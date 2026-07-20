@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wenu"
+version = "0.1.0"
+description = "Celestial visualization toolkit"
+authors = [{name = "Fernando Selman"}]
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "astropy",
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "astropy",
+]
+
+[project.scripts]
+wenu_notebooks = "wenu.cli.notebooks:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"wenu.data.catalogs.hipparcos" = ["*.dat"]
+"wenu.data.constellations.mapuche" = ["*.fab"]
+"wenu.data.constellations.western" = ["*.fab"]
+"wenu.data.constellations.iau" = ["*.dat"]
+"wenu.notebooks" = ["*.ipynb"]

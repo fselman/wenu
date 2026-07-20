@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Testing and analysis
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swp.*
+*.swo
+
+# macOS
+.DS_Store
+._*
+
+# Environment and secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Generated output
+output/
+outputs/
+figures/
+charts/
+exports/
+
+# Large astronomy data
+#hip_main.dat

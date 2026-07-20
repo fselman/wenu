@@ -1,0 +1,13 @@
+# mapuche.fab
+#
+# Demonstration only.
+# Based primarily on Fu (2016).
+# PUNONCHOYKE = the principal stars of Crux.
+# WIXAN = the bright stars of Orion.
+# GAW = the seven brightest Pleiades.
+
+PUNONCHOYKE  2  60718 62434 
+PUNONCHOYKE  2  60718 61084 
+PUNONCHOYKE  2  60718 59747 
+WIXAN        7  26727 26311 25930 25336 24436 27989 28614
+GAW          7  17499 17531 17702 17847 17954 17573 17776
