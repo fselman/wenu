@@ -158,3 +158,34 @@ def test_visible_preserves_strict_horizon_rule():
         True,
     ]
 
+def test_project_spherical_matches_existing_altaz_projection():
+    projection = StereographicProjection(
+        radius=2.0,
+        flip_ew=True,
+    )
+
+    lon_deg = np.array(
+        [0.0, 30.0, 90.0, 180.0, 270.0]
+    )
+    lat_deg = np.array(
+        [90.0, 60.0, 30.0, 10.0, 0.0]
+    )
+
+    expected_x, expected_y = projection.project(
+        alt_deg=lat_deg,
+        az_deg=lon_deg,
+    )
+
+    actual_x, actual_y = projection.project_spherical(
+        lon_deg=lon_deg,
+        lat_deg=lat_deg,
+    )
+
+    np.testing.assert_allclose(
+        actual_x,
+        expected_x,
+    )
+    np.testing.assert_allclose(
+        actual_y,
+        expected_y,
+    )

@@ -88,25 +88,65 @@ class StereographicProjection:
 
         return x, y
 
-    def project(self, alt_deg, az_deg):
+    def project_spherical(
+        self,
+        lon_deg,
+        lat_deg,
+    ):
         """
-        Project Alt/Az onto the stereographic planisphere.
+        Project generic spherical longitude and latitude coordinates.
+
+        Parameters
+        ----------
+        lon_deg
+            Spherical longitude in degrees.
+
+        lat_deg
+            Spherical latitude in degrees.
+
+        Returns
+        -------
+        tuple
+            Projected ``(x, y)`` coordinates.
+
+        Notes
+        -----
+        Latitude +90 degrees is the tangent point and maps to the
+        projection origin.
         """
 
-        alt = np.radians(alt_deg)
-        az = np.radians(az_deg)
+        lon = np.radians(lon_deg)
+        lat = np.radians(lat_deg)
 
         r = self.radius * np.tan(
-            (np.pi / 2.0 - alt) / 2.0
+            (np.pi / 2.0 - lat) / 2.0
         )
 
-        x = r * np.sin(az)
-        y = r * np.cos(az)
+        x = r * np.sin(lon)
+        y = r * np.cos(lon)
 
         if self.flip_ew:
             x = -x
 
         return x, y
+
+    def project(
+        self,
+        alt_deg,
+        az_deg,
+    ):
+        """
+        Project horizontal Alt/Az coordinates.
+
+        This is the backward-compatible interface used by the existing
+        Wenu code. Altitude is interpreted as spherical latitude and
+        azimuth as spherical longitude.
+        """
+
+        return self.project_spherical(
+            lon_deg=az_deg,
+            lat_deg=alt_deg,
+        )
 
     def visible(self, alt_deg, az_deg=None):
         """
