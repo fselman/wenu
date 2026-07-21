@@ -53,6 +53,39 @@ class CelestialCurve:
                 "A celestial curve requires at least two samples."
             )
 
+    @classmethod
+    def from_spherical(
+        cls,
+        lon_deg,
+        lat_deg,
+        *,
+        frame,
+        name: str | None = None,
+        closed: bool = False,
+        style: dict[str, Any] | None = None,
+    ) -> "CelestialCurve":
+        """
+        Build a horizontal celestial curve from generic spherical coordinates.
+
+        The supplied frame converts generic spherical longitude and latitude
+        into the horizontal longitude/latitude convention used by Wenu:
+
+        - transformed longitude becomes azimuth
+        - transformed latitude becomes altitude
+        """
+        coordinates = frame.transform(
+            lon_deg=lon_deg,
+            lat_deg=lat_deg,
+        )
+
+        return cls(
+            alt_deg=coordinates.lat_deg,
+            az_deg=coordinates.lon_deg,
+            name=name,
+            closed=closed,
+            style={} if style is None else style,
+        )
+
     def draw(
         self,
         ax,
