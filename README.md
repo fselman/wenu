@@ -14,6 +14,27 @@ Unlike interactive planetarium software, Wenu focuses on creating static charts 
 
 *Wenu* means **sky** in Mapudungun, the language of the Mapuche people of southern South America.
 
+## Project Status
+
+**Wenu** is currently under active design and development.
+
+This repository is temporarily public solely to facilitate architectural
+review, technical discussion, and collaboration during the development of
+the project.
+
+**Wenu is not yet an open-source release.**
+
+All rights to the software and its associated documentation are reserved by
+the author. No permission is granted to use, copy, modify, redistribute, or
+create derivative works without the prior written permission of the copyright
+holder.
+
+Once the development of both the software and its accompanying educational
+material has been completed, the project may be released under an appropriate
+open-source license.
+
+For further information, please refer to the **LICENSE** file.
+
 ---
 
 ## Features

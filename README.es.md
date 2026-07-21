@@ -14,6 +14,24 @@ A diferencia de los programas planetario interactivos, Wenu está orientada a la
 
 *Wenu* significa **cielo** en mapudungun, la lengua del pueblo mapuche del sur de Sudamérica.
 
+## Estado del proyecto
+
+**Wenu** se encuentra actualmente en una etapa activa de diseño y desarrollo.
+
+Este repositorio es temporalmente público con el único propósito de facilitar
+la revisión de la arquitectura, la discusión técnica y la colaboración durante
+el desarrollo del proyecto.
+
+**Wenu no constituye aún una versión de código abierto (Open Source).**
+
+Todos los derechos sobre el software y su documentación están reservados por
+el titular de los derechos de autor.  No se concede autorización para usar, copiar, modificar, redisistribuir o crear obras derivadas sin la autorización previa y por escrito del titular de los derechos de autor.
+
+Una vez finalizado el desarrollo del software y del material educativo asociado,
+el proyecto podrá ser publicado bajo una licencia de código abierto apropiada.
+
+Para más información, consulte el archivo **LICENSE**.
+
 ---
 
 ## Características
