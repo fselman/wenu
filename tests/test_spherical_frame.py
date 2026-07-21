@@ -133,4 +133,33 @@ def test_spherical_frame_is_public_api():
     assert PublicSphericalCoordinates is SphericalCoordinates
     assert PublicSphericalFrame is SphericalFrame
 
+def test_frame_can_be_constructed_from_rotation_matrix():
+    rotation_matrix = np.array(
+        [
+            [0.0, -1.0, 0.0],
+            [1.0,  0.0, 0.0],
+            [0.0,  0.0, 1.0],
+        ]
+    )
+
+    frame = SphericalFrame.from_rotation_matrix(
+        rotation_matrix
+    )
+
+    result = frame.transform(
+        lon_deg=0.0,
+        lat_deg=0.0,
+    )
+
+    np.testing.assert_allclose(
+        result.lon_deg,
+        90.0,
+        atol=1e-12,
+    )
+    np.testing.assert_allclose(
+        result.lat_deg,
+        0.0,
+        atol=1e-12,
+    )
+
 

@@ -7,7 +7,7 @@ to the existing Wenu projection or rendering pipeline.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 
@@ -67,6 +67,50 @@ class SphericalFrame:
     pole_lon_deg: float
     pole_lat_deg: float
     position_angle_deg: float = 0.0
+    _rotation_matrix: np.ndarray | None = field(
+    default=None,
+    repr=False,
+    compare=False,
+)
+
+    @classmethod
+    def from_rotation_matrix(
+        cls,
+        rotation_matrix,
+    ) -> "SphericalFrame":
+        """
+        Construct a spherical frame from a rotation matrix.
+
+        Parameters
+        ----------
+        rotation_matrix
+            A 3-by-3 matrix that rotates Cartesian vectors from the
+            source spherical coordinate system into this frame.
+
+        Returns
+        -------
+        SphericalFrame
+            A frame using the supplied rotation matrix.
+        """
+        matrix = np.array(
+            rotation_matrix,
+            dtype=float,
+            copy=True,
+        )
+
+        if matrix.shape != (3, 3):
+            raise ValueError(
+                "rotation_matrix must have shape (3, 3)."
+            )
+
+        matrix.setflags(write=False)
+
+        return cls(
+            pole_lon_deg=0.0,
+            pole_lat_deg=90.0,
+            position_angle_deg=0.0,
+            _rotation_matrix=matrix,
+        )
 
     def transform(
         self,
@@ -176,6 +220,8 @@ class SphericalFrame:
         The matrix is orthogonal. Its transpose therefore performs the
         inverse transformation.
         """
+        if self._rotation_matrix is not None:
+            return self._rotation_matrix
 
         pole_lon = np.radians(
             self.pole_lon_deg
