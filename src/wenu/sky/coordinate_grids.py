@@ -18,7 +18,33 @@ from astropy.time import Time
 import astropy.units as u
 
 from wenu.geometry import radec_to_altaz
+from wenu.spherical_frame import SphericalCoordinates
 from wenu.sky.curves import CelestialCurve
+
+
+class _GridToHorizontalTransform:
+    """
+    Adapt a grid's native-to-horizontal conversion to the transform
+    interface expected by CelestialCurve.from_spherical().
+    """
+
+    def __init__(self, grid) -> None:
+        self.grid = grid
+
+    def transform(
+        self,
+        lon_deg,
+        lat_deg,
+    ) -> SphericalCoordinates:
+        alt_deg, az_deg = self.grid._native_to_altaz(
+            lon_deg,
+            lat_deg,
+        )
+
+        return SphericalCoordinates(
+            lon_deg=np.asarray(az_deg),
+            lat_deg=np.asarray(alt_deg),
+        )
 
 
 class SphericalCoordinatesGrid(ABC):
@@ -166,14 +192,11 @@ class SphericalCoordinatesGrid(ABC):
         """
         Transform native grid coordinates and construct a CelestialCurve.
         """
-        alt_deg, az_deg = self._native_to_altaz(
-            longitude_deg,
-            latitude_deg,
-        )
 
-        return CelestialCurve(
-            alt_deg=alt_deg,
-            az_deg=az_deg,
+        return CelestialCurve.from_spherical(
+            lon_deg=longitude_deg,
+            lat_deg=latitude_deg,
+            frame=_GridToHorizontalTransform(self),
             name=name,
             closed=closed,
             style={} if style is None else dict(style),
