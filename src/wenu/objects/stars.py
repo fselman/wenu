@@ -8,6 +8,8 @@ from skyfield.api import Star
 from skyfield.data import hipparcos
 
 from wenu.resources import catalog_path
+from wenu.renderers import render_points
+from wenu.renderers import layers
 
 
 class Stars:
@@ -212,19 +214,22 @@ class Stars:
         projection,
         color="white",
         alt_min=-10.0,
-        zorder=3,
+        zorder=layers.STARS,
         **scatter_kwargs,
     ):
         """
-        Prepare and draw the Hipparcos star field.
-        """
+        Prepare and render the Hipparcos star field.
 
+        The astronomical calculations and projection are performed by
+        ``Stars``. The Matplotlib scatter artist is created by the renderer.
+        """
         self.prepare(
             projection=projection,
             alt_min=alt_min,
         )
 
-        self.artist = ax.scatter(
+        self.artist = render_points(
+            ax,
             self.x,
             self.y,
             s=self.sizes,

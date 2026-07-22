@@ -4,7 +4,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 
-from wenu.renderers.matplotlib_viewport import apply_viewport
+from wenu.renderers.matplotlib_axes import apply_viewport
 from wenu.viewport import Viewport
 
 
