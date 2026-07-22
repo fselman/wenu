@@ -1,4 +1,5 @@
 """Wenu: publication-quality astronomical chart generation."""
+
 from importlib.metadata import PackageNotFoundError, version
 try:
     __version__ = version("wenu")
@@ -13,6 +14,7 @@ from .spherical_frame import (
     SphericalCoordinates,
     SphericalFrame,
 )
+from .viewport import Viewport
 
 __all__ = [
     "Observer",
@@ -20,5 +22,6 @@ __all__ = [
     "CelestialSphere",
     "SphericalCoordinates",
     "SphericalFrame",
+    "Viewport",
 ]
 
