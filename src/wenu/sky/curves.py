@@ -7,6 +7,7 @@ from typing import Any
 
 import numpy as np
 
+from wenu.visibility import visibility_mask
 
 @dataclass
 class CelestialCurve:
@@ -97,6 +98,9 @@ class CelestialCurve:
         """
         Draw the curve using the supplied projection.
 
+        The projection performs the Cartesian transformation while visibility
+        segmentation is delegated to the visibility module.
+
         Styles supplied here override the defaults stored in ``self.style``.
         """
         alt_deg, az_deg = self._drawing_samples(
@@ -122,10 +126,11 @@ class CelestialCurve:
         min_altitude: float,
     ) -> tuple[np.ndarray, np.ndarray]:
         """
-        Arrange samples so a closed curve does not break unnecessarily
-        at the array boundary.
+        Arrange samples of a closed curve so that a visible arc is not split
+        between the beginning and end of the arrays.
 
-        Actual visibility clipping remains the projection's responsibility.
+        This method only reorders the samples. It does not clip or segment
+        the curve.
         """
         alt_deg = self.alt_deg
         az_deg = self.az_deg
@@ -133,7 +138,10 @@ class CelestialCurve:
         if not self.closed:
             return alt_deg, az_deg
 
-        visible = alt_deg > min_altitude
+        visible = visibility_mask(
+            alt_deg,
+            min_altitude=min_altitude,
+        )
 
         if not np.any(visible):
             return alt_deg, az_deg

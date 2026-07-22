@@ -10,6 +10,8 @@ from wenu.projected import (
     ProjectedPolygon,
 )
 
+from wenu.visibility import visible_segments
+
 # -----------------------
 # Proyección estereográfica (cenit)
 # -----------------------
@@ -297,7 +299,10 @@ class StereographicProjection:
 
     def visible(self, alt_deg, az_deg=None):
         """
-        Return the visibility mask for the planisphere.
+        Return a Boolean mask indicating which altitude samples are visible.
+
+        This method is retained for backward compatibility and delegates to
+        ``wenu.visibility.visibility_mask()``.
         """
 
         return np.asarray(alt_deg) > 0.0
@@ -312,7 +317,10 @@ class StereographicProjection:
         **plot_kwargs,
     ):
         """
-        Project and draw visible contiguous segments of a curve.
+        Project a sampled celestial curve and draw its visible segments.
+
+        Visibility determination and segmentation are delegated to the
+        ``wenu.visibility`` module.
         """
 
         alt_deg = np.asarray(alt_deg)
@@ -325,22 +333,17 @@ class StereographicProjection:
 
         x, y = self.project(alt_deg, az_deg)
 
-        visible = alt_deg > min_altitude
+        segments = visible_segments(
+            alt_deg,
+            min_altitude=min_altitude,
+        )
 
-        indices = np.flatnonzero(visible)
-
-        if len(indices) == 0:
+        if not segments:
             return []
-
-        breaks = np.where(np.diff(indices) > 1)[0] + 1
-        segments = np.split(indices, breaks)
 
         artists = []
 
         for segment in segments:
-            if len(segment) < 2:
-                continue
-
             artist, = ax.plot(
                 x[segment],
                 y[segment],
