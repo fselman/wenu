@@ -21,6 +21,7 @@ env/
 .ruff_cache/
 .coverage
 htmlcov/
+*.temp
 
 # Jupyter
 .ipynb_checkpoints/
