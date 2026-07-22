@@ -16,6 +16,12 @@ from .spherical_frame import (
 )
 from .viewport import Viewport
 
+from wenu.projected import (
+    ProjectedCurve,
+    ProjectedPoint,
+    ProjectedPolygon,
+)
+
 __all__ = [
     "Observer",
     "StereographicProjection",
@@ -23,5 +29,8 @@ __all__ = [
     "SphericalCoordinates",
     "SphericalFrame",
     "Viewport",
+    "ProjectedCurve",
+    "ProjectedPoint",
+    "ProjectedPolygon",
 ]
 

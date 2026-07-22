@@ -2,6 +2,14 @@
 
 import numpy as np
 
+from typing import Any
+
+from wenu.projected import (
+    ProjectedCurve,
+    ProjectedPoint,
+    ProjectedPolygon,
+)
+
 # -----------------------
 # Proyección estereográfica (cenit)
 # -----------------------
@@ -146,6 +154,145 @@ class StereographicProjection:
         return self.project_spherical(
             lon_deg=az_deg,
             lat_deg=alt_deg,
+        )
+
+    def project_point(
+        self,
+        lon_deg,
+        lat_deg,
+        *,
+        name: str | None = None,
+    ) -> ProjectedPoint:
+        """
+        Project one spherical point.
+
+        Parameters
+        ----------
+        lon_deg, lat_deg
+            Generic spherical longitude and latitude in degrees.
+        name
+            Optional point identifier.
+
+        Returns
+        -------
+        ProjectedPoint
+            Cartesian representation of the point.
+        """
+        x, y = self.project_spherical(
+            lon_deg=lon_deg,
+            lat_deg=lat_deg,
+        )
+
+        x_array = np.asarray(x)
+        y_array = np.asarray(y)
+
+        if x_array.ndim != 0 or y_array.ndim != 0:
+            raise ValueError(
+                "project_point requires scalar longitude and latitude."
+            )
+
+        return ProjectedPoint(
+            x=float(x_array),
+            y=float(y_array),
+            name=name,
+        )
+
+    def project_curve(
+        self,
+        lon_deg,
+        lat_deg,
+        *,
+        closed: bool = False,
+        name: str | None = None,
+    ) -> ProjectedCurve:
+        """
+        Project a sampled spherical curve.
+
+        This method performs projection only. It does not apply horizon
+        visibility, viewport clipping, segmentation, or rendering.
+        """
+        lon_deg = np.asarray(
+            lon_deg,
+            dtype=float,
+        )
+        lat_deg = np.asarray(
+            lat_deg,
+            dtype=float,
+        )
+
+        if lon_deg.ndim != 1 or lat_deg.ndim != 1:
+            raise ValueError(
+                "lon_deg and lat_deg must be one-dimensional arrays."
+            )
+
+        if lon_deg.shape != lat_deg.shape:
+            raise ValueError(
+                "lon_deg and lat_deg must have the same shape."
+            )
+
+        if lon_deg.size < 2:
+            raise ValueError(
+                "A projected curve requires at least two samples."
+            )
+
+        x, y = self.project_spherical(
+            lon_deg=lon_deg,
+            lat_deg=lat_deg,
+        )
+
+        return ProjectedCurve(
+            x=x,
+            y=y,
+            closed=closed,
+            name=name,
+        )
+
+    def project_polygon(
+        self,
+        lon_deg,
+        lat_deg,
+        *,
+        name: str | None = None,
+    ) -> ProjectedPolygon:
+        """
+        Project a spherical polygon boundary.
+
+        This method performs projection only. It does not clip or draw
+        the resulting polygon.
+        """
+        lon_deg = np.asarray(
+            lon_deg,
+            dtype=float,
+        )
+        lat_deg = np.asarray(
+            lat_deg,
+            dtype=float,
+        )
+
+        if lon_deg.ndim != 1 or lat_deg.ndim != 1:
+            raise ValueError(
+                "lon_deg and lat_deg must be one-dimensional arrays."
+            )
+
+        if lon_deg.shape != lat_deg.shape:
+            raise ValueError(
+                "lon_deg and lat_deg must have the same shape."
+            )
+
+        if lon_deg.size < 3:
+            raise ValueError(
+                "A projected polygon requires at least three vertices."
+            )
+
+        x, y = self.project_spherical(
+            lon_deg=lon_deg,
+            lat_deg=lat_deg,
+        )
+
+        return ProjectedPolygon(
+            x=x,
+            y=y,
+            name=name,
         )
 
     def visible(self, alt_deg, az_deg=None):
