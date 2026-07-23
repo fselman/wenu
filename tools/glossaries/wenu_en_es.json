@@ -1,0 +1,23 @@
+{
+  "altitude": "altura",
+  "azimuth": "acimut",
+  "celestial equator": "ecuador celeste",
+  "celestial sphere": "esfera celeste",
+  "chart": "carta celeste",
+  "constellation boundary": "límite de constelación",
+  "constellation lines": "líneas de constelación",
+  "coordinate frame": "sistema de referencia",
+  "ecliptic": "eclíptica",
+  "galactic plane": "plano galáctico",
+  "horizon": "horizonte",
+  "layer": "capa",
+  "Milky Way": "Vía Láctea",
+  "observer": "observador",
+  "planisphere": "planisferio",
+  "projection": "proyección",
+  "renderer": "renderizador",
+  "sky chart": "carta celeste",
+  "stereographic projection": "proyección estereográfica",
+  "viewport": "ventana gráfica",
+  "zenith": "cenit"
+}

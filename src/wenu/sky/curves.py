@@ -108,12 +108,12 @@ class CelestialCurve:
             min_altitude=min_altitude
         )
 
-        projected_curves = projection.project_curve(
+        projected_curve = projection.project_curve(
             lon_deg=az_deg,
             lat_deg=alt_deg,
             closed=False,
             name=self.name,
-            min_altitude=min_altitude,
+       #     min_altitude=min_altitude,
         )
 
         plot_style = {
@@ -127,7 +127,6 @@ class CelestialCurve:
                 projected_curve,
                 **plot_style,
             )
-            for projected_curve in projected_curves
         ]
 
 
