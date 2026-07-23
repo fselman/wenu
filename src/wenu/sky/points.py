@@ -6,7 +6,11 @@ from typing import Any, Optional
 import astropy.units as u
 from astropy.coordinates import SkyCoord, get_sun
 
-from wenu.renderers import layers
+from wenu.renderers import (
+        layers,
+        render_point,
+        render_text,
+        )
 from wenu.geometry import radec_to_altaz
 
 
@@ -454,12 +458,14 @@ class CelestialPoints:
 
     def draw(self, ax, projection):
         """
-        Draw all stored points.
+        Project and render all visible stored points.
+
+        Points below the horizon are not rendered.
 
         Returns
         -------
         list
-            Artists returned by projection.draw_point().
+            Matplotlib marker and text artists created by the renderer.
         """
         artists = []
 
@@ -476,19 +482,57 @@ class CelestialPoints:
                 self.obs.lon_deg,
             )
 
-            artist = projection.draw_point(
-                ax,
-                alt_deg,
-                az_deg,
-                marker=point.marker,
-                size=point.size,
-                color=point.color,
-                label=point.label,
-                zorder=point.zorder,
-                **point.style,
+            alt_deg = float(alt_deg)
+            az_deg = float(az_deg)
+
+            if alt_deg < 0.0:
+                continue
+
+            projected = projection.project_point(
+                lon_deg=az_deg,
+                lat_deg=alt_deg,
+                name=point.label,
             )
 
-            artists.append(artist)
+            style = dict(point.style)
+
+            label_offset = style.pop(
+                "label_offset",
+                (0.03, 0.03),
+            )
+            fontsize = style.pop(
+                "fontsize",
+                9,
+            )
+
+            marker_artist = render_point(
+                ax,
+                projected,
+                marker=point.marker,
+                s=point.size,
+                color=point.color,
+                zorder=point.zorder,
+                **style,
+            )
+
+            artists.append(marker_artist)
+
+            if point.label is not None:
+                dx, dy = label_offset
+
+                label_artist = render_text(
+                    ax,
+                    projected.x + dx,
+                    projected.y + dy,
+                    point.label,
+                    fontsize=fontsize,
+                    color=point.color,
+                    ha="left",
+                    va="bottom",
+                    zorder=point.zorder,
+                )
+
+                artists.append(label_artist)
 
         return artists
 

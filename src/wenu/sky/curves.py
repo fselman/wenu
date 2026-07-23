@@ -7,6 +7,7 @@ from typing import Any
 
 import numpy as np
 
+from wenu.renderers import render_curve
 from wenu.visibility import visibility_mask
 
 @dataclass
@@ -14,8 +15,8 @@ class CelestialCurve:
     """
     A sampled curve on the apparent celestial sphere.
 
-    The curve stores horizontal coordinates but delegates projection,
-    clipping, segmentation, and Matplotlib drawing to the projection.
+    The curve stores horizontal coordinates and delegates projection to the
+    projection object and drawing to the renderer.
 
     Parameters
     ----------
@@ -26,7 +27,7 @@ class CelestialCurve:
     closed
         Whether the curve is geometrically closed.
     style
-        Default keyword arguments passed to ``projection.draw_curve``.
+        Default keyword arguments passed to ``render_curve``.
     """
 
     alt_deg: np.ndarray
@@ -96,10 +97,10 @@ class CelestialCurve:
         **style: Any,
     ):
         """
-        Draw the curve using the supplied projection.
+        Project and render the visible portions of the curve.
 
-        The projection performs the Cartesian transformation while visibility
-        segmentation is delegated to the visibility module.
+        The projection performs the Cartesian transformation and visibility
+        segmentation. The renderer creates the Matplotlib artists.
 
         Styles supplied here override the defaults stored in ``self.style``.
         """
@@ -107,18 +108,28 @@ class CelestialCurve:
             min_altitude=min_altitude
         )
 
+        projected_curves = projection.project_curve(
+            lon_deg=az_deg,
+            lat_deg=alt_deg,
+            closed=False,
+            name=self.name,
+            min_altitude=min_altitude,
+        )
+
         plot_style = {
             **self.style,
             **style,
         }
 
-        return projection.draw_curve(
-            ax=ax,
-            alt_deg=alt_deg,
-            az_deg=az_deg,
-            min_altitude=min_altitude,
-            **plot_style,
-        )
+        return [
+            render_curve(
+                ax,
+                projected_curve,
+                **plot_style,
+            )
+            for projected_curve in projected_curves
+        ]
+
 
     def _drawing_samples(
         self,

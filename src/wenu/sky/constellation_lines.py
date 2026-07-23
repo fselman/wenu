@@ -5,6 +5,8 @@ from pathlib import Path
 
 import numpy as np
 
+from wenu.projected import ProjectedCurve
+from wenu.renderers import render_curve
 from wenu.resources import constellation_lines_path
 
 
@@ -345,9 +347,14 @@ class ConstellationLines:
                 if segment_length > self.max_segment_length:
                     continue
 
-            artist, = ax.plot(
-                [x1, x2],
-                [y1, y2],
+            curve = ProjectedCurve(
+                x=[x1, x2],
+                y=[y1, y2],
+            )
+
+            artist = render_curve(
+                ax,
+                curve,
                 color=self.color,
                 linewidth=self.linewidth,
                 alpha=self.alpha,

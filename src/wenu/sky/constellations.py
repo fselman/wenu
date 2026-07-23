@@ -7,7 +7,8 @@ import numpy as np
 from astropy.coordinates import SkyCoord
 import astropy.units as u
 
-from .constellation_lines import ConstellationLines
+from wenu.sky.constellation_lines import ConstellationLines
+from wenu.renderers import render_text
 
 
 class Constellations:
@@ -239,7 +240,8 @@ class Constellations:
                 dx = 0.0
                 dy = 0.0
 
-            artist = ax.text(
+            artist = render_text(
+                ax,
                 cx + dx,
                 cy + dy,
                 constellation,

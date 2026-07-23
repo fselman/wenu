@@ -8,6 +8,7 @@ import numpy as np
 from matplotlib.collections import PathCollection
 from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon as MatplotlibPolygon
+from matplotlib.text import Text
 
 from wenu.projected import (
     ProjectedCurve,
@@ -18,6 +19,7 @@ from wenu.renderers.matplotlib import (
     render_curve,
     render_point,
     render_points,
+    render_text,
     render_polygon,
 )
 
@@ -339,5 +341,32 @@ def test_render_polygon_forwards_style():
     assert artist.get_zorder() == 2
 
     plt.close(fig)
+
+def test_render_text_returns_text():
+    fig, ax = plt.subplots()
+
+    artist = render_text(
+        ax,
+        1.0,
+        2.0,
+        "GC",
+        fontsize=12,
+        color="yellow",
+        zorder=4,
+    )
+
+    assert isinstance(
+        artist,
+        Text,
+    )
+
+    assert artist.get_text() == "GC"
+    assert artist.get_position() == (1.0, 2.0)
+    assert artist.get_fontsize() == 12
+    assert artist.get_color() == "yellow"
+    assert artist.get_zorder() == 4
+
+    plt.close(fig)
+
 
 

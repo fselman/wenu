@@ -5,6 +5,7 @@ from wenu.renderers.matplotlib import (
     render_point,
     render_points,
     render_polygon,
+    render_text,
 )
 from wenu.renderers.matplotlib_axes import apply_viewport
 
@@ -14,4 +15,5 @@ __all__ = [
     "render_point",
     "render_points",
     "render_polygon",
+    "render_text",
 ]

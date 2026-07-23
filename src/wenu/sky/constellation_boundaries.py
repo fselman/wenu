@@ -11,6 +11,8 @@ from astropy.coordinates import AltAz, FK4, SkyCoord, EarthLocation
 from astropy.time import Time
 from matplotlib.path import Path as MatplotlibPath
 
+from wenu.projected import ProjectedCurve
+from wenu.renderers import render_curve
 from wenu.resources import boundary_path
 
 
@@ -719,15 +721,20 @@ class ConstellationBoundaries:
                 y=y,
                 altitude=altitude,
             ):
-                artist, = ax.plot(
-                    segment_x,
-                    segment_y,
+                curve = ProjectedCurve(
+                    x=segment_x,
+                    y=segment_y,
+                )
+
+                artist = render_curve(
+                    ax,
+                    curve,
                     color=self.color,
                     linewidth=self.linewidth,
                     alpha=self.alpha,
                     zorder=self.zorder,
                 )
-
+            
                 self.artists.append(artist)
 
         return self.artists
