@@ -1,7 +1,20 @@
 import numpy as np
+import pytest
 
 from wenu.projection import StereographicProjection
 
+def test_projection_rejects_nonpositive_radius():
+    with pytest.raises(
+        ValueError,
+        match="radius must be positive",
+    ):
+        StereographicProjection(radius=0.0)
+
+    with pytest.raises(
+        ValueError,
+        match="radius must be positive",
+    ):
+        StereographicProjection(radius=-1.0)
 
 def current_projection_formula(
     alt_deg,
@@ -142,21 +155,6 @@ def test_flip_ew_changes_only_x_sign():
         normal_y,
     )
 
-
-def test_visible_preserves_strict_horizon_rule():
-    projection = StereographicProjection()
-
-    visible = projection.visible(
-        np.array(
-            [-1.0, 0.0, 1.0]
-        )
-    )
-
-    assert visible.tolist() == [
-        False,
-        False,
-        True,
-    ]
 
 def test_project_spherical_matches_existing_altaz_projection():
     projection = StereographicProjection(

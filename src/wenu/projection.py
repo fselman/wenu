@@ -2,24 +2,35 @@
 
 import numpy as np
 
-from typing import Any
-
 from wenu.projected import (
     ProjectedCurve,
     ProjectedPoint,
     ProjectedPolygon,
 )
 
-from wenu.visibility import visible_segments
-
-# -----------------------
-# Proyección estereográfica (cenit)
-# -----------------------
 class StereographicProjection:
+    """
+    Stereographic projection tangent at spherical latitude +90 degrees.
 
-    def __init__(self, radius=2.0, flip_ew=True):
+    The projection operates on generic spherical longitude and latitude.
+    The ``project()`` method provides the legacy Alt/Az convenience
+    interface, while ``project_spherical()`` is coordinate-system
+    agnostic.
+    """
+    def __init__(
+        self,
+        radius: float = 2.0,
+        flip_ew: bool = True,
+    ):
+        radius = float(radius)
+
+        if radius <= 0.0:
+            raise ValueError(
+                "radius must be positive."
+            )
+
         self.radius = radius
-        self.flip_ew = flip_ew
+        self.flip_ew = bool(flip_ew)
 
     def project_spherical(
         self,
@@ -219,14 +230,4 @@ class StereographicProjection:
             y=y,
             name=name,
         )
-
-    def visible(self, alt_deg, az_deg=None):
-        """
-        Return a Boolean mask indicating which altitude samples are visible.
-
-        This method is retained for backward compatibility and delegates to
-        ``wenu.visibility.visibility_mask()``.
-        """
-
-        return np.asarray(alt_deg) > 0.0
 

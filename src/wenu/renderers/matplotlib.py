@@ -7,6 +7,7 @@ from matplotlib.axes import Axes
 from matplotlib.collections import PathCollection
 from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon as MatplotlibPolygon
+from matplotlib.text import Text
 
 from wenu.projected import (
     ProjectedCurve,
@@ -96,6 +97,42 @@ def render_points(
         **style,
     )
 
+
+def render_text(
+    ax: Axes,
+    x: float,
+    y: float,
+    text: str,
+    **style,
+) -> Text:
+    """
+    Render text at projected Cartesian coordinates.
+
+    Parameters
+    ----------
+    ax
+        Matplotlib axis on which the text is drawn.
+
+    x, y
+        Projected Cartesian coordinates.
+
+    text
+        Text to render.
+
+    **style
+        Keyword arguments forwarded to ``Axes.text``.
+
+    Returns
+    -------
+    matplotlib.text.Text
+        The Matplotlib text artist.
+    """
+    return ax.text(
+        float(x),
+        float(y),
+        text,
+        **style,
+    )
 
 def render_curve(
     ax: Axes,

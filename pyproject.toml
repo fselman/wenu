@@ -26,4 +26,11 @@ dependencies = [
 [project.scripts]
 wenu_notebooks = "wenu.cli.notebooks:main"
 
+[tool.ruff]
+line-length = 79
+target-version = "py311"
+exclude = [
+    "src/wenu/notebooks",
+]
+
 [tool.setuptools_scm]

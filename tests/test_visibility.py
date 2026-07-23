@@ -7,6 +7,10 @@ from wenu.visibility import (
     visible_segments,
 )
 
+def test_visibility_mask_empty():
+    visible = visibility_mask(np.array([]))
+
+    assert visible.size == 0
 
 def test_visibility_mask_uses_strict_altitude_limit():
     alt_deg = np.array([-1.0, 0.0, 1.0])

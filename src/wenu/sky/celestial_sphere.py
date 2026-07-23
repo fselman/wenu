@@ -7,7 +7,6 @@ from typing import Any
 
 from wenu.objects.stars import Stars
 from wenu.sky.constellations import Constellations
-from wenu.sky.constellation_lines import ConstellationLines
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.sky.coordinate_grids import (
         EquatorialGrid,

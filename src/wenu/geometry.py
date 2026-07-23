@@ -246,11 +246,11 @@ def galactic_plane_altaz(t, location, npts=720):
     """
 
     # Avoid discontinuity at edges
-    l = np.linspace(-180.0, 180.0, npts) * u.deg
+    lon = np.linspace(-180.0, 180.0, npts) * u.deg
     b = np.zeros(npts) * u.deg
 
     # Galactic frame
-    gal = SkyCoord(l=l, b=b, frame='galactic')
+    gal = SkyCoord(l=lon, b=b, frame='galactic')
 
     # Convert to ICRS
     icrs = gal.icrs
