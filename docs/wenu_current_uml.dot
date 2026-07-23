@@ -1,0 +1,170 @@
+digraph WenuCurrentUML {
+	bgcolor=white fontname=Helvetica fontsize=18 label="Wenu — Current Implemented Class Architecture
+GitHub commit 7208c7b (verified from source)" labelloc=t nodesep=0.38 pad=0.35 rankdir=LR ranksep=0.7 splines=ortho
+	node [fontname=Helvetica shape=plain]
+	edge [arrowsize=0.75 fontname=Helvetica fontsize=9]
+	subgraph cluster_core {
+		color="#8a8a8a" label="wenu core" style=rounded
+		Observer [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#e9f2ff">
+  <TR><TD BGCOLOR="#e9f2ff"><B>Observer</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ earth<BR ALIGN='LEFT'/>+ t<BR ALIGN='LEFT'/>+ lat_deg<BR ALIGN='LEFT'/>+ lon_deg<BR ALIGN='LEFT'/>+ elevation_m<BR ALIGN='LEFT'/>+ location<BR ALIGN='LEFT'/>+ skyfield</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ t_astropy<BR ALIGN='LEFT'/>+ earth_location<BR ALIGN='LEFT'/>+ icrs_frame<BR ALIGN='LEFT'/>+ galactic_frame<BR ALIGN='LEFT'/>+ ecliptic_frame<BR ALIGN='LEFT'/>+ altaz_frame</FONT></TD></TR>
+</TABLE>>]
+		Projection [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fff2cc">
+  <TR><TD BGCOLOR="#fff2cc"><B>StereographicProjection</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ radius<BR ALIGN='LEFT'/>+ flip_ew</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ project(alt_deg, az_deg)<BR ALIGN='LEFT'/>+ visible(alt_deg)<BR ALIGN='LEFT'/>+ draw_point(ax, ...)<BR ALIGN='LEFT'/>+ draw_curve(ax, ...)</FONT></TD></TR>
+</TABLE>>]
+		Geometry [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f5f5f5">
+  <TR><TD BGCOLOR="#f5f5f5">«module»<BR/><B>geometry module</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9"> </FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">radec_to_altaz(...)</FONT></TD></TR>
+</TABLE>>]
+		Resources [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#f5f5f5">
+  <TR><TD BGCOLOR="#f5f5f5">«module»<BR/><B>resources module</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9"> </FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">catalog_path(...)<BR ALIGN='LEFT'/>constellation_lines_path(...)<BR ALIGN='LEFT'/>boundary_path(...)</FONT></TD></TR>
+</TABLE>>]
+	}
+	subgraph cluster_objects {
+		color="#8a8a8a" label="wenu.objects" style=rounded
+		Stars [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#e8f7e8">
+  <TR><TD BGCOLOR="#e8f7e8"><B>Stars</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ observer<BR ALIGN='LEFT'/>+ catalog<BR ALIGN='LEFT'/>+ hip_df<BR ALIGN='LEFT'/>+ skyfield_stars<BR ALIGN='LEFT'/>+ alt / az<BR ALIGN='LEFT'/>+ x / y<BR ALIGN='LEFT'/>+ sizes<BR ALIGN='LEFT'/>+ projection<BR ALIGN='LEFT'/>+ artist</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ load()<BR ALIGN='LEFT'/>+ compute_altaz()<BR ALIGN='LEFT'/>+ project()<BR ALIGN='LEFT'/>+ compute_sizes()<BR ALIGN='LEFT'/>+ prepare()<BR ALIGN='LEFT'/>+ draw()<BR ALIGN='LEFT'/>+ hip_index</FONT></TD></TR>
+</TABLE>>]
+	}
+	subgraph cluster_sky {
+		color="#8a8a8a" label="wenu.sky" style=rounded
+		CelestialSphere [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#dceeff">
+  <TR><TD BGCOLOR="#dceeff"><B>CelestialSphere</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ observer<BR ALIGN='LEFT'/>+ stars<BR ALIGN='LEFT'/>+ points<BR ALIGN='LEFT'/>+ constellations<BR ALIGN='LEFT'/>+ constellation_lines<BR ALIGN='LEFT'/>+ constellation_boundaries<BR ALIGN='LEFT'/>- _layers</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ add(layer)<BR ALIGN='LEFT'/>+ extend(layers)<BR ALIGN='LEFT'/>+ remove(layer)<BR ALIGN='LEFT'/>+ clear()<BR ALIGN='LEFT'/>+ add_stars()<BR ALIGN='LEFT'/>+ add_points()<BR ALIGN='LEFT'/>+ add_constellations()<BR ALIGN='LEFT'/>+ add_constellation_boundaries()<BR ALIGN='LEFT'/>+ draw_equatorial_*()<BR ALIGN='LEFT'/>+ draw_ecliptic_*()<BR ALIGN='LEFT'/>+ draw_galactic_*()</FONT></TD></TR>
+</TABLE>>]
+		Point [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fce8f1">
+  <TR><TD BGCOLOR="#fce8f1">«dataclass»<BR/><B>_CelestialPoint</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ coord: SkyCoord<BR ALIGN='LEFT'/>+ label<BR ALIGN='LEFT'/>+ marker<BR ALIGN='LEFT'/>+ size<BR ALIGN='LEFT'/>+ color<BR ALIGN='LEFT'/>+ zorder<BR ALIGN='LEFT'/>+ style</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9"> </FONT></TD></TR>
+</TABLE>>]
+		Points [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fce8f1">
+  <TR><TD BGCOLOR="#fce8f1"><B>CelestialPoints</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ obs<BR ALIGN='LEFT'/>- _points</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ add_equatorial_point()<BR ALIGN='LEFT'/>+ add_galactic_point()<BR ALIGN='LEFT'/>+ add_ecliptic_point()<BR ALIGN='LEFT'/>+ add_equatorial_pole()<BR ALIGN='LEFT'/>+ add_galactic_center()<BR ALIGN='LEFT'/>+ add_galactic_anticenter()<BR ALIGN='LEFT'/>+ add_galactic_pole()<BR ALIGN='LEFT'/>+ add_ecliptic_pole()<BR ALIGN='LEFT'/>+ add_ecliptic_keypoints()<BR ALIGN='LEFT'/>+ add_antisolar_point()<BR ALIGN='LEFT'/>+ draw()</FONT></TD></TR>
+</TABLE>>]
+		Curve [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fce8f1">
+  <TR><TD BGCOLOR="#fce8f1">«dataclass»<BR/><B>CelestialCurve</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ alt_deg<BR ALIGN='LEFT'/>+ az_deg<BR ALIGN='LEFT'/>+ name<BR ALIGN='LEFT'/>+ closed<BR ALIGN='LEFT'/>+ style</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ draw(ax, projection)<BR ALIGN='LEFT'/>- _drawing_samples()</FONT></TD></TR>
+</TABLE>>]
+		GridBase [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#ede7f6">
+  <TR><TD BGCOLOR="#ede7f6">«abstract»<BR/><B>SphericalCoordinatesGrid</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ observer<BR ALIGN='LEFT'/>+ samples</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ parallel()<BR ALIGN='LEFT'/>+ meridian()<BR ALIGN='LEFT'/>+ grid()<BR ALIGN='LEFT'/>- _make_curve()<BR ALIGN='LEFT'/>- _native_to_altaz()<BR ALIGN='LEFT'/># _native_to_icrs()</FONT></TD></TR>
+</TABLE>>]
+		EqGrid [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#ede7f6">
+  <TR><TD BGCOLOR="#ede7f6"><B>EquatorialGrid</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ frame<BR ALIGN='LEFT'/>+ equinox</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ equator()<BR ALIGN='LEFT'/>+ parallel()<BR ALIGN='LEFT'/>+ meridian()<BR ALIGN='LEFT'/>+ grid()<BR ALIGN='LEFT'/>- _native_to_icrs()<BR ALIGN='LEFT'/>- _equinox_time()</FONT></TD></TR>
+</TABLE>>]
+		EcGrid [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#ede7f6">
+  <TR><TD BGCOLOR="#ede7f6"><B>EclipticGrid</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ equinox</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ ecliptic()<BR ALIGN='LEFT'/>+ parallel()<BR ALIGN='LEFT'/>+ meridian()<BR ALIGN='LEFT'/>+ grid()<BR ALIGN='LEFT'/>- _native_to_icrs()</FONT></TD></TR>
+</TABLE>>]
+		GalGrid [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#ede7f6">
+  <TR><TD BGCOLOR="#ede7f6"><B>GalacticGrid</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9"> </FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ galactic_equator()<BR ALIGN='LEFT'/>+ parallel()<BR ALIGN='LEFT'/>+ meridian()<BR ALIGN='LEFT'/>+ grid()<BR ALIGN='LEFT'/>- _native_to_icrs()</FONT></TD></TR>
+</TABLE>>]
+		Constellations [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#ffe9d6">
+  <TR><TD BGCOLOR="#ffe9d6"><B>Constellations</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ stars<BR ALIGN='LEFT'/>+ system<BR ALIGN='LEFT'/>+ selected<BR ALIGN='LEFT'/>+ lines<BR ALIGN='LEFT'/>+ boundaries<BR ALIGN='LEFT'/>+ line_artists<BR ALIGN='LEFT'/>+ label_artists<BR ALIGN='LEFT'/>+ boundary_artists</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ draw()<BR ALIGN='LEFT'/>+ draw_lines()<BR ALIGN='LEFT'/>+ draw_labels()<BR ALIGN='LEFT'/>+ draw_boundaries()<BR ALIGN='LEFT'/>+ set_boundaries()</FONT></TD></TR>
+</TABLE>>]
+		ConstLines [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#ffe9d6">
+  <TR><TD BGCOLOR="#ffe9d6"><B>ConstellationLines</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ stars<BR ALIGN='LEFT'/>+ system<BR ALIGN='LEFT'/>+ filename<BR ALIGN='LEFT'/>+ constellations<BR ALIGN='LEFT'/>+ edges<BR ALIGN='LEFT'/>+ edges_by_constellation<BR ALIGN='LEFT'/>+ artists</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ load()<BR ALIGN='LEFT'/>+ draw()<BR ALIGN='LEFT'/>+ draw_constellation()<BR ALIGN='LEFT'/>- _draw_edges()<BR ALIGN='LEFT'/>- _validate_stars()</FONT></TD></TR>
+</TABLE>>]
+		ConstBounds [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#ffe9d6">
+  <TR><TD BGCOLOR="#ffe9d6"><B>ConstellationBoundaries</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ observer<BR ALIGN='LEFT'/>+ boundaries_name<BR ALIGN='LEFT'/>+ filename<BR ALIGN='LEFT'/>+ constellations<BR ALIGN='LEFT'/>+ vertices<BR ALIGN='LEFT'/>+ sampled_vertices<BR ALIGN='LEFT'/>+ altaz<BR ALIGN='LEFT'/>+ projected<BR ALIGN='LEFT'/>+ artists</FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">+ load()<BR ALIGN='LEFT'/>+ draw()<BR ALIGN='LEFT'/>+ region_of(...)</FONT></TD></TR>
+</TABLE>>]
+	}
+	subgraph cluster_external {
+		color="#aaaaaa" label="external libraries" style="rounded,dashed"
+		Axes [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fafafa">
+  <TR><TD BGCOLOR="#fafafa">«external»<BR/><B>matplotlib.axes.Axes</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9"> </FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">scatter()<BR ALIGN='LEFT'/>plot()<BR ALIGN='LEFT'/>text()</FONT></TD></TR>
+</TABLE>>]
+		Astropy [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fafafa">
+  <TR><TD BGCOLOR="#fafafa">«external»<BR/><B>Astropy</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9"> </FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">SkyCoord / frames / Time</FONT></TD></TR>
+</TABLE>>]
+		Skyfield [label=<
+<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" BGCOLOR="#fafafa">
+  <TR><TD BGCOLOR="#fafafa">«external»<BR/><B>Skyfield</B></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9"> </FONT></TD></TR>
+  <TR><TD BORDER="1" SIDES="T" ALIGN="LEFT"><FONT POINT-SIZE="9">Star / observer / apparent AltAz</FONT></TD></TR>
+</TABLE>>]
+	}
+	EqGrid -> GridBase [label=inherits arrowhead=empty dir=back]
+	EcGrid -> GridBase [label=inherits arrowhead=empty dir=back]
+	GalGrid -> GridBase [label=inherits arrowhead=empty dir=back]
+	CelestialSphere -> Observer [label=holds arrowhead=odiamond dir=back]
+	CelestialSphere -> Stars [label="creates/holds" arrowhead=diamond dir=back]
+	CelestialSphere -> Points [label="creates/holds" arrowhead=diamond dir=back]
+	CelestialSphere -> Constellations [label="creates/holds" arrowhead=diamond dir=back]
+	CelestialSphere -> ConstBounds [label="creates/holds" arrowhead=diamond dir=back]
+	CelestialSphere -> EqGrid [label="instantiates in draw_*" style=dashed]
+	CelestialSphere -> EcGrid [label="instantiates in draw_*" style=dashed]
+	CelestialSphere -> GalGrid [label="instantiates in draw_*" style=dashed]
+	Points -> Point [label="contains 0..*" arrowhead=diamond dir=back]
+	GridBase -> Curve [label=creates arrowhead=vee]
+	Constellations -> ConstLines [label=owns arrowhead=diamond dir=back]
+	Constellations -> ConstBounds [label=optional arrowhead=odiamond dir=back]
+	Constellations -> Stars [label=uses arrowhead=odiamond dir=back]
+	ConstLines -> Stars [label="uses projected arrays" arrowhead=odiamond dir=back]
+	ConstBounds -> Observer [label=uses arrowhead=odiamond dir=back]
+	Stars -> Observer [label=uses arrowhead=odiamond dir=back]
+	Stars -> Projection [label="project()"]
+	Points -> Projection [label="draw_point()"]
+	Curve -> Projection [label="draw_curve()"]
+	ConstBounds -> Projection [label="project/draw"]
+	Stars -> Axes [label="scatter()" style=dashed]
+	ConstLines -> Axes [label="plot()" style=dashed]
+	Constellations -> Axes [label="text()/delegates" style=dashed]
+	Projection -> Axes [label="scatter/plot/text" style=dashed]
+	Points -> Geometry [label=radec_to_altaz style=dotted]
+	GridBase -> Geometry [label=radec_to_altaz style=dotted]
+	Stars -> Resources [label=catalog_path style=dotted]
+	ConstLines -> Resources [label="line resource" style=dotted]
+	ConstBounds -> Resources [label="boundary resource" style=dotted]
+	Observer -> Astropy [style=dotted]
+	Points -> Astropy [style=dotted]
+	GridBase -> Astropy [style=dotted]
+	ConstBounds -> Astropy [style=dotted]
+	Observer -> Skyfield [style=dotted]
+	Stars -> Skyfield [style=dotted]
+}

@@ -1,223 +1,217 @@
-# Wenu Architecture Roadmap
+# Wenu Development Roadmap
 
-## Phase I — Foundations
+## Vision
 
-### ✓ Commit 0 — Package foundation
-- Create the package structure.
-- Establish imports and basic project organization.
-- Configure testing infrastructure.
+Wenu is a Python package for producing publication-quality astronomical charts.
 
-### ✓ Commit 1 — Coordinate and observer foundations
-- Observer abstraction.
-- Time and location handling.
-- Coordinate transformations.
+The architecture is intentionally layered:
 
-### ✓ Commit 2 — Spherical frame abstraction
-- Separate astronomical coordinate systems from rendering.
-- Introduce spherical-frame abstractions.
+```
+Astronomical objects
+        ↓
+Coordinate transformations
+        ↓
+Projection
+        ↓
+Projected geometry
+        ↓
+Rendering
+        ↓
+Matplotlib (current backend)
+```
 
-### ✓ Commit 3 — Viewport abstraction
-- Introduce the Viewport class.
-- Define the rectangular projected region independently of rendering.
-
----
-
-## Phase II — Geometry Pipeline
-
-### ✓ Commit 4 — Projected geometry abstraction
-
-Introduce renderer-independent Cartesian geometry.
-
-Classes:
-
-- ProjectedPoint
-- ProjectedCurve
-- ProjectedPolygon
-
-Projection now produces projected geometry objects instead of plotting directly.
+The objective is to keep astronomy, geometry and rendering completely separated.
 
 ---
 
-### ✓ Commit 5 — Visibility and segmentation
+# Completed
 
-Introduce a dedicated visibility module.
+## Commit 0
+Project skeleton
 
-Responsibilities:
+## Commit 1
+Observer abstraction
 
-- altitude visibility determination
-- visibility masks
-- contiguous visible segment construction
+- Observer owns location, time and ephemerides.
+- Named observing sites.
+- Skyfield/Astropy integration.
 
-Implemented:
+## Commit 2
+Viewport abstraction
 
-- visibility_mask()
-- split_visible_segments()
-- visible_segments()
+- Projection-independent viewport.
+- Defines visible Cartesian region.
 
-Projection and CelestialCurve now delegate visibility logic to this module.
+## Commit 3
+Projected geometry
 
-Dedicated unit tests added.
+- Introduced:
+  - ProjectedPoint
+  - ProjectedCurve
+  - ProjectedPolygon
+- Projection returns geometry instead of plotting.
 
----
+## Commit 4
+Visibility segmentation
 
-### □ Commit 6 — Cartesian clipping
+- Cartesian clipping.
+- Curve segmentation.
+- Visibility handled before rendering.
 
-Purpose:
+## Commit 5
+Cartesian clipping
 
-Clip projected geometry to a rectangular viewport.
+- Robust clipping against viewport.
+- Projection remains renderer-independent.
 
-The clipping stage operates **only** on projected Cartesian geometry.
-It has no knowledge of astronomy or map projections.
+## Commit 6
+Rendering primitives
 
-#### 6.1 Low-level clipping
+Renderer package now provides:
 
-Provide low-level Cartesian clipping algorithms.
+- render_point()
+- render_points()
+- render_curve()
+- render_polygon()
 
-- Liang–Barsky line clipping
-- polyline clipping helper
+Rendering depends only on projected geometry.
 
-#### 6.2 Point clipping
+Matplotlib-specific helpers are isolated inside:
 
-Public API:
+```
+renderers/
+    matplotlib.py
+    matplotlib_axes.py
+```
 
-- clip_point_to_viewport()
+## Commit 7
+Star rendering
 
-Returns:
+Stars now:
 
-- ProjectedPoint
-- or None
+- load catalog
+- compute apparent positions
+- project coordinates
+- compute marker sizes
+- delegate rendering to renderer primitives
 
-#### 6.3 Curve clipping
-
-Public API:
-
-- clip_curve_to_viewport()
-
-Input:
-
-- ProjectedCurve
-
-Output:
-
-- list[ProjectedCurve]
-
-Responsibilities:
-
-- preserve metadata
-- split disconnected visible fragments
-- support closed curves
-- treat non-finite samples as curve breaks
-
-#### 6.4 Polygon clipping
-
-Public API:
-
-- clip_polygon_to_viewport()
-
-Input:
-
-- ProjectedPolygon
-
-Output:
-
-- ProjectedPolygon
-- or None
-
-Implementation:
-
-- Sutherland–Hodgman clipping
-
-#### 6.5 Pipeline integration
-
-Insert clipping between projection and rendering.
-
-Final pipeline:
-
-Celestial object
-→ sampled geometry
-→ visibility
-→ projection
-→ projected geometry
-→ clipping
-→ renderer
+Stars no longer call Matplotlib directly.
 
 ---
 
-### □ Commit 7 — Rendering
+# Remaining work
 
-Separate rendering completely from projection.
+## Commit 8 — Celestial Points
 
-Responsibilities:
+Render:
 
-- Matplotlib renderer
-- future SVG/PDF renderers
-- future interactive renderers
+- SCP / NCP
+- Galactic poles
+- Ecliptic poles
+- Galactic center
+- Anticenter
+- Equinoxes
+- Solstices
 
-Projection produces geometry only.
+using renderer primitives.
 
-Renderer consumes geometry only.
+Goal:
 
----
-
-## Phase III — Astronomical Objects
-
-### □ Commit 8 — Stars
-
-Complete geometry pipeline for stars.
-
-Responsibilities:
-
-- projection
-- clipping
-- rendering
+```
+CelestialPoints
+        ↓
+render_point()
+```
 
 ---
 
-### □ Commit 9 — Celestial points
+## Commit 9 — Celestial Curves
 
-Support:
-
-- poles
-- galactic center
-- equinoxes
-- solstices
-- labels
-
----
-
-### □ Commit 10 — Celestial curves
-
-Support:
+Render:
 
 - celestial equator
 - ecliptic
 - galactic equator
 - constant declination
 - constant latitude
-- future coordinate grids
+
+using
+
+```
+ProjectedCurve
+        ↓
+render_curve()
+```
 
 ---
 
-### □ Commit 11 — Constellations
+## Commit 10 — Constellations
 
-Support:
+Render
 
 - constellation lines
 - boundaries
 - labels
-- multiple line systems
+
+All rendering delegated to renderer primitives.
 
 ---
 
-### □ Commit 12 — Regional charts
+## Commit 11 — Complete chart scene
 
-Complete chart-generation pipeline.
+First complete publication-quality chart produced entirely with the new architecture.
+
+---
+
+## Commit 12 — Regional charts
+
+Generalize projection to arbitrary tangent points.
 
 Support:
 
-- arbitrary chart centers
-- arbitrary spherical coordinate systems
-- arbitrary tangent points
-- publication-quality regional charts
+- constellation charts
+- binocular charts
+- telescope charts
+- guide-book figures
 
-This marks the completion of the core Wenu geometry architecture.
+using the same rendering pipeline.
+
+---
+
+# Future work
+
+## Milky Way
+
+- isophotes
+- HEALPix support
+- FITS import utilities
+
+## Deep-sky objects
+
+- Messier
+- NGC
+- custom catalogs
+
+## Coordinate grids
+
+- Equatorial
+- Galactic
+- Ecliptic
+
+## Labels
+
+Collision avoidance.
+
+## Styling
+
+Themes.
+
+## Additional renderers
+
+Possible future backends:
+
+- SVG
+- PDF
+- Cairo
+
+without changing astronomical code.
