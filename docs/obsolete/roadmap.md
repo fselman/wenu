@@ -99,7 +99,6 @@ Stars no longer call Matplotlib directly.
 
 ---
 
-# Remaining work
 
 ## Commit 8 — Celestial Points
 
@@ -162,19 +161,41 @@ All rendering delegated to renderer primitives.
 First complete publication-quality chart produced entirely with the new architecture.
 
 ---
+# Remaining work
 
-## Commit 12 — Regional charts
+---
+## Commit 12a — Regional charts
 
-Generalize projection to arbitrary tangent points.
+## Commit 12a — Regional and constellation charts
 
-Support:
+- Generalize the projection to arbitrary tangent points.
+- make the viewport or chart aperture an explicit scene-level object rather than an implicit Matplotlib clip patch.
 
-- constellation charts
-- binocular charts
-- telescope charts
-- guide-book figures
+Produce regional charts, beginning with constellation-centered charts, using the same projected-geometry and rendering pipeline.
+
+The generalized framing should later support:
+
+- binocular fields;
+- telescope fields;
 
 using the same rendering pipeline.
+
+## Commit 12b — Rendering and clipping corrections
+
+Resolve inconsistencies discovered in the first complete chart:
+
+- stars are currently limited using an altitude threshold;
+- celestial curves are clipped only by the rectangular axes viewport;
+- constellation lines, boundaries and labels are clipped by the circular sky patch;
+- a constellation boundary near the celestial pole contains a spurious segment extending toward the pole.
+
+Goals:
+
+- define a single explicit clipping policy for the chart scene;
+- distinguish astronomical visibility from geometric clipping;
+- apply clipping consistently across all drawable layers;
+- split projected paths at coordinate and projection discontinuities;
+- remove spurious long segments near poles and coordinate wraps.
 
 ---
 
