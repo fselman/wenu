@@ -7,6 +7,9 @@ from typing import Any
 
 from wenu.objects.stars import Stars
 from wenu.renderers.stars import StarsRenderingAdapter
+from wenu.renderers.constellation_boundaries import (
+        ConstellationBoundaryRenderingAdapter,
+        )
 from wenu.sky.constellations import Constellations
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.sky.coordinate_grids import (
@@ -41,6 +44,7 @@ class CelestialSphere:
         self.points = None
         self.constellations = None
         self.constellation_boundaries = None
+        self.constellation_boundary_renderer = None
         self.constellation_lines = None
         self._layers: list[SkyLayer] = []
 
@@ -152,7 +156,8 @@ class CelestialSphere:
 
         if self.constellation_boundaries is not None:
             self.constellations.set_boundaries(
-                self.constellation_boundaries
+                self.constellation_boundaries,
+                renderer=self.constellation_boundary_renderer,
             )
 
         return self.constellations
@@ -165,6 +170,19 @@ class CelestialSphere:
         constellations=None,
         **kwargs,
     ):
+        renderer_names = {
+            "color",
+            "linewidth",
+            "alpha",
+            "zorder",
+            "horizon_altitude",
+        }
+        renderer_kwargs = {
+            name: kwargs.pop(name)
+            for name in tuple(kwargs)
+            if name in renderer_names
+        }
+
         boundary_layer = ConstellationBoundaries(
             observer=self.observer,
             boundaries=boundaries,
@@ -174,6 +192,14 @@ class CelestialSphere:
         )
 
         self.constellation_boundaries = boundary_layer
+        self.constellation_boundary_renderer = (
+            ConstellationBoundaryRenderingAdapter(
+                boundaries=boundary_layer,
+                observer=self.observer,
+                **renderer_kwargs,
+            )
+        )
+        self.add(boundary_layer)
 
         if self.constellations is None:
             raise RuntimeError(
@@ -181,7 +207,10 @@ class CelestialSphere:
                 "add_constellation_boundaries()."
             )
 
-        self.constellations.set_boundaries(boundary_layer)
+        self.constellations.set_boundaries(
+            boundary_layer,
+            renderer=self.constellation_boundary_renderer,
+        )
 
         return boundary_layer
 

@@ -45,6 +45,7 @@ class Constellations:
         )
 
         self.boundaries = None
+        self.boundary_renderer = None
 
         self.line_artists = []
         self.label_artists = []
@@ -295,12 +296,12 @@ class Constellations:
         projection,
         **kwargs,
     ):
-        if self.boundaries is None:
+        if self.boundary_renderer is None:
             raise RuntimeError(
                 "No constellation-boundary data has been configured."
             )
 
-        self.boundary_artists = self.boundaries.draw(
+        self.boundary_artists = self.boundary_renderer.draw(
             ax=ax,
             projection=projection,
             **kwargs,
@@ -308,8 +309,14 @@ class Constellations:
 
         return self.boundary_artists
 
-    def set_boundaries(self, boundaries):
+    def set_boundaries(
+        self,
+        boundaries,
+        *,
+        renderer=None,
+    ):
         self.boundaries = boundaries
+        self.boundary_renderer = renderer
         return self.boundaries
 
     # =====================================================
