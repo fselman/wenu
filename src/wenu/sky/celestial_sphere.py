@@ -6,6 +6,7 @@ from collections.abc import Iterable
 from typing import Any
 
 from wenu.objects.stars import Stars
+from wenu.renderers.stars import StarsRenderingAdapter
 from wenu.sky.constellations import Constellations
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.sky.coordinate_grids import (
@@ -36,6 +37,7 @@ class CelestialSphere:
         self.observer = observer
 
         self.stars =  None
+        self.star_renderer = None
         self.points = None
         self.constellations = None
         self.constellation_boundaries = None
@@ -111,6 +113,12 @@ class CelestialSphere:
 
         self.stars.load()
 
+        self.star_renderer = StarsRenderingAdapter(
+            stars=self.stars,
+            observer=self.observer,
+        )
+        self.add(self.stars)
+
         return self.stars
 
 # -------------------------------
@@ -136,7 +144,7 @@ class CelestialSphere:
             )
 
         self.constellations = Constellations(
-            stars=self.stars,
+            stars=self.star_renderer,
             system=system,
             lines_file=lines_file,
             selected=selected,
@@ -732,8 +740,8 @@ class CelestialSphere:
     def draw(self, ax, projection):
         artists = {}
 
-        if self.stars is not None:
-            artists["stars"] = self.stars.draw(
+        if self.star_renderer is not None:
+            artists["stars"] = self.star_renderer.draw(
                 ax=ax,
                 projection=projection,
             )

@@ -8,7 +8,7 @@ import pytest
 from wenu.regional_chart import draw_regional_chart
 
 
-class StubStars:
+class StubStarRenderer:
     def __init__(self):
         self.calls = []
 
@@ -39,7 +39,10 @@ class StubConstellations:
 
 class StubSky:
     def __init__(self, *, constellations=True):
-        self.stars = StubStars()
+        # The domain layer and transitional renderer are deliberately
+        # distinct after Milestone 7.
+        self.stars = object()
+        self.star_renderer = StubStarRenderer()
         self.constellations = (
             StubConstellations() if constellations else None
         )
@@ -80,7 +83,7 @@ def test_regional_chart_draws_stars_before_constellations():
     )
 
     assert list(result.artists) == ["stars", "constellations"]
-    assert len(sky.stars.calls) == 1
+    assert len(sky.star_renderer.calls) == 1
     assert len(sky.constellations.calls) == 1
     plt.close(figure)
 
@@ -159,6 +162,7 @@ def test_regional_chart_requires_stars():
 
     class EmptySky:
         stars = None
+        star_renderer = None
         constellations = None
 
     with pytest.raises(RuntimeError, match="sky.stars"):

@@ -52,7 +52,14 @@ def build_sky(selected=None, *, boundaries=False):
 
 def constellation_endpoint_indices(sky, abbreviations):
     stars = sky.stars
-    stars.compute_altaz(alt_min=-90.0)
+    geometry = stars.spherical_geometry(
+        sky.observer,
+        alt_min=-90.0,
+    )
+    geometry_index = {
+        int(hip_id): index
+        for index, hip_id in enumerate(geometry.ids)
+    }
 
     hip_ids = set()
     edges = []
@@ -68,26 +75,26 @@ def constellation_endpoint_indices(sky, abbreviations):
             hip_ids.update((hip1, hip2))
 
     indices = {
-        hip_id: stars.hip_index[hip_id]
+        hip_id: geometry_index[hip_id]
         for hip_id in hip_ids
-        if hip_id in stars.hip_index
+        if hip_id in geometry_index
     }
     if not indices:
         raise RuntimeError(
             "No Hipparcos endpoints were found for "
             f"{', '.join(abbreviations)}."
         )
-    return indices, edges
+    return geometry, indices, edges
 
 
 def spherical_mean_altaz(sky, abbreviations):
-    indices, _ = constellation_endpoint_indices(
+    geometry, indices, _ = constellation_endpoint_indices(
         sky,
         abbreviations,
     )
     selected = np.asarray(list(indices.values()), dtype=int)
-    altitude = np.radians(sky.stars.alt[selected])
-    azimuth = np.radians(sky.stars.az[selected])
+    altitude = np.radians(geometry.lat_deg[selected])
+    azimuth = np.radians(geometry.lon_deg[selected])
 
     vectors = np.column_stack(
         (
@@ -114,7 +121,7 @@ def crossing_angular_radius(
     center_az_deg,
     projection_radius=2.0,
 ):
-    indices, edges = constellation_endpoint_indices(
+    geometry, indices, edges = constellation_endpoint_indices(
         sky,
         abbreviations,
     )
@@ -129,11 +136,11 @@ def crossing_angular_radius(
 
     projected_radius_by_hip = {}
     for hip_id, index in indices.items():
-        if sky.stars.alt[index] <= 0.0:
+        if geometry.lat_deg[index] <= 0.0:
             continue
         x, y = projection.project(
-            sky.stars.alt[index],
-            sky.stars.az[index],
+            geometry.lat_deg[index],
+            geometry.lon_deg[index],
         )
         projected_radius_by_hip[hip_id] = max(
             abs(float(x)),
@@ -319,7 +326,7 @@ def generate(output_directory):
         alpha=0.55,
         zorder=3,
     )
-    sky.stars.draw(
+    sky.star_renderer.draw(
         ax=ax,
         projection=projection,
         color="white",

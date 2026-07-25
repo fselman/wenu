@@ -52,7 +52,7 @@ def draw_regional_chart(
     direction to the projection pole before the unchanged stereographic
     formula is evaluated.
     """
-    if getattr(sky, "stars", None) is None:
+    if getattr(sky, "star_renderer", None) is None:
         raise RuntimeError(
             "Regional chart rendering requires sky.stars to be configured."
         )
@@ -73,7 +73,7 @@ def draw_regional_chart(
     apply_viewport(ax, viewport)
 
     artists: dict[str, Any] = {}
-    artists["stars"] = sky.stars.draw(
+    artists["stars"] = sky.star_renderer.draw(
         ax=ax,
         projection=projection,
         **({} if star_kwargs is None else dict(star_kwargs)),
