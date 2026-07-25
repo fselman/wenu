@@ -3,6 +3,7 @@ from .constellations import Constellations
 from .constellation_boundaries import ConstellationBoundaries
 from .constellation_lines import ConstellationLines
 from .points import CelestialPoints
+from .sky_layer import SkyLayer
 
 __all__ = [
         "CelestialSphere",
@@ -10,4 +11,5 @@ __all__ = [
         "Constellations",
         "ConstellationBoundaries",
         "ConstellationLines",
+        "SkyLayer",
         ]

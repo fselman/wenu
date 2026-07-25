@@ -14,6 +14,7 @@ from wenu.sky.coordinate_grids import (
         GalacticGrid,
         )
 from wenu.sky.points import CelestialPoints
+from wenu.sky.sky_layer import SkyLayer
 
 
 class CelestialSphere:
@@ -39,10 +40,10 @@ class CelestialSphere:
         self.constellations = None
         self.constellation_boundaries = None
         self.constellation_lines = None
-        self._layers: list[Any] = []
+        self._layers: list[SkyLayer] = []
 
     @property
-    def layers(self) -> tuple[Any, ...]:
+    def layers(self) -> tuple[SkyLayer, ...]:
         """
         Return the registered sky layers.
 
@@ -51,38 +52,38 @@ class CelestialSphere:
         """
         return tuple(self._layers)
 
-    def add(self, layer: Any) -> Any:
+    def add(self, layer: SkyLayer) -> SkyLayer:
         """
-        Add an astronomical layer to the celestial sphere.
+        Add a sky layer to the celestial sphere.
 
         Parameters
         ----------
         layer
-            An object implementing a ``draw`` method.
+            An instance of :class:`SkyLayer`.
 
         Returns
         -------
-        object
+        SkyLayer
             The added layer. Returning it allows further configuration after
             registration.
         """
-        if not hasattr(layer, "draw"):
+        if not isinstance(layer, SkyLayer):
             raise TypeError(
                 f"{type(layer).__name__} cannot be added to CelestialSphere "
-                "because it does not define a draw() method."
+                "because it does not implement the SkyLayer contract."
             )
 
         self._layers.append(layer)
         return layer
 
-    def extend(self, layers: Iterable[Any]) -> None:
+    def extend(self, layers: Iterable[SkyLayer]) -> None:
         """
-        Add several astronomical layers.
+        Add several sky layers.
         """
         for layer in layers:
             self.add(layer)
 
-    def remove(self, layer: Any) -> None:
+    def remove(self, layer: SkyLayer) -> None:
         """
         Remove a previously registered layer.
         """
