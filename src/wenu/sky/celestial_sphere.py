@@ -157,7 +157,9 @@ class CelestialSphere:
             )
 
         self.constellations = Constellations(
-            stars=self.star_renderer,
+            stars=self.stars,
+            star_renderer=self.star_renderer,
+            observer=self.observer,
             system=system,
             lines_file=lines_file,
             selected=selected,

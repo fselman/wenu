@@ -9,6 +9,9 @@ import astropy.units as u
 
 from wenu.sky.constellation_lines import ConstellationLines
 from wenu.renderers import render_text
+from wenu.renderers.constellation_lines import (
+    ConstellationLinesRenderingAdapter,
+)
 
 
 class Constellations:
@@ -27,8 +30,18 @@ class Constellations:
         system="western",
         lines_file=None,
         selected=None,
+        observer=None,
+        star_renderer=None,
     ):
-        self.stars = stars
+        line_stars = getattr(stars, "stars", stars)
+        self.stars = (
+            stars if star_renderer is None else star_renderer
+        )
+        self.observer = (
+            getattr(stars, "observer", None)
+            if observer is None
+            else observer
+        )
         self.system = system
     
         self.selected = (
@@ -38,10 +51,14 @@ class Constellations:
         )
 
         self.lines = ConstellationLines(
-            stars=self.stars,
+            stars=line_stars,
             system=self.system,
             filename=lines_file,
             constellations=self.selected,
+        )
+        self.line_renderer = ConstellationLinesRenderingAdapter(
+            lines=self.lines,
+            observer=self.observer,
         )
 
         self.boundaries = None
@@ -123,7 +140,7 @@ class Constellations:
             self.line_artists = []
             return self.line_artists
 
-        self.line_artists = self.lines.draw(
+        self.line_artists = self.line_renderer.draw(
             ax=ax,
             projection=projection,
             **kwargs,
