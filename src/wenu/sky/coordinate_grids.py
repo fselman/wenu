@@ -243,10 +243,16 @@ class EquatorialGrid(CoordinatesGrid):
         frame: str = "fk5",
         equinox: str | Time = "of_date",
         samples: int = 721,
+        ra=None,
+        dec=None,
+        include_equator=False,
     ):
         super().__init__(observer, samples=samples)
         self.frame = frame.lower()
         self.equinox = equinox
+        self.ra = None if ra is None else tuple(ra)
+        self.dec = None if dec is None else tuple(dec)
+        self.include_equator = bool(include_equator)
         if self.frame not in {"icrs", "fk5"}:
             raise ValueError(
                 "frame must currently be either 'icrs' or 'fk5'."
@@ -288,6 +294,27 @@ class EquatorialGrid(CoordinatesGrid):
             latitudes=dec,
             meridian_style=meridian_style,
             parallel_style=parallel_style,
+        )
+
+    def spherical_geometry(self, observer) -> SphericalGrid:
+        resolved = self._resolve_observer(observer)
+        if resolved is not self.observer:
+            return type(self)(
+                resolved,
+                frame=self.frame,
+                equinox=self.equinox,
+                samples=self.samples,
+                ra=self.ra,
+                dec=self.dec,
+                include_equator=self.include_equator,
+            ).spherical_geometry(resolved)
+        geometry = self.grid(ra=self.ra, dec=self.dec)
+        components = dict(geometry.components)
+        if self.include_equator:
+            components["reference"] = self.equator()
+        return SphericalGrid(
+            components=components,
+            metadata=geometry.metadata,
         )
 
     def _native_to_icrs(self, longitude_deg, latitude_deg):
@@ -332,9 +359,19 @@ class EclipticGrid(CoordinatesGrid):
         *,
         equinox: str | Time = "of_date",
         samples: int = 721,
+        longitude=None,
+        latitude=None,
+        include_ecliptic=False,
     ):
         super().__init__(observer, samples=samples)
         self.equinox = equinox
+        self.longitude = (
+            None if longitude is None else tuple(longitude)
+        )
+        self.latitude = (
+            None if latitude is None else tuple(latitude)
+        )
+        self.include_ecliptic = bool(include_ecliptic)
 
     def ecliptic(self, *, style=None):
         return super().parallel(
@@ -396,6 +433,29 @@ class EclipticGrid(CoordinatesGrid):
             parallel_style=parallel_style,
         )
 
+    def spherical_geometry(self, observer) -> SphericalGrid:
+        resolved = self._resolve_observer(observer)
+        if resolved is not self.observer:
+            return type(self)(
+                resolved,
+                equinox=self.equinox,
+                samples=self.samples,
+                longitude=self.longitude,
+                latitude=self.latitude,
+                include_ecliptic=self.include_ecliptic,
+            ).spherical_geometry(resolved)
+        geometry = self.grid(
+            longitude=self.longitude,
+            latitude=self.latitude,
+        )
+        components = dict(geometry.components)
+        if self.include_ecliptic:
+            components["reference"] = self.ecliptic()
+        return SphericalGrid(
+            components=components,
+            metadata=geometry.metadata,
+        )
+
     def _native_to_icrs(self, longitude_deg, latitude_deg):
         coordinates = SkyCoord(
             lon=longitude_deg * u.deg,
@@ -423,6 +483,46 @@ class EclipticGrid(CoordinatesGrid):
 
 class GalacticGrid(CoordinatesGrid):
     coordinate_system = "galactic"
+
+    def __init__(
+        self,
+        observer,
+        *,
+        samples=721,
+        longitude=None,
+        latitude=None,
+        include_plane=False,
+    ):
+        super().__init__(observer, samples=samples)
+        self.longitude = (
+            None if longitude is None else tuple(longitude)
+        )
+        self.latitude = (
+            None if latitude is None else tuple(latitude)
+        )
+        self.include_plane = bool(include_plane)
+
+    def spherical_geometry(self, observer) -> SphericalGrid:
+        resolved = self._resolve_observer(observer)
+        if resolved is not self.observer:
+            return type(self)(
+                resolved,
+                samples=self.samples,
+                longitude=self.longitude,
+                latitude=self.latitude,
+                include_plane=self.include_plane,
+            ).spherical_geometry(resolved)
+        geometry = self.grid(
+            longitude=self.longitude,
+            latitude=self.latitude,
+        )
+        components = dict(geometry.components)
+        if self.include_plane:
+            components["reference"] = self.galactic_plane()
+        return SphericalGrid(
+            components=components,
+            metadata=geometry.metadata,
+        )
 
     def galactic_plane(self, *, style=None):
         return super().parallel(

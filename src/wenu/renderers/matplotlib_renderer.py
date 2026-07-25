@@ -15,6 +15,7 @@ from wenu.projected import (
     ProjectedPolygon,
     ProjectedPolygons,
 )
+from wenu.renderers.matplotlib_axes import apply_viewport
 from wenu.renderers.matplotlib import (
     render_curve,
     render_point,
@@ -29,6 +30,14 @@ class MatplotlibRenderer:
 
     def __init__(self, ax):
         self.ax = ax
+
+    def apply_viewport(self, viewport, *, equal_aspect=True):
+        """Apply projected chart bounds to this renderer's axes."""
+        apply_viewport(
+            self.ax,
+            viewport,
+            equal_aspect=equal_aspect,
+        )
 
     def draw(
         self,

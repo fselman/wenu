@@ -7,6 +7,7 @@ except PackageNotFoundError:
     # The source tree is being imported without installing the package.
     __version__ = "0+unknown"
 
+from .chart import ChartRenderingResult, LayerRenderingResult
 from .observer import Observer
 from .projection import StereographicProjection
 from .sky import CelestialSphere
@@ -23,6 +24,8 @@ from wenu.projected import (
 )
 
 __all__ = [
+    "ChartRenderingResult",
+    "LayerRenderingResult",
     "Observer",
     "StereographicProjection",
     "CelestialSphere",

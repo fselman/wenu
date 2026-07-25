@@ -5,6 +5,11 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import Any
 
+from wenu.chart import (
+        ChartRenderingResult,
+        LayerRenderingResult,
+        )
+
 from wenu.objects.stars import Stars
 from wenu.renderers.stars import StarsRenderingAdapter
 from wenu.renderers.celestial_points import (
@@ -108,6 +113,73 @@ class CelestialSphere:
         """
         self._layers.clear()
 
+
+    def draw_chart(
+        self,
+        *,
+        projection,
+        renderer,
+        viewport=None,
+        layer_options=None,
+    ) -> ChartRenderingResult:
+        """Render every registered SkyLayer through the generic pipeline."""
+        if not callable(getattr(projection, "project_geometry", None)):
+            raise TypeError(
+                "projection must provide project_geometry()."
+            )
+        if not callable(getattr(renderer, "draw", None)):
+            raise TypeError("renderer must provide draw().")
+
+        if viewport is not None:
+            apply = getattr(renderer, "apply_viewport", None)
+            if not callable(apply):
+                raise TypeError(
+                    "renderer must provide apply_viewport() when a "
+                    "viewport is supplied."
+                )
+            apply(viewport)
+
+        options = {} if layer_options is None else layer_options
+        rendered_layers = []
+        for layer in self._layers:
+            spherical = layer.spherical_geometry(self.observer)
+            projected = projection.project_geometry(spherical)
+            render_options = self._layer_render_options(
+                layer,
+                options,
+            )
+            artists = renderer.draw(
+                projected,
+                **render_options,
+            )
+            rendered_layers.append(
+                LayerRenderingResult(
+                    layer=layer,
+                    spherical=spherical,
+                    projected=projected,
+                    artists=artists,
+                )
+            )
+
+        return ChartRenderingResult(
+            projection=projection,
+            renderer=renderer,
+            viewport=viewport,
+            layers=tuple(rendered_layers),
+        )
+
+    @staticmethod
+    def _layer_render_options(layer, options):
+        # Object-specific configuration takes precedence over the shared
+        # layer name. Identity comparison also supports unhashable layers.
+        for key, value in options.items():
+            if key is layer:
+                return dict(value)
+        name = getattr(layer, "layer_name", None)
+        if name in options:
+            return dict(options[name])
+        return {}
+
 # -----------------------------
 # Star methods
 # ----------------------------
@@ -168,6 +240,9 @@ class CelestialSphere:
             selected=selected,
         )
 
+        self.constellation_lines = self.constellations.lines
+        self.add(self.constellation_lines)
+
         if self.constellation_boundaries is not None:
             self.constellations.set_boundaries(
                 self.constellation_boundaries,
@@ -227,6 +302,70 @@ class CelestialSphere:
         )
 
         return boundary_layer
+
+# ----------------------------
+# Coordinate-grid layer helpers
+# ----------------------------
+
+    def add_equatorial_grid(
+        self,
+        *,
+        ra=None,
+        dec=None,
+        include_equator=False,
+        frame="fk5",
+        equinox="of_date",
+        samples=721,
+    ):
+        layer = EquatorialGrid(
+            observer=self.observer,
+            frame=frame,
+            equinox=equinox,
+            samples=samples,
+            ra=ra,
+            dec=dec,
+            include_equator=include_equator,
+        )
+        self.add(layer)
+        return layer
+
+    def add_ecliptic_grid(
+        self,
+        *,
+        longitude=None,
+        latitude=None,
+        include_ecliptic=False,
+        equinox="of_date",
+        samples=721,
+    ):
+        layer = EclipticGrid(
+            observer=self.observer,
+            equinox=equinox,
+            samples=samples,
+            longitude=longitude,
+            latitude=latitude,
+            include_ecliptic=include_ecliptic,
+        )
+        self.add(layer)
+        return layer
+
+    def add_galactic_grid(
+        self,
+        *,
+        longitude=None,
+        latitude=None,
+        include_plane=False,
+        samples=721,
+    ):
+        layer = GalacticGrid(
+            observer=self.observer,
+            samples=samples,
+            longitude=longitude,
+            latitude=latitude,
+            include_plane=include_plane,
+        )
+        self.add(layer)
+        return layer
 
 # ----------------------------
 # Equatorial grid methods
