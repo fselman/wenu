@@ -11,12 +11,12 @@ import numpy as np
 from astropy.coordinates import AltAz, EarthLocation, FK4, SkyCoord
 from astropy.time import Time
 
-from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.resources import boundary_path
+from wenu.sky.geometrical_object import GeometricalObject
 from wenu.spherical import SphericalPolygons
 
 
-class ConstellationBoundaries(AstronomicalObject):
+class ConstellationBoundaries(GeometricalObject):
     """IAU boundaries whose authoritative geometry is FK4/B1875."""
 
     layer_name = "constellation_boundaries"

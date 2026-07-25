@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import numpy as np
 from astropy.time import Time
 
-from wenu.objects.astronomical_object import AstronomicalObject
+from wenu.sky.geometrical_object import GeometricalObject
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.spherical import SphericalPolygons
 
@@ -43,10 +43,10 @@ def make_observer():
     )
 
 
-def test_boundaries_are_astronomical_objects():
+def test_boundaries_are_geometrical_objects():
     assert issubclass(
         ConstellationBoundaries,
-        AstronomicalObject,
+        GeometricalObject,
     )
 
 
