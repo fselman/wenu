@@ -151,19 +151,33 @@ geometry and participates in the same rendering pipeline.
 
 ## Spherical Geometry
 
+-   SphericalPoint
 -   SphericalPoints
+-   SphericalCurve
 -   SphericalCurves
 -   SphericalGrid
+-   SphericalPolygon
 -   SphericalPolygons
-
-Single entities are represented as collections of length one.
 
 ## Projected Geometry
 
+-   ProjectedPoint
 -   ProjectedPoints
+-   ProjectedCurve
 -   ProjectedCurves
 -   ProjectedGrid
+-   ProjectedPolygon
 -   ProjectedPolygons
+
+Singular classes represent one geometric object. Projected curve and polygon
+collections are lightweight wrappers around a reasonably small number of
+their corresponding singular objects and may carry collection-level
+metadata.
+
+`ProjectedPoints` is intentionally different from `ProjectedPoint` and from
+the other projected collection classes. It uses vectorized arrays rather
+than wrapping large numbers of scalar point instances. This supports
+efficient catalogue projection, masking, clipping and rendering.
 
 ------------------------------------------------------------------------
 

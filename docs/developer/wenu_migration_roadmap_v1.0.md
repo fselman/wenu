@@ -73,18 +73,28 @@ SkyLayer
 The geometry vocabulary is fixed as:
 
 ```text
+SphericalPoint
 SphericalPoints
+SphericalCurve
 SphericalCurves
 SphericalGrid
+SphericalPolygon
 SphericalPolygons
 
+ProjectedPoint
 ProjectedPoints
+ProjectedCurve
 ProjectedCurves
 ProjectedGrid
+ProjectedPolygon
 ProjectedPolygons
 ```
 
-Only collection-oriented geometry classes are used.
+Singular classes represent one geometric object. Projected curve and polygon
+collections are lightweight wrappers around their singular classes and may
+add collection-level metadata. `ProjectedPoints` alone uses a distinct
+vectorized representation rather than wrapping scalar `ProjectedPoint`
+objects because it must efficiently handle large catalogues.
 
 ---
 
@@ -167,35 +177,49 @@ Establish a clean and reproducible starting point before structural changes.
 
 ---
 
-## Milestone 2 — Complete collection-based geometry
+## Milestone 2 — Complete singular and collection geometry
 
 ### Objective
 
-Make spherical and projected geometry use the fixed collection vocabulary.
+Make spherical and projected geometry use the fixed singular and collection
+vocabulary.
 
 ### Implement
 
 Spherical:
 
+- `SphericalPoint`;
 - `SphericalPoints`;
+- `SphericalCurve`;
 - `SphericalCurves`;
 - `SphericalGrid`;
+- `SphericalPolygon`;
 - `SphericalPolygons`.
 
 Projected:
 
+- `ProjectedPoint`;
 - `ProjectedPoints`;
+- `ProjectedCurve`;
 - `ProjectedCurves`;
 - `ProjectedGrid`;
+- `ProjectedPolygon`;
 - `ProjectedPolygons`.
 
 ### Migration strategy
 
 - adapt existing projected point, curve, and polygon implementations rather than rewriting them;
-- preserve vectorized NumPy arrays;
+- preserve vectorized NumPy arrays for `ProjectedPoints`;
 - retain names and metadata needed by current layers;
-- represent one entity as a collection of length one;
-- avoid introducing singular public geometry classes.
+- keep singular geometry classes as public primitives;
+- implement curve and polygon collections as lightweight wrappers around
+  reasonably small lists of their singular objects;
+- permit collection-level metadata in addition to metadata belonging to each
+  singular object;
+- implement `ProjectedPoints` as vectorized coordinate and attribute arrays,
+  not as a list of scalar `ProjectedPoint` objects;
+- preserve the singular or collection character of projection input whenever
+  practical.
 
 ### Minimum metadata
 
@@ -214,6 +238,8 @@ Only metadata required by current code should be implemented:
 - shape validation;
 - matching coordinate lengths;
 - empty and single-element collections where valid;
+- vectorized `ProjectedPoints` behaviour;
+- curve and polygon wrapper behaviour;
 - metadata preservation;
 - finite-coordinate behaviour;
 - grid composition.
@@ -860,7 +886,7 @@ Ensure the implementation actually follows the target architecture everywhere.
 - Matplotlib imports outside renderer modules;
 - temporary adapters from Milestone 5;
 - duplicate projection code;
-- obsolete singular geometry classes;
+- obsolete duplicate geometry paths;
 - obsolete `CoordinateGrid` naming;
 - stale notebook-side indexing and projection logic.
 
@@ -1101,7 +1127,9 @@ The following decisions are fixed for this migration:
 4. Celestial geometric constructs derive from `GeometricalObject`.
 5. `CoordinatesGrid` is the correct name.
 6. `MilkyWay` is an `AstronomicalObject`.
-7. Geometry uses collection classes only.
+7. Geometry retains singular primitives and collection containers.
+   `ProjectedPoints` uses vectorized storage; other projected collections
+   wrap singular objects.
 8. Projection is coordinate-system agnostic.
 9. Spherical rotation is separate from projection.
 10. Domain layers do not project or render themselves.
@@ -1116,6 +1144,6 @@ The following decisions are fixed for this migration:
 
 Start with **Milestone 1 — Freeze the baseline**.
 
-After the baseline commit, proceed directly to **Milestone 2 — Complete collection-based geometry**.
+After the baseline commit, proceed directly to **Milestone 2 — Complete singular and collection geometry**.
 
 Do not reopen the architectural discussion during these milestones.
