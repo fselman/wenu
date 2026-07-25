@@ -7,6 +7,9 @@ from typing import Any
 
 from wenu.objects.stars import Stars
 from wenu.renderers.stars import StarsRenderingAdapter
+from wenu.renderers.celestial_points import (
+        CelestialPointsRenderingAdapter,
+        )
 from wenu.renderers.constellation_boundaries import (
         ConstellationBoundaryRenderingAdapter,
         )
@@ -42,6 +45,7 @@ class CelestialSphere:
         self.stars =  None
         self.star_renderer = None
         self.points = None
+        self.point_renderer = None
         self.constellations = None
         self.constellation_boundaries = None
         self.constellation_boundary_renderer = None
@@ -130,6 +134,11 @@ class CelestialSphere:
 # --------------------------------
     def add_points(self, **kwargs: Any) -> CelestialPoints:
         self.points = CelestialPoints(obs=self.observer)
+        self.point_renderer = CelestialPointsRenderingAdapter(
+            points=self.points,
+            observer=self.observer,
+        )
+        self.add(self.points)
         return self.points
 
 # -------------------------
@@ -781,8 +790,8 @@ class CelestialSphere:
                 projection=projection,
             )
 
-        if self.points is not None:
-            artists["points"] = self.points.draw(
+        if self.point_renderer is not None:
+            artists["points"] = self.point_renderer.draw(
                 ax=ax,
                 projection=projection,
             )

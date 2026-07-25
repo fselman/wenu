@@ -19,6 +19,7 @@ import numpy as np
 
 from wenu import CelestialSphere, Observer, StereographicProjection
 from wenu.regional_chart import draw_regional_chart
+from wenu.renderers import layers, render_points
 from wenu.renderers.matplotlib_axes import apply_viewport
 from wenu.spherical_frame import SphericalFrame
 from wenu.viewport import Viewport
@@ -326,10 +327,15 @@ def generate(output_directory):
         alpha=0.55,
         zorder=3,
     )
-    sky.star_renderer.draw(
-        ax=ax,
-        projection=projection,
-        color="white",
+    sky.star_renderer.prepare(projection=projection)
+    render_points(
+        ax,
+        sky.star_renderer.x,
+        sky.star_renderer.y,
+        s=sky.star_renderer.sizes / 4.0,
+        c="white",
+        linewidths=0,
+        zorder=layers.STARS,
     )
     sky.constellations.draw(
         ax=ax,
@@ -338,13 +344,13 @@ def generate(output_directory):
         draw_labels=True,
         draw_boundaries=True,
     )
-    sky.points.draw(
+    sky.point_renderer.draw(
         ax=ax,
         projection=projection,
     )
     figure.savefig(
         full_sky,
-        dpi=150,
+        dpi=300,
         bbox_inches="tight",
     )
     plt.close(figure)

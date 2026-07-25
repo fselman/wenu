@@ -1,244 +1,113 @@
-import matplotlib
+"""Milestone 9 tests for geometry-only CelestialPoints."""
 
-matplotlib.use("Agg")
-
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.collections import PathCollection
-from matplotlib.text import Text
 from types import SimpleNamespace
 
-from wenu.projected import ProjectedPoint
+import numpy as np
+import pytest
+
+from wenu.sky import GeometricalObject, SkyLayer
 from wenu.sky.points import CelestialPoints
+from wenu.spherical import SphericalPoints
 
 
-class DummyProjection:
-    def __init__(self):
-        self.calls = []
-
-    def project_point(
-        self,
-        lon_deg,
-        lat_deg,
-        *,
-        name=None,
-    ):
-        self.calls.append(
-            {
-                "lon_deg": lon_deg,
-                "lat_deg": lat_deg,
-                "name": name,
-            }
-        )
-
-        return ProjectedPoint(
-            x=float(lon_deg),
-            y=float(lat_deg),
-            name=name,
-        )
-
-
-def make_observer():
+def make_observer(latitude=-33.0):
     return SimpleNamespace(
         icrs_frame="icrs",
+        galactic_frame="galactic",
+        ecliptic_frame="geocentrictrueecliptic",
         t=object(),
-        lat_deg=-33.0,
+        t_astropy=object(),
+        lat_deg=latitude,
         lon_deg=-71.5,
     )
 
 
-def test_point_below_horizon_is_not_rendered(
-    monkeypatch,
-):
+def test_points_are_geometrical_sky_layer():
+    assert issubclass(CelestialPoints, GeometricalObject)
+    assert issubclass(CelestialPoints, SkyLayer)
+
+
+def test_empty_collection_returns_empty_spherical_points():
+    observer = make_observer()
+    geometry = CelestialPoints(observer).spherical_geometry(observer)
+
+    assert isinstance(geometry, SphericalPoints)
+    assert len(geometry) == 0
+    assert geometry.labels.size == 0
+
+
+def test_single_point_returns_collection_and_style_metadata(monkeypatch):
     observer = make_observer()
     points = CelestialPoints(observer)
-
     points.add_equatorial_point(
-        ra_deg=0.0,
-        dec_deg=0.0,
-        label="hidden",
+        10.0,
+        -20.0,
+        label="test",
+        marker="+",
+        size=42.0,
+        color="cyan",
+        zorder=8,
+        fontsize=11,
     )
 
-    def fake_radec_to_altaz(
-        ra_deg,
-        dec_deg,
-        t,
-        lat_deg,
-        lon_deg,
-    ):
-        return -5.0, 120.0
+    def fake_radec_to_altaz(ra, dec, t, lat, lon):
+        np.testing.assert_allclose(ra, [10.0])
+        np.testing.assert_allclose(dec, [-20.0])
+        return np.asarray([35.0]), np.asarray([140.0])
 
     monkeypatch.setattr(
         "wenu.sky.points.radec_to_altaz",
         fake_radec_to_altaz,
     )
+    geometry = points.spherical_geometry(observer)
 
-    projection = DummyProjection()
-
-    fig, ax = plt.subplots()
-
-    artists = points.draw(
-        ax,
-        projection,
-    )
-
-    assert artists == []
-    assert projection.calls == []
-
-    plt.close(fig)
+    assert len(geometry) == 1
+    np.testing.assert_allclose(geometry.lon_deg, [140.0])
+    np.testing.assert_allclose(geometry.lat_deg, [35.0])
+    np.testing.assert_array_equal(geometry.labels, ["test"])
+    assert geometry.metadata["marker"][0] == "+"
+    assert geometry.metadata["size"][0] == 42.0
+    assert geometry.metadata["color"][0] == "cyan"
+    assert geometry.metadata["zorder"][0] == 8
+    assert geometry.metadata["style"][0]["fontsize"] == 11
 
 
-def test_visible_unlabelled_point_creates_marker(
-    monkeypatch,
-):
-    observer = make_observer()
-    points = CelestialPoints(observer)
+def test_visible_pole_uses_observer_hemisphere():
+    southern = CelestialPoints(make_observer(-33.0))
+    northern = CelestialPoints(make_observer(20.0))
 
-    points.add_equatorial_point(
-        ra_deg=10.0,
-        dec_deg=-20.0,
-    )
+    southern.add_equatorial_pole()
+    northern.add_equatorial_pole()
 
-    def fake_radec_to_altaz(
-        ra_deg,
-        dec_deg,
-        t,
-        lat_deg,
-        lon_deg,
-    ):
-        return 35.0, 140.0
-
-    monkeypatch.setattr(
-        "wenu.sky.points.radec_to_altaz",
-        fake_radec_to_altaz,
-    )
-
-    projection = DummyProjection()
-
-    fig, ax = plt.subplots()
-
-    artists = points.draw(
-        ax,
-        projection,
-    )
-
-    assert len(artists) == 1
-    assert isinstance(
-        artists[0],
-        PathCollection,
-    )
-
-    plt.close(fig)
+    assert southern._points[0].label == "SCP"
+    assert southern._points[0].coord.dec.deg == -90.0
+    assert northern._points[0].label == "NCP"
+    assert northern._points[0].coord.dec.deg == 90.0
 
 
-def test_visible_labelled_point_creates_marker_and_text(
-    monkeypatch,
-):
-    observer = make_observer()
-    points = CelestialPoints(observer)
+def test_ecliptic_cardinal_labels_are_preserved():
+    points = CelestialPoints(make_observer())
+    points.add_ecliptic_keypoints()
 
-    points.add_equatorial_point(
-        ra_deg=10.0,
-        dec_deg=-20.0,
-        label="test point",
-    )
-
-    def fake_radec_to_altaz(
-        ra_deg,
-        dec_deg,
-        t,
-        lat_deg,
-        lon_deg,
-    ):
-        return 35.0, 140.0
-
-    monkeypatch.setattr(
-        "wenu.sky.points.radec_to_altaz",
-        fake_radec_to_altaz,
-    )
-
-    projection = DummyProjection()
-
-    fig, ax = plt.subplots()
-
-    artists = points.draw(
-        ax,
-        projection,
-    )
-
-    assert len(artists) == 2
-
-    assert isinstance(
-        artists[0],
-        PathCollection,
-    )
-
-    assert isinstance(
-        artists[1],
-        Text,
-    )
-
-    assert artists[1].get_text() == "test point"
-
-    plt.close(fig)
+    assert [point.label for point in points._points] == [
+        "♈",
+        "♋",
+        "♎",
+        "♑",
+    ]
 
 
-def test_point_projection_uses_azimuth_as_longitude_and_altitude_as_latitude(
-    monkeypatch,
-):
-    observer = make_observer()
-    points = CelestialPoints(observer)
+def test_clear_preserves_collection_api():
+    points = CelestialPoints(make_observer())
+    points.add_equatorial_point(0.0, 0.0)
+    assert len(points) == 1
 
-    points.add_equatorial_point(
-        ra_deg=10.0,
-        dec_deg=-20.0,
-        label="test point",
-    )
+    assert points.clear() is points
+    assert len(points) == 0
 
-    def fake_radec_to_altaz(
-        ra_deg,
-        dec_deg,
-        t,
-        lat_deg,
-        lon_deg,
-    ):
-        np.testing.assert_allclose(
-            ra_deg,
-            10.0,
-        )
-        np.testing.assert_allclose(
-            dec_deg,
-            -20.0,
-        )
 
-        assert t is observer.t
-        assert lat_deg == observer.lat_deg
-        assert lon_deg == observer.lon_deg
-
-        return 35.0, 140.0
-
-    monkeypatch.setattr(
-        "wenu.sky.points.radec_to_altaz",
-        fake_radec_to_altaz,
-    )
-
-    projection = DummyProjection()
-
-    fig, ax = plt.subplots()
-
-    points.draw(
-        ax,
-        projection,
-    )
-
-    assert len(projection.calls) == 1
-
-    call = projection.calls[0]
-
-    assert call["lon_deg"] == 140.0
-    assert call["lat_deg"] == 35.0
-    assert call["name"] == "test point"
-
-    plt.close(fig)
-
+def test_domain_layer_has_no_projection_or_rendering_api():
+    points = CelestialPoints(make_observer())
+    for name in ("draw", "project", "artist", "artists"):
+        assert not hasattr(points, name)
 
