@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Iterator
+from typing import Iterator, Mapping
 
 import numpy as np
 
@@ -24,6 +24,17 @@ def _bounds(x: np.ndarray, y: np.ndarray):
         float(np.min(y[finite])),
         float(np.max(y[finite])),
     )
+
+
+def _optional_entity_array(values, *, name: str, length: int):
+    if values is None:
+        return None
+    array = np.asarray(values, dtype=object)
+    if array.ndim != 1:
+        raise ValueError(f"{name} must be a one-dimensional array.")
+    if array.size != length:
+        raise ValueError(f"{name} must contain one value per entity.")
+    return array
 
 
 @dataclass
@@ -54,12 +65,25 @@ class ProjectedPoints:
     x: np.ndarray
     y: np.ndarray
     metadata: dict[str, object] = field(default_factory=dict)
+    ids: np.ndarray | None = None
+    labels: np.ndarray | None = None
+    names: np.ndarray | None = None
 
     def __post_init__(self) -> None:
         self.x = _coordinate_array(self.x, name="x")
         self.y = _coordinate_array(self.y, name="y")
         if self.x.shape != self.y.shape:
             raise ValueError("x and y must have the same shape.")
+        length = self.x.size
+        self.ids = _optional_entity_array(
+            self.ids, name="ids", length=length
+        )
+        self.labels = _optional_entity_array(
+            self.labels, name="labels", length=length
+        )
+        self.names = _optional_entity_array(
+            self.names, name="names", length=length
+        )
         self.metadata = dict(self.metadata)
 
     def __len__(self) -> int:
@@ -132,8 +156,30 @@ class ProjectedCurves:
 
 
 @dataclass
-class ProjectedGrid(ProjectedCurves):
-    """A grouped collection of curves representing a projected grid."""
+class ProjectedGrid:
+    """Named groups of curves representing a projected grid."""
+
+    components: Mapping[str, ProjectedCurves]
+    metadata: dict[str, object] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        components = dict(self.components)
+        for name, curves in components.items():
+            if not isinstance(name, str):
+                raise TypeError("Grid component names must be strings.")
+            if not isinstance(curves, ProjectedCurves):
+                raise TypeError(
+                    "Every grid component must be a "
+                    "ProjectedCurves instance."
+                )
+        self.components = components
+        self.metadata = dict(self.metadata)
+
+    def __len__(self) -> int:
+        return len(self.components)
+
+    def __getitem__(self, name: str) -> ProjectedCurves:
+        return self.components[name]
 
 
 @dataclass

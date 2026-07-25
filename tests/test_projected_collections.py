@@ -53,13 +53,13 @@ def test_projected_curves_reject_non_curve_items():
 
 def test_projected_grid_is_a_semantic_curve_collection():
     curve = ProjectedCurve(x=[0.0, 1.0], y=[2.0, 3.0])
+    meridians = ProjectedCurves(items=[curve])
     grid = ProjectedGrid(
-        items=[curve],
+        components={"meridians": meridians},
         metadata={"coordinate_system": "equatorial"},
     )
 
-    assert isinstance(grid, ProjectedCurves)
-    assert grid[0] is curve
+    assert grid["meridians"] is meridians
     assert grid.metadata["coordinate_system"] == "equatorial"
 
 
