@@ -13,6 +13,9 @@ from wenu.renderers.celestial_points import (
 from wenu.renderers.constellation_boundaries import (
         ConstellationBoundaryRenderingAdapter,
         )
+from wenu.renderers.coordinate_grids import (
+        CoordinatesGridRenderingAdapter,
+        )
 from wenu.sky.constellations import Constellations
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.sky.coordinate_grids import (
@@ -267,11 +270,15 @@ class CelestialSphere:
             samples=samples,
         )
 
-        curve = grid.equator()
+        geometry = grid.equator()
 
-        return curve.draw(
+        renderer = CoordinatesGridRenderingAdapter(
+            observer=self.observer,
+        )
+        return renderer.draw_curves(
             ax=ax,
             projection=projection,
+            geometry=geometry,
             min_altitude=min_altitude,
             **style,
         )
@@ -298,13 +305,17 @@ class CelestialSphere:
             samples=samples,
         )
 
-        curve = grid.parallel(
+        geometry = grid.parallel(
             declination_deg=declination_deg,
         )
 
-        return curve.draw(
+        renderer = CoordinatesGridRenderingAdapter(
+            observer=self.observer,
+        )
+        return renderer.draw_curves(
             ax=ax,
             projection=projection,
+            geometry=geometry,
             min_altitude=min_altitude,
             **style,
         )
@@ -350,13 +361,17 @@ class CelestialSphere:
             samples=samples,
         )
 
-        curve = grid.meridian(
+        geometry = grid.meridian(
             right_ascension_deg=right_ascension_deg,
         )
 
-        return curve.draw(
+        renderer = CoordinatesGridRenderingAdapter(
+            observer=self.observer,
+        )
+        return renderer.draw_curves(
             ax=ax,
             projection=projection,
+            geometry=geometry,
             min_altitude=min_altitude,
             **style,
         )
@@ -434,26 +449,22 @@ class CelestialSphere:
             **({} if parallel_style is None else parallel_style),
         }
 
-        curves = grid.grid(
+        geometry = grid.grid(
             ra=ra,
             dec=dec,
             meridian_style=resolved_meridian_style,
             parallel_style=resolved_parallel_style,
         )
 
-        artists = []
-
-        for curve in curves:
-            artists.extend(
-                curve.draw(
-                    ax=ax,
-                    projection=projection,
-                    min_altitude=min_altitude,
-                    **curve.style,
-                )
-            )
-
-        return artists
+        renderer = CoordinatesGridRenderingAdapter(
+            observer=self.observer,
+        )
+        return renderer.draw_grid(
+            ax=ax,
+            projection=projection,
+            geometry=geometry,
+            min_altitude=min_altitude,
+        )
 
 # -------------------------
 # Ecliptic grid methods
@@ -481,11 +492,15 @@ class CelestialSphere:
             samples=samples,
         )
 
-        curve = grid.ecliptic()
+        geometry = grid.ecliptic()
 
-        return curve.draw(
+        renderer = CoordinatesGridRenderingAdapter(
+            observer=self.observer,
+        )
+        return renderer.draw_curves(
             ax=ax,
             projection=projection,
+            geometry=geometry,
             min_altitude=min_altitude,
             **style,
         )
@@ -510,13 +525,17 @@ class CelestialSphere:
             samples=samples,
         )
 
-        curve = grid.parallel(
+        geometry = grid.parallel(
             latitude_deg=latitude_deg,
         )
 
-        return curve.draw(
+        renderer = CoordinatesGridRenderingAdapter(
+            observer=self.observer,
+        )
+        return renderer.draw_curves(
             ax=ax,
             projection=projection,
+            geometry=geometry,
             min_altitude=min_altitude,
             **style,
         )
@@ -541,13 +560,17 @@ class CelestialSphere:
             samples=samples,
         )
 
-        curve = grid.meridian(
+        geometry = grid.meridian(
             longitude_deg=longitude_deg,
         )
 
-        return curve.draw(
+        renderer = CoordinatesGridRenderingAdapter(
+            observer=self.observer,
+        )
+        return renderer.draw_curves(
             ax=ax,
             projection=projection,
+            geometry=geometry,
             min_altitude=min_altitude,
             **style,
         )
@@ -597,26 +620,22 @@ class CelestialSphere:
             **({} if parallel_style is None else parallel_style),
         }
 
-        curves = grid.grid(
+        geometry = grid.grid(
             longitude=longitude,
             latitude=latitude,
             meridian_style=resolved_meridian_style,
             parallel_style=resolved_parallel_style,
         )
 
-        artists = []
-
-        for curve in curves:
-            artists.extend(
-                curve.draw(
-                    ax=ax,
-                    projection=projection,
-                    min_altitude=min_altitude,
-                    **curve.style,
-                )
-            )
-
-        return artists
+        renderer = CoordinatesGridRenderingAdapter(
+            observer=self.observer,
+        )
+        return renderer.draw_grid(
+            ax=ax,
+            projection=projection,
+            geometry=geometry,
+            min_altitude=min_altitude,
+        )
 
 # -------------------------
 # Galactic methods
@@ -641,11 +660,15 @@ class CelestialSphere:
             samples=samples,
         )
 
-        curve = grid.galactic_plane()
+        geometry = grid.galactic_plane()
 
-        return curve.draw(
+        renderer = CoordinatesGridRenderingAdapter(
+            observer=self.observer,
+        )
+        return renderer.draw_curves(
             ax=ax,
             projection=projection,
+            geometry=geometry,
             min_altitude=min_altitude,
             **style,
         )
@@ -668,13 +691,17 @@ class CelestialSphere:
             samples=samples,
         )
 
-        curve = grid.parallel(
+        geometry = grid.parallel(
             latitude_deg=latitude_deg,
         )
 
-        return curve.draw(
+        renderer = CoordinatesGridRenderingAdapter(
+            observer=self.observer,
+        )
+        return renderer.draw_curves(
             ax=ax,
             projection=projection,
+            geometry=geometry,
             min_altitude=min_altitude,
             **style,
         )
@@ -697,13 +724,17 @@ class CelestialSphere:
             samples=samples,
         )
 
-        curve = grid.meridian(
+        geometry = grid.meridian(
             longitude_deg=longitude_deg,
         )
 
-        return curve.draw(
+        renderer = CoordinatesGridRenderingAdapter(
+            observer=self.observer,
+        )
+        return renderer.draw_curves(
             ax=ax,
             projection=projection,
+            geometry=geometry,
             min_altitude=min_altitude,
             **style,
         )
@@ -752,26 +783,22 @@ class CelestialSphere:
             **({} if parallel_style is None else parallel_style),
         }
 
-        curves = grid.grid(
+        geometry = grid.grid(
             longitude=longitude,
             latitude=latitude,
             meridian_style=resolved_meridian_style,
             parallel_style=resolved_parallel_style,
         )
 
-        artists = []
-
-        for curve in curves:
-            artists.extend(
-                curve.draw(
-                    ax=ax,
-                    projection=projection,
-                    min_altitude=min_altitude,
-                    **curve.style,
-                )
-            )
-
-        return artists
+        renderer = CoordinatesGridRenderingAdapter(
+            observer=self.observer,
+        )
+        return renderer.draw_grid(
+            ax=ax,
+            projection=projection,
+            geometry=geometry,
+            min_altitude=min_altitude,
+        )
 
 # -------------------------------
 # General curve drawing method

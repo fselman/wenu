@@ -18,6 +18,7 @@ from matplotlib.patches import Circle
 import numpy as np
 
 from wenu import CelestialSphere, Observer, StereographicProjection
+from wenu.geometry import radec_to_altaz
 from wenu.regional_chart import draw_regional_chart
 from wenu.renderers import layers, render_points
 from wenu.renderers.matplotlib_axes import apply_viewport
@@ -114,6 +115,64 @@ def spherical_mean_altaz(sky, abbreviations):
     return float(center_alt_deg), float(center_az_deg)
 
 
+def north_up_position_angle_deg(
+    observer,
+    *,
+    center_alt_deg,
+    center_az_deg,
+):
+    """Return the chart rotation that places celestial north upward."""
+    north_alt_deg, north_az_deg = radec_to_altaz(
+        np.asarray([0.0]),
+        np.asarray([90.0]),
+        observer.t,
+        observer.lat_deg,
+        observer.lon_deg,
+    )
+
+    def horizontal_vector(altitude_deg, azimuth_deg):
+        altitude = np.radians(float(altitude_deg))
+        azimuth = np.radians(float(azimuth_deg))
+        return np.asarray(
+            [
+                np.cos(altitude) * np.cos(azimuth),
+                np.cos(altitude) * np.sin(azimuth),
+                np.sin(altitude),
+            ]
+        )
+
+    center = horizontal_vector(
+        center_alt_deg,
+        center_az_deg,
+    )
+    zenith = np.asarray([0.0, 0.0, 1.0])
+    local_up = zenith - np.dot(zenith, center) * center
+    local_up /= np.linalg.norm(local_up)
+    local_right = np.cross(center, local_up)
+
+    celestial_pole = horizontal_vector(
+        north_alt_deg[0],
+        north_az_deg[0],
+    )
+    celestial_north = (
+        celestial_pole
+        - np.dot(celestial_pole, center) * center
+    )
+    norm = np.linalg.norm(celestial_north)
+    if norm < 1.0e-12:
+        return 0.0
+    celestial_north /= norm
+
+    return float(
+        np.degrees(
+            np.arctan2(
+                np.dot(celestial_north, local_right),
+                np.dot(celestial_north, local_up),
+            )
+        )
+    )
+
+
 def crossing_angular_radius(
     sky,
     abbreviations,
@@ -192,12 +251,22 @@ def save_regional(
     selected,
     angular_radius_deg,
     boundaries=False,
+    north_up=False,
     title,
 ):
     sky = build_sky(selected, boundaries=boundaries)
     center_alt_deg, center_az_deg = spherical_mean_altaz(
         sky,
         selected,
+    )
+    position_angle_deg = (
+        north_up_position_angle_deg(
+            sky.observer,
+            center_alt_deg=center_alt_deg,
+            center_az_deg=center_az_deg,
+        )
+        if north_up
+        else 0.0
     )
 
     figure, ax = plt.subplots(figsize=(7, 7))
@@ -208,6 +277,7 @@ def save_regional(
         center_alt_deg=center_alt_deg,
         center_az_deg=center_az_deg,
         angular_radius_deg=angular_radius_deg,
+        position_angle_deg=position_angle_deg,
         selected_constellations=selected,
         draw_boundaries=boundaries,
         star_kwargs={"color": "white"},
@@ -239,6 +309,7 @@ def generate(output_directory):
         multiple,
         selected=["Cru", "Cen"],
         angular_radius_deg=35.0,
+        north_up=True,
         title="Crux and Centaurus",
     )
 
@@ -327,7 +398,10 @@ def generate(output_directory):
         alpha=0.55,
         zorder=3,
     )
-    sky.star_renderer.prepare(projection=projection)
+    sky.star_renderer.prepare(
+        projection=projection,
+        alt_min=0.0,
+    )
     render_points(
         ax,
         sky.star_renderer.x,

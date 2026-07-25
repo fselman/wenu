@@ -1,69 +1,35 @@
-# src/wenu/sky/coordinate_grids.py
+"""Observer-time equatorial, ecliptic, and Galactic grid geometry."""
 
 from __future__ import annotations
 
-from typing import Any
 from abc import ABC, abstractmethod
+from typing import Any
 
+import astropy.units as u
 import numpy as np
 from astropy.coordinates import (
-        BarycentricTrueEcliptic,
-        FK5, 
-        Galactic,
-        ICRS, 
-        SkyCoord,
-        )
-
+    BarycentricTrueEcliptic,
+    FK5,
+    Galactic,
+    ICRS,
+    SkyCoord,
+)
 from astropy.time import Time
-import astropy.units as u
 
 from wenu.geometry import radec_to_altaz
-from wenu.spherical_frame import SphericalCoordinates
-from wenu.sky.curves import CelestialCurve
+from wenu.sky.geometrical_object import GeometricalObject
+from wenu.spherical import SphericalCurves, SphericalGrid
 
 
-class _GridToHorizontalTransform:
-    """
-    Adapt a grid's native-to-horizontal conversion to the transform
-    interface expected by CelestialCurve.from_spherical().
-    """
+class CoordinatesGrid(GeometricalObject, ABC):
+    """Base geometrical layer for spherical coordinate grids."""
 
-    def __init__(self, grid) -> None:
-        self.grid = grid
+    layer_name = "coordinates_grid"
+    coordinate_system = "spherical"
 
-    def transform(
-        self,
-        lon_deg,
-        lat_deg,
-    ) -> SphericalCoordinates:
-        alt_deg, az_deg = self.grid._native_to_altaz(
-            lon_deg,
-            lat_deg,
-        )
-
-        return SphericalCoordinates(
-            lon_deg=np.asarray(az_deg),
-            lat_deg=np.asarray(alt_deg),
-        )
-
-
-class SphericalCoordinatesGrid(ABC):
-    """
-    Base class for grids defined by spherical longitude and latitude.
-
-    Subclasses define how their native longitude and latitude coordinates
-    are transformed into ICRS right ascension and declination.
-    """
-
-    def __init__(
-        self,
-        observer,
-        *,
-        samples: int = 721,
-    ) -> None:
+    def __init__(self, observer, *, samples: int = 721) -> None:
         if samples < 4:
             raise ValueError("samples must be at least 4.")
-
         self.observer = observer
         self.samples = int(samples)
 
@@ -73,39 +39,24 @@ class SphericalCoordinatesGrid(ABC):
         *,
         name: str | None = None,
         style: dict[str, Any] | None = None,
-    ) -> CelestialCurve:
-        """
-        Return a constant-latitude parallel.
-        """
+    ) -> SphericalCurves:
         latitude_deg = float(latitude_deg)
-
         if not -90.0 <= latitude_deg <= 90.0:
             raise ValueError(
                 "latitude_deg must lie between -90 and 90 degrees."
             )
-
-        longitude_deg = np.linspace(
-            0.0,
-            360.0,
-            self.samples,
-            endpoint=False,
+        longitude = np.linspace(
+            0.0, 360.0, self.samples, endpoint=False
         )
-
-        latitude = np.full_like(
-            longitude_deg,
-            latitude_deg,
-        )
-
-        return self._make_curve(
-            longitude_deg=longitude_deg,
-            latitude_deg=latitude,
-            name=(
-                f"latitude_{latitude_deg:g}"
-                if name is None
-                else name
+        latitude = np.full_like(longitude, latitude_deg)
+        return self._make_curves(
+            longitude_deg=(longitude,),
+            latitude_deg=(latitude,),
+            names=(
+                f"latitude_{latitude_deg:g}" if name is None else name,
             ),
-            closed=True,
-            style=style,
+            closed=(True,),
+            styles=(style,),
         )
 
     def meridian(
@@ -114,33 +65,20 @@ class SphericalCoordinatesGrid(ABC):
         *,
         name: str | None = None,
         style: dict[str, Any] | None = None,
-    ) -> CelestialCurve:
-        """
-        Return a constant-longitude meridian.
-        """
+    ) -> SphericalCurves:
         longitude_deg = float(longitude_deg) % 360.0
-
-        latitude_deg = np.linspace(
-            -90.0,
-            90.0,
-            self.samples,
-        )
-
-        longitude = np.full_like(
-            latitude_deg,
-            longitude_deg,
-        )
-
-        return self._make_curve(
-            longitude_deg=longitude,
-            latitude_deg=latitude_deg,
-            name=(
+        latitude = np.linspace(-90.0, 90.0, self.samples)
+        longitude = np.full_like(latitude, longitude_deg)
+        return self._make_curves(
+            longitude_deg=(longitude,),
+            latitude_deg=(latitude,),
+            names=(
                 f"longitude_{longitude_deg:g}"
                 if name is None
-                else name
+                else name,
             ),
-            closed=False,
-            style=style,
+            closed=(False,),
+            styles=(style,),
         )
 
     def grid(
@@ -150,117 +88,153 @@ class SphericalCoordinatesGrid(ABC):
         latitudes=None,
         meridian_style=None,
         parallel_style=None,
-    ) -> list[CelestialCurve]:
-        """
-        Construct a complete coordinate grid.
-
-        Coordinate values are passed positionally so subclasses may expose
-        frame-specific parameter names, such as ``right_ascension_deg`` and
-        ``declination_deg``.
-        """
-        curves: list[CelestialCurve] = []
-
+    ) -> SphericalGrid:
+        components = {}
         if longitudes is not None:
-            for longitude_deg in longitudes:
-                curves.append(
+            components["meridians"] = self._combine(
+                [
                     self.meridian(
-                        float(longitude_deg),
+                        float(longitude),
                         style=meridian_style,
                     )
-                )
-
+                    for longitude in longitudes
+                ]
+            )
         if latitudes is not None:
-            for latitude_deg in latitudes:
-                curves.append(
+            components["parallels"] = self._combine(
+                [
                     self.parallel(
-                        float(latitude_deg),
+                        float(latitude),
                         style=parallel_style,
                     )
-                )
+                    for latitude in latitudes
+                ]
+            )
+        return SphericalGrid(
+            components=components,
+            metadata=self._grid_metadata(),
+        )
 
-        return curves
+    def spherical_geometry(self, observer) -> SphericalGrid:
+        """Return the unconfigured grid as an empty semantic collection.
 
-    def _make_curve(
+        Concrete grid selections are produced by ``grid()``, ``parallel()``,
+        and ``meridian()``. This method completes the SkyLayer contract while
+        keeping selection explicit at the public drawing entry points.
+        """
+        self._resolve_observer(observer)
+        return SphericalGrid(
+            components={},
+            metadata=self._grid_metadata(),
+        )
+
+    def _make_curves(
         self,
         *,
-        longitude_deg: np.ndarray,
-        latitude_deg: np.ndarray,
-        name: str,
-        closed: bool,
-        style: dict[str, Any] | None,
-    ) -> CelestialCurve:
-        """
-        Transform native grid coordinates and construct a CelestialCurve.
-        """
-
-        return CelestialCurve.from_spherical(
-            lon_deg=longitude_deg,
-            lat_deg=latitude_deg,
-            frame=_GridToHorizontalTransform(self),
-            name=name,
+        longitude_deg,
+        latitude_deg,
+        names,
+        closed,
+        styles,
+        observer=None,
+    ) -> SphericalCurves:
+        resolved_observer = self._resolve_observer(observer)
+        azimuths = []
+        altitudes = []
+        for longitude, latitude in zip(
+            longitude_deg, latitude_deg
+        ):
+            altitude, azimuth = self._native_to_altaz(
+                np.asarray(longitude, dtype=float),
+                np.asarray(latitude, dtype=float),
+                observer=resolved_observer,
+            )
+            azimuths.append(np.asarray(azimuth, dtype=float))
+            altitudes.append(np.asarray(altitude, dtype=float))
+        return SphericalCurves(
+            lon_deg=tuple(azimuths),
+            lat_deg=tuple(altitudes),
+            names=names,
             closed=closed,
-            style={} if style is None else dict(style),
+            metadata={
+                **self._grid_metadata(),
+                "styles": tuple(
+                    {} if style is None else dict(style)
+                    for style in styles
+                ),
+            },
+        )
+
+    @staticmethod
+    def _combine(collections) -> SphericalCurves:
+        if not collections:
+            return SphericalCurves(lon_deg=(), lat_deg=())
+        lon_deg = []
+        lat_deg = []
+        names = []
+        closed = []
+        styles = []
+        for collection in collections:
+            lon_deg.extend(collection.lon_deg)
+            lat_deg.extend(collection.lat_deg)
+            names.extend(collection.names)
+            closed.extend(collection.closed)
+            styles.extend(collection.metadata.get("styles", ({},)))
+        metadata = dict(collections[0].metadata)
+        metadata["styles"] = tuple(styles)
+        return SphericalCurves(
+            lon_deg=tuple(lon_deg),
+            lat_deg=tuple(lat_deg),
+            names=names,
+            closed=closed,
+            metadata=metadata,
         )
 
     def _native_to_altaz(
         self,
-        longitude_deg: np.ndarray,
-        latitude_deg: np.ndarray,
-    ) -> tuple[np.ndarray, np.ndarray]:
-        """
-        Convert native spherical coordinates to apparent altitude and azimuth.
-
-        The default transformation passes through ICRS. Subclasses define
-        how their native longitude and latitude coordinates map to ICRS.
-        """
+        longitude_deg,
+        latitude_deg,
+        *,
+        observer,
+    ):
         ra_deg, dec_deg = self._native_to_icrs(
             longitude_deg,
             latitude_deg,
         )
-
         alt_deg, az_deg = radec_to_altaz(
             ra_deg,
             dec_deg,
-            self.observer.t,
-            self.observer.lat_deg,
-            self.observer.lon_deg,
+            observer.t,
+            observer.lat_deg,
+            observer.lon_deg,
         )
+        return np.asarray(alt_deg), np.asarray(az_deg)
 
-        return (
-            np.asarray(alt_deg),
-            np.asarray(az_deg),
-        )
+    def _resolve_observer(self, observer):
+        resolved = self.observer if observer is None else observer
+        if resolved is None:
+            raise RuntimeError(
+                "An Observer is required for coordinate-grid geometry."
+            )
+        return resolved
+
+    def _grid_metadata(self):
+        return {
+            "coordinate_system": self.coordinate_system,
+            "output_coordinate_system": "altaz",
+        }
 
     @abstractmethod
-    def _native_to_icrs(
-        self,
-        longitude_deg: np.ndarray,
-        latitude_deg: np.ndarray,
-    ) -> tuple[np.ndarray, np.ndarray]:
-        """
-        Convert native longitude and latitude to ICRS RA and Dec.
-        """
+    def _native_to_icrs(self, longitude_deg, latitude_deg):
         raise NotImplementedError
 
-class EquatorialGrid(SphericalCoordinatesGrid):
-    """
-    Curves belonging to an equatorial coordinate system.
 
-    This class performs astronomical coordinate calculations but has no
-    knowledge of Matplotlib or map projections.
+# Compatibility name retained while callers migrate.
+SphericalCoordinatesGrid = CoordinatesGrid
 
-    Parameters
-    ----------
-    observer
-        Wenu observer supplying time and geographic location.
-    frame
-        Equatorial reference frame. Currently ``"icrs"`` or ``"fk5"``.
-    equinox
-        Equinox used for FK5 coordinates. It may be an Astropy ``Time``,
-        a value accepted by ``Time``, or ``"of_date"``.
-    samples
-        Number of samples used for complete circles.
-    """
+
+class EquatorialGrid(CoordinatesGrid):
+    coordinate_system = "equatorial"
 
     def __init__(
         self,
@@ -269,91 +243,46 @@ class EquatorialGrid(SphericalCoordinatesGrid):
         frame: str = "fk5",
         equinox: str | Time = "of_date",
         samples: int = 721,
-    ) -> None:
-        super().__init__(
-            observer,
-            samples=samples,
-        )
-
+    ):
+        super().__init__(observer, samples=samples)
         self.frame = frame.lower()
         self.equinox = equinox
-
         if self.frame not in {"icrs", "fk5"}:
             raise ValueError(
                 "frame must currently be either 'icrs' or 'fk5'."
             )
 
-    def equator(
-        self,
-        *,
-        style: dict[str, Any] | None = None,
-    ) -> CelestialCurve:
-        """
-        Return the celestial equator as a closed apparent-sky curve.
-        """
+    def equator(self, *, style=None):
         return super().parallel(
             0.0,
             name="celestial_equator",
             style=style,
         )
 
-    def parallel(
-        self,
-        declination_deg: float,
-        *,
-        style: dict[str, Any] | None = None,
-    ) -> CelestialCurve:
-        """
-        Return a constant-declination parallel.
-        """
-        declination_deg = float(declination_deg)
-
+    def parallel(self, declination_deg, *, style=None):
+        value = float(declination_deg)
         return super().parallel(
-            declination_deg,
-            name=f"declination_{declination_deg:g}",
+            value,
+            name=f"declination_{value:g}",
             style=style,
         )
 
-    def meridian(
-        self,
-        right_ascension_deg: float,
-        *,
-        style: dict[str, Any] | None = None,
-    ) -> CelestialCurve:
-        """
-        Return a constant-right-ascension meridian.
-        """
-        right_ascension_deg = float(right_ascension_deg) % 360.0
-
+    def meridian(self, right_ascension_deg, *, style=None):
+        value = float(right_ascension_deg) % 360.0
         return super().meridian(
-            right_ascension_deg,
-            name=f"right_ascension_{right_ascension_deg:g}",
+            value,
+            name=f"right_ascension_{value:g}",
             style=style,
         )
-
 
     def grid(
         self,
         *,
         ra=None,
         dec=None,
-        meridian_style: dict[str, Any] | None = None,
-        parallel_style: dict[str, Any] | None = None,
-    ) -> list[CelestialCurve]:
-        """
-        Construct an equatorial coordinate grid.
-
-        Parameters
-        ----------
-        ra
-            Right ascensions of meridians, in degrees.
-        dec
-            Declinations of parallels, in degrees.
-        meridian_style
-            Style stored in each right-ascension meridian.
-        parallel_style
-            Style stored in each declination parallel.
-        """
+        meridian_style=None,
+        parallel_style=None,
+    ):
         return super().grid(
             longitudes=ra,
             latitudes=dec,
@@ -361,15 +290,7 @@ class EquatorialGrid(SphericalCoordinatesGrid):
             parallel_style=parallel_style,
         )
 
-
-    def _native_to_icrs(
-        self,
-        longitude_deg: np.ndarray,
-        latitude_deg: np.ndarray,
-    ) -> tuple[np.ndarray, np.ndarray]:
-        """
-        Convert coordinates in this grid's frame to ICRS RA and Dec.
-        """
+    def _native_to_icrs(self, longitude_deg, latitude_deg):
         if self.frame == "icrs":
             coordinates = SkyCoord(
                 ra=longitude_deg * u.deg,
@@ -382,46 +303,28 @@ class EquatorialGrid(SphericalCoordinatesGrid):
                 dec=latitude_deg * u.deg,
                 frame=FK5(equinox=self._equinox_time()),
             )
-
         icrs = coordinates.icrs
+        return np.asarray(icrs.ra.deg), np.asarray(icrs.dec.deg)
 
-        return (
-            np.asarray(icrs.ra.deg),
-            np.asarray(icrs.dec.deg),
-        )
-
-    def _equinox_time(self) -> Time:
-        """
-        Resolve the requested FK5 equinox.
-        """
+    def _equinox_time(self):
         if isinstance(self.equinox, Time):
             return self.equinox
-
         if str(self.equinox).lower() == "of_date":
-            try:
-                return self.observer.t_astropy
-            except AttributeError as exc:
-                raise AttributeError(
-                    "The observer must define t_astropy when "
-                    "equinox='of_date'."
-                ) from exc
-
+            return self.observer.t_astropy
         return Time(self.equinox)
 
-class EclipticGrid(SphericalCoordinatesGrid):
-    """
-    Curves belonging to an ecliptic coordinate system.
+    def _grid_metadata(self):
+        metadata = {
+            **super()._grid_metadata(),
+            "frame": self.frame,
+        }
+        if self.frame == "fk5":
+            metadata["equinox"] = str(self._equinox_time())
+        return metadata
 
-    Parameters
-    ----------
-    observer
-        Wenu observer supplying time and geographic location.
-    equinox
-        Equinox of the ecliptic frame. It may be an Astropy ``Time``,
-        a value accepted by ``Time``, or ``"of_date"``.
-    samples
-        Number of samples used for complete circles.
-    """
+
+class EclipticGrid(CoordinatesGrid):
+    coordinate_system = "ecliptic"
 
     def __init__(
         self,
@@ -429,22 +332,11 @@ class EclipticGrid(SphericalCoordinatesGrid):
         *,
         equinox: str | Time = "of_date",
         samples: int = 721,
-    ) -> None:
-        super().__init__(
-            observer,
-            samples=samples,
-        )
-
+    ):
+        super().__init__(observer, samples=samples)
         self.equinox = equinox
 
-    def ecliptic(
-        self,
-        *,
-        style: dict[str, Any] | None = None,
-    ) -> CelestialCurve:
-        """
-        Return the ecliptic as a closed apparent-sky curve.
-        """
+    def ecliptic(self, *, style=None):
         return super().parallel(
             0.0,
             name="ecliptic",
@@ -453,35 +345,39 @@ class EclipticGrid(SphericalCoordinatesGrid):
 
     def parallel(
         self,
-        ecliptic_latitude_deg: float,
+        ecliptic_latitude_deg=None,
         *,
-        style: dict[str, Any] | None = None,
-    ) -> CelestialCurve:
-        """
-        Return a constant-ecliptic-latitude parallel.
-        """
-        ecliptic_latitude_deg = float(ecliptic_latitude_deg)
-
+        latitude_deg=None,
+        style=None,
+    ):
+        value = (
+            ecliptic_latitude_deg
+            if latitude_deg is None
+            else latitude_deg
+        )
+        value = float(value)
         return super().parallel(
-            ecliptic_latitude_deg,
-            name=f"ecliptic_latitude_{ecliptic_latitude_deg:g}",
+            value,
+            name=f"ecliptic_latitude_{value:g}",
             style=style,
         )
 
     def meridian(
         self,
-        ecliptic_longitude_deg: float,
+        ecliptic_longitude_deg=None,
         *,
-        style: dict[str, Any] | None = None,
-    ) -> CelestialCurve:
-        """
-        Return a constant-ecliptic-longitude meridian.
-        """
-        ecliptic_longitude_deg = float(ecliptic_longitude_deg) % 360.0
-
+        longitude_deg=None,
+        style=None,
+    ):
+        value = (
+            ecliptic_longitude_deg
+            if longitude_deg is None
+            else longitude_deg
+        )
+        value = float(value) % 360.0
         return super().meridian(
-            ecliptic_longitude_deg,
-            name=f"ecliptic_longitude_{ecliptic_longitude_deg:g}",
+            value,
+            name=f"ecliptic_longitude_{value:g}",
             style=style,
         )
 
@@ -490,23 +386,9 @@ class EclipticGrid(SphericalCoordinatesGrid):
         *,
         longitude=None,
         latitude=None,
-        meridian_style: dict[str, Any] | None = None,
-        parallel_style: dict[str, Any] | None = None,
-    ) -> list[CelestialCurve]:
-        """
-        Construct an ecliptic coordinate grid.
-
-        Parameters
-        ----------
-        longitude
-            Ecliptic longitudes of meridians, in degrees.
-        latitude
-            Ecliptic latitudes of parallels, in degrees.
-        meridian_style
-            Style stored in each ecliptic meridian.
-        parallel_style
-            Style stored in each ecliptic parallel.
-        """
+        meridian_style=None,
+        parallel_style=None,
+    ):
         return super().grid(
             longitudes=longitude,
             latitudes=latitude,
@@ -514,67 +396,35 @@ class EclipticGrid(SphericalCoordinatesGrid):
             parallel_style=parallel_style,
         )
 
-    def _native_to_icrs(
-        self,
-        longitude_deg: np.ndarray,
-        latitude_deg: np.ndarray,
-    ) -> tuple[np.ndarray, np.ndarray]:
-        """
-        Convert ecliptic longitude and latitude to ICRS RA and Dec.
-        """
+    def _native_to_icrs(self, longitude_deg, latitude_deg):
         coordinates = SkyCoord(
             lon=longitude_deg * u.deg,
             lat=latitude_deg * u.deg,
             frame=BarycentricTrueEcliptic(
-                equinox=self._equinox_time(),
+                equinox=self._equinox_time()
             ),
         )
-
         icrs = coordinates.icrs
+        return np.asarray(icrs.ra.deg), np.asarray(icrs.dec.deg)
 
-        return (
-            np.asarray(icrs.ra.deg),
-            np.asarray(icrs.dec.deg),
-        )
-
-    def _equinox_time(self) -> Time:
-        """
-        Resolve the requested ecliptic equinox.
-        """
+    def _equinox_time(self):
         if isinstance(self.equinox, Time):
             return self.equinox
-
         if str(self.equinox).lower() == "of_date":
-            try:
-                return self.observer.t_astropy
-            except AttributeError as exc:
-                raise AttributeError(
-                    "The observer must define t_astropy when "
-                    "equinox='of_date'."
-                ) from exc
-
+            return self.observer.t_astropy
         return Time(self.equinox)
 
-class GalacticGrid(SphericalCoordinatesGrid):
-    """
-    Curves belonging to the IAU Galactic coordinate system.
+    def _grid_metadata(self):
+        return {
+            **super()._grid_metadata(),
+            "equinox": str(self._equinox_time()),
+        }
 
-    Parameters
-    ----------
-    observer
-        Wenu observer supplying time and geographic location.
-    samples
-        Number of samples used for complete circles.
-    """
 
-    def galactic_plane(
-        self,
-        *,
-        style: dict[str, Any] | None = None,
-    ) -> CelestialCurve:
-        """
-        Return the Galactic plane as a closed apparent-sky curve.
-        """
+class GalacticGrid(CoordinatesGrid):
+    coordinate_system = "galactic"
+
+    def galactic_plane(self, *, style=None):
         return super().parallel(
             0.0,
             name="galactic_plane",
@@ -583,35 +433,39 @@ class GalacticGrid(SphericalCoordinatesGrid):
 
     def parallel(
         self,
-        galactic_latitude_deg: float,
+        galactic_latitude_deg=None,
         *,
-        style: dict[str, Any] | None = None,
-    ) -> CelestialCurve:
-        """
-        Return a constant-Galactic-latitude parallel.
-        """
-        galactic_latitude_deg = float(galactic_latitude_deg)
-
+        latitude_deg=None,
+        style=None,
+    ):
+        value = (
+            galactic_latitude_deg
+            if latitude_deg is None
+            else latitude_deg
+        )
+        value = float(value)
         return super().parallel(
-            galactic_latitude_deg,
-            name=f"galactic_latitude_{galactic_latitude_deg:g}",
+            value,
+            name=f"galactic_latitude_{value:g}",
             style=style,
         )
 
     def meridian(
         self,
-        galactic_longitude_deg: float,
+        galactic_longitude_deg=None,
         *,
-        style: dict[str, Any] | None = None,
-    ) -> CelestialCurve:
-        """
-        Return a constant-Galactic-longitude meridian.
-        """
-        galactic_longitude_deg = float(galactic_longitude_deg) % 360.0
-
+        longitude_deg=None,
+        style=None,
+    ):
+        value = (
+            galactic_longitude_deg
+            if longitude_deg is None
+            else longitude_deg
+        )
+        value = float(value) % 360.0
         return super().meridian(
-            galactic_longitude_deg,
-            name=f"galactic_longitude_{galactic_longitude_deg:g}",
+            value,
+            name=f"galactic_longitude_{value:g}",
             style=style,
         )
 
@@ -620,23 +474,9 @@ class GalacticGrid(SphericalCoordinatesGrid):
         *,
         longitude=None,
         latitude=None,
-        meridian_style: dict[str, Any] | None = None,
-        parallel_style: dict[str, Any] | None = None,
-    ) -> list[CelestialCurve]:
-        """
-        Construct a Galactic coordinate grid.
-
-        Parameters
-        ----------
-        longitude
-            Galactic longitudes of meridians, in degrees.
-        latitude
-            Galactic latitudes of parallels, in degrees.
-        meridian_style
-            Style stored in each Galactic meridian.
-        parallel_style
-            Style stored in each Galactic parallel.
-        """
+        meridian_style=None,
+        parallel_style=None,
+    ):
         return super().grid(
             longitudes=longitude,
             latitudes=latitude,
@@ -644,24 +484,11 @@ class GalacticGrid(SphericalCoordinatesGrid):
             parallel_style=parallel_style,
         )
 
-    def _native_to_icrs(
-        self,
-        longitude_deg: np.ndarray,
-        latitude_deg: np.ndarray,
-    ) -> tuple[np.ndarray, np.ndarray]:
-        """
-        Convert Galactic longitude and latitude to ICRS RA and Dec.
-        """
+    def _native_to_icrs(self, longitude_deg, latitude_deg):
         coordinates = SkyCoord(
             l=longitude_deg * u.deg,
             b=latitude_deg * u.deg,
             frame=Galactic(),
         )
-
         icrs = coordinates.icrs
-
-        return (
-            np.asarray(icrs.ra.deg),
-            np.asarray(icrs.dec.deg),
-        )
-
+        return np.asarray(icrs.ra.deg), np.asarray(icrs.dec.deg)

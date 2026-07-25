@@ -2,10 +2,11 @@ from types import SimpleNamespace
 
 import numpy as np
 
-from wenu.sky.coordinate_grids import SphericalCoordinatesGrid
+from wenu.sky.coordinate_grids import CoordinatesGrid
+from wenu.spherical import SphericalCurves
 
 
-class StubGrid(SphericalCoordinatesGrid):
+class StubGrid(CoordinatesGrid):
     def _native_to_icrs(
         self,
         longitude_deg,
@@ -17,7 +18,7 @@ class StubGrid(SphericalCoordinatesGrid):
         )
 
 
-def test_make_curve_preserves_native_to_horizontal_conversion(
+def test_make_curves_preserves_native_to_horizontal_conversion(
     monkeypatch,
 ):
     observer = SimpleNamespace(
@@ -25,11 +26,7 @@ def test_make_curve_preserves_native_to_horizontal_conversion(
         lat_deg=-33.0,
         lon_deg=-71.5,
     )
-
-    grid = StubGrid(
-        observer,
-        samples=5,
-    )
+    grid = StubGrid(observer, samples=5)
 
     def fake_radec_to_altaz(
         ra_deg,
@@ -46,11 +43,9 @@ def test_make_curve_preserves_native_to_horizontal_conversion(
             dec_deg,
             [5.0, 10.0, 15.0],
         )
-
         assert t is observer.t
         assert lat_deg == observer.lat_deg
         assert lon_deg == observer.lon_deg
-
         return (
             np.array([20.0, 30.0, 40.0]),
             np.array([100.0, 110.0, 120.0]),
@@ -60,25 +55,23 @@ def test_make_curve_preserves_native_to_horizontal_conversion(
         "wenu.sky.coordinate_grids.radec_to_altaz",
         fake_radec_to_altaz,
     )
-
-    curve = grid._make_curve(
-        longitude_deg=np.array([0.0, 20.0, 40.0]),
-        latitude_deg=np.array([10.0, 15.0, 20.0]),
-        name="test_grid_curve",
-        closed=True,
-        style={"linewidth": 1.5},
+    curves = grid._make_curves(
+        longitude_deg=(np.array([0.0, 20.0, 40.0]),),
+        latitude_deg=(np.array([10.0, 15.0, 20.0]),),
+        names=("test_grid_curve",),
+        closed=(True,),
+        styles=({"linewidth": 1.5},),
     )
 
+    assert isinstance(curves, SphericalCurves)
     np.testing.assert_allclose(
-        curve.alt_deg,
+        curves.lat_deg[0],
         [20.0, 30.0, 40.0],
     )
     np.testing.assert_allclose(
-        curve.az_deg,
+        curves.lon_deg[0],
         [100.0, 110.0, 120.0],
     )
-
-    assert curve.name == "test_grid_curve"
-    assert curve.closed is True
-    assert curve.style == {"linewidth": 1.5}
-
+    assert curves.names.tolist() == ["test_grid_curve"]
+    assert curves.closed.tolist() == [True]
+    assert curves.metadata["styles"] == ({"linewidth": 1.5},)
