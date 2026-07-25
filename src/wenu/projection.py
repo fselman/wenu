@@ -9,12 +9,17 @@ from wenu.projected import (
     ProjectedPolygon,
     ProjectedPolygons,
 )
+from wenu.spherical_frame import (
+    SphericalCoordinates,
+    SphericalFrame,
+)
 from wenu.spherical import (
     SphericalCurves,
     SphericalGrid,
     SphericalPoints,
     SphericalPolygons,
 )
+from wenu.viewport import Viewport
 
 
 class StereographicProjection:
@@ -24,15 +29,55 @@ class StereographicProjection:
         self,
         radius: float = 2.0,
         flip_ew: bool = True,
+        frame: SphericalFrame | None = None,
     ):
         radius = float(radius)
         if radius <= 0.0:
             raise ValueError("radius must be positive.")
         self.radius = radius
         self.flip_ew = bool(flip_ew)
+        if frame is not None and not isinstance(frame, SphericalFrame):
+            raise TypeError("frame must be a SphericalFrame or None.")
+        self.frame = frame
+
+    def transform_spherical(
+        self,
+        lon_deg,
+        lat_deg,
+    ) -> SphericalCoordinates:
+        """Return coordinates aligned with the projection pole.
+
+        With no configured frame, the input coordinates are already
+        projection-aligned. With a frame, spherical rotation is delegated
+        to ``SphericalFrame`` before the planar projection is evaluated.
+
+        At zero position angle, the direction toward the source frame's
+        north pole is placed along projected positive y. Positive position
+        angle rotates that direction toward projected negative x before
+        any east-west flip is applied.
+        """
+        if self.frame is not None:
+            return self.frame.transform(lon_deg, lat_deg)
+
+        lon, lat = np.broadcast_arrays(
+            np.asarray(lon_deg, dtype=float),
+            np.asarray(lat_deg, dtype=float),
+        )
+        return SphericalCoordinates(
+            lon_deg=lon,
+            lat_deg=lat,
+        )
 
     def project_spherical(self, lon_deg, lat_deg):
-        """Project generic spherical longitude and latitude coordinates."""
+        """Rotate, when configured, and project spherical coordinates."""
+        coordinates = self.transform_spherical(lon_deg, lat_deg)
+        return self._project_aligned(
+            coordinates.lon_deg,
+            coordinates.lat_deg,
+        )
+
+    def _project_aligned(self, lon_deg, lat_deg):
+        """Project coordinates whose north pole is the tangent point."""
         lon = np.radians(lon_deg)
         lat = np.radians(lat_deg)
         r = self.radius * np.tan((np.pi / 2.0 - lat) / 2.0)
@@ -41,6 +86,35 @@ class StereographicProjection:
         if self.flip_ew:
             x = -x
         return x, y
+
+    def projected_radius(self, angular_radius_deg: float) -> float:
+        """Convert angular separation from chart center to plane radius."""
+        angular_radius_deg = float(angular_radius_deg)
+        if (
+            not np.isfinite(angular_radius_deg)
+            or angular_radius_deg <= 0.0
+            or angular_radius_deg >= 180.0
+        ):
+            raise ValueError(
+                "angular_radius_deg must be finite and between "
+                "0 and 180 degrees."
+            )
+        return float(
+            self.radius
+            * np.tan(np.radians(angular_radius_deg) / 2.0)
+        )
+
+    def viewport_for_angular_radius(
+        self,
+        angular_radius_deg: float,
+    ) -> Viewport:
+        """Return the centered square viewport bounding an angular field."""
+        projected_radius = self.projected_radius(angular_radius_deg)
+        diameter = 2.0 * projected_radius
+        return Viewport.centered(
+            width=diameter,
+            height=diameter,
+        )
 
     def project(self, alt_deg, az_deg):
         """Backward-compatible horizontal Alt/Az projection."""
