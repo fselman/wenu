@@ -1,0 +1,134 @@
+"""Constellation label anchors represented as spherical point geometry."""
+
+from __future__ import annotations
+
+from collections import defaultdict
+
+import astropy.units as u
+import numpy as np
+from astropy.coordinates import SkyCoord
+
+from wenu.sky.geometrical_object import GeometricalObject
+from wenu.spherical import SphericalPoints
+
+
+class ConstellationLabels(GeometricalObject):
+    """Compute projection-independent constellation label anchors."""
+
+    layer_name = "constellation_labels"
+
+    LABEL_OVERRIDES = {
+        "SER1": "SerCap",
+        "SER2": "SerCau",
+    }
+
+    def __init__(
+        self,
+        stars,
+        *,
+        selected=None,
+        boundaries=None,
+        min_stars=3,
+    ):
+        self.stars = stars
+        self.selected = None if selected is None else set(selected)
+        self.boundaries = boundaries
+        self.min_stars = int(min_stars)
+
+    def set_boundaries(self, boundaries):
+        self.boundaries = boundaries
+        return boundaries
+
+    def spherical_geometry(self, observer) -> SphericalPoints:
+        stars = self.stars.spherical_geometry(
+            observer,
+            alt_min=0.0,
+        )
+        frame = self.stars.hip_df
+        if frame is None or len(frame) == 0:
+            return self._empty()
+
+        coordinates = SkyCoord(
+            ra=frame["ra_degrees"].to_numpy() * u.deg,
+            dec=frame["dec_degrees"].to_numpy() * u.deg,
+            frame="icrs",
+        )
+        abbreviations = coordinates.get_constellation(short_name=True)
+        groups = defaultdict(list)
+
+        for index, (hip_id, abbreviation) in enumerate(
+            zip(frame.index, abbreviations)
+        ):
+            label = self._label_group(
+                int(hip_id),
+                abbreviation,
+                frame.iloc[index],
+            )
+            if (
+                self.selected is not None
+                and abbreviation not in self.selected
+                and label not in self.selected
+            ):
+                continue
+            groups[label].append(index)
+
+        lon_deg = []
+        lat_deg = []
+        labels = []
+        for label, indices in groups.items():
+            if len(indices) < self.min_stars:
+                continue
+            lon, lat = self._spherical_mean(
+                stars.lon_deg[indices],
+                stars.lat_deg[indices],
+            )
+            lon_deg.append(lon)
+            lat_deg.append(lat)
+            labels.append(label)
+
+        return SphericalPoints(
+            lon_deg=np.asarray(lon_deg, dtype=float),
+            lat_deg=np.asarray(lat_deg, dtype=float),
+            labels=np.asarray(labels, dtype=object),
+            metadata={"kind": "constellation_labels"},
+        )
+
+    def _label_group(self, hip_id, abbreviation, row):
+        if abbreviation != "Ser" or self.boundaries is None:
+            return abbreviation
+        identifier = self.boundaries.region_of(
+            ra_deg=float(row["ra_degrees"]),
+            dec_deg=float(row["dec_degrees"]),
+            candidates={"SER1", "SER2"},
+        )
+        return self.LABEL_OVERRIDES.get(identifier, abbreviation)
+
+    @staticmethod
+    def _spherical_mean(lon_deg, lat_deg):
+        lon = np.radians(np.asarray(lon_deg, dtype=float))
+        lat = np.radians(np.asarray(lat_deg, dtype=float))
+        vectors = np.column_stack(
+            (
+                np.cos(lat) * np.cos(lon),
+                np.cos(lat) * np.sin(lon),
+                np.sin(lat),
+            )
+        )
+        mean = np.mean(vectors, axis=0)
+        norm = np.linalg.norm(mean)
+        if norm == 0.0:
+            return float(lon_deg[0]), float(lat_deg[0])
+        mean /= norm
+        return (
+            float(np.degrees(np.arctan2(mean[1], mean[0])) % 360.0),
+            float(np.degrees(np.arcsin(mean[2]))),
+        )
+
+    @staticmethod
+    def _empty():
+        return SphericalPoints(
+            lon_deg=np.asarray([], dtype=float),
+            lat_deg=np.asarray([], dtype=float),
+            labels=np.asarray([], dtype=object),
+            metadata={"kind": "constellation_labels"},
+        )

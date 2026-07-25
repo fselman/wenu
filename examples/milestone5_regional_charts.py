@@ -1,8 +1,4 @@
-"""Generate the four demonstrations required by Wenu Milestone 5.
-
-This revision includes the full-sky reference curves, constellation
-boundaries, and roadmap keypoints.
-"""
+"""Generate the four regional-chart regression demonstrations canonically."""
 
 from __future__ import annotations
 
@@ -10,18 +6,20 @@ import argparse
 from pathlib import Path
 
 import matplotlib
-
 matplotlib.use("Agg")
-
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 import numpy as np
 
 from wenu import CelestialSphere, Observer, StereographicProjection
 from wenu.geometry import radec_to_altaz
-from wenu.regional_chart import draw_regional_chart
-from wenu.renderers import layers, render_points
-from wenu.renderers.matplotlib_axes import apply_viewport
+from wenu.renderers import MatplotlibRenderer, layers
+from wenu.rendering import (
+    clip_to_latitude,
+    magnitude_sizes,
+    point_styles,
+    radial_label_offset,
+)
 from wenu.spherical_frame import SphericalFrame
 from wenu.viewport import Viewport
 
@@ -31,19 +29,10 @@ OBSERVATION_TIME = "2026-08-15 21:00"
 
 
 def build_sky(selected=None, *, boundaries=False):
-    observer = Observer(
-        location=LOCATION,
-        time=OBSERVATION_TIME,
-    )
+    observer = Observer(location=LOCATION, time=OBSERVATION_TIME)
     sky = CelestialSphere(observer)
-    sky.add_stars(
-        catalog="hipparcos",
-        magnitude_limit=5.5,
-    )
-    sky.add_constellations(
-        system="western",
-        selected=selected,
-    )
+    sky.add_stars(catalog="hipparcos", magnitude_limit=5.5)
+    sky.add_constellations(system="western", selected=selected)
     if boundaries:
         sky.add_constellation_boundaries(
             boundaries="iau",
@@ -53,8 +42,7 @@ def build_sky(selected=None, *, boundaries=False):
 
 
 def constellation_endpoint_indices(sky, abbreviations):
-    stars = sky.stars
-    geometry = stars.spherical_geometry(
+    geometry = sky.stars.spherical_geometry(
         sky.observer,
         alt_min=-90.0,
     )
@@ -62,7 +50,6 @@ def constellation_endpoint_indices(sky, abbreviations):
         int(hip_id): index
         for index, hip_id in enumerate(geometry.ids)
     }
-
     hip_ids = set()
     edges = []
     for abbreviation in abbreviations:
@@ -75,7 +62,6 @@ def constellation_endpoint_indices(sky, abbreviations):
         edges.extend(selected_edges)
         for hip1, hip2 in selected_edges:
             hip_ids.update((hip1, hip2))
-
     indices = {
         hip_id: geometry_index[hip_id]
         for hip_id in hip_ids
@@ -97,7 +83,6 @@ def spherical_mean_altaz(sky, abbreviations):
     selected = np.asarray(list(indices.values()), dtype=int)
     altitude = np.radians(geometry.lat_deg[selected])
     azimuth = np.radians(geometry.lon_deg[selected])
-
     vectors = np.column_stack(
         (
             np.cos(altitude) * np.cos(azimuth),
@@ -107,12 +92,10 @@ def spherical_mean_altaz(sky, abbreviations):
     )
     mean = np.mean(vectors, axis=0)
     mean /= np.linalg.norm(mean)
-
-    center_alt_deg = np.degrees(np.arcsin(mean[2]))
-    center_az_deg = np.degrees(
-        np.arctan2(mean[1], mean[0])
-    ) % 360.0
-    return float(center_alt_deg), float(center_az_deg)
+    return (
+        float(np.degrees(np.arcsin(mean[2]))),
+        float(np.degrees(np.arctan2(mean[1], mean[0])) % 360.0),
+    )
 
 
 def north_up_position_angle_deg(
@@ -121,7 +104,6 @@ def north_up_position_angle_deg(
     center_alt_deg,
     center_az_deg,
 ):
-    """Return the chart rotation that places celestial north upward."""
     north_alt_deg, north_az_deg = radec_to_altaz(
         np.asarray([0.0]),
         np.asarray([90.0]),
@@ -130,7 +112,7 @@ def north_up_position_angle_deg(
         observer.lon_deg,
     )
 
-    def horizontal_vector(altitude_deg, azimuth_deg):
+    def vector(altitude_deg, azimuth_deg):
         altitude = np.radians(float(altitude_deg))
         azimuth = np.radians(float(azimuth_deg))
         return np.asarray(
@@ -141,33 +123,22 @@ def north_up_position_angle_deg(
             ]
         )
 
-    center = horizontal_vector(
-        center_alt_deg,
-        center_az_deg,
-    )
+    center = vector(center_alt_deg, center_az_deg)
     zenith = np.asarray([0.0, 0.0, 1.0])
     local_up = zenith - np.dot(zenith, center) * center
     local_up /= np.linalg.norm(local_up)
     local_right = np.cross(center, local_up)
-
-    celestial_pole = horizontal_vector(
-        north_alt_deg[0],
-        north_az_deg[0],
-    )
-    celestial_north = (
-        celestial_pole
-        - np.dot(celestial_pole, center) * center
-    )
-    norm = np.linalg.norm(celestial_north)
+    pole = vector(north_alt_deg[0], north_az_deg[0])
+    north = pole - np.dot(pole, center) * center
+    norm = np.linalg.norm(north)
     if norm < 1.0e-12:
         return 0.0
-    celestial_north /= norm
-
+    north /= norm
     return float(
         np.degrees(
             np.arctan2(
-                np.dot(celestial_north, local_right),
-                np.dot(celestial_north, local_up),
+                np.dot(north, local_right),
+                np.dot(north, local_up),
             )
         )
     )
@@ -193,8 +164,7 @@ def crossing_angular_radius(
             pole_lat_deg=center_alt_deg,
         ),
     )
-
-    projected_radius_by_hip = {}
+    radii = {}
     for hip_id, index in indices.items():
         if geometry.lat_deg[index] <= 0.0:
             continue
@@ -202,39 +172,25 @@ def crossing_angular_radius(
             geometry.lat_deg[index],
             geometry.lon_deg[index],
         )
-        projected_radius_by_hip[hip_id] = max(
-            abs(float(x)),
-            abs(float(y)),
-        )
-
+        radii[hip_id] = max(abs(float(x)), abs(float(y)))
     candidates = []
     for hip1, hip2 in edges:
-        if (
-            hip1 not in projected_radius_by_hip
-            or hip2 not in projected_radius_by_hip
-        ):
-            continue
-        radius1 = projected_radius_by_hip[hip1]
-        radius2 = projected_radius_by_hip[hip2]
-        difference = abs(radius1 - radius2)
-        if difference > 1.0e-8:
-            candidates.append(
-                (difference, radius1, radius2, hip1, hip2)
-            )
-
+        if hip1 in radii and hip2 in radii:
+            difference = abs(radii[hip1] - radii[hip2])
+            if difference > 1.0e-8:
+                candidates.append(
+                    (difference, radii[hip1], radii[hip2], hip1, hip2)
+                )
     if not candidates:
         raise RuntimeError(
-            "No visible constellation edge can be made to cross "
-            "a centered regional viewport."
+            "No visible constellation edge can cross the viewport."
         )
-
     _, radius1, radius2, hip1, hip2 = max(candidates)
     projected_limit = (radius1 + radius2) / 2.0
-    angular_radius_deg = np.degrees(
+    angular_radius = np.degrees(
         2.0 * np.arctan(projected_limit / projection_radius)
     )
-
-    return float(angular_radius_deg), (hip1, hip2)
+    return float(angular_radius), (hip1, hip2)
 
 
 def configure_axes(ax, title):
@@ -243,6 +199,89 @@ def configure_axes(ax, title):
     ax.set_title(title)
     ax.set_xticks([])
     ax.set_yticks([])
+
+
+def _clip(minimum=0.0):
+    return lambda spherical, projected: clip_to_latitude(
+        spherical,
+        projected,
+        minimum=minimum,
+    )
+
+
+def canonical_options(sky, *, star_area_scale=1.0):
+    options = {
+        sky.stars: {
+            "geometry": {"alt_min": 0.0},
+            "render": lambda spherical, projected: {
+                "style": {
+                    "s": magnitude_sizes(
+                        spherical.metadata["magnitude"]
+                    ) * star_area_scale,
+                    "c": "white",
+                    "linewidths": 0,
+                    "zorder": layers.STARS,
+                }
+            },
+        },
+        sky.constellation_lines: {
+            "prepare": _clip(),
+            "render": {
+                "style": {
+                    "color": "white",
+                    "linewidth": 0.4,
+                    "alpha": 0.7,
+                    "zorder": 2,
+                }
+            },
+        },
+        sky.constellation_labels: {
+            "prepare": _clip(),
+            "render": {
+                "style": {"s": 0.0},
+                "draw_labels": True,
+                "label_style": {
+                    "color": "white",
+                    "fontsize": 10,
+                    "ha": "center",
+                    "va": "center",
+                    "alpha": 0.85,
+                    "zorder": 5,
+                },
+                "label_offset": radial_label_offset(0.04),
+            },
+        },
+    }
+    if sky.constellation_boundaries is not None:
+        options[sky.constellation_boundaries] = {
+            "prepare": _clip(),
+            "render": {
+                "style": {
+                    "color": "white",
+                    "linewidth": 0.3,
+                    "alpha": 0.4,
+                    "zorder": 1,
+                }
+            },
+        }
+    if sky.points is not None:
+        options[sky.points] = {
+            "prepare": _clip(),
+            "render": lambda spherical, projected: {
+                "styles": point_styles(
+                    spherical.metadata,
+                    default_zorder=layers.POINTS,
+                ),
+                "draw_labels": True,
+                "label_style": {
+                    "fontsize": 9,
+                    "ha": "left",
+                    "va": "bottom",
+                },
+                "label_offset": (0.03, 0.03),
+            },
+        }
+    return options
 
 
 def save_regional(
@@ -255,10 +294,7 @@ def save_regional(
     title,
 ):
     sky = build_sky(selected, boundaries=boundaries)
-    center_alt_deg, center_az_deg = spherical_mean_altaz(
-        sky,
-        selected,
-    )
+    center_alt_deg, center_az_deg = spherical_mean_altaz(sky, selected)
     position_angle_deg = (
         north_up_position_angle_deg(
             sky.observer,
@@ -268,25 +304,27 @@ def save_regional(
         if north_up
         else 0.0
     )
-
+    projection = StereographicProjection(
+        radius=2.0,
+        flip_ew=True,
+        frame=SphericalFrame(
+            pole_lon_deg=center_az_deg,
+            pole_lat_deg=center_alt_deg,
+            position_angle_deg=position_angle_deg,
+        ),
+    )
+    viewport = projection.viewport_for_angular_radius(
+        angular_radius_deg
+    )
     figure, ax = plt.subplots(figsize=(7, 7))
     configure_axes(ax, title)
-    result = draw_regional_chart(
-        sky,
-        ax,
-        center_alt_deg=center_alt_deg,
-        center_az_deg=center_az_deg,
-        angular_radius_deg=angular_radius_deg,
-        position_angle_deg=position_angle_deg,
-        selected_constellations=selected,
-        draw_boundaries=boundaries,
-        star_kwargs={"color": "white"},
-        save_path=output,
-        savefig_kwargs={
-            "dpi": 150,
-            "bbox_inches": "tight",
-        },
+    result = sky.draw_chart(
+        projection=projection,
+        renderer=MatplotlibRenderer(ax),
+        viewport=viewport,
+        layer_options=canonical_options(sky),
     )
+    figure.savefig(output, dpi=150, bbox_inches="tight")
     plt.close(figure)
     return result
 
@@ -331,19 +369,23 @@ def generate(output_directory):
         f"Crux edge crossing: HIP {crossing_edge[0]}–"
         f"{crossing_edge[1]}",
     )
-    draw_regional_chart(
-        crossing_sky,
-        ax,
-        center_alt_deg=center_alt_deg,
-        center_az_deg=center_az_deg,
-        angular_radius_deg=crossing_radius,
-        selected_constellations=["Cru"],
-        save_path=crossing,
-        savefig_kwargs={
-            "dpi": 150,
-            "bbox_inches": "tight",
-        },
+    projection = StereographicProjection(
+        radius=2.0,
+        flip_ew=True,
+        frame=SphericalFrame(
+            pole_lon_deg=center_az_deg,
+            pole_lat_deg=center_alt_deg,
+        ),
     )
+    crossing_sky.draw_chart(
+        projection=projection,
+        renderer=MatplotlibRenderer(ax),
+        viewport=projection.viewport_for_angular_radius(
+            crossing_radius
+        ),
+        layer_options=canonical_options(crossing_sky),
+    )
+    figure.savefig(crossing, dpi=150, bbox_inches="tight")
     plt.close(figure)
 
     full_sky = output_directory / "04-full-sky.png"
@@ -353,17 +395,13 @@ def generate(output_directory):
     points.add_ecliptic_pole(pole="visible")
     points.add_galactic_center()
     points.add_ecliptic_keypoints()
-    projection = StereographicProjection(
-        radius=2.0,
-        flip_ew=True,
-    )
-    viewport = Viewport.centered(
-        width=4.0,
-        height=4.0,
-    )
+    equatorial = sky.add_equatorial_grid(include_equator=True)
+    ecliptic = sky.add_ecliptic_grid(include_ecliptic=True)
+    galactic = sky.add_galactic_grid(include_plane=True)
+    projection = StereographicProjection(radius=2.0, flip_ew=True)
+    viewport = Viewport.centered(width=4.0, height=4.0)
     figure, ax = plt.subplots(figsize=(7, 7))
     configure_axes(ax, "Full-sky planisphere regression")
-    apply_viewport(ax, viewport)
     ax.add_patch(
         Circle(
             (0.0, 0.0),
@@ -373,60 +411,48 @@ def generate(output_directory):
             linewidth=0.8,
         )
     )
-    sky.draw_equatorial(
-        ax=ax,
+    options = canonical_options(sky, star_area_scale=0.25)
+    options[equatorial] = {
+        "prepare": _clip(),
+        "render": {
+            "style": {
+                "color": "deepskyblue",
+                "linewidth": 0.7,
+                "alpha": 0.8,
+                "zorder": 3,
+            }
+        },
+    }
+    options[ecliptic] = {
+        "prepare": _clip(),
+        "render": {
+            "style": {
+                "color": "gold",
+                "linewidth": 0.7,
+                "alpha": 0.8,
+                "zorder": 3,
+            }
+        },
+    }
+    options[galactic] = {
+        "prepare": _clip(),
+        "render": {
+            "style": {
+                "color": "white",
+                "linewidth": 0.8,
+                "linestyle": "--",
+                "alpha": 0.55,
+                "zorder": 3,
+            }
+        },
+    }
+    sky.draw_chart(
         projection=projection,
-        color="deepskyblue",
-        linewidth=0.7,
-        alpha=0.8,
-        zorder=3,
+        renderer=MatplotlibRenderer(ax),
+        viewport=viewport,
+        layer_options=options,
     )
-    sky.draw_ecliptic(
-        ax=ax,
-        projection=projection,
-        color="gold",
-        linewidth=0.7,
-        alpha=0.8,
-        zorder=3,
-    )
-    sky.draw_galactic_plane(
-        ax=ax,
-        projection=projection,
-        color="white",
-        linewidth=0.8,
-        linestyle="--",
-        alpha=0.55,
-        zorder=3,
-    )
-    sky.star_renderer.prepare(
-        projection=projection,
-        alt_min=0.0,
-    )
-    render_points(
-        ax,
-        sky.star_renderer.x,
-        sky.star_renderer.y,
-        s=sky.star_renderer.sizes / 4.0,
-        c="white",
-        linewidths=0,
-        zorder=layers.STARS,
-    )
-    sky.constellations.draw(
-        ax=ax,
-        projection=projection,
-        draw_lines=True,
-        draw_labels=True,
-        draw_boundaries=True,
-    )
-    sky.point_renderer.draw(
-        ax=ax,
-        projection=projection,
-    )
-    figure.savefig(
-        full_sky,
-        dpi=300,
-        bbox_inches="tight",
-    )
+    figure.savefig(full_sky, dpi=300, bbox_inches="tight")
     plt.close(figure)
 
     outputs = [single, multiple, crossing, full_sky]
@@ -446,7 +472,6 @@ def main():
         default="milestone5-output",
     )
     arguments = parser.parse_args()
-
     for output in generate(arguments.output_directory):
         print(output)
 

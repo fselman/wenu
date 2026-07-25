@@ -193,15 +193,21 @@ class MatplotlibRenderer:
                 )
 
         if draw_labels:
+            entity_styles = self._entity_styles(styles, len(points))
             for index in np.flatnonzero(finite):
                 label = self._entity_label(points, index)
                 if label is not None:
+                    inherited = {
+                        name: entity_styles[index][name]
+                        for name in ("color", "alpha", "zorder")
+                        if name in entity_styles[index]
+                    }
                     artists.append(
                         self._label(
                             points.x[index],
                             points.y[index],
                             label,
-                            label_style,
+                            {**inherited, **label_style},
                             label_offset,
                         )
                     )
@@ -368,7 +374,7 @@ class MatplotlibRenderer:
         return artists
 
     def _label(self, x, y, label, style, offset):
-        dx, dy = offset
+        dx, dy = offset(x, y) if callable(offset) else offset
         return render_text(
             self.ax,
             x + dx,

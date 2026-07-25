@@ -22,6 +22,7 @@ from wenu.renderers.coordinate_grids import (
         CoordinatesGridRenderingAdapter,
         )
 from wenu.sky.constellations import Constellations
+from wenu.sky.constellation_labels import ConstellationLabels
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.sky.coordinate_grids import (
         EquatorialGrid,
@@ -58,6 +59,7 @@ class CelestialSphere:
         self.constellation_boundaries = None
         self.constellation_boundary_renderer = None
         self.constellation_lines = None
+        self.constellation_labels = None
         self._layers: list[SkyLayer] = []
 
     @property
@@ -142,16 +144,20 @@ class CelestialSphere:
         options = {} if layer_options is None else layer_options
         rendered_layers = []
         for layer in self._layers:
-            spherical = layer.spherical_geometry(self.observer)
+            configured = self._layer_render_options(layer, options)
+            geometry_options, prepare, render_options = (
+                self._pipeline_options(configured)
+            )
+            spherical = layer.spherical_geometry(
+                self.observer,
+                **geometry_options,
+            )
             projected = projection.project_geometry(spherical)
-            render_options = self._layer_render_options(
-                layer,
-                options,
-            )
-            artists = renderer.draw(
-                projected,
-                **render_options,
-            )
+            if prepare is not None:
+                projected = prepare(spherical, projected)
+            if callable(render_options):
+                render_options = render_options(spherical, projected)
+            artists = renderer.draw(projected, **dict(render_options))
             rendered_layers.append(
                 LayerRenderingResult(
                     layer=layer,
@@ -167,6 +173,24 @@ class CelestialSphere:
             viewport=viewport,
             layers=tuple(rendered_layers),
         )
+
+    @staticmethod
+    def _pipeline_options(configured):
+        configured = dict(configured)
+        structured = any(
+            name in configured
+            for name in ("geometry", "prepare", "render")
+        )
+        if not structured:
+            return {}, None, configured
+        geometry = dict(configured.pop("geometry", {}))
+        prepare = configured.pop("prepare", None)
+        render = configured.pop("render", configured)
+        if prepare is not None and not callable(prepare):
+            raise TypeError("prepare must be callable or None.")
+        if not callable(render):
+            render = dict(render)
+        return geometry, prepare, render
 
     @staticmethod
     def _layer_render_options(layer, options):
@@ -241,7 +265,13 @@ class CelestialSphere:
         )
 
         self.constellation_lines = self.constellations.lines
+        self.constellation_labels = ConstellationLabels(
+            self.stars,
+            selected=selected,
+            boundaries=self.constellation_boundaries,
+        )
         self.add(self.constellation_lines)
+        self.add(self.constellation_labels)
 
         if self.constellation_boundaries is not None:
             self.constellations.set_boundaries(
@@ -300,6 +330,8 @@ class CelestialSphere:
             boundary_layer,
             renderer=self.constellation_boundary_renderer,
         )
+        if self.constellation_labels is not None:
+            self.constellation_labels.set_boundaries(boundary_layer)
 
         return boundary_layer
 
