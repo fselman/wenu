@@ -1,35 +1,74 @@
 # Wenu implementation reference
 
-Status: as implemented on `feature/regional-stereographic-charts` at commit
-`8c8abeb` (Milestone 16).
+**Baseline:** `feature/regional-stereographic-charts` at commit `c7feaf7`  
+**Architecture version:** 0.4  
+**Date:** 2026-07-26
 
-This reference complements `current_architecture.md`. It records the current
-modules, contracts, data flow, and extension points. It intentionally avoids
-future design commitments.
+This reference records implemented imports, contracts, and normal usage.
 
-## 1. Package map
+## 1. Public imports
 
-| Module or package | Role |
-|---|---|
-| `wenu.observer` | observing time, location, and coordinate-frame context |
-| `wenu.objects` | astronomical-object abstractions and `Stars` |
-| `wenu.sky` | `SkyLayer` implementations and `CelestialSphere` |
-| `wenu.spherical` | spherical geometry value objects |
-| `wenu.spherical_frame` | tangent-frame rotation |
-| `wenu.projection` | stereographic projection and geometry dispatch |
-| `wenu.projected` | projected Cartesian geometry value objects |
-| `wenu.viewport` | rectangular projected viewport |
-| `wenu.clipping` | low-level curve and polygon clipping algorithms |
-| `wenu.rendering` | generic preparation functions |
-| `wenu.renderers.matplotlib` | Matplotlib renderer and low-level artist functions |
-| `wenu.chart` | rendering-result records |
-| `wenu.regional` | regional chart configuration and export |
-| `wenu.styles` | reusable publication style |
-| `wenu.geometry` | coordinate-conversion compatibility utilities |
+```python
+from wenu import (
+    CelestialSphere,
+    ChartRenderingResult,
+    ExportOptions,
+    FullSkyChart,
+    LayerRenderingResult,
+    MatplotlibRenderer,
+    Observer,
+    PublicationStyle,
+    RegionalChart,
+    SphericalFrame,
+    StereographicProjection,
+    Viewport,
+)
+```
 
-## 2. Canonical rendering call
+Package-level implementation imports use:
 
-The central call is:
+```python
+from wenu.geometry.spherical import SphericalCurves, SphericalGrid
+from wenu.geometry.projected import ProjectedCurve, ProjectedPoints
+from wenu.geometry.frame import SphericalFrame
+from wenu.geometry.viewport import Viewport
+from wenu.projections.stereographic import StereographicProjection
+from wenu.rendering.preparation import clip_to_latitude
+from wenu.rendering.matplotlib import MatplotlibRenderer
+from wenu.charts.regional import RegionalChart, ExportOptions
+from wenu.charts.full_sky import FullSkyChart
+from wenu.charts.styles import PublicationStyle
+```
+
+Pre-v0.4 paths such as singular top-level geometry modules, `wenu.renderers`,
+`wenu.regional`, and `wenu.styles` no longer exist.
+
+## 2. Constructing the sky
+
+```python
+observer = Observer(
+    location="La Ligua",
+    time="2026-08-15 21:00",
+)
+sky = CelestialSphere(observer)
+sky.add_stars(catalog="hipparcos", magnitude_limit=5.5)
+sky.add_constellations(system="western")
+sky.add_constellation_boundaries(boundaries="iau")
+
+points = sky.add_points()
+points.add_equatorial_pole(pole="visible")
+points.add_ecliptic_pole(pole="visible")
+points.add_galactic_center()
+points.add_ecliptic_keypoints()
+
+sky.add_equatorial_grid(include_equator=True)
+sky.add_ecliptic_grid(include_ecliptic=True)
+sky.add_galactic_grid(include_plane=True)
+```
+
+Registration order determines drawing order.
+
+## 3. Canonical low-level call
 
 ```python
 result = sky.draw_chart(
@@ -40,23 +79,18 @@ result = sky.draw_chart(
 )
 ```
 
-The equivalent production-level call for a regional chart is:
+For each registered layer, the method:
 
-```python
-result = chart.render(
-    sky,
-    renderer,
-    style=style,
-    layer_options=overrides,
-)
-```
+1. resolves geometry, preparation, and renderer options;
+2. requests spherical geometry;
+3. projects it;
+4. optionally prepares it;
+5. renders it;
+6. records all observable results.
 
-`RegionalChart.render()` constructs its projection and viewport, merges style
-options and explicit overrides, and delegates to `CelestialSphere.draw_chart()`.
+## 4. Layer contract
 
-## 3. Layer contract
-
-Every drawable sky layer implements:
+Every drawable layer implements:
 
 ```python
 class SkyLayer(ABC):
@@ -65,145 +99,27 @@ class SkyLayer(ABC):
         ...
 ```
 
-Concrete signatures may expose layer-specific selection parameters. Those
-parameters belong in the `geometry` section of that layer's options.
+Concrete geometry options belong in the `geometry` section of the per-layer
+configuration.
 
-A layer implementation should:
+## 5. Geometry correspondence
 
-1. read or hold source data;
-2. transform it to the observer's current horizontal frame when required;
-3. return a spherical geometry value;
-4. preserve identifiers, names, labels, styles, and other non-coordinate data
-   in explicit fields or metadata.
+| Spherical | Projected |
+|---|---|
+| `SphericalPoint` | `ProjectedPoint` |
+| `SphericalPoints` | `ProjectedPoints` |
+| `SphericalCurve` | `ProjectedCurve` |
+| `SphericalCurves` | `ProjectedCurves` |
+| `SphericalGrid` | `ProjectedGrid` |
+| `SphericalPolygon` | `ProjectedPolygon` |
+| `SphericalPolygons` | `ProjectedPolygons` |
 
-A layer implementation must not:
-
-- instantiate a renderer;
-- create Matplotlib artists;
-- project coordinates;
-- cache projected or rendered state as part of normal chart drawing.
-
-## 4. `CelestialSphere`
-
-`CelestialSphere(observer)` is the composition root for a sky.
-
-It provides convenience methods that create and register standard layers,
-including stars, celestial points, constellations, labels, and coordinate
-grids. Registration order is rendering order.
-
-### 4.1 `draw_chart`
-
-For each registered layer, `draw_chart()` performs:
-
-```python
-spherical = layer.spherical_geometry(observer, **geometry_options)
-projected = projection.project_geometry(spherical)
-prepared = prepare(spherical, projected) if prepare else projected
-artists = renderer.draw(prepared, **render_options)
-```
-
-When a viewport is supplied, it is applied before layer drawing.
-
-The precise option entry forms are:
-
-```python
-# Structured form
-layer_options[layer] = {
-    "geometry": {"selected": ("Cru", "Cen")},
-    "prepare": prepare_callable,
-    "render": {"color": "white"},
-}
-
-# Dynamic renderer options
-layer_options[layer] = {
-    "render": lambda spherical, projected: {
-        "sizes": ...,
-    },
-}
-
-# Compatibility flat form: treated as renderer options
-layer_options[layer] = {
-    "color": "white",
-}
-```
-
-An explicit layer mapping is preferable to mutation of a shared layer when a
-choice varies by chart.
-
-### 4.2 Results
-
-`wenu.chart` defines:
-
-```python
-LayerRenderingResult(
-    layer,
-    spherical,
-    projected,
-    artists,
-)
-
-ChartRenderingResult(
-    projection,
-    renderer,
-    viewport,
-    layers,
-)
-```
-
-The `projected` field contains the value actually sent to the renderer after
-optional preparation.
-
-## 5. Spherical geometry
-
-### 5.1 Points
-
-`SphericalPoint` represents one point. `SphericalPoints` represents a
-vectorized point set and can carry:
-
-- longitude and latitude arrays;
-- identifiers;
-- labels;
-- names;
-- metadata.
-
-Use `SphericalPoints` for catalogue-sized data. Do not construct thousands of
-singular point objects for stars.
-
-### 5.2 Curves
-
-`SphericalCurve` holds one sampled curve, its closure flag, identity fields,
-and metadata. `SphericalCurves` is the semantic collection wrapper.
-
-Sampling belongs to the layer that knows the native geometry. For example,
-constellation boundaries are sampled in their B1875 native frame before being
-transformed to observer-time coordinates. Sampling only after precession would
-require unnecessary density and would distort the intended construction.
-
-### 5.3 Grids
-
-`SphericalGrid` maps component names to `SphericalCurves`. Typical component
-names distinguish meridians, parallels, and reference curves. Component
-grouping is preserved through projection so styles can be assigned by semantic
-role.
-
-### 5.4 Polygons
-
-`SphericalPolygon` and `SphericalPolygons` represent closed areas and their
-collections. Boundary code handles the right-ascension seam and polar
-degeneracies before projection.
+Use vectorized point collections for catalogues. Curve and polygon
+collections wrap a manageable number of singular values.
 
 ## 6. Projection
 
-Create an ordinary full-sky stereographic projection with:
-
-```python
-projection = StereographicProjection(
-    radius=2.0,
-    flip_ew=True,
-)
-```
-
-Create a regional tangent projection with:
+Create an arbitrary tangent-point stereographic projection with:
 
 ```python
 projection = StereographicProjection(
@@ -217,164 +133,76 @@ projection = StereographicProjection(
 )
 ```
 
-`project_geometry()` dispatches to the corresponding point, curve, grid, or
-polygon projection method. It preserves semantic fields and metadata.
+`project_spherical()` handles arrays. `project_geometry()` preserves semantic
+geometry and component grouping.
 
-`project_spherical(lon_deg, lat_deg)` is the vectorized numerical projection.
-`projected_radius(angle_deg)` converts angular separation from the tangent
-point into projected distance and is used to construct regional viewports.
+## 7. Preparation
 
-## 7. Projected geometry
+Available helpers include:
 
-The projected containers mirror their spherical sources:
+```python
+magnitude_sizes(...)
+point_styles(...)
+radial_label_offset(...)
+clip_to_latitude(spherical, projected, minimum=0.0)
+```
 
-| Spherical input | Projected output |
-|---|---|
-| `SphericalPoint` | `ProjectedPoint` |
-| `SphericalPoints` | `ProjectedPoints` |
-| `SphericalCurve` | `ProjectedCurve` |
-| `SphericalCurves` | `ProjectedCurves` |
-| `SphericalGrid` | `ProjectedGrid` |
-| `SphericalPolygon` | `ProjectedPolygon` |
-| `SphericalPolygons` | `ProjectedPolygons` |
+`clip_to_latitude()`:
 
-Collection invariants are validated at construction. Coordinate arrays are
-normalized to NumPy arrays. Identity and style data travel with the geometry
-rather than through side channels.
+- masks hidden points;
+- splits visible curve runs;
+- interpolates entry and exit intersections;
+- handles grids component by component;
+- returns visible polygon-boundary fragments.
 
-## 8. Generic preparation
+It is a spherical semantic clip. It is distinct from final graphical clipping
+to a viewport or projected boundary.
 
-Use `wenu.rendering` for transformations that depend on geometry and display
-policy but do not create artists.
-
-### 8.1 Magnitude sizes
-
-`magnitude_sizes(...)` maps astronomical magnitudes to marker areas. Star
-catalogue filtering remains a `Stars` geometry concern; marker sizing is
-preparation/render policy.
-
-### 8.2 Point styles
-
-`point_styles(...)` derives entity-level styles for projected point
-collections.
-
-### 8.3 Label offsets
-
-`radial_label_offset(distance)` returns an offset callable that moves a label
-radially from its projected anchor.
-
-### 8.4 Latitude clipping
-
-`clip_to_latitude(...)` clips supported points, curves, grids, and polygon
-boundaries using the original spherical latitude and the projected geometry.
-It is suitable for a horizon or another spherical latitude limit.
-
-This clip is distinct from viewport clipping:
-
-- latitude clipping is a geometry-preparation decision;
-- viewport clipping is a final renderer/axes decision.
-
-For regional equatorial grids, leaving the grid minimum altitude unset allows
-the grid to fill the rectangular viewport. Setting it to `0.0` clips the grid
-at the astronomical horizon.
-
-## 9. Matplotlib renderer
-
-Construct the renderer with:
+## 8. Rendering
 
 ```python
 renderer = MatplotlibRenderer(ax)
-```
-
-Apply a viewport directly when not using the chart orchestrator:
-
-```python
 renderer.apply_viewport(viewport)
+artists = renderer.draw(projected, **render_options)
 ```
 
-Draw projected geometry with:
+A full-sky chart additionally configures:
 
 ```python
-artists = renderer.draw(
-    projected,
-    **renderer_options,
+renderer.set_clip_boundary(
+    projected_closed_curve,
+    style={
+        "facecolor": "none",
+        "edgecolor": "white",
+    },
 )
 ```
 
-The dispatcher supports projected points, curves, grids, polygons, and their
-collections. Renderer options can include:
+All subsequently created artists use that projected boundary as their clip
+path.
 
-- common style values;
-- styles associated with individual entities;
-- styles associated with grid components;
-- labels and label offsets.
+## 9. Structured layer options
 
-Curve and text artists are explicitly assigned the axes patch as clip path.
-The same final clipping principle applies to the other supported artist types.
-This is what makes curves generated beyond a regional field terminate cleanly
-at the rectangular chart edge.
+```python
+layer_options[layer] = {
+    "geometry": {
+        "selected": ("Cru", "Cen"),
+    },
+    "prepare": prepare_callable,
+    "render": {
+        "style": {
+            "color": "white",
+        },
+    },
+}
+```
 
-Do not put observer-time conversion or sky-layer selection in renderer
-options.
+`render` may also be a callable receiving spherical and projected values.
+Explicit chart overrides are merged after style-derived options.
 
-## 10. Standard layer behavior
+## 10. Regional charts
 
-### 10.1 `Stars`
-
-`Stars.spherical_geometry()` returns apparent observer-time Alt/Az positions
-as `SphericalPoints`. HIP numbers are identifiers and magnitude is retained in
-metadata. The geometry call can filter by altitude and magnitude.
-
-Rendering size is derived later by `magnitude_sizes`.
-
-### 10.2 `CelestialPoints`
-
-This layer stores named coordinates and transforms them for the observer. It
-returns points with label and style metadata. It is used for reference
-locations such as celestial and ecliptic poles.
-
-### 10.3 `ConstellationLines`
-
-Constellation line figures are stored as HIP endpoint edges. Their coordinates
-are obtained from the observer-time star geometry, then grouped as spherical
-curves. Selection of constellations is a geometry option.
-
-### 10.4 `ConstellationBoundaries`
-
-The official polygons are defined in B1875/FK4. Polygon assembly, seam
-handling, polar handling, and sampling occur in that native representation
-before conversion to the observer's current Alt/Az frame.
-
-The implementation includes special handling required by the two-part Serpens
-constellation and avoids artificial line segments to a celestial pole.
-
-### 10.5 `ConstellationLabels`
-
-Label anchors are spherical and projection-independent. They are computed from
-visible stars, with boundary information used where a single label rule is
-insufficient. `selected` and `min_stars` can be supplied for each render.
-
-Supplying `selected=()` intentionally suppresses IAU labels, which is useful
-when a chart contains a different cultural constellation overlay.
-
-### 10.6 Coordinate grids
-
-The three concrete grid classes share a common `CoordinatesGrid` base. Each
-returns a `SphericalGrid`, transforming its native meridians and parallels into
-the observer's horizontal frame.
-
-Reference components are optional:
-
-- equator;
-- ecliptic;
-- galactic plane.
-
-The grid layer does not trim to a rectangular viewport. It generates adequate
-curves; projection and the Matplotlib axes patch complete the visible crop.
-
-## 11. `RegionalChart`
-
-### 11.1 Direct construction
+Direct construction:
 
 ```python
 chart = RegionalChart(
@@ -382,192 +210,158 @@ chart = RegionalChart(
     center_az_deg=210.0,
     field_width_deg=30.0,
     field_height_deg=20.0,
-    position_angle_deg=0.0,
-    projection_radius=2.0,
-    flip_ew=True,
-    crop_x=0.0,
-    crop_y=0.0,
 )
 ```
 
-All numeric values must be finite. Center altitude is constrained to
-`[-90, 90]`; field dimensions must be positive and smaller than 360 degrees;
-projection radius must be positive.
-
-### 11.2 Radius constructor
+Alternative constructors:
 
 ```python
-chart = RegionalChart.from_angular_radius(
-    center_alt_deg=...,
-    center_az_deg=...,
-    angular_radius_deg=...,
-    aspect_ratio=...,
+RegionalChart.from_angular_radius(...)
+RegionalChart.from_coordinate(...)
+RegionalChart.from_constellations(...)
+```
+
+Render:
+
+```python
+figure, ax = plt.subplots(
+    figsize=chart.figure_size(width_inches=7.0)
 )
-```
-
-The angular radius is the vertical half-field. Width is the vertical diameter
-multiplied by `aspect_ratio`.
-
-### 11.3 Coordinate constructor
-
-```python
-chart = RegionalChart.from_coordinate(
-    observer,
-    coordinate,
-    field_width_deg=...,
-    field_height_deg=...,
-    north_up=True,
-)
-```
-
-The coordinate is transformed through `observer.altaz_frame`. `north_up=True`
-computes the celestial-north position angle at the chart center. It is mutually
-exclusive with a nonzero explicit position angle.
-
-### 11.4 Constellation constructor
-
-```python
-chart = RegionalChart.from_constellations(
-    sky,
-    ("Cru", "Cen"),
-    angular_radius_deg=...,
-    aspect_ratio=...,
-    north_up=True,
-)
-```
-
-This requires stars and constellation lines to have been added to the sky. The
-center is the spherical mean of unique catalogue endpoints in the selected
-figures. By default the same names become the label selection.
-
-### 11.5 Figure sizing
-
-```python
-figsize = chart.figure_size(width_inches=7.0)
-```
-
-The returned height matches the projected viewport aspect ratio. Use it when
-creating the Matplotlib figure; otherwise an apparently small chart inside a
-large white canvas can result.
-
-### 11.6 Rendering and export
-
-```python
+style = PublicationStyle()
+style.configure_axes(ax, title="Regional chart")
 result = chart.render(
     sky,
-    renderer,
-    style=PublicationStyle(),
-    layer_options=overrides,
+    MatplotlibRenderer(ax),
+    style=style,
 )
+```
 
-result, output_path = chart.export(
+`north_up=True` is available in coordinate- and constellation-based
+constructors.
+
+## 11. Full-sky charts
+
+Zenith-centered:
+
+```python
+chart = FullSkyChart()
+```
+
+Independent tangent point:
+
+```python
+chart = FullSkyChart(
+    center_alt_deg=tangent_altitude,
+    center_az_deg=tangent_azimuth,
+    horizon_altitude_deg=0.0,
+    position_angle_deg=0.0,
+)
+```
+
+The observer defines the horizontal coordinates and horizon. The configured
+center defines the projection tangent point.
+
+The retained region must exclude the stereographic antipode. The implemented
+validation requires:
+
+```python
+center_alt_deg > -horizon_altitude_deg
+```
+
+Render and export:
+
+```python
+figure, ax = plt.subplots(
+    figsize=chart.figure_size(width_inches=7.0)
+)
+style = PublicationStyle(star_area_scale=0.25)
+style.configure_axes(ax, title="Full-sky chart")
+
+result, path = chart.export(
     sky,
-    renderer,
-    "chart.png",
-    style=PublicationStyle(),
+    MatplotlibRenderer(ax),
+    "full-sky.png",
+    style=style,
     export_options=ExportOptions(dpi=300),
 )
 ```
 
-Explicit `layer_options` are merged after style-derived options and therefore
-act as overrides.
+The projected horizon determines both the graphical clip boundary and the
+viewport bounds.
 
-## 12. `PublicationStyle`
+## 12. Publication style
 
-`PublicationStyle` centralizes repeatable axes and layer defaults for regional
-charts. It controls such concerns as:
+`PublicationStyle` supplies:
 
-- background, foreground, grid, boundary, and reference colors;
-- line widths and alpha values;
-- star magnitude limit and marker-size mapping;
-- layer visibility and selections;
-- minimum altitude for stars or grids;
-- label styling.
+- sky, foreground, star, boundary, and grid colors;
+- marker-size scale;
+- label size;
+- horizon and grid clipping defaults;
+- structured options for all registered standard layers.
 
-The style:
+For `FullSkyChart`, the chart passes its horizon altitude to the style so that
+stars, curves, boundaries, labels, and grids share one limit.
 
-1. configures a Matplotlib axes;
-2. builds the layer-option mapping consumed by the canonical chart pipeline.
-
-`grid_minimum_altitude_deg=None` means no spherical horizon clip for grids, so
-they span the regional viewport and are clipped by the axes patch.
+For regional charts, `grid_minimum_altitude_deg=None` lets grids fill the
+rectangular viewport.
 
 ## 13. Export
 
-`ExportOptions` fixes:
+```python
+ExportOptions(
+    dpi=300,
+    bbox_inches="tight",
+    transparent=False,
+    facecolor=None,
+    metadata={},
+)
+```
 
-- DPI;
-- `bbox_inches`;
-- transparency;
-- optional face color;
-- image metadata.
+Use chart `figure_size()` for physical dimensions. DPI controls raster
+resolution and must not be used to rescale markers, lines, or text.
 
-`save()` creates the output parent directory and delegates to
-`figure.savefig()`. Chart dimensions and DPI are independent:
+## 14. Adding a layer
 
-- use `figure_size()` to control physical size and aspect ratio;
-- use `dpi` to control raster resolution;
-- do not multiply Matplotlib marker sizes or font sizes merely because DPI is
-  increased.
+1. Implement `SkyLayer`.
+2. Produce an existing spherical geometry type when possible.
+3. Preserve identities and semantic metadata.
+4. Register the layer with `CelestialSphere`.
+5. Configure chart variation through structured options.
+6. Add geometry, projection, rendering, and dependency tests as appropriate.
 
-## 14. Adding a new layer
+Do not add a direct draw or projection method to the layer.
 
-The normal implementation sequence is:
+## 15. Adding a projection
 
-1. subclass the appropriate `SkyLayer` category;
-2. implement observer-aware `spherical_geometry()`;
-3. choose an existing spherical geometry type;
-4. attach stable identifiers and metadata required downstream;
-5. register the layer with `CelestialSphere`;
-6. configure preparation and renderer options through layer options or a
-   style;
-7. add geometry, projection, rendering, and dependency tests as appropriate.
+A projection consumes spherical geometry and returns standard projected
+geometry. It must not import observers, sky layers, charts, or renderers.
 
-Add a new geometry type only when the existing point, curve, grid, and polygon
-semantics cannot represent the data.
+## 16. Adding a backend
 
-## 15. Adding a renderer backend
+A backend consumes prepared projected geometry and Cartesian framing. It must
+not load astronomical resources, transform celestial coordinates, or perform
+projection.
 
-The current backend is Matplotlib. Another renderer should consume projected
-geometry and a Cartesian viewport. It must not call sky-layer astronomy or
-perform stereographic projection.
+## 17. Contract tests
 
-Backend-independent preparation should remain in `wenu.rendering`; backend
-artist construction belongs in the backend package.
+Key suites:
 
-## 16. Tests that define the current contracts
-
-The implementation is covered by focused milestone tests and regression tests.
-The most important architectural contract groups are:
-
-| Test area | Contract |
+| Tests | Contract |
 |---|---|
-| spherical/projected geometry tests | container validation and metadata preservation |
-| projection geometry tests | type dispatch and group preservation |
-| Milestone 4 tests | arbitrary tangent-point projection |
-| Milestones 6–12 tests | layer geometry contracts |
-| Milestones 13–14 tests | renderer and canonical orchestration |
-| Milestone 15A tests | preparation and canonical rendering path |
-| Milestone 15B dependency tests | removal of reverse and parallel dependencies |
-| Milestone 16 tests | regional production API, orientation, sizing, render, and export |
-| projection/regional examples | visual regression and end-to-end behavior |
+| spherical/projected tests | geometry validation and preservation |
+| Milestone 4 | arbitrary tangent-point projection |
+| Milestones 6–12 | sky-layer geometry |
+| Milestones 13–15 | rendering and canonical pipeline |
+| Milestone 16 | regional production API |
+| Milestone 22 | package boundaries and obsolete paths |
+| Milestone 23 | full-sky API and projected horizon |
 
-Run the full suite before accepting architectural changes:
+Run:
 
 ```bash
 pytest
-```
-
-Run the regional examples for visual validation:
-
-```bash
+python examples/full_sky_chart.py
 python examples/milestone16_regional_charts.py
 ```
 
-Generated output directories are build artifacts and should remain untracked.
-
-## 17. Source-of-truth rule
-
-When this reference conflicts with code, the code and tests at the documented
-baseline commit are authoritative. Update this document in the same change
-that alters a public contract or dependency boundary.
+Generated output directories are build artifacts and remain untracked.

@@ -2,167 +2,182 @@
 
 **Language:** English | [Español](README.es.md)
 
----
+Wenu is a Python library for producing accurate, reproducible,
+publication-quality static charts of the sky. It supports regional charts and
+observer-dependent full-sky charts through one geometry pipeline.
 
-# Wenu
+Wenu is intended for observing guides, books, articles, education, public
+outreach, and guided observation. It is not an interactive planetarium.
 
-**Wenu** is an open-source Python library for creating beautiful, accurate, and customizable astronomical charts.
+*Wenu* means **sky** in Mapudungun, the language of the Mapuche people of
+southern South America.
 
-It was developed to support astronomy communication through education, public outreach, publishing, and guided observation of the night sky. Typical applications include observing guides, planispheres, educational material, books, articles, presentations, and astronomy courses.
+## Project status
 
-Unlike interactive planetarium software, Wenu focuses on creating static charts whose appearance can be completely controlled and reproduced.
+Wenu remains under active development and has not yet reached its first public
+release. The v0.4 chart architecture is implemented. Public APIs may still
+change before release.
 
-*Wenu* means **sky** in Mapudungun, the language of the Mapuche people of southern South America.
+See `LICENSE` for the current usage terms.
 
-## Project Status
+## Implemented features
 
-**Wenu** is currently under active design and development.
-
-This repository is temporarily public solely to facilitate architectural
-review, technical discussion, and collaboration during the development of
-the project.
-
-**Wenu is not yet an open-source release.**
-
-All rights to the software and its associated documentation are reserved by
-the author. No permission is granted to use, copy, modify, redistribute, or
-create derivative works without the prior written permission of the copyright
-holder.
-
-Once the development of both the software and its accompanying educational
-material has been completed, the project may be released under an appropriate
-open-source license.
-
-For further information, please refer to the **LICENSE** file.
-
----
-
-## Features
-
-The current version supports
-
-- observer-dependent sky calculations
-- stereographic sky projections
-- full-sky and regional charts
-- Hipparcos stellar catalogue
-- constellation lines
-- IAU constellation boundaries
-- equatorial, ecliptic, and Galactic coordinate grids
-- celestial reference points
-- customizable drawing styles
-- layered chart composition
-- Matplotlib rendering
-
----
-
-## Design Philosophy
-
-Wenu is built around three simple ideas.
-
-- **The sky comes first.** Astronomical calculations should be independent of how the sky is displayed.
-
-- **Charts should be publication quality.** Every element of a chart should contribute to clear and effective communication.
-
-- **Reproducibility matters.** The same script should always produce the same chart.
-
-This design makes it possible to create anything from a simple planisphere to detailed charts of individual constellations while maintaining a consistent programming interface.
-
----
-
-## Architecture
-
-The package is organized into a small number of core components.
-
-### Observer
-
-Represents the observing site and time and performs observer-dependent astronomical calculations.
-
-### CelestialSphere
-
-Represents the sky to be drawn. It manages stars, constellations, coordinate grids, boundaries, and other celestial structures.
-
-### Projection
-
-Projection classes transform celestial coordinates into planar coordinates suitable for plotting.
-
-The current implementation provides a stereographic projection suitable for both planispheres and regional charts.
-
-### Rendering
-
-Rendering is performed using Matplotlib, allowing charts to be exported in publication-quality formats.
-
----
+- observer-dependent sky calculations;
+- coordinate-neutral spherical and projected geometry;
+- arbitrary tangent-point stereographic projection;
+- regional chart production API;
+- full-sky chart production API with independent horizon and tangent point;
+- Hipparcos stellar catalogue;
+- Western and alternative constellation-line systems;
+- IAU constellation boundaries assembled in B1875;
+- equatorial, ecliptic, and Galactic grids;
+- celestial reference points;
+- publication styles and reproducible export;
+- generic preparation and Matplotlib rendering;
+- package-boundary and regression tests.
 
 ## Installation
 
-Clone the repository
-
 ```bash
-git clone https://github.com/<username>/wenu.git
-```
-
-Install the package
-
-```bash
+git clone https://github.com/fselman/wenu.git
+cd wenu
 pip install -e .
 ```
 
----
+Wenu requires Python 3.10 or newer. Runtime dependencies are declared in
+`pyproject.toml`: Astropy, Matplotlib, NumPy, and Pandas.
 
-## Dependencies
+## Regional chart
 
-Wenu currently depends on
+```python
+import matplotlib.pyplot as plt
 
-- Astropy
-- Skyfield
-- Matplotlib
-- NumPy
-- Pandas
+from wenu import (
+    CelestialSphere,
+    MatplotlibRenderer,
+    Observer,
+    PublicationStyle,
+    RegionalChart,
+)
 
----
+observer = Observer(
+    location="La Ligua",
+    time="2026-08-15 21:00",
+)
+sky = CelestialSphere(observer)
+sky.add_stars(catalog="hipparcos", magnitude_limit=5.5)
+sky.add_constellations(
+    system="western",
+    selected=("Cru", "Cen"),
+)
 
-## Project Status
+chart = RegionalChart.from_constellations(
+    sky,
+    ("Cru", "Cen"),
+    angular_radius_deg=35.0,
+    north_up=True,
+)
+style = PublicationStyle()
+figure, ax = plt.subplots(figsize=chart.figure_size(7.0))
+style.configure_axes(ax, title="Crux and Centaurus")
+chart.render(
+    sky,
+    MatplotlibRenderer(ax),
+    style=style,
+)
+figure.savefig("regional.png", dpi=300)
+```
 
-Wenu is currently under active development.
+## Full-sky chart
 
-The architecture is stabilizing, but the public API should still be considered subject to change until the first official release.
+```python
+import matplotlib.pyplot as plt
 
----
+from wenu import (
+    CelestialSphere,
+    ExportOptions,
+    FullSkyChart,
+    MatplotlibRenderer,
+    Observer,
+    PublicationStyle,
+)
 
-## Roadmap
+observer = Observer(
+    location="La Ligua",
+    time="2026-08-15 21:00",
+)
+sky = CelestialSphere(observer)
+sky.add_stars(catalog="hipparcos", magnitude_limit=5.5)
+sky.add_constellations(system="western")
 
-Planned future developments include
+chart = FullSkyChart()
+style = PublicationStyle(star_area_scale=0.25)
+figure, ax = plt.subplots(figsize=chart.figure_size(7.0))
+style.configure_axes(ax, title="Visible sky")
+chart.export(
+    sky,
+    MatplotlibRenderer(ax),
+    "full-sky.png",
+    style=style,
+    export_options=ExportOptions(dpi=300),
+)
+```
 
-- additional map projections
-- stellar colours
-- Milky Way isophotes
-- deep-sky object catalogues
-- additional rendering options
-- automated tests
-- expanded documentation
+`FullSkyChart` may place its stereographic tangent point independently of the
+observer zenith. The observer continues to determine the AltAz sky and
+horizon.
 
----
+See:
 
-## Documentation
+- `examples/full_sky_chart.py`;
+- `examples/milestone16_regional_charts.py`.
 
-Additional documentation is available in the `docs/` directory.
+## Architecture
 
----
+The canonical pipeline is:
 
-## Data Attribution
+```text
+Observer
+  → CelestialSphere and SkyLayer
+  → spherical geometry
+  → projection
+  → projected geometry
+  → optional preparation
+  → renderer
+```
 
-Information about the astronomical catalogues and external datasets used by Wenu is provided in `DATA_ATTRIBUTION.md`.
+The principal packages are:
 
----
+- `wenu.objects`: physical astronomical catalogue objects;
+- `wenu.sky`: sky layers and canonical orchestration;
+- `wenu.geometry`: coordinate-neutral values and algorithms;
+- `wenu.projections`: map projections;
+- `wenu.charts`: chart specifications and styles;
+- `wenu.rendering`: preparation and graphical backends.
 
-## License
+Developer references:
 
-The license will be specified before the first public release.
+- `docs/developer/current_architecture.md`;
+- `docs/developer/implementation_reference.md`;
+- `docs/developer/target_architecture_v0.4.md`;
+- `docs/developer/wenu_migration_roadmap_v0.4.md`.
 
----
+## Tests
+
+```bash
+pytest
+python examples/full_sky_chart.py
+python examples/milestone16_regional_charts.py
+```
+
+Generated chart-output directories should remain outside version control.
+
+## Data attribution
+
+Astronomical catalogue and dataset attribution is documented in
+`DATA_ATTRIBUTION.md`.
 
 ## Acknowledgements
 
-Wenu builds upon the outstanding work of the astronomical open-source community, particularly the developers of Astropy, Skyfield, and Matplotlib, together with publicly available astronomical catalogues.
-
-
+Wenu builds on Astropy, Matplotlib, NumPy, Pandas, and public astronomical
+catalogues.

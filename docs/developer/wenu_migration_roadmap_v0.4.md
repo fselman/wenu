@@ -2,7 +2,8 @@
 
 **Version:** 0.4  
 **Date:** 2026-07-26  
-**Status:** Draft  
+**Status:** Complete  
+**Functional completion baseline:** commit `c7feaf7`  
 **Target architecture:** `target_architecture_v0.4.md`  
 **Implementation baseline:** commit `8c8abeb`
 
@@ -27,6 +28,27 @@ This migration plan answers:
 - when the migration is complete.
 
 It intentionally does not repeat the full architectural rationale.
+
+## Completion record
+
+| Milestone | Commit | Result |
+|---|---|---|
+| 17 | `599ecea` | v0.4 target and migration documents |
+| 18 | `c925610` | geometry package |
+| 19 | `36b9111` | projections package |
+| 20 | `844ba37` | charts package |
+| 21 | `940fd3f` | rendering package |
+| 22 | `1f560b6` | package-boundary audit |
+| 23 | `c7feaf7` | full-sky production API |
+| 24 | closure commit | active documentation and migration closure |
+
+Milestone 23 selected `FullSkyChart` and
+`src/wenu/charts/full_sky.py`. The observer horizon and projection tangent
+point are independent. The implementation also added interpolated
+horizon-crossing clipping and a generic projected Matplotlib clip boundary.
+
+All functional and structural milestones passed the complete automated suite
+and the full-sky and regional visual examples before closure.
 
 ## 2. Migration principles
 
@@ -134,7 +156,7 @@ src/wenu/
 │   ├── geometrical_object.py
 │   ├── celestial_sphere.py
 │   ├── rendering_results.py
-│   ├── celestial_points.py
+│   ├── points.py
 │   ├── constellation_lines.py
 │   ├── constellation_boundaries.py
 │   ├── constellation_labels.py
@@ -156,7 +178,7 @@ src/wenu/
 ├── charts/
 │   ├── __init__.py
 │   ├── regional.py
-│   ├── planisphere.py
+│   ├── full_sky.py
 │   └── styles.py
 │
 ├── rendering/
@@ -607,7 +629,7 @@ active developer guidance.
 - update all example imports;
 - remove or archive superseded active documents:
   - `target_architecture_v0.3.md`;
-  - `wenu_migration_roadmap_v1.0.md`;
+  - `wenu_migration_roadmap_v0.3.md`;
 - retain this plan as the historical implementation record, marked complete.
 
 ### Verification

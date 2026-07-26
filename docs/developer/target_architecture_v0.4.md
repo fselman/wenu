@@ -2,7 +2,8 @@
 
 **Version:** 0.4  
 **Date:** 2026-07-26  
-**Status:** Draft  
+**Status:** Implemented  
+**Implementation baseline:** commit `c7feaf7`  
 **Supersedes:** `target_architecture_v0.3.md`
 
 ## 1. Purpose
@@ -16,13 +17,10 @@ It supports two principal kinds of output:
 - regional charts, including charts centered on constellations or arbitrary
   celestial coordinates.
 
-The target architecture defines how astronomical content, geometry,
-projection, chart configuration, styling, and rendering are separated. It
-also defines the package boundaries into which the present implementation
-will be reorganized.
-
-This document describes the desired architecture. Implementation sequencing
-belongs in the migration roadmap.
+This architecture defines how astronomical content, geometry, projection,
+chart configuration, styling, and rendering are separated. It also records
+the implemented package boundaries. Implementation history and sequencing
+are recorded in the migration roadmap.
 
 ## 2. Product priorities
 
@@ -645,7 +643,7 @@ src/wenu/
 │   ├── geometrical_object.py
 │   ├── celestial_sphere.py
 │   ├── rendering_results.py
-│   ├── celestial_points.py
+│   ├── points.py
 │   ├── constellation_lines.py
 │   ├── constellation_boundaries.py
 │   ├── constellation_labels.py
@@ -667,6 +665,7 @@ src/wenu/
 ├── charts/
 │   ├── __init__.py
 │   ├── regional.py
+│   ├── full_sky.py
 │   └── styles.py
 │
 ├── rendering/

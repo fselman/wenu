@@ -1,233 +1,222 @@
 # Wenu current architecture
 
-Status: as implemented on `feature/regional-stereographic-charts` at commit
-`8c8abeb` (Milestone 16).
+**Status:** Implemented on `feature/regional-stereographic-charts` through
+commit `c7feaf7` (Milestone 23)  
+**Architecture version:** 0.4  
+**Date:** 2026-07-26
 
-This document describes the code that exists now. It is not a target design or
-a migration plan.
+This document describes the implemented architecture. Historical targets and
+migration plans are retained under `docs/developer/archive/`.
 
-## 1. Architectural summary
+## 1. Purpose
 
-Wenu has one canonical chart pipeline:
+Wenu produces reproducible, publication-quality static charts of the sky. It
+supports regional charts and observer-dependent full-sky charts through one
+pipeline. It is not designed as an interactive planetarium.
+
+## 2. Canonical pipeline
+
+Every drawable sky layer follows:
 
 ```text
 Observer
-  -> CelestialSphere and ordered SkyLayer objects
-  -> spherical geometry
-  -> StereographicProjection
-  -> projected geometry
-  -> optional generic preparation
-  -> MatplotlibRenderer
-  -> Matplotlib artists
+  → CelestialSphere
+  → SkyLayer.spherical_geometry()
+  → spherical geometry
+  → projection
+  → projected geometry
+  → optional preparation
+  → renderer
+  → graphical artists
 ```
 
-Astronomy, geometry, projection, preparation, and rendering are separate
-responsibilities:
+`CelestialSphere.draw_chart()` is the only chart-execution pipeline. Regional
+and full-sky chart specifications configure and delegate to it.
 
-| Concern | Current owner |
+## 3. Package structure
+
+```text
+src/wenu/
+├── __init__.py
+├── observer.py
+├── coordinates.py
+├── objects/
+│   ├── astronomical_object.py
+│   └── stars.py
+├── sky/
+│   ├── sky_layer.py
+│   ├── geometrical_object.py
+│   ├── celestial_sphere.py
+│   ├── rendering_results.py
+│   ├── points.py
+│   ├── constellation_lines.py
+│   ├── constellation_boundaries.py
+│   ├── constellation_labels.py
+│   ├── constellations.py
+│   └── coordinate_grids.py
+├── geometry/
+│   ├── spherical.py
+│   ├── projected.py
+│   ├── frame.py
+│   ├── clipping.py
+│   └── viewport.py
+├── projections/
+│   └── stereographic.py
+├── charts/
+│   ├── regional.py
+│   ├── full_sky.py
+│   └── styles.py
+├── rendering/
+│   ├── preparation.py
+│   ├── matplotlib.py
+│   ├── _matplotlib_primitives.py
+│   ├── _matplotlib_axes.py
+│   └── layers.py
+├── catalogs/
+├── resources.py
+└── data/
+```
+
+## 4. Responsibilities
+
+| Concern | Owner |
 |---|---|
-| Observation time and location | `Observer` |
-| Astronomical data and coordinate transformation | `SkyLayer` implementations |
-| Layer ordering and chart orchestration | `CelestialSphere` |
-| Coordinate-neutral spherical values | `wenu.spherical` |
-| Stereographic projection | `StereographicProjection` |
-| Projected Cartesian values | `wenu.projected` |
-| Generic clipping and visual preparation | `wenu.rendering` |
-| Matplotlib artist creation | `MatplotlibRenderer` |
-| Reproducible regional-chart configuration | `RegionalChart` |
-| Reusable publication defaults | `PublicationStyle` |
+| Time, location, and observer frames | `Observer` |
+| Physical catalogue objects | `objects/` |
+| Celestial constructs and layer geometry | `sky/` |
+| Coordinate conversion helpers | `coordinates.py` |
+| Coordinate-neutral values and algorithms | `geometry/` |
+| Map projections | `projections/` |
+| Chart specifications and styles | `charts/` |
+| Preparation and graphical backends | `rendering/` |
 
-There are no astronomy-aware Matplotlib adapters and no layer-specific drawing
-methods in the current pipeline.
+## 5. Observer and sky layers
 
-## 2. Principal runtime objects
+`Observer` owns observing time and location. Concrete layers transform their
+native data into observer-time horizontal longitude and latitude.
 
-### 2.1 `Observer`
-
-`Observer` represents the observing context: time, latitude, longitude, and the
-coordinate frames required by Astropy and Skyfield. Layers use it to transform
-catalogue or native-frame coordinates into apparent horizontal coordinates.
-
-### 2.2 `SkyLayer`
-
-`SkyLayer` is the common layer contract:
+Every drawable layer implements:
 
 ```python
-spherical_geometry(observer)
+spherical_geometry(observer, **geometry_options)
 ```
 
-The returned value is a spherical geometry container. A layer does not project
-its geometry and does not render it.
+Layers do not project or draw themselves. Implemented layers include:
 
-The current hierarchy distinguishes two semantic categories:
+- vectorized Hipparcos stars;
+- celestial reference points;
+- observer-time constellation lines;
+- B1875-constructed IAU constellation boundaries;
+- projection-independent constellation labels;
+- equatorial, ecliptic, and Galactic grids.
 
-- `AstronomicalObject`, currently used by `Stars`.
-- `GeometricalObject`, used by points, constellation figures, boundaries,
-  labels, and coordinate grids.
+`Constellations` is a grouping façade, not a layer and not a rendering path.
 
-The distinction is descriptive; both participate through the same
-`SkyLayer.spherical_geometry()` contract.
+## 6. Geometry
 
-### 2.3 `CelestialSphere`
+`geometry/spherical.py` and `geometry/projected.py` provide corresponding
+point, curve, grid, and polygon types.
 
-`CelestialSphere` owns the observer and the ordered collection of active
-layers. Its `draw_chart()` method is the canonical orchestration entry point.
+Singular curve and polygon types represent one object. Their collection
+classes are lightweight semantic wrappers. `SphericalPoints` and
+`ProjectedPoints` remain vectorized for catalogue-scale processing.
 
-For every layer, in order, it:
+Projection preserves identities, labels, names, closure, component grouping,
+and applicable metadata.
 
-1. resolves per-layer options;
-2. requests spherical geometry;
-3. projects that geometry;
-4. optionally applies a generic preparation callable;
-5. derives renderer options;
-6. asks the renderer to draw the projected geometry.
+`SphericalFrame` rotates generic spherical coordinates to an arbitrary tangent
+frame. `Viewport` is a pure projected Cartesian rectangle.
 
-It returns records containing the spherical geometry, projected geometry, and
-created artists. These records make the pipeline observable without storing
-projected or rendered state inside layers.
+## 7. Projection
 
-`Constellations` is a grouping/facade around constellation-related layers. It
-is not itself a `SkyLayer` and does not own projected state.
+`StereographicProjection` is independent of observers, sky layers, chart
+styles, and Matplotlib. It supports:
 
-## 3. Current sky layers
+- scalar and vector inputs;
+- all implemented spherical geometry containers;
+- arbitrary tangent points;
+- position angle;
+- east-west orientation;
+- configurable radius.
 
-| Layer | Source/native frame | Spherical output | Important behavior |
-|---|---|---|---|
-| `Stars` | star catalogue, observer time | `SphericalPoints` | magnitude filtering; vectorized points; HIP identifiers and magnitude metadata |
-| `CelestialPoints` | named Astropy coordinates | `SphericalPoints` | transforms reference points to observer-time Alt/Az; carries label/style metadata |
-| `ConstellationLines` | constellation edge data | `SphericalCurves` | endpoints are evaluated at observer time |
-| `ConstellationBoundaries` | official B1875/FK4 boundary polygons | `SphericalPolygons` | polygons are formed and sampled in B1875 before transformation, preserving the intended boundary geometry |
-| `ConstellationLabels` | visible-star anchors and boundary information | `SphericalPoints` | projection-independent label anchors; supports per-render selection and minimum-star rules |
-| `EquatorialGrid` | equatorial coordinates | `SphericalGrid` | produces named meridian, parallel, and optional reference components |
-| `EclipticGrid` | ecliptic coordinates | `SphericalGrid` | produces ecliptic meridians, parallels, and optional ecliptic reference |
-| `GalacticGrid` | galactic coordinates | `SphericalGrid` | produces galactic meridians, parallels, and optional galactic-plane reference |
+The tangent point and the observer are separate concepts. Chart
+specifications choose the projection frame; layers obtain the horizontal sky
+from the observer.
 
-Coordinate-grid curves are generated as spherical geometry and projected like
-every other curve. For regional charts, grids may be generated over the full
-regional viewport and left to the renderer's axes-patch clipping. An explicit
-minimum altitude can instead apply horizon clipping.
+## 8. Preparation
 
-## 4. Geometry model
+`rendering/preparation.py` contains backend-independent transformations:
 
-### 4.1 Spherical geometry
+- magnitude-to-area conversion;
+- per-point style derivation;
+- label offsets;
+- clipping to spherical latitude.
 
-`wenu.spherical` contains coordinate-neutral containers:
+Latitude clipping interpolates curve intersections with the limiting
+latitude. This gives explicit endpoints at the horizon rather than merely
+discarding the first hidden sample.
 
-- `SphericalPoint`
-- `SphericalPoints`
-- `SphericalCurve`
-- `SphericalCurves`
-- `SphericalGrid`
-- `SphericalPolygon`
-- `SphericalPolygons`
+## 9. Rendering
 
-Longitudes and latitudes are expressed in degrees. In the chart pipeline the
-usual interpretation is azimuth and altitude, but the geometry containers do
-not encode that astronomy-specific meaning.
+`MatplotlibRenderer` consumes projected geometry. It:
 
-`SphericalPoints` is vectorized because star catalogues and point layers may
-contain large numbers of objects. The other collection classes are semantic
-wrappers around manageable collections of singular objects, with collection
-metadata where needed.
+- applies rectangular viewports;
+- dispatches by projected geometry type;
+- applies common, entity, and grid-component styles;
+- draws points, curves, polygons, grids, and labels;
+- supports a projected closed clip boundary;
+- returns the created artists.
 
-### 4.2 Projected geometry
+The projected clip boundary permits a full-sky horizon to differ from the
+projection center. Rendering contains no astronomical transformation or map
+projection.
 
-`wenu.projected` mirrors the spherical model:
+## 10. Chart specifications
 
-- `ProjectedPoint`
-- `ProjectedPoints`
-- `ProjectedCurve`
-- `ProjectedCurves`
-- `ProjectedGrid`
-- `ProjectedPolygon`
-- `ProjectedPolygons`
+### 10.1 `RegionalChart`
 
-Projected coordinates are Cartesian `x`, `y` values. Projection preserves
-identifiers, labels, names, closure information, and metadata required by
-generic preparation and rendering.
+`RegionalChart` is immutable and supports:
 
-`ProjectedGrid` preserves named component groups rather than flattening
-meridians, parallels, and reference curves into one anonymous collection.
+- explicit horizontal centers;
+- centers derived from Astropy coordinates;
+- centers derived from constellation figures;
+- arbitrary position angles or celestial north up;
+- rectangular angular fields and crop offsets;
+- reproducible figure sizing and export.
 
-## 5. Projection and viewport
+### 10.2 `FullSkyChart`
 
-### 5.1 `StereographicProjection`
+`FullSkyChart` represents the sky above an observer-defined limiting altitude.
+It supports:
 
-`StereographicProjection` is coordinate-neutral. It projects scalars, arrays,
-and all supported spherical geometry containers.
+- a tangent point independent of the observer zenith;
+- a configurable horizon altitude;
+- arbitrary position angle and east-west orientation;
+- a projected horizon boundary and derived viewport;
+- reproducible figure sizing and export.
 
-An optional `SphericalFrame` defines:
+The observer defines the AltAz sky and horizon. The tangent point defines the
+stereographic origin. The chart validates that the retained sky does not
+contain the projection antipode.
 
-- the tangent point (`pole_lon_deg`, `pole_lat_deg`);
-- the chart position angle;
-- the orientation used before stereographic projection.
+The standard example places the tangent point at the South Celestial Pole
+while keeping the observer zenith toward the top of the chart.
 
-This supports both full-sky and arbitrary tangent-point regional charts.
-East-west flipping and projection radius are projection configuration, not
-layer or renderer behavior.
+Neither chart type uses a parallel rendering pipeline, and there is no
+speculative common `Chart` superclass.
 
-### 5.2 `Viewport`
+## 11. Styles and export
 
-`Viewport` is a pure Cartesian rectangle. It represents the final crop in
-projected coordinates and does not know about astronomy or Matplotlib.
+`PublicationStyle` configures Matplotlib axes and produces structured layer
+options. A chart may provide the authoritative horizon altitude while the
+style supplies its graphical policy.
 
-The renderer applies a viewport to the axes limits. Matplotlib's axes patch is
-also used as the final clip path for points, curves, polygons, and text.
+`ExportOptions` fixes DPI, bounding-box behavior, transparency, face color,
+and metadata. Physical figure size and raster DPI remain independent.
 
-## 6. Generic preparation
+## 12. Structured layer options
 
-`wenu.rendering` contains reusable transformations between projection and
-rendering. Current examples include:
-
-- converting magnitude to symbol sizes;
-- deriving point styles;
-- radial label offsets;
-- clipping supported geometry to a minimum latitude.
-
-Preparation functions operate on geometry and return prepared projected
-geometry or renderer options. They do not create artists and do not import
-astronomical layers.
-
-This stage is optional. It exists so presentation-related transformations do
-not leak back into sky-layer data acquisition or into the renderer.
-
-## 7. Rendering
-
-`MatplotlibRenderer` wraps a Matplotlib `Axes`.
-
-Its responsibilities are:
-
-- applying a `Viewport`;
-- dispatching on projected geometry type;
-- resolving common, per-entity, and per-component styles;
-- drawing points, curves, grids, polygons, and labels;
-- clipping all relevant artists to the axes patch;
-- returning the created Matplotlib artists.
-
-The renderer receives already projected geometry. It contains no catalogue
-loading, celestial coordinate conversion, precession, observer-time logic, or
-stereographic mathematics.
-
-Low-level `render_*` functions support the renderer implementation, but the
-normal public flow is through `MatplotlibRenderer.draw()`.
-
-## 8. Chart orchestration records
-
-The canonical pipeline returns two immutable result records:
-
-- `LayerRenderingResult`: layer, spherical geometry, projected/prepared
-  geometry, and artists for one layer.
-- `ChartRenderingResult`: projection, renderer, viewport, and the ordered layer
-  results for a chart.
-
-These results make intermediate values available for testing and inspection.
-They replace the legacy practice of attaching projection and artist state to
-domain objects.
-
-## 9. Layer options
-
-`CelestialSphere.draw_chart()` accepts options keyed by layer. A structured
-entry can contain:
+Per-render behavior is configured as:
 
 ```python
 {
@@ -237,101 +226,70 @@ entry can contain:
 }
 ```
 
-- `geometry` is passed to `spherical_geometry()`.
-- `prepare(spherical, projected)` returns the geometry supplied to the
-  renderer.
-- `render` is either a renderer keyword mapping or a callable deriving that
-  mapping from the spherical and projected values.
+Chart-specific choices are supplied through these options rather than by
+mutating shared layers.
 
-Flat renderer keyword mappings remain accepted for compatibility.
+## 13. Results
 
-This mechanism supports per-render selections and styles without mutating
-layers or introducing specialized draw paths.
+The pipeline returns immutable inspection records:
 
-## 10. Regional production API
+- `LayerRenderingResult`;
+- `ChartRenderingResult`.
 
-`RegionalChart` is an immutable regional chart specification. It configures:
+They retain the layer, spherical value, prepared projected value, artists,
+projection, renderer, and viewport as applicable.
 
-- tangent altitude and azimuth;
-- angular field width and height;
-- position angle or celestial-north-up orientation;
-- projection radius and east-west orientation;
-- projected crop offset;
-- optional constellation-label selection.
+## 14. Dependency rules
 
-It provides constructors centered on:
-
-- an explicit horizontal direction;
-- an arbitrary Astropy coordinate;
-- the spherical mean of selected constellation-line endpoints.
-
-Its `projection` and `viewport` properties translate angular chart
-configuration into the canonical projection pipeline. `render()` delegates to
-`CelestialSphere.draw_chart()`; it does not implement another pipeline.
-
-`ExportOptions` centralizes reproducible `savefig` options. `PublicationStyle`
-configures the axes and produces layer options for the same canonical
-orchestrator.
-
-## 11. Dependency rules
-
-The present architecture enforces these directions:
+The permitted high-level directions are:
 
 ```text
-objects / sky
-    -> spherical geometry and coordinate libraries
+objects/ ───────┐
+                ├─→ sky/ ──────────→ geometry/
+coordinates.py ─┘
 
-projection
-    -> spherical geometry, projected geometry, spherical frame
-
-generic preparation
-    -> spherical/projected geometry
-
-renderer
-    -> projected geometry, viewport, Matplotlib
-
-chart APIs
-    -> sky orchestrator, projection, viewport, style, renderer
+projections/ ──────────────────────→ geometry/
+rendering/ ────────────────────────→ geometry/
+charts/ ─→ sky/, geometry/, projections/, rendering/
 ```
 
-In particular:
+Reverse dependencies and obsolete module paths are prohibited by:
 
-- `wenu.objects` and `wenu.sky` do not import Matplotlib renderers;
-- sky layers do not import projection or projected-geometry modules;
-- sky layers expose no direct `draw`, `project`, or Matplotlib-adapter methods;
-- renderer code does not import astronomy-domain layers;
-- there is one projection-to-render path.
+- `tests/test_milestone15b_dependencies.py`;
+- `tests/test_milestone22_package_boundaries.py`.
 
-`tests/test_milestone15b_dependencies.py` protects these boundaries.
+There are no forwarding modules for the pre-v0.4 layout.
 
-## 12. Removed legacy architecture
+## 15. Public API
 
-Milestone 15B removed the parallel rendering architecture, including:
+Intentional top-level exports include:
 
-- `regional_chart.py`;
-- `sky/curves.py` and `CelestialCurve`;
-- layer-specific renderer adapter modules;
-- direct layer drawing methods;
-- renderer-specific state stored by layers;
-- the old adapter-oriented tests.
+```python
+from wenu import (
+    CelestialSphere,
+    ExportOptions,
+    FullSkyChart,
+    MatplotlibRenderer,
+    Observer,
+    PublicationStyle,
+    RegionalChart,
+    StereographicProjection,
+    Viewport,
+)
+```
 
-The surviving compatibility projection entry points are covered by regression
-tests, but they do not reverse the current dependency direction.
+Internal module organization is not itself a public compatibility promise.
 
-## 13. Current architectural limits
+## 16. Current limits
 
-The following are facts about the current implementation, not proposed
-solutions:
+Version 0.4 intentionally provides:
 
-- Matplotlib is the implemented rendering backend.
-- The production convenience API is regional-chart focused; a comparably
-  polished public full-sky production API is not yet separate from examples.
-- Style is expressed through dictionaries and `PublicationStyle`, not through
-  a general backend-independent style object model.
-- Layer ordering is explicit and significant because it determines artist
-  stacking.
-- `CelestialSphere` remains both the sky-layer registry and the canonical
-  chart orchestrator.
+- one map projection implementation;
+- one graphical backend;
+- static rather than interactive output;
+- explicit dictionary-based layer options;
+- no abstract renderer hierarchy;
+- no common chart superclass.
 
-Future architecture decisions belong in `target_architecture_v0.4.md`, not in
-this document.
+These are deliberate v0.4 boundaries rather than unfinished parallel
+architectures.
