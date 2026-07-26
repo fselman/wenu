@@ -19,7 +19,7 @@ FORBIDDEN_IMPORTS = (
     "wenu.geometry.projected",
     "wenu.projections",
     "wenu.charts",
-    "wenu.renderers",
+    "wenu.rendering",
 )
 REMOVED_PATHS = (
     "src/wenu/regional_chart.py",

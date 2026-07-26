@@ -13,8 +13,8 @@ import numpy as np
 
 from wenu import CelestialSphere, Observer, StereographicProjection
 from wenu.coordinates import radec_to_altaz
-from wenu.renderers import MatplotlibRenderer, layers
-from wenu.rendering import (
+from wenu.rendering import MatplotlibRenderer, layers
+from wenu.rendering.preparation import (
     clip_to_latitude,
     magnitude_sizes,
     point_styles,

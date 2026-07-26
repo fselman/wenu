@@ -20,13 +20,13 @@ from wenu.geometry.projected import (
     ProjectedPolygon,
     ProjectedPolygons,
 )
-from wenu.renderers.matplotlib_renderer import MatplotlibRenderer
+from wenu.rendering.matplotlib import MatplotlibRenderer
 
 
 def test_renderer_has_no_astronomical_or_projection_dependency():
     source = inspect.getsource(
         __import__(
-            "wenu.renderers.matplotlib_renderer",
+            "wenu.rendering.matplotlib",
             fromlist=["MatplotlibRenderer"],
         )
     )

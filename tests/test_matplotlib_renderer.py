@@ -15,7 +15,7 @@ from wenu.geometry.projected import (
     ProjectedPoint,
     ProjectedPolygon,
 )
-from wenu.renderers.matplotlib import (
+from wenu.rendering import (
     render_curve,
     render_point,
     render_points,

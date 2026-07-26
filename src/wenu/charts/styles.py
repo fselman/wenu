@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from wenu.renderers import layers
-from wenu.rendering import (
+from wenu.rendering import layers
+from wenu.rendering.preparation import (
     clip_to_latitude,
     magnitude_sizes,
     point_styles,

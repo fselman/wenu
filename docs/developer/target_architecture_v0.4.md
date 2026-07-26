@@ -672,7 +672,10 @@ src/wenu/
 ├── rendering/
 │   ├── __init__.py
 │   ├── preparation.py
-│   └── matplotlib.py
+│   ├── matplotlib.py
+│   ├── _matplotlib_primitives.py
+│   ├── _matplotlib_axes.py
+│   └── layers.py
 │
 ├── catalogs/
 ├── resources.py
@@ -750,9 +753,15 @@ The planned file moves are:
 | Current | Target |
 |---|---|
 | `rendering.py` | `rendering/preparation.py` |
-| `renderers/matplotlib.py` | `rendering/matplotlib.py` |
+| `renderers/matplotlib_renderer.py` | `rendering/matplotlib.py` |
+| `renderers/matplotlib.py` | `rendering/_matplotlib_primitives.py` |
+| `renderers/matplotlib_axes.py` | `rendering/_matplotlib_axes.py` |
+| `renderers/layers.py` | `rendering/layers.py` |
 
-Preparation and backend rendering remain architecturally distinct.
+`matplotlib.py` is the public backend module. The underscore-prefixed modules
+preserve small, tested implementation helpers without making them separate
+public backends. Preparation and backend rendering remain architecturally
+distinct.
 
 ## 19. Source dependency rules
 

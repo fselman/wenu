@@ -15,8 +15,8 @@ from wenu.geometry.projected import (
     ProjectedPolygon,
     ProjectedPolygons,
 )
-from wenu.renderers.matplotlib_axes import apply_viewport
-from wenu.renderers.matplotlib import (
+from wenu.rendering._matplotlib_axes import apply_viewport
+from wenu.rendering._matplotlib_primitives import (
     render_curve,
     render_point,
     render_points,

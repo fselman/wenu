@@ -11,7 +11,7 @@ from .sky.rendering_results import ChartRenderingResult, LayerRenderingResult
 from .observer import Observer
 from .charts.regional import ExportOptions, RegionalChart
 from .charts.styles import PublicationStyle
-from .renderers import MatplotlibRenderer
+from .rendering import MatplotlibRenderer
 from .projections import StereographicProjection
 from .sky import CelestialSphere
 from .geometry.frame import (

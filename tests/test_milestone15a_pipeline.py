@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from wenu.geometry.projected import ProjectedCurve, ProjectedCurves, ProjectedPoints
-from wenu.rendering import (
+from wenu.rendering.preparation import (
     clip_to_latitude,
     magnitude_sizes,
     radial_label_offset,

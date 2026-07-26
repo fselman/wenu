@@ -162,7 +162,10 @@ src/wenu/
 ├── rendering/
 │   ├── __init__.py
 │   ├── preparation.py
-│   └── matplotlib.py
+│   ├── matplotlib.py
+│   ├── _matplotlib_primitives.py
+│   ├── _matplotlib_axes.py
+│   └── layers.py
 │
 ├── catalogs/
 ├── resources.py
@@ -385,7 +388,10 @@ while preserving their architectural separation.
 | Current path | Target path |
 |---|---|
 | `src/wenu/rendering.py` | `src/wenu/rendering/preparation.py` |
-| `src/wenu/renderers/matplotlib.py` | `src/wenu/rendering/matplotlib.py` |
+| `src/wenu/renderers/matplotlib_renderer.py` | `src/wenu/rendering/matplotlib.py` |
+| `src/wenu/renderers/matplotlib.py` | `src/wenu/rendering/_matplotlib_primitives.py` |
+| `src/wenu/renderers/matplotlib_axes.py` | `src/wenu/rendering/_matplotlib_axes.py` |
+| `src/wenu/renderers/layers.py` | `src/wenu/rendering/layers.py` |
 
 Add:
 
