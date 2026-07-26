@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 
-from wenu.chart import ChartRenderingResult, LayerRenderingResult
+from wenu.sky.rendering_results import ChartRenderingResult, LayerRenderingResult
 from wenu.objects.stars import Stars
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.sky.constellation_labels import ConstellationLabels

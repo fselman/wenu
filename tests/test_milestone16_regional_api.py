@@ -5,8 +5,8 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from wenu.regional import ExportOptions, RegionalChart
-from wenu.styles import PublicationStyle
+from wenu.charts.regional import ExportOptions, RegionalChart
+from wenu.charts.styles import PublicationStyle
 
 
 def test_angular_radius_and_aspect_define_viewport():

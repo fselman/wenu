@@ -7,10 +7,10 @@ except PackageNotFoundError:
     # The source tree is being imported without installing the package.
     __version__ = "0+unknown"
 
-from .chart import ChartRenderingResult, LayerRenderingResult
+from .sky.rendering_results import ChartRenderingResult, LayerRenderingResult
 from .observer import Observer
-from .regional import ExportOptions, RegionalChart
-from .styles import PublicationStyle
+from .charts.regional import ExportOptions, RegionalChart
+from .charts.styles import PublicationStyle
 from .renderers import MatplotlibRenderer
 from .projections import StereographicProjection
 from .sky import CelestialSphere

@@ -644,6 +644,7 @@ src/wenu/
 │   ├── sky_layer.py
 │   ├── geometrical_object.py
 │   ├── celestial_sphere.py
+│   ├── rendering_results.py
 │   ├── celestial_points.py
 │   ├── constellation_lines.py
 │   ├── constellation_boundaries.py
@@ -665,7 +666,6 @@ src/wenu/
 │
 ├── charts/
 │   ├── __init__.py
-│   ├── results.py
 │   ├── regional.py
 │   └── styles.py
 │
@@ -725,19 +725,21 @@ The current `projection.py` becomes
 
 ### 18.6 `charts/`
 
-Contains chart specifications, chart-result values, reusable chart styles, and
-eventually a public full-sky/planisphere specification.
+Contains chart specifications, reusable chart styles, and eventually a public
+full-sky/planisphere specification.
 
 The planned file moves are:
 
 | Current | Target |
 |---|---|
-| `chart.py` | `charts/results.py` |
+| `chart.py` | `sky/rendering_results.py` |
 | `regional.py` | `charts/regional.py` |
 | `styles.py` | `charts/styles.py` |
 
-The name `results.py` reflects the present contents of `chart.py` and does not
-invent a `Chart` class.
+Rendering results belong beside `CelestialSphere`, which creates them. This
+preserves the dependency direction `charts → sky` and avoids `sky → charts`.
+The name `rendering_results.py` reflects the present contents of `chart.py`
+without inventing a `Chart` class.
 
 ### 18.7 `rendering/`
 

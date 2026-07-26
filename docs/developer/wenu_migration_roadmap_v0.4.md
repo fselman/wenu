@@ -133,6 +133,7 @@ src/wenu/
 │   ├── sky_layer.py
 │   ├── geometrical_object.py
 │   ├── celestial_sphere.py
+│   ├── rendering_results.py
 │   ├── celestial_points.py
 │   ├── constellation_lines.py
 │   ├── constellation_boundaries.py
@@ -154,7 +155,6 @@ src/wenu/
 │
 ├── charts/
 │   ├── __init__.py
-│   ├── results.py
 │   ├── regional.py
 │   ├── planisphere.py
 │   └── styles.py
@@ -318,14 +318,15 @@ Milestone 19: Organize projections package
 
 ### Objective
 
-Group chart configuration, rendering results, and chart styles without
-inventing an unnecessary base `Chart` class.
+Group chart configuration and chart styles without inventing an unnecessary
+base `Chart` class. Place orchestration results beside `CelestialSphere`,
+which creates them.
 
 ### File moves
 
 | Current path | Target path |
 |---|---|
-| `src/wenu/chart.py` | `src/wenu/charts/results.py` |
+| `src/wenu/chart.py` | `src/wenu/sky/rendering_results.py` |
 | `src/wenu/regional.py` | `src/wenu/charts/regional.py` |
 | `src/wenu/styles.py` | `src/wenu/charts/styles.py` |
 

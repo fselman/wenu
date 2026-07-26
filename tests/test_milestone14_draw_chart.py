@@ -9,7 +9,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from wenu.chart import ChartRenderingResult
+from wenu.sky.rendering_results import ChartRenderingResult
 from wenu.geometry.projected import ProjectedPoints
 from wenu.projections.stereographic import StereographicProjection
 from wenu.renderers import MatplotlibRenderer

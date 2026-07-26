@@ -18,6 +18,7 @@ FORBIDDEN_IMPORTS = (
     "matplotlib",
     "wenu.geometry.projected",
     "wenu.projections",
+    "wenu.charts",
     "wenu.renderers",
 )
 REMOVED_PATHS = (
