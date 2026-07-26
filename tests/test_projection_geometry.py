@@ -7,7 +7,7 @@ from wenu.geometry.projected import (
     ProjectedPoints,
     ProjectedPolygons,
 )
-from wenu.projection import StereographicProjection
+from wenu.projections.stereographic import StereographicProjection
 from wenu.geometry.spherical import (
     SphericalCurves,
     SphericalGrid,

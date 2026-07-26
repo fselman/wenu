@@ -17,7 +17,7 @@ DOMAIN_ROOTS = (
 FORBIDDEN_IMPORTS = (
     "matplotlib",
     "wenu.geometry.projected",
-    "wenu.projection",
+    "wenu.projections",
     "wenu.renderers",
 )
 REMOVED_PATHS = (

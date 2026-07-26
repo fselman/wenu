@@ -6,7 +6,7 @@ from wenu.geometry.clipping import (
     clip_polygon_to_viewport,
 )
 from wenu.geometry.projected import ProjectedCurve, ProjectedPolygon
-from wenu.projection import StereographicProjection
+from wenu.projections.stereographic import StereographicProjection
 from wenu.geometry.spherical import SphericalPoints
 from wenu.geometry.frame import SphericalFrame
 

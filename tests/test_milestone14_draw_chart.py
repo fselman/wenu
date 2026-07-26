@@ -11,7 +11,7 @@ import numpy as np
 
 from wenu.chart import ChartRenderingResult
 from wenu.geometry.projected import ProjectedPoints
-from wenu.projection import StereographicProjection
+from wenu.projections.stereographic import StereographicProjection
 from wenu.renderers import MatplotlibRenderer
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.sky_layer import SkyLayer

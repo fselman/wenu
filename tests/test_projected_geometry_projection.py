@@ -6,7 +6,7 @@ from wenu.geometry.projected import (
     ProjectedPoint,
     ProjectedPolygon,
 )
-from wenu.projection import StereographicProjection
+from wenu.projections.stereographic import StereographicProjection
 
 
 @pytest.fixture

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from wenu.projection import StereographicProjection
+from wenu.projections.stereographic import StereographicProjection
 
 def test_projection_rejects_nonpositive_radius():
     with pytest.raises(

@@ -9,7 +9,7 @@ from typing import Any
 import numpy as np
 
 from wenu.coordinates import radec_to_altaz
-from wenu.projection import StereographicProjection
+from wenu.projections.stereographic import StereographicProjection
 from wenu.geometry.frame import SphericalFrame
 from wenu.geometry.viewport import Viewport
 

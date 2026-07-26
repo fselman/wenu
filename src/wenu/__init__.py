@@ -12,7 +12,7 @@ from .observer import Observer
 from .regional import ExportOptions, RegionalChart
 from .styles import PublicationStyle
 from .renderers import MatplotlibRenderer
-from .projection import StereographicProjection
+from .projections import StereographicProjection
 from .sky import CelestialSphere
 from .geometry.frame import (
     SphericalCoordinates,
