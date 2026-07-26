@@ -29,6 +29,9 @@ class PublicationStyle:
     horizon_altitude_deg: float = 0.0
     grid_minimum_altitude_deg: float | None = None
     label_fontsize: float = 10.0
+    outside_mask_color: str = "black"
+    outside_mask_alpha: float = 0.35
+    outside_mask_zorder: float = 20.0
 
     def configure_axes(self, ax, *, title=None):
         """Apply chart-level axes styling."""
@@ -39,6 +42,20 @@ class PublicationStyle:
         ax.set_xticks([])
         ax.set_yticks([])
         return ax
+
+    def outside_mask_style(self):
+        """Return presentation options for an outside-region mask."""
+        alpha = float(self.outside_mask_alpha)
+        if not 0.0 <= alpha <= 1.0:
+            raise ValueError(
+                "outside_mask_alpha must be between 0 and 1."
+            )
+        return {
+            "facecolor": self.outside_mask_color,
+            "edgecolor": "none",
+            "alpha": alpha,
+            "zorder": float(self.outside_mask_zorder),
+        }
 
     def _clip(self, spherical, projected):
         return clip_to_latitude(

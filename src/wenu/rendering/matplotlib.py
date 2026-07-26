@@ -72,6 +72,92 @@ class MatplotlibRenderer:
                 artist.set_clip_path(self._clip_patch)
         return artists
 
+    def draw_outside_mask(
+        self,
+        polygons,
+        *,
+        viewport,
+        style=None,
+    ):
+        """Shade the viewport except for holes defined by polygons."""
+        from matplotlib.path import Path
+        from matplotlib.patches import PathPatch
+
+        if not isinstance(polygons, ProjectedPolygons):
+            raise TypeError("polygons must be ProjectedPolygons.")
+        if not polygons.items:
+            raise ValueError("At least one mask opening is required.")
+
+        vertices = []
+        codes = []
+
+        def add_ring(points, *, clockwise):
+            points = np.asarray(points, dtype=float)
+            if points.ndim != 2 or points.shape[1] != 2:
+                raise ValueError("Mask rings must contain x/y vertices.")
+            points = points[np.all(np.isfinite(points), axis=1)]
+            if len(points) < 3:
+                return
+            if np.allclose(points[0], points[-1]):
+                points = points[:-1]
+            if len(points) < 3:
+                return
+            area = 0.5 * np.sum(
+                points[:, 0] * np.roll(points[:, 1], -1)
+                - np.roll(points[:, 0], -1) * points[:, 1]
+            )
+            is_clockwise = area < 0.0
+            if is_clockwise != clockwise:
+                points = points[::-1]
+            ring = np.vstack((points, points[0]))
+            ring_codes = np.full(
+                len(ring),
+                Path.LINETO,
+                dtype=np.uint8,
+            )
+            ring_codes[0] = Path.MOVETO
+            ring_codes[-1] = Path.CLOSEPOLY
+            vertices.extend(ring)
+            codes.extend(ring_codes)
+
+        add_ring(
+            (
+                (viewport.x_min, viewport.y_min),
+                (viewport.x_max, viewport.y_min),
+                (viewport.x_max, viewport.y_max),
+                (viewport.x_min, viewport.y_max),
+            ),
+            clockwise=False,
+        )
+        for polygon in polygons:
+            add_ring(
+                np.column_stack((polygon.x, polygon.y)),
+                clockwise=True,
+            )
+        if len(vertices) <= 5:
+            raise ValueError(
+                "No finite polygon opening could be constructed."
+            )
+
+        mask_style = {
+            "facecolor": "black",
+            "edgecolor": "none",
+            "alpha": 0.35,
+            "zorder": 20.0,
+        }
+        if style is not None:
+            mask_style.update(style)
+        patch = PathPatch(
+            Path(
+                np.asarray(vertices, dtype=float),
+                np.asarray(codes, dtype=np.uint8),
+            ),
+            **mask_style,
+        )
+        self.ax.add_patch(patch)
+        self._apply_clip_patch([patch])
+        return patch
+
     def apply_viewport(self, viewport, *, equal_aspect=True):
         """Apply projected chart bounds to this renderer's axes."""
         apply_viewport(

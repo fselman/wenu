@@ -127,6 +127,7 @@ class RegionalChart:
     crop_x: float = 0.0
     crop_y: float = 0.0
     label_selection: tuple[str, ...] | None = None
+    outside_mask_constellations: tuple[str, ...] | None = None
 
     def __post_init__(self):
         values = np.asarray(
@@ -158,6 +159,20 @@ class RegionalChart:
                 )
         if self.projection_radius <= 0.0:
             raise ValueError("projection_radius must be positive.")
+        if self.outside_mask_constellations is not None:
+            names = tuple(
+                str(name).strip()
+                for name in self.outside_mask_constellations
+            )
+            if not names or any(not name for name in names):
+                raise ValueError(
+                    "outside_mask_constellations must contain names."
+                )
+            object.__setattr__(
+                self,
+                "outside_mask_constellations",
+                names,
+            )
 
     @classmethod
     def from_angular_radius(
@@ -368,12 +383,38 @@ class RegionalChart:
             options[sky.constellation_labels] = label_options
         if layer_options is not None:
             options.update(layer_options)
-        return sky.draw_chart(
-            projection=self.projection,
+        projection = self.projection
+        viewport = self.viewport
+        result = sky.draw_chart(
+            projection=projection,
             renderer=renderer,
-            viewport=self.viewport,
+            viewport=viewport,
             layer_options=options,
         )
+        if self.outside_mask_constellations is not None:
+            from wenu.charts._masking import (
+                draw_constellation_outside_mask,
+            )
+
+            mask_style = (
+                {
+                    "facecolor": "black",
+                    "edgecolor": "none",
+                    "alpha": 0.35,
+                    "zorder": 20.0,
+                }
+                if style is None
+                else style.outside_mask_style()
+            )
+            draw_constellation_outside_mask(
+                sky=sky,
+                projection=projection,
+                renderer=renderer,
+                viewport=viewport,
+                constellations=self.outside_mask_constellations,
+                style=mask_style,
+            )
+        return result
 
     def export(
         self,
