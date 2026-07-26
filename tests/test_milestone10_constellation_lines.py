@@ -8,7 +8,7 @@ import pandas as pd
 
 from wenu.sky.constellation_lines import ConstellationLines
 from wenu.sky.geometrical_object import GeometricalObject
-from wenu.spherical import SphericalCurves
+from wenu.geometry.spherical import SphericalCurves
 
 
 class Angle:

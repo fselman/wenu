@@ -12,7 +12,7 @@ from matplotlib.patches import Circle
 import numpy as np
 
 from wenu import CelestialSphere, Observer, StereographicProjection
-from wenu.geometry import radec_to_altaz
+from wenu.coordinates import radec_to_altaz
 from wenu.renderers import MatplotlibRenderer, layers
 from wenu.rendering import (
     clip_to_latitude,
@@ -20,8 +20,8 @@ from wenu.rendering import (
     point_styles,
     radial_label_offset,
 )
-from wenu.spherical_frame import SphericalFrame
-from wenu.viewport import Viewport
+from wenu.geometry.frame import SphericalFrame
+from wenu.geometry.viewport import Viewport
 
 
 LOCATION = "La Ligua"

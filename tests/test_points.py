@@ -7,7 +7,7 @@ import pytest
 
 from wenu.sky import GeometricalObject, SkyLayer
 from wenu.sky.points import CelestialPoints
-from wenu.spherical import SphericalPoints
+from wenu.geometry.spherical import SphericalPoints
 
 
 def make_observer(latitude=-33.0):

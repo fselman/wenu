@@ -9,9 +9,9 @@ import astropy.units as u
 import numpy as np
 from astropy.coordinates import SkyCoord, get_sun
 
-from wenu.geometry import radec_to_altaz
+from wenu.coordinates import radec_to_altaz
 from wenu.sky.geometrical_object import GeometricalObject
-from wenu.spherical import SphericalPoints
+from wenu.geometry.spherical import SphericalPoints
 
 
 @dataclass

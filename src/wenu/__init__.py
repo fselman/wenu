@@ -14,13 +14,13 @@ from .styles import PublicationStyle
 from .renderers import MatplotlibRenderer
 from .projection import StereographicProjection
 from .sky import CelestialSphere
-from .spherical_frame import (
+from .geometry.frame import (
     SphericalCoordinates,
     SphericalFrame,
 )
-from .viewport import Viewport
+from .geometry.viewport import Viewport
 
-from wenu.projected import (
+from wenu.geometry.projected import (
     ProjectedCurve,
     ProjectedPoint,
     ProjectedPolygon,

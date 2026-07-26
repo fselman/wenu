@@ -10,7 +10,7 @@ from skyfield.data import hipparcos
 
 from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.resources import catalog_path
-from wenu.spherical import SphericalPoints
+from wenu.geometry.spherical import SphericalPoints
 
 
 class Stars(AstronomicalObject):

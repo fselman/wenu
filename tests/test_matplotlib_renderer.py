@@ -10,7 +10,7 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon as MatplotlibPolygon
 from matplotlib.text import Text
 
-from wenu.projected import (
+from wenu.geometry.projected import (
     ProjectedCurve,
     ProjectedPoint,
     ProjectedPolygon,

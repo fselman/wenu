@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import numpy as np
 
 from wenu.sky.coordinate_grids import CoordinatesGrid
-from wenu.spherical import SphericalCurves
+from wenu.geometry.spherical import SphericalCurves
 
 
 class StubGrid(CoordinatesGrid):

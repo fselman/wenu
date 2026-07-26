@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from wenu.viewport import Viewport
+from wenu.geometry.viewport import Viewport
 
 
 def apply_viewport(

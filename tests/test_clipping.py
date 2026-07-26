@@ -1,15 +1,15 @@
 import numpy as np
 import pytest
 
-from wenu.clipping import (
+from wenu.geometry.clipping import (
     _clip_polyline_to_viewport,
     clip_curve_to_viewport,
     clip_line_segment_to_viewport,
     clip_point_to_viewport,
     clip_polygon_to_viewport,
 )
-from wenu.viewport import Viewport
-from wenu.projected import (
+from wenu.geometry.viewport import Viewport
+from wenu.geometry.projected import (
         ProjectedPolygon,
         ProjectedCurve,
         ProjectedPoint,

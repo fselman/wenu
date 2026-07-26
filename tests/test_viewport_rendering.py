@@ -5,7 +5,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from wenu.renderers.matplotlib_axes import apply_viewport
-from wenu.viewport import Viewport
+from wenu.geometry.viewport import Viewport
 
 
 def test_apply_viewport_sets_axis_limits():

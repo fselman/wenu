@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from wenu.projected import (
+from wenu.geometry.projected import (
     ProjectedCurve,
     ProjectedCurves,
     ProjectedGrid,

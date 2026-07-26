@@ -10,13 +10,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from wenu.chart import ChartRenderingResult
-from wenu.projected import ProjectedPoints
+from wenu.geometry.projected import ProjectedPoints
 from wenu.projection import StereographicProjection
 from wenu.renderers import MatplotlibRenderer
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.sky_layer import SkyLayer
-from wenu.spherical import SphericalPoints
-from wenu.viewport import Viewport
+from wenu.geometry.spherical import SphericalPoints
+from wenu.geometry.viewport import Viewport
 
 
 class StubLayer(SkyLayer):

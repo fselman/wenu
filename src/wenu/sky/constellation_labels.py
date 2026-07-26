@@ -9,7 +9,7 @@ import numpy as np
 from astropy.coordinates import SkyCoord
 
 from wenu.sky.geometrical_object import GeometricalObject
-from wenu.spherical import SphericalPoints
+from wenu.geometry.spherical import SphericalPoints
 
 
 class ConstellationLabels(GeometricalObject):

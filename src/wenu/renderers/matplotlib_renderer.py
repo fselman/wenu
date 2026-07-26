@@ -6,7 +6,7 @@ from collections.abc import Mapping, Sequence
 
 import numpy as np
 
-from wenu.projected import (
+from wenu.geometry.projected import (
     ProjectedCurve,
     ProjectedCurves,
     ProjectedGrid,

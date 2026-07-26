@@ -1,14 +1,14 @@
 import numpy as np
 import pytest
 
-from wenu.clipping import (
+from wenu.geometry.clipping import (
     clip_curve_to_viewport,
     clip_polygon_to_viewport,
 )
-from wenu.projected import ProjectedCurve, ProjectedPolygon
+from wenu.geometry.projected import ProjectedCurve, ProjectedPolygon
 from wenu.projection import StereographicProjection
-from wenu.spherical import SphericalPoints
-from wenu.spherical_frame import SphericalFrame
+from wenu.geometry.spherical import SphericalPoints
+from wenu.geometry.frame import SphericalFrame
 
 
 def test_default_frame_preserves_existing_projection_exactly():

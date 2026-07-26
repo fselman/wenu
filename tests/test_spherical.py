@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from wenu.spherical import (
+from wenu.geometry.spherical import (
     SphericalCurves,
     SphericalPoints,
     SphericalPolygons,

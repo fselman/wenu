@@ -16,7 +16,7 @@ DOMAIN_ROOTS = (
 )
 FORBIDDEN_IMPORTS = (
     "matplotlib",
-    "wenu.projected",
+    "wenu.geometry.projected",
     "wenu.projection",
     "wenu.renderers",
 )
@@ -103,7 +103,7 @@ def test_legacy_drawing_api_is_removed():
 
 
 def test_obsolete_altaz_helpers_are_removed():
-    import wenu.geometry as geometry
+    import wenu.coordinates as geometry
 
     for name in (
         "constant_declination_altaz",

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from wenu.viewport import Viewport
+from wenu.geometry.viewport import Viewport
 
 
 def test_viewport_properties():

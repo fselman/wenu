@@ -7,7 +7,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from wenu.projected import ProjectedCurve, ProjectedCurves, ProjectedPoints
+from wenu.geometry.projected import ProjectedCurve, ProjectedCurves, ProjectedPoints
 from wenu.rendering import (
     clip_to_latitude,
     magnitude_sizes,
@@ -15,7 +15,7 @@ from wenu.rendering import (
 )
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.sky_layer import SkyLayer
-from wenu.spherical import SphericalCurves, SphericalPoints
+from wenu.geometry.spherical import SphericalCurves, SphericalPoints
 
 
 class Layer(SkyLayer):

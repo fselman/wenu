@@ -1,14 +1,14 @@
 import numpy as np
 import pytest
 
-from wenu.projected import (
+from wenu.geometry.projected import (
     ProjectedCurves,
     ProjectedGrid,
     ProjectedPoints,
     ProjectedPolygons,
 )
 from wenu.projection import StereographicProjection
-from wenu.spherical import (
+from wenu.geometry.spherical import (
     SphericalCurves,
     SphericalGrid,
     SphericalPoints,

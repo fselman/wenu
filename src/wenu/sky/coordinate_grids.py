@@ -16,9 +16,9 @@ from astropy.coordinates import (
 )
 from astropy.time import Time
 
-from wenu.geometry import radec_to_altaz
+from wenu.coordinates import radec_to_altaz
 from wenu.sky.geometrical_object import GeometricalObject
-from wenu.spherical import SphericalCurves, SphericalGrid
+from wenu.geometry.spherical import SphericalCurves, SphericalGrid
 
 
 class CoordinatesGrid(GeometricalObject, ABC):

@@ -1,6 +1,6 @@
 import numpy as np
 
-from wenu.projected import (
+from wenu.geometry.projected import (
     ProjectedCurve,
     ProjectedCurves,
     ProjectedGrid,
@@ -9,17 +9,17 @@ from wenu.projected import (
     ProjectedPolygon,
     ProjectedPolygons,
 )
-from wenu.spherical_frame import (
+from wenu.geometry.frame import (
     SphericalCoordinates,
     SphericalFrame,
 )
-from wenu.spherical import (
+from wenu.geometry.spherical import (
     SphericalCurves,
     SphericalGrid,
     SphericalPoints,
     SphericalPolygons,
 )
-from wenu.viewport import Viewport
+from wenu.geometry.viewport import Viewport
 
 
 class StereographicProjection:

@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import numpy as np
 
-from wenu.projected import (
+from wenu.geometry.projected import (
     ProjectedCurve,
     ProjectedCurves,
     ProjectedGrid,
     ProjectedPolygons,
     ProjectedPoints,
 )
-from wenu.spherical import (
+from wenu.geometry.spherical import (
     SphericalCurves,
     SphericalGrid,
     SphericalPoints,

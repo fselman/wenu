@@ -12,7 +12,7 @@ from matplotlib.collections import PathCollection
 from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon
 
-from wenu.projected import (
+from wenu.geometry.projected import (
     ProjectedCurve,
     ProjectedCurves,
     ProjectedGrid,

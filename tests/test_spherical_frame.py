@@ -1,6 +1,6 @@
 import numpy as np
 
-from wenu.spherical_frame import (
+from wenu.geometry.frame import (
     SphericalCoordinates,
     SphericalFrame,
 )

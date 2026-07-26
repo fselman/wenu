@@ -8,7 +8,7 @@ from astropy.time import Time
 
 from wenu.sky.geometrical_object import GeometricalObject
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
-from wenu.spherical import SphericalPolygons
+from wenu.geometry.spherical import SphericalPolygons
 
 
 def make_boundaries(*, sampling_step_deg=1.0):

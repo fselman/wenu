@@ -4,12 +4,12 @@ from collections.abc import Callable
 
 import numpy as np
 
-from wenu.projected import (
+from wenu.geometry.projected import (
         ProjectedPoint,
         ProjectedCurve,
         ProjectedPolygon,
         )
-from wenu.viewport import Viewport
+from wenu.geometry.viewport import Viewport
 
 def clip_point_to_viewport(
     point: ProjectedPoint,

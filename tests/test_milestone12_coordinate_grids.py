@@ -9,7 +9,7 @@ from wenu.sky.coordinate_grids import (
     SphericalCoordinatesGrid,
 )
 from wenu.sky.geometrical_object import GeometricalObject
-from wenu.spherical import SphericalCurves, SphericalGrid
+from wenu.geometry.spherical import SphericalCurves, SphericalGrid
 
 
 class StubGrid(CoordinatesGrid):

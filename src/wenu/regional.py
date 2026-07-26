@@ -8,10 +8,10 @@ from typing import Any
 
 import numpy as np
 
-from wenu.geometry import radec_to_altaz
+from wenu.coordinates import radec_to_altaz
 from wenu.projection import StereographicProjection
-from wenu.spherical_frame import SphericalFrame
-from wenu.viewport import Viewport
+from wenu.geometry.frame import SphericalFrame
+from wenu.geometry.viewport import Viewport
 
 
 def _spherical_mean(lon_deg, lat_deg):

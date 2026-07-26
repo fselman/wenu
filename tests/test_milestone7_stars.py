@@ -11,7 +11,7 @@ import pytest
 from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.objects.stars import Stars
 from wenu.sky import SkyLayer
-from wenu.spherical import SphericalPoints
+from wenu.geometry.spherical import SphericalPoints
 
 
 class FakeAngle:

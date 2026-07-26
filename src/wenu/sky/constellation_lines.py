@@ -9,7 +9,7 @@ import numpy as np
 
 from wenu.resources import constellation_lines_path
 from wenu.sky.geometrical_object import GeometricalObject
-from wenu.spherical import SphericalCurves
+from wenu.geometry.spherical import SphericalCurves
 
 
 class ConstellationLines(GeometricalObject):

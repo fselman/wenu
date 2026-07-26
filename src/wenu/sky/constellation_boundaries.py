@@ -13,7 +13,7 @@ from astropy.time import Time
 
 from wenu.resources import boundary_path
 from wenu.sky.geometrical_object import GeometricalObject
-from wenu.spherical import SphericalPolygons
+from wenu.geometry.spherical import SphericalPolygons
 
 
 class ConstellationBoundaries(GeometricalObject):
