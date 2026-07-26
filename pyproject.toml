@@ -21,6 +21,7 @@ dependencies = [
     "matplotlib",
     "numpy",
     "pandas",
+    "skyfield",
 ]
 
 [project.scripts]
