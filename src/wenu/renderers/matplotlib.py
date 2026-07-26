@@ -127,12 +127,15 @@ def render_text(
     matplotlib.text.Text
         The Matplotlib text artist.
     """
-    return ax.text(
+    artist = ax.text(
         float(x),
         float(y),
         text,
         **style,
     )
+    artist.set_clip_on(True)
+    artist.set_clip_path(ax.patch)
+    return artist
 
 def render_curve(
     ax: Axes,
@@ -180,6 +183,8 @@ def render_curve(
         y,
         **style,
     )
+    line.set_clip_on(True)
+    line.set_clip_path(ax.patch)
 
     return line
 

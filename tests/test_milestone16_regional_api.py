@@ -1,0 +1,113 @@
+"""Milestone 16 production regional-chart API tests."""
+
+from types import SimpleNamespace
+
+import numpy as np
+import pytest
+
+from wenu.regional import ExportOptions, RegionalChart
+from wenu.styles import PublicationStyle
+
+
+def test_angular_radius_and_aspect_define_viewport():
+    chart = RegionalChart.from_angular_radius(
+        center_alt_deg=45.0,
+        center_az_deg=120.0,
+        angular_radius_deg=20.0,
+        aspect_ratio=1.5,
+        crop_x=0.1,
+        crop_y=-0.2,
+    )
+    assert chart.field_width_deg == 60.0
+    assert chart.field_height_deg == 40.0
+    assert chart.viewport.aspect_ratio > 1.0
+    assert chart.viewport.center == pytest.approx((0.1, -0.2))
+    width, height = chart.figure_size(7.0)
+    assert width / height == pytest.approx(
+        chart.viewport.aspect_ratio
+    )
+
+
+def test_projection_tangent_point_maps_to_origin():
+    chart = RegionalChart(
+        center_alt_deg=35.0,
+        center_az_deg=210.0,
+        field_width_deg=30.0,
+        field_height_deg=20.0,
+    )
+    x, y = chart.projection.project_spherical(210.0, 35.0)
+    assert np.hypot(x, y) < 2.0e-8
+
+
+def test_invalid_field_is_rejected():
+    with pytest.raises(ValueError, match="field_width_deg"):
+        RegionalChart(
+            center_alt_deg=0.0,
+            center_az_deg=0.0,
+            field_width_deg=0.0,
+            field_height_deg=20.0,
+        )
+
+
+class Figure:
+    def __init__(self):
+        self.saved = None
+
+    def savefig(self, path, **kwargs):
+        self.saved = (path, kwargs)
+
+
+def test_export_options_are_reproducible(tmp_path):
+    figure = Figure()
+    options = ExportOptions(
+        dpi=240,
+        transparent=True,
+        metadata={"Creator": "Wenu"},
+    )
+    path = options.save(figure, tmp_path / "chart.png")
+    assert path.name == "chart.png"
+    assert figure.saved[1]["dpi"] == 240
+    assert figure.saved[1]["transparent"] is True
+    assert figure.saved[1]["metadata"] == {"Creator": "Wenu"}
+
+
+def test_style_configures_axes():
+    calls = []
+    axes = SimpleNamespace(
+        figure=SimpleNamespace(facecolor=None),
+        set_facecolor=lambda value: calls.append(("face", value)),
+        set_title=lambda value: calls.append(("title", value)),
+        set_xticks=lambda value: calls.append(("x", value)),
+        set_yticks=lambda value: calls.append(("y", value)),
+    )
+    axes.figure.set_facecolor = lambda value: calls.append(
+        ("figure", value)
+    )
+    style = PublicationStyle(sky_color="navy")
+    assert style.configure_axes(axes, title="Crux") is axes
+    assert ("face", "navy") in calls
+    assert ("title", "Crux") in calls
+
+
+def test_constellation_center_requires_configured_layers():
+    with pytest.raises(RuntimeError, match="Add stars"):
+        RegionalChart.from_constellations(
+            SimpleNamespace(
+                stars=None,
+                constellation_lines=None,
+            ),
+            ["Cru"],
+            angular_radius_deg=20.0,
+        )
+
+
+def test_regional_grid_defaults_to_viewport_clipping():
+    grid = SimpleNamespace(coordinate_system="equatorial")
+    assert "prepare" not in PublicationStyle()._grid_options(grid)
+
+    horizon_limited = PublicationStyle(
+        grid_minimum_altitude_deg=0.0
+    )
+    assert callable(
+        horizon_limited._grid_options(grid)["prepare"]
+    )

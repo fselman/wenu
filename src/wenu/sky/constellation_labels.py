@@ -39,7 +39,19 @@ class ConstellationLabels(GeometricalObject):
         self.boundaries = boundaries
         return boundaries
 
-    def spherical_geometry(self, observer) -> SphericalPoints:
+    def spherical_geometry(
+        self,
+        observer,
+        *,
+        selected=None,
+        min_stars=None,
+    ) -> SphericalPoints:
+        selected = (
+            self.selected if selected is None else set(selected)
+        )
+        min_stars = (
+            self.min_stars if min_stars is None else int(min_stars)
+        )
         stars = self.stars.spherical_geometry(
             observer,
             alt_min=0.0,
@@ -65,9 +77,9 @@ class ConstellationLabels(GeometricalObject):
                 frame.iloc[index],
             )
             if (
-                self.selected is not None
-                and abbreviation not in self.selected
-                and label not in self.selected
+                selected is not None
+                and abbreviation not in selected
+                and label not in selected
             ):
                 continue
             groups[label].append(index)
@@ -76,7 +88,7 @@ class ConstellationLabels(GeometricalObject):
         lat_deg = []
         labels = []
         for label, indices in groups.items():
-            if len(indices) < self.min_stars:
+            if len(indices) < min_stars:
                 continue
             lon, lat = self._spherical_mean(
                 stars.lon_deg[indices],

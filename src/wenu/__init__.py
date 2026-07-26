@@ -9,6 +9,9 @@ except PackageNotFoundError:
 
 from .chart import ChartRenderingResult, LayerRenderingResult
 from .observer import Observer
+from .regional import ExportOptions, RegionalChart
+from .styles import PublicationStyle
+from .renderers import MatplotlibRenderer
 from .projection import StereographicProjection
 from .sky import CelestialSphere
 from .spherical_frame import (
@@ -27,6 +30,10 @@ __all__ = [
     "ChartRenderingResult",
     "LayerRenderingResult",
     "Observer",
+    "ExportOptions",
+    "RegionalChart",
+    "PublicationStyle",
+    "MatplotlibRenderer",
     "StereographicProjection",
     "CelestialSphere",
     "SphericalCoordinates",
