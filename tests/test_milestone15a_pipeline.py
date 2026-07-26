@@ -109,7 +109,10 @@ def test_curve_clipping_preserves_visible_runs():
     )
     clipped = clip_to_latitude(spherical, projected)
     assert len(clipped) == 1
-    assert np.array_equal(clipped[0].x, [1.0, 2.0])
+    np.testing.assert_allclose(
+    clipped[0].x,
+    [0.5, 1.0, 2.0, 8.0 / 3.0],
+    )
 
 
 def test_magnitude_sizes_matches_legacy_formula():

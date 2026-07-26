@@ -179,37 +179,79 @@ def _clip_polygon_boundaries(spherical, projected, minimum):
 
 
 def _visible_segments(x, y, latitude, *, closed, minimum):
+    """Return visible fragments with interpolated latitude crossings."""
     x = np.asarray(x, dtype=float)
     y = np.asarray(y, dtype=float)
     latitude = np.asarray(latitude, dtype=float)
-    visible = (
-        np.isfinite(x)
-        & np.isfinite(y)
-        & np.isfinite(latitude)
-        & (latitude >= minimum)
-    )
-    if not np.any(visible):
-        return []
-    if closed:
-        if np.all(visible):
-            return [(np.append(x, x[0]), np.append(y, y[0]))]
-        first_hidden = int(np.flatnonzero(~visible)[0])
-        order = (
-            np.arange(len(x), dtype=int) + first_hidden + 1
-        ) % len(x)
-        x = x[order]
-        y = y[order]
-        visible = visible[order]
+    if not (x.shape == y.shape == latitude.shape):
+        raise ValueError(
+            "Projected coordinates and latitude must have matching shapes."
+        )
+    if x.ndim != 1:
+        raise ValueError("Curve clipping arrays must be one-dimensional.")
+    if closed and x.size:
+        x = np.append(x, x[0])
+        y = np.append(y, y[0])
+        latitude = np.append(latitude, latitude[0])
 
     segments = []
-    start = None
-    for index, is_visible in enumerate(visible):
-        if is_visible and start is None:
-            start = index
-        if not is_visible and start is not None:
-            if index - start >= 2:
-                segments.append((x[start:index], y[start:index]))
-            start = None
-    if start is not None and len(x) - start >= 2:
-        segments.append((x[start:], y[start:]))
+    current_x = []
+    current_y = []
+
+    def finish():
+        nonlocal current_x, current_y
+        if len(current_x) >= 2:
+            segments.append(
+                (
+                    np.asarray(current_x, dtype=float),
+                    np.asarray(current_y, dtype=float),
+                )
+            )
+        current_x = []
+        current_y = []
+
+    def intersection(index):
+        latitude0 = latitude[index]
+        latitude1 = latitude[index + 1]
+        fraction = (
+            (minimum - latitude0) / (latitude1 - latitude0)
+        )
+        return (
+            x[index] + fraction * (x[index + 1] - x[index]),
+            y[index] + fraction * (y[index + 1] - y[index]),
+        )
+
+    for index in range(max(0, x.size - 1)):
+        finite0 = np.all(
+            np.isfinite((x[index], y[index], latitude[index]))
+        )
+        finite1 = np.all(
+            np.isfinite(
+                (x[index + 1], y[index + 1], latitude[index + 1])
+            )
+        )
+        if not finite0 or not finite1:
+            finish()
+            continue
+
+        visible0 = latitude[index] >= minimum
+        visible1 = latitude[index + 1] >= minimum
+        if visible0 and not current_x:
+            current_x.append(float(x[index]))
+            current_y.append(float(y[index]))
+
+        if visible0 and visible1:
+            current_x.append(float(x[index + 1]))
+            current_y.append(float(y[index + 1]))
+        elif visible0 and not visible1:
+            crossing_x, crossing_y = intersection(index)
+            current_x.append(float(crossing_x))
+            current_y.append(float(crossing_y))
+            finish()
+        elif not visible0 and visible1:
+            crossing_x, crossing_y = intersection(index)
+            current_x = [float(crossing_x), float(x[index + 1])]
+            current_y = [float(crossing_y), float(y[index + 1])]
+
+    finish()
     return segments

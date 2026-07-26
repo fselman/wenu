@@ -9,6 +9,7 @@ except PackageNotFoundError:
 
 from .sky.rendering_results import ChartRenderingResult, LayerRenderingResult
 from .observer import Observer
+from .charts.full_sky import FullSkyChart
 from .charts.regional import ExportOptions, RegionalChart
 from .charts.styles import PublicationStyle
 from .rendering import MatplotlibRenderer
@@ -31,6 +32,7 @@ __all__ = [
     "LayerRenderingResult",
     "Observer",
     "ExportOptions",
+    "FullSkyChart",
     "RegionalChart",
     "PublicationStyle",
     "MatplotlibRenderer",

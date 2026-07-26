@@ -47,13 +47,28 @@ class PublicationStyle:
             minimum=self.horizon_altitude_deg,
         )
 
-    def layer_options(self, sky):
+    def layer_options(
+        self,
+        sky,
+        *,
+        horizon_altitude_deg=None,
+    ):
         """Build explicit options for the layers registered in ``sky``."""
+        minimum = (
+            self.horizon_altitude_deg
+            if horizon_altitude_deg is None
+            else float(horizon_altitude_deg)
+        )
+        clip = lambda spherical, projected: clip_to_latitude(
+            spherical,
+            projected,
+            minimum=minimum,
+        )
         options = {}
         if sky.stars is not None:
             options[sky.stars] = {
                 "geometry": {
-                    "alt_min": self.horizon_altitude_deg,
+                    "alt_min": minimum,
                 },
                 "render": lambda spherical, projected: {
                     "style": {
@@ -68,7 +83,7 @@ class PublicationStyle:
             }
         if sky.constellation_lines is not None:
             options[sky.constellation_lines] = {
-                "prepare": self._clip,
+                "prepare": clip,
                 "render": {
                     "style": {
                         "color": self.foreground_color,
@@ -80,7 +95,7 @@ class PublicationStyle:
             }
         if sky.constellation_labels is not None:
             options[sky.constellation_labels] = {
-                "prepare": self._clip,
+                "prepare": clip,
                 "render": {
                     "style": {"s": 0.0},
                     "draw_labels": True,
@@ -97,7 +112,7 @@ class PublicationStyle:
             }
         if sky.constellation_boundaries is not None:
             options[sky.constellation_boundaries] = {
-                "prepare": self._clip,
+                "prepare": clip,
                 "render": {
                     "style": {
                         "color": self.boundary_color,
@@ -109,7 +124,7 @@ class PublicationStyle:
             }
         if sky.points is not None:
             options[sky.points] = {
-                "prepare": self._clip,
+                "prepare": clip,
                 "render": lambda spherical, projected: {
                     "styles": point_styles(
                         spherical.metadata,
@@ -126,10 +141,13 @@ class PublicationStyle:
             }
         for layer in sky.layers:
             if isinstance(layer, CoordinatesGrid):
-                options[layer] = self._grid_options(layer)
+                options[layer] = self._grid_options(
+                    layer,
+                    minimum=horizon_altitude_deg,
+                )
         return options
 
-    def _grid_options(self, layer):
+    def _grid_options(self, layer, *, minimum=None):
         system = layer.coordinate_system
         if system == "equatorial":
             color = self.equatorial_color
@@ -151,8 +169,10 @@ class PublicationStyle:
                 }
             },
         }
-        if self.grid_minimum_altitude_deg is not None:
-            minimum = float(self.grid_minimum_altitude_deg)
+        if minimum is None:
+            minimum = self.grid_minimum_altitude_deg
+        if minimum is not None:
+            minimum = float(minimum)
             options["prepare"] = (
                 lambda spherical, projected: clip_to_latitude(
                     spherical,

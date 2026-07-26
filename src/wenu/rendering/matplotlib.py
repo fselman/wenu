@@ -30,6 +30,47 @@ class MatplotlibRenderer:
 
     def __init__(self, ax):
         self.ax = ax
+        self._clip_patch = None
+
+    def set_clip_boundary(self, boundary, *, style=None):
+        """Set and draw a projected closed clipping boundary."""
+        from matplotlib.path import Path
+        from matplotlib.patches import PathPatch
+
+        if not isinstance(boundary, ProjectedCurve):
+            raise TypeError("boundary must be a ProjectedCurve.")
+        if not boundary.closed:
+            raise ValueError("The clipping boundary must be closed.")
+        finite = boundary.finite
+        if np.count_nonzero(finite) < 3:
+            raise ValueError(
+                "The clipping boundary needs three finite vertices."
+            )
+        vertices = np.column_stack(
+            (boundary.x[finite], boundary.y[finite])
+        )
+        vertices = np.vstack((vertices, vertices[0]))
+        codes = np.full(len(vertices), Path.LINETO, dtype=np.uint8)
+        codes[0] = Path.MOVETO
+        codes[-1] = Path.CLOSEPOLY
+        patch = PathPatch(
+            Path(vertices, codes),
+            **({} if style is None else dict(style)),
+        )
+        self.ax.add_patch(patch)
+        self._clip_patch = patch
+        return patch
+
+    def _apply_clip_patch(self, artists):
+        if self._clip_patch is None:
+            return artists
+        for artist in artists:
+            if isinstance(artist, (list, tuple)):
+                self._apply_clip_patch(artist)
+            elif callable(getattr(artist, "set_clip_path", None)):
+                artist.set_clip_on(True)
+                artist.set_clip_path(self._clip_patch)
+        return artists
 
     def apply_viewport(self, viewport, *, equal_aspect=True):
         """Apply projected chart bounds to this renderer's axes."""
@@ -50,42 +91,20 @@ class MatplotlibRenderer:
         label_style=None,
         label_offset=(0.0, 0.0),
     ):
-        """Draw a supported projected geometry object.
-
-        Parameters are renderer-facing only. ``style`` applies to the whole
-        object, ``styles`` optionally supplies one style per entity, and
-        ``component_styles`` supplies overrides for named grid components.
-        """
+        """Draw a supported projected geometry object."""
         common = {} if style is None else dict(style)
         labels = {} if label_style is None else dict(label_style)
 
         if isinstance(geometry, ProjectedPoint):
-            return self._draw_point(
+            artists = self._draw_point(
                 geometry,
                 common,
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
             )
-        if isinstance(geometry, ProjectedPoints):
-            return self._draw_points(
-                geometry,
-                common,
-                styles=styles,
-                draw_labels=draw_labels,
-                label_style=labels,
-                label_offset=label_offset,
-            )
-        if isinstance(geometry, ProjectedCurve):
-            return self._draw_curve(
-                geometry,
-                common,
-                draw_labels=draw_labels,
-                label_style=labels,
-                label_offset=label_offset,
-            )
-        if isinstance(geometry, ProjectedCurves):
-            return self._draw_curves(
+        elif isinstance(geometry, ProjectedPoints):
+            artists = self._draw_points(
                 geometry,
                 common,
                 styles=styles,
@@ -93,8 +112,25 @@ class MatplotlibRenderer:
                 label_style=labels,
                 label_offset=label_offset,
             )
-        if isinstance(geometry, ProjectedGrid):
-            return self._draw_grid(
+        elif isinstance(geometry, ProjectedCurve):
+            artists = self._draw_curve(
+                geometry,
+                common,
+                draw_labels=draw_labels,
+                label_style=labels,
+                label_offset=label_offset,
+            )
+        elif isinstance(geometry, ProjectedCurves):
+            artists = self._draw_curves(
+                geometry,
+                common,
+                styles=styles,
+                draw_labels=draw_labels,
+                label_style=labels,
+                label_offset=label_offset,
+            )
+        elif isinstance(geometry, ProjectedGrid):
+            artists = self._draw_grid(
                 geometry,
                 common,
                 styles=styles,
@@ -103,16 +139,16 @@ class MatplotlibRenderer:
                 label_style=labels,
                 label_offset=label_offset,
             )
-        if isinstance(geometry, ProjectedPolygon):
-            return self._draw_polygon(
+        elif isinstance(geometry, ProjectedPolygon):
+            artists = self._draw_polygon(
                 geometry,
                 common,
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
             )
-        if isinstance(geometry, ProjectedPolygons):
-            return self._draw_polygons(
+        elif isinstance(geometry, ProjectedPolygons):
+            artists = self._draw_polygons(
                 geometry,
                 common,
                 styles=styles,
@@ -120,10 +156,13 @@ class MatplotlibRenderer:
                 label_style=labels,
                 label_offset=label_offset,
             )
-        raise TypeError(
-            "Unsupported projected geometry type: "
-            f"{type(geometry).__name__}."
-        )
+        else:
+            raise TypeError(
+                "Unsupported projected geometry type: "
+                f"{type(geometry).__name__}."
+            )
+        return self._apply_clip_patch(artists)
+
 
     def _draw_point(
         self,
