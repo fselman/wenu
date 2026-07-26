@@ -23,12 +23,12 @@ from wenu import (
 # The Western line file stores the two disconnected parts of Serpens
 # separately. The official-boundary and mask APIs accept the collective
 # abbreviation "Ser" and expand it to both regions.
-LINE_CONSTELLATIONS = ("Sag", "Sco", "Oph", "Ser1", "Ser2")
-BOUNDARY_CONSTELLATIONS = ("Sag", "Sco", "Oph", "Ser")
-LABEL_CONSTELLATIONS = ("Sag", "Sco", "Oph", "SerCap", "SerCau")
+LINE_CONSTELLATIONS = ("Sgr", "Sco", "Oph", "Ser1", "Ser2")
+BOUNDARY_CONSTELLATIONS = ("Sgr", "Sco", "Oph", "Ser")
+LABEL_CONSTELLATIONS = ("Sgr", "Sco", "Oph", "SerCap", "SerCau")
 
 
-def generate(output):
+def generate(output, *, nonstellar_labels=False):
     output = Path(output)
 
     observer = Observer(
@@ -39,6 +39,10 @@ def generate(output):
     sky.add_stars(
         catalog="hipparcos",
         magnitude_limit=5.5,
+    )
+    sky.add_nonstellar(
+        catalog="messier",
+        samples=73,
     )
     sky.add_constellations(
         system="western",
@@ -65,6 +69,9 @@ def generate(output):
         outside_mask_alpha=0.42,
         outside_mask_zorder=20,
         label_fontsize=11,
+        nonstellar_minimum_size_arcmin=30.0,
+        nonstellar_draw_labels=nonstellar_labels,
+        nonstellar_label_fontsize=7.0,
     )
 
     figure, ax = plt.subplots(figsize=chart.figure_size(9.0))
@@ -93,8 +100,16 @@ def main():
             "sag-sco-oph-ser.png"
         ),
     )
+    parser.add_argument(
+        "--nonstellar-labels",
+        action="store_true",
+        help="label the plotted Messier symbols",
+    )
     arguments = parser.parse_args()
-    _, output = generate(arguments.output)
+    _, output = generate(
+        arguments.output,
+        nonstellar_labels=arguments.nonstellar_labels,
+    )
     print(output)
 
 

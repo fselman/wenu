@@ -21,6 +21,14 @@ class PublicationStyle:
     sky_color: str = "midnightblue"
     foreground_color: str = "white"
     star_color: str = "white"
+    nonstellar_color: str = "white"
+    nonstellar_linewidth: float = 0.8
+    nonstellar_alpha: float = 0.9
+    nonstellar_minimum_size_arcmin: float | None = 30.0
+    nonstellar_draw_labels: bool = False
+    nonstellar_label_fontsize: float = 7.0
+    nonstellar_symbol_dots: int = 12
+    nonstellar_dot_markersize: float = 2.0
     boundary_color: str = "white"
     equatorial_color: str = "deepskyblue"
     ecliptic_color: str = "gold"
@@ -96,6 +104,47 @@ class PublicationStyle:
                         "linewidths": 0,
                         "zorder": layers.STARS,
                     }
+                },
+            }
+        if sky.nonstellar is not None:
+            symbol_dots = int(self.nonstellar_symbol_dots)
+            if symbol_dots < 8:
+                raise ValueError(
+                    "nonstellar_symbol_dots must be at least 8."
+                )
+            markevery = max(
+                1,
+                int(sky.nonstellar.samples) // symbol_dots,
+            )
+            options[sky.nonstellar] = {
+                "geometry": {
+                    "minimum_size_arcmin": (
+                        self.nonstellar_minimum_size_arcmin
+                    ),
+                },
+                "prepare": clip,
+                "render": {
+                    "style": {
+                        "color": self.nonstellar_color,
+                        "linewidth": self.nonstellar_linewidth,
+                        "linestyle": "None",
+                        "marker": ".",
+                        "markersize": self.nonstellar_dot_markersize,
+                        "markeredgewidth": 0.0,
+                        "markevery": markevery,
+                        "alpha": self.nonstellar_alpha,
+                        "zorder": layers.POINTS,
+                    },
+                    "draw_labels": self.nonstellar_draw_labels,
+                    "label_style": {
+                        "color": self.nonstellar_color,
+                        "fontsize": (
+                            self.nonstellar_label_fontsize
+                        ),
+                        "ha": "center",
+                        "va": "bottom",
+                    },
+                    "label_offset": (0.0, 0.02),
                 },
             }
         if sky.constellation_lines is not None:

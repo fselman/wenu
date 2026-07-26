@@ -1,0 +1,44 @@
+{
+  "source": "NASA HEASARC",
+  "catalog": "messier",
+  "source_url": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap",
+  "documentation_url": "https://heasarc.gsfc.nasa.gov/w3browse/all/messier.html",
+  "catalog_reference": "Sky Catalog 2000.0, Volume 2, edited by A. Hirshfeld and R. W. Sinnott, 1985",
+  "query": "SELECT * FROM messier",
+  "retrieved_at_utc": "2026-07-26T20:43:55+00:00",
+  "astroquery_version": "0.4.11",
+  "row_count": 109,
+  "expected_row_count": 109,
+  "notes": "The HEASARC table contains 109 rows. HEASARC treats M102 as a duplicate or erroneous observation of M101.",
+  "files": {
+    "canonical_snapshot": {
+      "name": "messier_heasarc.ecsv",
+      "format": "Astropy ECSV",
+      "sha256": "81360deb549d205e099765c95e306bba24a835cb3f5fb49345bcfa47c234d8c6"
+    },
+    "csv_derivative": {
+      "name": "messier_heasarc.csv",
+      "format": "CSV",
+      "sha256": "e6ab5f0a12d75fa80064af7f449a1424215fae904cec7c0b253203deb96822ce"
+    }
+  },
+  "columns": [
+    "__row",
+    "alt_name",
+    "bii",
+    "class",
+    "constell",
+    "dec",
+    "dimension",
+    "lii",
+    "name",
+    "notes",
+    "object_type",
+    "ra",
+    "vmag",
+    "vmag_uncert",
+    "__x_ra_dec",
+    "__y_ra_dec",
+    "__z_ra_dec"
+  ]
+}

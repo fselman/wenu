@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 
 from wenu.sky.rendering_results import ChartRenderingResult, LayerRenderingResult
+from wenu.objects.nonstellar import NonStellar
 from wenu.objects.stars import Stars
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.sky.constellation_labels import ConstellationLabels
@@ -24,6 +25,7 @@ class CelestialSphere:
     def __init__(self, observer) -> None:
         self.observer = observer
         self.stars = None
+        self.nonstellar = None
         self.points = None
         self.constellations = None
         self.constellation_boundaries = None
@@ -163,6 +165,25 @@ class CelestialSphere:
         self.stars.load()
         self.add(self.stars)
         return self.stars
+
+    def add_nonstellar(
+        self,
+        catalog="messier",
+        *,
+        filename=None,
+        magnitude_limit=None,
+        samples=73,
+    ) -> NonStellar:
+        """Load and register a non-stellar catalogue layer."""
+        self.nonstellar = NonStellar(
+            observer=self.observer,
+            catalog=catalog,
+            magnitude_limit=magnitude_limit,
+            samples=samples,
+        )
+        self.nonstellar.load(filename=filename)
+        self.add(self.nonstellar)
+        return self.nonstellar
 
     def add_points(self) -> CelestialPoints:
         """Create and register a celestial-reference-point layer."""

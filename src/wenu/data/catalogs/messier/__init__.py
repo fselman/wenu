@@ -1,0 +1,1 @@
+"""Packaged Messier catalogue data."""

@@ -70,3 +70,33 @@ def boundary_path(name):
     raise ValueError(
         f"Unknown boundary set: {name}"
     )
+
+def nonstellar_catalog_path(name):
+    """Return a packaged non-stellar catalogue resource."""
+    name = name.lower()
+    if name != "messier":
+        raise ValueError(f"Unknown non-stellar catalogue: {name}")
+
+    package = files("wenu.data.catalogs.messier")
+    preferred = (
+        "messier_heasarc.ecsv",
+        "heasarc_messier.ecsv",
+        "messier.ecsv",
+    )
+    for filename in preferred:
+        resource = package / filename
+        if resource.is_file():
+            return resource
+
+    available = tuple(
+        resource
+        for resource in package.iterdir()
+        if resource.name.lower().endswith(".ecsv")
+    )
+    if len(available) == 1:
+        return available[0]
+    raise FileNotFoundError(
+        "Expected one Messier ECSV catalogue in "
+        "wenu.data.catalogs.messier."
+    )
+
