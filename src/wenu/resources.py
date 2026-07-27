@@ -86,6 +86,10 @@ def nonstellar_catalog_path(name):
             "wenu.data.catalogs.galaxies",
             ("galaxies_openngc.ecsv",),
         ),
+        "open_clusters": (
+            "wenu.data.catalogs.open_clusters",
+            ("open_clusters_dias_heasarc.ecsv",),
+        ),
         "globular_clusters": (
             "wenu.data.catalogs.globular_clusters",
             ("globular_clusters_harris_heasarc.ecsv",),

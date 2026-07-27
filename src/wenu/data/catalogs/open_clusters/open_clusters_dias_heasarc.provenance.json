@@ -1,0 +1,64 @@
+{
+  "source": "NASA HEASARC",
+  "catalog": "openclust",
+  "catalog_version": "HEASARC/CDS B/ocl snapshot",
+  "source_url": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap",
+  "documentation_url": "https://heasarc.gsfc.nasa.gov/W3Browse/star-catalog/openclust.html",
+  "cds_url": "https://cdsarc.cds.unistra.fr/ftp/cats/B/ocl/",
+  "catalog_reference": "Dias, W. S., Alessi, B. S., Moitinho, A., & Lepine, J. R. D. 2002, A&A, 389, 871; HEASARC OPENCLUST table updated from CDS B/ocl",
+  "query": "SELECT * FROM openclust",
+  "retrieved_at_utc": "2026-07-27T22:16:50+00:00",
+  "astropy_version": "6.1.7",
+  "astroquery_version": "0.4.11",
+  "source_row_count": 2166,
+  "selected_row_count": 1931,
+  "excluded_type_flags": [
+    "A",
+    "CR",
+    "D",
+    "G",
+    "M",
+    "N",
+    "NF",
+    "O",
+    "OC?",
+    "OE",
+    "OEV",
+    "P"
+  ],
+  "selection": "Retain ordinary, embedded, recovered, infrared, variable-extinction, and explicitly likely open clusters. Exclude flags denoting asterisms, dubious/non-existent objects, associations, moving groups, possible globular clusters, cluster remnants, and merely possible clusters.",
+  "coordinate_frame": "ICRS/J2000 as served by HEASARC TAP",
+  "diameter_coverage_fraction": 0.9974106680476437,
+  "brightness_notice": "OPENCLUST has no homogeneous integrated visual magnitude. No magnitude threshold is applied or inferred.",
+  "columns": [
+    "identifier",
+    "ra_deg",
+    "dec_deg",
+    "galactic_longitude_deg",
+    "galactic_latitude_deg",
+    "apparent_diameter_arcmin",
+    "distance_pc",
+    "reddening_e_bv",
+    "log_age_years",
+    "member_count",
+    "proper_motion_ra_mas_per_year",
+    "proper_motion_dec_mas_per_year",
+    "radial_velocity_km_per_s",
+    "metallicity_feh",
+    "trumpler_type",
+    "source_type_flag",
+    "object_type"
+  ],
+  "files": {
+    "canonical_snapshot": {
+      "name": "open_clusters_dias_heasarc.ecsv",
+      "format": "Astropy ECSV",
+      "sha256": "508dfdb29110957cf66e50fa2a3cca4139098a4ed396b24787128fc24057241d"
+    },
+    "csv_derivative": {
+      "name": "open_clusters_dias_heasarc.csv",
+      "format": "CSV",
+      "sha256": "48f7ac1a2493b78e160248990fb5369c61d7f578f2b6d4acdd52b0ef2f7c2850"
+    }
+  }
+}

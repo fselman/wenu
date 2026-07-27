@@ -80,6 +80,13 @@ class PublicationStyle:
     planetary_nebula_draw_labels: bool = False
     planetary_nebula_label_color: str | None = None
     planetary_nebula_label_fontsize: float = 6.0
+    open_cluster_color: str = "white"
+    open_cluster_symbol_size: float = 64.0
+    open_cluster_linewidth: float = 0.6
+    open_cluster_alpha: float = 0.9
+    open_cluster_draw_labels: bool = False
+    open_cluster_label_color: str | None = None
+    open_cluster_label_fontsize: float = 6.0
     boundary_color: str = "white"
     equatorial_color: str = "deepskyblue"
     ecliptic_color: str = "gold"
@@ -320,6 +327,35 @@ class PublicationStyle:
                 "render": galaxy_render,
             }
 
+
+        if getattr(sky, "open_clusters", None) is not None:
+            options[sky.open_clusters] = {
+                "prepare": clip,
+                "render": {
+                    "style": {
+                        "marker": DEFAULT_SYMBOLS.open_cluster,
+                        "s": self.open_cluster_symbol_size,
+                        "facecolors": self.open_cluster_color,
+                        "edgecolors": self.open_cluster_color,
+                        "linewidths": self.open_cluster_linewidth,
+                        "alpha": self.open_cluster_alpha,
+                        "zorder": layers.OPEN_CLUSTERS,
+                    },
+                    "draw_labels": self.open_cluster_draw_labels,
+                    "label_style": {
+                        "color": (
+                            self.open_cluster_color
+                            if self.open_cluster_label_color is None
+                            else self.open_cluster_label_color
+                        ),
+                        "fontsize": self.open_cluster_label_fontsize,
+                        "ha": "center",
+                        "va": "bottom",
+                        "zorder": layers.OPEN_CLUSTER_LABELS,
+                    },
+                    "label_offset": (0.0, 0.015),
+                },
+            }
 
         if getattr(sky, "planetary_nebulae", None) is not None:
             options[sky.planetary_nebulae] = {

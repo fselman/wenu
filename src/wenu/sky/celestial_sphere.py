@@ -8,6 +8,7 @@ from wenu.sky.rendering_results import ChartRenderingResult, LayerRenderingResul
 from wenu.objects.nonstellar import NonStellar
 from wenu.objects.galaxies import Galaxies
 from wenu.objects.globular_clusters import GlobularClusters
+from wenu.objects.open_clusters import OpenClusters
 from wenu.objects.supernova_remnants import SupernovaRemnants
 from wenu.objects.planetary_nebulae import PlanetaryNebulae
 from wenu.objects.stars import Stars
@@ -34,6 +35,7 @@ class CelestialSphere:
         self.nonstellar = None
         self.galaxies = None
         self.globular_clusters = None
+        self.open_clusters = None
         self.supernova_remnants = None
         self.planetary_nebulae = None
         self.milky_way_isophotes = None
@@ -250,6 +252,21 @@ class CelestialSphere:
         self.magellanic_cloud_isophotes[layer.cloud] = layer
         self.add(layer)
         return layer
+
+    def add_open_clusters(
+        self,
+        *,
+        filename=None,
+        selected=None,
+    ) -> OpenClusters:
+        """Load and register established/likely Galactic open clusters."""
+        self.open_clusters = OpenClusters(
+            observer=self.observer,
+            selected=selected,
+        )
+        self.open_clusters.load(filename=filename)
+        self.add(self.open_clusters)
+        return self.open_clusters
 
     def add_globular_clusters(
         self,

@@ -12,6 +12,7 @@ from .observer import Observer
 from .objects.nonstellar import NonStellar
 from .objects.galaxies import Galaxies
 from .objects.globular_clusters import GlobularClusters
+from .objects.open_clusters import OpenClusters
 from .objects.supernova_remnants import SupernovaRemnants
 from .objects.planetary_nebulae import PlanetaryNebulae
 from .sky.milky_way import MilkyWayIsophotes
@@ -42,6 +43,7 @@ __all__ = [
     "PlanetaryNebulae",
     "Galaxies",
     "GlobularClusters",
+    "OpenClusters",
     "SupernovaRemnants",
     "MilkyWayIsophotes",
     "MagellanicCloudIsophotes",
@@ -59,4 +61,3 @@ __all__ = [
     "ProjectedPoint",
     "ProjectedPolygon",
 ]
-
