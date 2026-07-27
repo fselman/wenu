@@ -1,0 +1,191 @@
+"""Bright-galaxy catalogue layer."""
+
+from __future__ import annotations
+
+import astropy.units as u
+import numpy as np
+from astropy.coordinates import SkyCoord
+
+from wenu.geometry.spherical import SphericalPolygons
+from wenu.objects.nonstellar import NonStellar
+
+
+class Galaxies(NonStellar):
+    """OpenNGC galaxies represented by their catalogue ellipses.
+
+    The Magellanic Clouds remain in the normalized catalogue but are
+    withheld from ordinary polygon geometry because they are reserved for
+    later isophote rendering.
+    """
+
+    layer_name = "galaxies"
+
+    _ALIASES = {
+        **NonStellar._ALIASES,
+        "magnitude": (
+            "selection_magnitude",
+            "vmag",
+            "magnitude",
+            "mag",
+        ),
+        "common_name": ("common_names", "common_name"),
+    }
+
+    _FLOAT_FIELDS = (
+        "b_magnitude",
+        "v_magnitude",
+        "selection_magnitude",
+        "surface_brightness_b_mag_arcsec2",
+    )
+    _TEXT_FIELDS = (
+        "selection_band",
+        "morphology",
+        "messier",
+        "ngc",
+        "ic",
+        "identifiers",
+        "common_names",
+        "openngc_notes",
+        "ned_notes",
+        "sources",
+        "source_file",
+        "rendering_class",
+    )
+
+    def __init__(
+        self,
+        observer,
+        catalog="galaxies",
+        *,
+        magnitude_limit=12.0,
+        samples=73,
+    ):
+        super().__init__(
+            observer=observer,
+            catalog=catalog,
+            magnitude_limit=magnitude_limit,
+            samples=samples,
+        )
+
+    @staticmethod
+    def _source_column(source, name):
+        names = {
+            column.casefold(): column
+            for column in source.colnames
+        }
+        actual = names.get(name.casefold())
+        return None if actual is None else source[actual]
+
+    @staticmethod
+    def _text_values(values, count, *, default=None):
+        if values is None:
+            return np.full(count, default, dtype=object)
+        return np.asarray(
+            [
+                default
+                if np.ma.is_masked(value)
+                or str(value).strip() == ""
+                else str(value).strip()
+                for value in values
+            ],
+            dtype=object,
+        )
+
+    def _normalize(self, source):
+        normalized = super()._normalize(source)
+        count = len(source)
+
+        for name in self._FLOAT_FIELDS:
+            values = self._source_column(source, name)
+            normalized[name] = (
+                np.full(count, np.nan)
+                if values is None
+                else self._float_values(values)
+            )
+
+        for name in self._TEXT_FIELDS:
+            default = "ellipse" if name == "rendering_class" else None
+            normalized[name] = self._text_values(
+                self._source_column(source, name),
+                count,
+                default=default,
+            )
+        return normalized
+
+    def _geometry_table(self, selected=None):
+        table = super()._geometry_table(selected)
+        rendering_class = np.asarray(
+            table["rendering_class"],
+            dtype=str,
+        )
+        return table[rendering_class == "ellipse"]
+
+    def _geometry_metadata(
+        self,
+        table,
+        *,
+        minimum_size_arcmin=None,
+    ):
+        metadata = super()._geometry_metadata(
+            table,
+            minimum_size_arcmin=minimum_size_arcmin,
+        )
+        for name in self._FLOAT_FIELDS:
+            metadata[name] = np.asarray(table[name], dtype=float)
+        for name in self._TEXT_FIELDS:
+            metadata[name] = np.asarray(table[name], dtype=object)
+        return metadata
+
+    def spherical_geometry(
+        self,
+        observer,
+        *,
+        selected=None,
+        minimum_size_arcmin=None,
+    ) -> SphericalPolygons:
+        """Return galaxy ellipses as polygons transformed to Alt/Az."""
+        if self.catalog is None:
+            raise RuntimeError(
+                "The catalogue has not been loaded. "
+                "Call galaxies.load() first."
+            )
+        resolved = self.observer if observer is None else observer
+        if resolved is None or not hasattr(resolved, "altaz_frame"):
+            raise ValueError(
+                "An observer with an altaz_frame is required."
+            )
+
+        table = self._geometry_table(selected)
+        lon_deg = []
+        lat_deg = []
+        identifiers = []
+
+        for row in table:
+            center = SkyCoord(
+                ra=float(row["ra_deg"]) * u.deg,
+                dec=float(row["dec_deg"]) * u.deg,
+                frame="icrs",
+            )
+            outline = self._ellipse(
+                center,
+                row["major_axis_arcmin"],
+                row["minor_axis_arcmin"],
+                row["position_angle_deg"],
+                self.samples,
+                minimum_size_arcmin=minimum_size_arcmin,
+            )
+            horizontal = outline.transform_to(resolved.altaz_frame)
+            lon_deg.append(horizontal.az.to_value(u.deg))
+            lat_deg.append(horizontal.alt.to_value(u.deg))
+            identifiers.append(str(row["identifier"]))
+
+        return SphericalPolygons(
+            lon_deg=tuple(lon_deg),
+            lat_deg=tuple(lat_deg),
+            ids=identifiers,
+            names=identifiers,
+            metadata=self._geometry_metadata(
+                table,
+                minimum_size_arcmin=minimum_size_arcmin,
+            ),
+        )

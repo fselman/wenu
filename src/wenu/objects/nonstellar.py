@@ -264,6 +264,59 @@ class NonStellar(AstronomicalObject):
         bearing = np.arctan2(east, north) * u.rad
         return center.directional_offset_by(bearing, separation)
 
+    def _geometry_table(self, selected=None):
+        """Return the catalogue rows participating in geometry."""
+        table = self.catalog
+        if selected is None:
+            return table
+        wanted = {
+            str(identifier).strip().casefold()
+            for identifier in selected
+        }
+        keep = np.asarray(
+            [
+                str(value).strip().casefold() in wanted
+                for value in table["identifier"]
+            ]
+        )
+        return table[keep]
+
+    def _geometry_metadata(
+        self,
+        table,
+        *,
+        minimum_size_arcmin=None,
+    ):
+        """Return per-object metadata accompanying generated geometry."""
+        return {
+            "catalog": self.catalog_name,
+            "coordinate_system": "altaz",
+            "magnitude": np.asarray(table["magnitude"], dtype=float),
+            "object_type": np.asarray(
+                table["object_type"],
+                dtype=object,
+            ),
+            "major_axis_arcmin": np.asarray(
+                table["major_axis_arcmin"],
+                dtype=float,
+            ),
+            "minor_axis_arcmin": np.asarray(
+                table["minor_axis_arcmin"],
+                dtype=float,
+            ),
+            "position_angle_deg": np.asarray(
+                table["position_angle_deg"],
+                dtype=float,
+            ),
+            "position_angle_known": np.isfinite(
+                np.asarray(
+                    table["position_angle_deg"],
+                    dtype=float,
+                )
+            ),
+            "minimum_size_arcmin": minimum_size_arcmin,
+        }
+
     def spherical_geometry(
         self,
         observer,
@@ -283,19 +336,7 @@ class NonStellar(AstronomicalObject):
                 "An observer with an altaz_frame is required."
             )
 
-        table = self.catalog
-        if selected is not None:
-            wanted = {
-                str(identifier).strip().casefold()
-                for identifier in selected
-            }
-            keep = np.asarray(
-                [
-                    str(value).strip().casefold() in wanted
-                    for value in table["identifier"]
-                ]
-            )
-            table = table[keep]
+        table = self._geometry_table(selected)
 
         lon_deg = []
         lat_deg = []
@@ -329,30 +370,8 @@ class NonStellar(AstronomicalObject):
             closed=np.ones(len(table), dtype=bool),
             ids=identifiers,
             names=identifiers,
-            metadata={
-                "catalog": self.catalog_name,
-                "coordinate_system": "altaz",
-                "magnitude": np.asarray(table["magnitude"], dtype=float),
-                "object_type": np.asarray(
-                    table["object_type"],
-                    dtype=object,
-                ),
-                "major_axis_arcmin": np.asarray(
-                    table["major_axis_arcmin"],
-                    dtype=float,
-                ),
-                "minor_axis_arcmin": np.asarray(
-                    table["minor_axis_arcmin"],
-                    dtype=float,
-                ),
-                "position_angle_deg": np.asarray(
-                    table["position_angle_deg"],
-                    dtype=float,
-                ),
-                "position_angle_known": np.asarray(
-                    angle_known,
-                    dtype=bool,
-                ),
-                "minimum_size_arcmin": minimum_size_arcmin,
-            },
+            metadata=self._geometry_metadata(
+                table,
+                minimum_size_arcmin=minimum_size_arcmin,
+            ),
         )

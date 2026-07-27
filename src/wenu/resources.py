@@ -73,16 +73,31 @@ def boundary_path(name):
 
 def nonstellar_catalog_path(name):
     """Return a packaged non-stellar catalogue resource."""
-    name = name.lower()
-    if name != "messier":
-        raise ValueError(f"Unknown non-stellar catalogue: {name}")
+    catalogues = {
+        "messier": (
+            "wenu.data.catalogs.messier",
+            (
+                "messier_heasarc.ecsv",
+                "heasarc_messier.ecsv",
+                "messier.ecsv",
+            ),
+        ),
+        "galaxies": (
+            "wenu.data.catalogs.galaxies",
+            ("galaxies_openngc.ecsv",),
+        ),
+    }
+    key = str(name).lower()
+    try:
+        package_name, preferred = catalogues[key]
+    except KeyError as error:
+        available = ", ".join(sorted(catalogues))
+        raise ValueError(
+            f"Unknown non-stellar catalogue: {name!r}. "
+            f"Available catalogues: {available}."
+        ) from error
 
-    package = files("wenu.data.catalogs.messier")
-    preferred = (
-        "messier_heasarc.ecsv",
-        "heasarc_messier.ecsv",
-        "messier.ecsv",
-    )
+    package = files(package_name)
     for filename in preferred:
         resource = package / filename
         if resource.is_file():
@@ -96,7 +111,6 @@ def nonstellar_catalog_path(name):
     if len(available) == 1:
         return available[0]
     raise FileNotFoundError(
-        "Expected one Messier ECSV catalogue in "
-        "wenu.data.catalogs.messier."
+        f"Expected one ECSV catalogue in {package_name}."
     )
 

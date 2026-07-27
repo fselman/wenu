@@ -1,0 +1,71 @@
+{
+  "source": "OpenNGC",
+  "repository_url": "https://github.com/mattiaverga/OpenNGC",
+  "release": "v20260501",
+  "retrieved_at_utc": "2026-07-27T14:59:43+00:00",
+  "license": "CC-BY-SA-4.0",
+  "license_url": "https://raw.githubusercontent.com/mattiaverga/OpenNGC/v20260501/LICENSES/CC-BY-SA-4.0.txt",
+  "selection": {
+    "object_type": "G",
+    "magnitude_limit": 12.0,
+    "magnitude_rule": "Use V-Mag when available; otherwise use B-Mag."
+  },
+  "statistics": {
+    "source_rows": 14033,
+    "individual_galaxies": 10521,
+    "without_selection_magnitude": 62,
+    "fainter_than_limit": 9401,
+    "selected_rows": 1058
+  },
+  "source_files": {
+    "NGC.csv": {
+      "url": "https://raw.githubusercontent.com/mattiaverga/OpenNGC/v20260501/database_files/NGC.csv",
+      "sha256": "840fe0c9ee1332e551b2e722a0e92726cd7b157914a3d2177602832aadd3aa9e"
+    },
+    "addendum.csv": {
+      "url": "https://raw.githubusercontent.com/mattiaverga/OpenNGC/v20260501/database_files/addendum.csv",
+      "sha256": "1d8f0914e643ada325a5a94d88d8fefad6a4937a2f77cc34f21483af22b11983"
+    }
+  },
+  "notes": "Integrated magnitude does not alone determine naked-eye or binocular visibility. Angular dimensions and surface brightness are retained. Magellanic Clouds remain in the catalogue with rendering_class='isophote'.",
+  "generated_files": {
+    "galaxies_openngc.ecsv": {
+      "sha256": "c045328220dfbdae1f0dbad9cd1ba83f1dad5e257f636a34b356ed1dbb96009f"
+    },
+    "galaxies_openngc.csv": {
+      "sha256": "269fb4036d6ba0094d8a947537c603fc3fae55d3da8845b14b1b88465d70de96"
+    },
+    "CC-BY-SA-4.0.txt": {
+      "sha256": "cde7883b9050a1104f4ac19a1572aafd6e5d7323b68351aaf51fbf4beba54966"
+    },
+    "README.md": {
+      "sha256": "aff51782aa5dea7262dfa798dcffe840d0f44442e9759e0cb251c15c4940b3a5"
+    }
+  },
+  "columns": [
+    "name",
+    "object_type",
+    "ra_deg",
+    "dec_deg",
+    "constellation",
+    "major_axis_arcmin",
+    "minor_axis_arcmin",
+    "position_angle_deg",
+    "b_magnitude",
+    "v_magnitude",
+    "selection_magnitude",
+    "selection_band",
+    "surface_brightness_b_mag_arcsec2",
+    "morphology",
+    "messier",
+    "ngc",
+    "ic",
+    "identifiers",
+    "common_names",
+    "openngc_notes",
+    "ned_notes",
+    "sources",
+    "source_file",
+    "rendering_class"
+  ]
+}

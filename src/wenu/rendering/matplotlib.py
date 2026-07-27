@@ -172,6 +172,8 @@ class MatplotlibRenderer:
         *,
         style=None,
         styles=None,
+        polygon_fill_style=None,
+        polygon_outline_style=None,
         component_styles=None,
         draw_labels=False,
         label_style=None,
@@ -180,6 +182,16 @@ class MatplotlibRenderer:
         """Draw a supported projected geometry object."""
         common = {} if style is None else dict(style)
         labels = {} if label_style is None else dict(label_style)
+        polygon_fill = (
+            None
+            if polygon_fill_style is None
+            else dict(polygon_fill_style)
+        )
+        polygon_outline = (
+            None
+            if polygon_outline_style is None
+            else dict(polygon_outline_style)
+        )
 
         if isinstance(geometry, ProjectedPoint):
             artists = self._draw_point(
@@ -229,6 +241,8 @@ class MatplotlibRenderer:
             artists = self._draw_polygon(
                 geometry,
                 common,
+                fill_style=polygon_fill,
+                outline_style=polygon_outline,
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
@@ -238,6 +252,8 @@ class MatplotlibRenderer:
                 geometry,
                 common,
                 styles=styles,
+                fill_style=polygon_fill,
+                outline_style=polygon_outline,
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
@@ -439,13 +455,44 @@ class MatplotlibRenderer:
         polygon,
         style,
         *,
+        fill_style,
+        outline_style,
         draw_labels,
         label_style,
         label_offset,
     ):
         if not np.any(polygon.finite):
             return []
-        artists = [render_polygon(self.ax, polygon, **style)]
+        if fill_style is None and outline_style is None:
+            artists = [
+                render_polygon(
+                    self.ax,
+                    polygon,
+                    **self._polygon_style(style),
+                )
+            ]
+        else:
+            artists = []
+            if fill_style is not None:
+                fill = {**style, **fill_style}
+                fill.setdefault("edgecolor", "none")
+                artists.append(
+                    render_polygon(
+                        self.ax,
+                        polygon,
+                        **self._polygon_style(fill),
+                    )
+                )
+            if outline_style is not None:
+                outline = {**style, **outline_style}
+                outline.setdefault("facecolor", "none")
+                artists.append(
+                    render_polygon(
+                        self.ax,
+                        polygon,
+                        **self._polygon_style(outline),
+                    )
+                )
         if draw_labels and polygon.name is not None:
             anchor = self._anchor(polygon.x, polygon.y)
             if anchor is not None:
@@ -465,6 +512,8 @@ class MatplotlibRenderer:
         style,
         *,
         styles,
+        fill_style,
+        outline_style,
         draw_labels,
         label_style,
         label_offset,
@@ -491,12 +540,58 @@ class MatplotlibRenderer:
                 self._draw_polygon(
                     polygon,
                     {**style, **entity_styles[index]},
+                    fill_style=fill_style,
+                    outline_style=outline_style,
                     draw_labels=draw_labels,
                     label_style=label_style,
                     label_offset=label_offset,
                 )
             )
         return artists
+
+    @staticmethod
+    def _polygon_style(style):
+        """Translate independent edge/face alpha into RGBA colors."""
+        from matplotlib.colors import to_rgba
+
+        result = dict(style)
+        edge_alpha = result.pop("edge_alpha", None)
+        face_alpha = result.pop("face_alpha", None)
+        if (
+            "alpha" in result
+            and (edge_alpha is not None or face_alpha is not None)
+        ):
+            raise ValueError(
+                "Polygon alpha cannot be combined with edge_alpha or "
+                "face_alpha."
+            )
+
+        color = result.pop("color", None)
+        if color is not None:
+            result.setdefault("edgecolor", color)
+            result.setdefault("facecolor", color)
+
+        def alpha_value(value, name):
+            value = float(value)
+            if not np.isfinite(value) or not 0.0 <= value <= 1.0:
+                raise ValueError(f"{name} must be between 0 and 1.")
+            return value
+
+        if edge_alpha is not None:
+            edge_alpha = alpha_value(edge_alpha, "edge_alpha")
+            edgecolor = result.get("edgecolor", "black")
+            result["edgecolor"] = to_rgba(
+                edgecolor,
+                alpha=edge_alpha,
+            )
+        if face_alpha is not None:
+            face_alpha = alpha_value(face_alpha, "face_alpha")
+            facecolor = result.get("facecolor", "none")
+            result["facecolor"] = to_rgba(
+                facecolor,
+                alpha=face_alpha,
+            )
+        return result
 
     def _label(self, x, y, label, style, offset):
         dx, dy = offset(x, y) if callable(offset) else offset

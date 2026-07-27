@@ -8,6 +8,7 @@ from wenu.geometry.projected import (
     ProjectedCurve,
     ProjectedCurves,
     ProjectedGrid,
+    ProjectedPolygon,
     ProjectedPolygons,
     ProjectedPoints,
 )
@@ -148,6 +149,155 @@ def _clip_curves(spherical, projected, minimum):
             styles[index] for index in source_indices
         )
     return ProjectedCurves(items=items, metadata=metadata)
+
+
+def clip_polygons_to_latitude(
+    spherical,
+    projected,
+    *,
+    minimum=0.0,
+):
+    """Clip filled polygons against a spherical latitude boundary.
+
+    Unlike ``clip_to_latitude()``, which retains historical boundary-only
+    behavior for spherical polygons, this function returns closed
+    ``ProjectedPolygons`` suitable for face rendering.
+    """
+    if not isinstance(spherical, SphericalPolygons):
+        raise TypeError("spherical must be SphericalPolygons.")
+    if not isinstance(projected, ProjectedPolygons):
+        raise TypeError("projected must be ProjectedPolygons.")
+    if len(spherical) != len(projected):
+        raise ValueError(
+            "Spherical and projected polygon collections must match."
+        )
+
+    minimum = float(minimum)
+    items = []
+    source_indices = []
+    for index, (latitude, polygon) in enumerate(
+        zip(spherical.lat_deg, projected)
+    ):
+        clipped = _clip_one_polygon_to_latitude(
+            polygon,
+            latitude,
+            minimum,
+        )
+        if clipped is not None:
+            items.append(clipped)
+            source_indices.append(index)
+
+    return ProjectedPolygons(
+        items=items,
+        metadata=_subset_metadata(
+            projected.metadata,
+            source_indices,
+            len(projected),
+        ),
+    )
+
+
+def _clip_one_polygon_to_latitude(polygon, latitude, minimum):
+    """Clip one projected polygon using corresponding vertex latitudes."""
+    latitude = np.asarray(latitude, dtype=float)
+    x = np.asarray(polygon.x, dtype=float)
+    y = np.asarray(polygon.y, dtype=float)
+    if not (x.shape == y.shape == latitude.shape):
+        raise ValueError(
+            "Projected polygon coordinates and latitudes must match."
+        )
+    if x.ndim != 1:
+        raise ValueError("Polygon clipping arrays must be one-dimensional.")
+    finite = np.isfinite(x) & np.isfinite(y) & np.isfinite(latitude)
+    if not np.all(finite) or x.size < 3:
+        return None
+
+    output = []
+    previous = (x[-1], y[-1], latitude[-1])
+    previous_inside = previous[2] >= minimum
+
+    for current in zip(x, y, latitude):
+        current_inside = current[2] >= minimum
+        if current_inside:
+            if not previous_inside:
+                output.append(
+                    _latitude_intersection(
+                        previous,
+                        current,
+                        minimum,
+                    )
+                )
+            output.append((float(current[0]), float(current[1])))
+        elif previous_inside:
+            output.append(
+                _latitude_intersection(
+                    previous,
+                    current,
+                    minimum,
+                )
+            )
+        previous = current
+        previous_inside = current_inside
+
+    cleaned = []
+    for vertex in output:
+        if not cleaned or not np.allclose(vertex, cleaned[-1]):
+            cleaned.append(vertex)
+    if (
+        len(cleaned) > 1
+        and np.allclose(cleaned[0], cleaned[-1])
+    ):
+        cleaned.pop()
+    if len(cleaned) < 3:
+        return None
+
+    clipped_x, clipped_y = zip(*cleaned)
+    return ProjectedPolygon(
+        x=np.asarray(clipped_x, dtype=float),
+        y=np.asarray(clipped_y, dtype=float),
+        name=polygon.name,
+    )
+
+
+def _latitude_intersection(start, end, minimum):
+    """Interpolate a projected edge at a spherical latitude crossing."""
+    latitude0 = float(start[2])
+    latitude1 = float(end[2])
+    if np.isclose(latitude0, latitude1):
+        fraction = 0.0
+    else:
+        fraction = (minimum - latitude0) / (
+            latitude1 - latitude0
+        )
+    return (
+        float(start[0] + fraction * (end[0] - start[0])),
+        float(start[1] + fraction * (end[1] - start[1])),
+    )
+
+
+def _subset_metadata(metadata, indices, source_length):
+    """Subset per-entity metadata while preserving collection metadata."""
+    subset = {}
+    index_array = np.asarray(indices, dtype=int)
+    for name, value in dict(metadata).items():
+        if isinstance(value, np.ndarray) and value.ndim >= 1:
+            if len(value) == source_length:
+                subset[name] = value[index_array]
+                continue
+        if (
+            isinstance(value, (list, tuple))
+            and not isinstance(value, (str, bytes))
+            and len(value) == source_length
+        ):
+            selected = [value[index] for index in indices]
+            subset[name] = (
+                tuple(selected)
+                if isinstance(value, tuple)
+                else selected
+            )
+            continue
+        subset[name] = value
+    return subset
 
 
 def _clip_polygon_boundaries(spherical, projected, minimum):

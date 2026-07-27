@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 from wenu.rendering import layers
 from wenu.rendering.preparation import (
+    clip_polygons_to_latitude,
     clip_to_latitude,
     magnitude_sizes,
     point_styles,
@@ -29,6 +30,15 @@ class PublicationStyle:
     nonstellar_label_fontsize: float = 7.0
     nonstellar_symbol_dots: int = 12
     nonstellar_dot_markersize: float = 2.0
+    galaxy_edge_color: str = "white"
+    galaxy_linewidth: float = 0.7
+    galaxy_edge_alpha: float = 0.9
+    galaxy_face_color: str | None = None
+    galaxy_face_alpha: float = 0.0
+    galaxy_minimum_size_arcmin: float | None = 6.0
+    galaxy_draw_labels: bool = False
+    galaxy_label_color: str | None = None
+    galaxy_label_fontsize: float = 6.0
     boundary_color: str = "white"
     equatorial_color: str = "deepskyblue"
     ecliptic_color: str = "gold"
@@ -146,6 +156,51 @@ class PublicationStyle:
                     },
                     "label_offset": (0.0, 0.02),
                 },
+            }
+        if getattr(sky, "galaxies", None) is not None:
+            galaxy_render = {
+                "polygon_outline_style": {
+                    "edgecolor": self.galaxy_edge_color,
+                    "edge_alpha": self.galaxy_edge_alpha,
+                    "linewidth": self.galaxy_linewidth,
+                    "linestyle": "-",
+                    "zorder": layers.GALAXIES,
+                },
+                "draw_labels": self.galaxy_draw_labels,
+                "label_style": {
+                    "color": (
+                        self.galaxy_edge_color
+                        if self.galaxy_label_color is None
+                        else self.galaxy_label_color
+                    ),
+                    "fontsize": self.galaxy_label_fontsize,
+                    "ha": "center",
+                    "va": "bottom",
+                    "zorder": layers.GALAXY_LABELS,
+                },
+                "label_offset": (0.0, 0.015),
+            }
+            if self.galaxy_face_color is not None:
+                galaxy_render["polygon_fill_style"] = {
+                    "facecolor": self.galaxy_face_color,
+                    "face_alpha": self.galaxy_face_alpha,
+                    "zorder": layers.GALAXY_FILLS,
+                }
+            options[sky.galaxies] = {
+                "geometry": {
+                    "minimum_size_arcmin": (
+                        self.galaxy_minimum_size_arcmin
+                    ),
+                },
+                "prepare": (
+                    lambda spherical, projected:
+                    clip_polygons_to_latitude(
+                        spherical,
+                        projected,
+                        minimum=minimum,
+                    )
+                ),
+                "render": galaxy_render,
             }
         if sky.constellation_lines is not None:
             options[sky.constellation_lines] = {
