@@ -118,3 +118,15 @@ def nonstellar_catalog_path(name):
         f"Expected one ECSV catalogue in {package_name}."
     )
 
+def milky_way_isophotes_path():
+    """Return the packaged D3-Celestial Milky Way GeoJSON snapshot."""
+    resource = (
+        files("wenu.data.isophotes.milky_way")
+        / "milky_way_d3.json"
+    )
+    if not resource.is_file():
+        raise FileNotFoundError(
+            "Milky Way isophote resource not found. Run "
+            "tools/query_milky_way_isophotes_d3.py."
+        )
+    return resource

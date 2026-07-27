@@ -22,6 +22,11 @@ class PublicationStyle:
     sky_color: str = "midnightblue"
     foreground_color: str = "white"
     star_color: str = "white"
+    milky_way_color: str = "deepskyblue"
+    milky_way_alpha: float = 0.10
+    milky_way_edge_color: str | None = None
+    milky_way_edge_alpha: float = 0.0
+    milky_way_linewidth: float = 0.0
     nonstellar_color: str = "white"
     nonstellar_linewidth: float = 0.8
     nonstellar_alpha: float = 0.9
@@ -163,6 +168,37 @@ class PublicationStyle:
                     },
                     "label_offset": (0.0, 0.02),
                 },
+            }
+        if getattr(sky, "milky_way_isophotes", None) is not None:
+            milky_way_render = {
+                "compound_by": "compound_id",
+                "polygon_fill_style": {
+                    "facecolor": self.milky_way_color,
+                    "face_alpha": self.milky_way_alpha,
+                    "edgecolor": "none",
+                    "zorder": layers.MILKY_WAY,
+                },
+            }
+            if (
+                self.milky_way_edge_color is not None
+                and self.milky_way_linewidth > 0.0
+            ):
+                milky_way_render["polygon_outline_style"] = {
+                    "edgecolor": self.milky_way_edge_color,
+                    "edge_alpha": self.milky_way_edge_alpha,
+                    "linewidth": self.milky_way_linewidth,
+                    "zorder": layers.MILKY_WAY,
+                }
+            options[sky.milky_way_isophotes] = {
+                "prepare": (
+                    lambda spherical, projected:
+                    clip_polygons_to_latitude(
+                        spherical,
+                        projected,
+                        minimum=minimum,
+                    )
+                ),
+                "render": milky_way_render,
             }
         if getattr(sky, "galaxies", None) is not None:
             galaxy_render = {

@@ -174,6 +174,7 @@ class MatplotlibRenderer:
         styles=None,
         polygon_fill_style=None,
         polygon_outline_style=None,
+        compound_by=None,
         component_styles=None,
         draw_labels=False,
         label_style=None,
@@ -246,6 +247,17 @@ class MatplotlibRenderer:
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
+            )
+        elif (
+            isinstance(geometry, ProjectedPolygons)
+            and compound_by is not None
+        ):
+            artists = self._draw_compound_polygons(
+                geometry,
+                common,
+                compound_by=compound_by,
+                fill_style=polygon_fill,
+                outline_style=polygon_outline,
             )
         elif isinstance(geometry, ProjectedPolygons):
             artists = self._draw_polygons(
@@ -547,6 +559,97 @@ class MatplotlibRenderer:
                     label_offset=label_offset,
                 )
             )
+        return artists
+
+    def _draw_compound_polygons(
+        self,
+        polygons,
+        style,
+        *,
+        compound_by,
+        fill_style,
+        outline_style,
+    ):
+        """Draw grouped rings as compound paths with interior holes."""
+        from matplotlib.path import Path
+        from matplotlib.patches import PathPatch
+
+        groups = polygons.metadata.get(compound_by)
+        if groups is None:
+            raise ValueError(
+                f"Missing compound polygon metadata: {compound_by!r}."
+            )
+        groups = np.asarray(groups, dtype=object)
+        if groups.ndim != 1 or groups.size != len(polygons):
+            raise ValueError(
+                "Compound polygon metadata must contain one group "
+                "identifier per ring."
+            )
+        is_hole = polygons.metadata.get(
+            "is_hole",
+            np.zeros(len(polygons), dtype=bool),
+        )
+        is_hole = np.asarray(is_hole, dtype=bool)
+        if is_hole.shape != groups.shape:
+            raise ValueError(
+                "is_hole must contain one value per polygon ring."
+            )
+
+        ordered_groups = tuple(dict.fromkeys(groups.tolist()))
+        artists = []
+        for group in ordered_groups:
+            vertices = []
+            codes = []
+            for index in np.flatnonzero(groups == group):
+                polygon = polygons[index]
+                finite = polygon.finite
+                points = np.column_stack(
+                    (polygon.x[finite], polygon.y[finite])
+                )
+                if len(points) > 1 and np.allclose(
+                    points[0], points[-1]
+                ):
+                    points = points[:-1]
+                if len(points) < 3:
+                    continue
+                area = 0.5 * np.sum(
+                    points[:, 0] * np.roll(points[:, 1], -1)
+                    - np.roll(points[:, 0], -1) * points[:, 1]
+                )
+                want_clockwise = bool(is_hole[index])
+                if (area < 0.0) != want_clockwise:
+                    points = points[::-1]
+                ring = np.vstack((points, points[0]))
+                ring_codes = np.full(
+                    len(ring), Path.LINETO, dtype=np.uint8
+                )
+                ring_codes[0] = Path.MOVETO
+                ring_codes[-1] = Path.CLOSEPOLY
+                vertices.extend(ring)
+                codes.extend(ring_codes)
+            if not vertices:
+                continue
+            path = Path(
+                np.asarray(vertices, dtype=float),
+                np.asarray(codes, dtype=np.uint8),
+            )
+            if fill_style is None and outline_style is None:
+                patch = PathPatch(path, **self._polygon_style(style))
+                self.ax.add_patch(patch)
+                artists.append(patch)
+                continue
+            if fill_style is not None:
+                fill = {**style, **fill_style}
+                fill.setdefault("edgecolor", "none")
+                patch = PathPatch(path, **self._polygon_style(fill))
+                self.ax.add_patch(patch)
+                artists.append(patch)
+            if outline_style is not None:
+                outline = {**style, **outline_style}
+                outline.setdefault("facecolor", "none")
+                patch = PathPatch(path, **self._polygon_style(outline))
+                self.ax.add_patch(patch)
+                artists.append(patch)
         return artists
 
     @staticmethod

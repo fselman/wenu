@@ -9,6 +9,7 @@ from wenu.objects.nonstellar import NonStellar
 from wenu.objects.galaxies import Galaxies
 from wenu.objects.globular_clusters import GlobularClusters
 from wenu.objects.stars import Stars
+from wenu.sky.milky_way import MilkyWayIsophotes
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.sky.constellation_labels import ConstellationLabels
 from wenu.sky.constellations import Constellations
@@ -30,6 +31,7 @@ class CelestialSphere:
         self.nonstellar = None
         self.galaxies = None
         self.globular_clusters = None
+        self.milky_way_isophotes = None
         self.points = None
         self.constellations = None
         self.constellation_boundaries = None
@@ -205,6 +207,21 @@ class CelestialSphere:
         self.galaxies.load(filename=filename)
         self.add(self.galaxies)
         return self.galaxies
+
+    def add_milky_way_isophotes(
+        self,
+        *,
+        filename=None,
+        levels=None,
+    ) -> MilkyWayIsophotes:
+        """Load and register nested Milky Way isophotes."""
+        self.milky_way_isophotes = MilkyWayIsophotes(
+            observer=self.observer,
+            levels=levels,
+        )
+        self.milky_way_isophotes.load(filename=filename)
+        self.add(self.milky_way_isophotes)
+        return self.milky_way_isophotes
 
     def add_globular_clusters(
         self,

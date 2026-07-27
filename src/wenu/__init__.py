@@ -12,6 +12,7 @@ from .observer import Observer
 from .objects.nonstellar import NonStellar
 from .objects.galaxies import Galaxies
 from .objects.globular_clusters import GlobularClusters
+from .sky.milky_way import MilkyWayIsophotes
 from .charts.full_sky import FullSkyChart
 from .charts.regional import ExportOptions, RegionalChart
 from .charts.styles import PublicationStyle
@@ -37,6 +38,7 @@ __all__ = [
     "NonStellar",
     "Galaxies",
     "GlobularClusters",
+    "MilkyWayIsophotes",
     "ExportOptions",
     "FullSkyChart",
     "RegionalChart",

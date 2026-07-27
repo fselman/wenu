@@ -5,6 +5,7 @@ from .constellation_lines import ConstellationLines
 from .geometrical_object import GeometricalObject
 from .points import CelestialPoints
 from .sky_layer import SkyLayer
+from .milky_way import MilkyWayIsophotes
 
 __all__ = [
         "CelestialSphere",
@@ -14,4 +15,5 @@ __all__ = [
         "ConstellationLines",
         "GeometricalObject",
         "SkyLayer",
+        "MilkyWayIsophotes",
         ]

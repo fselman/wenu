@@ -1,0 +1,25 @@
+{
+  "catalogue": "D3-Celestial Milky Way isophotes",
+  "repository": "ofrohn/d3-celestial",
+  "source_path": "data/mw.json",
+  "git_blob_sha": "ce06eaa01d80a4eed149c538d2d162c919b58a84",
+  "source_url": "https://api.github.com/repos/ofrohn/d3-celestial/git/blobs/ce06eaa01d80a4eed149c538d2d162c919b58a84",
+  "retrieved_utc": "2026-07-27T16:57:23.273144+00:00",
+  "license": "BSD-3-Clause",
+  "canonical_file": "milky_way_d3.json",
+  "canonical_sha256": "c6cf082cb0ffb9a6080858f673eb8f119df585b00730a5bcfd5ea43dc3f98627",
+  "levels": [
+    "ol1",
+    "ol2",
+    "ol3",
+    "ol4",
+    "ol5"
+  ],
+  "ring_counts": [
+    10,
+    113,
+    46,
+    27,
+    6
+  ]
+}
