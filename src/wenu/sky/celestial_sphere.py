@@ -7,6 +7,7 @@ from collections.abc import Iterable
 from wenu.sky.rendering_results import ChartRenderingResult, LayerRenderingResult
 from wenu.objects.nonstellar import NonStellar
 from wenu.objects.galaxies import Galaxies
+from wenu.objects.globular_clusters import GlobularClusters
 from wenu.objects.stars import Stars
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.sky.constellation_labels import ConstellationLabels
@@ -28,6 +29,7 @@ class CelestialSphere:
         self.stars = None
         self.nonstellar = None
         self.galaxies = None
+        self.globular_clusters = None
         self.points = None
         self.constellations = None
         self.constellation_boundaries = None
@@ -203,6 +205,23 @@ class CelestialSphere:
         self.galaxies.load(filename=filename)
         self.add(self.galaxies)
         return self.galaxies
+
+    def add_globular_clusters(
+        self,
+        *,
+        filename=None,
+        magnitude_limit=12.0,
+        samples=73,
+    ) -> GlobularClusters:
+        """Load and register Galactic globular clusters."""
+        self.globular_clusters = GlobularClusters(
+            observer=self.observer,
+            magnitude_limit=magnitude_limit,
+            samples=samples,
+        )
+        self.globular_clusters.load(filename=filename)
+        self.add(self.globular_clusters)
+        return self.globular_clusters
 
     def add_points(self) -> CelestialPoints:
         """Create and register a celestial-reference-point layer."""

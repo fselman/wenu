@@ -118,5 +118,5 @@ def test_provenance_records_pinned_source_and_selection():
 
 
 def test_unknown_nonstellar_catalogue_reports_available_names():
-    with pytest.raises(ValueError, match="galaxies, messier"):
+    with pytest.raises(ValueError, match="galaxies, globular_clusters, messier"):
         nonstellar_catalog_path("unknown")

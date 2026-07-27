@@ -86,6 +86,10 @@ def nonstellar_catalog_path(name):
             "wenu.data.catalogs.galaxies",
             ("galaxies_openngc.ecsv",),
         ),
+        "globular_clusters": (
+            "wenu.data.catalogs.globular_clusters",
+            ("globular_clusters_harris_heasarc.ecsv",),
+        ),
     }
     key = str(name).lower()
     try:

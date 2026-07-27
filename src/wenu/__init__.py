@@ -11,6 +11,7 @@ from .sky.rendering_results import ChartRenderingResult, LayerRenderingResult
 from .observer import Observer
 from .objects.nonstellar import NonStellar
 from .objects.galaxies import Galaxies
+from .objects.globular_clusters import GlobularClusters
 from .charts.full_sky import FullSkyChart
 from .charts.regional import ExportOptions, RegionalChart
 from .charts.styles import PublicationStyle
@@ -35,6 +36,7 @@ __all__ = [
     "Observer",
     "NonStellar",
     "Galaxies",
+    "GlobularClusters",
     "ExportOptions",
     "FullSkyChart",
     "RegionalChart",

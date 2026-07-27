@@ -39,6 +39,13 @@ class PublicationStyle:
     galaxy_draw_labels: bool = False
     galaxy_label_color: str | None = None
     galaxy_label_fontsize: float = 6.0
+    globular_cluster_color: str = "white"
+    globular_cluster_linewidth: float = 0.8
+    globular_cluster_alpha: float = 0.9
+    globular_cluster_minimum_size_arcmin: float | None = 10.0
+    globular_cluster_draw_labels: bool = False
+    globular_cluster_label_color: str | None = None
+    globular_cluster_label_fontsize: float = 6.0
     boundary_color: str = "white"
     equatorial_color: str = "deepskyblue"
     ecliptic_color: str = "gold"
@@ -201,6 +208,46 @@ class PublicationStyle:
                     )
                 ),
                 "render": galaxy_render,
+            }
+        if getattr(sky, "globular_clusters", None) is not None:
+            options[sky.globular_clusters] = {
+                "geometry": {
+                    "minimum_size_arcmin": (
+                        self.globular_cluster_minimum_size_arcmin
+                    ),
+                },
+                "prepare": clip,
+                "render": {
+                    "style": {
+                        "color": self.globular_cluster_color,
+                        "linewidth": (
+                            self.globular_cluster_linewidth
+                        ),
+                        "linestyle": "-",
+                        "alpha": self.globular_cluster_alpha,
+                        "zorder": layers.GLOBULAR_CLUSTERS,
+                    },
+                    "draw_labels": (
+                        self.globular_cluster_draw_labels
+                    ),
+                    "label_style": {
+                        "color": (
+                            self.globular_cluster_color
+                            if self.globular_cluster_label_color
+                            is None
+                            else self.globular_cluster_label_color
+                        ),
+                        "fontsize": (
+                            self.globular_cluster_label_fontsize
+                        ),
+                        "ha": "center",
+                        "va": "bottom",
+                        "zorder": (
+                            layers.GLOBULAR_CLUSTER_LABELS
+                        ),
+                    },
+                    "label_offset": (0.0, 0.015),
+                },
             }
         if sky.constellation_lines is not None:
             options[sky.constellation_lines] = {
