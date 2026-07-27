@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from importlib.resources import as_file
+from io import BytesIO
 
 import numpy as np
 from skyfield.api import Star
@@ -11,6 +12,82 @@ from skyfield.data import hipparcos
 from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.resources import catalog_path
 from wenu.geometry.spherical import SphericalPoints
+
+
+_HIPPARCOS_SEMANTIC_DEFAULTS = {
+    "variability_type": "",
+    "variability_annex": "",
+    "light_curve_annex": "",
+    "is_variable": False,
+    "ccdm_id": "",
+    "ccdm_entry_count": 0,
+    "component_count": 0,
+    "multiple_annex": "",
+    "component_position_angle_deg": np.nan,
+    "component_separation_arcsec": np.nan,
+    "component_magnitude_difference": np.nan,
+    "is_multiple": False,
+}
+
+
+def _integer(text, default=0):
+    text = text.strip()
+    return default if not text else int(text)
+
+
+def _floating(text):
+    text = text.strip()
+    return np.nan if not text else float(text)
+
+
+def _hipparcos_semantics(payload):
+    """Return H52--H67 classifications keyed by HIP identifier.
+
+    Byte positions follow ESA (1997), Hipparcos Catalogue I/239.  Python
+    slices are zero-based and therefore one less than the published byte
+    numbers.
+    """
+    semantics = {}
+    for raw_line in payload.splitlines():
+        line = raw_line.decode("ascii") if isinstance(raw_line, bytes) else raw_line
+        if len(line) < 14:
+            continue
+        hip_text = line[8:14].strip()
+        if not hip_text.isdigit():
+            continue
+        line = line.ljust(383)
+        variability_type = line[321:322].strip()
+        ccdm_id = line[327:337].strip()
+        component_count = _integer(line[343:345])
+        multiple_annex = line[346:347].strip()
+        semantics[int(hip_text)] = {
+            "variability_type": variability_type,
+            "variability_annex": line[323:324].strip(),
+            "light_curve_annex": line[325:326].strip(),
+            # C means constant; R only records a revised V-I colour.
+            "is_variable": variability_type in {"D", "M", "P", "U"},
+            "ccdm_id": ccdm_id,
+            "ccdm_entry_count": _integer(line[340:342]),
+            "component_count": component_count,
+            "multiple_annex": multiple_annex,
+            "component_position_angle_deg": _floating(line[355:358]),
+            "component_separation_arcsec": _floating(line[359:366]),
+            "component_magnitude_difference": _floating(line[373:378]),
+            "is_multiple": bool(
+                ccdm_id or component_count > 1 or multiple_annex
+            ),
+        }
+    return semantics
+
+
+def _attach_hipparcos_semantics(source, semantics):
+    """Attach classification columns without changing Skyfield row order."""
+    for name, default in _HIPPARCOS_SEMANTIC_DEFAULTS.items():
+        source[name] = [
+            semantics.get(int(hip_id), {}).get(name, default)
+            for hip_id in source.index
+        ]
+    return source
 
 
 class Stars(AstronomicalObject):
@@ -49,13 +126,19 @@ class Stars(AstronomicalObject):
 
         if filename is not None:
             with open(filename, "rb") as file:
-                source = hipparcos.load_dataframe(file)
+                payload = file.read()
         else:
             resource = catalog_path(self.catalog_name)
 
             with as_file(resource) as path:
                 with open(path, "rb") as file:
-                    source = hipparcos.load_dataframe(file)
+                    payload = file.read()
+
+        source = hipparcos.load_dataframe(BytesIO(payload))
+        source = _attach_hipparcos_semantics(
+            source,
+            _hipparcos_semantics(payload),
+        )
 
         self.catalog = source[
             source["magnitude"] <= self.magnitude_limit
@@ -126,6 +209,14 @@ class Stars(AstronomicalObject):
             "catalog": self.catalog_name,
             "magnitude": magnitudes,
         }
+        for name, default in _HIPPARCOS_SEMANTIC_DEFAULTS.items():
+            if name in self.hip_df.columns:
+                values = self.hip_df[name].to_numpy(copy=True)
+            else:
+                values = np.asarray(
+                    [default] * len(self.hip_df)
+                )
+            metadata[name] = values
 
         # Preserve colour information when supplied by a catalogue. The
         # bundled Hipparcos table does not currently provide such a column.

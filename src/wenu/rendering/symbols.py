@@ -48,6 +48,25 @@ def _dotted_circle() -> Path:
         paths.append(Path(vertices, dot.codes))
     return Path.make_compound_path(*paths)
 
+
+def _variable_star() -> Path:
+    """Return an independent conventional variable-star marker."""
+    circle = Path.unit_circle()
+    dot = Path.unit_circle()
+    dot_vertices = 0.24 * dot.vertices
+    return Path.make_compound_path(circle, Path(dot_vertices, dot.codes))
+
+
+def _multiple_star() -> Path:
+    """Return an independent conventional multiple-star marker."""
+    circle = Path.unit_circle()
+    divider = Path(
+        np.asarray(((-0.72, -0.72), (0.72, 0.72)), dtype=float),
+        np.asarray((Path.MOVETO, Path.LINETO), dtype=np.uint8),
+    )
+    return Path.make_compound_path(circle, divider)
+
+
 @dataclass(frozen=True)
 class SymbolLibrary:
     """Named normalized marker paths used by complete chart styles."""
@@ -56,6 +75,8 @@ class SymbolLibrary:
         default_factory=_circle_with_radial_ticks
     )
     open_cluster: Path = field(default_factory=_dotted_circle)
+    variable_star: Path = field(default_factory=_variable_star)
+    multiple_star: Path = field(default_factory=_multiple_star)
 
     @property
     def symbols(self) -> Mapping[str, Path]:
@@ -64,6 +85,8 @@ class SymbolLibrary:
             {
                 "planetary_nebula": self.planetary_nebula,
                 "open_cluster": self.open_cluster,
+                "variable_star": self.variable_star,
+                "multiple_star": self.multiple_star,
             }
         )
 

@@ -23,6 +23,16 @@ class PublicationStyle:
     sky_color: str = "midnightblue"
     foreground_color: str = "white"
     star_color: str = "white"
+    draw_variable_star_symbols: bool = False
+    variable_star_color: str | None = None
+    variable_star_symbol_size: float = 28.0
+    variable_star_linewidth: float = 0.7
+    variable_star_alpha: float = 0.95
+    draw_multiple_star_symbols: bool = False
+    multiple_star_color: str | None = None
+    multiple_star_symbol_size: float = 28.0
+    multiple_star_linewidth: float = 0.7
+    multiple_star_alpha: float = 0.95
     milky_way_color: str = "deepskyblue"
     milky_way_alpha: float = 0.10
     milky_way_edge_color: str | None = None
@@ -153,16 +163,7 @@ class PublicationStyle:
                 "geometry": {
                     "alt_min": minimum,
                 },
-                "render": lambda spherical, projected: {
-                    "style": {
-                        "s": magnitude_sizes(
-                            spherical.metadata["magnitude"]
-                        ) * self.star_area_scale,
-                        "c": self.star_color,
-                        "linewidths": 0,
-                        "zorder": layers.STARS,
-                    }
-                },
+                "render": self._star_render_options,
             }
         if sky.nonstellar is not None:
             symbol_dots = int(self.nonstellar_symbol_dots)
@@ -538,6 +539,59 @@ class PublicationStyle:
                     minimum=horizon_altitude_deg,
                 )
         return options
+
+    def _star_render_options(self, spherical, projected):
+        """Return one base scatter plus optional vectorized overlays."""
+        overlays = []
+        if self.draw_multiple_star_symbols:
+            overlays.append(
+                {
+                    "mask": spherical.metadata["is_multiple"],
+                    "style": {
+                        "marker": DEFAULT_SYMBOLS.multiple_star,
+                        "s": self.multiple_star_symbol_size,
+                        "facecolors": "none",
+                        "edgecolors": (
+                            self.star_color
+                            if self.multiple_star_color is None
+                            else self.multiple_star_color
+                        ),
+                        "linewidths": self.multiple_star_linewidth,
+                        "alpha": self.multiple_star_alpha,
+                        "zorder": layers.MULTIPLE_STARS,
+                    },
+                }
+            )
+        if self.draw_variable_star_symbols:
+            overlays.append(
+                {
+                    "mask": spherical.metadata["is_variable"],
+                    "style": {
+                        "marker": DEFAULT_SYMBOLS.variable_star,
+                        "s": self.variable_star_symbol_size,
+                        "facecolors": "none",
+                        "edgecolors": (
+                            self.star_color
+                            if self.variable_star_color is None
+                            else self.variable_star_color
+                        ),
+                        "linewidths": self.variable_star_linewidth,
+                        "alpha": self.variable_star_alpha,
+                        "zorder": layers.VARIABLE_STARS,
+                    },
+                }
+            )
+        return {
+            "style": {
+                "s": magnitude_sizes(
+                    spherical.metadata["magnitude"]
+                ) * self.star_area_scale,
+                "c": self.star_color,
+                "linewidths": 0,
+                "zorder": layers.STARS,
+            },
+            "point_overlays": overlays,
+        }
 
     def _grid_options(self, layer, *, minimum=None):
         system = layer.coordinate_system

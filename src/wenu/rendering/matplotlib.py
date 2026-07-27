@@ -176,6 +176,7 @@ class MatplotlibRenderer:
         polygon_outline_style=None,
         compound_by=None,
         component_styles=None,
+        point_overlays=None,
         draw_labels=False,
         label_style=None,
         label_offset=(0.0, 0.0),
@@ -207,6 +208,7 @@ class MatplotlibRenderer:
                 geometry,
                 common,
                 styles=styles,
+                point_overlays=point_overlays,
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
@@ -308,6 +310,7 @@ class MatplotlibRenderer:
         style,
         *,
         styles,
+        point_overlays,
         draw_labels,
         label_style,
         label_offset,
@@ -344,6 +347,35 @@ class MatplotlibRenderer:
                         label_offset=(0.0, 0.0),
                     )
                 )
+
+        if point_overlays is not None:
+            for overlay in point_overlays:
+                overlay = dict(overlay)
+                if "mask" not in overlay:
+                    raise ValueError(
+                        "Each point overlay must provide a mask."
+                    )
+                mask = np.asarray(overlay.pop("mask"), dtype=bool)
+                if mask.shape != (len(points),):
+                    raise ValueError(
+                        "Point overlay masks must match the point collection."
+                    )
+                overlay_style = dict(overlay.pop("style", {}))
+                if overlay:
+                    raise ValueError(
+                        "Unsupported point overlay options: "
+                        + ", ".join(sorted(overlay))
+                    )
+                selected = finite & mask
+                if np.any(selected):
+                    artists.append(
+                        render_points(
+                            self.ax,
+                            points.x[selected],
+                            points.y[selected],
+                            **overlay_style,
+                        )
+                    )
 
         if draw_labels:
             entity_styles = self._entity_styles(styles, len(points))
