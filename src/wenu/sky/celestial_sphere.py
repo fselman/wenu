@@ -10,6 +10,7 @@ from wenu.objects.galaxies import Galaxies
 from wenu.objects.globular_clusters import GlobularClusters
 from wenu.objects.stars import Stars
 from wenu.sky.milky_way import MilkyWayIsophotes
+from wenu.sky.magellanic_clouds import MagellanicCloudIsophotes
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.sky.constellation_labels import ConstellationLabels
 from wenu.sky.constellations import Constellations
@@ -32,6 +33,7 @@ class CelestialSphere:
         self.galaxies = None
         self.globular_clusters = None
         self.milky_way_isophotes = None
+        self.magellanic_cloud_isophotes = {}
         self.points = None
         self.constellations = None
         self.constellation_boundaries = None
@@ -222,6 +224,28 @@ class CelestialSphere:
         self.milky_way_isophotes.load(filename=filename)
         self.add(self.milky_way_isophotes)
         return self.milky_way_isophotes
+
+    def add_magellanic_cloud_isophotes(
+        self,
+        cloud,
+        *,
+        filename=None,
+        levels=None,
+    ) -> MagellanicCloudIsophotes:
+        """Load and register one Magellanic Cloud isophote layer."""
+        layer = MagellanicCloudIsophotes(
+            observer=self.observer,
+            cloud=cloud,
+            levels=levels,
+        )
+        if layer.cloud in self.magellanic_cloud_isophotes:
+            raise ValueError(
+                f"{layer.cloud.upper()} isophotes are already registered."
+            )
+        layer.load(filename=filename)
+        self.magellanic_cloud_isophotes[layer.cloud] = layer
+        self.add(layer)
+        return layer
 
     def add_globular_clusters(
         self,

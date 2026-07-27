@@ -6,6 +6,7 @@ from .geometrical_object import GeometricalObject
 from .points import CelestialPoints
 from .sky_layer import SkyLayer
 from .milky_way import MilkyWayIsophotes
+from .magellanic_clouds import MagellanicCloudIsophotes
 
 __all__ = [
         "CelestialSphere",
@@ -16,4 +17,5 @@ __all__ = [
         "GeometricalObject",
         "SkyLayer",
         "MilkyWayIsophotes",
+        "MagellanicCloudIsophotes",
         ]

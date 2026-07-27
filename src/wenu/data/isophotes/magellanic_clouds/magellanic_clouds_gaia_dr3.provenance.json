@@ -1,0 +1,115 @@
+{
+  "title": "Gaia-derived Magellanic Cloud isophotes",
+  "created_utc": "2026-07-27T19:26:35.443497+00:00",
+  "source": {
+    "release": "Gaia DR3",
+    "table": "gaiadr3.gaia_source_lite",
+    "available_tap_services": {
+      "ari": "https://gaia.ari.uni-heidelberg.de/tap",
+      "esa": "https://gea.esac.esa.int/tap-server/tap"
+    },
+    "requested_service": "auto",
+    "query_interface": "pyvo.dal.TAPService.run_async"
+  },
+  "interpretation": "Broad astrometric selections for morphology; not membership probabilities.",
+  "healpix": {
+    "source_id_order": 12,
+    "aggregate_order": 9,
+    "source_id_divisor": 2199023255552
+  },
+  "selection": {
+    "phot_g_mean_mag": [
+      12.0,
+      20.0
+    ],
+    "absolute_parallax_max_mas": 0.5
+  },
+  "processing": {
+    "field": "g_flux",
+    "grid_step_deg": 0.1,
+    "smooth_sigma_deg": 0.25,
+    "background": "median of smoothed pixels at radius >= 0.75 query radius",
+    "contour_fractions": [
+      0.08,
+      0.16,
+      0.32,
+      0.55
+    ],
+    "minimum_closed_ring_vertices": 8,
+    "minimum_tangent_plane_area_deg2": 0.01
+  },
+  "clouds": [
+    {
+      "key": "lmc",
+      "name": "Large Magellanic Cloud",
+      "center_ra_deg": 80.8942,
+      "center_dec_deg": -69.7561,
+      "query_radius_deg": 12.0,
+      "pmra_min": 0.5,
+      "pmra_max": 3.2,
+      "pmdec_min": -1.0,
+      "pmdec_max": 1.5,
+      "aggregate_cells": 33891,
+      "background": 1.340363838550014e-07,
+      "absolute_contour_levels": [
+        2.3427789773599683e-05,
+        4.6855579547199366e-05,
+        9.371115909439873e-05,
+        0.00016106605469349782
+      ],
+      "features_written": 4
+    },
+    {
+      "key": "smc",
+      "name": "Small Magellanic Cloud",
+      "center_ra_deg": 13.1867,
+      "center_dec_deg": -72.8286,
+      "query_radius_deg": 7.0,
+      "pmra_min": -0.2,
+      "pmra_max": 1.8,
+      "pmdec_min": -2.2,
+      "pmdec_max": -0.2,
+      "aggregate_cells": 11376,
+      "background": 8.087231011033459e-08,
+      "absolute_contour_levels": [
+        1.7691303850164285e-05,
+        3.538260770032857e-05,
+        7.076521540065714e-05,
+        0.00012162771396987947
+      ],
+      "features_written": 4
+    }
+  ],
+  "queries": [
+    {
+      "cloud": "lmc",
+      "adql": "SELECT\n    source_id / 2199023255552 AS healpix9,\n    AVG(ra) AS ra_deg,\n    MIN(ra) AS ra_min_deg,\n    MAX(ra) AS ra_max_deg,\n    AVG(dec) AS dec_deg,\n    COUNT(*) AS source_count,\n    SUM(POWER(10.0, -0.4 * phot_g_mean_mag)) AS g_flux\nFROM gaiadr3.gaia_source_lite\nWHERE\n    1 = CONTAINS(\n        POINT('ICRS', ra, dec),\n        CIRCLE(\n            'ICRS',\n            80.8942,\n            -69.7561,\n            12.0\n        )\n    )\n    AND phot_g_mean_mag >= 12.0\n    AND phot_g_mean_mag <= 20.0\n    AND parallax >= -0.5\n    AND parallax <= 0.5\n    AND pmra >= 0.5\n    AND pmra <= 3.2\n    AND pmdec >= -1.0\n    AND pmdec <= 1.5\nGROUP BY healpix9",
+      "requested_service": "auto",
+      "tap_service": "ari",
+      "tap_service_url": "https://gaia.ari.uni-heidelberg.de/tap",
+      "cache_reused": true
+    },
+    {
+      "cloud": "smc",
+      "adql": "SELECT\n    source_id / 2199023255552 AS healpix9,\n    AVG(ra) AS ra_deg,\n    MIN(ra) AS ra_min_deg,\n    MAX(ra) AS ra_max_deg,\n    AVG(dec) AS dec_deg,\n    COUNT(*) AS source_count,\n    SUM(POWER(10.0, -0.4 * phot_g_mean_mag)) AS g_flux\nFROM gaiadr3.gaia_source_lite\nWHERE\n    1 = CONTAINS(\n        POINT('ICRS', ra, dec),\n        CIRCLE(\n            'ICRS',\n            13.1867,\n            -72.8286,\n            7.0\n        )\n    )\n    AND phot_g_mean_mag >= 12.0\n    AND phot_g_mean_mag <= 20.0\n    AND parallax >= -0.5\n    AND parallax <= 0.5\n    AND pmra >= -0.2\n    AND pmra <= 1.8\n    AND pmdec >= -2.2\n    AND pmdec <= -0.2\nGROUP BY healpix9",
+      "requested_service": "auto",
+      "tap_service": "ari",
+      "tap_service_url": "https://gaia.ari.uni-heidelberg.de/tap",
+      "cache_reused": true
+    }
+  ],
+  "outputs": [
+    {
+      "cloud": "lmc",
+      "path": "src/wenu/data/isophotes/magellanic_clouds/lmc_gaia_dr3.json",
+      "sha256": "9ad2298999577bbf96a2ad743b90106c3e971948ed2cc832e2fd33cb59f2fc4e",
+      "feature_count": 4
+    },
+    {
+      "cloud": "smc",
+      "path": "src/wenu/data/isophotes/magellanic_clouds/smc_gaia_dr3.json",
+      "sha256": "348d0f485088d6c40efb70dd04fcad3247aa7d9a0e1fe26611b6b10e3f972695",
+      "feature_count": 4
+    }
+  ]
+}

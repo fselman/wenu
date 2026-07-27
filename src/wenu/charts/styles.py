@@ -27,6 +27,16 @@ class PublicationStyle:
     milky_way_edge_color: str | None = None
     milky_way_edge_alpha: float = 0.0
     milky_way_linewidth: float = 0.0
+    lmc_color: str = "deepskyblue"
+    lmc_alpha: float = 0.08
+    lmc_edge_color: str | None = None
+    lmc_edge_alpha: float = 0.0
+    lmc_linewidth: float = 0.0
+    smc_color: str = "deepskyblue"
+    smc_alpha: float = 0.06
+    smc_edge_color: str | None = None
+    smc_edge_alpha: float = 0.0
+    smc_linewidth: float = 0.0
     nonstellar_color: str = "white"
     nonstellar_linewidth: float = 0.8
     nonstellar_alpha: float = 0.9
@@ -199,6 +209,51 @@ class PublicationStyle:
                     )
                 ),
                 "render": milky_way_render,
+            }
+        for cloud, cloud_layer in getattr(
+            sky,
+            "magellanic_cloud_isophotes",
+            {},
+        ).items():
+            if cloud == "lmc":
+                color = self.lmc_color
+                alpha = self.lmc_alpha
+                edge_color = self.lmc_edge_color
+                edge_alpha = self.lmc_edge_alpha
+                linewidth = self.lmc_linewidth
+            else:
+                color = self.smc_color
+                alpha = self.smc_alpha
+                edge_color = self.smc_edge_color
+                edge_alpha = self.smc_edge_alpha
+                linewidth = self.smc_linewidth
+
+            cloud_render = {
+                "compound_by": "compound_id",
+                "polygon_fill_style": {
+                    "facecolor": color,
+                    "face_alpha": alpha,
+                    "edgecolor": "none",
+                    "zorder": layers.MAGELLANIC_CLOUDS,
+                },
+            }
+            if edge_color is not None and linewidth > 0.0:
+                cloud_render["polygon_outline_style"] = {
+                    "edgecolor": edge_color,
+                    "edge_alpha": edge_alpha,
+                    "linewidth": linewidth,
+                    "zorder": layers.MAGELLANIC_CLOUDS,
+                }
+            options[cloud_layer] = {
+                "prepare": (
+                    lambda spherical, projected:
+                    clip_polygons_to_latitude(
+                        spherical,
+                        projected,
+                        minimum=minimum,
+                    )
+                ),
+                "render": cloud_render,
             }
         if getattr(sky, "galaxies", None) is not None:
             galaxy_render = {

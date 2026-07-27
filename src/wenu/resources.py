@@ -130,3 +130,23 @@ def milky_way_isophotes_path():
             "tools/query_milky_way_isophotes_d3.py."
         )
     return resource
+
+
+def magellanic_cloud_isophotes_path(cloud):
+    """Return one packaged Gaia-derived Magellanic Cloud snapshot."""
+    cloud = str(cloud).lower()
+    if cloud not in ("lmc", "smc"):
+        raise ValueError(
+            f"Unknown Magellanic Cloud: {cloud!r}. "
+            "Available clouds: lmc, smc."
+        )
+    resource = (
+        files("wenu.data.isophotes.magellanic_clouds")
+        / f"{cloud}_gaia_dr3.json"
+    )
+    if not resource.is_file():
+        raise FileNotFoundError(
+            f"{cloud.upper()} isophote resource not found. Run "
+            "tools/query_magellanic_clouds_gaia.py."
+        )
+    return resource
