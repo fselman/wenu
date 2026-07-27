@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from wenu.rendering import layers
+from wenu.rendering.symbols import DEFAULT_SYMBOLS
 from wenu.rendering.preparation import (
     clip_polygons_to_latitude,
     clip_to_latitude,
@@ -69,6 +70,16 @@ class PublicationStyle:
     globular_cluster_draw_labels: bool = False
     globular_cluster_label_color: str | None = None
     globular_cluster_label_fontsize: float = 6.0
+
+
+    planetary_nebula_color: str = "white"
+    planetary_nebula_face_color: str = "none"
+    planetary_nebula_symbol_size: float = 64.0
+    planetary_nebula_linewidth: float = 0.8
+    planetary_nebula_alpha: float = 0.95
+    planetary_nebula_draw_labels: bool = False
+    planetary_nebula_label_color: str | None = None
+    planetary_nebula_label_fontsize: float = 6.0
     boundary_color: str = "white"
     equatorial_color: str = "deepskyblue"
     ecliptic_color: str = "gold"
@@ -307,6 +318,38 @@ class PublicationStyle:
                     )
                 ),
                 "render": galaxy_render,
+            }
+
+
+        if getattr(sky, "planetary_nebulae", None) is not None:
+            options[sky.planetary_nebulae] = {
+                "prepare": clip,
+                "render": {
+                    "style": {
+                        "marker": DEFAULT_SYMBOLS.planetary_nebula,
+                        "s": self.planetary_nebula_symbol_size,
+                        "facecolors": self.planetary_nebula_face_color,
+                        "edgecolors": self.planetary_nebula_color,
+                        "linewidths": self.planetary_nebula_linewidth,
+                        "alpha": self.planetary_nebula_alpha,
+                        "zorder": layers.PLANETARY_NEBULAE,
+                    },
+                    "draw_labels": self.planetary_nebula_draw_labels,
+                    "label_style": {
+                        "color": (
+                            self.planetary_nebula_color
+                            if self.planetary_nebula_label_color is None
+                            else self.planetary_nebula_label_color
+                        ),
+                        "fontsize": (
+                            self.planetary_nebula_label_fontsize
+                        ),
+                        "ha": "center",
+                        "va": "bottom",
+                        "zorder": layers.PLANETARY_NEBULA_LABELS,
+                    },
+                    "label_offset": (0.0, 0.015),
+                },
             }
         if getattr(
             sky,

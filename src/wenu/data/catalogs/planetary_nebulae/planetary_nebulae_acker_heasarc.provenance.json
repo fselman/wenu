@@ -1,0 +1,50 @@
+{
+  "source": "NASA HEASARC",
+  "catalog": "plnebulae",
+  "catalog_version": "Strasbourg-ESO 1992",
+  "source_url": "https://heasarc.gsfc.nasa.gov/xamin/vo/tap",
+  "documentation_url": "https://heasarc.gsfc.nasa.gov/W3Browse/nebula-catalog/plnebulae.html",
+  "vizier_url": "https://cdsarc.cds.unistra.fr/viz-bin/cat/V/84",
+  "modern_catalogue_url": "https://hashpn.space/",
+  "catalog_reference": "Acker, A., Ochsenbein, F., Stenholm, B., Tylenda, R., Marcout, J., & Schohn, C. 1992, Strasbourg-ESO Catalogue of Galactic Planetary Nebulae, ESO, ISBN 3-923524-41-2",
+  "query": "SELECT * FROM plnebulae WHERE pn_name IS NOT NULL",
+  "retrieved_at_utc": "2026-07-27T21:22:00+00:00",
+  "astropy_version": "6.1.7",
+  "astroquery_version": "0.4.11",
+  "row_count": 1143,
+  "expected_row_count": 1143,
+  "selection": "Rows with a non-empty PN_Name: the catalogue's 1,143 true or probable planetary nebulae. Possible objects are excluded.",
+  "coordinate_frame": "ICRS/J2000 as served by HEASARC TAP",
+  "size_definition": "Acker optical diameter, converted from arcseconds to arcminutes and copied to both axes; no position angle is available in this source.",
+  "brightness_notice": "log_hbeta_flux is an emission-line flux, not a visual magnitude. No visual-magnitude selection is applied.",
+  "currency_notice": "This snapshot is based on the 1992 Strasbourg-ESO catalogue. HASH is the modern primary Galactic PN compilation and contains later discoveries and revisions.",
+  "columns": [
+    "identifier",
+    "ra_deg",
+    "dec_deg",
+    "galactic_longitude_deg",
+    "galactic_latitude_deg",
+    "common_name",
+    "pk_name",
+    "alternate_names",
+    "major_axis_arcmin",
+    "minor_axis_arcmin",
+    "optical_diameter_limit",
+    "optical_diameter_uncertain",
+    "log_hbeta_flux",
+    "position_quality",
+    "object_type"
+  ],
+  "files": {
+    "canonical_snapshot": {
+      "name": "planetary_nebulae_acker_heasarc.ecsv",
+      "format": "Astropy ECSV",
+      "sha256": "949d05e8bd41d05345024df52da69f1030b7818656798c8471815a3b6be939e3"
+    },
+    "csv_derivative": {
+      "name": "planetary_nebulae_acker_heasarc.csv",
+      "format": "CSV",
+      "sha256": "31c4d8fa0a11f1aafc15717f633d38dc2be2eacc298b4b757bbf456cff368e66"
+    }
+  }
+}

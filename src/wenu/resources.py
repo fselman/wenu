@@ -94,6 +94,10 @@ def nonstellar_catalog_path(name):
             "wenu.data.catalogs.supernova_remnants",
             ("supernova_remnants_green_2024.ecsv",),
         ),
+        "planetary_nebulae": (
+            "wenu.data.catalogs.planetary_nebulae",
+            ("planetary_nebulae_acker_heasarc.ecsv",),
+        ),
     }
     key = str(name).lower()
     try:

@@ -10,6 +10,7 @@ from ._matplotlib_primitives import (
     render_text,
 )
 from .matplotlib import MatplotlibRenderer
+from .symbols import DEFAULT_SYMBOLS, SymbolLibrary
 from .preparation import (
     clip_to_latitude,
     magnitude_sizes,
@@ -19,6 +20,8 @@ from .preparation import (
 
 __all__ = [
     "MatplotlibRenderer",
+    "SymbolLibrary",
+    "DEFAULT_SYMBOLS",
     "apply_viewport",
     "render_curve",
     "render_point",

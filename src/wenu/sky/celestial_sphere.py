@@ -9,6 +9,7 @@ from wenu.objects.nonstellar import NonStellar
 from wenu.objects.galaxies import Galaxies
 from wenu.objects.globular_clusters import GlobularClusters
 from wenu.objects.supernova_remnants import SupernovaRemnants
+from wenu.objects.planetary_nebulae import PlanetaryNebulae
 from wenu.objects.stars import Stars
 from wenu.sky.milky_way import MilkyWayIsophotes
 from wenu.sky.magellanic_clouds import MagellanicCloudIsophotes
@@ -34,6 +35,7 @@ class CelestialSphere:
         self.galaxies = None
         self.globular_clusters = None
         self.supernova_remnants = None
+        self.planetary_nebulae = None
         self.milky_way_isophotes = None
         self.magellanic_cloud_isophotes = {}
         self.points = None
@@ -280,6 +282,23 @@ class CelestialSphere:
         self.supernova_remnants.load(filename=filename)
         self.add(self.supernova_remnants)
         return self.supernova_remnants
+
+    def add_planetary_nebulae(
+        self,
+        *,
+        selected=None,
+        filename=None,
+        samples=73,
+    ) -> PlanetaryNebulae:
+        """Load and register true/probable Galactic planetary nebulae."""
+        self.planetary_nebulae = PlanetaryNebulae(
+            observer=self.observer,
+            samples=samples,
+            selected=selected,
+        )
+        self.planetary_nebulae.load(filename=filename)
+        self.add(self.planetary_nebulae)
+        return self.planetary_nebulae
 
     def add_points(self) -> CelestialPoints:
         """Create and register a celestial-reference-point layer."""
