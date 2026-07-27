@@ -12,6 +12,7 @@ from .observer import Observer
 from .objects.nonstellar import NonStellar
 from .objects.galaxies import Galaxies
 from .objects.globular_clusters import GlobularClusters
+from .objects.supernova_remnants import SupernovaRemnants
 from .sky.milky_way import MilkyWayIsophotes
 from .sky.magellanic_clouds import MagellanicCloudIsophotes
 from .charts.full_sky import FullSkyChart
@@ -39,6 +40,7 @@ __all__ = [
     "NonStellar",
     "Galaxies",
     "GlobularClusters",
+    "SupernovaRemnants",
     "MilkyWayIsophotes",
     "MagellanicCloudIsophotes",
     "ExportOptions",

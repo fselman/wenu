@@ -1,0 +1,49 @@
+{
+  "source": "VizieR/CDS",
+  "catalog": "VII/297",
+  "table": "VII/297/snrs",
+  "catalog_version": "2024 October",
+  "source_url": "https://cdsarc.cds.unistra.fr/viz-bin/cat/VII/297",
+  "readme_url": "https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/VII/297",
+  "original_source_url": "https://www.mrao.cam.ac.uk/surveys/snrs/",
+  "catalog_reference": "Green, D. A. 2025, Journal of Astrophysics and Astronomy, 46, 14; Green, D. A. 2024, A Catalogue of Galactic Supernova Remnants (2024 October version).",
+  "retrieved_at_utc": "2026-07-27T20:03:24+00:00",
+  "astropy_version": "6.1.7",
+  "astroquery_version": "0.4.11",
+  "row_count": 310,
+  "expected_row_count": 310,
+  "selection": "All 310 confirmed remnants in VizieR VII/297.",
+  "coordinate_frame": "ICRS/J2000",
+  "size_definition": "Green major and minor radio angular diameters. When only one diameter is supplied, Wenu copies it to the minor axis.",
+  "position_angle_notice": "The catalogue does not provide position angles. No position angle is inferred during acquisition.",
+  "visibility_notice": "The 1 GHz flux is a radio quantity and is not an optical visibility or chart magnitude.",
+  "acknowledgement": "This research has made use of the VizieR catalogue access tool, CDS, Strasbourg, France.",
+  "columns": [
+    "identifier",
+    "ra_deg",
+    "dec_deg",
+    "galactic_longitude_deg",
+    "galactic_latitude_deg",
+    "major_axis_arcmin",
+    "minor_axis_arcmin",
+    "morphology",
+    "flux_1ghz_jy",
+    "flux_limit_flag",
+    "flux_uncertain",
+    "spectral_index",
+    "spectral_index_flag",
+    "alternate_names"
+  ],
+  "files": {
+    "canonical_snapshot": {
+      "name": "supernova_remnants_green_2024.ecsv",
+      "format": "Astropy ECSV",
+      "sha256": "26c57a0193f0b27506e3adb356978c69d022591edd05d9ea494337f30576b9bf"
+    },
+    "csv_derivative": {
+      "name": "supernova_remnants_green_2024.csv",
+      "format": "CSV",
+      "sha256": "e2b505afa1c4dd75e4fa83ca7096661f47f77fd737940e8dac12da84f0643b61"
+    }
+  }
+}

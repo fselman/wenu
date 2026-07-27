@@ -5,11 +5,13 @@ from .stars import Stars
 from .nonstellar import NonStellar
 from .galaxies import Galaxies
 from .globular_clusters import GlobularClusters
+from .supernova_remnants import SupernovaRemnants
 
 __all__ = [
     "AstronomicalObject",
     "Galaxies",
     "GlobularClusters",
     "NonStellar",
+    "SupernovaRemnants",
     "Stars",
 ]

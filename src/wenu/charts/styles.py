@@ -54,6 +54,14 @@ class PublicationStyle:
     galaxy_draw_labels: bool = False
     galaxy_label_color: str | None = None
     galaxy_label_fontsize: float = 6.0
+    supernova_remnant_color: str = "orange"
+    supernova_remnant_linewidth: float = 0.8
+    supernova_remnant_linestyle: str = "--"
+    supernova_remnant_alpha: float = 0.9
+    supernova_remnant_minimum_size_arcmin: float | None = 10.0
+    supernova_remnant_draw_labels: bool = False
+    supernova_remnant_label_color: str | None = None
+    supernova_remnant_label_fontsize: float = 6.0
     globular_cluster_color: str = "white"
     globular_cluster_linewidth: float = 0.8
     globular_cluster_alpha: float = 0.9
@@ -299,6 +307,52 @@ class PublicationStyle:
                     )
                 ),
                 "render": galaxy_render,
+            }
+        if getattr(
+            sky,
+            "supernova_remnants",
+            None,
+        ) is not None:
+            options[sky.supernova_remnants] = {
+                "geometry": {
+                    "minimum_size_arcmin": (
+                        self.supernova_remnant_minimum_size_arcmin
+                    ),
+                },
+                "prepare": clip,
+                "render": {
+                    "style": {
+                        "color": self.supernova_remnant_color,
+                        "linewidth": (
+                            self.supernova_remnant_linewidth
+                        ),
+                        "linestyle": (
+                            self.supernova_remnant_linestyle
+                        ),
+                        "alpha": self.supernova_remnant_alpha,
+                        "zorder": layers.SUPERNOVA_REMNANTS,
+                    },
+                    "draw_labels": (
+                        self.supernova_remnant_draw_labels
+                    ),
+                    "label_style": {
+                        "color": (
+                            self.supernova_remnant_color
+                            if self.supernova_remnant_label_color
+                            is None
+                            else self.supernova_remnant_label_color
+                        ),
+                        "fontsize": (
+                            self.supernova_remnant_label_fontsize
+                        ),
+                        "ha": "center",
+                        "va": "bottom",
+                        "zorder": (
+                            layers.SUPERNOVA_REMNANT_LABELS
+                        ),
+                    },
+                    "label_offset": (0.0, 0.015),
+                },
             }
         if getattr(sky, "globular_clusters", None) is not None:
             options[sky.globular_clusters] = {
