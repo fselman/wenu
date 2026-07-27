@@ -22,6 +22,7 @@ env/
 .coverage
 htmlcov/
 *.temp
+*-output/
 
 # Jupyter
 .ipynb_checkpoints/
