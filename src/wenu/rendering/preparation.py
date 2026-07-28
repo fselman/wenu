@@ -197,6 +197,206 @@ def clip_polygons_to_latitude(
     )
 
 
+def clip_polygons_to_projection_cap(
+    spherical,
+    projected,
+    *,
+    projection,
+    angular_radius_deg=80.0,
+):
+    """Clip spherical polygons to a cap around a projection tangent point.
+
+    This preparation is intended for filled, full-sky polygon layers in a
+    regional stereographic chart.  Clipping before projection prevents a
+    ring on the far side of the sphere from wrapping around the projection
+    antipode and appearing as a viewport-sized patch.
+
+    The cap boundary should normally lie outside the chart viewport.  Its
+    only purpose is to provide a safe finite domain for projection.
+    """
+    if not isinstance(spherical, SphericalPolygons):
+        raise TypeError("spherical must be SphericalPolygons.")
+    if not isinstance(projected, ProjectedPolygons):
+        raise TypeError("projected must be ProjectedPolygons.")
+    if len(spherical) != len(projected):
+        raise ValueError(
+            "Spherical and projected polygon collections must match."
+        )
+    angular_radius_deg = float(angular_radius_deg)
+    if (
+        not np.isfinite(angular_radius_deg)
+        or angular_radius_deg <= 0.0
+        or angular_radius_deg >= 90.0
+    ):
+        raise ValueError(
+            "angular_radius_deg must be finite and between "
+            "0 and 90 degrees."
+        )
+
+    minimum_z = np.cos(np.radians(angular_radius_deg))
+    items = []
+    source_indices = []
+    for index, (longitude, latitude, polygon) in enumerate(
+        zip(spherical.lon_deg, spherical.lat_deg, projected)
+    ):
+        clipped = _clip_one_polygon_to_projection_cap(
+            longitude,
+            latitude,
+            polygon.name,
+            projection,
+            minimum_z,
+        )
+        if clipped is not None:
+            items.append(clipped)
+            source_indices.append(index)
+
+    return ProjectedPolygons(
+        items=items,
+        metadata=_subset_metadata(
+            projected.metadata,
+            source_indices,
+            len(projected),
+        ),
+    )
+
+
+def _clip_one_polygon_to_projection_cap(
+    longitude,
+    latitude,
+    name,
+    projection,
+    minimum_z,
+):
+    """Clip one ring in projection-aligned unit-vector coordinates."""
+    longitude = np.asarray(longitude, dtype=float)
+    latitude = np.asarray(latitude, dtype=float)
+    if longitude.shape != latitude.shape or longitude.ndim != 1:
+        raise ValueError(
+            "Spherical polygon coordinates must be matching "
+            "one-dimensional arrays."
+        )
+    finite = np.isfinite(longitude) & np.isfinite(latitude)
+    if not np.all(finite) or longitude.size < 3:
+        return None
+
+    aligned = projection.transform_spherical(longitude, latitude)
+    vectors = _unit_vectors(
+        aligned.lon_deg,
+        aligned.lat_deg,
+    )
+    if (
+        len(vectors) > 1
+        and np.allclose(vectors[0], vectors[-1])
+    ):
+        vectors = vectors[:-1]
+    if len(vectors) < 3:
+        return None
+
+    output = []
+    previous = vectors[-1]
+    previous_inside = previous[2] >= minimum_z
+    for current in vectors:
+        current_inside = current[2] >= minimum_z
+        if current_inside:
+            if not previous_inside:
+                output.append(
+                    _cap_intersection(
+                        previous,
+                        current,
+                        minimum_z,
+                    )
+                )
+            output.append(current)
+        elif previous_inside:
+            output.append(
+                _cap_intersection(
+                    previous,
+                    current,
+                    minimum_z,
+                )
+            )
+        previous = current
+        previous_inside = current_inside
+
+    output = _deduplicate_vectors(output)
+    if len(output) < 3:
+        return None
+    clipped = np.asarray(output, dtype=float)
+    aligned_lon = np.degrees(
+        np.arctan2(clipped[:, 1], clipped[:, 0])
+    )
+    aligned_lat = np.degrees(
+        np.arcsin(np.clip(clipped[:, 2], -1.0, 1.0))
+    )
+    x, y = projection._project_aligned(
+        aligned_lon,
+        aligned_lat,
+    )
+    return ProjectedPolygon(x=x, y=y, name=name)
+
+
+def _unit_vectors(longitude_deg, latitude_deg):
+    longitude = np.radians(np.asarray(longitude_deg, dtype=float))
+    latitude = np.radians(np.asarray(latitude_deg, dtype=float))
+    cos_latitude = np.cos(latitude)
+    return np.column_stack(
+        (
+            cos_latitude * np.cos(longitude),
+            cos_latitude * np.sin(longitude),
+            np.sin(latitude),
+        )
+    )
+
+
+def _cap_intersection(start, end, minimum_z):
+    """Locate a great-circle edge crossing of a constant-radius cap."""
+    start = np.asarray(start, dtype=float)
+    end = np.asarray(end, dtype=float)
+    low = 0.0
+    high = 1.0
+    start_inside = start[2] >= minimum_z
+    for _ in range(52):
+        middle = 0.5 * (low + high)
+        candidate = _slerp(start, end, middle)
+        if (candidate[2] >= minimum_z) == start_inside:
+            low = middle
+        else:
+            high = middle
+    return _slerp(start, end, 0.5 * (low + high))
+
+
+def _slerp(start, end, fraction):
+    dot = float(np.clip(np.dot(start, end), -1.0, 1.0))
+    angle = float(np.arccos(dot))
+    if angle <= 1.0e-12:
+        vector = (1.0 - fraction) * start + fraction * end
+    else:
+        sine = np.sin(angle)
+        vector = (
+            np.sin((1.0 - fraction) * angle) / sine * start
+            + np.sin(fraction * angle) / sine * end
+        )
+    norm = np.linalg.norm(vector)
+    if norm <= 1.0e-15:
+        raise ValueError(
+            "Cannot interpolate antipodal polygon vertices."
+        )
+    return vector / norm
+
+
+def _deduplicate_vectors(vectors):
+    cleaned = []
+    for vector in vectors:
+        if not cleaned or not np.allclose(vector, cleaned[-1]):
+            cleaned.append(np.asarray(vector, dtype=float))
+    if (
+        len(cleaned) > 1
+        and np.allclose(cleaned[0], cleaned[-1])
+    ):
+        cleaned.pop()
+    return cleaned
+
+
 def _clip_one_polygon_to_latitude(polygon, latitude, minimum):
     """Clip one projected polygon using corresponding vertex latitudes."""
     latitude = np.asarray(latitude, dtype=float)

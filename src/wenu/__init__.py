@@ -20,6 +20,9 @@ from .sky.magellanic_clouds import MagellanicCloudIsophotes
 from .charts.full_sky import FullSkyChart
 from .charts.regional import ExportOptions, RegionalChart
 from .charts.styles import PublicationStyle
+from .charts.style_components import ChartStyle
+from .charts.presets import AtlasChartStyle
+from .charts.legend import draw_chart_legend
 from .rendering import MatplotlibRenderer
 from .projections import StereographicProjection
 from .sky import CelestialSphere
@@ -51,6 +54,9 @@ __all__ = [
     "FullSkyChart",
     "RegionalChart",
     "PublicationStyle",
+    "ChartStyle",
+    "AtlasChartStyle",
+    "draw_chart_legend",
     "MatplotlibRenderer",
     "StereographicProjection",
     "CelestialSphere",

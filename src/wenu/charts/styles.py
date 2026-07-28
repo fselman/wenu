@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import numpy as np
+
 from wenu.rendering import layers
 from wenu.rendering.symbols import DEFAULT_SYMBOLS
 from wenu.rendering.preparation import (
@@ -38,6 +40,10 @@ class PublicationStyle:
     milky_way_edge_color: str | None = None
     milky_way_edge_alpha: float = 0.0
     milky_way_linewidth: float = 0.0
+    milky_way_contour_color: str | None = None
+    milky_way_contour_linestyle: str = ":"
+    milky_way_contour_linewidth: float = 0.35
+    milky_way_contour_alpha: float = 0.30
     lmc_color: str = "deepskyblue"
     lmc_alpha: float = 0.08
     lmc_edge_color: str | None = None
@@ -98,9 +104,26 @@ class PublicationStyle:
     open_cluster_label_color: str | None = None
     open_cluster_label_fontsize: float = 6.0
     boundary_color: str = "white"
+    boundary_linewidth: float = 0.3
+    boundary_linestyle: str = "-"
+    boundary_alpha: float = 0.4
+    constellation_line_color: str | None = None
+    constellation_linewidth: float = 0.4
+    constellation_line_alpha: float = 0.7
+    constellation_label_color: str | None = None
+    constellation_label_alpha: float = 0.85
     equatorial_color: str = "deepskyblue"
+    equatorial_linestyle: str = "-"
     ecliptic_color: str = "gold"
+    ecliptic_linestyle: str = "-"
     galactic_color: str = "white"
+    galactic_linestyle: str = "--"
+    grid_linewidth: float = 0.7
+    grid_alpha: float = 0.75
+    grid_draw_labels: bool = False
+    grid_label_color: str | None = None
+    grid_label_fontsize: float = 6.0
+    grid_label_alpha: float = 0.8
     star_area_scale: float = 1.0
     horizon_altitude_deg: float = 0.0
     grid_minimum_altitude_deg: float | None = None
@@ -225,6 +248,14 @@ class PublicationStyle:
                     "edge_alpha": self.milky_way_edge_alpha,
                     "linewidth": self.milky_way_linewidth,
                     "zorder": layers.MILKY_WAY,
+                }
+            if self.milky_way_contour_color is not None:
+                milky_way_render["polygon_marker_style"] = {
+                    "color": self.milky_way_contour_color,
+                    "linestyle": self.milky_way_contour_linestyle,
+                    "linewidth": self.milky_way_contour_linewidth,
+                    "alpha": self.milky_way_contour_alpha,
+                    "zorder": layers.MILKY_WAY + 0.1,
                 }
             options[sky.milky_way_isophotes] = {
                 "prepare": (
@@ -479,9 +510,13 @@ class PublicationStyle:
                 "prepare": clip,
                 "render": {
                     "style": {
-                        "color": self.foreground_color,
-                        "linewidth": 0.4,
-                        "alpha": 0.7,
+                        "color": (
+                            self.foreground_color
+                            if self.constellation_line_color is None
+                            else self.constellation_line_color
+                        ),
+                        "linewidth": self.constellation_linewidth,
+                        "alpha": self.constellation_line_alpha,
                         "zorder": 2,
                     }
                 },
@@ -493,11 +528,15 @@ class PublicationStyle:
                     "style": {"s": 0.0},
                     "draw_labels": True,
                     "label_style": {
-                        "color": self.foreground_color,
+                        "color": (
+                            self.foreground_color
+                            if self.constellation_label_color is None
+                            else self.constellation_label_color
+                        ),
                         "fontsize": self.label_fontsize,
                         "ha": "center",
                         "va": "center",
-                        "alpha": 0.85,
+                        "alpha": self.constellation_label_alpha,
                         "zorder": 5,
                     },
                     "label_offset": radial_label_offset(0.04),
@@ -509,8 +548,9 @@ class PublicationStyle:
                 "render": {
                     "style": {
                         "color": self.boundary_color,
-                        "linewidth": 0.3,
-                        "alpha": 0.4,
+                        "linewidth": self.boundary_linewidth,
+                        "linestyle": self.boundary_linestyle,
+                        "alpha": self.boundary_alpha,
                         "zorder": 1,
                     }
                 },
@@ -597,22 +637,37 @@ class PublicationStyle:
         system = layer.coordinate_system
         if system == "equatorial":
             color = self.equatorial_color
-            linestyle = "-"
+            linestyle = self.equatorial_linestyle
         elif system == "ecliptic":
             color = self.ecliptic_color
-            linestyle = "-"
+            linestyle = self.ecliptic_linestyle
         else:
             color = self.galactic_color
-            linestyle = "--"
+            linestyle = self.galactic_linestyle
         options = {
             "render": {
                 "style": {
                     "color": color,
-                    "linewidth": 0.7,
+                    "linewidth": self.grid_linewidth,
                     "linestyle": linestyle,
-                    "alpha": 0.75,
+                    "alpha": self.grid_alpha,
                     "zorder": 3,
-                }
+                },
+                "draw_labels": self.grid_draw_labels,
+                "label_style": {
+                    "color": (
+                        color
+                        if self.grid_label_color is None
+                        else self.grid_label_color
+                    ),
+                    "fontsize": self.grid_label_fontsize,
+                    "alpha": self.grid_label_alpha,
+                    "ha": "center",
+                    "va": "center",
+                    "zorder": 4,
+                },
+                "label_formatter": self._coordinate_label,
+                "label_anchor": self._coordinate_label_anchor,
             },
         }
         if minimum is None:
@@ -627,3 +682,39 @@ class PublicationStyle:
                 )
             )
         return options
+
+    @staticmethod
+    def _coordinate_label(name):
+        if name.startswith("right_ascension_"):
+            degrees = float(name.removeprefix("right_ascension_"))
+            hours = (degrees / 15.0) % 24.0
+            return f"{hours:g}h"
+        if name.startswith("declination_"):
+            degrees = float(name.removeprefix("declination_"))
+            return f"{degrees:+g}°"
+        return name
+
+    @staticmethod
+    def _coordinate_label_anchor(curve, ax):
+        finite = curve.finite
+        if not np.any(finite):
+            return None
+        x = curve.x[finite]
+        y = curve.y[finite]
+        x_min, x_max = sorted(ax.get_xlim())
+        y_min, y_max = sorted(ax.get_ylim())
+        inside = (
+            (x >= x_min)
+            & (x <= x_max)
+            & (y >= y_min)
+            & (y <= y_max)
+        )
+        if not np.any(inside):
+            return None
+        x = x[inside]
+        y = y[inside]
+        if curve.name.startswith("right_ascension_"):
+            index = int(np.argmin(np.abs(y - y_min)))
+            return x[index], y_min + 0.018 * (y_max - y_min)
+        index = int(np.argmin(np.abs(x - x_min)))
+        return x_min + 0.012 * (x_max - x_min), y[index]

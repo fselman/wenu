@@ -288,12 +288,14 @@ class CelestialSphere:
     def add_supernova_remnants(
         self,
         *,
+        selected=None,
         filename=None,
         samples=73,
     ) -> SupernovaRemnants:
         """Load and register confirmed Galactic supernova remnants."""
         self.supernova_remnants = SupernovaRemnants(
             observer=self.observer,
+            selected=selected,
             samples=samples,
         )
         self.supernova_remnants.load(filename=filename)
@@ -388,6 +390,8 @@ class CelestialSphere:
         frame="fk5",
         equinox="of_date",
         samples=721,
+        meridian_dec_min=-90.0,
+        meridian_dec_max=90.0,
     ) -> EquatorialGrid:
         """Create and register an equatorial coordinate grid."""
         layer = EquatorialGrid(
@@ -398,6 +402,8 @@ class CelestialSphere:
             ra=ra,
             dec=dec,
             include_equator=include_equator,
+            meridian_dec_min=meridian_dec_min,
+            meridian_dec_max=meridian_dec_max,
         )
         self.add(layer)
         return layer

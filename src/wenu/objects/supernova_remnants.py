@@ -51,6 +51,7 @@ class SupernovaRemnants(NonStellar):
         observer,
         catalog="supernova_remnants",
         *,
+        selected=None,
         samples=73,
     ):
         super().__init__(
@@ -58,6 +59,15 @@ class SupernovaRemnants(NonStellar):
             catalog=catalog,
             magnitude_limit=None,
             samples=samples,
+        )
+        self.selected = None if selected is None else tuple(selected)
+
+    def spherical_geometry(self, observer, *, selected=None, **kwargs):
+        selection = self.selected if selected is None else selected
+        return super().spherical_geometry(
+            observer,
+            selected=selection,
+            **kwargs,
         )
 
     @staticmethod

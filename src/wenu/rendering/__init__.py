@@ -12,6 +12,7 @@ from ._matplotlib_primitives import (
 from .matplotlib import MatplotlibRenderer
 from .symbols import DEFAULT_SYMBOLS, SymbolLibrary
 from .preparation import (
+    clip_polygons_to_projection_cap,
     clip_to_latitude,
     magnitude_sizes,
     point_styles,
@@ -28,6 +29,7 @@ __all__ = [
     "render_points",
     "render_polygon",
     "render_text",
+    "clip_polygons_to_projection_cap",
     "clip_to_latitude",
     "magnitude_sizes",
     "point_styles",

@@ -63,11 +63,26 @@ class CoordinatesGrid(GeometricalObject, ABC):
         self,
         longitude_deg: float,
         *,
+        latitude_min_deg: float = -90.0,
+        latitude_max_deg: float = 90.0,
         name: str | None = None,
         style: dict[str, Any] | None = None,
     ) -> SphericalCurves:
         longitude_deg = float(longitude_deg) % 360.0
-        latitude = np.linspace(-90.0, 90.0, self.samples)
+        latitude_min_deg = float(latitude_min_deg)
+        latitude_max_deg = float(latitude_max_deg)
+        if not (
+            -90.0 <= latitude_min_deg < latitude_max_deg <= 90.0
+        ):
+            raise ValueError(
+                "Meridian latitude limits must satisfy "
+                "-90 <= minimum < maximum <= 90 degrees."
+            )
+        latitude = np.linspace(
+            latitude_min_deg,
+            latitude_max_deg,
+            self.samples,
+        )
         longitude = np.full_like(latitude, longitude_deg)
         return self._make_curves(
             longitude_deg=(longitude,),
@@ -246,6 +261,8 @@ class EquatorialGrid(CoordinatesGrid):
         ra=None,
         dec=None,
         include_equator=False,
+        meridian_dec_min=-90.0,
+        meridian_dec_max=90.0,
     ):
         super().__init__(observer, samples=samples)
         self.frame = frame.lower()
@@ -253,6 +270,18 @@ class EquatorialGrid(CoordinatesGrid):
         self.ra = None if ra is None else tuple(ra)
         self.dec = None if dec is None else tuple(dec)
         self.include_equator = bool(include_equator)
+        self.meridian_dec_min = float(meridian_dec_min)
+        self.meridian_dec_max = float(meridian_dec_max)
+        if not (
+            -90.0
+            <= self.meridian_dec_min
+            < self.meridian_dec_max
+            <= 90.0
+        ):
+            raise ValueError(
+                "meridian_dec_min and meridian_dec_max must satisfy "
+                "-90 <= minimum < maximum <= 90 degrees."
+            )
         if self.frame not in {"icrs", "fk5"}:
             raise ValueError(
                 "frame must currently be either 'icrs' or 'fk5'."
@@ -273,10 +302,27 @@ class EquatorialGrid(CoordinatesGrid):
             style=style,
         )
 
-    def meridian(self, right_ascension_deg, *, style=None):
+    def meridian(
+        self,
+        right_ascension_deg,
+        *,
+        dec_min=None,
+        dec_max=None,
+        style=None,
+    ):
         value = float(right_ascension_deg) % 360.0
         return super().meridian(
             value,
+            latitude_min_deg=(
+                self.meridian_dec_min
+                if dec_min is None
+                else float(dec_min)
+            ),
+            latitude_max_deg=(
+                self.meridian_dec_max
+                if dec_max is None
+                else float(dec_max)
+            ),
             name=f"right_ascension_{value:g}",
             style=style,
         )
@@ -289,11 +335,30 @@ class EquatorialGrid(CoordinatesGrid):
         meridian_style=None,
         parallel_style=None,
     ):
-        return super().grid(
-            longitudes=ra,
-            latitudes=dec,
-            meridian_style=meridian_style,
-            parallel_style=parallel_style,
+        components = {}
+        if ra is not None:
+            components["meridians"] = self._combine(
+                [
+                    self.meridian(
+                        value,
+                        style=meridian_style,
+                    )
+                    for value in ra
+                ]
+            )
+        if dec is not None:
+            components["parallels"] = self._combine(
+                [
+                    self.parallel(
+                        value,
+                        style=parallel_style,
+                    )
+                    for value in dec
+                ]
+            )
+        return SphericalGrid(
+            components=components,
+            metadata=self._grid_metadata(),
         )
 
     def spherical_geometry(self, observer) -> SphericalGrid:
@@ -307,6 +372,8 @@ class EquatorialGrid(CoordinatesGrid):
                 ra=self.ra,
                 dec=self.dec,
                 include_equator=self.include_equator,
+                meridian_dec_min=self.meridian_dec_min,
+                meridian_dec_max=self.meridian_dec_max,
             ).spherical_geometry(resolved)
         geometry = self.grid(ra=self.ra, dec=self.dec)
         components = dict(geometry.components)

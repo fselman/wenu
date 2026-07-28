@@ -174,12 +174,15 @@ class MatplotlibRenderer:
         styles=None,
         polygon_fill_style=None,
         polygon_outline_style=None,
+        polygon_marker_style=None,
         compound_by=None,
         component_styles=None,
         point_overlays=None,
         draw_labels=False,
         label_style=None,
         label_offset=(0.0, 0.0),
+        label_formatter=None,
+        label_anchor=None,
     ):
         """Draw a supported projected geometry object."""
         common = {} if style is None else dict(style)
@@ -193,6 +196,11 @@ class MatplotlibRenderer:
             None
             if polygon_outline_style is None
             else dict(polygon_outline_style)
+        )
+        polygon_markers = (
+            None
+            if polygon_marker_style is None
+            else dict(polygon_marker_style)
         )
 
         if isinstance(geometry, ProjectedPoint):
@@ -239,6 +247,8 @@ class MatplotlibRenderer:
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
+                label_formatter=label_formatter,
+                label_anchor=label_anchor,
             )
         elif isinstance(geometry, ProjectedPolygon):
             artists = self._draw_polygon(
@@ -260,6 +270,7 @@ class MatplotlibRenderer:
                 compound_by=compound_by,
                 fill_style=polygon_fill,
                 outline_style=polygon_outline,
+                marker_style=polygon_markers,
             )
         elif isinstance(geometry, ProjectedPolygons):
             artists = self._draw_polygons(
@@ -470,6 +481,8 @@ class MatplotlibRenderer:
         draw_labels,
         label_style,
         label_offset,
+        label_formatter,
+        label_anchor,
     ):
         component_styles = (
             {} if component_styles is None else component_styles
@@ -487,11 +500,47 @@ class MatplotlibRenderer:
                         **dict(component_styles.get(name, {})),
                     },
                     styles=per_component_styles.get(name),
-                    draw_labels=draw_labels,
+                    draw_labels=False,
                     label_style=label_style,
                     label_offset=label_offset,
                 )
             )
+            if draw_labels:
+                for index, curve in enumerate(curves):
+                    curve_name = curve.name
+                    if curve_name is None:
+                        curve_name = self._metadata_label(
+                            curves.metadata,
+                            index,
+                        )
+                    if curve_name is None:
+                        continue
+                    named_curve = ProjectedCurve(
+                        curve.x,
+                        curve.y,
+                        closed=curve.closed,
+                        name=curve_name,
+                    )
+                    anchor = (
+                        self._anchor(curve.x, curve.y)
+                        if label_anchor is None
+                        else label_anchor(named_curve, self.ax)
+                    )
+                    if anchor is None:
+                        continue
+                    label = (
+                        curve_name
+                        if label_formatter is None
+                        else label_formatter(curve_name)
+                    )
+                    artists.append(
+                        self._label(
+                            *anchor,
+                            label,
+                            label_style,
+                            label_offset,
+                        )
+                    )
         return artists
 
     def _draw_polygon(
@@ -601,6 +650,7 @@ class MatplotlibRenderer:
         compound_by,
         fill_style,
         outline_style,
+        marker_style,
     ):
         """Draw grouped rings as compound paths with interior holes."""
         from matplotlib.path import Path
@@ -682,6 +732,20 @@ class MatplotlibRenderer:
                 patch = PathPatch(path, **self._polygon_style(outline))
                 self.ax.add_patch(patch)
                 artists.append(patch)
+        if marker_style is not None:
+            for polygon in polygons:
+                marker_curve = ProjectedCurve(
+                    polygon.x,
+                    polygon.y,
+                    closed=True,
+                )
+                artists.append(
+                    render_curve(
+                        self.ax,
+                        marker_curve,
+                        **marker_style,
+                    )
+                )
         return artists
 
     @staticmethod
@@ -787,4 +851,3 @@ class MatplotlibRenderer:
         if not np.any(finite):
             return None
         return float(np.mean(x[finite])), float(np.mean(y[finite]))
-
