@@ -17,6 +17,34 @@ from .objects.supernova_remnants import SupernovaRemnants
 from .objects.planetary_nebulae import PlanetaryNebulae
 from .sky.milky_way import MilkyWayIsophotes
 from .sky.magellanic_clouds import MagellanicCloudIsophotes
+from .charts.composition import ChartComposition, compose_chart
+from .charts.context import BoundaryKind, ChartContext
+from .charts.detail import (
+    AdaptiveDetailPolicy,
+    DetailOverrides,
+    DetailPolicy,
+    FieldDetailLevel,
+    FixedDetailPolicy,
+    ResolvedDetail,
+)
+from .charts.modes import (
+    ChartMode,
+    PresentationMode,
+    PrintMode,
+    ResolvedMode,
+)
+from .charts.binocular import BinocularChart
+from .charts.boundaries import (
+    CircularLabelAnchor,
+    RectangularLabelAnchor,
+)
+from .charts.circumpolar import CircumpolarChart
+from .charts.detail_application import (
+    DetailApplication,
+    apply_resolved_detail,
+    composition_layer_options,
+    merge_layer_options,
+)
 from .charts.full_sky import FullSkyChart
 from .charts.regional import ExportOptions, RegionalChart
 from .charts.styles import PublicationStyle
@@ -39,6 +67,24 @@ from wenu.geometry.projected import (
 )
 
 __all__ = [
+    "BoundaryKind",
+    "ChartComposition",
+    "ChartContext",
+    "ChartMode",
+    "AdaptiveDetailPolicy",
+    "DetailApplication",
+    "apply_resolved_detail",
+    "composition_layer_options",
+    "merge_layer_options",
+    "DetailOverrides",
+    "DetailPolicy",
+    "FieldDetailLevel",
+    "FixedDetailPolicy",
+    "PresentationMode",
+    "PrintMode",
+    "ResolvedDetail",
+    "ResolvedMode",
+    "compose_chart",
     "ChartRenderingResult",
     "LayerRenderingResult",
     "Observer",
@@ -51,6 +97,10 @@ __all__ = [
     "MilkyWayIsophotes",
     "MagellanicCloudIsophotes",
     "ExportOptions",
+    "BinocularChart",
+    "CircularLabelAnchor",
+    "CircumpolarChart",
+    "RectangularLabelAnchor",
     "FullSkyChart",
     "RegionalChart",
     "PublicationStyle",

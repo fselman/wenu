@@ -131,6 +131,29 @@ class FullSkyChart:
             y_max=float(center_y + radius),
         )
 
+    @property
+    def chart_context(self):
+        """Return output-neutral geometry for composition."""
+        from wenu.charts.context import BoundaryKind, ChartContext
+
+        angular_radius = 90.0 - self.horizon_altitude_deg
+        solid_angle_sr = 2.0 * np.pi * (
+            1.0 - np.cos(np.radians(angular_radius))
+        )
+        square_degrees_per_steradian = (180.0 / np.pi) ** 2
+        return ChartContext(
+            viewport=self.viewport,
+            angular_width_deg=2.0 * angular_radius,
+            angular_height_deg=2.0 * angular_radius,
+            tangent_longitude_deg=self.center_az_deg,
+            tangent_latitude_deg=self.center_alt_deg,
+            boundary_kind=BoundaryKind.CIRCULAR,
+            clip_boundary=self.horizon,
+            visible_solid_angle_sq_deg=(
+                solid_angle_sr * square_degrees_per_steradian
+            ),
+        )
+
     def figure_size(self, width_inches=7.0):
         """Return a figure size matching the projected horizon bounds."""
         width_inches = float(width_inches)

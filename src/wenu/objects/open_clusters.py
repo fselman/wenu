@@ -81,6 +81,7 @@ class OpenClusters(AstronomicalObject):
         observer,
         *,
         selected=None,
+        minimum_size_arcmin=None,
     ) -> SphericalPoints:
         """Return vectorized Alt/Az centers for open-cluster symbols."""
         if self.catalog is None:
@@ -94,6 +95,18 @@ class OpenClusters(AstronomicalObject):
                 "An observer with an altaz_frame is required."
             )
         table = self._selected_table(selected)
+        if minimum_size_arcmin is not None:
+            minimum = float(minimum_size_arcmin)
+            if not np.isfinite(minimum) or minimum < 0.0:
+                raise ValueError(
+                    "minimum_size_arcmin must be finite and "
+                    "non-negative."
+                )
+            sizes = np.asarray(
+                table["apparent_diameter_arcmin"],
+                dtype=float,
+            )
+            table = table[np.isfinite(sizes) & (sizes >= minimum)]
         identifiers = np.asarray(table["identifier"], dtype=object)
         metadata = {
             "catalog": "openclust",

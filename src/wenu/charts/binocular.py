@@ -1,0 +1,207 @@
+"""Circular binocular-field chart type."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+import numpy as np
+
+from wenu.charts.boundaries import (
+    CircularLabelAnchor,
+    apply_coordinate_label_anchor,
+    circular_boundary,
+    viewport_from_boundary,
+)
+from wenu.charts.context import BoundaryKind, ChartContext
+from wenu.charts.regional import ExportOptions, RegionalChart
+
+
+@dataclass(frozen=True)
+class BinocularChart:
+    """A circular regional chart representing a binocular field stop."""
+
+    center_alt_deg: float
+    center_az_deg: float
+    field_diameter_deg: float = 6.5
+    position_angle_deg: float = 0.0
+    projection_radius: float = 2.0
+    flip_ew: bool = True
+    boundary_samples: int = 721
+    label_selection: tuple[str, ...] | None = None
+
+    def __post_init__(self):
+        values = np.asarray(
+            (
+                self.center_alt_deg,
+                self.center_az_deg,
+                self.field_diameter_deg,
+                self.position_angle_deg,
+                self.projection_radius,
+            ),
+            dtype=float,
+        )
+        if not np.all(np.isfinite(values)):
+            raise ValueError("Binocular chart values must be finite.")
+        if not -90.0 <= self.center_alt_deg <= 90.0:
+            raise ValueError("center_alt_deg must be between -90 and 90.")
+        if not 0.0 < self.field_diameter_deg < 180.0:
+            raise ValueError(
+                "field_diameter_deg must be between 0 and 180."
+            )
+        if self.projection_radius <= 0.0:
+            raise ValueError("projection_radius must be positive.")
+        if int(self.boundary_samples) < 9:
+            raise ValueError("boundary_samples must be at least 9.")
+
+    @classmethod
+    def from_coordinate(
+        cls,
+        observer,
+        coordinate,
+        *,
+        field_diameter_deg=6.5,
+        north_up=False,
+        position_angle_deg=0.0,
+        boundary_samples=721,
+        **kwargs,
+    ):
+        """Create a binocular chart centered on an Astropy coordinate."""
+        regional = RegionalChart.from_coordinate(
+            observer,
+            coordinate,
+            field_width_deg=field_diameter_deg,
+            field_height_deg=field_diameter_deg,
+            north_up=north_up,
+            position_angle_deg=position_angle_deg,
+            **kwargs,
+        )
+        return cls(
+            center_alt_deg=regional.center_alt_deg,
+            center_az_deg=regional.center_az_deg,
+            field_diameter_deg=field_diameter_deg,
+            position_angle_deg=regional.position_angle_deg,
+            projection_radius=regional.projection_radius,
+            flip_ew=regional.flip_ew,
+            boundary_samples=boundary_samples,
+            label_selection=regional.label_selection,
+        )
+
+    @property
+    def regional_chart(self):
+        """Return the equivalent square regional chart."""
+        return RegionalChart(
+            center_alt_deg=self.center_alt_deg,
+            center_az_deg=self.center_az_deg,
+            field_width_deg=self.field_diameter_deg,
+            field_height_deg=self.field_diameter_deg,
+            position_angle_deg=self.position_angle_deg,
+            projection_radius=self.projection_radius,
+            flip_ew=self.flip_ew,
+            label_selection=self.label_selection,
+        )
+
+    @property
+    def projection(self):
+        return self.regional_chart.projection
+
+    @property
+    def field_stop(self):
+        radius = self.projection.projected_radius(
+            self.field_diameter_deg / 2.0
+        )
+        return circular_boundary(
+            radius,
+            samples=self.boundary_samples,
+            name="binocular_field_stop",
+        )
+
+    @property
+    def viewport(self):
+        return viewport_from_boundary(self.field_stop)
+
+    @property
+    def coordinate_label_anchor(self):
+        return CircularLabelAnchor(self.field_stop)
+
+    @property
+    def chart_context(self):
+        angular_radius = self.field_diameter_deg / 2.0
+        solid_angle_sr = 2.0 * np.pi * (
+            1.0 - np.cos(np.radians(angular_radius))
+        )
+        return ChartContext(
+            viewport=self.viewport,
+            angular_width_deg=self.field_diameter_deg,
+            angular_height_deg=self.field_diameter_deg,
+            tangent_longitude_deg=self.center_az_deg,
+            tangent_latitude_deg=self.center_alt_deg,
+            boundary_kind=BoundaryKind.CIRCULAR,
+            clip_boundary=self.field_stop,
+            visible_solid_angle_sq_deg=(
+                solid_angle_sr * (180.0 / np.pi) ** 2
+            ),
+        )
+
+    def figure_size(self, width_inches=7.0):
+        width_inches = float(width_inches)
+        if not np.isfinite(width_inches) or width_inches <= 0.0:
+            raise ValueError("width_inches must be positive and finite.")
+        return width_inches, width_inches
+
+    def render(
+        self,
+        sky,
+        renderer,
+        *,
+        style=None,
+        layer_options=None,
+        boundary_style=None,
+    ):
+        """Render and clip every artist to the circular field stop."""
+        options = {} if style is None else style.layer_options(sky)
+        if layer_options is not None:
+            options.update(layer_options)
+        options = apply_coordinate_label_anchor(
+            options,
+            self.coordinate_label_anchor,
+        )
+        renderer.set_clip_boundary(
+            self.field_stop,
+            style=(
+                {"facecolor": "none", "edgecolor": "none"}
+                if boundary_style is None
+                else dict(boundary_style)
+            ),
+        )
+        return self.regional_chart.render(
+            sky,
+            renderer,
+            style=None,
+            layer_options=options,
+        )
+
+    def export(
+        self,
+        sky,
+        renderer,
+        path,
+        *,
+        style=None,
+        layer_options=None,
+        boundary_style=None,
+        export_options=None,
+    ):
+        result = self.render(
+            sky,
+            renderer,
+            style=style,
+            layer_options=layer_options,
+            boundary_style=boundary_style,
+        )
+        options = (
+            ExportOptions()
+            if export_options is None
+            else export_options
+        )
+        output = options.save(renderer.ax.figure, path)
+        return result, output

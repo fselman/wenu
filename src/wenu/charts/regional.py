@@ -317,6 +317,19 @@ class RegionalChart:
             )
         return float(position_angle_deg)
 
+    @property
+    def chart_context(self):
+        """Return output-neutral geometry for composition."""
+        from wenu.charts.context import ChartContext
+
+        return ChartContext(
+            viewport=self.viewport,
+            angular_width_deg=self.field_width_deg,
+            angular_height_deg=self.field_height_deg,
+            tangent_longitude_deg=self.center_az_deg,
+            tangent_latitude_deg=self.center_alt_deg,
+        )
+
     def figure_size(self, width_inches=7.0):
         """Return a figure size matching the projected viewport."""
         width_inches = float(width_inches)

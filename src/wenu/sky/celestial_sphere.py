@@ -105,6 +105,11 @@ class CelestialSphere:
         rendered_layers = []
         for layer in self._layers:
             configured = self._layer_render_options(layer, options)
+            enabled = configured.pop("enabled", True)
+            if not isinstance(enabled, bool):
+                raise TypeError("layer enabled option must be boolean.")
+            if not enabled:
+                continue
             geometry_options, prepare, render_options = (
                 self._pipeline_options(configured)
             )

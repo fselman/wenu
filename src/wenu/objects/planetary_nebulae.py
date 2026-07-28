@@ -72,6 +72,7 @@ class PlanetaryNebulae(NonStellar):
         observer,
         *,
         selected=None,
+        minimum_size_arcmin=None,
     ) -> SphericalPoints:
         """Return vectorized Alt/Az centers for fixed renderer symbols."""
         if self.catalog is None:
@@ -105,6 +106,17 @@ class PlanetaryNebulae(NonStellar):
                 if matches.size:
                     indices.append(int(matches[0]))
             table = self.catalog[np.asarray(indices, dtype=int)]
+        if minimum_size_arcmin is not None:
+            minimum = float(minimum_size_arcmin)
+            if not np.isfinite(minimum) or minimum < 0.0:
+                raise ValueError(
+                    "minimum_size_arcmin must be finite and "
+                    "non-negative."
+                )
+            major = np.asarray(table["major_axis_arcmin"], dtype=float)
+            minor = np.asarray(table["minor_axis_arcmin"], dtype=float)
+            sizes = np.fmax(major, minor)
+            table = table[np.isfinite(sizes) & (sizes >= minimum)]
         identifiers = np.asarray(
             table["identifier"],
             dtype=object,
