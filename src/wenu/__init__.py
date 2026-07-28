@@ -62,6 +62,15 @@ from .charts.legend_symbols import (
     LegendSymbolDescriptor,
     legend_symbol_descriptors,
 )
+from .charts.magnitude_legend import (
+    StellarMagnitudeEntry,
+    StellarMagnitudeScale,
+    VisibleStarStatistics,
+    integer_magnitude_range,
+    stellar_magnitude_scale,
+    visible_star_mask,
+    visible_star_statistics,
+)
 from .rendering import MatplotlibRenderer
 from .projections import StereographicProjection
 from .sky import CelestialSphere
@@ -126,6 +135,13 @@ __all__ = [
     "resolve_legend_metadata",
     "LegendSymbolDescriptor",
     "legend_symbol_descriptors",
+    "StellarMagnitudeEntry",
+    "StellarMagnitudeScale",
+    "VisibleStarStatistics",
+    "visible_star_mask",
+    "visible_star_statistics",
+    "integer_magnitude_range",
+    "stellar_magnitude_scale",
     "MatplotlibRenderer",
     "StereographicProjection",
     "CelestialSphere",
@@ -136,3 +152,18 @@ __all__ = [
     "ProjectedPoint",
     "ProjectedPolygon",
 ]
+
+from .charts.magnitude_legend_matplotlib import (
+    draw_stellar_magnitude_legend,
+    stellar_magnitude_handles,
+)
+
+from .charts.magnitude_legend_workflow import (
+    StellarMagnitudeLegendResult,
+    draw_visible_stellar_magnitude_legend,
+)
+
+from .charts.magnitude_legend_style import (
+    StellarMagnitudeLegendStyle,
+    draw_styled_stellar_magnitude_legend,
+)
