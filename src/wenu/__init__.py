@@ -167,3 +167,40 @@ from .charts.magnitude_legend_style import (
     StellarMagnitudeLegendStyle,
     draw_styled_stellar_magnitude_legend,
 )
+
+from .charts.legend_plan import (
+    ChartLegendPlan,
+    LegendPlacement,
+    default_chart_legend_plan,
+)
+
+from .charts.legend_composition import (
+    ComposedChartLegends,
+    apply_legend_placement,
+    draw_planned_chart_legends,
+)
+
+from .charts.legend_geometry import (
+    RenderedStarGeometry,
+    RenderedStarsNotFoundError,
+    rendered_star_geometry,
+)
+from .charts.rendered_legend_composition import (
+    draw_rendered_chart_legends,
+)
+
+from .charts.legend_inputs import (
+    ResolvedStellarLegendInputs,
+    resolve_stellar_legend_inputs,
+)
+
+from .charts.automatic_legends import (
+    AutomaticChartLegends,
+    chart_type_name,
+    draw_automatic_chart_legends,
+)
+
+from .charts.chart_legend_workflow import (
+    RenderedChartWithLegends,
+    render_chart_with_legends,
+)
