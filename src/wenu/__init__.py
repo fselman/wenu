@@ -51,7 +51,17 @@ from .charts.regional import ExportOptions, RegionalChart
 from .charts.styles import PublicationStyle
 from .charts.style_components import ChartStyle
 from .charts.presets import AtlasChartStyle, CartoonChartStyle
+from .charts.cartoon import CartoonChartPreset
 from .charts.legend import draw_chart_legend
+from .charts.legend_metadata import (
+    LegendMetadata,
+    active_coordinate_grid,
+    resolve_legend_metadata,
+)
+from .charts.legend_symbols import (
+    LegendSymbolDescriptor,
+    legend_symbol_descriptors,
+)
 from .rendering import MatplotlibRenderer
 from .projections import StereographicProjection
 from .sky import CelestialSphere
@@ -73,6 +83,7 @@ __all__ = [
     "ChartContext",
     "CartoonDetailPolicy",
     "CartoonChartStyle",
+    "CartoonChartPreset",
     "ChartMode",
     "AdaptiveDetailPolicy",
     "DetailApplication",
@@ -110,6 +121,11 @@ __all__ = [
     "ChartStyle",
     "AtlasChartStyle",
     "draw_chart_legend",
+    "LegendMetadata",
+    "active_coordinate_grid",
+    "resolve_legend_metadata",
+    "LegendSymbolDescriptor",
+    "legend_symbol_descriptors",
     "MatplotlibRenderer",
     "StereographicProjection",
     "CelestialSphere",

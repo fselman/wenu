@@ -2,11 +2,74 @@
 
 from __future__ import annotations
 
-from astropy import units as u
-from astropy.coordinates import FK5, SkyCoord
-from astropy.time import Time
+from matplotlib.legend_handler import HandlerPatch
 from matplotlib.lines import Line2D
-from matplotlib.patches import Patch
+from matplotlib.patches import Ellipse, Patch
+
+from wenu.rendering.symbols import DEFAULT_SYMBOLS
+
+from .legend_metadata import resolve_legend_metadata
+from .legend_symbols import legend_symbol_descriptors
+
+
+def _legend_ellipse(
+    legend,
+    orig_handle,
+    xdescent,
+    ydescent,
+    width,
+    height,
+    fontsize,
+):
+    """Create an elongated ellipse inside a legend handle box."""
+    return Ellipse(
+        (width / 2.0 - xdescent, height / 2.0 - ydescent),
+        width=width,
+        height=height * 0.58,
+    )
+
+
+def _legend_handler_map():
+    return {
+        Ellipse: HandlerPatch(patch_func=_legend_ellipse),
+    }
+
+
+def _legend_handle(descriptor):
+    if descriptor.key == "galaxy":
+        return Ellipse(
+            (0.0, 0.0),
+            width=1.7,
+            height=0.75,
+            facecolor=descriptor.face_color,
+            edgecolor=descriptor.edge_color,
+            alpha=descriptor.alpha,
+            linewidth=descriptor.linewidth,
+            label=descriptor.label,
+        )
+    if descriptor.kind == "patch":
+        return Patch(
+            facecolor=descriptor.face_color,
+            edgecolor=descriptor.edge_color,
+            alpha=descriptor.alpha,
+            linewidth=descriptor.linewidth,
+            label=descriptor.label,
+        )
+    marker = descriptor.marker
+    if descriptor.symbol_name is not None:
+        marker = DEFAULT_SYMBOLS[descriptor.symbol_name]
+    return Line2D(
+        [],
+        [],
+        color=descriptor.edge_color,
+        marker=marker,
+        markerfacecolor=descriptor.face_color,
+        markeredgecolor=descriptor.edge_color,
+        markeredgewidth=descriptor.linewidth,
+        linestyle="None",
+        alpha=descriptor.alpha,
+        label=descriptor.label,
+    )
 
 
 def draw_chart_legend(
@@ -15,67 +78,33 @@ def draw_chart_legend(
     sky,
     style,
     *,
+    grid=None,
+    title=None,
     context_lines=None,
 ):
-    """Draw the symbol key, chart center, and optional context lines."""
+    """Draw a configurable symbol key with coordinate and context metadata."""
     config = style.legend
     if not config.visible:
         return None
 
-    deep = style.deep_sky
-    iso = style.isophotes
-    handles = []
-    if getattr(sky, "open_clusters", None) is not None:
-        handles.append(Line2D([], [], color=deep.open_cluster_color,
-                              marker="o", fillstyle="none",
-                              linestyle="None", label="Open cluster"))
-    if getattr(sky, "globular_clusters", None) is not None:
-        handles.append(Line2D([], [], color=deep.globular_cluster_color,
-                              marker="o", linestyle="None",
-                              label="Globular cluster"))
-    if getattr(sky, "planetary_nebulae", None) is not None:
-        handles.append(Line2D([], [], color=deep.planetary_nebula_color,
-                              marker="+", linestyle="None",
-                              label="Planetary nebula"))
-    if getattr(sky, "supernova_remnants", None) is not None:
-        handles.append(Line2D([], [], color=deep.supernova_remnant_color,
-                              marker="o", fillstyle="none",
-                              linestyle="None", label="Supernova remnant"))
-    if getattr(sky, "galaxies", None) is not None:
-        handles.append(Patch(facecolor=deep.galaxy_face_color or "none",
-                             edgecolor=deep.galaxy_edge_color,
-                             label="Galaxy"))
-    if getattr(sky, "milky_way_isophotes", None) is not None:
-        handles.append(Patch(facecolor=iso.milky_way_color,
-                             edgecolor=iso.milky_way_contour_color or "none",
-                             alpha=iso.milky_way_alpha,
-                             label="Milky Way"))
-
-    horizontal = SkyCoord(
-        az=float(chart.center_az_deg) * u.deg,
-        alt=float(chart.center_alt_deg) * u.deg,
-        frame=sky.observer.altaz_frame,
-    )
-    center = horizontal.transform_to(FK5(equinox=Time("J2000")))
-    ra = center.ra.to_string(unit=u.hour, sep="hms", precision=0)
-    dec = center.dec.to_string(
-        unit=u.deg,
-        sep="°′″",
-        precision=0,
-        alwayssign=True,
-    )
-    title_lines = [
-        f"Center: RA {ra}, Dec {dec}",
-        "Equatorial grid: FK5, J2000.0",
+    handles = [
+        _legend_handle(descriptor)
+        for descriptor in legend_symbol_descriptors(sky, style)
     ]
+    title_lines = (
+        resolve_legend_metadata(chart, sky, grid=grid).title.splitlines()
+        if title is None
+        else [str(title)]
+    )
     if context_lines is not None:
         title_lines.extend(str(line) for line in context_lines)
-    title = "\n".join(title_lines)
+    resolved_title = "\n".join(title_lines)
     legend = ax.legend(
         handles=handles,
+        handler_map=_legend_handler_map(),
         loc=config.location,
         fontsize=config.fontsize,
-        title=title,
+        title=resolved_title,
         title_fontsize=config.title_fontsize,
         frameon=config.frame,
         facecolor=config.facecolor,
