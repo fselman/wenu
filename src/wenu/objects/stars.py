@@ -104,6 +104,8 @@ class Stars(AstronomicalObject):
         self.observer = observer
         self.catalog_name = catalog
         self.magnitude_limit = magnitude_limit
+        # Identifiers retained in addition to the magnitude cut.
+        self.include_ids = frozenset()
 
         # Stable magnitude-limited catalogue.
         self.catalog = None
@@ -140,8 +142,12 @@ class Stars(AstronomicalObject):
             _hipparcos_semantics(payload),
         )
 
-        self.catalog = source[
+        magnitude_mask = (
             source["magnitude"] <= self.magnitude_limit
+        )
+        identifier_mask = source.index.isin(self.include_ids)
+        self.catalog = source[
+            magnitude_mask | identifier_mask
         ].copy()
         self.hip_df = self.catalog.copy()
 
@@ -151,6 +157,15 @@ class Stars(AstronomicalObject):
         )
 
         return self.catalog
+
+    def configure_selection(self, *, include_ids=(), reload=True):
+        """Retain IDs in addition to the magnitude-limited stars."""
+        identifiers = frozenset(int(value) for value in include_ids)
+        changed = identifiers != self.include_ids
+        self.include_ids = identifiers
+        if changed and reload:
+            self.load()
+        return changed
 
     def compute_altaz(
         self,

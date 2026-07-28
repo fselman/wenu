@@ -4,12 +4,18 @@ from __future__ import annotations
 
 from importlib.resources import as_file
 from pathlib import Path
+from types import MappingProxyType
+import warnings
 
 import numpy as np
 
 from wenu.resources import constellation_lines_path
 from wenu.sky.geometrical_object import GeometricalObject
 from wenu.geometry.spherical import SphericalCurves
+
+
+class UnresolvedConstellationStarWarning(UserWarning):
+    """A constellation figure references stars absent from the catalogue."""
 
 
 class ConstellationLines(GeometricalObject):
@@ -35,6 +41,81 @@ class ConstellationLines(GeometricalObject):
         self.edges = []
         self.edges_by_constellation = {}
         self.load()
+
+    @property
+    def star_ids(self):
+        """Immutable, deduplicated identifiers in the loaded line system."""
+        return frozenset(
+            hip_id
+            for edge in self.edges
+            for hip_id in edge
+        )
+
+    @property
+    def star_ids_by_constellation(self):
+        """Immutable mapping of figure abbreviation to stellar identifiers."""
+        return MappingProxyType(
+            {
+                abbreviation: frozenset(
+                    hip_id
+                    for edge in edges
+                    for hip_id in edge
+                )
+                for abbreviation, edges
+                in self.edges_by_constellation.items()
+            }
+        )
+
+    def star_ids_for(self, constellations=None):
+        """Return deduplicated identifiers for selected loaded figures.
+
+        ``None`` returns all identifiers. Unknown abbreviations are reported
+        rather than silently ignored.
+        """
+        if constellations is None:
+            return self.star_ids
+        requested = frozenset(str(name) for name in constellations)
+        unknown = requested.difference(self.edges_by_constellation)
+        if unknown:
+            names = ", ".join(sorted(unknown))
+            raise KeyError(f"Unknown loaded constellation figure(s): {names}")
+        return frozenset(
+            hip_id
+            for abbreviation in requested
+            for edge in self.edges_by_constellation[abbreviation]
+            for hip_id in edge
+        )
+
+    @property
+    def resolvable_star_ids(self):
+        """Identifiers that are present in the active stellar catalogue."""
+        available = self._catalogue_star_ids()
+        return self.star_ids.intersection(available)
+
+    @property
+    def unresolved_star_ids(self):
+        """Identifiers referenced by figures but absent from the catalogue."""
+        available = self._catalogue_star_ids()
+        return self.star_ids.difference(available)
+
+    def _catalogue_star_ids(self):
+        catalog = getattr(self.stars, "catalog", None)
+        if catalog is None:
+            catalog = getattr(self.stars, "hip_df", None)
+        if catalog is None:
+            return frozenset()
+        return frozenset(int(value) for value in catalog.index)
+
+    def require_resolved_star_ids(self):
+        """Return identifiers or raise with a complete missing-ID diagnostic."""
+        missing = self.unresolved_star_ids
+        if missing:
+            values = ", ".join(str(value) for value in sorted(missing))
+            raise LookupError(
+                "Constellation-line stars are absent from the stellar "
+                f"catalogue: {values}"
+            )
+        return self.star_ids
 
     def load(self):
         """Read constellation connectivity from a Stellarium-style .fab file."""
@@ -109,6 +190,16 @@ class ConstellationLines(GeometricalObject):
                 "The stellar Skyfield representation is unavailable."
             )
 
+        missing = self.unresolved_star_ids
+        if missing:
+            values = ", ".join(str(value) for value in sorted(missing))
+            warnings.warn(
+                "Constellation-line stars are absent from the stellar "
+                f"catalogue and cannot be drawn: {values}",
+                UnresolvedConstellationStarWarning,
+                stacklevel=2,
+            )
+
         # Evaluate the stable catalogue directly. Do not call
         # Stars.spherical_geometry(), because that deliberately updates the
         # renderer-facing active selection.
@@ -164,6 +255,8 @@ class ConstellationLines(GeometricalObject):
                 "system": self.system,
                 "coordinate_system": "altaz",
                 "hip_edges": tuple(hip_edges),
+                "star_ids": self.star_ids,
+                "resolvable_star_ids": self.resolvable_star_ids,
+                "unresolved_star_ids": missing,
             },
         )
-

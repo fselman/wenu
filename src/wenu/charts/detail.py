@@ -27,6 +27,18 @@ DEFAULT_CONTENT_LAYERS = frozenset(
     }
 )
 
+CARTOON_CONTENT_LAYERS = frozenset(
+    {
+        "stars",
+        "constellation_lines",
+        "constellation_labels",
+    }
+)
+
+CONSTELLATION_STAR_MODES = frozenset(
+    {"selected", "visible", "all", "none"}
+)
+
 
 @dataclass(frozen=True)
 class ResolvedDetail:
@@ -40,6 +52,8 @@ class ResolvedDetail:
     minimum_supernova_remnant_size_arcmin: float | None = None
     label_density: float = 1.0
     enabled_layers: frozenset[str] | None = None
+    constellation_star_mode: str | None = None
+    extra_star_ids: frozenset[int] = frozenset()
 
     def __post_init__(self) -> None:
         numeric_names = (
@@ -70,6 +84,19 @@ class ResolvedDetail:
             if not normalized:
                 raise ValueError("enabled_layers cannot be empty.")
             object.__setattr__(self, "enabled_layers", normalized)
+        if (
+            self.constellation_star_mode is not None
+            and self.constellation_star_mode not in CONSTELLATION_STAR_MODES
+        ):
+            raise ValueError(
+                "constellation_star_mode must be selected, visible, all, "
+                "none, or None."
+            )
+        object.__setattr__(
+            self,
+            "extra_star_ids",
+            frozenset(int(value) for value in self.extra_star_ids),
+        )
 
     def layer_enabled(self, name: str) -> bool:
         """Return whether a semantic layer is enabled."""
@@ -92,6 +119,8 @@ class DetailOverrides:
     minimum_supernova_remnant_size_arcmin: float | None = None
     label_density: float | None = None
     enabled_layers: frozenset[str] | None = None
+    constellation_star_mode: str | None = None
+    extra_star_ids: frozenset[int] | None = None
 
 
 @runtime_checkable
@@ -119,6 +148,60 @@ class FixedDetailPolicy:
     ) -> ResolvedDetail:
         del context, mode
         return self.detail
+
+
+@dataclass(frozen=True)
+class CartoonDetailPolicy:
+    """Sparse educational-chart content, independent of visual style.
+
+    The stellar catalogue is resolved as the union of constellation vertices,
+    stars at or brighter than ``bright_star_magnitude_limit``, and
+    ``extra_star_ids``.  Constellation identifiers are obtained later when
+    the resolved detail is applied to a populated celestial sphere.
+    """
+
+    constellation_star_mode: str = "selected"
+    bright_star_magnitude_limit: float = 1.5
+    extra_star_ids: frozenset[int] = frozenset()
+    include_deep_sky: bool = False
+    label_named_stars: bool = False
+
+    def __post_init__(self) -> None:
+        if self.constellation_star_mode not in CONSTELLATION_STAR_MODES:
+            raise ValueError(
+                "constellation_star_mode must be selected, visible, all, "
+                "or none."
+            )
+        if not isfinite(float(self.bright_star_magnitude_limit)):
+            raise ValueError(
+                "bright_star_magnitude_limit must be finite."
+            )
+        object.__setattr__(
+            self,
+            "extra_star_ids",
+            frozenset(int(value) for value in self.extra_star_ids),
+        )
+
+    def resolve(
+        self,
+        context: ChartContext,
+        mode: ResolvedMode,
+    ) -> ResolvedDetail:
+        del context, mode
+        enabled = (
+            DEFAULT_CONTENT_LAYERS
+            if self.include_deep_sky
+            else CARTOON_CONTENT_LAYERS
+        )
+        return ResolvedDetail(
+            star_magnitude_limit=float(
+                self.bright_star_magnitude_limit
+            ),
+            label_density=1.0,
+            enabled_layers=enabled,
+            constellation_star_mode=self.constellation_star_mode,
+            extra_star_ids=self.extra_star_ids,
+        )
 
 
 @dataclass(frozen=True)

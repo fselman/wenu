@@ -105,3 +105,97 @@ class AtlasChartStyle(ChartStyle):
             title_fontsize=6.2,
         )
     )
+
+
+@dataclass(frozen=True)
+class CartoonChartStyle(ChartStyle):
+    """Original, sparse classroom-chart visual language.
+
+    This preset controls appearance only.  Chart geometry belongs to the
+    chart type, output sizing belongs to the chart mode, and layer/star
+    selection belongs to a detail policy such as ``CartoonDetailPolicy``.
+    """
+
+    canvas: CanvasStyle = field(
+        default_factory=lambda: CanvasStyle(
+            sky_color="#fffdf7",
+            foreground_color="#172238",
+            label_fontsize=13.0,
+        )
+    )
+    stars: StellarStyle = field(
+        default_factory=lambda: StellarStyle(
+            color="#172238",
+            area_scale=1.30,
+            draw_variable_symbols=False,
+            draw_multiple_symbols=False,
+        )
+    )
+    isophotes: IsophoteStyle = field(
+        default_factory=lambda: IsophoteStyle(
+            milky_way_color="#dbe8ef",
+            milky_way_alpha=0.20,
+            milky_way_contour_color="#8aa6b6",
+            milky_way_contour_linestyle=":",
+            milky_way_contour_linewidth=0.45,
+            milky_way_contour_alpha=0.35,
+            lmc_color="#dbe8ef",
+            lmc_alpha=0.18,
+            smc_color="#dbe8ef",
+            smc_alpha=0.16,
+        )
+    )
+    deep_sky: DeepSkyStyle = field(
+        default_factory=lambda: DeepSkyStyle(
+            nonstellar_color="#b07a17",
+            galaxy_edge_color="#a84940",
+            supernova_remnant_color="#66865d",
+            globular_cluster_color="#b07a17",
+            planetary_nebula_color="#66865d",
+            open_cluster_color="#b89028",
+            open_cluster_symbol_size=16.0,
+            open_cluster_linewidth=0.55,
+            planetary_nebula_symbol_size=16.0,
+            planetary_nebula_linewidth=0.55,
+        )
+    )
+    grids: GridStyle = field(
+        default_factory=lambda: GridStyle(
+            boundary_color="#9aa0a6",
+            boundary_linewidth=0.30,
+            boundary_linestyle=":",
+            boundary_alpha=0.45,
+            constellation_line_color="#304f78",
+            constellation_linewidth=1.15,
+            constellation_line_alpha=0.95,
+            constellation_label_color="#203958",
+            constellation_label_alpha=1.0,
+            equatorial_color="#9aa0a6",
+            equatorial_linestyle="-",
+            ecliptic_color="#b58955",
+            ecliptic_linestyle="--",
+            galactic_color="#7e9eac",
+            galactic_linestyle="--",
+            coordinate_linewidth=0.40,
+            coordinate_alpha=0.45,
+            draw_coordinate_labels=False,
+            coordinate_label_color="#66717c",
+            coordinate_label_fontsize=7.0,
+            coordinate_label_alpha=0.75,
+        )
+    )
+    mask: MaskStyle = field(
+        default_factory=lambda: MaskStyle(
+            color="#d8dde2",
+            alpha=0.25,
+            zorder=20.0,
+        )
+    )
+    legend: LegendStyle = field(
+        default_factory=lambda: LegendStyle(
+            visible=False,
+            location="upper right",
+            fontsize=7.0,
+            title_fontsize=7.5,
+        )
+    )

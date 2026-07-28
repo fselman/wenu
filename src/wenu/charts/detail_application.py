@@ -67,6 +67,38 @@ def _refresh_magnitude_limit(layer, value):
     return True
 
 
+def _constellation_star_ids(sky, mode):
+    if mode in (None, "none"):
+        return frozenset()
+    lines = getattr(sky, "constellation_lines", None)
+    if lines is None:
+        return frozenset()
+    if mode in {"selected", "all"}:
+        return lines.star_ids
+    if mode == "visible":
+        # Visibility clipping occurs after spherical geometry is created.
+        # At this stage, use every resolvable vertex in the loaded figures;
+        # the normal projection/viewport pipeline removes off-chart points.
+        return lines.resolvable_star_ids
+    raise ValueError(f"Unsupported constellation-star mode: {mode}")
+
+
+def _refresh_star_selection(sky, detail):
+    stars = getattr(sky, "stars", None)
+    if stars is None or detail.constellation_star_mode is None:
+        return False
+    identifiers = _constellation_star_ids(
+        sky,
+        detail.constellation_star_mode,
+    ).union(detail.extra_star_ids)
+    configure = getattr(stars, "configure_selection", None)
+    if not callable(configure):
+        raise TypeError(
+            "The stellar layer does not support configure_selection()."
+        )
+    return bool(configure(include_ids=identifiers, reload=True))
+
+
 @dataclass(frozen=True)
 class DetailApplication:
     """Result of applying a resolved detail policy to a sky."""
@@ -96,10 +128,12 @@ def apply_resolved_detail(
     """
     reloaded = []
     if reload_catalogues:
-        if _refresh_magnitude_limit(
+        stars_reloaded = _refresh_magnitude_limit(
             getattr(sky, "stars", None),
             detail.star_magnitude_limit,
-        ):
+        )
+        selection_reloaded = _refresh_star_selection(sky, detail)
+        if stars_reloaded or selection_reloaded:
             reloaded.append("stars")
         if _refresh_magnitude_limit(
             getattr(sky, "galaxies", None),

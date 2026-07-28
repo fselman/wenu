@@ -20,6 +20,7 @@ from .sky.magellanic_clouds import MagellanicCloudIsophotes
 from .charts.composition import ChartComposition, compose_chart
 from .charts.context import BoundaryKind, ChartContext
 from .charts.detail import (
+    CartoonDetailPolicy,
     AdaptiveDetailPolicy,
     DetailOverrides,
     DetailPolicy,
@@ -49,7 +50,7 @@ from .charts.full_sky import FullSkyChart
 from .charts.regional import ExportOptions, RegionalChart
 from .charts.styles import PublicationStyle
 from .charts.style_components import ChartStyle
-from .charts.presets import AtlasChartStyle
+from .charts.presets import AtlasChartStyle, CartoonChartStyle
 from .charts.legend import draw_chart_legend
 from .rendering import MatplotlibRenderer
 from .projections import StereographicProjection
@@ -70,6 +71,8 @@ __all__ = [
     "BoundaryKind",
     "ChartComposition",
     "ChartContext",
+    "CartoonDetailPolicy",
+    "CartoonChartStyle",
     "ChartMode",
     "AdaptiveDetailPolicy",
     "DetailApplication",
