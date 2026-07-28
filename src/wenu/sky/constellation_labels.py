@@ -52,20 +52,29 @@ class ConstellationLabels(GeometricalObject):
         min_stars = (
             self.min_stars if min_stars is None else int(min_stars)
         )
-        stars = self.stars.spherical_geometry(
-            observer,
-            alt_min=0.0,
+        frame = getattr(
+            self.stars,
+            "source_catalog",
+            self.stars.hip_df,
         )
-        frame = self.stars.hip_df
         if frame is None or len(frame) == 0:
             return self._empty()
 
+        ra_deg = frame["ra_degrees"].to_numpy(dtype=float)
+        dec_deg = frame["dec_degrees"].to_numpy(dtype=float)
+        valid_coordinates = np.isfinite(ra_deg) & np.isfinite(dec_deg)
+        if not np.any(valid_coordinates):
+            return self._empty()
+        frame = frame.iloc[np.flatnonzero(valid_coordinates)]
         coordinates = SkyCoord(
-            ra=frame["ra_degrees"].to_numpy() * u.deg,
-            dec=frame["dec_degrees"].to_numpy() * u.deg,
+            ra=ra_deg[valid_coordinates] * u.deg,
+            dec=dec_deg[valid_coordinates] * u.deg,
             frame="icrs",
         )
         abbreviations = coordinates.get_constellation(short_name=True)
+        apparent = coordinates.transform_to(observer.altaz_frame)
+        apparent_lon_deg = apparent.az.to_value(u.deg)
+        apparent_lat_deg = apparent.alt.to_value(u.deg)
         groups = defaultdict(list)
 
         for index, (hip_id, abbreviation) in enumerate(
@@ -91,8 +100,8 @@ class ConstellationLabels(GeometricalObject):
             if len(indices) < min_stars:
                 continue
             lon, lat = self._spherical_mean(
-                stars.lon_deg[indices],
-                stars.lat_deg[indices],
+                apparent_lon_deg[indices],
+                apparent_lat_deg[indices],
             )
             lon_deg.append(lon)
             lat_deg.append(lat)

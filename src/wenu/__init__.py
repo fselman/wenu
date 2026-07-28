@@ -52,6 +52,10 @@ from .charts.styles import PublicationStyle
 from .charts.style_components import ChartStyle
 from .charts.presets import AtlasChartStyle, CartoonChartStyle
 from .charts.cartoon import CartoonChartPreset
+from .charts.label_placement import (
+    LABEL_POSITION_VECTORS,
+    resolve_constellation_label_offsets,
+)
 from .charts.legend import draw_chart_legend
 from .charts.legend_metadata import (
     LegendMetadata,
@@ -87,6 +91,8 @@ from wenu.geometry.projected import (
 )
 
 __all__ = [
+    "resolve_constellation_label_offsets",
+    "LABEL_POSITION_VECTORS",
     "BoundaryKind",
     "ChartComposition",
     "ChartContext",
@@ -203,4 +209,16 @@ from .charts.automatic_legends import (
 from .charts.chart_legend_workflow import (
     RenderedChartWithLegends,
     render_chart_with_legends,
+)
+
+from .charts.cartoon_modes import (
+    CartoonModePalette,
+    CARTOON_PRINT_PALETTE,
+    CARTOON_PRESENTATION_PALETTE,
+    cartoon_chart_style,
+)
+
+from .charts.cartoon_composition import (
+    cartoon_output_mode,
+    compose_cartoon_chart,
 )

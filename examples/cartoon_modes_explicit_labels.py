@@ -1,0 +1,181 @@
+"""Render editable print and presentation cartoon charts."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+from wenu.rendering import clip_polygons_to_projection_cap
+from wenu import (
+    CelestialSphere,
+    DetailOverrides,
+    MatplotlibRenderer,
+    Observer,
+    RegionalChart,
+    compose_cartoon_chart,
+)
+
+
+CONSTELLATIONS = ("Cyg", "Lyr", "Vul", "Sge", "Aql")
+DEFAULT_OUTPUT = Path("output/cartoon-modes-explicit-labels")
+
+# Edit these nine-position switches directly.
+# Accepted values: ul, u, ur, cl, c, cr, ll, lc, lr.
+CONSTELLATION_LABEL_POSITIONS = {
+    "Cyg": "cl",
+    "Lyr": "ur",
+    "Vul": "ll",
+    "Sge": "lr",
+    "Aql": "ur",
+}
+
+# Optional fine corrections added after the position switch.
+# Values are projected-chart (dx, dy) displacements.
+CONSTELLATION_LABEL_OFFSETS = {
+    "Cyg": (0.00, 0.00),
+    "Lyr": (-0.03, 0.01),
+    "Vul": (0.00, 0.00),
+    "Sge": (0.00, 0.00),
+    "Aql": (0.00, 0.00),
+}
+
+LABEL_CLEARANCE = (0.24, 0.20)
+STAR_MAGNITUDE_LIMIT = 3.0
+
+CARTOON_LAYERS = frozenset(
+    {
+        "stars",
+        "constellation_lines",
+        "constellation_labels",
+    }
+)
+
+
+def build_scene():
+    """Return the sky and regional chart shared by both output modes."""
+    observer = Observer(
+        location="La Ligua",
+        time="2026-08-15 21:00",
+    )
+    sky = CelestialSphere(observer)
+    sky.add_stars(
+        catalog="hipparcos",
+        magnitude_limit=6.5,
+    )
+    sky.add_constellations(
+        system="western",
+        selected=CONSTELLATIONS,
+    )
+    sky.add_milky_way_isophotes()
+    chart = RegionalChart.from_constellations(
+        sky,
+        CONSTELLATIONS,
+        angular_radius_deg=46.0,
+        aspect_ratio=1.38,
+        north_up=True,
+        crop_y=0.0,
+        label_selection=CONSTELLATIONS,
+    )
+    return sky, chart
+
+
+def content_layers(mode):
+    """Enable the Milky Way only in presentation mode."""
+    if mode == "presentation":
+        return CARTOON_LAYERS | {"milky_way"}
+    return CARTOON_LAYERS
+
+
+def render_mode(
+    sky,
+    chart,
+    mode,
+    output_directory=DEFAULT_OUTPUT,
+):
+    """Render one mode with explicit, editable label placement."""
+    output_directory = Path(output_directory)
+    output_directory.mkdir(parents=True, exist_ok=True)
+    composition = compose_cartoon_chart(
+        chart,
+        mode=mode,
+        detail_overrides=DetailOverrides(
+            star_magnitude_limit=STAR_MAGNITUDE_LIMIT,
+            enabled_layers=content_layers(mode),
+        ),
+        constellation_label_positions=(
+            CONSTELLATION_LABEL_POSITIONS
+        ),
+        constellation_label_offsets=CONSTELLATION_LABEL_OFFSETS,
+        constellation_label_clearance=LABEL_CLEARANCE,
+    )
+    application = composition.layer_options(sky)
+    layer_options = dict(application.layer_options)
+    milky_way_options = dict(
+        layer_options[sky.milky_way_isophotes]
+    )
+    milky_way_options["prepare"] = (
+        lambda spherical, projected: (
+            clip_polygons_to_projection_cap(
+                spherical,
+                projected,
+                projection=chart.projection,
+                angular_radius_deg=75.0,
+            )
+        )
+    )
+    layer_options[sky.milky_way_isophotes] = milky_way_options
+    style = composition.style
+    resolved = composition.mode
+
+    figure, ax = plt.subplots(
+        figsize=(resolved.width_inches, resolved.height_inches),
+    )
+    style.configure_axes(
+        ax,
+        title=f"The Summer Triangle — cartoon {mode} mode",
+    )
+    destination = output_directory / f"cartoon-{mode}.png"
+    chart.export(
+        sky,
+        MatplotlibRenderer(ax),
+        destination,
+        style=style,
+        layer_options=layer_options,
+    )
+    figure.savefig(
+        destination,
+        dpi=resolved.dpi,
+        bbox_inches="tight",
+        transparent=resolved.transparent,
+    )
+    plt.close(figure)
+    return destination, composition
+
+
+def generate(output_directory=DEFAULT_OUTPUT):
+    """Create matching print and presentation charts."""
+    sky, chart = build_scene()
+    products = {}
+    for mode in ("print", "presentation"):
+        path, composition = render_mode(
+            sky,
+            chart,
+            mode,
+            output_directory,
+        )
+        products[mode] = (path, composition)
+    return products
+
+
+def main():
+    products = generate()
+    for mode, (path, _) in products.items():
+        print(f"{mode}: {path}")
+
+
+if __name__ == "__main__":
+    main()

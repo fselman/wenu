@@ -123,6 +123,12 @@ class GridStyle:
     constellation_line_alpha: float = 0.7
     constellation_label_color: str | None = None
     constellation_label_alpha: float = 0.85
+    constellation_label_offset: tuple[float, float] = (0.0, 0.0)
+    constellation_label_offsets: dict[
+        str, tuple[float, float]
+    ] | None = None
+    constellation_label_ha: str = "center"
+    constellation_label_va: str = "center"
     equatorial_color: str = "deepskyblue"
     equatorial_linestyle: str = "-"
     ecliptic_color: str = "gold"
@@ -324,6 +330,14 @@ class ChartStyle:
             constellation_label_alpha=(
                 grids.constellation_label_alpha
             ),
+            constellation_label_offset=(
+                grids.constellation_label_offset
+            ),
+            constellation_label_offsets=(
+                grids.constellation_label_offsets
+            ),
+            constellation_label_ha=grids.constellation_label_ha,
+            constellation_label_va=grids.constellation_label_va,
             equatorial_color=grids.equatorial_color,
             equatorial_linestyle=grids.equatorial_linestyle,
             ecliptic_color=grids.ecliptic_color,

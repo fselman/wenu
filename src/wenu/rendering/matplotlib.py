@@ -793,6 +793,11 @@ class MatplotlibRenderer:
         return result
 
     def _label(self, x, y, label, style, offset):
+        if isinstance(offset, Mapping):
+            offset = offset.get(
+                str(label),
+                offset.get("__default__", (0.0, 0.0)),
+            )
         dx, dy = offset(x, y) if callable(offset) else offset
         return render_text(
             self.ax,

@@ -142,6 +142,7 @@ class Stars(AstronomicalObject):
             _hipparcos_semantics(payload),
         )
 
+        self.source_catalog = source.copy()
         magnitude_mask = (
             source["magnitude"] <= self.magnitude_limit
         )

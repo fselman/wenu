@@ -134,6 +134,10 @@ class ConstellationLines(GeometricalObject):
         path = Path(path)
         self.edges.clear()
         self.edges_by_constellation.clear()
+        if self.constellations is not None:
+            self.edges_by_constellation.update(
+                (name, []) for name in self.constellations
+            )
 
         with path.open("r", encoding="utf-8") as file:
             for line_number, raw_line in enumerate(file, start=1):

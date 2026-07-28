@@ -112,6 +112,12 @@ class PublicationStyle:
     constellation_line_alpha: float = 0.7
     constellation_label_color: str | None = None
     constellation_label_alpha: float = 0.85
+    constellation_label_offset: tuple[float, float] = (0.0, 0.0)
+    constellation_label_offsets: dict[
+        str, tuple[float, float]
+    ] | None = None
+    constellation_label_ha: str = "center"
+    constellation_label_va: str = "center"
     equatorial_color: str = "deepskyblue"
     equatorial_linestyle: str = "-"
     ecliptic_color: str = "gold"
@@ -534,12 +540,15 @@ class PublicationStyle:
                             else self.constellation_label_color
                         ),
                         "fontsize": self.label_fontsize,
-                        "ha": "center",
-                        "va": "center",
+                        "ha": self.constellation_label_ha,
+                        "va": self.constellation_label_va,
                         "alpha": self.constellation_label_alpha,
                         "zorder": 5,
                     },
-                    "label_offset": radial_label_offset(0.04),
+                    "label_offset": {
+                        "__default__": self.constellation_label_offset,
+                        **dict(self.constellation_label_offsets or {}),
+                    },
                 },
             }
         if sky.constellation_boundaries is not None:

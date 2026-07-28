@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+from .context import BoundaryKind
 from .detail import ResolvedDetail
 
 
@@ -39,14 +40,96 @@ def merge_layer_options(*sources):
     return merged
 
 
-def _style_layer_options(style, sky):
+_LAYER_OPTION_ALIASES = {
+    "milky_way_isophotes": ("milky_way",),
+}
+
+
+def _layer_option_names(layer):
+    name = getattr(layer, "layer_name", None)
+    if name is None:
+        return ()
+    return (name, *_LAYER_OPTION_ALIASES.get(name, ()))
+
+
+def _is_hashable(value):
+    try:
+        hash(value)
+    except TypeError:
+        return False
+    return True
+
+
+def merge_sky_layer_options(sky, *sources):
+    """Merge semantic, registered-name, and object-keyed layer options.
+
+    Source precedence remains left-to-right. Within one source, semantic
+    aliases are applied first, the registered layer name second, and the
+    layer object last.
+    """
+    sources = tuple(source for source in sources if source is not None)
+    merged = {}
+    consumed = set()
+    for layer in sky.layers:
+        names = _layer_option_names(layer)
+        registered_name = names[0] if names else None
+        aliases = names[1:]
+        resolved = {}
+        found = False
+        layer_is_hashable = _is_hashable(layer)
+        for source in sources:
+            for name in (*aliases, registered_name):
+                if name is not None and name in source:
+                    resolved = _merge_mapping(resolved, source[name])
+                    consumed.add(name)
+                    found = True
+            if layer_is_hashable and layer in source:
+                resolved = _merge_mapping(resolved, source[layer])
+                consumed.add(layer)
+                found = True
+        if found:
+            if layer_is_hashable:
+                merged[layer] = resolved
+            for name in names:
+                merged[name] = resolved
+    for source in sources:
+        for key, value in source.items():
+            if key not in consumed:
+                merged[key] = _merge_mapping(
+                    merged.get(key, {}),
+                    value,
+                )
+    return merged
+
+
+def _style_layer_options(
+    style,
+    sky,
+    *,
+    horizon_altitude_deg=None,
+):
     resolved = (
         style.as_publication_style()
         if callable(getattr(style, "as_publication_style", None))
         else style
     )
     factory = getattr(resolved, "layer_options", None)
-    return {} if not callable(factory) else factory(sky)
+    if not callable(factory):
+        return {}
+    if horizon_altitude_deg is None:
+        return factory(sky)
+    return factory(
+        sky,
+        horizon_altitude_deg=horizon_altitude_deg,
+    )
+
+
+def _composition_horizon_altitude(composition):
+    context = getattr(composition, "context", None)
+    boundary_kind = getattr(context, "boundary_kind", None)
+    if boundary_kind == BoundaryKind.RECTANGULAR:
+        return -90.0
+    return None
 
 
 def _refresh_magnitude_limit(layer, value):
@@ -107,6 +190,16 @@ class DetailApplication:
     reloaded_layers: tuple[str, ...] = ()
 
 
+_DETAIL_LAYER_NAMES = {
+    "milky_way_isophotes": "milky_way",
+}
+
+
+def _detail_layer_name(layer_name):
+    """Return the semantic content-policy name for a registered layer."""
+    return _DETAIL_LAYER_NAMES.get(layer_name, layer_name)
+
+
 def apply_resolved_detail(
     sky,
     detail: ResolvedDetail,
@@ -147,7 +240,9 @@ def apply_resolved_detail(
         if not name:
             continue
         configured = {
-            "enabled": detail.layer_enabled(name),
+            "enabled": detail.layer_enabled(
+                _detail_layer_name(name)
+            ),
         }
         detail_field = _SIZE_OPTIONS.get(name)
         if detail_field is not None:
@@ -159,7 +254,8 @@ def apply_resolved_detail(
         resolved_options[name] = configured
 
     return DetailApplication(
-        layer_options=merge_layer_options(
+        layer_options=merge_sky_layer_options(
+            sky,
             base_layer_options,
             resolved_options,
             explicit_layer_options,
@@ -176,7 +272,13 @@ def composition_layer_options(
     reload_catalogues=True,
 ):
     """Return rendering options for a resolved chart composition."""
-    base = _style_layer_options(composition.style, sky)
+    base = _style_layer_options(
+        composition.style,
+        sky,
+        horizon_altitude_deg=_composition_horizon_altitude(
+            composition
+        ),
+    )
     return apply_resolved_detail(
         sky,
         composition.detail,
