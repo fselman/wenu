@@ -20,7 +20,6 @@ from wenu import (
     RegionalChart,
     draw_chart_legend,
 )
-from wenu.rendering import clip_polygons_to_projection_cap
 
 
 CONSTELLATIONS = ("Cyg", "Lyr", "Vul", "Sge", "Aql")
@@ -96,19 +95,6 @@ def generate(output=DEFAULT_OUTPUT):
             minimum_altitude_deg=-90.0,
         ),
     )
-    milky_way_options = dict(
-        style.layer_options(sky)[sky.milky_way_isophotes]
-    )
-    milky_way_options["prepare"] = (
-        lambda spherical, projected:
-        clip_polygons_to_projection_cap(
-            spherical,
-            projected,
-            projection=chart.projection,
-            angular_radius_deg=75.0,
-        )
-    )
-
     figure, ax = plt.subplots(
         figsize=chart.figure_size(10.0),
     )
@@ -122,9 +108,6 @@ def generate(output=DEFAULT_OUTPUT):
         MatplotlibRenderer(ax),
         output,
         style=style,
-        layer_options={
-            sky.milky_way_isophotes: milky_way_options,
-        },
         export_options=ExportOptions(dpi=480),
     )
     draw_chart_legend(ax, chart, sky, style)

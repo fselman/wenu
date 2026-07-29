@@ -9,7 +9,6 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from wenu.rendering import clip_polygons_to_projection_cap
 from wenu import (
     CelestialSphere,
     DetailOverrides,
@@ -113,21 +112,6 @@ def render_mode(
         constellation_label_clearance=LABEL_CLEARANCE,
     )
     application = composition.layer_options(sky)
-    layer_options = dict(application.layer_options)
-    milky_way_options = dict(
-        layer_options[sky.milky_way_isophotes]
-    )
-    milky_way_options["prepare"] = (
-        lambda spherical, projected: (
-            clip_polygons_to_projection_cap(
-                spherical,
-                projected,
-                projection=chart.projection,
-                angular_radius_deg=75.0,
-            )
-        )
-    )
-    layer_options[sky.milky_way_isophotes] = milky_way_options
     style = composition.style
     resolved = composition.mode
 
@@ -144,7 +128,7 @@ def render_mode(
         MatplotlibRenderer(ax),
         destination,
         style=style,
-        layer_options=layer_options,
+        layer_options=application.layer_options,
     )
     figure.savefig(
         destination,

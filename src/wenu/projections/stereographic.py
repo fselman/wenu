@@ -104,6 +104,25 @@ class StereographicProjection:
             * np.tan(np.radians(angular_radius_deg) / 2.0)
         )
 
+    def angular_radius_for_projected_radius(
+        self,
+        projected_radius,
+    ) -> float:
+        """Convert a non-negative plane radius to angular separation."""
+        projected_radius = float(projected_radius)
+        if (
+            not np.isfinite(projected_radius)
+            or projected_radius < 0.0
+        ):
+            raise ValueError(
+                "projected_radius must be finite and non-negative."
+            )
+        return float(
+            np.degrees(
+                2.0 * np.arctan(projected_radius / self.radius)
+            )
+        )
+
     def viewport_for_angular_radius(
         self,
         angular_radius_deg: float,

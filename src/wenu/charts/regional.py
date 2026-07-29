@@ -12,6 +12,7 @@ from wenu.coordinates import radec_to_altaz
 from wenu.projections.stereographic import StereographicProjection
 from wenu.geometry.frame import SphericalFrame
 from wenu.geometry.viewport import Viewport
+from wenu.rendering.preparation import project_geometry_for_viewport
 
 
 def _spherical_mean(lon_deg, lat_deg):
@@ -403,6 +404,13 @@ class RegionalChart:
             renderer=renderer,
             viewport=viewport,
             layer_options=options,
+            project_geometry=lambda spherical: (
+                project_geometry_for_viewport(
+                    spherical,
+                    projection=projection,
+                    viewport=viewport,
+                )
+            ),
         )
         if self.outside_mask_constellations is not None:
             from wenu.charts._masking import (

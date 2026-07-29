@@ -10,6 +10,7 @@ from wenu.geometry.frame import SphericalFrame
 from wenu.geometry.projected import ProjectedCurve
 from wenu.geometry.viewport import Viewport
 from wenu.projections.stereographic import StereographicProjection
+from wenu.rendering.preparation import project_geometry_for_viewport
 
 
 @dataclass(frozen=True)
@@ -200,11 +201,20 @@ class FullSkyChart:
                 "facecolor": "none",
             },
         )
+        projection = self.projection
+        viewport = self.viewport
         return sky.draw_chart(
-            projection=self.projection,
+            projection=projection,
             renderer=renderer,
-            viewport=self.viewport,
+            viewport=viewport,
             layer_options=options,
+            project_geometry=lambda spherical: (
+                project_geometry_for_viewport(
+                    spherical,
+                    projection=projection,
+                    viewport=viewport,
+                )
+            ),
         )
 
     def export(

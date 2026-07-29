@@ -83,6 +83,7 @@ class CelestialSphere:
         renderer,
         viewport=None,
         layer_options=None,
+        project_geometry=None,
     ) -> ChartRenderingResult:
         """Render all registered layers through the canonical pipeline."""
         if not callable(getattr(projection, "project_geometry", None)):
@@ -91,6 +92,8 @@ class CelestialSphere:
             )
         if not callable(getattr(renderer, "draw", None)):
             raise TypeError("renderer must provide draw().")
+        if project_geometry is not None and not callable(project_geometry):
+            raise TypeError("project_geometry must be callable or None.")
 
         if viewport is not None:
             apply = getattr(renderer, "apply_viewport", None)
@@ -117,7 +120,11 @@ class CelestialSphere:
                 self.observer,
                 **geometry_options,
             )
-            projected = projection.project_geometry(spherical)
+            projected = (
+                projection.project_geometry(spherical)
+                if project_geometry is None
+                else project_geometry(spherical)
+            )
             if prepare is not None:
                 projected = prepare(spherical, projected)
             if callable(render_options):

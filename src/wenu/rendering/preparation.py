@@ -167,16 +167,12 @@ def clip_polygons_to_latitude(
         raise TypeError("spherical must be SphericalPolygons.")
     if not isinstance(projected, ProjectedPolygons):
         raise TypeError("projected must be ProjectedPolygons.")
-    if len(spherical) != len(projected):
-        raise ValueError(
-            "Spherical and projected polygon collections must match."
-        )
-
     minimum = float(minimum)
     items = []
     source_indices = []
+    latitudes = _polygon_latitudes(spherical, projected)
     for index, (latitude, polygon) in enumerate(
-        zip(spherical.lat_deg, projected)
+        zip(latitudes, projected)
     ):
         clipped = _clip_one_polygon_to_latitude(
             polygon,
@@ -260,12 +256,162 @@ def clip_polygons_to_projection_cap(
     )
 
 
+def project_geometry_for_viewport(
+    spherical,
+    *,
+    projection,
+    viewport=None,
+    projection_cap_margin_deg=2.0,
+):
+    """Project geometry through a safe domain for the visible viewport.
+
+    Stereographic projection is finite on the near hemisphere but filled
+    full-sky polygon rings can otherwise cross its antipode and wrap back
+    across a regional chart.  When a viewport is known, spherical polygons
+    are clipped to a cap that contains the complete viewport before any
+    planar coordinates are calculated.  Other geometry retains the normal
+    projection path.
+
+    The projected viewport and any chart-specific field stop remain later
+    clipping stages.  This function only protects projection topology.
+    """
+    if viewport is None or not isinstance(spherical, SphericalPolygons):
+        return projection.project_geometry(spherical)
+
+    angular_radius_deg = projection_cap_for_viewport(
+        projection,
+        viewport,
+        margin_deg=projection_cap_margin_deg,
+    )
+    if angular_radius_deg is None:
+        return projection.project_geometry(spherical)
+    return project_polygons_to_projection_cap(
+        spherical,
+        projection=projection,
+        angular_radius_deg=angular_radius_deg,
+    )
+
+
+def projection_cap_for_viewport(
+    projection,
+    viewport,
+    *,
+    margin_deg=2.0,
+    maximum_deg=89.999,
+):
+    """Return a near-hemisphere cap containing a projected viewport.
+
+    ``None`` means that the projection does not expose the stereographic
+    scale needed to derive the inverse angular radius.
+    """
+    inverse_radius = getattr(
+        projection,
+        "angular_radius_for_projected_radius",
+        None,
+    )
+    if not callable(inverse_radius):
+        return None
+    margin_deg = float(margin_deg)
+    maximum_deg = float(maximum_deg)
+    if not np.isfinite(margin_deg) or margin_deg < 0.0:
+        raise ValueError("margin_deg must be finite and non-negative.")
+    if not np.isfinite(maximum_deg) or not 0.0 < maximum_deg < 90.0:
+        raise ValueError("maximum_deg must be between 0 and 90 degrees.")
+
+    corners_x = np.asarray(
+        (
+            viewport.x_min,
+            viewport.x_min,
+            viewport.x_max,
+            viewport.x_max,
+        ),
+        dtype=float,
+    )
+    corners_y = np.asarray(
+        (
+            viewport.y_min,
+            viewport.y_max,
+            viewport.y_min,
+            viewport.y_max,
+        ),
+        dtype=float,
+    )
+    planar_radius = float(np.max(np.hypot(corners_x, corners_y)))
+    angular_radius_deg = float(inverse_radius(planar_radius))
+    return min(maximum_deg, angular_radius_deg + margin_deg)
+
+
+def project_polygons_to_projection_cap(
+    spherical,
+    *,
+    projection,
+    angular_radius_deg=80.0,
+):
+    """Clip spherical polygons to a safe cap and then project them.
+
+    Unlike :func:`clip_polygons_to_projection_cap`, this is a true
+    pre-projection operation: no unsafe full polygon projection is created
+    first.
+    """
+    if not isinstance(spherical, SphericalPolygons):
+        raise TypeError("spherical must be SphericalPolygons.")
+    angular_radius_deg = float(angular_radius_deg)
+    if (
+        not np.isfinite(angular_radius_deg)
+        or angular_radius_deg <= 0.0
+        or angular_radius_deg >= 90.0
+    ):
+        raise ValueError(
+            "angular_radius_deg must be finite and between "
+            "0 and 90 degrees."
+        )
+
+    minimum_z = np.cos(np.radians(angular_radius_deg))
+    items = []
+    source_indices = []
+    source_latitudes = []
+    for index, (longitude, latitude) in enumerate(
+        zip(spherical.lon_deg, spherical.lat_deg)
+    ):
+        name = (
+            None
+            if spherical.names is None
+            else spherical.names[index]
+        )
+        clipped_result = _clip_one_polygon_to_projection_cap(
+            longitude,
+            latitude,
+            name,
+            projection,
+            minimum_z,
+            return_source_latitudes=True,
+        )
+        if clipped_result is not None:
+            clipped, clipped_latitude = clipped_result
+            items.append(clipped)
+            source_indices.append(index)
+            source_latitudes.append(clipped_latitude)
+
+    metadata = _spherical_collection_metadata(spherical)
+    metadata = _subset_metadata(
+        metadata,
+        source_indices,
+        len(spherical),
+    )
+    metadata["projection_domain_clipped"] = True
+    metadata["projection_cap_deg"] = angular_radius_deg
+    metadata["projection_source_latitudes"] = tuple(source_latitudes)
+    return ProjectedPolygons(items=items, metadata=metadata)
+
+
 def _clip_one_polygon_to_projection_cap(
     longitude,
     latitude,
     name,
     projection,
     minimum_z,
+    *,
+    return_source_latitudes=False,
 ):
     """Clip one ring in projection-aligned unit-vector coordinates."""
     longitude = np.asarray(longitude, dtype=float)
@@ -284,41 +430,64 @@ def _clip_one_polygon_to_projection_cap(
         aligned.lon_deg,
         aligned.lat_deg,
     )
+    source_vectors = _unit_vectors(longitude, latitude)
     if (
         len(vectors) > 1
         and np.allclose(vectors[0], vectors[-1])
     ):
         vectors = vectors[:-1]
+        source_vectors = source_vectors[:-1]
     if len(vectors) < 3:
         return None
 
     output = []
+    output_source = []
     previous = vectors[-1]
+    previous_source = source_vectors[-1]
     previous_inside = previous[2] >= minimum_z
-    for current in vectors:
+    for current, current_source in zip(vectors, source_vectors):
         current_inside = current[2] >= minimum_z
         if current_inside:
             if not previous_inside:
-                output.append(
-                    _cap_intersection(
-                        previous,
-                        current,
-                        minimum_z,
-                    )
-                )
-            output.append(current)
-        elif previous_inside:
-            output.append(
-                _cap_intersection(
+                intersection, fraction = _cap_intersection(
                     previous,
                     current,
                     minimum_z,
+                    return_fraction=True,
+                )
+                output.append(intersection)
+                output_source.append(
+                    _slerp(
+                        previous_source,
+                        current_source,
+                        fraction,
+                    )
+                )
+            output.append(current)
+            output_source.append(current_source)
+        elif previous_inside:
+            intersection, fraction = _cap_intersection(
+                previous,
+                current,
+                minimum_z,
+                return_fraction=True,
+            )
+            output.append(intersection)
+            output_source.append(
+                _slerp(
+                    previous_source,
+                    current_source,
+                    fraction,
                 )
             )
         previous = current
+        previous_source = current_source
         previous_inside = current_inside
 
-    output = _deduplicate_vectors(output)
+    output, output_source = _deduplicate_vector_pairs(
+        output,
+        output_source,
+    )
     if len(output) < 3:
         return None
     clipped = np.asarray(output, dtype=float)
@@ -332,7 +501,14 @@ def _clip_one_polygon_to_projection_cap(
         aligned_lon,
         aligned_lat,
     )
-    return ProjectedPolygon(x=x, y=y, name=name)
+    polygon = ProjectedPolygon(x=x, y=y, name=name)
+    if not return_source_latitudes:
+        return polygon
+    output_source = np.asarray(output_source, dtype=float)
+    source_latitude = np.degrees(
+        np.arcsin(np.clip(output_source[:, 2], -1.0, 1.0))
+    )
+    return polygon, source_latitude
 
 
 def _unit_vectors(longitude_deg, latitude_deg):
@@ -348,7 +524,13 @@ def _unit_vectors(longitude_deg, latitude_deg):
     )
 
 
-def _cap_intersection(start, end, minimum_z):
+def _cap_intersection(
+    start,
+    end,
+    minimum_z,
+    *,
+    return_fraction=False,
+):
     """Locate a great-circle edge crossing of a constant-radius cap."""
     start = np.asarray(start, dtype=float)
     end = np.asarray(end, dtype=float)
@@ -362,7 +544,11 @@ def _cap_intersection(start, end, minimum_z):
             low = middle
         else:
             high = middle
-    return _slerp(start, end, 0.5 * (low + high))
+    fraction = 0.5 * (low + high)
+    intersection = _slerp(start, end, fraction)
+    if return_fraction:
+        return intersection, fraction
+    return intersection
 
 
 def _slerp(start, end, fraction):
@@ -395,6 +581,25 @@ def _deduplicate_vectors(vectors):
     ):
         cleaned.pop()
     return cleaned
+
+
+def _deduplicate_vector_pairs(vectors, source_vectors):
+    """Deduplicate aligned vertices and their source-frame partners."""
+    cleaned = []
+    cleaned_source = []
+    for vector, source_vector in zip(vectors, source_vectors):
+        if not cleaned or not np.allclose(vector, cleaned[-1]):
+            cleaned.append(np.asarray(vector, dtype=float))
+            cleaned_source.append(
+                np.asarray(source_vector, dtype=float)
+            )
+    if (
+        len(cleaned) > 1
+        and np.allclose(cleaned[0], cleaned[-1])
+    ):
+        cleaned.pop()
+        cleaned_source.pop()
+    return cleaned, cleaned_source
 
 
 def _clip_one_polygon_to_latitude(polygon, latitude, minimum):
@@ -500,13 +705,40 @@ def _subset_metadata(metadata, indices, source_length):
     return subset
 
 
+def _spherical_collection_metadata(spherical):
+    """Return collection metadata in the form used by projections."""
+    metadata = dict(spherical.metadata)
+    for name in ("ids", "labels", "names"):
+        values = getattr(spherical, name, None)
+        if values is not None:
+            metadata[name] = values.copy()
+    return metadata
+
+
+def _polygon_latitudes(spherical, projected):
+    """Return latitudes corresponding exactly to projected vertices."""
+    latitudes = projected.metadata.get(
+        "projection_source_latitudes"
+    )
+    if latitudes is None:
+        latitudes = spherical.lat_deg
+    if len(latitudes) != len(projected):
+        raise ValueError(
+            "Spherical and projected polygon collections must match."
+        )
+    return latitudes
+
+
 def _clip_polygon_boundaries(spherical, projected, minimum):
     if not isinstance(projected, ProjectedPolygons):
         raise TypeError(
             "SphericalPolygons require ProjectedPolygons."
         )
     items = []
-    for latitude, polygon in zip(spherical.lat_deg, projected):
+    for latitude, polygon in zip(
+        _polygon_latitudes(spherical, projected),
+        projected,
+    ):
         for x, y in _visible_segments(
             polygon.x,
             polygon.y,

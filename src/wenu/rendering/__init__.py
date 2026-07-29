@@ -13,9 +13,13 @@ from .matplotlib import MatplotlibRenderer
 from .symbols import DEFAULT_SYMBOLS, SymbolLibrary
 from .preparation import (
     clip_polygons_to_projection_cap,
+    clip_polygons_to_latitude,
     clip_to_latitude,
     magnitude_sizes,
     point_styles,
+    project_geometry_for_viewport,
+    project_polygons_to_projection_cap,
+    projection_cap_for_viewport,
     radial_label_offset,
 )
 
@@ -30,9 +34,13 @@ __all__ = [
     "render_polygon",
     "render_text",
     "clip_polygons_to_projection_cap",
+    "clip_polygons_to_latitude",
     "clip_to_latitude",
     "magnitude_sizes",
     "point_styles",
+    "project_geometry_for_viewport",
+    "project_polygons_to_projection_cap",
+    "projection_cap_for_viewport",
     "radial_label_offset",
     "layers",
 ]

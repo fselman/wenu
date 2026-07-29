@@ -1,32 +1,28 @@
-"""Atlas-style chart of the J2000 sky south of declination -40 degrees."""
+"""Atlas chart whose circular boundary bisects the Large Magellanic Cloud."""
 
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
-import astropy.units as u
 import matplotlib
 import numpy as np
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from astropy.coordinates import FK5, SkyCoord
-from astropy.time import Time
 
 from wenu import (
     AtlasChartStyle,
     CelestialSphere,
+    CircumpolarChart,
     ExportOptions,
     MatplotlibRenderer,
     Observer,
-    RegionalChart,
     draw_chart_legend,
 )
-from wenu.geometry.projected import ProjectedCurve
 
 
-LIMITING_DECLINATION_DEG = -40.0
+LIMITING_DECLINATION_DEG = -69.75
 OPEN_CLUSTERS = (
     "Melotte 25",
     "IC 2391",
@@ -46,38 +42,8 @@ SUPERNOVA_REMNANTS = (
     "G315.4-02.3",  # RCW 86
 )
 DEFAULT_OUTPUT = Path(
-    "output/style-gallery/atlas-south-circumpolar-dec-minus40.png"
+    "output/style-gallery/atlas-south-circumpolar-lmc-boundary.png"
 )
-
-
-def south_pole():
-    """Return the J2000 South Celestial Pole."""
-    return SkyCoord(
-        ra=0.0 * u.deg,
-        dec=-90.0 * u.deg,
-        frame=FK5(equinox=Time("J2000")),
-    )
-
-
-def declination_boundary(observer, projection, samples=1441):
-    """Project the J2000 declination -40 degree limiting circle."""
-    ra = np.linspace(0.0, 360.0, int(samples), endpoint=False)
-    coordinates = SkyCoord(
-        ra=ra * u.deg,
-        dec=np.full_like(ra, LIMITING_DECLINATION_DEG) * u.deg,
-        frame=FK5(equinox=Time("J2000")),
-    )
-    horizontal = coordinates.transform_to(observer.altaz_frame)
-    x, y = projection.project_spherical(
-        horizontal.az.deg,
-        horizontal.alt.deg,
-    )
-    return ProjectedCurve(
-        x=x,
-        y=y,
-        closed=True,
-        name="declination_-40",
-    )
 
 
 def polar_grid_label_anchor(curve, ax, boundary_radius):
@@ -112,7 +78,6 @@ def build_chart():
     sky = CelestialSphere(observer)
     sky.add_milky_way_isophotes()
     sky.add_magellanic_cloud_isophotes("lmc")
-    sky.add_magellanic_cloud_isophotes("smc")
     sky.add_stars(catalog="hipparcos", magnitude_limit=6.5)
     sky.add_galaxies(magnitude_limit=10.5)
     sky.add_open_clusters(selected=OPEN_CLUSTERS)
@@ -123,7 +88,7 @@ def build_chart():
     sky.add_constellation_boundaries(boundaries="iau")
     grid = sky.add_equatorial_grid(
         ra=tuple(range(0, 360, 30)),
-        dec=(-75, -60, -45),
+        dec=(-85, -80, -75),
         frame="fk5",
         equinox="J2000",
         samples=1441,
@@ -131,11 +96,10 @@ def build_chart():
         meridian_dec_max=90.0,
     )
 
-    chart = RegionalChart.from_coordinate(
+    chart = CircumpolarChart(
         observer,
-        south_pole(),
-        field_width_deg=100.0,
-        field_height_deg=100.0,
+        limiting_declination_deg=LIMITING_DECLINATION_DEG,
+        pole="south",
         position_angle_deg=0.0,
     )
     return sky, chart, grid, AtlasChartStyle()
@@ -148,19 +112,13 @@ def generate(output=DEFAULT_OUTPUT):
     figure, ax = plt.subplots(figsize=chart.figure_size(10.0))
     style.configure_axes(
         ax,
-        title="Southern circumpolar atlas — J2000 declination ≤ −40°",
+        title=(
+            "Southern circumpolar atlas — "
+            "the −69.75° boundary bisects the LMC"
+        ),
     )
     renderer = MatplotlibRenderer(ax)
-    boundary = declination_boundary(sky.observer, chart.projection)
-    renderer.set_clip_boundary(
-        boundary,
-        style={
-            "facecolor": "none",
-            "edgecolor": "#707070",
-            "linewidth": 0.8,
-            "zorder": 8.0,
-        },
-    )
+    boundary = chart.boundary
     layer_options = style.layer_options(
         sky,
         horizon_altitude_deg=-90.0,
@@ -186,6 +144,12 @@ def generate(output=DEFAULT_OUTPUT):
         output,
         style=style,
         layer_options=layer_options,
+        boundary_style={
+            "facecolor": "none",
+            "edgecolor": "#707070",
+            "linewidth": 0.8,
+            "zorder": 8.0,
+        },
         export_options=ExportOptions(dpi=480),
     )
     draw_chart_legend(ax, chart, sky, style)

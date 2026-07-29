@@ -52,6 +52,6 @@ def test_equatorial_atlas_field_is_not_clipped_at_observer_horizon():
 
 def test_milky_way_is_clipped_before_far_side_projection():
     text = source()
-    assert "clip_polygons_to_projection_cap" in text
-    assert "angular_radius_deg=75.0" in text
-    assert "sky.milky_way_isophotes: milky_way_options" in text
+    assert "clip_polygons_to_projection_cap" not in text
+    assert "milky_way_options" not in text
+    assert "layer_options=" not in text
