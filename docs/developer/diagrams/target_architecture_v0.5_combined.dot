@@ -1,0 +1,126 @@
+digraph target_architecture_v05 {
+    graph [
+        rankdir=TB,
+        bgcolor="white",
+        fontname="Helvetica",
+        fontsize=12,
+        label="Wenu v0.5 combined architecture",
+        labelloc="t",
+        nodesep=0.35,
+        ranksep=0.45,
+        pad=0.25
+    ];
+    node [
+        shape=box,
+        style="rounded,filled",
+        fillcolor="#f7f7f7",
+        color="#555555",
+        fontname="Helvetica",
+        fontsize=10,
+        margin="0.12,0.08"
+    ];
+    edge [
+        color="#555555",
+        fontname="Helvetica",
+        fontsize=8,
+        arrowsize=0.7
+    ];
+
+    entry [
+        label="User / example chart request",
+        fillcolor="#fff2cc"
+    ];
+
+    subgraph cluster_control {
+        label="CONTROL PLANE — chart request resolution";
+        color="#5b9bd5";
+        style="rounded";
+
+        chart [label="Chart type + ChartContext"];
+        observer [label="Observer"];
+        mode [label="Output mode"];
+        detail_policy [label="Detail policy"];
+        style [label="Chart style"];
+        legend_policy [label="Legend policy"];
+
+        compose [
+            label="Chart request / composition resolution",
+            fillcolor="#d9eaf7"
+        ];
+        sky_request [label="Resolved sky-layer requests"];
+        projection_spec [
+            label="Projection-domain, projection\nand viewport specification"
+        ];
+        preparation_spec [
+            label="Projected-preparation and\noptional horizon specification"
+        ];
+        visual_spec [label="Resolved visual specification"];
+        legend_spec [label="Resolved legend and export specification"];
+
+        chart -> compose;
+        observer -> compose;
+        mode -> compose;
+        detail_policy -> compose;
+        style -> compose;
+        legend_policy -> compose;
+
+        compose -> sky_request;
+        compose -> projection_spec;
+        compose -> preparation_spec;
+        compose -> visual_spec;
+        compose -> legend_spec;
+    }
+
+    subgraph cluster_data {
+        label="DATA PLANE — geometry and rendering";
+        color="#70ad47";
+        style="rounded";
+
+        catalogues [label="Catalogues and sky definitions"];
+        sky [
+            label="CelestialSphere and\nregistered sky layers",
+            fillcolor="#e2f0d9"
+        ];
+        spherical [label="Spherical scene\n(layered spherical geometry)"];
+        guard [label="Projection-domain guard"];
+        projection [label="Projection"];
+        projected [label="Projected scene\n(layered projected geometry)"];
+        preparation [
+            label="Projected-geometry preparation",
+            fillcolor="#e2f0d9"
+        ];
+        prepared [label="Prepared projected scene"];
+        render_plan [label="Resolved render plan"];
+        renderer [label="Renderer"];
+        export [label="Chart furniture and export"];
+
+        catalogues -> sky;
+        sky -> spherical;
+        spherical -> guard;
+        guard -> projection;
+        projection -> projected;
+        projected -> preparation;
+        preparation -> prepared;
+        prepared -> render_plan;
+        render_plan -> renderer;
+        renderer -> export;
+    }
+
+    entry -> compose;
+    sky_request -> sky [
+        label="selection and\ngeometry options",
+        color="#2f75b5"
+    ];
+    observer -> sky [
+        label="time, location,\nframe context",
+        color="#2f75b5"
+    ];
+    projection_spec -> guard [color="#2f75b5"];
+    projection_spec -> projection [color="#2f75b5"];
+    preparation_spec -> preparation [
+        label="preparation controls",
+        color="#2f75b5"
+    ];
+    visual_spec -> render_plan [color="#2f75b5"];
+    legend_spec -> export [color="#2f75b5"];
+}
