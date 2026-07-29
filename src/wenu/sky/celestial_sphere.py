@@ -349,6 +349,9 @@ class CelestialSphere:
             selected=selected,
         )
         self.constellation_lines = self.constellations.lines
+        self.stars.set_constellation_vertices(
+            self.constellation_lines.star_ids
+        )
         self.constellation_labels = ConstellationLabels(
             self.stars,
             selected=selected,

@@ -14,15 +14,31 @@ class FakeStars:
     def __init__(self):
         self.magnitude_limit = 5.5
         self.include_ids = frozenset()
+        self.include_constellation_vertices = False
         self.loads = 0
 
     def load(self):
         self.loads += 1
 
-    def configure_selection(self, *, include_ids=(), reload=True):
+    def configure_selection(
+        self,
+        *,
+        include_ids=(),
+        include_constellation_vertices=None,
+        reload=True,
+    ):
         identifiers = frozenset(int(value) for value in include_ids)
-        changed = identifiers != self.include_ids
+        include_vertices = (
+            self.include_constellation_vertices
+            if include_constellation_vertices is None
+            else bool(include_constellation_vertices)
+        )
+        changed = (
+            identifiers != self.include_ids
+            or include_vertices != self.include_constellation_vertices
+        )
         self.include_ids = identifiers
+        self.include_constellation_vertices = include_vertices
         if changed and reload:
             self.load()
         return changed
@@ -68,7 +84,8 @@ def test_constellation_vertices_and_explicit_stars_are_unioned():
     ).resolve(object(), object())
     application = apply_resolved_detail(sky, detail)
     assert sky.stars.magnitude_limit == pytest.approx(2.0)
-    assert sky.stars.include_ids == frozenset({1, 2, 3, 99})
+    assert sky.stars.include_ids == frozenset({3, 99})
+    assert sky.stars.include_constellation_vertices
     assert application.reloaded_layers == ("stars",)
 
 
@@ -80,6 +97,7 @@ def test_none_mode_keeps_only_explicit_ids_beyond_bright_limit():
     ).resolve(object(), object())
     apply_resolved_detail(sky, detail)
     assert sky.stars.include_ids == frozenset({42})
+    assert not sky.stars.include_constellation_vertices
 
 
 def test_deep_sky_can_be_enabled_without_changing_visual_style():

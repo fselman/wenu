@@ -150,36 +150,23 @@ def _refresh_magnitude_limit(layer, value):
     return True
 
 
-def _constellation_star_ids(sky, mode):
-    if mode in (None, "none"):
-        return frozenset()
-    lines = getattr(sky, "constellation_lines", None)
-    if lines is None:
-        return frozenset()
-    if mode in {"selected", "all"}:
-        return lines.star_ids
-    if mode == "visible":
-        # Visibility clipping occurs after spherical geometry is created.
-        # At this stage, use every resolvable vertex in the loaded figures;
-        # the normal projection/viewport pipeline removes off-chart points.
-        return lines.resolvable_star_ids
-    raise ValueError(f"Unsupported constellation-star mode: {mode}")
-
-
 def _refresh_star_selection(sky, detail):
     stars = getattr(sky, "stars", None)
     if stars is None or detail.constellation_star_mode is None:
         return False
-    identifiers = _constellation_star_ids(
-        sky,
-        detail.constellation_star_mode,
-    ).union(detail.extra_star_ids)
+    include_vertices = detail.constellation_star_mode != "none"
     configure = getattr(stars, "configure_selection", None)
     if not callable(configure):
         raise TypeError(
             "The stellar layer does not support configure_selection()."
         )
-    return bool(configure(include_ids=identifiers, reload=True))
+    return bool(
+        configure(
+            include_ids=detail.extra_star_ids,
+            include_constellation_vertices=include_vertices,
+            reload=True,
+        )
+    )
 
 
 @dataclass(frozen=True)

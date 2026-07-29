@@ -107,6 +107,11 @@ class Stars(AstronomicalObject):
         # Identifiers retained in addition to the magnitude cut.
         self.include_ids = frozenset()
 
+        # Constellation vertices in the active sky line system.  Membership
+        # is metadata; inclusion remains an explicit detail-policy choice.
+        self.constellation_vertex_ids = frozenset()
+        self.include_constellation_vertices = False
+
         # Stable magnitude-limited catalogue.
         self.catalog = None
 
@@ -141,14 +146,22 @@ class Stars(AstronomicalObject):
             source,
             _hipparcos_semantics(payload),
         )
+        source["is_constellation_vertex"] = source.index.isin(
+            getattr(self, "constellation_vertex_ids", frozenset())
+        )
 
         self.source_catalog = source.copy()
         magnitude_mask = (
             source["magnitude"] <= self.magnitude_limit
         )
         identifier_mask = source.index.isin(self.include_ids)
+        vertex_mask = (
+            source["is_constellation_vertex"]
+            if self.include_constellation_vertices
+            else np.zeros(len(source), dtype=bool)
+        )
         self.catalog = source[
-            magnitude_mask | identifier_mask
+            magnitude_mask | identifier_mask | vertex_mask
         ].copy()
         self.hip_df = self.catalog.copy()
 
@@ -159,11 +172,44 @@ class Stars(AstronomicalObject):
 
         return self.catalog
 
-    def configure_selection(self, *, include_ids=(), reload=True):
-        """Retain IDs in addition to the magnitude-limited stars."""
+    def set_constellation_vertices(self, identifiers, *, reload=True):
+        """Store vertices for the active constellation-line configuration."""
+        identifiers = frozenset(int(value) for value in identifiers)
+        changed = identifiers != getattr(
+            self,
+            "constellation_vertex_ids",
+            frozenset(),
+        )
+        self.constellation_vertex_ids = identifiers
+        if changed and reload:
+            self.load()
+        return changed
+
+    def configure_selection(
+        self,
+        *,
+        include_ids=(),
+        include_constellation_vertices=None,
+        reload=True,
+    ):
+        """Configure additions to the magnitude-limited stellar selection."""
         identifiers = frozenset(int(value) for value in include_ids)
-        changed = identifiers != self.include_ids
+        current_include_vertices = getattr(
+            self,
+            "include_constellation_vertices",
+            False,
+        )
+        include_vertices = (
+            current_include_vertices
+            if include_constellation_vertices is None
+            else bool(include_constellation_vertices)
+        )
+        changed = (
+            identifiers != self.include_ids
+            or include_vertices != current_include_vertices
+        )
         self.include_ids = identifiers
+        self.include_constellation_vertices = include_vertices
         if changed and reload:
             self.load()
         return changed
@@ -221,9 +267,20 @@ class Stars(AstronomicalObject):
         magnitudes = self.hip_df["magnitude"].to_numpy(copy=True)
         hip_ids = self.hip_df.index.to_numpy(copy=True)
 
+        vertex_membership = self.hip_df.get(
+            "is_constellation_vertex"
+        )
+        if vertex_membership is None:
+            vertex_membership = np.zeros(len(self.hip_df), dtype=bool)
+        else:
+            vertex_membership = vertex_membership.to_numpy(
+                dtype=bool,
+                copy=True,
+            )
         metadata = {
             "catalog": self.catalog_name,
             "magnitude": magnitudes,
+            "is_constellation_vertex": vertex_membership,
         }
         for name, default in _HIPPARCOS_SEMANTIC_DEFAULTS.items():
             if name in self.hip_df.columns:
