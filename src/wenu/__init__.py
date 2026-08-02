@@ -39,6 +39,15 @@ from .charts.footer_furniture import (
     installed_wenu_version,
     resolved_footer_text,
 )
+from .charts.product_options import (
+    CANONICAL_CHART_PRODUCTS,
+    CHART_MODES,
+    CHART_STYLES,
+    ChartProduct,
+    ChartProductOptions,
+    add_chart_product_arguments,
+    chart_product_options,
+)
 from .charts.chart_legend_workflow import draw_resolved_chart_legends
 from .charts.context import BoundaryKind, ChartContext
 from .charts.detail import (
@@ -171,6 +180,13 @@ __all__ = [
     "MagellanicCloudIsophotes",
     "ExportOptions",
     "ChartExportResult",
+    "CHART_STYLES",
+    "CHART_MODES",
+    "CANONICAL_CHART_PRODUCTS",
+    "ChartProduct",
+    "ChartProductOptions",
+    "add_chart_product_arguments",
+    "chart_product_options",
     "BinocularChart",
     "CircularLabelAnchor",
     "CircularGridLabelAnchor",
