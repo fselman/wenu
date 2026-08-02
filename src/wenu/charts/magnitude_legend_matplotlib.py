@@ -35,9 +35,16 @@ def stellar_magnitude_handles(
             markeredgecolor=edge_color,
             markeredgewidth=marker_edge_width,
             alpha=scale.alpha,
-            label=f"{entry.magnitude:+d}"
-            if entry.magnitude < 0
-            else str(entry.magnitude),
+            label=(
+                f"{entry.magnitude:+d}"
+                if entry.magnitude < 0
+                else str(entry.magnitude)
+            )
+            + (
+                ""
+                if entry.cumulative_count is None
+                else f" ({entry.cumulative_count})"
+            ),
         )
         for entry in scale.entries
     )

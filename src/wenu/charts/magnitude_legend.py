@@ -16,6 +16,7 @@ class StellarMagnitudeEntry:
 
     magnitude: int
     area: float
+    cumulative_count: int | None = None
 
 
 @dataclass(frozen=True)
@@ -78,6 +79,7 @@ def stellar_magnitude_scale(
     color="white",
     alpha=1.0,
     title="Stars",
+    cumulative_counts=None,
 ):
     """Resolve an integer magnitude scale using the chart star-size law."""
     scale = float(area_scale)
@@ -95,18 +97,56 @@ def stellar_magnitude_scale(
         entries = ()
     else:
         areas = magnitude_sizes(magnitudes) * scale
+        counts = (
+            (None,) * len(magnitudes)
+            if cumulative_counts is None
+            else tuple(int(value) for value in cumulative_counts)
+        )
+        if len(counts) != len(magnitudes):
+            raise ValueError(
+                "cumulative_counts must match the magnitude entries."
+            )
+        if any(value is not None and value < 0 for value in counts):
+            raise ValueError("cumulative_counts cannot be negative.")
         entries = tuple(
             StellarMagnitudeEntry(
                 magnitude=magnitude,
                 area=float(area),
+                cumulative_count=count,
             )
-            for magnitude, area in zip(magnitudes, areas)
+            for magnitude, area, count in zip(magnitudes, areas, counts)
         )
     return StellarMagnitudeScale(
         entries=entries,
         color=str(color),
         alpha=resolved_alpha,
         title=str(title),
+    )
+
+
+def cumulative_visible_star_counts(
+    spherical,
+    projected,
+    viewport,
+    magnitudes,
+    *,
+    effective_limit,
+    footprint_contains=None,
+):
+    """Count rendered stars at or brighter than each legend magnitude."""
+    mask = visible_star_mask(
+        spherical,
+        projected,
+        viewport,
+        effective_limit=effective_limit,
+        footprint_contains=footprint_contains,
+    )
+    rendered = np.asarray(
+        spherical.metadata["magnitude"], dtype=float
+    )[mask]
+    return tuple(
+        int(np.count_nonzero(rendered <= float(magnitude)))
+        for magnitude in magnitudes
     )
 
 

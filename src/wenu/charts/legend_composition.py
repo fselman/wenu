@@ -89,6 +89,7 @@ def draw_planned_chart_legends(
     include_objects=True,
     include_context=None,
     resolved_detail=None,
+    stellar_counts: bool = False,
 ) -> ComposedChartLegends:
     """Draw the planned object and stellar legends for a chart."""
     object_artist = None
@@ -130,17 +131,22 @@ def draw_planned_chart_legends(
             enabled=True,
             location=plan.stars.location,
         )
-        stars_result = draw_styled_stellar_magnitude_legend(
-            ax,
-            star_spherical,
-            star_projected,
-            viewport,
+        star_options = dict(
             effective_limit=effective_limit,
             area_scale=star_area_scale,
             color=star_color,
             alpha=star_alpha,
             footprint_contains=footprint_contains,
             legend_style=resolved_style,
+        )
+        if stellar_counts:
+            star_options["include_counts"] = True
+        stars_result = draw_styled_stellar_magnitude_legend(
+            ax,
+            star_spherical,
+            star_projected,
+            viewport,
+            **star_options,
         )
         apply_legend_placement(
             stars_result.artist,

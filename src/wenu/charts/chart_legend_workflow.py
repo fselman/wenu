@@ -41,17 +41,22 @@ def draw_resolved_chart_legends(
         raise TypeError(
             "Canonical legends require a composed chart style."
         )
+    options = dict(
+        resolved_detail=resolved_detail,
+        plan=legend_options.plan,
+        include_objects=legend_options.plan.objects.enabled,
+        include_context=legend_options.context,
+        context_lines=legend_options.context_lines,
+    )
+    if legend_options.stellar_counts:
+        options["stellar_counts"] = True
     legends = draw_automatic_chart_legends(
         renderer.ax,
         chart,
         sky,
         chart_style,
         rendering,
-        resolved_detail=resolved_detail,
-        plan=legend_options.plan,
-        include_objects=legend_options.plan.objects.enabled,
-        include_context=legend_options.context,
-        context_lines=legend_options.context_lines,
+        **options,
     )
     return RenderedChartWithLegends(
         rendering=rendering,

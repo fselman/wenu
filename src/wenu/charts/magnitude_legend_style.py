@@ -57,6 +57,7 @@ def draw_styled_stellar_magnitude_legend(
     color: str = "black",
     alpha: float = 1.0,
     footprint_contains=None,
+    include_counts: bool = False,
     legend_style: StellarMagnitudeLegendStyle | None = None,
 ) -> StellarMagnitudeLegendResult:
     """Draw a visible-star legend using independent style settings."""
@@ -81,15 +82,20 @@ def draw_styled_stellar_magnitude_legend(
             artist=None,
         )
 
-    return draw_visible_stellar_magnitude_legend(
-        ax,
-        spherical,
-        projected,
-        viewport,
+    options = dict(
         effective_limit=effective_limit,
         area_scale=area_scale,
         color=color,
         alpha=alpha,
         footprint_contains=footprint_contains,
-        **style.drawing_options(),
+        **style.drawing_options()
+    )
+    if include_counts:
+        options["include_counts"] = True
+    return draw_visible_stellar_magnitude_legend(
+        ax,
+        spherical,
+        projected,
+        viewport,
+        **options,
     )

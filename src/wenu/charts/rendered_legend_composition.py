@@ -2,9 +2,31 @@
 
 from __future__ import annotations
 
+import numpy as np
+
 from .legend_composition import draw_planned_chart_legends
 from .legend_geometry import rendered_star_geometry
 from .legend_inputs import resolve_stellar_legend_inputs
+from .context import BoundaryKind
+
+
+def _resolved_footprint(chart, explicit):
+    """Return a vectorized final-footprint predicate when required."""
+    if explicit is not None:
+        return explicit
+    context = getattr(chart, "chart_context", None)
+    if context is None:
+        return None
+    boundary = context.clip_boundary
+    if context.boundary_kind != BoundaryKind.CIRCULAR or boundary is None:
+        return None
+    finite = boundary.finite
+    x = np.asarray(boundary.x[finite], dtype=float)
+    y = np.asarray(boundary.y[finite], dtype=float)
+    center_x = float((np.nanmin(x) + np.nanmax(x)) / 2.0)
+    center_y = float((np.nanmin(y) + np.nanmax(y)) / 2.0)
+    radius = float(np.nanmedian(np.hypot(x - center_x, y - center_y)))
+    return lambda px, py: np.hypot(px - center_x, py - center_y) <= radius
 
 
 def draw_rendered_chart_legends(
@@ -16,6 +38,7 @@ def draw_rendered_chart_legends(
     rendering_result,
     *,
     resolved_detail=None,
+    stellar_counts: bool = False,
     effective_limit=None,
     star_area_scale=None,
     star_color=None,
@@ -76,7 +99,7 @@ def draw_rendered_chart_legends(
         ),
         star_color=inputs.color if inputs is not None else "black",
         star_alpha=inputs.alpha if inputs is not None else 1.0,
-        footprint_contains=footprint_contains,
+        footprint_contains=_resolved_footprint(chart, footprint_contains),
         stellar_legend_style=stellar_legend_style,
         grid=grid,
         object_title=object_title,
@@ -84,4 +107,5 @@ def draw_rendered_chart_legends(
         include_objects=include_objects,
         include_context=include_context,
         resolved_detail=resolved_detail,
+        stellar_counts=stellar_counts,
     )

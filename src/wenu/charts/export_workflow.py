@@ -17,6 +17,7 @@ class ChartExportResult:
     layer_options: dict
     export_options: object
     furniture_rendering: object | None = None
+    footer_rendering: object | None = None
 
     def __iter__(self):
         """Preserve established ``rendering, output = export(...)`` use."""
@@ -113,6 +114,18 @@ def export_composed_chart(
             composition.detail,
             composition.legends,
         )
+    footer_rendering = None
+    if composition.furniture is not None:
+        footer = composition.furniture.footer
+        from .footer_furniture import draw_chart_footer
+
+        canvas = getattr(composition.style, "canvas", None)
+        footer_rendering = draw_chart_footer(
+            renderer,
+            footer,
+            composition.mode,
+            color=getattr(canvas, "foreground_color", "black"),
+        )
     options = (
         _composition_export_options(composition)
         if export_options is None
@@ -126,4 +139,5 @@ def export_composed_chart(
         layer_options=application.layer_options,
         export_options=options,
         furniture_rendering=furniture_rendering,
+        footer_rendering=footer_rendering,
     )

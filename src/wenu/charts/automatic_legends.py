@@ -42,6 +42,7 @@ def draw_automatic_chart_legends(
     context_lines=None,
     include_objects=True,
     include_context=None,
+    stellar_counts: bool = False,
 ) -> AutomaticChartLegends:
     """Draw both chart legends with no duplicated scientific/style inputs."""
     inferred = (
@@ -52,13 +53,7 @@ def draw_automatic_chart_legends(
         if plan is None
         else plan
     )
-    legends = draw_rendered_chart_legends(
-        ax,
-        chart,
-        sky,
-        chart_style,
-        resolved_plan,
-        rendering_result,
+    options = dict(
         resolved_detail=resolved_detail,
         footprint_contains=footprint_contains,
         stellar_legend_style=stellar_legend_style,
@@ -68,6 +63,17 @@ def draw_automatic_chart_legends(
         context_lines=context_lines,
         include_objects=include_objects,
         include_context=include_context,
+    )
+    if stellar_counts:
+        options["stellar_counts"] = True
+    legends = draw_rendered_chart_legends(
+        ax,
+        chart,
+        sky,
+        chart_style,
+        resolved_plan,
+        rendering_result,
+        **options,
     )
     return AutomaticChartLegends(
         chart_type=inferred,

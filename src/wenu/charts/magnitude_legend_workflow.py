@@ -10,6 +10,7 @@ from .magnitude_legend import (
     StellarMagnitudeScale,
     VisibleStarStatistics,
     stellar_magnitude_scale,
+    cumulative_visible_star_counts,
     visible_star_statistics,
 )
 from .magnitude_legend_matplotlib import (
@@ -53,6 +54,7 @@ def draw_visible_stellar_magnitude_legend(
     handle_text_pad: float = 0.8,
     border_pad: float = 0.5,
     zorder: float = 1000.0,
+    include_counts: bool = False,
 ) -> StellarMagnitudeLegendResult:
     """Calculate and draw the legend for stars visible in a chart.
 
@@ -81,6 +83,24 @@ def draw_visible_stellar_magnitude_legend(
         alpha=alpha,
         title=title,
     )
+    if include_counts and scale.entries:
+        counts = cumulative_visible_star_counts(
+            spherical,
+            projected,
+            viewport,
+            scale.magnitudes,
+            effective_limit=effective_limit,
+            footprint_contains=footprint_contains,
+        )
+        scale = stellar_magnitude_scale(
+            statistics.brightest_magnitude,
+            statistics.faintest_magnitude,
+            area_scale=area_scale,
+            color=color,
+            alpha=alpha,
+            title=title,
+            cumulative_counts=counts,
+        )
     if not scale.entries:
         return StellarMagnitudeLegendResult(
             statistics=statistics,

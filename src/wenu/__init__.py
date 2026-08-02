@@ -33,6 +33,12 @@ from .charts.reference_furniture import (
     build_celestial_reference_sky,
     draw_celestial_reference_furniture,
 )
+from .charts.footer_furniture import (
+    ChartFooterRendering,
+    draw_chart_footer,
+    installed_wenu_version,
+    resolved_footer_text,
+)
 from .charts.chart_legend_workflow import draw_resolved_chart_legends
 from .charts.context import BoundaryKind, ChartContext
 from .charts.detail import (
@@ -98,6 +104,7 @@ from .charts.magnitude_legend import (
     stellar_magnitude_scale,
     visible_star_mask,
     visible_star_statistics,
+    cumulative_visible_star_counts,
 )
 from .rendering import MatplotlibRenderer
 from .projections import StereographicProjection
