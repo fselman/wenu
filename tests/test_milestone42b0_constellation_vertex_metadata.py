@@ -131,9 +131,14 @@ def test_detail_application_uses_vertex_flag_and_keeps_extra_ids():
         extra_star_ids=frozenset({99}),
         enabled_layers=frozenset({"stars", "constellation_lines"}),
     )
-    apply_resolved_detail(sky, detail)
-    assert stars.include_ids == frozenset({99})
-    assert stars.include_constellation_vertices
+    applied = apply_resolved_detail(sky, detail)
+    assert stars.include_ids == frozenset()
+    assert not stars.include_constellation_vertices
+    assert applied.layer_options["stars"]["geometry"] == {
+        "magnitude_limit": 2.0,
+        "include_ids": frozenset({99}),
+        "include_constellation_vertices": True,
+    }
 
 
 def test_none_mode_disables_vertex_inclusion():
@@ -154,6 +159,10 @@ def test_none_mode_disables_vertex_inclusion():
         extra_star_ids=frozenset({42}),
         enabled_layers=frozenset({"stars", "constellation_lines"}),
     )
-    apply_resolved_detail(sky, detail)
-    assert stars.include_ids == frozenset({42})
-    assert not stars.include_constellation_vertices
+    applied = apply_resolved_detail(sky, detail)
+    assert stars.include_ids == frozenset()
+    assert stars.include_constellation_vertices
+    assert applied.layer_options["stars"]["geometry"] == {
+        "include_ids": frozenset({42}),
+        "include_constellation_vertices": False,
+    }

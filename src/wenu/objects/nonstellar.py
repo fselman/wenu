@@ -63,6 +63,7 @@ class NonStellar(AstronomicalObject):
         if self.samples < 12:
             raise ValueError("samples must be at least 12.")
         self.catalog = None
+        self.source_catalog = None
         self.source = None
 
     def load(self, *, catalog=None, filename=None):
@@ -79,14 +80,15 @@ class NonStellar(AstronomicalObject):
                 self.source = resource
                 table = Table.read(path)
 
-        self.catalog = self._normalize(table)
+        self.source_catalog = self._normalize(table)
+        self.catalog = self.source_catalog
         if self.magnitude_limit is not None:
             magnitude = self.catalog["magnitude"]
             keep = (
                 ~np.isfinite(magnitude)
                 | (magnitude <= self.magnitude_limit)
             )
-            self.catalog = self.catalog[keep]
+            self.catalog = self.source_catalog[keep]
         return self.catalog
 
     def _normalize(self, source):
@@ -264,9 +266,20 @@ class NonStellar(AstronomicalObject):
         bearing = np.arctan2(east, north) * u.rad
         return center.directional_offset_by(bearing, separation)
 
-    def _geometry_table(self, selected=None):
+    def _geometry_table(self, selected=None, magnitude_limit=None):
         """Return the catalogue rows participating in geometry."""
-        table = self.catalog
+        table = (
+            self.catalog
+            if magnitude_limit is None
+            else self.source_catalog
+        )
+        if magnitude_limit is not None:
+            magnitude = np.asarray(table["magnitude"], dtype=float)
+            keep = (
+                ~np.isfinite(magnitude)
+                | (magnitude <= float(magnitude_limit))
+            )
+            table = table[keep]
         if selected is None:
             return table
         wanted = {
@@ -322,6 +335,7 @@ class NonStellar(AstronomicalObject):
         observer,
         *,
         selected=None,
+        magnitude_limit=None,
         minimum_size_arcmin=None,
     ) -> SphericalCurves:
         """Return sampled outlines transformed from ICRS to Alt/Az."""
@@ -336,7 +350,10 @@ class NonStellar(AstronomicalObject):
                 "An observer with an altaz_frame is required."
             )
 
-        table = self._geometry_table(selected)
+        table = self._geometry_table(
+            selected,
+            magnitude_limit=magnitude_limit,
+        )
 
         lon_deg = []
         lat_deg = []

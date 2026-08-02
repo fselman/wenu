@@ -257,17 +257,47 @@ class Stars(AstronomicalObject):
         observer,
         *,
         alt_min=-10.0,
+        magnitude_limit=None,
+        include_ids=None,
+        include_constellation_vertices=None,
     ) -> SphericalPoints:
         """Return observer-dependent stellar positions as spherical points."""
-        alt_deg, az_deg = self.compute_altaz(
-            alt_min=alt_min,
-            observer=observer,
-        )
+        if getattr(self, "source_catalog", None) is None:
+            if any(
+                value is not None
+                for value in (
+                    magnitude_limit,
+                    include_ids,
+                    include_constellation_vertices,
+                )
+            ):
+                raise RuntimeError(
+                    "Render-local stellar selection requires a loaded "
+                    "source catalogue."
+                )
+            alt_deg, az_deg = self.compute_altaz(
+                alt_min=alt_min,
+                observer=observer,
+            )
+            selected = self.hip_df
+        else:
+            catalog = self._render_catalog(
+                magnitude_limit=magnitude_limit,
+                include_ids=include_ids,
+                include_constellation_vertices=(
+                    include_constellation_vertices
+                ),
+            )
+            selected, alt_deg, az_deg = self._catalog_altaz(
+                catalog,
+                observer,
+                alt_min,
+            )
 
-        magnitudes = self.hip_df["magnitude"].to_numpy(copy=True)
-        hip_ids = self.hip_df.index.to_numpy(copy=True)
+        magnitudes = selected["magnitude"].to_numpy(copy=True)
+        hip_ids = selected.index.to_numpy(copy=True)
 
-        vertex_membership = self.hip_df.get(
+        vertex_membership = selected.get(
             "is_constellation_vertex"
         )
         if vertex_membership is None:
@@ -283,18 +313,18 @@ class Stars(AstronomicalObject):
             "is_constellation_vertex": vertex_membership,
         }
         for name, default in _HIPPARCOS_SEMANTIC_DEFAULTS.items():
-            if name in self.hip_df.columns:
-                values = self.hip_df[name].to_numpy(copy=True)
+            if name in selected.columns:
+                values = selected[name].to_numpy(copy=True)
             else:
                 values = np.asarray(
-                    [default] * len(self.hip_df)
+                    [default] * len(selected)
                 )
             metadata[name] = values
 
         # Preserve colour information when supplied by a catalogue. The
         # bundled Hipparcos table does not currently provide such a column.
-        if "color" in self.hip_df.columns:
-            metadata["color"] = self.hip_df[
+        if "color" in selected.columns:
+            metadata["color"] = selected[
                 "color"
             ].to_numpy(copy=True)
 
@@ -303,6 +333,73 @@ class Stars(AstronomicalObject):
             lat_deg=alt_deg,
             ids=hip_ids,
             metadata=metadata,
+        )
+
+    def _render_catalog(
+        self,
+        *,
+        magnitude_limit=None,
+        include_ids=None,
+        include_constellation_vertices=None,
+    ):
+        """Return one render's stellar selection without changing the layer."""
+        if getattr(self, "source_catalog", None) is None:
+            raise RuntimeError(
+                "Hipparcos has not been loaded. Call stars.load() first."
+            )
+        if (
+            magnitude_limit is None
+            and include_ids is None
+            and include_constellation_vertices is None
+        ):
+            return self.catalog
+        limit = (
+            self.magnitude_limit
+            if magnitude_limit is None
+            else float(magnitude_limit)
+        )
+        identifiers = (
+            self.include_ids
+            if include_ids is None
+            else frozenset(int(value) for value in include_ids)
+        )
+        include_vertices = (
+            self.include_constellation_vertices
+            if include_constellation_vertices is None
+            else bool(include_constellation_vertices)
+        )
+        source = self.source_catalog
+        keep = source["magnitude"] <= limit
+        keep |= source.index.isin(identifiers)
+        if include_vertices:
+            keep |= source["is_constellation_vertex"]
+        return source[keep].copy()
+
+    def _catalog_altaz(self, catalog, observer, alt_min):
+        """Transform a render-local catalogue without updating cached state."""
+        resolved_observer = self.observer if observer is None else observer
+        if resolved_observer is None:
+            raise ValueError(
+                "An observer is required to compute stellar coordinates."
+            )
+        stars = Star(
+            ra_hours=catalog["ra_hours"].to_numpy(),
+            dec_degrees=catalog["dec_degrees"].to_numpy(),
+        )
+        apparent = (
+            resolved_observer.skyfield
+            .at(resolved_observer.t)
+            .observe(stars)
+            .apparent(deflectors=[])
+        )
+        alt, az, _ = apparent.altaz()
+        altitude = np.asarray(alt.degrees)
+        azimuth = np.asarray(az.degrees)
+        keep = altitude > float(alt_min)
+        return (
+            catalog.iloc[np.flatnonzero(keep)].copy(),
+            altitude[keep],
+            azimuth[keep],
         )
 
     @property
@@ -315,4 +412,3 @@ class Stars(AstronomicalObject):
             int(hip_id): index
             for index, hip_id in enumerate(self.hip_df.index)
         }
-

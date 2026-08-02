@@ -45,9 +45,16 @@ def test_detail_applies_catalogue_limits_and_geometry_thresholds():
         minimum_planetary_nebula_size_arcmin=1.0,
     )
     applied = apply_resolved_detail(sky, detail)
-    assert sky.stars.magnitude_limit == 8.5
-    assert sky.galaxies.magnitude_limit == 11.0
-    assert applied.reloaded_layers == ("stars", "galaxies")
+    assert sky.stars.magnitude_limit == 6.0
+    assert sky.galaxies.magnitude_limit == 10.0
+    assert sky.stars.loads == sky.galaxies.loads == 0
+    assert applied.reloaded_layers == ()
+    assert applied.layer_options["stars"]["geometry"] == {
+        "magnitude_limit": 8.5,
+    }
+    assert applied.layer_options["galaxies"]["geometry"] == {
+        "magnitude_limit": 11.0,
+    }
     assert applied.layer_options["open_clusters"]["geometry"] == {
         "minimum_size_arcmin": 4.0,
     }
@@ -113,7 +120,7 @@ def test_merge_layer_options_preserves_nested_style_options():
     }
 
 
-def test_catalogue_reload_can_be_disabled():
+def test_legacy_reload_flag_does_not_restore_mutation():
     sky = fake_sky()
     apply_resolved_detail(
         sky,

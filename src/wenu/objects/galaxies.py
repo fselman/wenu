@@ -112,8 +112,11 @@ class Galaxies(NonStellar):
             )
         return normalized
 
-    def _geometry_table(self, selected=None):
-        table = super()._geometry_table(selected)
+    def _geometry_table(self, selected=None, magnitude_limit=None):
+        table = super()._geometry_table(
+            selected,
+            magnitude_limit=magnitude_limit,
+        )
         rendering_class = np.asarray(
             table["rendering_class"],
             dtype=str,
@@ -141,6 +144,7 @@ class Galaxies(NonStellar):
         observer,
         *,
         selected=None,
+        magnitude_limit=None,
         minimum_size_arcmin=None,
     ) -> SphericalPolygons:
         """Return galaxy ellipses as polygons transformed to Alt/Az."""
@@ -155,7 +159,10 @@ class Galaxies(NonStellar):
                 "An observer with an altaz_frame is required."
             )
 
-        table = self._geometry_table(selected)
+        table = self._geometry_table(
+            selected,
+            magnitude_limit=magnitude_limit,
+        )
         lon_deg = []
         lat_deg = []
         identifiers = []

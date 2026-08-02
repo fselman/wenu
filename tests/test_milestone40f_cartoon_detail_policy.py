@@ -83,10 +83,16 @@ def test_constellation_vertices_and_explicit_stars_are_unioned():
         extra_star_ids=frozenset({3, 99}),
     ).resolve(object(), object())
     application = apply_resolved_detail(sky, detail)
-    assert sky.stars.magnitude_limit == pytest.approx(2.0)
-    assert sky.stars.include_ids == frozenset({3, 99})
-    assert sky.stars.include_constellation_vertices
-    assert application.reloaded_layers == ("stars",)
+    assert sky.stars.magnitude_limit == pytest.approx(5.5)
+    assert sky.stars.include_ids == frozenset()
+    assert not sky.stars.include_constellation_vertices
+    assert sky.stars.loads == 0
+    assert application.reloaded_layers == ()
+    assert application.layer_options["stars"]["geometry"] == {
+        "magnitude_limit": 2.0,
+        "include_ids": frozenset({3, 99}),
+        "include_constellation_vertices": True,
+    }
 
 
 def test_none_mode_keeps_only_explicit_ids_beyond_bright_limit():
@@ -95,9 +101,15 @@ def test_none_mode_keeps_only_explicit_ids_beyond_bright_limit():
         constellation_star_mode="none",
         extra_star_ids=frozenset({42}),
     ).resolve(object(), object())
-    apply_resolved_detail(sky, detail)
-    assert sky.stars.include_ids == frozenset({42})
+    application = apply_resolved_detail(sky, detail)
+    assert sky.stars.include_ids == frozenset()
     assert not sky.stars.include_constellation_vertices
+    assert sky.stars.loads == 0
+    assert application.layer_options["stars"]["geometry"] == {
+        "magnitude_limit": 1.5,
+        "include_ids": frozenset({42}),
+        "include_constellation_vertices": False,
+    }
 
 
 def test_deep_sky_can_be_enabled_without_changing_visual_style():

@@ -132,43 +132,6 @@ def _composition_horizon_altitude(composition):
     return None
 
 
-def _refresh_magnitude_limit(layer, value):
-    if layer is None or value is None:
-        return False
-    value = float(value)
-    current = getattr(layer, "magnitude_limit", None)
-    if current is not None and float(current) == value:
-        return False
-    layer.magnitude_limit = value
-    loader = getattr(layer, "load", None)
-    if not callable(loader):
-        raise TypeError(
-            f"{type(layer).__name__} has no load() method for applying "
-            "a catalogue magnitude limit."
-        )
-    loader()
-    return True
-
-
-def _refresh_star_selection(sky, detail):
-    stars = getattr(sky, "stars", None)
-    if stars is None or detail.constellation_star_mode is None:
-        return False
-    include_vertices = detail.constellation_star_mode != "none"
-    configure = getattr(stars, "configure_selection", None)
-    if not callable(configure):
-        raise TypeError(
-            "The stellar layer does not support configure_selection()."
-        )
-    return bool(
-        configure(
-            include_ids=detail.extra_star_ids,
-            include_constellation_vertices=include_vertices,
-            reload=True,
-        )
-    )
-
-
 @dataclass(frozen=True)
 class DetailApplication:
     """Result of applying a resolved detail policy to a sky."""
@@ -206,20 +169,9 @@ def apply_resolved_detail(
     This function never adds or removes registered layers. Disabled layers
     remain in the sky and are skipped by the canonical rendering pipeline.
     """
-    reloaded = []
-    if reload_catalogues:
-        stars_reloaded = _refresh_magnitude_limit(
-            getattr(sky, "stars", None),
-            detail.star_magnitude_limit,
-        )
-        selection_reloaded = _refresh_star_selection(sky, detail)
-        if stars_reloaded or selection_reloaded:
-            reloaded.append("stars")
-        if _refresh_magnitude_limit(
-            getattr(sky, "galaxies", None),
-            detail.galaxy_magnitude_limit,
-        ):
-            reloaded.append("galaxies")
+    # Kept as a compatibility argument while catalogue selection moves from
+    # persistent layer mutation to render-local geometry options.
+    del reload_catalogues
 
     resolved_options = {}
     for layer in sky.layers:
@@ -231,13 +183,28 @@ def apply_resolved_detail(
                 _detail_layer_name(name)
             ),
         }
+        geometry = {}
+        if name == "stars":
+            if detail.star_magnitude_limit is not None:
+                geometry["magnitude_limit"] = float(
+                    detail.star_magnitude_limit
+                )
+            if detail.constellation_star_mode is not None:
+                geometry["include_ids"] = detail.extra_star_ids
+                geometry["include_constellation_vertices"] = (
+                    detail.constellation_star_mode != "none"
+                )
+        elif name == "galaxies" and detail.galaxy_magnitude_limit is not None:
+            geometry["magnitude_limit"] = float(
+                detail.galaxy_magnitude_limit
+            )
         detail_field = _SIZE_OPTIONS.get(name)
         if detail_field is not None:
             minimum = getattr(detail, detail_field)
             if minimum is not None:
-                configured["geometry"] = {
-                    "minimum_size_arcmin": float(minimum),
-                }
+                geometry["minimum_size_arcmin"] = float(minimum)
+        if geometry:
+            configured["geometry"] = geometry
         resolved_options[name] = configured
 
     return DetailApplication(
@@ -247,7 +214,7 @@ def apply_resolved_detail(
             resolved_options,
             explicit_layer_options,
         ),
-        reloaded_layers=tuple(reloaded),
+        reloaded_layers=(),
     )
 
 
