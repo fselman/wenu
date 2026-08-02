@@ -237,7 +237,19 @@ from .charts.cartoon_modes import (
     cartoon_chart_style,
 )
 
-from .charts.cartoon_composition import (
-    cartoon_output_mode,
-    compose_cartoon_chart,
+_DEPRECATED_CARTOON_EXPORTS = frozenset(
+    {"cartoon_output_mode", "compose_cartoon_chart"}
 )
+
+
+def __getattr__(name):
+    """Load deprecated compatibility exports only when requested."""
+    if name in _DEPRECATED_CARTOON_EXPORTS:
+        from .charts import cartoon_composition
+
+        return getattr(cartoon_composition, name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def __dir__():
+    return sorted(set(globals()) | _DEPRECATED_CARTOON_EXPORTS)
