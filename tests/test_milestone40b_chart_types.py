@@ -5,6 +5,7 @@ from wenu import (
     BinocularChart,
     BoundaryKind,
     CircumpolarChart,
+    CircularGridLabelAnchor,
     CircularLabelAnchor,
     ProjectedCurve,
 )
@@ -33,6 +34,28 @@ def test_circular_anchor_uses_boundary_not_axes_shape():
     )
     anchor = CircularLabelAnchor(boundary, inset=0.5)
     assert anchor(curve, ax=None) == pytest.approx((0.0, 1.0))
+
+
+def test_circular_grid_anchor_preserves_polar_label_conventions():
+    boundary = circular_boundary(2.0, samples=73)
+    ra = ProjectedCurve(
+        x=[0.0, 0.0, 0.0],
+        y=[0.0, 1.0, 2.0],
+        name="right_ascension_0",
+    )
+    dec = ProjectedCurve(
+        x=[1.0, -1.9, 0.0],
+        y=[0.0, 0.5, 1.0],
+        name="declination_-75",
+    )
+    anchor = CircularGridLabelAnchor(
+        boundary,
+        inset=0.965,
+        declination_at_left=True,
+    )
+
+    assert anchor(ra) == pytest.approx((0.0, 1.93))
+    assert anchor(dec) == pytest.approx((-1.8335, 0.4825))
 
 
 def test_rectangular_anchor_places_ra_at_bottom_and_dec_at_left():

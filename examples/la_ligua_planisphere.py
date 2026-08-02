@@ -4,22 +4,21 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from zoneinfo import ZoneInfo
 
 import matplotlib
-import numpy as np
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from wenu import (
-    AtlasChartStyle,
     CelestialSphere,
-    ExportOptions,
     FullSkyChart,
+    LegendOptions,
     MatplotlibRenderer,
     Observer,
-    draw_chart_legend,
+    PrintMode,
+    compose_chart,
+    observer_context_lines,
 )
 
 
@@ -53,63 +52,6 @@ SUPERNOVA_REMNANTS = (
 )
 
 
-def circular_grid_label_anchor(curve, ax, boundary):
-    """Place coordinate labels immediately inside a circular boundary."""
-    finite_boundary = boundary.finite
-    boundary_radius = float(
-        np.nanmedian(
-            np.hypot(
-                boundary.x[finite_boundary],
-                boundary.y[finite_boundary],
-            )
-        )
-    )
-    finite = curve.finite
-    if not np.any(finite):
-        return None
-    x = curve.x[finite]
-    y = curve.y[finite]
-    radius = np.hypot(x, y)
-    inside = radius <= boundary_radius * (1.0 + 1.0e-6)
-    if not np.any(inside):
-        return None
-    x = x[inside]
-    y = y[inside]
-    radius = radius[inside]
-    index = int(np.argmax(radius))
-    return 0.965 * x[index], 0.965 * y[index]
-
-
-def utc_offset_text(local_datetime):
-    """Format a timezone-aware UTC offset."""
-    offset = local_datetime.utcoffset()
-    total_minutes = int(offset.total_seconds() // 60)
-    sign = "+" if total_minutes >= 0 else "−"
-    total_minutes = abs(total_minutes)
-    hours, minutes = divmod(total_minutes, 60)
-    return f"UTC{sign}{hours:02d}:{minutes:02d}"
-
-
-def observation_context(observer):
-    """Return location and local date/time lines for the chart legend."""
-    local = observer.utc_datetime.astimezone(
-        ZoneInfo(observer.timezone_name)
-    )
-    return (
-        (
-            f"Location: {observer.location_name} — "
-            f"{abs(observer.lat_deg):.4f}° S, "
-            f"{abs(observer.lon_deg):.4f}° W, "
-            f"{observer.elevation_m:.0f} m"
-        ),
-        f"Date: {local:%Y-%m-%d}",
-        (
-            f"Local time: {local:%H:%M} "
-            f"({utc_offset_text(local)})"
-        ),
-    )
-
-
 def build_planisphere():
     """Build the La Ligua visible sky and zenith-centered chart."""
     observer = Observer(location="La Ligua", time=LOCAL_TIME)
@@ -125,7 +67,7 @@ def build_planisphere():
     sky.add_planetary_nebulae(selected=PLANETARY_NEBULAE)
     sky.add_constellations(system="western")
     sky.add_constellation_boundaries(boundaries="iau")
-    grid = sky.add_equatorial_grid(
+    sky.add_equatorial_grid(
         ra=tuple(range(0, 360, 30)),
         dec=tuple(range(-75, 76, 15)),
         frame="fk5",
@@ -141,51 +83,40 @@ def build_planisphere():
         horizon_color="#707070",
         horizon_linewidth=0.8,
     )
-    return sky, chart, grid, AtlasChartStyle()
+    return sky, chart
 
 
 def generate(output=DEFAULT_OUTPUT):
     """Generate the 480 dpi La Ligua atlas planisphere."""
     output = Path(output)
-    sky, chart, grid, style = build_planisphere()
-    figure, ax = plt.subplots(figsize=chart.figure_size(10.0))
-    style.configure_axes(
+    sky, chart = build_planisphere()
+    composition = compose_chart(
+        chart,
+        style="atlas",
+        mode=PrintMode(width_inches=10.0, dpi=480),
+        legends=LegendOptions(
+            objects=True,
+            stellar_magnitudes=False,
+            context=True,
+            context_lines=observer_context_lines(sky.observer),
+        ),
+    )
+    figure, ax = plt.subplots(
+        figsize=(
+            composition.mode.width_inches,
+            composition.mode.height_inches,
+        )
+    )
+    composition.style.configure_axes(
         ax,
         title="La Ligua planisphere — 15 August 2026, 21:00",
     )
-    renderer = MatplotlibRenderer(ax)
-    layer_options = style.layer_options(
-        sky,
-        horizon_altitude_deg=0.0,
-    )
-    grid_options = dict(layer_options[grid])
-    grid_render = dict(grid_options["render"])
-    grid_render["label_anchor"] = (
-        lambda curve, axes: circular_grid_label_anchor(
-            curve,
-            axes,
-            chart.horizon,
-        )
-    )
-    grid_options["render"] = grid_render
-    layer_options[grid] = grid_options
-
     result, saved = chart.export(
         sky,
-        renderer,
+        MatplotlibRenderer(ax),
         output,
-        style=style,
-        layer_options=layer_options,
-        export_options=ExportOptions(dpi=480),
+        composition=composition,
     )
-    draw_chart_legend(
-        ax,
-        chart,
-        sky,
-        style,
-        context_lines=observation_context(sky.observer),
-    )
-    figure.savefig(saved, dpi=480, bbox_inches="tight")
     plt.close(figure)
     return result, saved
 

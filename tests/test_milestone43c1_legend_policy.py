@@ -43,6 +43,14 @@ def test_legend_families_resolve_independently():
     assert composition.legends.context is False
 
 
+def test_context_lines_are_resolved_as_immutable_text():
+    resolved = LegendOptions(
+        context_lines=("Location", "Date", "Time"),
+    ).resolve("planisphere")
+
+    assert resolved.context_lines == ("Location", "Date", "Time")
+
+
 def test_existing_plan_is_reused_with_family_switches():
     plan = ChartLegendPlan(
         chart_type="regional",

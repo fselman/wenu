@@ -51,6 +51,7 @@ def draw_resolved_chart_legends(
         plan=legend_options.plan,
         include_objects=legend_options.plan.objects.enabled,
         include_context=legend_options.context,
+        context_lines=legend_options.context_lines,
     )
     return RenderedChartWithLegends(
         rendering=rendering,

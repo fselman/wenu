@@ -6,6 +6,13 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from wenu.charts.boundaries import (
+    CircularGridLabelAnchor,
+    apply_coordinate_label_anchor,
+)
+from wenu.charts.constellation_label_placement import (
+    apply_visible_constellation_label_anchors,
+)
 from wenu.geometry.frame import SphericalFrame
 from wenu.geometry.projected import ProjectedCurve
 from wenu.geometry.viewport import Viewport
@@ -155,6 +162,11 @@ class FullSkyChart:
             ),
         )
 
+    @property
+    def coordinate_label_anchor(self):
+        """Return the coordinate-grid anchor for the horizon circle."""
+        return CircularGridLabelAnchor(self.horizon)
+
     def figure_size(self, width_inches=7.0):
         """Return a figure size matching the projected horizon bounds."""
         width_inches = float(width_inches)
@@ -190,6 +202,17 @@ class FullSkyChart:
         )
         if layer_options is not None:
             options.update(layer_options)
+        options = apply_coordinate_label_anchor(
+            options,
+            self.coordinate_label_anchor,
+        )
+        options = apply_visible_constellation_label_anchors(
+            options,
+            sky=sky,
+            projection=self.projection,
+            viewport=self.viewport,
+            boundary=self.horizon,
+        )
 
         set_boundary = getattr(renderer, "set_clip_boundary", None)
         if not callable(set_boundary):

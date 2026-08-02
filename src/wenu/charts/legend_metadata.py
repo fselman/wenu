@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import re
+from zoneinfo import ZoneInfo
 
 from astropy import units as u
 from astropy.coordinates import FK5, SkyCoord
@@ -124,4 +125,25 @@ def resolve_legend_metadata(chart, sky, *, grid=None) -> LegendMetadata:
         coordinate_system=system,
         frame=frame,
         epoch=epoch,
+    )
+
+
+def observer_context_lines(observer) -> tuple[str, str, str]:
+    """Return publication-ready observer location and local-time lines."""
+    local = observer.utc_datetime.astimezone(
+        ZoneInfo(observer.timezone_name)
+    )
+    offset = local.utcoffset()
+    total_minutes = int(offset.total_seconds() // 60)
+    sign = "+" if total_minutes >= 0 else "−"
+    hours, minutes = divmod(abs(total_minutes), 60)
+    return (
+        (
+            f"Location: {observer.location_name} — "
+            f"{abs(observer.lat_deg):.4f}° S, "
+            f"{abs(observer.lon_deg):.4f}° W, "
+            f"{observer.elevation_m:.0f} m"
+        ),
+        f"Date: {local:%Y-%m-%d}",
+        f"Local time: {local:%H:%M} (UTC{sign}{hours:02d}:{minutes:02d})",
     )

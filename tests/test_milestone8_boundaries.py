@@ -106,6 +106,24 @@ def test_native_containment_handles_ra_seam_without_matplotlib():
     )
 
 
+def test_vectorized_region_lookup_preserves_shape_and_nonfinite_values():
+    boundaries = make_boundaries()
+    ra = np.asarray([[15.0, np.nan], [30.0, 45.0]])
+    dec = np.asarray([[-15.0, 0.0], [-15.0, -15.0]])
+
+    regions = boundaries.regions_of(
+        ra,
+        dec,
+        candidates={"TST"},
+    )
+
+    assert regions.shape == ra.shape
+    assert regions[0, 1] is None
+    assert regions[0, 0] == boundaries.region_of(
+        ra[0, 0], dec[0, 0], candidates={"TST"}
+    )
+
+
 def test_domain_layer_contains_no_projection_or_rendering_api():
     boundaries = make_boundaries()
 

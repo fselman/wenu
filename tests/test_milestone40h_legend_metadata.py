@@ -11,6 +11,7 @@ from wenu import (
     LegendMetadata,
     draw_chart_legend,
     resolve_legend_metadata,
+    observer_context_lines,
 )
 
 
@@ -147,3 +148,22 @@ def test_metadata_module_has_no_render_backend_dependency():
 
     source = Path(module.__file__).read_text().lower()
     assert "matplotlib" not in source
+
+
+def test_observer_context_lines_include_location_and_local_time():
+    from datetime import datetime, timezone
+
+    observer = SimpleNamespace(
+        utc_datetime=datetime(2026, 8, 16, 1, 0, tzinfo=timezone.utc),
+        timezone_name="America/Santiago",
+        location_name="La Ligua",
+        lat_deg=-32.4524,
+        lon_deg=-71.2311,
+        elevation_m=52.0,
+    )
+
+    assert observer_context_lines(observer) == (
+        "Location: La Ligua — 32.4524° S, 71.2311° W, 52 m",
+        "Date: 2026-08-15",
+        "Local time: 21:00 (UTC−04:00)",
+    )

@@ -9,6 +9,7 @@ from astropy.coordinates import SkyCoord
 from astropy import units as u
 
 from wenu.charts.binocular import BinocularChart
+from wenu.charts.boundaries import CircularGridLabelAnchor
 from wenu.geometry.projected import ProjectedCurve
 
 
@@ -123,7 +124,10 @@ class CircumpolarChart:
 
     @property
     def coordinate_label_anchor(self):
-        return self.binocular_chart.coordinate_label_anchor
+        return CircularGridLabelAnchor(
+            self.boundary,
+            declination_at_left=True,
+        )
 
     @property
     def chart_context(self):
@@ -133,6 +137,10 @@ class CircumpolarChart:
         return self.binocular_chart.figure_size(width_inches)
 
     def render(self, *args, **kwargs):
+        kwargs.setdefault(
+            "coordinate_label_anchor",
+            self.coordinate_label_anchor,
+        )
         return self.binocular_chart.render(*args, **kwargs)
 
     def export(

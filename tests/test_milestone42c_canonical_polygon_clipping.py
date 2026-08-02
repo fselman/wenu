@@ -142,7 +142,7 @@ def test_circumpolar_lmc_boundary_crosses_projected_lmc():
         encoding="utf-8"
     )
     exec(compile(source, "circumpolar_atlas.py", "exec"), namespace)
-    sky, chart, _, _ = namespace["build_chart"]()
+    sky, chart = namespace["build_chart"]()
     lmc = sky.magellanic_cloud_isophotes["lmc"]
     spherical = lmc.spherical_geometry(sky.observer)
     projected = chart.projection.project_polygons(spherical)

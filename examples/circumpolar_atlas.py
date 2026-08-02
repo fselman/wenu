@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 from pathlib import Path
 
 import matplotlib
-import numpy as np
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -15,10 +15,11 @@ from wenu import (
     AtlasChartStyle,
     CelestialSphere,
     CircumpolarChart,
-    ExportOptions,
+    LegendOptions,
     MatplotlibRenderer,
     Observer,
-    draw_chart_legend,
+    PrintMode,
+    compose_chart,
 )
 
 
@@ -46,29 +47,6 @@ DEFAULT_OUTPUT = Path(
 )
 
 
-def polar_grid_label_anchor(curve, ax, boundary_radius):
-    """Anchor grid labels just inside the circular polar boundary."""
-    finite = curve.finite
-    if not np.any(finite):
-        return None
-    x = curve.x[finite]
-    y = curve.y[finite]
-    radius = np.hypot(x, y)
-    inside = radius <= float(boundary_radius) * (1.0 + 1.0e-6)
-    if not np.any(inside):
-        return None
-    x = x[inside]
-    y = y[inside]
-    radius = radius[inside]
-
-    if curve.name.startswith("right_ascension_"):
-        index = int(np.argmax(radius))
-        return 0.965 * x[index], 0.965 * y[index]
-
-    index = int(np.argmin(x))
-    return 0.965 * x[index], 0.965 * y[index]
-
-
 def build_chart():
     """Build the sky, polar chart, and atlas style."""
     observer = Observer(
@@ -86,7 +64,7 @@ def build_chart():
     sky.add_planetary_nebulae(selected=PLANETARY_NEBULAE)
     sky.add_constellations(system="western")
     sky.add_constellation_boundaries(boundaries="iau")
-    grid = sky.add_equatorial_grid(
+    sky.add_equatorial_grid(
         ra=tuple(range(0, 360, 30)),
         dec=(-85, -80, -75),
         frame="fk5",
@@ -102,58 +80,57 @@ def build_chart():
         pole="south",
         position_angle_deg=0.0,
     )
-    return sky, chart, grid, AtlasChartStyle()
+    return sky, chart
 
 
 def generate(output=DEFAULT_OUTPUT):
     """Generate the circular atlas chart at double-resolution PNG DPI."""
     output = Path(output)
-    sky, chart, grid, style = build_chart()
-    figure, ax = plt.subplots(figsize=chart.figure_size(10.0))
-    style.configure_axes(
+    sky, chart = build_chart()
+    style = AtlasChartStyle()
+    style = replace(
+        style,
+        grids=replace(
+            style.grids,
+            horizon_altitude_deg=-90.0,
+            minimum_altitude_deg=-90.0,
+        ),
+    )
+    composition = compose_chart(
+        chart,
+        style=style,
+        mode=PrintMode(width_inches=10.0, dpi=480),
+        legends=LegendOptions(
+            objects=True,
+            stellar_magnitudes=False,
+            context=True,
+        ),
+    )
+    figure, ax = plt.subplots(
+        figsize=(
+            composition.mode.width_inches,
+            composition.mode.height_inches,
+        )
+    )
+    composition.style.configure_axes(
         ax,
         title=(
             "Southern circumpolar atlas — "
             "the −69.75° boundary bisects the LMC"
         ),
     )
-    renderer = MatplotlibRenderer(ax)
-    boundary = chart.boundary
-    layer_options = style.layer_options(
-        sky,
-        horizon_altitude_deg=-90.0,
-    )
-    grid_options = dict(layer_options[grid])
-    grid_render = dict(grid_options["render"])
-    boundary_radius = float(
-        np.nanmedian(np.hypot(boundary.x, boundary.y))
-    )
-    grid_render["label_anchor"] = (
-        lambda curve, axes: polar_grid_label_anchor(
-            curve,
-            axes,
-            boundary_radius,
-        )
-    )
-    grid_options["render"] = grid_render
-    layer_options[grid] = grid_options
-
     result, saved = chart.export(
         sky,
-        renderer,
+        MatplotlibRenderer(ax),
         output,
-        style=style,
-        layer_options=layer_options,
+        composition=composition,
         boundary_style={
             "facecolor": "none",
             "edgecolor": "#707070",
             "linewidth": 0.8,
             "zorder": 8.0,
         },
-        export_options=ExportOptions(dpi=480),
     )
-    draw_chart_legend(ax, chart, sky, style)
-    figure.savefig(saved, dpi=480, bbox_inches="tight")
     plt.close(figure)
     return result, saved
 

@@ -65,26 +65,36 @@ class ConstellationLabels(GeometricalObject):
         valid_coordinates = np.isfinite(ra_deg) & np.isfinite(dec_deg)
         if not np.any(valid_coordinates):
             return self._empty()
-        frame = frame.iloc[np.flatnonzero(valid_coordinates)]
         coordinates = SkyCoord(
             ra=ra_deg[valid_coordinates] * u.deg,
             dec=dec_deg[valid_coordinates] * u.deg,
             frame="icrs",
         )
-        abbreviations = coordinates.get_constellation(short_name=True)
+        abbreviations = np.asarray(
+            coordinates.get_constellation(short_name=True),
+            dtype=object,
+        )
         apparent = coordinates.transform_to(observer.altaz_frame)
         apparent_lon_deg = apparent.az.to_value(u.deg)
         apparent_lat_deg = apparent.alt.to_value(u.deg)
         groups = defaultdict(list)
+        group_labels = np.asarray(abbreviations, dtype=object).copy()
+        if self.boundaries is not None:
+            serpens = abbreviations == "Ser"
+            if np.any(serpens):
+                identifiers = self.boundaries.regions_of(
+                    ra_deg[valid_coordinates][serpens],
+                    dec_deg[valid_coordinates][serpens],
+                    candidates={"SER1", "SER2"},
+                )
+                group_labels[serpens] = [
+                    self.LABEL_OVERRIDES.get(identifier, "Ser")
+                    for identifier in identifiers
+                ]
 
-        for index, (hip_id, abbreviation) in enumerate(
-            zip(frame.index, abbreviations)
+        for index, (abbreviation, label) in enumerate(
+            zip(abbreviations, group_labels, strict=True)
         ):
-            label = self._label_group(
-                int(hip_id),
-                abbreviation,
-                frame.iloc[index],
-            )
             if (
                 selected is not None
                 and abbreviation not in selected
@@ -113,16 +123,6 @@ class ConstellationLabels(GeometricalObject):
             labels=np.asarray(labels, dtype=object),
             metadata={"kind": "constellation_labels"},
         )
-
-    def _label_group(self, hip_id, abbreviation, row):
-        if abbreviation != "Ser" or self.boundaries is None:
-            return abbreviation
-        identifier = self.boundaries.region_of(
-            ra_deg=float(row["ra_degrees"]),
-            dec_deg=float(row["dec_degrees"]),
-            candidates={"SER1", "SER2"},
-        )
-        return self.LABEL_OVERRIDES.get(identifier, abbreviation)
 
     @staticmethod
     def _spherical_mean(lon_deg, lat_deg):

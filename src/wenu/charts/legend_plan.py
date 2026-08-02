@@ -71,6 +71,7 @@ class ResolvedLegendOptions:
 
     plan: ChartLegendPlan
     context: bool = True
+    context_lines: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -81,6 +82,7 @@ class LegendOptions:
     stellar_magnitudes: bool = True
     context: bool = True
     plan: ChartLegendPlan | None = None
+    context_lines: tuple[str, ...] = ()
 
     def resolve(self, chart_type: str) -> ResolvedLegendOptions:
         """Resolve family switches into the established placement plan."""
@@ -98,6 +100,7 @@ class LegendOptions:
         return ResolvedLegendOptions(
             plan=plan,
             context=bool(self.context),
+            context_lines=tuple(str(line) for line in self.context_lines),
         )
 
 

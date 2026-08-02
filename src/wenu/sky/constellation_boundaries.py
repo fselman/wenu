@@ -334,38 +334,64 @@ class ConstellationBoundaries(GeometricalObject):
         candidates=None,
     ):
         """Return the native B1875 boundary containing an ICRS point."""
-        if not np.all(np.isfinite([ra_deg, dec_deg])):
-            return None
+        return self.regions_of(
+            np.asarray([ra_deg], dtype=float),
+            np.asarray([dec_deg], dtype=float),
+            candidates=candidates,
+        )[0]
+
+    def regions_of(
+        self,
+        ra_deg,
+        dec_deg,
+        *,
+        candidates=None,
+    ):
+        """Return native B1875 regions for ICRS coordinate arrays."""
+        ra_deg = np.asarray(ra_deg, dtype=float)
+        dec_deg = np.asarray(dec_deg, dtype=float)
+        if ra_deg.shape != dec_deg.shape:
+            raise ValueError("ra_deg and dec_deg must have matching shapes.")
+        result = np.full(ra_deg.shape, None, dtype=object)
+        finite = np.isfinite(ra_deg) & np.isfinite(dec_deg)
+        if not np.any(finite):
+            return result
 
         coordinate = SkyCoord(
-            ra=float(ra_deg) * u.deg,
-            dec=float(dec_deg) * u.deg,
+            ra=ra_deg[finite] * u.deg,
+            dec=dec_deg[finite] * u.deg,
             frame="icrs",
         )
         b1875 = coordinate.transform_to(
             FK4(equinox=Time("B1875.0"))
         )
-        ra_hours = float(
-            b1875.ra.to_value(u.hourangle) % 24.0
-        )
-        dec_degrees = float(b1875.dec.to_value(u.deg))
+        ra_hours = b1875.ra.to_value(u.hourangle) % 24.0
+        dec_degrees = b1875.dec.to_value(u.deg)
 
-        identifiers = (
-            self.vertices.keys()
+        identifiers = tuple(
+            self.vertices
             if candidates is None
             else (item.upper() for item in candidates)
         )
-        for abbreviation in identifiers:
-            vertices = self.vertices.get(abbreviation)
-            if vertices is None or len(vertices) < 3:
-                continue
-            if self._contains_b1875_point(
-                vertices,
-                ra_hours,
-                dec_degrees,
-            ):
-                return abbreviation
-        return None
+        resolved = []
+        for point_ra, point_dec in zip(
+            ra_hours, dec_degrees, strict=True
+        ):
+            match = None
+            for abbreviation in identifiers:
+                vertices = self.vertices.get(abbreviation)
+                if vertices is None or len(vertices) < 3:
+                    continue
+                if self._contains_b1875_point(
+                    vertices,
+                    point_ra,
+                    point_dec,
+                ):
+                    match = abbreviation
+                    break
+            resolved.append(match)
+        result[finite] = resolved
+        return result
 
     @classmethod
     def _contains_b1875_point(

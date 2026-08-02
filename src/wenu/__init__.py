@@ -38,6 +38,7 @@ from .charts.modes import (
 )
 from .charts.binocular import BinocularChart
 from .charts.boundaries import (
+    CircularGridLabelAnchor,
     CircularLabelAnchor,
     RectangularLabelAnchor,
 )
@@ -69,6 +70,7 @@ from .charts.legend_metadata import (
     LegendMetadata,
     active_coordinate_grid,
     resolve_legend_metadata,
+    observer_context_lines,
 )
 from .charts.legend_symbols import (
     LegendSymbolDescriptor,
@@ -140,6 +142,7 @@ __all__ = [
     "ChartExportResult",
     "BinocularChart",
     "CircularLabelAnchor",
+    "CircularGridLabelAnchor",
     "CircumpolarChart",
     "RectangularLabelAnchor",
     "FullSkyChart",
@@ -154,6 +157,7 @@ __all__ = [
     "LegendMetadata",
     "active_coordinate_grid",
     "resolve_legend_metadata",
+    "observer_context_lines",
     "LegendSymbolDescriptor",
     "legend_symbol_descriptors",
     "StellarMagnitudeEntry",

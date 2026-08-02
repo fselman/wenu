@@ -23,22 +23,22 @@ def test_circumpolar_atlas_uses_circular_chart_clipping():
     source = EXAMPLE.read_text(encoding="utf-8")
     assert "horizon_altitude_deg=-90.0" in source
     assert "boundary_style={" in source
+    assert "composition=composition" in source
     assert "RegionalChart" not in source
 
 
 def test_circumpolar_atlas_uses_atlas_style_and_double_resolution():
     source = EXAMPLE.read_text(encoding="utf-8")
     assert "AtlasChartStyle()" in source
-    assert "ExportOptions(dpi=480)" in source
+    assert "PrintMode(width_inches=10.0, dpi=480)" in source
     assert "output/style-gallery/" in source
 
 
 def test_circumpolar_grid_labels_anchor_to_the_circle():
     source = EXAMPLE.read_text(encoding="utf-8")
-    assert "def polar_grid_label_anchor(" in source
-    assert 'curve.name.startswith("right_ascension_")' in source
-    assert "np.argmax(radius)" in source
-    assert 'grid_render["label_anchor"]' in source
+    assert "def polar_grid_label_anchor(" not in source
+    assert "layer_options" not in source
+    assert "CircularGridLabelAnchor" not in source
 
 
 def test_circumpolar_grid_uses_two_hour_spacing_and_stops_at_minus_75():

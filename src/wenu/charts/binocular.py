@@ -13,6 +13,9 @@ from wenu.charts.boundaries import (
     viewport_from_boundary,
 )
 from wenu.charts.context import BoundaryKind, ChartContext
+from wenu.charts.constellation_label_placement import (
+    apply_visible_constellation_label_anchors,
+)
 from wenu.charts.regional import ExportOptions, RegionalChart
 
 
@@ -156,6 +159,7 @@ class BinocularChart:
         style=None,
         layer_options=None,
         boundary_style=None,
+        coordinate_label_anchor=None,
     ):
         """Render and clip every artist to the circular field stop."""
         resolved_style = style
@@ -171,7 +175,18 @@ class BinocularChart:
             options.update(layer_options)
         options = apply_coordinate_label_anchor(
             options,
-            self.coordinate_label_anchor,
+            (
+                self.coordinate_label_anchor
+                if coordinate_label_anchor is None
+                else coordinate_label_anchor
+            ),
+        )
+        options = apply_visible_constellation_label_anchors(
+            options,
+            sky=sky,
+            projection=self.projection,
+            viewport=self.viewport,
+            boundary=self.field_stop,
         )
         renderer.set_clip_boundary(
             self.field_stop,

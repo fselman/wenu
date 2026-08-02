@@ -5,10 +5,10 @@ from collections.abc import Callable
 import numpy as np
 
 from wenu.geometry.projected import (
-        ProjectedPoint,
-        ProjectedCurve,
-        ProjectedPolygon,
-        )
+    ProjectedPoint,
+    ProjectedCurve,
+    ProjectedPolygon,
+)
 from wenu.geometry.viewport import Viewport
 
 def clip_point_to_viewport(
@@ -106,6 +106,102 @@ def clip_curve_to_viewport(
 
 
 _Point = tuple[float, float]
+
+
+def clip_polygon_to_convex_boundary(
+    polygon: ProjectedPolygon,
+    boundary: ProjectedCurve,
+) -> ProjectedPolygon | None:
+    """Intersect one polygon with a closed convex projected boundary."""
+    if not boundary.closed:
+        raise ValueError("boundary must be closed.")
+    if not np.all(polygon.finite):
+        return None
+    finite = boundary.finite
+    vertices = np.column_stack(
+        (boundary.x[finite], boundary.y[finite])
+    )
+    if len(vertices) < 3:
+        raise ValueError("boundary needs at least three finite vertices.")
+    if np.allclose(vertices[0], vertices[-1]):
+        vertices = vertices[:-1]
+    signed_area = 0.5 * np.sum(
+        vertices[:, 0] * np.roll(vertices[:, 1], -1)
+        - np.roll(vertices[:, 0], -1) * vertices[:, 1]
+    )
+    if np.isclose(signed_area, 0.0):
+        raise ValueError("boundary must enclose a finite area.")
+    orientation = 1.0 if signed_area > 0.0 else -1.0
+    subject = list(zip(polygon.x, polygon.y, strict=True))
+
+    for start, end in zip(
+        vertices,
+        np.roll(vertices, -1, axis=0),
+        strict=True,
+    ):
+        edge = end - start
+
+        def side(point):
+            relative = np.asarray(point, dtype=float) - start
+            return orientation * (
+                edge[0] * relative[1] - edge[1] * relative[0]
+            )
+
+        clipped = []
+        if subject:
+            previous = subject[-1]
+            previous_side = side(previous)
+            for current in subject:
+                current_side = side(current)
+                current_inside = current_side >= -1.0e-12
+                previous_inside = previous_side >= -1.0e-12
+                if current_inside != previous_inside:
+                    fraction = previous_side / (
+                        previous_side - current_side
+                    )
+                    clipped.append(
+                        tuple(
+                            np.asarray(previous, dtype=float)
+                            + fraction
+                            * (
+                                np.asarray(current, dtype=float)
+                                - np.asarray(previous, dtype=float)
+                            )
+                        )
+                    )
+                if current_inside:
+                    clipped.append(current)
+                previous = current
+                previous_side = current_side
+        subject = clipped
+        if len(subject) < 3:
+            return None
+
+    subject = _remove_consecutive_duplicate_vertices(subject)
+    if len(subject) < 3:
+        return None
+    x, y = zip(*subject, strict=True)
+    return ProjectedPolygon(
+        x=np.asarray(x, dtype=float),
+        y=np.asarray(y, dtype=float),
+        name=polygon.name,
+    )
+
+
+def polygon_centroid(polygon: ProjectedPolygon) -> tuple[float, float]:
+    """Return the area centroid of a finite projected polygon."""
+    if not np.all(polygon.finite):
+        raise ValueError("polygon must contain only finite vertices.")
+    x = polygon.x
+    y = polygon.y
+    cross = x * np.roll(y, -1) - np.roll(x, -1) * y
+    area_twice = float(np.sum(cross))
+    if np.isclose(area_twice, 0.0):
+        return float(np.mean(x)), float(np.mean(y))
+    return (
+        float(np.sum((x + np.roll(x, -1)) * cross) / (3.0 * area_twice)),
+        float(np.sum((y + np.roll(y, -1)) * cross) / (3.0 * area_twice)),
+    )
 
 
 def _clip_polygon_against_edge(
@@ -546,5 +642,3 @@ def _clip_polyline_to_viewport(
         )
 
     return polylines
-
-
