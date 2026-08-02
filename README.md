@@ -15,8 +15,9 @@ southern South America.
 ## Project status
 
 Wenu remains under active development and has not yet reached its first public
-release. The v0.4 chart architecture is implemented. Public APIs may still
-change before release.
+release. The v0.5 chart architecture is implemented. It provides one
+composition and export workflow across chart types, styles, output modes,
+detail policies, and legends. Public APIs may still change before release.
 
 See `LICENSE` for the current usage terms.
 
@@ -33,6 +34,11 @@ See `LICENSE` for the current usage terms.
 - equatorial, ecliptic, and Galactic grids;
 - celestial reference points;
 - publication styles and reproducible export;
+- atlas and cartoon chart styles;
+- print/paper and presentation output modes;
+- render-local fixed, adaptive, and cartoon detail policies;
+- integrated object, stellar-magnitude, and contextual legends;
+- regional, full-sky, circumpolar, and binocular chart types;
 - generic preparation and Matplotlib rendering;
 - package-boundary and regression tests.
 
@@ -47,17 +53,20 @@ pip install -e .
 Wenu requires Python 3.10 or newer. Runtime dependencies are declared in
 `pyproject.toml`: Astropy, Matplotlib, NumPy, and Pandas.
 
-## Regional chart
+## Canonical chart composition
 
 ```python
 import matplotlib.pyplot as plt
 
 from wenu import (
     CelestialSphere,
+    FixedDetailPolicy,
+    LegendOptions,
     MatplotlibRenderer,
     Observer,
-    PublicationStyle,
     RegionalChart,
+    ResolvedDetail,
+    compose_chart,
 )
 
 observer = Observer(
@@ -77,60 +86,51 @@ chart = RegionalChart.from_constellations(
     angular_radius_deg=35.0,
     north_up=True,
 )
-style = PublicationStyle()
 figure, ax = plt.subplots(figsize=chart.figure_size(7.0))
-style.configure_axes(ax, title="Crux and Centaurus")
-chart.render(
-    sky,
-    MatplotlibRenderer(ax),
-    style=style,
+composition = compose_chart(
+    chart,
+    style="atlas",
+    mode="print",
+    detail=FixedDetailPolicy(
+        ResolvedDetail(star_magnitude_limit=5.5)
+    ),
+    legends=LegendOptions(
+        objects=True,
+        stellar_magnitudes=True,
+        context=True,
+    ),
 )
-figure.savefig("regional.png", dpi=300)
-```
-
-## Full-sky chart
-
-```python
-import matplotlib.pyplot as plt
-
-from wenu import (
-    CelestialSphere,
-    ExportOptions,
-    FullSkyChart,
-    MatplotlibRenderer,
-    Observer,
-    PublicationStyle,
-)
-
-observer = Observer(
-    location="La Ligua",
-    time="2026-08-15 21:00",
-)
-sky = CelestialSphere(observer)
-sky.add_stars(catalog="hipparcos", magnitude_limit=5.5)
-sky.add_constellations(system="western")
-
-chart = FullSkyChart()
-style = PublicationStyle(star_area_scale=0.25)
-figure, ax = plt.subplots(figsize=chart.figure_size(7.0))
-style.configure_axes(ax, title="Visible sky")
 chart.export(
     sky,
     MatplotlibRenderer(ax),
-    "full-sky.png",
-    style=style,
-    export_options=ExportOptions(dpi=300),
+    "regional.png",
+    composition=composition,
 )
 ```
 
-`FullSkyChart` may place its stereographic tangent point independently of the
-observer zenith. The observer continues to determine the AltAz sky and
-horizon.
+Change the independent choices without changing chart geometry:
+
+```python
+atlas_slides = compose_chart(
+    chart, style="atlas", mode="presentation"
+)
+cartoon_print = compose_chart(
+    chart, style="cartoon", mode="print"
+)
+```
+
+The same workflow supports `RegionalChart`, `FullSkyChart`,
+`CircumpolarChart`, and `BinocularChart`. `FullSkyChart` may place its
+stereographic tangent point independently of the observer zenith; the observer
+continues to determine the AltAz sky and horizon.
 
 See:
 
-- `examples/full_sky_chart.py`;
-- `examples/milestone16_regional_charts.py`.
+- `examples/atlas_style.py`;
+- `examples/atlas_summer_triangle.py`;
+- `examples/circumpolar_atlas.py`;
+- `examples/la_ligua_planisphere.py`;
+- `examples/cartoon_modes.py`.
 
 ## Architecture
 
@@ -140,10 +140,12 @@ The canonical pipeline is:
 Observer
   → CelestialSphere and SkyLayer
   → spherical geometry
+  → projection-domain guard
   → projection
   → projected geometry
-  → optional preparation
+  → chart preparation
   → renderer
+  → legends and export
 ```
 
 The principal packages are:
@@ -157,17 +159,18 @@ The principal packages are:
 
 Developer references:
 
-- `docs/developer/current_architecture.md`;
+- `docs/developer/current_architecture_v0.4.md` (migration baseline);
 - `docs/developer/implementation_reference.md`;
-- `docs/developer/target_architecture_v0.4.md`;
-- `docs/developer/wenu_migration_roadmap_v0.4.md`.
+- `docs/developer/target_architecture_v0.5.md` (implemented architecture);
+- `docs/developer/wenu_migration_0.4_to_0.5.md` (completed roadmap);
+- `docs/developer/deprecations_v0.5.md`.
 
 ## Tests
 
 ```bash
 pytest
-python examples/full_sky_chart.py
-python examples/milestone16_regional_charts.py
+python examples/atlas_style.py
+python examples/cartoon_modes.py
 ```
 
 Generated chart-output directories should remain outside version control.

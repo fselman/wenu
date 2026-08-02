@@ -1,6 +1,6 @@
 # Wenu target architecture v0.5
 
-Status: proposed target  
+Status: implemented
 Migration source: `current_architecture_v0.4.md`  
 Migration plan: `wenu_migration_0.4_to_0.5.md`
 
@@ -467,7 +467,7 @@ Version 0.5 uses staged compatibility:
 
 - existing atlas print examples remain valid;
 - existing chart constructors remain valid;
-- existing `style=` and `layer_options=` calls remain valid during migration;
+- existing `style=` and `layer_options=` calls remain valid in v0.5;
 - deprecated cartoon APIs emit deprecation warnings only after their canonical
   replacements are demonstrated;
 - removal is outside the first v0.5 migration unless separately approved.

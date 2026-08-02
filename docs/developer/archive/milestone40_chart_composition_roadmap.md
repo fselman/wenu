@@ -1,5 +1,7 @@
 # Milestone 40 — Chart composition and cartoon charts
 
+**Status:** Historical; superseded by the completed v0.5 migration roadmap.
+
 ## Purpose
 
 Milestone 40 will separate four concerns that are presently partly mixed:
@@ -518,4 +520,3 @@ Milestone 40 is complete when:
 - all z-orders use named layer constants;
 - Atlas charts remain operational;
 - all tests and visual checks pass.
-

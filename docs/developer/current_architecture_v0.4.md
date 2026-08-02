@@ -1,6 +1,6 @@
 # Wenu Current Architecture v0.4
 
-Status: architecture baseline for review
+Status: historical migration baseline
 Milestone: 42A
 Date: 2026-07-28
 
@@ -229,4 +229,3 @@ The gap is limited to high-level orchestration:
 - examples may save the same product twice.
 
 No lower-level architectural replacement is required to close this gap.
-

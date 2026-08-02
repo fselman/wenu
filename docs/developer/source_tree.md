@@ -1,221 +1,96 @@
-# Wenu Source Organization
+# Wenu source organization
 
-**Branch**
+**Architecture version:** 0.5
+**Status:** Implemented
 
-`feature/regional-stereographic-charts`
+The source tree is organized by responsibility. Astronomical objects and sky
+layers do not import chart or renderer policy, and all chart styles and modes
+share the same geometry and rendering pipeline.
 
-**Status**
-
-This document describes the organization of the Wenu source tree.
-
-Its purpose is to explain how the current architecture maps onto the package structure. It complements `current_architecture.md`, which describes the software architecture independently of the directory layout.
-
----
-
-# 1. Overview
-
-The Wenu source tree is organized by software responsibility.
-
-Major architectural concepts are generally grouped into separate packages, allowing astronomical computations, celestial-sphere constructs, projections, geometry and rendering to evolve independently.
-
-The current source tree is
+## Principal packages
 
 ```text
-src/wenu
-│
-├── geometry.py              Basic geometric utilities
-├── observer.py              Observer definition and observing context
-├── projected.py             Projected geometric objects
-├── projection.py            Map projections
-├── spherical_frame.py       Spherical coordinate transformations
-├── viewport.py              Visible chart region
-│
-├── objects/
-│   └── stars.py             Stellar catalogues
-│
-├── sky/
-│   ├── celestial_sphere.py  CelestialSphere orchestration class
-│   ├── constellations.py    Constellation layers
-│   ├── curves.py            Celestial curves
-│   ├── grids.py             Coordinate grids
-│   └── points.py            Celestial reference points
-│
-├── renderers/
-│   ├── matplotlib.py        Rendering primitives
-│   └── matplotlib_axes.py   Matplotlib backend support
-│
-├── resources/               Package resource access
-│
-├── data/                    Astronomical catalogues and datasets
-│
-└── utils/                   General utilities
+src/wenu/
+├── observer.py                 observing context
+├── objects/                    catalogues and physical object layers
+├── sky/                        celestial layers and draw orchestration
+├── geometry/                   spherical/projected values and algorithms
+├── projections/                coordinate-neutral map projections
+├── charts/                     chart types, composition, detail, styles,
+│                               legends, boundaries, and export workflow
+├── rendering/                  preparation and Matplotlib backend
+├── resources/                  installed-resource access
+├── data/                       distributed astronomical datasets
+└── utils/                      general utilities
 ```
 
----
+## Responsibility mapping
 
-# 2. Top-Level Modules
-
-## observer.py
-
-Defines the observing conditions.
-
-Provides the astronomical context shared by the entire package.
-
----
-
-## spherical_frame.py
-
-Implements spherical coordinate transformations independently of any particular astronomical coordinate system.
-
----
-
-## projection.py
-
-Implements spherical map projections.
-
-The current implementation provides stereographic projection together with compatibility interfaces for the existing astronomical layers.
-
----
-
-## projected.py
-
-Defines projected Cartesian geometry produced by the projection subsystem.
-
-Current projected classes include projected points, curves and polygons.
-
----
-
-## viewport.py
-
-Defines the visible region of a chart after projection.
-
----
-
-## geometry.py
-
-Contains geometric utilities shared by multiple subsystems.
-
----
-
-# 3. Packages
-
-## objects/
-
-Contains physical astronomical objects and catalogues.
-
-Current contents
-
-```text
-stars.py          Stellar catalogue management
-```
-
----
-
-## sky/
-
-Contains celestial-sphere constructs.
-
-These classes describe the organization of the sky rather than physical astronomical objects.
-
-Current contents
-
-```text
-celestial_sphere.py    Central orchestration class
-
-constellations.py      Constellation layers
-
-curves.py              Celestial curves
-
-grids.py               Coordinate grids
-
-points.py              Celestial reference points
-```
-
----
-
-## renderers/
-
-Contains rendering backends.
-
-Current contents
-
-```text
-matplotlib.py          Rendering primitives
-
-matplotlib_axes.py     Matplotlib backend support
-```
-
----
-
-## resources/
-
-Contains utilities for locating package resources independently of the installation location.
-
----
-
-## data/
-
-Contains astronomical catalogues and other datasets distributed with Wenu.
-
----
-
-## utils/
-
-Contains general-purpose utilities used throughout the package.
-
----
-
-# 4. Relationship Between Packages
-
-The current organization of the principal packages is
-
-```text
-                   observer
-                       │
-                       │
-                       ▼
-                     sky
-                   /  |  \
-                  /   |   \
-                 ▼    ▼    ▼
-            objects projection
-                  \      /
-                   \    /
-                    ▼  ▼
-                 projected
-                      │
-                      ▼
-                 renderers
-```
-
-This diagram illustrates the principal package dependencies in the current implementation. It is intended as a conceptual overview rather than a complete dependency graph.
-
----
-
-# 5. Relationship to the Architecture
-
-The mapping between the architectural concepts described in `current_architecture.md` and the source tree is summarized below.
-
-| Architectural concept | Principal implementation |
-|------------------------|--------------------------|
-| Observer | `observer.py` |
-| CelestialSphere | `sky/celestial_sphere.py` |
-| Sky Layers | `sky/` and `objects/` |
-| Coordinate transformations | `spherical_frame.py` |
-| Projection | `projection.py` |
-| Projected Geometry | `projected.py` |
-| Rendering | `renderers/` |
-| Resources | `resources/` |
+| Responsibility | Principal implementation |
+|---|---|
+| Observer and time | `observer.py` |
+| Physical catalogues | `objects/` |
+| Sky layers and execution core | `sky/` |
+| Spherical and projected geometry | `geometry/` |
+| Projection | `projections/` |
+| Chart framing and composition | `charts/` |
+| Rendering and preparation | `rendering/` |
+| Package resources | `resources/` |
 | Astronomical data | `data/` |
 
----
+## Charts package
 
-# 6. Summary
+The v0.5 chart workflow is concentrated in `wenu.charts`:
 
-The Wenu source tree mirrors the principal architectural concepts of the package.
+```text
+charts/
+├── regional.py, full_sky.py,
+│   circumpolar.py, binocular.py  chart geometry and export entry points
+├── context.py                    output-neutral chart geometry context
+├── composition.py                style/mode/detail/legend resolution
+├── export_workflow.py            render, decorate, and save once
+├── detail.py                     detail policies and resolved detail
+├── detail_application.py         render-local layer options
+├── styles.py, style_components.py,
+│   presets.py                    composed visual styles
+├── atlas_modes.py,
+│   cartoon_modes.py              medium-specific style adaptation
+├── legend_plan.py and
+│   legend_* modules              legend policy, metadata, symbols, layout
+├── boundaries.py                 chart and grid-label boundary helpers
+└── constellation_label_placement.py
+                                   visible-region label placement
+```
 
-Top-level modules implement the core mathematical infrastructure, while packages group related functionality according to their responsibilities within the architecture.
+The deprecated `cartoon_composition.py` contains compatibility wrappers only.
+It is lazily imported when an old public entry point is requested and is not
+part of canonical composition.
 
-Detailed documentation of the classes contained in each source file is provided separately.
+## Dependency direction
 
+```text
+objects ─┐
+         ├─> sky ─> geometry ─> projections
+observer ┘
+                    charts ─> rendering
+                       └────> sky execution core
+```
 
+More precisely, chart production flows from registered layers through
+spherical geometry, projection-domain guarding, projection, projected
+geometry, preparation, rendering, legends, and one final export. Styles,
+modes, detail policies, and legends configure that flow; they do not create
+parallel implementations.
+
+## Architectural boundaries
+
+- `objects` owns catalogue interpretation, not plotting.
+- `sky` owns drawable layer contracts and `CelestialSphere.draw_chart()`.
+- `geometry` and `projections` are independent of Matplotlib.
+- `charts` owns projection/framing choices and resolves chart concerns.
+- `rendering` owns graphical backend behavior.
+- examples request charts and may supply documented label overrides, but do
+  not implement clipping, catalogue joins, legends, or repeated saving.
+
+See `target_architecture_v0.5.md` for the implemented architecture and
+`implementation_reference.md` for public usage.

@@ -17,6 +17,9 @@ A diferencia de los programas planetario interactivos, Wenu está orientada a la
 ## Estado del proyecto
 
 **Wenu** se encuentra actualmente en una etapa activa de diseño y desarrollo.
+La arquitectura v0.5 está implementada: tipos de carta, estilos, modos de
+salida, políticas de detalle y leyendas se resuelven mediante un único flujo
+de composición y exportación.
 
 Este repositorio es temporalmente público con el único propósito de facilitar
 la revisión de la arquitectura, la discusión técnica y la colaboración durante
@@ -47,6 +50,11 @@ La versión actual incluye
 - rejillas de coordenadas ecuatoriales, eclípticas y galácticas
 - puntos de referencia celestes
 - estilos de dibujo personalizables
+- estilos atlas y cartoon
+- modos de impresión/papel y presentación
+- políticas de detalle locales a cada exportación
+- leyendas integradas de objetos, magnitudes estelares y contexto
+- cartas regionales, de cielo completo, circumpolares y binoculares
 - composición por capas
 - representación gráfica mediante Matplotlib
 
@@ -126,23 +134,27 @@ Aunque su arquitectura principal está estabilizándose, la API pública todaví
 
 ---
 
-## Hoja de Ruta
+## Arquitectura v0.5
 
-Entre los desarrollos previstos se incluyen
+La carta se describe mediante elecciones independientes:
 
-- nuevas proyecciones cartográficas
-- colores estelares
-- isófotas de la Vía Láctea
-- catálogos de objetos de cielo profundo
-- nuevas opciones de representación gráfica
-- pruebas automáticas
-- ampliación de la documentación
+- el tipo de carta controla la proyección, el encuadre y el límite;
+- el estilo (`atlas` o `cartoon`) controla la apariencia;
+- el modo (`print`/`paper` o `presentation`) adapta el medio de salida;
+- la política de detalle controla la selección astronómica;
+- la política de leyendas controla los elementos informativos.
+
+Todas las combinaciones utilizan la misma geometría, proyección, preparación
+y representación gráfica.
 
 ---
 
 ## Documentación
 
-La documentación adicional se encuentra en el directorio `docs/`.
+La documentación adicional se encuentra en el directorio `docs/`. La
+referencia vigente es `docs/developer/implementation_reference.md`; la
+arquitectura implementada se describe en
+`docs/developer/target_architecture_v0.5.md`.
 
 ---
 

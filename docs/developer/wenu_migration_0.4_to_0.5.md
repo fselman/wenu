@@ -1,6 +1,6 @@
 # Wenu migration roadmap: v0.4 to v0.5
 
-Status: proposed incremental roadmap  
+Status: complete
 Source architecture: `current_architecture_v0.4.md`  
 Target architecture: `target_architecture_v0.5.md`
 

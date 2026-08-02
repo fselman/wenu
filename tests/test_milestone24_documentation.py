@@ -7,10 +7,10 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 ACTIVE = (
     ROOT / "README.md",
-    ROOT / "docs/developer/current_architecture_v0.4.md",
     ROOT / "docs/developer/implementation_reference.md",
+    ROOT / "docs/developer/source_tree.md",
     ROOT / "docs/developer/target_architecture_v0.5.md",
-    ROOT / "docs/developer/wenu_migration_0.4_to_0.5.md",
+    ROOT / "docs/developer/deprecations_v0.5.md",
 )
 
 OBSOLETE = (
@@ -55,15 +55,15 @@ def test_public_api_documents_name_both_chart_apis():
         assert "FullSkyChart" in text
 
 
-def test_v05_migration_documents_are_active():
+def test_v05_migration_documents_are_closed():
     target = (
         ROOT / "docs/developer/target_architecture_v0.5.md"
     ).read_text()
     roadmap = (
         ROOT / "docs/developer/wenu_migration_0.4_to_0.5.md"
     ).read_text()
-    assert "Status: proposed target" in target
-    assert "Status: proposed incremental roadmap" in roadmap
+    assert "Status: implemented" in target
+    assert "Status: complete" in roadmap
     assert "current_architecture_v0.4.md" in target
     assert "target_architecture_v0.5.md" in roadmap
 
