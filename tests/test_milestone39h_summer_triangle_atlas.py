@@ -20,6 +20,7 @@ def test_example_selects_the_requested_constellations():
 def test_example_uses_the_atlas_style_and_j2000_grid():
     text = source()
     assert "AtlasChartStyle()" in text
+    assert "composition=composition" in text
     assert 'frame="fk5"' in text
     assert 'equinox="J2000"' in text
 
@@ -34,8 +35,8 @@ def test_example_keeps_deep_sky_catalogues_selective():
 def test_example_uses_high_resolution_output_directory():
     text = source()
     assert "output/style-gallery/atlas-summer-triangle.png" in text
-    assert "ExportOptions(dpi=480)" in text
-    assert "figure.savefig(saved, dpi=480" in text
+    assert "PrintMode(width_inches=10.0, dpi=480)" in text
+    assert "figure.savefig" not in text
 
 
 def test_example_framing_contains_the_full_constellation_group():

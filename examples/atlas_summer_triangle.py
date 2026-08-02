@@ -14,11 +14,12 @@ import matplotlib.pyplot as plt
 from wenu import (
     AtlasChartStyle,
     CelestialSphere,
-    ExportOptions,
+    LegendOptions,
     MatplotlibRenderer,
     Observer,
+    PrintMode,
     RegionalChart,
-    draw_chart_legend,
+    compose_chart,
 )
 
 
@@ -95,10 +96,23 @@ def generate(output=DEFAULT_OUTPUT):
             minimum_altitude_deg=-90.0,
         ),
     )
-    figure, ax = plt.subplots(
-        figsize=chart.figure_size(10.0),
+    composition = compose_chart(
+        chart,
+        style=style,
+        mode=PrintMode(width_inches=10.0, dpi=480),
+        legends=LegendOptions(
+            objects=True,
+            stellar_magnitudes=False,
+            context=True,
+        ),
     )
-    style.configure_axes(
+    figure, ax = plt.subplots(
+        figsize=(
+            composition.mode.width_inches,
+            composition.mode.height_inches,
+        ),
+    )
+    composition.style.configure_axes(
         ax,
         title="The Summer Triangle — Cygnus, Lyra, Vulpecula, "
         "Sagitta, and Aquila",
@@ -107,11 +121,8 @@ def generate(output=DEFAULT_OUTPUT):
         sky,
         MatplotlibRenderer(ax),
         output,
-        style=style,
-        export_options=ExportOptions(dpi=480),
+        composition=composition,
     )
-    draw_chart_legend(ax, chart, sky, style)
-    figure.savefig(saved, dpi=480, bbox_inches="tight")
     plt.close(figure)
     return result, saved
 
