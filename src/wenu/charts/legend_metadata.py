@@ -87,7 +87,7 @@ def _grid_description(grid) -> tuple[str, str | None, str | None, str]:
     return system, frame, epoch, f"Coordinate grid: {system}"
 
 
-def _center_text(chart, sky) -> str:
+def _center_coordinates(chart, sky) -> tuple[str, str]:
     context = getattr(chart, "chart_context", None)
     altitude = getattr(
         chart,
@@ -112,6 +112,11 @@ def _center_text(chart, sky) -> str:
         precision=0,
         alwayssign=True,
     )
+    return ra, dec
+
+
+def _center_text(chart, sky) -> str:
+    ra, dec = _center_coordinates(chart, sky)
     return f"Center: RA {ra}, Dec {dec}"
 
 
@@ -128,7 +133,36 @@ def resolve_legend_metadata(chart, sky, *, grid=None) -> LegendMetadata:
     )
 
 
-def observer_context_lines(observer) -> tuple[str, str, str]:
+def chart_context_lines(
+    chart,
+    sky,
+    *,
+    center: bool = True,
+    grid: bool = True,
+) -> tuple[str, ...]:
+    """Return compact, independently selectable chart context lines."""
+    lines = []
+    if center:
+        ra, dec = _center_coordinates(chart, sky)
+        lines.extend((f"RA {ra}", f"Dec {dec}"))
+    if grid:
+        description = resolve_legend_metadata(chart, sky).grid_text
+        lines.append(
+            description.split(": ", 1)[-1]
+            if ": " in description
+            else description
+        )
+    return tuple(lines)
+
+
+def observer_context_lines(
+    observer,
+    *,
+    location: bool = True,
+    date: bool = True,
+    local_time: bool = True,
+    labels: bool = True,
+) -> tuple[str, ...]:
     """Return publication-ready observer location and local-time lines."""
     local = observer.utc_datetime.astimezone(
         ZoneInfo(observer.timezone_name)
@@ -137,13 +171,23 @@ def observer_context_lines(observer) -> tuple[str, str, str]:
     total_minutes = int(offset.total_seconds() // 60)
     sign = "+" if total_minutes >= 0 else "−"
     hours, minutes = divmod(abs(total_minutes), 60)
-    return (
-        (
-            f"Location: {observer.location_name} — "
-            f"{abs(observer.lat_deg):.4f}° S, "
-            f"{abs(observer.lon_deg):.4f}° W, "
-            f"{observer.elevation_m:.0f} m"
-        ),
-        f"Date: {local:%Y-%m-%d}",
-        f"Local time: {local:%H:%M} (UTC{sign}{hours:02d}:{minutes:02d})",
+    location_value = (
+        f"{observer.location_name} — "
+        f"{abs(observer.lat_deg):.4f}° S, "
+        f"{abs(observer.lon_deg):.4f}° W, "
+        f"{observer.elevation_m:.0f} m"
+    )
+    date_value = f"{local:%Y-%m-%d}"
+    time_value = (
+        f"{local:%H:%M} (UTC{sign}{hours:02d}:{minutes:02d})"
+    )
+    candidates = (
+        (location, "Location", location_value),
+        (date, "Date", date_value),
+        (local_time, "Local time", time_value),
+    )
+    return tuple(
+        f"{label}: {value}" if labels else value
+        for enabled, label, value in candidates
+        if enabled
     )

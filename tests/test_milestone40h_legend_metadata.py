@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from wenu import (
     AtlasChartStyle,
     LegendMetadata,
+    chart_context_lines,
     draw_chart_legend,
     resolve_legend_metadata,
     observer_context_lines,
@@ -167,3 +168,36 @@ def test_observer_context_lines_include_location_and_local_time():
         "Date: 2026-08-15",
         "Local time: 21:00 (UTC−04:00)",
     )
+
+    assert observer_context_lines(
+        observer,
+        location=False,
+        local_time=False,
+        labels=False,
+    ) == ("2026-08-15",)
+
+
+def test_compact_chart_context_lines_are_independently_selectable(
+    monkeypatch,
+):
+    import wenu.charts.legend_metadata as module
+
+    monkeypatch.setattr(module, "SkyCoord", FakeSkyCoord)
+    grid = SimpleNamespace(
+        coordinate_system="equatorial",
+        frame="fk5",
+        equinox="J2050",
+    )
+    sky = fake_sky(grid)
+
+    assert chart_context_lines(fake_chart(), sky) == (
+        "RA 1h00m00s",
+        "Dec -30°00′00″",
+        "FK5, J2050.0",
+    )
+    assert chart_context_lines(
+        fake_chart(), sky, center=False
+    ) == ("FK5, J2050.0",)
+    assert chart_context_lines(
+        fake_chart(), sky, grid=False
+    ) == ("RA 1h00m00s", "Dec -30°00′00″")

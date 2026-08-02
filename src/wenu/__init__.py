@@ -98,6 +98,7 @@ from .charts.legend import draw_chart_legend
 from .charts.legend_metadata import (
     LegendMetadata,
     active_coordinate_grid,
+    chart_context_lines,
     resolve_legend_metadata,
     observer_context_lines,
 )
@@ -203,6 +204,7 @@ __all__ = [
     "draw_chart_legend",
     "LegendMetadata",
     "active_coordinate_grid",
+    "chart_context_lines",
     "resolve_legend_metadata",
     "observer_context_lines",
     "LegendSymbolDescriptor",
