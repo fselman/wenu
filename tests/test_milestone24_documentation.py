@@ -7,10 +7,10 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 ACTIVE = (
     ROOT / "README.md",
-    ROOT / "docs/developer/current_architecture.md",
+    ROOT / "docs/developer/current_architecture_v0.4.md",
     ROOT / "docs/developer/implementation_reference.md",
-    ROOT / "docs/developer/target_architecture_v0.4.md",
-    ROOT / "docs/developer/wenu_migration_roadmap_v0.4.md",
+    ROOT / "docs/developer/target_architecture_v0.5.md",
+    ROOT / "docs/developer/wenu_migration_0.4_to_0.5.md",
 )
 
 OBSOLETE = (
@@ -45,10 +45,9 @@ def test_active_documents_do_not_recommend_obsolete_imports():
     assert violations == []
 
 
-def test_current_documents_name_both_public_chart_apis():
+def test_public_api_documents_name_both_chart_apis():
     for path in (
         ROOT / "README.md",
-        ROOT / "docs/developer/current_architecture.md",
         ROOT / "docs/developer/implementation_reference.md",
     ):
         text = path.read_text()
@@ -56,15 +55,17 @@ def test_current_documents_name_both_public_chart_apis():
         assert "FullSkyChart" in text
 
 
-def test_v04_documents_are_closed():
+def test_v05_migration_documents_are_active():
     target = (
-        ROOT / "docs/developer/target_architecture_v0.4.md"
+        ROOT / "docs/developer/target_architecture_v0.5.md"
     ).read_text()
     roadmap = (
-        ROOT / "docs/developer/wenu_migration_roadmap_v0.4.md"
+        ROOT / "docs/developer/wenu_migration_0.4_to_0.5.md"
     ).read_text()
-    assert "**Status:** Implemented" in target
-    assert "**Status:** Complete" in roadmap
+    assert "Status: proposed target" in target
+    assert "Status: proposed incremental roadmap" in roadmap
+    assert "current_architecture_v0.4.md" in target
+    assert "target_architecture_v0.5.md" in roadmap
 
 
 def test_historical_documents_are_archived():
