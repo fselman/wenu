@@ -27,6 +27,12 @@ from .charts.furniture import (
     ReferencePlaneAnnotation,
     ResolvedChartFurnitureOptions,
 )
+from .charts.reference_furniture import (
+    BoundaryAwareReferenceAnchor,
+    CelestialReferenceRendering,
+    build_celestial_reference_sky,
+    draw_celestial_reference_furniture,
+)
 from .charts.chart_legend_workflow import draw_resolved_chart_legends
 from .charts.context import BoundaryKind, ChartContext
 from .charts.detail import (
@@ -121,6 +127,10 @@ __all__ = [
     "ReferenceAnnotations",
     "PoleAnnotations",
     "FooterOptions",
+    "BoundaryAwareReferenceAnchor",
+    "CelestialReferenceRendering",
+    "build_celestial_reference_sky",
+    "draw_celestial_reference_furniture",
     "draw_resolved_chart_legends",
     "ChartContext",
     "CartoonDetailPolicy",

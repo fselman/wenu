@@ -16,6 +16,7 @@ class ChartExportResult:
     composition: ChartComposition
     layer_options: dict
     export_options: object
+    furniture_rendering: object | None = None
 
     def __iter__(self):
         """Preserve established ``rendering, output = export(...)`` use."""
@@ -88,6 +89,18 @@ def export_composed_chart(
         layer_options=application.layer_options,
         **({} if render_options is None else dict(render_options)),
     )
+    furniture_rendering = None
+    if composition.furniture is not None:
+        from .reference_furniture import (
+            draw_celestial_reference_furniture,
+        )
+
+        furniture_rendering = draw_celestial_reference_furniture(
+            chart,
+            sky,
+            renderer,
+            composition,
+        )
     if composition.legends is not None:
         from .chart_legend_workflow import draw_resolved_chart_legends
 
@@ -112,4 +125,5 @@ def export_composed_chart(
         composition=composition,
         layer_options=application.layer_options,
         export_options=options,
+        furniture_rendering=furniture_rendering,
     )
