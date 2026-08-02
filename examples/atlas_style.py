@@ -11,13 +11,15 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from wenu import (
-    AtlasChartStyle,
     CelestialSphere,
-    ExportOptions,
+    FixedDetailPolicy,
+    LegendOptions,
     MatplotlibRenderer,
     Observer,
+    PrintMode,
     RegionalChart,
-    draw_chart_legend,
+    ResolvedDetail,
+    compose_chart,
 )
 
 
@@ -95,12 +97,30 @@ def generate(output=DEFAULT_OUTPUT):
         crop_y=0.12,
         label_selection=LABEL_CONSTELLATIONS,
     )
-    style = AtlasChartStyle()
+    composition = compose_chart(
+        chart,
+        style="atlas",
+        mode=PrintMode(width_inches=10.0, dpi=600),
+        detail=FixedDetailPolicy(
+            ResolvedDetail(
+                star_magnitude_limit=6.5,
+                galaxy_magnitude_limit=11.0,
+            )
+        ),
+        legends=LegendOptions(
+            objects=True,
+            stellar_magnitudes=True,
+            context=True,
+        ),
+    )
 
     figure, ax = plt.subplots(
-        figsize=chart.figure_size(10.0),
+        figsize=(
+            composition.mode.width_inches,
+            composition.mode.height_inches,
+        ),
     )
-    style.configure_axes(
+    composition.style.configure_axes(
         ax,
         title="Sagittarius–Scorpius atlas-style reference",
     )
@@ -108,11 +128,8 @@ def generate(output=DEFAULT_OUTPUT):
         sky,
         MatplotlibRenderer(ax),
         output,
-        style=style,
-        export_options=ExportOptions(dpi=240),
+        composition=composition,
     )
-    draw_chart_legend(ax, chart, sky, style)
-    figure.savefig(saved, dpi=600, bbox_inches="tight")
     plt.close(figure)
     return result, saved
 

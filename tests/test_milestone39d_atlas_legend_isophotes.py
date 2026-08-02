@@ -40,7 +40,8 @@ def test_atlas_example_curates_remnants_and_declares_j2000_grid():
     )
     assert "add_supernova_remnants(selected=SUPERNOVA_REMNANTS)" in source
     assert 'equinox="J2000"' in source
-    assert "draw_chart_legend(ax, chart, sky, style)" in source
+    assert "legends=LegendOptions(" in source
+    assert "composition=composition" in source
 
 
 def test_legacy_style_keeps_new_features_disabled():
