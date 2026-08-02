@@ -25,6 +25,39 @@ class RenderedChartWithLegends:
         return self.legends.artists
 
 
+def draw_resolved_chart_legends(
+    chart,
+    sky,
+    renderer,
+    chart_style,
+    rendering,
+    resolved_detail,
+    legend_options,
+):
+    """Attach resolved canonical legends to an existing rendering."""
+    if legend_options is None:
+        return rendering
+    if not hasattr(chart_style, "legend"):
+        raise TypeError(
+            "Canonical legends require a composed chart style."
+        )
+    legends = draw_automatic_chart_legends(
+        renderer.ax,
+        chart,
+        sky,
+        chart_style,
+        rendering,
+        resolved_detail=resolved_detail,
+        plan=legend_options.plan,
+        include_objects=legend_options.plan.objects.enabled,
+        include_context=legend_options.context,
+    )
+    return RenderedChartWithLegends(
+        rendering=rendering,
+        legends=legends,
+    )
+
+
 def render_chart_with_legends(
     chart,
     sky,
@@ -41,6 +74,8 @@ def render_chart_with_legends(
     object_title=None,
     context_lines=None,
     render_options=None,
+    include_objects=True,
+    include_context=None,
 ) -> RenderedChartWithLegends:
     """Render ``chart`` and add automatically composed independent legends.
 
@@ -72,6 +107,8 @@ def render_chart_with_legends(
         grid=grid,
         object_title=object_title,
         context_lines=context_lines,
+        include_objects=include_objects,
+        include_context=include_context,
     )
     return RenderedChartWithLegends(
         rendering=rendering,

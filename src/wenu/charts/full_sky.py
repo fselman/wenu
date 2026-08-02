@@ -176,10 +176,14 @@ class FullSkyChart:
         layer_options=None,
     ):
         """Render the visible hemisphere through ``CelestialSphere``."""
+        resolved_style = style
+        converter = getattr(style, "as_publication_style", None)
+        if callable(converter):
+            resolved_style = converter()
         options = (
             {}
-            if style is None
-            else style.layer_options(
+            if resolved_style is None
+            else resolved_style.layer_options(
                 sky,
                 horizon_altitude_deg=self.horizon_altitude_deg,
             )
@@ -226,6 +230,8 @@ class FullSkyChart:
         style=None,
         layer_options=None,
         export_options=None,
+        legends=None,
+        resolved_detail=None,
     ):
         """Render and reproducibly save a full-sky chart."""
         from wenu.charts.regional import ExportOptions
@@ -236,6 +242,20 @@ class FullSkyChart:
             style=style,
             layer_options=layer_options,
         )
+        if legends is not None:
+            from wenu.charts.chart_legend_workflow import (
+                draw_resolved_chart_legends,
+            )
+
+            result = draw_resolved_chart_legends(
+                self,
+                sky,
+                renderer,
+                style,
+                result,
+                resolved_detail,
+                legends,
+            )
         options = (
             ExportOptions()
             if export_options is None

@@ -158,7 +158,15 @@ class BinocularChart:
         boundary_style=None,
     ):
         """Render and clip every artist to the circular field stop."""
-        options = {} if style is None else style.layer_options(sky)
+        resolved_style = style
+        converter = getattr(style, "as_publication_style", None)
+        if callable(converter):
+            resolved_style = converter()
+        options = (
+            {}
+            if resolved_style is None
+            else resolved_style.layer_options(sky)
+        )
         if layer_options is not None:
             options.update(layer_options)
         options = apply_coordinate_label_anchor(
@@ -190,6 +198,8 @@ class BinocularChart:
         layer_options=None,
         boundary_style=None,
         export_options=None,
+        legends=None,
+        resolved_detail=None,
     ):
         result = self.render(
             sky,
@@ -198,6 +208,20 @@ class BinocularChart:
             layer_options=layer_options,
             boundary_style=boundary_style,
         )
+        if legends is not None:
+            from wenu.charts.chart_legend_workflow import (
+                draw_resolved_chart_legends,
+            )
+
+            result = draw_resolved_chart_legends(
+                self,
+                sky,
+                renderer,
+                style,
+                result,
+                resolved_detail,
+                legends,
+            )
         options = (
             ExportOptions()
             if export_options is None

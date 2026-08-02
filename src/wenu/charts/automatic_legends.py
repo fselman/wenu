@@ -4,38 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .legend_plan import ChartLegendPlan, default_chart_legend_plan
+from .legend_plan import (
+    ChartLegendPlan,
+    chart_type_name,
+    default_chart_legend_plan,
+)
 from .rendered_legend_composition import draw_rendered_chart_legends
-
-
-_CLASS_CHART_TYPES = {
-    "RegionalChart": "regional",
-    "FullSkyChart": "planisphere",
-    "CircumpolarChart": "circumpolar",
-    "BinocularChart": "binocular",
-}
-
-
-def chart_type_name(chart) -> str:
-    """Return the semantic chart type used by layout policies.
-
-    The mapping deliberately depends only on the public chart class name,
-    keeping this small composition adapter free of chart-implementation
-    imports and avoiding circular dependencies.
-    """
-    explicit = getattr(chart, "chart_type", None)
-    if explicit is not None:
-        normalized = str(explicit).strip().lower()
-        if normalized in set(_CLASS_CHART_TYPES.values()):
-            return normalized
-    name = type(chart).__name__
-    try:
-        return _CLASS_CHART_TYPES[name]
-    except KeyError as error:
-        raise ValueError(
-            f"Cannot infer a legend plan for chart class {name!r}; "
-            "pass plan explicitly."
-        ) from error
 
 
 @dataclass(frozen=True)
@@ -66,6 +40,8 @@ def draw_automatic_chart_legends(
     grid=None,
     object_title=None,
     context_lines=None,
+    include_objects=True,
+    include_context=None,
 ) -> AutomaticChartLegends:
     """Draw both chart legends with no duplicated scientific/style inputs."""
     inferred = (
@@ -90,6 +66,8 @@ def draw_automatic_chart_legends(
         grid=grid,
         object_title=object_title,
         context_lines=context_lines,
+        include_objects=include_objects,
+        include_context=include_context,
     )
     return AutomaticChartLegends(
         chart_type=inferred,

@@ -25,7 +25,7 @@ class LegendSymbolDescriptor:
     linewidth: float | None = None
 
 
-def legend_symbol_descriptors(sky, style):
+def legend_symbol_descriptors(sky, style, *, resolved_detail=None):
     """Return descriptors for active layers in conventional legend order."""
     deep = style.deep_sky
     iso = style.isophotes
@@ -101,8 +101,20 @@ def legend_symbol_descriptors(sky, style):
             ),
         ),
     )
+    detail_names = {
+        "milky_way_isophotes": "milky_way",
+    }
     return tuple(
         descriptor
         for descriptor in candidates
         if getattr(sky, descriptor.layer_attribute, None) is not None
+        and (
+            resolved_detail is None
+            or resolved_detail.layer_enabled(
+                detail_names.get(
+                    descriptor.layer_attribute,
+                    descriptor.layer_attribute,
+                )
+            )
+        )
     )

@@ -81,30 +81,49 @@ def draw_chart_legend(
     grid=None,
     title=None,
     context_lines=None,
+    include_objects=True,
+    include_context=True,
+    resolved_detail=None,
 ):
     """Draw a configurable symbol key with coordinate and context metadata."""
     config = style.legend
     if not config.visible:
         return None
 
-    handles = [
-        _legend_handle(descriptor)
-        for descriptor in legend_symbol_descriptors(sky, style)
-    ]
-    title_lines = (
-        resolve_legend_metadata(chart, sky, grid=grid).title.splitlines()
-        if title is None
-        else [str(title)]
+    handles = (
+        [
+            _legend_handle(descriptor)
+            for descriptor in legend_symbol_descriptors(
+                sky,
+                style,
+                resolved_detail=resolved_detail,
+            )
+        ]
+        if include_objects
+        else []
     )
+    title_lines = []
+    if include_context:
+        title_lines = (
+            resolve_legend_metadata(
+                chart,
+                sky,
+                grid=grid,
+            ).title.splitlines()
+            if title is None
+            else [str(title)]
+        )
     if context_lines is not None:
         title_lines.extend(str(line) for line in context_lines)
+    if not handles and not title_lines:
+        return None
     resolved_title = "\n".join(title_lines)
     legend = ax.legend(
         handles=handles,
         handler_map=_legend_handler_map(),
         loc=config.location,
         fontsize=config.fontsize,
-        title=resolved_title,
+        title=resolved_title or None,
         title_fontsize=config.title_fontsize,
         frameon=config.frame,
         facecolor=config.facecolor,

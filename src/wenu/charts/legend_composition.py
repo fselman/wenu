@@ -86,18 +86,35 @@ def draw_planned_chart_legends(
     grid=None,
     object_title=None,
     context_lines=None,
+    include_objects=True,
+    include_context=None,
+    resolved_detail=None,
 ) -> ComposedChartLegends:
     """Draw the planned object and stellar legends for a chart."""
     object_artist = None
-    if plan.objects.enabled:
+    context_enabled = (
+        plan.objects.enabled
+        if include_context is None
+        else bool(include_context)
+    )
+    if plan.objects.enabled or context_enabled:
+        legend_kwargs = dict(
+            grid=grid,
+            title=object_title,
+            context_lines=context_lines,
+        )
+        if not include_objects:
+            legend_kwargs["include_objects"] = False
+        if include_context is not None:
+            legend_kwargs["include_context"] = context_enabled
+        if resolved_detail is not None:
+            legend_kwargs["resolved_detail"] = resolved_detail
         object_artist = draw_chart_legend(
             ax,
             chart,
             sky,
             chart_style,
-            grid=grid,
-            title=object_title,
-            context_lines=context_lines,
+            **legend_kwargs,
         )
         apply_legend_placement(object_artist, plan.objects)
 

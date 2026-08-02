@@ -382,8 +382,14 @@ class RegionalChart:
         layer_options=None,
     ):
         """Render this specification through ``CelestialSphere``."""
+        resolved_style = style
+        converter = getattr(style, "as_publication_style", None)
+        if callable(converter):
+            resolved_style = converter()
         options = (
-            {} if style is None else style.layer_options(sky)
+            {}
+            if resolved_style is None
+            else resolved_style.layer_options(sky)
         )
         if self.label_selection is not None:
             label_options = dict(
@@ -425,7 +431,7 @@ class RegionalChart:
                     "zorder": 20.0,
                 }
                 if style is None
-                else style.outside_mask_style()
+                else resolved_style.outside_mask_style()
             )
             draw_constellation_outside_mask(
                 sky=sky,
@@ -446,6 +452,8 @@ class RegionalChart:
         style=None,
         layer_options=None,
         export_options=None,
+        legends=None,
+        resolved_detail=None,
     ):
         """Render and reproducibly save a regional chart."""
         result = self.render(
@@ -454,6 +462,20 @@ class RegionalChart:
             style=style,
             layer_options=layer_options,
         )
+        if legends is not None:
+            from wenu.charts.chart_legend_workflow import (
+                draw_resolved_chart_legends,
+            )
+
+            result = draw_resolved_chart_legends(
+                self,
+                sky,
+                renderer,
+                style,
+                result,
+                resolved_detail,
+                legends,
+            )
         options = (
             ExportOptions()
             if export_options is None

@@ -18,6 +18,8 @@ from .objects.planetary_nebulae import PlanetaryNebulae
 from .sky.milky_way import MilkyWayIsophotes
 from .sky.magellanic_clouds import MagellanicCloudIsophotes
 from .charts.composition import ChartComposition, compose_chart
+from .charts.legend_plan import LegendOptions, ResolvedLegendOptions
+from .charts.chart_legend_workflow import draw_resolved_chart_legends
 from .charts.context import BoundaryKind, ChartContext
 from .charts.detail import (
     CartoonDetailPolicy,
@@ -95,6 +97,9 @@ __all__ = [
     "LABEL_POSITION_VECTORS",
     "BoundaryKind",
     "ChartComposition",
+    "LegendOptions",
+    "ResolvedLegendOptions",
+    "draw_resolved_chart_legends",
     "ChartContext",
     "CartoonDetailPolicy",
     "CartoonChartStyle",

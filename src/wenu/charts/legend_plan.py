@@ -65,6 +65,65 @@ class ChartLegendPlan:
         )
 
 
+@dataclass(frozen=True)
+class ResolvedLegendOptions:
+    """Backend-independent legend policy resolved for one chart type."""
+
+    plan: ChartLegendPlan
+    context: bool = True
+
+
+@dataclass(frozen=True)
+class LegendOptions:
+    """User-facing switches for canonical chart furniture."""
+
+    objects: bool = True
+    stellar_magnitudes: bool = True
+    context: bool = True
+    plan: ChartLegendPlan | None = None
+
+    def resolve(self, chart_type: str) -> ResolvedLegendOptions:
+        """Resolve family switches into the established placement plan."""
+        plan = (
+            default_chart_legend_plan(chart_type)
+            if self.plan is None
+            else self.plan
+        )
+        if plan.chart_type != str(chart_type).strip().lower():
+            raise ValueError(
+                "Legend plan chart_type does not match the chart."
+            )
+        plan = plan.with_objects(enabled=bool(self.objects))
+        plan = plan.with_stars(enabled=bool(self.stellar_magnitudes))
+        return ResolvedLegendOptions(
+            plan=plan,
+            context=bool(self.context),
+        )
+
+
+def chart_type_name(chart) -> str:
+    """Return the stable semantic type used by legend layout policy."""
+    explicit = getattr(chart, "chart_type", None)
+    if explicit is not None:
+        normalized = str(explicit).strip().lower()
+        if normalized in _CHART_TYPES:
+            return normalized
+    names = {
+        "RegionalChart": "regional",
+        "FullSkyChart": "planisphere",
+        "CircumpolarChart": "circumpolar",
+        "BinocularChart": "binocular",
+    }
+    try:
+        return names[type(chart).__name__]
+    except KeyError as error:
+        raise ValueError(
+            f"Cannot infer a legend plan for chart class "
+            f"{type(chart).__name__!r}; pass plan explicitly or use "
+            "a chart with a stable chart_type."
+        ) from error
+
+
 def default_chart_legend_plan(chart_type: str) -> ChartLegendPlan:
     """Return neutral defaults appropriate to a chart's geometry.
 

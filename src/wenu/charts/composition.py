@@ -14,6 +14,12 @@ from .detail import (
     apply_detail_overrides,
 )
 from .modes import ChartMode, PrintMode, ResolvedMode
+from .legend_plan import (
+    ChartLegendPlan,
+    LegendOptions,
+    ResolvedLegendOptions,
+    chart_type_name,
+)
 
 
 ATLAS_STYLE = "atlas"
@@ -78,6 +84,7 @@ class ChartComposition:
     detail: ResolvedDetail
     style_name: str = "custom"
     mode_name: str = "custom"
+    legends: ResolvedLegendOptions | None = None
 
     def layer_options(
         self,
@@ -104,6 +111,7 @@ def compose_chart(
     mode: ChartMode | str | None = None,
     detail: DetailPolicy | None = None,
     detail_overrides: DetailOverrides | None = None,
+    legends: LegendOptions | ChartLegendPlan | None = None,
 ) -> ChartComposition:
     """Resolve independent chart concerns without rendering the chart."""
     context = chart.chart_context
@@ -117,6 +125,13 @@ def compose_chart(
         policy.resolve(context, resolved_mode),
         detail_overrides,
     )
+    if isinstance(legends, ChartLegendPlan):
+        legends = LegendOptions(plan=legends)
+    resolved_legends = (
+        None
+        if legends is None
+        else legends.resolve(chart_type_name(chart))
+    )
     return ChartComposition(
         context=context,
         style=resolved_style,
@@ -124,4 +139,5 @@ def compose_chart(
         detail=resolved_detail,
         style_name=style_name,
         mode_name=mode_name,
+        legends=resolved_legends,
     )

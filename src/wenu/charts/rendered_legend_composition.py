@@ -26,6 +26,8 @@ def draw_rendered_chart_legends(
     grid=None,
     object_title=None,
     context_lines=None,
+    include_objects=True,
+    include_context=None,
 ):
     """Draw both legends from already-rendered geometry.
 
@@ -79,4 +81,7 @@ def draw_rendered_chart_legends(
         grid=grid,
         object_title=object_title,
         context_lines=context_lines,
+        include_objects=include_objects,
+        include_context=include_context,
+        resolved_detail=resolved_detail,
     )
