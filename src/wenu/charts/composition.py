@@ -20,6 +20,10 @@ from .legend_plan import (
     ResolvedLegendOptions,
     chart_type_name,
 )
+from .furniture import (
+    ChartFurnitureOptions,
+    ResolvedChartFurnitureOptions,
+)
 
 
 ATLAS_STYLE = "atlas"
@@ -93,6 +97,7 @@ class ChartComposition:
     style_name: str = "custom"
     mode_name: str = "custom"
     legends: ResolvedLegendOptions | None = None
+    furniture: ResolvedChartFurnitureOptions | None = None
 
     def layer_options(
         self,
@@ -120,6 +125,7 @@ def compose_chart(
     detail: DetailPolicy | None = None,
     detail_overrides: DetailOverrides | None = None,
     legends: LegendOptions | ChartLegendPlan | None = None,
+    furniture: ChartFurnitureOptions | None = None,
 ) -> ChartComposition:
     """Resolve independent chart concerns without rendering the chart."""
     context = chart.chart_context
@@ -168,13 +174,21 @@ def compose_chart(
         policy.resolve(context, resolved_mode),
         detail_overrides,
     )
-    if isinstance(legends, ChartLegendPlan):
-        legends = LegendOptions(plan=legends)
-    resolved_legends = (
-        None
-        if legends is None
-        else legends.resolve(chart_type_name(chart))
-    )
+    if furniture is not None and legends is not None:
+        raise ValueError("Pass legends through furniture or legends, not both.")
+    if furniture is not None:
+        if not isinstance(furniture, ChartFurnitureOptions):
+            raise TypeError("furniture must be a ChartFurnitureOptions value.")
+        resolved_furniture = furniture.resolve(chart_type_name(chart))
+        resolved_legends = resolved_furniture.legends
+    else:
+        resolved_furniture = None
+        if legends is None:
+            resolved_legends = None
+        else:
+            if isinstance(legends, ChartLegendPlan):
+                legends = LegendOptions(plan=legends)
+            resolved_legends = legends.resolve(chart_type_name(chart))
     return ChartComposition(
         context=context,
         style=resolved_style,
@@ -183,4 +197,5 @@ def compose_chart(
         style_name=style_name,
         mode_name=mode_name,
         legends=resolved_legends,
+        furniture=resolved_furniture,
     )

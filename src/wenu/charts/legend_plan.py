@@ -72,6 +72,7 @@ class ResolvedLegendOptions:
     plan: ChartLegendPlan
     context: bool = True
     context_lines: tuple[str, ...] = ()
+    stellar_counts: bool = False
 
 
 @dataclass(frozen=True)
@@ -81,6 +82,7 @@ class LegendOptions:
     objects: bool = True
     stellar_magnitudes: bool = True
     context: bool = True
+    stellar_counts: bool = False
     plan: ChartLegendPlan | None = None
     context_lines: tuple[str, ...] = ()
 
@@ -101,6 +103,7 @@ class LegendOptions:
             plan=plan,
             context=bool(self.context),
             context_lines=tuple(str(line) for line in self.context_lines),
+            stellar_counts=bool(self.stellar_counts),
         )
 
 
