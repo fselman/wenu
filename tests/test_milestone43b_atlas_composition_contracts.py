@@ -94,7 +94,7 @@ def test_mode_resolution_changes_no_chart_geometry_or_content():
     assert printed.context.viewport == chart.viewport
     assert printed.context.clip_boundary is None
     assert printed.detail == presented.detail
-    assert printed.style == presented.style
+    assert printed.style != presented.style
     assert printed.mode != presented.mode
 
 

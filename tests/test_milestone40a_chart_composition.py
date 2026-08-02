@@ -85,7 +85,9 @@ def test_composition_keeps_style_geometry_mode_and_detail_independent():
         detail=detail,
     )
     assert composition.context == chart.chart_context
-    assert composition.style is style
+    assert composition.style is not style
+    assert composition.style != style
+    assert style == AtlasChartStyle()
     assert composition.detail.star_magnitude_limit == 8.0
     assert composition.mode.font_scale == pytest.approx(1.35)
 

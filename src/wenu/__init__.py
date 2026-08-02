@@ -53,6 +53,11 @@ from .charts.regional import ExportOptions, RegionalChart
 from .charts.styles import PublicationStyle
 from .charts.style_components import ChartStyle
 from .charts.presets import AtlasChartStyle, CartoonChartStyle
+from .charts.atlas_modes import (
+    AtlasPresentationPalette,
+    ATLAS_PRESENTATION_PALETTE,
+    atlas_chart_style,
+)
 from .charts.cartoon import CartoonChartPreset
 from .charts.label_placement import (
     LABEL_POSITION_VECTORS,
@@ -140,6 +145,9 @@ __all__ = [
     "PublicationStyle",
     "ChartStyle",
     "AtlasChartStyle",
+    "AtlasPresentationPalette",
+    "ATLAS_PRESENTATION_PALETTE",
+    "atlas_chart_style",
     "draw_chart_legend",
     "LegendMetadata",
     "active_coordinate_grid",

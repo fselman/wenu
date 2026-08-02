@@ -120,6 +120,17 @@ def compose_chart(
     if not callable(getattr(mode_policy, "resolve", None)):
         raise TypeError("mode must provide resolve() or be a known mode name.")
     resolved_mode = mode_policy.resolve(context)
+    if style_name == ATLAS_STYLE and mode_name in {
+        PRINT_MODE,
+        PRESENTATION_MODE,
+    }:
+        from .atlas_modes import atlas_chart_style
+
+        resolved_style = atlas_chart_style(
+            resolved_mode,
+            base=resolved_style,
+            mode_name=mode_name,
+        )
     policy = FixedDetailPolicy() if detail is None else detail
     resolved_detail = apply_detail_overrides(
         policy.resolve(context, resolved_mode),
