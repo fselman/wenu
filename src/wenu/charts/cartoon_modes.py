@@ -47,6 +47,7 @@ CARTOON_PRESENTATION_PALETTE = CartoonModePalette(
 class CartoonModeChartStyle(CartoonChartStyle):
     """Cartoon style with explicit constellation-label clearance."""
 
+    output_mode_name: str = "print"
     constellation_label_offset: tuple[float, float] = (0.18, 0.14)
     constellation_label_halo_alpha: float = 0.78
 
@@ -111,19 +112,23 @@ def _scales(mode, name):
 def cartoon_chart_style(
     mode="print",
     *,
+    base=None,
+    mode_name=None,
     constellation_label_positions=None,
     constellation_label_offsets=None,
     constellation_label_clearance=(0.24, 0.20),
 ):
     """Return a complete cartoon style for print or presentation."""
-    name = _mode_name(mode)
+    name = _mode_name(mode if mode_name is None else mode_name)
     palette = (
         CARTOON_PRESENTATION_PALETTE
         if name == "presentation"
         else CARTOON_PRINT_PALETTE
     )
     font_scale, line_scale, symbol_scale = _scales(mode, name)
-    base = CartoonModeChartStyle()
+    style = CartoonModeChartStyle() if base is None else base
+    if not isinstance(style, CartoonChartStyle):
+        raise TypeError("base must be a CartoonChartStyle.")
     positioned_labels = constellation_label_positions is not None
     resolved_label_offsets = (
         resolve_constellation_label_offsets(
@@ -140,27 +145,27 @@ def cartoon_chart_style(
     )
 
     canvas = replace(
-        base.canvas,
+        style.canvas,
         sky_color=palette.sky,
         foreground_color=palette.foreground,
-        label_fontsize=base.canvas.label_fontsize * font_scale,
+        label_fontsize=style.canvas.label_fontsize * font_scale,
     )
     stars = replace(
-        base.stars,
+        style.stars,
         color=palette.stars,
-        area_scale=base.stars.area_scale * symbol_scale,
+        area_scale=style.stars.area_scale * symbol_scale,
         draw_variable_symbols=False,
         draw_multiple_symbols=False,
     )
     grids = replace(
-        base.grids,
+        style.grids,
         boundary_color=palette.frame,
         boundary_linewidth=(
-            base.grids.boundary_linewidth * line_scale
+            style.grids.boundary_linewidth * line_scale
         ),
         constellation_line_color=palette.constellation_lines,
         constellation_linewidth=(
-            base.grids.constellation_linewidth * line_scale
+            style.grids.constellation_linewidth * line_scale
         ),
         constellation_label_color=palette.constellation_labels,
         constellation_label_offset=(0.18, 0.14),
@@ -173,26 +178,31 @@ def cartoon_chart_style(
         ),
         coordinate_label_color=palette.foreground,
         coordinate_label_fontsize=(
-            base.grids.coordinate_label_fontsize * font_scale
+            style.grids.coordinate_label_fontsize * font_scale
         ),
     )
     isophotes = replace(
-        base.isophotes,
+        style.isophotes,
         milky_way_color=palette.milky_way,
         milky_way_contour_color=palette.frame,
     )
     legend = replace(
-        base.legend,
-        fontsize=base.legend.fontsize * font_scale,
-        title_fontsize=base.legend.title_fontsize * font_scale,
+        style.legend,
+        fontsize=style.legend.fontsize * font_scale,
+        title_fontsize=style.legend.title_fontsize * font_scale,
     )
-    mask = replace(base.mask, color=palette.sky)
+    mask = replace(style.mask, color=palette.sky)
+    replacements = {
+        "canvas": canvas,
+        "stars": stars,
+        "grids": grids,
+        "isophotes": isophotes,
+        "legend": legend,
+        "mask": mask,
+    }
+    if isinstance(style, CartoonModeChartStyle):
+        replacements["output_mode_name"] = name
     return replace(
-        base,
-        canvas=canvas,
-        stars=stars,
-        grids=grids,
-        isophotes=isophotes,
-        legend=legend,
-        mask=mask,
+        style,
+        **replacements,
     )

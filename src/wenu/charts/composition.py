@@ -23,6 +23,7 @@ from .legend_plan import (
 
 
 ATLAS_STYLE = "atlas"
+CARTOON_STYLE = "cartoon"
 PRINT_MODE = "print"
 PRESENTATION_MODE = "presentation"
 
@@ -31,18 +32,25 @@ def _resolve_style(style):
     """Return the stable style identifier and concrete style value."""
     if isinstance(style, str):
         name = style.strip().lower()
-        if name != ATLAS_STYLE:
+        if name not in {ATLAS_STYLE, CARTOON_STYLE}:
             raise ValueError(
-                f"Unknown chart style {style!r}. Use 'atlas' or pass "
-                "a chart-style object."
+                f"Unknown chart style {style!r}. Use 'atlas', 'cartoon', "
+                "or pass a chart-style object."
             )
-        from .presets import AtlasChartStyle
+        from .presets import AtlasChartStyle, CartoonChartStyle
 
-        return ATLAS_STYLE, AtlasChartStyle()
+        if name == ATLAS_STYLE:
+            return ATLAS_STYLE, AtlasChartStyle()
+        return CARTOON_STYLE, CartoonChartStyle()
 
-    from .presets import AtlasChartStyle
+    from .presets import AtlasChartStyle, CartoonChartStyle
 
-    name = ATLAS_STYLE if isinstance(style, AtlasChartStyle) else "custom"
+    if isinstance(style, AtlasChartStyle):
+        name = ATLAS_STYLE
+    elif isinstance(style, CartoonChartStyle):
+        name = CARTOON_STYLE
+    else:
+        name = "custom"
     return name, style
 
 
@@ -131,7 +139,31 @@ def compose_chart(
             base=resolved_style,
             mode_name=mode_name,
         )
-    policy = FixedDetailPolicy() if detail is None else detail
+    elif style_name == CARTOON_STYLE and mode_name in {
+        PRINT_MODE,
+        PRESENTATION_MODE,
+    }:
+        from .cartoon_modes import (
+            CartoonModeChartStyle,
+            cartoon_chart_style,
+        )
+
+        already_resolved = (
+            isinstance(resolved_style, CartoonModeChartStyle)
+            and resolved_style.output_mode_name == mode_name
+        )
+        if not already_resolved:
+            resolved_style = cartoon_chart_style(
+                resolved_mode,
+                base=resolved_style,
+                mode_name=mode_name,
+            )
+    if detail is None and style_name == CARTOON_STYLE:
+        from .detail import CartoonDetailPolicy
+
+        policy = CartoonDetailPolicy()
+    else:
+        policy = FixedDetailPolicy() if detail is None else detail
     resolved_detail = apply_detail_overrides(
         policy.resolve(context, resolved_mode),
         detail_overrides,

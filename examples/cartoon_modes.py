@@ -62,8 +62,10 @@ def render_mode(sky, chart, mode, output_directory=DEFAULT_OUTPUT):
             star_magnitude_limit=3.0,
         ),
         constellation_label_offsets={
-            "Lyr": (0.07, 0.05),
-            "Cyg": (-0.40, -0.02), 
+            "Cyg": (-0.40, -0.02),
+            "Lyr": (0.34, 0.22),
+            "Vul": (-0.48, -0.16),
+            "Sge": (0.38, -0.30),
         },
     )
     application = composition.layer_options(sky)

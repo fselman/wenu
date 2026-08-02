@@ -54,7 +54,9 @@ def test_chart_type_and_mode_remain_independently_replaceable():
         mode=PresentationMode(width_inches=14.0),
     )
     assert narrow.context == wide.context == chart.chart_context
-    assert narrow.style is wide.style is preset.style
+    assert narrow.style == wide.style
+    assert narrow.style is not preset.style
+    assert narrow.style_name == wide.style_name == "cartoon"
     assert narrow.mode.width_inches == 8.0
     assert wide.mode.width_inches == 14.0
 

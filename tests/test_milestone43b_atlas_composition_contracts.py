@@ -64,7 +64,7 @@ def test_direct_atlas_style_construction_remains_supported():
 def test_unknown_style_and_mode_names_are_rejected():
     chart = regional_chart()
     with pytest.raises(ValueError, match="Unknown chart style"):
-        compose_chart(chart, style="special-cartoon")
+        compose_chart(chart, style="special-style")
     with pytest.raises(ValueError, match="Unknown chart mode"):
         compose_chart(chart, style="atlas", mode="slides")
 

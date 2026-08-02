@@ -60,6 +60,13 @@ def test_example_uses_resolved_mode_dimensions_and_dpi():
     assert "dpi=resolved.dpi" in source
 
 
+def test_crowded_constellation_labels_have_explicit_offsets():
+    source = EXAMPLE.read_text()
+    assert '"Lyr": (0.34, 0.22)' in source
+    assert '"Vul": (-0.48, -0.16)' in source
+    assert '"Sge": (0.38, -0.30)' in source
+
+
 def test_presentation_palette_avoids_red_on_blue():
     namespace = example_namespace()
     _, chart = namespace["build_scene"]()
