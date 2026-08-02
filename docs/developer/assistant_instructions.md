@@ -28,13 +28,15 @@ Previous conversations may explain intent but do not override the repository.
 
 ## Architectural authority
 
-For the implemented v0.5 architecture, read and follow:
+For the v0.6 migration, read and follow:
 
-- `target_architecture_v0.5.md` as the implemented architecture;
+- `current_architecture_v0.5.md` as the implemented baseline;
+- `target_architecture_v0.6.md` as the proposed target;
+- `wenu_migration_0.5_to_0.6.md` as the active roadmap;
 - `implementation_reference.md` for current public and internal APIs;
 - `source_tree.md` for package responsibilities;
-- `current_architecture_v0.4.md` and
-  `wenu_migration_0.4_to_0.5.md` as migration history.
+- `target_architecture_v0.5.md`, `current_architecture_v0.4.md`, and
+  `wenu_migration_0.4_to_0.5.md` as completed migration history.
 
 Wenu has one canonical flow:
 
