@@ -232,9 +232,28 @@ class FullSkyChart:
         export_options=None,
         legends=None,
         resolved_detail=None,
+        composition=None,
     ):
         """Render and reproducibly save a full-sky chart."""
         from wenu.charts.regional import ExportOptions
+
+        if composition is not None:
+            if style is not None or legends is not None or resolved_detail is not None:
+                raise ValueError(
+                    "composition cannot be combined with style, legends, "
+                    "or resolved_detail."
+                )
+            from wenu.charts.export_workflow import export_composed_chart
+
+            return export_composed_chart(
+                self,
+                sky,
+                renderer,
+                path,
+                composition=composition,
+                layer_options=layer_options,
+                export_options=export_options,
+            )
 
         result = self.render(
             sky,

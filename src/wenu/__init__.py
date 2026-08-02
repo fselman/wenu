@@ -50,6 +50,7 @@ from .charts.detail_application import (
 )
 from .charts.full_sky import FullSkyChart
 from .charts.regional import ExportOptions, RegionalChart
+from .charts.export_workflow import ChartExportResult
 from .charts.styles import PublicationStyle
 from .charts.style_components import ChartStyle
 from .charts.presets import AtlasChartStyle, CartoonChartStyle
@@ -136,6 +137,7 @@ __all__ = [
     "MilkyWayIsophotes",
     "MagellanicCloudIsophotes",
     "ExportOptions",
+    "ChartExportResult",
     "BinocularChart",
     "CircularLabelAnchor",
     "CircumpolarChart",

@@ -135,5 +135,45 @@ class CircumpolarChart:
     def render(self, *args, **kwargs):
         return self.binocular_chart.render(*args, **kwargs)
 
-    def export(self, *args, **kwargs):
-        return self.binocular_chart.export(*args, **kwargs)
+    def export(
+        self,
+        sky,
+        renderer,
+        path,
+        *,
+        composition=None,
+        **kwargs,
+    ):
+        if composition is None:
+            return self.binocular_chart.export(
+                sky,
+                renderer,
+                path,
+                **kwargs,
+            )
+        style = kwargs.pop("style", None)
+        legends = kwargs.pop("legends", None)
+        resolved_detail = kwargs.pop("resolved_detail", None)
+        if style is not None or legends is not None or resolved_detail is not None:
+            raise ValueError(
+                "composition cannot be combined with style, legends, "
+                "or resolved_detail."
+            )
+        layer_options = kwargs.pop("layer_options", None)
+        export_options = kwargs.pop("export_options", None)
+        boundary_style = kwargs.pop("boundary_style", None)
+        if kwargs:
+            unexpected = next(iter(kwargs))
+            raise TypeError(f"Unexpected export option {unexpected!r}.")
+        from wenu.charts.export_workflow import export_composed_chart
+
+        return export_composed_chart(
+            self,
+            sky,
+            renderer,
+            path,
+            composition=composition,
+            layer_options=layer_options,
+            export_options=export_options,
+            render_options={"boundary_style": boundary_style},
+        )
