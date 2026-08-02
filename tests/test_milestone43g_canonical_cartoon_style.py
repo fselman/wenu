@@ -162,10 +162,11 @@ def test_explicit_constellation_label_controls_remain_supported():
 
 
 def test_legacy_wrapper_is_not_adapted_twice():
-    legacy = compose_cartoon_chart(
-        charts()[0],
-        mode="presentation",
-    )
+    with pytest.warns(DeprecationWarning, match="compose_chart"):
+        legacy = compose_cartoon_chart(
+            charts()[0],
+            mode="presentation",
+        )
     canonical = compose_chart(
         charts()[0],
         style="cartoon",

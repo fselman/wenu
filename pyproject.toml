@@ -34,4 +34,10 @@ exclude = [
     "src/wenu/notebooks",
 ]
 
+[tool.pytest.ini_options]
+addopts = "-p no:remotedata"
+filterwarnings = [
+    "error::FutureWarning",
+]
+
 [tool.setuptools_scm]
