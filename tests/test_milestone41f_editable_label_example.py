@@ -24,6 +24,7 @@ def test_example_exposes_all_requested_label_positions():
     assert set(values["CONSTELLATION_LABEL_OFFSETS"]) == {
         "Cyg", "Lyr", "Vul", "Sge", "Aql"
     }
+    assert values["LABEL_CLEARANCE"] == (0.32, 0.36)
 
 
 def test_only_presentation_enables_milky_way():

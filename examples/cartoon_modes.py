@@ -11,11 +11,13 @@ import matplotlib.pyplot as plt
 
 from wenu import (
     CelestialSphere,
+    CartoonDetailPolicy,
+    DetailOverrides,
     MatplotlibRenderer,
     Observer,
     RegionalChart,
-    compose_cartoon_chart,
-    DetailOverrides,
+    cartoon_chart_style,
+    compose_chart,
 )
 
 
@@ -55,12 +57,8 @@ def render_mode(sky, chart, mode, output_directory=DEFAULT_OUTPUT):
     output_directory = Path(output_directory)
     output_directory.mkdir(parents=True, exist_ok=True)
 
-    composition = compose_cartoon_chart(
-        chart,
-        mode=mode,
-        detail_overrides=DetailOverrides(
-            star_magnitude_limit=3.0,
-        ),
+    style = cartoon_chart_style(
+        mode,
         constellation_label_offsets={
             "Cyg": (-0.40, -0.02),
             "Lyr": (0.34, 0.22),
@@ -68,14 +66,21 @@ def render_mode(sky, chart, mode, output_directory=DEFAULT_OUTPUT):
             "Sge": (0.38, -0.30),
         },
     )
-    application = composition.layer_options(sky)
-    style = composition.style
+    composition = compose_chart(
+        chart,
+        style=style,
+        mode=mode,
+        detail=CartoonDetailPolicy(),
+        detail_overrides=DetailOverrides(
+            star_magnitude_limit=3.0,
+        ),
+    )
     resolved = composition.mode
 
     figure, ax = plt.subplots(
         figsize=(resolved.width_inches, resolved.height_inches),
     )
-    style.configure_axes(
+    composition.style.configure_axes(
         ax,
         title=f"The Summer Triangle — cartoon {mode} mode",
     )
@@ -84,14 +89,7 @@ def render_mode(sky, chart, mode, output_directory=DEFAULT_OUTPUT):
         sky,
         MatplotlibRenderer(ax),
         destination,
-        style=style,
-        layer_options=application.layer_options,
-    )
-    figure.savefig(
-        destination,
-        dpi=resolved.dpi,
-        bbox_inches="tight",
-        transparent=resolved.transparent,
+        composition=composition,
     )
     plt.close(figure)
     return destination, composition

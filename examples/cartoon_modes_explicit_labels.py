@@ -11,11 +11,13 @@ import matplotlib.pyplot as plt
 
 from wenu import (
     CelestialSphere,
+    CartoonDetailPolicy,
     DetailOverrides,
     MatplotlibRenderer,
     Observer,
     RegionalChart,
-    compose_cartoon_chart,
+    cartoon_chart_style,
+    compose_chart,
 )
 
 
@@ -42,7 +44,7 @@ CONSTELLATION_LABEL_OFFSETS = {
     "Aql": (0.00, 0.00),
 }
 
-LABEL_CLEARANCE = (0.24, 0.20)
+LABEL_CLEARANCE = (0.32, 0.36)
 STAR_MAGNITUDE_LIMIT = 3.0
 
 CARTOON_LAYERS = frozenset(
@@ -98,27 +100,30 @@ def render_mode(
     """Render one mode with explicit, editable label placement."""
     output_directory = Path(output_directory)
     output_directory.mkdir(parents=True, exist_ok=True)
-    composition = compose_cartoon_chart(
-        chart,
-        mode=mode,
-        detail_overrides=DetailOverrides(
-            star_magnitude_limit=STAR_MAGNITUDE_LIMIT,
-            enabled_layers=content_layers(mode),
-        ),
+    style = cartoon_chart_style(
+        mode,
         constellation_label_positions=(
             CONSTELLATION_LABEL_POSITIONS
         ),
         constellation_label_offsets=CONSTELLATION_LABEL_OFFSETS,
         constellation_label_clearance=LABEL_CLEARANCE,
     )
-    application = composition.layer_options(sky)
-    style = composition.style
+    composition = compose_chart(
+        chart,
+        style=style,
+        mode=mode,
+        detail=CartoonDetailPolicy(),
+        detail_overrides=DetailOverrides(
+            star_magnitude_limit=STAR_MAGNITUDE_LIMIT,
+            enabled_layers=content_layers(mode),
+        ),
+    )
     resolved = composition.mode
 
     figure, ax = plt.subplots(
         figsize=(resolved.width_inches, resolved.height_inches),
     )
-    style.configure_axes(
+    composition.style.configure_axes(
         ax,
         title=f"The Summer Triangle — cartoon {mode} mode",
     )
@@ -127,14 +132,7 @@ def render_mode(
         sky,
         MatplotlibRenderer(ax),
         destination,
-        style=style,
-        layer_options=application.layer_options,
-    )
-    figure.savefig(
-        destination,
-        dpi=resolved.dpi,
-        bbox_inches="tight",
-        transparent=resolved.transparent,
+        composition=composition,
     )
     plt.close(figure)
     return destination, composition

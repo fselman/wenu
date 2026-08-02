@@ -1,7 +1,7 @@
 from pathlib import Path
 import runpy
 
-from wenu import compose_cartoon_chart
+from wenu import compose_chart
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,8 +34,12 @@ def test_example_outputs_live_below_output_directory():
 def test_mode_pair_preserves_context_and_content(monkeypatch):
     namespace = example_namespace()
     sky, chart = namespace["build_scene"]()
-    printed = compose_cartoon_chart(chart, mode="print")
-    presented = compose_cartoon_chart(chart, mode="presentation")
+    printed = compose_chart(chart, style="cartoon", mode="print")
+    presented = compose_chart(
+        chart,
+        style="cartoon",
+        mode="presentation",
+    )
     assert printed.context == presented.context
     assert printed.detail == presented.detail
     assert printed.style.canvas.sky_color == "white"
@@ -53,11 +57,14 @@ def test_cartoon_scene_contains_only_required_registered_layers():
     assert sky.milky_way_isophotes is None
 
 
-def test_example_uses_resolved_mode_dimensions_and_dpi():
+def test_example_uses_resolved_dimensions_and_canonical_export():
     source = EXAMPLE.read_text()
     assert "resolved.width_inches" in source
     assert "resolved.height_inches" in source
-    assert "dpi=resolved.dpi" in source
+    assert "composition=composition" in source
+    assert "composition.layer_options" not in source
+    assert "figure.savefig" not in source
+    assert "compose_cartoon_chart" not in source
 
 
 def test_crowded_constellation_labels_have_explicit_offsets():
@@ -70,7 +77,11 @@ def test_crowded_constellation_labels_have_explicit_offsets():
 def test_presentation_palette_avoids_red_on_blue():
     namespace = example_namespace()
     _, chart = namespace["build_scene"]()
-    composition = compose_cartoon_chart(chart, mode="presentation")
+    composition = compose_chart(
+        chart,
+        style="cartoon",
+        mode="presentation",
+    )
     style = composition.style
     assert style.canvas.sky_color == "#1677A6"
     assert style.stars.color == "#FFF4CC"
