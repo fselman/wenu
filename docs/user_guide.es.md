@@ -1,5 +1,9 @@
 # Guía de Usuario de Wenu
 
+> La guía estructurada vigente comienza en
+> [`docs/user_guide/index.md`](user_guide/index.md). Esta página se conserva
+> para no romper los enlaces existentes.
+
 ## Introducción
 
 Bienvenido a Wenu.

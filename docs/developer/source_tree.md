@@ -97,3 +97,6 @@ parallel implementations.
 
 See `target_architecture_v0.5.md` for the implemented architecture and
 `implementation_reference.md` for public usage.
+
+The structured user guide is rooted at `docs/user_guide/index.md`; its
+`assets/` directory contains only the provenance-controlled README image.

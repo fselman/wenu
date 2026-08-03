@@ -15,9 +15,10 @@ southern South America.
 ## Project status
 
 Wenu remains under active development and has not yet reached its first public
-release. The v0.5 chart architecture is implemented. It provides one
-composition and export workflow across chart types, styles, output modes,
-detail policies, and legends. Public APIs may still change before release.
+release. The v0.5 chart architecture is implemented and the v0.6 reference
+chart migration is in progress. One composition and export workflow serves
+all chart types, styles, output modes, detail policies, and legends. Public
+APIs may still change before release.
 
 See `LICENSE` for the current usage terms.
 
@@ -53,7 +54,26 @@ pip install -e .
 Wenu requires Python 3.10 or newer. Runtime dependencies are declared in
 `pyproject.toml`: Astropy, Matplotlib, NumPy, and Pandas.
 
-## Canonical chart composition
+## Quick start: La Ligua planisphere
+
+Generate the same canonical cartoon presentation chart shown below:
+
+```bash
+python examples/planisphere.py \
+  --style cartoon --mode presentation \
+  --output output/la-ligua-planisphere.png \
+  --credits
+```
+
+![La Ligua planisphere in cartoon presentation mode](docs/user_guide/assets/la-ligua-planisphere.png)
+
+The image's exact command, source commit, dimensions, checksum, and visual
+approval are recorded in the
+[planisphere guide](docs/user_guide/planisphere.md#readme-image-provenance).
+The complete [Wenu v0.6 user guide](docs/user_guide/index.md) covers all five
+canonical chart families and their shared controls.
+
+## Library composition
 
 ```python
 import matplotlib.pyplot as plt
@@ -124,13 +144,13 @@ The same workflow supports `RegionalChart`, `FullSkyChart`,
 stereographic tangent point independently of the observer zenith; the observer
 continues to determine the AltAz sky and horizon.
 
-See:
+The five canonical user examples are:
 
-- `examples/atlas_style.py`;
-- `examples/atlas_summer_triangle.py`;
-- `examples/circumpolar_atlas.py`;
-- `examples/la_ligua_planisphere.py`;
-- `examples/cartoon_modes.py`.
+- `examples/planisphere.py`;
+- `examples/regional_constellation_group.py`;
+- `examples/regional_constellation.py`;
+- `examples/circumpolar.py`;
+- `examples/binocular_object.py`.
 
 ## Architecture
 
@@ -170,8 +190,8 @@ Developer references:
 
 ```bash
 pytest
-python examples/atlas_style.py
-python examples/cartoon_modes.py
+python examples/planisphere.py --style atlas --mode print
+python examples/binocular_object.py --target omega-centauri
 ```
 
 Generated chart-output directories should remain outside version control.

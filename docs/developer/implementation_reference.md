@@ -266,3 +266,15 @@ Every extension must continue through `CelestialSphere.draw_chart()`.
 The legacy `cartoon_output_mode()` and `compose_cartoon_chart()` wrappers
 remain functional but emit `DeprecationWarning`. Their replacements and the
 v0.5 compatibility policy are recorded in `deprecations_v0.5.md`.
+
+## 12. User documentation and reference image
+
+The v0.6 user guide begins at `docs/user_guide/index.md` and contains one page
+for each canonical family plus a shared styles, modes, detail, and furniture
+reference. `docs/user_guide.md` remains only as a compatibility link.
+
+The README planisphere is the sole checked-in generated chart. Its generating
+script, exact arguments, source commit, dimensions, SHA-256 checksum,
+destination, and visual approval are recorded in
+`docs/user_guide/planisphere.md`. All other generated products remain below
+`output/` and outside version control.
