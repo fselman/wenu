@@ -14,6 +14,7 @@ class ResolvedStellarLegendInputs:
     area_scale: float
     color: str
     alpha: float = 1.0
+    magnitude_sizing: object | None = None
 
     def __post_init__(self):
         if not isfinite(float(self.effective_limit)):
@@ -83,4 +84,9 @@ def resolve_stellar_legend_inputs(
         area_scale=float(area_scale),
         color=str(color),
         alpha=float(alpha),
+        magnitude_sizing=getattr(
+            getattr(chart_style, "stars", None),
+            "magnitude_sizing",
+            None,
+        ),
     )

@@ -334,9 +334,12 @@ Make selected-object binocular charts fully canonical.
 - move aperture rendering and artist clipping into `BinocularChart` or
   canonical export;
 - center charts on a selected coordinate or catalogue object;
-- add `binocular_object.py`, initially documenting Centaurus A;
+- add `binocular_object.py`, initially documenting Centaurus A and Omega
+  Centauri through one target-selection interface;
 - support the uniform style/mode interface;
 - integrate appropriate furniture without overcrowding the field.
+- normalize binocular stellar areas to the resolved limiting magnitude through
+  a shared, bounded style configuration used by rendering and the legend.
 
 ### Constraints
 

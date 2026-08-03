@@ -27,13 +27,39 @@ def magnitude_sizes(
     reference_magnitude=5.0,
     exponent=0.35,
     minimum=1.0,
+    maximum=None,
 ):
     """Convert magnitudes to Matplotlib scatter areas."""
     values = scale * 10.0 ** (
         exponent
         * (reference_magnitude - np.asarray(magnitudes, dtype=float))
     )
-    return np.maximum(values, minimum)
+    values = np.maximum(values, minimum)
+    return values if maximum is None else np.minimum(values, maximum)
+
+
+def configured_magnitude_sizes(
+    magnitudes,
+    sizing,
+    *,
+    limiting_magnitude=None,
+):
+    """Apply an immutable stellar sizing configuration."""
+    reference = float(sizing.reference_magnitude)
+    if sizing.reference == "limiting_magnitude":
+        if limiting_magnitude is None:
+            raise ValueError(
+                "limiting_magnitude is required by the sizing configuration."
+            )
+        reference = float(limiting_magnitude)
+    return magnitude_sizes(
+        magnitudes,
+        scale=sizing.scale,
+        reference_magnitude=reference,
+        exponent=sizing.exponent,
+        minimum=sizing.minimum_area,
+        maximum=sizing.maximum_area,
+    )
 
 
 def point_styles(metadata, *, default_zorder=None):

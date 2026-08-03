@@ -150,6 +150,16 @@ explicit `boundary_style` retains precedence.
 Circular charts paint their style-owned sky color only inside the clipping
 boundary. Their default raster export leaves the surrounding figure and axes
 area transparent while retaining titles and footer furniture.
+The canonical `binocular_object.py` example centers the same binocular chart
+family on either Centaurus A (NGC 5128) or Omega Centauri (NGC 5139) through
+one target-selection interface and accepts an explicit field diameter.
+The binocular stellar-magnitude legend defaults outside the rectangular axes
+at lower right so its frame remains clear of the circular aperture.
+Its stellar presentation opts into `StellarMagnitudeSizing` with the resolved
+limiting magnitude as the reference, so the faintest selected magnitude uses
+the configured minimum scatter area. Brighter stars grow by the configured
+exponent and are bounded by the configured maximum area. The rendered stars
+and stellar magnitude legend use the same sizing configuration.
 `ChartContext.horizon_altitude_deg` optionally carries a chart-owned altitude
 floor into composition detail application. Circumpolar charts set it to
 `-90.0`, so their declination field and reference furniture are not clipped

@@ -37,6 +37,8 @@ def test_binocular_defaults_to_a_minimal_object_legend():
     plan = default_chart_legend_plan("binocular")
     assert not plan.objects.enabled
     assert plan.stars.enabled
+    assert plan.stars.location == "lower right"
+    assert plan.stars.outside
 
 
 def test_plan_can_be_overridden_without_mutation():

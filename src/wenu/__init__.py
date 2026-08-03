@@ -94,7 +94,7 @@ from .charts.full_sky import FullSkyChart
 from .charts.regional import ExportOptions, RegionalChart
 from .charts.export_workflow import ChartExportResult
 from .charts.styles import PublicationStyle
-from .charts.style_components import ChartStyle
+from .charts.style_components import ChartStyle, StellarMagnitudeSizing
 from .charts.style_overrides import ChartStyleOverrides
 from .charts.presets import AtlasChartStyle, CartoonChartStyle
 from .charts.atlas_modes import (
@@ -149,6 +149,7 @@ __all__ = [
     "LABEL_POSITION_VECTORS",
     "BoundaryKind",
     "ChartComposition",
+    "StellarMagnitudeSizing",
     "LegendOptions",
     "ResolvedLegendOptions",
     "ChartFurnitureOptions",

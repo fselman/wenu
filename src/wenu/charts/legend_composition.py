@@ -81,6 +81,7 @@ def draw_planned_chart_legends(
     star_area_scale: float = 1.0,
     star_color: str = "black",
     star_alpha: float = 1.0,
+    stellar_magnitude_sizing=None,
     footprint_contains=None,
     stellar_legend_style: StellarMagnitudeLegendStyle | None = None,
     grid=None,
@@ -150,6 +151,8 @@ def draw_planned_chart_legends(
             footprint_contains=footprint_contains,
             legend_style=resolved_style,
         )
+        if stellar_magnitude_sizing is not None:
+            star_options["magnitude_sizing"] = stellar_magnitude_sizing
         if stellar_counts:
             star_options["include_counts"] = True
         stars_result = draw_styled_stellar_magnitude_legend(

@@ -101,6 +101,12 @@ The shared arguments retain the independent ownership rules:
   precedence over mode defaults;
 - legends remain independently selectable chart furniture.
 
+Stellar magnitude sizing is an immutable style configuration. It owns the
+reference policy, scale, exponent, minimum area, and optional maximum area.
+The fixed-reference legacy law remains the default; chart families may opt
+into limiting-magnitude normalization without creating a private rendering
+or legend path.
+
 The horizon remains chart-owned geometry. Disabling constellation labels,
 boundaries, references, poles, or legends must not remove or alter it.
 
@@ -248,8 +254,9 @@ remains in rendering or final chart export coordination.
 user example supplies a selected object and field size; it does not add
 Matplotlib circles, modify artist clip paths, or save the figure directly.
 
-The initial documented target is Centaurus A. The interface must permit other
-selected catalogue or coordinate targets without adding one script per object.
+The initially documented targets are Centaurus A and Omega Centauri. One
+target-selection interface handles both and must permit other selected
+catalogue or coordinate targets without adding one script per object.
 
 ## 11. User guide and README
 

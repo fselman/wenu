@@ -82,6 +82,13 @@ def draw_rendered_chart_legends(
         # Values are unused by the lower-level coordinator when disabled.
         inputs = None
 
+    legend_options = dict(
+        stellar_counts=stellar_counts,
+    )
+    if inputs is not None and inputs.magnitude_sizing is not None:
+        legend_options["stellar_magnitude_sizing"] = (
+            inputs.magnitude_sizing
+        )
     return draw_planned_chart_legends(
         ax,
         chart,
@@ -107,5 +114,5 @@ def draw_rendered_chart_legends(
         include_objects=include_objects,
         include_context=include_context,
         resolved_detail=resolved_detail,
-        stellar_counts=stellar_counts,
+        **legend_options,
     )

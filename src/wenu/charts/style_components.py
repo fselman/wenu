@@ -3,6 +3,43 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from math import isfinite
+
+
+@dataclass(frozen=True)
+class StellarMagnitudeSizing:
+    """Configuration of the magnitude-to-scatter-area relation."""
+
+    reference: str = "fixed"
+    reference_magnitude: float = 5.0
+    scale: float = 1.5
+    exponent: float = 0.35
+    minimum_area: float = 1.0
+    maximum_area: float | None = None
+
+    def __post_init__(self):
+        if self.reference not in {"fixed", "limiting_magnitude"}:
+            raise ValueError(
+                "reference must be 'fixed' or 'limiting_magnitude'."
+            )
+        for name in (
+            "reference_magnitude", "scale", "exponent", "minimum_area"
+        ):
+            value = float(getattr(self, name))
+            if not isfinite(value):
+                raise ValueError(f"{name} must be finite.")
+        if self.scale <= 0.0 or self.exponent < 0.0:
+            raise ValueError(
+                "scale must be positive and exponent non-negative."
+            )
+        if self.minimum_area <= 0.0:
+            raise ValueError("minimum_area must be positive.")
+        if self.maximum_area is not None:
+            maximum = float(self.maximum_area)
+            if not isfinite(maximum) or maximum < self.minimum_area:
+                raise ValueError(
+                    "maximum_area must be finite and at least minimum_area."
+                )
 
 
 @dataclass(frozen=True)
@@ -21,6 +58,9 @@ class StellarStyle:
 
     color: str = "white"
     area_scale: float = 1.0
+    magnitude_sizing: StellarMagnitudeSizing = field(
+        default_factory=StellarMagnitudeSizing
+    )
     draw_variable_symbols: bool = False
     variable_color: str | None = None
     variable_symbol_size: float = 28.0

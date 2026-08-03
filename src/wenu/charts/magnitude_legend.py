@@ -7,7 +7,10 @@ import math
 
 import numpy as np
 
-from wenu.rendering.preparation import magnitude_sizes
+from wenu.rendering.preparation import (
+    configured_magnitude_sizes,
+    magnitude_sizes,
+)
 
 
 @dataclass(frozen=True)
@@ -80,6 +83,8 @@ def stellar_magnitude_scale(
     alpha=1.0,
     title="Stars",
     cumulative_counts=None,
+    magnitude_sizing=None,
+    limiting_magnitude=None,
 ):
     """Resolve an integer magnitude scale using the chart star-size law."""
     scale = float(area_scale)
@@ -96,7 +101,15 @@ def stellar_magnitude_scale(
     if not magnitudes:
         entries = ()
     else:
-        areas = magnitude_sizes(magnitudes) * scale
+        areas = (
+            magnitude_sizes(magnitudes)
+            if magnitude_sizing is None
+            else configured_magnitude_sizes(
+                magnitudes,
+                magnitude_sizing,
+                limiting_magnitude=limiting_magnitude,
+            )
+        ) * scale
         counts = (
             (None,) * len(magnitudes)
             if cumulative_counts is None

@@ -62,6 +62,7 @@ def draw_styled_stellar_magnitude_legend(
     area_scale: float = 1.0,
     color: str = "black",
     alpha: float = 1.0,
+    magnitude_sizing=None,
     footprint_contains=None,
     include_counts: bool = False,
     legend_style: StellarMagnitudeLegendStyle | None = None,
@@ -96,6 +97,8 @@ def draw_styled_stellar_magnitude_legend(
         footprint_contains=footprint_contains,
         **style.drawing_options()
     )
+    if magnitude_sizing is not None:
+        options["magnitude_sizing"] = magnitude_sizing
     if include_counts:
         options["include_counts"] = True
     return draw_visible_stellar_magnitude_legend(

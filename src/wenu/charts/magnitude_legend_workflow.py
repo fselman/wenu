@@ -41,6 +41,7 @@ def draw_visible_stellar_magnitude_legend(
     area_scale: float = 1.0,
     color: str = "black",
     alpha: float = 1.0,
+    magnitude_sizing=None,
     title: str = "Stars",
     footprint_contains=None,
     location: str = "lower right",
@@ -78,6 +79,12 @@ def draw_visible_stellar_magnitude_legend(
             artist=None,
         )
 
+    scale_options = {}
+    if magnitude_sizing is not None:
+        scale_options.update(
+            magnitude_sizing=magnitude_sizing,
+            limiting_magnitude=effective_limit,
+        )
     scale = stellar_magnitude_scale(
         statistics.brightest_magnitude,
         statistics.faintest_magnitude,
@@ -85,6 +92,7 @@ def draw_visible_stellar_magnitude_legend(
         color=color,
         alpha=alpha,
         title=title,
+        **scale_options,
     )
     if include_counts and scale.entries:
         counts = cumulative_visible_star_counts(
@@ -103,6 +111,7 @@ def draw_visible_stellar_magnitude_legend(
             alpha=alpha,
             title=title,
             cumulative_counts=counts,
+            **scale_options,
         )
     if not scale.entries:
         return StellarMagnitudeLegendResult(

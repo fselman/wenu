@@ -7,6 +7,8 @@ from typing import Any, Mapping
 
 from .context import BoundaryKind
 from .detail import ResolvedDetail
+from .style_components import StellarMagnitudeSizing
+from wenu.rendering.preparation import configured_magnitude_sizes
 
 
 _SIZE_OPTIONS = {
@@ -237,6 +239,36 @@ def composition_layer_options(
             composition
         ),
     )
+    stars = getattr(composition.style, "stars", None)
+    sizing = getattr(stars, "magnitude_sizing", None)
+    if sizing is not None and sizing != StellarMagnitudeSizing():
+        limit = (
+            composition.detail.star_magnitude_limit
+            if sizing.reference == "limiting_magnitude"
+            else None
+        )
+        if sizing.reference == "limiting_magnitude" and limit is None:
+            raise ValueError(
+                "Normalized stellar sizing requires a magnitude limit."
+            )
+        publication = composition.style.as_publication_style()
+
+        def render_stars(spherical, projected):
+            options = publication._star_render_options(
+                spherical, projected
+            )
+            options["style"]["s"] = configured_magnitude_sizes(
+                spherical.metadata["magnitude"],
+                sizing,
+                limiting_magnitude=limit,
+            ) * stars.area_scale
+            return options
+
+        base = merge_sky_layer_options(
+            sky,
+            base,
+            {"stars": {"render": render_stars}},
+        )
     return apply_resolved_detail(
         sky,
         composition.detail,

@@ -159,7 +159,10 @@ def default_chart_legend_plan(chart_type: str) -> ChartLegendPlan:
         return ChartLegendPlan(
             chart_type=normalized,
             objects=LegendPlacement(enabled=False),
-            stars=LegendPlacement(location="lower right"),
+            stars=LegendPlacement(
+                location="lower right",
+                outside=True,
+            ),
         )
     raise ValueError(
         "chart_type must be one of: "
