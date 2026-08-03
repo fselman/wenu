@@ -48,6 +48,9 @@ charts/
 │   circumpolar.py, binocular.py  chart geometry and export entry points
 ├── context.py                    output-neutral chart geometry context
 ├── composition.py                style/mode/detail/legend resolution
+├── chart_arguments.py            shared canonical chart request arguments
+├── product_options.py            style/mode product selection and naming
+├── style_overrides.py            immutable post-mode visual overrides
 ├── export_workflow.py            render, decorate, and save once
 ├── detail.py                     detail policies and resolved detail
 ├── detail_application.py         render-local layer options

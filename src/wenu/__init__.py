@@ -48,6 +48,17 @@ from .charts.product_options import (
     add_chart_product_arguments,
     chart_product_options,
 )
+from .charts.chart_arguments import (
+    ChartContentOptions,
+    ChartLegendSelection,
+    add_chart_arguments,
+    add_chart_content_arguments,
+    add_chart_legend_arguments,
+    add_chart_style_arguments,
+    chart_content_options,
+    chart_legend_selection,
+    chart_style_overrides,
+)
 from .charts.chart_legend_workflow import draw_resolved_chart_legends
 from .charts.context import BoundaryKind, ChartContext
 from .charts.detail import (
@@ -83,6 +94,7 @@ from .charts.regional import ExportOptions, RegionalChart
 from .charts.export_workflow import ChartExportResult
 from .charts.styles import PublicationStyle
 from .charts.style_components import ChartStyle
+from .charts.style_overrides import ChartStyleOverrides
 from .charts.presets import AtlasChartStyle, CartoonChartStyle
 from .charts.atlas_modes import (
     AtlasPresentationPalette,
@@ -186,8 +198,18 @@ __all__ = [
     "CANONICAL_CHART_PRODUCTS",
     "ChartProduct",
     "ChartProductOptions",
+    "ChartContentOptions",
+    "ChartLegendSelection",
+    "ChartStyleOverrides",
+    "add_chart_arguments",
+    "add_chart_content_arguments",
+    "add_chart_legend_arguments",
     "add_chart_product_arguments",
+    "add_chart_style_arguments",
+    "chart_content_options",
+    "chart_legend_selection",
     "chart_product_options",
+    "chart_style_overrides",
     "BinocularChart",
     "CircularLabelAnchor",
     "CircularGridLabelAnchor",

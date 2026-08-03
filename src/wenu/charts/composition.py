@@ -24,6 +24,7 @@ from .furniture import (
     ChartFurnitureOptions,
     ResolvedChartFurnitureOptions,
 )
+from .style_overrides import ChartStyleOverrides
 
 
 ATLAS_STYLE = "atlas"
@@ -124,6 +125,7 @@ def compose_chart(
     mode: ChartMode | str | None = None,
     detail: DetailPolicy | None = None,
     detail_overrides: DetailOverrides | None = None,
+    style_overrides: ChartStyleOverrides | None = None,
     legends: LegendOptions | ChartLegendPlan | None = None,
     furniture: ChartFurnitureOptions | None = None,
 ) -> ChartComposition:
@@ -164,6 +166,12 @@ def compose_chart(
                 base=resolved_style,
                 mode_name=mode_name,
             )
+    if style_overrides is not None:
+        if not isinstance(style_overrides, ChartStyleOverrides):
+            raise TypeError(
+                "style_overrides must be a ChartStyleOverrides value."
+            )
+        resolved_style = style_overrides.apply(resolved_style)
     if detail is None and style_name == CARTOON_STYLE:
         from .detail import CartoonDetailPolicy
 

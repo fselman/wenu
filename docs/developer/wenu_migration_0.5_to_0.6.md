@@ -244,6 +244,54 @@ Create the first three canonical example families.
 Milestone 44F: Add canonical planisphere and regional examples
 ```
 
+## 10. Milestone 44F.B — Shared controls and alternate products
+
+### Goal
+
+Give every canonical example one reusable set of content, appearance, and
+legend controls, then refine the non-baseline style/mode products before
+adding more chart families.
+
+### Work
+
+- extend the shared chart arguments without adding an example-only framework;
+- add opt-in constellation labels and IAU boundary lines;
+- add a caller magnitude-limit override while preserving cartoon
+  constellation vertices;
+- classify references, poles, and pole labels as user-facing astronomical
+  content while retaining their canonical furniture implementation;
+- add opt-in object and stellar-magnitude legends, with optional cumulative
+  star counts;
+- add immutable constellation line, label, and boundary visual overrides;
+- resolve visual overrides after style and mode defaults;
+- preserve the planisphere horizon independently of all content switches;
+- apply the shared controls to the planisphere and both regional examples;
+- refine atlas presentation, cartoon print, and cartoon presentation without
+  changing chart geometry or the accepted atlas-print baseline.
+
+### Tests and visual acceptance
+
+- shared defaults are deterministic and inspectable;
+- omitted visual overrides preserve each style/mode default;
+- explicit colors and widths take precedence over mode adaptation;
+- labels, boundaries, references, poles, and both legends resolve
+  independently;
+- magnitude overrides retain required cartoon constellation vertices;
+- regional masks work without visible constellation boundaries;
+- disabling planisphere content does not remove the horizon;
+- sequential products do not leak content or visual overrides;
+- the 12-product planisphere/regional matrix executes;
+- the Summer Triangle, Sgr-Sco-Oph-Ser, and Crux alternate products receive
+  explicit visual approval.
+
+### Incremental commits
+
+```text
+Milestone 44F.B.1: Define shared chart control contracts
+Milestone 44F.B.2: Apply shared controls to canonical examples
+Milestone 44F.B.3: Refine alternate planisphere and regional products
+```
+
 ## 10. Milestone 44G — Circumpolar example
 
 ### Goal

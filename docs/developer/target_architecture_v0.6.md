@@ -64,12 +64,45 @@ Each script uses one common user contract:
 --mode print|presentation
 --output PATH
 --all
+
+--magnitude-limit VALUE
+--constellation-labels
+--constellation-boundaries
+--references
+--poles
+--pole-labels
+
+--constellation-line-width VALUE
+--constellation-line-color COLOR
+--constellation-label-color COLOR
+--constellation-boundary-width VALUE
+--constellation-boundary-color COLOR
+
+--legends
+--object-legend
+--magnitude-legend
+--star-counts
 ```
 
 `--all` generates the four style/mode combinations. A normal invocation
 generates one chart. Examples may expose family-specific astronomical choices,
 such as constellations or binocular target, but must not acquire a private
-rendering framework.
+rendering framework. Content and legend switches are opt-in. An omitted
+magnitude limit or visual override preserves the family, style, and mode
+default.
+
+The shared arguments retain the independent ownership rules:
+
+- magnitude and astronomical-layer visibility are detail/content choices;
+- references and poles are astronomical content presented through canonical
+  chart furniture;
+- line widths and colors are style choices;
+- explicit visual overrides apply after mode adaptation and therefore take
+  precedence over mode defaults;
+- legends remain independently selectable chart furniture.
+
+The horizon remains chart-owned geometry. Disabling constellation labels,
+boundaries, references, poles, or legends must not remove or alter it.
 
 The minimum visual matrix contains 20 products: five families by two styles
 by two modes.
@@ -87,6 +120,11 @@ For the same chart request:
 - atlas may select denser content through an explicit detail policy;
 - cartoon may select sparse content through an explicit cartoon policy;
 - no content or style state leaks between sequential exports.
+
+Print and presentation modes provide suitable visual defaults. Callers may
+override documented colors and widths without mutating a named style. Such
+overrides are immutable, render-local, and applied only after the named style
+has been adapted to the selected output mode.
 
 ## 5. Regional emphasis masks
 

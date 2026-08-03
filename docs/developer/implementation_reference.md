@@ -17,6 +17,9 @@ from wenu import (
     BinocularChart,
     CartoonDetailPolicy,
     CelestialSphere,
+    ChartContentOptions,
+    ChartLegendSelection,
+    ChartStyleOverrides,
     CircumpolarChart,
     DetailOverrides,
     FixedDetailPolicy,
@@ -28,6 +31,7 @@ from wenu import (
     PrintMode,
     RegionalChart,
     ResolvedDetail,
+    add_chart_arguments,
     compose_chart,
 )
 ```
@@ -87,6 +91,30 @@ rendering, saved = result
 
 Compatibility `style=` and `layer_options=` arguments remain available for
 existing callers.
+
+Canonical examples may add the complete shared command-line contract with:
+
+```python
+add_chart_arguments(parser, default_output="output/example")
+```
+
+The parsed request separates product selection, astronomical content,
+appearance, and legends. Content and legend switches are opt-in. Explicit
+visual overrides are immutable and apply after style/mode resolution:
+
+```python
+composition = compose_chart(
+    chart,
+    style="cartoon",
+    mode="presentation",
+    style_overrides=ChartStyleOverrides(
+        constellation_linewidth=2.0,
+        constellation_line_color="white",
+    ),
+)
+```
+
+Omitting `style_overrides` preserves the resolved style and mode defaults.
 
 ## 4. Chart types
 
