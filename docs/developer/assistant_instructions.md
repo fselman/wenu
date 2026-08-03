@@ -104,22 +104,32 @@ test data unless the milestone requires them.
 Assume development occurs on the active branch; never guess its name or base
 commit. Do not commit or push on the user's behalf unless explicitly asked.
 
-When handing changes to the user on macOS, provide a ZIP containing one
-same-named folder with:
+Every modification handed to the user must be delivered as a ZIP containing
+one same-named folder with exactly the handoff files needed to apply it:
 
 - `README.md`;
 - one `.patch` file.
 
-The README must state the exact base commit and give commands to:
+The ZIP layout must ensure that double-clicking it in macOS Finder creates the
+same-named subdirectory rather than placing loose files in `Downloads`.
+
+The README must state the exact base commit and present commands in this
+order:
 
 1. verify clean status, branch, and commit;
-2. run `git apply --check` before `git apply`;
-3. inspect status, diff, diff stat, and `git diff --check`;
-4. compile changed Python files;
-5. run focused, related, and full tests;
-6. stage each intended file explicitly;
-7. inspect the cached diff and run `git diff --cached --check`;
-8. commit, push, and verify final status and log.
+2. run `git apply --check` and only then the separate `git apply` command;
+3. compile every changed Python file when compilation is relevant;
+4. run the limited or focused test set when one is relevant;
+5. run the general test suite;
+6. inspect `git status`, the diff, diff stat, and `git diff --check`, stage
+   every intended file explicitly, then inspect the cached diff and run
+   `git diff --cached --check`;
+7. commit, push, and verify the final status and log to close the milestone.
+
+Do not combine the apply check and application into one shell command. Keep
+the limited and general test commands separate so their results can be
+reported independently. Omit compilation or limited-test sections only when
+they are genuinely irrelevant, and state that explicitly in the README.
 
 Use `$HOME/Downloads/<folder>/<patch>.patch`. Safari/Finder may already have
 expanded the ZIP; do not require an unnecessary manual unzip step.
