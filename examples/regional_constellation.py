@@ -15,8 +15,10 @@ from wenu import (
     FixedDetailPolicy, LegendOptions,
     MatplotlibRenderer, Observer, PoleAnnotations, ReferenceAnnotations,
     ReferencePlaneAnnotation, RegionalChart, ResolvedDetail,
-    add_chart_product_arguments,
-    chart_context_lines, chart_product_options, compose_chart,
+    add_chart_arguments,
+    chart_context_lines, chart_detail_overrides,
+    chart_legend_selection, chart_product_options, chart_style_overrides,
+    compose_chart,
     observer_context_lines,
 )
 
@@ -59,6 +61,7 @@ def build_chart(
 
 
 def furniture(sky, chart, arguments):
+    legends = chart_legend_selection(arguments)
     state = "labeled" if arguments.references else "none"
     poles = "visible" if arguments.poles else "none"
     return ChartFurnitureOptions(
@@ -77,7 +80,9 @@ def furniture(sky, chart, arguments):
             copyright=("© Fernando Selman" if arguments.credits else None),
         ),
         legends=LegendOptions(
-            stellar_counts=arguments.star_counts,
+            objects=legends.objects,
+            stellar_magnitudes=legends.stellar_magnitudes,
+            stellar_counts=legends.stellar_counts,
             context=False,
             context_lines=(
                 chart_context_lines(
@@ -120,6 +125,8 @@ def generate(arguments):
         composition = compose_chart(
             chart, style=product.style, mode=product.mode,
             detail=detail,
+            detail_overrides=chart_detail_overrides(arguments),
+            style_overrides=chart_style_overrides(arguments),
             furniture=furniture(sky, chart, arguments),
         )
         figure, ax = plt.subplots(figsize=(composition.mode.width_inches, composition.mode.height_inches))
@@ -132,7 +139,7 @@ def generate(arguments):
 
 def parser():
     value = argparse.ArgumentParser(description=__doc__)
-    add_chart_product_arguments(value, default_output=DEFAULT_OUTPUT)
+    add_chart_arguments(value, default_output=DEFAULT_OUTPUT)
     value.add_argument("--constellation", default="Cru")
     value.add_argument("--mask", action="store_true")
     value.add_argument(
@@ -147,15 +154,7 @@ def parser():
         "--position-angle", type=float,
         help="chart rotation in degrees; the default keeps celestial north up",
     )
-    value.add_argument("--references", action="store_true")
-    value.add_argument("--poles", action="store_true")
-    value.add_argument(
-        "--pole-labels",
-        action="store_true",
-        help="label visible pole crosses with their abbreviations",
-    )
     value.add_argument("--credits", action="store_true")
-    value.add_argument("--star-counts", action="store_true")
     value.add_argument(
         "--no-center", action="store_false", dest="center",
         help="omit the two chart-center coordinate lines",

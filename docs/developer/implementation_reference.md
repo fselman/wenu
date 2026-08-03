@@ -32,6 +32,7 @@ from wenu import (
     RegionalChart,
     ResolvedDetail,
     add_chart_arguments,
+    chart_detail_overrides,
     compose_chart,
 )
 ```
@@ -115,6 +116,9 @@ composition = compose_chart(
 ```
 
 Omitting `style_overrides` preserves the resolved style and mode defaults.
+`chart_detail_overrides(arguments)` applies the caller magnitude limit and
+adds or removes constellation labels and boundaries relative to the selected
+detail policy. It therefore retains cartoon constellation-vertex selection.
 
 ## 4. Chart types
 

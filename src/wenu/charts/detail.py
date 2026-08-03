@@ -119,8 +119,28 @@ class DetailOverrides:
     minimum_supernova_remnant_size_arcmin: float | None = None
     label_density: float | None = None
     enabled_layers: frozenset[str] | None = None
+    enabled_layer_additions: frozenset[str] | None = None
+    disabled_layers: frozenset[str] | None = None
     constellation_star_mode: str | None = None
     extra_star_ids: frozenset[int] | None = None
+
+    def __post_init__(self):
+        for name in (
+            "enabled_layers",
+            "enabled_layer_additions",
+            "disabled_layers",
+        ):
+            value = getattr(self, name)
+            if value is not None:
+                object.__setattr__(
+                    self,
+                    name,
+                    frozenset(
+                        str(item).strip()
+                        for item in value
+                        if str(item).strip()
+                    ),
+                )
 
 
 @runtime_checkable
@@ -380,9 +400,23 @@ def apply_detail_overrides(
     """Apply non-``None`` explicit values with deterministic precedence."""
     if overrides is None:
         return detail
+    layer_fields = {"enabled_layer_additions", "disabled_layers"}
     changes = {
         item.name: getattr(overrides, item.name)
         for item in fields(overrides)
-        if getattr(overrides, item.name) is not None
+        if item.name not in layer_fields
+        and getattr(overrides, item.name) is not None
     }
-    return replace(detail, **changes)
+    resolved = replace(detail, **changes)
+    additions = overrides.enabled_layer_additions
+    removals = overrides.disabled_layers
+    if additions is None and removals is None:
+        return resolved
+    enabled = set(
+        DEFAULT_CONTENT_LAYERS
+        if resolved.enabled_layers is None
+        else resolved.enabled_layers
+    )
+    enabled.update(() if additions is None else additions)
+    enabled.difference_update(() if removals is None else removals)
+    return replace(resolved, enabled_layers=frozenset(enabled))

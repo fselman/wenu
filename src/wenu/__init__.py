@@ -56,6 +56,7 @@ from .charts.chart_arguments import (
     add_chart_legend_arguments,
     add_chart_style_arguments,
     chart_content_options,
+    chart_detail_overrides,
     chart_legend_selection,
     chart_style_overrides,
 )
@@ -207,6 +208,7 @@ __all__ = [
     "add_chart_product_arguments",
     "add_chart_style_arguments",
     "chart_content_options",
+    "chart_detail_overrides",
     "chart_legend_selection",
     "chart_product_options",
     "chart_style_overrides",

@@ -38,7 +38,7 @@ def calls_named(tree, name):
 def test_canonical_examples_use_public_composition_and_export(path):
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
 
-    assert calls_named(tree, "add_chart_product_arguments")
+    assert calls_named(tree, "add_chart_arguments")
     assert calls_named(tree, "chart_product_options")
     assert calls_named(tree, "compose_chart")
     assert calls_named(tree, "export")

@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from math import isfinite
 
 from .product_options import add_chart_product_arguments
+from .detail import DetailOverrides
 from .style_overrides import ChartStyleOverrides
 
 
@@ -136,6 +137,32 @@ def chart_style_overrides(arguments) -> ChartStyleOverrides:
         constellation_label_color=arguments.constellation_label_color,
         boundary_linewidth=arguments.constellation_boundary_width,
         boundary_color=arguments.constellation_boundary_color,
+    )
+
+
+def chart_detail_overrides(arguments) -> DetailOverrides:
+    """Resolve magnitude and opt-in constellation layer visibility."""
+    content = chart_content_options(arguments)
+    additions = {
+        name
+        for name, enabled in (
+            ("constellation_labels", content.constellation_labels),
+            ("constellation_boundaries", content.constellation_boundaries),
+        )
+        if enabled
+    }
+    removals = {
+        name
+        for name, enabled in (
+            ("constellation_labels", content.constellation_labels),
+            ("constellation_boundaries", content.constellation_boundaries),
+        )
+        if not enabled
+    }
+    return DetailOverrides(
+        star_magnitude_limit=content.magnitude_limit,
+        enabled_layer_additions=frozenset(additions),
+        disabled_layers=frozenset(removals),
     )
 
 
