@@ -316,10 +316,11 @@ regressions.
 - reference annotations remain inside the usable chart region;
 - no circular placement logic appears in the example.
 
-### Commit
+### Incremental commits
 
 ```text
-Milestone 44G: Add the canonical circumpolar example
+Milestone 44G.1: Resolve circumpolar boundary appearance canonically
+Milestone 44G.2: Add the canonical circumpolar example
 ```
 
 ## 11. Milestone 44H — Binocular object workflow and example

@@ -138,7 +138,10 @@ The canonical workflow supports:
 Each chart exposes `chart_context`, `render(...)`, and `export(...)` according
 to its geometry and boundary requirements. `FullSkyChart` may place its
 stereographic tangent point independently of the observer zenith; the observer
-still determines the AltAz sky and horizon.
+still determines the AltAz sky and horizon. `CircumpolarChart` owns its
+declination-parallel boundary and circular grid-label anchor; when no explicit
+boundary appearance is supplied, it resolves that appearance from the chart
+style before delegating clipping to its circular rendering chart.
 
 ## 5. Styles and modes
 
