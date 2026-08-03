@@ -9,31 +9,11 @@ from astropy.coordinates import SkyCoord
 from astropy import units as u
 
 from wenu.charts.binocular import BinocularChart
-from wenu.charts.boundaries import CircularGridLabelAnchor
+from wenu.charts.boundaries import (
+    CircularGridLabelAnchor,
+    resolved_circular_boundary_style,
+)
 from wenu.geometry.projected import ProjectedCurve
-
-
-def _resolved_boundary_style(style):
-    """Return the style-owned appearance of a polar chart boundary."""
-    if style is None:
-        return None
-    factory = getattr(style, "chart_boundary_style", None)
-    if callable(factory):
-        return {
-            "facecolor": "none",
-            "zorder": 8.0,
-            **factory(),
-        }
-    converter = getattr(style, "as_publication_style", None)
-    resolved = converter() if callable(converter) else style
-    return {
-        "facecolor": "none",
-        "edgecolor": resolved.boundary_color,
-        "linewidth": resolved.boundary_linewidth,
-        "linestyle": resolved.boundary_linestyle,
-        "alpha": resolved.boundary_alpha,
-        "zorder": 8.0,
-    }
 
 
 @dataclass(frozen=True)
@@ -169,7 +149,9 @@ class CircumpolarChart:
 
     def render(self, *args, **kwargs):
         if kwargs.get("boundary_style") is None:
-            resolved = _resolved_boundary_style(kwargs.get("style"))
+            resolved = resolved_circular_boundary_style(
+                kwargs.get("style")
+            )
             if resolved is not None:
                 kwargs["boundary_style"] = resolved
         if "coordinate_label_anchor" not in kwargs:

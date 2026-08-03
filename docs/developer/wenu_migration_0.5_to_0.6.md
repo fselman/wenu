@@ -352,10 +352,11 @@ Make selected-object binocular charts fully canonical.
 - target label and contextual metadata are correct;
 - example source contains no renderer internals.
 
-### Commit
+### Incremental commits
 
 ```text
-Milestone 44H: Add canonical selected-object binocular charts
+Milestone 44H.1: Canonicalize binocular aperture and target contracts
+Milestone 44H.2: Add the canonical binocular object example
 ```
 
 ## 12. Milestone 44I — User guide and README image

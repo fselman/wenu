@@ -10,6 +10,29 @@ from wenu.geometry.projected import ProjectedCurve
 from wenu.geometry.viewport import Viewport
 
 
+def resolved_circular_boundary_style(style):
+    """Return a style-owned circular boundary appearance."""
+    if style is None:
+        return None
+    factory = getattr(style, "chart_boundary_style", None)
+    if callable(factory):
+        return {
+            "facecolor": "none",
+            "zorder": 8.0,
+            **factory(),
+        }
+    converter = getattr(style, "as_publication_style", None)
+    resolved = converter() if callable(converter) else style
+    return {
+        "facecolor": "none",
+        "edgecolor": resolved.boundary_color,
+        "linewidth": resolved.boundary_linewidth,
+        "linestyle": resolved.boundary_linestyle,
+        "alpha": resolved.boundary_alpha,
+        "zorder": 8.0,
+    }
+
+
 def circular_boundary(radius, *, samples=721, name="chart_boundary"):
     """Return a closed projected circle centered on the origin."""
     radius = float(radius)

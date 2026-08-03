@@ -144,6 +144,9 @@ still determines the AltAz sky and horizon. `CircumpolarChart` owns its
 declination-parallel boundary and circular grid-label anchor; when no explicit
 boundary appearance is supplied, it resolves that appearance from the chart
 style before delegating clipping to its circular rendering chart.
+`BinocularChart` uses the same shared boundary-resolution contract, so direct
+binocular compositions receive a visible style-owned aperture rim while an
+explicit `boundary_style` retains precedence.
 `ChartContext.horizon_altitude_deg` optionally carries a chart-owned altitude
 floor into composition detail application. Circumpolar charts set it to
 `-90.0`, so their declination field and reference furniture are not clipped

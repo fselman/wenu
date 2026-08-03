@@ -10,6 +10,7 @@ from wenu.charts.boundaries import (
     CircularLabelAnchor,
     apply_coordinate_label_anchor,
     circular_boundary,
+    resolved_circular_boundary_style,
     viewport_from_boundary,
 )
 from wenu.charts.context import BoundaryKind, ChartContext
@@ -162,6 +163,8 @@ class BinocularChart:
         coordinate_label_anchor=None,
     ):
         """Render and clip every artist to the circular field stop."""
+        if boundary_style is None:
+            boundary_style = resolved_circular_boundary_style(style)
         resolved_style = style
         converter = getattr(style, "as_publication_style", None)
         if callable(converter):
