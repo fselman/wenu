@@ -128,7 +128,7 @@ def test_projection_domain_and_horizon_clipping_remain_composable():
 
 
 def test_summer_triangle_is_part_of_chart_regression_suite():
-    source = Path("examples/atlas_summer_triangle.py").read_text(
+    source = Path("tests/fixtures/example_regressions/atlas_summer_triangle.py").read_text(
         encoding="utf-8"
     )
     assert "RegionalChart.from_constellations(" in source
@@ -138,7 +138,7 @@ def test_summer_triangle_is_part_of_chart_regression_suite():
 
 def test_circumpolar_lmc_boundary_crosses_projected_lmc():
     namespace = {}
-    source = Path("examples/circumpolar_atlas.py").read_text(
+    source = Path("tests/fixtures/example_regressions/circumpolar_atlas.py").read_text(
         encoding="utf-8"
     )
     exec(compile(source, "circumpolar_atlas.py", "exec"), namespace)

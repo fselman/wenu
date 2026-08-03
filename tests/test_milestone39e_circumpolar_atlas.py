@@ -3,7 +3,7 @@
 from pathlib import Path
 
 
-EXAMPLE = Path("examples/circumpolar_atlas.py")
+EXAMPLE = Path("tests/fixtures/example_regressions/circumpolar_atlas.py")
 
 
 def test_circumpolar_atlas_example_exists():

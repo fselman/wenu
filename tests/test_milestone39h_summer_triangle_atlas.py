@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "atlas_summer_triangle.py"
+EXAMPLE = ROOT / "tests" / "fixtures" / "example_regressions" / "atlas_summer_triangle.py"
 
 
 def source():

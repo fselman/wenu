@@ -10,7 +10,7 @@ from matplotlib.patches import Ellipse
 
 
 def load_example():
-    path = Path("examples/stellar_magnitude_legend.py")
+    path = Path("tests/fixtures/example_regressions/stellar_magnitude_legend.py")
     specification = importlib.util.spec_from_file_location(
         "stellar_magnitude_legend_example_repaired",
         path,

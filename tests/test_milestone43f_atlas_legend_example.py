@@ -4,7 +4,7 @@ import ast
 from pathlib import Path
 
 
-EXAMPLE = Path("examples/atlas_style.py")
+EXAMPLE = Path("tests/fixtures/example_regressions/atlas_style.py")
 
 
 def source():

@@ -119,7 +119,7 @@ def test_visual_example_is_importable_and_writes_output(tmp_path):
     import importlib.util
     from pathlib import Path
 
-    path = Path("examples/stellar_magnitude_legend.py")
+    path = Path("tests/fixtures/example_regressions/stellar_magnitude_legend.py")
     specification = importlib.util.spec_from_file_location(
         "stellar_magnitude_legend_example",
         path,

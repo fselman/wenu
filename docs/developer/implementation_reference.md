@@ -166,6 +166,19 @@ floor into composition detail application. Circumpolar charts set it to
 at the observer's horizon; other circular chart families retain their prior
 behavior.
 
+## 4.1 Canonical examples
+
+The supported user examples are exactly:
+
+- `planisphere.py`;
+- `regional_constellation_group.py`;
+- `regional_constellation.py`;
+- `circumpolar.py`;
+- `binocular_object.py`.
+
+Catalogue, symbol, legend, clipping, and historical style demonstrations are
+test-local regression fixtures rather than additional public examples.
+
 ## 5. Styles and modes
 
 Named styles are resolved by `compose_chart()`:

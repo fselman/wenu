@@ -35,7 +35,7 @@ def test_atlas_supernova_remnants_use_complete_circles():
 
 
 def test_atlas_example_curates_remnants_and_declares_j2000_grid():
-    source = Path("examples/atlas_style.py").read_text(
+    source = Path("tests/fixtures/example_regressions/atlas_style.py").read_text(
         encoding="utf-8"
     )
     assert "add_supernova_remnants(selected=SUPERNOVA_REMNANTS)" in source

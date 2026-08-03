@@ -4,7 +4,7 @@ import runpy
 
 EXAMPLE = (
     Path(__file__).parents[1]
-    / "examples/cartoon_modes_explicit_labels.py"
+    / "tests/fixtures/example_regressions/cartoon_modes_explicit_labels.py"
 )
 
 

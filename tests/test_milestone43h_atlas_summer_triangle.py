@@ -4,7 +4,7 @@ import ast
 from pathlib import Path
 
 
-EXAMPLE = Path("examples/atlas_summer_triangle.py")
+EXAMPLE = Path("tests/fixtures/example_regressions/atlas_summer_triangle.py")
 
 
 def calls_named(tree, name):

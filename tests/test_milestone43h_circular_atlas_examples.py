@@ -7,8 +7,8 @@ import pytest
 
 
 EXAMPLES = (
-    Path("examples/circumpolar_atlas.py"),
-    Path("examples/la_ligua_planisphere.py"),
+    Path("tests/fixtures/example_regressions/circumpolar_atlas.py"),
+    Path("tests/fixtures/example_regressions/la_ligua_planisphere.py"),
 )
 
 

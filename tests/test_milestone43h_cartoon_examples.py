@@ -7,8 +7,8 @@ import pytest
 
 
 EXAMPLES = (
-    Path("examples/cartoon_modes.py"),
-    Path("examples/cartoon_modes_explicit_labels.py"),
+    Path("tests/fixtures/example_regressions/cartoon_modes.py"),
+    Path("tests/fixtures/example_regressions/cartoon_modes_explicit_labels.py"),
 )
 
 

@@ -19,10 +19,12 @@ from wenu.rendering import layers
 
 
 def galaxy_regions_module():
-    """Load examples/galaxy_regions.py without packaging examples."""
+    """Load tests/fixtures/example_regressions/galaxy_regions.py without packaging examples."""
     path = (
         Path(__file__).resolve().parents[1]
-        / "examples"
+        / "tests"
+        / "fixtures"
+        / "example_regressions"
         / "galaxy_regions.py"
     )
     spec = spec_from_file_location("wenu_example_galaxy_regions", path)

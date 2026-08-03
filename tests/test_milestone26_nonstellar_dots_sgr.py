@@ -41,6 +41,6 @@ def test_nonstellar_dot_count_cannot_be_less_than_eight():
 
 
 def test_sagittarius_example_uses_iau_abbreviation():
-    source = Path("examples/sag_sco_oph_ser_mask.py").read_text()
+    source = Path("tests/fixtures/example_regressions/sag_sco_oph_ser_mask.py").read_text()
     assert '"Sgr"' in source
     assert '"Sag"' not in source

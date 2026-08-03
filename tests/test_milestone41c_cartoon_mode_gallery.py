@@ -5,7 +5,7 @@ from wenu import compose_chart
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "cartoon_modes.py"
+EXAMPLE = ROOT / "tests" / "fixtures" / "example_regressions" / "cartoon_modes.py"
 
 
 def example_namespace():

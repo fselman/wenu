@@ -13,7 +13,7 @@ import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "cen_a_binocular.py"
+EXAMPLE = ROOT / "tests" / "fixtures" / "example_regressions" / "cen_a_binocular.py"
 
 
 def _example():

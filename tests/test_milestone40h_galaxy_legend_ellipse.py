@@ -16,7 +16,7 @@ from wenu.charts.legend import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "legend_symbols.py"
+EXAMPLE = ROOT / "tests" / "fixtures" / "example_regressions" / "legend_symbols.py"
 
 
 def galaxy_descriptor():

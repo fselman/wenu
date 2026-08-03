@@ -71,7 +71,7 @@ def test_grid_renderer_supports_formatter_and_edge_anchor():
 
 def test_atlas_example_uses_curated_catalogue_subsets_and_global_grid():
     source = open(
-        "examples/atlas_style.py",
+        "tests/fixtures/example_regressions/atlas_style.py",
         encoding="utf-8",
     ).read()
     assert "add_open_clusters(selected=OPEN_CLUSTERS)" in source

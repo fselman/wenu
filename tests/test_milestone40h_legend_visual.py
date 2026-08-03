@@ -12,7 +12,7 @@ from wenu.rendering.symbols import DEFAULT_SYMBOLS
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXAMPLE = ROOT / "examples" / "legend_symbols.py"
+EXAMPLE = ROOT / "tests" / "fixtures" / "example_regressions" / "legend_symbols.py"
 
 
 def load_example():

@@ -3,7 +3,7 @@
 from pathlib import Path
 
 
-EXAMPLE = Path("examples/la_ligua_planisphere.py")
+EXAMPLE = Path("tests/fixtures/example_regressions/la_ligua_planisphere.py")
 
 
 def test_la_ligua_planisphere_example_exists():

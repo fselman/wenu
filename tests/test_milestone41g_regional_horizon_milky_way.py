@@ -60,14 +60,14 @@ def test_non_rectangular_chart_retains_style_horizon_default():
 
 def test_cartoon_example_enables_milky_way_only_in_presentation():
     namespace = {}
-    source = Path("examples/cartoon_modes_explicit_labels.py").read_text()
+    source = Path("tests/fixtures/example_regressions/cartoon_modes_explicit_labels.py").read_text()
     exec(compile(source, "cartoon_modes_explicit_labels.py", "exec"), namespace)
     assert "milky_way" not in namespace["content_layers"]("print")
     assert "milky_way" in namespace["content_layers"]("presentation")
 
 
 def test_cartoon_example_uses_canonical_polygon_projection():
-    source = Path("examples/cartoon_modes_explicit_labels.py").read_text()
+    source = Path("tests/fixtures/example_regressions/cartoon_modes_explicit_labels.py").read_text()
     assert "clip_polygons_to_projection_cap" not in source
     assert 'milky_way_options["prepare"]' not in source
     assert "horizon_altitude_deg=-90.0" not in source

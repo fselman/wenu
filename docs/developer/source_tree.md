@@ -100,3 +100,8 @@ See `target_architecture_v0.5.md` for the implemented architecture and
 
 The structured user guide is rooted at `docs/user_guide/index.md`; its
 `assets/` directory contains only the provenance-controlled README image.
+
+The user-facing `examples/` directory contains only the five canonical chart
+families. Historical component demonstrations that still provide regression
+coverage live under `tests/fixtures/example_regressions/`; they are test-local
+fixtures, not supported user examples.
