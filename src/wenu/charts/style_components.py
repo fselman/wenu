@@ -51,11 +51,13 @@ class IsophoteStyle:
     lmc_edge_color: str | None = None
     lmc_edge_alpha: float = 0.0
     lmc_linewidth: float = 0.0
+    lmc_linestyle: str = "-"
     smc_color: str = "deepskyblue"
     smc_alpha: float = 0.06
     smc_edge_color: str | None = None
     smc_edge_alpha: float = 0.0
     smc_linewidth: float = 0.0
+    smc_linestyle: str = "-"
 
 
 @dataclass(frozen=True)
@@ -229,11 +231,13 @@ class ChartStyle:
             lmc_edge_color=iso.lmc_edge_color,
             lmc_edge_alpha=iso.lmc_edge_alpha,
             lmc_linewidth=iso.lmc_linewidth,
+            lmc_linestyle=iso.lmc_linestyle,
             smc_color=iso.smc_color,
             smc_alpha=iso.smc_alpha,
             smc_edge_color=iso.smc_edge_color,
             smc_edge_alpha=iso.smc_edge_alpha,
             smc_linewidth=iso.smc_linewidth,
+            smc_linestyle=iso.smc_linestyle,
             nonstellar_color=deep.nonstellar_color,
             nonstellar_linewidth=deep.nonstellar_linewidth,
             nonstellar_alpha=deep.nonstellar_alpha,

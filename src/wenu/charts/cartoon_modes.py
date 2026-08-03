@@ -221,7 +221,26 @@ def cartoon_chart_style(
     isophotes = replace(
         style.isophotes,
         milky_way_color=palette.milky_way,
+        milky_way_alpha=0.0,
         milky_way_contour_color=palette.frame,
+        milky_way_contour_linestyle=":",
+        milky_way_contour_alpha=1.0,
+        lmc_color=palette.milky_way,
+        lmc_alpha=0.0,
+        lmc_edge_color=palette.frame,
+        lmc_edge_alpha=1.0,
+        lmc_linewidth=(
+            style.isophotes.milky_way_contour_linewidth * line_scale
+        ),
+        lmc_linestyle=":",
+        smc_color=palette.milky_way,
+        smc_alpha=0.0,
+        smc_edge_color=palette.frame,
+        smc_edge_alpha=1.0,
+        smc_linewidth=(
+            style.isophotes.milky_way_contour_linewidth * line_scale
+        ),
+        smc_linestyle=":",
     )
     deep_sky = replace(
         style.deep_sky,

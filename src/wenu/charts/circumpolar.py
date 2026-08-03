@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import numpy as np
 from astropy.coordinates import SkyCoord
@@ -154,7 +154,15 @@ class CircumpolarChart:
 
     @property
     def chart_context(self):
-        return self.binocular_chart.chart_context
+        return replace(
+            self.binocular_chart.chart_context,
+            horizon_altitude_deg=self.horizon_altitude_deg,
+        )
+
+    @property
+    def horizon_altitude_deg(self):
+        """Do not observer-horizon clip a declination-centred chart."""
+        return -90.0
 
     def figure_size(self, width_inches=7.0):
         return self.binocular_chart.figure_size(width_inches)

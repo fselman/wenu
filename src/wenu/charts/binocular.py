@@ -196,6 +196,11 @@ class BinocularChart:
                 else dict(boundary_style)
             ),
         )
+        set_frame_visible = getattr(
+            renderer, "set_axes_frame_visible", None
+        )
+        if callable(set_frame_visible):
+            set_frame_visible(False)
         return self.regional_chart.render(
             sky,
             renderer,

@@ -42,6 +42,15 @@ def test_presentation_uses_yellow_for_all_chart_structure():
     assert style.grids.ecliptic_color == YELLOW
     assert style.grids.galactic_color == YELLOW
     assert style.isophotes.milky_way_color == YELLOW
+    assert style.isophotes.milky_way_alpha == pytest.approx(0.0)
+    assert style.isophotes.milky_way_contour_color == YELLOW
+    assert style.isophotes.milky_way_contour_linestyle == ":"
+    assert style.isophotes.lmc_alpha == pytest.approx(0.0)
+    assert style.isophotes.lmc_edge_color == YELLOW
+    assert style.isophotes.lmc_linestyle == ":"
+    assert style.isophotes.smc_alpha == pytest.approx(0.0)
+    assert style.isophotes.smc_edge_color == YELLOW
+    assert style.isophotes.smc_linestyle == ":"
     assert style.deep_sky.galaxy_edge_color == YELLOW
     assert style.legend.facecolor == BLUE
     assert style.legend.edgecolor == YELLOW
@@ -57,6 +66,10 @@ def test_print_uses_black_for_structure_and_footer():
     assert style.canvas.foreground_color == "#000000"
     assert style.grids.constellation_line_color == "#000000"
     assert style.grids.boundary_color == "#000000"
+    assert style.isophotes.milky_way_alpha == pytest.approx(0.0)
+    assert style.isophotes.milky_way_contour_color == "#000000"
+    assert style.isophotes.lmc_edge_color == "#000000"
+    assert style.isophotes.smc_edge_color == "#000000"
     assert style.legend.facecolor == "white"
     assert style.legend.edgecolor == "#000000"
     assert style.legend.text_color == "#000000"

@@ -126,6 +126,9 @@ def _style_layer_options(
 
 def _composition_horizon_altitude(composition):
     context = getattr(composition, "context", None)
+    configured = getattr(context, "horizon_altitude_deg", None)
+    if configured is not None:
+        return float(configured)
     boundary_kind = getattr(context, "boundary_kind", None)
     if boundary_kind == BoundaryKind.RECTANGULAR:
         return -90.0
@@ -142,6 +145,7 @@ class DetailApplication:
 
 _DETAIL_LAYER_NAMES = {
     "milky_way_isophotes": "milky_way",
+    "magellanic_cloud_isophotes": "magellanic_clouds",
 }
 
 

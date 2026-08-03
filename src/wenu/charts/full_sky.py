@@ -236,6 +236,11 @@ class FullSkyChart:
             self.horizon,
             style=boundary_style,
         )
+        set_frame_visible = getattr(
+            renderer, "set_axes_frame_visible", None
+        )
+        if callable(set_frame_visible):
+            set_frame_visible(False)
         projection = self.projection
         viewport = self.viewport
         return sky.draw_chart(

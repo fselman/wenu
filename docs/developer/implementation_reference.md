@@ -124,7 +124,9 @@ Cartoon presentation resolves a trichromatic palette: deep-blue background,
 yellow stars/lines/boundaries/context, and white footer credits. Cartoon print
 uses white paper with black structure, context, and credits. Circular chart
 boundaries obtain their appearance from the resolved cartoon mode without
-changing their chart-owned geometry.
+changing their chart-owned geometry. When Milky Way or Magellanic Cloud
+isophotes are selected as cartoon content, they use unshaded dotted contours:
+yellow in presentation and black in print.
 
 ## 4. Chart types
 
@@ -142,6 +144,11 @@ still determines the AltAz sky and horizon. `CircumpolarChart` owns its
 declination-parallel boundary and circular grid-label anchor; when no explicit
 boundary appearance is supplied, it resolves that appearance from the chart
 style before delegating clipping to its circular rendering chart.
+`ChartContext.horizon_altitude_deg` optionally carries a chart-owned altitude
+floor into composition detail application. Circumpolar charts set it to
+`-90.0`, so their declination field and reference furniture are not clipped
+at the observer's horizon; other circular chart families retain their prior
+behavior.
 
 ## 5. Styles and modes
 

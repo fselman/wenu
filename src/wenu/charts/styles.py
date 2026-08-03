@@ -49,11 +49,13 @@ class PublicationStyle:
     lmc_edge_color: str | None = None
     lmc_edge_alpha: float = 0.0
     lmc_linewidth: float = 0.0
+    lmc_linestyle: str = "-"
     smc_color: str = "deepskyblue"
     smc_alpha: float = 0.06
     smc_edge_color: str | None = None
     smc_edge_alpha: float = 0.0
     smc_linewidth: float = 0.0
+    smc_linestyle: str = "-"
     nonstellar_color: str = "white"
     nonstellar_linewidth: float = 0.8
     nonstellar_alpha: float = 0.9
@@ -144,6 +146,10 @@ class PublicationStyle:
         ax.figure.set_facecolor("white")
         if title is not None:
             ax.set_title(title)
+            title_artist = getattr(ax, "title", None)
+            set_color = getattr(title_artist, "set_color", None)
+            if callable(set_color):
+                set_color(self.foreground_color)
         ax.set_xticks([])
         ax.set_yticks([])
         return ax
@@ -285,12 +291,14 @@ class PublicationStyle:
                 edge_color = self.lmc_edge_color
                 edge_alpha = self.lmc_edge_alpha
                 linewidth = self.lmc_linewidth
+                linestyle = self.lmc_linestyle
             else:
                 color = self.smc_color
                 alpha = self.smc_alpha
                 edge_color = self.smc_edge_color
                 edge_alpha = self.smc_edge_alpha
                 linewidth = self.smc_linewidth
+                linestyle = self.smc_linestyle
 
             cloud_render = {
                 "compound_by": "compound_id",
@@ -306,6 +314,7 @@ class PublicationStyle:
                     "edgecolor": edge_color,
                     "edge_alpha": edge_alpha,
                     "linewidth": linewidth,
+                    "linestyle": linestyle,
                     "zorder": layers.MAGELLANIC_CLOUDS,
                 }
             options[cloud_layer] = {

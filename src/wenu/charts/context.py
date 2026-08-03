@@ -34,6 +34,7 @@ class ChartContext:
     boundary_kind: BoundaryKind = BoundaryKind.RECTANGULAR
     clip_boundary: Any | None = None
     visible_solid_angle_sq_deg: float | None = None
+    horizon_altitude_deg: float | None = None
 
     def __post_init__(self) -> None:
         values = (
@@ -61,6 +62,12 @@ class ChartContext:
             if not isfinite(solid_angle) or solid_angle <= 0.0:
                 raise ValueError(
                     "visible_solid_angle_sq_deg must be positive and finite."
+                )
+        if self.horizon_altitude_deg is not None:
+            altitude = float(self.horizon_altitude_deg)
+            if not isfinite(altitude) or not -90.0 <= altitude < 90.0:
+                raise ValueError(
+                    "horizon_altitude_deg must be in [-90, 90)."
                 )
 
     @property

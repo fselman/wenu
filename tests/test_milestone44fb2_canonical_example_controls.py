@@ -18,6 +18,7 @@ EXAMPLES = (
     Path("examples/planisphere.py"),
     Path("examples/regional_constellation_group.py"),
     Path("examples/regional_constellation.py"),
+    Path("examples/circumpolar.py"),
 )
 
 
@@ -61,6 +62,9 @@ def resolved_detail(module, arguments, *, style):
         default_limit = 5.0
     elif module.__name__ == "regional_constellation_group":
         _, chart, _ = module.build_chart("summer-triangle")
+        default_limit = 6.5
+    elif module.__name__ == "circumpolar":
+        _, chart = module.build_chart()
         default_limit = 6.5
     else:
         _, chart = module.build_chart("Cru")

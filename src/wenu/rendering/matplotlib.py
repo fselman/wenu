@@ -32,6 +32,11 @@ class MatplotlibRenderer:
         self.ax = ax
         self._clip_patch = None
 
+    def set_axes_frame_visible(self, visible):
+        """Show or hide the rectangular Matplotlib axes frame."""
+        for spine in self.ax.spines.values():
+            spine.set_visible(bool(visible))
+
     def set_clip_boundary(self, boundary, *, style=None):
         """Set and draw a projected closed clipping boundary."""
         from matplotlib.path import Path
