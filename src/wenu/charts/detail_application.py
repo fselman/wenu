@@ -146,6 +146,7 @@ class DetailApplication:
 
 
 _DETAIL_LAYER_NAMES = {
+    "coordinates_grid": "coordinate_grids",
     "milky_way_isophotes": "milky_way",
     "magellanic_cloud_isophotes": "magellanic_clouds",
 }

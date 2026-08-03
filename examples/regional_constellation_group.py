@@ -47,6 +47,20 @@ GROUPS = {
         "planetary_nebulae": ("PN G349.5+01.0", "PN G002.4+05.8", "PN G008.0+03.9", "PN G009.4-05.0", "PN G010.1+00.7", "PN G025.8-17.9"),
         "supernova_remnants": ("G004.5+06.8", "G006.4-00.1", "G011.2-00.3", "G021.8-00.6", "G027.4+00.0", "G034.7-00.4"),
     },
+    "sgr-sco-oph-ser": {
+        "lines": ("Sgr", "Sco", "Oph", "Ser1", "Ser2"),
+        "boundaries": ("Sgr", "Sco", "Oph", "Ser"),
+        "labels": ("Sgr", "Sco", "Oph", "SerCap", "SerCau"),
+        "field_width": 90.0,
+        "field_height": 90.0,
+        "title": "Sagittarius, Scorpius, Ophiuchus, and Serpens",
+        "open_clusters": ("NGC 6405", "NGC 6475", "NGC 6530", "NGC 6603", "NGC 6611", "NGC 6705"),
+        "planetary_nebulae": ("PN G349.5+01.0", "PN G002.4+05.8", "PN G008.0+03.9", "PN G009.4-05.0", "PN G010.1+00.7", "PN G025.8-17.9"),
+        "supernova_remnants": ("G004.5+06.8", "G006.4-00.1", "G011.2-00.3", "G021.8-00.6", "G027.4+00.0", "G034.7-00.4"),
+        "coordinate_grid": True,
+        "coordinate_grid_labels": True,
+        "mask": True,
+    },
 }
 
 
@@ -149,9 +163,10 @@ def furniture(sky, chart, arguments):
 
 def generate(arguments):
     options = chart_product_options(arguments)
+    group = GROUPS[arguments.group]
     sky, chart, title = build_chart(
         arguments.group,
-        mask=arguments.mask,
+        mask=(arguments.mask or group.get("mask", False)),
         field_width_deg=arguments.field_width,
         field_height_deg=arguments.field_height,
         position_angle_deg=arguments.position_angle,
@@ -169,8 +184,21 @@ def generate(arguments):
         composition = compose_chart(
             chart, style=product.style, mode=product.mode,
             detail=detail,
-            detail_overrides=chart_detail_overrides(arguments),
-            style_overrides=chart_style_overrides(arguments),
+            detail_overrides=chart_detail_overrides(
+                arguments,
+                coordinate_grid=(
+                    arguments.coordinate_grid
+                    or arguments.coordinate_grid_labels
+                    or group.get("coordinate_grid", False)
+                ),
+            ),
+            style_overrides=chart_style_overrides(
+                arguments,
+                coordinate_grid_labels=(
+                    arguments.coordinate_grid_labels
+                    or group.get("coordinate_grid_labels", False)
+                ),
+            ),
             furniture=furniture(sky, chart, arguments),
         )
         figure, ax = plt.subplots(figsize=(composition.mode.width_inches, composition.mode.height_inches))

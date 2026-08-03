@@ -154,5 +154,5 @@ def test_regional_mask_does_not_require_visible_boundary_lines():
 def test_examples_apply_render_local_style_overrides(path):
     source = path.read_text(encoding="utf-8")
 
-    assert "style_overrides=chart_style_overrides(arguments)" in source
-    assert "detail_overrides=chart_detail_overrides(arguments)" in source
+    assert "style_overrides=chart_style_overrides(" in source
+    assert "detail_overrides=chart_detail_overrides(" in source

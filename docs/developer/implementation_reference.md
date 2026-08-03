@@ -291,3 +291,14 @@ script, exact arguments, source commit, dimensions, SHA-256 checksum,
 destination, and visual approval are recorded in
 `docs/user_guide/planisphere.md`. All other generated products remain below
 `output/` and outside version control.
+
+### Sgr-Sco-Oph-Ser regional product
+
+`examples/regional_constellation_group.py --group sgr-sco-oph-ser` is the
+canonical labeled-grid regression for the Sagittarius, Scorpius, Ophiuchus,
+and two-part Serpens region. Shared `--coordinate-grid` and
+`--coordinate-grid-labels` controls are available to every canonical family;
+the latter also enables the registered grid. The named regional product opts
+into both controls for all four style/mode combinations.
+It also enables the canonical outside-region mask by default, producing the
+regional emphasis patch without an additional command-line switch.

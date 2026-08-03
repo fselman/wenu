@@ -17,6 +17,8 @@ class ChartContentOptions:
     magnitude_limit: float | None = None
     constellation_labels: bool = False
     constellation_boundaries: bool = False
+    coordinate_grid: bool = False
+    coordinate_grid_labels: bool = False
     references: bool = False
     poles: bool = False
     pole_labels: bool = False
@@ -54,6 +56,16 @@ def add_chart_content_arguments(parser):
         "--constellation-boundaries",
         action="store_true",
         help="draw IAU constellation boundaries",
+    )
+    parser.add_argument(
+        "--coordinate-grid",
+        action="store_true",
+        help="draw the configured coordinate grid",
+    )
+    parser.add_argument(
+        "--coordinate-grid-labels",
+        action="store_true",
+        help="draw coordinate-grid labels (and enable the grid)",
     )
     parser.add_argument(
         "--references",
@@ -123,13 +135,19 @@ def chart_content_options(arguments) -> ChartContentOptions:
         magnitude_limit=arguments.magnitude_limit,
         constellation_labels=arguments.constellation_labels,
         constellation_boundaries=arguments.constellation_boundaries,
+        coordinate_grid=arguments.coordinate_grid,
+        coordinate_grid_labels=arguments.coordinate_grid_labels,
         references=arguments.references,
         poles=arguments.poles,
         pole_labels=arguments.pole_labels,
     )
 
 
-def chart_style_overrides(arguments) -> ChartStyleOverrides:
+def chart_style_overrides(
+    arguments,
+    *,
+    coordinate_grid_labels=None,
+) -> ChartStyleOverrides:
     """Resolve parsed visual arguments without applying mode defaults."""
     return ChartStyleOverrides(
         constellation_linewidth=arguments.constellation_line_width,
@@ -137,17 +155,32 @@ def chart_style_overrides(arguments) -> ChartStyleOverrides:
         constellation_label_color=arguments.constellation_label_color,
         boundary_linewidth=arguments.constellation_boundary_width,
         boundary_color=arguments.constellation_boundary_color,
+        draw_coordinate_labels=(
+            arguments.coordinate_grid_labels
+            if coordinate_grid_labels is None
+            else bool(coordinate_grid_labels)
+        ) or None,
     )
 
 
-def chart_detail_overrides(arguments) -> DetailOverrides:
+def chart_detail_overrides(
+    arguments,
+    *,
+    coordinate_grid=None,
+) -> DetailOverrides:
     """Resolve magnitude and opt-in constellation layer visibility."""
     content = chart_content_options(arguments)
+    grid_enabled = (
+        content.coordinate_grid or content.coordinate_grid_labels
+        if coordinate_grid is None
+        else bool(coordinate_grid)
+    )
     additions = {
         name
         for name, enabled in (
             ("constellation_labels", content.constellation_labels),
             ("constellation_boundaries", content.constellation_boundaries),
+            ("coordinate_grids", grid_enabled),
         )
         if enabled
     }

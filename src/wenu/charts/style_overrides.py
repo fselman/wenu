@@ -17,6 +17,7 @@ class ChartStyleOverrides:
     constellation_label_color: str | None = None
     boundary_linewidth: float | None = None
     boundary_color: str | None = None
+    draw_coordinate_labels: bool | None = None
     stellar_magnitude_sizing: StellarMagnitudeSizing | None = None
 
     def __post_init__(self):
@@ -58,6 +59,7 @@ class ChartStyleOverrides:
                 "constellation_label_color",
                 "boundary_linewidth",
                 "boundary_color",
+                "draw_coordinate_labels",
             )
             if getattr(self, name) is not None
         }

@@ -9,6 +9,7 @@ from wenu import (
     RegionalChart,
     add_chart_arguments,
     chart_content_options,
+    chart_detail_overrides,
     chart_legend_selection,
     chart_style_overrides,
     compose_chart,
@@ -29,6 +30,8 @@ def test_shared_content_and_legends_are_opt_in():
     assert chart_content_options(arguments).magnitude_limit is None
     assert chart_content_options(arguments).constellation_labels is False
     assert chart_content_options(arguments).constellation_boundaries is False
+    assert chart_content_options(arguments).coordinate_grid is False
+    assert chart_content_options(arguments).coordinate_grid_labels is False
     assert chart_content_options(arguments).references is False
     assert chart_content_options(arguments).poles is False
     assert chart_content_options(arguments).pole_labels is False
@@ -43,6 +46,8 @@ def test_shared_content_switches_resolve_independently():
             "--magnitude-limit", "4.5",
             "--constellation-labels",
             "--constellation-boundaries",
+            "--coordinate-grid",
+            "--coordinate-grid-labels",
             "--references",
             "--poles",
             "--pole-labels",
@@ -53,6 +58,8 @@ def test_shared_content_switches_resolve_independently():
     assert content.magnitude_limit == pytest.approx(4.5)
     assert content.constellation_labels is True
     assert content.constellation_boundaries is True
+    assert content.coordinate_grid is True
+    assert content.coordinate_grid_labels is True
     assert content.references is True
     assert content.poles is True
     assert content.pole_labels is True
@@ -103,7 +110,23 @@ def test_style_arguments_resolve_to_immutable_overrides():
         constellation_label_color="gold",
         boundary_linewidth=0.75,
         boundary_color="silver",
+        draw_coordinate_labels=None,
     )
+
+
+def test_coordinate_grid_labels_enable_grid_and_override_style():
+    arguments = parser().parse_args(["--coordinate-grid-labels"])
+    chart = RegionalChart(45.0, 180.0, 20.0, 15.0)
+    composition = compose_chart(
+        chart,
+        style="cartoon",
+        mode="presentation",
+        detail_overrides=chart_detail_overrides(arguments),
+        style_overrides=chart_style_overrides(arguments),
+    )
+
+    assert "coordinate_grids" in composition.detail.enabled_layers
+    assert composition.style.grids.draw_coordinate_labels is True
 
 
 @pytest.mark.parametrize("name", [

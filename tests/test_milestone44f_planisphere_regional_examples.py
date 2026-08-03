@@ -6,7 +6,10 @@ from pathlib import Path
 
 import pytest
 
-from wenu import chart_product_options, compose_chart
+from wenu import (
+    chart_detail_overrides, chart_product_options, chart_style_overrides,
+    compose_chart, composition_layer_options,
+)
 
 
 EXAMPLES = (
@@ -68,6 +71,44 @@ def test_group_mask_is_union_of_selected_iau_regions():
         "galactic-center"
     ]["boundaries"]
     assert center.outside_mask_constellations[-1] == "Ser"
+
+
+def test_sgr_sco_oph_ser_group_defaults_to_labeled_coordinate_grid():
+    module = load(EXAMPLES[1])
+    arguments = module.parser().parse_args(["--group", "sgr-sco-oph-ser"])
+    group = module.GROUPS[arguments.group]
+    sky, chart, _ = module.build_chart(
+        arguments.group,
+        mask=group["mask"],
+    )
+
+    assert group["lines"] == ("Sgr", "Sco", "Oph", "Ser1", "Ser2")
+    assert group["boundaries"] == ("Sgr", "Sco", "Oph", "Ser")
+    for style in ("atlas", "cartoon"):
+        for mode in ("print", "presentation"):
+            composition = compose_chart(
+                chart,
+                style=style,
+                mode=mode,
+                detail_overrides=chart_detail_overrides(
+                    arguments,
+                    coordinate_grid=group["coordinate_grid"],
+                ),
+                style_overrides=chart_style_overrides(
+                    arguments,
+                    coordinate_grid_labels=group[
+                        "coordinate_grid_labels"
+                    ],
+                ),
+            )
+            assert "coordinate_grids" in composition.detail.enabled_layers
+            assert composition.style.grids.draw_coordinate_labels is True
+            layer_options = composition_layer_options(composition, sky)
+            assert (
+                layer_options.layer_options["coordinates_grid"]["enabled"]
+                is True
+            )
+    assert chart.outside_mask_constellations == group["boundaries"]
 
 
 def test_single_mask_follows_exactly_one_iau_region():
