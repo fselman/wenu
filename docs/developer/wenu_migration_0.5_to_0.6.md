@@ -1,6 +1,6 @@
 # Wenu migration roadmap: v0.5 to v0.6
 
-**Status:** Proposed incremental roadmap
+**Status:** Complete
 **Source:** `current_architecture_v0.5.md`
 **Target:** `target_architecture_v0.6.md`
 **Base commit:** `33cd5aa`
@@ -471,3 +471,20 @@ Pause and review the architecture if a change would require:
 The migration is complete when the target architecture completion criteria
 are satisfied and the five canonical examples are the clearest supported path
 for learning and verifying Wenu.
+
+## 17. Closure record
+
+Milestone 44K completed the migration on 2026-08-03. The closure audit
+confirmed:
+
+- exactly five canonical user examples;
+- all 20 required style/mode products and the additional Sgr-Sco-Oph-Ser
+  regional product visually approved;
+- README image provenance verified by its contract test;
+- documented imports and commands covered by executable tests;
+- package dependency directions covered by the boundary audit;
+- 916 tests passing without a warning summary before closure.
+
+The v0.5 architecture and migration documents remain in place as historical
+compatibility records because existing documentation tests and deprecation
+policy link to them. They are no longer active architectural authority.

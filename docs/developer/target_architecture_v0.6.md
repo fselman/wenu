@@ -1,6 +1,7 @@
 # Wenu target architecture v0.6
 
-**Status:** Proposed target
+**Status:** Implemented
+**Completed:** 2026-08-03
 **Source architecture:** `current_architecture_v0.5.md`
 **Migration plan:** `wenu_migration_0.5_to_0.6.md`
 
@@ -317,3 +318,6 @@ Version 0.6 is complete when:
 11. all relocated regression coverage passes;
 12. the full suite passes without warnings and atlas print regressions are
     explicitly approved.
+
+All criteria were satisfied by Milestone 44K. The five canonical examples and
+their 20 required style/mode products are the supported reference workflow.

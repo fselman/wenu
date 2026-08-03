@@ -15,8 +15,8 @@ southern South America.
 ## Project status
 
 Wenu remains under active development and has not yet reached its first public
-release. The v0.5 chart architecture is implemented and the v0.6 reference
-chart migration is in progress. One composition and export workflow serves
+release. The v0.6 reference-chart architecture and migration are complete.
+One composition and export workflow serves
 all chart types, styles, output modes, detail policies, and legends. Public
 APIs may still change before release.
 
@@ -179,10 +179,10 @@ The principal packages are:
 
 Developer references:
 
-- `docs/developer/current_architecture_v0.5.md` (implemented baseline);
+- `docs/developer/current_architecture_v0.5.md` (historical baseline);
 - `docs/developer/implementation_reference.md`;
-- `docs/developer/target_architecture_v0.6.md` (proposed architecture);
-- `docs/developer/wenu_migration_0.5_to_0.6.md` (active roadmap);
+- `docs/developer/target_architecture_v0.6.md` (implemented architecture);
+- `docs/developer/wenu_migration_0.5_to_0.6.md` (completed roadmap);
 - `docs/developer/target_architecture_v0.5.md` (completed architecture);
 - `docs/developer/deprecations_v0.5.md`.
 

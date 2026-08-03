@@ -1,6 +1,6 @@
 # Wenu source organization
 
-**Architecture version:** 0.5
+**Architecture version:** 0.6
 **Status:** Implemented
 
 The source tree is organized by responsibility. Astronomical objects and sky
@@ -40,7 +40,7 @@ src/wenu/
 
 ## Charts package
 
-The v0.5 chart workflow is concentrated in `wenu.charts`:
+The v0.6 chart workflow is concentrated in `wenu.charts`:
 
 ```text
 charts/
@@ -95,7 +95,7 @@ parallel implementations.
 - examples request charts and may supply documented label overrides, but do
   not implement clipping, catalogue joins, legends, or repeated saving.
 
-See `target_architecture_v0.5.md` for the implemented architecture and
+See `target_architecture_v0.6.md` for the implemented architecture and
 `implementation_reference.md` for public usage.
 
 The structured user guide is rooted at `docs/user_guide/index.md`; its

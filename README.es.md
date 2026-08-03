@@ -17,8 +17,8 @@ A diferencia de los programas planetario interactivos, Wenu está orientada a la
 ## Estado del proyecto
 
 **Wenu** se encuentra actualmente en una etapa activa de diseño y desarrollo.
-La arquitectura v0.5 está implementada y la migración de las cartas de
-referencia v0.6 está en progreso. Tipos de carta, estilos, modos de salida,
+La arquitectura y la migración de las cartas de referencia v0.6 están
+completas. Tipos de carta, estilos, modos de salida,
 políticas de detalle y leyendas se resuelven mediante un único flujo de
 composición y exportación.
 
