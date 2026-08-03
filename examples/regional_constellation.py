@@ -16,14 +16,22 @@ from wenu import (
     MatplotlibRenderer, Observer, PoleAnnotations, ReferenceAnnotations,
     ReferencePlaneAnnotation, RegionalChart, ResolvedDetail,
     add_chart_product_arguments,
-    chart_product_options, compose_chart,
+    chart_context_lines, chart_product_options, compose_chart,
+    observer_context_lines,
 )
 
 
 DEFAULT_OUTPUT = Path("output/examples/regional-constellation")
 
 
-def build_chart(constellation="Cru", *, mask=False):
+def build_chart(
+    constellation="Cru",
+    *,
+    mask=False,
+    field_width_deg=18.0,
+    field_height_deg=16.0,
+    position_angle_deg=None,
+):
     selected = (constellation,)
     observer = Observer(location="La Ligua", time="2026-08-15 21:00")
     sky = CelestialSphere(observer)
@@ -36,14 +44,21 @@ def build_chart(constellation="Cru", *, mask=False):
         frame="fk5", equinox="J2000",
     )
     chart = RegionalChart.from_constellations(
-        sky, selected, angular_radius_deg=22.0, aspect_ratio=1.15,
-        north_up=True, label_selection=selected,
+        sky,
+        selected,
+        angular_radius_deg=field_height_deg / 2.0,
+        aspect_ratio=field_width_deg / field_height_deg,
+        north_up=position_angle_deg is None,
+        position_angle_deg=(
+            0.0 if position_angle_deg is None else position_angle_deg
+        ),
+        label_selection=selected,
         outside_mask_constellations=(selected if mask else None),
     )
     return sky, chart
 
 
-def furniture(arguments):
+def furniture(sky, chart, arguments):
     state = "labeled" if arguments.references else "none"
     poles = "visible" if arguments.poles else "none"
     return ChartFurnitureOptions(
@@ -61,13 +76,37 @@ def furniture(arguments):
             application=arguments.credits,
             copyright=("© Fernando Selman" if arguments.credits else None),
         ),
-        legends=LegendOptions(stellar_counts=arguments.star_counts),
+        legends=LegendOptions(
+            stellar_counts=arguments.star_counts,
+            context=False,
+            context_lines=(
+                chart_context_lines(
+                    chart,
+                    sky,
+                    center=arguments.center,
+                    grid=arguments.grid,
+                )
+                + observer_context_lines(
+                    sky.observer,
+                    location=arguments.location,
+                    date=arguments.date,
+                    local_time=arguments.local_time,
+                    labels=False,
+                )
+            ),
+        ),
     )
 
 
 def generate(arguments):
     options = chart_product_options(arguments)
-    sky, chart = build_chart(arguments.constellation, mask=arguments.mask)
+    sky, chart = build_chart(
+        arguments.constellation,
+        mask=arguments.mask,
+        field_width_deg=arguments.field_width,
+        field_height_deg=arguments.field_height,
+        position_angle_deg=arguments.position_angle,
+    )
     saved = []
     stem = f"regional-{arguments.constellation.lower()}"
     for product, output in options.outputs(stem=stem):
@@ -81,7 +120,7 @@ def generate(arguments):
         composition = compose_chart(
             chart, style=product.style, mode=product.mode,
             detail=detail,
-            furniture=furniture(arguments),
+            furniture=furniture(sky, chart, arguments),
         )
         figure, ax = plt.subplots(figsize=(composition.mode.width_inches, composition.mode.height_inches))
         composition.style.configure_axes(ax, title=f"{arguments.constellation} — IAU constellation region")
@@ -96,6 +135,18 @@ def parser():
     add_chart_product_arguments(value, default_output=DEFAULT_OUTPUT)
     value.add_argument("--constellation", default="Cru")
     value.add_argument("--mask", action="store_true")
+    value.add_argument(
+        "--field-width", type=float, default=18.0,
+        help="horizontal angular field in degrees (default: 18)",
+    )
+    value.add_argument(
+        "--field-height", type=float, default=16.0,
+        help="vertical angular field in degrees (default: 16)",
+    )
+    value.add_argument(
+        "--position-angle", type=float,
+        help="chart rotation in degrees; the default keeps celestial north up",
+    )
     value.add_argument("--references", action="store_true")
     value.add_argument("--poles", action="store_true")
     value.add_argument(
@@ -105,6 +156,17 @@ def parser():
     )
     value.add_argument("--credits", action="store_true")
     value.add_argument("--star-counts", action="store_true")
+    value.add_argument(
+        "--no-center", action="store_false", dest="center",
+        help="omit the two chart-center coordinate lines",
+    )
+    value.add_argument(
+        "--no-grid", action="store_false", dest="grid",
+        help="omit the coordinate-grid line",
+    )
+    value.add_argument("--location", action="store_true")
+    value.add_argument("--date", action="store_true")
+    value.add_argument("--local-time", action="store_true")
     return value
 
 

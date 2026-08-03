@@ -78,6 +78,40 @@ def test_single_mask_follows_exactly_one_iau_region():
     assert chart.label_selection == ("Cru",)
 
 
+def test_group_framing_accepts_width_height_and_position_angle():
+    module = load(EXAMPLES[1])
+    _, chart, _ = module.build_chart(
+        "summer-triangle",
+        field_width_deg=80.0,
+        field_height_deg=50.0,
+        position_angle_deg=17.0,
+    )
+
+    assert chart.field_width_deg == pytest.approx(80.0)
+    assert chart.field_height_deg == pytest.approx(50.0)
+    assert chart.position_angle_deg == pytest.approx(17.0)
+
+
+def test_single_framing_accepts_width_height_and_position_angle():
+    module = load(EXAMPLES[2])
+    arguments = module.parser().parse_args([])
+    _, default = module.build_chart("Cru")
+    _, rotated = module.build_chart(
+        "Cru",
+        field_width_deg=20.0,
+        field_height_deg=12.0,
+        position_angle_deg=-25.0,
+    )
+
+    assert arguments.field_width == pytest.approx(18.0)
+    assert arguments.field_height == pytest.approx(16.0)
+    assert default.field_width_deg == pytest.approx(18.0)
+    assert default.field_height_deg == pytest.approx(16.0)
+    assert rotated.field_width_deg == pytest.approx(20.0)
+    assert rotated.field_height_deg == pytest.approx(12.0)
+    assert rotated.position_angle_deg == pytest.approx(-25.0)
+
+
 def test_style_and_mode_do_not_change_example_geometry():
     module = load(EXAMPLES[2])
     _, chart = module.build_chart("Cru", mask=False)
@@ -131,8 +165,9 @@ def test_pole_crosses_and_labels_are_independently_optional(path):
     )
 
 
-def test_planisphere_uses_compact_configurable_context_and_magnitude_five():
-    module = load(EXAMPLES[0])
+@pytest.mark.parametrize("path", EXAMPLES)
+def test_examples_use_compact_configurable_context(path):
+    module = load(path)
     arguments = module.parser().parse_args([])
 
     assert arguments.center is True
@@ -140,9 +175,13 @@ def test_planisphere_uses_compact_configurable_context_and_magnitude_five():
     assert arguments.location is False
     assert arguments.date is False
     assert arguments.local_time is False
-    source = EXAMPLES[0].read_text(encoding="utf-8")
+    source = path.read_text(encoding="utf-8")
     assert "chart_context_lines(" in source
     assert "labels=False" in source
+
+
+def test_planisphere_uses_magnitude_five():
+    source = EXAMPLES[0].read_text(encoding="utf-8")
     assert source.count("star_magnitude_limit=5.0") == 1
     assert 'sky.add_stars(catalog="hipparcos", magnitude_limit=6.5)' in source
 

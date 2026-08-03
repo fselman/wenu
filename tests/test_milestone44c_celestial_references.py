@@ -16,6 +16,7 @@ from wenu import (
     RegionalChart,
     build_celestial_reference_sky,
     compose_chart,
+    LegendOptions,
 )
 from wenu.geometry.projected import ProjectedCurve
 from wenu.charts.reference_furniture import _reference_layer_options
@@ -114,6 +115,30 @@ def test_rectangular_automatic_anchor_uses_visible_curve_segment():
     assert context.viewport.contains(x, y)
 
 
+def test_rectangular_anchor_avoids_legend_corners_and_chart_edges():
+    context = chart().chart_context
+    anchor = BoundaryAwareReferenceAnchor(
+        context,
+        avoid_locations=("upper right", "lower right"),
+    )
+    curve = ProjectedCurve(
+        x=np.linspace(context.viewport.x_min, context.viewport.x_max, 101),
+        y=np.linspace(context.viewport.y_min, context.viewport.y_max, 101),
+        name="ecliptic",
+    )
+
+    x, y = anchor(curve)
+    normalized_x = (
+        (x - context.viewport.x_min) / context.viewport.width
+    )
+    normalized_y = (
+        (y - context.viewport.y_min) / context.viewport.height
+    )
+    assert 0.16 <= normalized_x <= 0.84
+    assert 0.16 <= normalized_y <= 0.84
+    assert normalized_x <= 0.50
+
+
 def test_circular_automatic_anchor_stays_inside_field_stop():
     context = BinocularChart(45.0, 180.0).chart_context
     anchor = BoundaryAwareReferenceAnchor(context)
@@ -171,6 +196,64 @@ def test_reference_labels_are_semantic_and_independent():
         == "Ecliptic"
     )
     assert options[galactic]["render"]["draw_labels"] is False
+
+
+def test_automatic_reference_anchor_inherits_legend_occupancy():
+    subject = chart()
+    composition = compose_chart(
+        subject,
+        style="atlas",
+        furniture=ChartFurnitureOptions(
+            references=ReferenceAnnotations(
+                ecliptic=ReferencePlaneAnnotation(
+                    state="labeled",
+                    label="Ecliptic",
+                )
+            ),
+            legends=LegendOptions(),
+        ),
+    )
+    overlay = build_celestial_reference_sky(
+        SimpleNamespace(observer=observer()),
+        composition,
+    )
+    options = _reference_layer_options(overlay, composition, subject)
+    anchor = options[overlay.layers[0]]["render"]["label_anchor"]
+
+    assert anchor.delegate.avoid_locations == (
+        "upper right",
+        "lower right",
+    )
+
+
+def test_reference_anchor_labels_only_one_visible_segment():
+    subject = chart()
+    composition = compose_chart(
+        subject,
+        style="atlas",
+        furniture=ChartFurnitureOptions(
+            references=ReferenceAnnotations(
+                ecliptic=ReferencePlaneAnnotation(
+                    state="labeled",
+                    label="Ecliptic",
+                )
+            )
+        ),
+    )
+    overlay = build_celestial_reference_sky(
+        SimpleNamespace(observer=observer()),
+        composition,
+    )
+    options = _reference_layer_options(overlay, composition, subject)
+    anchor = options[overlay.layers[0]]["render"]["label_anchor"]
+    curve = ProjectedCurve(
+        x=np.asarray([-0.1, 0.0, 0.1]),
+        y=np.asarray([-0.1, 0.0, 0.1]),
+        name="ecliptic",
+    )
+
+    assert anchor(curve) is not None
+    assert anchor(curve) is None
 
 
 def test_explicit_reference_anchor_is_preserved_by_composition():

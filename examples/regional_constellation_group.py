@@ -16,7 +16,8 @@ from wenu import (
     MatplotlibRenderer, Observer, PoleAnnotations, ReferenceAnnotations,
     ReferencePlaneAnnotation, RegionalChart, ResolvedDetail,
     add_chart_product_arguments,
-    chart_product_options, compose_chart,
+    chart_context_lines, chart_product_options, compose_chart,
+    observer_context_lines,
 )
 
 
@@ -26,7 +27,8 @@ GROUPS = {
         "lines": ("Cyg", "Lyr", "Vul", "Sge", "Aql"),
         "boundaries": ("Cyg", "Lyr", "Vul", "Sge", "Aql"),
         "labels": ("Cyg", "Lyr", "Vul", "Sge", "Aql"),
-        "radius": 52.0,
+        "field_width": 143.52,
+        "field_height": 104.0,
         "title": "The Summer Triangle — Cygnus, Lyra, Vulpecula, Sagitta, and Aquila",
         "open_clusters": ("NGC 6709", "NGC 6811", "NGC 6830", "NGC 6885", "NGC 6940"),
         "planetary_nebulae": ("PN G060.8-03.6", "PN G063.1+13.9"),
@@ -36,7 +38,8 @@ GROUPS = {
         "lines": ("Sgr", "Sco", "Oph", "Ser1", "Ser2"),
         "boundaries": ("Sgr", "Sco", "Oph", "Ser"),
         "labels": ("Sgr", "Sco", "Oph", "SerCap", "SerCau"),
-        "radius": 45.0,
+        "field_width": 90.0,
+        "field_height": 90.0,
         "title": "Sagittarius, Scorpius, Ophiuchus, and Serpens",
         "open_clusters": ("NGC 6405", "NGC 6475", "NGC 6530", "NGC 6603", "NGC 6611", "NGC 6705"),
         "planetary_nebulae": ("PN G349.5+01.0", "PN G002.4+05.8", "PN G008.0+03.9", "PN G009.4-05.0", "PN G010.1+00.7", "PN G025.8-17.9"),
@@ -45,7 +48,14 @@ GROUPS = {
 }
 
 
-def build_chart(group_name, *, mask=False):
+def build_chart(
+    group_name,
+    *,
+    mask=False,
+    field_width_deg=None,
+    field_height_deg=None,
+    position_angle_deg=None,
+):
     group = GROUPS[group_name]
     observer = Observer(location="La Ligua", time="2026-08-15 21:00")
     sky = CelestialSphere(observer)
@@ -68,16 +78,31 @@ def build_chart(group_name, *, mask=False):
     chart = RegionalChart.from_constellations(
         sky,
         group["lines"],
-        angular_radius_deg=group["radius"],
-        aspect_ratio=1.38,
-        north_up=True,
+        angular_radius_deg=(
+            group["field_height"]
+            if field_height_deg is None
+            else field_height_deg
+        ) / 2.0,
+        aspect_ratio=(
+            group["field_width"]
+            if field_width_deg is None
+            else field_width_deg
+        ) / (
+            group["field_height"]
+            if field_height_deg is None
+            else field_height_deg
+        ),
+        north_up=position_angle_deg is None,
+        position_angle_deg=(
+            0.0 if position_angle_deg is None else position_angle_deg
+        ),
         label_selection=group["labels"],
         outside_mask_constellations=(group["boundaries"] if mask else None),
     )
     return sky, chart, group["title"]
 
 
-def furniture(arguments):
+def furniture(sky, chart, arguments):
     state = "labeled" if arguments.references else "none"
     poles = "visible" if arguments.poles else "none"
     return ChartFurnitureOptions(
@@ -95,13 +120,37 @@ def furniture(arguments):
             application=arguments.credits,
             copyright=("© Fernando Selman" if arguments.credits else None),
         ),
-        legends=LegendOptions(stellar_counts=arguments.star_counts),
+        legends=LegendOptions(
+            stellar_counts=arguments.star_counts,
+            context=False,
+            context_lines=(
+                chart_context_lines(
+                    chart,
+                    sky,
+                    center=arguments.center,
+                    grid=arguments.grid,
+                )
+                + observer_context_lines(
+                    sky.observer,
+                    location=arguments.location,
+                    date=arguments.date,
+                    local_time=arguments.local_time,
+                    labels=False,
+                )
+            ),
+        ),
     )
 
 
 def generate(arguments):
     options = chart_product_options(arguments)
-    sky, chart, title = build_chart(arguments.group, mask=arguments.mask)
+    sky, chart, title = build_chart(
+        arguments.group,
+        mask=arguments.mask,
+        field_width_deg=arguments.field_width,
+        field_height_deg=arguments.field_height,
+        position_angle_deg=arguments.position_angle,
+    )
     saved = []
     stem = f"regional-{arguments.group}"
     for product, output in options.outputs(stem=stem):
@@ -115,7 +164,7 @@ def generate(arguments):
         composition = compose_chart(
             chart, style=product.style, mode=product.mode,
             detail=detail,
-            furniture=furniture(arguments),
+            furniture=furniture(sky, chart, arguments),
         )
         figure, ax = plt.subplots(figsize=(composition.mode.width_inches, composition.mode.height_inches))
         composition.style.configure_axes(ax, title=title)
@@ -130,6 +179,18 @@ def parser():
     add_chart_product_arguments(value, default_output=DEFAULT_OUTPUT)
     value.add_argument("--group", choices=tuple(GROUPS), default="summer-triangle")
     value.add_argument("--mask", action="store_true")
+    value.add_argument(
+        "--field-width", type=float,
+        help="horizontal angular field in degrees",
+    )
+    value.add_argument(
+        "--field-height", type=float,
+        help="vertical angular field in degrees",
+    )
+    value.add_argument(
+        "--position-angle", type=float,
+        help="chart rotation in degrees; the default keeps celestial north up",
+    )
     value.add_argument("--references", action="store_true")
     value.add_argument("--poles", action="store_true")
     value.add_argument(
@@ -139,6 +200,17 @@ def parser():
     )
     value.add_argument("--credits", action="store_true")
     value.add_argument("--star-counts", action="store_true")
+    value.add_argument(
+        "--no-center", action="store_false", dest="center",
+        help="omit the two chart-center coordinate lines",
+    )
+    value.add_argument(
+        "--no-grid", action="store_false", dest="grid",
+        help="omit the coordinate-grid line",
+    )
+    value.add_argument("--location", action="store_true")
+    value.add_argument("--date", action="store_true")
+    value.add_argument("--local-time", action="store_true")
     return value
 
 

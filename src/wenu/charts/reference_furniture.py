@@ -23,10 +23,11 @@ class CelestialReferenceRendering:
 
 @dataclass(frozen=True)
 class BoundaryAwareReferenceAnchor:
-    """Choose a finite curve point inside the final chart footprint."""
+    """Choose a finite curve point in an unoccupied interior region."""
 
     context: object
-    inset: float = 0.88
+    inset: float = 0.68
+    avoid_locations: tuple[str, ...] = ()
 
     def __post_init__(self):
         if not 0.0 < float(self.inset) <= 1.0:
@@ -39,17 +40,21 @@ class BoundaryAwareReferenceAnchor:
         x = np.asarray(curve.x[finite], dtype=float)
         y = np.asarray(curve.y[finite], dtype=float)
         viewport = self.context.viewport
+        normalized_x = (x - viewport.x_min) / viewport.width
+        normalized_y = (y - viewport.y_min) / viewport.height
+        margin = (1.0 - float(self.inset)) / 2.0
         inside = (
-            (x >= viewport.x_min)
-            & (x <= viewport.x_max)
-            & (y >= viewport.y_min)
-            & (y <= viewport.y_max)
+            (normalized_x >= margin)
+            & (normalized_x <= 1.0 - margin)
+            & (normalized_y >= margin)
+            & (normalized_y <= 1.0 - margin)
         )
         boundary = self.context.clip_boundary
-        if (
+        circular = (
             self.context.boundary_kind == BoundaryKind.CIRCULAR
             and boundary is not None
-        ):
+        )
+        if circular:
             boundary_finite = boundary.finite
             radius = float(
                 np.nanmedian(
@@ -61,20 +66,33 @@ class BoundaryAwareReferenceAnchor:
             )
             radial = np.hypot(x, y)
             inside &= radial <= radius * (1.0 + 1.0e-6)
-            if not np.any(inside):
-                return None
-            indices = np.flatnonzero(inside)
-            target = radius * float(self.inset)
+        for location in self.avoid_locations:
+            horizontal = str(location).lower()
+            if "right" in horizontal:
+                horizontal_mask = normalized_x >= 0.50
+            elif "left" in horizontal:
+                horizontal_mask = normalized_x <= 0.50
+            else:
+                horizontal_mask = np.ones_like(inside)
+            if "upper" in horizontal:
+                vertical_mask = normalized_y >= 0.58
+            elif "lower" in horizontal:
+                vertical_mask = normalized_y <= 0.46
+            else:
+                vertical_mask = np.ones_like(inside)
+            inside &= ~(horizontal_mask & vertical_mask)
+        if not np.any(inside):
+            return None
+        indices = np.flatnonzero(inside)
+        if circular:
+            target = radius * 0.62
             index = indices[np.argmin(np.abs(radial[indices] - target))]
         else:
-            if not np.any(inside):
-                return None
-            indices = np.flatnonzero(inside)
-            target = (
-                viewport.y_min
-                + float(self.inset) * viewport.height
+            distance = (
+                (normalized_x[indices] - 0.5) ** 2
+                + (normalized_y[indices] - 0.5) ** 2
             )
-            index = indices[np.argmin(np.abs(y[indices] - target))]
+            index = indices[np.argmin(distance)]
         return float(x[index]), float(y[index])
 
 
@@ -85,10 +103,45 @@ def _explicit_anchor(position):
     return anchor
 
 
-def _label_anchor(annotation, context):
+class _SingleReferenceLabelAnchor:
+    """Return at most one successful anchor for a semantic reference."""
+
+    def __init__(self, delegate):
+        self.delegate = delegate
+        self.used = False
+
+    def __call__(self, curve, ax=None):
+        if self.used:
+            return None
+        anchor = self.delegate(curve, ax)
+        if anchor is not None:
+            self.used = True
+        return anchor
+
+
+def _occupied_legend_locations(composition):
+    legends = composition.legends
+    if legends is None:
+        return ()
+    placements = (legends.plan.objects, legends.plan.stars)
+    return tuple(
+        placement.location
+        for placement in placements
+        if placement.enabled and not placement.outside
+    )
+
+
+def _label_anchor(annotation, composition):
     if annotation.anchor is not None:
-        return _explicit_anchor(annotation.anchor)
-    return BoundaryAwareReferenceAnchor(context)
+        delegate = _explicit_anchor(annotation.anchor)
+    else:
+        delegate = BoundaryAwareReferenceAnchor(
+            composition.context,
+            avoid_locations=_occupied_legend_locations(composition),
+        )
+    return _SingleReferenceLabelAnchor(
+        delegate,
+    )
 
 
 def _publication_style(style):
@@ -197,7 +250,7 @@ def _reference_layer_options(reference_sky, composition, chart):
         render["label_formatter"] = lambda name, text=annotation.label: text
         render["label_anchor"] = _label_anchor(
             annotation,
-            composition.context,
+            composition,
         )
         label_style = dict(render["label_style"])
         label_style["zorder"] = layers.LABELS
