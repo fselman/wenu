@@ -55,13 +55,21 @@ def _configure_figure(renderer, composition):
 
 
 def _composition_export_options(composition):
+    from .context import BoundaryKind
     from .regional import ExportOptions
 
     canvas = getattr(composition.style, "canvas", None)
+    circular = composition.context.boundary_kind is BoundaryKind.CIRCULAR
     return ExportOptions(
         dpi=composition.mode.dpi,
-        transparent=composition.mode.transparent,
-        facecolor=getattr(canvas, "sky_color", None),
+        transparent=(
+            True if circular else composition.mode.transparent
+        ),
+        facecolor=(
+            "none"
+            if circular
+            else getattr(canvas, "sky_color", None)
+        ),
     )
 
 

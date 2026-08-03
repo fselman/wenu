@@ -37,10 +37,40 @@ class MatplotlibRenderer:
         for spine in self.ax.spines.values():
             spine.set_visible(bool(visible))
 
-    def set_clip_boundary(self, boundary, *, style=None):
-        """Set and draw a projected closed clipping boundary."""
+    def set_circular_background(self, boundary, *, color):
+        """Paint a circular interior over a transparent canvas."""
         from matplotlib.path import Path
         from matplotlib.patches import PathPatch
+
+        path = self._closed_boundary_path(boundary)
+        self.ax.set_facecolor("none")
+        self.ax.figure.set_facecolor("none")
+        patch = PathPatch(
+            path,
+            facecolor=color,
+            edgecolor="none",
+            zorder=-1000.0,
+        )
+        self.ax.add_patch(patch)
+        return patch
+
+    def set_clip_boundary(self, boundary, *, style=None):
+        """Set and draw a projected closed clipping boundary."""
+        from matplotlib.patches import PathPatch
+
+        path = self._closed_boundary_path(boundary)
+        patch = PathPatch(
+            path,
+            **({} if style is None else dict(style)),
+        )
+        self.ax.add_patch(patch)
+        self._clip_patch = patch
+        return patch
+
+    @staticmethod
+    def _closed_boundary_path(boundary):
+        """Return a Matplotlib path for a closed projected boundary."""
+        from matplotlib.path import Path
 
         if not isinstance(boundary, ProjectedCurve):
             raise TypeError("boundary must be a ProjectedCurve.")
@@ -58,13 +88,7 @@ class MatplotlibRenderer:
         codes = np.full(len(vertices), Path.LINETO, dtype=np.uint8)
         codes[0] = Path.MOVETO
         codes[-1] = Path.CLOSEPOLY
-        patch = PathPatch(
-            Path(vertices, codes),
-            **({} if style is None else dict(style)),
-        )
-        self.ax.add_patch(patch)
-        self._clip_patch = patch
-        return patch
+        return Path(vertices, codes)
 
     def _apply_clip_patch(self, artists):
         if self._clip_patch is None:

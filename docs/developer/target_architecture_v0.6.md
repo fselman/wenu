@@ -131,6 +131,9 @@ deep-blue background, yellow astronomical structure and contextual text, and
 white version/copyright text. Print uses a white background and black for all
 structure, context, and footer text. The planisphere horizon uses the same
 mode-resolved structural color while its geometry remains chart-owned.
+For circular chart families, the mode-resolved background fills only the
+interior of the circular boundary; the surrounding exported canvas is
+transparent.
 
 ## 5. Regional emphasis masks
 

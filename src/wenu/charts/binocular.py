@@ -169,6 +169,18 @@ class BinocularChart:
         converter = getattr(style, "as_publication_style", None)
         if callable(converter):
             resolved_style = converter()
+        canvas = getattr(style, "canvas", None)
+        sky_color = getattr(canvas, "sky_color", None)
+        if sky_color is None:
+            sky_color = getattr(resolved_style, "sky_color", None)
+        set_circular_background = getattr(
+            renderer, "set_circular_background", None
+        )
+        if callable(set_circular_background) and sky_color is not None:
+            set_circular_background(
+                self.field_stop,
+                color=sky_color,
+            )
         options = (
             {}
             if resolved_style is None
@@ -265,7 +277,7 @@ class BinocularChart:
                 legends,
             )
         options = (
-            ExportOptions()
+            ExportOptions(transparent=True, facecolor="none")
             if export_options is None
             else export_options
         )

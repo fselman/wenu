@@ -147,6 +147,9 @@ style before delegating clipping to its circular rendering chart.
 `BinocularChart` uses the same shared boundary-resolution contract, so direct
 binocular compositions receive a visible style-owned aperture rim while an
 explicit `boundary_style` retains precedence.
+Circular charts paint their style-owned sky color only inside the clipping
+boundary. Their default raster export leaves the surrounding figure and axes
+area transparent while retaining titles and footer furniture.
 `ChartContext.horizon_altitude_deg` optionally carries a chart-owned altitude
 floor into composition detail application. Circumpolar charts set it to
 `-90.0`, so their declination field and reference furniture are not clipped

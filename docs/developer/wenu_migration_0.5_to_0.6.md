@@ -349,6 +349,7 @@ Make selected-object binocular charts fully canonical.
 - all four style/mode products execute;
 - field diameter and tangent point remain correct;
 - circular aperture owns all clipping;
+- the exported area outside the circular aperture is transparent;
 - target label and contextual metadata are correct;
 - example source contains no renderer internals.
 
@@ -356,6 +357,7 @@ Make selected-object binocular charts fully canonical.
 
 ```text
 Milestone 44H.1: Canonicalize binocular aperture and target contracts
+Milestone 44H.1.1: Make circular chart exteriors transparent
 Milestone 44H.2: Add the canonical binocular object example
 ```
 
