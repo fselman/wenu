@@ -120,6 +120,12 @@ Omitting `style_overrides` preserves the resolved style and mode defaults.
 adds or removes constellation labels and boundaries relative to the selected
 detail policy. It therefore retains cartoon constellation-vertex selection.
 
+Cartoon presentation resolves a trichromatic palette: deep-blue background,
+yellow stars/lines/boundaries/context, and white footer credits. Cartoon print
+uses white paper with black structure, context, and credits. Circular chart
+boundaries obtain their appearance from the resolved cartoon mode without
+changing their chart-owned geometry.
+
 ## 4. Chart types
 
 The canonical workflow supports:

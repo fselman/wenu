@@ -54,6 +54,9 @@ def draw_visible_stellar_magnitude_legend(
     handle_text_pad: float = 0.8,
     border_pad: float = 0.5,
     zorder: float = 1000.0,
+    text_color: str | None = None,
+    facecolor: str | None = None,
+    edgecolor: str | None = None,
     include_counts: bool = False,
 ) -> StellarMagnitudeLegendResult:
     """Calculate and draw the legend for stars visible in a chart.
@@ -122,6 +125,9 @@ def draw_visible_stellar_magnitude_legend(
         handle_text_pad=handle_text_pad,
         border_pad=border_pad,
         zorder=zorder,
+        text_color=text_color,
+        facecolor=facecolor,
+        edgecolor=edgecolor,
     )
     return StellarMagnitudeLegendResult(
         statistics=statistics,

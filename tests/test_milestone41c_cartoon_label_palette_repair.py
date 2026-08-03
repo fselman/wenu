@@ -32,13 +32,13 @@ def test_presentation_uses_brighter_ocean_blue():
     style = cartoon_chart_style("presentation")
     assert style.canvas.sky_color == "#1677A6"
     assert style.grids.constellation_line_color == "#FFE066"
-    assert style.grids.constellation_label_color == "#FFF0A6"
+    assert style.grids.constellation_label_color == "#FFE066"
 
 
 def test_print_remains_white_for_paper():
     style = cartoon_chart_style("print")
     assert style.canvas.sky_color == "white"
-    assert style.stars.color == "#111111"
+    assert style.stars.color == "#000000"
 
 
 def test_cartoon_labels_receive_clearance_and_matching_halo():

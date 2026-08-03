@@ -86,6 +86,9 @@ def draw_stellar_magnitude_legend(
     border_pad: float = 0.5,
     handle_height: float | None = None,
     zorder: float = 1000.0,
+    text_color: str | None = None,
+    facecolor: str | None = None,
+    edgecolor: str | None = None,
 ) -> Legend | None:
     """Draw an independent, non-overlapping stellar magnitude legend."""
     handles = stellar_magnitude_handles(
@@ -120,5 +123,14 @@ def draw_stellar_magnitude_legend(
         handleheight=resolved_handle_height,
     )
     legend.set_zorder(zorder)
+    if text_color is not None:
+        for text in legend.get_texts():
+            text.set_color(text_color)
+        legend.get_title().set_color(text_color)
+    frame = legend.get_frame()
+    if facecolor is not None:
+        frame.set_facecolor(facecolor)
+    if edgecolor is not None:
+        frame.set_edgecolor(edgecolor)
     ax.add_artist(legend)
     return legend

@@ -84,6 +84,6 @@ def test_presentation_palette_avoids_red_on_blue():
     )
     style = composition.style
     assert style.canvas.sky_color == "#1677A6"
-    assert style.stars.color == "#FFF4CC"
+    assert style.stars.color == "#FFE066"
     assert style.grids.constellation_line_color == "#FFE066"
-    assert style.grids.constellation_label_color == "#FFF0A6"
+    assert style.grids.constellation_label_color == "#FFE066"

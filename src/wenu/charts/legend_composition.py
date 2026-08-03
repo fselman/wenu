@@ -121,8 +121,19 @@ def draw_planned_chart_legends(
 
     stars_result = None
     if plan.stars.enabled:
+        chart_legend_style = getattr(chart_style, "legend", None)
         base_style = (
-            StellarMagnitudeLegendStyle()
+            (
+                StellarMagnitudeLegendStyle()
+                if chart_legend_style is None
+                else StellarMagnitudeLegendStyle(
+                    font_size=chart_legend_style.fontsize,
+                    title_font_size=chart_legend_style.title_fontsize,
+                    text_color=chart_legend_style.text_color,
+                    facecolor=chart_legend_style.facecolor,
+                    edgecolor=chart_legend_style.edgecolor,
+                )
+            )
             if stellar_legend_style is None
             else stellar_legend_style
         )

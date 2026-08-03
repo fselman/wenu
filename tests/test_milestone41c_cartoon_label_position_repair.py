@@ -47,6 +47,6 @@ def test_cartoon_label_clearance_is_part_of_reusable_style():
 def test_presentation_palette_remains_unchanged():
     style = cartoon_chart_style("presentation")
     assert style.canvas.sky_color == "#1677A6"
-    assert style.canvas.foreground_color == "#F7FBFD"
+    assert style.canvas.foreground_color == "#FFE066"
     assert style.grids.constellation_line_color == "#FFE066"
-    assert style.grids.constellation_label_color == "#FFF0A6"
+    assert style.grids.constellation_label_color == "#FFE066"

@@ -189,6 +189,11 @@ class FullSkyChart:
     ):
         """Render the visible hemisphere through ``CelestialSphere``."""
         resolved_style = style
+        boundary_style_factory = getattr(
+            style,
+            "chart_boundary_style",
+            None,
+        )
         converter = getattr(style, "as_publication_style", None)
         if callable(converter):
             resolved_style = converter()
@@ -220,13 +225,16 @@ class FullSkyChart:
                 "renderer must provide set_clip_boundary() for a "
                 "full-sky chart."
             )
+        boundary_style = {
+            "edgecolor": self.horizon_color,
+            "linewidth": self.horizon_linewidth,
+            "facecolor": "none",
+        }
+        if callable(boundary_style_factory):
+            boundary_style.update(boundary_style_factory())
         set_boundary(
             self.horizon,
-            style={
-                "edgecolor": self.horizon_color,
-                "linewidth": self.horizon_linewidth,
-                "facecolor": "none",
-            },
+            style=boundary_style,
         )
         projection = self.projection
         viewport = self.viewport

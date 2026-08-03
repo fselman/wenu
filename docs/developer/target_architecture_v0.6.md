@@ -126,6 +126,12 @@ override documented colors and widths without mutating a named style. Such
 overrides are immutable, render-local, and applied only after the named style
 has been adapted to the selected output mode.
 
+Cartoon products use a deliberately restricted palette. Presentation uses a
+deep-blue background, yellow astronomical structure and contextual text, and
+white version/copyright text. Print uses a white background and black for all
+structure, context, and footer text. The planisphere horizon uses the same
+mode-resolved structural color while its geometry remains chart-owned.
+
 ## 5. Regional emphasis masks
 
 Single-constellation and constellation-group examples may request a canonical

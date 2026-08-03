@@ -124,7 +124,10 @@ def export_composed_chart(
             renderer,
             footer,
             composition.mode,
-            color=getattr(canvas, "foreground_color", "black"),
+            color=(
+                getattr(canvas, "footer_color", None)
+                or getattr(canvas, "foreground_color", "black")
+            ),
         )
     options = (
         _composition_export_options(composition)

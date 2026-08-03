@@ -12,6 +12,7 @@ class CanvasStyle:
     sky_color: str = "midnightblue"
     foreground_color: str = "white"
     label_fontsize: float = 10.0
+    footer_color: str | None = None
 
 
 @dataclass(frozen=True)
@@ -167,6 +168,7 @@ class LegendStyle:
     edgecolor: str = "#777777"
     alpha: float = 0.90
     columns: int = 1
+    text_color: str | None = None
 
 
 @dataclass(frozen=True)

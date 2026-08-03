@@ -131,5 +131,9 @@ def draw_chart_legend(
         framealpha=config.alpha,
         ncols=config.columns,
     )
+    if config.text_color is not None:
+        for text in legend.get_texts():
+            text.set_color(config.text_color)
+        legend.get_title().set_color(config.text_color)
     legend.set_zorder(100)
     return legend

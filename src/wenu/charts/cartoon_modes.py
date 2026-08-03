@@ -20,26 +20,29 @@ class CartoonModePalette:
     constellation_labels: str
     frame: str
     milky_way: str
+    footer: str = "black"
 
 
 CARTOON_PRINT_PALETTE = CartoonModePalette(
     sky="white",
-    foreground="#1A1A1A",
-    stars="#111111",
-    constellation_lines="#252525",
-    constellation_labels="#252525",
-    frame="#555555",
-    milky_way="#DCE7EB",
+    foreground="#000000",
+    stars="#000000",
+    constellation_lines="#000000",
+    constellation_labels="#000000",
+    frame="#000000",
+    milky_way="#000000",
+    footer="#000000",
 )
 
 CARTOON_PRESENTATION_PALETTE = CartoonModePalette(
     sky="#1677A6",
-    foreground="#F7FBFD",
-    stars="#FFF4CC",
+    foreground="#FFE066",
+    stars="#FFE066",
     constellation_lines="#FFE066",
-    constellation_labels="#FFF0A6",
-    frame="#BFE7F5",
-    milky_way="#69B9D6",
+    constellation_labels="#FFE066",
+    frame="#FFE066",
+    milky_way="#FFE066",
+    footer="#FFFFFF",
 )
 
 
@@ -50,6 +53,23 @@ class CartoonModeChartStyle(CartoonChartStyle):
     output_mode_name: str = "print"
     constellation_label_offset: tuple[float, float] = (0.18, 0.14)
     constellation_label_halo_alpha: float = 0.78
+
+    def configure_axes(self, ax, *, title=None):
+        """Apply the trichromatic cartoon canvas and context color."""
+        configured = super().configure_axes(ax, title=title)
+        color = self.canvas.foreground_color
+        configured.title.set_color(color)
+        for spine in configured.spines.values():
+            spine.set_color(color)
+            spine.set_linewidth(self.grids.boundary_linewidth)
+        return configured
+
+    def chart_boundary_style(self):
+        """Return mode-resolved appearance for a circular chart boundary."""
+        return {
+            "edgecolor": self.grids.boundary_color,
+            "linewidth": self.grids.constellation_linewidth,
+        }
 
     def layer_options(self, sky, *, horizon_altitude_deg=None):
         options = super().layer_options(
@@ -126,8 +146,21 @@ def cartoon_chart_style(
         else CARTOON_PRINT_PALETTE
     )
     font_scale, line_scale, symbol_scale = _scales(mode, name)
-    style = CartoonModeChartStyle() if base is None else base
-    if not isinstance(style, CartoonChartStyle):
+    if base is None:
+        style = CartoonModeChartStyle()
+    elif isinstance(base, CartoonModeChartStyle):
+        style = base
+    elif isinstance(base, CartoonChartStyle):
+        style = CartoonModeChartStyle(
+            canvas=base.canvas,
+            stars=base.stars,
+            isophotes=base.isophotes,
+            deep_sky=base.deep_sky,
+            grids=base.grids,
+            mask=base.mask,
+            legend=base.legend,
+        )
+    else:
         raise TypeError("base must be a CartoonChartStyle.")
     positioned_labels = constellation_label_positions is not None
     resolved_label_offsets = (
@@ -148,6 +181,7 @@ def cartoon_chart_style(
         style.canvas,
         sky_color=palette.sky,
         foreground_color=palette.foreground,
+        footer_color=palette.footer,
         label_fontsize=style.canvas.label_fontsize * font_scale,
     )
     stars = replace(
@@ -177,6 +211,9 @@ def cartoon_chart_style(
             "center" if positioned_labels else "bottom"
         ),
         coordinate_label_color=palette.foreground,
+        equatorial_color=palette.foreground,
+        ecliptic_color=palette.foreground,
+        galactic_color=palette.foreground,
         coordinate_label_fontsize=(
             style.grids.coordinate_label_fontsize * font_scale
         ),
@@ -186,10 +223,27 @@ def cartoon_chart_style(
         milky_way_color=palette.milky_way,
         milky_way_contour_color=palette.frame,
     )
+    deep_sky = replace(
+        style.deep_sky,
+        nonstellar_color=palette.foreground,
+        galaxy_edge_color=palette.foreground,
+        galaxy_label_color=palette.foreground,
+        supernova_remnant_color=palette.foreground,
+        supernova_remnant_label_color=palette.foreground,
+        globular_cluster_color=palette.foreground,
+        globular_cluster_label_color=palette.foreground,
+        planetary_nebula_color=palette.foreground,
+        planetary_nebula_label_color=palette.foreground,
+        open_cluster_color=palette.foreground,
+        open_cluster_label_color=palette.foreground,
+    )
     legend = replace(
         style.legend,
         fontsize=style.legend.fontsize * font_scale,
         title_fontsize=style.legend.title_fontsize * font_scale,
+        facecolor=palette.sky,
+        edgecolor=palette.foreground,
+        text_color=palette.foreground,
     )
     mask = replace(style.mask, color=palette.sky)
     replacements = {
@@ -197,11 +251,11 @@ def cartoon_chart_style(
         "stars": stars,
         "grids": grids,
         "isophotes": isophotes,
+        "deep_sky": deep_sky,
         "legend": legend,
         "mask": mask,
     }
-    if isinstance(style, CartoonModeChartStyle):
-        replacements["output_mode_name"] = name
+    replacements["output_mode_name"] = name
     return replace(
         style,
         **replacements,
