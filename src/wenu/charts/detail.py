@@ -10,13 +10,18 @@ from .context import ChartContext
 from .modes import ResolvedMode
 
 
+COORDINATE_GRID_LAYERS = frozenset(
+    {"equatorial_grid", "ecliptic_grid", "galactic_grid"}
+)
+
+
 DEFAULT_CONTENT_LAYERS = frozenset(
     {
         "stars",
         "constellation_lines",
         "constellation_labels",
         "constellation_boundaries",
-        "coordinate_grids",
+        *COORDINATE_GRID_LAYERS,
         "milky_way",
         "magellanic_clouds",
         "galaxies",
@@ -100,11 +105,16 @@ class ResolvedDetail:
 
     def layer_enabled(self, name: str) -> bool:
         """Return whether a semantic layer is enabled."""
-        return (
-            True
-            if self.enabled_layers is None
-            else str(name) in self.enabled_layers
-        )
+        if self.enabled_layers is None:
+            return True
+        name = str(name)
+        if name in self.enabled_layers:
+            return True
+        if name == "coordinate_grids":
+            return bool(self.enabled_layers & COORDINATE_GRID_LAYERS)
+        if name in COORDINATE_GRID_LAYERS:
+            return "coordinate_grids" in self.enabled_layers
+        return False
 
 
 @dataclass(frozen=True)

@@ -46,12 +46,24 @@ _LAYER_OPTION_ALIASES = {
     "milky_way_isophotes": ("milky_way",),
 }
 
+_GRID_DETAIL_LAYER_NAMES = {
+    "equatorial": "equatorial_grid",
+    "ecliptic": "ecliptic_grid",
+    "galactic": "galactic_grid",
+}
+
 
 def _layer_option_names(layer):
     name = getattr(layer, "layer_name", None)
     if name is None:
         return ()
-    return (name, *_LAYER_OPTION_ALIASES.get(name, ()))
+    aliases = list(_LAYER_OPTION_ALIASES.get(name, ()))
+    grid_name = _GRID_DETAIL_LAYER_NAMES.get(
+        getattr(layer, "coordinate_system", None)
+    )
+    if name == "coordinates_grid" and grid_name is not None:
+        aliases.append(grid_name)
+    return (name, *aliases)
 
 
 def _is_hashable(value):
@@ -146,14 +158,20 @@ class DetailApplication:
 
 
 _DETAIL_LAYER_NAMES = {
-    "coordinates_grid": "coordinate_grids",
     "milky_way_isophotes": "milky_way",
     "magellanic_cloud_isophotes": "magellanic_clouds",
 }
 
 
-def _detail_layer_name(layer_name):
+def _detail_layer_name(layer):
     """Return the semantic content-policy name for a registered layer."""
+    layer_name = getattr(layer, "layer_name", None)
+    if layer_name == "coordinates_grid":
+        coordinate_system = getattr(layer, "coordinate_system", None)
+        return _GRID_DETAIL_LAYER_NAMES.get(
+            coordinate_system,
+            "coordinate_grids",
+        )
     return _DETAIL_LAYER_NAMES.get(layer_name, layer_name)
 
 
@@ -187,7 +205,7 @@ def apply_resolved_detail(
             continue
         configured = {
             "enabled": detail.layer_enabled(
-                _detail_layer_name(name)
+                _detail_layer_name(layer)
             ),
         }
         geometry = {}
@@ -212,7 +230,9 @@ def apply_resolved_detail(
                 geometry["minimum_size_arcmin"] = float(minimum)
         if geometry:
             configured["geometry"] = geometry
-        resolved_options[name] = configured
+        resolved_options[
+            layer if _is_hashable(layer) else name
+        ] = configured
 
     return DetailApplication(
         layer_options=merge_sky_layer_options(
