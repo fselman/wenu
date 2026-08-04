@@ -1,0 +1,264 @@
+"""Generate canonical binocular charts centered on a selected object.
+
+Examples:
+    python examples/binocular_object.py --target centaurus-a
+    python examples/binocular_object.py --target omega-centauri --all
+"""
+
+from __future__ import annotations
+
+import argparse
+from dataclasses import replace
+from pathlib import Path
+from typing import NamedTuple
+
+import astropy.units as u
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from astropy.coordinates import SkyCoord
+
+from wenu import (
+    BinocularChart,
+    CelestialSphere,
+    ChartFurnitureOptions,
+    FixedDetailPolicy,
+    FooterOptions,
+    LegendOptions,
+    MatplotlibRenderer,
+    Observer,
+    PoleAnnotations,
+    ReferenceAnnotations,
+    ReferencePlaneAnnotation,
+    ResolvedDetail,
+    StellarMagnitudeSizing,
+    add_chart_arguments,
+    chart_context_lines,
+    chart_detail_overrides,
+    chart_legend_selection,
+    chart_product_options,
+    chart_style_overrides,
+    compose_chart,
+    observer_context_lines,
+)
+
+
+LOCAL_TIME = "2026-05-15 22:00"
+DEFAULT_FIELD_DIAMETER_DEG = 6.5
+STAR_MAGNITUDE_LIMIT = 11.0
+BINOCULAR_STELLAR_SIZING = StellarMagnitudeSizing(
+    reference="limiting_magnitude",
+    scale=1.0,
+    exponent=0.20,
+    minimum_area=1.0,
+    maximum_area=40.0,
+)
+DEFAULT_OUTPUT = Path("output/examples/binocular-object")
+
+
+class BinocularTarget(NamedTuple):
+    """Immutable catalogue identity and center for one documented target."""
+
+    key: str
+    title: str
+    identifier: str
+    coordinate: SkyCoord
+
+
+TARGETS = {
+    "centaurus-a": BinocularTarget(
+        key="centaurus-a",
+        title="Centaurus A",
+        identifier="NGC 5128",
+        coordinate=SkyCoord(
+            ra=201.3650833333333 * u.deg,
+            dec=-43.01911111111111 * u.deg,
+            frame="icrs",
+        ),
+    ),
+    "omega-centauri": BinocularTarget(
+        key="omega-centauri",
+        title="Omega Centauri",
+        identifier="NGC 5139",
+        coordinate=SkyCoord(
+            ra=201.69683333 * u.deg,
+            dec=-47.47958333 * u.deg,
+            frame="icrs",
+        ),
+    ),
+}
+
+CARTOON_CONTENT_LAYERS = frozenset({
+    "stars",
+    "constellation_lines",
+    "galaxies",
+    "globular_clusters",
+})
+
+
+def build_chart(
+    target_key="centaurus-a",
+    field_diameter_deg=DEFAULT_FIELD_DIAMETER_DEG,
+):
+    """Build the selected-object sky and north-up binocular chart."""
+    target = TARGETS[target_key]
+    observer = Observer(location="La Ligua", time=LOCAL_TIME)
+    sky = CelestialSphere(observer)
+    sky.add_stars(
+        catalog="hipparcos",
+        magnitude_limit=STAR_MAGNITUDE_LIMIT,
+    )
+    sky.add_galaxies(magnitude_limit=11.0, samples=97)
+    sky.add_globular_clusters(magnitude_limit=12.0, samples=73)
+    sky.add_constellations(system="western")
+    sky.add_constellation_boundaries(boundaries="iau")
+    chart = BinocularChart.from_coordinate(
+        observer,
+        target.coordinate,
+        field_diameter_deg=field_diameter_deg,
+        north_up=True,
+    )
+    return sky, chart, target
+
+
+def furniture(sky, chart, arguments):
+    legends = chart_legend_selection(arguments)
+    references = "labeled" if arguments.references else "none"
+    poles = "both" if arguments.poles else "none"
+    return ChartFurnitureOptions(
+        references=ReferenceAnnotations(
+            ecliptic=ReferencePlaneAnnotation(
+                state=references, label="Ecliptic"
+            ),
+            galactic_plane=ReferencePlaneAnnotation(
+                state=references, label="Galactic plane"
+            ),
+        ),
+        poles=PoleAnnotations(
+            celestial=poles,
+            ecliptic=poles,
+            galactic=poles,
+            labels=arguments.pole_labels,
+        ),
+        footer=FooterOptions(
+            application=arguments.credits,
+            copyright=("© Fernando Selman" if arguments.credits else None),
+        ),
+        legends=LegendOptions(
+            objects=legends.objects,
+            stellar_magnitudes=legends.stellar_magnitudes,
+            stellar_counts=legends.stellar_counts,
+            context=False,
+            context_lines=(
+                chart_context_lines(
+                    chart, sky,
+                    center=arguments.center,
+                    grid=arguments.grid,
+                )
+                + observer_context_lines(
+                    sky.observer,
+                    location=arguments.location,
+                    date=arguments.date,
+                    local_time=arguments.local_time,
+                    labels=False,
+                )
+            ),
+        ),
+    )
+
+
+def generate(arguments):
+    """Generate the selected target and product matrix."""
+    options = chart_product_options(arguments)
+    sky, chart, target = build_chart(
+        arguments.target,
+        arguments.field_diameter,
+    )
+    saved = []
+    for product, output in options.outputs(
+        stem=f"binocular-{target.key}",
+    ):
+        if product.style == "cartoon":
+            detail = FixedDetailPolicy(ResolvedDetail(
+                star_magnitude_limit=STAR_MAGNITUDE_LIMIT,
+                enabled_layers=CARTOON_CONTENT_LAYERS,
+                constellation_star_mode="selected",
+            ))
+        else:
+            detail = FixedDetailPolicy(
+                ResolvedDetail(
+                    star_magnitude_limit=STAR_MAGNITUDE_LIMIT
+                )
+            )
+        composition = compose_chart(
+            chart,
+            style=product.style,
+            mode=product.mode,
+            detail=detail,
+            detail_overrides=chart_detail_overrides(arguments),
+            style_overrides=replace(
+                chart_style_overrides(arguments),
+                stellar_magnitude_sizing=BINOCULAR_STELLAR_SIZING,
+            ),
+            furniture=furniture(sky, chart, arguments),
+        )
+        figure, ax = plt.subplots(figsize=(
+            composition.mode.width_inches,
+            composition.mode.height_inches,
+        ))
+        composition.style.configure_axes(
+            ax,
+            title=(
+                f"{target.title} ({target.identifier}) — "
+                f"{chart.field_diameter_deg:g}° binocular field"
+            ),
+        )
+        _, path = chart.export(
+            sky,
+            MatplotlibRenderer(ax),
+            output,
+            composition=composition,
+        )
+        plt.close(figure)
+        saved.append(path)
+    return tuple(saved)
+
+
+def parser():
+    value = argparse.ArgumentParser(description=__doc__)
+    add_chart_arguments(value, default_output=DEFAULT_OUTPUT)
+    value.add_argument(
+        "--target",
+        choices=tuple(TARGETS),
+        default="centaurus-a",
+        help="catalogue object at the center of the binocular field",
+    )
+    value.add_argument(
+        "--field-diameter",
+        type=float,
+        default=DEFAULT_FIELD_DIAMETER_DEG,
+        help="circular binocular field diameter in degrees",
+    )
+    value.add_argument("--credits", action="store_true")
+    value.add_argument(
+        "--no-center", action="store_false", dest="center",
+        help="omit chart-center coordinate context",
+    )
+    value.add_argument(
+        "--no-grid", action="store_false", dest="grid",
+        help="omit coordinate-grid context",
+    )
+    value.add_argument("--location", action="store_true")
+    value.add_argument("--date", action="store_true")
+    value.add_argument("--local-time", action="store_true")
+    return value
+
+
+def main():
+    for path in generate(parser().parse_args()):
+        print(path)
+
+
+if __name__ == "__main__":
+    main()

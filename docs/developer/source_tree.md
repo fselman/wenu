@@ -20,6 +20,7 @@ src/wenu/
 │                               legends, boundaries, and export workflow
 ├── rendering/                  preparation and Matplotlib backend
 ├── resources/                  installed-resource access
+├── example_scripts/            packaged canonical user examples
 ├── data/                       distributed astronomical datasets
 └── utils/                      general utilities
 ```

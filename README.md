@@ -54,6 +54,16 @@ pip install -e .
 Wenu requires Python 3.10 or newer. Runtime dependencies are declared in
 `pyproject.toml`: Astropy, Matplotlib, NumPy, and Pandas.
 
+To install editable copies of all five canonical example scripts in a
+`wenu_examples` directory below the current directory, run:
+
+```bash
+wenu_examples
+```
+
+The command preserves existing scripts. Use `wenu_examples --force` to
+replace them with the copies from the installed Wenu version.
+
 ## Quick start: La Ligua planisphere
 
 Generate the same canonical cartoon presentation chart shown below:

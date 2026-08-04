@@ -176,6 +176,11 @@ The supported user examples are exactly:
 - `circumpolar.py`;
 - `binocular_object.py`.
 
+An installed Wenu distribution provides the `wenu_examples` command. Running
+it creates `wenu_examples/` in the current directory and installs these five
+scripts from package resources. Existing scripts are preserved unless the
+caller supplies `--force`.
+
 Catalogue, symbol, legend, clipping, and historical style demonstrations are
 test-local regression fixtures rather than additional public examples.
 

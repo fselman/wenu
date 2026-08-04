@@ -25,6 +25,7 @@ dependencies = [
 ]
 
 [project.scripts]
+wenu_examples = "wenu.cli.examples:main"
 wenu_notebooks = "wenu.cli.notebooks:main"
 
 [tool.ruff]
