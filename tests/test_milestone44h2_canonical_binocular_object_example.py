@@ -77,7 +77,7 @@ def test_all_selects_four_products_per_target(target_key):
     module = load()
     arguments = module.parser().parse_args([
         "--target", target_key,
-        "--all",
+        "--all-products",
     ])
     options = chart_product_options(arguments)
 
@@ -100,7 +100,7 @@ def test_shared_content_legend_credit_and_field_switches_are_available():
         "--magnitude-limit", "7.25",
         "--constellation-labels",
         "--constellation-boundaries",
-        "--references",
+        "--grid-references", "all",
         "--poles",
         "--pole-labels",
         "--object-legend",
@@ -114,7 +114,9 @@ def test_shared_content_legend_credit_and_field_switches_are_available():
     assert arguments.magnitude_limit == pytest.approx(7.25)
     assert arguments.constellation_labels is True
     assert arguments.constellation_boundaries is True
-    assert arguments.references is True
+    assert arguments.grid_references == frozenset(
+        {"equatorial", "ecliptic", "galactic"}
+    )
     assert arguments.poles is True
     assert arguments.pole_labels is True
     assert arguments.object_legend is True

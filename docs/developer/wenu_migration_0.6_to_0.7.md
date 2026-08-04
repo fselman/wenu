@@ -97,6 +97,8 @@ request.
 
 - add `--constellation-lines`;
 - replace generic grid switches with six system-specific switches;
+- replace `--references` with comma-separated `--grid-references` selection;
+- replace the vague `--all` product switch with `--all-products`;
 - make each grid-label switch imply only its own grid;
 - carry selected label systems through resolved detail;
 - apply `draw_labels` through grid-object render-local options;

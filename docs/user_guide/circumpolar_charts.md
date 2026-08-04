@@ -14,7 +14,7 @@ Generate all four products with:
 
 ```bash
 python examples/circumpolar.py \
-  --all --output output/circumpolar
+  --all-products --output output/circumpolar
 ```
 
 Atlas products show the detailed stellar field and shaded Magellanic Cloud

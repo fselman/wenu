@@ -2,7 +2,7 @@
 
 Examples:
     python examples/binocular_object.py --target centaurus-a
-    python examples/binocular_object.py --target omega-centauri --all
+    python examples/binocular_object.py --target omega-centauri --all-products
 """
 
 from __future__ import annotations
@@ -113,6 +113,26 @@ def build_chart(
     sky.add_globular_clusters(magnitude_limit=12.0, samples=73)
     sky.add_constellations(system="western")
     sky.add_constellation_boundaries(boundaries="iau")
+    grid_longitudes = tuple(range(0, 360, 5))
+    grid_latitudes = tuple(value for value in range(-85, 86, 5) if value)
+    sky.add_equatorial_grid(
+        ra=grid_longitudes,
+        dec=grid_latitudes,
+        frame="fk5",
+        equinox="J2000",
+        include_equator=False,
+    )
+    sky.add_ecliptic_grid(
+        longitude=grid_longitudes,
+        latitude=grid_latitudes,
+        equinox="J2000",
+        include_ecliptic=False,
+    )
+    sky.add_galactic_grid(
+        longitude=grid_longitudes,
+        latitude=grid_latitudes,
+        include_plane=False,
+    )
     chart = BinocularChart.from_coordinate(
         observer,
         target.coordinate,
@@ -124,15 +144,19 @@ def build_chart(
 
 def furniture(sky, chart, arguments):
     legends = chart_legend_selection(arguments)
-    references = "labeled" if arguments.references else "none"
+    def reference(name):
+        return "labeled" if name in arguments.grid_references else "none"
     poles = "both" if arguments.poles else "none"
     return ChartFurnitureOptions(
         references=ReferenceAnnotations(
+            celestial_equator=ReferencePlaneAnnotation(
+                state=reference("equatorial"), label="Celestial equator"
+            ),
             ecliptic=ReferencePlaneAnnotation(
-                state=references, label="Ecliptic"
+                state=reference("ecliptic"), label="Ecliptic"
             ),
             galactic_plane=ReferencePlaneAnnotation(
-                state=references, label="Galactic plane"
+                state=reference("galactic"), label="Galactic plane"
             ),
         ),
         poles=PoleAnnotations(

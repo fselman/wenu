@@ -120,11 +120,11 @@ class PublicationStyle:
     ] | None = None
     constellation_label_ha: str = "center"
     constellation_label_va: str = "center"
-    equatorial_color: str = "deepskyblue"
+    equatorial_color: str = "black"
     equatorial_linestyle: str = "-"
-    ecliptic_color: str = "gold"
+    ecliptic_color: str = "orange"
     ecliptic_linestyle: str = "-"
-    galactic_color: str = "white"
+    galactic_color: str = "blue"
     galactic_linestyle: str = "--"
     grid_linewidth: float = 0.7
     grid_alpha: float = 0.75
@@ -710,6 +710,20 @@ class PublicationStyle:
         if name.startswith("declination_"):
             degrees = float(name.removeprefix("declination_"))
             return f"{degrees:+g}°"
+        for prefix in (
+            "ecliptic_longitude_",
+            "galactic_longitude_",
+        ):
+            if name.startswith(prefix):
+                degrees = float(name.removeprefix(prefix)) % 360.0
+                return f"{degrees:g}°"
+        for prefix in (
+            "ecliptic_latitude_",
+            "galactic_latitude_",
+        ):
+            if name.startswith(prefix):
+                degrees = float(name.removeprefix(prefix))
+                return f"{degrees:+g}°"
         return name
 
     @staticmethod
@@ -731,7 +745,12 @@ class PublicationStyle:
             return None
         x = x[inside]
         y = y[inside]
-        if curve.name.startswith("right_ascension_"):
+        meridian_prefixes = (
+            "right_ascension_",
+            "ecliptic_longitude_",
+            "galactic_longitude_",
+        )
+        if curve.name.startswith(meridian_prefixes):
             index = int(np.argmin(np.abs(y - y_min)))
             return x[index], y_min + 0.018 * (y_max - y_min)
         index = int(np.argmin(np.abs(x - x_min)))

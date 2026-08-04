@@ -53,7 +53,7 @@ def test_canonical_examples_use_public_composition_and_export(path):
 @pytest.mark.parametrize("path", EXAMPLES)
 def test_all_selects_four_products_for_every_family(path):
     module = load(path)
-    arguments = module.parser().parse_args(["--all"])
+    arguments = module.parser().parse_args(["--all-products"])
     options = chart_product_options(arguments)
 
     assert len(options.products) == 4

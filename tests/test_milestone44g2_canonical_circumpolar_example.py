@@ -50,7 +50,7 @@ def test_example_uses_uniform_interface_without_rendering_internals():
 def test_all_selects_four_circumpolar_products():
     module = load()
     options = chart_product_options(
-        module.parser().parse_args(["--all"])
+        module.parser().parse_args(["--all-products"])
     )
 
     assert len(options.products) == 4
@@ -109,7 +109,7 @@ def test_shared_content_legend_and_credit_switches_are_available():
         "--magnitude-limit", "5.25",
         "--constellation-labels",
         "--constellation-boundaries",
-        "--references",
+        "--grid-references", "all",
         "--poles",
         "--pole-labels",
         "--object-legend",
@@ -121,7 +121,9 @@ def test_shared_content_legend_and_credit_switches_are_available():
     assert arguments.magnitude_limit == pytest.approx(5.25)
     assert arguments.constellation_labels is True
     assert arguments.constellation_boundaries is True
-    assert arguments.references is True
+    assert arguments.grid_references == frozenset(
+        {"equatorial", "ecliptic", "galactic"}
+    )
     assert arguments.poles is True
     assert arguments.pole_labels is True
     assert arguments.object_legend is True

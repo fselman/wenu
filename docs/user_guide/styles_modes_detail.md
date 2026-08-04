@@ -25,15 +25,23 @@ These options are shared by all five examples:
 
 ```text
 --magnitude-limit VALUE
+--constellation-lines
 --constellation-labels
 --constellation-boundaries
---references
+--equatorial-grid
+--equatorial-grid-labels
+--ecliptic-grid
+--ecliptic-grid-labels
+--galactic-grid
+--galactic-grid-labels
+--grid-references SELECTION
 --poles
 --pole-labels
 ```
 
-Omitting a switch preserves the family/style default. References select the
-semantic Ecliptic and Galactic-plane annotations. Poles select visible
+Omitting these switches leaves constellation structure, grids, and references
+off. `--grid-references` accepts a comma-separated selection of `equatorial`,
+`ecliptic`, and `galactic`, or `all`. Poles select visible
 celestial, ecliptic, and Galactic crosses; `--pole-labels` adds their standard
 abbreviations.
 

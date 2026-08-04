@@ -44,6 +44,8 @@ def test_target_defines_independent_opt_in_grid_contract():
         "--ecliptic-grid-labels",
         "--galactic-grid",
         "--galactic-grid-labels",
+        "--grid-references",
+        "--all-products",
     ):
         assert switch in target
     assert "all three" in target

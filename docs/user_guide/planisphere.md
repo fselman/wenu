@@ -16,7 +16,7 @@ Generate the four style/mode products:
 
 ```bash
 python examples/planisphere.py \
-  --all --output output/planisphere
+  --all-products --output output/planisphere
 ```
 
 References, poles, legends, cumulative star counts, and credits are opt-in:
@@ -24,7 +24,7 @@ References, poles, legends, cumulative star counts, and credits are opt-in:
 ```bash
 python examples/planisphere.py \
   --style atlas --mode presentation \
-  --references --poles --pole-labels \
+  --grid-references all --poles --pole-labels \
   --legends --star-counts --credits \
   --output output/planisphere-context.png
 ```

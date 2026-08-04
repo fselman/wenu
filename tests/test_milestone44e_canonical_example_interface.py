@@ -58,7 +58,7 @@ def test_normal_invocation_selects_one_exact_output():
 
 def test_all_selects_four_deterministically_named_outputs():
     arguments = parser().parse_args(
-        ["--all", "--output", "output/gallery"]
+        ["--all-products", "--output", "output/gallery"]
     )
     options = chart_product_options(arguments)
 
@@ -69,6 +69,11 @@ def test_all_selects_four_deterministically_named_outputs():
         "planisphere-cartoon-print.png",
         "planisphere-cartoon-presentation.png",
     ]
+
+
+def test_vague_all_switch_is_rejected():
+    with pytest.raises(SystemExit):
+        parser().parse_args(["--all"])
 
 
 def test_directory_output_names_one_selected_product():

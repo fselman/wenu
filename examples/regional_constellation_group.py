@@ -86,8 +86,19 @@ def build_chart(
     )
     sky.add_equatorial_grid(
         ra=tuple(range(0, 360, 15)),
-        dec=tuple(range(-75, 76, 15)),
+        dec=tuple(value for value in range(-75, 76, 15) if value),
         frame="fk5", equinox="J2000",
+    )
+    sky.add_ecliptic_grid(
+        longitude=tuple(range(0, 360, 15)),
+        latitude=tuple(value for value in range(-75, 76, 15) if value),
+        equinox="J2000",
+        include_ecliptic=False,
+    )
+    sky.add_galactic_grid(
+        longitude=tuple(range(0, 360, 15)),
+        latitude=tuple(value for value in range(-75, 76, 15) if value),
+        include_plane=False,
     )
     chart = RegionalChart.from_constellations(
         sky,
@@ -118,12 +129,20 @@ def build_chart(
 
 def furniture(sky, chart, arguments):
     legends = chart_legend_selection(arguments)
-    state = "labeled" if arguments.references else "none"
+    def reference(name):
+        return "labeled" if name in arguments.grid_references else "none"
     poles = "visible" if arguments.poles else "none"
     return ChartFurnitureOptions(
         references=ReferenceAnnotations(
-            ecliptic=ReferencePlaneAnnotation(state=state, label="Ecliptic"),
-            galactic_plane=ReferencePlaneAnnotation(state=state, label="Galactic plane"),
+            celestial_equator=ReferencePlaneAnnotation(
+                state=reference("equatorial"), label="Celestial equator"
+            ),
+            ecliptic=ReferencePlaneAnnotation(
+                state=reference("ecliptic"), label="Ecliptic"
+            ),
+            galactic_plane=ReferencePlaneAnnotation(
+                state=reference("galactic"), label="Galactic plane"
+            ),
         ),
         poles=PoleAnnotations(
             celestial=poles,

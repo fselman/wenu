@@ -2,12 +2,40 @@
 
 from __future__ import annotations
 
+import argparse
 from dataclasses import dataclass
 from math import isfinite
 
 from .product_options import add_chart_product_arguments
 from .detail import DetailOverrides
 from .style_overrides import ChartStyleOverrides
+
+
+GRID_REFERENCES = frozenset({"equatorial", "ecliptic", "galactic"})
+
+
+def _grid_references(value):
+    names = frozenset(
+        item.strip().lower()
+        for item in str(value).split(",")
+        if item.strip()
+    )
+    if not names:
+        raise argparse.ArgumentTypeError(
+            "grid references cannot be empty"
+        )
+    if "all" in names:
+        if names != {"all"}:
+            raise argparse.ArgumentTypeError(
+                "'all' cannot be combined with named grid references"
+            )
+        return GRID_REFERENCES
+    unknown = names - GRID_REFERENCES
+    if unknown:
+        raise argparse.ArgumentTypeError(
+            "unknown grid reference: " + ", ".join(sorted(unknown))
+        )
+    return names
 
 
 @dataclass(frozen=True)
@@ -24,7 +52,7 @@ class ChartContentOptions:
     ecliptic_grid_labels: bool = False
     galactic_grid: bool = False
     galactic_grid_labels: bool = False
-    references: bool = False
+    grid_references: frozenset[str] = frozenset()
     poles: bool = False
     pole_labels: bool = False
 
@@ -34,6 +62,17 @@ class ChartContentOptions:
             and not isfinite(float(self.magnitude_limit))
         ):
             raise ValueError("magnitude_limit must be finite.")
+        references = frozenset(
+            str(name).strip().lower()
+            for name in self.grid_references
+            if str(name).strip()
+        )
+        if references - GRID_REFERENCES:
+            raise ValueError(
+                "grid_references must contain only equatorial, ecliptic, "
+                "or galactic."
+            )
+        object.__setattr__(self, "grid_references", references)
 
 
 @dataclass(frozen=True)
@@ -98,9 +137,14 @@ def add_chart_content_arguments(parser):
         help="draw Galactic-grid labels (and enable that grid)",
     )
     parser.add_argument(
-        "--references",
-        action="store_true",
-        help="draw configured celestial reference planes and labels",
+        "--grid-references",
+        type=_grid_references,
+        default=frozenset(),
+        metavar="SELECTION",
+        help=(
+            "draw labeled zero-latitude references selected from "
+            "equatorial,ecliptic,galactic or all"
+        ),
     )
     parser.add_argument(
         "--poles",
@@ -172,7 +216,7 @@ def chart_content_options(arguments) -> ChartContentOptions:
         ecliptic_grid_labels=arguments.ecliptic_grid_labels,
         galactic_grid=arguments.galactic_grid,
         galactic_grid_labels=arguments.galactic_grid_labels,
-        references=arguments.references,
+        grid_references=arguments.grid_references,
         poles=arguments.poles,
         pole_labels=arguments.pole_labels,
     )

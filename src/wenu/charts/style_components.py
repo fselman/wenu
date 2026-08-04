@@ -172,11 +172,11 @@ class GridStyle:
     ] | None = None
     constellation_label_ha: str = "center"
     constellation_label_va: str = "center"
-    equatorial_color: str = "deepskyblue"
+    equatorial_color: str = "black"
     equatorial_linestyle: str = "-"
-    ecliptic_color: str = "gold"
+    ecliptic_color: str = "orange"
     ecliptic_linestyle: str = "-"
-    galactic_color: str = "white"
+    galactic_color: str = "blue"
     galactic_linestyle: str = "--"
     coordinate_linewidth: float = 0.7
     coordinate_alpha: float = 0.75

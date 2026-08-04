@@ -31,10 +31,10 @@ Every example accepts:
 --style atlas|cartoon
 --mode print|presentation
 --output PATH
---all
+--all-products
 ```
 
-A normal invocation writes one product. `--all` writes the four style/mode
+A normal invocation writes one product. `--all-products` writes the four style/mode
 products to a directory with deterministic names. See
 [Styles, modes, detail, and furniture](styles_modes_detail.md) for shared
 content, appearance, legend, reference, and credit options.

@@ -37,7 +37,7 @@ def test_shared_content_and_legends_are_opt_in():
     assert chart_content_options(arguments).ecliptic_grid_labels is False
     assert chart_content_options(arguments).galactic_grid is False
     assert chart_content_options(arguments).galactic_grid_labels is False
-    assert chart_content_options(arguments).references is False
+    assert chart_content_options(arguments).grid_references == frozenset()
     assert chart_content_options(arguments).poles is False
     assert chart_content_options(arguments).pole_labels is False
     assert chart_legend_selection(arguments).objects is False
@@ -58,7 +58,7 @@ def test_shared_content_switches_resolve_independently():
             "--ecliptic-grid-labels",
             "--galactic-grid",
             "--galactic-grid-labels",
-            "--references",
+            "--grid-references", "equatorial,ecliptic,galactic",
             "--poles",
             "--pole-labels",
         ]
@@ -75,7 +75,9 @@ def test_shared_content_switches_resolve_independently():
     assert content.ecliptic_grid_labels is True
     assert content.galactic_grid is True
     assert content.galactic_grid_labels is True
-    assert content.references is True
+    assert content.grid_references == frozenset(
+        {"equatorial", "ecliptic", "galactic"}
+    )
     assert content.poles is True
     assert content.pole_labels is True
 
@@ -85,6 +87,32 @@ def test_magnitude_limit_must_be_finite():
         chart_content_options(
             parser().parse_args(["--magnitude-limit", "nan"])
         )
+
+
+def test_grid_reference_selection_is_comma_separated_and_validated():
+    selected = chart_content_options(
+        parser().parse_args(
+            ["--grid-references", "equatorial, galactic"]
+        )
+    )
+    all_references = chart_content_options(
+        parser().parse_args(["--grid-references", "all"])
+    )
+
+    assert selected.grid_references == frozenset(
+        {"equatorial", "galactic"}
+    )
+    assert all_references.grid_references == frozenset(
+        {"equatorial", "ecliptic", "galactic"}
+    )
+    with pytest.raises(SystemExit):
+        parser().parse_args(
+            ["--grid-references", "all,ecliptic"]
+        )
+    with pytest.raises(SystemExit):
+        parser().parse_args(["--grid-references", "horizontal"])
+    with pytest.raises(SystemExit):
+        parser().parse_args(["--references"])
 
 
 def test_legend_convenience_and_individual_switches():

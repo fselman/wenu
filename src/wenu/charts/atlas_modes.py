@@ -173,7 +173,7 @@ def atlas_chart_style(mode="print", *, base=None, mode_name=None):
         ecliptic_color=palette.structure,
         galactic_color=palette.foreground,
         coordinate_linewidth=style.grids.coordinate_linewidth * line_scale,
-        coordinate_label_color=palette.foreground,
+        coordinate_label_color=None,
         coordinate_label_fontsize=(
             style.grids.coordinate_label_fontsize * font_scale
         ),

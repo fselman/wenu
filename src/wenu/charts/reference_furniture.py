@@ -10,7 +10,11 @@ from wenu.charts.context import BoundaryKind
 from wenu.rendering import layers
 from wenu.rendering.preparation import project_geometry_for_viewport
 from wenu.sky import CelestialSphere
-from wenu.sky.coordinate_grids import EclipticGrid, GalacticGrid
+from wenu.sky.coordinate_grids import (
+    EclipticGrid,
+    EquatorialGrid,
+    GalacticGrid,
+)
 
 
 @dataclass(frozen=True)
@@ -166,7 +170,8 @@ def build_celestial_reference_sky(sky, composition):
     references = furniture.references
     poles = furniture.poles
     requested = (
-        references.ecliptic.enabled
+        references.celestial_equator.enabled
+        or references.ecliptic.enabled
         or references.galactic_plane.enabled
         or any(
             value != "none"
@@ -177,6 +182,17 @@ def build_celestial_reference_sky(sky, composition):
         return None
 
     reference_sky = CelestialSphere(sky.observer)
+    if references.celestial_equator.enabled:
+        reference_sky.add(
+            EquatorialGrid(
+                sky.observer,
+                ra=(),
+                dec=(),
+                include_equator=True,
+                frame="fk5",
+                equinox="J2000",
+            )
+        )
     if references.ecliptic.enabled:
         reference_sky.add(
             EclipticGrid(
@@ -237,13 +253,13 @@ def _reference_layer_options(reference_sky, composition, chart):
     annotations = composition.furniture.references
     for layer in reference_sky.layers:
         system = getattr(layer, "coordinate_system", None)
-        if system not in {"ecliptic", "galactic"}:
+        if system not in {"equatorial", "ecliptic", "galactic"}:
             continue
-        annotation = (
-            annotations.ecliptic
-            if system == "ecliptic"
-            else annotations.galactic_plane
-        )
+        annotation = {
+            "equatorial": annotations.celestial_equator,
+            "ecliptic": annotations.ecliptic,
+            "galactic": annotations.galactic_plane,
+        }[system]
         configured = dict(options[layer])
         render = dict(configured["render"])
         render["draw_labels"] = annotation.labeled

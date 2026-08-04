@@ -102,6 +102,7 @@ class ChartProductOptions:
 
 def add_chart_product_arguments(parser, *, default_output):
     """Add the four common chart-product arguments to an ArgumentParser."""
+    parser.allow_abbrev = False
     parser.add_argument(
         "--style",
         choices=CHART_STYLES,
@@ -118,10 +119,10 @@ def add_chart_product_arguments(parser, *, default_output):
         "--output",
         type=Path,
         default=Path(default_output),
-        help="output file, or output directory with --all",
+        help="output file, or output directory with --all-products",
     )
     parser.add_argument(
-        "--all",
+        "--all-products",
         action="store_true",
         dest="all_products",
         help="generate atlas/cartoon in print/presentation modes",

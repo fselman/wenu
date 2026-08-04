@@ -36,7 +36,7 @@ def test_shared_content_and_legend_controls_are_available(path):
             "--magnitude-limit", "4.25",
             "--constellation-labels",
             "--constellation-boundaries",
-            "--references",
+            "--grid-references", "all",
             "--poles",
             "--pole-labels",
             "--object-legend",
@@ -48,7 +48,9 @@ def test_shared_content_and_legend_controls_are_available(path):
     assert arguments.magnitude_limit == pytest.approx(4.25)
     assert arguments.constellation_labels is True
     assert arguments.constellation_boundaries is True
-    assert arguments.references is True
+    assert arguments.grid_references == frozenset(
+        {"equatorial", "ecliptic", "galactic"}
+    )
     assert arguments.poles is True
     assert arguments.pole_labels is True
     assert arguments.object_legend is True
@@ -133,7 +135,7 @@ def test_planisphere_horizon_is_independent_of_content_switches():
         [
             "--constellation-labels",
             "--constellation-boundaries",
-            "--references",
+            "--grid-references", "all",
             "--poles",
             "--legends",
         ]

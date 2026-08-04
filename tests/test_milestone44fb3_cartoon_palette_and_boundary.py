@@ -15,22 +15,31 @@ YELLOW = "#FFE066"
 BLUE = "#1677A6"
 
 
-def test_presentation_palette_contains_only_three_resolved_colors():
-    assert set(vars(CARTOON_PRESENTATION_PALETTE).values()) == {
+def test_presentation_palette_retains_base_colors_and_distinct_grids():
+    colors = set(vars(CARTOON_PRESENTATION_PALETTE).values())
+    assert {
         BLUE,
         YELLOW,
         "#FFFFFF",
-    }
+    } <= colors
+    assert len({
+        CARTOON_PRESENTATION_PALETTE.equatorial_grid,
+        CARTOON_PRESENTATION_PALETTE.ecliptic_grid,
+        CARTOON_PRESENTATION_PALETTE.galactic_grid,
+    }) == 3
 
 
-def test_print_palette_contains_only_white_and_black():
+def test_print_palette_adds_semantic_grid_colors():
     assert set(vars(CARTOON_PRINT_PALETTE).values()) == {
         "white",
         "#000000",
+        "black",
+        "orange",
+        "blue",
     }
 
 
-def test_presentation_uses_yellow_for_all_chart_structure():
+def test_presentation_uses_yellow_except_semantic_coordinate_grids():
     style = cartoon_chart_style("presentation")
 
     assert style.stars.color == YELLOW
@@ -38,9 +47,9 @@ def test_presentation_uses_yellow_for_all_chart_structure():
     assert style.grids.constellation_line_color == YELLOW
     assert style.grids.constellation_label_color == YELLOW
     assert style.grids.boundary_color == YELLOW
-    assert style.grids.equatorial_color == YELLOW
-    assert style.grids.ecliptic_color == YELLOW
-    assert style.grids.galactic_color == YELLOW
+    assert style.grids.equatorial_color == "#FFFFFF"
+    assert style.grids.ecliptic_color == "#FFA500"
+    assert style.grids.galactic_color == "#66CCFF"
     assert style.isophotes.milky_way_color == YELLOW
     assert style.isophotes.milky_way_alpha == pytest.approx(0.0)
     assert style.isophotes.milky_way_contour_color == YELLOW

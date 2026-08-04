@@ -49,6 +49,10 @@ def test_reference_sky_contains_only_requested_semantic_geometry():
         mode="presentation",
         furniture=ChartFurnitureOptions(
             references=ReferenceAnnotations(
+                celestial_equator=ReferencePlaneAnnotation(
+                    state="labeled",
+                    label="Celestial equator",
+                ),
                 ecliptic=ReferencePlaneAnnotation(
                     state="labeled",
                     label="Ecliptic",
@@ -70,12 +74,14 @@ def test_reference_sky_contains_only_requested_semantic_geometry():
         composition,
     )
 
-    assert [layer.coordinate_system for layer in overlay.layers[:2]] == [
+    assert [layer.coordinate_system for layer in overlay.layers[:3]] == [
+        "equatorial",
         "ecliptic",
         "galactic",
     ]
-    assert overlay.layers[0].include_ecliptic is True
-    assert overlay.layers[1].include_plane is True
+    assert overlay.layers[0].include_equator is True
+    assert overlay.layers[1].include_ecliptic is True
+    assert overlay.layers[2].include_plane is True
     assert len(overlay.points) == 5
     metadata = overlay.points._style_metadata()
     assert set(metadata["marker"]) == {"x"}

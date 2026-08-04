@@ -50,7 +50,7 @@ Every canonical example exposes:
 --galactic-grid
 --galactic-grid-labels
 
---references
+--grid-references SELECTION
 --poles
 --pole-labels
 ```
@@ -109,9 +109,10 @@ EclipticGrid.include_ecliptic = False
 GalacticGrid.include_plane = False
 ```
 
-Ecliptic and Galactic reference planes remain canonical chart furniture
-selected by `--references`. This avoids duplicate lines and keeps semantic
-reference labels independent from numeric grid labels.
+The celestial equator, ecliptic, and Galactic plane remain canonical chart
+furniture selected by comma-separated `--grid-references` values or `all`.
+This avoids duplicate lines and keeps semantic reference labels independent
+from numeric grid labels.
 
 No named example product, including `sgr-sco-oph-ser`, silently enables a
 grid or grid labels. A regression product must pass the system-specific
@@ -162,6 +163,8 @@ The old generic grid switches are removed as an explicit pre-release CLI
 correction because their meaning is ambiguous with several registered grid
 systems. Internal compatibility APIs that do not prevent independent
 selection may remain documented during migration.
+
+The vague product switch `--all` is likewise replaced by `--all-products`.
 
 ## 9. Validation matrix
 

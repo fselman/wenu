@@ -70,7 +70,11 @@ class ReferencePlaneAnnotation:
 
 @dataclass(frozen=True)
 class ReferenceAnnotations:
-    """Independent ecliptic and Galactic-plane annotation policies."""
+    """Independent principal coordinate-plane annotation policies."""
+
+    celestial_equator: ReferencePlaneAnnotation = ReferencePlaneAnnotation(
+        label="Celestial equator"
+    )
 
     ecliptic: ReferencePlaneAnnotation = ReferencePlaneAnnotation(
         label="Ecliptic"
@@ -80,7 +84,11 @@ class ReferenceAnnotations:
     )
 
     def __post_init__(self):
-        for name in ("ecliptic", "galactic_plane"):
+        for name in (
+            "celestial_equator",
+            "ecliptic",
+            "galactic_plane",
+        ):
             if not isinstance(getattr(self, name), ReferencePlaneAnnotation):
                 raise TypeError(
                     f"{name} must be a ReferencePlaneAnnotation value."

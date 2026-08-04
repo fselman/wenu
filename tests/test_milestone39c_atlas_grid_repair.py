@@ -27,6 +27,10 @@ def test_atlas_enables_coordinate_labels():
     assert flat.grid_draw_labels is True
     assert flat._coordinate_label("right_ascension_270") == "18h"
     assert flat._coordinate_label("declination_-15") == "-15°"
+    assert flat._coordinate_label("ecliptic_longitude_270") == "270°"
+    assert flat._coordinate_label("ecliptic_latitude_-60") == "-60°"
+    assert flat._coordinate_label("galactic_longitude_30") == "30°"
+    assert flat._coordinate_label("galactic_latitude_60") == "+60°"
 
 
 def test_grid_renderer_supports_formatter_and_edge_anchor():
