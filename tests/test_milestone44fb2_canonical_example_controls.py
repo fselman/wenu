@@ -105,16 +105,24 @@ def test_labels_and_boundaries_are_opt_in(path, style):
 
 
 @pytest.mark.parametrize("path", EXAMPLES)
-def test_cartoon_magnitude_override_preserves_constellation_vertices(path):
+def test_cartoon_constellation_vertices_follow_line_switch(path):
     module = load(path)
-    detail = resolved_detail(
+    hidden = resolved_detail(
         module,
         module.parser().parse_args(["--magnitude-limit", "4.25"]),
         style="cartoon",
     )
+    visible = resolved_detail(
+        module,
+        module.parser().parse_args(
+            ["--magnitude-limit", "4.25", "--constellation-lines"]
+        ),
+        style="cartoon",
+    )
 
-    assert detail.star_magnitude_limit == pytest.approx(4.25)
-    assert detail.constellation_star_mode == "selected"
+    assert hidden.star_magnitude_limit == pytest.approx(4.25)
+    assert hidden.constellation_star_mode == "none"
+    assert visible.constellation_star_mode == "selected"
 
 
 def test_planisphere_horizon_is_independent_of_content_switches():

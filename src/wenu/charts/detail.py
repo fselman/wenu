@@ -57,6 +57,7 @@ class ResolvedDetail:
     minimum_supernova_remnant_size_arcmin: float | None = None
     label_density: float = 1.0
     enabled_layers: frozenset[str] | None = None
+    grid_label_layers: frozenset[str] = frozenset()
     constellation_star_mode: str | None = None
     extra_star_ids: frozenset[int] = frozenset()
 
@@ -89,6 +90,18 @@ class ResolvedDetail:
             if not normalized:
                 raise ValueError("enabled_layers cannot be empty.")
             object.__setattr__(self, "enabled_layers", normalized)
+        labels = frozenset(
+            str(name).strip()
+            for name in self.grid_label_layers
+            if str(name).strip()
+        )
+        unknown_labels = labels - COORDINATE_GRID_LAYERS
+        if unknown_labels:
+            raise ValueError(
+                "grid_label_layers must contain only equatorial_grid, "
+                "ecliptic_grid, or galactic_grid."
+            )
+        object.__setattr__(self, "grid_label_layers", labels)
         if (
             self.constellation_star_mode is not None
             and self.constellation_star_mode not in CONSTELLATION_STAR_MODES
@@ -129,6 +142,7 @@ class DetailOverrides:
     minimum_supernova_remnant_size_arcmin: float | None = None
     label_density: float | None = None
     enabled_layers: frozenset[str] | None = None
+    grid_label_layers: frozenset[str] | None = None
     enabled_layer_additions: frozenset[str] | None = None
     disabled_layers: frozenset[str] | None = None
     constellation_star_mode: str | None = None
@@ -137,6 +151,7 @@ class DetailOverrides:
     def __post_init__(self):
         for name in (
             "enabled_layers",
+            "grid_label_layers",
             "enabled_layer_additions",
             "disabled_layers",
         ):

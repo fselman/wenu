@@ -57,8 +57,6 @@ GROUPS = {
         "open_clusters": ("NGC 6405", "NGC 6475", "NGC 6530", "NGC 6603", "NGC 6611", "NGC 6705"),
         "planetary_nebulae": ("PN G349.5+01.0", "PN G002.4+05.8", "PN G008.0+03.9", "PN G009.4-05.0", "PN G010.1+00.7", "PN G025.8-17.9"),
         "supernova_remnants": ("G004.5+06.8", "G006.4-00.1", "G011.2-00.3", "G021.8-00.6", "G027.4+00.0", "G034.7-00.4"),
-        "coordinate_grid": True,
-        "coordinate_grid_labels": True,
         "mask": True,
     },
 }
@@ -184,21 +182,8 @@ def generate(arguments):
         composition = compose_chart(
             chart, style=product.style, mode=product.mode,
             detail=detail,
-            detail_overrides=chart_detail_overrides(
-                arguments,
-                coordinate_grid=(
-                    arguments.coordinate_grid
-                    or arguments.coordinate_grid_labels
-                    or group.get("coordinate_grid", False)
-                ),
-            ),
-            style_overrides=chart_style_overrides(
-                arguments,
-                coordinate_grid_labels=(
-                    arguments.coordinate_grid_labels
-                    or group.get("coordinate_grid_labels", False)
-                ),
-            ),
+            detail_overrides=chart_detail_overrides(arguments),
+            style_overrides=chart_style_overrides(arguments),
             furniture=furniture(sky, chart, arguments),
         )
         figure, ax = plt.subplots(figsize=(composition.mode.width_inches, composition.mode.height_inches))

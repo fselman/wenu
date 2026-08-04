@@ -56,7 +56,7 @@ SUPERNOVA_REMNANTS = (
 CARTOON_CONTENT_LAYERS = frozenset({
     "stars",
     "constellation_lines",
-    "coordinate_grids",
+    "equatorial_grid",
     "milky_way",
     "magellanic_clouds",
 })

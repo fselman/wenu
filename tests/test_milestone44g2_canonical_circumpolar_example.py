@@ -82,7 +82,7 @@ def test_cartoon_product_retains_defining_circumpolar_content():
     assert module.CARTOON_CONTENT_LAYERS == frozenset({
         "stars",
         "constellation_lines",
-        "coordinate_grids",
+        "equatorial_grid",
         "milky_way",
         "magellanic_clouds",
     })

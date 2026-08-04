@@ -208,6 +208,11 @@ def apply_resolved_detail(
                 _detail_layer_name(layer)
             ),
         }
+        detail_name = _detail_layer_name(layer)
+        if detail_name in _GRID_DETAIL_LAYER_NAMES.values():
+            configured["render"] = {
+                "draw_labels": detail_name in detail.grid_label_layers,
+            }
         geometry = {}
         if name == "stars":
             if detail.star_magnitude_limit is not None:

@@ -15,10 +15,15 @@ class ChartContentOptions:
     """Shared astronomical-content choices parsed by canonical examples."""
 
     magnitude_limit: float | None = None
+    constellation_lines: bool = False
     constellation_labels: bool = False
     constellation_boundaries: bool = False
-    coordinate_grid: bool = False
-    coordinate_grid_labels: bool = False
+    equatorial_grid: bool = False
+    equatorial_grid_labels: bool = False
+    ecliptic_grid: bool = False
+    ecliptic_grid_labels: bool = False
+    galactic_grid: bool = False
+    galactic_grid_labels: bool = False
     references: bool = False
     poles: bool = False
     pole_labels: bool = False
@@ -48,6 +53,11 @@ def add_chart_content_arguments(parser):
         help="override the style/family stellar magnitude limit",
     )
     parser.add_argument(
+        "--constellation-lines",
+        action="store_true",
+        help="draw constellation line figures",
+    )
+    parser.add_argument(
         "--constellation-labels",
         action="store_true",
         help="draw constellation labels",
@@ -58,14 +68,34 @@ def add_chart_content_arguments(parser):
         help="draw IAU constellation boundaries",
     )
     parser.add_argument(
-        "--coordinate-grid",
+        "--equatorial-grid",
         action="store_true",
-        help="draw the configured coordinate grid",
+        help="draw the configured equatorial grid",
     )
     parser.add_argument(
-        "--coordinate-grid-labels",
+        "--equatorial-grid-labels",
         action="store_true",
-        help="draw coordinate-grid labels (and enable the grid)",
+        help="draw equatorial-grid labels (and enable that grid)",
+    )
+    parser.add_argument(
+        "--ecliptic-grid",
+        action="store_true",
+        help="draw the configured ecliptic grid",
+    )
+    parser.add_argument(
+        "--ecliptic-grid-labels",
+        action="store_true",
+        help="draw ecliptic-grid labels (and enable that grid)",
+    )
+    parser.add_argument(
+        "--galactic-grid",
+        action="store_true",
+        help="draw the configured Galactic grid",
+    )
+    parser.add_argument(
+        "--galactic-grid-labels",
+        action="store_true",
+        help="draw Galactic-grid labels (and enable that grid)",
     )
     parser.add_argument(
         "--references",
@@ -133,10 +163,15 @@ def chart_content_options(arguments) -> ChartContentOptions:
     """Resolve shared parsed content arguments into an immutable value."""
     return ChartContentOptions(
         magnitude_limit=arguments.magnitude_limit,
+        constellation_lines=arguments.constellation_lines,
         constellation_labels=arguments.constellation_labels,
         constellation_boundaries=arguments.constellation_boundaries,
-        coordinate_grid=arguments.coordinate_grid,
-        coordinate_grid_labels=arguments.coordinate_grid_labels,
+        equatorial_grid=arguments.equatorial_grid,
+        equatorial_grid_labels=arguments.equatorial_grid_labels,
+        ecliptic_grid=arguments.ecliptic_grid,
+        ecliptic_grid_labels=arguments.ecliptic_grid_labels,
+        galactic_grid=arguments.galactic_grid,
+        galactic_grid_labels=arguments.galactic_grid_labels,
         references=arguments.references,
         poles=arguments.poles,
         pole_labels=arguments.pole_labels,
@@ -145,8 +180,6 @@ def chart_content_options(arguments) -> ChartContentOptions:
 
 def chart_style_overrides(
     arguments,
-    *,
-    coordinate_grid_labels=None,
 ) -> ChartStyleOverrides:
     """Resolve parsed visual arguments without applying mode defaults."""
     return ChartStyleOverrides(
@@ -155,47 +188,59 @@ def chart_style_overrides(
         constellation_label_color=arguments.constellation_label_color,
         boundary_linewidth=arguments.constellation_boundary_width,
         boundary_color=arguments.constellation_boundary_color,
-        draw_coordinate_labels=(
-            arguments.coordinate_grid_labels
-            if coordinate_grid_labels is None
-            else bool(coordinate_grid_labels)
-        ) or None,
     )
 
 
 def chart_detail_overrides(
     arguments,
-    *,
-    coordinate_grid=None,
 ) -> DetailOverrides:
     """Resolve magnitude and opt-in constellation layer visibility."""
     content = chart_content_options(arguments)
-    grid_enabled = (
-        content.coordinate_grid or content.coordinate_grid_labels
-        if coordinate_grid is None
-        else bool(coordinate_grid)
-    )
+    grids = {
+        "equatorial_grid": (
+            content.equatorial_grid or content.equatorial_grid_labels
+        ),
+        "ecliptic_grid": (
+            content.ecliptic_grid or content.ecliptic_grid_labels
+        ),
+        "galactic_grid": (
+            content.galactic_grid or content.galactic_grid_labels
+        ),
+    }
     additions = {
         name
         for name, enabled in (
+            ("constellation_lines", content.constellation_lines),
             ("constellation_labels", content.constellation_labels),
             ("constellation_boundaries", content.constellation_boundaries),
-            ("coordinate_grids", grid_enabled),
+            *grids.items(),
         )
         if enabled
     }
-    removals = {
+    optional_layers = {
+        "constellation_lines",
+        "constellation_labels",
+        "constellation_boundaries",
+        "coordinate_grids",
+        *grids,
+    }
+    labels = frozenset(
         name
         for name, enabled in (
-            ("constellation_labels", content.constellation_labels),
-            ("constellation_boundaries", content.constellation_boundaries),
+            ("equatorial_grid", content.equatorial_grid_labels),
+            ("ecliptic_grid", content.ecliptic_grid_labels),
+            ("galactic_grid", content.galactic_grid_labels),
         )
-        if not enabled
-    }
+        if enabled
+    )
     return DetailOverrides(
         star_magnitude_limit=content.magnitude_limit,
         enabled_layer_additions=frozenset(additions),
-        disabled_layers=frozenset(removals),
+        disabled_layers=frozenset(optional_layers - additions),
+        grid_label_layers=labels,
+        constellation_star_mode=(
+            "selected" if content.constellation_lines else "none"
+        ),
     )
 
 
