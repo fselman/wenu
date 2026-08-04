@@ -189,8 +189,11 @@ The principal packages are:
 
 Developer references:
 
+- `docs/developer/current_architecture_v0.6.md` (implemented baseline);
+- `docs/developer/target_architecture_v0.7.md` (proposed architecture);
+- `docs/developer/wenu_migration_0.6_to_0.7.md` (active roadmap);
+- `docs/developer/implementation_reference.md` (current v0.6 APIs);
 - `docs/developer/current_architecture_v0.5.md` (historical baseline);
-- `docs/developer/implementation_reference.md`;
 - `docs/developer/target_architecture_v0.6.md` (implemented architecture);
 - `docs/developer/wenu_migration_0.5_to_0.6.md` (completed roadmap);
 - `docs/developer/target_architecture_v0.5.md` (completed architecture);

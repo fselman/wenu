@@ -96,8 +96,10 @@ parallel implementations.
 - examples request charts and may supply documented label overrides, but do
   not implement clipping, catalogue joins, legends, or repeated saving.
 
-See `target_architecture_v0.6.md` for the implemented architecture and
-`implementation_reference.md` for public usage.
+See `current_architecture_v0.6.md` for the implemented baseline,
+`target_architecture_v0.7.md` for the proposed target,
+`wenu_migration_0.6_to_0.7.md` for the active roadmap, and
+`implementation_reference.md` for current public usage.
 
 The structured user guide is rooted at `docs/user_guide/index.md`; its
 `assets/` directory contains only the provenance-controlled README image.
