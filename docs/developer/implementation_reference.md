@@ -1,8 +1,8 @@
 # Wenu implementation reference
 
-**Architecture version:** 0.6
+**Architecture version:** 0.7
 **Status:** Implemented
-**Date:** 2026-08-03
+**Date:** 2026-08-04
 
 This reference records the implemented public chart workflow. Lower-level
 geometry, projection, preparation, and rendering APIs remain available for
@@ -42,6 +42,10 @@ The stable named choices are:
 - chart styles: `"atlas"` and `"cartoon"`;
 - output modes: `"print"` (with `"paper"` as an alias) and
   `"presentation"`.
+
+`Observer` owns its loaded Skyfield ephemeris. Call `observer.close()` when
+its lifetime ends, or use `with Observer(...) as observer:` for deterministic
+cleanup. Existing callers retain automatic finalization as a safety net.
 
 ## 2. Independent chart concerns
 
@@ -117,8 +121,17 @@ composition = compose_chart(
 
 Omitting `style_overrides` preserves the resolved style and mode defaults.
 `chart_detail_overrides(arguments)` applies the caller magnitude limit and
-adds or removes constellation labels and boundaries relative to the selected
-detail policy. It therefore retains cartoon constellation-vertex selection.
+the explicitly selected constellation and coordinate-grid layers relative to
+the selected detail policy. Constellation lines, labels, and boundaries are
+independent opt-in requests. It retains cartoon constellation-vertex
+selection even when line figures are hidden.
+
+Each canonical example exposes independent equatorial, ecliptic, and Galactic
+grid and grid-label switches. A `*-grid-labels` switch enables only its own
+grid. The grid systems use black, orange, and blue respectively for both
+their default lines and numeric labels. The principal equator, ecliptic, and
+Galactic plane remain separate furniture selected with
+`--grid-references SELECTION`.
 
 Cartoon presentation resolves a trichromatic palette: deep-blue background,
 yellow stars/lines/boundaries/context, and white footer credits. Cartoon print
@@ -147,7 +160,8 @@ style before delegating clipping to its circular rendering chart.
 `BinocularChart` uses the same shared boundary-resolution contract, so direct
 binocular compositions receive a visible style-owned aperture rim while an
 explicit `boundary_style` retains precedence.
-Circular charts paint their style-owned sky color only inside the clipping
+Circular charts, including full-sky planispheres, paint their style-owned sky
+color only inside the clipping
 boundary. Their default raster export leaves the surrounding figure and axes
 area transparent while retaining titles and footer furniture.
 The canonical `binocular_object.py` example centers the same binocular chart
@@ -221,6 +235,9 @@ style or mode. Layer selection is applied locally for each render.
 
 Legend content is derived from resolved enabled layers. Legends are drawn as
 part of export before the single final save.
+Planisphere legends use outside placements clear of the circular sky.
+`LegendOptions.symbol_labels` and `LegendOptions.stellar_title` permit
+example-local language overrides without changing global English defaults.
 
 ## 8. Canonical execution core
 
@@ -287,7 +304,7 @@ v0.5 compatibility policy are recorded in `deprecations_v0.5.md`.
 
 ## 12. User documentation and reference image
 
-The v0.6 user guide begins at `docs/user_guide/index.md` and contains one page
+The v0.7 user guide begins at `docs/user_guide/index.md` and contains one page
 for each canonical family plus a shared styles, modes, detail, and furniture
 reference. `docs/user_guide.md` remains only as a compatibility link.
 
@@ -299,11 +316,10 @@ destination, and visual approval are recorded in
 
 ### Sgr-Sco-Oph-Ser regional product
 
-`examples/regional_constellation_group.py --group sgr-sco-oph-ser` is the
-canonical labeled-grid regression for the Sagittarius, Scorpius, Ophiuchus,
-and two-part Serpens region. Shared `--coordinate-grid` and
-`--coordinate-grid-labels` controls are available to every canonical family;
-the latter also enables the registered grid. The named regional product opts
-into both controls for all four style/mode combinations.
+`examples/regional_constellation_group.py --group sgr-sco-oph-ser` selects the
+Sagittarius, Scorpius, Ophiuchus, and two-part Serpens region. It does not
+silently enable a grid. Every canonical family exposes `--equatorial-grid`,
+`--ecliptic-grid`, and `--galactic-grid` plus the corresponding label
+switches; regression commands request the required systems explicitly.
 It also enables the canonical outside-region mask by default, producing the
 regional emphasis patch without an additional command-line switch.

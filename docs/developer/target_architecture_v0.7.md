@@ -1,6 +1,8 @@
 # Wenu target architecture v0.7
 
-**Status:** Proposed target
+**Status:** Implemented
+**Completed:** 2026-08-04
+**Implementation baseline:** `61fc73e`
 **Source architecture:** `current_architecture_v0.6.md`
 **Migration plan:** `wenu_migration_0.6_to_0.7.md`
 

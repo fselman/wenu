@@ -24,11 +24,13 @@ def test_v07_architecture_documents_exist_and_cross_reference():
     assert "target_architecture_v0.7.md" in current
     assert "wenu_migration_0.6_to_0.7.md" in current
 
-    assert "**Status:** Proposed target" in target
+    assert "**Status:** Implemented" in target
+    assert "**Implementation baseline:** `61fc73e`" in target
     assert "current_architecture_v0.6.md" in target
     assert "wenu_migration_0.6_to_0.7.md" in target
 
-    assert "**Status:** Proposed incremental roadmap" in roadmap
+    assert "**Status:** Complete" in roadmap
+    assert "**Implemented through:** `61fc73e`" in roadmap
     assert "**Base commit:** `054d0c0`" in roadmap
     assert "current_architecture_v0.6.md" in roadmap
     assert "target_architecture_v0.7.md" in roadmap

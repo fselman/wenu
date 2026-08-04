@@ -1,5 +1,7 @@
 """Regression tests for atlas catalogue density and grid labels."""
 
+from pathlib import Path
+
 import matplotlib
 
 matplotlib.use("Agg")
@@ -74,10 +76,9 @@ def test_grid_renderer_supports_formatter_and_edge_anchor():
 
 
 def test_atlas_example_uses_curated_catalogue_subsets_and_global_grid():
-    source = open(
-        "tests/fixtures/example_regressions/atlas_style.py",
-        encoding="utf-8",
-    ).read()
+    source = Path(
+        "tests/fixtures/example_regressions/atlas_style.py"
+    ).read_text(encoding="utf-8")
     assert "add_open_clusters(selected=OPEN_CLUSTERS)" in source
     assert "add_planetary_nebulae(selected=PLANETARY_NEBULAE)" in source
     assert "ra=tuple(range(0, 360, 15))" in source

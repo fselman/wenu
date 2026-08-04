@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import weakref
 from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -106,6 +107,10 @@ class Observer:
         self.ephemeris = self.loader(
             self.ephemeris_name
         )
+        self._ephemeris_finalizer = weakref.finalize(
+            self,
+            self.ephemeris.close,
+        )
 
         self.earth = self.ephemeris["earth"]
 
@@ -120,6 +125,16 @@ class Observer:
 
         # Optional descriptive alias.
         self.topos = self.skyfield
+
+    def close(self) -> None:
+        """Close the loaded ephemeris resource, if it is still open."""
+        self._ephemeris_finalizer()
+
+    def __enter__(self) -> Observer:
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        self.close()
 
     @staticmethod
     def _resolve_location(
@@ -276,5 +291,3 @@ class Observer:
             obstime=self.t_astropy,
             location=self.earth_location,
         )
-
-

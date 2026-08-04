@@ -11,16 +11,11 @@ def read(relative):
     return (ROOT / relative).read_text(encoding="utf-8")
 
 
-def test_active_architecture_documents_record_v06_completion():
+def test_historical_architecture_documents_record_v06_completion():
     target = read("docs/developer/target_architecture_v0.6.md")
     roadmap = read("docs/developer/wenu_migration_0.5_to_0.6.md")
-    reference = read("docs/developer/implementation_reference.md")
-    source_tree = read("docs/developer/source_tree.md")
-
     assert "**Status:** Implemented" in target
     assert "**Status:** Complete" in roadmap
-    assert "**Architecture version:** 0.6" in reference
-    assert "**Architecture version:** 0.6" in source_tree
     assert "Milestone 44K completed the migration" in roadmap
 
 
@@ -30,15 +25,15 @@ def test_public_status_and_assistant_authority_are_current():
     instructions = read("docs/developer/assistant_instructions.md")
 
     assert (
-        "v0.6 reference-chart architecture and migration are complete"
+        "v0.7 explicit-reference architecture and migration are complete"
         in readme
     )
     assert (
-        "target_architecture_v0.6.md` (implemented architecture)"
+        "target_architecture_v0.7.md` (implemented architecture)"
         in readme
     )
     assert (
-        "wenu_migration_0.5_to_0.6.md` (completed roadmap)"
+        "wenu_migration_0.6_to_0.7.md` (completed roadmap)"
         in readme
     )
     assert (
@@ -46,7 +41,7 @@ def test_public_status_and_assistant_authority_are_current():
         in instructions
     )
     assert "completed migration history" in instructions
-    assert "referencia v0.6 están" in readme_es
+    assert "migración v0.7 están" in readme_es
     assert "completas" in readme_es
 
 

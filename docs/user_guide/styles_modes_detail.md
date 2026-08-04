@@ -45,6 +45,12 @@ off. `--grid-references` accepts a comma-separated selection of `equatorial`,
 celestial, ecliptic, and Galactic crosses; `--pole-labels` adds their standard
 abbreviations.
 
+Equatorial grid lines and numeric labels default to black, ecliptic ones to
+orange, and Galactic ones to blue. Presentation and cartoon modes may adapt
+them for contrast while keeping the systems visually distinct. Grid labels
+contain only their numeric coordinate values; semantic names belong to the
+separately selected reference curves.
+
 ## Appearance overrides
 
 Explicit overrides apply after mode defaults and therefore take precedence:

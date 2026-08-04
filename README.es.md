@@ -17,7 +17,7 @@ A diferencia de los programas planetario interactivos, Wenu está orientada a la
 ## Estado del proyecto
 
 **Wenu** se encuentra actualmente en una etapa activa de diseño y desarrollo.
-La arquitectura y la migración de las cartas de referencia v0.6 están
+La arquitectura de referencias explícitas y la migración v0.7 están
 completas. Tipos de carta, estilos, modos de salida,
 políticas de detalle y leyendas se resuelven mediante un único flujo de
 composición y exportación.
@@ -152,11 +152,11 @@ y representación gráfica.
 
 ## Documentación
 
-La [guía de usuario v0.6](docs/user_guide/index.md) documenta las cinco
+La [guía de usuario v0.7](docs/user_guide/index.md) documenta las cinco
 familias canónicas de cartas y sus controles compartidos. La referencia
 técnica vigente es `docs/developer/implementation_reference.md`; la
 arquitectura implementada se describe en
-`docs/developer/target_architecture_v0.5.md`.
+`docs/developer/target_architecture_v0.7.md`.
 
 ---
 

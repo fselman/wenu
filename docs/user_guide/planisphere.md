@@ -3,6 +3,8 @@
 `examples/planisphere.py` produces the visible sky from La Ligua at 21:00 local
 time on 15 August 2026. The observer defines the horizon and the chart remains
 zenith-centred. Content switches never remove or alter the circular horizon.
+The sky-colored interior is opaque, the canvas outside the horizon is
+transparent, and requested legends are placed outside the sky circle.
 
 Generate one detailed print product:
 
@@ -32,6 +34,10 @@ python examples/planisphere.py \
 Use `--magnitude-limit VALUE` to override stellar depth. Constellation labels
 and IAU boundaries are independently enabled with `--constellation-labels`
 and `--constellation-boundaries`.
+
+This canonical example supplies Spanish title, reference-curve annotations,
+object-symbol labels, and stellar-legend title through example-local legend
+overrides. Library-wide legend defaults remain English.
 
 ## README image provenance
 

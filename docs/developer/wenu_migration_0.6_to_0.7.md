@@ -1,9 +1,10 @@
 # Wenu migration roadmap: v0.6 to v0.7
 
-**Status:** Proposed incremental roadmap
+**Status:** Complete
 **Source:** `current_architecture_v0.6.md`
 **Target:** `target_architecture_v0.7.md`
 **Base commit:** `054d0c0`
+**Implemented through:** `61fc73e`
 
 ## 1. Objective
 
@@ -261,3 +262,15 @@ Pause and review if a change would require:
 The v0.6-to-v0.7 migration is complete when every target criterion is
 implemented, the affected visual products are approved, all tests pass, and
 the architecture documents agree with the repository.
+
+## 12. Closure record
+
+Milestones 45A through 45F were implemented through commit `61fc73e`.
+The final suite passed 995 tests with warnings treated as errors. The
+dependency audit found no reported conflict among Wenu's declared runtime
+dependencies; `pip check` did report unrelated inconsistencies in the shared
+Conda base environment. The affected canonical atlas/cartoon and
+print/presentation charts
+were visually approved, including semantic grid colors, explicit reference
+selection, tangent-aligned reference labels, and circular planisphere
+composition. Canonical and packaged examples remained byte-identical.

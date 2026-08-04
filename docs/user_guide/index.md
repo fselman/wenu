@@ -1,4 +1,4 @@
-# Wenu v0.6 user guide
+# Wenu v0.7 user guide
 
 Wenu produces reproducible static sky charts through five canonical example
 families. Each example uses the same chart composition and export pipeline and

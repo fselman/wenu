@@ -15,7 +15,7 @@ southern South America.
 ## Project status
 
 Wenu remains under active development and has not yet reached its first public
-release. The v0.6 reference-chart architecture and migration are complete.
+release. The v0.7 explicit-reference architecture and migration are complete.
 One composition and export workflow serves
 all chart types, styles, output modes, detail policies, and legends. Public
 APIs may still change before release.
@@ -80,7 +80,7 @@ python examples/planisphere.py \
 The image's exact command, source commit, dimensions, checksum, and visual
 approval are recorded in the
 [planisphere guide](docs/user_guide/planisphere.md#readme-image-provenance).
-The complete [Wenu v0.6 user guide](docs/user_guide/index.md) covers all five
+The complete [Wenu v0.7 user guide](docs/user_guide/index.md) covers all five
 canonical chart families and their shared controls.
 
 ## Library composition
@@ -189,10 +189,10 @@ The principal packages are:
 
 Developer references:
 
-- `docs/developer/current_architecture_v0.6.md` (implemented baseline);
-- `docs/developer/target_architecture_v0.7.md` (proposed architecture);
-- `docs/developer/wenu_migration_0.6_to_0.7.md` (active roadmap);
-- `docs/developer/implementation_reference.md` (current v0.6 APIs);
+- `docs/developer/target_architecture_v0.7.md` (implemented architecture);
+- `docs/developer/implementation_reference.md` (current v0.7 APIs);
+- `docs/developer/wenu_migration_0.6_to_0.7.md` (completed roadmap);
+- `docs/developer/current_architecture_v0.6.md` (historical baseline);
 - `docs/developer/current_architecture_v0.5.md` (historical baseline);
 - `docs/developer/target_architecture_v0.6.md` (implemented architecture);
 - `docs/developer/wenu_migration_0.5_to_0.6.md` (completed roadmap);
