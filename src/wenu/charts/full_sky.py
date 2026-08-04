@@ -197,6 +197,18 @@ class FullSkyChart:
         converter = getattr(style, "as_publication_style", None)
         if callable(converter):
             resolved_style = converter()
+        canvas = getattr(style, "canvas", None)
+        sky_color = getattr(canvas, "sky_color", None)
+        if sky_color is None:
+            sky_color = getattr(resolved_style, "sky_color", None)
+        set_circular_background = getattr(
+            renderer, "set_circular_background", None
+        )
+        if callable(set_circular_background) and sky_color is not None:
+            set_circular_background(
+                self.horizon,
+                color=sky_color,
+            )
         options = (
             {}
             if resolved_style is None

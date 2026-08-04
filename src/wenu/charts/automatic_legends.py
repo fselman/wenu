@@ -43,6 +43,8 @@ def draw_automatic_chart_legends(
     include_objects=True,
     include_context=None,
     stellar_counts: bool = False,
+    symbol_labels=None,
+    stellar_title="Stars",
 ) -> AutomaticChartLegends:
     """Draw both chart legends with no duplicated scientific/style inputs."""
     inferred = (
@@ -63,6 +65,8 @@ def draw_automatic_chart_legends(
         context_lines=context_lines,
         include_objects=include_objects,
         include_context=include_context,
+        symbol_labels=symbol_labels,
+        stellar_title=stellar_title,
     )
     if stellar_counts:
         options["stellar_counts"] = True

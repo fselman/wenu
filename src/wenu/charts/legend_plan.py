@@ -73,6 +73,8 @@ class ResolvedLegendOptions:
     context: bool = True
     context_lines: tuple[str, ...] = ()
     stellar_counts: bool = False
+    symbol_labels: tuple[tuple[str, str], ...] = ()
+    stellar_title: str = "Stars"
 
 
 @dataclass(frozen=True)
@@ -85,6 +87,8 @@ class LegendOptions:
     stellar_counts: bool = False
     plan: ChartLegendPlan | None = None
     context_lines: tuple[str, ...] = ()
+    symbol_labels: tuple[tuple[str, str], ...] = ()
+    stellar_title: str = "Stars"
 
     def resolve(self, chart_type: str) -> ResolvedLegendOptions:
         """Resolve family switches into the established placement plan."""
@@ -104,6 +108,11 @@ class LegendOptions:
             context=bool(self.context),
             context_lines=tuple(str(line) for line in self.context_lines),
             stellar_counts=bool(self.stellar_counts),
+            symbol_labels=tuple(
+                (str(key), str(label))
+                for key, label in self.symbol_labels
+            ),
+            stellar_title=str(self.stellar_title),
         )
 
 
@@ -146,8 +155,14 @@ def default_chart_legend_plan(chart_type: str) -> ChartLegendPlan:
     if normalized == "planisphere":
         return ChartLegendPlan(
             chart_type=normalized,
-            objects=LegendPlacement(location="upper right"),
-            stars=LegendPlacement(location="lower right"),
+            objects=LegendPlacement(
+                location="upper right",
+                outside=True,
+            ),
+            stars=LegendPlacement(
+                location="lower right",
+                outside=True,
+            ),
         )
     if normalized == "circumpolar":
         return ChartLegendPlan(

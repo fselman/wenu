@@ -47,6 +47,8 @@ def draw_resolved_chart_legends(
         include_objects=legend_options.plan.objects.enabled,
         include_context=legend_options.context,
         context_lines=legend_options.context_lines,
+        symbol_labels=legend_options.symbol_labels,
+        stellar_title=legend_options.stellar_title,
     )
     if legend_options.stellar_counts:
         options["stellar_counts"] = True

@@ -84,6 +84,7 @@ def draw_chart_legend(
     include_objects=True,
     include_context=True,
     resolved_detail=None,
+    symbol_labels=None,
 ):
     """Draw a configurable symbol key with coordinate and context metadata."""
     config = style.legend
@@ -97,6 +98,7 @@ def draw_chart_legend(
                 sky,
                 style,
                 resolved_detail=resolved_detail,
+                labels=symbol_labels,
             )
         ]
         if include_objects

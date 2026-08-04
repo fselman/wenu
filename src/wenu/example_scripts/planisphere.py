@@ -112,13 +112,13 @@ def furniture(sky, chart, arguments):
     return ChartFurnitureOptions(
         references=ReferenceAnnotations(
             celestial_equator=ReferencePlaneAnnotation(
-                state=reference("equatorial"), label="Celestial equator"
+                state=reference("equatorial"), label="Ecuador celeste"
             ),
             ecliptic=ReferencePlaneAnnotation(
-                state=reference("ecliptic"), label="Ecliptic"
+                state=reference("ecliptic"), label="Eclíptica"
             ),
             galactic_plane=ReferencePlaneAnnotation(
-                state=reference("galactic"), label="Galactic plane"
+                state=reference("galactic"), label="Plano galáctico"
             ),
         ),
         poles=PoleAnnotations(
@@ -136,6 +136,15 @@ def furniture(sky, chart, arguments):
             stellar_magnitudes=legends.stellar_magnitudes,
             stellar_counts=legends.stellar_counts,
             context=False,
+            symbol_labels=(
+                ("open_cluster", "Cúmulo abierto"),
+                ("globular_cluster", "Cúmulo globular"),
+                ("planetary_nebula", "Nebulosa planetaria"),
+                ("supernova_remnant", "Remanente de supernova"),
+                ("galaxy", "Galaxia"),
+                ("milky_way", "Vía Láctea"),
+            ),
+            stellar_title="Estrellas",
             context_lines=(
                 chart_context_lines(
                     chart,
@@ -183,7 +192,7 @@ def generate(arguments):
         ))
         composition.style.configure_axes(
             ax,
-            title="La Ligua planisphere — 15 August 2026, 21:00",
+            title="Planisferio de La Ligua — 15 de agosto de 2026, 21:00",
         )
         _, path = chart.export(
             sky,

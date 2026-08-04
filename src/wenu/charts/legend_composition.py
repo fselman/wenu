@@ -91,6 +91,8 @@ def draw_planned_chart_legends(
     include_context=None,
     resolved_detail=None,
     stellar_counts: bool = False,
+    symbol_labels=None,
+    stellar_title="Stars",
 ) -> ComposedChartLegends:
     """Draw the planned object and stellar legends for a chart."""
     object_artist = None
@@ -105,6 +107,8 @@ def draw_planned_chart_legends(
             title=object_title,
             context_lines=context_lines,
         )
+        if symbol_labels is not None:
+            legend_kwargs["symbol_labels"] = symbol_labels
         if not include_objects:
             legend_kwargs["include_objects"] = False
         if include_context is not None:
@@ -142,6 +146,7 @@ def draw_planned_chart_legends(
             base_style,
             enabled=True,
             location=plan.stars.location,
+            title=str(stellar_title),
         )
         star_options = dict(
             effective_limit=effective_limit,

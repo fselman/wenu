@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Literal
 
 
@@ -25,7 +25,13 @@ class LegendSymbolDescriptor:
     linewidth: float | None = None
 
 
-def legend_symbol_descriptors(sky, style, *, resolved_detail=None):
+def legend_symbol_descriptors(
+    sky,
+    style,
+    *,
+    resolved_detail=None,
+    labels=None,
+):
     """Return descriptors for active layers in conventional legend order."""
     deep = style.deep_sky
     iso = style.isophotes
@@ -104,8 +110,12 @@ def legend_symbol_descriptors(sky, style, *, resolved_detail=None):
     detail_names = {
         "milky_way_isophotes": "milky_way",
     }
+    labels = {} if labels is None else dict(labels)
     return tuple(
-        descriptor
+        replace(
+            descriptor,
+            label=labels.get(descriptor.key, descriptor.label),
+        )
         for descriptor in candidates
         if getattr(sky, descriptor.layer_attribute, None) is not None
         and (
