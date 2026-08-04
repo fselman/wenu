@@ -127,6 +127,15 @@ def test_cartoon_constellation_vertices_follow_line_switch(path):
     assert visible.constellation_star_mode == "selected"
 
 
+def test_shared_cartoon_limit_is_three_with_deep_binocular_exception():
+    assert CartoonDetailPolicy().resolve(
+        object(), object()
+    ).star_magnitude_limit == pytest.approx(3.0)
+
+    binocular = load(Path("examples/binocular_object.py"))
+    assert binocular.STAR_MAGNITUDE_LIMIT == pytest.approx(11.0)
+
+
 def test_planisphere_horizon_is_independent_of_content_switches():
     module = load(EXAMPLES[0])
     _, chart = module.build_chart()

@@ -69,7 +69,7 @@ def fake_sky():
 def test_default_policy_is_sparse_and_style_independent():
     detail = CartoonDetailPolicy().resolve(object(), object())
     assert detail.enabled_layers == CARTOON_CONTENT_LAYERS
-    assert detail.star_magnitude_limit == pytest.approx(1.5)
+    assert detail.star_magnitude_limit == pytest.approx(3.0)
     assert detail.constellation_star_mode == "selected"
     assert not detail.layer_enabled("constellation_boundaries")
     assert not detail.layer_enabled("coordinate_grids")
@@ -106,7 +106,7 @@ def test_none_mode_keeps_only_explicit_ids_beyond_bright_limit():
     assert not sky.stars.include_constellation_vertices
     assert sky.stars.loads == 0
     assert application.layer_options["stars"]["geometry"] == {
-        "magnitude_limit": 1.5,
+        "magnitude_limit": 3.0,
         "include_ids": frozenset({42}),
         "include_constellation_vertices": False,
     }

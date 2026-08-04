@@ -8,6 +8,7 @@ import numpy as np
 
 from wenu.charts.context import BoundaryKind
 from wenu.rendering import layers
+from wenu.rendering.label_placement import tangent_label_placement
 from wenu.rendering.preparation import project_geometry_for_viewport
 from wenu.sky import CelestialSphere
 from wenu.sky.coordinate_grids import (
@@ -69,7 +70,9 @@ class BoundaryAwareReferenceAnchor:
                 )
             )
             radial = np.hypot(x, y)
-            inside &= radial <= radius * (1.0 + 1.0e-6)
+            inside = radial <= radius * (
+                1.0 - margin + 1.0e-6
+            )
         for location in self.avoid_locations:
             horizontal = str(location).lower()
             if "right" in horizontal:
@@ -89,14 +92,18 @@ class BoundaryAwareReferenceAnchor:
             return None
         indices = np.flatnonzero(inside)
         if circular:
-            target = radius * 0.62
+            target = radius * 0.78
             index = indices[np.argmin(np.abs(radial[indices] - target))]
         else:
-            distance = (
-                (normalized_x[indices] - 0.5) ** 2
-                + (normalized_y[indices] - 0.5) ** 2
+            edge_distance = np.minimum.reduce(
+                (
+                    normalized_x[indices],
+                    1.0 - normalized_x[indices],
+                    normalized_y[indices],
+                    1.0 - normalized_y[indices],
+                )
             )
-            index = indices[np.argmin(distance)]
+            index = indices[np.argmin(edge_distance)]
         return float(x[index]), float(y[index])
 
 
@@ -120,7 +127,12 @@ class _SingleReferenceLabelAnchor:
         anchor = self.delegate(curve, ax)
         if anchor is not None:
             self.used = True
-        return anchor
+            return tangent_label_placement(
+                curve,
+                anchor,
+                normal_offset_em=0.75,
+            )
+        return None
 
 
 def _occupied_legend_locations(composition):

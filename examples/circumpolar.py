@@ -166,7 +166,7 @@ def generate(arguments):
     for product, output in options.outputs(stem="circumpolar"):
         if product.style == "cartoon":
             detail = FixedDetailPolicy(ResolvedDetail(
-                star_magnitude_limit=1.5,
+                star_magnitude_limit=3.0,
                 enabled_layers=CARTOON_CONTENT_LAYERS,
                 constellation_star_mode="selected",
             ))

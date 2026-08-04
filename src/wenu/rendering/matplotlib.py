@@ -23,6 +23,7 @@ from wenu.rendering._matplotlib_primitives import (
     render_polygon,
     render_text,
 )
+from wenu.rendering.label_placement import CurveLabelPlacement
 
 
 class MatplotlibRenderer:
@@ -557,6 +558,41 @@ class MatplotlibRenderer:
                     )
                     if anchor is None:
                         continue
+                    label_style_for_curve = label_style
+                    if isinstance(anchor, CurveLabelPlacement):
+                        position = (anchor.x, anchor.y)
+                        if anchor.rotation_deg is not None:
+                            label_style_for_curve = {
+                                **label_style,
+                                "rotation": anchor.rotation_deg,
+                                "rotation_mode": "anchor",
+                            }
+                            if anchor.normal_offset_em:
+                                from matplotlib.transforms import (
+                                    ScaledTranslation,
+                                )
+
+                                fontsize = float(
+                                    label_style_for_curve.get(
+                                        "fontsize", 10.0
+                                    )
+                                )
+                                angle = np.radians(anchor.rotation_deg)
+                                distance = (
+                                    anchor.normal_offset_em * fontsize
+                                )
+                                dx = -np.sin(angle) * distance / 72.0
+                                dy = np.cos(angle) * distance / 72.0
+                                label_style_for_curve["transform"] = (
+                                    self.ax.transData
+                                    + ScaledTranslation(
+                                        dx,
+                                        dy,
+                                        self.ax.figure.dpi_scale_trans,
+                                    )
+                                )
+                    else:
+                        position = anchor
                     label = (
                         curve_name
                         if label_formatter is None
@@ -564,9 +600,9 @@ class MatplotlibRenderer:
                     )
                     artists.append(
                         self._label(
-                            *anchor,
+                            *position,
                             label,
-                            label_style,
+                            label_style_for_curve,
                             label_offset,
                         )
                     )

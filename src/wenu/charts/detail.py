@@ -206,7 +206,7 @@ class CartoonDetailPolicy:
     """
 
     constellation_star_mode: str = "selected"
-    bright_star_magnitude_limit: float = 1.5
+    bright_star_magnitude_limit: float = 3.0
     extra_star_ids: frozenset[int] = frozenset()
     include_deep_sky: bool = False
     label_named_stars: bool = False

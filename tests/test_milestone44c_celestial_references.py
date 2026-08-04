@@ -140,28 +140,29 @@ def test_rectangular_anchor_avoids_legend_corners_and_chart_edges():
     normalized_y = (
         (y - context.viewport.y_min) / context.viewport.height
     )
-    assert 0.16 <= normalized_x <= 0.84
-    assert 0.16 <= normalized_y <= 0.84
+    assert 0.16 <= normalized_x + 1.0e-12 <= 0.84
+    assert 0.16 <= normalized_y + 1.0e-12 <= 0.84
     assert normalized_x <= 0.50
 
 
 def test_circular_automatic_anchor_stays_inside_field_stop():
     context = BinocularChart(45.0, 180.0).chart_context
-    anchor = BoundaryAwareReferenceAnchor(context)
-    curve = ProjectedCurve(
-        x=np.linspace(-2.0, 2.0, 73),
-        y=np.zeros(73),
-        name="galactic_plane",
-    )
-
-    x, y = anchor(curve)
     radius = np.nanmedian(
         np.hypot(
             context.clip_boundary.x,
             context.clip_boundary.y,
         )
     )
+    anchor = BoundaryAwareReferenceAnchor(context)
+    curve = ProjectedCurve(
+        x=np.linspace(-radius, radius, 73),
+        y=np.zeros(73),
+        name="galactic_plane",
+    )
+
+    x, y = anchor(curve)
     assert np.hypot(x, y) <= radius
+    assert np.hypot(x, y) >= 0.70 * radius
 
     invisible = ProjectedCurve(
         x=np.asarray([-2.0, 2.0]),

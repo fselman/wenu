@@ -10,6 +10,10 @@ from ._matplotlib_primitives import (
     render_text,
 )
 from .matplotlib import MatplotlibRenderer
+from .label_placement import (
+    CurveLabelPlacement,
+    tangent_label_placement,
+)
 from .symbols import DEFAULT_SYMBOLS, SymbolLibrary
 from .preparation import (
     clip_polygons_to_projection_cap,
@@ -25,6 +29,8 @@ from .preparation import (
 
 __all__ = [
     "MatplotlibRenderer",
+    "CurveLabelPlacement",
+    "tangent_label_placement",
     "SymbolLibrary",
     "DEFAULT_SYMBOLS",
     "apply_viewport",
