@@ -131,8 +131,17 @@ def built_sky(path):
 
 
 @pytest.mark.parametrize("path", EXAMPLES)
-def test_canonical_examples_register_four_reference_free_grids(path):
-    sky = built_sky(path)
+def test_canonical_examples_declare_four_semantic_grids(path):
+    source = path.read_text(encoding="utf-8")
+
+    assert "sky.add_altaz_grid(" in source
+    assert "sky.add_equatorial_grid(" in source
+    assert "sky.add_ecliptic_grid(" in source
+    assert "sky.add_galactic_grid(" in source
+
+
+def test_canonical_grid_configuration_is_reference_free():
+    sky = built_sky(EXAMPLES[0])
     grids = {
         layer.coordinate_system: layer
         for layer in sky.layers

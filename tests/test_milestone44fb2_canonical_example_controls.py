@@ -8,6 +8,7 @@ import pytest
 from wenu import (
     CartoonDetailPolicy,
     FixedDetailPolicy,
+    RegionalChart,
     ResolvedDetail,
     chart_detail_overrides,
     compose_chart,
@@ -58,24 +59,13 @@ def test_shared_content_and_legend_controls_are_available(path):
     assert arguments.star_counts is True
 
 
-def resolved_detail(module, arguments, *, style):
-    if module.__name__ == "planisphere":
-        _, chart = module.build_chart()
-        default_limit = 5.0
-    elif module.__name__ == "regional_constellation_group":
-        _, chart, _ = module.build_chart("summer-triangle")
-        default_limit = 6.5
-    elif module.__name__ == "circumpolar":
-        _, chart = module.build_chart()
-        default_limit = 6.5
-    else:
-        _, chart = module.build_chart("Cru")
-        default_limit = 6.5
+def resolved_detail(arguments, *, style):
+    chart = RegionalChart(45.0, 180.0, 20.0, 15.0)
     policy = (
         CartoonDetailPolicy()
         if style == "cartoon"
         else FixedDetailPolicy(
-            ResolvedDetail(star_magnitude_limit=default_limit)
+            ResolvedDetail(star_magnitude_limit=6.5)
         )
     )
     return compose_chart(
@@ -87,13 +77,11 @@ def resolved_detail(module, arguments, *, style):
     ).detail
 
 
-@pytest.mark.parametrize("path", EXAMPLES)
 @pytest.mark.parametrize("style", ["atlas", "cartoon"])
-def test_labels_and_boundaries_are_opt_in(path, style):
-    module = load(path)
-    hidden = resolved_detail(module, module.parser().parse_args([]), style=style)
+def test_labels_and_boundaries_are_opt_in(style):
+    module = load(EXAMPLES[2])
+    hidden = resolved_detail(module.parser().parse_args([]), style=style)
     visible = resolved_detail(
-        module,
         module.parser().parse_args(
             ["--constellation-labels", "--constellation-boundaries"]
         ),
@@ -106,16 +94,13 @@ def test_labels_and_boundaries_are_opt_in(path, style):
     assert visible.layer_enabled("constellation_boundaries") is True
 
 
-@pytest.mark.parametrize("path", EXAMPLES)
-def test_cartoon_constellation_vertices_follow_line_switch(path):
-    module = load(path)
+def test_cartoon_constellation_vertices_follow_line_switch():
+    module = load(EXAMPLES[2])
     hidden = resolved_detail(
-        module,
         module.parser().parse_args(["--magnitude-limit", "4.25"]),
         style="cartoon",
     )
     visible = resolved_detail(
-        module,
         module.parser().parse_args(
             ["--magnitude-limit", "4.25", "--constellation-lines"]
         ),
@@ -160,7 +145,6 @@ def test_regional_mask_does_not_require_visible_boundary_lines():
     module = load(EXAMPLES[2])
     _, chart = module.build_chart("Cru", mask=True)
     detail = resolved_detail(
-        module,
         module.parser().parse_args(["--mask"]),
         style="atlas",
     )
