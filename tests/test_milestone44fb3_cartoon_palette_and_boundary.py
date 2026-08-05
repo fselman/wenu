@@ -33,6 +33,7 @@ def test_print_palette_adds_semantic_grid_colors():
     assert set(vars(CARTOON_PRINT_PALETTE).values()) == {
         "white",
         "#000000",
+        "#707070",
         "black",
         "orange",
         "blue",

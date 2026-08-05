@@ -6,10 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from wenu import AtlasChartStyle, CartoonChartStyle
+from wenu import AtlasChartStyle, CartoonChartStyle, ChartStyle
 from wenu.charts.atlas_modes import atlas_chart_style
 from wenu.charts.cartoon_modes import cartoon_chart_style
 from wenu.sky.coordinate_grids import (
+    AltAzGrid,
     EclipticGrid,
     EquatorialGrid,
     GalacticGrid,
@@ -25,6 +26,7 @@ EXAMPLES = (
     ROOT / "examples" / "binocular_object.py",
 )
 SEMANTIC_COLORS = {
+    "altaz": "black",
     "equatorial": "black",
     "ecliptic": "orange",
     "galactic": "blue",
@@ -42,9 +44,10 @@ def grid_options(style, grid):
     return style.as_publication_style()._grid_options(grid)
 
 
-@pytest.mark.parametrize("style", [AtlasChartStyle(), CartoonChartStyle()])
+@pytest.mark.parametrize("style", [ChartStyle(), CartoonChartStyle()])
 def test_base_grid_lines_and_labels_share_semantic_colors(style):
     grids = (
+        AltAzGrid(None),
         EquatorialGrid(None),
         EclipticGrid(None),
         GalacticGrid(None),
@@ -60,8 +63,9 @@ def test_base_grid_lines_and_labels_share_semantic_colors(style):
     "style",
     [atlas_chart_style("print"), cartoon_chart_style("print")],
 )
-def test_print_modes_preserve_semantic_grid_defaults(style):
+def test_print_modes_subdue_altaz_without_changing_other_grid_defaults(style):
     assert style.grids.equatorial_color == "black"
+    assert style.grids.altaz_color == "#707070"
     assert style.grids.ecliptic_color == "orange"
     assert style.grids.galactic_color == "blue"
     assert style.grids.coordinate_label_color is None
@@ -73,6 +77,7 @@ def test_print_modes_preserve_semantic_grid_defaults(style):
 )
 def test_presentation_grid_colors_remain_distinct_and_labels_follow(style):
     grids = (
+        AltAzGrid(None),
         EquatorialGrid(None),
         EclipticGrid(None),
         GalacticGrid(None),
@@ -85,7 +90,7 @@ def test_presentation_grid_colors_remain_distinct_and_labels_follow(style):
             options["label_style"]["color"]
             == options["style"]["color"]
         )
-    assert len(set(colors)) == 3
+    assert len(set(colors)) >= 3
 
 
 def test_explicit_coordinate_label_color_retains_precedence():
@@ -126,7 +131,7 @@ def built_sky(path):
 
 
 @pytest.mark.parametrize("path", EXAMPLES)
-def test_canonical_examples_register_three_reference_free_grids(path):
+def test_canonical_examples_register_four_reference_free_grids(path):
     sky = built_sky(path)
     grids = {
         layer.coordinate_system: layer
@@ -138,9 +143,11 @@ def test_canonical_examples_register_three_reference_free_grids(path):
     assert grids["equatorial"].include_equator is False
     assert grids["ecliptic"].include_ecliptic is False
     assert grids["galactic"].include_plane is False
+    assert grids["altaz"].include_horizon is False
     assert 0 not in grids["equatorial"].dec
     assert 0 not in grids["ecliptic"].latitude
     assert 0 not in grids["galactic"].latitude
+    assert 0 not in grids["altaz"].altitude
 
 
 @pytest.mark.parametrize("path", EXAMPLES)

@@ -23,6 +23,7 @@ class CartoonModePalette:
     equatorial_grid: str
     ecliptic_grid: str
     galactic_grid: str
+    altaz_grid: str
     footer: str = "black"
 
 
@@ -34,6 +35,7 @@ CARTOON_PRINT_PALETTE = CartoonModePalette(
     constellation_labels="#000000",
     frame="#000000",
     milky_way="#000000",
+    altaz_grid="#707070",
     equatorial_grid="black",
     ecliptic_grid="orange",
     galactic_grid="blue",
@@ -48,6 +50,7 @@ CARTOON_PRESENTATION_PALETTE = CartoonModePalette(
     constellation_labels="#FFE066",
     frame="#FFE066",
     milky_way="#FFE066",
+    altaz_grid="#FFFFFF",
     equatorial_grid="#FFFFFF",
     ecliptic_grid="#FFA500",
     galactic_grid="#66CCFF",
@@ -220,6 +223,7 @@ def cartoon_chart_style(
             "center" if positioned_labels else "bottom"
         ),
         coordinate_label_color=None,
+        altaz_color=palette.altaz_grid,
         equatorial_color=palette.equatorial_grid,
         ecliptic_color=palette.ecliptic_grid,
         galactic_color=palette.galactic_grid,

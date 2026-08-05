@@ -11,7 +11,12 @@ from .modes import ResolvedMode
 
 
 COORDINATE_GRID_LAYERS = frozenset(
-    {"equatorial_grid", "ecliptic_grid", "galactic_grid"}
+    {
+        "altaz_grid",
+        "equatorial_grid",
+        "ecliptic_grid",
+        "galactic_grid",
+    }
 )
 
 
@@ -98,8 +103,8 @@ class ResolvedDetail:
         unknown_labels = labels - COORDINATE_GRID_LAYERS
         if unknown_labels:
             raise ValueError(
-                "grid_label_layers must contain only equatorial_grid, "
-                "ecliptic_grid, or galactic_grid."
+                "grid_label_layers must contain only altaz_grid, "
+                "equatorial_grid, ecliptic_grid, or galactic_grid."
             )
         object.__setattr__(self, "grid_label_layers", labels)
         if (

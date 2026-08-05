@@ -1,4 +1,4 @@
-"""Observer-time equatorial, ecliptic, and Galactic grid geometry."""
+"""Observer-time AltAz, equatorial, ecliptic, and Galactic grid geometry."""
 
 from __future__ import annotations
 
@@ -242,6 +242,109 @@ class CoordinatesGrid(GeometricalObject, ABC):
     @abstractmethod
     def _native_to_icrs(self, longitude_deg, latitude_deg):
         raise NotImplementedError
+
+
+class AltAzGrid(CoordinatesGrid):
+    """Observer-local horizontal coordinate grid.
+
+    Azimuth meridians and altitude parallels are already expressed in the
+    canonical spherical AltAz geometry used downstream, so their construction
+    deliberately avoids a horizontal-to-ICRS-to-horizontal round trip.
+    """
+
+    coordinate_system = "altaz"
+
+    def __init__(
+        self,
+        observer,
+        *,
+        samples=721,
+        azimuth=None,
+        altitude=None,
+        include_horizon=False,
+    ):
+        super().__init__(observer, samples=samples)
+        self.azimuth = None if azimuth is None else tuple(azimuth)
+        self.altitude = None if altitude is None else tuple(altitude)
+        self.include_horizon = bool(include_horizon)
+
+    def horizon(self, *, style=None):
+        return self.parallel(0.0, style=style, name="horizon")
+
+    def parallel(self, altitude_deg, *, style=None, name=None):
+        value = float(altitude_deg)
+        return super().parallel(
+            value,
+            name=(f"altitude_{value:g}" if name is None else name),
+            style=style,
+        )
+
+    def meridian(self, azimuth_deg, *, style=None):
+        value = float(azimuth_deg) % 360.0
+        return super().meridian(
+            value,
+            name=f"azimuth_{value:g}",
+            style=style,
+        )
+
+    def grid(
+        self,
+        *,
+        azimuth=None,
+        altitude=None,
+        meridian_style=None,
+        parallel_style=None,
+    ):
+        return super().grid(
+            longitudes=azimuth,
+            latitudes=altitude,
+            meridian_style=meridian_style,
+            parallel_style=parallel_style,
+        )
+
+    def spherical_geometry(self, observer) -> SphericalGrid:
+        resolved = self._resolve_observer(observer)
+        if resolved is not self.observer:
+            return type(self)(
+                resolved,
+                samples=self.samples,
+                azimuth=self.azimuth,
+                altitude=self.altitude,
+                include_horizon=self.include_horizon,
+            ).spherical_geometry(resolved)
+        geometry = self.grid(
+            azimuth=self.azimuth,
+            altitude=self.altitude,
+        )
+        components = dict(geometry.components)
+        if self.include_horizon:
+            components["reference"] = self.horizon()
+        return SphericalGrid(
+            components=components,
+            metadata=geometry.metadata,
+        )
+
+    def _native_to_altaz(
+        self,
+        longitude_deg,
+        latitude_deg,
+        *,
+        observer,
+    ):
+        del observer
+        return (
+            np.asarray(latitude_deg, dtype=float),
+            np.asarray(longitude_deg, dtype=float),
+        )
+
+    def _native_to_icrs(self, longitude_deg, latitude_deg):
+        coordinates = SkyCoord(
+            az=np.asarray(longitude_deg, dtype=float) * u.deg,
+            alt=np.asarray(latitude_deg, dtype=float) * u.deg,
+            frame=self._resolve_observer(None).altaz_frame,
+        )
+        icrs = coordinates.icrs
+        return np.asarray(icrs.ra.deg), np.asarray(icrs.dec.deg)
 
 
 # Compatibility name retained while callers migrate.

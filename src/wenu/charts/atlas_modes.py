@@ -169,6 +169,7 @@ def atlas_chart_style(mode="print", *, base=None, mode_name=None):
             style.grids.constellation_linewidth * line_scale
         ),
         constellation_label_color=palette.labels,
+        altaz_color=palette.frame,
         equatorial_color=palette.frame,
         ecliptic_color=palette.structure,
         galactic_color=palette.foreground,

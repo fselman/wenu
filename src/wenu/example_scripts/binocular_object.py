@@ -133,6 +133,11 @@ def build_chart(
         latitude=grid_latitudes,
         include_plane=False,
     )
+    sky.add_altaz_grid(
+        azimuth=tuple(range(0, 360, 5)),
+        altitude=tuple(range(5, 90, 5)),
+        include_horizon=False,
+    )
     chart = BinocularChart.from_coordinate(
         observer,
         target.coordinate,

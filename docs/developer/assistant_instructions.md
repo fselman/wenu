@@ -28,11 +28,14 @@ Previous conversations may explain intent but do not override the repository.
 
 ## Architectural authority
 
-For the active v0.7 migration, read and follow:
+For the active v0.8 migration, read and follow:
 
-- `current_architecture_v0.6.md` as the implemented baseline;
-- `target_architecture_v0.7.md` as the proposed target;
-- `wenu_migration_0.6_to_0.7.md` as the active roadmap;
+- `current_architecture_v0.7.md` as the implemented baseline;
+- `target_architecture_v0.8.md` as the proposed target;
+- `wenu_migration_0.7_to_0.8.md` as the active roadmap;
+- `target_architecture_v0.7.md` as the implemented architecture for v0.7;
+- `wenu_migration_0.6_to_0.7.md` as completed migration history;
+- `current_architecture_v0.6.md` as the historical baseline;
 - `implementation_reference.md` as the current API reference;
 - `source_tree.md` as the current responsibility map;
 - `target_architecture_v0.6.md` as the implemented architecture for v0.6;

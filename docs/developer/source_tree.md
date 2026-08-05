@@ -1,6 +1,10 @@
 # Wenu source organization
 
 **Architecture version:** 0.7
+
+Milestone 46A extends the registered coordinate-grid family with native
+observer-local `AltAzGrid` geometry. Selection remains in render-local detail,
+appearance remains in style, and the chart type continues to own the horizon.
 **Status:** Implemented
 
 The source tree is organized by responsibility. Astronomical objects and sky

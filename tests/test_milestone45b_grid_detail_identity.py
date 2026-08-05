@@ -24,7 +24,8 @@ class Layer:
 
 def grid_sky():
     grids = tuple(
-        Grid(name) for name in ("equatorial", "ecliptic", "galactic")
+        Grid(name)
+        for name in ("altaz", "equatorial", "ecliptic", "galactic")
     )
     return SimpleNamespace(layers=grids), grids
 
@@ -38,14 +39,14 @@ def enabled(application, grids):
 def test_each_grid_can_be_enabled_without_enabling_another():
     sky, grids = grid_sky()
     for index, name in enumerate(
-        ("equatorial_grid", "ecliptic_grid", "galactic_grid")
+        ("altaz_grid", "equatorial_grid", "ecliptic_grid", "galactic_grid")
     ):
         application = apply_resolved_detail(
             sky,
             ResolvedDetail(enabled_layers=frozenset({name})),
         )
         assert enabled(application, grids) == tuple(
-            position == index for position in range(3)
+            position == index for position in range(4)
         )
 
 
@@ -58,7 +59,7 @@ def test_grid_options_are_available_by_object_and_semantic_name():
 
     for grid, name in zip(
         grids,
-        ("equatorial_grid", "ecliptic_grid", "galactic_grid"),
+        ("altaz_grid", "equatorial_grid", "ecliptic_grid", "galactic_grid"),
     ):
         assert application.layer_options[grid] is application.layer_options[name]
 
@@ -69,7 +70,7 @@ def test_legacy_group_name_still_enables_all_grids():
         sky,
         ResolvedDetail(enabled_layers=frozenset({"coordinate_grids"})),
     )
-    assert enabled(application, grids) == (True, True, True)
+    assert enabled(application, grids) == (True, True, True, True)
 
 
 def test_sequential_grid_selection_does_not_leak():
@@ -83,9 +84,9 @@ def test_sequential_grid_selection_does_not_leak():
     second = apply_resolved_detail(sky, galactic)
     repeated = apply_resolved_detail(sky, equatorial)
 
-    assert enabled(first, grids) == (True, False, False)
-    assert enabled(second, grids) == (False, False, True)
-    assert enabled(repeated, grids) == (True, False, False)
+    assert enabled(first, grids) == (False, True, False, False)
+    assert enabled(second, grids) == (False, False, False, True)
+    assert enabled(repeated, grids) == (False, True, False, False)
 
 
 def test_policy_contracts_use_system_specific_grid_names():
@@ -104,6 +105,7 @@ def test_policy_contracts_use_system_specific_grid_names():
         assert detail.layer_enabled("equatorial_grid")
         assert detail.layer_enabled("ecliptic_grid")
         assert detail.layer_enabled("galactic_grid")
+        assert detail.layer_enabled("altaz_grid")
         assert detail.layer_enabled("coordinate_grids")
 
 

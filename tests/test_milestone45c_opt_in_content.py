@@ -20,6 +20,7 @@ OPTIONAL_LAYERS = frozenset(
         "constellation_lines",
         "constellation_labels",
         "constellation_boundaries",
+        "altaz_grid",
         "equatorial_grid",
         "ecliptic_grid",
         "galactic_grid",
@@ -68,6 +69,7 @@ def test_default_arguments_disable_all_optional_content():
         ("--constellation-lines", "constellation_lines"),
         ("--constellation-labels", "constellation_labels"),
         ("--constellation-boundaries", "constellation_boundaries"),
+        ("--altaz-grid", "altaz_grid"),
         ("--equatorial-grid", "equatorial_grid"),
         ("--ecliptic-grid", "ecliptic_grid"),
         ("--galactic-grid", "galactic_grid"),
@@ -90,6 +92,7 @@ def test_each_content_switch_enables_only_its_layer(option, layer):
 @pytest.mark.parametrize(
     ("option", "layer"),
     (
+        ("--altaz-grid-labels", "altaz_grid"),
         ("--equatorial-grid-labels", "equatorial_grid"),
         ("--ecliptic-grid-labels", "ecliptic_grid"),
         ("--galactic-grid-labels", "galactic_grid"),
@@ -110,7 +113,7 @@ def test_grid_label_switch_enables_only_matching_grid(option, layer):
 def test_grid_labels_are_applied_per_grid_object_not_global_style():
     grids = tuple(
         Layer("coordinates_grid", name)
-        for name in ("equatorial", "ecliptic", "galactic")
+        for name in ("altaz", "equatorial", "ecliptic", "galactic")
     )
     sky = SimpleNamespace(layers=grids)
     overrides = chart_detail_overrides(
@@ -128,7 +131,7 @@ def test_grid_labels_are_applied_per_grid_object_not_global_style():
     assert tuple(
         application.layer_options[grid]["render"]["draw_labels"]
         for grid in grids
-    ) == (False, True, False)
+    ) == (False, False, True, False)
 
 
 def test_removed_generic_grid_switches_are_rejected():

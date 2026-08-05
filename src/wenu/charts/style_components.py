@@ -178,6 +178,8 @@ class GridStyle:
     ecliptic_linestyle: str = "-"
     galactic_color: str = "blue"
     galactic_linestyle: str = "--"
+    altaz_color: str = "black"
+    altaz_linestyle: str = "-"
     coordinate_linewidth: float = 0.7
     coordinate_alpha: float = 0.75
     draw_coordinate_labels: bool = False
@@ -386,6 +388,8 @@ class ChartStyle:
             constellation_label_va=grids.constellation_label_va,
             equatorial_color=grids.equatorial_color,
             equatorial_linestyle=grids.equatorial_linestyle,
+            altaz_color=grids.altaz_color,
+            altaz_linestyle=grids.altaz_linestyle,
             ecliptic_color=grids.ecliptic_color,
             ecliptic_linestyle=grids.ecliptic_linestyle,
             galactic_color=grids.galactic_color,

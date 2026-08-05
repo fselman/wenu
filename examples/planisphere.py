@@ -95,6 +95,12 @@ def build_chart():
         samples=1441,
         include_plane=False,
     )
+    sky.add_altaz_grid(
+        azimuth=tuple(range(0, 360, 30)),
+        altitude=tuple(range(15, 90, 15)),
+        samples=1441,
+        include_horizon=False,
+    )
     return sky, FullSkyChart(
         center_alt_deg=90.0,
         center_az_deg=0.0,

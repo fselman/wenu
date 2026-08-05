@@ -126,6 +126,8 @@ class PublicationStyle:
     ecliptic_linestyle: str = "-"
     galactic_color: str = "blue"
     galactic_linestyle: str = "--"
+    altaz_color: str = "black"
+    altaz_linestyle: str = "-"
     grid_linewidth: float = 0.7
     grid_alpha: float = 0.75
     grid_draw_labels: bool = False
@@ -653,7 +655,10 @@ class PublicationStyle:
 
     def _grid_options(self, layer, *, minimum=None):
         system = layer.coordinate_system
-        if system == "equatorial":
+        if system == "altaz":
+            color = self.altaz_color
+            linestyle = self.altaz_linestyle
+        elif system == "equatorial":
             color = self.equatorial_color
             linestyle = self.equatorial_linestyle
         elif system == "ecliptic":
@@ -711,6 +716,7 @@ class PublicationStyle:
             degrees = float(name.removeprefix("declination_"))
             return f"{degrees:+g}°"
         for prefix in (
+            "azimuth_",
             "ecliptic_longitude_",
             "galactic_longitude_",
         ):
@@ -718,6 +724,7 @@ class PublicationStyle:
                 degrees = float(name.removeprefix(prefix)) % 360.0
                 return f"{degrees:g}°"
         for prefix in (
+            "altitude_",
             "ecliptic_latitude_",
             "galactic_latitude_",
         ):
@@ -746,6 +753,7 @@ class PublicationStyle:
         x = x[inside]
         y = y[inside]
         meridian_prefixes = (
+            "azimuth_",
             "right_ascension_",
             "ecliptic_longitude_",
             "galactic_longitude_",

@@ -18,6 +18,7 @@ from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.sky.constellation_labels import ConstellationLabels
 from wenu.sky.constellations import Constellations
 from wenu.sky.coordinate_grids import (
+    AltAzGrid,
     EclipticGrid,
     EquatorialGrid,
     GalacticGrid,
@@ -419,6 +420,25 @@ class CelestialSphere:
             include_equator=include_equator,
             meridian_dec_min=meridian_dec_min,
             meridian_dec_max=meridian_dec_max,
+        )
+        self.add(layer)
+        return layer
+
+    def add_altaz_grid(
+        self,
+        *,
+        azimuth=None,
+        altitude=None,
+        include_horizon=False,
+        samples=721,
+    ) -> AltAzGrid:
+        """Create and register an observer-local AltAz coordinate grid."""
+        layer = AltAzGrid(
+            observer=self.observer,
+            samples=samples,
+            azimuth=azimuth,
+            altitude=altitude,
+            include_horizon=include_horizon,
         )
         self.add(layer)
         return layer

@@ -47,6 +47,7 @@ _LAYER_OPTION_ALIASES = {
 }
 
 _GRID_DETAIL_LAYER_NAMES = {
+    "altaz": "altaz_grid",
     "equatorial": "equatorial_grid",
     "ecliptic": "ecliptic_grid",
     "galactic": "galactic_grid",

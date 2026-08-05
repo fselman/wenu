@@ -318,8 +318,12 @@ destination, and visual approval are recorded in
 
 `examples/regional_constellation_group.py --group sgr-sco-oph-ser` selects the
 Sagittarius, Scorpius, Ophiuchus, and two-part Serpens region. It does not
-silently enable a grid. Every canonical family exposes `--equatorial-grid`,
-`--ecliptic-grid`, and `--galactic-grid` plus the corresponding label
-switches; regression commands request the required systems explicitly.
+silently enable a grid. Every canonical family exposes `--altaz-grid`,
+`--equatorial-grid`, `--ecliptic-grid`, and `--galactic-grid` plus the
+corresponding label switches; regression commands request the required
+systems explicitly. The AltAz grid has a black semantic base color, realized
+as gray `#707070` for both lines and labels in print modes so it remains
+subordinate to black stars. It excludes its altitude-zero circle so it does
+not duplicate the chart-owned horizon.
 It also enables the canonical outside-region mask by default, producing the
 regional emphasis patch without an additional command-line switch.

@@ -100,6 +100,11 @@ def build_chart(
         latitude=tuple(value for value in range(-75, 76, 15) if value),
         include_plane=False,
     )
+    sky.add_altaz_grid(
+        azimuth=tuple(range(0, 360, 15)),
+        altitude=tuple(range(15, 90, 15)),
+        include_horizon=False,
+    )
     chart = RegionalChart.from_constellations(
         sky,
         group["lines"],

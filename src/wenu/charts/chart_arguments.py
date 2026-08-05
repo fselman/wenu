@@ -55,6 +55,8 @@ class ChartContentOptions:
     grid_references: frozenset[str] = frozenset()
     poles: bool = False
     pole_labels: bool = False
+    altaz_grid: bool = False
+    altaz_grid_labels: bool = False
 
     def __post_init__(self):
         if (
@@ -105,6 +107,16 @@ def add_chart_content_arguments(parser):
         "--constellation-boundaries",
         action="store_true",
         help="draw IAU constellation boundaries",
+    )
+    parser.add_argument(
+        "--altaz-grid",
+        action="store_true",
+        help="draw the configured AltAz grid",
+    )
+    parser.add_argument(
+        "--altaz-grid-labels",
+        action="store_true",
+        help="draw AltAz-grid labels (and enable that grid)",
     )
     parser.add_argument(
         "--equatorial-grid",
@@ -210,6 +222,8 @@ def chart_content_options(arguments) -> ChartContentOptions:
         constellation_lines=arguments.constellation_lines,
         constellation_labels=arguments.constellation_labels,
         constellation_boundaries=arguments.constellation_boundaries,
+        altaz_grid=arguments.altaz_grid,
+        altaz_grid_labels=arguments.altaz_grid_labels,
         equatorial_grid=arguments.equatorial_grid,
         equatorial_grid_labels=arguments.equatorial_grid_labels,
         ecliptic_grid=arguments.ecliptic_grid,
@@ -241,6 +255,7 @@ def chart_detail_overrides(
     """Resolve magnitude and opt-in constellation layer visibility."""
     content = chart_content_options(arguments)
     grids = {
+        "altaz_grid": content.altaz_grid or content.altaz_grid_labels,
         "equatorial_grid": (
             content.equatorial_grid or content.equatorial_grid_labels
         ),
@@ -271,6 +286,7 @@ def chart_detail_overrides(
     labels = frozenset(
         name
         for name, enabled in (
+            ("altaz_grid", content.altaz_grid_labels),
             ("equatorial_grid", content.equatorial_grid_labels),
             ("ecliptic_grid", content.ecliptic_grid_labels),
             ("galactic_grid", content.galactic_grid_labels),

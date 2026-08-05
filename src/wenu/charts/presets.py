@@ -76,6 +76,7 @@ class AtlasChartStyle(ChartStyle):
             constellation_line_alpha=0.58,
             constellation_label_color="#5b5b5b",
             constellation_label_alpha=0.90,
+            altaz_color="#707070",
             equatorial_color="black",
             equatorial_linestyle="-",
             ecliptic_color="orange",
