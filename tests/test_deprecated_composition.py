@@ -1,4 +1,4 @@
-"""Milestone 43I legacy-cartoon deprecation contracts."""
+"""Compatibility contracts for deprecated cartoon composition."""
 
 import subprocess
 import sys

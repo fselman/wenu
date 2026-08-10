@@ -1,6 +1,4 @@
-"""Regression tests for atlas catalogue density and grid labels."""
-
-from pathlib import Path
+"""Current atlas appearance and grid-label contracts."""
 
 import matplotlib
 
@@ -75,11 +73,40 @@ def test_grid_renderer_supports_formatter_and_edge_anchor():
     plt.close(figure)
 
 
-def test_atlas_example_uses_curated_catalogue_subsets_and_global_grid():
-    source = Path(
-        "tests/fixtures/example_regressions/atlas_style.py"
-    ).read_text(encoding="utf-8")
-    assert "add_open_clusters(selected=OPEN_CLUSTERS)" in source
-    assert "add_planetary_nebulae(selected=PLANETARY_NEBULAE)" in source
-    assert "ra=tuple(range(0, 360, 15))" in source
-    assert "dec=tuple(range(-75, 76, 15))" in source
+def test_atlas_milky_way_uses_subtle_dotted_contours():
+    iso = AtlasChartStyle().isophotes
+    assert iso.milky_way_contour_color == "#555555"
+    assert iso.milky_way_contour_linestyle == ":"
+    assert iso.milky_way_contour_linewidth <= 0.4
+    assert iso.milky_way_contour_alpha <= 0.3
+    flat = AtlasChartStyle().as_publication_style()
+    assert flat.milky_way_contour_color == "#555555"
+    assert flat.milky_way_contour_linestyle == ":"
+
+
+def test_atlas_legend_is_enabled_and_configurable():
+    legend = AtlasChartStyle().legend
+    assert legend.visible is True
+    assert legend.location == "upper right"
+    assert legend.columns == 1
+
+
+def test_atlas_supernova_remnants_use_complete_circles():
+    deep_sky = AtlasChartStyle().deep_sky
+    assert deep_sky.supernova_remnant_linestyle == "-"
+    assert deep_sky.supernova_remnant_linewidth == 0.55
+
+
+def test_legacy_style_keeps_new_features_disabled():
+    from wenu.charts.style_components import ChartStyle
+
+    style = ChartStyle()
+    assert style.legend.visible is False
+    assert style.isophotes.milky_way_contour_color is None
+
+
+def test_atlas_axes_configuration_remains_valid():
+    figure, ax = plt.subplots()
+    AtlasChartStyle().configure_axes(ax, title="Atlas")
+    assert ax.get_title() == "Atlas"
+    plt.close(figure)

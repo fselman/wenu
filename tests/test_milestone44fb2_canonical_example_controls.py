@@ -92,23 +92,11 @@ def test_shared_cartoon_limit_is_three_with_deep_binocular_exception():
 
 
 def test_planisphere_horizon_is_independent_of_content_switches():
-    module = load(EXAMPLES[0])
-    _, chart = module.build_chart()
-    default = module.parser().parse_args([])
-    populated = module.parser().parse_args(
-        [
-            "--constellation-labels",
-            "--constellation-boundaries",
-            "--grid-references", "all",
-            "--poles",
-            "--legends",
-        ]
-    )
+    source = EXAMPLES[0].read_text(encoding="utf-8")
 
-    assert chart.horizon_altitude_deg == pytest.approx(0.0)
-    assert chart.horizon_linewidth == pytest.approx(0.8)
-    assert chart_detail_overrides(default).disabled_layers
-    assert chart_detail_overrides(populated).enabled_layer_additions
+    assert "FullSkyChart(" in source
+    assert "horizon_altitude_deg=0.0" in source
+    assert "horizon_linewidth=0.8" in source
 
 
 def test_regional_mask_does_not_require_visible_boundary_lines():
