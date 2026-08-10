@@ -1,4 +1,4 @@
-"""Milestone 45F circular planisphere composition contracts."""
+"""Rendered circular-planisphere composition contracts."""
 
 from types import SimpleNamespace
 
@@ -10,6 +10,9 @@ from wenu import FullSkyChart, MatplotlibRenderer, compose_chart
 from wenu.charts.export_workflow import _composition_export_options
 from wenu.charts.legend_composition import apply_legend_placement
 from wenu.charts.legend_plan import default_chart_legend_plan
+
+
+pytestmark = pytest.mark.visual
 
 
 class RecordingRenderer:

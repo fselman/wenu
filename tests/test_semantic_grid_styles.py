@@ -140,6 +140,7 @@ def test_canonical_examples_declare_four_semantic_grids(path):
     assert "sky.add_galactic_grid(" in source
 
 
+@pytest.mark.integration
 def test_canonical_grid_configuration_is_reference_free():
     sky = built_sky(EXAMPLES[0])
     grids = {

@@ -1,4 +1,4 @@
-"""Milestone 44H.2 canonical selected-object binocular example."""
+"""Canonical selected-object binocular integration contracts."""
 
 import importlib.util
 from pathlib import Path
@@ -6,6 +6,9 @@ from pathlib import Path
 import pytest
 
 from wenu import BinocularChart, BoundaryKind
+
+
+pytestmark = pytest.mark.integration
 
 
 EXAMPLE = Path("examples/binocular_object.py")

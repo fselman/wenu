@@ -112,3 +112,24 @@ The user-facing `examples/` directory contains only the five canonical chart
 families. Historical component demonstrations that still provide regression
 coverage live under `tests/fixtures/example_regressions/`; they are test-local
 fixtures, not supported user examples.
+
+## Test-suite responsibility and tiers
+
+Permanent test modules are named for current responsibilities rather than the
+milestones that introduced them. Scientific geometry and catalogue contracts
+remain ordinary unit tests. Cross-component canonical chart construction is
+marked `integration`, while rendered appearance and image-structure contracts
+are marked `visual`. The registered `slow` tier is reserved for future tests
+that are intrinsically slow, not for inefficient tests that should be fixed.
+
+The supported validation loops are:
+
+```bash
+pytest -q -m "not integration and not visual and not slow"
+pytest -q -m integration
+pytest -q -m visual
+pytest -q
+```
+
+The full suite remains the release authority. Atlas print remains the visual
+reference baseline.

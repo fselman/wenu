@@ -1,4 +1,4 @@
-"""Milestone 44F canonical planisphere and regional examples."""
+"""Canonical planisphere and regional-example integration contracts."""
 
 import importlib.util
 from pathlib import Path
@@ -9,6 +9,9 @@ from wenu import (
     chart_detail_overrides, chart_style_overrides,
     compose_chart, composition_layer_options,
 )
+
+
+pytestmark = pytest.mark.integration
 
 
 EXAMPLES = (

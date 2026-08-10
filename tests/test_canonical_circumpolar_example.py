@@ -1,4 +1,4 @@
-"""Milestone 44G.2 canonical circumpolar example."""
+"""Canonical circumpolar-example integration contracts."""
 
 import importlib.util
 from pathlib import Path
@@ -10,6 +10,9 @@ import pytest
 from wenu import BoundaryKind, compose_chart
 from wenu.charts.detail import ResolvedDetail
 from wenu.charts.detail_application import apply_resolved_detail
+
+
+pytestmark = pytest.mark.integration
 
 
 EXAMPLE = Path("examples/circumpolar.py")

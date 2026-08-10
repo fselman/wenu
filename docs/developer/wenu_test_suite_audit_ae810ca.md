@@ -607,6 +607,23 @@ contract mapping in this report supplies the initial ownership inventory.
 - Run the full suite and mandatory visual regression set.
 - Update the current architecture and source-tree responsibility map.
 
+**Closure status:** completed through Milestone 46B.10.
+
+The implementation was deliberately split into smaller reversible steps after
+46B.7 so that residual ownership renames and regression-example consolidation
+could be validated independently. The final measured Mac results are:
+
+| Measure | Before 46B | After 46B.9 |
+|---|---:|---:|
+| Collected passing cases | 1,003 | 929 |
+| Full-suite wall time | 172.74 s | 58.80 s |
+| Milestone-named test modules | 132 | 12 before final ownership rename |
+
+Milestone 46B.10 renames the final twelve modules by responsibility, registers
+the `integration`, `visual`, and reserved `slow` markers, documents the fast,
+integration, visual, and full commands, and leaves collected full-suite cases
+unchanged. No production files or public APIs change.
+
 ## Acceptance criteria for Milestone 46B
 
 - No production-code behavior changes.

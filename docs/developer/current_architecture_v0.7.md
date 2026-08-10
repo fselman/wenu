@@ -13,3 +13,8 @@ chart-owned boundary geometry and is not optional reference content.
 The canonical flow, ownership boundaries, declarative examples, render-local
 detail policy, style ownership, and packaged-example parity documented by
 `target_architecture_v0.7.md` remain in force.
+
+The permanent test suite is organized by these current responsibilities rather
+than by completed milestone history. Fast unit, integration, visual, and full
+commands are recorded in `source_tree.md`; the full suite remains the release
+authority and atlas print remains the visual reference baseline.

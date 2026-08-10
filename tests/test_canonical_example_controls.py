@@ -99,6 +99,7 @@ def test_planisphere_horizon_is_independent_of_content_switches():
     assert "horizon_linewidth=0.8" in source
 
 
+@pytest.mark.integration
 def test_regional_mask_does_not_require_visible_boundary_lines():
     module = load(EXAMPLES[2])
     _, chart = module.build_chart("Cru", mask=True)

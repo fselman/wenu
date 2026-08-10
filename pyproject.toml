@@ -40,5 +40,10 @@ addopts = "-p no:remotedata"
 filterwarnings = [
     "error::FutureWarning",
 ]
+markers = [
+    "integration: crosses architectural component boundaries",
+    "visual: validates rendered appearance or image structure",
+    "slow: excluded from the normal development loop",
+]
 
 [tool.setuptools_scm]
