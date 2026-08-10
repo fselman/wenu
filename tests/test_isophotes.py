@@ -83,6 +83,22 @@ def test_level_selection_is_ordered_and_valid(tmp_path):
         MilkyWayIsophotes(Observer(), levels=("ol6",))
 
 
+def test_level_selection_can_change_per_render_without_mutation(tmp_path):
+    layer = MilkyWayIsophotes(
+        Observer(), levels=MilkyWayIsophotes.available_levels
+    )
+    layer.load(_catalogue(tmp_path / "mw.json"))
+
+    selected = layer.spherical_geometry(
+        Observer(), levels={"ol4", "ol2"}
+    )
+    complete = layer.spherical_geometry(Observer())
+
+    assert selected.metadata["level"].tolist() == ["ol2", "ol4"]
+    assert set(complete.metadata["level"]) == set(layer.available_levels)
+    assert layer.levels == layer.available_levels
+
+
 def test_renderer_groups_rings_into_one_compound_patch():
     polygons = ProjectedPolygons(
         items=[

@@ -288,6 +288,47 @@ def test_named_catalogue_selections_are_render_local_geometry_options():
     assert labels["geometry"]["selected"] == frozenset({"Cru", "Cen"})
 
 
+def test_geometry_and_isophote_selections_are_render_local_options():
+    sky = m40d_detail_application_fake_sky()
+    lines = m40d_detail_application_Layer("constellation_lines")
+    boundaries = m40d_detail_application_Layer(
+        "constellation_boundaries"
+    )
+    milky_way = m40d_detail_application_Layer("milky_way_isophotes")
+    lmc = m40d_detail_application_Layer("magellanic_cloud_isophotes")
+    lmc.cloud = "lmc"
+    smc = m40d_detail_application_Layer("magellanic_cloud_isophotes")
+    smc.cloud = "smc"
+    sky.layers += (lines, boundaries, milky_way, lmc, smc)
+    detail = ResolvedDetail(
+        content_selection=SkyContentSelection(
+            constellation_lines={"Cru"},
+            constellation_boundaries={"Cru", "Cen"},
+            milky_way_levels={"ol2", "ol4"},
+            lmc_levels={1, 3},
+            smc_levels={2, 4},
+        )
+    )
+
+    applied = apply_resolved_detail(sky, detail)
+
+    assert applied.layer_options[lines]["geometry"]["selected"] == (
+        frozenset({"Cru"})
+    )
+    assert applied.layer_options[boundaries]["geometry"]["selected"] == (
+        frozenset({"Cru", "Cen"})
+    )
+    assert applied.layer_options[milky_way]["geometry"]["levels"] == (
+        frozenset({"ol2", "ol4"})
+    )
+    assert applied.layer_options[lmc]["geometry"]["levels"] == (
+        frozenset({1, 3})
+    )
+    assert applied.layer_options[smc]["geometry"]["levels"] == (
+        frozenset({2, 4})
+    )
+
+
 def test_sequential_content_selections_do_not_mutate_sky_or_detail():
     sky = m40d_detail_application_fake_sky()
     first = ResolvedDetail(

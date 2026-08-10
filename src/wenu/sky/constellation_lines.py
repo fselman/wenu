@@ -179,7 +179,12 @@ class ConstellationLines(GeometricalObject):
 
         return self.edges
 
-    def spherical_geometry(self, observer) -> SphericalCurves:
+    def spherical_geometry(
+        self,
+        observer,
+        *,
+        selected=None,
+    ) -> SphericalCurves:
         """Return apparent Alt/Az line segments at the observer's time."""
         if observer is None:
             raise RuntimeError(
@@ -194,7 +199,18 @@ class ConstellationLines(GeometricalObject):
                 "The stellar Skyfield representation is unavailable."
             )
 
-        missing = self.unresolved_star_ids
+        if selected is None:
+            selected_names = tuple(self.edges_by_constellation)
+        else:
+            requested = frozenset(str(name) for name in selected)
+            self.star_ids_for(requested)
+            selected_names = tuple(
+                name
+                for name in self.edges_by_constellation
+                if name in requested
+            )
+        selected_star_ids = self.star_ids_for(selected_names)
+        missing = selected_star_ids.difference(self._catalogue_star_ids())
         if missing:
             values = ", ".join(str(value) for value in sorted(missing))
             warnings.warn(
@@ -227,7 +243,8 @@ class ConstellationLines(GeometricalObject):
         names = []
         hip_edges = []
 
-        for abbreviation, edges in self.edges_by_constellation.items():
+        for abbreviation in selected_names:
+            edges = self.edges_by_constellation[abbreviation]
             for edge_number, (hip1, hip2) in enumerate(edges):
                 if hip1 not in catalogue_index or hip2 not in catalogue_index:
                     continue

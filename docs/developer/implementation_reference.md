@@ -229,9 +229,10 @@ style or mode. Layer selection is applied locally for each render.
 owned by `ResolvedDetail.content_selection`. `None` preserves a registered
 layer's default selection, while an empty set explicitly selects no members
 of that family. The v0.8 migration initially applies the catalogue and
-constellation-label selections already supported by layer geometry. The same
-contract records constellation-line, boundary, and isophote selections for
-their render-local implementation in Milestone 46C.4.
+constellation-label selections already supported by layer geometry. It also
+applies constellation-line and boundary subsets and Milky Way, LMC, and SMC
+isophote levels as render-local geometry options. These selections do not
+change the registered layers' loaded content or defaults.
 
 ## 7. Legends
 

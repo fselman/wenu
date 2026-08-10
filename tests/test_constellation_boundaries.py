@@ -7,6 +7,7 @@ from collections import OrderedDict
 from types import SimpleNamespace
 
 import numpy as np
+import pytest
 from astropy.time import Time
 
 from wenu.sky.geometrical_object import GeometricalObject
@@ -82,6 +83,28 @@ def test_serpens_selection_expands_to_native_polygons():
     assert ConstellationBoundaries._expand_constellation_names(
         ["Ser"]
     ) == {"SER1", "SER2"}
+
+
+def test_boundary_selection_is_render_local_and_expands_serpens():
+    boundaries = make_boundaries()
+    boundaries.vertices["SER1"] = boundaries.vertices["TST"].copy()
+    boundaries.vertices["SER2"] = boundaries.vertices["TST"].copy()
+
+    selected = boundaries.spherical_geometry(
+        make_observer(), selected={"Ser"}
+    )
+    complete = boundaries.spherical_geometry(make_observer())
+
+    assert selected.ids.tolist() == ["SER1", "SER2"]
+    assert complete.ids.tolist() == ["TST", "SER1", "SER2"]
+    assert tuple(boundaries.vertices) == ("TST", "SER1", "SER2")
+
+
+def test_unknown_boundary_selection_is_rejected():
+    with pytest.raises(KeyError, match="Unknown loaded constellation"):
+        make_boundaries().spherical_geometry(
+            make_observer(), selected={"Cru"}
+        )
     assert ConstellationBoundaries._expand_constellation_names(
         ["SerCap", "SerCau"]
     ) == {"SER1", "SER2"}

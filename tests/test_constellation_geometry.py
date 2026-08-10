@@ -186,6 +186,26 @@ def test_geometry_does_not_mutate_active_star_selection(tmp_path):
 
     assert lines.stars.hip_df is active
 
+
+def test_line_selection_is_render_local_and_ordered(tmp_path):
+    lines, observer = make_lines(tmp_path)
+    lines.edges_by_constellation["Cen"] = [(100, 300)]
+    lines.edges.append((100, 300))
+
+    selected = lines.spherical_geometry(observer, selected={"Cen"})
+    complete = lines.spherical_geometry(observer)
+
+    assert selected.names.tolist() == ["Cen"]
+    assert complete.names.tolist() == ["Cru", "Cru", "Cen"]
+    assert tuple(lines.edges_by_constellation) == ("Cru", "Cen")
+
+
+def test_unknown_line_selection_is_rejected(tmp_path):
+    lines, observer = make_lines(tmp_path)
+
+    with pytest.raises(KeyError, match="Unknown loaded constellation"):
+        lines.spherical_geometry(observer, selected={"Lyr"})
+
 # Contracts consolidated from test_milestone12_coordinate_grids.py.
 """Milestone 12 domain tests for coordinate grids."""
 

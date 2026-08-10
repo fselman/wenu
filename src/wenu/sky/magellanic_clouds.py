@@ -131,7 +131,7 @@ class MagellanicCloudIsophotes(SkyLayer):
         self.source = str(path)
         return self
 
-    def spherical_geometry(self, observer):
+    def spherical_geometry(self, observer, *, levels=None):
         """Transform the selected ICRS isophote rings to observer Alt/Az."""
         if self.features is None:
             raise RuntimeError(
@@ -144,14 +144,19 @@ class MagellanicCloudIsophotes(SkyLayer):
         longitude = []
         latitude = []
         ids = []
-        levels = []
+        level_values = []
         fractions = []
         compounds = []
         ring_indices = []
         holes = []
         clouds = []
 
-        for level in self.levels:
+        selected_levels = (
+            self.levels
+            if levels is None
+            else self._validate_levels(levels)
+        )
+        for level in selected_levels:
             for polygon_index, polygon in enumerate(self.features[level]):
                 compound = f"{self.cloud}:{level}:{polygon_index}"
                 for ring_index, ring in enumerate(polygon):
@@ -181,7 +186,7 @@ class MagellanicCloudIsophotes(SkyLayer):
                     longitude.append(horizontal.az.to_value(u.deg))
                     latitude.append(horizontal.alt.to_value(u.deg))
                     ids.append(f"{compound}:{ring_index}")
-                    levels.append(level)
+                    level_values.append(level)
                     fractions.append(self.fractions[level])
                     compounds.append(compound)
                     ring_indices.append(ring_index)
@@ -196,7 +201,7 @@ class MagellanicCloudIsophotes(SkyLayer):
                 "source": self.source,
                 "coordinate_system": "altaz",
                 "cloud": np.asarray(clouds, dtype=object),
-                "level": np.asarray(levels, dtype=int),
+                "level": np.asarray(level_values, dtype=int),
                 "fraction_of_peak": np.asarray(fractions, dtype=float),
                 "compound_id": np.asarray(compounds, dtype=object),
                 "ring_index": np.asarray(ring_indices, dtype=int),

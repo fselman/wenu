@@ -252,6 +252,24 @@ def apply_resolved_detail(
             )
             if selected is not None:
                 geometry["selected"] = selected
+        selection = detail.content_selection
+        if name == "constellation_lines":
+            selected = selection.constellation_lines
+            if selected is not None:
+                geometry["selected"] = selected
+        elif name == "constellation_boundaries":
+            selected = selection.constellation_boundaries
+            if selected is not None:
+                geometry["selected"] = selected
+        elif name == "milky_way_isophotes":
+            levels = selection.milky_way_levels
+            if levels is not None:
+                geometry["levels"] = levels
+        elif name == "magellanic_cloud_isophotes":
+            field = f"{getattr(layer, 'cloud', '')}_levels"
+            levels = getattr(selection, field, None)
+            if levels is not None:
+                geometry["levels"] = levels
         if geometry:
             configured["geometry"] = geometry
         resolved_options[

@@ -280,7 +280,12 @@ class ConstellationBoundaries(GeometricalObject):
             return ra_end_hours + 24.0
         return ra_end_hours
 
-    def spherical_geometry(self, observer) -> SphericalPolygons:
+    def spherical_geometry(
+        self,
+        observer,
+        *,
+        selected=None,
+    ) -> SphericalPolygons:
         """Transform sampled native B1875 polygons to observer Alt/Az."""
         resolved_observer = self.observer if observer is None else observer
         self._validate_observer(resolved_observer)
@@ -299,11 +304,24 @@ class ConstellationBoundaries(GeometricalObject):
             location=location,
         )
 
-        identifiers = list(self.sampled_vertices)
+        requested = self._expand_constellation_names(selected)
+        if requested is None:
+            identifiers = list(self.sampled_vertices)
+        else:
+            unknown = requested.difference(self.sampled_vertices)
+            if unknown:
+                names = ", ".join(sorted(unknown))
+                raise KeyError(
+                    f"Unknown loaded constellation boundary(s): {names}"
+                )
+            identifiers = [
+                name for name in self.sampled_vertices if name in requested
+            ]
         lon_deg = []
         lat_deg = []
 
-        for vertices in self.sampled_vertices.values():
+        for identifier in identifiers:
+            vertices = self.sampled_vertices[identifier]
             native = SkyCoord(
                 ra=vertices[:, 0] * u.hourangle,
                 dec=vertices[:, 1] * u.deg,

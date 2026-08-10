@@ -78,6 +78,19 @@ def test_cloud_and_level_selection_are_explicit(tmp_path):
     assert all(np.all(np.isfinite(values)) for values in geometry.lon_deg)
 
 
+def test_level_selection_can_change_per_render_without_mutation(tmp_path):
+    layer = MagellanicCloudIsophotes(
+        Observer(), cloud="lmc"
+    ).load(_catalogue(tmp_path / "lmc.json", "lmc"))
+
+    selected = layer.spherical_geometry(Observer(), levels={4, 2})
+    complete = layer.spherical_geometry(Observer())
+
+    assert selected.metadata["level"].tolist() == [2, 4]
+    assert complete.metadata["level"].tolist() == [1, 2, 3, 4]
+    assert layer.levels == layer.default_levels
+
+
 def test_invalid_clouds_levels_and_mismatched_files_are_rejected(tmp_path):
     with pytest.raises(ValueError, match="Unknown Magellanic Cloud"):
         MagellanicCloudIsophotes(Observer(), cloud="both")
