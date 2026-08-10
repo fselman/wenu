@@ -296,6 +296,12 @@ detail, style, legend, renderer, or output. Coordinate grids remain
 request-time geometry because their spacing and extent differ by chart
 family. Rendering continues through `CelestialSphere.draw_chart()`.
 
+The loaded stellar layer computes its maximal observer-time AltAz arrays on
+first use. Later magnitude selections and constellation-line geometry for the
+same observer and instant reuse those immutable arrays. A different observer,
+instant, ephemeris, data directory, catalogue, or source reload selects a
+different cache entry; presentation and render state never enter the key.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

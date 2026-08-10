@@ -220,21 +220,16 @@ class ConstellationLines(GeometricalObject):
                 stacklevel=2,
             )
 
-        # Evaluate the stable catalogue directly. Do not call
-        # Stars.spherical_geometry(), because that deliberately updates the
-        # renderer-facing active selection.
-        apparent = (
-            observer.skyfield
-            .at(observer.t)
-            .observe(self.stars.skyfield_stars)
-            .apparent(deflectors=[])
-        )
-        altitude, azimuth, _ = apparent.altaz()
-        alt_deg = np.asarray(altitude.degrees, dtype=float)
-        az_deg = np.asarray(azimuth.degrees, dtype=float)
-        catalogue_index = {
+        # Reuse the maximal stellar transformation without changing the
+        # renderer-facing active stellar selection.
+        source, alt_deg, az_deg = self.stars.observed_altaz(observer)
+        source_positions = {
             int(hip_id): index
-            for index, hip_id in enumerate(self.stars.catalog.index)
+            for index, hip_id in enumerate(source.index)
+        }
+        catalogue_index = {
+            int(hip_id): source_positions[int(hip_id)]
+            for hip_id in self.stars.catalog.index
         }
 
         lon_curves = []

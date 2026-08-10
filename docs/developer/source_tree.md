@@ -33,6 +33,8 @@ Within `sky/`, `maximal_sphere.py` owns the immutable catalogue load profile
 and the one canonical complete-content factory. The resulting object is an
 ordinary `CelestialSphere`; chart geometry and presentation remain outside
 the factory.
+`sky/observed_cache.py` defines observer/time/source cache-key identity;
+individual layers continue to own their cached spherical realizations.
 
 ## Responsibility mapping
 

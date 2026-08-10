@@ -12,6 +12,7 @@ from skyfield.data import hipparcos
 from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.resources import catalog_path
 from wenu.geometry.spherical import SphericalPoints
+from wenu.sky.observed_cache import observer_geometry_key
 
 
 _HIPPARCOS_SEMANTIC_DEFAULTS = {
@@ -120,6 +121,8 @@ class Stars(AstronomicalObject):
 
         # Skyfield representation of the stable catalogue.
         self.skyfield_stars = None
+        self._source_revision = 0
+        self._observed_altaz_cache = {}
 
     def load(
         self,
@@ -169,6 +172,8 @@ class Stars(AstronomicalObject):
             ra_hours=self.catalog["ra_hours"].to_numpy(),
             dec_degrees=self.catalog["dec_degrees"].to_numpy(),
         )
+        self._source_revision += 1
+        self._observed_altaz_cache.clear()
 
         return self.catalog
 
@@ -382,25 +387,66 @@ class Stars(AstronomicalObject):
             raise ValueError(
                 "An observer is required to compute stellar coordinates."
             )
-        stars = Star(
-            ra_hours=catalog["ra_hours"].to_numpy(),
-            dec_degrees=catalog["dec_degrees"].to_numpy(),
+        source, source_altitude, source_azimuth = (
+            self.observed_altaz(resolved_observer)
         )
-        apparent = (
-            resolved_observer.skyfield
-            .at(resolved_observer.t)
-            .observe(stars)
-            .apparent(deflectors=[])
-        )
-        alt, az, _ = apparent.altaz()
-        altitude = np.asarray(alt.degrees)
-        azimuth = np.asarray(az.degrees)
+        positions = source.index.get_indexer(catalog.index)
+        if np.any(positions < 0):
+            raise RuntimeError(
+                "The render-local stellar selection is not contained in "
+                "the loaded source catalogue."
+            )
+        altitude = source_altitude[positions]
+        azimuth = source_azimuth[positions]
         keep = altitude > float(alt_min)
         return (
             catalog.iloc[np.flatnonzero(keep)].copy(),
             altitude[keep],
             azimuth[keep],
         )
+
+    def observed_altaz(self, observer=None):
+        """Return cached maximal-catalogue Alt/Az for one observer instant."""
+        resolved = self.observer if observer is None else observer
+        if resolved is None:
+            raise ValueError(
+                "An observer is required to compute stellar coordinates."
+            )
+        source = getattr(self, "source_catalog", None)
+        if source is None:
+            source = self.catalog
+        if source is None:
+            raise RuntimeError(
+                "Hipparcos has not been loaded. Call stars.load() first."
+            )
+        key = (
+            observer_geometry_key(resolved),
+            self.catalog_name,
+            self._source_revision,
+        )
+        cached = self._observed_altaz_cache.get(key)
+        if cached is None:
+            if source is self.catalog and self.skyfield_stars is not None:
+                stars = self.skyfield_stars
+            else:
+                stars = Star(
+                    ra_hours=source["ra_hours"].to_numpy(),
+                    dec_degrees=source["dec_degrees"].to_numpy(),
+                )
+            apparent = (
+                resolved.skyfield
+                .at(resolved.t)
+                .observe(stars)
+                .apparent(deflectors=[])
+            )
+            altitude, azimuth, _ = apparent.altaz()
+            altitude = np.asarray(altitude.degrees, dtype=float)
+            azimuth = np.asarray(azimuth.degrees, dtype=float)
+            altitude.setflags(write=False)
+            azimuth.setflags(write=False)
+            cached = (altitude, azimuth)
+            self._observed_altaz_cache[key] = cached
+        return source, cached[0], cached[1]
 
     @property
     def hip_index(self):

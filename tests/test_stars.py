@@ -11,6 +11,7 @@ import pytest
 from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.objects.stars import Stars
 from wenu.sky import SkyLayer
+from wenu.sky.constellation_lines import ConstellationLines
 from wenu.geometry.spherical import SphericalPoints
 
 
@@ -33,19 +34,22 @@ class FakeApparent:
 
 
 class FakeAt:
-    def __init__(self, apparent):
-        self.apparent_result = apparent
+    def __init__(self, owner):
+        self.owner = owner
+        self.apparent_result = owner.apparent
 
     def observe(self, stars):
+        self.owner.observe_calls += 1
         return self.apparent_result
 
 
 class FakeSkyfieldObserver:
     def __init__(self, apparent):
         self.apparent = apparent
+        self.observe_calls = 0
 
     def at(self, time):
-        return FakeAt(self.apparent)
+        return FakeAt(self)
 
 
 def make_stars():
@@ -124,6 +128,64 @@ def test_repeated_geometry_starts_from_stable_catalogue():
     assert len(stars.catalog) == 3
 
 
+def test_render_local_star_selections_share_one_maximal_altaz_transform():
+    stars, observer = make_stars()
+    stars.source_catalog = stars.catalog.copy()
+
+    bright = stars.spherical_geometry(
+        observer,
+        alt_min=-90.0,
+        magnitude_limit=1.5,
+    )
+    deep = stars.spherical_geometry(
+        observer,
+        alt_min=-90.0,
+        magnitude_limit=3.0,
+    )
+
+    assert bright.ids.tolist() == [100]
+    assert deep.ids.tolist() == [100, 200, 300]
+    assert observer.skyfield.observe_calls == 1
+
+
+def test_observed_altaz_cache_is_immutable_and_observer_keyed():
+    stars, observer = make_stars()
+    stars.source_catalog = stars.catalog.copy()
+    _, first_altitude, first_azimuth = stars.observed_altaz(observer)
+
+    assert first_altitude.flags.writeable is False
+    assert first_azimuth.flags.writeable is False
+
+    second_observer = SimpleNamespace(
+        skyfield=FakeSkyfieldObserver(
+            FakeApparent(
+                alt=[10.0, 20.0, 30.0],
+                az=[40.0, 50.0, 60.0],
+            )
+        ),
+        t=object(),
+    )
+    _, second_altitude, _ = stars.observed_altaz(second_observer)
+
+    np.testing.assert_allclose(second_altitude, [10.0, 20.0, 30.0])
+    assert observer.skyfield.observe_calls == 1
+    assert second_observer.skyfield.observe_calls == 1
+
+
+def test_constellation_lines_reuse_the_stellar_altaz_transform(tmp_path):
+    stars, observer = make_stars()
+    stars.source_catalog = stars.catalog.copy()
+    lines_file = tmp_path / "test.fab"
+    lines_file.write_text("Cru 3 100 200 300\n", encoding="utf-8")
+    lines = ConstellationLines(stars, filename=lines_file)
+
+    stars.spherical_geometry(observer, alt_min=-90.0)
+    geometry = lines.spherical_geometry(observer)
+
+    assert len(geometry) == 2
+    assert observer.skyfield.observe_calls == 1
+
+
 def test_stars_contains_no_projection_or_rendering_api():
     stars, _ = make_stars()
 
@@ -139,4 +201,3 @@ def test_stars_contains_no_projection_or_rendering_api():
         "sizes",
     ):
         assert not hasattr(stars, name)
-

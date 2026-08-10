@@ -24,3 +24,8 @@ maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,
 coordinate-grid spacing, detail, presentation, and export remain downstream
 request concerns.
+
+Stellar AltAz realization is cached per loaded `Stars` layer using observer
+location, instant, ephemeris identity, data directory, catalogue identity,
+and source revision. Render-local magnitude and identifier selections mask
+that immutable maximal realization, and constellation figures reuse it.

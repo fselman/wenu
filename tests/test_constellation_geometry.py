@@ -130,9 +130,15 @@ class ObserverVector:
 def make_lines(tmp_path):
     filename = Path(tmp_path) / "test.fab"
     filename.write_text("Cru 3 100 200 300\n", encoding="utf-8")
+    catalog = pd.DataFrame(index=[100, 200, 300])
     stars = SimpleNamespace(
-        catalog=pd.DataFrame(index=[100, 200, 300]),
+        catalog=catalog,
         skyfield_stars=object(),
+        observed_altaz=lambda observer: (
+            catalog,
+            np.asarray([10.0, 20.0, -5.0]) + float(observer.t),
+            np.asarray([30.0, 40.0, 50.0]) + float(observer.t),
+        ),
     )
     observer = SimpleNamespace(
         skyfield=ObserverVector(),
