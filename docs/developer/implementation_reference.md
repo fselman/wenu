@@ -31,6 +31,7 @@ from wenu import (
     PrintMode,
     RegionalChart,
     ResolvedDetail,
+    SkyContentSelection,
     add_chart_arguments,
     chart_detail_overrides,
     compose_chart,
@@ -223,6 +224,14 @@ Available policies include:
 
 `DetailOverrides` modifies a policy without merging content choices into
 style or mode. Layer selection is applied locally for each render.
+
+`SkyContentSelection` carries immutable named subsets for one render and is
+owned by `ResolvedDetail.content_selection`. `None` preserves a registered
+layer's default selection, while an empty set explicitly selects no members
+of that family. The v0.8 migration initially applies the catalogue and
+constellation-label selections already supported by layer geometry. The same
+contract records constellation-line, boundary, and isophote selections for
+their render-local implementation in Milestone 46C.4.
 
 ## 7. Legends
 

@@ -14,6 +14,7 @@ from wenu import (
     FullSkyChart,
     PrintMode,
     RegionalChart,
+    SkyContentSelection,
     compose_chart,
 )
 
@@ -136,6 +137,58 @@ def test_adaptive_results_are_immutable():
         detail.star_magnitude_limit = 12.0
 
 
+def test_named_content_selection_is_immutable_and_normalized():
+    selection = SkyContentSelection(
+        constellation_lines={" Cru ", "Cen"},
+        open_clusters=["NGC 4755"],
+        milky_way_levels=[" ol2 ", "ol3"],
+        lmc_levels=[1, "2"],
+    )
+
+    assert selection.constellation_lines == frozenset({"Cru", "Cen"})
+    assert selection.open_clusters == frozenset({"NGC 4755"})
+    assert selection.milky_way_levels == frozenset({"ol2", "ol3"})
+    assert selection.lmc_levels == frozenset({1, 2})
+    with pytest.raises(FrozenInstanceError):
+        selection.open_clusters = frozenset()
+
+
+def test_empty_selection_is_distinct_from_preserving_layer_default():
+    default = SkyContentSelection()
+    empty = SkyContentSelection(open_clusters=())
+
+    assert default.open_clusters is None
+    assert empty.open_clusters == frozenset()
+
+
+def test_empty_named_identifier_is_rejected():
+    with pytest.raises(ValueError, match="empty identifier"):
+        SkyContentSelection(galaxies={"NGC 5128", " "})
+
+
+def test_content_selection_requires_the_immutable_contract():
+    with pytest.raises(TypeError, match="SkyContentSelection"):
+        ResolvedDetail(content_selection={"open_clusters": {"NGC 4755"}})
+
+
+def test_explicit_content_selection_override_has_final_precedence():
+    base = ResolvedDetail(
+        content_selection=SkyContentSelection(
+            open_clusters={"NGC 4755"},
+        )
+    )
+    override = SkyContentSelection(
+        planetary_nebulae={"PN G063.1+13.9"},
+    )
+
+    resolved = apply_detail_overrides(
+        base,
+        DetailOverrides(content_selection=override),
+    )
+
+    assert resolved.content_selection is override
+
+
 def test_adaptive_detail_contract_has_no_backend_dependency():
     from pathlib import Path
     import wenu.charts.detail as detail_module
@@ -207,6 +260,59 @@ def test_detail_applies_catalogue_limits_and_geometry_thresholds():
     assert applied.layer_options["planetary_nebulae"]["geometry"] == {
         "minimum_size_arcmin": 1.0,
     }
+
+
+def test_named_catalogue_selections_are_render_local_geometry_options():
+    sky = m40d_detail_application_fake_sky()
+    selection = SkyContentSelection(
+        galaxies={"NGC 5128"},
+        open_clusters={"NGC 4755"},
+        planetary_nebulae={"PN G063.1+13.9"},
+        constellation_labels={"Cru", "Cen"},
+    )
+    detail = ResolvedDetail(content_selection=selection)
+
+    applied = apply_resolved_detail(sky, detail)
+
+    assert applied.layer_options["galaxies"]["geometry"]["selected"] == (
+        frozenset({"NGC 5128"})
+    )
+    assert applied.layer_options["open_clusters"]["geometry"]["selected"] == (
+        frozenset({"NGC 4755"})
+    )
+    planetary = applied.layer_options["planetary_nebulae"]
+    labels = applied.layer_options["constellation_labels"]
+    assert planetary["geometry"]["selected"] == frozenset(
+        {"PN G063.1+13.9"}
+    )
+    assert labels["geometry"]["selected"] == frozenset({"Cru", "Cen"})
+
+
+def test_sequential_content_selections_do_not_mutate_sky_or_detail():
+    sky = m40d_detail_application_fake_sky()
+    first = ResolvedDetail(
+        content_selection=SkyContentSelection(
+            open_clusters={"NGC 4755"},
+        )
+    )
+    second = ResolvedDetail(
+        content_selection=SkyContentSelection(
+            open_clusters={"NGC 6475"},
+        )
+    )
+
+    before = sky.layers
+    first_options = apply_resolved_detail(sky, first).layer_options
+    second_options = apply_resolved_detail(sky, second).layer_options
+
+    assert first_options["open_clusters"]["geometry"]["selected"] == (
+        frozenset({"NGC 4755"})
+    )
+    assert second_options["open_clusters"]["geometry"]["selected"] == (
+        frozenset({"NGC 6475"})
+    )
+    assert sky.layers is before
+    assert first.content_selection.open_clusters == frozenset({"NGC 4755"})
 
 
 def test_disabled_layers_are_expressed_without_mutating_registry():

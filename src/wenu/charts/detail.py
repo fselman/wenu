@@ -50,6 +50,100 @@ CONSTELLATION_STAR_MODES = frozenset(
 )
 
 
+def _normalized_identifiers(values, *, field_name):
+    if values is None:
+        return None
+    normalized = []
+    for value in values:
+        identifier = str(value).strip()
+        if not identifier:
+            raise ValueError(
+                f"{field_name} cannot contain an empty identifier."
+            )
+        normalized.append(identifier)
+    return frozenset(normalized)
+
+
+def _normalized_levels(values, *, field_name, converter):
+    if values is None:
+        return None
+    normalized = []
+    for value in values:
+        level = converter(value)
+        if isinstance(level, str):
+            level = level.strip()
+            if not level:
+                raise ValueError(
+                    f"{field_name} cannot contain an empty level."
+                )
+        normalized.append(level)
+    return frozenset(normalized)
+
+
+@dataclass(frozen=True)
+class SkyContentSelection:
+    """Named astronomical content selected for one chart render.
+
+    ``None`` preserves the registered layer's default selection. An empty
+    set explicitly selects no members of that family. Catalogue identifiers
+    retain their spelling; individual layers remain responsible for their
+    established case-folding and alias rules.
+    """
+
+    constellation_lines: frozenset[str] | None = None
+    constellation_boundaries: frozenset[str] | None = None
+    constellation_labels: frozenset[str] | None = None
+    nonstellar_objects: frozenset[str] | None = None
+    galaxies: frozenset[str] | None = None
+    open_clusters: frozenset[str] | None = None
+    globular_clusters: frozenset[str] | None = None
+    planetary_nebulae: frozenset[str] | None = None
+    supernova_remnants: frozenset[str] | None = None
+    milky_way_levels: frozenset[str] | None = None
+    lmc_levels: frozenset[int] | None = None
+    smc_levels: frozenset[int] | None = None
+
+    def __post_init__(self):
+        for name in (
+            "constellation_lines",
+            "constellation_boundaries",
+            "constellation_labels",
+            "nonstellar_objects",
+            "galaxies",
+            "open_clusters",
+            "globular_clusters",
+            "planetary_nebulae",
+            "supernova_remnants",
+        ):
+            object.__setattr__(
+                self,
+                name,
+                _normalized_identifiers(
+                    getattr(self, name),
+                    field_name=name,
+                ),
+            )
+        object.__setattr__(
+            self,
+            "milky_way_levels",
+            _normalized_levels(
+                self.milky_way_levels,
+                field_name="milky_way_levels",
+                converter=str,
+            ),
+        )
+        for name in ("lmc_levels", "smc_levels"):
+            object.__setattr__(
+                self,
+                name,
+                _normalized_levels(
+                    getattr(self, name),
+                    field_name=name,
+                    converter=int,
+                ),
+            )
+
+
 @dataclass(frozen=True)
 class ResolvedDetail:
     """Effective catalogue, size, labeling, and layer limits."""
@@ -65,6 +159,7 @@ class ResolvedDetail:
     grid_label_layers: frozenset[str] = frozenset()
     constellation_star_mode: str | None = None
     extra_star_ids: frozenset[int] = frozenset()
+    content_selection: SkyContentSelection = SkyContentSelection()
 
     def __post_init__(self) -> None:
         numeric_names = (
@@ -120,6 +215,10 @@ class ResolvedDetail:
             "extra_star_ids",
             frozenset(int(value) for value in self.extra_star_ids),
         )
+        if not isinstance(self.content_selection, SkyContentSelection):
+            raise TypeError(
+                "content_selection must be a SkyContentSelection."
+            )
 
     def layer_enabled(self, name: str) -> bool:
         """Return whether a semantic layer is enabled."""
@@ -152,6 +251,7 @@ class DetailOverrides:
     disabled_layers: frozenset[str] | None = None
     constellation_star_mode: str | None = None
     extra_star_ids: frozenset[int] | None = None
+    content_selection: SkyContentSelection | None = None
 
     def __post_init__(self):
         for name in (
@@ -171,6 +271,16 @@ class DetailOverrides:
                         if str(item).strip()
                     ),
                 )
+        if (
+            self.content_selection is not None
+            and not isinstance(
+                self.content_selection,
+                SkyContentSelection,
+            )
+        ):
+            raise TypeError(
+                "content_selection must be a SkyContentSelection or None."
+            )
 
 
 @runtime_checkable

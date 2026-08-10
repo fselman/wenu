@@ -18,6 +18,16 @@ _SIZE_OPTIONS = {
     "supernova_remnants": "minimum_supernova_remnant_size_arcmin",
 }
 
+_SELECTION_OPTIONS = {
+    "nonstellar": "nonstellar_objects",
+    "galaxies": "galaxies",
+    "open_clusters": "open_clusters",
+    "globular_clusters": "globular_clusters",
+    "planetary_nebulae": "planetary_nebulae",
+    "supernova_remnants": "supernova_remnants",
+    "constellation_labels": "constellation_labels",
+}
+
 
 def _merge_mapping(base, overlay):
     merged = dict(base)
@@ -234,6 +244,14 @@ def apply_resolved_detail(
             minimum = getattr(detail, detail_field)
             if minimum is not None:
                 geometry["minimum_size_arcmin"] = float(minimum)
+        selection_field = _SELECTION_OPTIONS.get(name)
+        if selection_field is not None:
+            selected = getattr(
+                detail.content_selection,
+                selection_field,
+            )
+            if selected is not None:
+                geometry["selected"] = selected
         if geometry:
             configured["geometry"] = geometry
         resolved_options[

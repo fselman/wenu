@@ -77,6 +77,7 @@ from .charts.detail import (
     FieldDetailLevel,
     FixedDetailPolicy,
     ResolvedDetail,
+    SkyContentSelection,
 )
 from .charts.modes import (
     ChartMode,
@@ -192,6 +193,7 @@ __all__ = [
     "PresentationMode",
     "PrintMode",
     "ResolvedDetail",
+    "SkyContentSelection",
     "ResolvedMode",
     "compose_chart",
     "ChartRenderingResult",
