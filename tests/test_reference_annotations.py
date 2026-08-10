@@ -1,3 +1,6 @@
+"""Current reference annotations contracts."""
+
+# Contracts consolidated from test_milestone44c_celestial_references.py.
 """Milestone 44C canonical celestial-reference annotations."""
 
 from types import SimpleNamespace
