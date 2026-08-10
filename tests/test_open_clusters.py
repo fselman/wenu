@@ -81,6 +81,24 @@ def test_empty_selection_returns_empty_points():
     assert len(geometry) == 0
 
 
+def test_sequential_open_cluster_selections_share_observed_catalogue():
+    layer = OpenClusters(observer())
+    layer.load()
+
+    first = layer.spherical_geometry(
+        layer.observer,
+        selected=["IC 2602"],
+    )
+    second = layer.spherical_geometry(
+        layer.observer,
+        selected=["NGC 4755"],
+    )
+
+    assert first.ids.tolist() == ["IC 2602"]
+    assert second.ids.tolist() == ["NGC 4755"]
+    assert len(layer._observed_point_cache) == 1
+
+
 def test_open_cluster_symbol_is_dotted_circumference():
     marker = DEFAULT_SYMBOLS.open_cluster
     assert isinstance(marker, Path)

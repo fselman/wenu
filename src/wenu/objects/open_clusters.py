@@ -5,14 +5,13 @@ from __future__ import annotations
 from importlib.resources import as_file
 from pathlib import Path
 
-import astropy.units as u
 import numpy as np
-from astropy.coordinates import SkyCoord
 from astropy.table import Table
 
 from wenu.geometry.spherical import SphericalPoints
 from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.resources import nonstellar_catalog_path
+from wenu.sky.observed_cache import catalogue_point_altaz
 
 
 class OpenClusters(AstronomicalObject):
@@ -25,6 +24,8 @@ class OpenClusters(AstronomicalObject):
         self.selected = None if selected is None else tuple(selected)
         self.catalog = None
         self.source = None
+        self._source_revision = 0
+        self._observed_point_cache = {}
 
     def load(self, *, filename=None):
         """Load the normalized Dias/HEASARC catalogue snapshot."""
@@ -38,6 +39,8 @@ class OpenClusters(AstronomicalObject):
             table = Table.read(self.source)
         self._validate(table)
         self.catalog = table
+        self._source_revision += 1
+        self._observed_point_cache.clear()
         return self.catalog
 
     @staticmethod
@@ -128,15 +131,16 @@ class OpenClusters(AstronomicalObject):
                 metadata=metadata,
             )
 
-        centers = SkyCoord(
-            ra=np.asarray(table["ra_deg"], dtype=float) * u.deg,
-            dec=np.asarray(table["dec_deg"], dtype=float) * u.deg,
-            frame="icrs",
+        azimuth, altitude = catalogue_point_altaz(
+            self._observed_point_cache,
+            resolved,
+            source_table=self.catalog,
+            selected_table=table,
+            source_key=("open_clusters", self._source_revision),
         )
-        horizontal = centers.transform_to(resolved.altaz_frame)
         return SphericalPoints(
-            lon_deg=horizontal.az.to_value(u.deg),
-            lat_deg=horizontal.alt.to_value(u.deg),
+            lon_deg=azimuth,
+            lat_deg=altitude,
             ids=identifiers,
             labels=identifiers,
             names=identifiers,

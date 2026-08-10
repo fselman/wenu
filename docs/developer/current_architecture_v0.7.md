@@ -29,3 +29,5 @@ Stellar AltAz realization is cached per loaded `Stars` layer using observer
 location, instant, ephemeris identity, data directory, catalogue identity,
 and source revision. Render-local magnitude and identifier selections mask
 that immutable maximal realization, and constellation figures reuse it.
+Vectorized point catalogues use the same key identity: open-cluster and
+planetary-nebula selections index immutable maximal AltAz center arrays.

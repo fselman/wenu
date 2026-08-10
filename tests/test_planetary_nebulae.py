@@ -80,3 +80,21 @@ def test_empty_selection_returns_empty_points():
     geometry = layer.spherical_geometry(layer.observer)
     assert isinstance(geometry, SphericalPoints)
     assert len(geometry) == 0
+
+
+def test_sequential_nebula_selections_share_observed_catalogue():
+    layer = PlanetaryNebulae(observer())
+    layer.load()
+
+    first = layer.spherical_geometry(
+        layer.observer,
+        selected=["PN G063.1+13.9"],
+    )
+    second = layer.spherical_geometry(
+        layer.observer,
+        selected=["PN G036.1-57.1"],
+    )
+
+    assert first.ids.tolist() == ["PN G063.1+13.9"]
+    assert second.ids.tolist() == ["PN G036.1-57.1"]
+    assert len(layer._observed_point_cache) == 1

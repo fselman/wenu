@@ -301,6 +301,8 @@ first use. Later magnitude selections and constellation-line geometry for the
 same observer and instant reuse those immutable arrays. A different observer,
 instant, ephemeris, data directory, catalogue, or source reload selects a
 different cache entry; presentation and render state never enter the key.
+Open clusters and planetary nebulae likewise transform their complete loaded
+center catalogues once and obtain ordered render-local subsets by identifier.
 
 ## 9. Package imports
 

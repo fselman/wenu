@@ -65,6 +65,8 @@ class NonStellar(AstronomicalObject):
         self.catalog = None
         self.source_catalog = None
         self.source = None
+        self._source_revision = 0
+        self._observed_point_cache = {}
 
     def load(self, *, catalog=None, filename=None):
         """Load and normalize a non-stellar catalogue."""
@@ -89,6 +91,8 @@ class NonStellar(AstronomicalObject):
                 | (magnitude <= self.magnitude_limit)
             )
             self.catalog = self.source_catalog[keep]
+        self._source_revision += 1
+        self._observed_point_cache.clear()
         return self.catalog
 
     def _normalize(self, source):

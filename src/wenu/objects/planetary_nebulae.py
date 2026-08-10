@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import astropy.units as u
 import numpy as np
-from astropy.coordinates import SkyCoord
 
 from wenu.geometry.spherical import SphericalPoints
 from wenu.objects.nonstellar import NonStellar
+from wenu.sky.observed_cache import catalogue_point_altaz
 
 
 class PlanetaryNebulae(NonStellar):
@@ -131,15 +130,16 @@ class PlanetaryNebulae(NonStellar):
                 metadata=self._point_metadata(table),
             )
 
-        centers = SkyCoord(
-            ra=np.asarray(table["ra_deg"], dtype=float) * u.deg,
-            dec=np.asarray(table["dec_deg"], dtype=float) * u.deg,
-            frame="icrs",
+        azimuth, altitude = catalogue_point_altaz(
+            self._observed_point_cache,
+            resolved,
+            source_table=self.source_catalog,
+            selected_table=table,
+            source_key=(self.catalog_name, self._source_revision),
         )
-        horizontal = centers.transform_to(resolved.altaz_frame)
         return SphericalPoints(
-            lon_deg=horizontal.az.to_value(u.deg),
-            lat_deg=horizontal.alt.to_value(u.deg),
+            lon_deg=azimuth,
+            lat_deg=altitude,
             ids=identifiers,
             labels=identifiers,
             names=identifiers,
