@@ -294,6 +294,20 @@ class NonStellar(AstronomicalObject):
         )
         return table[keep]
 
+    def _resolved_samples(self, samples):
+        """Return render-local outline samples within loaded quality."""
+        if samples is None:
+            return self.samples
+        resolved = int(samples)
+        if resolved < 12:
+            raise ValueError("samples must be at least 12.")
+        if resolved > self.samples:
+            raise ValueError(
+                "samples cannot exceed the layer's maximum sampling "
+                f"quality ({self.samples})."
+            )
+        return resolved
+
     def _geometry_metadata(
         self,
         table,
@@ -337,6 +351,7 @@ class NonStellar(AstronomicalObject):
         selected=None,
         magnitude_limit=None,
         minimum_size_arcmin=None,
+        samples=None,
     ) -> SphericalCurves:
         """Return sampled outlines transformed from ICRS to Alt/Az."""
         if self.catalog is None:
@@ -354,6 +369,7 @@ class NonStellar(AstronomicalObject):
             selected,
             magnitude_limit=magnitude_limit,
         )
+        resolved_samples = self._resolved_samples(samples)
 
         lon_deg = []
         lat_deg = []
@@ -370,7 +386,7 @@ class NonStellar(AstronomicalObject):
                 row["major_axis_arcmin"],
                 row["minor_axis_arcmin"],
                 row["position_angle_deg"],
-                self.samples,
+                resolved_samples,
                 minimum_size_arcmin=minimum_size_arcmin,
             )
             horizontal = outline.transform_to(resolved.altaz_frame)

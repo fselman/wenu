@@ -108,6 +108,21 @@ def test_geometry_uses_equal_area_circle_without_inventing_pa(
     ]
 
 
+def test_outline_sampling_can_be_reduced_per_render(catalogue, observer):
+    layer = SupernovaRemnants(observer, samples=48)
+    layer.load(filename=catalogue)
+
+    reduced = layer.spherical_geometry(
+        observer, selected=["G184.6-5.8"], samples=24
+    )
+    complete = layer.spherical_geometry(
+        observer, selected=["G184.6-5.8"]
+    )
+
+    assert len(reduced.lon_deg[0]) == 24
+    assert len(complete.lon_deg[0]) == 48
+
+
 def test_sphere_helper_loads_and_registers(catalogue, observer):
     sky = CelestialSphere(observer)
     layer = sky.add_supernova_remnants(

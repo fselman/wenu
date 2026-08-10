@@ -98,6 +98,22 @@ def test_selection(catalogue, observer):
     assert list(geometry.ids) == ["M 31"]
 
 
+def test_outline_sampling_is_render_local_and_bounded(catalogue, observer):
+    layer = NonStellar(observer, samples=36)
+    layer.load(filename=catalogue)
+
+    reduced = layer.spherical_geometry(observer, samples=18)
+    complete = layer.spherical_geometry(observer)
+
+    assert all(len(curve) == 18 for curve in reduced.lon_deg)
+    assert all(len(curve) == 36 for curve in complete.lon_deg)
+    assert layer.samples == 36
+    with pytest.raises(ValueError, match="at least 12"):
+        layer.spherical_geometry(observer, samples=11)
+    with pytest.raises(ValueError, match="maximum sampling quality"):
+        layer.spherical_geometry(observer, samples=37)
+
+
 def test_celestial_sphere_helper_loads_and_registers(
     catalogue,
     observer,

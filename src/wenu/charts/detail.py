@@ -154,6 +154,7 @@ class ResolvedDetail:
     minimum_globular_cluster_size_arcmin: float | None = None
     minimum_planetary_nebula_size_arcmin: float | None = None
     minimum_supernova_remnant_size_arcmin: float | None = None
+    extended_object_samples: int | None = None
     label_density: float = 1.0
     enabled_layers: frozenset[str] | None = None
     grid_label_layers: frozenset[str] = frozenset()
@@ -181,6 +182,13 @@ class ResolvedDetail:
                 raise ValueError(f"{name} cannot be negative.")
         if self.label_density <= 0.0:
             raise ValueError("label_density must be positive.")
+        if self.extended_object_samples is not None:
+            samples = int(self.extended_object_samples)
+            if samples < 12:
+                raise ValueError(
+                    "extended_object_samples must be at least 12."
+                )
+            object.__setattr__(self, "extended_object_samples", samples)
         if self.enabled_layers is not None:
             normalized = frozenset(
                 str(name).strip()
@@ -244,6 +252,7 @@ class DetailOverrides:
     minimum_globular_cluster_size_arcmin: float | None = None
     minimum_planetary_nebula_size_arcmin: float | None = None
     minimum_supernova_remnant_size_arcmin: float | None = None
+    extended_object_samples: int | None = None
     label_density: float | None = None
     enabled_layers: frozenset[str] | None = None
     grid_label_layers: frozenset[str] | None = None

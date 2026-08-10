@@ -93,6 +93,21 @@ def test_geometry_is_circular_and_preserves_metadata(
     assert geometry.metadata["metallicity"].tolist() == [-1.53]
 
 
+def test_outline_sampling_can_be_reduced_per_render(catalogue, observer):
+    layer = GlobularClusters(observer, samples=48)
+    layer.load(filename=catalogue)
+
+    reduced = layer.spherical_geometry(
+        observer, selected=["NGC 5139"], samples=24
+    )
+    complete = layer.spherical_geometry(
+        observer, selected=["NGC 5139"]
+    )
+
+    assert len(reduced.lon_deg[0]) == 24
+    assert len(complete.lon_deg[0]) == 48
+
+
 def test_sphere_helper_loads_and_registers(catalogue, observer):
     sky = CelestialSphere(observer)
     layer = sky.add_globular_clusters(

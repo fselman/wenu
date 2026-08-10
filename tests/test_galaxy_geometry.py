@@ -97,6 +97,26 @@ def test_selected_galaxy_geometry_preserves_catalogue_metadata():
     )
 
 
+def test_galaxy_outline_sampling_can_be_reduced_per_render():
+    current_observer = observer()
+    layer = Galaxies(current_observer, samples=24)
+    layer.load()
+
+    reduced = layer.spherical_geometry(
+        current_observer,
+        selected=["NGC5128"],
+        samples=12,
+    )
+    complete = layer.spherical_geometry(
+        current_observer,
+        selected=["NGC5128"],
+    )
+
+    assert len(reduced.lon_deg[0]) == 12
+    assert len(complete.lon_deg[0]) == 24
+    assert layer.samples == 24
+
+
 def test_galaxies_and_messier_can_coexist_on_one_sky():
     sky = CelestialSphere(observer())
     messier = sky.add_nonstellar(samples=24)

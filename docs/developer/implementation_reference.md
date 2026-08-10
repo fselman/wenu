@@ -234,6 +234,12 @@ applies constellation-line and boundary subsets and Milky Way, LMC, and SMC
 isophote levels as render-local geometry options. These selections do not
 change the registered layers' loaded content or defaults.
 
+`ResolvedDetail.extended_object_samples` may request a lower render-local
+sampling density for extended-object outlines. It applies to Messier-style
+non-stellar objects, galaxies, globular clusters, and supernova remnants.
+The request cannot exceed the layer's construction-time maximum sampling
+quality; fixed-symbol open clusters and planetary nebulae are unaffected.
+
 ## 7. Legends
 
 `LegendOptions` independently controls:

@@ -28,6 +28,15 @@ _SELECTION_OPTIONS = {
     "constellation_labels": "constellation_labels",
 }
 
+_SAMPLED_OUTLINE_LAYERS = frozenset(
+    {
+        "nonstellar",
+        "galaxies",
+        "globular_clusters",
+        "supernova_remnants",
+    }
+)
+
 
 def _merge_mapping(base, overlay):
     merged = dict(base)
@@ -244,6 +253,11 @@ def apply_resolved_detail(
             minimum = getattr(detail, detail_field)
             if minimum is not None:
                 geometry["minimum_size_arcmin"] = float(minimum)
+        if (
+            name in _SAMPLED_OUTLINE_LAYERS
+            and detail.extended_object_samples is not None
+        ):
+            geometry["samples"] = detail.extended_object_samples
         selection_field = _SELECTION_OPTIONS.get(name)
         if selection_field is not None:
             selected = getattr(

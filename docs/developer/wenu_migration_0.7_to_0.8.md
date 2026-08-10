@@ -88,6 +88,8 @@ must not prematurely change public behavior or introduce a parallel pipeline.
 - preserve catalogue provenance, authoritative native coordinates, Serpens
   boundary behavior, and atlas-print appearance.
 
+**Status:** Implemented through Milestone 46C.4B.
+
 ## Milestone 46C.5 — Add one canonical maximal-sphere factory
 
 - define an immutable, comparable load profile containing catalogue ceilings,

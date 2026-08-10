@@ -262,12 +262,50 @@ def test_detail_applies_catalogue_limits_and_geometry_thresholds():
     }
 
 
+def test_outline_sampling_density_is_applied_only_to_curve_layers():
+    sky = m40d_detail_application_fake_sky()
+    nonstellar = m40d_detail_application_Layer("nonstellar")
+    globular = m40d_detail_application_Layer("globular_clusters")
+    remnants = m40d_detail_application_Layer("supernova_remnants")
+    sky.layers += (nonstellar, globular, remnants)
+
+    applied = apply_resolved_detail(
+        sky,
+        ResolvedDetail(extended_object_samples=24),
+    )
+
+    for layer in (sky.galaxies, nonstellar, globular, remnants):
+        assert applied.layer_options[layer]["geometry"]["samples"] == 24
+    for layer_name in ("open_clusters", "planetary_nebulae"):
+        geometry = applied.layer_options[layer_name].get("geometry", {})
+        assert "samples" not in geometry
+
+
+def test_outline_sampling_density_is_validated_and_overridable():
+    with pytest.raises(ValueError, match="at least 12"):
+        ResolvedDetail(extended_object_samples=11)
+
+    resolved = apply_detail_overrides(
+        ResolvedDetail(extended_object_samples=48),
+        DetailOverrides(extended_object_samples=24),
+    )
+
+    assert resolved.extended_object_samples == 24
+
+
 def test_named_catalogue_selections_are_render_local_geometry_options():
     sky = m40d_detail_application_fake_sky()
+    nonstellar = m40d_detail_application_Layer("nonstellar")
+    globular = m40d_detail_application_Layer("globular_clusters")
+    remnants = m40d_detail_application_Layer("supernova_remnants")
+    sky.layers += (nonstellar, globular, remnants)
     selection = SkyContentSelection(
+        nonstellar_objects={"M 17"},
         galaxies={"NGC 5128"},
         open_clusters={"NGC 4755"},
+        globular_clusters={"NGC 5139"},
         planetary_nebulae={"PN G063.1+13.9"},
+        supernova_remnants={"G074.0-08.5"},
         constellation_labels={"Cru", "Cen"},
     )
     detail = ResolvedDetail(content_selection=selection)
@@ -279,6 +317,15 @@ def test_named_catalogue_selections_are_render_local_geometry_options():
     )
     assert applied.layer_options["open_clusters"]["geometry"]["selected"] == (
         frozenset({"NGC 4755"})
+    )
+    assert applied.layer_options[nonstellar]["geometry"]["selected"] == (
+        frozenset({"M 17"})
+    )
+    assert applied.layer_options[globular]["geometry"]["selected"] == (
+        frozenset({"NGC 5139"})
+    )
+    assert applied.layer_options[remnants]["geometry"]["selected"] == (
+        frozenset({"G074.0-08.5"})
     )
     planetary = applied.layer_options["planetary_nebulae"]
     labels = applied.layer_options["constellation_labels"]

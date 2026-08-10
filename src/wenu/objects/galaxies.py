@@ -146,6 +146,7 @@ class Galaxies(NonStellar):
         selected=None,
         magnitude_limit=None,
         minimum_size_arcmin=None,
+        samples=None,
     ) -> SphericalPolygons:
         """Return galaxy ellipses as polygons transformed to Alt/Az."""
         if self.catalog is None:
@@ -163,6 +164,7 @@ class Galaxies(NonStellar):
             selected,
             magnitude_limit=magnitude_limit,
         )
+        resolved_samples = self._resolved_samples(samples)
         lon_deg = []
         lat_deg = []
         identifiers = []
@@ -178,7 +180,7 @@ class Galaxies(NonStellar):
                 row["major_axis_arcmin"],
                 row["minor_axis_arcmin"],
                 row["position_angle_deg"],
-                self.samples,
+                resolved_samples,
                 minimum_size_arcmin=minimum_size_arcmin,
             )
             horizontal = outline.transform_to(resolved.altaz_frame)
