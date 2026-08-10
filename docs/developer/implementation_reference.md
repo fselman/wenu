@@ -329,6 +329,16 @@ Centaurus A and Omega Centauri fields plus M13, M16, M17, M57, M7, and the
 Veil Nebula usage-audit targets. Unknown and ambiguous aliases are errors,
 not empty successful charts.
 
+`resolve_constellation_subject(ChartSubjectRequest(...))` accepts either an
+ordered IAU abbreviation set or a packaged teaching-group alias. Its
+`ResolvedConstellationSubject` keeps public region identities separate from
+the line, boundary, and label identifiers consumed downstream. A public
+Serpens (`Ser`) request expands to the two figure and label identities
+without requiring callers to know `Ser1`, `Ser2`, `SerCap`, or `SerCau`.
+Packaged groups also carry their provenance, legacy canonical framing
+defaults, and curated content identifiers until spatial field selection
+replaces the latter in a later 46C.7 step.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

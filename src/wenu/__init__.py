@@ -73,6 +73,17 @@ from .charts.target_resolver import (
     resolve_target,
     target_catalogue_path,
 )
+from .charts.constellation_resolver import (
+    IAU_CONSTELLATIONS,
+    ConstellationResolutionError,
+    ResolvedConstellationSubject,
+    UnknownConstellationError,
+    UnknownConstellationGroupError,
+    constellation_group_catalogue_path,
+    load_constellation_groups,
+    normalize_constellations,
+    resolve_constellation_subject,
+)
 from .charts.chart_arguments import (
     ChartContentOptions,
     ChartLegendSelection,
@@ -254,6 +265,15 @@ __all__ = [
     "load_target_catalogue",
     "resolve_target",
     "target_catalogue_path",
+    "IAU_CONSTELLATIONS",
+    "ConstellationResolutionError",
+    "ResolvedConstellationSubject",
+    "UnknownConstellationError",
+    "UnknownConstellationGroupError",
+    "constellation_group_catalogue_path",
+    "load_constellation_groups",
+    "normalize_constellations",
+    "resolve_constellation_subject",
     "ChartContentOptions",
     "ChartLegendSelection",
     "ChartStyleOverrides",

@@ -53,3 +53,12 @@ resolver. A resolved target preserves its display identity and ICRS center
 while separately naming every catalogue family and identifier required to
 draw it. Unknown and ambiguous aliases raise explicit user-facing errors;
 explicit coordinates retain user provenance and need no packaged component.
+
+Milestone 46C.7C adds the corresponding offline constellation-subject
+resolver. It accepts arbitrary IAU abbreviation sets and packaged teaching
+groups, and resolves their public region identities into the distinct line,
+boundary, and label identifiers required internally. In particular, a public
+`Ser` request consistently expands to `Ser1`/`Ser2` figures and
+`SerCap`/`SerCau` labels while retaining one official boundary identity.
+Teaching-group framing and curated legacy-example content are packaged data,
+not example-script globals.

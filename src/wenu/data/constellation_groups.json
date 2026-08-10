@@ -1,0 +1,27 @@
+{
+  "provenance": "Wenu packaged regional teaching-group declarations, derived from the canonical v0.7 regional examples.",
+  "groups": [
+    {
+      "key": "summer-triangle",
+      "name": "The Summer Triangle — Cygnus, Lyra, Vulpecula, Sagitta, and Aquila",
+      "aliases": ["summer triangle"],
+      "constellations": ["Cyg", "Lyr", "Vul", "Sge", "Aql"],
+      "field_width_deg": 143.52,
+      "field_height_deg": 104.0,
+      "open_clusters": ["NGC 6709", "NGC 6811", "NGC 6830", "NGC 6885", "NGC 6940"],
+      "planetary_nebulae": ["PN G060.8-03.6", "PN G063.1+13.9"],
+      "supernova_remnants": ["G065.3+05.7", "G074.0-08.5", "G078.2+02.1"]
+    },
+    {
+      "key": "galactic-center",
+      "name": "Sagittarius, Scorpius, Ophiuchus, and Serpens",
+      "aliases": ["galactic centre", "sgr-sco-oph-ser"],
+      "constellations": ["Sgr", "Sco", "Oph", "Ser"],
+      "field_width_deg": 90.0,
+      "field_height_deg": 90.0,
+      "open_clusters": ["NGC 6405", "NGC 6475", "NGC 6530", "NGC 6603", "NGC 6611", "NGC 6705"],
+      "planetary_nebulae": ["PN G349.5+01.0", "PN G002.4+05.8", "PN G008.0+03.9", "PN G009.4-05.0", "PN G010.1+00.7", "PN G025.8-17.9"],
+      "supernova_remnants": ["G004.5+06.8", "G006.4-00.1", "G011.2-00.3", "G021.8-00.6", "G027.4+00.0", "G034.7-00.4"]
+    }
+  ]
+}
