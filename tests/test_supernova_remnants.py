@@ -1,3 +1,6 @@
+"""Current supernova remnants contracts."""
+
+# Contracts consolidated from test_milestone35b_supernova_remnants.py.
 """Milestone 35B tests for Galactic supernova remnants."""
 
 from types import SimpleNamespace

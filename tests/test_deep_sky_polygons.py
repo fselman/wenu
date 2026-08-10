@@ -1,3 +1,6 @@
+"""Current deep sky polygons contracts."""
+
+# Contracts consolidated from test_milestone29_galaxy_polygons.py.
 """Milestone 29 tests for galaxy polygon geometry."""
 
 from types import SimpleNamespace

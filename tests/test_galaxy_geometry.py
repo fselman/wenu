@@ -1,3 +1,6 @@
+"""Current galaxy geometry contracts."""
+
+# Contracts consolidated from test_milestone28_galaxies.py.
 """Milestone 28 tests for the Galaxies domain layer."""
 
 from types import SimpleNamespace

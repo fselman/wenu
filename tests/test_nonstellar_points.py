@@ -1,3 +1,6 @@
+"""Current nonstellar points contracts."""
+
+# Contracts consolidated from test_milestone26_nonstellar_dots_sgr.py.
 """Regression tests for NonStellar dot symbols and Sagittarius."""
 
 from pathlib import Path

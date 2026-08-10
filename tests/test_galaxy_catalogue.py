@@ -1,3 +1,6 @@
+"""Current galaxy catalogue contracts."""
+
+# Contracts consolidated from test_milestone27_galaxy_catalogue.py.
 """Milestone 27 tests for the bundled OpenNGC bright-galaxy catalogue."""
 
 from importlib.resources import as_file, files

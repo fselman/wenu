@@ -1,3 +1,6 @@
+"""Current globular clusters contracts."""
+
+# Contracts consolidated from test_milestone32_globular_clusters.py.
 """Milestone 32 tests for Galactic globular clusters."""
 
 from types import SimpleNamespace

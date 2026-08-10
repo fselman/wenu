@@ -1,3 +1,6 @@
+"""Current constellation boundaries contracts."""
+
+# Contracts consolidated from test_milestone8_boundaries.py.
 """Milestone 8 tests for geometry-only constellation boundaries."""
 
 from collections import OrderedDict

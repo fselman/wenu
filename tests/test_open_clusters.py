@@ -1,3 +1,6 @@
+"""Current open clusters contracts."""
+
+# Contracts consolidated from test_milestone37b_open_clusters.py.
 from types import SimpleNamespace
 
 import matplotlib

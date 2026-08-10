@@ -1,3 +1,6 @@
+"""Current nonstellar catalogue contracts."""
+
+# Contracts consolidated from test_milestone26_nonstellar.py.
 """Milestone 26 tests for the NonStellar catalogue layer."""
 
 from types import SimpleNamespace

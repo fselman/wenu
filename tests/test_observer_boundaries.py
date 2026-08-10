@@ -1,3 +1,6 @@
+"""Current observer boundaries contracts."""
+
+# Contracts consolidated from test_milestone11_boundaries.py.
 """Milestone 11 domain regression retained after legacy renderer removal."""
 
 from collections import OrderedDict

@@ -1,3 +1,6 @@
+"""Current magellanic clouds contracts."""
+
+# Contracts consolidated from test_milestone34b_magellanic_clouds.py.
 import json
 
 import numpy as np

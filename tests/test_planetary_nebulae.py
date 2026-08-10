@@ -1,3 +1,6 @@
+"""Current planetary nebulae contracts."""
+
+# Contracts consolidated from test_milestone36b_planetary_nebulae.py.
 from types import SimpleNamespace
 
 import numpy as np

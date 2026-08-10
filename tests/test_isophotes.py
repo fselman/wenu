@@ -1,3 +1,6 @@
+"""Current isophotes contracts."""
+
+# Contracts consolidated from test_milestone33_milky_way_isophotes.py.
 import json
 
 import matplotlib
