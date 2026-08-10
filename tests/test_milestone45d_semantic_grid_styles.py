@@ -157,9 +157,3 @@ def test_canonical_grid_configuration_is_reference_free():
     assert 0 not in grids["ecliptic"].latitude
     assert 0 not in grids["galactic"].latitude
     assert 0 not in grids["altaz"].altitude
-
-
-@pytest.mark.parametrize("path", EXAMPLES)
-def test_packaged_examples_remain_identical(path):
-    packaged = ROOT / "src" / "wenu" / "example_scripts" / path.name
-    assert path.read_bytes() == packaged.read_bytes()

@@ -8,7 +8,6 @@ from wenu.charts.presets import AtlasChartStyle
 
 
 PLANISPHERE = Path("examples/planisphere.py")
-PACKAGED = Path("src/wenu/example_scripts/planisphere.py")
 
 
 def test_planisphere_requests_spanish_annotations_and_titles():
@@ -28,10 +27,6 @@ def test_planisphere_requests_spanish_annotations_and_titles():
         'stellar_title="Estrellas"',
     ):
         assert text in source
-
-
-def test_installed_planisphere_matches_canonical_spanish_example():
-    assert PLANISPHERE.read_bytes() == PACKAGED.read_bytes()
 
 
 def test_legend_text_overrides_are_resolved_without_global_translation():

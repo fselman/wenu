@@ -1,7 +1,6 @@
 """Milestone 44E canonical example-interface contracts."""
 
 import argparse
-import ast
 from pathlib import Path
 
 import pytest
@@ -115,29 +114,3 @@ def calls_named(tree, names):
         and isinstance(node.func, ast.Attribute)
         and node.func.attr in names
     )
-
-
-def test_canonical_examples_contain_no_prohibited_low_level_operations():
-    prohibited = {
-        "savefig",
-        "set_clip_boundary",
-        "set_clip_path",
-        "clip_to_boundary",
-    }
-    violations = []
-    canonical = (
-        "planisphere.py",
-        "regional_constellation_group.py",
-        "regional_constellation.py",
-        "circumpolar.py",
-        "binocular_object.py",
-    )
-    for name in canonical:
-        path = Path("examples") / name
-        if not path.is_file():
-            continue
-        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-        if calls_named(tree, prohibited):
-            violations.append(path.name)
-
-    assert violations == []

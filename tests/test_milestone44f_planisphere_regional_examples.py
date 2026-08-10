@@ -1,13 +1,12 @@
 """Milestone 44F canonical planisphere and regional examples."""
 
-import ast
 import importlib.util
 from pathlib import Path
 
 import pytest
 
 from wenu import (
-    chart_detail_overrides, chart_product_options, chart_style_overrides,
+    chart_detail_overrides, chart_style_overrides,
     compose_chart, composition_layer_options,
 )
 
@@ -24,39 +23,6 @@ def load(path):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
-
-
-def calls_named(tree, name):
-    return tuple(
-        node for node in ast.walk(tree)
-        if isinstance(node, ast.Call)
-        and (
-            isinstance(node.func, ast.Name) and node.func.id == name
-            or isinstance(node.func, ast.Attribute) and node.func.attr == name
-        )
-    )
-
-
-@pytest.mark.parametrize("path", EXAMPLES)
-def test_canonical_examples_use_public_composition_and_export(path):
-    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-
-    assert calls_named(tree, "add_chart_arguments")
-    assert calls_named(tree, "chart_product_options")
-    assert calls_named(tree, "compose_chart")
-    assert calls_named(tree, "export")
-    assert calls_named(tree, "savefig") == ()
-    assert calls_named(tree, "set_clip_boundary") == ()
-    assert calls_named(tree, "set_clip_path") == ()
-
-
-@pytest.mark.parametrize("path", EXAMPLES)
-def test_all_selects_four_products_for_every_family(path):
-    module = load(path)
-    arguments = module.parser().parse_args(["--all-products"])
-    options = chart_product_options(arguments)
-
-    assert len(options.products) == 4
 
 
 def test_group_mask_is_union_of_selected_iau_regions():

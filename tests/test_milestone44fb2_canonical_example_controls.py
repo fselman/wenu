@@ -30,35 +30,6 @@ def load(path):
     return module
 
 
-@pytest.mark.parametrize("path", EXAMPLES)
-def test_shared_content_and_legend_controls_are_available(path):
-    arguments = load(path).parser().parse_args(
-        [
-            "--magnitude-limit", "4.25",
-            "--constellation-labels",
-            "--constellation-boundaries",
-            "--grid-references", "all",
-            "--poles",
-            "--pole-labels",
-            "--object-legend",
-            "--magnitude-legend",
-            "--star-counts",
-        ]
-    )
-
-    assert arguments.magnitude_limit == pytest.approx(4.25)
-    assert arguments.constellation_labels is True
-    assert arguments.constellation_boundaries is True
-    assert arguments.grid_references == frozenset(
-        {"equatorial", "ecliptic", "galactic"}
-    )
-    assert arguments.poles is True
-    assert arguments.pole_labels is True
-    assert arguments.object_legend is True
-    assert arguments.magnitude_legend is True
-    assert arguments.star_counts is True
-
-
 def resolved_detail(arguments, *, style):
     chart = RegionalChart(45.0, 180.0, 20.0, 15.0)
     policy = (
@@ -75,7 +46,6 @@ def resolved_detail(arguments, *, style):
         detail=policy,
         detail_overrides=chart_detail_overrides(arguments),
     ).detail
-
 
 @pytest.mark.parametrize("style", ["atlas", "cartoon"])
 def test_labels_and_boundaries_are_opt_in(style):

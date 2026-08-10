@@ -8,6 +8,13 @@ from wenu.cli.examples import copy_examples
 ROOT = Path(__file__).resolve().parents[1]
 CANONICAL_EXAMPLES = ROOT / "examples"
 PACKAGED_EXAMPLES = ROOT / "src" / "wenu" / "example_scripts"
+CANONICAL_EXAMPLE_NAMES = {
+    "binocular_object.py",
+    "circumpolar.py",
+    "planisphere.py",
+    "regional_constellation.py",
+    "regional_constellation_group.py",
+}
 
 
 def example_names(directory):
@@ -20,7 +27,8 @@ def example_names(directory):
 
 
 def test_packaged_examples_match_canonical_examples():
-    assert example_names(PACKAGED_EXAMPLES) == example_names(CANONICAL_EXAMPLES)
+    assert example_names(CANONICAL_EXAMPLES) == CANONICAL_EXAMPLE_NAMES
+    assert example_names(PACKAGED_EXAMPLES) == CANONICAL_EXAMPLE_NAMES
     for name in example_names(CANONICAL_EXAMPLES):
         assert (PACKAGED_EXAMPLES / name).read_bytes() == (
             CANONICAL_EXAMPLES / name

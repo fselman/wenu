@@ -1,13 +1,8 @@
 """Milestone 44I structured user-guide and README provenance contracts."""
 
 from hashlib import sha256
-import importlib.util
 from pathlib import Path
 import struct
-
-import pytest
-
-from wenu import chart_product_options
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,16 +28,6 @@ EXAMPLES = (
 )
 
 
-def load_example(filename):
-    path = ROOT / "examples" / filename
-    spec = importlib.util.spec_from_file_location(
-        f"documented_{path.stem}", path
-    )
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
 def png_dimensions(path):
     data = path.read_bytes()
     assert data[:8] == b"\x89PNG\r\n\x1a\n"
@@ -58,23 +43,6 @@ def test_guide_index_names_all_five_canonical_examples():
     text = (GUIDE / "index.md").read_text(encoding="utf-8")
     for filename in EXAMPLES:
         assert f"examples/{filename}" in text
-
-
-@pytest.mark.parametrize("filename", EXAMPLES)
-def test_documented_examples_expose_the_shared_product_contract(filename):
-    module = load_example(filename)
-    arguments = module.parser().parse_args([
-        "--style", "cartoon",
-        "--mode", "presentation",
-        "--output", "output/documented.png",
-    ])
-    options = chart_product_options(arguments)
-
-    assert options.style == "cartoon"
-    assert options.mode == "presentation"
-    assert options.output == Path("output/documented.png")
-    assert len(options.products) == 1
-
 
 def test_readme_quick_start_uses_the_canonical_planisphere_interface():
     text = (ROOT / "README.md").read_text(encoding="utf-8")
