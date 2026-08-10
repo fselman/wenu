@@ -33,6 +33,33 @@ def observer_geometry_key(observer):
     )
 
 
+def observed_polygon_arrays(cache, observer, *, source_key, build):
+    """Return immutable maximal polygon arrays from an observed cache."""
+    key = (observer_geometry_key(observer), source_key)
+    cached = cache.get(key)
+    if cached is None:
+        longitude, latitude = build()
+        longitude = tuple(
+            _immutable_float_array(values) for values in longitude
+        )
+        latitude = tuple(
+            _immutable_float_array(values) for values in latitude
+        )
+        if len(longitude) != len(latitude):
+            raise ValueError(
+                "Observed polygon longitude and latitude must align."
+            )
+        cached = (longitude, latitude)
+        cache[key] = cached
+    return cached
+
+
+def _immutable_float_array(values):
+    array = np.asarray(values, dtype=float)
+    array.setflags(write=False)
+    return array
+
+
 def _icrs_catalogue_altaz(table, observer):
     coordinates = SkyCoord(
         ra=np.asarray(table["ra_deg"], dtype=float) * u.deg,

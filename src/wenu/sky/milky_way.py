@@ -10,6 +10,7 @@ from astropy.coordinates import SkyCoord
 
 from wenu.geometry.spherical import SphericalPolygons
 from wenu.resources import milky_way_isophotes_path
+from wenu.sky.observed_cache import observed_polygon_arrays
 from wenu.sky.sky_layer import SkyLayer
 
 
@@ -25,6 +26,8 @@ class MilkyWayIsophotes(SkyLayer):
         self.levels = self._validate_levels(levels)
         self.features = None
         self.source = None
+        self._source_revision = 0
+        self._observed_polygon_cache = {}
 
     @classmethod
     def _validate_levels(cls, levels):
@@ -69,6 +72,8 @@ class MilkyWayIsophotes(SkyLayer):
             raise ValueError("Milky Way data must contain ol1 through ol5.")
         self.features = features
         self.source = str(path)
+        self._source_revision += 1
+        self._observed_polygon_cache.clear()
         return self
 
     def spherical_geometry(self, observer, *, levels=None):
@@ -81,8 +86,7 @@ class MilkyWayIsophotes(SkyLayer):
         if resolved is None or not hasattr(resolved, "altaz_frame"):
             raise ValueError("An observer with an altaz_frame is required.")
 
-        longitude = []
-        latitude = []
+        native_rings = []
         ids = []
         level_values = []
         compounds = []
@@ -94,7 +98,7 @@ class MilkyWayIsophotes(SkyLayer):
             if levels is None
             else self._validate_levels(levels)
         )
-        for level in selected_levels:
+        for level in self.available_levels:
             for polygon_index, polygon in enumerate(self.features[level]):
                 compound = f"{level}:{polygon_index}"
                 for ring_index, ring in enumerate(polygon):
@@ -112,16 +116,7 @@ class MilkyWayIsophotes(SkyLayer):
                         raise ValueError(
                             f"{compound} ring {ring_index} is too short."
                         )
-                    equatorial = SkyCoord(
-                        ra=np.mod(coordinates[:, 0], 360.0) * u.deg,
-                        dec=coordinates[:, 1] * u.deg,
-                        frame="icrs",
-                    )
-                    horizontal = equatorial.transform_to(
-                        resolved.altaz_frame
-                    )
-                    longitude.append(horizontal.az.to_value(u.deg))
-                    latitude.append(horizontal.alt.to_value(u.deg))
+                    native_rings.append(coordinates[:, :2])
                     ring_id = f"{compound}:{ring_index}"
                     ids.append(ring_id)
                     level_values.append(level)
@@ -129,16 +124,52 @@ class MilkyWayIsophotes(SkyLayer):
                     ring_indices.append(ring_index)
                     holes.append(ring_index > 0)
 
+        longitude, latitude = observed_polygon_arrays(
+            self._observed_polygon_cache,
+            resolved,
+            source_key=(
+                self.layer_name,
+                self.source,
+                self._source_revision,
+            ),
+            build=lambda: self._transform_rings(
+                native_rings, resolved
+            ),
+        )
+        positions = [
+            index
+            for index, level in enumerate(level_values)
+            if level in selected_levels
+        ]
+
         return SphericalPolygons(
-            lon_deg=tuple(longitude),
-            lat_deg=tuple(latitude),
-            ids=ids,
+            lon_deg=tuple(longitude[index] for index in positions),
+            lat_deg=tuple(latitude[index] for index in positions),
+            ids=[ids[index] for index in positions],
             metadata={
                 "source": self.source,
                 "coordinate_system": "altaz",
-                "level": np.asarray(level_values, dtype=object),
-                "compound_id": np.asarray(compounds, dtype=object),
-                "ring_index": np.asarray(ring_indices, dtype=int),
-                "is_hole": np.asarray(holes, dtype=bool),
+                "level": np.asarray(level_values, dtype=object)[positions],
+                "compound_id": np.asarray(compounds, dtype=object)[positions],
+                "ring_index": np.asarray(ring_indices, dtype=int)[positions],
+                "is_hole": np.asarray(holes, dtype=bool)[positions],
             },
+        )
+
+    @staticmethod
+    def _transform_rings(rings, observer):
+        if not rings:
+            return (), ()
+        lengths = [len(ring) for ring in rings]
+        coordinates = np.concatenate(rings, axis=0)
+        equatorial = SkyCoord(
+            ra=np.mod(coordinates[:, 0], 360.0) * u.deg,
+            dec=coordinates[:, 1] * u.deg,
+            frame="icrs",
+        )
+        horizontal = equatorial.transform_to(observer.altaz_frame)
+        splits = np.cumsum(lengths)[:-1]
+        return (
+            np.split(horizontal.az.to_value(u.deg), splits),
+            np.split(horizontal.alt.to_value(u.deg), splits),
         )

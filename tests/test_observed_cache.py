@@ -116,3 +116,55 @@ def test_empty_selection_does_not_transform_or_populate_cache(monkeypatch):
 
     assert azimuth.size == altitude.size == 0
     assert cache == {}
+
+
+def test_polygon_cache_builds_maximal_immutable_arrays_once():
+    cache = {}
+    observer = SimpleNamespace(altaz_frame=object())
+    calls = []
+
+    def build():
+        calls.append(True)
+        return ([1.0, 2.0], [3.0]), ([4.0, 5.0], [6.0])
+
+    first = observed_cache.observed_polygon_arrays(
+        cache,
+        observer,
+        source_key=("polygons", 1, 0.5),
+        build=build,
+    )
+    second = observed_cache.observed_polygon_arrays(
+        cache,
+        observer,
+        source_key=("polygons", 1, 0.5),
+        build=build,
+    )
+
+    assert first is second
+    assert len(calls) == 1
+    assert all(
+        array.flags.writeable is False
+        for coordinate in first
+        for array in coordinate
+    )
+
+
+def test_polygon_quality_selects_a_distinct_cache_entry():
+    cache = {}
+    observer = SimpleNamespace(altaz_frame=object())
+    calls = []
+
+    def build():
+        calls.append(True)
+        return ([1.0],), ([2.0],)
+
+    for quality in (0.5, 0.25):
+        observed_cache.observed_polygon_arrays(
+            cache,
+            observer,
+            source_key=("boundaries", 1, quality),
+            build=build,
+        )
+
+    assert len(calls) == 2
+    assert len(cache) == 2

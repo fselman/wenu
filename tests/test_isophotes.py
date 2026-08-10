@@ -232,3 +232,29 @@ def test_outer_level_remains_explicitly_available(tmp_path):
     layer.load(_catalogue(tmp_path / "mw.json"))
     geometry = layer.spherical_geometry(Observer())
     assert set(geometry.metadata["level"]) == {"ol1"}
+
+
+def test_level_selections_share_one_maximal_observed_geometry(
+    tmp_path, monkeypatch
+):
+    layer = MilkyWayIsophotes(Observer()).load(
+        _catalogue(tmp_path / "mw.json")
+    )
+    observer = Observer()
+    original = layer._transform_rings
+    calls = []
+
+    def transform(rings, resolved):
+        calls.append(len(rings))
+        return original(rings, resolved)
+
+    monkeypatch.setattr(layer, "_transform_rings", transform)
+    selected = layer.spherical_geometry(observer, levels={"ol2"})
+    complete = layer.spherical_geometry(
+        observer, levels=layer.available_levels
+    )
+
+    assert set(selected.metadata["level"]) == {"ol2"}
+    assert set(complete.metadata["level"]) == set(layer.available_levels)
+    assert calls == [len(complete)]
+    assert len(layer._observed_polygon_cache) == 1

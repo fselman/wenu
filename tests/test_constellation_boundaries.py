@@ -100,6 +100,31 @@ def test_boundary_selection_is_render_local_and_expands_serpens():
     assert tuple(boundaries.vertices) == ("TST", "SER1", "SER2")
 
 
+def test_boundary_selections_share_maximal_observed_geometry(monkeypatch):
+    boundaries = make_boundaries(sampling_step_deg=0.5)
+    boundaries.vertices["ALT"] = boundaries.vertices["TST"].copy()
+    observer = make_observer()
+    original = boundaries._transform_sampled_boundaries
+    calls = []
+
+    def transform(rings, b1875, altaz_frame):
+        calls.append(len(rings))
+        return original(rings, b1875, altaz_frame)
+
+    monkeypatch.setattr(
+        boundaries, "_transform_sampled_boundaries", transform
+    )
+    selected = boundaries.spherical_geometry(
+        observer, selected={"ALT"}
+    )
+    complete = boundaries.spherical_geometry(observer)
+
+    assert selected.ids.tolist() == ["ALT"]
+    assert complete.ids.tolist() == ["TST", "ALT"]
+    assert calls == [2]
+    assert len(boundaries._observed_polygon_cache) == 1
+
+
 def test_unknown_boundary_selection_is_rejected():
     with pytest.raises(KeyError, match="Unknown loaded constellation"):
         make_boundaries().spherical_geometry(

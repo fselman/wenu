@@ -121,10 +121,12 @@ be frozen into the reusable sphere.
 - measure catalogue reads and coordinate transformations directly rather than
   enforcing fragile wall-clock thresholds.
 
-**Status:** Implemented through Milestone 46C.6B for the maximal stellar
-transformation shared by stars and constellation figures and for vectorized
-open-cluster and planetary-nebula point catalogues. Remaining native polygon
-and isophote transformations stay in this milestone.
+**Status:** Implemented through Milestone 46C.6C for the maximal stellar
+transformation shared by stars and constellation figures, vectorized
+open-cluster and planetary-nebula point catalogues, Milky Way and Magellanic
+Cloud isophotes, and sampled B1875 constellation boundaries. Sampled
+extended-object outlines whose geometry quality depends on requested size
+and density remain in this milestone.
 
 ## Milestone 46C.7 — Add a declarative user chart-request facade
 

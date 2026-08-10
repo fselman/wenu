@@ -12,6 +12,7 @@ from astropy.coordinates import AltAz, EarthLocation, FK4, SkyCoord
 from astropy.time import Time
 
 from wenu.resources import boundary_path
+from wenu.sky.observed_cache import observed_polygon_arrays
 from wenu.sky.geometrical_object import GeometricalObject
 from wenu.geometry.spherical import SphericalPolygons
 
@@ -44,6 +45,8 @@ class ConstellationBoundaries(GeometricalObject):
         # Native, authoritative B1875 vertices and their sampled realization.
         self.vertices = OrderedDict()
         self.sampled_vertices = OrderedDict()
+        self._source_revision = 0
+        self._observed_polygon_cache = {}
         self.load()
 
     @staticmethod
@@ -143,6 +146,10 @@ class ConstellationBoundaries(GeometricalObject):
             for abbreviation, points in blocks.items()
         )
         self.sampled_vertices.clear()
+        self._source_revision = getattr(
+            self, "_source_revision", 0
+        ) + 1
+        self._observed_polygon_cache = {}
 
         if not self.vertices and self.constellations is None:
             raise ValueError(
@@ -317,23 +324,39 @@ class ConstellationBoundaries(GeometricalObject):
             identifiers = [
                 name for name in self.sampled_vertices if name in requested
             ]
-        lon_deg = []
-        lat_deg = []
-
-        for identifier in identifiers:
-            vertices = self.sampled_vertices[identifier]
-            native = SkyCoord(
-                ra=vertices[:, 0] * u.hourangle,
-                dec=vertices[:, 1] * u.deg,
-                frame=b1875,
-            )
-            horizontal = native.transform_to(altaz_frame)
-            lon_deg.append(horizontal.az.to_value(u.deg))
-            lat_deg.append(horizontal.alt.to_value(u.deg))
+        all_identifiers = list(self.sampled_vertices)
+        native_rings = [
+            self.sampled_vertices[identifier]
+            for identifier in all_identifiers
+        ]
+        cache = getattr(self, "_observed_polygon_cache", None)
+        if cache is None:
+            cache = {}
+            self._observed_polygon_cache = cache
+        lon_deg, lat_deg = observed_polygon_arrays(
+            cache,
+            resolved_observer,
+            source_key=(
+                self.layer_name,
+                self.boundaries_name,
+                str(self.filename or "packaged"),
+                getattr(self, "_source_revision", 0),
+                self.sampling_step_deg,
+            ),
+            build=lambda: self._transform_sampled_boundaries(
+                native_rings,
+                b1875,
+                altaz_frame,
+            ),
+        )
+        positions = {
+            identifier: index
+            for index, identifier in enumerate(all_identifiers)
+        }
 
         return SphericalPolygons(
-            lon_deg=tuple(lon_deg),
-            lat_deg=tuple(lat_deg),
+            lon_deg=tuple(lon_deg[positions[item]] for item in identifiers),
+            lat_deg=tuple(lat_deg[positions[item]] for item in identifiers),
             ids=identifiers,
             names=identifiers,
             metadata={
@@ -342,6 +365,24 @@ class ConstellationBoundaries(GeometricalObject):
                 "source_equinox": "B1875.0",
                 "coordinate_system": "altaz",
             },
+        )
+
+    @staticmethod
+    def _transform_sampled_boundaries(rings, b1875, altaz_frame):
+        if not rings:
+            return (), ()
+        lengths = [len(ring) for ring in rings]
+        vertices = np.concatenate(rings, axis=0)
+        native = SkyCoord(
+            ra=vertices[:, 0] * u.hourangle,
+            dec=vertices[:, 1] * u.deg,
+            frame=b1875,
+        )
+        horizontal = native.transform_to(altaz_frame)
+        splits = np.cumsum(lengths)[:-1]
+        return (
+            np.split(horizontal.az.to_value(u.deg), splits),
+            np.split(horizontal.alt.to_value(u.deg), splits),
         )
 
     def region_of(

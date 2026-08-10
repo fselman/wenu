@@ -31,3 +31,8 @@ and source revision. Render-local magnitude and identifier selections mask
 that immutable maximal realization, and constellation figures reuse it.
 Vectorized point catalogues use the same key identity: open-cluster and
 planetary-nebula selections index immutable maximal AltAz center arrays.
+Milky Way and Magellanic Cloud level selections likewise index immutable
+maximal observed ring arrays. Official constellation boundaries cache their
+complete sampled B1875 realization; the native source revision and sampling
+step are part of the cache identity, while the requested constellation set
+remains render-local.

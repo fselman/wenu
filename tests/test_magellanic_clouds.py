@@ -172,3 +172,29 @@ def test_default_cloud_opacities_match_milky_way_scale():
     assert style.lmc_alpha == pytest.approx(0.08)
     assert style.smc_alpha == pytest.approx(0.06)
     assert style.smc_alpha < style.lmc_alpha <= style.milky_way_alpha
+
+
+def test_level_selections_share_one_maximal_observed_geometry(
+    tmp_path, monkeypatch
+):
+    layer = MagellanicCloudIsophotes(
+        Observer(), cloud="lmc"
+    ).load(_catalogue(tmp_path / "lmc.json", "lmc"))
+    observer = Observer()
+    original = layer._transform_rings
+    calls = []
+
+    def transform(rings, resolved):
+        calls.append(len(rings))
+        return original(rings, resolved)
+
+    monkeypatch.setattr(layer, "_transform_rings", transform)
+    selected = layer.spherical_geometry(observer, levels={2})
+    complete = layer.spherical_geometry(
+        observer, levels=layer.available_levels
+    )
+
+    assert selected.metadata["level"].tolist() == [2]
+    assert complete.metadata["level"].tolist() == [1, 2, 3, 4]
+    assert calls == [len(complete)]
+    assert len(layer._observed_polygon_cache) == 1

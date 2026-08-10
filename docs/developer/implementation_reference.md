@@ -303,6 +303,10 @@ instant, ephemeris, data directory, catalogue, or source reload selects a
 different cache entry; presentation and render state never enter the key.
 Open clusters and planetary nebulae likewise transform their complete loaded
 center catalogues once and obtain ordered render-local subsets by identifier.
+Milky Way and Magellanic Cloud isophotes transform every loaded ring in one
+maximal vectorized operation and apply level choices afterward. Constellation
+boundaries do the same after native B1875 sampling; their cache key includes
+the sampling step so geometry quality cannot be reused accidentally.
 
 ## 9. Package imports
 
