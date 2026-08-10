@@ -36,6 +36,8 @@ the factory.
 `sky/observed_cache.py` defines observer/time/source cache-key identity and
 freezes shared point and polygon arrays; individual layers continue to own
 their cached spherical realizations.
+Within `charts/`, `request.py` owns the immutable ordinary-user request graph;
+it contains no catalogue resolution, projection, rendering, or export work.
 
 ## Responsibility mapping
 

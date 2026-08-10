@@ -313,6 +313,14 @@ and supported magnitude selections then index that immutable maximal
 realization. This shared `NonStellar` behavior covers ordinary nonstellar
 objects, galaxies, globular clusters, and supernova remnants.
 
+`ChartRequest` is the immutable input shared by the Python facade and future
+command-line adapter. `ChartObserverRequest` defines the actual observing
+location and instant; `ChartSubjectRequest` accepts one target, explicit ICRS
+coordinate, constellation set, or packaged group; and `ChartFrameRequest`
+holds optional framing overrides. Existing `SkyContentSelection`,
+`DetailOverrides`, `ChartFurnitureOptions`, and `ChartProductOptions` remain
+the corresponding content, detail, furniture, and output contracts.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

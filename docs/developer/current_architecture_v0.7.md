@@ -41,3 +41,9 @@ requested geometry quality. Sample count and minimum displayed angular size
 belong to the cache identity; magnitude and identifier subsets are applied
 afterward. Galaxies, Messier-style objects, globular clusters, and supernova
 remnants share this policy through `NonStellar`.
+
+Milestone 46C.7A adds an immutable public chart-request graph. It separates
+the scientific observer and instant, subject identity, optional framing,
+content, detail, furniture, product, language, title, and output. It is a
+declarative contract only: resolution and generation continue to be added
+incrementally over the canonical sphere and chart pipeline.
