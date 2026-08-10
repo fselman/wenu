@@ -321,6 +321,14 @@ holds optional framing overrides. Existing `SkyContentSelection`,
 `DetailOverrides`, `ChartFurnitureOptions`, and `ChartProductOptions` remain
 the corresponding content, detail, furniture, and output contracts.
 
+`resolve_target(ChartSubjectRequest(...))` resolves packaged aliases without
+network access. Its immutable `ResolvedTarget` records canonical key, display
+name, ICRS coordinate, matched alias, provenance, and `TargetComponent`
+values. The initial packaged cross-identifications cover the canonical
+Centaurus A and Omega Centauri fields plus M13, M16, M17, M57, M7, and the
+Veil Nebula usage-audit targets. Unknown and ambiguous aliases are errors,
+not empty successful charts.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

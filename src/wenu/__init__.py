@@ -63,6 +63,16 @@ from .charts.request import (
     ChartRequest,
     ChartSubjectRequest,
 )
+from .charts.target_resolver import (
+    AmbiguousTargetError,
+    ResolvedTarget,
+    TargetComponent,
+    TargetResolutionError,
+    UnknownTargetError,
+    load_target_catalogue,
+    resolve_target,
+    target_catalogue_path,
+)
 from .charts.chart_arguments import (
     ChartContentOptions,
     ChartLegendSelection,
@@ -236,6 +246,14 @@ __all__ = [
     "ChartObserverRequest",
     "ChartRequest",
     "ChartSubjectRequest",
+    "AmbiguousTargetError",
+    "ResolvedTarget",
+    "TargetComponent",
+    "TargetResolutionError",
+    "UnknownTargetError",
+    "load_target_catalogue",
+    "resolve_target",
+    "target_catalogue_path",
     "ChartContentOptions",
     "ChartLegendSelection",
     "ChartStyleOverrides",

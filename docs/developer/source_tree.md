@@ -38,6 +38,8 @@ freezes shared point and polygon arrays; individual layers continue to own
 their cached spherical realizations.
 Within `charts/`, `request.py` owns the immutable ordinary-user request graph;
 it contains no catalogue resolution, projection, rendering, or export work.
+`charts/target_resolver.py` owns offline alias resolution over the packaged
+`data/targets.json` cross-identification resource.
 
 ## Responsibility mapping
 

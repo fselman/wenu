@@ -47,3 +47,9 @@ the scientific observer and instant, subject identity, optional framing,
 content, detail, furniture, product, language, title, and output. It is a
 declarative contract only: resolution and generation continue to be added
 incrementally over the canonical sphere and chart pipeline.
+
+Milestone 46C.7B adds an offline packaged target cross-identification
+resolver. A resolved target preserves its display identity and ICRS center
+while separately naming every catalogue family and identifier required to
+draw it. Unknown and ambiguous aliases raise explicit user-facing errors;
+explicit coordinates retain user provenance and need no packaged component.

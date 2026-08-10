@@ -152,10 +152,11 @@ constellation boundaries, and quality-keyed extended-object outlines.
   and single export rather than implementing a convenience pipeline;
 - retain all established lower-level APIs for advanced callers.
 
-**Status:** Implemented through Milestone 46C.7A for the immutable observer,
-subject, frame, content, detail, furniture, product, language, title, and
-output request contract. Offline resolution and generation remain in this
-milestone.
+**Status:** Implemented through Milestone 46C.7B for the immutable request
+contract and offline target cross-identification with provenance and explicit
+unknown/ambiguity diagnostics. Constellation/group resolution, compatible
+load-profile validation, automatic framing/content, and generation remain in
+this milestone.
 
 ## Milestone 46C.8 — Make canonical examples pure chart requests
 
