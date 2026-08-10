@@ -18,3 +18,9 @@ The permanent test suite is organized by these current responsibilities rather
 than by completed milestone history. Fast unit, integration, visual, and full
 commands are recorded in `source_tree.md`; the full suite remains the release
 authority and atlas print remains the visual reference baseline.
+
+The v0.8 migration now provides one immutable canonical load profile and one
+maximal-sphere factory. It loads complete reusable astronomical content for an
+observer and returns the existing `CelestialSphere`; chart geometry,
+coordinate-grid spacing, detail, presentation, and export remain downstream
+request concerns.

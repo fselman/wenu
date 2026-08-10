@@ -139,7 +139,12 @@ from .charts.magnitude_legend import (
 )
 from .rendering import MatplotlibRenderer
 from .projections import StereographicProjection
-from .sky import CelestialSphere
+from .sky import (
+    CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    CelestialSphere,
+    CelestialSphereLoadProfile,
+    build_maximal_sphere,
+)
 from .geometry.frame import (
     SphericalCoordinates,
     SphericalFrame,
@@ -207,6 +212,9 @@ __all__ = [
     "SupernovaRemnants",
     "MilkyWayIsophotes",
     "MagellanicCloudIsophotes",
+    "CANONICAL_MAXIMAL_SPHERE_PROFILE",
+    "CelestialSphereLoadProfile",
+    "build_maximal_sphere",
     "ExportOptions",
     "ChartExportResult",
     "CHART_STYLES",

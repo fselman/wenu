@@ -282,6 +282,20 @@ result = sky.draw_chart(
 )
 ```
 
+### Reusable maximal sphere
+
+`build_maximal_sphere(observer)` loads the complete canonical astronomical
+content once and returns an ordinary `CelestialSphere`. Its immutable
+`CelestialSphereLoadProfile` records catalogue sources, magnitude ceilings,
+and maximum extended-object sampling quality. Before resolving a chart
+request, call `sky.load_profile.require(...)`; it raises `ValueError` rather
+than allowing a request deeper than the loaded data.
+
+The factory does not select a projection, chart frame, mask, grid spacing,
+detail, style, legend, renderer, or output. Coordinate grids remain
+request-time geometry because their spacing and extent differ by chart
+family. Rendering continues through `CelestialSphere.draw_chart()`.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

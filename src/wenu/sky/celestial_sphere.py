@@ -32,6 +32,7 @@ class CelestialSphere:
 
     def __init__(self, observer) -> None:
         self.observer = observer
+        self.load_profile = None
         self.stars = None
         self.nonstellar = None
         self.galaxies = None
@@ -182,6 +183,8 @@ class CelestialSphere:
         self,
         catalog="hipparcos",
         magnitude_limit=5.5,
+        *,
+        filename=None,
     ) -> Stars:
         """Load and register a stellar catalogue layer."""
         self.stars = Stars(
@@ -189,7 +192,7 @@ class CelestialSphere:
             catalog=catalog,
             magnitude_limit=magnitude_limit,
         )
-        self.stars.load()
+        self.stars.load(filename=filename)
         self.add(self.stars)
         return self.stars
 

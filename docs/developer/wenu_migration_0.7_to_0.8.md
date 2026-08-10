@@ -102,6 +102,12 @@ must not prematurely change public behavior or introduce a parallel pipeline.
 - reject requests that exceed the declared available content instead of
   silently returning an incomplete chart.
 
+Coordinate grids remain request-time semantic geometry rather than loaded
+catalogue content: their spacing and extent vary by chart family and must not
+be frozen into the reusable sphere.
+
+**Status:** Implemented.
+
 ## Milestone 46C.6 — Cache observer-dependent spherical realizations
 
 - cache expensive native-coordinate to AltAz transformations under complete

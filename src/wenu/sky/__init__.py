@@ -7,6 +7,11 @@ from .points import CelestialPoints
 from .sky_layer import SkyLayer
 from .milky_way import MilkyWayIsophotes
 from .magellanic_clouds import MagellanicCloudIsophotes
+from .maximal_sphere import (
+    CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    CelestialSphereLoadProfile,
+    build_maximal_sphere,
+)
 
 __all__ = [
         "CelestialSphere",
@@ -18,4 +23,7 @@ __all__ = [
         "SkyLayer",
         "MilkyWayIsophotes",
         "MagellanicCloudIsophotes",
+        "CANONICAL_MAXIMAL_SPHERE_PROFILE",
+        "CelestialSphereLoadProfile",
+        "build_maximal_sphere",
         ]
