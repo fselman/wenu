@@ -54,6 +54,9 @@ ownership boundary.
   families;
 - reserve the same layer contract for future planets, Moon, artificial
   satellites, tracks, and time sequences;
+- record the regional, binocular, and masked-planisphere adaptation evidence
+  in `wenu_chart_request_audit_20260810.md` and derive the declarative request
+  requirements from actual usage;
 - add characterization tests only where the implemented boundary is not
   already enforced.
 
@@ -68,6 +71,8 @@ must not prematurely change public behavior or introduce a parallel pipeline.
 - translate the selection through `apply_resolved_detail()` into structured
   layer geometry options;
 - preserve existing `ResolvedDetail`, explicit layer-option, and example APIs;
+- make the selection contract suitable for both Python and command-line chart
+  requests rather than coupling it to test fixtures or example globals;
 - prove that sequential selections on one sphere do not leak state.
 
 ## Milestone 46C.4 — Complete late selection in every canonical layer
@@ -108,18 +113,49 @@ must not prematurely change public behavior or introduce a parallel pipeline.
 - measure catalogue reads and coordinate transformations directly rather than
   enforcing fragile wall-clock thresholds.
 
-## Milestone 46C.7 — Make canonical examples pure chart requests
+## Milestone 46C.7 — Add a declarative user chart-request facade
+
+- introduce one immutable request contract shared by Python and command-line
+  entry points;
+- express observer location/time, chart family, target or constellation set,
+  optional framing, mask, content, product, furniture, language, title, and
+  output without exposing construction orchestration;
+- resolve packaged common names and catalogue identifiers offline with
+  explicit provenance, unknown-name, and ambiguity diagnostics;
+- accept explicit coordinates for targets not present in packaged catalogues;
+- automatically request the catalogue families required to represent the
+  resolved target and reject incompatible load profiles;
+- select ordinary field objects spatially so users do not have to curate every
+  object identifier, while retaining explicit inclusion and exclusion;
+- retain the resolved central target independently of general magnitude or
+  size thresholds and diagnose a target with no drawable representation;
+- provide automatic regional framing and sensible family defaults while
+  retaining explicit field and position-angle overrides;
+- normalize constellation line, boundary, and label identities internally,
+  including the two parts of Serpens;
+- accept actual observer location/time inputs independently of switches that
+  request their display in chart furniture;
+- delegate to the maximal-sphere factory, canonical composition, renderer,
+  and single export rather than implementing a convenience pipeline;
+- retain all established lower-level APIs for advanced callers.
+
+## Milestone 46C.8 — Make canonical examples pure chart requests
 
 - migrate the five canonical examples to obtain content from the shared
-  maximal-sphere factory;
+  declarative request facade;
 - express their differences through chart definitions, resolved detail, and
   immutable content selections;
 - permit a prebuilt compatible sphere to be supplied while retaining existing
   standalone `build_chart()` behavior;
+- replace hard-coded binocular target dictionaries and regional-group
+  construction procedures with packaged target/group declarations consumed by
+  the common resolver;
+- ensure that adding an ordinary binocular target or regional constellation
+  set requires data or command arguments, not a new orchestration script;
 - preserve documented CLI behavior, catalogue provenance, scientific
   geometry, and approved atlas-print output.
 
-## Milestone 46C.8 — Validate all chart families from one maximal sphere
+## Milestone 46C.9 — Validate all chart families from one maximal sphere
 
 - build one canonical sphere for the shared La Ligua observer and instant;
 - exercise planisphere, regional single, regional group, circumpolar, and
@@ -130,7 +166,7 @@ must not prematurely change public behavior or introduce a parallel pipeline.
 - retain distinct builds for genuinely different observer, time, ephemeris,
   source, or load-profile requests.
 
-## Milestone 46C.9 — Benchmark and close reusable observed-sky work
+## Milestone 46C.10 — Benchmark and close reusable observed-sky work
 
 - report catalogue-loading, AltAz transformation, selection, projection,
   preparation, rendering, and export costs separately;

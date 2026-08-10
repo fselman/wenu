@@ -55,6 +55,47 @@ This refinement does not create a second sky or rendering pipeline.
 continues to provide spherical geometry to the established projection,
 preparation, rendering, furniture, and export stages.
 
+## Declarative user chart requests
+
+Ordinary users must not have to reproduce the catalogue-loading, target
+coordinate, projection, composition, Matplotlib, furniture, or export code in
+the canonical examples. A user-facing request describes the desired chart;
+Wenu resolves that request through the same maximal sphere and canonical
+pipeline.
+
+A complete ordinary request contains only the choices a user can reasonably
+be expected to make:
+
+- observer location and local date/time;
+- chart family;
+- subject, expressed as a catalogue identifier, common target name,
+  coordinate, constellation, or constellation group;
+- field diameter or width/height when the automatic framing is not desired;
+- optional mask and astronomical content choices;
+- style, output mode, legends, language, title, and destination.
+
+Wenu owns the remaining procedure. In particular, it resolves packaged target
+identities and aliases, selects the catalogue families required to represent
+the target, obtains a compatible maximal sphere, constructs the chart,
+resolves detail and furniture, creates the renderer, and exports exactly once.
+Target resolution remains offline and provenance-controlled by default.
+Unknown and ambiguous names produce explicit diagnostics rather than an
+empty, apparently successful chart.
+
+The Python request API and command-line interface are two adapters over one
+immutable request contract. Regional requests accept arbitrary IAU
+constellation sets as well as named packaged groups. Binocular requests accept
+packaged object identifiers or explicit coordinates and are not limited to a
+hard-coded example-target dictionary. The request resolver must verify that
+the target and requested content are available under the selected load
+profile.
+
+Canonical examples become short declarations using this public request API.
+They remain reproducible demonstrations and regression authorities, not
+templates that require users to copy internal orchestration. Existing
+lower-level chart, composition, layer, and renderer APIs remain available for
+advanced callers.
+
 ## Future time-dependent layers
 
 The same layer contract must accommodate future solar-system and artificial
