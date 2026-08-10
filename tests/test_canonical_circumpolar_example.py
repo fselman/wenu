@@ -1,6 +1,5 @@
 """Canonical circumpolar-example integration contracts."""
 
-import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -18,16 +17,11 @@ pytestmark = pytest.mark.integration
 EXAMPLE = Path("examples/circumpolar.py")
 
 
-def load():
-    spec = importlib.util.spec_from_file_location("circumpolar", EXAMPLE)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-def test_chart_preserves_southern_pole_and_lmc_crossing_geometry():
-    module = load()
-    _, chart = module.build_chart()
+def test_chart_preserves_southern_pole_and_lmc_crossing_geometry(
+    canonical_builds,
+):
+    module = canonical_builds.module(EXAMPLE)
+    _, chart = canonical_builds.build(EXAMPLE)
 
     assert module.LIMITING_DECLINATION_DEG == pytest.approx(-69.75)
     assert chart.pole == "south"
@@ -37,8 +31,10 @@ def test_chart_preserves_southern_pole_and_lmc_crossing_geometry():
     assert chart.coordinate_label_anchor.declination_at_left is True
 
 
-def test_cartoon_product_retains_defining_circumpolar_content():
-    module = load()
+def test_cartoon_product_retains_defining_circumpolar_content(
+    canonical_builds,
+):
+    module = canonical_builds.module(EXAMPLE)
 
     assert module.CARTOON_CONTENT_LAYERS == frozenset({
         "stars",
@@ -65,9 +61,8 @@ def test_magellanic_isophotes_use_the_shared_content_name():
     ]["enabled"] is True
 
 
-def test_style_and_mode_leave_polar_geometry_unchanged():
-    module = load()
-    _, chart = module.build_chart()
+def test_style_and_mode_leave_polar_geometry_unchanged(canonical_builds):
+    _, chart = canonical_builds.build(EXAMPLE)
     contexts = [
         compose_chart(chart, style=style, mode=mode).context
         for style in ("atlas", "cartoon")

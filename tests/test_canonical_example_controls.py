@@ -100,14 +100,21 @@ def test_planisphere_horizon_is_independent_of_content_switches():
 
 
 @pytest.mark.integration
-def test_regional_mask_does_not_require_visible_boundary_lines():
-    module = load(EXAMPLES[2])
-    _, chart = module.build_chart("Cru", mask=True)
+def test_regional_mask_does_not_require_visible_boundary_lines(
+    canonical_builds,
+):
+    module = canonical_builds.module(EXAMPLES[2])
+    sky, chart = canonical_builds.build(EXAMPLES[2], "Cru", mask=True)
+    repeated_sky, repeated_chart = canonical_builds.build(
+        EXAMPLES[2], "Cru", mask=True
+    )
     detail = resolved_detail(
         module.parser().parse_args(["--mask"]),
         style="atlas",
     )
 
+    assert repeated_sky is sky
+    assert repeated_chart is chart
     assert chart.outside_mask_constellations == ("Cru",)
     assert detail.layer_enabled("constellation_boundaries") is False
 

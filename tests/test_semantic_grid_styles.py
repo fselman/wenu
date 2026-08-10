@@ -119,14 +119,13 @@ def test_ecliptic_and_galactic_labels_contain_only_values(name, label):
     assert formatter(name) == label
 
 
-def built_sky(path):
-    module = load(path)
+def built_sky(path, canonical_builds):
     if path.stem == "regional_constellation_group":
-        result = module.build_chart("summer-triangle")
+        result = canonical_builds.build(path, "summer-triangle")
     elif path.stem == "regional_constellation":
-        result = module.build_chart("Cru")
+        result = canonical_builds.build(path, "Cru")
     else:
-        result = module.build_chart()
+        result = canonical_builds.build(path)
     return result[0]
 
 
@@ -141,8 +140,8 @@ def test_canonical_examples_declare_four_semantic_grids(path):
 
 
 @pytest.mark.integration
-def test_canonical_grid_configuration_is_reference_free():
-    sky = built_sky(EXAMPLES[0])
+def test_canonical_grid_configuration_is_reference_free(canonical_builds):
+    sky = built_sky(EXAMPLES[0], canonical_builds)
     grids = {
         layer.coordinate_system: layer
         for layer in sky.layers

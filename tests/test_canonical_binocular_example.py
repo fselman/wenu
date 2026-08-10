@@ -1,6 +1,5 @@
 """Canonical selected-object binocular integration contracts."""
 
-import importlib.util
 from pathlib import Path
 
 import pytest
@@ -14,15 +13,8 @@ pytestmark = pytest.mark.integration
 EXAMPLE = Path("examples/binocular_object.py")
 
 
-def load():
-    spec = importlib.util.spec_from_file_location("binocular_object", EXAMPLE)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-def test_target_registry_includes_cen_a_and_omega_cen():
-    module = load()
+def test_target_registry_includes_cen_a_and_omega_cen(canonical_builds):
+    module = canonical_builds.module(EXAMPLE)
 
     assert tuple(module.TARGETS) == ("centaurus-a", "omega-centauri")
     assert module.TARGETS["centaurus-a"].identifier == "NGC 5128"
@@ -30,9 +22,10 @@ def test_target_registry_includes_cen_a_and_omega_cen():
 
 
 @pytest.mark.parametrize("target_key", ["centaurus-a", "omega-centauri"])
-def test_chart_is_centered_on_selected_catalogue_target(target_key):
-    module = load()
-    sky, chart, target = module.build_chart(target_key, 7.0)
+def test_chart_is_centered_on_selected_catalogue_target(
+    target_key, canonical_builds,
+):
+    sky, chart, target = canonical_builds.build(EXAMPLE, target_key, 7.0)
     horizontal = target.coordinate.transform_to(sky.observer.altaz_frame)
     x, y = chart.projection.project_spherical(
         horizontal.az.deg,
@@ -47,8 +40,8 @@ def test_chart_is_centered_on_selected_catalogue_target(target_key):
     assert sky.galaxies is not None
     assert sky.globular_clusters is not None
 
-def test_cartoon_retains_both_supported_target_layer_types():
-    module = load()
+def test_cartoon_retains_both_supported_target_layer_types(canonical_builds):
+    module = canonical_builds.module(EXAMPLE)
 
     assert module.STAR_MAGNITUDE_LIMIT == pytest.approx(11.0)
     assert module.CARTOON_CONTENT_LAYERS == frozenset({

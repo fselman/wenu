@@ -1,6 +1,5 @@
 """Canonical planisphere and regional-example integration contracts."""
 
-import importlib.util
 from pathlib import Path
 
 import pytest
@@ -21,16 +20,11 @@ EXAMPLES = (
 )
 
 
-def load(path):
-    spec = importlib.util.spec_from_file_location(path.stem, path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-def test_group_mask_is_union_of_selected_iau_regions():
-    module = load(EXAMPLES[1])
-    _, center, _ = module.build_chart("galactic-center", mask=True)
+def test_group_mask_is_union_of_selected_iau_regions(canonical_builds):
+    module = canonical_builds.module(EXAMPLES[1])
+    _, center, _ = canonical_builds.build(
+        EXAMPLES[1], "galactic-center", mask=True
+    )
 
     assert module.GROUPS["summer-triangle"]["boundaries"] == (
         "Cyg", "Lyr", "Vul", "Sge", "Aql"
@@ -41,13 +35,14 @@ def test_group_mask_is_union_of_selected_iau_regions():
     assert center.outside_mask_constellations[-1] == "Ser"
 
 
-def test_sgr_sco_oph_ser_group_does_not_enable_coordinate_grid():
-    module = load(EXAMPLES[1])
+def test_sgr_sco_oph_ser_group_does_not_enable_coordinate_grid(
+    canonical_builds,
+):
+    module = canonical_builds.module(EXAMPLES[1])
     arguments = module.parser().parse_args(["--group", "sgr-sco-oph-ser"])
     group = module.GROUPS[arguments.group]
-    sky, chart, _ = module.build_chart(
-        arguments.group,
-        mask=group["mask"],
+    sky, chart, _ = canonical_builds.build(
+        EXAMPLES[1], arguments.group, mask=group["mask"],
     )
 
     assert group["lines"] == ("Sgr", "Sco", "Oph", "Ser1", "Ser2")
@@ -70,18 +65,18 @@ def test_sgr_sco_oph_ser_group_does_not_enable_coordinate_grid():
     assert chart.outside_mask_constellations == group["boundaries"]
 
 
-def test_single_mask_follows_exactly_one_iau_region():
-    module = load(EXAMPLES[2])
-    _, chart = module.build_chart("Cru", mask=True)
+def test_single_mask_follows_exactly_one_iau_region(canonical_builds):
+    _, chart = canonical_builds.build(EXAMPLES[2], "Cru", mask=True)
 
     assert chart.outside_mask_constellations == ("Cru",)
     assert chart.label_selection == ("Cru",)
 
 
-def test_group_framing_accepts_width_height_and_position_angle():
-    module = load(EXAMPLES[1])
-    _, chart, _ = module.build_chart(
-        "summer-triangle",
+def test_group_framing_accepts_width_height_and_position_angle(
+    canonical_builds,
+):
+    _, chart, _ = canonical_builds.build(
+        EXAMPLES[1], "summer-triangle",
         field_width_deg=80.0,
         field_height_deg=50.0,
         position_angle_deg=17.0,
@@ -92,11 +87,13 @@ def test_group_framing_accepts_width_height_and_position_angle():
     assert chart.position_angle_deg == pytest.approx(17.0)
 
 
-def test_single_framing_accepts_width_height_and_position_angle():
-    module = load(EXAMPLES[2])
+def test_single_framing_accepts_width_height_and_position_angle(
+    canonical_builds,
+):
+    module = canonical_builds.module(EXAMPLES[2])
     arguments = module.parser().parse_args([])
-    _, rotated = module.build_chart(
-        "Cru",
+    _, rotated = canonical_builds.build(
+        EXAMPLES[2], "Cru",
         field_width_deg=20.0,
         field_height_deg=12.0,
         position_angle_deg=-25.0,
@@ -109,9 +106,8 @@ def test_single_framing_accepts_width_height_and_position_angle():
     assert rotated.position_angle_deg == pytest.approx(-25.0)
 
 
-def test_style_and_mode_do_not_change_example_geometry():
-    module = load(EXAMPLES[2])
-    _, chart = module.build_chart("Cru", mask=False)
+def test_style_and_mode_do_not_change_example_geometry(canonical_builds):
+    _, chart = canonical_builds.build(EXAMPLES[2], "Cru", mask=False)
     contexts = [
         compose_chart(chart, style=style, mode=mode).context
         for style in ("atlas", "cartoon")
@@ -147,8 +143,10 @@ def test_object_rich_examples_use_curated_catalogue_selections():
 
 
 @pytest.mark.parametrize("path", EXAMPLES)
-def test_pole_crosses_and_labels_are_independently_optional(path):
-    module = load(path)
+def test_pole_crosses_and_labels_are_independently_optional(
+    path, canonical_builds,
+):
+    module = canonical_builds.module(path)
 
     crosses_only = module.parser().parse_args(["--poles"])
     labeled = module.parser().parse_args(["--poles", "--pole-labels"])
@@ -163,8 +161,8 @@ def test_pole_crosses_and_labels_are_independently_optional(path):
 
 
 @pytest.mark.parametrize("path", EXAMPLES)
-def test_examples_use_compact_configurable_context(path):
-    module = load(path)
+def test_examples_use_compact_configurable_context(path, canonical_builds):
+    module = canonical_builds.module(path)
     arguments = module.parser().parse_args([])
 
     assert arguments.center is True
@@ -183,8 +181,9 @@ def test_planisphere_uses_magnitude_five():
     assert 'sky.add_stars(catalog="hipparcos", magnitude_limit=6.5)' in source
 
 
-def test_planisphere_catalogue_retains_constellation_line_vertices():
-    module = load(EXAMPLES[0])
-    sky, _ = module.build_chart()
+def test_planisphere_catalogue_retains_constellation_line_vertices(
+    canonical_builds,
+):
+    sky, _ = canonical_builds.build(EXAMPLES[0])
 
     assert {78400, 107608}.issubset(set(sky.stars.catalog.index))

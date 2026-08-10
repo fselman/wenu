@@ -133,3 +133,10 @@ pytest -q
 
 The full suite remains the release authority. Atlas print remains the visual
 reference baseline.
+
+Canonical integration tests use a session-scoped build registry to reuse an
+identical example sphere and chart across read-only contracts. Distinct
+observer, catalogue-depth, constellation-selection, target, mask, or framing
+requests remain distinct builds. The registry closes every owned observer at
+session teardown and does not replace the full builder smoke coverage for any
+canonical chart family.
