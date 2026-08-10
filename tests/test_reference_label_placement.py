@@ -1,3 +1,6 @@
+"""Current reference label placement contracts."""
+
+# Contracts consolidated from test_milestone45e_reference_label_tangents.py.
 """Milestone 45E tangent-aligned celestial-reference labels."""
 
 from types import SimpleNamespace

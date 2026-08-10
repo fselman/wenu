@@ -1,3 +1,6 @@
+"""Current render isolation contracts."""
+
+# Contracts consolidated from test_milestone43e_render_local_detail.py.
 """Milestone 43E contracts for render-local detail resolution."""
 
 from types import SimpleNamespace
