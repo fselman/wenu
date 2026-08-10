@@ -114,6 +114,85 @@ def test_outline_sampling_is_render_local_and_bounded(catalogue, observer):
         layer.spherical_geometry(observer, samples=37)
 
 
+def test_outline_selections_share_one_quality_specific_cache(
+    catalogue, observer, monkeypatch
+):
+    layer = NonStellar(observer, samples=36)
+    layer.load(filename=catalogue)
+    calls = []
+
+    def transform(
+        table,
+        resolved,
+        *,
+        samples,
+        minimum_size_arcmin,
+    ):
+        calls.append((len(table), samples, minimum_size_arcmin))
+        return (
+            tuple(np.full(samples, index) for index in range(len(table))),
+            tuple(np.full(samples, -index) for index in range(len(table))),
+        )
+
+    monkeypatch.setattr(layer, "_transform_outline_table", transform)
+    first = layer.spherical_geometry(
+        observer,
+        selected=["M 31"],
+        samples=18,
+        minimum_size_arcmin=2.0,
+    )
+    second = layer.spherical_geometry(
+        observer,
+        selected=["M 42", "M 1"],
+        samples=18,
+        minimum_size_arcmin=2.0,
+    )
+
+    assert first.ids.tolist() == ["M 31"]
+    assert second.ids.tolist() == ["M 1", "M 42"]
+    assert calls == [(3, 18, 2.0)]
+    assert len(layer._observed_outline_cache) == 1
+    cached = next(iter(layer._observed_outline_cache.values()))
+    assert all(
+        values.flags.writeable is False
+        for coordinate in cached
+        for values in coordinate
+    )
+
+
+def test_outline_quality_and_reload_select_distinct_realizations(
+    catalogue, observer, monkeypatch
+):
+    layer = NonStellar(observer, samples=36)
+    layer.load(filename=catalogue)
+    calls = []
+
+    def transform(
+        table,
+        resolved,
+        *,
+        samples,
+        minimum_size_arcmin,
+    ):
+        calls.append((samples, minimum_size_arcmin))
+        values = tuple(np.zeros(samples) for _ in table)
+        return values, values
+
+    monkeypatch.setattr(layer, "_transform_outline_table", transform)
+    for samples, minimum in ((18, None), (36, None), (36, 2.0)):
+        layer.spherical_geometry(
+            observer,
+            samples=samples,
+            minimum_size_arcmin=minimum,
+        )
+
+    assert calls == [(18, None), (36, None), (36, 2.0)]
+    assert len(layer._observed_outline_cache) == 3
+
+    layer.load(filename=catalogue)
+    assert layer._observed_outline_cache == {}
+
+
 def test_celestial_sphere_helper_loads_and_registers(
     catalogue,
     observer,

@@ -36,3 +36,8 @@ maximal observed ring arrays. Official constellation boundaries cache their
 complete sampled B1875 realization; the native source revision and sampling
 step are part of the cache identity, while the requested constellation set
 remains render-local.
+Extended-object layers cache complete observed outline catalogues at each
+requested geometry quality. Sample count and minimum displayed angular size
+belong to the cache identity; magnitude and identifier subsets are applied
+afterward. Galaxies, Messier-style objects, globular clusters, and supernova
+remnants share this policy through `NonStellar`.

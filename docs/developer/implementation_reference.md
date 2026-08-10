@@ -307,6 +307,11 @@ Milky Way and Magellanic Cloud isophotes transform every loaded ring in one
 maximal vectorized operation and apply level choices afterward. Constellation
 boundaries do the same after native B1875 sampling; their cache key includes
 the sampling step so geometry quality cannot be reused accidentally.
+Sampled extended-object outlines are cached once per observer, loaded source,
+source revision, sample count, and minimum displayed angular size. Identifier
+and supported magnitude selections then index that immutable maximal
+realization. This shared `NonStellar` behavior covers ordinary nonstellar
+objects, galaxies, globular clusters, and supernova remnants.
 
 ## 9. Package imports
 

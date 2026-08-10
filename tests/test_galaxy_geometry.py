@@ -117,6 +117,38 @@ def test_galaxy_outline_sampling_can_be_reduced_per_render():
     assert layer.samples == 24
 
 
+def test_galaxy_selections_reuse_inherited_maximal_outline_cache(
+    monkeypatch,
+):
+    current_observer = observer()
+    layer = Galaxies(current_observer, samples=24)
+    layer.load()
+    calls = []
+
+    def transform(
+        table,
+        resolved,
+        *,
+        samples,
+        minimum_size_arcmin,
+    ):
+        calls.append(len(table))
+        values = tuple(np.zeros(samples) for _ in table)
+        return values, values
+
+    monkeypatch.setattr(layer, "_transform_outline_table", transform)
+    first = layer.spherical_geometry(
+        current_observer, selected=["NGC5128"]
+    )
+    second = layer.spherical_geometry(
+        current_observer, selected=["NGC0224"]
+    )
+
+    assert first.ids.tolist() == ["NGC5128"]
+    assert second.ids.tolist() == ["NGC0224"]
+    assert calls == [1056]
+
+
 def test_galaxies_and_messier_can_coexist_on_one_sky():
     sky = CelestialSphere(observer())
     messier = sky.add_nonstellar(samples=24)

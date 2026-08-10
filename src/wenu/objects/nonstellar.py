@@ -8,12 +8,13 @@ import re
 
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import SkyCoord
+from astropy.coordinates import SkyCoord, concatenate
 from astropy.table import Table
 
 from wenu.geometry.spherical import SphericalCurves
 from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.resources import nonstellar_catalog_path
+from wenu.sky.observed_cache import observed_polygon_arrays
 
 
 class NonStellar(AstronomicalObject):
@@ -67,6 +68,7 @@ class NonStellar(AstronomicalObject):
         self.source = None
         self._source_revision = 0
         self._observed_point_cache = {}
+        self._observed_outline_cache = {}
 
     def load(self, *, catalog=None, filename=None):
         """Load and normalize a non-stellar catalogue."""
@@ -93,6 +95,7 @@ class NonStellar(AstronomicalObject):
             self.catalog = self.source_catalog[keep]
         self._source_revision += 1
         self._observed_point_cache.clear()
+        self._observed_outline_cache.clear()
         return self.catalog
 
     def _normalize(self, source):
@@ -348,6 +351,97 @@ class NonStellar(AstronomicalObject):
             "minimum_size_arcmin": minimum_size_arcmin,
         }
 
+    def _maximal_geometry_table(self):
+        """Return every loaded row capable of producing an outline."""
+        return self._geometry_table(selected=None)
+
+    def _transform_outline_table(
+        self,
+        table,
+        observer,
+        *,
+        samples,
+        minimum_size_arcmin,
+    ):
+        """Transform one complete outline table in one AltAz operation."""
+        if len(table) == 0:
+            return (), ()
+        outlines = []
+        for row in table:
+            center = SkyCoord(
+                ra=float(row["ra_deg"]) * u.deg,
+                dec=float(row["dec_deg"]) * u.deg,
+                frame="icrs",
+            )
+            outlines.append(
+                self._ellipse(
+                    center,
+                    row["major_axis_arcmin"],
+                    row["minor_axis_arcmin"],
+                    row["position_angle_deg"],
+                    samples,
+                    minimum_size_arcmin=minimum_size_arcmin,
+                )
+            )
+        native = concatenate(outlines)
+        horizontal = native.transform_to(observer.altaz_frame)
+        splits = np.arange(1, len(table)) * samples
+        return (
+            np.split(horizontal.az.to_value(u.deg), splits),
+            np.split(horizontal.alt.to_value(u.deg), splits),
+        )
+
+    def _observed_outlines(
+        self,
+        observer,
+        *,
+        samples,
+        minimum_size_arcmin,
+    ):
+        """Return the maximal cached outline realization and its table."""
+        maximal = self._maximal_geometry_table()
+        minimum = (
+            None
+            if minimum_size_arcmin is None
+            else float(minimum_size_arcmin)
+        )
+        longitude, latitude = observed_polygon_arrays(
+            self._observed_outline_cache,
+            observer,
+            source_key=(
+                self.layer_name,
+                self.catalog_name,
+                str(self.source),
+                self._source_revision,
+                int(samples),
+                minimum,
+            ),
+            build=lambda: self._transform_outline_table(
+                maximal,
+                observer,
+                samples=samples,
+                minimum_size_arcmin=minimum,
+            ),
+        )
+        return maximal, longitude, latitude
+
+    @staticmethod
+    def _outline_positions(maximal, selected):
+        positions = {
+            str(identifier): index
+            for index, identifier in enumerate(maximal["identifier"])
+        }
+        try:
+            return [
+                positions[str(identifier)]
+                for identifier in selected["identifier"]
+            ]
+        except KeyError as error:
+            raise RuntimeError(
+                "The outline selection is not contained in the loaded "
+                "source catalogue."
+            ) from error
+
     def spherical_geometry(
         self,
         observer,
@@ -375,35 +469,17 @@ class NonStellar(AstronomicalObject):
         )
         resolved_samples = self._resolved_samples(samples)
 
-        lon_deg = []
-        lat_deg = []
-        identifiers = []
-        angle_known = []
-        for row in table:
-            center = SkyCoord(
-                ra=float(row["ra_deg"]) * u.deg,
-                dec=float(row["dec_deg"]) * u.deg,
-                frame="icrs",
-            )
-            outline = self._ellipse(
-                center,
-                row["major_axis_arcmin"],
-                row["minor_axis_arcmin"],
-                row["position_angle_deg"],
-                resolved_samples,
-                minimum_size_arcmin=minimum_size_arcmin,
-            )
-            horizontal = outline.transform_to(resolved.altaz_frame)
-            lon_deg.append(horizontal.az.to_value(u.deg))
-            lat_deg.append(horizontal.alt.to_value(u.deg))
-            identifiers.append(str(row["identifier"]))
-            angle_known.append(
-                bool(np.isfinite(row["position_angle_deg"]))
-            )
+        maximal, longitude, latitude = self._observed_outlines(
+            resolved,
+            samples=resolved_samples,
+            minimum_size_arcmin=minimum_size_arcmin,
+        )
+        positions = self._outline_positions(maximal, table)
+        identifiers = [str(value) for value in table["identifier"]]
 
         return SphericalCurves(
-            lon_deg=tuple(lon_deg),
-            lat_deg=tuple(lat_deg),
+            lon_deg=tuple(longitude[index] for index in positions),
+            lat_deg=tuple(latitude[index] for index in positions),
             closed=np.ones(len(table), dtype=bool),
             ids=identifiers,
             names=identifiers,

@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-import astropy.units as u
 import numpy as np
-from astropy.coordinates import SkyCoord
 
 from wenu.geometry.spherical import SphericalPolygons
 from wenu.objects.nonstellar import NonStellar
@@ -165,32 +163,17 @@ class Galaxies(NonStellar):
             magnitude_limit=magnitude_limit,
         )
         resolved_samples = self._resolved_samples(samples)
-        lon_deg = []
-        lat_deg = []
-        identifiers = []
-
-        for row in table:
-            center = SkyCoord(
-                ra=float(row["ra_deg"]) * u.deg,
-                dec=float(row["dec_deg"]) * u.deg,
-                frame="icrs",
-            )
-            outline = self._ellipse(
-                center,
-                row["major_axis_arcmin"],
-                row["minor_axis_arcmin"],
-                row["position_angle_deg"],
-                resolved_samples,
-                minimum_size_arcmin=minimum_size_arcmin,
-            )
-            horizontal = outline.transform_to(resolved.altaz_frame)
-            lon_deg.append(horizontal.az.to_value(u.deg))
-            lat_deg.append(horizontal.alt.to_value(u.deg))
-            identifiers.append(str(row["identifier"]))
+        maximal, longitude, latitude = self._observed_outlines(
+            resolved,
+            samples=resolved_samples,
+            minimum_size_arcmin=minimum_size_arcmin,
+        )
+        positions = self._outline_positions(maximal, table)
+        identifiers = [str(value) for value in table["identifier"]]
 
         return SphericalPolygons(
-            lon_deg=tuple(lon_deg),
-            lat_deg=tuple(lat_deg),
+            lon_deg=tuple(longitude[index] for index in positions),
+            lat_deg=tuple(latitude[index] for index in positions),
             ids=identifiers,
             names=identifiers,
             metadata=self._geometry_metadata(
