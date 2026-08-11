@@ -70,6 +70,10 @@ resolution, and ownership remains with the caller.
 density and replacement. It registers only explicitly selected semantic grids
 and removes prior grid layers so a reused sphere never accumulates duplicates;
 it does not modify maximal catalogue content.
+`charts/request_composition.py` owns immutable detail-policy and visual-style
+overrides for one exact selected product. It deliberately contains no chart
+geometry; `request_generation.py` consumes it only when calling the canonical
+composition boundary.
 
 ## Responsibility mapping
 

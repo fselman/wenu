@@ -10,6 +10,7 @@ from pathlib import Path
 from .detail import DetailOverrides, SkyContentSelection
 from .furniture import ChartFurnitureOptions
 from .product_options import ChartProductOptions
+from .request_composition import ChartProductCompositionOptions
 
 
 CHART_FAMILIES = frozenset(
@@ -299,6 +300,7 @@ class ChartRequest:
     exclusions: ChartContentExclusions = ChartContentExclusions()
     detail: DetailOverrides = DetailOverrides()
     furniture: ChartFurnitureOptions = ChartFurnitureOptions()
+    product_compositions: tuple[ChartProductCompositionOptions, ...] = ()
     language: str = "en"
     title: str | None = None
 
@@ -322,6 +324,27 @@ class ChartRequest:
         for name, value, kind in expected:
             if not isinstance(value, kind):
                 raise TypeError(f"{name} must be a {kind.__name__} value.")
+        product_compositions = tuple(self.product_compositions)
+        if any(
+            not isinstance(value, ChartProductCompositionOptions)
+            for value in product_compositions
+        ):
+            raise TypeError(
+                "product_compositions must contain only "
+                "ChartProductCompositionOptions values."
+            )
+        configured_products = tuple(
+            value.product for value in product_compositions
+        )
+        if len(set(configured_products)) != len(configured_products):
+            raise ValueError(
+                "product_compositions cannot configure a product twice."
+            )
+        unselected = set(configured_products) - set(self.product.products)
+        if unselected:
+            raise ValueError(
+                "product_compositions can configure only selected products."
+            )
         if family == "binocular" and (
             self.subject.target is None and self.subject.ra_deg is None
         ):
@@ -355,9 +378,19 @@ class ChartRequest:
             )
         object.__setattr__(self, "family", family)
         object.__setattr__(self, "mask", bool(self.mask))
+        object.__setattr__(
+            self, "product_compositions", product_compositions
+        )
         object.__setattr__(self, "language", language)
         object.__setattr__(
             self,
             "title",
             _optional_text(self.title, field_name="title"),
         )
+
+    def composition_for(self, product):
+        """Return optional composition choices for ``product``."""
+        for options in self.product_compositions:
+            if options.product == product:
+                return options
+        return None

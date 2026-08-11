@@ -81,11 +81,22 @@ def export_prepared_chart(sky, prepared):
     for product, output in request.product.outputs(
         stem=_request_stem(prepared)
     ):
+        product_composition = request.composition_for(product)
         composition = compose_chart(
             chart,
             style=product.style,
             mode=product.mode,
+            detail=(
+                None
+                if product_composition is None
+                else product_composition.detail
+            ),
             detail_overrides=detail,
+            style_overrides=(
+                None
+                if product_composition is None
+                else product_composition.style_overrides
+            ),
             furniture=request.furniture,
         )
         figure, ax = plt.subplots(figsize=(

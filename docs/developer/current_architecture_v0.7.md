@@ -122,3 +122,10 @@ grids are removed and the selected planisphere, regional, circumpolar, or
 binocular configuration is installed in canonical drawing order. Astronomical
 catalogue layers are untouched, the maximal load profile remains grid-free,
 and repeated requests cannot accumulate duplicate grid layers.
+
+Milestone 46C.8C adds immutable product-specific composition options to the
+chart-request graph. An exact atlas/cartoon and print/presentation product may
+select its detail policy and post-mode style overrides without changing the
+request's family, frame, projection, mask, or other chart geometry. The
+generation facade applies those options at the established composition
+boundary; products without an explicit entry retain their previous defaults.

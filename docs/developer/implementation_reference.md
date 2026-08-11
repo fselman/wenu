@@ -322,6 +322,11 @@ holds optional framing overrides. Existing `SkyContentSelection`,
 the corresponding content, detail, furniture, and output contracts.
 `ChartContentExclusions` names deep-sky catalogue identifiers that must be
 omitted after field selection; it does not mutate loaded catalogue content.
+`ChartProductCompositionOptions` optionally assigns a detail policy and
+`ChartStyleOverrides` to one exact selected `ChartProduct`. These values are
+resolved only at composition time. They cannot carry framing, projection,
+masking, or other chart geometry, and duplicate or unselected product entries
+are rejected when the request is constructed.
 
 `resolve_target(ChartSubjectRequest(...))` resolves packaged aliases without
 network access. Its immutable `ResolvedTarget` records canonical key, display
@@ -384,6 +389,10 @@ observer. Advanced callers that already have a compatible sphere may call
 `export_prepared_chart(sky, prepared_request)` after resolution and
 preparation; this avoids rebuilding the sphere while retaining the same
 canonical composition and single-export path.
+For each selected output, that export boundary applies the request's matching
+`ChartProductCompositionOptions` before the common render-local detail
+overrides. Omitting a matching entry preserves the established style-derived
+detail and mode defaults.
 
 `generate_chart_request(request, sky=existing_sphere)` provides the simpler
 reuse adapter needed by canonical examples and batch callers. The sphere must

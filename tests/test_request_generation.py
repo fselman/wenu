@@ -6,9 +6,14 @@ import pytest
 
 from wenu import (
     ChartObserverRequest,
+    ChartProduct,
+    ChartProductCompositionOptions,
     ChartProductOptions,
     ChartRequest,
     ChartSubjectRequest,
+    ChartStyleOverrides,
+    FixedDetailPolicy,
+    ResolvedDetail,
 )
 from wenu.charts.export_workflow import ChartExportResult
 from wenu.charts.request_chart import PreparedChartRequest
@@ -21,7 +26,7 @@ from wenu.charts.request_resolver import resolve_chart_request
 from wenu.sky.maximal_sphere import CANONICAL_MAXIMAL_SPHERE_PROFILE
 
 
-def _request(tmp_path, *, all_products=False):
+def _request(tmp_path, *, all_products=False, product_compositions=()):
     return ChartRequest(
         family="binocular",
         observer=ChartObserverRequest(
@@ -34,6 +39,7 @@ def _request(tmp_path, *, all_products=False):
             all_products=all_products,
             output=tmp_path,
         ),
+        product_compositions=product_compositions,
     )
 
 
@@ -61,7 +67,10 @@ def test_prepared_request_exports_the_shared_product_matrix_once(
                 export_options=None,
             )
 
-    def composition(chart, *, style, mode, detail_overrides, furniture):
+    def composition(
+        chart, *, style, mode, detail, detail_overrides,
+        style_overrides, furniture,
+    ):
         assert detail_overrides.content_selection == resolved.request.content
         return SimpleNamespace(
             mode=SimpleNamespace(width_inches=8.0, height_inches=6.0),
@@ -72,6 +81,8 @@ def test_prepared_request_exports_the_shared_product_matrix_once(
             ),
             product=(style, mode),
             detail=detail_overrides,
+            detail_policy=detail,
+            style_overrides=style_overrides,
             furniture=furniture,
         )
 
@@ -98,6 +109,81 @@ def test_prepared_request_exports_the_shared_product_matrix_once(
     ]
     assert configured_titles == ["Centaurus A"] * 4
     assert len(closed) == 4
+
+
+def test_prepared_request_applies_exact_product_composition_options(
+    monkeypatch, tmp_path
+):
+    atlas_detail = FixedDetailPolicy(
+        ResolvedDetail(star_magnitude_limit=11.0)
+    )
+    cartoon_detail = FixedDetailPolicy(ResolvedDetail(
+        star_magnitude_limit=11.0,
+        enabled_layers={"stars", "constellation_lines", "galaxies"},
+        constellation_star_mode="selected",
+    ))
+    atlas_style = ChartStyleOverrides(boundary_linewidth=0.5)
+    cartoon_style = ChartStyleOverrides(boundary_linewidth=1.0)
+    request = _request(
+        tmp_path,
+        all_products=True,
+        product_compositions=(
+            ChartProductCompositionOptions(
+                product=ChartProduct("atlas", "print"),
+                detail=atlas_detail,
+                style_overrides=atlas_style,
+            ),
+            ChartProductCompositionOptions(
+                product=ChartProduct("cartoon", "presentation"),
+                detail=cartoon_detail,
+                style_overrides=cartoon_style,
+            ),
+        ),
+    )
+    resolved = resolve_chart_request(
+        request, CANONICAL_MAXIMAL_SPHERE_PROFILE
+    )
+    calls = []
+
+    class Chart:
+        chart_context = object()
+
+        def export(self, sky, renderer, output, *, composition):
+            return ChartExportResult(
+                rendering=None,
+                output=output,
+                composition=composition,
+                layer_options={},
+                export_options=None,
+            )
+
+    def composition(chart, **kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(
+            mode=SimpleNamespace(width_inches=8.0, height_inches=6.0),
+            style=SimpleNamespace(configure_axes=lambda ax, title: None),
+        )
+
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.compose_chart", composition
+    )
+    monkeypatch.setattr(
+        "matplotlib.pyplot.subplots",
+        lambda **kwargs: (object(), object()),
+    )
+    monkeypatch.setattr("matplotlib.pyplot.close", lambda figure: None)
+
+    export_prepared_chart(
+        SimpleNamespace(observer=object()),
+        PreparedChartRequest(chart=Chart(), resolved=resolved),
+    )
+
+    assert [call["detail"] for call in calls] == [
+        atlas_detail, None, None, cartoon_detail
+    ]
+    assert [call["style_overrides"] for call in calls] == [
+        atlas_style, None, None, cartoon_style
+    ]
 
 
 def test_generation_owns_and_closes_its_observer(monkeypatch, tmp_path):

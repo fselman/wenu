@@ -64,6 +64,7 @@ from .charts.request import (
     ChartRequest,
     ChartSubjectRequest,
 )
+from .charts.request_composition import ChartProductCompositionOptions
 from .charts.target_resolver import (
     AmbiguousTargetError,
     ResolvedTarget,
@@ -276,6 +277,7 @@ __all__ = [
     "CANONICAL_CHART_PRODUCTS",
     "ChartProduct",
     "ChartProductOptions",
+    "ChartProductCompositionOptions",
     "CHART_FAMILIES",
     "CHART_LANGUAGES",
     "ChartFrameRequest",

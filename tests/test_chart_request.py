@@ -11,10 +11,14 @@ from wenu import (
     ChartContentExclusions,
     ChartFrameRequest,
     ChartObserverRequest,
+    ChartProduct,
+    ChartProductCompositionOptions,
     ChartProductOptions,
     ChartRequest,
     ChartSubjectRequest,
     DetailOverrides,
+    FixedDetailPolicy,
+    ResolvedDetail,
     SkyContentSelection,
 )
 from wenu.observer import Observer
@@ -211,3 +215,42 @@ def test_request_graph_is_immutable():
 
     with pytest.raises(FrozenInstanceError):
         request.language = "es"
+
+
+def test_product_compositions_are_immutable_unique_and_selected():
+    atlas = ChartProduct("atlas", "presentation")
+    options = ChartProductCompositionOptions(
+        product=atlas,
+        detail=FixedDetailPolicy(
+            ResolvedDetail(star_magnitude_limit=11.0)
+        ),
+    )
+    request = ChartRequest(
+        observer=observer(),
+        family="binocular",
+        subject=ChartSubjectRequest(target="M13"),
+        product=product(),
+        product_compositions=[options],
+    )
+
+    assert request.product_compositions == (options,)
+    assert request.composition_for(atlas) is options
+    assert request.composition_for(ChartProduct("atlas", "print")) is None
+    with pytest.raises(ValueError, match="configure a product twice"):
+        ChartRequest(
+            observer=observer(),
+            family="binocular",
+            subject=ChartSubjectRequest(target="M13"),
+            product=product(),
+            product_compositions=(options, options),
+        )
+    with pytest.raises(ValueError, match="only selected products"):
+        ChartRequest(
+            observer=observer(),
+            family="binocular",
+            subject=ChartSubjectRequest(target="M13"),
+            product=product(),
+            product_compositions=(ChartProductCompositionOptions(
+                product=ChartProduct("cartoon", "print")
+            ),),
+        )
