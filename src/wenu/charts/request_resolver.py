@@ -34,6 +34,58 @@ class ResolvedChartRequest:
     request: ChartRequest
     target: ResolvedTarget | None = None
     constellations: ResolvedConstellationSubject | None = None
+    frame: "ResolvedChartFrame | None" = None
+
+
+@dataclass(frozen=True)
+class ResolvedChartFrame:
+    """Effective family framing, retaining whether geometry must derive it."""
+
+    field_diameter_deg: float | None = None
+    field_width_deg: float | None = None
+    field_height_deg: float | None = None
+    position_angle_deg: float = 0.0
+    automatic_from_geometry: bool = False
+    source: str = "request"
+
+
+def _resolve_frame(request, constellations):
+    frame = request.frame
+    if request.family == "binocular":
+        return ResolvedChartFrame(
+            field_diameter_deg=(
+                6.5 if frame.field_diameter_deg is None
+                else frame.field_diameter_deg
+            ),
+            position_angle_deg=frame.position_angle_deg,
+            source=(
+                "family-default" if frame.field_diameter_deg is None
+                else "request"
+            ),
+        )
+    if request.family == "regional":
+        if frame.field_width_deg is not None:
+            return ResolvedChartFrame(
+                field_width_deg=frame.field_width_deg,
+                field_height_deg=frame.field_height_deg,
+                position_angle_deg=frame.position_angle_deg,
+            )
+        if constellations.field_width_deg is not None:
+            return ResolvedChartFrame(
+                field_width_deg=constellations.field_width_deg,
+                field_height_deg=constellations.field_height_deg,
+                position_angle_deg=frame.position_angle_deg,
+                source="packaged-group",
+            )
+        return ResolvedChartFrame(
+            position_angle_deg=frame.position_angle_deg,
+            automatic_from_geometry=True,
+            source="constellation-geometry",
+        )
+    return ResolvedChartFrame(
+        position_angle_deg=frame.position_angle_deg,
+        source="chart-family",
+    )
 
 
 def _union(current, additions):
@@ -113,4 +165,5 @@ def resolve_chart_request(request, profile):
         request=replace(request, content=content),
         target=target,
         constellations=constellations,
+        frame=_resolve_frame(request, constellations),
     )

@@ -89,6 +89,42 @@ def test_resolution_does_not_mutate_the_immutable_input_request():
     assert resolved.request is not original
 
 
+def test_binocular_family_supplies_a_sensible_default_field():
+    resolved = resolve_chart_request(
+        request(), CANONICAL_MAXIMAL_SPHERE_PROFILE
+    )
+
+    assert resolved.frame.field_diameter_deg == pytest.approx(6.5)
+    assert resolved.frame.source == "family-default"
+
+
+def test_packaged_group_supplies_framing_but_request_overrides_it():
+    grouped = resolve_chart_request(
+        request(
+            family="regional",
+            subject=ChartSubjectRequest(group="summer-triangle"),
+        ),
+        CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    )
+
+    assert grouped.frame.field_width_deg == pytest.approx(143.52)
+    assert grouped.frame.field_height_deg == pytest.approx(104.0)
+    assert grouped.frame.source == "packaged-group"
+
+
+def test_arbitrary_constellation_set_defers_automatic_field_to_geometry():
+    resolved = resolve_chart_request(
+        request(
+            family="regional",
+            subject=ChartSubjectRequest(constellations=("Cru", "Cen")),
+        ),
+        CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    )
+
+    assert resolved.frame.automatic_from_geometry is True
+    assert resolved.frame.field_width_deg is None
+
+
 def test_resolver_rejects_untyped_inputs():
     with pytest.raises(TypeError, match="request must be"):
         resolve_chart_request(object(), CANONICAL_MAXIMAL_SPHERE_PROFILE)

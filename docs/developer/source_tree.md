@@ -47,6 +47,8 @@ identities.
 `charts/request_resolver.py` combines those resolved subjects with immutable
 content selection and validates request ceilings against the selected
 maximal-sphere profile. It performs no chart construction or rendering.
+It also resolves explicit and family framing defaults while marking arbitrary
+constellation framing as a downstream geometry operation.
 
 ## Responsibility mapping
 

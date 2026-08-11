@@ -347,6 +347,11 @@ lost to general thresholds. It calls the load profile's established
 sampling, returning a new immutable `ResolvedChartRequest` without modifying
 the input request or constructing a chart.
 
+The returned `ResolvedChartFrame` records the effective explicit, family, or
+packaged-group field and its provenance. `automatic_from_geometry=True` means
+an arbitrary constellation set must be framed later from loaded authoritative
+geometry; it is not replaced by a guessed fixed field.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

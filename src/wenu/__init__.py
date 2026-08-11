@@ -86,6 +86,7 @@ from .charts.constellation_resolver import (
 )
 from .charts.request_resolver import (
     ResolvedChartRequest,
+    ResolvedChartFrame,
     SUPPORTED_TARGET_FAMILIES,
     resolve_chart_request,
 )
@@ -280,6 +281,7 @@ __all__ = [
     "normalize_constellations",
     "resolve_constellation_subject",
     "ResolvedChartRequest",
+    "ResolvedChartFrame",
     "SUPPORTED_TARGET_FAMILIES",
     "resolve_chart_request",
     "ChartContentOptions",

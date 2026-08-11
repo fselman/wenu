@@ -69,3 +69,8 @@ packaged group content into an immutable render-local selection, and rejects
 detail ceilings that exceed the chosen maximal-sphere load profile. The
 original request remains unchanged; no chart, renderer, or export work occurs
 in this phase.
+
+Milestone 46C.7E resolves family framing defaults without constructing chart
+geometry. Binocular requests receive the established 6.5-degree field unless
+overridden; packaged groups provide their recorded width and height; arbitrary
+IAU sets explicitly defer automatic framing to their authoritative geometry.
