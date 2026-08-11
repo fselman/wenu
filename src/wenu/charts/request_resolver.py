@@ -11,7 +11,7 @@ from .constellation_resolver import (
     resolve_constellation_subject,
 )
 from .detail import SkyContentSelection
-from .request import ChartRequest
+from .request import EXCLUDABLE_CATALOGUE_FAMILIES, ChartRequest
 from .target_resolver import ResolvedTarget, resolve_target
 
 
@@ -125,7 +125,33 @@ def _resolved_content(request, *, target=None, constellations=None):
             values[name] = _union(
                 values[name], getattr(constellations, name)
             )
+    for name in EXCLUDABLE_CATALOGUE_FAMILIES:
+        selected = values[name]
+        excluded = getattr(request.exclusions, name)
+        if selected is not None:
+            values[name] = selected - excluded
     return SkyContentSelection(**values)
+
+
+def _validate_exclusions(request, target):
+    for name in EXCLUDABLE_CATALOGUE_FAMILIES:
+        included = getattr(request.content, name)
+        excluded = getattr(request.exclusions, name)
+        overlap = frozenset() if included is None else included & excluded
+        if overlap:
+            identifiers = ", ".join(sorted(overlap))
+            raise ValueError(
+                f"{name} cannot both include and exclude: {identifiers}."
+            )
+    if target is not None:
+        for component in target.components:
+            if component.identifier in getattr(
+                request.exclusions, component.family
+            ):
+                raise ValueError(
+                    "The central target cannot be excluded from its "
+                    f"catalogue family: {component.identifier}."
+                )
 
 
 def resolve_chart_request(request, profile):
@@ -156,6 +182,7 @@ def resolve_chart_request(request, profile):
         galaxy_magnitude_limit=request.detail.galaxy_magnitude_limit,
         extended_object_samples=request.detail.extended_object_samples,
     )
+    _validate_exclusions(request, target)
     content = _resolved_content(
         request,
         target=target,

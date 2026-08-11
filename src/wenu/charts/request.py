@@ -16,6 +16,14 @@ CHART_FAMILIES = frozenset(
     {"planisphere", "regional", "circumpolar", "binocular"}
 )
 CHART_LANGUAGES = frozenset({"en", "es"})
+EXCLUDABLE_CATALOGUE_FAMILIES = (
+    "nonstellar_objects",
+    "galaxies",
+    "open_clusters",
+    "globular_clusters",
+    "planetary_nebulae",
+    "supernova_remnants",
+)
 
 
 def _optional_text(value, *, field_name):
@@ -25,6 +33,35 @@ def _optional_text(value, *, field_name):
     if not text:
         raise ValueError(f"{field_name} cannot be empty.")
     return text
+
+
+def _identifier_set(values, *, field_name):
+    if values is None:
+        return frozenset()
+    normalized = frozenset(str(value).strip() for value in values)
+    if "" in normalized:
+        raise ValueError(f"{field_name} cannot contain an empty identifier.")
+    return normalized
+
+
+@dataclass(frozen=True)
+class ChartContentExclusions:
+    """Catalogue identifiers explicitly omitted from one chart request."""
+
+    nonstellar_objects: frozenset[str] = frozenset()
+    galaxies: frozenset[str] = frozenset()
+    open_clusters: frozenset[str] = frozenset()
+    globular_clusters: frozenset[str] = frozenset()
+    planetary_nebulae: frozenset[str] = frozenset()
+    supernova_remnants: frozenset[str] = frozenset()
+
+    def __post_init__(self):
+        for name in EXCLUDABLE_CATALOGUE_FAMILIES:
+            object.__setattr__(
+                self,
+                name,
+                _identifier_set(getattr(self, name), field_name=name),
+            )
 
 
 @dataclass(frozen=True)
@@ -241,6 +278,7 @@ class ChartRequest:
     frame: ChartFrameRequest = ChartFrameRequest()
     mask: bool = False
     content: SkyContentSelection = SkyContentSelection()
+    exclusions: ChartContentExclusions = ChartContentExclusions()
     detail: DetailOverrides = DetailOverrides()
     furniture: ChartFurnitureOptions = ChartFurnitureOptions()
     language: str = "en"
@@ -259,6 +297,7 @@ class ChartRequest:
             ("subject", self.subject, ChartSubjectRequest),
             ("frame", self.frame, ChartFrameRequest),
             ("content", self.content, SkyContentSelection),
+            ("exclusions", self.exclusions, ChartContentExclusions),
             ("detail", self.detail, DetailOverrides),
             ("furniture", self.furniture, ChartFurnitureOptions),
         )

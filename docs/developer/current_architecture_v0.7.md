@@ -86,3 +86,8 @@ field exists. Catalogue centers reuse the observer/time point cache, are
 projected through the selected chart, and are tested against its viewport and
 circular field stop where present. Visible identifiers are unioned with
 explicit selections and the already retained central target.
+
+Milestone 46C.7H adds immutable catalogue exclusions to the chart request.
+They are applied after packaged, explicit, and automatic field selection.
+Contradictory explicit inclusion is rejected, and a resolved central target
+cannot be excluded silently.

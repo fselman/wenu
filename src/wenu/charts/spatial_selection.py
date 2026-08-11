@@ -58,8 +58,11 @@ def select_spatial_chart_content(sky, chart, resolved):
             continue
         automatic = _visible_identifiers(sky, chart, layer)
         explicit = values[content_name]
-        values[content_name] = (
+        selected = (
             automatic if explicit is None else automatic | explicit
+        )
+        values[content_name] = selected - getattr(
+            resolved.request.exclusions, content_name
         )
     content = SkyContentSelection(**values)
     request = replace(resolved.request, content=content)

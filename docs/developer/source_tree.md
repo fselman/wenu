@@ -36,8 +36,9 @@ the factory.
 `sky/observed_cache.py` defines observer/time/source cache-key identity and
 freezes shared point and polygon arrays; individual layers continue to own
 their cached spherical realizations.
-Within `charts/`, `request.py` owns the immutable ordinary-user request graph;
-it contains no catalogue resolution, projection, rendering, or export work.
+Within `charts/`, `request.py` owns the immutable ordinary-user request graph,
+including catalogue exclusions; it contains no catalogue resolution,
+projection, rendering, or export work.
 `charts/target_resolver.py` owns offline alias resolution over the packaged
 `data/targets.json` cross-identification resource.
 `charts/constellation_resolver.py` owns IAU abbreviation normalization and
@@ -52,7 +53,8 @@ constellation framing as a downstream geometry operation.
 `charts/regional.py` performs that geometry-derived framing from loaded
 constellation endpoints; the request resolver does not inspect sky geometry.
 `charts/spatial_selection.py` owns vectorized field-footprint selection over
-cached catalogue centers; it returns immutable content and does not render.
+cached catalogue centers; it applies explicit exclusions, returns immutable
+content, and does not render.
 
 ## Responsibility mapping
 

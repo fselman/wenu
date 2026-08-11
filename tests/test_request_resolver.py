@@ -6,6 +6,7 @@ import pytest
 
 from wenu import (
     CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    ChartContentExclusions,
     ChartObserverRequest,
     ChartProductOptions,
     ChartRequest,
@@ -16,7 +17,10 @@ from wenu import (
 )
 
 
-def request(*, family="binocular", subject=None, detail=None, content=None):
+def request(
+    *, family="binocular", subject=None, detail=None, content=None,
+    exclusions=None,
+):
     return ChartRequest(
         observer=ChartObserverRequest(
             location="La Ligua", time="2026-08-15 22:00"
@@ -25,6 +29,7 @@ def request(*, family="binocular", subject=None, detail=None, content=None):
         subject=subject or ChartSubjectRequest(target="M57"),
         detail=detail or DetailOverrides(),
         content=content or SkyContentSelection(),
+        exclusions=exclusions or ChartContentExclusions(),
         product=ChartProductOptions(output=Path("output/chart.png")),
     )
 
@@ -62,6 +67,46 @@ def test_constellation_resolution_populates_internal_identities_and_content():
         "Sgr", "Sco", "Oph", "Ser"
     }
     assert "NGC 6475" in resolved.request.content.open_clusters
+
+
+def test_group_content_can_be_explicitly_excluded():
+    resolved = resolve_chart_request(
+        request(
+            family="regional",
+            subject=ChartSubjectRequest(group="galactic-center"),
+            exclusions=ChartContentExclusions(
+                open_clusters={"NGC 6475"}
+            ),
+        ),
+        CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    )
+
+    assert "NGC 6475" not in resolved.request.content.open_clusters
+
+
+def test_conflicting_explicit_content_is_rejected():
+    with pytest.raises(ValueError, match="both include and exclude"):
+        resolve_chart_request(
+            request(
+                content=SkyContentSelection(open_clusters={"NGC 6475"}),
+                exclusions=ChartContentExclusions(
+                    open_clusters={"NGC 6475"}
+                ),
+            ),
+            CANONICAL_MAXIMAL_SPHERE_PROFILE,
+        )
+
+
+def test_central_target_cannot_be_excluded():
+    with pytest.raises(ValueError, match="central target cannot be excluded"):
+        resolve_chart_request(
+            request(
+                exclusions=ChartContentExclusions(
+                    planetary_nebulae={"PN G063.1+13.9"}
+                )
+            ),
+            CANONICAL_MAXIMAL_SPHERE_PROFILE,
+        )
 
 
 @pytest.mark.parametrize(

@@ -56,6 +56,7 @@ from .charts.product_options import (
     chart_product_options,
 )
 from .charts.request import (
+    ChartContentExclusions,
     CHART_FAMILIES,
     CHART_LANGUAGES,
     ChartFrameRequest,
@@ -238,6 +239,7 @@ __all__ = [
     "PrintMode",
     "ResolvedDetail",
     "SkyContentSelection",
+    "ChartContentExclusions",
     "ResolvedMode",
     "compose_chart",
     "ChartRenderingResult",

@@ -320,6 +320,8 @@ coordinate, constellation set, or packaged group; and `ChartFrameRequest`
 holds optional framing overrides. Existing `SkyContentSelection`,
 `DetailOverrides`, `ChartFurnitureOptions`, and `ChartProductOptions` remain
 the corresponding content, detail, furniture, and output contracts.
+`ChartContentExclusions` names deep-sky catalogue identifiers that must be
+omitted after field selection; it does not mutate loaded catalogue content.
 
 `resolve_target(ChartSubjectRequest(...))` resolves packaged aliases without
 network access. Its immutable `ResolvedTarget` records canonical key, display
@@ -361,7 +363,9 @@ continues to provide exact publication control.
 `select_spatial_chart_content(sky, chart, resolved_request)` obtains cached
 AltAz centers for every registered deep-sky catalogue, projects them through
 the chart, and returns a new request containing field objects plus explicit
-inclusions and target components. Extended-object layers expose
+inclusions and target components, minus the request's explicit exclusions.
+An identifier cannot be both explicitly included and excluded, and the
+resolved central target cannot be excluded. Extended-object layers expose
 `spherical_centers()` so selection does not sample their outlines.
 
 ## 9. Package imports

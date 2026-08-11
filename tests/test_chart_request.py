@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from wenu import (
+    ChartContentExclusions,
     ChartFrameRequest,
     ChartObserverRequest,
     ChartProductOptions,
@@ -120,6 +121,18 @@ def test_regional_request_expresses_constellation_group_without_scripts():
     assert request.subject.constellations == ("CEN", "CRU", "MUS")
     assert request.mask is True
     assert request.language == "es"
+
+
+def test_catalogue_exclusions_are_normalized_and_immutable():
+    exclusions = ChartContentExclusions(
+        open_clusters={" NGC 6475 ", "M 7"},
+        galaxies={"NGC 5128"},
+    )
+
+    assert exclusions.open_clusters == {"NGC 6475", "M 7"}
+    assert exclusions.galaxies == {"NGC 5128"}
+    with pytest.raises(ValueError, match="empty identifier"):
+        ChartContentExclusions(open_clusters={""})
 
 
 def test_planisphere_mask_and_circumpolar_limit_are_explicit():

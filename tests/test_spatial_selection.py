@@ -7,6 +7,7 @@ import numpy as np
 
 from wenu import (
     CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    ChartContentExclusions,
     ChartObserverRequest,
     ChartProductOptions,
     ChartRequest,
@@ -35,7 +36,7 @@ class Layer:
         return self.geometry
 
 
-def resolved():
+def resolved(*, exclusions=None):
     request = ChartRequest(
         observer=ChartObserverRequest(
             location="La Ligua", time="2026-08-15 22:00"
@@ -43,6 +44,7 @@ def resolved():
         family="binocular",
         subject=ChartSubjectRequest(target="M57"),
         content=SkyContentSelection(open_clusters={"explicit"}),
+        exclusions=exclusions or ChartContentExclusions(),
         product=ChartProductOptions(output=Path("output/chart.png")),
     )
     return resolve_chart_request(
@@ -102,3 +104,33 @@ def test_spatial_selection_is_immutable_and_repeatable():
 
     assert first == second
     assert original.request.content.open_clusters == {"explicit"}
+
+
+def test_explicit_exclusions_override_automatic_field_selection():
+    sky = SimpleNamespace(
+        observer=object(),
+        nonstellar=None,
+        galaxies=None,
+        open_clusters=Layer(
+            ["retained", "excluded"], [0.0, 0.5], [0.0, 0.0]
+        ),
+        globular_clusters=None,
+        planetary_nebulae=Layer(
+            ["PN G063.1+13.9"], [0.0], [0.0]
+        ),
+        supernova_remnants=None,
+    )
+    chart = SimpleNamespace(
+        projection=Projection(),
+        viewport=Viewport.centered(width=2.0, height=2.0),
+    )
+    request = resolved(
+        exclusions=ChartContentExclusions(open_clusters={"excluded"})
+    )
+
+    selected = select_spatial_chart_content(sky, chart, request)
+
+    assert selected.request.content.open_clusters == {
+        "retained", "explicit"
+    }
+    assert request.request.exclusions.open_clusters == {"excluded"}
