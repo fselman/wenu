@@ -89,6 +89,8 @@ def test_v08_roadmap_records_ordinary_interface_and_static_sequences():
 
     for phrase in (
         "Three-stage ordinary Python interface",
+        "observer-independent loaded-content container",
+        "Defining a projection and applying it are separate operations",
         "fewer than 70 lines",
         "Reproducible image-frame sequences",
         "does not encode movies",
@@ -97,7 +99,10 @@ def test_v08_roadmap_records_ordinary_interface_and_static_sequences():
 
     for phrase in (
         "Milestone 46C.8G",
-        "Milestone 46C.8N",
+        "Milestone 46C.8O",
+        "Pass observer explicitly through canonical execution",
+        "Decouple maximal-sphere construction",
+        "one observer-independent canonical maximal sphere",
         "fewer-than-70-line declarative examples",
         "movie encoding",
         "Hawaii-to-Tahiti",

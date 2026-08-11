@@ -108,6 +108,11 @@ be frozen into the reusable sphere.
 
 **Status:** Implemented.
 
+This factory is the implemented intermediate boundary: it still receives an
+observer and returns a `CelestialSphere` bound to that observer.  Milestone
+46C.8 will preserve its behavior while moving the target maximal sphere to
+observer-independent ownership.
+
 ## Milestone 46C.6 — Cache observer-dependent spherical realizations
 
 - cache expensive native-coordinate to AltAz transformations under complete
@@ -167,6 +172,10 @@ prepared-request export entry point preserves an advanced sphere-reuse path.
   request scaffold;
 - add a small ordinary Python interface that generates a celestial sphere,
   obtains a geometrical view, and draws that view;
+- make the maximal sphere observer-independent and bind observer, instant,
+  projection, framing, orientation, viewport, mask, and boundary in the view;
+- distinguish configuring projection in the view from applying it lazily to
+  render-selected observer-dependent spherical geometry during drawing;
 - keep style and detail out of view geometry so one view can produce several
   products without geometrical reconstruction;
 - retain the immutable request graph as the canonical advanced contract and
@@ -208,30 +217,50 @@ size and remaining adapter ceremony establish that the shared scaffold is not
 yet the intended ordinary interface.  Further example migrations are paused
 until that interface is implemented and verified.
 
-### Milestone 46C.8G — Specify the three-stage ordinary interface
+### Milestone 46C.8G — Specify observer-independent sphere ownership
 
 - define the public generate-sphere, get-view, and draw operations before
   choosing final names in code;
-- assign observer and load-profile choices to sphere generation, geometry to
-  the view, and appearance, detail, furniture, and output to drawing;
+- assign load-profile and native-content choices to sphere generation;
+- assign observer, instant, projection, framing, orientation, viewport, mask,
+  and boundary to the view;
+- assign appearance, detail, grids, furniture, and output to drawing;
+- define projection configuration as view state and projection execution as a
+  lazy drawing-stage operation after render-local spherical selection;
 - document ownership, cleanup, return values, supported projection names, and
   the boundary between friendly arguments and structured advanced options;
 - require delegation to the existing maximal-sphere, request, composition,
   export, and `CelestialSphere.draw_chart()` pipeline.
 
-### Milestone 46C.8H — Add ordinary sphere generation
+### Milestone 46C.8H — Pass observer explicitly through canonical execution
+
+- add an explicit observer to `CelestialSphere.draw_chart()` and the chart,
+  masking, spatial-selection, context, and furniture paths that currently read
+  `sky.observer`;
+- preserve the existing bound-observer calls as a compatibility form during
+  migration;
+- keep `SkyLayer.spherical_geometry(observer)` as the sole observed-geometry
+  contract and preserve complete observer/time/source cache keys;
+- prove that explicit observers do not change approved atlas-print output.
+
+### Milestone 46C.8I — Decouple maximal-sphere construction
 
 - expose a concise wrapper over `build_maximal_sphere()` that returns an
-  ordinary `CelestialSphere`;
+  observer-independent ordinary `CelestialSphere`;
+- load catalogues, native geometry, load ceilings, source provenance, and
+  caches without selecting one authoritative observer or instant;
 - keep chart geometry, grids, selection, style, furniture, and output outside
   sphere construction;
-- preserve explicit load profiles and unambiguous observer ownership for
-  advanced and reusable callers.
+- preserve the implemented observer-bound factory and request facade while
+  callers migrate;
+- make observer ownership and cleanup the responsibility of the caller or the
+  request facade that created it.
 
-### Milestone 46C.8I — Add the geometrical view facade
+### Milestone 46C.8J — Add the observer-bound geometrical view facade
 
-- translate friendly family, subject, projection, framing, orientation, and
-  mask arguments into the existing immutable request and resolver contracts;
+- translate friendly observer, instant, family, subject, projection, framing,
+  orientation, and mask arguments into the existing immutable request and
+  resolver contracts;
 - return a small immutable prepared-view value with resolved provenance and no
   style, renderer, Matplotlib, furniture, or output state;
 - initially expose stereographic projection honestly and reject unsupported
@@ -239,7 +268,7 @@ until that interface is implemented and verified.
 - preserve packaged targets, arbitrary IAU sets, packaged groups, automatic
   framing, spatial selection, Serpens normalization, and supplied-sphere use.
 
-### Milestone 46C.8J — Centralize explicit family defaults
+### Milestone 46C.8K — Centralize explicit family defaults
 
 - define one public default policy for binocular, regional single, regional
   group, planisphere, and circumpolar views;
@@ -248,7 +277,7 @@ until that interface is implemented and verified.
 - exclude cache keys, catalogue joins, internal layer identifiers, and other
   implementation details from the ordinary vocabulary.
 
-### Milestone 46C.8K — Add the ordinary drawing facade
+### Milestone 46C.8L — Add the ordinary drawing facade
 
 - accept direct style, mode, detail, grid, furniture, title, language, and
   destination choices for one prepared view;
@@ -259,7 +288,7 @@ until that interface is implemented and verified.
 - retain structured options for advanced callers and export exactly once per
   selected product.
 
-### Milestone 46C.8L — Add shared command-line adaptation
+### Milestone 46C.8M — Add shared command-line adaptation
 
 - map common CLI controls into the same three-stage Python interface;
 - leave examples responsible only for explicit family defaults and genuinely
@@ -267,7 +296,7 @@ until that interface is implemented and verified.
 - preserve documented controls without making a script own catalogue,
   projection, renderer, furniture, or export procedure.
 
-### Milestone 46C.8M — Replace the five canonical examples
+### Milestone 46C.8N — Replace the five canonical examples
 
 - replace binocular, regional single, regional group, planisphere, and
   circumpolar scripts with fewer-than-70-line declarative examples;
@@ -276,7 +305,7 @@ until that interface is implemented and verified.
   through the common facade where that compatibility remains required;
 - delete superseded example-only helpers rather than carrying both forms.
 
-### Milestone 46C.8N — Verify and close the example migration
+### Milestone 46C.8O — Verify and close the example migration
 
 - verify Centaurus A, Omega Centauri, regional single and group charts,
   Serpens, masks, furniture, products, and all retained CLI controls;
@@ -286,21 +315,26 @@ until that interface is implemented and verified.
 
 ## Milestone 46C.9 — Validate all chart families from one maximal sphere
 
-- build one canonical sphere for the shared La Ligua observer and instant;
+- build one observer-independent canonical maximal sphere;
 - exercise planisphere, regional single, regional group, circumpolar, and
-  binocular chart requests against it;
+  binocular chart views for the shared La Ligua observer and instant;
+- exercise additional instants and observer locations against that same
+  sphere without catalogue reconstruction;
 - retain separate readable tests and one builder smoke contract per family;
 - prove order independence, selection isolation, exact target and mask
-  behavior, and deterministic cleanup;
-- retain distinct builds for genuinely different observer, time, ephemeris,
-  source, or load-profile requests.
+  behavior, observer isolation, and deterministic cleanup;
+- prove that changing observer, instant, or ephemeris selects a separately
+  keyed observed realization while returning to an earlier state reuses its
+  compatible cache;
+- retain distinct maximal spheres only for genuinely different source or
+  load-profile requests.
 
 ## Milestone 46C.10 — Benchmark and close reusable observed-sky work
 
 - report catalogue-loading, AltAz transformation, selection, projection,
   preparation, rendering, and export costs separately;
-- verify that canonical catalogues are read once and reusable transformations
-  are not repeated;
+- verify that canonical catalogues are read once across several observers and
+  instants and that compatible observed transformations are not repeated;
 - run fast, integration, visual, and full suites;
 - visually approve the mandatory atlas-print regression charts;
 - update current architecture, implementation reference, source tree, and test

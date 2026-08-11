@@ -28,21 +28,34 @@ set and deriving several chart products from it without repeatedly reading or
 permanently filtering the same catalogues. Construction defines what content
 is available; resolved detail defines what a particular chart includes.
 
-Wenu distinguishes three conceptual states while retaining
+Wenu distinguishes four conceptual states while retaining
 `CelestialSphere` as the compatible public orchestration facade:
 
 1. observer-independent catalogue and native geometry, including stellar and
    deep-sky catalogues, constellation topology, boundaries, and isophotes;
 2. observer- and time-dependent spherical geometry in horizontal AltAz
    coordinates;
-3. render-local content selection followed by chart-owned projection,
-   framing, masking, and boundary application.
+3. an observer-bound chart view defining projection, framing, orientation,
+   viewport, masking, and the final boundary;
+4. render-local content selection, projection execution, preparation,
+   rendering, furniture, and export.
+
+The maximal `CelestialSphere` is an observer-independent loaded-content container.
+It owns load ceilings, catalogue provenance, native geometry, and
+caches, but it does not own one authoritative observer or instant.  The
+observer enters at the chart-view boundary.  A view binds an observer and
+instant to a chart family, subject, projection, frame, orientation, viewport,
+mask, and boundary without acquiring style, detail, furniture, renderer, or
+output state.  Observer ownership remains with the caller or the request
+facade that created it; neither the maximal sphere nor a view closes an
+observer it did not create.
 
 AltAz remains the canonical spherical geometry entering projection. It is not
 an intrinsic stored coordinate of an observer-independent catalogue. Layers
-may cache their AltAz realization for a particular observer and instant, but
-that cache must be invalidated or separately keyed when the location, time,
-ephemeris, or source data changes.
+may cache several AltAz realizations, but each is keyed by the complete
+observer location, instant, ephemeris, source, and geometry-quality identity.
+Changing observer or instant selects or creates another realization; it does
+not require reloading the maximal sphere.
 
 Catalogue load ceilings and sampling quality must be sufficient for every
 requested chart. Shallower magnitude limits, named object selections,
@@ -51,9 +64,11 @@ detail choices. Rendering one chart must not mutate the available catalogue
 content or affect a subsequent chart made from the same celestial sphere.
 
 This refinement does not create a second sky or rendering pipeline.
-`CelestialSphere.draw_chart()` remains the execution core, and every layer
-continues to provide spherical geometry to the established projection,
-preparation, rendering, furniture, and export stages.
+`CelestialSphere.draw_chart()` remains the execution core and receives the
+view's observer explicitly.  During migration its existing bound-observer
+form remains compatible.  Every layer continues to provide spherical
+geometry through `SkyLayer.spherical_geometry(observer)` to the established
+projection, preparation, rendering, furniture, and export stages.
 
 ## Declarative user chart requests
 
@@ -100,9 +115,9 @@ advanced callers.
 
 The ordinary Python interface presents one stable three-stage workflow:
 
-1. generate reusable celestial content for an observer and instant;
-2. obtain a geometrical chart view for a family, subject, projection, frame,
-   orientation, and optional mask;
+1. generate reusable observer-independent celestial content;
+2. obtain an observer-bound geometrical chart view for an instant, family,
+   subject, projection, frame, orientation, and optional mask;
 3. draw that view with explicit detail, style, furniture, title, and output
    choices.
 
@@ -114,20 +129,28 @@ The immutable request graph remains the canonical internal and advanced
 contract; the ordinary interface translates friendly arguments into that
 graph instead of adding another construction or rendering path.
 
-A view owns geometry, not appearance.  It records the resolved subject,
-projection, framing, position angle, orientation, viewport, and mask.  Style,
-output mode, render-local detail, grids, legends, language, title, and output
-belong to drawing.  The same view can therefore produce atlas and cartoon
-charts without reconstructing or changing its geometry.  Unsupported
-projection names are rejected explicitly; exposing a projection choice does
-not imply that more than the implemented stereographic projection is
-available.
+A view owns geometry, not appearance.  It records the observer identity,
+resolved subject, projection, framing, position angle, orientation, viewport,
+and mask.  Style, output mode, render-local detail, grids, legends, language,
+title, and output belong to drawing.  The same view can therefore produce
+atlas and cartoon charts without reconstructing or changing its geometry.
+Unsupported projection names are rejected explicitly; exposing a projection
+choice does not imply that more than the implemented stereographic projection
+is available.
+
+Defining a projection and applying it are separate operations.  The view
+selects and configures projection before chart drawing.  Drawing then selects
+the requested maximal content, realizes that content in AltAz for the view's
+observer, applies the already configured projection, prepares and clips the
+projected geometry, and renders it.  Projection remains lazy so a shallow
+render need not project every object loaded in the maximal sphere.
 
 The three stages delegate respectively to the canonical maximal-sphere
-factory, request resolution and chart preparation, and composition plus
-`CelestialSphere.draw_chart()`.  Existing structured request and lower-level
-APIs remain available.  Shared command-line adaptation must use the same
-ordinary interface and must not restore example-owned orchestration.
+factory, observer-aware request resolution and chart-view construction, and
+composition plus `CelestialSphere.draw_chart()`.  Existing structured request
+and lower-level APIs remain available.  Shared command-line adaptation must
+use the same ordinary interface and must not restore example-owned
+orchestration.
 
 ## Reproducible image-frame sequences
 
@@ -147,10 +170,10 @@ Sequence state must distinguish scientifically different variables:
   precession model rather than treating epoch as observer time or imposing a
   cosmetic rotation.
 
-Observer-independent catalogue and native geometry should be reused across
-frames.  Observer-, instant-, ephemeris-, source-, and epoch-dependent
-realizations remain separately keyed, and sequence rendering must not leak
-selection, mask, style, or view state between frames.
+One observer-independent maximal sphere is reused across frames.  Observer-,
+instant-, ephemeris-, source-, and epoch-dependent realizations remain
+separately keyed, and sequence rendering must not leak selection, mask, style,
+or view state between frames.
 
 ## Future time-dependent layers
 
