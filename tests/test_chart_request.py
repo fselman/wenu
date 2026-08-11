@@ -3,6 +3,7 @@
 from dataclasses import FrozenInstanceError
 from datetime import datetime
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -16,6 +17,7 @@ from wenu import (
     DetailOverrides,
     SkyContentSelection,
 )
+from wenu.observer import Observer
 
 
 def observer():
@@ -44,6 +46,34 @@ def test_named_observer_is_independent_of_display_furniture():
         "elevation_m": None,
         "timezone_name": None,
     }
+
+
+def test_observer_request_matches_its_normalized_scientific_observer():
+    request = observer()
+    actual = SimpleNamespace(
+        lat_deg=-32.443342,
+        lon_deg=-71.230289,
+        elevation_m=52.0,
+        utc_datetime=datetime.fromisoformat("2026-08-16T02:00:00+00:00"),
+    )
+
+    assert request.matches(actual) is True
+    actual.lon_deg = -71.0
+    assert request.matches(actual) is False
+
+
+def test_observer_identity_resolution_does_not_construct_an_ephemeris(
+    monkeypatch,
+):
+    monkeypatch.setattr(
+        Observer,
+        "__init__",
+        lambda self, **kwargs: pytest.fail("must not construct Observer"),
+    )
+
+    identity = observer().scientific_identity()
+
+    assert identity[:3] == (-32.443342, -71.230289, 52.0)
 
 
 def test_explicit_observer_coordinates_are_normalized():

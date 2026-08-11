@@ -27,7 +27,7 @@ def _request(tmp_path, *, all_products=False):
         observer=ChartObserverRequest(
             lat_deg=-33.0,
             lon_deg=-71.0,
-            time="2026-08-10T03:00:00",
+            time="2026-08-10T03:00:00Z",
         ),
         subject=ChartSubjectRequest(target="centaurus-a"),
         product=ChartProductOptions(
@@ -153,6 +153,89 @@ def test_generation_closes_observer_when_build_fails(monkeypatch, tmp_path):
     with pytest.raises(RuntimeError, match="catalogue failure"):
         generate_chart_request(request)
     assert closed == [True]
+
+
+def test_generation_reuses_a_compatible_supplied_sphere(
+    monkeypatch, tmp_path
+):
+    request = _request(tmp_path)
+    observer = SimpleNamespace(
+        lat_deg=-33.0,
+        lon_deg=-71.0,
+        elevation_m=0.0,
+        utc_datetime=request.observer.scientific_identity()[-1],
+    )
+    sky = SimpleNamespace(
+        observer=observer,
+        load_profile=CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    )
+    resolved = object()
+    prepared = object()
+    generation = ChartRequestGeneration(exports=())
+    events = []
+
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.build_maximal_sphere",
+        lambda *args, **kwargs: pytest.fail("must reuse supplied sphere"),
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.resolve_chart_request",
+        lambda actual, profile: events.append((actual, profile)) or resolved,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.prepare_chart_request",
+        lambda actual, value: events.append((actual, value)) or prepared,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.export_prepared_chart",
+        lambda actual, value: events.append((actual, value)) or generation,
+    )
+
+    assert generate_chart_request(request, sky=sky) is generation
+    assert events == [
+        (request, CANONICAL_MAXIMAL_SPHERE_PROFILE),
+        (sky, resolved),
+        (sky, prepared),
+    ]
+
+
+def test_supplied_sphere_must_match_observer_and_profile(tmp_path):
+    request = _request(tmp_path)
+    observer = SimpleNamespace(
+        lat_deg=-34.0,
+        lon_deg=-71.0,
+        elevation_m=0.0,
+        utc_datetime=request.observer.scientific_identity()[-1],
+    )
+    sky = SimpleNamespace(
+        observer=observer,
+        load_profile=CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    )
+
+    with pytest.raises(ValueError, match="observer does not match"):
+        generate_chart_request(request, sky=sky)
+
+    observer.lat_deg = -33.0
+    sky.load_profile = None
+    with pytest.raises(ValueError, match="does not declare a load profile"):
+        generate_chart_request(request, sky=sky)
+
+
+def test_explicit_profile_must_match_supplied_sphere(tmp_path):
+    request = _request(tmp_path)
+    observer = SimpleNamespace(
+        lat_deg=-33.0,
+        lon_deg=-71.0,
+        elevation_m=0.0,
+        utc_datetime=request.observer.scientific_identity()[-1],
+    )
+    sky = SimpleNamespace(
+        observer=observer,
+        load_profile=CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    )
+
+    with pytest.raises(ValueError, match="load profile does not match"):
+        generate_chart_request(request, sky=sky, profile=object())
 
 
 def test_generation_entry_points_reject_untyped_inputs():

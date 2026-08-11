@@ -107,3 +107,10 @@ closes its observer even after failure. `export_prepared_chart()` exposes the
 same final composition/export boundary for a caller that already owns a
 compatible prepared sphere and chart request. Named targets without a
 drawable packaged catalogue component are rejected before construction.
+
+Milestone 46C.8A allows that same facade to receive a compatible prebuilt
+maximal sphere. `ChartObserverRequest` normalizes its scientific location and
+UTC instant without constructing an observer or loading an ephemeris; the
+facade compares that identity and the sphere's declared load profile before
+resolution. A supplied sphere remains caller-owned and is never closed or
+rebuilt. Omitting it retains the standalone owned-sphere behavior.

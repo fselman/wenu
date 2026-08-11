@@ -177,6 +177,14 @@ prepared-request export entry point preserves an advanced sphere-reuse path.
 - preserve documented CLI behavior, catalogue provenance, scientific
   geometry, and approved atlas-print output.
 
+**Status:** Implemented through Milestone 46C.8A for the reusable request
+execution boundary. `generate_chart_request()` now accepts a compatible
+caller-owned maximal sphere, verifies its normalized observer/instant and
+declared load profile without constructing another observer, and never closes
+or rebuilds the supplied sphere. Canonical example declarations and their
+request-time grid and product-specific composition parity remain in this
+milestone.
+
 ## Milestone 46C.9 — Validate all chart families from one maximal sphere
 
 - build one canonical sphere for the shared La Ligua observer and instant;

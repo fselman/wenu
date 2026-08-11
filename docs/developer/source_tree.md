@@ -63,6 +63,9 @@ It owns observer/maximal-sphere lifetime for one-call generation and delegates
 all composition, rendering, furniture, and saving to the existing canonical
 APIs. Its prepared-request entry point permits later sphere reuse without a
 parallel export pipeline.
+The generation facade also accepts a compatible caller-owned maximal sphere;
+request observer identity and the declared load profile are checked before
+resolution, and ownership remains with the caller.
 
 ## Responsibility mapping
 

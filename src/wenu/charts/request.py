@@ -133,6 +133,24 @@ class ChartObserverRequest:
             "timezone_name": self.timezone_name,
         }
 
+    def scientific_identity(self):
+        """Return the normalized location and UTC instant of this request."""
+        from wenu.observer import Observer
+
+        return Observer.resolve_scientific_identity(
+            **self.observer_kwargs()
+        )
+
+    def matches(self, observer):
+        """Return whether an existing observer realizes this request."""
+        latitude, longitude, elevation, instant = self.scientific_identity()
+        return (
+            getattr(observer, "lat_deg", None) == latitude
+            and getattr(observer, "lon_deg", None) == longitude
+            and getattr(observer, "elevation_m", None) == elevation
+            and getattr(observer, "utc_datetime", None) == instant
+        )
+
 
 @dataclass(frozen=True)
 class ChartSubjectRequest:

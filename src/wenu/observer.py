@@ -130,6 +130,30 @@ class Observer:
         """Close the loaded ephemeris resource, if it is still open."""
         self._ephemeris_finalizer()
 
+    @classmethod
+    def resolve_scientific_identity(
+        cls,
+        *,
+        location=None,
+        time="now",
+        lat_deg=None,
+        lon_deg=None,
+        elevation_m=None,
+        timezone_name=None,
+    ):
+        """Normalize observer inputs without loading an ephemeris."""
+        latitude, longitude, elevation, timezone_name, _ = (
+            cls._resolve_location(
+                location=location,
+                lat_deg=lat_deg,
+                lon_deg=lon_deg,
+                elevation_m=elevation_m,
+                timezone_name=timezone_name,
+            )
+        )
+        instant = cls._resolve_time(time, timezone_name=timezone_name)
+        return (latitude, longitude, elevation, instant)
+
     def __enter__(self) -> Observer:
         return self
 

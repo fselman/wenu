@@ -108,11 +108,38 @@ def export_prepared_chart(sky, prepared):
 def generate_chart_request(
     request,
     *,
-    profile=CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    sky=None,
+    profile=None,
 ):
-    """Build, resolve, render, save, and close one ordinary chart request."""
+    """Resolve and export a request using an owned or supplied sphere."""
     if not isinstance(request, ChartRequest):
         raise TypeError("request must be a ChartRequest.")
+    if sky is not None:
+        observer = getattr(sky, "observer", None)
+        if observer is None:
+            raise TypeError("sky must provide its scientific observer.")
+        if not request.observer.matches(observer):
+            raise ValueError(
+                "The supplied sphere observer does not match the chart "
+                "request."
+            )
+        available_profile = getattr(sky, "load_profile", None)
+        if available_profile is None:
+            raise ValueError(
+                "The supplied sphere does not declare a load profile."
+            )
+        if profile is not None and profile != available_profile:
+            raise ValueError(
+                "The supplied sphere load profile does not match profile."
+            )
+        profile = available_profile
+        resolved = resolve_chart_request(request, profile)
+        prepared = prepare_chart_request(sky, resolved)
+        return export_prepared_chart(sky, prepared)
+
+    profile = (
+        CANONICAL_MAXIMAL_SPHERE_PROFILE if profile is None else profile
+    )
     observer = Observer(**request.observer.observer_kwargs())
     try:
         sky = build_maximal_sphere(observer, profile=profile)

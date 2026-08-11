@@ -385,6 +385,15 @@ observer. Advanced callers that already have a compatible sphere may call
 preparation; this avoids rebuilding the sphere while retaining the same
 canonical composition and single-export path.
 
+`generate_chart_request(request, sky=existing_sphere)` provides the simpler
+reuse adapter needed by canonical examples and batch callers. The sphere must
+declare a load profile and its observer's normalized latitude, longitude,
+elevation, and UTC instant must match `request.observer`. The facade resolves,
+prepares, composes, and exports against that sphere without rebuilding or
+closing it. `ChartObserverRequest.scientific_identity()` performs this check
+without loading an ephemeris. When `sky` is omitted, generation continues to
+own and close its observer and sphere resources.
+
 ```python
 result = generate_chart_request(
     ChartRequest(
