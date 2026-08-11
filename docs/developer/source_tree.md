@@ -51,6 +51,8 @@ It also resolves explicit and family framing defaults while marking arbitrary
 constellation framing as a downstream geometry operation.
 `charts/regional.py` performs that geometry-derived framing from loaded
 constellation endpoints; the request resolver does not inspect sky geometry.
+`charts/spatial_selection.py` owns vectorized field-footprint selection over
+cached catalogue centers; it returns immutable content and does not render.
 
 ## Responsibility mapping
 

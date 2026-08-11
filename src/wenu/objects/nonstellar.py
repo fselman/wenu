@@ -11,10 +11,13 @@ import numpy as np
 from astropy.coordinates import SkyCoord, concatenate
 from astropy.table import Table
 
-from wenu.geometry.spherical import SphericalCurves
+from wenu.geometry.spherical import SphericalCurves, SphericalPoints
 from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.resources import nonstellar_catalog_path
-from wenu.sky.observed_cache import observed_polygon_arrays
+from wenu.sky.observed_cache import (
+    catalogue_point_altaz,
+    observed_polygon_arrays,
+)
 
 
 class NonStellar(AstronomicalObject):
@@ -487,4 +490,44 @@ class NonStellar(AstronomicalObject):
                 table,
                 minimum_size_arcmin=minimum_size_arcmin,
             ),
+        )
+
+    def spherical_centers(
+        self,
+        observer,
+        *,
+        selected=None,
+        magnitude_limit=None,
+    ) -> SphericalPoints:
+        """Return cached AltAz catalogue centers for spatial selection."""
+        if self.catalog is None:
+            raise RuntimeError(
+                "The catalogue has not been loaded. Call load() first."
+            )
+        resolved = self.observer if observer is None else observer
+        if resolved is None or not hasattr(resolved, "altaz_frame"):
+            raise ValueError(
+                "An observer with an altaz_frame is required."
+            )
+        table = self._geometry_table(
+            selected,
+            magnitude_limit=magnitude_limit,
+        )
+        identifiers = np.asarray(table["identifier"], dtype=object)
+        if len(table) == 0:
+            longitude = latitude = np.asarray([], dtype=float)
+        else:
+            longitude, latitude = catalogue_point_altaz(
+                self._observed_point_cache,
+                resolved,
+                source_table=self.source_catalog,
+                selected_table=table,
+                source_key=(self.catalog_name, self._source_revision),
+            )
+        return SphericalPoints(
+            lon_deg=longitude,
+            lat_deg=latitude,
+            ids=identifiers,
+            names=identifiers,
+            metadata={"coordinate_system": "altaz"},
         )

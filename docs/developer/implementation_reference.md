@@ -358,6 +358,12 @@ maximum great-circle separation, `framing_padding` (default 1.15), and
 `minimum_angular_radius_deg` (default 5). Supplying radius and aspect ratio
 continues to provide exact publication control.
 
+`select_spatial_chart_content(sky, chart, resolved_request)` obtains cached
+AltAz centers for every registered deep-sky catalogue, projects them through
+the chart, and returns a new request containing field objects plus explicit
+inclusions and target components. Extended-object layers expose
+`spherical_centers()` so selection does not sample their outlines.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

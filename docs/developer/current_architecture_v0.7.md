@@ -80,3 +80,9 @@ Milestone 46C.7F completes that operation in the existing
 derives a spherical center and maximum great-circle extent from all unique
 loaded figure endpoints, then applies configurable padding and a minimum
 field. Explicit-radius calls retain their previous result.
+
+Milestone 46C.7G adds render-local spatial catalogue selection after a chart
+field exists. Catalogue centers reuse the observer/time point cache, are
+projected through the selected chart, and are tested against its viewport and
+circular field stop where present. Visible identifiers are unioned with
+explicit selections and the already retained central target.

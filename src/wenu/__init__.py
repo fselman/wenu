@@ -90,6 +90,10 @@ from .charts.request_resolver import (
     SUPPORTED_TARGET_FAMILIES,
     resolve_chart_request,
 )
+from .charts.spatial_selection import (
+    FIELD_CATALOGUE_LAYERS,
+    select_spatial_chart_content,
+)
 from .charts.chart_arguments import (
     ChartContentOptions,
     ChartLegendSelection,
@@ -284,6 +288,8 @@ __all__ = [
     "ResolvedChartFrame",
     "SUPPORTED_TARGET_FAMILIES",
     "resolve_chart_request",
+    "FIELD_CATALOGUE_LAYERS",
+    "select_spatial_chart_content",
     "ChartContentOptions",
     "ChartLegendSelection",
     "ChartStyleOverrides",
