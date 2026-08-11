@@ -133,10 +133,15 @@ def built_sky(path, canonical_builds):
 def test_canonical_examples_declare_four_semantic_grids(path):
     source = path.read_text(encoding="utf-8")
 
-    assert "sky.add_altaz_grid(" in source
-    assert "sky.add_equatorial_grid(" in source
-    assert "sky.add_ecliptic_grid(" in source
-    assert "sky.add_galactic_grid(" in source
+    if path.name == "binocular_object.py":
+        assert "ChartRequest(" in source
+        assert "build_chart_request(" in source
+        assert "sky.add_" not in source
+    else:
+        assert "sky.add_altaz_grid(" in source
+        assert "sky.add_equatorial_grid(" in source
+        assert "sky.add_ecliptic_grid(" in source
+        assert "sky.add_galactic_grid(" in source
 
 
 @pytest.mark.integration

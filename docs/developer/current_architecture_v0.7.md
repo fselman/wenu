@@ -146,3 +146,14 @@ ownership, exposes the prepared chart, supports deterministic context-manager
 cleanup, closes an owned observer at most once, and never closes a supplied
 sphere. `generate_chart_request()` now delegates to this same preparation
 boundary before the established single export.
+
+Milestone 46C.8F migrates the canonical binocular example to that shared
+request scaffold. The script declares its observer, packaged target, field,
+content, products, detail, style overrides, furniture, and title; the common
+facades own maximal content, target/component resolution, chart preparation,
+composition, rendering, and single export. `TARGETS`, manual catalogue and
+grid registration, Matplotlib orchestration, and repeated saving are removed.
+Its compatibility `build_chart()` uses `build_chart_request()` and accepts a
+caller-owned sphere. Any packaged drawable target is accepted without a script
+change, while Centaurus A and Omega Centauri retain their approved fields and
+publication identities.

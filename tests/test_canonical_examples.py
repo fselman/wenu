@@ -112,13 +112,21 @@ def test_shared_content_legend_and_credit_controls_are_available(path):
 def test_examples_use_public_composition_without_rendering_internals(path):
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
 
-    for required in (
-        "add_chart_arguments",
-        "chart_product_options",
-        "compose_chart",
-        "export",
-    ):
+    required_calls = (
+        ("add_chart_arguments", "generate_chart_request")
+        if path.name == "binocular_object.py"
+        else (
+            "add_chart_arguments",
+            "chart_product_options",
+            "compose_chart",
+            "export",
+        )
+    )
+    for required in required_calls:
         assert calls_named(tree, required)
+    if path.name == "binocular_object.py":
+        assert calls_named(tree, "compose_chart") == ()
+        assert calls_named(tree, "export") == ()
     for prohibited in (
         "savefig",
         "set_clip_boundary",

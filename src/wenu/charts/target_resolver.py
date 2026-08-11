@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from importlib.resources import files
 import json
+import re
 
 from .request import ChartSubjectRequest
 
@@ -28,6 +29,14 @@ class TargetComponent:
     family: str
     identifier: str
 
+    @property
+    def display_identifier(self):
+        """Return a compact catalogue identifier in publication form."""
+        match = re.fullmatch(r"NGC\s*(\d+)", self.identifier)
+        if match:
+            return f"NGC {match.group(1)}"
+        return self.identifier
+
 
 @dataclass(frozen=True)
 class ResolvedTarget:
@@ -44,6 +53,25 @@ class ResolvedTarget:
     @property
     def required_families(self):
         return frozenset(component.family for component in self.components)
+
+    @property
+    def primary_identifier(self):
+        """Return the first drawable catalogue identity, when available."""
+        if not self.components:
+            return None
+        return self.components[0].display_identifier
+
+    @property
+    def coordinate(self):
+        """Return the resolved center as an ICRS coordinate."""
+        from astropy import units as u
+        from astropy.coordinates import SkyCoord
+
+        return SkyCoord(
+            ra=self.ra_deg * u.deg,
+            dec=self.dec_deg * u.deg,
+            frame="icrs",
+        )
 
 
 def _alias_key(value):

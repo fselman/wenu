@@ -52,6 +52,22 @@ def test_explicit_coordinate_target_needs_no_packaged_component():
     assert target.provenance == "user-supplied ICRS coordinate"
 
 
+def test_resolved_target_exposes_publication_identity_and_icrs_center():
+    target = resolve_target(ChartSubjectRequest(target="Centaurus A"))
+
+    assert target.primary_identifier == "NGC 5128"
+    assert target.coordinate.icrs.ra.deg == pytest.approx(target.ra_deg)
+    assert target.coordinate.icrs.dec.deg == pytest.approx(target.dec_deg)
+
+
+def test_target_without_components_has_no_primary_identifier():
+    target = resolve_target(ChartSubjectRequest(
+        ra_deg=10.0, dec_deg=-20.0
+    ))
+
+    assert target.primary_identifier is None
+
+
 def test_unknown_target_is_diagnostic_instead_of_empty_chart():
     with pytest.raises(UnknownTargetError, match="Unknown packaged target"):
         resolve_target(ChartSubjectRequest(target="not a real target"))

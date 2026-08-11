@@ -1,8 +1,9 @@
 # Binocular charts
 
 `examples/binocular_object.py` centers a north-up circular binocular field on
-a selected catalogue object. The documented targets are Centaurus A
-(`NGC 5128`) and Omega Centauri (`NGC 5139`).
+a selected packaged catalogue object. Centaurus A (`NGC 5128`) and Omega
+Centauri (`NGC 5139`) are the documented regression targets, but `--target`
+accepts any drawable name or alias in Wenu's packaged resolver, such as `M57`.
 
 ```bash
 python examples/binocular_object.py \
@@ -29,4 +30,5 @@ maximum bounds the brightest symbols. The magnitude legend uses exactly the
 same sizing law and is placed outside the circular aperture.
 
 The chart owns its aperture, clipping, rim, and transparent exterior. The
-example does not create Matplotlib circles or clip artists itself.
+example is a pure `ChartRequest`: it does not load catalogues, construct grids,
+create Matplotlib figures, clip artists, or implement export itself.

@@ -152,6 +152,9 @@ parallel implementations.
 - `rendering` owns graphical backend behavior.
 - examples request charts and may supply documented label overrides, but do
   not implement clipping, catalogue joins, legends, or repeated saving.
+- the canonical binocular example is the first fully migrated pure request;
+  its source and installed resource are byte-identical and contain no private
+  target registry, catalogue construction, renderer, or export loop.
 
 See `target_architecture_v0.7.md` for the implemented architecture,
 `wenu_migration_0.6_to_0.7.md` for the completed roadmap,

@@ -166,8 +166,12 @@ color only inside the clipping
 boundary. Their default raster export leaves the surrounding figure and axes
 area transparent while retaining titles and footer furniture.
 The canonical `binocular_object.py` example centers the same binocular chart
-family on either Centaurus A (NGC 5128) or Omega Centauri (NGC 5139) through
-one target-selection interface and accepts an explicit field diameter.
+family on any drawable target in the packaged resolver and accepts an explicit
+field diameter. Centaurus A (NGC 5128) and Omega Centauri (NGC 5139) remain
+the documented regression targets. The example declares a `ChartRequest` and
+delegates construction to `build_chart_request()` or complete generation to
+`generate_chart_request()`; it has no private target dictionary, catalogue
+loading, renderer, or export loop.
 The binocular stellar-magnitude legend defaults outside the rectangular axes
 at lower right so its frame remains clear of the circular aperture.
 Its stellar presentation opts into `StellarMagnitudeSizing` with the resolved
@@ -342,6 +346,10 @@ values. The initial packaged cross-identifications cover the canonical
 Centaurus A and Omega Centauri fields plus M13, M16, M17, M57, M7, and the
 Veil Nebula usage-audit targets. Unknown and ambiguous aliases are errors,
 not empty successful charts.
+`ResolvedTarget.coordinate` provides its authoritative center as an ICRS
+`SkyCoord`; `primary_identifier` exposes the first drawable component in
+publication form. These preserve compatibility builders and titles without
+duplicating coordinates or catalogue spelling in example scripts.
 
 `resolve_constellation_subject(ChartSubjectRequest(...))` accepts either an
 ordered IAU abbreviation set or a packaged teaching-group alias. Its

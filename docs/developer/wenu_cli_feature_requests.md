@@ -252,9 +252,9 @@ stellar sizing is set programmatically.
 
 ### Problem
 
-`binocular_object.py --target` currently accepts only `centaurus-a` and
-`omega-centauri`. Generating M13 required a Python wrapper that inserted a new
-entry into `TARGETS`.
+`binocular_object.py --target` now accepts every drawable name and alias in the
+packaged offline resolver; the former two-entry `TARGETS` registry has been
+removed. Explicit coordinate fallback remains pending in the CLI adapter.
 
 ### Proposed interface
 
