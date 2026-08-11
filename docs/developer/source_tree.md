@@ -44,6 +44,9 @@ it contains no catalogue resolution, projection, rendering, or export work.
 offline teaching-group resolution over `data/constellation_groups.json`.
 It is the sole translation boundary for Serpens line, boundary, and label
 identities.
+`charts/request_resolver.py` combines those resolved subjects with immutable
+content selection and validates request ceilings against the selected
+maximal-sphere profile. It performs no chart construction or rendering.
 
 ## Responsibility mapping
 

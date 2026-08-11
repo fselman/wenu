@@ -339,6 +339,14 @@ Packaged groups also carry their provenance, legacy canonical framing
 defaults, and curated content identifiers until spatial field selection
 replaces the latter in a later 46C.7 step.
 
+`resolve_chart_request(request, profile)` combines those subject results with
+the request's explicit `SkyContentSelection`. Target components are always
+unioned into the appropriate catalogue family so a central target is not
+lost to general thresholds. It calls the load profile's established
+`require()` contract for requested stellar depth, galaxy depth, and outline
+sampling, returning a new immutable `ResolvedChartRequest` without modifying
+the input request or constructing a chart.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

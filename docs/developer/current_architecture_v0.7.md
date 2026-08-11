@@ -62,3 +62,10 @@ boundary, and label identifiers required internally. In particular, a public
 `SerCap`/`SerCau` labels while retaining one official boundary identity.
 Teaching-group framing and curated legacy-example content are packaged data,
 not example-script globals.
+
+Milestone 46C.7D adds one request-resolution boundary before construction.
+It resolves targets or constellation subjects, unions the central target and
+packaged group content into an immutable render-local selection, and rejects
+detail ceilings that exceed the chosen maximal-sphere load profile. The
+original request remains unchanged; no chart, renderer, or export work occurs
+in this phase.

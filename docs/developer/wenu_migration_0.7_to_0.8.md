@@ -152,11 +152,10 @@ constellation boundaries, and quality-keyed extended-object outlines.
   and single export rather than implementing a convenience pipeline;
 - retain all established lower-level APIs for advanced callers.
 
-**Status:** Implemented through Milestone 46C.7C for the immutable request
-contract, offline target cross-identification, and IAU constellation/group
-resolution with internal Serpens identity normalization. Compatible
-load-profile validation, automatic framing/content, and generation remain in
-this milestone.
+**Status:** Implemented through Milestone 46C.7D for the immutable request
+contract, offline target and constellation/group resolution, central-target
+retention, and compatible load-profile ceiling validation. Automatic spatial
+content, automatic framing, and generation remain in this milestone.
 
 ## Milestone 46C.8 — Make canonical examples pure chart requests
 

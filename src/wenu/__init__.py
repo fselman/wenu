@@ -84,6 +84,11 @@ from .charts.constellation_resolver import (
     normalize_constellations,
     resolve_constellation_subject,
 )
+from .charts.request_resolver import (
+    ResolvedChartRequest,
+    SUPPORTED_TARGET_FAMILIES,
+    resolve_chart_request,
+)
 from .charts.chart_arguments import (
     ChartContentOptions,
     ChartLegendSelection,
@@ -274,6 +279,9 @@ __all__ = [
     "load_constellation_groups",
     "normalize_constellations",
     "resolve_constellation_subject",
+    "ResolvedChartRequest",
+    "SUPPORTED_TARGET_FAMILIES",
+    "resolve_chart_request",
     "ChartContentOptions",
     "ChartLegendSelection",
     "ChartStyleOverrides",
