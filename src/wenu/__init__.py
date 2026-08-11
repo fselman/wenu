@@ -102,7 +102,9 @@ from .charts.request_chart import (
     prepare_chart_request,
 )
 from .charts.request_generation import (
+    ChartRequestBuild,
     ChartRequestGeneration,
+    build_chart_request,
     export_prepared_chart,
     generate_chart_request,
 )
@@ -312,6 +314,8 @@ __all__ = [
     "PreparedChartRequest",
     "prepare_chart_request",
     "ChartRequestGeneration",
+    "ChartRequestBuild",
+    "build_chart_request",
     "export_prepared_chart",
     "generate_chart_request",
     "configure_chart_request_grids",

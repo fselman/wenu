@@ -177,7 +177,7 @@ prepared-request export entry point preserves an advanced sphere-reuse path.
 - preserve documented CLI behavior, catalogue provenance, scientific
   geometry, and approved atlas-print output.
 
-**Status:** Implemented through Milestone 46C.8D. The request facade accepts a
+**Status:** Implemented through Milestone 46C.8E. The request facade accepts a
 compatible caller-owned maximal sphere, verifies its normalized
 observer/instant and declared load profile, and never closes or rebuilds it.
 Family-specific coordinate-grid density now has one request-time configuration
@@ -188,7 +188,10 @@ own detail policy and post-mode style overrides without mixing presentation
 with chart geometry. Generic chart-center, active-grid, observer, date, and
 time metadata may also be selected before chart construction and is realized
 through the common furniture boundary afterward. The binocular example is the
-first pending migration to these shared request facilities.
+first pending migration to these shared request facilities. A common
+`build_chart_request()` boundary now prepares any family without export and
+records whether it owns the observer, allowing every canonical `build_chart()`
+compatibility wrapper to reuse identical construction and cleanup semantics.
 
 ## Milestone 46C.9 — Validate all chart families from one maximal sphere
 

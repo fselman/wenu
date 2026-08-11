@@ -137,3 +137,12 @@ The request exporter realizes those selections only after chart construction,
 then supplies immutable context lines to the established legend furniture.
 The same contract applies to all canonical chart families and contains no
 target, framing, projection, or example-specific policy.
+
+Milestone 46C.8E exposes the request facade's existing construction phase as
+`build_chart_request()`. It resolves and prepares any chart family without
+rendering or exporting, using either an owned canonical maximal sphere or a
+compatible caller-owned sphere. Its `ChartRequestBuild` records resource
+ownership, exposes the prepared chart, supports deterministic context-manager
+cleanup, closes an owned observer at most once, and never closes a supplied
+sphere. `generate_chart_request()` now delegates to this same preparation
+boundary before the established single export.

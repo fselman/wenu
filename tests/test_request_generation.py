@@ -21,7 +21,9 @@ from wenu import (
 from wenu.charts.export_workflow import ChartExportResult
 from wenu.charts.request_chart import PreparedChartRequest
 from wenu.charts.request_generation import (
+    ChartRequestBuild,
     ChartRequestGeneration,
+    build_chart_request,
     export_prepared_chart,
     generate_chart_request,
 )
@@ -283,6 +285,82 @@ def test_generation_owns_and_closes_its_observer(monkeypatch, tmp_path):
     assert events == [
         "build", "resolve", "grids", "prepare", "export", "close"
     ]
+
+
+def test_build_result_exposes_prepared_chart_and_closes_owned_observer_once():
+    closed = []
+    chart = object()
+    sky = SimpleNamespace(
+        observer=SimpleNamespace(close=lambda: closed.append(True))
+    )
+    build = ChartRequestBuild(
+        sky=sky,
+        prepared=SimpleNamespace(chart=chart),
+        owns_observer=True,
+    )
+
+    assert build.chart is chart
+    build.close()
+    build.close()
+    assert closed == [True]
+
+
+def test_build_result_never_closes_a_supplied_sphere():
+    closed = []
+    build = ChartRequestBuild(
+        sky=SimpleNamespace(
+            observer=SimpleNamespace(close=lambda: closed.append(True))
+        ),
+        prepared=SimpleNamespace(chart=object()),
+        owns_observer=False,
+    )
+
+    with build:
+        pass
+    assert closed == []
+
+
+def test_public_build_boundary_prepares_without_exporting(
+    monkeypatch, tmp_path
+):
+    request = _request(tmp_path)
+    observer = SimpleNamespace(close=lambda: None)
+    sky = SimpleNamespace(observer=observer)
+    resolved = SimpleNamespace(request=request)
+    prepared = SimpleNamespace(chart=object())
+    events = []
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.Observer",
+        lambda **kwargs: observer,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.build_maximal_sphere",
+        lambda actual, profile: events.append("build") or sky,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.resolve_chart_request",
+        lambda actual, profile: events.append("resolve") or resolved,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.configure_chart_request_grids",
+        lambda actual, value: events.append("grids"),
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.prepare_chart_request",
+        lambda actual, value: events.append("prepare") or prepared,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.export_prepared_chart",
+        lambda *args: pytest.fail("build must not export"),
+    )
+
+    build = build_chart_request(request)
+
+    assert build.sky is sky
+    assert build.prepared is prepared
+    assert build.owns_observer is True
+    assert events == ["build", "resolve", "grids", "prepare"]
+    build.close()
 
 
 def test_generation_closes_observer_when_build_fails(monkeypatch, tmp_path):

@@ -63,6 +63,10 @@ It owns observer/maximal-sphere lifetime for one-call generation and delegates
 all composition, rendering, furniture, and saving to the existing canonical
 APIs. Its prepared-request entry point permits later sphere reuse without a
 parallel export pipeline.
+The same module exposes `build_chart_request()` and `ChartRequestBuild` as the
+family-neutral non-exporting preparation facade used by compatibility builders
+and by `generate_chart_request()` itself. The result owns cleanup explicitly;
+it does not create another construction or rendering path.
 The generation facade also accepts a compatible caller-owned maximal sphere;
 request observer identity and the declared load profile are checked before
 resolution, and ownership remains with the caller.

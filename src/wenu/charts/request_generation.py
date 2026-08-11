@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 
 from wenu.observer import Observer
 from wenu.rendering.matplotlib import MatplotlibRenderer
@@ -30,6 +30,33 @@ class ChartRequestGeneration:
     def outputs(self):
         """Return the deterministic paths written by this request."""
         return tuple(result.output for result in self.exports)
+
+
+@dataclass
+class ChartRequestBuild:
+    """Prepared request plus explicit ownership of its reusable sphere."""
+
+    sky: object
+    prepared: PreparedChartRequest
+    owns_observer: bool = False
+    _closed: bool = field(default=False, init=False, repr=False)
+
+    @property
+    def chart(self):
+        return self.prepared.chart
+
+    def close(self):
+        """Close an owned observer once; leave supplied spheres untouched."""
+        if self.owns_observer and not self._closed:
+            self.sky.observer.close()
+        self._closed = True
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        del exc_type, exc_value, traceback
+        self.close()
 
 
 def _request_stem(prepared):
@@ -121,13 +148,19 @@ def export_prepared_chart(sky, prepared):
     return ChartRequestGeneration(exports=tuple(exports))
 
 
-def generate_chart_request(
-    request,
-    *,
-    sky=None,
-    profile=None,
-):
-    """Resolve and export a request using an owned or supplied sphere."""
+def _prepare_with_sphere(request, sky, profile, *, owns_observer):
+    resolved = resolve_chart_request(request, profile)
+    configure_chart_request_grids(sky, resolved.request)
+    prepared = prepare_chart_request(sky, resolved)
+    return ChartRequestBuild(
+        sky=sky,
+        prepared=prepared,
+        owns_observer=owns_observer,
+    )
+
+
+def build_chart_request(request, *, sky=None, profile=None):
+    """Prepare any chart request using an owned or supplied maximal sphere."""
     if not isinstance(request, ChartRequest):
         raise TypeError("request must be a ChartRequest.")
     if sky is not None:
@@ -148,11 +181,9 @@ def generate_chart_request(
             raise ValueError(
                 "The supplied sphere load profile does not match profile."
             )
-        profile = available_profile
-        resolved = resolve_chart_request(request, profile)
-        configure_chart_request_grids(sky, resolved.request)
-        prepared = prepare_chart_request(sky, resolved)
-        return export_prepared_chart(sky, prepared)
+        return _prepare_with_sphere(
+            request, sky, available_profile, owns_observer=False
+        )
 
     profile = (
         CANONICAL_MAXIMAL_SPHERE_PROFILE if profile is None else profile
@@ -160,9 +191,23 @@ def generate_chart_request(
     observer = Observer(**request.observer.observer_kwargs())
     try:
         sky = build_maximal_sphere(observer, profile=profile)
-        resolved = resolve_chart_request(request, profile)
-        configure_chart_request_grids(sky, resolved.request)
-        prepared = prepare_chart_request(sky, resolved)
-        return export_prepared_chart(sky, prepared)
-    finally:
+        return _prepare_with_sphere(
+            request, sky, profile, owns_observer=True
+        )
+    except BaseException:
         observer.close()
+        raise
+
+
+def generate_chart_request(
+    request,
+    *,
+    sky=None,
+    profile=None,
+):
+    """Resolve and export a request using an owned or supplied sphere."""
+    build = build_chart_request(request, sky=sky, profile=profile)
+    try:
+        return export_prepared_chart(build.sky, build.prepared)
+    finally:
+        build.close()

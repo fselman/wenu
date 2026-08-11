@@ -388,6 +388,14 @@ nor composes, renders, or exports. A masked planisphere is an ordinary
 `FullSkyChart` whose optional outside mask uses the shared official-boundary
 masking operation; its chart-owned horizon limits automatic field objects.
 
+`build_chart_request(request, sky=None)` is the public non-exporting facade
+over observer/sphere acquisition, resolution, request-time grids, chart
+construction, and spatial selection. It returns `ChartRequestBuild`, which
+exposes `sky`, `prepared`, and `chart`. When it constructs the sphere it owns
+the observer and closes it once through `close()` or context-manager exit; a
+supplied compatible sphere remains caller-owned and is never closed. Failure
+during an owned build closes the observer before propagating the error.
+
 `generate_chart_request(request)` is the ordinary one-call facade. It owns
 the observer and canonical maximal sphere, resolves and prepares the request,
 and returns a `ChartRequestGeneration` containing the inspectable
@@ -396,6 +404,9 @@ observer. Advanced callers that already have a compatible sphere may call
 `export_prepared_chart(sky, prepared_request)` after resolution and
 preparation; this avoids rebuilding the sphere while retaining the same
 canonical composition and single-export path.
+Generation delegates its entire preparation phase to
+`build_chart_request()`, then exports the returned prepared request and closes
+only resources recorded as owned by that build result.
 For each selected output, that export boundary applies the request's matching
 `ChartProductCompositionOptions` before the common render-local detail
 overrides. Omitting a matching entry preserves the established style-derived
