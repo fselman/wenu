@@ -149,6 +149,24 @@ class ResolvedChartFurnitureOptions:
 
 
 @dataclass(frozen=True)
+class ChartContextOptions:
+    """Chart and observer metadata resolved after chart construction."""
+
+    center: bool = True
+    grid: bool = True
+    location: bool = False
+    date: bool = False
+    local_time: bool = False
+    labels: bool = False
+
+    def __post_init__(self):
+        for name in (
+            "center", "grid", "location", "date", "local_time", "labels"
+        ):
+            object.__setattr__(self, name, bool(getattr(self, name)))
+
+
+@dataclass(frozen=True)
 class ChartFurnitureOptions:
     """User-facing, backend-independent chart-furniture options."""
 
@@ -156,6 +174,7 @@ class ChartFurnitureOptions:
     poles: PoleAnnotations = PoleAnnotations()
     footer: FooterOptions = FooterOptions()
     legends: LegendOptions | ChartLegendPlan | None = None
+    context: ChartContextOptions | None = None
 
     def __post_init__(self):
         expected = (
@@ -172,6 +191,12 @@ class ChartFurnitureOptions:
         ):
             raise TypeError(
                 "legends must be LegendOptions, ChartLegendPlan, or None."
+            )
+        if self.context is not None and not isinstance(
+            self.context, ChartContextOptions
+        ):
+            raise TypeError(
+                "context must be a ChartContextOptions value or None."
             )
 
     def resolve(self, chart_type: str) -> ResolvedChartFurnitureOptions:

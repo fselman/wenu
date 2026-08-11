@@ -1,10 +1,13 @@
 """End-to-end ownership contracts for declarative chart generation."""
 
+from dataclasses import replace
 from types import SimpleNamespace
 
 import pytest
 
 from wenu import (
+    ChartContextOptions,
+    ChartFurnitureOptions,
     ChartObserverRequest,
     ChartProduct,
     ChartProductCompositionOptions,
@@ -184,6 +187,62 @@ def test_prepared_request_applies_exact_product_composition_options(
     assert [call["style_overrides"] for call in calls] == [
         atlas_style, None, None, cartoon_style
     ]
+
+
+def test_prepared_request_resolves_generic_context_after_chart_construction(
+    monkeypatch, tmp_path
+):
+    request = _request(tmp_path)
+    request = replace(
+        request,
+        furniture=ChartFurnitureOptions(
+            context=ChartContextOptions(
+                center=True,
+                grid=False,
+                location=False,
+                date=False,
+                local_time=False,
+            )
+        ),
+    )
+    resolved = resolve_chart_request(
+        request, CANONICAL_MAXIMAL_SPHERE_PROFILE
+    )
+    resolved_furniture = ChartFurnitureOptions()
+    captured = []
+
+    class Chart:
+        chart_context = object()
+
+        def export(self, sky, renderer, output, *, composition):
+            return ChartExportResult(
+                rendering=None, output=output, composition=composition,
+                layer_options={}, export_options=None,
+            )
+
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.resolve_request_furniture_context",
+        lambda furniture, chart, sky: resolved_furniture,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.compose_chart",
+        lambda chart, **kwargs: captured.append(kwargs) or SimpleNamespace(
+            mode=SimpleNamespace(width_inches=8.0, height_inches=6.0),
+            style=SimpleNamespace(configure_axes=lambda ax, title: None),
+        ),
+    )
+    monkeypatch.setattr(
+        "matplotlib.pyplot.subplots",
+        lambda **kwargs: (object(), object()),
+    )
+    monkeypatch.setattr("matplotlib.pyplot.close", lambda figure: None)
+
+    export_prepared_chart(
+        SimpleNamespace(observer=object()),
+        PreparedChartRequest(chart=Chart(), resolved=resolved),
+    )
+
+    assert captured[0]["furniture"] is resolved_furniture
 
 
 def test_generation_owns_and_closes_its_observer(monkeypatch, tmp_path):

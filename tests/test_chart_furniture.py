@@ -10,6 +10,7 @@ from types import SimpleNamespace
 import pytest
 
 from wenu import (
+    ChartContextOptions,
     ChartFurnitureOptions,
     FooterOptions,
     LegendOptions,
@@ -432,6 +433,22 @@ def test_context_lines_are_resolved_as_immutable_text():
     ).resolve("planisphere")
 
     assert resolved.context_lines == ("Location", "Date", "Time")
+
+
+def test_declarative_chart_context_options_are_typed_and_immutable():
+    context = ChartContextOptions(
+        center=True,
+        grid=False,
+        location=True,
+        date=True,
+        local_time=True,
+    )
+    furniture = ChartFurnitureOptions(context=context)
+
+    assert furniture.context is context
+    assert context.grid is False
+    with pytest.raises(TypeError, match="ChartContextOptions"):
+        ChartFurnitureOptions(context=object())
 
 
 def test_existing_plan_is_reused_with_family_switches():

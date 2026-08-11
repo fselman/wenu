@@ -327,6 +327,13 @@ omitted after field selection; it does not mutate loaded catalogue content.
 resolved only at composition time. They cannot carry framing, projection,
 masking, or other chart geometry, and duplicate or unselected product entries
 are rejected when the request is constructed.
+`ChartFurnitureOptions.context` may carry `ChartContextOptions` selecting
+chart-center coordinates, the active coordinate-grid description, observer
+location, date, and local time. These are declarative booleans rather than
+precomputed strings. The request exporter resolves them after both the chart
+and sky exist, appends any caller-supplied context lines, and passes the result
+through the established immutable legend furniture. The contract is shared by
+all four chart families.
 
 `resolve_target(ChartSubjectRequest(...))` resolves packaged aliases without
 network access. Its immutable `ResolvedTarget` records canonical key, display
@@ -393,6 +400,9 @@ For each selected output, that export boundary applies the request's matching
 `ChartProductCompositionOptions` before the common render-local detail
 overrides. Omitting a matching entry preserves the established style-derived
 detail and mode defaults.
+It also realizes optional `ChartContextOptions` once per prepared request,
+before product composition, so every product receives identical scientific
+metadata without requiring example-side access to a constructed chart.
 
 `generate_chart_request(request, sky=existing_sphere)` provides the simpler
 reuse adapter needed by canonical examples and batch callers. The sphere must

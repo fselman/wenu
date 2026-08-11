@@ -27,6 +27,7 @@ from .sky.coordinate_grids import (
 from .charts.composition import ChartComposition, compose_chart
 from .charts.legend_plan import LegendOptions, ResolvedLegendOptions
 from .charts.furniture import (
+    ChartContextOptions,
     ChartFurnitureOptions,
     FooterOptions,
     PoleAnnotations,
@@ -254,6 +255,7 @@ __all__ = [
     "ResolvedDetail",
     "SkyContentSelection",
     "ChartContentExclusions",
+    "ChartContextOptions",
     "ResolvedMode",
     "compose_chart",
     "ChartRenderingResult",

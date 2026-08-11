@@ -129,3 +129,11 @@ select its detail policy and post-mode style overrides without changing the
 request's family, frame, projection, mask, or other chart geometry. The
 generation facade applies those options at the established composition
 boundary; products without an explicit entry retain their previous defaults.
+
+Milestone 46C.8D adds one family-neutral late context-furniture boundary.
+`ChartContextOptions` records chart-center, active-grid, observer-location,
+date, and local-time selections without requiring a constructed chart or sky.
+The request exporter realizes those selections only after chart construction,
+then supplies immutable context lines to the established legend furniture.
+The same contract applies to all canonical chart families and contains no
+target, framing, projection, or example-specific policy.

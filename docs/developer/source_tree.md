@@ -74,6 +74,9 @@ it does not modify maximal catalogue content.
 overrides for one exact selected product. It deliberately contains no chart
 geometry; `request_generation.py` consumes it only when calling the canonical
 composition boundary.
+`charts/request_furniture.py` realizes family-neutral declarative chart and
+observer context only after a request chart exists. It feeds the established
+legend furniture and contains no chart construction or example policy.
 
 ## Responsibility mapping
 

@@ -16,6 +16,7 @@ from .export_workflow import ChartExportResult
 from .request import ChartRequest
 from .request_chart import PreparedChartRequest, prepare_chart_request
 from .request_grids import configure_chart_request_grids
+from .request_furniture import resolve_request_furniture_context
 from .request_resolver import resolve_chart_request
 
 
@@ -76,6 +77,9 @@ def export_prepared_chart(sky, prepared):
         request.detail,
         content_selection=request.content,
     )
+    furniture = resolve_request_furniture_context(
+        request.furniture, chart, sky
+    )
     title = _request_title(prepared)
     exports = []
     for product, output in request.product.outputs(
@@ -97,7 +101,7 @@ def export_prepared_chart(sky, prepared):
                 if product_composition is None
                 else product_composition.style_overrides
             ),
-            furniture=request.furniture,
+            furniture=furniture,
         )
         figure, ax = plt.subplots(figsize=(
             composition.mode.width_inches,
