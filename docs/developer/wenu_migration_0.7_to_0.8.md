@@ -152,15 +152,14 @@ constellation boundaries, and quality-keyed extended-object outlines.
   and single export rather than implementing a convenience pipeline;
 - retain all established lower-level APIs for advanced callers.
 
-**Status:** Implemented through Milestone 46C.7I for the immutable request
-contract, offline target and constellation/group resolution, central-target
-retention, and compatible load-profile ceiling validation. Automatic spatial
-content selection and framing. Automatic spatial inclusion now covers every
-registered deep-sky catalogue while preserving explicit inclusions and the
-central target. Explicit exclusions are applied after spatial selection with
-conflict and central-target diagnostics. Resolved requests now construct all
-four established chart families and apply field content; composition, maximal
-sphere ownership, and single export remain in this milestone.
+**Status:** Implemented. Milestones 46C.7A–46C.7J cover the immutable request,
+offline target and constellation/group resolution, load-profile validation,
+automatic framing and spatial content, explicit exclusions, all four chart
+families, and the ordinary one-call generation facade. The facade owns and
+closes its observer and canonical maximal sphere, delegates composition and
+single export to the established pipeline, exposes results and output paths,
+and rejects named targets without drawable packaged components. A separate
+prepared-request export entry point preserves an advanced sphere-reuse path.
 
 ## Milestone 46C.8 — Make canonical examples pure chart requests
 

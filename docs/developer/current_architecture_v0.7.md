@@ -98,3 +98,12 @@ chart, then applies spatial content selection. `FullSkyChart` now owns the
 same official-boundary outside-mask operation already used by regional charts;
 its horizon also bounds spatial catalogue selection. No request facade
 subclass or private example pipeline is required.
+
+Milestone 46C.7J closes the ordinary declarative facade. Public
+`generate_chart_request()` owns one observer and canonical maximal sphere,
+resolves and prepares the request, composes each requested product through
+the established composition API, exports each product exactly once, and
+closes its observer even after failure. `export_prepared_chart()` exposes the
+same final composition/export boundary for a caller that already owns a
+compatible prepared sphere and chart request. Named targets without a
+drawable packaged catalogue component are rejected before construction.

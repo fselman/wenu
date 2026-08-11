@@ -165,6 +165,11 @@ def resolve_chart_request(request, profile):
     constellations = None
     if request.subject.target is not None or request.subject.ra_deg is not None:
         target = resolve_target(request.subject)
+        if request.subject.target is not None and not target.components:
+            raise ValueError(
+                f"Target {target.display_name!r} has no drawable catalogue "
+                "representation."
+            )
         unsupported = target.required_families - SUPPORTED_TARGET_FAMILIES
         if unsupported:
             names = ", ".join(sorted(unsupported))

@@ -99,6 +99,11 @@ from .charts.request_chart import (
     PreparedChartRequest,
     prepare_chart_request,
 )
+from .charts.request_generation import (
+    ChartRequestGeneration,
+    export_prepared_chart,
+    generate_chart_request,
+)
 from .charts.chart_arguments import (
     ChartContentOptions,
     ChartLegendSelection,
@@ -298,6 +303,9 @@ __all__ = [
     "select_spatial_chart_content",
     "PreparedChartRequest",
     "prepare_chart_request",
+    "ChartRequestGeneration",
+    "export_prepared_chart",
+    "generate_chart_request",
     "ChartContentOptions",
     "ChartLegendSelection",
     "ChartStyleOverrides",

@@ -4,6 +4,8 @@ from pathlib import Path
 
 import pytest
 
+from wenu.charts.target_resolver import ResolvedTarget
+
 from wenu import (
     CANONICAL_MAXIMAL_SPHERE_PROFILE,
     ChartContentExclusions,
@@ -49,6 +51,25 @@ def test_target_component_is_retained_independently_of_general_thresholds():
     assert resolved.request.content.planetary_nebulae == {
         "another nebula", "PN G063.1+13.9"
     }
+
+
+def test_named_target_without_a_drawable_component_is_rejected(monkeypatch):
+    monkeypatch.setattr(
+        "wenu.charts.request_resolver.resolve_target",
+        lambda subject: ResolvedTarget(
+            key="empty",
+            display_name="Empty target",
+            ra_deg=0.0,
+            dec_deg=0.0,
+            components=(),
+            provenance="test",
+        ),
+    )
+
+    with pytest.raises(ValueError, match="no drawable catalogue"):
+        resolve_chart_request(
+            request(), CANONICAL_MAXIMAL_SPHERE_PROFILE
+        )
 
 
 def test_constellation_resolution_populates_internal_identities_and_content():

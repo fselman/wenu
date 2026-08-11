@@ -376,6 +376,30 @@ nor composes, renders, or exports. A masked planisphere is an ordinary
 `FullSkyChart` whose optional outside mask uses the shared official-boundary
 masking operation; its chart-owned horizon limits automatic field objects.
 
+`generate_chart_request(request)` is the ordinary one-call facade. It owns
+the observer and canonical maximal sphere, resolves and prepares the request,
+and returns a `ChartRequestGeneration` containing the inspectable
+`ChartExportResult` values and their output paths. It always closes the owned
+observer. Advanced callers that already have a compatible sphere may call
+`export_prepared_chart(sky, prepared_request)` after resolution and
+preparation; this avoids rebuilding the sphere while retaining the same
+canonical composition and single-export path.
+
+```python
+result = generate_chart_request(
+    ChartRequest(
+        observer=ChartObserverRequest(
+            location="La Ligua",
+            time="2026-08-15 22:00",
+        ),
+        family="binocular",
+        subject=ChartSubjectRequest(target="Centaurus A"),
+        product=ChartProductOptions(output="output/centaurus-a.png"),
+    )
+)
+print(result.outputs)
+```
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

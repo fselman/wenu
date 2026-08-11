@@ -58,6 +58,11 @@ content, and does not render.
 `charts/request_chart.py` maps a resolved request onto the four established
 chart types and invokes that selector; composition and export remain in their
 existing modules.
+`charts/request_generation.py` is the ordinary facade over those boundaries.
+It owns observer/maximal-sphere lifetime for one-call generation and delegates
+all composition, rendering, furniture, and saving to the existing canonical
+APIs. Its prepared-request entry point permits later sphere reuse without a
+parallel export pipeline.
 
 ## Responsibility mapping
 
