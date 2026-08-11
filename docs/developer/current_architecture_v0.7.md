@@ -114,3 +114,11 @@ UTC instant without constructing an observer or loading an ephemeris; the
 facade compares that identity and the sphere's declared load profile before
 resolution. A supplied sphere remains caller-owned and is never closed or
 rebuilt. Omitting it retains the standalone owned-sphere behavior.
+
+Milestone 46C.8B moves canonical coordinate-grid density into one request-time
+configuration boundary. Only grids explicitly selected by detail or label
+options are registered. Before each request, previously registered semantic
+grids are removed and the selected planisphere, regional, circumpolar, or
+binocular configuration is installed in canonical drawing order. Astronomical
+catalogue layers are untouched, the maximal load profile remains grid-free,
+and repeated requests cannot accumulate duplicate grid layers.

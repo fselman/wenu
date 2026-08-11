@@ -66,6 +66,10 @@ parallel export pipeline.
 The generation facade also accepts a compatible caller-owned maximal sphere;
 request observer identity and the declared load profile are checked before
 resolution, and ownership remains with the caller.
+`charts/request_grids.py` owns family-specific request-time coordinate-grid
+density and replacement. It registers only explicitly selected semantic grids
+and removes prior grid layers so a reused sphere never accumulates duplicates;
+it does not modify maximal catalogue content.
 
 ## Responsibility mapping
 

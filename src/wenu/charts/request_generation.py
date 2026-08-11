@@ -15,6 +15,7 @@ from .composition import compose_chart
 from .export_workflow import ChartExportResult
 from .request import ChartRequest
 from .request_chart import PreparedChartRequest, prepare_chart_request
+from .request_grids import configure_chart_request_grids
 from .request_resolver import resolve_chart_request
 
 
@@ -134,6 +135,7 @@ def generate_chart_request(
             )
         profile = available_profile
         resolved = resolve_chart_request(request, profile)
+        configure_chart_request_grids(sky, resolved.request)
         prepared = prepare_chart_request(sky, resolved)
         return export_prepared_chart(sky, prepared)
 
@@ -144,6 +146,7 @@ def generate_chart_request(
     try:
         sky = build_maximal_sphere(observer, profile=profile)
         resolved = resolve_chart_request(request, profile)
+        configure_chart_request_grids(sky, resolved.request)
         prepared = prepare_chart_request(sky, resolved)
         return export_prepared_chart(sky, prepared)
     finally:

@@ -104,6 +104,10 @@ from .charts.request_generation import (
     export_prepared_chart,
     generate_chart_request,
 )
+from .charts.request_grids import (
+    configure_chart_request_grids,
+    requested_coordinate_grids,
+)
 from .charts.chart_arguments import (
     ChartContentOptions,
     ChartLegendSelection,
@@ -306,6 +310,8 @@ __all__ = [
     "ChartRequestGeneration",
     "export_prepared_chart",
     "generate_chart_request",
+    "configure_chart_request_grids",
+    "requested_coordinate_grids",
     "ChartContentOptions",
     "ChartLegendSelection",
     "ChartStyleOverrides",

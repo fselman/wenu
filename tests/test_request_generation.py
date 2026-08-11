@@ -105,7 +105,7 @@ def test_generation_owns_and_closes_its_observer(monkeypatch, tmp_path):
     events = []
     observer = SimpleNamespace(close=lambda: events.append("close"))
     sky = SimpleNamespace(observer=observer)
-    resolved = object()
+    resolved = SimpleNamespace(request=request)
     prepared = object()
     generation = ChartRequestGeneration(exports=())
 
@@ -126,12 +126,18 @@ def test_generation_owns_and_closes_its_observer(monkeypatch, tmp_path):
         lambda actual, value: events.append("prepare") or prepared,
     )
     monkeypatch.setattr(
+        "wenu.charts.request_generation.configure_chart_request_grids",
+        lambda actual, value: events.append("grids"),
+    )
+    monkeypatch.setattr(
         "wenu.charts.request_generation.export_prepared_chart",
         lambda actual, value: events.append("export") or generation,
     )
 
     assert generate_chart_request(request) is generation
-    assert events == ["build", "resolve", "prepare", "export", "close"]
+    assert events == [
+        "build", "resolve", "grids", "prepare", "export", "close"
+    ]
 
 
 def test_generation_closes_observer_when_build_fails(monkeypatch, tmp_path):
@@ -169,7 +175,7 @@ def test_generation_reuses_a_compatible_supplied_sphere(
         observer=observer,
         load_profile=CANONICAL_MAXIMAL_SPHERE_PROFILE,
     )
-    resolved = object()
+    resolved = SimpleNamespace(request=request)
     prepared = object()
     generation = ChartRequestGeneration(exports=())
     events = []
@@ -187,6 +193,10 @@ def test_generation_reuses_a_compatible_supplied_sphere(
         lambda actual, value: events.append((actual, value)) or prepared,
     )
     monkeypatch.setattr(
+        "wenu.charts.request_generation.configure_chart_request_grids",
+        lambda actual, value: events.append((actual, value)),
+    )
+    monkeypatch.setattr(
         "wenu.charts.request_generation.export_prepared_chart",
         lambda actual, value: events.append((actual, value)) or generation,
     )
@@ -194,6 +204,7 @@ def test_generation_reuses_a_compatible_supplied_sphere(
     assert generate_chart_request(request, sky=sky) is generation
     assert events == [
         (request, CANONICAL_MAXIMAL_SPHERE_PROFILE),
+        (sky, request),
         (sky, resolved),
         (sky, prepared),
     ]
