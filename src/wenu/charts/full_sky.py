@@ -33,6 +33,7 @@ class FullSkyChart:
     horizon_samples: int = 721
     horizon_color: str = "white"
     horizon_linewidth: float = 0.8
+    outside_mask_constellations: tuple[str, ...] | None = None
 
     def __post_init__(self):
         values = np.asarray(
@@ -68,6 +69,18 @@ class FullSkyChart:
             raise ValueError("horizon_samples must be at least 16.")
         if self.horizon_linewidth < 0.0:
             raise ValueError("horizon_linewidth cannot be negative.")
+        if self.outside_mask_constellations is not None:
+            names = tuple(
+                str(name).strip()
+                for name in self.outside_mask_constellations
+            )
+            if not names or any(not name for name in names):
+                raise ValueError(
+                    "outside_mask_constellations must contain names."
+                )
+            object.__setattr__(
+                self, "outside_mask_constellations", names
+            )
 
     @property
     def projection(self):
@@ -255,7 +268,7 @@ class FullSkyChart:
             set_frame_visible(False)
         projection = self.projection
         viewport = self.viewport
-        return sky.draw_chart(
+        result = sky.draw_chart(
             projection=projection,
             renderer=renderer,
             viewport=viewport,
@@ -268,6 +281,30 @@ class FullSkyChart:
                 )
             ),
         )
+        if self.outside_mask_constellations is not None:
+            from wenu.charts._masking import (
+                draw_constellation_outside_mask,
+            )
+
+            mask_style = (
+                {
+                    "facecolor": "black",
+                    "edgecolor": "none",
+                    "alpha": 0.35,
+                    "zorder": 20.0,
+                }
+                if style is None
+                else resolved_style.outside_mask_style()
+            )
+            draw_constellation_outside_mask(
+                sky=sky,
+                projection=projection,
+                renderer=renderer,
+                viewport=viewport,
+                constellations=self.outside_mask_constellations,
+                style=mask_style,
+            )
+        return result
 
     def export(
         self,

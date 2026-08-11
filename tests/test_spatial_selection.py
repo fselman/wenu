@@ -17,6 +17,7 @@ from wenu import (
     select_spatial_chart_content,
 )
 from wenu.geometry.spherical import SphericalPoints
+from wenu.geometry.projected import ProjectedCurve
 from wenu.geometry.viewport import Viewport
 
 
@@ -134,3 +135,32 @@ def test_explicit_exclusions_override_automatic_field_selection():
         "retained", "explicit"
     }
     assert request.request.exclusions.open_clusters == {"excluded"}
+
+
+def test_full_sky_horizon_limits_automatic_selection():
+    sky = SimpleNamespace(
+        observer=object(),
+        nonstellar=None,
+        galaxies=None,
+        open_clusters=Layer(
+            ["inside", "corner"], [0.5, 1.5], [0.0, 1.5]
+        ),
+        globular_clusters=None,
+        planetary_nebulae=Layer(
+            ["PN G063.1+13.9"], [0.0], [0.0]
+        ),
+        supernova_remnants=None,
+    )
+    chart = SimpleNamespace(
+        projection=Projection(),
+        viewport=Viewport.centered(width=4.0, height=4.0),
+        horizon=ProjectedCurve(
+            x=[-2.0, 0.0, 2.0, 0.0],
+            y=[0.0, 2.0, 0.0, -2.0],
+            closed=True,
+        ),
+    )
+
+    selected = select_spatial_chart_content(sky, chart, resolved())
+
+    assert selected.request.content.open_clusters == {"inside", "explicit"}

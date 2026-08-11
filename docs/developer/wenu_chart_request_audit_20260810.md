@@ -81,10 +81,11 @@ the observer and should not be mistaken for observer inputs.
 
 ### Masked planisphere
 
-The masked planisphere defines a new `FullSkyChart` subclass and imports a
-private masking function. Mask selection is a chart request already supported
-for regional charts and should be generalized through chart-owned public
-behavior rather than copied into user scripts.
+The reviewed masked planisphere defined a new `FullSkyChart` subclass and
+imported a private masking function. Milestone 46C.7I moved that operation
+into the ordinary full-sky chart, so mask selection is now a chart request
+implemented through chart-owned public behavior for both full-sky and
+regional charts rather than copied into user scripts.
 
 ## Required public behavior
 

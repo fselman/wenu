@@ -55,6 +55,9 @@ constellation endpoints; the request resolver does not inspect sky geometry.
 `charts/spatial_selection.py` owns vectorized field-footprint selection over
 cached catalogue centers; it applies explicit exclusions, returns immutable
 content, and does not render.
+`charts/request_chart.py` maps a resolved request onto the four established
+chart types and invokes that selector; composition and export remain in their
+existing modules.
 
 ## Responsibility mapping
 

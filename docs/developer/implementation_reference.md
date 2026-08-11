@@ -368,6 +368,14 @@ An identifier cannot be both explicitly included and excluded, and the
 resolved central target cannot be excluded. Extended-object layers expose
 `spherical_centers()` so selection does not sample their outlines.
 
+`prepare_chart_request(sky, resolved_request)` constructs the established
+chart type from the resolved family, target, constellation identities, field,
+position angle, pole, and mask. It then applies the spatial selector and
+returns an immutable `PreparedChartRequest`. It neither builds a second sky
+nor composes, renders, or exports. A masked planisphere is an ordinary
+`FullSkyChart` whose optional outside mask uses the shared official-boundary
+masking operation; its chart-owned horizon limits automatic field objects.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

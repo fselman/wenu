@@ -91,3 +91,10 @@ Milestone 46C.7H adds immutable catalogue exclusions to the chart request.
 They are applied after packaged, explicit, and automatic field selection.
 Contradictory explicit inclusion is rejected, and a resolved central target
 cannot be excluded silently.
+
+Milestone 46C.7I adds one chart-construction boundary over resolved requests.
+It constructs the established full-sky, regional, circumpolar, or binocular
+chart, then applies spatial content selection. `FullSkyChart` now owns the
+same official-boundary outside-mask operation already used by regional charts;
+its horizon also bounds spatial catalogue selection. No request facade
+subclass or private example pipeline is required.

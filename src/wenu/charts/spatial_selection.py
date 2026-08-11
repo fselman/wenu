@@ -32,6 +32,8 @@ def _visible_identifiers(sky, chart, layer):
     )
     visible = np.asarray(chart.viewport.contains(x, y), dtype=bool)
     field_stop = getattr(chart, "field_stop", None)
+    if field_stop is None:
+        field_stop = getattr(chart, "horizon", None)
     if field_stop is not None:
         finite = field_stop.finite
         radius = float(np.nanmedian(np.hypot(

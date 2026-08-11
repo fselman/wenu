@@ -128,6 +128,35 @@ def test_render_delegates_with_chart_horizon():
     assert "override" in calls["draw"]["layer_options"]
 
 
+def test_full_sky_chart_can_draw_an_outside_constellation_mask(monkeypatch):
+    calls = {}
+
+    def draw_mask(**kwargs):
+        calls.update(kwargs)
+
+    monkeypatch.setattr(
+        "wenu.charts._masking.draw_constellation_outside_mask",
+        draw_mask,
+    )
+
+    class Renderer:
+        def set_clip_boundary(self, boundary, *, style):
+            pass
+
+    class Sky:
+        constellation_labels = None
+
+        def draw_chart(self, **kwargs):
+            return "result"
+
+    chart = FullSkyChart(outside_mask_constellations=("Cru", "Cen"))
+    result = chart.render(Sky(), Renderer())
+
+    assert result == "result"
+    assert calls["constellations"] == ("Cru", "Cen")
+    assert calls["viewport"] == chart.viewport
+
+
 def test_full_sky_chart_is_a_top_level_export():
     import wenu
 

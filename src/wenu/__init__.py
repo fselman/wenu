@@ -95,6 +95,10 @@ from .charts.spatial_selection import (
     FIELD_CATALOGUE_LAYERS,
     select_spatial_chart_content,
 )
+from .charts.request_chart import (
+    PreparedChartRequest,
+    prepare_chart_request,
+)
 from .charts.chart_arguments import (
     ChartContentOptions,
     ChartLegendSelection,
@@ -292,6 +296,8 @@ __all__ = [
     "resolve_chart_request",
     "FIELD_CATALOGUE_LAYERS",
     "select_spatial_chart_content",
+    "PreparedChartRequest",
+    "prepare_chart_request",
     "ChartContentOptions",
     "ChartLegendSelection",
     "ChartStyleOverrides",
