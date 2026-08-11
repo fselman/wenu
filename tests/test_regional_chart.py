@@ -101,6 +101,85 @@ def test_constellation_center_requires_configured_layers():
         )
 
 
+def test_constellation_field_can_be_derived_from_loaded_geometry():
+    stars = SimpleNamespace(
+        spherical_geometry=lambda observer, alt_min: SimpleNamespace(
+            ids=np.asarray([1, 2, 3]),
+            lon_deg=np.asarray([350.0, 0.0, 10.0]),
+            lat_deg=np.asarray([-5.0, 0.0, 5.0]),
+        )
+    )
+    sky = SimpleNamespace(
+        observer=object(),
+        stars=stars,
+        constellation_lines=SimpleNamespace(
+            edges_by_constellation={"Test": [(1, 2), (2, 3)]}
+        ),
+    )
+
+    chart = RegionalChart.from_constellations(
+        sky,
+        ["Test"],
+        framing_padding=1.2,
+    )
+
+    assert chart.center_az_deg == pytest.approx(0.0, abs=1.0e-8)
+    assert chart.center_alt_deg == pytest.approx(0.0, abs=1.0e-8)
+    assert chart.field_width_deg == pytest.approx(chart.field_height_deg)
+    assert chart.field_height_deg > 24.0
+
+
+def test_explicit_constellation_field_preserves_compatible_behavior():
+    stars = SimpleNamespace(
+        spherical_geometry=lambda observer, alt_min: SimpleNamespace(
+            ids=np.asarray([1, 2]),
+            lon_deg=np.asarray([10.0, 20.0]),
+            lat_deg=np.asarray([30.0, 35.0]),
+        )
+    )
+    sky = SimpleNamespace(
+        observer=object(),
+        stars=stars,
+        constellation_lines=SimpleNamespace(
+            edges_by_constellation={"Test": [(1, 2)]}
+        ),
+    )
+
+    chart = RegionalChart.from_constellations(
+        sky,
+        ["Test"],
+        angular_radius_deg=10.0,
+        aspect_ratio=1.5,
+    )
+
+    assert chart.field_width_deg == pytest.approx(30.0)
+    assert chart.field_height_deg == pytest.approx(20.0)
+
+
+@pytest.mark.parametrize(
+    ("name", "value"),
+    [("framing_padding", 1.0), ("minimum_angular_radius_deg", 0.0)],
+)
+def test_invalid_automatic_constellation_framing_is_rejected(name, value):
+    stars = SimpleNamespace(
+        spherical_geometry=lambda observer, alt_min: SimpleNamespace(
+            ids=np.asarray([1, 2]),
+            lon_deg=np.asarray([0.0, 1.0]),
+            lat_deg=np.asarray([0.0, 1.0]),
+        )
+    )
+    sky = SimpleNamespace(
+        observer=object(),
+        stars=stars,
+        constellation_lines=SimpleNamespace(
+            edges_by_constellation={"Test": [(1, 2)]}
+        ),
+    )
+
+    with pytest.raises(ValueError, match=name):
+        RegionalChart.from_constellations(sky, ["Test"], **{name: value})
+
+
 def test_regional_grid_defaults_to_viewport_clipping():
     grid = SimpleNamespace(coordinate_system="equatorial")
     assert "prepare" not in PublicationStyle()._grid_options(grid)

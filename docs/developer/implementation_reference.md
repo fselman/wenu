@@ -352,6 +352,12 @@ packaged-group field and its provenance. `automatic_from_geometry=True` means
 an arbitrary constellation set must be framed later from loaded authoritative
 geometry; it is not replaced by a guessed fixed field.
 
+`RegionalChart.from_constellations()` may omit `angular_radius_deg`. It then
+frames all selected loaded figure endpoints using their spherical mean,
+maximum great-circle separation, `framing_padding` (default 1.15), and
+`minimum_angular_radius_deg` (default 5). Supplying radius and aspect ratio
+continues to provide exact publication control.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

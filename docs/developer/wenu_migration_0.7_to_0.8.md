@@ -155,8 +155,8 @@ constellation boundaries, and quality-keyed extended-object outlines.
 **Status:** Implemented through Milestone 46C.7E for the immutable request
 contract, offline target and constellation/group resolution, central-target
 retention, and compatible load-profile ceiling validation. Automatic spatial
-content, geometry-derived constellation framing, and generation remain in
-this milestone. Family and packaged-group framing defaults are resolved.
+content and generation remain in this milestone. Family, packaged-group, and
+geometry-derived constellation framing are resolved.
 
 ## Milestone 46C.8 — Make canonical examples pure chart requests
 

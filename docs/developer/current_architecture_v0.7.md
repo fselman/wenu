@@ -74,3 +74,9 @@ Milestone 46C.7E resolves family framing defaults without constructing chart
 geometry. Binocular requests receive the established 6.5-degree field unless
 overridden; packaged groups provide their recorded width and height; arbitrary
 IAU sets explicitly defer automatic framing to their authoritative geometry.
+
+Milestone 46C.7F completes that operation in the existing
+`RegionalChart.from_constellations()` constructor. With no explicit field it
+derives a spherical center and maximum great-circle extent from all unique
+loaded figure endpoints, then applies configurable padding and a minimum
+field. Explicit-radius calls retain their previous result.

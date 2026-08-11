@@ -30,10 +30,25 @@ def _spherical_mean(lon_deg, lat_deg):
     if norm <= 1.0e-15:
         raise ValueError("The selected directions have no spherical mean.")
     mean /= norm
-    return (
-        float(np.degrees(np.arctan2(mean[1], mean[0])) % 360.0),
-        float(np.degrees(np.arcsin(mean[2]))),
+    longitude = float(
+        np.degrees(np.arctan2(mean[1], mean[0])) % 360.0
     )
+    if np.isclose(longitude, 360.0, atol=1.0e-12):
+        longitude = 0.0
+    return longitude, float(np.degrees(np.arcsin(mean[2])))
+
+
+def _maximum_angular_separation(lon_deg, lat_deg, center_lon, center_lat):
+    """Return the greatest great-circle distance from one center."""
+    lon = np.radians(np.asarray(lon_deg, dtype=float))
+    lat = np.radians(np.asarray(lat_deg, dtype=float))
+    center_lon = np.radians(float(center_lon))
+    center_lat = np.radians(float(center_lat))
+    cosine = (
+        np.sin(lat) * np.sin(center_lat)
+        + np.cos(lat) * np.cos(center_lat) * np.cos(lon - center_lon)
+    )
+    return float(np.degrees(np.max(np.arccos(np.clip(cosine, -1.0, 1.0)))))
 
 
 def celestial_north_position_angle(
@@ -236,14 +251,16 @@ class RegionalChart:
         sky,
         constellations,
         *,
-        angular_radius_deg,
+        angular_radius_deg=None,
         aspect_ratio=1.0,
+        framing_padding=1.15,
+        minimum_angular_radius_deg=5.0,
         north_up=False,
         position_angle_deg=0.0,
         label_selection=None,
         **kwargs,
     ):
-        """Center a chart on unique endpoints of selected line figures."""
+        """Center and optionally frame unique selected figure endpoints."""
         names = tuple(constellations)
         if not names:
             raise ValueError("Select at least one constellation.")
@@ -278,6 +295,24 @@ class RegionalChart:
             stars.lon_deg[selected],
             stars.lat_deg[selected],
         )
+        if angular_radius_deg is None:
+            padding = float(framing_padding)
+            minimum = float(minimum_angular_radius_deg)
+            if not np.isfinite(padding) or padding <= 1.0:
+                raise ValueError("framing_padding must be greater than 1.")
+            if not np.isfinite(minimum) or minimum <= 0.0:
+                raise ValueError(
+                    "minimum_angular_radius_deg must be positive."
+                )
+            angular_radius_deg = max(
+                minimum,
+                padding * _maximum_angular_separation(
+                    stars.lon_deg[selected],
+                    stars.lat_deg[selected],
+                    azimuth,
+                    altitude,
+                ),
+            )
         position_angle = cls._position_angle(
             sky.observer,
             altitude,

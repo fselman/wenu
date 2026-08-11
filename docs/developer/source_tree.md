@@ -49,6 +49,8 @@ content selection and validates request ceilings against the selected
 maximal-sphere profile. It performs no chart construction or rendering.
 It also resolves explicit and family framing defaults while marking arbitrary
 constellation framing as a downstream geometry operation.
+`charts/regional.py` performs that geometry-derived framing from loaded
+constellation endpoints; the request resolver does not inspect sky geometry.
 
 ## Responsibility mapping
 
