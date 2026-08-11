@@ -163,10 +163,18 @@ prepared-request export entry point preserves an advanced sphere-reuse path.
 
 ## Milestone 46C.8 — Make canonical examples pure chart requests
 
-- migrate the five canonical examples to obtain content from the shared
-  declarative request facade;
-- express their differences through chart definitions, resolved detail, and
-  immutable content selections;
+- pause further example migrations after the binocular proof of the shared
+  request scaffold;
+- add a small ordinary Python interface that generates a celestial sphere,
+  obtains a geometrical view, and draws that view;
+- keep style and detail out of view geometry so one view can produce several
+  products without geometrical reconstruction;
+- retain the immutable request graph as the canonical advanced contract and
+  translate the ordinary interface into it;
+- centralize appropriate binocular, regional, planisphere, and circumpolar
+  defaults while spelling the important defaults out in canonical examples;
+- replace, rather than incrementally reproduce, the five canonical examples
+  with declarations using few public imports and fewer than 70 lines each;
 - permit a prebuilt compatible sphere to be supplied while retaining existing
   standalone `build_chart()` behavior;
 - replace hard-coded binocular target dictionaries and regional-group
@@ -195,7 +203,86 @@ compatibility wrapper to reuse identical construction and cleanup semantics.
 The canonical binocular example is now a pure request adapter over those
 facilities: it has no private target registry or construction/export pipeline,
 accepts every packaged drawable target, preserves its documented controls and
-compatibility builder, and keeps the installed resource byte-identical.
+compatibility builder, and keeps the installed resource byte-identical.  Its
+size and remaining adapter ceremony establish that the shared scaffold is not
+yet the intended ordinary interface.  Further example migrations are paused
+until that interface is implemented and verified.
+
+### Milestone 46C.8G — Specify the three-stage ordinary interface
+
+- define the public generate-sphere, get-view, and draw operations before
+  choosing final names in code;
+- assign observer and load-profile choices to sphere generation, geometry to
+  the view, and appearance, detail, furniture, and output to drawing;
+- document ownership, cleanup, return values, supported projection names, and
+  the boundary between friendly arguments and structured advanced options;
+- require delegation to the existing maximal-sphere, request, composition,
+  export, and `CelestialSphere.draw_chart()` pipeline.
+
+### Milestone 46C.8H — Add ordinary sphere generation
+
+- expose a concise wrapper over `build_maximal_sphere()` that returns an
+  ordinary `CelestialSphere`;
+- keep chart geometry, grids, selection, style, furniture, and output outside
+  sphere construction;
+- preserve explicit load profiles and unambiguous observer ownership for
+  advanced and reusable callers.
+
+### Milestone 46C.8I — Add the geometrical view facade
+
+- translate friendly family, subject, projection, framing, orientation, and
+  mask arguments into the existing immutable request and resolver contracts;
+- return a small immutable prepared-view value with resolved provenance and no
+  style, renderer, Matplotlib, furniture, or output state;
+- initially expose stereographic projection honestly and reject unsupported
+  projection names rather than promising an unimplemented projection family;
+- preserve packaged targets, arbitrary IAU sets, packaged groups, automatic
+  framing, spatial selection, Serpens normalization, and supplied-sphere use.
+
+### Milestone 46C.8J — Centralize explicit family defaults
+
+- define one public default policy for binocular, regional single, regional
+  group, planisphere, and circumpolar views;
+- keep concise omitted-default calls available while requiring canonical
+  examples to show the scientifically and geometrically important values;
+- exclude cache keys, catalogue joins, internal layer identifiers, and other
+  implementation details from the ordinary vocabulary.
+
+### Milestone 46C.8K — Add the ordinary drawing facade
+
+- accept direct style, mode, detail, grid, furniture, title, language, and
+  destination choices for one prepared view;
+- translate those choices into existing detail, composition, style override,
+  furniture, and export contracts;
+- permit repeated atlas/cartoon and print/presentation drawings of one view
+  without changing its geometry or leaking render-local state;
+- retain structured options for advanced callers and export exactly once per
+  selected product.
+
+### Milestone 46C.8L — Add shared command-line adaptation
+
+- map common CLI controls into the same three-stage Python interface;
+- leave examples responsible only for explicit family defaults and genuinely
+  family-specific arguments;
+- preserve documented controls without making a script own catalogue,
+  projection, renderer, furniture, or export procedure.
+
+### Milestone 46C.8M — Replace the five canonical examples
+
+- replace binocular, regional single, regional group, planisphere, and
+  circumpolar scripts with fewer-than-70-line declarative examples;
+- use few public imports and show the important defaults explicitly;
+- retain installed-example byte parity and `build_chart()` compatibility only
+  through the common facade where that compatibility remains required;
+- delete superseded example-only helpers rather than carrying both forms.
+
+### Milestone 46C.8N — Verify and close the example migration
+
+- verify Centaurus A, Omega Centauri, regional single and group charts,
+  Serpens, masks, furniture, products, and all retained CLI controls;
+- run focused, full, and mandatory atlas-print visual regressions;
+- record the ordinary and advanced interfaces in architecture, implementation,
+  source-tree, user-guide, and test-ownership documentation.
 
 ## Milestone 46C.9 — Validate all chart families from one maximal sphere
 
@@ -227,9 +314,15 @@ After 46C establishes correct static-data and observed-geometry ownership:
 - **47B:** topocentric Moon position, phase, apparent size, and orientation;
 - **47C:** artificial-satellite points and sampled tracks with explicit orbital
   source identity;
-- **47D:** time sequences and animation that reuse static catalogues while
-  producing correctly keyed observed states.
+- **47D:** reproducible image-frame sequences that reuse static catalogues
+  while producing correctly keyed observed states.  Initial demonstrations
+  cover a rotating planisphere, a Hawaii-to-Tahiti location-and-time
+  trajectory viewing the Southern Cross, and coordinate-epoch precession
+  through an accepted astronomical model.
 
 These layers must use the existing `SkyLayer.spherical_geometry()` contract
 and canonical chart pipeline. They do not authorize a second projection,
-clipping, rendering, legend, or export implementation.
+clipping, rendering, legend, or export implementation.  Wenu exports
+deterministically named static images and frame metadata only; movie encoding,
+frame rate, transitions, and audio remain the responsibility of external
+tools.

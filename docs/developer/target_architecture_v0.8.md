@@ -96,6 +96,62 @@ templates that require users to copy internal orchestration. Existing
 lower-level chart, composition, layer, and renderer APIs remain available for
 advanced callers.
 
+## Three-stage ordinary Python interface
+
+The ordinary Python interface presents one stable three-stage workflow:
+
+1. generate reusable celestial content for an observer and instant;
+2. obtain a geometrical chart view for a family, subject, projection, frame,
+   orientation, and optional mask;
+3. draw that view with explicit detail, style, furniture, title, and output
+   choices.
+
+The public vocabulary must remain small enough for canonical examples to use
+few imports and fewer than 70 lines, including their command-line adapter.
+Family defaults make concise calls possible, while each canonical example
+spells out the important defaults so that a user can copy and alter them.
+The immutable request graph remains the canonical internal and advanced
+contract; the ordinary interface translates friendly arguments into that
+graph instead of adding another construction or rendering path.
+
+A view owns geometry, not appearance.  It records the resolved subject,
+projection, framing, position angle, orientation, viewport, and mask.  Style,
+output mode, render-local detail, grids, legends, language, title, and output
+belong to drawing.  The same view can therefore produce atlas and cartoon
+charts without reconstructing or changing its geometry.  Unsupported
+projection names are rejected explicitly; exposing a projection choice does
+not imply that more than the implemented stereographic projection is
+available.
+
+The three stages delegate respectively to the canonical maximal-sphere
+factory, request resolution and chart preparation, and composition plus
+`CelestialSphere.draw_chart()`.  Existing structured request and lower-level
+APIs remain available.  Shared command-line adaptation must use the same
+ordinary interface and must not restore example-owned orchestration.
+
+## Reproducible image-frame sequences
+
+Wenu may later produce ordered sequences of ordinary static chart images for
+time-, observer-, trajectory-, or coordinate-epoch studies.  Each frame is a
+normal view drawn through the same canonical pipeline, with deterministic
+numbering and returned frame metadata.  Wenu does not encode movies, choose a
+frame rate, add transitions, or invoke video software; external tools may
+combine the exported images.
+
+Sequence state must distinguish scientifically different variables:
+
+- a rotating planisphere varies observer time at a fixed location;
+- a Hawaii-to-Tahiti view of the Southern Cross varies observer location and
+  time along an explicit trajectory;
+- a precession demonstration varies coordinate epoch through an accepted
+  precession model rather than treating epoch as observer time or imposing a
+  cosmetic rotation.
+
+Observer-independent catalogue and native geometry should be reused across
+frames.  Observer-, instant-, ephemeris-, source-, and epoch-dependent
+realizations remain separately keyed, and sequence rendering must not leak
+selection, mask, style, or view state between frames.
+
 ## Future time-dependent layers
 
 The same layer contract must accommodate future solar-system and artificial

@@ -83,6 +83,29 @@ def test_assistant_instructions_name_current_architecture_authorities():
         assert name in instructions
 
 
+def test_v08_roadmap_records_ordinary_interface_and_static_sequences():
+    target = read(TARGET)
+    roadmap = read(ROADMAP)
+
+    for phrase in (
+        "Three-stage ordinary Python interface",
+        "fewer than 70 lines",
+        "Reproducible image-frame sequences",
+        "does not encode movies",
+    ):
+        assert phrase in target
+
+    for phrase in (
+        "Milestone 46C.8G",
+        "Milestone 46C.8N",
+        "fewer-than-70-line declarative examples",
+        "movie encoding",
+        "Hawaii-to-Tahiti",
+        "coordinate-epoch precession",
+    ):
+        assert phrase in roadmap
+
+
 def test_documented_python_is_syntactically_valid():
     for document in (
         ROOT / "README.md",
