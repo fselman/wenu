@@ -212,7 +212,7 @@ from .charts.magnitude_legend import (
     cumulative_visible_star_counts,
 )
 from .rendering import MatplotlibRenderer
-from .projections import StereographicProjection
+from .projections import MollweideProjection, StereographicProjection
 from .sky import (
     CANONICAL_MAXIMAL_SPHERE_PROFILE,
     CelestialSphere,
@@ -390,6 +390,7 @@ __all__ = [
     "integer_magnitude_range",
     "stellar_magnitude_scale",
     "MatplotlibRenderer",
+    "MollweideProjection",
     "StereographicProjection",
     "CelestialSphere",
     "SphericalCoordinates",

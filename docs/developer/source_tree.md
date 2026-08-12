@@ -29,6 +29,10 @@ src/wenu/
 └── utils/                      general utilities
 ```
 
+`projections/mollweide.py` owns coordinate-neutral equal-area projection and
+longitude-seam topology for points, curves, grids, and polygon rings. It has
+no astronomical-frame, chart, renderer, or Matplotlib dependency.
+
 Within `sky/`, `maximal_sphere.py` owns the immutable catalogue load profile
 and the one canonical complete-content factory. The resulting object is an
 ordinary `CelestialSphere`; chart geometry and presentation remain outside

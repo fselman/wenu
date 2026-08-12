@@ -488,6 +488,16 @@ names, closed-curve state, component groups, and metadata are preserved;
 metadata records the AltAz source and Galactic result. It performs no seam
 splitting, planar projection, clipping, rendering, or example adaptation.
 
+`MollweideProjection(central_longitude_deg=0, flip_ew=True, radius=1)` is the
+coordinate-neutral equal-area all-sky projection. `project_spherical()` maps
+generic longitude and latitude directly; `project_geometry()` supports all
+canonical spherical geometry forms. Points are vectorized. Curves and grid
+components are unwrapped and clipped into separate open pieces at the
+longitude seam. Polygon rings are clipped into valid closed pieces on either
+side. Per-entity identifiers, labels, names, styles, and compound-ring
+metadata are duplicated for every split piece. The projection owns no
+astronomical frame conversion, chart boundary, renderer, or style behavior.
+
 `chart_view_defaults(family, group=False)` returns the corresponding frozen
 `ChartViewDefaults` policy from `CHART_VIEW_DEFAULTS`:
 

@@ -238,3 +238,10 @@ latitude. It handles points, curves, grids, and polygons without changing
 their entity identity or collection metadata. The transformation uses the
 observer's authoritative Astropy frames and remains separate from both sky
 layers and coordinate-neutral map projections.
+
+Milestone 46C.8P.3 adds a public coordinate-neutral `MollweideProjection`.
+Its equal-area mathematics accepts generic longitude and latitude, centers a
+configurable longitude, and follows Wenu's east-left orientation convention.
+Before planar evaluation it unwraps and clips curves, grid components, and
+polygon rings into longitude slabs, preserving separate seam pieces and
+duplicating per-entity metadata without creating map-spanning chords.

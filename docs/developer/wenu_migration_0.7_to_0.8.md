@@ -437,6 +437,8 @@ Milestone 46C.8O.
 - prove that resulting Galactic geometry is invariant within numerical
   tolerance across observer locations and instants.
 
+**Status:** Implemented.
+
 ##### Milestone 46C.8P.3 — Add Mollweide projection and seam topology
 
 - add Mollweide through the existing projection and chart pipeline only after
