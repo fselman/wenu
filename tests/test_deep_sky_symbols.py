@@ -343,6 +343,7 @@ def test_galaxy_style_uses_filled_polygon_clipping():
 def test_outside_mask_is_above_all_named_galaxy_layers():
     style = PublicationStyle(outside_mask_zorder=20.0)
     mask = style.outside_mask_style()
+    assert mask["zorder"] > layers.MILKY_WAY
     assert mask["zorder"] > layers.GALAXY_FILLS
     assert mask["zorder"] > layers.GALAXIES
     assert mask["zorder"] > layers.GALAXY_LABELS

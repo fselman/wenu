@@ -110,6 +110,14 @@ projection, renderer, furniture drawing, or saving procedure.
 arbitrary IAU constellation set or optional packaged-group alias into typed
 friendly view arguments. It does not resolve internal constellation geometry,
 frame a chart, test visibility, project, mask, or clip.
+All constellation-subject examples use this one adapter; a single region is
+represented by a one-element `--constellations` value rather than a parallel
+singular parser.
+`charts/_masking.py` selects official mask boundaries before projection. For
+observer-visible full-sky charts it rejects wholly hidden regions while
+preserving complete partly visible, possibly disjoint polygons for clipping
+by the chart-owned final boundary; regional masks retain their viewport-only
+behavior.
 
 ## Responsibility mapping
 

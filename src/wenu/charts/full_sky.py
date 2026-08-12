@@ -307,6 +307,9 @@ class FullSkyChart:
                 observer=observer,
                 constellations=self.outside_mask_constellations,
                 style=mask_style,
+                visible_minimum_latitude_deg=(
+                    self.horizon_altitude_deg
+                ),
             )
         return result
 

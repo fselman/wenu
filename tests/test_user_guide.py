@@ -82,6 +82,14 @@ def test_planisphere_provenance_is_complete_and_reproducible():
         assert value in text
 
 
+def test_planisphere_guide_documents_disjoint_visible_masks():
+    text = (GUIDE / "planisphere.md").read_text(encoding="utf-8")
+
+    assert "--constellations Cru,Cyg,UMa --mask" in text
+    assert "wholly below" in text
+    assert "crossing" in text
+
+
 def test_english_and_spanish_readmes_link_the_structured_guide():
     for filename in ("README.md", "README.es.md"):
         text = (ROOT / filename).read_text(encoding="utf-8")

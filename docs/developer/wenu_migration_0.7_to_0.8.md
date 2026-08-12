@@ -402,6 +402,8 @@ Milestone 46C.8O.
 - make the canonical group example declare an adjacent constellation set
   rather than encode or require a packaged group.
 
+**Status:** Implemented.
+
 #### Milestone 46C.8O.4 — Add visible multi-patch planisphere masks
 
 - interpret a possibly disjoint constellation set as official mask regions

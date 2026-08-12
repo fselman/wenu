@@ -96,7 +96,7 @@ def test_planisphere_horizon_is_independent_of_content_switches():
 
     assert 'family="planisphere"' in source
     assert "position_angle_deg=0.0" in source
-    assert "mask=False" in source
+    assert "mask=arguments.mask" in source
 
 
 def test_regional_mask_does_not_require_visible_boundary_lines():

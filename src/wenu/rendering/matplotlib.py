@@ -115,8 +115,6 @@ class MatplotlibRenderer:
 
         if not isinstance(polygons, ProjectedPolygons):
             raise TypeError("polygons must be ProjectedPolygons.")
-        if not polygons.items:
-            raise ValueError("At least one mask opening is required.")
 
         vertices = []
         codes = []
@@ -164,11 +162,6 @@ class MatplotlibRenderer:
                 np.column_stack((polygon.x, polygon.y)),
                 clockwise=True,
             )
-        if len(vertices) <= 5:
-            raise ValueError(
-                "No finite polygon opening could be constructed."
-            )
-
         mask_style = {
             "facecolor": "black",
             "edgecolor": "none",

@@ -214,3 +214,13 @@ and group data; examples retain only reproducible observer/time values,
 explicit family geometry, family-specific detail, titles, and CLI arguments.
 The former example-owned catalogue builders, request builders, renderer loops,
 and compatibility-only `build_chart()` helpers are removed.
+
+Milestone 46C.8O.4 makes planisphere constellation masks observer-visible
+multi-patch geometry. Official selected boundaries are obtained before
+projection; wholly hidden regions are omitted, while partially visible and
+disjoint regions remain complete openings clipped by the chart-owned horizon.
+The canonical planisphere exposes this through the shared constellation
+subject adapter and an explicit mask switch without owning visibility or
+clipping logic. All canonical examples with a constellation subject use the
+same shared `--constellations IAU,...` / `--group ALIAS` parser; the former
+single-constellation example is merely the one-element default case.

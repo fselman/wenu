@@ -82,13 +82,15 @@ def add_constellation_subject_arguments(
     return parser
 
 
-def chart_constellation_subject(arguments):
+def chart_constellation_subject(arguments, *, required=True):
     """Return the typed constellation subject selected by parsed controls."""
     group = getattr(arguments, "group", None)
     constellations = (
         None if group is not None
         else getattr(arguments, "constellations", None)
     )
+    if constellations is None and group is None and not required:
+        return None
     return ChartConstellationSubjectOptions(
         constellations=constellations,
         group=group,

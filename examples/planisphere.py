@@ -5,7 +5,8 @@ from pathlib import Path
 
 from wenu import (
     AdaptiveDetailPolicy, Observer, add_chart_cli_arguments,
-    chart_cli_furniture, draw_chart_view_from_arguments,
+    add_constellation_subject_arguments, chart_cli_furniture,
+    chart_constellation_subject, draw_chart_view_from_arguments,
     generate_celestial_sphere, get_chart_view,
 )
 
@@ -16,9 +17,11 @@ DEFAULT_OUTPUT = Path("output/examples/planisphere")
 def chart_view(arguments, *, sky=None):
     sky = generate_celestial_sphere() if sky is None else sky
     observer = Observer(location="La Ligua", time=LOCAL_TIME)
+    subject = chart_constellation_subject(arguments, required=False)
     return get_chart_view(
         sky, observer, family="planisphere", projection="stereographic",
-        position_angle_deg=0.0, mask=False,
+        position_angle_deg=0.0, mask=arguments.mask,
+        **({} if subject is None else subject.view_arguments()),
     )
 
 
@@ -48,8 +51,11 @@ def generate(arguments):
 
 
 def parser():
-    return add_chart_cli_arguments(argparse.ArgumentParser(description=__doc__),
-                                   default_output=DEFAULT_OUTPUT)
+    value = add_chart_cli_arguments(argparse.ArgumentParser(description=__doc__),
+                                    default_output=DEFAULT_OUTPUT)
+    add_constellation_subject_arguments(value)
+    value.add_argument("--mask", action="store_true")
+    return value
 
 
 if __name__ == "__main__":

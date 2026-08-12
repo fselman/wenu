@@ -534,6 +534,19 @@ Constellation-family adapters may add the shared subject contract with
 `view_arguments()` pass directly to `get_chart_view()`. Arbitrary sets use the
 existing resolver and automatic spherical regional framing; packaged groups
 remain optional aliases and no example owns IAU parsing or group geometry.
+The subject may be optional for a family such as the planisphere by calling
+`chart_constellation_subject(arguments, required=False)`.
+Every canonical example that has a constellation subject uses this adapter,
+including the one-element regional default. There is no separate singular
+`--constellation` parsing path.
+
+A masked stereographic planisphere accepts a possibly disjoint constellation
+set. Its full-sky mask selects official boundary geometry before projection,
+discards regions with no sampled vertex at or above the chart horizon, and
+retains complete partially visible polygons. The renderer then clips those
+separate mask openings at the chart-owned horizon, so an all-invisible set
+correctly shades the complete visible hemisphere. Regional masks do not apply
+observer-horizon rejection.
 
 ```python
 sky = generate_celestial_sphere()

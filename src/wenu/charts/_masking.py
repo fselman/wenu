@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import numpy as np
+
 from wenu.geometry.projected import ProjectedPolygons
+from wenu.geometry.spherical import SphericalPolygons
 
 
 def _expanded_names(names):
@@ -29,8 +32,15 @@ def draw_constellation_outside_mask(
     observer=None,
     constellations,
     style,
+    visible_minimum_latitude_deg=None,
 ):
-    """Draw a presentation mask outside selected official boundaries."""
+    """Draw a presentation mask outside selected official boundaries.
+
+    When a visible minimum latitude is supplied, wholly invisible regions
+    are discarded before projection. Partly visible polygons remain complete
+    so the renderer's final chart-boundary clip produces the exact visible
+    opening.
+    """
     boundaries = sky.constellation_boundaries
     if boundaries is None:
         raise RuntimeError(
@@ -40,28 +50,56 @@ def draw_constellation_outside_mask(
     resolved_observer = getattr(sky, "observer", None) if observer is None else observer
     if resolved_observer is None:
         raise TypeError("outside masking requires an observer.")
-    spherical = boundaries.spherical_geometry(resolved_observer)
+    selected = _expanded_names(constellations)
+    spherical = boundaries.spherical_geometry(
+        resolved_observer,
+        selected=selected,
+    )
+    if visible_minimum_latitude_deg is not None:
+        spherical = _visible_polygons(
+            spherical,
+            minimum=float(visible_minimum_latitude_deg),
+        )
     projected = projection.project_geometry(spherical)
     if not isinstance(projected, ProjectedPolygons):
         raise TypeError(
             "Constellation boundaries must project to ProjectedPolygons."
         )
-    selected = _expanded_names(constellations)
-    polygons = ProjectedPolygons(
-        items=[
-            polygon
-            for polygon in projected
-            if str(polygon.name).upper() in selected
-        ],
-        metadata=dict(projected.metadata),
-    )
-    if not polygons.items:
-        raise ValueError(
-            "No projected boundaries were found for: "
-            + ", ".join(sorted(selected))
-        )
     return renderer.draw_outside_mask(
-        polygons,
+        projected,
         viewport=viewport,
         style=style,
+    )
+
+
+def _visible_polygons(spherical, *, minimum):
+    """Return polygons with at least one sampled visible vertex."""
+    if not isinstance(spherical, SphericalPolygons):
+        raise TypeError(
+            "Constellation boundaries must be SphericalPolygons."
+        )
+    minimum = float(minimum)
+    if not np.isfinite(minimum):
+        raise ValueError("minimum must be finite.")
+    indices = [
+        index
+        for index, latitude in enumerate(spherical.lat_deg)
+        if np.any(
+            np.isfinite(latitude)
+            & (np.asarray(latitude, dtype=float) >= minimum)
+        )
+    ]
+
+    def selected(values):
+        if values is None:
+            return None
+        return np.asarray(values, dtype=object)[indices]
+
+    return SphericalPolygons(
+        lon_deg=tuple(spherical.lon_deg[index] for index in indices),
+        lat_deg=tuple(spherical.lat_deg[index] for index in indices),
+        ids=selected(spherical.ids),
+        labels=selected(spherical.labels),
+        names=selected(spherical.names),
+        metadata=dict(spherical.metadata),
     )

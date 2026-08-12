@@ -155,6 +155,7 @@ def test_full_sky_chart_can_draw_an_outside_constellation_mask(monkeypatch):
     assert result == "result"
     assert calls["constellations"] == ("Cru", "Cen")
     assert calls["viewport"] == chart.viewport
+    assert calls["visible_minimum_latitude_deg"] == pytest.approx(0.0)
 
 
 def test_full_sky_chart_is_a_top_level_export():

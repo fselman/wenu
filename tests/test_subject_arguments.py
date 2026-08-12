@@ -60,3 +60,11 @@ def test_subject_requires_exactly_one_form():
             default_constellations=("Cru",),
             default_group="summer-triangle",
         )
+
+
+def test_optional_subject_can_represent_an_unmasked_planisphere():
+    arguments = parser().parse_args([])
+
+    assert chart_constellation_subject(
+        arguments, required=False
+    ) is None

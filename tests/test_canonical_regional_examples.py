@@ -22,13 +22,38 @@ def load(path):
 
 
 def test_single_regional_defaults_remain_explicit():
-    arguments = load(EXAMPLES[2]).parser().parse_args([])
+    module = load(EXAMPLES[2])
+    arguments = module.parser().parse_args([])
+    source = EXAMPLES[2].read_text(encoding="utf-8")
 
-    assert arguments.constellation == "Cru"
+    assert arguments.constellations == ("Cru",)
+    assert arguments.group is None
     assert arguments.field_width == pytest.approx(18.0)
     assert arguments.field_height == pytest.approx(16.0)
     assert arguments.position_angle == pytest.approx(0.0)
     assert arguments.mask is False
+    assert "add_constellation_subject_arguments(" in source
+    assert "chart_constellation_subject(" in source
+
+
+@pytest.mark.parametrize("path", EXAMPLES)
+def test_constellation_subject_examples_use_one_shared_parser(path):
+    arguments = load(path).parser().parse_args([
+        "--constellations", "Cru,Cyg,UMa"
+    ])
+
+    assert arguments.constellations == ("Cru", "Cyg", "UMa")
+    assert arguments.group is None
+
+
+def test_planisphere_accepts_optional_disjoint_mask_sets():
+    module = load(EXAMPLES[0])
+    arguments = module.parser().parse_args([
+        "--constellations", "Cru,Cyg,UMa", "--mask"
+    ])
+
+    assert arguments.constellations == ("Cru", "Cyg", "UMa")
+    assert arguments.mask is True
 
 
 def test_group_example_defaults_to_an_arbitrary_adjacent_iau_set():

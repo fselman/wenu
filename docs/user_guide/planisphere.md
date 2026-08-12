@@ -35,6 +35,20 @@ Use `--magnitude-limit VALUE` to override stellar depth. Constellation labels
 and IAU boundaries are independently enabled with `--constellation-labels`
 and `--constellation-boundaries`.
 
+To emphasize several adjacent or disjoint official regions, supply their IAU
+abbreviations and request the outside mask:
+
+```bash
+python examples/planisphere.py \
+  --constellations Cru,Cyg,UMa --mask \
+  --style atlas --mode print \
+  --output output/planisphere-regions.png
+```
+
+Regions wholly below the observer's horizon are omitted. A region crossing
+the horizon remains an opening clipped at the visible-sky boundary. Packaged
+aliases may be supplied with `--group ALIAS` instead.
+
 This canonical example supplies Spanish title, reference-curve annotations,
 object-symbol labels, and stellar-legend title through example-local legend
 overrides. Library-wide legend defaults remain English.

@@ -37,11 +37,13 @@ also requests the canonical outside mask:
 
 ```bash
 python examples/regional_constellation.py \
-  --constellation Cru --mask \
+  --constellations Cru --mask \
   --style atlas --mode print \
   --output output/crux.png
 ```
 
-Both regional examples support the common magnitude, labels, boundaries,
+Both regional examples use the same `--constellations IAU,...` and optional
+`--group ALIAS` subject controls. They also support the common magnitude,
+labels, boundaries,
 references, poles, visual overrides, legends, counts, and credits described
 in [Styles, modes, detail, and furniture](styles_modes_detail.md).
