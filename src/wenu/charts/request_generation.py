@@ -157,7 +157,11 @@ def export_prepared_chart(sky, prepared, *, observer=None):
 
 def _prepare_with_sphere(request, sky, profile, *, owns_observer):
     resolved = resolve_chart_request(request, profile)
-    configure_chart_request_grids(sky, resolved.request)
+    configure_chart_request_grids(
+        sky,
+        resolved.request,
+        frame=getattr(resolved, "frame", None),
+    )
     prepared = prepare_chart_request(sky, resolved)
     return ChartRequestBuild(
         sky=sky,

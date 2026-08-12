@@ -710,8 +710,9 @@ class PublicationStyle:
     def _coordinate_label(name):
         if name.startswith("right_ascension_"):
             degrees = float(name.removeprefix("right_ascension_"))
-            hours = (degrees / 15.0) % 24.0
-            return f"{hours:g}h"
+            total_minutes = round((degrees % 360.0) * 4.0) % (24 * 60)
+            hours, minutes = divmod(total_minutes, 60)
+            return f"{hours:02d}:{minutes:02d}"
         if name.startswith("declination_"):
             degrees = float(name.removeprefix("declination_"))
             return f"{degrees:+g}°"

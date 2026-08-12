@@ -25,7 +25,8 @@ def test_atlas_enables_coordinate_labels():
     assert grids.draw_coordinate_labels is True
     flat = AtlasChartStyle().as_publication_style()
     assert flat.grid_draw_labels is True
-    assert flat._coordinate_label("right_ascension_270") == "18h"
+    assert flat._coordinate_label("right_ascension_270") == "18:00"
+    assert flat._coordinate_label("right_ascension_277.5") == "18:30"
     assert flat._coordinate_label("declination_-15") == "-15°"
     assert flat._coordinate_label("ecliptic_longitude_270") == "270°"
     assert flat._coordinate_label("ecliptic_latitude_-60") == "-60°"
@@ -67,7 +68,7 @@ def test_grid_renderer_supports_formatter_and_edge_anchor():
         label_anchor=style._coordinate_label_anchor,
     )
     labels = [artist for artist in artists if hasattr(artist, "get_text")]
-    assert [label.get_text() for label in labels] == ["18h", "+0°"]
+    assert [label.get_text() for label in labels] == ["18:00", "+0°"]
     assert labels[0].get_position()[1] < -0.9
     assert labels[1].get_position()[0] < -0.9
     plt.close(figure)

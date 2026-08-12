@@ -74,8 +74,8 @@ it does not create another construction or rendering path.
 The generation facade also accepts a compatible caller-owned maximal sphere;
 request observer identity and the declared load profile are checked before
 resolution, and ownership remains with the caller.
-`charts/request_grids.py` owns family-specific request-time coordinate-grid
-density and replacement. It registers only explicitly selected semantic grids
+`charts/request_grids.py` owns view-span-dependent request-time coordinate-grid
+density and replacement. It registers only selected semantic grids
 and removes prior grid layers so a reused sphere never accumulates duplicates;
 it does not modify maximal catalogue content.
 `charts/request_composition.py` owns immutable detail-policy and visual-style
@@ -102,7 +102,8 @@ direct presentation choices onto the prepared view's immutable request,
 configures semantic grids through `request_grids.py`, and delegates the sole
 composition, render, furniture, and save operation to `request_generation.py`.
 `charts/command_line.py` owns the shared parser additions and translation from
-common command-line controls to `draw_chart_view()`. It may iterate the
+common command-line controls to `draw_chart_view()`, including the ordinary
+labeled-equatorial-grid default and its suppression switch. It may iterate the
 selected product matrix, but it owns no sphere construction, chart geometry,
 projection, renderer, furniture drawing, or saving procedure.
 

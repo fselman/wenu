@@ -57,7 +57,9 @@ def test_drawing_translates_direct_options_to_one_canonical_export(
 
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_grids",
-        lambda sky, request: configured.append((sky, request)),
+        lambda sky, request, *, frame: configured.append(
+            (sky, request, frame)
+        ),
     )
 
     def export(sky, prepared, *, observer):
@@ -84,6 +86,7 @@ def test_drawing_translates_direct_options_to_one_canonical_export(
     assert actual is result
     request = configured[0][1]
     assert request.product.output == output
+    assert configured[0][2] is chart_view.frame
     assert request.product.style == "cartoon"
     assert request.product.mode == "presentation"
     assert request.detail.enabled_layer_additions == {
@@ -108,7 +111,7 @@ def test_repeated_drawings_reuse_geometry_without_request_state_leak(
     prepared = []
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_grids",
-        lambda sky, request: requests.append(request),
+        lambda sky, request, *, frame: requests.append(request),
     )
 
     def export(sky, value, *, observer):
@@ -147,7 +150,9 @@ def test_drawing_rejects_detail_beyond_sphere_profile(
 ):
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_grids",
-        lambda sky, request: pytest.fail("configuration must be late"),
+        lambda sky, request, *, frame: pytest.fail(
+            "configuration must be late"
+        ),
     )
 
     with pytest.raises(ValueError, match="star_magnitude_limit"):

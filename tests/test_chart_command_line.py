@@ -11,6 +11,7 @@ from wenu import (
     DetailOverrides,
     StellarMagnitudeSizing,
     add_chart_cli_arguments,
+    chart_detail_overrides,
     chart_cli_furniture,
     draw_chart_view_from_arguments,
 )
@@ -35,6 +36,18 @@ def test_complete_cli_contract_includes_context_and_credits():
     assert arguments.location is True
     assert arguments.date is True
     assert arguments.local_time is True
+    assert arguments.equatorial_grid is True
+    assert arguments.equatorial_grid_labels is True
+
+
+def test_ordinary_cli_can_omit_default_equatorial_grid():
+    arguments = parser().parse_args(["--no-equatorial-grid"])
+
+    assert arguments.equatorial_grid is False
+    assert arguments.equatorial_grid_labels is False
+    assert "equatorial_grid" in chart_detail_overrides(
+        arguments
+    ).disabled_layers
 
 
 def test_cli_furniture_maps_references_poles_legends_and_context():
@@ -106,13 +119,17 @@ def test_adapter_delegates_selected_products_to_ordinary_drawing(
     assert calls[1][2]["detail"] is None
     assert calls[0][2]["detail_overrides"] == DetailOverrides(
         star_magnitude_limit=5.5,
-        enabled_layer_additions=frozenset({"ecliptic_grid"}),
+        enabled_layer_additions=frozenset({
+            "equatorial_grid", "ecliptic_grid"
+        }),
         disabled_layers=frozenset({
             "constellation_lines", "constellation_labels",
             "constellation_boundaries", "coordinate_grids",
-            "altaz_grid", "equatorial_grid", "galactic_grid",
+            "altaz_grid", "galactic_grid",
         }),
-        grid_label_layers=frozenset({"ecliptic_grid"}),
+        grid_label_layers=frozenset({
+            "equatorial_grid", "ecliptic_grid"
+        }),
         constellation_star_mode="none",
     )
     assert calls[0][2]["style_overrides"] == ChartStyleOverrides(

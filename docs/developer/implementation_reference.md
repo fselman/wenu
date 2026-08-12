@@ -435,12 +435,13 @@ closing it. `ChartObserverRequest.scientific_identity()` performs this check
 without loading an ephemeris. When `sky` is omitted, generation continues to
 own and close its observer and sphere resources.
 
-`configure_chart_request_grids(sky, request)` owns coordinate grids as
+`configure_chart_request_grids(sky, request, frame=...)` owns coordinate grids as
 request-time geometry. It derives explicit grid selection from
 `DetailOverrides.enabled_layers`, `enabled_layer_additions`,
 `disabled_layers`, and `grid_label_layers`; labels imply the corresponding
-geometry. It replaces only prior `CoordinatesGrid` layers and registers the
-canonical density for the request's chart family. This makes sequential
+geometry. It replaces only prior `CoordinatesGrid` layers and registers a
+15-degree density for resolved views smaller than 60 degrees and a 30-degree
+density otherwise. This makes sequential
 requests order-independent without adding coordinate grids to the maximal
 load profile or mutating astronomical catalogue content. Ordinary generation
 calls this boundary automatically after request resolution.
@@ -516,6 +517,9 @@ returns one `ChartExportResult` per selected product. A family may pass
 may construct
 localized furniture with `chart_cli_furniture()`; these remain declarative
 inputs to `draw_chart_view()` rather than a second rendering path.
+The ordinary CLI enables the labeled equatorial grid by default and accepts
+`--no-equatorial-grid` to omit it. Equatorial right ascension is labeled as
+`hh:mm`; declination and the other coordinate systems use degrees.
 
 ```python
 sky = generate_celestial_sphere()
@@ -596,10 +600,10 @@ destination, and visual approval are recorded in
 
 `examples/regional_constellation_group.py --group sgr-sco-oph-ser` selects the
 Sagittarius, Scorpius, Ophiuchus, and two-part Serpens region. It does not
-silently enable a grid. Every canonical family exposes `--altaz-grid`,
+enable any non-equatorial grid by default. Every canonical family exposes `--altaz-grid`,
 `--equatorial-grid`, `--ecliptic-grid`, and `--galactic-grid` plus the
-corresponding label switches; regression commands request the required
-systems explicitly. The AltAz grid has a black semantic base color, realized
+corresponding label switches, and the ordinary CLI defaults to a labeled
+equatorial grid. The AltAz grid has a black semantic base color, realized
 as gray `#707070` for both lines and labels in print modes so it remains
 subordinate to black stars. It excludes its altitude-zero circle so it does
 not duplicate the chart-owned horizon.

@@ -28,74 +28,34 @@ def _latitude_values(limit, step):
     return tuple(value for value in range(-limit, limit + 1, step) if value)
 
 
-def _grid_specifications(family):
-    if family == "binocular":
-        longitudes = tuple(range(0, 360, 5))
-        latitudes = _latitude_values(85, 5)
-        return {
-            "equatorial_grid": {
-                "ra": longitudes,
-                "dec": latitudes,
-                "frame": "fk5",
-                "equinox": "J2000",
-                "include_equator": False,
-            },
-            "ecliptic_grid": {
-                "longitude": longitudes,
-                "latitude": latitudes,
-                "equinox": "J2000",
-                "include_ecliptic": False,
-            },
-            "galactic_grid": {
-                "longitude": longitudes,
-                "latitude": latitudes,
-                "include_plane": False,
-            },
-            "altaz_grid": {
-                "azimuth": longitudes,
-                "altitude": tuple(range(5, 90, 5)),
-                "include_horizon": False,
-            },
-        }
-    if family == "regional":
-        longitudes = tuple(range(0, 360, 15))
-        latitudes = _latitude_values(75, 15)
-        return {
-            "equatorial_grid": {
-                "ra": longitudes,
-                "dec": latitudes,
-                "frame": "fk5",
-                "equinox": "J2000",
-            },
-            "ecliptic_grid": {
-                "longitude": longitudes,
-                "latitude": latitudes,
-                "equinox": "J2000",
-                "include_ecliptic": False,
-            },
-            "galactic_grid": {
-                "longitude": longitudes,
-                "latitude": latitudes,
-                "include_plane": False,
-            },
-            "altaz_grid": {
-                "azimuth": longitudes,
-                "altitude": tuple(range(15, 90, 15)),
-                "include_horizon": False,
-            },
-        }
-    longitudes = tuple(range(0, 360, 30))
-    samples = 1441
-    if family == "circumpolar":
-        equatorial_latitudes = (-85, -80, -75)
-        other_latitudes = _latitude_values(75, 15)
-    else:
-        equatorial_latitudes = _latitude_values(75, 15)
-        other_latitudes = _latitude_values(60, 15)
+def _view_span_deg(family, frame):
+    if frame is not None:
+        diameter = getattr(frame, "field_diameter_deg", None)
+        if diameter is not None:
+            return float(diameter)
+        dimensions = tuple(
+            value for value in (
+                getattr(frame, "field_width_deg", None),
+                getattr(frame, "field_height_deg", None),
+            ) if value is not None
+        )
+        if dimensions:
+            return max(map(float, dimensions))
+        limiting = getattr(frame, "limiting_declination_deg", None)
+        if limiting is not None:
+            return 2.0 * (90.0 - abs(float(limiting)))
+    return 180.0 if family == "planisphere" else 60.0
+
+
+def _grid_specifications(family, frame=None):
+    step = 15 if _view_span_deg(family, frame) < 60.0 else 30
+    longitudes = tuple(range(0, 360, step))
+    latitudes = _latitude_values(75, step)
+    samples = 721 if step == 15 else 1441
     return {
         "equatorial_grid": {
             "ra": longitudes,
-            "dec": equatorial_latitudes,
+            "dec": latitudes,
             "frame": "fk5",
             "equinox": "J2000",
             "samples": samples,
@@ -104,27 +64,27 @@ def _grid_specifications(family):
         },
         "ecliptic_grid": {
             "longitude": longitudes,
-            "latitude": other_latitudes,
+            "latitude": latitudes,
             "equinox": "J2000",
             "samples": samples,
             "include_ecliptic": False,
         },
         "galactic_grid": {
             "longitude": longitudes,
-            "latitude": other_latitudes,
+            "latitude": latitudes,
             "samples": samples,
             "include_plane": False,
         },
         "altaz_grid": {
             "azimuth": longitudes,
-            "altitude": tuple(range(15, 90, 15)),
+            "altitude": tuple(range(step, 90, step)),
             "samples": samples,
             "include_horizon": False,
         },
     }
 
 
-def configure_chart_request_grids(sky, request):
+def configure_chart_request_grids(sky, request, *, frame=None):
     """Replace request-time grids with the selected family configuration."""
     if not isinstance(request, ChartRequest):
         raise TypeError("request must be a ChartRequest.")
@@ -136,7 +96,7 @@ def configure_chart_request_grids(sky, request):
             sky.remove(layer)
 
     requested = requested_coordinate_grids(request.detail)
-    specifications = _grid_specifications(request.family)
+    specifications = _grid_specifications(request.family, frame)
     configured = []
     for name, method_name in (
         ("equatorial_grid", "add_equatorial_grid"),

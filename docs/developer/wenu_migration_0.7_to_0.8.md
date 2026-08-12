@@ -368,6 +368,15 @@ Milestone 46C.8O.
 
 ### Milestone 46C.8O — Verify and close the example migration
 
+#### Milestone 46C.8O.1 — Establish ordinary equatorial-grid defaults
+
+- enable the labeled equatorial grid by default in the ordinary CLI while
+  retaining an explicit suppression switch;
+- derive 15-degree spacing for views smaller than 60 degrees and 30-degree
+  spacing otherwise from the resolved geometrical frame;
+- format equatorial right ascension labels as `hh:mm` and all other grid
+  coordinates in degrees.
+
 - verify Centaurus A, Omega Centauri, regional single and group charts,
   Serpens, masks, furniture, products, and all retained CLI controls;
 - run focused, full, and mandatory atlas-print visual regressions;

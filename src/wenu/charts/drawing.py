@@ -96,7 +96,7 @@ def draw_chart_view(
         language=language,
     )
     _validate_load_profile(view, overrides)
-    configure_chart_request_grids(view.sky, request)
+    configure_chart_request_grids(view.sky, request, frame=view.frame)
     prepared = PreparedChartRequest(
         chart=view.chart,
         resolved=replace(view._prepared.resolved, request=request),

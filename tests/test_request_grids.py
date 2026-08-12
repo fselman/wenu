@@ -1,6 +1,7 @@
 """Request-time semantic grid configuration contracts."""
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -77,16 +78,29 @@ def test_individual_cli_addition_overrides_disabled_general_alias():
 
 
 @pytest.mark.parametrize(
-    ("family", "step", "samples"),
+    ("family", "frame", "step", "samples"),
     (
-        ("planisphere", 30, 1441),
-        ("regional", 15, 721),
-        ("circumpolar", 30, 1441),
-        ("binocular", 5, 721),
+        ("planisphere", None, 30, 1441),
+        ("regional", SimpleNamespace(
+            field_width_deg=59.0, field_height_deg=40.0,
+            field_diameter_deg=None, limiting_declination_deg=None,
+        ), 15, 721),
+        ("regional", SimpleNamespace(
+            field_width_deg=60.0, field_height_deg=40.0,
+            field_diameter_deg=None, limiting_declination_deg=None,
+        ), 30, 1441),
+        ("circumpolar", SimpleNamespace(
+            field_width_deg=None, field_height_deg=None,
+            field_diameter_deg=None, limiting_declination_deg=-69.75,
+        ), 15, 721),
+        ("binocular", SimpleNamespace(
+            field_width_deg=None, field_height_deg=None,
+            field_diameter_deg=6.5, limiting_declination_deg=None,
+        ), 15, 721),
     ),
 )
-def test_family_grid_density_matches_canonical_examples(
-    family, step, samples
+def test_view_grid_density_uses_resolved_angular_span(
+    family, frame, step, samples
 ):
     sky = CelestialSphere(object())
     configured = configure_chart_request_grids(
@@ -97,6 +111,7 @@ def test_family_grid_density_matches_canonical_examples(
                 enabled_layer_additions={"coordinate_grids"}
             ),
         ),
+        frame=frame,
     )
 
     assert tuple(grid.coordinate_system for grid in configured) == (
@@ -130,7 +145,7 @@ def test_reconfiguration_replaces_grids_without_accumulation():
     assert len(first) == len(second) == 1
     assert first[0] not in sky.layers
     assert grids(sky) == second
-    assert second[0].ra == tuple(range(0, 360, 5))
+    assert second[0].ra == tuple(range(0, 360, 30))
 
 
 def test_request_without_grids_clears_previous_request_geometry():

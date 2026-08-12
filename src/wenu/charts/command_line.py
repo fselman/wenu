@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 from collections.abc import Mapping
 from dataclasses import fields
 
@@ -33,9 +34,25 @@ _REFERENCE_LABELS = {
 }
 
 
+class _DisableDefaultEquatorialGrid(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, "equatorial_grid", False)
+        setattr(namespace, "equatorial_grid_labels", False)
+
+
 def add_chart_cli_arguments(parser, *, default_output):
     """Add the complete common CLI contract for ordinary chart views."""
     add_chart_arguments(parser, default_output=default_output)
+    parser.set_defaults(
+        equatorial_grid=True,
+        equatorial_grid_labels=True,
+    )
+    parser.add_argument(
+        "--no-equatorial-grid",
+        action=_DisableDefaultEquatorialGrid,
+        nargs=0,
+        help="omit the default labeled equatorial grid",
+    )
     parser.add_argument("--credits", action="store_true")
     parser.add_argument(
         "--no-center", action="store_false", dest="center",

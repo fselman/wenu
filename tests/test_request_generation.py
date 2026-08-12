@@ -274,7 +274,7 @@ def test_generation_owns_and_closes_its_observer(monkeypatch, tmp_path):
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.configure_chart_request_grids",
-        lambda actual, value: events.append("grids"),
+        lambda actual, value, *, frame: events.append("grids"),
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.export_prepared_chart",
@@ -343,7 +343,7 @@ def test_public_build_boundary_prepares_without_exporting(
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.configure_chart_request_grids",
-        lambda actual, value: events.append("grids"),
+        lambda actual, value, *, frame: events.append("grids"),
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.prepare_chart_request",
@@ -417,7 +417,7 @@ def test_generation_reuses_a_compatible_supplied_sphere(
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.configure_chart_request_grids",
-        lambda actual, value: events.append((actual, value)),
+        lambda actual, value, *, frame: events.append((actual, value)),
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.export_prepared_chart",
