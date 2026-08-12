@@ -44,6 +44,10 @@ request facade migrates.
 `sky/observed_cache.py` defines observer/time/source cache-key identity and
 freezes shared point and polygon arrays; individual layers continue to own
 their cached spherical realizations.
+`sky/horizon.py` owns the semantic `HorizonReference` layer. It delegates its
+single closed altitude-zero spherical curve to native `AltAzGrid` geometry
+without registering the coordinate grid or acquiring projection, masking,
+style, or chart-boundary responsibility.
 `sky/constellation_lines.py` adapts the packaged Western `Ser` line record
 into the `Ser1` and `Ser2` catalogue identities required by loading and
 framing, while retaining both the visual line joining Caput to Cauda and

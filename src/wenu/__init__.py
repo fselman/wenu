@@ -17,6 +17,7 @@ from .objects.supernova_remnants import SupernovaRemnants
 from .objects.planetary_nebulae import PlanetaryNebulae
 from .sky.milky_way import MilkyWayIsophotes
 from .sky.magellanic_clouds import MagellanicCloudIsophotes
+from .sky.horizon import HorizonReference
 from .sky.coordinate_grids import (
     AltAzGrid,
     CoordinatesGrid,
@@ -240,6 +241,7 @@ __all__ = [
     "EclipticGrid",
     "EquatorialGrid",
     "GalacticGrid",
+    "HorizonReference",
     "resolve_constellation_label_offsets",
     "LABEL_POSITION_VECTORS",
     "BoundaryKind",

@@ -496,6 +496,8 @@ Milestones 46C.8Q.2 through 46C.8Q.9.
 - preserve observer-independent maximal-sphere ownership and observer-bound
   realization.
 
+**Status:** Implemented.
+
 ##### Milestone 46C.8Q.3 — Add shared request controls
 
 - add independent `--horizon` and `--horizon-mask` switches to the common

@@ -465,6 +465,13 @@ requests order-independent without adding coordinate grids to the maximal
 load profile or mutating astronomical catalogue content. Ordinary generation
 calls this boundary automatically after request resolution.
 
+`HorizonReference(observer=None, samples=721)` is the semantic observer-local
+altitude-zero curve. `spherical_geometry(observer)` returns one closed native
+AltAz curve named `horizon`; an observerless instance requires the execution
+observer explicitly. `CelestialSphere.add_horizon_reference()` registers the
+layer without adding an `AltAzGrid`. The maximal-sphere factory does not add
+this request-time geometry, and Q.2 introduces no CLI or visible default.
+
 `CelestialSphere.draw_chart(..., observer=observer)` selects the scientific
 observer explicitly for every registered layer. The same optional keyword is
 carried by canonical chart rendering and export, request preparation and

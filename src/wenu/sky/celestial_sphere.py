@@ -17,6 +17,7 @@ from wenu.sky.magellanic_clouds import MagellanicCloudIsophotes
 from wenu.sky.constellation_boundaries import ConstellationBoundaries
 from wenu.sky.constellation_labels import ConstellationLabels
 from wenu.sky.constellations import Constellations
+from wenu.sky.horizon import HorizonReference
 from wenu.sky.coordinate_grids import (
     AltAzGrid,
     EclipticGrid,
@@ -47,6 +48,7 @@ class CelestialSphere:
         self.constellation_boundaries = None
         self.constellation_lines = None
         self.constellation_labels = None
+        self.horizon_reference = None
         self._layers: list[SkyLayer] = []
 
     @property
@@ -451,6 +453,16 @@ class CelestialSphere:
             altitude=altitude,
             include_horizon=include_horizon,
         )
+        self.add(layer)
+        return layer
+
+    def add_horizon_reference(self, *, samples=721) -> HorizonReference:
+        """Create and register the semantic observer horizon."""
+        layer = HorizonReference(
+            observer=self.observer,
+            samples=samples,
+        )
+        self.horizon_reference = layer
         self.add(layer)
         return layer
 

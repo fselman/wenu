@@ -3,6 +3,7 @@ from .constellations import Constellations
 from .constellation_boundaries import ConstellationBoundaries
 from .constellation_lines import ConstellationLines
 from .geometrical_object import GeometricalObject
+from .horizon import HorizonReference
 from .points import CelestialPoints
 from .sky_layer import SkyLayer
 from .milky_way import MilkyWayIsophotes
@@ -21,6 +22,7 @@ __all__ = [
         "ConstellationBoundaries",
         "ConstellationLines",
         "GeometricalObject",
+        "HorizonReference",
         "SkyLayer",
         "MilkyWayIsophotes",
         "MagellanicCloudIsophotes",

@@ -278,3 +278,10 @@ below-horizon-mask roles derived from the same observer-bound geometry.
 The horizon mask will reuse the resolved translucent outside-mask style, and
 combined constellation and horizon restrictions will be composed into one
 visible opening before a single mask is painted so opacity cannot accumulate.
+
+Milestone 46C.8Q.2 adds public semantic `HorizonReference` geometry. It is an
+observer-local `GeometricalObject` whose spherical realization delegates to
+the existing native AltAz altitude-zero curve and records one closed
+`horizon` reference. `CelestialSphere.add_horizon_reference()` registers it
+independently of `AltAzGrid`; the canonical maximal sphere does not load it,
+and no request, CLI, style, masking, or default drawing behavior changes yet.
