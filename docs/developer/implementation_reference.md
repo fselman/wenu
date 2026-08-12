@@ -442,6 +442,13 @@ requests order-independent without adding coordinate grids to the maximal
 load profile or mutating astronomical catalogue content. Ordinary generation
 calls this boundary automatically after request resolution.
 
+`CelestialSphere.draw_chart(..., observer=observer)` selects the scientific
+observer explicitly for every registered layer. The same optional keyword is
+carried by canonical chart rendering and export, request preparation and
+export, spatial selection, masking, constellation-label placement, and
+contextual or celestial-reference furniture. Omitting it uses `sky.observer`
+for backward compatibility; an observerless sphere must receive it explicitly.
+
 ```python
 result = generate_chart_request(
     ChartRequest(

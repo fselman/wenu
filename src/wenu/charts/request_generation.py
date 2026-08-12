@@ -89,12 +89,13 @@ def _request_title(prepared):
     }.get(request.family, request.family.title())
 
 
-def export_prepared_chart(sky, prepared):
+def export_prepared_chart(sky, prepared, *, observer=None):
     """Compose and export every requested product exactly once."""
     if not isinstance(prepared, PreparedChartRequest):
         raise TypeError("prepared must be a PreparedChartRequest.")
-    if getattr(sky, "observer", None) is None:
-        raise TypeError("sky must provide its scientific observer.")
+    resolved_observer = getattr(sky, "observer", None) if observer is None else observer
+    if resolved_observer is None:
+        raise TypeError("request export requires an observer.")
 
     from matplotlib import pyplot as plt
 
@@ -104,8 +105,11 @@ def export_prepared_chart(sky, prepared):
         request.detail,
         content_selection=request.content,
     )
+    furniture_options = {}
+    if observer is not None:
+        furniture_options["observer"] = resolved_observer
     furniture = resolve_request_furniture_context(
-        request.furniture, chart, sky
+        request.furniture, chart, sky, **furniture_options
     )
     title = _request_title(prepared)
     exports = []
@@ -136,11 +140,14 @@ def export_prepared_chart(sky, prepared):
         ))
         try:
             composition.style.configure_axes(ax, title=title)
+            export_options = {"composition": composition}
+            if observer is not None:
+                export_options["observer"] = resolved_observer
             result = chart.export(
                 sky,
                 MatplotlibRenderer(ax),
                 output,
-                composition=composition,
+                **export_options,
             )
         finally:
             plt.close(figure)

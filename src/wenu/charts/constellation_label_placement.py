@@ -22,6 +22,7 @@ def apply_visible_constellation_label_anchors(
     projection,
     viewport,
     boundary,
+    observer=None,
     inset=0.94,
     maximum_boundary_vertices=73,
 ):
@@ -54,7 +55,10 @@ def apply_visible_constellation_label_anchors(
             raise TypeError(
                 "constellation label preparation requires ProjectedPoints."
             )
-        region_spherical = regions.spherical_geometry(sky.observer)
+        resolved_observer = getattr(sky, "observer", None) if observer is None else observer
+        if resolved_observer is None:
+            raise TypeError("constellation label placement requires an observer.")
+        region_spherical = regions.spherical_geometry(resolved_observer)
         region_projected = project_geometry_for_viewport(
             region_spherical,
             projection=projection,

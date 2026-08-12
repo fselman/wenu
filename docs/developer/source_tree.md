@@ -81,6 +81,11 @@ composition boundary.
 `charts/request_furniture.py` realizes family-neutral declarative chart and
 observer context only after a request chart exists. It feeds the established
 legend furniture and contains no chart construction or example policy.
+Canonical chart execution and its downstream geometry and furniture helpers
+accept an explicit scientific observer while retaining their bound-observer
+compatibility form. This is the seam for the later observer-independent
+maximal-sphere factory; it does not yet remove the observer accepted by the
+existing factory.
 
 ## Responsibility mapping
 

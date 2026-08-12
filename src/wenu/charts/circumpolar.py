@@ -186,6 +186,7 @@ class CircumpolarChart:
             )
         layer_options = kwargs.pop("layer_options", None)
         export_options = kwargs.pop("export_options", None)
+        observer = kwargs.pop("observer", None)
         boundary_style = kwargs.pop("boundary_style", None)
         if kwargs:
             unexpected = next(iter(kwargs))
@@ -197,6 +198,7 @@ class CircumpolarChart:
             sky,
             renderer,
             path,
+            observer=observer,
             composition=composition,
             layer_options=layer_options,
             export_options=export_options,

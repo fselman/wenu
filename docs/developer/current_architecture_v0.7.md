@@ -157,3 +157,10 @@ Its compatibility `build_chart()` uses `build_chart_request()` and accepts a
 caller-owned sphere. Any packaged drawable target is accepted without a script
 change, while Centaurus A and Omega Centauri retain their approved fields and
 publication identities.
+
+Milestone 46C.8H introduces the execution seam required by the target
+observer-independent sphere. `CelestialSphere.draw_chart()` accepts an
+explicit observer, which overrides its compatibility bound observer, and the
+canonical chart, masking, spatial-selection, label-placement, context, and
+reference-furniture paths carry that observer without changing the layer
+contract. Existing calls that omit it retain their v0.7 behavior.

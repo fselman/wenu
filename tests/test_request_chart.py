@@ -139,5 +139,24 @@ def test_preparation_rejects_unresolved_or_observerless_inputs():
     ))
     with pytest.raises(TypeError, match="ResolvedChartRequest"):
         prepare_chart_request(sky(), object())
-    with pytest.raises(TypeError, match="scientific observer"):
+    with pytest.raises(TypeError, match="requires an observer"):
         prepare_chart_request(SimpleNamespace(), resolved)
+
+
+def test_preparation_uses_explicit_observer_for_observerless_sphere(monkeypatch):
+    resolved = resolve(request(
+        "binocular", subject=ChartSubjectRequest(target="M57")
+    ))
+    source = sky()
+    source.observer = None
+    explicit_observer = object()
+    calls = {}
+
+    def build(cls, observer, coordinate, **kwargs):
+        calls["observer"] = observer
+        return SimpleNamespace(projection=object(), viewport=object())
+
+    monkeypatch.setattr(BinocularChart, "from_coordinate", classmethod(build))
+    prepare_chart_request(source, resolved, observer=explicit_observer)
+
+    assert calls["observer"] is explicit_observer

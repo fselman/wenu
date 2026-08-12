@@ -31,7 +31,7 @@ def _target_coordinate(target):
     )
 
 
-def _regional_chart(sky, resolved):
+def _regional_chart(sky, resolved, observer):
     subject = resolved.constellations
     frame = resolved.frame
     if subject is None:
@@ -47,18 +47,19 @@ def _regional_chart(sky, resolved):
     }
     if frame.field_width_deg is None:
         return RegionalChart.from_constellations(
-            sky, subject.line_constellations, **options
+            sky, subject.line_constellations, observer=observer, **options
         )
     return RegionalChart.from_constellations(
         sky,
         subject.line_constellations,
+        observer=observer,
         angular_radius_deg=frame.field_height_deg / 2.0,
         aspect_ratio=frame.field_width_deg / frame.field_height_deg,
         **options,
     )
 
 
-def _chart_from_resolved(sky, resolved):
+def _chart_from_resolved(sky, resolved, observer):
     request = resolved.request
     frame = resolved.frame
     if request.family == "planisphere":
@@ -71,10 +72,10 @@ def _chart_from_resolved(sky, resolved):
             outside_mask_constellations=mask,
         )
     if request.family == "regional":
-        return _regional_chart(sky, resolved)
+        return _regional_chart(sky, resolved, observer)
     if request.family == "circumpolar":
         return CircumpolarChart(
-            sky.observer,
+            observer,
             limiting_declination_deg=(
                 request.frame.limiting_declination_deg
             ),
@@ -85,7 +86,7 @@ def _chart_from_resolved(sky, resolved):
         if resolved.target is None:
             raise ValueError("A binocular chart requires a resolved target.")
         return BinocularChart.from_coordinate(
-            sky.observer,
+            observer,
             _target_coordinate(resolved.target),
             field_diameter_deg=frame.field_diameter_deg,
             north_up=frame.position_angle_deg == 0.0,
@@ -94,12 +95,15 @@ def _chart_from_resolved(sky, resolved):
     raise ValueError(f"Unsupported chart family {request.family!r}.")
 
 
-def prepare_chart_request(sky, resolved):
+def prepare_chart_request(sky, resolved, *, observer=None):
     """Construct a chart and apply immutable field-content selection."""
     if not isinstance(resolved, ResolvedChartRequest):
         raise TypeError("resolved must be a ResolvedChartRequest.")
-    if getattr(sky, "observer", None) is None:
-        raise TypeError("sky must provide its scientific observer.")
-    chart = _chart_from_resolved(sky, resolved)
-    selected = select_spatial_chart_content(sky, chart, resolved)
+    resolved_observer = getattr(sky, "observer", None) if observer is None else observer
+    if resolved_observer is None:
+        raise TypeError("chart preparation requires an observer.")
+    chart = _chart_from_resolved(sky, resolved, resolved_observer)
+    selected = select_spatial_chart_content(
+        sky, chart, resolved, observer=resolved_observer
+    )
     return PreparedChartRequest(chart=chart, resolved=selected)

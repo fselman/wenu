@@ -26,6 +26,7 @@ def draw_constellation_outside_mask(
     projection,
     renderer,
     viewport,
+    observer=None,
     constellations,
     style,
 ):
@@ -36,7 +37,10 @@ def draw_constellation_outside_mask(
             "Add constellation boundaries before requesting an "
             "outside-constellation mask."
         )
-    spherical = boundaries.spherical_geometry(sky.observer)
+    resolved_observer = getattr(sky, "observer", None) if observer is None else observer
+    if resolved_observer is None:
+        raise TypeError("outside masking requires an observer.")
+    spherical = boundaries.spherical_geometry(resolved_observer)
     projected = projection.project_geometry(spherical)
     if not isinstance(projected, ProjectedPolygons):
         raise TypeError(

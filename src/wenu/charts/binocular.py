@@ -157,6 +157,7 @@ class BinocularChart:
         sky,
         renderer,
         *,
+        observer=None,
         style=None,
         layer_options=None,
         boundary_style=None,
@@ -202,6 +203,7 @@ class BinocularChart:
             projection=self.projection,
             viewport=self.viewport,
             boundary=self.field_stop,
+            observer=observer,
         )
         renderer.set_clip_boundary(
             self.field_stop,
@@ -219,6 +221,7 @@ class BinocularChart:
         return self.regional_chart.render(
             sky,
             renderer,
+            observer=observer,
             style=None,
             layer_options=options,
         )
@@ -229,6 +232,7 @@ class BinocularChart:
         renderer,
         path,
         *,
+        observer=None,
         style=None,
         layer_options=None,
         boundary_style=None,
@@ -250,6 +254,7 @@ class BinocularChart:
                 sky,
                 renderer,
                 path,
+                observer=observer,
                 composition=composition,
                 layer_options=layer_options,
                 export_options=export_options,
@@ -258,6 +263,7 @@ class BinocularChart:
         result = self.render(
             sky,
             renderer,
+            observer=observer,
             style=style,
             layer_options=layer_options,
             boundary_style=boundary_style,

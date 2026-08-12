@@ -20,12 +20,12 @@ FIELD_CATALOGUE_LAYERS = {
 }
 
 
-def _visible_identifiers(sky, chart, layer):
+def _visible_identifiers(sky, chart, layer, observer):
     centers = getattr(layer, "spherical_centers", None)
     geometry = (
-        centers(sky.observer)
+        centers(observer)
         if callable(centers)
-        else layer.spherical_geometry(sky.observer)
+        else layer.spherical_geometry(observer)
     )
     x, y = chart.projection.project_spherical(
         geometry.lon_deg, geometry.lat_deg
@@ -46,10 +46,13 @@ def _visible_identifiers(sky, chart, layer):
     )
 
 
-def select_spatial_chart_content(sky, chart, resolved):
+def select_spatial_chart_content(sky, chart, resolved, *, observer=None):
     """Return a new resolved request containing every field catalogue ID."""
     if not isinstance(resolved, ResolvedChartRequest):
         raise TypeError("resolved must be a ResolvedChartRequest.")
+    resolved_observer = getattr(sky, "observer", None) if observer is None else observer
+    if resolved_observer is None:
+        raise TypeError("spatial selection requires an observer.")
     values = {
         field.name: getattr(resolved.request.content, field.name)
         for field in fields(SkyContentSelection)
@@ -58,7 +61,9 @@ def select_spatial_chart_content(sky, chart, resolved):
         layer = getattr(sky, attribute, None)
         if layer is None:
             continue
-        automatic = _visible_identifiers(sky, chart, layer)
+        automatic = _visible_identifiers(
+            sky, chart, layer, resolved_observer
+        )
         explicit = values[content_name]
         selected = (
             automatic if explicit is None else automatic | explicit

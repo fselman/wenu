@@ -174,7 +174,7 @@ def _add_selected_poles(points, system, selection, **style):
         add(pole=pole, marker="x", **style)
 
 
-def build_celestial_reference_sky(sky, composition):
+def build_celestial_reference_sky(sky, composition, *, observer=None):
     """Build an unregistered reference-only sky for one composition."""
     furniture = composition.furniture
     if furniture is None:
@@ -193,11 +193,14 @@ def build_celestial_reference_sky(sky, composition):
     if not requested:
         return None
 
-    reference_sky = CelestialSphere(sky.observer)
+    resolved_observer = getattr(sky, "observer", None) if observer is None else observer
+    if resolved_observer is None:
+        raise TypeError("celestial reference furniture requires an observer.")
+    reference_sky = CelestialSphere(resolved_observer)
     if references.celestial_equator.enabled:
         reference_sky.add(
             EquatorialGrid(
-                sky.observer,
+                resolved_observer,
                 ra=(),
                 dec=(),
                 include_equator=True,
@@ -208,7 +211,7 @@ def build_celestial_reference_sky(sky, composition):
     if references.ecliptic.enabled:
         reference_sky.add(
             EclipticGrid(
-                sky.observer,
+                resolved_observer,
                 longitude=(),
                 latitude=(),
                 include_ecliptic=True,
@@ -217,7 +220,7 @@ def build_celestial_reference_sky(sky, composition):
     if references.galactic_plane.enabled:
         reference_sky.add(
             GalacticGrid(
-                sky.observer,
+                resolved_observer,
                 longitude=(),
                 latitude=(),
                 include_plane=True,
@@ -314,9 +317,13 @@ def draw_celestial_reference_furniture(
     sky,
     renderer,
     composition,
+    *,
+    observer=None,
 ):
     """Draw requested references through the canonical geometry pipeline."""
-    reference_sky = build_celestial_reference_sky(sky, composition)
+    reference_sky = build_celestial_reference_sky(
+        sky, composition, observer=observer
+    )
     if reference_sky is None:
         return None
     projection = chart.projection
@@ -324,6 +331,7 @@ def draw_celestial_reference_furniture(
     rendering = reference_sky.draw_chart(
         projection=projection,
         renderer=renderer,
+        observer=observer,
         viewport=viewport,
         layer_options=_reference_layer_options(
             reference_sky,

@@ -243,6 +243,13 @@ until that interface is implemented and verified.
   contract and preserve complete observer/time/source cache keys;
 - prove that explicit observers do not change approved atlas-print output.
 
+**Status:** Implemented. `CelestialSphere.draw_chart()` and the canonical
+chart render/export, masking, spatial-selection, label-placement, reference
+furniture, request-furniture, and request preparation/export paths accept an
+explicit observer. Omitting it preserves the observer-bound compatibility
+form. Layer realization continues exclusively through
+`SkyLayer.spherical_geometry(observer)`.
+
 ### Milestone 46C.8I — Decouple maximal-sphere construction
 
 - expose a concise wrapper over `build_maximal_sphere()` that returns an

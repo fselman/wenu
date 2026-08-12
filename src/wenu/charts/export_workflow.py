@@ -79,6 +79,7 @@ def export_composed_chart(
     renderer,
     path,
     *,
+    observer=None,
     composition,
     layer_options=None,
     export_options=None,
@@ -94,6 +95,7 @@ def export_composed_chart(
     rendering = chart.render(
         sky,
         renderer,
+        observer=observer,
         style=composition.style,
         layer_options=application.layer_options,
         **({} if render_options is None else dict(render_options)),
@@ -109,6 +111,7 @@ def export_composed_chart(
             sky,
             renderer,
             composition,
+            observer=observer,
         )
     if composition.legends is not None:
         from .chart_legend_workflow import draw_resolved_chart_legends

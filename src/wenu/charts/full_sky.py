@@ -197,6 +197,7 @@ class FullSkyChart:
         sky,
         renderer,
         *,
+        observer=None,
         style=None,
         layer_options=None,
     ):
@@ -242,6 +243,7 @@ class FullSkyChart:
             projection=self.projection,
             viewport=self.viewport,
             boundary=self.horizon,
+            observer=observer,
         )
 
         set_boundary = getattr(renderer, "set_clip_boundary", None)
@@ -271,6 +273,7 @@ class FullSkyChart:
         result = sky.draw_chart(
             projection=projection,
             renderer=renderer,
+            observer=observer,
             viewport=viewport,
             layer_options=options,
             project_geometry=lambda spherical: (
@@ -301,6 +304,7 @@ class FullSkyChart:
                 projection=projection,
                 renderer=renderer,
                 viewport=viewport,
+                observer=observer,
                 constellations=self.outside_mask_constellations,
                 style=mask_style,
             )
@@ -312,6 +316,7 @@ class FullSkyChart:
         renderer,
         path,
         *,
+        observer=None,
         style=None,
         layer_options=None,
         export_options=None,
@@ -335,6 +340,7 @@ class FullSkyChart:
                 sky,
                 renderer,
                 path,
+                observer=observer,
                 composition=composition,
                 layer_options=layer_options,
                 export_options=export_options,
@@ -343,6 +349,7 @@ class FullSkyChart:
         result = self.render(
             sky,
             renderer,
+            observer=observer,
             style=style,
             layer_options=layer_options,
         )

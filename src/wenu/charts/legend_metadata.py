@@ -87,7 +87,7 @@ def _grid_description(grid) -> tuple[str, str | None, str | None, str]:
     return system, frame, epoch, f"Coordinate grid: {system}"
 
 
-def _center_coordinates(chart, sky) -> tuple[str, str]:
+def _center_coordinates(chart, sky, observer=None) -> tuple[str, str]:
     context = getattr(chart, "chart_context", None)
     altitude = getattr(
         chart,
@@ -99,10 +99,13 @@ def _center_coordinates(chart, sky) -> tuple[str, str]:
         "center_az_deg",
         getattr(context, "tangent_longitude_deg", 0.0),
     )
+    resolved_observer = getattr(sky, "observer", None) if observer is None else observer
+    if resolved_observer is None:
+        raise TypeError("chart metadata requires an observer.")
     horizontal = SkyCoord(
         az=float(azimuth) * u.deg,
         alt=float(altitude) * u.deg,
-        frame=sky.observer.altaz_frame,
+        frame=resolved_observer.altaz_frame,
     )
     center = horizontal.transform_to(FK5(equinox=Time("J2000")))
     ra = center.ra.to_string(unit=u.hour, sep="hms", precision=0)
@@ -115,17 +118,19 @@ def _center_coordinates(chart, sky) -> tuple[str, str]:
     return ra, dec
 
 
-def _center_text(chart, sky) -> str:
-    ra, dec = _center_coordinates(chart, sky)
+def _center_text(chart, sky, observer=None) -> str:
+    ra, dec = _center_coordinates(chart, sky, observer)
     return f"Center: RA {ra}, Dec {dec}"
 
 
-def resolve_legend_metadata(chart, sky, *, grid=None) -> LegendMetadata:
+def resolve_legend_metadata(
+    chart, sky, *, observer=None, grid=None
+) -> LegendMetadata:
     """Resolve center and active-grid descriptions for a chart legend."""
     active = active_coordinate_grid(sky, explicit=grid)
     system, frame, epoch, description = _grid_description(active)
     return LegendMetadata(
-        center_text=_center_text(chart, sky),
+        center_text=_center_text(chart, sky, observer),
         grid_text=description,
         coordinate_system=system,
         frame=frame,
@@ -137,16 +142,19 @@ def chart_context_lines(
     chart,
     sky,
     *,
+    observer=None,
     center: bool = True,
     grid: bool = True,
 ) -> tuple[str, ...]:
     """Return compact, independently selectable chart context lines."""
     lines = []
     if center:
-        ra, dec = _center_coordinates(chart, sky)
+        ra, dec = _center_coordinates(chart, sky, observer)
         lines.extend((f"RA {ra}", f"Dec {dec}"))
     if grid:
-        description = resolve_legend_metadata(chart, sky).grid_text
+        description = resolve_legend_metadata(
+            chart, sky, observer=observer
+        ).grid_text
         lines.append(
             description.split(": ", 1)[-1]
             if ": " in description

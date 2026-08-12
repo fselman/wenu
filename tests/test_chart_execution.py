@@ -8,6 +8,7 @@ matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pytest
 
 from wenu.sky.rendering_results import ChartRenderingResult
 from wenu.geometry.projected import ProjectedPoints
@@ -118,6 +119,34 @@ def test_layer_instance_options_override_name_options():
         "points",
         {"style": {"color": "cyan"}},
     )
+
+
+def test_explicit_observer_overrides_bound_observer():
+    calls = []
+    bound_observer = object()
+    explicit_observer = object()
+    sky = CelestialSphere(bound_observer)
+    sky.add(StubLayer("points", calls, 10.0))
+
+    sky.draw_chart(
+        projection=StubProjection(calls),
+        renderer=StubRenderer(calls),
+        observer=explicit_observer,
+    )
+
+    assert ("geometry", "points", explicit_observer) in calls
+    assert ("geometry", "points", bound_observer) not in calls
+
+
+def test_observerless_sphere_requires_explicit_observer():
+    sky = CelestialSphere(None)
+    sky.add(StubLayer("points", [], 10.0))
+
+    with pytest.raises(TypeError, match="requires an observer"):
+        sky.draw_chart(
+            projection=StubProjection([]),
+            renderer=StubRenderer([]),
+        )
 
 
 def test_repeated_rendering_with_different_projection_and_viewport():

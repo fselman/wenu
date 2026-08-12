@@ -251,6 +251,7 @@ class RegionalChart:
         sky,
         constellations,
         *,
+        observer=None,
         angular_radius_deg=None,
         aspect_ratio=1.0,
         framing_padding=1.15,
@@ -268,8 +269,11 @@ class RegionalChart:
             raise RuntimeError(
                 "Add stars and constellations before deriving a center."
             )
+        resolved_observer = getattr(sky, "observer", None) if observer is None else observer
+        if resolved_observer is None:
+            raise TypeError("constellation framing requires an observer.")
         stars = sky.stars.spherical_geometry(
-            sky.observer,
+            resolved_observer,
             alt_min=-90.0,
         )
         index = {
@@ -314,7 +318,7 @@ class RegionalChart:
                 ),
             )
         position_angle = cls._position_angle(
-            sky.observer,
+            resolved_observer,
             altitude,
             azimuth,
             north_up=north_up,
@@ -413,6 +417,7 @@ class RegionalChart:
         sky,
         renderer,
         *,
+        observer=None,
         style=None,
         layer_options=None,
     ):
@@ -443,6 +448,7 @@ class RegionalChart:
         result = sky.draw_chart(
             projection=projection,
             renderer=renderer,
+            observer=observer,
             viewport=viewport,
             layer_options=options,
             project_geometry=lambda spherical: (
@@ -473,6 +479,7 @@ class RegionalChart:
                 projection=projection,
                 renderer=renderer,
                 viewport=viewport,
+                observer=observer,
                 constellations=self.outside_mask_constellations,
                 style=mask_style,
             )
@@ -484,6 +491,7 @@ class RegionalChart:
         renderer,
         path,
         *,
+        observer=None,
         style=None,
         layer_options=None,
         export_options=None,
@@ -505,6 +513,7 @@ class RegionalChart:
                 sky,
                 renderer,
                 path,
+                observer=observer,
                 composition=composition,
                 layer_options=layer_options,
                 export_options=export_options,
@@ -512,6 +521,7 @@ class RegionalChart:
         result = self.render(
             sky,
             renderer,
+            observer=observer,
             style=style,
             layer_options=layer_options,
         )

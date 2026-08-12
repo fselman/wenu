@@ -28,7 +28,7 @@ from wenu.sky.sky_layer import SkyLayer
 
 
 class CelestialSphere:
-    """The ordered collection of sky layers for one observer."""
+    """The ordered collection of sky layers, optionally bound to an observer."""
 
     def __init__(self, observer) -> None:
         self.observer = observer
@@ -83,11 +83,16 @@ class CelestialSphere:
         *,
         projection,
         renderer,
+        observer=None,
         viewport=None,
         layer_options=None,
         project_geometry=None,
     ) -> ChartRenderingResult:
-        """Render all registered layers through the canonical pipeline."""
+        """Render all registered layers through the canonical pipeline.
+
+        An explicit observer overrides the compatibility observer bound at
+        construction time.
+        """
         if not callable(getattr(projection, "project_geometry", None)):
             raise TypeError(
                 "projection must provide project_geometry()."
@@ -96,6 +101,9 @@ class CelestialSphere:
             raise TypeError("renderer must provide draw().")
         if project_geometry is not None and not callable(project_geometry):
             raise TypeError("project_geometry must be callable or None.")
+        resolved_observer = self.observer if observer is None else observer
+        if resolved_observer is None:
+            raise TypeError("draw_chart requires an observer.")
 
         if viewport is not None:
             apply = getattr(renderer, "apply_viewport", None)
@@ -119,7 +127,7 @@ class CelestialSphere:
                 self._pipeline_options(configured)
             )
             spherical = layer.spherical_geometry(
-                self.observer,
+                resolved_observer,
                 **geometry_options,
             )
             projected = (
