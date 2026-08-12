@@ -426,6 +426,8 @@ Milestone 46C.8O.
 - retain explicit rejection of unimplemented combinations until their
   transformation, projection, and clipping stages exist.
 
+**Status:** Implemented.
+
 ##### Milestone 46C.8P.2 — Add Galactic frame preparation
 
 - transform canonical observer-bound AltAz spherical geometry to Galactic

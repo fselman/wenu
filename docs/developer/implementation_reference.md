@@ -478,6 +478,16 @@ The currently implemented geometry is limited explicitly to stereographic
 projection in the horizontal frame. Style, mode, detail, grids, furniture,
 language, title, and output remain drawing concerns.
 
+`charts.coordinate_frames.horizontal_to_galactic(geometry, observer)` is the
+chart-owned astronomical frame adapter reserved for Galactic all-sky views.
+It accepts `SphericalPoints`, `SphericalCurves`, `SphericalGrid`, or
+`SphericalPolygons`, interprets their generic longitude and latitude as the
+canonical AltAz geometry for `observer.altaz_frame`, and returns the same
+geometry form in `observer.galactic_frame`. Entity identifiers, labels,
+names, closed-curve state, component groups, and metadata are preserved;
+metadata records the AltAz source and Galactic result. It performs no seam
+splitting, planar projection, clipping, rendering, or example adaptation.
+
 `chart_view_defaults(family, group=False)` returns the corresponding frozen
 `ChartViewDefaults` policy from `CHART_VIEW_DEFAULTS`:
 

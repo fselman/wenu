@@ -97,6 +97,10 @@ construction, projection, rendering, or export pipeline.
 Projection and spherical coordinate-frame names are immutable request
 geometry; the view exposes their resolved values rather than maintaining a
 parallel tag.
+`charts/coordinate_frames.py` owns astronomical transformation of canonical
+AltAz spherical geometry into a chart-selected celestial frame before
+projection. It preserves geometry structure and metadata and contains no map
+projection, seam, viewport, renderer, or style implementation.
 `charts/view_defaults.py` owns the immutable public geometry defaults for the
 five ordinary view forms. It contains no catalogue, cache, layer, style,
 furniture, renderer, or output policy.

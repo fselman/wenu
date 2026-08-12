@@ -231,3 +231,10 @@ from its resolved request rather than storing a disconnected projection tag.
 Until the Galactic transformation and Mollweide seam handling are complete,
 the only accepted combination remains stereographic projection in the
 horizontal frame.
+
+Milestone 46C.8P.2 adds the chart-owned pre-projection transformation from
+canonical observer-bound AltAz spherical geometry to Galactic longitude and
+latitude. It handles points, curves, grids, and polygons without changing
+their entity identity or collection metadata. The transformation uses the
+observer's authoritative Astropy frames and remains separate from both sky
+layers and coordinate-neutral map projections.
