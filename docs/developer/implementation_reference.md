@@ -449,6 +449,13 @@ export, spatial selection, masking, constellation-label placement, and
 contextual or celestial-reference furniture. Omitting it uses `sky.observer`
 for backward compatibility; an observerless sphere must receive it explicitly.
 
+`generate_celestial_sphere(profile=CANONICAL_MAXIMAL_SPHERE_PROFILE)` loads
+one reusable observer-independent canonical sphere. The sphere owns its load
+profile, native catalogue content, provenance, and observed-geometry caches,
+but neither it nor its canonical layers select an observer or instant. The
+compatibility `build_maximal_sphere(observer, profile=...)` retains the prior
+observer-bound behavior.
+
 ```python
 result = generate_chart_request(
     ChartRequest(

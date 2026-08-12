@@ -263,6 +263,13 @@ form. Layer realization continues exclusively through
 - make observer ownership and cleanup the responsibility of the caller or the
   request facade that created it.
 
+**Status:** Implemented. `generate_celestial_sphere(profile=...)` is the
+ordinary observer-independent loading operation. It returns the existing
+`CelestialSphere` with the selected load profile and all canonical native
+content registered, but with no sphere- or layer-bound observer. The existing
+`build_maximal_sphere(observer, profile=...)` factory and request facade remain
+available unchanged during migration.
+
 ### Milestone 46C.8J — Add the observer-bound geometrical view facade
 
 - translate friendly observer, instant, family, subject, projection, framing,

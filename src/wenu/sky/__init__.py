@@ -11,6 +11,7 @@ from .maximal_sphere import (
     CANONICAL_MAXIMAL_SPHERE_PROFILE,
     CelestialSphereLoadProfile,
     build_maximal_sphere,
+    generate_celestial_sphere,
 )
 
 __all__ = [
@@ -26,4 +27,5 @@ __all__ = [
         "CANONICAL_MAXIMAL_SPHERE_PROFILE",
         "CelestialSphereLoadProfile",
         "build_maximal_sphere",
+        "generate_celestial_sphere",
         ]

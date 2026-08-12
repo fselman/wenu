@@ -9,6 +9,7 @@ from wenu import (
     CANONICAL_MAXIMAL_SPHERE_PROFILE,
     CelestialSphereLoadProfile,
     build_maximal_sphere,
+    generate_celestial_sphere,
 )
 from wenu.sky import maximal_sphere
 
@@ -110,3 +111,38 @@ def test_factory_registers_complete_content_without_chart_decisions(
 def test_factory_rejects_an_untyped_profile():
     with pytest.raises(TypeError, match="CelestialSphereLoadProfile"):
         build_maximal_sphere(object(), profile=object())
+
+
+def test_ordinary_factory_generates_an_observer_independent_sphere(
+    monkeypatch,
+):
+    calls = []
+
+    def build(observer, *, profile):
+        calls.append((observer, profile))
+        return object()
+
+    monkeypatch.setattr(maximal_sphere, "build_maximal_sphere", build)
+
+    sphere = generate_celestial_sphere()
+
+    assert sphere is not None
+    assert calls == [(None, CANONICAL_MAXIMAL_SPHERE_PROFILE)]
+
+
+def test_ordinary_factory_rejects_an_untyped_profile():
+    with pytest.raises(TypeError, match="CelestialSphereLoadProfile"):
+        generate_celestial_sphere(profile=object())
+
+
+@pytest.mark.integration
+def test_ordinary_factory_loads_canonical_layers_without_an_observer():
+    sphere = generate_celestial_sphere()
+
+    assert sphere.observer is None
+    assert sphere.load_profile is CANONICAL_MAXIMAL_SPHERE_PROFILE
+    assert len(sphere.layers) == 13
+    assert all(
+        getattr(layer, "observer", None) is None
+        for layer in sphere.layers
+    )

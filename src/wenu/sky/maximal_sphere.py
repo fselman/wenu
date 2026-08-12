@@ -101,6 +101,14 @@ class CelestialSphereLoadProfile:
 CANONICAL_MAXIMAL_SPHERE_PROFILE = CelestialSphereLoadProfile()
 
 
+def generate_celestial_sphere(
+    *,
+    profile=CANONICAL_MAXIMAL_SPHERE_PROFILE,
+):
+    """Load reusable canonical content without binding an observer."""
+    return build_maximal_sphere(None, profile=profile)
+
+
 def build_maximal_sphere(
     observer,
     *,

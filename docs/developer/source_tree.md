@@ -33,6 +33,10 @@ Within `sky/`, `maximal_sphere.py` owns the immutable catalogue load profile
 and the one canonical complete-content factory. The resulting object is an
 ordinary `CelestialSphere`; chart geometry and presentation remain outside
 the factory.
+Its ordinary `generate_celestial_sphere()` entry point leaves the sphere and
+every canonical layer observer-independent. The compatibility
+`build_maximal_sphere(observer, ...)` entry point remains available while the
+request facade migrates.
 `sky/observed_cache.py` defines observer/time/source cache-key identity and
 freezes shared point and polygon arrays; individual layers continue to own
 their cached spherical realizations.

@@ -164,3 +164,10 @@ explicit observer, which overrides its compatibility bound observer, and the
 canonical chart, masking, spatial-selection, label-placement, context, and
 reference-furniture paths carry that observer without changing the layer
 contract. Existing calls that omit it retain their v0.7 behavior.
+
+Milestone 46C.8I adds `generate_celestial_sphere()` as the first ordinary
+three-stage operation. It loads the canonical native catalogues and geometry
+under an explicit load profile into an ordinary `CelestialSphere` whose
+observer is `None`; its canonical layers are likewise unbound. The established
+observer-bound `build_maximal_sphere()` and request facade remain compatible
+until observer-bound views become the ordinary construction boundary.

@@ -201,6 +201,7 @@ from .sky import (
     CelestialSphere,
     CelestialSphereLoadProfile,
     build_maximal_sphere,
+    generate_celestial_sphere,
 )
 from .geometry.frame import (
     SphericalCoordinates,
@@ -274,6 +275,7 @@ __all__ = [
     "CANONICAL_MAXIMAL_SPHERE_PROFILE",
     "CelestialSphereLoadProfile",
     "build_maximal_sphere",
+    "generate_celestial_sphere",
     "ExportOptions",
     "ChartExportResult",
     "CHART_STYLES",
