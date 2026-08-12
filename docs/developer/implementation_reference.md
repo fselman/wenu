@@ -13,6 +13,7 @@ advanced use, but ordinary chart production uses a resolved composition.
 ```python
 from wenu import (
     AdaptiveDetailPolicy,
+    AllSkyChart,
     AtlasChartStyle,
     BinocularChart,
     CartoonDetailPolicy,
@@ -148,6 +149,7 @@ The canonical workflow supports:
 
 - `RegionalChart`;
 - `FullSkyChart`;
+- `AllSkyChart`;
 - `CircumpolarChart`;
 - `BinocularChart`.
 
@@ -165,10 +167,21 @@ Circular charts, including full-sky planispheres, paint their style-owned sky
 color only inside the clipping
 boundary. Their default raster export leaves the surrounding figure and axes
 area transparent while retaining titles and footer furniture.
+The canonical `all_sky.py` example requests the complete Galactic sphere with
+Mollweide projection, central longitude zero, position angle zero, and an
+adaptive atlas magnitude ceiling of 5.0. Its labeled Galactic grid is supplied
+by the ordinary all-sky drawing default. The shared constellation-subject
+parser optionally supplies arbitrary adjacent or disjoint region masks; no
+example code transforms coordinates, splits the seam, or clips the ellipse.
+Built-in atlas and cartoon compositions use one quarter of their ordinary
+stellar scatter area for this half-height map, halving marker diameter while
+keeping rendered stars and the magnitude legend consistent.
+Constellation boundaries are outline-only content: their polygons always use
+a transparent face, including when an outside-region mask is also enabled.
 The canonical `binocular_object.py` example centers the same binocular chart
 family on any drawable target in the packaged resolver and accepts an explicit
 field diameter. Centaurus A (NGC 5128) and Omega Centauri (NGC 5139) remain
-the documented regression targets. Like the other four canonical examples,
+the documented regression targets. Like the other five canonical examples,
 it generates one observer-independent sphere, obtains one observer-bound view,
 and delegates the selected product matrix to
 `draw_chart_view_from_arguments()`. It has no private target dictionary,

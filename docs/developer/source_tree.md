@@ -44,6 +44,12 @@ request facade migrates.
 `sky/observed_cache.py` defines observer/time/source cache-key identity and
 freezes shared point and polygon arrays; individual layers continue to own
 their cached spherical realizations.
+`sky/constellation_lines.py` adapts the packaged Western `Ser` line record
+into the `Ser1` and `Ser2` catalogue identities required by loading and
+framing, while retaining both the visual line joining Caput to Cauda and
+`Ser` as the caller-facing selection alias. The separate IAU boundary regions
+are unchanged. Request-level IAU normalization remains in
+`charts/constellation_resolver.py`.
 Within `charts/`, `request.py` owns the immutable ordinary-user request graph,
 including catalogue exclusions; it contains no catalogue resolution,
 projection, rendering, or export work.
@@ -89,6 +95,9 @@ it does not modify maximal catalogue content.
 overrides for one exact selected product. It deliberately contains no chart
 geometry; `request_generation.py` consumes it only when calling the canonical
 composition boundary.
+`charts/composition.py` also applies the built-in all-sky stellar-area
+adaptation after mode resolution and before caller style overrides, so the
+renderer and magnitude furniture consume one resolved visual scale.
 `charts/request_furniture.py` realizes family-neutral declarative chart and
 observer context only after a request chart exists. It feeds the established
 legend furniture and contains no chart construction or example policy.
@@ -204,7 +213,7 @@ parallel implementations.
 - `rendering` owns graphical backend behavior.
 - examples request charts and may supply documented label overrides, but do
   not implement clipping, catalogue joins, legends, or repeated saving.
-- all five canonical examples use the ordinary three-stage interface; each
+- all six canonical examples use the ordinary three-stage interface; each
   source and installed resource is byte-identical, shorter than 70 lines, and
   contains no private catalogue construction, request graph, renderer, legend
   assembly, or export loop.
@@ -217,11 +226,17 @@ See `target_architecture_v0.7.md` for the implemented architecture,
 The structured user guide is rooted at `docs/user_guide/index.md`; its
 `assets/` directory contains only the provenance-controlled README image.
 
-The user-facing `examples/` directory contains only the five canonical chart
+The user-facing `examples/` directory contains only the six canonical chart
 families as short declarations over the shared sphere, view, drawing, and CLI
 facades. Historical component demonstrations that still provide regression
 coverage live under `tests/fixtures/example_regressions/`; they are test-local
 fixtures, not supported user examples.
+
+`tests/test_canonical_all_sky_example.py` owns the all-sky declaration's
+explicit Galactic Mollweide geometry, default detail, optional disjoint mask,
+shared drawing delegation, and observer cleanup. Shared example and installer
+tests own CLI parity, short-source boundaries, and byte identity with the
+packaged resource; `tests/test_user_guide.py` owns its guide contract.
 
 ## Test-suite responsibility and tiers
 

@@ -1,6 +1,6 @@
 # Wenu v0.7 user guide
 
-Wenu produces reproducible static sky charts through five canonical example
+Wenu produces reproducible static sky charts through six canonical example
 families. Each example uses the same chart composition and export pipeline and
 supports atlas and cartoon styles in print and presentation modes.
 
@@ -17,6 +17,7 @@ The canonical examples are:
 
 | Chart family | Example | Guide |
 |---|---|---|
+| Galactic Mollweide all-sky map | `examples/all_sky.py` | [All-sky map](all_sky.md) |
 | Visible-sky planisphere | `examples/planisphere.py` | [Planisphere](planisphere.md) |
 | Constellation group | `examples/regional_constellation_group.py` | [Regional charts](regional_charts.md) |
 | Single constellation | `examples/regional_constellation.py` | [Regional charts](regional_charts.md) |

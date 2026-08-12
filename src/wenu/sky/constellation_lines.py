@@ -22,6 +22,7 @@ class ConstellationLines(GeometricalObject):
     """HIP-to-HIP constellation edges evaluated for an observer."""
 
     layer_name = "constellation_lines"
+    _SERPENS_COMPONENTS = ("Ser1", "Ser2")
 
     def __init__(
         self,
@@ -74,7 +75,7 @@ class ConstellationLines(GeometricalObject):
         """
         if constellations is None:
             return self.star_ids
-        requested = frozenset(str(name) for name in constellations)
+        requested = self._expanded_names(constellations)
         unknown = requested.difference(self.edges_by_constellation)
         if unknown:
             names = ", ".join(sorted(unknown))
@@ -136,8 +137,16 @@ class ConstellationLines(GeometricalObject):
         self.edges_by_constellation.clear()
         if self.constellations is not None:
             self.edges_by_constellation.update(
-                (name, []) for name in self.constellations
+                (name, []) for name in self._expanded_names(
+                    self.constellations
+                )
             )
+
+        accepted = (
+            None
+            if self.constellations is None
+            else self._expanded_names(self.constellations)
+        )
 
         with path.open("r", encoding="utf-8") as file:
             for line_number, raw_line in enumerate(file, start=1):
@@ -151,13 +160,17 @@ class ConstellationLines(GeometricalObject):
 
                 abbreviation = parts[0]
                 if (
-                    self.constellations is not None
-                    and abbreviation not in self.constellations
+                    accepted is not None
+                    and abbreviation not in accepted
+                    and not (
+                        abbreviation == "Ser"
+                        and set(self._SERPENS_COMPONENTS) & accepted
+                    )
                 ):
                     continue
 
                 try:
-                    int(parts[1])
+                    edge_count = int(parts[1])
                     hip_ids = [int(value) for value in parts[2:]]
                 except ValueError as error:
                     raise ValueError(
@@ -166,6 +179,18 @@ class ConstellationLines(GeometricalObject):
                     ) from error
 
                 if len(hip_ids) < 2:
+                    continue
+
+                if abbreviation == "Ser" and len(hip_ids) == 2 * edge_count:
+                    components = self._serpens_components(hip_ids)
+                    for name, edges in zip(
+                        self._SERPENS_COMPONENTS, components, strict=True
+                    ):
+                        if accepted is None or name in accepted:
+                            self.edges.extend(edges)
+                            self.edges_by_constellation.setdefault(
+                                name, []
+                            ).extend(edges)
                     continue
 
                 constellation_edges = [
@@ -178,6 +203,45 @@ class ConstellationLines(GeometricalObject):
                 ).extend(constellation_edges)
 
         return self.edges
+
+    @classmethod
+    def _expanded_names(cls, names):
+        expanded = set(map(str, names))
+        if "Ser" in expanded:
+            expanded.remove("Ser")
+            expanded.update(cls._SERPENS_COMPONENTS)
+        return frozenset(expanded)
+
+    @staticmethod
+    def _serpens_components(hip_ids):
+        """Return both Ser figures while retaining their visual bridge."""
+        edges = list(zip(hip_ids[::2], hip_ids[1::2], strict=True))
+        components = []
+        remaining = edges[:]
+        while remaining:
+            component = [remaining.pop(0)]
+            vertices = set(component[0])
+            changed = True
+            while changed:
+                changed = False
+                retained = []
+                for edge in remaining:
+                    if vertices.intersection(edge):
+                        component.append(edge)
+                        vertices.update(edge)
+                        changed = True
+                    else:
+                        retained.append(edge)
+                remaining = retained
+            components.append(component)
+        if len(components) != 2:
+            raise ValueError(
+                "The packaged Serpens figure must contain two components."
+            )
+        components[0].append(
+            (components[0][-1][1], components[1][0][0])
+        )
+        return tuple(components)
 
     def spherical_geometry(
         self,
@@ -202,7 +266,7 @@ class ConstellationLines(GeometricalObject):
         if selected is None:
             selected_names = tuple(self.edges_by_constellation)
         else:
-            requested = frozenset(str(name) for name in selected)
+            requested = self._expanded_names(selected)
             self.star_ids_for(requested)
             selected_names = tuple(
                 name

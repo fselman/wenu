@@ -482,6 +482,15 @@ def test_projection_domain_and_horizon_clipping_remain_composable():
     assert np.all(np.isfinite(clipped[0].y))
 
 
+def test_complete_sphere_latitude_floor_preserves_seam_topology():
+    spherical = PolygonLayer().spherical_geometry(object())
+    projected = ProjectedPolygons([])
+
+    assert clip_polygons_to_latitude(
+        spherical, projected, minimum=-90.0
+    ) is projected
+
+
 def test_summer_triangle_is_part_of_chart_regression_suite():
     source = Path("tests/fixtures/example_regressions/atlas_summer_triangle.py").read_text(
         encoding="utf-8"

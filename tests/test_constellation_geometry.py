@@ -212,6 +212,19 @@ def test_unknown_line_selection_is_rejected(tmp_path):
     with pytest.raises(KeyError, match="Unknown loaded constellation"):
         lines.spherical_geometry(observer, selected={"Lyr"})
 
+
+def test_packaged_serpens_record_exposes_parts_and_preserves_bridge():
+    lines = ConstellationLines(
+        stars=SimpleNamespace(catalog=pd.DataFrame()),
+        constellations={"Ser1", "Ser2"},
+    )
+
+    assert set(lines.edges_by_constellation) == {"Ser1", "Ser2"}
+    assert len(lines.edges_by_constellation["Ser1"]) == 10
+    assert len(lines.edges_by_constellation["Ser2"]) == 4
+    assert (79593, 84012) in lines.edges
+    assert lines.star_ids_for({"Ser"}) == lines.star_ids
+
 # Contracts consolidated from test_milestone12_coordinate_grids.py.
 """Milestone 12 domain tests for coordinate grids."""
 

@@ -254,3 +254,19 @@ patch at its 2:1 elliptical boundary. Complete-sphere catalogue selection
 does not apply observer-horizon rejection. Ordinary all-sky drawing defaults
 to a labeled Galactic grid; explicit equatorial and ecliptic grids remain
 transformed overlays through the same sky execution path.
+
+Milestone 46C.8P.5 adds the sixth canonical example, `all_sky.py`. Its source
+and installed resource are byte-identical short declarations over the same
+observer-independent sphere, observer-bound view, shared constellation
+subject parser, drawing adapter, product matrix, and furniture adapter as the
+other examples. It spells out the Galactic Mollweide request geometry while
+leaving frame transformation, seam topology, elliptical clipping, density,
+rendering, and export in their established library owners.
+Composition reduces built-in all-sky stellar scatter area to one quarter of
+the corresponding circular-chart value. This preserves approximately the
+same marker diameter relative to the map when the output changes from a
+circle to the physically half-height 2:1 ellipse; the resolved style also
+keeps the magnitude legend on the identical scale.
+Constellation-boundary content is rendered as transparent polygon outlines;
+enabling official boundaries therefore never paints or darkens the interiors
+of constellation masks.

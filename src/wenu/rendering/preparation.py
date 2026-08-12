@@ -98,6 +98,8 @@ def radial_label_offset(distance):
 def clip_to_latitude(spherical, projected, *, minimum=0.0):
     """Clip corresponding projected geometry by spherical latitude."""
     minimum = float(minimum)
+    if minimum <= -90.0:
+        return projected
     if isinstance(spherical, SphericalPoints):
         return _clip_points(spherical, projected, minimum)
     if isinstance(spherical, SphericalCurves):
@@ -194,6 +196,8 @@ def clip_polygons_to_latitude(
     if not isinstance(projected, ProjectedPolygons):
         raise TypeError("projected must be ProjectedPolygons.")
     minimum = float(minimum)
+    if minimum <= -90.0:
+        return projected
     items = []
     source_indices = []
     latitudes = _polygon_latitudes(spherical, projected)

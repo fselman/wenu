@@ -12,6 +12,7 @@ from wenu import CANONICAL_CHART_PRODUCTS, chart_product_options
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE_PATHS = (
+    ROOT / "examples" / "all_sky.py",
     ROOT / "examples" / "planisphere.py",
     ROOT / "examples" / "regional_constellation_group.py",
     ROOT / "examples" / "regional_constellation.py",

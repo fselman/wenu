@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
 
 from .context import ChartContext
@@ -166,6 +166,17 @@ def compose_chart(
                 base=resolved_style,
                 mode_name=mode_name,
             )
+    if (
+        getattr(chart, "chart_type", None) == "all_sky"
+        and style_name in {ATLAS_STYLE, CARTOON_STYLE}
+    ):
+        resolved_style = replace(
+            resolved_style,
+            stars=replace(
+                resolved_style.stars,
+                area_scale=resolved_style.stars.area_scale * 0.25,
+            ),
+        )
     if style_overrides is not None:
         if not isinstance(style_overrides, ChartStyleOverrides):
             raise TypeError(

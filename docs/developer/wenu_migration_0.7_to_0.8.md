@@ -466,6 +466,8 @@ Milestone 46C.8O.
 - record the ordinary and advanced interfaces in architecture, implementation,
   source-tree, user-guide, and test-ownership documentation.
 
+**Status:** Implemented.
+
 ## Milestone 46C.9 — Validate all chart families from one maximal sphere
 
 - build one observer-independent canonical maximal sphere;

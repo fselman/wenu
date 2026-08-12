@@ -127,6 +127,7 @@ def test_documented_canonical_public_imports_execute():
     )[0]
     exec(import_block, namespace)
     for name in (
+        "AllSkyChart",
         "compose_chart",
         "LegendOptions",
         "RegionalChart",

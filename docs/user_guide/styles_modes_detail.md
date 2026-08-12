@@ -21,7 +21,7 @@ structure and context.
 
 ## Detail and content
 
-These options are shared by all five examples:
+These options are shared by all six examples:
 
 ```text
 --magnitude-limit VALUE
@@ -39,8 +39,10 @@ These options are shared by all five examples:
 --pole-labels
 ```
 
-Omitting these switches leaves constellation structure, grids, and references
-off. `--grid-references` accepts a comma-separated selection of `equatorial`,
+Omitting these switches leaves constellation structure and references off.
+The all-sky family supplies its labeled Galactic grid by default; the other
+families supply a labeled equatorial grid by default. `--grid-references`
+accepts a comma-separated selection of `equatorial`,
 `ecliptic`, and `galactic`, or `all`. Poles select visible
 celestial, ecliptic, and Galactic crosses; `--pole-labels` adds their standard
 abbreviations.

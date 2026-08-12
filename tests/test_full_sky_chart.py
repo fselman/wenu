@@ -73,6 +73,23 @@ def test_latitude_clipping_interpolates_horizon_crossings():
     assert clipped[0].y == pytest.approx([0.5, 1.0, 0.5])
 
 
+def test_complete_sphere_latitude_floor_preserves_split_curves():
+    spherical = SphericalCurves(
+        lon_deg=([170.0, -170.0],),
+        lat_deg=([0.0, 0.0],),
+    )
+    from wenu.geometry.projected import ProjectedCurves
+
+    projected = ProjectedCurves(items=[
+        ProjectedCurve(x=[-2.0, -1.0], y=[0.0, 0.0]),
+        ProjectedCurve(x=[1.0, 2.0], y=[0.0, 0.0]),
+    ])
+
+    assert clip_to_latitude(
+        spherical, projected, minimum=-90.0
+    ) is projected
+
+
 def test_renderer_applies_projected_boundary_to_all_artists():
     figure, ax = plt.subplots()
     renderer = MatplotlibRenderer(ax)

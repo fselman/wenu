@@ -99,6 +99,34 @@ def test_default_star_rendering_is_output_equivalent():
     assert np.array_equal(old["style"]["s"], new["style"]["s"])
 
 
+def test_constellation_boundaries_are_strokes_without_polygon_fill():
+    boundary_layer = object()
+    sky = SimpleNamespace(
+        stars=None,
+        nonstellar=None,
+        galaxies=None,
+        milky_way_isophotes=None,
+        globular_clusters=None,
+        open_clusters=None,
+        supernova_remnants=None,
+        planetary_nebulae=None,
+        constellation_lines=None,
+        constellation_labels=None,
+        constellation_boundaries=boundary_layer,
+        points=None,
+        layers=(),
+    )
+    style = PublicationStyle(boundary_color="#123456")
+
+    boundary_style = style.layer_options(sky)[boundary_layer][
+        "render"
+    ]["style"]
+
+    assert boundary_style["edgecolor"] == "#123456"
+    assert boundary_style["facecolor"] == "none"
+    assert "color" not in boundary_style
+
+
 def test_chart_style_implements_the_existing_style_protocol():
     style = ChartStyle(mask=MaskStyle(alpha=0.42, zorder=21.0))
     assert style.outside_mask_style() == (

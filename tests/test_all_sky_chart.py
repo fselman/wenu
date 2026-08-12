@@ -94,6 +94,7 @@ def test_all_sky_chart_is_public():
 
 
 def test_all_sky_chart_has_a_stable_composition_identity():
+    assert AllSkyChart.chart_type == "all_sky"
     assert chart_type_name(AllSkyChart()) == "all_sky"
     plan = default_chart_legend_plan("all_sky")
     assert plan.objects.outside is True

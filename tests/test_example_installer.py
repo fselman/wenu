@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CANONICAL_EXAMPLES = ROOT / "examples"
 PACKAGED_EXAMPLES = ROOT / "src" / "wenu" / "example_scripts"
 CANONICAL_EXAMPLE_NAMES = {
+    "all_sky.py",
     "binocular_object.py",
     "circumpolar.py",
     "planisphere.py",

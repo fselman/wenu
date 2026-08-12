@@ -123,6 +123,15 @@ def test_filled_polygon_clipping_removes_invisible_polygon():
     assert clipped.metadata["magnitude"].size == 0
 
 
+def test_complete_sphere_polygon_clipping_is_an_identity():
+    spherical, _ = polygon_collections()
+    projected = ProjectedPolygons(items=[])
+
+    assert clip_polygons_to_latitude(
+        spherical, projected, minimum=-90.0
+    ) is projected
+
+
 def test_renderer_draws_fill_and_continuous_outline_separately():
     _, projected = polygon_collections()
     figure, ax = plt.subplots()

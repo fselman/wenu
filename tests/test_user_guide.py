@@ -13,6 +13,7 @@ IMAGE_SHA256 = (
 )
 GUIDE_PAGES = (
     "index.md",
+    "all_sky.md",
     "planisphere.md",
     "regional_charts.md",
     "circumpolar_charts.md",
@@ -20,6 +21,7 @@ GUIDE_PAGES = (
     "styles_modes_detail.md",
 )
 EXAMPLES = (
+    "all_sky.py",
     "planisphere.py",
     "regional_constellation_group.py",
     "regional_constellation.py",
@@ -39,7 +41,7 @@ def test_structured_user_guide_has_the_target_pages():
     assert {path.name for path in GUIDE.glob("*.md")} == set(GUIDE_PAGES)
 
 
-def test_guide_index_names_all_five_canonical_examples():
+def test_guide_index_names_all_canonical_examples():
     text = (GUIDE / "index.md").read_text(encoding="utf-8")
     for filename in EXAMPLES:
         assert f"examples/{filename}" in text
@@ -88,6 +90,21 @@ def test_planisphere_guide_documents_disjoint_visible_masks():
     assert "--constellations Cru,Cyg,UMa --mask" in text
     assert "wholly below" in text
     assert "crossing" in text
+
+
+def test_all_sky_guide_documents_galactic_mollweide_geometry():
+    text = (GUIDE / "all_sky.md").read_text(encoding="utf-8")
+
+    for value in (
+        "examples/all_sky.py",
+        'family="all_sky"',
+        'projection="mollweide"',
+        'coordinate_frame="galactic"',
+        "Galactic longitude zero",
+        "180° seam",
+        "--constellations Cru,Cyg,UMa --mask",
+    ):
+        assert value in text
 
 
 def test_english_and_spanish_readmes_link_the_structured_guide():

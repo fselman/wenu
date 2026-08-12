@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from wenu import (
+    AllSkyChart,
     AtlasChartStyle,
     BoundaryKind,
     ChartContext,
@@ -51,6 +52,15 @@ def test_full_sky_chart_exposes_circular_context():
     assert context.clip_boundary.name == "horizon"
     assert context.visible_solid_angle_sq_deg == pytest.approx(
         20626.480624709635
+    )
+
+
+def test_all_sky_composition_halves_builtin_star_marker_diameters():
+    atlas = compose_chart(AllSkyChart(), style="atlas", mode="print")
+    full_sky = compose_chart(FullSkyChart(), style="atlas", mode="print")
+
+    assert atlas.style.stars.area_scale == pytest.approx(
+        full_sky.style.stars.area_scale * 0.25
     )
 
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import ClassVar
 
 import numpy as np
 
@@ -23,6 +24,7 @@ from wenu.projections.mollweide import MollweideProjection
 class AllSkyChart:
     """A complete-sphere Galactic Mollweide chart."""
 
+    chart_type: ClassVar[str] = "all_sky"
     central_longitude_deg: float = 0.0
     projection_radius: float = 1.0
     flip_ew: bool = True

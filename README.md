@@ -3,8 +3,8 @@
 **Language:** English | [Español](README.es.md)
 
 Wenu is a Python library for producing accurate, reproducible,
-publication-quality static charts of the sky. It supports regional charts and
-observer-dependent full-sky charts through one geometry pipeline.
+publication-quality static charts of the sky. It supports regional,
+observer-visible, and complete-sphere charts through one geometry pipeline.
 
 Wenu is intended for observing guides, books, articles, education, public
 outreach, and guided observation. It is not an interactive planetarium.
@@ -24,9 +24,10 @@ See `LICENSE` for the current usage terms.
 
 ## Implemented features
 
-- observer-dependent sky calculations;
+- observer-independent celestial content with observer-bound sky geometry;
 - coordinate-neutral spherical and projected geometry;
 - arbitrary tangent-point stereographic projection;
+- seam-safe Galactic Mollweide projection;
 - regional chart production API;
 - full-sky chart production API with independent horizon and tangent point;
 - Hipparcos stellar catalogue;
@@ -39,7 +40,8 @@ See `LICENSE` for the current usage terms.
 - print/paper and presentation output modes;
 - render-local fixed, adaptive, and cartoon detail policies;
 - integrated object, stellar-magnitude, and contextual legends;
-- regional, full-sky, circumpolar, and binocular chart types;
+- regional, visible-sky, Galactic all-sky, circumpolar, and binocular chart
+  types;
 - generic preparation and Matplotlib rendering;
 - package-boundary and regression tests.
 
@@ -54,7 +56,7 @@ pip install -e .
 Wenu requires Python 3.10 or newer. Runtime dependencies are declared in
 `pyproject.toml`: Astropy, Matplotlib, NumPy, and Pandas.
 
-To install editable copies of all five canonical example scripts in a
+To install editable copies of all six canonical example scripts in a
 `wenu_examples` directory below the current directory, run:
 
 ```bash
@@ -80,7 +82,7 @@ python examples/planisphere.py \
 The image's exact command, source commit, dimensions, checksum, and visual
 approval are recorded in the
 [planisphere guide](docs/user_guide/planisphere.md#readme-image-provenance).
-The complete [Wenu v0.7 user guide](docs/user_guide/index.md) covers all five
+The complete [Wenu v0.7 user guide](docs/user_guide/index.md) covers all six
 canonical chart families and their shared controls.
 
 ## Library composition
@@ -149,13 +151,14 @@ cartoon_print = compose_chart(
 )
 ```
 
-The same workflow supports `RegionalChart`, `FullSkyChart`,
+The same workflow supports `RegionalChart`, `FullSkyChart`, `AllSkyChart`,
 `CircumpolarChart`, and `BinocularChart`. `FullSkyChart` may place its
 stereographic tangent point independently of the observer zenith; the observer
 continues to determine the AltAz sky and horizon.
 
-The five canonical user examples are:
+The six canonical user examples are:
 
+- `examples/all_sky.py`;
 - `examples/planisphere.py`;
 - `examples/regional_constellation_group.py`;
 - `examples/regional_constellation.py`;
@@ -167,9 +170,9 @@ The five canonical user examples are:
 The canonical pipeline is:
 
 ```text
-Observer
-  → CelestialSphere and SkyLayer
-  → spherical geometry
+catalogues
+  → observer-independent CelestialSphere and SkyLayer
+  → observer-bound spherical geometry
   → projection-domain guard
   → projection
   → projected geometry
