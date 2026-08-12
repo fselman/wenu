@@ -298,6 +298,8 @@ class ChartRequest:
     subject: ChartSubjectRequest = ChartSubjectRequest()
     frame: ChartFrameRequest = ChartFrameRequest()
     mask: bool = False
+    horizon: bool = False
+    horizon_mask: bool = False
     content: SkyContentSelection = SkyContentSelection()
     exclusions: ChartContentExclusions = ChartContentExclusions()
     detail: DetailOverrides = DetailOverrides()
@@ -406,6 +408,8 @@ class ChartRequest:
         object.__setattr__(self, "projection", projection)
         object.__setattr__(self, "coordinate_frame", coordinate_frame)
         object.__setattr__(self, "mask", bool(self.mask))
+        object.__setattr__(self, "horizon", bool(self.horizon))
+        object.__setattr__(self, "horizon_mask", bool(self.horizon_mask))
         object.__setattr__(
             self, "product_compositions", product_compositions
         )

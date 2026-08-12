@@ -285,3 +285,12 @@ the existing native AltAz altitude-zero curve and records one closed
 `horizon` reference. `CelestialSphere.add_horizon_reference()` registers it
 independently of `AltAzGrid`; the canonical maximal sphere does not load it,
 and no request, CLI, style, masking, or default drawing behavior changes yet.
+
+Milestone 46C.8Q.3 adds independent immutable `horizon` and `horizon_mask`
+values to `ChartRequest`, matching `--horizon` and `--horizon-mask` switches
+to the shared content parser, and equivalent `draw_chart_view()` options.
+The common command-line adapter forwards both values for every canonical and
+installed example. They remain declaration-only in this milestone: no chart
+registers or paints horizon content until the later lifecycle, mask, and
+appearance milestones, so current rendering and planisphere behavior remain
+unchanged.

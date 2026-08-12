@@ -84,6 +84,8 @@ def test_drawing_translates_direct_options_to_one_canonical_export(
         detail_overrides=DetailOverrides(star_magnitude_limit=6.5),
         grids=("equatorial", "altaz_grid"),
         grid_labels=("equatorial_grid",),
+        horizon=True,
+        horizon_mask=True,
         furniture=furniture,
         title="Southern sky",
         language="es",
@@ -99,6 +101,8 @@ def test_drawing_translates_direct_options_to_one_canonical_export(
         "equatorial_grid", "altaz_grid"
     }
     assert request.detail.grid_label_layers == {"equatorial_grid"}
+    assert request.horizon is True
+    assert request.horizon_mask is True
     assert request.furniture is furniture
     assert request.title == "Southern sky"
     assert request.language == "es"

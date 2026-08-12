@@ -170,6 +170,7 @@ def draw_chart_view_from_arguments(
         if furniture is None else furniture
     )
     detail_overrides = chart_detail_overrides(effective_arguments)
+    content = chart_content_options(effective_arguments)
     parsed_style = chart_style_overrides(arguments)
     if style_overrides is not None:
         if not isinstance(style_overrides, ChartStyleOverrides):
@@ -195,6 +196,8 @@ def draw_chart_view_from_arguments(
             mode=product.mode,
             detail=details.get(product, details.get(product.style, detail)),
             detail_overrides=detail_overrides,
+            horizon=content.horizon,
+            horizon_mask=content.horizon_mask,
             furniture=furniture,
             style_overrides=style_overrides,
             title=title,

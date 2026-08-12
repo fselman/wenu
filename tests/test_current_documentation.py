@@ -126,9 +126,11 @@ def test_horizon_roadmap_separates_boundary_reference_and_mask_roles():
         assert phrase in target
     for phrase in (
         "Milestone 46C.8Q.1",
+        "Milestone 46C.8Q.3",
         "Milestone 46C.8Q.9",
         "preventing accumulated opacity",
         "runtime behavior remains",
+        "declaration and adapter plumbing",
     ):
         assert phrase in roadmap
 

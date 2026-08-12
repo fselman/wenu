@@ -38,6 +38,26 @@ def test_complete_cli_contract_includes_context_and_credits():
     assert arguments.local_time is True
     assert arguments.equatorial_grid is True
     assert arguments.equatorial_grid_labels is True
+    assert arguments.horizon is False
+    assert arguments.horizon_mask is False
+
+
+def test_cli_forwards_independent_horizon_controls(monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        "wenu.charts.command_line.draw_chart_view",
+        lambda *args, **kwargs: calls.append(kwargs) or object(),
+    )
+    view = type("View", (), {"family": "regional"})()
+
+    draw_chart_view_from_arguments(
+        view,
+        parser().parse_args(["--horizon-mask"]),
+        stem="map",
+    )
+
+    assert calls[0]["horizon"] is False
+    assert calls[0]["horizon_mask"] is True
 
 
 def test_ordinary_cli_can_omit_default_equatorial_grid():

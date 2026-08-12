@@ -232,6 +232,26 @@ def test_planisphere_mask_and_circumpolar_limit_are_explicit():
     assert polar.frame.limiting_declination_deg == -30.0
 
 
+def test_horizon_controls_are_independent_immutable_request_values():
+    reference = ChartRequest(
+        observer=observer(),
+        family="planisphere",
+        product=product(),
+        horizon=1,
+    )
+    mask = ChartRequest(
+        observer=observer(),
+        family="planisphere",
+        product=product(),
+        horizon_mask=1,
+    )
+
+    assert reference.horizon is True
+    assert reference.horizon_mask is False
+    assert mask.horizon is False
+    assert mask.horizon_mask is True
+
+
 def test_family_specific_missing_inputs_are_rejected():
     with pytest.raises(ValueError, match="binocular request requires"):
         ChartRequest(

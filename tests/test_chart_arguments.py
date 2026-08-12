@@ -31,6 +31,8 @@ def test_shared_content_and_legends_are_opt_in():
     assert chart_content_options(arguments).constellation_lines is False
     assert chart_content_options(arguments).constellation_labels is False
     assert chart_content_options(arguments).constellation_boundaries is False
+    assert chart_content_options(arguments).horizon is False
+    assert chart_content_options(arguments).horizon_mask is False
     assert chart_content_options(arguments).equatorial_grid is False
     assert chart_content_options(arguments).equatorial_grid_labels is False
     assert chart_content_options(arguments).ecliptic_grid is False
@@ -52,6 +54,8 @@ def test_shared_content_switches_resolve_independently():
             "--constellation-lines",
             "--constellation-labels",
             "--constellation-boundaries",
+            "--horizon",
+            "--horizon-mask",
             "--equatorial-grid",
             "--equatorial-grid-labels",
             "--ecliptic-grid",
@@ -69,6 +73,8 @@ def test_shared_content_switches_resolve_independently():
     assert content.constellation_lines is True
     assert content.constellation_labels is True
     assert content.constellation_boundaries is True
+    assert content.horizon is True
+    assert content.horizon_mask is True
     assert content.equatorial_grid is True
     assert content.equatorial_grid_labels is True
     assert content.ecliptic_grid is True

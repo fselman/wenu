@@ -37,6 +37,8 @@ def draw_chart_view(
     detail_overrides=None,
     grids=(),
     grid_labels=(),
+    horizon=False,
+    horizon_mask=False,
     furniture=None,
     style_overrides=None,
     title=None,
@@ -96,6 +98,8 @@ def draw_chart_view(
             mode=product.mode,
         ),
         detail=overrides,
+        horizon=bool(horizon),
+        horizon_mask=bool(horizon_mask),
         furniture=furniture,
         product_compositions=(ChartProductCompositionOptions(
             product=product,

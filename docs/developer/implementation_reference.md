@@ -470,7 +470,16 @@ altitude-zero curve. `spherical_geometry(observer)` returns one closed native
 AltAz curve named `horizon`; an observerless instance requires the execution
 observer explicitly. `CelestialSphere.add_horizon_reference()` registers the
 layer without adding an `AltAzGrid`. The maximal-sphere factory does not add
-this request-time geometry, and Q.2 introduces no CLI or visible default.
+this request-time geometry.
+
+`ChartRequest.horizon` and `ChartRequest.horizon_mask` are independent frozen
+request booleans. The shared chart-content parser exposes them as `--horizon`
+and `--horizon-mask`; `draw_chart_view(..., horizon=False,
+horizon_mask=False)` provides the matching ordinary Python interface, and
+`draw_chart_view_from_arguments()` forwards both through the common adapter.
+Q.3 declares and transports the controls only. Request-time layer lifecycle,
+mask geometry, appearance, and visible behavior remain assigned to Q.4
+through Q.7.
 
 `CelestialSphere.draw_chart(..., observer=observer)` selects the scientific
 observer explicitly for every registered layer. The same optional keyword is

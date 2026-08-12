@@ -86,6 +86,8 @@ def test_shared_content_legend_and_credit_controls_are_available(path):
         "--magnitude-limit", "4.25",
         "--constellation-labels",
         "--constellation-boundaries",
+        "--horizon",
+        "--horizon-mask",
         "--grid-references", "all",
         "--poles",
         "--pole-labels",
@@ -98,6 +100,8 @@ def test_shared_content_legend_and_credit_controls_are_available(path):
     assert arguments.magnitude_limit == pytest.approx(4.25)
     assert arguments.constellation_labels is True
     assert arguments.constellation_boundaries is True
+    assert arguments.horizon is True
+    assert arguments.horizon_mask is True
     assert arguments.grid_references == frozenset({
         "equatorial", "ecliptic", "galactic",
     })

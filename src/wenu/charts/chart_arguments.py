@@ -54,6 +54,8 @@ class ChartContentOptions:
     constellation_lines: bool = False
     constellation_labels: bool = False
     constellation_boundaries: bool = False
+    horizon: bool = False
+    horizon_mask: bool = False
     equatorial_grid: bool = False
     equatorial_grid_labels: bool = False
     ecliptic_grid: bool = False
@@ -115,6 +117,16 @@ def add_chart_content_arguments(parser):
         "--constellation-boundaries",
         action="store_true",
         help="draw IAU constellation boundaries",
+    )
+    parser.add_argument(
+        "--horizon",
+        action="store_true",
+        help="draw the observer horizon reference",
+    )
+    parser.add_argument(
+        "--horizon-mask",
+        action="store_true",
+        help="shade the sky below the observer horizon",
     )
     parser.add_argument(
         "--altaz-grid",
@@ -234,6 +246,8 @@ def chart_content_options(arguments) -> ChartContentOptions:
         constellation_lines=arguments.constellation_lines,
         constellation_labels=arguments.constellation_labels,
         constellation_boundaries=arguments.constellation_boundaries,
+        horizon=arguments.horizon,
+        horizon_mask=arguments.horizon_mask,
         altaz_grid=arguments.altaz_grid,
         altaz_grid_labels=arguments.altaz_grid_labels,
         equatorial_grid=arguments.equatorial_grid,

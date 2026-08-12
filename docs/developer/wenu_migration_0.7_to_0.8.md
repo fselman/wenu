@@ -506,6 +506,9 @@ Milestones 46C.8Q.2 through 46C.8Q.9.
 - make all canonical and installed examples inherit both controls through the
   shared adapter without example-specific logic.
 
+**Status:** Implemented as declaration and adapter plumbing; visible behavior
+remains in Milestones 46C.8Q.4 through 46C.8Q.7.
+
 ##### Milestone 46C.8Q.4 — Configure reference lifecycle
 
 - register the semantic horizon reference only when selected and never for a

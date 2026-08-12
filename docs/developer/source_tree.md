@@ -55,8 +55,14 @@ framing, while retaining both the visual line joining Caput to Cauda and
 are unchanged. Request-level IAU normalization remains in
 `charts/constellation_resolver.py`.
 Within `charts/`, `request.py` owns the immutable ordinary-user request graph,
-including catalogue exclusions; it contains no catalogue resolution,
-projection, rendering, or export work.
+including catalogue exclusions and the independent horizon-reference and
+horizon-mask declarations; it contains no catalogue resolution, projection,
+rendering, or export work.
+`charts/chart_arguments.py` owns their shared `--horizon` and
+`--horizon-mask` syntax with the other content controls.
+`charts/command_line.py` and `charts/drawing.py` transport those declarations
+through the common example and ordinary-Python adapters; they do not create
+horizon geometry, masks, or appearance.
 `charts/target_resolver.py` owns offline alias resolution over the packaged
 `data/targets.json` cross-identification resource.
 `charts/constellation_resolver.py` owns IAU abbreviation normalization and
