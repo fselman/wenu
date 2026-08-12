@@ -155,6 +155,27 @@ def test_resolution_does_not_mutate_the_immutable_input_request():
     assert resolved.request is not original
 
 
+def test_resolution_selects_default_milky_way_levels_render_locally():
+    original = request()
+    resolved = resolve_chart_request(
+        original, CANONICAL_MAXIMAL_SPHERE_PROFILE
+    )
+
+    assert original.content.milky_way_levels is None
+    assert resolved.request.content.milky_way_levels == {
+        "ol2", "ol3", "ol4", "ol5"
+    }
+
+
+def test_explicit_milky_way_levels_override_render_default():
+    resolved = resolve_chart_request(
+        request(content=SkyContentSelection(milky_way_levels={"ol4"})),
+        CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    )
+
+    assert resolved.request.content.milky_way_levels == {"ol4"}
+
+
 def test_binocular_family_supplies_a_sensible_default_field():
     resolved = resolve_chart_request(
         request(), CANONICAL_MAXIMAL_SPHERE_PROFILE

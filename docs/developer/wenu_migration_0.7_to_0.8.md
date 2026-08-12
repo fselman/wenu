@@ -377,6 +377,19 @@ Milestone 46C.8O.
 - format equatorial right ascension labels as `hh:mm` and all other grid
   coordinates in degrees.
 
+**Status:** Implemented.
+
+#### Milestone 46C.8O.2 — Restore render-local atlas density defaults
+
+- select the established `ol2` through `ol5` Milky Way levels by default at
+  request resolution while retaining every loaded level in the maximal
+  sphere and permitting explicit level selection;
+- use the existing field-adaptive deep-sky thresholds in the regional,
+  planisphere, and circumpolar atlas examples while preserving their explicit
+  publication stellar limits;
+- retain fixed binocular target detail and the separate sparse cartoon
+  policies.
+
 - verify Centaurus A, Omega Centauri, regional single and group charts,
   Serpens, masks, furniture, products, and all retained CLI controls;
 - run focused, full, and mandatory atlas-print visual regressions;

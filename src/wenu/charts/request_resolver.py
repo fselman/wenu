@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, fields, replace
 
 from wenu.sky.maximal_sphere import CelestialSphereLoadProfile
+from wenu.sky.milky_way import MilkyWayIsophotes
 
 from .constellation_resolver import (
     ResolvedConstellationSubject,
@@ -110,6 +111,10 @@ def _resolved_content(request, *, target=None, constellations=None):
         field.name: getattr(request.content, field.name)
         for field in fields(SkyContentSelection)
     }
+    if values["milky_way_levels"] is None:
+        values["milky_way_levels"] = frozenset(
+            MilkyWayIsophotes.default_levels
+        )
     if target is not None:
         for component in target.components:
             values[component.family] = _union(

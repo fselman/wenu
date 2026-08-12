@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 from wenu import (
-    FixedDetailPolicy, Observer, ResolvedDetail, add_chart_cli_arguments,
+    AdaptiveDetailPolicy, Observer, add_chart_cli_arguments,
     chart_cli_furniture, draw_chart_view_from_arguments,
     generate_celestial_sphere, get_chart_view,
 )
@@ -31,8 +31,8 @@ def generate(arguments):
     try:
         results = draw_chart_view_from_arguments(
             view, arguments, stem=f"regional-{view.constellations.key}",
-            product_details={"atlas": FixedDetailPolicy(
-                ResolvedDetail(star_magnitude_limit=6.5))},
+            product_details={"atlas": AdaptiveDetailPolicy(
+                star_magnitude_limit=6.5)},
             furniture=chart_cli_furniture(
                 arguments, copyright="© Fernando Selman"),
             title=view.constellations.display_name)

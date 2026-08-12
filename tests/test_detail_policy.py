@@ -604,6 +604,28 @@ def test_invalid_constellation_mode_is_rejected():
         CartoonDetailPolicy(constellation_star_mode="nearby")
 
 
+def test_adaptive_policy_can_preserve_a_publication_stellar_limit():
+    detail = AdaptiveDetailPolicy(star_magnitude_limit=5.0).resolve(
+        SimpleNamespace(
+            visible_solid_angle_sq_deg=32400.0,
+            angular_area_deg2=32400.0,
+        ),
+        SimpleNamespace(
+            width_inches=14.0,
+            font_scale=1.0,
+            symbol_scale=1.0,
+        ),
+    )
+
+    assert detail.star_magnitude_limit == pytest.approx(5.0)
+    assert detail.minimum_open_cluster_size_arcmin == pytest.approx(30.0)
+
+
+def test_adaptive_publication_stellar_limit_must_be_finite():
+    with pytest.raises(ValueError, match="star_magnitude_limit"):
+        AdaptiveDetailPolicy(star_magnitude_limit=float("nan"))
+
+
 def test_stars_selection_configuration_is_stable():
     stars = Stars.__new__(Stars)
     stars.include_ids = frozenset()

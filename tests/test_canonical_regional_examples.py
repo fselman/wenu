@@ -50,6 +50,13 @@ def test_atlas_stellar_limits_remain_explicit(path, limit):
 
 
 @pytest.mark.parametrize("path", EXAMPLES)
+def test_atlas_examples_use_adaptive_deep_sky_detail(path):
+    source = path.read_text(encoding="utf-8")
+
+    assert "AdaptiveDetailPolicy(" in source
+
+
+@pytest.mark.parametrize("path", EXAMPLES)
 def test_examples_use_the_shared_context_and_furniture_adapter(path):
     module = load(path)
     arguments = module.parser().parse_args([

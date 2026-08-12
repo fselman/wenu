@@ -420,6 +420,7 @@ class AdaptiveDetailPolicy:
     output_magnitude_adjustment_per_octave: float = 0.20
     maximum_output_magnitude_adjustment: float = 0.50
     adapt_enabled_layers: bool = True
+    star_magnitude_limit: float | None = None
 
     def __post_init__(self) -> None:
         levels = tuple(
@@ -436,6 +437,11 @@ class AdaptiveDetailPolicy:
             raise ValueError(
                 "maximum_output_magnitude_adjustment cannot be negative."
             )
+        if (
+            self.star_magnitude_limit is not None
+            and not isfinite(float(self.star_magnitude_limit))
+        ):
+            raise ValueError("star_magnitude_limit must be finite.")
         object.__setattr__(self, "levels", levels)
 
     @staticmethod
@@ -530,6 +536,10 @@ class AdaptiveDetailPolicy:
         }
         output_adjustment = self._output_magnitude_adjustment(mode)
         values["star_magnitude_limit"] += output_adjustment
+        if self.star_magnitude_limit is not None:
+            values["star_magnitude_limit"] = float(
+                self.star_magnitude_limit
+            )
         values["galaxy_magnitude_limit"] += 0.5 * output_adjustment
         values["label_density"] *= (
             mode.width_inches / self.reference_width_inches

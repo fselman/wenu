@@ -225,7 +225,9 @@ controls are required.
 Available policies include:
 
 - `FixedDetailPolicy` for explicit resolved values;
-- `AdaptiveDetailPolicy` for field-size-dependent density;
+- `AdaptiveDetailPolicy` for field-size-dependent density, optionally with a
+  fixed publication `star_magnitude_limit` while its deep-sky thresholds
+  remain adaptive;
 - `CartoonDetailPolicy` for sparse cartoon content while preserving
   constellation vertices.
 
@@ -240,6 +242,10 @@ constellation-label selections already supported by layer geometry. It also
 applies constellation-line and boundary subsets and Milky Way, LMC, and SMC
 isophote levels as render-local geometry options. These selections do not
 change the registered layers' loaded content or defaults.
+Resolved chart requests use the established `ol2` through `ol5` Milky Way
+levels when no levels are supplied, thereby omitting the outer complement
+without removing it from maximal loaded content. Explicit level requests
+retain precedence.
 
 `ResolvedDetail.extended_object_samples` may request a lower render-local
 sampling density for extended-object outlines. It applies to Messier-style
