@@ -481,6 +481,16 @@ Q.3 declares and transports the controls only. Request-time layer lifecycle,
 mask geometry, appearance, and visible behavior remain assigned to Q.4
 through Q.7.
 
+`configure_chart_request_horizon(sky, request)` owns the optional reference
+lifecycle. It removes prior `HorizonReference` instances on every call,
+clears `sky.horizon_reference`, and registers one replacement only when
+`request.horizon` is true and the family is not `planisphere`. It returns the
+registered reference or `None`. The canonical request builder and ordinary
+drawing facade call this configurator after grid configuration. An AltAz grid
+continues to use `include_horizon=False`; `horizon_mask` does not imply the
+reference. Because registration itself is the selection boundary, resolved
+astronomical detail policies do not disable a registered semantic horizon.
+
 `CelestialSphere.draw_chart(..., observer=observer)` selects the scientific
 observer explicitly for every registered layer. The same optional keyword is
 carried by canonical chart rendering and export, request preparation and

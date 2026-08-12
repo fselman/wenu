@@ -63,6 +63,10 @@ rendering, or export work.
 `charts/command_line.py` and `charts/drawing.py` transport those declarations
 through the common example and ordinary-Python adapters; they do not create
 horizon geometry, masks, or appearance.
+`charts/request_horizon.py` owns request-time removal and conditional
+registration of the semantic horizon reference. It is independent of
+`charts/request_grids.py`; neither module acquires style, masking, projection,
+or example responsibility.
 `charts/target_resolver.py` owns offline alias resolution over the packaged
 `data/targets.json` cross-identification resource.
 `charts/constellation_resolver.py` owns IAU abbreviation normalization and

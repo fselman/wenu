@@ -294,3 +294,13 @@ installed example. They remain declaration-only in this milestone: no chart
 registers or paints horizon content until the later lifecycle, mask, and
 appearance milestones, so current rendering and planisphere behavior remain
 unchanged.
+
+Milestone 46C.8Q.4 gives the optional reference a request-time lifecycle.
+`configure_chart_request_horizon()` first removes every prior semantic
+`HorizonReference`, then registers exactly one only when `request.horizon` is
+true and the family is not `planisphere`. The common build and drawing paths
+invoke it beside, but independently from, grid configuration. AltAz request
+grids continue to exclude their own horizon, `horizon_mask` alone registers
+nothing, and registered horizon geometry remains enabled independently of
+astronomical detail density. Appearance and below-horizon masking remain for
+later milestones.

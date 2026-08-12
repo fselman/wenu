@@ -113,6 +113,7 @@ from .charts.request_grids import (
     configure_chart_request_grids,
     requested_coordinate_grids,
 )
+from .charts.request_horizon import configure_chart_request_horizon
 from .charts.chart_arguments import (
     ChartContentOptions,
     ChartLegendSelection,
@@ -352,6 +353,7 @@ __all__ = [
     "generate_chart_request",
     "configure_chart_request_grids",
     "requested_coordinate_grids",
+    "configure_chart_request_horizon",
     "ChartContentOptions",
     "ChartLegendSelection",
     "ChartStyleOverrides",

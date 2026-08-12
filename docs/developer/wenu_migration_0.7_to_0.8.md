@@ -518,6 +518,9 @@ remains in Milestones 46C.8Q.4 through 46C.8Q.7.
 - remove prior request-time references so reused spheres cannot accumulate
   horizon layers.
 
+**Status:** Implemented; reference appearance and mask behavior remain in
+Milestones 46C.8Q.5 through 46C.8Q.7.
+
 ##### Milestone 46C.8Q.5 — Add below-horizon mask geometry
 
 - derive below-horizon coverage from spherical altitude rather than projected

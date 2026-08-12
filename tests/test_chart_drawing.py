@@ -51,6 +51,7 @@ def test_drawing_translates_direct_options_to_one_canonical_export(
 ):
     chart_view = view()
     configured = []
+    configured_horizons = []
     exported = []
     furniture = ChartFurnitureOptions(
         context=ChartContextOptions(location=True)
@@ -66,6 +67,10 @@ def test_drawing_translates_direct_options_to_one_canonical_export(
         lambda sky, request, *, frame: configured.append(
             (sky, request, frame)
         ),
+    )
+    monkeypatch.setattr(
+        "wenu.charts.drawing.configure_chart_request_horizon",
+        lambda sky, request: configured_horizons.append((sky, request)),
     )
 
     def export(sky, prepared, *, observer):
@@ -103,6 +108,7 @@ def test_drawing_translates_direct_options_to_one_canonical_export(
     assert request.detail.grid_label_layers == {"equatorial_grid"}
     assert request.horizon is True
     assert request.horizon_mask is True
+    assert configured_horizons == [(chart_view.sky, request)]
     assert request.furniture is furniture
     assert request.title == "Southern sky"
     assert request.language == "es"

@@ -11,6 +11,7 @@ from .request_chart import PreparedChartRequest
 from .request_composition import ChartProductCompositionOptions
 from .request_generation import export_prepared_chart
 from .request_grids import configure_chart_request_grids
+from .request_horizon import configure_chart_request_horizon
 from .style_overrides import ChartStyleOverrides
 from .view import ChartView
 
@@ -111,6 +112,7 @@ def draw_chart_view(
     )
     _validate_load_profile(view, overrides)
     configure_chart_request_grids(view.sky, request, frame=view.frame)
+    configure_chart_request_horizon(view.sky, request)
     prepared = PreparedChartRequest(
         chart=view.chart,
         resolved=replace(view._prepared.resolved, request=request),

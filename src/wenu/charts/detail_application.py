@@ -182,6 +182,8 @@ _DETAIL_LAYER_NAMES = {
     "magellanic_cloud_isophotes": "magellanic_clouds",
 }
 
+_REQUEST_GEOMETRY_LAYERS = frozenset({"horizon"})
+
 
 def _detail_layer_name(layer):
     """Return the semantic content-policy name for a registered layer."""
@@ -224,8 +226,10 @@ def apply_resolved_detail(
         if not name:
             continue
         configured = {
-            "enabled": detail.layer_enabled(
-                _detail_layer_name(layer)
+            "enabled": (
+                True
+                if name in _REQUEST_GEOMETRY_LAYERS
+                else detail.layer_enabled(_detail_layer_name(layer))
             ),
         }
         detail_name = _detail_layer_name(layer)

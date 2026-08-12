@@ -16,6 +16,7 @@ from .export_workflow import ChartExportResult
 from .request import ChartRequest
 from .request_chart import PreparedChartRequest, prepare_chart_request
 from .request_grids import configure_chart_request_grids
+from .request_horizon import configure_chart_request_horizon
 from .request_furniture import resolve_request_furniture_context
 from .request_resolver import resolve_chart_request
 
@@ -163,6 +164,7 @@ def _prepare_with_sphere(request, sky, profile, *, owns_observer):
         resolved.request,
         frame=getattr(resolved, "frame", None),
     )
+    configure_chart_request_horizon(sky, resolved.request)
     prepared = prepare_chart_request(sky, resolved)
     return ChartRequestBuild(
         sky=sky,
