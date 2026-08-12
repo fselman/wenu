@@ -16,7 +16,16 @@ def observer_geometry_key(observer):
     if utc_datetime is not None:
         instant = utc_datetime.isoformat()
     else:
-        instant = id(getattr(observer, "t", observer))
+        astropy_time = getattr(observer, "t_astropy", None)
+        if astropy_time is not None:
+            utc = astropy_time.utc
+            instant = (
+                "astropy",
+                float(utc.jd1),
+                float(utc.jd2),
+            )
+        else:
+            instant = id(getattr(observer, "t", observer))
 
     coordinates = tuple(
         getattr(observer, name, None)

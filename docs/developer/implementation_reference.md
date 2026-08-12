@@ -491,6 +491,28 @@ continues to use `include_horizon=False`; `horizon_mask` does not imply the
 reference. Because registration itself is the selection boundary, resolved
 astronomical detail policies do not disable a registered semantic horizon.
 
+`HorizonReference.visible_hemisphere_geometry(observer,
+radial_step_deg=5)` returns native AltAz `SphericalPolygons` tessellating the
+altitude-nonnegative hemisphere. Its metadata identifies an `above_horizon`
+mask opening and its altitude-zero vertices come from the same sampled
+semantic horizon used by the reference curve.
+
+`StereographicProjection.unproject_spherical(x, y)` performs the inverse
+planar mapping and returns coordinates in the projection's source frame. It
+is the classification boundary used by horizon-mask preparation; it does not
+perform astronomy, clipping, or masking.
+
+`prepare_horizon_mask_opening(...)` returns a frozen `PreparedHorizonMask`
+with `visibility` equal to `above`, `crossing`, or `below`, native spherical
+openings, and prepared projected openings. Regional, binocular, and
+circumpolar fields are classified from their final rectangular or circular
+boundary. Wholly above fields use the viewport as their opening, wholly below
+fields use no opening, and crossing fields project the AltAz tessellation
+through `project_geometry_for_viewport()`. With `complete_sphere=True`, the
+optional chart-owned transformation is applied before projection; Galactic
+Mollweide therefore reuses its established seam splitting. This function
+prepares geometry only and does not call a renderer.
+
 `CelestialSphere.draw_chart(..., observer=observer)` selects the scientific
 observer explicitly for every registered layer. The same optional keyword is
 carried by canonical chart rendering and export, request preparation and

@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 import numpy as np
 from astropy.table import Table
+from astropy.time import Time
 
 from wenu.sky import observed_cache
 
@@ -15,6 +16,36 @@ def catalogue():
             "ra_deg": [10.0, 20.0, 30.0],
             "dec_deg": [-10.0, -20.0, -30.0],
         }
+    )
+
+
+def test_astropy_observer_time_has_stable_value_identity():
+    first = SimpleNamespace(
+        t_astropy=Time("2026-08-16T01:00:00"),
+        lat_deg=-33.0,
+        lon_deg=-71.5,
+        elevation_m=52.0,
+    )
+    equivalent = SimpleNamespace(
+        t_astropy=Time("2026-08-16T01:00:00"),
+        lat_deg=-33.0,
+        lon_deg=-71.5,
+        elevation_m=52.0,
+    )
+    later = SimpleNamespace(
+        t_astropy=Time("2026-08-16T07:00:00"),
+        lat_deg=-33.0,
+        lon_deg=-71.5,
+        elevation_m=52.0,
+    )
+
+    assert (
+        observed_cache.observer_geometry_key(first)
+        == observed_cache.observer_geometry_key(equivalent)
+    )
+    assert (
+        observed_cache.observer_geometry_key(first)
+        != observed_cache.observer_geometry_key(later)
     )
 
 

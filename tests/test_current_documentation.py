@@ -128,11 +128,13 @@ def test_horizon_roadmap_separates_boundary_reference_and_mask_roles():
         "Milestone 46C.8Q.1",
         "Milestone 46C.8Q.3",
         "Milestone 46C.8Q.4",
+        "Milestone 46C.8Q.5",
         "Milestone 46C.8Q.9",
         "preventing accumulated opacity",
         "runtime behavior remains",
         "declaration and adapter plumbing",
         "reference appearance and mask behavior remain",
+        "mask-opening geometry preparation",
     ):
         assert phrase in roadmap
 

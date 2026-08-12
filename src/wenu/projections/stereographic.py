@@ -76,6 +76,22 @@ class StereographicProjection:
             coordinates.lat_deg,
         )
 
+    def unproject_spherical(self, x, y):
+        """Return source-frame coordinates for projected positions."""
+        projected_x, projected_y = np.broadcast_arrays(
+            np.asarray(x, dtype=float),
+            np.asarray(y, dtype=float),
+        )
+        aligned_x = -projected_x if self.flip_ew else projected_x
+        radius = np.hypot(aligned_x, projected_y)
+        longitude = np.degrees(np.arctan2(aligned_x, projected_y))
+        latitude = 90.0 - np.degrees(
+            2.0 * np.arctan(radius / self.radius)
+        )
+        if self.frame is None:
+            return SphericalCoordinates(longitude, latitude)
+        return self.frame.inverse_transform(longitude, latitude)
+
     def _project_aligned(self, lon_deg, lat_deg):
         """Project coordinates whose north pole is the tangent point."""
         lon = np.radians(lon_deg)

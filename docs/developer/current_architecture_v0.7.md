@@ -304,3 +304,14 @@ grids continue to exclude their own horizon, `horizon_mask` alone registers
 nothing, and registered horizon geometry remains enabled independently of
 astronomical detail density. Appearance and below-horizon masking remain for
 later milestones.
+
+Milestone 46C.8Q.5 adds projection-neutral preparation of the mask's
+above-horizon opening without painting it. `HorizonReference` tessellates the
+native AltAz hemisphere into spherical polygon wedges derived from the same
+altitude-zero geometry. Stereographic preparation inverse-projects the final
+field boundary to classify it as wholly above, crossing, or wholly below the
+horizon; only a crossing field projects the hemisphere tessellation through
+the established projection-domain guard. Complete-sphere preparation applies
+the chart-owned horizontal-to-Galactic transformation before Mollweide
+projection, whose existing longitude-seam topology produces valid separate
+pieces. Q.5 does not yet combine or draw masks.

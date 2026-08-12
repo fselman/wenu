@@ -114,6 +114,11 @@ from .charts.request_grids import (
     requested_coordinate_grids,
 )
 from .charts.request_horizon import configure_chart_request_horizon
+from .charts.horizon_mask import (
+    HORIZON_VISIBILITIES,
+    PreparedHorizonMask,
+    prepare_horizon_mask_opening,
+)
 from .charts.chart_arguments import (
     ChartContentOptions,
     ChartLegendSelection,
@@ -354,6 +359,9 @@ __all__ = [
     "configure_chart_request_grids",
     "requested_coordinate_grids",
     "configure_chart_request_horizon",
+    "HORIZON_VISIBILITIES",
+    "PreparedHorizonMask",
+    "prepare_horizon_mask_opening",
     "ChartContentOptions",
     "ChartLegendSelection",
     "ChartStyleOverrides",

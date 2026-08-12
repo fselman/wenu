@@ -530,6 +530,9 @@ Milestones 46C.8Q.5 through 46C.8Q.7.
 - transform and seam-split the all-sky horizon through the established
   horizontal-to-Galactic Mollweide pipeline.
 
+**Status:** Implemented as mask-opening geometry preparation; composition and
+painting remain in Milestones 46C.8Q.6 and 46C.8Q.7.
+
 ##### Milestone 46C.8Q.6 — Compose chart masks once
 
 - generalize chart mask preparation so constellation and horizon restrictions

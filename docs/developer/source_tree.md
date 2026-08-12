@@ -67,6 +67,12 @@ horizon geometry, masks, or appearance.
 registration of the semantic horizon reference. It is independent of
 `charts/request_grids.py`; neither module acquires style, masking, projection,
 or example responsibility.
+`charts/horizon_mask.py` owns projection-neutral preparation of the
+above-horizon mask opening and stereographic field-visibility classification.
+It delegates spherical AltAz geometry to `sky/horizon.py`, stereographic
+projection-domain protection to `rendering/preparation.py`, and Galactic
+transformation and Mollweide seam topology to their established chart and
+projection owners. It does not compose masks, select appearance, or render.
 `charts/target_resolver.py` owns offline alias resolution over the packaged
 `data/targets.json` cross-identification resource.
 `charts/constellation_resolver.py` owns IAU abbreviation normalization and
