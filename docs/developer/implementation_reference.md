@@ -483,6 +483,28 @@ mask. Explicit arguments to `get_chart_view()` take precedence. The advanced
 limit; the default is an ordinary-interface convenience rather than a change
 to that contract.
 
+`draw_chart_view(view, destination, ...)` completes the ordinary workflow and
+returns one `ChartExportResult`. Direct choices are `style`, `mode`, `grids`,
+`grid_labels`, `furniture`, `title`, and `language`. Advanced callers may also
+supply a `DetailPolicy`, `DetailOverrides`, and `ChartStyleOverrides` without
+leaving the ordinary facade. Grid names accept `altaz`, `equatorial`,
+`ecliptic`, or `galactic`, with their `_grid` semantic names also accepted.
+The view's spatial content is retained, the load profile validates explicit
+detail ceilings, and the destination is saved exactly once.
+
+```python
+result = draw_chart_view(
+    view,
+    "output/m57.png",
+    style="atlas",
+    mode="print",
+    grids=("equatorial",),
+    grid_labels=("equatorial",),
+    title="M57",
+)
+print(result.output)
+```
+
 ```python
 sky = generate_celestial_sphere()
 observer = Observer(location="La Ligua", time="2026-08-15 22:00")

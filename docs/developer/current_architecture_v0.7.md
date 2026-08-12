@@ -188,3 +188,11 @@ The ordinary facade fills omitted values from this policy before translating
 to the advanced request graph; explicit values still win. Canonical examples
 will continue to state scientifically important publication geometry rather
 than relying invisibly on these defaults.
+
+Milestone 46C.8L adds `draw_chart_view()` as the third ordinary operation. A
+call selects exactly one style/mode product and may supply a structured detail
+policy, render-local overrides, semantic grids and labels, furniture, visual
+overrides, title, language, and destination. The adapter retains the view's
+chart and resolved spatial content, configures grids through the existing
+request boundary, and delegates to the canonical request composition and
+single-export workflow. Its return value is the resulting `ChartExportResult`.

@@ -190,6 +190,7 @@ from .charts.view_defaults import (
     ChartViewDefaults,
     chart_view_defaults,
 )
+from .charts.drawing import draw_chart_view
 from .charts.magnitude_legend import (
     StellarMagnitudeEntry,
     StellarMagnitudeScale,
@@ -285,6 +286,7 @@ __all__ = [
     "build_maximal_sphere",
     "generate_celestial_sphere",
     "get_chart_view",
+    "draw_chart_view",
     "CHART_VIEW_DEFAULTS",
     "chart_view_defaults",
     "ExportOptions",

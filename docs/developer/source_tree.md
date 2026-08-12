@@ -97,6 +97,10 @@ construction, projection, rendering, or export pipeline.
 `charts/view_defaults.py` owns the immutable public geometry defaults for the
 five ordinary view forms. It contains no catalogue, cache, layer, style,
 furniture, renderer, or output policy.
+`charts/drawing.py` owns the ordinary one-product drawing adapter. It translates
+direct presentation choices onto the prepared view's immutable request,
+configures semantic grids through `request_grids.py`, and delegates the sole
+composition, render, furniture, and save operation to `request_generation.py`.
 
 ## Responsibility mapping
 

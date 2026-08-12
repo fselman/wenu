@@ -319,6 +319,15 @@ override the policy; advanced request validation remains compatible.
 - retain structured options for advanced callers and export exactly once per
   selected product.
 
+**Status:** Implemented. `draw_chart_view(view, destination, ...)` translates
+one direct style, mode, detail policy, detail override, grid, furniture,
+style-override, title, language, and output choice into a one-product immutable
+request over the view's prepared geometry and content. It configures grids at
+the established request-time boundary and delegates composition, rendering,
+furniture, and the single save to `export_prepared_chart()`. It returns the
+one `ChartExportResult`; repeated drawings reuse the same chart geometry and
+replace request-time grids without leaking drawing state.
+
 ### Milestone 46C.8M — Add shared command-line adaptation
 
 - map common CLI controls into the same three-stage Python interface;
