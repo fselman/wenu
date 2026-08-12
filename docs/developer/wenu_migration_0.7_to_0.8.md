@@ -282,6 +282,14 @@ available unchanged during migration.
 - preserve packaged targets, arbitrary IAU sets, packaged groups, automatic
   framing, spatial selection, Serpens normalization, and supplied-sphere use.
 
+**Status:** Implemented. `get_chart_view(sky, observer, ...)` translates the
+ordinary family, subject, stereographic projection, framing, orientation, and
+mask vocabulary into the established immutable request resolution and chart
+preparation boundaries. It returns a frozen `ChartView` containing the
+caller-owned observer, canonical chart geometry, projection identity, and
+resolved target, constellation, and frame provenance. It owns no style,
+renderer, furniture, language, title, output, or observer cleanup.
+
 ### Milestone 46C.8K — Centralize explicit family defaults
 
 - define one public default policy for binocular, regional single, regional

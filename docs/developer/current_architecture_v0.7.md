@@ -171,3 +171,11 @@ under an explicit load profile into an ordinary `CelestialSphere` whose
 observer is `None`; its canonical layers are likewise unbound. The established
 observer-bound `build_maximal_sphere()` and request facade remain compatible
 until observer-bound views become the ordinary construction boundary.
+
+Milestone 46C.8J adds `get_chart_view()` as the second ordinary operation. It
+binds a caller-owned scientific observer to an observer-independent sphere,
+resolves the friendly subject and frame vocabulary through the advanced
+request graph, and prepares the established canonical chart geometry. The
+returned frozen `ChartView` exposes geometry and resolved provenance but no
+appearance, drawing, furniture, language, title, output, or cleanup state.
+Only the implemented stereographic projection is accepted.

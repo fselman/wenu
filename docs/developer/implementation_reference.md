@@ -456,6 +456,28 @@ but neither it nor its canonical layers select an observer or instant. The
 compatibility `build_maximal_sphere(observer, profile=...)` retains the prior
 observer-bound behavior.
 
+`get_chart_view(sky, observer, *, family, ...)` obtains one geometrical view
+from that reusable sphere. `observer` is an existing caller-owned `Observer`;
+the view neither creates nor closes it. Friendly target, coordinate,
+constellation, group, field, position-angle, pole, declination-limit, and mask
+arguments are resolved by the established request and preparation contracts.
+The returned frozen `ChartView` exposes `chart`, `family`, `mask`,
+`projection_name`, `target`, `constellations`, and `frame`. Projection is
+currently limited explicitly to `"stereographic"`. Style, mode, detail,
+grids, furniture, language, title, and output remain drawing concerns.
+
+```python
+sky = generate_celestial_sphere()
+observer = Observer(location="La Ligua", time="2026-08-15 22:00")
+view = get_chart_view(
+    sky,
+    observer,
+    family="binocular",
+    target="M57",
+    field_diameter_deg=6.5,
+)
+```
+
 ```python
 result = generate_chart_request(
     ChartRequest(

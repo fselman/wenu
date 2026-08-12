@@ -90,6 +90,10 @@ accept an explicit scientific observer while retaining their bound-observer
 compatibility form. This is the seam for the later observer-independent
 maximal-sphere factory; it does not yet remove the observer accepted by the
 existing factory.
+`charts/view.py` owns the ordinary observer-bound geometrical view adapter. It
+translates friendly arguments into the existing request resolver and chart
+preparation boundary and returns frozen geometry/provenance without adding a
+construction, projection, rendering, or export pipeline.
 
 ## Responsibility mapping
 
