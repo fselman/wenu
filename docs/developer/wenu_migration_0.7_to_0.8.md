@@ -468,6 +468,94 @@ Milestone 46C.8O.
 
 **Status:** Implemented.
 
+#### Milestone 46C.8Q — Add optional observer-horizon presentation
+
+##### Milestone 46C.8Q.1 — Establish horizon roles and mask policy
+
+- retain the planisphere horizon as intrinsic chart boundary geometry rather
+  than optional content;
+- define `--horizon` as an independent unlabeled altitude-zero reference and
+  `--horizon-mask` as an independent translucent below-horizon presentation
+  mask for other chart families;
+- make both controls idempotent no-ops for planispheres and keep both
+  independent of AltAz-grid and `--grid-references` selection;
+- require constellation and horizon openings to be composed before one
+  effective outside mask is painted, preventing accumulated opacity;
+- preserve the canonical spherical-geometry, frame-transformation,
+  projection, preparation, clipping, rendering, and export pipeline.
+
+**Status:** Implemented as architectural policy; runtime behavior remains in
+Milestones 46C.8Q.2 through 46C.8Q.9.
+
+##### Milestone 46C.8Q.2 — Add reusable horizon geometry
+
+- expose one semantic observer-local altitude-zero curve without registering
+  the complete AltAz grid;
+- reuse that geometry for reference drawing and below-horizon mask
+  preparation;
+- preserve observer-independent maximal-sphere ownership and observer-bound
+  realization.
+
+##### Milestone 46C.8Q.3 — Add shared request controls
+
+- add independent `--horizon` and `--horizon-mask` switches to the common
+  parser and immutable request adapters;
+- expose equivalent ordinary Python drawing options;
+- make all canonical and installed examples inherit both controls through the
+  shared adapter without example-specific logic.
+
+##### Milestone 46C.8Q.4 — Configure reference lifecycle
+
+- register the semantic horizon reference only when selected and never for a
+  planisphere;
+- keep `--horizon`, `--horizon-mask`, and `--altaz-grid` independent and avoid
+  duplicate altitude-zero curves;
+- remove prior request-time references so reused spheres cannot accumulate
+  horizon layers.
+
+##### Milestone 46C.8Q.5 — Add below-horizon mask geometry
+
+- derive below-horizon coverage from spherical altitude rather than projected
+  line orientation;
+- support wholly above, crossing, and wholly below regional, circumpolar, and
+  binocular fields;
+- transform and seam-split the all-sky horizon through the established
+  horizontal-to-Galactic Mollweide pipeline.
+
+##### Milestone 46C.8Q.6 — Compose chart masks once
+
+- generalize chart mask preparation so constellation and horizon restrictions
+  define one final visible opening;
+- paint the resolved translucent outside-mask style exactly once everywhere
+  outside that opening;
+- retain separate disjoint openings and horizon clipping without alpha
+  accumulation.
+
+##### Milestone 46C.8Q.7 — Add semantic appearance
+
+- give the horizon reference explicit style-owned color, linewidth,
+  linestyle, alpha, and z-order;
+- reuse the existing resolved mask style for `--horizon-mask` without adding
+  a second opacity policy;
+- keep styles and output modes from changing geometry.
+
+##### Milestone 46C.8Q.8 — Prove behavior and isolation
+
+- test independent CLI and Python controls, geometry, Mollweide seam
+  preparation, cross-family clipping, planisphere idempotence, mask
+  intersection, and single-opacity rendering;
+- prove request-order independence and no state leakage on one reusable
+  maximal sphere.
+
+##### Milestone 46C.8Q.9 — Close visually
+
+- compare atlas-print all-sky, masked all-sky, regional horizon crossings,
+  binocular and circumpolar intersections, combined Serpens/Ophiuchus masks,
+  and planisphere no-op products;
+- smoke-test cartoon presentation products;
+- compile, run focused and full suites, and record the final ordinary and
+  advanced interfaces.
+
 ## Milestone 46C.9 — Validate all chart families from one maximal sphere
 
 - build one observer-independent canonical maximal sphere;

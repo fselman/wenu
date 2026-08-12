@@ -111,6 +111,28 @@ def test_v08_roadmap_records_ordinary_interface_and_static_sequences():
         assert phrase in roadmap
 
 
+def test_horizon_roadmap_separates_boundary_reference_and_mask_roles():
+    target = read(TARGET)
+    roadmap = read(ROADMAP)
+
+    for phrase in (
+        "Observer-horizon roles",
+        "`--horizon`",
+        "`--horizon-mask`",
+        "deliberately not opaque",
+        "paints one effective outside mask exactly once",
+        "idempotent no-ops for a planisphere",
+    ):
+        assert phrase in target
+    for phrase in (
+        "Milestone 46C.8Q.1",
+        "Milestone 46C.8Q.9",
+        "preventing accumulated opacity",
+        "runtime behavior remains",
+    ):
+        assert phrase in roadmap
+
+
 def test_documented_python_is_syntactically_valid():
     for document in (
         ROOT / "README.md",

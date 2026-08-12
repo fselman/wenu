@@ -21,6 +21,41 @@ Canonical examples configure the fourth grid declaratively without enabling
 it by default. Detail owns selection, style owns appearance, and label
 selection remains render-local and grid-specific.
 
+## Observer-horizon roles
+
+The observer horizon has three independent roles derived from the same
+observer- and time-dependent altitude-zero spherical geometry:
+
+1. the planisphere owns it as its intrinsic chart boundary and visibility
+   limit;
+2. `--horizon` requests it as an optional reference curve on chart families
+   whose final boundary is not already the horizon; and
+3. `--horizon-mask` requests a translucent presentation mask over the
+   below-horizon part of those charts.
+
+The optional reference and mask do not change catalogue selection, spherical
+geometry, projection, framing, viewport, or final chart boundary. Neither
+control enables the AltAz grid, neither is part of `--grid-references`, and
+neither implies the other. The reference has no label. Both controls are
+idempotent no-ops for a planisphere because its horizon boundary already
+clips away the invisible hemisphere and supplies the single visible horizon
+stroke.
+
+`--horizon-mask` uses the resolved style's existing outside-mask color,
+opacity, and z-order; it is deliberately not opaque. When constellation and
+horizon masks are both selected, Wenu composes their visible openings before
+drawing and paints one effective outside mask exactly once. The opening is
+the intersection of the chart aperture, the selected constellation regions,
+and the above-horizon hemisphere. Overlap therefore cannot accumulate alpha,
+partly visible regions are clipped at the horizon, wholly invisible regions
+are omitted, and disjoint visible constellation regions remain separate.
+
+Horizon reference and mask geometry must use the canonical execution path:
+horizontal spherical geometry, any chart-owned frame transformation,
+projection-domain guards and seam topology, projection, chart preparation,
+viewport or aperture clipping, renderer, and export. Examples and command-line
+adapters declare the controls but contain no horizon geometry or masking.
+
 ## Reusable celestial content and observed geometry
 
 The canonical pipeline must support loading one complete astronomical data

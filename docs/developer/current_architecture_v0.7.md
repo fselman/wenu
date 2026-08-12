@@ -270,3 +270,11 @@ keeps the magnitude legend on the identical scale.
 Constellation-boundary content is rendered as transparent polygon outlines;
 enabling official boundaries therefore never paints or darkens the interiors
 of constellation masks.
+
+Milestone 46C.8Q.1 records the approved next horizon contract without yet
+changing runtime behavior. The planisphere retains its altitude-zero chart
+boundary. Other families will gain independent optional horizon-reference and
+below-horizon-mask roles derived from the same observer-bound geometry.
+The horizon mask will reuse the resolved translucent outside-mask style, and
+combined constellation and horizon restrictions will be composed into one
+visible opening before a single mask is painted so opacity cannot accumulate.
