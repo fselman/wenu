@@ -196,3 +196,12 @@ overrides, title, language, and destination. The adapter retains the view's
 chart and resolved spatial content, configures grids through the existing
 request boundary, and delegates to the canonical request composition and
 single-export workflow. Its return value is the resulting `ChartExportResult`.
+
+Milestone 46C.8M adds the shared command-line adapter over that same ordinary
+workflow. `add_chart_cli_arguments()` owns the complete common product,
+content, appearance, legend, context, and credit switches;
+`draw_chart_view_from_arguments()` resolves them and calls
+`draw_chart_view()` once for every selected product. Examples retain only
+their explicit geometrical defaults, subject arguments, and product-specific
+detail policy. The adapter contains no catalogue loading, projection,
+rendering, furniture-drawing, or export implementation of its own.

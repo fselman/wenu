@@ -336,6 +336,16 @@ replace request-time grids without leaking drawing state.
 - preserve documented controls without making a script own catalogue,
   projection, renderer, furniture, or export procedure.
 
+**Status:** Implemented. `add_chart_cli_arguments()` adds the complete common
+product, content, style, legend, context, and credit contract.
+`chart_cli_furniture()` translates shared furniture switches into immutable
+options, including localizable reference and legend labels.
+`draw_chart_view_from_arguments()` resolves the selected product matrix,
+detail and style overrides, furniture, titles, language, and deterministic
+destinations, then delegates each product to `draw_chart_view()`. Exact
+product detail policies remain explicit family inputs. No canonical example
+is replaced until Milestone 46C.8N.
+
 ### Milestone 46C.8N — Replace the five canonical examples
 
 - replace binocular, regional single, regional group, planisphere, and

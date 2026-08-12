@@ -505,6 +505,14 @@ result = draw_chart_view(
 print(result.output)
 ```
 
+Command-line examples add the complete common contract with
+`add_chart_cli_arguments(parser, default_output=...)`. The resulting namespace
+is passed to `draw_chart_view_from_arguments(view, arguments, stem=...)`, which
+returns one `ChartExportResult` per selected product. A family may pass
+`product_details` keyed by exact `ChartProduct` values and may construct
+localized furniture with `chart_cli_furniture()`; these remain declarative
+inputs to `draw_chart_view()` rather than a second rendering path.
+
 ```python
 sky = generate_celestial_sphere()
 observer = Observer(location="La Ligua", time="2026-08-15 22:00")

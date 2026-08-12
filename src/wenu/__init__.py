@@ -191,6 +191,11 @@ from .charts.view_defaults import (
     chart_view_defaults,
 )
 from .charts.drawing import draw_chart_view
+from .charts.command_line import (
+    add_chart_cli_arguments,
+    chart_cli_furniture,
+    draw_chart_view_from_arguments,
+)
 from .charts.magnitude_legend import (
     StellarMagnitudeEntry,
     StellarMagnitudeScale,
@@ -287,6 +292,9 @@ __all__ = [
     "generate_celestial_sphere",
     "get_chart_view",
     "draw_chart_view",
+    "add_chart_cli_arguments",
+    "chart_cli_furniture",
+    "draw_chart_view_from_arguments",
     "CHART_VIEW_DEFAULTS",
     "chart_view_defaults",
     "ExportOptions",

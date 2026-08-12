@@ -101,6 +101,10 @@ furniture, renderer, or output policy.
 direct presentation choices onto the prepared view's immutable request,
 configures semantic grids through `request_grids.py`, and delegates the sole
 composition, render, furniture, and save operation to `request_generation.py`.
+`charts/command_line.py` owns the shared parser additions and translation from
+common command-line controls to `draw_chart_view()`. It may iterate the
+selected product matrix, but it owns no sphere construction, chart geometry,
+projection, renderer, furniture drawing, or saving procedure.
 
 ## Responsibility mapping
 
@@ -127,6 +131,7 @@ charts/
 ├── context.py                    output-neutral chart geometry context
 ├── composition.py                style/mode/detail/legend resolution
 ├── chart_arguments.py            shared canonical chart request arguments
+├── command_line.py               ordinary shared command-line adapter
 ├── product_options.py            style/mode product selection and naming
 ├── style_overrides.py            immutable post-mode visual overrides
 ├── export_workflow.py            render, decorate, and save once
