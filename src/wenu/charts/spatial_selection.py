@@ -27,6 +27,11 @@ def _visible_identifiers(sky, chart, layer, observer):
         if callable(centers)
         else layer.spherical_geometry(observer)
     )
+    if getattr(chart, "selects_full_sphere", False):
+        return frozenset(
+            str(identifier)
+            for identifier in np.asarray(geometry.ids, dtype=object)
+        )
     x, y = chart.projection.project_spherical(
         geometry.lon_deg, geometry.lat_deg
     )

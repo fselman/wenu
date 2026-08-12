@@ -63,9 +63,12 @@ constellation endpoints; the request resolver does not inspect sky geometry.
 `charts/spatial_selection.py` owns vectorized field-footprint selection over
 cached catalogue centers; it applies explicit exclusions, returns immutable
 content, and does not render.
-`charts/request_chart.py` maps a resolved request onto the four established
+`charts/request_chart.py` maps a resolved request onto the established
 chart types and invokes that selector; composition and export remain in their
 existing modules.
+`charts/all_sky.py` owns the complete-sphere Galactic Mollweide chart,
+including its elliptical boundary, chart context, frame preparation, full
+catalogue footprint, and optional disjoint constellation-mask openings.
 `charts/request_generation.py` is the ordinary facade over those boundaries.
 It owns observer/maximal-sphere lifetime for one-call generation and delegates
 all composition, rendering, furniture, and saving to the existing canonical
@@ -150,7 +153,7 @@ The v0.7 chart workflow is concentrated in `wenu.charts`:
 
 ```text
 charts/
-├── regional.py, full_sky.py,
+├── regional.py, full_sky.py, all_sky.py,
 │   circumpolar.py, binocular.py  chart geometry and export entry points
 ├── context.py                    output-neutral chart geometry context
 ├── composition.py                style/mode/detail/legend resolution

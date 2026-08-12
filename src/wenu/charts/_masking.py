@@ -33,6 +33,7 @@ def draw_constellation_outside_mask(
     constellations,
     style,
     visible_minimum_latitude_deg=None,
+    transform_spherical=None,
 ):
     """Draw a presentation mask outside selected official boundaries.
 
@@ -60,6 +61,8 @@ def draw_constellation_outside_mask(
             spherical,
             minimum=float(visible_minimum_latitude_deg),
         )
+    if transform_spherical is not None:
+        spherical = transform_spherical(spherical)
     projected = projection.project_geometry(spherical)
     if not isinstance(projected, ProjectedPolygons):
         raise TypeError(

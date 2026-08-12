@@ -8,6 +8,7 @@ import astropy.units as u
 from astropy.coordinates import SkyCoord
 
 from .binocular import BinocularChart
+from .all_sky import AllSkyChart
 from .circumpolar import CircumpolarChart
 from .full_sky import FullSkyChart
 from .regional import RegionalChart
@@ -73,6 +74,12 @@ def _chart_from_resolved(sky, resolved, observer):
             horizon_linewidth=0.8,
             outside_mask_constellations=mask,
         )
+    if request.family == "all_sky":
+        mask = (
+            resolved.constellations.boundary_constellations
+            if request.mask else None
+        )
+        return AllSkyChart(outside_mask_constellations=mask)
     if request.family == "regional":
         return _regional_chart(sky, resolved, observer)
     if request.family == "circumpolar":

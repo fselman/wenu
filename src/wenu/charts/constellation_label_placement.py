@@ -25,6 +25,7 @@ def apply_visible_constellation_label_anchors(
     observer=None,
     inset=0.94,
     maximum_boundary_vertices=73,
+    transform_spherical=None,
 ):
     """Use visible IAU regions to prepare labels at a chart boundary."""
     labels = getattr(sky, "constellation_labels", None)
@@ -38,7 +39,6 @@ def apply_visible_constellation_label_anchors(
     }
     options = dict(resolved.get(labels, {}))
     previous = options.get("prepare")
-    boundary_radius = _boundary_radius(boundary)
     safe_boundary = _simplified_inset_boundary(
         boundary,
         inset=inset,
@@ -59,12 +59,15 @@ def apply_visible_constellation_label_anchors(
         if resolved_observer is None:
             raise TypeError("constellation label placement requires an observer.")
         region_spherical = regions.spherical_geometry(resolved_observer)
+        if transform_spherical is not None:
+            region_spherical = transform_spherical(region_spherical)
         region_projected = project_geometry_for_viewport(
             region_spherical,
             projection=projection,
             viewport=viewport,
         )
         visible = {}
+        visible_area = {}
         complete = set()
         for polygon in region_projected:
             clipped = clip_polygon_to_convex_boundary(
@@ -73,11 +76,13 @@ def apply_visible_constellation_label_anchors(
             if clipped is None:
                 continue
             identifier = str(polygon.name or "").upper()
-            visible[identifier] = polygon_centroid(clipped)
-            if np.all(
-                np.hypot(polygon.x, polygon.y)
-                <= boundary_radius * (1.0 + 1.0e-9)
-            ):
+            area = _polygon_area(clipped)
+            if area > visible_area.get(identifier, -1.0):
+                visible[identifier] = polygon_centroid(clipped)
+                visible_area[identifier] = area
+            if _points_inside_convex_boundary(
+                polygon.x, polygon.y, boundary
+            ).all():
                 complete.add(identifier)
 
         x = np.asarray(prepared.x, dtype=float).copy()
@@ -91,12 +96,9 @@ def apply_visible_constellation_label_anchors(
             identifier = _BOUNDARY_IDS.get(
                 str(name).upper(), str(name).upper()
             )
-            anchor_inside = (
-                np.isfinite(x[index])
-                and np.isfinite(y[index])
-                and np.hypot(x[index], y[index])
-                <= boundary_radius * (1.0 + 1.0e-9)
-            )
+            anchor_inside = bool(_points_inside_convex_boundary(
+                [x[index]], [y[index]], boundary
+            )[0])
             if identifier in complete and anchor_inside:
                 continue
             replacement = visible.get(identifier)
@@ -122,11 +124,37 @@ def apply_visible_constellation_label_anchors(
     return resolved
 
 
-def _boundary_radius(boundary):
+def _polygon_area(polygon):
+    return float(0.5 * abs(np.sum(
+        polygon.x * np.roll(polygon.y, -1)
+        - np.roll(polygon.x, -1) * polygon.y
+    )))
+
+
+def _points_inside_convex_boundary(x, y, boundary):
+    """Return finite points inside a closed convex boundary."""
     finite = boundary.finite
-    return float(
-        np.nanmedian(np.hypot(boundary.x[finite], boundary.y[finite]))
+    vertices = np.column_stack((boundary.x[finite], boundary.y[finite]))
+    if len(vertices) < 3:
+        raise ValueError("boundary needs at least three finite vertices.")
+    if np.allclose(vertices[0], vertices[-1]):
+        vertices = vertices[:-1]
+    edges = np.roll(vertices, -1, axis=0) - vertices
+    area = np.sum(
+        vertices[:, 0] * np.roll(vertices[:, 1], -1)
+        - np.roll(vertices[:, 0], -1) * vertices[:, 1]
     )
+    orientation = 1.0 if area > 0.0 else -1.0
+    points = np.column_stack((
+        np.asarray(x, dtype=float), np.asarray(y, dtype=float)
+    ))
+    valid = np.all(np.isfinite(points), axis=1)
+    inside = valid.copy()
+    for start, edge in zip(vertices, edges, strict=True):
+        relative = points - start
+        cross = edge[0] * relative[:, 1] - edge[1] * relative[:, 0]
+        inside &= orientation * cross >= -1.0e-9
+    return inside
 
 
 def _simplified_inset_boundary(

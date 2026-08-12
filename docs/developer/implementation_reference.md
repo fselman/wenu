@@ -474,9 +474,11 @@ arguments are resolved by the established request and preparation contracts.
 The returned frozen `ChartView` exposes `chart`, `family`, `mask`,
 `projection_name`, `coordinate_frame`, `target`, `constellations`, and
 `frame`. Both identities come from the resolved immutable `ChartRequest`.
-The currently implemented geometry is limited explicitly to stereographic
-projection in the horizontal frame. Style, mode, detail, grids, furniture,
-language, title, and output remain drawing concerns.
+Regional, binocular, circumpolar, and planisphere views use stereographic
+projection in the horizontal frame. The all-sky view uses Mollweide projection
+in the Galactic frame. Other combinations are rejected explicitly. Style,
+mode, detail, grids, furniture, language, title, and output remain drawing
+concerns.
 
 `charts.coordinate_frames.horizontal_to_galactic(geometry, observer)` is the
 chart-owned astronomical frame adapter reserved for Galactic all-sky views.
@@ -498,6 +500,16 @@ side. Per-entity identifiers, labels, names, styles, and compound-ring
 metadata are duplicated for every split piece. The projection owns no
 astronomical frame conversion, chart boundary, renderer, or style behavior.
 
+`AllSkyChart()` owns the complete-sphere Galactic Mollweide view. Its
+projected boundary is the exact 2:1 Mollweide ellipse, and its chart context
+reports 360 by 180 degrees and the full `4 pi` steradians. During canonical
+`CelestialSphere.draw_chart()` execution it applies
+`horizontal_to_galactic()` before projection, retains catalogue centers
+without horizon rejection, and clips all artists and optional disjoint
+constellation-mask openings at the ellipse. Ordinary drawing selects a
+labeled Galactic grid by default; equatorial and ecliptic overlays remain
+available explicitly.
+
 `chart_view_defaults(family, group=False)` returns the corresponding frozen
 `ChartViewDefaults` policy from `CHART_VIEW_DEFAULTS`:
 
@@ -507,10 +519,12 @@ astronomical frame conversion, chart boundary, renderer, or style behavior.
 | regional single | automatic from constellation geometry |
 | regional group | automatic from an arbitrary set, or a packaged preset |
 | planisphere | visible observer hemisphere |
+| all_sky | complete Galactic sphere in a Mollweide ellipse |
 | circumpolar | south pole through declination -69.75 degrees |
 
-Every policy uses stereographic projection, the horizontal coordinate frame,
-position angle 0 degrees, and no mask. Explicit arguments to
+Every policy except `all_sky` uses stereographic projection and the horizontal
+coordinate frame. `all_sky` uses Mollweide and Galactic coordinates. Every
+policy uses position angle 0 degrees and no mask. Explicit arguments to
 `get_chart_view()` take precedence. The advanced
 `ChartRequest` API continues to require an explicit circumpolar declination
 limit; the default is an ordinary-interface convenience rather than a change

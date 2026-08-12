@@ -14,10 +14,10 @@ from .request_composition import ChartProductCompositionOptions
 
 
 CHART_FAMILIES = frozenset(
-    {"planisphere", "regional", "circumpolar", "binocular"}
+    {"planisphere", "all_sky", "regional", "circumpolar", "binocular"}
 )
-CHART_PROJECTIONS = frozenset({"stereographic"})
-CHART_COORDINATE_FRAMES = frozenset({"horizontal"})
+CHART_PROJECTIONS = frozenset({"stereographic", "mollweide"})
+CHART_COORDINATE_FRAMES = frozenset({"horizontal", "galactic"})
 CHART_LANGUAGES = frozenset({"en", "es"})
 EXCLUDABLE_CATALOGUE_FAMILIES = (
     "nonstellar_objects",
@@ -312,15 +312,29 @@ class ChartRequest:
         family = str(self.family).strip().lower()
         if family not in CHART_FAMILIES:
             raise ValueError(
-                "family must be planisphere, regional, circumpolar, or "
-                "binocular."
+                "family must be planisphere, all_sky, regional, "
+                "circumpolar, or binocular."
             )
         projection = str(self.projection).strip().lower()
         if projection not in CHART_PROJECTIONS:
-            raise ValueError("projection must be 'stereographic'.")
+            raise ValueError(
+                "projection must be 'stereographic' or 'mollweide'."
+            )
         coordinate_frame = str(self.coordinate_frame).strip().lower()
         if coordinate_frame not in CHART_COORDINATE_FRAMES:
-            raise ValueError("coordinate_frame must be 'horizontal'.")
+            raise ValueError(
+                "coordinate_frame must be 'horizontal' or 'galactic'."
+            )
+        expected_geometry = (
+            ("mollweide", "galactic")
+            if family == "all_sky"
+            else ("stereographic", "horizontal")
+        )
+        if (projection, coordinate_frame) != expected_geometry:
+            raise ValueError(
+                f"{family} requires projection={expected_geometry[0]!r} "
+                f"and coordinate_frame={expected_geometry[1]!r}."
+            )
         expected = (
             ("observer", self.observer, ChartObserverRequest),
             ("product", self.product, ChartProductOptions),
@@ -369,15 +383,17 @@ class ChartRequest:
             )
         if family == "circumpolar" and not self.subject.is_empty:
             raise ValueError("A circumpolar request does not take a subject.")
-        if family == "planisphere" and not self.subject.is_empty:
+        if family in {"planisphere", "all_sky"} and not self.subject.is_empty:
             allowed_mask = self.mask and (
                 self.subject.constellations is not None
                 or self.subject.group is not None
             )
             if not allowed_mask:
                 raise ValueError(
-                    "A planisphere subject is allowed only as a mask."
+                    f"An {family} subject is allowed only as a mask."
                 )
+        if family == "all_sky" and self.frame.position_angle_deg != 0.0:
+            raise ValueError("An all_sky request requires position angle 0.")
         language = str(self.language).strip().lower()
         if language not in CHART_LANGUAGES:
             raise ValueError("language must be 'en' or 'es'.")

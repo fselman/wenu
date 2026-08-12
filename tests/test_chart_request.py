@@ -149,15 +149,32 @@ def test_request_normalizes_implemented_projection_geometry():
 
     assert request.projection == "stereographic"
     assert request.coordinate_frame == "horizontal"
-    with pytest.raises(ValueError, match="stereographic"):
+    with pytest.raises(ValueError, match="requires projection"):
         ChartRequest(
             observer=observer(), family="planisphere", product=product(),
             projection="mollweide",
         )
-    with pytest.raises(ValueError, match="horizontal"):
+    with pytest.raises(ValueError, match="requires projection"):
         ChartRequest(
             observer=observer(), family="planisphere", product=product(),
             coordinate_frame="galactic",
+        )
+
+
+def test_all_sky_request_requires_galactic_mollweide_geometry():
+    request = ChartRequest(
+        observer=observer(),
+        family="all_sky",
+        product=product(),
+        projection="mollweide",
+        coordinate_frame="galactic",
+    )
+
+    assert request.projection == "mollweide"
+    assert request.coordinate_frame == "galactic"
+    with pytest.raises(ValueError, match="mollweide"):
+        ChartRequest(
+            observer=observer(), family="all_sky", product=product()
         )
 
 

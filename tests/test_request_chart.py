@@ -8,6 +8,7 @@ import pytest
 from wenu import (
     CANONICAL_MAXIMAL_SPHERE_PROFILE,
     BinocularChart,
+    AllSkyChart,
     ChartFrameRequest,
     ChartObserverRequest,
     ChartProductOptions,
@@ -32,6 +33,8 @@ def request(family, *, subject=None, frame=None, mask=False):
         frame=frame or ChartFrameRequest(),
         mask=mask,
         product=ChartProductOptions(output=Path("output/chart.png")),
+        projection=("mollweide" if family == "all_sky" else "stereographic"),
+        coordinate_frame=("galactic" if family == "all_sky" else "horizontal"),
     )
 
 
@@ -67,6 +70,20 @@ def test_planisphere_construction_owns_requested_mask():
     assert isinstance(prepared.chart, FullSkyChart)
     assert prepared.chart.horizon_color == "#707070"
     assert prepared.chart.horizon_linewidth == pytest.approx(0.8)
+    assert prepared.chart.outside_mask_constellations == ("Cru", "Cen")
+
+
+def test_all_sky_construction_owns_requested_mask():
+    prepared = prepare_chart_request(
+        sky(),
+        resolve(request(
+            "all_sky",
+            subject=ChartSubjectRequest(constellations=("Cru", "Cen")),
+            mask=True,
+        )),
+    )
+
+    assert isinstance(prepared.chart, AllSkyChart)
     assert prepared.chart.outside_mask_constellations == ("Cru", "Cen")
 
 

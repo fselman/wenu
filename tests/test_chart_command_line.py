@@ -50,6 +50,38 @@ def test_ordinary_cli_can_omit_default_equatorial_grid():
     ).disabled_layers
 
 
+def test_all_sky_cli_uses_labeled_galactic_grid_by_default(monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        "wenu.charts.command_line.draw_chart_view",
+        lambda *args, **kwargs: calls.append(kwargs) or object(),
+    )
+    view = type("View", (), {"family": "all_sky"})()
+
+    draw_chart_view_from_arguments(view, parser().parse_args([]), stem="map")
+
+    detail = calls[0]["detail_overrides"]
+    assert detail.enabled_layer_additions == {"galactic_grid"}
+    assert detail.grid_label_layers == {"galactic_grid"}
+    assert "equatorial_grid" in detail.disabled_layers
+
+
+def test_all_sky_cli_retains_explicit_equatorial_grid(monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        "wenu.charts.command_line.draw_chart_view",
+        lambda *args, **kwargs: calls.append(kwargs) or object(),
+    )
+    view = type("View", (), {"family": "all_sky"})()
+
+    arguments = parser().parse_args(["--equatorial-grid-labels"])
+    draw_chart_view_from_arguments(view, arguments, stem="map")
+
+    detail = calls[0]["detail_overrides"]
+    assert detail.enabled_layer_additions == {"equatorial_grid"}
+    assert detail.grid_label_layers == {"equatorial_grid"}
+
+
 def test_cli_furniture_maps_references_poles_legends_and_context():
     arguments = parser().parse_args([
         "--grid-references", "equatorial,galactic",

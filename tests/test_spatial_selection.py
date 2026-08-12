@@ -164,3 +164,24 @@ def test_full_sky_horizon_limits_automatic_selection():
     selected = select_spatial_chart_content(sky, chart, resolved())
 
     assert selected.request.content.open_clusters == {"inside", "explicit"}
+
+
+def test_complete_sphere_selection_does_not_reject_catalogue_centers():
+    sky = SimpleNamespace(
+        observer=object(),
+        nonstellar=None,
+        galaxies=None,
+        open_clusters=Layer(
+            ["near", "far"], [0.0, 180.0], [0.0, -80.0]
+        ),
+        globular_clusters=None,
+        planetary_nebulae=None,
+        supernova_remnants=None,
+    )
+    chart = SimpleNamespace(selects_full_sphere=True)
+
+    selected = select_spatial_chart_content(sky, chart, resolved())
+
+    assert selected.request.content.open_clusters == {
+        "near", "far", "explicit"
+    }

@@ -39,6 +39,10 @@ def request(family, *, detail=None):
     }
     if frame is not None:
         options["frame"] = frame
+    if family == "all_sky":
+        options.update(
+            projection="mollweide", coordinate_frame="galactic"
+        )
     return ChartRequest(**options)
 
 
@@ -81,6 +85,7 @@ def test_individual_cli_addition_overrides_disabled_general_alias():
     ("family", "frame", "step", "samples"),
     (
         ("planisphere", None, 30, 1441),
+        ("all_sky", None, 30, 1441),
         ("regional", SimpleNamespace(
             field_width_deg=59.0, field_height_deg=40.0,
             field_diameter_deg=None, limiting_declination_deg=None,

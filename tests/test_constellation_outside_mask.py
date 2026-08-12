@@ -198,6 +198,45 @@ def test_serpens_selection_expands_to_both_regions():
     assert _expanded_names(("SerCap", "SerCau")) == {"SER1", "SER2"}
 
 
+def test_mask_can_transform_selected_geometry_before_projection():
+    spherical = SphericalPolygons(
+        lon_deg=([0.0, 1.0, 0.0],),
+        lat_deg=([0.0, 0.0, 1.0],),
+        names=("CRU",),
+    )
+    transformed = SphericalPolygons(
+        lon_deg=([10.0, 11.0, 10.0],),
+        lat_deg=([20.0, 20.0, 21.0],),
+        names=("CRU",),
+    )
+    calls = {}
+
+    class Projection:
+        def project_geometry(self, value):
+            calls["projected"] = value
+            return ProjectedPolygons(items=[])
+
+    sky = SimpleNamespace(
+        observer=object(),
+        constellation_boundaries=SimpleNamespace(
+            spherical_geometry=lambda observer, selected: spherical
+        ),
+    )
+    draw_constellation_outside_mask(
+        sky=sky,
+        projection=Projection(),
+        renderer=SimpleNamespace(
+            draw_outside_mask=lambda polygons, viewport, style: None
+        ),
+        viewport=Viewport(-1.0, 1.0, -1.0, 1.0),
+        constellations=("Cru",),
+        style={},
+        transform_spherical=lambda value: transformed,
+    )
+
+    assert calls["projected"] is transformed
+
+
 def test_regional_chart_normalizes_mask_selection():
     chart = RegionalChart(
         center_alt_deg=40.0,

@@ -9,6 +9,7 @@ _CHART_TYPES = frozenset(
     {
         "regional",
         "planisphere",
+        "all_sky",
         "circumpolar",
         "binocular",
     }
@@ -126,6 +127,7 @@ def chart_type_name(chart) -> str:
     names = {
         "RegionalChart": "regional",
         "FullSkyChart": "planisphere",
+        "AllSkyChart": "all_sky",
         "CircumpolarChart": "circumpolar",
         "BinocularChart": "binocular",
     }
@@ -152,7 +154,7 @@ def default_chart_legend_plan(chart_type: str) -> ChartLegendPlan:
             objects=LegendPlacement(location="upper right"),
             stars=LegendPlacement(location="lower right"),
         )
-    if normalized == "planisphere":
+    if normalized in {"planisphere", "all_sky"}:
         return ChartLegendPlan(
             chart_type=normalized,
             objects=LegendPlacement(

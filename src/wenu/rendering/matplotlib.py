@@ -38,8 +38,8 @@ class MatplotlibRenderer:
         for spine in self.ax.spines.values():
             spine.set_visible(bool(visible))
 
-    def set_circular_background(self, boundary, *, color):
-        """Paint a circular interior over a transparent canvas."""
+    def set_boundary_background(self, boundary, *, color):
+        """Paint a closed-boundary interior over a transparent canvas."""
         from matplotlib.path import Path
         from matplotlib.patches import PathPatch
 
@@ -54,6 +54,10 @@ class MatplotlibRenderer:
         )
         self.ax.add_patch(patch)
         return patch
+
+    def set_circular_background(self, boundary, *, color):
+        """Paint a circular interior over a transparent canvas."""
+        return self.set_boundary_background(boundary, color=color)
 
     def set_clip_boundary(self, boundary, *, style=None):
         """Set and draw a projected closed clipping boundary."""

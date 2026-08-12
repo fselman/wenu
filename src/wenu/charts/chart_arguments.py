@@ -14,6 +14,14 @@ from .style_overrides import ChartStyleOverrides
 GRID_REFERENCES = frozenset({"equatorial", "ecliptic", "galactic"})
 
 
+class _ExplicitEquatorialGrid(argparse.Action):
+    """Record an explicit equatorial choice separately from CLI defaults."""
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, self.dest, True)
+        setattr(namespace, "_equatorial_grid_explicit", True)
+
+
 def _grid_references(value):
     names = frozenset(
         item.strip().lower()
@@ -120,12 +128,16 @@ def add_chart_content_arguments(parser):
     )
     parser.add_argument(
         "--equatorial-grid",
-        action="store_true",
+        action=_ExplicitEquatorialGrid,
+        nargs=0,
+        default=False,
         help="draw the configured equatorial grid",
     )
     parser.add_argument(
         "--equatorial-grid-labels",
-        action="store_true",
+        action=_ExplicitEquatorialGrid,
+        nargs=0,
+        default=False,
         help="draw equatorial-grid labels (and enable that grid)",
     )
     parser.add_argument(

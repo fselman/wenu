@@ -44,6 +44,8 @@ def _view_span_deg(family, frame):
         limiting = getattr(frame, "limiting_declination_deg", None)
         if limiting is not None:
             return 2.0 * (90.0 - abs(float(limiting)))
+    if family == "all_sky":
+        return 360.0
     return 180.0 if family == "planisphere" else 60.0
 
 

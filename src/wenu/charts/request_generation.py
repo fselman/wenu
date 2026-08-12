@@ -85,6 +85,7 @@ def _request_title(prepared):
         return resolved.constellations.display_name
     return {
         "planisphere": "Planisphere",
+        "all_sky": "Galactic all-sky map",
         "circumpolar": "Circumpolar sky",
     }.get(request.family, request.family.title())
 

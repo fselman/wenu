@@ -58,6 +58,16 @@ def draw_chart_view(
         )
     requested_grids = _grid_layers(grids)
     requested_labels = _grid_layers(grid_labels)
+    if (
+        view.family == "all_sky"
+        and not requested_grids
+        and not requested_labels
+        and not overrides.enabled_layer_additions
+        and not overrides.grid_label_layers
+        and not overrides.disabled_layers
+    ):
+        requested_grids = frozenset({"galactic_grid"})
+        requested_labels = requested_grids
     additions = frozenset(overrides.enabled_layer_additions or ())
     labels = frozenset(overrides.grid_label_layers or ())
     overrides = replace(

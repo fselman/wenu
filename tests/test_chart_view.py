@@ -83,6 +83,7 @@ def test_public_family_defaults_are_immutable_and_geometrical():
     group = chart_view_defaults("regional", group=True)
     planisphere = chart_view_defaults("planisphere")
     circumpolar = chart_view_defaults("circumpolar")
+    all_sky = chart_view_defaults("all_sky")
 
     assert isinstance(binocular, ChartViewDefaults)
     assert binocular.field_diameter_deg == pytest.approx(6.5)
@@ -91,12 +92,16 @@ def test_public_family_defaults_are_immutable_and_geometrical():
     assert planisphere.framing == "visible-hemisphere"
     assert circumpolar.pole == "south"
     assert circumpolar.limiting_declination_deg == pytest.approx(-69.75)
+    assert all_sky.framing == "complete-sphere"
+    assert all_sky.projection == "mollweide"
+    assert all_sky.coordinate_frame == "galactic"
     assert all(
         value.projection == "stereographic"
         and value.coordinate_frame == "horizontal"
         and value.position_angle_deg == 0.0
         and value.mask is False
-        for value in CHART_VIEW_DEFAULTS.values()
+        for key, value in CHART_VIEW_DEFAULTS.items()
+        if key != "all_sky"
     )
     with pytest.raises(TypeError):
         CHART_VIEW_DEFAULTS["binocular"] = planisphere
@@ -112,6 +117,19 @@ def test_circumpolar_view_uses_public_defaults_when_omitted(monkeypatch):
 
     assert view.frame.pole == "south"
     assert view.frame.limiting_declination_deg == pytest.approx(-69.75)
+    assert view.frame.position_angle_deg == pytest.approx(0.0)
+
+
+def test_all_sky_view_uses_galactic_mollweide_defaults(monkeypatch):
+    monkeypatch.setattr(
+        "wenu.charts.view.prepare_chart_request",
+        lambda sky, resolved, *, observer: prepared(resolved),
+    )
+
+    view = get_chart_view(sky(), observer(), family="all_sky")
+
+    assert view.projection_name == "mollweide"
+    assert view.coordinate_frame == "galactic"
     assert view.frame.position_angle_deg == pytest.approx(0.0)
 
 

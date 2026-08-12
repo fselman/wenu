@@ -36,6 +36,12 @@ def view():
     return get_chart_view(sky, observer(), family="planisphere")
 
 
+def all_sky_view():
+    sky = CelestialSphere(None)
+    sky.load_profile = CANONICAL_MAXIMAL_SPHERE_PROFILE
+    return get_chart_view(sky, observer(), family="all_sky")
+
+
 def export_result(path):
     return SimpleNamespace(output=path)
 
@@ -143,6 +149,27 @@ def test_repeated_drawings_reuse_geometry_without_request_state_leak(
     }
     assert chart_view._prepared.resolved.request is original_request
     assert original_request.detail.enabled_layer_additions is None
+
+
+def test_all_sky_drawing_defaults_to_labeled_galactic_grid(
+    monkeypatch, tmp_path
+):
+    requests = []
+    monkeypatch.setattr(
+        "wenu.charts.drawing.configure_chart_request_grids",
+        lambda sky, request, *, frame: requests.append(request),
+    )
+    monkeypatch.setattr(
+        "wenu.charts.drawing.export_prepared_chart",
+        lambda *args, **kwargs: SimpleNamespace(
+            exports=(export_result(tmp_path / "map.png"),)
+        ),
+    )
+
+    draw_chart_view(all_sky_view(), tmp_path / "map.png")
+
+    assert requests[0].detail.enabled_layer_additions == {"galactic_grid"}
+    assert requests[0].detail.grid_label_layers == {"galactic_grid"}
 
 
 def test_drawing_rejects_detail_beyond_sphere_profile(

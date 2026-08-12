@@ -446,6 +446,8 @@ Milestone 46C.8O.
 - center Galactic longitude zero and split curves, grids, and polygon rings
   correctly at the longitude-180-degree seam while retaining metadata;
 
+**Status:** Implemented.
+
 ##### Milestone 46C.8P.4 — Add the elliptical all-sky chart
 
 - reuse the same resolved constellation-set contract without observer-horizon
@@ -453,6 +455,8 @@ Milestone 46C.8O.
   and preserving separate mask openings;
 - make the Galactic grid the ordinary default and retain equatorial and
   ecliptic grids as optional transformed overlays.
+
+**Status:** Implemented.
 
 ##### Milestone 46C.8P.5 — Add the canonical example and close visually
 

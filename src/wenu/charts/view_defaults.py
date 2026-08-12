@@ -39,6 +39,12 @@ CHART_VIEW_DEFAULTS = MappingProxyType({
         family="planisphere",
         framing="visible-hemisphere",
     ),
+    "all_sky": ChartViewDefaults(
+        family="all_sky",
+        framing="complete-sphere",
+        projection="mollweide",
+        coordinate_frame="galactic",
+    ),
     "circumpolar": ChartViewDefaults(
         family="circumpolar",
         framing="declination-limit",
@@ -62,6 +68,6 @@ def chart_view_defaults(family, *, group=False):
         return CHART_VIEW_DEFAULTS[key]
     except KeyError as error:
         raise ValueError(
-            "family must be planisphere, regional, circumpolar, or "
-            "binocular."
+            "family must be planisphere, all_sky, regional, circumpolar, "
+            "or binocular."
         ) from error

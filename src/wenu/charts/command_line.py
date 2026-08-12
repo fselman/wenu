@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from copy import copy
 from collections.abc import Mapping
 from dataclasses import fields
 
@@ -153,10 +154,22 @@ def draw_chart_view_from_arguments(
         raise ValueError(
             "product_details keys must be selected products or styles."
         )
+    effective_arguments = arguments
+    if (
+        getattr(view, "family", None) == "all_sky"
+        and getattr(arguments, "equatorial_grid", False)
+        and not getattr(arguments, "_equatorial_grid_explicit", False)
+    ):
+        effective_arguments = copy(arguments)
+        effective_arguments.equatorial_grid = False
+        effective_arguments.equatorial_grid_labels = False
+        effective_arguments.galactic_grid = True
+        effective_arguments.galactic_grid_labels = True
     furniture = (
-        chart_cli_furniture(arguments) if furniture is None else furniture
+        chart_cli_furniture(effective_arguments)
+        if furniture is None else furniture
     )
-    detail_overrides = chart_detail_overrides(arguments)
+    detail_overrides = chart_detail_overrides(effective_arguments)
     parsed_style = chart_style_overrides(arguments)
     if style_overrides is not None:
         if not isinstance(style_overrides, ChartStyleOverrides):

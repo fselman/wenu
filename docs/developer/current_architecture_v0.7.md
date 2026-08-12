@@ -228,9 +228,9 @@ single-constellation example is merely the one-element default case.
 Milestone 46C.8P.1 makes projection and spherical coordinate-frame identity
 part of the immutable request geometry. `ChartView` now exposes those values
 from its resolved request rather than storing a disconnected projection tag.
-Until the Galactic transformation and Mollweide seam handling are complete,
-the only accepted combination remains stereographic projection in the
-horizontal frame.
+Regional, binocular, circumpolar, and planisphere requests accept only
+stereographic projection in the horizontal frame; the all-sky family accepts
+only Mollweide projection in the Galactic frame.
 
 Milestone 46C.8P.2 adds the chart-owned pre-projection transformation from
 canonical observer-bound AltAz spherical geometry to Galactic longitude and
@@ -245,3 +245,12 @@ configurable longitude, and follows Wenu's east-left orientation convention.
 Before planar evaluation it unwraps and clips curves, grid components, and
 polygon rings into longitude slabs, preserving separate seam pieces and
 duplicating per-entity metadata without creating map-spanning chords.
+
+Milestone 46C.8P.4 adds `AllSkyChart` as a distinct complete-sphere chart.
+It transforms canonical observer-bound spherical geometry to Galactic
+longitude and latitude immediately before the coordinate-neutral Mollweide
+projection, centers Galactic longitude zero, and clips every layer and mask
+patch at its 2:1 elliptical boundary. Complete-sphere catalogue selection
+does not apply observer-horizon rejection. Ordinary all-sky drawing defaults
+to a labeled Galactic grid; explicit equatorial and ecliptic grids remain
+transformed overlays through the same sky execution path.

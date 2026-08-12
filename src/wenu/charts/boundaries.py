@@ -154,6 +154,49 @@ class CircularGridLabelAnchor:
 
 
 @dataclass(frozen=True)
+class EllipticalGridLabelAnchor:
+    """Place coordinate labels just inside an elliptical boundary."""
+
+    boundary: ProjectedCurve
+    inset: float = 0.965
+
+    def __post_init__(self):
+        if not 0.0 < float(self.inset) <= 1.0:
+            raise ValueError("inset must be in the interval (0, 1].")
+
+    @property
+    def limits(self):
+        finite = self.boundary.finite
+        if not np.any(finite):
+            raise ValueError("boundary has no finite points.")
+        return (
+            float(np.max(np.abs(self.boundary.x[finite]))),
+            float(np.max(np.abs(self.boundary.y[finite]))),
+        )
+
+    def __call__(self, curve, ax=None):
+        finite = curve.finite
+        if not np.any(finite):
+            return None
+        x = np.asarray(curve.x[finite], dtype=float)
+        y = np.asarray(curve.y[finite], dtype=float)
+        x_limit, y_limit = self.limits
+        radius = np.hypot(x / x_limit, y / y_limit)
+        inside = radius <= 1.0 + 1.0e-6
+        if not np.any(inside):
+            return None
+        x = x[inside]
+        y = y[inside]
+        radius = radius[inside]
+        name = str(curve.name or "")
+        latitude = any(name.startswith(prefix) for prefix in (
+            "declination_", "ecliptic_latitude_", "galactic_latitude_",
+        ))
+        index = int(np.argmin(x) if latitude else np.argmax(radius))
+        return self.inset * float(x[index]), self.inset * float(y[index])
+
+
+@dataclass(frozen=True)
 class RectangularLabelAnchor:
     """Place RA labels at bottom and declination labels at left."""
 

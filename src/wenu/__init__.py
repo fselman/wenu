@@ -148,9 +148,11 @@ from .charts.modes import (
     ResolvedMode,
 )
 from .charts.binocular import BinocularChart
+from .charts.all_sky import AllSkyChart
 from .charts.boundaries import (
     CircularGridLabelAnchor,
     CircularLabelAnchor,
+    EllipticalGridLabelAnchor,
     RectangularLabelAnchor,
 )
 from .charts.circumpolar import CircumpolarChart
@@ -362,8 +364,10 @@ __all__ = [
     "chart_product_options",
     "chart_style_overrides",
     "BinocularChart",
+    "AllSkyChart",
     "CircularLabelAnchor",
     "CircularGridLabelAnchor",
+    "EllipticalGridLabelAnchor",
     "CircumpolarChart",
     "RectangularLabelAnchor",
     "FullSkyChart",
