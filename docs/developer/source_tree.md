@@ -94,6 +94,9 @@ existing factory.
 translates friendly arguments into the existing request resolver and chart
 preparation boundary and returns frozen geometry/provenance without adding a
 construction, projection, rendering, or export pipeline.
+Projection and spherical coordinate-frame names are immutable request
+geometry; the view exposes their resolved values rather than maintaining a
+parallel tag.
 `charts/view_defaults.py` owns the immutable public geometry defaults for the
 five ordinary view forms. It contains no catalogue, cache, layer, style,
 furniture, renderer, or output policy.

@@ -472,9 +472,11 @@ the view neither creates nor closes it. Friendly target, coordinate,
 constellation, group, field, position-angle, pole, declination-limit, and mask
 arguments are resolved by the established request and preparation contracts.
 The returned frozen `ChartView` exposes `chart`, `family`, `mask`,
-`projection_name`, `target`, `constellations`, and `frame`. Projection is
-currently limited explicitly to `"stereographic"`. Style, mode, detail,
-grids, furniture, language, title, and output remain drawing concerns.
+`projection_name`, `coordinate_frame`, `target`, `constellations`, and
+`frame`. Both identities come from the resolved immutable `ChartRequest`.
+The currently implemented geometry is limited explicitly to stereographic
+projection in the horizontal frame. Style, mode, detail, grids, furniture,
+language, title, and output remain drawing concerns.
 
 `chart_view_defaults(family, group=False)` returns the corresponding frozen
 `ChartViewDefaults` policy from `CHART_VIEW_DEFAULTS`:
@@ -487,8 +489,9 @@ grids, furniture, language, title, and output remain drawing concerns.
 | planisphere | visible observer hemisphere |
 | circumpolar | south pole through declination -69.75 degrees |
 
-Every policy uses stereographic projection, position angle 0 degrees, and no
-mask. Explicit arguments to `get_chart_view()` take precedence. The advanced
+Every policy uses stereographic projection, the horizontal coordinate frame,
+position angle 0 degrees, and no mask. Explicit arguments to
+`get_chart_view()` take precedence. The advanced
 `ChartRequest` API continues to require an explicit circumpolar declination
 limit; the default is an ordinary-interface convenience rather than a change
 to that contract.

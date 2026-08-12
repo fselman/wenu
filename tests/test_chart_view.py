@@ -66,6 +66,7 @@ def test_view_resolves_friendly_target_and_frame_without_presentation(
     assert view.sky is source
     assert view.observer is observing
     assert view.projection_name == "stereographic"
+    assert view.coordinate_frame == "horizontal"
     assert view.family == "binocular"
     assert view.mask is False
     assert view.target.key == "m57"
@@ -92,6 +93,7 @@ def test_public_family_defaults_are_immutable_and_geometrical():
     assert circumpolar.limiting_declination_deg == pytest.approx(-69.75)
     assert all(
         value.projection == "stereographic"
+        and value.coordinate_frame == "horizontal"
         and value.position_angle_deg == 0.0
         and value.mask is False
         for value in CHART_VIEW_DEFAULTS.values()
@@ -158,6 +160,14 @@ def test_view_rejects_unsupported_projection_before_preparation():
     with pytest.raises(ValueError, match="stereographic"):
         get_chart_view(
             sky(), observer(), family="planisphere", projection="gnomonic"
+        )
+
+
+def test_view_rejects_unimplemented_coordinate_frame_before_preparation():
+    with pytest.raises(ValueError, match="horizontal"):
+        get_chart_view(
+            sky(), observer(), family="planisphere",
+            coordinate_frame="galactic",
         )
 
 

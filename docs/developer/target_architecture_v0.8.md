@@ -112,13 +112,15 @@ normalizes only the public subject vocabulary; the constellation resolver
 retains IAU validation and Serpens identities, and the regional chart retains
 automatic spherical framing.
 
-A selected constellation set may later define several disjoint mask patches
+A selected constellation set may define several disjoint mask patches
 on an observer-visible planisphere. Visibility is resolved only after the
 observer-bound chart exists: wholly invisible official regions are omitted,
 partly visible regions are clipped at the horizon and final chart boundary,
-and separate visible regions remain separate patches. A later Mollweide
+and separate visible regions remain separate patches. The Galactic Mollweide
 all-sky view reuses the same projection-neutral resolved set without horizon
-rejection and owns its elliptical boundary and longitude-seam splitting in
+rejection. It transforms canonical observer-bound AltAz geometry to Galactic
+longitude and latitude before projection, centers Galactic longitude zero,
+and owns its elliptical boundary and longitude-180-degree seam splitting in
 the established projection and clipping pipeline.
 
 Canonical examples become short declarations using this public request API.
@@ -146,9 +148,11 @@ contract; the ordinary interface translates friendly arguments into that
 graph instead of adding another construction or rendering path.
 
 A view owns geometry, not appearance.  It records the observer identity,
-resolved subject, projection, framing, position angle, orientation, viewport,
-and mask.  Style, output mode, render-local detail, grids, legends, language,
-title, and output belong to drawing.  The same view can therefore produce
+resolved subject, spherical coordinate frame, projection, framing, position
+angle, orientation, viewport, and mask. Projection and coordinate frame are
+also immutable advanced-request geometry. Style, output mode, render-local
+detail, grids, legends, language, title, and output belong to drawing. The
+same view can therefore produce
 atlas and cartoon charts without reconstructing or changing its geometry.
 Unsupported projection names are rejected explicitly; exposing a projection
 choice does not imply that more than the implemented stereographic projection

@@ -16,16 +16,12 @@ from .request_resolver import resolve_chart_request
 from .view_defaults import chart_view_defaults
 
 
-SUPPORTED_VIEW_PROJECTIONS = frozenset({"stereographic"})
-
-
 @dataclass(frozen=True)
 class ChartView:
     """Observer-bound chart geometry with resolved subject provenance."""
 
     sky: object
     observer: object
-    projection_name: str
     _prepared: object = field(repr=False)
 
     @property
@@ -37,6 +33,16 @@ class ChartView:
     def family(self):
         """Return the canonical chart-family identity."""
         return self._prepared.resolved.request.family
+
+    @property
+    def projection_name(self):
+        """Return the resolved planar-projection identity."""
+        return self._prepared.resolved.request.projection
+
+    @property
+    def coordinate_frame(self):
+        """Return the resolved spherical coordinate-frame identity."""
+        return self._prepared.resolved.request.coordinate_frame
 
     @property
     def mask(self):
@@ -77,6 +83,7 @@ def get_chart_view(
     pole=None,
     limiting_declination_deg=None,
     projection=None,
+    coordinate_frame=None,
     mask=None,
 ):
     """Resolve and prepare one observer-bound geometrical chart view."""
@@ -84,8 +91,10 @@ def get_chart_view(
     projection_name = str(
         defaults.projection if projection is None else projection
     ).strip().lower()
-    if projection_name not in SUPPORTED_VIEW_PROJECTIONS:
-        raise ValueError("projection must be 'stereographic'.")
+    coordinate_frame_name = str(
+        defaults.coordinate_frame
+        if coordinate_frame is None else coordinate_frame
+    ).strip().lower()
     profile = getattr(sky, "load_profile", None)
     if profile is None:
         raise ValueError("sky must declare a load profile.")
@@ -105,6 +114,8 @@ def get_chart_view(
     request = ChartRequest(
         observer=_observer_request(observer),
         family=family,
+        projection=projection_name,
+        coordinate_frame=coordinate_frame_name,
         subject=ChartSubjectRequest(
             target=target,
             ra_deg=ra_deg,
@@ -131,7 +142,6 @@ def get_chart_view(
     return ChartView(
         sky=sky,
         observer=observer,
-        projection_name=projection_name,
         _prepared=prepared,
     )
 

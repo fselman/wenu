@@ -131,9 +131,34 @@ def test_binocular_request_expresses_recent_m57_use_case():
     )
 
     assert request.family == "binocular"
+    assert request.projection == "stereographic"
+    assert request.coordinate_frame == "horizontal"
     assert request.subject.target == "M57"
     assert request.frame.field_diameter_deg == 6.5
     assert request.detail.star_magnitude_limit == 11.0
+
+
+def test_request_normalizes_implemented_projection_geometry():
+    request = ChartRequest(
+        observer=observer(),
+        family="planisphere",
+        product=product(),
+        projection=" STEREOGRAPHIC ",
+        coordinate_frame=" HORIZONTAL ",
+    )
+
+    assert request.projection == "stereographic"
+    assert request.coordinate_frame == "horizontal"
+    with pytest.raises(ValueError, match="stereographic"):
+        ChartRequest(
+            observer=observer(), family="planisphere", product=product(),
+            projection="mollweide",
+        )
+    with pytest.raises(ValueError, match="horizontal"):
+        ChartRequest(
+            observer=observer(), family="planisphere", product=product(),
+            coordinate_frame="galactic",
+        )
 
 
 def test_regional_request_expresses_constellation_group_without_scripts():

@@ -414,13 +414,43 @@ Milestone 46C.8O.
 - keep visibility and clipping in observer-bound chart preparation rather
   than the resolver, CLI adapter, or examples.
 
-#### Later projection milestone — Add Mollweide all-sky views
+**Status:** Implemented.
+
+#### Milestone 46C.8P — Add Galactic Mollweide all-sky views
+
+##### Milestone 46C.8P.1 — Put projection geometry in the request
+
+- make projection and spherical coordinate-frame identity immutable advanced
+  request geometry rather than a view-only tag;
+- expose both resolved identities from the ordinary chart view;
+- retain explicit rejection of unimplemented combinations until their
+  transformation, projection, and clipping stages exist.
+
+##### Milestone 46C.8P.2 — Add Galactic frame preparation
+
+- transform canonical observer-bound AltAz spherical geometry to Galactic
+  longitude and latitude before projection;
+- keep the astronomical transformation outside the coordinate-neutral map
+  projection;
+- prove that resulting Galactic geometry is invariant within numerical
+  tolerance across observer locations and instants.
+
+##### Milestone 46C.8P.3 — Add Mollweide projection and seam topology
 
 - add Mollweide through the existing projection and chart pipeline only after
   regional sets and stereographic multi-patch masks are complete;
+- center Galactic longitude zero and split curves, grids, and polygon rings
+  correctly at the longitude-180-degree seam while retaining metadata;
+
+##### Milestone 46C.8P.4 — Add the elliptical all-sky chart
+
 - reuse the same resolved constellation-set contract without observer-horizon
   rejection, clipping all-sky curves and patches at the elliptical boundary
-  and splitting geometry correctly at the longitude seam.
+  and preserving separate mask openings;
+- make the Galactic grid the ordinary default and retain equatorial and
+  ecliptic grids as optional transformed overlays.
+
+##### Milestone 46C.8P.5 — Add the canonical example and close visually
 
 - verify Centaurus A, Omega Centauri, regional single and group charts,
   Serpens, masks, furniture, products, and all retained CLI controls;

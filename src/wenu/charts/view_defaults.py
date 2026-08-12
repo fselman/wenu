@@ -13,6 +13,7 @@ class ChartViewDefaults:
     family: str
     framing: str
     projection: str = "stereographic"
+    coordinate_frame: str = "horizontal"
     position_angle_deg: float = 0.0
     mask: bool = False
     field_diameter_deg: float | None = None

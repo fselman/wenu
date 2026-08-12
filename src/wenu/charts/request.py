@@ -16,6 +16,8 @@ from .request_composition import ChartProductCompositionOptions
 CHART_FAMILIES = frozenset(
     {"planisphere", "regional", "circumpolar", "binocular"}
 )
+CHART_PROJECTIONS = frozenset({"stereographic"})
+CHART_COORDINATE_FRAMES = frozenset({"horizontal"})
 CHART_LANGUAGES = frozenset({"en", "es"})
 EXCLUDABLE_CATALOGUE_FAMILIES = (
     "nonstellar_objects",
@@ -303,6 +305,8 @@ class ChartRequest:
     product_compositions: tuple[ChartProductCompositionOptions, ...] = ()
     language: str = "en"
     title: str | None = None
+    projection: str = "stereographic"
+    coordinate_frame: str = "horizontal"
 
     def __post_init__(self):
         family = str(self.family).strip().lower()
@@ -311,6 +315,12 @@ class ChartRequest:
                 "family must be planisphere, regional, circumpolar, or "
                 "binocular."
             )
+        projection = str(self.projection).strip().lower()
+        if projection not in CHART_PROJECTIONS:
+            raise ValueError("projection must be 'stereographic'.")
+        coordinate_frame = str(self.coordinate_frame).strip().lower()
+        if coordinate_frame not in CHART_COORDINATE_FRAMES:
+            raise ValueError("coordinate_frame must be 'horizontal'.")
         expected = (
             ("observer", self.observer, ChartObserverRequest),
             ("product", self.product, ChartProductOptions),
@@ -377,6 +387,8 @@ class ChartRequest:
                 "DetailOverrides.content_selection."
             )
         object.__setattr__(self, "family", family)
+        object.__setattr__(self, "projection", projection)
+        object.__setattr__(self, "coordinate_frame", coordinate_frame)
         object.__setattr__(self, "mask", bool(self.mask))
         object.__setattr__(
             self, "product_compositions", product_compositions

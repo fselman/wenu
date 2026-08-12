@@ -224,3 +224,10 @@ subject adapter and an explicit mask switch without owning visibility or
 clipping logic. All canonical examples with a constellation subject use the
 same shared `--constellations IAU,...` / `--group ALIAS` parser; the former
 single-constellation example is merely the one-element default case.
+
+Milestone 46C.8P.1 makes projection and spherical coordinate-frame identity
+part of the immutable request geometry. `ChartView` now exposes those values
+from its resolved request rather than storing a disconnected projection tag.
+Until the Galactic transformation and Mollweide seam handling are complete,
+the only accepted combination remains stereographic projection in the
+horizontal frame.
