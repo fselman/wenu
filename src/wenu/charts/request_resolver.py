@@ -13,6 +13,7 @@ from .constellation_resolver import (
 from .detail import SkyContentSelection
 from .request import EXCLUDABLE_CATALOGUE_FAMILIES, ChartRequest
 from .target_resolver import ResolvedTarget, resolve_target
+from .view_defaults import chart_view_defaults
 
 
 SUPPORTED_TARGET_FAMILIES = frozenset(
@@ -45,6 +46,8 @@ class ResolvedChartFrame:
     field_width_deg: float | None = None
     field_height_deg: float | None = None
     position_angle_deg: float = 0.0
+    pole: str | None = None
+    limiting_declination_deg: float | None = None
     automatic_from_geometry: bool = False
     source: str = "request"
 
@@ -54,7 +57,8 @@ def _resolve_frame(request, constellations):
     if request.family == "binocular":
         return ResolvedChartFrame(
             field_diameter_deg=(
-                6.5 if frame.field_diameter_deg is None
+                chart_view_defaults("binocular").field_diameter_deg
+                if frame.field_diameter_deg is None
                 else frame.field_diameter_deg
             ),
             position_angle_deg=frame.position_angle_deg,
@@ -81,6 +85,13 @@ def _resolve_frame(request, constellations):
             position_angle_deg=frame.position_angle_deg,
             automatic_from_geometry=True,
             source="constellation-geometry",
+        )
+    if request.family == "circumpolar":
+        return ResolvedChartFrame(
+            position_angle_deg=frame.position_angle_deg,
+            pole=frame.pole,
+            limiting_declination_deg=frame.limiting_declination_deg,
+            source="chart-family",
         )
     return ResolvedChartFrame(
         position_angle_deg=frame.position_angle_deg,

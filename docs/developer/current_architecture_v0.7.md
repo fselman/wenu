@@ -179,3 +179,12 @@ request graph, and prepares the established canonical chart geometry. The
 returned frozen `ChartView` exposes geometry and resolved provenance but no
 appearance, drawing, furniture, language, title, output, or cleanup state.
 Only the implemented stereographic projection is accepted.
+
+Milestone 46C.8K centralizes ordinary geometry defaults in immutable
+`ChartViewDefaults` values. The five policies distinguish binocular,
+regional-single, regional-group, planisphere, and circumpolar framing while
+sharing stereographic projection, zero position angle, and an unmasked view.
+The ordinary facade fills omitted values from this policy before translating
+to the advanced request graph; explicit values still win. Canonical examples
+will continue to state scientifically important publication geometry rather
+than relying invisibly on these defaults.

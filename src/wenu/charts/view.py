@@ -13,6 +13,7 @@ from .request import (
 )
 from .request_chart import prepare_chart_request
 from .request_resolver import resolve_chart_request
+from .view_defaults import chart_view_defaults
 
 
 SUPPORTED_VIEW_PROJECTIONS = frozenset({"stereographic"})
@@ -72,14 +73,17 @@ def get_chart_view(
     field_diameter_deg=None,
     field_width_deg=None,
     field_height_deg=None,
-    position_angle_deg=0.0,
-    pole="south",
+    position_angle_deg=None,
+    pole=None,
     limiting_declination_deg=None,
-    projection="stereographic",
-    mask=False,
+    projection=None,
+    mask=None,
 ):
     """Resolve and prepare one observer-bound geometrical chart view."""
-    projection_name = str(projection).strip().lower()
+    defaults = chart_view_defaults(family, group=group is not None)
+    projection_name = str(
+        defaults.projection if projection is None else projection
+    ).strip().lower()
     if projection_name not in SUPPORTED_VIEW_PROJECTIONS:
         raise ValueError("projection must be 'stereographic'.")
     profile = getattr(sky, "load_profile", None)
@@ -87,6 +91,16 @@ def get_chart_view(
         raise ValueError("sky must declare a load profile.")
     if observer is None:
         raise TypeError("observer is required for a chart view.")
+    if field_diameter_deg is None:
+        field_diameter_deg = defaults.field_diameter_deg
+    if position_angle_deg is None:
+        position_angle_deg = defaults.position_angle_deg
+    if pole is None:
+        pole = defaults.pole or "south"
+    if limiting_declination_deg is None:
+        limiting_declination_deg = defaults.limiting_declination_deg
+    if mask is None:
+        mask = defaults.mask
 
     request = ChartRequest(
         observer=_observer_request(observer),

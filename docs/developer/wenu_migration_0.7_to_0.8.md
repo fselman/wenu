@@ -299,6 +299,15 @@ renderer, furniture, language, title, output, or observer cleanup.
 - exclude cache keys, catalogue joins, internal layer identifiers, and other
   implementation details from the ordinary vocabulary.
 
+**Status:** Implemented. `CHART_VIEW_DEFAULTS` and
+`chart_view_defaults()` define one immutable public geometrical policy.
+Binocular views default to a 6.5-degree field, regional single views derive
+their frame from constellation geometry, regional groups use packaged group
+framing, planispheres use the visible hemisphere, and circumpolar views use
+the south pole to declination -69.75 degrees. All default to stereographic
+projection, zero position angle, and no mask. Explicit ordinary arguments
+override the policy; advanced request validation remains compatible.
+
 ### Milestone 46C.8L — Add the ordinary drawing facade
 
 - accept direct style, mode, detail, grid, furniture, title, language, and

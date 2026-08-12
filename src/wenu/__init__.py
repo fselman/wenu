@@ -185,6 +185,11 @@ from .charts.legend_symbols import (
     legend_symbol_descriptors,
 )
 from .charts.view import ChartView, get_chart_view
+from .charts.view_defaults import (
+    CHART_VIEW_DEFAULTS,
+    ChartViewDefaults,
+    chart_view_defaults,
+)
 from .charts.magnitude_legend import (
     StellarMagnitudeEntry,
     StellarMagnitudeScale,
@@ -264,6 +269,7 @@ __all__ = [
     "compose_chart",
     "ChartRenderingResult",
     "ChartView",
+    "ChartViewDefaults",
     "LayerRenderingResult",
     "Observer",
     "NonStellar",
@@ -279,6 +285,8 @@ __all__ = [
     "build_maximal_sphere",
     "generate_celestial_sphere",
     "get_chart_view",
+    "CHART_VIEW_DEFAULTS",
+    "chart_view_defaults",
     "ExportOptions",
     "ChartExportResult",
     "CHART_STYLES",

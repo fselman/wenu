@@ -466,6 +466,23 @@ The returned frozen `ChartView` exposes `chart`, `family`, `mask`,
 currently limited explicitly to `"stereographic"`. Style, mode, detail,
 grids, furniture, language, title, and output remain drawing concerns.
 
+`chart_view_defaults(family, group=False)` returns the corresponding frozen
+`ChartViewDefaults` policy from `CHART_VIEW_DEFAULTS`:
+
+| Ordinary view | Default framing |
+|---|---|
+| binocular | fixed 6.5-degree diameter |
+| regional single | automatic from constellation geometry |
+| regional group | packaged group width and height |
+| planisphere | visible observer hemisphere |
+| circumpolar | south pole through declination -69.75 degrees |
+
+Every policy uses stereographic projection, position angle 0 degrees, and no
+mask. Explicit arguments to `get_chart_view()` take precedence. The advanced
+`ChartRequest` API continues to require an explicit circumpolar declination
+limit; the default is an ordinary-interface convenience rather than a change
+to that contract.
+
 ```python
 sky = generate_celestial_sphere()
 observer = Observer(location="La Ligua", time="2026-08-15 22:00")

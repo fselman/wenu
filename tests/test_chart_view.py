@@ -8,8 +8,11 @@ import pytest
 
 from wenu import (
     CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    CHART_VIEW_DEFAULTS,
     CelestialSphere,
     ChartView,
+    ChartViewDefaults,
+    chart_view_defaults,
     get_chart_view,
 )
 
@@ -71,6 +74,63 @@ def test_view_resolves_friendly_target_and_frame_without_presentation(
     assert calls == [(source, observing)]
     assert not hasattr(view, "style")
     assert not hasattr(view, "output")
+
+
+def test_public_family_defaults_are_immutable_and_geometrical():
+    binocular = chart_view_defaults("binocular")
+    single = chart_view_defaults("regional")
+    group = chart_view_defaults("regional", group=True)
+    planisphere = chart_view_defaults("planisphere")
+    circumpolar = chart_view_defaults("circumpolar")
+
+    assert isinstance(binocular, ChartViewDefaults)
+    assert binocular.field_diameter_deg == pytest.approx(6.5)
+    assert single.framing == "constellation-geometry"
+    assert group.framing == "packaged-group"
+    assert planisphere.framing == "visible-hemisphere"
+    assert circumpolar.pole == "south"
+    assert circumpolar.limiting_declination_deg == pytest.approx(-69.75)
+    assert all(
+        value.projection == "stereographic"
+        and value.position_angle_deg == 0.0
+        and value.mask is False
+        for value in CHART_VIEW_DEFAULTS.values()
+    )
+    with pytest.raises(TypeError):
+        CHART_VIEW_DEFAULTS["binocular"] = planisphere
+
+
+def test_circumpolar_view_uses_public_defaults_when_omitted(monkeypatch):
+    monkeypatch.setattr(
+        "wenu.charts.view.prepare_chart_request",
+        lambda sky, resolved, *, observer: prepared(resolved),
+    )
+
+    view = get_chart_view(sky(), observer(), family="circumpolar")
+
+    assert view.frame.pole == "south"
+    assert view.frame.limiting_declination_deg == pytest.approx(-69.75)
+    assert view.frame.position_angle_deg == pytest.approx(0.0)
+
+
+def test_explicit_geometry_overrides_public_defaults(monkeypatch):
+    monkeypatch.setattr(
+        "wenu.charts.view.prepare_chart_request",
+        lambda sky, resolved, *, observer: prepared(resolved),
+    )
+
+    view = get_chart_view(
+        sky(),
+        observer(),
+        family="circumpolar",
+        pole="north",
+        limiting_declination_deg=72.0,
+        position_angle_deg=15.0,
+    )
+
+    assert view.frame.pole == "north"
+    assert view.frame.limiting_declination_deg == pytest.approx(72.0)
+    assert view.frame.position_angle_deg == pytest.approx(15.0)
 
 
 def test_view_preserves_serpens_resolution_and_automatic_framing(
