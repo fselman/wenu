@@ -1,111 +1,74 @@
-"""Canonical selected-object binocular integration contracts."""
+"""Canonical binocular example declaration contracts."""
 
+import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
-from wenu import BinocularChart, BoundaryKind, ChartRequest
+
+def example():
+    path = Path("examples/binocular_object.py")
+    spec = importlib.util.spec_from_file_location("binocular_object", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
-pytestmark = pytest.mark.integration
+def test_packaged_target_and_explicit_geometry_are_cli_data():
+    module = example()
+    arguments = module.parser().parse_args([
+        "--target", "M57", "--field-diameter", "7.0"
+    ])
 
-
-EXAMPLE = Path("examples/binocular_object.py")
-
-
-def test_example_uses_packaged_targets_without_a_private_registry(
-    canonical_builds,
-):
-    module = canonical_builds.module(EXAMPLE)
-
-    assert not hasattr(module, "TARGETS")
-    assert module.parser().parse_args(["--target", "M57"]).target == "M57"
-    request = module.chart_request("omega-centauri", 7.0)
-    assert request.subject.target == "omega-centauri"
-    assert request.title == (
-        "Omega Centauri (NGC 5139) — 7° binocular field"
-    )
-    assert all(
-        options.detail.detail.extended_object_samples == 73
-        for options in request.product_compositions
-    )
-
-
-def test_centaurus_a_retains_its_approved_atlas_detail(canonical_builds):
-    module = canonical_builds.module(EXAMPLE)
-    request = module.chart_request("centaurus-a")
-
-    assert all(
-        options.detail.detail.galaxy_magnitude_limit == pytest.approx(11.0)
-        for options in request.product_compositions
-    )
-    assert all(
-        options.detail.detail.extended_object_samples == 97
-        for options in request.product_compositions
-    )
-
-
-@pytest.mark.parametrize("target_key", ["centaurus-a", "omega-centauri"])
-def test_chart_is_centered_on_selected_catalogue_target(
-    target_key, canonical_builds,
-):
-    sky, chart, target = canonical_builds.build(EXAMPLE, target_key, 7.0)
-    horizontal = target.coordinate.transform_to(sky.observer.altaz_frame)
-    x, y = chart.projection.project_spherical(
-        horizontal.az.deg,
-        horizontal.alt.deg,
-    )
-
-    assert isinstance(chart, BinocularChart)
-    assert chart.field_diameter_deg == pytest.approx(7.0)
-    assert chart.chart_context.boundary_kind == BoundaryKind.CIRCULAR
-    assert x == pytest.approx(0.0, abs=2.0e-8)
-    assert y == pytest.approx(0.0, abs=2.0e-8)
-    assert sky.galaxies is not None
-    assert sky.globular_clusters is not None
-
-def test_cartoon_retains_both_supported_target_layer_types(canonical_builds):
-    module = canonical_builds.module(EXAMPLE)
-
+    assert arguments.target == "M57"
+    assert arguments.field_diameter == pytest.approx(7.0)
+    assert module.FIELD_DIAMETER_DEG == pytest.approx(6.5)
     assert module.STAR_MAGNITUDE_LIMIT == pytest.approx(11.0)
-    assert module.CARTOON_CONTENT_LAYERS == frozenset({
-        "stars",
-        "constellation_lines",
-        "galaxies",
-        "globular_clusters",
-    })
+    assert not hasattr(module, "TARGETS")
 
 
-def test_ordinary_packaged_target_adds_its_resolved_family(canonical_builds):
-    module = canonical_builds.module(EXAMPLE)
-    request = module.chart_request("M57")
+@pytest.mark.parametrize(
+    ("families", "samples"),
+    [({"globular_clusters"}, 73), ({"galaxies"}, 97)],
+)
+def test_target_family_selects_approved_binocular_detail(families, samples):
+    module = example()
+    target = SimpleNamespace(required_families=frozenset(families))
+    details = module._details(SimpleNamespace(target=target))
 
-    assert all(
-        "planetary_nebulae" in options.detail.detail.enabled_layers
-        for options in request.product_compositions
-    )
+    assert details["atlas"].detail.star_magnitude_limit == pytest.approx(11.0)
+    assert details["atlas"].detail.extended_object_samples == samples
+    assert families <= details["cartoon"].detail.enabled_layers
+    assert details["cartoon"].detail.constellation_star_mode == "selected"
 
 
-def test_generation_delegates_the_pure_request_to_the_common_facade(
-    monkeypatch, tmp_path, canonical_builds
-):
-    module = canonical_builds.module(EXAMPLE)
-    captured = []
+def test_generation_delegates_to_shared_view_drawing(monkeypatch, tmp_path):
+    module = example()
+    closed = []
     output = tmp_path / "m57.png"
+    target = SimpleNamespace(
+        display_name="Ring Nebula", primary_identifier="M57",
+        required_families=frozenset({"planetary_nebulae"}),
+    )
+    view = SimpleNamespace(
+        target=target,
+        observer=SimpleNamespace(close=lambda: closed.append(True)),
+    )
+    captured = []
+    monkeypatch.setattr(module, "chart_view", lambda arguments: view)
     monkeypatch.setattr(
-        module,
-        "generate_chart_request",
-        lambda request: captured.append(request) or SimpleNamespace(
-            outputs=(output,)
-        ),
+        module, "draw_chart_view_from_arguments",
+        lambda *args, **kwargs: captured.append((args, kwargs))
+        or (SimpleNamespace(output=output),),
     )
 
-    paths = module.generate(module.parser().parse_args([
-        "--target", "M57", "--output", str(output)
-    ]))
+    paths = module.generate(module.parser().parse_args(["--target", "M57"]))
 
     assert paths == (output,)
-    assert len(captured) == 1
-    assert isinstance(captured[0], ChartRequest)
-    assert captured[0].subject.target == "M57"
+    assert captured[0][0][0] is view
+    assert captured[0][1]["title"] == "Ring Nebula (M57) — 6.5° binocular field"
+    assert "planetary_nebulae" in (
+        captured[0][1]["product_details"]["cartoon"].detail.enabled_layers
+    )
+    assert closed == [True]

@@ -1,7 +1,6 @@
 """Milestone 45D semantic grid styles and canonical configuration."""
 
 from dataclasses import replace
-import importlib.util
 from pathlib import Path
 
 import pytest
@@ -31,13 +30,6 @@ SEMANTIC_COLORS = {
     "ecliptic": "orange",
     "galactic": "blue",
 }
-
-
-def load(path):
-    spec = importlib.util.spec_from_file_location(path.stem, path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def grid_options(style, grid):
@@ -119,46 +111,10 @@ def test_ecliptic_and_galactic_labels_contain_only_values(name, label):
     assert formatter(name) == label
 
 
-def built_sky(path, canonical_builds):
-    if path.stem == "regional_constellation_group":
-        result = canonical_builds.build(path, "summer-triangle")
-    elif path.stem == "regional_constellation":
-        result = canonical_builds.build(path, "Cru")
-    else:
-        result = canonical_builds.build(path)
-    return result[0]
-
-
 @pytest.mark.parametrize("path", EXAMPLES)
 def test_canonical_examples_declare_four_semantic_grids(path):
     source = path.read_text(encoding="utf-8")
 
-    if path.name == "binocular_object.py":
-        assert "ChartRequest(" in source
-        assert "build_chart_request(" in source
-        assert "sky.add_" not in source
-    else:
-        assert "sky.add_altaz_grid(" in source
-        assert "sky.add_equatorial_grid(" in source
-        assert "sky.add_ecliptic_grid(" in source
-        assert "sky.add_galactic_grid(" in source
-
-
-@pytest.mark.integration
-def test_canonical_grid_configuration_is_reference_free(canonical_builds):
-    sky = built_sky(EXAMPLES[0], canonical_builds)
-    grids = {
-        layer.coordinate_system: layer
-        for layer in sky.layers
-        if hasattr(layer, "coordinate_system")
-    }
-
-    assert set(grids) == set(SEMANTIC_COLORS)
-    assert grids["equatorial"].include_equator is False
-    assert grids["ecliptic"].include_ecliptic is False
-    assert grids["galactic"].include_plane is False
-    assert grids["altaz"].include_horizon is False
-    assert 0 not in grids["equatorial"].dec
-    assert 0 not in grids["ecliptic"].latitude
-    assert 0 not in grids["galactic"].latitude
-    assert 0 not in grids["altaz"].altitude
+    assert "generate_celestial_sphere(" in source
+    assert "draw_chart_view_from_arguments(" in source
+    assert "sky.add_" not in source

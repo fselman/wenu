@@ -94,28 +94,19 @@ def test_shared_cartoon_limit_is_three_with_deep_binocular_exception():
 def test_planisphere_horizon_is_independent_of_content_switches():
     source = EXAMPLES[0].read_text(encoding="utf-8")
 
-    assert "FullSkyChart(" in source
-    assert "horizon_altitude_deg=0.0" in source
-    assert "horizon_linewidth=0.8" in source
+    assert 'family="planisphere"' in source
+    assert "position_angle_deg=0.0" in source
+    assert "mask=False" in source
 
 
-@pytest.mark.integration
-def test_regional_mask_does_not_require_visible_boundary_lines(
-    canonical_builds,
-):
-    module = canonical_builds.module(EXAMPLES[2])
-    sky, chart = canonical_builds.build(EXAMPLES[2], "Cru", mask=True)
-    repeated_sky, repeated_chart = canonical_builds.build(
-        EXAMPLES[2], "Cru", mask=True
-    )
+def test_regional_mask_does_not_require_visible_boundary_lines():
+    module = load(EXAMPLES[2])
     detail = resolved_detail(
         module.parser().parse_args(["--mask"]),
         style="atlas",
     )
 
-    assert repeated_sky is sky
-    assert repeated_chart is chart
-    assert chart.outside_mask_constellations == ("Cru",)
+    assert "mask=arguments.mask" in EXAMPLES[2].read_text(encoding="utf-8")
     assert detail.layer_enabled("constellation_boundaries") is False
 
 
@@ -123,10 +114,6 @@ def test_regional_mask_does_not_require_visible_boundary_lines(
 def test_examples_apply_render_local_style_overrides(path):
     source = path.read_text(encoding="utf-8")
 
-    if path.name == "binocular_object.py":
-        assert "ChartProductCompositionOptions(" in source
-        assert "detail=chart_detail_overrides(" in source
-        assert "else chart_style_overrides(arguments)" in source
-    else:
-        assert "style_overrides=chart_style_overrides(" in source
-        assert "detail_overrides=chart_detail_overrides(" in source
+    assert "draw_chart_view_from_arguments(" in source
+    assert "compose_chart(" not in source
+    assert ".export(" not in source

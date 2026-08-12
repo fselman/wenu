@@ -112,28 +112,29 @@ def test_shared_content_legend_and_credit_controls_are_available(path):
 def test_examples_use_public_composition_without_rendering_internals(path):
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
 
-    required_calls = (
-        ("add_chart_arguments", "generate_chart_request")
-        if path.name == "binocular_object.py"
-        else (
-            "add_chart_arguments",
-            "chart_product_options",
-            "compose_chart",
-            "export",
-        )
-    )
-    for required in required_calls:
+    for required in (
+        "generate_celestial_sphere",
+        "get_chart_view",
+        "add_chart_cli_arguments",
+        "draw_chart_view_from_arguments",
+    ):
         assert calls_named(tree, required)
-    if path.name == "binocular_object.py":
-        assert calls_named(tree, "compose_chart") == ()
-        assert calls_named(tree, "export") == ()
     for prohibited in (
+        "build_chart_request",
+        "generate_chart_request",
+        "compose_chart",
+        "export",
         "savefig",
         "set_clip_boundary",
         "set_clip_path",
         "clip_to_boundary",
     ):
         assert calls_named(tree, prohibited) == ()
+
+
+@pytest.mark.parametrize("path", EXAMPLE_PATHS)
+def test_examples_are_short_declarations(path):
+    assert len(path.read_text(encoding="utf-8").splitlines()) < 70
 
 
 def test_regression_fixtures_are_test_local():

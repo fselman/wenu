@@ -69,6 +69,8 @@ def _chart_from_resolved(sky, resolved, observer):
         )
         return FullSkyChart(
             position_angle_deg=frame.position_angle_deg,
+            horizon_color="#707070",
+            horizon_linewidth=0.8,
             outside_mask_constellations=mask,
         )
     if request.family == "regional":

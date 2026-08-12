@@ -1,16 +1,10 @@
-"""Canonical planisphere and regional-example integration contracts."""
+"""Canonical planisphere and regional declaration contracts."""
 
+import importlib.util
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
-
-from wenu import (
-    chart_detail_overrides, chart_style_overrides,
-    compose_chart, composition_layer_options,
-)
-
-
-pytestmark = pytest.mark.integration
 
 
 EXAMPLES = (
@@ -20,170 +14,80 @@ EXAMPLES = (
 )
 
 
-def test_group_mask_is_union_of_selected_iau_regions(canonical_builds):
-    module = canonical_builds.module(EXAMPLES[1])
-    _, center, _ = canonical_builds.build(
-        EXAMPLES[1], "galactic-center", mask=True
-    )
-
-    assert module.GROUPS["summer-triangle"]["boundaries"] == (
-        "Cyg", "Lyr", "Vul", "Sge", "Aql"
-    )
-    assert center.outside_mask_constellations == module.GROUPS[
-        "galactic-center"
-    ]["boundaries"]
-    assert center.outside_mask_constellations[-1] == "Ser"
+def load(path):
+    spec = importlib.util.spec_from_file_location(path.stem, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
-def test_sgr_sco_oph_ser_group_does_not_enable_coordinate_grid(
-    canonical_builds,
-):
-    module = canonical_builds.module(EXAMPLES[1])
-    arguments = module.parser().parse_args(["--group", "sgr-sco-oph-ser"])
-    group = module.GROUPS[arguments.group]
-    sky, chart, _ = canonical_builds.build(
-        EXAMPLES[1], arguments.group, mask=group["mask"],
-    )
+def test_single_regional_defaults_remain_explicit():
+    arguments = load(EXAMPLES[2]).parser().parse_args([])
 
-    assert group["lines"] == ("Sgr", "Sco", "Oph", "Ser1", "Ser2")
-    assert group["boundaries"] == ("Sgr", "Sco", "Oph", "Ser")
-    for style in ("atlas", "cartoon"):
-        for mode in ("print", "presentation"):
-            composition = compose_chart(
-                chart,
-                style=style,
-                mode=mode,
-                detail_overrides=chart_detail_overrides(arguments),
-                style_overrides=chart_style_overrides(arguments),
-            )
-            assert "equatorial_grid" not in composition.detail.enabled_layers
-            layer_options = composition_layer_options(composition, sky)
-            assert (
-                layer_options.layer_options["coordinates_grid"]["enabled"]
-                is False
-            )
-    assert chart.outside_mask_constellations == group["boundaries"]
-
-
-def test_single_mask_follows_exactly_one_iau_region(canonical_builds):
-    _, chart = canonical_builds.build(EXAMPLES[2], "Cru", mask=True)
-
-    assert chart.outside_mask_constellations == ("Cru",)
-    assert chart.label_selection == ("Cru",)
-
-
-def test_group_framing_accepts_width_height_and_position_angle(
-    canonical_builds,
-):
-    _, chart, _ = canonical_builds.build(
-        EXAMPLES[1], "summer-triangle",
-        field_width_deg=80.0,
-        field_height_deg=50.0,
-        position_angle_deg=17.0,
-    )
-
-    assert chart.field_width_deg == pytest.approx(80.0)
-    assert chart.field_height_deg == pytest.approx(50.0)
-    assert chart.position_angle_deg == pytest.approx(17.0)
-
-
-def test_single_framing_accepts_width_height_and_position_angle(
-    canonical_builds,
-):
-    module = canonical_builds.module(EXAMPLES[2])
-    arguments = module.parser().parse_args([])
-    _, rotated = canonical_builds.build(
-        EXAMPLES[2], "Cru",
-        field_width_deg=20.0,
-        field_height_deg=12.0,
-        position_angle_deg=-25.0,
-    )
-
+    assert arguments.constellation == "Cru"
     assert arguments.field_width == pytest.approx(18.0)
     assert arguments.field_height == pytest.approx(16.0)
-    assert rotated.field_width_deg == pytest.approx(20.0)
-    assert rotated.field_height_deg == pytest.approx(12.0)
-    assert rotated.position_angle_deg == pytest.approx(-25.0)
+    assert arguments.position_angle == pytest.approx(0.0)
+    assert arguments.mask is False
 
 
-def test_style_and_mode_do_not_change_example_geometry(canonical_builds):
-    _, chart = canonical_builds.build(EXAMPLES[2], "Cru", mask=False)
-    contexts = [
-        compose_chart(chart, style=style, mode=mode).context
-        for style in ("atlas", "cartoon")
-        for mode in ("print", "presentation")
-    ]
+def test_group_alias_remains_data_driven_and_mask_compatible():
+    module = load(EXAMPLES[1])
+    arguments = module.parser().parse_args(["--group", "sgr-sco-oph-ser"])
+    source = EXAMPLES[1].read_text(encoding="utf-8")
 
-    assert all(
-        context.viewport == contexts[0].viewport
-        and context.tangent_longitude_deg
-        == contexts[0].tangent_longitude_deg
-        and context.tangent_latitude_deg
-        == contexts[0].tangent_latitude_deg
-        for context in contexts
+    assert arguments.group == "sgr-sco-oph-ser"
+    assert "GROUPS" not in source
+    assert 'arguments.group == "sgr-sco-oph-ser"' in source
+
+
+@pytest.mark.parametrize(
+    ("path", "limit"),
+    [(EXAMPLES[0], 5.0), (EXAMPLES[1], 6.5), (EXAMPLES[2], 6.5)],
+)
+def test_atlas_stellar_limits_remain_explicit(path, limit):
+    assert f"star_magnitude_limit={limit}" in path.read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("path", EXAMPLES)
+def test_examples_use_the_shared_context_and_furniture_adapter(path):
+    module = load(path)
+    arguments = module.parser().parse_args([
+        "--grid-references", "all", "--poles", "--pole-labels",
+        "--legends", "--credits", "--location",
+    ])
+
+    assert arguments.grid_references == frozenset(
+        {"equatorial", "ecliptic", "galactic"}
+    )
+    assert arguments.poles is True
+    assert arguments.pole_labels is True
+    assert arguments.legends is True
+    assert arguments.credits is True
+    assert arguments.location is True
+
+
+def test_group_generation_uses_resolved_packaged_title(monkeypatch, tmp_path):
+    module = load(EXAMPLES[1])
+    output = tmp_path / "group.png"
+    closed = []
+    view = SimpleNamespace(
+        constellations=SimpleNamespace(
+            key="summer-triangle", display_name="The Summer Triangle"
+        ),
+        observer=SimpleNamespace(close=lambda: closed.append(True)),
+    )
+    captured = []
+    monkeypatch.setattr(module, "chart_view", lambda arguments: view)
+    monkeypatch.setattr(
+        module, "draw_chart_view_from_arguments",
+        lambda *args, **kwargs: captured.append(kwargs)
+        or (SimpleNamespace(output=output),),
     )
 
+    paths = module.generate(module.parser().parse_args([]))
 
-@pytest.mark.parametrize("path", EXAMPLES)
-def test_atlas_examples_declare_stellar_detail_for_legends(path):
-    source = path.read_text(encoding="utf-8")
-    expected_limit = 5.0 if path == EXAMPLES[0] else 6.5
-
-    assert "FixedDetailPolicy" in source
-    assert f"star_magnitude_limit={expected_limit}" in source
-    assert 'product.style == "cartoon"' in source
-
-
-def test_object_rich_examples_use_curated_catalogue_selections():
-    for path in EXAMPLES[:2]:
-        source = path.read_text(encoding="utf-8")
-        assert "add_open_clusters(selected=" in source
-        assert "add_planetary_nebulae(selected=" in source
-        assert "add_supernova_remnants(selected=" in source
-
-
-@pytest.mark.parametrize("path", EXAMPLES)
-def test_pole_crosses_and_labels_are_independently_optional(
-    path, canonical_builds,
-):
-    module = canonical_builds.module(path)
-
-    crosses_only = module.parser().parse_args(["--poles"])
-    labeled = module.parser().parse_args(["--poles", "--pole-labels"])
-
-    assert crosses_only.poles is True
-    assert crosses_only.pole_labels is False
-    assert labeled.poles is True
-    assert labeled.pole_labels is True
-    assert "labels=arguments.pole_labels" in path.read_text(
-        encoding="utf-8"
-    )
-
-
-@pytest.mark.parametrize("path", EXAMPLES)
-def test_examples_use_compact_configurable_context(path, canonical_builds):
-    module = canonical_builds.module(path)
-    arguments = module.parser().parse_args([])
-
-    assert arguments.center is True
-    assert arguments.grid is True
-    assert arguments.location is False
-    assert arguments.date is False
-    assert arguments.local_time is False
-    source = path.read_text(encoding="utf-8")
-    assert "chart_context_lines(" in source
-    assert "labels=False" in source
-
-
-def test_planisphere_uses_magnitude_five():
-    source = EXAMPLES[0].read_text(encoding="utf-8")
-    assert source.count("star_magnitude_limit=5.0") == 1
-    assert 'sky.add_stars(catalog="hipparcos", magnitude_limit=6.5)' in source
-
-
-def test_planisphere_catalogue_retains_constellation_line_vertices(
-    canonical_builds,
-):
-    sky, _ = canonical_builds.build(EXAMPLES[0])
-
-    assert {78400, 107608}.issubset(set(sky.stars.catalog.index))
+    assert paths == (output,)
+    assert captured[0]["stem"] == "regional-summer-triangle"
+    assert captured[0]["title"] == "The Summer Triangle"
+    assert closed == [True]

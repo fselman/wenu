@@ -355,6 +355,17 @@ is replaced until Milestone 46C.8N.
   through the common facade where that compatibility remains required;
 - delete superseded example-only helpers rather than carrying both forms.
 
+**Status:** Implemented. The binocular, regional-single, regional-group,
+planisphere, and circumpolar examples now declare the ordinary three-stage
+workflow and shared CLI in 56–69 lines each. Their installed resources remain
+byte-identical. Packaged target and constellation-group data replace private
+registries and curated construction procedures; the scripts retain explicit
+observer/time, projection, framing, orientation, mask, family detail, title,
+and family-specific arguments. Superseded `build_chart()`, `chart_request()`,
+catalogue-loading, composition, Matplotlib, furniture-assembly, and export
+helpers are removed. Exact rendered parity and migration closure remain for
+Milestone 46C.8O.
+
 ### Milestone 46C.8O — Verify and close the example migration
 
 - verify Centaurus A, Omega Centauri, regional single and group charts,

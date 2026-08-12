@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+from dataclasses import fields
 
 from .chart_arguments import (
     add_chart_arguments,
@@ -22,6 +23,7 @@ from .furniture import (
 )
 from .legend_plan import LegendOptions
 from .product_options import ChartProduct, chart_product_options
+from .style_overrides import ChartStyleOverrides
 
 
 _REFERENCE_LABELS = {
@@ -114,24 +116,46 @@ def draw_chart_view_from_arguments(
     detail=None,
     product_details=None,
     furniture=None,
+    style_overrides=None,
     title=None,
     language="en",
 ):
-    """Draw every CLI-selected product through the ordinary view facade."""
+    """Draw every CLI-selected product through the ordinary view facade.
+
+    ``product_details`` may key policies by exact ``ChartProduct`` values or
+    by the shared ``atlas`` and ``cartoon`` style names. Exact products take
+    precedence. Optional family style overrides are merged over parsed CLI
+    values without discarding unrelated explicit switches.
+    """
     options = chart_product_options(arguments)
     details = {} if product_details is None else product_details
     if not isinstance(details, Mapping):
         raise TypeError("product_details must be a mapping.")
-    unknown = set(details) - set(options.products)
+    unknown = set(details) - set(options.products) - {"atlas", "cartoon"}
     if unknown:
         raise ValueError(
-            "product_details contains a product not selected by the CLI."
+            "product_details keys must be selected products or styles."
         )
     furniture = (
         chart_cli_furniture(arguments) if furniture is None else furniture
     )
     detail_overrides = chart_detail_overrides(arguments)
-    style_overrides = chart_style_overrides(arguments)
+    parsed_style = chart_style_overrides(arguments)
+    if style_overrides is not None:
+        if not isinstance(style_overrides, ChartStyleOverrides):
+            raise TypeError(
+                "style_overrides must be a ChartStyleOverrides value."
+            )
+        style_overrides = ChartStyleOverrides(**{
+            field.name: (
+                getattr(style_overrides, field.name)
+                if getattr(style_overrides, field.name) is not None
+                else getattr(parsed_style, field.name)
+            )
+            for field in fields(ChartStyleOverrides)
+        })
+    else:
+        style_overrides = parsed_style
     exports = []
     for product, destination in options.outputs(stem=stem):
         exports.append(draw_chart_view(
@@ -139,7 +163,7 @@ def draw_chart_view_from_arguments(
             destination,
             style=product.style,
             mode=product.mode,
-            detail=details.get(product, detail),
+            detail=details.get(product, details.get(product.style, detail)),
             detail_overrides=detail_overrides,
             furniture=furniture,
             style_overrides=style_overrides,

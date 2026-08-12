@@ -65,6 +65,8 @@ def test_planisphere_construction_owns_requested_mask():
 
     assert isinstance(prepared, PreparedChartRequest)
     assert isinstance(prepared.chart, FullSkyChart)
+    assert prepared.chart.horizon_color == "#707070"
+    assert prepared.chart.horizon_linewidth == pytest.approx(0.8)
     assert prepared.chart.outside_mask_constellations == ("Cru", "Cen")
 
 

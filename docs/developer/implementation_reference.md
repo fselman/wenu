@@ -168,10 +168,11 @@ area transparent while retaining titles and footer furniture.
 The canonical `binocular_object.py` example centers the same binocular chart
 family on any drawable target in the packaged resolver and accepts an explicit
 field diameter. Centaurus A (NGC 5128) and Omega Centauri (NGC 5139) remain
-the documented regression targets. The example declares a `ChartRequest` and
-delegates construction to `build_chart_request()` or complete generation to
-`generate_chart_request()`; it has no private target dictionary, catalogue
-loading, renderer, or export loop.
+the documented regression targets. Like the other four canonical examples,
+it generates one observer-independent sphere, obtains one observer-bound view,
+and delegates the selected product matrix to
+`draw_chart_view_from_arguments()`. It has no private target dictionary,
+catalogue loading, request graph, renderer, or export loop.
 The binocular stellar-magnitude legend defaults outside the rectangular axes
 at lower right so its frame remains clear of the circular aperture.
 Its stellar presentation opts into `StellarMagnitudeSizing` with the resolved
@@ -202,6 +203,8 @@ caller supplies `--force`.
 
 Catalogue, symbol, legend, clipping, and historical style demonstrations are
 test-local regression fixtures rather than additional public examples.
+Every canonical example is a fewer-than-70-line declaration, and its source
+copy is byte-identical to the corresponding installed package resource.
 
 ## 5. Styles and modes
 
@@ -509,7 +512,8 @@ Command-line examples add the complete common contract with
 `add_chart_cli_arguments(parser, default_output=...)`. The resulting namespace
 is passed to `draw_chart_view_from_arguments(view, arguments, stem=...)`, which
 returns one `ChartExportResult` per selected product. A family may pass
-`product_details` keyed by exact `ChartProduct` values and may construct
+`product_details` keyed by exact `ChartProduct` values or by style name and
+may construct
 localized furniture with `chart_cli_furniture()`; these remain declarative
 inputs to `draw_chart_view()` rather than a second rendering path.
 

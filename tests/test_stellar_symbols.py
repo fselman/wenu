@@ -393,7 +393,11 @@ def test_magnitude_legend_uses_the_identical_area_law():
 
 def test_binocular_example_declares_the_normalized_contract():
     binocular_object = load_binocular_example()
+    source = Path("examples/binocular_object.py").read_text(encoding="utf-8")
 
-    sizing = binocular_object.BINOCULAR_STELLAR_SIZING
-    assert sizing == SIZING
     assert binocular_object.STAR_MAGNITUDE_LIMIT == pytest.approx(11.0)
+    assert 'reference="limiting_magnitude"' in source
+    assert "scale=1.0" in source
+    assert "exponent=0.20" in source
+    assert "minimum_area=1.0" in source
+    assert "maximum_area=40.0" in source

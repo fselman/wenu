@@ -205,3 +205,12 @@ content, appearance, legend, context, and credit switches;
 their explicit geometrical defaults, subject arguments, and product-specific
 detail policy. The adapter contains no catalogue loading, projection,
 rendering, furniture-drawing, or export implementation of its own.
+
+Milestone 46C.8N replaces all five canonical examples with short declarations
+over `generate_celestial_sphere()`, `get_chart_view()`, and
+`draw_chart_view_from_arguments()`. Each source and installed copy is
+byte-identical and shorter than 70 lines. Packaged resolvers now supply target
+and group data; examples retain only reproducible observer/time values,
+explicit family geometry, family-specific detail, titles, and CLI arguments.
+The former example-owned catalogue builders, request builders, renderer loops,
+and compatibility-only `build_chart()` helpers are removed.

@@ -1,95 +1,54 @@
-"""Canonical circumpolar-example integration contracts."""
+"""Canonical circumpolar declaration contracts."""
 
+import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 
-import numpy as np
 import pytest
 
-from wenu import BoundaryKind, compose_chart
-from wenu.charts.detail import ResolvedDetail
-from wenu.charts.detail_application import apply_resolved_detail
+
+def example():
+    path = Path("examples/circumpolar.py")
+    spec = importlib.util.spec_from_file_location("circumpolar", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
-pytestmark = pytest.mark.integration
-
-
-EXAMPLE = Path("examples/circumpolar.py")
-
-
-def test_chart_preserves_southern_pole_and_lmc_crossing_geometry(
-    canonical_builds,
-):
-    module = canonical_builds.module(EXAMPLE)
-    _, chart = canonical_builds.build(EXAMPLE)
+def test_defining_geometry_is_explicit():
+    module = example()
+    source = Path("examples/circumpolar.py").read_text(encoding="utf-8")
 
     assert module.LIMITING_DECLINATION_DEG == pytest.approx(-69.75)
-    assert chart.pole == "south"
-    assert chart.limiting_declination_deg == pytest.approx(-69.75)
-    assert chart.chart_context.boundary_kind == BoundaryKind.CIRCULAR
-    assert chart.chart_context.horizon_altitude_deg == pytest.approx(-90.0)
-    assert chart.coordinate_label_anchor.declination_at_left is True
+    assert 'pole="south"' in source
+    assert "limiting_declination_deg=LIMITING_DECLINATION_DEG" in source
+    assert 'projection="stereographic"' in source
 
 
-def test_cartoon_product_retains_defining_circumpolar_content(
-    canonical_builds,
+def test_generation_retains_cartoon_content_and_closes_observer(
+    monkeypatch, tmp_path
 ):
-    module = canonical_builds.module(EXAMPLE)
+    module = example()
+    closed = []
+    output = tmp_path / "circumpolar.png"
+    view = SimpleNamespace(
+        observer=SimpleNamespace(close=lambda: closed.append(True))
+    )
+    captured = []
+    monkeypatch.setattr(module, "chart_view", lambda arguments: view)
+    monkeypatch.setattr(
+        module, "draw_chart_view_from_arguments",
+        lambda *args, **kwargs: captured.append(kwargs)
+        or (SimpleNamespace(output=output),),
+    )
 
-    assert module.CARTOON_CONTENT_LAYERS == frozenset({
-        "stars",
-        "constellation_lines",
-        "equatorial_grid",
-        "milky_way",
-        "magellanic_clouds",
+    paths = module.generate(module.parser().parse_args([]))
+    detail = captured[0]["product_details"]["cartoon"].detail
+
+    assert paths == (output,)
+    assert detail.star_magnitude_limit == pytest.approx(3.0)
+    assert detail.enabled_layers == frozenset({
+        "stars", "constellation_lines", "equatorial_grid",
+        "milky_way", "magellanic_clouds",
     })
-    source = EXAMPLE.read_text(encoding="utf-8")
-    assert 'add_magellanic_cloud_isophotes("lmc")' in source
-    assert 'add_magellanic_cloud_isophotes("smc")' in source
-
-
-def test_magellanic_isophotes_use_the_shared_content_name():
-    layer = SimpleNamespace(layer_name="magellanic_cloud_isophotes")
-    sky = SimpleNamespace(layers=(layer,))
-    applied = apply_resolved_detail(
-        sky,
-        ResolvedDetail(enabled_layers=frozenset({"magellanic_clouds"})),
-    )
-
-    assert applied.layer_options[
-        "magellanic_cloud_isophotes"
-    ]["enabled"] is True
-
-
-def test_style_and_mode_leave_polar_geometry_unchanged(canonical_builds):
-    _, chart = canonical_builds.build(EXAMPLE)
-    contexts = [
-        compose_chart(chart, style=style, mode=mode).context
-        for style in ("atlas", "cartoon")
-        for mode in ("print", "presentation")
-    ]
-
-    baseline = contexts[0]
-    assert all(
-        context.viewport == baseline.viewport
-        and context.tangent_longitude_deg
-        == baseline.tangent_longitude_deg
-        and context.tangent_latitude_deg
-        == baseline.tangent_latitude_deg
-        and context.boundary_kind == baseline.boundary_kind
-        and context.horizon_altitude_deg
-        == baseline.horizon_altitude_deg
-        for context in contexts
-    )
-    for context in contexts[1:]:
-        np.testing.assert_allclose(
-            context.clip_boundary.x,
-            baseline.clip_boundary.x,
-        )
-        np.testing.assert_allclose(
-            context.clip_boundary.y,
-            baseline.clip_boundary.y,
-        )
-    assert 'sky.add_magellanic_cloud_isophotes("lmc")' in (
-        EXAMPLE.read_text(encoding="utf-8")
-    )
+    assert closed == [True]

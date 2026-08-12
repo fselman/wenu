@@ -9,6 +9,7 @@ from wenu import (
     ChartProduct,
     ChartStyleOverrides,
     DetailOverrides,
+    StellarMagnitudeSizing,
     add_chart_cli_arguments,
     chart_cli_furniture,
     draw_chart_view_from_arguments,
@@ -134,3 +135,26 @@ def test_adapter_rejects_invalid_product_detail_contract():
             stem="example",
             product_details={ChartProduct("cartoon", "print"): object()},
         )
+
+
+def test_style_detail_and_family_style_overrides_are_composed(monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        "wenu.charts.command_line.draw_chart_view",
+        lambda *args, **kwargs: calls.append(kwargs) or object(),
+    )
+    arguments = parser().parse_args([
+        "--style", "cartoon", "--constellation-line-color", "white"
+    ])
+    detail = object()
+    sizing = StellarMagnitudeSizing()
+
+    draw_chart_view_from_arguments(
+        "view", arguments, stem="example",
+        product_details={"cartoon": detail},
+        style_overrides=ChartStyleOverrides(stellar_magnitude_sizing=sizing),
+    )
+
+    assert calls[0]["detail"] is detail
+    assert calls[0]["style_overrides"].constellation_line_color == "white"
+    assert calls[0]["style_overrides"].stellar_magnitude_sizing is sizing

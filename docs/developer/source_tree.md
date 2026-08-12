@@ -177,9 +177,10 @@ parallel implementations.
 - `rendering` owns graphical backend behavior.
 - examples request charts and may supply documented label overrides, but do
   not implement clipping, catalogue joins, legends, or repeated saving.
-- the canonical binocular example is the first fully migrated pure request;
-  its source and installed resource are byte-identical and contain no private
-  target registry, catalogue construction, renderer, or export loop.
+- all five canonical examples use the ordinary three-stage interface; each
+  source and installed resource is byte-identical, shorter than 70 lines, and
+  contains no private catalogue construction, request graph, renderer, legend
+  assembly, or export loop.
 
 See `target_architecture_v0.7.md` for the implemented architecture,
 `wenu_migration_0.6_to_0.7.md` for the completed roadmap,
@@ -190,7 +191,8 @@ The structured user guide is rooted at `docs/user_guide/index.md`; its
 `assets/` directory contains only the provenance-controlled README image.
 
 The user-facing `examples/` directory contains only the five canonical chart
-families. Historical component demonstrations that still provide regression
+families as short declarations over the shared sphere, view, drawing, and CLI
+facades. Historical component demonstrations that still provide regression
 coverage live under `tests/fixtures/example_regressions/`; they are test-local
 fixtures, not supported user examples.
 
