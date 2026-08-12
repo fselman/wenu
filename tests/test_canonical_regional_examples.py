@@ -31,14 +31,26 @@ def test_single_regional_defaults_remain_explicit():
     assert arguments.mask is False
 
 
-def test_group_alias_remains_data_driven_and_mask_compatible():
+def test_group_example_defaults_to_an_arbitrary_adjacent_iau_set():
     module = load(EXAMPLES[1])
-    arguments = module.parser().parse_args(["--group", "sgr-sco-oph-ser"])
+    arguments = module.parser().parse_args([])
     source = EXAMPLES[1].read_text(encoding="utf-8")
 
-    assert arguments.group == "sgr-sco-oph-ser"
+    assert arguments.constellations == ("Sgr", "Sco", "Oph", "Ser")
+    assert arguments.group is None
     assert "GROUPS" not in source
-    assert 'arguments.group == "sgr-sco-oph-ser"' in source
+    assert "add_constellation_subject_arguments(" in source
+    assert "chart_constellation_subject(" in source
+
+
+def test_group_example_retains_packaged_aliases_and_explicit_mask():
+    module = load(EXAMPLES[1])
+    arguments = module.parser().parse_args([
+        "--group", "summer-triangle", "--mask"
+    ])
+
+    assert arguments.group == "summer-triangle"
+    assert arguments.mask is True
 
 
 @pytest.mark.parametrize(

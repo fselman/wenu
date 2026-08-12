@@ -390,6 +390,36 @@ Milestone 46C.8O.
 - retain fixed binocular target detail and the separate sparse cartoon
   policies.
 
+**Status:** Implemented.
+
+#### Milestone 46C.8O.3 — Make constellation sets the regional-group primitive
+
+- add one shared command-line subject adapter for comma-separated arbitrary
+  IAU sets and optional packaged-group aliases;
+- pass its typed result through the ordinary `get_chart_view()` subject
+  boundary so validation, Serpens expansion, content selection, and automatic
+  spherical framing remain resolver and chart responsibilities;
+- make the canonical group example declare an adjacent constellation set
+  rather than encode or require a packaged group.
+
+#### Milestone 46C.8O.4 — Add visible multi-patch planisphere masks
+
+- interpret a possibly disjoint constellation set as official mask regions
+  when requested by a stereographic observer-visible planisphere;
+- discard selected regions wholly outside the visible hemisphere, retain and
+  clip partially visible regions at the horizon and final chart boundary, and
+  preserve separate visible patches;
+- keep visibility and clipping in observer-bound chart preparation rather
+  than the resolver, CLI adapter, or examples.
+
+#### Later projection milestone — Add Mollweide all-sky views
+
+- add Mollweide through the existing projection and chart pipeline only after
+  regional sets and stereographic multi-patch masks are complete;
+- reuse the same resolved constellation-set contract without observer-horizon
+  rejection, clipping all-sky curves and patches at the elliptical boundary
+  and splitting geometry correctly at the longitude seam.
+
 - verify Centaurus A, Omega Centauri, regional single and group charts,
   Serpens, masks, furniture, products, and all retained CLI controls;
 - run focused, full, and mandatory atlas-print visual regressions;

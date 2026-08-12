@@ -44,6 +44,14 @@ def test_guide_index_names_all_five_canonical_examples():
     for filename in EXAMPLES:
         assert f"examples/{filename}" in text
 
+
+def test_regional_guide_uses_arbitrary_constellation_sets():
+    text = (GUIDE / "regional_charts.md").read_text(encoding="utf-8")
+
+    assert "--constellations Sgr,Sco,Oph,Ser" in text
+    assert "--constellations Cen,Cru,Mus --mask" in text
+    assert "--group summer-triangle" in text
+
 def test_readme_quick_start_uses_the_canonical_planisphere_interface():
     text = (ROOT / "README.md").read_text(encoding="utf-8")
     assert "python examples/planisphere.py" in text

@@ -78,10 +78,13 @@ The default title should remain the canonical generated title.
 
 ## 3. Feature: Allow arbitrary constellation groups from the command line
 
+**Status:** Implemented by Milestone 46C.8O.3 through the shared
+constellation-subject adapter and ordinary chart-view facade.
+
 ### Problem
 
-`regional_constellation_group.py` only accepts keys defined in its hard-coded
-`GROUPS` dictionary. Today this required separate wrappers for:
+Historically, `regional_constellation_group.py` accepted only keys defined in
+its hard-coded `GROUPS` dictionary. This required separate wrappers for:
 
 - Libra, Scorpius, Sagittarius, Ophiuchus, and Serpens;
 - Centaurus, Crux, and Musca;

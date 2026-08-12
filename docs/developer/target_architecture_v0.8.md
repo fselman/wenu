@@ -105,6 +105,22 @@ hard-coded example-target dictionary. The request resolver must verify that
 the target and requested content are available under the selected load
 profile.
 
+An arbitrary constellation set is the ordinary regional-group primitive.
+Packaged groups remain optional curated aliases carrying preset framing or
+content, not the implementation of grouping. The shared command-line adapter
+normalizes only the public subject vocabulary; the constellation resolver
+retains IAU validation and Serpens identities, and the regional chart retains
+automatic spherical framing.
+
+A selected constellation set may later define several disjoint mask patches
+on an observer-visible planisphere. Visibility is resolved only after the
+observer-bound chart exists: wholly invisible official regions are omitted,
+partly visible regions are clipped at the horizon and final chart boundary,
+and separate visible regions remain separate patches. A later Mollweide
+all-sky view reuses the same projection-neutral resolved set without horizon
+rejection and owns its elliptical boundary and longitude-seam splitting in
+the established projection and clipping pipeline.
+
 Canonical examples become short declarations using this public request API.
 They remain reproducible demonstrations and regression authorities, not
 templates that require users to copy internal orchestration. Existing

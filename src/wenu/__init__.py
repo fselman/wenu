@@ -124,6 +124,11 @@ from .charts.chart_arguments import (
     chart_legend_selection,
     chart_style_overrides,
 )
+from .charts.subject_arguments import (
+    ChartConstellationSubjectOptions,
+    add_constellation_subject_arguments,
+    chart_constellation_subject,
+)
 from .charts.chart_legend_workflow import draw_resolved_chart_legends
 from .charts.context import BoundaryKind, ChartContext
 from .charts.detail import (

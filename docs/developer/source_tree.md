@@ -106,6 +106,10 @@ common command-line controls to `draw_chart_view()`, including the ordinary
 labeled-equatorial-grid default and its suppression switch. It may iterate the
 selected product matrix, but it owns no sphere construction, chart geometry,
 projection, renderer, furniture drawing, or saving procedure.
+`charts/subject_arguments.py` owns reusable command-line adaptation of an
+arbitrary IAU constellation set or optional packaged-group alias into typed
+friendly view arguments. It does not resolve internal constellation geometry,
+frame a chart, test visibility, project, mask, or clip.
 
 ## Responsibility mapping
 

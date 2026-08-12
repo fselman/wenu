@@ -483,7 +483,7 @@ grids, furniture, language, title, and output remain drawing concerns.
 |---|---|
 | binocular | fixed 6.5-degree diameter |
 | regional single | automatic from constellation geometry |
-| regional group | packaged group width and height |
+| regional group | automatic from an arbitrary set, or a packaged preset |
 | planisphere | visible observer hemisphere |
 | circumpolar | south pole through declination -69.75 degrees |
 
@@ -526,6 +526,14 @@ inputs to `draw_chart_view()` rather than a second rendering path.
 The ordinary CLI enables the labeled equatorial grid by default and accepts
 `--no-equatorial-grid` to omit it. Equatorial right ascension is labeled as
 `hh:mm`; declination and the other coordinate systems use degrees.
+
+Constellation-family adapters may add the shared subject contract with
+`add_constellation_subject_arguments(...)`. It accepts mutually exclusive
+`--constellations IAU,...` and `--group ALIAS` forms.
+`chart_constellation_subject(arguments)` returns immutable typed options whose
+`view_arguments()` pass directly to `get_chart_view()`. Arbitrary sets use the
+existing resolver and automatic spherical regional framing; packaged groups
+remain optional aliases and no example owns IAU parsing or group geometry.
 
 ```python
 sky = generate_celestial_sphere()
@@ -604,7 +612,8 @@ destination, and visual approval are recorded in
 
 ### Sgr-Sco-Oph-Ser regional product
 
-`examples/regional_constellation_group.py --group sgr-sco-oph-ser` selects the
+`examples/regional_constellation_group.py --constellations Sgr,Sco,Oph,Ser`
+selects the
 Sagittarius, Scorpius, Ophiuchus, and two-part Serpens region. It does not
 enable any non-equatorial grid by default. Every canonical family exposes `--altaz-grid`,
 `--equatorial-grid`, `--ecliptic-grid`, and `--galactic-grid` plus the
@@ -613,5 +622,4 @@ equatorial grid. The AltAz grid has a black semantic base color, realized
 as gray `#707070` for both lines and labels in print modes so it remains
 subordinate to black stars. It excludes its altitude-zero circle so it does
 not duplicate the chart-owned horizon.
-It also enables the canonical outside-region mask by default, producing the
-regional emphasis patch without an additional command-line switch.
+`--mask` enables the canonical outside-region mask explicitly.

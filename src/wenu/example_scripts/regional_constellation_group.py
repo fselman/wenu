@@ -1,28 +1,31 @@
-"""Generate a regional chart for a packaged constellation group."""
+"""Generate a regional chart for an arbitrary constellation group."""
 
 import argparse
 from pathlib import Path
 
 from wenu import (
     AdaptiveDetailPolicy, Observer, add_chart_cli_arguments,
-    chart_cli_furniture, draw_chart_view_from_arguments,
+    add_constellation_subject_arguments, chart_cli_furniture,
+    chart_constellation_subject, draw_chart_view_from_arguments,
     generate_celestial_sphere, get_chart_view,
 )
 
 LOCAL_TIME = "2026-08-15 21:00"
 DEFAULT_OUTPUT = Path("output/examples/regional-constellation-group")
+DEFAULT_CONSTELLATIONS = ("Sgr", "Sco", "Oph", "Ser")
 
 
 def chart_view(arguments, *, sky=None):
     sky = generate_celestial_sphere() if sky is None else sky
     observer = Observer(location="La Ligua", time=LOCAL_TIME)
+    subject = chart_constellation_subject(arguments)
     return get_chart_view(
-        sky, observer, family="regional", group=arguments.group,
+        sky, observer, family="regional", **subject.view_arguments(),
         field_width_deg=arguments.field_width,
         field_height_deg=arguments.field_height,
         position_angle_deg=arguments.position_angle,
         projection="stereographic",
-        mask=(arguments.mask or arguments.group == "sgr-sco-oph-ser"),
+        mask=arguments.mask,
     )
 
 
@@ -44,7 +47,8 @@ def generate(arguments):
 def parser():
     value = add_chart_cli_arguments(argparse.ArgumentParser(description=__doc__),
                                     default_output=DEFAULT_OUTPUT)
-    value.add_argument("--group", default="summer-triangle")
+    add_constellation_subject_arguments(
+        value, default_constellations=DEFAULT_CONSTELLATIONS)
     value.add_argument("--mask", action="store_true")
     value.add_argument("--field-width", type=float)
     value.add_argument("--field-height", type=float)
