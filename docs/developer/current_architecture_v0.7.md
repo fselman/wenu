@@ -351,3 +351,10 @@ adapter. The circumpolar declaration exposes its existing chart-owned
 limiting declination as `--limiting-declination`, allowing a horizon crossing
 to be inspected without moving horizon logic into the example. Final approval
 remains pending the fixed visual matrix.
+
+The Q.9 visual review exposed that automatic regional framing still measured
+only constellation-figure endpoints. Regional requests now keep the resolved
+line identities for figure drawing but pass the separate official IAU region
+identities to `RegionalChart.from_constellations()` for automatic centering
+and radius. The resulting padded field contains every sampled boundary vertex;
+explicit width and height requests remain authoritative.

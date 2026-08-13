@@ -96,7 +96,9 @@ maximal-sphere profile. It performs no chart construction or rendering.
 It also resolves explicit and family framing defaults while marking arbitrary
 constellation framing as a downstream geometry operation.
 `charts/regional.py` performs that geometry-derived framing from loaded
-constellation endpoints; the request resolver does not inspect sky geometry.
+official constellation-region vertices, retaining figure endpoints as the
+compatibility fallback for direct callers that do not request region framing;
+the request resolver does not inspect sky geometry.
 `charts/spatial_selection.py` owns vectorized field-footprint selection over
 cached catalogue centers; it applies explicit exclusions, returns immutable
 content, and does not render.

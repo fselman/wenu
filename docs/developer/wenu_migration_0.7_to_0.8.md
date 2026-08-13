@@ -593,6 +593,11 @@ planisphere no-op products; and a cartoon-presentation smoke product.
 Milestone 46C.8Q.9.2 records approval or fixes only defects exposed by that
 matrix, then marks the horizon work complete.
 
+The first regional visual exposed incomplete endpoint-based framing.
+Milestone 46C.8Q.9.1c moves automatic request framing to the complete official
+IAU boundary geometry while retaining separate constellation-line identities
+and explicit field overrides. The visual matrix must be rerun before closure.
+
 ## Milestone 46C.9 — Validate all chart families from one maximal sphere
 
 - build one observer-independent canonical maximal sphere;

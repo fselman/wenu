@@ -252,6 +252,7 @@ class RegionalChart:
         constellations,
         *,
         observer=None,
+        framing_constellations=None,
         angular_radius_deg=None,
         aspect_ratio=1.0,
         framing_padding=1.15,
@@ -261,7 +262,7 @@ class RegionalChart:
         label_selection=None,
         **kwargs,
     ):
-        """Center and optionally frame unique selected figure endpoints."""
+        """Center and optionally frame selected official regions or figures."""
         names = tuple(constellations)
         if not names:
             raise ValueError("Select at least one constellation.")
@@ -295,10 +296,22 @@ class RegionalChart:
                 "No catalogue endpoints were found for "
                 f"{', '.join(names)}."
             )
-        azimuth, altitude = _spherical_mean(
-            stars.lon_deg[selected],
-            stars.lat_deg[selected],
-        )
+        framing_lon = stars.lon_deg[selected]
+        framing_lat = stars.lat_deg[selected]
+        if framing_constellations is not None:
+            boundaries = getattr(sky, "constellation_boundaries", None)
+            if boundaries is None:
+                raise RuntimeError(
+                    "Add constellation boundaries before deriving region "
+                    "framing."
+                )
+            regions = boundaries.spherical_geometry(
+                resolved_observer,
+                selected=framing_constellations,
+            )
+            framing_lon = np.concatenate(regions.lon_deg)
+            framing_lat = np.concatenate(regions.lat_deg)
+        azimuth, altitude = _spherical_mean(framing_lon, framing_lat)
         if angular_radius_deg is None:
             padding = float(framing_padding)
             minimum = float(minimum_angular_radius_deg)
@@ -311,8 +324,8 @@ class RegionalChart:
             angular_radius_deg = max(
                 minimum,
                 padding * _maximum_angular_separation(
-                    stars.lon_deg[selected],
-                    stars.lat_deg[selected],
+                    framing_lon,
+                    framing_lat,
                     azimuth,
                     altitude,
                 ),

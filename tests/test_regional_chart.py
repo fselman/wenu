@@ -129,6 +129,41 @@ def test_constellation_field_can_be_derived_from_loaded_geometry():
     assert chart.field_height_deg > 24.0
 
 
+def test_constellation_region_framing_uses_complete_official_boundary():
+    stars = SimpleNamespace(
+        spherical_geometry=lambda observer, alt_min: SimpleNamespace(
+            ids=np.asarray([1, 2]),
+            lon_deg=np.asarray([0.0, 2.0]),
+            lat_deg=np.asarray([0.0, 0.0]),
+        )
+    )
+    regions = SimpleNamespace(
+        spherical_geometry=lambda observer, selected: SimpleNamespace(
+            lon_deg=(np.asarray([350.0, 10.0, 10.0, 350.0]),),
+            lat_deg=(np.asarray([-8.0, -8.0, 8.0, 8.0]),),
+        )
+    )
+    sky = SimpleNamespace(
+        observer=object(),
+        stars=stars,
+        constellation_lines=SimpleNamespace(
+            edges_by_constellation={"Test": [(1, 2)]}
+        ),
+        constellation_boundaries=regions,
+    )
+
+    chart = RegionalChart.from_constellations(
+        sky,
+        ["Test"],
+        framing_constellations=["TestRegion"],
+        framing_padding=1.15,
+    )
+
+    assert chart.center_az_deg == pytest.approx(0.0, abs=1.0e-8)
+    assert chart.center_alt_deg == pytest.approx(0.0, abs=1.0e-8)
+    assert chart.field_height_deg > 26.0
+
+
 def test_explicit_constellation_field_preserves_compatible_behavior():
     stars = SimpleNamespace(
         spherical_geometry=lambda observer, alt_min: SimpleNamespace(

@@ -45,6 +45,7 @@ def _regional_chart(sky, resolved, observer):
             subject.boundary_constellations
             if resolved.request.mask else None
         ),
+        "framing_constellations": subject.boundary_constellations,
     }
     if frame.field_width_deg is None:
         return RegionalChart.from_constellations(

@@ -113,6 +113,9 @@ def test_regional_construction_uses_resolved_group_field(monkeypatch):
     assert calls["outside_mask_constellations"] == (
         "Sgr", "Sco", "Oph", "Ser"
     )
+    assert calls["framing_constellations"] == (
+        "Sgr", "Sco", "Oph", "Ser"
+    )
 
 
 def test_binocular_construction_uses_resolved_target_and_field(monkeypatch):

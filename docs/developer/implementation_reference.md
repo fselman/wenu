@@ -532,6 +532,13 @@ The canonical circumpolar declaration additionally exposes
 `--limiting-declination`; this changes the chart-owned polar field boundary
 and does not participate in horizon geometry or appearance.
 
+For automatic regional fields, `RegionalChart.from_constellations()` accepts
+`framing_constellations` independently of its figure-line identities. The
+ordinary request builder supplies official IAU boundary identities there, so
+the spherical center and padded angular radius cover the complete selected
+regions. This does not select boundary-line appearance, alter Serpens figure
+connectivity, or override an explicitly requested field size.
+
 `StereographicProjection.unproject_spherical(x, y)` performs the inverse
 planar mapping and returns coordinates in the projection's source frame. It
 is the classification boundary used by horizon-mask preparation; it does not
