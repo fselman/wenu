@@ -640,6 +640,16 @@ remain authoritative.
 - update current architecture, implementation reference, source tree, and test
   audit to record the implemented result.
 
+**Status:** In progress. Milestone 46C.10A adds a reproducible diagnostic
+benchmark over one observer-independent canonical sphere, all six chart
+families, three observer/instant identities, and atlas-print export. It reports
+public-operation wall times, profiler-attributed selection, projection,
+preparation, rendering, and export costs, observed-cache entry counts before
+and after a compatible repeat, and deterministic image products. It defines
+no timing threshold and changes no runtime behavior. Milestone 46C.10B records
+the measured Mac report, suite results, atlas-print approval, and final
+architecture, implementation-reference, source-tree, and test-audit closure.
+
 ## Milestone 46D — Add one installed command and authoritative defaults
 
 Milestone 46D begins only after Milestone 46C.9 validates all chart families

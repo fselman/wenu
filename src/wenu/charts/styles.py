@@ -600,8 +600,7 @@ class PublicationStyle:
                 "prepare": clip,
                 "render": {
                     "style": {
-                        "edgecolor": self.boundary_color,
-                        "facecolor": "none",
+                        "color": self.boundary_color,
                         "linewidth": self.boundary_linewidth,
                         "linestyle": self.boundary_linestyle,
                         "alpha": self.boundary_alpha,

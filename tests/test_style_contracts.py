@@ -11,7 +11,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from wenu import ChartStyle, PublicationStyle
+from wenu import ChartStyle, MatplotlibRenderer, PublicationStyle
 from wenu.charts.style_components import (
     CanvasStyle,
     DeepSkyStyle,
@@ -20,6 +20,7 @@ from wenu.charts.style_components import (
     MaskStyle,
     StellarStyle,
 )
+from wenu.geometry.projected import ProjectedCurve
 
 
 def stellar_metadata():
@@ -99,7 +100,7 @@ def test_default_star_rendering_is_output_equivalent():
     assert np.array_equal(old["style"]["s"], new["style"]["s"])
 
 
-def test_constellation_boundaries_are_strokes_without_polygon_fill():
+def test_constellation_boundaries_use_matplotlib_line_style():
     boundary_layer = object()
     sky = SimpleNamespace(
         stars=None,
@@ -116,15 +117,28 @@ def test_constellation_boundaries_are_strokes_without_polygon_fill():
         points=None,
         layers=(),
     )
-    style = PublicationStyle(boundary_color="#123456")
+    style = PublicationStyle(
+        boundary_color="#123456",
+        boundary_linestyle="--",
+    )
 
     boundary_style = style.layer_options(sky)[boundary_layer][
         "render"
     ]["style"]
 
-    assert boundary_style["edgecolor"] == "#123456"
-    assert boundary_style["facecolor"] == "none"
-    assert "color" not in boundary_style
+    assert boundary_style["color"] == "#123456"
+    assert boundary_style["linestyle"] == "--"
+    assert "edgecolor" not in boundary_style
+    assert "facecolor" not in boundary_style
+
+    figure, axes = plt.subplots()
+    artist = MatplotlibRenderer(axes).draw(
+        ProjectedCurve(x=[0.0, 1.0], y=[0.0, 1.0]),
+        **style.layer_options(sky)[boundary_layer]["render"],
+    )[0]
+    assert artist.get_color() == "#123456"
+    assert artist.get_linestyle() == "--"
+    plt.close(figure)
 
 
 def test_chart_style_implements_the_existing_style_protocol():

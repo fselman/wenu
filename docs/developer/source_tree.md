@@ -303,6 +303,14 @@ pytest -q
 The full suite remains the release authority. Atlas print remains the visual
 reference baseline.
 
+`tools/benchmark_reusable_sphere.py` is a diagnostic closure harness rather
+than a runtime dependency or test threshold. It loads one observer-independent
+canonical sphere, prepares and exports every chart family for three
+observer/instant identities, and writes JSON phase timings and cache-entry
+counts beside deterministic atlas-print products. Profiler categories are
+reported independently and may overlap; they diagnose ownership costs rather
+than claiming an additive wall-time decomposition.
+
 Canonical integration tests use a session-scoped build registry to reuse an
 identical example sphere and chart across read-only contracts. Distinct
 observer, catalogue-depth, constellation-selection, target, mask, or framing
