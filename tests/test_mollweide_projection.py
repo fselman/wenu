@@ -212,6 +212,11 @@ def test_seam_crossing_polygon_becomes_valid_closed_pieces():
     np.testing.assert_array_equal(
         projected.metadata["is_hole"], [False, False]
     )
+    assert len(projected.metadata["projection_source_latitudes"]) == 2
+    for latitude, polygon in zip(
+        projected.metadata["projection_source_latitudes"], projected
+    ):
+        assert len(latitude) == len(polygon)
 
 
 def test_unknown_geometry_and_nonscalar_point_are_rejected():

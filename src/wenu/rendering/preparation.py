@@ -98,7 +98,9 @@ def radial_label_offset(distance):
 def clip_to_latitude(spherical, projected, *, minimum=0.0):
     """Clip corresponding projected geometry by spherical latitude."""
     minimum = float(minimum)
-    if minimum <= -90.0:
+    if minimum <= -90.0 and not isinstance(
+        spherical, SphericalPolygons
+    ):
         return projected
     if isinstance(spherical, SphericalPoints):
         return _clip_points(spherical, projected, minimum)

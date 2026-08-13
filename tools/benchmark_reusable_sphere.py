@@ -20,8 +20,22 @@ from wenu import (
 
 VIEW_REQUESTS = (
     ("planisphere", {"family": "planisphere"}),
-    ("regional-single", {"family": "regional", "constellations": ("Cru",)}),
-    ("regional-group", {"family": "regional", "group": "galactic-center"}),
+    (
+        "regional-single",
+        {
+            "family": "regional",
+            "constellations": ("Cru",),
+            "mask": True,
+        },
+    ),
+    (
+        "regional-group",
+        {
+            "family": "regional",
+            "group": "galactic-center",
+            "mask": True,
+        },
+    ),
     (
         "circumpolar",
         {
@@ -68,6 +82,10 @@ def _timed(name, operation):
     started = perf_counter()
     value = operation()
     return value, TimedOperation(name, perf_counter() - started)
+
+
+def _progress(index, total, name):
+    print(f"[{index}/{total}] {name}", flush=True)
 
 
 def _profile_totals(profile):
@@ -120,6 +138,9 @@ def benchmark(destination):
     """Run and return the reusable-sphere benchmark report."""
     destination.mkdir(parents=True, exist_ok=True)
     operations = []
+    total = 1 + 2 * len(VIEW_REQUESTS) * 3
+    step = 1
+    _progress(step, total, "catalogue_loading")
     sky, timing = _timed("catalogue_loading", generate_celestial_sphere)
     operations.append(timing)
     observers = (
@@ -133,8 +154,11 @@ def benchmark(destination):
         views = []
         for observer_index, observer in enumerate(observers):
             for name, arguments in VIEW_REQUESTS:
+                step += 1
+                operation_name = f"view.{observer_index}.{name}"
+                _progress(step, total, operation_name)
                 view, timing = _timed(
-                    f"view.{observer_index}.{name}",
+                    operation_name,
                     lambda arguments=arguments, observer=observer: (
                         get_chart_view(sky, observer, **arguments)
                     ),
@@ -143,8 +167,11 @@ def benchmark(destination):
                 operations.append(timing)
         for observer_index, name, view in views:
             output = destination / f"{observer_index}-{name}.png"
+            step += 1
+            operation_name = f"draw_export.{observer_index}.{name}"
+            _progress(step, total, operation_name)
             _result, timing = _timed(
-                f"draw_export.{observer_index}.{name}",
+                operation_name,
                 lambda view=view, output=output: draw_chart_view(
                     view, output, style="atlas", mode="print"
                 ),

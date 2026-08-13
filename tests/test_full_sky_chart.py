@@ -9,10 +9,15 @@ import numpy as np
 import pytest
 
 from wenu import FullSkyChart
-from wenu.geometry.projected import ProjectedCurve
+from wenu.geometry.projected import (
+    ProjectedCurve,
+    ProjectedCurves,
+    ProjectedPolygon,
+    ProjectedPolygons,
+)
 from wenu.rendering import MatplotlibRenderer
 from wenu.rendering.preparation import clip_to_latitude
-from wenu.geometry.spherical import SphericalCurves
+from wenu.geometry.spherical import SphericalCurves, SphericalPolygons
 
 
 def test_default_chart_reproduces_zenith_centered_horizon():
@@ -88,6 +93,25 @@ def test_complete_sphere_latitude_floor_preserves_split_curves():
     assert clip_to_latitude(
         spherical, projected, minimum=-90.0
     ) is projected
+
+
+def test_complete_sphere_polygon_layer_remains_boundary_only():
+    spherical = SphericalPolygons(
+        lon_deg=([0.0, 1.0, 1.0, 0.0],),
+        lat_deg=([0.0, 0.0, 1.0, 1.0],),
+    )
+    projected = ProjectedPolygons(items=[ProjectedPolygon(
+        x=[0.0, 1.0, 1.0, 0.0],
+        y=[0.0, 0.0, 1.0, 1.0],
+    )])
+
+    prepared = clip_to_latitude(
+        spherical, projected, minimum=-90.0
+    )
+
+    assert isinstance(prepared, ProjectedCurves)
+    assert len(prepared) == 1
+    assert prepared[0].closed is False
 
 
 def test_renderer_applies_projected_boundary_to_all_artists():

@@ -167,6 +167,7 @@ class MollweideProjection:
     def project_polygons(self, polygons):
         items = []
         source_indices = []
+        source_latitudes = []
         for index, (longitude, latitude) in enumerate(
             zip(polygons.lon_deg, polygons.lat_deg)
         ):
@@ -179,9 +180,14 @@ class MollweideProjection:
                 )
                 items.append(ProjectedPolygon(x=x, y=y, name=name))
                 source_indices.append(index)
+                source_latitudes.append(ring_latitude)
+        metadata = _expanded_metadata(polygons, source_indices)
+        metadata["projection_source_latitudes"] = tuple(
+            source_latitudes
+        )
         return ProjectedPolygons(
             items=items,
-            metadata=_expanded_metadata(polygons, source_indices),
+            metadata=metadata,
         )
 
 
