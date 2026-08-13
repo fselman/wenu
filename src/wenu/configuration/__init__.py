@@ -14,14 +14,24 @@ from .geometry_detail_translation import (
     GeometryDetailDefaults,
     translate_geometry_detail_defaults,
 )
+from .furniture_product_export_translation import (
+    FooterLayoutDefaults,
+    FurnitureProductExportDefaults,
+    ProductDefaults,
+    translate_furniture_product_export_defaults,
+)
 
 __all__ = [
     "ConfigurationError",
+    "FooterLayoutDefaults",
+    "FurnitureProductExportDefaults",
     "GeometryDetailDefaults",
     "load_packaged_defaults",
     "parse_configuration",
+    "ProductDefaults",
     "StyleModeDefaults",
     "translate_style_mode_defaults",
     "translate_geometry_detail_defaults",
+    "translate_furniture_product_export_defaults",
     "validate_configuration",
 ]

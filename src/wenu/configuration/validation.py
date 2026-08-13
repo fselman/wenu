@@ -19,6 +19,19 @@ SCHEMA_VERSION = 1
 LINE_STYLES = frozenset(
     {"solid", "dashed", "dotted", "dash_dot", "none"}
 )
+LEGEND_LOCATIONS = frozenset(
+    {
+        "none",
+        "upper left",
+        "upper right",
+        "lower left",
+        "lower right",
+        "upper left outside",
+        "upper right outside",
+        "lower left outside",
+        "lower right outside",
+    }
+)
 
 
 class ConfigurationError(ValueError):
@@ -479,11 +492,28 @@ def _validate_semantics(configuration: Mapping[str, Any]) -> None:
             )
 
     magnitude_legend = configuration["furniture"]["magnitude_legend"]
+    if magnitude_legend["location"] not in LEGEND_LOCATIONS:
+        _error(
+            "furniture.magnitude_legend.location",
+            f"unsupported value {magnitude_legend['location']!r}",
+        )
     if magnitude_legend["enabled"] and magnitude_legend["location"] == "none":
         _error(
             "furniture.magnitude_legend.location",
             "must name a location when the legend is enabled",
         )
+
+    legends = configuration["furniture"]["legends"]
+    for family in (
+        "regional", "planisphere", "all_sky", "circumpolar", "binocular"
+    ):
+        for name in ("objects_location", "stars_location"):
+            location = legends[family][name]
+            if location not in LEGEND_LOCATIONS:
+                _error(
+                    f"furniture.legends.{family}.{name}",
+                    f"unsupported value {location!r}",
+                )
 
     references = configuration["grids_references"]["references"]
     if references["state"] == "labeled":

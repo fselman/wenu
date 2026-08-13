@@ -56,6 +56,15 @@ height remain unrepresentable in the current view-default contract and fail
 with a complete path instead of being ignored. Active request resolution and
 composition remain deliberately unconnected.
 
+Milestone 46D.3E translates reference and pole annotations, footer and
+context options, family legend plans, magnitude-legend appearance, default
+product selection, and export options into their existing immutable owners.
+Footer layout coordinates, product language/title/extension, and export
+padding have no aggregate behavioral owner yet, so frozen translation
+metadata preserves them without inventing runtime wiring. Exact constructor
+parity is characterized, and request resolution, composition, rendering, path
+generation, and export remain unchanged.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

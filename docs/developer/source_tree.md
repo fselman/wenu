@@ -323,6 +323,13 @@ geometry/detail owners, rejects values the current contracts cannot represent,
 and does not connect request resolution, composition, catalogue selection, or
 rendering to configuration.
 
+`src/wenu/configuration/furniture_product_export_translation.py` is the
+Milestone 46D.3E translation seam for immutable furniture, family legend,
+magnitude-legend, product, and export contracts. Values that do not yet have
+aggregate behavioral fields remain frozen translation metadata. The module
+contains no furniture drawing, path creation, rendering, saving, or runtime
+registry wiring.
+
 Permanent test modules are named for current responsibilities rather than the
 milestones that introduced them. Scientific geometry and catalogue contracts
 remain ordinary unit tests. Cross-component canonical chart construction is

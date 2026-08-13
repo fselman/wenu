@@ -733,8 +733,14 @@ objects with exact current parity. `translate_geometry_detail_defaults()`
 does the same for family view defaults, neutral/content/cartoon/adaptive
 detail, canonical family ceilings, and binocular fixed detail and stellar
 sizing. Both are parity seams: composition and request resolution continue to
-use their established Python constructors until the remaining Milestone 46D.3
-work is complete.
+sizing. `translate_furniture_product_export_defaults()` completes the same
+translation boundary for references, poles, footer/context options, family
+legend plans, magnitude-legend appearance, product selection, and export
+options. Footer layout, product metadata, and export padding are retained as
+frozen translation metadata until their existing behavioral owners accept
+them. These are parity seams: composition, rendering, path generation, and
+export continue to use their established Python defaults until Milestone
+46D.4 connects each responsibility incrementally.
 
 ## 9. Package imports
 

@@ -742,7 +742,7 @@ overlay, command, or runtime behavior; those remain in Milestones 46D.3–46D.6.
 - prove the packaged document alone reproduces the established resolved
   request values and canonical appearance.
 
-**Status:** In progress. Milestone 46D.3A adds the complete, versioned,
+**Final status:** Implemented. Milestone 46D.3A adds the complete, versioned,
 commented `wenu.configuration/defaults.toml` resource and characterizes its
 deterministic order, schema coverage, line vocabulary, and audited baseline
 values. Milestone 46D.3B adds resource-based loading and strict complete-
@@ -755,8 +755,13 @@ parity. Milestone 46D.3D translates family geometry, neutral/content/cartoon/
 adaptive detail, canonical family ceilings, and binocular fixed detail and
 stellar sizing into their existing immutable contracts, again with exact
 parity. Request resolution and composition are deliberately not rewired.
-Remaining furniture, product, and export translation must close before this
-milestone can claim runtime authority or visual closure.
+Milestone 46D.3E translates furniture, family legends, magnitude-legend
+appearance, product selection, and export options into their existing
+immutable owners; public values without aggregate behavioral fields remain
+frozen translation metadata. Exact packaged-default parity is now established
+without changing request resolution, composition, rendering, path generation,
+or export. Incremental runtime authority and visual closure belong to
+Milestone 46D.4.
 
 ### Milestone 46D.4 — Migrate defaults by responsibility
 
