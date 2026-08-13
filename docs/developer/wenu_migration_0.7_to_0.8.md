@@ -619,6 +619,16 @@ overrides. Focused and full suites and the fixed visual matrix pass.
 - retain distinct maximal spheres only for genuinely different source or
   load-profile requests.
 
+**Final status:** Implemented. A family-spanning integration contract prepares
+planisphere, regional-single, regional-group, circumpolar, binocular, and
+Galactic all-sky views from one actual observer-independent canonical sphere.
+Forward and reverse requests preserve identical subjects, masks, frames, and
+render-local selections without changing canonical layers. Additional La
+Ligua instants and Papudo use separately keyed observed realizations, while
+returning to an earlier compatible state reuses its immutable stellar AltAz
+arrays. Existing family builder, cleanup, source, and load-profile contracts
+remain authoritative.
+
 ## Milestone 46C.10 — Benchmark and close reusable observed-sky work
 
 - report catalogue-loading, AltAz transformation, selection, projection,

@@ -358,3 +358,13 @@ line identities for figure drawing but pass the separate official IAU region
 identities to `RegionalChart.from_constellations()` for automatic centering
 and radius. The resulting padded field contains every sampled boundary vertex;
 explicit width and height requests remain authoritative.
+
+Milestone 46C.9 validates every canonical chart family against one actual
+observer-independent maximal sphere. Planisphere, regional-single,
+regional-group, circumpolar, binocular, and Galactic all-sky views retain
+their exact resolved subjects, masks, frames, and render-local catalogue
+selections independently of request order. The same loaded sphere serves
+additional La Ligua instants and Papudo without acquiring an observer.
+Observer location, instant, ephemeris, data directory, catalogue identity,
+and source revision remain part of observed-cache identity; returning to an
+earlier compatible state reuses the immutable stellar AltAz arrays.
