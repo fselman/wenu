@@ -598,6 +598,11 @@ Milestone 46C.8Q.9.1c moves automatic request framing to the complete official
 IAU boundary geometry while retaining separate constellation-line identities
 and explicit field overrides. The visual matrix must be rerun before closure.
 
+**Final status:** Implemented and visually approved through Milestone
+46C.8Q.9.2. Automatic regional framing now uses complete sampled official IAU
+regions while retaining separate figure identities and explicit field
+overrides. Focused and full suites and the fixed visual matrix pass.
+
 ## Milestone 46C.9 — Validate all chart families from one maximal sphere
 
 - build one observer-independent canonical maximal sphere;
@@ -624,6 +629,92 @@ and explicit field overrides. The visual matrix must be rerun before closure.
 - visually approve the mandatory atlas-print regression charts;
 - update current architecture, implementation reference, source tree, and test
   audit to record the implemented result.
+
+## Milestone 46D — Add one installed command and editable defaults
+
+Milestone 46D begins only after Milestone 46C.9 validates all chart families
+from one reusable observer-independent maximal sphere. It must preserve the
+same request, view, drawing, `CelestialSphere.draw_chart()`, and single-export
+pipeline.
+
+### Milestone 46D.1 — Audit and specify the configuration contract
+
+- inventory every effective default in the six canonical examples, shared
+  argument adapters, view defaults, chart families, styles, output modes,
+  detail policies, furniture, and export workflow;
+- classify each value by observer, subject, geometry, detail, style, mode,
+  grid/reference, furniture, or export ownership;
+- distinguish public stable defaults from derived values and implementation
+  details that must not be serialized;
+- specify a versioned TOML schema, contextual validation errors, and exact
+  built-in/configuration/CLI precedence before adding runtime loading.
+
+### Milestone 46D.2 — Centralize typed built-in declarations
+
+- express public built-in defaults through one readable typed registry while
+  preserving their existing runtime owners;
+- retain derived geometry and appearance computations in chart, style, mode,
+  detail, and furniture code rather than flattening them into data;
+- prove that using no external configuration produces byte-compatible request
+  values and visually unchanged canonical products.
+
+### Milestone 46D.3 — Load and validate TOML overlays
+
+- load an optional user TOML file with sections for observer, subjects,
+  family geometry, detail, styles, modes, grids and references, furniture,
+  products, and export;
+- translate validated values into the existing immutable typed contracts;
+- reject unknown keys, wrong types, unsupported values, and contradictory
+  combinations with the complete configuration path in each diagnostic;
+- apply deterministic precedence:
+  `built-ins < TOML configuration < explicit command-line arguments`;
+- prohibit executable expressions, Python class names, renderer operations,
+  catalogue joins, and arbitrary imports.
+
+### Milestone 46D.4 — Add the installed `wenu-chart` command
+
+- add one installed command with `all-sky`, `planisphere`, `regional`,
+  `circumpolar`, and `binocular` subcommands;
+- make `regional` accept one or several constellations through the same
+  constellation-subject parser, without separate single/group execution;
+- retain shared observer, product, content, horizon, grid, furniture, style,
+  mode, output, and configuration arguments;
+- delegate to `generate_celestial_sphere()`, `get_chart_view()`, and the shared
+  drawing adapter without importing or executing canonical example scripts;
+- retain the six examples as short reproducible declarations and regression
+  authorities.
+
+### Milestone 46D.5 — Export a complete editable template
+
+- add `wenu-chart defaults --write PATH` to write a complete, versioned,
+  commented TOML template containing effective public built-in values;
+- make the generated order and formatting deterministic;
+- document how to create named publication, presentation, outreach, location,
+  and observing profiles without editing Wenu source;
+- define whether a future profile-inheritance feature is justified only after
+  ordinary single-file overlays are proven sufficient or insufficient.
+
+### Milestone 46D.6 — Prove command and example parity
+
+- generate every canonical family through both its example and the unified
+  command with equivalent effective options;
+- prove matching resolved observer, subject, geometry, detail, appearance,
+  furniture, and export requests;
+- test one- and multi-constellation regional subjects, packaged groups,
+  explicit fields, targets, masks, horizon roles, grids, styles, modes,
+  legends, and output paths;
+- prove that sequential commands and configurations do not leak mutable state
+  into later products or a reused maximal sphere.
+
+### Milestone 46D.7 — Document and close visually
+
+- document the installed command, schema, precedence, complete template, and
+  Python equivalents in the user guide and implementation reference;
+- run fast, integration, visual, and full suites;
+- compare the mandatory atlas-print and cartoon-presentation regression
+  matrix with and without configuration files;
+- update current architecture, source tree, migration status, and test audit;
+- accept no unexplained change to the atlas-print golden baseline.
 
 ## Later dynamic-sky milestones
 

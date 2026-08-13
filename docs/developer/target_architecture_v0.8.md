@@ -207,6 +207,56 @@ and lower-level APIs remain available.  Shared command-line adaptation must
 use the same ordinary interface and must not restore example-owned
 orchestration.
 
+## Unified command and editable defaults
+
+Wenu will provide one installed `wenu-chart` command over the ordinary request
+interface. Chart families are subcommands rather than independent execution
+pipelines:
+
+```text
+wenu-chart all-sky ...
+wenu-chart planisphere ...
+wenu-chart regional ...
+wenu-chart circumpolar ...
+wenu-chart binocular ...
+```
+
+The `regional` subcommand accepts one or several IAU constellations through the
+same subject parser; a single constellation is not a separate chart family.
+The six canonical examples remain short reproducible declarations and visual
+regression authorities. The installed command delegates to their shared
+request, view, drawing, and export boundaries rather than dispatching through
+the example scripts or reproducing their orchestration.
+
+Editable defaults use a human-readable TOML document rather than executable
+Python or implementation-specific serialized objects. TOML permits comments
+and named sections while remaining deterministic. Its sections preserve the
+existing responsibility boundaries for observer, subject, chart-family
+geometry, astronomical detail, style, output mode, grids and references,
+legends and furniture, and export. A configuration loader validates those
+sections and translates them into the existing typed request, detail, style,
+furniture, and product values; it does not acquire their behavior.
+
+Precedence is explicit and stable:
+
+```text
+built-in Wenu defaults < selected TOML configuration < explicit CLI arguments
+```
+
+The installed command can write a complete documented template containing
+the effective built-in values. Users may copy and edit that file without
+modifying package source. Configuration files contain no class names,
+expressions, renderer calls, catalogue joins, or arbitrary code. Invalid
+families, keys, types, values, and combinations produce contextual errors
+rather than being ignored silently.
+
+Centralizing the readable declaration of defaults does not centralize their
+runtime ownership. Chart types still own geometry, styles own appearance,
+output modes own medium adaptation, detail policies own astronomical density,
+and furniture owns legends and contextual annotation. Atlas print remains the
+golden visual baseline, and loading no configuration file must reproduce the
+current canonical behavior exactly.
+
 ## Reproducible image-frame sequences
 
 Wenu may later produce ordered sequences of ordinary static chart images for
