@@ -168,6 +168,19 @@ def test_configuration_default_audit_covers_every_public_responsibility():
     assert "Milestone 46D.1A" in roadmap
     assert "Milestone 46D.1B" in roadmap
 
+    for phrase in (
+        "Exact ordered value inventory",
+        "Atlas-print semantic style",
+        "Mode palettes and transformations",
+        "Furniture, legends, grids, and implementation constants",
+        "minimum area `1.0`, maximum area `40.0`",
+        "style `dotted`",
+        "style `solid`",
+        "style `dashed`",
+    ):
+        assert phrase in audit
+    assert "**Final status:** Implemented" in roadmap
+
 
 def test_documented_python_is_syntactically_valid():
     for document in (

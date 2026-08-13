@@ -698,12 +698,13 @@ it adds no configuration loader, command, or runtime behavior.
 - record every output-mode transformation and detect duplicated or conflicting
   literals before moving any value.
 
-**Status:** In progress. Milestone 46D.1A records the exhaustive responsibility
-map, classification boundary, appearance and source checklists, output-mode
-transformations, and duplication/conflict register in
-`configuration_default_audit.md`. Milestone 46D.1B will record the exact,
-ordered values for every identified public default before schema design or
-runtime implementation begins.
+**Final status:** Implemented. Milestone 46D.1A records the exhaustive
+responsibility map, classification boundary, appearance and source checklists,
+output-mode transformations, and duplication/conflict register.
+Milestone 46D.1B adds the exact ordered inventory for observer, subject,
+family, product, export, detail, styles, modes, furniture, legends, grids, and
+implementation constants. Schema design may now use that single audit without
+introducing runtime configuration or a second default registry.
 
 ### Milestone 46D.2 — Specify the versioned TOML schema
 
