@@ -2,6 +2,15 @@
 
 from importlib.resources import files
 
+import pytest
+
+from wenu.configuration import (
+    ConfigurationError,
+    load_packaged_defaults,
+    parse_configuration,
+    validate_configuration,
+)
+
 try:
     import tomllib
 except ModuleNotFoundError:  # pragma: no cover - Python 3.10
@@ -149,3 +158,92 @@ def test_packaged_defaults_preserve_audited_baseline_values():
     assert cartoon["constellation_figures"]["line_width"] == 1.15
     assert cartoon["horizon"]["line_style"] == "dashed"
     assert defaults["products"]["default"]["extension"] == ".png"
+
+
+def test_packaged_defaults_pass_strict_validation_without_shared_state():
+    first = load_packaged_defaults()
+    second = load_packaged_defaults()
+    assert first == second == _load()
+    assert first is not second
+    first["observer"]["location"] = "Changed"
+    assert second["observer"]["location"] == "La Ligua"
+
+
+@pytest.mark.parametrize(
+    ("mutation", "diagnostic"),
+    (
+        (
+            lambda value: value.update(schema_version=2),
+            "schema_version: unsupported value 2",
+        ),
+        (
+            lambda value: value["styles"]["atlas"]["horizon"].update(
+                line_style="dashdot"
+            ),
+            "styles.atlas.horizon.line_style: unsupported value",
+        ),
+        (
+            lambda value: value["styles"]["atlas"]["horizon"].update(
+                color="definitely-not-a-color"
+            ),
+            "styles.atlas.horizon.color: invalid color",
+        ),
+        (
+            lambda value: value["styles"]["atlas"]["mask"].update(
+                opacity=1.5
+            ),
+            "styles.atlas.mask.opacity: must be in the interval [0, 1]",
+        ),
+        (
+            lambda value: value["modes"]["print"].update(dpi=True),
+            "modes.print.dpi: expected an integer",
+        ),
+        (
+            lambda value: value["families"]["regional_single"].update(
+                width=12.0
+            ),
+            "families.regional_single.height: width and height must both",
+        ),
+        (
+            lambda value: value["families"]["circumpolar"].update(
+                limiting_declination=69.75
+            ),
+            "families.circumpolar.limiting_declination: must be negative",
+        ),
+        (
+            lambda value: value["detail"]["binocular_stellar_sizing"].update(
+                maximum_area=0.5
+            ),
+            "detail.binocular_stellar_sizing.maximum_area: must be at least",
+        ),
+    ),
+)
+def test_strict_validation_reports_complete_paths(mutation, diagnostic):
+    value = _load()
+    mutation(value)
+    with pytest.raises(ConfigurationError, match=None) as error:
+        validate_configuration(value)
+    assert diagnostic in str(error.value)
+
+
+def test_strict_validation_rejects_unknown_and_missing_keys():
+    unknown = _load()
+    unknown["styles"]["atlas"]["horizon"]["renderer_operation"] = "plot"
+    with pytest.raises(ConfigurationError) as error:
+        validate_configuration(unknown)
+    assert (
+        "styles.atlas.horizon.renderer_operation: unknown configuration key"
+        in str(error.value)
+    )
+
+    missing = _load()
+    del missing["products"]["default"]["style"]
+    with pytest.raises(ConfigurationError) as error:
+        validate_configuration(missing)
+    assert "products.default.style: missing required key" in str(error.value)
+
+
+def test_toml_syntax_diagnostic_names_its_source():
+    with pytest.raises(ConfigurationError) as error:
+        parse_configuration("schema_version = [", source="broken.toml")
+    assert "broken.toml: invalid TOML" in str(error.value)

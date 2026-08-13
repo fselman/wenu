@@ -745,9 +745,12 @@ overlay, command, or runtime behavior; those remain in Milestones 46D.3–46D.6.
 **Status:** In progress. Milestone 46D.3A adds the complete, versioned,
 commented `wenu.configuration/defaults.toml` resource and characterizes its
 deterministic order, schema coverage, line vocabulary, and audited baseline
-values. It is deliberately not connected to runtime owners yet. Subsequent
-46D.3 slices add strict validation and typed translation before this milestone
-can claim runtime authority or visual parity.
+values. Milestone 46D.3B adds resource-based loading and strict complete-
+document validation for structure and ordering, types, finite values, colors,
+ranges, vocabularies, schema version, and contradictory combinations. Every
+failure names its complete configuration path. Neither slice is connected to
+chart runtime owners yet; typed translation and parity remain before this
+milestone can claim runtime authority or visual closure.
 
 ### Milestone 46D.4 — Migrate defaults by responsibility
 

@@ -33,6 +33,14 @@ independent line fields, and audited baseline values. Existing Python owners
 remain the runtime authority until strict validation and typed translation are
 implemented in later 46D.3 slices, so this step changes no chart behavior.
 
+Milestone 46D.3B loads that resource without current-directory dependence and
+strictly validates complete version-1 documents before any catalogue, chart,
+or renderer work. Validation rejects unknown or missing paths, nondeterministic
+ordering, wrong types, non-finite numbers, invalid colors and ranges,
+unsupported vocabularies and versions, and contradictory combinations with a
+complete configuration path. Typed chart owners still use their existing
+Python defaults; translation remains the next 46D.3 responsibility.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

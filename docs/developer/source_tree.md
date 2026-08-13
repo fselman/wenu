@@ -303,6 +303,13 @@ it has no renderer, catalogue, geometry, or execution dependency. Tests load
 it through `importlib.resources` and TOML parsing. Runtime contracts do not
 consume it until later 46D.3 validation and translation slices are complete.
 
+`src/wenu/configuration/validation.py` is the Milestone 46D.3B parser and
+strict complete-document validation boundary. It reads the package resource,
+uses its values as the sole default authority, and supplies only structural
+and semantic validation behavior in Python. It has no catalogue, observer,
+geometry, chart, renderer, furniture-drawing, or export dependency and does
+not yet translate values into those runtime owners.
+
 Permanent test modules are named for current responsibilities rather than the
 milestones that introduced them. Scientific geometry and catalogue contracts
 remain ordinary unit tests. Cross-component canonical chart construction is

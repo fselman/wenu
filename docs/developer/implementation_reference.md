@@ -721,6 +721,16 @@ result = generate_chart_request(
 print(result.outputs)
 ```
 
+## 8.1 Packaged configuration validation
+
+`wenu.configuration.load_packaged_defaults()` reads and strictly validates a
+fresh copy of the installed version-1 `defaults.toml`. The related
+`parse_configuration()` and `validate_configuration()` functions validate
+complete documents and mappings, and raise `ConfigurationError` with the full
+configuration path on failure. These functions do not yet translate values
+into chart runtime contracts; the existing typed Python defaults remain active
+until the remaining Milestone 46D.3 work is complete.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:
