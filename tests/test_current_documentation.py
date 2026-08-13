@@ -12,6 +12,7 @@ IMPLEMENTED = DEVELOPER / "target_architecture_v0.7.md"
 TARGET = DEVELOPER / "target_architecture_v0.8.md"
 ROADMAP = DEVELOPER / "wenu_migration_0.7_to_0.8.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
+CONFIGURATION_AUDIT = DEVELOPER / "configuration_default_audit.md"
 PUBLIC_DOCUMENTS = (
     ROOT / "README.md",
     ROOT / "README.es.md",
@@ -137,6 +138,35 @@ def test_horizon_roadmap_separates_boundary_reference_and_mask_roles():
         "mask-opening geometry preparation",
     ):
         assert phrase in roadmap
+
+
+def test_configuration_default_audit_covers_every_public_responsibility():
+    audit = read(CONFIGURATION_AUDIT)
+    roadmap = read(ROADMAP)
+
+    for phrase in (
+        "public default",
+        "derived value",
+        "invariant",
+        "implementation detail",
+        "observer",
+        "subject",
+        "family geometry",
+        "detail",
+        "style",
+        "output mode",
+        "grids/references",
+        "furniture",
+        "product",
+        "export",
+        "line_width",
+        "line_style",
+        "Duplication and conflict register",
+        "Output-mode transformation inventory",
+    ):
+        assert phrase in audit
+    assert "Milestone 46D.1A" in roadmap
+    assert "Milestone 46D.1B" in roadmap
 
 
 def test_documented_python_is_syntactically_valid():

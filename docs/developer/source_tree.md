@@ -284,6 +284,12 @@ packaged resource; `tests/test_user_guide.py` owns its guide contract.
 
 ## Test-suite responsibility and tiers
 
+`docs/developer/configuration_default_audit.md` is the Milestone 46D authority
+map for public defaults. It separates public values from derived values,
+invariants, and implementation details; inventories every responsibility and
+appearance source; and records duplications that must be removed as TOML
+becomes authoritative. It is an audit input, not a runtime registry.
+
 Permanent test modules are named for current responsibilities rather than the
 milestones that introduced them. Scientific geometry and catalogue contracts
 remain ordinary unit tests. Cross-component canonical chart construction is
