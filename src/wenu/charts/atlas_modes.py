@@ -54,7 +54,13 @@ def _scales(mode, name):
     return defaults.font_scale, defaults.line_scale, defaults.symbol_scale
 
 
-def atlas_chart_style(mode="print", *, base=None, mode_name=None):
+def atlas_chart_style(
+    mode="print",
+    *,
+    base=None,
+    mode_name=None,
+    presentation_palette=None,
+):
     """Return an immutable atlas style adapted to one output medium.
 
     Print deliberately preserves the established atlas preset. Presentation
@@ -69,7 +75,15 @@ def atlas_chart_style(mode="print", *, base=None, mode_name=None):
         return style
 
     font_scale, line_scale, symbol_scale = _scales(mode, name)
-    palette = ATLAS_PRESENTATION_PALETTE
+    palette = (
+        ATLAS_PRESENTATION_PALETTE
+        if presentation_palette is None
+        else presentation_palette
+    )
+    if not isinstance(palette, AtlasPresentationPalette):
+        raise TypeError(
+            "presentation_palette must be an AtlasPresentationPalette."
+        )
     canvas = replace(
         style.canvas,
         sky_color=palette.sky,

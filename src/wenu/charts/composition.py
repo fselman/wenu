@@ -33,6 +33,14 @@ PRINT_MODE = "print"
 PRESENTATION_MODE = "presentation"
 
 
+def _style_mode_defaults():
+    from wenu.configuration.style_mode_translation import (
+        packaged_style_mode_defaults,
+    )
+
+    return packaged_style_mode_defaults()
+
+
 def _resolve_style(style):
     """Return the stable style identifier and concrete style value."""
     if isinstance(style, str):
@@ -42,11 +50,9 @@ def _resolve_style(style):
                 f"Unknown chart style {style!r}. Use 'atlas', 'cartoon', "
                 "or pass a chart-style object."
             )
-        from .presets import AtlasChartStyle, CartoonChartStyle
-
         if name == ATLAS_STYLE:
-            return ATLAS_STYLE, AtlasChartStyle()
-        return CARTOON_STYLE, CartoonChartStyle()
+            return ATLAS_STYLE, _style_mode_defaults().atlas
+        return CARTOON_STYLE, _style_mode_defaults().cartoon
 
     from .presets import AtlasChartStyle, CartoonChartStyle
 
@@ -62,15 +68,16 @@ def _resolve_style(style):
 def _resolve_mode(mode):
     """Return the stable mode identifier and concrete mode policy."""
     if mode is None:
-        return PRINT_MODE, PrintMode()
+        return PRINT_MODE, _style_mode_defaults().print_mode
     if isinstance(mode, str):
         name = mode.strip().lower()
         if name in {PRINT_MODE, "paper"}:
-            return PRINT_MODE, PrintMode()
+            return PRINT_MODE, _style_mode_defaults().print_mode
         if name == PRESENTATION_MODE:
-            from .modes import PresentationMode
-
-            return PRESENTATION_MODE, PresentationMode()
+            return (
+                PRESENTATION_MODE,
+                _style_mode_defaults().presentation_mode,
+            )
         raise ValueError(
             f"Unknown chart mode {mode!r}. Use 'print', 'paper', or "
             "'presentation'."
@@ -146,6 +153,9 @@ def compose_chart(
             resolved_mode,
             base=resolved_style,
             mode_name=mode_name,
+            presentation_palette=(
+                _style_mode_defaults().atlas_presentation_palette
+            ),
         )
     elif style_name == CARTOON_STYLE and mode_name in {
         PRINT_MODE,
@@ -165,6 +175,20 @@ def compose_chart(
                 resolved_mode,
                 base=resolved_style,
                 mode_name=mode_name,
+                palette=(
+                    _style_mode_defaults().cartoon_presentation_palette
+                    if mode_name == PRESENTATION_MODE
+                    else _style_mode_defaults().cartoon_print_palette
+                ),
+                constellation_label_offset=(
+                    _style_mode_defaults().cartoon_label_offset
+                ),
+                constellation_label_clearance=(
+                    _style_mode_defaults().cartoon_label_clearance
+                ),
+                constellation_label_halo_opacity=(
+                    _style_mode_defaults().cartoon_label_halo_opacity
+                ),
             )
     if (
         getattr(chart, "chart_type", None) == "all_sky"

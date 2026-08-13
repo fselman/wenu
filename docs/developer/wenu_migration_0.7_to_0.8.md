@@ -775,6 +775,13 @@ Milestone 46D.4.
 - add focused characterization, schema, and validation tests at every step;
 - accept no unexplained change to the atlas-print golden baseline.
 
+**Status:** In progress. Milestone 46D.4A connects named atlas/cartoon and
+print/presentation composition to one cached packaged style/mode translation.
+The existing adapters receive the packaged palettes and cartoon label
+transform values explicitly; custom style and mode objects retain final
+precedence. Geometry, detail, furniture, products, and export are not rewired
+in this slice.
+
 ### Milestone 46D.5 — Load and validate user TOML overlays
 
 - load an optional partial user TOML document over the packaged authority;

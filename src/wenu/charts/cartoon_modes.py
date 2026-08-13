@@ -149,19 +149,34 @@ def cartoon_chart_style(
     constellation_label_positions=None,
     constellation_label_offsets=None,
     constellation_label_clearance=(0.24, 0.20),
+    palette=None,
+    constellation_label_offset=None,
+    constellation_label_halo_opacity=None,
 ):
     """Return a complete cartoon style for print or presentation."""
     name = _mode_name(mode if mode_name is None else mode_name)
-    palette = (
-        CARTOON_PRESENTATION_PALETTE
-        if name == "presentation"
-        else CARTOON_PRINT_PALETTE
-    )
+    if palette is None:
+        palette = (
+            CARTOON_PRESENTATION_PALETTE
+            if name == "presentation"
+            else CARTOON_PRINT_PALETTE
+        )
+    if not isinstance(palette, CartoonModePalette):
+        raise TypeError("palette must be a CartoonModePalette.")
     font_scale, line_scale, symbol_scale = _scales(mode, name)
+    transform = {}
+    if constellation_label_offset is not None:
+        transform["constellation_label_offset"] = tuple(
+            constellation_label_offset
+        )
+    if constellation_label_halo_opacity is not None:
+        transform["constellation_label_halo_alpha"] = float(
+            constellation_label_halo_opacity
+        )
     if base is None:
-        style = CartoonModeChartStyle()
+        style = CartoonModeChartStyle(**transform)
     elif isinstance(base, CartoonModeChartStyle):
-        style = base
+        style = replace(base, **transform) if transform else base
     elif isinstance(base, CartoonChartStyle):
         style = CartoonModeChartStyle(
             canvas=base.canvas,
@@ -171,6 +186,7 @@ def cartoon_chart_style(
             grids=base.grids,
             mask=base.mask,
             legend=base.legend,
+            **transform,
         )
     else:
         raise TypeError("base must be a CartoonChartStyle.")
@@ -214,7 +230,7 @@ def cartoon_chart_style(
             style.grids.constellation_linewidth * line_scale
         ),
         constellation_label_color=palette.constellation_labels,
-        constellation_label_offset=(0.18, 0.14),
+        constellation_label_offset=style.constellation_label_offset,
         constellation_label_offsets=resolved_label_offsets,
         constellation_label_ha=(
             "center" if positioned_labels else "left"

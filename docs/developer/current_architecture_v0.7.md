@@ -65,6 +65,14 @@ metadata preserves them without inventing runtime wiring. Exact constructor
 parity is characterized, and request resolution, composition, rendering, path
 generation, and export remain unchanged.
 
+Milestone 46D.4A makes the cached packaged style/mode translation the runtime
+authority for named atlas/cartoon and print/presentation composition. The
+packaged presentation and cartoon palettes, label offset, clearance, and halo
+opacity are passed explicitly through the existing mode adapters. Explicit
+style and mode objects retain final precedence, and geometry, detail,
+furniture, and export remain unchanged. Direct constructors remain supported
+compatibility APIs but are no longer the canonical named-composition source.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

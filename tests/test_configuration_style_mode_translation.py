@@ -1,6 +1,6 @@
 """Parity contracts for TOML-to-style/mode translation."""
 
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, replace
 
 import pytest
 
@@ -13,6 +13,8 @@ from wenu.charts.cartoon_modes import (
 from wenu.charts.composition import _resolve_mode, _resolve_style
 from wenu.charts.modes import PresentationMode, PrintMode
 from wenu.charts.presets import AtlasChartStyle, CartoonChartStyle
+from wenu.charts.regional import RegionalChart
+from wenu import compose_chart
 from wenu.configuration import (
     ConfigurationError,
     load_packaged_defaults,
@@ -58,20 +60,71 @@ def test_packaged_palettes_and_cartoon_transform_values_have_parity():
     )
 
 
-def test_existing_composition_defaults_are_not_rewired_yet():
-    defaults = translate_style_mode_defaults()
+def test_named_composition_defaults_are_the_cached_packaged_authority():
+    from wenu.configuration import packaged_style_mode_defaults
+
+    defaults = packaged_style_mode_defaults()
     atlas_name, atlas = _resolve_style("atlas")
     cartoon_name, cartoon = _resolve_style("cartoon")
     print_name, print_mode = _resolve_mode(None)
     presentation_name, presentation = _resolve_mode("presentation")
 
-    assert (atlas_name, atlas) == ("atlas", defaults.atlas)
-    assert (cartoon_name, cartoon) == ("cartoon", defaults.cartoon)
-    assert (print_name, print_mode) == ("print", defaults.print_mode)
-    assert (presentation_name, presentation) == (
-        "presentation",
-        defaults.presentation_mode,
+    assert atlas_name == "atlas" and atlas is defaults.atlas
+    assert cartoon_name == "cartoon" and cartoon is defaults.cartoon
+    assert print_name == "print" and print_mode is defaults.print_mode
+    assert presentation_name == "presentation"
+    assert presentation is defaults.presentation_mode
+
+
+def test_packaged_style_mode_authority_is_cached_and_clearable():
+    from wenu.configuration import packaged_style_mode_defaults
+
+    packaged_style_mode_defaults.cache_clear()
+    first = packaged_style_mode_defaults()
+    second = packaged_style_mode_defaults()
+    assert first is second
+
+
+def test_named_composition_consumes_translated_mode_and_cartoon_values(
+    monkeypatch,
+):
+    from wenu.configuration import packaged_style_mode_defaults
+
+    defaults = packaged_style_mode_defaults()
+    configured = replace(
+        defaults,
+        print_mode=replace(defaults.print_mode, dpi=257),
+        cartoon_print_palette=replace(
+            defaults.cartoon_print_palette,
+            sky="#123456",
+        ),
+        atlas_presentation_palette=replace(
+            defaults.atlas_presentation_palette,
+            sky="#654321",
+        ),
+        cartoon_label_offset=(0.31, 0.27),
+        cartoon_label_halo_opacity=0.44,
     )
+    monkeypatch.setattr(
+        "wenu.charts.composition._style_mode_defaults",
+        lambda: configured,
+    )
+    chart = RegionalChart(
+        center_alt_deg=45.0,
+        center_az_deg=180.0,
+        field_width_deg=30.0,
+        field_height_deg=20.0,
+    )
+    composition = compose_chart(chart, style="cartoon", mode="print")
+
+    assert composition.mode.dpi == 257
+    assert composition.style.canvas.sky_color == "#123456"
+    assert composition.style.constellation_label_offset == (0.31, 0.27)
+    assert composition.style.grids.constellation_label_offset == (0.31, 0.27)
+    assert composition.style.constellation_label_halo_alpha == 0.44
+
+    atlas = compose_chart(chart, style="atlas", mode="presentation")
+    assert atlas.style.canvas.sky_color == "#654321"
 
 
 def test_unmigrated_independent_grid_width_reports_complete_path():

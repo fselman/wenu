@@ -313,8 +313,9 @@ not yet translate values into those runtime owners.
 `src/wenu/configuration/style_mode_translation.py` is the Milestone 46D.3C
 translation seam for existing immutable style, mode, and palette dataclasses.
 It contains translations but no public default literals, composition registry,
-renderer dispatch, or mutation. Existing composition remains unconnected
-until all configuration responsibilities have typed parity.
+renderer dispatch, or mutation. Milestone 46D.4A adds one process-local cached
+packaged translation; named composition consumes that immutable authority
+through the existing style and mode adapters.
 
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,

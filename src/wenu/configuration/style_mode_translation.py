@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Any, Mapping
 
 from wenu.charts.atlas_modes import AtlasPresentationPalette
@@ -372,7 +373,7 @@ def _cartoon_palette(table: Mapping[str, Any]) -> CartoonModePalette:
 def translate_style_mode_defaults(
     configuration: Mapping[str, Any] | None = None,
 ) -> StyleModeDefaults:
-    """Translate validated values without changing composition defaults."""
+    """Translate validated values into immutable style/mode contracts."""
     values = (
         load_packaged_defaults()
         if configuration is None
@@ -406,3 +407,9 @@ def translate_style_mode_defaults(
         cartoon_label_clearance=tuple(cartoon_mode["clearance"]),
         cartoon_label_halo_opacity=cartoon_mode["halo_opacity"],
     )
+
+
+@lru_cache(maxsize=1)
+def packaged_style_mode_defaults() -> StyleModeDefaults:
+    """Return the immutable packaged style/mode authority once per process."""
+    return translate_style_mode_defaults()

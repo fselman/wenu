@@ -7,6 +7,7 @@ from .validation import (
     validate_configuration,
 )
 from .style_mode_translation import (
+    packaged_style_mode_defaults,
     StyleModeDefaults,
     translate_style_mode_defaults,
 )
@@ -28,6 +29,7 @@ __all__ = [
     "GeometryDetailDefaults",
     "load_packaged_defaults",
     "parse_configuration",
+    "packaged_style_mode_defaults",
     "ProductDefaults",
     "StyleModeDefaults",
     "translate_style_mode_defaults",
