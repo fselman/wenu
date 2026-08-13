@@ -81,6 +81,17 @@ detail policies, and detail overrides retain their established precedence.
 Chart construction, projection, catalogue loading, and rendering are
 unchanged.
 
+Milestone 46D.4C makes one cached furniture/product/export translation the
+runtime authority for neutral ordinary furniture, family legend placement,
+stellar-magnitude legend appearance, footer layout, parser product defaults,
+output extensions, and base export options. Output-mode DPI and transparency,
+circular transparency, and canvas face color remain derived at composition
+time. Legends and context remain opt-in furniture rather than becoming
+visible merely because their configured contract defaults exist. Explicit
+furniture, product arguments, output paths, and export options retain
+precedence; zero packaged export padding preserves Matplotlib's established
+atlas-print crop.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

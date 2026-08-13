@@ -112,6 +112,7 @@ class ExportOptions:
     transparent: bool = False
     facecolor: Any | None = None
     metadata: dict[str, str] = field(default_factory=dict)
+    padding: float = 0.0
 
     def save(self, figure, path):
         """Save a Matplotlib figure using these fixed settings."""
@@ -125,6 +126,8 @@ class ExportOptions:
         }
         if self.facecolor is not None:
             kwargs["facecolor"] = self.facecolor
+        if float(self.padding) != 0.0:
+            kwargs["pad_inches"] = float(self.padding)
         figure.savefig(path, **kwargs)
         return path
 

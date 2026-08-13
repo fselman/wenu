@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 from types import MappingProxyType
 from typing import Any, Mapping
 
@@ -238,6 +239,13 @@ def translate_furniture_product_export_defaults(
             transparent=export["transparent"],
             facecolor=_optional(export["face_color"]),
             metadata=dict(export["metadata"]),
+            padding=export["padding"],
         ),
         export_padding=export["padding"],
     )
+
+
+@lru_cache(maxsize=1)
+def packaged_furniture_product_export_defaults():
+    """Return the process-local immutable packaged runtime authority."""
+    return translate_furniture_product_export_defaults()

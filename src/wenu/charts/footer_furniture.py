@@ -45,6 +45,7 @@ def draw_chart_footer(
     *,
     color="black",
     package_version=None,
+    layout=None,
 ) -> ChartFooterRendering | None:
     """Draw requested credits below the axes in the figure margin."""
     copyright_text, application_text = resolved_footer_text(
@@ -64,9 +65,17 @@ def draw_chart_footer(
             [position.x0, bottom, position.width, top - bottom]
         )
 
-    font_size = 7.0 * float(getattr(mode, "font_scale", 1.0))
+    if layout is None:
+        from wenu.configuration import (
+            packaged_furniture_product_export_defaults,
+        )
+
+        layout = packaged_furniture_product_export_defaults().footer_layout
+    font_size = layout.font_size * float(
+        getattr(mode, "font_scale", 1.0)
+    )
     common = dict(
-        y=0.018,
+        y=layout.y,
         fontsize=font_size,
         color=str(color),
         va="bottom",
@@ -75,7 +84,7 @@ def draw_chart_footer(
     if copyright_text is not None:
         artists.append(
             figure.text(
-                0.01,
+                layout.left_x,
                 s=copyright_text,
                 ha="left",
                 **common,
@@ -84,7 +93,7 @@ def draw_chart_footer(
     if application_text is not None:
         artists.append(
             figure.text(
-                0.99,
+                layout.right_x,
                 s=application_text,
                 ha="right",
                 **common,

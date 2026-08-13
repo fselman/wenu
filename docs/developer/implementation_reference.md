@@ -735,9 +735,7 @@ detail, canonical family ceilings, and binocular fixed detail and stellar
 sizing. `translate_furniture_product_export_defaults()` completes the same
 translation boundary for references, poles, footer/context options, family
 legend plans, magnitude-legend appearance, product selection, and export
-options. Footer layout, product metadata, and export padding are retained as
-frozen translation metadata until their existing behavioral owners accept
-them. `packaged_style_mode_defaults()` caches the validated style/mode
+options. `packaged_style_mode_defaults()` caches the validated style/mode
 translation, and canonical named composition now consumes its semantic bases,
 modes, palettes, and cartoon label-transform values. Explicit style and mode
 objects remain unchanged. Other responsibilities continue to use their
@@ -748,6 +746,17 @@ view and detail translation. `chart_view_defaults()` now returns its packaged
 family contracts, and named composition uses its neutral or cartoon policy
 and content-layer baselines. Explicit frame arguments, `DetailPolicy` values,
 and `DetailOverrides` continue to take precedence.
+
+`packaged_furniture_product_export_defaults()` caches the remaining validated
+translation. Ordinary drawing uses its neutral references, poles, and footer
+when no explicit furniture is supplied; legends and context remain opt-in.
+Family legend plans, magnitude-legend appearance and footer coordinates
+resolve through the same authority. Shared product parser
+defaults and generated filename extensions use its product values. Canonical
+export starts with its bounding-box, metadata and padding settings, then
+retains the existing derived mode DPI/transparency, circular transparency,
+and canvas face color. Explicit furniture, CLI product selections, output
+paths, and chart export options still win.
 
 ## 9. Package imports
 

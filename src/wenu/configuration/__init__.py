@@ -19,6 +19,7 @@ from .geometry_detail_translation import (
 from .furniture_product_export_translation import (
     FooterLayoutDefaults,
     FurnitureProductExportDefaults,
+    packaged_furniture_product_export_defaults,
     ProductDefaults,
     translate_furniture_product_export_defaults,
 )
@@ -29,6 +30,7 @@ __all__ = [
     "FurnitureProductExportDefaults",
     "GeometryDetailDefaults",
     "load_packaged_defaults",
+    "packaged_furniture_product_export_defaults",
     "packaged_geometry_detail_defaults",
     "parse_configuration",
     "packaged_style_mode_defaults",

@@ -16,6 +16,7 @@ from wenu import (
     draw_chart_view,
     get_chart_view,
 )
+from wenu.configuration import packaged_furniture_product_export_defaults
 
 
 def observer():
@@ -116,6 +117,37 @@ def test_drawing_translates_direct_options_to_one_canonical_export(
     assert exported[0][0] is chart_view.sky
     assert exported[0][1].chart is chart_view.chart
     assert exported[0][2] is chart_view.observer
+
+
+def test_ordinary_drawing_uses_packaged_neutral_furniture_by_default(
+    monkeypatch, tmp_path
+):
+    chart_view = view()
+    requests = []
+    monkeypatch.setattr(
+        "wenu.charts.drawing.configure_chart_request_grids",
+        lambda sky, request, *, frame: requests.append(request),
+    )
+    monkeypatch.setattr(
+        "wenu.charts.drawing.configure_chart_request_horizon",
+        lambda *args: None,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.drawing.export_prepared_chart",
+        lambda *args, **kwargs: SimpleNamespace(
+            exports=(export_result(tmp_path / "chart.png"),)
+        ),
+    )
+
+    draw_chart_view(chart_view, tmp_path / "chart.png")
+
+    expected = packaged_furniture_product_export_defaults()
+    configured = expected.furniture_by_family["planisphere"]
+    assert requests[0].furniture.references is configured.references
+    assert requests[0].furniture.poles is configured.poles
+    assert requests[0].furniture.footer is configured.footer
+    assert requests[0].furniture.legends is None
+    assert requests[0].furniture.context is None
 
 
 def test_repeated_drawings_reuse_geometry_without_request_state_leak(

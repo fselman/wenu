@@ -148,40 +148,14 @@ def default_chart_legend_plan(chart_type: str) -> ChartLegendPlan:
     magnitude limits, content, or output mode.
     """
     normalized = str(chart_type).strip().lower()
-    if normalized == "regional":
-        return ChartLegendPlan(
-            chart_type=normalized,
-            objects=LegendPlacement(location="upper right"),
-            stars=LegendPlacement(location="lower right"),
+    if normalized not in _CHART_TYPES:
+        raise ValueError(
+            "chart_type must be one of: "
+            + ", ".join(sorted(_CHART_TYPES))
         )
-    if normalized in {"planisphere", "all_sky"}:
-        return ChartLegendPlan(
-            chart_type=normalized,
-            objects=LegendPlacement(
-                location="upper right",
-                outside=True,
-            ),
-            stars=LegendPlacement(
-                location="lower right",
-                outside=True,
-            ),
-        )
-    if normalized == "circumpolar":
-        return ChartLegendPlan(
-            chart_type=normalized,
-            objects=LegendPlacement(location="upper right"),
-            stars=LegendPlacement(location="lower left"),
-        )
-    if normalized == "binocular":
-        return ChartLegendPlan(
-            chart_type=normalized,
-            objects=LegendPlacement(enabled=False),
-            stars=LegendPlacement(
-                location="lower right",
-                outside=True,
-            ),
-        )
-    raise ValueError(
-        "chart_type must be one of: "
-        + ", ".join(sorted(_CHART_TYPES))
+    from wenu.configuration import (
+        packaged_furniture_product_export_defaults,
     )
+
+    furniture = packaged_furniture_product_export_defaults()
+    return furniture.furniture_by_family[normalized].legends.plan

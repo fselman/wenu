@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from .composition import ChartComposition
 
@@ -60,7 +60,13 @@ def _composition_export_options(composition):
 
     canvas = getattr(composition.style, "canvas", None)
     circular = composition.context.boundary_kind is BoundaryKind.CIRCULAR
-    return ExportOptions(
+    from wenu.configuration import (
+        packaged_furniture_product_export_defaults,
+    )
+
+    defaults = packaged_furniture_product_export_defaults().export_options
+    return replace(
+        defaults,
         dpi=composition.mode.dpi,
         transparent=(
             True if circular else composition.mode.transparent

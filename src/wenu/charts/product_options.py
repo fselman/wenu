@@ -43,6 +43,14 @@ CANONICAL_CHART_PRODUCTS = tuple(
 )
 
 
+def _packaged_product_defaults():
+    from wenu.configuration import (
+        packaged_furniture_product_export_defaults,
+    )
+
+    return packaged_furniture_product_export_defaults().product
+
+
 @dataclass(frozen=True)
 class ChartProductOptions:
     """Resolved request for one or all canonical chart products."""
@@ -70,7 +78,7 @@ class ChartProductOptions:
         product: ChartProduct,
         *,
         stem: str,
-        extension: str = ".png",
+        extension: str | None = None,
     ) -> Path:
         """Return one deterministic path without creating directories."""
         if product not in self.products:
@@ -78,14 +86,17 @@ class ChartProductOptions:
         normalized_stem = str(stem).strip()
         if not normalized_stem:
             raise ValueError("stem cannot be empty.")
-        suffix = str(extension).strip()
+        suffix = str(
+            _packaged_product_defaults().extension
+            if extension is None else extension
+        ).strip()
         if not suffix.startswith("."):
             suffix = "." + suffix
         if not self.all_products and self.output.suffix:
             return self.output
         return self.output / f"{normalized_stem}-{product.suffix}{suffix}"
 
-    def outputs(self, *, stem: str, extension: str = ".png"):
+    def outputs(self, *, stem: str, extension: str | None = None):
         """Return products paired with their deterministic output paths."""
         return tuple(
             (
@@ -103,17 +114,24 @@ class ChartProductOptions:
 def add_chart_product_arguments(parser, *, default_output):
     """Add the four common chart-product arguments to an ArgumentParser."""
     parser.allow_abbrev = False
+    defaults = _packaged_product_defaults()
     parser.add_argument(
         "--style",
         choices=CHART_STYLES,
-        default="atlas",
-        help="chart visual style (default: atlas)",
+        default=defaults.product.style,
+        help=(
+            "chart visual style "
+            f"(default: {defaults.product.style})"
+        ),
     )
     parser.add_argument(
         "--mode",
         choices=CHART_MODES,
-        default="print",
-        help="output medium (default: print)",
+        default=defaults.product.mode,
+        help=(
+            "output medium "
+            f"(default: {defaults.product.mode})"
+        ),
     )
     parser.add_argument(
         "--output",
@@ -125,6 +143,7 @@ def add_chart_product_arguments(parser, *, default_output):
         "--all-products",
         action="store_true",
         dest="all_products",
+        default=defaults.all_products,
         help="generate atlas/cartoon in print/presentation modes",
     )
     return parser

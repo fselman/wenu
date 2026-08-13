@@ -327,10 +327,11 @@ changing chart construction, catalogue selection, or rendering.
 
 `src/wenu/configuration/furniture_product_export_translation.py` is the
 Milestone 46D.3E translation seam for immutable furniture, family legend,
-magnitude-legend, product, and export contracts. Values that do not yet have
-aggregate behavioral fields remain frozen translation metadata. The module
-contains no furniture drawing, path creation, rendering, saving, or runtime
-registry wiring.
+magnitude-legend, product, and export contracts. Milestone 46D.4C adds one
+process-local cached packaged translation consumed by the existing ordinary
+drawing, legend-plan, magnitude-legend, footer, product-naming, parser, and
+canonical export owners. The module itself still contains no furniture
+drawing, path creation, rendering, or saving.
 
 Permanent test modules are named for current responsibilities rather than the
 milestones that introduced them. Scientific geometry and catalogue contracts

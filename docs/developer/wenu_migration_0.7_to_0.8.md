@@ -784,7 +784,14 @@ in that slice. Milestone 46D.4B connects `chart_view_defaults()` and
 neutral/cartoon named composition to one cached packaged geometry/detail
 translation. Packaged content-layer sets travel with the policies; explicit
 view arguments, detail policies, and detail overrides retain precedence.
-Furniture, products, and export remain unconnected.
+Milestone 46D.4C connects one cached furniture/product/export translation to
+neutral ordinary furniture, family legend plans, magnitude-legend appearance,
+footer layout, shared product parser defaults, generated filename extensions,
+and canonical base export options. Legends and context remain opt-in.
+Explicit furniture, product arguments, output paths, and export options retain
+precedence. Mode DPI/transparency,
+circular transparency, and canvas face color remain derived; zero packaged
+padding preserves the approved atlas-print crop.
 
 ### Milestone 46D.5 — Load and validate user TOML overlays
 

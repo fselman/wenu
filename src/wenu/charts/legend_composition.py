@@ -15,6 +15,14 @@ from .magnitude_legend_style import (
 from .magnitude_legend_workflow import StellarMagnitudeLegendResult
 
 
+def _packaged_magnitude_legend_style():
+    from wenu.configuration import (
+        packaged_furniture_product_export_defaults,
+    )
+
+    return packaged_furniture_product_export_defaults().magnitude_legend
+
+
 @dataclass(frozen=True)
 class ComposedChartLegends:
     """Artists produced by one dual-legend composition."""
@@ -127,21 +135,19 @@ def draw_planned_chart_legends(
     stars_result = None
     if plan.stars.enabled:
         chart_legend_style = getattr(chart_style, "legend", None)
-        base_style = (
-            (
-                StellarMagnitudeLegendStyle()
-                if chart_legend_style is None
-                else StellarMagnitudeLegendStyle(
+        if stellar_legend_style is not None:
+            base_style = stellar_legend_style
+        else:
+            base_style = _packaged_magnitude_legend_style()
+            if chart_legend_style is not None:
+                base_style = replace(
+                    base_style,
                     font_size=chart_legend_style.fontsize,
                     title_font_size=chart_legend_style.title_fontsize,
                     text_color=chart_legend_style.text_color,
                     facecolor=chart_legend_style.facecolor,
                     edgecolor=chart_legend_style.edgecolor,
                 )
-            )
-            if stellar_legend_style is None
-            else stellar_legend_style
-        )
         resolved_style = replace(
             base_style,
             enabled=True,

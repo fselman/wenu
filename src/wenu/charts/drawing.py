@@ -28,6 +28,25 @@ _GRID_NAMES = {
 }
 
 
+def _furniture_product_export_defaults():
+    from wenu.configuration import (
+        packaged_furniture_product_export_defaults,
+    )
+
+    return packaged_furniture_product_export_defaults()
+
+
+def _default_furniture(family):
+    configured = _furniture_product_export_defaults().furniture_by_family[
+        family
+    ]
+    return ChartFurnitureOptions(
+        references=configured.references,
+        poles=configured.poles,
+        footer=configured.footer,
+    )
+
+
 def draw_chart_view(
     view,
     destination,
@@ -79,7 +98,8 @@ def draw_chart_view(
         grid_label_layers=labels | requested_labels,
     )
     furniture = (
-        ChartFurnitureOptions() if furniture is None else furniture
+        _default_furniture(view.family)
+        if furniture is None else furniture
     )
     if not isinstance(furniture, ChartFurnitureOptions):
         raise TypeError("furniture must be a ChartFurnitureOptions value.")
