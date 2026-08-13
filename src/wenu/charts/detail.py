@@ -334,6 +334,8 @@ class CartoonDetailPolicy:
     extra_star_ids: frozenset[int] = frozenset()
     include_deep_sky: bool = False
     label_named_stars: bool = False
+    default_content_layers: frozenset[str] = DEFAULT_CONTENT_LAYERS
+    cartoon_content_layers: frozenset[str] = CARTOON_CONTENT_LAYERS
 
     def __post_init__(self) -> None:
         if self.constellation_star_mode not in CONSTELLATION_STAR_MODES:
@@ -350,6 +352,16 @@ class CartoonDetailPolicy:
             "extra_star_ids",
             frozenset(int(value) for value in self.extra_star_ids),
         )
+        object.__setattr__(
+            self,
+            "default_content_layers",
+            frozenset(str(value) for value in self.default_content_layers),
+        )
+        object.__setattr__(
+            self,
+            "cartoon_content_layers",
+            frozenset(str(value) for value in self.cartoon_content_layers),
+        )
 
     def resolve(
         self,
@@ -358,9 +370,9 @@ class CartoonDetailPolicy:
     ) -> ResolvedDetail:
         del context, mode
         enabled = (
-            DEFAULT_CONTENT_LAYERS
+            self.default_content_layers
             if self.include_deep_sky
-            else CARTOON_CONTENT_LAYERS
+            else self.cartoon_content_layers
         )
         return ResolvedDetail(
             star_magnitude_limit=float(
@@ -421,6 +433,7 @@ class AdaptiveDetailPolicy:
     maximum_output_magnitude_adjustment: float = 0.50
     adapt_enabled_layers: bool = True
     star_magnitude_limit: float | None = None
+    default_content_layers: frozenset[str] = DEFAULT_CONTENT_LAYERS
 
     def __post_init__(self) -> None:
         levels = tuple(
@@ -443,6 +456,11 @@ class AdaptiveDetailPolicy:
         ):
             raise ValueError("star_magnitude_limit must be finite.")
         object.__setattr__(self, "levels", levels)
+        object.__setattr__(
+            self,
+            "default_content_layers",
+            frozenset(str(value) for value in self.default_content_layers),
+        )
 
     @staticmethod
     def field_span_deg(context: ChartContext) -> float:
@@ -491,9 +509,8 @@ class AdaptiveDetailPolicy:
         bound = self.maximum_output_magnitude_adjustment
         return max(-bound, min(bound, adjustment))
 
-    @staticmethod
-    def _enabled_layers(span):
-        layers = set(DEFAULT_CONTENT_LAYERS)
+    def _enabled_layers(self, span):
+        layers = set(self.default_content_layers)
         if span > 120.0:
             layers -= {
                 "planetary_nebulae",
@@ -555,6 +572,8 @@ class AdaptiveDetailPolicy:
 def apply_detail_overrides(
     detail: ResolvedDetail,
     overrides: DetailOverrides | None,
+    *,
+    default_content_layers=DEFAULT_CONTENT_LAYERS,
 ) -> ResolvedDetail:
     """Apply non-``None`` explicit values with deterministic precedence."""
     if overrides is None:
@@ -572,7 +591,7 @@ def apply_detail_overrides(
     if additions is None and removals is None:
         return resolved
     enabled = set(
-        DEFAULT_CONTENT_LAYERS
+        default_content_layers
         if resolved.enabled_layers is None
         else resolved.enabled_layers
     )

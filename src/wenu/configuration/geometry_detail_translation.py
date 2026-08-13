@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from functools import lru_cache
 from types import MappingProxyType
 from typing import Any, Mapping
 
@@ -117,7 +118,11 @@ def _resolved_detail(table: Mapping[str, Any]) -> ResolvedDetail:
     )
 
 
-def _adaptive(table: Mapping[str, Any]) -> AdaptiveDetailPolicy:
+def _adaptive(
+    table: Mapping[str, Any],
+    *,
+    default_content_layers: frozenset[str],
+) -> AdaptiveDetailPolicy:
     levels = tuple(
         FieldDetailLevel(
             level["span"],
@@ -139,13 +144,14 @@ def _adaptive(table: Mapping[str, Any]) -> AdaptiveDetailPolicy:
         ),
         maximum_output_magnitude_adjustment=table["maximum_adjustment"],
         adapt_enabled_layers=table["adapt_layers"],
+        default_content_layers=default_content_layers,
     )
 
 
 def translate_geometry_detail_defaults(
     configuration: Mapping[str, Any] | None = None,
 ) -> GeometryDetailDefaults:
-    """Translate validated values without changing active chart defaults."""
+    """Translate validated values into immutable geometry/detail contracts."""
     values = (
         load_packaged_defaults()
         if configuration is None
@@ -153,8 +159,13 @@ def translate_geometry_detail_defaults(
     )
     detail = values["detail"]
     content = detail["content"]
+    default_content_layers = frozenset(content["default_layers"])
+    cartoon_content_layers = frozenset(content["cartoon_layers"])
     cartoon = detail["cartoon"]
-    adaptive = _adaptive(detail["adaptive"])
+    adaptive = _adaptive(
+        detail["adaptive"],
+        default_content_layers=default_content_layers,
+    )
     canonical = detail["canonical"]
     family_policies = MappingProxyType({
         name: replace(
@@ -171,14 +182,16 @@ def translate_geometry_detail_defaults(
     return GeometryDetailDefaults(
         view_defaults=_views(values),
         neutral_detail=_resolved_detail(detail["neutral"]),
-        default_content_layers=frozenset(content["default_layers"]),
-        cartoon_content_layers=frozenset(content["cartoon_layers"]),
+        default_content_layers=default_content_layers,
+        cartoon_content_layers=cartoon_content_layers,
         cartoon_policy=CartoonDetailPolicy(
             constellation_star_mode=cartoon["star_mode"],
             bright_star_magnitude_limit=cartoon["bright_limit"],
             extra_star_ids=frozenset(cartoon["extra_stars"]),
             include_deep_sky=cartoon["deep_sky"],
             label_named_stars=cartoon["named_star_labels"],
+            default_content_layers=default_content_layers,
+            cartoon_content_layers=cartoon_content_layers,
         ),
         adaptive_policy=adaptive,
         family_atlas_policies=family_policies,
@@ -198,3 +211,9 @@ def translate_geometry_detail_defaults(
             maximum_area=sizing["maximum_area"],
         ),
     )
+
+
+@lru_cache(maxsize=1)
+def packaged_geometry_detail_defaults() -> GeometryDetailDefaults:
+    """Return immutable packaged geometry/detail authority once per process."""
+    return translate_geometry_detail_defaults()

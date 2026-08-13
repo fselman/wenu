@@ -13,6 +13,7 @@ from .style_mode_translation import (
 )
 from .geometry_detail_translation import (
     GeometryDetailDefaults,
+    packaged_geometry_detail_defaults,
     translate_geometry_detail_defaults,
 )
 from .furniture_product_export_translation import (
@@ -28,6 +29,7 @@ __all__ = [
     "FurnitureProductExportDefaults",
     "GeometryDetailDefaults",
     "load_packaged_defaults",
+    "packaged_geometry_detail_defaults",
     "parse_configuration",
     "packaged_style_mode_defaults",
     "ProductDefaults",

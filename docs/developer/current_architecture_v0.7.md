@@ -73,6 +73,14 @@ style and mode objects retain final precedence, and geometry, detail,
 furniture, and export remain unchanged. Direct constructors remain supported
 compatibility APIs but are no longer the canonical named-composition source.
 
+Milestone 46D.4B makes the cached packaged geometry/detail translation the
+runtime authority at `chart_view_defaults()` and for neutral/cartoon named
+composition. Packaged default and cartoon content-layer sets travel with the
+detail policies and govern layer additions/removals. Explicit view arguments,
+detail policies, and detail overrides retain their established precedence.
+Chart construction, projection, catalogue loading, and rendering are
+unchanged.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

@@ -780,7 +780,11 @@ print/presentation composition to one cached packaged style/mode translation.
 The existing adapters receive the packaged palettes and cartoon label
 transform values explicitly; custom style and mode objects retain final
 precedence. Geometry, detail, furniture, products, and export are not rewired
-in this slice.
+in that slice. Milestone 46D.4B connects `chart_view_defaults()` and
+neutral/cartoon named composition to one cached packaged geometry/detail
+translation. Packaged content-layer sets travel with the policies; explicit
+view arguments, detail policies, and detail overrides retain precedence.
+Furniture, products, and export remain unconnected.
 
 ### Milestone 46D.5 — Load and validate user TOML overlays
 

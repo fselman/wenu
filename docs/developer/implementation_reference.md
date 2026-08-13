@@ -743,6 +743,12 @@ modes, palettes, and cartoon label-transform values. Explicit style and mode
 objects remain unchanged. Other responsibilities continue to use their
 established Python defaults until later Milestone 46D.4 slices connect them.
 
+`packaged_geometry_detail_defaults()` likewise caches the validated family
+view and detail translation. `chart_view_defaults()` now returns its packaged
+family contracts, and named composition uses its neutral or cartoon policy
+and content-layer baselines. Explicit frame arguments, `DetailPolicy` values,
+and `DetailOverrides` continue to take precedence.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

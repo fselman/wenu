@@ -1,5 +1,6 @@
 """Parity contracts for TOML geometry and detail translation."""
 
+from dataclasses import replace
 from types import MappingProxyType
 
 import pytest
@@ -10,14 +11,18 @@ from wenu.charts.detail import (
     CartoonDetailPolicy,
     DEFAULT_CONTENT_LAYERS,
     DEFAULT_FIELD_DETAIL_LEVELS,
+    DetailOverrides,
     FixedDetailPolicy,
     ResolvedDetail,
 )
 from wenu.charts.style_components import StellarMagnitudeSizing
-from wenu.charts.view_defaults import CHART_VIEW_DEFAULTS
+from wenu.charts.view_defaults import CHART_VIEW_DEFAULTS, chart_view_defaults
+from wenu.charts.regional import RegionalChart
+from wenu import compose_chart
 from wenu.configuration import (
     ConfigurationError,
     load_packaged_defaults,
+    packaged_geometry_detail_defaults,
     translate_geometry_detail_defaults,
     validate_configuration,
 )
@@ -30,6 +35,18 @@ def test_packaged_family_geometry_translates_with_exact_parity():
 
     with pytest.raises(TypeError):
         defaults.view_defaults["binocular"] = CHART_VIEW_DEFAULTS["binocular"]
+
+
+def test_family_geometry_gateway_uses_cached_packaged_authority():
+    packaged_geometry_detail_defaults.cache_clear()
+    defaults = packaged_geometry_detail_defaults()
+    assert defaults is packaged_geometry_detail_defaults()
+    assert chart_view_defaults("binocular") is defaults.view_defaults[
+        "binocular"
+    ]
+    assert chart_view_defaults("regional", group=True) is (
+        defaults.view_defaults["regional-group"]
+    )
 
 
 def test_packaged_neutral_content_and_cartoon_detail_have_parity():
@@ -70,6 +87,75 @@ def test_packaged_binocular_detail_and_stellar_sizing_have_parity():
         exponent=0.20,
         minimum_area=1.0,
         maximum_area=40.0,
+    )
+
+
+def test_named_composition_consumes_packaged_neutral_and_cartoon_detail(
+    monkeypatch,
+):
+    defaults = packaged_geometry_detail_defaults()
+    configured = replace(
+        defaults,
+        neutral_detail=replace(defaults.neutral_detail, label_density=1.7),
+        cartoon_policy=replace(
+            defaults.cartoon_policy,
+            bright_star_magnitude_limit=2.4,
+            cartoon_content_layers=frozenset({"stars"}),
+        ),
+        default_content_layers=frozenset({"stars", "galaxies"}),
+    )
+    monkeypatch.setattr(
+        "wenu.charts.composition._geometry_detail_defaults",
+        lambda: configured,
+    )
+    chart = RegionalChart(
+        center_alt_deg=45.0,
+        center_az_deg=180.0,
+        field_width_deg=30.0,
+        field_height_deg=20.0,
+    )
+
+    atlas = compose_chart(chart, style="atlas", mode="print")
+    cartoon = compose_chart(chart, style="cartoon", mode="print")
+    assert atlas.detail.label_density == 1.7
+    assert cartoon.detail.star_magnitude_limit == 2.4
+    assert cartoon.detail.enabled_layers == frozenset({"stars"})
+
+    additions = compose_chart(
+        chart,
+        style="atlas",
+        mode="print",
+        detail_overrides=DetailOverrides(
+            enabled_layer_additions=frozenset({"open_clusters"})
+        ),
+    )
+    assert additions.detail.enabled_layers == frozenset(
+        {"stars", "galaxies", "open_clusters"}
+    )
+
+    explicit = FixedDetailPolicy(
+        ResolvedDetail(star_magnitude_limit=9.0)
+    )
+    overridden = compose_chart(
+        chart,
+        style="atlas",
+        mode="print",
+        detail=explicit,
+    )
+    assert overridden.detail.star_magnitude_limit == 9.0
+
+
+def test_translated_policies_carry_configured_content_layer_sets():
+    values = load_packaged_defaults()
+    values["detail"]["content"]["default_layers"] = ["stars", "galaxies"]
+    values["detail"]["content"]["cartoon_layers"] = ["stars"]
+    defaults = translate_geometry_detail_defaults(values)
+
+    assert defaults.adaptive_policy.default_content_layers == frozenset(
+        {"stars", "galaxies"}
+    )
+    assert defaults.cartoon_policy.cartoon_content_layers == frozenset(
+        {"stars"}
     )
 
 

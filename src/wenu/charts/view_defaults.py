@@ -54,6 +54,14 @@ CHART_VIEW_DEFAULTS = MappingProxyType({
 })
 
 
+def _geometry_detail_defaults():
+    from wenu.configuration.geometry_detail_translation import (
+        packaged_geometry_detail_defaults,
+    )
+
+    return packaged_geometry_detail_defaults()
+
+
 def chart_view_defaults(family, *, group=False):
     """Return the immutable ordinary geometrical policy for a family."""
     normalized = str(family).strip().lower()
@@ -65,7 +73,7 @@ def chart_view_defaults(family, *, group=False):
         else normalized
     )
     try:
-        return CHART_VIEW_DEFAULTS[key]
+        return _geometry_detail_defaults().view_defaults[key]
     except KeyError as error:
         raise ValueError(
             "family must be planisphere, all_sky, regional, circumpolar, "

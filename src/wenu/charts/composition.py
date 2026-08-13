@@ -41,6 +41,14 @@ def _style_mode_defaults():
     return packaged_style_mode_defaults()
 
 
+def _geometry_detail_defaults():
+    from wenu.configuration.geometry_detail_translation import (
+        packaged_geometry_detail_defaults,
+    )
+
+    return packaged_geometry_detail_defaults()
+
+
 def _resolve_style(style):
     """Return the stable style identifier and concrete style value."""
     if isinstance(style, str):
@@ -208,14 +216,21 @@ def compose_chart(
             )
         resolved_style = style_overrides.apply(resolved_style)
     if detail is None and style_name == CARTOON_STYLE:
-        from .detail import CartoonDetailPolicy
-
-        policy = CartoonDetailPolicy()
+        policy = _geometry_detail_defaults().cartoon_policy
     else:
-        policy = FixedDetailPolicy() if detail is None else detail
+        policy = (
+            FixedDetailPolicy(
+                _geometry_detail_defaults().neutral_detail
+            )
+            if detail is None
+            else detail
+        )
     resolved_detail = apply_detail_overrides(
         policy.resolve(context, resolved_mode),
         detail_overrides,
+        default_content_layers=(
+            _geometry_detail_defaults().default_content_layers
+        ),
     )
     if furniture is not None and legends is not None:
         raise ValueError("Pass legends through furniture or legends, not both.")
