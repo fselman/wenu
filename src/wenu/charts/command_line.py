@@ -136,7 +136,7 @@ def draw_chart_view_from_arguments(
     furniture=None,
     style_overrides=None,
     title=None,
-    language="en",
+    language=None,
 ):
     """Draw every CLI-selected product through the ordinary view facade.
 

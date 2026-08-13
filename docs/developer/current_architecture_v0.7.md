@@ -92,6 +92,15 @@ furniture, product arguments, output paths, and export options retain
 precedence; zero packaged export padding preserves Matplotlib's established
 atlas-print crop.
 
+Milestone 46D.4D closes packaged runtime activation by removing the remaining
+ordinary drawing and request literals for default style, mode, language, and
+title. Those values now resolve from `[products.default]`. Explicit values retain precedence.
+This applies to Python and CLI callers. Matching defaults
+retained on direct immutable
+constructors are compatibility API contracts, not a canonical runtime
+registry. With focused, full-suite, and canonical atlas-print visual
+parity, Milestone 46D.4 is complete.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

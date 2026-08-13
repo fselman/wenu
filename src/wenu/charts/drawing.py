@@ -47,12 +47,16 @@ def _default_furniture(family):
     )
 
 
+def _product_defaults():
+    return _furniture_product_export_defaults().product
+
+
 def draw_chart_view(
     view,
     destination,
     *,
-    style="atlas",
-    mode="print",
+    style=None,
+    mode=None,
     detail=None,
     detail_overrides=None,
     grids=(),
@@ -62,7 +66,7 @@ def draw_chart_view(
     furniture=None,
     style_overrides=None,
     title=None,
-    language="en",
+    language=None,
 ):
     """Compose, render, and export one product from a chart view."""
     if not isinstance(view, ChartView):
@@ -110,7 +114,11 @@ def draw_chart_view(
             "style_overrides must be a ChartStyleOverrides value."
         )
 
-    product = ChartProduct(style, mode)
+    defaults = _product_defaults()
+    product = ChartProduct(
+        defaults.product.style if style is None else style,
+        defaults.product.mode if mode is None else mode,
+    )
     request = replace(
         view._prepared.resolved.request,
         product=ChartProductOptions(
@@ -127,8 +135,8 @@ def draw_chart_view(
             detail=detail,
             style_overrides=style_overrides,
         ),),
-        title=title,
-        language=language,
+        title=defaults.title if title is None else title,
+        language=defaults.language if language is None else language,
     )
     _validate_load_profile(view, overrides)
     configure_chart_request_grids(view.sky, request, frame=view.frame)

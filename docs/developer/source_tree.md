@@ -333,6 +333,12 @@ drawing, legend-plan, magnitude-legend, footer, product-naming, parser, and
 canonical export owners. The module itself still contains no furniture
 drawing, path creation, rendering, or saving.
 
+Milestone 46D.4D completes packaged runtime activation at the ordinary drawing
+and immutable request boundaries: omitted style, mode, language, and title
+come from the packaged product contract. Literal defaults retained by direct
+typed constructors are compatibility signatures only and are not consumed by
+the canonical named runtime gateways.
+
 Permanent test modules are named for current responsibilities rather than the
 milestones that introduced them. Scientific geometry and catalogue contracts
 remain ordinary unit tests. Cross-component canonical chart construction is

@@ -738,8 +738,7 @@ legend plans, magnitude-legend appearance, product selection, and export
 options. `packaged_style_mode_defaults()` caches the validated style/mode
 translation, and canonical named composition now consumes its semantic bases,
 modes, palettes, and cartoon label-transform values. Explicit style and mode
-objects remain unchanged. Other responsibilities continue to use their
-established Python defaults until later Milestone 46D.4 slices connect them.
+objects remain unchanged.
 
 `packaged_geometry_detail_defaults()` likewise caches the validated family
 view and detail translation. `chart_view_defaults()` now returns its packaged
@@ -757,6 +756,13 @@ export starts with its bounding-box, metadata and padding settings, then
 retains the existing derived mode DPI/transparency, circular transparency,
 and canvas face color. Explicit furniture, CLI product selections, output
 paths, and chart export options still win.
+
+Ordinary `draw_chart_view()` and `ChartRequest` omission now also resolves
+style, mode, language, and title through `[products.default]`. Direct typed
+constructors retain their historical default arguments for source
+compatibility; canonical named composition, view, drawing, furniture,
+product, and export gateways no longer consult those literals as runtime
+authority.
 
 ## 9. Package imports
 

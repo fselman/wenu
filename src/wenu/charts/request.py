@@ -29,6 +29,14 @@ EXCLUDABLE_CATALOGUE_FAMILIES = (
 )
 
 
+def _product_defaults():
+    from wenu.configuration import (
+        packaged_furniture_product_export_defaults,
+    )
+
+    return packaged_furniture_product_export_defaults().product
+
+
 def _optional_text(value, *, field_name):
     if value is None:
         return None
@@ -305,7 +313,7 @@ class ChartRequest:
     detail: DetailOverrides = DetailOverrides()
     furniture: ChartFurnitureOptions = ChartFurnitureOptions()
     product_compositions: tuple[ChartProductCompositionOptions, ...] = ()
-    language: str = "en"
+    language: str | None = None
     title: str | None = None
     projection: str = "stereographic"
     coordinate_frame: str = "horizontal"
@@ -396,7 +404,10 @@ class ChartRequest:
                 )
         if family == "all_sky" and self.frame.position_angle_deg != 0.0:
             raise ValueError("An all_sky request requires position angle 0.")
-        language = str(self.language).strip().lower()
+        defaults = _product_defaults()
+        language = str(
+            defaults.language if self.language is None else self.language
+        ).strip().lower()
         if language not in CHART_LANGUAGES:
             raise ValueError("language must be 'en' or 'es'.")
         if self.detail.content_selection is not None:
@@ -417,7 +428,10 @@ class ChartRequest:
         object.__setattr__(
             self,
             "title",
-            _optional_text(self.title, field_name="title"),
+            _optional_text(
+                defaults.title if self.title is None else self.title,
+                field_name="title",
+            ),
         )
 
     def composition_for(self, product):

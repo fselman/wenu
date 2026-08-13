@@ -775,7 +775,7 @@ Milestone 46D.4.
 - add focused characterization, schema, and validation tests at every step;
 - accept no unexplained change to the atlas-print golden baseline.
 
-**Status:** In progress. Milestone 46D.4A connects named atlas/cartoon and
+**Final status:** Implemented. Milestone 46D.4A connects named atlas/cartoon and
 print/presentation composition to one cached packaged style/mode translation.
 The existing adapters receive the packaged palettes and cartoon label
 transform values explicitly; custom style and mode objects retain final
@@ -792,6 +792,15 @@ Explicit furniture, product arguments, output paths, and export options retain
 precedence. Mode DPI/transparency,
 circular transparency, and canvas face color remain derived; zero packaged
 padding preserves the approved atlas-print crop.
+Milestone 46D.4D removes the remaining ordinary drawing and request literals
+for product style, mode, language, and title; omission resolves them from the
+packaged `[products.default]` contract while explicit values retain
+precedence. Explicit values retain precedence. Direct
+typed-constructor defaults remain compatibility API signatures, not canonical
+runtime authorities; they are not a second canonical runtime registry.
+Focused and full tests plus the canonical atlas-print
+regression matrix close the responsibility migration without an explained
+visual change.
 
 ### Milestone 46D.5 — Load and validate user TOML overlays
 

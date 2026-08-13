@@ -226,6 +226,22 @@ def test_configuration_schema_v1_freezes_structure_and_validation():
     assert "This milestone adds no parser" in roadmap
 
 
+def test_configuration_runtime_migration_is_closed_before_user_overlays():
+    roadmap = read(ROADMAP)
+    architecture = read(DEVELOPER / "current_architecture_v0.7.md")
+
+    for phrase in (
+        "Milestone 46D.4D",
+        "[products.default]",
+        "compatibility API",
+        "canonical runtime",
+        "Explicit values retain precedence",
+    ):
+        assert phrase in roadmap
+        assert phrase in architecture
+    assert "**Final status:** Implemented" in roadmap
+
+
 def test_documented_python_is_syntactically_valid():
     for document in (
         ROOT / "README.md",
