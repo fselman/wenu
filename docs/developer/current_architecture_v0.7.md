@@ -19,6 +19,13 @@ than by completed milestone history. Fast unit, integration, visual, and full
 commands are recorded in `source_tree.md`; the full suite remains the release
 authority and atlas print remains the visual reference baseline.
 
+Milestone 46D.2 specifies the future version-1 TOML namespace in
+`configuration_schema_v1.md`. The specification fixes responsibility and key
+ordering, value vocabularies, validation rules, full-path diagnostics, and a
+strict non-executable boundary. It is documentation only: no configuration
+parser, packaged defaults, overlay, command, or runtime default authority is
+implemented yet.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

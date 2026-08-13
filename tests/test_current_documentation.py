@@ -13,6 +13,7 @@ TARGET = DEVELOPER / "target_architecture_v0.8.md"
 ROADMAP = DEVELOPER / "wenu_migration_0.7_to_0.8.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = DEVELOPER / "configuration_default_audit.md"
+CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
 PUBLIC_DOCUMENTS = (
     ROOT / "README.md",
     ROOT / "README.es.md",
@@ -180,6 +181,49 @@ def test_configuration_default_audit_covers_every_public_responsibility():
     ):
         assert phrase in audit
     assert "**Final status:** Implemented" in roadmap
+
+
+def test_configuration_schema_v1_freezes_structure_and_validation():
+    schema = read(CONFIGURATION_SCHEMA)
+    roadmap = read(ROADMAP)
+
+    assert "**Schema version:** `1`" in schema
+    ordered_sections = (
+        "`observer`",
+        "`subjects`",
+        "`families`",
+        "`detail`",
+        "`styles`",
+        "`modes`",
+        "`grids_references`",
+        "`furniture`",
+        "`products`",
+        "`export`",
+    )
+    positions = [schema.index(f"### {section}") for section in ordered_sections]
+    assert positions == sorted(positions)
+
+    for phrase in (
+        "schema_version = 1",
+        "color`, `line_width`, and `line_style`",
+        "`solid`, `dashed`, `dotted`, `dash_dot`, or `none`",
+        "Unknown sections and keys are errors",
+        "complete configuration path",
+        "invalid colors",
+        "contradictory combinations",
+        "executable expressions",
+        "Python class names",
+        "renderer operations",
+        "catalogue joins",
+        "imports",
+        "arbitrary code",
+        "styles.atlas.horizon.line_style",
+    ):
+        assert phrase in schema
+
+    assert "### Milestone 46D.2" in roadmap
+    assert "configuration_schema_v1.md" in roadmap
+    assert "This milestone adds no parser" in roadmap
 
 
 def test_documented_python_is_syntactically_valid():

@@ -290,6 +290,13 @@ invariants, and implementation details; inventories every responsibility and
 appearance source; and records duplications that must be removed as TOML
 becomes authoritative. It is an audit input, not a runtime registry.
 
+`docs/developer/configuration_schema_v1.md` is the Milestone 46D.2 structural
+contract for the future authoritative TOML document. It orders every public
+namespace, defines scalar and closed-vocabulary validation, requires
+independent color/line-width/line-style keys, and specifies complete-path
+diagnostics and the non-executable data boundary. It is not a parser, packaged
+default file, overlay loader, command implementation, or runtime registry.
+
 Permanent test modules are named for current responsibilities rather than the
 milestones that introduced them. Scientific geometry and catalogue contracts
 remain ordinary unit tests. Cross-component canonical chart construction is

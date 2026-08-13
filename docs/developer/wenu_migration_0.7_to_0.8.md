@@ -721,6 +721,13 @@ introducing runtime configuration or a second default registry.
 - prohibit executable expressions, Python class names, renderer operations,
   catalogue joins, imports, and arbitrary code.
 
+**Status:** Implemented. `configuration_schema_v1.md` defines schema version
+`1`, deterministic responsibility and key ordering, complete public namespace
+boundaries, independent line color/width/style fields, closed vocabularies,
+range and combination rules, full-path diagnostics, and the non-executable
+data boundary. This milestone adds no parser, packaged `defaults.toml`, user
+overlay, command, or runtime behavior; those remain in Milestones 46D.3–46D.6.
+
 ### Milestone 46D.3 — Add authoritative packaged defaults
 
 - add one packaged, versioned, fully commented `defaults.toml` containing
