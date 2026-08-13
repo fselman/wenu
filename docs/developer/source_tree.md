@@ -316,6 +316,13 @@ It contains translations but no public default literals, composition registry,
 renderer dispatch, or mutation. Existing composition remains unconnected
 until all configuration responsibilities have typed parity.
 
+`src/wenu/configuration/geometry_detail_translation.py` is the Milestone
+46D.3D translation seam for existing immutable family-view, detail-policy,
+content-selection, and stellar-sizing contracts. It preserves the current
+geometry/detail owners, rejects values the current contracts cannot represent,
+and does not connect request resolution, composition, catalogue selection, or
+rendering to configuration.
+
 Permanent test modules are named for current responsibilities rather than the
 milestones that introduced them. Scientific geometry and catalogue contracts
 remain ordinary unit tests. Cross-component canonical chart construction is

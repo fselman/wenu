@@ -55,9 +55,10 @@ _OPTIONAL_POINTS = frozenset({"grids_references.references.anchor"})
 _STRING_LISTS = frozenset(
     {
         "detail.neutral.grid_label_layers",
-        "detail.neutral.extra_stars",
-        "detail.cartoon.extra_stars",
     }
+)
+_INTEGER_LISTS = frozenset(
+    {"detail.neutral.extra_stars", "detail.cartoon.extra_stars"}
 )
 _NUMBER_LISTS = frozenset(
     {
@@ -189,6 +190,18 @@ def _validate_leaf_type(value: Any, exemplar: Any, parts: tuple[str, ...]):
     if path in _OPTIONAL_LISTS:
         if value != "none" and not isinstance(value, list):
             _error(path, "expected an array or \"none\"")
+        if (
+            value != "none"
+            and path == "detail.neutral.enabled_layers"
+            and not all(isinstance(item, str) for item in value)
+        ):
+            _error(path, "array values must be strings")
+        if (
+            value != "none"
+            and path in _NUMBER_LISTS
+            and not all(_is_number(item) for item in value)
+        ):
+            _error(path, "array values must be finite numbers")
         return
     if path in _OPTIONAL_POINTS:
         if value != "none" and not (
@@ -266,6 +279,11 @@ def _validate_shape(
             _is_number(item) for item in value
         ):
             _error(path, "array values must be finite numbers")
+        if path in _INTEGER_LISTS and not all(
+            not isinstance(item, bool) and isinstance(item, int)
+            for item in value
+        ):
+            _error(path, "array values must be integers")
         if path in _POINTS and len(value) != 2:
             _error(path, "must contain exactly two numbers")
         return

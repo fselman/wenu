@@ -47,6 +47,15 @@ style and mode dataclasses. Exact equality with the established constructors
 is characterized. Composition still constructs its existing Python defaults;
 the translated objects are a parity seam only and cannot change rendering.
 
+Milestone 46D.3D translates the six family geometry tables, neutral and
+content detail, cartoon and adaptive policies, canonical family magnitude
+ceilings, and binocular fixed detail and stellar sizing into the existing
+immutable view, detail, and style-component contracts. Exact equality with
+the established Python authorities is characterized. Regional width and
+height remain unrepresentable in the current view-default contract and fail
+with a complete path instead of being ignored. Active request resolution and
+composition remain deliberately unconnected.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,
