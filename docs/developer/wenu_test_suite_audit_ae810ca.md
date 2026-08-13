@@ -544,6 +544,14 @@ Retain a deliberately small golden set:
 The existing 11 fixture scripts can probably be reduced or combined, but that
 decision requires the runtime and visual review on the Mac.
 
+Milestone 46C.10 completed that required Mac validation without changing the
+tier definitions. Fast, integration, visual, and full suites passed. The
+diagnostic benchmark also produced 18 atlas-print products across all six
+families and three observer/instant identities; all were visually approved.
+Regional-single and regional-group exercised explicit outside masks. A later
+appearance-curation stage may tune faint-star symbol saturation, but no
+unexplained visual regression remains in the reusable-sphere closure.
+
 ## Incremental implementation plan
 
 ### 46B.1 — Record baseline and current contract matrix

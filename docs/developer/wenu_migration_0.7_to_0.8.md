@@ -640,15 +640,20 @@ remain authoritative.
 - update current architecture, implementation reference, source tree, and test
   audit to record the implemented result.
 
-**Status:** In progress. Milestone 46C.10A adds a reproducible diagnostic
-benchmark over one observer-independent canonical sphere, all six chart
-families, three observer/instant identities, and atlas-print export. It reports
-public-operation wall times, profiler-attributed selection, projection,
-preparation, rendering, and export costs, observed-cache entry counts before
-and after a compatible repeat, and deterministic image products. It defines
-no timing threshold and changes no runtime behavior. Milestone 46C.10B records
-the measured Mac report, suite results, atlas-print approval, and final
-architecture, implementation-reference, source-tree, and test-audit closure.
+**Final status:** Implemented. The Mac closure run built one canonical sphere
+in 4.530 seconds, prepared and exported 18 views across all six chart families
+and three observer/instant identities, and completed its 37 reported
+operations. Populated observed caches held three compatible identities while
+optional unused outline caches remained empty; repeating the first stellar
+AltAz request added no entry. Cumulative profiler
+totals were 6.763 seconds for selection, 240.172 for projection, 124.118 for
+preparation, 144.755 for rendering, and 277.339 for export. These diagnostic
+categories overlap and are not an additive wall-time decomposition or release
+threshold. Fast, integration, visual, and full suites passed. All 18
+atlas-print products were visually approved, including the explicitly masked
+regional-single and regional-group products; faint-star symbol saturation is
+deferred to the later appearance-curation stage. Current architecture,
+implementation reference, source tree, and test audit record this closure.
 
 ## Milestone 46D — Add one installed command and authoritative defaults
 

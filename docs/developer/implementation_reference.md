@@ -569,6 +569,12 @@ but neither it nor its canonical layers select an observer or instant. The
 compatibility `build_maximal_sphere(observer, profile=...)` retains the prior
 observer-bound behavior.
 
+`tools/benchmark_reusable_sphere.py` is the reproducible diagnostic for that
+contract. It builds one sphere, prepares and exports six chart families for
+three observer/instant identities, prints progress for 37 operations, and
+writes operation timings, overlapping profiler categories, and observed-cache
+counts to JSON. It deliberately defines no pass/fail timing threshold.
+
 `get_chart_view(sky, observer, *, family, ...)` obtains one geometrical view
 from that reusable sphere. `observer` is an existing caller-owned `Observer`;
 the view neither creates nor closes it. Friendly target, coordinate,

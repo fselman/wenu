@@ -368,3 +368,16 @@ additional La Ligua instants and Papudo without acquiring an observer.
 Observer location, instant, ephemeris, data directory, catalogue identity,
 and source revision remain part of observed-cache identity; returning to an
 earlier compatible state reuses the immutable stellar AltAz arrays.
+
+Milestone 46C.10 closes the reusable observed-sky work with a diagnostic Mac
+benchmark, not a runtime timing threshold. One canonical sphere supplies 18
+views spanning all six chart families and three observer/instant identities.
+The measured run built the canonical sphere once in 4.530 seconds; populated
+observed caches contained three compatible identities, optional unused outline
+caches remained empty, and repeating the first stellar AltAz request added no
+cache entry. Selection, projection,
+preparation, rendering, and export profiler totals are reported separately;
+the cumulative categories intentionally overlap. All required suites passed,
+and the 18 atlas-print products were visually approved. Faint-star symbol
+saturation remains a deferred appearance-curation concern rather than a
+reusable-sphere architectural defect.

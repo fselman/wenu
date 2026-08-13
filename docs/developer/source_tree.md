@@ -309,7 +309,10 @@ canonical sphere, prepares and exports every chart family for three
 observer/instant identities, and writes JSON phase timings and cache-entry
 counts beside deterministic atlas-print products. Profiler categories are
 reported independently and may overlap; they diagnose ownership costs rather
-than claiming an additive wall-time decomposition.
+than claiming an additive wall-time decomposition. Its 37-step progress output
+covers one catalogue load, 18 view preparations, and 18 atlas-print exports.
+The regional-single and regional-group requests explicitly exercise outside
+masks; the other four families remain unmasked.
 
 Canonical integration tests use a session-scoped build registry to reuse an
 identical example sphere and chart across read-only contracts. Distinct
