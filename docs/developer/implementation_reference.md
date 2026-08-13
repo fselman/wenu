@@ -728,8 +728,11 @@ fresh copy of the installed version-1 `defaults.toml`. The related
 `parse_configuration()` and `validate_configuration()` functions validate
 complete documents and mappings, and raise `ConfigurationError` with the full
 configuration path on failure. These functions do not yet translate values
-into chart runtime contracts; the existing typed Python defaults remain active
-until the remaining Milestone 46D.3 work is complete.
+into active chart runtime contracts. `translate_style_mode_defaults()` does
+construct existing immutable atlas/cartoon style, print/presentation mode, and
+palette objects with exact current parity, but composition continues to use
+its established Python constructors until the remaining Milestone 46D.3 work
+is complete.
 
 ## 9. Package imports
 

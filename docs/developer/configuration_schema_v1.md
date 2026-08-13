@@ -2,8 +2,8 @@
 
 **Status:** Milestone 46D.2 specification
 **Schema version:** `1`
-**Runtime status:** Packaged document loaded and strictly validated; typed
-translation is not yet connected
+**Runtime status:** Packaged document loaded and strictly validated; style and
+mode values translate with typed parity but are not yet connected to composition
 
 This document is the authoritative structural contract for Wenu's first
 versioned TOML configuration. It derives its public paths from

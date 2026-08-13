@@ -41,6 +41,12 @@ unsupported vocabularies and versions, and contradictory combinations with a
 complete configuration path. Typed chart owners still use their existing
 Python defaults; translation remains the next 46D.3 responsibility.
 
+Milestone 46D.3C translates the validated atlas and cartoon semantic bases,
+print and presentation modes, and their palettes into the existing immutable
+style and mode dataclasses. Exact equality with the established constructors
+is characterized. Composition still constructs its existing Python defaults;
+the translated objects are a parity seam only and cannot change rendering.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

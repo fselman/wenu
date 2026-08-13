@@ -748,9 +748,12 @@ deterministic order, schema coverage, line vocabulary, and audited baseline
 values. Milestone 46D.3B adds resource-based loading and strict complete-
 document validation for structure and ordering, types, finite values, colors,
 ranges, vocabularies, schema version, and contradictory combinations. Every
-failure names its complete configuration path. Neither slice is connected to
-chart runtime owners yet; typed translation and parity remain before this
-milestone can claim runtime authority or visual closure.
+failure names its complete configuration path. Milestone 46D.3C translates
+the atlas/cartoon semantic bases, print/presentation modes, and mode palettes
+into their existing immutable typed contracts and proves exact constructor
+parity. Composition is deliberately not rewired. Remaining geometry, detail,
+furniture, product, and export translation must close before this milestone
+can claim runtime authority or visual closure.
 
 ### Milestone 46D.4 — Migrate defaults by responsibility
 

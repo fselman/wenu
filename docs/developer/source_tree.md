@@ -310,6 +310,12 @@ and semantic validation behavior in Python. It has no catalogue, observer,
 geometry, chart, renderer, furniture-drawing, or export dependency and does
 not yet translate values into those runtime owners.
 
+`src/wenu/configuration/style_mode_translation.py` is the Milestone 46D.3C
+translation seam for existing immutable style, mode, and palette dataclasses.
+It contains translations but no public default literals, composition registry,
+renderer dispatch, or mutation. Existing composition remains unconnected
+until all configuration responsibilities have typed parity.
+
 Permanent test modules are named for current responsibilities rather than the
 milestones that introduced them. Scientific geometry and catalogue contracts
 remain ordinary unit tests. Cross-component canonical chart construction is
