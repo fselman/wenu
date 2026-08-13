@@ -630,51 +630,106 @@ overrides. Focused and full suites and the fixed visual matrix pass.
 - update current architecture, implementation reference, source tree, and test
   audit to record the implemented result.
 
-## Milestone 46D — Add one installed command and editable defaults
+## Milestone 46D — Add one installed command and authoritative defaults
 
 Milestone 46D begins only after Milestone 46C.9 validates all chart families
 from one reusable observer-independent maximal sphere. It must preserve the
 same request, view, drawing, `CelestialSphere.draw_chart()`, and single-export
 pipeline.
 
-### Milestone 46D.1 — Audit and specify the configuration contract
+### Milestone 46D.0.1 — Correct and freeze the configuration roadmap
+
+- name the installed command `wenu_chart`, never `wenu-chart`;
+- make the packaged, versioned, commented `defaults.toml` the authoritative
+  declaration of all public configurable defaults rather than an overlay on
+  duplicated Python literals;
+- define deterministic precedence as
+  `packaged defaults.toml < optional user TOML < explicit CLI arguments`;
+- require comprehensive public appearance coverage, including backgrounds,
+  fills, colors, line widths, `line_style`, symbol shapes and sizes, symbol
+  edges, opacity, z-order, fonts, labels, grids, horizon, masks, furniture,
+  and export appearance;
+- retain validation, behavior, invariants, derived geometry, derived
+  appearance, and catalogue operations in their existing Python owners;
+- retain Milestone 46C.9 as the implementation prerequisite for all runtime
+  configuration and command work.
+
+**Status:** Implemented. This milestone changes documentation authority only;
+it adds no configuration loader, command, or runtime behavior.
+
+### Milestone 46D.1 — Audit every effective default
 
 - inventory every effective default in the six canonical examples, shared
   argument adapters, view defaults, chart families, styles, output modes,
-  detail policies, furniture, and export workflow;
+  detail policies, rendering symbols, grids and references, horizon and masks,
+  furniture, and export workflow;
 - classify each value by observer, subject, geometry, detail, style, mode,
   grid/reference, furniture, or export ownership;
-- distinguish public stable defaults from derived values and implementation
-  details that must not be serialized;
-- specify a versioned TOML schema, contextual validation errors, and exact
-  built-in/configuration/CLI precedence before adding runtime loading.
+- classify each as a public configurable default, derived value, invariant,
+  or implementation detail;
+- explicitly inventory every background, foreground, fill, line, label, and
+  symbol color; line width and `line_style`; symbol shape, size, edge, and
+  edge width; opacity, z-order, font, and label property;
+- record every output-mode transformation and detect duplicated or conflicting
+  literals before moving any value.
 
-### Milestone 46D.2 — Centralize typed built-in declarations
+### Milestone 46D.2 — Specify the versioned TOML schema
 
-- express public built-in defaults through one readable typed registry while
-  preserving their existing runtime owners;
-- retain derived geometry and appearance computations in chart, style, mode,
-  detail, and furniture code rather than flattening them into data;
-- prove that using no external configuration produces byte-compatible request
-  values and visually unchanged canonical products.
-
-### Milestone 46D.3 — Load and validate TOML overlays
-
-- load an optional user TOML file with sections for observer, subjects,
-  family geometry, detail, styles, modes, grids and references, furniture,
-  products, and export;
-- translate validated values into the existing immutable typed contracts;
-- reject unknown keys, wrong types, unsupported values, and contradictory
-  combinations with the complete configuration path in each diagnostic;
-- apply deterministic precedence:
-  `built-ins < TOML configuration < explicit command-line arguments`;
+- define responsibility-based sections for observer, subjects, family
+  geometry, detail, styles, modes, grids and references, furniture, products,
+  and export;
+- require a schema version and deterministic section and key ordering;
+- require every configurable line-bearing element to expose independent
+  `color`, `line_width`, and `line_style` values;
+- initially validate `solid`, `dashed`, `dotted`, `dash_dot`, and `none`;
+- reject unknown sections and keys, wrong types, invalid colors and ranges,
+  unsupported values and schema versions, and contradictory combinations with
+  the complete configuration path in each diagnostic;
 - prohibit executable expressions, Python class names, renderer operations,
-  catalogue joins, and arbitrary imports.
+  catalogue joins, imports, and arbitrary code.
 
-### Milestone 46D.4 — Add the installed `wenu-chart` command
+### Milestone 46D.3 — Add authoritative packaged defaults
+
+- add one packaged, versioned, fully commented `defaults.toml` containing
+  every public configurable built-in value;
+- load it through package resources without relying on the current directory;
+- translate its validated values into the existing immutable typed contracts
+  while preserving their runtime owners;
+- permit Python schema and validation types but do not duplicate public default
+  literals in a second registry;
+- retain mathematical constants, invariants, catalogue operations, derived
+  geometry, and derived appearance computations in Python;
+- prove the packaged document alone reproduces the established resolved
+  request values and canonical appearance.
+
+### Milestone 46D.4 — Migrate defaults by responsibility
+
+- migrate chart backgrounds and boundaries, astronomical symbols,
+  constellation figures and boundaries, grids and labels, horizon, extended
+  objects, masks, furniture, fonts, family geometry, detail, products, and
+  export defaults incrementally;
+- remove each displaced Python public literal when its TOML value is connected
+  to the existing typed runtime owner;
+- include `line_style` wherever a configurable line is drawn;
+- add focused characterization, schema, and validation tests at every step;
+- accept no unexplained change to the atlas-print golden baseline.
+
+### Milestone 46D.5 — Load and validate user TOML overlays
+
+- load an optional partial user TOML document over the packaged authority;
+- merge recursively only through documented sections and keys without
+  modifying the packaged defaults in memory;
+- translate the validated result into existing immutable typed contracts;
+- apply deterministic precedence:
+  `packaged defaults.toml < optional user TOML < explicit CLI arguments`;
+- distinguish omitted CLI values from explicit values so an argument-parser
+  default cannot accidentally override TOML;
+- prove sequential overlays do not leak mutable state.
+
+### Milestone 46D.6 — Add the installed `wenu_chart` command
 
 - add one installed command with `all-sky`, `planisphere`, `regional`,
-  `circumpolar`, and `binocular` subcommands;
+  `circumpolar`, `binocular`, and `defaults` subcommands;
 - make `regional` accept one or several constellations through the same
   constellation-subject parser, without separate single/group execution;
 - retain shared observer, product, content, horizon, grid, furniture, style,
@@ -684,36 +739,34 @@ pipeline.
 - retain the six examples as short reproducible declarations and regression
   authorities.
 
-### Milestone 46D.5 — Export a complete editable template
+### Milestone 46D.7 — Export a complete editable template
 
-- add `wenu-chart defaults --write PATH` to write a complete, versioned,
-  commented TOML template containing effective public built-in values;
-- make the generated order and formatting deterministic;
+- add `wenu_chart defaults --write PATH` to write a complete, versioned,
+  commented TOML document containing the effective packaged public defaults;
+- make generated order, formatting, documentation, and schema version
+  deterministic;
+- document valid values, including the complete `line_style` vocabulary;
 - document how to create named publication, presentation, outreach, location,
   and observing profiles without editing Wenu source;
 - define whether a future profile-inheritance feature is justified only after
   ordinary single-file overlays are proven sufficient or insufficient.
 
-### Milestone 46D.6 — Prove command and example parity
+### Milestone 46D.8 — Prove parity and close visually
 
-- generate every canonical family through both its example and the unified
-  command with equivalent effective options;
+- generate every canonical family through both its example and `wenu_chart`
+  with equivalent effective options;
 - prove matching resolved observer, subject, geometry, detail, appearance,
   furniture, and export requests;
 - test one- and multi-constellation regional subjects, packaged groups,
   explicit fields, targets, masks, horizon roles, grids, styles, modes,
   legends, and output paths;
-- prove that sequential commands and configurations do not leak mutable state
-  into later products or a reused maximal sphere.
-
-### Milestone 46D.7 — Document and close visually
-
-- document the installed command, schema, precedence, complete template, and
-  Python equivalents in the user guide and implementation reference;
-- run fast, integration, visual, and full suites;
-- compare the mandatory atlas-print and cartoon-presentation regression
-  matrix with and without configuration files;
-- update current architecture, source tree, migration status, and test audit;
+- prove partial overlays change only requested values and sequential commands
+  do not leak state into later products or a reused maximal sphere;
+- prove invalid configuration fails before catalogue loading or rendering;
+- run fast, integration, visual, and full suites and compare the mandatory
+  atlas-print and cartoon-presentation regression matrix;
+- update current architecture, source tree, implementation reference, user
+  guide, README, migration status, and test audit;
 - accept no unexplained change to the atlas-print golden baseline.
 
 ## Later dynamic-sky milestones

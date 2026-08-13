@@ -207,18 +207,18 @@ and lower-level APIs remain available.  Shared command-line adaptation must
 use the same ordinary interface and must not restore example-owned
 orchestration.
 
-## Unified command and editable defaults
+## Unified command and authoritative defaults
 
-Wenu will provide one installed `wenu-chart` command over the ordinary request
+Wenu will provide one installed `wenu_chart` command over the ordinary request
 interface. Chart families are subcommands rather than independent execution
 pipelines:
 
 ```text
-wenu-chart all-sky ...
-wenu-chart planisphere ...
-wenu-chart regional ...
-wenu-chart circumpolar ...
-wenu-chart binocular ...
+wenu_chart all-sky ...
+wenu_chart planisphere ...
+wenu_chart regional ...
+wenu_chart circumpolar ...
+wenu_chart binocular ...
 ```
 
 The `regional` subcommand accepts one or several IAU constellations through the
@@ -228,34 +228,50 @@ regression authorities. The installed command delegates to their shared
 request, view, drawing, and export boundaries rather than dispatching through
 the example scripts or reproducing their orchestration.
 
-Editable defaults use a human-readable TOML document rather than executable
-Python or implementation-specific serialized objects. TOML permits comments
-and named sections while remaining deterministic. Its sections preserve the
-existing responsibility boundaries for observer, subject, chart-family
-geometry, astronomical detail, style, output mode, grids and references,
-legends and furniture, and export. A configuration loader validates those
-sections and translates them into the existing typed request, detail, style,
-furniture, and product values; it does not acquire their behavior.
-
-Precedence is explicit and stable:
+Wenu's packaged, versioned, and commented `defaults.toml` document is the
+authoritative declaration of every public configurable default. It is not an
+overlay on a second Python registry of the same values. Its
+responsibility-based sections cover observer and subject choices, chart-family
+geometry, astronomical detail, styles, output modes, grids and references,
+legends and furniture, products, and export. An optional user TOML document
+may override only selected public values, and explicit command-line arguments
+override both:
 
 ```text
-built-in Wenu defaults < selected TOML configuration < explicit CLI arguments
+packaged defaults.toml < optional user TOML < explicit CLI arguments
 ```
 
-The installed command can write a complete documented template containing
-the effective built-in values. Users may copy and edit that file without
-modifying package source. Configuration files contain no class names,
-expressions, renderer calls, catalogue joins, or arbitrary code. Invalid
-families, keys, types, values, and combinations produce contextual errors
-rather than being ignored silently.
+The packaged document includes backgrounds; foreground, fill, line, label,
+and symbol colors; line widths and line styles; symbol shapes, sizes, edges,
+and widths; opacity and z-order; fonts and label properties; grid and horizon
+appearance; masks; furniture; and every other stable public appearance value.
+Every configurable line-bearing element exposes `color`, `line_width`, and
+`line_style` as independent values. The initial validated line-style
+vocabulary includes `solid`, `dashed`, `dotted`, `dash_dot`, and `none`.
 
-Centralizing the readable declaration of defaults does not centralize their
-runtime ownership. Chart types still own geometry, styles own appearance,
-output modes own medium adaptation, detail policies own astronomical density,
-and furniture owns legends and contextual annotation. Atlas print remains the
-golden visual baseline, and loading no configuration file must reproduce the
-current canonical behavior exactly.
+A configuration loader validates the packaged document and any user overlay,
+then translates the merged values into the existing immutable typed request,
+detail, style, furniture, mode, and product contracts. Unknown sections and
+keys, wrong types, invalid colors, invalid ranges, unsupported line styles,
+unsupported schema versions, and contradictory combinations raise contextual
+errors containing the complete configuration path. Configuration contains no
+Python class names, executable expressions, renderer calls, catalogue joins,
+imports, or arbitrary code.
+
+Centralizing public values in TOML does not centralize runtime behavior. Chart
+types still own geometry, styles own appearance, output modes own medium
+adaptation, detail policies own astronomical density, and furniture owns
+legends and contextual annotation. Mathematical constants, invariants,
+catalogue operations, derived geometry, and derived appearance computations
+remain in Python and are not serialized. Python may define immutable schema
+and validation types but must not duplicate the public default literals.
+
+The installed command can write a complete deterministic editable copy with
+`wenu_chart defaults --write PATH`. The generated file contains the same
+effective public values, documentation, schema version, and ordering as the
+packaged authority. Loading the packaged defaults without a user overlay must
+reproduce current resolved requests and canonical appearance exactly. Atlas
+print remains the golden visual baseline.
 
 ## Reproducible image-frame sequences
 
