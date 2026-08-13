@@ -188,6 +188,7 @@ class CircumpolarChart:
         export_options = kwargs.pop("export_options", None)
         observer = kwargs.pop("observer", None)
         boundary_style = kwargs.pop("boundary_style", None)
+        horizon_mask = kwargs.pop("horizon_mask", False)
         if kwargs:
             unexpected = next(iter(kwargs))
             raise TypeError(f"Unexpected export option {unexpected!r}.")
@@ -202,5 +203,8 @@ class CircumpolarChart:
             composition=composition,
             layer_options=layer_options,
             export_options=export_options,
-            render_options={"boundary_style": boundary_style},
+            render_options={
+                "boundary_style": boundary_style,
+                "horizon_mask": horizon_mask,
+            },
         )

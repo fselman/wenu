@@ -315,3 +315,13 @@ the established projection-domain guard. Complete-sphere preparation applies
 the chart-owned horizontal-to-Galactic transformation before Mollweide
 projection, whose existing longitude-seam topology produces valid separate
 pieces. Q.5 does not yet combine or draw masks.
+
+Milestone 46C.8Q.6 composes every selected mask restriction before drawing.
+Constellation regions and the above-horizon hemisphere remain independent
+opening groups; the renderer encodes one viewport winding per group and all
+group holes in one compound nonzero-winding path. The only transparent area
+is therefore the intersection of the selected openings, while their excluded
+union is painted once with the existing outside-mask style. Disjoint openings,
+chart-boundary clipping, and Mollweide seam pieces remain intact without
+stacking translucent patches. Planispheres ignore horizon masking and retain
+their intrinsic horizon boundary.

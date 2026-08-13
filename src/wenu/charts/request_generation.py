@@ -142,7 +142,10 @@ def export_prepared_chart(sky, prepared, *, observer=None):
         ))
         try:
             composition.style.configure_axes(ax, title=title)
-            export_options = {"composition": composition}
+            export_options = {
+                "composition": composition,
+                "horizon_mask": request.horizon_mask,
+            }
             if observer is not None:
                 export_options["observer"] = resolved_observer
             result = chart.export(

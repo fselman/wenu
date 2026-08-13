@@ -64,7 +64,7 @@ def test_all_sky_mask_uses_galactic_transform_without_horizon_rejection(
 ):
     calls = {}
     monkeypatch.setattr(
-        "wenu.charts._masking.draw_constellation_outside_mask",
+        "wenu.charts._masking.draw_composed_outside_mask",
         lambda **kwargs: calls.update(kwargs),
     )
 
@@ -83,6 +83,7 @@ def test_all_sky_mask_uses_galactic_transform_without_horizon_rejection(
     assert chart.render(Sky(), Renderer(), observer=object()) == "result"
     assert calls["constellations"] == ("Cru", "Cen")
     assert calls["transform_spherical"] is not None
+    assert calls["complete_sphere"] is True
     assert "visible_minimum_latitude_deg" not in calls
 
 

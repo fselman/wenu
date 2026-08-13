@@ -542,6 +542,12 @@ painting remain in Milestones 46C.8Q.6 and 46C.8Q.7.
 - retain separate disjoint openings and horizon clipping without alpha
   accumulation.
 
+**Status:** Implemented. Requests now carry horizon masking through the
+shared export boundary, chart families prepare their applicable opening
+groups, and the renderer paints one compound nonzero-winding mask. The
+planisphere remains an idempotent no-op. Semantic horizon-reference and mask
+appearance are finalized in Milestone 46C.8Q.7.
+
 ##### Milestone 46C.8Q.7 — Add semantic appearance
 
 - give the horizon reference explicit style-owned color, linewidth,

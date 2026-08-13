@@ -135,6 +135,7 @@ class AllSkyChart:
         observer=None,
         style=None,
         layer_options=None,
+        horizon_mask=False,
     ):
         """Render the complete sphere through the canonical execution core."""
         resolved_observer = (
@@ -209,8 +210,8 @@ class AllSkyChart:
                 transform(spherical)
             ),
         )
-        if self.outside_mask_constellations is not None:
-            from wenu.charts._masking import draw_constellation_outside_mask
+        if self.outside_mask_constellations is not None or horizon_mask:
+            from wenu.charts._masking import draw_composed_outside_mask
 
             mask_style = (
                 {
@@ -222,7 +223,7 @@ class AllSkyChart:
                 if style is None
                 else resolved_style.outside_mask_style()
             )
-            draw_constellation_outside_mask(
+            draw_composed_outside_mask(
                 sky=sky,
                 projection=projection,
                 renderer=renderer,
@@ -231,6 +232,9 @@ class AllSkyChart:
                 constellations=self.outside_mask_constellations,
                 style=mask_style,
                 transform_spherical=transform,
+                horizon_mask=horizon_mask,
+                boundary=self.boundary,
+                complete_sphere=True,
             )
         return result
 
@@ -247,6 +251,7 @@ class AllSkyChart:
         legends=None,
         resolved_detail=None,
         composition=None,
+        horizon_mask=False,
     ):
         """Render and reproducibly save an all-sky chart."""
         from wenu.charts.regional import ExportOptions
@@ -272,6 +277,7 @@ class AllSkyChart:
                 composition=composition,
                 layer_options=layer_options,
                 export_options=export_options,
+                render_options={"horizon_mask": horizon_mask},
             )
 
         result = self.render(
@@ -280,6 +286,7 @@ class AllSkyChart:
             observer=observer,
             style=style,
             layer_options=layer_options,
+            horizon_mask=horizon_mask,
         )
         if legends is not None:
             from wenu.charts.chart_legend_workflow import (

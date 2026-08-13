@@ -152,20 +152,32 @@ class MatplotlibRenderer:
             vertices.extend(ring)
             codes.extend(ring_codes)
 
-        add_ring(
-            (
-                (viewport.x_min, viewport.y_min),
-                (viewport.x_max, viewport.y_min),
-                (viewport.x_max, viewport.y_max),
-                (viewport.x_min, viewport.y_max),
-            ),
-            clockwise=False,
-        )
-        for polygon in polygons:
-            add_ring(
-                np.column_stack((polygon.x, polygon.y)),
-                clockwise=True,
+        sizes = polygons.metadata.get("mask_opening_group_sizes")
+        if sizes is None:
+            sizes = (len(polygons),)
+        if any(not isinstance(size, int) or size < 0 for size in sizes):
+            raise ValueError(
+                "Mask opening group sizes must be nonnegative integers."
             )
+        if sum(sizes) != len(polygons):
+            raise ValueError("Mask opening group sizes must match polygons.")
+        offset = 0
+        for size in sizes:
+            add_ring(
+                (
+                    (viewport.x_min, viewport.y_min),
+                    (viewport.x_max, viewport.y_min),
+                    (viewport.x_max, viewport.y_max),
+                    (viewport.x_min, viewport.y_max),
+                ),
+                clockwise=False,
+            )
+            for polygon in polygons.items[offset:offset + size]:
+                add_ring(
+                    np.column_stack((polygon.x, polygon.y)),
+                    clockwise=True,
+                )
+            offset += size
         mask_style = {
             "facecolor": "black",
             "edgecolor": "none",

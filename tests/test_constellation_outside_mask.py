@@ -10,6 +10,7 @@ import pytest
 
 from wenu.charts._masking import (
     _expanded_names,
+    compose_projected_mask_openings,
     draw_constellation_outside_mask,
 )
 from wenu.charts.regional import RegionalChart
@@ -55,6 +56,33 @@ def test_renderer_builds_compound_path_with_hole():
     assert np.count_nonzero(patch.get_path().codes == Path.MOVETO) == 2
     assert patch.get_alpha() == pytest.approx(0.3)
     assert patch in ax.patches
+    plt.close(figure)
+
+
+def test_renderer_composes_independent_opening_groups_in_one_patch():
+    figure, ax = plt.subplots()
+    renderer = MatplotlibRenderer(ax)
+    first = ProjectedPolygons(items=[ProjectedPolygon(
+        x=[-0.8, 0.2, 0.2, -0.8],
+        y=[-0.8, -0.8, 0.8, 0.8],
+    )])
+    second = ProjectedPolygons(items=[ProjectedPolygon(
+        x=[-0.2, 0.8, 0.8, -0.2],
+        y=[-0.8, -0.8, 0.8, 0.8],
+    )])
+
+    composed = compose_projected_mask_openings(first, second)
+    patch = renderer.draw_outside_mask(
+        composed,
+        viewport=Viewport(-1.0, 1.0, -1.0, 1.0),
+        style={"facecolor": "black", "alpha": 0.3},
+    )
+    from matplotlib.path import Path
+
+    assert composed.metadata["mask_opening_group_sizes"] == (1, 1)
+    assert len(ax.patches) == 1
+    assert np.count_nonzero(patch.get_path().codes == Path.MOVETO) == 4
+    assert patch.get_alpha() == pytest.approx(0.3)
     plt.close(figure)
 
 

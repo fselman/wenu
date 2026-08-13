@@ -156,11 +156,17 @@ frame a chart, test visibility, project, mask, or clip.
 All constellation-subject examples use this one adapter; a single region is
 represented by a one-element `--constellations` value rather than a parallel
 singular parser.
-`charts/_masking.py` selects official mask boundaries before projection. For
+`charts/_masking.py` selects official mask boundaries before projection and
+composes constellation and above-horizon openings into one renderer mask.
+Independent opening groups are retained as compound-path winding metadata so
+the renderer paints their excluded union once instead of stacking alpha. For
 observer-visible full-sky charts it rejects wholly hidden regions while
 preserving complete partly visible, possibly disjoint polygons for clipping
 by the chart-owned final boundary; regional masks retain their viewport-only
 behavior.
+`charts/horizon_mask.py` prepares the above-horizon opening for ordinary
+stereographic fields and the transformed, seam-aware Galactic Mollweide map;
+it does not paint or own appearance.
 
 ## Responsibility mapping
 

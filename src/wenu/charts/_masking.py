@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from wenu.charts.horizon_mask import prepare_horizon_mask_opening
 from wenu.geometry.projected import ProjectedPolygons
 from wenu.geometry.spherical import SphericalPolygons
 
@@ -42,6 +43,31 @@ def draw_constellation_outside_mask(
     so the renderer's final chart-boundary clip produces the exact visible
     opening.
     """
+    projected = prepare_constellation_mask_opening(
+        sky=sky,
+        projection=projection,
+        observer=observer,
+        constellations=constellations,
+        visible_minimum_latitude_deg=visible_minimum_latitude_deg,
+        transform_spherical=transform_spherical,
+    )
+    return renderer.draw_outside_mask(
+        projected,
+        viewport=viewport,
+        style=style,
+    )
+
+
+def prepare_constellation_mask_opening(
+    *,
+    sky,
+    projection,
+    observer=None,
+    constellations,
+    visible_minimum_latitude_deg=None,
+    transform_spherical=None,
+):
+    """Project selected official regions as one mask-opening group."""
     boundaries = sky.constellation_boundaries
     if boundaries is None:
         raise RuntimeError(
@@ -68,8 +94,69 @@ def draw_constellation_outside_mask(
         raise TypeError(
             "Constellation boundaries must project to ProjectedPolygons."
         )
+    return projected
+
+
+def compose_projected_mask_openings(*groups):
+    """Combine independent openings for one nonzero-winding mask path."""
+    resolved = tuple(group for group in groups if group is not None)
+    if not all(isinstance(group, ProjectedPolygons) for group in resolved):
+        raise TypeError("mask openings must be ProjectedPolygons.")
+    items = [polygon for group in resolved for polygon in group]
+    return ProjectedPolygons(
+        items=items,
+        metadata={
+            "mask_opening_group_sizes": tuple(len(group) for group in resolved),
+            "mask_opening_group_count": len(resolved),
+        },
+    )
+
+
+def draw_composed_outside_mask(
+    *,
+    sky,
+    projection,
+    renderer,
+    viewport,
+    observer,
+    style,
+    constellations=None,
+    horizon_mask=False,
+    planisphere=False,
+    boundary=None,
+    transform_spherical=None,
+    complete_sphere=False,
+    visible_minimum_latitude_deg=None,
+):
+    """Paint all selected outside restrictions exactly once."""
+    resolved_observer = (
+        getattr(sky, "observer", None) if observer is None else observer
+    )
+    if resolved_observer is None:
+        raise TypeError("outside masking requires an observer.")
+    groups = []
+    if constellations is not None:
+        groups.append(prepare_constellation_mask_opening(
+            sky=sky,
+            projection=projection,
+            observer=resolved_observer,
+            constellations=constellations,
+            visible_minimum_latitude_deg=visible_minimum_latitude_deg,
+            transform_spherical=transform_spherical,
+        ))
+    if horizon_mask and not planisphere:
+        groups.append(prepare_horizon_mask_opening(
+            projection=projection,
+            viewport=viewport,
+            observer=resolved_observer,
+            boundary=boundary,
+            transform_spherical=transform_spherical,
+            complete_sphere=complete_sphere,
+        ).projected)
+    if not groups:
+        return None
     return renderer.draw_outside_mask(
-        projected,
+        compose_projected_mask_openings(*groups),
         viewport=viewport,
         style=style,
     )

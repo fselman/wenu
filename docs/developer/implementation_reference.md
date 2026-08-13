@@ -434,6 +434,14 @@ observer. Advanced callers that already have a compatible sphere may call
 `export_prepared_chart(sky, prepared_request)` after resolution and
 preparation; this avoids rebuilding the sphere while retaining the same
 canonical composition and single-export path.
+The resolved request also carries `horizon_mask` through this export boundary
+as a render option. Regional, binocular, circumpolar, and Galactic all-sky
+charts prepare the above-horizon opening beside any constellation opening.
+The mask composer passes all independent groups to one
+`MatplotlibRenderer.draw_outside_mask()` call; nonzero winding leaves only
+their intersection transparent and applies the resolved outside-mask alpha
+once. A planisphere accepts the shared option but deliberately performs no
+horizon-mask operation because its horizon is already the chart boundary.
 Generation delegates its entire preparation phase to
 `build_chart_request()`, then exports the returned prepared request and closes
 only resources recorded as owned by that build result.

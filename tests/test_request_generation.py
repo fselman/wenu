@@ -62,7 +62,10 @@ def test_prepared_request_exports_the_shared_product_matrix_once(
     class Chart:
         chart_context = object()
 
-        def export(self, sky, renderer, output, *, composition):
+        def export(
+            self, sky, renderer, output, *, composition, horizon_mask
+        ):
+            assert horizon_mask is False
             exported.append((sky, output, composition))
             return ChartExportResult(
                 rendering=None,
@@ -153,7 +156,10 @@ def test_prepared_request_applies_exact_product_composition_options(
     class Chart:
         chart_context = object()
 
-        def export(self, sky, renderer, output, *, composition):
+        def export(
+            self, sky, renderer, output, *, composition, horizon_mask
+        ):
+            assert horizon_mask is False
             return ChartExportResult(
                 rendering=None,
                 output=output,
@@ -216,7 +222,10 @@ def test_prepared_request_resolves_generic_context_after_chart_construction(
     class Chart:
         chart_context = object()
 
-        def export(self, sky, renderer, output, *, composition):
+        def export(
+            self, sky, renderer, output, *, composition, horizon_mask
+        ):
+            assert horizon_mask is False
             return ChartExportResult(
                 rendering=None, output=output, composition=composition,
                 layer_options={}, export_options=None,

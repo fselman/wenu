@@ -200,6 +200,7 @@ class FullSkyChart:
         observer=None,
         style=None,
         layer_options=None,
+        horizon_mask=False,
     ):
         """Render the visible hemisphere through ``CelestialSphere``."""
         resolved_style = style
@@ -286,7 +287,7 @@ class FullSkyChart:
         )
         if self.outside_mask_constellations is not None:
             from wenu.charts._masking import (
-                draw_constellation_outside_mask,
+                draw_composed_outside_mask,
             )
 
             mask_style = (
@@ -299,7 +300,7 @@ class FullSkyChart:
                 if style is None
                 else resolved_style.outside_mask_style()
             )
-            draw_constellation_outside_mask(
+            draw_composed_outside_mask(
                 sky=sky,
                 projection=projection,
                 renderer=renderer,
@@ -307,6 +308,8 @@ class FullSkyChart:
                 observer=observer,
                 constellations=self.outside_mask_constellations,
                 style=mask_style,
+                horizon_mask=horizon_mask,
+                planisphere=True,
                 visible_minimum_latitude_deg=(
                     self.horizon_altitude_deg
                 ),
@@ -326,6 +329,7 @@ class FullSkyChart:
         legends=None,
         resolved_detail=None,
         composition=None,
+        horizon_mask=False,
     ):
         """Render and reproducibly save a full-sky chart."""
         from wenu.charts.regional import ExportOptions
@@ -347,6 +351,7 @@ class FullSkyChart:
                 composition=composition,
                 layer_options=layer_options,
                 export_options=export_options,
+                render_options={"horizon_mask": horizon_mask},
             )
 
         result = self.render(
@@ -355,6 +360,7 @@ class FullSkyChart:
             observer=observer,
             style=style,
             layer_options=layer_options,
+            horizon_mask=horizon_mask,
         )
         if legends is not None:
             from wenu.charts.chart_legend_workflow import (

@@ -152,7 +152,7 @@ def test_full_sky_chart_can_draw_an_outside_constellation_mask(monkeypatch):
         calls.update(kwargs)
 
     monkeypatch.setattr(
-        "wenu.charts._masking.draw_constellation_outside_mask",
+        "wenu.charts._masking.draw_composed_outside_mask",
         draw_mask,
     )
 
@@ -173,6 +173,30 @@ def test_full_sky_chart_can_draw_an_outside_constellation_mask(monkeypatch):
     assert calls["constellations"] == ("Cru", "Cen")
     assert calls["viewport"] == chart.viewport
     assert calls["visible_minimum_latitude_deg"] == pytest.approx(0.0)
+    assert calls["planisphere"] is True
+
+
+def test_full_sky_chart_ignores_horizon_mask(monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        "wenu.charts._masking.draw_composed_outside_mask",
+        lambda **kwargs: calls.append(kwargs),
+    )
+
+    class Renderer:
+        def set_clip_boundary(self, boundary, *, style):
+            pass
+
+    class Sky:
+        constellation_labels = None
+
+        def draw_chart(self, **kwargs):
+            return "result"
+
+    assert FullSkyChart().render(
+        Sky(), Renderer(), horizon_mask=True
+    ) == "result"
+    assert calls == []
 
 
 def test_full_sky_chart_is_a_top_level_export():

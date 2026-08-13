@@ -162,6 +162,7 @@ class BinocularChart:
         layer_options=None,
         boundary_style=None,
         coordinate_label_anchor=None,
+        horizon_mask=False,
     ):
         """Render and clip every artist to the circular field stop."""
         if boundary_style is None:
@@ -224,6 +225,8 @@ class BinocularChart:
             observer=observer,
             style=None,
             layer_options=options,
+            horizon_mask=horizon_mask,
+            mask_boundary=self.field_stop,
         )
 
     def export(
@@ -240,6 +243,7 @@ class BinocularChart:
         legends=None,
         resolved_detail=None,
         composition=None,
+        horizon_mask=False,
     ):
         if composition is not None:
             if style is not None or legends is not None or resolved_detail is not None:
@@ -258,7 +262,10 @@ class BinocularChart:
                 composition=composition,
                 layer_options=layer_options,
                 export_options=export_options,
-                render_options={"boundary_style": boundary_style},
+                render_options={
+                    "boundary_style": boundary_style,
+                    "horizon_mask": horizon_mask,
+                },
             )
         result = self.render(
             sky,
@@ -267,6 +274,7 @@ class BinocularChart:
             style=style,
             layer_options=layer_options,
             boundary_style=boundary_style,
+            horizon_mask=horizon_mask,
         )
         if legends is not None:
             from wenu.charts.chart_legend_workflow import (
