@@ -26,6 +26,13 @@ strict non-executable boundary. It is documentation only: no configuration
 parser, packaged defaults, overlay, command, or runtime default authority is
 implemented yet.
 
+Milestone 46D.3A adds the complete commented version-1 document as the
+installed `wenu.configuration/defaults.toml` resource. Resource and
+characterization tests prove deterministic ordering, responsibility coverage,
+independent line fields, and audited baseline values. Existing Python owners
+remain the runtime authority until strict validation and typed translation are
+implemented in later 46D.3 slices, so this step changes no chart behavior.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

@@ -135,8 +135,9 @@ existing typed detail boundary. Unknown names are errors.
 
 ### `styles`
 
-`styles.atlas` contains the semantic base appearance. Its ordered subtables
-are `canvas`, `stars`, `milky_way`, `lmc`, `smc`, `nonstellar`, `galaxy`,
+`styles.atlas` and `styles.cartoon` each contain one complete semantic base
+appearance; neither inherits from the other. Their ordered subtables are
+`canvas`, `stars`, `milky_way`, `lmc`, `smc`, `nonstellar`, `galaxy`,
 `supernova_remnant`, `globular_cluster`, `planetary_nebula`, `open_cluster`,
 `constellation_boundaries`, `constellation_figures`, `constellation_labels`,
 `equatorial_grid`, `ecliptic_grid`, `galactic_grid`, `altaz_grid`,

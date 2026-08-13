@@ -1,0 +1,824 @@
+# Wenu authoritative public defaults
+#
+# Schema version 1. Values use public vocabulary rather than Python,
+# Matplotlib, renderer, or catalogue implementation names. The initial
+# runtime translation is added incrementally after this packaged document is
+# characterized. "none" represents an intentional absent optional value.
+
+schema_version = 1
+
+# Observer defaults used by the canonical examples and future wenu_chart CLI.
+[observer]
+location = "La Ligua"
+time = "2026-08-15 21:00"
+elevation = "none"
+timezone = "none"
+ephemeris = "none"
+data_directory = "none"
+
+# Default subjects. Empty arrays mean that no subject is selected.
+[subjects.all_sky]
+kind = "none"
+
+[subjects.planisphere]
+kind = "none"
+
+[subjects.regional_single]
+kind = "constellations"
+constellations = ["Cru"]
+
+[subjects.regional_group]
+kind = "constellations"
+constellations = ["Sgr", "Sco", "Oph", "Ser"]
+group = "none"
+
+[subjects.circumpolar]
+kind = "none"
+
+[subjects.binocular]
+kind = "target"
+target = "centaurus-a"
+
+# Chart-family geometry. Projection radii, boundary sampling, east-west flip,
+# derived viewports, and automatic region framing remain Python invariants.
+[families.all_sky]
+projection = "mollweide"
+coordinate_frame = "galactic"
+position_angle = 0.0
+mask = false
+
+[families.planisphere]
+projection = "stereographic"
+coordinate_frame = "horizontal"
+position_angle = 0.0
+mask = false
+
+[families.regional_single]
+projection = "stereographic"
+coordinate_frame = "horizontal"
+position_angle = 0.0
+mask = false
+width = "none"
+height = "none"
+
+[families.regional_group]
+projection = "stereographic"
+coordinate_frame = "horizontal"
+position_angle = 0.0
+mask = false
+width = "none"
+height = "none"
+
+[families.circumpolar]
+projection = "stereographic"
+coordinate_frame = "horizontal"
+position_angle = 0.0
+mask = false
+pole = "south"
+limiting_declination = -69.75
+
+[families.binocular]
+projection = "stereographic"
+coordinate_frame = "horizontal"
+position_angle = 0.0
+mask = false
+field_diameter = 6.5
+
+# Neutral detail contains no ceilings until a family/product policy supplies
+# them. Optional values use "none".
+[detail.neutral]
+star_magnitude_limit = "none"
+galaxy_magnitude_limit = "none"
+open_cluster_minimum_size = "none"
+globular_cluster_minimum_size = "none"
+planetary_nebula_minimum_size = "none"
+supernova_remnant_minimum_size = "none"
+extended_samples = "none"
+label_density = 1.0
+enabled_layers = "none"
+grid_label_layers = []
+constellation_star_mode = "none"
+extra_stars = []
+
+[detail.content]
+default_layers = [
+    "stars", "constellation_lines", "constellation_labels",
+    "constellation_boundaries", "equatorial_grid", "ecliptic_grid",
+    "galactic_grid", "altaz_grid", "milky_way", "magellanic_clouds",
+    "galaxies", "globular_clusters", "open_clusters",
+    "planetary_nebulae", "supernova_remnants",
+]
+cartoon_layers = ["stars", "constellation_lines", "constellation_labels"]
+
+[detail.cartoon]
+star_mode = "selected"
+bright_limit = 3.0
+extra_stars = []
+deep_sky = false
+named_star_labels = false
+
+[detail.adaptive]
+reference_width = 7.0
+magnitude_adjustment_per_octave = 0.20
+maximum_adjustment = 0.50
+adapt_layers = true
+
+[[detail.adaptive.levels]]
+span = 3.0
+stars = 12.0
+galaxies = 12.0
+open_clusters = 0.5
+globular_clusters = 0.2
+planetary_nebulae = 0.1
+supernova_remnants = 0.5
+label_density = 1.30
+
+[[detail.adaptive.levels]]
+span = 6.5
+stars = 11.0
+galaxies = 12.0
+open_clusters = 1.0
+globular_clusters = 0.5
+planetary_nebulae = 0.2
+supernova_remnants = 1.0
+label_density = 1.20
+
+[[detail.adaptive.levels]]
+span = 15.0
+stars = 9.5
+galaxies = 11.8
+open_clusters = 2.0
+globular_clusters = 1.0
+planetary_nebulae = 0.5
+supernova_remnants = 2.0
+label_density = 1.05
+
+[[detail.adaptive.levels]]
+span = 30.0
+stars = 8.2
+galaxies = 11.5
+open_clusters = 4.0
+globular_clusters = 2.0
+planetary_nebulae = 1.0
+supernova_remnants = 4.0
+label_density = 0.90
+
+[[detail.adaptive.levels]]
+span = 60.0
+stars = 7.2
+galaxies = 11.0
+open_clusters = 8.0
+globular_clusters = 4.0
+planetary_nebulae = 2.0
+supernova_remnants = 8.0
+label_density = 0.72
+
+[[detail.adaptive.levels]]
+span = 100.0
+stars = 6.5
+galaxies = 10.5
+open_clusters = 15.0
+globular_clusters = 8.0
+planetary_nebulae = 4.0
+supernova_remnants = 15.0
+label_density = 0.55
+
+[[detail.adaptive.levels]]
+span = 180.0
+stars = 6.0
+galaxies = 10.0
+open_clusters = 30.0
+globular_clusters = 15.0
+planetary_nebulae = 8.0
+supernova_remnants = 30.0
+label_density = 0.40
+
+[detail.canonical]
+all_sky_star_limit = 5.0
+planisphere_star_limit = 5.0
+regional_star_limit = 6.5
+circumpolar_star_limit = 6.5
+binocular_star_limit = 11.0
+binocular_galaxy_limit = 11.0
+binocular_globular_samples = 73
+binocular_other_samples = 97
+
+[detail.binocular_stellar_sizing]
+reference = "limiting_magnitude"
+scale = 1.0
+exponent = 0.20
+minimum_area = 1.0
+maximum_area = 40.0
+
+# Atlas print is the semantic appearance baseline.
+[styles.atlas.canvas]
+background = "white"
+foreground = "#505050"
+label_font_size = 8.5
+footer_color = "none"
+
+[styles.atlas.stars]
+color = "#151515"
+area_scale = 0.85
+magnitude_reference = "fixed"
+reference_magnitude = 5.0
+magnitude_scale = 1.5
+magnitude_exponent = 0.35
+minimum_area = 1.0
+maximum_area = "none"
+
+[styles.atlas.stars.variable_symbol]
+enabled = false
+color = "none"
+shape = "circle"
+size = 28.0
+edge_width = 0.7
+opacity = 0.95
+
+[styles.atlas.stars.multiple_symbol]
+enabled = false
+color = "none"
+shape = "circle"
+size = 28.0
+edge_width = 0.7
+opacity = 0.95
+
+[styles.atlas.milky_way.fill]
+color = "#b9d3da"
+opacity = 0.28
+
+[styles.atlas.milky_way.edge]
+color = "none"
+line_width = 0.0
+line_style = "none"
+opacity = 0.0
+
+[styles.atlas.milky_way.contour]
+color = "#555555"
+line_width = 0.35
+line_style = "dotted"
+opacity = 0.28
+
+[styles.atlas.lmc.fill]
+color = "#b9d3da"
+opacity = 0.22
+
+[styles.atlas.lmc.edge]
+color = "none"
+line_width = 0.0
+line_style = "solid"
+opacity = 0.0
+
+[styles.atlas.smc.fill]
+color = "#b9d3da"
+opacity = 0.18
+
+[styles.atlas.smc.edge]
+color = "none"
+line_width = 0.0
+line_style = "solid"
+opacity = 0.0
+
+[styles.atlas.nonstellar]
+color = "#c5a000"
+line_width = 0.8
+line_style = "solid"
+opacity = 0.9
+minimum_size_arcmin = 30.0
+draw_labels = false
+label_color = "none"
+label_font_size = 7.0
+symbol_shape = "dotted_circle"
+symbol_dots = 12
+symbol_dot_size = 2.0
+
+[styles.atlas.galaxy.edge]
+color = "#b43b37"
+line_width = 0.7
+line_style = "solid"
+opacity = 0.9
+
+[styles.atlas.galaxy]
+face_color = "none"
+face_opacity = 0.0
+minimum_size_arcmin = 6.0
+draw_labels = false
+label_color = "none"
+label_font_size = 6.0
+
+[styles.atlas.supernova_remnant]
+color = "#5f844c"
+line_width = 0.55
+line_style = "solid"
+opacity = 0.9
+minimum_size_arcmin = 10.0
+draw_labels = false
+label_color = "none"
+label_font_size = 6.0
+
+[styles.atlas.globular_cluster]
+color = "#c5a000"
+line_width = 0.8
+line_style = "solid"
+opacity = 0.9
+minimum_size_arcmin = 10.0
+draw_labels = false
+label_color = "none"
+label_font_size = 6.0
+
+[styles.atlas.planetary_nebula]
+color = "#6f8e4d"
+line_width = 0.45
+line_style = "solid"
+opacity = 0.95
+face_color = "none"
+symbol_shape = "circle"
+symbol_size = 18.0
+draw_labels = false
+label_color = "none"
+label_font_size = 6.0
+
+[styles.atlas.open_cluster]
+color = "#d2b321"
+line_width = 0.45
+line_style = "dotted"
+opacity = 0.9
+symbol_shape = "circle"
+symbol_size = 18.0
+draw_labels = false
+label_color = "none"
+label_font_size = 6.0
+
+[styles.atlas.constellation_boundaries]
+color = "#777777"
+line_width = 0.35
+line_style = "dotted"
+opacity = 0.65
+
+[styles.atlas.constellation_figures]
+color = "#686868"
+line_width = 0.35
+line_style = "solid"
+opacity = 0.58
+
+[styles.atlas.constellation_labels]
+color = "#5b5b5b"
+font_size = 8.5
+opacity = 0.90
+offset = [0.0, 0.0]
+horizontal_alignment = "center"
+vertical_alignment = "center"
+
+[styles.atlas.equatorial_grid]
+color = "black"
+line_width = 0.45
+line_style = "solid"
+opacity = 0.65
+
+[styles.atlas.ecliptic_grid]
+color = "orange"
+line_width = 0.45
+line_style = "dashed"
+opacity = 0.65
+
+[styles.atlas.galactic_grid]
+color = "blue"
+line_width = 0.45
+line_style = "dashed"
+opacity = 0.65
+
+[styles.atlas.altaz_grid]
+color = "#707070"
+line_width = 0.45
+line_style = "solid"
+opacity = 0.65
+
+[styles.atlas.coordinate_labels]
+enabled = true
+color = "none"
+font_size = 6.0
+opacity = 0.85
+
+[styles.atlas.horizon]
+altitude = 0.0
+minimum_altitude = "none"
+color = "#707070"
+line_width = 0.55
+line_style = "dashed"
+opacity = 0.80
+z_order = 3.5
+
+[styles.atlas.mask]
+color = "#d8d8d8"
+opacity = 0.42
+z_order = 20.0
+
+[styles.atlas.chart_boundary]
+background = "inherit_canvas"
+color = "#777777"
+line_width = 0.35
+line_style = "dotted"
+opacity = 0.65
+z_order = 8.0
+
+[styles.atlas.legend]
+visible = true
+location = "upper right"
+font_size = 5.7
+title_font_size = 6.2
+frame = true
+face_color = "white"
+edge_color = "#777777"
+opacity = 0.90
+columns = 1
+text_color = "none"
+
+# Cartoon is a separate complete semantic base, not an inherited atlas delta.
+[styles.cartoon.canvas]
+background = "#fffdf7"
+foreground = "#172238"
+label_font_size = 13.0
+footer_color = "none"
+
+[styles.cartoon.stars]
+color = "#172238"
+area_scale = 1.30
+magnitude_reference = "fixed"
+reference_magnitude = 5.0
+magnitude_scale = 1.5
+magnitude_exponent = 0.35
+minimum_area = 1.0
+maximum_area = "none"
+
+[styles.cartoon.stars.variable_symbol]
+enabled = false
+color = "none"
+shape = "circle"
+size = 28.0
+edge_width = 0.7
+opacity = 0.95
+
+[styles.cartoon.stars.multiple_symbol]
+enabled = false
+color = "none"
+shape = "circle"
+size = 28.0
+edge_width = 0.7
+opacity = 0.95
+
+[styles.cartoon.milky_way.fill]
+color = "#dbe8ef"
+opacity = 0.20
+
+[styles.cartoon.milky_way.edge]
+color = "none"
+line_width = 0.0
+line_style = "none"
+opacity = 0.0
+
+[styles.cartoon.milky_way.contour]
+color = "#8aa6b6"
+line_width = 0.45
+line_style = "dotted"
+opacity = 0.35
+
+[styles.cartoon.lmc.fill]
+color = "#dbe8ef"
+opacity = 0.18
+
+[styles.cartoon.lmc.edge]
+color = "none"
+line_width = 0.0
+line_style = "solid"
+opacity = 0.0
+
+[styles.cartoon.smc.fill]
+color = "#dbe8ef"
+opacity = 0.16
+
+[styles.cartoon.smc.edge]
+color = "none"
+line_width = 0.0
+line_style = "solid"
+opacity = 0.0
+
+[styles.cartoon.nonstellar]
+color = "#b07a17"
+line_width = 0.8
+line_style = "solid"
+opacity = 0.9
+minimum_size_arcmin = 30.0
+draw_labels = false
+label_color = "none"
+label_font_size = 7.0
+symbol_shape = "dotted_circle"
+symbol_dots = 12
+symbol_dot_size = 2.0
+
+[styles.cartoon.galaxy.edge]
+color = "#a84940"
+line_width = 0.7
+line_style = "solid"
+opacity = 0.9
+
+[styles.cartoon.galaxy]
+face_color = "none"
+face_opacity = 0.0
+minimum_size_arcmin = 6.0
+draw_labels = false
+label_color = "none"
+label_font_size = 6.0
+
+[styles.cartoon.supernova_remnant]
+color = "#66865d"
+line_width = 0.8
+line_style = "dashed"
+opacity = 0.9
+minimum_size_arcmin = 10.0
+draw_labels = false
+label_color = "none"
+label_font_size = 6.0
+
+[styles.cartoon.globular_cluster]
+color = "#b07a17"
+line_width = 0.8
+line_style = "solid"
+opacity = 0.9
+minimum_size_arcmin = 10.0
+draw_labels = false
+label_color = "none"
+label_font_size = 6.0
+
+[styles.cartoon.planetary_nebula]
+color = "#66865d"
+line_width = 0.55
+line_style = "solid"
+opacity = 0.95
+face_color = "none"
+symbol_shape = "circle"
+symbol_size = 16.0
+draw_labels = false
+label_color = "none"
+label_font_size = 6.0
+
+[styles.cartoon.open_cluster]
+color = "#b89028"
+line_width = 0.55
+line_style = "dotted"
+opacity = 0.9
+symbol_shape = "circle"
+symbol_size = 16.0
+draw_labels = false
+label_color = "none"
+label_font_size = 6.0
+
+[styles.cartoon.constellation_boundaries]
+color = "#9aa0a6"
+line_width = 0.30
+line_style = "dotted"
+opacity = 0.45
+
+[styles.cartoon.constellation_figures]
+color = "#304f78"
+line_width = 1.15
+line_style = "solid"
+opacity = 0.95
+
+[styles.cartoon.constellation_labels]
+color = "#203958"
+font_size = 13.0
+opacity = 1.0
+offset = [0.0, 0.0]
+horizontal_alignment = "center"
+vertical_alignment = "center"
+
+[styles.cartoon.equatorial_grid]
+color = "black"
+line_width = 0.40
+line_style = "solid"
+opacity = 0.45
+
+[styles.cartoon.ecliptic_grid]
+color = "orange"
+line_width = 0.40
+line_style = "dashed"
+opacity = 0.45
+
+[styles.cartoon.galactic_grid]
+color = "blue"
+line_width = 0.40
+line_style = "dashed"
+opacity = 0.45
+
+[styles.cartoon.altaz_grid]
+color = "black"
+line_width = 0.40
+line_style = "solid"
+opacity = 0.45
+
+[styles.cartoon.coordinate_labels]
+enabled = false
+color = "none"
+font_size = 7.0
+opacity = 0.75
+
+[styles.cartoon.horizon]
+altitude = 0.0
+minimum_altitude = "none"
+color = "#304f78"
+line_width = 0.75
+line_style = "dashed"
+opacity = 0.85
+z_order = 3.5
+
+[styles.cartoon.mask]
+color = "#d8dde2"
+opacity = 0.25
+z_order = 20.0
+
+[styles.cartoon.chart_boundary]
+background = "inherit_canvas"
+color = "#9aa0a6"
+line_width = 0.30
+line_style = "dotted"
+opacity = 0.45
+z_order = 8.0
+
+[styles.cartoon.legend]
+visible = false
+location = "upper right"
+font_size = 7.0
+title_font_size = 7.5
+frame = true
+face_color = "white"
+edge_color = "#777777"
+opacity = 0.90
+columns = 1
+text_color = "none"
+
+# Mode palettes contain color substitutions only.
+[styles.palettes.atlas_presentation]
+sky = "#1677A6"
+foreground = "#F7FBFD"
+stars = "#FFF4CC"
+structure = "#FFE066"
+labels = "#FFF0A6"
+frame = "#BFE7F5"
+milky_way = "#69B9D6"
+deep_sky = "#FFE08A"
+
+[styles.palettes.cartoon_print]
+sky = "white"
+foreground = "#000000"
+stars = "#000000"
+figures = "#000000"
+labels = "#000000"
+frame = "#000000"
+milky_way = "#000000"
+footer = "#000000"
+altaz = "#707070"
+equatorial = "black"
+ecliptic = "orange"
+galactic = "blue"
+
+[styles.palettes.cartoon_presentation]
+sky = "#1677A6"
+foreground = "#FFE066"
+stars = "#FFE066"
+figures = "#FFE066"
+labels = "#FFE066"
+frame = "#FFE066"
+milky_way = "#FFE066"
+footer = "#FFFFFF"
+altaz = "#FFFFFF"
+equatorial = "#FFFFFF"
+ecliptic = "#FFA500"
+galactic = "#66CCFF"
+
+[modes.base]
+width = 7.0
+height = "none"
+transparent = false
+
+[modes.print]
+dpi = 300
+font_scale = 1.0
+line_scale = 1.0
+symbol_scale = 1.0
+contrast_scale = 1.0
+prefer_vector = true
+
+[modes.presentation]
+dpi = 160
+font_scale = 1.35
+line_scale = 1.25
+symbol_scale = 1.25
+contrast_scale = 1.12
+prefer_vector = false
+
+[modes.cartoon]
+label_offset = [0.18, 0.14]
+clearance = [0.24, 0.20]
+halo_opacity = 0.78
+
+[grids_references.coordinate_grid]
+samples = 721
+frame = "fk5"
+equinox = "of_date"
+meridian_declination_minimum = -90.0
+meridian_declination_maximum = 90.0
+include_equatorial_reference = false
+include_ecliptic_reference = false
+include_galactic_reference = false
+requested_longitudes = "none"
+requested_latitudes = "none"
+
+[grids_references.references]
+state = "none"
+anchor = "none"
+equatorial_label = "Celestial equator"
+ecliptic_label = "Ecliptic"
+galactic_label = "Galactic plane"
+
+[grids_references.poles]
+state = "none"
+labels = true
+
+[furniture.footer]
+enabled = false
+application = "Wenu"
+include_version = true
+copyright = "none"
+font_size = 7.0
+y = 0.018
+left_x = 0.01
+right_x = 0.99
+
+[furniture.context]
+center = true
+grid = true
+location = false
+date = false
+local_time = false
+labels = false
+
+[furniture.legends]
+objects = true
+stars = true
+context = true
+counts = false
+title = "Stars"
+
+[furniture.legends.regional]
+objects_location = "upper right"
+stars_location = "lower right"
+
+[furniture.legends.planisphere]
+objects_location = "upper right outside"
+stars_location = "lower right outside"
+
+[furniture.legends.all_sky]
+objects_location = "upper right outside"
+stars_location = "lower right outside"
+
+[furniture.legends.circumpolar]
+objects_location = "upper right"
+stars_location = "lower left"
+
+[furniture.legends.binocular]
+objects = false
+objects_location = "none"
+stars_location = "lower right outside"
+
+[furniture.magnitude_legend]
+enabled = true
+location = "lower right"
+title = "Stars"
+frame = true
+font_size = "none"
+title_font_size = "none"
+marker = "o"
+face_color = "none"
+edge_color = "none"
+text_color = "none"
+edge_width = 0.0
+label_spacing = 0.5
+handle_text_padding = 0.8
+border_padding = 0.5
+z_order = 1000.0
+
+[products.default]
+style = "atlas"
+mode = "print"
+all_products = false
+language = "en"
+title = "none"
+extension = ".png"
+
+[export]
+dpi = 300
+bounding_box = "tight"
+transparent = false
+face_color = "none"
+metadata = {}
+padding = 0.0

@@ -253,10 +253,27 @@ derivation applies. Unless marked otherwise, entries are **public defaults**.
 - horizon: altitude `0`, minimum altitude `null`, `#707070`, width `0.55`,
   style `dashed`, opacity `0.80`, z-order `3.5`;
 - mask: `#d8d8d8`, opacity `0.42`, z-order `20`;
+- chart boundary: background inherits the canvas; `#777777`, width `0.35`,
+  style `dotted`, opacity `0.65`, z-order `8.0`; direct chart-constructor
+  fallback colors and widths are compatibility implementation defaults
+  displaced whenever the composed style is supplied;
 - legend: visible, upper right, font `5.7`, title `6.2`, frame true, face white,
   edge `#777777`, opacity `0.90`, one column, text color `null`.
 
 ### Mode palettes and transformations
+
+- cartoon semantic base: canvas `#fffdf7`/`#172238`, label font `13.0`;
+  stars `#172238`, area scale `1.30`; Milky Way `#dbe8ef`/`0.20`, contour
+  `#8aa6b6`/`0.45`/dotted/`0.35`; LMC/SMC fill opacity `0.18`/`0.16`;
+  deep-sky colors nonstellar `#b07a17`, galaxy `#a84940`, supernova and
+  planetary `#66865d`, globular `#b07a17`, open cluster `#b89028`;
+  open/planetary symbol size `16.0`, width `0.55`; boundary
+  `#9aa0a6`/`0.30`/dotted/`0.45`; figure
+  `#304f78`/`1.15`/solid/`0.95`; label `#203958`/`1.0`; coordinate width
+  `0.40`, opacity `0.45`, labels disabled/font `7.0`/opacity `0.75`; horizon
+  `#304f78`/`0.75`/dashed/`0.85`; mask `#d8dde2`/`0.25`; legend disabled,
+  font/title `7.0`/`7.5`; all unlisted component values match the explicitly
+  repeated complete `styles.cartoon` tables in `defaults.toml`;
 
 - atlas presentation palette: sky `#1677A6`, foreground `#F7FBFD`, stars
   `#FFF4CC`, structure `#FFE066`, labels `#FFF0A6`, frame `#BFE7F5`,

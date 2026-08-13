@@ -22,6 +22,7 @@ dependencies = [
     "numpy",
     "pandas",
     "skyfield",
+    "tomli>=2; python_version < '3.11'",
 ]
 
 [project.scripts]
@@ -45,5 +46,8 @@ markers = [
     "visual: validates rendered appearance or image structure",
     "slow: excluded from the normal development loop",
 ]
+
+[tool.setuptools.package-data]
+"wenu.configuration" = ["defaults.toml"]
 
 [tool.setuptools_scm]

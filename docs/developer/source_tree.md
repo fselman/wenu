@@ -297,6 +297,12 @@ independent color/line-width/line-style keys, and specifies complete-path
 diagnostics and the non-executable data boundary. It is not a parser, packaged
 default file, overlay loader, command implementation, or runtime registry.
 
+`src/wenu/configuration/defaults.toml` is the Milestone 46D.3A complete
+commented version-1 public-default document. Its package contains data only;
+it has no renderer, catalogue, geometry, or execution dependency. Tests load
+it through `importlib.resources` and TOML parsing. Runtime contracts do not
+consume it until later 46D.3 validation and translation slices are complete.
+
 Permanent test modules are named for current responsibilities rather than the
 milestones that introduced them. Scientific geometry and catalogue contracts
 remain ordinary unit tests. Cross-component canonical chart construction is
