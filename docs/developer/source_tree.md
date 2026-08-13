@@ -79,6 +79,11 @@ stores the corresponding composed `GridStyle` reference fields and the one
 existing `MaskStyle`; output-mode adapters may change those visual values but
 not geometry. Circular wrappers pass the resolved mask mapping into regional
 rendering rather than allowing a second fallback policy.
+The horizon contracts are distributed by ownership: argument and drawing
+tests cover the shared controls, request-horizon tests cover reusable-sphere
+lifecycle, horizon-mask geometry tests cover field classification and frame
+transformation, chart-family tests cover final boundaries, and composed-mask
+tests cover seam grouping, intersection winding, and single-opacity drawing.
 `charts/target_resolver.py` owns offline alias resolution over the packaged
 `data/targets.json` cross-identification resource.
 `charts/constellation_resolver.py` owns IAU abbreviation normalization and

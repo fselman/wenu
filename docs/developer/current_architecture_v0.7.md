@@ -334,3 +334,13 @@ chart mask now obtains its appearance through
 `resolved_outside_mask_style()`; binocular delegation transports that same
 resolved `MaskStyle` to its regional renderer, so horizon-only and combined
 masks use one color, alpha, and z-order policy in every chart family.
+
+Milestone 46C.8Q.8 closes the behavioral contract with tests rather than a
+second implementation. The shared CLI and Python facade preserve all four
+horizon-reference/mask states independently. Regional, binocular,
+circumpolar, Galactic Mollweide, and planisphere paths prove their respective
+viewport, circular-boundary, seam, and no-op policies. Compound-path winding
+is checked directly: only the intersection of independent openings has zero
+winding, while one translucent patch covers their excluded union. Reordering
+all horizon states on one reused sphere replaces or removes only the semantic
+horizon and preserves unrelated layers.

@@ -132,6 +132,35 @@ def test_circumpolar_radius_and_validation():
         )
 
 
+def test_circumpolar_forwards_horizon_mask_to_circular_chart(monkeypatch):
+    calls = {}
+
+    class CircularChart:
+        def render(self, *args, **kwargs):
+            calls.update(kwargs)
+            return "result"
+
+    monkeypatch.setattr(
+        CircumpolarChart,
+        "binocular_chart",
+        property(lambda self: CircularChart()),
+    )
+    chart = CircumpolarChart(
+        observer=object(),
+        limiting_declination_deg=-40.0,
+        pole="south",
+    )
+
+    assert chart.render(
+        object(),
+        object(),
+        horizon_mask=True,
+        boundary_style={},
+        coordinate_label_anchor=object(),
+    ) == "result"
+    assert calls["horizon_mask"] is True
+
+
 def test_chart_type_modules_do_not_import_render_backend():
     from pathlib import Path
     import wenu.charts.binocular as binocular_module

@@ -87,6 +87,38 @@ def test_all_sky_mask_uses_galactic_transform_without_horizon_rejection(
     assert "visible_minimum_latitude_deg" not in calls
 
 
+def test_all_sky_horizon_mask_uses_ellipse_and_galactic_seam_path(
+    monkeypatch,
+):
+    calls = {}
+    monkeypatch.setattr(
+        "wenu.charts._masking.draw_composed_outside_mask",
+        lambda **kwargs: calls.update(kwargs),
+    )
+
+    class Renderer:
+        def set_clip_boundary(self, boundary, *, style):
+            pass
+
+    class Sky:
+        observer = None
+        constellation_labels = None
+
+        def draw_chart(self, **kwargs):
+            return "result"
+
+    chart = AllSkyChart()
+    assert chart.render(
+        Sky(), Renderer(), observer=object(), horizon_mask=True
+    ) == "result"
+    assert calls["horizon_mask"] is True
+    assert calls["boundary"].name == "all_sky_boundary"
+    np.testing.assert_allclose(calls["boundary"].x, chart.boundary.x)
+    np.testing.assert_allclose(calls["boundary"].y, chart.boundary.y)
+    assert calls["transform_spherical"] is not None
+    assert calls["complete_sphere"] is True
+
+
 def test_all_sky_chart_is_public():
     import wenu
 

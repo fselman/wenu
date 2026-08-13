@@ -14,6 +14,7 @@ from wenu import (
     ResolvedDetail,
     configure_chart_request_grids,
     configure_chart_request_horizon,
+    generate_celestial_sphere,
 )
 from wenu.charts.detail_application import apply_resolved_detail
 from wenu.sky.celestial_sphere import CelestialSphere
@@ -119,6 +120,29 @@ def test_selected_horizon_is_independent_of_detail_density():
     )
 
     assert application.layer_options[horizon]["enabled"] is True
+
+
+@pytest.mark.integration
+def test_reused_maximal_sphere_is_order_independent_for_horizon_states():
+    sky = generate_celestial_sphere()
+    retained = sky.layers
+    states = [
+        (request(horizon=True), True),
+        (request(horizon_mask=True), False),
+        (request(horizon=True, horizon_mask=True), True),
+        (request(), False),
+        (request("planisphere", horizon=True, horizon_mask=True), False),
+    ]
+
+    for sequence in (states, list(reversed(states))):
+        for value, expected_reference in sequence:
+            configured = configure_chart_request_horizon(sky, value)
+            assert (configured is not None) is expected_reference
+            assert len(horizons(sky)) == int(expected_reference)
+            assert tuple(
+                layer for layer in sky.layers
+                if not isinstance(layer, HorizonReference)
+            ) == retained
 
 
 def test_configuration_rejects_untyped_inputs():

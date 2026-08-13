@@ -569,6 +569,12 @@ single `MaskStyle` policy.
 - prove request-order independence and no state leakage on one reusable
   maximal sphere.
 
+**Status:** Implemented. The contract suite covers independent shared
+controls, geometry and Mollweide seam preparation, chart-family boundaries,
+planisphere idempotence, mask intersection and single-opacity rendering, and
+forward/reverse horizon-state sequences on one reused sphere without layer
+leakage.
+
 ##### Milestone 46C.8Q.9 — Close visually
 
 - compare atlas-print all-sky, masked all-sky, regional horizon crossings,

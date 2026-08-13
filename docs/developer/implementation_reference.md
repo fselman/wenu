@@ -517,6 +517,14 @@ conversion boundary for mask appearance. It returns the existing resolved
 constellation-only, and combined masks all pass that same mapping to the one
 compound mask draw; no horizon-specific opacity setting exists.
 
+The Q.8 contract suite exercises the four independent `(horizon,
+horizon_mask)` control states through both shared adapters, chart-family mask
+boundaries, planisphere idempotence with and without constellation masking,
+Mollweide seam-piece grouping, compound-path winding and single alpha, and
+forward/reverse request sequences on one reusable `CelestialSphere`. These
+are tests of the established pipeline; Q.8 adds no alternate geometry,
+projection, clipping, rendering, or export path.
+
 `StereographicProjection.unproject_spherical(x, y)` performs the inverse
 planar mapping and returns coordinates in the projection's source frame. It
 is the classification boundary used by horizon-mask preparation; it does not

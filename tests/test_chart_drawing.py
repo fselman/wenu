@@ -161,6 +161,41 @@ def test_repeated_drawings_reuse_geometry_without_request_state_leak(
     assert original_request.detail.enabled_layer_additions is None
 
 
+@pytest.mark.parametrize(
+    ("horizon", "horizon_mask"),
+    ((False, False), (True, False), (False, True), (True, True)),
+)
+def test_python_facade_preserves_independent_horizon_controls(
+    monkeypatch, tmp_path, horizon, horizon_mask
+):
+    chart_view = view()
+    requests = []
+    monkeypatch.setattr(
+        "wenu.charts.drawing.configure_chart_request_grids",
+        lambda *args, **kwargs: None,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.drawing.configure_chart_request_horizon",
+        lambda sky, request: requests.append(request),
+    )
+    monkeypatch.setattr(
+        "wenu.charts.drawing.export_prepared_chart",
+        lambda *args, **kwargs: SimpleNamespace(
+            exports=(export_result(tmp_path / "chart.png"),)
+        ),
+    )
+
+    draw_chart_view(
+        chart_view,
+        tmp_path / "chart.png",
+        horizon=horizon,
+        horizon_mask=horizon_mask,
+    )
+
+    assert requests[0].horizon is horizon
+    assert requests[0].horizon_mask is horizon_mask
+
+
 def test_all_sky_drawing_defaults_to_labeled_galactic_grid(
     monkeypatch, tmp_path
 ):

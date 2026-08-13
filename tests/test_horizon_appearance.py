@@ -145,3 +145,5 @@ def test_binocular_mask_uses_resolved_composed_style(monkeypatch):
     ) == "result"
     assert calls["mask_style"] == resolved_outside_mask_style(style)
     assert calls["horizon_mask"] is True
+    assert calls["mask_boundary"].name == "binocular_field_stop"
+    assert calls["mask_boundary"].closed is True

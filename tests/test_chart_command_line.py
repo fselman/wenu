@@ -42,7 +42,18 @@ def test_complete_cli_contract_includes_context_and_credits():
     assert arguments.horizon_mask is False
 
 
-def test_cli_forwards_independent_horizon_controls(monkeypatch):
+@pytest.mark.parametrize(
+    ("arguments", "horizon", "horizon_mask"),
+    (
+        ([], False, False),
+        (["--horizon"], True, False),
+        (["--horizon-mask"], False, True),
+        (["--horizon", "--horizon-mask"], True, True),
+    ),
+)
+def test_cli_forwards_independent_horizon_controls(
+    monkeypatch, arguments, horizon, horizon_mask
+):
     calls = []
     monkeypatch.setattr(
         "wenu.charts.command_line.draw_chart_view",
@@ -52,12 +63,12 @@ def test_cli_forwards_independent_horizon_controls(monkeypatch):
 
     draw_chart_view_from_arguments(
         view,
-        parser().parse_args(["--horizon-mask"]),
+        parser().parse_args(arguments),
         stem="map",
     )
 
-    assert calls[0]["horizon"] is False
-    assert calls[0]["horizon_mask"] is True
+    assert calls[0]["horizon"] is horizon
+    assert calls[0]["horizon_mask"] is horizon_mask
 
 
 def test_ordinary_cli_can_omit_default_equatorial_grid():

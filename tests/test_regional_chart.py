@@ -190,3 +190,31 @@ def test_regional_grid_defaults_to_viewport_clipping():
     assert callable(
         horizon_limited._grid_options(grid)["prepare"]
     )
+
+
+def test_regional_horizon_mask_uses_rectangular_chart_viewport(monkeypatch):
+    calls = {}
+    monkeypatch.setattr(
+        "wenu.charts._masking.draw_composed_outside_mask",
+        lambda **kwargs: calls.update(kwargs),
+    )
+
+    class Sky:
+        observer = object()
+
+        def draw_chart(self, **kwargs):
+            return "result"
+
+    chart = RegionalChart(
+        center_alt_deg=0.0,
+        center_az_deg=180.0,
+        field_width_deg=10.0,
+        field_height_deg=8.0,
+    )
+
+    assert chart.render(
+        Sky(), object(), horizon_mask=True
+    ) == "result"
+    assert calls["horizon_mask"] is True
+    assert calls["viewport"] == chart.viewport
+    assert calls["boundary"] is None
