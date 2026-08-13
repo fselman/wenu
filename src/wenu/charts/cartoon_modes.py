@@ -224,6 +224,10 @@ def cartoon_chart_style(
         ),
         coordinate_label_color=None,
         altaz_color=palette.altaz_grid,
+        horizon_color=palette.frame,
+        horizon_linewidth=(
+            style.grids.horizon_linewidth * line_scale
+        ),
         equatorial_color=palette.equatorial_grid,
         ecliptic_color=palette.ecliptic_grid,
         galactic_color=palette.galactic_grid,

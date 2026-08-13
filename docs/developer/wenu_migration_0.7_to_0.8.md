@@ -556,6 +556,11 @@ appearance are finalized in Milestone 46C.8Q.7.
   a second opacity policy;
 - keep styles and output modes from changing geometry.
 
+**Status:** Implemented. The semantic horizon is configured through explicit
+style fields, atlas/cartoon mode adapters change only its appearance, and all
+chart families resolve horizon and constellation masks through the existing
+single `MaskStyle` policy.
+
 ##### Milestone 46C.8Q.8 — Prove behavior and isolation
 
 - test independent CLI and Python controls, geometry, Mollweide seam

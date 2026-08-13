@@ -422,6 +422,7 @@ class RegionalChart:
         layer_options=None,
         horizon_mask=False,
         mask_boundary=None,
+        mask_style=None,
     ):
         """Render this specification through ``CelestialSphere``."""
         resolved_style = style
@@ -466,16 +467,12 @@ class RegionalChart:
                 draw_composed_outside_mask,
             )
 
-            mask_style = (
-                {
-                    "facecolor": "black",
-                    "edgecolor": "none",
-                    "alpha": 0.35,
-                    "zorder": 20.0,
-                }
-                if style is None
-                else resolved_style.outside_mask_style()
-            )
+            if mask_style is None:
+                from wenu.charts.styles import (
+                    resolved_outside_mask_style,
+                )
+
+                mask_style = resolved_outside_mask_style(style)
             draw_composed_outside_mask(
                 sky=sky,
                 projection=projection,

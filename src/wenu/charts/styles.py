@@ -18,6 +18,19 @@ from wenu.rendering.preparation import (
 from wenu.sky.coordinate_grids import CoordinatesGrid
 
 
+def resolved_outside_mask_style(style=None):
+    """Return the one resolved appearance shared by every chart mask."""
+    if style is None:
+        style = PublicationStyle()
+    converter = getattr(style, "as_publication_style", None)
+    if callable(converter):
+        style = converter()
+    factory = getattr(style, "outside_mask_style", None)
+    if not callable(factory):
+        raise TypeError("style must provide outside_mask_style().")
+    return factory()
+
+
 @dataclass(frozen=True)
 class PublicationStyle:
     """Explicit renderer options for publication sky charts."""
@@ -141,6 +154,11 @@ class PublicationStyle:
     outside_mask_color: str = "black"
     outside_mask_alpha: float = 0.35
     outside_mask_zorder: float = 20.0
+    horizon_color: str = "black"
+    horizon_linewidth: float = 0.7
+    horizon_linestyle: str = "--"
+    horizon_alpha: float = 0.8
+    horizon_zorder: float = 3.5
 
     def configure_axes(self, ax, *, title=None):
         """Apply chart-level axes styling."""
@@ -168,6 +186,21 @@ class PublicationStyle:
             "edgecolor": "none",
             "alpha": alpha,
             "zorder": float(self.outside_mask_zorder),
+        }
+
+    def horizon_reference_style(self):
+        """Return presentation options for the semantic horizon."""
+        alpha = float(self.horizon_alpha)
+        if not 0.0 <= alpha <= 1.0:
+            raise ValueError(
+                "horizon_alpha must be between 0 and 1."
+            )
+        return {
+            "color": self.horizon_color,
+            "linewidth": float(self.horizon_linewidth),
+            "linestyle": self.horizon_linestyle,
+            "alpha": alpha,
+            "zorder": float(self.horizon_zorder),
         }
 
     def _clip(self, spherical, projected):
@@ -599,6 +632,13 @@ class PublicationStyle:
                     layer,
                     minimum=horizon_altitude_deg,
                 )
+        horizon = getattr(sky, "horizon_reference", None)
+        if horizon is not None:
+            options[horizon] = {
+                "render": {
+                    "style": self.horizon_reference_style(),
+                },
+            }
         return options
 
     def _star_render_options(self, spherical, projected):

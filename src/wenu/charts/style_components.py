@@ -155,7 +155,7 @@ class DeepSkyStyle:
 
 @dataclass(frozen=True)
 class GridStyle:
-    """Coordinate grids, constellation boundaries, and clipping."""
+    """Coordinate grids, celestial references, and boundaries."""
 
     boundary_color: str = "white"
     boundary_linewidth: float = 0.3
@@ -188,6 +188,11 @@ class GridStyle:
     coordinate_label_alpha: float = 0.8
     horizon_altitude_deg: float = 0.0
     minimum_altitude_deg: float | None = None
+    horizon_color: str = "black"
+    horizon_linewidth: float = 0.7
+    horizon_linestyle: str = "--"
+    horizon_alpha: float = 0.8
+    horizon_zorder: float = 3.5
 
 
 @dataclass(frozen=True)
@@ -390,6 +395,11 @@ class ChartStyle:
             equatorial_linestyle=grids.equatorial_linestyle,
             altaz_color=grids.altaz_color,
             altaz_linestyle=grids.altaz_linestyle,
+            horizon_color=grids.horizon_color,
+            horizon_linewidth=grids.horizon_linewidth,
+            horizon_linestyle=grids.horizon_linestyle,
+            horizon_alpha=grids.horizon_alpha,
+            horizon_zorder=grids.horizon_zorder,
             ecliptic_color=grids.ecliptic_color,
             ecliptic_linestyle=grids.ecliptic_linestyle,
             galactic_color=grids.galactic_color,
@@ -419,6 +429,10 @@ class ChartStyle:
     def outside_mask_style(self):
         """Return presentation options for an outside-region mask."""
         return self.as_publication_style().outside_mask_style()
+
+    def horizon_reference_style(self):
+        """Return presentation options for the semantic horizon."""
+        return self.as_publication_style().horizon_reference_style()
 
     def layer_options(self, sky, *, horizon_altitude_deg=None):
         """Build renderer options for layers registered in ``sky``."""

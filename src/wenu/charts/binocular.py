@@ -219,6 +219,8 @@ class BinocularChart:
         )
         if callable(set_frame_visible):
             set_frame_visible(False)
+        from wenu.charts.styles import resolved_outside_mask_style
+
         return self.regional_chart.render(
             sky,
             renderer,
@@ -227,6 +229,11 @@ class BinocularChart:
             layer_options=options,
             horizon_mask=horizon_mask,
             mask_boundary=self.field_stop,
+            mask_style=(
+                None
+                if not horizon_mask
+                else resolved_outside_mask_style(style)
+            ),
         )
 
     def export(

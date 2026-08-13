@@ -290,16 +290,9 @@ class FullSkyChart:
                 draw_composed_outside_mask,
             )
 
-            mask_style = (
-                {
-                    "facecolor": "black",
-                    "edgecolor": "none",
-                    "alpha": 0.35,
-                    "zorder": 20.0,
-                }
-                if style is None
-                else resolved_style.outside_mask_style()
-            )
+            from wenu.charts.styles import resolved_outside_mask_style
+
+            mask_style = resolved_outside_mask_style(style)
             draw_composed_outside_mask(
                 sky=sky,
                 projection=projection,

@@ -498,12 +498,24 @@ drawing facade call this configurator after grid configuration. An AltAz grid
 continues to use `include_horizon=False`; `horizon_mask` does not imply the
 reference. Because registration itself is the selection boundary, resolved
 astronomical detail policies do not disable a registered semantic horizon.
+`PublicationStyle.horizon_reference_style()` supplies its explicit color,
+linewidth, linestyle, alpha, and z-order. `ChartStyle` stores those semantic
+values in `GridStyle`, and atlas/cartoon output adapters alter appearance only.
+The reference remains an ordinary sky layer rendered through
+`CelestialSphere.draw_chart()`; styles never construct or transform its
+geometry.
 
 `HorizonReference.visible_hemisphere_geometry(observer,
 radial_step_deg=5)` returns native AltAz `SphericalPolygons` tessellating the
 altitude-nonnegative hemisphere. Its metadata identifies an `above_horizon`
 mask opening and its altitude-zero vertices come from the same sampled
 semantic horizon used by the reference curve.
+
+`resolved_outside_mask_style(style)` is the sole chart-family fallback and
+conversion boundary for mask appearance. It returns the existing resolved
+`MaskStyle` as Matplotlib face color, alpha, and z-order options. Horizon-only,
+constellation-only, and combined masks all pass that same mapping to the one
+compound mask draw; no horizon-specific opacity setting exists.
 
 `StereographicProjection.unproject_spherical(x, y)` performs the inverse
 planar mapping and returns coordinates in the projection's source frame. It

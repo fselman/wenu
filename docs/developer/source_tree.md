@@ -73,6 +73,12 @@ It delegates spherical AltAz geometry to `sky/horizon.py`, stereographic
 projection-domain protection to `rendering/preparation.py`, and Galactic
 transformation and Mollweide seam topology to their established chart and
 projection owners. It does not compose masks, select appearance, or render.
+`charts/styles.py` owns the flat semantic horizon-reference appearance and
+the common resolved outside-mask style boundary. `charts/style_components.py`
+stores the corresponding composed `GridStyle` reference fields and the one
+existing `MaskStyle`; output-mode adapters may change those visual values but
+not geometry. Circular wrappers pass the resolved mask mapping into regional
+rendering rather than allowing a second fallback policy.
 `charts/target_resolver.py` owns offline alias resolution over the packaged
 `data/targets.json` cross-identification resource.
 `charts/constellation_resolver.py` owns IAU abbreviation normalization and

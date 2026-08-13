@@ -325,3 +325,12 @@ union is painted once with the existing outside-mask style. Disjoint openings,
 chart-boundary clipping, and Mollweide seam pieces remain intact without
 stacking translucent patches. Planispheres ignore horizon masking and retain
 their intrinsic horizon boundary.
+
+Milestone 46C.8Q.7 gives the semantic horizon explicit style-owned color,
+linewidth, linestyle, alpha, and z-order beside the other reference and grid
+appearance. Atlas and cartoon output-mode adapters may scale or recolor that
+line, but neither style nor mode participates in horizon geometry. Every
+chart mask now obtains its appearance through
+`resolved_outside_mask_style()`; binocular delegation transports that same
+resolved `MaskStyle` to its regional renderer, so horizon-only and combined
+masks use one color, alpha, and z-order policy in every chart family.
