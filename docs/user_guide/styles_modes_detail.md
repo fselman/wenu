@@ -28,6 +28,8 @@ These options are shared by all six examples:
 --constellation-lines
 --constellation-labels
 --constellation-boundaries
+--horizon
+--horizon-mask
 --equatorial-grid
 --equatorial-grid-labels
 --ecliptic-grid
@@ -46,6 +48,19 @@ accepts a comma-separated selection of `equatorial`,
 `ecliptic`, and `galactic`, or `all`. Poles select visible
 celestial, ecliptic, and Galactic crosses; `--pole-labels` adds their standard
 abbreviations.
+
+`--horizon` draws the observer's unlabeled altitude-zero reference without
+changing chart selection. `--horizon-mask` independently shades the sky below
+that reference with the resolved translucent mask appearance. Using both
+switches draws the line and shades the below-horizon side. If a constellation
+mask is also selected, Wenu intersects the openings and paints one translucent
+mask, so their overlap is not darker.
+
+The planisphere already uses the observer's horizon as its intrinsic chart
+boundary. Both horizon switches are therefore intentional no-ops for that
+family. On a Galactic Mollweide all-sky chart the same observer-bound horizon
+is transformed and seam-split through the ordinary coordinate-frame and
+projection pipeline.
 
 Equatorial grid lines and numeric labels default to black, ecliptic ones to
 orange, and Galactic ones to blue. Presentation and cartoon modes may adapt

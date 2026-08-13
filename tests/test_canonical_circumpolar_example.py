@@ -21,8 +21,31 @@ def test_defining_geometry_is_explicit():
 
     assert module.LIMITING_DECLINATION_DEG == pytest.approx(-69.75)
     assert 'pole="south"' in source
-    assert "limiting_declination_deg=LIMITING_DECLINATION_DEG" in source
+    assert "limiting_declination_deg=arguments.limiting_declination" in source
     assert 'projection="stereographic"' in source
+    assert module.parser().parse_args([]).limiting_declination == pytest.approx(
+        module.LIMITING_DECLINATION_DEG
+    )
+
+
+def test_limiting_declination_is_an_ordinary_framing_control(monkeypatch):
+    module = example()
+    captured = []
+    sky = object()
+    observer = SimpleNamespace(close=lambda: None)
+    monkeypatch.setattr(module, "Observer", lambda **kwargs: observer)
+    monkeypatch.setattr(
+        module, "get_chart_view",
+        lambda *args, **kwargs: captured.append((args, kwargs)) or object(),
+    )
+
+    module.chart_view(
+        module.parser().parse_args(["--limiting-declination", "-30"]),
+        sky=sky,
+    )
+
+    assert captured[0][0][:2] == (sky, observer)
+    assert captured[0][1]["limiting_declination_deg"] == pytest.approx(-30.0)
 
 
 def test_generation_retains_cartoon_content_and_closes_observer(

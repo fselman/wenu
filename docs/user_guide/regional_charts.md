@@ -43,7 +43,10 @@ python examples/regional_constellation.py \
 ```
 
 Both regional examples use the same `--constellations IAU,...` and optional
-`--group ALIAS` subject controls. They also support the common magnitude,
+`--group ALIAS` subject controls. Both derive their default viewport from the
+complete selected constellation geometry. Explicit `--field-width` and
+`--field-height` values override that automatic framing when a wider or fixed
+field is wanted. They also support the common magnitude,
 labels, boundaries,
 references, poles, visual overrides, legends, counts, and credits described
 in [Styles, modes, detail, and furniture](styles_modes_detail.md).

@@ -584,6 +584,15 @@ leakage.
 - compile, run focused and full suites, and record the final ordinary and
   advanced interfaces.
 
+**Status:** In progress. Milestone 46C.8Q.9.1 adds the one missing canonical
+circumpolar framing control and records the public horizon interface. Its
+visual handoff renders a fixed matrix through the six canonical examples:
+unmasked and horizon-masked all-sky products; regional, binocular, and
+circumpolar horizon crossings; combined Serpens/Ophiuchus masks; matching
+planisphere no-op products; and a cartoon-presentation smoke product.
+Milestone 46C.8Q.9.2 records approval or fixes only defects exposed by that
+matrix, then marks the horizon work complete.
+
 ## Milestone 46C.9 — Validate all chart families from one maximal sphere
 
 - build one observer-independent canonical maximal sphere;

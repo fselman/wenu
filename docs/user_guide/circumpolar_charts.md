@@ -10,6 +10,18 @@ python examples/circumpolar.py \
   --output output/circumpolar-atlas-print.png
 ```
 
+The default limiting declination remains −69.75°. Use
+`--limiting-declination` when a wider polar field is required. For example, a
+southern field extending to −30° crosses the La Ligua horizon and can display
+both optional horizon roles:
+
+```bash
+python examples/circumpolar.py \
+  --limiting-declination -30 --horizon --horizon-mask \
+  --style atlas --mode print \
+  --output output/circumpolar-horizon-crossing.png
+```
+
 Generate all four products with:
 
 ```bash

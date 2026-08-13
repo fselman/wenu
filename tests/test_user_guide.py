@@ -107,6 +107,27 @@ def test_all_sky_guide_documents_galactic_mollweide_geometry():
         assert value in text
 
 
+def test_shared_guide_documents_independent_horizon_roles():
+    text = " ".join(
+        (GUIDE / "styles_modes_detail.md").read_text(encoding="utf-8").split()
+    )
+
+    for value in (
+        "--horizon",
+        "--horizon-mask",
+        "one translucent mask",
+        "intentional no-ops",
+        "Galactic Mollweide",
+    ):
+        assert value in text
+
+
+def test_circumpolar_guide_documents_horizon_crossing_framing():
+    text = (GUIDE / "circumpolar_charts.md").read_text(encoding="utf-8")
+
+    assert "--limiting-declination -30 --horizon --horizon-mask" in text
+
+
 def test_english_and_spanish_readmes_link_the_structured_guide():
     for filename in ("README.md", "README.es.md"):
         text = (ROOT / filename).read_text(encoding="utf-8")

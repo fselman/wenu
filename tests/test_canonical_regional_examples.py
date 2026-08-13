@@ -21,19 +21,29 @@ def load(path):
     return module
 
 
-def test_single_regional_defaults_remain_explicit():
+def test_single_regional_defaults_use_constellation_framing():
     module = load(EXAMPLES[2])
     arguments = module.parser().parse_args([])
     source = EXAMPLES[2].read_text(encoding="utf-8")
 
     assert arguments.constellations == ("Cru",)
     assert arguments.group is None
-    assert arguments.field_width == pytest.approx(18.0)
-    assert arguments.field_height == pytest.approx(16.0)
+    assert arguments.field_width is None
+    assert arguments.field_height is None
     assert arguments.position_angle == pytest.approx(0.0)
     assert arguments.mask is False
     assert "add_constellation_subject_arguments(" in source
     assert "chart_constellation_subject(" in source
+
+
+def test_single_and_group_regional_examples_share_optional_field_overrides():
+    for path in EXAMPLES[1:]:
+        arguments = load(path).parser().parse_args([
+            "--field-width", "30", "--field-height", "24",
+        ])
+
+        assert arguments.field_width == pytest.approx(30.0)
+        assert arguments.field_height == pytest.approx(24.0)
 
 
 @pytest.mark.parametrize("path", EXAMPLES)

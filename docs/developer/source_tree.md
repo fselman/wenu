@@ -269,6 +269,11 @@ facades. Historical component demonstrations that still provide regression
 coverage live under `tests/fixtures/example_regressions/`; they are test-local
 fixtures, not supported user examples.
 
+`examples/circumpolar.py` and its byte-identical packaged resource expose the
+family's existing limiting-declination framing value as an ordinary argument.
+They still only declare a view and delegate horizon controls to the shared
+request and drawing facades.
+
 `tests/test_canonical_all_sky_example.py` owns the all-sky declaration's
 explicit Galactic Mollweide geometry, default detail, optional disjoint mask,
 shared drawing delegation, and observer cleanup. Shared example and installer

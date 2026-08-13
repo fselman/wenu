@@ -20,7 +20,7 @@ def chart_view(arguments, *, sky=None):
     observer = Observer(location="La Ligua", time=LOCAL_TIME)
     return get_chart_view(
         sky, observer, family="circumpolar", pole="south",
-        limiting_declination_deg=LIMITING_DECLINATION_DEG,
+        limiting_declination_deg=arguments.limiting_declination,
         projection="stereographic", position_angle_deg=0.0, mask=False,
     )
 
@@ -48,8 +48,12 @@ def generate(arguments):
 
 
 def parser():
-    return add_chart_cli_arguments(argparse.ArgumentParser(description=__doc__),
-                                   default_output=DEFAULT_OUTPUT)
+    value = add_chart_cli_arguments(
+        argparse.ArgumentParser(description=__doc__),
+        default_output=DEFAULT_OUTPUT)
+    value.add_argument("--limiting-declination", type=float,
+                       default=LIMITING_DECLINATION_DEG)
+    return value
 
 
 if __name__ == "__main__":

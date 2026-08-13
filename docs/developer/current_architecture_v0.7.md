@@ -344,3 +344,10 @@ is checked directly: only the intersection of independent openings has zero
 winding, while one translucent patch covers their excluded union. Reordering
 all horizon states on one reused sphere replaces or removes only the semantic
 horizon and preserves unrelated layers.
+
+Milestone 46C.8Q.9.1 begins visual closure without another rendering path.
+All regression products use the six canonical examples and their shared
+adapter. The circumpolar declaration exposes its existing chart-owned
+limiting declination as `--limiting-declination`, allowing a horizon crossing
+to be inspected without moving horizon logic into the example. Final approval
+remains pending the fixed visual matrix.

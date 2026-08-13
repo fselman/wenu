@@ -525,6 +525,13 @@ forward/reverse request sequences on one reusable `CelestialSphere`. These
 are tests of the established pipeline; Q.8 adds no alternate geometry,
 projection, clipping, rendering, or export path.
 
+The ordinary interfaces are final: shared scripts use `--horizon` and
+`--horizon-mask`, while Python callers use `draw_chart_view(...,
+horizon=True, horizon_mask=True)`. Neither interface implies the other role.
+The canonical circumpolar declaration additionally exposes
+`--limiting-declination`; this changes the chart-owned polar field boundary
+and does not participate in horizon geometry or appearance.
+
 `StereographicProjection.unproject_spherical(x, y)` performs the inverse
 planar mapping and returns coordinates in the projection's source frame. It
 is the classification boundary used by horizon-mask preparation; it does not

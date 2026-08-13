@@ -48,8 +48,8 @@ def parser():
     add_constellation_subject_arguments(
         value, default_constellations=("Cru",))
     value.add_argument("--mask", action="store_true")
-    value.add_argument("--field-width", type=float, default=18.0)
-    value.add_argument("--field-height", type=float, default=16.0)
+    value.add_argument("--field-width", type=float)
+    value.add_argument("--field-height", type=float)
     value.add_argument("--position-angle", type=float, default=0.0)
     return value
 
