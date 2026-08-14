@@ -36,8 +36,13 @@ def grid_options(style, grid):
     return style.as_publication_style()._grid_options(grid)
 
 
-@pytest.mark.parametrize("style", [ChartStyle(), CartoonChartStyle()])
-def test_base_grid_lines_and_labels_share_semantic_colors(style):
+@pytest.mark.parametrize(
+    ("style", "equatorial_color"),
+    [(ChartStyle(), "black"), (CartoonChartStyle(), "#667788")],
+)
+def test_base_grid_lines_and_labels_share_semantic_colors(
+    style, equatorial_color
+):
     grids = (
         AltAzGrid(None),
         EquatorialGrid(None),
@@ -46,7 +51,11 @@ def test_base_grid_lines_and_labels_share_semantic_colors(style):
     )
     for grid in grids:
         options = grid_options(style, grid)["render"]
-        expected = SEMANTIC_COLORS[grid.coordinate_system]
+        expected = (
+            equatorial_color
+            if grid.coordinate_system == "equatorial"
+            else SEMANTIC_COLORS[grid.coordinate_system]
+        )
         assert options["style"]["color"] == expected
         assert options["label_style"]["color"] == expected
 
@@ -56,11 +65,20 @@ def test_base_grid_lines_and_labels_share_semantic_colors(style):
     [atlas_chart_style("print"), cartoon_chart_style("print")],
 )
 def test_print_modes_subdue_altaz_without_changing_other_grid_defaults(style):
-    assert style.grids.equatorial_color == "black"
+    assert style.grids.equatorial_color == "#667788"
     assert style.grids.altaz_color == "#707070"
     assert style.grids.ecliptic_color == "orange"
     assert style.grids.galactic_color == "blue"
     assert style.grids.coordinate_label_color is None
+
+
+def test_named_print_styles_use_the_shared_subtle_grid_baseline():
+    for style in (
+        atlas_chart_style("print"), cartoon_chart_style("print")
+    ):
+        assert style.grids.equatorial_color == "#667788"
+        assert style.grids.coordinate_linewidth == pytest.approx(0.35)
+        assert style.grids.coordinate_alpha <= 0.45
 
 
 @pytest.mark.parametrize(
@@ -107,6 +125,19 @@ def test_explicit_coordinate_label_color_retains_precedence():
     ),
 )
 def test_ecliptic_and_galactic_labels_contain_only_values(name, label):
+    formatter = AtlasChartStyle().as_publication_style()._coordinate_label
+    assert formatter(name) == label
+
+
+@pytest.mark.parametrize(
+    ("name", "label"),
+    (
+        ("right_ascension_277.5", "18:30"),
+        ("declination_0", "+00:00"),
+        ("declination_-15.5", "-15:30"),
+    ),
+)
+def test_equatorial_labels_use_shared_sexagesimal_formats(name, label):
     formatter = AtlasChartStyle().as_publication_style()._coordinate_label
     assert formatter(name) == label
 

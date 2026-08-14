@@ -7,6 +7,7 @@ from wenu import (
     CircumpolarChart,
     CircularGridLabelAnchor,
     CircularLabelAnchor,
+    EllipticalGridLabelAnchor,
     ProjectedCurve,
 )
 from wenu.charts.boundaries import (
@@ -14,6 +15,7 @@ from wenu.charts.boundaries import (
     apply_coordinate_label_anchor,
     circular_boundary,
 )
+from wenu.rendering.label_placement import CurveLabelPlacement
 
 
 def test_circular_boundary_is_closed_and_finite():
@@ -55,7 +57,10 @@ def test_circular_grid_anchor_preserves_polar_label_conventions():
     )
 
     assert anchor(ra) == pytest.approx((0.0, 1.93))
-    assert anchor(dec) == pytest.approx((-1.8335, 0.4825))
+    placement = anchor(dec)
+    assert isinstance(placement, CurveLabelPlacement)
+    assert (placement.x, placement.y) == pytest.approx((-1.8335, 0.4825))
+    assert placement.normal_offset_em == pytest.approx(0.65)
 
 
 def test_rectangular_anchor_places_ra_at_bottom_and_dec_at_left():
@@ -78,7 +83,37 @@ def test_rectangular_anchor_places_ra_at_bottom_and_dec_at_left():
     )
     anchor = RectangularLabelAnchor(inset=0.0)
     assert anchor(ra, Axes()) == pytest.approx((0.0, -1.0))
-    assert anchor(dec, Axes()) == pytest.approx((-2.0, 0.0))
+    placement = anchor(dec, Axes())
+    assert isinstance(placement, CurveLabelPlacement)
+    assert (placement.x, placement.y) == pytest.approx((-2.0, 0.0))
+
+
+def test_elliptical_anchor_uses_one_meridian_for_latitudes_and_key_longitudes():
+    boundary = ProjectedCurve(
+        x=[-2.0, 0.0, 2.0, 0.0, -2.0],
+        y=[0.0, 1.0, 0.0, -1.0, 0.0],
+        closed=True,
+        name="boundary",
+    )
+    latitude = ProjectedCurve(
+        x=[-1.5, 0.0, 1.5],
+        y=[0.5, 0.6, 0.5],
+        name="galactic_latitude_30",
+    )
+    secondary_longitude = ProjectedCurve(
+        x=[0.2, 0.3], y=[-0.8, 0.8], name="galactic_longitude_30"
+    )
+    principal_longitude = ProjectedCurve(
+        x=[-0.3, -0.2], y=[-0.8, 0.8], name="galactic_longitude_270"
+    )
+    anchor = EllipticalGridLabelAnchor(boundary)
+
+    placement = anchor(latitude)
+    assert isinstance(placement, CurveLabelPlacement)
+    assert placement.x < 0.0
+    assert placement.y == pytest.approx(0.579)
+    assert anchor(secondary_longitude) is None
+    assert anchor(principal_longitude) is not None
 
 
 def test_grid_anchor_application_does_not_mutate_input():

@@ -210,7 +210,7 @@ def test_atlas_structural_styles_reach_publication_adapter():
     assert flat.constellation_label_color == "#5b5b5b"
     assert flat.boundary_color == "#777777"
     assert flat.boundary_linestyle == ":"
-    assert flat.grid_linewidth == 0.45
+    assert flat.grid_linewidth == 0.35
     assert flat.ecliptic_linestyle == "--"
 
 
@@ -983,7 +983,7 @@ def test_print_palette_adds_semantic_grid_colors():
         "white",
         "#000000",
         "#707070",
-        "black",
+        "#667788",
         "orange",
         "blue",
     }

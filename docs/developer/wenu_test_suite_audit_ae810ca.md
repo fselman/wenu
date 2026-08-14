@@ -576,6 +576,12 @@ horizon opening and assigns the retained horizon-mask role to the circumpolar
 geometry selected for that purpose. Catalogue and renderer suites are not
 duplicated because production behavior is unchanged.
 
+Milestone 46D.8F extends the permanent grid and chart-type owners. Configuration
+parity protects the new packaged appearance; request-grid contracts protect
+family sampling and the all-sky zero parallel; semantic-style contracts protect
+sexagesimal formatting; chart-type contracts protect central/principal label
+selection and clearance. No example-specific appearance test is added.
+
 Milestone 46C.10 completed that required Mac validation without changing the
 tier definitions. Fast, integration, visual, and full suites passed. The
 diagnostic benchmark also produced 18 atlas-print products across all six

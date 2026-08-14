@@ -8,6 +8,13 @@ import numpy as np
 
 from wenu.geometry.projected import ProjectedCurve
 from wenu.geometry.viewport import Viewport
+from wenu.rendering.label_placement import CurveLabelPlacement
+
+
+def _above_line(x, y):
+    return CurveLabelPlacement(
+        float(x), float(y), rotation_deg=0.0, normal_offset_em=0.65
+    )
 
 
 def resolved_circular_boundary_style(style):
@@ -143,8 +150,21 @@ class CircularGridLabelAnchor:
         y = y[inside]
         radius = radius[inside]
         name = str(curve.name or "")
-        if self.declination_at_left and name.startswith("declination_"):
-            index = int(np.argmin(x))
+        if name.startswith("declination_"):
+            if self.declination_at_left:
+                index = int(np.argmin(x))
+                label_x = float(self.inset) * float(x[index])
+            else:
+                upper = np.flatnonzero(y >= 0.0)
+                candidates = upper if upper.size else np.arange(len(x))
+                index = int(candidates[np.argmin(np.abs(x[candidates]))])
+                label_x = (
+                    float(self.inset) * float(x[index])
+                    - 0.012 * self.radius
+                )
+            return _above_line(
+                label_x, float(self.inset) * float(y[index])
+            )
         else:
             index = int(np.argmax(radius))
         return (
@@ -192,7 +212,26 @@ class EllipticalGridLabelAnchor:
         latitude = any(name.startswith(prefix) for prefix in (
             "declination_", "ecliptic_latitude_", "galactic_latitude_",
         ))
-        index = int(np.argmin(x) if latitude else np.argmax(radius))
+        if latitude:
+            index = int(np.argmin(np.abs(x)))
+            return _above_line(
+                self.inset * float(x[index]) - 0.012 * x_limit,
+                self.inset * float(y[index]),
+            )
+        longitude_prefixes = (
+            "right_ascension_", "ecliptic_longitude_",
+            "galactic_longitude_", "azimuth_",
+        )
+        for prefix in longitude_prefixes:
+            if name.startswith(prefix):
+                value = float(name.removeprefix(prefix)) % 360.0
+                if not any(
+                    np.isclose(value, principal)
+                    for principal in (0.0, 90.0, 180.0, 270.0)
+                ):
+                    return None
+                break
+        index = int(np.argmax(radius))
         return self.inset * float(x[index]), self.inset * float(y[index])
 
 
@@ -223,6 +262,8 @@ class RectangularLabelAnchor:
             index = int(np.argmin(np.abs(x - target)))
         else:
             index = int(np.argmax(y))
+        if name.startswith("declination_"):
+            return _above_line(x[index], y[index])
         return float(x[index]), float(y[index])
 
 

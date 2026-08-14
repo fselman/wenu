@@ -937,6 +937,13 @@ and the above-horizon opening must not be used together to judge the opacity
 or completeness of either one. A horizon reference is claimed only where the
 chosen family geometry demonstrates a crossing.
 
+The canonical equatorial formatter emits right ascension as `hh:mm` and signed
+declination as `dd:mm`. Regional fields through 60 degrees use 15-degree grid
+sampling; circumpolar charts use 30-degree, two-hour meridians. All-sky grids
+include zero latitude, place latitude labels on the central longitude, and
+label only principal longitudes. These are shared chart policies rather than
+example arguments.
+
 ### Sgr-Sco-Oph-Ser regional product
 
 `examples/regional_constellation_group.py --constellations Sgr,Sco,Oph,Ser`

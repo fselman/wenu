@@ -383,6 +383,12 @@ acceptance covers its actual field and furniture, and circumpolar retains the
 crossing horizon case. The acceptance document owns the normalized remediation
 register; production chart modules remain untouched.
 
+Milestone 46D.8F assigns common remediation to existing owners:
+`configuration/defaults.toml` and `charts/presets.py` own semantic appearance,
+`charts/request_grids.py` owns family sampling, `charts/styles.py` owns numeric
+formatting and rectangular fallback placement, and `charts/boundaries.py` owns
+circular and elliptical label anchors. Examples contain none of these values.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current

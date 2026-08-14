@@ -18,6 +18,9 @@ outer left and right tips of the 2:1 Mollweide ellipse. Longitude and latitude
 are sampled every 30° by default. The labeled Galactic grid is the ordinary
 default for this family; explicitly requested equatorial and ecliptic grids
 are transformed overlays using the same spherical-geometry pipeline.
+The zero-latitude parallel is included. Latitude labels are placed along the
+central longitude, and only the principal 0°, 90°, 180°, and 270° longitudes
+are labeled, keeping the complete-sphere view readable.
 Because the 2:1 map is physically half as tall as the circular charts at the
 same output width, its built-in styles halve stellar marker diameters. The
 magnitude legend uses the same adjusted scale.

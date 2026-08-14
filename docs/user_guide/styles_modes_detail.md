@@ -62,11 +62,15 @@ family. On a Galactic Mollweide all-sky chart the same observer-bound horizon
 is transformed and seam-split through the ordinary coordinate-frame and
 projection pipeline.
 
-Equatorial grid lines and numeric labels default to black, ecliptic ones to
-orange, and Galactic ones to blue. Presentation and cartoon modes may adapt
+Equatorial grid lines and numeric labels default to subtle blue-grey, ecliptic
+ones to orange, and Galactic ones to blue. Presentation and cartoon modes may adapt
 them for contrast while keeping the systems visually distinct. Grid labels
 contain only their numeric coordinate values; semantic names belong to the
 separately selected reference curves.
+Equatorial labels use `hh:mm` for right ascension and signed `dd:mm` for
+declination. Regional charts use denser 15-degree sampling through 60-degree
+fields; circumpolar meridians are separated by two hours. Binocular grids
+remain opt-in.
 
 ## Appearance overrides
 

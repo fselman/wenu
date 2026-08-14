@@ -1,6 +1,6 @@
 # Milestone 46D.8 visual acceptance
 
-**Status:** Reviewed on Mac; remediation required before approval
+**Status:** Reviewed on Mac; 46D.8F grid remediation pending rerender
 
 **Matrix source:** `tools/render_46d8_visual_matrix.py`
 
@@ -108,15 +108,25 @@ owners.
 | DETAIL-1 | Atlas all-sky, planisphere, regional-group, and circumpolar products contain too many open clusters, planetary nebulae, and remnants. | confirmed family density policy | immutable detail policy | 46D.8G |
 | CARTOON-1 | Cartoon products omit the Milky Way, Magellanic Clouds, and a restrained bright deep-sky selection. | confirmed product content policy | cartoon detail/content policy | 46D.8G |
 | MASK-1 | The cartoon regional outside mask is too weak. | confirmed style policy | packaged cartoon mask style | 46D.8H |
-| MASK-2 | A combined constellation and horizon opening cannot independently prove either mask because openings use union semantics. | invalid diagnostic composition | visual matrix | 46D.8E |
+| MASK-2 | The combined all-sky mask correctly leaves visible only selected constellation regions above the horizon; UMa is present but masked below the horizon. Isolated products are still needed to judge each mask independently. | valid intersection behavior; ambiguous opacity diagnostic | visual matrix | 46D.8E and final closure |
 | HORIZON-1 | Regional and Centaurus A binocular fields did not contain a demonstrated horizon crossing. | invalid diagnostic geometry, not yet a renderer defect | visual matrix | 46D.8E |
 | BINOCULAR-1 | Binocular defaults should omit grids and provide target marker, center, and field diameter. | confirmed family/furniture policy | binocular request and context furniture | 46D.8I |
 | BINOCULAR-2 | Stellar symbols appear nearly equal in size. | diagnosis required before changing behavior | binocular stellar sizing | 46D.8I |
 
-Milestone 46D.8E removes the invalid combined claims from the next matrix:
+Milestone 46D.8E separates the combined claims in the next matrix so that
+each mask can be judged independently:
 constellation masks are reviewed independently, the binocular diagnostic is
 a field/furniture product, and the circumpolar product retains the explicit
 horizon-crossing role. No production rendering behavior changes in 46D.8E.
+
+Milestone 46D.8F centralizes the first appearance remediation. Atlas and
+cartoon coordinate grids receive subtler shared line weights and opacity;
+atlas-print equatorial lines use blue-grey. Coordinate-label bases are reduced
+before mode scaling, equatorial labels use `hh:mm` and signed `dd:mm`, latitude
+labels receive clearance above their lines, and all-sky latitude labels use
+one central longitude. The all-sky grid includes its zero latitude and labels
+only principal longitudes. Regional fields through 60 degrees use 15-degree
+spacing, while circumpolar RA uses two-hour spacing. Examples remain unchanged.
 
 ## Product review appendix
 

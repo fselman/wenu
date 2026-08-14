@@ -93,11 +93,11 @@ def test_individual_cli_addition_overrides_disabled_general_alias():
         ("regional", SimpleNamespace(
             field_width_deg=60.0, field_height_deg=40.0,
             field_diameter_deg=None, limiting_declination_deg=None,
-        ), 30, 1441),
+        ), 15, 721),
         ("circumpolar", SimpleNamespace(
             field_width_deg=None, field_height_deg=None,
             field_diameter_deg=None, limiting_declination_deg=-69.75,
-        ), 15, 721),
+        ), 30, 1441),
         ("binocular", SimpleNamespace(
             field_width_deg=None, field_height_deg=None,
             field_diameter_deg=6.5, limiting_declination_deg=None,
@@ -151,6 +151,28 @@ def test_reconfiguration_replaces_grids_without_accumulation():
     assert first[0] not in sky.layers
     assert grids(sky) == second
     assert second[0].ra == tuple(range(0, 360, 30))
+
+
+def test_family_grid_policy_includes_all_sky_zero_and_two_hour_polar_ra():
+    all_sky = configure_chart_request_grids(
+        CelestialSphere(object()),
+        request("all_sky", detail=DetailOverrides(
+            enabled_layer_additions={"equatorial_grid"}
+        )),
+    )[0]
+    circumpolar = configure_chart_request_grids(
+        CelestialSphere(object()),
+        request("circumpolar", detail=DetailOverrides(
+            enabled_layer_additions={"equatorial_grid"}
+        )),
+        frame=SimpleNamespace(
+            field_width_deg=None, field_height_deg=None,
+            field_diameter_deg=None, limiting_declination_deg=-69.75,
+        ),
+    )[0]
+
+    assert 0 in all_sky.dec
+    assert circumpolar.ra == tuple(range(0, 360, 30))
 
 
 def test_request_without_grids_clears_previous_request_geometry():

@@ -24,8 +24,13 @@ def requested_coordinate_grids(detail):
     return frozenset(requested - disabled)
 
 
-def _latitude_values(limit, step):
-    return tuple(value for value in range(-limit, limit + 1, step) if value)
+def _latitude_values(limit, step, *, include_zero=False):
+    values = set(range(-limit, limit + 1, step))
+    if include_zero:
+        values.add(0)
+    else:
+        values.discard(0)
+    return tuple(sorted(values))
 
 
 def _view_span_deg(family, frame):
@@ -50,9 +55,17 @@ def _view_span_deg(family, frame):
 
 
 def _grid_specifications(family, frame=None):
-    step = 15 if _view_span_deg(family, frame) < 60.0 else 30
+    span = _view_span_deg(family, frame)
+    if family == "circumpolar":
+        step = 30
+    elif family == "regional" and span <= 60.0:
+        step = 15
+    else:
+        step = 15 if span < 60.0 else 30
     longitudes = tuple(range(0, 360, step))
-    latitudes = _latitude_values(75, step)
+    latitudes = _latitude_values(
+        75, step, include_zero=family == "all_sky"
+    )
     samples = 721 if step == 15 else 1441
     return {
         "equatorial_grid": {

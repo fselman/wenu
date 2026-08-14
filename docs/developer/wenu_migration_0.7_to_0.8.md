@@ -926,6 +926,15 @@ binocular fields that did not demonstrate a crossing, and retains the proven
 circumpolar horizon diagnostic. No production behavior changes. Subsequent
 46D.8 slices own implementation and final visual approval.
 
+Milestone 46D.8F implements the common coordinate-grid remediation without
+example overrides. Packaged semantic styles provide subdued grid weight,
+opacity, color, and label scale. Request-time family policy supplies the
+all-sky zero parallel, 15-degree regional sampling through 60-degree fields,
+and two-hour circumpolar meridians. Shared formatting and boundary-aware
+placement provide `hh:mm`, signed `dd:mm`, line clearance, one central
+all-sky latitude-label meridian, and principal Mollweide longitude labels.
+Visual rerendering remains required before acceptance.
+
 - generate every canonical family through both its example and `wenu_chart`
   with equivalent effective options;
 - prove matching resolved observer, subject, geometry, detail, appearance,

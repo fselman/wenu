@@ -247,9 +247,10 @@ derivation applies. Unless marked otherwise, entries are **public defaults**.
 - IAU boundaries: `#777777`, width `0.35`, style `dotted`, opacity `0.65`;
 - constellation figures: `#686868`, width `0.35`, style `solid` (currently
   implicit), opacity `0.58`; labels `#5b5b5b`/`0.90`, offset `(0,0)`, center;
-- equatorial: black/`0.45`/solid; ecliptic: orange/`0.45`/dashed; Galactic:
-  blue/`0.45`/dashed; AltAz: `#707070`/`0.45`/solid; shared opacity `0.65`;
-- coordinate labels enabled, fallback color `null`, font `6.0`, opacity `0.85`;
+- equatorial: `#667788`/`0.35`/solid; ecliptic: orange/`0.35`/dashed;
+  Galactic: blue/`0.35`/dashed; AltAz: `#707070`/`0.35`/solid; shared
+  opacity `0.45`;
+- coordinate labels enabled, fallback color `null`, font `3.5`, opacity `0.85`;
 - horizon: altitude `0`, minimum altitude `null`, `#707070`, width `0.55`,
   style `dashed`, opacity `0.80`, z-order `3.5`;
 - mask: `#d8d8d8`, opacity `0.42`, z-order `20`;
@@ -279,7 +280,7 @@ derivation applies. Unless marked otherwise, entries are **public defaults**.
   `#FFF4CC`, structure `#FFE066`, labels `#FFF0A6`, frame `#BFE7F5`,
   Milky Way `#69B9D6`, deep sky `#FFE08A`;
 - cartoon print palette: sky white, foreground/stars/figures/labels/frame/
-  Milky Way/footer `#000000`, AltAz `#707070`, equatorial black, ecliptic
+  Milky Way/footer `#000000`, AltAz `#707070`, equatorial `#667788`, ecliptic
   orange, Galactic blue;
 - cartoon presentation palette: sky `#1677A6`, foreground/stars/figures/
   labels/frame/Milky Way `#FFE066`, AltAz/equatorial/footer `#FFFFFF`,

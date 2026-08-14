@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from wenu.rendering import layers
+from wenu.rendering.label_placement import CurveLabelPlacement
 from wenu.rendering.symbols import DEFAULT_SYMBOLS
 from wenu.rendering.preparation import (
     clip_polygons_to_latitude,
@@ -755,7 +756,10 @@ class PublicationStyle:
             return f"{hours:02d}:{minutes:02d}"
         if name.startswith("declination_"):
             degrees = float(name.removeprefix("declination_"))
-            return f"{degrees:+g}°"
+            total_minutes = round(abs(degrees) * 60.0)
+            whole_degrees, minutes = divmod(total_minutes, 60)
+            sign = "+" if degrees >= 0.0 else "-"
+            return f"{sign}{whole_degrees:02d}:{minutes:02d}"
         for prefix in (
             "azimuth_",
             "ecliptic_longitude_",
@@ -803,4 +807,9 @@ class PublicationStyle:
             index = int(np.argmin(np.abs(y - y_min)))
             return x[index], y_min + 0.018 * (y_max - y_min)
         index = int(np.argmin(np.abs(x - x_min)))
-        return x_min + 0.012 * (x_max - x_min), y[index]
+        return CurveLabelPlacement(
+            x_min + 0.012 * (x_max - x_min),
+            y[index],
+            rotation_deg=0.0,
+            normal_offset_em=0.65,
+        )

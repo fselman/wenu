@@ -190,6 +190,15 @@ crossing outside its field. The circumpolar diagnostic retains the explicit
 horizon role. This slice changes only the visual harness, its structural
 contracts, and documentation; production rendering remains unchanged.
 
+Milestone 46D.8F begins remediation at the shared semantic-grid owners. The
+packaged atlas/cartoon bases own subdued line appearance and smaller label
+type; request-time family policy owns 15-degree regional and 30-degree
+circumpolar sampling plus the all-sky zero parallel. Shared formatting emits
+RA as `hh:mm` and signed declination as `dd:mm`. Boundary-aware anchors keep
+latitude labels above their curves, use one central all-sky longitude, and
+limit the Mollweide longitude labels to principal quadrants. Canonical examples
+remain request-only.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

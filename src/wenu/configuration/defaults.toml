@@ -370,33 +370,33 @@ horizontal_alignment = "center"
 vertical_alignment = "center"
 
 [styles.atlas.equatorial_grid]
-color = "black"
-line_width = 0.45
+color = "#667788"
+line_width = 0.35
 line_style = "solid"
-opacity = 0.65
+opacity = 0.45
 
 [styles.atlas.ecliptic_grid]
 color = "orange"
-line_width = 0.45
+line_width = 0.35
 line_style = "dashed"
-opacity = 0.65
+opacity = 0.45
 
 [styles.atlas.galactic_grid]
 color = "blue"
-line_width = 0.45
+line_width = 0.35
 line_style = "dashed"
-opacity = 0.65
+opacity = 0.45
 
 [styles.atlas.altaz_grid]
 color = "#707070"
-line_width = 0.45
+line_width = 0.35
 line_style = "solid"
-opacity = 0.65
+opacity = 0.45
 
 [styles.atlas.coordinate_labels]
 enabled = true
 color = "none"
-font_size = 6.0
+font_size = 3.5
 opacity = 0.85
 
 [styles.atlas.horizon]
@@ -593,33 +593,33 @@ horizontal_alignment = "center"
 vertical_alignment = "center"
 
 [styles.cartoon.equatorial_grid]
-color = "black"
-line_width = 0.40
+color = "#667788"
+line_width = 0.35
 line_style = "solid"
-opacity = 0.45
+opacity = 0.35
 
 [styles.cartoon.ecliptic_grid]
 color = "orange"
-line_width = 0.40
+line_width = 0.35
 line_style = "dashed"
-opacity = 0.45
+opacity = 0.35
 
 [styles.cartoon.galactic_grid]
 color = "blue"
-line_width = 0.40
+line_width = 0.35
 line_style = "dashed"
-opacity = 0.45
+opacity = 0.35
 
 [styles.cartoon.altaz_grid]
 color = "black"
-line_width = 0.40
+line_width = 0.35
 line_style = "solid"
-opacity = 0.45
+opacity = 0.35
 
 [styles.cartoon.coordinate_labels]
 enabled = false
 color = "none"
-font_size = 7.0
+font_size = 4.0
 opacity = 0.75
 
 [styles.cartoon.horizon]
@@ -677,7 +677,7 @@ frame = "#000000"
 milky_way = "#000000"
 footer = "#000000"
 altaz = "#707070"
-equatorial = "black"
+equatorial = "#667788"
 ecliptic = "orange"
 galactic = "blue"
 
