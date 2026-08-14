@@ -207,6 +207,7 @@ from .charts.view_defaults import (
 from .charts.drawing import draw_chart_view
 from .charts.command_line import (
     add_chart_cli_arguments,
+    chart_configuration,
     chart_cli_furniture,
     draw_chart_view_from_arguments,
 )
@@ -308,6 +309,7 @@ __all__ = [
     "get_chart_view",
     "draw_chart_view",
     "add_chart_cli_arguments",
+    "chart_configuration",
     "chart_cli_furniture",
     "draw_chart_view_from_arguments",
     "CHART_VIEW_DEFAULTS",

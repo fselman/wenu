@@ -5,28 +5,27 @@ from pathlib import Path
 
 from wenu import (
     ChartStyleOverrides, FixedDetailPolicy, Observer, ResolvedDetail,
-    StellarMagnitudeSizing, add_chart_cli_arguments,
-    draw_chart_view_from_arguments, generate_celestial_sphere, get_chart_view,
+    StellarMagnitudeSizing, add_chart_cli_arguments, chart_configuration,
+    draw_chart_view_from_arguments,
+    generate_celestial_sphere, get_chart_view,
 )
 
-LOCAL_TIME = "2026-05-15 22:00"
-FIELD_DIAMETER_DEG = 6.5
-STAR_MAGNITUDE_LIMIT = 11.0
 DEFAULT_OUTPUT = Path("output/examples/binocular-object")
 
 def chart_view(arguments, *, sky=None):
+    configuration = chart_configuration(arguments)
     sky = generate_celestial_sphere() if sky is None else sky
-    observer = Observer(location="La Ligua", time=LOCAL_TIME)
+    observer = Observer(location="La Ligua", time="2026-05-15 22:00")
     return get_chart_view(
         sky, observer, family="binocular", target=arguments.target,
         field_diameter_deg=arguments.field_diameter, projection="stereographic",
-        position_angle_deg=0.0, mask=False,
+        configuration=configuration,
     )
 
 
 def _details(view):
     samples = 73 if "globular_clusters" in view.target.required_families else 97
-    common = dict(star_magnitude_limit=STAR_MAGNITUDE_LIMIT,
+    common = dict(star_magnitude_limit=11.0,
                   galaxy_magnitude_limit=11.0, extended_object_samples=samples)
     return {
         "atlas": FixedDetailPolicy(ResolvedDetail(**common)),
@@ -43,7 +42,7 @@ def generate(arguments):
     target = view.target
     name = target.display_name + (
         "" if target.primary_identifier is None else f" ({target.primary_identifier})")
-    title = f"{name} — {arguments.field_diameter:g}° binocular field"
+    title = f"{name} — {view.frame.field_diameter_deg:g}° binocular field"
     sizing = StellarMagnitudeSizing(reference="limiting_magnitude", scale=1.0, exponent=0.20,
                                     minimum_area=1.0, maximum_area=40.0)
     try:
@@ -60,10 +59,9 @@ def parser():
     value = add_chart_cli_arguments(argparse.ArgumentParser(description=__doc__),
                                     default_output=DEFAULT_OUTPUT)
     value.add_argument("--target", default="centaurus-a")
-    value.add_argument("--field-diameter", type=float, default=FIELD_DIAMETER_DEG)
+    value.add_argument("--field-diameter", type=float)
     return value
 
 
 if __name__ == "__main__":
-    for path in generate(parser().parse_args()):
-        print(path)
+    print(*generate(parser().parse_args()), sep="\n")

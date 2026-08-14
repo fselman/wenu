@@ -19,13 +19,10 @@ def test_defining_geometry_is_explicit():
     module = example()
     source = Path("examples/circumpolar.py").read_text(encoding="utf-8")
 
-    assert module.LIMITING_DECLINATION_DEG == pytest.approx(-69.75)
-    assert 'pole="south"' in source
     assert "limiting_declination_deg=arguments.limiting_declination" in source
     assert 'projection="stereographic"' in source
-    assert module.parser().parse_args([]).limiting_declination == pytest.approx(
-        module.LIMITING_DECLINATION_DEG
-    )
+    assert module.parser().parse_args([]).limiting_declination is None
+    assert "configuration=configuration" in source
 
 
 def test_limiting_declination_is_an_ordinary_framing_control(monkeypatch):

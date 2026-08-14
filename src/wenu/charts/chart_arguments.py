@@ -185,11 +185,13 @@ def add_chart_content_arguments(parser):
     parser.add_argument(
         "--poles",
         action="store_true",
+        default=None,
         help="draw configured visible coordinate-system poles",
     )
     parser.add_argument(
         "--pole-labels",
         action="store_true",
+        default=None,
         help="label visible pole crosses with their abbreviations",
     )
     return parser
@@ -257,8 +259,8 @@ def chart_content_options(arguments) -> ChartContentOptions:
         galactic_grid=arguments.galactic_grid,
         galactic_grid_labels=arguments.galactic_grid_labels,
         grid_references=arguments.grid_references,
-        poles=arguments.poles,
-        pole_labels=arguments.pole_labels,
+        poles=bool(arguments.poles),
+        pole_labels=bool(arguments.pole_labels),
     )
 
 

@@ -17,6 +17,8 @@ class ChartViewDefaults:
     position_angle_deg: float = 0.0
     mask: bool = False
     field_diameter_deg: float | None = None
+    field_width_deg: float | None = None
+    field_height_deg: float | None = None
     pole: str | None = None
     limiting_declination_deg: float | None = None
 
@@ -62,7 +64,7 @@ def _geometry_detail_defaults():
     return packaged_geometry_detail_defaults()
 
 
-def chart_view_defaults(family, *, group=False):
+def chart_view_defaults(family, *, group=False, configuration=None):
     """Return the immutable ordinary geometrical policy for a family."""
     normalized = str(family).strip().lower()
     key = (
@@ -73,7 +75,12 @@ def chart_view_defaults(family, *, group=False):
         else normalized
     )
     try:
-        return _geometry_detail_defaults().view_defaults[key]
+        defaults = (
+            _geometry_detail_defaults()
+            if configuration is None
+            else configuration.geometry_detail
+        )
+        return defaults.view_defaults[key]
     except KeyError as error:
         raise ValueError(
             "family must be planisphere, all_sky, regional, circumpolar, "

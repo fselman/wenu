@@ -6,6 +6,7 @@ from pathlib import Path
 from wenu import (
     AdaptiveDetailPolicy, Observer, add_chart_cli_arguments,
     add_constellation_subject_arguments, chart_cli_furniture,
+    chart_configuration,
     chart_constellation_subject, draw_chart_view_from_arguments,
     generate_celestial_sphere, get_chart_view,
 )
@@ -16,6 +17,7 @@ DEFAULT_CONSTELLATIONS = ("Sgr", "Sco", "Oph", "Ser")
 
 
 def chart_view(arguments, *, sky=None):
+    configuration = chart_configuration(arguments)
     sky = generate_celestial_sphere() if sky is None else sky
     observer = Observer(location="La Ligua", time=LOCAL_TIME)
     subject = chart_constellation_subject(arguments)
@@ -25,7 +27,7 @@ def chart_view(arguments, *, sky=None):
         field_height_deg=arguments.field_height,
         position_angle_deg=arguments.position_angle,
         projection="stereographic",
-        mask=arguments.mask,
+        mask=arguments.mask, configuration=configuration,
     )
 
 
@@ -37,7 +39,9 @@ def generate(arguments):
             product_details={"atlas": AdaptiveDetailPolicy(
                 star_magnitude_limit=6.5)},
             furniture=chart_cli_furniture(
-                arguments, copyright="© Fernando Selman"),
+                arguments, copyright="© Fernando Selman",
+                configuration=getattr(view, "configuration", None),
+                family=getattr(view, "family", None)),
             title=view.constellations.display_name)
         return tuple(result.output for result in results)
     finally:
@@ -49,10 +53,10 @@ def parser():
                                     default_output=DEFAULT_OUTPUT)
     add_constellation_subject_arguments(
         value, default_constellations=DEFAULT_CONSTELLATIONS)
-    value.add_argument("--mask", action="store_true")
+    value.add_argument("--mask", action="store_true", default=None)
     value.add_argument("--field-width", type=float)
     value.add_argument("--field-height", type=float)
-    value.add_argument("--position-angle", type=float, default=0.0)
+    value.add_argument("--position-angle", type=float)
     return value
 
 

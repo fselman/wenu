@@ -30,8 +30,8 @@ def test_single_regional_defaults_use_constellation_framing():
     assert arguments.group is None
     assert arguments.field_width is None
     assert arguments.field_height is None
-    assert arguments.position_angle == pytest.approx(0.0)
-    assert arguments.mask is False
+    assert arguments.position_angle is None
+    assert arguments.mask is None
     assert "add_constellation_subject_arguments(" in source
     assert "chart_constellation_subject(" in source
 

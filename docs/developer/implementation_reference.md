@@ -780,6 +780,30 @@ geometry/detail, and furniture/product/export translations. These functions
 do not install global process state. Ordinary runtime and CLI activation
 remains the following Milestone 46D.5 slice.
 
+The ordinary runtime accepts that aggregate directly:
+
+```python
+from wenu import get_chart_view
+from wenu.configuration import load_configuration_defaults
+
+configuration = load_configuration_defaults("my-wenu.toml")
+view = get_chart_view(
+    sky,
+    observer,
+    family="binocular",
+    target="M13",
+    configuration=configuration,
+)
+```
+
+`draw_chart_view()` automatically carries `view.configuration` through named
+style/mode composition, detail, footer and magnitude-legend appearance, and
+export. Explicit view and drawing arguments retain final precedence. The six
+canonical examples expose the same path as `--config PATH`; the adapter loads
+and validates it before generating a maximal sphere. Omitted `--style`,
+`--mode`, and `--all-products` values resolve from the effective TOML, while
+arguments explicitly present on the command line override it.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

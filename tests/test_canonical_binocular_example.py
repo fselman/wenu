@@ -23,8 +23,7 @@ def test_packaged_target_and_explicit_geometry_are_cli_data():
 
     assert arguments.target == "M57"
     assert arguments.field_diameter == pytest.approx(7.0)
-    assert module.FIELD_DIAMETER_DEG == pytest.approx(6.5)
-    assert module.STAR_MAGNITUDE_LIMIT == pytest.approx(11.0)
+    assert module.parser().parse_args([]).field_diameter is None
     assert not hasattr(module, "TARGETS")
 
 
@@ -53,6 +52,7 @@ def test_generation_delegates_to_shared_view_drawing(monkeypatch, tmp_path):
     )
     view = SimpleNamespace(
         target=target,
+        frame=SimpleNamespace(field_diameter_deg=6.5),
         observer=SimpleNamespace(close=lambda: closed.append(True)),
     )
     captured = []

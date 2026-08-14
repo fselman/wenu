@@ -822,6 +822,17 @@ loads are isolated. Milestone 46D.5B remains responsible for threading the
 resolved configuration through ordinary view/drawing and shared CLI adapters,
 including omitted-versus-explicit argument precedence.
 
+**Final status:** Implemented. Milestone 46D.5B threads one frozen effective
+configuration through ordinary view geometry, composition, detail, footer and
+magnitude-legend furniture, product naming, and export. The shared CLI exposes
+`--config PATH`; configuration is validated before canonical sphere loading,
+and product arguments retain `None` as the omission sentinel until the user
+overlay is resolved. Explicit CLI style, mode, and all-product selections win
+at the existing adapter boundary. Family field, angle, mask, and limiting
+declination controls use the same omission rule, as do configurable furniture
+switches. Direct Python values retain the same final precedence. Sequential
+configured and packaged products remain isolated, and packaged-only behavior is unchanged.
+
 ### Milestone 46D.6 — Add the installed `wenu_chart` command
 
 - add one installed command with `all-sky`, `planisphere`, `regional`,

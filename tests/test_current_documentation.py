@@ -210,6 +210,38 @@ def test_user_overlay_boundary_is_currently_documented():
     assert "src/wenu/configuration/translation.py" in source_tree
 
 
+def test_user_overlay_runtime_precedence_is_currently_documented():
+    current = read(CURRENT)
+    roadmap = read(ROADMAP)
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+
+    for phrase in (
+        "Milestone 46D.5B",
+        "one frozen aggregate",
+        "`--config PATH`",
+        "before maximal-sphere construction",
+    ):
+        assert phrase in current
+    for phrase in (
+        "**Final status:** Implemented",
+        "product arguments retain `None` as the omission sentinel",
+        "packaged-only behavior is unchanged",
+    ):
+        assert phrase in roadmap
+    for phrase in (
+        "load_configuration_defaults(\"my-wenu.toml\")",
+        "configuration=configuration",
+        "explicitly present on the command line override it",
+    ):
+        assert phrase in implementation
+    for phrase in (
+        "Milestone 46D.5B",
+        "no active-configuration singleton exists",
+    ):
+        assert phrase in source_tree
+
+
 def test_configuration_schema_v1_freezes_structure_and_validation():
     schema = read(CONFIGURATION_SCHEMA)
     roadmap = read(ROADMAP)

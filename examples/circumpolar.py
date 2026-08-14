@@ -6,22 +6,23 @@ from pathlib import Path
 from wenu import (
     AdaptiveDetailPolicy, FixedDetailPolicy, Observer, ResolvedDetail,
     add_chart_cli_arguments,
-    chart_cli_furniture, draw_chart_view_from_arguments,
+    chart_cli_furniture, chart_configuration, draw_chart_view_from_arguments,
     generate_celestial_sphere, get_chart_view,
 )
 
 LOCAL_TIME = "2026-08-15 21:00"
-LIMITING_DECLINATION_DEG = -69.75
 DEFAULT_OUTPUT = Path("output/examples/circumpolar")
 
 
 def chart_view(arguments, *, sky=None):
+    configuration = chart_configuration(arguments)
     sky = generate_celestial_sphere() if sky is None else sky
     observer = Observer(location="La Ligua", time=LOCAL_TIME)
     return get_chart_view(
-        sky, observer, family="circumpolar", pole="south",
+        sky, observer, family="circumpolar",
         limiting_declination_deg=arguments.limiting_declination,
-        projection="stereographic", position_angle_deg=0.0, mask=False,
+        projection="stereographic",
+        configuration=configuration,
     )
 
 
@@ -40,7 +41,9 @@ def generate(arguments):
         results = draw_chart_view_from_arguments(
             view, arguments, stem="circumpolar", product_details=details,
             furniture=chart_cli_furniture(
-                arguments, pole_selection="both", copyright="© Fernando Selman"),
+                arguments, pole_selection="both", copyright="© Fernando Selman",
+                configuration=getattr(view, "configuration", None),
+                family=getattr(view, "family", None)),
             title="Southern circumpolar sky — −69.75° boundary crossing the LMC")
         return tuple(result.output for result in results)
     finally:
@@ -51,8 +54,7 @@ def parser():
     value = add_chart_cli_arguments(
         argparse.ArgumentParser(description=__doc__),
         default_output=DEFAULT_OUTPUT)
-    value.add_argument("--limiting-declination", type=float,
-                       default=LIMITING_DECLINATION_DEG)
+    value.add_argument("--limiting-declination", type=float)
     return value
 
 

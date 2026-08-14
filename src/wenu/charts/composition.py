@@ -33,7 +33,9 @@ PRINT_MODE = "print"
 PRESENTATION_MODE = "presentation"
 
 
-def _style_mode_defaults():
+def _style_mode_defaults(configuration=None):
+    if configuration is not None:
+        return configuration.style_mode
     from wenu.configuration.style_mode_translation import (
         packaged_style_mode_defaults,
     )
@@ -41,7 +43,9 @@ def _style_mode_defaults():
     return packaged_style_mode_defaults()
 
 
-def _geometry_detail_defaults():
+def _geometry_detail_defaults(configuration=None):
+    if configuration is not None:
+        return configuration.geometry_detail
     from wenu.configuration.geometry_detail_translation import (
         packaged_geometry_detail_defaults,
     )
@@ -49,7 +53,23 @@ def _geometry_detail_defaults():
     return packaged_geometry_detail_defaults()
 
 
-def _resolve_style(style):
+def _resolved_style_mode_defaults(configuration):
+    return (
+        _style_mode_defaults()
+        if configuration is None
+        else _style_mode_defaults(configuration)
+    )
+
+
+def _resolved_geometry_detail_defaults(configuration):
+    return (
+        _geometry_detail_defaults()
+        if configuration is None
+        else _geometry_detail_defaults(configuration)
+    )
+
+
+def _resolve_style(style, *, configuration=None):
     """Return the stable style identifier and concrete style value."""
     if isinstance(style, str):
         name = style.strip().lower()
@@ -59,8 +79,12 @@ def _resolve_style(style):
                 "or pass a chart-style object."
             )
         if name == ATLAS_STYLE:
-            return ATLAS_STYLE, _style_mode_defaults().atlas
-        return CARTOON_STYLE, _style_mode_defaults().cartoon
+            return ATLAS_STYLE, _resolved_style_mode_defaults(
+                configuration
+            ).atlas
+        return CARTOON_STYLE, _resolved_style_mode_defaults(
+            configuration
+        ).cartoon
 
     from .presets import AtlasChartStyle, CartoonChartStyle
 
@@ -73,18 +97,24 @@ def _resolve_style(style):
     return name, style
 
 
-def _resolve_mode(mode):
+def _resolve_mode(mode, *, configuration=None):
     """Return the stable mode identifier and concrete mode policy."""
     if mode is None:
-        return PRINT_MODE, _style_mode_defaults().print_mode
+        return PRINT_MODE, _resolved_style_mode_defaults(
+            configuration
+        ).print_mode
     if isinstance(mode, str):
         name = mode.strip().lower()
         if name in {PRINT_MODE, "paper"}:
-            return PRINT_MODE, _style_mode_defaults().print_mode
+            return PRINT_MODE, _resolved_style_mode_defaults(
+                configuration
+            ).print_mode
         if name == PRESENTATION_MODE:
             return (
                 PRESENTATION_MODE,
-                _style_mode_defaults().presentation_mode,
+                _resolved_style_mode_defaults(
+                    configuration
+                ).presentation_mode,
             )
         raise ValueError(
             f"Unknown chart mode {mode!r}. Use 'print', 'paper', or "
@@ -114,6 +144,7 @@ class ChartComposition:
     mode_name: str = "custom"
     legends: ResolvedLegendOptions | None = None
     furniture: ResolvedChartFurnitureOptions | None = None
+    configuration: Any | None = None
 
     def layer_options(
         self,
@@ -143,11 +174,27 @@ def compose_chart(
     style_overrides: ChartStyleOverrides | None = None,
     legends: LegendOptions | ChartLegendPlan | None = None,
     furniture: ChartFurnitureOptions | None = None,
+    configuration=None,
 ) -> ChartComposition:
     """Resolve independent chart concerns without rendering the chart."""
+    if configuration is not None:
+        from wenu.configuration import ConfigurationDefaults
+
+        if not isinstance(configuration, ConfigurationDefaults):
+            raise TypeError(
+                "configuration must be a ConfigurationDefaults value."
+            )
+    style_defaults = _resolved_style_mode_defaults(configuration)
+    geometry_defaults = _resolved_geometry_detail_defaults(configuration)
     context = chart.chart_context
-    style_name, resolved_style = _resolve_style(style)
-    mode_name, mode_policy = _resolve_mode(mode)
+    style_name, resolved_style = _resolve_style(
+        style,
+        configuration=configuration,
+    )
+    mode_name, mode_policy = _resolve_mode(
+        mode,
+        configuration=configuration,
+    )
     if not callable(getattr(mode_policy, "resolve", None)):
         raise TypeError("mode must provide resolve() or be a known mode name.")
     resolved_mode = mode_policy.resolve(context)
@@ -162,7 +209,7 @@ def compose_chart(
             base=resolved_style,
             mode_name=mode_name,
             presentation_palette=(
-                _style_mode_defaults().atlas_presentation_palette
+                style_defaults.atlas_presentation_palette
             ),
         )
     elif style_name == CARTOON_STYLE and mode_name in {
@@ -184,18 +231,18 @@ def compose_chart(
                 base=resolved_style,
                 mode_name=mode_name,
                 palette=(
-                    _style_mode_defaults().cartoon_presentation_palette
+                    style_defaults.cartoon_presentation_palette
                     if mode_name == PRESENTATION_MODE
-                    else _style_mode_defaults().cartoon_print_palette
+                    else style_defaults.cartoon_print_palette
                 ),
                 constellation_label_offset=(
-                    _style_mode_defaults().cartoon_label_offset
+                    style_defaults.cartoon_label_offset
                 ),
                 constellation_label_clearance=(
-                    _style_mode_defaults().cartoon_label_clearance
+                    style_defaults.cartoon_label_clearance
                 ),
                 constellation_label_halo_opacity=(
-                    _style_mode_defaults().cartoon_label_halo_opacity
+                    style_defaults.cartoon_label_halo_opacity
                 ),
             )
     if (
@@ -216,11 +263,11 @@ def compose_chart(
             )
         resolved_style = style_overrides.apply(resolved_style)
     if detail is None and style_name == CARTOON_STYLE:
-        policy = _geometry_detail_defaults().cartoon_policy
+        policy = geometry_defaults.cartoon_policy
     else:
         policy = (
             FixedDetailPolicy(
-                _geometry_detail_defaults().neutral_detail
+                geometry_defaults.neutral_detail
             )
             if detail is None
             else detail
@@ -229,7 +276,7 @@ def compose_chart(
         policy.resolve(context, resolved_mode),
         detail_overrides,
         default_content_layers=(
-            _geometry_detail_defaults().default_content_layers
+            geometry_defaults.default_content_layers
         ),
     )
     if furniture is not None and legends is not None:
@@ -256,4 +303,5 @@ def compose_chart(
         mode_name=mode_name,
         legends=resolved_legends,
         furniture=resolved_furniture,
+        configuration=configuration,
     )

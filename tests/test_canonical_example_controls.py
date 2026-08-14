@@ -88,14 +88,15 @@ def test_shared_cartoon_limit_is_three_with_deep_binocular_exception():
     ).star_magnitude_limit == pytest.approx(3.0)
 
     binocular = load(Path("examples/binocular_object.py"))
-    assert binocular.STAR_MAGNITUDE_LIMIT == pytest.approx(11.0)
+    target = type("Target", (), {"required_families": frozenset()})()
+    detail = binocular._details(type("View", (), {"target": target})())
+    assert detail["atlas"].detail.star_magnitude_limit == pytest.approx(11.0)
 
 
 def test_planisphere_horizon_is_independent_of_content_switches():
     source = EXAMPLES[0].read_text(encoding="utf-8")
 
     assert 'family="planisphere"' in source
-    assert "position_angle_deg=0.0" in source
     assert "mask=arguments.mask" in source
 
 

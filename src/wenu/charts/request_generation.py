@@ -91,7 +91,13 @@ def _request_title(prepared):
     }.get(request.family, request.family.title())
 
 
-def export_prepared_chart(sky, prepared, *, observer=None):
+def export_prepared_chart(
+    sky,
+    prepared,
+    *,
+    observer=None,
+    configuration=None,
+):
     """Compose and export every requested product exactly once."""
     if not isinstance(prepared, PreparedChartRequest):
         raise TypeError("prepared must be a PreparedChartRequest.")
@@ -119,8 +125,7 @@ def export_prepared_chart(sky, prepared, *, observer=None):
         stem=_request_stem(prepared)
     ):
         product_composition = request.composition_for(product)
-        composition = compose_chart(
-            chart,
+        composition_options = dict(
             style=product.style,
             mode=product.mode,
             detail=(
@@ -136,6 +141,9 @@ def export_prepared_chart(sky, prepared, *, observer=None):
             ),
             furniture=furniture,
         )
+        if configuration is not None:
+            composition_options["configuration"] = configuration
+        composition = compose_chart(chart, **composition_options)
         figure, ax = plt.subplots(figsize=(
             composition.mode.width_inches,
             composition.mode.height_inches,

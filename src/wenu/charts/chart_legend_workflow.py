@@ -33,6 +33,7 @@ def draw_resolved_chart_legends(
     rendering,
     resolved_detail,
     legend_options,
+    stellar_legend_style=None,
 ):
     """Attach resolved canonical legends to an existing rendering."""
     if legend_options is None:
@@ -52,6 +53,8 @@ def draw_resolved_chart_legends(
     )
     if legend_options.stellar_counts:
         options["stellar_counts"] = True
+    if stellar_legend_style is not None:
+        options["stellar_legend_style"] = stellar_legend_style
     legends = draw_automatic_chart_legends(
         renderer.ax,
         chart,

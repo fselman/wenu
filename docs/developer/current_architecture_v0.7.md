@@ -111,6 +111,20 @@ furniture/product/export contract groups. Sequential loads share no mutable
 configuration state. Runtime gateways and command-line omission handling are
 deliberately unchanged until Milestone 46D.5B.
 
+Milestone 46D.5B carries that one frozen aggregate with an ordinary
+`ChartView` through composition, rendering furniture, and export. Geometry,
+named style/mode appearance, detail, footer layout, magnitude-legend
+appearance, product metadata, and export values therefore resolve from the
+same effective document without installing process-global state. The shared
+CLI accepts `--config PATH`; product parser defaults remain `None` until the
+effective configuration is known, so explicit `--style`, `--mode`, and
+`--all-products` values alone take final precedence. Canonical examples load
+and validate configuration before maximal-sphere construction. Their optional
+field, angle, mask, and limiting-declination controls likewise retain `None`
+as the omission sentinel, while furniture switches fall back to the same
+effective family contract. Packaged-only calls retain their cached authorities
+and exact established behavior.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

@@ -118,7 +118,7 @@ def add_chart_product_arguments(parser, *, default_output):
     parser.add_argument(
         "--style",
         choices=CHART_STYLES,
-        default=defaults.product.style,
+        default=None,
         help=(
             "chart visual style "
             f"(default: {defaults.product.style})"
@@ -127,7 +127,7 @@ def add_chart_product_arguments(parser, *, default_output):
     parser.add_argument(
         "--mode",
         choices=CHART_MODES,
-        default=defaults.product.mode,
+        default=None,
         help=(
             "output medium "
             f"(default: {defaults.product.mode})"
@@ -143,17 +143,27 @@ def add_chart_product_arguments(parser, *, default_output):
         "--all-products",
         action="store_true",
         dest="all_products",
-        default=defaults.all_products,
+        default=None,
         help="generate atlas/cartoon in print/presentation modes",
     )
     return parser
 
 
-def chart_product_options(arguments) -> ChartProductOptions:
+def chart_product_options(arguments, *, defaults=None) -> ChartProductOptions:
     """Resolve parsed common arguments into one immutable request."""
+    defaults = _packaged_product_defaults() if defaults is None else defaults
     return ChartProductOptions(
         output=arguments.output,
-        style=arguments.style,
-        mode=arguments.mode,
-        all_products=arguments.all_products,
+        style=(
+            defaults.product.style
+            if arguments.style is None else arguments.style
+        ),
+        mode=(
+            defaults.product.mode
+            if arguments.mode is None else arguments.mode
+        ),
+        all_products=(
+            defaults.all_products
+            if arguments.all_products is None else arguments.all_products
+        ),
     )

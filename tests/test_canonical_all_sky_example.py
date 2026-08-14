@@ -26,7 +26,7 @@ def test_geometry_and_default_detail_are_explicit():
     assert 'coordinate_frame="galactic"' in source
     assert "position_angle_deg=0.0" in source
     assert "star_magnitude_limit=5.0" in source
-    assert module.parser().parse_args([]).mask is False
+    assert module.parser().parse_args([]).mask is None
 
 
 def test_optional_constellations_define_disjoint_mask_openings():

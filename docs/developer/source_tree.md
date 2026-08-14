@@ -324,6 +324,14 @@ mapping, validates the complete result, and returns the three existing frozen
 typed contract groups without installing mutable process state. Runtime and
 shared-command adaptation remain outside this slice.
 
+Milestone 46D.5B makes that aggregate explicit request-adjacent state on an
+ordinary `ChartView`. `view.py`, `composition.py`, `drawing.py`, and
+`export_workflow.py` carry it through their existing geometry, appearance,
+detail, furniture, product, and export owners. `command_line.py` owns the
+shared `--config` adapter and resolves omitted product arguments only after
+the effective document is available. Canonical examples validate it before
+maximal-sphere construction; no active-configuration singleton exists.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current

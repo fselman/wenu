@@ -23,6 +23,7 @@ class ChartView:
     sky: object
     observer: object
     _prepared: object = field(repr=False)
+    configuration: object | None = field(default=None, repr=False)
 
     @property
     def chart(self):
@@ -85,9 +86,21 @@ def get_chart_view(
     projection=None,
     coordinate_frame=None,
     mask=None,
+    configuration=None,
 ):
     """Resolve and prepare one observer-bound geometrical chart view."""
-    defaults = chart_view_defaults(family, group=group is not None)
+    if configuration is not None:
+        from wenu.configuration import ConfigurationDefaults
+
+        if not isinstance(configuration, ConfigurationDefaults):
+            raise TypeError(
+                "configuration must be a ConfigurationDefaults value."
+            )
+    defaults = chart_view_defaults(
+        family,
+        group=group is not None,
+        configuration=configuration,
+    )
     projection_name = str(
         defaults.projection if projection is None else projection
     ).strip().lower()
@@ -102,6 +115,9 @@ def get_chart_view(
         raise TypeError("observer is required for a chart view.")
     if field_diameter_deg is None:
         field_diameter_deg = defaults.field_diameter_deg
+    if field_width_deg is None and field_height_deg is None:
+        field_width_deg = defaults.field_width_deg
+        field_height_deg = defaults.field_height_deg
     if position_angle_deg is None:
         position_angle_deg = defaults.position_angle_deg
     if pole is None:
@@ -143,6 +159,7 @@ def get_chart_view(
         sky=sky,
         observer=observer,
         _prepared=prepared,
+        configuration=configuration,
     )
 
 

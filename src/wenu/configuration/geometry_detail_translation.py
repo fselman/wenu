@@ -17,11 +17,7 @@ from wenu.charts.detail import (
 from wenu.charts.style_components import StellarMagnitudeSizing
 from wenu.charts.view_defaults import ChartViewDefaults
 
-from .validation import (
-    ConfigurationError,
-    load_packaged_defaults,
-    validate_configuration,
-)
+from .validation import load_packaged_defaults, validate_configuration
 
 
 _VIEW_CONTRACTS = {
@@ -58,14 +54,6 @@ def _views(configuration: Mapping[str, Any]):
     translated = {}
     for name, table in configuration["families"].items():
         family, framing = _VIEW_CONTRACTS[name]
-        if name in {"regional_single", "regional_group"} and (
-            table["width"] != "none" or table["height"] != "none"
-        ):
-            raise ConfigurationError(
-                f"families.{name}.width: explicit width and height cannot "
-                "translate until Milestone 46D.4 adds them to the runtime "
-                "view-default contract"
-            )
         key = name.replace("_", "-") if name.startswith("regional_") else name
         translated[key] = ChartViewDefaults(
             family=family,
@@ -76,6 +64,16 @@ def _views(configuration: Mapping[str, Any]):
             mask=table["mask"],
             field_diameter_deg=(
                 table["field_diameter"] if name == "binocular" else None
+            ),
+            field_width_deg=(
+                _optional(table["width"])
+                if name in {"regional_single", "regional_group"}
+                else None
+            ),
+            field_height_deg=(
+                _optional(table["height"])
+                if name in {"regional_single", "regional_group"}
+                else None
             ),
             pole=table["pole"] if name == "circumpolar" else None,
             limiting_declination_deg=(

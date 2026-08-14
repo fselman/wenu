@@ -56,15 +56,20 @@ def _configure_figure(renderer, composition):
 
 def _composition_export_options(composition):
     from .context import BoundaryKind
-    from .regional import ExportOptions
 
     canvas = getattr(composition.style, "canvas", None)
     circular = composition.context.boundary_kind is BoundaryKind.CIRCULAR
-    from wenu.configuration import (
-        packaged_furniture_product_export_defaults,
-    )
+    configuration = getattr(composition, "configuration", None)
+    if configuration is None:
+        from wenu.configuration import (
+            packaged_furniture_product_export_defaults,
+        )
 
-    defaults = packaged_furniture_product_export_defaults().export_options
+        defaults = packaged_furniture_product_export_defaults().export_options
+    else:
+        defaults = (
+            configuration.furniture_product_export.export_options
+        )
     return replace(
         defaults,
         dpi=composition.mode.dpi,
@@ -122,6 +127,12 @@ def export_composed_chart(
     if composition.legends is not None:
         from .chart_legend_workflow import draw_resolved_chart_legends
 
+        legend_options = {}
+        configuration = getattr(composition, "configuration", None)
+        if configuration is not None:
+            legend_options["stellar_legend_style"] = (
+                configuration.furniture_product_export.magnitude_legend
+            )
         rendering = draw_resolved_chart_legends(
             chart,
             sky,
@@ -130,6 +141,7 @@ def export_composed_chart(
             rendering,
             composition.detail,
             composition.legends,
+            **legend_options,
         )
     footer_rendering = None
     if composition.furniture is not None:
@@ -137,6 +149,12 @@ def export_composed_chart(
         from .footer_furniture import draw_chart_footer
 
         canvas = getattr(composition.style, "canvas", None)
+        footer_options = {}
+        configuration = getattr(composition, "configuration", None)
+        if configuration is not None:
+            footer_options["layout"] = (
+                configuration.furniture_product_export.footer_layout
+            )
         footer_rendering = draw_chart_footer(
             renderer,
             footer,
@@ -145,6 +163,7 @@ def export_composed_chart(
                 getattr(canvas, "footer_color", None)
                 or getattr(canvas, "foreground_color", "black")
             ),
+            **footer_options,
         )
     options = (
         _composition_export_options(composition)

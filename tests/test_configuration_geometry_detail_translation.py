@@ -159,12 +159,14 @@ def test_translated_policies_carry_configured_content_layer_sets():
     )
 
 
-def test_translation_rejects_geometry_not_owned_by_current_view_contract():
+def test_translation_carries_optional_regional_field_geometry():
     values = load_packaged_defaults()
     values["families"]["regional_single"].update(width=12.0, height=8.0)
-    with pytest.raises(ConfigurationError) as error:
-        translate_geometry_detail_defaults(values)
-    assert "families.regional_single.width" in str(error.value)
+    defaults = translate_geometry_detail_defaults(values)
+
+    regional = defaults.view_defaults["regional-single"]
+    assert regional.field_width_deg == 12.0
+    assert regional.field_height_deg == 8.0
 
 
 @pytest.mark.parametrize(

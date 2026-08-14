@@ -28,7 +28,9 @@ _GRID_NAMES = {
 }
 
 
-def _furniture_product_export_defaults():
+def _furniture_product_export_defaults(configuration=None):
+    if configuration is not None:
+        return configuration.furniture_product_export
     from wenu.configuration import (
         packaged_furniture_product_export_defaults,
     )
@@ -36,8 +38,10 @@ def _furniture_product_export_defaults():
     return packaged_furniture_product_export_defaults()
 
 
-def _default_furniture(family):
-    configured = _furniture_product_export_defaults().furniture_by_family[
+def _default_furniture(family, configuration=None):
+    configured = _furniture_product_export_defaults(
+        configuration
+    ).furniture_by_family[
         family
     ]
     return ChartFurnitureOptions(
@@ -47,8 +51,8 @@ def _default_furniture(family):
     )
 
 
-def _product_defaults():
-    return _furniture_product_export_defaults().product
+def _product_defaults(configuration=None):
+    return _furniture_product_export_defaults(configuration).product
 
 
 def draw_chart_view(
@@ -102,7 +106,11 @@ def draw_chart_view(
         grid_label_layers=labels | requested_labels,
     )
     furniture = (
-        _default_furniture(view.family)
+        (
+            _default_furniture(view.family)
+            if view.configuration is None
+            else _default_furniture(view.family, view.configuration)
+        )
         if furniture is None else furniture
     )
     if not isinstance(furniture, ChartFurnitureOptions):
@@ -114,7 +122,11 @@ def draw_chart_view(
             "style_overrides must be a ChartStyleOverrides value."
         )
 
-    defaults = _product_defaults()
+    defaults = (
+        _product_defaults()
+        if view.configuration is None
+        else _product_defaults(view.configuration)
+    )
     product = ChartProduct(
         defaults.product.style if style is None else style,
         defaults.product.mode if mode is None else mode,
@@ -145,10 +157,13 @@ def draw_chart_view(
         chart=view.chart,
         resolved=replace(view._prepared.resolved, request=request),
     )
+    export_options = {"observer": view.observer}
+    if view.configuration is not None:
+        export_options["configuration"] = view.configuration
     generation = export_prepared_chart(
         view.sky,
         prepared,
-        observer=view.observer,
+        **export_options,
     )
     if len(generation.exports) != 1:
         raise RuntimeError("A chart-view drawing must export exactly once.")
