@@ -563,6 +563,13 @@ remain the owners of recursive merge immutability, repeated drawing and grid
 cleanup, family-order independence, observer-cache separation, and real
 reusable-sphere behavior; those expensive contracts are not duplicated.
 
+Milestone 46D.8D adds one cheap structural contract for the fixed 18-product
+visual matrix. It proves unique output names, the six canonical family pairs,
+the two supported style/mode products, and coverage of masks, horizons,
+explicit framing, four grids, references, poles, legends, counts, and credits.
+Rendering remains an explicit Mac acceptance action rather than an automated
+golden-image test.
+
 Milestone 46C.10 completed that required Mac validation without changing the
 tier definitions. Fast, integration, visual, and full suites passed. The
 diagnostic benchmark also produced 18 atlas-print products across all six

@@ -910,6 +910,14 @@ language, and output precedence. Invalid configuration raises
 integration contracts retain reused-sphere selection, grid, mask, observer,
 and cache isolation ownership. Visual and documentation closure remain.
 
+Milestone 46D.8D makes that visual closure reproducible. The command-driven
+runner renders 18 products in fresh processes: both mandatory style/mode
+baselines for all six families and six diagnostic atlas-print products that
+exercise the remaining high-risk visual roles. A JSON manifest records the
+exact commands, image metadata, checksums, and source revision. Structural
+tests keep the matrix complete and cheap; generated images require explicit
+human review on the Mac before this milestone can be marked approved.
+
 - generate every canonical family through both its example and `wenu_chart`
   with equivalent effective options;
 - prove matching resolved observer, subject, geometry, detail, appearance,

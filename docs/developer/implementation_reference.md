@@ -919,6 +919,18 @@ destination, and visual approval are recorded in
 `docs/user_guide/planisphere.md`. All other generated products remain below
 `output/` and outside version control.
 
+For the Milestone 46D.8 visual handoff, run:
+
+```bash
+python tools/render_46d8_visual_matrix.py
+```
+
+The runner invokes the real command module once per product and writes 18
+PNGs plus `manifest.json` below `output/46d8-visual-matrix/`. Use `--list` to
+inspect the matrix or repeated `--entry NAME` options to rerender selected
+products. The review and approval contract is
+`docs/developer/visual_acceptance_46d8.md`.
+
 ### Sgr-Sco-Oph-Ser regional product
 
 `examples/regional_constellation_group.py --constellations Sgr,Sco,Oph,Ser`

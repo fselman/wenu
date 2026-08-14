@@ -173,6 +173,15 @@ conflicting overlay, while invalid configuration stops before any observer,
 sphere, view, or drawing work. Existing integration owners continue to prove
 render-local and observed-cache isolation on a real reusable sphere.
 
+Milestone 46D.8D adds a reproducible visual handoff without changing runtime
+behavior. `tools/render_46d8_visual_matrix.py` invokes the installed-command
+module in 18 isolated processes: every canonical family in atlas-print and
+cartoon-presentation, followed by six atlas-print diagnostics for masks,
+horizons, explicit framing, grids, references, poles, legends, counts, and
+credits. It records exact commands, PNG dimensions, byte sizes, checksums, and
+the source revision in `manifest.json`. Human Mac review and approval remain
+required; generated products stay outside version control.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

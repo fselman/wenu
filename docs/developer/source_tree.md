@@ -370,6 +370,13 @@ destination values retain final precedence. `tests/test_wenu_chart_cli.py`
 owns the complementary early-failure order before observer, sphere, view, or
 drawing work.
 
+`tools/render_46d8_visual_matrix.py` and
+`tests/test_visual_acceptance_matrix.py` own Milestone 46D.8D's reproducible
+visual handoff. The tool drives the actual command module in fresh processes
+and writes 18 untracked PNGs plus a checksum manifest. The test verifies the
+matrix shape and role coverage without rendering; human acceptance is recorded
+in `docs/developer/visual_acceptance_46d8.md` only after Mac review.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current
@@ -421,6 +428,12 @@ than claiming an additive wall-time decomposition. Its 37-step progress output
 covers one catalogue load, 18 view preparations, and 18 atlas-print exports.
 The regional-single and regional-group requests explicitly exercise outside
 masks; the other four families remain unmasked.
+
+`tools/render_46d8_visual_matrix.py` is the final command-surface visual
+acceptance harness. It is intentionally separate from the reusable-sphere
+benchmark: each entry launches `python -m wenu.cli.chart` in a fresh process,
+and its output directory remains ignored rather than becoming a golden-image
+test fixture.
 
 Canonical integration tests use a session-scoped build registry to reuse an
 identical example sphere and chart across read-only contracts. Distinct
