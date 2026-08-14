@@ -106,24 +106,24 @@ issue in the comment field.
 
 | Product | F | C | R | M | A | O | Comment |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `canonical-all-sky-atlas-print` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `canonical-all-sky-cartoon-presentation` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `canonical-planisphere-atlas-print` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `canonical-planisphere-cartoon-presentation` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `canonical-regional-single-atlas-print` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `canonical-regional-single-cartoon-presentation` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `canonical-regional-group-atlas-print` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `canonical-regional-group-cartoon-presentation` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `canonical-circumpolar-atlas-print` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `canonical-circumpolar-cartoon-presentation` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `canonical-binocular-atlas-print` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `canonical-binocular-cartoon-presentation` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `diagnostic-all-sky-mask-horizon` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `diagnostic-regional-explicit-field-horizon` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `diagnostic-binocular-horizon` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `diagnostic-circumpolar-horizon` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `diagnostic-planisphere-horizon-noop` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
-| `diagnostic-legends-references-grids` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | |
+| `canonical-all-sky-atlas-print` | [+] | [-] | [-] | [+] | [+] | [+] | Too many PNs, OC. Label of grid should be half size. Latitude only in the central longitude. Place the latitude above and to the left. Draw the 0 latitude line and their mark the 0, 90, and 180 degrees. Color of grid should be subtler, blue-grey? |
+| `canonical-all-sky-cartoon-presentation` | [+] | [-] | [-] | [+] | [+] | [+] | Add few of the brightes clusters and galaxies, including the MCs. Similar grid changes as in previous example.|
+| `canonical-planisphere-atlas-print` | [+] | [-] | [-] | [+] | [+] | [+] | Too many clusters, PN, SNRs as in previous plots. Grid should be of a more subtle grey. Grid labels should be half size. Declination labels should stay in a single RA line, e.g. the central one, at upper-left corner of the intersection of the chosen RA line and the corresponding declination.|
+| `canonical-planisphere-cartoon-presentation` | [+] | [-] | [-] | [+] | [+] | [+] | Same comments as before. In addition add the MW and MCs. Add a few of the brightest clusters and galaxies.|
+| `canonical-regional-single-atlas-print` | [+] | [+] | [-] | [-] | [+] | [+] | It plots the single 12:00 RA line and no declination line. The line should be of a subtler grey. There should be at least two RA and two dec lines. The RA labels in format hh:mm and the Dec labels in dd:mm. Did not see the mask of the constellation (it is OK if not requested).|
+| `canonical-regional-single-cartoon-presentation` | [+] | [-] | [-] | [+] | [+] | [ ] | I would add the MW contours. Same comments about a single grid line appearing. I would outline with a mask the constellation. |
+| `canonical-regional-group-atlas-print` | [+] | [-] | [-] | [+] | [+] | [+] | Too many clusters, PNs. Label sizes correct. Declination label should be above the declination line (cannot read sign). I would make the grid a bit subtler too.|
+| `canonical-regional-group-cartoon-presentation` | [+] | [+] |[-] | [-] | [+] | [ ] | I would add MW contours, and a few of the brighter clusters. Dec labels should be raised above Dec line. Masked region barely noticeable. It should look much whiter a more opaque.
+| `canonical-circumpolar-atlas-print` | [+] | [+] | [-] | [+] | [+] | [+] | Grid should be of a subtler grey. The RA spacing should be every 2h.|
+| `canonical-circumpolar-cartoon-presentation` | [+] | [+] | [-] | [+] | [+] | [+] | The RA spacing should be every 2h. |
+| `canonical-binocular-atlas-print` | [+] | [+] | [-] | [+] | [+] | [-] | All stars look the same size (perhaps they should). There should not be a grid. Needs field center and diameter in the title.|
+| `canonical-binocular-cartoon-presentation` | [+] | [-] | [-] | [+] | [+] | [-] | Needs the symbol for the target. There should not be a grid. Needs field center and diameter in the title. |
+| `diagnostic-all-sky-mask-horizon` | [+] | [-] | [-] | [-] | [-] | [ ] | Too many clusters, PNs. Same issue with the grid as other all-sky. The above horizon unmasked area looks the same as the masked one. It seems to outline with the mask Cygnus and Crux. I do not see UMa masked. The horizon is properly drawn. |
+| `diagnostic-regional-explicit-field-horizon` | [+] | [-] | [-] | [?] | [+] | [+] | Too many clusters and PNs. Although the constellations are masked, the horizon is nowhere to be seen. Equatorial grid should be subtler and Dec labesl should be above Dec lines. Not enough space outside constellation.|
+| `diagnostic-binocular-horizon` | [-] | [+] | [-] | [?] | [+] | [+] | Does not show the horizon, only the -45 dec line.|
+| `diagnostic-circumpolar-horizon` | [+] | [-] | [-] | [+] | [+] | [+] | Too many clusters, PNs, and SNRs. Grid lines shoukld be of a subtler grey. The declination labels should be next to the drawn RA line closer to the upper meridian, and they should be above to the Dec line, and to the left of the meridian.|
+| `diagnostic-planisphere-horizon-noop` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Same comments as per planisphere |
+| `diagnostic-legends-references-grids` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Same comment as previous regional.|
 
 The appendix may be committed with every box empty. Completing it is the
 human visual-approval record and may be committed separately after review.
