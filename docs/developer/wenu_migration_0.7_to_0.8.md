@@ -944,6 +944,11 @@ through magnitude 8, and only large open and globular clusters; planetary
 nebulae and remnants remain omitted. Explicit detail policies and overrides
 retain final precedence. Visual rerendering remains required.
 
+Milestone 46D.8H resolves the weak cartoon regional mask at the packaged style
+owner. Cartoon mask opacity rises from `0.25` to `0.68`; its pale-grey color,
+z-order, mask geometry, intersection semantics, and one-pass rendering remain
+unchanged, as does the atlas mask. Visual rerendering remains required.
+
 - generate every canonical family through both its example and `wenu_chart`
   with equivalent effective options;
 - prove matching resolved observer, subject, geometry, detail, appearance,

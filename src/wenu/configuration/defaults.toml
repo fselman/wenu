@@ -640,7 +640,7 @@ z_order = 3.5
 
 [styles.cartoon.mask]
 color = "#d8dde2"
-opacity = 0.25
+opacity = 0.68
 z_order = 20.0
 
 [styles.cartoon.chart_boundary]

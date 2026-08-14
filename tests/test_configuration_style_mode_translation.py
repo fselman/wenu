@@ -33,6 +33,14 @@ def test_packaged_styles_translate_to_existing_immutable_contracts():
         defaults.atlas.canvas.sky_color = "red"
 
 
+def test_packaged_cartoon_mask_is_strong_but_retains_outside_context():
+    defaults = translate_style_mode_defaults()
+    assert defaults.cartoon.mask.color == "#d8dde2"
+    assert defaults.cartoon.mask.alpha == pytest.approx(0.68)
+    assert 0.0 < defaults.cartoon.mask.alpha < 1.0
+    assert defaults.atlas.mask == AtlasChartStyle().mask
+
+
 def test_packaged_modes_translate_to_existing_immutable_contracts():
     defaults = translate_style_mode_defaults()
     assert defaults.print_mode == PrintMode()

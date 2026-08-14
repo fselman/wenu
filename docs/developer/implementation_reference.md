@@ -518,6 +518,10 @@ conversion boundary for mask appearance. It returns the existing resolved
 constellation-only, and combined masks all pass that same mapping to the one
 compound mask draw; no horizon-specific opacity setting exists.
 
+The packaged cartoon mask uses pale grey `#d8dde2` at opacity `0.68` and
+z-order `20.0`. Milestone 46D.8H changes only that opacity; atlas appearance
+and the shared compound-mask geometry and rendering contracts are unchanged.
+
 The Q.8 contract suite exercises the four independent `(horizon,
 horizon_mask)` control states through both shared adapters, chart-family mask
 boundaries, planisphere idempotence with and without constellation masking,

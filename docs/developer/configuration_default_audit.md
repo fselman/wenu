@@ -274,7 +274,7 @@ derivation applies. Unless marked otherwise, entries are **public defaults**.
   `#9aa0a6`/`0.30`/dotted/`0.45`; figure
   `#304f78`/`1.15`/solid/`0.95`; label `#203958`/`1.0`; coordinate width
   `0.40`, opacity `0.45`, labels disabled/font `7.0`/opacity `0.75`; horizon
-  `#304f78`/`0.75`/dashed/`0.85`; mask `#d8dde2`/`0.25`; legend disabled,
+  `#304f78`/`0.75`/dashed/`0.85`; mask `#d8dde2`/`0.68`; legend disabled,
   font/title `7.0`/`7.5`; all unlisted component values match the explicitly
   repeated complete `styles.cartoon` tables in `defaults.toml`;
 

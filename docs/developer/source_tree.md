@@ -395,6 +395,12 @@ policy is supplied. The packaged cartoon policy owns its bright deep-sky
 subset and thresholds. Canonical examples delegate both decisions and contain
 no family magnitude, size, or layer-density literals.
 
+Milestone 46D.8H keeps outside-mask appearance in the existing packaged style
+owners: `configuration/defaults.toml` is authoritative and
+`charts/presets.py` retains the compatibility default. Translation and the
+shared mask renderer continue to consume `MaskStyle` without family, example,
+or geometry-specific overrides.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current

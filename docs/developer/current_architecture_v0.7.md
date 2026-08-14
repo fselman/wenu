@@ -208,6 +208,12 @@ Way, Magellanic Clouds, galaxies brighter than magnitude 8, and only large
 open and globular clusters while continuing to omit planetary nebulae and
 supernova remnants. Canonical examples no longer encode family detail values.
 
+Milestone 46D.8H strengthens only the packaged cartoon outside-mask opacity,
+from `0.25` to `0.68`. The existing pale-grey color, z-order, compound mask
+geometry, opening intersections, and single-paint workflow remain unchanged;
+the atlas mask baseline is also unchanged. The stronger translucent fill makes
+the selected region distinct while retaining visible outside-sky context.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

@@ -136,6 +136,11 @@ clusters at least 30 arcmin. Planetary nebulae and remnants remain absent from
 the restrained cartoon baseline. The matrix must be rerendered before either
 detail finding is accepted.
 
+Milestone 46D.8H strengthens the packaged cartoon outside mask from opacity
+`0.25` to `0.68`. Its pale-grey color and z-order are unchanged, and no mask
+geometry, opening intersection, or rendering-path behavior changes. The matrix
+must be rerendered before `MASK-1` is accepted.
+
 ## Product review appendix
 
 Use one checkbox in every criterion column for every product. Leave a box
