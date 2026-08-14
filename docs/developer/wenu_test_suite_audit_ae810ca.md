@@ -550,6 +550,12 @@ from every canonical example with the equivalent installed-command inputs;
 later 46D.8 contracts retain ownership of drawing requests, configuration
 isolation, invalid-input ordering, and the required visual matrix.
 
+Milestone 46D.8B adds two more catalogue-free contracts at the shared drawing
+adapter: one dense representative request covers every downstream concern,
+and one covers the canonical four-product destination matrix. Existing
+responsibility tests retain their focused edge cases; no integration build is
+duplicated.
+
 Milestone 46C.10 completed that required Mac validation without changing the
 tier definitions. Fast, integration, visual, and full suites passed. The
 diagnostic benchmark also produced 18 atlas-print products across all six

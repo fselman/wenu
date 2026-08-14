@@ -855,6 +855,13 @@ observer-bound view request; syntactic differences such as an example
 spelling out `projection="stereographic"` while the command accepts the
 configured default are therefore not treated as behavioral differences.
 
+The installed-command drawing contract is likewise resolved by
+`draw_chart_view_from_arguments()`, not by a command-specific translation.
+Its tested vocabulary includes content detail, grids and labels, horizon
+reference and mask, furniture and legends, post-mode appearance, product,
+title, language, and destination. Selecting `--all-products` yields the
+canonical atlas/cartoon by print/presentation matrix in deterministic order.
+
 ## 10. Package imports
 
 Internal implementation imports use responsibility-based packages:

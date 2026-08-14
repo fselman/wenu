@@ -157,6 +157,13 @@ includes subject, projection, coordinate frame, framing, orientation, pole,
 declination limit, and mask without loading catalogues or rendering. Product
 and visual parity remain separate downstream closure responsibilities.
 
+Milestone 46D.8B carries that evidence through the real shared command-line
+drawing adapter. A catalogue-free command contract resolves the combined
+detail, grid, horizon, furniture, appearance, product, title, language, and
+explicit-output vocabulary immediately before ordinary drawing. A second
+contract proves the four deterministic canonical product destinations. The
+slice changes no runtime owner or production behavior.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

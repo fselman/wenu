@@ -890,6 +890,15 @@ declination limit, and mask only after omitted values have been resolved from
 the same effective configuration. Drawing-request, overlay-isolation, failure
 ordering, documentation, suite, and visual-matrix closure remain in 46D.8.
 
+Milestone 46D.8B proves the installed command's downstream parity at the
+shared drawing-adapter boundary without loading catalogues or rendering. One
+combined contract resolves detail, all four semantic grids and labels, all
+three reference planes, both horizon roles, constellation layers, poles,
+legends, counts, context, credits, post-mode visual overrides, title,
+language, style, mode, and an explicit output file. A separate contract proves
+the deterministic atlas/cartoon and print/presentation output matrix. No
+production behavior changes; configuration isolation and visual closure remain.
+
 - generate every canonical family through both its example and `wenu_chart`
   with equivalent effective options;
 - prove matching resolved observer, subject, geometry, detail, appearance,

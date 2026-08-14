@@ -356,6 +356,12 @@ configuration, normalizes only documented omitted geometry, and compares the
 observer, subject, projection, coordinate frame, frame, orientation, pole,
 declination-limit, and mask requests before catalogue loading or rendering.
 
+`tests/test_wenu_chart_drawing_parity.py` owns Milestone 46D.8B's downstream
+installed-command contract. It lets `draw_chart_view_from_arguments()` resolve
+the complete public drawing vocabulary and captures the immutable arguments
+at the existing `draw_chart_view()` boundary. It also proves deterministic
+four-product naming without constructing catalogues or a renderer.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current
