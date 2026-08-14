@@ -848,6 +848,13 @@ passed through `--config`. One invocation accepts one overlay. Version 1 has
 no profile inheritance or multi-file composition; that feature remains
 deferred until ordinary single-file use demonstrates a concrete requirement.
 
+The canonical examples and `wenu_chart` are independently maintained
+front-end adapters over this same interface. Their parity contract resolves
+omitted geometry from the same effective configuration before comparing the
+observer-bound view request; syntactic differences such as an example
+spelling out `projection="stereographic"` while the command accepts the
+configured default are therefore not treated as behavioral differences.
+
 ## 10. Package imports
 
 Internal implementation imports use responsibility-based packages:

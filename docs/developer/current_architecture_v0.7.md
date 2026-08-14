@@ -149,6 +149,14 @@ observing profile files are ordinary version-1 overlays selected with
 `--config`; schema-level profile inheritance is deliberately deferred until
 single-file use demonstrates a concrete need.
 
+Milestone 46D.8A begins final parity closure with one parameterized contract
+covering all six canonical examples. Each example and an equivalent installed
+command invocation must resolve the same observer-bound view after their
+shared effective configuration supplies omitted geometry. The comparison
+includes subject, projection, coordinate frame, framing, orientation, pole,
+declination limit, and mask without loading catalogues or rendering. Product
+and visual parity remain separate downstream closure responsibilities.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

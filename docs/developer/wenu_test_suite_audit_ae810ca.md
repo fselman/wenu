@@ -544,6 +544,12 @@ Retain a deliberately small golden set:
 The existing 11 fixture scripts can probably be reduced or combined, but that
 decision requires the runtime and visual review on the Mac.
 
+Milestone 46D.8A adds one parameterized, catalogue-free parity module rather
+than duplicating six integration builds. It compares the resolved view inputs
+from every canonical example with the equivalent installed-command inputs;
+later 46D.8 contracts retain ownership of drawing requests, configuration
+isolation, invalid-input ordering, and the required visual matrix.
+
 Milestone 46C.10 completed that required Mac validation without changing the
 tier definitions. Fast, integration, visual, and full suites passed. The
 diagnostic benchmark also produced 18 atlas-print products across all six

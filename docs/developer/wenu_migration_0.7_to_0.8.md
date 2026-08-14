@@ -882,6 +882,14 @@ actual single-file use proves that another schema feature is warranted.
 
 ### Milestone 46D.8 — Prove parity and close visually
 
+**Status:** In progress. Milestone 46D.8A establishes executable
+resolved-view parity between each of the six canonical examples and an
+equivalent `wenu_chart` invocation. The contract compares observer identity,
+family, subject, projection, coordinate frame, framing, orientation, pole,
+declination limit, and mask only after omitted values have been resolved from
+the same effective configuration. Drawing-request, overlay-isolation, failure
+ordering, documentation, suite, and visual-matrix closure remain in 46D.8.
+
 - generate every canonical family through both its example and `wenu_chart`
   with equivalent effective options;
 - prove matching resolved observer, subject, geometry, detail, appearance,

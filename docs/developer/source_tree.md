@@ -349,6 +349,13 @@ Milestone 46D.7 keeps editable-template export in that same CLI adapter.
 serialize typed translations or acquire schema, validation, profile
 inheritance, catalogue, or chart responsibility.
 
+`tests/test_wenu_chart_example_parity.py` owns Milestone 46D.8A's
+front-end-neutral view contract. It executes every canonical example adapter
+and an equivalent `wenu_chart` invocation against the same effective
+configuration, normalizes only documented omitted geometry, and compares the
+observer, subject, projection, coordinate frame, frame, orientation, pole,
+declination-limit, and mask requests before catalogue loading or rendering.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current
