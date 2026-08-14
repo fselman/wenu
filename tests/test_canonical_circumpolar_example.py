@@ -45,7 +45,7 @@ def test_limiting_declination_is_an_ordinary_framing_control(monkeypatch):
     assert captured[0][1]["limiting_declination_deg"] == pytest.approx(-30.0)
 
 
-def test_generation_retains_cartoon_content_and_closes_observer(
+def test_generation_uses_shared_detail_and_closes_observer(
     monkeypatch, tmp_path
 ):
     module = example()
@@ -63,12 +63,6 @@ def test_generation_retains_cartoon_content_and_closes_observer(
     )
 
     paths = module.generate(module.parser().parse_args([]))
-    detail = captured[0]["product_details"]["cartoon"].detail
-
     assert paths == (output,)
-    assert detail.star_magnitude_limit == pytest.approx(3.0)
-    assert detail.enabled_layers == frozenset({
-        "stars", "constellation_lines", "equatorial_grid",
-        "milky_way", "magellanic_clouds",
-    })
+    assert "product_details" not in captured[0]
     assert closed == [True]

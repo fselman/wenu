@@ -1,6 +1,6 @@
 # Milestone 46D.8 visual acceptance
 
-**Status:** Reviewed on Mac; 46D.8F grid remediation pending rerender
+**Status:** Reviewed on Mac; 46D.8F–G remediation pending rerender
 
 **Matrix source:** `tools/render_46d8_visual_matrix.py`
 
@@ -127,6 +127,14 @@ labels receive clearance above their lines, and all-sky latitude labels use
 one central longitude. The all-sky grid includes its zero latitude and labels
 only principal longitudes. Regional fields through 60 degrees use 15-degree
 spacing, while circumpolar RA uses two-hour spacing. Examples remain unchanged.
+
+Milestone 46D.8G routes named atlas products through the packaged adaptive
+policy for their chart family, so command and example products share the same
+DSO limits. Cartoon products add the Milky Way, Magellanic Clouds, galaxies
+through magnitude 8, and only open clusters at least 60 arcmin and globular
+clusters at least 30 arcmin. Planetary nebulae and remnants remain absent from
+the restrained cartoon baseline. The matrix must be rerendered before either
+detail finding is accepted.
 
 ## Product review appendix
 

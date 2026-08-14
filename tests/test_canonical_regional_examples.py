@@ -88,19 +88,13 @@ def test_group_example_retains_packaged_aliases_and_explicit_mask():
     assert arguments.mask is True
 
 
-@pytest.mark.parametrize(
-    ("path", "limit"),
-    [(EXAMPLES[0], 5.0), (EXAMPLES[1], 6.5), (EXAMPLES[2], 6.5)],
-)
-def test_atlas_stellar_limits_remain_explicit(path, limit):
-    assert f"star_magnitude_limit={limit}" in path.read_text(encoding="utf-8")
-
-
 @pytest.mark.parametrize("path", EXAMPLES)
-def test_atlas_examples_use_adaptive_deep_sky_detail(path):
+def test_examples_defer_detail_to_shared_family_policy(path):
     source = path.read_text(encoding="utf-8")
 
-    assert "AdaptiveDetailPolicy(" in source
+    assert "AdaptiveDetailPolicy" not in source
+    assert "star_magnitude_limit" not in source
+    assert "product_details" not in source
 
 
 @pytest.mark.parametrize("path", EXAMPLES)

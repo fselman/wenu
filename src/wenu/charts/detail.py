@@ -42,6 +42,11 @@ CARTOON_CONTENT_LAYERS = frozenset(
         "stars",
         "constellation_lines",
         "constellation_labels",
+        "milky_way",
+        "magellanic_clouds",
+        "galaxies",
+        "globular_clusters",
+        "open_clusters",
     }
 )
 
@@ -321,12 +326,14 @@ class FixedDetailPolicy:
 
 @dataclass(frozen=True)
 class CartoonDetailPolicy:
-    """Sparse educational-chart content, independent of visual style.
+    """Restrained educational-chart content, independent of visual style.
 
     The stellar catalogue is resolved as the union of constellation vertices,
     stars at or brighter than ``bright_star_magnitude_limit``, and
-    ``extra_star_ids``.  Constellation identifiers are obtained later when
-    the resolved detail is applied to a populated celestial sphere.
+    ``extra_star_ids``.  The ordinary cartoon layer set may also include
+    configured bright galaxies and large clusters; ``include_deep_sky``
+    switches to the complete default layer set. Constellation identifiers are
+    obtained later when the resolved detail is applied to a populated sphere.
     """
 
     constellation_star_mode: str = "selected"
@@ -334,6 +341,9 @@ class CartoonDetailPolicy:
     extra_star_ids: frozenset[int] = frozenset()
     include_deep_sky: bool = False
     label_named_stars: bool = False
+    galaxy_magnitude_limit: float = 8.0
+    minimum_open_cluster_size_arcmin: float = 60.0
+    minimum_globular_cluster_size_arcmin: float = 30.0
     default_content_layers: frozenset[str] = DEFAULT_CONTENT_LAYERS
     cartoon_content_layers: frozenset[str] = CARTOON_CONTENT_LAYERS
 
@@ -343,10 +353,17 @@ class CartoonDetailPolicy:
                 "constellation_star_mode must be selected, visible, all, "
                 "or none."
             )
-        if not isfinite(float(self.bright_star_magnitude_limit)):
-            raise ValueError(
-                "bright_star_magnitude_limit must be finite."
-            )
+        for name in (
+            "bright_star_magnitude_limit",
+            "galaxy_magnitude_limit",
+            "minimum_open_cluster_size_arcmin",
+            "minimum_globular_cluster_size_arcmin",
+        ):
+            value = float(getattr(self, name))
+            if not isfinite(value):
+                raise ValueError(f"{name} must be finite.")
+            if name.startswith("minimum_") and value < 0.0:
+                raise ValueError(f"{name} cannot be negative.")
         object.__setattr__(
             self,
             "extra_star_ids",
@@ -377,6 +394,13 @@ class CartoonDetailPolicy:
         return ResolvedDetail(
             star_magnitude_limit=float(
                 self.bright_star_magnitude_limit
+            ),
+            galaxy_magnitude_limit=float(self.galaxy_magnitude_limit),
+            minimum_open_cluster_size_arcmin=float(
+                self.minimum_open_cluster_size_arcmin
+            ),
+            minimum_globular_cluster_size_arcmin=float(
+                self.minimum_globular_cluster_size_arcmin
             ),
             label_density=1.0,
             enabled_layers=enabled,

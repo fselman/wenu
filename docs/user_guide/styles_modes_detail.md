@@ -49,6 +49,16 @@ accepts a comma-separated selection of `equatorial`,
 celestial, ecliptic, and Galactic crosses; `--pole-labels` adds their standard
 abbreviations.
 
+Named atlas products automatically use the packaged density policy for their
+chart family: large fields receive shallower catalogue limits, larger minimum
+object sizes, and suppression of crowded specialized layers. Named cartoon
+products use a restrained explanatory subset containing the Milky Way,
+Magellanic Clouds, galaxies through magnitude 8, open clusters at least 60
+arcmin across, and globular clusters at least 30 arcmin across. Planetary
+nebulae and supernova remnants are omitted from that cartoon baseline. These
+values may be replaced in a user TOML overlay; explicit Python detail policies
+and command-line magnitude/layer overrides retain precedence.
+
 `--horizon` draws the observer's unlabeled altitude-zero reference without
 changing chart selection. `--horizon-mask` independently shades the sky below
 that reference with the resolved translucent mask appearance. Using both

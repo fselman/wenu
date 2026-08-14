@@ -64,6 +64,32 @@ def test_all_sky_composition_halves_builtin_star_marker_diameters():
     )
 
 
+def test_named_atlas_uses_packaged_family_detail_without_example_policy():
+    all_sky = compose_chart(AllSkyChart(), style="atlas", mode="print")
+    regional = compose_chart(regional_chart(), style="atlas", mode="print")
+
+    assert all_sky.detail.star_magnitude_limit == pytest.approx(5.0)
+    assert not all_sky.detail.layer_enabled("open_clusters")
+    assert not all_sky.detail.layer_enabled("planetary_nebulae")
+    assert regional.detail.star_magnitude_limit == pytest.approx(6.5)
+
+
+def test_named_cartoon_uses_restrained_bright_deep_sky_policy():
+    detail = compose_chart(
+        FullSkyChart(), style="cartoon", mode="presentation"
+    ).detail
+
+    assert detail.layer_enabled("milky_way")
+    assert detail.layer_enabled("magellanic_clouds")
+    assert detail.layer_enabled("galaxies")
+    assert detail.layer_enabled("open_clusters")
+    assert not detail.layer_enabled("planetary_nebulae")
+    assert not detail.layer_enabled("supernova_remnants")
+    assert detail.galaxy_magnitude_limit == pytest.approx(8.0)
+    assert detail.minimum_open_cluster_size_arcmin == pytest.approx(60.0)
+    assert detail.minimum_globular_cluster_size_arcmin == pytest.approx(30.0)
+
+
 def test_modes_resolve_output_size_without_changing_geometry():
     chart = regional_chart()
     before = chart.viewport

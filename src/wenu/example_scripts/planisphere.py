@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 from wenu import (
-    AdaptiveDetailPolicy, Observer, add_chart_cli_arguments,
+    Observer, add_chart_cli_arguments,
     add_constellation_subject_arguments, chart_cli_furniture,
     chart_configuration,
     chart_constellation_subject, draw_chart_view_from_arguments,
@@ -46,8 +46,7 @@ def generate(arguments):
     try:
         results = draw_chart_view_from_arguments(
             view, arguments, stem="planisphere",
-            product_details={"atlas": AdaptiveDetailPolicy(
-                star_magnitude_limit=5.0)}, furniture=furniture,
+            furniture=furniture,
             title="Planisferio de La Ligua — 15 de agosto de 2026, 21:00",
             language="es")
         return tuple(result.output for result in results)

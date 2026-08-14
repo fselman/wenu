@@ -550,7 +550,14 @@ def test_default_policy_is_sparse_and_style_independent():
     assert detail.constellation_star_mode == "selected"
     assert not detail.layer_enabled("constellation_boundaries")
     assert not detail.layer_enabled("coordinate_grids")
-    assert not detail.layer_enabled("galaxies")
+    assert detail.layer_enabled("milky_way")
+    assert detail.layer_enabled("magellanic_clouds")
+    assert detail.layer_enabled("galaxies")
+    assert detail.layer_enabled("open_clusters")
+    assert detail.layer_enabled("globular_clusters")
+    assert not detail.layer_enabled("planetary_nebulae")
+    assert not detail.layer_enabled("supernova_remnants")
+    assert detail.galaxy_magnitude_limit == pytest.approx(8.0)
 
 
 def test_constellation_vertices_and_explicit_stars_are_unioned():

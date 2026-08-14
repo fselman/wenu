@@ -188,6 +188,13 @@ def translate_geometry_detail_defaults(
             extra_star_ids=frozenset(cartoon["extra_stars"]),
             include_deep_sky=cartoon["deep_sky"],
             label_named_stars=cartoon["named_star_labels"],
+            galaxy_magnitude_limit=cartoon["galaxy_magnitude_limit"],
+            minimum_open_cluster_size_arcmin=(
+                cartoon["open_cluster_minimum_size"]
+            ),
+            minimum_globular_cluster_size_arcmin=(
+                cartoon["globular_cluster_minimum_size"]
+            ),
             default_content_layers=default_content_layers,
             cartoon_content_layers=cartoon_content_layers,
         ),

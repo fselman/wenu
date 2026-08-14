@@ -108,7 +108,11 @@ default_layers = [
     "galaxies", "globular_clusters", "open_clusters",
     "planetary_nebulae", "supernova_remnants",
 ]
-cartoon_layers = ["stars", "constellation_lines", "constellation_labels"]
+cartoon_layers = [
+    "stars", "constellation_lines", "constellation_labels",
+    "milky_way", "magellanic_clouds", "galaxies",
+    "globular_clusters", "open_clusters",
+]
 
 [detail.cartoon]
 star_mode = "selected"
@@ -116,6 +120,9 @@ bright_limit = 3.0
 extra_stars = []
 deep_sky = false
 named_star_labels = false
+galaxy_magnitude_limit = 8.0
+open_cluster_minimum_size = 60.0
+globular_cluster_minimum_size = 30.0
 
 [detail.adaptive]
 reference_width = 7.0

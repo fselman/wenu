@@ -241,8 +241,9 @@ Available policies include:
 - `AdaptiveDetailPolicy` for field-size-dependent density, optionally with a
   fixed publication `star_magnitude_limit` while its deep-sky thresholds
   remain adaptive;
-- `CartoonDetailPolicy` for sparse cartoon content while preserving
-  constellation vertices.
+- `CartoonDetailPolicy` for restrained cartoon content while preserving
+  constellation vertices and admitting only configured bright galaxies and
+  large clusters alongside the Milky Way and Magellanic Clouds.
 
 `DetailOverrides` modifies a policy without merging content choices into
 style or mode. Layer selection is applied locally for each render.
@@ -665,8 +666,8 @@ Command-line examples add the complete common contract with
 `add_chart_cli_arguments(parser, default_output=...)`. The resulting namespace
 is passed to `draw_chart_view_from_arguments(view, arguments, stem=...)`, which
 returns one `ChartExportResult` per selected product. A family may pass
-`product_details` keyed by exact `ChartProduct` values or by style name and
-may construct
+`product_details` keyed by exact `ChartProduct` values or by style name when
+an application needs to replace the packaged family policy, and may construct
 localized furniture with `chart_cli_furniture()`; these remain declarative
 inputs to `draw_chart_view()` rather than a second rendering path.
 The ordinary CLI enables the labeled equatorial grid by default and accepts
@@ -741,10 +742,12 @@ modes, palettes, and cartoon label-transform values. Explicit style and mode
 objects remain unchanged.
 
 `packaged_geometry_detail_defaults()` likewise caches the validated family
-view and detail translation. `chart_view_defaults()` now returns its packaged
-family contracts, and named composition uses its neutral or cartoon policy
-and content-layer baselines. Explicit frame arguments, `DetailPolicy` values,
-and `DetailOverrides` continue to take precedence.
+view and detail translation. `chart_view_defaults()` returns its packaged
+family contracts. Named atlas composition uses the corresponding all-sky,
+planisphere, regional, or circumpolar adaptive policy; named cartoon
+composition uses its restrained bright-content policy. Explicit frame
+arguments, `DetailPolicy` values, and `DetailOverrides` continue to take
+precedence.
 
 `packaged_furniture_product_export_defaults()` caches the remaining validated
 translation. Ordinary drawing uses its neutral references, poles, and footer

@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 from wenu import (
-    AdaptiveDetailPolicy, Observer, add_chart_cli_arguments,
+    Observer, add_chart_cli_arguments,
     add_constellation_subject_arguments, chart_cli_furniture,
     chart_configuration,
     chart_constellation_subject, draw_chart_view_from_arguments,
@@ -33,8 +33,6 @@ def generate(arguments):
     try:
         results = draw_chart_view_from_arguments(
             view, arguments, stem="all-sky",
-            product_details={"atlas": AdaptiveDetailPolicy(
-                star_magnitude_limit=5.0)},
             furniture=chart_cli_furniture(
                 arguments, copyright="© Fernando Selman",
                 configuration=getattr(view, "configuration", None),

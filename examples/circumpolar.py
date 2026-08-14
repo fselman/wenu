@@ -4,8 +4,7 @@ import argparse
 from pathlib import Path
 
 from wenu import (
-    AdaptiveDetailPolicy, FixedDetailPolicy, Observer, ResolvedDetail,
-    add_chart_cli_arguments,
+    Observer, add_chart_cli_arguments,
     chart_cli_furniture, chart_configuration, draw_chart_view_from_arguments,
     generate_celestial_sphere, get_chart_view,
 )
@@ -28,18 +27,9 @@ def chart_view(arguments, *, sky=None):
 
 def generate(arguments):
     view = chart_view(arguments)
-    details = {
-        "atlas": AdaptiveDetailPolicy(star_magnitude_limit=6.5),
-        "cartoon": FixedDetailPolicy(ResolvedDetail(
-            star_magnitude_limit=3.0,
-            enabled_layers=frozenset({"stars", "constellation_lines",
-                                      "equatorial_grid", "milky_way",
-                                      "magellanic_clouds"}),
-            constellation_star_mode="selected")),
-    }
     try:
         results = draw_chart_view_from_arguments(
-            view, arguments, stem="circumpolar", product_details=details,
+            view, arguments, stem="circumpolar",
             furniture=chart_cli_furniture(
                 arguments, pole_selection="both", copyright="© Fernando Selman",
                 configuration=getattr(view, "configuration", None),

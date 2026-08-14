@@ -199,6 +199,15 @@ latitude labels above their curves, use one central all-sky longitude, and
 limit the Mollweide longitude labels to principal quadrants. Canonical examples
 remain request-only.
 
+Milestone 46D.8G activates the packaged family atlas policies whenever named
+atlas composition receives no explicit detail policy. Large charts therefore
+use their existing adaptive magnitude, size, and layer-density limits through
+both canonical examples and `wenu_chart`; explicit policies and overrides
+retain final precedence. The packaged cartoon policy now selects the Milky
+Way, Magellanic Clouds, galaxies brighter than magnitude 8, and only large
+open and globular clusters while continuing to omit planetary nebulae and
+supernova remnants. Canonical examples no longer encode family detail values.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

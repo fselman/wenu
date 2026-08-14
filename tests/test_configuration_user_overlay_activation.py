@@ -41,8 +41,8 @@ def test_composition_and_export_use_one_overlay_contract(tmp_path):
         "background = '#123456'\n"
         "[modes.print]\n"
         "dpi = 240\n"
-        "[detail.neutral]\n"
-        "label_density = 1.75\n"
+        "[detail.canonical]\n"
+        "regional_star_limit = 6.25\n"
         "[export]\n"
         "metadata = { source = 'user' }\n"
         "padding = 0.125\n",
@@ -60,7 +60,7 @@ def test_composition_and_export_use_one_overlay_contract(tmp_path):
     assert composition.configuration is configuration
     assert composition.style.canvas.sky_color == "#123456"
     assert composition.mode.dpi == 240
-    assert composition.detail.label_density == 1.75
+    assert composition.detail.star_magnitude_limit == pytest.approx(6.25)
     assert export.dpi == 240
     assert export.metadata == {"source": "user"}
     assert export.padding == 0.125

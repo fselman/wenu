@@ -935,6 +935,15 @@ placement provide `hh:mm`, signed `dd:mm`, line clearance, one central
 all-sky latitude-label meridian, and principal Mollweide longitude labels.
 Visual rerendering remains required before acceptance.
 
+Milestone 46D.8G activates the existing packaged family atlas policies at the
+named composition boundary, closing the command/example density discrepancy
+without adding example overrides. Large-area atlas charts now receive their
+adaptive DSO magnitude, minimum-size, and enabled-layer policy by chart family.
+The packaged cartoon policy adds the Milky Way, Magellanic Clouds, galaxies
+through magnitude 8, and only large open and globular clusters; planetary
+nebulae and remnants remain omitted. Explicit detail policies and overrides
+retain final precedence. Visual rerendering remains required.
+
 - generate every canonical family through both its example and `wenu_chart`
   with equivalent effective options;
 - prove matching resolved observer, subject, geometry, detail, appearance,

@@ -69,6 +69,17 @@ def _resolved_geometry_detail_defaults(configuration):
     )
 
 
+def _family_atlas_policy(chart, geometry_defaults):
+    try:
+        family = chart_type_name(chart)
+    except ValueError:
+        return FixedDetailPolicy(geometry_defaults.neutral_detail)
+    return geometry_defaults.family_atlas_policies.get(
+        family,
+        FixedDetailPolicy(geometry_defaults.neutral_detail),
+    )
+
+
 def _resolve_style(style, *, configuration=None):
     """Return the stable style identifier and concrete style value."""
     if isinstance(style, str):
@@ -187,6 +198,7 @@ def compose_chart(
     style_defaults = _resolved_style_mode_defaults(configuration)
     geometry_defaults = _resolved_geometry_detail_defaults(configuration)
     context = chart.chart_context
+    named_style = isinstance(style, str)
     style_name, resolved_style = _resolve_style(
         style,
         configuration=configuration,
@@ -262,18 +274,25 @@ def compose_chart(
                 "style_overrides must be a ChartStyleOverrides value."
             )
         resolved_style = style_overrides.apply(resolved_style)
+    family_atlas_default = False
     if detail is None and style_name == CARTOON_STYLE:
         policy = geometry_defaults.cartoon_policy
+    elif detail is None and named_style and style_name == ATLAS_STYLE:
+        policy = _family_atlas_policy(chart, geometry_defaults)
+        family_atlas_default = True
     else:
         policy = (
-            FixedDetailPolicy(
-                geometry_defaults.neutral_detail
-            )
+            FixedDetailPolicy(geometry_defaults.neutral_detail)
             if detail is None
             else detail
         )
+    detail_mode = (
+        replace(resolved_mode, font_scale=1.0, symbol_scale=1.0)
+        if family_atlas_default
+        else resolved_mode
+    )
     resolved_detail = apply_detail_overrides(
-        policy.resolve(context, resolved_mode),
+        policy.resolve(context, detail_mode),
         detail_overrides,
         default_content_layers=(
             geometry_defaults.default_content_layers

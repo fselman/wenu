@@ -233,7 +233,7 @@ def test_atlas_style_is_exported_at_package_top_level():
 from dataclasses import fields
 
 from wenu import CartoonChartStyle
-from wenu.charts.detail import CartoonDetailPolicy
+from wenu.charts.detail import CARTOON_CONTENT_LAYERS, CartoonDetailPolicy
 
 
 def test_cartoon_style_uses_an_original_light_classroom_palette():
@@ -302,9 +302,7 @@ def test_cartoon_content_policy_remains_a_separate_object():
     style = CartoonChartStyle()
     detail = CartoonDetailPolicy().resolve(object(), object())
     assert style.grids.constellation_linewidth > 0
-    assert detail.enabled_layers == frozenset(
-        {"stars", "constellation_lines", "constellation_labels"}
-    )
+    assert detail.enabled_layers == CARTOON_CONTENT_LAYERS
     assert detail.constellation_star_mode == "selected"
 
 # Contracts consolidated from test_milestone40h_cartoon_preset.py.
@@ -473,9 +471,7 @@ def test_print_composition_keeps_concerns_separate():
     assert composition.context.angular_width_deg == pytest.approx(60.0)
     assert composition.style.canvas.sky_color == "white"
     assert composition.mode.dpi == 300
-    assert composition.detail.enabled_layers == frozenset(
-        {"stars", "constellation_lines", "constellation_labels"}
-    )
+    assert composition.detail.enabled_layers == CARTOON_CONTENT_LAYERS
 
 
 def test_presentation_changes_style_and_output_not_content():
@@ -658,6 +654,7 @@ def test_direct_atlas_style_construction_remains_supported():
     composition = compose_chart(m43b_atlas_composition_contracts_regional_chart(), style=style)
     assert composition.style is style
     assert composition.style_name == "atlas"
+    assert composition.detail == ResolvedDetail()
 
 
 def test_unknown_style_and_mode_names_are_rejected():
@@ -829,9 +826,7 @@ def test_named_cartoon_style_uses_canonical_composition(chart, mode):
         composition.context,
         composition.mode,
     )
-    assert composition.detail.enabled_layers == frozenset(
-        {"stars", "constellation_lines", "constellation_labels"}
-    )
+    assert composition.detail.enabled_layers == CARTOON_CONTENT_LAYERS
     assert composition.detail.constellation_star_mode == "selected"
 
 
@@ -887,9 +882,9 @@ def test_explicit_detail_policy_replaces_cartoon_recommendation():
     )
 
 
-def test_optional_milky_way_is_render_local():
+def test_disabling_default_cartoon_milky_way_is_render_local():
     chart = charts()[0]
-    with_milky_way = compose_chart(
+    without_milky_way = compose_chart(
         chart,
         style="cartoon",
         detail_overrides=DetailOverrides(
@@ -898,15 +893,14 @@ def test_optional_milky_way_is_render_local():
                     "stars",
                     "constellation_lines",
                     "constellation_labels",
-                    "milky_way",
                 }
             )
         ),
     )
     default_again = compose_chart(chart, style="cartoon")
 
-    assert with_milky_way.detail.layer_enabled("milky_way")
-    assert not default_again.detail.layer_enabled("milky_way")
+    assert not without_milky_way.detail.layer_enabled("milky_way")
+    assert default_again.detail.layer_enabled("milky_way")
 
 
 def test_explicit_constellation_label_controls_remain_supported():

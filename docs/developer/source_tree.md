@@ -389,6 +389,12 @@ Milestone 46D.8F assigns common remediation to existing owners:
 formatting and rectangular fallback placement, and `charts/boundaries.py` owns
 circular and elliptical label anchors. Examples contain none of these values.
 
+Milestone 46D.8G keeps density in those same detail owners. Named atlas
+composition selects the packaged policy for the chart family when no explicit
+policy is supplied. The packaged cartoon policy owns its bright deep-sky
+subset and thresholds. Canonical examples delegate both decisions and contain
+no family magnitude, size, or layer-density literals.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current

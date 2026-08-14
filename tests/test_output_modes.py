@@ -11,6 +11,7 @@ from wenu import (
     PrintMode,
     cartoon_chart_style,
 )
+from wenu.charts.detail import CARTOON_CONTENT_LAYERS
 
 
 def test_print_cartoon_uses_white_paper_palette():
@@ -64,9 +65,7 @@ def test_mode_selection_rejects_unknown_names():
 
 def test_visual_mode_does_not_resolve_content():
     detail = CartoonDetailPolicy().resolve(object(), object())
-    assert detail.enabled_layers == frozenset(
-        {"stars", "constellation_lines", "constellation_labels"}
-    )
+    assert detail.enabled_layers == CARTOON_CONTENT_LAYERS
     assert detail.constellation_star_mode == "selected"
 
 

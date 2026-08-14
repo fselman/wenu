@@ -55,6 +55,13 @@ def test_packaged_neutral_content_and_cartoon_detail_have_parity():
     assert defaults.default_content_layers == DEFAULT_CONTENT_LAYERS
     assert defaults.cartoon_content_layers == CARTOON_CONTENT_LAYERS
     assert defaults.cartoon_policy == CartoonDetailPolicy()
+    assert defaults.cartoon_policy.galaxy_magnitude_limit == pytest.approx(8.0)
+    assert defaults.cartoon_policy.minimum_open_cluster_size_arcmin == (
+        pytest.approx(60.0)
+    )
+    assert defaults.cartoon_policy.minimum_globular_cluster_size_arcmin == (
+        pytest.approx(30.0)
+    )
 
 
 def test_packaged_adaptive_levels_and_family_ceilings_have_parity():
@@ -90,13 +97,24 @@ def test_packaged_binocular_detail_and_stellar_sizing_have_parity():
     )
 
 
-def test_named_composition_consumes_packaged_neutral_and_cartoon_detail(
+def test_named_composition_consumes_packaged_family_and_cartoon_detail(
     monkeypatch,
 ):
     defaults = packaged_geometry_detail_defaults()
+    regional = defaults.family_atlas_policies["regional"]
     configured = replace(
         defaults,
-        neutral_detail=replace(defaults.neutral_detail, label_density=1.7),
+        family_atlas_policies=MappingProxyType({
+            **defaults.family_atlas_policies,
+            "regional": replace(
+                regional,
+                levels=tuple(
+                    replace(level, label_density=1.7)
+                    for level in regional.levels
+                ),
+                default_content_layers=frozenset({"stars", "galaxies"}),
+            ),
+        }),
         cartoon_policy=replace(
             defaults.cartoon_policy,
             bright_star_magnitude_limit=2.4,
@@ -157,6 +175,20 @@ def test_translated_policies_carry_configured_content_layer_sets():
     assert defaults.cartoon_policy.cartoon_content_layers == frozenset(
         {"stars"}
     )
+
+
+def test_translation_carries_restrained_cartoon_deep_sky_limits():
+    values = load_packaged_defaults()
+    cartoon = values["detail"]["cartoon"]
+    cartoon["galaxy_magnitude_limit"] = 7.5
+    cartoon["open_cluster_minimum_size"] = 75.0
+    cartoon["globular_cluster_minimum_size"] = 40.0
+
+    policy = translate_geometry_detail_defaults(values).cartoon_policy
+
+    assert policy.galaxy_magnitude_limit == pytest.approx(7.5)
+    assert policy.minimum_open_cluster_size_arcmin == pytest.approx(75.0)
+    assert policy.minimum_globular_cluster_size_arcmin == pytest.approx(40.0)
 
 
 def test_translation_carries_optional_regional_field_geometry():

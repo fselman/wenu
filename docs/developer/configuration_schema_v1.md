@@ -120,8 +120,9 @@ may state them for reproducibility but may not invent another pairing.
   enabled layers, grid-label layer list, optional constellation-star mode,
   and extra-star identifier list.
 - `content.default_layers` and `content.cartoon_layers`: string-list.
-- `cartoon`: `star_mode`, `bright_limit`, extra stars, `deep_sky`, and
-  `named_star_labels`.
+- `cartoon`: `star_mode`, `bright_limit`, extra stars, `deep_sky`,
+  `named_star_labels`, a galaxy magnitude ceiling, and minimum displayed
+  sizes for open and globular clusters.
 - `adaptive`: positive `reference_width`, nonnegative
   `magnitude_adjustment_per_octave`, nonnegative `maximum_adjustment`,
   `adapt_layers`, and ordered `levels` array of tables. Each level has

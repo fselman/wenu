@@ -201,9 +201,11 @@ derivation applies. Unless marked otherwise, entries are **public defaults**.
 - default content layers: stars, constellation lines/labels/boundaries, all
   four coordinate grids, Milky Way, Magellanic Clouds, galaxies, globular and
   open clusters, planetary nebulae, and supernova remnants;
-- cartoon content: stars, constellation lines, constellation labels;
+- cartoon content: stars, constellation lines and labels, Milky Way,
+  Magellanic Clouds, galaxies, globular clusters, and open clusters;
 - cartoon detail: star mode `selected`, bright limit `3.0`, extra stars empty,
-  deep sky `false`, named-star labels `false`;
+  deep sky `false`, named-star labels `false`, galaxy ceiling `8.0`, open
+  cluster minimum size `60` arcmin, globular-cluster minimum size `30` arcmin;
 - adaptive detail controls: reference width `7.0`, magnitude adjustment per
   octave `0.20`, maximum adjustment `0.50`, adapt layers `true`;
 - adaptive levels `(span, stars, galaxies, open, globular, planetary,

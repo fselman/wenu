@@ -4,9 +4,6 @@ import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 
-import pytest
-
-
 PATH = Path("examples/all_sky.py")
 
 
@@ -17,7 +14,7 @@ def example():
     return module
 
 
-def test_geometry_and_default_detail_are_explicit():
+def test_geometry_is_explicit_and_detail_uses_shared_family_policy():
     module = example()
     source = PATH.read_text(encoding="utf-8")
 
@@ -25,7 +22,8 @@ def test_geometry_and_default_detail_are_explicit():
     assert 'projection="mollweide"' in source
     assert 'coordinate_frame="galactic"' in source
     assert "position_angle_deg=0.0" in source
-    assert "star_magnitude_limit=5.0" in source
+    assert "AdaptiveDetailPolicy" not in source
+    assert "star_magnitude_limit" not in source
     assert module.parser().parse_args([]).mask is None
 
 
@@ -65,6 +63,5 @@ def test_generation_uses_shared_drawing_and_closes_observer(
     assert captured[0][1]["title"] == (
         "Galactic all-sky map — Mollweide projection"
     )
-    policy = captured[0][1]["product_details"]["atlas"]
-    assert policy.star_magnitude_limit == pytest.approx(5.0)
+    assert "product_details" not in captured[0][1]
     assert closed == [True]
