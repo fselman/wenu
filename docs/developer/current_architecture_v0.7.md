@@ -101,6 +101,16 @@ constructors are compatibility API contracts, not a canonical runtime
 registry. With focused, full-suite, and canonical atlas-print visual
 parity, Milestone 46D.4 is complete.
 
+Milestone 46D.5A adds the strict partial-user-document boundary. A user TOML
+overlay must declare schema version 1, may contain only documented paths, and
+is recursively merged over a fresh packaged mapping without mutating either
+input. The complete effective document then passes the existing structural
+and semantic validator before one aggregate translator constructs the three
+existing immutable style/mode, geometry/detail, and
+furniture/product/export contract groups. Sequential loads share no mutable
+configuration state. Runtime gateways and command-line omission handling are
+deliberately unchanged until Milestone 46D.5B.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

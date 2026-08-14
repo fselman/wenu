@@ -764,6 +764,22 @@ compatibility; canonical named composition, view, drawing, furniture,
 product, and export gateways no longer consult those literals as runtime
 authority.
 
+`load_configuration(path=None)` returns a fresh complete effective mapping.
+With no path it is equivalent to the packaged authority; with a path it loads
+a partial user TOML document, recursively merges only documented keys over a
+fresh packaged mapping, and validates the complete result.
+`parse_configuration_overlay()`, `validate_configuration_overlay()`, and
+`merge_configuration_overlay()` expose the same strict boundary for callers
+that already own text or mappings. Every overlay must declare
+`schema_version = 1`.
+
+`load_configuration_defaults(path=None)` and
+`translate_configuration_defaults()` return one frozen
+`ConfigurationDefaults` aggregate containing the existing style/mode,
+geometry/detail, and furniture/product/export translations. These functions
+do not install global process state. Ordinary runtime and CLI activation
+remains the following Milestone 46D.5 slice.
+
 ## 9. Package imports
 
 Internal implementation imports use responsibility-based packages:

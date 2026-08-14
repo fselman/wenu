@@ -317,6 +317,13 @@ renderer dispatch, or mutation. Milestone 46D.4A adds one process-local cached
 packaged translation; named composition consumes that immutable authority
 through the existing style and mode adapters.
 
+`src/wenu/configuration/translation.py` is the Milestone 46D.5A aggregate
+translation boundary. Together with the partial-overlay functions in
+`validation.py`, it loads an optional user TOML file over a fresh packaged
+mapping, validates the complete result, and returns the three existing frozen
+typed contract groups without installing mutable process state. Runtime and
+shared-command adaptation remain outside this slice.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current

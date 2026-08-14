@@ -814,6 +814,14 @@ visual change.
   default cannot accidentally override TOML;
 - prove sequential overlays do not leak mutable state.
 
+**Status:** In progress. Milestone 46D.5A adds strict partial-overlay parsing,
+schema-version and documented-path validation, recursive non-mutating merge,
+complete effective-document validation, optional file loading, and aggregate
+translation through the existing immutable typed owners. Sequential overlay
+loads are isolated. Milestone 46D.5B remains responsible for threading the
+resolved configuration through ordinary view/drawing and shared CLI adapters,
+including omitted-versus-explicit argument precedence.
+
 ### Milestone 46D.6 — Add the installed `wenu_chart` command
 
 - add one installed command with `all-sky`, `planisphere`, `regional`,

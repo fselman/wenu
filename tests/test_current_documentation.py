@@ -168,7 +168,6 @@ def test_configuration_default_audit_covers_every_public_responsibility():
         assert phrase in audit
     assert "Milestone 46D.1A" in roadmap
     assert "Milestone 46D.1B" in roadmap
-
     for phrase in (
         "Exact ordered value inventory",
         "Atlas-print semantic style",
@@ -181,6 +180,34 @@ def test_configuration_default_audit_covers_every_public_responsibility():
     ):
         assert phrase in audit
     assert "**Final status:** Implemented" in roadmap
+
+
+def test_user_overlay_boundary_is_currently_documented():
+    current = read(CURRENT)
+    roadmap = read(ROADMAP)
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+
+    for phrase in (
+        "Milestone 46D.5A",
+        "strict partial-user-document boundary",
+        "Sequential loads share no mutable",
+        "Milestone 46D.5B",
+    ):
+        assert phrase in current
+    for phrase in (
+        "Milestone 46D.5A",
+        "recursive non-mutating merge",
+        "omitted-versus-explicit argument precedence",
+    ):
+        assert phrase in roadmap
+    for phrase in (
+        "load_configuration(path=None)",
+        "load_configuration_defaults(path=None)",
+        "ConfigurationDefaults",
+    ):
+        assert phrase in implementation
+    assert "src/wenu/configuration/translation.py" in source_tree
 
 
 def test_configuration_schema_v1_freezes_structure_and_validation():

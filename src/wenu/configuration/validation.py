@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from importlib.resources import files
 from math import isfinite
+from pathlib import Path
 import re
 from typing import Any, Mapping
 
@@ -558,6 +560,46 @@ def validate_configuration(
     return value
 
 
+def validate_configuration_overlay(
+    overlay: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Validate and return one partial schema-version-1 overlay mapping."""
+    if not isinstance(overlay, Mapping):
+        _error("configuration", "root must be a table")
+    value = dict(overlay)
+    exemplar = _parse(_resource_text(), source="packaged defaults")
+    _validate_shape(value, exemplar, (), complete=False)
+    if "schema_version" not in value:
+        _error("schema_version", "missing required overlay key")
+    if value["schema_version"] != SCHEMA_VERSION:
+        _error(
+            "schema_version",
+            f"unsupported value {value['schema_version']!r}; "
+            f"expected {SCHEMA_VERSION}",
+        )
+    return value
+
+
+def merge_configuration_overlay(
+    packaged: Mapping[str, Any],
+    overlay: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Return a validated recursive merge without mutating either input."""
+    base = validate_configuration(packaged)
+    partial = validate_configuration_overlay(overlay)
+
+    def merge(left, right):
+        result = deepcopy(left)
+        for key, value in right.items():
+            if isinstance(value, dict):
+                result[key] = merge(result[key], value)
+            else:
+                result[key] = deepcopy(value)
+        return result
+
+    return validate_configuration(merge(base, partial))
+
+
 def parse_configuration(
     text: str,
     *,
@@ -569,6 +611,36 @@ def parse_configuration(
     return validate_configuration(_parse(text, source=source))
 
 
+def parse_configuration_overlay(
+    text: str,
+    *,
+    source: str = "user configuration",
+) -> dict[str, Any]:
+    """Parse and validate one partial schema-version-1 TOML overlay."""
+    if not isinstance(text, str):
+        raise TypeError("text must be a string")
+    return validate_configuration_overlay(_parse(text, source=source))
+
+
 def load_packaged_defaults() -> dict[str, Any]:
     """Load and strictly validate a fresh packaged default mapping."""
     return parse_configuration(_resource_text(), source="packaged defaults")
+
+
+def load_configuration(path=None) -> dict[str, Any]:
+    """Load packaged defaults with an optional partial user TOML overlay."""
+    packaged = load_packaged_defaults()
+    if path is None:
+        return packaged
+    source = Path(path)
+    try:
+        text = source.read_text(encoding="utf-8")
+    except OSError as error:
+        raise ConfigurationError(
+            f"user configuration {source}: {error}"
+        ) from error
+    overlay = parse_configuration_overlay(
+        text,
+        source=f"user configuration {source}",
+    )
+    return merge_configuration_overlay(packaged, overlay)
