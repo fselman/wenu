@@ -132,6 +132,37 @@ order:
    `git diff --cached --check`;
 7. commit, push, and verify the final status and log to close the milestone.
 
+Keep inspection practical for long patches. Before staging, run:
+
+```bash
+git status --short
+git diff --name-status
+git diff --stat
+git diff --check
+```
+
+Verify that only the intended files appear, that the change sizes are
+plausible, and that `git diff --check` is silent. Inspect substantive code one
+file at a time with `git diff -- path/to/file`; use `q` to leave the pager.
+
+After staging every intended file explicitly, run:
+
+```bash
+git status --short
+git diff --cached --name-status
+git diff --cached --stat
+git diff --cached --check
+git diff --quiet
+echo $?
+```
+
+The first status column must show the intended staged `M` or `A` entries,
+`git diff --cached --check` must be silent, and the final result must be `0`,
+proving that no unstaged changes remain. `git diff --cached` remains available
+for full inspection of exactly what the next commit will contain, but a
+handoff must not require rereading a very long undifferentiated diff when the
+name, status, size, whitespace, and substantive-file checks are sufficient.
+
 Do not combine the apply check and application into one shell command. Keep
 the limited and general test commands separate so their results can be
 reported independently. Omit compilation or limited-test sections only when

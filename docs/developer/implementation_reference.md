@@ -862,6 +862,14 @@ reference and mask, furniture and legends, post-mode appearance, product,
 title, language, and destination. Selecting `--all-products` yields the
 canonical atlas/cartoon by print/presentation matrix in deterministic order.
 
+Each `wenu_chart` invocation loads and translates a fresh effective document;
+it does not install active configuration globally. Partial overlays therefore
+affect only their named values, a later command may safely use another overlay
+or packaged defaults, and a reused maximal sphere acquires no configuration
+state. Explicit command observer, subject, geometry, product, title, language,
+and output arguments retain final precedence. Invalid documents raise
+`ConfigurationError` before observer or astronomical construction.
+
 ## 10. Package imports
 
 Internal implementation imports use responsibility-based packages:

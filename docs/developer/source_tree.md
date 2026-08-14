@@ -362,6 +362,14 @@ the complete public drawing vocabulary and captures the immutable arguments
 at the existing `draw_chart_view()` boundary. It also proves deterministic
 four-product naming without constructing catalogues or a renderer.
 
+`tests/test_wenu_chart_configuration_isolation.py` owns Milestone 46D.8C's
+installed-command overlay boundary. It proves sequential partial overlays and
+packaged defaults remain independent on one reused sphere identity and that
+explicit command observer, subject, geometry, product, title, language, and
+destination values retain final precedence. `tests/test_wenu_chart_cli.py`
+owns the complementary early-failure order before observer, sphere, view, or
+drawing work.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current

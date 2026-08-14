@@ -6,6 +6,7 @@ from types import SimpleNamespace
 import pytest
 
 from wenu.cli import chart
+from wenu.configuration import ConfigurationError
 
 
 EXPECTED_COMMANDS = {
@@ -102,8 +103,18 @@ def test_invalid_configuration_fails_before_observer_or_sphere(
         "generate_celestial_sphere",
         lambda: calls.append("sphere"),
     )
+    monkeypatch.setattr(
+        chart,
+        "get_chart_view",
+        lambda *args, **kwargs: calls.append("view"),
+    )
+    monkeypatch.setattr(
+        chart,
+        "draw_chart_view_from_arguments",
+        lambda *args, **kwargs: calls.append("draw"),
+    )
 
-    with pytest.raises(Exception):
+    with pytest.raises(ConfigurationError):
         chart.generate(chart.parser().parse_args([
             "planisphere", "--config", str(path),
         ]))

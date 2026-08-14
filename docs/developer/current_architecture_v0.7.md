@@ -164,6 +164,15 @@ explicit-output vocabulary immediately before ordinary drawing. A second
 contract proves the four deterministic canonical product destinations. The
 slice changes no runtime owner or production behavior.
 
+Milestone 46D.8C proves the installed command carries one fresh immutable
+effective configuration per invocation. Two unrelated partial overlays and a
+following packaged-only command reuse the same test sphere without sharing
+observer, geometry, appearance, or product values. Explicit command observer,
+subject, field, mask, product, title, language, and output values override a
+conflicting overlay, while invalid configuration stops before any observer,
+sphere, view, or drawing work. Existing integration owners continue to prove
+render-local and observed-cache isolation on a real reusable sphere.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

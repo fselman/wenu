@@ -556,6 +556,13 @@ and one covers the canonical four-product destination matrix. Existing
 responsibility tests retain their focused edge cases; no integration build is
 duplicated.
 
+Milestone 46D.8C adds two catalogue-free installed-command contracts for
+sequential overlay isolation and explicit precedence, and strengthens invalid
+configuration failure ordering through the drawing boundary. Existing tests
+remain the owners of recursive merge immutability, repeated drawing and grid
+cleanup, family-order independence, observer-cache separation, and real
+reusable-sphere behavior; those expensive contracts are not duplicated.
+
 Milestone 46C.10 completed that required Mac validation without changing the
 tier definitions. Fast, integration, visual, and full suites passed. The
 diagnostic benchmark also produced 18 atlas-print products across all six

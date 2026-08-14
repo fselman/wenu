@@ -899,6 +899,17 @@ language, style, mode, and an explicit output file. A separate contract proves
 the deterministic atlas/cartoon and print/presentation output matrix. No
 production behavior changes; configuration isolation and visual closure remain.
 
+Milestone 46D.8C closes installed-command configuration precedence and state
+isolation. Sequential commands apply two unrelated partial overlays and then
+packaged defaults against one reused maximal-sphere identity; observer,
+geometry, appearance, and product values remain local to their own immutable
+configuration and each command owns a distinct observer. A conflicting
+overlay proves explicit observer, subject, field, mask, product, title,
+language, and output precedence. Invalid configuration raises
+`ConfigurationError` before observer, sphere, view, or drawing work. Existing
+integration contracts retain reused-sphere selection, grid, mask, observer,
+and cache isolation ownership. Visual and documentation closure remain.
+
 - generate every canonical family through both its example and `wenu_chart`
   with equivalent effective options;
 - prove matching resolved observer, subject, geometry, detail, appearance,
