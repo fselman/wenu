@@ -804,7 +804,41 @@ and validates it before generating a maximal sphere. Omitted `--style`,
 `--mode`, and `--all-products` values resolve from the effective TOML, while
 arguments explicitly present on the command line override it.
 
-## 9. Package imports
+## 9. Installed unified chart command
+
+Installing Wenu provides one command over the ordinary Python facade:
+
+```text
+wenu_chart all-sky ...
+wenu_chart planisphere ...
+wenu_chart regional --constellations Cen,Cru,Mus ...
+wenu_chart circumpolar ...
+wenu_chart binocular --target M13 ...
+wenu_chart defaults
+```
+
+Every chart subcommand accepts the shared product, content, grid, horizon,
+furniture, appearance, output, observer, title, language, and `--config`
+controls. Observer controls use the unambiguous `--observer-location`,
+`--observer-time`, `--observer-latitude`, `--observer-longitude`,
+`--observer-height`, and `--observer-timezone` names because `--location`
+already selects location context furniture. Ephemeris and data-directory
+overrides are also available.
+
+The command loads and translates one effective configuration, constructs an
+`Observer`, calls `generate_celestial_sphere()`, passes the result to
+`get_chart_view()`, and finally calls `draw_chart_view_from_arguments()`.
+It prints the resulting output paths and closes the observer in a `finally`
+boundary. `src/wenu/cli/chart.py` does not import or execute example scripts.
+The examples and installed command are separate adapters over the same
+library interfaces.
+
+`wenu_chart defaults` writes the installed commented `defaults.toml` to
+standard output without loading an observer or astronomical catalogues. The
+file-writing form `wenu_chart defaults --write PATH` belongs to Milestone
+46D.7.
+
+## 10. Package imports
 
 Internal implementation imports use responsibility-based packages:
 
@@ -821,7 +855,7 @@ from wenu.charts.composition import ChartComposition, compose_chart
 Pre-v0.4 singular top-level geometry modules and the old `wenu.renderers`,
 `wenu.regional`, and `wenu.styles` packages do not exist.
 
-## 10. Extension procedure
+## 11. Extension procedure
 
 - Add a chart type only when geometry or framing differs.
 - Add a style by composing visual components; do not add projection or export
@@ -834,13 +868,13 @@ Pre-v0.4 singular top-level geometry modules and the old `wenu.renderers`,
 
 Every extension must continue through `CelestialSphere.draw_chart()`.
 
-## 11. Compatibility and deprecation
+## 12. Compatibility and deprecation
 
 The legacy `cartoon_output_mode()` and `compose_cartoon_chart()` wrappers
 remain functional but emit `DeprecationWarning`. Their replacements and the
 v0.5 compatibility policy are recorded in `deprecations_v0.5.md`.
 
-## 12. User documentation and reference image
+## 13. User documentation and reference image
 
 The v0.7 user guide begins at `docs/user_guide/index.md` and contains one page
 for each canonical family plus a shared styles, modes, detail, and furniture

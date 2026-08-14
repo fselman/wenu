@@ -174,6 +174,41 @@ def test_view_preserves_serpens_resolution_and_automatic_framing(
     assert view.frame.automatic_from_geometry
 
 
+def test_arbitrary_multi_constellation_view_uses_group_defaults(
+    monkeypatch,
+):
+    import wenu.charts.view as view_module
+
+    calls = []
+    actual_defaults = view_module.chart_view_defaults
+    monkeypatch.setattr(
+        view_module,
+        "chart_view_defaults",
+        lambda family, *, group, configuration: (
+            calls.append((family, group, configuration))
+            or actual_defaults(
+                family,
+                group=group,
+                configuration=configuration,
+            )
+        ),
+    )
+    monkeypatch.setattr(
+        view_module,
+        "prepare_chart_request",
+        lambda sky, resolved, *, observer: prepared(resolved),
+    )
+
+    get_chart_view(
+        sky(),
+        observer(),
+        family="regional",
+        constellations=("Cyg", "Lyr", "Aql"),
+    )
+
+    assert calls == [("regional", True, None)]
+
+
 def test_view_rejects_unsupported_projection_before_preparation():
     with pytest.raises(ValueError, match="stereographic"):
         get_chart_view(

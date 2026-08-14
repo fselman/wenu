@@ -24,6 +24,7 @@ src/wenu/
 │                               legends, boundaries, and export workflow
 ├── rendering/                  preparation and Matplotlib backend
 ├── resources/                  installed-resource access
+├── cli/                        installed command adapters
 ├── example_scripts/            packaged canonical user examples
 ├── data/                       distributed astronomical datasets
 └── utils/                      general utilities
@@ -331,6 +332,14 @@ detail, furniture, product, and export owners. `command_line.py` owns the
 shared `--config` adapter and resolves omitted product arguments only after
 the effective document is available. Canonical examples validate it before
 maximal-sphere construction; no active-configuration singleton exists.
+
+Milestone 46D.6 adds `src/wenu/cli/chart.py` as the installed `wenu_chart`
+adapter. It owns the six subcommand parsers, effective observer and subject
+argument selection, observer lifetime, output-path reporting, and verbatim
+`defaults.toml` display. Chart commands delegate to
+`generate_celestial_sphere()`, `get_chart_view()`, and
+`draw_chart_view_from_arguments()` and do not import `example_scripts` or own
+catalogue, projection, rendering, furniture, or export behavior.
 
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,

@@ -98,7 +98,10 @@ def get_chart_view(
             )
     defaults = chart_view_defaults(
         family,
-        group=group is not None,
+        group=(
+            group is not None
+            or constellations is not None and len(constellations) > 1
+        ),
         configuration=configuration,
     )
     projection_name = str(

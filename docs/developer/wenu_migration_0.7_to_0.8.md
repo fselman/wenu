@@ -846,6 +846,17 @@ configured and packaged products remain isolated, and packaged-only behavior is 
 - retain the six examples as short reproducible declarations and regression
   authorities.
 
+**Final status:** Implemented. The installed `wenu_chart` entry point exposes
+all five chart-family subcommands plus `defaults`. Each chart command loads
+and validates the effective configuration before catalogue work, resolves
+observer and subject omissions from that document, constructs one ordinary
+observer-independent sphere and `ChartView`, delegates products to the shared
+drawing adapter, and closes its observer on success or failure. The unified
+`regional` path accepts either one or several IAU constellations or a packaged
+group. The module does not import examples and owns no catalogue, projection,
+rendering, furniture, or export procedure. `defaults` prints the packaged
+authoritative TOML; deterministic `--write` output remains Milestone 46D.7.
+
 ### Milestone 46D.7 — Export a complete editable template
 
 - add `wenu_chart defaults --write PATH` to write a complete, versioned,

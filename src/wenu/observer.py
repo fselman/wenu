@@ -50,6 +50,9 @@ class Observer:
     - a named location, such as ``"La Ligua"``; or
     - explicit latitude, longitude, and elevation.
 
+    A named location may receive explicit elevation and timezone overrides;
+    its registered latitude, longitude, and display name remain unchanged.
+
     Time can be supplied as:
 
     - ``"now"``;
@@ -176,18 +179,10 @@ class Observer:
         str | None,
     ]:
         if location is not None:
-            if any(
-                value is not None
-                for value in (
-                    lat_deg,
-                    lon_deg,
-                    elevation_m,
-                    timezone_name,
-                )
-            ):
+            if lat_deg is not None or lon_deg is not None:
                 raise ValueError(
-                    "Specify either location=... or explicit "
-                    "coordinates, not both."
+                    "Specify either location=... or explicit latitude and "
+                    "longitude, not both."
                 )
 
             key = location.strip().casefold()
@@ -208,8 +203,14 @@ class Observer:
             return (
                 float(site["lat_deg"]),
                 float(site["lon_deg"]),
-                float(site.get("elevation_m", 0.0)),
-                str(site["timezone"]),
+                float(
+                    site.get("elevation_m", 0.0)
+                    if elevation_m is None else elevation_m
+                ),
+                str(
+                    site["timezone"]
+                    if timezone_name is None else timezone_name
+                ),
                 str(site["name"]),
             )
 

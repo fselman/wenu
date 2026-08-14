@@ -242,6 +242,38 @@ def test_user_overlay_runtime_precedence_is_currently_documented():
         assert phrase in source_tree
 
 
+def test_installed_wenu_chart_boundary_is_currently_documented():
+    current = read(CURRENT)
+    roadmap = read(ROADMAP)
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+
+    for phrase in (
+        "Milestone 46D.6",
+        "one `wenu_chart` command",
+        "never imports\nexample modules",
+    ):
+        assert phrase in current
+    for phrase in (
+        "**Final status:** Implemented",
+        "all five chart-family subcommands plus `defaults`",
+        "deterministic `--write` output remains Milestone 46D.7",
+    ):
+        assert phrase in roadmap
+    for phrase in (
+        "wenu_chart regional --constellations Cen,Cru,Mus",
+        "`--observer-location`",
+        "does not import or execute example scripts",
+    ):
+        assert phrase in implementation
+    for phrase in (
+        "src/wenu/cli/chart.py",
+        "`generate_celestial_sphere()`",
+        "do not import `example_scripts`",
+    ):
+        assert phrase in source_tree
+
+
 def test_configuration_schema_v1_freezes_structure_and_validation():
     schema = read(CONFIGURATION_SCHEMA)
     roadmap = read(ROADMAP)

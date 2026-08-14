@@ -125,6 +125,20 @@ as the omission sentinel, while furniture switches fall back to the same
 effective family contract. Packaged-only calls retain their cached authorities
 and exact established behavior.
 
+Milestone 46D.6 installs one `wenu_chart` command with `all-sky`,
+`planisphere`, `regional`, `circumpolar`, `binocular`, and `defaults`
+subcommands. The chart subcommands validate one effective configuration,
+construct one command-owned observer and one observer-independent maximal
+sphere, obtain an ordinary `ChartView`, and delegate every selected product
+to `draw_chart_view_from_arguments()`. The command contains no catalogue,
+projection, rendering, furniture, or export implementation. It never imports
+example modules.
+One or many IAU constellations share the `regional` path. Observer, subject,
+family geometry, product, content, furniture, style,
+mode, title, language, output, and `--config` arguments all reach the same
+library boundaries. `wenu_chart defaults` prints the installed authoritative
+TOML verbatim; deterministic file export remains Milestone 46D.7.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,
