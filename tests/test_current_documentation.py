@@ -274,6 +274,38 @@ def test_installed_wenu_chart_boundary_is_currently_documented():
         assert phrase in source_tree
 
 
+def test_editable_configuration_template_is_currently_documented():
+    current = read(CURRENT)
+    roadmap = read(ROADMAP)
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+
+    for phrase in (
+        "Milestone 46D.7",
+        "exact UTF-8 bytes",
+        "profile inheritance is deliberately deferred",
+    ):
+        assert phrase in current
+    for phrase in (
+        "**Final status:** Implemented",
+        "`wenu_chart defaults --write PATH`",
+        "overlay per invocation and no inheritance",
+    ):
+        assert phrase in roadmap
+    for phrase in (
+        "`dashed`, `dotted`, `dash_dot`, and `none`",
+        "deterministically replaced",
+        "One invocation accepts one overlay",
+    ):
+        assert phrase in implementation
+    for phrase in (
+        "`write_defaults_template()`",
+        "exact UTF-8 bytes",
+        "does not\nserialize typed translations",
+    ):
+        assert phrase in source_tree
+
+
 def test_configuration_schema_v1_freezes_structure_and_validation():
     schema = read(CONFIGURATION_SCHEMA)
     roadmap = read(ROADMAP)

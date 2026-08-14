@@ -40,6 +40,10 @@ products to a directory with deterministic names. See
 [Styles, modes, detail, and furniture](styles_modes_detail.md) for shared
 content, appearance, legend, reference, and credit options.
 
+Use [`wenu_chart` and editable TOML profiles](configuration.md) to generate
+any family through one installed command and keep publication, presentation,
+outreach, location, or observing choices outside Wenu source.
+
 Generated gallery products belong below `output/` and are not committed. The
 one exception is the approved README image; its exact provenance is recorded
 in [the planisphere guide](planisphere.md#readme-image-provenance).

@@ -139,6 +139,16 @@ mode, title, language, output, and `--config` arguments all reach the same
 library boundaries. `wenu_chart defaults` prints the installed authoritative
 TOML verbatim; deterministic file export remains Milestone 46D.7.
 
+Milestone 46D.7 adds `wenu_chart defaults --write PATH`. It copies the
+installed authoritative TOML as exact UTF-8 bytes, so comments, schema
+version, section and key order, value spelling, and final newline remain
+deterministic without reconstructing the document from Python objects. The
+destination parent must already exist, and an existing destination is
+replaced. Separate publication, presentation, outreach, location, and
+observing profile files are ordinary version-1 overlays selected with
+`--config`; schema-level profile inheritance is deliberately deferred until
+single-file use demonstrates a concrete need.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

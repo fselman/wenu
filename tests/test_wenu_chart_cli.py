@@ -57,6 +57,37 @@ def test_defaults_prints_packaged_authority_without_generation(
     assert "schema_version = 1" in output
 
 
+def test_defaults_write_is_an_exact_deterministic_editable_copy(
+    monkeypatch, tmp_path, capsys
+):
+    monkeypatch.setattr(
+        chart,
+        "generate_celestial_sphere",
+        lambda: pytest.fail("defaults must not load catalogues"),
+    )
+    destination = tmp_path / "profiles" / "publication.toml"
+    destination.parent.mkdir()
+
+    assert chart.main(["defaults", "--write", str(destination)]) == 0
+
+    expected = chart.packaged_defaults_text().encode("utf-8")
+    assert destination.read_bytes() == expected
+    assert capsys.readouterr().out.strip() == str(destination)
+
+    destination.write_text("changed", encoding="utf-8")
+    assert chart.write_defaults_template(destination) == destination
+    assert destination.read_bytes() == expected
+
+
+def test_defaults_write_requires_an_existing_parent(tmp_path):
+    destination = tmp_path / "missing" / "observing.toml"
+
+    with pytest.raises(FileNotFoundError):
+        chart.write_defaults_template(destination)
+
+    assert not destination.exists()
+
+
 def test_invalid_configuration_fails_before_observer_or_sphere(
     monkeypatch, tmp_path
 ):

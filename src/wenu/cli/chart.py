@@ -94,9 +94,15 @@ def parser():
     binocular.add_argument("--display-name")
     binocular.add_argument("--field-diameter", type=float)
 
-    commands.add_parser(
+    defaults = commands.add_parser(
         "defaults",
-        help="print the packaged authoritative TOML defaults",
+        help="print or write the packaged authoritative TOML defaults",
+    )
+    defaults.add_argument(
+        "--write",
+        type=Path,
+        metavar="PATH",
+        help="write an editable copy of the authoritative TOML defaults",
     )
     return value
 
@@ -248,11 +254,21 @@ def packaged_defaults_text():
     )
 
 
+def write_defaults_template(path):
+    """Write the packaged defaults byte-for-byte to ``path``."""
+    destination = Path(path)
+    destination.write_bytes(packaged_defaults_text().encode("utf-8"))
+    return destination
+
+
 def main(argv=None):
     """Run the installed command and return a process status."""
     arguments = parser().parse_args(argv)
     if arguments.command == "defaults":
-        print(packaged_defaults_text(), end="")
+        if arguments.write is None:
+            print(packaged_defaults_text(), end="")
+        else:
+            print(write_defaults_template(arguments.write))
         return 0
     for output in generate(arguments):
         print(output)

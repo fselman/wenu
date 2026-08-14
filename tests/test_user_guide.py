@@ -19,6 +19,7 @@ GUIDE_PAGES = (
     "circumpolar_charts.md",
     "binocular_charts.md",
     "styles_modes_detail.md",
+    "configuration.md",
 )
 EXAMPLES = (
     "all_sky.py",
@@ -118,6 +119,27 @@ def test_shared_guide_documents_independent_horizon_roles():
         "one translucent mask",
         "intentional no-ops",
         "Galactic Mollweide",
+    ):
+        assert value in text
+
+
+def test_configuration_guide_documents_template_and_profiles():
+    text = (GUIDE / "configuration.md").read_text(encoding="utf-8")
+
+    for value in (
+        "wenu_chart defaults --write profiles/publication.toml",
+        "packaged defaults.toml < --config TOML < explicit CLI arguments",
+        "`solid`",
+        "`dashed`",
+        "`dotted`",
+        "`dash_dot`",
+        "`none`",
+        "publication.toml",
+        "presentation.toml",
+        "outreach.toml",
+        "papudo.toml",
+        "binocular-observing.toml",
+        "no profile inheritance or multi-file stacking",
     ):
         assert value in text
 

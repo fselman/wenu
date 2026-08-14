@@ -264,7 +264,9 @@ See `target_architecture_v0.7.md` for the implemented architecture,
 `implementation_reference.md` for current public usage.
 
 The structured user guide is rooted at `docs/user_guide/index.md`; its
-`assets/` directory contains only the provenance-controlled README image.
+`configuration.md` page owns the editable-template, value-vocabulary, and
+single-file profile guidance. Its `assets/` directory contains only the
+provenance-controlled README image.
 
 The user-facing `examples/` directory contains only the six canonical chart
 families as short declarations over the shared sphere, view, drawing, and CLI
@@ -340,6 +342,12 @@ argument selection, observer lifetime, output-path reporting, and verbatim
 `generate_celestial_sphere()`, `get_chart_view()`, and
 `draw_chart_view_from_arguments()` and do not import `example_scripts` or own
 catalogue, projection, rendering, furniture, or export behavior.
+
+Milestone 46D.7 keeps editable-template export in that same CLI adapter.
+`packaged_defaults_text()` reads the installed resource verbatim and
+`write_defaults_template()` writes its exact UTF-8 bytes. It does not
+serialize typed translations or acquire schema, validation, profile
+inheritance, catalogue, or chart responsibility.
 
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,

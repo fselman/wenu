@@ -869,6 +869,17 @@ authoritative TOML; deterministic `--write` output remains Milestone 46D.7.
 - define whether a future profile-inheritance feature is justified only after
   ordinary single-file overlays are proven sufficient or insufficient.
 
+**Final status:** Implemented. `wenu_chart defaults --write PATH` writes the
+installed commented authority byte-for-byte as UTF-8, preserving its schema
+version, deterministic order and formatting, documentation, value spelling,
+and final newline. Repeating the command replaces the destination with the
+same bytes; its parent directory must already exist. The user guide documents
+the complete `solid`, `dashed`, `dotted`, `dash_dot`, and `none` line-style
+vocabulary and separate publication, presentation, outreach, location, and
+observing TOML profiles selected through `--config`. Version 1 retains one
+overlay per invocation and no inheritance: composition is deferred until
+actual single-file use proves that another schema feature is warranted.
+
 ### Milestone 46D.8 — Prove parity and close visually
 
 - generate every canonical family through both its example and `wenu_chart`

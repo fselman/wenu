@@ -1,0 +1,84 @@
+# Unified command and editable configuration
+
+Installing Wenu provides one command for every ordinary chart family:
+
+```text
+wenu_chart all-sky ...
+wenu_chart planisphere ...
+wenu_chart regional ...
+wenu_chart circumpolar ...
+wenu_chart binocular ...
+```
+
+## Create an editable template
+
+Create the destination directory, then export Wenu's complete commented
+version-1 configuration:
+
+```bash
+mkdir -p profiles
+wenu_chart defaults --write profiles/publication.toml
+```
+
+The command prints the written path. The file is an exact UTF-8 copy of the
+installed `defaults.toml`: comments, schema version, section and key order,
+formatting, and final newline are reproducible. Running the command again for
+the same path replaces that file. It does not create a missing parent
+directory.
+
+Use the edited file with any chart family:
+
+```bash
+wenu_chart regional \
+  --config profiles/publication.toml \
+  --constellations Cen,Cru,Mus \
+  --output output/centaurus-cross-musca.png
+```
+
+Explicit command-line values override the selected file, which in turn
+overrides Wenu's packaged defaults:
+
+```text
+packaged defaults.toml < --config TOML < explicit CLI arguments
+```
+
+Without `--write`, `wenu_chart defaults` prints the same complete document to
+standard output.
+
+## Valid line styles
+
+Every configurable line-bearing element independently declares `color`,
+`line_width`, and `line_style`. The complete version-1 `line_style` vocabulary
+is:
+
+- `solid`
+- `dashed`
+- `dotted`
+- `dash_dot`
+- `none`
+
+Other spellings are rejected with the complete configuration path.
+
+## Named profiles
+
+Profiles are normal TOML files whose filenames describe their purpose. They
+do not require Python changes:
+
+| Profile | Typical sections to edit |
+|---|---|
+| `publication.toml` | atlas style, print mode, product and export |
+| `presentation.toml` | presentation mode, canvas, labels and symbols |
+| `outreach.toml` | cartoon style, larger labels, legends and furniture |
+| `papudo.toml` | observer location, elevation, timezone and time |
+| `binocular-observing.toml` | subject, binocular field and detail limits |
+
+Each command accepts one profile:
+
+```bash
+wenu_chart planisphere --config profiles/papudo.toml
+```
+
+Version 1 intentionally has no profile inheritance or multi-file stacking.
+When one chart needs choices from several themes, keep a dedicated combined
+profile. An inheritance feature should be added only if experience with these
+ordinary single-file overlays demonstrates that it is necessary.

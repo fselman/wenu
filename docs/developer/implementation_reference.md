@@ -834,9 +834,19 @@ The examples and installed command are separate adapters over the same
 library interfaces.
 
 `wenu_chart defaults` writes the installed commented `defaults.toml` to
-standard output without loading an observer or astronomical catalogues. The
-file-writing form `wenu_chart defaults --write PATH` belongs to Milestone
-46D.7.
+standard output without loading an observer or astronomical catalogues.
+`wenu_chart defaults --write PATH` copies those exact UTF-8 bytes to an
+editable file and prints its path. The destination parent must exist; an
+existing file is deterministically replaced. This deliberately preserves
+comments and formatting from the authority rather than serializing translated
+Python contracts.
+
+Configuration line styles use the complete public vocabulary `solid`,
+`dashed`, `dotted`, `dash_dot`, and `none`. Named publication, presentation,
+outreach, location, and observing profiles are separate version-1 TOML files
+passed through `--config`. One invocation accepts one overlay. Version 1 has
+no profile inheritance or multi-file composition; that feature remains
+deferred until ordinary single-file use demonstrates a concrete requirement.
 
 ## 10. Package imports
 
@@ -878,7 +888,8 @@ v0.5 compatibility policy are recorded in `deprecations_v0.5.md`.
 
 The v0.7 user guide begins at `docs/user_guide/index.md` and contains one page
 for each canonical family plus a shared styles, modes, detail, and furniture
-reference. `docs/user_guide.md` remains only as a compatibility link.
+reference and the unified-command/configuration profile guide.
+`docs/user_guide.md` remains only as a compatibility link.
 
 The README planisphere is the sole checked-in generated chart. Its generating
 script, exact arguments, source commit, dimensions, SHA-256 checksum,
