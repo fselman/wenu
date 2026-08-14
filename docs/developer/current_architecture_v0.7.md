@@ -182,6 +182,14 @@ credits. It records exact commands, PNG dimensions, byte sizes, checksums, and
 the source revision in `manifest.json`. Human Mac review and approval remain
 required; generated products stay outside version control.
 
+Milestone 46D.8E records the first Mac review as a remediation
+register and corrects three overclaimed diagnostics. Constellation and horizon
+mask openings are no longer combined when independent appearance is under
+review, and the Centaurus A binocular product no longer claims a horizon
+crossing outside its field. The circumpolar diagnostic retains the explicit
+horizon role. This slice changes only the visual harness, its structural
+contracts, and documentation; production rendering remains unchanged.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

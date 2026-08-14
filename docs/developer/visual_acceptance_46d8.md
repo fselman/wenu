@@ -1,10 +1,12 @@
 # Milestone 46D.8 visual acceptance
 
-**Status:** Pending Mac rendering and human approval
+**Status:** Reviewed on Mac; remediation required before approval
 
 **Matrix source:** `tools/render_46d8_visual_matrix.py`
 
-**Required source commit:** `5fa6bfa`
+**Reviewed source commit:** `84baedb`
+
+**Review record commit:** `a6739a7`
 
 ## Purpose
 
@@ -39,7 +41,7 @@ One product can be repeated independently when review finds a question:
 
 ```bash
 python tools/render_46d8_visual_matrix.py \
-  --entry diagnostic-regional-explicit-field-horizon \
+  --entry diagnostic-regional-explicit-field-mask \
   --output output/46d8-visual-matrix-rerun
 ```
 
@@ -66,9 +68,9 @@ Six atlas-print diagnostics cover the remaining high-risk combinations:
 
 | Diagnostic | Required evidence |
 | --- | --- |
-| all-sky mask and horizon | disjoint regions, horizon reference, one effective translucent mask |
-| regional explicit field and horizon | explicit width, height, angle, combined Oph/Ser mask, horizon crossing |
-| binocular horizon | aperture, horizon reference, and below-horizon mask remain distinct |
+| all-sky constellation mask | three disjoint regions and one effective translucent outside mask |
+| regional explicit field and mask | explicit width, height, angle, and combined Oph/Ser mask |
+| binocular field | aperture, target content, stellar sizing, and family furniture |
 | circumpolar horizon | declination boundary and observer horizon intersect correctly |
 | planisphere horizon no-op | optional horizon roles do not duplicate or alter its intrinsic boundary |
 | legends, references, and grids | four grids, three reference planes, poles, legends, counts, context, credits |
@@ -90,6 +92,31 @@ For every product verify:
 Record any defect by matrix entry name and retain its manifest record. Do not
 approve 46D.8 visually until all 18 entries pass or every intentional change
 is explained and accepted.
+
+## Remediation register
+
+The `84baedb` review identified shared policy defects rather than independent
+example defects. Examples remain request-only; fixes belong to packaged
+configuration and the existing family, detail, style, mask, and furniture
+owners.
+
+| ID | Finding | Classification | Owner | Planned slice |
+| --- | --- | --- | --- | --- |
+| GRID-1 | Equatorial lines are too dark and prominent. | confirmed common style policy | packaged atlas/cartoon grid style | 46D.8F |
+| GRID-2 | Regional selection can produce fewer than two useful RA and Dec lines; circumpolar RA spacing is not two hours. | confirmed family grid policy | request-time grid configuration | 46D.8F |
+| GRID-3 | Coordinate labels are too large or collide with their line; RA and Dec formatting and anchor meridians are inconsistent. | confirmed shared label policy | semantic grid formatter and placement | 46D.8F |
+| DETAIL-1 | Atlas all-sky, planisphere, regional-group, and circumpolar products contain too many open clusters, planetary nebulae, and remnants. | confirmed family density policy | immutable detail policy | 46D.8G |
+| CARTOON-1 | Cartoon products omit the Milky Way, Magellanic Clouds, and a restrained bright deep-sky selection. | confirmed product content policy | cartoon detail/content policy | 46D.8G |
+| MASK-1 | The cartoon regional outside mask is too weak. | confirmed style policy | packaged cartoon mask style | 46D.8H |
+| MASK-2 | A combined constellation and horizon opening cannot independently prove either mask because openings use union semantics. | invalid diagnostic composition | visual matrix | 46D.8E |
+| HORIZON-1 | Regional and Centaurus A binocular fields did not contain a demonstrated horizon crossing. | invalid diagnostic geometry, not yet a renderer defect | visual matrix | 46D.8E |
+| BINOCULAR-1 | Binocular defaults should omit grids and provide target marker, center, and field diameter. | confirmed family/furniture policy | binocular request and context furniture | 46D.8I |
+| BINOCULAR-2 | Stellar symbols appear nearly equal in size. | diagnosis required before changing behavior | binocular stellar sizing | 46D.8I |
+
+Milestone 46D.8E removes the invalid combined claims from the next matrix:
+constellation masks are reviewed independently, the binocular diagnostic is
+a field/furniture product, and the circumpolar product retains the explicit
+horizon-crossing role. No production rendering behavior changes in 46D.8E.
 
 ## Product review appendix
 
@@ -113,24 +140,25 @@ issue in the comment field.
 | `canonical-regional-single-atlas-print` | [+] | [+] | [-] | [-] | [+] | [+] | It plots the single 12:00 RA line and no declination line. The line should be of a subtler grey. There should be at least two RA and two dec lines. The RA labels in format hh:mm and the Dec labels in dd:mm. Did not see the mask of the constellation (it is OK if not requested).|
 | `canonical-regional-single-cartoon-presentation` | [+] | [-] | [-] | [+] | [+] | [ ] | I would add the MW contours. Same comments about a single grid line appearing. I would outline with a mask the constellation. |
 | `canonical-regional-group-atlas-print` | [+] | [-] | [-] | [+] | [+] | [+] | Too many clusters, PNs. Label sizes correct. Declination label should be above the declination line (cannot read sign). I would make the grid a bit subtler too.|
-| `canonical-regional-group-cartoon-presentation` | [+] | [+] |[-] | [-] | [+] | [ ] | I would add MW contours, and a few of the brighter clusters. Dec labels should be raised above Dec line. Masked region barely noticeable. It should look much whiter a more opaque.
+| `canonical-regional-group-cartoon-presentation` | [+] | [+] | [-] | [-] | [+] | [ ] | I would add MW contours, and a few of the brighter clusters. Dec labels should be raised above Dec line. Masked region barely noticeable. It should look much whiter and more opaque. |
 | `canonical-circumpolar-atlas-print` | [+] | [+] | [-] | [+] | [+] | [+] | Grid should be of a subtler grey. The RA spacing should be every 2h.|
 | `canonical-circumpolar-cartoon-presentation` | [+] | [+] | [-] | [+] | [+] | [+] | The RA spacing should be every 2h. |
 | `canonical-binocular-atlas-print` | [+] | [+] | [-] | [+] | [+] | [-] | All stars look the same size (perhaps they should). There should not be a grid. Needs field center and diameter in the title.|
 | `canonical-binocular-cartoon-presentation` | [+] | [-] | [-] | [+] | [+] | [-] | Needs the symbol for the target. There should not be a grid. Needs field center and diameter in the title. |
-| `diagnostic-all-sky-mask-horizon` | [+] | [-] | [-] | [-] | [-] | [ ] | Too many clusters, PNs. Same issue with the grid as other all-sky. The above horizon unmasked area looks the same as the masked one. It seems to outline with the mask Cygnus and Crux. I do not see UMa masked. The horizon is properly drawn. |
-| `diagnostic-regional-explicit-field-horizon` | [+] | [-] | [-] | [?] | [+] | [+] | Too many clusters and PNs. Although the constellations are masked, the horizon is nowhere to be seen. Equatorial grid should be subtler and Dec labesl should be above Dec lines. Not enough space outside constellation.|
-| `diagnostic-binocular-horizon` | [-] | [+] | [-] | [?] | [+] | [+] | Does not show the horizon, only the -45 dec line.|
+| `diagnostic-all-sky-constellation-mask` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Rerender required after removing the independent horizon opening. The prior combined product showed Cru and Cyg but did not independently prove UMa. |
+| `diagnostic-regional-explicit-field-mask` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Rerender required after removing the unproven horizon claim. Prior review found excessive clusters/PNs, prominent grid, low Dec-label clearance, and too little context outside the selected constellations. |
+| `diagnostic-binocular-field` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Rerender required as a field/furniture diagnostic. The prior Centaurus A field did not cross the horizon, so it supplied no horizon evidence. |
 | `diagnostic-circumpolar-horizon` | [+] | [-] | [-] | [+] | [+] | [+] | Too many clusters, PNs, and SNRs. Grid lines shoukld be of a subtler grey. The declination labels should be next to the drawn RA line closer to the upper meridian, and they should be above to the Dec line, and to the left of the meridian.|
 | `diagnostic-planisphere-horizon-noop` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Same comments as per planisphere |
 | `diagnostic-legends-references-grids` | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | Same comment as previous regional.|
 
-The appendix may be committed with every box empty. Completing it is the
-human visual-approval record and may be committed separately after review.
+The original observations remain the baseline evidence. Renamed diagnostics
+are deliberately reset because their command contracts changed and require a
+new render.
 
 ## Approval record
 
-Complete this section only after the Mac run:
+Complete this section only after remediation and the final Mac rerun:
 
 - source commit:
 - fast suite:
@@ -141,4 +169,4 @@ Complete this section only after the Mac run:
 - cartoon-presentation products approved:
 - diagnostic products approved:
 - unexplained golden-baseline changes:
-- reviewer and date:
+- reviewer and date: Fernando Selman, 2026-08-14 (initial review)

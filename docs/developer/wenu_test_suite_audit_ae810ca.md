@@ -570,6 +570,12 @@ explicit framing, four grids, references, poles, legends, counts, and credits.
 Rendering remains an explicit Mac acceptance action rather than an automated
 golden-image test.
 
+Milestone 46D.8E strengthens that same structural contract without adding an
+image test. It proves constellation-mask diagnostics do not also request a
+horizon opening and assigns the retained horizon-mask role to the circumpolar
+geometry selected for that purpose. Catalogue and renderer suites are not
+duplicated because production behavior is unchanged.
+
 Milestone 46C.10 completed that required Mac validation without changing the
 tier definitions. Fast, integration, visual, and full suites passed. The
 diagnostic benchmark also produced 18 atlas-print products across all six

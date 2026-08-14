@@ -931,6 +931,12 @@ inspect the matrix or repeated `--entry NAME` options to rerender selected
 products. The review and approval contract is
 `docs/developer/visual_acceptance_46d8.md`.
 
+The matrix intentionally assigns one independently visible role to each mask
+diagnostic. Outside-mask openings compose by union, so a constellation opening
+and the above-horizon opening must not be used together to judge the opacity
+or completeness of either one. A horizon reference is claimed only where the
+chosen family geometry demonstrates a crossing.
+
 ### Sgr-Sco-Oph-Ser regional product
 
 `examples/regional_constellation_group.py --constellations Sgr,Sco,Oph,Ser`

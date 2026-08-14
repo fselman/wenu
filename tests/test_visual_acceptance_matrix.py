@@ -6,6 +6,7 @@ import sys
 
 
 PATH = Path("tools/render_46d8_visual_matrix.py")
+REVIEW = Path("docs/developer/visual_acceptance_46d8.md")
 FAMILIES = {
     "all-sky", "planisphere", "regional-single", "regional-group",
     "circumpolar", "binocular",
@@ -47,6 +48,26 @@ def test_diagnostics_cover_every_visual_closure_role():
         assert option in arguments
 
 
+def test_mask_diagnostics_do_not_conflate_independent_openings():
+    entries = {entry.name: entry for entry in _module().MATRIX}
+    all_sky = entries["diagnostic-all-sky-constellation-mask"].arguments
+    regional = entries["diagnostic-regional-explicit-field-mask"].arguments
+
+    for arguments in (all_sky, regional):
+        assert "--mask" in arguments
+        assert "--horizon-mask" not in arguments
+        assert "--horizon" not in arguments
+
+
+def test_horizon_diagnostic_uses_a_family_with_a_proven_crossing():
+    entries = {entry.name: entry for entry in _module().MATRIX}
+    arguments = entries["diagnostic-circumpolar-horizon"].arguments
+
+    assert "--horizon" in arguments
+    assert "--horizon-mask" in arguments
+    assert arguments[arguments.index("--limiting-declination") + 1] == "-40"
+
+
 def test_every_entry_selects_one_supported_product():
     matrix = _module().MATRIX
 
@@ -67,3 +88,16 @@ def test_every_entry_has_the_fixed_acceptance_magnitude_limit():
         expected = "11.0" if "binocular" in entry.name else "5.0"
 
         assert magnitude == expected
+
+
+def test_review_records_shared_remediation_owners_and_current_baseline():
+    review = REVIEW.read_text(encoding="utf-8")
+
+    assert "**Reviewed source commit:** `84baedb`" in review
+    assert "**Review record commit:** `a6739a7`" in review
+    for finding in (
+        "GRID-1", "GRID-2", "GRID-3", "DETAIL-1", "CARTOON-1",
+        "MASK-1", "MASK-2", "HORIZON-1", "BINOCULAR-1",
+        "BINOCULAR-2",
+    ):
+        assert f"| {finding} |" in review

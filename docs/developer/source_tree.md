@@ -377,6 +377,12 @@ and writes 18 untracked PNGs plus a checksum manifest. The test verifies the
 matrix shape and role coverage without rendering; human acceptance is recorded
 in `docs/developer/visual_acceptance_46d8.md` only after Mac review.
 
+Milestone 46D.8E keeps those owners but narrows diagnostic claims: all-sky and
+regional constellation masks are isolated from horizon openings, binocular
+acceptance covers its actual field and furniture, and circumpolar retains the
+crossing horizon case. The acceptance document owns the normalized remediation
+register; production chart modules remain untouched.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current

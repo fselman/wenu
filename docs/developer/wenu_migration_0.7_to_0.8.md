@@ -918,6 +918,14 @@ exact commands, image metadata, checksums, and source revision. Structural
 tests keep the matrix complete and cheap; generated images require explicit
 human review on the Mac before this milestone can be marked approved.
 
+Milestone 46D.8E records that review without treating every observation as a
+renderer defect. Shared grid, detail, cartoon-content, mask, and binocular
+policies become named remediation owners. The matrix separates constellation
+mask openings from horizon openings, removes horizon claims from regional and
+binocular fields that did not demonstrate a crossing, and retains the proven
+circumpolar horizon diagnostic. No production behavior changes. Subsequent
+46D.8 slices own implementation and final visual approval.
+
 - generate every canonical family through both its example and `wenu_chart`
   with equivalent effective options;
 - prove matching resolved observer, subject, geometry, detail, appearance,
