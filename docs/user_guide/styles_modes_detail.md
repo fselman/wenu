@@ -69,6 +69,8 @@ mask, so their overlap is not darker.
 The packaged cartoon style uses a strong but translucent pale-grey outside
 mask. It clearly separates the selected region while leaving the surrounding
 sky faintly visible; atlas retains its own independent mask appearance.
+Both packaged defaults and `[styles.cartoon.mask]` user overlays retain their
+configured color and opacity in cartoon print and presentation modes.
 
 The planisphere already uses the observer's horizon as its intrinsic chart
 boundary. Both horizon switches are therefore intentional no-ops for that

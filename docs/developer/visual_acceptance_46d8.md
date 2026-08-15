@@ -141,6 +141,11 @@ Milestone 46D.8H strengthens the packaged cartoon outside mask from opacity
 geometry, opening intersection, or rendering-path behavior changes. The matrix
 must be rerendered before `MASK-1` is accepted.
 
+Milestone 46D.8H.1 removes the cartoon-mode sky-color substitution discovered
+by rendering an opaque white user overlay. Cartoon presentation now preserves
+the configured mask color and opacity. `MASK-1` remains pending until a local
+overlay selects the final packaged values and the matrix is rerendered.
+
 ## Product review appendix
 
 Use one checkbox in every criterion column for every product. Leave a box

@@ -401,6 +401,11 @@ owners: `configuration/defaults.toml` is authoritative and
 shared mask renderer continue to consume `MaskStyle` without family, example,
 or geometry-specific overrides.
 
+Milestone 46D.8H.1 corrects `charts/cartoon_modes.py` at the mode-realization
+boundary: it preserves the style-owned mask instead of replacing its color
+with the mode sky. Configuration translation and the shared mask renderer
+remain the owners on either side; atlas mode resolution is unchanged.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current

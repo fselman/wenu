@@ -66,6 +66,27 @@ def test_composition_and_export_use_one_overlay_contract(tmp_path):
     assert export.padding == 0.125
 
 
+def test_cartoon_presentation_preserves_user_mask_appearance(tmp_path):
+    configuration = _configuration(
+        tmp_path,
+        "[styles.cartoon.mask]\n"
+        "color = '#ffffff'\n"
+        "opacity = 1.0\n",
+    )
+    chart = RegionalChart(45.0, 180.0, 20.0, 15.0)
+
+    composition = compose_chart(
+        chart,
+        style="cartoon",
+        mode="presentation",
+        configuration=configuration,
+    )
+
+    assert composition.style.canvas.sky_color == "#1677A6"
+    assert composition.style.mask.color == "#ffffff"
+    assert composition.style.mask.alpha == pytest.approx(1.0)
+
+
 def test_view_geometry_uses_the_same_overlay_contract(tmp_path):
     configuration = _configuration(
         tmp_path,

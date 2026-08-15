@@ -297,7 +297,6 @@ def cartoon_chart_style(
         edgecolor=palette.foreground,
         text_color=palette.foreground,
     )
-    mask = replace(style.mask, color=palette.sky)
     replacements = {
         "canvas": canvas,
         "stars": stars,
@@ -305,7 +304,6 @@ def cartoon_chart_style(
         "isophotes": isophotes,
         "deep_sky": deep_sky,
         "legend": legend,
-        "mask": mask,
     }
     replacements["output_mode_name"] = name
     return replace(

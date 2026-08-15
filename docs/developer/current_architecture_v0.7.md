@@ -214,6 +214,12 @@ geometry, opening intersections, and single-paint workflow remain unchanged;
 the atlas mask baseline is also unchanged. The stronger translucent fill makes
 the selected region distinct while retaining visible outside-sky context.
 
+Milestone 46D.8H.1 removes the cartoon output-mode substitution that replaced
+the configured mask color with the canvas sky color. Cartoon print and
+presentation now preserve the translated `MaskStyle` color and opacity, so
+packaged and user-TOML mask appearance reaches the shared renderer unchanged.
+Atlas mode behavior, mask geometry, intersections, and painting are unchanged.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,
