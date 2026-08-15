@@ -198,6 +198,7 @@ from .charts.legend_symbols import (
     LegendSymbolDescriptor,
     legend_symbol_descriptors,
 )
+from .charts.projection_selection import ProjectionSelection
 from .charts.view import ChartView, get_chart_view
 from .charts.view_defaults import (
     CHART_VIEW_DEFAULTS,
@@ -296,6 +297,7 @@ __all__ = [
     "ChartRenderingResult",
     "ChartView",
     "ChartViewDefaults",
+    "ProjectionSelection",
     "LayerRenderingResult",
     "Observer",
     "NonStellar",

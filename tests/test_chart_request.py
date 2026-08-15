@@ -178,6 +178,17 @@ def test_all_sky_request_requires_galactic_mollweide_geometry():
         )
 
 
+def test_existing_families_do_not_claim_unimplemented_polar_rendering():
+    with pytest.raises(ValueError, match="requires projection='stereographic'"):
+        ChartRequest(
+            observer=observer(),
+            family="planisphere",
+            product=product(),
+            projection="polar_azimuthal_equidistant",
+            coordinate_frame="equatorial",
+        )
+
+
 def test_regional_request_expresses_constellation_group_without_scripts():
     request = ChartRequest(
         observer=observer(),

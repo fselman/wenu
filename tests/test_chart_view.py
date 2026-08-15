@@ -67,6 +67,8 @@ def test_view_resolves_friendly_target_and_frame_without_presentation(
     assert view.observer is observing
     assert view.projection_name == "stereographic"
     assert view.coordinate_frame == "horizontal"
+    assert view.projection_selection.name == "stereographic"
+    assert view.projection_selection.coordinate_frame == "horizontal"
     assert view.family == "binocular"
     assert view.mask is False
     assert view.target.key == "m57"

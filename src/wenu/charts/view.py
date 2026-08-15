@@ -46,6 +46,15 @@ class ChartView:
         return self._prepared.resolved.request.coordinate_frame
 
     @property
+    def projection_selection(self):
+        """Return the immutable projection and coordinate-frame selection."""
+        from .projection_selection import ProjectionSelection
+
+        return ProjectionSelection.from_request(
+            self._prepared.resolved.request
+        )
+
+    @property
     def mask(self):
         """Return whether region masking belongs to this view geometry."""
         return self._prepared.resolved.request.mask

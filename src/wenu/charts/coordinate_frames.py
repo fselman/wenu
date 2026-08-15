@@ -16,11 +16,36 @@ from wenu.geometry.spherical import (
 
 def horizontal_to_galactic(geometry, observer):
     """Transform canonical AltAz geometry to Galactic longitude/latitude."""
+    return _horizontal_to_frame(
+        geometry,
+        observer,
+        target_attribute="galactic_frame",
+        coordinate_system="galactic",
+    )
+
+
+def horizontal_to_equatorial(geometry, observer):
+    """Transform canonical AltAz geometry to ICRS right ascension/declination."""
+    return _horizontal_to_frame(
+        geometry,
+        observer,
+        target_attribute="icrs_frame",
+        coordinate_system="equatorial",
+    )
+
+
+def _horizontal_to_frame(
+    geometry,
+    observer,
+    *,
+    target_attribute,
+    coordinate_system,
+):
     source_frame = getattr(observer, "altaz_frame", None)
-    target_frame = getattr(observer, "galactic_frame", None)
+    target_frame = getattr(observer, target_attribute, None)
     if source_frame is None or target_frame is None:
         raise TypeError(
-            "observer must provide altaz_frame and galactic_frame."
+            f"observer must provide altaz_frame and {target_attribute}."
         )
     if isinstance(geometry, SphericalPoints):
         longitude, latitude = _transform(
@@ -35,7 +60,7 @@ def horizontal_to_galactic(geometry, observer):
             ids=_copy(geometry.ids),
             labels=_copy(geometry.labels),
             names=_copy(geometry.names),
-            metadata=_metadata(geometry.metadata),
+            metadata=_metadata(geometry.metadata, coordinate_system),
         )
     if isinstance(geometry, SphericalCurves):
         longitude, latitude = _transform_collections(
@@ -51,7 +76,7 @@ def horizontal_to_galactic(geometry, observer):
             ids=_copy(geometry.ids),
             labels=_copy(geometry.labels),
             names=_copy(geometry.names),
-            metadata=_metadata(geometry.metadata),
+            metadata=_metadata(geometry.metadata, coordinate_system),
         )
     if isinstance(geometry, SphericalPolygons):
         longitude, latitude = _transform_collections(
@@ -66,15 +91,20 @@ def horizontal_to_galactic(geometry, observer):
             ids=_copy(geometry.ids),
             labels=_copy(geometry.labels),
             names=_copy(geometry.names),
-            metadata=_metadata(geometry.metadata),
+            metadata=_metadata(geometry.metadata, coordinate_system),
         )
     if isinstance(geometry, SphericalGrid):
         return SphericalGrid(
             components={
-                name: horizontal_to_galactic(curves, observer)
+                name: _horizontal_to_frame(
+                    curves,
+                    observer,
+                    target_attribute=target_attribute,
+                    coordinate_system=coordinate_system,
+                )
                 for name, curves in geometry.components.items()
             },
-            metadata=_metadata(geometry.metadata),
+            metadata=_metadata(geometry.metadata, coordinate_system),
         )
     raise TypeError(
         "Unsupported spherical geometry type: "
@@ -88,10 +118,10 @@ def _transform(longitude, latitude, *, source_frame, target_frame):
         alt=np.asarray(latitude, dtype=float) * u.deg,
         frame=source_frame,
     )
-    galactic = horizontal.transform_to(target_frame)
+    transformed = horizontal.transform_to(target_frame).spherical
     return (
-        np.asarray(galactic.l.to_value(u.deg), dtype=float),
-        np.asarray(galactic.b.to_value(u.deg), dtype=float),
+        np.asarray(transformed.lon.to_value(u.deg), dtype=float),
+        np.asarray(transformed.lat.to_value(u.deg), dtype=float),
     )
 
 
@@ -119,9 +149,9 @@ def _copy(values):
     return None if values is None else values.copy()
 
 
-def _metadata(metadata):
+def _metadata(metadata, coordinate_system):
     return {
         **dict(metadata),
         "source_coordinate_system": "altaz",
-        "coordinate_system": "galactic",
+        "coordinate_system": coordinate_system,
     }

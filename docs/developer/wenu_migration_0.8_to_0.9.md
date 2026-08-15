@@ -88,10 +88,28 @@ No chart or request selects it before Milestone 48B.2.
 
 ### Milestone 48B.2 - Projection selection boundary
 
-- register the projection through immutable request/view geometry;
+- register the polar projection and equatorial frame identities at the
+  immutable request/view boundary;
+- add one immutable projection/frame selection that constructs projections
+  lazily from chart-owned geometry;
+- add the canonical AltAz-to-ICRS geometry transformation required by a
+  static polar disk;
 - preserve stereographic and Mollweide behavior;
 - expose no calendar, physical size, or style values from the projection;
 - prove lazy projection and selection isolation on the reusable sphere.
+
+Existing chart families continue to reject the polar/equatorial pair until
+Milestone 48C.1 supplies a chart that actually renders it. This prevents a
+request from claiming polar geometry while constructing a stereographic
+chart.
+
+**Status:** Implemented. `ProjectionSelection` pairs every registered
+projection with its required spherical frame, builds a fresh backend-neutral
+projection only when requested, and is exposed by `ChartView`. The canonical
+coordinate-frame adapter now preserves spherical structure and metadata when
+recovering observer-independent ICRS geometry from canonical AltAz layers.
+The five v0.8 families retain their exact implemented projection/frame pairs;
+the first selectable polar chart remains Milestone 48C.1.
 
 ## 5. Milestone 48C - Add paired polar disk geometry
 

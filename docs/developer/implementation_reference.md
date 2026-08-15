@@ -576,6 +576,15 @@ position angle, handedness, radius conversion, viewport construction, and the
 ordinary point, curve, grid, and polygon dispatch contract. Milestone 48B.1
 does not connect it to a chart family or physical planisphere product.
 
+`ProjectionSelection(name, coordinate_frame)` is the frozen projection
+identity used at the request/view boundary. The accepted pairs are
+stereographic/horizontal, Mollweide/Galactic, and polar-azimuthal-equidistant/
+equatorial. `build(**geometry)` imports and constructs a fresh selected
+projection lazily; projection scale, position angle, handedness, pole, and
+central longitude remain chart-owned constructor values. `ChartView` exposes
+the value as `projection_selection`. Existing v0.8 families still reject the
+polar pair until a polar chart owner is added.
+
 `prepare_horizon_mask_opening(...)` returns a frozen `PreparedHorizonMask`
 with `visibility` equal to `above`, `crossing`, or `below`, native spherical
 openings, and prepared projected openings. Regional, binocular, and
@@ -614,7 +623,9 @@ constellation, group, field, position-angle, pole, declination-limit, and mask
 arguments are resolved by the established request and preparation contracts.
 The returned frozen `ChartView` exposes `chart`, `family`, `mask`,
 `projection_name`, `coordinate_frame`, `target`, `constellations`, and
-`frame`. Both identities come from the resolved immutable `ChartRequest`.
+`frame`, and `projection_selection`. Both identities come from the resolved
+immutable `ChartRequest` and the selection pairs them without constructing a
+projection until requested.
 Regional, binocular, circumpolar, and planisphere views use stereographic
 projection in the horizontal frame. The all-sky view uses Mollweide projection
 in the Galactic frame. Other combinations are rejected explicitly. Style,
@@ -630,6 +641,9 @@ geometry form in `observer.galactic_frame`. Entity identifiers, labels,
 names, closed-curve state, component groups, and metadata are preserved;
 metadata records the AltAz source and Galactic result. It performs no seam
 splitting, planar projection, clipping, rendering, or example adaptation.
+`horizontal_to_equatorial(geometry, observer)` applies the same structure- and
+metadata-preserving contract to `observer.icrs_frame`; it is the astronomical
+transformation seam required by static polar disks.
 
 `MollweideProjection(central_longitude_deg=0, flip_ew=True, radius=1)` is the
 coordinate-neutral equal-area all-sky projection. `project_spherical()` maps

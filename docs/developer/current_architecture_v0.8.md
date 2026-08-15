@@ -111,3 +111,10 @@ position angle and east-west handedness, provides an inverse and radius
 conversions, and reuses the established spherical geometry dispatch protocol.
 No chart, request, calendar, horizon, style, renderer, or export path selects
 it yet.
+
+Milestone 48B.2 registers `polar_azimuthal_equidistant` and `equatorial` as a
+valid immutable `ProjectionSelection` pair and adds canonical AltAz-to-ICRS
+spherical-geometry transformation. A chart view exposes its frozen selection,
+whose projection is constructed lazily from chart-owned geometry. Existing
+v0.8 chart families still reject the polar pair because none constructs a
+polar chart yet; that first honest selection belongs to Milestone 48C.1.

@@ -3,12 +3,15 @@
 from types import SimpleNamespace
 
 import astropy.units as u
-from astropy.coordinates import AltAz, EarthLocation, Galactic, SkyCoord
+from astropy.coordinates import AltAz, EarthLocation, Galactic, ICRS, SkyCoord
 from astropy.time import Time
 import numpy as np
 import pytest
 
-from wenu.charts.coordinate_frames import horizontal_to_galactic
+from wenu.charts.coordinate_frames import (
+    horizontal_to_equatorial,
+    horizontal_to_galactic,
+)
 from wenu.geometry.spherical import (
     SphericalCurves,
     SphericalGrid,
@@ -26,6 +29,7 @@ def observer(*, time, latitude, longitude):
     return SimpleNamespace(
         altaz_frame=AltAz(obstime=Time(time), location=location),
         galactic_frame=Galactic(),
+        icrs_frame=ICRS(),
     )
 
 
@@ -85,6 +89,35 @@ def test_galactic_result_is_invariant_across_observers_and_instants():
     np.testing.assert_allclose(
         transformed[0].lat_deg, transformed[1].lat_deg, atol=1.0e-7
     )
+
+
+def test_equatorial_result_recovers_observer_independent_icrs():
+    fixed = SkyCoord(
+        ra=[0.0, 83.6331, 266.4051] * u.deg,
+        dec=[-60.0, 22.0145, -28.936175] * u.deg,
+        frame="icrs",
+    )
+    actual_observer = observer(
+        time="2026-08-16T01:00:00",
+        latitude=-32.443342,
+        longitude=-71.230289,
+    )
+    horizontal = fixed.transform_to(actual_observer.altaz_frame)
+    points = SphericalPoints(
+        lon_deg=horizontal.az.deg,
+        lat_deg=horizontal.alt.deg,
+        metadata={"catalogue": "test"},
+    )
+
+    transformed = horizontal_to_equatorial(points, actual_observer)
+
+    np.testing.assert_allclose(transformed.lon_deg, fixed.ra.deg, atol=1e-7)
+    np.testing.assert_allclose(transformed.lat_deg, fixed.dec.deg, atol=1e-7)
+    assert transformed.metadata == {
+        "catalogue": "test",
+        "source_coordinate_system": "altaz",
+        "coordinate_system": "equatorial",
+    }
 
 
 def test_curve_polygon_and_grid_structure_and_identity_are_preserved():
@@ -148,5 +181,9 @@ def test_empty_collections_and_invalid_inputs_are_explicit():
         horizontal_to_galactic(object(), actual_observer)
     with pytest.raises(TypeError, match="altaz_frame and galactic_frame"):
         horizontal_to_galactic(
+            SphericalPoints(lon_deg=[0.0], lat_deg=[0.0]), object()
+        )
+    with pytest.raises(TypeError, match="altaz_frame and icrs_frame"):
+        horizontal_to_equatorial(
             SphericalPoints(lon_deg=[0.0], lat_deg=[0.0]), object()
         )

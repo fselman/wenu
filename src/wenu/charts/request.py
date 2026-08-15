@@ -16,8 +16,12 @@ from .request_composition import ChartProductCompositionOptions
 CHART_FAMILIES = frozenset(
     {"planisphere", "all_sky", "regional", "circumpolar", "binocular"}
 )
-CHART_PROJECTIONS = frozenset({"stereographic", "mollweide"})
-CHART_COORDINATE_FRAMES = frozenset({"horizontal", "galactic"})
+CHART_PROJECTIONS = frozenset(
+    {"stereographic", "mollweide", "polar_azimuthal_equidistant"}
+)
+CHART_COORDINATE_FRAMES = frozenset(
+    {"horizontal", "galactic", "equatorial"}
+)
 CHART_LANGUAGES = frozenset({"en", "es"})
 EXCLUDABLE_CATALOGUE_FAMILIES = (
     "nonstellar_objects",
@@ -328,12 +332,14 @@ class ChartRequest:
         projection = str(self.projection).strip().lower()
         if projection not in CHART_PROJECTIONS:
             raise ValueError(
-                "projection must be 'stereographic' or 'mollweide'."
+                "projection must be 'stereographic', 'mollweide', or "
+                "'polar_azimuthal_equidistant'."
             )
         coordinate_frame = str(self.coordinate_frame).strip().lower()
         if coordinate_frame not in CHART_COORDINATE_FRAMES:
             raise ValueError(
-                "coordinate_frame must be 'horizontal' or 'galactic'."
+                "coordinate_frame must be 'horizontal', 'galactic', or "
+                "'equatorial'."
             )
         expected_geometry = (
             ("mollweide", "galactic")
