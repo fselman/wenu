@@ -17,6 +17,8 @@ class CurveLabelPlacement:
     y: float
     rotation_deg: float | None = None
     normal_offset_em: float = 0.0
+    horizontal_alignment: str | None = None
+    vertical_alignment: str | None = None
 
     def __post_init__(self):
         if not np.isfinite((self.x, self.y)).all():
@@ -29,6 +31,22 @@ class CurveLabelPlacement:
             raise ValueError("label normal offset must be finite.")
         if self.normal_offset_em < 0.0:
             raise ValueError("label normal offset cannot be negative.")
+        if self.horizontal_alignment not in {
+            None,
+            "left",
+            "center",
+            "right",
+        }:
+            raise ValueError("unsupported horizontal label alignment.")
+        if self.vertical_alignment not in {
+            None,
+            "bottom",
+            "baseline",
+            "center",
+            "center_baseline",
+            "top",
+        }:
+            raise ValueError("unsupported vertical label alignment.")
 
 
 def _readable_rotation(angle_deg):

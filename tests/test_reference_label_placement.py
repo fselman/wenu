@@ -123,7 +123,12 @@ def test_renderer_applies_generic_placement_without_reference_semantics():
             draw_labels=True,
             label_style={"fontsize": 10.0},
             label_anchor=lambda curve, ax: CurveLabelPlacement(
-                0.0, 0.0, 45.0, 0.75
+                0.0,
+                0.0,
+                45.0,
+                0.75,
+                horizontal_alignment="left",
+                vertical_alignment="bottom",
             ),
         )
         text = next(
@@ -135,6 +140,8 @@ def test_renderer_applies_generic_placement_without_reference_semantics():
         assert text.get_text() == "generic"
         assert text.get_rotation() == pytest.approx(45.0)
         assert text.get_rotation_mode() == "anchor"
+        assert text.get_horizontalalignment() == "left"
+        assert text.get_verticalalignment() == "bottom"
         displacement = (
             text.get_transform().transform((0.0, 0.0))
             - ax.transData.transform((0.0, 0.0))

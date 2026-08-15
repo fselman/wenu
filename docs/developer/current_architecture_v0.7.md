@@ -225,6 +225,13 @@ the packaged authority: warm white `#fffdf5` at opacity `0.45`, with z-order
 `20.0`. The compatibility preset and translation contract retain exact parity.
 No mode, atlas, geometry, intersection, or rendering behavior changes.
 
+Milestone 46D.8F.1 routes regional coordinate-grid labels through the shared
+rectangular anchor. Declination labels are left-aligned at the `0.01` viewport
+inset and right-ascension labels are bottom-aligned at the same inset, so text
+grows into the chart rather than across its boundary. The backend-neutral
+curve-label contract carries these alignments to the renderer while preserving
+the established horizontal orientation and above-line clearance.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

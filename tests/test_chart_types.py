@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
@@ -8,12 +9,18 @@ from wenu import (
     CircularGridLabelAnchor,
     CircularLabelAnchor,
     EllipticalGridLabelAnchor,
+    MatplotlibRenderer,
     ProjectedCurve,
+    RegionalChart,
 )
 from wenu.charts.boundaries import (
     RectangularLabelAnchor,
     apply_coordinate_label_anchor,
     circular_boundary,
+)
+from wenu.geometry.projected import (
+    ProjectedCurves,
+    ProjectedGrid,
 )
 from wenu.rendering.label_placement import CurveLabelPlacement
 
@@ -82,10 +89,81 @@ def test_rectangular_anchor_places_ra_at_bottom_and_dec_at_left():
         name="declination_0",
     )
     anchor = RectangularLabelAnchor(inset=0.0)
-    assert anchor(ra, Axes()) == pytest.approx((0.0, -1.0))
+    ra_placement = anchor(ra, Axes())
+    assert isinstance(ra_placement, CurveLabelPlacement)
+    assert (ra_placement.x, ra_placement.y) == pytest.approx((0.0, -1.0))
+    assert ra_placement.horizontal_alignment == "center"
+    assert ra_placement.vertical_alignment == "bottom"
     placement = anchor(dec, Axes())
     assert isinstance(placement, CurveLabelPlacement)
     assert (placement.x, placement.y) == pytest.approx((-2.0, 0.0))
+    assert placement.horizontal_alignment == "left"
+
+
+def test_rectangular_anchor_keeps_negative_declination_label_inside_axes():
+    declination = ProjectedCurve(
+        x=[-2.0, 0.0, 2.0],
+        y=[0.0, 0.0, 0.0],
+        name="declination_-15",
+    )
+    grid = ProjectedGrid(
+        {"declination": ProjectedCurves([declination])}
+    )
+    figure, ax = plt.subplots(figsize=(7.0, 7.0), dpi=160)
+    ax.set_xlim(-2.0, 2.0)
+    ax.set_ylim(-1.0, 1.0)
+    try:
+        artists = MatplotlibRenderer(ax).draw(
+            grid,
+            draw_labels=True,
+            label_style={"fontsize": 18.0},
+            label_formatter=lambda name: "-15:00",
+            label_anchor=RectangularLabelAnchor(),
+        )
+        figure.canvas.draw()
+        text = next(
+            artist
+            for artist in artists
+            if callable(getattr(artist, "get_text", None))
+            and artist.get_text() == "-15:00"
+        )
+        renderer = figure.canvas.get_renderer()
+        axes_bounds = ax.get_window_extent(renderer=renderer)
+        label_bounds = text.get_window_extent(renderer=renderer)
+
+        assert label_bounds.x0 >= axes_bounds.x0
+        assert text.get_horizontalalignment() == "left"
+    finally:
+        plt.close(figure)
+
+
+def test_regional_chart_applies_rectangular_coordinate_label_anchor():
+    layer = object()
+    captured = {}
+
+    class Style:
+        def layer_options(self, sky):
+            return {
+                layer: {
+                    "render": {
+                        "label_formatter": str,
+                    }
+                }
+            }
+
+    class Sky:
+        def draw_chart(self, **kwargs):
+            captured.update(kwargs)
+            return "rendered"
+
+    chart = RegionalChart(45.0, 180.0, 30.0, 20.0)
+
+    assert chart.render(Sky(), object(), style=Style()) == "rendered"
+    anchor = captured["layer_options"][layer]["render"][
+        "label_anchor"
+    ]
+    assert isinstance(anchor, RectangularLabelAnchor)
+    assert anchor.inset == pytest.approx(0.01)
 
 
 def test_elliptical_anchor_uses_one_meridian_for_latitudes_and_key_longitudes():

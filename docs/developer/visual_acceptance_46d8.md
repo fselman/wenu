@@ -108,6 +108,7 @@ owners.
 | DETAIL-1 | Atlas all-sky, planisphere, regional-group, and circumpolar products contain too many open clusters, planetary nebulae, and remnants. | confirmed family density policy | immutable detail policy | 46D.8G |
 | CARTOON-1 | Cartoon products omit the Milky Way, Magellanic Clouds, and a restrained bright deep-sky selection. | confirmed product content policy | cartoon detail/content policy | 46D.8G |
 | MASK-1 | The cartoon regional outside mask is too weak. | confirmed style policy | packaged cartoon mask style | 46D.8H–H.2 |
+| LABEL-1 | Centered regional declination labels are clipped at the left boundary, hiding the minus sign in values such as `-15:00`. | confirmed rectangular anchor policy | shared coordinate-label anchor | 46D.8F.1 |
 | MASK-2 | The combined all-sky mask correctly leaves visible only selected constellation regions above the horizon; UMa is present but masked below the horizon. Isolated products are still needed to judge each mask independently. | valid intersection behavior; ambiguous opacity diagnostic | visual matrix | 46D.8E and final closure |
 | HORIZON-1 | Regional and Centaurus A binocular fields did not contain a demonstrated horizon crossing. | invalid diagnostic geometry, not yet a renderer defect | visual matrix | 46D.8E |
 | BINOCULAR-1 | Binocular defaults should omit grids and provide target marker, center, and field diameter. | confirmed family/furniture policy | binocular request and context furniture | 46D.8I |
@@ -150,6 +151,13 @@ Milestone 46D.8H.2 promotes the locally selected warm-white `#fffdf5` mask at
 opacity `0.45` and z-order `20.0` to the packaged cartoon authority. The
 regional product and complete matrix must be rerendered before `MASK-1` is
 accepted.
+
+Milestone 46D.8F.1 routes regional coordinate-grid labels through the shared
+rectangular anchor. Declination labels are left-aligned at the `0.01` viewport
+inset and bottom-edge right-ascension labels are bottom-aligned there, so
+larger type grows inward rather than crossing the chart boundary. The existing
+above-line declination clearance remains unchanged. The regional product and
+complete matrix must be rerendered before `LABEL-1` is accepted.
 
 ## Product review appendix
 

@@ -11,9 +11,13 @@ from wenu.geometry.viewport import Viewport
 from wenu.rendering.label_placement import CurveLabelPlacement
 
 
-def _above_line(x, y):
+def _above_line(x, y, *, horizontal_alignment=None):
     return CurveLabelPlacement(
-        float(x), float(y), rotation_deg=0.0, normal_offset_em=0.65
+        float(x),
+        float(y),
+        rotation_deg=0.0,
+        normal_offset_em=0.65,
+        horizontal_alignment=horizontal_alignment,
     )
 
 
@@ -239,7 +243,7 @@ class EllipticalGridLabelAnchor:
 class RectangularLabelAnchor:
     """Place RA labels at bottom and declination labels at left."""
 
-    inset: float = 0.015
+    inset: float = 0.01
 
     def __post_init__(self):
         if not 0.0 <= float(self.inset) < 0.5:
@@ -263,7 +267,18 @@ class RectangularLabelAnchor:
         else:
             index = int(np.argmax(y))
         if name.startswith("declination_"):
-            return _above_line(x[index], y[index])
+            return _above_line(
+                x[index],
+                y[index],
+                horizontal_alignment="left",
+            )
+        if name.startswith("right_ascension_"):
+            return CurveLabelPlacement(
+                float(x[index]),
+                float(y[index]),
+                horizontal_alignment="center",
+                vertical_alignment="bottom",
+            )
         return float(x[index]), float(y[index])
 
 

@@ -570,9 +570,18 @@ class MatplotlibRenderer:
                     label_style_for_curve = label_style
                     if isinstance(anchor, CurveLabelPlacement):
                         position = (anchor.x, anchor.y)
+                        label_style_for_curve = dict(label_style)
+                        if anchor.horizontal_alignment is not None:
+                            label_style_for_curve["ha"] = (
+                                anchor.horizontal_alignment
+                            )
+                        if anchor.vertical_alignment is not None:
+                            label_style_for_curve["va"] = (
+                                anchor.vertical_alignment
+                            )
                         if anchor.rotation_deg is not None:
                             label_style_for_curve = {
-                                **label_style,
+                                **label_style_for_curve,
                                 "rotation": anchor.rotation_deg,
                                 "rotation_mode": "anchor",
                             }

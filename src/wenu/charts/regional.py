@@ -8,6 +8,10 @@ from typing import Any
 
 import numpy as np
 
+from wenu.charts.boundaries import (
+    RectangularLabelAnchor,
+    apply_coordinate_label_anchor,
+)
 from wenu.coordinates import radec_to_altaz
 from wenu.projections.stereographic import StereographicProjection
 from wenu.geometry.frame import SphericalFrame
@@ -428,6 +432,11 @@ class RegionalChart:
             center_y=self.crop_y,
         )
 
+    @property
+    def coordinate_label_anchor(self):
+        """Return the coordinate-grid anchor for the rectangular crop."""
+        return RectangularLabelAnchor()
+
     def render(
         self,
         sky,
@@ -462,6 +471,10 @@ class RegionalChart:
             options[sky.constellation_labels] = label_options
         if layer_options is not None:
             options.update(layer_options)
+        options = apply_coordinate_label_anchor(
+            options,
+            self.coordinate_label_anchor,
+        )
         projection = self.projection
         viewport = self.viewport
         result = sky.draw_chart(
