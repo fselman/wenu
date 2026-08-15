@@ -337,6 +337,7 @@ def test_chart_type_modules_do_not_import_render_backend():
         "polar_planisphere.py",
         "polar_planisphere_pair.py",
         "polar_calendar.py",
+        "polar_calendar_furniture.py",
     ):
         source = (directory / filename).read_text().lower()
         assert "matplotlib" not in source

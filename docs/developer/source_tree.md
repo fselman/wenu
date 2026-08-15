@@ -176,6 +176,12 @@ standard UTC offset, and non-leap reference year; advances by a closed mean
 common-year step; and returns semantic day, true-month-arc, boundary, and
 month-label-key records. It owns no face handedness, drawing, translation,
 daylight-saving, horizon, content, style, or export policy.
+`charts/polar_calendar_furniture.py` maps that neutral calendar onto a resolved
+paired disk as immutable physical millimetre geometry. It owns daily and month
+ticks, day and semantic month-label positions, outward-base rotations, the
+reserved central star-disk radius, and projection-derived opposite face
+handedness. It owns no Matplotlib realization, localized text, style, horizon,
+astronomical content, or export orchestration.
 `charts/coordinate_frames.py` owns astronomical transformation of canonical
 AltAz spherical geometry into a chart-selected celestial frame before
 projection. Its Galactic and equatorial adapters preserve geometry structure

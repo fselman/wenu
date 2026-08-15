@@ -988,6 +988,19 @@ keys, and numeric labels only for days 5, 10, 15, 20, 25, and 30 when that
 date exists. It deliberately excludes leap days, daylight-saving rules,
 localized month text, face handedness, and renderer policy.
 
+`PolarCalendarFurnitureRequest.resolve(pair)` converts that neutral scale into
+one matched `PolarCalendarPairFurniture`. Each face contains 365 tick segments
+in physical millimetres, 12 strengthened month boundaries, 71 numeric day
+labels, and 12 semantic month-label anchors. The default central star-disk
+radius is 80 percent of the physical disk radius; tick lengths and day/month
+label radii are separately configurable fractions. An explicit paired
+`calendar_radius_mm` overrides the fractional star-disk default and is rejected
+if it leaves insufficient room. All calendar geometry stays between that
+reserved radius and the physical edge. Text rotations encode
+typographic bases outward and never mirror glyphs. A date direction is exactly
+opposite the projected direction of its midnight RA, deriving reversed face
+handedness from the selected equidistant or stereographic projection.
+
 ## 12. Compatibility and deprecation
 
 The legacy `cartoon_output_mode()` and `compose_cartoon_chart()` wrappers

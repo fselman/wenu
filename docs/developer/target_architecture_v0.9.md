@@ -109,6 +109,10 @@ must not silently vary with the machine clock.
 
 Calendar computation produces immutable scale geometry and semantic label
 records. Matplotlib only realizes already-resolved lines and text.
+The resolved physical furniture reserves a central star-disk radius and keeps
+all ticks and label anchors between that radius and the printable disk edge.
+Its north/south handedness follows the selected projections rather than a
+second independently maintained calendar sign convention.
 
 ## 5. Disk astronomical content
 

@@ -180,6 +180,13 @@ from .charts.polar_calendar import (
     CommonYearCalendarRequest,
     CommonYearCalendarScale,
 )
+from .charts.polar_calendar_furniture import (
+    PolarCalendarFaceFurniture,
+    PolarCalendarFurnitureRequest,
+    PolarCalendarLabel,
+    PolarCalendarPairFurniture,
+    PolarCalendarTick,
+)
 from .charts.detail_application import (
     DetailApplication,
     apply_resolved_detail,
@@ -419,6 +426,11 @@ __all__ = [
     "CalendarMonthRecord",
     "CommonYearCalendarRequest",
     "CommonYearCalendarScale",
+    "PolarCalendarFaceFurniture",
+    "PolarCalendarFurnitureRequest",
+    "PolarCalendarLabel",
+    "PolarCalendarPairFurniture",
+    "PolarCalendarTick",
     "RectangularLabelAnchor",
     "FullSkyChart",
     "RegionalChart",

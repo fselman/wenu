@@ -145,3 +145,15 @@ calendar angle needed for the future bottom-midnight alignment. True month
 arcs, boundaries, semantic month keys, and labels on days 5, 10, 15, 20, 25,
 and 30 are resolved without drawing, translation, daylight-saving, or face
 handedness policy.
+
+Milestone 48D.2 adds the public immutable
+`PolarCalendarFurnitureRequest`. It resolves the common-year scale onto an
+already matched north/south pair as millimetre geometry: 365 daily ticks per
+face, stronger month boundaries, selected five-day labels, semantic month
+labels at true arc centres, and radial rotations whose typographic bases face
+outward. An explicit star-disk radius keeps every calendar element outside the
+astronomical aperture. Date angles are derived as the direction opposite each
+face's projected midnight RA, so projection-owned handedness reverses between
+the glued faces and bottom-date alignment sends the correct RA vertically
+upward. The records contain no Matplotlib, localized month text, horizon, or
+style policy.

@@ -189,6 +189,17 @@ Handedness and drawing remain furniture responsibilities of Milestone 48D.2.
 When a date is placed at the future bottom `00:00` mark, tests prove that the
 correct RA lies on the implicit upward midnight meridian.
 
+**Status:** Implemented. `PolarCalendarFurnitureRequest` maps the immutable
+common-year scale onto both resolved disk projections. Each face receives 365
+physical tick segments, 12 longer month-boundary ticks, 71 selected numeric
+day labels, and 12 semantic month-label anchors at true arc centres. Label
+rotation records keep typographic bases outward without mirroring text. The
+calendar begins outside an explicit star-disk radius, and each date lies
+exactly opposite its projected midnight RA; face-specific projection geometry
+therefore produces the required reversed handedness and proves the future
+bottom-midnight alignment. Backend realization and localized month text remain
+later presentation work.
+
 ## 7. Milestone 48E - Produce the first classroom disks
 
 This is the urgent minimum printable product.
