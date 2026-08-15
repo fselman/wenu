@@ -70,6 +70,7 @@ _OPTIONAL_POINTS = frozenset({"grids_references.references.anchor"})
 _STRING_LISTS = frozenset(
     {
         "detail.neutral.grid_label_layers",
+        "detail.polar_planisphere.enabled_layers",
     }
 )
 _INTEGER_LISTS = frozenset(
@@ -145,6 +146,7 @@ _ENUMS = {
     "families.binocular.projection": {"stereographic"},
     "families.binocular.coordinate_frame": {"horizontal"},
     "detail.cartoon.star_mode": {"selected", "all", "none"},
+    "detail.polar_planisphere.constellation_star_mode": {"none"},
     "detail.binocular_stellar_sizing.reference": {
         "fixed",
         "limiting_magnitude",

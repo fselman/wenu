@@ -50,6 +50,15 @@ CARTOON_CONTENT_LAYERS = frozenset(
     }
 )
 
+POLAR_PLANISPHERE_CONTENT_LAYERS = frozenset(
+    {
+        "stars",
+        "constellation_lines",
+        "constellation_labels",
+        "milky_way",
+    }
+)
+
 CONSTELLATION_STAR_MODES = frozenset(
     {"selected", "visible", "all", "none"}
 )
@@ -322,6 +331,53 @@ class FixedDetailPolicy:
     ) -> ResolvedDetail:
         del context, mode
         return self.detail
+
+
+@dataclass(frozen=True)
+class PolarPlanisphereDetailPolicy:
+    """Sparse, projection-independent content for classroom star disks."""
+
+    star_magnitude_limit: float = 5.0
+    label_density: float = 1.0
+    enabled_layers: frozenset[str] = POLAR_PLANISPHERE_CONTENT_LAYERS
+    constellation_star_mode: str = "none"
+
+    def __post_init__(self):
+        magnitude = float(self.star_magnitude_limit)
+        density = float(self.label_density)
+        layers = frozenset(str(value) for value in self.enabled_layers)
+        if not isfinite(magnitude):
+            raise ValueError("star_magnitude_limit must be finite.")
+        if not isfinite(density) or density <= 0.0:
+            raise ValueError("label_density must be positive and finite.")
+        if layers != POLAR_PLANISPHERE_CONTENT_LAYERS:
+            raise ValueError(
+                "enabled_layers must contain only the essential polar-"
+                "planisphere stars, constellation lines and labels, and "
+                "Milky Way."
+            )
+        if self.constellation_star_mode != "none":
+            raise ValueError(
+                "constellation_star_mode must be 'none' so magnitude 5 "
+                "remains the complete stellar selection rule."
+            )
+        object.__setattr__(self, "star_magnitude_limit", magnitude)
+        object.__setattr__(self, "label_density", density)
+        object.__setattr__(self, "enabled_layers", layers)
+
+    def resolve(
+        self,
+        context: ChartContext,
+        mode: ResolvedMode,
+    ) -> ResolvedDetail:
+        """Return the same astronomical selection for either disk face."""
+        del context, mode
+        return ResolvedDetail(
+            star_magnitude_limit=self.star_magnitude_limit,
+            label_density=self.label_density,
+            enabled_layers=self.enabled_layers,
+            constellation_star_mode=self.constellation_star_mode,
+        )
 
 
 @dataclass(frozen=True)

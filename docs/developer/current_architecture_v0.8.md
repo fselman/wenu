@@ -157,3 +157,13 @@ face's projected midnight RA, so projection-owned handedness reverses between
 the glued faces and bottom-date alignment sends the correct RA vertically
 upward. The records contain no Matplotlib, localized month text, horizon, or
 style policy.
+
+Milestone 48E.1 adds the packaged `PolarPlanisphereDetailPolicy` and registers
+it as the ordinary atlas-detail default for `polar_planisphere`. It selects
+stars through magnitude 5.0 plus constellation figures, constellation labels,
+and the Milky Way. It disables constellation-boundary, coordinate-grid,
+Magellanic-Cloud, and deep-sky symbol layers, and prevents constellation
+vertices from bypassing the magnitude ceiling. North and south compositions
+resolve identical render-local catalogue geometry options before projection,
+preserving common content throughout their overlap without a separate sky or
+catalogue path.

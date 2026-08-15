@@ -139,7 +139,9 @@ from .charts.subject_arguments import (
 from .charts.chart_legend_workflow import draw_resolved_chart_legends
 from .charts.context import BoundaryKind, ChartContext
 from .charts.detail import (
+    POLAR_PLANISPHERE_CONTENT_LAYERS,
     CartoonDetailPolicy,
+    PolarPlanisphereDetailPolicy,
     AdaptiveDetailPolicy,
     DetailOverrides,
     DetailPolicy,
@@ -297,7 +299,9 @@ __all__ = [
     "draw_celestial_reference_furniture",
     "draw_resolved_chart_legends",
     "ChartContext",
+    "POLAR_PLANISPHERE_CONTENT_LAYERS",
     "CartoonDetailPolicy",
+    "PolarPlanisphereDetailPolicy",
     "CartoonChartStyle",
     "CartoonChartPreset",
     "ChartMode",

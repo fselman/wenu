@@ -129,6 +129,11 @@ The first printable disks contain:
 - the labelled Galactic plane;
 - the relevant ecliptic pole and Galactic pole annotations within each face.
 
+One packaged polar-planisphere detail policy owns this selection for both
+faces. Its initial layer set is limited to magnitude-5 stars, constellation
+figures and labels, and the Milky Way; projection and face do not alter the
+pre-projection catalogue selection.
+
 Constellation boundaries are absent by default. Structural reference features
 remain subordinate to stars and constellation figures. Labels must remain
 inside the usable disk and avoid the date ring.

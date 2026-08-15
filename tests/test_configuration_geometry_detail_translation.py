@@ -13,6 +13,7 @@ from wenu.charts.detail import (
     DEFAULT_FIELD_DETAIL_LEVELS,
     DetailOverrides,
     FixedDetailPolicy,
+    PolarPlanisphereDetailPolicy,
     ResolvedDetail,
 )
 from wenu.charts.style_components import StellarMagnitudeSizing
@@ -74,6 +75,9 @@ def test_packaged_adaptive_levels_and_family_ceilings_have_parity():
         "regional": AdaptiveDetailPolicy(star_magnitude_limit=6.5),
         "circumpolar": AdaptiveDetailPolicy(star_magnitude_limit=6.5),
     }
+    assert defaults.polar_planisphere_policy == (
+        PolarPlanisphereDetailPolicy()
+    )
 
 
 def test_packaged_binocular_detail_and_stellar_sizing_have_parity():

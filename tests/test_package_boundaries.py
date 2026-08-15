@@ -114,6 +114,7 @@ PUBLIC_EXPORTS = (
     "PolarPlanispherePairRequest",
     "CommonYearCalendarRequest",
     "PolarCalendarFurnitureRequest",
+    "PolarPlanisphereDetailPolicy",
     "ProjectionSelection",
     "StereographicProjection",
     "CelestialSphere",

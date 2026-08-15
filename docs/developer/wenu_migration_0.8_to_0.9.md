@@ -212,6 +212,16 @@ This is the urgent minimum printable product.
 - resolve one clean physical-print detail policy for both faces;
 - prove overlap-region content is identical before projection.
 
+**Status:** Implemented. The packaged `PolarPlanisphereDetailPolicy` is the
+normal atlas-detail default for both polar faces. It fixes the classroom
+stellar ceiling at magnitude 5.0 and enables only stars, constellation lines,
+constellation labels, and the Milky Way. Constellation vertices do not bypass
+the magnitude ceiling; boundaries, coordinate grids, Magellanic Clouds, and
+all deep-sky symbol families remain disabled. Both face compositions resolve
+the same detail and identical layer geometry options before projection, so
+their shared declination overlap cannot acquire face-specific catalogue
+selection. Appearance and Milky Way realization remain Milestone 48E.2.
+
 ### Milestone 48E.2 - Canonical appearance
 
 - add a physical-planisphere style derived through normal style composition;

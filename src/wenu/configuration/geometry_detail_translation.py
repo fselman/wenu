@@ -12,6 +12,7 @@ from wenu.charts.detail import (
     CartoonDetailPolicy,
     FieldDetailLevel,
     FixedDetailPolicy,
+    PolarPlanisphereDetailPolicy,
     ResolvedDetail,
 )
 from wenu.charts.style_components import StellarMagnitudeSizing
@@ -39,6 +40,7 @@ class GeometryDetailDefaults:
     default_content_layers: frozenset[str]
     cartoon_content_layers: frozenset[str]
     cartoon_policy: CartoonDetailPolicy
+    polar_planisphere_policy: PolarPlanisphereDetailPolicy
     adaptive_policy: AdaptiveDetailPolicy
     family_atlas_policies: Mapping[str, AdaptiveDetailPolicy]
     binocular_globular_policy: FixedDetailPolicy
@@ -160,6 +162,7 @@ def translate_geometry_detail_defaults(
     default_content_layers = frozenset(content["default_layers"])
     cartoon_content_layers = frozenset(content["cartoon_layers"])
     cartoon = detail["cartoon"]
+    polar_planisphere = detail["polar_planisphere"]
     adaptive = _adaptive(
         detail["adaptive"],
         default_content_layers=default_content_layers,
@@ -197,6 +200,18 @@ def translate_geometry_detail_defaults(
             ),
             default_content_layers=default_content_layers,
             cartoon_content_layers=cartoon_content_layers,
+        ),
+        polar_planisphere_policy=PolarPlanisphereDetailPolicy(
+            star_magnitude_limit=(
+                polar_planisphere["star_magnitude_limit"]
+            ),
+            label_density=polar_planisphere["label_density"],
+            enabled_layers=frozenset(
+                polar_planisphere["enabled_layers"]
+            ),
+            constellation_star_mode=(
+                polar_planisphere["constellation_star_mode"]
+            ),
         ),
         adaptive_policy=adaptive,
         family_atlas_policies=family_policies,

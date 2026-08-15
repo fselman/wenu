@@ -247,7 +247,7 @@ charts/
 ├── product_options.py            style/mode product selection and naming
 ├── style_overrides.py            immutable post-mode visual overrides
 ├── export_workflow.py            render, decorate, and save once
-├── detail.py                     detail policies and resolved detail
+├── detail.py                     detail policies, including polar content
 ├── detail_application.py         render-local layer options
 ├── styles.py, style_components.py,
 │   presets.py                    composed visual styles

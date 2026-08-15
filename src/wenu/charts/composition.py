@@ -76,6 +76,8 @@ def _family_atlas_policy(chart, geometry_defaults):
         return FixedDetailPolicy(geometry_defaults.neutral_detail)
     if family == "binocular":
         return geometry_defaults.binocular_other_policy
+    if family == "polar_planisphere":
+        return geometry_defaults.polar_planisphere_policy
     return geometry_defaults.family_atlas_policies.get(
         family,
         FixedDetailPolicy(geometry_defaults.neutral_detail),
