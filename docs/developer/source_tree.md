@@ -182,6 +182,11 @@ ticks, day and semantic month-label positions, outward-base rotations, the
 reserved central star-disk radius, and projection-derived opposite face
 handedness. It owns no Matplotlib realization, localized text, style, horizon,
 astronomical content, or export orchestration.
+`charts/polar_planisphere_style.py` owns the provisional configurable physical
+paper palette and its pure adaptation of the existing atlas style. It changes
+appearance only: white paper, blue ordinary star symbols, filled outline-free
+Milky Way, restrained constellation structure, and boundary hierarchy. It
+owns no content selection, projection, calendar geometry, renderer, or export.
 `charts/coordinate_frames.py` owns astronomical transformation of canonical
 AltAz spherical geometry into a chart-selected celestial frame before
 projection. Its Galactic and equatorial adapters preserve geometry structure
@@ -412,6 +417,13 @@ visual handoff. The tool drives the actual command module in fresh processes
 and writes 18 untracked PNGs plus a checksum manifest. The test verifies the
 matrix shape and role coverage without rendering; human acceptance is recorded
 in `docs/developer/visual_acceptance_46d8.md` only after Mac review.
+
+`tools/render_48e2_polar_preview.py` owns the v0.9 physical-style checkpoint.
+It drives the canonical generated sphere, paired charts, atlas-print
+composition, and calendar geometry to write two untracked PNGs and a checksum
+manifest. It is a diagnostic only; product export and physical A4 assembly
+remain later milestones. Human review is recorded in
+`docs/developer/visual_acceptance_48e2.md`.
 
 Milestone 46D.8E keeps those owners but narrows diagnostic claims: all-sky and
 regional constellation masks are isolated from horizon openings, binocular

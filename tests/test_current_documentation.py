@@ -478,3 +478,24 @@ def test_public_documents_do_not_recommend_obsolete_imports():
             if pattern.search(text):
                 violations.append(f"{path.relative_to(ROOT)}: {obsolete}")
     assert violations == []
+
+
+def test_polar_physical_style_checkpoint_is_documented():
+    roadmap = read(DEVELOPER / "wenu_migration_0.8_to_0.9.md")
+    architecture = read(DEVELOPER / "current_architecture_v0.8.md")
+    reference = read(DEVELOPER / "implementation_reference.md")
+    acceptance = read(DEVELOPER / "visual_acceptance_48e2.md")
+
+    for phrase in (
+        "Milestone 48E.2",
+        "PolarPlanisphereStylePalette",
+        "render_48e2_polar_preview.py",
+    ):
+        assert (
+            phrase in roadmap
+            or phrase in architecture
+            or phrase in reference
+        )
+    assert "polar-planisphere-south.png" in acceptance
+    assert "polar-planisphere-north.png" in acceptance
+    assert "--projection stereographic" in acceptance

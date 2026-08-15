@@ -167,3 +167,13 @@ vertices from bypassing the magnitude ceiling. North and south compositions
 resolve identical render-local catalogue geometry options before projection,
 preserving common content throughout their overlap without a separate sky or
 catalogue path.
+
+Milestone 48E.2 adds a packaged physical-planisphere palette and applies it
+only to named atlas-print compositions of `polar_planisphere`. It derives from
+the ordinary atlas style while selecting white paper, configurable provisional
+blue stars, reduced circular stellar area, translucent filled Milky Way
+polygons with every outline path disabled, restrained constellation structure,
+and no legend. Ordinary atlas families and screen presentation are unchanged.
+The deterministic `render_48e2_polar_preview.py` diagnostic uses the canonical
+sphere, composition, chart rendering, and resolved calendar geometry to create
+the two images required for visual review; it is not a product pipeline.

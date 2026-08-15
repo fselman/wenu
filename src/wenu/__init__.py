@@ -172,6 +172,10 @@ from .charts.polar_planisphere_pair import (
     PolarPlanispherePairRequest,
     PolarRegistrationMark,
 )
+from .charts.polar_planisphere_style import (
+    PolarPlanisphereStylePalette,
+    polar_planisphere_chart_style,
+)
 from .charts.polar_calendar import (
     COMMON_YEAR_DAY_LABELS,
     COMMON_YEAR_MONTH_LENGTHS,
@@ -422,6 +426,8 @@ __all__ = [
     "PolarPlanispherePair",
     "PolarPlanispherePairRequest",
     "PolarRegistrationMark",
+    "PolarPlanisphereStylePalette",
+    "polar_planisphere_chart_style",
     "COMMON_YEAR_DAY_LABELS",
     "COMMON_YEAR_MONTH_LENGTHS",
     "MONTH_LABEL_KEYS",

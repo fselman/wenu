@@ -116,6 +116,10 @@ def test_packaged_defaults_cover_schema_responsibilities():
         style = defaults["styles"][style_name]
         for name in components:
             assert name in style
+    polar = defaults["styles"]["polar_planisphere"]
+    assert polar["paper_color"] == "#FFFFFF"
+    assert polar["star_color"] == "#005B8F"
+    assert polar["milky_way_opacity"] == pytest.approx(0.32)
 
 
 def test_every_packaged_line_has_independent_public_fields():

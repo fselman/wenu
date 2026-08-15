@@ -671,6 +671,25 @@ opacity = 0.90
 columns = 1
 text_color = "none"
 
+# Provisional physical-planisphere colors remain configurable until print
+# review and final ESO-blue/font curation.
+[styles.polar_planisphere]
+paper_color = "#FFFFFF"
+foreground_color = "#244C64"
+star_color = "#005B8F"
+star_area_scale = 0.55
+milky_way_color = "#C9DFE8"
+milky_way_opacity = 0.32
+constellation_line_color = "#66899B"
+constellation_line_width = 0.35
+constellation_line_opacity = 0.68
+constellation_label_color = "#365F78"
+constellation_label_font_size = 7.5
+constellation_label_opacity = 0.90
+boundary_color = "#6F8795"
+boundary_line_width = 0.45
+boundary_opacity = 0.80
+
 # Mode palettes contain color substitutions only.
 [styles.palettes.atlas_presentation]
 sky = "#1677A6"

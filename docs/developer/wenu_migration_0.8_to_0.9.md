@@ -232,6 +232,16 @@ selection. Appearance and Milky Way realization remain Milestone 48E.2.
 - keep labels and constellation figures subordinate and legible;
 - leave final font curation explicitly deferred.
 
+**Status:** Implemented, pending visual approval. Named atlas-print composition
+now derives a dedicated physical-planisphere appearance from packaged values:
+white paper, provisional configurable blue stars with reduced ordinary-circle
+area, filled translucent Milky Way polygons with no edge or contour strokes,
+restrained constellation figures and labels, and no legend. Other chart
+families and atlas presentation mode retain their established appearance.
+`tools/render_48e2_polar_preview.py` renders genuine north/south catalogue
+checkpoints with the resolved calendar ring; approval is recorded through
+`visual_acceptance_48e2.md` before further visual tuning.
+
 ### Milestone 48E.3 - Essential references
 
 - add RA meridians at 0h, 6h, 12h, and 18h;

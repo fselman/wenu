@@ -10,6 +10,9 @@ from wenu.charts.atlas_modes import AtlasPresentationPalette
 from wenu.charts.cartoon_modes import CartoonModePalette
 from wenu.charts.modes import PresentationMode, PrintMode
 from wenu.charts.presets import AtlasChartStyle, CartoonChartStyle
+from wenu.charts.polar_planisphere_style import (
+    PolarPlanisphereStylePalette,
+)
 from wenu.charts.style_components import (
     CanvasStyle,
     DeepSkyStyle,
@@ -43,6 +46,7 @@ class StyleModeDefaults:
 
     atlas: AtlasChartStyle
     cartoon: CartoonChartStyle
+    polar_planisphere_palette: PolarPlanisphereStylePalette
     print_mode: PrintMode
     presentation_mode: PresentationMode
     atlas_presentation_palette: AtlasPresentationPalette
@@ -393,6 +397,61 @@ def translate_style_mode_defaults(
             styles["cartoon"],
             CartoonChartStyle,
             style_name="cartoon",
+        ),
+        polar_planisphere_palette=PolarPlanisphereStylePalette(
+            paper_color=styles["polar_planisphere"]["paper_color"],
+            foreground_color=(
+                styles["polar_planisphere"]["foreground_color"]
+            ),
+            star_color=styles["polar_planisphere"]["star_color"],
+            star_area_scale=(
+                styles["polar_planisphere"]["star_area_scale"]
+            ),
+            milky_way_color=(
+                styles["polar_planisphere"]["milky_way_color"]
+            ),
+            milky_way_opacity=(
+                styles["polar_planisphere"]["milky_way_opacity"]
+            ),
+            constellation_line_color=(
+                styles["polar_planisphere"][
+                    "constellation_line_color"
+                ]
+            ),
+            constellation_linewidth=(
+                styles["polar_planisphere"][
+                    "constellation_line_width"
+                ]
+            ),
+            constellation_line_opacity=(
+                styles["polar_planisphere"][
+                    "constellation_line_opacity"
+                ]
+            ),
+            constellation_label_color=(
+                styles["polar_planisphere"][
+                    "constellation_label_color"
+                ]
+            ),
+            constellation_label_fontsize=(
+                styles["polar_planisphere"][
+                    "constellation_label_font_size"
+                ]
+            ),
+            constellation_label_opacity=(
+                styles["polar_planisphere"][
+                    "constellation_label_opacity"
+                ]
+            ),
+            boundary_color=(
+                styles["polar_planisphere"]["boundary_color"]
+            ),
+            boundary_linewidth=(
+                styles["polar_planisphere"]["boundary_line_width"]
+            ),
+            boundary_opacity=(
+                styles["polar_planisphere"]["boundary_opacity"]
+            ),
         ),
         print_mode=print_mode,
         presentation_mode=presentation_mode,

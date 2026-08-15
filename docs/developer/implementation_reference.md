@@ -1014,6 +1014,21 @@ the policy ignores face context and output-mode scaling, north and south
 compositions produce identical render-local catalogue geometry options before
 their different projections clip the common sky.
 
+## Polar physical-print appearance
+
+For named atlas-print composition, `polar_planisphere_chart_style()` adapts the
+resolved atlas style using the packaged `PolarPlanisphereStylePalette`. The
+initial values use white paper, provisional configurable blue stars, ordinary
+circular markers at reduced area, pale translucent Milky Way fill, zero Milky
+Way edge and contour realization, subordinate constellation figures and
+labels, a restrained circular boundary, and no legend. The adapter does not
+change detail, chart geometry, projection, output scale, or other chart
+families. Atlas presentation retains its established screen palette.
+
+Run `python tools/render_48e2_polar_preview.py` for the canonical equidistant
+north/south diagnostic. The tool may also render `--projection stereographic`
+for comparison. It writes only below `output/` and saves each face once.
+
 ## 12. Compatibility and deprecation
 
 The legacy `cartoon_output_mode()` and `compose_cartoon_chart()` wrappers

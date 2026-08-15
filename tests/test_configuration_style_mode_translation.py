@@ -13,6 +13,9 @@ from wenu.charts.cartoon_modes import (
 from wenu.charts.composition import _resolve_mode, _resolve_style
 from wenu.charts.modes import PresentationMode, PrintMode
 from wenu.charts.presets import AtlasChartStyle, CartoonChartStyle
+from wenu.charts.polar_planisphere_style import (
+    PolarPlanisphereStylePalette,
+)
 from wenu.charts.regional import RegionalChart
 from wenu import compose_chart
 from wenu.configuration import (
@@ -28,6 +31,9 @@ def test_packaged_styles_translate_to_existing_immutable_contracts():
     assert defaults.cartoon == CartoonChartStyle()
     assert type(defaults.atlas) is AtlasChartStyle
     assert type(defaults.cartoon) is CartoonChartStyle
+    assert defaults.polar_planisphere_palette == (
+        PolarPlanisphereStylePalette()
+    )
 
     with pytest.raises(FrozenInstanceError):
         defaults.atlas.canvas.sky_color = "red"

@@ -262,6 +262,17 @@ def compose_chart(
                 ),
             )
     if (
+        getattr(chart, "chart_type", None) == "polar_planisphere"
+        and style_name == ATLAS_STYLE
+        and mode_name == PRINT_MODE
+    ):
+        from .polar_planisphere_style import polar_planisphere_chart_style
+
+        resolved_style = polar_planisphere_chart_style(
+            resolved_style,
+            style_defaults.polar_planisphere_palette,
+        )
+    if (
         getattr(chart, "chart_type", None) == "all_sky"
         and style_name in {ATLAS_STYLE, CARTOON_STYLE}
     ):

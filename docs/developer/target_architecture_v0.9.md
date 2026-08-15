@@ -171,6 +171,10 @@ calendar furniture use a restrained related hierarchy. The exact color values
 are configuration-owned and visually curated; the architecture does not
 embed an unaudited institutional-color literal.
 
+The initial implementation therefore names its blue values provisional and
+keeps them in packaged configuration. Visual print review precedes any claim
+that the exact color is an approved institutional value.
+
 An optional night edition may use a dark-blue background, white stars, and
 high-contrast light structure. It is another style/mode resolution over the
 same geometry and content, not another chart type or rendering pipeline. It
