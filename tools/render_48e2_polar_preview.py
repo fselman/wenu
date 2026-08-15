@@ -10,11 +10,16 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 from wenu import (
+    ChartFurnitureOptions,
+    DetailOverrides,
     ExportOptions,
     MatplotlibRenderer,
     Observer,
+    PoleAnnotations,
     PolarCalendarFurnitureRequest,
     PolarPlanispherePairRequest,
+    ReferenceAnnotations,
+    ReferencePlaneAnnotation,
     compose_chart,
     generate_celestial_sphere,
 )
@@ -34,7 +39,11 @@ def _draw_calendar(ax, face, scale, *, color, label_color):
             x,
             y,
             color=color,
-            linewidth=0.55 if tick.month_boundary else 0.18,
+            linewidth=(
+                0.55
+                if tick.month_boundary
+                else 0.36 if tick.labeled_day else 0.18
+            ),
             alpha=0.85,
             solid_capstyle="butt",
             zorder=30,
@@ -58,7 +67,7 @@ def _draw_calendar(ax, face, scale, *, color, label_color):
             label.position[1] * scale,
             MONTH_NAMES[label.month - 1],
             color=label_color,
-            fontsize=5.2,
+            fontsize=8.6,
             fontweight="medium",
             ha="center",
             va="baseline",
@@ -69,7 +78,29 @@ def _draw_calendar(ax, face, scale, *, color, label_color):
 
 
 def _render_face(chart, furniture, sky, observer, destination):
-    composition = compose_chart(chart, style="atlas", mode="print")
+    labeled = lambda text: ReferencePlaneAnnotation(
+        state="labeled", label=text
+    )
+    composition = compose_chart(
+        chart,
+        style="atlas",
+        mode="print",
+        detail_overrides=DetailOverrides(
+            enabled_layer_additions=frozenset({"equatorial_grid"}),
+        ),
+        furniture=ChartFurnitureOptions(
+            references=ReferenceAnnotations(
+                celestial_equator=labeled("Celestial equator"),
+                ecliptic=labeled("Ecliptic"),
+                galactic_plane=labeled("Galactic plane"),
+            ),
+            poles=PoleAnnotations(
+                ecliptic="both",
+                galactic="both",
+                labels=True,
+            ),
+        ),
+    )
     figure, ax = plt.subplots(figsize=(8.0, 8.0))
     composition.style.configure_axes(ax)
     renderer = MatplotlibRenderer(ax)
@@ -80,6 +111,17 @@ def _render_face(chart, furniture, sky, observer, destination):
         observer=observer,
         style=composition.style,
         layer_options=application.layer_options,
+    )
+    from wenu.charts.reference_furniture import (
+        draw_celestial_reference_furniture,
+    )
+
+    draw_celestial_reference_furniture(
+        chart,
+        sky,
+        renderer,
+        composition,
+        observer=observer,
     )
     unit_per_mm = chart.boundary_radius / furniture.star_disk_radius_mm
     _draw_calendar(

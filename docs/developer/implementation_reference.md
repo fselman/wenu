@@ -649,8 +649,8 @@ transformation seam required by static polar disks.
 `PolarPlanisphereChart(pole="south", limiting_declination_deg=None,
 projection_name="polar_azimuthal_equidistant", position_angle_deg=0,
 projection_radius=2, physical_diameter_mm=195, flip_ew=True)` describes one
-immutable polar disk face. An omitted limit resolves to +10 degrees for the
-south face and -10 degrees for the north face. The chart accepts either the
+immutable polar disk face. An omitted limit resolves to +20 degrees for the
+south face and -20 degrees for the north face. The chart accepts either the
 linear polar-equidistant projection or an equatorial stereographic
 alternative, while retaining the same selected pole, circular declination
 boundary, exact centre, square viewport, physical diameter, and canonical
@@ -1028,6 +1028,17 @@ families. Atlas presentation retains its established screen palette.
 Run `python tools/render_48e2_polar_preview.py` for the canonical equidistant
 north/south diagnostic. The tool may also render `--projection stereographic`
 for comparison. It writes only below `output/` and saves each face once.
+
+For Milestone 48E.3, `PolarPlanispherePairRequest` defaults to symmetric
+limits of +20 and -20 degrees. A default stereographic pair selects its
+unmirrored south-face convention automatically; an explicit `south_flip_ew`
+still overrides it. Polar reference composition opts into the ordinary
+equatorial-grid layer, realized as meridians at 0, 90, 180, and 270 degrees
+with short declination ticks every 20 degrees. The established reference sky
+owns the equator, ecliptic, Galactic plane, ecliptic cardinal points, and pole
+annotations, and converts its canonical AltAz geometry back to ICRS before
+the polar projection. `PolarCalendarTick.labeled_day` allows stronger stroke
+weight without changing tick length.
 
 ## 12. Compatibility and deprecation
 

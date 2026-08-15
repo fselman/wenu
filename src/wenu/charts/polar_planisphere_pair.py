@@ -51,12 +51,12 @@ class PolarPlanispherePairRequest:
     """One source of truth for a matched back-to-back disk pair."""
 
     projection_name: str = "polar_azimuthal_equidistant"
-    south_limiting_declination_deg: float = 10.0
-    north_limiting_declination_deg: float = -10.0
+    south_limiting_declination_deg: float = 20.0
+    north_limiting_declination_deg: float = -20.0
     position_angle_deg: float = 0.0
     projection_radius: float = 2.0
     physical_diameter_mm: float = 195.0
-    south_flip_ew: bool = True
+    south_flip_ew: bool | None = None
     boundary_samples: int = 721
     calendar_radius_mm: float | None = None
     pivot_radius_mm: float | None = None
@@ -169,7 +169,10 @@ class PolarPlanispherePairRequest:
         object.__setattr__(
             self, "physical_diameter_mm", physical_diameter
         )
-        object.__setattr__(self, "south_flip_ew", bool(self.south_flip_ew))
+        if self.south_flip_ew is not None:
+            object.__setattr__(
+                self, "south_flip_ew", bool(self.south_flip_ew)
+            )
         object.__setattr__(
             self, "boundary_samples", int(self.boundary_samples)
         )
@@ -204,8 +207,14 @@ class PolarPlanispherePairRequest:
     @property
     def north_flip_ew(self):
         if self.projection_name == "polar_azimuthal_equidistant":
-            return not bool(self.south_flip_ew)
-        return bool(self.south_flip_ew)
+            return not self.resolved_south_flip_ew
+        return self.resolved_south_flip_ew
+
+    @property
+    def resolved_south_flip_ew(self):
+        if self.south_flip_ew is not None:
+            return bool(self.south_flip_ew)
+        return self.projection_name == "polar_azimuthal_equidistant"
 
     def resolve(self):
         """Return matched immutable faces and assembly metadata."""
@@ -221,7 +230,7 @@ class PolarPlanispherePairRequest:
             limiting_declination_deg=(
                 self.south_limiting_declination_deg
             ),
-            flip_ew=bool(self.south_flip_ew),
+            flip_ew=self.resolved_south_flip_ew,
             **shared,
         )
         north = PolarPlanisphereChart(

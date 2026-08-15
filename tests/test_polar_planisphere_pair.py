@@ -30,7 +30,7 @@ def test_default_pair_resolves_matching_faces_with_opposite_ra_direction(
     assert pair.north.pole == "north"
     assert pair.south.projection_name == projection_name
     assert pair.north.projection_name == projection_name
-    assert request.overlap_deg == pytest.approx(20.0)
+    assert request.overlap_deg == pytest.approx(40.0)
     assert _ra_direction(pair.south) == -_ra_direction(pair.north)
 
 
@@ -81,6 +81,26 @@ def test_equatorial_paper_samples_fold_across_the_back_to_back_axis(
 
     np.testing.assert_allclose(north_x, -south_x, atol=1.0e-12)
     np.testing.assert_allclose(north_y, south_y, atol=1.0e-12)
+
+
+def test_default_stereographic_pair_uses_correct_unmirrored_south_face():
+    request = PolarPlanispherePairRequest(projection_name="stereographic")
+    pair = request.resolve()
+
+    assert request.resolved_south_flip_ew is False
+    assert pair.south.flip_ew is False
+    assert pair.north.flip_ew is False
+
+
+def test_explicit_stereographic_handedness_override_is_preserved():
+    request = PolarPlanispherePairRequest(
+        projection_name="stereographic",
+        south_flip_ew=True,
+    )
+    pair = request.resolve()
+
+    assert pair.south.flip_ew is True
+    assert pair.north.flip_ew is True
 
 
 def test_registration_marks_fold_together_but_are_not_rotationally_symmetric():

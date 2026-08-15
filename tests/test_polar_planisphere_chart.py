@@ -8,6 +8,7 @@ import pytest
 from wenu import PolarPlanisphereChart
 from wenu.charts.context import BoundaryKind
 from wenu.charts.legend_plan import chart_type_name, default_chart_legend_plan
+from wenu.geometry.projected import ProjectedPoints
 from wenu.geometry.spherical import SphericalPoints
 from wenu.projections import (
     PolarAzimuthalEquidistantProjection,
@@ -15,18 +16,18 @@ from wenu.projections import (
 )
 
 
-def test_default_faces_have_configurable_twenty_degree_overlap():
+def test_default_faces_have_configurable_forty_degree_overlap():
     south = PolarPlanisphereChart()
     north = PolarPlanisphereChart(pole="north")
 
-    assert south.limiting_declination_deg == pytest.approx(10.0)
-    assert north.limiting_declination_deg == pytest.approx(-10.0)
-    assert south.angular_radius_deg == pytest.approx(100.0)
-    assert north.angular_radius_deg == pytest.approx(100.0)
+    assert south.limiting_declination_deg == pytest.approx(20.0)
+    assert north.limiting_declination_deg == pytest.approx(-20.0)
+    assert south.angular_radius_deg == pytest.approx(110.0)
+    assert north.angular_radius_deg == pytest.approx(110.0)
     assert (
         south.limiting_declination_deg
         - north.limiting_declination_deg
-    ) == pytest.approx(20.0)
+    ) == pytest.approx(40.0)
 
 
 @pytest.mark.parametrize(
@@ -68,9 +69,9 @@ def test_projection_choice_changes_radial_law_not_disk_contract():
     equidistant = PolarPlanisphereChart()
     stereographic = PolarPlanisphereChart(projection_name="stereographic")
 
-    assert equidistant.boundary_radius == pytest.approx(2.0 * 100.0 / 90.0)
+    assert equidistant.boundary_radius == pytest.approx(2.0 * 110.0 / 90.0)
     assert stereographic.boundary_radius == pytest.approx(
-        2.0 * np.tan(np.radians(50.0))
+        2.0 * np.tan(np.radians(55.0))
     )
     for chart in (equidistant, stereographic):
         assert chart.boundary.closed
@@ -126,7 +127,29 @@ def test_render_transforms_canonical_altaz_before_selected_projection(
     np.testing.assert_allclose(result.y, expected.y)
     assert calls["transform"] == (source, observer)
     assert calls["draw"]["observer"] is observer
-    assert calls["boundary"].name == "declination_10"
+    assert calls["boundary"].name == "declination_20"
+
+
+def test_constellation_labels_are_suppressed_before_the_date_ring():
+    chart = PolarPlanisphereChart()
+    radius = chart.boundary_radius
+    labels = ProjectedPoints(
+        x=np.asarray((0.0, radius * 0.95)),
+        y=np.asarray((0.0, 0.0)),
+        labels=np.asarray(("SCP", "EDGE"), dtype=object),
+    )
+    layer = object()
+    sky = SimpleNamespace(constellation_labels=layer)
+    options = chart._inset_constellation_labels(
+        sky,
+        {layer: {"prepare": lambda spherical, projected: projected}},
+    )
+
+    prepared = options[layer]["prepare"](object(), labels)
+
+    assert np.isfinite(prepared.x[0])
+    assert np.isnan(prepared.x[1])
+    assert prepared.labels.tolist() == ["SCP", "EDGE"]
 
 
 @pytest.mark.parametrize(

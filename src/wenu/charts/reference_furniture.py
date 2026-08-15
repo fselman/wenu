@@ -7,6 +7,8 @@ from dataclasses import dataclass
 import numpy as np
 
 from wenu.charts.context import BoundaryKind
+from wenu.charts.coordinate_frames import horizontal_to_equatorial
+from wenu.geometry.spherical import SphericalGrid
 from wenu.rendering import layers
 from wenu.rendering.label_placement import tangent_label_placement
 from wenu.rendering.preparation import project_geometry_for_viewport
@@ -16,6 +18,47 @@ from wenu.sky.coordinate_grids import (
     EquatorialGrid,
     GalacticGrid,
 )
+
+
+class _PolarEquatorialGrid(EquatorialGrid):
+    """Four RA meridians with short 20-degree declination ticks."""
+
+    tick_half_width_deg = 1.5
+
+    def spherical_geometry(self, observer):
+        resolved = self._resolve_observer(observer)
+        meridians = self._combine(
+            [self.meridian(value) for value in self.ra]
+        )
+        ticks = []
+        for right_ascension in self.ra:
+            for declination in self.dec:
+                longitude = np.linspace(
+                    right_ascension - self.tick_half_width_deg,
+                    right_ascension + self.tick_half_width_deg,
+                    9,
+                )
+                latitude = np.full_like(longitude, declination)
+                ticks.append(
+                    self._make_curves(
+                        longitude_deg=(longitude,),
+                        latitude_deg=(latitude,),
+                        names=(
+                            f"declination_tick_{right_ascension:g}_"
+                            f"{declination:g}",
+                        ),
+                        closed=(False,),
+                        styles=(None,),
+                        observer=resolved,
+                    )
+                )
+        return SphericalGrid(
+            components={
+                "meridians": meridians,
+                "declination_ticks": self._combine(ticks),
+            },
+            metadata=self._grid_metadata(),
+        )
 
 
 @dataclass(frozen=True)
@@ -188,8 +231,13 @@ def build_celestial_reference_sky(
         if chart is None or getattr(chart, "target_ra_deg", None) is None
         else (chart.target_ra_deg, chart.target_dec_deg)
     )
+    polar = getattr(chart, "chart_type", None) == "polar_planisphere"
+    polar_grid = polar and composition.detail.layer_enabled(
+        "equatorial_grid"
+    )
     requested = (
-        references.celestial_equator.enabled
+        polar_grid
+        or references.celestial_equator.enabled
         or references.ecliptic.enabled
         or references.galactic_plane.enabled
         or any(
@@ -205,6 +253,17 @@ def build_celestial_reference_sky(
     if resolved_observer is None:
         raise TypeError("celestial reference furniture requires an observer.")
     reference_sky = CelestialSphere(resolved_observer)
+    if polar_grid:
+        reference_sky.add(
+            _PolarEquatorialGrid(
+                resolved_observer,
+                ra=(0.0, 90.0, 180.0, 270.0),
+                dec=tuple(float(value) for value in range(-80, 81, 20)),
+                include_equator=False,
+                frame="fk5",
+                equinox="J2000",
+            )
+        )
     if references.celestial_equator.enabled:
         reference_sky.add(
             EquatorialGrid(
@@ -263,6 +322,13 @@ def build_celestial_reference_sky(
             size=size,
             color=style.galactic_color,
         )
+        if polar:
+            points.add_ecliptic_keypoints(
+                marker="o",
+                size=24.0 * composition.mode.symbol_scale,
+                color=style.ecliptic_color,
+                zorder=layers.POINTS,
+            )
     if target is not None:
         style = _publication_style(composition.style)
         points = (
@@ -301,7 +367,14 @@ def _reference_layer_options(reference_sky, composition, chart):
         }[system]
         configured = dict(options[layer])
         render = dict(configured["render"])
-        render["draw_labels"] = annotation.labeled
+        unlabeled_polar_grid = (
+            getattr(chart, "chart_type", None) == "polar_planisphere"
+            and system == "equatorial"
+            and bool(getattr(layer, "ra", ()))
+        )
+        render["draw_labels"] = (
+            annotation.labeled and not unlabeled_polar_grid
+        )
         render["label_formatter"] = lambda name, text=annotation.label: text
         render["label_anchor"] = _label_anchor(
             annotation,
@@ -352,6 +425,20 @@ def draw_celestial_reference_furniture(
         return None
     projection = chart.projection
     viewport = chart.viewport
+    polar = getattr(chart, "chart_type", None) == "polar_planisphere"
+
+    def project(spherical):
+        geometry = (
+            horizontal_to_equatorial(spherical, observer)
+            if polar
+            else spherical
+        )
+        return project_geometry_for_viewport(
+            geometry,
+            projection=projection,
+            viewport=viewport,
+        )
+
     rendering = reference_sky.draw_chart(
         projection=projection,
         renderer=renderer,
@@ -362,11 +449,7 @@ def draw_celestial_reference_furniture(
             composition,
             chart,
         ),
-        project_geometry=lambda spherical: project_geometry_for_viewport(
-            spherical,
-            projection=projection,
-            viewport=viewport,
-        ),
+        project_geometry=project,
     )
     return CelestialReferenceRendering(
         sky=reference_sky,

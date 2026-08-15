@@ -115,8 +115,8 @@ def test_v09_plan_records_paired_physical_planisphere_contract():
         assert phrase in current
     for phrase in (
         "polar azimuthal-equidistant projection",
-        "-90 degrees through +10 degrees",
-        "+90 degrees through -10 degrees",
+        "-90 degrees through +20 degrees",
+        "+90 degrees through -20 degrees",
         "glued back to back",
         "opposite",
         "365 daily ticks",
@@ -499,3 +499,18 @@ def test_polar_physical_style_checkpoint_is_documented():
     assert "polar-planisphere-south.png" in acceptance
     assert "polar-planisphere-north.png" in acceptance
     assert "--projection stereographic" in acceptance
+
+
+def test_polar_reference_review_corrections_are_documented():
+    roadmap = read(DEVELOPER / "wenu_migration_0.8_to_0.9.md")
+    target = read(DEVELOPER / "target_architecture_v0.9.md")
+    acceptance = read(DEVELOPER / "visual_acceptance_48e3.md")
+
+    for phrase in (
+        "Milestone 48E.3",
+        "+20/-20-degree overlap",
+        "0h/6h/12h/18h meridians",
+        "short declination ticks",
+        "corrected stereographic handedness",
+    ):
+        assert phrase in roadmap or phrase in target or phrase in acceptance

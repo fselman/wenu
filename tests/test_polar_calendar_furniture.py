@@ -34,6 +34,7 @@ def test_calendar_furniture_resolves_both_faces_and_every_daily_tick(
     for face in furniture.faces:
         assert len(face.ticks) == 365
         assert sum(tick.month_boundary for tick in face.ticks) == 12
+        assert sum(tick.labeled_day for tick in face.ticks) == 71
         assert tuple(tick.ordinal for tick in face.ticks) == tuple(
             range(1, 366)
         )
@@ -82,6 +83,8 @@ def test_calendar_geometry_reserves_the_star_disk_and_strengthens_boundaries():
         for label in face.labels:
             assert np.hypot(*label.position) > face.star_disk_radius_mm
             assert np.hypot(*label.position) < face.outer_radius_mm
+        assert np.hypot(*face.day_labels[0].position) == pytest.approx(84.5)
+        assert np.hypot(*face.month_labels[0].position) == pytest.approx(86.5)
 
 
 def test_explicit_paired_calendar_radius_is_the_star_disk_boundary():

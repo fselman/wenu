@@ -117,8 +117,8 @@ the first selectable polar chart remains Milestone 48C.1.
 
 - add a polar-planisphere disk chart owner with pole, limiting declination,
   position angle, projected radius, physical diameter, and face handedness;
-- default south coverage to -90 through +10 degrees;
-- default north coverage to +90 through -10 degrees;
+- default south coverage to -90 through +20 degrees;
+- default north coverage to +90 through -20 degrees;
 - allow both limits to be configured independently;
 - retain circular clipping and an exact centre.
 
@@ -127,7 +127,7 @@ owner also accepts stereographic projection in the equatorial frame so the
 two radial laws can be compared without changing disk framing or content.
 
 **Status:** Implemented. `PolarPlanisphereChart` owns one immutable north or
-south face, resolves the +10/-10 degree default limits, constructs either
+south face, resolves the +20/-20 degree default limits, constructs either
 equidistant or stereographic equatorial projection, and exposes an exact
 circular boundary, square viewport, physical diameter, handedness, chart
 context, canonical render, and export seams. Paired resolution, registration,
@@ -144,7 +144,7 @@ calendar furniture, and the public paired request remain later milestones.
 
 Tests fold paper-coordinate samples through the two faces and prove opposite
 apparent rotation, RA quadrant order, shared centre, matching radii, and the
-20-degree default overlap.
+40-degree default overlap.
 
 **Status:** Implemented. `PolarPlanispherePairRequest` resolves both immutable
 faces from one projection, scale, physical diameter, position angle, sample
@@ -242,6 +242,11 @@ families and atlas presentation mode retain their established appearance.
 checkpoints with the resolved calendar ring; approval is recorded through
 `visual_acceptance_48e2.md` before further visual tuning.
 
+Fernando accepted the physical palette and overall appearance after the first
+real preview. Calendar spacing, boundary-label containment, overlap,
+stereographic handedness, and missing essential references became the next
+focused correction rather than silently changing the accepted style.
+
 ### Milestone 48E.3 - Essential references
 
 - add RA meridians at 0h, 6h, 12h, and 18h;
@@ -254,6 +259,18 @@ checkpoints with the resolved calendar ring; approval is recorded through
 References use existing spherical/reference preparation wherever possible.
 Disk-only ticks and physical-scale labels remain chart furniture rather than
 new sky catalogues.
+
+**Status:** Implemented, pending second visual approval. Both faces now extend
+through a symmetric +20/-20-degree overlap. Default stereographic pairs use
+the corrected unmirrored south-face convention while retaining opposite
+back-to-back RA direction. Polar reference furniture uses the canonical
+reference-sky pipeline for 0h/6h/12h/18h meridians, short declination ticks
+every 20 degrees, labelled equator/ecliptic/Galactic plane, cardinal points,
+and the relevant ecliptic and Galactic poles after explicit ICRS preparation.
+Constellation-label anchors are suppressed near the date ring. Calendar day
+numbers move toward their ticks, labelled-day ticks gain weight without
+length, and month names occupy the same band at twice the day-label size.
+The second review is recorded in `visual_acceptance_48e3.md`.
 
 ### Milestone 48E.4 - Actual-size A4 export
 

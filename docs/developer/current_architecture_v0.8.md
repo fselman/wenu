@@ -177,3 +177,13 @@ and no legend. Ordinary atlas families and screen presentation are unchanged.
 The deterministic `render_48e2_polar_preview.py` diagnostic uses the canonical
 sphere, composition, chart rendering, and resolved calendar geometry to create
 the two images required for visual review; it is not a product pipeline.
+
+Milestone 48E.3 applies the first review corrections without changing that
+accepted palette. The paired default overlap is now +20/-20 degrees, default
+stereographic handedness is corrected, and constellation-label anchors remain
+inside an inset stellar aperture. The canonical reference-furniture path now
+prepares polar overlays into ICRS and supplies four RA meridians, short
+declination ticks every 20 degrees, labelled principal planes, cardinal points,
+and face-visible pole annotations. Calendar geometry records labelled-day
+ticks separately so rendering can strengthen them without changing length;
+day and month typography now share a tighter radial band.

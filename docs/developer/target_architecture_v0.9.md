@@ -22,10 +22,10 @@ disk or overlay is the part a user rotates.
 The paired product consists of:
 
 1. a south-polar face centred on the South Celestial Pole, extending by
-   default from declination -90 degrees through +10 degrees;
+   default from declination -90 degrees through +20 degrees;
 2. a north-polar face centred on the North Celestial Pole, extending by
-   default from +90 degrees through -10 degrees;
-3. a 20-degree overlap around the celestial equator;
+   default from +90 degrees through -20 degrees;
+3. a 40-degree overlap around the celestial equator;
 4. identical physical disk and calendar-ring radii;
 5. a common centre punch and unambiguous back-to-back registration marks;
 6. later, a separate latitude-specific horizon overlay with its own hour
@@ -89,6 +89,7 @@ handedness:
 - one closed mean-common-year step of exactly `360 / 365` degrees per day,
   anchored to standard-time local midnight at configurable longitude;
 - stronger month-boundary ticks;
+- stronger, but not longer, ticks for numerically labelled days;
 - month names centred on their actual month arcs;
 - numeric labels only on days 5, 10, 15, 20, 25, and 30 when present;
 - day numbers placed radially with their bases toward the outside;

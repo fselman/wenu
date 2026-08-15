@@ -22,7 +22,10 @@ from wenu import (
     BinocularChart,
     ChartFurnitureOptions,
     CircumpolarChart,
+    DetailOverrides,
     FullSkyChart,
+    PoleAnnotations,
+    PolarPlanisphereChart,
     ReferenceAnnotations,
     ReferencePlaneAnnotation,
     RegionalChart,
@@ -214,3 +217,54 @@ def test_reference_policy_uses_one_shared_tangent_procedure():
             np.degrees(np.arctan2(1.0, 2.0))
         )
         assert placements[0].normal_offset_em == 0.75
+
+
+def test_polar_reference_overlay_contains_grid_planes_points_and_poles():
+    observer = SimpleNamespace(
+        lat_deg=-32.0,
+        icrs_frame=ICRS(),
+        ecliptic_frame=BarycentricMeanEcliptic(),
+        galactic_frame=Galactic(),
+        altaz_frame=AltAz(
+            obstime=Time("2026-08-02T00:00:00"),
+            location=EarthLocation(lat=-32.0 * u.deg, lon=-71.0 * u.deg),
+        ),
+    )
+    labeled = lambda text: ReferencePlaneAnnotation(
+        state="labeled", label=text
+    )
+    chart = PolarPlanisphereChart()
+    composition = compose_chart(
+        chart,
+        style="atlas",
+        mode="print",
+        detail_overrides=DetailOverrides(
+            enabled_layer_additions=frozenset({"equatorial_grid"}),
+        ),
+        furniture=ChartFurnitureOptions(
+            references=ReferenceAnnotations(
+                celestial_equator=labeled("Celestial equator"),
+                ecliptic=labeled("Ecliptic"),
+                galactic_plane=labeled("Galactic plane"),
+            ),
+            poles=PoleAnnotations(ecliptic="both", galactic="both"),
+        ),
+    )
+
+    overlay = build_celestial_reference_sky(
+        SimpleNamespace(observer=observer),
+        composition,
+        observer=observer,
+        chart=chart,
+    )
+    equatorial = [
+        layer
+        for layer in overlay.layers
+        if getattr(layer, "coordinate_system", None) == "equatorial"
+    ]
+
+    assert len(equatorial) == 2
+    assert equatorial[0].ra == (0.0, 90.0, 180.0, 270.0)
+    assert equatorial[0].dec == tuple(float(v) for v in range(-80, 81, 20))
+    assert equatorial[1].include_equator is True
+    assert len(overlay.points) == 8

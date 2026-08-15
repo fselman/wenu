@@ -9,7 +9,9 @@ def test_visual_checkpoint_uses_canonical_sky_composition_and_rendering():
     source = RUNNER.read_text(encoding="utf-8")
 
     assert "generate_celestial_sphere()" in source
-    assert 'compose_chart(chart, style="atlas", mode="print")' in source
+    assert "composition = compose_chart(" in source
+    assert 'style="atlas"' in source
+    assert 'mode="print"' in source
     assert "chart.render(" in source
     assert "PolarCalendarFurnitureRequest().resolve(pair)" in source
     assert ").save(figure, destination)" in source
@@ -24,3 +26,14 @@ def test_visual_checkpoint_has_both_projection_choices_and_fixed_observer():
     assert 'time="2026-08-15 21:00"' in source
     assert '"polar_azimuthal_equidistant", "stereographic"' in source
     assert source.count("ExportOptions(") == 1
+
+
+def test_visual_checkpoint_realizes_reviewed_calendar_and_references():
+    source = RUNNER.read_text(encoding="utf-8")
+
+    assert "tick.labeled_day" in source
+    assert "fontsize=8.6" in source
+    assert 'labeled("Celestial equator")' in source
+    assert 'labeled("Ecliptic")' in source
+    assert 'labeled("Galactic plane")' in source
+    assert "draw_celestial_reference_furniture(" in source

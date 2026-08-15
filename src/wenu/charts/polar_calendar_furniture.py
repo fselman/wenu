@@ -24,6 +24,7 @@ class PolarCalendarTick:
     inner: tuple[float, float]
     outer: tuple[float, float]
     month_boundary: bool
+    labeled_day: bool = False
 
 
 @dataclass(frozen=True)
@@ -80,8 +81,8 @@ class PolarCalendarFurnitureRequest:
     star_disk_radius_fraction: float = 0.80
     day_tick_length_fraction: float = 0.025
     month_tick_length_fraction: float = 0.045
-    day_label_radius_fraction: float = 0.89
-    month_label_radius_fraction: float = 0.955
+    day_label_radius_fraction: float = 0.845
+    month_label_radius_fraction: float = 0.865
 
     def __post_init__(self):
         if not isinstance(self.calendar, CommonYearCalendarRequest):
@@ -186,6 +187,7 @@ class PolarCalendarFurnitureRequest:
                         angle, star_radius + outer_radius * length_fraction
                     ),
                     month_boundary=month_boundary,
+                    labeled_day=day.label_text is not None,
                 )
             )
         day_labels = tuple(

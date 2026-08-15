@@ -16,6 +16,7 @@ from wenu.charts.boundaries import (
 from wenu.charts.coordinate_frames import horizontal_to_equatorial
 from wenu.charts.projection_selection import ProjectionSelection
 from wenu.geometry.frame import SphericalFrame
+from wenu.geometry.projected import ProjectedPoints
 from wenu.geometry.viewport import Viewport
 
 
@@ -48,7 +49,7 @@ class PolarPlanisphereChart:
             )
         limit = self.limiting_declination_deg
         if limit is None:
-            limit = 10.0 if pole == "south" else -10.0
+            limit = 20.0 if pole == "south" else -20.0
         values = np.asarray(
             (
                 limit,
@@ -205,6 +206,7 @@ class PolarPlanisphereChart:
         )
         if layer_options is not None:
             options.update(layer_options)
+        options = self._inset_constellation_labels(sky, options)
         options = apply_coordinate_label_anchor(
             options, self.coordinate_label_anchor
         )
@@ -239,6 +241,42 @@ class PolarPlanisphereChart:
                 transform(spherical)
             ),
         )
+
+    def _inset_constellation_labels(self, sky, options):
+        """Suppress label anchors too close to the physical date ring."""
+        layer = getattr(sky, "constellation_labels", None)
+        if layer is None or layer not in options:
+            return options
+        configured = dict(options[layer])
+        prepare = configured.get("prepare")
+        radius = self.boundary_radius * 0.94
+
+        def inset(spherical, projected):
+            prepared = (
+                projected
+                if prepare is None
+                else prepare(spherical, projected)
+            )
+            if not isinstance(prepared, ProjectedPoints):
+                return prepared
+            x = np.asarray(prepared.x, dtype=float).copy()
+            y = np.asarray(prepared.y, dtype=float).copy()
+            outside = np.hypot(x, y) > radius
+            x[outside] = np.nan
+            y[outside] = np.nan
+            return ProjectedPoints(
+                x=x,
+                y=y,
+                metadata=prepared.metadata,
+                ids=prepared.ids,
+                labels=prepared.labels,
+                names=prepared.names,
+            )
+
+        configured["prepare"] = inset
+        result = dict(options)
+        result[layer] = configured
+        return result
 
     def export(
         self,

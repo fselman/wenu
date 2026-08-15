@@ -164,6 +164,8 @@ projection choice, selected pole, limiting declination, normalized and
 physical scale, handedness, exact circular boundary, square viewport, chart
 context, and canonical render/export adaptation. It owns no paired-face,
 calendar, registration, horizon, content, or appearance policy.
+Its circular boundary also owns the final inset that suppresses constellation
+label anchors before their text can enter the physical date ring.
 `charts/polar_planisphere_pair.py` owns paired-face resolution and frozen
 assembly geometry. It validates shared scale and physical size, compatible
 north/south polar radii, projection-aware opposite RA direction, common
@@ -182,6 +184,8 @@ ticks, day and semantic month-label positions, outward-base rotations, the
 reserved central star-disk radius, and projection-derived opposite face
 handedness. It owns no Matplotlib realization, localized text, style, horizon,
 astronomical content, or export orchestration.
+Labelled-day identity is retained separately from tick length so a renderer
+can emphasize those ticks by weight without changing calendar geometry.
 `charts/polar_planisphere_style.py` owns the provisional configurable physical
 paper palette and its pure adaptation of the existing atlas style. It changes
 appearance only: white paper, blue ordinary star symbols, filled outline-free
@@ -192,6 +196,11 @@ AltAz spherical geometry into a chart-selected celestial frame before
 projection. Its Galactic and equatorial adapters preserve geometry structure
 and metadata and contain no map projection, seam, viewport, renderer, or style
 implementation.
+`charts/reference_furniture.py` retains the single reference-overlay path. For
+polar disks it configures the four canonical RA meridians and short 20-degree
+declination ticks, then uses the shared horizontal-to-equatorial adapter
+before polar projection. Principal-plane labels, ecliptic cardinal points,
+and pole annotations remain semantic furniture rather than catalogue layers.
 `charts/view_defaults.py` owns the immutable public geometry defaults for the
 five ordinary view forms. It contains no catalogue, cache, layer, style,
 furniture, renderer, or output policy.
@@ -424,6 +433,8 @@ composition, and calendar geometry to write two untracked PNGs and a checksum
 manifest. It is a diagnostic only; product export and physical A4 assembly
 remain later milestones. Human review is recorded in
 `docs/developer/visual_acceptance_48e2.md`.
+Milestone 48E.3 reuses that genuine two-face diagnostic; its separate review
+criteria and disposition live in `docs/developer/visual_acceptance_48e3.md`.
 
 Milestone 46D.8E keeps those owners but narrows diagnostic claims: all-sky and
 regional constellation masks are isolated from horizon openings, binocular
