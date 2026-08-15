@@ -34,6 +34,11 @@ src/wenu/
 longitude-seam topology for points, curves, grids, and polygon rings. It has
 no astronomical-frame, chart, renderer, or Matplotlib dependency.
 
+`projections/polar_azimuthal_equidistant.py` owns the backend-neutral linear
+polar-distance projection for north- and south-centred physical sky disks. It
+reuses the ordinary spherical geometry dispatch contract and contains no
+chart, calendar, horizon, style, renderer, or export policy.
+
 Within `sky/`, `maximal_sphere.py` owns the immutable catalogue load profile
 and the one canonical complete-content factory. The resulting object is an
 ordinary `CelestialSphere`; chart geometry and presentation remain outside
@@ -74,6 +79,7 @@ It delegates spherical AltAz geometry to `sky/horizon.py`, stereographic
 projection-domain protection to `rendering/preparation.py`, and Galactic
 transformation and Mollweide seam topology to their established chart and
 projection owners. It does not compose masks, select appearance, or render.
+
 `charts/styles.py` owns the flat semantic horizon-reference appearance and
 the common resolved outside-mask style boundary. `charts/style_components.py`
 stores the corresponding composed `GridStyle` reference fields and the one

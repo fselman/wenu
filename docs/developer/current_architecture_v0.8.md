@@ -103,3 +103,11 @@ Version 0.9 must preserve:
 - one final save for each exported page;
 - atlas-print behavior and every existing chart family unless an explicit
   v0.9 product requests new appearance.
+
+Milestone 48B.1 adds the backend-neutral
+`PolarAzimuthalEquidistantProjection`. It selects a north or south pole,
+places radial distance linearly in polar angular distance, supports explicit
+position angle and east-west handedness, provides an inverse and radius
+conversions, and reuses the established spherical geometry dispatch protocol.
+No chart, request, calendar, horizon, style, renderer, or export path selects
+it yet.

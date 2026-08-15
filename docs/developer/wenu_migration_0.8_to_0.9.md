@@ -81,6 +81,11 @@ Milestone 48A: Define the Wenu v0.9 polar-planisphere architecture
 Tests cover poles, equator, representative RA quadrants, round trips,
 declination-linear radial spacing, and north/south handedness.
 
+**Status:** Implemented. The backend-neutral projection owns selected-pole
+linear radial mathematics, inverse mapping, position angle, handedness,
+radius conversion, viewport construction, and established geometry dispatch.
+No chart or request selects it before Milestone 48B.2.
+
 ### Milestone 48B.2 - Projection selection boundary
 
 - register the projection through immutable request/view geometry;

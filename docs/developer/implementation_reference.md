@@ -568,6 +568,14 @@ planar mapping and returns coordinates in the projection's source frame. It
 is the classification boundary used by horizon-mask preparation; it does not
 perform astronomy, clipping, or masking.
 
+`PolarAzimuthalEquidistantProjection(radius=2, pole="south",
+position_angle_deg=0, flip_ew=True)` maps polar angular distance linearly in
+projected radius. `radius` is the equatorial projected radius. The projection
+supports north and south poles, forward and inverse spherical mapping,
+position angle, handedness, radius conversion, viewport construction, and the
+ordinary point, curve, grid, and polygon dispatch contract. Milestone 48B.1
+does not connect it to a chart family or physical planisphere product.
+
 `prepare_horizon_mask_opening(...)` returns a frozen `PreparedHorizonMask`
 with `visibility` equal to `above`, `crossing`, or `below`, native spherical
 openings, and prepared projected openings. Regional, binocular, and
