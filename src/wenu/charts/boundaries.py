@@ -235,6 +235,27 @@ class EllipticalGridLabelAnchor:
                 ):
                     return None
                 break
+        if name.startswith("galactic_longitude_"):
+            equator_distance = np.abs(y)
+            candidates = np.flatnonzero(
+                np.isclose(
+                    equator_distance,
+                    np.min(equator_distance),
+                    atol=1.0e-12,
+                    rtol=0.0,
+                )
+            )
+            if np.isclose(value, 180.0):
+                index = int(candidates[np.argmin(x[candidates])])
+            else:
+                index = int(candidates[0])
+            return CurveLabelPlacement(
+                float(x[index]) + 0.012 * x_limit,
+                -0.035 * y_limit,
+                rotation_deg=0.0,
+                horizontal_alignment="left",
+                vertical_alignment="top",
+            )
         index = int(np.argmax(radius))
         return self.inset * float(x[index]), self.inset * float(y[index])
 

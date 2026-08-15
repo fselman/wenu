@@ -232,6 +232,13 @@ grows into the chart rather than across its boundary. The backend-neutral
 curve-label contract carries these alignments to the renderer while preserving
 the established horizontal orientation and above-line clearance.
 
+Milestone 46D.8F.2 gives the Galactic all-sky grid its explicit Mollweide
+sampling and label policy. Galactic parallels are `-60`, `-30`, `0`, `30`,
+and `60` degrees; meridians are drawn every 45 degrees. Only `0`, `90`, `180`,
+and `270` degrees are labeled, immediately below the Galactic equator and to
+the right of the corresponding meridian. The 180-degree label uses the left
+seam so its rightward text remains inside the ellipse.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

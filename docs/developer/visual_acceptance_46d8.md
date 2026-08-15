@@ -105,6 +105,7 @@ owners.
 | GRID-1 | Equatorial lines are too dark and prominent. | confirmed common style policy | packaged atlas/cartoon grid style | 46D.8F |
 | GRID-2 | Regional selection can produce fewer than two useful RA and Dec lines; circumpolar RA spacing is not two hours. | confirmed family grid policy | request-time grid configuration | 46D.8F |
 | GRID-3 | Coordinate labels are too large or collide with their line; RA and Dec formatting and anchor meridians are inconsistent. | confirmed shared label policy | semantic grid formatter and placement | 46D.8F |
+| GRID-4 | Galactic all-sky parallels use unintended latitudes and principal longitude labels crowd the outer ellipse. | confirmed all-sky grid policy | request-time Galactic grid and elliptical label anchor | 46D.8F.2 |
 | DETAIL-1 | Atlas all-sky, planisphere, regional-group, and circumpolar products contain too many open clusters, planetary nebulae, and remnants. | confirmed family density policy | immutable detail policy | 46D.8G |
 | CARTOON-1 | Cartoon products omit the Milky Way, Magellanic Clouds, and a restrained bright deep-sky selection. | confirmed product content policy | cartoon detail/content policy | 46D.8G |
 | MASK-1 | The cartoon regional outside mask is too weak. | confirmed style policy | packaged cartoon mask style | 46D.8H–H.2 |
@@ -158,6 +159,13 @@ inset and bottom-edge right-ascension labels are bottom-aligned there, so
 larger type grows inward rather than crossing the chart boundary. The existing
 above-line declination clearance remains unchanged. The regional product and
 complete matrix must be rerendered before `LABEL-1` is accepted.
+
+Milestone 46D.8F.2 draws Galactic all-sky parallels at `-60`, `-30`, `0`,
+`30`, and `60` degrees and meridians every 45 degrees. It labels only `0`,
+`90`, `180`, and `270` degrees immediately below the Galactic equator and to
+the right of the corresponding meridian. The 180-degree label uses the left
+seam so the label grows into the ellipse. The all-sky products and complete
+matrix must be rerendered before `GRID-4` is accepted.
 
 ## Product review appendix
 

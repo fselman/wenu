@@ -66,6 +66,11 @@ def _grid_specifications(family, frame=None):
     latitudes = _latitude_values(
         75, step, include_zero=family == "all_sky"
     )
+    galactic_longitudes = longitudes
+    galactic_latitudes = latitudes
+    if family == "all_sky":
+        galactic_longitudes = tuple(range(0, 360, 45))
+        galactic_latitudes = tuple(range(-60, 61, 30))
     samples = 721 if step == 15 else 1441
     return {
         "equatorial_grid": {
@@ -85,8 +90,8 @@ def _grid_specifications(family, frame=None):
             "include_ecliptic": False,
         },
         "galactic_grid": {
-            "longitude": longitudes,
-            "latitude": latitudes,
+            "longitude": galactic_longitudes,
+            "latitude": galactic_latitudes,
             "samples": samples,
             "include_plane": False,
         },

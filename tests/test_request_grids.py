@@ -175,6 +175,21 @@ def test_family_grid_policy_includes_all_sky_zero_and_two_hour_polar_ra():
     assert circumpolar.ra == tuple(range(0, 360, 30))
 
 
+def test_all_sky_galactic_grid_uses_requested_meridians_and_parallels():
+    grid = configure_chart_request_grids(
+        CelestialSphere(object()),
+        request(
+            "all_sky",
+            detail=DetailOverrides(
+                enabled_layer_additions={"galactic_grid"}
+            ),
+        ),
+    )[0]
+
+    assert grid.longitude == tuple(range(0, 360, 45))
+    assert grid.latitude == (-60, -30, 0, 30, 60)
+
+
 def test_request_without_grids_clears_previous_request_geometry():
     sky = CelestialSphere(object())
     configure_chart_request_grids(
