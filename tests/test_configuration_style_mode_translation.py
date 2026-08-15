@@ -35,8 +35,8 @@ def test_packaged_styles_translate_to_existing_immutable_contracts():
 
 def test_packaged_cartoon_mask_is_strong_but_retains_outside_context():
     defaults = translate_style_mode_defaults()
-    assert defaults.cartoon.mask.color == "#d8dde2"
-    assert defaults.cartoon.mask.alpha == pytest.approx(0.68)
+    assert defaults.cartoon.mask.color == "#fffdf5"
+    assert defaults.cartoon.mask.alpha == pytest.approx(0.45)
     assert 0.0 < defaults.cartoon.mask.alpha < 1.0
     assert defaults.atlas.mask == AtlasChartStyle().mask
 

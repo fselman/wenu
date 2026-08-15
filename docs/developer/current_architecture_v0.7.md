@@ -220,6 +220,11 @@ presentation now preserve the translated `MaskStyle` color and opacity, so
 packaged and user-TOML mask appearance reaches the shared renderer unchanged.
 Atlas mode behavior, mask geometry, intersections, and painting are unchanged.
 
+Milestone 46D.8H.2 promotes the visually selected cartoon mask appearance to
+the packaged authority: warm white `#fffdf5` at opacity `0.45`, with z-order
+`20.0`. The compatibility preset and translation contract retain exact parity.
+No mode, atlas, geometry, intersection, or rendering behavior changes.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

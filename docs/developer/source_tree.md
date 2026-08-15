@@ -406,6 +406,11 @@ boundary: it preserves the style-owned mask instead of replacing its color
 with the mode sky. Configuration translation and the shared mask renderer
 remain the owners on either side; atlas mode resolution is unchanged.
 
+Milestone 46D.8H.2 returns final appearance ownership to
+`configuration/defaults.toml`, with `charts/presets.py` retaining its exact
+compatibility value and the translation contract proving parity. Examples and
+mode adapters contain no cartoon mask color or opacity literals.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current

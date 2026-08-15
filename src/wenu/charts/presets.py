@@ -197,8 +197,8 @@ class CartoonChartStyle(ChartStyle):
     )
     mask: MaskStyle = field(
         default_factory=lambda: MaskStyle(
-            color="#d8dde2",
-            alpha=0.68,
+            color="#fffdf5",
+            alpha=0.45,
             zorder=20.0,
         )
     )

@@ -954,6 +954,11 @@ the configured mask color with the canvas sky color. The translated packaged
 or user-overlay mask now reaches cartoon print and presentation unchanged.
 Atlas realization and all mask geometry and rendering behavior remain intact.
 
+Milestone 46D.8H.2 promotes the visually selected cartoon mask defaults: warm
+white `#fffdf5`, opacity `0.45`, and unchanged z-order `20.0`. Packaged TOML,
+the compatibility preset, and translation contracts agree exactly; atlas and
+all mask geometry and rendering behavior remain unchanged.
+
 - generate every canonical family through both its example and `wenu_chart`
   with equivalent effective options;
 - prove matching resolved observer, subject, geometry, detail, appearance,

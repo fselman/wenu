@@ -66,9 +66,9 @@ switches draws the line and shades the below-horizon side. If a constellation
 mask is also selected, Wenu intersects the openings and paints one translucent
 mask, so their overlap is not darker.
 
-The packaged cartoon style uses a strong but translucent pale-grey outside
-mask. It clearly separates the selected region while leaving the surrounding
-sky faintly visible; atlas retains its own independent mask appearance.
+The packaged cartoon style uses a translucent warm-white outside mask. It
+clearly separates the selected region while leaving the surrounding sky
+visible; atlas retains its own independent mask appearance.
 Both packaged defaults and `[styles.cartoon.mask]` user overlays retain their
 configured color and opacity in cartoon print and presentation modes.
 
