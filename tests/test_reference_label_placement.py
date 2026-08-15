@@ -223,6 +223,58 @@ def test_reference_policy_uses_one_shared_tangent_procedure():
         assert placements[0].normal_offset_em == 0.75
 
 
+def test_automatic_reference_labels_reserve_separated_positions():
+    observer = SimpleNamespace(
+        lat_deg=-32.0,
+        icrs_frame=ICRS(),
+        ecliptic_frame=BarycentricMeanEcliptic(),
+        galactic_frame=Galactic(),
+        altaz_frame=AltAz(
+            obstime=Time("2026-08-02T00:00:00"),
+            location=EarthLocation(lat=-32.0 * u.deg, lon=-71.0 * u.deg),
+        ),
+    )
+    labeled = lambda text: ReferencePlaneAnnotation(
+        state="labeled", label=text
+    )
+    chart = PolarPlanisphereChart()
+    composition = compose_chart(
+        chart,
+        style="atlas",
+        mode="print",
+        furniture=ChartFurnitureOptions(
+            references=ReferenceAnnotations(
+                ecliptic=labeled("Ecliptic"),
+                galactic_plane=labeled("Galactic plane"),
+            )
+        ),
+    )
+    overlay = build_celestial_reference_sky(
+        SimpleNamespace(observer=observer),
+        composition,
+        observer=observer,
+        chart=chart,
+    )
+    options = _reference_layer_options(overlay, composition, chart)
+    curve = ProjectedCurve(
+        np.linspace(-1.5, 1.5, 121),
+        np.zeros(121),
+    )
+
+    placements = [
+        options[layer]["render"]["label_anchor"](curve)
+        for layer in overlay.layers
+    ]
+
+    assert all(isinstance(item, CurveLabelPlacement) for item in placements)
+    viewport = composition.context.viewport
+    separation = np.hypot(
+        (placements[0].x - placements[1].x) / viewport.width,
+        (placements[0].y - placements[1].y) / viewport.height,
+    )
+    assert separation >= 0.10 - 1.0e-12
+
+
 def test_polar_reference_overlay_contains_grid_planes_points_and_poles():
     observer = SimpleNamespace(
         lat_deg=-32.0,

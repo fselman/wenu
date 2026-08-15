@@ -93,6 +93,7 @@ class BoundaryAwareReferenceAnchor:
     context: object
     inset: float = 0.68
     avoid_locations: tuple[str, ...] = ()
+    reservations: object | None = None
 
     def __post_init__(self):
         if not 0.0 < float(self.inset) <= 1.0:
@@ -153,7 +154,9 @@ class BoundaryAwareReferenceAnchor:
         indices = np.flatnonzero(inside)
         if circular:
             target = radius * 0.78
-            index = indices[np.argmin(np.abs(radial[indices] - target))]
+            order = indices[
+                np.argsort(np.abs(radial[indices] - target))
+            ]
         else:
             edge_distance = np.minimum.reduce(
                 (
@@ -163,12 +166,49 @@ class BoundaryAwareReferenceAnchor:
                     1.0 - normalized_y[indices],
                 )
             )
-            index = indices[np.argmin(edge_distance)]
-        return float(x[index]), float(y[index])
+            order = indices[np.argsort(edge_distance)]
+        for index in order:
+            anchor = float(x[index]), float(y[index])
+            if self.reservations is None or self.reservations.claim(anchor):
+                return anchor
+        return None
 
 
-def _explicit_anchor(position):
+class _ReferenceLabelReservations:
+    """Reserve separated normalized positions during one reference render."""
+
+    def __init__(self, context, minimum_separation=0.10):
+        self.context = context
+        self.minimum_separation = float(minimum_separation)
+        self.positions = []
+
+    def _normalized(self, anchor):
+        viewport = self.context.viewport
+        return (
+            (float(anchor[0]) - viewport.x_min) / viewport.width,
+            (float(anchor[1]) - viewport.y_min) / viewport.height,
+        )
+
+    def claim(self, anchor, *, force=False):
+        normalized = self._normalized(anchor)
+        separated = all(
+            np.hypot(
+                normalized[0] - occupied[0],
+                normalized[1] - occupied[1],
+            )
+            >= self.minimum_separation
+            for occupied in self.positions
+        )
+        if separated or force:
+            self.positions.append(normalized)
+            return True
+        return False
+
+
+def _explicit_anchor(position, reservations=None):
     def anchor(curve, ax=None):
+        if reservations is not None:
+            reservations.claim(position, force=True)
         return position
 
     return anchor
@@ -207,13 +247,14 @@ def _occupied_legend_locations(composition):
     )
 
 
-def _label_anchor(annotation, composition):
+def _label_anchor(annotation, composition, reservations):
     if annotation.anchor is not None:
-        delegate = _explicit_anchor(annotation.anchor)
+        delegate = _explicit_anchor(annotation.anchor, reservations)
     else:
         delegate = BoundaryAwareReferenceAnchor(
             composition.context,
             avoid_locations=_occupied_legend_locations(composition),
+            reservations=reservations,
         )
     return _SingleReferenceLabelAnchor(
         delegate,
@@ -376,6 +417,7 @@ def _reference_layer_options(reference_sky, composition, chart):
         horizon_altitude_deg=minimum,
     )
     annotations = composition.furniture.references
+    reservations = _ReferenceLabelReservations(composition.context)
     for layer in reference_sky.layers:
         system = getattr(layer, "coordinate_system", None)
         if system not in {"equatorial", "ecliptic", "galactic"}:
@@ -399,6 +441,7 @@ def _reference_layer_options(reference_sky, composition, chart):
         render["label_anchor"] = _label_anchor(
             annotation,
             composition,
+            reservations,
         )
         label_style = dict(render["label_style"])
         label_style["zorder"] = layers.LABELS

@@ -280,6 +280,9 @@ The image review then exposed out-of-face constellation segments as long
 equidistant chords. Polar points, curves, and grids are now clipped to the
 face's spherical declination cap before projection. Pole visibility follows
 the same geometric preparation rather than hemisphere selection.
+Automatic principal-reference labels also share normalized render-local
+reservations, preventing equator/ecliptic/Galactic-plane collisions without a
+south-face special case or displacement of explicit anchors.
 
 ### Milestone 48E.4 - Actual-size A4 export
 

@@ -62,3 +62,10 @@ chord crossing the disk. Every point, curve, and grid is now clipped by
 equatorial declination before either polar projection. Both ecliptic and
 Galactic poles remain semantically requested; the same cap preparation
 suppresses an out-of-face marker and its label.
+
+The next south-face review found the automatic celestial-equator and ecliptic
+labels occupying the same location. Automatic semantic reference labels now
+share a render-local collision registry in normalized chart coordinates. Each
+successful label reserves its position and later reference labels search their
+own curve for the next separated interior candidate. Explicit anchors remain
+authoritative.

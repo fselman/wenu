@@ -1050,6 +1050,12 @@ diagnostic uses the canonical footer, whose application version comes from
 installed package metadata. `PolarCalendarTick.labeled_day` allows stronger
 stroke weight without changing tick length.
 
+Automatic equator, ecliptic, and Galactic-plane labels share a render-local
+collision registry. Reservations use normalized chart coordinates so the
+policy is independent of projection scale and output size. Later labels search
+their visible curve for a separated interior candidate; explicit anchors are
+never displaced.
+
 ## 12. Compatibility and deprecation
 
 The legacy `cartoon_output_mode()` and `compose_cartoon_chart()` wrappers
