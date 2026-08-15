@@ -164,6 +164,12 @@ projection choice, selected pole, limiting declination, normalized and
 physical scale, handedness, exact circular boundary, square viewport, chart
 context, and canonical render/export adaptation. It owns no paired-face,
 calendar, registration, horizon, content, or appearance policy.
+`charts/polar_planisphere_pair.py` owns paired-face resolution and frozen
+assembly geometry. It validates shared scale and physical size, compatible
+north/south polar radii, projection-aware opposite RA direction, common
+centres and optional calendar/pivot radii, and reflected asymmetric
+registration metadata. It draws no marks and contains no calendar, site,
+content, style, renderer, or export orchestration.
 `charts/coordinate_frames.py` owns astronomical transformation of canonical
 AltAz spherical geometry into a chart-selected celestial frame before
 projection. Its Galactic and equatorial adapters preserve geometry structure

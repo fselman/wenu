@@ -164,6 +164,12 @@ from .charts.boundaries import (
 )
 from .charts.circumpolar import CircumpolarChart
 from .charts.polar_planisphere import PolarPlanisphereChart
+from .charts.polar_planisphere_pair import (
+    PolarFaceRegistration,
+    PolarPlanispherePair,
+    PolarPlanispherePairRequest,
+    PolarRegistrationMark,
+)
 from .charts.detail_application import (
     DetailApplication,
     apply_resolved_detail,
@@ -391,6 +397,10 @@ __all__ = [
     "EllipticalGridLabelAnchor",
     "CircumpolarChart",
     "PolarPlanisphereChart",
+    "PolarFaceRegistration",
+    "PolarPlanispherePair",
+    "PolarPlanispherePairRequest",
+    "PolarRegistrationMark",
     "RectangularLabelAnchor",
     "FullSkyChart",
     "RegionalChart",

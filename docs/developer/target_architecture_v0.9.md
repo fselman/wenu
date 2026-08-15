@@ -34,11 +34,18 @@ The paired product consists of:
 Both limiting declinations are independent configurable values. They are
 validated as coverage limits, not inferred from the observer horizon. The
 overlap may therefore be changed for another physical edition.
+When one paired edition requires a common angular scale and disk radius, its
+independent limits must produce equal polar angular radii; incompatible
+asymmetric coverage is rejected rather than silently rescaled.
 
 The north and south disk faces share one physical rotation axis but are viewed
 from opposite normals. Their apparent rotation directions must consequently
 be opposite. Wenu reverses angular handedness in geometry and scale placement
 for one face; it never mirrors a finished raster or produces reversed text.
+Because north/south spherical rotation already reverses stereographic RA
+orientation while the direct equidistant convention does not, the paired
+resolver verifies paper-coordinate direction rather than assuming that one
+identical `flip_ew` rule applies to both projection classes.
 
 ## 3. Polar azimuthal-equidistant projection
 

@@ -126,3 +126,12 @@ AltAz-to-equatorial canonical rendering seam. Polar azimuthal-equidistant is
 the physical-product default; stereographic is an explicit equatorial
 alternative over the same disk contract. Paired requests, calendar rings,
 registration, and horizon templates are not yet implemented.
+
+Milestone 48C.2 adds one immutable `PolarPlanispherePairRequest`. It resolves
+matched north and south charts with one projection choice, scale, position
+angle, physical diameter, sample count, centre, and compatible independently
+declared limits. Projection-aware handedness produces opposite paper RA
+direction for both equidistant and stereographic pairs. Frozen assembly
+metadata supplies shared optional calendar and pivot radii plus asymmetric
+marks that fold together without mirrored text. No registration marks,
+calendar scale, or physical furniture are drawn yet.

@@ -335,6 +335,7 @@ def test_chart_type_modules_do_not_import_render_backend():
         "binocular.py",
         "circumpolar.py",
         "polar_planisphere.py",
+        "polar_planisphere_pair.py",
     ):
         source = (directory / filename).read_text().lower()
         assert "matplotlib" not in source

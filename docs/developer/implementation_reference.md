@@ -659,6 +659,21 @@ geometry and does not alter normalized projection coordinates. Pairing,
 calendar furniture, registration, and horizon overlay are not part of this
 class.
 
+`PolarPlanispherePairRequest(...)` is the immutable source of truth for a
+matched back-to-back pair. It accepts the shared projection name, position
+angle, projection radius, physical diameter, boundary sampling, south-face
+handedness, and optional calendar and pivot radii, plus independently named
+north and south declination limits. Equal physical scale requires those limits
+to produce equal polar angular radii. `resolve()` returns a
+`PolarPlanispherePair` containing fresh north/south charts and frozen
+`PolarFaceRegistration` records. The resolver derives projection-aware
+opposite paper RA direction: the equidistant pair reverses the north
+`flip_ew`, while stereographic retains it because its pole rotation already
+reverses orientation. Corresponding asymmetric registration angles are
+reflected between faces, centres and physical radii match, and
+`text_mirrored` remains false. These records are geometry metadata; later
+furniture owns drawing them.
+
 `MollweideProjection(central_longitude_deg=0, flip_ew=True, radius=1)` is the
 coordinate-neutral equal-area all-sky projection. `project_spherical()` maps
 generic longitude and latitude directly; `project_geometry()` supports all

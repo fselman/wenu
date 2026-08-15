@@ -146,6 +146,14 @@ Tests fold paper-coordinate samples through the two faces and prove opposite
 apparent rotation, RA quadrant order, shared centre, matching radii, and the
 20-degree default overlap.
 
+**Status:** Implemented. `PolarPlanispherePairRequest` resolves both immutable
+faces from one projection, scale, physical diameter, position angle, sample
+count, and compatible independent declination limits. It verifies equal polar
+and projected radii, derives projection-aware opposite paper RA direction,
+shares centre and optional calendar/pivot radii, and supplies corresponding
+asymmetric registration metadata without mirroring text. Calendar geometry,
+site/time calibration, and rendered assembly furniture remain later owners.
+
 ## 6. Milestone 48D - Add the civil calendar ring
 
 ### Milestone 48D.1 - Calendar model
