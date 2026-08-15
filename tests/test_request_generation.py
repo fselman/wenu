@@ -115,7 +115,13 @@ def test_prepared_request_exports_the_shared_product_matrix_once(
         "binocular-centaurus-a-cartoon-print.png",
         "binocular-centaurus-a-cartoon-presentation.png",
     ]
-    assert configured_titles == ["Centaurus A"] * 4
+    assert len(configured_titles) == 4
+    assert all(
+        title.startswith("Centaurus A — center RA 13h25m28s")
+        and "Dec -43°01′09″" in title
+        and title.endswith("6.5° binocular field")
+        for title in configured_titles
+    )
     assert len(closed) == 4
 
 

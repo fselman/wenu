@@ -135,7 +135,7 @@ def test_packaged_defaults_preserve_audited_baseline_values():
     assert defaults["detail"]["binocular_stellar_sizing"] == {
         "reference": "limiting_magnitude",
         "scale": 1.0,
-        "exponent": 0.20,
+        "exponent": 0.35,
         "minimum_area": 1.0,
         "maximum_area": 40.0,
     }

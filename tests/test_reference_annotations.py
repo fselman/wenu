@@ -6,6 +6,7 @@
 from types import SimpleNamespace
 
 import numpy as np
+import pytest
 from astropy.coordinates import BarycentricMeanEcliptic, Galactic, ICRS
 
 from wenu import (
@@ -43,6 +44,35 @@ def test_reference_overlay_is_opt_in():
     sky = SimpleNamespace(observer=observer())
 
     assert build_celestial_reference_sky(sky, composition) is None
+
+
+def test_binocular_target_marker_is_render_local_reference_furniture():
+    binocular = BinocularChart(
+        35.0,
+        210.0,
+        target_ra_deg=201.365,
+        target_dec_deg=-43.019,
+    )
+    composition = compose_chart(
+        binocular,
+        style="atlas",
+        furniture=ChartFurnitureOptions(),
+    )
+    sky = SimpleNamespace(observer=observer())
+
+    overlay = build_celestial_reference_sky(
+        sky,
+        composition,
+        chart=binocular,
+    )
+
+    assert overlay is not None
+    assert len(overlay.points) == 1
+    point = overlay.points._points[0]
+    assert point.marker == "+"
+    assert point.label is None
+    assert point.coord.icrs.ra.deg == pytest.approx(201.365)
+    assert point.coord.icrs.dec.deg == pytest.approx(-43.019)
 
 
 def test_reference_sky_contains_only_requested_semantic_geometry():

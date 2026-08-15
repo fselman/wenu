@@ -32,6 +32,8 @@ class BinocularChart:
     flip_ew: bool = True
     boundary_samples: int = 721
     label_selection: tuple[str, ...] | None = None
+    target_ra_deg: float | None = None
+    target_dec_deg: float | None = None
 
     def __post_init__(self):
         values = np.asarray(
@@ -56,6 +58,15 @@ class BinocularChart:
             raise ValueError("projection_radius must be positive.")
         if int(self.boundary_samples) < 9:
             raise ValueError("boundary_samples must be at least 9.")
+        if (self.target_ra_deg is None) != (self.target_dec_deg is None):
+            raise ValueError(
+                "target_ra_deg and target_dec_deg must be supplied together."
+            )
+        if self.target_ra_deg is not None:
+            if not np.isfinite((self.target_ra_deg, self.target_dec_deg)).all():
+                raise ValueError("Target coordinates must be finite.")
+            if not -90.0 <= float(self.target_dec_deg) <= 90.0:
+                raise ValueError("target_dec_deg must be between -90 and 90.")
 
     @classmethod
     def from_coordinate(
@@ -79,6 +90,7 @@ class BinocularChart:
             position_angle_deg=position_angle_deg,
             **kwargs,
         )
+        icrs = coordinate.icrs
         return cls(
             center_alt_deg=regional.center_alt_deg,
             center_az_deg=regional.center_az_deg,
@@ -88,6 +100,8 @@ class BinocularChart:
             flip_ew=regional.flip_ew,
             boundary_samples=boundary_samples,
             label_selection=regional.label_selection,
+            target_ra_deg=float(icrs.ra.deg),
+            target_dec_deg=float(icrs.dec.deg),
         )
 
     @property

@@ -241,6 +241,16 @@ the equator at the named longitude's expected Mollweide x-coordinate, which
 suppresses false seam-split duplicates. The 180-degree label uses the left
 seam so its rightward text remains inside the ellipse.
 
+Milestone 46D.8I makes the binocular family default grid-free without
+removing explicit grid controls. Its observer-bound chart retains the target's
+ICRS center so reference furniture can draw one render-local `+` marker through
+the canonical spherical-geometry pipeline. Binocular titles report that ICRS
+center and field diameter. Packaged binocular stellar sizing uses the existing
+limiting-magnitude law with exponent `0.35`; no renderer or catalogue-selection
+path changes. Named binocular atlas composition uses its existing packaged
+fixed detail policy rather than neutral detail, supplying the required
+limiting-magnitude reference.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

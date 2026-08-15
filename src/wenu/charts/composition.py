@@ -74,6 +74,8 @@ def _family_atlas_policy(chart, geometry_defaults):
         family = chart_type_name(chart)
     except ValueError:
         return FixedDetailPolicy(geometry_defaults.neutral_detail)
+    if family == "binocular":
+        return geometry_defaults.binocular_other_policy
     return geometry_defaults.family_atlas_policies.get(
         family,
         FixedDetailPolicy(geometry_defaults.neutral_detail),
@@ -266,6 +268,19 @@ def compose_chart(
             stars=replace(
                 resolved_style.stars,
                 area_scale=resolved_style.stars.area_scale * 0.25,
+            ),
+        )
+    if (
+        type(chart).__name__ == "BinocularChart"
+        and named_style
+    ):
+        resolved_style = replace(
+            resolved_style,
+            stars=replace(
+                resolved_style.stars,
+                magnitude_sizing=(
+                    geometry_defaults.binocular_stellar_sizing
+                ),
             ),
         )
     if style_overrides is not None:

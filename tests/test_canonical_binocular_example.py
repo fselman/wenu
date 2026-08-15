@@ -5,6 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+from astropy.coordinates import SkyCoord
 
 
 def example():
@@ -49,6 +50,7 @@ def test_generation_delegates_to_shared_view_drawing(monkeypatch, tmp_path):
     target = SimpleNamespace(
         display_name="Ring Nebula", primary_identifier="M57",
         required_families=frozenset({"planetary_nebulae"}),
+        coordinate=SkyCoord(ra=283.396, dec=33.030, unit="deg"),
     )
     view = SimpleNamespace(
         target=target,
@@ -67,8 +69,18 @@ def test_generation_delegates_to_shared_view_drawing(monkeypatch, tmp_path):
 
     assert paths == (output,)
     assert captured[0][0][0] is view
-    assert captured[0][1]["title"] == "Ring Nebula (M57) — 6.5° binocular field"
+    title = captured[0][1]["title"]
+    assert title.startswith("Ring Nebula (M57) — center RA 18h53m35s")
+    assert "Dec +33°01′48″" in title
+    assert title.endswith("6.5° binocular field")
     assert "planetary_nebulae" in (
         captured[0][1]["product_details"]["cartoon"].detail.enabled_layers
     )
     assert closed == [True]
+
+
+def test_binocular_defaults_omit_coordinate_grids():
+    arguments = example().parser().parse_args([])
+
+    assert arguments.equatorial_grid is False
+    assert arguments.equatorial_grid_labels is False

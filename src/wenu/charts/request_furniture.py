@@ -4,9 +4,25 @@ from __future__ import annotations
 
 from dataclasses import replace
 
+from astropy import units as u
+
 from .furniture import ChartFurnitureOptions
 from .legend_metadata import chart_context_lines, observer_context_lines
 from .legend_plan import ChartLegendPlan, LegendOptions
+
+
+def binocular_product_title(target, field_diameter_deg, *, display_name=None):
+    """Return one publication title with target, center, and field size."""
+    coordinate = target.coordinate
+    ra = coordinate.ra.to_string(unit=u.hour, sep="hms", precision=0)
+    dec = coordinate.dec.to_string(
+        unit=u.deg, sep="°′″", precision=0, alwayssign=True
+    )
+    name = target.display_name if display_name is None else str(display_name)
+    return (
+        f"{name} — center RA {ra}, Dec {dec} — "
+        f"{float(field_diameter_deg):g}° binocular field"
+    )
 
 
 def resolve_request_furniture_context(

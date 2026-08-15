@@ -174,13 +174,20 @@ def _add_selected_poles(points, system, selection, **style):
         add(pole=pole, marker="x", **style)
 
 
-def build_celestial_reference_sky(sky, composition, *, observer=None):
+def build_celestial_reference_sky(
+    sky, composition, *, observer=None, chart=None
+):
     """Build an unregistered reference-only sky for one composition."""
     furniture = composition.furniture
     if furniture is None:
         return None
     references = furniture.references
     poles = furniture.poles
+    target = (
+        None
+        if chart is None or getattr(chart, "target_ra_deg", None) is None
+        else (chart.target_ra_deg, chart.target_dec_deg)
+    )
     requested = (
         references.celestial_equator.enabled
         or references.ecliptic.enabled
@@ -189,6 +196,7 @@ def build_celestial_reference_sky(sky, composition, *, observer=None):
             value != "none"
             for value in (poles.celestial, poles.ecliptic, poles.galactic)
         )
+        or target is not None
     )
     if not requested:
         return None
@@ -254,6 +262,22 @@ def build_celestial_reference_sky(sky, composition, *, observer=None):
             poles.galactic,
             size=size,
             color=style.galactic_color,
+        )
+    if target is not None:
+        style = _publication_style(composition.style)
+        points = (
+            reference_sky.add_points()
+            if reference_sky.points is None
+            else reference_sky.points
+        )
+        points.add_equatorial_point(
+            target[0],
+            target[1],
+            marker="+",
+            size=80.0 * composition.mode.symbol_scale,
+            color=style.foreground_color,
+            zorder=layers.LABELS,
+            linewidths=1.1 * composition.mode.line_scale,
         )
     return reference_sky
 
@@ -322,7 +346,7 @@ def draw_celestial_reference_furniture(
 ):
     """Draw requested references through the canonical geometry pipeline."""
     reference_sky = build_celestial_reference_sky(
-        sky, composition, observer=observer
+        sky, composition, observer=observer, chart=chart
     )
     if reference_sky is None:
         return None

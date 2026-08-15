@@ -91,7 +91,7 @@ def test_packaged_binocular_detail_and_stellar_sizing_have_parity():
     assert defaults.binocular_stellar_sizing == StellarMagnitudeSizing(
         reference="limiting_magnitude",
         scale=1.0,
-        exponent=0.20,
+        exponent=0.35,
         minimum_area=1.0,
         maximum_area=40.0,
     )

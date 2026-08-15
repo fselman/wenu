@@ -42,7 +42,9 @@ class _DisableDefaultEquatorialGrid(argparse.Action):
         setattr(namespace, "equatorial_grid_labels", False)
 
 
-def add_chart_cli_arguments(parser, *, default_output):
+def add_chart_cli_arguments(
+    parser, *, default_output, default_equatorial_grid=True
+):
     """Add the complete common CLI contract for ordinary chart views."""
     add_chart_arguments(parser, default_output=default_output)
     parser.add_argument(
@@ -51,8 +53,8 @@ def add_chart_cli_arguments(parser, *, default_output):
         help="load a partial user TOML configuration overlay",
     )
     parser.set_defaults(
-        equatorial_grid=True,
-        equatorial_grid_labels=True,
+        equatorial_grid=bool(default_equatorial_grid),
+        equatorial_grid_labels=bool(default_equatorial_grid),
     )
     parser.add_argument(
         "--no-equatorial-grid",

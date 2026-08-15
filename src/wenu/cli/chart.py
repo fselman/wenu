@@ -43,6 +43,7 @@ def _add_common_arguments(parser, *, family):
     add_chart_cli_arguments(
         parser,
         default_output=Path("output/wenu-chart") / family,
+        default_equatorial_grid=family != "binocular",
     )
     _add_observer_arguments(parser)
     parser.add_argument("--title")

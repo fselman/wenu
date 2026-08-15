@@ -43,6 +43,18 @@ def test_regional_accepts_one_or_many_constellations():
     assert many.constellations == ("Cyg", "Lyr", "Aql")
 
 
+def test_binocular_omits_the_shared_grid_default_but_keeps_opt_in():
+    omitted = chart.parser().parse_args(["binocular"])
+    selected = chart.parser().parse_args([
+        "binocular", "--equatorial-grid", "--equatorial-grid-labels",
+    ])
+
+    assert omitted.equatorial_grid is False
+    assert omitted.equatorial_grid_labels is False
+    assert selected.equatorial_grid is True
+    assert selected.equatorial_grid_labels is True
+
+
 def test_defaults_prints_packaged_authority_without_generation(
     monkeypatch, capsys
 ):

@@ -17,7 +17,10 @@ from .request import ChartRequest
 from .request_chart import PreparedChartRequest, prepare_chart_request
 from .request_grids import configure_chart_request_grids
 from .request_horizon import configure_chart_request_horizon
-from .request_furniture import resolve_request_furniture_context
+from .request_furniture import (
+    binocular_product_title,
+    resolve_request_furniture_context,
+)
 from .request_resolver import resolve_chart_request
 
 
@@ -81,6 +84,11 @@ def _request_title(prepared):
     if request.title is not None:
         return request.title
     if resolved.target is not None:
+        if request.family == "binocular":
+            return binocular_product_title(
+                resolved.target,
+                resolved.frame.field_diameter_deg,
+            )
         return resolved.target.display_name
     if resolved.constellations is not None:
         return resolved.constellations.display_name

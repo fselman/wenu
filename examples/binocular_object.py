@@ -9,6 +9,7 @@ from wenu import (
     draw_chart_view_from_arguments,
     generate_celestial_sphere, get_chart_view,
 )
+from wenu.charts.request_furniture import binocular_product_title
 
 DEFAULT_OUTPUT = Path("output/examples/binocular-object")
 
@@ -42,8 +43,8 @@ def generate(arguments):
     target = view.target
     name = target.display_name + (
         "" if target.primary_identifier is None else f" ({target.primary_identifier})")
-    title = f"{name} — {view.frame.field_diameter_deg:g}° binocular field"
-    sizing = StellarMagnitudeSizing(reference="limiting_magnitude", scale=1.0, exponent=0.20,
+    title = binocular_product_title(target, view.frame.field_diameter_deg, display_name=name)
+    sizing = StellarMagnitudeSizing(reference="limiting_magnitude", scale=1.0, exponent=0.35,
                                     minimum_area=1.0, maximum_area=40.0)
     try:
         results = draw_chart_view_from_arguments(
@@ -57,7 +58,8 @@ def generate(arguments):
 
 def parser():
     value = add_chart_cli_arguments(argparse.ArgumentParser(description=__doc__),
-                                    default_output=DEFAULT_OUTPUT)
+                                    default_output=DEFAULT_OUTPUT,
+                                    default_equatorial_grid=False)
     value.add_argument("--target", default="centaurus-a")
     value.add_argument("--field-diameter", type=float)
     return value

@@ -193,6 +193,15 @@ limiting magnitude as the reference, so the faintest selected magnitude uses
 the configured minimum scatter area. Brighter stars grow by the configured
 exponent and are bounded by the configured maximum area. The rendered stars
 and stellar magnitude legend use the same sizing configuration.
+Milestone 46D.8I makes binocular products grid-free by default; all four grid
+systems remain explicit opt-ins. The title includes the resolved ICRS center
+and field diameter, and unregistered reference furniture marks the resolved
+target with a `+` through the ordinary projection and clipping pipeline. The
+binocular-only exponent is `0.35`, with minimum area `1.0` and maximum area
+`40.0`. Named binocular atlas composition selects the existing packaged fixed
+detail policy, so its limiting-magnitude sizing reference is always defined.
+The render callback is installed only when the supplied sphere contains a
+stellar layer; catalogue-free and empty-sky composition remains empty.
 `ChartContext.horizon_altitude_deg` optionally carries a chart-owned altitude
 floor into composition detail application. Circumpolar charts set it to
 `-90.0`, so their declination field and reference furniture are not clipped

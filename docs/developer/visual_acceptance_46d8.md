@@ -170,6 +170,14 @@ not labeled, suppressing false `90`-degree center and `180`-degree right-seam
 duplicates. The all-sky products and complete matrix must be rerendered before
 `GRID-4` is accepted.
 
+Milestone 46D.8I removes the implicit equatorial grid from binocular products,
+adds a render-local `+` at the resolved target, and includes the ICRS center
+and field diameter in the title. The stellar renderer was already applying its
+configured law correctly; the binocular-only exponent changes from `0.20` to
+`0.35` so stars between magnitudes 8 and 11 have a clearer area progression.
+The canonical and diagnostic binocular products must be rerendered before
+`BINOCULAR-1` and `BINOCULAR-2` are accepted.
+
 ## Product review appendix
 
 Use one checkbox in every criterion column for every product. Leave a box

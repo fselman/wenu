@@ -322,7 +322,11 @@ def composition_layer_options(
     )
     stars = getattr(composition.style, "stars", None)
     sizing = getattr(stars, "magnitude_sizing", None)
-    if sizing is not None and sizing != StellarMagnitudeSizing():
+    if (
+        getattr(sky, "stars", None) is not None
+        and sizing is not None
+        and sizing != StellarMagnitudeSizing()
+    ):
         limit = (
             composition.detail.star_magnitude_limit
             if sizing.reference == "limiting_magnitude"

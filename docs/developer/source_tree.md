@@ -411,6 +411,14 @@ Milestone 46D.8H.2 returns final appearance ownership to
 compatibility value and the translation contract proving parity. Examples and
 mode adapters contain no cartoon mask color or opacity literals.
 
+Milestone 46D.8I keeps binocular remediation distributed by responsibility:
+`charts/command_line.py` and `cli/chart.py` own the family grid default;
+`charts/binocular.py` retains the resolved target center as geometry;
+`charts/reference_furniture.py` constructs its unregistered marker overlay;
+`charts/request_furniture.py` owns the center-and-diameter title; and
+`configuration/defaults.toml` owns the binocular-only stellar sizing exponent.
+The canonical example declares those public policies without drawing them.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current

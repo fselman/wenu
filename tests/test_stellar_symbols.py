@@ -316,10 +316,11 @@ import numpy as np
 import pytest
 
 from wenu import (
-    AtlasChartStyle,
+    AtlasChartStyle, BinocularChart,
     ChartStyleOverrides,
     StellarMagnitudeSizing,
     stellar_magnitude_scale,
+    compose_chart,
 )
 from wenu.rendering.preparation import (
     configured_magnitude_sizes,
@@ -330,7 +331,7 @@ from wenu.rendering.preparation import (
 SIZING = StellarMagnitudeSizing(
     reference="limiting_magnitude",
     scale=1.0,
-    exponent=0.20,
+    exponent=0.35,
     minimum_area=1.0,
     maximum_area=40.0,
 )
@@ -358,7 +359,8 @@ def test_limiting_magnitude_maps_to_minimum_and_bright_stars_grow():
         limiting_magnitude=11.0,
     )
     assert areas[0] == pytest.approx(1.0)
-    assert np.all(np.diff(areas) > 0.0)
+    assert areas[1] > areas[0]
+    assert np.all(np.diff(areas) >= 0.0)
     assert areas[-1] == pytest.approx(40.0)
 
 
@@ -397,6 +399,20 @@ def test_binocular_example_declares_the_normalized_contract():
     assert "star_magnitude_limit=11.0" in source
     assert 'reference="limiting_magnitude"' in source
     assert "scale=1.0" in source
-    assert "exponent=0.20" in source
+    assert "exponent=0.35" in source
     assert "minimum_area=1.0" in source
     assert "maximum_area=40.0" in source
+
+
+def test_named_binocular_composition_activates_packaged_stellar_sizing():
+    composition = compose_chart(
+        BinocularChart(35.0, 210.0),
+        style="atlas",
+    )
+
+    sizing = composition.style.stars.magnitude_sizing
+    assert sizing.reference == "limiting_magnitude"
+    assert sizing.exponent == pytest.approx(0.35)
+    assert sizing.minimum_area == pytest.approx(1.0)
+    assert sizing.maximum_area == pytest.approx(40.0)
+    assert composition.detail.star_magnitude_limit == pytest.approx(11.0)

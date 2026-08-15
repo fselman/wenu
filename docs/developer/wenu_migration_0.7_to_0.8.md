@@ -968,6 +968,19 @@ white `#fffdf5`, opacity `0.45`, and unchanged z-order `20.0`. Packaged TOML,
 the compatibility preset, and translation contracts agree exactly; atlas and
 all mask geometry and rendering behavior remain unchanged.
 
+Milestone 46D.8I closes the binocular findings at their existing owners.
+Binocular command and example adapters no longer inherit the shared labeled
+equatorial-grid default, while explicit grid switches remain available. The
+resolved target is marked by a render-local `+` reference point, and the
+default title states the ICRS center and field diameter. The stellar renderer
+was not defective: the packaged `0.20` exponent compressed the predominantly
+faint binocular population. Raising the binocular-only exponent to `0.35`
+restores a readable magnitude hierarchy while retaining the same limiting
+magnitude, minimum area, maximum area, and sizing pipeline.
+Named binocular atlas composition now resolves the existing packaged fixed
+detail policy, ensuring the sizing reference always has its family magnitude
+limit without weakening validation.
+
 - generate every canonical family through both its example and `wenu_chart`
   with equivalent effective options;
 - prove matching resolved observer, subject, geometry, detail, appearance,
