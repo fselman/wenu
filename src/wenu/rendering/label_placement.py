@@ -54,7 +54,7 @@ def _readable_rotation(angle_deg):
     return float((float(angle_deg) + 90.0) % 180.0 - 90.0)
 
 
-def _rotation_with_down_toward(angle_deg, position, target):
+def rotation_with_down_toward(angle_deg, position, target):
     """Choose the tangent direction whose typographic down faces target."""
     angle = _readable_rotation(angle_deg)
     radians = np.radians(angle)
@@ -137,7 +137,7 @@ def tangent_label_placement(
     angle = (
         _readable_rotation(raw_angle)
         if down_toward is None
-        else _rotation_with_down_toward(
+        else rotation_with_down_toward(
             raw_angle,
             (x, y),
             down_toward,

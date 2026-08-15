@@ -117,7 +117,8 @@ def test_reference_sky_contains_only_requested_semantic_geometry():
     assert overlay.layers[2].include_plane is True
     assert len(overlay.points) == 5
     metadata = overlay.points._style_metadata()
-    assert set(metadata["marker"]) == {"x"}
+    assert metadata["marker"][:2].tolist() == ["+", "+"]
+    assert set(metadata["marker"][2:]) == {"x"}
 
 
 def test_both_poles_use_conventional_labels():

@@ -199,6 +199,11 @@ def test_constellation_labels_are_suppressed_before_the_date_ring():
     assert np.isfinite(prepared.x[0])
     assert np.isnan(prepared.x[1])
     assert prepared.labels.tolist() == ["SCP", "EDGE"]
+    rotation = options[layer]["render"]["label_style"]["rotation"]
+    assert rotation(0.0, radius * 0.5) == pytest.approx(0.0)
+    assert rotation(0.0, -radius * 0.5) == pytest.approx(-180.0)
+    assert rotation(radius * 0.5, 0.0) == pytest.approx(-90.0)
+    assert rotation(-radius * 0.5, 0.0) == pytest.approx(90.0)
 
 
 @pytest.mark.parametrize(

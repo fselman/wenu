@@ -189,6 +189,34 @@ def test_renderer_applies_generic_placement_without_reference_semantics():
         plt.close(figure)
 
 
+def test_renderer_resolves_callable_point_label_rotation():
+    points = ProjectedPoints(
+        x=np.asarray((0.0,)),
+        y=np.asarray((-1.0,)),
+        labels=np.asarray(("label",), dtype=object),
+    )
+    figure, ax = plt.subplots()
+    try:
+        artists = MatplotlibRenderer(ax).draw(
+            points,
+            style={"s": 0.0},
+            draw_labels=True,
+            label_style={
+                "rotation": lambda x, y: -180.0,
+                "rotation_mode": "anchor",
+            },
+        )
+        text = next(
+            artist
+            for artist in artists
+            if callable(getattr(artist, "get_text", None))
+        )
+        assert text.get_rotation() == pytest.approx(180.0)
+        assert text.get_rotation_mode() == "anchor"
+    finally:
+        plt.close(figure)
+
+
 def test_reference_policy_uses_one_shared_tangent_procedure():
     observer = SimpleNamespace(
         lat_deg=-32.0,
@@ -398,6 +426,10 @@ def test_polar_reference_overlay_contains_grid_planes_points_and_poles():
     assert equatorial[0].dec == tuple(float(v) for v in range(-80, 81, 20))
     assert equatorial[1].include_equator is True
     assert len(overlay.points) == 8
+    metadata = overlay.points._style_metadata()
+    assert set(metadata["marker"]) == {"x"}
+    keypoint_sizes = metadata["size"][-4:]
+    np.testing.assert_allclose(keypoint_sizes, [18.0] * 4)
 
 
 @pytest.mark.parametrize(

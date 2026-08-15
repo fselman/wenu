@@ -96,6 +96,7 @@ def _render_face(chart, furniture, sky, observer, destination):
                 galactic_plane=labeled("Galactic plane"),
             ),
             poles=PoleAnnotations(
+                celestial="both",
                 ecliptic="both",
                 galactic="both",
                 labels=True,

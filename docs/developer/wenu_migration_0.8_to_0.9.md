@@ -286,6 +286,9 @@ south-face special case or displacement of explicit anchors.
 Polar reference text also keeps its curve tangent while choosing the
 orientation whose typographic down points toward the pole; this orientation
 policy does not affect other chart families.
+Constellation names now follow that same polar-only orientation. Ecliptic
+keypoints change from filled circles to small `x` marks, while celestial poles
+use `+` and the other coordinate-system poles retain `x`.
 
 ### Milestone 48E.4 - Actual-size A4 export
 

@@ -283,8 +283,9 @@ def _add_selected_poles(points, system, selection, **style):
         poles = (selection,)
     else:
         poles = ("north", "south")
+    marker = "+" if system == "equatorial" else "x"
     for pole in poles:
-        add(pole=pole, marker="x", **style)
+        add(pole=pole, marker=marker, **style)
 
 
 def build_celestial_reference_sky(
@@ -394,8 +395,8 @@ def build_celestial_reference_sky(
         )
         if polar:
             points.add_ecliptic_keypoints(
-                marker="o",
-                size=24.0 * composition.mode.symbol_scale,
+                marker="x",
+                size=18.0 * composition.mode.symbol_scale,
                 color=style.ecliptic_color,
                 zorder=layers.POINTS,
             )

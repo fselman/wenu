@@ -20,6 +20,7 @@ from wenu.geometry.projected import ProjectedPoints
 from wenu.geometry.spherical import SphericalPolygons
 from wenu.geometry.viewport import Viewport
 from wenu.rendering.preparation import clip_to_latitude
+from wenu.rendering.label_placement import rotation_with_down_toward
 
 
 @dataclass(frozen=True)
@@ -297,6 +298,23 @@ class PolarPlanisphereChart:
             )
 
         configured["prepare"] = inset
+        render = dict(configured.get("render", {}))
+        label_style = dict(render.get("label_style", {}))
+
+        def polar_rotation(x, y):
+            radial_angle = np.degrees(np.arctan2(y, x))
+            return rotation_with_down_toward(
+                radial_angle + 90.0,
+                (x, y),
+                (0.0, 0.0),
+            )
+
+        label_style.update(
+            rotation=polar_rotation,
+            rotation_mode="anchor",
+        )
+        render["label_style"] = label_style
+        configured["render"] = render
         result = dict(options)
         result[layer] = configured
         return result

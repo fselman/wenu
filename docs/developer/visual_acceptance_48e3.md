@@ -74,3 +74,9 @@ Polar-planisphere reference labels retain their local tangent but use a
 disk-specific orientation rule: typographic down points toward the celestial
 pole at the disk center. Other chart families retain page-readable tangent
 normalization.
+
+Constellation labels on polar faces follow the same inward-down convention,
+with their baseline tangent to the circle about the pole through the label
+anchor. Ecliptic cardinal keypoints use small `x` marks rather than star-like
+filled circles. Celestial poles use `+`; ecliptic and Galactic poles retain
+`x`.

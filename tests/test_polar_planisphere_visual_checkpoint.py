@@ -39,6 +39,7 @@ def test_visual_checkpoint_realizes_reviewed_calendar_and_references():
     assert "draw_celestial_reference_furniture(" in source
     assert 'ecliptic="both"' in source
     assert 'galactic="both"' in source
+    assert 'celestial="both"' in source
     assert "FooterOptions(" in source
     assert "include_version=True" in source
     assert "draw_chart_footer(" in source

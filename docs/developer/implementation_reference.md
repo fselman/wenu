@@ -1061,6 +1061,12 @@ labels choose between the two equivalent tangent directions by requiring the
 typographic down normal to point toward projected disk center. Other chart
 families retain the ordinary page-readable tangent convention.
 
+Polar constellation labels use the corresponding circular tangent at their
+point anchor and the same inward-down convention. The renderer resolves their
+rotation callback per projected point without changing non-polar label style.
+Polar ecliptic keypoints use small `x` symbols, celestial poles use `+`, and
+ecliptic and Galactic poles use `x`.
+
 ## 12. Compatibility and deprecation
 
 The legacy `cartoon_output_mode()` and `compose_cartoon_chart()` wrappers

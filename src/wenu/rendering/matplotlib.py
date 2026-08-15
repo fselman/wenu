@@ -876,6 +876,10 @@ class MatplotlibRenderer:
         return result
 
     def _label(self, x, y, label, style, offset):
+        style = dict(style)
+        rotation = style.get("rotation")
+        if callable(rotation):
+            style["rotation"] = rotation(x, y)
         if isinstance(offset, Mapping):
             offset = offset.get(
                 str(label),
