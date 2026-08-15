@@ -1056,6 +1056,11 @@ policy is independent of projection scale and output size. Later labels search
 their visible curve for a separated interior candidate; explicit anchors are
 never displaced.
 
+For `polar_planisphere` only, automatic and explicit principal-reference
+labels choose between the two equivalent tangent directions by requiring the
+typographic down normal to point toward projected disk center. Other chart
+families retain the ordinary page-readable tangent convention.
+
 ## 12. Compatibility and deprecation
 
 The legacy `cartoon_output_mode()` and `compose_cartoon_chart()` wrappers

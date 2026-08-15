@@ -217,8 +217,9 @@ def _explicit_anchor(position, reservations=None):
 class _SingleReferenceLabelAnchor:
     """Return at most one successful anchor for a semantic reference."""
 
-    def __init__(self, delegate):
+    def __init__(self, delegate, *, down_toward=None):
         self.delegate = delegate
+        self.down_toward = down_toward
         self.used = False
 
     def __call__(self, curve, ax=None):
@@ -231,6 +232,7 @@ class _SingleReferenceLabelAnchor:
                 curve,
                 anchor,
                 normal_offset_em=0.75,
+                down_toward=self.down_toward,
             )
         return None
 
@@ -247,7 +249,13 @@ def _occupied_legend_locations(composition):
     )
 
 
-def _label_anchor(annotation, composition, reservations):
+def _label_anchor(
+    annotation,
+    composition,
+    reservations,
+    *,
+    down_toward=None,
+):
     if annotation.anchor is not None:
         delegate = _explicit_anchor(annotation.anchor, reservations)
     else:
@@ -258,6 +266,7 @@ def _label_anchor(annotation, composition, reservations):
         )
     return _SingleReferenceLabelAnchor(
         delegate,
+        down_toward=down_toward,
     )
 
 
@@ -418,6 +427,11 @@ def _reference_layer_options(reference_sky, composition, chart):
     )
     annotations = composition.furniture.references
     reservations = _ReferenceLabelReservations(composition.context)
+    down_toward = (
+        (0.0, 0.0)
+        if getattr(chart, "chart_type", None) == "polar_planisphere"
+        else None
+    )
     for layer in reference_sky.layers:
         system = getattr(layer, "coordinate_system", None)
         if system not in {"equatorial", "ecliptic", "galactic"}:
@@ -442,6 +456,7 @@ def _reference_layer_options(reference_sky, composition, chart):
             annotation,
             composition,
             reservations,
+            down_toward=down_toward,
         )
         label_style = dict(render["label_style"])
         label_style["zorder"] = layers.LABELS

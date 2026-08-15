@@ -76,6 +76,35 @@ def test_tangent_does_not_bridge_disconnected_segments():
     assert placement.rotation_deg == 0.0
 
 
+@pytest.mark.parametrize(
+    ("position", "expected"),
+    (
+        ((0.0, 1.0), 0.0),
+        ((0.0, -1.0), -180.0),
+        ((1.0, 0.0), -90.0),
+        ((-1.0, 0.0), 90.0),
+    ),
+)
+def test_polar_tangent_orientation_points_typographic_down_to_pole(
+    position,
+    expected,
+):
+    x, y = position
+    tangent = np.asarray((-1.0, 0.0, 1.0))
+    curve = ProjectedCurve(
+        x + tangent * (-y),
+        y + tangent * x,
+    )
+
+    placement = tangent_label_placement(
+        curve,
+        position,
+        down_toward=(0.0, 0.0),
+    )
+
+    assert placement.rotation_deg == pytest.approx(expected)
+
+
 def test_automatic_reference_anchors_prefer_safe_outer_regions():
     from wenu.charts.context import BoundaryKind
     from wenu.charts.reference_furniture import BoundaryAwareReferenceAnchor
@@ -273,6 +302,51 @@ def test_automatic_reference_labels_reserve_separated_positions():
         (placements[0].y - placements[1].y) / viewport.height,
     )
     assert separation >= 0.10 - 1.0e-12
+
+
+def test_polar_reference_policy_uses_pole_down_orientation_exclusively():
+    observer = SimpleNamespace(
+        lat_deg=-32.0,
+        icrs_frame=ICRS(),
+        ecliptic_frame=BarycentricMeanEcliptic(),
+        galactic_frame=Galactic(),
+        altaz_frame=AltAz(
+            obstime=Time("2026-08-02T00:00:00"),
+            location=EarthLocation(lat=-32.0 * u.deg, lon=-71.0 * u.deg),
+        ),
+    )
+    annotation = ReferencePlaneAnnotation(
+        state="labeled",
+        label="Ecliptic",
+        anchor=(0.0, -1.0),
+    )
+    curve = ProjectedCurve(
+        np.asarray((-1.0, 0.0, 1.0)),
+        np.asarray((-1.0, -1.0, -1.0)),
+    )
+
+    placements = []
+    for chart in (PolarPlanisphereChart(), FullSkyChart()):
+        composition = compose_chart(
+            chart,
+            style="atlas",
+            furniture=ChartFurnitureOptions(
+                references=ReferenceAnnotations(ecliptic=annotation)
+            ),
+        )
+        overlay = build_celestial_reference_sky(
+            SimpleNamespace(observer=observer),
+            composition,
+            observer=observer,
+            chart=chart,
+        )
+        options = _reference_layer_options(overlay, composition, chart)
+        placements.append(
+            options[overlay.layers[0]]["render"]["label_anchor"](curve)
+        )
+
+    assert placements[0].rotation_deg == pytest.approx(-180.0)
+    assert placements[1].rotation_deg == pytest.approx(0.0)
 
 
 def test_polar_reference_overlay_contains_grid_planes_points_and_poles():

@@ -54,6 +54,20 @@ def _readable_rotation(angle_deg):
     return float((float(angle_deg) + 90.0) % 180.0 - 90.0)
 
 
+def _rotation_with_down_toward(angle_deg, position, target):
+    """Choose the tangent direction whose typographic down faces target."""
+    angle = _readable_rotation(angle_deg)
+    radians = np.radians(angle)
+    down = np.asarray((np.sin(radians), -np.cos(radians)))
+    toward = np.asarray(target, dtype=float) - np.asarray(
+        position,
+        dtype=float,
+    )
+    if float(np.dot(down, toward)) >= 0.0:
+        return angle
+    return float((angle + 180.0 + 180.0) % 360.0 - 180.0)
+
+
 def _distinct_neighbor(curve, index, step):
     """Return the nearest distinct point in one contiguous direction."""
     x0 = float(curve.x[index])
@@ -70,19 +84,30 @@ def _distinct_neighbor(curve, index, step):
     return None
 
 
-def tangent_label_placement(curve, position, *, normal_offset_em=0.0):
+def tangent_label_placement(
+    curve,
+    position,
+    *,
+    normal_offset_em=0.0,
+    down_toward=None,
+):
     """Return a label placement parallel to the local projected tangent.
 
     The tangent is measured at the finite curve sample nearest ``position``.
     It never bridges a non-finite break, and repeated samples are skipped.
     When no finite tangent exists, the position remains valid and rotation is
-    left unspecified.
+    left unspecified. ``down_toward`` optionally chooses between the two
+    tangent directions so the typographic down normal faces a target point.
     """
     if not isinstance(curve, ProjectedCurve):
         raise TypeError("curve must be a ProjectedCurve.")
     x, y = (float(value) for value in position)
     if not np.isfinite((x, y)).all():
         raise ValueError("label position must be finite.")
+    if down_toward is not None:
+        down_toward = tuple(float(value) for value in down_toward)
+        if len(down_toward) != 2 or not np.isfinite(down_toward).all():
+            raise ValueError("down_toward must contain two finite values.")
     finite_indices = np.flatnonzero(curve.finite)
     if finite_indices.size == 0:
         return CurveLabelPlacement(
@@ -108,5 +133,14 @@ def tangent_label_placement(curve, position, *, normal_offset_em=0.0):
         return CurveLabelPlacement(
             x, y, normal_offset_em=normal_offset_em
         )
-    angle = _readable_rotation(np.degrees(np.arctan2(dy, dx)))
+    raw_angle = np.degrees(np.arctan2(dy, dx))
+    angle = (
+        _readable_rotation(raw_angle)
+        if down_toward is None
+        else _rotation_with_down_toward(
+            raw_angle,
+            (x, y),
+            down_toward,
+        )
+    )
     return CurveLabelPlacement(x, y, angle, normal_offset_em)

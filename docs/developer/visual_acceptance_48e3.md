@@ -69,3 +69,8 @@ share a render-local collision registry in normalized chart coordinates. Each
 successful label reserves its position and later reference labels search their
 own curve for the next separated interior candidate. Explicit anchors remain
 authoritative.
+
+Polar-planisphere reference labels retain their local tangent but use a
+disk-specific orientation rule: typographic down points toward the celestial
+pole at the disk center. Other chart families retain page-readable tangent
+normalization.

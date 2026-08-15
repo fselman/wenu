@@ -283,6 +283,9 @@ the same geometric preparation rather than hemisphere selection.
 Automatic principal-reference labels also share normalized render-local
 reservations, preventing equator/ecliptic/Galactic-plane collisions without a
 south-face special case or displacement of explicit anchors.
+Polar reference text also keeps its curve tangent while choosing the
+orientation whose typographic down points toward the pole; this orientation
+policy does not affect other chart families.
 
 ### Milestone 48E.4 - Actual-size A4 export
 
