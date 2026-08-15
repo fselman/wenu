@@ -8,6 +8,7 @@ import numpy as np
 
 from wenu.charts.context import BoundaryKind
 from wenu.charts.coordinate_frames import horizontal_to_equatorial
+from wenu.geometry.projected import ProjectedCurve, ProjectedCurves
 from wenu.geometry.spherical import SphericalGrid
 from wenu.rendering import layers
 from wenu.rendering.label_placement import tangent_label_placement
@@ -21,44 +22,59 @@ from wenu.sky.coordinate_grids import (
 
 
 class _PolarEquatorialGrid(EquatorialGrid):
-    """Four RA meridians with short 20-degree declination ticks."""
-
-    tick_half_width_deg = 1.5
+    """Four RA meridians; declination ticks remain disk furniture."""
 
     def spherical_geometry(self, observer):
-        resolved = self._resolve_observer(observer)
+        self._resolve_observer(observer)
         meridians = self._combine(
             [self.meridian(value) for value in self.ra]
         )
-        ticks = []
-        for right_ascension in self.ra:
-            for declination in self.dec:
-                longitude = np.linspace(
-                    right_ascension - self.tick_half_width_deg,
-                    right_ascension + self.tick_half_width_deg,
-                    9,
-                )
-                latitude = np.full_like(longitude, declination)
-                ticks.append(
-                    self._make_curves(
-                        longitude_deg=(longitude,),
-                        latitude_deg=(latitude,),
-                        names=(
-                            f"declination_tick_{right_ascension:g}_"
-                            f"{declination:g}",
-                        ),
-                        closed=(False,),
-                        styles=(None,),
-                        observer=resolved,
-                    )
-                )
         return SphericalGrid(
-            components={
-                "meridians": meridians,
-                "declination_ticks": self._combine(ticks),
-            },
+            components={"meridians": meridians},
             metadata=self._grid_metadata(),
         )
+
+
+def polar_declination_tick_geometry(
+    chart,
+    *,
+    right_ascensions_deg=(0.0, 90.0, 180.0, 270.0),
+    declinations_deg=tuple(float(value) for value in range(-80, 81, 20)),
+    half_width_deg=1.5,
+):
+    """Return short projected declination marks on selected RA meridians."""
+    lower = min(
+        chart.pole_declination_deg,
+        chart.limiting_declination_deg,
+    )
+    upper = max(
+        chart.pole_declination_deg,
+        chart.limiting_declination_deg,
+    )
+    curves = []
+    for right_ascension in right_ascensions_deg:
+        for declination in declinations_deg:
+            if not lower <= declination <= upper:
+                continue
+            longitude = np.asarray(
+                (
+                    float(right_ascension) - float(half_width_deg),
+                    float(right_ascension) + float(half_width_deg),
+                )
+            )
+            latitude = np.full(2, float(declination))
+            x, y = chart.projection.project_spherical(longitude, latitude)
+            curves.append(
+                ProjectedCurve(
+                    x,
+                    y,
+                    name=(
+                        f"declination_tick_{right_ascension:g}_"
+                        f"{declination:g}"
+                    ),
+                )
+            )
+    return ProjectedCurves(curves)
 
 
 @dataclass(frozen=True)
@@ -67,6 +83,7 @@ class CelestialReferenceRendering:
 
     sky: CelestialSphere
     rendering: object
+    declination_tick_artists: tuple[object, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -212,7 +229,10 @@ def _add_selected_poles(points, system, selection, **style):
     if selection == "none":
         return
     add = getattr(points, f"add_{system}_pole")
-    poles = ("visible",) if selection == "visible" else ("north", "south")
+    if selection in {"visible", "north", "south"}:
+        poles = (selection,)
+    else:
+        poles = ("north", "south")
     for pole in poles:
         add(pole=pole, marker="x", **style)
 
@@ -433,6 +453,8 @@ def draw_celestial_reference_furniture(
             if polar
             else spherical
         )
+        if polar:
+            return chart.project_equatorial_geometry(geometry)
         return project_geometry_for_viewport(
             geometry,
             projection=projection,
@@ -451,7 +473,23 @@ def draw_celestial_reference_furniture(
         ),
         project_geometry=project,
     )
+    tick_artists = ()
+    if polar and composition.detail.layer_enabled("equatorial_grid"):
+        style = _publication_style(composition.style)
+        tick_artists = tuple(
+            renderer.draw(
+                polar_declination_tick_geometry(chart),
+                style={
+                    "color": style.equatorial_color,
+                    "linewidth": style.grid_linewidth,
+                    "linestyle": style.equatorial_linestyle,
+                    "alpha": style.grid_alpha,
+                    "zorder": 3,
+                },
+            )
+        )
     return CelestialReferenceRendering(
         sky=reference_sky,
         rendering=rendering,
+        declination_tick_artists=tick_artists,
     )

@@ -24,6 +24,8 @@ class PolarPlanisphereStylePalette:
     constellation_label_color: str = "#365F78"
     constellation_label_fontsize: float = 7.5
     constellation_label_opacity: float = 0.90
+    reference_color: str = "#66899B"
+    reference_label_fontsize: float = 5.25
     boundary_color: str = "#6F8795"
     boundary_linewidth: float = 0.45
     boundary_opacity: float = 0.80
@@ -32,6 +34,7 @@ class PolarPlanisphereStylePalette:
         positive = (
             "star_area_scale",
             "constellation_label_fontsize",
+            "reference_label_fontsize",
         )
         nonnegative = (
             "constellation_linewidth",
@@ -104,6 +107,11 @@ def polar_planisphere_chart_style(base, palette):
             constellation_line_alpha=palette.constellation_line_opacity,
             constellation_label_color=palette.constellation_label_color,
             constellation_label_alpha=palette.constellation_label_opacity,
+            equatorial_color=palette.reference_color,
+            ecliptic_color=palette.reference_color,
+            galactic_color=palette.reference_color,
+            coordinate_label_color=palette.reference_color,
+            coordinate_label_fontsize=palette.reference_label_fontsize,
             draw_coordinate_labels=False,
         ),
         mask=replace(base.mask, color=palette.paper_color),

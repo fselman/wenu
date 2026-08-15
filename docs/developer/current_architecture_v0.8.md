@@ -186,4 +186,9 @@ prepares polar overlays into ICRS and supplies four RA meridians, short
 declination ticks every 20 degrees, labelled principal planes, cardinal points,
 and face-visible pole annotations. Calendar geometry records labelled-day
 ticks separately so rendering can strengthen them without changing length;
-day and month typography now share a tighter radial band.
+day and month typography now share a tighter radial band. The second review
+correction moves month names slightly outward, renders declination marks as
+short projected disk furniture rather than spherical parallels, selects the
+pole belonging to each face explicitly, unifies principal references under a
+neutral blue-grey style, and enlarges their labels by 50 percent. The
+diagnostic footer obtains the installed Wenu version from package metadata.

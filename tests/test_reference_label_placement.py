@@ -32,11 +32,15 @@ from wenu import (
     build_celestial_reference_sky,
     compose_chart,
 )
-from wenu.charts.reference_furniture import _reference_layer_options
+from wenu.charts.reference_furniture import (
+    _reference_layer_options,
+    polar_declination_tick_geometry,
+)
 from wenu.geometry.projected import (
     ProjectedCurve,
     ProjectedCurves,
     ProjectedGrid,
+    ProjectedPoints,
 )
 from wenu.rendering import (
     CurveLabelPlacement,
@@ -268,3 +272,28 @@ def test_polar_reference_overlay_contains_grid_planes_points_and_poles():
     assert equatorial[0].dec == tuple(float(v) for v in range(-80, 81, 20))
     assert equatorial[1].include_equator is True
     assert len(overlay.points) == 8
+
+
+@pytest.mark.parametrize(
+    "projection_name", ("polar_azimuthal_equidistant", "stereographic")
+)
+@pytest.mark.parametrize(
+    ("pole", "expected_count"), (("south", 24), ("north", 24))
+)
+def test_polar_declination_ticks_are_short_projected_furniture(
+    projection_name,
+    pole,
+    expected_count,
+):
+    chart = PolarPlanisphereChart(
+        pole=pole,
+        limiting_declination_deg=20.0 if pole == "south" else -20.0,
+        projection_name=projection_name,
+    )
+
+    ticks = polar_declination_tick_geometry(chart)
+
+    assert len(ticks) == expected_count
+    assert all(len(curve.x) == 2 for curve in ticks)
+    assert all(len(curve.y) == 2 for curve in ticks)
+    assert all(curve.closed is False for curve in ticks)

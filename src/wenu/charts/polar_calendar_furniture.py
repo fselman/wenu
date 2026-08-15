@@ -82,7 +82,7 @@ class PolarCalendarFurnitureRequest:
     day_tick_length_fraction: float = 0.025
     month_tick_length_fraction: float = 0.045
     day_label_radius_fraction: float = 0.845
-    month_label_radius_fraction: float = 0.865
+    month_label_radius_fraction: float = 0.88
 
     def __post_init__(self):
         if not isinstance(self.calendar, CommonYearCalendarRequest):

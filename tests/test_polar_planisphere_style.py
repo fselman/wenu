@@ -21,6 +21,8 @@ def test_packaged_physical_palette_has_clean_white_and_provisional_blue():
     assert palette == PolarPlanisphereStylePalette()
     assert palette.paper_color == "#FFFFFF"
     assert palette.star_color == "#005B8F"
+    assert palette.reference_color == "#66899B"
+    assert palette.reference_label_fontsize == pytest.approx(5.25)
     assert palette.star_area_scale < AtlasChartStyle().stars.area_scale
 
 
@@ -38,6 +40,11 @@ def test_polar_print_composition_uses_dedicated_physical_style():
     assert style.legend.visible is False
     assert style.grids.constellation_linewidth == pytest.approx(0.35)
     assert style.grids.constellation_label_color == "#365F78"
+    assert style.grids.equatorial_color == "#66899B"
+    assert style.grids.ecliptic_color == "#66899B"
+    assert style.grids.galactic_color == "#66899B"
+    assert style.grids.coordinate_label_color == "#66899B"
+    assert style.grids.coordinate_label_fontsize == pytest.approx(5.25)
     assert style.canvas.label_fontsize == pytest.approx(7.5)
 
 
@@ -111,10 +118,16 @@ def test_configured_palette_flows_through_normal_composition(monkeypatch):
 def test_configuration_translation_carries_palette_values():
     values = load_packaged_defaults()
     values["styles"]["polar_planisphere"]["star_color"] = "#123456"
+    values["styles"]["polar_planisphere"]["reference_color"] = "#654321"
+    values["styles"]["polar_planisphere"][
+        "reference_label_font_size"
+    ] = 6.0
 
     defaults = translate_style_mode_defaults(values)
 
     assert defaults.polar_planisphere_palette.star_color == "#123456"
+    assert defaults.polar_planisphere_palette.reference_color == "#654321"
+    assert defaults.polar_planisphere_palette.reference_label_fontsize == 6.0
 
 
 def test_palette_and_style_adapter_are_immutable_and_validated():
@@ -126,6 +139,8 @@ def test_palette_and_style_adapter_are_immutable_and_validated():
         PolarPlanisphereStylePalette(star_area_scale=0.0)
     with pytest.raises(ValueError, match="milky_way_opacity"):
         PolarPlanisphereStylePalette(milky_way_opacity=1.1)
+    with pytest.raises(ValueError, match="reference_label_fontsize"):
+        PolarPlanisphereStylePalette(reference_label_fontsize=0.0)
     with pytest.raises(TypeError, match="base"):
         polar_planisphere_chart_style(object(), palette)
     with pytest.raises(TypeError, match="palette"):

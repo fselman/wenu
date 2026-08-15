@@ -95,24 +95,49 @@ def radial_label_offset(distance):
     return offset
 
 
-def clip_to_latitude(spherical, projected, *, minimum=0.0):
+def clip_to_latitude(
+    spherical,
+    projected,
+    *,
+    minimum=0.0,
+    maximum=None,
+):
     """Clip corresponding projected geometry by spherical latitude."""
     minimum = float(minimum)
-    if minimum <= -90.0 and not isinstance(
+    maximum = None if maximum is None else float(maximum)
+    if maximum is not None and minimum > -90.0:
+        raise ValueError(
+            "Simultaneous minimum and maximum latitude clipping is not "
+            "supported."
+        )
+    latitude_sign = -1.0 if maximum is not None else 1.0
+    threshold = -maximum if maximum is not None else minimum
+    if threshold <= -90.0 and not isinstance(
         spherical, SphericalPolygons
     ):
         return projected
     if isinstance(spherical, SphericalPoints):
-        return _clip_points(spherical, projected, minimum)
+        return _clip_points(
+            spherical,
+            projected,
+            threshold,
+            latitude_sign=latitude_sign,
+        )
     if isinstance(spherical, SphericalCurves):
-        return _clip_curves(spherical, projected, minimum)
+        return _clip_curves(
+            spherical,
+            projected,
+            threshold,
+            latitude_sign=latitude_sign,
+        )
     if isinstance(spherical, SphericalGrid):
         return ProjectedGrid(
             components={
                 name: _clip_curves(
                     curves,
                     projected.components[name],
-                    minimum,
+                    threshold,
+                    latitude_sign=latitude_sign,
                 )
                 for name, curves in spherical.components.items()
             },
@@ -122,7 +147,8 @@ def clip_to_latitude(spherical, projected, *, minimum=0.0):
         return _clip_polygon_boundaries(
             spherical,
             projected,
-            minimum,
+            threshold,
+            latitude_sign=latitude_sign,
         )
     raise TypeError(
         "Latitude clipping does not support "
@@ -130,10 +156,11 @@ def clip_to_latitude(spherical, projected, *, minimum=0.0):
     )
 
 
-def _clip_points(spherical, projected, minimum):
+def _clip_points(spherical, projected, minimum, *, latitude_sign=1.0):
+    latitude = latitude_sign * spherical.lat_deg
     visible = (
-        np.isfinite(spherical.lat_deg)
-        & (spherical.lat_deg >= minimum)
+        np.isfinite(latitude)
+        & (latitude >= minimum)
     )
     x = np.asarray(projected.x, dtype=float).copy()
     y = np.asarray(projected.y, dtype=float).copy()
@@ -149,7 +176,13 @@ def _clip_points(spherical, projected, minimum):
     )
 
 
-def _clip_curves(spherical, projected, minimum):
+def _clip_curves(
+    spherical,
+    projected,
+    minimum,
+    *,
+    latitude_sign=1.0,
+):
     items = []
     source_indices = []
     for source_index, (latitude, curve, closed) in enumerate(
@@ -158,7 +191,7 @@ def _clip_curves(spherical, projected, minimum):
         for x, y in _visible_segments(
             curve.x,
             curve.y,
-            latitude,
+            latitude_sign * latitude,
             closed=bool(closed),
             minimum=minimum,
         ):
@@ -761,7 +794,13 @@ def _polygon_latitudes(spherical, projected):
     return latitudes
 
 
-def _clip_polygon_boundaries(spherical, projected, minimum):
+def _clip_polygon_boundaries(
+    spherical,
+    projected,
+    minimum,
+    *,
+    latitude_sign=1.0,
+):
     if not isinstance(projected, ProjectedPolygons):
         raise TypeError(
             "SphericalPolygons require ProjectedPolygons."
@@ -774,7 +813,7 @@ def _clip_polygon_boundaries(spherical, projected, minimum):
         for x, y in _visible_segments(
             polygon.x,
             polygon.y,
-            latitude,
+            latitude_sign * latitude,
             closed=True,
             minimum=minimum,
         ):

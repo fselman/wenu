@@ -13,7 +13,9 @@ from .legend_plan import (
 
 
 _REFERENCE_STATES = frozenset({"none", "line", "labeled"})
-_POLE_SELECTIONS = frozenset({"none", "visible", "both"})
+_POLE_SELECTIONS = frozenset(
+    {"none", "visible", "north", "south", "both"}
+)
 
 
 def _anchor(value, name):
@@ -110,7 +112,7 @@ class PoleAnnotations:
             if selection not in _POLE_SELECTIONS:
                 raise ValueError(
                     f"{name} pole selection must be 'none', 'visible', "
-                    "or 'both'."
+                    "'north', 'south', or 'both'."
                 )
             object.__setattr__(self, name, selection)
         object.__setattr__(self, "labels", bool(self.labels))

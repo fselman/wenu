@@ -120,7 +120,9 @@ def test_automatic_and_explicit_reference_anchors_are_distinct():
     assert explicit.anchor == (1.0, 2.0)
 
 
-@pytest.mark.parametrize("selection", ["none", "visible", "both"])
+@pytest.mark.parametrize(
+    "selection", ["none", "visible", "north", "south", "both"]
+)
 def test_pole_selection_contract(selection):
     poles = PoleAnnotations(celestial=selection)
     assert poles.celestial == selection
@@ -138,7 +140,7 @@ def test_invalid_furniture_values_fail_early():
             anchor=(float("nan"), 0.0),
         )
     with pytest.raises(ValueError, match="pole selection"):
-        PoleAnnotations(galactic="north")
+        PoleAnnotations(galactic="east")
     with pytest.raises(ValueError, match="requires a name"):
         FooterOptions(application=True, application_name=" ")
 

@@ -84,7 +84,7 @@ def test_calendar_geometry_reserves_the_star_disk_and_strengthens_boundaries():
             assert np.hypot(*label.position) > face.star_disk_radius_mm
             assert np.hypot(*label.position) < face.outer_radius_mm
         assert np.hypot(*face.day_labels[0].position) == pytest.approx(84.5)
-        assert np.hypot(*face.month_labels[0].position) == pytest.approx(86.5)
+        assert np.hypot(*face.month_labels[0].position) == pytest.approx(88.0)
 
 
 def test_explicit_paired_calendar_radius_is_the_star_disk_boundary():

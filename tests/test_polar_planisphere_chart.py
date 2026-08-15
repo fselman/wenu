@@ -9,7 +9,7 @@ from wenu import PolarPlanisphereChart
 from wenu.charts.context import BoundaryKind
 from wenu.charts.legend_plan import chart_type_name, default_chart_legend_plan
 from wenu.geometry.projected import ProjectedPoints
-from wenu.geometry.spherical import SphericalPoints
+from wenu.geometry.spherical import SphericalCurves, SphericalPoints
 from wenu.projections import (
     PolarAzimuthalEquidistantProjection,
     StereographicProjection,
@@ -80,6 +80,55 @@ def test_projection_choice_changes_radial_law_not_disk_contract():
         assert chart.chart_context.clip_boundary.closed
         assert chart.figure_size(8.0) == pytest.approx((8.0, 8.0))
         assert chart.physical_diameter_mm == pytest.approx(195.0)
+
+
+@pytest.mark.parametrize(
+    "projection_name", ("polar_azimuthal_equidistant", "stereographic")
+)
+@pytest.mark.parametrize(
+    ("pole", "outside_declination"), (("north", -30.0), ("south", 30.0))
+)
+def test_face_cap_removes_outside_curve_chords_before_rendering(
+    projection_name,
+    pole,
+    outside_declination,
+):
+    chart = PolarPlanisphereChart(
+        pole=pole,
+        projection_name=projection_name,
+    )
+    curves = SphericalCurves(
+        lon_deg=(np.asarray((20.0, 200.0)),),
+        lat_deg=(np.asarray((outside_declination, outside_declination)),),
+    )
+
+    projected = chart.project_equatorial_geometry(curves)
+
+    assert len(projected) == 0
+
+
+@pytest.mark.parametrize(
+    ("pole", "declinations", "finite"),
+    (
+        ("north", (-27.0, 27.0), (False, True)),
+        ("south", (-27.0, 27.0), (True, False)),
+    ),
+)
+def test_face_cap_suppresses_reference_points_outside_declination_limit(
+    pole,
+    declinations,
+    finite,
+):
+    chart = PolarPlanisphereChart(pole=pole)
+    points = SphericalPoints(
+        lon_deg=np.asarray((0.0, 0.0)),
+        lat_deg=np.asarray(declinations),
+    )
+
+    projected = chart.project_equatorial_geometry(points)
+
+    assert tuple(np.isfinite(projected.x)) == finite
+    assert tuple(np.isfinite(projected.y)) == finite
 
 
 def test_physical_diameter_does_not_change_projection_geometry():

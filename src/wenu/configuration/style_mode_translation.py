@@ -443,6 +443,14 @@ def translate_style_mode_defaults(
                     "constellation_label_opacity"
                 ]
             ),
+            reference_color=(
+                styles["polar_planisphere"]["reference_color"]
+            ),
+            reference_label_fontsize=(
+                styles["polar_planisphere"][
+                    "reference_label_font_size"
+                ]
+            ),
             boundary_color=(
                 styles["polar_planisphere"]["boundary_color"]
             ),

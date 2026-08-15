@@ -115,6 +115,34 @@ def test_curve_clipping_preserves_visible_runs():
     )
 
 
+def test_curve_clipping_supports_a_maximum_latitude():
+    spherical = SphericalCurves(
+        lon_deg=([0.0, 1.0, 2.0, 3.0],),
+        lat_deg=([1.0, -1.0, -2.0, 1.0],),
+    )
+    projected = ProjectedCurves(
+        items=[
+            ProjectedCurve(
+                x=[0.0, 1.0, 2.0, 3.0],
+                y=[0.0, 1.0, 2.0, 3.0],
+            )
+        ]
+    )
+
+    clipped = clip_to_latitude(
+        spherical,
+        projected,
+        minimum=-90.0,
+        maximum=0.0,
+    )
+
+    assert len(clipped) == 1
+    np.testing.assert_allclose(
+        clipped[0].x,
+        [0.5, 1.0, 2.0, 8.0 / 3.0],
+    )
+
+
 def test_magnitude_sizes_matches_legacy_formula():
     sizes = magnitude_sizes([5.0, 4.0])
     assert sizes[0] == 1.5

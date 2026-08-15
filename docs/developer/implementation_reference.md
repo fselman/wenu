@@ -1033,12 +1033,22 @@ For Milestone 48E.3, `PolarPlanispherePairRequest` defaults to symmetric
 limits of +20 and -20 degrees. A default stereographic pair selects its
 unmirrored south-face convention automatically; an explicit `south_flip_ew`
 still overrides it. Polar reference composition opts into the ordinary
-equatorial-grid layer, realized as meridians at 0, 90, 180, and 270 degrees
-with short declination ticks every 20 degrees. The established reference sky
+equatorial-grid layer, realized as meridians at 0, 90, 180, and 270 degrees.
+Short declination ticks every 20 degrees are projected disk furniture, not
+spherical parallels. After conversion to equatorial coordinates, polar points,
+curves, and grids are clipped to the face's declination cap before projection.
+This prevents exterior constellation endpoints from becoming false planar
+chords in the equidistant view. The established reference sky
 owns the equator, ecliptic, Galactic plane, ecliptic cardinal points, and pole
 annotations, and converts its canonical AltAz geometry back to ICRS before
-the polar projection. `PolarCalendarTick.labeled_day` allows stronger stroke
-weight without changing tick length.
+the polar projection. Both physical poles may be requested normally; the same
+declination-cap preparation suppresses out-of-face markers and labels. Pole
+selection also accepts explicit `north` and
+`south` values. The polar physical palette owns a
+single neutral reference color and a configurable principal-label size. The
+diagnostic uses the canonical footer, whose application version comes from
+installed package metadata. `PolarCalendarTick.labeled_day` allows stronger
+stroke weight without changing tick length.
 
 ## 12. Compatibility and deprecation
 

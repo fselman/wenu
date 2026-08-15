@@ -17,7 +17,9 @@ from wenu.charts.coordinate_frames import horizontal_to_equatorial
 from wenu.charts.projection_selection import ProjectionSelection
 from wenu.geometry.frame import SphericalFrame
 from wenu.geometry.projected import ProjectedPoints
+from wenu.geometry.spherical import SphericalPolygons
 from wenu.geometry.viewport import Viewport
+from wenu.rendering.preparation import clip_to_latitude
 
 
 @dataclass(frozen=True)
@@ -210,9 +212,6 @@ class PolarPlanisphereChart:
         options = apply_coordinate_label_anchor(
             options, self.coordinate_label_anchor
         )
-        transform = lambda spherical: horizontal_to_equatorial(
-            spherical, resolved_observer
-        )
         set_background = getattr(renderer, "set_circular_background", None)
         canvas = getattr(style, "canvas", None)
         sky_color = getattr(canvas, "sky_color", None)
@@ -231,15 +230,39 @@ class PolarPlanisphereChart:
         if callable(set_frame_visible):
             set_frame_visible(False)
         projection = self.projection
+
+        def project(spherical):
+            equatorial = horizontal_to_equatorial(
+                spherical,
+                resolved_observer,
+            )
+            return self.project_equatorial_geometry(equatorial)
+
         return sky.draw_chart(
             projection=projection,
             renderer=renderer,
             observer=resolved_observer,
             viewport=self.viewport,
             layer_options=options,
-            project_geometry=lambda spherical: projection.project_geometry(
-                transform(spherical)
-            ),
+            project_geometry=project,
+        )
+
+    def project_equatorial_geometry(self, spherical):
+        """Project geometry after clipping it to this face's sky cap."""
+        projected = self.projection.project_geometry(spherical)
+        if isinstance(spherical, SphericalPolygons):
+            return projected
+        if self.pole == "north":
+            return clip_to_latitude(
+                spherical,
+                projected,
+                minimum=self.limiting_declination_deg,
+            )
+        return clip_to_latitude(
+            spherical,
+            projected,
+            minimum=-90.0,
+            maximum=self.limiting_declination_deg,
         )
 
     def _inset_constellation_labels(self, sky, options):

@@ -13,6 +13,7 @@ from wenu import (
     ChartFurnitureOptions,
     DetailOverrides,
     ExportOptions,
+    FooterOptions,
     MatplotlibRenderer,
     Observer,
     PoleAnnotations,
@@ -99,6 +100,11 @@ def _render_face(chart, furniture, sky, observer, destination):
                 galactic="both",
                 labels=True,
             ),
+            footer=FooterOptions(
+                application=True,
+                application_name="Wenu",
+                include_version=True,
+            ),
         ),
     )
     figure, ax = plt.subplots(figsize=(8.0, 8.0))
@@ -138,6 +144,14 @@ def _render_face(chart, furniture, sky, observer, destination):
     ax.set_aspect("equal")
     ax.set_axis_off()
     figure.subplots_adjust(0.0, 0.0, 1.0, 1.0)
+    from wenu.charts.footer_furniture import draw_chart_footer
+
+    draw_chart_footer(
+        renderer,
+        composition.furniture.footer,
+        composition.mode,
+        color=composition.style.canvas.foreground_color,
+    )
     output = ExportOptions(
         dpi=180,
         bbox_inches="tight",

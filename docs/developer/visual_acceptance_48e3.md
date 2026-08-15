@@ -36,3 +36,29 @@ python tools/render_48e2_polar_preview.py \
 Verify stereographic east-west direction against the accepted equidistant
 face, not merely the fact that the two printed faces fold back to back.
 Actual-size page layout, translation, and final typography remain later work.
+
+## Second review correction
+
+The second visual review accepted the overall appearance and identified six
+focused corrections before actual-size layout work:
+
+- move month names slightly outward from the day-number band;
+- remove the unexplained full declination circles from the equidistant view;
+- show only the pole belonging to the rendered face;
+- use the same neutral blue-grey for all three principal reference curves;
+- enlarge principal-reference labels by 50 percent; and
+- identify each diagnostic with the installed Wenu package version.
+
+The correction keeps RA meridians and principal planes in the canonical
+reference-sky path. Short declination marks are projected disk furniture, not
+spherical parallels, so neither supported projection can turn them into full
+circles. The preview uses the existing canonical footer and its
+`importlib.metadata` version authority; no version string is hard coded.
+
+The subsequent image review identified three long equidistant chords as
+constellation segments whose endpoints both lay outside the face's
+declination cap. Planar artist clipping retained the portion of each false
+chord crossing the disk. Every point, curve, and grid is now clipped by
+equatorial declination before either polar projection. Both ecliptic and
+Galactic poles remain semantically requested; the same cap preparation
+suppresses an out-of-face marker and its label.

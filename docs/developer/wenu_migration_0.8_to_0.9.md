@@ -260,7 +260,7 @@ References use existing spherical/reference preparation wherever possible.
 Disk-only ticks and physical-scale labels remain chart furniture rather than
 new sky catalogues.
 
-**Status:** Implemented, pending second visual approval. Both faces now extend
+**Status:** Implemented, pending third visual approval. Both faces now extend
 through a symmetric +20/-20-degree overlap. Default stereographic pairs use
 the corrected unmirrored south-face convention while retaining opposite
 back-to-back RA direction. Polar reference furniture uses the canonical
@@ -271,6 +271,15 @@ Constellation-label anchors are suppressed near the date ring. Calendar day
 numbers move toward their ticks, labelled-day ticks gain weight without
 length, and month names occupy the same band at twice the day-label size.
 The second review is recorded in `visual_acceptance_48e3.md`.
+Its focused correction moves month names slightly outward; makes declination
+marks projected disk furniture so equidistant rendering cannot create full
+parallels; selects only the relevant face pole; unifies principal-reference
+color; enlarges reference labels by 50 percent; and adds the installed Wenu
+version through the canonical footer metadata path.
+The image review then exposed out-of-face constellation segments as long
+equidistant chords. Polar points, curves, and grids are now clipped to the
+face's spherical declination cap before projection. Pole visibility follows
+the same geometric preparation rather than hemisphere selection.
 
 ### Milestone 48E.4 - Actual-size A4 export
 

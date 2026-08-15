@@ -197,10 +197,12 @@ projection. Its Galactic and equatorial adapters preserve geometry structure
 and metadata and contain no map projection, seam, viewport, renderer, or style
 implementation.
 `charts/reference_furniture.py` retains the single reference-overlay path. For
-polar disks it configures the four canonical RA meridians and short 20-degree
-declination ticks, then uses the shared horizontal-to-equatorial adapter
-before polar projection. Principal-plane labels, ecliptic cardinal points,
-and pole annotations remain semantic furniture rather than catalogue layers.
+polar disks it configures the four canonical RA meridians and uses the shared
+horizontal-to-equatorial adapter before polar projection. Short 20-degree
+declination marks are projected disk furniture rather than spherical
+parallels. Principal-plane labels, ecliptic cardinal points, and explicitly
+selected north/south pole annotations remain semantic furniture rather than
+catalogue layers.
 `charts/view_defaults.py` owns the immutable public geometry defaults for the
 five ordinary view forms. It contains no catalogue, cache, layer, style,
 furniture, renderer, or output policy.
