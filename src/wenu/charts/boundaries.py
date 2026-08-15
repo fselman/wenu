@@ -246,9 +246,18 @@ class EllipticalGridLabelAnchor:
                 )
             )
             if np.isclose(value, 180.0):
-                index = int(candidates[np.argmin(x[candidates])])
+                expected_x = -x_limit
+            elif value < 180.0:
+                expected_x = -(value / 180.0) * x_limit
             else:
-                index = int(candidates[0])
+                expected_x = ((360.0 - value) / 180.0) * x_limit
+            index = int(
+                candidates[
+                    np.argmin(np.abs(x[candidates] - expected_x))
+                ]
+            )
+            if abs(float(x[index]) - expected_x) > 0.08 * x_limit:
+                return None
             return CurveLabelPlacement(
                 float(x[index]) + 0.012 * x_limit,
                 -0.035 * y_limit,

@@ -939,8 +939,10 @@ Milestone 46D.8F.2 refines the Galactic all-sky grid after Mac review. It draws
 30-degree latitude parallels from `-60` through `60`, draws longitude
 meridians every 45 degrees, and labels only `0`, `90`, `180`, and `270`
 degrees. Principal longitude labels sit below the Galactic equator and to the
-right of their meridian; the seam label remains inside the Mollweide ellipse.
-Other family and coordinate-grid policies remain unchanged.
+right of their meridian. A segment is labeled only when its equatorial
+crossing matches the named longitude's expected Mollweide x-coordinate, so
+seam-split duplicates are suppressed and the seam label remains inside the
+ellipse. Other family and coordinate-grid policies remain unchanged.
 
 Milestone 46D.8G activates the existing packaged family atlas policies at the
 named composition boundary, closing the command/example density discrepancy

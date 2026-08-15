@@ -164,8 +164,11 @@ Milestone 46D.8F.2 draws Galactic all-sky parallels at `-60`, `-30`, `0`,
 `30`, and `60` degrees and meridians every 45 degrees. It labels only `0`,
 `90`, `180`, and `270` degrees immediately below the Galactic equator and to
 the right of the corresponding meridian. The 180-degree label uses the left
-seam so the label grows into the ellipse. The all-sky products and complete
-matrix must be rerendered before `GRID-4` is accepted.
+seam so the label grows into the ellipse. Candidate segments whose equatorial
+crossing does not match the named longitude's expected Mollweide position are
+not labeled, suppressing false `90`-degree center and `180`-degree right-seam
+duplicates. The all-sky products and complete matrix must be rerendered before
+`GRID-4` is accepted.
 
 ## Product review appendix
 

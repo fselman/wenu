@@ -184,7 +184,7 @@ def test_elliptical_anchor_uses_one_meridian_for_latitudes_and_key_longitudes():
         name="galactic_longitude_45",
     )
     principal_longitude = ProjectedCurve(
-        x=[-0.3, -0.3, -0.3],
+        x=[1.0, 1.0, 1.0],
         y=[-0.8, 0.0, 0.8],
         name="galactic_longitude_270",
     )
@@ -197,7 +197,7 @@ def test_elliptical_anchor_uses_one_meridian_for_latitudes_and_key_longitudes():
     assert anchor(secondary_longitude) is None
     placement = anchor(principal_longitude)
     assert isinstance(placement, CurveLabelPlacement)
-    assert placement.x == pytest.approx(-0.276)
+    assert placement.x == pytest.approx(1.024)
     assert placement.y == pytest.approx(-0.035)
     assert placement.horizontal_alignment == "left"
     assert placement.vertical_alignment == "top"
@@ -220,6 +220,29 @@ def test_elliptical_anchor_places_180_label_inside_left_seam():
 
     assert placement.x == pytest.approx(-1.976)
     assert placement.y == pytest.approx(-0.035)
+
+
+@pytest.mark.parametrize(
+    ("name", "x"),
+    (
+        ("galactic_longitude_90", 0.0),
+        ("galactic_longitude_180", 2.0),
+    ),
+)
+def test_elliptical_anchor_rejects_false_split_longitude_segments(name, x):
+    boundary = ProjectedCurve(
+        x=[-2.0, 0.0, 2.0, 0.0, -2.0],
+        y=[0.0, 1.0, 0.0, -1.0, 0.0],
+        closed=True,
+        name="boundary",
+    )
+    duplicate = ProjectedCurve(
+        x=[x, x, x],
+        y=[-0.8, 0.0, 0.8],
+        name=name,
+    )
+
+    assert EllipticalGridLabelAnchor(boundary)(duplicate) is None
 
 
 def test_grid_anchor_application_does_not_mutate_input():
