@@ -1,6 +1,6 @@
 # Wenu migration roadmap: v0.7 to v0.8
 
-**Status:** Active
+**Status:** Complete
 **Source:** `current_architecture_v0.7.md`
 **Target:** `target_architecture_v0.8.md`
 **Base commit:** `b72eef8`
@@ -1022,3 +1022,20 @@ clipping, rendering, legend, or export implementation.  Wenu exports
 deterministically named static images and frame metadata only; movie encoding,
 frame rate, transitions, and audio remain the responsibility of external
 tools.
+
+## Milestone 46E — Documentation and v0.8 release closure
+
+Milestone 46E reconciles the public and developer documentation with the
+implemented v0.8 architecture, marks this roadmap complete, and releases the
+package as version 0.8.0. The distribution version remains owned by
+`setuptools-scm`: the annotated Git tag `v0.8.0` supplies installed package
+metadata, and `pyproject.toml` supplies the matching fallback only when Git
+metadata is unavailable. Chart footer annotations continue to resolve that
+installed metadata through `importlib.metadata`; no rendering code contains a
+version literal.
+
+The complete post-remediation 18-product visual rerun and faint-star
+appearance curation remain explicitly deferred. Their deferral does not imply
+new visual evidence and does not reopen Milestone 46D.8.
+
+**Final status:** Implemented. The v0.7-to-v0.8 migration is complete.

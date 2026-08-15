@@ -348,6 +348,17 @@ def test_footer_sides_are_independent_and_version_is_resolved():
     assert right == (None, "Wenu 9.8.7")
 
 
+def test_footer_resolves_version_from_installed_package_metadata(monkeypatch):
+    import wenu.charts.footer_furniture as footer_module
+
+    monkeypatch.setattr(footer_module, "version", lambda name: "0.8.0")
+
+    assert footer_module.installed_wenu_version() == "0.8.0"
+    assert footer_module.resolved_footer_text(
+        FooterOptions(application=True)
+    ) == (None, "Wenu 0.8.0")
+
+
 def test_footer_artists_use_figure_margin_and_reserve_axes_space():
     figure, ax = plt.subplots(figsize=(7.0, 5.0))
     renderer = SimpleNamespace(ax=ax)

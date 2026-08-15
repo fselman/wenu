@@ -1,8 +1,8 @@
 # Wenu implementation reference
 
-**Architecture version:** 0.7
+**Architecture version:** 0.8
 **Status:** Implemented
-**Date:** 2026-08-04
+**Date:** 2026-08-15
 
 This reference records the implemented public chart workflow. Lower-level
 geometry, projection, preparation, and rendering APIs remain available for

@@ -3,6 +3,7 @@
 from pathlib import Path
 import ast
 import re
+import tomllib
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -70,6 +71,30 @@ def test_current_architecture_authorities_exist_and_cross_reference():
     assert "wenu_migration_0.7_to_0.8.md" in target
     assert "current_architecture_v0.7.md" in roadmap
     assert "target_architecture_v0.8.md" in roadmap
+
+
+def test_v08_architecture_and_migration_are_closed():
+    target = read(TARGET)
+    roadmap = read(ROADMAP)
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+    readme = read(ROOT / "README.md")
+
+    assert "**Status:** Implemented" in target
+    assert "**Release:** 0.8.0" in target
+    assert "**Status:** Complete" in roadmap
+    assert "Milestone 46E" in roadmap
+    assert "annotated Git tag `v0.8.0`" in roadmap
+    assert "**Architecture version:** 0.8" in implementation
+    assert "**Architecture version:** 0.8" in source_tree
+    assert "Wenu v0.8 user guide" in readme
+
+
+def test_release_version_comes_from_scm_with_v08_archive_fallback():
+    project = tomllib.loads(read(ROOT / "pyproject.toml"))
+
+    assert project["project"]["dynamic"] == ["version"]
+    assert project["tool"]["setuptools_scm"]["fallback_version"] == "0.8.0"
 
 
 def test_assistant_instructions_name_current_architecture_authorities():
