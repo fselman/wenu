@@ -104,7 +104,7 @@ request from claiming polar geometry while constructing a stereographic
 chart.
 
 **Status:** Implemented. `ProjectionSelection` pairs every registered
-projection with its required spherical frame, builds a fresh backend-neutral
+projection with an accepted spherical frame, builds a fresh backend-neutral
 projection only when requested, and is exposed by `ChartView`. The canonical
 coordinate-frame adapter now preserves spherical structure and metadata when
 recovering observer-independent ICRS geometry from canonical AltAz layers.
@@ -121,6 +121,17 @@ the first selectable polar chart remains Milestone 48C.1.
 - default north coverage to +90 through -10 degrees;
 - allow both limits to be configured independently;
 - retain circular clipping and an exact centre.
+
+The physical-product default is polar azimuthal-equidistant. The same chart
+owner also accepts stereographic projection in the equatorial frame so the
+two radial laws can be compared without changing disk framing or content.
+
+**Status:** Implemented. `PolarPlanisphereChart` owns one immutable north or
+south face, resolves the +10/-10 degree default limits, constructs either
+equidistant or stereographic equatorial projection, and exposes an exact
+circular boundary, square viewport, physical diameter, handedness, chart
+context, canonical render, and export seams. Paired resolution, registration,
+calendar furniture, and the public paired request remain later milestones.
 
 ### Milestone 48C.2 - Paired request and registration
 

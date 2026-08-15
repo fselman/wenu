@@ -6,9 +6,9 @@ from dataclasses import dataclass
 
 
 _PROJECTION_FRAMES = {
-    "stereographic": "horizontal",
-    "mollweide": "galactic",
-    "polar_azimuthal_equidistant": "equatorial",
+    "stereographic": frozenset({"horizontal", "equatorial"}),
+    "mollweide": frozenset({"galactic"}),
+    "polar_azimuthal_equidistant": frozenset({"equatorial"}),
 }
 
 
@@ -23,13 +23,16 @@ class ProjectionSelection:
         name = str(self.name).strip().lower()
         coordinate_frame = str(self.coordinate_frame).strip().lower()
         try:
-            expected_frame = _PROJECTION_FRAMES[name]
+            accepted_frames = _PROJECTION_FRAMES[name]
         except KeyError as error:
             raise ValueError(f"Unsupported projection: {name!r}.") from error
-        if coordinate_frame != expected_frame:
+        if coordinate_frame not in accepted_frames:
+            expected = " or ".join(
+                repr(value) for value in sorted(accepted_frames)
+            )
             raise ValueError(
                 f"projection={name!r} requires "
-                f"coordinate_frame={expected_frame!r}."
+                f"coordinate_frame={expected}."
             )
         object.__setattr__(self, "name", name)
         object.__setattr__(self, "coordinate_frame", coordinate_frame)

@@ -163,6 +163,7 @@ from .charts.boundaries import (
     RectangularLabelAnchor,
 )
 from .charts.circumpolar import CircumpolarChart
+from .charts.polar_planisphere import PolarPlanisphereChart
 from .charts.detail_application import (
     DetailApplication,
     apply_resolved_detail,
@@ -389,6 +390,7 @@ __all__ = [
     "CircularGridLabelAnchor",
     "EllipticalGridLabelAnchor",
     "CircumpolarChart",
+    "PolarPlanisphereChart",
     "RectangularLabelAnchor",
     "FullSkyChart",
     "RegionalChart",

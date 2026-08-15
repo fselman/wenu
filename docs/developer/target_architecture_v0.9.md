@@ -43,8 +43,8 @@ for one face; it never mirrors a finished raster or produces reversed text.
 ## 3. Polar azimuthal-equidistant projection
 
 The physical disks use a backend-neutral polar azimuthal-equidistant
-projection. Radial distance is proportional to angular distance from the
-selected celestial pole:
+projection by default. Radial distance is proportional to angular distance
+from the selected celestial pole:
 
 ```text
 r = scale * polar_distance
@@ -59,6 +59,13 @@ The projection must provide forward and inverse spherical transforms,
 projected-radius conversion, viewport construction, and ordinary geometry
 dispatch equivalent to existing projections. Projection classes contain no
 calendar, horizon, typography, catalogue, or renderer policy.
+
+The same polar-disk chart owner may select stereographic projection for
+comparison or specialized editions. That alternative uses the same
+equatorial input, selected pole, limiting declination, position angle,
+handedness, circular boundary, and physical-size contract; only its radial
+projection law changes. The paired classroom product remains equidistant by
+default because its declination scale is linear.
 
 The celestial disk uses an equatorial celestial frame suitable for a static
 printed atlas. Observer location does not change stellar or constellation

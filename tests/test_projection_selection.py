@@ -16,6 +16,7 @@ from wenu.projections import (
     ("name", "coordinate_frame", "kind", "geometry"),
     (
         ("stereographic", "horizontal", StereographicProjection, {}),
+        ("stereographic", "equatorial", StereographicProjection, {}),
         ("mollweide", "galactic", MollweideProjection, {}),
         (
             "polar_azimuthal_equidistant",

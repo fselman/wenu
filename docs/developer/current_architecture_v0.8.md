@@ -118,3 +118,11 @@ spherical-geometry transformation. A chart view exposes its frozen selection,
 whose projection is constructed lazily from chart-owned geometry. Existing
 v0.8 chart families still reject the polar pair because none constructs a
 polar chart yet; that first honest selection belongs to Milestone 48C.1.
+
+Milestone 48C.1 adds the public single-face `PolarPlanisphereChart`. It owns
+selected pole, limiting declination, position angle, projected scale,
+physical diameter, handedness, circular boundary, square viewport, and the
+AltAz-to-equatorial canonical rendering seam. Polar azimuthal-equidistant is
+the physical-product default; stereographic is an explicit equatorial
+alternative over the same disk contract. Paired requests, calendar rings,
+registration, and horizon templates are not yet implemented.

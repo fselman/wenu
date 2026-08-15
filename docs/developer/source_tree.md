@@ -154,9 +154,16 @@ Projection and spherical coordinate-frame names are immutable request
 geometry; the view exposes their resolved values rather than maintaining a
 parallel tag.
 `charts/projection_selection.py` pairs each registered projection identity
-with its required spherical frame in one frozen value. It constructs the
-selected backend-neutral projection lazily from chart-owned geometry and owns
-no chart family, calendar, physical page, style, renderer, or export policy.
+with an accepted spherical frame in one frozen value. Stereographic supports
+both its established horizontal charts and the equatorial polar-disk
+alternative. The module constructs the selected backend-neutral projection
+lazily from chart-owned geometry and owns no chart family, calendar, physical
+page, style, renderer, or export policy.
+`charts/polar_planisphere.py` owns one north- or south-polar disk face:
+projection choice, selected pole, limiting declination, normalized and
+physical scale, handedness, exact circular boundary, square viewport, chart
+context, and canonical render/export adaptation. It owns no paired-face,
+calendar, registration, horizon, content, or appearance policy.
 `charts/coordinate_frames.py` owns astronomical transformation of canonical
 AltAz spherical geometry into a chart-selected celestial frame before
 projection. Its Galactic and equatorial adapters preserve geometry structure

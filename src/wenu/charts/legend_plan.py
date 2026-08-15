@@ -9,6 +9,7 @@ _CHART_TYPES = frozenset(
     {
         "regional",
         "planisphere",
+        "polar_planisphere",
         "all_sky",
         "circumpolar",
         "binocular",
@@ -158,4 +159,7 @@ def default_chart_legend_plan(chart_type: str) -> ChartLegendPlan:
     )
 
     furniture = packaged_furniture_product_export_defaults()
+    if normalized == "polar_planisphere":
+        plan = furniture.furniture_by_family["circumpolar"].legends.plan
+        return replace(plan, chart_type=normalized)
     return furniture.furniture_by_family[normalized].legends.plan

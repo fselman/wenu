@@ -578,8 +578,9 @@ does not connect it to a chart family or physical planisphere product.
 
 `ProjectionSelection(name, coordinate_frame)` is the frozen projection
 identity used at the request/view boundary. The accepted pairs are
-stereographic/horizontal, Mollweide/Galactic, and polar-azimuthal-equidistant/
-equatorial. `build(**geometry)` imports and constructs a fresh selected
+stereographic/horizontal, stereographic/equatorial, Mollweide/Galactic, and
+polar-azimuthal-equidistant/equatorial. `build(**geometry)` imports and
+constructs a fresh selected
 projection lazily; projection scale, position angle, handedness, pole, and
 central longitude remain chart-owned constructor values. `ChartView` exposes
 the value as `projection_selection`. Existing v0.8 families still reject the
@@ -644,6 +645,19 @@ splitting, planar projection, clipping, rendering, or example adaptation.
 `horizontal_to_equatorial(geometry, observer)` applies the same structure- and
 metadata-preserving contract to `observer.icrs_frame`; it is the astronomical
 transformation seam required by static polar disks.
+
+`PolarPlanisphereChart(pole="south", limiting_declination_deg=None,
+projection_name="polar_azimuthal_equidistant", position_angle_deg=0,
+projection_radius=2, physical_diameter_mm=195, flip_ew=True)` describes one
+immutable polar disk face. An omitted limit resolves to +10 degrees for the
+south face and -10 degrees for the north face. The chart accepts either the
+linear polar-equidistant projection or an equatorial stereographic
+alternative, while retaining the same selected pole, circular declination
+boundary, exact centre, square viewport, physical diameter, and canonical
+AltAz-to-ICRS render/export path. Physical diameter is declared product
+geometry and does not alter normalized projection coordinates. Pairing,
+calendar furniture, registration, and horizon overlay are not part of this
+class.
 
 `MollweideProjection(central_longitude_deg=0, flip_ew=True, radius=1)` is the
 coordinate-neutral equal-area all-sky projection. `project_spherical()` maps
