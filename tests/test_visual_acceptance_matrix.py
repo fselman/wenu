@@ -101,3 +101,12 @@ def test_review_records_shared_remediation_owners_and_current_baseline():
         "BINOCULAR-2",
     ):
         assert f"| {finding} |" in review
+
+
+def test_review_closes_truthfully_without_claiming_a_deferred_rerun():
+    review = REVIEW.read_text(encoding="utf-8")
+
+    assert "**Accepted source commit:** `2883e67`" in review
+    assert "complete post-remediation 18-product rerun deferred" in review
+    assert "Fernando Selman, 2026-08-15 (final closure acceptance)" in review
+    assert "not represented by newly\nchecked product rows" in review

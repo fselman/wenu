@@ -202,6 +202,10 @@ binocular-only exponent is `0.35`, with minimum area `1.0` and maximum area
 detail policy, so its limiting-magnitude sizing reference is always defined.
 The render callback is installed only when the supplied sphere contains a
 stellar layer; catalogue-free and empty-sky composition remains empty.
+
+Milestone 46D.8J changes no API or rendering behavior. It records acceptance
+of the remediated `2883e67` implementation while retaining the fixed visual
+matrix for a later complete rerun.
 `ChartContext.horizon_altitude_deg` optionally carries a chart-owned altitude
 floor into composition detail application. Circumpolar charts set it to
 `-90.0`, so their declination field and reference furniture are not clipped

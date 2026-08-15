@@ -882,13 +882,11 @@ actual single-file use proves that another schema feature is warranted.
 
 ### Milestone 46D.8 — Prove parity and close visually
 
-**Status:** In progress. Milestone 46D.8A establishes executable
-resolved-view parity between each of the six canonical examples and an
-equivalent `wenu_chart` invocation. The contract compares observer identity,
-family, subject, projection, coordinate frame, framing, orientation, pole,
-declination limit, and mask only after omitted values have been resolved from
-the same effective configuration. Drawing-request, overlay-isolation, failure
-ordering, documentation, suite, and visual-matrix closure remain in 46D.8.
+**Status:** Implemented. Milestones 46D.8A–46D.8I establish executable parity,
+configuration isolation, a reproducible visual matrix, and the shared-policy
+remediation identified by Mac review. Milestone 46D.8J records the reviewer's
+acceptance at `2883e67`; the complete post-remediation 18-product rerun is
+explicitly deferred and is not claimed as new visual evidence.
 
 Milestone 46D.8B proves the installed command's downstream parity at the
 shared drawing-adapter boundary without loading catalogues or rendering. One
@@ -980,6 +978,13 @@ magnitude, minimum area, maximum area, and sizing pipeline.
 Named binocular atlas composition now resolves the existing packaged fixed
 detail policy, ensuring the sizing reference always has its family magnitude
 limit without weakening validation.
+
+Milestone 46D.8J closes the parity milestone without changing production
+behavior. The acceptance record preserves the original product checklist as
+historical evidence, records Fernando Selman's explicit 2026-08-15 acceptance
+of `2883e67` as good enough for the present closure, and states that the full
+post-remediation matrix rerun remains deferred rather than fabricating new
+checkbox or manifest results.
 
 - generate every canonical family through both its example and `wenu_chart`
   with equivalent effective options;

@@ -251,6 +251,12 @@ path changes. Named binocular atlas composition uses its existing packaged
 fixed detail policy rather than neutral detail, supplying the required
 limiting-magnitude reference.
 
+Milestone 46D.8J closes the 46D.8 parity milestone as documentation only.
+The review authority accepts the remediated implementation at `2883e67` for
+the present closure while explicitly deferring the complete 18-product rerun.
+No new visual evidence, product checkbox state, runtime behavior, or golden
+baseline comparison is inferred by that acceptance.
+
 The v0.8 migration now provides one immutable canonical load profile and one
 maximal-sphere factory. It loads complete reusable astronomical content for an
 observer and returns the existing `CelestialSphere`; chart geometry,

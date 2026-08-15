@@ -419,6 +419,12 @@ Milestone 46D.8I keeps binocular remediation distributed by responsibility:
 `configuration/defaults.toml` owns the binocular-only stellar sizing exponent.
 The canonical example declares those public policies without drawing them.
 
+Milestone 46D.8J leaves runtime ownership unchanged.
+`docs/developer/visual_acceptance_46d8.md` owns the truthful closure record:
+accepted source, reviewer, date, and explicit full-matrix deferral.
+`tests/test_visual_acceptance_matrix.py` prevents that disposition from being
+silently rewritten as a completed rerun.
+
 `src/wenu/configuration/geometry_detail_translation.py` is the Milestone
 46D.3D translation seam for existing immutable family-view, detail-policy,
 content-selection, and stellar-sizing contracts. It preserves the current

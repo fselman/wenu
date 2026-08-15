@@ -1,12 +1,30 @@
 # Milestone 46D.8 visual acceptance
 
-**Status:** Reviewed on Mac; 46D.8F–G remediation pending rerender
+**Status:** Accepted for Milestone 46D.8 closure with the complete
+post-remediation matrix rerun explicitly deferred by the reviewer
 
 **Matrix source:** `tools/render_46d8_visual_matrix.py`
 
 **Reviewed source commit:** `84baedb`
 
 **Review record commit:** `a6739a7`
+
+**Accepted source commit:** `2883e67`
+
+## Final disposition
+
+The initial Mac review at `84baedb` produced the remediation register below.
+Milestones 46D.8E–46D.8I implemented those shared grid, density, cartoon
+content, mask, label, and binocular corrections. Fernando Selman accepted the
+resulting state at `2883e67` as good enough for the present closure on
+2026-08-15.
+
+The complete 18-product post-remediation rerun was not performed as part of
+this final documentation slice and is deliberately not represented by newly
+checked product rows or invented manifest evidence. The original review table
+remains historical evidence of the defects that drove remediation. Any later
+visual refinement may rerun the fixed matrix and open a new milestone without
+reopening the implemented 46D.8 parity contracts.
 
 ## Purpose
 
@@ -218,15 +236,18 @@ new render.
 
 ## Approval record
 
-Complete this section only after remediation and the final Mac rerun:
+Milestone 46D.8 closes with the following explicit evidence and deferral:
 
-- source commit:
-- fast suite:
-- integration suite:
-- visual suite:
-- full suite:
-- atlas-print products approved:
-- cartoon-presentation products approved:
-- diagnostic products approved:
-- unexplained golden-baseline changes:
-- reviewer and date: Fernando Selman, 2026-08-14 (initial review)
+- source commit: `2883e67`
+- focused and full suites: accepted by the reviewer before closure; detailed
+  final command output is not reproduced in this document
+- visual suite: complete post-remediation 18-product rerun deferred
+- atlas-print products: current remediated state accepted as good enough for
+  this closure
+- cartoon-presentation products: current remediated state accepted as good
+  enough for this closure
+- diagnostic products: complete rerun deferred with the matrix retained for
+  future refinement
+- unexplained golden-baseline changes: none asserted; no new full-matrix
+  comparison was recorded
+- reviewer and date: Fernando Selman, 2026-08-15 (final closure acceptance)
