@@ -169,10 +169,18 @@ site/time calibration, and rendered assembly furniture remain later owners.
 Tests cover 365 unique days, month lengths, month boundaries, wraparound,
 La Ligua standard-time calibration, and several equinox/solstice dates.
 
+**Status:** Implemented. `CommonYearCalendarRequest` anchors January 1 to
+local mean sidereal time at standard-time midnight for a configurable
+longitude, UTC offset, and deterministic non-leap reference year. The neutral
+ring advances by exactly `360 / 365` degrees per civil day, closes without a
+special New Year gap, retains the corresponding midnight RA, and exposes
+frozen day, true-month-arc, month-boundary, and semantic month-label records.
+Handedness and drawing remain furniture responsibilities of Milestone 48D.2.
+
 ### Milestone 48D.2 - Calendar furniture
 
 - draw one tick per day and stronger month boundaries;
-- label only days 7, 14, and 21;
+- label only days 5, 10, 15, 20, 25, and 30 when present;
 - centre month names on their actual arcs;
 - orient day numbers radially with bases outside;
 - place the face-appropriate scale in reversed handedness;

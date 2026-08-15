@@ -170,6 +170,12 @@ north/south polar radii, projection-aware opposite RA direction, common
 centres and optional calendar/pivot radii, and reflected asymmetric
 registration metadata. It draws no marks and contains no calendar, site,
 content, style, renderer, or export orchestration.
+`charts/polar_calendar.py` owns the immutable 365-day common-year calendar
+model. It calibrates a neutral date ring from configurable longitude,
+standard UTC offset, and non-leap reference year; advances by a closed mean
+common-year step; and returns semantic day, true-month-arc, boundary, and
+month-label-key records. It owns no face handedness, drawing, translation,
+daylight-saving, horizon, content, style, or export policy.
 `charts/coordinate_frames.py` owns astronomical transformation of canonical
 AltAz spherical geometry into a chart-selected celestial frame before
 projection. Its Galactic and equatorial adapters preserve geometry structure

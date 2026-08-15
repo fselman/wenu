@@ -977,6 +977,17 @@ Pre-v0.4 singular top-level geometry modules and the old `wenu.renderers`,
 
 Every extension must continue through `CelestialSphere.draw_chart()`.
 
+## Polar common-year calendar model
+
+`CommonYearCalendarRequest` resolves the neutral civil-date geometry used by
+future polar-planisphere furniture. Its defaults calibrate La Ligua/Papudo
+with longitude `-71.230289`, standard UTC offset `-4`, and common reference
+year 2026. The returned `CommonYearCalendarScale` contains 365 frozen day
+records, 12 true month arcs, 12 month-boundary records, semantic month label
+keys, and numeric labels only for days 5, 10, 15, 20, 25, and 30 when that
+date exists. It deliberately excludes leap days, daylight-saving rules,
+localized month text, face handedness, and renderer policy.
+
 ## 12. Compatibility and deprecation
 
 The legacy `cartoon_output_mode()` and `compose_cartoon_chart()` wrappers

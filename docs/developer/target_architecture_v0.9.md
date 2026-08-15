@@ -86,9 +86,11 @@ handedness:
 
 - exactly 365 daily ticks;
 - ordinary non-leap month lengths;
+- one closed mean-common-year step of exactly `360 / 365` degrees per day,
+  anchored to standard-time local midnight at configurable longitude;
 - stronger month-boundary ticks;
 - month names centred on their actual month arcs;
-- day-number labels only on 7, 14, and 21;
+- numeric labels only on days 5, 10, 15, 20, 25, and 30 when present;
 - day numbers placed radially with their bases toward the outside;
 - no leap-day branch or second leap-year scale.
 

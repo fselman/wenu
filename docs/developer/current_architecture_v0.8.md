@@ -135,3 +135,13 @@ direction for both equidistant and stereographic pairs. Frozen assembly
 metadata supplies shared optional calendar and pivot radii plus asymmetric
 marks that fold together without mirrored text. No registration marks,
 calendar scale, or physical furniture are drawn yet.
+
+Milestone 48D.1 adds the public immutable `CommonYearCalendarRequest`. It
+builds a backend-neutral 365-day scale anchored to local mean sidereal time at
+standard-time midnight for configurable longitude, fixed UTC offset, and a
+deterministic non-leap reference year. Its exact `360 / 365` degree step
+closes the ring, while day records preserve midnight RA and the neutral
+calendar angle needed for the future bottom-midnight alignment. True month
+arcs, boundaries, semantic month keys, and labels on days 5, 10, 15, 20, 25,
+and 30 are resolved without drawing, translation, daylight-saving, or face
+handedness policy.
