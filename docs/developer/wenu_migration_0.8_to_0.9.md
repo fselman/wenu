@@ -380,6 +380,17 @@ and tabs but must not alter celestial or horizon geometry.
 - make latitude and physical radii configurable;
 - prove cardinal orientation and polar visibility limits.
 
+Milestone 48G.2A establishes the renderer-neutral geometry boundary. The
+semantic `HorizonReference` remains the sole altitude-zero source; the
+existing horizontal-to-equatorial adapter and each resolved polar chart own
+the coordinate transformation, face clipping, and projection. A new immutable
+paired overlay record maps those results into the already-resolved A4 disk
+centre and radius, normalizes the local meridian, records cut clearance, and
+places E-S-W on the south-facing paper and W-N-E on the north-facing paper.
+The complete 195 mm disk remains inside each 210 by 297 mm overlay page. No
+artist, hour/date scale, title, instruction, catalogue, or alternate export
+path is introduced in this geometry milestone.
+
 ### Milestone 48G.3 - Hour scale and instructions
 
 - place fixed `00:00` at the bottom;

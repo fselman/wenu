@@ -167,6 +167,18 @@ La Ligua/Papudo classroom edition.
 independent spherical checks. Both faces share the same observer latitude and
 physical centre. No overlay module loads or selects astronomical catalogues.
 
+The accepted classroom construction additionally fixes these physical-product
+constraints for the following furniture milestone:
+
+- the complete rotating disk is contained by the folded A4 overlay;
+- the disk bottom rests on the fold and supplies vertical registration;
+- both faces use three identical 37.5-degree date windows separated by
+  5 degrees;
+- the hour numerals remain upright and their short radial marks lie outside
+  the numerals;
+- N, E, S, W and `HORIZONTE` belong to the fixed overlay, never the disk;
+- the south-facing overlay title is `Un firmamento, muchos cielos`.
+
 ### Milestone 48G.2 - Hour ring, cardinal marks, and instructions
 
 Each face-specific overlay must include:

@@ -208,6 +208,15 @@ continues through `export_composed_chart()`; its additional-furniture hook
 realizes the page immediately before the existing single save. PDF metadata
 records the product and source revision. No alternate sphere, renderer, or
 export path is introduced.
+`charts/polar_horizon_overlay.py` resolves the canonical semantic altitude-zero
+curve through the existing horizontal-to-equatorial adapter, normalizes right
+ascension to the local meridian, clips the result through each existing polar
+chart, and maps it into immutable physical page coordinates. It owns the
+paired horizon segments, geographic cardinal anchors, observer latitude, and
+cut-clearance value. Opposite face handedness remains owned by the paired polar
+projections and is not reflected a second time by the overlay. The module owns
+no catalogue selection, artist, calendar/hour furniture, text placement, or
+save.
 `charts/polar_planisphere_style.py` owns the provisional configurable physical
 paper palette and its pure adaptation of the existing atlas style. It changes
 appearance only: white paper, blue ordinary star symbols, filled outline-free

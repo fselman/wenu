@@ -211,6 +211,12 @@ from .charts.polar_page_export import (
     PolarPagePairExportResult,
     export_polar_planisphere_pages,
 )
+from .charts.polar_horizon_overlay import (
+    PolarHorizonCardinal,
+    PolarHorizonFaceOverlay,
+    PolarHorizonOverlayRequest,
+    PolarHorizonPairOverlay,
+)
 from .charts.detail_application import (
     DetailApplication,
     apply_resolved_detail,
@@ -471,6 +477,10 @@ __all__ = [
     "polar_disk_axes_bounds",
     "PolarPagePairExportResult",
     "export_polar_planisphere_pages",
+    "PolarHorizonCardinal",
+    "PolarHorizonFaceOverlay",
+    "PolarHorizonOverlayRequest",
+    "PolarHorizonPairOverlay",
     "RectangularLabelAnchor",
     "FullSkyChart",
     "RegionalChart",
