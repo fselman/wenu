@@ -122,7 +122,7 @@ def test_scale_ruler_has_exact_physical_length_and_safe_position():
             )
 
 
-def test_registration_marks_realize_existing_reflected_metadata():
+def test_registration_marks_coincide_after_upright_back_to_back_assembly():
     pair = PolarPlanispherePairRequest().resolve()
     furniture = PolarPageFurnitureRequest(
         source_revision=SOURCE_REVISION
@@ -149,13 +149,13 @@ def test_registration_marks_realize_existing_reflected_metadata():
         strict=True,
     ):
         assert north_mark.position_mm[0] == pytest.approx(
-            south_mark.position_mm[0]
+            north.page_width_mm - south_mark.position_mm[0]
         )
         assert north_mark.position_mm[1] == pytest.approx(
-            north.page_height_mm - south_mark.position_mm[1]
+            south_mark.position_mm[1]
         )
         assert north_mark.angle_deg == pytest.approx(
-            (-south_mark.angle_deg) % 360.0
+            (180.0 - south_mark.angle_deg) % 360.0
         )
 
 

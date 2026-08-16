@@ -199,7 +199,7 @@ class PolarPlanispherePairRequest:
                 identifier=f"registration_{index + 1}",
                 radius_fraction=self.registration_radius_fraction,
                 south_angle_deg=angle,
-                north_angle_deg=(-angle) % 360.0,
+                north_angle_deg=(180.0 - angle) % 360.0,
             )
             for index, angle in enumerate(self.registration_angles_deg)
         )

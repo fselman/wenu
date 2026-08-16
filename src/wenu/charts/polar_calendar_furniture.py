@@ -78,11 +78,11 @@ class PolarCalendarFurnitureRequest:
     """Resolve one common calendar scale onto matched physical disk faces."""
 
     calendar: CommonYearCalendarRequest = CommonYearCalendarRequest()
-    star_disk_radius_fraction: float = 0.80
-    day_tick_length_fraction: float = 0.025
-    month_tick_length_fraction: float = 0.045
-    day_label_radius_fraction: float = 0.845
-    month_label_radius_fraction: float = 0.88
+    star_disk_radius_fraction: float = 0.84
+    day_tick_length_fraction: float = 0.02
+    month_tick_length_fraction: float = 0.035
+    day_label_radius_fraction: float = 0.88
+    month_label_radius_fraction: float = 0.925
 
     def __post_init__(self):
         if not isinstance(self.calendar, CommonYearCalendarRequest):

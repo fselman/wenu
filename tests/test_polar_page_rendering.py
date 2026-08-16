@@ -15,7 +15,7 @@ from wenu import (
 
 
 def resolved_values():
-    pair = PolarPlanispherePairRequest(calendar_radius_mm=78.0).resolve()
+    pair = PolarPlanispherePairRequest(calendar_radius_mm=82.0).resolve()
     calendar = PolarCalendarFurnitureRequest().resolve(pair)
     pages = PolarPageFurnitureRequest(
         source_revision="7fd4649"
@@ -67,8 +67,15 @@ def test_resolved_calendar_and_page_records_are_realized_once():
     assert len(result.text_artists) == len(pages.south.text_blocks)
     assert result.page_axes.get_xlim() == pytest.approx((0.0, 210.0))
     assert result.page_axes.get_ylim() == pytest.approx((0.0, 297.0))
-    outer = chart.boundary_radius * 97.5 / 78.0
+    outer = chart.boundary_radius * 97.5 / 82.0
     assert ax.get_xlim() == pytest.approx((-outer, outer))
+    assert all(
+        artist.get_markerfacecolor() == "black"
+        and artist.get_markeredgecolor() == "black"
+        for artist in result.registration_artists
+    )
+    assert result.center_artists[0].get_edgecolor() == (0.0, 0.0, 0.0, 1.0)
+    assert result.center_artists[1].get_color() == "black"
 
 
 def test_realization_rejects_mixed_faces_and_invalid_month_names():

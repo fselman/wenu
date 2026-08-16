@@ -332,8 +332,8 @@ class PolarPageFurnitureRequest:
                 lines=(
                     "Recorte el borde; perfore el centro; pegue reverso con reverso.",
                     (
-                        "Alinee las marcas; la marca triangular △ fija "
-                        "la orientación."
+                        "Mantenga ambos títulos derechos; alinee las marcas "
+                        "a contraluz."
                     ),
                 ),
                 position_mm=(center[0], 25.0),

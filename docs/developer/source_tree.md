@@ -188,7 +188,7 @@ Labelled-day identity is retained separately from tick length so a renderer
 can emphasize those ticks by weight without changing calendar geometry.
 `charts/polar_page_furniture.py` resolves one paired physical disk into
 immutable A4 paper coordinates and semantic face information. It owns page
-size, safe margins, the common disk centre, centre-punch radius, the existing
+size, safe margins, the common disk centre, centre-punch radius, horizontally
 reflected registration marks and their orientation glyphs, a measurable scale
 ruler, bilingual classroom instructions, site/time calibration, face identity,
 coverage, product identity, and required source revision. It consumes paired
@@ -197,7 +197,8 @@ localization framework, Matplotlib artist, or export orchestration.
 `charts/polar_page_rendering.py` is the sole Matplotlib realization of those
 resolved calendar and A4 page records. It expands the already-rendered polar
 chart axes to the physical date-ring radius, draws Spanish month furniture,
-and realizes the cut line, centre punch, reflected registration glyphs, scale
+and realizes the cut line, black centre punch, solid-black reflected
+registration glyphs, scale
 ruler, and semantic text on a transparent millimetre page axes. It calculates
 no astronomy and performs no save.
 `charts/polar_page_export.py` owns paired physical-product orchestration. It

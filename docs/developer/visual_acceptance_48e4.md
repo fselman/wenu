@@ -2,7 +2,7 @@
 
 **Status:** Awaiting generated-page and physical review
 
-**Implementation base:** `7fd4649dd4467ef9a2246e0ee4604e9755d39d2e`
+**Implementation base:** `b6a9044181acf78875bbde596919cfaf653e504f`
 
 **Astronomical checkpoint:** `09a2afd`
 
@@ -28,13 +28,18 @@ Do not add these generated files to Git.
 
 - both PDF media boxes are exactly A4: 210 by 297 mm;
 - each page contains one complete 195 mm disk without clipping;
-- the stellar aperture and date ring retain the accepted geometry;
+- the stellar aperture is 164 mm in diameter inside the unchanged 195 mm
+  cut disk, and the tightened date ring remains legible;
 - the centre punch, dashed cut line, three registration glyphs, 50 mm ruler,
   and every required text role are present;
+- the centre and registration marks are solid black for transmitted-light
+  alignment;
+- the north registration pattern is the left-right reflection of the south
+  pattern, so corresponding marks coincide with both face titles upright;
 - `SOUTH / SUR` and `NORTH / NORTE` identify the correct pages;
 - page text is readable normally and is never mirrored;
-- the manifest records both files, byte sizes, checksums, projection, page and
-  disk dimensions, DPI, and source revision;
+- the manifest records both files, byte sizes, checksums, projection, page,
+  disk, and stellar-aperture dimensions, DPI, and source revision;
 - the known 48E.3 ecliptic/equator/reference-frame issues are unchanged.
 
 ## Physical checks
@@ -55,7 +60,8 @@ Then:
 
 - pierce both centre marks and confirm coincidence;
 - place the blank sides together;
-- align triangle with triangle, circle with circle, and square with square;
+- keep both face titles upright and align triangle with triangle, circle with
+  circle, and square with square against a light source;
 - confirm that the triangular cue prevents an accidental 180-degree assembly;
 - verify that no calendar label or information block is cut or obscured;
 - confirm that instructions, La Ligua/Papudo coordinates, UTC-4, daylight-

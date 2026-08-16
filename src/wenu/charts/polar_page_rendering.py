@@ -198,7 +198,7 @@ def _draw_page_axes(figure, face, *, color):
         face.disk_center_mm,
         face.disk_radius_mm,
         fill=False,
-        edgecolor=color,
+        edgecolor="black",
         linewidth=0.35,
         linestyle=(0, (2.0, 2.0)),
         zorder=101,
@@ -208,7 +208,7 @@ def _draw_page_axes(figure, face, *, color):
         face.disk_center_mm,
         face.center_punch_radius_mm,
         fill=False,
-        edgecolor=color,
+        edgecolor="black",
         linewidth=0.45,
         zorder=103,
     )
@@ -218,7 +218,7 @@ def _draw_page_axes(figure, face, *, color):
         marker="+",
         markersize=5.0,
         markeredgewidth=0.55,
-        color=color,
+        color="black",
         linestyle="none",
         zorder=103,
     )[0]
@@ -231,8 +231,8 @@ def _draw_page_axes(figure, face, *, color):
                 if mark.identifier == face.orientation_mark_identifier
                 else 3.8
             ),
-            markerfacecolor="white",
-            markeredgecolor=color,
+            markerfacecolor="black",
+            markeredgecolor="black",
             markeredgewidth=0.55,
             linestyle="none",
             zorder=103,

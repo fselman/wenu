@@ -103,7 +103,7 @@ def test_explicit_stereographic_handedness_override_is_preserved():
     assert pair.north.flip_ew is True
 
 
-def test_registration_marks_fold_together_but_are_not_rotationally_symmetric():
+def test_registration_marks_fold_left_to_right_for_upright_back_to_back_faces():
     request = PolarPlanispherePairRequest()
     pair = request.resolve()
 
@@ -115,7 +115,9 @@ def test_registration_marks_fold_together_but_are_not_rotationally_symmetric():
     )
     for south_mark, north_mark in zip(south, north, strict=True):
         assert south_mark[1] == north_mark[1]
-        assert north_mark[2] == pytest.approx((-south_mark[2]) % 360.0)
+        assert north_mark[2] == pytest.approx(
+            (180.0 - south_mark[2]) % 360.0
+        )
     angles = np.asarray([value[2] for value in south])
     gaps = np.diff(np.append(angles, angles[0] + 360.0))
     assert len(set(gaps)) == len(gaps)

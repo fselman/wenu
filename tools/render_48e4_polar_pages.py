@@ -22,7 +22,7 @@ def render_pages(destination, *, source_revision, projection_name, dpi=300):
     destination.mkdir(parents=True, exist_ok=True)
     pair = PolarPlanispherePairRequest(
         projection_name=projection_name,
-        calendar_radius_mm=78.0,
+        calendar_radius_mm=82.0,
         pivot_radius_mm=1.0,
     ).resolve()
     calendar = PolarCalendarFurnitureRequest().resolve(pair)
@@ -53,6 +53,9 @@ def render_pages(destination, *, source_revision, projection_name, dpi=300):
             {
                 "page_size_mm": [210.0, 297.0],
                 "disk_diameter_mm": 195.0,
+                "stellar_aperture_diameter_mm": (
+                    2.0 * calendar.south.star_disk_radius_mm
+                ),
                 "projection": projection_name,
                 "source_revision": source_revision,
                 "dpi": int(dpi),

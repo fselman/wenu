@@ -74,17 +74,17 @@ def test_calendar_geometry_reserves_the_star_disk_and_strengthens_boundaries():
     furniture = PolarCalendarFurnitureRequest().resolve(pair)
 
     for face in furniture.faces:
-        assert face.star_disk_radius_mm == pytest.approx(80.0)
+        assert face.star_disk_radius_mm == pytest.approx(84.0)
         assert face.outer_radius_mm == pytest.approx(100.0)
         for tick in face.ticks:
-            assert np.hypot(*tick.inner) == pytest.approx(80.0)
-            expected = 84.5 if tick.month_boundary else 82.5
+            assert np.hypot(*tick.inner) == pytest.approx(84.0)
+            expected = 87.5 if tick.month_boundary else 86.0
             assert np.hypot(*tick.outer) == pytest.approx(expected)
         for label in face.labels:
             assert np.hypot(*label.position) > face.star_disk_radius_mm
             assert np.hypot(*label.position) < face.outer_radius_mm
-        assert np.hypot(*face.day_labels[0].position) == pytest.approx(84.5)
-        assert np.hypot(*face.month_labels[0].position) == pytest.approx(88.0)
+        assert np.hypot(*face.day_labels[0].position) == pytest.approx(88.0)
+        assert np.hypot(*face.month_labels[0].position) == pytest.approx(92.5)
 
 
 def test_explicit_paired_calendar_radius_is_the_star_disk_boundary():
