@@ -428,8 +428,11 @@ def test_polar_reference_overlay_contains_grid_planes_points_and_poles():
     assert len(overlay.points) == 8
     metadata = overlay.points._style_metadata()
     assert set(metadata["marker"]) == {"x"}
-    keypoint_sizes = metadata["size"][-4:]
-    np.testing.assert_allclose(keypoint_sizes, [18.0] * 4)
+    np.testing.assert_allclose(metadata["size"], [12.0] * 8)
+    assert all(
+        style["linewidths"] == pytest.approx(0.55)
+        for style in metadata["style"]
+    )
 
 
 @pytest.mark.parametrize(

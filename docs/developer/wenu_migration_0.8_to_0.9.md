@@ -293,6 +293,10 @@ Fernando's third visual review accepted the corrected reference geometry and
 requested both Magellanic Clouds plus a magnitude-5.5 stellar ceiling. The
 shared polar detail policy now selects that content before ordinary face-cap
 clipping; the clouds therefore appear only on faces containing their geometry.
+The following review suppresses inline coordinate-pole labels, including the
+SEP label that overlapped the Large Magellanic Cloud. All coordinate-pole and
+ecliptic-keypoint markers remain as small, light semantic symbols for later
+external documentation rather than an on-disk legend.
 
 ### Milestone 48E.4 - Actual-size A4 export
 

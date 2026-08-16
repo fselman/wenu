@@ -1067,6 +1067,9 @@ point anchor and the same inward-down convention. The renderer resolves their
 rotation callback per projected point without changing non-polar label style.
 Polar ecliptic keypoints use small `x` symbols, celestial poles use `+`, and
 ecliptic and Galactic poles use `x`.
+The physical disk suppresses their inline labels and renders all pole and
+ecliptic-keypoint markers at the same small, light weight. Their meanings are
+reserved for later external product furniture or documentation.
 
 ## 12. Compatibility and deprecation
 

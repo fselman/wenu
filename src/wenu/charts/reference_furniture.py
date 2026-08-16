@@ -371,13 +371,17 @@ def build_celestial_reference_sky(
     ):
         style = _publication_style(composition.style)
         points = reference_sky.add_points()
-        size = 45.0 * composition.mode.symbol_scale
+        size = (12.0 if polar else 45.0) * composition.mode.symbol_scale
+        pole_style = {}
+        if polar:
+            pole_style["linewidths"] = 0.55 * composition.mode.line_scale
         _add_selected_poles(
             points,
             "equatorial",
             poles.celestial,
             size=size,
             color=style.equatorial_color,
+            **pole_style,
         )
         _add_selected_poles(
             points,
@@ -385,6 +389,7 @@ def build_celestial_reference_sky(
             poles.ecliptic,
             size=size,
             color=style.ecliptic_color,
+            **pole_style,
         )
         _add_selected_poles(
             points,
@@ -392,13 +397,15 @@ def build_celestial_reference_sky(
             poles.galactic,
             size=size,
             color=style.galactic_color,
+            **pole_style,
         )
         if polar:
             points.add_ecliptic_keypoints(
                 marker="x",
-                size=18.0 * composition.mode.symbol_scale,
+                size=size,
                 color=style.ecliptic_color,
                 zorder=layers.POINTS,
+                **pole_style,
             )
     if target is not None:
         style = _publication_style(composition.style)

@@ -88,3 +88,10 @@ orientation, and reference symbols. The remaining content correction raises
 the stellar ceiling from magnitude 5.0 to 5.5 and enables both Magellanic
 Cloud layers through the common polar detail policy. Ordinary declination-cap
 clipping determines on which face each Cloud is visible.
+
+The next review found the south ecliptic-pole label overlapping the Large
+Magellanic Cloud and rejected an internal legend for every reference symbol.
+The physical preview now suppresses all coordinate-pole labels. Celestial,
+ecliptic, and Galactic pole markers and the four ecliptic keypoints retain
+their semantic `+` or `x` shapes at one smaller, lighter visual weight. A
+later external legend or guide may document them without crowding the disk.

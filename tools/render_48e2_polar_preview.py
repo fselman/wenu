@@ -99,7 +99,7 @@ def _render_face(chart, furniture, sky, observer, destination):
                 celestial="both",
                 ecliptic="both",
                 galactic="both",
-                labels=True,
+                labels=False,
             ),
             footer=FooterOptions(
                 application=True,
