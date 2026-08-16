@@ -80,3 +80,11 @@ with their baseline tangent to the circle about the pole through the label
 anchor. Ecliptic cardinal keypoints use small `x` marks rather than star-like
 filled circles. Celestial poles use `+`; ecliptic and Galactic poles retain
 `x`.
+
+## Third review correction
+
+Fernando accepted the geometry, reference-label placement, polar text
+orientation, and reference symbols. The remaining content correction raises
+the stellar ceiling from magnitude 5.0 to 5.5 and enables both Magellanic
+Cloud layers through the common polar detail policy. Ordinary declination-cap
+clipping determines on which face each Cloud is visible.

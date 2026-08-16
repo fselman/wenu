@@ -1005,12 +1005,13 @@ handedness from the selected equidistant or stereographic projection.
 
 `PolarPlanisphereDetailPolicy` is the packaged atlas-detail authority for a
 `polar_planisphere` composition. Its canonical configuration selects stars
-through magnitude 5.0 and enables exactly `stars`, `constellation_lines`,
-`constellation_labels`, and `milky_way`. `constellation_star_mode="none"`
+through magnitude 5.5 and enables exactly `stars`, `constellation_lines`,
+`constellation_labels`, `milky_way`, and `magellanic_clouds`.
+`constellation_star_mode="none"`
 ensures that faint constellation vertices do not bypass the stellar ceiling.
-Constellation boundaries, coordinate grids, Magellanic Clouds, galaxies,
-clusters, planetary nebulae, and supernova remnants remain disabled. Because
-the policy ignores face context and output-mode scaling, north and south
+Constellation boundaries, coordinate grids, galaxies, clusters, planetary
+nebulae, and supernova remnants remain disabled. Because the policy ignores
+face context and output-mode scaling, north and south
 compositions produce identical render-local catalogue geometry options before
 their different projections clip the common sky.
 

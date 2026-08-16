@@ -160,9 +160,9 @@ style policy.
 
 Milestone 48E.1 adds the packaged `PolarPlanisphereDetailPolicy` and registers
 it as the ordinary atlas-detail default for `polar_planisphere`. It selects
-stars through magnitude 5.0 plus constellation figures, constellation labels,
-and the Milky Way. It disables constellation-boundary, coordinate-grid,
-Magellanic-Cloud, and deep-sky symbol layers, and prevents constellation
+stars through magnitude 5.5 plus constellation figures, constellation labels,
+the Milky Way, and both Magellanic Clouds. It disables constellation-boundary,
+coordinate-grid, and deep-sky symbol layers, and prevents constellation
 vertices from bypassing the magnitude ceiling. North and south compositions
 resolve identical render-local catalogue geometry options before projection,
 preserving common content throughout their overlap without a separate sky or

@@ -35,7 +35,7 @@ class Layer:
 def test_default_policy_is_the_exact_sparse_classroom_content():
     detail = PolarPlanisphereDetailPolicy().resolve(object(), object())
 
-    assert detail.star_magnitude_limit == pytest.approx(5.0)
+    assert detail.star_magnitude_limit == pytest.approx(5.5)
     assert detail.label_density == pytest.approx(1.0)
     assert detail.enabled_layers == POLAR_PLANISPHERE_CONTENT_LAYERS
     assert detail.constellation_star_mode == "none"
@@ -43,8 +43,8 @@ def test_default_policy_is_the_exact_sparse_classroom_content():
     assert detail.layer_enabled("constellation_lines")
     assert detail.layer_enabled("constellation_labels")
     assert detail.layer_enabled("milky_way")
+    assert detail.layer_enabled("magellanic_clouds")
     assert not detail.layer_enabled("constellation_boundaries")
-    assert not detail.layer_enabled("magellanic_clouds")
     assert not detail.enabled_layers & DEEP_SKY_LAYERS
 
 
@@ -59,7 +59,7 @@ def test_atlas_composition_uses_one_policy_for_both_faces(mode):
     assert south.detail == PolarPlanisphereDetailPolicy().resolve(
         south.context, south.mode
     )
-    assert south.detail.star_magnitude_limit == pytest.approx(5.0)
+    assert south.detail.star_magnitude_limit == pytest.approx(5.5)
     assert south.detail.enabled_layers == POLAR_PLANISPHERE_CONTENT_LAYERS
 
 
@@ -80,6 +80,7 @@ def test_overlap_content_options_are_identical_before_projection():
                 "constellation_labels",
                 "constellation_boundaries",
                 "milky_way_isophotes",
+                "magellanic_clouds",
                 *sorted(DEEP_SKY_LAYERS),
             )
         )
@@ -95,7 +96,7 @@ def test_overlap_content_options_are_identical_before_projection():
     assert south_options == north_options
     stars = next(layer for layer in sky.layers if layer.layer_name == "stars")
     assert south_options[stars]["geometry"] == {
-        "magnitude_limit": 5.0,
+        "magnitude_limit": 5.5,
         "include_ids": frozenset(),
         "include_constellation_vertices": False,
     }
@@ -105,6 +106,7 @@ def test_overlap_content_options_are_identical_before_projection():
             "constellation_lines",
             "constellation_labels",
             "milky_way_isophotes",
+            "magellanic_clouds",
         }
         assert south_options[layer]["enabled"] is expected
 

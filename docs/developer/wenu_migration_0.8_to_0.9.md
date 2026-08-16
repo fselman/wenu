@@ -214,10 +214,10 @@ This is the urgent minimum printable product.
 
 **Status:** Implemented. The packaged `PolarPlanisphereDetailPolicy` is the
 normal atlas-detail default for both polar faces. It fixes the classroom
-stellar ceiling at magnitude 5.0 and enables only stars, constellation lines,
-constellation labels, and the Milky Way. Constellation vertices do not bypass
-the magnitude ceiling; boundaries, coordinate grids, Magellanic Clouds, and
-all deep-sky symbol families remain disabled. Both face compositions resolve
+stellar ceiling at magnitude 5.5 and enables stars, constellation lines,
+constellation labels, the Milky Way, and both Magellanic Clouds. Constellation
+vertices do not bypass the magnitude ceiling; boundaries, coordinate grids,
+and all deep-sky symbol families remain disabled. Both face compositions resolve
 the same detail and identical layer geometry options before projection, so
 their shared declination overlap cannot acquire face-specific catalogue
 selection. Appearance and Milky Way realization remain Milestone 48E.2.
@@ -289,6 +289,10 @@ policy does not affect other chart families.
 Constellation names now follow that same polar-only orientation. Ecliptic
 keypoints change from filled circles to small `x` marks, while celestial poles
 use `+` and the other coordinate-system poles retain `x`.
+Fernando's third visual review accepted the corrected reference geometry and
+requested both Magellanic Clouds plus a magnitude-5.5 stellar ceiling. The
+shared polar detail policy now selects that content before ordinary face-cap
+clipping; the clouds therefore appear only on faces containing their geometry.
 
 ### Milestone 48E.4 - Actual-size A4 export
 
@@ -306,7 +310,7 @@ use `+` and the other coordinate-system poles retain `x`.
 - measured diameter agrees with the request;
 - a paper mock-up aligns and glues back to back;
 - dates, RA handedness, and face rotation are correct;
-- magnitude-5 stars, constellations, Milky Way, and references remain clean;
+- magnitude-5.5 stars, constellations, Milky Way, Clouds, and references remain clean;
 - Fernando Selman approves the classroom print or records only the smallest
   corrections needed before Wednesday.
 

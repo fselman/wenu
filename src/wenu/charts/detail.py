@@ -56,6 +56,7 @@ POLAR_PLANISPHERE_CONTENT_LAYERS = frozenset(
         "constellation_lines",
         "constellation_labels",
         "milky_way",
+        "magellanic_clouds",
     }
 )
 
@@ -337,7 +338,7 @@ class FixedDetailPolicy:
 class PolarPlanisphereDetailPolicy:
     """Sparse, projection-independent content for classroom star disks."""
 
-    star_magnitude_limit: float = 5.0
+    star_magnitude_limit: float = 5.5
     label_density: float = 1.0
     enabled_layers: frozenset[str] = POLAR_PLANISPHERE_CONTENT_LAYERS
     constellation_star_mode: str = "none"
@@ -353,12 +354,12 @@ class PolarPlanisphereDetailPolicy:
         if layers != POLAR_PLANISPHERE_CONTENT_LAYERS:
             raise ValueError(
                 "enabled_layers must contain only the essential polar-"
-                "planisphere stars, constellation lines and labels, and "
-                "Milky Way."
+                "planisphere stars, constellation lines and labels, "
+                "Milky Way, and Magellanic Clouds."
             )
         if self.constellation_star_mode != "none":
             raise ValueError(
-                "constellation_star_mode must be 'none' so magnitude 5 "
+                "constellation_star_mode must be 'none' so magnitude 5.5 "
                 "remains the complete stellar selection rule."
             )
         object.__setattr__(self, "star_magnitude_limit", magnitude)

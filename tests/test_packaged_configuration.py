@@ -76,13 +76,14 @@ def test_packaged_defaults_cover_schema_responsibilities():
     assert tuple(defaults["families"]) == tuple(defaults["subjects"])
     assert len(defaults["detail"]["adaptive"]["levels"]) == 7
     assert defaults["detail"]["polar_planisphere"] == {
-        "star_magnitude_limit": 5.0,
+        "star_magnitude_limit": 5.5,
         "label_density": 1.0,
         "enabled_layers": [
             "stars",
             "constellation_lines",
             "constellation_labels",
             "milky_way",
+            "magellanic_clouds",
         ],
         "constellation_star_mode": "none",
     }

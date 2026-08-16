@@ -131,8 +131,8 @@ The first printable disks contain:
 - the relevant ecliptic pole and Galactic pole annotations within each face.
 
 One packaged polar-planisphere detail policy owns this selection for both
-faces. Its initial layer set is limited to magnitude-5 stars, constellation
-figures and labels, and the Milky Way; projection and face do not alter the
+faces. Its reviewed layer set contains magnitude-5.5 stars, constellation
+figures and labels, the Milky Way, and both Magellanic Clouds; face does not alter the
 pre-projection catalogue selection.
 
 Constellation boundaries are absent by default. Structural reference features
