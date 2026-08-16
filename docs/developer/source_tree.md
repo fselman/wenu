@@ -191,9 +191,9 @@ immutable A4 paper coordinates and semantic face information. It owns page
 size, safe margins, the common disk centre, centre-punch radius, horizontally
 reflected registration marks and their orientation glyphs, a measurable scale
 ruler, bilingual classroom instructions, site/time calibration, face identity,
-coverage, product identity, and required source revision. It consumes paired
-geometry but owns no chart projection, astronomical content, style,
-localization framework, Matplotlib artist, or export orchestration.
+rights notice, coverage, product identity, and required source revision. It
+consumes paired geometry but owns no chart projection, astronomical content,
+style, localization framework, Matplotlib artist, or export orchestration.
 `charts/polar_page_rendering.py` is the sole Matplotlib realization of those
 resolved calendar and A4 page records. It expands the already-rendered polar
 chart axes to the physical date-ring radius, draws Spanish month furniture,

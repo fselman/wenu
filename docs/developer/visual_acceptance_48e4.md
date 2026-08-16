@@ -2,7 +2,7 @@
 
 **Status:** Awaiting generated-page and physical review
 
-**Implementation base:** `b6a9044181acf78875bbde596919cfaf653e504f`
+**Implementation base:** `a0bcb9a4c54015d9c647bc04232f8eba2eecf7bb`
 
 **Astronomical checkpoint:** `09a2afd`
 
@@ -37,6 +37,8 @@ Do not add these generated files to Git.
 - the north registration pattern is the left-right reflection of the south
   pattern, so corresponding marks coincide with both face titles upright;
 - `SOUTH / SUR` and `NORTH / NORTE` identify the correct pages;
+- the complete upper information group, including the bilingual rights
+  notice, remains inside the 5 mm safe page area;
 - page text is readable normally and is never mirrored;
 - the manifest records both files, byte sizes, checksums, projection, page,
   disk, and stellar-aperture dimensions, DPI, and source revision;
@@ -66,7 +68,7 @@ Then:
 - verify that no calendar label or information block is cut or obscured;
 - confirm that instructions, La Ligua/Papudo coordinates, UTC-4, daylight-
   saving disclaimer, projection, coverage, magnitude 5.5, product identifier,
-  and source revision are legible;
+  rights notice, and source revision are legible;
 - record only print-blocking corrections before beginning the horizon overlay.
 
 ## Disposition

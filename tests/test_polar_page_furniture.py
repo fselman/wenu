@@ -50,6 +50,7 @@ def test_information_blocks_cover_the_print_and_classroom_contract():
     north = furniture.north
     roles = {
         "face_identity",
+        "rights_notice",
         "edition_site",
         "geometry",
         "print_instruction",
@@ -80,11 +81,32 @@ def test_information_blocks_cover_the_print_and_classroom_contract():
         assert "195 mm" in text
         assert "100% / ACTUAL SIZE" in text
         assert "NO AJUSTAR A PÁGINA" in text
+        assert "ALL RIGHTS RESERVED" in text
+        assert "TODOS LOS DERECHOS RESERVADOS" in text
         assert "perfore el centro" in text
         assert "reverso con reverso" in text
         assert SOURCE_REVISION in text
     assert "Declinación -90° a +20°" in south_text
     assert "Declinación -20° a +90°" in north_text
+
+
+def test_top_information_group_is_lowered_inside_the_safe_page():
+    furniture = page_furniture()
+
+    for face in furniture.faces:
+        blocks = {block.role: block for block in face.text_blocks}
+        assert blocks["face_identity"].position_mm == pytest.approx(
+            (105.0, 285.0)
+        )
+        assert blocks["rights_notice"].position_mm == pytest.approx(
+            (105.0, 279.5)
+        )
+        assert blocks["edition_site"].position_mm == pytest.approx(
+            (105.0, 273.5)
+        )
+        assert blocks["geometry"].position_mm == pytest.approx(
+            (105.0, 265.0)
+        )
 
 
 def test_all_text_anchors_remain_outside_the_disk_and_inside_safe_page():

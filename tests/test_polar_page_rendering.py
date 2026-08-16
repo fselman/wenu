@@ -109,3 +109,41 @@ def test_realization_rejects_mixed_faces_and_invalid_month_names():
             )
     finally:
         plt.close(figure)
+
+
+def test_rendered_page_text_extents_remain_inside_the_safe_page():
+    pair, calendar, pages = resolved_values()
+    chart = pair.south
+    page = pages.south
+    composition = compose_chart(chart, style="atlas", mode="print")
+    figure = plt.figure(figsize=(210.0 / 25.4, 297.0 / 25.4))
+    ax = figure.add_axes(polar_disk_axes_bounds(page))
+    composition.style.configure_axes(ax)
+    renderer = MatplotlibRenderer(ax)
+    try:
+        result = draw_polar_page_furniture(
+            chart=chart,
+            sky=object(),
+            renderer=renderer,
+            composition=composition,
+            rendering=object(),
+            calendar_face=calendar.south,
+            page_face=page,
+        )
+        figure.canvas.draw()
+        canvas_renderer = figure.canvas.get_renderer()
+        inverse = result.page_axes.transData.inverted()
+        for artist in result.text_artists:
+            bounds = inverse.transform(
+                artist.get_window_extent(renderer=canvas_renderer).get_points()
+            )
+            assert bounds[:, 0].min() >= page.safe_margin_mm
+            assert bounds[:, 0].max() <= (
+                page.page_width_mm - page.safe_margin_mm
+            )
+            assert bounds[:, 1].min() >= page.safe_margin_mm
+            assert bounds[:, 1].max() <= (
+                page.page_height_mm - page.safe_margin_mm
+            )
+    finally:
+        plt.close(figure)

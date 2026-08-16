@@ -282,7 +282,14 @@ class PolarPageFurnitureRequest:
             PolarPageTextBlock(
                 role="face_identity",
                 lines=(_FACE_TITLES[face],),
-                position_mm=(center[0], page_top - 2.0),
+                position_mm=(center[0], page_top - 7.0),
+            ),
+            PolarPageTextBlock(
+                role="rights_notice",
+                lines=(
+                    "ALL RIGHTS RESERVED / TODOS LOS DERECHOS RESERVADOS",
+                ),
+                position_mm=(center[0], page_top - 12.5),
             ),
             PolarPageTextBlock(
                 role="edition_site",
@@ -290,7 +297,7 @@ class PolarPageFurnitureRequest:
                     f"Edición {self.site_edition} — sitio: {self.site_name}",
                     f"{latitude}, {longitude} — hora estándar {offset_text}",
                 ),
-                position_mm=(center[0], page_top - 8.0),
+                position_mm=(center[0], page_top - 18.5),
             ),
             PolarPageTextBlock(
                 role="geometry",
@@ -301,7 +308,7 @@ class PolarPageFurnitureRequest:
                         f"magnitud límite {self.magnitude_limit:g}"
                     ),
                 ),
-                position_mm=(center[0], page_top - 16.0),
+                position_mm=(center[0], page_top - 27.0),
             ),
         )
         bottom = (

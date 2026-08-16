@@ -31,6 +31,7 @@ _REGISTRATION_MARKERS = {
 }
 _TEXT_STYLE = {
     "face_identity": {"fontsize": 11.0, "fontweight": "bold"},
+    "rights_notice": {"fontsize": 5.2, "fontweight": "medium"},
     "edition_site": {"fontsize": 6.5},
     "geometry": {"fontsize": 6.2},
     "print_instruction": {"fontsize": 7.0, "fontweight": "bold"},
