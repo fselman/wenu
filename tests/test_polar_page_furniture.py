@@ -37,6 +37,8 @@ def test_default_request_resolves_matched_actual_size_a4_faces():
         assert face.disk_center_mm == pytest.approx((105.0, 148.5))
         assert face.disk_diameter_mm == pytest.approx(195.0)
         assert face.center_punch_radius_mm == pytest.approx(1.0)
+        assert face.product_identifier.startswith("Wenu polar planisphere")
+        assert face.source_revision == SOURCE_REVISION
         assert face.safe_margin_mm == pytest.approx(5.0)
         assert face.disk_center_mm[0] - face.disk_radius_mm >= 5.0
         assert face.disk_center_mm[0] + face.disk_radius_mm <= 205.0

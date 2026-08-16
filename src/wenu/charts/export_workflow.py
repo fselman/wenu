@@ -18,6 +18,7 @@ class ChartExportResult:
     export_options: object
     furniture_rendering: object | None = None
     footer_rendering: object | None = None
+    additional_furniture_rendering: object | None = None
 
     def __iter__(self):
         """Preserve established ``rendering, output = export(...)`` use."""
@@ -95,6 +96,7 @@ def export_composed_chart(
     layer_options=None,
     export_options=None,
     render_options=None,
+    additional_furniture=None,
 ):
     """Render, decorate, and save one resolved composition exactly once."""
     _validate_composition(chart, composition)
@@ -165,6 +167,17 @@ def export_composed_chart(
             ),
             **footer_options,
         )
+    additional_furniture_rendering = None
+    if additional_furniture is not None:
+        if not callable(additional_furniture):
+            raise TypeError("additional_furniture must be callable or None.")
+        additional_furniture_rendering = additional_furniture(
+            chart=chart,
+            sky=sky,
+            renderer=renderer,
+            composition=composition,
+            rendering=rendering,
+        )
     options = (
         _composition_export_options(composition)
         if export_options is None
@@ -179,4 +192,7 @@ def export_composed_chart(
         export_options=options,
         furniture_rendering=furniture_rendering,
         footer_rendering=footer_rendering,
+        additional_furniture_rendering=(
+            additional_furniture_rendering
+        ),
     )

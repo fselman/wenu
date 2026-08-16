@@ -333,6 +333,7 @@ class PolarPlanisphereChart:
         resolved_detail=None,
         composition=None,
         boundary_style=None,
+        additional_furniture=None,
     ):
         """Render and reproducibly save one polar-planisphere face."""
         if composition is not None:
@@ -357,6 +358,11 @@ class PolarPlanisphereChart:
                 layer_options=layer_options,
                 export_options=export_options,
                 render_options={"boundary_style": boundary_style},
+                additional_furniture=additional_furniture,
+            )
+        if additional_furniture is not None:
+            raise ValueError(
+                "additional_furniture requires a resolved composition."
             )
         result = self.render(
             sky,

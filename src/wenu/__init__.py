@@ -201,6 +201,16 @@ from .charts.polar_page_furniture import (
     PolarPageScaleRuler,
     PolarPageTextBlock,
 )
+from .charts.polar_page_rendering import (
+    PolarFacePageRendering,
+    SPANISH_MONTH_NAMES,
+    draw_polar_page_furniture,
+    polar_disk_axes_bounds,
+)
+from .charts.polar_page_export import (
+    PolarPagePairExportResult,
+    export_polar_planisphere_pages,
+)
 from .charts.detail_application import (
     DetailApplication,
     apply_resolved_detail,
@@ -455,6 +465,12 @@ __all__ = [
     "PolarPageRegistrationMark",
     "PolarPageScaleRuler",
     "PolarPageTextBlock",
+    "PolarFacePageRendering",
+    "SPANISH_MONTH_NAMES",
+    "draw_polar_page_furniture",
+    "polar_disk_axes_bounds",
+    "PolarPagePairExportResult",
+    "export_polar_planisphere_pages",
     "RectangularLabelAnchor",
     "FullSkyChart",
     "RegionalChart",

@@ -194,6 +194,19 @@ ruler, bilingual classroom instructions, site/time calibration, face identity,
 coverage, product identity, and required source revision. It consumes paired
 geometry but owns no chart projection, astronomical content, style,
 localization framework, Matplotlib artist, or export orchestration.
+`charts/polar_page_rendering.py` is the sole Matplotlib realization of those
+resolved calendar and A4 page records. It expands the already-rendered polar
+chart axes to the physical date-ring radius, draws Spanish month furniture,
+and realizes the cut line, centre punch, reflected registration glyphs, scale
+ruler, and semantic text on a transparent millimetre page axes. It calculates
+no astronomy and performs no save.
+`charts/polar_page_export.py` owns paired physical-product orchestration. It
+creates an A4 print composition and physical disk axes for each resolved face,
+then calls `PolarPlanisphereChart.export()` once per destination. The chart
+continues through `export_composed_chart()`; its additional-furniture hook
+realizes the page immediately before the existing single save. PDF metadata
+records the product and source revision. No alternate sphere, renderer, or
+export path is introduced.
 `charts/polar_planisphere_style.py` owns the provisional configurable physical
 paper palette and its pure adaptation of the existing atlas style. It changes
 appearance only: white paper, blue ordinary star symbols, filled outline-free
@@ -451,6 +464,11 @@ limits, physical scale, handedness, and face-neutral content policy, and proves
 that resolving physical calendar furniture cannot mutate celestial geometry.
 It deliberately compares renderer-neutral geometry rather than raster pixels,
 so later page furniture can be reviewed without silently moving the sky.
+`tools/render_48e4_polar_pages.py` is the actual-size Milestone 48E.4 handoff.
+It resolves the accepted paired disk, calendar, and A4 page information, calls
+the paired canonical exporter, and writes exactly two PDF pages plus a checksum
+manifest outside the repository. Physical review is recorded in
+`docs/developer/visual_acceptance_48e4.md`.
 
 Milestone 46D.8E keeps those owners but narrows diagnostic claims: all-sky and
 regional constellation masks are isolated from horizon openings, binocular

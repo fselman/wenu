@@ -1021,6 +1021,34 @@ so a printable page cannot silently omit provenance. This object contains no
 artists or saving code; renderer realization and the single final save per
 page belong to the following export milestone.
 
+`draw_polar_page_furniture(...)` is the single Matplotlib realization of one
+resolved calendar face and page face. It runs only as additional furniture
+after the canonical sky, reference, legend, and footer stages. The chart axes
+are expanded from the stellar aperture to the physical date-ring radius; daily
+ticks, Spanish month names, and all paper marks are then drawn from immutable
+millimetre records. A transparent full-page axes uses coordinates from
+`(0, 0)` to `(210, 297)` mm, while `polar_disk_axes_bounds(face)` locates the
+195 mm outer disk exactly on the physical A4 figure. The function saves
+nothing and returns an inspectable `PolarFacePageRendering` artist record.
+
+`export_polar_planisphere_pages(...)` accepts one resolved pair, calendar, and
+page-furniture pair plus explicit north and south destinations. Each face uses
+an A4 `PrintMode`, the accepted polar composition, and a non-tight opaque
+`ExportOptions`; `bbox_inches=None` is essential because tight bounding boxes
+would destroy actual-size page dimensions. It calls
+`PolarPlanisphereChart.export()` exactly once per face. That method delegates
+to `export_composed_chart()`, whose optional callable additional-furniture
+stage now runs immediately before its existing sole `save()`. The returned
+`PolarPagePairExportResult` retains both ordinary `ChartExportResult` values,
+including the new `additional_furniture_rendering` record.
+
+`tools/render_48e4_polar_pages.py --source-revision REVISION` is the review
+entry point. It writes `polar-planisphere-south-a4.pdf`,
+`polar-planisphere-north-a4.pdf`, and `manifest.json`; source revision is
+required rather than guessed from a working directory. The PDFs contain A4
+media boxes, one 195 mm disk each, embedded product/source metadata, and no
+implicit crop-to-content operation.
+
 ## Polar classroom-disk content
 
 `PolarPlanisphereDetailPolicy` is the packaged atlas-detail authority for a

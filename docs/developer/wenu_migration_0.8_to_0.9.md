@@ -320,6 +320,16 @@ physical millimetre geometry and semantic text blocks; no production artist or
 parallel export path is introduced. Milestone 48E.4C will realize these records
 through the canonical export boundary and retain one final save per page.
 
+Milestone 48E.4C adds that realization and actual-size export. One Matplotlib
+furniture owner draws the resolved calendar and paper records without
+recomputing geometry. One paired product exporter creates an A4 print
+composition for each face and calls the existing polar chart export once per
+destination. `export_composed_chart()` now accepts an optional resolved-
+furniture callable immediately before its existing final save; this is the
+only canonical extension. The review tool writes two non-tight A4 PDFs and one
+checksum manifest with an explicit source revision. Physical acceptance is
+recorded separately in `visual_acceptance_48e4.md`.
+
 - export deterministic north and south pages at an explicit physical size;
 - target an initial 190-200 mm common disk diameter on A4;
 - add pivot, face identity, asymmetric registration marks, scale ruler, and

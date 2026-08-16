@@ -62,6 +62,8 @@ class PolarFacePageFurniture:
     orientation_mark_identifier: str
     scale_ruler: PolarPageScaleRuler
     text_blocks: tuple[PolarPageTextBlock, ...]
+    product_identifier: str
+    source_revision: str
 
     @property
     def page_width_mm(self):
@@ -254,6 +256,8 @@ class PolarPageFurnitureRequest:
             orientation_mark_identifier=marks[0].identifier,
             scale_ruler=ruler,
             text_blocks=self._text_blocks(face, chart, center),
+            product_identifier=self.product_identifier,
+            source_revision=self.source_revision,
         )
 
     def _text_blocks(self, face, chart, center):
@@ -352,7 +356,7 @@ class PolarPageFurnitureRequest:
             PolarPageTextBlock(
                 role="ruler_caption",
                 lines=("Verifique esta regla después de imprimir.",),
-                position_mm=(left, 13.0),
+                position_mm=(left, 17.0),
                 horizontal_alignment="left",
             ),
         )
