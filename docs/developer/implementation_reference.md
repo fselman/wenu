@@ -1001,6 +1001,26 @@ typographic bases outward and never mirror glyphs. A date direction is exactly
 opposite the projected direction of its midnight RA, deriving reversed face
 handedness from the selected equidistant or stereographic projection.
 
+`PolarPageFurnitureRequest(source_revision=...)` resolves the paired disk into
+one `PolarPagePairFurniture` expressed entirely in physical A4 paper
+coordinates. The default page is 210 by 297 mm with a 5 mm safe margin and the
+195 mm disk centred at `(105, 148.5)` mm. Each face carries a 1 mm centre-punch
+radius, the reflected registration metadata positioned in millimetres, a
+triangle/circle/square glyph sequence whose triangle is the unambiguous
+orientation cue, and an exact 50 mm scale ruler with 10 mm major intervals.
+The south and north pages share one request and remain individually readable;
+their completed text is never mirrored.
+
+The page request also owns local semantic information for the classroom
+edition: `SOUTH / SUR` or `NORTH / NORTE`, La Ligua/Papudo identity, La Ligua
+coordinates, UTC-4 standard time, the explicit daylight-saving disclaimer,
+projection and declination coverage, magnitude limit 5.5, disk diameter,
+actual-size printing, minimal cutting/gluing/face-use instructions, product
+identifier, and source revision. `source_revision` is mandatory at resolution
+so a printable page cannot silently omit provenance. This object contains no
+artists or saving code; renderer realization and the single final save per
+page belong to the following export milestone.
+
 ## Polar classroom-disk content
 
 `PolarPlanisphereDetailPolicy` is the packaged atlas-detail authority for a

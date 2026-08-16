@@ -311,6 +311,15 @@ face-neutral magnitude-5.5 content selection, and verifies that resolving
 physical furniture cannot mutate that celestial geometry. The accepted 48E.3
 reference-frame issues remain unchanged for this print.
 
+Milestone 48E.4B adds the renderer-neutral A4 face-information owner. One
+paired request now resolves the common page/disk centre, safe margins,
+centre-punch radius, reflected asymmetric registration positions and glyphs,
+physical scale ruler, bilingual face/site/time/geometry/printing/assembly
+information, product identity, and mandatory source revision. These values are
+physical millimetre geometry and semantic text blocks; no production artist or
+parallel export path is introduced. Milestone 48E.4C will realize these records
+through the canonical export boundary and retain one final save per page.
+
 - export deterministic north and south pages at an explicit physical size;
 - target an initial 190-200 mm common disk diameter on A4;
 - add pivot, face identity, asymmetric registration marks, scale ruler, and

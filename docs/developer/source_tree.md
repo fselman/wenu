@@ -186,6 +186,14 @@ handedness. It owns no Matplotlib realization, localized text, style, horizon,
 astronomical content, or export orchestration.
 Labelled-day identity is retained separately from tick length so a renderer
 can emphasize those ticks by weight without changing calendar geometry.
+`charts/polar_page_furniture.py` resolves one paired physical disk into
+immutable A4 paper coordinates and semantic face information. It owns page
+size, safe margins, the common disk centre, centre-punch radius, the existing
+reflected registration marks and their orientation glyphs, a measurable scale
+ruler, bilingual classroom instructions, site/time calibration, face identity,
+coverage, product identity, and required source revision. It consumes paired
+geometry but owns no chart projection, astronomical content, style,
+localization framework, Matplotlib artist, or export orchestration.
 `charts/polar_planisphere_style.py` owns the provisional configurable physical
 paper palette and its pure adaptation of the existing atlas style. It changes
 appearance only: white paper, blue ordinary star symbols, filled outline-free

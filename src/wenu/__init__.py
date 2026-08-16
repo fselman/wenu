@@ -193,6 +193,14 @@ from .charts.polar_calendar_furniture import (
     PolarCalendarPairFurniture,
     PolarCalendarTick,
 )
+from .charts.polar_page_furniture import (
+    PolarFacePageFurniture,
+    PolarPageFurnitureRequest,
+    PolarPagePairFurniture,
+    PolarPageRegistrationMark,
+    PolarPageScaleRuler,
+    PolarPageTextBlock,
+)
 from .charts.detail_application import (
     DetailApplication,
     apply_resolved_detail,
@@ -441,6 +449,12 @@ __all__ = [
     "PolarCalendarLabel",
     "PolarCalendarPairFurniture",
     "PolarCalendarTick",
+    "PolarFacePageFurniture",
+    "PolarPageFurnitureRequest",
+    "PolarPagePairFurniture",
+    "PolarPageRegistrationMark",
+    "PolarPageScaleRuler",
+    "PolarPageTextBlock",
     "RectangularLabelAnchor",
     "FullSkyChart",
     "RegionalChart",
