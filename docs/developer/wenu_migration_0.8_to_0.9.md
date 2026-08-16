@@ -385,11 +385,12 @@ semantic `HorizonReference` remains the sole altitude-zero source; the
 existing horizontal-to-equatorial adapter and each resolved polar chart own
 the coordinate transformation, face clipping, and projection. A new immutable
 paired overlay record maps those results into the already-resolved A4 disk
-centre and radius, normalizes the local meridian, records cut clearance, and
-places E-S-W on the south-facing paper and W-N-E on the north-facing paper.
-The complete 195 mm disk remains inside each 210 by 297 mm overlay page. No
-artist, hour/date scale, title, instruction, catalogue, or alternate export
-path is introduced in this geometry milestone.
+centre and radius, normalizes the local meridian, and records cut clearance.
+The complete 195 mm disk remains inside each 210 by 297 mm overlay page.
+Geographic letters are not derived from sky orientation; the following
+furniture milestone places them on the fixed pouch for manual use. No artist,
+hour/date scale, title, instruction, catalogue, or alternate export path is
+introduced in this geometry milestone.
 
 ### Milestone 48G.3 - Hour scale and instructions
 
@@ -399,6 +400,16 @@ path is introduced in this geometry milestone.
 - use standard time and provide a daylight-saving adjustment instruction;
 - add N, E, S, W, centre, registration, cut, and assembly marks;
 - preserve the disk's date-to-upward-midnight-meridian contract.
+
+Milestone 48G.2B adds the renderer-neutral folded-pouch furniture records. The
+complete disk is translated rigidly, not reprojected, so its bottom is tangent
+to the fold and its top remains inside the A4 safe margin. Both faces receive
+the same three 37.5-degree date windows separated by 5 degrees. Their fixed
+hour marks run from 19:00 through 05:00 with face-specific reading direction,
+upright numerals, and short ticks outside the numerals. Geographic letters,
+`HORIZONTE`, the south title, and glue zones are physical paper furniture;
+they do not claim or constrain the rotating disk's sky orientation. No
+Matplotlib artist, retained-paper polygon, duplex imposition, or save is added.
 
 ### Milestone 48G.4 - Physical acceptance
 

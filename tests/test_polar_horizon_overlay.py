@@ -60,22 +60,18 @@ def test_request_resolves_paired_canonical_horizon_geometry():
             assert len(segment) >= 2
 
 
-def test_geographic_orientation_matches_each_face_in_the_hands():
+def test_meridian_horizon_has_the_expected_polar_geometry():
     _, _, overlay = resolved_overlay()
     center_x, center_y = overlay.south.disk_center_mm
-    south = {item.label: item.position_mm for item in overlay.south.cardinals}
-    north = {item.label: item.position_mm for item in overlay.north.cardinals}
 
-    assert tuple(south) == ("E", "S", "W")
-    assert south["E"][0] < center_x < south["W"][0]
-    assert south["E"][1] == pytest.approx(center_y, abs=0.2)
-    assert south["W"][1] == pytest.approx(center_y, abs=0.2)
-    assert south["S"][1] < center_y
-    assert tuple(north) == ("W", "N", "E")
-    assert north["W"][0] < center_x < north["E"][0]
-    assert north["W"][1] == pytest.approx(center_y, abs=0.2)
-    assert north["E"][1] == pytest.approx(center_y, abs=0.2)
-    assert north["N"][1] > center_y
+    assert overlay.south.meridian_horizon_position_mm[0] == pytest.approx(
+        center_x, abs=0.2
+    )
+    assert overlay.south.meridian_horizon_position_mm[1] < center_y
+    assert overlay.north.meridian_horizon_position_mm[0] == pytest.approx(
+        center_x, abs=0.2
+    )
+    assert overlay.north.meridian_horizon_position_mm[1] > center_y
 
 
 def test_pole_to_meridian_horizon_distance_encodes_site_latitude():
@@ -128,7 +124,6 @@ def test_request_validates_identity_and_is_immutable_and_public():
     import wenu
 
     for name in (
-        "PolarHorizonCardinal",
         "PolarHorizonFaceOverlay",
         "PolarHorizonOverlayRequest",
         "PolarHorizonPairOverlay",

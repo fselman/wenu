@@ -212,11 +212,21 @@ export path is introduced.
 curve through the existing horizontal-to-equatorial adapter, normalizes right
 ascension to the local meridian, clips the result through each existing polar
 chart, and maps it into immutable physical page coordinates. It owns the
-paired horizon segments, geographic cardinal anchors, observer latitude, and
-cut-clearance value. Opposite face handedness remains owned by the paired polar
-projections and is not reflected a second time by the overlay. The module owns
-no catalogue selection, artist, calendar/hour furniture, text placement, or
-save.
+paired horizon segments, observer latitude, meridian reference, and cut-
+clearance value. Opposite face handedness remains owned by the paired polar
+projections and is not reflected a second time by the overlay. Geographic
+letters are deliberately absent: they are fixed pouch furniture, not projected
+sky anchors. The module owns no catalogue selection, artist, calendar/hour
+furniture, text placement, or save.
+`charts/polar_pouch_furniture.py` rigidly translates the resolved horizon pair
+onto the accepted folded A4 construction and owns the resulting physical
+furniture records. It places the fold tangent to the bottom of the complete
+195 mm disk, three identical 37.5-degree annular date windows with 5-degree
+gaps, face-handed 19:00-05:00 hour marks, upright tangent numerals, external
+short ticks, fixed geographic letters, `HORIZONTE`, the south-face title, and
+side glue zones. Geographic text positions are paper instructions and never
+projected sky anchors. The module calculates no astronomy, draws no artist,
+and performs no save.
 `charts/polar_planisphere_style.py` owns the provisional configurable physical
 paper palette and its pure adaptation of the existing atlas style. It changes
 appearance only: white paper, blue ordinary star symbols, filled outline-free

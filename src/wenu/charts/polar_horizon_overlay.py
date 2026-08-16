@@ -14,15 +14,6 @@ from wenu.sky.horizon import HorizonReference
 
 
 @dataclass(frozen=True)
-class PolarHorizonCardinal:
-    """One geographic direction resolved in physical overlay coordinates."""
-
-    label: str
-    azimuth_deg: float
-    position_mm: tuple[float, float]
-
-
-@dataclass(frozen=True)
 class PolarHorizonFaceOverlay:
     """One clipped horizon window in physical page coordinates."""
 
@@ -33,7 +24,6 @@ class PolarHorizonFaceOverlay:
     site_latitude_deg: float
     cut_clearance_mm: float
     horizon_segments_mm: tuple[tuple[tuple[float, float], ...], ...]
-    cardinals: tuple[PolarHorizonCardinal, ...]
     pole_position_mm: tuple[float, float]
     meridian_horizon_position_mm: tuple[float, float]
 
@@ -101,20 +91,20 @@ class PolarHorizonOverlayRequest:
             observer
         )
         equatorial = horizontal_to_equatorial(horizon, observer)
-        cardinals, zenith_ra_deg = _equatorial_cardinals(observer)
+        references, zenith_ra_deg = _equatorial_references(observer)
         normalized_horizon = _relative_right_ascension(
             equatorial, zenith_ra_deg
         )
-        normalized_cardinals = (
-            _wrap_degrees(cardinals.lon_deg - zenith_ra_deg),
-            cardinals.lat_deg,
+        normalized_references = (
+            _wrap_degrees(references.lon_deg - zenith_ra_deg),
+            references.lat_deg,
         )
         south = _resolve_face(
             face="south",
             chart=pair.south,
             page=pages.south,
             horizon=normalized_horizon,
-            cardinal_coordinates=normalized_cardinals,
+            reference_coordinates=normalized_references,
             site_latitude_deg=self.site_latitude_deg,
             cut_clearance_mm=self.cut_clearance_mm,
         )
@@ -123,18 +113,18 @@ class PolarHorizonOverlayRequest:
             chart=pair.north,
             page=pages.north,
             horizon=normalized_horizon,
-            cardinal_coordinates=normalized_cardinals,
+            reference_coordinates=normalized_references,
             site_latitude_deg=self.site_latitude_deg,
             cut_clearance_mm=self.cut_clearance_mm,
         )
         return PolarHorizonPairOverlay(south=south, north=north)
 
 
-def _equatorial_cardinals(observer):
+def _equatorial_references(observer):
     horizontal = SphericalPoints(
-        lon_deg=np.asarray((0.0, 90.0, 180.0, 270.0, 0.0)),
-        lat_deg=np.asarray((0.0, 0.0, 0.0, 0.0, 90.0)),
-        labels=np.asarray(("N", "E", "S", "W", "ZENITH"), dtype=object),
+        lon_deg=np.asarray((0.0, 180.0, 0.0)),
+        lat_deg=np.asarray((0.0, 0.0, 90.0)),
+        labels=np.asarray(("N", "S", "ZENITH"), dtype=object),
         metadata={"coordinate_system": "altaz"},
     )
     equatorial = horizontal_to_equatorial(horizontal, observer)
@@ -165,7 +155,7 @@ def _resolve_face(
     chart,
     page,
     horizon,
-    cardinal_coordinates,
+    reference_coordinates,
     site_latitude_deg,
     cut_clearance_mm,
 ):
@@ -183,36 +173,16 @@ def _resolve_face(
         )
         for curve in projected
     )
-    longitude, latitude = cardinal_coordinates
-    x, y = chart.projection.project_spherical(longitude[:4], latitude[:4])
-    positions = tuple(
+    longitude, latitude = reference_coordinates
+    x, y = chart.projection.project_spherical(longitude[:2], latitude[:2])
+    meridian_positions = tuple(
         (
             float(center[0] + scale * value_x),
             float(center[1] + scale * value_y),
         )
         for value_x, value_y in zip(x, y, strict=True)
     )
-    indices = (1, 2, 3) if face == "south" else (3, 0, 1)
-    labels = ("E", "S", "W") if face == "south" else ("W", "N", "E")
-    azimuths = (90.0, 180.0, 270.0) if face == "south" else (
-        270.0,
-        0.0,
-        90.0,
-    )
-    cardinals = tuple(
-        PolarHorizonCardinal(
-            label=label,
-            azimuth_deg=azimuth,
-            position_mm=positions[index],
-        )
-        for label, azimuth, index in zip(
-            labels, azimuths, indices, strict=True
-        )
-    )
-    meridian_label = "S" if face == "south" else "N"
-    meridian = next(
-        item.position_mm for item in cardinals if item.label == meridian_label
-    )
+    meridian = meridian_positions[1 if face == "south" else 0]
     return PolarHorizonFaceOverlay(
         face=face,
         page_size_mm=page.page_size_mm,
@@ -221,7 +191,6 @@ def _resolve_face(
         site_latitude_deg=site_latitude_deg,
         cut_clearance_mm=cut_clearance_mm,
         horizon_segments_mm=segments,
-        cardinals=cardinals,
         pole_position_mm=page.disk_center_mm,
         meridian_horizon_position_mm=meridian,
     )

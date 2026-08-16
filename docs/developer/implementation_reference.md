@@ -1049,6 +1049,35 @@ required rather than guessed from a working directory. The PDFs contain A4
 media boxes, one 195 mm disk each, embedded product/source metadata, and no
 implicit crop-to-content operation.
 
+## Polar folded-pouch furniture
+
+`PolarHorizonOverlayRequest.resolve(pair, pages, observer)` retains only
+astronomical altitude-zero geometry: paired clipped horizon segments, the
+shared observer latitude, physical disk scale, and the face-specific meridian
+horizon reference. It deliberately exposes no E, W, N, or S label anchors.
+Those printed letters tell the user how to hold the fixed pouch; they are not
+derived from the rotating disk's current projected orientation.
+
+`PolarPouchFurnitureRequest.resolve(overlays)` maps that immutable horizon pair
+onto one 210 by 297 mm folded construction. With the 195 mm classroom disk and
+5 mm safe margin, the fold is at 97 mm and the disk centre is `(105, 194.5)`
+mm, so the complete disk lies between the fold and the upper safe margin. The
+fold therefore supplies vertical registration when the disk rests on it.
+
+Each resolved face owns three identical annular date windows. Every window
+spans 37.5 degrees, adjacent windows are separated by 5 degrees, and the full
+group is centred on the bottom of the disk. The hour furniture covers 19:00
+through 05:00 at one-hour/15-degree intervals. On the south face it runs from
+right to left; on the north face it runs from left to right. Numerals lie
+outside the smaller hour circle with upright tangent bases, and each short
+radial tick lies beyond its numeral but inside the date windows.
+
+Fixed paper labels are E-S-W plus `HORIZONTE` and `Un firmamento, muchos
+cielos` on the south face, and W-N-E plus `HORIZONTE` on the north face. Their
+positions are pouch furniture, not astronomical geometry. Rendering, cut-path
+realization, retained-paper fills, duplex imposition, and PDF export remain the
+following milestone.
+
 ## Polar classroom-disk content
 
 `PolarPlanisphereDetailPolicy` is the packaged atlas-detail authority for a

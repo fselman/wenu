@@ -212,10 +212,18 @@ from .charts.polar_page_export import (
     export_polar_planisphere_pages,
 )
 from .charts.polar_horizon_overlay import (
-    PolarHorizonCardinal,
     PolarHorizonFaceOverlay,
     PolarHorizonOverlayRequest,
     PolarHorizonPairOverlay,
+)
+from .charts.polar_pouch_furniture import (
+    PolarPouchDateWindow,
+    PolarPouchFaceFurniture,
+    PolarPouchFurnitureRequest,
+    PolarPouchGlueStrip,
+    PolarPouchHourMark,
+    PolarPouchLabel,
+    PolarPouchPairFurniture,
 )
 from .charts.detail_application import (
     DetailApplication,
@@ -477,10 +485,16 @@ __all__ = [
     "polar_disk_axes_bounds",
     "PolarPagePairExportResult",
     "export_polar_planisphere_pages",
-    "PolarHorizonCardinal",
     "PolarHorizonFaceOverlay",
     "PolarHorizonOverlayRequest",
     "PolarHorizonPairOverlay",
+    "PolarPouchDateWindow",
+    "PolarPouchFaceFurniture",
+    "PolarPouchFurnitureRequest",
+    "PolarPouchGlueStrip",
+    "PolarPouchHourMark",
+    "PolarPouchLabel",
+    "PolarPouchPairFurniture",
     "RectangularLabelAnchor",
     "FullSkyChart",
     "RegionalChart",

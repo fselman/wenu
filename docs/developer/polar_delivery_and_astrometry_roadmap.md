@@ -198,6 +198,12 @@ Each face-specific overlay must include:
 The hour scale and text are furniture over already-resolved physical overlay
 geometry. They do not belong to projection classes or the renderer.
 
+Milestone 48G.2B freezes that furniture as immutable millimetre records. The
+compass letters are explicitly manual geographic cues on the fixed pouch, not
+positions derived from Wenu's projected sky. During use, the observer rotates
+the disk so the selected date and hour agree with the pouch; the labels then
+show how to hold the assembled device toward the corresponding horizon.
+
 ### Milestone 48G.3 - Deterministic print package
 
 **Goal:** Generate the complete classroom print candidate reproducibly.
