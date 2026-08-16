@@ -433,6 +433,12 @@ def test_polar_reference_overlay_contains_grid_planes_points_and_poles():
         style["linewidths"] == pytest.approx(0.55)
         for style in metadata["style"]
     )
+    assert [point.label for point in overlay.points._points[:4]] == [
+        "", "", "", ""
+    ]
+    assert [point.label for point in overlay.points._points[-4:]] == [
+        "♈", "♋", "♎", "♑"
+    ]
 
 
 @pytest.mark.parametrize(

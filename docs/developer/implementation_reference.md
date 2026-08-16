@@ -1070,6 +1070,11 @@ ecliptic and Galactic poles use `x`.
 The physical disk suppresses their inline labels and renders all pole and
 ecliptic-keypoint markers at the same small, light weight. Their meanings are
 reserved for later external product furniture or documentation.
+The ecliptic cardinal keypoints retain their zodiac labels. Packaged polar
+label directions place the celestial-equator and ecliptic names in opposite,
+comparatively sparse 3h/15h sectors rather than near their crossings. The
+configuration stores equatorial right ascension and ecliptic longitude so the
+anchors remain independent of page size and projection scale.
 
 ## 12. Compatibility and deprecation
 

@@ -121,6 +121,18 @@ def test_packaged_defaults_cover_schema_responsibilities():
     assert polar["paper_color"] == "#FFFFFF"
     assert polar["star_color"] == "#005B8F"
     assert polar["milky_way_opacity"] == pytest.approx(0.32)
+    assert defaults["grids_references"][
+        "polar_planisphere_label_anchors"
+    ] == {
+        "north": {
+            "equatorial_right_ascension_deg": 225.0,
+            "ecliptic_longitude_deg": 45.0,
+        },
+        "south": {
+            "equatorial_right_ascension_deg": 45.0,
+            "ecliptic_longitude_deg": 225.0,
+        },
+    }
 
 
 def test_every_packaged_line_has_independent_public_fields():

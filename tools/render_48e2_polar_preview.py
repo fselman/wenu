@@ -8,6 +8,9 @@ import json
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
+import astropy.units as u
+from astropy.coordinates import SkyCoord
 
 from wenu import (
     ChartFurnitureOptions,
@@ -24,6 +27,7 @@ from wenu import (
     compose_chart,
     generate_celestial_sphere,
 )
+from wenu.configuration import load_packaged_defaults
 
 
 MONTH_NAMES = (
@@ -78,10 +82,51 @@ def _draw_calendar(ax, face, scale, *, color, label_color):
         )
 
 
-def _render_face(chart, furniture, sky, observer, destination):
-    labeled = lambda text: ReferencePlaneAnnotation(
-        state="labeled", label=text
+def _projected_anchor(chart, observer, *, frame, angle_deg):
+    if frame == "equatorial":
+        ra_deg, dec_deg = float(angle_deg), 0.0
+    else:
+        point = SkyCoord(
+            lon=float(angle_deg) * u.deg,
+            lat=0.0 * u.deg,
+            frame=observer.ecliptic_frame,
+        ).transform_to(observer.icrs_frame)
+        ra_deg, dec_deg = float(point.ra.deg), float(point.dec.deg)
+    x, y = chart.projection.project_spherical(
+        np.asarray((ra_deg,)), np.asarray((dec_deg,))
     )
+    return float(x[0]), float(y[0])
+
+
+def _polar_reference_annotations(chart, observer):
+    values = load_packaged_defaults()["grids_references"][
+        "polar_planisphere_label_anchors"
+    ][chart.pole]
+    labeled = lambda text, anchor: ReferencePlaneAnnotation(
+        state="labeled", label=text, anchor=anchor
+    )
+    return ReferenceAnnotations(
+        celestial_equator=labeled(
+            "Celestial equator",
+            _projected_anchor(
+                chart, observer, frame="equatorial",
+                angle_deg=values["equatorial_right_ascension_deg"],
+            ),
+        ),
+        ecliptic=labeled(
+            "Ecliptic",
+            _projected_anchor(
+                chart, observer, frame="ecliptic",
+                angle_deg=values["ecliptic_longitude_deg"],
+            ),
+        ),
+        galactic_plane=ReferencePlaneAnnotation(
+            state="labeled", label="Galactic plane"
+        ),
+    )
+
+
+def _render_face(chart, furniture, sky, observer, destination):
     composition = compose_chart(
         chart,
         style="atlas",
@@ -90,16 +135,12 @@ def _render_face(chart, furniture, sky, observer, destination):
             enabled_layer_additions=frozenset({"equatorial_grid"}),
         ),
         furniture=ChartFurnitureOptions(
-            references=ReferenceAnnotations(
-                celestial_equator=labeled("Celestial equator"),
-                ecliptic=labeled("Ecliptic"),
-                galactic_plane=labeled("Galactic plane"),
-            ),
+            references=_polar_reference_annotations(chart, observer),
             poles=PoleAnnotations(
                 celestial="both",
                 ecliptic="both",
                 galactic="both",
-                labels=False,
+                labels=True,
             ),
             footer=FooterOptions(
                 application=True,

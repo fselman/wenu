@@ -33,14 +33,15 @@ def test_visual_checkpoint_realizes_reviewed_calendar_and_references():
 
     assert "tick.labeled_day" in source
     assert "fontsize=8.6" in source
-    assert 'labeled("Celestial equator")' in source
-    assert 'labeled("Ecliptic")' in source
-    assert 'labeled("Galactic plane")' in source
+    assert '"Celestial equator",' in source
+    assert '"Ecliptic",' in source
+    assert 'state="labeled", label="Galactic plane"' in source
     assert "draw_celestial_reference_furniture(" in source
     assert 'ecliptic="both"' in source
     assert 'galactic="both"' in source
     assert 'celestial="both"' in source
-    assert "labels=False" in source
+    assert "labels=True" in source
+    assert "_polar_reference_annotations(chart, observer)" in source
     assert "FooterOptions(" in source
     assert "include_version=True" in source
     assert "draw_chart_footer(" in source

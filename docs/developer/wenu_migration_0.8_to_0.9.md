@@ -297,6 +297,10 @@ The following review suppresses inline coordinate-pole labels, including the
 SEP label that overlapped the Large Magellanic Cloud. All coordinate-pole and
 ecliptic-keypoint markers remain as small, light semantic symbols for later
 external documentation rather than an on-disk legend.
+Ecliptic keypoints retain their zodiac labels. Face-specific celestial label
+directions for the equator and ecliptic are packaged as right ascension and
+ecliptic longitude, selecting separated low-density 3h/15h sectors without
+coupling the configuration to projected page coordinates.
 
 ### Milestone 48E.4 - Actual-size A4 export
 

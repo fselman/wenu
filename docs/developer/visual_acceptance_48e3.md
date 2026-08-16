@@ -95,3 +95,7 @@ The physical preview now suppresses all coordinate-pole labels. Celestial,
 ecliptic, and Galactic pole markers and the four ecliptic keypoints retain
 their semantic `+` or `x` shapes at one smaller, lighter visual weight. A
 later external legend or guide may document them without crowding the disk.
+The four ecliptic keypoints keep their zodiac labels. The celestial-equator
+and ecliptic names use configured face-specific celestial directions in quiet,
+opposite 3h/15h sectors, avoiding their crossings and the densest Milky Way
+fields without storing fragile page-pixel positions.
