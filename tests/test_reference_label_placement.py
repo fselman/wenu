@@ -378,13 +378,15 @@ def test_polar_reference_policy_uses_pole_down_orientation_exclusively():
 
 
 def test_polar_reference_overlay_contains_grid_planes_points_and_poles():
+    obstime = Time("2026-08-02T00:00:00")
     observer = SimpleNamespace(
         lat_deg=-32.0,
+        t_astropy=obstime,
         icrs_frame=ICRS(),
         ecliptic_frame=BarycentricMeanEcliptic(),
         galactic_frame=Galactic(),
         altaz_frame=AltAz(
-            obstime=Time("2026-08-02T00:00:00"),
+            obstime=obstime,
             location=EarthLocation(lat=-32.0 * u.deg, lon=-71.0 * u.deg),
         ),
     )

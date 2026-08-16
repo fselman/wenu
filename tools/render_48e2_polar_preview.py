@@ -10,7 +10,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import astropy.units as u
-from astropy.coordinates import SkyCoord
+from astropy.coordinates import BarycentricTrueEcliptic, SkyCoord
 
 from wenu import (
     ChartFurnitureOptions,
@@ -89,7 +89,7 @@ def _projected_anchor(chart, observer, *, frame, angle_deg):
         point = SkyCoord(
             lon=float(angle_deg) * u.deg,
             lat=0.0 * u.deg,
-            frame=observer.ecliptic_frame,
+            frame=BarycentricTrueEcliptic(equinox=observer.t_astropy),
         ).transform_to(observer.icrs_frame)
         ra_deg, dec_deg = float(point.ra.deg), float(point.dec.deg)
     x, y = chart.projection.project_spherical(

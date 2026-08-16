@@ -1075,6 +1075,9 @@ label directions place the celestial-equator and ecliptic names in opposite,
 comparatively sparse 3h/15h sectors rather than near their crossings. The
 configuration stores equatorial right ascension and ecliptic longitude so the
 anchors remain independent of page size and projection scale.
+Ecliptic anchors and cardinal keypoints share the reference grid's barycentric
+true-ecliptic-of-date frame; the observer's mean-ecliptic convenience frame is
+not used for this physical reference furniture.
 
 ## 12. Compatibility and deprecation
 

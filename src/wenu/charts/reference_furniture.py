@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+import astropy.units as u
+from astropy.coordinates import BarycentricTrueEcliptic, SkyCoord
 
 from wenu.charts.context import BoundaryKind
 from wenu.charts.coordinate_frames import horizontal_to_equatorial
@@ -403,13 +405,28 @@ def build_celestial_reference_sky(
             **pole_style,
         )
         if polar:
-            points.add_ecliptic_keypoints(
-                marker="x",
-                size=size,
-                color=style.ecliptic_color,
-                zorder=layers.POINTS,
-                **marker_style,
+            ecliptic_frame = BarycentricTrueEcliptic(
+                equinox=resolved_observer.t_astropy
             )
+            for longitude, label in (
+                (0.0, "♈"), (90.0, "♋"),
+                (180.0, "♎"), (270.0, "♑"),
+            ):
+                coordinate = SkyCoord(
+                    lon=longitude * u.deg,
+                    lat=0.0 * u.deg,
+                    frame=ecliptic_frame,
+                ).icrs
+                points.add_equatorial_point(
+                    coordinate.ra.deg,
+                    coordinate.dec.deg,
+                    label=label,
+                    marker="x",
+                    size=size,
+                    color=style.ecliptic_color,
+                    zorder=layers.POINTS,
+                    **marker_style,
+                )
     if target is not None:
         style = _publication_style(composition.style)
         points = (

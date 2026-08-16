@@ -99,3 +99,7 @@ The four ecliptic keypoints keep their zodiac labels. The celestial-equator
 and ecliptic names use configured face-specific celestial directions in quiet,
 opposite 3h/15h sectors, avoiding their crossings and the densest Milky Way
 fields without storing fragile page-pixel positions.
+Both configured ecliptic anchors and the four cardinal keypoints use the same
+barycentric true ecliptic of date as the rendered ecliptic curve. This keeps
+the vernal point on the curve and lets tangent label placement recover the
+actual local curve direction.
