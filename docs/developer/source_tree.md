@@ -437,6 +437,12 @@ remain later milestones. Human review is recorded in
 `docs/developer/visual_acceptance_48e2.md`.
 Milestone 48E.3 reuses that genuine two-face diagnostic; its separate review
 criteria and disposition live in `docs/developer/visual_acceptance_48e3.md`.
+`tests/test_polar_classroom_disk_freeze.py` records commit `09a2afd` as the
+accepted classroom astronomical checkpoint. It freezes the paired projection,
+limits, physical scale, handedness, and face-neutral content policy, and proves
+that resolving physical calendar furniture cannot mutate celestial geometry.
+It deliberately compares renderer-neutral geometry rather than raster pixels,
+so later page furniture can be reviewed without silently moving the sky.
 
 Milestone 46D.8E keeps those owners but narrows diagnostic claims: all-sky and
 regional constellation masks are isolated from horizon openings, binocular

@@ -304,6 +304,13 @@ coupling the configuration to projected page coordinates.
 
 ### Milestone 48E.4 - Actual-size A4 export
 
+Milestone 48E.4A freezes commit `09a2afd` as the accepted classroom
+astronomical disk checkpoint. A dedicated renderer-neutral regression contract
+now protects paired projection geometry, limits, scale, handedness, and the
+face-neutral magnitude-5.5 content selection, and verifies that resolving
+physical furniture cannot mutate that celestial geometry. The accepted 48E.3
+reference-frame issues remain unchanged for this print.
+
 - export deterministic north and south pages at an explicit physical size;
 - target an initial 190-200 mm common disk diameter on A4;
 - add pivot, face identity, asymmetric registration marks, scale ruler, and
