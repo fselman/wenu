@@ -56,7 +56,7 @@ def configured_stellar_symbol_sizes(
         + stars.bright_magnitude_offset,
         sizing,
         limiting_magnitude=limiting_magnitude,
-    ) * stars.area_scale
+    ) * stars.area_scale * stars.bright_symbol_area_scale
     return ordinary, highlighted, bright
 
 _SAMPLED_OUTLINE_LAYERS = frozenset(

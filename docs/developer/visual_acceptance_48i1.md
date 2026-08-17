@@ -52,7 +52,10 @@ mapped affinely onto the former magnitude -1 through 0 size interval. Ordinary
 circles in the source interval 0.18 through 5.5 are mapped affinely onto the
 former magnitude 0 through 4 size interval. The circular base markers under
 the selected five-point symbols are suppressed, and the five-point path uses
-a compact inner radius so its silhouette remains distinct in print.
+a compact 0.38 inner radius so its silhouette remains distinct in print.
+Milestone 48I.1E scales the five-point marker areas by `1 / 0.38^2`; therefore
+the inner pentagon, rather than the complete outer star, carries the former
+magnitude -1 through 0 linear scale.
 
 Constellation strokes and the shared right-ascension/equator/ecliptic/Galactic
 reference stroke are exactly 50 percent wider than in 48I.1A. Confirm on paper

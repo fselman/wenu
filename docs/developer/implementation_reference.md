@@ -1179,7 +1179,9 @@ cutoff, color, opacity, and affine magnitude scale and offset.
 masks vector-valued overlay areas with the same point mask. The corrected polar
 configuration uses a 0.18 cutoff, maps source magnitudes -1.44..0.18 onto the
 former -1..0 symbol areas, maps 0.18..5.5 onto the former 0..4 symbol areas,
-and suppresses the ordinary circle under each selected overlay. These are
+then multiplies five-point areas by `1 / 0.38^2` so the inner pentagon has the
+mapped linear size, and suppresses the ordinary circle under each selected
+overlay. These are
 appearance-only operations over the existing Hipparcos points.
 
 The canonical actual-size page and pouch tools pass an 86 mm calendar radius

@@ -686,6 +686,7 @@ star_minimum_area = 1.25
 bright_star_magnitude_limit = 0.18
 bright_star_magnitude_scale = 0.617283950617284
 bright_star_magnitude_offset = -0.1111111111111111
+bright_star_symbol_area_scale = 6.925207756232687
 ordinary_star_magnitude_scale = 0.7518796992481203
 ordinary_star_magnitude_offset = -0.13533834586466165
 milky_way_color = "#A8C8D6"

@@ -491,6 +491,11 @@ polar-only artist branch are introduced. Constellation and
 coordinate/reference strokes remain exactly 50 percent wider than in 48I.1A.
 Physical comparison remains required.
 
+Milestone 48I.1E retains those magnitude mappings and gives the bright overlay
+an explicit area factor of `1 / 0.38^2`. The inner pentagon of the five-point
+path therefore has the former magnitude -1-to-0 marker scale; the outer points
+extend beyond it without changing catalogue selection or magnitude semantics.
+
 ### Milestone 48I.2 - Night edition
 
 - add a dark-blue/white-star appearance over identical geometry;

@@ -31,6 +31,9 @@ def test_packaged_physical_palette_has_clean_white_and_provisional_blue():
     assert palette.bright_star_magnitude_limit == pytest.approx(0.18)
     assert palette.bright_star_magnitude_scale == pytest.approx(1.0 / 1.62)
     assert palette.bright_star_magnitude_offset == pytest.approx(-1.0 / 9.0)
+    assert palette.bright_star_symbol_area_scale == pytest.approx(
+        1.0 / 0.38**2
+    )
     assert palette.ordinary_star_magnitude_scale == pytest.approx(4.0 / 5.32)
     assert palette.ordinary_star_magnitude_offset == pytest.approx(
         -0.18 * 4.0 / 5.32
@@ -68,6 +71,9 @@ def test_polar_print_composition_uses_dedicated_physical_style():
     assert style.stars.bright_magnitude_limit == pytest.approx(0.18)
     assert style.stars.bright_magnitude_scale == pytest.approx(1.0 / 1.62)
     assert style.stars.bright_magnitude_offset == pytest.approx(-1.0 / 9.0)
+    assert style.stars.bright_symbol_area_scale == pytest.approx(
+        1.0 / 0.38**2
+    )
     assert style.stars.ordinary_magnitude_scale == pytest.approx(4.0 / 5.32)
     assert style.legend.visible is False
     assert style.grids.constellation_linewidth == pytest.approx(0.675)
@@ -174,7 +180,9 @@ def test_polar_star_ranges_remap_to_the_requested_existing_areas():
     assert not np.any(ordinary_mask)
     assert hidden_circles == pytest.approx(np.zeros(3))
     assert np.all(bright_mask)
-    assert bright == pytest.approx(current((-1.0, -0.5, 0.0)))
+    assert bright == pytest.approx(
+        current((-1.0, -0.5, 0.0)) / 0.38**2
+    )
 
 
 def test_bright_cut_selects_rigel_and_every_brighter_hipparcos_star():
