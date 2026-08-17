@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+import numpy as np
+
 from .context import BoundaryKind
 from .detail import ResolvedDetail
 from .style_components import StellarMagnitudeSizing
@@ -27,6 +29,33 @@ _SELECTION_OPTIONS = {
     "supernova_remnants": "supernova_remnants",
     "constellation_labels": "constellation_labels",
 }
+
+
+def configured_stellar_symbol_sizes(
+    magnitudes,
+    stars,
+    *,
+    limiting_magnitude=None,
+):
+    """Return ordinary areas, bright-star areas, and the bright mask."""
+    values = np.asarray(magnitudes, dtype=float)
+    sizing = stars.magnitude_sizing
+    bright = (
+        stars.draw_bright_symbols
+        & (values <= stars.bright_magnitude_limit)
+    )
+    ordinary = configured_magnitude_sizes(
+        values + stars.ordinary_magnitude_offset,
+        sizing,
+        limiting_magnitude=limiting_magnitude,
+    ) * stars.area_scale
+    ordinary = np.where(bright, 0.0, ordinary)
+    highlighted = configured_magnitude_sizes(
+        values + stars.bright_magnitude_offset,
+        sizing,
+        limiting_magnitude=limiting_magnitude,
+    ) * stars.area_scale
+    return ordinary, highlighted, bright
 
 _SAMPLED_OUTLINE_LAYERS = frozenset(
     {
@@ -352,7 +381,10 @@ def composition_layer_options(
     if (
         getattr(sky, "stars", None) is not None
         and sizing is not None
-        and sizing != StellarMagnitudeSizing()
+        and (
+            sizing != StellarMagnitudeSizing()
+            or stars.draw_bright_symbols
+        )
     ):
         limit = (
             composition.detail.star_magnitude_limit
@@ -366,15 +398,19 @@ def composition_layer_options(
         publication = composition.style.as_publication_style()
 
         def render_stars(spherical, projected):
-            options = publication._star_render_options(
-                spherical, projected
+            ordinary_sizes, bright_sizes, _ = (
+                configured_stellar_symbol_sizes(
+                    spherical.metadata["magnitude"],
+                    stars,
+                    limiting_magnitude=limit,
+                )
             )
-            options["style"]["s"] = configured_magnitude_sizes(
-                spherical.metadata["magnitude"],
-                sizing,
-                limiting_magnitude=limit,
-            ) * stars.area_scale
-            return options
+            return publication._star_render_options(
+                spherical,
+                projected,
+                star_sizes=ordinary_sizes,
+                bright_star_sizes=bright_sizes,
+            )
 
         base = merge_sky_layer_options(
             sky,

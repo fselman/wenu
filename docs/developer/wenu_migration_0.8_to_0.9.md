@@ -479,6 +479,16 @@ outward within the same calendar rim, and a rendered-font extent regression
 keeps all Spanish month names inside the cut circle. Physical printer review
 remains required before final typography acceptance.
 
+### Milestone 48I.1B - Remap printed stars and strengthen structure
+
+The physical-print follow-up activates the previously planned configurable
+five-point overlay at magnitude 0.05. It maps the -1.5-to-0 bright range onto
+the former magnitude-0-to-1.5 areas and the ordinary 1.5-to-5.5 range onto the
+former magnitude-0-to-4 areas. The renderer continues to use vectorized point
+collections, and no catalogue identifiers or polar-only artist branch are
+introduced. Constellation and coordinate/reference strokes increase by
+exactly 50 percent. Physical comparison remains required.
+
 ### Milestone 48I.2 - Night edition
 
 - add a dark-blue/white-star appearance over identical geometry;

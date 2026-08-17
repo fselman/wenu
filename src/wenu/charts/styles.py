@@ -39,6 +39,10 @@ class PublicationStyle:
     sky_color: str = "midnightblue"
     foreground_color: str = "white"
     star_color: str = "white"
+    draw_bright_star_symbols: bool = False
+    bright_star_magnitude_limit: float = 0.05
+    bright_star_color: str | None = None
+    bright_star_alpha: float = 1.0
     draw_variable_star_symbols: bool = False
     variable_star_color: str | None = None
     variable_star_symbol_size: float = 28.0
@@ -641,9 +645,44 @@ class PublicationStyle:
             }
         return options
 
-    def _star_render_options(self, spherical, projected):
+    def _star_render_options(
+        self,
+        spherical,
+        projected,
+        *,
+        star_sizes=None,
+        bright_star_sizes=None,
+    ):
         """Return one base scatter plus optional vectorized overlays."""
         overlays = []
+        if self.draw_bright_star_symbols:
+            bright = (
+                np.asarray(spherical.metadata["magnitude"], dtype=float)
+                <= self.bright_star_magnitude_limit
+            )
+            overlays.append(
+                {
+                    "mask": bright,
+                    "style": {
+                        "marker": DEFAULT_SYMBOLS.filled_five_point_star,
+                        "s": (
+                            magnitude_sizes(
+                                spherical.metadata["magnitude"]
+                            )
+                            if bright_star_sizes is None
+                            else bright_star_sizes
+                        ),
+                        "facecolors": (
+                            self.star_color
+                            if self.bright_star_color is None
+                            else self.bright_star_color
+                        ),
+                        "edgecolors": "none",
+                        "alpha": self.bright_star_alpha,
+                        "zorder": layers.BRIGHT_STARS,
+                    },
+                }
+            )
         if self.draw_multiple_star_symbols:
             overlays.append(
                 {
@@ -684,9 +723,12 @@ class PublicationStyle:
             )
         return {
             "style": {
-                "s": magnitude_sizes(
-                    spherical.metadata["magnitude"]
-                ) * self.star_area_scale,
+                "s": (
+                    magnitude_sizes(spherical.metadata["magnitude"])
+                    * self.star_area_scale
+                    if star_sizes is None
+                    else star_sizes
+                ),
                 "c": self.star_color,
                 "linewidths": 0,
                 "zorder": layers.STARS,

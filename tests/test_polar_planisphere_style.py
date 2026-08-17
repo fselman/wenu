@@ -14,6 +14,8 @@ from wenu.configuration import (
     load_packaged_defaults,
     translate_style_mode_defaults,
 )
+from wenu.charts.detail_application import configured_stellar_symbol_sizes
+from wenu.rendering.preparation import configured_magnitude_sizes
 
 
 def test_packaged_physical_palette_has_clean_white_and_provisional_blue():
@@ -26,7 +28,11 @@ def test_packaged_physical_palette_has_clean_white_and_provisional_blue():
     assert palette.star_minimum_area == pytest.approx(1.25)
     assert palette.star_magnitude_scale == pytest.approx(2.2727272727272725)
     assert palette.star_magnitude_exponent == pytest.approx(0.30488598388546717)
-    assert palette.reference_linewidth == pytest.approx(0.50)
+    assert palette.bright_star_magnitude_limit == pytest.approx(0.05)
+    assert palette.bright_star_magnitude_offset == pytest.approx(1.5)
+    assert palette.ordinary_star_magnitude_offset == pytest.approx(-1.5)
+    assert palette.constellation_linewidth == pytest.approx(0.675)
+    assert palette.reference_linewidth == pytest.approx(0.75)
     assert palette.reference_opacity == pytest.approx(0.65)
     assert palette.reference_label_fontsize == pytest.approx(5.25)
     assert palette.deep_sky_label_fontsize == pytest.approx(4.5)
@@ -54,15 +60,19 @@ def test_polar_print_composition_uses_dedicated_physical_style():
     )
     assert style.stars.draw_variable_symbols is False
     assert style.stars.draw_multiple_symbols is False
+    assert style.stars.draw_bright_symbols is True
+    assert style.stars.bright_magnitude_limit == pytest.approx(0.05)
+    assert style.stars.bright_magnitude_offset == pytest.approx(1.5)
+    assert style.stars.ordinary_magnitude_offset == pytest.approx(-1.5)
     assert style.legend.visible is False
-    assert style.grids.constellation_linewidth == pytest.approx(0.45)
+    assert style.grids.constellation_linewidth == pytest.approx(0.675)
     assert style.grids.constellation_label_color == "#23495D"
     assert style.grids.equatorial_color == "#456B7D"
     assert style.grids.ecliptic_color == "#456B7D"
     assert style.grids.galactic_color == "#456B7D"
     assert style.grids.coordinate_label_color == "#456B7D"
     assert style.grids.coordinate_label_fontsize == pytest.approx(5.25)
-    assert style.grids.coordinate_linewidth == pytest.approx(0.50)
+    assert style.grids.coordinate_linewidth == pytest.approx(0.75)
     assert style.grids.coordinate_alpha == pytest.approx(0.65)
     assert style.canvas.label_fontsize == pytest.approx(7.5)
     deep_sky = style.deep_sky
@@ -131,6 +141,48 @@ def test_print_star_curve_promotes_intermediate_magnitudes_only():
     assert areas[0] <= old[0]
     assert areas[5] == pytest.approx(1.25)
     assert areas[6] == pytest.approx(1.25)
+
+
+def test_polar_star_ranges_remap_to_the_requested_existing_areas():
+    style = compose_chart(
+        PolarPlanispherePairRequest().resolve().south,
+        style="atlas",
+        mode="print",
+    ).style
+    current = lambda magnitudes: configured_magnitude_sizes(
+        np.asarray(magnitudes, dtype=float),
+        style.stars.magnitude_sizing,
+    ) * style.stars.area_scale
+
+    ordinary_magnitudes = np.asarray((1.5, 2.5, 3.5, 4.5, 5.5))
+    ordinary, _, ordinary_mask = configured_stellar_symbol_sizes(
+        ordinary_magnitudes,
+        style.stars,
+    )
+    bright_magnitudes = np.asarray((-1.5, -0.75, 0.0))
+    hidden_circles, bright, bright_mask = configured_stellar_symbol_sizes(
+        bright_magnitudes,
+        style.stars,
+    )
+
+    assert ordinary == pytest.approx(current((0.0, 1.0, 2.0, 3.0, 4.0)))
+    assert not np.any(ordinary_mask)
+    assert hidden_circles == pytest.approx(np.zeros(3))
+    assert np.all(bright_mask)
+    assert bright == pytest.approx(current((0.0, 0.75, 1.5)))
+
+
+def test_bright_cut_selects_the_five_reviewed_hipparcos_stars():
+    from wenu.objects.stars import Stars
+
+    catalogue = Stars(None).load()
+    selected = catalogue[
+        catalogue["magnitude"]
+        <= PolarPlanisphereStylePalette().bright_star_magnitude_limit
+    ]
+
+    assert tuple(selected.index) == (30438, 32349, 69673, 71683, 91262)
+    assert catalogue.loc[24608, "magnitude"] == pytest.approx(0.08)
 
 
 def test_physical_style_does_not_change_other_atlas_print_families():

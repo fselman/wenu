@@ -416,6 +416,21 @@ def translate_style_mode_defaults(
             star_minimum_area=(
                 styles["polar_planisphere"]["star_minimum_area"]
             ),
+            bright_star_magnitude_limit=(
+                styles["polar_planisphere"][
+                    "bright_star_magnitude_limit"
+                ]
+            ),
+            bright_star_magnitude_offset=(
+                styles["polar_planisphere"][
+                    "bright_star_magnitude_offset"
+                ]
+            ),
+            ordinary_star_magnitude_offset=(
+                styles["polar_planisphere"][
+                    "ordinary_star_magnitude_offset"
+                ]
+            ),
             milky_way_color=(
                 styles["polar_planisphere"]["milky_way_color"]
             ),

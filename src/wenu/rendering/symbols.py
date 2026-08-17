@@ -67,6 +67,11 @@ def _multiple_star() -> Path:
     return Path.make_compound_path(circle, divider)
 
 
+def _filled_five_point_star() -> Path:
+    """Return a normalized compact five-point stellar marker."""
+    return Path.unit_regular_star(5)
+
+
 @dataclass(frozen=True)
 class SymbolLibrary:
     """Named normalized marker paths used by complete chart styles."""
@@ -77,6 +82,9 @@ class SymbolLibrary:
     open_cluster: Path = field(default_factory=_dotted_circle)
     variable_star: Path = field(default_factory=_variable_star)
     multiple_star: Path = field(default_factory=_multiple_star)
+    filled_five_point_star: Path = field(
+        default_factory=_filled_five_point_star
+    )
 
     @property
     def symbols(self) -> Mapping[str, Path]:
@@ -87,6 +95,7 @@ class SymbolLibrary:
                 "open_cluster": self.open_cluster,
                 "variable_star": self.variable_star,
                 "multiple_star": self.multiple_star,
+                "filled_five_point_star": self.filled_five_point_star,
             }
         )
 

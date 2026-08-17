@@ -217,3 +217,10 @@ using an 86 mm stellar-aperture radius and shifted calendar anchors; rendered
 Spanish month extents are required to remain inside the physical cut circle.
 No projection, sky coordinates, catalogue selection, or non-polar atlas style
 changes.
+
+Milestone 48I.1B adds a generic, vectorized filled five-point stellar overlay
+to the existing stellar rendering contract. The polar palette activates it at
+magnitude 0.05 and owns both magnitude remapping offsets. Ordinary circles are
+zero-sized beneath selected overlays, while all selection remains a
+render-local magnitude mask. Polar constellation and coordinate/reference
+strokes are 50 percent wider; other chart families remain unchanged.

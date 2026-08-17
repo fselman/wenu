@@ -259,6 +259,9 @@ filled outline-free Milky Way and Clouds, restrained constellation, reference,
 and boundary hierarchy, and calendar typography. `style_components.CalendarStyle`
 carries the resolved calendar text appearance to page realization. The palette
 owns no content selection, projection, calendar geometry, renderer, or export.
+`rendering/symbols.py` owns the normalized filled five-point path alongside
+the established semantic markers. Generic stellar style and preparation own
+its threshold and magnitude-area mapping; the polar renderer owns none of it.
 `charts/coordinate_frames.py` owns astronomical transformation of canonical
 AltAz spherical geometry into a chart-selected celestial frame before
 projection. Its Galactic and equatorial adapters preserve geometry structure

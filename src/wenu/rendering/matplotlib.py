@@ -435,7 +435,7 @@ class MatplotlibRenderer:
                             self.ax,
                             points.x[selected],
                             points.y[selected],
-                            **overlay_style,
+                            **self._mask_style(overlay_style, selected),
                         )
                     )
 

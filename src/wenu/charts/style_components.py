@@ -61,6 +61,12 @@ class StellarStyle:
     magnitude_sizing: StellarMagnitudeSizing = field(
         default_factory=StellarMagnitudeSizing
     )
+    draw_bright_symbols: bool = False
+    bright_magnitude_limit: float = 0.05
+    bright_magnitude_offset: float = 1.5
+    ordinary_magnitude_offset: float = 0.0
+    bright_color: str | None = None
+    bright_alpha: float = 1.0
     draw_variable_symbols: bool = False
     variable_color: str | None = None
     variable_symbol_size: float = 28.0
@@ -261,6 +267,10 @@ class ChartStyle:
             sky_color=canvas.sky_color,
             foreground_color=canvas.foreground_color,
             star_color=stars.color,
+            draw_bright_star_symbols=stars.draw_bright_symbols,
+            bright_star_magnitude_limit=stars.bright_magnitude_limit,
+            bright_star_color=stars.bright_color,
+            bright_star_alpha=stars.bright_alpha,
             draw_variable_star_symbols=stars.draw_variable_symbols,
             variable_star_color=stars.variable_color,
             variable_star_symbol_size=stars.variable_symbol_size,

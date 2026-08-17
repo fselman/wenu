@@ -19,19 +19,22 @@ class PolarPlanisphereStylePalette:
     star_magnitude_scale: float = 2.2727272727272725
     star_magnitude_exponent: float = 0.30488598388546717
     star_minimum_area: float = 1.25
+    bright_star_magnitude_limit: float = 0.05
+    bright_star_magnitude_offset: float = 1.5
+    ordinary_star_magnitude_offset: float = -1.5
     milky_way_color: str = "#A8C8D6"
     milky_way_opacity: float = 0.45
     magellanic_cloud_color: str = "#A8C8D6"
     lmc_opacity: float = 0.32
     smc_opacity: float = 0.28
     constellation_line_color: str = "#456B7D"
-    constellation_linewidth: float = 0.45
+    constellation_linewidth: float = 0.675
     constellation_line_opacity: float = 0.85
     constellation_label_color: str = "#23495D"
     constellation_label_fontsize: float = 7.5
     constellation_label_opacity: float = 1.0
     reference_color: str = "#456B7D"
-    reference_linewidth: float = 0.50
+    reference_linewidth: float = 0.75
     reference_opacity: float = 0.65
     reference_label_fontsize: float = 5.25
     deep_sky_color: str = "#23495D"
@@ -74,6 +77,11 @@ class PolarPlanisphereStylePalette:
             "reference_opacity",
             "boundary_opacity",
         )
+        finite_values = (
+            "bright_star_magnitude_limit",
+            "bright_star_magnitude_offset",
+            "ordinary_star_magnitude_offset",
+        )
         for name in positive:
             value = float(getattr(self, name))
             if not isfinite(value) or value <= 0.0:
@@ -88,6 +96,11 @@ class PolarPlanisphereStylePalette:
             value = float(getattr(self, name))
             if not isfinite(value) or not 0.0 <= value <= 1.0:
                 raise ValueError(f"{name} must be between 0 and 1.")
+            object.__setattr__(self, name, value)
+        for name in finite_values:
+            value = float(getattr(self, name))
+            if not isfinite(value):
+                raise ValueError(f"{name} must be finite.")
             object.__setattr__(self, name, value)
 
 
@@ -117,6 +130,14 @@ def polar_planisphere_chart_style(base, palette):
                     palette.star_minimum_area / palette.star_area_scale
                 ),
             ),
+            draw_bright_symbols=True,
+            bright_magnitude_limit=palette.bright_star_magnitude_limit,
+            bright_magnitude_offset=palette.bright_star_magnitude_offset,
+            ordinary_magnitude_offset=(
+                palette.ordinary_star_magnitude_offset
+            ),
+            bright_color=palette.star_color,
+            bright_alpha=1.0,
             draw_variable_symbols=False,
             draw_multiple_symbols=False,
         ),

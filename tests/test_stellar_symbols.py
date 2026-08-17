@@ -284,6 +284,49 @@ def test_stellar_symbol_overlays_are_independently_optional():
     ]
 
 
+def test_bright_star_overlay_uses_configured_five_point_threshold():
+    spherical = SimpleNamespace(
+        metadata={
+            "magnitude": np.asarray((-1.44, 0.03, 0.08)),
+            "is_variable": np.zeros(3, dtype=bool),
+            "is_multiple": np.zeros(3, dtype=bool),
+        }
+    )
+    options = PublicationStyle(
+        draw_bright_star_symbols=True,
+        bright_star_magnitude_limit=0.05,
+    )._star_render_options(spherical, None)
+
+    overlay = options["point_overlays"][0]
+    assert overlay["mask"].tolist() == [True, True, False]
+    assert overlay["style"]["marker"] is DEFAULT_SYMBOLS.filled_five_point_star
+    assert overlay["style"]["facecolors"] == "white"
+    assert overlay["style"]["edgecolors"] == "none"
+    assert overlay["style"]["zorder"] == layers.BRIGHT_STARS
+
+
+def test_renderer_masks_vectorized_overlay_sizes():
+    figure, ax = plt.subplots()
+    renderer = MatplotlibRenderer(ax)
+    artists = renderer.draw(
+        points(),
+        style={"s": 5.0},
+        point_overlays=[
+            {
+                "mask": [True, False, True, False],
+                "style": {
+                    "marker": DEFAULT_SYMBOLS.filled_five_point_star,
+                    "s": np.asarray((11.0, 22.0, 33.0, 44.0)),
+                },
+            }
+        ],
+    )
+    try:
+        assert artists[1].get_sizes().tolist() == [11.0, 33.0]
+    finally:
+        plt.close(figure)
+
+
 def test_stellar_overlay_styles_use_named_layer_zorders():
     options = PublicationStyle(
         draw_variable_star_symbols=True,
