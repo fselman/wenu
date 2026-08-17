@@ -58,6 +58,8 @@ def test_renderer_realizes_every_resolved_artist_once_in_black():
     assert len(result.hour_labels) == 11
     assert len(result.labels) == len(face.labels)
     assert len(result.glue_strips) == 2
+    assert len(result.magnitude_scale.markers) == 9
+    assert len(result.magnitude_scale.labels) == 9
     assert all(artist.get_color() == "black" for artist in result.hour_ticks)
     assert all(label.get_color() == "black" for label in result.hour_labels)
     assert result.hour_circle.get_linewidth() == pytest.approx(0.8)

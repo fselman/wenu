@@ -66,6 +66,16 @@ def test_resolved_calendar_and_page_records_are_realized_once():
     assert len(result.registration_artists) == 3
     assert len(result.ruler_artists) == 8
     assert len(result.text_artists) == len(pages.south.text_blocks)
+    assert len(result.magnitude_scale.markers) == 9
+    assert len(result.magnitude_scale.labels) == 9
+    assert tuple(
+        marker.get_markersize() for marker in result.magnitude_scale.markers
+    ) == pytest.approx(
+        tuple(
+            np.sqrt(entry.marker_area_points2)
+            for entry in pages.south.magnitude_scale.entries
+        )
+    )
     assert result.page_axes.get_xlim() == pytest.approx((0.0, 210.0))
     assert result.page_axes.get_ylim() == pytest.approx((0.0, 297.0))
     outer = chart.boundary_radius * 97.5 / 86.0

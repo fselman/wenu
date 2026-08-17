@@ -62,6 +62,13 @@ def test_sheet_renderer_preserves_vector_faces_and_distinct_fold_lines():
             90.0 <= label.get_rotation() <= 270.0
             for label in result.north.hour_labels
         )
+        assert result.north.magnitude_scale.title.get_rotation() == (
+            pytest.approx(180.0)
+        )
+        assert all(
+            label.get_rotation() == pytest.approx(180.0)
+            for label in result.north.magnitude_scale.labels
+        )
     finally:
         import matplotlib.pyplot as plt
 

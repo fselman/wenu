@@ -7,6 +7,11 @@ from dataclasses import dataclass
 import numpy as np
 
 from wenu.charts.polar_planisphere_pair import PolarPlanispherePair
+from wenu.charts.polar_magnitude_scale import (
+    PolarMagnitudeScale,
+    PolarMagnitudeScalePlacement,
+    default_polar_magnitude_scale,
+)
 
 
 _FACE_TITLES = {
@@ -61,6 +66,8 @@ class PolarFacePageFurniture:
     registration_marks: tuple[PolarPageRegistrationMark, ...]
     orientation_mark_identifier: str
     scale_ruler: PolarPageScaleRuler
+    magnitude_scale: PolarMagnitudeScale
+    magnitude_scale_placement: PolarMagnitudeScalePlacement
     text_blocks: tuple[PolarPageTextBlock, ...]
     product_identifier: str
     source_revision: str
@@ -105,7 +112,7 @@ class PolarPageFurnitureRequest:
     site_latitude_deg: float = -32.443342
     site_longitude_deg: float = -71.230289
     standard_utc_offset_hours: float = -4.0
-    magnitude_limit: float = 5.5
+    magnitude_limit: float = 5.0
     product_identifier: str = (
         "Wenu polar planisphere — classroom edition 2026-08"
     )
@@ -177,12 +184,17 @@ class PolarPageFurnitureRequest:
         )
         object.__setattr__(self, "magnitude_limit", float(self.magnitude_limit))
 
-    def resolve(self, pair):
+    def resolve(self, pair, magnitude_scale=None):
         """Return matched page furniture for one resolved disk pair."""
         if not isinstance(pair, PolarPlanispherePair):
             raise TypeError("pair must be a PolarPlanispherePair value.")
         if not self.source_revision:
             raise ValueError("source_revision is required for printable pages.")
+        scale = magnitude_scale or default_polar_magnitude_scale()
+        if not isinstance(scale, PolarMagnitudeScale):
+            raise TypeError("magnitude_scale must be a PolarMagnitudeScale value.")
+        if not np.isclose(scale.limiting_magnitude, self.magnitude_limit):
+            raise ValueError("Page and magnitude-scale limits must match.")
         page_size = self.page_width_mm, self.page_height_mm
         center = self.page_width_mm / 2.0, self.page_height_mm / 2.0
         disk_radius = pair.south_registration.outer_radius_mm
@@ -206,14 +218,18 @@ class PolarPageFurnitureRequest:
         ):
             raise ValueError("The scale ruler does not fit the safe page area.")
         south = self._resolve_face(
-            "south", pair.south, pair.south_registration, page_size, center
+            "south", pair.south, pair.south_registration, page_size, center,
+            scale,
         )
         north = self._resolve_face(
-            "north", pair.north, pair.north_registration, page_size, center
+            "north", pair.north, pair.north_registration, page_size, center,
+            scale,
         )
         return PolarPagePairFurniture(south=south, north=north)
 
-    def _resolve_face(self, face, chart, registration, page_size, center):
+    def _resolve_face(
+        self, face, chart, registration, page_size, center, magnitude_scale
+    ):
         marks = tuple(
             PolarPageRegistrationMark(
                 identifier=identifier,
@@ -255,6 +271,13 @@ class PolarPageFurnitureRequest:
             registration_marks=marks,
             orientation_mark_identifier=marks[0].identifier,
             scale_ruler=ruler,
+            magnitude_scale=magnitude_scale,
+            magnitude_scale_placement=PolarMagnitudeScalePlacement(
+                title_position_mm=(self.safe_margin_mm + 9.0, 254.0),
+                bright_center_mm=(center[0] - 40.0, 254.0),
+                ordinary_center_mm=(center[0] + 44.0, 254.0),
+                entry_spacing_mm=17.0,
+            ),
             text_blocks=self._text_blocks(face, chart, center),
             product_identifier=self.product_identifier,
             source_revision=self.source_revision,

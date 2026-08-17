@@ -67,3 +67,17 @@ Constellation strokes and the shared right-ascension/equator/ecliptic/Galactic
 reference stroke are exactly 50 percent wider than in 48I.1A. Confirm on paper
 that the seven symbols remain compact, the faint-star field remains legible,
 and reference structure does not dominate constellation figures.
+
+## Milestone 48I.1G magnitude scale
+
+The polar palette now selects Procyon, Betelgeuse, and Achernar together with
+the seven previously selected bright stars by extending the five-point cutoff
+to magnitude 0.5. This does not change the general atlas default or the
+ordinary faint-end marker law.
+
+Each disk sheet and both pouch faces must show the same compact `Magnitud`
+scale. Confirm that it contains four five-point bins from -1.5 to 0.5 and five
+circular bins from 0.5 to 5.0, that symbol hierarchy follows the printed sky,
+and that no scale text or marker collides with the disk, horizon, hour ring,
+date windows, title, folds, or safe page boundary. On the single-sheet pouch,
+the inverted north scale must read upright after folding.

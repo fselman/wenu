@@ -128,7 +128,7 @@ def test_packaged_defaults_cover_schema_responsibilities():
     assert polar["star_minimum_area"] == pytest.approx(1.25)
     assert polar["star_magnitude_scale"] == pytest.approx(2.2727272727272725)
     assert polar["star_magnitude_exponent"] == pytest.approx(0.30488598388546717)
-    assert polar["bright_star_magnitude_limit"] == pytest.approx(0.18)
+    assert polar["bright_star_magnitude_limit"] == pytest.approx(0.5)
     assert polar["bright_star_magnitude_scale"] == pytest.approx(1.0 / 1.62)
     assert polar["bright_star_magnitude_offset"] == pytest.approx(-1.0 / 9.0)
     assert polar["bright_star_symbol_area_scale"] == pytest.approx(

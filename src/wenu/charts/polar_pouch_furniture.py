@@ -7,6 +7,11 @@ from dataclasses import dataclass
 import numpy as np
 
 from wenu.charts.polar_horizon_overlay import PolarHorizonPairOverlay
+from wenu.charts.polar_magnitude_scale import (
+    PolarMagnitudeScale,
+    PolarMagnitudeScalePlacement,
+    default_polar_magnitude_scale,
+)
 
 
 _HOURS = (19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5)
@@ -75,6 +80,8 @@ class PolarPouchFaceFurniture:
     hour_circle_radius_mm: float
     hour_marks: tuple[PolarPouchHourMark, ...]
     labels: tuple[PolarPouchLabel, ...]
+    magnitude_scale: PolarMagnitudeScale
+    magnitude_scale_placement: PolarMagnitudeScalePlacement
     glue_strips: tuple[PolarPouchGlueStrip, ...]
 
     @property
@@ -179,10 +186,13 @@ class PolarPouchFurnitureRequest:
         ):
             object.__setattr__(self, name, float(getattr(self, name)))
 
-    def resolve(self, overlays):
+    def resolve(self, overlays, magnitude_scale=None):
         """Return paired fixed furniture around resolved horizon curves."""
         if not isinstance(overlays, PolarHorizonPairOverlay):
             raise TypeError("overlays must be a PolarHorizonPairOverlay value.")
+        scale = magnitude_scale or default_polar_magnitude_scale()
+        if not isinstance(scale, PolarMagnitudeScale):
+            raise TypeError("magnitude_scale must be a PolarMagnitudeScale value.")
         south, north = overlays.faces
         if south.page_size_mm != north.page_size_mm:
             raise ValueError("Paired pouch faces require one common page size.")
@@ -209,12 +219,19 @@ class PolarPouchFurnitureRequest:
         ):
             raise ValueError("Paired pouch faces require one cut clearance.")
         resolved = tuple(
-            self._resolve_face(face, center=center, fold_y=fold_y)
+            self._resolve_face(
+                face,
+                center=center,
+                fold_y=fold_y,
+                magnitude_scale=scale,
+            )
             for face in overlays.faces
         )
         return PolarPouchPairFurniture(south=resolved[0], north=resolved[1])
 
-    def _resolve_face(self, overlay, *, center, fold_y):
+    def _resolve_face(
+        self, overlay, *, center, fold_y, magnitude_scale
+    ):
         offset = np.asarray(center) - np.asarray(overlay.disk_center_mm)
         horizon = tuple(
             tuple(
@@ -268,6 +285,13 @@ class PolarPouchFurnitureRequest:
                 horizon,
                 south_title=self.south_title,
                 horizon_label=self.horizon_label,
+            ),
+            magnitude_scale=magnitude_scale,
+            magnitude_scale_placement=PolarMagnitudeScalePlacement(
+                title_position_mm=(center[0], 146.0),
+                bright_center_mm=(center[0] - 17.0, 140.0),
+                ordinary_center_mm=(center[0] + 19.0, 140.0),
+                entry_spacing_mm=9.0,
             ),
             glue_strips=_glue_strips(
                 overlay.page_size_mm,

@@ -8,6 +8,9 @@ import numpy as np
 
 from wenu.charts.polar_calendar_furniture import PolarCalendarFaceFurniture
 from wenu.charts.polar_page_furniture import PolarFacePageFurniture
+from wenu.charts.polar_magnitude_scale_rendering import (
+    draw_polar_magnitude_scale,
+)
 
 
 SPANISH_MONTH_NAMES = (
@@ -54,6 +57,7 @@ class PolarFacePageRendering:
     center_artists: tuple[object, ...]
     registration_artists: tuple[object, ...]
     ruler_artists: tuple[object, ...]
+    magnitude_scale: object
     text_artists: tuple[object, ...]
 
 
@@ -243,6 +247,12 @@ def _draw_page_axes(figure, face, *, color):
         for mark in face.registration_marks
     )
     ruler = _draw_ruler(ax, face, color=color)
+    magnitude_scale = draw_polar_magnitude_scale(
+        ax,
+        face.magnitude_scale,
+        face.magnitude_scale_placement,
+        color=color,
+    )
     text = tuple(_draw_text_block(ax, block, color=color) for block in face.text_blocks)
     return {
         "page_axes": ax,
@@ -250,6 +260,7 @@ def _draw_page_axes(figure, face, *, color):
         "center_artists": (center_circle, center_cross),
         "registration_artists": registration,
         "ruler_artists": ruler,
+        "magnitude_scale": magnitude_scale,
         "text_artists": text,
     }
 

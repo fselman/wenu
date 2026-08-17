@@ -140,6 +140,19 @@ def test_hour_numbers_are_upright_and_short_marks_lie_outside_them():
             assert -90.0 <= mark.numeral_rotation_deg <= 90.0
 
 
+def test_both_pouch_faces_share_one_resolved_polar_magnitude_scale():
+    value = furniture()
+
+    assert value.south.magnitude_scale is value.north.magnitude_scale
+    assert len(value.south.magnitude_scale.entries) == 9
+    for face in value.faces:
+        placement = face.magnitude_scale_placement
+        assert placement.bright_center_mm[1] == pytest.approx(
+            placement.ordinary_center_mm[1]
+        )
+        assert placement.bright_center_mm[1] < face.disk_center_mm[1]
+
+
 def test_geographic_letters_are_fixed_pouch_furniture_not_sky_anchors():
     value = furniture()
     south = {}

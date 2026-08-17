@@ -193,6 +193,17 @@ from .charts.polar_calendar_furniture import (
     PolarCalendarPairFurniture,
     PolarCalendarTick,
 )
+from .charts.polar_magnitude_scale import (
+    PolarMagnitudeScale,
+    PolarMagnitudeScaleEntry,
+    PolarMagnitudeScalePlacement,
+    PolarMagnitudeScaleRequest,
+    default_polar_magnitude_scale,
+)
+from .charts.polar_magnitude_scale_rendering import (
+    PolarMagnitudeScaleRendering,
+    draw_polar_magnitude_scale,
+)
 from .charts.polar_page_furniture import (
     PolarFacePageFurniture,
     PolarPageFurnitureRequest,
@@ -499,6 +510,13 @@ __all__ = [
     "PolarCalendarLabel",
     "PolarCalendarPairFurniture",
     "PolarCalendarTick",
+    "PolarMagnitudeScale",
+    "PolarMagnitudeScaleEntry",
+    "PolarMagnitudeScalePlacement",
+    "PolarMagnitudeScaleRequest",
+    "PolarMagnitudeScaleRendering",
+    "default_polar_magnitude_scale",
+    "draw_polar_magnitude_scale",
     "PolarFacePageFurniture",
     "PolarPageFurnitureRequest",
     "PolarPagePairFurniture",

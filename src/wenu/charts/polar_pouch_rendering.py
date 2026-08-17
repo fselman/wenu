@@ -7,6 +7,9 @@ from dataclasses import dataclass
 import numpy as np
 
 from wenu.charts.polar_pouch_furniture import PolarPouchFaceFurniture
+from wenu.charts.polar_magnitude_scale_rendering import (
+    draw_polar_magnitude_scale,
+)
 
 
 _LABEL_STYLE = {
@@ -35,6 +38,7 @@ class PolarPouchFaceRendering:
     hour_ticks: tuple[object, ...]
     hour_labels: tuple[object, ...]
     labels: tuple[object, ...]
+    magnitude_scale: object
     fold_line: object
     glue_strips: tuple[object, ...]
 
@@ -171,6 +175,13 @@ def draw_polar_pouch_face(
         )
         for label in face.labels
     )
+    magnitude_scale = draw_polar_magnitude_scale(
+        ax,
+        face.magnitude_scale,
+        face.magnitude_scale_placement,
+        color="black",
+        zorder=8,
+    )
     fold = np.asarray(face.fold_line_mm, dtype=float)
     fold_line = ax.plot(
         fold[:, 0],
@@ -205,6 +216,7 @@ def draw_polar_pouch_face(
         hour_ticks=hour_ticks,
         hour_labels=hour_labels,
         labels=labels,
+        magnitude_scale=magnitude_scale,
         fold_line=fold_line,
         glue_strips=glue_strips,
     )
@@ -248,6 +260,7 @@ def _rendering_artists(result):
         *result.hour_ticks,
         *result.hour_labels,
         *result.labels,
+        *result.magnitude_scale.artists,
         result.fold_line,
         *result.glue_strips,
     )

@@ -229,3 +229,10 @@ overlays. A separate bright-symbol area factor scales the five-point path by
 linear size. All selection remains a render-local magnitude mask. Polar
 constellation and coordinate/reference strokes are 50 percent wider; other
 chart families remain unchanged.
+
+Milestone 48I.1G keeps this policy polar-only, extends the filled five-point
+cutoff to magnitude 0.5, and adds one immutable `PolarMagnitudeScale` shared
+by the north/south disk pages and folded pouch. Its four bright intervals and
+five ordinary intervals store marker areas resolved through the same stellar
+size law used by the chart. Page and pouch modules own only physical placement;
+neither renderer recalculates magnitude semantics or marker sizes.

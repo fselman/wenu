@@ -19,7 +19,7 @@ class PolarPlanisphereStylePalette:
     star_magnitude_scale: float = 2.2727272727272725
     star_magnitude_exponent: float = 0.30488598388546717
     star_minimum_area: float = 1.25
-    bright_star_magnitude_limit: float = 0.18
+    bright_star_magnitude_limit: float = 0.5
     bright_star_magnitude_scale: float = 0.617283950617284
     bright_star_magnitude_offset: float = -0.1111111111111111
     bright_star_symbol_area_scale: float = 0.70**2 / 0.38**2

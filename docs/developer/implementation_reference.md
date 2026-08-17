@@ -1044,6 +1044,16 @@ millimetre records. A transparent full-page axes uses coordinates from
 195 mm outer disk exactly on the physical A4 figure. The function saves
 nothing and returns an inspectable `PolarFacePageRendering` artist record.
 
+`PolarMagnitudeScaleRequest` resolves the polar-only classroom scale at the
+packaged magnitude-0.5 bright cutoff and magnitude-5.0 catalogue ceiling. The
+four five-point intervals (`-1.5..-1.0` through `0.0..0.5`) and five circular
+intervals (`0.5..1.0` through `4.0..5.0`) use interval midpoints as samples of
+`configured_stellar_symbol_sizes(...)`. The resulting immutable scale object
+is passed unchanged to both `PolarPageFurnitureRequest.resolve(...)` and
+`PolarPouchFurnitureRequest.resolve(...)`; their placement records are in
+millimetres. `draw_polar_magnitude_scale(...)` realizes those stored point
+areas without introducing an independent legend sizing law.
+
 `export_polar_planisphere_pages(...)` accepts one resolved pair, calendar, and
 page-furniture pair plus explicit north and south destinations. Each face uses
 an A4 `PrintMode`, the accepted polar composition, and a non-tight opaque
@@ -1177,8 +1187,8 @@ The optional bright-star overlay uses `StellarStyle` values for its magnitude
 cutoff, color, opacity, and affine magnitude scale and offset.
 `PublicationStyle` emits one vectorized five-point overlay, and the renderer
 masks vector-valued overlay areas with the same point mask. The corrected polar
-configuration uses a 0.18 cutoff, maps source magnitudes -1.44..0.18 onto the
-former -1..0 symbol areas, maps 0.18..5.5 onto the former 0..4 symbol areas,
+configuration uses a 0.5 cutoff, retaining the established bright affine law
+through that endpoint and the established ordinary 0.18..5.5 affine law,
 then multiplies five-point areas by `0.70^2 / 0.38^2` so the inner pentagon has
 70 percent of the mapped linear size, and suppresses the ordinary circle under
 each selected overlay. These are

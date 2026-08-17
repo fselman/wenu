@@ -12,6 +12,7 @@ from wenu import (
     PolarCalendarFurnitureRequest,
     PolarPageFurnitureRequest,
     PolarPlanispherePairRequest,
+    default_polar_magnitude_scale,
     export_polar_planisphere_pages,
     generate_celestial_sphere,
 )
@@ -25,10 +26,11 @@ def render_pages(destination, *, source_revision, projection_name, dpi=300):
         calendar_radius_mm=86.0,
         pivot_radius_mm=1.0,
     ).resolve()
+    magnitude_scale = default_polar_magnitude_scale()
     calendar = PolarCalendarFurnitureRequest().resolve(pair)
     pages = PolarPageFurnitureRequest(
         source_revision=source_revision
-    ).resolve(pair)
+    ).resolve(pair, magnitude_scale=magnitude_scale)
     sky = generate_celestial_sphere()
     observer = Observer(location="La Ligua", time="2026-08-15 21:00")
     south = destination / "polar-planisphere-south-a4.pdf"
@@ -59,6 +61,7 @@ def render_pages(destination, *, source_revision, projection_name, dpi=300):
                 "projection": projection_name,
                 "source_revision": source_revision,
                 "dpi": int(dpi),
+                "magnitude_scale": magnitude_scale.manifest_record(),
                 "outputs": [
                     {
                         "path": str(path),

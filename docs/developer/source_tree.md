@@ -191,6 +191,11 @@ handedness. It owns no Matplotlib realization, localized text, style, horizon,
 astronomical content, or export orchestration.
 Labelled-day identity is retained separately from tick length so a renderer
 can emphasize those ticks by weight without changing calendar geometry.
+`charts/polar_magnitude_scale.py` owns the polar-only magnitude intervals and
+resolves their representative marker areas through the configured stellar
+style. `charts/polar_magnitude_scale_rendering.py` is their shared Matplotlib
+realization. Disk-page and pouch furniture retain separate millimetre
+placements but reference the same immutable semantic scale.
 `charts/polar_page_furniture.py` resolves one paired physical disk into
 immutable A4 paper coordinates and semantic face information. It owns page
 size, safe margins, the common disk centre, centre-punch radius, horizontally

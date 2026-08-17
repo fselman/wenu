@@ -61,7 +61,12 @@ def draw_polar_pouch_sheet(sheet, pouches, *, figure=None):
         artist_transform=north_transform,
         clip_bounds_mm=sheet.north.clip_bounds_mm,
     )
-    for text in (*north.hour_labels, *north.labels):
+    for text in (
+        *north.hour_labels,
+        *north.labels,
+        north.magnitude_scale.title,
+        *north.magnitude_scale.labels,
+    ):
         text.set_rotation(float(text.get_rotation()) + 180.0)
     return PolarPouchSheetRendering(
         page_axes=ax,

@@ -77,7 +77,7 @@ def test_information_blocks_cover_the_print_and_classroom_contract():
         assert "71.230289° O" in text
         assert "UTC-4" in text
         assert "horario de verano no incorporado" in text
-        assert "magnitud límite 5.5" in text
+        assert "magnitud límite 5" in text
         assert "195 mm" in text
         assert "100% / ACTUAL SIZE" in text
         assert "NO AJUSTAR A PÁGINA" in text
@@ -142,6 +142,19 @@ def test_scale_ruler_has_exact_physical_length_and_safe_position():
             assert face.safe_margin_mm <= point[1] <= (
                 face.page_height_mm - face.safe_margin_mm
             )
+
+
+def test_both_pages_share_one_resolved_polar_magnitude_scale():
+    furniture = page_furniture()
+
+    assert furniture.south.magnitude_scale is furniture.north.magnitude_scale
+    assert len(furniture.south.magnitude_scale.bright_entries) == 4
+    assert len(furniture.south.magnitude_scale.ordinary_entries) == 5
+    for face in furniture.faces:
+        assert face.magnitude_scale.limiting_magnitude == pytest.approx(5.0)
+        assert face.magnitude_scale_placement.title_position_mm[1] > (
+            face.disk_center_mm[1] + face.disk_radius_mm
+        )
 
 
 def test_registration_marks_coincide_after_upright_back_to_back_assembly():

@@ -22,6 +22,7 @@ from wenu import (
     export_polar_planisphere_pages,
     export_polar_pouch_sheet,
     generate_celestial_sphere,
+    default_polar_magnitude_scale,
 )
 
 
@@ -32,10 +33,11 @@ def render_pouch(destination, *, source_revision, title, dpi=300):
         calendar_radius_mm=86.0,
         pivot_radius_mm=1.0,
     ).resolve()
+    magnitude_scale = default_polar_magnitude_scale()
     calendar = PolarCalendarFurnitureRequest().resolve(pair)
     pages = PolarPageFurnitureRequest(
         source_revision=source_revision
-    ).resolve(pair)
+    ).resolve(pair, magnitude_scale=magnitude_scale)
     sky = generate_celestial_sphere()
     observer = Observer(location="La Ligua", time="2026-08-15 21:00")
     try:
@@ -43,7 +45,8 @@ def render_pouch(destination, *, source_revision, title, dpi=300):
             site_latitude_deg=observer.lat_deg
         ).resolve(pair, pages, observer)
         pouches = PolarPouchFurnitureRequest(south_title=title).resolve(
-            horizons
+            horizons,
+            magnitude_scale=magnitude_scale,
         )
         sheet = PolarPouchSheetRequest(spine_width_mm=1.0).resolve(pouches)
         disk_rotations = _diagnostic_disk_rotations(
@@ -128,6 +131,7 @@ def render_pouch(destination, *, source_revision, title, dpi=300):
                     "gap_deg": 5.0,
                 },
                 "hours": [19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5],
+                "magnitude_scale": magnitude_scale.manifest_record(),
                 "duplex_instruction": "Print actual size, flip on long edge",
                 "source_revision": source_revision,
                 "south_title": title,

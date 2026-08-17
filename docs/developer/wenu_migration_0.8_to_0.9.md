@@ -501,6 +501,12 @@ factor `0.70^2 / 0.38^2`. It independently lowers the polar catalogue ceiling
 from magnitude 5.5 to 5.0 while retaining the existing marker-size law, so the
 change removes fainter points rather than resizing the new faint endpoint.
 
+Milestone 48I.1G extends only the polar bright-symbol cutoff to magnitude 0.5
+and introduces a shared physical magnitude scale for both disk sheets and the
+pouch. The scale is resolved once from the same stellar sizing law and then
+placed independently in page and pouch millimetre furniture. Export manifests
+record the nine interval semantics and resolved marker areas.
+
 ### Milestone 48I.2 - Night edition
 
 - add a dark-blue/white-star appearance over identical geometry;
