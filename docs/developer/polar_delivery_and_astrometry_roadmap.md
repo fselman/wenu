@@ -170,14 +170,14 @@ physical centre. No overlay module loads or selects astronomical catalogues.
 The accepted classroom construction additionally fixes these physical-product
 constraints for the following furniture milestone:
 
-- the complete rotating disk is contained by the folded A4 overlay;
-- the disk bottom rests on the fold and supplies vertical registration;
+- the rotating disk rests against the one-millimetre folding spine and
+  protrudes 47 mm from the open edge for insertion after assembly;
 - both faces use three identical 37.5-degree date windows separated by
   5 degrees;
 - the hour numerals remain upright and their short radial marks lie outside
   the numerals;
 - N, E, S, W and `HORIZONTE` belong to the fixed overlay, never the disk;
-- the south-facing overlay title is `Un firmamento, muchos cielos`.
+- the south-facing overlay title is `Muchos cielos, un firmamento`.
 
 ### Milestone 48G.2 - Hour ring, cardinal marks, and instructions
 
@@ -203,6 +203,12 @@ compass letters are explicitly manual geographic cues on the fixed pouch, not
 positions derived from Wenu's projected sky. During use, the observer rotates
 the disk so the selected date and hour agree with the pouch; the labels then
 show how to hold the assembled device toward the corresponding horizon.
+
+Milestone 48G.2C realizes those records as black actual-size construction
+artwork. The front is the south-facing overlay and the back is the north-facing
+overlay. Print the imposed sheet one-sided at 100 percent / Actual Size,
+verify the 195 mm disk guide and fold lines at 148 and 149 mm, then cut only
+the dashed sky and date-window paths before folding and gluing.
 
 ### Milestone 48G.3 - Deterministic print package
 

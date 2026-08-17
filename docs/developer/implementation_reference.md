@@ -1068,15 +1068,68 @@ Each resolved face owns three identical annular date windows. Every window
 spans 37.5 degrees, adjacent windows are separated by 5 degrees, and the full
 group is centred on the bottom of the disk. The hour furniture covers 19:00
 through 05:00 at one-hour/15-degree intervals. On the south face it runs from
-right to left; on the north face it runs from left to right. Numerals lie
-outside the smaller hour circle with upright tangent bases, and each short
-radial tick lies beyond its numeral but inside the date windows.
+right to left; on the north face it runs from left to right. Bold numerals lie
+just inside the hour circle with upright tangent bases, and each short radial
+tick begins on that circle and extends outward. The windows run from 0.83 to
+0.95 disk radius: they expose calendar ticks, day numbers, and month names
+while retaining a continuous outer strip over the disk's white margin.
 
-Fixed paper labels are E-S-W plus `HORIZONTE` and `Un firmamento, muchos
-cielos` on the south face, and W-N-E plus `HORIZONTE` on the north face. Their
-positions are pouch furniture, not astronomical geometry. Rendering, cut-path
-realization, retained-paper fills, duplex imposition, and PDF export remain the
-following milestone.
+Fixed paper labels are E-S-W, two bold `HORIZONTE` labels, and `Muchos cielos,
+un firmamento` on the south face, and bold W-N-E plus two bold `HORIZONTE`
+labels on the north face. Cardinal labels share a seven-millimetre vertical
+clearance below the local resolved horizon. Horizon text positions and
+rotations follow the resolved curve and remain just below it on retained
+paper. Geographic letters remain manual pouch furniture, not rotating-disk
+sky anchors.
+
+`PolarPouchSheetRequest.resolve(pouches)` imposes both accepted faces on one
+portrait A4 sheet. A one-millimetre central spine separates fold lines at 148
+and 149 mm. The south face occupies the upper 148 mm panel; the north face is
+rotated 180 degrees into the lower panel. Each panel is clipped without
+recalculating face geometry. The 195 mm disk therefore protrudes 47 mm from
+the open edge after folding and is inserted after the side seams are glued.
+
+`PolarPouchFaceFurniture.sky_window_boundary_mm` first joins all resolved
+horizon segments from E to W, then closes them with the physical upper disk
+arc. This is the complete
+cuttable visible-sky window path; the renderer never infers which side of the
+horizon is visible. The original horizon segments remain separately available
+so the astronomical horizon can be printed more strongly than the remaining
+cut arc.
+
+`draw_polar_pouch_face(face, figure=...)` realizes one resolved face on an A4
+axes expressed directly in millimetres. All cut, fold, hour, label, and glue
+marks are black for inspection through paper. The function returns
+`PolarPouchFaceRendering`, calculates no astronomy or furniture positions, and
+saves nothing.
+
+`draw_polar_pouch_sheet(sheet, pouches, figure=...)` applies the two resolved
+affine placements to those same vector artists on one axes. It clips each face
+to its 148 mm panel and preserves the distinct fold lines around the spine.
+North text artists receive the additional 180-degree glyph rotation required
+to read upright after the lower panel is folded; rotating coordinates alone
+does not rotate Matplotlib text glyphs.
+`export_polar_pouch_sheet(...)` owns the one-save actual-size A4 boundary.
+
+`export_polar_pouch_pages(...)` creates one 210 by 297 mm figure per face,
+calls the pouch renderer once, and delegates exactly one final save per output
+to the established `ExportOptions` boundary with `bbox_inches=None`. Explicit
+source revision is mandatory and embedded in PDF metadata. The review tool
+`tools/render_48g2_polar_pouch.py` writes one clean single-sheet fabrication
+PDF, one faded canonical-disk PNG diagnostic, and a checksum manifest. The
+diagnostic composer registers and clips both disks at their imposed panel
+positions and rotates 15 August to the 21-hour mark on both faces; it does not
+affect the fabrication PDF. Printing is one-sided at
+100 percent / Actual Size. The review command's `--title` option supplies the
+south title before furniture resolution; its default is `Muchos cielos, un
+firmamento`.
+
+Diagnostic center registration is an explicit two-step mapping. The canonical
+disk-page center `(105, 148.5)` mm first maps to the pouch-face disk center
+`(105, 194.5)` mm; the panel affine then maps that center to the imposed A4
+sheet. Rotation and circular clipping use the pouch-face center, preventing
+the 46 mm vertical offset that would result from applying the panel affine
+directly to the canonical page center.
 
 ## Polar classroom-disk content
 

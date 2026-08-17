@@ -227,6 +227,26 @@ short ticks, fixed geographic letters, `HORIZONTE`, the south-face title, and
 side glue zones. Geographic text positions are paper instructions and never
 projected sky anchors. The module calculates no astronomy, draws no artist,
 and performs no save.
+`charts/polar_pouch_rendering.py` is the sole Matplotlib realization of one
+resolved pouch face. It draws the closed sky-window cut path, strengthened
+astronomical horizon, three annular date-window cuts, partial hour circle,
+upright numerals, external ticks, fixed labels, fold, disk guide, and black
+glue zones. It consumes millimetre records and saves nothing.
+`charts/polar_pouch_export.py` creates one actual-size A4 figure per resolved
+face and delegates its sole save to the established `ExportOptions` boundary.
+It requires explicit source provenance, preserves a non-tight A4 media box,
+and owns no horizon, window, hour, label, or fold calculation.
+`charts/polar_pouch_preview.py` composes diagnostics from canonical rendered
+disks and clean pouch marks. It supports both the legacy paired-face review
+and the single-sheet affine placements, clips each disk to its panel, fades
+it, applies an explicit date/hour registration rotation, and keeps pouch
+marks opaque. It is not part of fabrication PDF export.
+`charts/polar_pouch_sheet.py` owns the single-A4 imposition records: two 148
+mm panels, the one-millimetre spine, affine face placements, clipping bounds,
+and the resulting 47 mm disk protrusion. It changes no face geometry.
+`charts/polar_pouch_sheet_rendering.py` realizes both placed vector faces on
+one A4 axes. `charts/polar_pouch_sheet_export.py` owns the corresponding
+single-save actual-size export boundary.
 `charts/polar_planisphere_style.py` owns the provisional configurable physical
 paper palette and its pure adaptation of the existing atlas style. It changes
 appearance only: white paper, blue ordinary star symbols, filled outline-free
@@ -489,6 +509,11 @@ It resolves the accepted paired disk, calendar, and A4 page information, calls
 the paired canonical exporter, and writes exactly two PDF pages plus a checksum
 manifest outside the repository. Physical review is recorded in
 `docs/developer/visual_acceptance_48e4.md`.
+`tools/render_48g2_polar_pouch.py` is the actual-size folded-pouch review
+entry point. It resolves the ordinary paired disk, page, canonical horizon,
+and pouch furniture owners. It writes one clean, one-sided A4 fabrication PDF
+with south above and inverted north below, plus one faded canonical-disk PNG
+diagnostic and one checksum manifest.
 
 Milestone 46D.8E keeps those owners but narrows diagnostic claims: all-sky and
 regional constellation masks are isolated from horizon openings, binocular

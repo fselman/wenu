@@ -19,6 +19,7 @@ class PolarPouchLabel:
     role: str
     text: str
     position_mm: tuple[float, float]
+    rotation_deg: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -69,6 +70,7 @@ class PolarPouchFaceFurniture:
     disk_center_mm: tuple[float, float]
     disk_radius_mm: float
     horizon_segments_mm: tuple[tuple[tuple[float, float], ...], ...]
+    sky_window_boundary_mm: tuple[tuple[float, float], ...]
     date_windows: tuple[PolarPouchDateWindow, ...]
     hour_circle_radius_mm: float
     hour_marks: tuple[PolarPouchHourMark, ...]
@@ -104,13 +106,13 @@ class PolarPouchFurnitureRequest:
     date_window_span_deg: float = 37.5
     date_window_gap_deg: float = 5.0
     date_window_count: int = 3
-    date_window_inner_radius_fraction: float = 0.945
-    date_window_outer_radius_fraction: float = 0.99
+    date_window_inner_radius_fraction: float = 0.83
+    date_window_outer_radius_fraction: float = 0.95
     hour_circle_radius_fraction: float = 0.80
-    hour_numeral_radius_fraction: float = 0.86
-    hour_tick_inner_radius_fraction: float = 0.91
-    hour_tick_outer_radius_fraction: float = 0.94
-    south_title: str = "Un firmamento, muchos cielos"
+    hour_numeral_radius_fraction: float = 0.76
+    hour_tick_inner_radius_fraction: float = 0.80
+    hour_tick_outer_radius_fraction: float = 0.82
+    south_title: str = "Muchos cielos, un firmamento"
     horizon_label: str = "HORIZONTE"
 
     def __post_init__(self):
@@ -143,9 +145,9 @@ class PolarPouchFurnitureRequest:
         if not np.all((radii > 0.0) & (radii < 1.0)):
             raise ValueError("Pouch radial fractions must lie between 0 and 1.")
         if not (
-            self.hour_circle_radius_fraction
-            < self.hour_numeral_radius_fraction
-            < self.hour_tick_inner_radius_fraction
+            self.hour_numeral_radius_fraction
+            < self.hour_circle_radius_fraction
+            == self.hour_tick_inner_radius_fraction
             < self.hour_tick_outer_radius_fraction
             < self.date_window_inner_radius_fraction
             < self.date_window_outer_radius_fraction
@@ -251,6 +253,9 @@ class PolarPouchFurnitureRequest:
             disk_center_mm=center,
             disk_radius_mm=radius,
             horizon_segments_mm=horizon,
+            sky_window_boundary_mm=_sky_window_boundary(
+                horizon, center, radius
+            ),
             date_windows=windows,
             hour_circle_radius_mm=(
                 radius * self.hour_circle_radius_fraction
@@ -260,6 +265,7 @@ class PolarPouchFurnitureRequest:
                 overlay.face,
                 center,
                 radius,
+                horizon,
                 south_title=self.south_title,
                 horizon_label=self.horizon_label,
             ),
@@ -304,6 +310,31 @@ def _date_windows(
     )
 
 
+def _sky_window_boundary(horizon_segments, center, radius):
+    if not horizon_segments:
+        raise ValueError("A pouch face requires a horizon segment.")
+    horizon = list(_whole_horizon_curve(horizon_segments))
+    left = np.asarray(horizon[0], dtype=float)
+    right = np.asarray(horizon[-1], dtype=float)
+    center_array = np.asarray(center, dtype=float)
+    right_angle = np.degrees(
+        np.arctan2(*(right - center_array)[::-1])
+    ) % 360.0
+    left_angle = np.degrees(
+        np.arctan2(*(left - center_array)[::-1])
+    ) % 360.0
+    counterclockwise = (left_angle - right_angle) % 360.0
+    through_top = (90.0 - right_angle) % 360.0
+    delta = (
+        counterclockwise
+        if through_top <= counterclockwise
+        else -((right_angle - left_angle) % 360.0)
+    )
+    angles = np.linspace(right_angle, right_angle + delta, 181)
+    arc = tuple(_radial_point(center, radius, angle) for angle in angles)
+    return tuple(horizon) + arc[1:] + (tuple(horizon[0]),)
+
+
 def _hour_marks(
     face,
     center,
@@ -337,35 +368,116 @@ def _hour_marks(
     )
 
 
-def _fixed_labels(face, center, radius, *, south_title, horizon_label):
+def _fixed_labels(
+    face,
+    center,
+    radius,
+    horizon_segments,
+    *,
+    south_title,
+    horizon_label,
+):
     center_x, center_y = center
+    horizon = _whole_horizon_curve(horizon_segments)
+    left_cardinal = _label_below_curve(horizon, 0.08, offset_mm=7.0)
+    right_cardinal = _label_below_curve(horizon, 0.92, offset_mm=7.0)
+    center_cardinal = _label_below_curve(horizon, 0.50, offset_mm=7.0)
     if face == "south":
+        left_horizon = _label_below_curve(horizon, 0.30, offset_mm=4.0)
+        right_horizon = _label_below_curve(horizon, 0.70, offset_mm=4.0)
         values = (
-            ("cardinal", "E", (center_x - 0.86 * radius, center_y - 4.0)),
-            ("cardinal", "W", (center_x + 0.86 * radius, center_y - 4.0)),
-            ("cardinal", "S", (center_x, center_y - 0.36 * radius)),
+            ("cardinal", "E", left_cardinal[0], 0.0),
+            ("cardinal", "W", right_cardinal[0], 0.0),
+            ("cardinal", "S", center_cardinal[0], 0.0),
             (
-                "horizon",
+                "horizon_bold",
                 horizon_label,
-                (center_x + 0.45 * radius, center_y - 0.36 * radius),
+                left_horizon[0],
+                left_horizon[1],
             ),
-            ("title", south_title, (center_x, center_y - radius + 12.0)),
+            (
+                "horizon_bold",
+                horizon_label,
+                right_horizon[0],
+                right_horizon[1],
+            ),
+            (
+                "title",
+                south_title,
+                (center_x, center_y - 0.44 * radius),
+                0.0,
+            ),
         )
     else:
+        left_horizon = _label_below_curve(horizon, 0.30, offset_mm=4.0)
+        north_horizon = _label_below_curve(horizon, 0.70, offset_mm=4.0)
         values = (
-            ("cardinal", "W", (center_x - 0.86 * radius, center_y + 4.0)),
-            ("cardinal", "E", (center_x + 0.86 * radius, center_y + 4.0)),
-            ("cardinal", "N", (center_x, center_y + 0.36 * radius)),
+            ("cardinal", "W", left_cardinal[0], 0.0),
+            ("cardinal", "E", right_cardinal[0], 0.0),
+            ("cardinal", "N", center_cardinal[0], 0.0),
             (
-                "horizon",
+                "horizon_bold",
                 horizon_label,
-                (center_x + 0.45 * radius, center_y + 0.36 * radius),
+                left_horizon[0],
+                left_horizon[1],
+            ),
+            (
+                "horizon_bold",
+                horizon_label,
+                north_horizon[0],
+                north_horizon[1],
             ),
         )
     return tuple(
-        PolarPouchLabel(role=role, text=text, position_mm=position)
-        for role, text, position in values
+        PolarPouchLabel(
+            role=role,
+            text=text,
+            position_mm=position,
+            rotation_deg=rotation,
+        )
+        for role, text, position, rotation in values
     )
+
+
+def _label_below_curve(points, fraction, *, offset_mm):
+    """Return a retained-paper label position and local curve rotation."""
+    values = np.asarray(points, dtype=float)
+    if values[0, 0] > values[-1, 0]:
+        values = values[::-1]
+    steps = np.linalg.norm(np.diff(values, axis=0), axis=1)
+    distances = np.concatenate(([0.0], np.cumsum(steps)))
+    target = float(fraction) * distances[-1]
+    index = min(int(np.searchsorted(distances, target)), len(values) - 1)
+    index = max(index, 1)
+    span = distances[index] - distances[index - 1]
+    local = 0.0 if span == 0.0 else (target - distances[index - 1]) / span
+    point = values[index - 1] + local * (values[index] - values[index - 1])
+    tangent = values[index] - values[index - 1]
+    rotation = float(np.degrees(np.arctan2(tangent[1], tangent[0])))
+    return (float(point[0]), float(point[1] - offset_mm)), rotation
+
+
+def _whole_horizon_curve(horizon_segments):
+    """Join split single-valued horizon pieces into one E-to-W curve."""
+    points = np.asarray(
+        [point for segment in horizon_segments for point in segment],
+        dtype=float,
+    )
+    if points.ndim != 2 or points.shape[0] < 2 or points.shape[1] != 2:
+        raise ValueError("A pouch face requires a resolved horizon curve.")
+    order = np.lexsort((points[:, 1], points[:, 0]))
+    points = points[order]
+    unique = []
+    for point in points:
+        if unique and np.isclose(point[0], unique[-1][0], atol=1.0e-9):
+            if np.isclose(point[1], unique[-1][1], atol=1.0e-9):
+                continue
+            unique[-1] = (float(point[0]), float(point[1]))
+        else:
+            unique.append((float(point[0]), float(point[1])))
+    if len(unique) < 2:
+        raise ValueError("A pouch face requires a non-degenerate horizon.")
+    return tuple(unique)
 
 
 def _glue_strips(page_size, fold_y, *, safe_margin_mm, width_mm):

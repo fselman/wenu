@@ -411,6 +411,23 @@ upright numerals, and short ticks outside the numerals. Geographic letters,
 they do not claim or constrain the rotating disk's sky orientation. No
 Matplotlib artist, retained-paper polygon, duplex imposition, or save is added.
 
+Milestone 48G.2C closes the printable realization. The furniture owner first
+closes each resolved horizon with the physical upper disk arc, producing the
+complete visible-sky cut boundary. One Matplotlib owner realizes only those
+immutable millimetre records in black. A paired exporter creates actual-size
+A4 south-front and north-back figures and reuses `ExportOptions` for one final
+save per output. The review tool emits PDF faces, diagnostic PNG faces, and a
+checksum manifest with explicit source revision. No celestial chart, horizon,
+window, hour, compass, fold, or glue geometry is recalculated during drawing
+or export.
+
+Milestone 48G.2C.6 adds the accepted one-sided A4 imposition without changing
+either face. South is clipped into the upper 148 mm panel; north is rotated
+180 degrees into the lower panel; a one-millimetre spine separates their fold
+lines. The assembled 195 mm disk is loaded through the open edge and protrudes
+47 mm. The fabrication product becomes one vector PDF, while one diagnostic
+PNG fades both canonically rendered disks behind their imposed pouch marks.
+
 ### Milestone 48G.4 - Physical acceptance
 
 Print, cut, assemble, rotate, and verify representative dates and times. Check

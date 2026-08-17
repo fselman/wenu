@@ -73,6 +73,14 @@ def test_horizon_geometry_is_translated_without_recalculation():
         value.north.horizon_segments_mm[0],
         ((7.5, 194.5), (105.0, 223.0), (202.5, 194.5)),
     )
+    for face in value.faces:
+        np.testing.assert_allclose(
+            face.sky_window_boundary_mm[0],
+            face.sky_window_boundary_mm[-1],
+        )
+        assert max(point[1] for point in face.sky_window_boundary_mm) == (
+            pytest.approx(292.0)
+        )
 
 
 def test_three_identical_date_windows_span_37_5_degrees_with_5_degree_gaps():
@@ -94,7 +102,8 @@ def test_three_identical_date_windows_span_37_5_degrees_with_5_degree_gaps():
         assert face.date_windows == value.south.date_windows
         assert face.date_windows[0].start_angle_deg == pytest.approx(208.75)
         assert face.date_windows[-1].end_angle_deg == pytest.approx(331.25)
-        assert face.date_windows[0].outer_radius_mm == pytest.approx(96.5)
+        assert face.date_windows[0].outer_radius_mm == pytest.approx(92.625)
+        assert face.date_windows[0].inner_radius_mm == pytest.approx(80.925)
 
 
 def test_hour_numbers_are_upright_and_short_marks_lie_outside_them():
@@ -124,29 +133,98 @@ def test_hour_numbers_are_upright_and_short_marks_lie_outside_them():
             )
             tick_start = np.linalg.norm(np.asarray(mark.tick_start_mm) - center)
             tick_end = np.linalg.norm(np.asarray(mark.tick_end_mm) - center)
-            assert face.hour_circle_radius_mm < numeral < tick_start < tick_end
+            assert numeral < face.hour_circle_radius_mm
+            assert tick_start == pytest.approx(face.hour_circle_radius_mm)
+            assert tick_start < tick_end
             assert tick_end < face.date_windows[0].inner_radius_mm
             assert -90.0 <= mark.numeral_rotation_deg <= 90.0
 
 
 def test_geographic_letters_are_fixed_pouch_furniture_not_sky_anchors():
     value = furniture()
-    south = {label.text: label for label in value.south.labels}
-    north = {label.text: label for label in value.north.labels}
+    south = {}
+    for label in value.south.labels:
+        south.setdefault(label.text, []).append(label)
+    north = {}
+    for label in value.north.labels:
+        north.setdefault(label.text, []).append(label)
 
     assert tuple(south) == (
         "E",
         "W",
         "S",
         "HORIZONTE",
-        "Un firmamento, muchos cielos",
+        "Muchos cielos, un firmamento",
     )
     assert tuple(north) == ("W", "E", "N", "HORIZONTE")
-    assert south["E"].position_mm[0] < south["W"].position_mm[0]
-    assert north["W"].position_mm[0] < north["E"].position_mm[0]
-    assert south["S"].position_mm[1] < value.south.disk_center_mm[1]
-    assert north["N"].position_mm[1] > value.north.disk_center_mm[1]
+    assert len(south["HORIZONTE"]) == 2
+    assert len(north["HORIZONTE"]) == 2
+    assert south["E"][0].position_mm[0] < south["W"][0].position_mm[0]
+    assert north["W"][0].position_mm[0] < north["E"][0].position_mm[0]
+    for face, labels, names in (
+        (value.south, south, ("E", "S", "W")),
+        (value.north, north, ("W", "N", "E")),
+    ):
+        horizon = np.asarray(max(face.horizon_segments_mm, key=len))
+        order = np.argsort(horizon[:, 0])
+        for name in names:
+            label = labels[name][0]
+            curve_y = np.interp(
+                label.position_mm[0],
+                horizon[order, 0],
+                horizon[order, 1],
+            )
+            assert curve_y - label.position_mm[1] == pytest.approx(7.0)
+    assert value.south.fold_y_mm < (
+        south["Muchos cielos, un firmamento"][0].position_mm[1]
+    ) < south["S"][0].position_mm[1]
+    assert south["HORIZONTE"][0].rotation_deg < 0.0
+    assert south["HORIZONTE"][1].rotation_deg > 0.0
+    assert all(
+        label.role == "horizon_bold"
+        for label in (*south["HORIZONTE"], *north["HORIZONTE"])
+    )
     assert not hasattr(overlays().south, "cardinals")
+
+
+def test_labels_use_the_complete_horizon_when_resolver_splits_both_sides():
+    value = overlays()
+    split = type(value)(
+        south=type(value.south)(
+            **{
+                **value.south.__dict__,
+                "horizon_segments_mm": (
+                    ((7.5, 148.5), (105.0, 120.0)),
+                    ((105.0, 120.0), (202.5, 148.5)),
+                ),
+            }
+        ),
+        north=type(value.north)(
+            **{
+                **value.north.__dict__,
+                "horizon_segments_mm": (
+                    ((7.5, 148.5), (105.0, 177.0)),
+                    ((105.0, 177.0), (202.5, 148.5)),
+                ),
+            }
+        ),
+    )
+    resolved = PolarPouchFurnitureRequest().resolve(split)
+
+    for face in resolved.faces:
+        cardinals = [
+            label for label in face.labels if label.role == "cardinal"
+        ]
+        horizons = [
+            label for label in face.labels if label.text == "HORIZONTE"
+        ]
+        cardinal_x = tuple(
+            label.position_mm[0] for label in cardinals
+        )
+        assert min(cardinal_x) < face.disk_center_mm[0]
+        assert max(cardinal_x) > face.disk_center_mm[0]
+        assert horizons[0].position_mm[0] < face.disk_center_mm[0]
+        assert horizons[1].position_mm[0] > face.disk_center_mm[0]
 
 
 def test_glue_strips_are_safe_and_request_is_validated_and_public():
