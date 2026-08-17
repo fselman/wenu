@@ -451,6 +451,24 @@ def translate_style_mode_defaults(
                     "reference_label_font_size"
                 ]
             ),
+            deep_sky_color=(
+                styles["polar_planisphere"]["deep_sky_color"]
+            ),
+            deep_sky_label_fontsize=(
+                styles["polar_planisphere"][
+                    "deep_sky_label_font_size"
+                ]
+            ),
+            deep_sky_outline_minimum_size_arcmin=(
+                styles["polar_planisphere"][
+                    "deep_sky_outline_minimum_size_arcmin"
+                ]
+            ),
+            globular_cluster_minimum_size_arcmin=(
+                styles["polar_planisphere"][
+                    "globular_cluster_minimum_size_arcmin"
+                ]
+            ),
             boundary_color=(
                 styles["polar_planisphere"]["boundary_color"]
             ),

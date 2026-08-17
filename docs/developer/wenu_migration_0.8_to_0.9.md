@@ -452,6 +452,12 @@ objects near all cardinal horizons and the overlap between disk faces.
 - use existing semantic symbols and render-local selection;
 - reject crowding that weakens constellation teaching.
 
+Implemented refinement: both faces consume one packaged identifier selection
+and one compact display-label map. Messier labels and common names are
+preferred, nearby M81/M82 and NGC 869/884 pairs receive one label each, and
+outline symbols receive a configurable visible minimum size. The selection,
+symbols, and common pre-projection content remain unchanged by face.
+
 ## 11. Milestone 48I - Curate typography and night appearance
 
 ### Milestone 48I.1 - Typography

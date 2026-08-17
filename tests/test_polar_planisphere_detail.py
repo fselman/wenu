@@ -18,11 +18,11 @@ from wenu.configuration import (
 
 DEEP_SKY_LAYERS = frozenset(
     {
+        "nonstellar_objects",
         "galaxies",
         "globular_clusters",
         "open_clusters",
         "planetary_nebulae",
-        "supernova_remnants",
     }
 )
 
@@ -32,7 +32,7 @@ class Layer:
         self.layer_name = name
 
 
-def test_default_policy_is_the_exact_sparse_classroom_content():
+def test_default_policy_adds_only_the_curated_binocular_content():
     detail = PolarPlanisphereDetailPolicy().resolve(object(), object())
 
     assert detail.star_magnitude_limit == pytest.approx(5.5)
@@ -45,7 +45,30 @@ def test_default_policy_is_the_exact_sparse_classroom_content():
     assert detail.layer_enabled("milky_way")
     assert detail.layer_enabled("magellanic_clouds")
     assert not detail.layer_enabled("constellation_boundaries")
-    assert not detail.enabled_layers & DEEP_SKY_LAYERS
+    assert detail.enabled_layers & DEEP_SKY_LAYERS == DEEP_SKY_LAYERS
+    selection = detail.content_selection
+    assert selection.nonstellar_objects == frozenset({"M 8", "M 42"})
+    assert selection.galaxies == frozenset(
+        {
+            "NGC0224",
+            "NGC0253",
+            "NGC0598",
+            "NGC3031",
+            "NGC3034",
+            "NGC5194",
+        }
+    )
+    assert len(selection.open_clusters) == 11
+    assert len(selection.globular_clusters) == 5
+    assert selection.planetary_nebulae == frozenset(
+        {"PN G060.8-03.6"}
+    )
+    labels = {
+        (family, identifier): label
+        for family, identifier, label in detail.content_label_overrides
+    }
+    assert labels[("galaxies", "NGC0224")] == "M31"
+    assert labels[("globular_clusters", "NGC 5139")] == "ω"
 
 
 @pytest.mark.parametrize("mode", ("print", "presentation"))
@@ -81,6 +104,7 @@ def test_overlap_content_options_are_identical_before_projection():
                 "constellation_boundaries",
                 "milky_way_isophotes",
                 "magellanic_clouds",
+                "nonstellar",
                 *sorted(DEEP_SKY_LAYERS),
             )
         )
@@ -107,8 +131,37 @@ def test_overlap_content_options_are_identical_before_projection():
             "constellation_labels",
             "milky_way_isophotes",
             "magellanic_clouds",
+            "nonstellar",
+            "nonstellar_objects",
+            "galaxies",
+            "globular_clusters",
+            "open_clusters",
+            "planetary_nebulae",
         }
         assert south_options[layer]["enabled"] is expected
+
+    assert south_options["nonstellar"]["geometry"]["selected"] == (
+        south_detail.content_selection.nonstellar_objects
+    )
+    for name in (
+        "galaxies",
+        "globular_clusters",
+        "open_clusters",
+        "planetary_nebulae",
+    ):
+        assert south_options[name]["geometry"]["selected"] == getattr(
+            south_detail.content_selection,
+            name,
+        )
+        formatter = south_options[name]["render"]["label_formatter"]
+        expected = {
+            identifier.casefold(): label
+            for family, identifier, label
+            in south_detail.content_label_overrides
+            if family == name
+        }
+        for identifier, label in expected.items():
+            assert formatter(identifier.upper()) == label
 
 
 def test_packaged_configuration_owns_the_physical_disk_policy():

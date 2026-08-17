@@ -89,6 +89,27 @@ def test_point_labels_and_individual_styles():
     plt.close(figure)
 
 
+def test_entity_label_formatter_can_rename_or_suppress_labels():
+    figure, ax = plt.subplots()
+    renderer = MatplotlibRenderer(ax)
+    points = ProjectedPoints(
+        x=[0.0, 1.0],
+        y=[2.0, 3.0],
+        labels=["NGC0224", "NGC3034"],
+    )
+    labels = {"NGC0224": "M31", "NGC3034": None}
+
+    artists = renderer.draw(
+        points,
+        draw_labels=True,
+        label_formatter=labels.get,
+    )
+
+    assert len(artists) == 2
+    assert artists[1].get_text() == "M31"
+    plt.close(figure)
+
+
 def test_curves_preserve_nan_segmentation_and_style():
     figure, ax = plt.subplots()
     renderer = MatplotlibRenderer(ax)
@@ -196,4 +217,3 @@ def test_unknown_geometry_is_rejected():
         raise AssertionError("Expected TypeError")
     finally:
         plt.close(figure)
-

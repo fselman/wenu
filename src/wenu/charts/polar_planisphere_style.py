@@ -26,6 +26,10 @@ class PolarPlanisphereStylePalette:
     constellation_label_opacity: float = 0.90
     reference_color: str = "#66899B"
     reference_label_fontsize: float = 5.25
+    deep_sky_color: str = "#365F78"
+    deep_sky_label_fontsize: float = 4.5
+    deep_sky_outline_minimum_size_arcmin: float = 40.0
+    globular_cluster_minimum_size_arcmin: float = 80.0
     boundary_color: str = "#6F8795"
     boundary_linewidth: float = 0.45
     boundary_opacity: float = 0.80
@@ -35,6 +39,9 @@ class PolarPlanisphereStylePalette:
             "star_area_scale",
             "constellation_label_fontsize",
             "reference_label_fontsize",
+            "deep_sky_label_fontsize",
+            "deep_sky_outline_minimum_size_arcmin",
+            "globular_cluster_minimum_size_arcmin",
         )
         nonnegative = (
             "constellation_linewidth",
@@ -95,6 +102,41 @@ def polar_planisphere_chart_style(base, palette):
             milky_way_contour_linestyle="None",
             milky_way_contour_linewidth=0.0,
             milky_way_contour_alpha=0.0,
+        ),
+        deep_sky=replace(
+            base.deep_sky,
+            nonstellar_color=palette.deep_sky_color,
+            nonstellar_minimum_size_arcmin=(
+                palette.deep_sky_outline_minimum_size_arcmin
+            ),
+            nonstellar_draw_labels=True,
+            nonstellar_label_fontsize=palette.deep_sky_label_fontsize,
+            galaxy_edge_color=palette.deep_sky_color,
+            galaxy_minimum_size_arcmin=(
+                palette.deep_sky_outline_minimum_size_arcmin
+            ),
+            galaxy_draw_labels=True,
+            galaxy_label_color=palette.deep_sky_color,
+            galaxy_label_fontsize=palette.deep_sky_label_fontsize,
+            globular_cluster_color=palette.deep_sky_color,
+            globular_cluster_minimum_size_arcmin=(
+                palette.globular_cluster_minimum_size_arcmin
+            ),
+            globular_cluster_draw_labels=True,
+            globular_cluster_label_color=palette.deep_sky_color,
+            globular_cluster_label_fontsize=(
+                palette.deep_sky_label_fontsize
+            ),
+            planetary_nebula_color=palette.deep_sky_color,
+            planetary_nebula_draw_labels=True,
+            planetary_nebula_label_color=palette.deep_sky_color,
+            planetary_nebula_label_fontsize=(
+                palette.deep_sky_label_fontsize
+            ),
+            open_cluster_color=palette.deep_sky_color,
+            open_cluster_draw_labels=True,
+            open_cluster_label_color=palette.deep_sky_color,
+            open_cluster_label_fontsize=palette.deep_sky_label_fontsize,
         ),
         grids=replace(
             base.grids,

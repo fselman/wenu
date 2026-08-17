@@ -23,6 +23,13 @@ def test_packaged_physical_palette_has_clean_white_and_provisional_blue():
     assert palette.star_color == "#005B8F"
     assert palette.reference_color == "#66899B"
     assert palette.reference_label_fontsize == pytest.approx(5.25)
+    assert palette.deep_sky_label_fontsize == pytest.approx(4.5)
+    assert palette.deep_sky_outline_minimum_size_arcmin == pytest.approx(
+        40.0
+    )
+    assert palette.globular_cluster_minimum_size_arcmin == pytest.approx(
+        80.0
+    )
     assert palette.star_area_scale < AtlasChartStyle().stars.area_scale
 
 
@@ -46,6 +53,22 @@ def test_polar_print_composition_uses_dedicated_physical_style():
     assert style.grids.coordinate_label_color == "#66899B"
     assert style.grids.coordinate_label_fontsize == pytest.approx(5.25)
     assert style.canvas.label_fontsize == pytest.approx(7.5)
+    deep_sky = style.deep_sky
+    assert deep_sky.galaxy_draw_labels is True
+    assert deep_sky.open_cluster_draw_labels is True
+    assert deep_sky.globular_cluster_draw_labels is True
+    assert deep_sky.planetary_nebula_draw_labels is True
+    assert deep_sky.nonstellar_draw_labels is True
+    assert deep_sky.galaxy_label_fontsize == pytest.approx(4.5)
+    assert deep_sky.open_cluster_label_fontsize == pytest.approx(4.5)
+    assert deep_sky.globular_cluster_label_fontsize == pytest.approx(4.5)
+    assert deep_sky.planetary_nebula_label_fontsize == pytest.approx(4.5)
+    assert deep_sky.nonstellar_label_fontsize == pytest.approx(4.5)
+    assert deep_sky.nonstellar_minimum_size_arcmin == pytest.approx(40.0)
+    assert deep_sky.galaxy_minimum_size_arcmin == pytest.approx(40.0)
+    assert deep_sky.globular_cluster_minimum_size_arcmin == pytest.approx(
+        80.0
+    )
 
 
 def test_milky_way_is_filled_without_edge_or_contour_outlines():
@@ -122,12 +145,32 @@ def test_configuration_translation_carries_palette_values():
     values["styles"]["polar_planisphere"][
         "reference_label_font_size"
     ] = 6.0
+    values["styles"]["polar_planisphere"][
+        "deep_sky_label_font_size"
+    ] = 4.25
+    values["styles"]["polar_planisphere"][
+        "deep_sky_outline_minimum_size_arcmin"
+    ] = 36.0
+    values["styles"]["polar_planisphere"][
+        "globular_cluster_minimum_size_arcmin"
+    ] = 72.0
 
     defaults = translate_style_mode_defaults(values)
 
     assert defaults.polar_planisphere_palette.star_color == "#123456"
     assert defaults.polar_planisphere_palette.reference_color == "#654321"
     assert defaults.polar_planisphere_palette.reference_label_fontsize == 6.0
+    assert defaults.polar_planisphere_palette.deep_sky_label_fontsize == 4.25
+    assert (
+        defaults.polar_planisphere_palette.
+        deep_sky_outline_minimum_size_arcmin
+        == 36.0
+    )
+    assert (
+        defaults.polar_planisphere_palette.
+        globular_cluster_minimum_size_arcmin
+        == 72.0
+    )
 
 
 def test_palette_and_style_adapter_are_immutable_and_validated():

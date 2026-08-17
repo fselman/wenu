@@ -267,41 +267,40 @@ class PolarPlanisphereChart:
         )
 
     def _inset_constellation_labels(self, sky, options):
-        """Suppress label anchors too close to the physical date ring."""
+        """Inset constellation labels and orient polar labels radially."""
         layer = getattr(sky, "constellation_labels", None)
-        if layer is None or layer not in options:
-            return options
-        configured = dict(options[layer])
-        prepare = configured.get("prepare")
-        radius = self.boundary_radius * 0.94
+        result = dict(options)
+        if layer is not None and layer in options:
+            configured = dict(options[layer])
+            prepare = configured.get("prepare")
+            radius = self.boundary_radius * 0.94
 
-        def inset(spherical, projected):
-            prepared = (
-                projected
-                if prepare is None
-                else prepare(spherical, projected)
-            )
-            if not isinstance(prepared, ProjectedPoints):
-                return prepared
-            x = np.asarray(prepared.x, dtype=float).copy()
-            y = np.asarray(prepared.y, dtype=float).copy()
-            outside = np.hypot(x, y) > radius
-            x[outside] = np.nan
-            y[outside] = np.nan
-            return ProjectedPoints(
-                x=x,
-                y=y,
-                metadata=prepared.metadata,
-                ids=prepared.ids,
-                labels=prepared.labels,
-                names=prepared.names,
-            )
+            def inset(spherical, projected):
+                prepared = (
+                    projected
+                    if prepare is None
+                    else prepare(spherical, projected)
+                )
+                if not isinstance(prepared, ProjectedPoints):
+                    return prepared
+                x = np.asarray(prepared.x, dtype=float).copy()
+                y = np.asarray(prepared.y, dtype=float).copy()
+                outside = np.hypot(x, y) > radius
+                x[outside] = np.nan
+                y[outside] = np.nan
+                return ProjectedPoints(
+                    x=x,
+                    y=y,
+                    metadata=prepared.metadata,
+                    ids=prepared.ids,
+                    labels=prepared.labels,
+                    names=prepared.names,
+                )
 
-        configured["prepare"] = inset
-        render = dict(configured.get("render", {}))
-        label_style = dict(render.get("label_style", {}))
+            configured["prepare"] = inset
+            result[layer] = configured
 
-        def polar_rotation(x, y):
+        def polar_tangent_rotation(x, y):
             radial_angle = np.degrees(np.arctan2(y, x))
             return rotation_with_down_toward(
                 radial_angle + 90.0,
@@ -309,14 +308,39 @@ class PolarPlanisphereChart:
                 (0.0, 0.0),
             )
 
-        label_style.update(
-            rotation=polar_rotation,
-            rotation_mode="anchor",
+        if layer is not None and layer in result:
+            configured = dict(result[layer])
+            render = dict(configured.get("render", {}))
+            label_style = dict(render.get("label_style", {}))
+            label_style.update(
+                rotation=polar_tangent_rotation,
+                rotation_mode="anchor",
+            )
+            render["label_style"] = label_style
+            configured["render"] = render
+            result[layer] = configured
+
+        label_layers = (
+            "nonstellar",
+            "galaxies",
+            "open_clusters",
+            "globular_clusters",
+            "planetary_nebulae",
         )
-        render["label_style"] = label_style
-        configured["render"] = render
-        result = dict(options)
-        result[layer] = configured
+        for name in label_layers:
+            current = getattr(sky, name, None)
+            if current is None or current not in result:
+                continue
+            configured = dict(result[current])
+            render = dict(configured.get("render", {}))
+            label_style = dict(render.get("label_style", {}))
+            label_style.update(
+                rotation=polar_tangent_rotation,
+                rotation_mode="anchor",
+            )
+            render["label_style"] = label_style
+            configured["render"] = render
+            result[current] = configured
         return result
 
     def export(

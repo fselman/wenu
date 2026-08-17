@@ -353,6 +353,19 @@ and supported magnitude selections then index that immutable maximal
 realization. This shared `NonStellar` behavior covers ordinary nonstellar
 objects, galaxies, globular clusters, and supernova remnants.
 
+The physical polar-planisphere detail policy loads its reviewed binocular
+selection from `data/polar_binocular_targets.json`. Selection remains keyed by
+canonical catalogue identifier. Independent per-family display-label
+overrides prefer Messier designations or concise common names and may return
+`None` to omit one label in a close pair while retaining both objects. Detail
+application supplies those overrides through the renderer's generic
+`label_formatter` option. The polar atlas-print palette alone raises the
+minimum displayed outline diameter to 40 arcminutes and the globular-cluster
+floor to 80 arcminutes; it does not filter catalogue objects or alter their
+recorded angular dimensions. The polar chart owner applies readable tangent
+rotation to enabled deep-sky labels after composition: each text baseline is
+perpendicular to the radius and its typographic down faces the disk center.
+
 `ChartRequest` is the immutable input shared by the Python facade and future
 command-line adapter. `ChartObserverRequest` defines the actual observing
 location and instant; `ChartSubjectRequest` accepts one target, explicit ICRS

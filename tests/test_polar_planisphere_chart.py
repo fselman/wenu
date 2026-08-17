@@ -206,6 +206,36 @@ def test_constellation_labels_are_suppressed_before_the_date_ring():
     assert rotation(-radius * 0.5, 0.0) == pytest.approx(90.0)
 
 
+def test_deep_sky_labels_share_the_radial_polar_orientation():
+    chart = PolarPlanisphereChart()
+    constellation = object()
+    deep_sky_layers = {
+        name: object()
+        for name in (
+            "nonstellar",
+            "galaxies",
+            "open_clusters",
+            "globular_clusters",
+            "planetary_nebulae",
+        )
+    }
+    sky = SimpleNamespace(
+        constellation_labels=constellation,
+        **deep_sky_layers,
+    )
+    options = {
+        layer: {"render": {"draw_labels": True}}
+        for layer in (constellation, *deep_sky_layers.values())
+    }
+
+    resolved = chart._inset_constellation_labels(sky, options)
+
+    for layer in options:
+        label_style = resolved[layer]["render"]["label_style"]
+        assert label_style["rotation_mode"] == "anchor"
+        assert label_style["rotation"](1.0, 0.0) == pytest.approx(-90.0)
+
+
 @pytest.mark.parametrize(
     "options, message",
     (

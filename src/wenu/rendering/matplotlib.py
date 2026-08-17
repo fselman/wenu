@@ -249,6 +249,7 @@ class MatplotlibRenderer:
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
+                label_formatter=label_formatter,
             )
         elif isinstance(geometry, ProjectedPoints):
             artists = self._draw_points(
@@ -259,6 +260,7 @@ class MatplotlibRenderer:
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
+                label_formatter=label_formatter,
             )
         elif isinstance(geometry, ProjectedCurve):
             artists = self._draw_curve(
@@ -267,6 +269,7 @@ class MatplotlibRenderer:
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
+                label_formatter=label_formatter,
             )
         elif isinstance(geometry, ProjectedCurves):
             artists = self._draw_curves(
@@ -276,6 +279,7 @@ class MatplotlibRenderer:
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
+                label_formatter=label_formatter,
             )
         elif isinstance(geometry, ProjectedGrid):
             artists = self._draw_grid(
@@ -298,6 +302,7 @@ class MatplotlibRenderer:
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
+                label_formatter=label_formatter,
             )
         elif (
             isinstance(geometry, ProjectedPolygons)
@@ -321,6 +326,7 @@ class MatplotlibRenderer:
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
+                label_formatter=label_formatter,
             )
         else:
             raise TypeError(
@@ -338,16 +344,20 @@ class MatplotlibRenderer:
         draw_labels,
         label_style,
         label_offset,
+        label_formatter,
     ):
         if not point.finite:
             return []
         artists = [render_point(self.ax, point, **style)]
-        if draw_labels and point.name is not None:
+        label = point.name
+        if label is not None and label_formatter is not None:
+            label = label_formatter(label)
+        if draw_labels and label is not None:
             artists.append(
                 self._label(
                     point.x,
                     point.y,
-                    point.name,
+                    label,
                     label_style,
                     label_offset,
                 )
@@ -364,6 +374,7 @@ class MatplotlibRenderer:
         draw_labels,
         label_style,
         label_offset,
+        label_formatter,
     ):
         finite = points.finite
         artists = []
@@ -395,6 +406,7 @@ class MatplotlibRenderer:
                         draw_labels=False,
                         label_style={},
                         label_offset=(0.0, 0.0),
+                        label_formatter=None,
                     )
                 )
 
@@ -431,6 +443,8 @@ class MatplotlibRenderer:
             entity_styles = self._entity_styles(styles, len(points))
             for index in np.flatnonzero(finite):
                 label = self._entity_label(points, index)
+                if label is not None and label_formatter is not None:
+                    label = label_formatter(label)
                 if label is not None:
                     inherited = {
                         name: entity_styles[index][name]
@@ -456,17 +470,21 @@ class MatplotlibRenderer:
         draw_labels,
         label_style,
         label_offset,
+        label_formatter,
     ):
         if not np.any(curve.finite):
             return []
         artists = [render_curve(self.ax, curve, **style)]
-        if draw_labels and curve.name is not None:
+        label = curve.name
+        if label is not None and label_formatter is not None:
+            label = label_formatter(label)
+        if draw_labels and label is not None:
             anchor = self._anchor(curve.x, curve.y)
             if anchor is not None:
                 artists.append(
                     self._label(
                         *anchor,
-                        curve.name,
+                        label,
                         label_style,
                         label_offset,
                     )
@@ -482,6 +500,7 @@ class MatplotlibRenderer:
         draw_labels,
         label_style,
         label_offset,
+        label_formatter,
     ):
         entity_styles = self._entity_styles(
             styles,
@@ -506,6 +525,7 @@ class MatplotlibRenderer:
                     draw_labels=draw_labels,
                     label_style=label_style,
                     label_offset=label_offset,
+                    label_formatter=label_formatter,
                 )
             )
         return artists
@@ -542,6 +562,7 @@ class MatplotlibRenderer:
                     draw_labels=False,
                     label_style=label_style,
                     label_offset=label_offset,
+                    label_formatter=None,
                 )
             )
             if draw_labels:
@@ -636,6 +657,7 @@ class MatplotlibRenderer:
         draw_labels,
         label_style,
         label_offset,
+        label_formatter,
     ):
         if not np.any(polygon.finite):
             return []
@@ -669,13 +691,16 @@ class MatplotlibRenderer:
                         **self._polygon_style(outline),
                     )
                 )
-        if draw_labels and polygon.name is not None:
+        label = polygon.name
+        if label is not None and label_formatter is not None:
+            label = label_formatter(label)
+        if draw_labels and label is not None:
             anchor = self._anchor(polygon.x, polygon.y)
             if anchor is not None:
                 artists.append(
                     self._label(
                         *anchor,
-                        polygon.name,
+                        label,
                         label_style,
                         label_offset,
                     )
@@ -693,6 +718,7 @@ class MatplotlibRenderer:
         draw_labels,
         label_style,
         label_offset,
+        label_formatter,
     ):
         entity_styles = self._entity_styles(
             styles,
@@ -721,6 +747,7 @@ class MatplotlibRenderer:
                     draw_labels=draw_labels,
                     label_style=label_style,
                     label_offset=label_offset,
+                    label_formatter=label_formatter,
                 )
             )
         return artists

@@ -57,6 +57,11 @@ POLAR_PLANISPHERE_CONTENT_LAYERS = frozenset(
         "constellation_labels",
         "milky_way",
         "magellanic_clouds",
+        "nonstellar_objects",
+        "galaxies",
+        "globular_clusters",
+        "open_clusters",
+        "planetary_nebulae",
     }
 )
 
@@ -176,6 +181,9 @@ class ResolvedDetail:
     constellation_star_mode: str | None = None
     extra_star_ids: frozenset[int] = frozenset()
     content_selection: SkyContentSelection = SkyContentSelection()
+    content_label_overrides: tuple[
+        tuple[str, str, str | None], ...
+    ] = ()
 
     def __post_init__(self) -> None:
         numeric_names = (
@@ -242,6 +250,26 @@ class ResolvedDetail:
             raise TypeError(
                 "content_selection must be a SkyContentSelection."
             )
+        normalized_overrides = []
+        for family, identifier, label in self.content_label_overrides:
+            family = str(family).strip()
+            identifier = str(identifier).strip()
+            if not family or not identifier:
+                raise ValueError(
+                    "content label overrides require a family and identifier."
+                )
+            normalized_overrides.append(
+                (
+                    family,
+                    identifier,
+                    None if label is None else str(label).strip(),
+                )
+            )
+        object.__setattr__(
+            self,
+            "content_label_overrides",
+            tuple(normalized_overrides),
+        )
 
     def layer_enabled(self, name: str) -> bool:
         """Return whether a semantic layer is enabled."""
@@ -372,12 +400,17 @@ class PolarPlanisphereDetailPolicy:
         mode: ResolvedMode,
     ) -> ResolvedDetail:
         """Return the same astronomical selection for either disk face."""
+        from .polar_binocular_targets import polar_binocular_targets
+
         del context, mode
+        targets = polar_binocular_targets()
         return ResolvedDetail(
             star_magnitude_limit=self.star_magnitude_limit,
             label_density=self.label_density,
             enabled_layers=self.enabled_layers,
             constellation_star_mode=self.constellation_star_mode,
+            content_selection=targets.content_selection,
+            content_label_overrides=targets.label_overrides,
         )
 
 

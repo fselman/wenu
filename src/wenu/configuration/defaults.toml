@@ -129,7 +129,8 @@ star_magnitude_limit = 5.5
 label_density = 1.0
 enabled_layers = [
     "stars", "constellation_lines", "constellation_labels", "milky_way",
-    "magellanic_clouds",
+    "magellanic_clouds", "nonstellar_objects", "galaxies",
+    "globular_clusters", "open_clusters", "planetary_nebulae",
 ]
 constellation_star_mode = "none"
 
@@ -689,6 +690,10 @@ constellation_label_font_size = 7.5
 constellation_label_opacity = 0.90
 reference_color = "#66899B"
 reference_label_font_size = 5.25
+deep_sky_color = "#365F78"
+deep_sky_label_font_size = 4.5
+deep_sky_outline_minimum_size_arcmin = 40.0
+globular_cluster_minimum_size_arcmin = 80.0
 boundary_color = "#6F8795"
 boundary_line_width = 0.45
 boundary_opacity = 0.80

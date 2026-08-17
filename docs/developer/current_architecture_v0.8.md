@@ -192,3 +192,17 @@ short projected disk furniture rather than spherical parallels, selects the
 pole belonging to each face explicitly, unifies principal references under a
 neutral blue-grey style, and enlarges their labels by 50 percent. The
 diagnostic footer obtains the installed Wenu version from package metadata.
+
+Milestone 48H.2 adds one reviewed, packaged binocular-target selection shared
+by both polar faces before projection. Catalogue identifiers remain the
+selection and provenance authority; a separate immutable label policy prefers
+Messier designations and concise common names, and can suppress one label in a
+close pair without suppressing either symbol. The generic projected-geometry
+renderer applies the resulting formatter, so no catalogue rows or
+polar-specific object classes are rewritten. The physical polar palette also
+sets a configurable 40-arcminute display floor for ordinary outline-based
+deep-sky symbols and an 80-arcminute floor for globular clusters. Fixed
+open-cluster and planetary-nebula symbols retain their existing fixed print
+sizes. Deep-sky label baselines are tangent to their local circle and thus
+perpendicular to the disk radius, with typographic down facing the disk
+center. Other chart families remain unchanged.

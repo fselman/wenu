@@ -38,6 +38,16 @@ _SAMPLED_OUTLINE_LAYERS = frozenset(
 )
 
 
+@dataclass(frozen=True)
+class _LabelFormatter:
+    """Value-semantic renderer adapter for curated object labels."""
+
+    overrides: tuple[tuple[str, str | None], ...]
+
+    def __call__(self, value):
+        return dict(self.overrides).get(str(value).casefold(), value)
+
+
 def _merge_mapping(base, overlay):
     merged = dict(base)
     for key, value in overlay.items():
@@ -178,6 +188,7 @@ class DetailApplication:
 
 
 _DETAIL_LAYER_NAMES = {
+    "nonstellar": "nonstellar_objects",
     "milky_way_isophotes": "milky_way",
     "magellanic_cloud_isophotes": "magellanic_clouds",
 }
@@ -219,6 +230,14 @@ def apply_resolved_detail(
     # Kept as a compatibility argument while catalogue selection moves from
     # persistent layer mutation to render-local geometry options.
     del reload_catalogues
+
+    label_overrides = {}
+    for family, identifier, label in getattr(
+        detail, "content_label_overrides", ()
+    ):
+        label_overrides.setdefault(family, {})[
+            identifier.casefold()
+        ] = label
 
     resolved_options = {}
     for layer in sky.layers:
@@ -270,6 +289,14 @@ def apply_resolved_detail(
             )
             if selected is not None:
                 geometry["selected"] = selected
+        overrides = label_overrides.get(detail_name)
+        if overrides:
+            configured["render"] = {
+                **configured.get("render", {}),
+                "label_formatter": _LabelFormatter(
+                    tuple(sorted(overrides.items()))
+                ),
+            }
         selection = detail.content_selection
         if name == "constellation_lines":
             selected = selection.constellation_lines

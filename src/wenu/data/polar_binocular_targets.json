@@ -1,0 +1,78 @@
+{
+  "catalogue": "polar_binocular_28",
+  "description": "Curated binocular targets for the paired classroom polar planisphere.",
+  "content_selection": {
+    "nonstellar_objects": ["M 8", "M 42"],
+    "galaxies": [
+      "NGC0224",
+      "NGC0253",
+      "NGC0598",
+      "NGC3031",
+      "NGC3034",
+      "NGC5194"
+    ],
+    "open_clusters": [
+      "IC 2602",
+      "Melotte 20",
+      "Melotte 22",
+      "Melotte 25",
+      "NGC 869",
+      "NGC 884",
+      "NGC 2516",
+      "NGC 2632",
+      "NGC 3532",
+      "NGC 4755",
+      "NGC 6475"
+    ],
+    "globular_clusters": [
+      "NGC 104",
+      "NGC 5139",
+      "NGC 5272",
+      "NGC 6205",
+      "NGC 6656"
+    ],
+    "planetary_nebulae": ["PN G060.8-03.6"]
+  },
+  "labels": {
+    "nonstellar_objects": {
+      "M 8": "M8",
+      "M 42": "M42"
+    },
+    "galaxies": {
+      "NGC0224": "M31",
+      "NGC0253": "N253",
+      "NGC0598": "M33",
+      "NGC3031": "M81/82",
+      "NGC3034": null,
+      "NGC5194": "M51"
+    },
+    "open_clusters": {
+      "IC 2602": "Pléyades S",
+      "Melotte 20": "α Per",
+      "Melotte 22": "Pléyades",
+      "Melotte 25": "Híades",
+      "NGC 869": "Cúmulo Doble",
+      "NGC 884": null,
+      "NGC 2516": "N2516",
+      "NGC 2632": "El Pesebre",
+      "NGC 3532": "N3532",
+      "NGC 4755": "El Joyero",
+      "NGC 6475": "Cúmulo de Ptolomeo"
+    },
+    "globular_clusters": {
+      "NGC 104": "47 Tuc",
+      "NGC 5139": "ω",
+      "NGC 5272": "M3",
+      "NGC 6205": "M13",
+      "NGC 6656": "M22"
+    },
+    "planetary_nebulae": {
+      "PN G060.8-03.6": "M27"
+    }
+  },
+  "label_aliases": {
+    "globular_clusters": {
+      "Omega Cen": "ω"
+    }
+  }
+}

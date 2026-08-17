@@ -39,6 +39,11 @@ polar-distance projection for north- and south-centred physical sky disks. It
 reuses the ordinary spherical geometry dispatch contract and contains no
 chart, calendar, horizon, style, renderer, or export policy.
 
+`charts/polar_binocular_targets.py` validates the packaged curated identifier
+and compact-label policy in `data/polar_binocular_targets.json`. It returns
+ordinary detail-selection contracts and contains no catalogue loading,
+projection, renderer, or page-furniture implementation.
+
 Within `sky/`, `maximal_sphere.py` owns the immutable catalogue load profile
 and the one canonical complete-content factory. The resulting object is an
 ordinary `CelestialSphere`; chart geometry and presentation remain outside

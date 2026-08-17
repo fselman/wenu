@@ -82,9 +82,14 @@ def test_packaged_defaults_cover_schema_responsibilities():
             "stars",
             "constellation_lines",
             "constellation_labels",
-            "milky_way",
-            "magellanic_clouds",
-        ],
+                "milky_way",
+                "magellanic_clouds",
+                "nonstellar_objects",
+                "galaxies",
+                "globular_clusters",
+                "open_clusters",
+                "planetary_nebulae",
+            ],
         "constellation_star_mode": "none",
     }
 

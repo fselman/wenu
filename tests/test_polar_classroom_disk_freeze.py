@@ -112,7 +112,12 @@ def test_classroom_content_selection_is_face_neutral_and_frozen():
             "stars",
             "constellation_lines",
             "constellation_labels",
-            "milky_way",
-            "magellanic_clouds",
-        }
+                "milky_way",
+                "magellanic_clouds",
+                "nonstellar_objects",
+                "galaxies",
+                "globular_clusters",
+                "open_clusters",
+                "planetary_nebulae",
+            }
     )
