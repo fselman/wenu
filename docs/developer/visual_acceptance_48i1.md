@@ -42,18 +42,19 @@ Draft. Verify the printed 50 mm scale ruler before judging density or size.
 
 Record Fernando Selman's physical-print disposition here after inspection.
 
-## Milestone 48I.1B follow-up
+## Milestone 48I.1B follow-up and 48I.1C correction
 
-The follow-up print candidate uses filled five-point symbols through a
-configurable magnitude-0.05 cutoff. With the packaged Hipparcos catalogue this
-selects Sirius, Canopus, Arcturus, Rigil Kentaurus, and Vega, but not Capella.
-Their magnitudes from -1.5 through 0 are shifted by +1.5 before applying the
-48I.1A area law, reproducing the former magnitude-0 through 1.5 areas.
-Ordinary circles from magnitude 1.5 through 5.5 are shifted by -1.5 and thus
-reproduce the former magnitude-0 through 4 areas. The circular base markers
-under the selected five-point symbols are suppressed.
+The corrected print candidate uses filled five-point symbols through a
+configurable magnitude-0.18 cutoff. With the packaged Hipparcos catalogue this
+selects Rigel and every brighter star: Rigel, Capella, Canopus, Sirius,
+Arcturus, Rigil Kentaurus, and Vega. The source interval -1.44 through 0.18 is
+mapped affinely onto the former magnitude -1 through 0 size interval. Ordinary
+circles in the source interval 0.18 through 5.5 are mapped affinely onto the
+former magnitude 1 through 4 size interval. The circular base markers under
+the selected five-point symbols are suppressed, and the five-point path uses
+a compact inner radius so its silhouette remains distinct in print.
 
 Constellation strokes and the shared right-ascension/equator/ecliptic/Galactic
 reference stroke are exactly 50 percent wider than in 48I.1A. Confirm on paper
-that the five symbols remain compact, the faint-star field remains legible,
+that the seven symbols remain compact, the faint-star field remains legible,
 and reference structure does not dominate constellation figures.

@@ -287,14 +287,14 @@ def test_stellar_symbol_overlays_are_independently_optional():
 def test_bright_star_overlay_uses_configured_five_point_threshold():
     spherical = SimpleNamespace(
         metadata={
-            "magnitude": np.asarray((-1.44, 0.03, 0.08)),
+            "magnitude": np.asarray((-1.44, 0.18, 0.40)),
             "is_variable": np.zeros(3, dtype=bool),
             "is_multiple": np.zeros(3, dtype=bool),
         }
     )
     options = PublicationStyle(
         draw_bright_star_symbols=True,
-        bright_star_magnitude_limit=0.05,
+        bright_star_magnitude_limit=0.18,
     )._star_render_options(spherical, None)
 
     overlay = options["point_overlays"][0]

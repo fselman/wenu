@@ -62,8 +62,10 @@ class StellarStyle:
         default_factory=StellarMagnitudeSizing
     )
     draw_bright_symbols: bool = False
-    bright_magnitude_limit: float = 0.05
-    bright_magnitude_offset: float = 1.5
+    bright_magnitude_limit: float = 0.18
+    bright_magnitude_scale: float = 1.0
+    bright_magnitude_offset: float = 0.0
+    ordinary_magnitude_scale: float = 1.0
     ordinary_magnitude_offset: float = 0.0
     bright_color: str | None = None
     bright_alpha: float = 1.0

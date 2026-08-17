@@ -19,9 +19,11 @@ class PolarPlanisphereStylePalette:
     star_magnitude_scale: float = 2.2727272727272725
     star_magnitude_exponent: float = 0.30488598388546717
     star_minimum_area: float = 1.25
-    bright_star_magnitude_limit: float = 0.05
-    bright_star_magnitude_offset: float = 1.5
-    ordinary_star_magnitude_offset: float = -1.5
+    bright_star_magnitude_limit: float = 0.18
+    bright_star_magnitude_scale: float = 0.617283950617284
+    bright_star_magnitude_offset: float = -0.1111111111111111
+    ordinary_star_magnitude_scale: float = 0.5639097744360902
+    ordinary_star_magnitude_offset: float = 0.8984962406015038
     milky_way_color: str = "#A8C8D6"
     milky_way_opacity: float = 0.45
     magellanic_cloud_color: str = "#A8C8D6"
@@ -55,6 +57,8 @@ class PolarPlanisphereStylePalette:
             "star_magnitude_scale",
             "star_magnitude_exponent",
             "star_minimum_area",
+            "bright_star_magnitude_scale",
+            "ordinary_star_magnitude_scale",
             "constellation_label_fontsize",
             "reference_label_fontsize",
             "deep_sky_label_fontsize",
@@ -132,7 +136,11 @@ def polar_planisphere_chart_style(base, palette):
             ),
             draw_bright_symbols=True,
             bright_magnitude_limit=palette.bright_star_magnitude_limit,
+            bright_magnitude_scale=palette.bright_star_magnitude_scale,
             bright_magnitude_offset=palette.bright_star_magnitude_offset,
+            ordinary_magnitude_scale=(
+                palette.ordinary_star_magnitude_scale
+            ),
             ordinary_magnitude_offset=(
                 palette.ordinary_star_magnitude_offset
             ),

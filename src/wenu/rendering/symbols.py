@@ -69,7 +69,7 @@ def _multiple_star() -> Path:
 
 def _filled_five_point_star() -> Path:
     """Return a normalized compact five-point stellar marker."""
-    return Path.unit_regular_star(5)
+    return Path.unit_regular_star(5, innerCircle=0.38)
 
 
 @dataclass(frozen=True)

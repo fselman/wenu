@@ -40,7 +40,7 @@ class PublicationStyle:
     foreground_color: str = "white"
     star_color: str = "white"
     draw_bright_star_symbols: bool = False
-    bright_star_magnitude_limit: float = 0.05
+    bright_star_magnitude_limit: float = 0.18
     bright_star_color: str | None = None
     bright_star_alpha: float = 1.0
     draw_variable_star_symbols: bool = False

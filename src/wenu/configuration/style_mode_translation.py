@@ -426,6 +426,16 @@ def translate_style_mode_defaults(
                     "bright_star_magnitude_offset"
                 ]
             ),
+            bright_star_magnitude_scale=(
+                styles["polar_planisphere"][
+                    "bright_star_magnitude_scale"
+                ]
+            ),
+            ordinary_star_magnitude_scale=(
+                styles["polar_planisphere"][
+                    "ordinary_star_magnitude_scale"
+                ]
+            ),
             ordinary_star_magnitude_offset=(
                 styles["polar_planisphere"][
                     "ordinary_star_magnitude_offset"

@@ -45,13 +45,15 @@ def configured_stellar_symbol_sizes(
         & (values <= stars.bright_magnitude_limit)
     )
     ordinary = configured_magnitude_sizes(
-        values + stars.ordinary_magnitude_offset,
+        values * stars.ordinary_magnitude_scale
+        + stars.ordinary_magnitude_offset,
         sizing,
         limiting_magnitude=limiting_magnitude,
     ) * stars.area_scale
     ordinary = np.where(bright, 0.0, ordinary)
     highlighted = configured_magnitude_sizes(
-        values + stars.bright_magnitude_offset,
+        values * stars.bright_magnitude_scale
+        + stars.bright_magnitude_offset,
         sizing,
         limiting_magnitude=limiting_magnitude,
     ) * stars.area_scale

@@ -1174,12 +1174,13 @@ change detail, chart geometry, projection, output scale, or other chart
 families. Atlas presentation retains its established screen palette.
 
 The optional bright-star overlay uses `StellarStyle` values for its magnitude
-cutoff, color, opacity, and magnitude offset. `PublicationStyle` emits one
-vectorized five-point overlay, and the renderer masks vector-valued overlay
-areas with the same point mask. The polar configuration uses a 0.05 cutoff,
-maps bright magnitudes by +1.5, maps ordinary magnitudes by -1.5, and suppresses
-the ordinary circle under each selected overlay. These are appearance-only
-operations over the existing Hipparcos points.
+cutoff, color, opacity, and affine magnitude scale and offset.
+`PublicationStyle` emits one vectorized five-point overlay, and the renderer
+masks vector-valued overlay areas with the same point mask. The corrected polar
+configuration uses a 0.18 cutoff, maps source magnitudes -1.44..0.18 onto the
+former -1..0 symbol areas, maps 0.18..5.5 onto the former 1..4 symbol areas,
+and suppresses the ordinary circle under each selected overlay. These are
+appearance-only operations over the existing Hipparcos points.
 
 The canonical actual-size page and pouch tools pass an 86 mm calendar radius
 to the paired disk request. This is the stellar-aperture boundary inside the
