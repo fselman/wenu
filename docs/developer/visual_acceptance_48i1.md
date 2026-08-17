@@ -50,7 +50,7 @@ selects Rigel and every brighter star: Rigel, Capella, Canopus, Sirius,
 Arcturus, Rigil Kentaurus, and Vega. The source interval -1.44 through 0.18 is
 mapped affinely onto the former magnitude -1 through 0 size interval. Ordinary
 circles in the source interval 0.18 through 5.5 are mapped affinely onto the
-former magnitude 1 through 4 size interval. The circular base markers under
+former magnitude 0 through 4 size interval. The circular base markers under
 the selected five-point symbols are suppressed, and the five-point path uses
 a compact inner radius so its silhouette remains distinct in print.
 

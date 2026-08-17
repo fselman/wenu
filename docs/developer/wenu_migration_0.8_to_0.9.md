@@ -485,7 +485,7 @@ The physical-print follow-up activates the previously planned configurable
 five-point overlay. The 48I.1C correction moves its cutoff to magnitude 0.18,
 so Rigel and every brighter packaged Hipparcos star are selected. It maps the
 -1.44-to-0.18 bright range onto the former magnitude--1-to-0 areas and the
-ordinary 0.18-to-5.5 range onto the former magnitude-1-to-4 areas. The renderer
+ordinary 0.18-to-5.5 range onto the former magnitude-0-to-4 areas. The renderer
 continues to use vectorized point collections, and no catalogue identifiers or
 polar-only artist branch are introduced. Constellation and
 coordinate/reference strokes remain exactly 50 percent wider than in 48I.1A.

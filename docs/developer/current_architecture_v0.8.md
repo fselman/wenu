@@ -222,7 +222,7 @@ Milestone 48I.1B adds a generic, vectorized filled five-point stellar overlay
 to the existing stellar rendering contract. The 48I.1C correction makes the
 polar palette activate it at magnitude 0.18 and gives that palette affine
 scale-and-offset mappings for both bright and ordinary magnitudes. The source
-intervals -1.44..0.18 and 0.18..5.5 reproduce the former -1..0 and 1..4 symbol
+intervals -1.44..0.18 and 0.18..5.5 reproduce the former -1..0 and 0..4 symbol
 areas respectively. Ordinary circles are zero-sized beneath selected
 overlays, while all selection remains a render-local magnitude mask. Polar
 constellation and coordinate/reference strokes are 50 percent wider; other

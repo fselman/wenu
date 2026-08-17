@@ -22,8 +22,8 @@ class PolarPlanisphereStylePalette:
     bright_star_magnitude_limit: float = 0.18
     bright_star_magnitude_scale: float = 0.617283950617284
     bright_star_magnitude_offset: float = -0.1111111111111111
-    ordinary_star_magnitude_scale: float = 0.5639097744360902
-    ordinary_star_magnitude_offset: float = 0.8984962406015038
+    ordinary_star_magnitude_scale: float = 0.7518796992481203
+    ordinary_star_magnitude_offset: float = -0.13533834586466165
     milky_way_color: str = "#A8C8D6"
     milky_way_opacity: float = 0.45
     magellanic_cloud_color: str = "#A8C8D6"

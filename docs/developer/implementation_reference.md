@@ -1178,7 +1178,7 @@ cutoff, color, opacity, and affine magnitude scale and offset.
 `PublicationStyle` emits one vectorized five-point overlay, and the renderer
 masks vector-valued overlay areas with the same point mask. The corrected polar
 configuration uses a 0.18 cutoff, maps source magnitudes -1.44..0.18 onto the
-former -1..0 symbol areas, maps 0.18..5.5 onto the former 1..4 symbol areas,
+former -1..0 symbol areas, maps 0.18..5.5 onto the former 0..4 symbol areas,
 and suppresses the ordinary circle under each selected overlay. These are
 appearance-only operations over the existing Hipparcos points.
 
