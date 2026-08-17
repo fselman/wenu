@@ -32,7 +32,7 @@ def test_visual_checkpoint_realizes_reviewed_calendar_and_references():
     source = RUNNER.read_text(encoding="utf-8")
 
     assert "tick.labeled_day" in source
-    assert "fontsize=8.6" in source
+    assert "typography.month_label_fontsize" in source
     assert '"Celestial equator",' in source
     assert '"Ecliptic",' in source
     assert 'state="labeled", label="Galactic plane"' in source

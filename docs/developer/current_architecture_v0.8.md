@@ -206,3 +206,14 @@ open-cluster and planetary-nebula symbols retain their existing fixed print
 sizes. Deep-sky label baselines are tangent to their local circle and thus
 perpendicular to the disk radius, with typographic down facing the disk
 center. Other chart families remain unchanged.
+
+Milestone 48I.1A adds a printer-calibrated polar-paper hierarchy. The packaged
+palette now owns darker physical-print colors, reference-line strength, a
+stellar size curve whose minimum begins at magnitude 5, darker diffuse sky
+features, and typed calendar day/month font sizes and weights. The
+calendar renderer consumes the resolved style and contains no font-size
+literals. Actual classroom exports retain the frozen 195 mm outer disk while
+using an 86 mm stellar-aperture radius and shifted calendar anchors; rendered
+Spanish month extents are required to remain inside the physical cut circle.
+No projection, sky coordinates, catalogue selection, or non-polar atlas style
+changes.

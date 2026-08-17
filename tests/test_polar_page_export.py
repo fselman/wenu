@@ -17,7 +17,7 @@ from wenu.charts.polar_planisphere import PolarPlanisphereChart
 
 
 def resolved_values():
-    pair = PolarPlanispherePairRequest(calendar_radius_mm=82.0).resolve()
+    pair = PolarPlanispherePairRequest(calendar_radius_mm=86.0).resolve()
     calendar = PolarCalendarFurnitureRequest().resolve(pair)
     pages = PolarPageFurnitureRequest(
         source_revision="7fd4649"
@@ -193,5 +193,5 @@ def test_actual_size_review_tool_uses_paired_export_and_no_direct_save():
     assert '"polar-planisphere-south-a4.pdf"' in source
     assert '"polar-planisphere-north-a4.pdf"' in source
     assert 'manifest = destination / "manifest.json"' in source
-    assert "calendar_radius_mm=82.0" in source
+    assert "calendar_radius_mm=86.0" in source
     assert '"stellar_aperture_diameter_mm"' in source

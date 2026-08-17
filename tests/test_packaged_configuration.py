@@ -124,8 +124,17 @@ def test_packaged_defaults_cover_schema_responsibilities():
             assert name in style
     polar = defaults["styles"]["polar_planisphere"]
     assert polar["paper_color"] == "#FFFFFF"
-    assert polar["star_color"] == "#005B8F"
-    assert polar["milky_way_opacity"] == pytest.approx(0.32)
+    assert polar["star_color"] == "#003F66"
+    assert polar["star_minimum_area"] == pytest.approx(1.25)
+    assert polar["star_magnitude_scale"] == pytest.approx(2.2727272727272725)
+    assert polar["star_magnitude_exponent"] == pytest.approx(0.30488598388546717)
+    assert polar["milky_way_opacity"] == pytest.approx(0.45)
+    assert polar["lmc_opacity"] == pytest.approx(0.32)
+    assert polar["smc_opacity"] == pytest.approx(0.28)
+    assert polar["reference_line_width"] == pytest.approx(0.50)
+    assert polar["reference_opacity"] == pytest.approx(0.65)
+    assert polar["calendar_day_label_font_size"] == pytest.approx(6.45)
+    assert polar["calendar_month_label_font_size"] == pytest.approx(11.5)
     assert defaults["grids_references"][
         "polar_planisphere_label_anchors"
     ] == {

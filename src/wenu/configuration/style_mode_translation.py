@@ -407,12 +407,26 @@ def translate_style_mode_defaults(
             star_area_scale=(
                 styles["polar_planisphere"]["star_area_scale"]
             ),
+            star_magnitude_scale=(
+                styles["polar_planisphere"]["star_magnitude_scale"]
+            ),
+            star_magnitude_exponent=(
+                styles["polar_planisphere"]["star_magnitude_exponent"]
+            ),
+            star_minimum_area=(
+                styles["polar_planisphere"]["star_minimum_area"]
+            ),
             milky_way_color=(
                 styles["polar_planisphere"]["milky_way_color"]
             ),
             milky_way_opacity=(
                 styles["polar_planisphere"]["milky_way_opacity"]
             ),
+            magellanic_cloud_color=(
+                styles["polar_planisphere"]["magellanic_cloud_color"]
+            ),
+            lmc_opacity=styles["polar_planisphere"]["lmc_opacity"],
+            smc_opacity=styles["polar_planisphere"]["smc_opacity"],
             constellation_line_color=(
                 styles["polar_planisphere"][
                     "constellation_line_color"
@@ -446,6 +460,12 @@ def translate_style_mode_defaults(
             reference_color=(
                 styles["polar_planisphere"]["reference_color"]
             ),
+            reference_linewidth=(
+                styles["polar_planisphere"]["reference_line_width"]
+            ),
+            reference_opacity=(
+                styles["polar_planisphere"]["reference_opacity"]
+            ),
             reference_label_fontsize=(
                 styles["polar_planisphere"][
                     "reference_label_font_size"
@@ -477,6 +497,26 @@ def translate_style_mode_defaults(
             ),
             boundary_opacity=(
                 styles["polar_planisphere"]["boundary_opacity"]
+            ),
+            calendar_day_label_fontsize=(
+                styles["polar_planisphere"][
+                    "calendar_day_label_font_size"
+                ]
+            ),
+            calendar_day_label_fontweight=(
+                styles["polar_planisphere"][
+                    "calendar_day_label_font_weight"
+                ]
+            ),
+            calendar_month_label_fontsize=(
+                styles["polar_planisphere"][
+                    "calendar_month_label_font_size"
+                ]
+            ),
+            calendar_month_label_fontweight=(
+                styles["polar_planisphere"][
+                    "calendar_month_label_font_weight"
+                ]
             ),
         ),
         print_mode=print_mode,

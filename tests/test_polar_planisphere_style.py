@@ -1,6 +1,7 @@
 from dataclasses import FrozenInstanceError, replace
 
 import pytest
+import numpy as np
 
 from wenu import (
     AtlasChartStyle,
@@ -20,8 +21,13 @@ def test_packaged_physical_palette_has_clean_white_and_provisional_blue():
 
     assert palette == PolarPlanisphereStylePalette()
     assert palette.paper_color == "#FFFFFF"
-    assert palette.star_color == "#005B8F"
-    assert palette.reference_color == "#66899B"
+    assert palette.star_color == "#003F66"
+    assert palette.reference_color == "#456B7D"
+    assert palette.star_minimum_area == pytest.approx(1.25)
+    assert palette.star_magnitude_scale == pytest.approx(2.2727272727272725)
+    assert palette.star_magnitude_exponent == pytest.approx(0.30488598388546717)
+    assert palette.reference_linewidth == pytest.approx(0.50)
+    assert palette.reference_opacity == pytest.approx(0.65)
     assert palette.reference_label_fontsize == pytest.approx(5.25)
     assert palette.deep_sky_label_fontsize == pytest.approx(4.5)
     assert palette.deep_sky_outline_minimum_size_arcmin == pytest.approx(
@@ -40,18 +46,24 @@ def test_polar_print_composition_uses_dedicated_physical_style():
     style = composition.style
 
     assert style.canvas.sky_color == "#FFFFFF"
-    assert style.stars.color == "#005B8F"
+    assert style.stars.color == "#003F66"
     assert style.stars.area_scale == pytest.approx(0.55)
+    assert (
+        style.stars.magnitude_sizing.minimum_area * style.stars.area_scale
+        == pytest.approx(1.25)
+    )
     assert style.stars.draw_variable_symbols is False
     assert style.stars.draw_multiple_symbols is False
     assert style.legend.visible is False
-    assert style.grids.constellation_linewidth == pytest.approx(0.35)
-    assert style.grids.constellation_label_color == "#365F78"
-    assert style.grids.equatorial_color == "#66899B"
-    assert style.grids.ecliptic_color == "#66899B"
-    assert style.grids.galactic_color == "#66899B"
-    assert style.grids.coordinate_label_color == "#66899B"
+    assert style.grids.constellation_linewidth == pytest.approx(0.45)
+    assert style.grids.constellation_label_color == "#23495D"
+    assert style.grids.equatorial_color == "#456B7D"
+    assert style.grids.ecliptic_color == "#456B7D"
+    assert style.grids.galactic_color == "#456B7D"
+    assert style.grids.coordinate_label_color == "#456B7D"
     assert style.grids.coordinate_label_fontsize == pytest.approx(5.25)
+    assert style.grids.coordinate_linewidth == pytest.approx(0.50)
+    assert style.grids.coordinate_alpha == pytest.approx(0.65)
     assert style.canvas.label_fontsize == pytest.approx(7.5)
     deep_sky = style.deep_sky
     assert deep_sky.galaxy_draw_labels is True
@@ -69,6 +81,10 @@ def test_polar_print_composition_uses_dedicated_physical_style():
     assert deep_sky.globular_cluster_minimum_size_arcmin == pytest.approx(
         80.0
     )
+    assert style.calendar.day_label_fontsize == pytest.approx(6.45)
+    assert style.calendar.day_label_fontweight == "semibold"
+    assert style.calendar.month_label_fontsize == pytest.approx(11.5)
+    assert style.calendar.month_label_fontweight == "semibold"
 
 
 def test_milky_way_is_filled_without_edge_or_contour_outlines():
@@ -77,15 +93,44 @@ def test_milky_way_is_filled_without_edge_or_contour_outlines():
     isophotes = style.isophotes
     publication = style.as_publication_style()
 
-    assert isophotes.milky_way_alpha == pytest.approx(0.32)
+    assert isophotes.milky_way_alpha == pytest.approx(0.45)
+    assert isophotes.lmc_alpha == pytest.approx(0.32)
+    assert isophotes.smc_alpha == pytest.approx(0.28)
     assert isophotes.milky_way_edge_color is None
     assert isophotes.milky_way_edge_alpha == pytest.approx(0.0)
     assert isophotes.milky_way_linewidth == pytest.approx(0.0)
     assert isophotes.milky_way_contour_color is None
     assert isophotes.milky_way_contour_linewidth == pytest.approx(0.0)
     assert isophotes.milky_way_contour_alpha == pytest.approx(0.0)
-    assert publication.milky_way_color == "#C9DFE8"
+    assert publication.milky_way_color == "#A8C8D6"
+    assert isophotes.lmc_color == "#A8C8D6"
+    assert isophotes.smc_color == "#A8C8D6"
     assert publication.milky_way_contour_color is None
+
+
+def test_print_star_curve_promotes_intermediate_magnitudes_only():
+    style = compose_chart(
+        PolarPlanispherePairRequest().resolve().south,
+        style="atlas",
+        mode="print",
+    ).style
+    sizing = style.stars.magnitude_sizing
+    magnitudes = np.asarray((0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 5.5))
+    areas = np.maximum(
+        sizing.minimum_area,
+        sizing.scale
+        * 10.0 ** (-sizing.exponent * (magnitudes - sizing.reference_magnitude)),
+    ) * style.stars.area_scale
+    old = np.maximum(
+        1.25,
+        0.55 * 1.5 * 10.0 ** (-0.35 * (magnitudes - sizing.reference_magnitude)),
+    )
+
+    assert areas[1] == pytest.approx(old[1])
+    assert np.all(areas[2:5] > old[2:5])
+    assert areas[0] <= old[0]
+    assert areas[5] == pytest.approx(1.25)
+    assert areas[6] == pytest.approx(1.25)
 
 
 def test_physical_style_does_not_change_other_atlas_print_families():
@@ -111,7 +156,7 @@ def test_presentation_remains_the_existing_screen_atlas_mode():
     style = compose_chart(chart, style="atlas", mode="presentation").style
 
     assert style.canvas.sky_color != "#FFFFFF"
-    assert style.stars.color != "#005B8F"
+    assert style.stars.color != "#003F66"
 
 
 def test_configured_palette_flows_through_normal_composition(monkeypatch):

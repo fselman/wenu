@@ -677,26 +677,38 @@ text_color = "none"
 # review and final ESO-blue/font curation.
 [styles.polar_planisphere]
 paper_color = "#FFFFFF"
-foreground_color = "#244C64"
-star_color = "#005B8F"
+foreground_color = "#16394D"
+star_color = "#003F66"
 star_area_scale = 0.55
-milky_way_color = "#C9DFE8"
-milky_way_opacity = 0.32
-constellation_line_color = "#66899B"
-constellation_line_width = 0.35
-constellation_line_opacity = 0.68
-constellation_label_color = "#365F78"
+star_magnitude_scale = 2.2727272727272725
+star_magnitude_exponent = 0.30488598388546717
+star_minimum_area = 1.25
+milky_way_color = "#A8C8D6"
+milky_way_opacity = 0.45
+magellanic_cloud_color = "#A8C8D6"
+lmc_opacity = 0.32
+smc_opacity = 0.28
+constellation_line_color = "#456B7D"
+constellation_line_width = 0.45
+constellation_line_opacity = 0.85
+constellation_label_color = "#23495D"
 constellation_label_font_size = 7.5
-constellation_label_opacity = 0.90
-reference_color = "#66899B"
+constellation_label_opacity = 1.0
+reference_color = "#456B7D"
+reference_line_width = 0.50
+reference_opacity = 0.65
 reference_label_font_size = 5.25
-deep_sky_color = "#365F78"
+deep_sky_color = "#23495D"
 deep_sky_label_font_size = 4.5
 deep_sky_outline_minimum_size_arcmin = 40.0
 globular_cluster_minimum_size_arcmin = 80.0
-boundary_color = "#6F8795"
-boundary_line_width = 0.45
-boundary_opacity = 0.80
+boundary_color = "#456B7D"
+boundary_line_width = 0.55
+boundary_opacity = 0.95
+calendar_day_label_font_size = 6.45
+calendar_day_label_font_weight = "semibold"
+calendar_month_label_font_size = 11.5
+calendar_month_label_font_weight = "semibold"
 
 # Mode palettes contain color substitutions only.
 [styles.palettes.atlas_presentation]

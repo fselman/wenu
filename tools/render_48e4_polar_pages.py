@@ -22,7 +22,7 @@ def render_pages(destination, *, source_revision, projection_name, dpi=300):
     destination.mkdir(parents=True, exist_ok=True)
     pair = PolarPlanispherePairRequest(
         projection_name=projection_name,
-        calendar_radius_mm=82.0,
+        calendar_radius_mm=86.0,
         pivot_radius_mm=1.0,
     ).resolve()
     calendar = PolarCalendarFurnitureRequest().resolve(pair)

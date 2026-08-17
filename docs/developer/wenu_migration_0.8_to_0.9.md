@@ -467,6 +467,18 @@ symbols, and common pre-projection content remain unchanged by face.
 - configure the accepted semantic hierarchy without changing geometry;
 - verify accents and Spanish glyph coverage before localization.
 
+Milestone 48I.1A performs the first printer-calibration pass without changing
+the accepted celestial projection or the 195 mm outer disk. The physical
+palette owns darker ink values, stronger constellation, coordinate, and
+boundary strokes, and a stellar curve that preserves magnitude 1 while
+promoting intermediate stars and reaching a 1.25 pt² floor at magnitude 5.
+Calendar realization uses 6.45 pt semibold days and 11.5 pt semibold months and
+consumes that typed style instead of hard-coded renderer sizes. The classroom
+stellar aperture increases from 82 to 86 mm radius; day and month anchors move
+outward within the same calendar rim, and a rendered-font extent regression
+keeps all Spanish month names inside the cut circle. Physical printer review
+remains required before final typography acceptance.
+
 ### Milestone 48I.2 - Night edition
 
 - add a dark-blue/white-star appearance over identical geometry;

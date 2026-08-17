@@ -221,6 +221,16 @@ class LegendStyle:
 
 
 @dataclass(frozen=True)
+class CalendarStyle:
+    """Physical calendar-ring typography for products that draw one."""
+
+    day_label_fontsize: float = 4.3
+    day_label_fontweight: str = "normal"
+    month_label_fontsize: float = 8.6
+    month_label_fontweight: str = "medium"
+
+
+@dataclass(frozen=True)
 class ChartStyle:
     """Complete chart style assembled from focused immutable sections.
 
@@ -235,6 +245,7 @@ class ChartStyle:
     grids: GridStyle = field(default_factory=GridStyle)
     mask: MaskStyle = field(default_factory=MaskStyle)
     legend: LegendStyle = field(default_factory=LegendStyle)
+    calendar: CalendarStyle = field(default_factory=CalendarStyle)
 
     def as_publication_style(self):
         """Return the equivalent proven flat rendering implementation."""

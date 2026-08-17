@@ -29,7 +29,7 @@ def render_pouch(destination, *, source_revision, title, dpi=300):
     """Write paired PDF/PNG faces and a deterministic checksum manifest."""
     destination.mkdir(parents=True, exist_ok=True)
     pair = PolarPlanispherePairRequest(
-        calendar_radius_mm=82.0,
+        calendar_radius_mm=86.0,
         pivot_radius_mm=1.0,
     ).resolve()
     calendar = PolarCalendarFurnitureRequest().resolve(pair)

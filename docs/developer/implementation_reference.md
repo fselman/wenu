@@ -1162,12 +1162,23 @@ their different projections clip the common sky.
 
 For named atlas-print composition, `polar_planisphere_chart_style()` adapts the
 resolved atlas style using the packaged `PolarPlanisphereStylePalette`. The
-initial values use white paper, provisional configurable blue stars, ordinary
-circular markers at reduced area, pale translucent Milky Way fill, zero Milky
-Way edge and contour realization, subordinate constellation figures and
-labels, a restrained circular boundary, and no legend. The adapter does not
+printer-calibrated values use white paper, darker configurable blue stars, a
+curve that promotes intermediate magnitudes while reaching its 1.25 pt² floor
+at magnitude 5, darker filled Milky Way and Cloud features with zero Milky Way
+edge and contour realization, stronger but subordinate constellation and
+reference structure, a restrained circular boundary, and no legend. The
+same palette owns 6.45 pt day labels and 11.5 pt month labels, with their
+weights, and `CalendarStyle` carries those resolved values to physical-page
+realization. The adapter does not
 change detail, chart geometry, projection, output scale, or other chart
 families. Atlas presentation retains its established screen palette.
+
+The canonical actual-size page and pouch tools pass an 86 mm calendar radius
+to the paired disk request. This is the stellar-aperture boundary inside the
+unchanged 97.5 mm outer radius. `PolarCalendarFurnitureRequest` places day and
+month labels at 0.957 of the outer radius in the remaining annulus; its
+rendered-font regression verifies
+that the complete Spanish month names remain inside the cut line.
 
 Run `python tools/render_48e2_polar_preview.py` for the canonical equidistant
 north/south diagnostic. The tool may also render `--projection stereographic`

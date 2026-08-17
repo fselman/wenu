@@ -36,7 +36,7 @@ MONTH_NAMES = (
 )
 
 
-def _draw_calendar(ax, face, scale, *, color, label_color):
+def _draw_calendar(ax, face, scale, *, color, label_color, typography):
     for tick in face.ticks:
         x = (tick.inner[0] * scale, tick.outer[0] * scale)
         y = (tick.inner[1] * scale, tick.outer[1] * scale)
@@ -49,7 +49,7 @@ def _draw_calendar(ax, face, scale, *, color, label_color):
                 if tick.month_boundary
                 else 0.36 if tick.labeled_day else 0.18
             ),
-            alpha=0.85,
+            alpha=1.0,
             solid_capstyle="butt",
             zorder=30,
         )
@@ -59,7 +59,8 @@ def _draw_calendar(ax, face, scale, *, color, label_color):
             label.position[1] * scale,
             label.text,
             color=label_color,
-            fontsize=4.3,
+            fontsize=typography.day_label_fontsize,
+            fontweight=typography.day_label_fontweight,
             ha="center",
             va="baseline",
             rotation=label.rotation_deg,
@@ -72,8 +73,8 @@ def _draw_calendar(ax, face, scale, *, color, label_color):
             label.position[1] * scale,
             MONTH_NAMES[label.month - 1],
             color=label_color,
-            fontsize=8.6,
-            fontweight="medium",
+            fontsize=typography.month_label_fontsize,
+            fontweight=typography.month_label_fontweight,
             ha="center",
             va="baseline",
             rotation=label.rotation_deg,
@@ -176,8 +177,9 @@ def _render_face(chart, furniture, sky, observer, destination):
         ax,
         furniture,
         unit_per_mm,
-        color=composition.style.grids.boundary_color,
+        color=composition.style.canvas.foreground_color,
         label_color=composition.style.canvas.foreground_color,
+        typography=composition.style.calendar,
     )
     outer = furniture.outer_radius_mm * unit_per_mm
     margin = outer * 1.035

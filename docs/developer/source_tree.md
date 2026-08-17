@@ -254,8 +254,10 @@ one A4 axes. `charts/polar_pouch_sheet_export.py` owns the corresponding
 single-save actual-size export boundary.
 `charts/polar_planisphere_style.py` owns the provisional configurable physical
 paper palette and its pure adaptation of the existing atlas style. It changes
-appearance only: white paper, blue ordinary star symbols, filled outline-free
-Milky Way, restrained constellation structure, and boundary hierarchy. It
+appearance only: white paper, a calibrated stellar magnitude curve, darker
+filled outline-free Milky Way and Clouds, restrained constellation, reference,
+and boundary hierarchy, and calendar typography. `style_components.CalendarStyle`
+carries the resolved calendar text appearance to page realization. The palette
 owns no content selection, projection, calendar geometry, renderer, or export.
 `charts/coordinate_frames.py` owns astronomical transformation of canonical
 AltAz spherical geometry into a chart-selected celestial frame before

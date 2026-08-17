@@ -103,15 +103,15 @@ def draw_polar_page_furniture(
     renderer.ax.set_ylim(-outer, outer)
     renderer.ax.set_aspect("equal")
     renderer.ax.set_axis_off()
-    color = composition.style.grids.boundary_color
     label_color = composition.style.canvas.foreground_color
     calendar_lines, calendar_labels = _draw_calendar(
         renderer.ax,
         calendar_face,
         unit_per_mm,
         month_names=names,
-        color=color,
+        color=label_color,
         label_color=label_color,
+        typography=composition.style.calendar,
     )
     page = _draw_page_axes(
         renderer.ax.figure,
@@ -133,6 +133,7 @@ def _draw_calendar(
     month_names,
     color,
     label_color,
+    typography,
 ):
     lines = []
     labels = []
@@ -146,7 +147,7 @@ def _draw_calendar(
                 if tick.month_boundary
                 else 0.36 if tick.labeled_day else 0.18
             ),
-            alpha=0.85,
+            alpha=1.0,
             solid_capstyle="butt",
             zorder=30,
         )[0]
@@ -158,7 +159,8 @@ def _draw_calendar(
                 label.position[1] * scale,
                 label.text,
                 color=label_color,
-                fontsize=4.3,
+                fontsize=typography.day_label_fontsize,
+                fontweight=typography.day_label_fontweight,
                 ha="center",
                 va="baseline",
                 rotation=label.rotation_deg,
@@ -173,8 +175,8 @@ def _draw_calendar(
                 label.position[1] * scale,
                 month_names[label.month - 1],
                 color=label_color,
-                fontsize=8.6,
-                fontweight="medium",
+                fontsize=typography.month_label_fontsize,
+                fontweight=typography.month_label_fontweight,
                 ha="center",
                 va="baseline",
                 rotation=label.rotation_deg,
