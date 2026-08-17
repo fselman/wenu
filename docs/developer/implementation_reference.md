@@ -1027,7 +1027,7 @@ their completed text is never mirrored.
 The page request also owns local semantic information for the classroom
 edition: `SOUTH / SUR` or `NORTH / NORTE`, La Ligua/Papudo identity, La Ligua
 coordinates, UTC-4 standard time, the explicit daylight-saving disclaimer,
-projection and declination coverage, magnitude limit 5.5, disk diameter,
+projection and declination coverage, magnitude limit 5.0, disk diameter,
 actual-size printing, minimal cutting/gluing/face-use instructions, product
 identifier, and source revision. `source_revision` is mandatory at resolution
 so a printable page cannot silently omit provenance. This object contains no
@@ -1148,7 +1148,7 @@ directly to the canonical page center.
 
 `PolarPlanisphereDetailPolicy` is the packaged atlas-detail authority for a
 `polar_planisphere` composition. Its canonical configuration selects stars
-through magnitude 5.5 and enables exactly `stars`, `constellation_lines`,
+through magnitude 5.0 and enables exactly `stars`, `constellation_lines`,
 `constellation_labels`, `milky_way`, and `magellanic_clouds`.
 `constellation_star_mode="none"`
 ensures that faint constellation vertices do not bypass the stellar ceiling.
@@ -1179,9 +1179,9 @@ cutoff, color, opacity, and affine magnitude scale and offset.
 masks vector-valued overlay areas with the same point mask. The corrected polar
 configuration uses a 0.18 cutoff, maps source magnitudes -1.44..0.18 onto the
 former -1..0 symbol areas, maps 0.18..5.5 onto the former 0..4 symbol areas,
-then multiplies five-point areas by `1 / 0.38^2` so the inner pentagon has the
-mapped linear size, and suppresses the ordinary circle under each selected
-overlay. These are
+then multiplies five-point areas by `0.70^2 / 0.38^2` so the inner pentagon has
+70 percent of the mapped linear size, and suppresses the ordinary circle under
+each selected overlay. These are
 appearance-only operations over the existing Hipparcos points.
 
 The canonical actual-size page and pouch tools pass an 86 mm calendar radius

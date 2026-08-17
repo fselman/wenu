@@ -32,7 +32,7 @@ Draft. Verify the printed 50 mm scale ruler before judging density or size.
 
 ## Acceptance checks
 
-- faint magnitude-5.5 stars remain distinct but subordinate;
+- faint magnitude-5.0 stars remain distinct but subordinate;
 - bright-star magnitude hierarchy remains readable;
 - no Spanish month name touches or crosses the cut line;
 - day values and month names can be read through the pouch windows;
@@ -56,6 +56,12 @@ a compact 0.38 inner radius so its silhouette remains distinct in print.
 Milestone 48I.1E scales the five-point marker areas by `1 / 0.38^2`; therefore
 the inner pentagon, rather than the complete outer star, carries the former
 magnitude -1 through 0 linear scale.
+
+Milestone 48I.1F reduces that bright-symbol linear scale by 30 percent, using
+an area factor of `0.70^2 / 0.38^2`, for a smoother transition from the largest
+round stars. It also changes the polar catalogue ceiling from magnitude 5.5 to
+5.0 without changing the marker-size law; a magnitude-5.0 point therefore
+retains its 48I.1E area while fainter catalogue points are omitted.
 
 Constellation strokes and the shared right-ascension/equator/ecliptic/Galactic
 reference stroke are exactly 50 percent wider than in 48I.1A. Confirm on paper

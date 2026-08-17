@@ -22,7 +22,7 @@ class PolarPlanisphereStylePalette:
     bright_star_magnitude_limit: float = 0.18
     bright_star_magnitude_scale: float = 0.617283950617284
     bright_star_magnitude_offset: float = -0.1111111111111111
-    bright_star_symbol_area_scale: float = 1.0 / 0.38**2
+    bright_star_symbol_area_scale: float = 0.70**2 / 0.38**2
     ordinary_star_magnitude_scale: float = 0.7518796992481203
     ordinary_star_magnitude_offset: float = -0.13533834586466165
     milky_way_color: str = "#A8C8D6"

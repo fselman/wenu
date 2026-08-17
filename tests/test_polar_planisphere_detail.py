@@ -35,7 +35,7 @@ class Layer:
 def test_default_policy_adds_only_the_curated_binocular_content():
     detail = PolarPlanisphereDetailPolicy().resolve(object(), object())
 
-    assert detail.star_magnitude_limit == pytest.approx(5.5)
+    assert detail.star_magnitude_limit == pytest.approx(5.0)
     assert detail.label_density == pytest.approx(1.0)
     assert detail.enabled_layers == POLAR_PLANISPHERE_CONTENT_LAYERS
     assert detail.constellation_star_mode == "none"
@@ -82,7 +82,7 @@ def test_atlas_composition_uses_one_policy_for_both_faces(mode):
     assert south.detail == PolarPlanisphereDetailPolicy().resolve(
         south.context, south.mode
     )
-    assert south.detail.star_magnitude_limit == pytest.approx(5.5)
+    assert south.detail.star_magnitude_limit == pytest.approx(5.0)
     assert south.detail.enabled_layers == POLAR_PLANISPHERE_CONTENT_LAYERS
 
 
@@ -120,7 +120,7 @@ def test_overlap_content_options_are_identical_before_projection():
     assert south_options == north_options
     stars = next(layer for layer in sky.layers if layer.layer_name == "stars")
     assert south_options[stars]["geometry"] == {
-        "magnitude_limit": 5.5,
+        "magnitude_limit": 5.0,
         "include_ids": frozenset(),
         "include_constellation_vertices": False,
     }

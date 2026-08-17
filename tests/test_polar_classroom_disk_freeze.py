@@ -105,7 +105,7 @@ def test_classroom_content_selection_is_face_neutral_and_frozen():
 
     assert south.detail == expected
     assert north.detail == expected
-    assert expected.star_magnitude_limit == pytest.approx(5.5)
+    assert expected.star_magnitude_limit == pytest.approx(5.0)
     assert expected.enabled_layers == POLAR_PLANISPHERE_CONTENT_LAYERS
     assert expected.enabled_layers == frozenset(
         {

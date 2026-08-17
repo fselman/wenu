@@ -496,6 +496,11 @@ an explicit area factor of `1 / 0.38^2`. The inner pentagon of the five-point
 path therefore has the former magnitude -1-to-0 marker scale; the outer points
 extend beyond it without changing catalogue selection or magnitude semantics.
 
+Milestone 48I.1F calibrates that result to 70 percent linear size with the area
+factor `0.70^2 / 0.38^2`. It independently lowers the polar catalogue ceiling
+from magnitude 5.5 to 5.0 while retaining the existing marker-size law, so the
+change removes fainter points rather than resizing the new faint endpoint.
+
 ### Milestone 48I.2 - Night edition
 
 - add a dark-blue/white-star appearance over identical geometry;

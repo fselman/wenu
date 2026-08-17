@@ -366,7 +366,7 @@ class FixedDetailPolicy:
 class PolarPlanisphereDetailPolicy:
     """Sparse, projection-independent content for classroom star disks."""
 
-    star_magnitude_limit: float = 5.5
+    star_magnitude_limit: float = 5.0
     label_density: float = 1.0
     enabled_layers: frozenset[str] = POLAR_PLANISPHERE_CONTENT_LAYERS
     constellation_star_mode: str = "none"

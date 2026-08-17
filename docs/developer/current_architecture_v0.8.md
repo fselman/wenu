@@ -160,7 +160,7 @@ style policy.
 
 Milestone 48E.1 adds the packaged `PolarPlanisphereDetailPolicy` and registers
 it as the ordinary atlas-detail default for `polar_planisphere`. It selects
-stars through magnitude 5.5 plus constellation figures, constellation labels,
+stars through magnitude 5.0 plus constellation figures, constellation labels,
 the Milky Way, and both Magellanic Clouds. It disables constellation-boundary,
 coordinate-grid, and deep-sky symbol layers, and prevents constellation
 vertices from bypassing the magnitude ceiling. North and south compositions
@@ -225,8 +225,7 @@ scale-and-offset mappings for both bright and ordinary magnitudes. The source
 intervals -1.44..0.18 and 0.18..5.5 reproduce the former -1..0 and 0..4 symbol
 areas respectively. Ordinary circles are zero-sized beneath selected
 overlays. A separate bright-symbol area factor scales the five-point path by
-the inverse square of its 0.38 inner-radius ratio, preserving the requested
-former marker size at the inner pentagon. All selection remains a render-local
-magnitude mask. Polar
+`0.70^2 / 0.38^2`, making its inner pentagon 70 percent of the former marker's
+linear size. All selection remains a render-local magnitude mask. Polar
 constellation and coordinate/reference strokes are 50 percent wider; other
 chart families remain unchanged.
