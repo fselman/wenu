@@ -1,4 +1,4 @@
-"""Render the twelve traditional zodiac constellations as separate charts."""
+"""Render selected traditional zodiac constellations as separate charts."""
 
 from __future__ import annotations
 
@@ -22,6 +22,7 @@ from wenu import (
     default_chart_legend_plan,
     generate_celestial_sphere,
     get_chart_view,
+    parse_constellation_list,
 )
 from wenu.charts.regional import target_up_position_angle
 from wenu.translations import translate_label
@@ -165,8 +166,22 @@ def _effective_arguments(arguments, destination):
     return effective
 
 
+def _selected_constellations(arguments):
+    selected = tuple(arguments.constellations)
+    unsupported = tuple(
+        name for name in selected if name not in ZODIAC_CONSTELLATIONS
+    )
+    if unsupported:
+        raise ValueError(
+            "Only traditional zodiac constellations are supported: "
+            + ", ".join(unsupported)
+        )
+    return selected
+
+
 def render_zodiac(arguments, *, sky=None):
-    """Render and return twelve paths through the ordinary Wenu facade."""
+    """Render and return selected zodiac paths through the Wenu facade."""
+    selected = _selected_constellations(arguments)
     configuration = chart_configuration(arguments)
     sky = generate_celestial_sphere() if sky is None else sky
     observer_options = {}
@@ -185,7 +200,8 @@ def render_zodiac(arguments, *, sky=None):
         enabled_layers=VISIBLE_LAYERS,
     ))
     try:
-        for index, constellation in enumerate(ZODIAC_CONSTELLATIONS, 1):
+        for constellation in selected:
+            index = ZODIAC_CONSTELLATIONS.index(constellation) + 1
             view = _chart_view(
                 sky,
                 observer,
@@ -242,6 +258,16 @@ def parser():
         equatorial_grid=True,
         equatorial_grid_labels=True,
         grid_references=frozenset({"equatorial", "ecliptic"}),
+    )
+    value.add_argument(
+        "--constellations",
+        type=parse_constellation_list,
+        default=ZODIAC_CONSTELLATIONS,
+        metavar="IAU,...",
+        help=(
+            "comma-separated zodiac constellation abbreviations; "
+            "default: all twelve"
+        ),
     )
     value.add_argument(
         "--format",

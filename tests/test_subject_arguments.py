@@ -8,6 +8,7 @@ from wenu import (
     ChartConstellationSubjectOptions,
     add_constellation_subject_arguments,
     chart_constellation_subject,
+    parse_constellation_list,
 )
 
 
@@ -30,6 +31,10 @@ def test_arbitrary_iau_list_is_normalized_once_for_the_view():
         "constellations": ("Sgr", "Sco", "Oph", "Ser"),
         "group": None,
     }
+
+
+def test_public_constellation_list_parser_reuses_iau_normalization():
+    assert parse_constellation_list("sco, SGR") == ("Sco", "Sgr")
 
 
 def test_packaged_group_remains_an_optional_alias_form():

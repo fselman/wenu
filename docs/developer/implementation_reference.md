@@ -794,6 +794,9 @@ The ordinary CLI enables the labeled equatorial grid by default and accepts
 Constellation-family adapters may add the shared subject contract with
 `add_constellation_subject_arguments(...)`. It accepts mutually exclusive
 `--constellations IAU,...` and `--group ALIAS` forms.
+The underlying public `parse_constellation_list()` adapter is available to
+specialized tools that need the same comma-separated IAU normalization but
+do not support packaged groups; they must not implement a second list parser.
 `chart_constellation_subject(arguments)` returns immutable typed options whose
 `view_arguments()` pass directly to `get_chart_view()`. Arbitrary sets use the
 existing resolver and automatic spherical regional framing; packaged groups

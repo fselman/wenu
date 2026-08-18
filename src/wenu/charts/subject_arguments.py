@@ -8,7 +8,8 @@ from dataclasses import dataclass
 from .constellation_resolver import normalize_constellations
 
 
-def _constellation_list(value):
+def parse_constellation_list(value):
+    """Parse and normalize one comma-separated IAU abbreviation list."""
     names = tuple(
         item.strip() for item in str(value).split(",") if item.strip()
     )
@@ -69,7 +70,7 @@ def add_constellation_subject_arguments(
     subjects = parser.add_mutually_exclusive_group()
     subjects.add_argument(
         "--constellations",
-        type=_constellation_list,
+        type=parse_constellation_list,
         default=defaults,
         metavar="IAU,...",
         help="comma-separated IAU constellation abbreviations",

@@ -538,8 +538,10 @@ diagnostic and one checksum manifest.
 
 `tools/render_zodiac_constellations.py` is a review-only batch entry point. It
 uses `generate_celestial_sphere()`, `get_chart_view()`, the shared command-line
-adapter, configured furniture, and ordinary request export to emit the twelve
-traditional zodiac constellations separately. The north ecliptic pole defines
+adapter, configured furniture, and ordinary request export to emit selected
+traditional zodiac constellations separately. Its `--constellations IAU,...`
+control reuses the package's public constellation-list parser; omission emits
+all twelve. The north ecliptic pole defines
 chart up; fixed content is Hipparcos stars through magnitude 5.5, one figure
 and Spanish label, the ecliptic, celestial equator, and equatorial grid. Titles
 carry the Spanish constellation name and J2000 center RA/Dec to minutes.

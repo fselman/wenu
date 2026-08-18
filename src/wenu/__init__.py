@@ -135,6 +135,7 @@ from .charts.subject_arguments import (
     ChartConstellationSubjectOptions,
     add_constellation_subject_arguments,
     chart_constellation_subject,
+    parse_constellation_list,
 )
 from .charts.chart_legend_workflow import draw_resolved_chart_legends
 from .charts.context import BoundaryKind, ChartContext

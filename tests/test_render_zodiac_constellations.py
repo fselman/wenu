@@ -40,6 +40,7 @@ def test_defaults_are_cartoon_presentation_with_canonical_mask_switch():
     assert arguments.mode == "presentation"
     assert arguments.magnitude_limit == pytest.approx(5.5)
     assert arguments.mask is False
+    assert arguments.constellations == MODULE.ZODIAC_CONSTELLATIONS
 
     selected = MODULE.parser().parse_args(["--mask", "--presentation"])
     assert selected.mask is True
@@ -47,6 +48,21 @@ def test_defaults_are_cartoon_presentation_with_canonical_mask_switch():
 
     colored = MODULE.parser().parse_args(["--sky-color", "#1F699B"])
     assert colored.sky_color == "#1F699B"
+
+
+def test_constellation_list_uses_shared_normalization_and_accepts_one():
+    selected = MODULE.parser().parse_args([
+        "--constellations", "sco, SGR"
+    ])
+    single = MODULE.parser().parse_args(["--constellations", "sco"])
+
+    assert selected.constellations == ("Sco", "Sgr")
+    assert single.constellations == ("Sco",)
+    assert MODULE._selected_constellations(selected) == ("Sco", "Sgr")
+
+    unsupported = MODULE.parser().parse_args(["--constellations", "Cru"])
+    with pytest.raises(ValueError, match="zodiac.*Cru"):
+        MODULE._selected_constellations(unsupported)
 
 
 def test_effective_arguments_fix_requested_content_without_mask_literals():
