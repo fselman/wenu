@@ -544,7 +544,14 @@ chart up; fixed content is Hipparcos stars through magnitude 5.5, one figure
 and Spanish label, the ecliptic, celestial equator, and equatorial grid. Titles
 carry the Spanish constellation name and J2000 center RA/Dec to minutes.
 `--mask` therefore receives the packaged cartoon warm-white mask unchanged;
-the tool contains no mask color, opacity, polygon, or renderer policy.
+the tool contains no mask color, opacity, polygon, or renderer policy. Its
+cartoon/presentation review overrides strengthen only the ecliptic and enlarge
+coordinate labels through `ChartStyleOverrides`.
+
+`data/translations.json` is the single packaged dictionary for generated
+visual labels. `translations.py` loads it immutably, validates the requested
+language, and preserves unknown text. Shared command-line furniture resolves
+reference-plane labels through this boundary; examples do not own translations.
 
 Milestone 46D.8E keeps those owners but narrows diagnostic claims: all-sky and
 regional constellation masks are isolated from horizon openings, binocular

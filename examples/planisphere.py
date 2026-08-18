@@ -32,8 +32,7 @@ def generate(arguments):
     view = chart_view(arguments)
     furniture = chart_cli_furniture(
         arguments,
-        reference_labels={"equatorial": "Ecuador celeste",
-                          "ecliptic": "Eclíptica", "galactic": "Plano galáctico"},
+        language="es",
         copyright="© Fernando Selman",
         symbol_labels=(("open_cluster", "Cúmulo abierto"),
                        ("globular_cluster", "Cúmulo globular"),

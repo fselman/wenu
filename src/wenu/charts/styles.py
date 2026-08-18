@@ -142,6 +142,7 @@ class PublicationStyle:
     equatorial_linestyle: str = "-"
     ecliptic_color: str = "orange"
     ecliptic_linestyle: str = "-"
+    ecliptic_linewidth: float | None = None
     galactic_color: str = "blue"
     galactic_linestyle: str = "--"
     altaz_color: str = "black"
@@ -750,11 +751,16 @@ class PublicationStyle:
         else:
             color = self.galactic_color
             linestyle = self.galactic_linestyle
+        linewidth = (
+            self.grid_linewidth
+            if system != "ecliptic" or self.ecliptic_linewidth is None
+            else self.ecliptic_linewidth
+        )
         options = {
             "render": {
                 "style": {
                     "color": color,
-                    "linewidth": self.grid_linewidth,
+                    "linewidth": linewidth,
                     "linestyle": linestyle,
                     "alpha": self.grid_alpha,
                     "zorder": 3,

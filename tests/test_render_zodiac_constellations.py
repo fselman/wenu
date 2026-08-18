@@ -21,9 +21,9 @@ def test_traditional_zodiac_order_and_spanish_names_are_complete():
         "Ari", "Tau", "Gem", "Cnc", "Leo", "Vir",
         "Lib", "Sco", "Sgr", "Cap", "Aqr", "Psc",
     )
-    assert tuple(MODULE.SPANISH_NAMES) == MODULE.ZODIAC_CONSTELLATIONS
-    assert MODULE.SPANISH_NAMES["Gem"] == "Géminis"
-    assert MODULE.SPANISH_NAMES["Sco"] == "Escorpio"
+    assert tuple(MODULE.ENGLISH_NAMES) == MODULE.ZODIAC_CONSTELLATIONS
+    assert MODULE.ENGLISH_NAMES["Gem"] == "Gemini"
+    assert MODULE.ENGLISH_NAMES["Sco"] == "Scorpius"
     assert MODULE.STAR_MAGNITUDE_LIMIT == pytest.approx(5.5)
 
 
@@ -63,6 +63,11 @@ def test_effective_arguments_fix_requested_content_without_mask_literals():
     assert "get_chart_view" in source
     assert "compose_chart" not in source
     assert "#fffdf5" not in source
+
+
+def test_zodiac_presentation_enhances_ecliptic_and_grid_labels():
+    assert MODULE.ECLIPTIC_LINEWIDTH == pytest.approx(1.0)
+    assert MODULE.GRID_LABEL_FONTSIZE == pytest.approx(7.5)
 
 
 def test_spanish_title_formats_center_ra_and_dec_to_minutes():

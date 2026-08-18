@@ -18,6 +18,8 @@ class ChartStyleOverrides:
     boundary_linewidth: float | None = None
     boundary_color: str | None = None
     draw_coordinate_labels: bool | None = None
+    ecliptic_linewidth: float | None = None
+    coordinate_label_fontsize: float | None = None
     stellar_magnitude_sizing: StellarMagnitudeSizing | None = None
 
     def __post_init__(self):
@@ -31,7 +33,12 @@ class ChartStyleOverrides:
             raise TypeError(
                 "stellar_magnitude_sizing must be StellarMagnitudeSizing."
             )
-        for name in ("constellation_linewidth", "boundary_linewidth"):
+        for name in (
+            "constellation_linewidth",
+            "boundary_linewidth",
+            "ecliptic_linewidth",
+            "coordinate_label_fontsize",
+        ):
             value = getattr(self, name)
             if value is None:
                 continue
@@ -60,6 +67,8 @@ class ChartStyleOverrides:
                 "boundary_linewidth",
                 "boundary_color",
                 "draw_coordinate_labels",
+                "ecliptic_linewidth",
+                "coordinate_label_fontsize",
             )
             if getattr(self, name) is not None
         }

@@ -1,0 +1,38 @@
+{
+  "en": {
+    "Celestial equator": "Celestial equator",
+    "Ecliptic": "Ecliptic",
+    "Galactic plane": "Galactic plane",
+    "Stars": "Stars",
+    "Aries": "Aries",
+    "Taurus": "Taurus",
+    "Gemini": "Gemini",
+    "Cancer": "Cancer",
+    "Leo": "Leo",
+    "Virgo": "Virgo",
+    "Libra": "Libra",
+    "Scorpius": "Scorpius",
+    "Sagittarius": "Sagittarius",
+    "Capricornus": "Capricornus",
+    "Aquarius": "Aquarius",
+    "Pisces": "Pisces"
+  },
+  "es": {
+    "Celestial equator": "Ecuador celeste",
+    "Ecliptic": "Eclíptica",
+    "Galactic plane": "Plano galáctico",
+    "Stars": "Estrellas",
+    "Aries": "Aries",
+    "Taurus": "Tauro",
+    "Gemini": "Géminis",
+    "Cancer": "Cáncer",
+    "Leo": "Leo",
+    "Virgo": "Virgo",
+    "Libra": "Libra",
+    "Scorpius": "Escorpio",
+    "Sagittarius": "Sagitario",
+    "Capricornus": "Capricornio",
+    "Aquarius": "Acuario",
+    "Pisces": "Piscis"
+  }
+}

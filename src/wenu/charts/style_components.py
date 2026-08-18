@@ -185,6 +185,7 @@ class GridStyle:
     equatorial_linestyle: str = "-"
     ecliptic_color: str = "orange"
     ecliptic_linestyle: str = "-"
+    ecliptic_linewidth: float | None = None
     galactic_color: str = "blue"
     galactic_linestyle: str = "--"
     altaz_color: str = "black"
@@ -426,6 +427,7 @@ class ChartStyle:
             horizon_zorder=grids.horizon_zorder,
             ecliptic_color=grids.ecliptic_color,
             ecliptic_linestyle=grids.ecliptic_linestyle,
+            ecliptic_linewidth=grids.ecliptic_linewidth,
             galactic_color=grids.galactic_color,
             galactic_linestyle=grids.galactic_linestyle,
             grid_linewidth=grids.coordinate_linewidth,

@@ -27,6 +27,7 @@ from .furniture import (
 from .legend_plan import LegendOptions
 from .product_options import ChartProduct, chart_product_options
 from .style_overrides import ChartStyleOverrides
+from wenu.translations import translate_label
 
 
 _REFERENCE_LABELS = {
@@ -94,6 +95,7 @@ def chart_cli_furniture(
     stellar_title="Stars",
     configuration=None,
     family=None,
+    language=None,
 ):
     """Translate shared parsed controls into immutable chart furniture."""
     if configuration is None:
@@ -110,7 +112,15 @@ def chart_cli_furniture(
         value = getattr(arguments, name, None)
         return fallback if value is None else bool(value)
 
-    labels = dict(_REFERENCE_LABELS)
+    if language is None:
+        language = getattr(arguments, "language", None)
+    if language is None and configuration is not None:
+        language = configuration.furniture_product_export.product.language
+    language = "en" if language is None else language
+    labels = {
+        name: translate_label(label, language)
+        for name, label in _REFERENCE_LABELS.items()
+    }
     if reference_labels is not None:
         labels.update(reference_labels)
     references = chart_content_options(arguments).grid_references
@@ -195,6 +205,10 @@ def draw_chart_view_from_arguments(
         if configuration is None
         else configuration.furniture_product_export.product
     )
+    if language is None:
+        language = getattr(arguments, "language", None)
+    if language is None and product_defaults is not None:
+        language = product_defaults.language
     options = chart_product_options(arguments, defaults=product_defaults)
     details = {} if product_details is None else product_details
     if not isinstance(details, Mapping):
@@ -220,6 +234,7 @@ def draw_chart_view_from_arguments(
             effective_arguments,
             configuration=configuration,
             family=getattr(view, "family", None),
+            language=language,
         )
         if furniture is None else furniture
     )

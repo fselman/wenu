@@ -50,6 +50,7 @@ markers = [
 
 [tool.setuptools.package-data]
 "wenu.configuration" = ["defaults.toml"]
+"wenu.data" = ["*.json"]
 
 [tool.setuptools_scm]
 fallback_version = "0.8.0"

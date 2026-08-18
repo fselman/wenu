@@ -11,6 +11,7 @@ from astropy.coordinates import BarycentricMeanEcliptic, FK5, SkyCoord
 from astropy.time import Time
 
 from wenu import (
+    ChartStyleOverrides,
     FixedDetailPolicy,
     Observer,
     ResolvedDetail,
@@ -22,27 +23,30 @@ from wenu import (
     get_chart_view,
 )
 from wenu.charts.regional import target_up_position_angle
+from wenu.translations import translate_label
 
 
 ZODIAC_CONSTELLATIONS = (
     "Ari", "Tau", "Gem", "Cnc", "Leo", "Vir",
     "Lib", "Sco", "Sgr", "Cap", "Aqr", "Psc",
 )
-SPANISH_NAMES = {
+ENGLISH_NAMES = {
     "Ari": "Aries",
-    "Tau": "Tauro",
-    "Gem": "Géminis",
-    "Cnc": "Cáncer",
+    "Tau": "Taurus",
+    "Gem": "Gemini",
+    "Cnc": "Cancer",
     "Leo": "Leo",
     "Vir": "Virgo",
     "Lib": "Libra",
-    "Sco": "Escorpio",
-    "Sgr": "Sagitario",
-    "Cap": "Capricornio",
-    "Aqr": "Acuario",
-    "Psc": "Piscis",
+    "Sco": "Scorpius",
+    "Sgr": "Sagittarius",
+    "Cap": "Capricornus",
+    "Aqr": "Aquarius",
+    "Psc": "Pisces",
 }
 STAR_MAGNITUDE_LIMIT = 5.5
+ECLIPTIC_LINEWIDTH = 1.0
+GRID_LABEL_FONTSIZE = 7.5
 DEFAULT_OUTPUT = Path("output/zodiac-constellations")
 VISIBLE_LAYERS = frozenset({
     "stars",
@@ -67,7 +71,7 @@ def _provisional_view(sky, observer, configuration, constellation, mask):
         observer,
         family="regional",
         constellations=(constellation,),
-        display_name=SPANISH_NAMES[constellation],
+        display_name=translate_label(ENGLISH_NAMES[constellation], "es"),
         projection="stereographic",
         mask=mask,
         configuration=configuration,
@@ -91,7 +95,7 @@ def _chart_view(sky, observer, configuration, constellation, mask):
         observer,
         family="regional",
         constellations=(constellation,),
-        display_name=SPANISH_NAMES[constellation],
+        display_name=translate_label(ENGLISH_NAMES[constellation], "es"),
         position_angle_deg=position_angle,
         projection="stereographic",
         mask=mask,
@@ -127,7 +131,7 @@ def _title(view, constellation):
         fields=2,
     )
     return (
-        f"{SPANISH_NAMES[constellation]} — "
+        f"{translate_label(ENGLISH_NAMES[constellation], 'es')} — "
         f"RA {right_ascension}, Dec {declination}"
     )
 
@@ -194,6 +198,11 @@ def render_zodiac(arguments, *, sky=None):
                     copyright="© Fernando Selman",
                     configuration=configuration,
                     family=view.family,
+                    language="es",
+                ),
+                style_overrides=ChartStyleOverrides(
+                    ecliptic_linewidth=ECLIPTIC_LINEWIDTH,
+                    coordinate_label_fontsize=GRID_LABEL_FONTSIZE,
                 ),
                 title=_title(view, constellation),
                 language="es",

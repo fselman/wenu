@@ -115,6 +115,22 @@ def test_explicit_coordinate_label_color_retains_precedence():
     assert options["label_style"]["color"] == "purple"
 
 
+def test_ecliptic_can_be_strengthened_without_changing_equatorial_grid():
+    base = CartoonChartStyle()
+    style = replace(
+        base,
+        grids=replace(base.grids, ecliptic_linewidth=1.25),
+    )
+
+    ecliptic = grid_options(style, EclipticGrid(None))["render"]
+    equatorial = grid_options(style, EquatorialGrid(None))["render"]
+
+    assert ecliptic["style"]["linewidth"] == pytest.approx(1.25)
+    assert equatorial["style"]["linewidth"] == pytest.approx(
+        base.grids.coordinate_linewidth
+    )
+
+
 @pytest.mark.parametrize(
     ("name", "label"),
     (

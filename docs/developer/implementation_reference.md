@@ -380,6 +380,9 @@ omitted after field selection; it does not mutate loaded catalogue content.
 resolved only at composition time. They cannot carry framing, projection,
 masking, or other chart geometry, and duplicate or unselected product entries
 are rejected when the request is constructed.
+Semantic style overrides may strengthen the ecliptic independently of the
+coordinate-grid baseline and enlarge coordinate labels without changing other
+products.
 `ChartFurnitureOptions.context` may carry `ChartContextOptions` selecting
 chart-center coordinates, the active coordinate-grid description, observer
 location, date, and local time. These are declarative booleans rather than
@@ -846,6 +849,12 @@ export starts with its bounding-box, metadata and padding settings, then
 retains the existing derived mode DPI/transparency, circular transparency,
 and canvas face color. Explicit furniture, CLI product selections, output
 paths, and chart export options still win.
+
+Generated reference labels resolve through `data/translations.json` and
+`wenu.translations.translate_label()`. The shared command-line furniture uses
+the selected product language before applying any explicit caller overrides;
+unknown labels pass through unchanged, while unsupported language identifiers
+are rejected.
 
 Ordinary `draw_chart_view()` and `ChartRequest` omission now also resolves
 style, mode, language, and title through `[products.default]`. Direct typed

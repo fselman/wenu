@@ -139,6 +139,18 @@ def test_cli_furniture_maps_references_poles_legends_and_context():
     assert furniture.context.location is True
 
 
+def test_cli_furniture_translates_reference_labels_from_product_language():
+    arguments = parser().parse_args([
+        "--grid-references", "equatorial,ecliptic",
+    ])
+    arguments.language = "es"
+
+    furniture = chart_cli_furniture(arguments)
+
+    assert furniture.references.celestial_equator.label == "Ecuador celeste"
+    assert furniture.references.ecliptic.label == "Eclíptica"
+
+
 def test_adapter_delegates_selected_products_to_ordinary_drawing(
     monkeypatch, tmp_path
 ):

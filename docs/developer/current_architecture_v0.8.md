@@ -36,8 +36,9 @@ Version 0.8 already provides:
 - celestial-reference curves and pole annotations;
 - atlas and cartoon styles, print and presentation modes, configurable
   furniture, and deterministic export;
-- configurable product language values `en` and `es`, but no complete shared
-  translation catalogue for generated visual labels;
+- configurable product language values `en` and `es`, with one packaged
+  dictionary and fallback translator for generated visual labels; its initial
+  curated vocabulary covers celestial reference planes and stellar furniture;
 - configurable style and font values, but no curated physical-planisphere
   typography contract.
 
