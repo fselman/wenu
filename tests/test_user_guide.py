@@ -148,6 +148,7 @@ def test_circumpolar_guide_documents_horizon_crossing_framing():
     text = (GUIDE / "circumpolar_charts.md").read_text(encoding="utf-8")
 
     assert "--limiting-declination -30 --horizon --horizon-mask" in text
+    assert "--declination-step 10" in text
 
 
 def test_english_and_spanish_readmes_link_the_structured_guide():

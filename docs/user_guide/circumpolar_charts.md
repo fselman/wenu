@@ -36,3 +36,5 @@ presentation. The exported area outside the circular boundary is transparent.
 
 The common switches control stellar depth, constellation content, celestial
 references, legends, counts, and credits without changing polar geometry.
+For a −60° southern chart, `--declination-step 10` adds the −70° and −80°
+parallels while retaining the established two-hour right-ascension meridians.

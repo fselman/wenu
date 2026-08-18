@@ -175,6 +175,35 @@ def test_family_grid_policy_includes_all_sky_zero_and_two_hour_polar_ra():
     assert circumpolar.ra == tuple(range(0, 360, 30))
 
 
+def test_explicit_declination_step_adds_only_requested_polar_parallels():
+    frame = SimpleNamespace(
+        field_width_deg=None,
+        field_height_deg=None,
+        field_diameter_deg=None,
+        limiting_declination_deg=-60.0,
+    )
+    grid = configure_chart_request_grids(
+        CelestialSphere(object()),
+        request(
+            "circumpolar",
+            detail=DetailOverrides(
+                enabled_layer_additions={"equatorial_grid"},
+                equatorial_declination_step_deg=10.0,
+            ),
+        ),
+        frame=frame,
+    )[0]
+
+    assert grid.ra == tuple(range(0, 360, 30))
+    assert grid.dec == (-80.0, -70.0)
+
+
+@pytest.mark.parametrize("value", [0.0, -10.0, float("nan"), 91.0])
+def test_detail_declination_step_rejects_invalid_values(value):
+    with pytest.raises(ValueError, match="declination_step"):
+        DetailOverrides(equatorial_declination_step_deg=value)
+
+
 def test_all_sky_galactic_grid_uses_requested_meridians_and_parallels():
     grid = configure_chart_request_grids(
         CelestialSphere(object()),

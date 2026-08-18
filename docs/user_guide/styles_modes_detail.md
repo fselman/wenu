@@ -32,6 +32,7 @@ These options are shared by all six examples:
 --horizon-mask
 --equatorial-grid
 --equatorial-grid-labels
+--declination-step DEGREES
 --ecliptic-grid
 --ecliptic-grid-labels
 --galactic-grid
@@ -40,6 +41,10 @@ These options are shared by all six examples:
 --poles
 --pole-labels
 ```
+
+`--declination-step` changes only equatorial declination-parallel spacing; it
+does not increase the number of right-ascension meridians. When omitted, each
+chart family retains its established grid-density policy.
 
 Omitting these switches leaves constellation structure and references off.
 The all-sky family supplies its labeled Galactic grid by default; the other

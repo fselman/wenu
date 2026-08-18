@@ -304,6 +304,7 @@ class DetailOverrides:
     constellation_star_mode: str | None = None
     extra_star_ids: frozenset[int] | None = None
     content_selection: SkyContentSelection | None = None
+    equatorial_declination_step_deg: float | None = None
 
     def __post_init__(self):
         for name in (
@@ -332,6 +333,17 @@ class DetailOverrides:
         ):
             raise TypeError(
                 "content_selection must be a SkyContentSelection or None."
+            )
+        step = self.equatorial_declination_step_deg
+        if step is not None:
+            step = float(step)
+            if not isfinite(step) or not 0.0 < step <= 90.0:
+                raise ValueError(
+                    "equatorial_declination_step_deg must be finite and "
+                    "between 0 and 90 degrees"
+                )
+            object.__setattr__(
+                self, "equatorial_declination_step_deg", step
             )
 
 
@@ -693,10 +705,11 @@ def apply_detail_overrides(
     if overrides is None:
         return detail
     layer_fields = {"enabled_layer_additions", "disabled_layers"}
+    request_fields = {"equatorial_declination_step_deg"}
     changes = {
         item.name: getattr(overrides, item.name)
         for item in fields(overrides)
-        if item.name not in layer_fields
+        if item.name not in layer_fields | request_fields
         and getattr(overrides, item.name) is not None
     }
     resolved = replace(detail, **changes)

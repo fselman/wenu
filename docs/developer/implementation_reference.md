@@ -798,6 +798,10 @@ inputs to `draw_chart_view()` rather than a second rendering path.
 The ordinary CLI enables the labeled equatorial grid by default and accepts
 `--no-equatorial-grid` to omit it. Equatorial right ascension is labeled as
 `hh:mm`; declination and the other coordinate systems use degrees.
+`--declination-step DEGREES` replaces only the equatorial parallel interval
+through `DetailOverrides` and canonical request-grid configuration. It leaves
+right-ascension meridian density and every non-equatorial grid unchanged;
+omission preserves the established family policy.
 
 Constellation-family adapters may add the shared subject contract with
 `add_constellation_subject_arguments(...)`. It accepts mutually exclusive

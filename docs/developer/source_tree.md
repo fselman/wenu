@@ -411,7 +411,9 @@ fixtures, not supported user examples.
 `examples/circumpolar.py` and its byte-identical packaged resource expose the
 family's existing limiting-declination framing value as an ordinary argument.
 They still only declare a view and delegate horizon controls to the shared
-request and drawing facades.
+request and drawing facades. The shared `--declination-step` control travels
+through `DetailOverrides` to request-time equatorial-grid configuration; it
+does not create family-local grid geometry or alter right-ascension spacing.
 
 `tests/test_canonical_all_sky_example.py` owns the all-sky declaration's
 explicit Galactic Mollweide geometry, default detail, optional disjoint mask,

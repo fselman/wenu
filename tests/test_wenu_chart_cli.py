@@ -55,6 +55,17 @@ def test_binocular_omits_the_shared_grid_default_but_keeps_opt_in():
     assert selected.equatorial_grid_labels is True
 
 
+def test_circumpolar_accepts_independent_declination_spacing():
+    arguments = chart.parser().parse_args([
+        "circumpolar",
+        "--pole", "south",
+        "--limiting-declination", "-60",
+        "--declination-step", "10",
+    ])
+
+    assert arguments.declination_step == pytest.approx(10.0)
+
+
 def test_defaults_prints_packaged_authority_without_generation(
     monkeypatch, capsys
 ):

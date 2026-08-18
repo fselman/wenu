@@ -67,6 +67,7 @@ class ChartContentOptions:
     pole_labels: bool = False
     altaz_grid: bool = False
     altaz_grid_labels: bool = False
+    equatorial_declination_step_deg: float | None = None
 
     def __post_init__(self):
         if (
@@ -85,6 +86,17 @@ class ChartContentOptions:
                 "or galactic."
             )
         object.__setattr__(self, "grid_references", references)
+        step = self.equatorial_declination_step_deg
+        if step is not None:
+            step = float(step)
+            if not isfinite(step) or not 0.0 < step <= 90.0:
+                raise ValueError(
+                    "equatorial declination step must be finite and "
+                    "between 0 and 90 degrees"
+                )
+            object.__setattr__(
+                self, "equatorial_declination_step_deg", step
+            )
 
 
 @dataclass(frozen=True)
@@ -151,6 +163,12 @@ def add_chart_content_arguments(parser):
         nargs=0,
         default=False,
         help="draw equatorial-grid labels (and enable that grid)",
+    )
+    parser.add_argument(
+        "--declination-step",
+        type=float,
+        metavar="DEGREES",
+        help="override spacing between equatorial declination parallels",
     )
     parser.add_argument(
         "--ecliptic-grid",
@@ -265,6 +283,7 @@ def chart_content_options(arguments) -> ChartContentOptions:
         grid_references=arguments.grid_references,
         poles=bool(arguments.poles),
         pole_labels=bool(arguments.pole_labels),
+        equatorial_declination_step_deg=arguments.declination_step,
     )
 
 
@@ -328,6 +347,9 @@ def chart_detail_overrides(
     )
     return DetailOverrides(
         star_magnitude_limit=content.magnitude_limit,
+        equatorial_declination_step_deg=(
+            content.equatorial_declination_step_deg
+        ),
         enabled_layer_additions=frozenset(additions),
         disabled_layers=frozenset(optional_layers - additions),
         grid_label_layers=labels,

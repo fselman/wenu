@@ -42,6 +42,10 @@ def test_shared_content_and_legends_are_opt_in():
     assert chart_content_options(arguments).grid_references == frozenset()
     assert chart_content_options(arguments).poles is False
     assert chart_content_options(arguments).pole_labels is False
+    assert (
+        chart_content_options(arguments).equatorial_declination_step_deg
+        is None
+    )
     assert chart_legend_selection(arguments).objects is False
     assert chart_legend_selection(arguments).stellar_magnitudes is False
     assert chart_legend_selection(arguments).stellar_counts is False
@@ -58,6 +62,7 @@ def test_shared_content_switches_resolve_independently():
             "--horizon-mask",
             "--equatorial-grid",
             "--equatorial-grid-labels",
+            "--declination-step", "10",
             "--ecliptic-grid",
             "--ecliptic-grid-labels",
             "--galactic-grid",
@@ -77,6 +82,7 @@ def test_shared_content_switches_resolve_independently():
     assert content.horizon_mask is True
     assert content.equatorial_grid is True
     assert content.equatorial_grid_labels is True
+    assert content.equatorial_declination_step_deg == pytest.approx(10.0)
     assert content.ecliptic_grid is True
     assert content.ecliptic_grid_labels is True
     assert content.galactic_grid is True
@@ -93,6 +99,32 @@ def test_magnitude_limit_must_be_finite():
         chart_content_options(
             parser().parse_args(["--magnitude-limit", "nan"])
         )
+
+
+@pytest.mark.parametrize("value", ["0", "-10", "nan", "91"])
+def test_declination_step_must_be_positive_finite_and_at_most_90(value):
+    with pytest.raises(ValueError):
+        chart_content_options(
+            parser().parse_args(["--declination-step", value])
+        )
+
+
+def test_declination_step_configures_request_grid_without_becoming_detail():
+    arguments = parser().parse_args(["--declination-step", "10"])
+    chart = RegionalChart(45.0, 180.0, 20.0, 15.0)
+
+    composition = compose_chart(
+        chart,
+        style="cartoon",
+        detail_overrides=chart_detail_overrides(arguments),
+    )
+    baseline = compose_chart(
+        chart,
+        style="cartoon",
+        detail_overrides=chart_detail_overrides(parser().parse_args([])),
+    )
+
+    assert composition.detail == baseline.detail
 
 
 def test_grid_reference_selection_is_comma_separated_and_validated():

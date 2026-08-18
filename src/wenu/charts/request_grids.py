@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from math import floor
+
 from wenu.sky.coordinate_grids import CoordinatesGrid
 
 from .detail import COORDINATE_GRID_LAYERS
@@ -33,6 +35,22 @@ def _latitude_values(limit, step, *, include_zero=False):
     return tuple(sorted(values))
 
 
+def _declination_values(step, *, include_zero=False):
+    count = int(floor((90.0 - 1.0e-12) / float(step)))
+    positive = tuple(float(step) * index for index in range(1, count + 1))
+    values = {-value for value in positive} | set(positive)
+    if include_zero:
+        values.add(0.0)
+    return tuple(sorted(values))
+
+
+def _circumpolar_declinations(values, frame):
+    limit = float(frame.limiting_declination_deg)
+    if limit < 0.0:
+        return tuple(value for value in values if -90.0 < value < limit)
+    return tuple(value for value in values if limit < value < 90.0)
+
+
 def _view_span_deg(family, frame):
     if frame is not None:
         diameter = getattr(frame, "field_diameter_deg", None)
@@ -54,7 +72,7 @@ def _view_span_deg(family, frame):
     return 180.0 if family == "planisphere" else 60.0
 
 
-def _grid_specifications(family, frame=None):
+def _grid_specifications(family, frame=None, detail=None):
     span = _view_span_deg(family, frame)
     if family == "circumpolar":
         step = 30
@@ -68,6 +86,19 @@ def _grid_specifications(family, frame=None):
     )
     galactic_longitudes = longitudes
     galactic_latitudes = latitudes
+    declination_step = getattr(
+        detail, "equatorial_declination_step_deg", None
+    )
+    equatorial_latitudes = latitudes
+    if declination_step is not None:
+        equatorial_latitudes = _declination_values(
+            declination_step,
+            include_zero=family == "all_sky",
+        )
+        if family == "circumpolar" and frame is not None:
+            equatorial_latitudes = _circumpolar_declinations(
+                equatorial_latitudes, frame
+            )
     if family == "all_sky":
         galactic_longitudes = tuple(range(0, 360, 45))
         galactic_latitudes = tuple(range(-60, 61, 30))
@@ -75,7 +106,7 @@ def _grid_specifications(family, frame=None):
     return {
         "equatorial_grid": {
             "ra": longitudes,
-            "dec": latitudes,
+            "dec": equatorial_latitudes,
             "frame": "fk5",
             "equinox": "J2000",
             "samples": samples,
@@ -116,7 +147,9 @@ def configure_chart_request_grids(sky, request, *, frame=None):
             sky.remove(layer)
 
     requested = requested_coordinate_grids(request.detail)
-    specifications = _grid_specifications(request.family, frame)
+    specifications = _grid_specifications(
+        request.family, frame, request.detail
+    )
     configured = []
     for name, method_name in (
         ("equatorial_grid", "add_equatorial_grid"),
