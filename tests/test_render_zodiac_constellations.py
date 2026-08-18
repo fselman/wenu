@@ -46,6 +46,7 @@ def test_defaults_are_cartoon_presentation_with_canonical_mask_switch():
     assert arguments.mode == "presentation"
     assert arguments.magnitude_limit == pytest.approx(5.5)
     assert arguments.mask is False
+    assert arguments.dpi is None
     assert arguments.constellations == MODULE.ZODIAC_CONSTELLATIONS
 
     selected = MODULE.parser().parse_args(["--mask", "--presentation"])
@@ -54,6 +55,12 @@ def test_defaults_are_cartoon_presentation_with_canonical_mask_switch():
 
     colored = MODULE.parser().parse_args(["--sky-color", "#1F699B"])
     assert colored.sky_color == "#1F699B"
+
+    raster = MODULE.parser().parse_args(["--dpi", "300"])
+    assert raster.dpi == 300
+
+    with pytest.raises(SystemExit):
+        MODULE.parser().parse_args(["--dpi", "0"])
 
 
 def test_constellation_list_uses_shared_normalization_and_accepts_one():
@@ -96,8 +103,10 @@ def test_ophiuchus_places_serpens_cauda_label_to_the_left():
     assert MODULE._review_label_offsets("Sco") is None
 
 
-def test_effective_arguments_fix_requested_content_without_mask_literals():
-    arguments = MODULE.parser().parse_args(["--mask"])
+def test_effective_arguments_preserve_optional_boundaries():
+    arguments = MODULE.parser().parse_args([
+        "--mask", "--constellation-boundaries"
+    ])
     effective = MODULE._effective_arguments(
         arguments, Path("output/01-ari.png")
     )
@@ -107,7 +116,7 @@ def test_effective_arguments_fix_requested_content_without_mask_literals():
     assert effective.magnitude_limit == pytest.approx(5.5)
     assert effective.constellation_lines is True
     assert effective.constellation_labels is True
-    assert effective.constellation_boundaries is False
+    assert effective.constellation_boundaries is True
     assert effective.equatorial_grid is True
     assert effective.grid_references == {"equatorial", "ecliptic"}
     assert effective.magnitude_legend is True
@@ -119,6 +128,22 @@ def test_effective_arguments_fix_requested_content_without_mask_literals():
     assert "get_chart_view" in source
     assert "compose_chart" not in source
     assert "#fffdf5" not in source
+
+
+def test_dpi_override_updates_wenu_presentation_mode_only():
+    configuration = MODULE.chart_configuration(MODULE.parser().parse_args([]))
+    original_print_dpi = configuration.style_mode.print_mode.dpi
+    original_presentation_dpi = configuration.style_mode.presentation_mode.dpi
+
+    resolved = MODULE._configuration_with_dpi(configuration, 420)
+
+    assert resolved.style_mode.presentation_mode.dpi == 420
+    assert resolved.style_mode.print_mode.dpi == original_print_dpi
+    assert (
+        configuration.style_mode.presentation_mode.dpi
+        == original_presentation_dpi
+    )
+    assert MODULE._configuration_with_dpi(configuration, None) is configuration
 
 
 def test_zodiac_presentation_enhances_ecliptic_and_grid_labels():

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from copy import copy
+from dataclasses import replace
 from pathlib import Path
 
 import astropy.units as u
@@ -176,7 +177,7 @@ def _effective_arguments(arguments, destination):
     effective.magnitude_limit = STAR_MAGNITUDE_LIMIT
     effective.constellation_lines = True
     effective.constellation_labels = True
-    effective.constellation_boundaries = False
+    effective.constellation_boundaries = arguments.constellation_boundaries
     effective.equatorial_grid = True
     effective.equatorial_grid_labels = True
     effective.ecliptic_grid = False
@@ -189,6 +190,30 @@ def _effective_arguments(arguments, destination):
     effective.magnitude_legend = True
     effective.star_counts = False
     return effective
+
+
+def _positive_dpi(value):
+    dpi = int(value)
+    if dpi <= 0:
+        raise argparse.ArgumentTypeError("dpi must be positive")
+    return dpi
+
+
+def _configuration_with_dpi(configuration, dpi):
+    """Return configuration with an optional presentation DPI override."""
+    if dpi is None:
+        return configuration
+    style_mode = configuration.style_mode
+    return replace(
+        configuration,
+        style_mode=replace(
+            style_mode,
+            presentation_mode=replace(
+                style_mode.presentation_mode,
+                dpi=int(dpi),
+            ),
+        ),
+    )
 
 
 def _selected_constellations(arguments):
@@ -207,7 +232,9 @@ def _selected_constellations(arguments):
 def render_zodiac(arguments, *, sky=None):
     """Render and return selected zodiac paths through the Wenu facade."""
     selected = _selected_constellations(arguments)
-    configuration = chart_configuration(arguments)
+    configuration = _configuration_with_dpi(
+        chart_configuration(arguments), arguments.dpi
+    )
     sky = generate_celestial_sphere() if sky is None else sky
     observer_options = {}
     if arguments.data_directory is not None:
@@ -304,6 +331,11 @@ def parser():
         dest="file_format",
     )
     value.add_argument("--data-directory", type=Path)
+    value.add_argument(
+        "--dpi",
+        type=_positive_dpi,
+        help="override Wenu's presentation-mode raster resolution",
+    )
     value.add_argument(
         "--mask",
         action="store_true",
