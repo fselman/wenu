@@ -70,6 +70,23 @@ def celestial_north_position_angle(
         observer.lon_deg,
     )
 
+    return target_up_position_angle(
+        center_alt_deg=center_alt_deg,
+        center_az_deg=center_az_deg,
+        target_alt_deg=north_alt[0],
+        target_az_deg=north_az[0],
+    )
+
+
+def target_up_position_angle(
+    *,
+    center_alt_deg,
+    center_az_deg,
+    target_alt_deg,
+    target_az_deg,
+):
+    """Return the rotation placing any horizontal direction at chart top."""
+
     def vector(altitude_deg, azimuth_deg):
         altitude = np.radians(float(altitude_deg))
         azimuth = np.radians(float(azimuth_deg))
@@ -91,17 +108,17 @@ def celestial_north_position_angle(
         chart_up /= norm
     chart_right = np.cross(center, chart_up)
 
-    pole = vector(north_alt[0], north_az[0])
-    north = pole - np.dot(pole, center) * center
-    norm = np.linalg.norm(north)
+    target = vector(target_alt_deg, target_az_deg)
+    direction = target - np.dot(target, center) * center
+    norm = np.linalg.norm(direction)
     if norm <= 1.0e-15:
         return 0.0
-    north /= norm
+    direction /= norm
     return float(
         np.degrees(
             np.arctan2(
-                np.dot(north, chart_right),
-                np.dot(north, chart_up),
+                np.dot(direction, chart_right),
+                np.dot(direction, chart_up),
             )
         )
     )

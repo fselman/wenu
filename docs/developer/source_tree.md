@@ -110,7 +110,9 @@ constellation framing as a downstream geometry operation.
 `charts/regional.py` performs that geometry-derived framing from loaded
 official constellation-region vertices, retaining figure endpoints as the
 compatibility fallback for direct callers that do not request region framing;
-the request resolver does not inspect sky geometry.
+the request resolver does not inspect sky geometry. It also owns the reusable
+tangent-plane position-angle operation used to put celestial north, or another
+explicit horizontal direction such as the north ecliptic pole, at chart top.
 `charts/spatial_selection.py` owns vectorized field-footprint selection over
 cached catalogue centers; it applies explicit exclusions, returns immutable
 content, and does not render.
@@ -535,16 +537,14 @@ with south above and inverted north below, plus one faded canonical-disk PNG
 diagnostic and one checksum manifest.
 
 `tools/render_zodiac_constellations.py` is a review-only batch entry point. It
-uses the established regional-chart pipeline to emit the twelve traditional
-zodiac constellations separately, with the north ecliptic pole defining chart
-up, Hipparcos stars through magnitude 5.5, the ecliptic, the celestial equator,
-and an equatorial grid. It introduces no chart family or projection policy.
-Its `--mask` switch uses the ordinary IAU outside-constellation mask, while
-`--presentation` selects the established high-contrast atlas presentation
-mode; neither switch changes framing or astronomical selection.
-The IAU boundary catalogue remains hidden mask-construction geometry: the
-tool's explicit visible-layer allowlist excludes `constellation_boundaries`,
-preventing those polygon edges from leaking into either output mode.
+uses `generate_celestial_sphere()`, `get_chart_view()`, the shared command-line
+adapter, configured furniture, and ordinary request export to emit the twelve
+traditional zodiac constellations separately. The north ecliptic pole defines
+chart up; fixed content is Hipparcos stars through magnitude 5.5, one figure
+and Spanish label, the ecliptic, celestial equator, and equatorial grid. Titles
+carry the Spanish constellation name and J2000 center RA/Dec to minutes.
+`--mask` therefore receives the packaged cartoon warm-white mask unchanged;
+the tool contains no mask color, opacity, polygon, or renderer policy.
 
 Milestone 46D.8E keeps those owners but narrows diagnostic claims: all-sky and
 regional constellation masks are isolated from horizon openings, binocular

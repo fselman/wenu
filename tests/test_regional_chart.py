@@ -5,7 +5,11 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from wenu.charts.regional import ExportOptions, RegionalChart
+from wenu.charts.regional import (
+    ExportOptions,
+    RegionalChart,
+    target_up_position_angle,
+)
 from wenu.charts.styles import PublicationStyle
 
 
@@ -37,6 +41,15 @@ def test_projection_tangent_point_maps_to_origin():
     )
     x, y = chart.projection.project_spherical(210.0, 35.0)
     assert np.hypot(x, y) < 2.0e-8
+
+
+def test_target_up_position_angle_accepts_non_celestial_poles():
+    assert target_up_position_angle(
+        center_alt_deg=30.0,
+        center_az_deg=45.0,
+        target_alt_deg=60.0,
+        target_az_deg=45.0,
+    ) == pytest.approx(0.0, abs=1.0e-10)
 
 
 def test_invalid_field_is_rejected():
