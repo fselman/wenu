@@ -420,6 +420,11 @@ magnitude scale while retaining the chart's canonical magnitude-to-area law.
 `stellar_background="sky"` resolves the legend frame from the composed canvas
 sky and foreground colors and forces an opaque frame; it is not a backend
 color literal.
+`ChartStyleOverrides.equatorial_reference_linewidth` strengthens only the
+celestial-equator reference prepared by canonical furniture. It does not
+change the linewidth of the ordinary right-ascension and declination grid;
+the existing `ecliptic_linewidth` remains the corresponding semantic control
+for ecliptic layers.
 
 `resolve_target(ChartSubjectRequest(...))` resolves packaged aliases without
 network access. Its immutable `ResolvedTarget` records canonical key, display

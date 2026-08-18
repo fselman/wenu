@@ -55,7 +55,8 @@ ENGLISH_NAMES = {
 }
 STAR_MAGNITUDE_LIMIT = 5.5
 REFERENCE_MAGNITUDE_RANGE = (0, 5)
-ECLIPTIC_LINEWIDTH = 1.0
+ECLIPTIC_LINEWIDTH = 1.5
+EQUATORIAL_REFERENCE_LINEWIDTH = 1.0
 GRID_LABEL_FONTSIZE = 7.5
 DEFAULT_OUTPUT = Path("output/zodiac-constellations")
 VISIBLE_LAYERS = frozenset({
@@ -285,6 +286,9 @@ def render_zodiac(arguments, *, sky=None):
                 ),
                 style_overrides=ChartStyleOverrides(
                     ecliptic_linewidth=ECLIPTIC_LINEWIDTH,
+                    equatorial_reference_linewidth=(
+                        EQUATORIAL_REFERENCE_LINEWIDTH
+                    ),
                     coordinate_label_fontsize=GRID_LABEL_FONTSIZE,
                     constellation_label_offsets=(
                         _review_label_offsets(constellation)

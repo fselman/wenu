@@ -19,6 +19,7 @@ from wenu import (
     BinocularChart,
     BoundaryAwareReferenceAnchor,
     ChartFurnitureOptions,
+    ChartStyleOverrides,
     FooterOptions,
     PoleAnnotations,
     ReferenceAnnotations,
@@ -343,6 +344,32 @@ def test_automatic_reference_anchor_inherits_legend_occupancy():
         "upper right",
         "lower right",
     )
+
+
+def test_equator_reference_width_does_not_strengthen_equatorial_grid():
+    subject = chart()
+    composition = compose_chart(
+        subject,
+        style="cartoon",
+        style_overrides=ChartStyleOverrides(
+            equatorial_reference_linewidth=1.0,
+        ),
+        furniture=ChartFurnitureOptions(
+            references=ReferenceAnnotations(
+                celestial_equator=ReferencePlaneAnnotation(state="line")
+            )
+        ),
+    )
+    overlay = build_celestial_reference_sky(
+        SimpleNamespace(observer=observer()),
+        composition,
+    )
+    options = _reference_layer_options(overlay, composition, subject)
+
+    assert options[overlay.layers[0]]["render"]["style"][
+        "linewidth"
+    ] == pytest.approx(1.0)
+    assert composition.style.grids.coordinate_linewidth != pytest.approx(1.0)
 
 
 def test_reference_anchor_labels_only_one_visible_segment():

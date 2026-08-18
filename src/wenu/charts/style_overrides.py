@@ -26,6 +26,7 @@ class ChartStyleOverrides:
     coordinate_label_fontsize: float | None = None
     stellar_magnitude_sizing: StellarMagnitudeSizing | None = None
     sky_color: str | None = None
+    equatorial_reference_linewidth: float | None = None
 
     def __post_init__(self):
         if self.constellation_label_offsets is not None:
@@ -57,6 +58,7 @@ class ChartStyleOverrides:
         for name in (
             "constellation_linewidth",
             "boundary_linewidth",
+            "equatorial_reference_linewidth",
             "ecliptic_linewidth",
             "coordinate_label_fontsize",
         ):
@@ -90,6 +92,7 @@ class ChartStyleOverrides:
                 "boundary_linewidth",
                 "boundary_color",
                 "draw_coordinate_labels",
+                "equatorial_reference_linewidth",
                 "ecliptic_linewidth",
                 "coordinate_label_fontsize",
             )

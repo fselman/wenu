@@ -188,6 +188,8 @@ def test_grid_labels_enable_only_matching_grid_in_detail():
 @pytest.mark.parametrize("name", [
     "constellation_linewidth",
     "boundary_linewidth",
+    "equatorial_reference_linewidth",
+    "ecliptic_linewidth",
 ])
 def test_style_widths_must_be_finite_and_non_negative(name):
     with pytest.raises(ValueError):

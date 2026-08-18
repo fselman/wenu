@@ -165,6 +165,7 @@ class PublicationStyle:
     horizon_linestyle: str = "--"
     horizon_alpha: float = 0.8
     horizon_zorder: float = 3.5
+    equatorial_reference_linewidth: float | None = None
 
     def configure_axes(self, ax, *, title=None):
         """Apply chart-level axes styling."""

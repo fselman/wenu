@@ -203,6 +203,7 @@ class GridStyle:
     horizon_linestyle: str = "--"
     horizon_alpha: float = 0.8
     horizon_zorder: float = 3.5
+    equatorial_reference_linewidth: float | None = None
 
 
 @dataclass(frozen=True)
@@ -418,6 +419,9 @@ class ChartStyle:
             constellation_label_va=grids.constellation_label_va,
             equatorial_color=grids.equatorial_color,
             equatorial_linestyle=grids.equatorial_linestyle,
+            equatorial_reference_linewidth=(
+                grids.equatorial_reference_linewidth
+            ),
             altaz_color=grids.altaz_color,
             altaz_linestyle=grids.altaz_linestyle,
             horizon_color=grids.horizon_color,

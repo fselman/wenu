@@ -477,6 +477,15 @@ def _reference_layer_options(reference_sky, composition, chart):
         }[system]
         configured = dict(options[layer])
         render = dict(configured["render"])
+        if (
+            system == "equatorial"
+            and style.equatorial_reference_linewidth is not None
+        ):
+            line_style = dict(render["style"])
+            line_style["linewidth"] = (
+                style.equatorial_reference_linewidth
+            )
+            render["style"] = line_style
         unlabeled_polar_grid = (
             getattr(chart, "chart_type", None) == "polar_planisphere"
             and system == "equatorial"

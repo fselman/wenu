@@ -147,7 +147,8 @@ def test_dpi_override_updates_wenu_presentation_mode_only():
 
 
 def test_zodiac_presentation_enhances_ecliptic_and_grid_labels():
-    assert MODULE.ECLIPTIC_LINEWIDTH == pytest.approx(1.0)
+    assert MODULE.ECLIPTIC_LINEWIDTH == pytest.approx(1.5)
+    assert MODULE.EQUATORIAL_REFERENCE_LINEWIDTH == pytest.approx(1.0)
     assert MODULE.GRID_LABEL_FONTSIZE == pytest.approx(7.5)
     source = PATH.read_text(encoding="utf-8")
     assert 'ecliptic_keypoints="labeled"' in source
@@ -156,6 +157,7 @@ def test_zodiac_presentation_enhances_ecliptic_and_grid_labels():
     assert 'stellar_background="sky"' in source
     assert "legend_plan=ZODIAC_LEGEND_PLAN" in source
     assert "coordinate_label_zorder" not in source
+    assert "equatorial_reference_linewidth" in source
 
 
 def test_keypoints_do_not_modify_constellation_framing():
