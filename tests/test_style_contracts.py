@@ -479,7 +479,7 @@ def test_presentation_changes_style_and_output_not_content():
         printed = compose_cartoon_chart(m41b_cartoon_composition_chart(), mode="print")
     with pytest.warns(DeprecationWarning, match="compose_chart"):
         presented = compose_cartoon_chart(m41b_cartoon_composition_chart(), mode="presentation")
-    assert presented.style.canvas.sky_color == "#1677A6"
+    assert presented.style.canvas.sky_color == "#0262AD"
     assert (
         presented.style.grids.constellation_line_color == "#FFE066"
     )
@@ -515,7 +515,7 @@ def test_detail_overrides_apply_without_touching_style():
             ),
         )
     assert composition.detail.star_magnitude_limit == pytest.approx(0.5)
-    assert composition.style.canvas.sky_color == "#1677A6"
+    assert composition.style.canvas.sky_color == "#0262AD"
 
 # Contracts consolidated from test_milestone41g_regional_horizon_milky_way.py.
 from pathlib import Path
@@ -843,7 +843,7 @@ def test_cartoon_mode_changes_no_chart_geometry_or_content(chart):
     assert_same_geometry(presented.context, chart.chart_context)
     assert printed.detail == presented.detail
     assert printed.style.canvas.sky_color == "white"
-    assert presented.style.canvas.sky_color == "#1677A6"
+    assert presented.style.canvas.sky_color == "#0262AD"
 
 
 def assert_same_geometry(left, right):
@@ -955,7 +955,7 @@ from wenu.charts.cartoon_modes import (
 
 
 YELLOW = "#FFE066"
-BLUE = "#1677A6"
+BLUE = "#0262AD"
 
 
 def test_presentation_palette_retains_base_colors_and_distinct_grids():

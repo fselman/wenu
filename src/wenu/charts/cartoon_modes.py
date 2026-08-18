@@ -43,7 +43,7 @@ CARTOON_PRINT_PALETTE = CartoonModePalette(
 )
 
 CARTOON_PRESENTATION_PALETTE = CartoonModePalette(
-    sky="#1677A6",
+    sky="#0262AD",
     foreground="#FFE066",
     stars="#FFE066",
     constellation_lines="#FFE066",

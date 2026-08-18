@@ -279,13 +279,13 @@ derivation applies. Unless marked otherwise, entries are **public defaults**.
   repeated complete `styles.cartoon` tables in `defaults.toml`; cartoon mode
   realization preserves the translated mask color and opacity;
 
-- atlas presentation palette: sky `#1677A6`, foreground `#F7FBFD`, stars
+- atlas presentation palette: sky `#0262AD`, foreground `#F7FBFD`, stars
   `#FFF4CC`, structure `#FFE066`, labels `#FFF0A6`, frame `#BFE7F5`,
   Milky Way `#69B9D6`, deep sky `#FFE08A`;
 - cartoon print palette: sky white, foreground/stars/figures/labels/frame/
   Milky Way/footer `#000000`, AltAz `#707070`, equatorial `#667788`, ecliptic
   orange, Galactic blue;
-- cartoon presentation palette: sky `#1677A6`, foreground/stars/figures/
+- cartoon presentation palette: sky `#0262AD`, foreground/stars/figures/
   labels/frame/Milky Way `#FFE066`, AltAz/equatorial/footer `#FFFFFF`,
   ecliptic `#FFA500`, Galactic `#66CCFF`;
 - cartoon label offset `(0.18,0.14)`, clearance `(0.24,0.20)`, halo opacity

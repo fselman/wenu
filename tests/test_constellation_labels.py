@@ -33,7 +33,7 @@ def m41c_cartoon_label_palette_repair_fake_sky():
 
 def test_presentation_uses_brighter_ocean_blue():
     style = cartoon_chart_style("presentation")
-    assert style.canvas.sky_color == "#1677A6"
+    assert style.canvas.sky_color == "#0262AD"
     assert style.grids.constellation_line_color == "#FFE066"
     assert style.grids.constellation_label_color == "#FFE066"
 
@@ -52,7 +52,7 @@ def test_cartoon_labels_receive_clearance_and_matching_halo():
     assert render["label_style"]["ha"] == "left"
     assert render["label_style"]["va"] == "bottom"
     bbox = render["label_style"]["bbox"]
-    assert bbox["facecolor"] == "#1677A6"
+    assert bbox["facecolor"] == "#0262AD"
     assert bbox["edgecolor"] == "none"
     assert bbox["alpha"] == 0.78
 
@@ -111,7 +111,7 @@ def test_cartoon_label_clearance_is_part_of_reusable_style():
 
 def test_presentation_palette_remains_unchanged():
     style = cartoon_chart_style("presentation")
-    assert style.canvas.sky_color == "#1677A6"
+    assert style.canvas.sky_color == "#0262AD"
     assert style.canvas.foreground_color == "#FFE066"
     assert style.grids.constellation_line_color == "#FFE066"
     assert style.grids.constellation_label_color == "#FFE066"

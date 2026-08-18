@@ -12,7 +12,7 @@ from .presets import AtlasChartStyle
 class AtlasPresentationPalette:
     """High-contrast colors for atlas charts shown on a screen."""
 
-    sky: str = "#1677A6"
+    sky: str = "#0262AD"
     foreground: str = "#F7FBFD"
     stars: str = "#FFF4CC"
     structure: str = "#FFE066"

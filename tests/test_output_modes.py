@@ -28,7 +28,7 @@ def test_print_cartoon_uses_white_paper_palette():
 
 def test_presentation_uses_agreed_projector_palette():
     style = cartoon_chart_style("presentation")
-    assert style.canvas.sky_color == "#1677A6"
+    assert style.canvas.sky_color == "#0262AD"
     assert style.stars.color == "#FFE066"
     assert style.grids.constellation_line_color == "#FFE066"
     assert style.grids.constellation_label_color == "#FFE066"
@@ -72,7 +72,7 @@ def test_visual_mode_does_not_resolve_content():
 def test_publication_styles_preserve_mode_colors():
     presented = cartoon_chart_style("presentation")
     publication = presented.as_publication_style()
-    assert publication.sky_color == "#1677A6"
+    assert publication.sky_color == "#0262AD"
     assert publication.star_color == "#FFE066"
     assert publication.constellation_line_color == "#FFE066"
     assert publication.constellation_label_color == "#FFE066"

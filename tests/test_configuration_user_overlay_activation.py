@@ -82,7 +82,7 @@ def test_cartoon_presentation_preserves_user_mask_appearance(tmp_path):
         configuration=configuration,
     )
 
-    assert composition.style.canvas.sky_color == "#1677A6"
+    assert composition.style.canvas.sky_color == "#0262AD"
     assert composition.style.mask.color == "#ffffff"
     assert composition.style.mask.alpha == pytest.approx(1.0)
 

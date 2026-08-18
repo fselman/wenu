@@ -718,7 +718,7 @@ calendar_month_label_font_weight = "semibold"
 
 # Mode palettes contain color substitutions only.
 [styles.palettes.atlas_presentation]
-sky = "#1677A6"
+sky = "#0262AD"
 foreground = "#F7FBFD"
 stars = "#FFF4CC"
 structure = "#FFE066"
@@ -742,7 +742,7 @@ ecliptic = "orange"
 galactic = "blue"
 
 [styles.palettes.cartoon_presentation]
-sky = "#1677A6"
+sky = "#0262AD"
 foreground = "#FFE066"
 stars = "#FFE066"
 figures = "#FFE066"
