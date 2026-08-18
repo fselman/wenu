@@ -99,6 +99,8 @@ def chart_cli_furniture(
     ecliptic_keypoints=None,
     ecliptic_keypoint_legend=False,
     stellar_reference_magnitude=None,
+    stellar_reference_range=None,
+    stellar_background=None,
     stellar_label_suffix="",
     legend_plan=None,
 ):
@@ -201,6 +203,8 @@ def chart_cli_furniture(
             symbol_labels=tuple(symbol_labels),
             stellar_title=stellar_title,
             stellar_reference_magnitude=stellar_reference_magnitude,
+            stellar_reference_range=stellar_reference_range,
+            stellar_background=stellar_background,
             stellar_label_suffix=stellar_label_suffix,
         ),
         context=ChartContextOptions(

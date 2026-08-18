@@ -46,7 +46,7 @@ ENGLISH_NAMES = {
     "Psc": "Pisces",
 }
 STAR_MAGNITUDE_LIMIT = 5.5
-REFERENCE_MAGNITUDE = 3
+REFERENCE_MAGNITUDE_RANGE = (0, 5)
 ECLIPTIC_LINEWIDTH = 1.0
 GRID_LABEL_FONTSIZE = 7.5
 DEFAULT_OUTPUT = Path("output/zodiac-constellations")
@@ -57,8 +57,9 @@ VISIBLE_LAYERS = frozenset({
     "equatorial_grid",
 })
 ZODIAC_LEGEND_PLAN = default_chart_legend_plan("regional").with_stars(
-    anchor=(0.99, 0.055),
+    anchor=(0.99, 0.02),
 )
+KEYPOINT_FIELD_SCALE = {"Gem": 1.20, "Psc": 1.20}
 
 
 def _north_ecliptic_pole(observer):
@@ -95,6 +96,7 @@ def _chart_view(sky, observer, configuration, constellation, mask):
         target_alt_deg=float(pole.alt.deg),
         target_az_deg=float(pole.az.deg),
     )
+    field_scale = KEYPOINT_FIELD_SCALE.get(constellation, 1.0)
     return get_chart_view(
         sky,
         observer,
@@ -102,6 +104,8 @@ def _chart_view(sky, observer, configuration, constellation, mask):
         constellations=(constellation,),
         display_name=translate_label(ENGLISH_NAMES[constellation], "es"),
         position_angle_deg=position_angle,
+        field_width_deg=chart.field_width_deg * field_scale,
+        field_height_deg=chart.field_height_deg * field_scale,
         projection="stereographic",
         mask=mask,
         configuration=configuration,
@@ -211,8 +215,8 @@ def render_zodiac(arguments, *, sky=None):
                     ecliptic_keypoints="labeled",
                     ecliptic_keypoint_legend=True,
                     stellar_title="",
-                    stellar_reference_magnitude=REFERENCE_MAGNITUDE,
-                    stellar_label_suffix=" mag",
+                    stellar_reference_range=REFERENCE_MAGNITUDE_RANGE,
+                    stellar_background="sky",
                     legend_plan=ZODIAC_LEGEND_PLAN,
                 ),
                 style_overrides=ChartStyleOverrides(

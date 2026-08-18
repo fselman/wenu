@@ -102,6 +102,8 @@ def draw_planned_chart_legends(
     symbol_labels=None,
     stellar_title="Stars",
     stellar_reference_magnitude=None,
+    stellar_reference_range=None,
+    stellar_background=None,
     stellar_label_suffix="",
 ) -> ComposedChartLegends:
     """Draw the planned object and stellar legends for a chart."""
@@ -156,6 +158,18 @@ def draw_planned_chart_legends(
             location=plan.stars.location,
             title=str(stellar_title),
         )
+        if stellar_background == "sky":
+            canvas = getattr(chart_style, "canvas", None)
+            if canvas is None:
+                raise TypeError("sky-backed legends require a canvas style.")
+            resolved_style = replace(
+                resolved_style,
+                frame_on=True,
+                frame_alpha=1.0,
+                facecolor=canvas.sky_color,
+                edgecolor=canvas.foreground_color,
+                text_color=canvas.foreground_color,
+            )
         star_options = dict(
             effective_limit=effective_limit,
             area_scale=star_area_scale,
@@ -164,6 +178,7 @@ def draw_planned_chart_legends(
             footprint_contains=footprint_contains,
             legend_style=resolved_style,
             reference_magnitude=stellar_reference_magnitude,
+            reference_range=stellar_reference_range,
             label_suffix=stellar_label_suffix,
         )
         if stellar_magnitude_sizing is not None:

@@ -186,6 +186,20 @@ def test_stellar_legend_can_request_one_reference_magnitude():
     assert resolved.stellar_label_suffix == " mag"
 
 
+def test_stellar_legend_can_request_a_range_on_the_sky_background():
+    resolved = LegendOptions(
+        stellar_reference_range=(0, 5),
+        stellar_background="sky",
+    ).resolve("regional")
+
+    assert resolved.stellar_reference_range == (0, 5)
+    assert resolved.stellar_background == "sky"
+    with pytest.raises(ValueError):
+        LegendOptions(stellar_reference_range=(5, 0)).resolve("regional")
+    with pytest.raises(ValueError):
+        LegendOptions(stellar_background="mask").resolve("regional")
+
+
 def test_style_and_mode_do_not_change_chart_geometry():
     request = ChartFurnitureOptions(
         references=ReferenceAnnotations(

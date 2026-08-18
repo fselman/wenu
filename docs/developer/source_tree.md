@@ -559,6 +559,10 @@ labels to off-page samples or stack at a shared chart edge.
 The tool also inherits the shared `--sky-color` option through
 `ChartStyleOverrides`; it contains no renderer-specific background-color
 path.
+The zodiac review selects the inclusive 0--5 canonical stellar scale on an
+opaque sky-colored frame. Gemini and Pisces alone receive a modest symmetric
+field expansion so the June-solstice and March-equinox points at their field
+edges survive ordinary projection and viewport clipping.
 
 `charts/reference_keypoint_legend.py` realizes the optional compact key for
 the canonical ecliptic points. It consumes the reference overlay's completed

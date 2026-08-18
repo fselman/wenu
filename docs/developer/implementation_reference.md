@@ -408,6 +408,11 @@ the four points are present in a regional field.
 reference rendering inspects its already-projected point result and adds only
 the canonical points inside the final viewport; the four localized names are
 carried by the immutable annotation request.
+`LegendOptions.stellar_reference_range` requests a fixed inclusive integer
+magnitude scale while retaining the chart's canonical magnitude-to-area law.
+`stellar_background="sky"` resolves the legend frame from the composed canvas
+sky and foreground colors and forces an opaque frame; it is not a backend
+color literal.
 
 `resolve_target(ChartSubjectRequest(...))` resolves packaged aliases without
 network access. Its immutable `ResolvedTarget` records canonical key, display

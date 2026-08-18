@@ -25,9 +25,9 @@ def test_traditional_zodiac_order_and_spanish_names_are_complete():
     assert MODULE.ENGLISH_NAMES["Gem"] == "Gemini"
     assert MODULE.ENGLISH_NAMES["Sco"] == "Scorpius"
     assert MODULE.STAR_MAGNITUDE_LIMIT == pytest.approx(5.5)
-    assert MODULE.REFERENCE_MAGNITUDE == 3
+    assert MODULE.REFERENCE_MAGNITUDE_RANGE == (0, 5)
     assert MODULE.ZODIAC_LEGEND_PLAN.stars.anchor == pytest.approx(
-        (0.99, 0.055)
+        (0.99, 0.02)
     )
 
 
@@ -80,10 +80,14 @@ def test_zodiac_presentation_enhances_ecliptic_and_grid_labels():
     source = PATH.read_text(encoding="utf-8")
     assert 'ecliptic_keypoints="labeled"' in source
     assert "ecliptic_keypoint_legend=True" in source
-    assert "stellar_reference_magnitude=REFERENCE_MAGNITUDE" in source
-    assert 'stellar_label_suffix=" mag"' in source
+    assert "stellar_reference_range=REFERENCE_MAGNITUDE_RANGE" in source
+    assert 'stellar_background="sky"' in source
     assert "legend_plan=ZODIAC_LEGEND_PLAN" in source
     assert "coordinate_label_zorder" not in source
+
+
+def test_keypoint_edge_fields_are_expanded_without_reframing_the_others():
+    assert MODULE.KEYPOINT_FIELD_SCALE == {"Gem": 1.20, "Psc": 1.20}
 
 
 def test_spanish_title_formats_center_ra_and_dec_to_minutes():

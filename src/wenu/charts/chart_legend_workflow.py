@@ -53,6 +53,8 @@ def draw_resolved_chart_legends(
         stellar_reference_magnitude=(
             legend_options.stellar_reference_magnitude
         ),
+        stellar_reference_range=legend_options.stellar_reference_range,
+        stellar_background=legend_options.stellar_background,
         stellar_label_suffix=legend_options.stellar_label_suffix,
     )
     if legend_options.stellar_counts:

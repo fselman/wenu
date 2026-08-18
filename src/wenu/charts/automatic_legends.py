@@ -46,6 +46,8 @@ def draw_automatic_chart_legends(
     symbol_labels=None,
     stellar_title="Stars",
     stellar_reference_magnitude=None,
+    stellar_reference_range=None,
+    stellar_background=None,
     stellar_label_suffix="",
 ) -> AutomaticChartLegends:
     """Draw both chart legends with no duplicated scientific/style inputs."""
@@ -70,6 +72,8 @@ def draw_automatic_chart_legends(
         symbol_labels=symbol_labels,
         stellar_title=stellar_title,
         stellar_reference_magnitude=stellar_reference_magnitude,
+        stellar_reference_range=stellar_reference_range,
+        stellar_background=stellar_background,
         stellar_label_suffix=stellar_label_suffix,
     )
     if stellar_counts:

@@ -80,6 +80,7 @@ def draw_stellar_magnitude_legend(
     location: str = "lower right",
     title: str | None = None,
     frame_on: bool = True,
+    frame_alpha: float | None = None,
     font_size: float | None = None,
     title_font_size: float | None = None,
     marker: str = "o",
@@ -134,6 +135,8 @@ def draw_stellar_magnitude_legend(
             text.set_color(text_color)
         legend.get_title().set_color(text_color)
     frame = legend.get_frame()
+    if frame_alpha is not None:
+        frame.set_alpha(float(frame_alpha))
     if facecolor is not None:
         frame.set_facecolor(facecolor)
     if edgecolor is not None:

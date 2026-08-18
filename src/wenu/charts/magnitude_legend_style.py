@@ -18,6 +18,7 @@ class StellarMagnitudeLegendStyle:
     location: str = "lower right"
     title: str = "Stars"
     frame_on: bool = True
+    frame_alpha: float | None = None
     font_size: float | None = None
     title_font_size: float | None = None
     marker: str = "o"
@@ -37,6 +38,7 @@ class StellarMagnitudeLegendStyle:
             "location": self.location,
             "title": self.title,
             "frame_on": self.frame_on,
+            "frame_alpha": self.frame_alpha,
             "font_size": self.font_size,
             "title_font_size": self.title_font_size,
             "marker": self.marker,
@@ -67,6 +69,7 @@ def draw_styled_stellar_magnitude_legend(
     include_counts: bool = False,
     legend_style: StellarMagnitudeLegendStyle | None = None,
     reference_magnitude: int | None = None,
+    reference_range: tuple[int, int] | None = None,
     label_suffix: str = "",
 ) -> StellarMagnitudeLegendResult:
     """Draw a visible-star legend using independent style settings."""
@@ -101,6 +104,8 @@ def draw_styled_stellar_magnitude_legend(
     )
     if reference_magnitude is not None:
         options["reference_magnitude"] = int(reference_magnitude)
+    if reference_range is not None:
+        options["reference_range"] = tuple(reference_range)
     if label_suffix:
         options["label_suffix"] = str(label_suffix)
     if magnitude_sizing is not None:

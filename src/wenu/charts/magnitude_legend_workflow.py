@@ -46,6 +46,7 @@ def draw_visible_stellar_magnitude_legend(
     footprint_contains=None,
     location: str = "lower right",
     frame_on: bool = True,
+    frame_alpha: float | None = None,
     font_size: float | None = None,
     title_font_size: float | None = None,
     marker: str = "o",
@@ -60,6 +61,7 @@ def draw_visible_stellar_magnitude_legend(
     edgecolor: str | None = None,
     include_counts: bool = False,
     reference_magnitude: int | None = None,
+    reference_range: tuple[int, int] | None = None,
     label_suffix: str = "",
 ) -> StellarMagnitudeLegendResult:
     """Calculate and draw the legend for stars visible in a chart.
@@ -87,13 +89,17 @@ def draw_visible_stellar_magnitude_legend(
             magnitude_sizing=magnitude_sizing,
             limiting_magnitude=effective_limit,
         )
+    if reference_magnitude is not None and reference_range is not None:
+        raise ValueError("Select a reference magnitude or range, not both.")
     scale_brightest = (
         statistics.brightest_magnitude
-        if reference_magnitude is None else int(reference_magnitude)
+        if reference_magnitude is None and reference_range is None
+        else int(reference_magnitude if reference_range is None else reference_range[0])
     )
     scale_faintest = (
         statistics.faintest_magnitude
-        if reference_magnitude is None else int(reference_magnitude)
+        if reference_magnitude is None and reference_range is None
+        else int(reference_magnitude if reference_range is None else reference_range[1])
     )
     scale = stellar_magnitude_scale(
         scale_brightest,
@@ -135,6 +141,7 @@ def draw_visible_stellar_magnitude_legend(
         scale,
         location=location,
         frame_on=frame_on,
+        frame_alpha=frame_alpha,
         font_size=font_size,
         title_font_size=title_font_size,
         marker=marker,

@@ -85,6 +85,28 @@ def test_workflow_can_draw_one_reference_magnitude_with_unit_suffix():
     plt.close(figure)
 
 
+def test_workflow_draws_an_opaque_vertical_zero_to_five_reference_scale():
+    figure, ax = plt.subplots()
+    spherical, projected = m40i_chart_magnitude_legend_workflow_geometry()
+    result = draw_visible_stellar_magnitude_legend(
+        ax,
+        spherical,
+        projected,
+        m40i_chart_magnitude_legend_workflow_Viewport(),
+        effective_limit=5.5,
+        reference_range=(0, 5),
+        frame_alpha=1.0,
+        title="",
+    )
+
+    assert result.scale.magnitudes == (0, 1, 2, 3, 4, 5)
+    assert [text.get_text() for text in result.artist.get_texts()] == [
+        "0", "1", "2", "3", "4", "5",
+    ]
+    assert result.artist.get_frame().get_alpha() == pytest.approx(1.0)
+    plt.close(figure)
+
+
 def test_workflow_preserves_the_existing_object_legend():
     figure, ax = plt.subplots()
     ax.plot([], [], marker="s", label="Galaxy")

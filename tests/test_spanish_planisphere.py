@@ -5,6 +5,7 @@ from pathlib import Path
 from wenu import LegendOptions
 from wenu.charts.legend_symbols import legend_symbol_descriptors
 from wenu.charts.presets import AtlasChartStyle
+from wenu.translations import translate_label
 
 
 PLANISPHERE = Path("examples/planisphere.py")
@@ -15,9 +16,6 @@ def test_planisphere_requests_spanish_annotations_and_titles():
 
     for text in (
         "Planisferio de La Ligua",
-        "Ecuador celeste",
-        "Eclíptica",
-        "Plano galáctico",
         "Cúmulo abierto",
         "Cúmulo globular",
         "Nebulosa planetaria",
@@ -27,6 +25,13 @@ def test_planisphere_requests_spanish_annotations_and_titles():
         'stellar_title="Estrellas"',
     ):
         assert text in source
+    assert 'language="es"' in source
+
+    assert translate_label("Celestial equator", "es") == (
+        "Ecuador celeste"
+    )
+    assert translate_label("Ecliptic", "es") == "Eclíptica"
+    assert translate_label("Galactic plane", "es") == "Plano galáctico"
 
 
 def test_legend_text_overrides_are_resolved_without_global_translation():

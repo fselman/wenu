@@ -78,6 +78,8 @@ class ResolvedLegendOptions:
     symbol_labels: tuple[tuple[str, str], ...] = ()
     stellar_title: str = "Stars"
     stellar_reference_magnitude: int | None = None
+    stellar_reference_range: tuple[int, int] | None = None
+    stellar_background: str | None = None
     stellar_label_suffix: str = ""
 
 
@@ -94,6 +96,8 @@ class LegendOptions:
     symbol_labels: tuple[tuple[str, str], ...] = ()
     stellar_title: str = "Stars"
     stellar_reference_magnitude: int | None = None
+    stellar_reference_range: tuple[int, int] | None = None
+    stellar_background: str | None = None
     stellar_label_suffix: str = ""
 
     def resolve(self, chart_type: str) -> ResolvedLegendOptions:
@@ -109,6 +113,16 @@ class LegendOptions:
             )
         plan = plan.with_objects(enabled=bool(self.objects))
         plan = plan.with_stars(enabled=bool(self.stellar_magnitudes))
+        reference_range = self.stellar_reference_range
+        if reference_range is not None:
+            if len(reference_range) != 2:
+                raise ValueError("stellar_reference_range must contain two values.")
+            reference_range = tuple(int(value) for value in reference_range)
+            if reference_range[0] > reference_range[1]:
+                raise ValueError("stellar_reference_range must be ascending.")
+        background = self.stellar_background
+        if background not in (None, "sky"):
+            raise ValueError("stellar_background must be None or 'sky'.")
         return ResolvedLegendOptions(
             plan=plan,
             context=bool(self.context),
@@ -124,6 +138,8 @@ class LegendOptions:
                 if self.stellar_reference_magnitude is None
                 else int(self.stellar_reference_magnitude)
             ),
+            stellar_reference_range=reference_range,
+            stellar_background=background,
             stellar_label_suffix=str(self.stellar_label_suffix),
         )
 
