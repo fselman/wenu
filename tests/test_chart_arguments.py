@@ -218,6 +218,7 @@ def test_explicit_style_values_apply_after_mode_defaults():
             sky_color="#1F699B",
             constellation_linewidth=2.25,
             constellation_line_color="white",
+            constellation_label_offsets={"SerCap": (-0.48, 0.0)},
         ),
     )
 
@@ -227,6 +228,9 @@ def test_explicit_style_values_apply_after_mode_defaults():
     )
     assert overridden.style.canvas.sky_color == "#1F699B"
     assert overridden.style.grids.constellation_line_color == "white"
+    assert overridden.style.grids.constellation_label_offsets == {
+        "SerCap": (-0.48, 0.0)
+    }
     assert overridden.context == default.context
     assert overridden.detail == default.detail
 

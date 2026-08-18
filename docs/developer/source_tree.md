@@ -541,8 +541,14 @@ uses `generate_celestial_sphere()`, `get_chart_view()`, the shared command-line
 adapter, configured furniture, and ordinary request export to emit selected
 traditional zodiac constellations separately. Its `--constellations IAU,...`
 control reuses the package's public constellation-list parser; omission emits
-all twelve. The north ecliptic pole defines
-chart up; fixed content is Hipparcos stars through magnitude 5.5, one figure
+all twelve, while an explicit list may additionally select Ophiuchus without
+renumbering the established zodiac outputs. The Ophiuchus review subject uses
+the ordinary `Oph,Ser` constellation-set resolver so both Serpens figure
+components accompany Ophiuchus without tool-owned component logic. The north
+ecliptic pole defines chart up. Its render-local `SerCap` label displacement
+uses the shared discrete constellation-label placement resolver and does not
+alter the catalogue anchor or any other chart. Fixed content is Hipparcos
+stars through magnitude 5.5, one figure
 and Spanish label, the ecliptic, celestial equator, and equatorial grid. Titles
 carry the Spanish constellation name and J2000 center RA/Dec to minutes.
 `--mask` therefore receives the packaged cartoon warm-white mask unchanged;

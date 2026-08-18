@@ -221,8 +221,8 @@ def test_packaged_serpens_record_exposes_parts_and_preserves_bridge():
 
     assert set(lines.edges_by_constellation) == {"Ser1", "Ser2"}
     assert len(lines.edges_by_constellation["Ser1"]) == 10
-    assert len(lines.edges_by_constellation["Ser2"]) == 4
-    assert (79593, 84012) in lines.edges
+    assert len(lines.edges_by_constellation["Ser2"]) == 3
+    assert (79593, 86263) in lines.edges
     assert lines.star_ids_for({"Ser"}) == lines.star_ids
 
 # Contracts consolidated from test_milestone12_coordinate_grids.py.

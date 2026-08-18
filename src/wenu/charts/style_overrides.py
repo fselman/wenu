@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from math import isfinite
+from typing import Mapping
 
 from .style_components import StellarMagnitudeSizing
 
@@ -15,6 +16,9 @@ class ChartStyleOverrides:
     constellation_linewidth: float | None = None
     constellation_line_color: str | None = None
     constellation_label_color: str | None = None
+    constellation_label_offsets: Mapping[
+        str, tuple[float, float]
+    ] | None = None
     boundary_linewidth: float | None = None
     boundary_color: str | None = None
     draw_coordinate_labels: bool | None = None
@@ -24,6 +28,22 @@ class ChartStyleOverrides:
     sky_color: str | None = None
 
     def __post_init__(self):
+        if self.constellation_label_offsets is not None:
+            offsets = {}
+            for label, value in self.constellation_label_offsets.items():
+                try:
+                    dx, dy = value
+                except (TypeError, ValueError) as error:
+                    raise ValueError(
+                        "constellation label offsets must contain pairs."
+                    ) from error
+                pair = (float(dx), float(dy))
+                if not all(isfinite(component) for component in pair):
+                    raise ValueError(
+                        "constellation label offsets must be finite."
+                    )
+                offsets[str(label)] = pair
+            object.__setattr__(self, "constellation_label_offsets", offsets)
         if (
             self.stellar_magnitude_sizing is not None
             and not isinstance(
@@ -66,6 +86,7 @@ class ChartStyleOverrides:
                 "constellation_linewidth",
                 "constellation_line_color",
                 "constellation_label_color",
+                "constellation_label_offsets",
                 "boundary_linewidth",
                 "boundary_color",
                 "draw_coordinate_labels",

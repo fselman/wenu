@@ -21,9 +21,15 @@ def test_traditional_zodiac_order_and_spanish_names_are_complete():
         "Ari", "Tau", "Gem", "Cnc", "Leo", "Vir",
         "Lib", "Sco", "Sgr", "Cap", "Aqr", "Psc",
     )
-    assert tuple(MODULE.ENGLISH_NAMES) == MODULE.ZODIAC_CONSTELLATIONS
+    assert MODULE.REVIEW_CONSTELLATIONS == (
+        *MODULE.ZODIAC_CONSTELLATIONS, "Oph"
+    )
+    assert tuple(MODULE.ENGLISH_NAMES) == MODULE.REVIEW_CONSTELLATIONS
     assert MODULE.ENGLISH_NAMES["Gem"] == "Gemini"
     assert MODULE.ENGLISH_NAMES["Sco"] == "Scorpius"
+    assert MODULE.ENGLISH_NAMES["Oph"] == "Ophiuchus"
+    assert MODULE.REVIEW_FIGURES == {"Oph": ("Oph", "Ser")}
+    assert MODULE.REVIEW_LABEL_POSITIONS == {"Oph": {"SerCap": "cl"}}
     assert MODULE.STAR_MAGNITUDE_LIMIT == pytest.approx(5.5)
     assert MODULE.REFERENCE_MAGNITUDE_RANGE == (0, 5)
     assert MODULE.ZODIAC_LEGEND_PLAN.stars.anchor == pytest.approx(
@@ -60,9 +66,34 @@ def test_constellation_list_uses_shared_normalization_and_accepts_one():
     assert single.constellations == ("Sco",)
     assert MODULE._selected_constellations(selected) == ("Sco", "Sgr")
 
+    ophiuchus = MODULE.parser().parse_args(["--constellations", "Oph"])
+    assert MODULE._selected_constellations(ophiuchus) == ("Oph",)
+
     unsupported = MODULE.parser().parse_args(["--constellations", "Cru"])
-    with pytest.raises(ValueError, match="zodiac.*Cru"):
+    with pytest.raises(ValueError, match="Ophiuchus.*Cru"):
         MODULE._selected_constellations(unsupported)
+
+
+def test_ophiuchus_keeps_existing_zodiac_numbers_and_uses_thirteen():
+    assert MODULE.REVIEW_CONSTELLATIONS.index("Sco") + 1 == 8
+    assert MODULE.REVIEW_CONSTELLATIONS.index("Sgr") + 1 == 9
+    assert MODULE.REVIEW_CONSTELLATIONS.index("Oph") + 1 == 13
+
+
+def test_ophiuchus_reuses_constellation_set_resolution_for_serpens():
+    source = PATH.read_text(encoding="utf-8")
+
+    assert MODULE._review_figures("Oph") == ("Oph", "Ser")
+    assert MODULE._review_figures("Sco") == ("Sco",)
+    assert "Ser1" not in source
+    assert "Ser2" not in source
+
+
+def test_ophiuchus_places_serpens_caput_label_to_the_left():
+    offsets = MODULE._review_label_offsets("Oph")
+
+    assert offsets == {"SerCap": pytest.approx((-0.48, 0.0))}
+    assert MODULE._review_label_offsets("Sco") is None
 
 
 def test_effective_arguments_fix_requested_content_without_mask_literals():
@@ -133,4 +164,7 @@ def test_spanish_title_formats_center_ra_and_dec_to_minutes():
 
     assert MODULE._title(view, "Tau") == (
         "Tauro — RA 02:00, Dec -10:00"
+    )
+    assert MODULE._title(view, "Oph") == (
+        "Ofiuco — RA 02:00, Dec -10:00"
     )

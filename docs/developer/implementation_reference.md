@@ -386,7 +386,10 @@ masking, or other chart geometry, and duplicate or unselected product entries
 are rejected when the request is constructed.
 Semantic style overrides may strengthen the ecliptic independently of the
 coordinate-grid baseline and enlarge coordinate labels without changing other
-products. The shared `--sky-color` option follows the same path: it becomes a
+products. `ChartStyleOverrides.constellation_label_offsets` carries validated
+finite per-label projected displacements into the existing grid-style owner;
+it adjusts one render without changing spherical catalogue anchors. The
+shared `--sky-color` option follows the same path: it becomes a
 `ChartStyleOverrides.sky_color` value and replaces
 `ChartCanvasStyle.sky_color` after style and mode resolution. Chart entry
 points must not bypass that semantic owner by setting a Matplotlib axes color

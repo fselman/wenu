@@ -23,6 +23,7 @@ from wenu import (
     generate_celestial_sphere,
     get_chart_view,
     parse_constellation_list,
+    resolve_constellation_label_offsets,
 )
 from wenu.charts.regional import target_up_position_angle
 from wenu.translations import translate_label
@@ -32,6 +33,10 @@ ZODIAC_CONSTELLATIONS = (
     "Ari", "Tau", "Gem", "Cnc", "Leo", "Vir",
     "Lib", "Sco", "Sgr", "Cap", "Aqr", "Psc",
 )
+REVIEW_CONSTELLATIONS = (*ZODIAC_CONSTELLATIONS, "Oph")
+REVIEW_FIGURES = {"Oph": ("Oph", "Ser")}
+REVIEW_LABEL_POSITIONS = {"Oph": {"SerCap": "cl"}}
+REVIEW_LABEL_CLEARANCE = (0.48, 0.20)
 ENGLISH_NAMES = {
     "Ari": "Aries",
     "Tau": "Taurus",
@@ -45,6 +50,7 @@ ENGLISH_NAMES = {
     "Cap": "Capricornus",
     "Aqr": "Aquarius",
     "Psc": "Pisces",
+    "Oph": "Ophiuchus",
 }
 STAR_MAGNITUDE_LIMIT = 5.5
 REFERENCE_MAGNITUDE_RANGE = (0, 5)
@@ -71,12 +77,31 @@ def _north_ecliptic_pole(observer):
     return pole.transform_to(observer.altaz_frame)
 
 
+def _review_figures(constellation):
+    return REVIEW_FIGURES.get(constellation, (constellation,))
+
+
+def _review_label_offsets(constellation):
+    positions = REVIEW_LABEL_POSITIONS.get(constellation)
+    if positions is None:
+        return None
+    resolved = resolve_constellation_label_offsets(
+        positions,
+        clearance=REVIEW_LABEL_CLEARANCE,
+    )
+    return {
+        label: offset
+        for label, offset in resolved.items()
+        if label != "__default__"
+    }
+
+
 def _provisional_view(sky, observer, configuration, constellation, mask):
     return get_chart_view(
         sky,
         observer,
         family="regional",
-        constellations=(constellation,),
+        constellations=_review_figures(constellation),
         display_name=translate_label(ENGLISH_NAMES[constellation], "es"),
         projection="stereographic",
         mask=mask,
@@ -100,7 +125,7 @@ def _chart_view(sky, observer, configuration, constellation, mask):
         sky,
         observer,
         family="regional",
-        constellations=(constellation,),
+        constellations=_review_figures(constellation),
         display_name=translate_label(ENGLISH_NAMES[constellation], "es"),
         position_angle_deg=position_angle,
         projection="stereographic",
@@ -169,11 +194,11 @@ def _effective_arguments(arguments, destination):
 def _selected_constellations(arguments):
     selected = tuple(arguments.constellations)
     unsupported = tuple(
-        name for name in selected if name not in ZODIAC_CONSTELLATIONS
+        name for name in selected if name not in REVIEW_CONSTELLATIONS
     )
     if unsupported:
         raise ValueError(
-            "Only traditional zodiac constellations are supported: "
+            "Only zodiac constellations and Ophiuchus are supported: "
             + ", ".join(unsupported)
         )
     return selected
@@ -201,7 +226,7 @@ def render_zodiac(arguments, *, sky=None):
     ))
     try:
         for constellation in selected:
-            index = ZODIAC_CONSTELLATIONS.index(constellation) + 1
+            index = REVIEW_CONSTELLATIONS.index(constellation) + 1
             view = _chart_view(
                 sky,
                 observer,
@@ -234,6 +259,9 @@ def render_zodiac(arguments, *, sky=None):
                 style_overrides=ChartStyleOverrides(
                     ecliptic_linewidth=ECLIPTIC_LINEWIDTH,
                     coordinate_label_fontsize=GRID_LABEL_FONTSIZE,
+                    constellation_label_offsets=(
+                        _review_label_offsets(constellation)
+                    ),
                 ),
                 title=_title(view, constellation),
                 language="es",
@@ -265,7 +293,7 @@ def parser():
         default=ZODIAC_CONSTELLATIONS,
         metavar="IAU,...",
         help=(
-            "comma-separated zodiac constellation abbreviations; "
+            "comma-separated zodiac or Ophiuchus abbreviations; "
             "default: all twelve"
         ),
     )
