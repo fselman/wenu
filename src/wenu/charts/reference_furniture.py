@@ -9,6 +9,7 @@ from astropy.coordinates import BarycentricTrueEcliptic
 
 from wenu.charts.context import BoundaryKind
 from wenu.charts.coordinate_frames import horizontal_to_equatorial
+from wenu.charts.detail_application import composition_horizon_altitude
 from wenu.geometry.projected import ProjectedCurve, ProjectedCurves
 from wenu.geometry.spherical import SphericalGrid
 from wenu.rendering import layers
@@ -453,7 +454,7 @@ def build_celestial_reference_sky(
 
 def _reference_layer_options(reference_sky, composition, chart):
     style = _publication_style(composition.style)
-    minimum = getattr(chart, "horizon_altitude_deg", None)
+    minimum = composition_horizon_altitude(composition)
     options = style.layer_options(
         reference_sky,
         horizon_altitude_deg=minimum,

@@ -550,9 +550,9 @@ coordinate labels through `ChartStyleOverrides`. Its furniture requests the
 four canonical ecliptic keypoints through the shared reference overlay; normal
 regional clipping shows only keypoints actually inside each constellation
 field. Charts containing one receive its localized lower-left name key from
-the same projected reference result. The ordinary stellar legend is reduced
-to one magnitude-3 reference circle at lower right while retaining the
-rendered star-size law. The shared rectangular grid-label anchor filters
+the same projected reference result. The ordinary stellar legend is an
+inclusive vertical 0--5 scale at lower right while retaining the rendered
+star-size law. The shared rectangular grid-label anchor filters
 projected samples to the axes viewport and reserves prior label positions
 before placing RA or declination text, so visible parallels cannot lose
 labels to off-page samples or stack at a shared chart edge.
@@ -560,9 +560,10 @@ The tool also inherits the shared `--sky-color` option through
 `ChartStyleOverrides`; it contains no renderer-specific background-color
 path.
 The zodiac review selects the inclusive 0--5 canonical stellar scale on an
-opaque sky-colored frame. Gemini and Pisces alone receive a modest symmetric
-field expansion so the June-solstice and March-equinox points at their field
-edges survive ordinary projection and viewport clipping.
+opaque sky-colored frame. It does not alter constellation framing for
+keypoints. Reference furniture consumes the same resolved -90-degree clipping
+limit as every other layer in a rectangular composition, leaving the final
+viewport as the only visibility test.
 
 `charts/reference_keypoint_legend.py` realizes the optional compact key for
 the canonical ecliptic points. It consumes the reference overlay's completed

@@ -59,7 +59,6 @@ VISIBLE_LAYERS = frozenset({
 ZODIAC_LEGEND_PLAN = default_chart_legend_plan("regional").with_stars(
     anchor=(0.99, 0.02),
 )
-KEYPOINT_FIELD_SCALE = {"Gem": 1.20, "Psc": 1.20}
 
 
 def _north_ecliptic_pole(observer):
@@ -96,7 +95,6 @@ def _chart_view(sky, observer, configuration, constellation, mask):
         target_alt_deg=float(pole.alt.deg),
         target_az_deg=float(pole.az.deg),
     )
-    field_scale = KEYPOINT_FIELD_SCALE.get(constellation, 1.0)
     return get_chart_view(
         sky,
         observer,
@@ -104,8 +102,6 @@ def _chart_view(sky, observer, configuration, constellation, mask):
         constellations=(constellation,),
         display_name=translate_label(ENGLISH_NAMES[constellation], "es"),
         position_angle_deg=position_angle,
-        field_width_deg=chart.field_width_deg * field_scale,
-        field_height_deg=chart.field_height_deg * field_scale,
         projection="stereographic",
         mask=mask,
         configuration=configuration,

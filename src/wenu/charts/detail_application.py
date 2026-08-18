@@ -199,7 +199,8 @@ def _style_layer_options(
     )
 
 
-def _composition_horizon_altitude(composition):
+def composition_horizon_altitude(composition):
+    """Return the single resolved layer-clipping altitude for a chart."""
     context = getattr(composition, "context", None)
     configured = getattr(context, "horizon_altitude_deg", None)
     if configured is not None:
@@ -374,7 +375,7 @@ def composition_layer_options(
     base = _style_layer_options(
         composition.style,
         sky,
-        horizon_altitude_deg=_composition_horizon_altitude(
+        horizon_altitude_deg=composition_horizon_altitude(
             composition
         ),
     )

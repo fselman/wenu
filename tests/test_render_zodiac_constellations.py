@@ -86,8 +86,11 @@ def test_zodiac_presentation_enhances_ecliptic_and_grid_labels():
     assert "coordinate_label_zorder" not in source
 
 
-def test_keypoint_edge_fields_are_expanded_without_reframing_the_others():
-    assert MODULE.KEYPOINT_FIELD_SCALE == {"Gem": 1.20, "Psc": 1.20}
+def test_keypoints_do_not_modify_constellation_framing():
+    source = PATH.read_text(encoding="utf-8")
+
+    assert "KEYPOINT_FIELD_SCALE" not in source
+    assert "field_scale" not in source
 
 
 def test_spanish_title_formats_center_ra_and_dec_to_minutes():

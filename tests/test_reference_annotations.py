@@ -28,7 +28,8 @@ from wenu import (
     compose_chart,
     LegendOptions,
 )
-from wenu.geometry.projected import ProjectedCurve
+from wenu.geometry.projected import ProjectedCurve, ProjectedPoints
+from wenu.geometry.spherical import SphericalPoints
 from wenu.charts.reference_furniture import _reference_layer_options
 
 
@@ -178,6 +179,45 @@ def test_labeled_ecliptic_keypoints_use_the_reference_ecliptic_frame():
     assert [point.label for point in overlay.points._points] == [
         "♈", "♋", "♎", "♑"
     ]
+
+
+def test_rectangular_reference_furniture_preserves_all_keypoint_altitudes():
+    resolved_observer = observer()
+    resolved_observer.t_astropy = Time("2026-08-16")
+    subject = chart()
+    composition = compose_chart(
+        subject,
+        style="cartoon",
+        furniture=ChartFurnitureOptions(
+            references=ReferenceAnnotations(
+                ecliptic_keypoints="labeled"
+            )
+        ),
+    )
+    overlay = build_celestial_reference_sky(
+        SimpleNamespace(observer=resolved_observer),
+        composition,
+    )
+    options = _reference_layer_options(overlay, composition, subject)
+    labels = np.asarray(["♈", "♋", "♎", "♑"], dtype=object)
+    spherical = SphericalPoints(
+        lon_deg=np.asarray([91.0, 190.0, 271.0, 10.0]),
+        lat_deg=np.asarray([-1.51, -80.86, 1.50, 80.86]),
+        labels=labels,
+    )
+    projected = ProjectedPoints(
+        x=np.asarray([-0.8, -0.4, 0.4, 0.8]),
+        y=np.asarray([0.0, 0.0, 0.0, 0.0]),
+        labels=labels,
+    )
+
+    prepared = options[overlay.points]["prepare"](
+        spherical,
+        projected,
+    )
+
+    assert prepared.finite.tolist() == [True, True, True, True]
+    assert prepared.labels.tolist() == ["♈", "♋", "♎", "♑"]
 
 
 def test_rectangular_automatic_anchor_uses_visible_curve_segment():

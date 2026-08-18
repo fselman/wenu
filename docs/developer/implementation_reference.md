@@ -402,8 +402,11 @@ all four chart families.
 `markers`, or `labeled`. The reference-furniture owner delegates the four
 equinox/solstice positions to `CelestialPoints.add_ecliptic_keypoints()` and
 supplies the same barycentric true-ecliptic-of-date frame used by the rendered
-ecliptic curve. Ordinary viewport preparation and clipping decide which of
-the four points are present in a regional field.
+ecliptic curve. Celestial-reference layers use the same composition-resolved
+horizon altitude as ordinary layers: rectangular regional charts resolve to
+-90 degrees, so seasonal points are not discarded merely because they are
+below the observer's physical horizon. Ordinary projection and viewport
+clipping still decide which of the four points are present in a field.
 `ecliptic_keypoint_legend` requests a compact lower-left name key. The
 reference rendering inspects its already-projected point result and adds only
 the canonical points inside the final viewport; the four localized names are
