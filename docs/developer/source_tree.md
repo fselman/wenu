@@ -171,6 +171,10 @@ context, and canonical render/export adaptation. It owns no paired-face,
 calendar, registration, horizon, content, or appearance policy.
 Its circular boundary also owns the final inset that suppresses constellation
 label anchors before their text can enter the physical date ring.
+`charts/polar_label_curation.py` owns reviewed south-face-only print
+clearances and the quiet extended-Hyades marker. These presentation overrides
+are applied after projection and do not alter catalogue selection, spherical
+coordinates, constellation geometry, or the north face.
 `charts/polar_planisphere_pair.py` owns paired-face resolution and frozen
 assembly geometry. It validates shared scale and physical size, compatible
 north/south polar radii, projection-aware opposite RA direction, common

@@ -231,9 +231,72 @@ def test_deep_sky_labels_share_the_radial_polar_orientation():
     resolved = chart._inset_constellation_labels(sky, options)
 
     for layer in options:
-        label_style = resolved[layer]["render"]["label_style"]
+        render = resolved[layer]["render"]
+        if callable(render):
+            render = render(
+                object(),
+                ProjectedPoints(
+                    x=np.asarray((0.0,)),
+                    y=np.asarray((0.0,)),
+                    ids=np.asarray(("other",), dtype=object),
+                ),
+            )
+        label_style = render["label_style"]
         assert label_style["rotation_mode"] == "anchor"
         assert label_style["rotation"](1.0, 0.0) == pytest.approx(-90.0)
+
+
+def test_south_label_curation_is_face_specific_and_preserves_geometry():
+    constellation = object()
+    open_clusters = object()
+    sky = SimpleNamespace(
+        constellation_labels=constellation,
+        nonstellar=None,
+        galaxies=None,
+        open_clusters=open_clusters,
+        globular_clusters=None,
+        planetary_nebulae=None,
+    )
+    source = {
+        constellation: {"render": {"label_offset": (0.0, 0.0)}},
+        open_clusters: {
+            "render": {
+                "style": {"s": 18.0},
+                "label_offset": (0.0, 0.015),
+            }
+        },
+    }
+
+    south = PolarPlanisphereChart(pole="south")._inset_constellation_labels(
+        sky, source
+    )
+    north = PolarPlanisphereChart(pole="north")._inset_constellation_labels(
+        sky, source
+    )
+
+    assert south[constellation]["render"]["label_offset"]["Mus"] == (
+        -0.018,
+        0.1125,
+    )
+    assert north[constellation]["render"]["label_offset"] == (0.0, 0.0)
+    points = ProjectedPoints(
+        x=np.asarray((1.0, 2.0)),
+        y=np.asarray((3.0, 4.0)),
+        ids=np.asarray(("Melotte 25", "other"), dtype=object),
+        labels=np.asarray(("Melotte 25", "other"), dtype=object),
+    )
+    render = south[open_clusters]["render"](object(), points)
+    hyades_style, other_style = render["styles"]
+    assert hyades_style["s"] == pytest.approx(600.0)
+    assert hyades_style["facecolors"] == "none"
+    assert hyades_style["linewidths"] == pytest.approx(0.45)
+    assert np.count_nonzero(
+        hyades_style["marker"].codes == hyades_style["marker"].MOVETO
+    ) == 12
+    assert other_style == {}
+    assert render["label_offset"]["Híades"] == (0.075, 0.15)
+    np.testing.assert_allclose(points.x, (1.0, 2.0))
+    np.testing.assert_allclose(points.y, (3.0, 4.0))
 
 
 @pytest.mark.parametrize(

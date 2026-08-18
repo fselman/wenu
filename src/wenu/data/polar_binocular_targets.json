@@ -56,8 +56,8 @@
       "NGC 2516": "N2516",
       "NGC 2632": "El Pesebre",
       "NGC 3532": "N3532",
-      "NGC 4755": "El Joyero",
-      "NGC 6475": "Cúmulo de Ptolomeo"
+      "NGC 4755": null,
+      "NGC 6475": "Ptolomeo"
     },
     "globular_clusters": {
       "NGC 104": "47 Tuc",

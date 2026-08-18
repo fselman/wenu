@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import ClassVar
 
@@ -21,6 +22,49 @@ from wenu.geometry.spherical import SphericalPolygons
 from wenu.geometry.viewport import Viewport
 from wenu.rendering.preparation import clip_to_latitude
 from wenu.rendering.label_placement import rotation_with_down_toward
+from wenu.charts.polar_label_curation import (
+    SOUTH_CONSTELLATION_LABEL_OFFSETS,
+    SOUTH_DEEP_SKY_LABEL_OFFSETS,
+    SOUTH_GLOBULAR_LABEL_FONTSIZE,
+    SOUTH_GLOBULAR_MINIMUM_SIZE_ARCMIN,
+    SOUTH_OPEN_CLUSTER_SYMBOL_STYLES,
+)
+
+
+def _merged_label_offsets(default, overrides):
+    if isinstance(default, Mapping):
+        return {**dict(default), **dict(overrides)}
+    return {"__default__": default, **dict(overrides)}
+
+
+def _with_entity_symbol_styles(render, overrides):
+    """Return options that restyle only reviewed point identifiers."""
+    configured = dict(render)
+
+    def resolved(_spherical, projected):
+        styles = []
+        for index in range(len(projected)):
+            identifiers = (
+                values[index]
+                for values in (
+                    projected.ids,
+                    projected.names,
+                    projected.labels,
+                )
+                if values is not None
+            )
+            style = next(
+                (
+                    overrides[str(identifier)]
+                    for identifier in identifiers
+                    if str(identifier) in overrides
+                ),
+                None,
+            )
+            styles.append({} if style is None else dict(style))
+        return {**configured, "styles": tuple(styles)}
+
+    return resolved
 
 
 @dataclass(frozen=True)
@@ -317,6 +361,11 @@ class PolarPlanisphereChart:
                 rotation_mode="anchor",
             )
             render["label_style"] = label_style
+            if self.pole == "south":
+                render["label_offset"] = _merged_label_offsets(
+                    render.get("label_offset", (0.0, 0.0)),
+                    SOUTH_CONSTELLATION_LABEL_OFFSETS,
+                )
             configured["render"] = render
             result[layer] = configured
 
@@ -338,7 +387,24 @@ class PolarPlanisphereChart:
                 rotation=polar_tangent_rotation,
                 rotation_mode="anchor",
             )
+            if self.pole == "south" and name == "globular_clusters":
+                label_style["fontsize"] = SOUTH_GLOBULAR_LABEL_FONTSIZE
+                geometry = dict(configured.get("geometry", {}))
+                geometry["minimum_size_arcmin"] = (
+                    SOUTH_GLOBULAR_MINIMUM_SIZE_ARCMIN
+                )
+                configured["geometry"] = geometry
             render["label_style"] = label_style
+            if self.pole == "south":
+                render["label_offset"] = _merged_label_offsets(
+                    render.get("label_offset", (0.0, 0.0)),
+                    SOUTH_DEEP_SKY_LABEL_OFFSETS.get(name, {}),
+                )
+                if name == "open_clusters":
+                    render = _with_entity_symbol_styles(
+                        render,
+                        SOUTH_OPEN_CLUSTER_SYMBOL_STYLES,
+                    )
             configured["render"] = render
             result[current] = configured
         return result

@@ -82,6 +82,8 @@ def test_curated_print_labels_prefer_names_and_messier_designations():
     assert labels[("open_clusters", "Melotte 22")] == "Pléyades"
     assert labels[("open_clusters", "IC 2602")] == "Pléyades S"
     assert labels[("open_clusters", "NGC 3532")] == "N3532"
+    assert labels[("open_clusters", "NGC 4755")] is None
+    assert labels[("open_clusters", "NGC 6475")] == "Ptolomeo"
     assert labels[("open_clusters", "NGC 884")] is None
     assert labels[("globular_clusters", "NGC 5139")] == "ω"
     assert labels[("globular_clusters", "Omega Cen")] == "ω"

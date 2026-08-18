@@ -81,3 +81,17 @@ circular bins from 0.5 to 5.0, that symbol hierarchy follows the printed sky,
 and that no scale text or marker collides with the disk, horizon, hour ring,
 date windows, title, folds, or safe page boundary. On the single-sheet pouch,
 the inverted north scale must read upright after folding.
+
+## Milestone 48I.1H southern label curation
+
+The southern classroom disk applies a reviewed set of small presentation-only
+offsets to crowded constellation and binocular-target labels. Confirm that
+Mus, Cir, Cen, TrA, Ara, Crv, Crt, Gru, PsA, Phe, For, Sgr, and CMa clear their
+figures; `47 Tuc` sits beside its enlarged globular symbol; and the ω label
+remains close to Omega Centauri. `El Joyero` is intentionally suppressed and
+`Cúmulo de Ptolomeo` is shortened to `Ptolomeo`.
+
+The Hyades retains its broad extent but uses a fine, open dashed circumference
+instead of an enlarged dotted symbol. Verify at actual print size that this
+line is visible without competing with nearby stars or the `Híades` label.
+The north face and all projected sky geometry must remain unchanged.
