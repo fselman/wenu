@@ -86,6 +86,13 @@ class ReferenceAnnotations:
         label="Galactic plane"
     )
     ecliptic_keypoints: str = "none"
+    ecliptic_keypoint_legend: bool = False
+    ecliptic_keypoint_names: tuple[str, str, str, str] = (
+        "March equinox",
+        "June solstice",
+        "September equinox",
+        "December solstice",
+    )
 
     def __post_init__(self):
         for name in (
@@ -104,6 +111,17 @@ class ReferenceAnnotations:
                 "'labeled'."
             )
         object.__setattr__(self, "ecliptic_keypoints", keypoints)
+        names = tuple(str(name) for name in self.ecliptic_keypoint_names)
+        if len(names) != 4 or any(not name.strip() for name in names):
+            raise ValueError(
+                "ecliptic_keypoint_names must contain four non-empty names."
+            )
+        object.__setattr__(
+            self,
+            "ecliptic_keypoint_legend",
+            bool(self.ecliptic_keypoint_legend),
+        )
+        object.__setattr__(self, "ecliptic_keypoint_names", names)
 
     @property
     def ecliptic_keypoints_enabled(self) -> bool:

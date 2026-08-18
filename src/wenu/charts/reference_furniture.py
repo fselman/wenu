@@ -85,6 +85,7 @@ class CelestialReferenceRendering:
     sky: CelestialSphere
     rendering: object
     declination_tick_artists: tuple[object, ...] = ()
+    ecliptic_keypoint_legend: object | None = None
 
 
 @dataclass(frozen=True)
@@ -566,6 +567,16 @@ def draw_celestial_reference_furniture(
         ),
         project_geometry=project,
     )
+    from .reference_keypoint_legend import (
+        draw_ecliptic_keypoint_legend,
+    )
+
+    keypoint_legend = draw_ecliptic_keypoint_legend(
+        renderer,
+        rendering,
+        reference_sky,
+        composition,
+    )
     tick_artists = ()
     if polar and composition.detail.layer_enabled("equatorial_grid"):
         style = _publication_style(composition.style)
@@ -585,4 +596,5 @@ def draw_celestial_reference_furniture(
         sky=reference_sky,
         rendering=rendering,
         declination_tick_artists=tick_artists,
+        ecliptic_keypoint_legend=keypoint_legend,
     )

@@ -77,6 +77,8 @@ class ResolvedLegendOptions:
     stellar_counts: bool = False
     symbol_labels: tuple[tuple[str, str], ...] = ()
     stellar_title: str = "Stars"
+    stellar_reference_magnitude: int | None = None
+    stellar_label_suffix: str = ""
 
 
 @dataclass(frozen=True)
@@ -91,6 +93,8 @@ class LegendOptions:
     context_lines: tuple[str, ...] = ()
     symbol_labels: tuple[tuple[str, str], ...] = ()
     stellar_title: str = "Stars"
+    stellar_reference_magnitude: int | None = None
+    stellar_label_suffix: str = ""
 
     def resolve(self, chart_type: str) -> ResolvedLegendOptions:
         """Resolve family switches into the established placement plan."""
@@ -115,6 +119,12 @@ class LegendOptions:
                 for key, label in self.symbol_labels
             ),
             stellar_title=str(self.stellar_title),
+            stellar_reference_magnitude=(
+                None
+                if self.stellar_reference_magnitude is None
+                else int(self.stellar_reference_magnitude)
+            ),
+            stellar_label_suffix=str(self.stellar_label_suffix),
         )
 
 

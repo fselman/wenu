@@ -15,7 +15,11 @@
     "Sagittarius": "Sagittarius",
     "Capricornus": "Capricornus",
     "Aquarius": "Aquarius",
-    "Pisces": "Pisces"
+    "Pisces": "Pisces",
+    "March equinox": "March equinox",
+    "June solstice": "June solstice",
+    "September equinox": "September equinox",
+    "December solstice": "December solstice"
   },
   "es": {
     "Celestial equator": "Ecuador celeste",
@@ -33,6 +37,10 @@
     "Sagittarius": "Sagitario",
     "Capricornus": "Capricornio",
     "Aquarius": "Acuario",
-    "Pisces": "Piscis"
+    "Pisces": "Piscis",
+    "March equinox": "Equinoccio de marzo",
+    "June solstice": "Solsticio de junio",
+    "September equinox": "Equinoccio de septiembre",
+    "December solstice": "Solsticio de diciembre"
   }
 }

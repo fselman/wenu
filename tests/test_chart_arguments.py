@@ -145,6 +145,7 @@ def test_legend_convenience_and_individual_switches():
 def test_style_arguments_resolve_to_immutable_overrides():
     arguments = parser().parse_args(
         [
+            "--sky-color", "#1F699B",
             "--constellation-line-width", "2.25",
             "--constellation-line-color", "white",
             "--constellation-label-color", "gold",
@@ -154,6 +155,7 @@ def test_style_arguments_resolve_to_immutable_overrides():
     )
 
     assert chart_style_overrides(arguments) == ChartStyleOverrides(
+        sky_color="#1F699B",
         constellation_linewidth=2.25,
         constellation_line_color="white",
         constellation_label_color="gold",
@@ -194,6 +196,13 @@ def test_style_widths_must_be_finite_and_non_negative(name):
         ChartStyleOverrides(**{name: float("nan")})
 
 
+def test_sky_color_must_not_be_empty():
+    with pytest.raises(ValueError):
+        ChartStyleOverrides(sky_color="")
+    with pytest.raises(ValueError):
+        ChartStyleOverrides(sky_color="   ")
+
+
 def test_explicit_style_values_apply_after_mode_defaults():
     chart = RegionalChart(45.0, 180.0, 20.0, 15.0)
     default = compose_chart(
@@ -206,6 +215,7 @@ def test_explicit_style_values_apply_after_mode_defaults():
         style="cartoon",
         mode="presentation",
         style_overrides=ChartStyleOverrides(
+            sky_color="#1F699B",
             constellation_linewidth=2.25,
             constellation_line_color="white",
         ),
@@ -215,6 +225,7 @@ def test_explicit_style_values_apply_after_mode_defaults():
     assert overridden.style.grids.constellation_linewidth == pytest.approx(
         2.25
     )
+    assert overridden.style.canvas.sky_color == "#1F699B"
     assert overridden.style.grids.constellation_line_color == "white"
     assert overridden.context == default.context
     assert overridden.detail == default.detail

@@ -9,6 +9,7 @@ from wenu import (
     ChartProduct,
     ChartStyleOverrides,
     DetailOverrides,
+    LegendOptions,
     StellarMagnitudeSizing,
     add_chart_cli_arguments,
     chart_detail_overrides,
@@ -164,6 +165,40 @@ def test_cli_furniture_selects_labeled_ecliptic_keypoints():
     assert furniture.references.ecliptic_keypoints == "labeled"
 
 
+def test_cli_furniture_translates_keypoint_legend_and_reference_magnitude():
+    arguments = parser().parse_args([])
+    arguments.language = "es"
+
+    furniture = chart_cli_furniture(
+        arguments,
+        ecliptic_keypoints="labeled",
+        ecliptic_keypoint_legend=True,
+        stellar_reference_magnitude=3,
+        stellar_label_suffix=" mag",
+    )
+
+    assert furniture.references.ecliptic_keypoint_legend is True
+    assert furniture.references.ecliptic_keypoint_names == (
+        "Equinoccio de marzo",
+        "Solsticio de junio",
+        "Equinoccio de septiembre",
+        "Solsticio de diciembre",
+    )
+    assert furniture.legends.stellar_reference_magnitude == 3
+    assert furniture.legends.stellar_label_suffix == " mag"
+
+
+def test_cli_furniture_accepts_an_explicit_shared_legend_plan():
+    arguments = parser().parse_args(["--magnitude-legend"])
+    plan = LegendOptions().resolve("regional").plan.with_stars(
+        anchor=(0.99, 0.055),
+    )
+
+    furniture = chart_cli_furniture(arguments, legend_plan=plan)
+
+    assert furniture.legends.plan is plan
+
+
 def test_adapter_delegates_selected_products_to_ordinary_drawing(
     monkeypatch, tmp_path
 ):
@@ -249,7 +284,9 @@ def test_style_detail_and_family_style_overrides_are_composed(monkeypatch):
         lambda *args, **kwargs: calls.append(kwargs) or object(),
     )
     arguments = parser().parse_args([
-        "--style", "cartoon", "--constellation-line-color", "white"
+        "--style", "cartoon",
+        "--sky-color", "#1F699B",
+        "--constellation-line-color", "white",
     ])
     detail = object()
     sizing = StellarMagnitudeSizing()
@@ -261,5 +298,6 @@ def test_style_detail_and_family_style_overrides_are_composed(monkeypatch):
     )
 
     assert calls[0]["detail"] is detail
+    assert calls[0]["style_overrides"].sky_color == "#1F699B"
     assert calls[0]["style_overrides"].constellation_line_color == "white"
     assert calls[0]["style_overrides"].stellar_magnitude_sizing is sizing

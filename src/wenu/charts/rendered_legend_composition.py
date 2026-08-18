@@ -53,6 +53,8 @@ def draw_rendered_chart_legends(
     include_context=None,
     symbol_labels=None,
     stellar_title="Stars",
+    stellar_reference_magnitude=None,
+    stellar_label_suffix="",
 ):
     """Draw both legends from already-rendered geometry.
 
@@ -117,6 +119,8 @@ def draw_rendered_chart_legends(
         include_context=include_context,
         symbol_labels=symbol_labels,
         stellar_title=stellar_title,
+        stellar_reference_magnitude=stellar_reference_magnitude,
+        stellar_label_suffix=stellar_label_suffix,
         resolved_detail=resolved_detail,
         **legend_options,
     )

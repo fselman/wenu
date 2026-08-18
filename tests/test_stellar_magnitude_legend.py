@@ -64,6 +64,27 @@ def test_workflow_uses_only_visible_stars():
     plt.close(figure)
 
 
+def test_workflow_can_draw_one_reference_magnitude_with_unit_suffix():
+    figure, ax = plt.subplots()
+    spherical, projected = m40i_chart_magnitude_legend_workflow_geometry()
+    result = draw_visible_stellar_magnitude_legend(
+        ax,
+        spherical,
+        projected,
+        m40i_chart_magnitude_legend_workflow_Viewport(),
+        effective_limit=4.0,
+        reference_magnitude=3,
+        label_suffix=" mag",
+        title="",
+    )
+
+    assert result.scale.magnitudes == (3,)
+    assert [text.get_text() for text in result.artist.get_texts()] == [
+        "3 mag"
+    ]
+    plt.close(figure)
+
+
 def test_workflow_preserves_the_existing_object_legend():
     figure, ax = plt.subplots()
     ax.plot([], [], marker="s", label="Galaxy")

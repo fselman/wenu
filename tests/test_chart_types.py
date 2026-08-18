@@ -159,6 +159,38 @@ def test_rectangular_anchor_ignores_off_page_declination_samples():
     assert (placement.x, placement.y) == pytest.approx((-1.5, -0.8))
 
 
+def test_rectangular_anchor_separates_bottom_left_grid_labels():
+    class Axes:
+        @staticmethod
+        def get_xlim():
+            return -1.0, 1.0
+
+        @staticmethod
+        def get_ylim():
+            return -1.0, 1.0
+
+    right_ascension = ProjectedCurve(
+        x=[-0.8, -0.7, -0.6],
+        y=[-1.0, -0.8, -0.6],
+        name="right_ascension_30",
+    )
+    declination = ProjectedCurve(
+        x=[-0.82, -0.65, -0.45, -0.2],
+        y=[-0.98, -0.86, -0.72, -0.55],
+        name="declination_-15",
+    )
+    anchor = RectangularLabelAnchor(inset=0.0)
+
+    ra = anchor(right_ascension, Axes())
+    dec = anchor(declination, Axes())
+
+    assert (ra.x, ra.y) == pytest.approx((-0.8, -1.0))
+    assert (dec.x, dec.y) != pytest.approx((-0.82, -0.98))
+    normalized_dx = abs(dec.x - ra.x) / 2.0
+    normalized_dy = abs(dec.y - ra.y) / 2.0
+    assert normalized_dx >= 0.13 or normalized_dy >= 0.06
+
+
 def test_regional_chart_applies_rectangular_coordinate_label_anchor():
     layer = object()
     captured = {}

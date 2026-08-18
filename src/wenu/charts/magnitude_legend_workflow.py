@@ -59,6 +59,8 @@ def draw_visible_stellar_magnitude_legend(
     facecolor: str | None = None,
     edgecolor: str | None = None,
     include_counts: bool = False,
+    reference_magnitude: int | None = None,
+    label_suffix: str = "",
 ) -> StellarMagnitudeLegendResult:
     """Calculate and draw the legend for stars visible in a chart.
 
@@ -85,9 +87,17 @@ def draw_visible_stellar_magnitude_legend(
             magnitude_sizing=magnitude_sizing,
             limiting_magnitude=effective_limit,
         )
+    scale_brightest = (
+        statistics.brightest_magnitude
+        if reference_magnitude is None else int(reference_magnitude)
+    )
+    scale_faintest = (
+        statistics.faintest_magnitude
+        if reference_magnitude is None else int(reference_magnitude)
+    )
     scale = stellar_magnitude_scale(
-        statistics.brightest_magnitude,
-        statistics.faintest_magnitude,
+        scale_brightest,
+        scale_faintest,
         area_scale=area_scale,
         color=color,
         alpha=alpha,
@@ -104,8 +114,8 @@ def draw_visible_stellar_magnitude_legend(
             footprint_contains=footprint_contains,
         )
         scale = stellar_magnitude_scale(
-            statistics.brightest_magnitude,
-            statistics.faintest_magnitude,
+            scale_brightest,
+            scale_faintest,
             area_scale=area_scale,
             color=color,
             alpha=alpha,
@@ -137,6 +147,7 @@ def draw_visible_stellar_magnitude_legend(
         text_color=text_color,
         facecolor=facecolor,
         edgecolor=edgecolor,
+        label_suffix=label_suffix,
     )
     return StellarMagnitudeLegendResult(
         statistics=statistics,

@@ -193,6 +193,10 @@ limiting magnitude as the reference, so the faintest selected magnitude uses
 the configured minimum scatter area. Brighter stars grow by the configured
 exponent and are bounded by the configured maximum area. The rendered stars
 and stellar magnitude legend use the same sizing configuration.
+`LegendOptions.stellar_reference_magnitude` may restrict that same canonical
+legend to one representative integer magnitude without introducing a second
+marker-size calculation. `stellar_label_suffix` supplies compact unit text
+such as ` mag` while preserving the ordinary full-scale default.
 Milestone 46D.8I makes binocular products grid-free by default; all four grid
 systems remain explicit opt-ins. The title includes the resolved ICRS center
 and field diameter, and unregistered reference furniture marks the resolved
@@ -382,7 +386,11 @@ masking, or other chart geometry, and duplicate or unselected product entries
 are rejected when the request is constructed.
 Semantic style overrides may strengthen the ecliptic independently of the
 coordinate-grid baseline and enlarge coordinate labels without changing other
-products.
+products. The shared `--sky-color` option follows the same path: it becomes a
+`ChartStyleOverrides.sky_color` value and replaces
+`ChartCanvasStyle.sky_color` after style and mode resolution. Chart entry
+points must not bypass that semantic owner by setting a Matplotlib axes color
+directly.
 `ChartFurnitureOptions.context` may carry `ChartContextOptions` selecting
 chart-center coordinates, the active coordinate-grid description, observer
 location, date, and local time. These are declarative booleans rather than
@@ -396,6 +404,10 @@ equinox/solstice positions to `CelestialPoints.add_ecliptic_keypoints()` and
 supplies the same barycentric true-ecliptic-of-date frame used by the rendered
 ecliptic curve. Ordinary viewport preparation and clipping decide which of
 the four points are present in a regional field.
+`ecliptic_keypoint_legend` requests a compact lower-left name key. The
+reference rendering inspects its already-projected point result and adds only
+the canonical points inside the final viewport; the four localized names are
+carried by the immutable annotation request.
 
 `resolve_target(ChartSubjectRequest(...))` resolves packaged aliases without
 network access. Its immutable `ResolvedTarget` records canonical key, display

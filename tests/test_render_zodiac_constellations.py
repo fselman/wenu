@@ -25,6 +25,10 @@ def test_traditional_zodiac_order_and_spanish_names_are_complete():
     assert MODULE.ENGLISH_NAMES["Gem"] == "Gemini"
     assert MODULE.ENGLISH_NAMES["Sco"] == "Scorpius"
     assert MODULE.STAR_MAGNITUDE_LIMIT == pytest.approx(5.5)
+    assert MODULE.REFERENCE_MAGNITUDE == 3
+    assert MODULE.ZODIAC_LEGEND_PLAN.stars.anchor == pytest.approx(
+        (0.99, 0.055)
+    )
 
 
 def test_defaults_are_cartoon_presentation_with_canonical_mask_switch():
@@ -41,6 +45,9 @@ def test_defaults_are_cartoon_presentation_with_canonical_mask_switch():
     assert selected.mask is True
     assert selected.mode == "presentation"
 
+    colored = MODULE.parser().parse_args(["--sky-color", "#1F699B"])
+    assert colored.sky_color == "#1F699B"
+
 
 def test_effective_arguments_fix_requested_content_without_mask_literals():
     arguments = MODULE.parser().parse_args(["--mask"])
@@ -56,6 +63,8 @@ def test_effective_arguments_fix_requested_content_without_mask_literals():
     assert effective.constellation_boundaries is False
     assert effective.equatorial_grid is True
     assert effective.grid_references == {"equatorial", "ecliptic"}
+    assert effective.magnitude_legend is True
+    assert effective.object_legend is False
     assert "constellation_boundaries" not in MODULE.VISIBLE_LAYERS
 
     source = PATH.read_text(encoding="utf-8")
@@ -70,6 +79,10 @@ def test_zodiac_presentation_enhances_ecliptic_and_grid_labels():
     assert MODULE.GRID_LABEL_FONTSIZE == pytest.approx(7.5)
     source = PATH.read_text(encoding="utf-8")
     assert 'ecliptic_keypoints="labeled"' in source
+    assert "ecliptic_keypoint_legend=True" in source
+    assert "stellar_reference_magnitude=REFERENCE_MAGNITUDE" in source
+    assert 'stellar_label_suffix=" mag"' in source
+    assert "legend_plan=ZODIAC_LEGEND_PLAN" in source
     assert "coordinate_label_zorder" not in source
 
 

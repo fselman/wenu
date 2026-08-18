@@ -199,6 +199,10 @@ def add_chart_content_arguments(parser):
 
 def add_chart_style_arguments(parser):
     """Add optional post-mode visual overrides to ``parser``."""
+    parser.add_argument(
+        "--sky-color",
+        help="override the resolved chart sky/background color",
+    )
     parser.add_argument("--constellation-line-width", type=float)
     parser.add_argument("--constellation-line-color")
     parser.add_argument("--constellation-label-color")
@@ -269,6 +273,7 @@ def chart_style_overrides(
 ) -> ChartStyleOverrides:
     """Resolve parsed visual arguments without applying mode defaults."""
     return ChartStyleOverrides(
+        sky_color=arguments.sky_color,
         constellation_linewidth=arguments.constellation_line_width,
         constellation_line_color=arguments.constellation_line_color,
         constellation_label_color=arguments.constellation_label_color,

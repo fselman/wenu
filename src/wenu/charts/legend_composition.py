@@ -101,6 +101,8 @@ def draw_planned_chart_legends(
     stellar_counts: bool = False,
     symbol_labels=None,
     stellar_title="Stars",
+    stellar_reference_magnitude=None,
+    stellar_label_suffix="",
 ) -> ComposedChartLegends:
     """Draw the planned object and stellar legends for a chart."""
     object_artist = None
@@ -161,6 +163,8 @@ def draw_planned_chart_legends(
             alpha=star_alpha,
             footprint_contains=footprint_contains,
             legend_style=resolved_style,
+            reference_magnitude=stellar_reference_magnitude,
+            label_suffix=stellar_label_suffix,
         )
         if stellar_magnitude_sizing is not None:
             star_options["magnitude_sizing"] = stellar_magnitude_sizing

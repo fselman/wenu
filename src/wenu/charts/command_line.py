@@ -97,6 +97,10 @@ def chart_cli_furniture(
     family=None,
     language=None,
     ecliptic_keypoints=None,
+    ecliptic_keypoint_legend=False,
+    stellar_reference_magnitude=None,
+    stellar_label_suffix="",
+    legend_plan=None,
 ):
     """Translate shared parsed controls into immutable chart furniture."""
     if configuration is None:
@@ -160,6 +164,14 @@ def chart_cli_furniture(
                     if references else base.references.galactic_plane
                 ),
                 ecliptic_keypoints=keypoint_state,
+                ecliptic_keypoint_legend=(
+                    ecliptic_keypoint_legend
+                    or base.references.ecliptic_keypoint_legend
+                ),
+                ecliptic_keypoint_names=tuple(
+                    translate_label(name, language)
+                    for name in base.references.ecliptic_keypoint_names
+                ),
             )
         ),
         poles=PoleAnnotations(
@@ -181,9 +193,15 @@ def chart_cli_furniture(
             stellar_magnitudes=legends.stellar_magnitudes,
             stellar_counts=legends.stellar_counts,
             context=False,
-            plan=(None if base.legends is None else base.legends.plan),
+            plan=(
+                legend_plan
+                if legend_plan is not None
+                else None if base.legends is None else base.legends.plan
+            ),
             symbol_labels=tuple(symbol_labels),
             stellar_title=stellar_title,
+            stellar_reference_magnitude=stellar_reference_magnitude,
+            stellar_label_suffix=stellar_label_suffix,
         ),
         context=ChartContextOptions(
             center=selected("center", base_context.center),

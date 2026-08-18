@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 
@@ -274,10 +274,39 @@ class RectangularLabelAnchor:
     """Place RA labels at bottom and declination labels at left."""
 
     inset: float = 0.01
+    minimum_horizontal_separation: float = 0.13
+    minimum_vertical_separation: float = 0.06
+    _occupied: list[tuple[float, float]] = field(
+        default_factory=list,
+        init=False,
+        repr=False,
+        compare=False,
+    )
 
     def __post_init__(self):
         if not 0.0 <= float(self.inset) < 0.5:
             raise ValueError("inset must be in the interval [0, 0.5).")
+        if float(self.minimum_horizontal_separation) <= 0.0:
+            raise ValueError("minimum_horizontal_separation must be positive.")
+        if float(self.minimum_vertical_separation) <= 0.0:
+            raise ValueError("minimum_vertical_separation must be positive.")
+
+    def _claim(self, x, y, xlim, ylim):
+        normalized = (
+            (float(x) - min(xlim)) / abs(xlim[1] - xlim[0]),
+            (float(y) - min(ylim)) / abs(ylim[1] - ylim[0]),
+        )
+        collision = any(
+            abs(normalized[0] - occupied[0])
+            < self.minimum_horizontal_separation
+            and abs(normalized[1] - occupied[1])
+            < self.minimum_vertical_separation
+            for occupied in self._occupied
+        )
+        if collision:
+            return False
+        self._occupied.append(normalized)
+        return True
 
     def __call__(self, curve, ax):
         finite = curve.finite
@@ -302,12 +331,22 @@ class RectangularLabelAnchor:
         name = str(curve.name or "")
         if name.startswith("right_ascension_"):
             target = min(ylim) + self.inset * abs(ylim[1] - ylim[0])
-            index = int(np.argmin(np.abs(y - target)))
+            order = np.argsort(np.abs(y - target))
         elif name.startswith("declination_"):
             target = min(xlim) + self.inset * abs(xlim[1] - xlim[0])
-            index = int(np.argmin(np.abs(x - target)))
+            order = np.argsort(np.abs(x - target))
         else:
-            index = int(np.argmax(y))
+            order = np.argsort(-y)
+        index = next(
+            (
+                int(candidate)
+                for candidate in order
+                if self._claim(x[candidate], y[candidate], xlim, ylim)
+            ),
+            None,
+        )
+        if index is None:
+            return None
         if name.startswith("declination_"):
             return _above_line(
                 x[index],

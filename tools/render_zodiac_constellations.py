@@ -19,6 +19,7 @@ from wenu import (
     chart_cli_furniture,
     chart_configuration,
     draw_chart_view_from_arguments,
+    default_chart_legend_plan,
     generate_celestial_sphere,
     get_chart_view,
 )
@@ -45,6 +46,7 @@ ENGLISH_NAMES = {
     "Psc": "Pisces",
 }
 STAR_MAGNITUDE_LIMIT = 5.5
+REFERENCE_MAGNITUDE = 3
 ECLIPTIC_LINEWIDTH = 1.0
 GRID_LABEL_FONTSIZE = 7.5
 DEFAULT_OUTPUT = Path("output/zodiac-constellations")
@@ -54,6 +56,9 @@ VISIBLE_LAYERS = frozenset({
     "constellation_labels",
     "equatorial_grid",
 })
+ZODIAC_LEGEND_PLAN = default_chart_legend_plan("regional").with_stars(
+    anchor=(0.99, 0.055),
+)
 
 
 def _north_ecliptic_pole(observer):
@@ -153,6 +158,10 @@ def _effective_arguments(arguments, destination):
     effective.grid_references = frozenset({"equatorial", "ecliptic"})
     effective.poles = False
     effective.pole_labels = False
+    effective.legends = False
+    effective.object_legend = False
+    effective.magnitude_legend = True
+    effective.star_counts = False
     return effective
 
 
@@ -200,6 +209,11 @@ def render_zodiac(arguments, *, sky=None):
                     family=view.family,
                     language="es",
                     ecliptic_keypoints="labeled",
+                    ecliptic_keypoint_legend=True,
+                    stellar_title="",
+                    stellar_reference_magnitude=REFERENCE_MAGNITUDE,
+                    stellar_label_suffix=" mag",
+                    legend_plan=ZODIAC_LEGEND_PLAN,
                 ),
                 style_overrides=ChartStyleOverrides(
                     ecliptic_linewidth=ECLIPTIC_LINEWIDTH,

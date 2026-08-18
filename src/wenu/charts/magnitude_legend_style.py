@@ -66,6 +66,8 @@ def draw_styled_stellar_magnitude_legend(
     footprint_contains=None,
     include_counts: bool = False,
     legend_style: StellarMagnitudeLegendStyle | None = None,
+    reference_magnitude: int | None = None,
+    label_suffix: str = "",
 ) -> StellarMagnitudeLegendResult:
     """Draw a visible-star legend using independent style settings."""
     style = (
@@ -97,6 +99,10 @@ def draw_styled_stellar_magnitude_legend(
         footprint_contains=footprint_contains,
         **style.drawing_options()
     )
+    if reference_magnitude is not None:
+        options["reference_magnitude"] = int(reference_magnitude)
+    if label_suffix:
+        options["label_suffix"] = str(label_suffix)
     if magnitude_sizing is not None:
         options["magnitude_sizing"] = magnitude_sizing
     if include_counts:

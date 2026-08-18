@@ -162,6 +162,30 @@ def test_ecliptic_keypoint_state_is_semantic_and_validated():
         ReferenceAnnotations(ecliptic_keypoints="visible")
 
 
+def test_ecliptic_keypoint_legend_has_four_semantic_names():
+    references = ReferenceAnnotations(ecliptic_keypoint_legend=True)
+
+    assert references.ecliptic_keypoint_legend is True
+    assert references.ecliptic_keypoint_names == (
+        "March equinox",
+        "June solstice",
+        "September equinox",
+        "December solstice",
+    )
+    with pytest.raises(ValueError, match="four non-empty"):
+        ReferenceAnnotations(ecliptic_keypoint_names=("one",) * 3)
+
+
+def test_stellar_legend_can_request_one_reference_magnitude():
+    resolved = LegendOptions(
+        stellar_reference_magnitude=3,
+        stellar_label_suffix=" mag",
+    ).resolve("regional")
+
+    assert resolved.stellar_reference_magnitude == 3
+    assert resolved.stellar_label_suffix == " mag"
+
+
 def test_style_and_mode_do_not_change_chart_geometry():
     request = ChartFurnitureOptions(
         references=ReferenceAnnotations(

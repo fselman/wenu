@@ -50,6 +50,10 @@ def draw_resolved_chart_legends(
         context_lines=legend_options.context_lines,
         symbol_labels=legend_options.symbol_labels,
         stellar_title=legend_options.stellar_title,
+        stellar_reference_magnitude=(
+            legend_options.stellar_reference_magnitude
+        ),
+        stellar_label_suffix=legend_options.stellar_label_suffix,
     )
     if legend_options.stellar_counts:
         options["stellar_counts"] = True

@@ -21,6 +21,7 @@ class ChartStyleOverrides:
     ecliptic_linewidth: float | None = None
     coordinate_label_fontsize: float | None = None
     stellar_magnitude_sizing: StellarMagnitudeSizing | None = None
+    sky_color: str | None = None
 
     def __post_init__(self):
         if (
@@ -48,6 +49,7 @@ class ChartStyleOverrides:
             "constellation_line_color",
             "constellation_label_color",
             "boundary_color",
+            "sky_color",
         ):
             value = getattr(self, name)
             if value is not None and not str(value).strip():
@@ -75,6 +77,16 @@ class ChartStyleOverrides:
         resolved = style if not changes else replace(
             style, grids=replace(grids, **changes)
         )
+        if self.sky_color is not None:
+            canvas = getattr(resolved, "canvas", None)
+            if canvas is None:
+                raise TypeError(
+                    "sky color overrides require a composed canvas style."
+                )
+            resolved = replace(
+                resolved,
+                canvas=replace(canvas, sky_color=str(self.sky_color)),
+            )
         if self.stellar_magnitude_sizing is None:
             return resolved
         stars = getattr(resolved, "stars", None)

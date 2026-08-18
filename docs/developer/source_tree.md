@@ -549,9 +549,20 @@ cartoon/presentation review overrides strengthen only the ecliptic and enlarge
 coordinate labels through `ChartStyleOverrides`. Its furniture requests the
 four canonical ecliptic keypoints through the shared reference overlay; normal
 regional clipping shows only keypoints actually inside each constellation
-field. The shared rectangular grid-label anchor filters projected samples to
-the axes viewport before placing RA or declination text, so visible parallels
-cannot lose labels to off-page curve samples.
+field. Charts containing one receive its localized lower-left name key from
+the same projected reference result. The ordinary stellar legend is reduced
+to one magnitude-3 reference circle at lower right while retaining the
+rendered star-size law. The shared rectangular grid-label anchor filters
+projected samples to the axes viewport and reserves prior label positions
+before placing RA or declination text, so visible parallels cannot lose
+labels to off-page samples or stack at a shared chart edge.
+The tool also inherits the shared `--sky-color` option through
+`ChartStyleOverrides`; it contains no renderer-specific background-color
+path.
+
+`charts/reference_keypoint_legend.py` realizes the optional compact key for
+the canonical ecliptic points. It consumes the reference overlay's completed
+projected point result and never recomputes celestial coordinates or clipping.
 
 `data/translations.json` is the single packaged dictionary for generated
 visual labels. `translations.py` loads it immutably, validates the requested

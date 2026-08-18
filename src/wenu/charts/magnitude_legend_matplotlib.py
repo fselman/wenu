@@ -17,6 +17,7 @@ def stellar_magnitude_handles(
     marker: str = "o",
     marker_edge_color: str | None = None,
     marker_edge_width: float = 0.0,
+    label_suffix: str = "",
 ) -> tuple[Line2D, ...]:
     """Return legend handles that reproduce the chart's stellar areas."""
     edge_color = (
@@ -36,14 +37,17 @@ def stellar_magnitude_handles(
             markeredgewidth=marker_edge_width,
             alpha=scale.alpha,
             label=(
-                f"{entry.magnitude:+d}"
-                if entry.magnitude < 0
-                else str(entry.magnitude)
-            )
-            + (
-                ""
-                if entry.cumulative_count is None
-                else f" ({entry.cumulative_count})"
+                (
+                    f"{entry.magnitude:+d}"
+                    if entry.magnitude < 0
+                    else str(entry.magnitude)
+                )
+                + (
+                    ""
+                    if entry.cumulative_count is None
+                    else f" ({entry.cumulative_count})"
+                )
+                + str(label_suffix)
             ),
         )
         for entry in scale.entries
@@ -89,6 +93,7 @@ def draw_stellar_magnitude_legend(
     text_color: str | None = None,
     facecolor: str | None = None,
     edgecolor: str | None = None,
+    label_suffix: str = "",
 ) -> Legend | None:
     """Draw an independent, non-overlapping stellar magnitude legend."""
     handles = stellar_magnitude_handles(
@@ -96,6 +101,7 @@ def draw_stellar_magnitude_legend(
         marker=marker,
         marker_edge_color=marker_edge_color,
         marker_edge_width=marker_edge_width,
+        label_suffix=label_suffix,
     )
     if not handles:
         return None
