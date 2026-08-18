@@ -4,6 +4,7 @@ import argparse
 from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
+import pytest
 
 from wenu.charts.context import BoundaryKind
 from wenu.charts.export_workflow import _composition_export_options
@@ -101,7 +102,8 @@ def test_footer_layout_uses_packaged_coordinates(monkeypatch):
     )
     calls = []
     figure = SimpleNamespace(
-        text=lambda x, **kwargs: calls.append((x, kwargs)) or object()
+        text=lambda x, **kwargs: calls.append((x, kwargs)) or object(),
+        get_size_inches=lambda: (7.0, 5.0),
     )
     position = SimpleNamespace(y0=0.1, y1=0.9, x0=0.1, width=0.8)
     ax = SimpleNamespace(
@@ -122,8 +124,8 @@ def test_footer_layout_uses_packaged_coordinates(monkeypatch):
         package_version="1.2.3",
     )
 
-    assert calls[0][0] == 0.98
-    assert calls[0][1]["y"] == 0.025
+    assert calls[0][0] == 0.9
+    assert calls[0][1]["y"] == pytest.approx(0.0325)
     assert calls[0][1]["fontsize"] == 18.0
 
 

@@ -418,10 +418,11 @@ def test_footer_resolves_version_from_installed_package_metadata(monkeypatch):
     ) == (None, "Wenu 0.8.0")
 
 
-def test_footer_artists_use_figure_margin_and_reserve_axes_space():
+def test_footer_artists_use_only_a_compact_lower_axes_margin():
     figure, ax = plt.subplots(figsize=(7.0, 5.0))
     renderer = SimpleNamespace(ax=ax)
     mode = SimpleNamespace(font_scale=1.0)
+    before = ax.get_position().bounds
     result = draw_chart_footer(
         renderer,
         FooterOptions(
@@ -433,8 +434,37 @@ def test_footer_artists_use_figure_margin_and_reserve_axes_space():
     )
 
     assert [artist.get_ha() for artist in result.artists] == ["left", "right"]
-    assert [artist.get_position()[0] for artist in result.artists] == [0.01, 0.99]
-    assert all(artist.get_position()[1] < ax.get_position().y0 for artist in result.artists)
+    horizontal_positions = [
+        artist.get_position()[0] for artist in result.artists
+    ]
+    assert horizontal_positions == pytest.approx([
+        before[0], before[0] + before[2]
+    ])
+    assert all(
+        artist.get_position()[1] < ax.get_position().y0
+        for artist in result.artists
+    )
+    assert ax.get_position().bounds == pytest.approx(before)
+    plt.close(figure)
+
+
+def test_footer_reserves_space_by_moving_only_the_lower_axes_edge():
+    figure, ax = plt.subplots(figsize=(7.0, 5.0))
+    ax.set_position([0.20, 0.01, 0.60, 0.80])
+    before = ax.get_position().bounds
+
+    draw_chart_footer(
+        SimpleNamespace(ax=ax),
+        FooterOptions(application=True),
+        SimpleNamespace(font_scale=1.0),
+        package_version="9.8.7",
+    )
+
+    after = ax.get_position().bounds
+    assert after[0] == pytest.approx(before[0])
+    assert after[1] > before[1]
+    assert after[2] == pytest.approx(before[2])
+    assert after[1] + after[3] == pytest.approx(before[1] + before[3])
     plt.close(figure)
 
 

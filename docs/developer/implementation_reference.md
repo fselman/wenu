@@ -882,6 +882,11 @@ export starts with its bounding-box, metadata and padding settings, then
 retains the existing derived mode DPI/transparency, circular transparency,
 and canvas face color. Explicit furniture, CLI product selections, output
 paths, and chart export options still win.
+The canonical footer interprets its configured coordinates as outer limits,
+anchors left and right credit text to the chart axes when those axes are more
+inset, and reserves at most a typography-sized strip below the chart. Tight
+export therefore grows only downward for credits instead of exposing unused
+canvas on the top and sides.
 
 Generated reference labels resolve through `data/translations.json` and
 `wenu.translations.translate_label()`. The shared command-line furniture uses

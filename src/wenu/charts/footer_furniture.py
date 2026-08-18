@@ -57,14 +57,6 @@ def draw_chart_footer(
 
     ax = renderer.ax
     figure = ax.figure
-    position = ax.get_position()
-    bottom = max(float(position.y0), 0.065)
-    top = float(position.y1)
-    if bottom < top:
-        ax.set_position(
-            [position.x0, bottom, position.width, top - bottom]
-        )
-
     if layout is None:
         from wenu.configuration import (
             packaged_furniture_product_export_defaults,
@@ -74,8 +66,21 @@ def draw_chart_footer(
     font_size = layout.font_size * float(
         getattr(mode, "font_scale", 1.0)
     )
+    position = ax.get_position()
+    left = float(position.x0)
+    width = float(position.width)
+    top = float(position.y1)
+    figure_height = float(figure.get_size_inches()[1])
+    text_height = font_size / 72.0 / figure_height
+    clearance = 1.35 * text_height
+    bottom = max(float(position.y0), float(layout.y) + clearance)
+    if bottom < top and bottom != float(position.y0):
+        ax.set_position([left, bottom, width, top - bottom])
+    footer_y = max(float(layout.y), bottom - clearance)
+    left_x = max(float(layout.left_x), left)
+    right_x = min(float(layout.right_x), left + width)
     common = dict(
-        y=layout.y,
+        y=footer_y,
         fontsize=font_size,
         color=str(color),
         va="bottom",
@@ -84,7 +89,7 @@ def draw_chart_footer(
     if copyright_text is not None:
         artists.append(
             figure.text(
-                layout.left_x,
+                left_x,
                 s=copyright_text,
                 ha="left",
                 **common,
@@ -93,7 +98,7 @@ def draw_chart_footer(
     if application_text is not None:
         artists.append(
             figure.text(
-                layout.right_x,
+                right_x,
                 s=application_text,
                 ha="right",
                 **common,
