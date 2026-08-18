@@ -545,7 +545,7 @@ all twelve, while an explicit list may additionally select Ophiuchus without
 renumbering the established zodiac outputs. The Ophiuchus review subject uses
 the ordinary `Oph,Ser` constellation-set resolver so both Serpens figure
 components accompany Ophiuchus without tool-owned component logic. The north
-ecliptic pole defines chart up. Its render-local `SerCap` label displacement
+ecliptic pole defines chart up. Its render-local `SerCau` label displacement
 uses the shared discrete constellation-label placement resolver and does not
 alter the catalogue anchor or any other chart. Fixed content is Hipparcos
 stars through magnitude 5.5, one figure

@@ -29,7 +29,7 @@ def test_traditional_zodiac_order_and_spanish_names_are_complete():
     assert MODULE.ENGLISH_NAMES["Sco"] == "Scorpius"
     assert MODULE.ENGLISH_NAMES["Oph"] == "Ophiuchus"
     assert MODULE.REVIEW_FIGURES == {"Oph": ("Oph", "Ser")}
-    assert MODULE.REVIEW_LABEL_POSITIONS == {"Oph": {"SerCap": "cl"}}
+    assert MODULE.REVIEW_LABEL_POSITIONS == {"Oph": {"SerCau": "cl"}}
     assert MODULE.STAR_MAGNITUDE_LIMIT == pytest.approx(5.5)
     assert MODULE.REFERENCE_MAGNITUDE_RANGE == (0, 5)
     assert MODULE.ZODIAC_LEGEND_PLAN.stars.anchor == pytest.approx(
@@ -89,10 +89,10 @@ def test_ophiuchus_reuses_constellation_set_resolution_for_serpens():
     assert "Ser2" not in source
 
 
-def test_ophiuchus_places_serpens_caput_label_to_the_left():
+def test_ophiuchus_places_serpens_cauda_label_to_the_left():
     offsets = MODULE._review_label_offsets("Oph")
 
-    assert offsets == {"SerCap": pytest.approx((-0.48, 0.0))}
+    assert offsets == {"SerCau": pytest.approx((-0.48, 0.0))}
     assert MODULE._review_label_offsets("Sco") is None
 
 
