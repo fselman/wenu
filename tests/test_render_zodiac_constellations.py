@@ -68,6 +68,9 @@ def test_effective_arguments_fix_requested_content_without_mask_literals():
 def test_zodiac_presentation_enhances_ecliptic_and_grid_labels():
     assert MODULE.ECLIPTIC_LINEWIDTH == pytest.approx(1.0)
     assert MODULE.GRID_LABEL_FONTSIZE == pytest.approx(7.5)
+    source = PATH.read_text(encoding="utf-8")
+    assert 'ecliptic_keypoints="labeled"' in source
+    assert "coordinate_label_zorder" not in source
 
 
 def test_spanish_title_formats_center_ra_and_dec_to_minutes():

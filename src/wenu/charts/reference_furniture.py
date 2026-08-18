@@ -5,8 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
-import astropy.units as u
-from astropy.coordinates import BarycentricTrueEcliptic, SkyCoord
+from astropy.coordinates import BarycentricTrueEcliptic
 
 from wenu.charts.context import BoundaryKind
 from wenu.charts.coordinate_frames import horizontal_to_equatorial
@@ -313,6 +312,7 @@ def build_celestial_reference_sky(
         or references.celestial_equator.enabled
         or references.ecliptic.enabled
         or references.galactic_plane.enabled
+        or references.ecliptic_keypoints_enabled
         or any(
             value != "none"
             for value in (poles.celestial, poles.ecliptic, poles.galactic)
@@ -367,24 +367,31 @@ def build_celestial_reference_sky(
             )
         )
 
-    if any(
-        value != "none"
-        for value in (poles.celestial, poles.ecliptic, poles.galactic)
-    ):
+    point_references = (
+        references.ecliptic_keypoints_enabled
+        or any(
+            value != "none"
+            for value in (poles.celestial, poles.ecliptic, poles.galactic)
+        )
+    )
+    if point_references:
         style = _publication_style(composition.style)
         points = reference_sky.add_points()
-        size = (12.0 if polar else 45.0) * composition.mode.symbol_scale
+        pole_size = (12.0 if polar else 45.0) * composition.mode.symbol_scale
+        keypoint_size = (
+            (12.0 if polar else 28.0) * composition.mode.symbol_scale
+        )
         marker_style = {}
         if polar:
             marker_style["linewidths"] = 0.55 * composition.mode.line_scale
         pole_style = dict(marker_style)
-        if polar:
+        if polar or not poles.labels:
             pole_style["label"] = ""
         _add_selected_poles(
             points,
             "equatorial",
             poles.celestial,
-            size=size,
+            size=pole_size,
             color=style.equatorial_color,
             **pole_style,
         )
@@ -392,7 +399,7 @@ def build_celestial_reference_sky(
             points,
             "ecliptic",
             poles.ecliptic,
-            size=size,
+            size=pole_size,
             color=style.ecliptic_color,
             **pole_style,
         )
@@ -400,33 +407,30 @@ def build_celestial_reference_sky(
             points,
             "galactic",
             poles.galactic,
-            size=size,
+            size=pole_size,
             color=style.galactic_color,
             **pole_style,
         )
-        if polar:
+        legacy_polar_keypoints = polar and any(
+            value != "none"
+            for value in (poles.celestial, poles.ecliptic, poles.galactic)
+        )
+        if references.ecliptic_keypoints_enabled or legacy_polar_keypoints:
             ecliptic_frame = BarycentricTrueEcliptic(
                 equinox=resolved_observer.t_astropy
             )
-            for longitude, label in (
-                (0.0, "♈"), (90.0, "♋"),
-                (180.0, "♎"), (270.0, "♑"),
-            ):
-                coordinate = SkyCoord(
-                    lon=longitude * u.deg,
-                    lat=0.0 * u.deg,
-                    frame=ecliptic_frame,
-                ).icrs
-                points.add_equatorial_point(
-                    coordinate.ra.deg,
-                    coordinate.dec.deg,
-                    label=label,
-                    marker="x",
-                    size=size,
-                    color=style.ecliptic_color,
-                    zorder=layers.POINTS,
-                    **marker_style,
-                )
+            points.add_ecliptic_keypoints(
+                marker="x",
+                size=keypoint_size,
+                color=style.ecliptic_color,
+                zorder=layers.POINTS,
+                frame=ecliptic_frame,
+                labels=(
+                    references.ecliptic_keypoints_labeled
+                    or (legacy_polar_keypoints and poles.labels)
+                ),
+                **marker_style,
+            )
     if target is not None:
         style = _publication_style(composition.style)
         points = (
@@ -498,7 +502,10 @@ def _reference_layer_options(reference_sky, composition, chart):
 
         def render_points(spherical, projected):
             render = dict(render_callback(spherical, projected))
-            render["draw_labels"] = composition.furniture.poles.labels
+            render["draw_labels"] = (
+                composition.furniture.poles.labels
+                or annotations.ecliptic_keypoints_labeled
+            )
             label_style = dict(render["label_style"])
             label_style.update(
                 {

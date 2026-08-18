@@ -151,6 +151,19 @@ def test_cli_furniture_translates_reference_labels_from_product_language():
     assert furniture.references.ecliptic.label == "Eclíptica"
 
 
+def test_cli_furniture_selects_labeled_ecliptic_keypoints():
+    arguments = parser().parse_args([
+        "--grid-references", "ecliptic",
+    ])
+
+    furniture = chart_cli_furniture(
+        arguments,
+        ecliptic_keypoints="labeled",
+    )
+
+    assert furniture.references.ecliptic_keypoints == "labeled"
+
+
 def test_adapter_delegates_selected_products_to_ordinary_drawing(
     monkeypatch, tmp_path
 ):

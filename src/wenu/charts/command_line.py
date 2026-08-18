@@ -96,6 +96,7 @@ def chart_cli_furniture(
     configuration=None,
     family=None,
     language=None,
+    ecliptic_keypoints=None,
 ):
     """Translate shared parsed controls into immutable chart furniture."""
     if configuration is None:
@@ -107,6 +108,10 @@ def chart_cli_furniture(
             family
         ]
     base_context = base.context or ChartContextOptions()
+    keypoint_state = (
+        base.references.ecliptic_keypoints
+        if ecliptic_keypoints is None else ecliptic_keypoints
+    )
 
     def selected(name, fallback):
         value = getattr(arguments, name, None)
@@ -140,11 +145,21 @@ def chart_cli_furniture(
     return ChartFurnitureOptions(
         references=(
             base.references
-            if not references
+            if not references and ecliptic_keypoints is None
             else ReferenceAnnotations(
-                celestial_equator=reference("equatorial"),
-                ecliptic=reference("ecliptic"),
-                galactic_plane=reference("galactic"),
+                celestial_equator=(
+                    reference("equatorial")
+                    if references else base.references.celestial_equator
+                ),
+                ecliptic=(
+                    reference("ecliptic")
+                    if references else base.references.ecliptic
+                ),
+                galactic_plane=(
+                    reference("galactic")
+                    if references else base.references.galactic_plane
+                ),
+                ecliptic_keypoints=keypoint_state,
             )
         ),
         poles=PoleAnnotations(

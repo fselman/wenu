@@ -199,6 +199,7 @@ def render_zodiac(arguments, *, sky=None):
                     configuration=configuration,
                     family=view.family,
                     language="es",
+                    ecliptic_keypoints="labeled",
                 ),
                 style_overrides=ChartStyleOverrides(
                     ecliptic_linewidth=ECLIPTIC_LINEWIDTH,

@@ -13,6 +13,7 @@ from .legend_plan import (
 
 
 _REFERENCE_STATES = frozenset({"none", "line", "labeled"})
+_KEYPOINT_STATES = frozenset({"none", "markers", "labeled"})
 _POLE_SELECTIONS = frozenset(
     {"none", "visible", "north", "south", "both"}
 )
@@ -84,6 +85,7 @@ class ReferenceAnnotations:
     galactic_plane: ReferencePlaneAnnotation = ReferencePlaneAnnotation(
         label="Galactic plane"
     )
+    ecliptic_keypoints: str = "none"
 
     def __post_init__(self):
         for name in (
@@ -95,6 +97,21 @@ class ReferenceAnnotations:
                 raise TypeError(
                     f"{name} must be a ReferencePlaneAnnotation value."
                 )
+        keypoints = str(self.ecliptic_keypoints).strip().lower()
+        if keypoints not in _KEYPOINT_STATES:
+            raise ValueError(
+                "ecliptic_keypoints must be 'none', 'markers', or "
+                "'labeled'."
+            )
+        object.__setattr__(self, "ecliptic_keypoints", keypoints)
+
+    @property
+    def ecliptic_keypoints_enabled(self) -> bool:
+        return self.ecliptic_keypoints != "none"
+
+    @property
+    def ecliptic_keypoints_labeled(self) -> bool:
+        return self.ecliptic_keypoints == "labeled"
 
 
 @dataclass(frozen=True)

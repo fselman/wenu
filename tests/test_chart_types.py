@@ -137,6 +137,28 @@ def test_rectangular_anchor_keeps_negative_declination_label_inside_axes():
         plt.close(figure)
 
 
+def test_rectangular_anchor_ignores_off_page_declination_samples():
+    curve = ProjectedCurve(
+        x=[-8.0, -6.0, -1.5, 0.0, 1.5, 6.0],
+        y=[3.0, 2.0, -0.8, -0.9, -0.8, 2.0],
+        name="declination_-30",
+    )
+
+    class Axes:
+        @staticmethod
+        def get_xlim():
+            return -2.0, 2.0
+
+        @staticmethod
+        def get_ylim():
+            return -1.0, 1.0
+
+    placement = RectangularLabelAnchor()(curve, Axes())
+
+    assert isinstance(placement, CurveLabelPlacement)
+    assert (placement.x, placement.y) == pytest.approx((-1.5, -0.8))
+
+
 def test_regional_chart_applies_rectangular_coordinate_label_anchor():
     layer = object()
     captured = {}

@@ -173,6 +173,9 @@ they are genuinely irrelevant, and state that explicitly in the README.
 
 Use `$HOME/Downloads/<folder>/<patch>.patch`. Safari/Finder may already have
 expanded the ZIP; do not require an unnecessary manual unzip step.
+In every patch handoff, also give Fernando the complete macOS path beginning
+with `/Users/fselman/Downloads/`; never leave `/path/to`, `/full/path`, or only
+the patch filename for him to resolve.
 
 ## Scientific and rendering standards
 

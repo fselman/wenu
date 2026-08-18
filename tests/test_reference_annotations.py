@@ -7,7 +7,13 @@ from types import SimpleNamespace
 
 import numpy as np
 import pytest
-from astropy.coordinates import BarycentricMeanEcliptic, Galactic, ICRS
+from astropy.coordinates import (
+    BarycentricMeanEcliptic,
+    BarycentricTrueEcliptic,
+    Galactic,
+    ICRS,
+)
+from astropy.time import Time
 
 from wenu import (
     BinocularChart,
@@ -140,6 +146,38 @@ def test_both_poles_use_conventional_labels():
 
     labels = [point.label for point in overlay.points._points]
     assert labels == ["NCP", "SCP", "NEP", "SEP", "NGP", "SGP"]
+
+
+def test_labeled_ecliptic_keypoints_use_the_reference_ecliptic_frame():
+    resolved_observer = observer()
+    resolved_observer.t_astropy = Time("2026-08-16")
+    composition = compose_chart(
+        chart(),
+        style="cartoon",
+        furniture=ChartFurnitureOptions(
+            references=ReferenceAnnotations(
+                ecliptic_keypoints="labeled"
+            ),
+            poles=PoleAnnotations(labels=False),
+        ),
+    )
+
+    overlay = build_celestial_reference_sky(
+        SimpleNamespace(observer=resolved_observer),
+        composition,
+    )
+
+    assert len(overlay.points) == 4
+    expected = BarycentricTrueEcliptic(
+        equinox=resolved_observer.t_astropy
+    )
+    assert all(
+        point.coord.frame.is_equivalent_frame(expected)
+        for point in overlay.points._points
+    )
+    assert [point.label for point in overlay.points._points] == [
+        "♈", "♋", "♎", "♑"
+    ]
 
 
 def test_rectangular_automatic_anchor_uses_visible_curve_segment():

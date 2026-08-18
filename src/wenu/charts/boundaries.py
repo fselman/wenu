@@ -287,6 +287,18 @@ class RectangularLabelAnchor:
         y = np.asarray(curve.y[finite], dtype=float)
         xlim = ax.get_xlim()
         ylim = ax.get_ylim()
+        x_min, x_max = sorted(xlim)
+        y_min, y_max = sorted(ylim)
+        inside = (
+            (x >= x_min)
+            & (x <= x_max)
+            & (y >= y_min)
+            & (y <= y_max)
+        )
+        if not np.any(inside):
+            return None
+        x = x[inside]
+        y = y[inside]
         name = str(curve.name or "")
         if name.startswith("right_ascension_"):
             target = min(ylim) + self.inset * abs(ylim[1] - ylim[0])

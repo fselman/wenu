@@ -546,7 +546,12 @@ carry the Spanish constellation name and J2000 center RA/Dec to minutes.
 `--mask` therefore receives the packaged cartoon warm-white mask unchanged;
 the tool contains no mask color, opacity, polygon, or renderer policy. Its
 cartoon/presentation review overrides strengthen only the ecliptic and enlarge
-coordinate labels through `ChartStyleOverrides`.
+coordinate labels through `ChartStyleOverrides`. Its furniture requests the
+four canonical ecliptic keypoints through the shared reference overlay; normal
+regional clipping shows only keypoints actually inside each constellation
+field. The shared rectangular grid-label anchor filters projected samples to
+the axes viewport before placing RA or declination text, so visible parallels
+cannot lose labels to off-page curve samples.
 
 `data/translations.json` is the single packaged dictionary for generated
 visual labels. `translations.py` loads it immutably, validates the requested

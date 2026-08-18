@@ -390,6 +390,12 @@ precomputed strings. The request exporter resolves them after both the chart
 and sky exist, appends any caller-supplied context lines, and passes the result
 through the established immutable legend furniture. The contract is shared by
 all four chart families.
+`ReferenceAnnotations.ecliptic_keypoints` independently selects `none`,
+`markers`, or `labeled`. The reference-furniture owner delegates the four
+equinox/solstice positions to `CelestialPoints.add_ecliptic_keypoints()` and
+supplies the same barycentric true-ecliptic-of-date frame used by the rendered
+ecliptic curve. Ordinary viewport preparation and clipping decide which of
+the four points are present in a regional field.
 
 `resolve_target(ChartSubjectRequest(...))` resolves packaged aliases without
 network access. Its immutable `ResolvedTarget` records canonical key, display

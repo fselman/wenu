@@ -4,6 +4,8 @@ from types import SimpleNamespace
 
 import numpy as np
 import pytest
+from astropy.coordinates import BarycentricTrueEcliptic
+from astropy.time import Time
 
 from wenu.sky import GeometricalObject, SkyLayer
 from wenu.sky.points import CelestialPoints
@@ -97,6 +99,20 @@ def test_ecliptic_cardinal_labels_are_preserved():
     ]
 
 
+def test_ecliptic_keypoints_accept_the_reference_grid_frame():
+    points = CelestialPoints(make_observer())
+    frame = BarycentricTrueEcliptic(equinox=Time("2026-08-16"))
+
+    points.add_ecliptic_keypoints(frame=frame, marker="x")
+
+    assert len(points) == 4
+    assert all(
+        point.coord.frame.is_equivalent_frame(frame)
+        for point in points._points
+    )
+    assert all(point.marker == "x" for point in points._points)
+
+
 def test_clear_preserves_collection_api():
     points = CelestialPoints(make_observer())
     points.add_equatorial_point(0.0, 0.0)
@@ -110,4 +126,3 @@ def test_domain_layer_has_no_projection_or_rendering_api():
     points = CelestialPoints(make_observer())
     for name in ("draw", "project", "artist", "artists"):
         assert not hasattr(points, name)
-

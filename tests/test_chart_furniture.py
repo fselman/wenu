@@ -151,6 +151,17 @@ def test_furniture_values_are_immutable():
         options.footer = FooterOptions(application=True)
 
 
+def test_ecliptic_keypoint_state_is_semantic_and_validated():
+    markers = ReferenceAnnotations(ecliptic_keypoints="markers")
+    labeled = ReferenceAnnotations(ecliptic_keypoints="labeled")
+
+    assert markers.ecliptic_keypoints_enabled is True
+    assert markers.ecliptic_keypoints_labeled is False
+    assert labeled.ecliptic_keypoints_labeled is True
+    with pytest.raises(ValueError, match="ecliptic_keypoints"):
+        ReferenceAnnotations(ecliptic_keypoints="visible")
+
+
 def test_style_and_mode_do_not_change_chart_geometry():
     request = ChartFurnitureOptions(
         references=ReferenceAnnotations(

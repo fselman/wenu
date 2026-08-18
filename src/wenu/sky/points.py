@@ -123,13 +123,15 @@ class CelestialPoints(GeometricalObject):
         size=30.0,
         color="white",
         zorder=None,
+        frame=None,
         **style,
     ):
+        frame = self.obs.ecliptic_frame if frame is None else frame
         return self._append_point(
             coord=SkyCoord(
                 lon=float(lon_deg) * u.deg,
                 lat=float(lat_deg) * u.deg,
-                frame=self.obs.ecliptic_frame,
+                frame=frame,
             ),
             label=label,
             marker=marker,
@@ -243,6 +245,8 @@ class CelestialPoints(GeometricalObject):
         size=28.0,
         color="cyan",
         zorder=None,
+        frame=None,
+        labels=True,
         **style,
     ):
         for lon_deg, label in (
@@ -254,11 +258,12 @@ class CelestialPoints(GeometricalObject):
             self.add_ecliptic_point(
                 lon_deg,
                 0.0,
-                label,
+                label if labels else "",
                 marker,
                 size,
                 color,
                 zorder,
+                frame=frame,
                 **style,
             )
         return self
@@ -358,4 +363,3 @@ class CelestialPoints(GeometricalObject):
                 "pole must be 'north', 'south', or 'visible'"
             )
         return pole
-
