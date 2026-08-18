@@ -174,6 +174,12 @@ def chart_cli_furniture(
                     translate_label(name, language)
                     for name in base.references.ecliptic_keypoint_names
                 ),
+                ecliptic_keypoint_zodiac_names=tuple(
+                    translate_label(name, language)
+                    for name in (
+                        base.references.ecliptic_keypoint_zodiac_names
+                    )
+                ),
             )
         ),
         poles=PoleAnnotations(

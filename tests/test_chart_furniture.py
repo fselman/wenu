@@ -172,8 +172,16 @@ def test_ecliptic_keypoint_legend_has_four_semantic_names():
         "September equinox",
         "December solstice",
     )
+    assert references.ecliptic_keypoint_zodiac_names == (
+        "Aries",
+        "Cancer",
+        "Libra",
+        "Capricorn",
+    )
     with pytest.raises(ValueError, match="four non-empty"):
         ReferenceAnnotations(ecliptic_keypoint_names=("one",) * 3)
+    with pytest.raises(ValueError, match="four non-empty"):
+        ReferenceAnnotations(ecliptic_keypoint_zodiac_names=("one",) * 3)
 
 
 def test_stellar_legend_can_request_one_reference_magnitude():

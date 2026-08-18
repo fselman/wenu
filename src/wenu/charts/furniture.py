@@ -93,6 +93,12 @@ class ReferenceAnnotations:
         "September equinox",
         "December solstice",
     )
+    ecliptic_keypoint_zodiac_names: tuple[str, str, str, str] = (
+        "Aries",
+        "Cancer",
+        "Libra",
+        "Capricorn",
+    )
 
     def __post_init__(self):
         for name in (
@@ -122,6 +128,21 @@ class ReferenceAnnotations:
             bool(self.ecliptic_keypoint_legend),
         )
         object.__setattr__(self, "ecliptic_keypoint_names", names)
+        zodiac_names = tuple(
+            str(name) for name in self.ecliptic_keypoint_zodiac_names
+        )
+        if len(zodiac_names) != 4 or any(
+            not name.strip() for name in zodiac_names
+        ):
+            raise ValueError(
+                "ecliptic_keypoint_zodiac_names must contain four "
+                "non-empty names."
+            )
+        object.__setattr__(
+            self,
+            "ecliptic_keypoint_zodiac_names",
+            zodiac_names,
+        )
 
     @property
     def ecliptic_keypoints_enabled(self) -> bool:

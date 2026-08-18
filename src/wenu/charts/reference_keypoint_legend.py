@@ -65,6 +65,11 @@ def draw_ecliptic_keypoint_legend(
         annotations.ecliptic_keypoint_names,
         strict=True,
     ))
+    zodiac_names = dict(zip(
+        ECLIPTIC_KEYPOINT_SYMBOLS,
+        annotations.ecliptic_keypoint_zodiac_names,
+        strict=True,
+    ))
     handles = tuple(
         Line2D(
             [],
@@ -74,7 +79,9 @@ def draw_ecliptic_keypoint_legend(
             markersize=4.0 * composition.mode.symbol_scale,
             markeredgewidth=0.8 * composition.mode.line_scale,
             color=style.ecliptic_color,
-            label=f"{symbol}  {names[symbol]}",
+            label=(
+                f"{symbol} ({zodiac_names[symbol]}): {names[symbol]}"
+            ),
         )
         for symbol in present
     )

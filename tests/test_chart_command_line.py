@@ -184,6 +184,12 @@ def test_cli_furniture_translates_keypoint_legend_and_reference_magnitude():
         "Equinoccio de septiembre",
         "Solsticio de diciembre",
     )
+    assert furniture.references.ecliptic_keypoint_zodiac_names == (
+        "Aries",
+        "Cáncer",
+        "Libra",
+        "Capricornio",
+    )
     assert furniture.legends.stellar_reference_magnitude == 3
     assert furniture.legends.stellar_label_suffix == " mag"
 

@@ -19,7 +19,8 @@
     "March equinox": "March equinox",
     "June solstice": "June solstice",
     "September equinox": "September equinox",
-    "December solstice": "December solstice"
+    "December solstice": "December solstice",
+    "Capricorn": "Capricorn"
   },
   "es": {
     "Celestial equator": "Ecuador celeste",
@@ -41,6 +42,7 @@
     "March equinox": "Equinoccio de marzo",
     "June solstice": "Solsticio de junio",
     "September equinox": "Equinoccio de septiembre",
-    "December solstice": "Solsticio de diciembre"
+    "December solstice": "Solsticio de diciembre",
+    "Capricorn": "Capricornio"
   }
 }

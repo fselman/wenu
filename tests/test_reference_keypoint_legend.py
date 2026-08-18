@@ -58,7 +58,7 @@ def test_keypoint_legend_lists_only_symbols_inside_the_viewport():
         )
 
         assert [text.get_text() for text in legend.get_texts()] == [
-            "♈  Equinoccio de marzo"
+            "♈ (Aries): Equinoccio de marzo"
         ]
         assert legend._loc == 3
     finally:

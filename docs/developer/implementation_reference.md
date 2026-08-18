@@ -409,8 +409,9 @@ below the observer's physical horizon. Ordinary projection and viewport
 clipping still decide which of the four points are present in a field.
 `ecliptic_keypoint_legend` requests a compact lower-left name key. The
 reference rendering inspects its already-projected point result and adds only
-the canonical points inside the final viewport; the four localized names are
-carried by the immutable annotation request.
+the canonical points inside the final viewport. Each entry identifies the
+symbol's localized zodiac sign before its localized seasonal explanation;
+both sets of four names are carried by the immutable annotation request.
 `LegendOptions.stellar_reference_range` requests a fixed inclusive integer
 magnitude scale while retaining the chart's canonical magnitude-to-area law.
 `stellar_background="sky"` resolves the legend frame from the composed canvas
