@@ -534,6 +534,15 @@ and pouch furniture owners. It writes one clean, one-sided A4 fabrication PDF
 with south above and inverted north below, plus one faded canonical-disk PNG
 diagnostic and one checksum manifest.
 
+`tools/render_zodiac_constellations.py` is a review-only batch entry point. It
+uses the established regional-chart pipeline to emit the twelve traditional
+zodiac constellations separately, with the north ecliptic pole defining chart
+up, Hipparcos stars through magnitude 5.5, the ecliptic, the celestial equator,
+and an equatorial grid. It introduces no chart family or projection policy.
+Its `--mask` switch uses the ordinary IAU outside-constellation mask, while
+`--presentation` selects the established high-contrast atlas presentation
+mode; neither switch changes framing or astronomical selection.
+
 Milestone 46D.8E keeps those owners but narrows diagnostic claims: all-sky and
 regional constellation masks are isolated from horizon openings, binocular
 acceptance covers its actual field and furniture, and circumpolar retains the
