@@ -33,6 +33,13 @@ ZODIAC_CONSTELLATIONS = (
 )
 STAR_MAGNITUDE_LIMIT = 5.5
 DEFAULT_OUTPUT = Path("output/zodiac-constellations")
+VISIBLE_LAYERS = frozenset({
+    "stars",
+    "constellation_lines",
+    "constellation_labels",
+    "equatorial_grid",
+    "ecliptic_grid",
+})
 
 
 def _vector(altitude_deg, azimuth_deg):
@@ -159,6 +166,7 @@ def render_zodiac(
                 ),
                 detail=FixedDetailPolicy(ResolvedDetail(
                     star_magnitude_limit=STAR_MAGNITUDE_LIMIT,
+                    enabled_layers=VISIBLE_LAYERS,
                 )),
             )
             figure, axes = plt.subplots(figsize=(

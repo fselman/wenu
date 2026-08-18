@@ -542,6 +542,9 @@ and an equatorial grid. It introduces no chart family or projection policy.
 Its `--mask` switch uses the ordinary IAU outside-constellation mask, while
 `--presentation` selects the established high-contrast atlas presentation
 mode; neither switch changes framing or astronomical selection.
+The IAU boundary catalogue remains hidden mask-construction geometry: the
+tool's explicit visible-layer allowlist excludes `constellation_boundaries`,
+preventing those polygon edges from leaking into either output mode.
 
 Milestone 46D.8E keeps those owners but narrows diagnostic claims: all-sky and
 regional constellation masks are isolated from horizon openings, binocular

@@ -43,3 +43,14 @@ def test_mask_and_presentation_are_explicit_independent_switches():
 
     assert arguments.mask is True
     assert arguments.presentation is True
+
+
+def test_mask_geometry_is_never_enabled_as_a_visible_boundary_layer():
+    assert MODULE.VISIBLE_LAYERS == {
+        "stars",
+        "constellation_lines",
+        "constellation_labels",
+        "equatorial_grid",
+        "ecliptic_grid",
+    }
+    assert "constellation_boundaries" not in MODULE.VISIBLE_LAYERS
