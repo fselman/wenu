@@ -1,0 +1,255 @@
+# Wenu post-v0.9 architecture roadmap
+
+**Status:** Accepted future direction; implementation not started
+
+**Planning baseline:** `52e9411`
+
+**Decision date:** 2026-08-19
+
+## 1. Purpose and authority
+
+This roadmap preserves three future enhancements after the physical
+polar-planisphere work:
+
+1. rationalize astronomical coordinates and time-dependent position
+   generation for planets, natural satellites, and artificial satellites;
+2. make SVG a documented and verified vector-output product;
+3. support time sequences in which celestial geometry, the observer horizon,
+   and moving phenomena evolve on explicitly different timescales.
+
+It records direction and sequencing. It does not supersede the active v0.9
+target or authorize implementation while `wenu_migration_0.8_to_0.9.md`
+remains open. Each implementation stage requires a fresh as-is assessment and
+its own small, testable milestone.
+
+The coordinate decisions in `coordinate_transformation_audit_09a2afd.md`
+remain authoritative scientific input. The longer-term astrometry sequence in
+`polar_delivery_and_astrometry_roadmap.md` is consolidated here so that it no
+longer depends on the urgent polar-delivery numbering.
+
+## 2. Two independent development tracks
+
+Post-v0.9 work has two complementary tracks.
+
+### 2.1 Scientific-state architecture
+
+This track owns reference frames, origins, epochs, observation instants, time
+scales, physical position status, ephemeris/orbit providers, transformation,
+and reusable celestial realization.
+
+### 2.2 Product and output architecture
+
+This track owns supported export formats and time-sequence products. It may
+reuse the current canonical static-render pipeline but must not create a
+second astronomical, projection, preparation, rendering, furniture, or
+export pipeline.
+
+SVG verification can proceed independently. Optimized horizon rotation and
+moving-object sequences depend on the scientific-state contracts.
+
+## 3. Preserved architectural boundaries
+
+The canonical flow remains:
+
+```text
+catalogue, ephemeris, or orbit provider
+    -> explicit astronomical state
+    -> astronomical coordinate service
+    -> typed spherical geometry in the product frame
+    -> coordinate-neutral projection alignment
+    -> projection
+    -> projected geometry and chart preparation
+    -> renderer
+    -> furniture and export
+```
+
+Position generation and coordinate transformation are different operations.
+A provider determines where an object is at an instant. The coordinate
+service represents that state in an explicitly requested frame. Projection
+alignment remains a coordinate-neutral spherical rotation and rendering
+performs no astronomical calculation.
+
+`CelestialSphere.draw_chart()` remains the canonical execution core until an
+approved milestone deliberately evolves that public boundary.
+
+## 4. Milestone 49A - Close v0.9 and refresh the as-is audit
+
+- close the physical-planisphere acceptance and documentation;
+- record the exact post-v0.9 implementation baseline;
+- reconcile the 2026-08-16 coordinate audit with intervening changes;
+- inventory every Astropy, Skyfield, handwritten, and chart-owned transform;
+- inventory time parsing, UTC offsets, time scales, and observer construction;
+- preserve current visual products as regression authorities.
+
+This milestone changes documentation and tests only unless the audit exposes
+a correctness defect that must be isolated separately.
+
+## 5. Milestone 49B - Explicit astronomical-state vocabulary
+
+Introduce immutable specifications for:
+
+- reference frame and origin;
+- coordinate epoch or equinox where applicable;
+- observation instant and time scale where applicable;
+- units and representation;
+- geometric, astrometric, apparent, or topocentric status;
+- provider/model identity and provenance;
+- refraction, light-time, aberration, deflection, precession/nutation, and
+  Earth-orientation policy when relevant.
+
+Static celestial products resolve an explicit observer-independent product
+frame. Local observing products resolve an explicit observer and AltAz
+policy. Frame-less astronomical longitude/latitude must not cross the new
+public boundary.
+
+## 6. Milestone 49C - One astronomical coordinate service
+
+- add one Astropy-backed package service for supported astronomical frame
+  transformations;
+- transform points, curves, polygons, grids, and disconnected geometry while
+  preserving identifiers, topology, labels, and provenance;
+- keep specialized adapters for states such as TEME where their physical
+  transformation path requires them;
+- migrate reference grids, planes, poles, and ecliptic keypoints first;
+- add spherical coincidence and round-trip tests;
+- retire independent `radec_to_altaz()` mathematics after all callers move.
+
+Projection classes must not import astronomical frames or infer them from
+longitude/latitude argument names.
+
+## 7. Milestone 49D - Observer-independent celestial realization
+
+- realize catalogue stars and deep-sky geometry directly in the canonical
+  celestial product frame;
+- migrate constellations, boundaries, labels, the Milky Way, and Magellanic
+  Clouds;
+- remove the celestial-to-AltAz-to-celestial detour from polar and other
+  observer-independent products;
+- prove that changing observer location or time does not change their
+  pre-furniture astronomical geometry;
+- establish an immutable reusable celestial-scene or maximal-sphere boundary.
+
+Gaia may replace or complement Hipparcos only through an explicit catalogue
+milestone with provenance, epoch, proper-motion, magnitude, identifier, and
+cross-match policies.
+
+## 8. Milestone 49E - Position-provider boundary
+
+Define a protocol for time-dependent position sources before adding their
+chart layers.
+
+| Object class | Expected provider state |
+| --- | --- |
+| stars with space motion | catalogue astrometry with reference epoch and motion |
+| Moon and planets | JPL or equivalent barycentric/geocentric ephemeris state |
+| natural satellites | planet-centred ephemeris or orbit-model state |
+| asteroids and comets | heliocentric or barycentric ephemeris/orbital state |
+| artificial satellites | TLE/OMM plus SGP4 TEME state |
+
+Providers compute or propagate states. They do not select charts, transform
+through undocumented downstream paths, project, clip, style, or render.
+
+## 9. Milestone 49F - SVG product verification
+
+Wenu already reaches Matplotlib's SVG backend when an `.svg` output path or
+configured SVG extension is selected. This milestone promotes that incidental
+capability into a supported product contract; it does not begin by creating a
+new renderer.
+
+- document SVG in the CLI, configuration, implementation reference, and user
+  guide;
+- export representative all-sky, regional, binocular, circumpolar, and polar
+  products through the canonical workflow;
+- verify physical dimensions, view boxes, clipping, transparency, masks,
+  symbols, lines, labels, legends, and furniture;
+- define the font policy: retained text versus paths and font portability;
+- detect unexpected raster image payloads;
+- compare SVG geometry and appearance with the atlas-print baseline;
+- add deterministic structural tests without snapshotting irrelevant backend
+  serialization details.
+
+A dedicated SVG renderer is considered only if this verification identifies
+a concrete requirement that Matplotlib's backend cannot meet.
+
+## 10. Milestone 49G - Temporal sequence contract
+
+Represent a sequence as one immutable product definition plus an ordered set
+of explicit instants. Separate state by its physical cadence:
+
+| Change | Reusable or recomputed state |
+| --- | --- |
+| Earth rotation over hours | celestial sphere reusable; local horizon and AltAz realization change |
+| planet motion over days or months | background sphere reusable; provider states change |
+| artificial-satellite motion over seconds or minutes | background sphere reusable; orbit propagation and local transform change rapidly |
+| proper motion or precession over years or centuries | catalogue/frame realization changes under an explicit epoch policy |
+| appearance-only changes | astronomical and projected geometry remain reusable where valid |
+
+The request must distinguish simulation time, display/civil time, time zone,
+UTC offset, time scale, sampling interval, playback duration, and frames per
+second. Presentation speed must never be mistaken for physical time.
+
+## 11. Milestone 49H - Fixed sky and rotating horizon
+
+Use the temporal contract to support the Earth-rotation presentation:
+
+- stars, constellation geometry, and celestial reference grids remain fixed
+  in their celestial frame;
+- observer-local horizon, cardinal directions, AltAz grid, visibility, and an
+  optional landscape/Earth mask change with time;
+- chart projection and camera remain explicit and stable unless the product
+  requests otherwise;
+- cache only values whose frame, epoch, instant, observer, and product policy
+  prove them reusable;
+- compare frames against complete independent renders within declared
+  scientific and graphical tolerances.
+
+The existing `tools/render_circumpolar_movie.py` remains the reference
+implementation: it changes observer time, performs complete canonical static
+renders, and assembles PNG frames with FFmpeg. The optimized implementation
+must reproduce that baseline rather than bypass the canonical pipeline.
+
+## 12. Milestone 49I - Moving-object vertical slices
+
+Add one object class at a time:
+
+1. Moon or one planet through an ephemeris provider;
+2. a natural satellite if its provider contract differs materially;
+3. one artificial satellite through an independently validated SGP4/TEME to
+   observer-local path.
+
+Each slice must test provenance, time scale, origin, coordinate status,
+transformation, visibility, labels, trails where requested, and repeatable
+sequence output before the next class begins.
+
+## 13. Milestone 49J - Performance and closure
+
+- benchmark complete independent frames before optimizing;
+- measure catalogue loading, provider evaluation, transformation, projection,
+  preparation, rendering, and encoding separately;
+- cache by explicit immutable scientific keys rather than mutable global
+  state;
+- retain the complete-render path as a correctness oracle;
+- update current architecture, implementation reference, source tree, user
+  documentation, and examples;
+- close or supersede this roadmap only after focused, full, scientific, SVG,
+  visual, and sequence tests pass.
+
+## 14. Stop conditions
+
+Stop and re-audit if a proposed milestone would:
+
+- create a second celestial-sphere, projection, rendering, or export path;
+- let a renderer or projection choose an astronomical frame;
+- treat TEME, Earth-fixed, AltAz, FK4/FK5, ecliptic, or Galactic coordinates
+  as ICRS by relabelling;
+- hide time scale, origin, observer, refraction, or apparent/geometric status;
+- make observer-independent geometry depend silently on observer time;
+- optimize frames before a complete-render reference and benchmark exist;
+- couple SVG output to different astronomical geometry.
+
+## 15. Completion definition
+
+The post-v0.9 program is complete when Wenu has one governed astronomical
+state and transformation architecture, documented and verified SVG output,
+and reproducible time sequences that reuse scientifically invariant state
+while correctly recomputing observer-local and moving-object phenomena.

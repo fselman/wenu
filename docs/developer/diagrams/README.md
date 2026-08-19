@@ -16,7 +16,7 @@ dot -Tsvg packages.dot -o packages.svg
 
 These diagrams complement, but do not replace,
 
-- `target_architecture_v0.5.md`
+- `../archive/architecture_history/target_architecture_v0.5.md`
 - `implementation_reference.md`
 
 because UML shows the static structure but not the runtime execution flow.

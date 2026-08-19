@@ -195,16 +195,13 @@ Developer references:
 - `docs/developer/current_architecture_v0.8.md` (implemented baseline);
 - `docs/developer/target_architecture_v0.9.md` (proposed architecture);
 - `docs/developer/wenu_migration_0.8_to_0.9.md` (active roadmap);
+- `docs/developer/post_v0.9_architecture_roadmap.md` (accepted future
+  coordinate, SVG, and temporal direction);
 - `docs/developer/target_architecture_v0.8.md` (implemented architecture);
 - `docs/developer/implementation_reference.md` (current v0.8 APIs);
 - `docs/developer/wenu_migration_0.7_to_0.8.md` (completed roadmap);
-- `docs/developer/current_architecture_v0.7.md` (historical baseline);
-- `docs/developer/target_architecture_v0.7.md` (implemented v0.7 architecture);
-- `docs/developer/wenu_migration_0.6_to_0.7.md` (completed v0.7 roadmap);
-- `docs/developer/current_architecture_v0.5.md` (historical baseline);
-- `docs/developer/target_architecture_v0.6.md` (implemented architecture);
-- `docs/developer/wenu_migration_0.5_to_0.6.md` (completed roadmap);
-- `docs/developer/target_architecture_v0.5.md` (completed architecture);
+- `docs/developer/archive/README.md` (historical architecture and migration
+  index);
 - `docs/developer/deprecations_v0.5.md`.
 
 ## Tests

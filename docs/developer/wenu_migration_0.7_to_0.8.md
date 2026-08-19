@@ -1,7 +1,7 @@
 # Wenu migration roadmap: v0.7 to v0.8
 
 **Status:** Complete
-**Source:** `current_architecture_v0.7.md`
+**Source:** `archive/architecture_history/current_architecture_v0.7.md`
 **Target:** `target_architecture_v0.8.md`
 **Base commit:** `b72eef8`
 

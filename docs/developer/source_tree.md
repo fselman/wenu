@@ -392,9 +392,11 @@ parallel implementations.
   contains no private catalogue construction, request graph, renderer, legend
   assembly, or export loop.
 
-See `target_architecture_v0.7.md` for the implemented architecture,
-`wenu_migration_0.6_to_0.7.md` for the completed roadmap,
-`current_architecture_v0.6.md` for the historical baseline, and
+See `archive/architecture_history/target_architecture_v0.7.md` for the
+implemented architecture,
+`archive/migration_history/wenu_migration_0.6_to_0.7.md` for the completed
+roadmap, `archive/architecture_history/current_architecture_v0.6.md` for the
+historical baseline, and
 `implementation_reference.md` for current public usage.
 
 The structured user guide is rooted at `docs/user_guide/index.md`; its

@@ -8,13 +8,15 @@ import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 DEVELOPER = ROOT / "docs" / "developer"
-CURRENT = DEVELOPER / "current_architecture_v0.7.md"
-IMPLEMENTED = DEVELOPER / "target_architecture_v0.7.md"
+ARCHIVE = DEVELOPER / "archive"
+CURRENT = ARCHIVE / "architecture_history" / "current_architecture_v0.7.md"
+IMPLEMENTED = ARCHIVE / "architecture_history" / "target_architecture_v0.7.md"
 V08_CURRENT = DEVELOPER / "current_architecture_v0.8.md"
 TARGET = DEVELOPER / "target_architecture_v0.8.md"
 ROADMAP = DEVELOPER / "wenu_migration_0.7_to_0.8.md"
 V09_TARGET = DEVELOPER / "target_architecture_v0.9.md"
 V09_ROADMAP = DEVELOPER / "wenu_migration_0.8_to_0.9.md"
+FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = DEVELOPER / "configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -69,6 +71,7 @@ def test_current_architecture_authorities_exist_and_cross_reference():
             ROADMAP,
             V09_TARGET,
             V09_ROADMAP,
+            FUTURE_ROADMAP,
             INSTRUCTIONS,
         )
         if not path.is_file()
@@ -83,6 +86,30 @@ def test_current_architecture_authorities_exist_and_cross_reference():
     assert "wenu_migration_0.8_to_0.9.md" in target
     assert "current_architecture_v0.8.md" in roadmap
     assert "target_architecture_v0.9.md" in roadmap
+
+
+def test_historical_documents_are_archived_and_not_active_authorities():
+    assert (ARCHIVE / "README.md").is_file()
+    assert not (ROOT / "docs" / "obsolete").exists()
+    for name in (
+        "current_architecture_v0.4.md",
+        "current_architecture_v0.5.md",
+        "current_architecture_v0.6.md",
+        "current_architecture_v0.7.md",
+        "target_architecture_v0.5.md",
+        "target_architecture_v0.6.md",
+        "target_architecture_v0.7.md",
+    ):
+        assert (ARCHIVE / "architecture_history" / name).is_file()
+        assert not (DEVELOPER / name).exists()
+    for name in (
+        "wenu_migration_0.4_to_0.5.md",
+        "wenu_migration_0.5_to_0.6.md",
+        "wenu_migration_0.6_to_0.7.md",
+    ):
+        assert (ARCHIVE / "migration_history" / name).is_file()
+        assert not (DEVELOPER / name).exists()
+    assert (ARCHIVE / "pre_versioned" / "architecture.md").is_file()
 
 
 def test_v08_architecture_and_migration_are_closed():
@@ -150,14 +177,34 @@ def test_assistant_instructions_name_current_architecture_authorities():
         "current_architecture_v0.8.md",
         "target_architecture_v0.9.md",
         "wenu_migration_0.8_to_0.9.md",
-        "current_architecture_v0.7.md",
-        "target_architecture_v0.7.md",
         "target_architecture_v0.8.md",
         "wenu_migration_0.7_to_0.8.md",
         "implementation_reference.md",
         "source_tree.md",
+        "coordinate_transformation_audit_09a2afd.md",
+        "post_v0.9_architecture_roadmap.md",
     ):
         assert name in instructions
+    assert "historical evidence, not active" in instructions
+
+
+def test_post_v09_roadmap_records_coordinate_svg_and_temporal_direction():
+    roadmap = read(FUTURE_ROADMAP)
+    for phrase in (
+        "Two independent development tracks",
+        "One astronomical coordinate service",
+        "Position-provider boundary",
+        "SVG product verification",
+        "Temporal sequence contract",
+        "Fixed sky and rotating horizon",
+        "tools/render_circumpolar_movie.py",
+        "simulation time",
+        "time scale",
+        "TEME",
+        "SGP4",
+        "complete-render path as a correctness oracle",
+    ):
+        assert phrase in roadmap
 
 
 def test_v08_roadmap_records_ordinary_interface_and_static_sequences():
@@ -426,7 +473,7 @@ def test_configuration_schema_v1_freezes_structure_and_validation():
 
 def test_configuration_runtime_migration_is_closed_before_user_overlays():
     roadmap = read(ROADMAP)
-    architecture = read(DEVELOPER / "current_architecture_v0.7.md")
+    architecture = read(CURRENT)
 
     for phrase in (
         "Milestone 46D.4D",

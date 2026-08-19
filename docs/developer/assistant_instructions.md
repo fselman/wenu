@@ -35,17 +35,16 @@ For the active v0.9 migration, read and follow:
 - `wenu_migration_0.8_to_0.9.md` as the active roadmap;
 - `target_architecture_v0.8.md` as the implemented architecture;
 - `wenu_migration_0.7_to_0.8.md` as the completed roadmap;
-- `current_architecture_v0.7.md` as the historical v0.7 baseline;
-- `target_architecture_v0.7.md` as the implemented architecture for v0.7;
-- `wenu_migration_0.6_to_0.7.md` as completed migration history;
-- `current_architecture_v0.6.md` as the historical baseline;
 - `implementation_reference.md` as the current API reference;
 - `source_tree.md` as the current responsibility map;
-- `target_architecture_v0.6.md` as the implemented architecture for v0.6;
-- `wenu_migration_0.5_to_0.6.md` as completed migration history;
-- `current_architecture_v0.5.md` as the historical baseline;
-- `target_architecture_v0.5.md`, `current_architecture_v0.4.md`, and
-  `wenu_migration_0.4_to_0.5.md` as completed migration history.
+- `coordinate_transformation_audit_09a2afd.md` for coordinate, frame, time,
+  observer, astrometry, planet, or satellite work;
+- `post_v0.9_architecture_roadmap.md` for accepted future coordinate, SVG,
+  temporal-sequence, animation, planet, or satellite direction.
+
+Documents under `docs/developer/archive/` are historical evidence, not active
+architectural authority. Do not read them routinely. Consult them only when a
+task requires provenance, old compatibility reasoning, or migration history.
 
 Wenu has one canonical flow:
 
@@ -63,6 +62,11 @@ catalogues and sky layers
 Do not create parallel sky, geometry, projection, clipping, rendering, legend,
 or export pipelines. Extend the existing architecture rather than replacing
 it. `CelestialSphere.draw_chart()` remains the canonical execution core.
+
+Animation may orchestrate repeated canonical static renders and later reuse
+scientifically invariant state through an approved temporal contract. It must
+not introduce a second astronomical or rendering pipeline. Output formats are
+export/backend concerns and must not change astronomical geometry.
 
 ## Independent chart concerns
 

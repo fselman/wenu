@@ -11,8 +11,9 @@ In particular:
 2. Establish the active branch, exact commit, and working-tree status before
    proposing a modification.
 3. Read the active architecture, migration, implementation-reference,
-   source-tree, implementation, and test material required by the governing
-   instructions.
+   source-tree, future-roadmap, implementation, and test material required by
+   the governing instructions. Documents under `docs/developer/archive/` are
+   historical evidence, not routine architectural authority.
 4. Perform an as-is assessment before changing anything.
 5. Implement only the smallest current milestone and preserve the canonical
    Wenu pipeline and responsibility boundaries.
