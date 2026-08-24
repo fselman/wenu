@@ -98,8 +98,12 @@ nonempty and contain unique IAU abbreviations. A `target`, `group`, and
 
 ### `families`
 
-Every family contains `projection`, `coordinate_frame`, `position_angle`,
-and `mask`. Family-specific geometry follows:
+Every family contains `projection`, `coordinate_frame`, `orientation`,
+`position_angle`, and `mask`. `orientation` is optional and accepts
+`celestial-north-up` or `zenith-up`; `position_angle` is an optional number.
+Regional and binocular families select exactly one of them. Other families
+use `orientation = "none"` and a literal position angle. Family-specific
+geometry follows:
 
 - `all_sky`: `projection = "mollweide"`, `coordinate_frame = "galactic"`.
 - `planisphere`: `projection = "stereographic"`,

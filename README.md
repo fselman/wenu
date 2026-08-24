@@ -116,7 +116,7 @@ chart = RegionalChart.from_constellations(
     sky,
     ("Cru", "Cen"),
     angular_radius_deg=35.0,
-    north_up=True,
+    orientation="celestial-north-up",
 )
 figure, ax = plt.subplots(figsize=chart.figure_size(7.0))
 composition = compose_chart(

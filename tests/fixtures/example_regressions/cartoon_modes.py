@@ -45,7 +45,7 @@ def build_scene():
         CONSTELLATIONS,
         angular_radius_deg=46.0,
         aspect_ratio=1.38,
-        north_up=True,
+        orientation="celestial-north-up",
         crop_y=0.0,
         label_selection=CONSTELLATIONS,
     )

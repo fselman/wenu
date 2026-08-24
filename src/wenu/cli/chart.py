@@ -78,7 +78,24 @@ def parser():
     _add_mask_argument(regional)
     regional.add_argument("--field-width", type=float)
     regional.add_argument("--field-height", type=float)
-    regional.add_argument("--position-angle", type=float)
+    regional.add_argument(
+        "--center-altitude", type=float,
+        help="fixed observer-local chart-center altitude in degrees",
+    )
+    regional.add_argument(
+        "--center-azimuth", type=float,
+        help="fixed observer-local chart-center azimuth in degrees",
+    )
+    orientation = regional.add_mutually_exclusive_group()
+    orientation.add_argument(
+        "--orientation",
+        choices=("celestial-north-up", "zenith-up"),
+        help="named chart orientation policy",
+    )
+    orientation.add_argument(
+        "--position-angle", type=float,
+        help="literal chart rotation in degrees",
+    )
 
     circumpolar = commands.add_parser("circumpolar")
     _add_common_arguments(circumpolar, family="circumpolar")
@@ -94,6 +111,12 @@ def parser():
     binocular.add_argument("--dec", type=float)
     binocular.add_argument("--display-name")
     binocular.add_argument("--field-diameter", type=float)
+    binocular_orientation = binocular.add_mutually_exclusive_group()
+    binocular_orientation.add_argument(
+        "--orientation",
+        choices=("celestial-north-up", "zenith-up"),
+    )
+    binocular_orientation.add_argument("--position-angle", type=float)
 
     defaults = commands.add_parser(
         "defaults",
@@ -200,6 +223,9 @@ def _view_arguments(arguments):
             **common,
             "field_width_deg": arguments.field_width,
             "field_height_deg": arguments.field_height,
+            "center_altitude_deg": arguments.center_altitude,
+            "center_azimuth_deg": arguments.center_azimuth,
+            "orientation": arguments.orientation,
             "position_angle_deg": arguments.position_angle,
         }
     if family == "circumpolar":
@@ -209,7 +235,12 @@ def _view_arguments(arguments):
             "pole": arguments.pole,
         }
     if family == "binocular":
-        return {**common, "field_diameter_deg": arguments.field_diameter}
+        return {
+            **common,
+            "field_diameter_deg": arguments.field_diameter,
+            "orientation": arguments.orientation,
+            "position_angle_deg": arguments.position_angle,
+        }
     return common
 
 

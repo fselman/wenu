@@ -89,6 +89,9 @@ def get_chart_view(
     field_diameter_deg=None,
     field_width_deg=None,
     field_height_deg=None,
+    center_altitude_deg=None,
+    center_azimuth_deg=None,
+    orientation=None,
     position_angle_deg=None,
     pole=None,
     limiting_declination_deg=None,
@@ -130,7 +133,8 @@ def get_chart_view(
     if field_width_deg is None and field_height_deg is None:
         field_width_deg = defaults.field_width_deg
         field_height_deg = defaults.field_height_deg
-    if position_angle_deg is None:
+    if orientation is None and position_angle_deg is None:
+        orientation = defaults.orientation
         position_angle_deg = defaults.position_angle_deg
     if pole is None:
         pole = defaults.pole or "south"
@@ -156,6 +160,9 @@ def get_chart_view(
             field_diameter_deg=field_diameter_deg,
             field_width_deg=field_width_deg,
             field_height_deg=field_height_deg,
+            center_altitude_deg=center_altitude_deg,
+            center_azimuth_deg=center_azimuth_deg,
+            orientation=orientation,
             position_angle_deg=position_angle_deg,
             pole=pole,
             limiting_declination_deg=limiting_declination_deg,

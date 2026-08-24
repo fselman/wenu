@@ -76,7 +76,7 @@ def build_region(name):
         region.constellations,
         angular_radius_deg=region.angular_radius_deg,
         aspect_ratio=region.aspect_ratio,
-        north_up=True,
+        orientation="celestial-north-up",
         crop_y=region.crop_y,
         label_selection=region.constellations,
         outside_mask_constellations=region.constellations,

@@ -20,10 +20,13 @@ def chart_view(arguments, *, sky=None):
     sky = generate_celestial_sphere() if sky is None else sky
     observer = Observer(location="La Ligua", time=LOCAL_TIME)
     subject = chart_constellation_subject(arguments)
+    orientation = arguments.orientation or (
+        None if arguments.position_angle is not None else "celestial-north-up")
     return get_chart_view(
         sky, observer, family="regional", **subject.view_arguments(),
         field_width_deg=arguments.field_width,
         field_height_deg=arguments.field_height,
+        orientation=orientation,
         position_angle_deg=arguments.position_angle,
         projection="stereographic", mask=arguments.mask,
         configuration=configuration,
@@ -53,7 +56,10 @@ def parser():
     value.add_argument("--mask", action="store_true", default=None)
     value.add_argument("--field-width", type=float)
     value.add_argument("--field-height", type=float)
-    value.add_argument("--position-angle", type=float)
+    orientation = value.add_mutually_exclusive_group()
+    orientation.add_argument(
+        "--orientation", choices=("celestial-north-up", "zenith-up"))
+    orientation.add_argument("--position-angle", type=float)
     return value
 
 

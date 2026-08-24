@@ -47,6 +47,9 @@ _OPTIONAL_NUMBERS = frozenset(
         "families.regional_single.height",
         "families.regional_group.width",
         "families.regional_group.height",
+        "families.regional_single.position_angle",
+        "families.regional_group.position_angle",
+        "families.binocular.position_angle",
         "detail.neutral.star_magnitude_limit",
         "detail.neutral.galaxy_magnitude_limit",
         "detail.neutral.open_cluster_minimum_size",
@@ -158,6 +161,14 @@ _ENUMS = {
     "grids_references.references.state": {"none", "line", "labeled"},
     "grids_references.poles.state": {"none", "visible", "both"},
 }
+
+for _family in (
+    "all_sky", "planisphere", "regional_single", "regional_group",
+    "circumpolar", "binocular",
+):
+    _ENUMS[f"families.{_family}.orientation"] = {
+        "none", "celestial-north-up", "zenith-up"
+    }
 
 
 def _error(path: str, message: str) -> None:
@@ -405,6 +416,24 @@ def _validate_semantics(configuration: Mapping[str, Any]) -> None:
             _error(
                 f"families.{family}.height",
                 "width and height must both be \"none\" or both be numbers",
+            )
+
+    for family in ("regional_single", "regional_group", "binocular"):
+        geometry = configuration["families"][family]
+        named = geometry["orientation"] != "none"
+        angled = geometry["position_angle"] != "none"
+        if named == angled:
+            _error(
+                f"families.{family}.orientation",
+                "specify exactly one of orientation or position_angle",
+            )
+
+    for family in ("all_sky", "planisphere", "circumpolar"):
+        geometry = configuration["families"][family]
+        if geometry["orientation"] != "none":
+            _error(
+                f"families.{family}.orientation",
+                "named orientation is not supported by this family",
             )
 
     circumpolar = configuration["families"]["circumpolar"]

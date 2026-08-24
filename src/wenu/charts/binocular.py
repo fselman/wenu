@@ -17,7 +17,11 @@ from wenu.charts.context import BoundaryKind, ChartContext
 from wenu.charts.constellation_label_placement import (
     apply_visible_constellation_label_anchors,
 )
-from wenu.charts.regional import ExportOptions, RegionalChart
+from wenu.charts.regional import (
+    ExportOptions,
+    RegionalChart,
+    ResolvedChartOrientation,
+)
 
 
 @dataclass(frozen=True)
@@ -28,6 +32,7 @@ class BinocularChart:
     center_az_deg: float
     field_diameter_deg: float = 6.5
     position_angle_deg: float = 0.0
+    resolved_orientation: ResolvedChartOrientation | None = None
     projection_radius: float = 2.0
     flip_ew: bool = True
     boundary_samples: int = 721
@@ -75,8 +80,8 @@ class BinocularChart:
         coordinate,
         *,
         field_diameter_deg=6.5,
-        north_up=False,
-        position_angle_deg=0.0,
+        orientation=None,
+        position_angle_deg=None,
         boundary_samples=721,
         **kwargs,
     ):
@@ -86,7 +91,7 @@ class BinocularChart:
             coordinate,
             field_width_deg=field_diameter_deg,
             field_height_deg=field_diameter_deg,
-            north_up=north_up,
+            orientation=orientation,
             position_angle_deg=position_angle_deg,
             **kwargs,
         )
@@ -96,6 +101,7 @@ class BinocularChart:
             center_az_deg=regional.center_az_deg,
             field_diameter_deg=field_diameter_deg,
             position_angle_deg=regional.position_angle_deg,
+            resolved_orientation=regional.resolved_orientation,
             projection_radius=regional.projection_radius,
             flip_ew=regional.flip_ew,
             boundary_samples=boundary_samples,
@@ -113,6 +119,7 @@ class BinocularChart:
             field_width_deg=self.field_diameter_deg,
             field_height_deg=self.field_diameter_deg,
             position_angle_deg=self.position_angle_deg,
+            resolved_orientation=self.resolved_orientation,
             projection_radius=self.projection_radius,
             flip_ew=self.flip_ew,
             label_selection=self.label_selection,

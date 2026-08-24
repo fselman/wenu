@@ -46,7 +46,10 @@ class ResolvedChartFrame:
     field_diameter_deg: float | None = None
     field_width_deg: float | None = None
     field_height_deg: float | None = None
-    position_angle_deg: float = 0.0
+    orientation: str | None = None
+    position_angle_deg: float | None = None
+    center_altitude_deg: float | None = None
+    center_azimuth_deg: float | None = None
     pole: str | None = None
     limiting_declination_deg: float | None = None
     automatic_from_geometry: bool = False
@@ -55,6 +58,22 @@ class ResolvedChartFrame:
 
 def _resolve_frame(request, constellations):
     frame = request.frame
+    defaults = chart_view_defaults(
+        request.family,
+        group=(
+            request.family == "regional"
+            and (
+                request.subject.group is not None
+                or request.subject.constellations is not None
+                and len(request.subject.constellations) > 1
+            )
+        ),
+    )
+    orientation = frame.orientation
+    position_angle = frame.position_angle_deg
+    if orientation is None and position_angle is None:
+        orientation = defaults.orientation
+        position_angle = defaults.position_angle_deg
     if request.family == "binocular":
         return ResolvedChartFrame(
             field_diameter_deg=(
@@ -62,7 +81,8 @@ def _resolve_frame(request, constellations):
                 if frame.field_diameter_deg is None
                 else frame.field_diameter_deg
             ),
-            position_angle_deg=frame.position_angle_deg,
+            orientation=orientation,
+            position_angle_deg=position_angle,
             source=(
                 "family-default" if frame.field_diameter_deg is None
                 else "request"
@@ -73,29 +93,34 @@ def _resolve_frame(request, constellations):
             return ResolvedChartFrame(
                 field_width_deg=frame.field_width_deg,
                 field_height_deg=frame.field_height_deg,
-                position_angle_deg=frame.position_angle_deg,
+                orientation=orientation,
+                position_angle_deg=position_angle,
+                center_altitude_deg=frame.center_altitude_deg,
+                center_azimuth_deg=frame.center_azimuth_deg,
             )
         if constellations.field_width_deg is not None:
             return ResolvedChartFrame(
                 field_width_deg=constellations.field_width_deg,
                 field_height_deg=constellations.field_height_deg,
-                position_angle_deg=frame.position_angle_deg,
+                orientation=orientation,
+                position_angle_deg=position_angle,
                 source="packaged-group",
             )
         return ResolvedChartFrame(
-            position_angle_deg=frame.position_angle_deg,
+            orientation=orientation,
+            position_angle_deg=position_angle,
             automatic_from_geometry=True,
             source="constellation-geometry",
         )
     if request.family == "circumpolar":
         return ResolvedChartFrame(
-            position_angle_deg=frame.position_angle_deg,
+            position_angle_deg=position_angle,
             pole=frame.pole,
             limiting_declination_deg=frame.limiting_declination_deg,
             source="chart-family",
         )
     return ResolvedChartFrame(
-        position_angle_deg=frame.position_angle_deg,
+        position_angle_deg=position_angle,
         source="chart-family",
     )
 

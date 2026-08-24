@@ -71,11 +71,14 @@ def _effective_view(call):
     })
     for name in (
         "field_diameter_deg", "field_width_deg", "field_height_deg",
-        "position_angle_deg", "pole", "limiting_declination_deg",
+        "orientation", "position_angle_deg", "pole",
+        "limiting_declination_deg",
         "projection", "coordinate_frame", "mask",
     ):
         if call.get(name) is not None:
             values[name] = call[name]
+    if call.get("position_angle_deg") is not None:
+        values["orientation"] = None
     values.pop("framing")
     return values
 

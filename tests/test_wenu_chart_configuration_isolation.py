@@ -125,7 +125,7 @@ def test_explicit_command_values_override_conflicting_overlay(
         "[subjects.regional_single]\nkind = 'constellations'\n"
         "constellations = ['Cru']\n"
         "[families.regional_group]\nwidth = 40.0\nheight = 25.0\n"
-        "position_angle = 0.0\nmask = false\n"
+        "orientation = 'none'\nposition_angle = 0.0\nmask = false\n"
         "[products.default]\nstyle = 'cartoon'\nmode = 'presentation'\n"
         "language = 'es'\ntitle = 'Configured title'\n",
         encoding="utf-8",

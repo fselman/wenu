@@ -93,7 +93,7 @@ def generate(output=DEFAULT_OUTPUT):
         LINE_CONSTELLATIONS,
         angular_radius_deg=43.0,
         aspect_ratio=1.38,
-        north_up=True,
+        orientation="celestial-north-up",
         crop_y=0.12,
         label_selection=LABEL_CONSTELLATIONS,
     )

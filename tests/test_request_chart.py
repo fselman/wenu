@@ -109,7 +109,8 @@ def test_regional_construction_uses_resolved_group_field(monkeypatch):
     assert calls["constellations"][-2:] == ("Ser1", "Ser2")
     assert calls["angular_radius_deg"] == pytest.approx(45.0)
     assert calls["aspect_ratio"] == pytest.approx(1.0)
-    assert calls["north_up"] is True
+    assert calls["orientation"] == "celestial-north-up"
+    assert calls["position_angle_deg"] is None
     assert calls["outside_mask_constellations"] == (
         "Sgr", "Sco", "Oph", "Ser"
     )
@@ -135,9 +136,40 @@ def test_binocular_construction_uses_resolved_target_and_field(monkeypatch):
     )
 
     assert calls["field_diameter_deg"] == pytest.approx(6.5)
-    assert calls["north_up"] is True
+    assert calls["orientation"] == "celestial-north-up"
+    assert calls["position_angle_deg"] is None
     assert calls["coordinate"].icrs.ra.deg == pytest.approx(283.39892816)
     assert calls["coordinate"].icrs.dec.deg == pytest.approx(33.02786646)
+
+
+def test_regional_fixed_horizontal_center_does_not_follow_subject(monkeypatch):
+    monkeypatch.setattr(
+        "wenu.charts.request_chart.select_spatial_chart_content",
+        lambda sky, chart, resolved, observer: resolved,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.regional.celestial_north_position_angle",
+        lambda *args, **kwargs: 0.0,
+    )
+    prepared = prepare_chart_request(
+        sky(),
+        resolve(request(
+            "regional",
+            subject=ChartSubjectRequest(constellations=("Vir",)),
+            frame=ChartFrameRequest(
+                center_altitude_deg=20.0,
+                center_azimuth_deg=270.0,
+                field_width_deg=60.0,
+                field_height_deg=50.0,
+                orientation="zenith-up",
+            ),
+        )),
+    )
+
+    assert prepared.chart.center_alt_deg == pytest.approx(20.0)
+    assert prepared.chart.center_az_deg == pytest.approx(270.0)
+    assert prepared.chart.position_angle_deg == pytest.approx(0.0)
+    assert prepared.chart.resolved_orientation.source == "zenith-up"
 
 
 def test_circumpolar_construction_uses_declination_boundary():

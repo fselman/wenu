@@ -270,7 +270,14 @@ from .charts.detail_application import (
     merge_layer_options,
 )
 from .charts.full_sky import FullSkyChart
-from .charts.regional import ExportOptions, RegionalChart
+from .charts.regional import (
+    ExportOptions,
+    LocalOrientation,
+    RegionalChart,
+    ResolvedChartOrientation,
+    local_orientation_at,
+    resolve_chart_orientation,
+)
 from .charts.export_workflow import ChartExportResult
 from .charts.styles import PublicationStyle
 from .charts.style_components import ChartStyle, StellarMagnitudeSizing
@@ -557,6 +564,10 @@ __all__ = [
     "RectangularLabelAnchor",
     "FullSkyChart",
     "RegionalChart",
+    "LocalOrientation",
+    "ResolvedChartOrientation",
+    "local_orientation_at",
+    "resolve_chart_orientation",
     "PublicationStyle",
     "ChartStyle",
     "AtlasChartStyle",

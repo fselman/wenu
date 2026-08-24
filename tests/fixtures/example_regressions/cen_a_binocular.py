@@ -55,7 +55,7 @@ def build_chart():
         CEN_A,
         field_width_deg=FIELD_DIAMETER_DEG,
         field_height_deg=FIELD_DIAMETER_DEG,
-        north_up=True,
+        orientation="celestial-north-up",
     )
     return observer, sky, chart
 
