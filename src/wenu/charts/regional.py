@@ -6,17 +6,45 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from astropy.coordinates import SkyCoord
 import numpy as np
 
 from wenu.charts.boundaries import (
     RectangularLabelAnchor,
     apply_coordinate_label_anchor,
 )
-from wenu.coordinates import radec_to_altaz
 from wenu.projections.stereographic import StereographicProjection
 from wenu.geometry.frame import SphericalFrame
 from wenu.geometry.viewport import Viewport
 from wenu.rendering.preparation import project_geometry_for_viewport
+
+
+REGIONAL_ORIENTATIONS = frozenset({"celestial-north-up", "zenith-up"})
+
+
+@dataclass(frozen=True)
+class LocalOrientation:
+    """Pointwise relation between celestial north and the local vertical.
+
+    Position angles use the unprojected horizontal tangent plane: zero points
+    toward the zenith and positive angles point toward ``chart_right`` as
+    defined by :func:`target_up_position_angle`. The signed parallactic angle
+    is the opposite rotation, from celestial north toward the zenith, reduced
+    to ``[-180, 180)``.
+    """
+
+    parallactic_angle_deg: float
+    celestial_meridian_position_angle_deg: float
+    zenith_position_angle_deg: float = 0.0
+
+
+@dataclass(frozen=True)
+class ResolvedChartOrientation:
+    """Literal chart rotation plus its pointwise astronomical provenance."""
+
+    source: str
+    position_angle_deg: float
+    local: LocalOrientation
 
 
 def _spherical_mean(lon_deg, lat_deg):
@@ -62,20 +90,79 @@ def celestial_north_position_angle(
     center_az_deg,
 ):
     """Return the rotation placing celestial north at chart top."""
-    north_alt, north_az = radec_to_altaz(
-        np.asarray([0.0]),
-        np.asarray([90.0]),
-        observer.t,
-        observer.lat_deg,
-        observer.lon_deg,
-    )
+    north = SkyCoord(
+        ra=0.0,
+        dec=90.0,
+        unit="deg",
+        frame="icrs",
+    ).transform_to(observer.altaz_frame)
 
     return target_up_position_angle(
         center_alt_deg=center_alt_deg,
         center_az_deg=center_az_deg,
-        target_alt_deg=north_alt[0],
-        target_az_deg=north_az[0],
+        target_alt_deg=float(north.alt.deg),
+        target_az_deg=float(north.az.deg),
     )
+
+
+def local_orientation_at(
+    observer,
+    *,
+    altitude_deg,
+    azimuth_deg,
+):
+    """Resolve pointwise meridian directions and signed parallactic angle.
+
+    The parallactic angle is measured from the celestial-north tangent toward
+    the zenith tangent and reduced to ``[-180, 180)``. It is the negative of
+    the celestial-meridian position angle under Wenu's horizontal tangent-
+    plane convention.
+    """
+    meridian = celestial_north_position_angle(
+        observer,
+        center_alt_deg=altitude_deg,
+        center_az_deg=azimuth_deg,
+    )
+    parallactic = (180.0 - meridian) % 360.0 - 180.0
+    return LocalOrientation(
+        parallactic_angle_deg=float(parallactic),
+        celestial_meridian_position_angle_deg=float(meridian),
+    )
+
+
+def resolve_chart_orientation(
+    observer,
+    *,
+    center_alt_deg,
+    center_az_deg,
+    orientation=None,
+    position_angle_deg=None,
+):
+    """Resolve one explicit named orientation or one literal angle."""
+    if (orientation is None) == (position_angle_deg is None):
+        raise ValueError(
+            "Specify exactly one of orientation or position_angle_deg."
+        )
+    local = local_orientation_at(
+        observer,
+        altitude_deg=center_alt_deg,
+        azimuth_deg=center_az_deg,
+    )
+    if position_angle_deg is not None:
+        angle = float(position_angle_deg)
+        if not np.isfinite(angle):
+            raise ValueError("position_angle_deg must be finite.")
+        return ResolvedChartOrientation("position-angle", angle, local)
+    name = str(orientation).strip().lower()
+    if name not in REGIONAL_ORIENTATIONS:
+        raise ValueError(
+            "orientation must be 'celestial-north-up' or 'zenith-up'."
+        )
+    angle = (
+        local.celestial_meridian_position_angle_deg
+        if name == "celestial-north-up" else 0.0
+    )
+    return ResolvedChartOrientation(name, angle, local)
 
 
 def target_up_position_angle(
@@ -162,6 +249,7 @@ class RegionalChart:
     field_width_deg: float
     field_height_deg: float
     position_angle_deg: float = 0.0
+    resolved_orientation: ResolvedChartOrientation | None = None
     projection_radius: float = 2.0
     flip_ew: bool = True
     crop_x: float = 0.0
@@ -245,19 +333,21 @@ class RegionalChart:
         *,
         field_width_deg,
         field_height_deg,
-        north_up=False,
-        position_angle_deg=0.0,
+        orientation=None,
+        position_angle_deg=None,
         **kwargs,
     ):
         """Create a chart centered on any Astropy sky coordinate."""
         horizontal = coordinate.transform_to(observer.altaz_frame)
         altitude = float(np.asarray(horizontal.alt.deg))
         azimuth = float(np.asarray(horizontal.az.deg))
-        position_angle = cls._position_angle(
+        if orientation is None and position_angle_deg is None:
+            orientation = "celestial-north-up"
+        resolved_orientation = resolve_chart_orientation(
             observer,
-            altitude,
-            azimuth,
-            north_up=north_up,
+            center_alt_deg=altitude,
+            center_az_deg=azimuth,
+            orientation=orientation,
             position_angle_deg=position_angle_deg,
         )
         return cls(
@@ -265,7 +355,8 @@ class RegionalChart:
             center_az_deg=azimuth,
             field_width_deg=field_width_deg,
             field_height_deg=field_height_deg,
-            position_angle_deg=position_angle,
+            position_angle_deg=resolved_orientation.position_angle_deg,
+            resolved_orientation=resolved_orientation,
             **kwargs,
         )
 
@@ -281,8 +372,8 @@ class RegionalChart:
         aspect_ratio=1.0,
         framing_padding=1.15,
         minimum_angular_radius_deg=5.0,
-        north_up=False,
-        position_angle_deg=0.0,
+        orientation=None,
+        position_angle_deg=None,
         label_selection=None,
         **kwargs,
     ):
@@ -297,6 +388,8 @@ class RegionalChart:
         resolved_observer = getattr(sky, "observer", None) if observer is None else observer
         if resolved_observer is None:
             raise TypeError("constellation framing requires an observer.")
+        if orientation is None and position_angle_deg is None:
+            orientation = "celestial-north-up"
         stars = sky.stars.spherical_geometry(
             resolved_observer,
             alt_min=-90.0,
@@ -354,11 +447,11 @@ class RegionalChart:
                     altitude,
                 ),
             )
-        position_angle = cls._position_angle(
+        resolved_orientation = resolve_chart_orientation(
             resolved_observer,
-            altitude,
-            azimuth,
-            north_up=north_up,
+            center_alt_deg=altitude,
+            center_az_deg=azimuth,
+            orientation=orientation,
             position_angle_deg=position_angle_deg,
         )
         return cls.from_angular_radius(
@@ -366,33 +459,13 @@ class RegionalChart:
             center_az_deg=azimuth,
             angular_radius_deg=angular_radius_deg,
             aspect_ratio=aspect_ratio,
-            position_angle_deg=position_angle,
+            position_angle_deg=resolved_orientation.position_angle_deg,
+            resolved_orientation=resolved_orientation,
             label_selection=(
                 names if label_selection is None else tuple(label_selection)
             ),
             **kwargs,
         )
-
-    @staticmethod
-    def _position_angle(
-        observer,
-        altitude,
-        azimuth,
-        *,
-        north_up,
-        position_angle_deg,
-    ):
-        if north_up and float(position_angle_deg) != 0.0:
-            raise ValueError(
-                "Use north_up or position_angle_deg, not both."
-            )
-        if north_up:
-            return celestial_north_position_angle(
-                observer,
-                center_alt_deg=altitude,
-                center_az_deg=azimuth,
-            )
-        return float(position_angle_deg)
 
     @property
     def chart_context(self):

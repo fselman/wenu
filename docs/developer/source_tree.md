@@ -113,6 +113,10 @@ compatibility fallback for direct callers that do not request region framing;
 the request resolver does not inspect sky geometry. It also owns the reusable
 tangent-plane position-angle operation used to put celestial north, or another
 explicit horizontal direction such as the north ecliptic pole, at chart top.
+It also owns explicit named-versus-literal orientation resolution and the
+backend-neutral pointwise parallactic/meridian tangent geometry retained for
+future furniture. `charts/request_chart.py` may instead give the same chart a
+fixed horizontal altitude/azimuth centre without changing selected content.
 `charts/spatial_selection.py` owns vectorized field-footprint selection over
 cached catalogue centers; it applies explicit exclusions, returns immutable
 content, and does not render.

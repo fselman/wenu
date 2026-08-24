@@ -58,7 +58,7 @@ def generate(output, *, nonstellar_labels=False):
         LINE_CONSTELLATIONS,
         angular_radius_deg=45.0,
         aspect_ratio=1.25,
-        north_up=True,
+        orientation="celestial-north-up",
         crop_y=0.25,
         label_selection=LABEL_CONSTELLATIONS,
         outside_mask_constellations=BOUNDARY_CONSTELLATIONS,

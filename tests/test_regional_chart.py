@@ -2,15 +2,29 @@
 
 from types import SimpleNamespace
 
+import astropy.units as u
+from astropy.coordinates import AltAz, EarthLocation
+from astropy.time import Time
 import numpy as np
 import pytest
 
 from wenu.charts.regional import (
     ExportOptions,
     RegionalChart,
+    celestial_north_position_angle,
+    local_orientation_at,
+    resolve_chart_orientation,
     target_up_position_angle,
 )
 from wenu.charts.styles import PublicationStyle
+
+
+@pytest.fixture(autouse=True)
+def stable_celestial_north(monkeypatch):
+    monkeypatch.setattr(
+        "wenu.charts.regional.celestial_north_position_angle",
+        lambda *args, **kwargs: 0.0,
+    )
 
 
 def test_angular_radius_and_aspect_define_viewport():
@@ -50,6 +64,73 @@ def test_target_up_position_angle_accepts_non_celestial_poles():
         target_alt_deg=60.0,
         target_az_deg=45.0,
     ) == pytest.approx(0.0, abs=1.0e-10)
+
+
+def test_celestial_north_uses_the_public_altaz_observer_contract():
+    observer = SimpleNamespace(
+        altaz_frame=AltAz(
+            obstime=Time("2026-08-16T01:00:00"),
+            location=EarthLocation.from_geodetic(
+                lon=-71.23 * u.deg,
+                lat=-32.44 * u.deg,
+            ),
+        )
+    )
+
+    angle = celestial_north_position_angle(
+        observer,
+        center_alt_deg=20.0,
+        center_az_deg=270.0,
+    )
+
+    assert np.isfinite(angle)
+
+
+def test_pointwise_orientation_retains_parallactic_geometry(monkeypatch):
+    monkeypatch.setattr(
+        "wenu.charts.regional.celestial_north_position_angle",
+        lambda *args, **kwargs: 32.5,
+    )
+
+    local = local_orientation_at(
+        object(), altitude_deg=20.0, azimuth_deg=270.0
+    )
+
+    assert local.celestial_meridian_position_angle_deg == pytest.approx(32.5)
+    assert local.zenith_position_angle_deg == pytest.approx(0.0)
+    assert local.parallactic_angle_deg == pytest.approx(-32.5)
+
+
+def test_named_and_literal_orientations_are_explicit(monkeypatch):
+    monkeypatch.setattr(
+        "wenu.charts.regional.local_orientation_at",
+        lambda *args, **kwargs: SimpleNamespace(
+            celestial_meridian_position_angle_deg=18.0
+        ),
+    )
+
+    north = resolve_chart_orientation(
+        object(), center_alt_deg=20.0, center_az_deg=270.0,
+        orientation="celestial-north-up",
+    )
+    zenith = resolve_chart_orientation(
+        object(), center_alt_deg=20.0, center_az_deg=270.0,
+        orientation="zenith-up",
+    )
+    literal = resolve_chart_orientation(
+        object(), center_alt_deg=20.0, center_az_deg=270.0,
+        position_angle_deg=0.0,
+    )
+
+    assert north.position_angle_deg == pytest.approx(18.0)
+    assert zenith.position_angle_deg == pytest.approx(0.0)
+    assert literal.position_angle_deg == pytest.approx(0.0)
+    assert literal.source == "position-angle"
+    with pytest.raises(ValueError, match="exactly one"):
+        resolve_chart_orientation(
+            object(), center_alt_deg=20.0, center_az_deg=270.0,
+            orientation="zenith-up", position_angle_deg=0.0,
+        )
 
 
 def test_invalid_field_is_rejected():

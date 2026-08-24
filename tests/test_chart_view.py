@@ -97,14 +97,12 @@ def test_public_family_defaults_are_immutable_and_geometrical():
     assert all_sky.framing == "complete-sphere"
     assert all_sky.projection == "mollweide"
     assert all_sky.coordinate_frame == "galactic"
-    assert all(
-        value.projection == "stereographic"
-        and value.coordinate_frame == "horizontal"
-        and value.position_angle_deg == 0.0
-        and value.mask is False
-        for key, value in CHART_VIEW_DEFAULTS.items()
-        if key != "all_sky"
-    )
+    assert single.orientation == "celestial-north-up"
+    assert group.orientation == "celestial-north-up"
+    assert binocular.orientation == "celestial-north-up"
+    assert single.position_angle_deg is None
+    assert planisphere.position_angle_deg == pytest.approx(0.0)
+    assert circumpolar.position_angle_deg == pytest.approx(0.0)
     with pytest.raises(TypeError):
         CHART_VIEW_DEFAULTS["binocular"] = planisphere
 

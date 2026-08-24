@@ -43,6 +43,37 @@ def test_regional_accepts_one_or_many_constellations():
     assert many.constellations == ("Cyg", "Lyr", "Aql")
 
 
+def test_regional_orientation_is_named_or_a_literal_angle():
+    named = chart.parser().parse_args([
+        "regional", "--orientation", "zenith-up",
+    ])
+    literal = chart.parser().parse_args([
+        "regional", "--position-angle", "0",
+    ])
+
+    assert named.orientation == "zenith-up"
+    assert named.position_angle is None
+    assert literal.orientation is None
+    assert literal.position_angle == pytest.approx(0.0)
+    with pytest.raises(SystemExit):
+        chart.parser().parse_args([
+            "regional", "--orientation", "zenith-up",
+            "--position-angle", "0",
+        ])
+
+
+def test_regional_accepts_a_fixed_horizontal_camera_center():
+    arguments = chart.parser().parse_args([
+        "regional", "--constellations", "Vir",
+        "--center-altitude", "20", "--center-azimuth", "270",
+        "--field-width", "60", "--field-height", "50",
+        "--orientation", "zenith-up",
+    ])
+
+    assert arguments.center_altitude == pytest.approx(20.0)
+    assert arguments.center_azimuth == pytest.approx(270.0)
+
+
 def test_binocular_omits_the_shared_grid_default_but_keeps_opt_in():
     omitted = chart.parser().parse_args(["binocular"])
     selected = chart.parser().parse_args([

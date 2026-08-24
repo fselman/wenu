@@ -210,6 +210,41 @@ def test_regional_request_expresses_constellation_group_without_scripts():
     assert request.language == "es"
 
 
+def test_fixed_horizontal_center_is_explicit_regional_framing():
+    frame = ChartFrameRequest(
+        center_altitude_deg=20.0,
+        center_azimuth_deg=270.0,
+        field_width_deg=60.0,
+        field_height_deg=50.0,
+        orientation="zenith-up",
+    )
+    request = ChartRequest(
+        observer=observer(), family="regional",
+        subject=ChartSubjectRequest(constellations=("Vir",)),
+        frame=frame, product=product(),
+    )
+
+    assert request.frame.center_altitude_deg == pytest.approx(20.0)
+    assert request.frame.center_azimuth_deg == pytest.approx(270.0)
+    with pytest.raises(ValueError, match="requires field width"):
+        ChartRequest(
+            observer=observer(), family="regional",
+            subject=ChartSubjectRequest(constellations=("Vir",)),
+            frame=ChartFrameRequest(
+                center_altitude_deg=20.0, center_azimuth_deg=270.0,
+                orientation="zenith-up",
+            ),
+            product=product(),
+        )
+
+
+def test_orientation_and_literal_angle_are_mutually_exclusive():
+    with pytest.raises(ValueError, match="orientation or position_angle"):
+        ChartFrameRequest(
+            orientation="zenith-up", position_angle_deg=0.0
+        )
+
+
 def test_catalogue_exclusions_are_normalized_and_immutable():
     exclusions = ChartContentExclusions(
         open_clusters={" NGC 6475 ", "M 7"},

@@ -243,7 +243,10 @@ class ChartFrameRequest:
     field_diameter_deg: float | None = None
     field_width_deg: float | None = None
     field_height_deg: float | None = None
-    position_angle_deg: float = 0.0
+    orientation: str | None = None
+    position_angle_deg: float | None = None
+    center_altitude_deg: float | None = None
+    center_azimuth_deg: float | None = None
     pole: str = "south"
     limiting_declination_deg: float | None = None
 
@@ -276,9 +279,45 @@ class ChartFrameRequest:
                     f"{name} must be between 0 and {upper:g}."
                 )
             object.__setattr__(self, name, value)
-        angle = float(self.position_angle_deg)
-        if not isfinite(angle):
-            raise ValueError("position_angle_deg must be finite.")
+        if (
+            self.orientation is not None
+            and self.position_angle_deg is not None
+        ):
+            raise ValueError(
+                "Specify orientation or position_angle_deg, not both."
+            )
+        orientation = self.orientation
+        if orientation is not None:
+            orientation = str(orientation).strip().lower()
+            if orientation not in {"celestial-north-up", "zenith-up"}:
+                raise ValueError(
+                    "orientation must be celestial-north-up or zenith-up."
+                )
+        angle = self.position_angle_deg
+        if angle is not None:
+            angle = float(angle)
+            if not isfinite(angle):
+                raise ValueError("position_angle_deg must be finite.")
+        centers = (
+            self.center_altitude_deg is not None,
+            self.center_azimuth_deg is not None,
+        )
+        if centers[0] != centers[1]:
+            raise ValueError(
+                "center_altitude_deg and center_azimuth_deg must be "
+                "supplied together."
+            )
+        altitude = self.center_altitude_deg
+        azimuth = self.center_azimuth_deg
+        if altitude is not None:
+            altitude = float(altitude)
+            azimuth = float(azimuth)
+            if not isfinite(altitude) or not -90.0 <= altitude <= 90.0:
+                raise ValueError(
+                    "center_altitude_deg must be between -90 and 90."
+                )
+            if not isfinite(azimuth) or not 0.0 <= azimuth < 360.0:
+                raise ValueError("center_azimuth_deg must be between 0 and 360.")
         pole = str(self.pole).strip().lower()
         if pole not in {"north", "south"}:
             raise ValueError("pole must be 'north' or 'south'.")
@@ -296,6 +335,9 @@ class ChartFrameRequest:
                     "limiting_declination_deg must agree with pole."
                 )
         object.__setattr__(self, "position_angle_deg", angle)
+        object.__setattr__(self, "orientation", orientation)
+        object.__setattr__(self, "center_altitude_deg", altitude)
+        object.__setattr__(self, "center_azimuth_deg", azimuth)
         object.__setattr__(self, "pole", pole)
         object.__setattr__(self, "limiting_declination_deg", limit)
 
@@ -393,6 +435,21 @@ class ChartRequest:
             )
         if family == "regional" and self.subject.is_empty:
             raise ValueError("A regional request requires a subject.")
+        if self.frame.center_altitude_deg is not None:
+            if family != "regional":
+                raise ValueError("A fixed horizontal center is regional-only.")
+            if self.frame.field_width_deg is None:
+                raise ValueError(
+                    "A fixed horizontal center requires field width and height."
+                )
+        if (
+            family not in {"regional", "binocular"}
+            and self.frame.orientation is not None
+        ):
+            raise ValueError(
+                "Named orientation is supported only by regional and "
+                "binocular charts."
+            )
         if family == "circumpolar" and self.frame.limiting_declination_deg is None:
             raise ValueError(
                 "A circumpolar request requires limiting_declination_deg."
@@ -408,7 +465,10 @@ class ChartRequest:
                 raise ValueError(
                     f"An {family} subject is allowed only as a mask."
                 )
-        if family == "all_sky" and self.frame.position_angle_deg != 0.0:
+        if (
+            family == "all_sky"
+            and self.frame.position_angle_deg not in {None, 0.0}
+        ):
             raise ValueError("An all_sky request requires position angle 0.")
         defaults = _product_defaults()
         language = str(

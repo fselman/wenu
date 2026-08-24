@@ -377,6 +377,11 @@ coordinate, constellation set, or packaged group; and `ChartFrameRequest`
 holds optional framing overrides. Existing `SkyContentSelection`,
 `DetailOverrides`, `ChartFurnitureOptions`, and `ChartProductOptions` remain
 the corresponding content, detail, furniture, and output contracts.
+For regional and binocular views, a named `orientation` is explicit and
+mutually exclusive with a literal `position_angle_deg`; zero therefore remains
+an ordinary angle. Regional framing may also carry a paired fixed horizontal
+altitude/azimuth centre, which requires explicit width and height and remains
+independent of constellation content selection.
 `ChartContentExclusions` names deep-sky catalogue identifiers that must be
 omitted after field selection; it does not mutate loaded catalogue content.
 `ChartProductCompositionOptions` optionally assigns a detail policy and
@@ -466,6 +471,10 @@ frames all selected loaded figure endpoints using their spherical mean,
 maximum great-circle separation, `framing_padding` (default 1.15), and
 `minimum_angular_radius_deg` (default 5). Supplying radius and aspect ratio
 continues to provide exact publication control.
+`local_orientation_at()` resolves the pointwise signed parallactic angle and
+the tangent directions toward celestial north and the local zenith. The chart
+retains the centre result in `ResolvedChartOrientation`; rendering does not
+recompute it and this milestone draws no orientation line.
 
 `select_spatial_chart_content(sky, chart, resolved_request)` obtains cached
 AltAz centers for every registered deep-sky catalogue, projects them through
@@ -759,7 +768,9 @@ available explicitly.
 
 Every policy except `all_sky` uses stereographic projection and the horizontal
 coordinate frame. `all_sky` uses Mollweide and Galactic coordinates. Every
-policy uses position angle 0 degrees and no mask. Explicit arguments to
+regional and binocular policies explicitly use celestial-north-up; the other
+families use literal position angle 0 degrees. Every policy uses no mask.
+Explicit arguments to
 `get_chart_view()` take precedence. The advanced
 `ChartRequest` API continues to require an explicit circumpolar declination
 limit; the default is an ordinary-interface convenience rather than a change

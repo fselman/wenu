@@ -44,19 +44,22 @@ target = "centaurus-a"
 [families.all_sky]
 projection = "mollweide"
 coordinate_frame = "galactic"
+orientation = "none"
 position_angle = 0.0
 mask = false
 
 [families.planisphere]
 projection = "stereographic"
 coordinate_frame = "horizontal"
+orientation = "none"
 position_angle = 0.0
 mask = false
 
 [families.regional_single]
 projection = "stereographic"
 coordinate_frame = "horizontal"
-position_angle = 0.0
+orientation = "celestial-north-up"
+position_angle = "none"
 mask = false
 width = "none"
 height = "none"
@@ -64,7 +67,8 @@ height = "none"
 [families.regional_group]
 projection = "stereographic"
 coordinate_frame = "horizontal"
-position_angle = 0.0
+orientation = "celestial-north-up"
+position_angle = "none"
 mask = false
 width = "none"
 height = "none"
@@ -72,6 +76,7 @@ height = "none"
 [families.circumpolar]
 projection = "stereographic"
 coordinate_frame = "horizontal"
+orientation = "none"
 position_angle = 0.0
 mask = false
 pole = "south"
@@ -80,7 +85,8 @@ limiting_declination = -69.75
 [families.binocular]
 projection = "stereographic"
 coordinate_frame = "horizontal"
-position_angle = 0.0
+orientation = "celestial-north-up"
+position_angle = "none"
 mask = false
 field_diameter = 6.5
 

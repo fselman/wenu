@@ -38,7 +38,7 @@ def _regional_chart(sky, resolved, observer):
     if subject is None:
         raise ValueError("A regional chart requires resolved constellations.")
     options = {
-        "north_up": frame.position_angle_deg == 0.0,
+        "orientation": frame.orientation,
         "position_angle_deg": frame.position_angle_deg,
         "label_selection": subject.label_constellations,
         "outside_mask_constellations": (
@@ -47,6 +47,33 @@ def _regional_chart(sky, resolved, observer):
         ),
         "framing_constellations": subject.boundary_constellations,
     }
+    if frame.center_altitude_deg is not None:
+        from .regional import resolve_chart_orientation
+
+        if frame.field_width_deg is None:
+            raise ValueError(
+                "fixed horizontal center requires field width and height."
+            )
+        resolved_orientation = resolve_chart_orientation(
+            observer,
+            center_alt_deg=frame.center_altitude_deg,
+            center_az_deg=frame.center_azimuth_deg,
+            orientation=frame.orientation,
+            position_angle_deg=frame.position_angle_deg,
+        )
+        return RegionalChart(
+            center_alt_deg=frame.center_altitude_deg,
+            center_az_deg=frame.center_azimuth_deg,
+            field_width_deg=frame.field_width_deg,
+            field_height_deg=frame.field_height_deg,
+            position_angle_deg=resolved_orientation.position_angle_deg,
+            resolved_orientation=resolved_orientation,
+            label_selection=subject.label_constellations,
+            outside_mask_constellations=(
+                subject.boundary_constellations
+                if resolved.request.mask else None
+            ),
+        )
     if frame.field_width_deg is None:
         return RegionalChart.from_constellations(
             sky, subject.line_constellations, observer=observer, **options
@@ -99,7 +126,7 @@ def _chart_from_resolved(sky, resolved, observer):
             observer,
             _target_coordinate(resolved.target),
             field_diameter_deg=frame.field_diameter_deg,
-            north_up=frame.position_angle_deg == 0.0,
+            orientation=frame.orientation,
             position_angle_deg=frame.position_angle_deg,
         )
     raise ValueError(f"Unsupported chart family {request.family!r}.")
