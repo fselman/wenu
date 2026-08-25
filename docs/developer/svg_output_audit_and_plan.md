@@ -309,22 +309,34 @@ The implementation milestone must name this policy through Wenu's public
 product/export vocabulary rather than requiring users to know Matplotlib
 configuration keys.
 
-## 7. Relationship to Wenu3D
+## 7. Wenu intermediate representations and relationship to Wenu3D
 
 SVG is a language for two-dimensional vector and mixed vector/raster graphics.
 It is not the shared representation between Wenu and Wenu3D.
 
-The shared boundary must instead be renderer-neutral astronomical and semantic
-scene state:
+Wenu should introduce two distinct typed intermediate representations:
+
+1. a renderer-neutral semantic celestial scene containing resolved scientific
+   and semantic state; and
+2. a projected 2D chart document containing page composition and editing
+   structure for static 2D products.
 
 ```text
 catalogue, ephemeris, or orbit provider
     -> explicit astronomical state
     -> coordinate service
     -> typed semantic celestial scene
-         -> 2D chart realization -> Matplotlib -> PNG / PDF / SVG
-         -> 3D scene realization -> Wenu3D -> image / animation / glTF / GLB
+         -> projected 2D chart document
+              -> Matplotlib or later 2D backend -> PNG / PDF / SVG
+         -> Wenu3D scene realization
+              -> image / animation / glTF / GLB
 ```
+
+The semantic celestial scene is the common scientific boundary. The projected
+2D chart document is downstream of projection and must not be consumed as the
+scientific source for Wenu3D.
+
+### Semantic celestial scene
 
 The shared semantic scene may carry:
 
@@ -337,11 +349,51 @@ The shared semantic scene may carry:
 - appearance roles that remain independent of Matplotlib artists, SVG
   elements, or 3D meshes.
 
+It must remain independent of projected page coordinates, SVG groups,
+Matplotlib artists, pixels, paper dimensions, editor layers, 3D meshes, camera
+state, and backend-specific serialization.
+
+### Projected 2D chart document
+
+The projected 2D chart document may carry:
+
+- projected and projection-guarded geometry;
+- seam splitting, clipping paths, masks, viewport, and chart boundary;
+- resolved page dimensions and physical scale;
+- label placements, legends, titles, footer, and other furniture;
+- Wenu semantic layers, composable classes, stable object IDs, and editing
+  classifications;
+- resolved 2D style roles, z-order, transparency, and font policy;
+- provenance linking the document to its semantic scene and chart request.
+
+SVG should preserve the useful semantic structure of this document. PDF should
+preserve its publication result, and PNG should rasterize that same result.
+Output backends must not independently reconstruct astronomical meaning or
+projection.
+
 The 2D and 3D realizations may legitimately represent the same semantic object
 differently. A star may be a magnitude-scaled 2D marker and a luminous point,
 billboard, or symbolic sphere in 3D. The Moon may be a phase-correct 2D disk
 and an illuminated sphere in 3D. Those differences belong downstream of the
 shared scientific state.
+
+### Deferred serialized Wenu package
+
+The intermediate representations are architectural contracts first. Milestone
+49F does not create or freeze a public `.wenu` file format.
+
+After coordinate ownership, Moon and planet providers, semantic SVG output, and
+the first Wenu3D vertical slice have exercised the models, Wenu may define a
+versioned optional package that serializes a reproducible request, resolved
+semantic scene, optional projected chart document, styles, assets, and
+provenance. A ZIP-based package containing documented JSON schemas and
+referenced assets is one candidate to evaluate.
+
+Such a package could support reopening and restyling charts, regenerating
+several output formats without repeating scientific preparation, archiving
+reproducible products, and transferring shared state to Wenu3D. It must not be
+declared until schema ownership, compatibility, migrations, asset licensing,
+and security limits are explicitly designed.
 
 For initial portable 3D delivery, glTF/GLB is the likely format to evaluate
 because it represents scene nodes, transformations, meshes, materials,
@@ -349,8 +401,8 @@ textures, cameras, and animation. OpenUSD remains a later option only if Wenu
 develops complex composed-asset or digital-content-creation workflows that
 justify its greater scope.
 
-No glTF, GLB, USD, camera, lighting, material, depth, or 3D-scene contract is
-introduced by Milestone 49F.
+No serialized `.wenu` format, glTF, GLB, USD, camera, lighting, material,
+depth, or 3D-scene contract is introduced by Milestone 49F.
 
 ## 8. Constellation artwork
 
@@ -447,6 +499,9 @@ Matplotlib-generated identifiers or complete serialized snapshots.
 
 ### Milestone 49F.2 - Semantic document structure
 
+- define the smallest typed projected 2D chart-document boundary justified by
+  the as-is rendering flow, without attempting a serialized `.wenu` format;
+- preserve provenance back to the resolved request and scientific scene;
 - finalize and document the public semantic layer taxonomy and composable
   class vocabulary;
 - map existing Wenu rendering roles and stable object identities onto SVG
@@ -496,6 +551,10 @@ Stop and re-audit if SVG work would:
 - imply that scientific geometry is freely repositionable or certify a
   derivative whose star, constellation-line, grid, boundary, or registered
   artwork geometry has been moved;
+- collapse the semantic celestial scene and projected 2D chart document into
+  one lowest-common-denominator representation;
+- make projected page geometry the scientific input to Wenu3D;
+- prematurely freeze or publish a serialized `.wenu` schema;
 - treat SVG as the internal celestial scene or Wenu3D exchange format;
 - embed unexplained raster payloads;
 - mix constellation-art registration implementation into SVG verification;
