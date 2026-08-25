@@ -40,7 +40,9 @@ For the active v0.9 migration, read and follow:
 - `coordinate_transformation_audit_09a2afd.md` for coordinate, frame, time,
   observer, astrometry, planet, or satellite work;
 - `post_v0.9_architecture_roadmap.md` for accepted future coordinate, SVG,
-  temporal-sequence, animation, planet, or satellite direction.
+  temporal-sequence, animation, planet, or satellite direction;
+- `svg_output_audit_and_plan.md` for SVG product, font, verification,
+  constellation-artwork, or 2D/3D-boundary work.
 
 Documents under `docs/developer/archive/` are historical evidence, not active
 architectural authority. Do not read them routinely. Consult them only when a
