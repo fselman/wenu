@@ -112,74 +112,85 @@ temporary and patch-handoff files outside it.
 Do not generate unrelated documentation, notebooks, screenshots, examples, or
 test data unless the milestone requires them.
 
-## Git and Mac patch handoff
+## Git and delivery workflow
 
-Assume development occurs on the active branch; never guess its name or base
-commit. Do not commit or push on the user's behalf unless explicitly asked.
+The normal Wenu workflow has four broad stages:
 
-Every modification handed to the user must be delivered as a ZIP containing
-one same-named folder with exactly the handoff files needed to apply it:
+1. Fernando and the assistant discuss and agree on the work, scope, non-goals,
+   delivery mode, and acceptance criteria.
+2. The assistant performs the agreed work on a dedicated GitHub branch,
+   verifies it, commits it, and opens or updates a pull request.
+3. After the GitHub state is approved and merged, the assistant guides Fernando
+   through synchronizing the Wenu repository on his Mac.
+4. Fernando runs the relevant local tests and performs the scientific, visual,
+   print, or classroom inspection that requires human judgment.
+
+### Before remote work
+
+GitHub is authoritative for shared committed history, but Fernando's local
+working tree may contain uncommitted work that a remote assistant cannot see.
+Before creating or updating a remote task branch, establish the exact base
+commit and ask Fernando to confirm that his Mac working tree is clean and
+synchronized with that base. If it is not, stop and resolve the local state
+before writing remotely.
+
+### Direct GitHub delivery
+
+Direct GitHub delivery is the preferred mode when the connector is available.
+
+Once Fernando approves a bounded milestone, that approval authorizes the
+assistant to create or update its dedicated branch, make the agreed changes,
+run available verification, commit the verified result to that branch, and
+open or update a pull request. Stay within the agreed scope and report any
+material choice that requires renewed approval.
+
+Do not merge a pull request, delete a branch, force-push, rewrite history, or
+commit directly to `main` without a separate explicit request. A direct
+`main` commit is reserved for a narrow, well-understood change that Fernando
+specifically asks to apply that way.
+
+Before presenting the pull request, inspect the changed filenames, diff stat,
+whitespace, substantive diff, and available focused and full test results.
+Record the exact base and head commits, remaining uncertainty, and acceptance
+work that must occur on the Mac.
+
+### Mac synchronization and acceptance
+
+After a pull request is approved and merged, guide Fernando one command group at
+a time. Normally verify a clean local tree, switch to `main`, and fast-forward
+from GitHub:
+
+```bash
+git status
+git switch main
+git pull --ff-only
+git status
+git log -1 --oneline
+```
+
+Interpret the output before proceeding. Then provide the exact focused tests,
+full tests, rendering commands, or visual inspection procedure required for the
+milestone. Do not treat remote automated checks as a substitute for Fernando's
+scientific or visual acceptance.
+
+### ZIP patch fallback
+
+Use the Finder-safe Mac ZIP handoff only when direct GitHub delivery is
+unavailable or Fernando specifically requests a patch. The ZIP must contain one
+same-named folder with exactly:
 
 - `README.md`;
 - one `.patch` file.
 
-The ZIP layout must ensure that double-clicking it in macOS Finder creates the
-same-named subdirectory rather than placing loose files in `Downloads`.
+The README must identify the exact base commit and guide Fernando through:
+clean-state verification; separate `git apply --check` and `git apply`
+commands; relevant compilation; focused and full tests; diff and whitespace
+inspection; explicit staging; cached-diff inspection; commit, push, and clean
+closure.
 
-The README must state the exact base commit and present commands in this
-order:
-
-1. verify clean status, branch, and commit;
-2. run `git apply --check` and only then the separate `git apply` command;
-3. compile every changed Python file when compilation is relevant;
-4. run the limited or focused test set when one is relevant;
-5. run the general test suite;
-6. inspect `git status`, the diff, diff stat, and `git diff --check`, stage
-   every intended file explicitly, then inspect the cached diff and run
-   `git diff --cached --check`;
-7. commit, push, and verify the final status and log to close the milestone.
-
-Keep inspection practical for long patches. Before staging, run:
-
-```bash
-git status --short
-git diff --name-status
-git diff --stat
-git diff --check
-```
-
-Verify that only the intended files appear, that the change sizes are
-plausible, and that `git diff --check` is silent. Inspect substantive code one
-file at a time with `git diff -- path/to/file`; use `q` to leave the pager.
-
-After staging every intended file explicitly, run:
-
-```bash
-git status --short
-git diff --cached --name-status
-git diff --cached --stat
-git diff --cached --check
-git diff --quiet
-echo $?
-```
-
-The first status column must show the intended staged `M` or `A` entries,
-`git diff --cached --check` must be silent, and the final result must be `0`,
-proving that no unstaged changes remain. `git diff --cached` remains available
-for full inspection of exactly what the next commit will contain, but a
-handoff must not require rereading a very long undifferentiated diff when the
-name, status, size, whitespace, and substantive-file checks are sufficient.
-
-Do not combine the apply check and application into one shell command. Keep
-the limited and general test commands separate so their results can be
-reported independently. Omit compilation or limited-test sections only when
-they are genuinely irrelevant, and state that explicitly in the README.
-
-Use `$HOME/Downloads/<folder>/<patch>.patch`. Safari/Finder may already have
-expanded the ZIP; do not require an unnecessary manual unzip step.
-In every patch handoff, also give Fernando the complete macOS path beginning
-with `/Users/fselman/Downloads/`; never leave `/path/to`, `/full/path`, or only
-the patch filename for him to resolve.
+Place temporary and handoff files outside the repository. Use
+`$HOME/Downloads/<folder>/<patch>.patch`, and always provide the complete
+macOS path beginning with `/Users/fselman/Downloads/`.
 
 ## Scientific and rendering standards
 
