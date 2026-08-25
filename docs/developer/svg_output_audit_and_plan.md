@@ -168,9 +168,12 @@ taxonomy rather than depend on backend-generated group names.
 
 ### Layer and object identity
 
-- Each public semantic group must have a stable, unique XML `id` and a
-  semantic `class`; display names may also be supplied for editor layer
-  panels.
+- Each public semantic group must have a stable, unique XML `id` and
+  semantic classes; display names may also be supplied for editor layer panels.
+- Classes must be composable rather than encode every combination in one name.
+  An element may identify its semantic family, subtype, and appearance role,
+  for example `wenu-star magnitude-2 symbol-primary` or
+  `wenu-grid-line grid-major equatorial`.
 - Repeated astronomical objects must carry stable identities derived from
   Wenu-owned catalogue or semantic identifiers, not draw order.
 - Independently meaningful objects must be addressable within their layer. For
@@ -184,6 +187,37 @@ taxonomy rather than depend on backend-generated group names.
   structures, but must not replace or obscure the public semantic hierarchy.
 - Z-order must follow the documented Wenu hierarchy while preserving the
   established visual result.
+
+### Class-level styling
+
+Bulk editing must not require selecting or modifying thousands of individual
+SVG elements. Wenu must emit a documented class vocabulary and shared style
+rules so one class-level change updates every member while leaving its geometry
+untouched.
+
+The initial class dimensions to audit include:
+
+| Class dimension | Representative roles |
+| --- | --- |
+| Semantic family | star, deep-sky object, constellation line, grid line, label, boundary, artwork |
+| Semantic subtype | galaxy, nebula, cluster, planet, major grid, minor grid |
+| Appearance role | primary, secondary, highlighted, muted, masked |
+| Quantized data role | documented magnitude or symbol-size bins where bulk restyling is useful |
+| Coordinate role | equatorial, ecliptic, galactic, horizontal |
+
+Classes are an editing API and must remain independent of translated visible
+text, element order, backend-generated names, and exact numeric coordinates.
+Continuous scientific values such as a star's precise magnitude remain data,
+not fabricated CSS classes, unless Wenu deliberately defines a documented
+display bin.
+
+The editable product should centralize shared presentation in SVG style rules
+or equivalent group-level properties. An individual object may carry a
+documented override for an exceptional editorial treatment, but ordinary
+objects must inherit their appearance from shared roles. Inkscape acceptance
+must demonstrate changing one shared rule for a representative large class
+without selecting its individual members. The SVG must preserve useful class
+membership and styling when saved again from the reference editor.
 
 ### Editing permissions and scientific integrity
 
@@ -203,6 +237,8 @@ Therefore, in an editable SVG, a user must be able to:
 
 - select the constellation-lines layer and change its color or line width
   without changing any vertex position;
+- change one documented class rule and update every member of a large object
+  class without selecting the individual objects;
 - select a coordinate-grid layer and restyle its lines separately from its
   labels without changing the grid geometry;
 - select all constellation labels and change their font properties;
@@ -374,7 +410,12 @@ For each representative product verify:
 - XML parses and has an SVG root;
 - width, height, units, and view box agree with the product request;
 - expected clip paths and visible drawing classes exist;
-- required Wenu semantic groups, IDs, classes, nesting, and z-order exist;
+- required Wenu semantic groups, IDs, composable classes, shared style rules,
+  nesting, and z-order exist;
+- a shared class-level style change updates all and only the intended members
+  without modifying their scientific geometry;
+- ordinary repeated objects inherit shared presentation rather than duplicate
+  independent inline styles;
 - representative layers and individual labels can be selected according to
   their editing classification without destructive ungrouping;
 - scientific geometry carries the non-layout editing classification and is
@@ -406,13 +447,15 @@ Matplotlib-generated identifiers or complete serialized snapshots.
 
 ### Milestone 49F.2 - Semantic document structure
 
-- finalize and document the public semantic layer taxonomy;
+- finalize and document the public semantic layer taxonomy and composable
+  class vocabulary;
 - map existing Wenu rendering roles and stable object identities onto SVG
-  groups, IDs, classes, and editor display names;
+  groups, IDs, shared style classes, data attributes, and editor display names;
 - preserve existing geometry, clipping, appearance, and the canonical final
   save while adding the supported document structure;
-- add structural tests for nesting, identity, z-order, editing classification,
-  scientific-geometry protection, and representative object-level editing;
+- add structural tests for nesting, identity, z-order, class-level style
+  propagation, editing classification, scientific-geometry protection, and
+  representative object-level editing;
 - verify in Inkscape that scientific layers are guarded against accidental
   movement while permitted style and label-layout edits remain practical.
 
@@ -447,8 +490,9 @@ Stop and re-audit if SVG work would:
 - make incidental serialized SVG structure rather than the documented Wenu
   semantic hierarchy and behavior the test oracle;
 - make an editor-specific layer model or proprietary namespace authoritative;
-- claim editable output while flattening promised layers or preventing
-  independent selection of meaningful objects;
+- claim editable output while flattening promised layers, duplicating
+  independent styling across thousands of ordinary objects, or preventing
+  class-level and permitted individual selection;
 - imply that scientific geometry is freely repositionable or certify a
   derivative whose star, constellation-line, grid, boundary, or registered
   artwork geometry has been moved;
