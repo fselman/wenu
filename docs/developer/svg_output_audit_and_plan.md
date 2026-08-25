@@ -185,21 +185,44 @@ taxonomy rather than depend on backend-generated group names.
 - Z-order must follow the documented Wenu hierarchy while preserving the
   established visual result.
 
-### Editing contract
+### Editing permissions and scientific integrity
 
-In an editable SVG, a user must be able to:
+"Editable" does not mean that every property may be changed legitimately.
+Wenu must classify exported objects by the editing operations that preserve
+their meaning:
 
-- select the constellation-lines layer and change its color or line width;
+| Semantic category | Appearance | Visibility | Position or geometry |
+| --- | --- | --- | --- |
+| Scientific geometry: stars, constellation-line vertices, coordinate curves and grids, object positions, chart boundaries, registered artwork geometry | Editable | Editable | Locked; not a supported edit |
+| Scientific symbols whose position is meaningful | Editable | Editable | Locked; not a supported edit |
+| Annotation labels: constellation, star, coordinate, and object labels | Font and appearance editable | Editable | Editable when the product marks the label as layout-adjustable |
+| Legends, titles, footer, attribution, and other furniture | Editable | Editable | Editable within the page-layout contract |
+| Technical definitions, clip paths, masks, and transforms | Not a user editing surface | Not a user editing surface | Not a user editing surface |
+
+Therefore, in an editable SVG, a user must be able to:
+
+- select the constellation-lines layer and change its color or line width
+  without changing any vertex position;
 - select a coordinate-grid layer and restyle its lines separately from its
-  labels;
+  labels without changing the grid geometry;
 - select all constellation labels and change their font properties;
-- select one constellation label and move or restyle it independently;
+- select one layout-adjustable constellation label and move or restyle it
+  independently;
 - hide or show a complete semantic layer without damaging unrelated content;
-- inspect an object's Wenu identity without inferring it from the visible label
-  or from its serialized position.
+- inspect an object's Wenu identity and editing classification without
+  inferring them from visible text or serialized position.
 
-Moving an object in an external editor changes only that exported document; it
-does not alter Wenu's astronomical source or feed coordinates back into Wenu.
+Scientific groups should be locked by default in the primary reference editor
+when this can be represented without compromising standard SVG. Because SVG
+does not provide a universally enforced, editor-independent lock, this is a
+workflow guard rather than tamper-proof protection. Wenu's documented
+`data-wenu-edit` classification (for example `style`, `layout`, or
+`none`) is authoritative; editor-specific lock metadata is optional and
+advisory.
+
+Moving a locked scientific object in an external editor creates a scientifically
+modified derivative that Wenu does not certify. No external edit alters Wenu's
+astronomical source or feeds coordinates back into Wenu.
 
 ### Editor policy
 
@@ -352,8 +375,11 @@ For each representative product verify:
 - width, height, units, and view box agree with the product request;
 - expected clip paths and visible drawing classes exist;
 - required Wenu semantic groups, IDs, classes, nesting, and z-order exist;
-- representative layers and individual labels can be selected and edited
-  independently without destructive ungrouping;
+- representative layers and individual labels can be selected according to
+  their editing classification without destructive ungrouping;
+- scientific geometry carries the non-layout editing classification and is
+  locked by default where the reference editor permits it;
+- permitted style edits leave scientific positions and geometry unchanged;
 - no unexpected `image` element or raster data URI exists;
 - both font policies satisfy their declared structural contract;
 - transparency and background behavior match the product;
@@ -385,9 +411,10 @@ Matplotlib-generated identifiers or complete serialized snapshots.
   groups, IDs, classes, and editor display names;
 - preserve existing geometry, clipping, appearance, and the canonical final
   save while adding the supported document structure;
-- add structural tests for nesting, identity, z-order, and representative
-  object-level editability;
-- verify layer and individual-object editing in Inkscape.
+- add structural tests for nesting, identity, z-order, editing classification,
+  scientific-geometry protection, and representative object-level editing;
+- verify in Inkscape that scientific layers are guarded against accidental
+  movement while permitted style and label-layout edits remain practical.
 
 ### Milestone 49F.3 - Explicit output and font policy
 
@@ -422,6 +449,9 @@ Stop and re-audit if SVG work would:
 - make an editor-specific layer model or proprietary namespace authoritative;
 - claim editable output while flattening promised layers or preventing
   independent selection of meaningful objects;
+- imply that scientific geometry is freely repositionable or certify a
+  derivative whose star, constellation-line, grid, boundary, or registered
+  artwork geometry has been moved;
 - treat SVG as the internal celestial scene or Wenu3D exchange format;
 - embed unexplained raster payloads;
 - mix constellation-art registration implementation into SVG verification;
@@ -432,7 +462,8 @@ Stop and re-audit if SVG work would:
 
 Milestone 49F is complete when Wenu exposes a documented, deterministic SVG
 product through its canonical workflow; representative chart families pass
-semantic-layer, object-editability, structural, physical, font, transparency,
+semantic-layer, classified-editability, scientific-geometry protection,
+structural, physical, font, transparency,
 raster-payload, browser-rendering, and Inkscape acceptance; 2D geometry is
 identical to established products; optional Illustrator interoperability does
 not define the product; and the SVG contract remains cleanly downstream of the scientific scene needed for Moon,
