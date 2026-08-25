@@ -96,8 +96,8 @@ SVG output must:
   Inkscape, the primary reference editor;
 - expose a Wenu-owned semantic layer and object hierarchy with stable public
   identifiers and classes;
-- permit whole-layer editing and object-level editing where the semantic
-  object is independently meaningful;
+- permit the documented appearance, visibility, and layout operations at
+  whole-layer or object level while protecting scientific geometry;
 - remain practically interoperable with other SVG-capable editors, including
   Illustrator when available, without making any editor's private document
   model authoritative;
@@ -466,5 +466,6 @@ semantic-layer, classified-editability, scientific-geometry protection,
 structural, physical, font, transparency,
 raster-payload, browser-rendering, and Inkscape acceptance; 2D geometry is
 identical to established products; optional Illustrator interoperability does
-not define the product; and the SVG contract remains cleanly downstream of the scientific scene needed for Moon,
-planet, constellation-artwork, and future Wenu3D work.
+not define the product; and the SVG contract remains cleanly downstream of the
+scientific scene needed for Moon, planet, constellation-artwork, and future
+Wenu3D work.
