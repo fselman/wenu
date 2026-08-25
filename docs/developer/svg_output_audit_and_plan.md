@@ -92,10 +92,17 @@ SVG output must:
 - preserve intentional transparency, face color, masks, alpha, line styles,
   symbols, and text orientation;
 - contain no unexpected embedded raster image payload;
-- remain inspectable in a standards-compliant browser and practical vector
-  editor;
-- avoid tests coupled to irrelevant Matplotlib element identifiers, ordering,
-  or serialization details.
+- remain inspectable in a standards-compliant browser and editable in
+  Inkscape, the primary reference editor;
+- expose a Wenu-owned semantic layer and object hierarchy with stable public
+  identifiers and classes;
+- permit whole-layer editing and object-level editing where the semantic
+  object is independently meaningful;
+- remain practically interoperable with other SVG-capable editors, including
+  Illustrator when available, without making any editor's private document
+  model authoritative;
+- avoid tests coupled to irrelevant Matplotlib-generated identifiers,
+  incidental ordering, or serialization details.
 
 SVG output must not:
 
@@ -105,9 +112,110 @@ SVG output must not:
   renderer, furniture owner, or final-save path;
 - silently alter geometry to accommodate an output backend;
 - serve as Wenu's internal scene representation;
-- serve as the Wenu3D interchange format.
+- serve as the Wenu3D interchange format;
+- expose Matplotlib's incidental artist tree as the supported editing
+  abstraction;
+- require Illustrator or any proprietary editor to exercise a promised editing
+  capability.
 
-## 5. Font policy
+## 5. Editable SVG document model
+
+The editable SVG product is a structured document, not merely a picture that
+happens to use vector primitives. Wenu owns this structure. Neither Matplotlib,
+Inkscape, Illustrator, nor another editor defines the authoritative layer
+taxonomy.
+
+The SVG root must contain stable nested groups representing Wenu semantic
+roles. The initial hierarchy to verify and refine during Milestone 49F.1 is:
+
+```text
+wenu-chart
+    background
+    sky-area
+        milky-way
+        coordinate-grids
+            equatorial-grid
+                grid-lines
+                grid-labels
+            ecliptic-grid
+            galactic-grid
+            horizontal-grid
+        reference-curves
+        constellation-artwork
+        constellation-lines
+        deep-sky-objects
+        stars
+        solar-system
+            sun
+            moon
+            planets
+        labels
+            star-labels
+            constellation-labels
+            object-labels
+    masks-and-boundaries
+    legends
+    furniture
+        title
+        footer
+        attribution
+```
+
+Only groups relevant to a particular product need be emitted. The audit may
+adjust names or nesting before they become public, but the accepted vocabulary
+must then be documented and versioned. New semantic roles must extend this
+taxonomy rather than depend on backend-generated group names.
+
+### Layer and object identity
+
+- Each public semantic group must have a stable, unique XML `id` and a
+  semantic `class`; display names may also be supplied for editor layer
+  panels.
+- Repeated astronomical objects must carry stable identities derived from
+  Wenu-owned catalogue or semantic identifiers, not draw order.
+- Independently meaningful objects must be addressable within their layer. For
+  example, one constellation label must be selectable and movable without
+  ungrouping every constellation label, and its identifier must remain distinct
+  from the visible translated text.
+- Geometry reused as a symbol may use SVG definitions and references only when
+  common editors still permit the promised object-level editing. Otherwise the
+  editable policy may deliberately emit expanded objects.
+- Clip paths, masks, definitions, and backend bookkeeping may remain technical
+  structures, but must not replace or obscure the public semantic hierarchy.
+- Z-order must follow the documented Wenu hierarchy while preserving the
+  established visual result.
+
+### Editing contract
+
+In an editable SVG, a user must be able to:
+
+- select the constellation-lines layer and change its color or line width;
+- select a coordinate-grid layer and restyle its lines separately from its
+  labels;
+- select all constellation labels and change their font properties;
+- select one constellation label and move or restyle it independently;
+- hide or show a complete semantic layer without damaging unrelated content;
+- inspect an object's Wenu identity without inferring it from the visible label
+  or from its serialized position.
+
+Moving an object in an external editor changes only that exported document; it
+does not alter Wenu's astronomical source or feed coordinates back into Wenu.
+
+### Editor policy
+
+Standards-compliant SVG and Wenu's documented hierarchy are normative.
+Rendering in current mainstream browsers is the baseline portability check.
+Inkscape is the primary reference editor because it is free and open source,
+uses SVG as its native document format, exposes nested layers and objects, and
+permits direct XML inspection.
+
+Illustrator is an optional secondary interoperability check because it is
+widely used in professional illustration and publishing. It is not required,
+and Adobe-specific namespaces, layer conventions, or round-trip behavior must
+not become part of Wenu's contract. Scribus may later be checked for page
+layout and print/PDF workflows, but it is not the reference SVG editor.
+
+## 6. Font policy
 
 Wenu will support two explicit SVG font policies:
 
@@ -142,7 +250,7 @@ The implementation milestone must name this policy through Wenu's public
 product/export vocabulary rather than requiring users to know Matplotlib
 configuration keys.
 
-## 6. Relationship to Wenu3D
+## 7. Relationship to Wenu3D
 
 SVG is a language for two-dimensional vector and mixed vector/raster graphics.
 It is not the shared representation between Wenu and Wenu3D.
@@ -185,7 +293,7 @@ justify its greater scope.
 No glTF, GLB, USD, camera, lighting, material, depth, or 3D-scene contract is
 introduced by Milestone 49F.
 
-## 7. Constellation artwork
+## 8. Constellation artwork
 
 Constellation artwork is a semantic celestial asset, not an output-format
 special case. Its source artwork and celestial registration must remain
@@ -225,7 +333,7 @@ A future first artwork milestone should use one licensed constellation as a
 vertical slice and prove registration, nonlinear projection, seam behavior,
 clipping, attribution, and 2D/3D reuse before adding a full collection.
 
-## 8. Representative SVG verification matrix
+## 9. Representative SVG verification matrix
 
 The first behavioral verification should cover:
 
@@ -243,17 +351,23 @@ For each representative product verify:
 - XML parses and has an SVG root;
 - width, height, units, and view box agree with the product request;
 - expected clip paths and visible drawing classes exist;
+- required Wenu semantic groups, IDs, classes, nesting, and z-order exist;
+- representative layers and individual labels can be selected and edited
+  independently without destructive ungrouping;
 - no unexpected `image` element or raster data URI exists;
 - both font policies satisfy their declared structural contract;
 - transparency and background behavior match the product;
 - the corresponding PNG or PDF has the same astronomical geometry and visual
   hierarchy;
-- browser and vector-editor inspection records any portability difference.
+- browser rendering and Inkscape editing acceptance are recorded;
+- optional Illustrator inspection records interoperability differences without
+  redefining the contract.
 
-Tests should assert semantic invariants and tolerances, not Matplotlib-generated
-identifier strings or complete serialized snapshots.
+Tests should assert documented Wenu semantic identities, hierarchy, editing
+invariants, and numeric tolerances. They must not assert incidental
+Matplotlib-generated identifiers or complete serialized snapshots.
 
-## 9. Planned implementation milestones
+## 10. Planned implementation milestones
 
 ### Milestone 49F.1 - Reference generation and structural audit
 
@@ -264,7 +378,18 @@ identifier strings or complete serialized snapshots.
 - record defects without changing the renderer unless a minimal correction is
   separately approved.
 
-### Milestone 49F.2 - Explicit output and font policy
+### Milestone 49F.2 - Semantic document structure
+
+- finalize and document the public semantic layer taxonomy;
+- map existing Wenu rendering roles and stable object identities onto SVG
+  groups, IDs, classes, and editor display names;
+- preserve existing geometry, clipping, appearance, and the canonical final
+  save while adding the supported document structure;
+- add structural tests for nesting, identity, z-order, and representative
+  object-level editability;
+- verify layer and individual-object editing in Inkscape.
+
+### Milestone 49F.3 - Explicit output and font policy
 
 - define public output-format and SVG-font-policy vocabulary;
 - make single-file, directory, and all-product naming deterministic;
@@ -272,16 +397,19 @@ identifier strings or complete serialized snapshots.
 - reject contradictory filename and explicit-format requests;
 - retain one final save and the same chart/export owners.
 
-### Milestone 49F.3 - Documentation and product acceptance
+### Milestone 49F.4 - Documentation and product acceptance
 
-- document SVG in CLI help, configuration, implementation reference, source
-  tree, README, and user guide;
+- document SVG, the layer taxonomy, IDs, and editing guarantees in CLI help,
+  configuration, implementation reference, source tree, README, and user guide;
 - record reproducible representative commands and artifacts;
-- inspect in at least one browser and one practical vector editor;
+- inspect rendering in current mainstream browsers;
+- perform the primary editing acceptance in Inkscape;
+- record optional Illustrator interoperability results when Illustrator is
+  available;
 - compare against atlas-print visual authorities;
 - record accepted limitations and close the supported product contract.
 
-## 10. Stop conditions
+## 11. Stop conditions
 
 Stop and re-audit if SVG work would:
 
@@ -289,18 +417,23 @@ Stop and re-audit if SVG work would:
   pipeline;
 - make SVG choose different geometry or content;
 - expose raw Matplotlib configuration as Wenu's only public contract;
-- make serialized SVG structure rather than semantic behavior the test oracle;
+- make incidental serialized SVG structure rather than the documented Wenu
+  semantic hierarchy and behavior the test oracle;
+- make an editor-specific layer model or proprietary namespace authoritative;
+- claim editable output while flattening promised layers or preventing
+  independent selection of meaningful objects;
 - treat SVG as the internal celestial scene or Wenu3D exchange format;
 - embed unexplained raster payloads;
 - mix constellation-art registration implementation into SVG verification;
 - begin 3D scene implementation before its scientific and semantic inputs are
   explicit.
 
-## 11. Completion definition
+## 12. Completion definition
 
 Milestone 49F is complete when Wenu exposes a documented, deterministic SVG
 product through its canonical workflow; representative chart families pass
-structural, physical, font, transparency, raster-payload, and visual
-acceptance; 2D geometry is identical to established products; and the SVG
-contract remains cleanly downstream of the scientific scene needed for Moon,
+semantic-layer, object-editability, structural, physical, font, transparency,
+raster-payload, browser-rendering, and Inkscape acceptance; 2D geometry is
+identical to established products; optional Illustrator interoperability does
+not define the product; and the SVG contract remains cleanly downstream of the scientific scene needed for Moon,
 planet, constellation-artwork, and future Wenu3D work.
