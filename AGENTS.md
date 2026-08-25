@@ -17,6 +17,15 @@ In particular:
 4. Perform an as-is assessment before changing anything.
 5. Implement only the smallest current milestone and preserve the canonical
    Wenu pipeline and responsibility boundaries.
-6. Do not commit or push unless the user explicitly requests it.
-7. Deliver every modification through the Finder-safe Mac ZIP handoff defined
-   in `docs/developer/assistant_instructions.md`.
+6. Before remote work begins, confirm with the user that the Mac working tree is
+   clean and synchronized with the agreed GitHub base. Treat uncommitted local
+   work as invisible until the user reports or publishes it.
+7. After the user approves a bounded milestone, use a dedicated GitHub branch,
+   commit the verified work there, and open or update a pull request for review.
+   Do not merge, delete, force-push, or commit directly to `main` without a
+   separate explicit request.
+8. Guide the user through synchronizing the Mac and running the relevant local,
+   scientific, visual, print, or classroom acceptance checks.
+9. Use the Finder-safe Mac ZIP patch handoff in
+   `docs/developer/assistant_instructions.md` only when direct GitHub delivery
+   is unavailable or the user specifically requests a patch.
