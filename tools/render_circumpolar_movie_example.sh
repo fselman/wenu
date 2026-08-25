@@ -1,14 +1,14 @@
-python "tools/render_circumpolar_movie.py" \
+python tools/render_circumpolar_movie.py \
   --start "2026-08-21T21:00:00-04:00" \
-  --duration-hours 12 \
-  --movie-seconds 1 \
-  --fps 12 \
+  --duration-hours 24 \
+  --movie-seconds 15 \
+  --fps 30 \
   --rerender \
   --title "Constelaciones circumpolares australes" \
   --location-label "La Ligua" \
   --background-color "#0262AD" \
-  --output output/circumpolar-south-35-1s.mp4 \
-  --frames output/circumpolar-south-35-1s-frames \
+  --output output/circumpolar-south-35-24h-smooth.mp4 \
+  --frames output/circumpolar-south-35-24h-smooth-frames \
   -- \
   --pole south \
   --limiting-declination -35 \
@@ -17,6 +17,6 @@ python "tools/render_circumpolar_movie.py" \
   --mode presentation \
   --observer-location "La Ligua" \
   --language es \
-  --magnitude-limit 5.5 \
+  --magnitude-limit 5.0 \
   --constellation-line-width 1.05 \
   --constellation-line-color "#FFE066"
