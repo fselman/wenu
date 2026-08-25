@@ -151,10 +151,21 @@ through undocumented downstream paths, project, clip, style, or render.
 
 ## 9. Milestone 49F - SVG product verification
 
+The detailed as-is audit, product contract, font policy, verification matrix,
+2D/3D boundary, constellation-artwork relationship, and implementation stages
+are recorded in `svg_output_audit_and_plan.md`.
+
 Wenu already reaches Matplotlib's SVG backend when an `.svg` output path or
 configured SVG extension is selected. This milestone promotes that incidental
 capability into a supported product contract; it does not begin by creating a
 new renderer.
+
+SVG is a 2D publication and editing product, not Wenu's internal celestial
+scene or the interchange format for future Wenu3D output. Wenu 1.0 should leave
+renderer-neutral astronomical and semantic state that both 2D charts and a
+later 3D realization can consume. glTF/GLB is the likely initial portable 3D
+delivery format to evaluate independently. SVG may also serve as source artwork
+when paired with separate celestial registration.
 
 - document SVG in the CLI, configuration, implementation reference, and user
   guide;
