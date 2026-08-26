@@ -82,3 +82,31 @@ Version 1 intentionally has no profile inheritance or multi-file stacking.
 When one chart needs choices from several themes, keep a dedicated combined
 profile. An inheritance feature should be added only if experience with these
 ordinary single-file overlays demonstrates that it is necessary.
+
+
+## Output format in profiles
+
+For a one-off command, select the public format explicitly:
+
+```bash
+wenu_chart regional ... --format svg --output output/chart.svg
+```
+
+A reusable TOML profile may instead set the existing product extension:
+
+```toml
+[products.default]
+extension = ".svg"
+```
+
+Version 1 accepts `.png`, `.pdf`, and `.svg` output extensions. SVG always
+uses Wenu's editable-text contract; there is no TOML font-policy switch.
+An explicit CLI `--format` overrides extension-based selection for generated
+names and must agree with an explicitly suffixed single-file `--output`.
+
+The mode setting `prefer_vector` is an appearance/export preference retained
+by the configuration schema. It does not itself choose PDF or SVG. Choose the
+format with `--format` or `products.default.extension`.
+
+See [SVG output and editing](svg_output.md) for semantic metadata, supported
+editor operations, font substitution, and the safe Inkscape workflow.
