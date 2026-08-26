@@ -594,3 +594,20 @@ def test_readmes_advertise_the_svg_user_contract():
         text = (ROOT / filename).read_text(encoding="utf-8")
         assert "--format svg" in text
         assert "docs/user_guide/svg_output.md" in text
+
+
+def test_svg_paint_order_record_rejects_semantic_inference():
+    record = (
+        DEVELOPER / "svg_exact_paint_order_49f4a.md"
+    ).read_text(encoding="utf-8")
+    normalized = " ".join(record.split())
+
+    for value in (
+        "What is the object?",
+        "When is it drawn?",
+        "does not classify the object",
+        "must never be inferred to be a star",
+        "does not contain or reconstruct astronomical knowledge",
+        "Hierarchical grouping remains a later",
+    ):
+        assert value in normalized
