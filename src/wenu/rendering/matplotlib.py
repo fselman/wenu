@@ -124,6 +124,10 @@ class MatplotlibRenderer:
                 zorder=zorder,
                 paint_role=paint_role,
                 edit_policy=identity.edit_policy,
+                semantic_path=identity.semantic_path,
+                display_name=identity.display_name,
+                presentation_order=identity.presentation_order,
+                style_role=identity.style_role,
             )
             results.append(
                 SemanticArtistRenderingResult(
@@ -132,6 +136,10 @@ class MatplotlibRenderer:
                     zorder=zorder,
                     paint_role=paint_role,
                     edit_policy=identity.edit_policy,
+                    semantic_path=identity.semantic_path,
+                    display_name=identity.display_name,
+                    presentation_order=identity.presentation_order,
+                    style_role=identity.style_role,
                 )
             )
         return tuple(results)
