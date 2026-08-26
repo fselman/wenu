@@ -706,3 +706,21 @@ observer, catalogue-depth, constellation-selection, target, mask, or framing
 requests remain distinct builds. The registry closes every owned observer at
 session teardown and does not replace the full builder smoke coverage for any
 canonical chart family.
+
+
+## SVG product modules (Milestones 49F.2C–49F.3)
+
+- `src/wenu/output_policy.py` owns the public `png`, `pdf`, and `svg`
+  vocabulary independently of Matplotlib.
+- `src/wenu/chart_document.py` owns renderer-neutral editing classifications
+  used by projected semantic content.
+- `src/wenu/svg_document.py` annotates already-saved SVG artist groups with
+  Wenu semantic, paint-order, and editing metadata. It does not own
+  astronomical selection, projection, rendering, or a second save path.
+- `src/wenu/charts/product_options.py` resolves explicit output selection and
+  deterministic filenames.
+- `src/wenu/rendering/matplotlib.py` carries Wenu semantic identity from
+  rendering to the final SVG annotation boundary.
+
+SVG remains a downstream 2D product. It is not Wenu's scientific scene, an
+internal `.wenu` representation, or the interchange format for Wenu3D.

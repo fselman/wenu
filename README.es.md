@@ -57,6 +57,7 @@ La versión actual incluye
 - leyendas integradas de objetos, magnitudes estelares y contexto
 - cartas regionales, de cielo completo, circumpolares y binoculares
 - composición por capas
+- exportación reproducible a PNG y PDF, y SVG semántico editable
 - representación gráfica mediante Matplotlib
 
 ---
@@ -153,7 +154,11 @@ y representación gráfica.
 ## Documentación
 
 La [guía de usuario v0.8](docs/user_guide/index.md) documenta las seis
-familias canónicas de cartas y sus controles compartidos. La referencia
+familias canónicas de cartas y sus controles compartidos. Use `--format svg`
+para obtener texto y vectores editables; consulte la
+[guía de salida SVG](docs/user_guide/svg_output.md) para conocer el flujo de
+trabajo admitido en Inkscape y las limitaciones de portabilidad tipográfica.
+La referencia
 técnica vigente es `docs/developer/implementation_reference.md`; la
 arquitectura implementada se describe en
 `docs/developer/target_architecture_v0.8.md`.

@@ -83,16 +83,14 @@ artists. A label remained movable as expected.
 A separate Inkscape Save As round trip preserved all 232 semantic artists and
 the complete 4-layout / 228-style classification.
 
-## Font limitation
+## Font capability completed by 49F.3
 
-The `layout` policy declares that label font and appearance edits are supported
-by the eventual editable SVG product. Current Matplotlib output still converts
-visible text to vector paths, so font family and wording are not yet editable
-as text. Individual path appearance and label position remain editable.
-
-Actual font-family, size, weight, and wording edits require the explicit SVG
-font policy planned for Milestone 49F.3. Wenu must not claim font editing before
-that policy is implemented and accepted.
+At 49F.2D acceptance, Matplotlib still converted visible text to paths and this
+section recorded font editing as deferred. Milestone 49F.3 subsequently
+established one SVG contract with genuine text elements and verified
+font-family, size, weight, color, wording, and label-position edits in Inkscape.
+The authoritative current user contract is
+`docs/user_guide/svg_output.md`.
 
 ## Contracts and deferred work
 
@@ -108,7 +106,7 @@ It deliberately defers:
 
 - editor-specific advisory locks;
 - shared class-level style rules;
-- parent paint-band and semantic-fragment groups;
+- parent semantic and semantic-fragment groups;
 - editable SVG text and font policy;
 - explicit output-format selection;
 - dense binocular SVG optimization.

@@ -215,7 +215,12 @@ boundary. An enabled legend must have a non-`none` location.
 - `default.all_products`: boolean
 - `default.language`: supported language identifier
 - `default.title`: optional-string
-- `default.extension`: supported filename extension beginning with `.`
+- `default.extension`: `.png`, `.pdf`, or `.svg`
+
+SVG extension selection invokes Wenu's single editable-text SVG contract. The
+schema has no separate SVG font-policy key. An explicit CLI `--format` remains
+the ordinary one-off override and must agree with an explicitly suffixed
+single-file output.
 
 Named product combinations contain only style, mode, detail-policy reference,
 and post-mode visual overrides accepted by existing immutable contracts. They

@@ -1378,3 +1378,27 @@ as gray `#707070` for both lines and labels in print modes so it remains
 subordinate to black stars. It excludes its altitude-zero circle so it does
 not duplicate the chart-owned horizon.
 `--mask` enables the canonical outside-region mask explicitly.
+
+
+## SVG output contract (Milestone 49F.3)
+
+The shared chart product arguments accept `--format png`, `--format pdf`,
+and `--format svg`. Public format resolution is owned by
+`wenu.output_policy.OutputFormat`; backend-specific Matplotlib font terms are
+not public API.
+
+`ChartProductOptions.output_format` carries an optional explicit format into
+deterministic naming. A single-file output suffix that contradicts an explicit
+format raises `ValueError`. Commands that omit the option retain established
+configuration and suffix behavior.
+
+The canonical SVG final-save path retains genuine text elements and then
+annotates Wenu-owned semantic artist groups through
+`wenu.svg_document.annotate_semantic_svg()`. Those groups expose stable IDs,
+semantic layer and paint metadata, and `data-wenu-edit` classification without
+reordering the XML tree or changing geometry, clipping, or appearance.
+
+SVG is the editable vector product; PDF is the portable publication and
+printing product. Ordinary SVG names font families and fallbacks but does not
+embed font files. The supported external-editing rules and safe Inkscape
+workflow are documented in `docs/user_guide/svg_output.md`.

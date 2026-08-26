@@ -32,13 +32,16 @@ Every example accepts:
 --style atlas|cartoon
 --mode print|presentation
 --output PATH
+--format png|pdf|svg
 --all-products
 ```
 
 A normal invocation writes one product. `--all-products` writes the four style/mode
 products to a directory with deterministic names. See
 [Styles, modes, detail, and furniture](styles_modes_detail.md) for shared
-content, appearance, legend, reference, and credit options.
+content, appearance, legend, reference, and credit options. See
+[SVG output and editing](svg_output.md) for the editable vector contract,
+font portability, semantic metadata, and safe Inkscape workflow.
 
 Use [`wenu_chart` and editable TOML profiles](configuration.md) to generate
 any family through one installed command and keep publication, presentation,

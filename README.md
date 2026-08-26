@@ -35,7 +35,7 @@ See `LICENSE` for the current usage terms.
 - IAU constellation boundaries assembled in B1875;
 - equatorial, ecliptic, and Galactic grids;
 - celestial reference points;
-- publication styles and reproducible export;
+- reproducible PNG and PDF export plus editable semantic SVG output;
 - atlas and cartoon chart styles;
 - print/paper and presentation output modes;
 - render-local fixed, adaptive, and cartoon detail policies;
@@ -83,7 +83,9 @@ The image's exact command, source commit, dimensions, checksum, and visual
 approval are recorded in the
 [planisphere guide](docs/user_guide/planisphere.md#readme-image-provenance).
 The complete [Wenu v0.8 user guide](docs/user_guide/index.md) covers all six
-canonical chart families and their shared controls.
+canonical chart families and their shared controls. Use `--format svg` for
+editable vector output; see [SVG output and editing](docs/user_guide/svg_output.md)
+for the supported Inkscape workflow and font-portability limits.
 
 ## Library composition
 

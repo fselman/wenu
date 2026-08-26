@@ -21,7 +21,6 @@ def attach_semantic_svg_metadata(
     }
     if paint_role is not None:
         metadata["paint_role"] = paint_role.name
-        metadata["paint_band"] = paint_role.band.name
     setattr(artist, _METADATA_ATTRIBUTE, metadata)
 
 
@@ -53,15 +52,10 @@ def annotate_semantic_svg(path, figure):
             "data-wenu-edit": metadata["edit_policy"],
         }
         paint_role = metadata.get("paint_role")
-        paint_band = metadata.get("paint_band")
         if paint_role is not None:
             classes.append(f"wenu-paint-{paint_role.replace('_', '-')}")
             attributes["class"] = " ".join(classes)
             attributes["data-wenu-paint-role"] = paint_role
-        if paint_band is not None:
-            classes.append(f"wenu-band-{paint_band.replace('_', '-')}")
-            attributes["class"] = " ".join(classes)
-            attributes["data-wenu-paint-band"] = paint_band
         extra = "".join(
             f' {name}="{escape(str(value), quote=True)}"'
             for name, value in attributes.items()

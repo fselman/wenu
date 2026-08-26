@@ -20,6 +20,7 @@ GUIDE_PAGES = (
     "binocular_charts.md",
     "styles_modes_detail.md",
     "configuration.md",
+    "svg_output.md",
 )
 EXAMPLES = (
     "all_sky.py",
@@ -140,6 +141,10 @@ def test_configuration_guide_documents_template_and_profiles():
         "papudo.toml",
         "binocular-observing.toml",
         "no profile inheritance or multi-file stacking",
+        'extension = ".svg"',
+        "--format svg",
+        "prefer_vector",
+        "does not itself choose PDF or SVG",
     ):
         assert value in text
 
@@ -161,3 +166,26 @@ def test_legacy_user_guide_paths_point_to_the_structured_guide():
     for filename in ("docs/user_guide.md", "docs/user_guide.es.md"):
         text = (ROOT / filename).read_text(encoding="utf-8")
         assert "user_guide/index.md" in text
+
+
+def test_svg_guide_documents_editable_vector_contract():
+    text = " ".join(
+        (GUIDE / "svg_output.md").read_text(encoding="utf-8").split()
+    )
+
+    for value in (
+        "--format png",
+        "--format pdf",
+        "--format svg",
+        'data-wenu-edit="style"',
+        'data-wenu-edit="layout"',
+        "genuine SVG `<text>` elements",
+        "does not embed the font file",
+        "scientifically modified derivative",
+        "Inkscape",
+    ):
+        assert value in text
+
+    index = (GUIDE / "index.md").read_text(encoding="utf-8")
+    assert "--format png|pdf|svg" in index
+    assert "(svg_output.md)" in index

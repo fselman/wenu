@@ -561,3 +561,53 @@ def test_polar_reference_review_corrections_are_documented():
         "corrected stereographic handedness",
     ):
         assert phrase in roadmap or phrase in target or phrase in acceptance
+
+
+def test_current_svg_documents_use_one_editable_text_contract():
+    roadmap = " ".join(
+        (DEVELOPER / "svg_output_audit_and_plan.md")
+        .read_text(encoding="utf-8")
+        .split()
+    )
+    implementation = (DEVELOPER / "implementation_reference.md").read_text(
+        encoding="utf-8"
+    )
+    source_tree = (DEVELOPER / "source_tree.md").read_text(encoding="utf-8")
+
+    for value in (
+        "SVG has one public text contract",
+        "--format {png,pdf,svg}",
+        "PDF is the publication product",
+        "SVG is the editable vector product",
+    ):
+        assert value in roadmap
+
+    assert "support two explicit SVG font policies" not in roadmap
+    assert "wenu.output_policy.OutputFormat" in implementation
+    assert "wenu.svg_document.annotate_semantic_svg()" in implementation
+    assert "src/wenu/output_policy.py" in source_tree
+    assert "src/wenu/svg_document.py" in source_tree
+
+
+def test_readmes_advertise_the_svg_user_contract():
+    for filename in ("README.md", "README.es.md"):
+        text = (ROOT / filename).read_text(encoding="utf-8")
+        assert "--format svg" in text
+        assert "docs/user_guide/svg_output.md" in text
+
+
+def test_svg_paint_order_record_rejects_semantic_inference():
+    record = (
+        DEVELOPER / "svg_exact_paint_order_49f4a.md"
+    ).read_text(encoding="utf-8")
+    normalized = " ".join(record.split())
+
+    for value in (
+        "What is the object?",
+        "When is it drawn?",
+        "does not classify the object",
+        "must never be inferred to be a star",
+        "does not contain or reconstruct astronomical knowledge",
+        "Hierarchical grouping remains a later",
+    ):
+        assert value in normalized
