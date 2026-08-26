@@ -87,12 +87,12 @@ it must not be marked accepted merely because XML parsing succeeds.
 
 | Product | Structural focus | Human focus | Status |
 | --- | --- | --- | --- |
-| Regional | Rectangular viewport, masks, labels | SVG/PNG geometry and hierarchy | Pending Mac render |
-| Planisphere | Circular boundary, outside transparency | Legends, footer, background | Pending Mac render |
-| Galactic all-sky | Mollweide ellipse, seam splitting | Grid labels and seam behavior | Pending Mac render |
-| Binocular | Circular aperture, dense symbols | Magnitude scale and labels | Pending Mac render |
-| Circumpolar | Declination boundary and clipping | Reference grids | Pending Mac render |
-| Polar disk/page or pouch | Exact paper size, non-tight page | Furniture and typography | Pending Mac render |
+| Regional | Rectangular viewport, masks, labels | SVG/PNG geometry and hierarchy | Accepted on Mac |
+| Planisphere | Circular boundary, outside transparency | Legends, footer, background | Accepted on Mac |
+| Galactic all-sky | Mollweide ellipse, seam splitting | Grid labels and seam behavior | SVG parity accepted; label defects recorded |
+| Binocular | Circular aperture, dense symbols | Magnitude scale and labels | Geometry accepted; editing performance defective |
+| Circumpolar | Declination boundary and clipping | Reference grids | Accepted on Mac |
+| Polar disk/page or pouch | Exact physical size, non-tight page | Furniture and typography | Accepted after metadata correction |
 
 For every generated SVG, record:
 
@@ -109,6 +109,50 @@ For every generated SVG, record:
 Illustrator remains an optional interoperability check and does not define
 acceptance.
 
+
+## Recorded representative results
+
+All files were generated outside the repository on Fernando's Mac through the
+existing public request or canonical physical-page exporter.
+
+| Product | Size | Paths / uses | Clips | Raster | Inkscape result |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Regional | 6.1 MB | 9,160 / not recorded | 1 | none | Correct; fit drawing/page 174% |
+| Galactic all-sky | 2.8 MB | 3,583 / not recorded | 2 | none | Correct serialization; fit drawing/page 145% |
+| Planisphere | 1.9 MB | 1,942 / not recorded | 2 | none | Correct; fit drawing/page 149% |
+| Binocular, magnitude 11 | 40 MB | 60,055 / 171 | 2 | none | Correct but slow; fit drawing/page 149% |
+| Circumpolar south to -35 degrees | 2.1 MB | 3,327 / 506 | 2 | none | Correct; fit drawing/page 149% |
+| Polar south A4 | 2.0 MB | 2,611 / 1,522 | 3 | none | Correct; fit drawing/page 74% |
+| Polar north A4 | 1.9 MB | 2,510 / 1,435 | 3 | none | Correct; fit drawing/page 74% |
+
+Every inspected document had matching physical dimensions and view box,
+one metadata element, no SVG mask element, no image element, and no raster data
+URI. Matplotlib's current default converted all visible text to paths.
+
+The regional file initially opened at 6.1 percent zoom, but fit drawing and fit
+page both produced 174 percent. This was an Inkscape initial-view quirk, not
+evidence of far-off-page geometry. The binocular file showed a slight
+horizontal recentering between fit drawing and fit page at the same rounded
+zoom value; no visible geometry defect resulted.
+
+The binocular file took approximately 10 seconds to open and 35 seconds to
+close in Inkscape. Its 40 MB size and 60,055 paths are not practical for the
+eventual editable product. Milestone 49F.2 must examine symbol reuse and
+semantic object structure without sacrificing object-level editing.
+
+The all-sky SVG and matching PNG both showed an incorrectly placed or oriented
+Galactic-plane label and an incorrectly oriented celestial-equator label.
+Because PNG and SVG match, these are existing all-sky label-placement defects,
+not SVG serialization defects. The same reference labels were correctly
+oriented in the planisphere and circumpolar products.
+
+The canonical polar-page export initially failed because PDF-oriented
+`Subject` metadata is rejected by Matplotlib's SVG writer. The approved
+minimal correction translates `Subject` to SVG `Description` while
+preserving non-SVG metadata. After that correction both canonical pages
+exported successfully at exactly 595.275591 by 841.889764 points, corresponding
+to A4 210 by 297 mm.
+
 ## Defects and deferred decisions
 
 The audit confirms these pre-existing product gaps without correcting them:
@@ -119,7 +163,8 @@ The audit confirms these pre-existing product gaps without correcting them:
 - SVG contains no Wenu-owned semantic layer, object identity, class, or editing
   classification;
 - scientific geometry is not guarded through a documented SVG editing policy;
-- browser and Inkscape acceptance have not yet been recorded.
+- no Wenu-owned semantic layers appear in Inkscape; all products expose only
+  backend structure rather than the planned editing hierarchy.
 
 These belong to Milestones 49F.2 through 49F.4. They are not reasons to create a
 second renderer during 49F.1.
@@ -127,6 +172,7 @@ second renderer during 49F.1.
 ## Acceptance and closure
 
 Remote acceptance requires the focused SVG tests and the full test suite.
-Scientific and visual closure additionally requires the representative matrix
-to be rendered and inspected on Fernando's Mac. Until those checks are
-recorded, 49F.1 remains open and no supported SVG product is claimed.
+The representative matrix has been rendered and inspected on Fernando's Mac.
+Milestone 49F.1 closes only after the post-correction full suite passes and the
+final branch diff and pull request are reviewed. This audit still does not
+claim the complete supported SVG product planned for Milestones 49F.2-49F.4.
