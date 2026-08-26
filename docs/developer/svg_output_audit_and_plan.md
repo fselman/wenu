@@ -1,7 +1,7 @@
 # Wenu SVG output audit and plan
 
 **Milestone:** 49F.0  
-**Status:** Approved planning and documentation; runtime implementation not started  
+**Status:** 49F.1–49F.3 implemented and accepted; 49F.4 product acceptance in progress  
 **Planning baseline:** `d315c51`  
 **Decision date:** 2026-08-25
 
@@ -274,40 +274,34 @@ and Adobe-specific namespaces, layer conventions, or round-trip behavior must
 not become part of Wenu's contract. Scribus may later be checked for page
 layout and print/PDF workflows, but it is not the reference SVG editor.
 
-## 6. Font policy
+## 6. Font and output policy
 
-Wenu will support two explicit SVG font policies:
+Wenu exposes three public output formats through its ordinary product
+vocabulary:
 
-### Reproducible publication
+- PNG for fixed raster preview and delivery;
+- PDF for portable publication and printing;
+- SVG for editable vector work.
 
-Convert text to vector paths. This is the default candidate for archival and
-portable publication output because it preserves glyph appearance without
-requiring the receiving system to have the original fonts.
+SVG has one public text contract: retain genuine SVG text elements. Wenu does
+not expose separate publication and editable SVG font policies. PDF already
+serves the portable publication role, while converting SVG glyphs to paths
+would defeat Wenu's reason for supporting an editable vector product.
 
-Acceptance must verify:
+Editable SVG acceptance verifies and documents:
 
-- all expected labels remain visible;
-- Spanish and English glyphs are preserved;
-- file size remains practical;
-- path conversion does not introduce raster images;
-- the resulting text is intentionally not searchable or directly editable as
-  text.
+- font family and fallback behavior;
+- expected substitution when the font is unavailable;
+- possible metric and layout changes in browsers and vector editors;
+- font-family, size, weight, color, wording, and layout editing in Inkscape;
+- preservation of text and Wenu semantic metadata through an editor round
+  trip;
+- no claim that ordinary editable SVG embeds fonts or guarantees
+  byte-for-byte visual portability.
 
-### Editable working output
-
-Retain text as SVG text elements. This output is intended for editing,
-searching, accessibility work, and downstream typographic adjustment.
-
-Acceptance must verify and document:
-
-- required font family and fallback policy;
-- expected behavior when the font is unavailable;
-- possible text reflow or metric changes in browsers and vector editors;
-- no silent claim of byte-for-byte visual portability.
-
-The implementation milestone must name this policy through Wenu's public
-product/export vocabulary rather than requiring users to know Matplotlib
-configuration keys.
+The public CLI selects output with `--format {png,pdf,svg}`. An explicit
+format and single-file suffix must agree. Matplotlib's private SVG font terms
+are not public Wenu vocabulary.
 
 ## 7. Wenu intermediate representations and relationship to Wenu3D
 
@@ -474,7 +468,7 @@ For each representative product verify:
   locked by default where the reference editor permits it;
 - permitted style edits leave scientific positions and geometry unchanged;
 - no unexpected `image` element or raster data URI exists;
-- both font policies satisfy their declared structural contract;
+- editable SVG text satisfies its declared structural and font-fallback contract;
 - transparency and background behavior match the product;
 - the corresponding PNG or PDF has the same astronomical geometry and visual
   hierarchy;
@@ -514,13 +508,18 @@ Matplotlib-generated identifiers or complete serialized snapshots.
 - verify in Inkscape that scientific layers are guarded against accidental
   movement while permitted style and label-layout edits remain practical.
 
-### Milestone 49F.3 - Explicit output and font policy
+### Milestone 49F.3 - Explicit output and editable-text policy
 
-- define public output-format and SVG-font-policy vocabulary;
+- define public PNG, PDF, and SVG output-format vocabulary;
+- retain genuine text elements in SVG as the single editable-vector contract;
 - make single-file, directory, and all-product naming deterministic;
-- expose the selected policy through the unified CLI and configuration;
+- expose explicit format selection through the unified CLI;
 - reject contradictory filename and explicit-format requests;
 - retain one final save and the same chart/export owners.
+
+Status: implemented and accepted. The accepted contract deliberately replaced
+the earlier two-policy SVG proposal: PDF is the publication product and SVG is
+the editable vector product.
 
 ### Milestone 49F.4 - Documentation and product acceptance
 
