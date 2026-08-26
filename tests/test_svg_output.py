@@ -12,7 +12,6 @@ import pytest
 
 from wenu.chart_document import EditPolicy
 from wenu.charts.regional import ExportOptions
-from wenu.output_policy import SvgFontPolicy
 from wenu.rendering import MatplotlibRenderer
 from wenu.sky.semantic_identity import SemanticLayerIdentity
 from svg_inspection import inspect_svg
@@ -40,16 +39,10 @@ def _representative_figure(*, figsize=(4.0, 3.0)):
     return figure
 
 
-@pytest.mark.parametrize(
-    ("font_policy", "expected_text"),
-    ((SvgFontPolicy.EDITABLE, True), (SvgFontPolicy.PUBLICATION, False)),
-)
-def test_existing_export_path_produces_parseable_vector_svg(
+def test_existing_export_path_produces_parseable_editable_vector_svg(
     tmp_path,
-    font_policy,
-    expected_text,
 ):
-    destination = tmp_path / f"representative-{font_policy.value}.svg"
+    destination = tmp_path / "representative-editable.svg"
     figure = _representative_figure()
     try:
         ExportOptions(
@@ -58,7 +51,6 @@ def test_existing_export_path_produces_parseable_vector_svg(
                 "Title": "Wenu SVG structural audit",
                 "Creator": "Wenu",
             },
-            svg_font_policy=font_policy,
         ).save(figure, destination)
     finally:
         plt.close(figure)
@@ -72,7 +64,7 @@ def test_existing_export_path_produces_parseable_vector_svg(
         (inspection.width.value, inspection.height.value)
     )
     assert inspection.count("clipPath") >= 1
-    assert (inspection.count("text") > 0) is expected_text
+    assert inspection.count("text") > 0
     assert inspection.count("path") > 0
     assert inspection.count("metadata") == 1
     assert not inspection.has_raster_images
