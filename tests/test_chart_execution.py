@@ -16,6 +16,10 @@ from wenu.projections.stereographic import StereographicProjection
 from wenu.rendering import MatplotlibRenderer
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.sky_layer import SkyLayer
+from wenu.sky.semantic_identity import (
+    SemanticLayerIdentity,
+    semantic_layer_identity,
+)
 from wenu.geometry.spherical import SphericalPoints
 from wenu.geometry.viewport import Viewport
 
@@ -84,6 +88,10 @@ def test_draw_chart_preserves_layer_order_and_pipeline():
 
     assert isinstance(result, ChartRenderingResult)
     assert [item.layer for item in result.layers] == [first, second]
+    assert [item.semantic_identity for item in result.layers] == [
+        SemanticLayerIdentity(name="first", svg_id="wenu-layer-first"),
+        SemanticLayerIdentity(name="second", svg_id="wenu-layer-second"),
+    ]
     assert calls == [
         ("viewport", viewport),
         ("geometry", "first", observer),
@@ -221,3 +229,22 @@ def test_grid_convenience_helpers_register_layers():
     assert equatorial.include_equator
     assert ecliptic.include_ecliptic
     assert galactic.include_plane
+
+
+def test_coordinate_grid_identity_uses_coordinate_system():
+    layer = SimpleNamespace(
+        layer_name="coordinates_grid",
+        coordinate_system="equatorial",
+    )
+
+    assert semantic_layer_identity(layer) == SemanticLayerIdentity(
+        name="equatorial_grid",
+        svg_id="wenu-layer-equatorial-grid",
+    )
+
+
+def test_semantic_identity_rejects_unnamed_or_unsafe_layers():
+    with pytest.raises(ValueError, match="stable layer_name"):
+        semantic_layer_identity(SimpleNamespace(layer_name=None))
+    with pytest.raises(ValueError, match="safe semantic name"):
+        semantic_layer_identity(SimpleNamespace(layer_name="translated label"))
