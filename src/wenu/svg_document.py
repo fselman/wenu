@@ -11,14 +11,29 @@ _METADATA_ATTRIBUTE = "_wenu_svg_semantics"
 
 
 def attach_semantic_svg_metadata(
-    artist, *, layer, zorder, paint_role, edit_policy
+    artist,
+    *,
+    layer,
+    zorder,
+    paint_role,
+    edit_policy,
+    semantic_path,
+    display_name,
+    presentation_order,
+    style_role,
 ):
     """Attach renderer-neutral values for the later SVG export boundary."""
     metadata = {
         "layer": str(layer),
         "zorder": float(zorder),
         "edit_policy": edit_policy.value,
+        "semantic_path": "/".join(semantic_path),
+        "parent_path": "/".join(semantic_path[:-1]),
+        "display_name": str(display_name),
+        "style_role": str(style_role),
     }
+    if presentation_order is not None:
+        metadata["presentation_order"] = int(presentation_order)
     if paint_role is not None:
         metadata["paint_role"] = paint_role.name
     setattr(artist, _METADATA_ATTRIBUTE, metadata)
@@ -44,13 +59,22 @@ def annotate_semantic_svg(path, figure):
             "wenu-semantic-artist",
             f"wenu-layer-{metadata['layer'].replace('_', '-')}",
             f"wenu-edit-{metadata['edit_policy']}",
+            f"wenu-style-{metadata['style_role'].replace('_', '-')}",
         ]
         attributes = {
             "class": " ".join(classes),
             "data-wenu-layer": metadata["layer"],
             "data-wenu-zorder": f"{metadata['zorder']:.12g}",
             "data-wenu-edit": metadata["edit_policy"],
+            "data-wenu-semantic-path": metadata["semantic_path"],
+            "data-wenu-parent-path": metadata["parent_path"],
+            "data-wenu-display-name": metadata["display_name"],
+            "data-wenu-style-role": metadata["style_role"],
         }
+        if "presentation_order" in metadata:
+            attributes["data-wenu-presentation-order"] = (
+                metadata["presentation_order"]
+            )
         paint_role = metadata.get("paint_role")
         if paint_role is not None:
             classes.append(f"wenu-paint-{paint_role.replace('_', '-')}")
