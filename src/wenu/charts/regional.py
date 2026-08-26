@@ -241,6 +241,10 @@ class ExportOptions:
         if float(self.padding) != 0.0:
             kwargs["pad_inches"] = float(self.padding)
         figure.savefig(path, **kwargs)
+        if path.suffix.lower() == ".svg":
+            from wenu.svg_document import annotate_semantic_svg
+
+            annotate_semantic_svg(path, figure)
         return path
 
 
