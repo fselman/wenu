@@ -239,21 +239,18 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
         for item in semantic_artists
     )
     assert all(item.paint_role.name == "boundaries" for item in semantic_artists)
-    assert all(
-        item.paint_role.band.name == "structure"
-        for item in semantic_artists
-    )
     assert (
         'class="wenu-semantic-artist '
         'wenu-layer-constellation-lines wenu-edit-style '
-        'wenu-paint-boundaries wenu-band-structure"'
+        'wenu-paint-boundaries"'
         in serialized
     )
     assert 'data-wenu-layer="constellation_lines"' in serialized
     assert 'data-wenu-edit="style"' in serialized
     assert 'data-wenu-zorder="2"' in serialized
     assert 'data-wenu-paint-role="boundaries"' in serialized
-    assert 'data-wenu-paint-band="structure"' in serialized
+    assert "data-wenu-paint-band" not in serialized
+    assert "wenu-band-" not in serialized
 
 
 def test_svg_annotation_is_noop_without_wenu_semantics(tmp_path):
