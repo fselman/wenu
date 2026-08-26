@@ -165,7 +165,9 @@ def test_legacy_user_guide_paths_point_to_the_structured_guide():
 
 
 def test_svg_guide_documents_editable_vector_contract():
-    text = (GUIDE / "svg_output.md").read_text(encoding="utf-8")
+    text = " ".join(
+        (GUIDE / "svg_output.md").read_text(encoding="utf-8").split()
+    )
 
     for value in (
         "--format png",
