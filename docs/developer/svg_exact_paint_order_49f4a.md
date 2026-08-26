@@ -1,6 +1,6 @@
 # Milestone 49F.4A: Exact paint order without coarse grouping
 
-**Status:** Implemented; focused and real-SVG verification complete  
+**Status:** Implemented; full-suite and real-SVG verification complete  
 **Base:** `c88c4df`  
 **Branch:** `feature/svg-product-documentation`  
 **Decision date:** 2026-08-26
@@ -105,3 +105,11 @@ band classes: 0
 Semantic-layer counts were unchanged from the accepted 49F.2C/49F.2D chart.
 The runtime removal therefore preserves semantic ownership and supported
 editing classification while eliminating the unnecessary metadata.
+
+
+Final verification on Fernando Selman's clean, synchronized Mac checkout:
+
+```text
+git diff --check: no output
+1616 passed in 56.38s
+```
