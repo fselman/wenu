@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 
 from wenu.sky.rendering_results import ChartRenderingResult, LayerRenderingResult
+from wenu.sky.semantic_identity import semantic_layer_identity
 from wenu.objects.nonstellar import NonStellar
 from wenu.objects.galaxies import Galaxies
 from wenu.objects.globular_clusters import GlobularClusters
@@ -148,6 +149,7 @@ class CelestialSphere:
             rendered_layers.append(
                 LayerRenderingResult(
                     layer=layer,
+                    semantic_identity=semantic_layer_identity(layer),
                     spherical=spherical,
                     projected=projected,
                     artists=artists,
