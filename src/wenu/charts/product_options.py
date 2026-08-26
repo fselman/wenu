@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+from wenu.output_policy import OutputFormat, SvgFontPolicy
+
 
 CHART_STYLES = ("atlas", "cartoon")
 CHART_MODES = ("print", "presentation")
@@ -59,6 +61,8 @@ class ChartProductOptions:
     style: str = "atlas"
     mode: str = "print"
     all_products: bool = False
+    output_format: OutputFormat | None = None
+    svg_font_policy: SvgFontPolicy = SvgFontPolicy.PUBLICATION
 
     def __post_init__(self):
         product = ChartProduct(self.style, self.mode)
@@ -66,6 +70,28 @@ class ChartProductOptions:
         object.__setattr__(self, "style", product.style)
         object.__setattr__(self, "mode", product.mode)
         object.__setattr__(self, "all_products", bool(self.all_products))
+        if self.output_format is not None:
+            try:
+                output_format = OutputFormat(self.output_format)
+            except ValueError as error:
+                raise ValueError(
+                    f"Unsupported output format: {self.output_format!r}."
+                ) from error
+            object.__setattr__(self, "output_format", output_format)
+        try:
+            font_policy = SvgFontPolicy(self.svg_font_policy)
+        except ValueError as error:
+            raise ValueError(
+                f"Unsupported SVG font policy: {self.svg_font_policy!r}."
+            ) from error
+        if (
+            font_policy is SvgFontPolicy.EDITABLE
+            and self.output_format not in (None, OutputFormat.SVG)
+        ):
+            raise ValueError(
+                "An editable SVG font policy requires SVG output."
+            )
+        object.__setattr__(self, "svg_font_policy", font_policy)
 
     @property
     def products(self) -> tuple[ChartProduct, ...]:
@@ -86,13 +112,25 @@ class ChartProductOptions:
         normalized_stem = str(stem).strip()
         if not normalized_stem:
             raise ValueError("stem cannot be empty.")
-        suffix = str(
+        configured_extension = (
             _packaged_product_defaults().extension
             if extension is None else extension
+        )
+        suffix = str(
+            self.output_format.extension
+            if self.output_format is not None
+            else configured_extension
         ).strip()
         if not suffix.startswith("."):
             suffix = "." + suffix
         if not self.all_products and self.output.suffix:
+            if (
+                self.output_format is not None
+                and self.output.suffix.lower() != self.output_format.extension
+            ):
+                raise ValueError(
+                    "Output filename extension contradicts explicit format."
+                )
             return self.output
         return self.output / f"{normalized_stem}-{product.suffix}{suffix}"
 
@@ -140,6 +178,20 @@ def add_chart_product_arguments(parser, *, default_output):
         help="output file, or output directory with --all-products",
     )
     parser.add_argument(
+        "--format",
+        choices=tuple(item.value for item in OutputFormat),
+        dest="output_format",
+        help="explicit output format: png, pdf, or svg",
+    )
+    parser.add_argument(
+        "--svg-font-policy",
+        choices=tuple(item.value for item in SvgFontPolicy),
+        help=(
+            "SVG text policy: publication paths or editable text "
+            "(default: publication)"
+        ),
+    )
+    parser.add_argument(
         "--all-products",
         action="store_true",
         dest="all_products",
@@ -165,5 +217,11 @@ def chart_product_options(arguments, *, defaults=None) -> ChartProductOptions:
         all_products=(
             defaults.all_products
             if arguments.all_products is None else arguments.all_products
+        ),
+        output_format=arguments.output_format,
+        svg_font_policy=(
+            SvgFontPolicy.PUBLICATION
+            if arguments.svg_font_policy is None
+            else arguments.svg_font_policy
         ),
     )
