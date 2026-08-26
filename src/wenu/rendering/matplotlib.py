@@ -25,7 +25,7 @@ from wenu.rendering._matplotlib_primitives import (
 )
 from wenu.rendering.label_placement import CurveLabelPlacement
 from wenu.rendering.paint_roles import paint_role_for_zorder
-from wenu.sky.rendering_results import SemanticArtistRenderingResult
+from wenu.rendering.results import SemanticArtistRenderingResult
 
 
 class MatplotlibRenderer:
