@@ -1,6 +1,6 @@
 # Milestone 49F.2B semantic paint roles
 
-**Status:** Implemented; focused tests complete  
+**Status:** Implemented; full-suite verification complete  
 **Base:** `d28eff6`  
 **Branch:** `feature/svg-paint-roles`  
 **Date:** 2026-08-26
@@ -50,6 +50,10 @@ clusters occupy ordered positions from 4.5 through 4.75 inside the objects
 band.
 
 ## Rendering-result boundary
+
+The shared `SemanticArtistRenderingResult` type is owned by the neutral
+`wenu.chart_document` module. The `sky` and `rendering` packages remain sibling
+packages and do not import one another.
 
 Each Matplotlib artist assigned a Wenu semantic SVG anchor now produces an
 immutable `SemanticArtistRenderingResult` containing:
@@ -119,3 +123,10 @@ It does not yet:
 Those operations belong to later 49F.2 slices and must build on this typed
 boundary rather than inspect Matplotlib-generated names or reorder the accepted
 chart.
+
+## Verification
+
+The final focused boundary, renderer, paint-role, orchestration, and SVG tests
+passed 39 tests in 3.93 seconds. The complete suite passed 1,598 tests in 56.43
+seconds. No visual acceptance rerun was required because this slice does not
+alter serialized SVG properties, artist geometry, clipping, or paint order.
