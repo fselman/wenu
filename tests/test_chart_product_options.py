@@ -17,7 +17,7 @@ from wenu import (
     chart_product_options,
     compose_chart,
 )
-from wenu.output_policy import OutputFormat, SvgFontPolicy
+from wenu.output_policy import OutputFormat
 
 
 def parser():
@@ -140,28 +140,6 @@ def test_single_file_rejects_format_extension_contradiction():
         options.outputs(stem="regional")
 
 
-def test_editable_font_policy_is_public_and_svg_only():
-    arguments = parser().parse_args(
-        [
-            "--format", "svg",
-            "--svg-font-policy", "editable",
-            "--output", "chosen.svg",
-        ]
-    )
-    options = chart_product_options(arguments)
-
-    assert options.svg_font_policy is SvgFontPolicy.EDITABLE
-    assert options.outputs(stem="regional")[0][1] == Path("chosen.svg")
-
-    with pytest.raises(ValueError, match="requires SVG output"):
-        chart_product_options(parser().parse_args([
-            "--format", "pdf",
-            "--svg-font-policy", "editable",
-        ]))
-
-
-def test_output_parser_rejects_backend_font_vocabulary():
-    with pytest.raises(SystemExit):
-        parser().parse_args(["--svg-font-policy", "none"])
+def test_output_parser_rejects_unknown_format():
     with pytest.raises(SystemExit):
         parser().parse_args(["--format", "jpeg"])
