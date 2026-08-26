@@ -147,11 +147,14 @@ class CelestialSphere:
                 projected,
                 **dict(render_options),
             )
+            semantic_artists = ()
             assign_identity = getattr(
                 renderer, "assign_semantic_identity", None
             )
             if identity is not None and callable(assign_identity):
-                assign_identity(artists, identity)
+                semantic_artists = tuple(
+                    assign_identity(artists, identity)
+                )
             rendered_layers.append(
                 LayerRenderingResult(
                     layer=layer,
@@ -159,6 +162,7 @@ class CelestialSphere:
                     spherical=spherical,
                     projected=projected,
                     artists=artists,
+                    semantic_artists=semantic_artists,
                 )
             )
 
