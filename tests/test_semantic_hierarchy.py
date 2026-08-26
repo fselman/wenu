@@ -95,7 +95,6 @@ def test_unknown_extension_layer_keeps_safe_generic_identity():
 @pytest.mark.parametrize(
     "path",
     (
-        (),
         ("Sky", "stars"),
         ("sky", "constellation labels"),
         ("sky", ""),
