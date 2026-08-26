@@ -92,7 +92,7 @@ it must not be marked accepted merely because XML parsing succeeds.
 | Galactic all-sky | Mollweide ellipse, seam splitting | Grid labels and seam behavior | SVG parity accepted; label defects recorded |
 | Binocular | Circular aperture, dense symbols | Magnitude scale and labels | Geometry accepted; editing performance defective |
 | Circumpolar | Declination boundary and clipping | Reference grids | Accepted on Mac |
-| Polar disk/page or pouch | Exact physical size, non-tight page | Furniture and typography | Accepted after metadata correction |
+| Polar disk/page and pouch | Exact physical size, non-tight page | Furniture and typography | Accepted after metadata correction |
 
 For every generated SVG, record:
 
@@ -124,6 +124,7 @@ existing public request or canonical physical-page exporter.
 | Circumpolar south to -35 degrees | 2.1 MB | 3,327 / 506 | 2 | none | Correct; fit drawing/page 149% |
 | Polar south A4 | 2.0 MB | 2,611 / 1,522 | 3 | none | Correct; fit drawing/page 74% |
 | Polar north A4 | 1.9 MB | 2,510 / 1,435 | 3 | none | Correct; fit drawing/page 74% |
+| Polar pouch A4 | 93 KB | 104 / 302 | 2 | none | Correct; fit drawing/page 74% |
 
 Every inspected document had matching physical dimensions and view box,
 one metadata element, no SVG mask element, no image element, and no raster data
@@ -149,9 +150,11 @@ oriented in the planisphere and circumpolar products.
 The canonical polar-page export initially failed because PDF-oriented
 `Subject` metadata is rejected by Matplotlib's SVG writer. The approved
 minimal correction translates `Subject` to SVG `Description` while
-preserving non-SVG metadata. After that correction both canonical pages
+preserving non-SVG metadata. After that correction both canonical pages and the canonical pouch sheet
 exported successfully at exactly 595.275591 by 841.889764 points, corresponding
-to A4 210 by 297 mm.
+to A4 210 by 297 mm. The pouch preserved its apertures, horizon boundaries,
+folds, spine, cut and registration marks, title, instructions, and clipping.
+Its 93 KB structure remained responsive in Inkscape.
 
 ## Defects and deferred decisions
 
@@ -173,6 +176,7 @@ second renderer during 49F.1.
 
 Remote acceptance requires the focused SVG tests and the full test suite.
 The representative matrix has been rendered and inspected on Fernando's Mac.
-Milestone 49F.1 closes only after the post-correction full suite passes and the
-final branch diff and pull request are reviewed. This audit still does not
+The post-correction full suite passed 1,590 tests in 57.83 seconds.
+Milestone 49F.1 closes after the final branch diff and pull request are
+reviewed. This audit still does not
 claim the complete supported SVG product planned for Milestones 49F.2-49F.4.
