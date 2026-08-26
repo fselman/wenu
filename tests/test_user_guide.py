@@ -141,6 +141,10 @@ def test_configuration_guide_documents_template_and_profiles():
         "papudo.toml",
         "binocular-observing.toml",
         "no profile inheritance or multi-file stacking",
+        'extension = ".svg"',
+        "--format svg",
+        "prefer_vector",
+        "does not itself choose PDF or SVG",
     ):
         assert value in text
 
