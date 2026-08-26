@@ -16,6 +16,7 @@ from wenu.charts.boundaries import (
 from wenu.projections.stereographic import StereographicProjection
 from wenu.geometry.frame import SphericalFrame
 from wenu.geometry.viewport import Viewport
+from wenu.output_policy import SvgFontPolicy
 from wenu.rendering.preparation import project_geometry_for_viewport
 
 
@@ -221,6 +222,16 @@ class ExportOptions:
     facecolor: Any | None = None
     metadata: dict[str, str] = field(default_factory=dict)
     padding: float = 0.0
+    svg_font_policy: SvgFontPolicy = SvgFontPolicy.PUBLICATION
+
+    def __post_init__(self):
+        try:
+            policy = SvgFontPolicy(self.svg_font_policy)
+        except ValueError as error:
+            raise ValueError(
+                f"Unsupported SVG font policy: {self.svg_font_policy!r}."
+            ) from error
+        object.__setattr__(self, "svg_font_policy", policy)
 
     def save(self, figure, path):
         """Save a Matplotlib figure using these fixed settings."""
@@ -240,7 +251,18 @@ class ExportOptions:
             kwargs["facecolor"] = self.facecolor
         if float(self.padding) != 0.0:
             kwargs["pad_inches"] = float(self.padding)
-        figure.savefig(path, **kwargs)
+        if path.suffix.lower() == ".svg":
+            from matplotlib import rc_context
+
+            fonttype = (
+                "none"
+                if self.svg_font_policy is SvgFontPolicy.EDITABLE
+                else "path"
+            )
+            with rc_context({"svg.fonttype": fonttype}):
+                figure.savefig(path, **kwargs)
+        else:
+            figure.savefig(path, **kwargs)
         if path.suffix.lower() == ".svg":
             from wenu.svg_document import annotate_semantic_svg
 
