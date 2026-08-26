@@ -11,7 +11,7 @@ from matplotlib.patches import Circle
 import pytest
 
 from wenu.charts.regional import ExportOptions
-from wenu.rendering.svg_inspection import inspect_svg
+from svg_inspection import inspect_svg
 
 
 POINTS_PER_INCH = 72.0
