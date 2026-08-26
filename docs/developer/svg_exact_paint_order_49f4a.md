@@ -1,6 +1,6 @@
 # Milestone 49F.4A: Exact paint order without coarse grouping
 
-**Status:** Implemented; focused verification pending  
+**Status:** Implemented; focused and real-SVG verification complete  
 **Base:** `c88c4df`  
 **Branch:** `feature/svg-product-documentation`  
 **Decision date:** 2026-08-26
@@ -81,3 +81,27 @@ This intentionally changes the experimental SVG metadata accepted during
 attribute, but newly generated SVG does not emit them. Wenu does not interpret
 external edited SVG as scientific input, so no migration or reader change is
 required.
+
+
+## Verification
+
+The focused runtime, configuration, CLI, documentation, renderer, and package
+boundary suite passed:
+
+```text
+137 passed in 4.93s
+```
+
+A fresh Centaurus, Crux, and Musca regional SVG contained:
+
+```text
+semantic artists: 232
+edit policies: {'layout': 4, 'style': 228}
+missing exact paint roles: 0
+band attributes: 0
+band classes: 0
+```
+
+Semantic-layer counts were unchanged from the accepted 49F.2C/49F.2D chart.
+The runtime removal therefore preserves semantic ownership and supported
+editing classification while eliminating the unnecessary metadata.
