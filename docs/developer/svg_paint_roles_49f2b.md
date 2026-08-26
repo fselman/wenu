@@ -21,33 +21,17 @@ meaning from backend element order.
 
 `PaintRole` is an immutable exact paint position with:
 
-- a stable semantic name;
+- a stable registered name;
 - the established numeric `zorder`;
-- one coarse `PaintBand`;
 - an SVG-safe token.
 
 The historical numeric constants in `wenu.rendering.layers` remain available
-and retain exactly the same values. They are now derived from the typed role
+and retain exactly the same values. They are derived from the typed role
 registry, so existing styles and renderer calls do not change.
 
-The ordered coarse bands are:
-
-| Rank | Band | Representative roles |
-| ---: | --- | --- |
-| 0 | background | background |
-| 1 | extended sky | Milky Way, Magellanic Clouds, galaxy fills |
-| 2 | structure | boundaries, curves and grids |
-| 3 | constellations | constellation figures |
-| 4 | objects | galaxies, nebulae, clusters and remnants |
-| 5 | stars | ordinary, bright, multiple and variable stars |
-| 6 | points | named reference points and markers |
-| 7 | labels | astronomical labels |
-| 8 | overlays | outside masks and other final overlays |
-
-Exact roles retain their established fractional distinctions. For example,
-galaxies, supernova remnants, planetary nebulae, open clusters, and globular
-clusters occupy ordered positions from 4.5 through 4.75 inside the objects
-band.
+The registered name describes the exact position; it does not classify the
+artist that occupies it. Exact roles retain established fractional
+distinctions, including the ordered positions from 4.5 through 4.75.
 
 ## Rendering-result boundary
 
@@ -79,26 +63,15 @@ Semantic membership and paint hierarchy are orthogonal:
 - semantic identity answers *what the content is*;
 - paint role answers *where it must be painted*.
 
-A future SVG realization must preserve the following order:
+A future SVG realization must preserve exact XML and numerical paint order
+independently of semantic ownership. Only consecutive elements may be wrapped
+together when wrapping would otherwise change rendering. If one logical
+semantic layer occurs at separated positions, physical fragments may share its
+semantic class and `data-wenu-layer` value while retaining unique IDs.
 
-```text
-paint band
-    exact paint role / zorder
-        consecutive semantic fragment
-            addressable objects
-```
-
-Only consecutive elements may be wrapped together. If one logical semantic
-layer occurs in several paint roles or separated runs, it must be represented
-by several physical fragments. Those fragments share a semantic class and
-`data-wenu-layer` value but require unique fragment IDs. They must not be moved
-into one parent merely to simplify an editor panel.
-
-This model permits class-level visibility and appearance edits across all
-fragments of one logical layer while retaining the accepted visual result.
-Editor display layers may expose paint bands, with semantic fragments below
-them. A future acceptance test must verify whether this remains practical in
-Inkscape before the hierarchy becomes a supported product contract.
+The SVG layer must not infer astronomical identity from a registered paint-role
+name. In particular, an artist using the numerical position named `stars`
+does not thereby become a star or a child of a stars group.
 
 ## Contracts established
 
@@ -106,8 +79,7 @@ Inkscape before the hierarchy becomes a supported product contract.
 
 - one authoritative immutable paint-role registry;
 - backward-compatible numerical layer constants;
-- nine ordered coarse paint bands;
-- exact role and band resolution for semantic Matplotlib artists;
+- exact role resolution for semantic Matplotlib artists;
 - explicit representation of unknown/custom paint positions;
 - a no-reordering rule for future SVG grouping.
 
