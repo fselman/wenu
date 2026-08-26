@@ -191,6 +191,10 @@ def test_repeated_rendering_with_different_projection_and_viewport():
 
     assert first.layers[0].projected.x[0] == -second.layers[0].projected.x[0] * 2
     assert ax1.get_xlim() == viewport1.xlim
+    assert (
+        first.layers[0].artists[0].get_gid()
+        == "wenu-layer-test--artist-0001"
+    )
     assert ax2.get_xlim() == viewport2.xlim
     plt.close(figure1)
     plt.close(figure2)
