@@ -564,8 +564,10 @@ def test_polar_reference_review_corrections_are_documented():
 
 
 def test_current_svg_documents_use_one_editable_text_contract():
-    roadmap = (DEVELOPER / "svg_output_audit_and_plan.md").read_text(
-        encoding="utf-8"
+    roadmap = " ".join(
+        (DEVELOPER / "svg_output_audit_and_plan.md")
+        .read_text(encoding="utf-8")
+        .split()
     )
     implementation = (DEVELOPER / "implementation_reference.md").read_text(
         encoding="utf-8"
