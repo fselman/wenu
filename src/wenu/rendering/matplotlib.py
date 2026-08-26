@@ -24,6 +24,8 @@ from wenu.rendering._matplotlib_primitives import (
     render_text,
 )
 from wenu.rendering.label_placement import CurveLabelPlacement
+from wenu.rendering.paint_roles import paint_role_for_zorder
+from wenu.sky.rendering_results import SemanticArtistRenderingResult
 
 
 class MatplotlibRenderer:
@@ -109,11 +111,20 @@ class MatplotlibRenderer:
 
         collect(artists)
         width = max(4, len(str(len(flattened))))
+        results = []
         for index, artist in enumerate(flattened, start=1):
-            artist.set_gid(
-                f"{identity.svg_id}--artist-{index:0{width}d}"
+            svg_id = f"{identity.svg_id}--artist-{index:0{width}d}"
+            artist.set_gid(svg_id)
+            zorder = float(artist.get_zorder())
+            results.append(
+                SemanticArtistRenderingResult(
+                    artist=artist,
+                    svg_id=svg_id,
+                    zorder=zorder,
+                    paint_role=paint_role_for_zorder(zorder),
+                )
             )
-        return artists
+        return tuple(results)
 
     def _apply_clip_patch(self, artists):
         if self._clip_patch is None:
