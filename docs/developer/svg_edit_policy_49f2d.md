@@ -106,7 +106,7 @@ It deliberately defers:
 
 - editor-specific advisory locks;
 - shared class-level style rules;
-- parent paint-band and semantic-fragment groups;
+- parent semantic and semantic-fragment groups;
 - editable SVG text and font policy;
 - explicit output-format selection;
 - dense binocular SVG optimization.
