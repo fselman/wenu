@@ -20,6 +20,7 @@ GUIDE_PAGES = (
     "binocular_charts.md",
     "styles_modes_detail.md",
     "configuration.md",
+    "svg_output.md",
 )
 EXAMPLES = (
     "all_sky.py",
@@ -161,3 +162,4 @@ def test_legacy_user_guide_paths_point_to_the_structured_guide():
     for filename in ("docs/user_guide.md", "docs/user_guide.es.md"):
         text = (ROOT / filename).read_text(encoding="utf-8")
         assert "user_guide/index.md" in text
+false
