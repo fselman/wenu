@@ -68,7 +68,7 @@ def test_existing_export_path_produces_parseable_vector_svg(
         (inspection.width.value, inspection.height.value)
     )
     assert inspection.count("clipPath") >= 1
-    assert inspection.count("text") > 0 is expected_text
+    assert (inspection.count("text") > 0) is expected_text
     assert inspection.count("path") > 0
     assert inspection.count("metadata") == 1
     assert not inspection.has_raster_images
