@@ -2,7 +2,7 @@
 
 ## Status
 
-Implementation and focused acceptance complete on `feature/svg-output-font-policy`. Final full-suite verification remains pending.
+Implementation, editor acceptance, and full-suite verification are complete on `feature/svg-output-font-policy`.
 
 ## User-facing contract
 
@@ -86,13 +86,22 @@ Thus Inkscape preserved editable text, semantic identity, and editing-policy met
 
 An editable SVG normally names fonts but does not embed their font files. A computer without the requested font may substitute another font and alter text metrics. Wenu should document its supported/default font family and fallbacks; embedded SVG fonts are not part of this milestone.
 
-## Remaining acceptance
+## Full-suite verification
 
-Run the complete test suite from a clean, synchronized branch:
+The first full-suite run exposed a duplicate `--format` declaration in `tools/render_zodiac_constellations.py`: the tool retained its private option after the shared product arguments gained the same public option. The tool now uses the shared `output_format` destination while preserving its PNG default. Regression coverage verifies SVG selection.
 
-```bash
-git pull --ff-only
-git status
-git diff --check
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q
+The focused and regression suite then passed:
+
+```text
+87 passed in 4.94s
+```
+
+Final verification on Fernando Selman's clean, synchronized Mac checkout:
+
+```text
+git status: clean; branch synchronized with origin
+
+git diff --check: no output
+
+1611 passed in 55.14s
 ```
