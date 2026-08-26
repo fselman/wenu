@@ -218,6 +218,10 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
         SemanticLayerIdentity(
             name="constellation_lines",
             svg_id="wenu-layer-constellation-lines",
+            semantic_path=("sky", "constellations", "lines"),
+            display_name="Constellation lines",
+            presentation_order=50,
+            style_role="constellation_lines",
         ),
     )
     try:
@@ -242,11 +246,16 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
     assert (
         'class="wenu-semantic-artist '
         'wenu-layer-constellation-lines wenu-edit-style '
-        'wenu-paint-boundaries"'
+        'wenu-style-constellation-lines wenu-paint-boundaries"'
         in serialized
     )
     assert 'data-wenu-layer="constellation_lines"' in serialized
     assert 'data-wenu-edit="style"' in serialized
+    assert 'data-wenu-semantic-path="sky/constellations/lines"' in serialized
+    assert 'data-wenu-parent-path="sky/constellations"' in serialized
+    assert 'data-wenu-display-name="Constellation lines"' in serialized
+    assert 'data-wenu-presentation-order="50"' in serialized
+    assert 'data-wenu-style-role="constellation_lines"' in serialized
     assert 'data-wenu-zorder="2"' in serialized
     assert 'data-wenu-paint-role="boundaries"' in serialized
     assert "data-wenu-paint-band" not in serialized
