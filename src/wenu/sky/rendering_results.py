@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from wenu.chart_document import SemanticArtistRenderingResult
+
 
 @dataclass(frozen=True)
 class LayerRenderingResult:
@@ -15,6 +17,7 @@ class LayerRenderingResult:
     spherical: Any
     projected: Any
     artists: Any
+    semantic_artists: tuple[SemanticArtistRenderingResult, ...] = ()
 
 
 @dataclass(frozen=True)

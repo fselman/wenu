@@ -219,7 +219,7 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
         (0.75, 0.25),
         color="gray",
     )
-    MatplotlibRenderer.assign_semantic_identity(
+    semantic_artists = MatplotlibRenderer.assign_semantic_identity(
         artists,
         SemanticLayerIdentity(
             name="constellation_lines",
@@ -235,3 +235,13 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
 
     assert 'id="wenu-layer-constellation-lines--artist-0001"' in serialized
     assert 'id="wenu-layer-constellation-lines--artist-0002"' in serialized
+    assert [item.svg_id for item in semantic_artists] == [
+        "wenu-layer-constellation-lines--artist-0001",
+        "wenu-layer-constellation-lines--artist-0002",
+    ]
+    assert all(item.zorder == 2.0 for item in semantic_artists)
+    assert all(item.paint_role.name == "boundaries" for item in semantic_artists)
+    assert all(
+        item.paint_role.band.name == "structure"
+        for item in semantic_artists
+    )
