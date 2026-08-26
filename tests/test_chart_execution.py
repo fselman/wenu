@@ -247,8 +247,7 @@ def test_coordinate_grid_identity_uses_coordinate_system():
     )
 
 
-def test_semantic_identity_rejects_unnamed_or_unsafe_layers():
-    with pytest.raises(ValueError, match="stable layer_name"):
-        semantic_layer_identity(SimpleNamespace(layer_name=None))
+def test_semantic_identity_supports_unnamed_layers_and_rejects_unsafe_names():
+    assert semantic_layer_identity(SimpleNamespace(layer_name=None)) is None
     with pytest.raises(ValueError, match="safe semantic name"):
         semantic_layer_identity(SimpleNamespace(layer_name="translated label"))
