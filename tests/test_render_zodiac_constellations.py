@@ -41,13 +41,16 @@ def test_defaults_are_cartoon_presentation_with_canonical_mask_switch():
     arguments = MODULE.parser().parse_args([])
 
     assert arguments.output == Path("output/zodiac-constellations")
-    assert arguments.file_format == "png"
+    assert arguments.output_format == "png"
     assert arguments.style == "cartoon"
     assert arguments.mode == "presentation"
     assert arguments.magnitude_limit == pytest.approx(5.5)
     assert arguments.mask is False
     assert arguments.dpi is None
     assert arguments.constellations == MODULE.ZODIAC_CONSTELLATIONS
+
+    svg = MODULE.parser().parse_args(["--format", "svg"])
+    assert svg.output_format == "svg"
 
     selected = MODULE.parser().parse_args(["--mask", "--presentation"])
     assert selected.mask is True

@@ -221,7 +221,6 @@ class ExportOptions:
     facecolor: Any | None = None
     metadata: dict[str, str] = field(default_factory=dict)
     padding: float = 0.0
-
     def save(self, figure, path):
         """Save a Matplotlib figure using these fixed settings."""
         path = Path(path)
@@ -240,7 +239,13 @@ class ExportOptions:
             kwargs["facecolor"] = self.facecolor
         if float(self.padding) != 0.0:
             kwargs["pad_inches"] = float(self.padding)
-        figure.savefig(path, **kwargs)
+        if path.suffix.lower() == ".svg":
+            from matplotlib import rc_context
+
+            with rc_context({"svg.fonttype": "none"}):
+                figure.savefig(path, **kwargs)
+        else:
+            figure.savefig(path, **kwargs)
         if path.suffix.lower() == ".svg":
             from wenu.svg_document import annotate_semantic_svg
 

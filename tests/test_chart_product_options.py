@@ -17,6 +17,7 @@ from wenu import (
     chart_product_options,
     compose_chart,
 )
+from wenu.output_policy import OutputFormat
 
 
 def parser():
@@ -114,3 +115,31 @@ def calls_named(tree, names):
         and isinstance(node.func, ast.Attribute)
         and node.func.attr in names
     )
+
+
+
+def test_explicit_format_names_directory_output_deterministically():
+    arguments = parser().parse_args(
+        ["--format", "svg", "--output", "output/gallery"]
+    )
+    options = chart_product_options(arguments)
+
+    assert options.output_format is OutputFormat.SVG
+    assert options.outputs(stem="regional")[0][1] == Path(
+        "output/gallery/regional-atlas-print.svg"
+    )
+
+
+def test_single_file_rejects_format_extension_contradiction():
+    arguments = parser().parse_args(
+        ["--format", "svg", "--output", "chosen.pdf"]
+    )
+    options = chart_product_options(arguments)
+
+    with pytest.raises(ValueError, match="contradicts explicit format"):
+        options.outputs(stem="regional")
+
+
+def test_output_parser_rejects_unknown_format():
+    with pytest.raises(SystemExit):
+        parser().parse_args(["--format", "jpeg"])

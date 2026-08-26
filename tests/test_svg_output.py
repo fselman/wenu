@@ -39,26 +39,19 @@ def _representative_figure(*, figsize=(4.0, 3.0)):
     return figure
 
 
-@pytest.mark.parametrize(
-    ("fonttype", "expected_text"),
-    (("none", True), ("path", False)),
-)
-def test_existing_export_path_produces_parseable_vector_svg(
+def test_existing_export_path_produces_parseable_editable_vector_svg(
     tmp_path,
-    fonttype,
-    expected_text,
 ):
-    destination = tmp_path / f"representative-{fonttype}.svg"
+    destination = tmp_path / "representative-editable.svg"
     figure = _representative_figure()
     try:
-        with matplotlib.rc_context({"svg.fonttype": fonttype}):
-            ExportOptions(
-                transparent=True,
-                metadata={
-                    "Title": "Wenu SVG structural audit",
-                    "Creator": "Wenu",
-                },
-            ).save(figure, destination)
+        ExportOptions(
+            transparent=True,
+            metadata={
+                "Title": "Wenu SVG structural audit",
+                "Creator": "Wenu",
+            },
+        ).save(figure, destination)
     finally:
         plt.close(figure)
 
@@ -71,7 +64,7 @@ def test_existing_export_path_produces_parseable_vector_svg(
         (inspection.width.value, inspection.height.value)
     )
     assert inspection.count("clipPath") >= 1
-    assert (inspection.count("text") > 0) is expected_text
+    assert inspection.count("text") > 0
     assert inspection.count("path") > 0
     assert inspection.count("metadata") == 1
     assert not inspection.has_raster_images

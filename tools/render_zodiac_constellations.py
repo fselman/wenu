@@ -246,7 +246,7 @@ def render_zodiac(arguments, *, sky=None):
         **observer_options,
     )
     output_directory = Path(arguments.output)
-    extension = str(arguments.file_format).lstrip(".")
+    extension = str(arguments.output_format).lstrip(".")
     outputs = []
     detail = FixedDetailPolicy(ResolvedDetail(
         star_magnitude_limit=STAR_MAGNITUDE_LIMIT,
@@ -317,6 +317,7 @@ def parser():
         equatorial_grid=True,
         equatorial_grid_labels=True,
         grid_references=frozenset({"equatorial", "ecliptic"}),
+        output_format="png",
     )
     value.add_argument(
         "--constellations",
@@ -327,12 +328,6 @@ def parser():
             "comma-separated zodiac or Ophiuchus abbreviations; "
             "default: all twelve"
         ),
-    )
-    value.add_argument(
-        "--format",
-        choices=("pdf", "png", "svg"),
-        default="png",
-        dest="file_format",
     )
     value.add_argument("--data-directory", type=Path)
     value.add_argument(
