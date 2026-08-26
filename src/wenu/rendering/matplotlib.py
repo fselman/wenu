@@ -25,6 +25,7 @@ from wenu.rendering._matplotlib_primitives import (
 )
 from wenu.rendering.label_placement import CurveLabelPlacement
 from wenu.rendering.paint_roles import paint_role_for_zorder
+from wenu.svg_document import attach_semantic_svg_metadata
 from wenu.chart_document import SemanticArtistRenderingResult
 
 
@@ -116,12 +117,19 @@ class MatplotlibRenderer:
             svg_id = f"{identity.svg_id}--artist-{index:0{width}d}"
             artist.set_gid(svg_id)
             zorder = float(artist.get_zorder())
+            paint_role = paint_role_for_zorder(zorder)
+            attach_semantic_svg_metadata(
+                artist,
+                layer=identity.name,
+                zorder=zorder,
+                paint_role=paint_role,
+            )
             results.append(
                 SemanticArtistRenderingResult(
                     artist=artist,
                     svg_id=svg_id,
                     zorder=zorder,
-                    paint_role=paint_role_for_zorder(zorder),
+                    paint_role=paint_role,
                 )
             )
         return tuple(results)
