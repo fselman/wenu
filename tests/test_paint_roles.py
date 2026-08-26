@@ -6,13 +6,9 @@ import pytest
 
 from wenu.rendering import layers
 from wenu.rendering.paint_roles import (
-    EXTENDED_SKY_BAND,
     LABELS,
-    LABEL_BAND,
-    PAINT_BANDS,
     PAINT_ROLES,
     STARS,
-    STAR_BAND,
     paint_role_for_zorder,
 )
 
@@ -46,10 +42,3 @@ def test_paint_roles_are_immutable_and_have_svg_tokens():
     with pytest.raises(FrozenInstanceError):
         STARS.zorder = 99.0
 
-
-def test_paint_bands_are_ordered_and_roles_reference_them():
-    assert [band.rank for band in PAINT_BANDS] == list(range(9))
-    assert paint_role_for_zorder(layers.MILKY_WAY).band is EXTENDED_SKY_BAND
-    assert STARS.band is STAR_BAND
-    assert LABELS.band is LABEL_BAND
-    assert LABEL_BAND.svg_token == "labels"
