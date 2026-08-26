@@ -11,6 +11,7 @@ class PaintRole:
 
     zorder: float
     name: str
+
     @property
     def svg_token(self):
         return self.name.replace("_", "-")
