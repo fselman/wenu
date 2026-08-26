@@ -42,3 +42,11 @@ def test_paint_roles_are_immutable_and_have_svg_tokens():
     with pytest.raises(FrozenInstanceError):
         STARS.zorder = 99.0
 
+
+
+def test_paint_roles_do_not_classify_positions_into_coarse_groups():
+    import wenu.rendering.paint_roles as paint_roles
+
+    assert not hasattr(paint_roles, "PaintBand")
+    assert not hasattr(paint_roles, "PAINT_BANDS")
+    assert not hasattr(STARS, "band")
