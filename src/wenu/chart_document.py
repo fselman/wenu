@@ -24,3 +24,7 @@ class SemanticArtistRenderingResult:
     zorder: float
     paint_role: Any | None
     edit_policy: EditPolicy
+    semantic_path: tuple[str, ...] = ()
+    display_name: str = ""
+    presentation_order: int | None = None
+    style_role: str = ""
