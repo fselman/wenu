@@ -12,6 +12,7 @@ import pytest
 
 from wenu.chart_document import EditPolicy
 from wenu.charts.regional import ExportOptions
+from wenu.output_policy import SvgFontPolicy
 from wenu.rendering import MatplotlibRenderer
 from wenu.sky.semantic_identity import SemanticLayerIdentity
 from svg_inspection import inspect_svg
@@ -40,25 +41,25 @@ def _representative_figure(*, figsize=(4.0, 3.0)):
 
 
 @pytest.mark.parametrize(
-    ("fonttype", "expected_text"),
-    (("none", True), ("path", False)),
+    ("font_policy", "expected_text"),
+    ((SvgFontPolicy.EDITABLE, True), (SvgFontPolicy.PUBLICATION, False)),
 )
 def test_existing_export_path_produces_parseable_vector_svg(
     tmp_path,
-    fonttype,
+    font_policy,
     expected_text,
 ):
-    destination = tmp_path / f"representative-{fonttype}.svg"
+    destination = tmp_path / f"representative-{font_policy.value}.svg"
     figure = _representative_figure()
     try:
-        with matplotlib.rc_context({"svg.fonttype": fonttype}):
-            ExportOptions(
-                transparent=True,
-                metadata={
-                    "Title": "Wenu SVG structural audit",
-                    "Creator": "Wenu",
-                },
-            ).save(figure, destination)
+        ExportOptions(
+            transparent=True,
+            metadata={
+                "Title": "Wenu SVG structural audit",
+                "Creator": "Wenu",
+            },
+            svg_font_policy=font_policy,
+        ).save(figure, destination)
     finally:
         plt.close(figure)
 
