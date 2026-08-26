@@ -274,3 +274,23 @@ def test_cli_source_does_not_import_or_execute_examples():
 
     assert "wenu.example_scripts" not in source
     assert "runpy" not in source
+
+
+def test_family_help_exposes_public_output_formats_only():
+    root = chart.parser()
+    subparsers = next(
+        action for action in root._actions
+        if action.dest == "command"
+    )
+    regional = subparsers.choices["regional"]
+    format_action = next(
+        action for action in regional._actions
+        if "--format" in action.option_strings
+    )
+
+    assert tuple(format_action.choices) == ("png", "pdf", "svg")
+    assert format_action.help == "explicit output format: png, pdf, or svg"
+    assert all(
+        "--svg-font-policy" not in action.option_strings
+        for action in regional._actions
+    )
