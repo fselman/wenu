@@ -150,7 +150,7 @@ class CelestialSphere:
             assign_identity = getattr(
                 renderer, "assign_semantic_identity", None
             )
-            if callable(assign_identity):
+            if identity is not None and callable(assign_identity):
                 assign_identity(artists, identity)
             rendered_layers.append(
                 LayerRenderingResult(
