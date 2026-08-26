@@ -7,6 +7,16 @@ from typing import Any
 
 
 @dataclass(frozen=True)
+class SemanticArtistRenderingResult:
+    """One renderer artist with Wenu identity and paint position."""
+
+    artist: Any
+    svg_id: str
+    zorder: float
+    paint_role: Any | None
+
+
+@dataclass(frozen=True)
 class LayerRenderingResult:
     """Geometry and artists produced for one registered sky layer."""
 
@@ -15,6 +25,7 @@ class LayerRenderingResult:
     spherical: Any
     projected: Any
     artists: Any
+    semantic_artists: tuple[SemanticArtistRenderingResult, ...] = ()
 
 
 @dataclass(frozen=True)
