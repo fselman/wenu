@@ -95,6 +95,26 @@ class MatplotlibRenderer:
         codes[-1] = Path.CLOSEPOLY
         return Path(vertices, codes)
 
+    @staticmethod
+    def assign_semantic_identity(artists, identity):
+        """Attach Wenu-owned SVG anchors without changing artist order."""
+        flattened = []
+
+        def collect(items):
+            for artist in items:
+                if isinstance(artist, (list, tuple)):
+                    collect(artist)
+                elif callable(getattr(artist, "set_gid", None)):
+                    flattened.append(artist)
+
+        collect(artists)
+        width = max(4, len(str(len(flattened))))
+        for index, artist in enumerate(flattened, start=1):
+            artist.set_gid(
+                f"{identity.svg_id}--artist-{index:0{width}d}"
+            )
+        return artists
+
     def _apply_clip_patch(self, artists):
         if self._clip_patch is None:
             return artists

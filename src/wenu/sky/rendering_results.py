@@ -11,6 +11,7 @@ class LayerRenderingResult:
     """Geometry and artists produced for one registered sky layer."""
 
     layer: Any
+    semantic_identity: Any
     spherical: Any
     projected: Any
     artists: Any

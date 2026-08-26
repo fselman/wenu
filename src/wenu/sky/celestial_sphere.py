@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 
 from wenu.sky.rendering_results import ChartRenderingResult, LayerRenderingResult
+from wenu.sky.semantic_identity import semantic_layer_identity
 from wenu.objects.nonstellar import NonStellar
 from wenu.objects.galaxies import Galaxies
 from wenu.objects.globular_clusters import GlobularClusters
@@ -119,6 +120,7 @@ class CelestialSphere:
         options = {} if layer_options is None else layer_options
         rendered_layers = []
         for layer in self._layers:
+            identity = semantic_layer_identity(layer)
             configured = self._layer_render_options(layer, options)
             enabled = configured.pop("enabled", True)
             if not isinstance(enabled, bool):
@@ -145,9 +147,15 @@ class CelestialSphere:
                 projected,
                 **dict(render_options),
             )
+            assign_identity = getattr(
+                renderer, "assign_semantic_identity", None
+            )
+            if identity is not None and callable(assign_identity):
+                assign_identity(artists, identity)
             rendered_layers.append(
                 LayerRenderingResult(
                     layer=layer,
+                    semantic_identity=identity,
                     spherical=spherical,
                     projected=projected,
                     artists=artists,

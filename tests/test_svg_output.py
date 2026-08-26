@@ -11,6 +11,8 @@ from matplotlib.patches import Circle
 import pytest
 
 from wenu.charts.regional import ExportOptions
+from wenu.rendering import MatplotlibRenderer
+from wenu.sky.semantic_identity import SemanticLayerIdentity
 from svg_inspection import inspect_svg
 
 
@@ -203,3 +205,33 @@ def test_inspection_rejects_missing_structural_dimensions(
 
     with pytest.raises(ValueError, match=message):
         inspect_svg(destination)
+
+
+def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
+    destination = tmp_path / "semantic-anchors.svg"
+    figure, ax = plt.subplots()
+    artists = ax.plot(
+        (0.0, 1.0),
+        (0.25, 0.75),
+        color="black",
+    ) + ax.plot(
+        (0.0, 1.0),
+        (0.75, 0.25),
+        color="gray",
+    )
+    MatplotlibRenderer.assign_semantic_identity(
+        artists,
+        SemanticLayerIdentity(
+            name="constellation_lines",
+            svg_id="wenu-layer-constellation-lines",
+        ),
+    )
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    serialized = destination.read_text(encoding="utf-8")
+
+    assert 'id="wenu-layer-constellation-lines--artist-0001"' in serialized
+    assert 'id="wenu-layer-constellation-lines--artist-0002"' in serialized
