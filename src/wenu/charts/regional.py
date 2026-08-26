@@ -226,11 +226,15 @@ class ExportOptions:
         """Save a Matplotlib figure using these fixed settings."""
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
+        metadata = dict(self.metadata)
+        if path.suffix.lower() == ".svg" and "Subject" in metadata:
+            metadata.setdefault("Description", metadata["Subject"])
+            del metadata["Subject"]
         kwargs = {
             "dpi": int(self.dpi),
             "bbox_inches": self.bbox_inches,
             "transparent": bool(self.transparent),
-            "metadata": dict(self.metadata),
+            "metadata": metadata,
         }
         if self.facecolor is not None:
             kwargs["facecolor"] = self.facecolor
