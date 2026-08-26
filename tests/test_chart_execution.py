@@ -14,6 +14,7 @@ from wenu.sky.rendering_results import ChartRenderingResult
 from wenu.geometry.projected import ProjectedPoints
 from wenu.projections.stereographic import StereographicProjection
 from wenu.rendering import MatplotlibRenderer
+from wenu.rendering.paint_roles import POINTS
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.sky_layer import SkyLayer
 from wenu.sky.semantic_identity import (
@@ -92,6 +93,7 @@ def test_draw_chart_preserves_layer_order_and_pipeline():
         SemanticLayerIdentity(name="first", svg_id="wenu-layer-first"),
         SemanticLayerIdentity(name="second", svg_id="wenu-layer-second"),
     ]
+    assert all(not item.semantic_artists for item in result.layers)
     assert calls == [
         ("viewport", viewport),
         ("geometry", "first", observer),
@@ -171,7 +173,7 @@ def test_repeated_rendering_with_different_projection_and_viewport():
         renderer=MatplotlibRenderer(ax1),
         viewport=viewport1,
         layer_options={
-            "test": {"style": {"s": 20.0, "c": "white"}},
+            "test": {"style": {"s": 20.0, "c": "white", "zorder": 6.0}},
         },
     )
 
@@ -195,6 +197,11 @@ def test_repeated_rendering_with_different_projection_and_viewport():
         first.layers[0].artists[0].get_gid()
         == "wenu-layer-test--artist-0001"
     )
+    semantic_artist = first.layers[0].semantic_artists[0]
+    assert semantic_artist.artist is first.layers[0].artists[0]
+    assert semantic_artist.svg_id == "wenu-layer-test--artist-0001"
+    assert semantic_artist.zorder == 6.0
+    assert semantic_artist.paint_role is POINTS
     assert ax2.get_xlim() == viewport2.xlim
     plt.close(figure1)
     plt.close(figure2)
