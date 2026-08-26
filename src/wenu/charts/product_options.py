@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from wenu.output_policy import OutputFormat, SvgFontPolicy
+from wenu.output_policy import OutputFormat
 
 
 CHART_STYLES = ("atlas", "cartoon")
@@ -62,7 +62,6 @@ class ChartProductOptions:
     mode: str = "print"
     all_products: bool = False
     output_format: OutputFormat | None = None
-    svg_font_policy: SvgFontPolicy = SvgFontPolicy.PUBLICATION
 
     def __post_init__(self):
         product = ChartProduct(self.style, self.mode)
@@ -78,20 +77,6 @@ class ChartProductOptions:
                     f"Unsupported output format: {self.output_format!r}."
                 ) from error
             object.__setattr__(self, "output_format", output_format)
-        try:
-            font_policy = SvgFontPolicy(self.svg_font_policy)
-        except ValueError as error:
-            raise ValueError(
-                f"Unsupported SVG font policy: {self.svg_font_policy!r}."
-            ) from error
-        if (
-            font_policy is SvgFontPolicy.EDITABLE
-            and self.output_format not in (None, OutputFormat.SVG)
-        ):
-            raise ValueError(
-                "An editable SVG font policy requires SVG output."
-            )
-        object.__setattr__(self, "svg_font_policy", font_policy)
 
     @property
     def products(self) -> tuple[ChartProduct, ...]:
@@ -184,14 +169,6 @@ def add_chart_product_arguments(parser, *, default_output):
         help="explicit output format: png, pdf, or svg",
     )
     parser.add_argument(
-        "--svg-font-policy",
-        choices=tuple(item.value for item in SvgFontPolicy),
-        help=(
-            "SVG text policy: publication paths or editable text "
-            "(default: publication)"
-        ),
-    )
-    parser.add_argument(
         "--all-products",
         action="store_true",
         dest="all_products",
@@ -219,9 +196,4 @@ def chart_product_options(arguments, *, defaults=None) -> ChartProductOptions:
             if arguments.all_products is None else arguments.all_products
         ),
         output_format=arguments.output_format,
-        svg_font_policy=(
-            SvgFontPolicy.PUBLICATION
-            if arguments.svg_font_policy is None
-            else arguments.svg_font_policy
-        ),
     )
