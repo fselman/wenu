@@ -204,6 +204,10 @@ def test_repeated_rendering_with_different_projection_and_viewport():
     assert semantic_artist.zorder == 6.0
     assert semantic_artist.paint_role is POINTS
     assert semantic_artist.edit_policy is EditPolicy.STYLE
+    assert semantic_artist.semantic_path == ("test",)
+    assert semantic_artist.display_name == "Test"
+    assert semantic_artist.presentation_order is None
+    assert semantic_artist.style_role == "test"
     assert ax2.get_xlim() == viewport2.xlim
     plt.close(figure1)
     plt.close(figure2)
@@ -253,6 +257,10 @@ def test_coordinate_grid_identity_uses_coordinate_system():
     assert semantic_layer_identity(layer) == SemanticLayerIdentity(
         name="equatorial_grid",
         svg_id="wenu-layer-equatorial-grid",
+        semantic_path=("sky", "grids", "equatorial"),
+        display_name="Equatorial grid",
+        presentation_order=70,
+        style_role="equatorial_grid",
     )
 
 
@@ -268,6 +276,9 @@ def test_label_layers_receive_layout_edit_policy():
     )
 
     assert identity.edit_policy is EditPolicy.LAYOUT
+    assert identity.semantic_path == ("sky", "constellations", "labels")
+    assert identity.parent_path == ("sky", "constellations")
+    assert identity.presentation_order == 52
 
 
 def test_layer_can_declare_no_supported_external_edits():
