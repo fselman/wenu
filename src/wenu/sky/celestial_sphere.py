@@ -120,6 +120,7 @@ class CelestialSphere:
         options = {} if layer_options is None else layer_options
         rendered_layers = []
         for layer in self._layers:
+            identity = semantic_layer_identity(layer)
             configured = self._layer_render_options(layer, options)
             enabled = configured.pop("enabled", True)
             if not isinstance(enabled, bool):
@@ -146,10 +147,15 @@ class CelestialSphere:
                 projected,
                 **dict(render_options),
             )
+            assign_identity = getattr(
+                renderer, "assign_semantic_identity", None
+            )
+            if callable(assign_identity):
+                assign_identity(artists, identity)
             rendered_layers.append(
                 LayerRenderingResult(
                     layer=layer,
-                    semantic_identity=semantic_layer_identity(layer),
+                    semantic_identity=identity,
                     spherical=spherical,
                     projected=projected,
                     artists=artists,
