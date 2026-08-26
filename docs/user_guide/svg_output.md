@@ -55,7 +55,9 @@ Wenu annotates its SVG objects with stable Wenu-owned IDs, classes, and data
 attributes. Representative semantic objects expose:
 
 - `data-wenu-layer`: logical layer ownership;
-- `data-wenu-paint-role` and `data-wenu-paint-band`: stacking identity;
+- `data-wenu-zorder`: exact numerical drawing position;
+- `data-wenu-paint-role`: registered name for that exact position; it does not
+  classify the object;
 - `data-wenu-edit="style"`: appearance and visibility may be edited, but
   scientific position and geometry must not be moved;
 - `data-wenu-edit="layout"`: appearance, visibility, and label layout may be
