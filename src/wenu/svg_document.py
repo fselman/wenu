@@ -10,11 +10,14 @@ import re
 _METADATA_ATTRIBUTE = "_wenu_svg_semantics"
 
 
-def attach_semantic_svg_metadata(artist, *, layer, zorder, paint_role):
+def attach_semantic_svg_metadata(
+    artist, *, layer, zorder, paint_role, edit_policy
+):
     """Attach renderer-neutral values for the later SVG export boundary."""
     metadata = {
         "layer": str(layer),
         "zorder": float(zorder),
+        "edit_policy": edit_policy.value,
     }
     if paint_role is not None:
         metadata["paint_role"] = paint_role.name
@@ -41,11 +44,13 @@ def annotate_semantic_svg(path, figure):
         classes = [
             "wenu-semantic-artist",
             f"wenu-layer-{metadata['layer'].replace('_', '-')}",
+            f"wenu-edit-{metadata['edit_policy']}",
         ]
         attributes = {
             "class": " ".join(classes),
             "data-wenu-layer": metadata["layer"],
             "data-wenu-zorder": f"{metadata['zorder']:.12g}",
+            "data-wenu-edit": metadata["edit_policy"],
         }
         paint_role = metadata.get("paint_role")
         paint_band = metadata.get("paint_band")
