@@ -1,6 +1,6 @@
 # Milestone 49F.2C semantic SVG attributes
 
-**Status:** Implemented; focused tests and Mac editor acceptance complete  
+**Status:** Implemented; full-suite and Mac editor acceptance complete  
 **Base:** `e4fdbcf`  
 **Branch:** `feature/svg-semantic-attributes`  
 **Acceptance date:** 2026-08-26
@@ -111,3 +111,8 @@ It deliberately defers:
 Later grouping must use these explicit attributes and the 49F.2B no-reordering
 rule. It must not infer semantic meaning from Matplotlib-generated IDs or
 visible text.
+
+## Verification
+
+The final complete suite passed 1,599 tests in 56.14 seconds. The working tree
+was clean and `git diff --check` reported no whitespace errors.
