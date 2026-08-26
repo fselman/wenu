@@ -241,3 +241,7 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
     ]
     assert all(item.zorder == 2.0 for item in semantic_artists)
     assert all(item.paint_role.name == "boundaries" for item in semantic_artists)
+    assert all(
+        item.paint_role.band.name == "structure"
+        for item in semantic_artists
+    )
