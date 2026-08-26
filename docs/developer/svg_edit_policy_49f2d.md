@@ -1,6 +1,6 @@
 # Milestone 49F.2D SVG editing classification
 
-**Status:** Implemented; focused tests and Mac editor acceptance complete  
+**Status:** Implemented; full-suite and Mac editor acceptance complete  
 **Base:** `b4b95e2`  
 **Branch:** `feature/svg-edit-policy`  
 **Acceptance date:** 2026-08-26
@@ -112,3 +112,8 @@ It deliberately defers:
 - editable SVG text and font policy;
 - explicit output-format selection;
 - dense binocular SVG optimization.
+
+## Verification
+
+The final complete suite passed 1,601 tests in 57.71 seconds. The working tree
+was clean and `git diff --check` reported no whitespace errors.
