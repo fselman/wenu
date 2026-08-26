@@ -141,17 +141,19 @@ wenu-chart
             galactic-grid
             horizontal-grid
         reference-curves
-        constellation-artwork
-        constellation-lines
+        constellations
+            constellation-artwork
+            constellation-boundaries
+            constellation-lines
+            constellation-labels
         deep-sky-objects
         stars
         solar-system
             sun
             moon
             planets
-        labels
+        other-labels
             star-labels
-            constellation-labels
             object-labels
     masks-and-boundaries
     legends
@@ -165,6 +167,19 @@ Only groups relevant to a particular product need be emitted. The audit may
 adjust names or nesting before they become public, but the accepted vocabulary
 must then be documented and versioned. New semantic roles must extend this
 taxonomy rather than depend on backend-generated group names.
+
+This is the logical semantic hierarchy: upstream Wenu code supplies what each
+object is. SVG serialization does not infer astronomical meaning from a
+numeric position, style, visible text, or registered paint-role name. Exact
+z-order and existing XML order independently describe when an object is
+painted.
+
+A physical SVG parent may be emitted only when doing so preserves the accepted
+drawing order. When one logical semantic group occupies separated positions,
+the serializer may use ordered fragments carrying the same semantic class and
+logical-parent metadata. It must not reorder artists merely to make the editor
+tree resemble the logical taxonomy. No coarse stacking categories are part of
+the public model.
 
 ### Layer and object identity
 
