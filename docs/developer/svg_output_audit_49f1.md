@@ -38,7 +38,7 @@ and pouch exporters deliberately override that value with
 
 ## Inspection boundary
 
-`wenu.rendering.svg_inspection.inspect_svg()` records only structural facts
+The test-side `inspect_svg()` helper records only structural facts
 that are meaningful across ordinary SVG serializers:
 
 - SVG root namespace;
