@@ -123,6 +123,7 @@ class MatplotlibRenderer:
                 layer=identity.name,
                 zorder=zorder,
                 paint_role=paint_role,
+                edit_policy=identity.edit_policy,
             )
             results.append(
                 SemanticArtistRenderingResult(
@@ -130,6 +131,7 @@ class MatplotlibRenderer:
                     svg_id=svg_id,
                     zorder=zorder,
                     paint_role=paint_role,
+                    edit_policy=identity.edit_policy,
                 )
             )
         return tuple(results)

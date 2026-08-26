@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import re
 
+from wenu.chart_document import EditPolicy
+
 
 _SAFE_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 
@@ -15,6 +17,7 @@ class SemanticLayerIdentity:
 
     name: str
     svg_id: str
+    edit_policy: EditPolicy = EditPolicy.STYLE
 
 
 def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
@@ -32,7 +35,22 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
         raise ValueError(
             f"Layer name {name!r} is not a safe semantic name."
         )
+    configured_policy = getattr(layer, "semantic_edit_policy", None)
+    if configured_policy is None:
+        edit_policy = (
+            EditPolicy.LAYOUT
+            if name.endswith("_labels")
+            else EditPolicy.STYLE
+        )
+    else:
+        try:
+            edit_policy = EditPolicy(configured_policy)
+        except ValueError as error:
+            raise ValueError(
+                f"Unsupported semantic edit policy: {configured_policy!r}."
+            ) from error
     return SemanticLayerIdentity(
         name=name,
         svg_id=f"wenu-layer-{name.replace('_', '-')}",
+        edit_policy=edit_policy,
     )

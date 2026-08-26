@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
+from wenu.chart_document import EditPolicy
 from wenu.sky.rendering_results import ChartRenderingResult
 from wenu.geometry.projected import ProjectedPoints
 from wenu.projections.stereographic import StereographicProjection
@@ -202,6 +203,7 @@ def test_repeated_rendering_with_different_projection_and_viewport():
     assert semantic_artist.svg_id == "wenu-layer-test--artist-0001"
     assert semantic_artist.zorder == 6.0
     assert semantic_artist.paint_role is POINTS
+    assert semantic_artist.edit_policy is EditPolicy.STYLE
     assert ax2.get_xlim() == viewport2.xlim
     plt.close(figure1)
     plt.close(figure2)
@@ -258,3 +260,22 @@ def test_semantic_identity_supports_unnamed_layers_and_rejects_unsafe_names():
     assert semantic_layer_identity(SimpleNamespace(layer_name=None)) is None
     with pytest.raises(ValueError, match="safe semantic name"):
         semantic_layer_identity(SimpleNamespace(layer_name="translated label"))
+
+
+def test_label_layers_receive_layout_edit_policy():
+    identity = semantic_layer_identity(
+        SimpleNamespace(layer_name="constellation_labels")
+    )
+
+    assert identity.edit_policy is EditPolicy.LAYOUT
+
+
+def test_layer_can_declare_no_supported_external_edits():
+    identity = semantic_layer_identity(
+        SimpleNamespace(
+            layer_name="technical_geometry",
+            semantic_edit_policy="none",
+        )
+    )
+
+    assert identity.edit_policy is EditPolicy.NONE

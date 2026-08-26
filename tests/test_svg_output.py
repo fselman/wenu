@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 import pytest
 
+from wenu.chart_document import EditPolicy
 from wenu.charts.regional import ExportOptions
 from wenu.rendering import MatplotlibRenderer
 from wenu.sky.semantic_identity import SemanticLayerIdentity
@@ -240,6 +241,10 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
         "wenu-layer-constellation-lines--artist-0002",
     ]
     assert all(item.zorder == 2.0 for item in semantic_artists)
+    assert all(
+        item.edit_policy is EditPolicy.STYLE
+        for item in semantic_artists
+    )
     assert all(item.paint_role.name == "boundaries" for item in semantic_artists)
     assert all(
         item.paint_role.band.name == "structure"
@@ -247,11 +252,12 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
     )
     assert (
         'class="wenu-semantic-artist '
-        'wenu-layer-constellation-lines '
+        'wenu-layer-constellation-lines wenu-edit-style '
         'wenu-paint-boundaries wenu-band-structure"'
         in serialized
     )
     assert 'data-wenu-layer="constellation_lines"' in serialized
+    assert 'data-wenu-edit="style"' in serialized
     assert 'data-wenu-zorder="2"' in serialized
     assert 'data-wenu-paint-role="boundaries"' in serialized
     assert 'data-wenu-paint-band="structure"' in serialized
