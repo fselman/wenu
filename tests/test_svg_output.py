@@ -74,6 +74,50 @@ def test_existing_export_path_produces_parseable_vector_svg(
     assert not inspection.has_raster_images
 
 
+
+def test_svg_translates_pdf_subject_to_description(tmp_path):
+    destination = tmp_path / "metadata.svg"
+    figure = _representative_figure()
+    try:
+        ExportOptions(
+            metadata={
+                "Title": "Physical polar page",
+                "Creator": "Wenu",
+                "Subject": "Source revision 918b4bd",
+            },
+        ).save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    serialized = destination.read_text(encoding="utf-8")
+
+    assert "<dc:description>Source revision 918b4bd</dc:description>" in (
+        serialized
+    )
+
+
+def test_non_svg_export_preserves_subject_metadata(tmp_path):
+    class RecordingFigure:
+        def __init__(self):
+            self.path = None
+            self.kwargs = None
+
+        def savefig(self, path, **kwargs):
+            self.path = path
+            self.kwargs = kwargs
+
+    figure = RecordingFigure()
+    destination = tmp_path / "physical-page.pdf"
+
+    ExportOptions(
+        metadata={"Subject": "Source revision 918b4bd"},
+    ).save(figure, destination)
+
+    assert figure.path == destination
+    assert figure.kwargs["metadata"] == {
+        "Subject": "Source revision 918b4bd"
+    }
+
 def test_non_tight_export_preserves_requested_physical_page(tmp_path):
     destination = tmp_path / "a4-page.svg"
     page_mm = (210.0, 297.0)
