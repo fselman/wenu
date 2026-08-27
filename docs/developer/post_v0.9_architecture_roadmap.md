@@ -1,6 +1,6 @@
 # Wenu post-v0.9 architecture roadmap
 
-**Status:** Active; 49F complete and 49G.1 implemented
+**Status:** Active; 49F complete and 49G.2 implemented
 
 **Planning baseline:** `52e9411`
 
@@ -186,11 +186,13 @@ a concrete requirement that Matplotlib's backend cannot meet.
 
 ## 10. Milestone 49G - Temporal sequence contract
 
-**Status:** 49G.1 immutable timeline and playback vocabulary implemented;
-package sequence requests and orchestration remain pending.
+**Status:** 49G.1 timeline/playback vocabulary and 49G.2 observer-time
+sequence orchestration implemented; CLI, manifests, acceptance, and reuse
+remain pending.
 
-The implemented contract is documented in
-`temporal_sequence_contract_49g1.md`.
+The implemented contracts are documented in
+`temporal_sequence_contract_49g1.md` and
+`observer_time_sequence_49g2.md`.
 
 Represent a sequence as one immutable product definition plus an ordered set
 of explicit instants. Separate state by its physical cadence:
