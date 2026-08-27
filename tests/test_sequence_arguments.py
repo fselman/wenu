@@ -6,6 +6,7 @@ from types import SimpleNamespace
 import pytest
 
 from wenu.charts.sequence_arguments import chart_sequence_cli_options
+from wenu.configuration import SequenceDefaults
 from wenu.charts.sequence_manifest import SequenceRestartPolicy
 
 
@@ -101,3 +102,57 @@ def test_cli_sequence_requires_an_offset_aware_stop():
             ),
             start=datetime(2026, 8, 22, 1, tzinfo=timezone.utc),
         )
+
+
+def test_cli_values_override_sequence_configuration_defaults():
+    defaults = SequenceDefaults(
+        stop="2026-08-22T05:00:00Z",
+        frames=3,
+        display_timezone="UTC",
+        playback_duration_seconds=None,
+        frames_per_second=None,
+        restart_policy="restart",
+    )
+
+    options = chart_sequence_cli_options(
+        arguments(
+            sequence_stop="2026-08-22T07:00:00Z",
+            sequence_frames=2,
+            display_timezone="America/Santiago",
+            restart_policy="resume",
+        ),
+        start=datetime(2026, 8, 22, 1, tzinfo=timezone.utc),
+        defaults=defaults,
+    )
+
+    assert options.timeline.frame_count == 2
+    assert options.timeline.instants[-1].hour == 7
+    assert options.timeline.display_timezone == "America/Santiago"
+    assert options.restart_policy is SequenceRestartPolicy.RESUME
+
+
+def test_complete_sequence_configuration_activates_without_cli_values():
+    defaults = SequenceDefaults(
+        stop="2026-08-22T07:00:00Z",
+        frames=2,
+        display_timezone="America/Santiago",
+        playback_duration_seconds=None,
+        frames_per_second=None,
+        restart_policy="resume",
+    )
+
+    options = chart_sequence_cli_options(
+        SimpleNamespace(
+            sequence_stop=None,
+            sequence_frames=None,
+            display_timezone=None,
+            playback_duration=None,
+            frames_per_second=None,
+            restart_policy=None,
+        ),
+        start=datetime(2026, 8, 22, 1, tzinfo=timezone.utc),
+        defaults=defaults,
+    )
+
+    assert options.timeline.frame_count == 2
+    assert options.restart_policy is SequenceRestartPolicy.RESUME
