@@ -1011,19 +1011,21 @@ class MatplotlibRenderer:
                 patch = PathPatch(path, **self._polygon_style(outline))
                 register(patch)
         if marker_style is not None:
-            for polygon in polygons:
+            for index, polygon in enumerate(polygons):
                 marker_curve = ProjectedCurve(
                     polygon.x,
                     polygon.y,
                     closed=True,
                 )
-                artists.append(
-                    render_curve(
-                        self.ax,
-                        marker_curve,
-                        **marker_style,
-                    )
+                marker_artist = render_curve(
+                    self.ax,
+                    marker_curve,
+                    **marker_style,
                 )
+                self._attach_semantic_entity(
+                    (marker_artist,), polygons.metadata, index
+                )
+                artists.append(marker_artist)
         return artists
 
     @staticmethod
