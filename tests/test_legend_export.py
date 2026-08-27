@@ -1333,8 +1333,9 @@ def test_legend_symbols_and_labels_receive_matching_semantic_names():
     ]
 
     magnitude_handle = Item()
-    magnitude_label = Item("3")
+    magnitude_label = Item("3 (127) visible stars")
     magnitude = SimpleNamespace(
+        _wenu_legend_entry_keys=("mag-3",),
         legend_handles=(magnitude_handle,),
         get_frame=lambda: Item(),
         get_title=lambda: Item(),
