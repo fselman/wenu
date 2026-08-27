@@ -105,15 +105,15 @@ def assign_canvas_semantics(renderer):
         assign(
             spines,
             SemanticArtistIdentity(
-                name="rectangular_viewport_frame",
-                svg_id="viewport-frame",
+                name="chart_boundary",
+                svg_id="chart-boundary",
                 edit_policy=EditPolicy.STYLE,
                 semantic_path=(
                     "chart",
                     "masks_and_boundary",
-                    "rectangular_viewport_frame",
+                    "chart_boundary",
                 ),
-                display_name="Rectangular viewport frame",
+                display_name="Chart boundary",
                 presentation_order=81,
                 style_role="chart_boundary",
             ),
