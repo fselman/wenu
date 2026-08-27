@@ -523,7 +523,7 @@ def _consolidate_designer_hierarchy(root):
     figures = [
         element
         for element in root.iter(group_tag)
-        if re.fullmatch(r"figure_\\d+", element.get("id", ""))
+        if re.fullmatch(r"figure_\d+", element.get("id", ""))
     ]
     for figure_index, figure in enumerate(figures, start=1):
         figure_id = (
@@ -546,7 +546,7 @@ def _consolidate_designer_hierarchy(root):
         axes = [
             element
             for element in figure.iter(group_tag)
-            if re.fullmatch(r"axes_\\d+", element.get("id", ""))
+            if re.fullmatch(r"axes_\d+", element.get("id", ""))
         ]
         for axes_index, plot_area in enumerate(axes, start=1):
             plot_id = (
