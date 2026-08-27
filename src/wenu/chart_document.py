@@ -27,6 +27,7 @@ class SemanticArtistIdentity:
     presentation_order: int
     style_role: str
     exact_svg_id: bool = True
+    path_display_names: tuple[str, ...] = ()
 
     def component_identity(self, component):
         """Chart-owned identities do not declare renderer subcomponents."""
