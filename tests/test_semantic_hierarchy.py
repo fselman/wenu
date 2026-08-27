@@ -12,6 +12,8 @@ from wenu.sky.semantic_identity import (
 
 def identity(name, *, coordinate_system=None):
     layer = SimpleNamespace(layer_name=name)
+    if name == "magellanic_cloud_isophotes":
+        layer.cloud = "lmc"
     if coordinate_system is not None:
         layer.coordinate_system = coordinate_system
     return semantic_layer_identity(layer)
@@ -42,7 +44,7 @@ def test_celestial_layers_follow_the_accepted_presentation_order():
         (
             "sky",
             "milky_way_and_magellanic_clouds",
-            "magellanic_clouds",
+            "lmc",
         ),
         ("sky", "deep_sky_objects", "open_clusters"),
         ("sky", "deep_sky_objects", "globular_clusters"),
