@@ -749,6 +749,9 @@ def test_sequence_manifest_documents_safe_restart_and_resume():
         "incompatible manifest before rendering",
         "real canonical PNG generation",
         "CLI/configuration exposure remains Milestone 49G.4",
+        "real restart/resume acceptance complete",
+        "selective resume",
+        "82 passed in 27.29s",
     ):
         assert value in contract
 
