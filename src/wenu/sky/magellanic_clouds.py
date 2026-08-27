@@ -220,6 +220,14 @@ class MagellanicCloudIsophotes(SkyLayer):
                 "compound_id": np.asarray(compounds, dtype=object)[positions],
                 "ring_index": np.asarray(ring_indices, dtype=int)[positions],
                 "is_hole": np.asarray(holes, dtype=bool)[positions],
+                "semantic_entity_keys": np.asarray(
+                    [f"isophote_{level}" for level in level_values],
+                    dtype=object,
+                )[positions],
+                "semantic_entity_display_names": np.asarray(
+                    [f"Isophote {level}" for level in level_values],
+                    dtype=object,
+                )[positions],
             },
         )
 
