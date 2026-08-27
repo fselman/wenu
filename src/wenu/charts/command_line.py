@@ -15,7 +15,7 @@ from .chart_arguments import (
     chart_legend_selection,
     chart_style_overrides,
 )
-from .drawing import draw_chart_view
+from .drawing import chart_view_request, draw_chart_view_request
 from .furniture import (
     ChartContextOptions,
     ChartFurnitureOptions,
@@ -223,7 +223,7 @@ def chart_cli_furniture(
     )
 
 
-def draw_chart_view_from_arguments(
+def chart_view_requests_from_arguments(
     view,
     arguments,
     *,
@@ -234,8 +234,9 @@ def draw_chart_view_from_arguments(
     style_overrides=None,
     title=None,
     language=None,
+    sequence=False,
 ):
-    """Draw every CLI-selected product through the ordinary view facade.
+    """Translate CLI-selected products into immutable chart requests.
 
     ``product_details`` may key policies by exact ``ChartProduct`` values or
     by the shared ``atlas`` and ``cartoon`` style names. Exact products take
@@ -299,15 +300,25 @@ def draw_chart_view_from_arguments(
         })
     else:
         style_overrides = parsed_style
-    exports = []
-    extension = (
-        None if product_defaults is None else product_defaults.extension
-    )
-    for product, destination in options.outputs(
-        stem=stem,
-        extension=extension,
-    ):
-        exports.append(draw_chart_view(
+    if sequence:
+        if options.all_products:
+            raise ValueError("A chart sequence accepts one chart product.")
+        if options.output_format is None:
+            raise ValueError(
+                "A chart sequence requires an explicit output format."
+            )
+        selected_outputs = ((options.products[0], options.output),)
+    else:
+        extension = (
+            None if product_defaults is None else product_defaults.extension
+        )
+        selected_outputs = options.outputs(
+            stem=stem,
+            extension=extension,
+        )
+    requests = []
+    for product, destination in selected_outputs:
+        requests.append(chart_view_request(
             view,
             destination,
             style=product.style,
@@ -320,5 +331,19 @@ def draw_chart_view_from_arguments(
             style_overrides=style_overrides,
             title=title,
             language=language,
+            output_format=options.output_format,
         ))
-    return tuple(exports)
+    return tuple(requests)
+
+
+def draw_chart_view_from_arguments(view, arguments, **options):
+    """Draw CLI-selected products through centrally translated requests."""
+    requests = chart_view_requests_from_arguments(
+        view,
+        arguments,
+        **options,
+    )
+    return tuple(
+        draw_chart_view_request(view, request)
+        for request in requests
+    )
