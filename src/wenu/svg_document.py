@@ -146,14 +146,21 @@ def annotate_semantic_svg(path, figure, *, provenance=None):
             pattern = re.compile(
                 rf'(<g\s+id="{re.escape(svg_id)}")(?P<rest>[^>]*>)'
             )
+            matches = tuple(pattern.finditer(serialized))
+            if not matches:
+                continue
+            if len(matches) != 1:
+                raise ValueError(
+                    f"Expected at most one SVG group for Wenu id {svg_id!r}."
+                )
             serialized, count = pattern.subn(
                 rf"\1{extra}\g<rest>",
                 serialized,
                 count=1,
             )
             if count != 1:
-                raise ValueError(
-                    f"Expected exactly one SVG group for Wenu id {svg_id!r}."
+                raise RuntimeError(
+                    f"Could not annotate Wenu SVG group {svg_id!r}."
                 )
         path.write_text(serialized, encoding="utf-8")
         _group_semantics(path)
