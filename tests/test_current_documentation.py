@@ -652,3 +652,36 @@ def test_svg_cross_product_acceptance_records_all_products():
     ):
         assert value in text
 
+
+def test_temporal_sequence_contract_separates_physical_and_playback_time():
+    contract = (
+        DEVELOPER / "temporal_sequence_contract_49g1.md"
+    ).read_text(encoding="utf-8")
+    roadmap = (
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).read_text(encoding="utf-8")
+    legacy = (
+        DEVELOPER / "polar_delivery_and_astrometry_roadmap.md"
+    ).read_text(encoding="utf-8")
+    implementation = (
+        DEVELOPER / "implementation_reference.md"
+    ).read_text(encoding="utf-8")
+    source_tree = (
+        DEVELOPER / "source_tree.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "TemporalTimeline",
+        "PlaybackSpec",
+        "simulation duration",
+        "Playback speed must never be interpreted as physical time",
+        "CelestialSphere.draw_chart()",
+        "29 passed in 3.42s",
+    ):
+        assert value in contract
+
+    assert "49G.1 immutable timeline and playback vocabulary" in roadmap
+    assert "does not compete" in legacy
+    assert "Temporal sequence vocabulary (Milestone 49G.1)" in implementation
+    assert "Temporal sequence modules (Milestone 49G.1)" in source_tree
+
