@@ -778,6 +778,10 @@ def test_arbitrary_canvas_background_and_boundary_are_semantic(tmp_path):
         if element.get("id")
     }
 
+    assert "wenu-chart" in by_id
+    assert "plot-area" in by_id
+    assert "figure_1" not in by_id
+    assert "axes_1" not in by_id
     assert "page-background" in by_id
     assert "sky-background" in by_id
     assert "chart-boundary" in by_id
@@ -823,6 +827,27 @@ def test_figure_margin_credits_and_version_belong_to_footer_furniture(
         if element.get("data-wenu-semantic-path")
     }
 
+    by_id = {
+        element.get("id"): element
+        for element in root.iter()
+        if element.get("id")
+    }
+    parent_of = {
+        child: parent
+        for parent in root.iter()
+        for child in parent
+    }
+    furniture_groups = [
+        element
+        for element in root.iter()
+        if element.get("data-wenu-semantic-path") == "furniture"
+    ]
+
+    assert "wenu-chart" in by_id
+    assert "plot-area" in by_id
+    assert len(furniture_groups) == 1
+    assert parent_of[furniture_groups[0]] is by_id["wenu-chart"]
+    assert parent_of[by_id["plot-area"]] is by_id["wenu-chart"]
     assert "furniture/footer" in by_path
     assert "furniture/footer/credits" in by_path
     assert "furniture/footer/application" in by_path
