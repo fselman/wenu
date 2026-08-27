@@ -115,6 +115,51 @@ def test_curve_clipping_preserves_visible_runs():
     )
 
 
+def test_curve_clipping_subsets_all_per_entity_metadata():
+    spherical = SphericalCurves(
+        lon_deg=(
+            [0.0, 1.0, 2.0],
+            [0.0, 1.0, 2.0, 3.0, 4.0],
+        ),
+        lat_deg=(
+            [-2.0, -2.0, -2.0],
+            [1.0, 1.0, -1.0, 1.0, 1.0],
+        ),
+    )
+    projected = ProjectedCurves(
+        items=[
+            ProjectedCurve(
+                x=[0.0, 1.0, 2.0],
+                y=[0.0, 1.0, 2.0],
+            ),
+            ProjectedCurve(
+                x=[0.0, 1.0, 2.0, 3.0, 4.0],
+                y=[0.0, 1.0, 2.0, 3.0, 4.0],
+            ),
+        ],
+        metadata={
+            "semantic_entity_keys": ("north", "south"),
+            "semantic_entity_display_names": ("North", "South"),
+            "styles": ({"color": "red"}, {"color": "blue"}),
+            "collection_value": "preserved",
+        },
+    )
+
+    clipped = clip_to_latitude(spherical, projected)
+
+    assert len(clipped) == 2
+    assert clipped.metadata["semantic_entity_keys"] == (
+        "south", "south"
+    )
+    assert clipped.metadata["semantic_entity_display_names"] == (
+        "South", "South"
+    )
+    assert clipped.metadata["styles"] == (
+        {"color": "blue"}, {"color": "blue"}
+    )
+    assert clipped.metadata["collection_value"] == "preserved"
+
+
 def test_curve_clipping_supports_a_maximum_latitude():
     spherical = SphericalCurves(
         lon_deg=([0.0, 1.0, 2.0, 3.0],),
