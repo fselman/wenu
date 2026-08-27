@@ -107,3 +107,29 @@ def test_semantic_paths_reject_unsafe_components(path):
             svg_id="wenu-layer-test",
             semantic_path=path,
         )
+
+
+def test_grid_identity_declares_independent_line_and_label_children():
+    grid = identity("coordinates_grid", coordinate_system="equatorial")
+
+    lines = grid.component_identity("lines")
+    labels = grid.component_identity("labels")
+
+    assert lines.semantic_path == (
+        "sky", "grids", "equatorial", "lines"
+    )
+    assert lines.display_name == "Equatorial grid lines"
+    assert lines.style_role == "equatorial_grid_lines"
+    assert lines.edit_policy.value == "style"
+    assert labels.semantic_path == (
+        "sky", "grids", "equatorial", "labels"
+    )
+    assert labels.display_name == "Equatorial grid labels"
+    assert labels.style_role == "equatorial_grid_labels"
+    assert labels.edit_policy.value == "layout"
+
+
+def test_non_grid_identity_ignores_undeclared_renderer_parts():
+    galaxies = identity("galaxies")
+
+    assert galaxies.component_identity("lines") is galaxies
