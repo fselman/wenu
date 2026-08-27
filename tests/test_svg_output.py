@@ -444,7 +444,10 @@ def test_constellation_entities_form_a_shallow_system_specific_group(tmp_path):
             "semantic_entity_display_names": ("Cru", "Cru", "Mus"),
         },
     )
-    artists = renderer.draw(curves)
+    artists = renderer.draw(
+        curves,
+        style={"color": "#123456", "linewidth": 2.5},
+    )
     MatplotlibRenderer.assign_semantic_identity(
         artists,
         SemanticLayerIdentity(
@@ -494,6 +497,35 @@ def test_constellation_entities_form_a_shallow_system_specific_group(tmp_path):
         "western-lines-mus",
     ]
     assert "sky/constellations/lines_western/western" not in by_path
+    lines_style = dict(
+        item.split(":", 1)
+        for item in lines.get("style", "").split("; ")
+        if ":" in item
+    )
+    assert lines_style["stroke"] == "#123456"
+    assert lines_style["stroke-width"] == "2.5"
+    descendant_paths = [
+        element
+        for element in lines.iter()
+        if element.tag.rsplit("}", 1)[-1] == "path"
+    ]
+    assert descendant_paths
+    assert all(
+        "stroke" not in dict(
+            item.split(":", 1)
+            for item in element.get("style", "").split("; ")
+            if ":" in item
+        )
+        for element in descendant_paths
+    )
+    assert all(
+        "stroke-width" not in dict(
+            item.split(":", 1)
+            for item in element.get("style", "").split("; ")
+            if ":" in item
+        )
+        for element in descendant_paths
+    )
     insensitive = (
         "{http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd}"
         "insensitive"
