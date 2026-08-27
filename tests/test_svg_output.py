@@ -11,7 +11,10 @@ import xml.etree.ElementTree as ET
 from matplotlib.patches import Circle
 import pytest
 
-from wenu.chart_document import EditPolicy
+from wenu.chart_document import (
+    EditPolicy,
+    SemanticArtistIdentity,
+)
 from wenu.charts.regional import ExportOptions
 from wenu.rendering import MatplotlibRenderer
 from wenu.sky.semantic_identity import SemanticLayerIdentity
@@ -409,3 +412,67 @@ def test_semantic_label_group_inherits_common_font_style(tmp_path):
         "font:" not in element.get("style", "")
         for element in text_elements
     )
+
+
+
+def test_chart_semantics_form_a_parallel_hierarchy(tmp_path):
+    destination = tmp_path / "chart-semantic-group.svg"
+    figure, ax = plt.subplots()
+    sky_artist = ax.plot((0.0, 1.0), (0.5, 0.5), zorder=1.0)[0]
+    mask_artist = Circle(
+        (0.5, 0.5),
+        0.3,
+        transform=ax.transAxes,
+        zorder=20.0,
+    )
+    ax.add_patch(mask_artist)
+    MatplotlibRenderer.assign_semantic_identity(
+        (sky_artist,),
+        SemanticLayerIdentity(
+            name="stars",
+            svg_id="wenu-layer-stars",
+            semantic_path=("sky", "stars", "symbols"),
+            display_name="Star symbols",
+            presentation_order=40,
+            style_role="stars",
+        ),
+    )
+    MatplotlibRenderer.assign_semantic_identity(
+        (mask_artist,),
+        SemanticArtistIdentity(
+            name="outside_constellation_group_mask",
+            svg_id="wenu-chart-outside-constellation-group-mask",
+            edit_policy=EditPolicy.STYLE,
+            semantic_path=(
+                "chart",
+                "masks_and_boundary",
+                "outside_constellation_group_mask",
+            ),
+            display_name="Outside constellation-group mask",
+            presentation_order=80,
+            style_role="outside_mask",
+        ),
+    )
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    by_id = {
+        element.get("id"): element
+        for element in root.iter()
+        if element.get("id")
+    }
+
+    assert "wenu-group-sky" in by_id
+    assert "wenu-group-chart" in by_id
+    masks = by_id["wenu-group-chart-masks_and_boundary"]
+    mask = by_id[
+        "wenu-group-chart-masks_and_boundary-"
+        "outside_constellation_group_mask"
+    ]
+    assert mask in list(masks)
+    assert mask.get(
+        "{http://www.inkscape.org/namespaces/inkscape}label"
+    ) == "Outside constellation-group mask"
