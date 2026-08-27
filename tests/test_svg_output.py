@@ -794,18 +794,21 @@ def test_arbitrary_canvas_background_and_boundary_are_semantic(tmp_path):
     )
 
 
-def test_figure_margin_version_belongs_to_footer_furniture(tmp_path):
-    destination = tmp_path / "footer-version.svg"
+def test_figure_margin_credits_and_version_belong_to_footer_furniture(
+    tmp_path,
+):
+    destination = tmp_path / "footer.svg"
     figure, ax = plt.subplots()
     renderer = MatplotlibRenderer(ax)
+    credits = figure.text(0.05, 0.02, "© Chart author", ha="left")
     version = figure.text(0.95, 0.02, "Wenu 1.2.3", ha="right")
     assign_furniture_semantics(
         renderer,
         object(),
         footer_rendering=ChartFooterRendering(
-            copyright_text=None,
+            copyright_text="© Chart author",
             application_text="Wenu 1.2.3",
-            artists=(version,),
+            artists=(credits, version),
         ),
     )
     try:
@@ -821,7 +824,14 @@ def test_figure_margin_version_belongs_to_footer_furniture(tmp_path):
     }
 
     assert "furniture/footer" in by_path
+    assert "furniture/footer/credits" in by_path
     assert "furniture/footer/application" in by_path
+    assert (
+        by_path["furniture/footer/credits"].get(
+            "data-wenu-display-name"
+        )
+        == "Credits"
+    )
     assert (
         by_path["furniture/footer/application"].get(
             "data-wenu-display-name"
@@ -830,6 +840,9 @@ def test_figure_margin_version_belongs_to_footer_furniture(tmp_path):
     )
     assert not any(
         element.get("id", "").startswith("text_")
-        and "Wenu 1.2.3" in "".join(element.itertext())
+        and any(
+            value in "".join(element.itertext())
+            for value in ("© Chart author", "Wenu 1.2.3")
+        )
         for element in root.iter()
     )
