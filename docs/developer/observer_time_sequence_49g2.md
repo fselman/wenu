@@ -120,9 +120,10 @@ dimensions, and differ in content.
 
 ## Verification
 
-The focused temporal, observer-time sequence, reference adapter, request
-generation, renderer-boundary, and package-boundary suite passed:
+The final focused temporal, observer-time sequence, movie adapter,
+documentation, request-generation, renderer-boundary, and package-boundary
+suite—including the permanent real-frame integration test—passed:
 
 ```text
-45 passed in 3.47s
+74 passed in 26.69s
 ```
