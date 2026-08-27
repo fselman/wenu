@@ -122,8 +122,16 @@ class MatplotlibRenderer:
                 if component is not None
                 else identity
             )
+            exact = bool(
+                getattr(artist_identity, "exact_svg_id", False)
+            )
             svg_id = (
-                f"{artist_identity.svg_id}--artist-{index:0{width}d}"
+                artist_identity.svg_id
+                if exact and len(flattened) == 1
+                else (
+                    f"{artist_identity.svg_id}--"
+                    f"{index:0{width}d}"
+                )
             )
             artist.set_gid(svg_id)
             zorder = float(artist.get_zorder())
