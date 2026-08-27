@@ -698,16 +698,16 @@ def test_canvas_semantics_group_independent_svg_parents(tmp_path):
     assert "sky-background" in by_id
     frame = by_id[
         "wenu-group-chart-masks_and_boundary-"
-        "rectangular_viewport_frame"
+        "chart_boundary"
     ]
     assert len(list(frame)) == 4
     assert {
         child.get("id") for child in frame
     } == {
-        "viewport-frame--0001",
-        "viewport-frame--0002",
-        "viewport-frame--0003",
-        "viewport-frame--0004",
+        "chart-boundary--0001",
+        "chart-boundary--0002",
+        "chart-boundary--0003",
+        "chart-boundary--0004",
     }
 
 
