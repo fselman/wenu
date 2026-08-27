@@ -115,7 +115,7 @@ def annotate_semantic_svg(path, figure):
 
 
 def _group_semantics(path):
-    """Materialize supplied sky and chart paths without reclassification."""
+    """Materialize supplied semantic paths without reclassification."""
     tree = ET.parse(path)
     root = tree.getroot()
     parent_of = {
@@ -130,7 +130,9 @@ def _group_semantics(path):
         order = element.get("data-wenu-presentation-order")
         if (
             "wenu-semantic-artist" in classes
-            and semantic_path.startswith(("sky/", "chart/"))
+            and semantic_path.startswith(
+                ("sky/", "chart/", "furniture/")
+            )
             and order is not None
         ):
             candidates.append(element)
