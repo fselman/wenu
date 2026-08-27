@@ -1,7 +1,7 @@
 # Observer-time chart sequences
 
 **Milestone:** 49G.2  
-**Status:** implemented; focused verification complete  
+**Status:** implemented and real-render acceptance complete  
 **Base:** `c70cb29`
 
 ## Purpose
@@ -98,6 +98,26 @@ No sequence code:
 
 The complete independent-frame path remains the correctness oracle for later
 optimization.
+
+## Real-render acceptance
+
+The Mac integration audit generated two ordinary atlas-presentation
+circumpolar PNG frames through
+`generate_observer_time_chart_sequence()`:
+
+| Frame | Simulation UTC | Civil display time | Dimensions | Bytes |
+| --- | --- | --- | ---: | ---: |
+| frame-0000.png | 2026-08-22T01:00:00+00:00 | 2026-08-21T21:00:00-04:00 | 894 × 927 | 240,493 |
+| frame-0001.png | 2026-08-22T07:00:00+00:00 | 2026-08-22T03:00:00-04:00 | 894 × 927 | 236,035 |
+
+The paths were deterministic, dimensions identical, files nonempty, and
+SHA-256 hashes different. Visual inspection accepted both complete charts,
+stable framing/projection/style/furniture/title, expected six-hour sky
+rotation, and no unexplained clipping or state leakage.
+
+A permanent integration test now repeats the essential invariant with
+temporary outputs: both canonical PNG frames must exist, have equal
+dimensions, and differ in content.
 
 ## Verification
 
