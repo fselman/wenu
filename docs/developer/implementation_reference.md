@@ -1402,3 +1402,24 @@ SVG is the editable vector product; PDF is the portable publication and
 printing product. Ordinary SVG names font families and fallbacks but does not
 embed font files. The supported external-editing rules and safe Inkscape
 workflow are documented in `docs/user_guide/svg_output.md`.
+
+## Temporal sequence vocabulary (Milestone 49G.1)
+
+`src/wenu/temporal.py` defines renderer-neutral immutable time contracts.
+
+`TemporalTimeline` owns strictly increasing, offset-aware physical instants.
+It normalizes them to UTC, keeps an IANA civil/display time zone separate, and
+reports simulation duration, frame count, uniform sampling interval when
+present, sampling kind, civil representations, and deterministic frame names.
+`TemporalTimeline.uniform()` creates an inclusive uniform sample; direct
+construction permits explicitly irregular samples.
+
+`PlaybackSpec` owns only playback duration and frames per second. Its implied
+frame count may be checked against a timeline, but playback never determines
+the meaning of a simulation instant or sampling interval.
+
+`tools/render_circumpolar_movie.py` is the reference consumer. It resolves
+these contracts and still performs complete canonical `wenu_chart` renders
+before invoking external FFmpeg. No package sequence renderer, alternate
+astronomical path, CLI sequence request, or temporal cache exists yet.
+
