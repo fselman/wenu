@@ -122,6 +122,14 @@ from .charts.sequence import (
     ObserverTimeChartSequenceRequest,
     generate_observer_time_chart_sequence,
 )
+from .charts.sequence_manifest import (
+    ObserverTimeSequenceManifest,
+    SEQUENCE_MANIFEST_NAME,
+    SEQUENCE_MANIFEST_SCHEMA_VERSION,
+    SequenceManifestFrame,
+    read_observer_time_sequence_manifest,
+    write_observer_time_sequence_manifest,
+)
 from .charts.request_grids import (
     configure_chart_request_grids,
     requested_coordinate_grids,
@@ -495,6 +503,12 @@ __all__ = [
     "ObserverTimeChartSequenceGeneration",
     "ObserverTimeChartSequenceRequest",
     "generate_observer_time_chart_sequence",
+    "ObserverTimeSequenceManifest",
+    "SEQUENCE_MANIFEST_NAME",
+    "SEQUENCE_MANIFEST_SCHEMA_VERSION",
+    "SequenceManifestFrame",
+    "read_observer_time_sequence_manifest",
+    "write_observer_time_sequence_manifest",
     "configure_chart_request_grids",
     "requested_coordinate_grids",
     "configure_chart_request_horizon",
