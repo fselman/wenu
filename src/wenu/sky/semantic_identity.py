@@ -60,6 +60,49 @@ _GRID_COMPONENT_CONTRACTS = {
 }
 
 
+_NONSTELLAR_CATEGORY_CONTRACTS = {
+    "galaxies": SemanticLayerContract(
+        ("sky", "galaxies"), "Galaxies", 10, "galaxies"
+    ),
+    "open_clusters": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "open_clusters"),
+        "Open clusters",
+        30,
+        "open_clusters",
+    ),
+    "globular_clusters": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "globular_clusters"),
+        "Globular clusters",
+        31,
+        "globular_clusters",
+    ),
+    "planetary_nebulae": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "planetary_nebulae"),
+        "Planetary nebulae",
+        32,
+        "planetary_nebulae",
+    ),
+    "supernova_remnants": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "supernova_remnants"),
+        "Supernova remnants",
+        33,
+        "supernova_remnants",
+    ),
+    "nebulae": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "nebulae"),
+        "Nebulae",
+        34,
+        "nebulae",
+    ),
+    "other_objects": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "other_objects"),
+        "Other objects",
+        35,
+        "nonstellar",
+    ),
+}
+
+
 _LAYER_CONTRACTS = {
     "galaxies": SemanticLayerContract(
         ("sky", "galaxies"), "Galaxies", 10, "galaxies"
@@ -181,6 +224,9 @@ class SemanticLayerIdentity:
         tuple[str, SemanticComponentContract], ...
     ] = ()
     path_display_names: tuple[str, ...] = ()
+    entity_category_contracts: tuple[
+        tuple[str, SemanticLayerContract], ...
+    ] = ()
 
     def __post_init__(self):
         path = self.semantic_path or (self.name,)
@@ -234,6 +280,28 @@ class SemanticLayerIdentity:
                 *self.path_display_names,
                 f"{self.display_name} {contract.display_name}",
             ),
+        )
+
+    def category_identity(self, category: str):
+        """Return the shared astronomical branch for one entity category."""
+        category = semantic_key(
+            category,
+            field="semantic entity category",
+        )
+        contract = dict(self.entity_category_contracts).get(category)
+        if contract is None:
+            return self
+        return SemanticLayerIdentity(
+            name=self.name,
+            svg_id=(
+                "wenu-layer-"
+                f"{contract.path[-1].replace('_', '-')}"
+            ),
+            edit_policy=self.edit_policy,
+            semantic_path=contract.path,
+            display_name=contract.display_name,
+            presentation_order=contract.presentation_order,
+            style_role=contract.style_role,
         )
 
     def entity_identity(self, key: str, display_name: str):
@@ -358,6 +426,11 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
         "component_contracts": (
             tuple(_GRID_COMPONENT_CONTRACTS.items())
             if name.endswith("_grid")
+            else ()
+        ),
+        "entity_category_contracts": (
+            tuple(_NONSTELLAR_CATEGORY_CONTRACTS.items())
+            if name == "nonstellar"
             else ()
         ),
     }
