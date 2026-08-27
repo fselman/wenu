@@ -141,5 +141,10 @@ def draw_stellar_magnitude_legend(
         frame.set_facecolor(facecolor)
     if edgecolor is not None:
         frame.set_edgecolor(edgecolor)
+    setattr(
+        legend,
+        "_wenu_legend_entry_keys",
+        tuple(f"mag-{entry.magnitude}" for entry in scale.entries),
+    )
     ax.add_artist(legend)
     return legend
