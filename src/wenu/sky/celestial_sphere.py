@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 
+from wenu.geometry.projected import ProjectedPoints
+from wenu.geometry.viewport import Viewport
+from wenu.rendering.preparation import cull_points_to_viewport
 from wenu.sky.rendering_results import ChartRenderingResult, LayerRenderingResult
 from wenu.sky.semantic_identity import semantic_layer_identity
 from wenu.objects.nonstellar import NonStellar
@@ -141,6 +144,14 @@ class CelestialSphere:
             )
             if prepare is not None:
                 projected = prepare(spherical, projected)
+            if (
+                isinstance(projected, ProjectedPoints)
+                and isinstance(viewport, Viewport)
+            ):
+                projected = cull_points_to_viewport(
+                    projected,
+                    viewport,
+                )
             if callable(render_options):
                 render_options = render_options(spherical, projected)
             artists = renderer.draw(
