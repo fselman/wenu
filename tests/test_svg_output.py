@@ -15,7 +15,9 @@ from wenu.chart_document import (
     EditPolicy,
     SemanticArtistIdentity,
     assign_canvas_semantics,
+    assign_furniture_semantics,
 )
+from wenu.charts.footer_furniture import ChartFooterRendering
 from wenu.charts.regional import ExportOptions
 from wenu.rendering import MatplotlibRenderer
 from wenu.geometry.projected import ProjectedCurve, ProjectedCurves
@@ -789,4 +791,45 @@ def test_arbitrary_canvas_background_and_boundary_are_semantic(tmp_path):
     assert (
         by_id["chart-boundary"].get("data-wenu-semantic-path")
         == "chart/masks_and_boundary/chart_boundary"
+    )
+
+
+def test_figure_margin_version_belongs_to_footer_furniture(tmp_path):
+    destination = tmp_path / "footer-version.svg"
+    figure, ax = plt.subplots()
+    renderer = MatplotlibRenderer(ax)
+    version = figure.text(0.95, 0.02, "Wenu 1.2.3", ha="right")
+    assign_furniture_semantics(
+        renderer,
+        object(),
+        footer_rendering=ChartFooterRendering(
+            copyright_text=None,
+            application_text="Wenu 1.2.3",
+            artists=(version,),
+        ),
+    )
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    by_path = {
+        element.get("data-wenu-semantic-path"): element
+        for element in root.iter()
+        if element.get("data-wenu-semantic-path")
+    }
+
+    assert "furniture/footer" in by_path
+    assert "furniture/footer/application" in by_path
+    assert (
+        by_path["furniture/footer/application"].get(
+            "data-wenu-display-name"
+        )
+        == "Wenu version"
+    )
+    assert not any(
+        element.get("id", "").startswith("text_")
+        and "Wenu 1.2.3" in "".join(element.itertext())
+        for element in root.iter()
     )
