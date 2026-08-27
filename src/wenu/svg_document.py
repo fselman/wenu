@@ -110,12 +110,12 @@ def annotate_semantic_svg(path, figure):
                 f"Expected exactly one SVG group for Wenu id {svg_id!r}."
             )
     path.write_text(serialized, encoding="utf-8")
-    _group_sky_semantics(path)
+    _group_semantics(path)
     return path
 
 
-def _group_sky_semantics(path):
-    """Materialize supplied sky paths without classifying chart content."""
+def _group_semantics(path):
+    """Materialize supplied sky and chart paths without reclassification."""
     tree = ET.parse(path)
     root = tree.getroot()
     parent_of = {
@@ -130,7 +130,7 @@ def _group_sky_semantics(path):
         order = element.get("data-wenu-presentation-order")
         if (
             "wenu-semantic-artist" in classes
-            and semantic_path.startswith("sky/")
+            and semantic_path.startswith(("sky/", "chart/"))
             and order is not None
         ):
             candidates.append(element)
@@ -140,7 +140,7 @@ def _group_sky_semantics(path):
     parents = {parent_of[element] for element in candidates}
     if len(parents) != 1:
         raise ValueError(
-            "Sky semantic artists must share one SVG parent before grouping."
+            "Semantic artists must share one SVG parent before grouping."
         )
     parent = parents.pop()
     original_children = list(parent)
@@ -175,7 +175,8 @@ def _group_sky_semantics(path):
         ]
         return min(values)
 
-    all_paths = {("sky",)}
+    root_paths = {(semantic_path[0],) for semantic_path in by_path}
+    all_paths = set(root_paths)
     for semantic_path in by_path:
         for length in range(2, len(semantic_path) + 1):
             all_paths.add(semantic_path[:length])
@@ -230,7 +231,11 @@ def _group_sky_semantics(path):
 
     for element in candidates:
         parent.remove(element)
-    parent.insert(insertion_index, build_group(("sky",)))
+    for offset, root_path in enumerate(sorted(
+        root_paths,
+        key=lambda item: (descendant_order(item), item),
+    )):
+        parent.insert(insertion_index + offset, build_group(root_path))
     _flatten_semantic_text_artists(root)
     _promote_common_label_typography(root)
     tree.write(path, encoding="utf-8", xml_declaration=True)
