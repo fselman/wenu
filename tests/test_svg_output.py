@@ -654,8 +654,8 @@ def test_chart_semantics_form_a_parallel_hierarchy(tmp_path):
         "insensitive"
     )
     assert by_id["wenu-group-chart"].get(insensitive) is None
-    assert masks.get(insensitive) == "true"
-    assert mask.get(insensitive) is None
+    assert masks.get(insensitive) is None
+    assert mask.get(insensitive) == "true"
     assert by_id["wenu-group-furniture"].get(insensitive) is None
 
 

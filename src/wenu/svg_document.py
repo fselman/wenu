@@ -372,6 +372,7 @@ def _group_semantic_siblings(parent, candidates):
         policy = descendant_policies(path_parts)
         return (
             len(path_parts) > 1
+            and path_parts in by_path
             and bool(policy)
             and policy <= {"style", "none"}
         )

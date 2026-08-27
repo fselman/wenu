@@ -47,12 +47,14 @@ Physical locking uses Inkscape's `sodipodi:insensitive="true"`. This is an
 editor convenience, not access control, and another SVG editor may ignore it.
 The `data-wenu-edit` value is therefore still the cross-editor contract.
 
-Only the highest homogeneous lockable branch below a public root (`Page`,
-`Sky`, `Chart`, or `Furniture`) receives the physical lock.
-Descendants are not redundantly locked, so unlocking one branch makes its
-contents available. A mixed parent remains unlocked. For example:
+Only a supplied semantic branch that directly owns artists receives a physical
+lock. A merely organizational ancestor is never locked just because all the
+content enabled in one chart happens to share a policy. Descendants of a
+locked owning branch are not redundantly locked, so unlocking that branch
+makes its contents available. For example:
 
-- `Constellations` remains unlocked because it contains both lines and labels;
+- `Constellations` remains unlocked because it is organizational, regardless
+  of which constellation components are enabled;
 - `Lines-Western` is locked once;
 - its individual constellation children are not separately locked; and
 - `Labels-Western` remains unlocked because label placement is a layout edit.
