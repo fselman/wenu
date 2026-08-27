@@ -15,7 +15,7 @@ from .chart_arguments import (
     chart_legend_selection,
     chart_style_overrides,
 )
-from .drawing import chart_view_request, draw_chart_view_request
+from .drawing import chart_view_request, draw_chart_view
 from .furniture import (
     ChartContextOptions,
     ChartFurnitureOptions,
@@ -223,7 +223,7 @@ def chart_cli_furniture(
     )
 
 
-def chart_view_requests_from_arguments(
+def _chart_view_argument_plans(
     view,
     arguments,
     *,
@@ -236,7 +236,7 @@ def chart_view_requests_from_arguments(
     language=None,
     sequence=False,
 ):
-    """Translate CLI-selected products into immutable chart requests.
+    """Resolve CLI-selected products into shared drawing plans.
 
     ``product_details`` may key policies by exact ``ChartProduct`` values or
     by the shared ``atlas`` and ``cartoon`` style names. Exact products take
@@ -316,34 +316,43 @@ def chart_view_requests_from_arguments(
             stem=stem,
             extension=extension,
         )
-    requests = []
+    plans = []
     for product, destination in selected_outputs:
-        requests.append(chart_view_request(
-            view,
+        plans.append((
             destination,
-            style=product.style,
-            mode=product.mode,
-            detail=details.get(product, details.get(product.style, detail)),
-            detail_overrides=detail_overrides,
-            horizon=content.horizon,
-            horizon_mask=content.horizon_mask,
-            furniture=furniture,
-            style_overrides=style_overrides,
-            title=title,
-            language=language,
-            output_format=options.output_format,
+            {
+                "style": product.style,
+                "mode": product.mode,
+                "detail": details.get(
+                    product,
+                    details.get(product.style, detail),
+                ),
+                "detail_overrides": detail_overrides,
+                "horizon": content.horizon,
+                "horizon_mask": content.horizon_mask,
+                "furniture": furniture,
+                "style_overrides": style_overrides,
+                "title": title,
+                "language": language,
+                "output_format": options.output_format,
+            },
         ))
-    return tuple(requests)
+    return tuple(plans)
+
+
+def chart_view_requests_from_arguments(view, arguments, **options):
+    """Translate CLI products into immutable requests without rendering."""
+    plans = _chart_view_argument_plans(view, arguments, **options)
+    return tuple(
+        chart_view_request(view, destination, **request_options)
+        for destination, request_options in plans
+    )
 
 
 def draw_chart_view_from_arguments(view, arguments, **options):
-    """Draw CLI-selected products through centrally translated requests."""
-    requests = chart_view_requests_from_arguments(
-        view,
-        arguments,
-        **options,
-    )
+    """Draw CLI products through the same centrally resolved plans."""
+    plans = _chart_view_argument_plans(view, arguments, **options)
     return tuple(
-        draw_chart_view_request(view, request)
-        for request in requests
+        draw_chart_view(view, destination, **request_options)
+        for destination, request_options in plans
     )
