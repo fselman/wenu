@@ -5,8 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from datetime import datetime
 from pathlib import Path
-from typing import Callable
-
 from wenu.temporal import PlaybackSpec, TemporalTimeline
 
 from .product_options import ChartProductOptions
@@ -151,20 +149,14 @@ class ObserverTimeChartSequenceGeneration:
 
 def generate_observer_time_chart_sequence(
     request: ObserverTimeChartSequenceRequest,
-    *,
-    generator: Callable[[ChartRequest], ChartRequestGeneration] = (
-        generate_chart_request
-    ),
 ) -> ObserverTimeChartSequenceGeneration:
     """Generate observer-time frames through the canonical static executor."""
     if not isinstance(request, ObserverTimeChartSequenceRequest):
-        raise TypeError("request must be a ObserverTimeChartSequenceRequest.")
-    if not callable(generator):
-        raise TypeError("generator must be callable.")
+        raise TypeError("request must be an ObserverTimeChartSequenceRequest.")
 
     results = []
     for frame in request.frames:
-        generation = generator(frame.request)
+        generation = generate_chart_request(frame.request)
         results.append(
             ObserverTimeObserverTimeChartSequenceFrameResult(
                 frame=frame,
