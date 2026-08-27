@@ -279,8 +279,10 @@ def generate(arguments):
         )
         sequence_options = chart_sequence_cli_options(
             arguments,
-            start=observer.utc_datetime,
-            default_display_timezone=observer.timezone_name or "UTC",
+            start=getattr(observer, "utc_datetime", None),
+            default_display_timezone=(
+                getattr(observer, "timezone_name", None) or "UTC"
+            ),
         )
         common_options = {
             "stem": _stem(view),
