@@ -716,6 +716,7 @@ def test_observer_time_sequence_reserves_astrometric_epoch_ownership():
         "expected six-hour sky",
         "permanent integration test",
         "74 passed in 26.69s",
+        "1708 passed in 81.99s",
     ):
         assert value in contract
 
