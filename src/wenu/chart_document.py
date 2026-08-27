@@ -16,6 +16,23 @@ class EditPolicy(str, Enum):
 
 
 @dataclass(frozen=True)
+class SemanticArtistIdentity:
+    """Renderer-neutral identity for chart-owned presentation content."""
+
+    name: str
+    svg_id: str
+    edit_policy: EditPolicy
+    semantic_path: tuple[str, ...]
+    display_name: str
+    presentation_order: int
+    style_role: str
+
+    def component_identity(self, component):
+        """Chart-owned identities do not declare renderer subcomponents."""
+        return self
+
+
+@dataclass(frozen=True)
 class SemanticArtistRenderingResult:
     """One renderer artist with Wenu identity and paint position."""
 
