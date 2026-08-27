@@ -122,10 +122,81 @@ def draw_polar_page_furniture(
         page_face,
         color=label_color,
     )
-    return PolarFacePageRendering(
+    result = PolarFacePageRendering(
         calendar_lines=calendar_lines,
         calendar_labels=calendar_labels,
         **page,
+    )
+    _assign_polar_page_semantics(renderer, result)
+    return result
+
+
+def _assign_polar_page_semantics(renderer, rendering):
+    """Name physical-page furniture before the canonical SVG save."""
+    from wenu.chart_document import EditPolicy, SemanticArtistIdentity
+
+    rendering.page_axes.patch.set_visible(False)
+
+    def assign(artists, key, display_name, parent, *, layout=False):
+        artists = tuple(artists)
+        if not artists:
+            return
+        renderer.assign_semantic_identity(
+            artists,
+            SemanticArtistIdentity(
+                name=f"polar_page_{key}",
+                svg_id=key.replace("_", "-"),
+                edit_policy=(
+                    EditPolicy.LAYOUT if layout else EditPolicy.STYLE
+                ),
+                semantic_path=("furniture", parent, key),
+                display_name=display_name,
+                presentation_order=94,
+                style_role=f"polar_page_{key}",
+            ),
+        )
+
+    assign(rendering.calendar_lines, "lines", "Lines", "calendar")
+    assign(
+        rendering.calendar_labels,
+        "labels",
+        "Labels",
+        "calendar",
+        layout=True,
+    )
+    assign((rendering.cut_line,), "cut_line", "Cut line", "fabrication")
+    assign(
+        rendering.center_artists,
+        "center_marks",
+        "Center marks",
+        "fabrication",
+    )
+    assign(
+        rendering.registration_artists,
+        "registration_marks",
+        "Registration marks",
+        "fabrication",
+    )
+    assign(
+        rendering.ruler_artists,
+        "scale_ruler",
+        "Scale ruler",
+        "fabrication",
+        layout=True,
+    )
+    assign(
+        rendering.magnitude_scale.artists,
+        "magnitude_scale",
+        "Magnitude scale",
+        "legends",
+        layout=True,
+    )
+    assign(
+        rendering.text_artists,
+        "page_information",
+        "Page information",
+        "footer",
+        layout=True,
     )
 
 
