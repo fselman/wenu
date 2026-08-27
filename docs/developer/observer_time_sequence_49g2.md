@@ -127,3 +127,9 @@ suite—including the permanent real-frame integration test—passed:
 ```text
 74 passed in 26.69s
 ```
+
+The clean branch full suite then passed:
+
+```text
+1708 passed in 81.99s
+```
