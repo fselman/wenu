@@ -131,20 +131,60 @@ def test_grid_identity_declares_independent_line_and_label_children():
     assert labels.edit_policy.value == "layout"
 
 
-def test_generic_catalog_objects_form_dynamic_deep_sky_entities():
-    resolved = identity("nonstellar")
-    m8 = resolved.entity_identity("M 8", "M 8")
+@pytest.mark.parametrize(
+    ("category", "path", "display_name", "order"),
+    (
+        ("galaxies", ("sky", "galaxies"), "Galaxies", 10),
+        (
+            "open_clusters",
+            ("sky", "deep_sky_objects", "open_clusters"),
+            "Open clusters",
+            30,
+        ),
+        (
+            "globular_clusters",
+            ("sky", "deep_sky_objects", "globular_clusters"),
+            "Globular clusters",
+            31,
+        ),
+        (
+            "planetary_nebulae",
+            ("sky", "deep_sky_objects", "planetary_nebulae"),
+            "Planetary nebulae",
+            32,
+        ),
+        (
+            "supernova_remnants",
+            ("sky", "deep_sky_objects", "supernova_remnants"),
+            "Supernova remnants",
+            33,
+        ),
+        (
+            "nebulae",
+            ("sky", "deep_sky_objects", "nebulae"),
+            "Nebulae",
+            34,
+        ),
+        (
+            "other_objects",
+            ("sky", "deep_sky_objects", "other_objects"),
+            "Other objects",
+            35,
+        ),
+    ),
+)
+def test_catalog_categories_reuse_shared_astronomical_hierarchy(
+    category, path, display_name, order
+):
+    resolved = identity("nonstellar").category_identity(category)
+    entity = resolved.entity_identity("M 8", "M 8")
 
-    assert resolved.semantic_path == (
-        "sky", "deep_sky_objects", "other_objects"
-    )
-    assert resolved.display_name == "Other objects"
-    assert resolved.presentation_order == 29
-    assert m8.semantic_path == (
-        "sky", "deep_sky_objects", "other_objects", "m_8"
-    )
-    assert m8.display_name == "M 8"
-    assert m8.svg_id == "wenu-layer-nonstellar-m-8"
+    assert resolved.semantic_path == path
+    assert resolved.display_name == display_name
+    assert resolved.presentation_order == order
+    assert entity.semantic_path == (*path, "m_8")
+    assert entity.display_name == "M 8"
+    assert entity.svg_id.endswith("-m-8")
 
 
 def test_non_grid_identity_ignores_undeclared_renderer_parts():
