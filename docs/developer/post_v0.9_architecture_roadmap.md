@@ -191,12 +191,17 @@ a concrete requirement that Matplotlib's backend cannot meet.
 **Status:** 49G.2 observer-time sequence orchestration and real-render
 acceptance complete.
 
-**Status:** 49G.3 deterministic manifest and restart/resume policy in
-progress; CLI/configuration and scientifically keyed reuse remain pending.
+**Status:** 49G.3 deterministic manifest and restart/resume policy
+implemented and accepted.
+
+**Status:** 49G.4 installed CLI and schema-version-1 configuration exposure
+implemented and accepted; scientifically keyed reuse remains pending.
 
 The implemented contracts are documented in
-`temporal_sequence_contract_49g1.md` and
-`observer_time_sequence_49g2.md`.
+`temporal_sequence_contract_49g1.md`,
+`observer_time_sequence_49g2.md`,
+`sequence_manifest_49g3.md`, and
+`temporal_sequence_cli_49g4.md`.
 
 Represent a sequence as one immutable product definition plus an ordered set
 of explicit instants. Separate state by its physical cadence:
