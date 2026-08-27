@@ -123,7 +123,7 @@ def _group_semantics(path):
         for parent in root.iter()
         for child in parent
     }
-    candidates = []
+    candidates_by_parent = {}
     for element in root.iter():
         classes = element.get("class", "").split()
         semantic_path = element.get("data-wenu-semantic-path", "")
@@ -131,25 +131,30 @@ def _group_semantics(path):
         if (
             "wenu-semantic-artist" in classes
             and semantic_path.startswith(
-                ("sky/", "chart/", "furniture/")
+                ("page/", "sky/", "chart/", "furniture/")
             )
             and order is not None
         ):
-            candidates.append(element)
-    if not candidates:
+            candidates_by_parent.setdefault(
+                parent_of[element], []
+            ).append(element)
+    if not candidates_by_parent:
         return path
 
-    parents = {parent_of[element] for element in candidates}
-    if len(parents) != 1:
-        raise ValueError(
-            "Semantic artists must share one SVG parent before grouping."
-        )
-    parent = parents.pop()
+    for parent, candidates in candidates_by_parent.items():
+        _group_semantic_siblings(parent, candidates)
+    _flatten_semantic_text_artists(root)
+    _promote_common_label_typography(root)
+    tree.write(path, encoding="utf-8", xml_declaration=True)
+    return path
+
+
+def _group_semantic_siblings(parent, candidates):
+    """Group one sibling set while preserving its supplied root paths."""
     original_children = list(parent)
     insertion_index = min(
         original_children.index(element) for element in candidates
     )
-
     by_path = {}
     for element in candidates:
         semantic_path = tuple(
@@ -170,12 +175,11 @@ def _group_semantics(path):
     }
 
     def descendant_order(path_parts):
-        values = [
+        return min(
             order
             for semantic_path, order in orders.items()
             if semantic_path[:len(path_parts)] == path_parts
-        ]
-        return min(values)
+        )
 
     root_paths = {(semantic_path[0],) for semantic_path in by_path}
     all_paths = set(root_paths)
@@ -238,10 +242,6 @@ def _group_semantics(path):
         key=lambda item: (descendant_order(item), item),
     )):
         parent.insert(insertion_index + offset, build_group(root_path))
-    _flatten_semantic_text_artists(root)
-    _promote_common_label_typography(root)
-    tree.write(path, encoding="utf-8", xml_declaration=True)
-    return path
 
 
 def _flatten_semantic_text_artists(root):
