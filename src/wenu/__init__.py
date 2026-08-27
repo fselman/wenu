@@ -109,6 +109,19 @@ from .charts.request_generation import (
     export_prepared_chart,
     generate_chart_request,
 )
+from .temporal import (
+    PlaybackSpec,
+    SamplingKind,
+    TemporalTimeline,
+    TimeScale,
+)
+from .charts.sequence import (
+    ChartSequenceFrame,
+    ChartSequenceFrameResult,
+    ChartSequenceGeneration,
+    ChartSequenceRequest,
+    generate_chart_sequence,
+)
 from .charts.request_grids import (
     configure_chart_request_grids,
     requested_coordinate_grids,
@@ -473,6 +486,15 @@ __all__ = [
     "build_chart_request",
     "export_prepared_chart",
     "generate_chart_request",
+    "PlaybackSpec",
+    "SamplingKind",
+    "TemporalTimeline",
+    "TimeScale",
+    "ChartSequenceFrame",
+    "ChartSequenceFrameResult",
+    "ChartSequenceGeneration",
+    "ChartSequenceRequest",
+    "generate_chart_sequence",
     "configure_chart_request_grids",
     "requested_coordinate_grids",
     "configure_chart_request_horizon",
