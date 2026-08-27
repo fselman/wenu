@@ -74,8 +74,8 @@ sky/deep_sky_objects/open_clusters               order 30
 sky/deep_sky_objects/globular_clusters           order 31
 sky/deep_sky_objects/supernova_remnants          order 33
 sky/stars/symbols                                order 40
-sky/constellations/lines                         order 50
-sky/constellations/labels                        order 52
+sky/constellations/lines_western                 order 50
+sky/constellations/labels_western                order 52
 sky/grids/equatorial                             order 70
 ```
 
@@ -90,9 +90,17 @@ boundary suite passed 51 tests in 4.15 seconds.
 
 ## Deferred work
 
+The continuation of this slice adds source-declared, constellation-system-
+agnostic entity groups. Component and system are combined into one useful
+designer level, such as `Lines-Western`, rather than deepening the hierarchy
+to `Lines / Western`. Individual source keys then form concise children such
+as `Cru`. Visible labels must be unique among siblings and must not repeat
+their ancestors. See `svg_semantic_naming_ledger_49f5a.md`.
+
 Later slices must separately implement and verify:
 
-- individual constellation, grid curve, tick, and label identity;
+- grid curve, tick, and individual label identity beyond the current line and
+  label component split;
 - actual nested SVG groups and editor layer labels;
 - deliberate transition from historical z-orders to presentation order;
 - shared inherited style rules and individual overrides;

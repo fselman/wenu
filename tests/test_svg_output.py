@@ -18,6 +18,7 @@ from wenu.chart_document import (
 )
 from wenu.charts.regional import ExportOptions
 from wenu.rendering import MatplotlibRenderer
+from wenu.geometry.projected import ProjectedCurve, ProjectedCurves
 from wenu.sky.semantic_identity import SemanticLayerIdentity
 from svg_inspection import inspect_svg
 
@@ -341,6 +342,96 @@ def test_sky_groups_follow_supplied_presentation_order(tmp_path):
     assert [
         child.get("data-wenu-presentation-order") for child in sky
     ] == ["10", "40"]
+
+
+def test_constellation_entities_form_a_shallow_system_specific_group(tmp_path):
+    destination = tmp_path / "constellation-entities.svg"
+    figure, ax = plt.subplots()
+    renderer = MatplotlibRenderer(ax)
+    curves = ProjectedCurves(
+        items=[
+            ProjectedCurve([0.0, 1.0], [0.2, 0.3], name="Cru"),
+            ProjectedCurve([0.2, 0.8], [0.4, 0.7], name="Cru"),
+            ProjectedCurve([0.1, 0.9], [0.8, 0.6], name="Mus"),
+        ],
+        metadata={
+            "semantic_entity_keys": ("cru", "cru", "mus"),
+            "semantic_entity_display_names": ("Cru", "Cru", "Mus"),
+        },
+    )
+    artists = renderer.draw(curves)
+    MatplotlibRenderer.assign_semantic_identity(
+        artists,
+        SemanticLayerIdentity(
+            name="constellation_lines",
+            svg_id="wenu-layer-constellation-lines-western",
+            semantic_path=(
+                "sky", "constellations", "lines_western"
+            ),
+            display_name="Lines-Western",
+            presentation_order=50,
+            style_role="constellation_lines_western",
+        ),
+    )
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    by_path = {
+        element.get("data-wenu-semantic-path"): element
+        for element in root.iter()
+        if (
+            element.get("data-wenu-semantic-path")
+            and "wenu-semantic-group"
+            in element.get("class", "").split()
+        )
+    }
+    lines = by_path["sky/constellations/lines_western"]
+    cru = by_path["sky/constellations/lines_western/cru"]
+    mus = by_path["sky/constellations/lines_western/mus"]
+
+    assert lines.get(
+        "{http://www.inkscape.org/namespaces/inkscape}label"
+    ) == "Lines-Western"
+    assert cru.get(
+        "{http://www.inkscape.org/namespaces/inkscape}label"
+    ) == "Cru"
+    assert mus.get(
+        "{http://www.inkscape.org/namespaces/inkscape}label"
+    ) == "Mus"
+    assert [child.get("id") for child in cru] == [
+        "wenu-layer-constellation-lines-western-cru--0001",
+        "wenu-layer-constellation-lines-western-cru--0002",
+    ]
+    assert [child.get("id") for child in mus] == [
+        "wenu-layer-constellation-lines-western-mus",
+    ]
+    assert "sky/constellations/lines_western/western" not in by_path
+
+
+def test_semantic_sibling_labels_must_be_unique(tmp_path):
+    destination = tmp_path / "duplicate-labels.svg"
+    figure, ax = plt.subplots()
+    first = ax.plot((0.0, 1.0), (0.2, 0.2))[0]
+    second = ax.plot((0.0, 1.0), (0.8, 0.8))[0]
+    for artist, child in ((first, "first"), (second, "second")):
+        MatplotlibRenderer.assign_semantic_identity(
+            (artist,),
+            SemanticLayerIdentity(
+                name=child,
+                svg_id=f"wenu-layer-{child}",
+                semantic_path=("sky", "test", child),
+                display_name="Repeated",
+                presentation_order=1,
+            ),
+        )
+    try:
+        with pytest.raises(ValueError, match="unique within sky/test"):
+            ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
 
 
 def test_svg_annotation_is_noop_without_wenu_semantics(tmp_path):

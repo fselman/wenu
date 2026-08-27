@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections import Counter
 from collections.abc import Mapping, Sequence
 
 import numpy as np
@@ -111,9 +112,9 @@ class MatplotlibRenderer:
                     flattened.append(artist)
 
         collect(artists)
-        width = max(4, len(str(len(flattened))))
-        results = []
-        for index, artist in enumerate(flattened, start=1):
+        identities = []
+        entity_flags = []
+        for artist in flattened:
             component = getattr(
                 artist, "_wenu_semantic_component", None
             )
@@ -122,15 +123,40 @@ class MatplotlibRenderer:
                 if component is not None
                 else identity
             )
+            entity_key = getattr(
+                artist, "_wenu_semantic_entity_key", None
+            )
+            if entity_key is not None:
+                artist_identity = artist_identity.entity_identity(
+                    entity_key,
+                    getattr(
+                        artist,
+                        "_wenu_semantic_entity_display_name",
+                        entity_key,
+                    ),
+                )
+            identities.append(artist_identity)
+            entity_flags.append(entity_key is not None)
+        totals = Counter(item.svg_id for item in identities)
+        positions = Counter()
+        results = []
+        for artist, artist_identity, is_entity in zip(
+            flattened, identities, entity_flags, strict=True
+        ):
             exact = bool(
                 getattr(artist_identity, "exact_svg_id", False)
             )
+            positions[artist_identity.svg_id] += 1
+            width = max(4, len(str(totals[artist_identity.svg_id])))
             svg_id = (
                 artist_identity.svg_id
-                if exact and len(flattened) == 1
+                if (
+                    (exact or is_entity)
+                    and totals[artist_identity.svg_id] == 1
+                )
                 else (
                     f"{artist_identity.svg_id}--"
-                    f"{index:0{width}d}"
+                    f"{positions[artist_identity.svg_id]:0{width}d}"
                 )
             )
             artist.set_gid(svg_id)
@@ -144,6 +170,11 @@ class MatplotlibRenderer:
                 edit_policy=artist_identity.edit_policy,
                 semantic_path=artist_identity.semantic_path,
                 display_name=artist_identity.display_name,
+                path_display_names=getattr(
+                    artist_identity,
+                    "path_display_names",
+                    (),
+                ),
                 presentation_order=artist_identity.presentation_order,
                 style_role=artist_identity.style_role,
             )
@@ -522,15 +553,17 @@ class MatplotlibRenderer:
                         for name in ("color", "alpha", "zorder")
                         if name in entity_styles[index]
                     }
-                    artists.append(
-                        self._label(
-                            points.x[index],
-                            points.y[index],
-                            label,
-                            {**inherited, **label_style},
-                            label_offset,
-                        )
+                    label_artist = self._label(
+                        points.x[index],
+                        points.y[index],
+                        label,
+                        {**inherited, **label_style},
+                        label_offset,
                     )
+                    self._attach_semantic_entity(
+                        (label_artist,), points.metadata, index
+                    )
+                    artists.append(label_artist)
         return artists
 
     def _draw_curve(
@@ -589,16 +622,18 @@ class MatplotlibRenderer:
                         closed=curve.closed,
                         name=name,
                     )
-            artists.extend(
-                self._draw_curve(
-                    curve,
-                    {**style, **entity_styles[index]},
-                    draw_labels=draw_labels,
-                    label_style=label_style,
-                    label_offset=label_offset,
-                    label_formatter=label_formatter,
-                )
+            curve_artists = self._draw_curve(
+                curve,
+                {**style, **entity_styles[index]},
+                draw_labels=draw_labels,
+                label_style=label_style,
+                label_offset=label_offset,
+                label_formatter=label_formatter,
             )
+            self._attach_semantic_entity(
+                curve_artists, curves.metadata, index
+            )
+            artists.extend(curve_artists)
         return artists
 
     def _draw_grid(
@@ -814,18 +849,20 @@ class MatplotlibRenderer:
                         polygon.y,
                         name=name,
                     )
-            artists.extend(
-                self._draw_polygon(
-                    polygon,
-                    {**style, **entity_styles[index]},
-                    fill_style=fill_style,
-                    outline_style=outline_style,
-                    draw_labels=draw_labels,
-                    label_style=label_style,
-                    label_offset=label_offset,
-                    label_formatter=label_formatter,
-                )
+            polygon_artists = self._draw_polygon(
+                polygon,
+                {**style, **entity_styles[index]},
+                fill_style=fill_style,
+                outline_style=outline_style,
+                draw_labels=draw_labels,
+                label_style=label_style,
+                label_offset=label_offset,
+                label_formatter=label_formatter,
             )
+            self._attach_semantic_entity(
+                polygon_artists, polygons.metadata, index
+            )
+            artists.extend(polygon_artists)
         return artists
 
     def _draw_compound_polygons(
@@ -1037,6 +1074,33 @@ class MatplotlibRenderer:
             if values is not None and values[index] is not None:
                 return values[index]
         return None
+
+    @staticmethod
+    def _attach_semantic_entity(artists, metadata, index):
+        """Carry optional source entity identity without domain knowledge."""
+        keys = metadata.get("semantic_entity_keys")
+        names = metadata.get("semantic_entity_display_names")
+        if keys is None and names is None:
+            return
+        if keys is None or names is None:
+            raise ValueError(
+                "Semantic entity keys and display names must be paired."
+            )
+        if len(keys) != len(names):
+            raise ValueError(
+                "Semantic entity keys and display names must align."
+            )
+        for artist in artists:
+            setattr(
+                artist,
+                "_wenu_semantic_entity_key",
+                keys[index],
+            )
+            setattr(
+                artist,
+                "_wenu_semantic_entity_display_name",
+                names[index],
+            )
 
     @staticmethod
     def _anchor(x, y):

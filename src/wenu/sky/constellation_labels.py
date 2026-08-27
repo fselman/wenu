@@ -10,6 +10,7 @@ from astropy.coordinates import SkyCoord
 
 from wenu.sky.geometrical_object import GeometricalObject
 from wenu.geometry.spherical import SphericalPoints
+from wenu.sky.semantic_identity import semantic_key
 
 
 class ConstellationLabels(GeometricalObject):
@@ -29,11 +30,17 @@ class ConstellationLabels(GeometricalObject):
         selected=None,
         boundaries=None,
         min_stars=3,
+        system="western",
     ):
         self.stars = stars
         self.selected = None if selected is None else set(selected)
         self.boundaries = boundaries
         self.min_stars = int(min_stars)
+        self.system = system
+        self.semantic_system_key = semantic_key(
+            system,
+            field="constellation system key",
+        )
 
     def set_boundaries(self, boundaries):
         self.boundaries = boundaries
@@ -121,7 +128,15 @@ class ConstellationLabels(GeometricalObject):
             lon_deg=np.asarray(lon_deg, dtype=float),
             lat_deg=np.asarray(lat_deg, dtype=float),
             labels=np.asarray(labels, dtype=object),
-            metadata={"kind": "constellation_labels"},
+            metadata={
+                "kind": "constellation_labels",
+                "system": self.system,
+                "semantic_entity_keys": tuple(
+                    semantic_key(label, field="constellation key")
+                    for label in labels
+                ),
+                "semantic_entity_display_names": tuple(labels),
+            },
         )
 
     @staticmethod
@@ -145,11 +160,15 @@ class ConstellationLabels(GeometricalObject):
             float(np.degrees(np.arcsin(mean[2]))),
         )
 
-    @staticmethod
-    def _empty():
+    def _empty(self):
         return SphericalPoints(
             lon_deg=np.asarray([], dtype=float),
             lat_deg=np.asarray([], dtype=float),
             labels=np.asarray([], dtype=object),
-            metadata={"kind": "constellation_labels"},
+            metadata={
+                "kind": "constellation_labels",
+                "system": self.system,
+                "semantic_entity_keys": (),
+                "semantic_entity_display_names": (),
+            },
         )

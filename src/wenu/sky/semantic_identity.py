@@ -12,6 +12,24 @@ _SAFE_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 _SAFE_PATH_COMPONENT = _SAFE_NAME
 
 
+def semantic_key(value, *, field: str) -> str:
+    """Return one safe stable key supplied by a semantic data source."""
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"{field} must be a non-empty string.")
+    key = re.sub(r"[^a-z0-9]+", "_", value.lower()).strip("_")
+    if _SAFE_NAME.fullmatch(key) is None:
+        raise ValueError(f"{field} {value!r} has no safe semantic key.")
+    return key
+
+
+def _path_display_name(value: str) -> str:
+    words = value.replace("_", " ").split()
+    return " ".join(
+        word if word in {"and", "of"} else word.capitalize()
+        for word in words
+    )
+
+
 @dataclass(frozen=True)
 class SemanticLayerContract:
     """Sky-owned hierarchy and presentation metadata for one layer."""
@@ -156,6 +174,7 @@ class SemanticLayerIdentity:
     component_contracts: tuple[
         tuple[str, SemanticComponentContract], ...
     ] = ()
+    path_display_names: tuple[str, ...] = ()
 
     def __post_init__(self):
         path = self.semantic_path or (self.name,)
@@ -176,6 +195,20 @@ class SemanticLayerIdentity:
             )
         if not self.style_role:
             object.__setattr__(self, "style_role", self.name)
+        if self.path_display_names:
+            if len(self.path_display_names) != len(path):
+                raise ValueError(
+                    "path_display_names must align with semantic_path."
+                )
+        else:
+            inferred = tuple(
+                _path_display_name(item) for item in path
+            )
+            object.__setattr__(
+                self,
+                "path_display_names",
+                (*inferred[:-1], self.display_name),
+            )
 
     def component_identity(self, component: str):
         """Return a declared child identity for one renderer output part."""
@@ -191,6 +224,28 @@ class SemanticLayerIdentity:
             display_name=f"{self.display_name} {contract.display_name}",
             presentation_order=self.presentation_order,
             style_role=f"{self.style_role}_{contract.style_role_suffix}",
+            path_display_names=(
+                *self.path_display_names,
+                f"{self.display_name} {contract.display_name}",
+            ),
+        )
+
+    def entity_identity(self, key: str, display_name: str):
+        """Return a concise child identity declared by the source data."""
+        key = semantic_key(key, field="semantic entity key")
+        if not isinstance(display_name, str) or not display_name:
+            raise ValueError(
+                "semantic entity display name must be a non-empty string."
+            )
+        return SemanticLayerIdentity(
+            name=self.name,
+            svg_id=f"{self.svg_id}-{key.replace('_', '-')}",
+            edit_policy=self.edit_policy,
+            semantic_path=(*self.semantic_path, key),
+            display_name=display_name,
+            presentation_order=self.presentation_order,
+            style_role=self.style_role,
+            path_display_names=(*self.path_display_names, display_name),
         )
 
     @property
@@ -232,6 +287,37 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
                 f"Unsupported semantic edit policy: {configured_policy!r}."
             ) from error
     contract = _LAYER_CONTRACTS.get(name)
+    if name in {
+        "constellation_lines",
+        "constellation_boundaries",
+        "constellation_labels",
+    }:
+        component = name.removeprefix("constellation_")
+        default_system = (
+            "iau" if name == "constellation_boundaries" else "western"
+        )
+        source_system = getattr(
+            layer,
+            "semantic_system_key",
+            getattr(
+                layer,
+                "system",
+                getattr(layer, "boundaries_name", default_system),
+            ),
+        )
+        system_key = semantic_key(
+            source_system,
+            field="constellation system key",
+        )
+        combined_key = f"{component}_{system_key}"
+        component_title = component.replace("_", " ").title()
+        system_title = str(source_system).replace("_", " ").title()
+        contract = SemanticLayerContract(
+            ("sky", "constellations", combined_key),
+            f"{component_title}-{system_title}",
+            _LAYER_CONTRACTS[name].presentation_order,
+            f"{name}_{system_key}",
+        )
     options = {} if contract is None else {
         "semantic_path": contract.path,
         "display_name": contract.display_name,

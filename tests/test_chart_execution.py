@@ -277,7 +277,9 @@ def test_label_layers_receive_layout_edit_policy():
     )
 
     assert identity.edit_policy is EditPolicy.LAYOUT
-    assert identity.semantic_path == ("sky", "constellations", "labels")
+    assert identity.semantic_path == (
+        "sky", "constellations", "labels_western"
+    )
     assert identity.parent_path == ("sky", "constellations")
     assert identity.presentation_order == 52
 

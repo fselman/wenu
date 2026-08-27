@@ -11,6 +11,16 @@ from matplotlib.lines import Line2D
 from .magnitude_legend import StellarMagnitudeScale
 
 
+def _magnitude_semantic_key(magnitude: int) -> str:
+    """Return an unambiguous ID token independent of displayed counts."""
+    magnitude = int(magnitude)
+    return (
+        f"mag-minus-{abs(magnitude)}"
+        if magnitude < 0
+        else f"mag-{magnitude}"
+    )
+
+
 def stellar_magnitude_handles(
     scale: StellarMagnitudeScale,
     *,
@@ -144,7 +154,10 @@ def draw_stellar_magnitude_legend(
     setattr(
         legend,
         "_wenu_legend_entry_keys",
-        tuple(f"mag-{entry.magnitude}" for entry in scale.entries),
+        tuple(
+            _magnitude_semantic_key(entry.magnitude)
+            for entry in scale.entries
+        ),
     )
     ax.add_artist(legend)
     return legend

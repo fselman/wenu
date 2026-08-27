@@ -389,6 +389,7 @@ class CelestialSphere:
             self.stars,
             selected=selected,
             boundaries=self.constellation_boundaries,
+            system=system,
         )
         self.add(self.constellation_lines)
         self.add(self.constellation_labels)

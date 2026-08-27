@@ -49,9 +49,9 @@ def test_celestial_layers_follow_the_accepted_presentation_order():
         ("sky", "deep_sky_objects", "planetary_nebulae"),
         ("sky", "deep_sky_objects", "supernova_remnants"),
         ("sky", "stars", "symbols"),
-        ("sky", "constellations", "lines"),
-        ("sky", "constellations", "boundaries"),
-        ("sky", "constellations", "labels"),
+        ("sky", "constellations", "lines_western"),
+        ("sky", "constellations", "boundaries_iau"),
+        ("sky", "constellations", "labels_western"),
     )
 
 
@@ -133,3 +133,32 @@ def test_non_grid_identity_ignores_undeclared_renderer_parts():
     galaxies = identity("galaxies")
 
     assert galaxies.component_identity("lines") is galaxies
+
+
+def test_constellation_hierarchy_is_shallow_and_system_agnostic():
+    layer = SimpleNamespace(
+        layer_name="constellation_lines",
+        semantic_system_key="polynesian_navigation",
+    )
+
+    resolved = semantic_layer_identity(layer)
+    entity = resolved.entity_identity("manu", "Manu")
+
+    assert resolved.semantic_path == (
+        "sky", "constellations", "lines_polynesian_navigation"
+    )
+    assert resolved.display_name == "Lines-Polynesian Navigation"
+    assert resolved.path_display_names == (
+        "Sky", "Constellations", "Lines-Polynesian Navigation"
+    )
+    assert entity.semantic_path == (
+        "sky",
+        "constellations",
+        "lines_polynesian_navigation",
+        "manu",
+    )
+    assert entity.display_name == "Manu"
+    assert entity.path_display_names[-2:] == (
+        "Lines-Polynesian Navigation", "Manu"
+    )
+    assert entity.svg_id.endswith("-manu")

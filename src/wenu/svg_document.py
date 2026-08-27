@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from html import escape
+import json
 from pathlib import Path
 import re
 import xml.etree.ElementTree as ET
@@ -23,6 +24,14 @@ ET.register_namespace(
 _METADATA_ATTRIBUTE = "_wenu_svg_semantics"
 
 
+def _default_path_display_name(value):
+    words = value.replace("_", " ").split()
+    return " ".join(
+        word if word in {"and", "of"} else word.capitalize()
+        for word in words
+    )
+
+
 def attach_semantic_svg_metadata(
     artist,
     *,
@@ -32,10 +41,19 @@ def attach_semantic_svg_metadata(
     edit_policy,
     semantic_path,
     display_name,
+    path_display_names=(),
     presentation_order,
     style_role,
 ):
     """Attach renderer-neutral values for the later SVG export boundary."""
+    semantic_path = tuple(semantic_path)
+    if path_display_names:
+        path_display_names = tuple(path_display_names)
+    else:
+        inferred = tuple(
+            _default_path_display_name(item) for item in semantic_path
+        )
+        path_display_names = (*inferred[:-1], str(display_name))
     metadata = {
         "layer": str(layer),
         "zorder": float(zorder),
@@ -43,6 +61,7 @@ def attach_semantic_svg_metadata(
         "semantic_path": "/".join(semantic_path),
         "parent_path": "/".join(semantic_path[:-1]),
         "display_name": str(display_name),
+        "path_display_names": path_display_names,
         "style_role": str(style_role),
     }
     if presentation_order is not None:
@@ -82,6 +101,11 @@ def annotate_semantic_svg(path, figure):
             "data-wenu-semantic-path": metadata["semantic_path"],
             "data-wenu-parent-path": metadata["parent_path"],
             "data-wenu-display-name": metadata["display_name"],
+            "data-wenu-path-display-names": json.dumps(
+                metadata["path_display_names"],
+                ensure_ascii=False,
+                separators=(",", ":"),
+            ),
             "data-wenu-style-role": metadata["style_role"],
         }
         if "presentation_order" in metadata:
@@ -194,17 +218,37 @@ def _group_semantic_siblings(parent, candidates):
                 semantic_path[:-1], []
             ).append(semantic_path)
 
+    supplied_path_names = {}
+    for element in candidates:
+        raw_names = element.get("data-wenu-path-display-names")
+        raw_path = element.get("data-wenu-semantic-path", "")
+        if not raw_names or not raw_path:
+            continue
+        names = tuple(json.loads(raw_names))
+        parts = tuple(raw_path.split("/"))
+        if len(names) != len(parts):
+            raise ValueError(
+                "Semantic path display names must align with their path."
+            )
+        for length, name in enumerate(names, start=1):
+            child_path = parts[:length]
+            previous = supplied_path_names.setdefault(child_path, name)
+            if previous != name:
+                raise ValueError(
+                    "Semantic hierarchy path has conflicting labels: "
+                    + "/".join(child_path)
+                )
+
     def display_name(path_parts):
+        supplied_path_name = supplied_path_names.get(path_parts)
+        if supplied_path_name:
+            return supplied_path_name
         elements = by_path.get(path_parts, ())
         if elements:
             supplied = elements[0].get("data-wenu-display-name")
             if supplied:
                 return supplied
-        words = path_parts[-1].replace("_", " ").split()
-        return " ".join(
-            word if word in {"and", "of"} else word.capitalize()
-            for word in words
-        )
+        return _default_path_display_name(path_parts[-1])
 
     def build_group(path_parts):
         token = "-".join(path_parts)
@@ -229,6 +273,12 @@ def _group_semantic_siblings(parent, candidates):
             children_by_parent.get(path_parts, ()),
             key=lambda item: (descendant_order(item), item),
         )
+        child_labels = [display_name(item) for item in child_paths]
+        if len(child_labels) != len(set(child_labels)):
+            raise ValueError(
+                "Semantic hierarchy labels must be unique within "
+                f"{'/'.join(path_parts)}."
+            )
         for child_path in child_paths:
             group.append(build_group(child_path))
         for element in by_path.get(path_parts, ()):
@@ -333,9 +383,13 @@ def _promote_common_label_typography(root):
     for group in root.iter(f"{{{_SVG_NAMESPACE}}}g"):
         classes = group.get("class", "").split()
         semantic_path = group.get("data-wenu-semantic-path", "")
+        path_component = semantic_path.rsplit("/", 1)[-1]
         if (
             "wenu-semantic-group" not in classes
-            or not semantic_path.endswith("/labels")
+            or not (
+                path_component == "labels"
+                or path_component.startswith("labels_")
+            )
         ):
             continue
         texts = list(group.iter(text_tag))

@@ -162,6 +162,11 @@ def test_lines_return_one_spherical_curve_per_hip_edge(tmp_path):
     assert isinstance(geometry, SphericalCurves)
     assert len(geometry) == 2
     assert geometry.names.tolist() == ["Cru", "Cru"]
+    assert lines.semantic_system_key == "western"
+    assert geometry.metadata["semantic_entity_keys"] == ("cru", "cru")
+    assert geometry.metadata["semantic_entity_display_names"] == (
+        "Cru", "Cru"
+    )
     assert geometry.metadata["hip_edges"] == ((100, 200), (200, 300))
     np.testing.assert_allclose(geometry.lon_deg[0], [30.0, 40.0])
     np.testing.assert_allclose(geometry.lat_deg[0], [10.0, 20.0])

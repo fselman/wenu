@@ -60,6 +60,9 @@ def test_workflow_uses_only_visible_stars():
         -1, 0, 1, 2
     ]
     assert isinstance(result.artist, Legend)
+    assert result.artist._wenu_legend_entry_keys == (
+        "mag-minus-1", "mag-0", "mag-1", "mag-2"
+    )
     assert result.drawn
     plt.close(figure)
 
