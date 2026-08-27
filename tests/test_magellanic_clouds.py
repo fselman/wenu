@@ -75,6 +75,12 @@ def test_cloud_and_level_selection_are_explicit(tmp_path):
     assert geometry.metadata["fraction_of_peak"] == pytest.approx(
         [0.16, 0.55]
     )
+    assert geometry.metadata["semantic_entity_keys"].tolist() == [
+        "isophote_2", "isophote_4"
+    ]
+    assert geometry.metadata[
+        "semantic_entity_display_names"
+    ].tolist() == ["Isophote 2", "Isophote 4"]
     assert all(np.all(np.isfinite(values)) for values in geometry.lon_deg)
 
 
