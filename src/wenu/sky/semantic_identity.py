@@ -76,6 +76,12 @@ _LAYER_CONTRACTS = {
         21,
         "magellanic_clouds",
     ),
+    "nonstellar": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "other_objects"),
+        "Other objects",
+        29,
+        "nonstellar",
+    ),
     "open_clusters": SemanticLayerContract(
         ("sky", "deep_sky_objects", "open_clusters"),
         "Open clusters",
