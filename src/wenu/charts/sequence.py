@@ -1,4 +1,4 @@
-"""Canonical repeated-static-render chart sequences."""
+"""Canonical repeated-static observer-time chart sequences."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from .request_generation import (
 
 
 @dataclass(frozen=True)
-class ChartSequenceFrame:
+class ObserverTimeChartSequenceFrame:
     """One deterministic static chart request in a temporal sequence."""
 
     index: int
@@ -30,8 +30,8 @@ class ChartSequenceFrame:
 
 
 @dataclass(frozen=True)
-class ChartSequenceRequest:
-    """One immutable chart product paired with one physical timeline."""
+class ObserverTimeChartSequenceRequest:
+    """One immutable chart product paired with observer-time instants."""
 
     chart: ChartRequest
     timeline: TemporalTimeline
@@ -65,7 +65,7 @@ class ChartSequenceRequest:
         return self.timeline.frame_count
 
     @property
-    def frames(self) -> tuple[ChartSequenceFrame, ...]:
+    def frames(self) -> tuple[ObserverTimeChartSequenceFrame, ...]:
         """Resolve immutable per-frame requests without rendering."""
         product = self.chart.product
         suffix = product.output_format.extension
@@ -87,7 +87,7 @@ class ChartSequenceRequest:
                 product=frame_product,
             )
             frames.append(
-                ChartSequenceFrame(
+                ObserverTimeChartSequenceFrame(
                     index=index,
                     simulation_time=instant,
                     display_time=display_instant,
@@ -100,15 +100,15 @@ class ChartSequenceRequest:
 
 
 @dataclass(frozen=True)
-class ChartSequenceFrameResult:
+class ObserverTimeObserverTimeChartSequenceFrameResult:
     """Completed canonical generation for one sequence frame."""
 
-    frame: ChartSequenceFrame
+    frame: ObserverTimeChartSequenceFrame
     generation: ChartRequestGeneration
 
     def __post_init__(self):
-        if not isinstance(self.frame, ChartSequenceFrame):
-            raise TypeError("frame must be a ChartSequenceFrame.")
+        if not isinstance(self.frame, ObserverTimeChartSequenceFrame):
+            raise TypeError("frame must be a ObserverTimeChartSequenceFrame.")
         if not isinstance(self.generation, ChartRequestGeneration):
             raise TypeError(
                 "generation must be a ChartRequestGeneration."
@@ -124,15 +124,15 @@ class ChartSequenceFrameResult:
 
 
 @dataclass(frozen=True)
-class ChartSequenceGeneration:
+class ObserverTimeChartSequenceGeneration:
     """Ordered immutable results from complete canonical static renders."""
 
-    request: ChartSequenceRequest
-    frames: tuple[ChartSequenceFrameResult, ...]
+    request: ObserverTimeChartSequenceRequest
+    frames: tuple[ObserverTimeObserverTimeChartSequenceFrameResult, ...]
 
     def __post_init__(self):
-        if not isinstance(self.request, ChartSequenceRequest):
-            raise TypeError("request must be a ChartSequenceRequest.")
+        if not isinstance(self.request, ObserverTimeChartSequenceRequest):
+            raise TypeError("request must be a ObserverTimeChartSequenceRequest.")
         frames = tuple(self.frames)
         if len(frames) != self.request.frame_count:
             raise ValueError(
@@ -149,16 +149,16 @@ class ChartSequenceGeneration:
         return tuple(item.output for item in self.frames)
 
 
-def generate_chart_sequence(
-    request: ChartSequenceRequest,
+def generate_observer_time_chart_sequence(
+    request: ObserverTimeChartSequenceRequest,
     *,
     generator: Callable[[ChartRequest], ChartRequestGeneration] = (
         generate_chart_request
     ),
-) -> ChartSequenceGeneration:
-    """Generate each frame through the canonical static request executor."""
-    if not isinstance(request, ChartSequenceRequest):
-        raise TypeError("request must be a ChartSequenceRequest.")
+) -> ObserverTimeChartSequenceGeneration:
+    """Generate observer-time frames through the canonical static executor."""
+    if not isinstance(request, ObserverTimeChartSequenceRequest):
+        raise TypeError("request must be a ObserverTimeChartSequenceRequest.")
     if not callable(generator):
         raise TypeError("generator must be callable.")
 
@@ -166,12 +166,12 @@ def generate_chart_sequence(
     for frame in request.frames:
         generation = generator(frame.request)
         results.append(
-            ChartSequenceFrameResult(
+            ObserverTimeObserverTimeChartSequenceFrameResult(
                 frame=frame,
                 generation=generation,
             )
         )
-    return ChartSequenceGeneration(
+    return ObserverTimeChartSequenceGeneration(
         request=request,
         frames=tuple(results),
     )
