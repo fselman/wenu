@@ -675,8 +675,12 @@ class RegionalChart:
                 resolved_detail,
                 legends,
             )
-        from wenu.chart_document import assign_furniture_semantics
+        from wenu.chart_document import (
+            assign_canvas_semantics,
+            assign_furniture_semantics,
+        )
 
+        assign_canvas_semantics(renderer)
         assign_furniture_semantics(renderer, result)
         options = (
             ExportOptions()
