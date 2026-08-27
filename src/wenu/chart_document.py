@@ -102,8 +102,13 @@ def _semantic_token(value):
         return "coordinates-dec"
     if "J2000" in text or text.startswith(("FK", "ICRS")):
         return "coordinates-frame"
-    if text.lstrip("+-").isdigit():
-        return text.replace("+", "plus-").replace("-", "minus-")
+    magnitude = re.match(r"^([+-]?\d+)(?:\s|$)", text)
+    if magnitude is not None:
+        return (
+            magnitude.group(1)
+            .replace("+", "plus-")
+            .replace("-", "minus-")
+        )
     token = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
     return token or "entry"
 
@@ -118,14 +123,31 @@ def _name_legend_contents(legend, prefix, *, entry_prefix=""):
         title.set_gid(f"{prefix}-title")
     handles = tuple(getattr(legend, "legend_handles", ()))
     texts = tuple(getattr(legend, "get_texts", lambda: ())())
+    declared = tuple(
+        getattr(legend, "_wenu_legend_entry_keys", ())
+    )
+    if declared and len(declared) != len(handles):
+        raise ValueError(
+            "Legend semantic keys must match rendered handles."
+        )
+    if len(handles) != len(texts):
+        raise ValueError(
+            "Legend handles and descriptions must remain paired."
+        )
+    bases = (
+        tuple(_semantic_token(key) for key in declared)
+        if declared
+        else tuple(_semantic_token(label.get_text()) for label in texts)
+    )
     used = {}
-    for handle, label in zip(handles, texts):
-        base = _semantic_token(label.get_text())
+    for handle, label, base in zip(handles, texts, bases):
         count = used.get(base, 0) + 1
         used[base] = count
         token = base if count == 1 else f"{base}-{count}"
         entry = (
-            f"{entry_prefix}-{token}" if entry_prefix else token
+            token
+            if declared or not entry_prefix
+            else f"{entry_prefix}-{token}"
         )
         handle.set_gid(f"{entry}-symbol")
         label.set_gid(f"{entry}-label")
