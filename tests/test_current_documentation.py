@@ -629,3 +629,26 @@ def test_svg_semantic_naming_ledger_records_designer_contract():
         "unexpected generic editable Matplotlib objects",
     ):
         assert value in ledger
+
+
+def test_svg_cross_product_acceptance_records_all_products():
+    text = (
+        DEVELOPER / "svg_cross_product_acceptance_49f6.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "Milestone 49F.6",
+        "all-sky",
+        "planisphere",
+        "regional",
+        "circumpolar",
+        "binocular",
+        "polar page, south",
+        "polar page, north",
+        "polar pouch",
+        "catalog_1636_283",
+        "Inkscape 1.4.4",
+        "1688 passed in 58.90s",
+    ):
+        assert value in text
+
