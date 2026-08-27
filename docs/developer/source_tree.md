@@ -742,3 +742,18 @@ internal `.wenu` representation, or the interchange format for Wenu3D.
 A package sequence request, frame manifest, CLI, and scientifically keyed
 reuse remain future 49G increments.
 
+### Observer-time sequence orchestration (Milestone 49G.2)
+
+- `src/wenu/charts/sequence.py` owns immutable observer-time frame plans,
+  canonical static-generation orchestration, and ordered result metadata.
+- It depends on `ChartRequest`, `TemporalTimeline`, and
+  `generate_chart_request()`; it does not construct sky, projection,
+  renderer, export, or encoder alternatives.
+- `tests/test_chart_sequence.py` verifies deterministic frame requests,
+  observer-time replacement, civil display metadata, canonical executor
+  ownership, output validation, and the bounded one-product contract.
+
+Celestial realization epochs for proper motion/precession and provider
+evaluation instants for moving objects are separate future owners. They must
+not enter through the observer-time sequence API.
+
