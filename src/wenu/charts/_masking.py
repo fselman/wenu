@@ -198,7 +198,11 @@ def _assign_outside_mask_identity(
             (patch,),
             SemanticArtistIdentity(
                 name=token,
-                svg_id=f"wenu-chart-{token.replace('_', '-')}",
+                svg_id=(
+                    "outside-mask"
+                    if token != "below_horizon_mask"
+                    else "below-horizon-mask"
+                ),
                 edit_policy=EditPolicy.STYLE,
                 semantic_path=("chart", "masks_and_boundary", token),
                 display_name=display_name,
