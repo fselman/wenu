@@ -32,6 +32,64 @@ class SemanticArtistIdentity:
         return self
 
 
+def assign_canvas_semantics(renderer):
+    """Attach identities to page, sky background, and visible frame sides."""
+    assign = getattr(renderer, "assign_semantic_identity", None)
+    ax = getattr(renderer, "ax", None)
+    if not callable(assign) or ax is None:
+        return
+    figure_patch = getattr(getattr(ax, "figure", None), "patch", None)
+    if figure_patch is not None and figure_patch.get_visible():
+        assign(
+            (figure_patch,),
+            SemanticArtistIdentity(
+                name="page_background",
+                svg_id="wenu-page-background",
+                edit_policy=EditPolicy.STYLE,
+                semantic_path=("page", "background"),
+                display_name="Page background",
+                presentation_order=0,
+                style_role="page_background",
+            ),
+        )
+    axes_patch = getattr(ax, "patch", None)
+    if axes_patch is not None and axes_patch.get_visible():
+        assign(
+            (axes_patch,),
+            SemanticArtistIdentity(
+                name="sky_background",
+                svg_id="wenu-sky-background",
+                edit_policy=EditPolicy.STYLE,
+                semantic_path=("sky", "background"),
+                display_name="Sky background",
+                presentation_order=0,
+                style_role="sky_background",
+            ),
+        )
+    spines = tuple(
+        spine
+        for spine in getattr(ax, "spines", {}).values()
+        if spine.get_visible()
+    )
+    if spines:
+        assign(
+            spines,
+            SemanticArtistIdentity(
+                name="rectangular_viewport_frame",
+                svg_id="wenu-chart-rectangular-viewport-frame",
+                edit_policy=EditPolicy.STYLE,
+                semantic_path=(
+                    "chart",
+                    "masks_and_boundary",
+                    "rectangular_viewport_frame",
+                ),
+                display_name="Rectangular viewport frame",
+                presentation_order=81,
+                style_role="chart_boundary",
+            ),
+        )
+
+
 def assign_furniture_semantics(renderer, rendering):
     """Attach identities to title and composed legend containers."""
     assign = getattr(renderer, "assign_semantic_identity", None)
