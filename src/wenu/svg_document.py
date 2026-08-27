@@ -231,5 +231,63 @@ def _group_sky_semantics(path):
     for element in candidates:
         parent.remove(element)
     parent.insert(insertion_index, build_group(("sky",)))
+    _promote_common_label_typography(root)
     tree.write(path, encoding="utf-8", xml_declaration=True)
     return path
+
+
+def _style_declarations(element):
+    """Return ordered declarations from one SVG style attribute."""
+    declarations = []
+    for declaration in element.get("style", "").split(";"):
+        if ":" not in declaration:
+            continue
+        name, value = declaration.split(":", 1)
+        declarations.append((name.strip(), value.strip()))
+    return declarations
+
+
+def _set_style_declarations(element, declarations):
+    if declarations:
+        element.set(
+            "style",
+            "; ".join(f"{name}: {value}" for name, value in declarations),
+        )
+    else:
+        element.attrib.pop("style", None)
+
+
+def _promote_common_label_typography(root):
+    """Make common label fonts inheritable from their semantic group."""
+    text_tag = f"{{{_SVG_NAMESPACE}}}text"
+    for group in root.iter(f"{{{_SVG_NAMESPACE}}}g"):
+        classes = group.get("class", "").split()
+        semantic_path = group.get("data-wenu-semantic-path", "")
+        if (
+            "wenu-semantic-group" not in classes
+            or not semantic_path.endswith("/labels")
+        ):
+            continue
+        texts = list(group.iter(text_tag))
+        if not texts:
+            continue
+        declarations = [
+            _style_declarations(element) for element in texts
+        ]
+        fonts = [
+            dict(items).get("font")
+            for items in declarations
+        ]
+        if fonts[0] is None or any(font != fonts[0] for font in fonts[1:]):
+            continue
+        group_declarations = _style_declarations(group)
+        group_declarations = [
+            item for item in group_declarations if item[0] != "font"
+        ]
+        group_declarations.append(("font", fonts[0]))
+        _set_style_declarations(group, group_declarations)
+        for element, items in zip(texts, declarations):
+            _set_style_declarations(
+                element,
+                [item for item in items if item[0] != "font"],
+            )
