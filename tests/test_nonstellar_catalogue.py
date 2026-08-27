@@ -78,6 +78,12 @@ def test_geometry_is_closed_and_transformed(catalogue, observer):
     assert all(len(curve) == 36 for curve in geometry.lon_deg)
     assert np.all(np.isfinite(geometry.lon_deg[0]))
     assert geometry.metadata["coordinate_system"] == "altaz"
+    assert geometry.metadata["semantic_entity_keys"] == (
+        "M 1", "M 31", "M 42"
+    )
+    assert geometry.metadata["semantic_entity_display_names"] == (
+        "M 1", "M 31", "M 42"
+    )
 
 
 def test_unknown_position_angle_does_not_invent_orientation():
@@ -96,6 +102,8 @@ def test_selection(catalogue, observer):
         selected=["M 31"],
     )
     assert list(geometry.ids) == ["M 31"]
+    assert geometry.metadata["semantic_entity_keys"] == ("M 31",)
+    assert geometry.metadata["semantic_entity_display_names"] == ("M 31",)
 
 
 def test_outline_sampling_is_render_local_and_bounded(catalogue, observer):
