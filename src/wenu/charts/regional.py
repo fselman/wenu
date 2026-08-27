@@ -19,68 +19,6 @@ from wenu.geometry.viewport import Viewport
 from wenu.rendering.preparation import project_geometry_for_viewport
 
 
-def _assign_furniture_semantics(renderer, rendering):
-    """Attach chart-owned identity to title and composed legend containers."""
-    from wenu.chart_document import EditPolicy, SemanticArtistIdentity
-
-    assign = getattr(renderer, "assign_semantic_identity", None)
-    if not callable(assign):
-        return
-    title = getattr(getattr(renderer, "ax", None), "title", None)
-    if title is not None and getattr(title, "get_text", lambda: "")():
-        assign(
-            (title,),
-            SemanticArtistIdentity(
-                name="title",
-                svg_id="wenu-furniture-title",
-                edit_policy=EditPolicy.LAYOUT,
-                semantic_path=("furniture", "title"),
-                display_name="Title",
-                presentation_order=90,
-                style_role="title",
-            ),
-        )
-    legends = getattr(rendering, "legends", None)
-    if legends is None:
-        return
-    objects = getattr(legends, "objects", None)
-    if objects is not None:
-        assign(
-            (objects,),
-            SemanticArtistIdentity(
-                name="chart_information_and_object_key",
-                svg_id="wenu-furniture-chart-information-object-key",
-                edit_policy=EditPolicy.LAYOUT,
-                semantic_path=(
-                    "furniture",
-                    "legends",
-                    "chart_information_and_object_key",
-                ),
-                display_name="Chart information and object key",
-                presentation_order=91,
-                style_role="chart_legend",
-            ),
-        )
-    stars = getattr(getattr(legends, "stars", None), "artist", None)
-    if stars is not None:
-        assign(
-            (stars,),
-            SemanticArtistIdentity(
-                name="stellar_magnitude_scale",
-                svg_id="wenu-furniture-stellar-magnitude-scale",
-                edit_policy=EditPolicy.LAYOUT,
-                semantic_path=(
-                    "furniture",
-                    "legends",
-                    "stellar_magnitude_scale",
-                ),
-                display_name="Stellar magnitude scale",
-                presentation_order=92,
-                style_role="stellar_magnitude_legend",
-            ),
-        )
-
-
 REGIONAL_ORIENTATIONS = frozenset({"celestial-north-up", "zenith-up"})
 
 
@@ -737,7 +675,9 @@ class RegionalChart:
                 resolved_detail,
                 legends,
             )
-        _assign_furniture_semantics(renderer, result)
+        from wenu.chart_document import assign_furniture_semantics
+
+        assign_furniture_semantics(renderer, result)
         options = (
             ExportOptions()
             if export_options is None
