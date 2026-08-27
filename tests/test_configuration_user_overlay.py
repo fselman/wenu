@@ -109,3 +109,71 @@ def test_sequential_overlays_do_not_leak_into_each_other_or_packaged_state(
     assert second.furniture_product_export.product.language == "es"
     assert packaged.style_mode.print_mode.dpi == 300
     assert packaged.furniture_product_export.product.language == "en"
+
+
+def test_sequence_overlay_translates_as_disabled_or_complete(tmp_path):
+    path = tmp_path / "sequence.toml"
+    path.write_text(
+        "schema_version = 1\n"
+        "[sequence]\n"
+        "stop = '2026-08-22T07:00:00Z'\n"
+        "frames = 3\n"
+        "display_timezone = 'America/Santiago'\n"
+        "playback_duration = 1.5\n"
+        "frames_per_second = 2.0\n"
+        "restart_policy = 'resume'\n",
+        encoding="utf-8",
+    )
+
+    configured = load_configuration_defaults(path)
+    packaged = load_configuration_defaults()
+
+    assert configured.sequence.stop == "2026-08-22T07:00:00Z"
+    assert configured.sequence.frames == 3
+    assert configured.sequence.display_timezone == "America/Santiago"
+    assert configured.sequence.playback_duration_seconds == pytest.approx(1.5)
+    assert configured.sequence.frames_per_second == pytest.approx(2.0)
+    assert configured.sequence.restart_policy == "resume"
+    assert packaged.sequence.stop is None
+    assert packaged.sequence.frames is None
+
+
+@pytest.mark.parametrize(
+    ("body", "diagnostic"),
+    (
+        (
+            "stop = '2026-08-22T07:00:00Z'\n",
+            "sequence.frames",
+        ),
+        (
+            "frames = 3\n",
+            "sequence.frames",
+        ),
+        (
+            "playback_duration = 1.5\n",
+            "sequence.frames_per_second",
+        ),
+        (
+            "stop = '2026-08-22T07:00:00Z'\n"
+            "frames = 3\n"
+            "playback_duration = 1.0\n"
+            "frames_per_second = 2.0\n",
+            "must imply sequence frames",
+        ),
+    ),
+)
+def test_sequence_overlay_rejects_incomplete_or_inconsistent_values(
+    tmp_path,
+    body,
+    diagnostic,
+):
+    path = tmp_path / "invalid-sequence.toml"
+    path.write_text(
+        "schema_version = 1\n[sequence]\n" + body,
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ConfigurationError, match=None) as error:
+        load_configuration_defaults(path)
+
+    assert diagnostic in str(error.value)
