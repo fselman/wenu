@@ -61,14 +61,21 @@ def test_resolved_calendar_and_page_records_are_realized_once():
         plt.close(figure)
 
     assert result.page_axes.patch.get_visible() is False
-    assert result.calendar_lines[0].get_gid().startswith("lines--")
-    assert result.calendar_labels[0].get_gid().startswith("labels--")
+    assert result.calendar_lines[0].get_gid().startswith(
+        "daily-tick-marks--"
+    )
+    assert result.day_labels[0].get_gid().startswith("day-labels--")
+    assert result.month_labels[0].get_gid().startswith(
+        "month-labels--"
+    )
     assert result.cut_line.get_gid() == "cut-line"
     assert result.text_artists[0].get_gid().startswith(
         "page-information--"
     )
     assert len(result.calendar_lines) == 365
     assert len(result.calendar_labels) == 83
+    assert len(result.day_labels) == len(calendar.south.day_labels)
+    assert len(result.month_labels) == len(calendar.south.month_labels)
     assert len(result.center_artists) == 2
     assert len(result.registration_artists) == 3
     assert len(result.ruler_artists) == 8
