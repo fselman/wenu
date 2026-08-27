@@ -88,9 +88,15 @@ part of the current Wenu contract.
 
 1. Keep the Wenu-generated SVG as the reproducible source artifact.
 2. Open it in Inkscape and save editorial work under a separate filename.
-3. Edit objects according to their `data-wenu-edit` classification.
-4. Do not move scientific geometry.
-5. Reopen the saved copy and inspect typography, clipping, masks, and page
+3. To restyle locked scientific content, temporarily unlock its semantic
+   owner, such as `Lines-Western` or an equatorial-grid line branch.
+4. Select the owner to restyle every descendant, or select one unlocked child
+   such as `Ori` for an individual refinement. An ancestor lock controls its
+   complete subtree even when child lock icons appear open.
+5. Edit objects according to their `data-wenu-edit` classification and do not
+   transform scientific geometry.
+6. Relock the semantic owner after completing appearance edits.
+7. Reopen the saved copy and inspect typography, clipping, masks, and page
    dimensions before delivery.
 
 Wenu-generated semantic metadata and editable text have been verified through
