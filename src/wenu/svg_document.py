@@ -650,6 +650,49 @@ def _consolidate_designer_hierarchy(root):
         )
         target[:] = ordered
 
+        graphical_tags = {
+            f"{{{_SVG_NAMESPACE}}}path",
+            f"{{{_SVG_NAMESPACE}}}use",
+            f"{{{_SVG_NAMESPACE}}}text",
+            f"{{{_SVG_NAMESPACE}}}image",
+        }
+        current_parent = {
+            child: parent
+            for parent in root.iter()
+            for child in parent
+        }
+        for plot_area in tuple(axes):
+            if not any(
+                descendant.tag in graphical_tags
+                for descendant in plot_area.iter()
+                if descendant is not plot_area
+            ):
+                parent = current_parent.get(plot_area)
+                if parent is not None:
+                    parent.remove(plot_area)
+        remaining_axes = [
+            plot_area
+            for plot_area in axes
+            if plot_area in list(figure)
+        ]
+        for axes_index, plot_area in enumerate(remaining_axes, start=1):
+            plot_area.set(
+                "id",
+                (
+                    "plot-area"
+                    if len(remaining_axes) == 1
+                    else f"plot-area-{axes_index}"
+                ),
+            )
+            plot_area.set(
+                f"{{{_INKSCAPE_NAMESPACE}}}label",
+                (
+                    "Plot area"
+                    if len(remaining_axes) == 1
+                    else f"Plot area {axes_index}"
+                ),
+            )
+
 
 def _flatten_semantic_text_artists(root):
     """Expose conservatively wrapped semantic text as actual text objects."""
