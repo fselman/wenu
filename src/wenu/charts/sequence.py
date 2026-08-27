@@ -98,7 +98,7 @@ class ObserverTimeChartSequenceRequest:
 
 
 @dataclass(frozen=True)
-class ObserverTimeObserverTimeChartSequenceFrameResult:
+class ObserverTimeChartSequenceFrameResult:
     """Completed canonical generation for one sequence frame."""
 
     frame: ObserverTimeChartSequenceFrame
@@ -126,7 +126,7 @@ class ObserverTimeChartSequenceGeneration:
     """Ordered immutable results from complete canonical static renders."""
 
     request: ObserverTimeChartSequenceRequest
-    frames: tuple[ObserverTimeObserverTimeChartSequenceFrameResult, ...]
+    frames: tuple[ObserverTimeChartSequenceFrameResult, ...]
 
     def __post_init__(self):
         if not isinstance(self.request, ObserverTimeChartSequenceRequest):
@@ -158,7 +158,7 @@ def generate_observer_time_chart_sequence(
     for frame in request.frames:
         generation = generate_chart_request(frame.request)
         results.append(
-            ObserverTimeObserverTimeChartSequenceFrameResult(
+            ObserverTimeChartSequenceFrameResult(
                 frame=frame,
                 generation=generation,
             )

@@ -8,6 +8,7 @@ import struct
 
 import pytest
 
+import wenu
 import wenu.charts.sequence as sequence_module
 from wenu.charts.product_options import ChartProductOptions
 from wenu.charts.request import (
@@ -17,6 +18,7 @@ from wenu.charts.request import (
 )
 from wenu.charts.request_generation import ChartRequestGeneration
 from wenu.charts.sequence import (
+    ObserverTimeChartSequenceFrameResult,
     ObserverTimeChartSequenceRequest,
     generate_observer_time_chart_sequence,
 )
@@ -51,6 +53,21 @@ def timeline(count=3):
         display_timezone="America/Santiago",
     )
 
+
+
+def test_frame_result_has_one_stable_public_name():
+    assert (
+        ObserverTimeChartSequenceFrameResult.__name__
+        == "ObserverTimeChartSequenceFrameResult"
+    )
+    assert (
+        wenu.ObserverTimeChartSequenceFrameResult
+        is ObserverTimeChartSequenceFrameResult
+    )
+    assert not hasattr(
+        sequence_module,
+        "ObserverTimeObserverTimeChartSequenceFrameResult",
+    )
 
 def test_sequence_pairs_one_chart_definition_with_explicit_frames(tmp_path):
     sequence = ObserverTimeChartSequenceRequest(

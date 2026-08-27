@@ -117,7 +117,7 @@ from .temporal import (
 )
 from .charts.sequence import (
     ObserverTimeChartSequenceFrame,
-    ObserverTimeObserverTimeChartSequenceFrameResult,
+    ObserverTimeChartSequenceFrameResult,
     ObserverTimeChartSequenceGeneration,
     ObserverTimeChartSequenceRequest,
     generate_observer_time_chart_sequence,
@@ -491,7 +491,7 @@ __all__ = [
     "TemporalTimeline",
     "TimeScale",
     "ObserverTimeChartSequenceFrame",
-    "ObserverTimeObserverTimeChartSequenceFrameResult",
+    "ObserverTimeChartSequenceFrameResult",
     "ObserverTimeChartSequenceGeneration",
     "ObserverTimeChartSequenceRequest",
     "generate_observer_time_chart_sequence",
