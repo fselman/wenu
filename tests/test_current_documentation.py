@@ -748,7 +748,7 @@ def test_sequence_manifest_documents_safe_restart_and_resume():
         "recorded filename, byte count, and SHA-256",
         "incompatible manifest before rendering",
         "real canonical PNG generation",
-        "CLI/configuration exposure remains Milestone 49G.4",
+        "CLI/configuration exposure is implemented downstream in Milestone 49G.4",
         "real restart/resume acceptance complete",
         "selective resume",
         "82 passed in 27.29s",
