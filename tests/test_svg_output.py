@@ -20,6 +20,7 @@ from wenu.charts.regional import ExportOptions
 from wenu.rendering import MatplotlibRenderer
 from wenu.geometry.projected import ProjectedCurve, ProjectedCurves
 from wenu.sky.semantic_identity import SemanticLayerIdentity
+from wenu.output_policy import SvgProvenance
 from svg_inspection import inspect_svg
 
 
@@ -96,6 +97,60 @@ def test_svg_translates_pdf_subject_to_description(tmp_path):
     assert "<dc:description>Source revision 918b4bd</dc:description>" in (
         serialized
     )
+
+
+def test_svg_records_standard_and_wenu_provenance(tmp_path, monkeypatch):
+    destination = tmp_path / "provenance.svg"
+    monkeypatch.setenv("SOURCE_DATE_EPOCH", "0")
+    monkeypatch.setenv("WENU_SOURCE_REVISION", "abc1234")
+    figure = _representative_figure()
+    try:
+        ExportOptions(
+            metadata={"Title": "Existing title", "Creator": "Wenu"},
+            svg_provenance=SvgProvenance(
+                product_name="regional",
+                title="Regional chart",
+                parameters={"z": 2, "a": {"values": frozenset({"b", "a"})}},
+                copyright="© Fernando Selman",
+            ),
+        ).save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    metadata = [
+        element for element in root
+        if element.tag.rsplit("}", 1)[-1] == "metadata"
+    ]
+    assert len(metadata) == 1
+    serialized = ET.tostring(metadata[0], encoding="unicode")
+    assert "Existing title" in serialized
+    assert "1970-01-01T00:00:00Z" in serialized
+    assert "image/svg+xml" in serialized
+    assert "© Fernando Selman" in serialized
+    assert "abc1234" in serialized
+    parameters = next(
+        element for element in metadata[0].iter()
+        if element.tag.rsplit("}", 1)[-1] == "parameters"
+    )
+    assert parameters.text == '{"a":{"values":["a","b"]},"z":2}'
+
+
+def test_svg_provenance_does_not_require_semantic_artists(tmp_path):
+    destination = tmp_path / "plain-provenance.svg"
+    figure = _representative_figure()
+    try:
+        ExportOptions(
+            svg_provenance=SvgProvenance(
+                product_name="regional",
+                parameters={"family": "regional"},
+                created_utc="2026-08-27T12:00:00Z",
+            ),
+        ).save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    assert "wenu:provenance" in destination.read_text(encoding="utf-8")
 
 
 def test_non_svg_export_preserves_subject_metadata(tmp_path):
@@ -409,6 +464,14 @@ def test_constellation_entities_form_a_shallow_system_specific_group(tmp_path):
         "western-lines-mus",
     ]
     assert "sky/constellations/lines_western/western" not in by_path
+    insensitive = (
+        "{http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd}"
+        "insensitive"
+    )
+    assert lines.get(insensitive) == "true"
+    assert lines.get("data-wenu-locked") == "true"
+    assert cru.get(insensitive) is None
+    assert mus.get(insensitive) is None
 
 
 def test_semantic_sibling_labels_must_be_unique(tmp_path):
@@ -586,6 +649,14 @@ def test_chart_semantics_form_a_parallel_hierarchy(tmp_path):
     assert mask.get(
         "{http://www.inkscape.org/namespaces/inkscape}label"
     ) == "Outside constellation-group mask"
+    insensitive = (
+        "{http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd}"
+        "insensitive"
+    )
+    assert by_id["wenu-group-chart"].get(insensitive) is None
+    assert masks.get(insensitive) == "true"
+    assert mask.get(insensitive) is None
+    assert by_id["wenu-group-furniture"].get(insensitive) is None
 
 
 

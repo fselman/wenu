@@ -97,6 +97,7 @@ def export_composed_chart(
     export_options=None,
     render_options=None,
     additional_furniture=None,
+    svg_provenance=None,
 ):
     """Render, decorate, and save one resolved composition exactly once."""
     _validate_composition(chart, composition)
@@ -190,6 +191,8 @@ def export_composed_chart(
         if export_options is None
         else export_options
     )
+    if svg_provenance is not None:
+        options = replace(options, svg_provenance=svg_provenance)
     output = options.save(figure, path)
     return ChartExportResult(
         rendering=rendering,

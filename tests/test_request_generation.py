@@ -63,9 +63,11 @@ def test_prepared_request_exports_the_shared_product_matrix_once(
         chart_context = object()
 
         def export(
-            self, sky, renderer, output, *, composition, horizon_mask
+            self, sky, renderer, output, *, composition, horizon_mask,
+            svg_provenance,
         ):
             assert horizon_mask is False
+            assert svg_provenance.product_name == "binocular"
             exported.append((sky, output, composition))
             return ChartExportResult(
                 rendering=None,
@@ -163,9 +165,11 @@ def test_prepared_request_applies_exact_product_composition_options(
         chart_context = object()
 
         def export(
-            self, sky, renderer, output, *, composition, horizon_mask
+            self, sky, renderer, output, *, composition, horizon_mask,
+            svg_provenance,
         ):
             assert horizon_mask is False
+            assert svg_provenance.product_name == "binocular"
             return ChartExportResult(
                 rendering=None,
                 output=output,
@@ -229,9 +233,11 @@ def test_prepared_request_resolves_generic_context_after_chart_construction(
         chart_context = object()
 
         def export(
-            self, sky, renderer, output, *, composition, horizon_mask
+            self, sky, renderer, output, *, composition, horizon_mask,
+            svg_provenance,
         ):
             assert horizon_mask is False
+            assert svg_provenance.product_name == "binocular"
             return ChartExportResult(
                 rendering=None, output=output, composition=composition,
                 layer_options={}, export_options=None,

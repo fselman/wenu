@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from wenu.output_policy import ChartOutputPolicy, OutputFormat
+from wenu.output_policy import ChartOutputPolicy, OutputFormat, SvgProvenance
 
 
 @pytest.mark.parametrize(
@@ -33,3 +33,18 @@ def test_output_policy_defaults_to_png():
 def test_output_policy_rejects_unknown_or_noncanonical_format(value):
     with pytest.raises(ValueError, match="Unsupported output format"):
         ChartOutputPolicy(output_format=value)
+
+
+def test_svg_provenance_requires_a_product_name_and_mapping():
+    with pytest.raises(ValueError, match="product_name"):
+        SvgProvenance(product_name=" ", parameters={})
+    with pytest.raises(TypeError, match="parameters"):
+        SvgProvenance(product_name="regional", parameters=())
+
+
+def test_svg_provenance_copies_mutable_parameter_mapping():
+    parameters = {"family": "regional"}
+    provenance = SvgProvenance("regional", parameters)
+    parameters["family"] = "changed"
+
+    assert provenance.parameters == {"family": "regional"}
