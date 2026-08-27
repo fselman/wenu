@@ -20,6 +20,7 @@ except ModuleNotFoundError:  # pragma: no cover - Python 3.10
 TOP_LEVEL_ORDER = (
     "schema_version",
     "observer",
+    "sequence",
     "subjects",
     "families",
     "detail",
@@ -61,6 +62,14 @@ def test_packaged_defaults_are_resource_loadable_and_ordered():
     defaults = tomllib.loads(text)
     assert tuple(defaults) == TOP_LEVEL_ORDER
     assert defaults["schema_version"] == 1
+    assert defaults["sequence"] == {
+        "stop": "none",
+        "frames": "none",
+        "display_timezone": "none",
+        "playback_duration": "none",
+        "frames_per_second": "none",
+        "restart_policy": "restart",
+    }
 
 
 def test_packaged_defaults_cover_schema_responsibilities():
