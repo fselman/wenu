@@ -283,6 +283,7 @@ def generate(arguments):
             default_display_timezone=(
                 getattr(observer, "timezone_name", None) or "UTC"
             ),
+            defaults=configuration.sequence,
         )
         common_options = {
             "stem": _stem(view),
