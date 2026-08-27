@@ -351,3 +351,50 @@ def test_svg_annotation_is_noop_without_wenu_semantics(tmp_path):
 
     assert "data-wenu-" not in serialized
     assert "wenu-semantic-artist" not in serialized
+
+
+
+def test_semantic_label_group_inherits_common_font_style(tmp_path):
+    destination = tmp_path / "inherited-label-font.svg"
+    figure, ax = plt.subplots()
+    labels = (
+        ax.text(0.2, 0.4, "10:00", fontsize=7.0),
+        ax.text(0.8, 0.6, "20:00", fontsize=7.0),
+    )
+    MatplotlibRenderer.assign_semantic_identity(
+        labels,
+        SemanticLayerIdentity(
+            name="equatorial_grid_labels",
+            svg_id="wenu-layer-equatorial-grid-labels",
+            edit_policy=EditPolicy.LAYOUT,
+            semantic_path=("sky", "grids", "equatorial", "labels"),
+            display_name="Equatorial grid labels",
+            presentation_order=70,
+            style_role="equatorial_grid_labels",
+        ),
+    )
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    group = next(
+        element
+        for element in root.iter()
+        if element.get("id")
+        == "wenu-group-sky-grids-equatorial-labels"
+    )
+    text_elements = [
+        element
+        for element in group.iter()
+        if element.tag.rsplit("}", 1)[-1] == "text"
+    ]
+
+    assert "font:" in group.get("style", "")
+    assert "7px" in group.get("style", "")
+    assert len(text_elements) == 2
+    assert all(
+        "font:" not in element.get("style", "")
+        for element in text_elements
+    )
