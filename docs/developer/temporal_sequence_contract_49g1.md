@@ -100,15 +100,22 @@ hours, fifteen playback seconds, twelve frames per second, and 180 frames.
 
 ## Next increments
 
-Later 49G slices may add:
+49G.2 now adds the first deliberately narrow consumer: an observer-time
+chart sequence pairing one existing `ChartRequest` with one timeline and
+repeated canonical static generation.
 
-1. an immutable sequence product definition pairing one existing chart
-   request with one timeline;
-2. deterministic frame-result metadata and a manifest;
-3. a package orchestration boundary that repeatedly invokes canonical static
-   generation;
-4. CLI/configuration exposure;
-5. complete-render equivalence and cross-product sequence tests.
+Later slices may add:
+
+1. deterministic frame manifests;
+2. CLI/configuration exposure;
+3. complete-render equivalence and cross-product sequence tests;
+4. scientifically keyed reuse after independent-frame validation;
+5. separate celestial-realization-epoch and provider-time contracts after
+   their astrometry and position-provider foundations exist.
+
+Proper motion must not be expressed by changing observer time. Catalogue
+reference epoch, celestial realization epoch, provider evaluation instant,
+observer instant, civil display time, and playback time are distinct roles.
 
 Reuse or caching begins only after complete independent frames provide a
 correctness oracle and scientific cache keys are explicit.
