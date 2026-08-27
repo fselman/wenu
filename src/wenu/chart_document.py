@@ -54,6 +54,8 @@ def assign_furniture_semantics(renderer, rendering):
     legends = getattr(rendering, "legends", None)
     if legends is None:
         return
+    while getattr(legends, "legends", None) is not None:
+        legends = legends.legends
     objects = getattr(legends, "objects", None)
     if objects is not None:
         assign(
