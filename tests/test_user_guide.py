@@ -21,6 +21,7 @@ GUIDE_PAGES = (
     "styles_modes_detail.md",
     "configuration.md",
     "svg_output.md",
+    "temporal_sequences.md",
 )
 EXAMPLES = (
     "all_sky.py",
@@ -189,3 +190,32 @@ def test_svg_guide_documents_editable_vector_contract():
     index = (GUIDE / "index.md").read_text(encoding="utf-8")
     assert "--format png|pdf|svg" in index
     assert "(svg_output.md)" in index
+
+
+def test_temporal_sequence_guide_documents_cli_and_resume_contract():
+    text = (
+        GUIDE / "temporal_sequences.md"
+    ).read_text(encoding="utf-8")
+    index = (GUIDE / "index.md").read_text(encoding="utf-8")
+    configuration = (
+        GUIDE / "configuration.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "--sequence-stop",
+        "--sequence-frames",
+        "--display-timezone",
+        "--playback-duration",
+        "--frames-per-second",
+        "--restart-policy resume",
+        "wenu-sequence-manifest.json",
+        "byte count, and SHA-256",
+        "PNG compression bytes may differ",
+        "[sequence]",
+        "complete translated effective configuration",
+    ):
+        assert value in text
+
+    assert "(temporal_sequences.md)" in index
+    assert "Observer-time sequence profiles" in configuration
+    assert 'stop = "2026-08-22T03:00:00-04:00"' in configuration

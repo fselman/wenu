@@ -748,7 +748,7 @@ def test_sequence_manifest_documents_safe_restart_and_resume():
         "recorded filename, byte count, and SHA-256",
         "incompatible manifest before rendering",
         "real canonical PNG generation",
-        "CLI/configuration exposure remains Milestone 49G.4",
+        "CLI/configuration exposure is implemented downstream in Milestone 49G.4",
         "real restart/resume acceptance complete",
         "selective resume",
         "82 passed in 27.29s",
@@ -762,3 +762,45 @@ def test_sequence_manifest_documents_safe_restart_and_resume():
         implementation
     )
     assert "Sequence manifest and resume (Milestone 49G.3)" in source_tree
+
+
+def test_temporal_sequence_cli_documents_shared_translation_and_acceptance():
+    contract = (
+        DEVELOPER / "temporal_sequence_cli_49g4.md"
+    ).read_text(encoding="utf-8")
+    roadmap = (
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).read_text(encoding="utf-8")
+    implementation = (
+        DEVELOPER / "implementation_reference.md"
+    ).read_text(encoding="utf-8")
+    source_tree = (
+        DEVELOPER / "source_tree.md"
+    ).read_text(encoding="utf-8")
+    schema = (
+        DEVELOPER / "configuration_schema_v1.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "49G.4",
+        "--sequence-stop",
+        "--sequence-frames",
+        "same immutable `ChartRequest`",
+        "complete translated effective configuration",
+        "eaf7f6d8cfbfb27376baf85bfb80613a86b67f0f0a40458961386299efac2f68",
+        "pixel-identical decoded RGBA",
+        "compressed PNG bytes differed",
+        "163 passed in 28.30s",
+        "1744 passed in 80.10s",
+    ):
+        assert value in contract
+
+    assert "49G.4 installed CLI" in roadmap
+    assert "implemented and accepted" in roadmap
+    assert "Temporal sequence CLI and configuration (Milestone 49G.4)" in (
+        implementation
+    )
+    assert "Temporal sequence CLI modules (Milestone 49G.4)" in source_tree
+
+    assert "### `sequence`" in schema
+    assert "playback_duration" in schema

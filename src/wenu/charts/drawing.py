@@ -7,6 +7,7 @@ from dataclasses import replace
 from .detail import DetailOverrides
 from .furniture import ChartFurnitureOptions
 from .product_options import ChartProduct, ChartProductOptions
+from .request import ChartRequest
 from .request_chart import PreparedChartRequest
 from .request_composition import ChartProductCompositionOptions
 from .request_generation import export_prepared_chart
@@ -55,7 +56,7 @@ def _product_defaults(configuration=None):
     return _furniture_product_export_defaults(configuration).product
 
 
-def draw_chart_view(
+def chart_view_request(
     view,
     destination,
     *,
@@ -71,8 +72,9 @@ def draw_chart_view(
     style_overrides=None,
     title=None,
     language=None,
+    output_format=None,
 ):
-    """Compose, render, and export one product from a chart view."""
+    """Translate one prepared view and product into an immutable request."""
     if not isinstance(view, ChartView):
         raise TypeError("view must be a ChartView.")
     overrides = (
@@ -150,7 +152,24 @@ def draw_chart_view(
         title=defaults.title if title is None else title,
         language=defaults.language if language is None else language,
     )
-    _validate_load_profile(view, overrides)
+    if output_format is not None:
+        request = replace(
+            request,
+            product=replace(
+                request.product,
+                output_format=output_format,
+            ),
+        )
+    return request
+
+
+def draw_chart_view_request(view, request):
+    """Render one translated request through its prepared view resources."""
+    if not isinstance(view, ChartView):
+        raise TypeError("view must be a ChartView.")
+    if not isinstance(request, ChartRequest):
+        raise TypeError("request must be a ChartRequest.")
+    _validate_load_profile(view, request.detail)
     configure_chart_request_grids(view.sky, request, frame=view.frame)
     configure_chart_request_horizon(view.sky, request)
     prepared = PreparedChartRequest(
@@ -168,6 +187,12 @@ def draw_chart_view(
     if len(generation.exports) != 1:
         raise RuntimeError("A chart-view drawing must export exactly once.")
     return generation.exports[0]
+
+
+def draw_chart_view(view, destination, **options):
+    """Compose, render, and export one product from a chart view."""
+    request = chart_view_request(view, destination, **options)
+    return draw_chart_view_request(view, request)
 
 
 def _grid_layers(values):

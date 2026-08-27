@@ -41,7 +41,9 @@ products to a directory with deterministic names. See
 [Styles, modes, detail, and furniture](styles_modes_detail.md) for shared
 content, appearance, legend, reference, and credit options. See
 [SVG output and editing](svg_output.md) for the editable vector contract,
-font portability, semantic metadata, and safe Inkscape workflow.
+font portability, semantic metadata, and safe Inkscape workflow. See
+[Observer-time chart sequences](temporal_sequences.md) for uniform physical
+time sampling, civil display time, manifests, and verified resume.
 
 Use [`wenu_chart` and editable TOML profiles](configuration.md) to generate
 any family through one installed command and keep publication, presentation,

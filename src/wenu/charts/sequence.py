@@ -6,6 +6,7 @@ from dataclasses import dataclass, replace
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
+from wenu.configuration import ConfigurationDefaults
 from wenu.temporal import PlaybackSpec, TemporalTimeline
 
 from .product_options import ChartProductOptions
@@ -35,6 +36,7 @@ class ObserverTimeChartSequenceRequest:
     chart: ChartRequest
     timeline: TemporalTimeline
     playback: PlaybackSpec | None = None
+    configuration: ConfigurationDefaults | None = None
 
     def __post_init__(self):
         if not isinstance(self.chart, ChartRequest):
@@ -45,6 +47,13 @@ class ObserverTimeChartSequenceRequest:
             if not isinstance(self.playback, PlaybackSpec):
                 raise TypeError("playback must be a PlaybackSpec or None.")
             self.playback.validate_timeline(self.timeline)
+        if self.configuration is not None and not isinstance(
+            self.configuration,
+            ConfigurationDefaults,
+        ):
+            raise TypeError(
+                "configuration must be ConfigurationDefaults or None."
+            )
         product = self.chart.product
         if product.all_products:
             raise ValueError(
@@ -224,7 +233,13 @@ def generate_observer_time_chart_sequence(
                 )
             )
             continue
-        generation = generate_chart_request(frame.request)
+        generation_options = {}
+        if request.configuration is not None:
+            generation_options["configuration"] = request.configuration
+        generation = generate_chart_request(
+            frame.request,
+            **generation_options,
+        )
         result = ObserverTimeChartSequenceFrameResult(
             frame=frame,
             generation=generation,

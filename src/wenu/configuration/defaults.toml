@@ -16,6 +16,15 @@ timezone = "none"
 ephemeris = "none"
 data_directory = "none"
 
+# Observer-time sequence defaults. "none" keeps ordinary static generation.
+[sequence]
+stop = "none"
+frames = "none"
+display_timezone = "none"
+playback_duration = "none"
+frames_per_second = "none"
+restart_policy = "restart"
+
 # Default subjects. Empty arrays mean that no subject is selected.
 [subjects.all_sky]
 kind = "none"

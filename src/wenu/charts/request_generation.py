@@ -251,10 +251,18 @@ def generate_chart_request(
     *,
     sky=None,
     profile=None,
+    configuration=None,
 ):
     """Resolve and export a request using an owned or supplied sphere."""
     build = build_chart_request(request, sky=sky, profile=profile)
     try:
-        return export_prepared_chart(build.sky, build.prepared)
+        export_options = {}
+        if configuration is not None:
+            export_options["configuration"] = configuration
+        return export_prepared_chart(
+            build.sky,
+            build.prepared,
+            **export_options,
+        )
     finally:
         build.close()

@@ -8,9 +8,18 @@ from pathlib import Path
 
 from wenu.charts.command_line import (
     add_chart_cli_arguments,
+    chart_view_requests_from_arguments,
     draw_chart_view_from_arguments,
 )
 from wenu.charts.request import CHART_LANGUAGES
+from wenu.charts.sequence import (
+    ObserverTimeChartSequenceRequest,
+    generate_observer_time_chart_sequence,
+)
+from wenu.charts.sequence_arguments import (
+    add_chart_sequence_arguments,
+    chart_sequence_cli_options,
+)
 from wenu.charts.subject_arguments import (
     add_constellation_subject_arguments,
     chart_constellation_subject,
@@ -46,6 +55,7 @@ def _add_common_arguments(parser, *, family):
         default_equatorial_grid=family != "binocular",
     )
     _add_observer_arguments(parser)
+    add_chart_sequence_arguments(parser)
     parser.add_argument("--title")
     parser.add_argument("--language", choices=CHART_LANGUAGES)
 
@@ -267,14 +277,47 @@ def generate(arguments):
             **_subject_arguments(arguments, values),
             **_view_arguments(arguments),
         )
-        results = draw_chart_view_from_arguments(
+        sequence_options = chart_sequence_cli_options(
+            arguments,
+            start=getattr(observer, "utc_datetime", None),
+            default_display_timezone=(
+                getattr(observer, "timezone_name", None) or "UTC"
+            ),
+            defaults=configuration.sequence,
+        )
+        common_options = {
+            "stem": _stem(view),
+            "title": arguments.title,
+            "language": arguments.language,
+        }
+        if sequence_options is None:
+            results = draw_chart_view_from_arguments(
+                view,
+                arguments,
+                **common_options,
+            )
+            return tuple(result.output for result in results)
+        requests = chart_view_requests_from_arguments(
             view,
             arguments,
-            stem=_stem(view),
-            title=arguments.title,
-            language=arguments.language,
+            sequence=True,
+            **common_options,
         )
-        return tuple(result.output for result in results)
+        if len(requests) != 1:
+            raise RuntimeError(
+                "A CLI chart sequence must resolve exactly one chart request."
+            )
+        sequence = ObserverTimeChartSequenceRequest(
+            chart=requests[0],
+            timeline=sequence_options.timeline,
+            playback=sequence_options.playback,
+            configuration=configuration,
+        )
+        generation = generate_observer_time_chart_sequence(
+            sequence,
+            restart_policy=sequence_options.restart_policy,
+        )
+        return generation.outputs
     finally:
         observer.close()
 

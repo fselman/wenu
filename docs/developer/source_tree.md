@@ -773,3 +773,22 @@ not enter through the observer-time sequence API.
 
 Manifest logic does not construct or cache sky state and does not render,
 project, clip, style, encode, or infer astronomical equivalence.
+
+
+## Temporal sequence CLI modules (Milestone 49G.4)
+
+`charts/sequence_arguments.py` owns the public temporal CLI vocabulary and
+translates explicit switches over immutable TOML defaults into
+`TemporalTimeline`, optional `PlaybackSpec`, and `SequenceRestartPolicy`.
+It performs no chart construction, rendering, caching, or media encoding.
+
+`configuration/sequence_translation.py` owns immutable `SequenceDefaults`.
+The aggregate configuration contract transports it with existing style,
+mode, detail, furniture, product, and export defaults.
+
+`charts/command_line.py` now resolves one shared static/sequence product plan.
+`charts/drawing.py::chart_view_request()` converts that plan into the same
+immutable `ChartRequest` used by ordinary drawing. The installed
+`cli/chart.py` chooses static drawing or the existing sequence orchestrator
+after this common translation; it does not own another scientific or export
+pipeline.

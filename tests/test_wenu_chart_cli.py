@@ -1,5 +1,6 @@
 """Installed unified command over Wenu's ordinary chart facade."""
 
+from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -294,3 +295,104 @@ def test_family_help_exposes_public_output_formats_only():
         "--svg-font-policy" not in action.option_strings
         for action in regional._actions
     )
+
+
+def test_family_help_exposes_temporal_sequence_controls():
+    regional = chart.parser().parse_args([
+        "regional",
+        "--observer-time", "2026-08-21T21:00:00-04:00",
+        "--sequence-stop", "2026-08-22T03:00:00-04:00",
+        "--sequence-frames", "25",
+        "--display-timezone", "America/Santiago",
+        "--playback-duration", "2",
+        "--frames-per-second", "12.5",
+        "--restart-policy", "resume",
+    ])
+
+    assert regional.sequence_stop == "2026-08-22T03:00:00-04:00"
+    assert regional.sequence_frames == 25
+    assert regional.display_timezone == "America/Santiago"
+    assert regional.playback_duration == pytest.approx(2.0)
+    assert regional.frames_per_second == pytest.approx(12.5)
+    assert regional.restart_policy == "resume"
+
+
+def test_sequence_cli_delegates_to_canonical_sequence_api(
+    monkeypatch,
+    tmp_path,
+):
+    calls = []
+    observer = SimpleNamespace(
+        utc_datetime=datetime(2026, 8, 22, 1, tzinfo=timezone.utc),
+        timezone_name="America/Santiago",
+        close=lambda: calls.append(("close",)),
+    )
+    view = SimpleNamespace(
+        family="circumpolar",
+        constellations=None,
+        target=None,
+    )
+    chart_request = object()
+    sequence_request = object()
+    monkeypatch.setattr(chart, "Observer", lambda **kwargs: observer)
+    monkeypatch.setattr(chart, "generate_celestial_sphere", lambda: object())
+    monkeypatch.setattr(chart, "get_chart_view", lambda *args, **kwargs: view)
+    monkeypatch.setattr(
+        chart,
+        "draw_chart_view_from_arguments",
+        lambda *args, **kwargs: pytest.fail("sequence used static draw"),
+    )
+    monkeypatch.setattr(
+        chart,
+        "chart_view_requests_from_arguments",
+        lambda *args, **kwargs: (
+            calls.append(("requests", kwargs)) or (chart_request,)
+        ),
+    )
+    monkeypatch.setattr(
+        chart,
+        "ObserverTimeChartSequenceRequest",
+        lambda **kwargs: (
+            calls.append(("sequence", kwargs)) or sequence_request
+        ),
+    )
+    monkeypatch.setattr(
+        chart,
+        "generate_observer_time_chart_sequence",
+        lambda request, **kwargs: (
+            calls.append(("generate", request, kwargs))
+            or SimpleNamespace(
+                outputs=(
+                    tmp_path / "frames" / "frame-0000.png",
+                    tmp_path / "frames" / "frame-0001.png",
+                )
+            )
+        ),
+    )
+
+    outputs = chart.generate(chart.parser().parse_args([
+        "circumpolar",
+        "--observer-time", "2026-08-21T21:00:00-04:00",
+        "--sequence-stop", "2026-08-22T03:00:00-04:00",
+        "--sequence-frames", "2",
+        "--format", "png",
+        "--output", str(tmp_path / "frames"),
+        "--restart-policy", "resume",
+    ]))
+
+    assert outputs == (
+        tmp_path / "frames" / "frame-0000.png",
+        tmp_path / "frames" / "frame-0001.png",
+    )
+    assert calls[0][0] == "requests"
+    assert calls[0][1]["sequence"] is True
+    assert calls[1][0] == "sequence"
+    assert calls[1][1]["chart"] is chart_request
+    assert calls[1][1]["timeline"].frame_count == 2
+    assert calls[1][1]["configuration"] is not None
+    assert calls[2] == (
+        "generate",
+        sequence_request,
+        {"restart_policy": "resume"},
+    )
+    assert calls[3] == ("close",)

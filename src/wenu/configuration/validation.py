@@ -43,6 +43,8 @@ class ConfigurationError(ValueError):
 _OPTIONAL_NUMBERS = frozenset(
     {
         "observer.elevation",
+        "sequence.playback_duration",
+        "sequence.frames_per_second",
         "families.regional_single.width",
         "families.regional_single.height",
         "families.regional_group.width",
@@ -61,7 +63,10 @@ _OPTIONAL_NUMBERS = frozenset(
         "furniture.magnitude_legend.title_font_size",
     }
 )
-_OPTIONAL_INTEGERS = frozenset({"detail.neutral.extended_samples"})
+_OPTIONAL_INTEGERS = frozenset({
+    "detail.neutral.extended_samples",
+    "sequence.frames",
+})
 _OPTIONAL_LISTS = frozenset(
     {
         "detail.neutral.enabled_layers",
@@ -135,6 +140,7 @@ _NONNEGATIVE_NAMES = frozenset(
     }
 )
 _ENUMS = {
+    "sequence.restart_policy": {"restart", "resume"},
     "families.all_sky.projection": {"mollweide"},
     "families.all_sky.coordinate_frame": {"galactic"},
     "families.planisphere.projection": {"stereographic"},
@@ -392,6 +398,39 @@ def _validate_semantics(configuration: Mapping[str, Any]) -> None:
                 "meridian_declination_maximum",
             } and not -90.0 <= number <= 90.0:
                 _error(path, "must be in the interval [-90, 90]")
+
+    sequence = configuration["sequence"]
+    enabled = sequence["stop"] != "none"
+    if enabled != (sequence["frames"] != "none"):
+        _error(
+            "sequence.frames",
+            "stop and frames must both be \"none\" or both be configured",
+        )
+    playback_enabled = sequence["playback_duration"] != "none"
+    if playback_enabled != (sequence["frames_per_second"] != "none"):
+        _error(
+            "sequence.frames_per_second",
+            "playback duration and frame rate must both be \"none\" or "
+            "both be configured",
+        )
+    if not enabled and playback_enabled:
+        _error(
+            "sequence.playback_duration",
+            "playback requires a configured observer-time sequence",
+        )
+    if sequence["frames"] != "none" and sequence["frames"] < 2:
+        _error("sequence.frames", "must be at least 2")
+    for name in ("playback_duration", "frames_per_second"):
+        value = sequence[name]
+        if value != "none" and value <= 0:
+            _error(f"sequence.{name}", "must be positive")
+    if playback_enabled and round(
+        sequence["playback_duration"] * sequence["frames_per_second"]
+    ) != sequence["frames"]:
+        _error(
+            "sequence.frames_per_second",
+            "playback duration and frame rate must imply sequence frames",
+        )
 
     samples = configuration["grids_references"]["coordinate_grid"]["samples"]
     if samples % 2 == 0:
