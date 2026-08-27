@@ -186,9 +186,10 @@ a concrete requirement that Matplotlib's backend cannot meet.
 
 ## 10. Milestone 49G - Temporal sequence contract
 
-**Status:** 49G.1 immutable timeline and playback vocabulary and 49G.2
-observer-time sequence orchestration implemented; CLI, manifests, acceptance,
-and reuse remain pending.
+**Status:** 49G.1 immutable timeline and playback vocabulary implemented.
+
+**Status:** 49G.2 observer-time sequence orchestration implemented; CLI,
+manifests, acceptance, and reuse remain pending.
 
 The implemented contracts are documented in
 `temporal_sequence_contract_49g1.md` and
