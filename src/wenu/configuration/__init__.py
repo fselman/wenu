@@ -10,6 +10,7 @@ from .validation import (
     validate_configuration,
     validate_configuration_overlay,
 )
+from .sequence_translation import SequenceDefaults, translate_sequence_defaults
 from .style_mode_translation import (
     packaged_style_mode_defaults,
     StyleModeDefaults,
@@ -49,7 +50,9 @@ __all__ = [
     "parse_configuration_overlay",
     "packaged_style_mode_defaults",
     "ProductDefaults",
+    "SequenceDefaults",
     "StyleModeDefaults",
+    "translate_sequence_defaults",
     "translate_style_mode_defaults",
     "translate_geometry_detail_defaults",
     "translate_furniture_product_export_defaults",
