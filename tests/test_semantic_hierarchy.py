@@ -6,8 +6,21 @@ import pytest
 
 from wenu.sky.semantic_identity import (
     SemanticLayerIdentity,
+    semantic_key,
     semantic_layer_identity,
 )
+
+
+
+def test_numeric_catalog_designation_gets_a_safe_stable_key():
+    assert semantic_key(
+        "1636-283",
+        field="semantic entity key",
+        numeric_prefix="catalog",
+    ) == "catalog_1636_283"
+
+    with pytest.raises(ValueError, match="has no safe semantic key"):
+        semantic_key("1636-283", field="semantic layer key")
 
 
 def identity(name, *, coordinate_system=None):
