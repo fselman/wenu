@@ -790,7 +790,8 @@ def test_temporal_sequence_cli_documents_shared_translation_and_acceptance():
         "eaf7f6d8cfbfb27376baf85bfb80613a86b67f0f0a40458961386299efac2f68",
         "pixel-identical decoded RGBA",
         "compressed PNG bytes differed",
-        "118 passed in 29.70s",
+        "163 passed in 28.30s",
+        "1744 passed in 80.10s",
     ):
         assert value in contract
 
