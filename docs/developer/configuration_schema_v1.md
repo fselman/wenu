@@ -17,15 +17,16 @@ The root is a TOML table containing the scalar `schema_version = 1`, followed
 by these top-level tables in this exact order:
 
 1. `observer`
-2. `subjects`
-3. `families`
-4. `detail`
-5. `styles`
-6. `modes`
-7. `grids_references`
-8. `furniture`
-9. `products`
-10. `export`
+2. `sequence`
+3. `subjects`
+4. `families`
+5. `detail`
+6. `styles`
+7. `modes`
+8. `grids_references`
+9. `furniture`
+10. `products`
+11. `export`
 
 The packaged document is complete. A user document is a partial overlay but
 must still declare `schema_version`. Tables and keys are emitted in the order
@@ -79,6 +80,21 @@ its type or its closed vocabulary.
 - `timezone`: optional-string
 - `ephemeris`: optional-string
 - `data_directory`: optional-string
+
+### `sequence`
+
+- `stop`: optional ISO 8601 datetime string with explicit UTC offset;
+- `frames`: optional integer, at least 2 when active;
+- `display_timezone`: optional IANA time-zone name;
+- `playback_duration`: optional positive seconds;
+- `frames_per_second`: optional positive number;
+- `restart_policy`: `restart` or `resume`.
+
+`stop` and `frames` are both `none` for static generation or both active
+for a uniform inclusive sequence. Playback duration and frame rate are
+likewise absent or present together, and their product must imply the frame
+count. The ordinary observer time remains the sequence start. Explicit CLI
+values override these defaults.
 
 ### `subjects`
 
