@@ -112,6 +112,20 @@ class MatplotlibRenderer:
                     flattened.append(artist)
 
         collect(artists)
+        existing_counts = Counter()
+        figures = {
+            getattr(artist, "get_figure", lambda: None)()
+            for artist in flattened
+        }
+        for figure in figures - {None}:
+            for existing_artist in figure.findobj():
+                base_id = getattr(
+                    existing_artist,
+                    "_wenu_semantic_svg_base_id",
+                    None,
+                )
+                if base_id is not None:
+                    existing_counts[base_id] += 1
         identities = []
         entity_flags = []
         lock_owner_paths = []
@@ -141,7 +155,7 @@ class MatplotlibRenderer:
             entity_flags.append(entity_key is not None)
             lock_owner_paths.append(lock_owner_path)
         totals = Counter(item.svg_id for item in identities)
-        positions = Counter()
+        positions = Counter(existing_counts)
         results = []
         for artist, artist_identity, is_entity, lock_owner_path in zip(
             flattened,
@@ -154,12 +168,16 @@ class MatplotlibRenderer:
                 getattr(artist_identity, "exact_svg_id", False)
             )
             positions[artist_identity.svg_id] += 1
-            width = max(4, len(str(totals[artist_identity.svg_id])))
+            total = (
+                existing_counts[artist_identity.svg_id]
+                + totals[artist_identity.svg_id]
+            )
+            width = max(4, len(str(total)))
             svg_id = (
                 artist_identity.svg_id
                 if (
                     (exact or is_entity)
-                    and totals[artist_identity.svg_id] == 1
+                    and total == 1
                 )
                 else (
                     f"{artist_identity.svg_id}--"
@@ -167,6 +185,11 @@ class MatplotlibRenderer:
                 )
             )
             artist.set_gid(svg_id)
+            setattr(
+                artist,
+                "_wenu_semantic_svg_base_id",
+                artist_identity.svg_id,
+            )
             zorder = float(artist.get_zorder())
             paint_role = paint_role_for_zorder(zorder)
             attach_semantic_svg_metadata(
