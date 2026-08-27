@@ -70,6 +70,8 @@ class MatplotlibRenderer:
         from matplotlib.patches import PathPatch
 
         path = self._closed_boundary_path(boundary)
+        for spine in self.ax.spines.values():
+            spine.set_visible(False)
         patch = PathPatch(
             path,
             **({} if style is None else dict(style)),
