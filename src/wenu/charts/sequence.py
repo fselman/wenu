@@ -1,0 +1,177 @@
+"""Canonical repeated-static-render chart sequences."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, replace
+from datetime import datetime
+from pathlib import Path
+from typing import Callable
+
+from wenu.temporal import PlaybackSpec, TemporalTimeline
+
+from .product_options import ChartProductOptions
+from .request import ChartRequest
+from .request_generation import (
+    ChartRequestGeneration,
+    generate_chart_request,
+)
+
+
+@dataclass(frozen=True)
+class ChartSequenceFrame:
+    """One deterministic static chart request in a temporal sequence."""
+
+    index: int
+    simulation_time: datetime
+    display_time: datetime
+    name: str
+    request: ChartRequest
+    expected_output: Path
+
+
+@dataclass(frozen=True)
+class ChartSequenceRequest:
+    """One immutable chart product paired with one physical timeline."""
+
+    chart: ChartRequest
+    timeline: TemporalTimeline
+    playback: PlaybackSpec | None = None
+
+    def __post_init__(self):
+        if not isinstance(self.chart, ChartRequest):
+            raise TypeError("chart must be a ChartRequest.")
+        if not isinstance(self.timeline, TemporalTimeline):
+            raise TypeError("timeline must be a TemporalTimeline.")
+        if self.playback is not None:
+            if not isinstance(self.playback, PlaybackSpec):
+                raise TypeError("playback must be a PlaybackSpec or None.")
+            self.playback.validate_timeline(self.timeline)
+        product = self.chart.product
+        if product.all_products:
+            raise ValueError(
+                "The first sequence contract accepts one chart product."
+            )
+        if product.output_format is None:
+            raise ValueError(
+                "A chart sequence requires an explicit output format."
+            )
+        if product.output.suffix:
+            raise ValueError(
+                "A chart sequence output must be a directory."
+            )
+
+    @property
+    def frame_count(self) -> int:
+        return self.timeline.frame_count
+
+    @property
+    def frames(self) -> tuple[ChartSequenceFrame, ...]:
+        """Resolve immutable per-frame requests without rendering."""
+        product = self.chart.product
+        suffix = product.output_format.extension
+        frames = []
+        for index, (instant, display_instant) in enumerate(
+            zip(
+                self.timeline.instants,
+                self.timeline.display_instants,
+                strict=True,
+            )
+        ):
+            name = self.timeline.frame_name(index, suffix=suffix)
+            output = product.output / name
+            frame_product = replace(product, output=output)
+            observer = replace(self.chart.observer, time=instant)
+            request = replace(
+                self.chart,
+                observer=observer,
+                product=frame_product,
+            )
+            frames.append(
+                ChartSequenceFrame(
+                    index=index,
+                    simulation_time=instant,
+                    display_time=display_instant,
+                    name=name,
+                    request=request,
+                    expected_output=output,
+                )
+            )
+        return tuple(frames)
+
+
+@dataclass(frozen=True)
+class ChartSequenceFrameResult:
+    """Completed canonical generation for one sequence frame."""
+
+    frame: ChartSequenceFrame
+    generation: ChartRequestGeneration
+
+    def __post_init__(self):
+        if not isinstance(self.frame, ChartSequenceFrame):
+            raise TypeError("frame must be a ChartSequenceFrame.")
+        if not isinstance(self.generation, ChartRequestGeneration):
+            raise TypeError(
+                "generation must be a ChartRequestGeneration."
+            )
+        if self.generation.outputs != (self.frame.expected_output,):
+            raise ValueError(
+                "Static generation outputs do not match the frame plan."
+            )
+
+    @property
+    def output(self) -> Path:
+        return self.frame.expected_output
+
+
+@dataclass(frozen=True)
+class ChartSequenceGeneration:
+    """Ordered immutable results from complete canonical static renders."""
+
+    request: ChartSequenceRequest
+    frames: tuple[ChartSequenceFrameResult, ...]
+
+    def __post_init__(self):
+        if not isinstance(self.request, ChartSequenceRequest):
+            raise TypeError("request must be a ChartSequenceRequest.")
+        frames = tuple(self.frames)
+        if len(frames) != self.request.frame_count:
+            raise ValueError(
+                "Sequence result count does not match its timeline."
+            )
+        if tuple(item.frame.index for item in frames) != tuple(
+            range(len(frames))
+        ):
+            raise ValueError("Sequence frame results must remain ordered.")
+        object.__setattr__(self, "frames", frames)
+
+    @property
+    def outputs(self) -> tuple[Path, ...]:
+        return tuple(item.output for item in self.frames)
+
+
+def generate_chart_sequence(
+    request: ChartSequenceRequest,
+    *,
+    generator: Callable[[ChartRequest], ChartRequestGeneration] = (
+        generate_chart_request
+    ),
+) -> ChartSequenceGeneration:
+    """Generate each frame through the canonical static request executor."""
+    if not isinstance(request, ChartSequenceRequest):
+        raise TypeError("request must be a ChartSequenceRequest.")
+    if not callable(generator):
+        raise TypeError("generator must be callable.")
+
+    results = []
+    for frame in request.frames:
+        generation = generator(frame.request)
+        results.append(
+            ChartSequenceFrameResult(
+                frame=frame,
+                generation=generation,
+            )
+        )
+    return ChartSequenceGeneration(
+        request=request,
+        frames=tuple(results),
+    )
