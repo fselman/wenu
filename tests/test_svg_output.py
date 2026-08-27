@@ -470,8 +470,8 @@ def test_constellation_entities_form_a_shallow_system_specific_group(tmp_path):
     )
     assert lines.get(insensitive) == "true"
     assert lines.get("data-wenu-locked") == "true"
-    assert cru.get(insensitive) == "true"
-    assert mus.get(insensitive) == "true"
+    assert cru.get(insensitive) is None
+    assert mus.get(insensitive) is None
     assert all(
         child.get("data-wenu-lock-owner-path")
         == "sky/constellations/lines_western"
@@ -479,7 +479,7 @@ def test_constellation_entities_form_a_shallow_system_specific_group(tmp_path):
         for child in entity
     )
     assert all(
-        child.get(insensitive) == "true"
+        child.get(insensitive) is None
         for entity in (cru, mus)
         for child in entity
     )
@@ -669,7 +669,7 @@ def test_chart_semantics_form_a_parallel_hierarchy(tmp_path):
     assert mask.get(insensitive) == "true"
     assert by_id[
         "wenu-chart-outside-constellation-group-mask"
-    ].get(insensitive) == "true"
+    ].get(insensitive) is None
     assert by_id["wenu-group-furniture"].get(insensitive) is None
 
 

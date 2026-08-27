@@ -409,17 +409,11 @@ def _group_semantic_siblings(parent, candidates):
             if semantic_path[:len(path_parts)] == path_parts
         ))
 
-    def protected_path(path_parts):
-        return any(
-            path_parts[:len(owner_path)] == owner_path
-            for owner_path in lock_owner_paths
-        )
-
     def lockable(path_parts):
         policy = descendant_policies(path_parts)
         return (
             len(path_parts) > 1
-            and protected_path(path_parts)
+            and path_parts in lock_owner_paths
             and bool(policy)
             and policy <= {"style", "none"}
         )
@@ -505,11 +499,6 @@ def _group_semantic_siblings(parent, candidates):
         for child_path in child_paths:
             group.append(build_group(child_path))
         for element in by_path.get(path_parts, ()):
-            if element.get("data-wenu-edit") in {"style", "none"}:
-                element.set(
-                    f"{{{_SODIPODI_NAMESPACE}}}insensitive", "true"
-                )
-                element.set("data-wenu-locked", "true")
             group.append(element)
         return group
 

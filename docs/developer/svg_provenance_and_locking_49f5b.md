@@ -49,10 +49,9 @@ Physical locking uses Inkscape's `sodipodi:insensitive="true"`. This is an
 editor convenience, not access control, and another SVG editor may ignore it.
 The `data-wenu-edit` value is therefore still the cross-editor contract.
 
-Locking is layered from a supplied semantic owner through its entity groups
-and drawing primitives. A merely organizational ancestor is never locked just
-because all the content enabled in one chart happens to share a policy. For
-example:
+One physical lock is placed on each supplied semantic owner. A merely
+organizational ancestor is never locked just because all the content enabled
+in one chart happens to share a policy. For example:
 
 The renderer-neutral `data-wenu-lock-owner-path` records that supplied owner
 explicitly. Entity subdivision does not change it: individual constellation
@@ -62,30 +61,47 @@ from astronomy names or from the accidental shape of a particular export.
 
 - `Constellations` remains unlocked because it is organizational, regardless
   of which constellation components are enabled;
-- `Lines-Western`, its individual constellation groups, and their drawing
-  primitives are locked;
+- `Lines-Western` is locked, while its descendant objects are not redundantly
+  locked;
 - `Labels-Western` remains unlocked because label placement is a layout edit.
 
 This rule also applies to grids: the coordinate-system parent is mixed, its
-line branch and line primitives are locked, and its label branch is unlocked.
+line-owner branch is locked, and its label branch is unlocked.
 
-The layered physical locks reflect an Inkscape 1.4.4 acceptance finding:
-locking only an owning group blocked translation but still left descendants
-shown as unlocked and allowed their geometry to be resized. With layered
-locks, a designer unlocks only the level required by the intended operation:
+Inkscape 1.4.4 acceptance established an important limitation. Its lock is a
+selection lock, not a geometry constraint. It prevents ordinary canvas-tool
+selection, but an object selected through Layers and Objects or the XML editor
+can still be transformed. Applying the same lock redundantly to descendants
+does not change that behavior and only makes editing more cumbersome.
 
-- unlock the owner for class-level appearance changes;
-- unlock one entity group for entity-level appearance changes; or
-- unlock one primitive only for a deliberate individual edit.
+Therefore `data-wenu-edit` remains the authoritative workflow contract:
+
+- `style` means appearance changes are supported but transforms are not;
+- `layout` means appearance and placement changes are supported; and
+- `none` means no edit is supported.
+
+The Inkscape lock reduces accidental canvas edits but cannot enforce that
+contract. A future Wenu round-trip validator should compare edited SVG
+geometry with the exported source, reject geometry changes to `style` and
+`none` content, and permit style-only and declared `layout` changes.
+
+The physical lock is also editor-specific. Illustrator must not be expected
+to translate `sodipodi:insensitive` into a native Illustrator lock. Illustrator
+can lock native objects and layers, but direct appearance editing requires an
+editable selection that can also be transformed. Shared or global colors can
+change some appearance indirectly while artwork remains locked, but they do
+not provide the complete Wenu `style` contract for strokes, opacity, fonts,
+and individual refinements.
 
 ## Acceptance
 
 Automated verification covers one metadata element, preservation of existing
 Dublin Core content, canonical parameter JSON, reproducible UTC dates, source
-revision recording, provenance without semantic artists, homogeneous branch
-locking, mixed-parent behavior, and layered descendant protection.
+revision recording, provenance without semantic artists, owner-branch
+locking, mixed-parent behavior, and absence of redundant descendant locks.
 
 Mac acceptance must additionally confirm in Inkscape 1.4.4 that locks appear
-in Layers and Objects, locked line geometry cannot be moved or resized, an
-unlocked label remains movable, unlocking one line branch enables style work,
-and an Inkscape Save As round trip preserves both provenance and Wenu policy.
+in Layers and Objects, ordinary canvas selection respects an owner lock, an
+unlocked label remains movable, owner-level styling remains practical, and an
+Inkscape Save As round trip preserves provenance, locks, and Wenu policy. The
+acceptance record must not claim that Inkscape enforces geometry immutability.
