@@ -103,12 +103,12 @@ def _semantic_token(value):
     if "J2000" in text or text.startswith(("FK", "ICRS")):
         return "coordinates-frame"
     if text.lstrip("+-").isdigit():
-        return f"magnitude-{text.replace('+', 'plus-').replace('-', 'minus-')}"
+        return text.replace("+", "plus-").replace("-", "minus-")
     token = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
     return token or "entry"
 
 
-def _name_legend_contents(legend, prefix):
+def _name_legend_contents(legend, prefix, *, entry_prefix=""):
     """Pair legend symbols and descriptions with meaningful SVG IDs."""
     frame = getattr(legend, "get_frame", lambda: None)()
     if frame is not None:
@@ -124,8 +124,11 @@ def _name_legend_contents(legend, prefix):
         count = used.get(base, 0) + 1
         used[base] = count
         token = base if count == 1 else f"{base}-{count}"
-        handle.set_gid(f"{prefix}-{token}-symbol")
-        label.set_gid(f"{prefix}-{token}-label")
+        entry = (
+            f"{entry_prefix}-{token}" if entry_prefix else token
+        )
+        handle.set_gid(f"{entry}-symbol")
+        label.set_gid(f"{entry}-label")
 
 
 def assign_furniture_semantics(renderer, rendering):
@@ -173,7 +176,11 @@ def assign_furniture_semantics(renderer, rendering):
         )
     stars = getattr(getattr(legends, "stars", None), "artist", None)
     if stars is not None:
-        _name_legend_contents(stars, "magnitude-scale")
+        _name_legend_contents(
+            stars,
+            "magnitude-scale",
+            entry_prefix="mag",
+        )
         assign(
             (stars,),
             SemanticArtistIdentity(
