@@ -138,3 +138,34 @@ def test_manifest_requires_offset_aware_frame_times(tmp_path):
 
     with pytest.raises(ValueError, match="UTC offset"):
         ObserverTimeSequenceManifest.from_json(json.dumps(document))
+
+
+def test_completion_records_do_not_change_plan_identity(tmp_path):
+    request = sequence(tmp_path / "frames")
+    manifest = ObserverTimeSequenceManifest.from_sequence(request)
+    output = request.frames[0].expected_output
+    output.parent.mkdir(parents=True)
+    output.write_bytes(b"verified frame")
+
+    completed = manifest.with_completed_output(0, output)
+
+    assert completed.identity_sha256 == manifest.identity_sha256
+    assert completed.frames[0].is_complete
+    assert completed.frames[0].output_bytes == len(b"verified frame")
+    assert completed.output_is_valid(0, output)
+    output.write_bytes(b"changed")
+    assert not completed.output_is_valid(0, output)
+
+
+def test_completion_progress_survives_manifest_round_trip(tmp_path):
+    request = sequence(tmp_path / "frames")
+    manifest = ObserverTimeSequenceManifest.from_sequence(request)
+    output = request.frames[1].expected_output
+    output.parent.mkdir(parents=True)
+    output.write_bytes(b"second frame")
+    completed = manifest.with_completed_output(1, output)
+
+    restored = ObserverTimeSequenceManifest.from_json(completed.to_json())
+
+    assert restored == completed
+    assert restored.output_is_valid(1, output)
