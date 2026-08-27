@@ -116,11 +116,11 @@ from .temporal import (
     TimeScale,
 )
 from .charts.sequence import (
-    ChartSequenceFrame,
-    ChartSequenceFrameResult,
-    ChartSequenceGeneration,
-    ChartSequenceRequest,
-    generate_chart_sequence,
+    ObserverTimeChartSequenceFrame,
+    ObserverTimeObserverTimeChartSequenceFrameResult,
+    ObserverTimeChartSequenceGeneration,
+    ObserverTimeChartSequenceRequest,
+    generate_observer_time_chart_sequence,
 )
 from .charts.request_grids import (
     configure_chart_request_grids,
@@ -490,11 +490,11 @@ __all__ = [
     "SamplingKind",
     "TemporalTimeline",
     "TimeScale",
-    "ChartSequenceFrame",
-    "ChartSequenceFrameResult",
-    "ChartSequenceGeneration",
-    "ChartSequenceRequest",
-    "generate_chart_sequence",
+    "ObserverTimeChartSequenceFrame",
+    "ObserverTimeObserverTimeChartSequenceFrameResult",
+    "ObserverTimeChartSequenceGeneration",
+    "ObserverTimeChartSequenceRequest",
+    "generate_observer_time_chart_sequence",
     "configure_chart_request_grids",
     "requested_coordinate_grids",
     "configure_chart_request_horizon",
