@@ -1324,10 +1324,26 @@ def test_legend_symbols_and_labels_receive_matching_semantic_names():
     assert frame.gid == "key-frame"
     assert title.gid == "key-title"
     assert [item.gid for item in handles] == [
-        "key-open-cluster-symbol",
-        "key-magnitude-3-symbol",
+        "open-cluster-symbol",
+        "3-symbol",
     ]
     assert [item.gid for item in labels] == [
-        "key-open-cluster-label",
-        "key-magnitude-3-label",
+        "open-cluster-label",
+        "3-label",
     ]
+
+    magnitude_handle = Item()
+    magnitude_label = Item("3")
+    magnitude = SimpleNamespace(
+        legend_handles=(magnitude_handle,),
+        get_frame=lambda: Item(),
+        get_title=lambda: Item(),
+        get_texts=lambda: (magnitude_label,),
+    )
+    _name_legend_contents(
+        magnitude,
+        "magnitude-scale",
+        entry_prefix="mag",
+    )
+    assert magnitude_handle.gid == "mag-3-symbol"
+    assert magnitude_label.gid == "mag-3-label"
