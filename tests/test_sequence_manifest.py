@@ -19,6 +19,7 @@ from wenu.charts.sequence_manifest import (
     read_observer_time_sequence_manifest,
     write_observer_time_sequence_manifest,
 )
+from wenu.configuration import load_configuration_defaults
 from wenu.output_policy import OutputFormat
 from wenu.temporal import PlaybackSpec, TemporalTimeline
 
@@ -169,3 +170,24 @@ def test_completion_progress_survives_manifest_round_trip(tmp_path):
 
     assert restored == completed
     assert restored.output_is_valid(1, output)
+
+
+def test_manifest_identity_includes_effective_configuration(tmp_path):
+    plain = sequence(tmp_path / "frames")
+    configured = replace(
+        plain,
+        configuration=load_configuration_defaults(),
+    )
+
+    plain_manifest = ObserverTimeSequenceManifest.from_sequence(plain)
+    configured_manifest = ObserverTimeSequenceManifest.from_sequence(configured)
+    restored = ObserverTimeSequenceManifest.from_json(
+        configured_manifest.to_json()
+    )
+
+    assert plain_manifest.configuration is None
+    assert configured_manifest.configuration is not None
+    assert configured_manifest.identity_sha256 != plain_manifest.identity_sha256
+    assert restored == configured_manifest
+    with pytest.raises(ValueError, match="incompatible"):
+        plain_manifest.assert_compatible(configured)
