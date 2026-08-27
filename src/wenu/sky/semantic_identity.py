@@ -22,6 +22,26 @@ class SemanticLayerContract:
     style_role: str
 
 
+@dataclass(frozen=True)
+class SemanticComponentContract:
+    """Semantic identity for one renderer-declared part of a sky layer."""
+
+    path_component: str
+    display_name: str
+    style_role_suffix: str
+    edit_policy: EditPolicy
+
+
+_GRID_COMPONENT_CONTRACTS = {
+    "lines": SemanticComponentContract(
+        "lines", "lines", "lines", EditPolicy.STYLE
+    ),
+    "labels": SemanticComponentContract(
+        "labels", "labels", "labels", EditPolicy.LAYOUT
+    ),
+}
+
+
 _LAYER_CONTRACTS = {
     "galaxies": SemanticLayerContract(
         ("sky", "galaxies"), "Galaxies", 10, "galaxies"
@@ -133,6 +153,9 @@ class SemanticLayerIdentity:
     display_name: str = ""
     presentation_order: int | None = None
     style_role: str = ""
+    component_contracts: tuple[
+        tuple[str, SemanticComponentContract], ...
+    ] = ()
 
     def __post_init__(self):
         path = self.semantic_path or (self.name,)
@@ -153,6 +176,22 @@ class SemanticLayerIdentity:
             )
         if not self.style_role:
             object.__setattr__(self, "style_role", self.name)
+
+    def component_identity(self, component: str):
+        """Return a declared child identity for one renderer output part."""
+        contracts = dict(self.component_contracts)
+        contract = contracts.get(component)
+        if contract is None:
+            return self
+        return SemanticLayerIdentity(
+            name=f"{self.name}_{contract.path_component}",
+            svg_id=f"{self.svg_id}-{contract.path_component.replace('_', '-')}",
+            edit_policy=contract.edit_policy,
+            semantic_path=(*self.semantic_path, contract.path_component),
+            display_name=f"{self.display_name} {contract.display_name}",
+            presentation_order=self.presentation_order,
+            style_role=f"{self.style_role}_{contract.style_role_suffix}",
+        )
 
     @property
     def semantic_path_text(self) -> str:
@@ -198,6 +237,11 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
         "display_name": contract.display_name,
         "presentation_order": contract.presentation_order,
         "style_role": contract.style_role,
+        "component_contracts": (
+            tuple(_GRID_COMPONENT_CONTRACTS.items())
+            if name.endswith("_grid")
+            else ()
+        ),
     }
     return SemanticLayerIdentity(
         name=name,
