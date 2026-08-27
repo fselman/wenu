@@ -231,9 +231,72 @@ def _group_sky_semantics(path):
     for element in candidates:
         parent.remove(element)
     parent.insert(insertion_index, build_group(("sky",)))
+    _flatten_semantic_text_artists(root)
     _promote_common_label_typography(root)
     tree.write(path, encoding="utf-8", xml_declaration=True)
     return path
+
+
+def _flatten_semantic_text_artists(root):
+    """Expose conservatively wrapped semantic text as actual text objects."""
+    group_tag = f"{{{_SVG_NAMESPACE}}}g"
+    text_tag = f"{{{_SVG_NAMESPACE}}}text"
+    parent_of = {
+        child: parent
+        for parent in root.iter()
+        for child in parent
+    }
+    for wrapper in tuple(root.iter(group_tag)):
+        if (
+            "wenu-semantic-artist"
+            not in wrapper.get("class", "").split()
+        ):
+            continue
+        descendants = list(wrapper.iter())
+        texts = [
+            element for element in descendants if element.tag == text_tag
+        ]
+        if len(texts) != 1:
+            continue
+        if any(
+            element is not wrapper
+            and element.tag not in {group_tag, text_tag}
+            for element in descendants
+        ):
+            continue
+        intermediate_groups = [
+            element
+            for element in descendants
+            if element is not wrapper and element.tag == group_tag
+        ]
+        if any(
+            set(element.attrib) - {"clip-path"}
+            for element in intermediate_groups
+        ):
+            continue
+        text_element = texts[0]
+        clip_paths = {
+            element.get("clip-path")
+            for element in intermediate_groups
+            if element.get("clip-path")
+        }
+        if len(clip_paths) > 1:
+            continue
+        if clip_paths:
+            text_element.set("clip-path", clip_paths.pop())
+        text_attributes = dict(text_element.attrib)
+        text_element.attrib.clear()
+        text_element.attrib.update(wrapper.attrib)
+        text_element.attrib.update(text_attributes)
+        parent = parent_of.get(wrapper)
+        if parent is None:
+            continue
+        index = list(parent).index(wrapper)
+        for intermediate in intermediate_groups:
+            if text_element in list(intermediate):
+                intermediate.remove(text_element)
+        parent.remove(wrapper)
+        parent.insert(index, text_element)
 
 
 def _style_declarations(element):
