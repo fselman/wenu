@@ -857,9 +857,12 @@ def _clip_polygon_boundaries(
             "SphericalPolygons require ProjectedPolygons."
         )
     items = []
-    for latitude, polygon in zip(
-        _polygon_latitudes(spherical, projected),
-        projected,
+    source_indices = []
+    for source_index, (latitude, polygon) in enumerate(
+        zip(
+            _polygon_latitudes(spherical, projected),
+            projected,
+        )
     ):
         for x, y in _visible_segments(
             polygon.x,
@@ -876,9 +879,14 @@ def _clip_polygon_boundaries(
                     name=polygon.name,
                 )
             )
+            source_indices.append(source_index)
     return ProjectedCurves(
         items=items,
-        metadata=dict(projected.metadata),
+        metadata=_subset_metadata(
+            projected.metadata,
+            source_indices,
+            len(projected),
+        ),
     )
 
 
