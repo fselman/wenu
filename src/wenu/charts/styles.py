@@ -582,7 +582,7 @@ class PublicationStyle:
             options[sky.constellation_labels] = {
                 "prepare": clip,
                 "render": {
-                    "style": {"s": 0.0},
+                    "draw_markers": False,
                     "draw_labels": True,
                     "label_style": {
                         "color": (
