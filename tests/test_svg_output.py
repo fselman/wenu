@@ -364,7 +364,7 @@ def test_constellation_entities_form_a_shallow_system_specific_group(tmp_path):
         artists,
         SemanticLayerIdentity(
             name="constellation_lines",
-            svg_id="wenu-layer-constellation-lines-western",
+            svg_id="western-lines",
             semantic_path=(
                 "sky", "constellations", "lines_western"
             ),
@@ -402,11 +402,11 @@ def test_constellation_entities_form_a_shallow_system_specific_group(tmp_path):
         "{http://www.inkscape.org/namespaces/inkscape}label"
     ) == "Mus"
     assert [child.get("id") for child in cru] == [
-        "wenu-layer-constellation-lines-western-cru--0001",
-        "wenu-layer-constellation-lines-western-cru--0002",
+        "western-lines-cru--0001",
+        "western-lines-cru--0002",
     ]
     assert [child.get("id") for child in mus] == [
-        "wenu-layer-constellation-lines-western-mus",
+        "western-lines-mus",
     ]
     assert "sky/constellations/lines_western/western" not in by_path
 

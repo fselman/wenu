@@ -52,6 +52,17 @@ sky/constellations/boundaries_iau/cru
 sky/constellations/labels_western/cru
 ```
 
+Corresponding globally unique but contextual artist IDs remain concise:
+
+```text
+western-lines-cru--0001
+western-labels-cru
+iau-boundaries-cru
+```
+
+The system key is required in an artist ID because two displayed systems may
+use the same entity key. Redundant backend and hierarchy prefixes are omitted.
+
 The SVG serializer knows only the supplied keys, names, and paths. It contains
 no Western, IAU, or other culture-specific constellation catalogue. Lines,
 boundaries, and labels are optional capabilities of a source system.

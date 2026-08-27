@@ -148,6 +148,7 @@ def test_constellation_hierarchy_is_shallow_and_system_agnostic():
         "sky", "constellations", "lines_polynesian_navigation"
     )
     assert resolved.display_name == "Lines-Polynesian Navigation"
+    assert resolved.svg_id == "polynesian-navigation-lines"
     assert resolved.path_display_names == (
         "Sky", "Constellations", "Lines-Polynesian Navigation"
     )
@@ -161,4 +162,4 @@ def test_constellation_hierarchy_is_shallow_and_system_agnostic():
     assert entity.path_display_names[-2:] == (
         "Lines-Polynesian Navigation", "Manu"
     )
-    assert entity.svg_id.endswith("-manu")
+    assert entity.svg_id == "polynesian-navigation-lines-manu"

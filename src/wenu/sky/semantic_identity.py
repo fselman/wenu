@@ -287,6 +287,7 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
                 f"Unsupported semantic edit policy: {configured_policy!r}."
             ) from error
     contract = _LAYER_CONTRACTS.get(name)
+    svg_id = f"wenu-layer-{name.replace('_', '-')}"
     if name in {
         "constellation_lines",
         "constellation_boundaries",
@@ -318,6 +319,7 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
             _LAYER_CONTRACTS[name].presentation_order,
             f"{name}_{system_key}",
         )
+        svg_id = f"{system_key.replace('_', '-')}-{component}"
     options = {} if contract is None else {
         "semantic_path": contract.path,
         "display_name": contract.display_name,
@@ -331,7 +333,7 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
     }
     return SemanticLayerIdentity(
         name=name,
-        svg_id=f"wenu-layer-{name.replace('_', '-')}",
+        svg_id=svg_id,
         edit_policy=edit_policy,
         **options,
     )
