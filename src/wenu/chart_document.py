@@ -213,8 +213,8 @@ def assign_furniture_semantics(
         footer_items = (
             (
                 getattr(footer_rendering, "copyright_text", None),
-                "copyright",
-                "Copyright",
+                "credits",
+                "Credits",
             ),
             (
                 getattr(footer_rendering, "application_text", None),
