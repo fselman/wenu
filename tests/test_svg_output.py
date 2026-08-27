@@ -426,6 +426,7 @@ def test_chart_semantics_form_a_parallel_hierarchy(tmp_path):
         zorder=20.0,
     )
     ax.add_patch(mask_artist)
+    title_artist = ax.text(0.5, 0.9, "Chart title")
     MatplotlibRenderer.assign_semantic_identity(
         (sky_artist,),
         SemanticLayerIdentity(
@@ -453,6 +454,18 @@ def test_chart_semantics_form_a_parallel_hierarchy(tmp_path):
             style_role="outside_mask",
         ),
     )
+    MatplotlibRenderer.assign_semantic_identity(
+        (title_artist,),
+        SemanticArtistIdentity(
+            name="title",
+            svg_id="wenu-furniture-title",
+            edit_policy=EditPolicy.LAYOUT,
+            semantic_path=("furniture", "title"),
+            display_name="Title",
+            presentation_order=90,
+            style_role="title",
+        ),
+    )
     try:
         ExportOptions().save(figure, destination)
     finally:
@@ -467,6 +480,11 @@ def test_chart_semantics_form_a_parallel_hierarchy(tmp_path):
 
     assert "wenu-group-sky" in by_id
     assert "wenu-group-chart" in by_id
+    assert "wenu-group-furniture" in by_id
+    assert "wenu-group-furniture-title" in by_id
+    assert by_id["wenu-furniture-title--artist-0001"].tag.endswith(
+        "}text"
+    )
     masks = by_id["wenu-group-chart-masks_and_boundary"]
     mask = by_id[
         "wenu-group-chart-masks_and_boundary-"
