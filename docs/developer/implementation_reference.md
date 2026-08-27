@@ -1402,3 +1402,44 @@ SVG is the editable vector product; PDF is the portable publication and
 printing product. Ordinary SVG names font families and fallbacks but does not
 embed font files. The supported external-editing rules and safe Inkscape
 workflow are documented in `docs/user_guide/svg_output.md`.
+
+## Temporal sequence vocabulary (Milestone 49G.1)
+
+`src/wenu/temporal.py` defines renderer-neutral immutable time contracts.
+
+`TemporalTimeline` owns strictly increasing, offset-aware physical instants.
+It normalizes them to UTC, keeps an IANA civil/display time zone separate, and
+reports simulation duration, frame count, uniform sampling interval when
+present, sampling kind, civil representations, and deterministic frame names.
+`TemporalTimeline.uniform()` creates an inclusive uniform sample; direct
+construction permits explicitly irregular samples.
+
+`PlaybackSpec` owns only playback duration and frames per second. Its implied
+frame count may be checked against a timeline, but playback never determines
+the meaning of a simulation instant or sampling interval.
+
+`tools/render_circumpolar_movie.py` is the reference consumer. It resolves
+these contracts and still performs complete canonical `wenu_chart` renders
+before invoking external FFmpeg. No package sequence renderer, alternate
+astronomical path, CLI sequence request, or temporal cache exists yet.
+
+### Observer-time chart sequence (Milestone 49G.2)
+
+`ObserverTimeChartSequenceRequest` pairs one immutable `ChartRequest` with
+one `TemporalTimeline`. It currently accepts one explicitly formatted
+product whose configured output is a directory. Planning preserves the chart
+definition and replaces only observer time and the deterministic frame output
+path.
+
+`generate_observer_time_chart_sequence()` has no injectable production
+executor: it calls `generate_chart_request()` for every frame and validates
+the returned static output against its plan. The ordered
+`ObserverTimeChartSequenceGeneration` retains per-frame UTC simulation time,
+civil display time, complete static generation, and output path.
+
+This API is intentionally observer-time-specific. Proper motion and
+precession require a future celestial-realization epoch plus catalogue
+reference epoch, time scale, astrometric propagation, frame, and provenance
+policy. Moving-object providers likewise require their own explicit evaluation
+instant. Neither role is represented by relabelling observer time.
+

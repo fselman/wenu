@@ -1,6 +1,6 @@
 # Wenu post-v0.9 architecture roadmap
 
-**Status:** Accepted future direction; implementation not started
+**Status:** Active; 49F complete and 49G.2 implemented
 
 **Planning baseline:** `52e9411`
 
@@ -151,6 +151,8 @@ through undocumented downstream paths, project, clip, style, or render.
 
 ## 9. Milestone 49F - SVG product verification
 
+**Status:** Complete at `c70cb29` after eight-product cross-product acceptance.
+
 The detailed as-is audit, product contract, font policy, verification matrix,
 2D/3D boundary, constellation-artwork relationship, and implementation stages
 are recorded in `svg_output_audit_and_plan.md`.
@@ -183,6 +185,15 @@ A dedicated SVG renderer is considered only if this verification identifies
 a concrete requirement that Matplotlib's backend cannot meet.
 
 ## 10. Milestone 49G - Temporal sequence contract
+
+**Status:** 49G.1 immutable timeline and playback vocabulary implemented.
+
+**Status:** 49G.2 observer-time sequence orchestration implemented; CLI,
+manifests, acceptance, and reuse remain pending.
+
+The implemented contracts are documented in
+`temporal_sequence_contract_49g1.md` and
+`observer_time_sequence_49g2.md`.
 
 Represent a sequence as one immutable product definition plus an ordered set
 of explicit instants. Separate state by its physical cadence:

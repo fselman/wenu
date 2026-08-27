@@ -652,3 +652,76 @@ def test_svg_cross_product_acceptance_records_all_products():
     ):
         assert value in text
 
+
+def test_temporal_sequence_contract_separates_physical_and_playback_time():
+    contract = (
+        DEVELOPER / "temporal_sequence_contract_49g1.md"
+    ).read_text(encoding="utf-8")
+    roadmap = (
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).read_text(encoding="utf-8")
+    legacy = (
+        DEVELOPER / "polar_delivery_and_astrometry_roadmap.md"
+    ).read_text(encoding="utf-8")
+    implementation = (
+        DEVELOPER / "implementation_reference.md"
+    ).read_text(encoding="utf-8")
+    source_tree = (
+        DEVELOPER / "source_tree.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "TemporalTimeline",
+        "PlaybackSpec",
+        "simulation duration",
+        "Playback speed must never be interpreted as physical time",
+        "CelestialSphere.draw_chart()",
+        "29 passed in 3.42s",
+    ):
+        assert value in contract
+
+    assert "49G.1 immutable timeline and playback vocabulary" in roadmap
+    assert "does not compete" in legacy
+    assert "Temporal sequence vocabulary (Milestone 49G.1)" in implementation
+    assert "Temporal sequence modules (Milestone 49G.1)" in source_tree
+
+
+def test_observer_time_sequence_reserves_astrometric_epoch_ownership():
+    contract = (
+        DEVELOPER / "observer_time_sequence_49g2.md"
+    ).read_text(encoding="utf-8")
+    timeline = (
+        DEVELOPER / "temporal_sequence_contract_49g1.md"
+    ).read_text(encoding="utf-8")
+    roadmap = (
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).read_text(encoding="utf-8")
+    implementation = (
+        DEVELOPER / "implementation_reference.md"
+    ).read_text(encoding="utf-8")
+    source_tree = (
+        DEVELOPER / "source_tree.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "ObserverTimeChartSequenceRequest",
+        "generate_observer_time_chart_sequence()",
+        "catalogue reference epoch",
+        "celestial realization epoch",
+        "provider evaluation instant",
+        "Gaia DR3 J2016.0 TCB",
+        "must not be forced into UTC datetimes",
+        "Real-render acceptance",
+        "894 × 927",
+        "expected six-hour sky",
+        "permanent integration test",
+        "74 passed in 26.69s",
+        "1708 passed in 81.99s",
+    ):
+        assert value in contract
+
+    assert "Proper motion must not be expressed" in timeline
+    assert "49G.2 observer-time" in roadmap
+    assert "Observer-time chart sequence (Milestone 49G.2)" in implementation
+    assert "Observer-time sequence orchestration" in source_tree
+

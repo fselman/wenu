@@ -10,6 +10,8 @@ import shutil
 import struct
 import subprocess
 
+from wenu.temporal import PlaybackSpec, TemporalTimeline
+
 
 DEFAULT_START = "2026-08-21T21:00:00-04:00"
 DEFAULT_DURATION_HOURS = 12.0
@@ -23,6 +25,11 @@ def parser() -> argparse.ArgumentParser:
     value.add_argument("--duration-hours", type=float, default=DEFAULT_DURATION_HOURS)
     value.add_argument("--movie-seconds", type=float, default=DEFAULT_MOVIE_SECONDS)
     value.add_argument("--fps", type=int, default=DEFAULT_FPS)
+    value.add_argument(
+        "--display-timezone",
+        default="America/Santiago",
+        help="IANA civil time zone used only for displayed frame times",
+    )
     value.add_argument(
         "--title",
         default="Constelaciones circumpolares australes",
@@ -71,12 +78,6 @@ def require_program(name: str) -> str:
     return executable
 
 
-def frame_times(start: datetime, duration: timedelta, count: int):
-    if count < 2:
-        raise SystemExit("The movie requires at least two frames")
-    return tuple(start + duration * (index / (count - 1)) for index in range(count))
-
-
 def png_size(path: Path) -> tuple[int, int]:
     with path.open("rb") as stream:
         header = stream.read(24)
@@ -85,20 +86,39 @@ def png_size(path: Path) -> tuple[int, int]:
     return struct.unpack(">II", header[16:24])
 
 
-def render(arguments: argparse.Namespace) -> Path:
+def sequence_contract(
+    arguments: argparse.Namespace,
+) -> tuple[TemporalTimeline, PlaybackSpec]:
+    """Resolve physical and presentation time without rendering."""
     if arguments.duration_hours <= 0.0:
         raise SystemExit("--duration-hours must be positive")
-    if arguments.movie_seconds <= 0.0:
-        raise SystemExit("--movie-seconds must be positive")
-    if arguments.fps <= 0:
-        raise SystemExit("--fps must be positive")
-
-    wenu_chart = require_program("wenu_chart")
-    ffmpeg = require_program("ffmpeg")
     start = aware_datetime(arguments.start)
     duration = timedelta(hours=arguments.duration_hours)
-    frame_count = round(arguments.movie_seconds * arguments.fps)
-    instants = frame_times(start, duration, frame_count)
+    try:
+        playback = PlaybackSpec(
+            duration=timedelta(seconds=arguments.movie_seconds),
+            frames_per_second=arguments.fps,
+        )
+        frame_count = playback.frame_count
+        if frame_count < 2:
+            raise ValueError("The movie requires at least two frames.")
+        timeline = TemporalTimeline.uniform(
+            start,
+            start + duration,
+            frame_count,
+            display_timezone=arguments.display_timezone,
+        )
+        playback.validate_timeline(timeline)
+    except (TypeError, ValueError) as error:
+        raise SystemExit(str(error)) from error
+    return timeline, playback
+
+
+def render(arguments: argparse.Namespace) -> Path:
+    timeline, playback = sequence_contract(arguments)
+    frame_count = timeline.frame_count
+    wenu_chart = require_program("wenu_chart")
+    ffmpeg = require_program("ffmpeg")
     extra = list(arguments.wenu_arguments)
     if extra[:1] == ["--"]:
         extra = extra[1:]
@@ -113,8 +133,10 @@ def render(arguments: argparse.Namespace) -> Path:
     arguments.frames.mkdir(parents=True, exist_ok=True)
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
 
-    for index, instant in enumerate(instants):
-        destination = arguments.frames / f"frame-{index:04d}.png"
+    for index, (instant, display_instant) in enumerate(
+        zip(timeline.instants, timeline.display_instants, strict=True)
+    ):
+        destination = arguments.frames / timeline.frame_name(index)
         print(
             f"[{index + 1:03d}/{frame_count:03d}] "
             f"{instant.isoformat()} -> {destination}",
@@ -126,7 +148,7 @@ def render(arguments: argparse.Namespace) -> Path:
         if arguments.time_in_title:
             title += (
                 f" — {arguments.location_label} — "
-                f"{instant:%Y-%m-%d %H:%M}"
+                f"{display_instant:%Y-%m-%d %H:%M}"
             )
         command = [
             wenu_chart,
