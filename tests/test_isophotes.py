@@ -68,6 +68,12 @@ def test_layer_preserves_compound_ring_topology(tmp_path):
         "ol1:0", "ol1:0"
     ]
     assert geometry.metadata["is_hole"].tolist()[:2] == [False, True]
+    assert geometry.metadata["semantic_entity_keys"].tolist()[:2] == [
+        "isophote_ol1", "isophote_ol1"
+    ]
+    assert geometry.metadata[
+        "semantic_entity_display_names"
+    ].tolist()[:2] == ["Isophote OL1", "Isophote OL1"]
     assert all(np.all(np.isfinite(values)) for values in geometry.lon_deg)
 
 
@@ -113,6 +119,12 @@ def test_renderer_groups_rings_into_one_compound_patch():
         ],
         metadata={
             "compound_id": np.asarray(["level", "level"], dtype=object),
+            "semantic_entity_keys": np.asarray(
+                ["isophote_ol2", "isophote_ol2"], dtype=object
+            ),
+            "semantic_entity_display_names": np.asarray(
+                ["Isophote OL2", "Isophote OL2"], dtype=object
+            ),
         },
     )
     figure, ax = plt.subplots()
@@ -124,10 +136,19 @@ def test_renderer_groups_rings_into_one_compound_patch():
             "face_alpha": 0.2,
             "zorder": layers.MILKY_WAY,
         },
+        polygon_marker_style={"color": "white"},
     )
-    assert len(artists) == 1
+    assert len(artists) == 3
     assert len(artists[0].get_path().codes) == 10
     assert artists[0].get_zorder() == layers.MILKY_WAY
+    assert all(
+        artist._wenu_semantic_entity_key == "isophote_ol2"
+        for artist in artists
+    )
+    assert all(
+        artist._wenu_semantic_entity_display_name == "Isophote OL2"
+        for artist in artists
+    )
     plt.close(figure)
 
 

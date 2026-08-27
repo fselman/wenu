@@ -68,6 +68,23 @@ from astronomy names or from the accidental shape of a particular export.
 This rule also applies to grids: the coordinate-system parent is mixed, its
 line-owner branch is locked, and its label branch is unlocked.
 
+### Inkscape owner-lock editing workflow
+
+Inkscape applies an ancestor lock to the complete subtree. A descendant may
+show an open lock icon because it has no local lock, but it remains effectively
+locked while its semantic owner is locked. This behavior is expected.
+
+To edit a `style` branch, the designer temporarily unlocks its supplied owner.
+For example, unlock `Lines-Western`, select that owner to restyle every
+constellation, or select `Ori` to restyle Orion alone. A locally locked `Ori`
+cannot be restyled even when its parent is unlocked. After appearance edits,
+relock `Lines-Western`. The same workflow applies to coordinate-grid line
+owners.
+
+This temporary unlock does not authorize geometry changes. The portable
+`data-wenu-edit="style"` contract continues to permit appearance and visibility
+changes while prohibiting transforms.
+
 Inkscape 1.4.4 acceptance established an important limitation. Its lock is a
 selection lock, not a geometry constraint. It prevents ordinary canvas-tool
 selection, but an object selected through Layers and Objects or the XML editor

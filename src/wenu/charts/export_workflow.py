@@ -185,7 +185,11 @@ def export_composed_chart(
     )
 
     assign_canvas_semantics(renderer)
-    assign_furniture_semantics(renderer, rendering)
+    assign_furniture_semantics(
+        renderer,
+        rendering,
+        footer_rendering=footer_rendering,
+    )
     options = (
         _composition_export_options(composition)
         if export_options is None

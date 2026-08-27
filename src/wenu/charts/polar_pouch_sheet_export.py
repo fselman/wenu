@@ -57,6 +57,21 @@ def export_polar_pouch_sheet(
     )
     try:
         rendering = draw_polar_pouch_sheet(sheet, pouches, figure=figure)
+        from wenu.chart_document import EditPolicy, SemanticArtistIdentity
+        from wenu.rendering.matplotlib import MatplotlibRenderer
+
+        MatplotlibRenderer.assign_semantic_identity(
+            (figure.patch,),
+            SemanticArtistIdentity(
+                name="page_background",
+                svg_id="page-background",
+                edit_policy=EditPolicy.STYLE,
+                semantic_path=("page", "background"),
+                display_name="Page background",
+                presentation_order=0,
+                style_role="page_background",
+            ),
+        )
         output = options.save(figure, destination)
     finally:
         plt.close(figure)

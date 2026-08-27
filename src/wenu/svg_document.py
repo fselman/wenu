@@ -146,14 +146,21 @@ def annotate_semantic_svg(path, figure, *, provenance=None):
             pattern = re.compile(
                 rf'(<g\s+id="{re.escape(svg_id)}")(?P<rest>[^>]*>)'
             )
+            matches = tuple(pattern.finditer(serialized))
+            if not matches:
+                continue
+            if len(matches) != 1:
+                raise ValueError(
+                    f"Expected at most one SVG group for Wenu id {svg_id!r}."
+                )
             serialized, count = pattern.subn(
                 rf"\1{extra}\g<rest>",
                 serialized,
                 count=1,
             )
             if count != 1:
-                raise ValueError(
-                    f"Expected exactly one SVG group for Wenu id {svg_id!r}."
+                raise RuntimeError(
+                    f"Could not annotate Wenu SVG group {svg_id!r}."
                 )
         path.write_text(serialized, encoding="utf-8")
         _group_semantics(path)
@@ -349,8 +356,10 @@ def _group_semantics(path):
 
     for parent, candidates in candidates_by_parent.items():
         _group_semantic_siblings(parent, candidates)
+    _consolidate_designer_hierarchy(root)
     _flatten_semantic_text_artists(root)
     _promote_common_label_typography(root)
+    _promote_common_line_styles(root)
     tree.write(path, encoding="utf-8", xml_declaration=True)
     return path
 
@@ -511,6 +520,181 @@ def _group_semantic_siblings(parent, candidates):
         parent.insert(insertion_index + offset, build_group(root_path))
 
 
+def _consolidate_designer_hierarchy(root):
+    """Expose one professional-facing chart and furniture hierarchy."""
+    group_tag = f"{{{_SVG_NAMESPACE}}}g"
+    parent_of = {
+        child: parent
+        for parent in root.iter()
+        for child in parent
+    }
+    figures = [
+        element
+        for element in root.iter(group_tag)
+        if re.fullmatch(r"figure_\d+", element.get("id", ""))
+    ]
+    for figure_index, figure in enumerate(figures, start=1):
+        figure_id = (
+            "wenu-chart"
+            if len(figures) == 1
+            else f"wenu-chart-{figure_index}"
+        )
+        figure_label = (
+            "Wenu chart"
+            if len(figures) == 1
+            else f"Wenu chart {figure_index}"
+        )
+        figure.set("id", figure_id)
+        figure.set(
+            f"{{{_INKSCAPE_NAMESPACE}}}groupmode",
+            "layer",
+        )
+        figure.set(f"{{{_INKSCAPE_NAMESPACE}}}label", figure_label)
+
+        axes = [
+            element
+            for element in figure.iter(group_tag)
+            if re.fullmatch(r"axes_\d+", element.get("id", ""))
+        ]
+        for axes_index, plot_area in enumerate(axes, start=1):
+            plot_id = (
+                "plot-area"
+                if len(axes) == 1
+                else f"plot-area-{axes_index}"
+            )
+            plot_label = (
+                "Plot area"
+                if len(axes) == 1
+                else f"Plot area {axes_index}"
+            )
+            plot_area.set("id", plot_id)
+            plot_area.set(
+                f"{{{_INKSCAPE_NAMESPACE}}}groupmode",
+                "layer",
+            )
+            plot_area.set(
+                f"{{{_INKSCAPE_NAMESPACE}}}label",
+                plot_label,
+            )
+
+        semantic_title = next(
+            (
+                element
+                for element in figure.iter()
+                if element.get("data-wenu-semantic-path")
+                == "furniture/title"
+            ),
+            None,
+        )
+        title_text = (
+            ""
+            if semantic_title is None
+            else " ".join(
+                "".join(semantic_title.itertext()).split()
+            )
+        )
+        if not title_text:
+            document_title = next(
+                root.iter(f"{{{_DC_NAMESPACE}}}title"),
+                None,
+            )
+            if document_title is not None and document_title.text:
+                title_text = " ".join(document_title.text.split())
+        if title_text:
+            figure.set(
+                f"{{{_INKSCAPE_NAMESPACE}}}label",
+                f"{figure_label} - {title_text}",
+            )
+
+        furniture_groups = [
+            element
+            for element in figure.iter(group_tag)
+            if (
+                element.get("data-wenu-semantic-path") == "furniture"
+                and "wenu-semantic-group"
+                in element.get("class", "").split()
+            )
+        ]
+        if not furniture_groups:
+            continue
+        target = next(
+            (
+                element
+                for element in furniture_groups
+                if parent_of.get(element) is figure
+            ),
+            furniture_groups[0],
+        )
+        for source in furniture_groups:
+            if source is target:
+                continue
+            for child in tuple(source):
+                source.remove(child)
+                target.append(child)
+            source_parent = parent_of.get(source)
+            if source_parent is not None:
+                source_parent.remove(source)
+        target_parent = parent_of.get(target)
+        if target_parent is not figure:
+            if target_parent is not None:
+                target_parent.remove(target)
+            figure.append(target)
+        elif target in list(figure):
+            figure.remove(target)
+            figure.append(target)
+        ordered = sorted(
+            tuple(target),
+            key=lambda element: (
+                int(element.get("data-wenu-presentation-order", "0")),
+                element.get("data-wenu-semantic-path", ""),
+            ),
+        )
+        target[:] = ordered
+
+        graphical_tags = {
+            f"{{{_SVG_NAMESPACE}}}path",
+            f"{{{_SVG_NAMESPACE}}}use",
+            f"{{{_SVG_NAMESPACE}}}text",
+            f"{{{_SVG_NAMESPACE}}}image",
+        }
+        current_parent = {
+            child: parent
+            for parent in root.iter()
+            for child in parent
+        }
+        for plot_area in tuple(axes):
+            if not any(
+                descendant.tag in graphical_tags
+                for descendant in plot_area.iter()
+                if descendant is not plot_area
+            ):
+                parent = current_parent.get(plot_area)
+                if parent is not None:
+                    parent.remove(plot_area)
+        remaining_axes = [
+            plot_area
+            for plot_area in axes
+            if plot_area in list(figure)
+        ]
+        for axes_index, plot_area in enumerate(remaining_axes, start=1):
+            plot_area.set(
+                "id",
+                (
+                    "plot-area"
+                    if len(remaining_axes) == 1
+                    else f"plot-area-{axes_index}"
+                ),
+            )
+            plot_area.set(
+                f"{{{_INKSCAPE_NAMESPACE}}}label",
+                (
+                    "Plot area"
+                    if len(remaining_axes) == 1
+                    else f"Plot area {axes_index}"
+                ),
+            )
+
+
 def _flatten_semantic_text_artists(root):
     """Expose conservatively wrapped semantic text as actual text objects."""
     group_tag = f"{{{_SVG_NAMESPACE}}}g"
@@ -592,6 +776,87 @@ def _set_style_declarations(element, declarations):
         )
     else:
         element.attrib.pop("style", None)
+
+
+_INHERITABLE_LINE_STYLE_PROPERTIES = (
+    "stroke",
+    "stroke-width",
+    "stroke-opacity",
+    "stroke-dasharray",
+    "stroke-dashoffset",
+    "stroke-linecap",
+    "stroke-linejoin",
+    "stroke-miterlimit",
+)
+
+
+def _line_style_owner(group):
+    path = tuple(
+        item
+        for item in group.get(
+            "data-wenu-semantic-path", ""
+        ).split("/")
+        if item
+    )
+    return any(
+        item == "lines"
+        or item.startswith("lines_")
+        or item.endswith("_lines")
+        for item in path
+    )
+
+
+def _promote_common_line_styles(root):
+    """Make uniform line appearance editable at semantic group level."""
+    graphics_tags = {
+        f"{{{_SVG_NAMESPACE}}}path",
+        f"{{{_SVG_NAMESPACE}}}line",
+        f"{{{_SVG_NAMESPACE}}}polyline",
+    }
+    for group in root.iter(f"{{{_SVG_NAMESPACE}}}g"):
+        classes = group.get("class", "").split()
+        if (
+            "wenu-semantic-group" not in classes
+            or not _line_style_owner(group)
+        ):
+            continue
+        graphics = [
+            element
+            for element in group.iter()
+            if element.tag in graphics_tags
+        ]
+        if not graphics:
+            continue
+        declarations = [
+            _style_declarations(element) for element in graphics
+        ]
+        promoted = []
+        for name in _INHERITABLE_LINE_STYLE_PROPERTIES:
+            values = [dict(items).get(name) for items in declarations]
+            if (
+                values[0] is not None
+                and all(value == values[0] for value in values[1:])
+            ):
+                promoted.append((name, values[0]))
+        if not promoted:
+            continue
+        promoted_names = {name for name, _ in promoted}
+        group_declarations = [
+            item
+            for item in _style_declarations(group)
+            if item[0] not in promoted_names
+        ]
+        group_declarations.extend(promoted)
+        _set_style_declarations(group, group_declarations)
+        for element, items in zip(graphics, declarations):
+            _set_style_declarations(
+                element,
+                [
+                    item
+                    for item in items
+                    if item[0] not in promoted_names
+                ],
+            )
 
 
 def _promote_common_label_typography(root):

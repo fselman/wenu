@@ -78,6 +78,47 @@ def test_geometry_is_closed_and_transformed(catalogue, observer):
     assert all(len(curve) == 36 for curve in geometry.lon_deg)
     assert np.all(np.isfinite(geometry.lon_deg[0]))
     assert geometry.metadata["coordinate_system"] == "altaz"
+    assert geometry.metadata["semantic_entity_keys"] == (
+        "M 1", "M 31", "M 42"
+    )
+    assert geometry.metadata["semantic_entity_display_names"] == (
+        "M 1", "M 31", "M 42"
+    )
+    assert geometry.metadata["semantic_entity_categories"] == (
+        "supernova_remnants", "galaxies", "nebulae"
+    )
+
+
+@pytest.mark.parametrize(
+    ("object_type", "identifier", "category"),
+    (
+        ("Galaxy", None, "galaxies"),
+        ("S", None, "galaxies"),
+        ("E", None, "galaxies"),
+        ("E?", None, "galaxies"),
+        ("IR", None, "galaxies"),
+        ("Open Cluster", None, "open_clusters"),
+        ("OC", None, "open_clusters"),
+        ("GC", None, "globular_clusters"),
+        ("GB", None, "globular_clusters"),
+        ("Planetary Nebula", None, "planetary_nebulae"),
+        ("PL", None, "planetary_nebulae"),
+        ("SNR", None, "supernova_remnants"),
+        ("DI", "M 1", "supernova_remnants"),
+        ("DI", "M 8", "nebulae"),
+        ("Emission Nebula", None, "nebulae"),
+        ("H II region", None, "nebulae"),
+        ("Unclassified", None, "other_objects"),
+        (None, None, "other_objects"),
+    ),
+)
+def test_catalog_object_types_use_shared_astronomical_categories(
+    object_type, identifier, category
+):
+    assert NonStellar.semantic_category(
+        object_type,
+        identifier=identifier,
+    ) == category
 
 
 def test_unknown_position_angle_does_not_invent_orientation():
@@ -96,6 +137,11 @@ def test_selection(catalogue, observer):
         selected=["M 31"],
     )
     assert list(geometry.ids) == ["M 31"]
+    assert geometry.metadata["semantic_entity_keys"] == ("M 31",)
+    assert geometry.metadata["semantic_entity_display_names"] == ("M 31",)
+    assert geometry.metadata["semantic_entity_categories"] == (
+        "galaxies",
+    )
 
 
 def test_outline_sampling_is_render_local_and_bounded(catalogue, observer):

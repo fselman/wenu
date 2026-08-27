@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import numpy as np
 from astropy.coordinates import BarycentricTrueEcliptic
 
+from wenu.chart_document import EditPolicy, SemanticArtistIdentity
 from wenu.charts.context import BoundaryKind
 from wenu.charts.coordinate_frames import horizontal_to_equatorial
 from wenu.charts.detail_application import composition_horizon_altitude
@@ -533,6 +534,39 @@ def _reference_layer_options(reference_sky, composition, chart):
     return options
 
 
+def _assign_polar_declination_tick_semantics(renderer, artists):
+    """Assign one stable identity to any resolved polar tick collection."""
+    artists = tuple(artists)
+    if not artists:
+        return artists
+    renderer.assign_semantic_identity(
+        artists,
+        SemanticArtistIdentity(
+            name="equatorial_declination_tick_marks",
+            svg_id="equatorial-declination-tick-marks",
+            edit_policy=EditPolicy.STYLE,
+            semantic_path=(
+                "sky",
+                "grids",
+                "equatorial",
+                "lines",
+                "declination_tick_marks",
+            ),
+            display_name="Declination tick marks",
+            presentation_order=70,
+            style_role="equatorial_grid_lines",
+            path_display_names=(
+                "Sky",
+                "Grids",
+                "Equatorial grid",
+                "Equatorial grid lines",
+                "Declination tick marks",
+            ),
+        ),
+    )
+    return artists
+
+
 def draw_celestial_reference_furniture(
     chart,
     sky,
@@ -601,6 +635,10 @@ def draw_celestial_reference_furniture(
                     "zorder": 3,
                 },
             )
+        )
+        tick_artists = _assign_polar_declination_tick_semantics(
+            renderer,
+            tick_artists,
         )
     return CelestialReferenceRendering(
         sky=reference_sky,

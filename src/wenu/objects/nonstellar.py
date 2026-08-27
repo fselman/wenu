@@ -318,6 +318,65 @@ class NonStellar(AstronomicalObject):
             )
         return resolved
 
+    @staticmethod
+    def semantic_category(object_type, *, identifier=None):
+        """Normalize one catalog row to Wenu's shared sky taxonomy."""
+        if object_type is None or np.ma.is_masked(object_type):
+            return "other_objects"
+        value = re.sub(
+            r"[^a-z0-9]+",
+            " ",
+            str(object_type).casefold(),
+        ).strip()
+        identifier_key = re.sub(
+            r"[^a-z0-9]+",
+            "",
+            "" if identifier is None else str(identifier).casefold(),
+        )
+        if identifier_key == "m1":
+            return "supernova_remnants"
+        aliases = {
+            "gal": "galaxies",
+            "galaxy": "galaxies",
+            "galaxies": "galaxies",
+            "s": "galaxies",
+            "e": "galaxies",
+            "e?": "galaxies",
+            "ir": "galaxies",
+            "oc": "open_clusters",
+            "open cluster": "open_clusters",
+            "gc": "globular_clusters",
+            "gb": "globular_clusters",
+            "globular cluster": "globular_clusters",
+            "pn": "planetary_nebulae",
+            "pl": "planetary_nebulae",
+            "planetary nebula": "planetary_nebulae",
+            "snr": "supernova_remnants",
+            "supernova remnant": "supernova_remnants",
+            "di": "nebulae",
+            "hii": "nebulae",
+            "h ii": "nebulae",
+            "nebula": "nebulae",
+            "diffuse nebula": "nebulae",
+            "emission nebula": "nebulae",
+            "reflection nebula": "nebulae",
+        }
+        if value in aliases:
+            return aliases[value]
+        if "supernova remnant" in value:
+            return "supernova_remnants"
+        if "planetary nebula" in value:
+            return "planetary_nebulae"
+        if "globular cluster" in value:
+            return "globular_clusters"
+        if "open cluster" in value:
+            return "open_clusters"
+        if "galaxy" in value:
+            return "galaxies"
+        if "nebula" in value or value.startswith("h ii"):
+            return "nebulae"
+        return "other_objects"
+
     def _geometry_metadata(
         self,
         table,
@@ -325,9 +384,25 @@ class NonStellar(AstronomicalObject):
         minimum_size_arcmin=None,
     ):
         """Return per-object metadata accompanying generated geometry."""
+        identifiers = tuple(
+            str(value) for value in table["identifier"]
+        )
         return {
             "catalog": self.catalog_name,
             "coordinate_system": "altaz",
+            "semantic_entity_keys": identifiers,
+            "semantic_entity_display_names": identifiers,
+            "semantic_entity_categories": tuple(
+                self.semantic_category(
+                    object_type,
+                    identifier=identifier,
+                )
+                for object_type, identifier in zip(
+                    table["object_type"],
+                    table["identifier"],
+                    strict=True,
+                )
+            ),
             "magnitude": np.asarray(table["magnitude"], dtype=float),
             "object_type": np.asarray(
                 table["object_type"],
@@ -524,10 +599,28 @@ class NonStellar(AstronomicalObject):
                 selected_table=table,
                 source_key=(self.catalog_name, self._source_revision),
             )
+        semantic_identifiers = tuple(
+            str(value) for value in identifiers
+        )
         return SphericalPoints(
             lon_deg=longitude,
             lat_deg=latitude,
             ids=identifiers,
             names=identifiers,
-            metadata={"coordinate_system": "altaz"},
+            metadata={
+                "coordinate_system": "altaz",
+                "semantic_entity_keys": semantic_identifiers,
+                "semantic_entity_display_names": semantic_identifiers,
+                "semantic_entity_categories": tuple(
+                    self.semantic_category(
+                        object_type,
+                        identifier=identifier,
+                    )
+                    for object_type, identifier in zip(
+                        table["object_type"],
+                        table["identifier"],
+                        strict=True,
+                    )
+                ),
+            },
         )

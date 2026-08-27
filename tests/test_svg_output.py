@@ -15,7 +15,9 @@ from wenu.chart_document import (
     EditPolicy,
     SemanticArtistIdentity,
     assign_canvas_semantics,
+    assign_furniture_semantics,
 )
+from wenu.charts.footer_furniture import ChartFooterRendering
 from wenu.charts.regional import ExportOptions
 from wenu.rendering import MatplotlibRenderer
 from wenu.geometry.projected import ProjectedCurve, ProjectedCurves
@@ -348,6 +350,34 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
     ) == "Constellation lines"
 
 
+def test_svg_skips_semantic_artist_omitted_by_matplotlib(tmp_path):
+    destination = tmp_path / "omitted-artist.svg"
+    figure, ax = plt.subplots()
+    artist = ax.plot((0.0, 1.0), (0.0, 1.0))[0]
+    artist.set_visible(False)
+    MatplotlibRenderer.assign_semantic_identity(
+        (artist,),
+        SemanticLayerIdentity(
+            name="celestial_points",
+            svg_id="omitted-point",
+            semantic_path=("sky", "grids", "reference_points"),
+            display_name="Celestial reference points",
+            presentation_order=74,
+            style_role="celestial_points",
+        ),
+    )
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    assert not any(
+        element.get("id") == "omitted-point"
+        for element in root.iter()
+    )
+
+
 def test_sky_groups_follow_supplied_presentation_order(tmp_path):
     destination = tmp_path / "semantic-order.svg"
     figure, ax = plt.subplots()
@@ -414,7 +444,10 @@ def test_constellation_entities_form_a_shallow_system_specific_group(tmp_path):
             "semantic_entity_display_names": ("Cru", "Cru", "Mus"),
         },
     )
-    artists = renderer.draw(curves)
+    artists = renderer.draw(
+        curves,
+        style={"color": "#123456", "linewidth": 2.5},
+    )
     MatplotlibRenderer.assign_semantic_identity(
         artists,
         SemanticLayerIdentity(
@@ -464,6 +497,35 @@ def test_constellation_entities_form_a_shallow_system_specific_group(tmp_path):
         "western-lines-mus",
     ]
     assert "sky/constellations/lines_western/western" not in by_path
+    lines_style = dict(
+        item.split(": ", 1)
+        for item in lines.get("style", "").split("; ")
+        if ":" in item
+    )
+    assert lines_style["stroke"] == "#123456"
+    assert lines_style["stroke-width"] == "2.5"
+    descendant_paths = [
+        element
+        for element in lines.iter()
+        if element.tag.rsplit("}", 1)[-1] == "path"
+    ]
+    assert descendant_paths
+    assert all(
+        "stroke" not in dict(
+            item.split(":", 1)
+            for item in element.get("style", "").split("; ")
+            if ":" in item
+        )
+        for element in descendant_paths
+    )
+    assert all(
+        "stroke-width" not in dict(
+            item.split(":", 1)
+            for item in element.get("style", "").split("; ")
+            if ":" in item
+        )
+        for element in descendant_paths
+    )
     insensitive = (
         "{http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd}"
         "insensitive"
@@ -698,14 +760,181 @@ def test_canvas_semantics_group_independent_svg_parents(tmp_path):
     assert "sky-background" in by_id
     frame = by_id[
         "wenu-group-chart-masks_and_boundary-"
-        "rectangular_viewport_frame"
+        "chart_boundary"
     ]
     assert len(list(frame)) == 4
     assert {
         child.get("id") for child in frame
     } == {
-        "viewport-frame--0001",
-        "viewport-frame--0002",
-        "viewport-frame--0003",
-        "viewport-frame--0004",
+        "chart-boundary--0001",
+        "chart-boundary--0002",
+        "chart-boundary--0003",
+        "chart-boundary--0004",
     }
+
+
+def test_separate_identity_assignments_share_one_figure_id_sequence(tmp_path):
+    destination = tmp_path / "separate-semantic-layers.svg"
+    figure, ax = plt.subplots()
+    first = ax.plot((0.0, 1.0), (0.2, 0.3))[0]
+    second = ax.plot((0.0, 1.0), (0.7, 0.8))[0]
+    identity = SemanticLayerIdentity(
+        name="magellanic_cloud_isophotes",
+        svg_id="wenu-layer-magellanic-cloud-isophotes",
+        semantic_path=(
+            "sky",
+            "milky_way_and_magellanic_clouds",
+            "magellanic_clouds",
+        ),
+        display_name="Magellanic Clouds",
+        presentation_order=21,
+        style_role="magellanic_clouds",
+    )
+
+    MatplotlibRenderer.assign_semantic_identity((first,), identity)
+    MatplotlibRenderer.assign_semantic_identity((second,), identity)
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    semantic_ids = [
+        element.get("id")
+        for element in root.iter()
+        if "wenu-semantic-artist" in element.get("class", "").split()
+    ]
+
+    assert semantic_ids == [
+        "wenu-layer-magellanic-cloud-isophotes--0001",
+        "wenu-layer-magellanic-cloud-isophotes--0002",
+    ]
+
+
+def test_arbitrary_canvas_background_and_boundary_are_semantic(tmp_path):
+    destination = tmp_path / "arbitrary-canvas.svg"
+    figure, ax = plt.subplots()
+    renderer = MatplotlibRenderer(ax)
+    boundary = ProjectedCurve(
+        (-1.0, 1.0, 1.0, -1.0),
+        (-0.5, -0.5, 0.5, 0.5),
+        closed=True,
+    )
+    renderer.set_boundary_background(boundary, color="#123456")
+    renderer.set_clip_boundary(
+        boundary,
+        style={"fill": False, "edgecolor": "#707070"},
+    )
+    assign_canvas_semantics(renderer)
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    by_id = {
+        element.get("id"): element
+        for element in root.iter()
+        if element.get("id")
+    }
+
+    assert "wenu-chart" in by_id
+    assert "plot-area" in by_id
+    assert "figure_1" not in by_id
+    assert "axes_1" not in by_id
+    assert "page-background" in by_id
+    assert "sky-background" in by_id
+    assert "chart-boundary" in by_id
+    assert not any(
+        object_id.startswith("patch_") for object_id in by_id
+    )
+    assert (
+        by_id["sky-background"].get("data-wenu-semantic-path")
+        == "sky/background"
+    )
+    assert (
+        by_id["chart-boundary"].get("data-wenu-semantic-path")
+        == "chart/masks_and_boundary/chart_boundary"
+    )
+
+
+def test_figure_margin_credits_and_version_belong_to_footer_furniture(
+    tmp_path,
+):
+    destination = tmp_path / "footer.svg"
+    figure, ax = plt.subplots()
+    ax.set_title("Designer audit")
+    renderer = MatplotlibRenderer(ax)
+    credits = figure.text(0.05, 0.02, "© Chart author", ha="left")
+    version = figure.text(0.95, 0.02, "Wenu 1.2.3", ha="right")
+    assign_furniture_semantics(
+        renderer,
+        object(),
+        footer_rendering=ChartFooterRendering(
+            copyright_text="© Chart author",
+            application_text="Wenu 1.2.3",
+            artists=(credits, version),
+        ),
+    )
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    by_path = {
+        element.get("data-wenu-semantic-path"): element
+        for element in root.iter()
+        if element.get("data-wenu-semantic-path")
+    }
+
+    by_id = {
+        element.get("id"): element
+        for element in root.iter()
+        if element.get("id")
+    }
+    parent_of = {
+        child: parent
+        for parent in root.iter()
+        for child in parent
+    }
+    furniture_groups = [
+        element
+        for element in root.iter()
+        if element.get("data-wenu-semantic-path") == "furniture"
+    ]
+
+    assert "wenu-chart" in by_id
+    assert (
+        by_id["wenu-chart"].get(
+            "{http://www.inkscape.org/namespaces/inkscape}label"
+        )
+        == "Wenu chart - Designer audit"
+    )
+    assert "plot-area" in by_id
+    assert len(furniture_groups) == 1
+    assert parent_of[furniture_groups[0]] is by_id["wenu-chart"]
+    assert parent_of[by_id["plot-area"]] is by_id["wenu-chart"]
+    assert "furniture/footer" in by_path
+    assert "furniture/footer/credits" in by_path
+    assert "furniture/footer/application" in by_path
+    assert (
+        by_path["furniture/footer/credits"].get(
+            "data-wenu-display-name"
+        )
+        == "Credits"
+    )
+    assert (
+        by_path["furniture/footer/application"].get(
+            "data-wenu-display-name"
+        )
+        == "Wenu version"
+    )
+    assert not any(
+        element.get("id", "").startswith("text_")
+        and any(
+            value in "".join(element.itertext())
+            for value in ("© Chart author", "Wenu 1.2.3")
+        )
+        for element in root.iter()
+    )

@@ -12,6 +12,7 @@ from wenu.charts.styles import PublicationStyle
 from wenu.rendering import layers
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.magellanic_clouds import MagellanicCloudIsophotes
+from wenu.sky.semantic_identity import semantic_layer_identity
 
 
 class Observer:
@@ -75,7 +76,37 @@ def test_cloud_and_level_selection_are_explicit(tmp_path):
     assert geometry.metadata["fraction_of_peak"] == pytest.approx(
         [0.16, 0.55]
     )
+    assert geometry.metadata["semantic_entity_keys"].tolist() == [
+        "isophote_2", "isophote_4"
+    ]
+    assert geometry.metadata[
+        "semantic_entity_display_names"
+    ].tolist() == ["Isophote 2", "Isophote 4"]
     assert all(np.all(np.isfinite(values)) for values in geometry.lon_deg)
+
+
+def test_clouds_own_distinct_semantic_hierarchy_branches():
+    lmc = semantic_layer_identity(
+        MagellanicCloudIsophotes(Observer(), cloud="lmc")
+    )
+    smc = semantic_layer_identity(
+        MagellanicCloudIsophotes(Observer(), cloud="smc")
+    )
+
+    assert lmc.semantic_path == (
+        "sky",
+        "milky_way_and_magellanic_clouds",
+        "lmc",
+    )
+    assert lmc.display_name == "Large Magellanic Cloud"
+    assert lmc.svg_id == "lmc-isophotes"
+    assert smc.semantic_path == (
+        "sky",
+        "milky_way_and_magellanic_clouds",
+        "smc",
+    )
+    assert smc.display_name == "Small Magellanic Cloud"
+    assert smc.svg_id == "smc-isophotes"
 
 
 def test_level_selection_can_change_per_render_without_mutation(tmp_path):

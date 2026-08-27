@@ -25,6 +25,7 @@ from wenu.rendering._matplotlib_primitives import (
     render_text,
 )
 from wenu.rendering.label_placement import CurveLabelPlacement
+from wenu.rendering.preparation import cull_points_to_viewport
 from wenu.rendering.paint_roles import paint_role_for_zorder
 from wenu.svg_document import attach_semantic_svg_metadata
 from wenu.chart_document import SemanticArtistRenderingResult
@@ -36,6 +37,7 @@ class MatplotlibRenderer:
     def __init__(self, ax):
         self.ax = ax
         self._clip_patch = None
+        self._viewport = None
 
     def set_axes_frame_visible(self, visible):
         """Show or hide the rectangular Matplotlib axes frame."""
@@ -49,6 +51,7 @@ class MatplotlibRenderer:
 
         path = self._closed_boundary_path(boundary)
         self.ax.set_facecolor("none")
+        self.ax.patch.set_visible(False)
         self.ax.figure.set_facecolor("none")
         patch = PathPatch(
             path,
@@ -57,6 +60,7 @@ class MatplotlibRenderer:
             zorder=-1000.0,
         )
         self.ax.add_patch(patch)
+        self._boundary_background_patch = patch
         return patch
 
     def set_circular_background(self, boundary, *, color):
@@ -68,6 +72,8 @@ class MatplotlibRenderer:
         from matplotlib.patches import PathPatch
 
         path = self._closed_boundary_path(boundary)
+        for spine in self.ax.spines.values():
+            spine.set_visible(False)
         patch = PathPatch(
             path,
             **({} if style is None else dict(style)),
@@ -112,6 +118,20 @@ class MatplotlibRenderer:
                     flattened.append(artist)
 
         collect(artists)
+        existing_counts = Counter()
+        figures = {
+            getattr(artist, "get_figure", lambda: None)()
+            for artist in flattened
+        }
+        for figure in figures - {None}:
+            for existing_artist in figure.findobj():
+                base_id = getattr(
+                    existing_artist,
+                    "_wenu_semantic_svg_base_id",
+                    None,
+                )
+                if base_id is not None:
+                    existing_counts[base_id] += 1
         identities = []
         entity_flags = []
         lock_owner_paths = []
@@ -124,6 +144,13 @@ class MatplotlibRenderer:
                 if component is not None
                 else identity
             )
+            entity_category = getattr(
+                artist, "_wenu_semantic_entity_category", None
+            )
+            if entity_category is not None:
+                artist_identity = artist_identity.category_identity(
+                    entity_category
+                )
             lock_owner_path = artist_identity.semantic_path
             entity_key = getattr(
                 artist, "_wenu_semantic_entity_key", None
@@ -141,7 +168,7 @@ class MatplotlibRenderer:
             entity_flags.append(entity_key is not None)
             lock_owner_paths.append(lock_owner_path)
         totals = Counter(item.svg_id for item in identities)
-        positions = Counter()
+        positions = Counter(existing_counts)
         results = []
         for artist, artist_identity, is_entity, lock_owner_path in zip(
             flattened,
@@ -154,12 +181,16 @@ class MatplotlibRenderer:
                 getattr(artist_identity, "exact_svg_id", False)
             )
             positions[artist_identity.svg_id] += 1
-            width = max(4, len(str(totals[artist_identity.svg_id])))
+            total = (
+                existing_counts[artist_identity.svg_id]
+                + totals[artist_identity.svg_id]
+            )
+            width = max(4, len(str(total)))
             svg_id = (
                 artist_identity.svg_id
                 if (
                     (exact or is_entity)
-                    and totals[artist_identity.svg_id] == 1
+                    and total == 1
                 )
                 else (
                     f"{artist_identity.svg_id}--"
@@ -167,6 +198,11 @@ class MatplotlibRenderer:
                 )
             )
             artist.set_gid(svg_id)
+            setattr(
+                artist,
+                "_wenu_semantic_svg_base_id",
+                artist_identity.svg_id,
+            )
             zorder = float(artist.get_zorder())
             paint_role = paint_role_for_zorder(zorder)
             attach_semantic_svg_metadata(
@@ -310,6 +346,7 @@ class MatplotlibRenderer:
             viewport,
             equal_aspect=equal_aspect,
         )
+        self._viewport = viewport
 
     def draw(
         self,
@@ -348,6 +385,14 @@ class MatplotlibRenderer:
             if polygon_marker_style is None
             else dict(polygon_marker_style)
         )
+        if (
+            isinstance(geometry, ProjectedPoints)
+            and self._viewport is not None
+        ):
+            geometry = cull_points_to_viewport(
+                geometry,
+                self._viewport,
+            )
 
         if isinstance(geometry, ProjectedPoint):
             artists = self._draw_point(
@@ -911,9 +956,11 @@ class MatplotlibRenderer:
         ordered_groups = tuple(dict.fromkeys(groups.tolist()))
         artists = []
         for group in ordered_groups:
+            group_indices = np.flatnonzero(groups == group)
+            representative_index = int(group_indices[0])
             vertices = []
             codes = []
-            for index in np.flatnonzero(groups == group):
+            for index in group_indices:
                 polygon = polygons[index]
                 finite = polygon.finite
                 points = np.column_stack(
@@ -942,41 +989,50 @@ class MatplotlibRenderer:
                 codes.extend(ring_codes)
             if not vertices:
                 continue
+
+            def register(patch):
+                self.ax.add_patch(patch)
+                self._attach_semantic_entity(
+                    (patch,),
+                    polygons.metadata,
+                    representative_index,
+                )
+                artists.append(patch)
+
             path = Path(
                 np.asarray(vertices, dtype=float),
                 np.asarray(codes, dtype=np.uint8),
             )
             if fill_style is None and outline_style is None:
                 patch = PathPatch(path, **self._polygon_style(style))
-                self.ax.add_patch(patch)
-                artists.append(patch)
+                register(patch)
                 continue
             if fill_style is not None:
                 fill = {**style, **fill_style}
                 fill.setdefault("edgecolor", "none")
                 patch = PathPatch(path, **self._polygon_style(fill))
-                self.ax.add_patch(patch)
-                artists.append(patch)
+                register(patch)
             if outline_style is not None:
                 outline = {**style, **outline_style}
                 outline.setdefault("facecolor", "none")
                 patch = PathPatch(path, **self._polygon_style(outline))
-                self.ax.add_patch(patch)
-                artists.append(patch)
+                register(patch)
         if marker_style is not None:
-            for polygon in polygons:
+            for index, polygon in enumerate(polygons):
                 marker_curve = ProjectedCurve(
                     polygon.x,
                     polygon.y,
                     closed=True,
                 )
-                artists.append(
-                    render_curve(
-                        self.ax,
-                        marker_curve,
-                        **marker_style,
-                    )
+                marker_artist = render_curve(
+                    self.ax,
+                    marker_curve,
+                    **marker_style,
                 )
+                self._attach_semantic_entity(
+                    (marker_artist,), polygons.metadata, index
+                )
+                artists.append(marker_artist)
         return artists
 
     @staticmethod
@@ -1088,7 +1144,8 @@ class MatplotlibRenderer:
         """Carry optional source entity identity without domain knowledge."""
         keys = metadata.get("semantic_entity_keys")
         names = metadata.get("semantic_entity_display_names")
-        if keys is None and names is None:
+        categories = metadata.get("semantic_entity_categories")
+        if keys is None and names is None and categories is None:
             return
         if keys is None or names is None:
             raise ValueError(
@@ -1097,6 +1154,10 @@ class MatplotlibRenderer:
         if len(keys) != len(names):
             raise ValueError(
                 "Semantic entity keys and display names must align."
+            )
+        if categories is not None and len(categories) != len(keys):
+            raise ValueError(
+                "Semantic entity categories must align with entities."
             )
         for artist in artists:
             setattr(
@@ -1109,6 +1170,12 @@ class MatplotlibRenderer:
                 "_wenu_semantic_entity_display_name",
                 names[index],
             )
+            if categories is not None:
+                setattr(
+                    artist,
+                    "_wenu_semantic_entity_category",
+                    categories[index],
+                )
 
     @staticmethod
     def _anchor(x, y):

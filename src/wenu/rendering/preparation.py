@@ -62,6 +62,56 @@ def configured_magnitude_sizes(
     )
 
 
+def cull_points_to_viewport(
+    projected,
+    viewport,
+    *,
+    margin_fraction=0.02,
+):
+    """Mark points well outside a projected viewport as non-renderable.
+
+    The small margin preserves marker fragments at the axes edge.  Point
+    arrays and metadata retain their original length so renderer masks and
+    per-object style arrays remain aligned.
+    """
+    from wenu.geometry.viewport import Viewport
+
+    if not isinstance(projected, ProjectedPoints):
+        raise TypeError("projected must be ProjectedPoints.")
+    if not isinstance(viewport, Viewport):
+        raise TypeError("viewport must be a Viewport.")
+    margin_fraction = float(margin_fraction)
+    if (
+        not np.isfinite(margin_fraction)
+        or margin_fraction < 0.0
+    ):
+        raise ValueError(
+            "margin_fraction must be finite and non-negative."
+        )
+    margin_x = margin_fraction * viewport.width
+    margin_y = margin_fraction * viewport.height
+    x = np.asarray(projected.x, dtype=float).copy()
+    y = np.asarray(projected.y, dtype=float).copy()
+    retained = (
+        np.isfinite(x)
+        & np.isfinite(y)
+        & (x >= viewport.x_min - margin_x)
+        & (x <= viewport.x_max + margin_x)
+        & (y >= viewport.y_min - margin_y)
+        & (y <= viewport.y_max + margin_y)
+    )
+    x[~retained] = np.nan
+    y[~retained] = np.nan
+    return ProjectedPoints(
+        x=x,
+        y=y,
+        ids=projected.ids,
+        labels=projected.labels,
+        names=projected.names,
+        metadata=dict(projected.metadata),
+    )
+
+
 def point_styles(metadata, *, default_zorder=None):
     """Return renderer styles encoded by a spherical point collection."""
     count = len(metadata.get("style", ()))
@@ -205,13 +255,14 @@ def _clip_curves(
             )
             source_indices.append(source_index)
 
-    metadata = dict(projected.metadata)
-    styles = metadata.get("styles")
-    if styles is not None:
-        metadata["styles"] = tuple(
-            styles[index] for index in source_indices
-        )
-    return ProjectedCurves(items=items, metadata=metadata)
+    return ProjectedCurves(
+        items=items,
+        metadata=_subset_metadata(
+            projected.metadata,
+            source_indices,
+            len(projected),
+        ),
+    )
 
 
 def clip_polygons_to_latitude(
@@ -806,9 +857,12 @@ def _clip_polygon_boundaries(
             "SphericalPolygons require ProjectedPolygons."
         )
     items = []
-    for latitude, polygon in zip(
-        _polygon_latitudes(spherical, projected),
-        projected,
+    source_indices = []
+    for source_index, (latitude, polygon) in enumerate(
+        zip(
+            _polygon_latitudes(spherical, projected),
+            projected,
+        )
     ):
         for x, y in _visible_segments(
             polygon.x,
@@ -825,9 +879,14 @@ def _clip_polygon_boundaries(
                     name=polygon.name,
                 )
             )
+            source_indices.append(source_index)
     return ProjectedCurves(
         items=items,
-        metadata=dict(projected.metadata),
+        metadata=_subset_metadata(
+            projected.metadata,
+            source_indices,
+            len(projected),
+        ),
     )
 
 

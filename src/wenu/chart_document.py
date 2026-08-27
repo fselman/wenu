@@ -27,6 +27,7 @@ class SemanticArtistIdentity:
     presentation_order: int
     style_role: str
     exact_svg_id: bool = True
+    path_display_names: tuple[str, ...] = ()
 
     def component_identity(self, component):
         """Chart-owned identities do not declare renderer subcomponents."""
@@ -53,10 +54,21 @@ def assign_canvas_semantics(renderer):
                 style_role="page_background",
             ),
         )
+    boundary_background = getattr(
+        renderer, "_boundary_background_patch", None
+    )
     axes_patch = getattr(ax, "patch", None)
-    if axes_patch is not None and axes_patch.get_visible():
+    sky_background = (
+        boundary_background
+        if boundary_background is not None
+        else axes_patch
+    )
+    if (
+        sky_background is not None
+        and sky_background.get_visible()
+    ):
         assign(
-            (axes_patch,),
+            (sky_background,),
             SemanticArtistIdentity(
                 name="sky_background",
                 svg_id="sky-background",
@@ -67,24 +79,42 @@ def assign_canvas_semantics(renderer):
                 style_role="sky_background",
             ),
         )
+    chart_boundary = getattr(renderer, "_clip_patch", None)
+    if chart_boundary is not None and chart_boundary.get_visible():
+        assign(
+            (chart_boundary,),
+            SemanticArtistIdentity(
+                name="chart_boundary",
+                svg_id="chart-boundary",
+                edit_policy=EditPolicy.STYLE,
+                semantic_path=(
+                    "chart",
+                    "masks_and_boundary",
+                    "chart_boundary",
+                ),
+                display_name="Chart boundary",
+                presentation_order=81,
+                style_role="chart_boundary",
+            ),
+        )
     spines = tuple(
         spine
         for spine in getattr(ax, "spines", {}).values()
         if spine.get_visible()
     )
-    if spines:
+    if spines and chart_boundary is None:
         assign(
             spines,
             SemanticArtistIdentity(
-                name="rectangular_viewport_frame",
-                svg_id="viewport-frame",
+                name="chart_boundary",
+                svg_id="chart-boundary",
                 edit_policy=EditPolicy.STYLE,
                 semantic_path=(
                     "chart",
                     "masks_and_boundary",
-                    "rectangular_viewport_frame",
+                    "chart_boundary",
                 ),
-                display_name="Rectangular viewport frame",
+                display_name="Chart boundary",
                 presentation_order=81,
                 style_role="chart_boundary",
             ),
@@ -153,8 +183,13 @@ def _name_legend_contents(legend, prefix, *, entry_prefix=""):
         label.set_gid(f"{entry}-label")
 
 
-def assign_furniture_semantics(renderer, rendering):
-    """Attach identities to title and composed legend containers."""
+def assign_furniture_semantics(
+    renderer,
+    rendering,
+    *,
+    footer_rendering=None,
+):
+    """Attach identities to title, legends, and figure-margin footer."""
     assign = getattr(renderer, "assign_semantic_identity", None)
     if not callable(assign):
         return
@@ -172,6 +207,38 @@ def assign_furniture_semantics(renderer, rendering):
                 style_role="title",
             ),
         )
+    if footer_rendering is not None:
+        footer_artists = iter(
+            getattr(footer_rendering, "artists", ())
+        )
+        footer_items = (
+            (
+                getattr(footer_rendering, "copyright_text", None),
+                "credits",
+                "Credits",
+            ),
+            (
+                getattr(footer_rendering, "application_text", None),
+                "application",
+                "Wenu version",
+            ),
+        )
+        for text, key, display_name in footer_items:
+            if text is None:
+                continue
+            artist = next(footer_artists)
+            assign(
+                (artist,),
+                SemanticArtistIdentity(
+                    name=f"footer_{key}",
+                    svg_id=f"footer-{key}",
+                    edit_policy=EditPolicy.LAYOUT,
+                    semantic_path=("furniture", "footer", key),
+                    display_name=display_name,
+                    presentation_order=93,
+                    style_role="footer",
+                ),
+            )
     legends = getattr(rendering, "legends", None)
     if legends is None:
         return

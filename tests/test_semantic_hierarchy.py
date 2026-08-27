@@ -6,12 +6,27 @@ import pytest
 
 from wenu.sky.semantic_identity import (
     SemanticLayerIdentity,
+    semantic_key,
     semantic_layer_identity,
 )
 
 
+
+def test_numeric_catalog_designation_gets_a_safe_stable_key():
+    assert semantic_key(
+        "1636-283",
+        field="semantic entity key",
+        numeric_prefix="catalog",
+    ) == "catalog_1636_283"
+
+    with pytest.raises(ValueError, match="has no safe semantic key"):
+        semantic_key("1636-283", field="semantic layer key")
+
+
 def identity(name, *, coordinate_system=None):
     layer = SimpleNamespace(layer_name=name)
+    if name == "magellanic_cloud_isophotes":
+        layer.cloud = "lmc"
     if coordinate_system is not None:
         layer.coordinate_system = coordinate_system
     return semantic_layer_identity(layer)
@@ -42,7 +57,7 @@ def test_celestial_layers_follow_the_accepted_presentation_order():
         (
             "sky",
             "milky_way_and_magellanic_clouds",
-            "magellanic_clouds",
+            "lmc",
         ),
         ("sky", "deep_sky_objects", "open_clusters"),
         ("sky", "deep_sky_objects", "globular_clusters"),
@@ -127,6 +142,62 @@ def test_grid_identity_declares_independent_line_and_label_children():
     assert labels.display_name == "Equatorial grid labels"
     assert labels.style_role == "equatorial_grid_labels"
     assert labels.edit_policy.value == "layout"
+
+
+@pytest.mark.parametrize(
+    ("category", "path", "display_name", "order"),
+    (
+        ("galaxies", ("sky", "galaxies"), "Galaxies", 10),
+        (
+            "open_clusters",
+            ("sky", "deep_sky_objects", "open_clusters"),
+            "Open clusters",
+            30,
+        ),
+        (
+            "globular_clusters",
+            ("sky", "deep_sky_objects", "globular_clusters"),
+            "Globular clusters",
+            31,
+        ),
+        (
+            "planetary_nebulae",
+            ("sky", "deep_sky_objects", "planetary_nebulae"),
+            "Planetary nebulae",
+            32,
+        ),
+        (
+            "supernova_remnants",
+            ("sky", "deep_sky_objects", "supernova_remnants"),
+            "Supernova remnants",
+            33,
+        ),
+        (
+            "nebulae",
+            ("sky", "deep_sky_objects", "nebulae"),
+            "Nebulae",
+            34,
+        ),
+        (
+            "other_objects",
+            ("sky", "deep_sky_objects", "other_objects"),
+            "Other objects",
+            35,
+        ),
+    ),
+)
+def test_catalog_categories_reuse_shared_astronomical_hierarchy(
+    category, path, display_name, order
+):
+    resolved = identity("nonstellar").category_identity(category)
+    entity = resolved.entity_identity("M 8", "M 8")
+
+    assert resolved.semantic_path == path
+    assert resolved.display_name == display_name
+    assert resolved.presentation_order == order
+    assert entity.semantic_path == (*path, "m_8")
+    assert entity.display_name == "M 8"
+    assert entity.svg_id.endswith("-m-8")
 
 
 def test_non_grid_identity_ignores_undeclared_renderer_parts():

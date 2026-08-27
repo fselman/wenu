@@ -12,11 +12,22 @@ _SAFE_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 _SAFE_PATH_COMPONENT = _SAFE_NAME
 
 
-def semantic_key(value, *, field: str) -> str:
+def semantic_key(
+    value,
+    *,
+    field: str,
+    numeric_prefix: str | None = None,
+) -> str:
     """Return one safe stable key supplied by a semantic data source."""
     if not isinstance(value, str) or not value:
         raise ValueError(f"{field} must be a non-empty string.")
     key = re.sub(r"[^a-z0-9]+", "_", value.lower()).strip("_")
+    if key[:1].isdigit() and numeric_prefix is not None:
+        if _SAFE_NAME.fullmatch(numeric_prefix) is None:
+            raise ValueError(
+                f"{field} numeric prefix {numeric_prefix!r} is not safe."
+            )
+        key = f"{numeric_prefix}_{key}"
     if _SAFE_NAME.fullmatch(key) is None:
         raise ValueError(f"{field} {value!r} has no safe semantic key.")
     return key
@@ -60,6 +71,49 @@ _GRID_COMPONENT_CONTRACTS = {
 }
 
 
+_NONSTELLAR_CATEGORY_CONTRACTS = {
+    "galaxies": SemanticLayerContract(
+        ("sky", "galaxies"), "Galaxies", 10, "galaxies"
+    ),
+    "open_clusters": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "open_clusters"),
+        "Open clusters",
+        30,
+        "open_clusters",
+    ),
+    "globular_clusters": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "globular_clusters"),
+        "Globular clusters",
+        31,
+        "globular_clusters",
+    ),
+    "planetary_nebulae": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "planetary_nebulae"),
+        "Planetary nebulae",
+        32,
+        "planetary_nebulae",
+    ),
+    "supernova_remnants": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "supernova_remnants"),
+        "Supernova remnants",
+        33,
+        "supernova_remnants",
+    ),
+    "nebulae": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "nebulae"),
+        "Nebulae",
+        34,
+        "nebulae",
+    ),
+    "other_objects": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "other_objects"),
+        "Other objects",
+        35,
+        "nonstellar",
+    ),
+}
+
+
 _LAYER_CONTRACTS = {
     "galaxies": SemanticLayerContract(
         ("sky", "galaxies"), "Galaxies", 10, "galaxies"
@@ -75,6 +129,12 @@ _LAYER_CONTRACTS = {
         "Magellanic Clouds",
         21,
         "magellanic_clouds",
+    ),
+    "nonstellar": SemanticLayerContract(
+        ("sky", "deep_sky_objects", "other_objects"),
+        "Other objects",
+        29,
+        "nonstellar",
     ),
     "open_clusters": SemanticLayerContract(
         ("sky", "deep_sky_objects", "open_clusters"),
@@ -175,6 +235,9 @@ class SemanticLayerIdentity:
         tuple[str, SemanticComponentContract], ...
     ] = ()
     path_display_names: tuple[str, ...] = ()
+    entity_category_contracts: tuple[
+        tuple[str, SemanticLayerContract], ...
+    ] = ()
 
     def __post_init__(self):
         path = self.semantic_path or (self.name,)
@@ -230,9 +293,35 @@ class SemanticLayerIdentity:
             ),
         )
 
+    def category_identity(self, category: str):
+        """Return the shared astronomical branch for one entity category."""
+        category = semantic_key(
+            category,
+            field="semantic entity category",
+        )
+        contract = dict(self.entity_category_contracts).get(category)
+        if contract is None:
+            return self
+        return SemanticLayerIdentity(
+            name=self.name,
+            svg_id=(
+                "wenu-layer-"
+                f"{contract.path[-1].replace('_', '-')}"
+            ),
+            edit_policy=self.edit_policy,
+            semantic_path=contract.path,
+            display_name=contract.display_name,
+            presentation_order=contract.presentation_order,
+            style_role=contract.style_role,
+        )
+
     def entity_identity(self, key: str, display_name: str):
         """Return a concise child identity declared by the source data."""
-        key = semantic_key(key, field="semantic entity key")
+        key = semantic_key(
+            key,
+            field="semantic entity key",
+            numeric_prefix="catalog",
+        )
         if not isinstance(display_name, str) or not display_name:
             raise ValueError(
                 "semantic entity display name must be a non-empty string."
@@ -288,6 +377,30 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
             ) from error
     contract = _LAYER_CONTRACTS.get(name)
     svg_id = f"wenu-layer-{name.replace('_', '-')}"
+    if name == "magellanic_cloud_isophotes":
+        cloud_key = semantic_key(
+            getattr(layer, "cloud", ""),
+            field="Magellanic Cloud key",
+        )
+        cloud_names = {
+            "lmc": "Large Magellanic Cloud",
+            "smc": "Small Magellanic Cloud",
+        }
+        if cloud_key not in cloud_names:
+            raise ValueError(
+                f"Unsupported Magellanic Cloud key: {cloud_key!r}."
+            )
+        contract = SemanticLayerContract(
+            (
+                "sky",
+                "milky_way_and_magellanic_clouds",
+                cloud_key,
+            ),
+            cloud_names[cloud_key],
+            _LAYER_CONTRACTS[name].presentation_order,
+            f"{cloud_key}_isophotes",
+        )
+        svg_id = f"{cloud_key}-isophotes"
     if name in {
         "constellation_lines",
         "constellation_boundaries",
@@ -328,6 +441,11 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
         "component_contracts": (
             tuple(_GRID_COMPONENT_CONTRACTS.items())
             if name.endswith("_grid")
+            else ()
+        ),
+        "entity_category_contracts": (
+            tuple(_NONSTELLAR_CATEGORY_CONTRACTS.items())
+            if name == "nonstellar"
             else ()
         ),
     }

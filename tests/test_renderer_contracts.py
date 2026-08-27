@@ -20,6 +20,7 @@ from wenu.geometry.projected import (
     ProjectedPolygon,
     ProjectedPolygons,
 )
+from wenu.geometry.viewport import Viewport
 from wenu.rendering.matplotlib import MatplotlibRenderer
 
 
@@ -60,6 +61,29 @@ def test_vectorized_points_and_style_forwarding():
     )
     np.testing.assert_allclose(artists[0].get_sizes(), [10.0, 20.0])
     assert artists[0].get_zorder() == 5
+    plt.close(figure)
+
+
+def test_renderer_culls_projected_points_outside_viewport():
+    figure, ax = plt.subplots()
+    renderer = MatplotlibRenderer(ax)
+    renderer.apply_viewport(Viewport.centered(width=2.0, height=2.0))
+    points = ProjectedPoints(
+        x=[-10.0, 0.0, 10.0],
+        y=[0.0, 0.0, 0.0],
+    )
+
+    artists = renderer.draw(
+        points,
+        style={
+            "s": np.asarray([10.0, 20.0, 30.0]),
+            "c": ["red", "blue", "green"],
+        },
+    )
+
+    assert len(artists) == 1
+    np.testing.assert_allclose(artists[0].get_offsets(), [[0.0, 0.0]])
+    np.testing.assert_allclose(artists[0].get_sizes(), [20.0])
     plt.close(figure)
 
 

@@ -52,6 +52,8 @@ class PolarFacePageRendering:
 
     calendar_lines: tuple[object, ...]
     calendar_labels: tuple[object, ...]
+    day_labels: tuple[object, ...]
+    month_labels: tuple[object, ...]
     page_axes: object
     cut_line: object
     center_artists: tuple[object, ...]
@@ -108,7 +110,7 @@ def draw_polar_page_furniture(
     renderer.ax.set_aspect("equal")
     renderer.ax.set_axis_off()
     label_color = composition.style.canvas.foreground_color
-    calendar_lines, calendar_labels = _draw_calendar(
+    calendar_lines, day_labels, month_labels = _draw_calendar(
         renderer.ax,
         calendar_face,
         unit_per_mm,
@@ -122,10 +124,95 @@ def draw_polar_page_furniture(
         page_face,
         color=label_color,
     )
-    return PolarFacePageRendering(
+    result = PolarFacePageRendering(
         calendar_lines=calendar_lines,
-        calendar_labels=calendar_labels,
+        calendar_labels=(*day_labels, *month_labels),
+        day_labels=day_labels,
+        month_labels=month_labels,
         **page,
+    )
+    _assign_polar_page_semantics(renderer, result)
+    return result
+
+
+def _assign_polar_page_semantics(renderer, rendering):
+    """Name physical-page furniture before the canonical SVG save."""
+    from wenu.chart_document import EditPolicy, SemanticArtistIdentity
+
+    rendering.page_axes.patch.set_visible(False)
+
+    def assign(artists, key, display_name, parent, *, layout=False):
+        artists = tuple(artists)
+        if not artists:
+            return
+        renderer.assign_semantic_identity(
+            artists,
+            SemanticArtistIdentity(
+                name=f"polar_page_{key}",
+                svg_id=key.replace("_", "-"),
+                edit_policy=(
+                    EditPolicy.LAYOUT if layout else EditPolicy.STYLE
+                ),
+                semantic_path=("furniture", parent, key),
+                display_name=display_name,
+                presentation_order=94,
+                style_role=f"polar_page_{key}",
+            ),
+        )
+
+    assign(
+        rendering.calendar_lines,
+        "daily_tick_marks",
+        "Daily tick marks",
+        "planisphere_rim",
+    )
+    assign(
+        rendering.day_labels,
+        "day_labels",
+        "Day labels",
+        "planisphere_rim",
+        layout=True,
+    )
+    assign(
+        rendering.month_labels,
+        "month_labels",
+        "Month labels",
+        "planisphere_rim",
+        layout=True,
+    )
+    assign((rendering.cut_line,), "cut_line", "Cut line", "fabrication")
+    assign(
+        rendering.center_artists,
+        "center_marks",
+        "Center marks",
+        "fabrication",
+    )
+    assign(
+        rendering.registration_artists,
+        "registration_marks",
+        "Registration marks",
+        "fabrication",
+    )
+    assign(
+        rendering.ruler_artists,
+        "scale_ruler",
+        "Scale ruler",
+        "fabrication",
+        layout=True,
+    )
+    assign(
+        rendering.magnitude_scale.artists,
+        "magnitude_scale",
+        "Magnitude scale",
+        "legends",
+        layout=True,
+    )
+    assign(
+        rendering.text_artists,
+        "page_information",
+        "Page information",
+        "footer",
+        layout=True,
     )
 
 
@@ -140,7 +227,8 @@ def _draw_calendar(
     typography,
 ):
     lines = []
-    labels = []
+    day_labels = []
+    month_labels = []
     for tick in face.ticks:
         line = ax.plot(
             (tick.inner[0] * scale, tick.outer[0] * scale),
@@ -157,7 +245,7 @@ def _draw_calendar(
         )[0]
         lines.append(line)
     for label in face.day_labels:
-        labels.append(
+        day_labels.append(
             ax.text(
                 label.position[0] * scale,
                 label.position[1] * scale,
@@ -173,7 +261,7 @@ def _draw_calendar(
             )
         )
     for label in face.month_labels:
-        labels.append(
+        month_labels.append(
             ax.text(
                 label.position[0] * scale,
                 label.position[1] * scale,
@@ -188,7 +276,7 @@ def _draw_calendar(
                 zorder=31,
             )
         )
-    return tuple(lines), tuple(labels)
+    return tuple(lines), tuple(day_labels), tuple(month_labels)
 
 
 def _draw_page_axes(figure, face, *, color):
