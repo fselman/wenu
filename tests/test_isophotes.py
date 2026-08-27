@@ -68,6 +68,12 @@ def test_layer_preserves_compound_ring_topology(tmp_path):
         "ol1:0", "ol1:0"
     ]
     assert geometry.metadata["is_hole"].tolist()[:2] == [False, True]
+    assert geometry.metadata["semantic_entity_keys"].tolist()[:2] == [
+        "isophote_ol1", "isophote_ol1"
+    ]
+    assert geometry.metadata[
+        "semantic_entity_display_names"
+    ].tolist()[:2] == ["Isophote OL1", "Isophote OL1"]
     assert all(np.all(np.isfinite(values)) for values in geometry.lon_deg)
 
 
