@@ -11,6 +11,7 @@ from wenu.charts.command_line import (
     draw_chart_view_from_arguments,
 )
 from wenu.charts.request import CHART_LANGUAGES
+from wenu.charts.sequence_arguments import add_chart_sequence_arguments
 from wenu.charts.subject_arguments import (
     add_constellation_subject_arguments,
     chart_constellation_subject,
@@ -46,6 +47,7 @@ def _add_common_arguments(parser, *, family):
         default_equatorial_grid=family != "binocular",
     )
     _add_observer_arguments(parser)
+    add_chart_sequence_arguments(parser)
     parser.add_argument("--title")
     parser.add_argument("--language", choices=CHART_LANGUAGES)
 
