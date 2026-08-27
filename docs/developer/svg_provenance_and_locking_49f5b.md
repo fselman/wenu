@@ -105,3 +105,30 @@ in Layers and Objects, ordinary canvas selection respects an owner lock, an
 unlocked label remains movable, owner-level styling remains practical, and an
 Inkscape Save As round trip preserves provenance, locks, and Wenu policy. The
 acceptance record must not claim that Inkscape enforces geometry immutability.
+
+## Final verification
+
+The completed branch was clean and synchronized, `git diff --check` reported
+no errors, and the full test suite passed 1,644 tests in 56.23 seconds.
+
+The final Centaurus, Crux, and Musca regional SVG was visually unchanged in
+Inkscape 1.4.4. Its original export and separate Inkscape Save As copy both
+reported exactly:
+
+```text
+semantic artists: 241
+text elements: 32
+edit policies: layout 18, style 223
+Lines-Western owner lock: true
+Labels-Western owner lock: absent
+metadata elements: 1
+source revision: 51d7e220e73973d995de3b01f09dde9934f3e20b
+parameter family: regional
+```
+
+The round trip therefore preserved editable text, the completed semantic
+hierarchy, editing policies, owner locks, Wenu provenance, and canonical chart
+parameters. Acceptance also records the observed Inkscape behavior: ordinary
+canvas selection respects owner locks, while selecting a locked object through
+Layers and Objects permits transforms. That limitation is why Wenu metadata is
+authoritative and geometry validation remains future work.
