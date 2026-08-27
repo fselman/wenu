@@ -92,7 +92,6 @@ No sequence code:
 - title-time templating;
 - restart/resume policy;
 - multi-product sequences;
-- real-frame integration acceptance;
 - scientific reuse or caching;
 - celestial-epoch or moving-provider sequences.
 
