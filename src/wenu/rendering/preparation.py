@@ -62,6 +62,56 @@ def configured_magnitude_sizes(
     )
 
 
+def cull_points_to_viewport(
+    projected,
+    viewport,
+    *,
+    margin_fraction=0.02,
+):
+    """Mark points well outside a projected viewport as non-renderable.
+
+    The small margin preserves marker fragments at the axes edge.  Point
+    arrays and metadata retain their original length so renderer masks and
+    per-object style arrays remain aligned.
+    """
+    from wenu.geometry.viewport import Viewport
+
+    if not isinstance(projected, ProjectedPoints):
+        raise TypeError("projected must be ProjectedPoints.")
+    if not isinstance(viewport, Viewport):
+        raise TypeError("viewport must be a Viewport.")
+    margin_fraction = float(margin_fraction)
+    if (
+        not np.isfinite(margin_fraction)
+        or margin_fraction < 0.0
+    ):
+        raise ValueError(
+            "margin_fraction must be finite and non-negative."
+        )
+    margin_x = margin_fraction * viewport.width
+    margin_y = margin_fraction * viewport.height
+    x = np.asarray(projected.x, dtype=float).copy()
+    y = np.asarray(projected.y, dtype=float).copy()
+    retained = (
+        np.isfinite(x)
+        & np.isfinite(y)
+        & (x >= viewport.x_min - margin_x)
+        & (x <= viewport.x_max + margin_x)
+        & (y >= viewport.y_min - margin_y)
+        & (y <= viewport.y_max + margin_y)
+    )
+    x[~retained] = np.nan
+    y[~retained] = np.nan
+    return ProjectedPoints(
+        x=x,
+        y=y,
+        ids=projected.ids,
+        labels=projected.labels,
+        names=projected.names,
+        metadata=dict(projected.metadata),
+    )
+
+
 def point_styles(metadata, *, default_zorder=None):
     """Return renderer styles encoded by a spherical point collection."""
     count = len(metadata.get("style", ()))
