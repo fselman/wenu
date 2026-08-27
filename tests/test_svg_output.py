@@ -14,6 +14,7 @@ import pytest
 from wenu.chart_document import (
     EditPolicy,
     SemanticArtistIdentity,
+    assign_canvas_semantics,
 )
 from wenu.charts.regional import ExportOptions
 from wenu.rendering import MatplotlibRenderer
@@ -494,3 +495,41 @@ def test_chart_semantics_form_a_parallel_hierarchy(tmp_path):
     assert mask.get(
         "{http://www.inkscape.org/namespaces/inkscape}label"
     ) == "Outside constellation-group mask"
+
+
+
+def test_canvas_semantics_group_independent_svg_parents(tmp_path):
+    destination = tmp_path / "canvas-semantics.svg"
+    figure, ax = plt.subplots()
+    renderer = MatplotlibRenderer(ax)
+    assign_canvas_semantics(renderer)
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    by_id = {
+        element.get("id"): element
+        for element in root.iter()
+        if element.get("id")
+    }
+
+    assert "wenu-group-page" in by_id
+    assert "wenu-group-page-background" in by_id
+    assert "wenu-page-background--artist-0001" in by_id
+    assert "wenu-group-sky-background" in by_id
+    assert "wenu-sky-background--artist-0001" in by_id
+    frame = by_id[
+        "wenu-group-chart-masks_and_boundary-"
+        "rectangular_viewport_frame"
+    ]
+    assert len(list(frame)) == 4
+    assert {
+        child.get("id") for child in frame
+    } == {
+        "wenu-chart-rectangular-viewport-frame--artist-0001",
+        "wenu-chart-rectangular-viewport-frame--artist-0002",
+        "wenu-chart-rectangular-viewport-frame--artist-0003",
+        "wenu-chart-rectangular-viewport-frame--artist-0004",
+    }
