@@ -131,6 +131,22 @@ def test_grid_identity_declares_independent_line_and_label_children():
     assert labels.edit_policy.value == "layout"
 
 
+def test_generic_catalog_objects_form_dynamic_deep_sky_entities():
+    resolved = identity("nonstellar")
+    m8 = resolved.entity_identity("M 8", "M 8")
+
+    assert resolved.semantic_path == (
+        "sky", "deep_sky_objects", "other_objects"
+    )
+    assert resolved.display_name == "Other objects"
+    assert resolved.presentation_order == 29
+    assert m8.semantic_path == (
+        "sky", "deep_sky_objects", "other_objects", "m_8"
+    )
+    assert m8.display_name == "M 8"
+    assert m8.svg_id == "wenu-layer-nonstellar-m-8"
+
+
 def test_non_grid_identity_ignores_undeclared_renderer_parts():
     galaxies = identity("galaxies")
 
