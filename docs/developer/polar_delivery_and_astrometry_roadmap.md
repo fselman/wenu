@@ -1,6 +1,6 @@
 # Wenu polar delivery and astrometry roadmap
 
-**Status:** Active sequencing addendum
+**Status:** Historical sequencing and scientific background
 
 **Repository baseline:** `0235a0d0824f8b0b434a50a54015b3afaddc68b8`
 
@@ -11,6 +11,14 @@
 **Related migration:** `wenu_migration_0.8_to_0.9.md`
 
 **Committed audit:** `coordinate_transformation_audit_09a2afd.md`
+
+**Current post-v0.9 numbering authority:**
+`post_v0.9_architecture_roadmap.md`
+
+The 49A-49I labels in section 6 predate the consolidated post-v0.9 roadmap.
+They remain here for scientific provenance but are not active milestone
+numbers. In particular, this document's older “49G” label does not compete
+with the active Milestone 49G temporal-sequence contract.
 
 ## 1. Purpose and authority
 
