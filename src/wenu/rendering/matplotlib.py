@@ -114,20 +114,30 @@ class MatplotlibRenderer:
         width = max(4, len(str(len(flattened))))
         results = []
         for index, artist in enumerate(flattened, start=1):
-            svg_id = f"{identity.svg_id}--artist-{index:0{width}d}"
+            component = getattr(
+                artist, "_wenu_semantic_component", None
+            )
+            artist_identity = (
+                identity.component_identity(component)
+                if component is not None
+                else identity
+            )
+            svg_id = (
+                f"{artist_identity.svg_id}--artist-{index:0{width}d}"
+            )
             artist.set_gid(svg_id)
             zorder = float(artist.get_zorder())
             paint_role = paint_role_for_zorder(zorder)
             attach_semantic_svg_metadata(
                 artist,
-                layer=identity.name,
+                layer=artist_identity.name,
                 zorder=zorder,
                 paint_role=paint_role,
-                edit_policy=identity.edit_policy,
-                semantic_path=identity.semantic_path,
-                display_name=identity.display_name,
-                presentation_order=identity.presentation_order,
-                style_role=identity.style_role,
+                edit_policy=artist_identity.edit_policy,
+                semantic_path=artist_identity.semantic_path,
+                display_name=artist_identity.display_name,
+                presentation_order=artist_identity.presentation_order,
+                style_role=artist_identity.style_role,
             )
             results.append(
                 SemanticArtistRenderingResult(
@@ -135,11 +145,11 @@ class MatplotlibRenderer:
                     svg_id=svg_id,
                     zorder=zorder,
                     paint_role=paint_role,
-                    edit_policy=identity.edit_policy,
-                    semantic_path=identity.semantic_path,
-                    display_name=identity.display_name,
-                    presentation_order=identity.presentation_order,
-                    style_role=identity.style_role,
+                    edit_policy=artist_identity.edit_policy,
+                    semantic_path=artist_identity.semantic_path,
+                    display_name=artist_identity.display_name,
+                    presentation_order=artist_identity.presentation_order,
+                    style_role=artist_identity.style_role,
                 )
             )
         return tuple(results)
@@ -600,8 +610,7 @@ class MatplotlibRenderer:
         )
         artists = []
         for name, curves in grid.components.items():
-            artists.extend(
-                self._draw_curves(
+            line_artists = self._draw_curves(
                     curves,
                     {
                         **style,
@@ -613,7 +622,9 @@ class MatplotlibRenderer:
                     label_offset=label_offset,
                     label_formatter=None,
                 )
-            )
+            for artist in line_artists:
+                setattr(artist, "_wenu_semantic_component", "lines")
+            artists.extend(line_artists)
             if draw_labels:
                 for index, curve in enumerate(curves):
                     curve_name = curve.name
@@ -686,14 +697,18 @@ class MatplotlibRenderer:
                         if label_formatter is None
                         else label_formatter(curve_name)
                     )
-                    artists.append(
-                        self._label(
-                            *position,
-                            label,
-                            label_style_for_curve,
-                            label_offset,
-                        )
+                    label_artist = self._label(
+                        *position,
+                        label,
+                        label_style_for_curve,
+                        label_offset,
                     )
+                    setattr(
+                        label_artist,
+                        "_wenu_semantic_component",
+                        "labels",
+                    )
+                    artists.append(label_artist)
         return artists
 
     def _draw_polygon(
