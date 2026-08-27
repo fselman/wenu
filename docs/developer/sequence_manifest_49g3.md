@@ -126,7 +126,7 @@ The milestone requires tests proving:
 - unconditional rendering under explicit restart;
 - real canonical PNG generation followed by zero-render verified resume.
 
-CLI/configuration exposure remains Milestone 49G.4.
+CLI/configuration exposure is implemented downstream in Milestone 49G.4.
 
 
 ## Real-directory acceptance
