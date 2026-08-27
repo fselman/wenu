@@ -196,11 +196,11 @@ def test_repeated_rendering_with_different_projection_and_viewport():
     assert ax1.get_xlim() == viewport1.xlim
     assert (
         first.layers[0].artists[0].get_gid()
-        == "wenu-layer-test--artist-0001"
+        == "wenu-layer-test--0001"
     )
     semantic_artist = first.layers[0].semantic_artists[0]
     assert semantic_artist.artist is first.layers[0].artists[0]
-    assert semantic_artist.svg_id == "wenu-layer-test--artist-0001"
+    assert semantic_artist.svg_id == "wenu-layer-test--0001"
     assert semantic_artist.zorder == 6.0
     assert semantic_artist.paint_role is POINTS
     assert semantic_artist.edit_policy is EditPolicy.STYLE
