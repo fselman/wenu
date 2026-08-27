@@ -49,11 +49,10 @@ Physical locking uses Inkscape's `sodipodi:insensitive="true"`. This is an
 editor convenience, not access control, and another SVG editor may ignore it.
 The `data-wenu-edit` value is therefore still the cross-editor contract.
 
-Only a supplied semantic branch that directly owns artists receives a physical
-lock. A merely organizational ancestor is never locked just because all the
-content enabled in one chart happens to share a policy. Descendants of a
-locked owning branch are not redundantly locked, so unlocking that branch
-makes its contents available. For example:
+Locking is layered from a supplied semantic owner through its entity groups
+and drawing primitives. A merely organizational ancestor is never locked just
+because all the content enabled in one chart happens to share a policy. For
+example:
 
 The renderer-neutral `data-wenu-lock-owner-path` records that supplied owner
 explicitly. Entity subdivision does not change it: individual constellation
@@ -63,21 +62,30 @@ from astronomy names or from the accidental shape of a particular export.
 
 - `Constellations` remains unlocked because it is organizational, regardless
   of which constellation components are enabled;
-- `Lines-Western` is locked once;
-- its individual constellation children are not separately locked; and
+- `Lines-Western`, its individual constellation groups, and their drawing
+  primitives are locked;
 - `Labels-Western` remains unlocked because label placement is a layout edit.
 
 This rule also applies to grids: the coordinate-system parent is mixed, its
-line branch is locked, and its label branch is unlocked.
+line branch and line primitives are locked, and its label branch is unlocked.
+
+The layered physical locks reflect an Inkscape 1.4.4 acceptance finding:
+locking only an owning group blocked translation but still left descendants
+shown as unlocked and allowed their geometry to be resized. With layered
+locks, a designer unlocks only the level required by the intended operation:
+
+- unlock the owner for class-level appearance changes;
+- unlock one entity group for entity-level appearance changes; or
+- unlock one primitive only for a deliberate individual edit.
 
 ## Acceptance
 
 Automated verification covers one metadata element, preservation of existing
 Dublin Core content, canonical parameter JSON, reproducible UTC dates, source
 revision recording, provenance without semantic artists, homogeneous branch
-locking, mixed-parent behavior, and absence of redundant descendant locks.
+locking, mixed-parent behavior, and layered descendant protection.
 
 Mac acceptance must additionally confirm in Inkscape 1.4.4 that locks appear
-in Layers and Objects, a locked line branch cannot be moved accidentally, an
+in Layers and Objects, locked line geometry cannot be moved or resized, an
 unlocked label remains movable, unlocking one line branch enables style work,
 and an Inkscape Save As round trip preserves both provenance and Wenu policy.

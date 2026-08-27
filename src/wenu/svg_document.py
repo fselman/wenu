@@ -409,11 +409,17 @@ def _group_semantic_siblings(parent, candidates):
             if semantic_path[:len(path_parts)] == path_parts
         ))
 
+    def protected_path(path_parts):
+        return any(
+            path_parts[:len(owner_path)] == owner_path
+            for owner_path in lock_owner_paths
+        )
+
     def lockable(path_parts):
         policy = descendant_policies(path_parts)
         return (
             len(path_parts) > 1
-            and path_parts in lock_owner_paths
+            and protected_path(path_parts)
             and bool(policy)
             and policy <= {"style", "none"}
         )
@@ -463,7 +469,7 @@ def _group_semantic_siblings(parent, candidates):
                 return supplied
         return _default_path_display_name(path_parts[-1])
 
-    def build_group(path_parts, *, ancestor_locked=False):
+    def build_group(path_parts):
         token = "-".join(path_parts)
         attributes = {
             "id": f"wenu-group-{token}",
@@ -479,7 +485,7 @@ def _group_semantic_siblings(parent, candidates):
             f"{{{_INKSCAPE_NAMESPACE}}}groupmode": "layer",
             f"{{{_INKSCAPE_NAMESPACE}}}label": display_name(path_parts),
         }
-        lock_here = lockable(path_parts) and not ancestor_locked
+        lock_here = lockable(path_parts)
         if lock_here:
             attributes.update({
                 f"{{{_SODIPODI_NAMESPACE}}}insensitive": "true",
@@ -497,11 +503,13 @@ def _group_semantic_siblings(parent, candidates):
                 f"{'/'.join(path_parts)}."
             )
         for child_path in child_paths:
-            group.append(build_group(
-                child_path,
-                ancestor_locked=ancestor_locked or lock_here,
-            ))
+            group.append(build_group(child_path))
         for element in by_path.get(path_parts, ()):
+            if element.get("data-wenu-edit") in {"style", "none"}:
+                element.set(
+                    f"{{{_SODIPODI_NAMESPACE}}}insensitive", "true"
+                )
+                element.set("data-wenu-locked", "true")
             group.append(element)
         return group
 
