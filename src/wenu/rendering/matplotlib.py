@@ -144,6 +144,13 @@ class MatplotlibRenderer:
                 if component is not None
                 else identity
             )
+            entity_category = getattr(
+                artist, "_wenu_semantic_entity_category", None
+            )
+            if entity_category is not None:
+                artist_identity = artist_identity.category_identity(
+                    entity_category
+                )
             lock_owner_path = artist_identity.semantic_path
             entity_key = getattr(
                 artist, "_wenu_semantic_entity_key", None
@@ -1137,7 +1144,8 @@ class MatplotlibRenderer:
         """Carry optional source entity identity without domain knowledge."""
         keys = metadata.get("semantic_entity_keys")
         names = metadata.get("semantic_entity_display_names")
-        if keys is None and names is None:
+        categories = metadata.get("semantic_entity_categories")
+        if keys is None and names is None and categories is None:
             return
         if keys is None or names is None:
             raise ValueError(
@@ -1146,6 +1154,10 @@ class MatplotlibRenderer:
         if len(keys) != len(names):
             raise ValueError(
                 "Semantic entity keys and display names must align."
+            )
+        if categories is not None and len(categories) != len(keys):
+            raise ValueError(
+                "Semantic entity categories must align with entities."
             )
         for artist in artists:
             setattr(
@@ -1158,6 +1170,12 @@ class MatplotlibRenderer:
                 "_wenu_semantic_entity_display_name",
                 names[index],
             )
+            if categories is not None:
+                setattr(
+                    artist,
+                    "_wenu_semantic_entity_category",
+                    categories[index],
+                )
 
     @staticmethod
     def _anchor(x, y):
