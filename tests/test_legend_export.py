@@ -1241,8 +1241,27 @@ def test_regional_furniture_declares_title_and_legend_hierarchy():
             (artists, identity)
         ),
     )
-    object_legend = object()
-    stellar_legend = object()
+    class Legend:
+        legend_handles = ()
+
+        def __init__(self):
+            self.frame = SimpleNamespace(set_gid=lambda value: None)
+            self.title = SimpleNamespace(
+                get_text=lambda: "",
+                set_gid=lambda value: None,
+            )
+
+        def get_frame(self):
+            return self.frame
+
+        def get_title(self):
+            return self.title
+
+        def get_texts(self):
+            return ()
+
+    object_legend = Legend()
+    stellar_legend = Legend()
     rendering = SimpleNamespace(
         legends=SimpleNamespace(
             legends=SimpleNamespace(
