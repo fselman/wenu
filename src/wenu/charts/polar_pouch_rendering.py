@@ -226,7 +226,67 @@ def draw_polar_pouch_face(
             artist_transform=artist_transform,
             clip_bounds_mm=clip_bounds_mm,
         )
+    _assign_polar_pouch_semantics(result, face.face)
     return result
+
+
+def _assign_polar_pouch_semantics(rendering, face):
+    """Name one physical pouch face before the canonical SVG save."""
+    from wenu.chart_document import EditPolicy, SemanticArtistIdentity
+    from wenu.rendering.matplotlib import MatplotlibRenderer
+
+    rendering.page_axes.patch.set_visible(False)
+    face_key = f"{face}_face"
+    face_name = f"{str(face).title()} face"
+
+    def assign(artists, key, display_name, *, layout=False):
+        artists = tuple(artists)
+        if not artists:
+            return
+        MatplotlibRenderer.assign_semantic_identity(
+            artists,
+            SemanticArtistIdentity(
+                name=f"polar_pouch_{face}_{key}",
+                svg_id=f"{face}-{key.replace('_', '-')}",
+                edit_policy=(
+                    EditPolicy.LAYOUT if layout else EditPolicy.STYLE
+                ),
+                semantic_path=("furniture", face_key, key),
+                display_name=display_name,
+                presentation_order=94,
+                style_role=f"polar_pouch_{key}",
+                path_display_names=(
+                    "Furniture",
+                    face_name,
+                    display_name,
+                ),
+            ),
+        )
+
+    assign((rendering.disk_guide,), "disk_guide", "Disk guide")
+    assign((rendering.sky_window,), "sky_window", "Sky window")
+    assign(rendering.horizon_lines, "horizon", "Horizon")
+    assign(rendering.date_windows, "date_windows", "Date windows")
+    assign(
+        (rendering.hour_circle, *rendering.hour_ticks),
+        "hour_scale",
+        "Hour scale",
+    )
+    assign(
+        rendering.hour_labels,
+        "hour_labels",
+        "Hour labels",
+        layout=True,
+    )
+    assign(rendering.labels, "labels", "Labels", layout=True)
+    assign(
+        rendering.magnitude_scale.artists,
+        "magnitude_scale",
+        "Magnitude scale",
+        layout=True,
+    )
+    assign((rendering.fold_line,), "fold_line", "Fold line")
+    assign(rendering.glue_strips, "glue_strips", "Glue strips")
 
 
 def _place_rendering(result, *, artist_transform, clip_bounds_mm):
