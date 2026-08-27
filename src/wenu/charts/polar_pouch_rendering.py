@@ -237,8 +237,6 @@ def _assign_polar_pouch_semantics(rendering, face):
 
     rendering.page_axes.patch.set_visible(False)
     face_key = f"{face}_face"
-    face_name = f"{str(face).title()} face"
-
     def assign(artists, key, display_name, *, layout=False):
         artists = tuple(artists)
         if not artists:
@@ -255,11 +253,6 @@ def _assign_polar_pouch_semantics(rendering, face):
                 display_name=display_name,
                 presentation_order=94,
                 style_role=f"polar_pouch_{key}",
-                path_display_names=(
-                    "Furniture",
-                    face_name,
-                    display_name,
-                ),
             ),
         )
 
