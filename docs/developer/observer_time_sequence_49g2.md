@@ -72,7 +72,7 @@ The current sequence requires:
 - an output directory rather than a single filename.
 
 Frame results contain the complete ordinary `ChartRequestGeneration`.
-`ChartSequenceGeneration.outputs` returns the ordered static paths.
+`ObserverTimeChartSequenceGeneration.outputs` returns the ordered static paths.
 
 No sequence code:
 
