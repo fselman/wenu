@@ -709,3 +709,41 @@ def test_canvas_semantics_group_independent_svg_parents(tmp_path):
         "viewport-frame--0003",
         "viewport-frame--0004",
     }
+
+
+def test_separate_identity_assignments_share_one_figure_id_sequence(tmp_path):
+    destination = tmp_path / "separate-semantic-layers.svg"
+    figure, ax = plt.subplots()
+    first = ax.plot((0.0, 1.0), (0.2, 0.3))[0]
+    second = ax.plot((0.0, 1.0), (0.7, 0.8))[0]
+    identity = SemanticLayerIdentity(
+        name="magellanic_cloud_isophotes",
+        svg_id="wenu-layer-magellanic-cloud-isophotes",
+        semantic_path=(
+            "sky",
+            "milky_way_and_magellanic_clouds",
+            "magellanic_clouds",
+        ),
+        display_name="Magellanic Clouds",
+        presentation_order=21,
+        style_role="magellanic_clouds",
+    )
+
+    MatplotlibRenderer.assign_semantic_identity((first,), identity)
+    MatplotlibRenderer.assign_semantic_identity((second,), identity)
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    semantic_ids = [
+        element.get("id")
+        for element in root.iter()
+        if "wenu-semantic-artist" in element.get("class", "").split()
+    ]
+
+    assert semantic_ids == [
+        "wenu-layer-magellanic-cloud-isophotes--0001",
+        "wenu-layer-magellanic-cloud-isophotes--0002",
+    ]
