@@ -1462,3 +1462,19 @@ byte counts and SHA-256 values without changing plan identity.
 renders all frames. With `restart_policy="resume"`, it rejects incompatible
 plans and reuses only outputs whose complete file bytes match their manifest
 record. Missing or changed outputs return to canonical static generation.
+
+
+## Temporal sequence CLI and configuration (Milestone 49G.4)
+
+The installed `wenu_chart` family commands optionally accept an inclusive
+observer-time stop, uniform frame count, civil display timezone, playback
+metadata, and restart/resume policy. Omission preserves the existing static
+path. Static and sequence commands resolve through one shared CLI product
+plan and `chart_view_request()`; sequence frames then use only
+`generate_observer_time_chart_sequence()` and `generate_chart_request()`.
+
+`ConfigurationDefaults.sequence` carries the immutable translated
+schema-version-1 `[sequence]` table. Packaged values disable sequence output.
+User overlays may provide a complete sequence, and explicit CLI values take
+precedence. The effective configuration reaches every frame and participates
+in deterministic manifest identity.
