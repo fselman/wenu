@@ -8,6 +8,7 @@ from enum import Enum
 from hashlib import sha256
 import json
 from pathlib import Path
+from collections.abc import Mapping
 from typing import Any
 
 from .request import ChartRequest
@@ -40,7 +41,7 @@ def _canonical(value: Any):
         return value.total_seconds()
     if isinstance(value, Path):
         return value.as_posix()
-    if isinstance(value, dict):
+    if isinstance(value, Mapping):
         return {
             str(key): _canonical(item)
             for key, item in sorted(value.items(), key=lambda pair: str(pair[0]))
