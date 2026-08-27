@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 
+from wenu.configuration import SequenceDefaults
 from wenu.temporal import PlaybackSpec, TemporalTimeline
 
 from .sequence_manifest import SequenceRestartPolicy
@@ -55,7 +56,7 @@ def add_chart_sequence_arguments(parser):
     parser.add_argument(
         "--restart-policy",
         choices=tuple(item.value for item in SequenceRestartPolicy),
-        default=SequenceRestartPolicy.RESTART.value,
+        default=None,
         help="restart every frame or resume only manifest-verified frames",
     )
     return parser
@@ -80,17 +81,37 @@ def chart_sequence_cli_options(
     *,
     start: datetime,
     default_display_timezone: str = "UTC",
+    defaults: SequenceDefaults | None = None,
 ) -> ChartSequenceCliOptions | None:
     """Resolve optional CLI controls without rendering or reading catalogues."""
-    stop = getattr(arguments, "sequence_stop", None)
-    count = getattr(arguments, "sequence_frames", None)
-    duration = getattr(arguments, "playback_duration", None)
-    frames_per_second = getattr(arguments, "frames_per_second", None)
-    display_timezone = getattr(arguments, "display_timezone", None)
-    restart_policy = getattr(
-        arguments,
+    configured = (
+        SequenceDefaults(None, None, None, None, None, "restart")
+        if defaults is None else defaults
+    )
+    if not isinstance(configured, SequenceDefaults):
+        raise TypeError("defaults must be SequenceDefaults or None.")
+
+    def selected(name, fallback):
+        value = getattr(arguments, name, None)
+        return fallback if value is None else value
+
+    stop = selected("sequence_stop", configured.stop)
+    count = selected("sequence_frames", configured.frames)
+    duration = selected(
+        "playback_duration",
+        configured.playback_duration_seconds,
+    )
+    frames_per_second = selected(
+        "frames_per_second",
+        configured.frames_per_second,
+    )
+    display_timezone = selected(
+        "display_timezone",
+        configured.display_timezone,
+    )
+    restart_policy = selected(
         "restart_policy",
-        SequenceRestartPolicy.RESTART.value,
+        configured.restart_policy,
     )
     sequence_selected = stop is not None or count is not None
     ancillary_selected = any(
