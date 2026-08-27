@@ -255,13 +255,14 @@ def _clip_curves(
             )
             source_indices.append(source_index)
 
-    metadata = dict(projected.metadata)
-    styles = metadata.get("styles")
-    if styles is not None:
-        metadata["styles"] = tuple(
-            styles[index] for index in source_indices
-        )
-    return ProjectedCurves(items=items, metadata=metadata)
+    return ProjectedCurves(
+        items=items,
+        metadata=_subset_metadata(
+            projected.metadata,
+            source_indices,
+            len(projected),
+        ),
+    )
 
 
 def clip_polygons_to_latitude(
