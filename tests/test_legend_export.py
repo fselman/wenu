@@ -1227,3 +1227,46 @@ def test_composition_rejects_wrong_chart_and_ambiguous_legacy_arguments():
             composition=compose_chart(chart, style="atlas"),
             style=object(),
         )
+
+
+
+def test_regional_furniture_declares_title_and_legend_hierarchy():
+    from wenu.charts.regional import _assign_furniture_semantics
+
+    assigned = []
+    title = SimpleNamespace(get_text=lambda: "Chart title")
+    renderer = SimpleNamespace(
+        ax=SimpleNamespace(title=title),
+        assign_semantic_identity=lambda artists, identity: assigned.append(
+            (artists, identity)
+        ),
+    )
+    object_legend = object()
+    stellar_legend = object()
+    rendering = SimpleNamespace(
+        legends=SimpleNamespace(
+            objects=object_legend,
+            stars=SimpleNamespace(artist=stellar_legend),
+        )
+    )
+
+    _assign_furniture_semantics(renderer, rendering)
+
+    assert [identity.semantic_path for _, identity in assigned] == [
+        ("furniture", "title"),
+        (
+            "furniture",
+            "legends",
+            "chart_information_and_object_key",
+        ),
+        ("furniture", "legends", "stellar_magnitude_scale"),
+    ]
+    assert [artists[0] for artists, _ in assigned] == [
+        title,
+        object_legend,
+        stellar_legend,
+    ]
+    assert all(
+        identity.edit_policy.value == "layout"
+        for _, identity in assigned
+    )
