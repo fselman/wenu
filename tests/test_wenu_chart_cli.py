@@ -294,3 +294,23 @@ def test_family_help_exposes_public_output_formats_only():
         "--svg-font-policy" not in action.option_strings
         for action in regional._actions
     )
+
+
+def test_family_help_exposes_temporal_sequence_controls():
+    regional = chart.parser().parse_args([
+        "regional",
+        "--observer-time", "2026-08-21T21:00:00-04:00",
+        "--sequence-stop", "2026-08-22T03:00:00-04:00",
+        "--sequence-frames", "25",
+        "--display-timezone", "America/Santiago",
+        "--playback-duration", "2",
+        "--frames-per-second", "12.5",
+        "--restart-policy", "resume",
+    ])
+
+    assert regional.sequence_stop == "2026-08-22T03:00:00-04:00"
+    assert regional.sequence_frames == 25
+    assert regional.display_timezone == "America/Santiago"
+    assert regional.playback_duration == pytest.approx(2.0)
+    assert regional.frames_per_second == pytest.approx(12.5)
+    assert regional.restart_policy == "resume"
