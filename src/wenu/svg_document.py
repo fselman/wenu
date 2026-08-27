@@ -359,6 +359,7 @@ def _group_semantics(path):
     _consolidate_designer_hierarchy(root)
     _flatten_semantic_text_artists(root)
     _promote_common_label_typography(root)
+    _promote_common_line_styles(root)
     tree.write(path, encoding="utf-8", xml_declaration=True)
     return path
 
@@ -775,6 +776,87 @@ def _set_style_declarations(element, declarations):
         )
     else:
         element.attrib.pop("style", None)
+
+
+_INHERITABLE_LINE_STYLE_PROPERTIES = (
+    "stroke",
+    "stroke-width",
+    "stroke-opacity",
+    "stroke-dasharray",
+    "stroke-dashoffset",
+    "stroke-linecap",
+    "stroke-linejoin",
+    "stroke-miterlimit",
+)
+
+
+def _line_style_owner(group):
+    path = tuple(
+        item
+        for item in group.get(
+            "data-wenu-semantic-path", ""
+        ).split("/")
+        if item
+    )
+    return any(
+        item == "lines"
+        or item.startswith("lines_")
+        or item.endswith("_lines")
+        for item in path
+    )
+
+
+def _promote_common_line_styles(root):
+    """Make uniform line appearance editable at semantic group level."""
+    graphics_tags = {
+        f"{{{_SVG_NAMESPACE}}}path",
+        f"{{{_SVG_NAMESPACE}}}line",
+        f"{{{_SVG_NAMESPACE}}}polyline",
+    }
+    for group in root.iter(f"{{{_SVG_NAMESPACE}}}g"):
+        classes = group.get("class", "").split()
+        if (
+            "wenu-semantic-group" not in classes
+            or not _line_style_owner(group)
+        ):
+            continue
+        graphics = [
+            element
+            for element in group.iter()
+            if element.tag in graphics_tags
+        ]
+        if not graphics:
+            continue
+        declarations = [
+            _style_declarations(element) for element in graphics
+        ]
+        promoted = []
+        for name in _INHERITABLE_LINE_STYLE_PROPERTIES:
+            values = [dict(items).get(name) for items in declarations]
+            if (
+                values[0] is not None
+                and all(value == values[0] for value in values[1:])
+            ):
+                promoted.append((name, values[0]))
+        if not promoted:
+            continue
+        promoted_names = {name for name, _ in promoted}
+        group_declarations = [
+            item
+            for item in _style_declarations(group)
+            if item[0] not in promoted_names
+        ]
+        group_declarations.extend(promoted)
+        _set_style_declarations(group, group_declarations)
+        for element, items in zip(graphics, declarations):
+            _set_style_declarations(
+                element,
+                [
+                    item
+                    for item in items
+                    if item[0] not in promoted_names
+                ],
+            )
 
 
 def _promote_common_label_typography(root):
