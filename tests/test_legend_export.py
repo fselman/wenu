@@ -1245,8 +1245,10 @@ def test_regional_furniture_declares_title_and_legend_hierarchy():
     stellar_legend = object()
     rendering = SimpleNamespace(
         legends=SimpleNamespace(
-            objects=object_legend,
-            stars=SimpleNamespace(artist=stellar_legend),
+            legends=SimpleNamespace(
+                objects=object_legend,
+                stars=SimpleNamespace(artist=stellar_legend),
+            )
         )
     )
 
