@@ -350,6 +350,34 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
     ) == "Constellation lines"
 
 
+def test_svg_skips_semantic_artist_omitted_by_matplotlib(tmp_path):
+    destination = tmp_path / "omitted-artist.svg"
+    figure, ax = plt.subplots()
+    artist = ax.plot((0.0, 1.0), (0.0, 1.0))[0]
+    artist.set_visible(False)
+    MatplotlibRenderer.assign_semantic_identity(
+        (artist,),
+        SemanticLayerIdentity(
+            name="celestial_points",
+            svg_id="omitted-point",
+            semantic_path=("sky", "grids", "reference_points"),
+            display_name="Celestial reference points",
+            presentation_order=74,
+            style_role="celestial_points",
+        ),
+    )
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    assert not any(
+        element.get("id") == "omitted-point"
+        for element in root.iter()
+    )
+
+
 def test_sky_groups_follow_supplied_presentation_order(tmp_path):
     destination = tmp_path / "semantic-order.svg"
     figure, ax = plt.subplots()
