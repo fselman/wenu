@@ -12,11 +12,22 @@ _SAFE_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 _SAFE_PATH_COMPONENT = _SAFE_NAME
 
 
-def semantic_key(value, *, field: str) -> str:
+def semantic_key(
+    value,
+    *,
+    field: str,
+    numeric_prefix: str | None = None,
+) -> str:
     """Return one safe stable key supplied by a semantic data source."""
     if not isinstance(value, str) or not value:
         raise ValueError(f"{field} must be a non-empty string.")
     key = re.sub(r"[^a-z0-9]+", "_", value.lower()).strip("_")
+    if key[:1].isdigit() and numeric_prefix is not None:
+        if _SAFE_NAME.fullmatch(numeric_prefix) is None:
+            raise ValueError(
+                f"{field} numeric prefix {numeric_prefix!r} is not safe."
+            )
+        key = f"{numeric_prefix}_{key}"
     if _SAFE_NAME.fullmatch(key) is None:
         raise ValueError(f"{field} {value!r} has no safe semantic key.")
     return key
@@ -306,7 +317,11 @@ class SemanticLayerIdentity:
 
     def entity_identity(self, key: str, display_name: str):
         """Return a concise child identity declared by the source data."""
-        key = semantic_key(key, field="semantic entity key")
+        key = semantic_key(
+            key,
+            field="semantic entity key",
+            numeric_prefix="catalog",
+        )
         if not isinstance(display_name, str) or not display_name:
             raise ValueError(
                 "semantic entity display name must be a non-empty string."
