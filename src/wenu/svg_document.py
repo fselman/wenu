@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import re
+import subprocess
 import xml.etree.ElementTree as ET
 
 
@@ -217,6 +218,27 @@ def _source_revision(explicit=None):
         )
         if commit_id:
             return str(commit_id)
+    source_file = Path(__file__).resolve()
+    repository = next(
+        (parent for parent in source_file.parents if (parent / ".git").exists()),
+        None,
+    )
+    if repository is not None:
+        try:
+            resolved = subprocess.run(
+                ("git", "-C", str(repository), "rev-parse", "HEAD"),
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=2.0,
+            ).stdout.strip()
+        except (OSError, subprocess.SubprocessError):
+            resolved = ""
+        if resolved:
+            return resolved
+    version_revision = re.search(r"\+g([0-9a-f]+)", _wenu_version())
+    if version_revision is not None:
+        return version_revision.group(1)
     return "unknown"
 
 

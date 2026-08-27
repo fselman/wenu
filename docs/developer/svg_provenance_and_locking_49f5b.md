@@ -31,7 +31,9 @@ artifact.
 Normal exports use the current UTC time with second precision. When
 `SOURCE_DATE_EPOCH` is set, its UTC instant is used instead so archival builds
 can be reproducible. `WENU_SOURCE_REVISION` may explicitly identify a source
-revision; otherwise an installed VCS revision is used when available.
+revision. Otherwise Wenu checks installed VCS metadata, the current Git working
+copy, and the package-version local segment in that order before reporting
+`unknown`.
 
 ## Initial editor-lock contract
 
