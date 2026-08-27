@@ -154,3 +154,9 @@ renderer-boundary, and package-boundary suite passed:
 ```text
 82 passed in 27.29s
 ```
+
+The clean branch full suite then passed:
+
+```text
+1721 passed in 83.03s
+```
