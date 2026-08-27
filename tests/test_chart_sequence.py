@@ -211,6 +211,14 @@ def test_observer_time_sequence_generates_real_canonical_frames(tmp_path):
         result.outputs[1].read_bytes()
     ).digest()
 
+    resumed = generate_observer_time_chart_sequence(
+        sequence,
+        restart_policy="resume",
+    )
+    assert resumed.outputs == result.outputs
+    assert resumed.rendered_count == 0
+    assert resumed.reused_count == 2
+
 
 
 def _file_generator(calls):
