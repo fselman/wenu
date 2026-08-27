@@ -711,6 +711,10 @@ def test_observer_time_sequence_reserves_astrometric_epoch_ownership():
         "provider evaluation instant",
         "Gaia DR3 J2016.0 TCB",
         "must not be forced into UTC datetimes",
+        "Real-render acceptance",
+        "894 × 927",
+        "expected six-hour sky",
+        "permanent integration test",
         "45 passed in 3.47s",
     ):
         assert value in contract
