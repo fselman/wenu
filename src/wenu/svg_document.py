@@ -349,6 +349,7 @@ def _group_semantics(path):
 
     for parent, candidates in candidates_by_parent.items():
         _group_semantic_siblings(parent, candidates)
+    _consolidate_designer_hierarchy(root)
     _flatten_semantic_text_artists(root)
     _promote_common_label_typography(root)
     tree.write(path, encoding="utf-8", xml_declaration=True)
@@ -509,6 +510,109 @@ def _group_semantic_siblings(parent, candidates):
         key=lambda item: (descendant_order(item), item),
     )):
         parent.insert(insertion_index + offset, build_group(root_path))
+
+
+def _consolidate_designer_hierarchy(root):
+    """Expose one professional-facing chart and furniture hierarchy."""
+    group_tag = f"{{{_SVG_NAMESPACE}}}g"
+    parent_of = {
+        child: parent
+        for parent in root.iter()
+        for child in parent
+    }
+    figures = [
+        element
+        for element in root.iter(group_tag)
+        if re.fullmatch(r"figure_\\d+", element.get("id", ""))
+    ]
+    for figure_index, figure in enumerate(figures, start=1):
+        figure_id = (
+            "wenu-chart"
+            if len(figures) == 1
+            else f"wenu-chart-{figure_index}"
+        )
+        figure_label = (
+            "Wenu chart"
+            if len(figures) == 1
+            else f"Wenu chart {figure_index}"
+        )
+        figure.set("id", figure_id)
+        figure.set(
+            f"{{{_INKSCAPE_NAMESPACE}}}groupmode",
+            "layer",
+        )
+        figure.set(f"{{{_INKSCAPE_NAMESPACE}}}label", figure_label)
+
+        axes = [
+            element
+            for element in figure.iter(group_tag)
+            if re.fullmatch(r"axes_\\d+", element.get("id", ""))
+        ]
+        for axes_index, plot_area in enumerate(axes, start=1):
+            plot_id = (
+                "plot-area"
+                if len(axes) == 1
+                else f"plot-area-{axes_index}"
+            )
+            plot_label = (
+                "Plot area"
+                if len(axes) == 1
+                else f"Plot area {axes_index}"
+            )
+            plot_area.set("id", plot_id)
+            plot_area.set(
+                f"{{{_INKSCAPE_NAMESPACE}}}groupmode",
+                "layer",
+            )
+            plot_area.set(
+                f"{{{_INKSCAPE_NAMESPACE}}}label",
+                plot_label,
+            )
+
+        furniture_groups = [
+            element
+            for element in figure.iter(group_tag)
+            if (
+                element.get("data-wenu-semantic-path") == "furniture"
+                and "wenu-semantic-group"
+                in element.get("class", "").split()
+            )
+        ]
+        if not furniture_groups:
+            continue
+        target = next(
+            (
+                element
+                for element in furniture_groups
+                if parent_of.get(element) is figure
+            ),
+            furniture_groups[0],
+        )
+        for source in furniture_groups:
+            if source is target:
+                continue
+            for child in tuple(source):
+                source.remove(child)
+                target.append(child)
+            source_parent = parent_of.get(source)
+            if source_parent is not None:
+                source_parent.remove(source)
+        target_parent = parent_of.get(target)
+        if target_parent is not figure:
+            if target_parent is not None:
+                target_parent.remove(target)
+            figure.append(target)
+        elif target in list(figure):
+            figure.remove(target)
+            figure.append(target)
+        ordered = sorted(
+            tuple(target),
+            key=lambda element: (
+                int(element.get("data-wenu-presentation-order", "0")),
+                element.get("data-wenu-semantic-path", ""),
+            ),
+        )
+        target[:] = ordered
 
 
 def _flatten_semantic_text_artists(root):
