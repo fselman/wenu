@@ -6,6 +6,7 @@ from types import SimpleNamespace
 
 import pytest
 
+import wenu.charts.sequence as sequence_module
 from wenu.charts.product_options import ChartProductOptions
 from wenu.charts.request import (
     ChartFrameRequest,
@@ -79,7 +80,10 @@ def test_sequence_pairs_one_chart_definition_with_explicit_frames(tmp_path):
     )
 
 
-def test_sequence_calls_only_the_canonical_static_generator(tmp_path):
+def test_sequence_calls_only_the_canonical_static_generator(
+    tmp_path,
+    monkeypatch,
+):
     sequence = ObserverTimeChartSequenceRequest(
         chart=chart_request(tmp_path / "frames"),
         timeline=timeline(),
@@ -92,7 +96,8 @@ def test_sequence_calls_only_the_canonical_static_generator(tmp_path):
             exports=(SimpleNamespace(output=request.product.output),)
         )
 
-    result = generate_observer_time_chart_sequence(sequence, generator=generator)
+    monkeypatch.setattr(sequence_module, "generate_chart_request", generator)
+    result = generate_observer_time_chart_sequence(sequence)
 
     assert tuple(calls) == tuple(
         frame.request for frame in sequence.frames
@@ -136,7 +141,10 @@ def test_sequence_requires_one_explicitly_formatted_directory(tmp_path):
         )
 
 
-def test_sequence_rejects_static_output_different_from_plan(tmp_path):
+def test_sequence_rejects_static_output_different_from_plan(
+    tmp_path,
+    monkeypatch,
+):
     sequence = ObserverTimeChartSequenceRequest(
         chart=chart_request(tmp_path / "frames"),
         timeline=timeline(count=2),
@@ -147,5 +155,6 @@ def test_sequence_rejects_static_output_different_from_plan(tmp_path):
             exports=(SimpleNamespace(output=Path("wrong.png")),)
         )
 
+    monkeypatch.setattr(sequence_module, "generate_chart_request", generator)
     with pytest.raises(ValueError, match="do not match"):
-        generate_observer_time_chart_sequence(sequence, generator=generator)
+        generate_observer_time_chart_sequence(sequence)
