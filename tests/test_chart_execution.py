@@ -254,14 +254,15 @@ def test_coordinate_grid_identity_uses_coordinate_system():
         coordinate_system="equatorial",
     )
 
-    assert semantic_layer_identity(layer) == SemanticLayerIdentity(
-        name="equatorial_grid",
-        svg_id="wenu-layer-equatorial-grid",
-        semantic_path=("sky", "grids", "equatorial"),
-        display_name="Equatorial grid",
-        presentation_order=70,
-        style_role="equatorial_grid",
-    )
+    identity = semantic_layer_identity(layer)
+
+    assert identity.name == "equatorial_grid"
+    assert identity.svg_id == "wenu-layer-equatorial-grid"
+    assert identity.semantic_path == ("sky", "grids", "equatorial")
+    assert identity.display_name == "Equatorial grid"
+    assert identity.presentation_order == 70
+    assert identity.style_role == "equatorial_grid"
+    assert tuple(dict(identity.component_contracts)) == ("lines", "labels")
 
 
 def test_semantic_identity_supports_unnamed_layers_and_rejects_unsafe_names():
