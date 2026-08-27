@@ -89,6 +89,31 @@ def test_point_labels_and_individual_styles():
     plt.close(figure)
 
 
+def test_point_labels_can_render_without_anchor_markers():
+    figure, ax = plt.subplots()
+    renderer = MatplotlibRenderer(ax)
+    points = ProjectedPoints(
+        x=[0.0, 1.0],
+        y=[2.0, 3.0],
+        labels=["Cen", "Cru"],
+    )
+
+    artists = renderer.draw(
+        points,
+        draw_markers=False,
+        draw_labels=True,
+        label_style={"fontsize": 8},
+    )
+
+    assert len(artists) == 2
+    assert all(
+        artist.get_text() in {"Cen", "Cru"}
+        for artist in artists
+    )
+    assert not any(isinstance(artist, PathCollection) for artist in artists)
+    plt.close(figure)
+
+
 def test_entity_label_formatter_can_rename_or_suppress_labels():
     figure, ax = plt.subplots()
     renderer = MatplotlibRenderer(ax)
