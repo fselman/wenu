@@ -752,6 +752,7 @@ def test_sequence_manifest_documents_safe_restart_and_resume():
         "real restart/resume acceptance complete",
         "selective resume",
         "82 passed in 27.29s",
+        "1721 passed in 83.03s",
     ):
         assert value in contract
 
