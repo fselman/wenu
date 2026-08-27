@@ -276,6 +276,7 @@ class MatplotlibRenderer:
         compound_by=None,
         component_styles=None,
         point_overlays=None,
+        draw_markers=True,
         draw_labels=False,
         label_style=None,
         label_offset=(0.0, 0.0),
@@ -316,6 +317,7 @@ class MatplotlibRenderer:
                 common,
                 styles=styles,
                 point_overlays=point_overlays,
+                draw_markers=draw_markers,
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
@@ -430,6 +432,7 @@ class MatplotlibRenderer:
         *,
         styles,
         point_overlays,
+        draw_markers,
         draw_labels,
         label_style,
         label_offset,
@@ -437,39 +440,40 @@ class MatplotlibRenderer:
     ):
         finite = points.finite
         artists = []
-        if styles is None:
-            if np.any(finite):
-                artists.append(
-                    render_points(
-                        self.ax,
-                        points.x[finite],
-                        points.y[finite],
-                        **self._mask_style(style, finite),
+        if draw_markers:
+            if styles is None:
+                if np.any(finite):
+                    artists.append(
+                        render_points(
+                            self.ax,
+                            points.x[finite],
+                            points.y[finite],
+                            **self._mask_style(style, finite),
+                        )
                     )
+            else:
+                entity_styles = self._entity_styles(
+                    styles,
+                    len(points),
                 )
-        else:
-            entity_styles = self._entity_styles(
-                styles,
-                len(points),
-            )
-            for index in np.flatnonzero(finite):
-                point = ProjectedPoint(
-                    points.x[index],
-                    points.y[index],
-                    name=self._entity_label(points, index),
-                )
-                artists.extend(
-                    self._draw_point(
-                        point,
-                        {**style, **entity_styles[index]},
-                        draw_labels=False,
-                        label_style={},
-                        label_offset=(0.0, 0.0),
-                        label_formatter=None,
+                for index in np.flatnonzero(finite):
+                    point = ProjectedPoint(
+                        points.x[index],
+                        points.y[index],
+                        name=self._entity_label(points, index),
                     )
-                )
+                    artists.extend(
+                        self._draw_point(
+                            point,
+                            {**style, **entity_styles[index]},
+                            draw_labels=False,
+                            label_style={},
+                            label_offset=(0.0, 0.0),
+                            label_formatter=None,
+                        )
+                    )
 
-        if point_overlays is not None:
+        if draw_markers and point_overlays is not None:
             for overlay in point_overlays:
                 overlay = dict(overlay)
                 if "mask" not in overlay:
