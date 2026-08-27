@@ -52,6 +52,8 @@ class PolarFacePageRendering:
 
     calendar_lines: tuple[object, ...]
     calendar_labels: tuple[object, ...]
+    day_labels: tuple[object, ...]
+    month_labels: tuple[object, ...]
     page_axes: object
     cut_line: object
     center_artists: tuple[object, ...]
@@ -108,7 +110,7 @@ def draw_polar_page_furniture(
     renderer.ax.set_aspect("equal")
     renderer.ax.set_axis_off()
     label_color = composition.style.canvas.foreground_color
-    calendar_lines, calendar_labels = _draw_calendar(
+    calendar_lines, day_labels, month_labels = _draw_calendar(
         renderer.ax,
         calendar_face,
         unit_per_mm,
@@ -124,7 +126,9 @@ def draw_polar_page_furniture(
     )
     result = PolarFacePageRendering(
         calendar_lines=calendar_lines,
-        calendar_labels=calendar_labels,
+        calendar_labels=(*day_labels, *month_labels),
+        day_labels=day_labels,
+        month_labels=month_labels,
         **page,
     )
     _assign_polar_page_semantics(renderer, result)
@@ -156,12 +160,24 @@ def _assign_polar_page_semantics(renderer, rendering):
             ),
         )
 
-    assign(rendering.calendar_lines, "lines", "Lines", "calendar")
     assign(
-        rendering.calendar_labels,
-        "labels",
-        "Labels",
-        "calendar",
+        rendering.calendar_lines,
+        "daily_tick_marks",
+        "Daily tick marks",
+        "planisphere_rim",
+    )
+    assign(
+        rendering.day_labels,
+        "day_labels",
+        "Day labels",
+        "planisphere_rim",
+        layout=True,
+    )
+    assign(
+        rendering.month_labels,
+        "month_labels",
+        "Month labels",
+        "planisphere_rim",
         layout=True,
     )
     assign((rendering.cut_line,), "cut_line", "Cut line", "fabrication")
@@ -211,7 +227,8 @@ def _draw_calendar(
     typography,
 ):
     lines = []
-    labels = []
+    day_labels = []
+    month_labels = []
     for tick in face.ticks:
         line = ax.plot(
             (tick.inner[0] * scale, tick.outer[0] * scale),
@@ -228,7 +245,7 @@ def _draw_calendar(
         )[0]
         lines.append(line)
     for label in face.day_labels:
-        labels.append(
+        day_labels.append(
             ax.text(
                 label.position[0] * scale,
                 label.position[1] * scale,
@@ -244,7 +261,7 @@ def _draw_calendar(
             )
         )
     for label in face.month_labels:
-        labels.append(
+        month_labels.append(
             ax.text(
                 label.position[0] * scale,
                 label.position[1] * scale,
@@ -259,7 +276,7 @@ def _draw_calendar(
                 zorder=31,
             )
         )
-    return tuple(lines), tuple(labels)
+    return tuple(lines), tuple(day_labels), tuple(month_labels)
 
 
 def _draw_page_axes(figure, face, *, color):
