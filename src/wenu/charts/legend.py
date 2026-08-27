@@ -91,19 +91,17 @@ def draw_chart_legend(
     if not config.visible:
         return None
 
-    handles = (
-        [
-            _legend_handle(descriptor)
-            for descriptor in legend_symbol_descriptors(
-                sky,
-                style,
-                resolved_detail=resolved_detail,
-                labels=symbol_labels,
-            )
-        ]
+    descriptors = (
+        tuple(legend_symbol_descriptors(
+            sky,
+            style,
+            resolved_detail=resolved_detail,
+            labels=symbol_labels,
+        ))
         if include_objects
-        else []
+        else ()
     )
+    handles = [_legend_handle(descriptor) for descriptor in descriptors]
     title_lines = []
     if include_context:
         title_lines = (
@@ -138,4 +136,9 @@ def draw_chart_legend(
             text.set_color(config.text_color)
         legend.get_title().set_color(config.text_color)
     legend.set_zorder(100)
+    setattr(
+        legend,
+        "_wenu_legend_entry_keys",
+        tuple(descriptor.key for descriptor in descriptors),
+    )
     return legend

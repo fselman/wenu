@@ -245,6 +245,7 @@ class AllSkyChart:
         resolved_detail=None,
         composition=None,
         horizon_mask=False,
+        svg_provenance=None,
     ):
         """Render and reproducibly save an all-sky chart."""
         from wenu.charts.regional import ExportOptions
@@ -271,6 +272,7 @@ class AllSkyChart:
                 layer_options=layer_options,
                 export_options=export_options,
                 render_options={"horizon_mask": horizon_mask},
+                svg_provenance=svg_provenance,
             )
 
         result = self.render(
@@ -296,5 +298,9 @@ class AllSkyChart:
                 legends,
             )
         options = ExportOptions() if export_options is None else export_options
+        if svg_provenance is not None:
+            from dataclasses import replace
+
+            options = replace(options, svg_provenance=svg_provenance)
         output = options.save(renderer.ax.figure, path)
         return result, output

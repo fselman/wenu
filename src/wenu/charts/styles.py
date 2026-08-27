@@ -179,6 +179,8 @@ class PublicationStyle:
                 set_color(self.foreground_color)
         ax.set_xticks([])
         ax.set_yticks([])
+        ax.xaxis.set_visible(False)
+        ax.yaxis.set_visible(False)
         return ax
 
     def outside_mask_style(self):
@@ -582,7 +584,7 @@ class PublicationStyle:
             options[sky.constellation_labels] = {
                 "prepare": clip,
                 "render": {
-                    "style": {"s": 0.0},
+                    "draw_markers": False,
                     "draw_labels": True,
                     "label_style": {
                         "color": (

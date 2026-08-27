@@ -611,3 +611,21 @@ def test_svg_paint_order_record_rejects_semantic_inference():
         "Hierarchical grouping remains a later",
     ):
         assert value in normalized
+
+
+def test_svg_semantic_naming_ledger_records_designer_contract():
+    ledger = (
+        DEVELOPER / "svg_semantic_naming_ledger_49f5a.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "unique among its siblings",
+        "does not repeat information",
+        "only when a designer can usefully style",
+        "Lines-Western",
+        "system agnostic",
+        "mag-minus-1",
+        "count does not change identity",
+        "unexpected generic editable Matplotlib objects",
+    ):
+        assert value in ledger

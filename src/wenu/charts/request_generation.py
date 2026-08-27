@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, replace
+from dataclasses import asdict, dataclass, field, replace
 
 from wenu.observer import Observer
 from wenu.rendering.matplotlib import MatplotlibRenderer
@@ -164,6 +164,20 @@ def export_prepared_chart(
             }
             if observer is not None:
                 export_options["observer"] = resolved_observer
+            from wenu.output_policy import SvgProvenance
+
+            copyright_text = getattr(
+                getattr(request.furniture, "footer", None),
+                "copyright",
+                None,
+            )
+            provenance = SvgProvenance(
+                product_name=request.family,
+                title=title,
+                parameters=asdict(request),
+                copyright=copyright_text,
+            )
+            export_options["svg_provenance"] = provenance
             result = chart.export(
                 sky,
                 MatplotlibRenderer(ax),

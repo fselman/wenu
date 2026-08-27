@@ -1227,3 +1227,124 @@ def test_composition_rejects_wrong_chart_and_ambiguous_legacy_arguments():
             composition=compose_chart(chart, style="atlas"),
             style=object(),
         )
+
+
+
+def test_regional_furniture_declares_title_and_legend_hierarchy():
+    from wenu.chart_document import assign_furniture_semantics
+
+    assigned = []
+    title = SimpleNamespace(get_text=lambda: "Chart title")
+    renderer = SimpleNamespace(
+        ax=SimpleNamespace(title=title),
+        assign_semantic_identity=lambda artists, identity: assigned.append(
+            (artists, identity)
+        ),
+    )
+    class Legend:
+        legend_handles = ()
+
+        def __init__(self):
+            self.frame = SimpleNamespace(set_gid=lambda value: None)
+            self.title = SimpleNamespace(
+                get_text=lambda: "",
+                set_gid=lambda value: None,
+            )
+
+        def get_frame(self):
+            return self.frame
+
+        def get_title(self):
+            return self.title
+
+        def get_texts(self):
+            return ()
+
+    object_legend = Legend()
+    stellar_legend = Legend()
+    rendering = SimpleNamespace(
+        legends=SimpleNamespace(
+            legends=SimpleNamespace(
+                objects=object_legend,
+                stars=SimpleNamespace(artist=stellar_legend),
+            )
+        )
+    )
+
+    assign_furniture_semantics(renderer, rendering)
+
+    assert [identity.semantic_path for _, identity in assigned] == [
+        ("furniture", "title"),
+        (
+            "furniture",
+            "legends",
+            "chart_information_and_object_key",
+        ),
+        ("furniture", "legends", "stellar_magnitude_scale"),
+    ]
+    assert [artists[0] for artists, _ in assigned] == [
+        title,
+        object_legend,
+        stellar_legend,
+    ]
+    assert all(
+        identity.edit_policy.value == "layout"
+        for _, identity in assigned
+    )
+
+
+
+def test_legend_symbols_and_labels_receive_matching_semantic_names():
+    from wenu.chart_document import _name_legend_contents
+
+    class Item:
+        def __init__(self, text=""):
+            self.text = text
+            self.gid = None
+
+        def get_text(self):
+            return self.text
+
+        def set_gid(self, value):
+            self.gid = value
+
+    frame = Item()
+    title = Item("Stars")
+    handles = (Item(), Item())
+    labels = (Item("Open cluster"), Item("3"))
+    legend = SimpleNamespace(
+        legend_handles=handles,
+        get_frame=lambda: frame,
+        get_title=lambda: title,
+        get_texts=lambda: labels,
+    )
+
+    _name_legend_contents(legend, "key")
+
+    assert frame.gid == "key-frame"
+    assert title.gid == "key-title"
+    assert [item.gid for item in handles] == [
+        "open-cluster-symbol",
+        "3-symbol",
+    ]
+    assert [item.gid for item in labels] == [
+        "open-cluster-label",
+        "3-label",
+    ]
+
+    magnitude_handle = Item()
+    magnitude_label = Item("3 (127) visible stars")
+    magnitude = SimpleNamespace(
+        _wenu_legend_entry_keys=("mag-3",),
+        legend_handles=(magnitude_handle,),
+        get_frame=lambda: Item(),
+        get_title=lambda: Item(),
+        get_texts=lambda: (magnitude_label,),
+    )
+    _name_legend_contents(
+        magnitude,
+        "magnitude-scale",
+        entry_prefix="mag",
+    )
+    assert magnitude_handle.gid == "mag-3-symbol"
+    assert magnitude_label.gid == "mag-3-label"

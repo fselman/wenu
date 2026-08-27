@@ -272,6 +272,7 @@ class BinocularChart:
         resolved_detail=None,
         composition=None,
         horizon_mask=False,
+        svg_provenance=None,
     ):
         if composition is not None:
             if style is not None or legends is not None or resolved_detail is not None:
@@ -294,6 +295,7 @@ class BinocularChart:
                     "boundary_style": boundary_style,
                     "horizon_mask": horizon_mask,
                 },
+                svg_provenance=svg_provenance,
             )
         result = self.render(
             sky,
@@ -323,5 +325,9 @@ class BinocularChart:
             if export_options is None
             else export_options
         )
+        if svg_provenance is not None:
+            from dataclasses import replace
+
+            options = replace(options, svg_provenance=svg_provenance)
         output = options.save(renderer.ax.figure, path)
         return result, output

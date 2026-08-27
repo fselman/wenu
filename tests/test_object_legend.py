@@ -574,3 +574,45 @@ def test_reference_writes_to_requested_destination(tmp_path):
 def test_default_output_keeps_repository_root_clean():
     module = m40h_legend_visual_load_example()
     assert module.OUTPUT == Path("output/legend-symbols")
+
+
+
+def test_object_legend_preserves_descriptor_keys_when_labels_change():
+    figure, ax = plt.subplots()
+    sky = fake_sky()
+    for name in (
+        "open_clusters",
+        "globular_clusters",
+        "planetary_nebulae",
+        "supernova_remnants",
+        "galaxies",
+        "milky_way_isophotes",
+    ):
+        setattr(sky, name, object())
+    custom = {
+        "open_cluster": "Amas ouverts",
+        "galaxy": "Galaxias",
+    }
+
+    from wenu.charts.legend import draw_chart_legend
+
+    legend = draw_chart_legend(
+        ax,
+        fake_chart(),
+        sky,
+        AtlasChartStyle(),
+        title="Context",
+        symbol_labels=custom,
+    )
+
+    assert legend._wenu_legend_entry_keys == (
+        "open_cluster",
+        "globular_cluster",
+        "planetary_nebula",
+        "supernova_remnant",
+        "galaxy",
+        "milky_way",
+    )
+    assert legend.get_texts()[0].get_text() == "Amas ouverts"
+    assert legend.get_texts()[4].get_text() == "Galaxias"
+    plt.close(figure)

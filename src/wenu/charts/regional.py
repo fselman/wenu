@@ -220,6 +220,7 @@ class ExportOptions:
     transparent: bool = False
     facecolor: Any | None = None
     metadata: dict[str, str] = field(default_factory=dict)
+    svg_provenance: object | None = None
     padding: float = 0.0
     def save(self, figure, path):
         """Save a Matplotlib figure using these fixed settings."""
@@ -249,7 +250,11 @@ class ExportOptions:
         if path.suffix.lower() == ".svg":
             from wenu.svg_document import annotate_semantic_svg
 
-            annotate_semantic_svg(path, figure)
+            annotate_semantic_svg(
+                path,
+                figure,
+                provenance=self.svg_provenance,
+            )
         return path
 
 
@@ -632,6 +637,7 @@ class RegionalChart:
         resolved_detail=None,
         composition=None,
         horizon_mask=False,
+        svg_provenance=None,
     ):
         """Render and reproducibly save a regional chart."""
         if composition is not None:
@@ -652,6 +658,7 @@ class RegionalChart:
                 layer_options=layer_options,
                 export_options=export_options,
                 render_options={"horizon_mask": horizon_mask},
+                svg_provenance=svg_provenance,
             )
         result = self.render(
             sky,
@@ -675,10 +682,21 @@ class RegionalChart:
                 resolved_detail,
                 legends,
             )
+        from wenu.chart_document import (
+            assign_canvas_semantics,
+            assign_furniture_semantics,
+        )
+
+        assign_canvas_semantics(renderer)
+        assign_furniture_semantics(renderer, result)
         options = (
             ExportOptions()
             if export_options is None
             else export_options
         )
+        if svg_provenance is not None:
+            from dataclasses import replace
+
+            options = replace(options, svg_provenance=svg_provenance)
         output = options.save(renderer.ax.figure, path)
         return result, output

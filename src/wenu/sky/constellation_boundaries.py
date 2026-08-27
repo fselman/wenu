@@ -15,6 +15,7 @@ from wenu.resources import boundary_path
 from wenu.sky.observed_cache import observed_polygon_arrays
 from wenu.sky.geometrical_object import GeometricalObject
 from wenu.geometry.spherical import SphericalPolygons
+from wenu.sky.semantic_identity import semantic_key
 
 
 class ConstellationBoundaries(GeometricalObject):
@@ -33,6 +34,10 @@ class ConstellationBoundaries(GeometricalObject):
     ):
         self.observer = observer
         self.boundaries_name = boundaries
+        self.semantic_system_key = semantic_key(
+            boundaries,
+            field="constellation boundary system key",
+        )
         self.filename = None if filename is None else Path(filename)
         self.constellations = self._expand_constellation_names(
             constellations
@@ -361,6 +366,11 @@ class ConstellationBoundaries(GeometricalObject):
             names=identifiers,
             metadata={
                 "boundaries": self.boundaries_name,
+                "semantic_entity_keys": tuple(
+                    semantic_key(item, field="constellation key")
+                    for item in identifiers
+                ),
+                "semantic_entity_display_names": tuple(identifiers),
                 "source_frame": "fk4",
                 "source_equinox": "B1875.0",
                 "coordinate_system": "altaz",

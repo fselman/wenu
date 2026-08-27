@@ -12,6 +12,7 @@ import numpy as np
 from wenu.resources import constellation_lines_path
 from wenu.sky.geometrical_object import GeometricalObject
 from wenu.geometry.spherical import SphericalCurves
+from wenu.sky.semantic_identity import semantic_key
 
 
 class UnresolvedConstellationStarWarning(UserWarning):
@@ -35,6 +36,10 @@ class ConstellationLines(GeometricalObject):
         # retain only its domain object.
         self.stars = getattr(stars, "stars", stars)
         self.system = system
+        self.semantic_system_key = semantic_key(
+            system,
+            field="constellation system key",
+        )
         self.filename = None if filename is None else Path(filename)
         self.constellations = (
             None if constellations is None else set(constellations)
@@ -333,6 +338,11 @@ class ConstellationLines(GeometricalObject):
             names=names,
             metadata={
                 "system": self.system,
+                "semantic_entity_keys": tuple(
+                    semantic_key(name, field="constellation key")
+                    for name in names
+                ),
+                "semantic_entity_display_names": tuple(names),
                 "coordinate_system": "altaz",
                 "hip_edges": tuple(hip_edges),
                 "star_ids": self.star_ids,

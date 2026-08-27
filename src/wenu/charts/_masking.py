@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from wenu.chart_document import EditPolicy, SemanticArtistIdentity
 from wenu.charts.horizon_mask import prepare_horizon_mask_opening
 from wenu.geometry.projected import ProjectedPolygons
 from wenu.geometry.spherical import SphericalPolygons
@@ -51,10 +52,16 @@ def draw_constellation_outside_mask(
         visible_minimum_latitude_deg=visible_minimum_latitude_deg,
         transform_spherical=transform_spherical,
     )
-    return renderer.draw_outside_mask(
+    patch = renderer.draw_outside_mask(
         projected,
         viewport=viewport,
         style=style,
+    )
+    return _assign_outside_mask_identity(
+        renderer,
+        patch,
+        constellations=True,
+        horizon_mask=False,
     )
 
 
@@ -155,11 +162,55 @@ def draw_composed_outside_mask(
         ).projected)
     if not groups:
         return None
-    return renderer.draw_outside_mask(
+    patch = renderer.draw_outside_mask(
         compose_projected_mask_openings(*groups),
         viewport=viewport,
         style=style,
     )
+    return _assign_outside_mask_identity(
+        renderer,
+        patch,
+        constellations=constellations is not None,
+        horizon_mask=horizon_mask and not planisphere,
+    )
+
+
+def _assign_outside_mask_identity(
+    renderer,
+    patch,
+    *,
+    constellations,
+    horizon_mask,
+):
+    """Attach chart-owned meaning without exposing SVG serialization."""
+    if constellations and horizon_mask:
+        token = "combined_outside_mask"
+        display_name = "Combined outside-region mask"
+    elif constellations:
+        token = "outside_constellation_group_mask"
+        display_name = "Outside constellation-group mask"
+    else:
+        token = "below_horizon_mask"
+        display_name = "Below-horizon mask"
+    assign = getattr(renderer, "assign_semantic_identity", None)
+    if callable(assign):
+        assign(
+            (patch,),
+            SemanticArtistIdentity(
+                name=token,
+                svg_id=(
+                    "outside-mask"
+                    if token != "below_horizon_mask"
+                    else "below-horizon-mask"
+                ),
+                edit_policy=EditPolicy.STYLE,
+                semantic_path=("chart", "masks_and_boundary", token),
+                display_name=display_name,
+                presentation_order=80,
+                style_role="outside_mask",
+            ),
+        )
+    return patch
 
 
 def _visible_polygons(spherical, *, minimum):
