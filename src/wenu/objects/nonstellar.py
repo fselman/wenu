@@ -325,9 +325,14 @@ class NonStellar(AstronomicalObject):
         minimum_size_arcmin=None,
     ):
         """Return per-object metadata accompanying generated geometry."""
+        identifiers = tuple(
+            str(value) for value in table["identifier"]
+        )
         return {
             "catalog": self.catalog_name,
             "coordinate_system": "altaz",
+            "semantic_entity_keys": identifiers,
+            "semantic_entity_display_names": identifiers,
             "magnitude": np.asarray(table["magnitude"], dtype=float),
             "object_type": np.asarray(
                 table["object_type"],
@@ -524,10 +529,17 @@ class NonStellar(AstronomicalObject):
                 selected_table=table,
                 source_key=(self.catalog_name, self._source_revision),
             )
+        semantic_identifiers = tuple(
+            str(value) for value in identifiers
+        )
         return SphericalPoints(
             lon_deg=longitude,
             lat_deg=latitude,
             ids=identifiers,
             names=identifiers,
-            metadata={"coordinate_system": "altaz"},
+            metadata={
+                "coordinate_system": "altaz",
+                "semantic_entity_keys": semantic_identifiers,
+                "semantic_entity_display_names": semantic_identifiers,
+            },
         )
