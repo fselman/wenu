@@ -37,5 +37,12 @@ def test_declination_tick_identity_does_not_depend_on_tick_count(count):
         "declination_tick_marks",
     )
     assert identity.display_name == "Declination tick marks"
+    assert identity.path_display_names == (
+        "Sky",
+        "Grids",
+        "Equatorial grid",
+        "Equatorial grid lines",
+        "Declination tick marks",
+    )
     assert identity.style_role == "equatorial_grid_lines"
     assert identity.edit_policy.value == "style"
