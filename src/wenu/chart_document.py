@@ -26,6 +26,7 @@ class SemanticArtistIdentity:
     display_name: str
     presentation_order: int
     style_role: str
+    exact_svg_id: bool = True
 
     def component_identity(self, component):
         """Chart-owned identities do not declare renderer subcomponents."""
@@ -44,7 +45,7 @@ def assign_canvas_semantics(renderer):
             (figure_patch,),
             SemanticArtistIdentity(
                 name="page_background",
-                svg_id="wenu-page-background",
+                svg_id="page-background",
                 edit_policy=EditPolicy.STYLE,
                 semantic_path=("page", "background"),
                 display_name="Page background",
@@ -58,7 +59,7 @@ def assign_canvas_semantics(renderer):
             (axes_patch,),
             SemanticArtistIdentity(
                 name="sky_background",
-                svg_id="wenu-sky-background",
+                svg_id="sky-background",
                 edit_policy=EditPolicy.STYLE,
                 semantic_path=("sky", "background"),
                 display_name="Sky background",
@@ -76,7 +77,7 @@ def assign_canvas_semantics(renderer):
             spines,
             SemanticArtistIdentity(
                 name="rectangular_viewport_frame",
-                svg_id="wenu-chart-rectangular-viewport-frame",
+                svg_id="viewport-frame",
                 edit_policy=EditPolicy.STYLE,
                 semantic_path=(
                     "chart",
@@ -90,6 +91,43 @@ def assign_canvas_semantics(renderer):
         )
 
 
+def _semantic_token(value):
+    """Return a concise safe token for one legend entry."""
+    import re
+
+    text = str(value).strip()
+    if text.startswith("RA "):
+        return "coordinates-ra"
+    if text.startswith("Dec "):
+        return "coordinates-dec"
+    if "J2000" in text or text.startswith(("FK", "ICRS")):
+        return "coordinates-frame"
+    if text.lstrip("+-").isdigit():
+        return f"magnitude-{text.replace('+', 'plus-').replace('-', 'minus-')}"
+    token = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    return token or "entry"
+
+
+def _name_legend_contents(legend, prefix):
+    """Pair legend symbols and descriptions with meaningful SVG IDs."""
+    frame = getattr(legend, "get_frame", lambda: None)()
+    if frame is not None:
+        frame.set_gid(f"{prefix}-frame")
+    title = getattr(legend, "get_title", lambda: None)()
+    if title is not None and getattr(title, "get_text", lambda: "")():
+        title.set_gid(f"{prefix}-title")
+    handles = tuple(getattr(legend, "legend_handles", ()))
+    texts = tuple(getattr(legend, "get_texts", lambda: ())())
+    used = {}
+    for handle, label in zip(handles, texts):
+        base = _semantic_token(label.get_text())
+        count = used.get(base, 0) + 1
+        used[base] = count
+        token = base if count == 1 else f"{base}-{count}"
+        handle.set_gid(f"{prefix}-{token}-symbol")
+        label.set_gid(f"{prefix}-{token}-label")
+
+
 def assign_furniture_semantics(renderer, rendering):
     """Attach identities to title and composed legend containers."""
     assign = getattr(renderer, "assign_semantic_identity", None)
@@ -101,7 +139,7 @@ def assign_furniture_semantics(renderer, rendering):
             (title,),
             SemanticArtistIdentity(
                 name="title",
-                svg_id="wenu-furniture-title",
+                svg_id="title",
                 edit_policy=EditPolicy.LAYOUT,
                 semantic_path=("furniture", "title"),
                 display_name="Title",
@@ -116,11 +154,12 @@ def assign_furniture_semantics(renderer, rendering):
         legends = legends.legends
     objects = getattr(legends, "objects", None)
     if objects is not None:
+        _name_legend_contents(objects, "object-key")
         assign(
             (objects,),
             SemanticArtistIdentity(
                 name="chart_information_and_object_key",
-                svg_id="wenu-furniture-chart-information-object-key",
+                svg_id="object-key",
                 edit_policy=EditPolicy.LAYOUT,
                 semantic_path=(
                     "furniture",
@@ -134,11 +173,12 @@ def assign_furniture_semantics(renderer, rendering):
         )
     stars = getattr(getattr(legends, "stars", None), "artist", None)
     if stars is not None:
+        _name_legend_contents(stars, "magnitude-scale")
         assign(
             (stars,),
             SemanticArtistIdentity(
                 name="stellar_magnitude_scale",
-                svg_id="wenu-furniture-stellar-magnitude-scale",
+                svg_id="magnitude-scale",
                 edit_policy=EditPolicy.LAYOUT,
                 semantic_path=(
                     "furniture",
