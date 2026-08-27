@@ -25,6 +25,7 @@ from wenu.rendering._matplotlib_primitives import (
     render_text,
 )
 from wenu.rendering.label_placement import CurveLabelPlacement
+from wenu.rendering.preparation import cull_points_to_viewport
 from wenu.rendering.paint_roles import paint_role_for_zorder
 from wenu.svg_document import attach_semantic_svg_metadata
 from wenu.chart_document import SemanticArtistRenderingResult
@@ -36,6 +37,7 @@ class MatplotlibRenderer:
     def __init__(self, ax):
         self.ax = ax
         self._clip_patch = None
+        self._viewport = None
 
     def set_axes_frame_visible(self, visible):
         """Show or hide the rectangular Matplotlib axes frame."""
@@ -337,6 +339,7 @@ class MatplotlibRenderer:
             viewport,
             equal_aspect=equal_aspect,
         )
+        self._viewport = viewport
 
     def draw(
         self,
@@ -375,6 +378,14 @@ class MatplotlibRenderer:
             if polygon_marker_style is None
             else dict(polygon_marker_style)
         )
+        if (
+            isinstance(geometry, ProjectedPoints)
+            and self._viewport is not None
+        ):
+            geometry = cull_points_to_viewport(
+                geometry,
+                self._viewport,
+            )
 
         if isinstance(geometry, ProjectedPoint):
             artists = self._draw_point(
