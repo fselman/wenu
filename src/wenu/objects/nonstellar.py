@@ -318,6 +318,51 @@ class NonStellar(AstronomicalObject):
             )
         return resolved
 
+    @staticmethod
+    def semantic_category(object_type):
+        """Normalize one catalog type to Wenu's shared sky taxonomy."""
+        if object_type is None or np.ma.is_masked(object_type):
+            return "other_objects"
+        value = re.sub(
+            r"[^a-z0-9]+",
+            " ",
+            str(object_type).casefold(),
+        ).strip()
+        aliases = {
+            "gal": "galaxies",
+            "galaxy": "galaxies",
+            "galaxies": "galaxies",
+            "oc": "open_clusters",
+            "open cluster": "open_clusters",
+            "gc": "globular_clusters",
+            "globular cluster": "globular_clusters",
+            "pn": "planetary_nebulae",
+            "planetary nebula": "planetary_nebulae",
+            "snr": "supernova_remnants",
+            "supernova remnant": "supernova_remnants",
+            "hii": "nebulae",
+            "h ii": "nebulae",
+            "nebula": "nebulae",
+            "diffuse nebula": "nebulae",
+            "emission nebula": "nebulae",
+            "reflection nebula": "nebulae",
+        }
+        if value in aliases:
+            return aliases[value]
+        if "supernova remnant" in value:
+            return "supernova_remnants"
+        if "planetary nebula" in value:
+            return "planetary_nebulae"
+        if "globular cluster" in value:
+            return "globular_clusters"
+        if "open cluster" in value:
+            return "open_clusters"
+        if "galaxy" in value:
+            return "galaxies"
+        if "nebula" in value or value.startswith("h ii"):
+            return "nebulae"
+        return "other_objects"
+
     def _geometry_metadata(
         self,
         table,
@@ -333,6 +378,10 @@ class NonStellar(AstronomicalObject):
             "coordinate_system": "altaz",
             "semantic_entity_keys": identifiers,
             "semantic_entity_display_names": identifiers,
+            "semantic_entity_categories": tuple(
+                self.semantic_category(value)
+                for value in table["object_type"]
+            ),
             "magnitude": np.asarray(table["magnitude"], dtype=float),
             "object_type": np.asarray(
                 table["object_type"],
@@ -541,5 +590,9 @@ class NonStellar(AstronomicalObject):
                 "coordinate_system": "altaz",
                 "semantic_entity_keys": semantic_identifiers,
                 "semantic_entity_display_names": semantic_identifiers,
+                "semantic_entity_categories": tuple(
+                    self.semantic_category(value)
+                    for value in table["object_type"]
+                ),
             },
         )
