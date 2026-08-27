@@ -99,11 +99,17 @@ Its compressed PNG bytes differed across the separate processes. The
 manifest correctly recorded the newly verified bytes; the contract does not
 misrepresent compression-byte identity as scientific or visual identity.
 
-The focused CLI, configuration, static drawing, sequence, manifest, package,
-and renderer set passed:
+The completed focused CLI, configuration, static drawing, sequence,
+manifest, documentation, package, and renderer set passed:
 
 ```text
-118 passed in 29.70s
+163 passed in 28.30s
+```
+
+Final repository verification from a clean synchronized branch passed:
+
+```text
+1744 passed in 80.10s
 ```
 
 ## Remaining 49G scope
