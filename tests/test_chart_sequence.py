@@ -1,8 +1,10 @@
 """Canonical observer-time sequence planning and orchestration tests."""
 
 from datetime import datetime, timedelta, timezone
+from hashlib import sha256
 from pathlib import Path
 from types import SimpleNamespace
+import struct
 
 import pytest
 
@@ -158,3 +160,34 @@ def test_sequence_rejects_static_output_different_from_plan(
     monkeypatch.setattr(sequence_module, "generate_chart_request", generator)
     with pytest.raises(ValueError, match="do not match"):
         generate_observer_time_chart_sequence(sequence)
+
+
+def test_observer_time_sequence_generates_real_canonical_frames(tmp_path):
+    sequence = ObserverTimeChartSequenceRequest(
+        chart=chart_request(tmp_path / "frames"),
+        timeline=TemporalTimeline.uniform(
+            datetime(2026, 8, 22, 1, tzinfo=timezone.utc),
+            datetime(2026, 8, 22, 7, tzinfo=timezone.utc),
+            2,
+            display_timezone="America/Santiago",
+        ),
+    )
+
+    result = generate_observer_time_chart_sequence(sequence)
+
+    assert result.outputs == (
+        tmp_path / "frames" / "frame-0000.png",
+        tmp_path / "frames" / "frame-0001.png",
+    )
+    assert all(path.is_file() for path in result.outputs)
+
+    def png_size(path):
+        header = path.read_bytes()[:24]
+        assert header[:8] == b"\x89PNG\r\n\x1a\n"
+        return struct.unpack(">II", header[16:24])
+
+    assert png_size(result.outputs[0]) == png_size(result.outputs[1])
+    assert sha256(result.outputs[0].read_bytes()).digest() != sha256(
+        result.outputs[1].read_bytes()
+    ).digest()
+
