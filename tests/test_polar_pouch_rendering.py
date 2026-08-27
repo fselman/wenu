@@ -50,6 +50,13 @@ def test_renderer_realizes_every_resolved_artist_once_in_black():
     finally:
         plt.close(figure)
 
+    assert result.page_axes.patch.get_visible() is False
+    assert result.disk_guide.get_gid() == "south-disk-guide"
+    assert result.sky_window.get_gid() == "south-sky-window"
+    assert result.horizon_lines[0].get_gid() == "south-horizon"
+    assert result.date_windows[0].get_gid().startswith(
+        "south-date-windows--"
+    )
     assert result.page_axes.get_xlim() == pytest.approx((0.0, 210.0))
     assert result.page_axes.get_ylim() == pytest.approx((0.0, 297.0))
     assert len(result.horizon_lines) == len(face.horizon_segments_mm)
