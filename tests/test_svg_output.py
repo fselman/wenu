@@ -747,3 +747,46 @@ def test_separate_identity_assignments_share_one_figure_id_sequence(tmp_path):
         "wenu-layer-magellanic-cloud-isophotes--0001",
         "wenu-layer-magellanic-cloud-isophotes--0002",
     ]
+
+
+def test_arbitrary_canvas_background_and_boundary_are_semantic(tmp_path):
+    destination = tmp_path / "arbitrary-canvas.svg"
+    figure, ax = plt.subplots()
+    renderer = MatplotlibRenderer(ax)
+    boundary = ProjectedCurve(
+        (-1.0, 1.0, 1.0, -1.0),
+        (-0.5, -0.5, 0.5, 0.5),
+        closed=True,
+    )
+    renderer.set_boundary_background(boundary, color="#123456")
+    renderer.set_clip_boundary(
+        boundary,
+        style={"fill": False, "edgecolor": "#707070"},
+    )
+    assign_canvas_semantics(renderer)
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    by_id = {
+        element.get("id"): element
+        for element in root.iter()
+        if element.get("id")
+    }
+
+    assert "page-background" in by_id
+    assert "sky-background" in by_id
+    assert "chart-boundary" in by_id
+    assert not any(
+        object_id.startswith("patch_") for object_id in by_id
+    )
+    assert (
+        by_id["sky-background"].get("data-wenu-semantic-path")
+        == "sky/background"
+    )
+    assert (
+        by_id["chart-boundary"].get("data-wenu-semantic-path")
+        == "chart/masks_and_boundary/chart_boundary"
+    )
