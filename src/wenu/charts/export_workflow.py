@@ -178,6 +178,9 @@ def export_composed_chart(
             composition=composition,
             rendering=rendering,
         )
+    from wenu.chart_document import assign_furniture_semantics
+
+    assign_furniture_semantics(renderer, rendering)
     options = (
         _composition_export_options(composition)
         if export_options is None
