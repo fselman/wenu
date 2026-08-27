@@ -108,6 +108,9 @@ def test_inspection_records_required_structural_facts(tmp_path):
     assert record["width"] == "10pt"
     assert record["height"] == "20pt"
     assert record["view_box"] == "0 0 10 20"
+    assert record["total_elements"] == 4
+    assert record["path_elements"] == 0
+    assert record["use_elements"] == 0
     assert record["text_elements"] == 1
     assert record["image_elements"] == 0
     assert record["metadata_elements"] == 1
