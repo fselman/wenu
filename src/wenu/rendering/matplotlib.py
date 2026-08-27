@@ -938,9 +938,11 @@ class MatplotlibRenderer:
         ordered_groups = tuple(dict.fromkeys(groups.tolist()))
         artists = []
         for group in ordered_groups:
+            group_indices = np.flatnonzero(groups == group)
+            representative_index = int(group_indices[0])
             vertices = []
             codes = []
-            for index in np.flatnonzero(groups == group):
+            for index in group_indices:
                 polygon = polygons[index]
                 finite = polygon.finite
                 points = np.column_stack(
@@ -969,27 +971,34 @@ class MatplotlibRenderer:
                 codes.extend(ring_codes)
             if not vertices:
                 continue
+
+            def register(patch):
+                self.ax.add_patch(patch)
+                self._attach_semantic_entity(
+                    (patch,),
+                    polygons.metadata,
+                    representative_index,
+                )
+                artists.append(patch)
+
             path = Path(
                 np.asarray(vertices, dtype=float),
                 np.asarray(codes, dtype=np.uint8),
             )
             if fill_style is None and outline_style is None:
                 patch = PathPatch(path, **self._polygon_style(style))
-                self.ax.add_patch(patch)
-                artists.append(patch)
+                register(patch)
                 continue
             if fill_style is not None:
                 fill = {**style, **fill_style}
                 fill.setdefault("edgecolor", "none")
                 patch = PathPatch(path, **self._polygon_style(fill))
-                self.ax.add_patch(patch)
-                artists.append(patch)
+                register(patch)
             if outline_style is not None:
                 outline = {**style, **outline_style}
                 outline.setdefault("facecolor", "none")
                 patch = PathPatch(path, **self._polygon_style(outline))
-                self.ax.add_patch(patch)
-                artists.append(patch)
+                register(patch)
         if marker_style is not None:
             for polygon in polygons:
                 marker_curve = ProjectedCurve(
