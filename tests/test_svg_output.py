@@ -236,11 +236,11 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
 
     serialized = destination.read_text(encoding="utf-8")
 
-    assert 'id="wenu-layer-constellation-lines--artist-0001"' in serialized
-    assert 'id="wenu-layer-constellation-lines--artist-0002"' in serialized
+    assert 'id="wenu-layer-constellation-lines--0001"' in serialized
+    assert 'id="wenu-layer-constellation-lines--0002"' in serialized
     assert [item.svg_id for item in semantic_artists] == [
-        "wenu-layer-constellation-lines--artist-0001",
-        "wenu-layer-constellation-lines--artist-0002",
+        "wenu-layer-constellation-lines--0001",
+        "wenu-layer-constellation-lines--0002",
     ]
     assert all(item.zorder == 2.0 for item in semantic_artists)
     assert all(
@@ -281,8 +281,8 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
     assert [
         child.get("id") for child in lines
     ] == [
-        "wenu-layer-constellation-lines--artist-0001",
-        "wenu-layer-constellation-lines--artist-0002",
+        "wenu-layer-constellation-lines--0001",
+        "wenu-layer-constellation-lines--0002",
     ]
     assert sky.get(
         "{http://www.inkscape.org/namespaces/inkscape}groupmode"
@@ -483,7 +483,7 @@ def test_chart_semantics_form_a_parallel_hierarchy(tmp_path):
     assert "wenu-group-chart" in by_id
     assert "wenu-group-furniture" in by_id
     assert "wenu-group-furniture-title" in by_id
-    assert by_id["wenu-furniture-title--artist-0001"].tag.endswith(
+    assert by_id["wenu-furniture-title"].tag.endswith(
         "}text"
     )
     masks = by_id["wenu-group-chart-masks_and_boundary"]
@@ -517,9 +517,9 @@ def test_canvas_semantics_group_independent_svg_parents(tmp_path):
 
     assert "wenu-group-page" in by_id
     assert "wenu-group-page-background" in by_id
-    assert "wenu-page-background--artist-0001" in by_id
+    assert "page-background" in by_id
     assert "wenu-group-sky-background" in by_id
-    assert "wenu-sky-background--artist-0001" in by_id
+    assert "sky-background" in by_id
     frame = by_id[
         "wenu-group-chart-masks_and_boundary-"
         "rectangular_viewport_frame"
@@ -528,8 +528,8 @@ def test_canvas_semantics_group_independent_svg_parents(tmp_path):
     assert {
         child.get("id") for child in frame
     } == {
-        "wenu-chart-rectangular-viewport-frame--artist-0001",
-        "wenu-chart-rectangular-viewport-frame--artist-0002",
-        "wenu-chart-rectangular-viewport-frame--artist-0003",
-        "wenu-chart-rectangular-viewport-frame--artist-0004",
+        "viewport-frame--0001",
+        "viewport-frame--0002",
+        "viewport-frame--0003",
+        "viewport-frame--0004",
     }
