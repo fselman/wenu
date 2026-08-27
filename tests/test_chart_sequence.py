@@ -111,6 +111,8 @@ def test_sequence_calls_only_the_canonical_static_generator(
 
     def generator(request):
         calls.append(request)
+        request.product.output.parent.mkdir(parents=True, exist_ok=True)
+        request.product.output.write_bytes(b"frame")
         return ChartRequestGeneration(
             exports=(SimpleNamespace(output=request.product.output),)
         )
