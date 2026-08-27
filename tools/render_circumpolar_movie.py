@@ -86,12 +86,12 @@ def png_size(path: Path) -> tuple[int, int]:
     return struct.unpack(">II", header[16:24])
 
 
-def render(arguments: argparse.Namespace) -> Path:
+def sequence_contract(
+    arguments: argparse.Namespace,
+) -> tuple[TemporalTimeline, PlaybackSpec]:
+    """Resolve physical and presentation time without rendering."""
     if arguments.duration_hours <= 0.0:
         raise SystemExit("--duration-hours must be positive")
-
-    wenu_chart = require_program("wenu_chart")
-    ffmpeg = require_program("ffmpeg")
     start = aware_datetime(arguments.start)
     duration = timedelta(hours=arguments.duration_hours)
     try:
@@ -111,6 +111,14 @@ def render(arguments: argparse.Namespace) -> Path:
         playback.validate_timeline(timeline)
     except (TypeError, ValueError) as error:
         raise SystemExit(str(error)) from error
+    return timeline, playback
+
+
+def render(arguments: argparse.Namespace) -> Path:
+    timeline, playback = sequence_contract(arguments)
+    frame_count = timeline.frame_count
+    wenu_chart = require_program("wenu_chart")
+    ffmpeg = require_program("ffmpeg")
     extra = list(arguments.wenu_arguments)
     if extra[:1] == ["--"]:
         extra = extra[1:]
