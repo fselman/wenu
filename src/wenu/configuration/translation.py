@@ -13,6 +13,7 @@ from .geometry_detail_translation import (
     GeometryDetailDefaults,
     translate_geometry_detail_defaults,
 )
+from .sequence_translation import SequenceDefaults, translate_sequence_defaults
 from .style_mode_translation import (
     StyleModeDefaults,
     translate_style_mode_defaults,
@@ -27,6 +28,7 @@ class ConfigurationDefaults:
     style_mode: StyleModeDefaults
     geometry_detail: GeometryDetailDefaults
     furniture_product_export: FurnitureProductExportDefaults
+    sequence: SequenceDefaults
 
 
 def translate_configuration_defaults(
@@ -40,6 +42,7 @@ def translate_configuration_defaults(
         furniture_product_export=(
             translate_furniture_product_export_defaults(values)
         ),
+        sequence=translate_sequence_defaults(values),
     )
 
 
