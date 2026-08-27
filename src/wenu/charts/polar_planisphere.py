@@ -424,6 +424,7 @@ class PolarPlanisphereChart:
         composition=None,
         boundary_style=None,
         additional_furniture=None,
+        svg_provenance=None,
     ):
         """Render and reproducibly save one polar-planisphere face."""
         if composition is not None:
@@ -449,6 +450,7 @@ class PolarPlanisphereChart:
                 export_options=export_options,
                 render_options={"boundary_style": boundary_style},
                 additional_furniture=additional_furniture,
+                svg_provenance=svg_provenance,
             )
         if additional_furniture is not None:
             raise ValueError(
@@ -481,5 +483,9 @@ class PolarPlanisphereChart:
         options = (
             ExportOptions() if export_options is None else export_options
         )
+        if svg_provenance is not None:
+            from dataclasses import replace
+
+            options = replace(options, svg_provenance=svg_provenance)
         output = options.save(renderer.ax.figure, path)
         return result, output

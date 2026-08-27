@@ -167,8 +167,16 @@ def test_export_options_are_reproducible(tmp_path):
 
 def test_style_configures_axes():
     calls = []
+    xaxis = SimpleNamespace(
+        set_visible=lambda value: calls.append(("x-visible", value))
+    )
+    yaxis = SimpleNamespace(
+        set_visible=lambda value: calls.append(("y-visible", value))
+    )
     axes = SimpleNamespace(
         figure=SimpleNamespace(facecolor=None),
+        xaxis=xaxis,
+        yaxis=yaxis,
         set_facecolor=lambda value: calls.append(("face", value)),
         set_title=lambda value: calls.append(("title", value)),
         set_xticks=lambda value: calls.append(("x", value)),
@@ -181,6 +189,8 @@ def test_style_configures_axes():
     assert style.configure_axes(axes, title="Crux") is axes
     assert ("face", "navy") in calls
     assert ("title", "Crux") in calls
+    assert ("x-visible", False) in calls
+    assert ("y-visible", False) in calls
 
 
 def test_constellation_center_requires_configured_layers():
