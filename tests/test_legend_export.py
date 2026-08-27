@@ -1291,3 +1291,43 @@ def test_regional_furniture_declares_title_and_legend_hierarchy():
         identity.edit_policy.value == "layout"
         for _, identity in assigned
     )
+
+
+
+def test_legend_symbols_and_labels_receive_matching_semantic_names():
+    from wenu.chart_document import _name_legend_contents
+
+    class Item:
+        def __init__(self, text=""):
+            self.text = text
+            self.gid = None
+
+        def get_text(self):
+            return self.text
+
+        def set_gid(self, value):
+            self.gid = value
+
+    frame = Item()
+    title = Item("Stars")
+    handles = (Item(), Item())
+    labels = (Item("Open cluster"), Item("3"))
+    legend = SimpleNamespace(
+        legend_handles=handles,
+        get_frame=lambda: frame,
+        get_title=lambda: title,
+        get_texts=lambda: labels,
+    )
+
+    _name_legend_contents(legend, "key")
+
+    assert frame.gid == "key-frame"
+    assert title.gid == "key-title"
+    assert [item.gid for item in handles] == [
+        "key-open-cluster-symbol",
+        "key-magnitude-3-symbol",
+    ]
+    assert [item.gid for item in labels] == [
+        "key-open-cluster-label",
+        "key-magnitude-3-label",
+    ]
