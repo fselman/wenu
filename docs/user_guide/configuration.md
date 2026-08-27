@@ -110,3 +110,27 @@ format with `--format` or `products.default.extension`.
 
 See [SVG output and editing](svg_output.md) for semantic metadata, supported
 editor operations, font substitution, and the safe Inkscape workflow.
+
+
+## Observer-time sequence profiles
+
+The packaged `[sequence]` table is disabled with `stop = "none"` and
+`frames = "none"`. A profile activates uniform observer-time generation by
+setting both values. Optional `playback_duration` and `frames_per_second`
+must also be supplied as a pair and must imply the configured frame count.
+
+```toml
+[sequence]
+stop = "2026-08-22T03:00:00-04:00"
+frames = 25
+display_timezone = "America/Santiago"
+playback_duration = 2.0
+frames_per_second = 12.5
+restart_policy = "resume"
+```
+
+The ordinary observer time is the inclusive sequence start. Explicit
+`--sequence-stop`, `--sequence-frames`, `--display-timezone`, playback, and
+restart arguments override these profile values. See
+[Observer-time chart sequences](temporal_sequences.md) for the complete
+physical-time and verified-resume contract.
