@@ -90,23 +90,35 @@ def test_geometry_is_closed_and_transformed(catalogue, observer):
 
 
 @pytest.mark.parametrize(
-    ("object_type", "category"),
+    ("object_type", "identifier", "category"),
     (
-        ("Galaxy", "galaxies"),
-        ("Open Cluster", "open_clusters"),
-        ("GC", "globular_clusters"),
-        ("Planetary Nebula", "planetary_nebulae"),
-        ("SNR", "supernova_remnants"),
-        ("Emission Nebula", "nebulae"),
-        ("H II region", "nebulae"),
-        ("Unclassified", "other_objects"),
-        (None, "other_objects"),
+        ("Galaxy", None, "galaxies"),
+        ("S", None, "galaxies"),
+        ("E", None, "galaxies"),
+        ("E?", None, "galaxies"),
+        ("IR", None, "galaxies"),
+        ("Open Cluster", None, "open_clusters"),
+        ("OC", None, "open_clusters"),
+        ("GC", None, "globular_clusters"),
+        ("GB", None, "globular_clusters"),
+        ("Planetary Nebula", None, "planetary_nebulae"),
+        ("PL", None, "planetary_nebulae"),
+        ("SNR", None, "supernova_remnants"),
+        ("DI", "M 1", "supernova_remnants"),
+        ("DI", "M 8", "nebulae"),
+        ("Emission Nebula", None, "nebulae"),
+        ("H II region", None, "nebulae"),
+        ("Unclassified", None, "other_objects"),
+        (None, None, "other_objects"),
     ),
 )
 def test_catalog_object_types_use_shared_astronomical_categories(
-    object_type, category
+    object_type, identifier, category
 ):
-    assert NonStellar.semantic_category(object_type) == category
+    assert NonStellar.semantic_category(
+        object_type,
+        identifier=identifier,
+    ) == category
 
 
 def test_unknown_position_angle_does_not_invent_orientation():
