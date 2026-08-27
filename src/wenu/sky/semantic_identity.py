@@ -288,6 +288,30 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
             ) from error
     contract = _LAYER_CONTRACTS.get(name)
     svg_id = f"wenu-layer-{name.replace('_', '-')}"
+    if name == "magellanic_cloud_isophotes":
+        cloud_key = semantic_key(
+            getattr(layer, "cloud", ""),
+            field="Magellanic Cloud key",
+        )
+        cloud_names = {
+            "lmc": "Large Magellanic Cloud",
+            "smc": "Small Magellanic Cloud",
+        }
+        if cloud_key not in cloud_names:
+            raise ValueError(
+                f"Unsupported Magellanic Cloud key: {cloud_key!r}."
+            )
+        contract = SemanticLayerContract(
+            (
+                "sky",
+                "milky_way_and_magellanic_clouds",
+                cloud_key,
+            ),
+            cloud_names[cloud_key],
+            _LAYER_CONTRACTS[name].presentation_order,
+            f"{cloud_key}_isophotes",
+        )
+        svg_id = f"{cloud_key}-isophotes"
     if name in {
         "constellation_lines",
         "constellation_boundaries",
