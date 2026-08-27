@@ -534,6 +534,32 @@ def _reference_layer_options(reference_sky, composition, chart):
     return options
 
 
+def _assign_polar_declination_tick_semantics(renderer, artists):
+    """Assign one stable identity to any resolved polar tick collection."""
+    artists = tuple(artists)
+    if not artists:
+        return artists
+    renderer.assign_semantic_identity(
+        artists,
+        SemanticArtistIdentity(
+            name="equatorial_declination_tick_marks",
+            svg_id="equatorial-declination-tick-marks",
+            edit_policy=EditPolicy.STYLE,
+            semantic_path=(
+                "sky",
+                "grids",
+                "equatorial",
+                "lines",
+                "declination_tick_marks",
+            ),
+            display_name="Declination tick marks",
+            presentation_order=70,
+            style_role="equatorial_grid_lines",
+        ),
+    )
+    return artists
+
+
 def draw_celestial_reference_furniture(
     chart,
     sky,
@@ -603,23 +629,9 @@ def draw_celestial_reference_furniture(
                 },
             )
         )
-        renderer.assign_semantic_identity(
+        tick_artists = _assign_polar_declination_tick_semantics(
+            renderer,
             tick_artists,
-            SemanticArtistIdentity(
-                name="equatorial_declination_tick_marks",
-                svg_id="equatorial-declination-tick-marks",
-                edit_policy=EditPolicy.STYLE,
-                semantic_path=(
-                    "sky",
-                    "grids",
-                    "equatorial",
-                    "lines",
-                    "declination_tick_marks",
-                ),
-                display_name="Declination tick marks",
-                presentation_order=70,
-                style_role="equatorial_grid_lines",
-            ),
         )
     return CelestialReferenceRendering(
         sky=reference_sky,
