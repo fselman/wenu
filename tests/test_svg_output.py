@@ -7,6 +7,7 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
+import xml.etree.ElementTree as ET
 from matplotlib.patches import Circle
 import pytest
 
@@ -260,6 +261,82 @@ def test_matplotlib_semantic_anchors_survive_svg_serialization(tmp_path):
     assert 'data-wenu-paint-role="boundaries"' in serialized
     assert "data-wenu-paint-band" not in serialized
     assert "wenu-band-" not in serialized
+
+    root = ET.parse(destination).getroot()
+    by_id = {
+        element.get("id"): element
+        for element in root.iter()
+        if element.get("id")
+    }
+    sky = by_id["wenu-group-sky"]
+    constellations = by_id["wenu-group-sky-constellations"]
+    lines = by_id["wenu-group-sky-constellations-lines"]
+
+    assert constellations in list(sky)
+    assert lines in list(constellations)
+    assert [
+        child.get("id") for child in lines
+    ] == [
+        "wenu-layer-constellation-lines--artist-0001",
+        "wenu-layer-constellation-lines--artist-0002",
+    ]
+    assert sky.get(
+        "{http://www.inkscape.org/namespaces/inkscape}groupmode"
+    ) == "layer"
+    assert lines.get(
+        "{http://www.inkscape.org/namespaces/inkscape}label"
+    ) == "Constellation lines"
+
+
+def test_sky_groups_follow_supplied_presentation_order(tmp_path):
+    destination = tmp_path / "semantic-order.svg"
+    figure, ax = plt.subplots()
+    galaxy = ax.plot((0.0, 1.0), (0.2, 0.2), zorder=7.0)[0]
+    star = ax.plot((0.0, 1.0), (0.8, 0.8), zorder=1.0)[0]
+
+    MatplotlibRenderer.assign_semantic_identity(
+        (galaxy,),
+        SemanticLayerIdentity(
+            name="galaxies",
+            svg_id="wenu-layer-galaxies",
+            semantic_path=("sky", "galaxies"),
+            display_name="Galaxies",
+            presentation_order=10,
+            style_role="galaxies",
+        ),
+    )
+    MatplotlibRenderer.assign_semantic_identity(
+        (star,),
+        SemanticLayerIdentity(
+            name="stars",
+            svg_id="wenu-layer-stars",
+            semantic_path=("sky", "stars", "symbols"),
+            display_name="Star symbols",
+            presentation_order=40,
+            style_role="stars",
+        ),
+    )
+    try:
+        ExportOptions().save(figure, destination)
+    finally:
+        plt.close(figure)
+
+    root = ET.parse(destination).getroot()
+    sky = next(
+        element
+        for element in root.iter()
+        if element.get("id") == "wenu-group-sky"
+    )
+
+    assert [
+        child.get("data-wenu-semantic-path") for child in sky
+    ] == [
+        "sky/galaxies",
+        "sky/stars",
+    ]
+    assert [
+        child.get("data-wenu-presentation-order") for child in sky
+    ] == ["10", "40"]
 
 
 def test_svg_annotation_is_noop_without_wenu_semantics(tmp_path):
