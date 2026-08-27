@@ -394,6 +394,17 @@ def test_semantic_label_group_inherits_common_font_style(tmp_path):
     assert "font:" in group.get("style", "")
     assert "7px" in group.get("style", "")
     assert len(text_elements) == 2
+    assert list(group) == text_elements
+    assert all(
+        "wenu-semantic-artist"
+        in element.get("class", "").split()
+        for element in text_elements
+    )
+    assert all(
+        element.get("data-wenu-semantic-path")
+        == "sky/grids/equatorial/labels"
+        for element in text_elements
+    )
     assert all(
         "font:" not in element.get("style", "")
         for element in text_elements
