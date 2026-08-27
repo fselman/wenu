@@ -803,6 +803,7 @@ def test_figure_margin_credits_and_version_belong_to_footer_furniture(
 ):
     destination = tmp_path / "footer.svg"
     figure, ax = plt.subplots()
+    ax.set_title("Designer audit")
     renderer = MatplotlibRenderer(ax)
     credits = figure.text(0.05, 0.02, "© Chart author", ha="left")
     version = figure.text(0.95, 0.02, "Wenu 1.2.3", ha="right")
@@ -844,6 +845,12 @@ def test_figure_margin_credits_and_version_belong_to_footer_furniture(
     ]
 
     assert "wenu-chart" in by_id
+    assert (
+        by_id["wenu-chart"].get(
+            "{http://www.inkscape.org/namespaces/inkscape}label"
+        )
+        == "Wenu chart - Designer audit"
+    )
     assert "plot-area" in by_id
     assert len(furniture_groups) == 1
     assert parent_of[furniture_groups[0]] is by_id["wenu-chart"]
