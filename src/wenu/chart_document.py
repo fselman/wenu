@@ -182,8 +182,13 @@ def _name_legend_contents(legend, prefix, *, entry_prefix=""):
         label.set_gid(f"{entry}-label")
 
 
-def assign_furniture_semantics(renderer, rendering):
-    """Attach identities to title and composed legend containers."""
+def assign_furniture_semantics(
+    renderer,
+    rendering,
+    *,
+    footer_rendering=None,
+):
+    """Attach identities to title, legends, and figure-margin footer."""
     assign = getattr(renderer, "assign_semantic_identity", None)
     if not callable(assign):
         return
@@ -201,6 +206,38 @@ def assign_furniture_semantics(renderer, rendering):
                 style_role="title",
             ),
         )
+    if footer_rendering is not None:
+        footer_artists = iter(
+            getattr(footer_rendering, "artists", ())
+        )
+        footer_items = (
+            (
+                getattr(footer_rendering, "copyright_text", None),
+                "copyright",
+                "Copyright",
+            ),
+            (
+                getattr(footer_rendering, "application_text", None),
+                "application",
+                "Wenu version",
+            ),
+        )
+        for text, key, display_name in footer_items:
+            if text is None:
+                continue
+            artist = next(footer_artists)
+            assign(
+                (artist,),
+                SemanticArtistIdentity(
+                    name=f"footer_{key}",
+                    svg_id=f"footer-{key}",
+                    edit_policy=EditPolicy.LAYOUT,
+                    semantic_path=("furniture", "footer", key),
+                    display_name=display_name,
+                    presentation_order=93,
+                    style_role="footer",
+                ),
+            )
     legends = getattr(rendering, "legends", None)
     if legends is None:
         return
