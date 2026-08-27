@@ -5,6 +5,19 @@ from __future__ import annotations
 from html import escape
 from pathlib import Path
 import re
+import xml.etree.ElementTree as ET
+
+
+_SVG_NAMESPACE = "http://www.w3.org/2000/svg"
+_INKSCAPE_NAMESPACE = "http://www.inkscape.org/namespaces/inkscape"
+ET.register_namespace("", _SVG_NAMESPACE)
+ET.register_namespace("inkscape", _INKSCAPE_NAMESPACE)
+ET.register_namespace("xlink", "http://www.w3.org/1999/xlink")
+ET.register_namespace("dc", "http://purl.org/dc/elements/1.1/")
+ET.register_namespace("cc", "http://creativecommons.org/ns#")
+ET.register_namespace(
+    "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+)
 
 
 _METADATA_ATTRIBUTE = "_wenu_svg_semantics"
@@ -97,4 +110,126 @@ def annotate_semantic_svg(path, figure):
                 f"Expected exactly one SVG group for Wenu id {svg_id!r}."
             )
     path.write_text(serialized, encoding="utf-8")
+    _group_sky_semantics(path)
+    return path
+
+
+def _group_sky_semantics(path):
+    """Materialize supplied sky paths without classifying chart content."""
+    tree = ET.parse(path)
+    root = tree.getroot()
+    parent_of = {
+        child: parent
+        for parent in root.iter()
+        for child in parent
+    }
+    candidates = []
+    for element in root.iter():
+        classes = element.get("class", "").split()
+        semantic_path = element.get("data-wenu-semantic-path", "")
+        order = element.get("data-wenu-presentation-order")
+        if (
+            "wenu-semantic-artist" in classes
+            and semantic_path.startswith("sky/")
+            and order is not None
+        ):
+            candidates.append(element)
+    if not candidates:
+        return path
+
+    parents = {parent_of[element] for element in candidates}
+    if len(parents) != 1:
+        raise ValueError(
+            "Sky semantic artists must share one SVG parent before grouping."
+        )
+    parent = parents.pop()
+    original_children = list(parent)
+    insertion_index = min(
+        original_children.index(element) for element in candidates
+    )
+
+    by_path = {}
+    for element in candidates:
+        semantic_path = tuple(
+            item
+            for item in element.get(
+                "data-wenu-semantic-path", ""
+            ).split("/")
+            if item
+        )
+        by_path.setdefault(semantic_path, []).append(element)
+
+    orders = {
+        semantic_path: min(
+            int(element.get("data-wenu-presentation-order"))
+            for element in elements
+        )
+        for semantic_path, elements in by_path.items()
+    }
+
+    def descendant_order(path_parts):
+        values = [
+            order
+            for semantic_path, order in orders.items()
+            if semantic_path[:len(path_parts)] == path_parts
+        ]
+        return min(values)
+
+    all_paths = {("sky",)}
+    for semantic_path in by_path:
+        for length in range(2, len(semantic_path) + 1):
+            all_paths.add(semantic_path[:length])
+
+    children_by_parent = {}
+    for semantic_path in all_paths:
+        if len(semantic_path) > 1:
+            children_by_parent.setdefault(
+                semantic_path[:-1], []
+            ).append(semantic_path)
+
+    def display_name(path_parts):
+        elements = by_path.get(path_parts, ())
+        if elements:
+            supplied = elements[0].get("data-wenu-display-name")
+            if supplied:
+                return supplied
+        words = path_parts[-1].replace("_", " ").split()
+        return " ".join(
+            word if word in {"and", "of"} else word.capitalize()
+            for word in words
+        )
+
+    def build_group(path_parts):
+        token = "-".join(path_parts)
+        group = ET.Element(
+            f"{{{_SVG_NAMESPACE}}}g",
+            {
+                "id": f"wenu-group-{token}",
+                "class": (
+                    "wenu-semantic-group "
+                    f"wenu-group-{path_parts[-1].replace('_', '-')}"
+                ),
+                "data-wenu-semantic-path": "/".join(path_parts),
+                "data-wenu-display-name": display_name(path_parts),
+                "data-wenu-presentation-order": str(
+                    descendant_order(path_parts)
+                ),
+                f"{{{_INKSCAPE_NAMESPACE}}}groupmode": "layer",
+                f"{{{_INKSCAPE_NAMESPACE}}}label": display_name(path_parts),
+            },
+        )
+        child_paths = sorted(
+            children_by_parent.get(path_parts, ()),
+            key=lambda item: (descendant_order(item), item),
+        )
+        for child_path in child_paths:
+            group.append(build_group(child_path))
+        for element in by_path.get(path_parts, ()):
+            group.append(element)
+        return group
+
+    for element in candidates:
+        parent.remove(element)
+    parent.insert(insertion_index, build_group(("sky",)))
+    tree.write(path, encoding="utf-8", xml_declaration=True)
     return path
