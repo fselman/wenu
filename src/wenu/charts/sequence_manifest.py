@@ -151,6 +151,7 @@ class ObserverTimeSequenceManifest:
     playback_duration_seconds: float | None
     playback_frames_per_second: float | None
     frames: tuple[SequenceManifestFrame, ...]
+    configuration: dict[str, Any] | None = None
     schema_version: int = SEQUENCE_MANIFEST_SCHEMA_VERSION
     sequence_kind: str = "observer_time"
 
@@ -180,6 +181,11 @@ class ObserverTimeSequenceManifest:
         playback = sequence.playback
         return cls(
             chart_request=_chart_request_identity(sequence.chart),
+            configuration=(
+                None
+                if sequence.configuration is None
+                else _canonical(sequence.configuration)
+            ),
             time_scale=sequence.timeline.time_scale.value,
             display_timezone=sequence.timeline.display_timezone,
             sampling_kind=sequence.timeline.sampling_kind.value,
@@ -203,7 +209,7 @@ class ObserverTimeSequenceManifest:
         )
 
     def _identity_payload(self) -> dict[str, Any]:
-        return {
+        payload = {
             "schema_version": self.schema_version,
             "sequence_kind": self.sequence_kind,
             "chart_request": self.chart_request,
@@ -230,6 +236,9 @@ class ObserverTimeSequenceManifest:
                 for frame in self.frames
             ],
         }
+        if self.configuration is not None:
+            payload["configuration"] = self.configuration
+        return payload
 
     def _document_payload(self) -> dict[str, Any]:
         document = self._identity_payload()
@@ -272,6 +281,7 @@ class ObserverTimeSequenceManifest:
                 schema_version=document["schema_version"],
                 sequence_kind=document["sequence_kind"],
                 chart_request=document["chart_request"],
+                configuration=document.get("configuration"),
                 time_scale=timeline["time_scale"],
                 display_timezone=timeline["display_timezone"],
                 sampling_kind=timeline["sampling_kind"],
