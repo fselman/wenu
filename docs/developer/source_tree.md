@@ -724,3 +724,21 @@ canonical chart family.
 
 SVG remains a downstream 2D product. It is not Wenu's scientific scene, an
 internal `.wenu` representation, or the interchange format for Wenu3D.
+
+## Temporal sequence modules (Milestone 49G.1)
+
+- `src/wenu/temporal.py` owns immutable physical timeline and separate
+  playback vocabulary. It has no chart, observer, projection, renderer,
+  encoder, or FFmpeg dependency.
+- `tools/render_circumpolar_movie.py` is the reference external adapter. It
+  consumes the temporal contracts, invokes complete ordinary `wenu_chart`
+  renders, and only then assembles their PNG outputs with FFmpeg.
+- `tests/test_temporal.py` verifies physical/civil time separation, uniform
+  and irregular sampling, playback independence, validation, and
+  deterministic filenames.
+- `tests/test_render_circumpolar_movie.py` verifies that the reference
+  adapter resolves the established twelve-hour/180-frame/15-second contract.
+
+A package sequence request, frame manifest, CLI, and scientifically keyed
+reuse remain future 49G increments.
+
