@@ -1,4 +1,4 @@
-"""Canonical chart-sequence planning and orchestration tests."""
+"""Canonical observer-time sequence planning and orchestration tests."""
 
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -14,8 +14,8 @@ from wenu.charts.request import (
 )
 from wenu.charts.request_generation import ChartRequestGeneration
 from wenu.charts.sequence import (
-    ChartSequenceRequest,
-    generate_chart_sequence,
+    ObserverTimeChartSequenceRequest,
+    generate_observer_time_chart_sequence,
 )
 from wenu.output_policy import OutputFormat
 from wenu.temporal import PlaybackSpec, TemporalTimeline
@@ -50,7 +50,7 @@ def timeline(count=3):
 
 
 def test_sequence_pairs_one_chart_definition_with_explicit_frames(tmp_path):
-    sequence = ChartSequenceRequest(
+    sequence = ObserverTimeChartSequenceRequest(
         chart=chart_request(tmp_path / "frames"),
         timeline=timeline(),
         playback=PlaybackSpec(timedelta(seconds=1.5), 2),
@@ -80,7 +80,7 @@ def test_sequence_pairs_one_chart_definition_with_explicit_frames(tmp_path):
 
 
 def test_sequence_calls_only_the_canonical_static_generator(tmp_path):
-    sequence = ChartSequenceRequest(
+    sequence = ObserverTimeChartSequenceRequest(
         chart=chart_request(tmp_path / "frames"),
         timeline=timeline(),
     )
@@ -92,7 +92,7 @@ def test_sequence_calls_only_the_canonical_static_generator(tmp_path):
             exports=(SimpleNamespace(output=request.product.output),)
         )
 
-    result = generate_chart_sequence(sequence, generator=generator)
+    result = generate_observer_time_chart_sequence(sequence, generator=generator)
 
     assert tuple(calls) == tuple(
         frame.request for frame in sequence.frames
@@ -110,7 +110,7 @@ def test_sequence_requires_one_explicitly_formatted_directory(tmp_path):
     base = chart_request(tmp_path / "frames")
 
     with pytest.raises(ValueError, match="explicit output format"):
-        ChartSequenceRequest(
+        ObserverTimeChartSequenceRequest(
             chart=ChartRequest(
                 observer=base.observer,
                 family=base.family,
@@ -121,13 +121,13 @@ def test_sequence_requires_one_explicitly_formatted_directory(tmp_path):
         )
 
     with pytest.raises(ValueError, match="must be a directory"):
-        ChartSequenceRequest(
+        ObserverTimeChartSequenceRequest(
             chart=chart_request(tmp_path / "frame.png"),
             timeline=timeline(),
         )
 
     with pytest.raises(ValueError, match="one chart product"):
-        ChartSequenceRequest(
+        ObserverTimeChartSequenceRequest(
             chart=chart_request(
                 tmp_path / "frames",
                 all_products=True,
@@ -137,7 +137,7 @@ def test_sequence_requires_one_explicitly_formatted_directory(tmp_path):
 
 
 def test_sequence_rejects_static_output_different_from_plan(tmp_path):
-    sequence = ChartSequenceRequest(
+    sequence = ObserverTimeChartSequenceRequest(
         chart=chart_request(tmp_path / "frames"),
         timeline=timeline(count=2),
     )
@@ -148,4 +148,4 @@ def test_sequence_rejects_static_output_different_from_plan(tmp_path):
         )
 
     with pytest.raises(ValueError, match="do not match"):
-        generate_chart_sequence(sequence, generator=generator)
+        generate_observer_time_chart_sequence(sequence, generator=generator)
