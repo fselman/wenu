@@ -1,7 +1,7 @@
 # Deterministic sequence manifests and resume
 
 **Milestone:** 49G.3  
-**Status:** implemented; focused verification in progress  
+**Status:** implemented; real restart/resume acceptance complete  
 **Base:** `542a97f`
 
 ## Purpose
@@ -127,3 +127,30 @@ The milestone requires tests proving:
 - real canonical PNG generation followed by zero-render verified resume.
 
 CLI/configuration exposure remains Milestone 49G.4.
+
+
+## Real-directory acceptance
+
+A three-frame circumpolar PNG sequence was generated on the Mac under
+`/tmp/wenu-49g3-resume`. The audit then preserved frame 0, deleted frame 1,
+and replaced frame 2 with incomplete bytes.
+
+Verified behavior:
+
+| Pass | Rendered | Reused | Result |
+| --- | ---: | ---: | --- |
+| initial restart | 3 | 0 | complete manifest and three outputs |
+| selective resume | 2 | 1 | missing and altered frames restored |
+| fully valid resume | 0 | 3 | no canonical render repeated |
+
+The selective pass reported `reused, rendered, rendered`. All recovered
+SHA-256 values matched the original outputs exactly. The final manifest used
+schema 1, sequence kind `observer_time`, and identity
+`7f31dee56261ea167c42b394135a3d11ddf93251c07c21143a00c168ce8155f9`.
+
+The focused contract, real-frame, documentation, request-generation,
+renderer-boundary, and package-boundary suite passed:
+
+```text
+82 passed in 27.29s
+```
