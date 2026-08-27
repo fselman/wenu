@@ -49,6 +49,7 @@ class MatplotlibRenderer:
 
         path = self._closed_boundary_path(boundary)
         self.ax.set_facecolor("none")
+        self.ax.patch.set_visible(False)
         self.ax.figure.set_facecolor("none")
         patch = PathPatch(
             path,
@@ -57,6 +58,7 @@ class MatplotlibRenderer:
             zorder=-1000.0,
         )
         self.ax.add_patch(patch)
+        self._boundary_background_patch = patch
         return patch
 
     def set_circular_background(self, boundary, *, color):
