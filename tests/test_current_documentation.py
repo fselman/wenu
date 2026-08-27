@@ -777,6 +777,9 @@ def test_temporal_sequence_cli_documents_shared_translation_and_acceptance():
     source_tree = (
         DEVELOPER / "source_tree.md"
     ).read_text(encoding="utf-8")
+    schema = (
+        DEVELOPER / "configuration_schema_v1.md"
+    ).read_text(encoding="utf-8")
 
     for value in (
         "49G.4",
@@ -797,3 +800,6 @@ def test_temporal_sequence_cli_documents_shared_translation_and_acceptance():
         implementation
     )
     assert "Temporal sequence CLI modules (Milestone 49G.4)" in source_tree
+
+    assert "### `sequence`" in schema
+    assert "playback_duration" in schema
