@@ -472,6 +472,12 @@ def test_constellation_entities_form_a_shallow_system_specific_group(tmp_path):
     assert lines.get("data-wenu-locked") == "true"
     assert cru.get(insensitive) is None
     assert mus.get(insensitive) is None
+    assert all(
+        child.get("data-wenu-lock-owner-path")
+        == "sky/constellations/lines_western"
+        for entity in (cru, mus)
+        for child in entity
+    )
 
 
 def test_semantic_sibling_labels_must_be_unique(tmp_path):

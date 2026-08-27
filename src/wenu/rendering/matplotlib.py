@@ -114,6 +114,7 @@ class MatplotlibRenderer:
         collect(artists)
         identities = []
         entity_flags = []
+        lock_owner_paths = []
         for artist in flattened:
             component = getattr(
                 artist, "_wenu_semantic_component", None
@@ -123,6 +124,7 @@ class MatplotlibRenderer:
                 if component is not None
                 else identity
             )
+            lock_owner_path = artist_identity.semantic_path
             entity_key = getattr(
                 artist, "_wenu_semantic_entity_key", None
             )
@@ -137,11 +139,16 @@ class MatplotlibRenderer:
                 )
             identities.append(artist_identity)
             entity_flags.append(entity_key is not None)
+            lock_owner_paths.append(lock_owner_path)
         totals = Counter(item.svg_id for item in identities)
         positions = Counter()
         results = []
-        for artist, artist_identity, is_entity in zip(
-            flattened, identities, entity_flags, strict=True
+        for artist, artist_identity, is_entity, lock_owner_path in zip(
+            flattened,
+            identities,
+            entity_flags,
+            lock_owner_paths,
+            strict=True,
         ):
             exact = bool(
                 getattr(artist_identity, "exact_svg_id", False)
@@ -169,6 +176,7 @@ class MatplotlibRenderer:
                 paint_role=paint_role,
                 edit_policy=artist_identity.edit_policy,
                 semantic_path=artist_identity.semantic_path,
+                lock_owner_path=lock_owner_path,
                 display_name=artist_identity.display_name,
                 path_display_names=getattr(
                     artist_identity,

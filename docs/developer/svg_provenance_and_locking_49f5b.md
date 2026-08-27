@@ -53,6 +53,12 @@ content enabled in one chart happens to share a policy. Descendants of a
 locked owning branch are not redundantly locked, so unlocking that branch
 makes its contents available. For example:
 
+The renderer-neutral `data-wenu-lock-owner-path` records that supplied owner
+explicitly. Entity subdivision does not change it: individual constellation
+artists may live below `.../lines_western/cru`, while their lock owner remains
+`.../lines_western`. The SVG serializer therefore does not infer ownership
+from astronomy names or from the accidental shape of a particular export.
+
 - `Constellations` remains unlocked because it is organizational, regardless
   of which constellation components are enabled;
 - `Lines-Western` is locked once;

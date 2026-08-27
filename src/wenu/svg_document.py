@@ -53,6 +53,7 @@ def attach_semantic_svg_metadata(
     paint_role,
     edit_policy,
     semantic_path,
+    lock_owner_path,
     display_name,
     path_display_names=(),
     presentation_order,
@@ -60,6 +61,11 @@ def attach_semantic_svg_metadata(
 ):
     """Attach renderer-neutral values for the later SVG export boundary."""
     semantic_path = tuple(semantic_path)
+    lock_owner_path = tuple(lock_owner_path)
+    if semantic_path[:len(lock_owner_path)] != lock_owner_path:
+        raise ValueError(
+            "lock_owner_path must be an ancestor of semantic_path."
+        )
     if path_display_names:
         path_display_names = tuple(path_display_names)
     else:
@@ -72,6 +78,7 @@ def attach_semantic_svg_metadata(
         "zorder": float(zorder),
         "edit_policy": edit_policy.value,
         "semantic_path": "/".join(semantic_path),
+        "lock_owner_path": "/".join(lock_owner_path),
         "parent_path": "/".join(semantic_path[:-1]),
         "display_name": str(display_name),
         "path_display_names": path_display_names,
@@ -110,6 +117,9 @@ def annotate_semantic_svg(path, figure, *, provenance=None):
                 "data-wenu-zorder": f"{metadata['zorder']:.12g}",
                 "data-wenu-edit": metadata["edit_policy"],
                 "data-wenu-semantic-path": metadata["semantic_path"],
+                "data-wenu-lock-owner-path": metadata[
+                    "lock_owner_path"
+                ],
                 "data-wenu-parent-path": metadata["parent_path"],
                 "data-wenu-display-name": metadata["display_name"],
                 "data-wenu-path-display-names": json.dumps(
@@ -353,6 +363,15 @@ def _group_semantic_siblings(parent, candidates):
         )
         for semantic_path, elements in by_path.items()
     }
+    lock_owner_paths = {
+        tuple(
+            element.get(
+                "data-wenu-lock-owner-path",
+                element.get("data-wenu-semantic-path", ""),
+            ).split("/")
+        )
+        for element in candidates
+    }
 
     def descendant_order(path_parts):
         return min(
@@ -372,7 +391,7 @@ def _group_semantic_siblings(parent, candidates):
         policy = descendant_policies(path_parts)
         return (
             len(path_parts) > 1
-            and path_parts in by_path
+            and path_parts in lock_owner_paths
             and bool(policy)
             and policy <= {"style", "none"}
         )
