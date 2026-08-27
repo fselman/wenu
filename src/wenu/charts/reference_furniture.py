@@ -555,6 +555,13 @@ def _assign_polar_declination_tick_semantics(renderer, artists):
             display_name="Declination tick marks",
             presentation_order=70,
             style_role="equatorial_grid_lines",
+            path_display_names=(
+                "Sky",
+                "Grids",
+                "Equatorial grid",
+                "Equatorial grid lines",
+                "Declination tick marks",
+            ),
         ),
     )
     return artists
