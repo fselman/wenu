@@ -23,6 +23,7 @@ from wenu.charts.sequence import (
     ObserverTimeChartSequenceRequest,
     generate_observer_time_chart_sequence,
 )
+from wenu.configuration import load_configuration_defaults
 from wenu.output_policy import OutputFormat
 from wenu.temporal import PlaybackSpec, TemporalTimeline
 
@@ -362,3 +363,42 @@ def test_restart_renders_every_frame_even_when_manifest_is_complete(
     assert restart_calls == list(restarted.outputs)
     assert restarted.rendered_count == 2
     assert restarted.reused_count == 0
+
+
+def test_sequence_passes_effective_configuration_to_every_static_frame(
+    tmp_path,
+    monkeypatch,
+):
+    configuration = load_configuration_defaults()
+    planned = ObserverTimeChartSequenceRequest(
+        chart=chart_request(tmp_path / "frames"),
+        timeline=timeline(count=2),
+        configuration=configuration,
+    )
+    calls = []
+
+    def generator(request, *, configuration=None):
+        calls.append((request, configuration))
+        request.product.output.parent.mkdir(parents=True, exist_ok=True)
+        request.product.output.write_bytes(b"configured frame")
+        return ChartRequestGeneration(
+            exports=(SimpleNamespace(output=request.product.output),)
+        )
+
+    monkeypatch.setattr(sequence_module, "generate_chart_request", generator)
+
+    generate_observer_time_chart_sequence(planned)
+
+    assert tuple(request for request, _ in calls) == tuple(
+        frame.request for frame in planned.frames
+    )
+    assert all(item is configuration for _, item in calls)
+
+
+def test_sequence_rejects_untranslated_configuration(tmp_path):
+    with pytest.raises(TypeError, match="ConfigurationDefaults"):
+        ObserverTimeChartSequenceRequest(
+            chart=chart_request(tmp_path / "frames"),
+            timeline=timeline(),
+            configuration={"style": "not translated"},
+        )
