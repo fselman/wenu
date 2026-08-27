@@ -498,7 +498,7 @@ def test_constellation_entities_form_a_shallow_system_specific_group(tmp_path):
     ]
     assert "sky/constellations/lines_western/western" not in by_path
     lines_style = dict(
-        item.split(":", 1)
+        item.split(": ", 1)
         for item in lines.get("style", "").split("; ")
         if ":" in item
     )
