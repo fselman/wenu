@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
 from wenu.temporal import PlaybackSpec, TemporalTimeline
 
@@ -97,36 +98,54 @@ class ObserverTimeChartSequenceRequest:
         return tuple(frames)
 
 
+class SequenceFrameDisposition(str, Enum):
+    """Whether one result was rendered now or reused after verification."""
+
+    RENDERED = "rendered"
+    REUSED = "reused"
+
+
 @dataclass(frozen=True)
 class ObserverTimeChartSequenceFrameResult:
-    """Completed canonical generation for one sequence frame."""
+    """Verified output for one rendered or safely reused sequence frame."""
 
     frame: ObserverTimeChartSequenceFrame
-    generation: ChartRequestGeneration
+    generation: ChartRequestGeneration | None
+    disposition: SequenceFrameDisposition = SequenceFrameDisposition.RENDERED
 
     def __post_init__(self):
         if not isinstance(self.frame, ObserverTimeChartSequenceFrame):
             raise TypeError("frame must be a ObserverTimeChartSequenceFrame.")
-        if not isinstance(self.generation, ChartRequestGeneration):
-            raise TypeError(
-                "generation must be a ChartRequestGeneration."
-            )
-        if self.generation.outputs != (self.frame.expected_output,):
-            raise ValueError(
-                "Static generation outputs do not match the frame plan."
-            )
+        disposition = SequenceFrameDisposition(self.disposition)
+        object.__setattr__(self, "disposition", disposition)
+        if disposition is SequenceFrameDisposition.RENDERED:
+            if not isinstance(self.generation, ChartRequestGeneration):
+                raise TypeError(
+                    "A rendered frame requires ChartRequestGeneration."
+                )
+            if self.generation.outputs != (self.frame.expected_output,):
+                raise ValueError(
+                    "Static generation outputs do not match the frame plan."
+                )
+        elif self.generation is not None:
+            raise ValueError("A reused frame must not claim new generation.")
 
     @property
     def output(self) -> Path:
         return self.frame.expected_output
 
+    @property
+    def reused(self) -> bool:
+        return self.disposition is SequenceFrameDisposition.REUSED
+
 
 @dataclass(frozen=True)
 class ObserverTimeChartSequenceGeneration:
-    """Ordered immutable results from complete canonical static renders."""
+    """Ordered results from canonical rendering and verified reuse."""
 
     request: ObserverTimeChartSequenceRequest
     frames: tuple[ObserverTimeChartSequenceFrameResult, ...]
+    manifest_path: Path | None = None
 
     def __post_init__(self):
         if not isinstance(self.request, ObserverTimeChartSequenceRequest):
@@ -141,29 +160,83 @@ class ObserverTimeChartSequenceGeneration:
         ):
             raise ValueError("Sequence frame results must remain ordered.")
         object.__setattr__(self, "frames", frames)
+        if self.manifest_path is not None:
+            object.__setattr__(self, "manifest_path", Path(self.manifest_path))
 
     @property
     def outputs(self) -> tuple[Path, ...]:
         return tuple(item.output for item in self.frames)
 
+    @property
+    def rendered_count(self) -> int:
+        return sum(not item.reused for item in self.frames)
+
+    @property
+    def reused_count(self) -> int:
+        return sum(item.reused for item in self.frames)
+
 
 def generate_observer_time_chart_sequence(
     request: ObserverTimeChartSequenceRequest,
+    *,
+    restart_policy="restart",
+    manifest_path: Path | None = None,
 ) -> ObserverTimeChartSequenceGeneration:
-    """Generate observer-time frames through the canonical static executor."""
+    """Generate frames or resume only outputs verified by a compatible manifest."""
     if not isinstance(request, ObserverTimeChartSequenceRequest):
         raise TypeError("request must be an ObserverTimeChartSequenceRequest.")
 
+    from .sequence_manifest import (
+        ObserverTimeSequenceManifest,
+        SEQUENCE_MANIFEST_NAME,
+        SequenceRestartPolicy,
+        read_observer_time_sequence_manifest,
+        update_observer_time_sequence_manifest,
+    )
+
+    try:
+        policy = SequenceRestartPolicy(restart_policy)
+    except ValueError as error:
+        raise ValueError("restart_policy must be 'restart' or 'resume'.") from error
+    destination = (
+        request.chart.product.output / SEQUENCE_MANIFEST_NAME
+        if manifest_path is None
+        else Path(manifest_path)
+    )
+    if policy is SequenceRestartPolicy.RESUME and destination.is_file():
+        manifest = read_observer_time_sequence_manifest(destination)
+        manifest.assert_compatible(request)
+    else:
+        manifest = ObserverTimeSequenceManifest.from_sequence(request)
+        update_observer_time_sequence_manifest(manifest, destination)
+
     results = []
     for frame in request.frames:
-        generation = generate_chart_request(frame.request)
-        results.append(
-            ObserverTimeChartSequenceFrameResult(
-                frame=frame,
-                generation=generation,
+        if (
+            policy is SequenceRestartPolicy.RESUME
+            and manifest.output_is_valid(frame.index, frame.expected_output)
+        ):
+            results.append(
+                ObserverTimeChartSequenceFrameResult(
+                    frame=frame,
+                    generation=None,
+                    disposition=SequenceFrameDisposition.REUSED,
+                )
             )
+            continue
+        generation = generate_chart_request(frame.request)
+        result = ObserverTimeChartSequenceFrameResult(
+            frame=frame,
+            generation=generation,
         )
+        manifest = manifest.with_completed_output(
+            frame.index,
+            frame.expected_output,
+        )
+        update_observer_time_sequence_manifest(manifest, destination)
+        results.append(result)
     return ObserverTimeChartSequenceGeneration(
         request=request,
         frames=tuple(results),
+        manifest_path=destination,
     )
