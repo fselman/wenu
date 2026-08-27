@@ -188,8 +188,11 @@ a concrete requirement that Matplotlib's backend cannot meet.
 
 **Status:** 49G.1 immutable timeline and playback vocabulary implemented.
 
-**Status:** 49G.2 observer-time sequence orchestration implemented; CLI,
-manifests, acceptance, and reuse remain pending.
+**Status:** 49G.2 observer-time sequence orchestration and real-render
+acceptance complete.
+
+**Status:** 49G.3 deterministic manifest and restart/resume policy in
+progress; CLI/configuration and scientifically keyed reuse remain pending.
 
 The implemented contracts are documented in
 `temporal_sequence_contract_49g1.md` and

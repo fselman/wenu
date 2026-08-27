@@ -1,5 +1,6 @@
 """Canonical observer-time sequence planning and orchestration tests."""
 
+from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 from pathlib import Path
@@ -111,6 +112,8 @@ def test_sequence_calls_only_the_canonical_static_generator(
 
     def generator(request):
         calls.append(request)
+        request.product.output.parent.mkdir(parents=True, exist_ok=True)
+        request.product.output.write_bytes(b"frame")
         return ChartRequestGeneration(
             exports=(SimpleNamespace(output=request.product.output),)
         )
@@ -208,3 +211,154 @@ def test_observer_time_sequence_generates_real_canonical_frames(tmp_path):
         result.outputs[1].read_bytes()
     ).digest()
 
+    resumed = generate_observer_time_chart_sequence(
+        sequence,
+        restart_policy="resume",
+    )
+    assert resumed.outputs == result.outputs
+    assert resumed.rendered_count == 0
+    assert resumed.reused_count == 2
+
+
+
+def _file_generator(calls):
+    def generate(request):
+        calls.append(request.product.output)
+        request.product.output.parent.mkdir(parents=True, exist_ok=True)
+        request.product.output.write_bytes(
+            request.observer.time.isoformat().encode("ascii")
+        )
+        return ChartRequestGeneration(
+            exports=(SimpleNamespace(output=request.product.output),)
+        )
+
+    return generate
+
+
+def test_resume_reuses_only_manifest_verified_outputs(
+    tmp_path,
+    monkeypatch,
+):
+    planned = ObserverTimeChartSequenceRequest(
+        chart=chart_request(tmp_path / "frames"),
+        timeline=timeline(count=2),
+    )
+    first_calls = []
+    monkeypatch.setattr(
+        sequence_module,
+        "generate_chart_request",
+        _file_generator(first_calls),
+    )
+    first = generate_observer_time_chart_sequence(planned)
+
+    assert first.rendered_count == 2
+    assert first.reused_count == 0
+    assert first.manifest_path.is_file()
+
+    monkeypatch.setattr(
+        sequence_module,
+        "generate_chart_request",
+        lambda request: pytest.fail("verified frame was rendered again"),
+    )
+    resumed = generate_observer_time_chart_sequence(
+        planned,
+        restart_policy="resume",
+    )
+
+    assert resumed.outputs == first.outputs
+    assert resumed.rendered_count == 0
+    assert resumed.reused_count == 2
+    assert all(frame.generation is None for frame in resumed.frames)
+
+
+def test_resume_rerenders_an_altered_output_only(tmp_path, monkeypatch):
+    planned = ObserverTimeChartSequenceRequest(
+        chart=chart_request(tmp_path / "frames"),
+        timeline=timeline(count=2),
+    )
+    monkeypatch.setattr(
+        sequence_module,
+        "generate_chart_request",
+        _file_generator([]),
+    )
+    first = generate_observer_time_chart_sequence(planned)
+    first.outputs[0].write_bytes(b"altered")
+
+    resumed_calls = []
+    monkeypatch.setattr(
+        sequence_module,
+        "generate_chart_request",
+        _file_generator(resumed_calls),
+    )
+    resumed = generate_observer_time_chart_sequence(
+        planned,
+        restart_policy="resume",
+    )
+
+    assert resumed_calls == [first.outputs[0]]
+    assert resumed.rendered_count == 1
+    assert resumed.reused_count == 1
+    assert not resumed.frames[0].reused
+    assert resumed.frames[1].reused
+
+
+def test_resume_rejects_an_incompatible_manifest_before_rendering(
+    tmp_path,
+    monkeypatch,
+):
+    planned = ObserverTimeChartSequenceRequest(
+        chart=chart_request(tmp_path / "frames"),
+        timeline=timeline(count=2),
+    )
+    monkeypatch.setattr(
+        sequence_module,
+        "generate_chart_request",
+        _file_generator([]),
+    )
+    generate_observer_time_chart_sequence(planned)
+    incompatible = replace(
+        planned,
+        chart=replace(planned.chart, title="Different sequence"),
+    )
+    monkeypatch.setattr(
+        sequence_module,
+        "generate_chart_request",
+        lambda request: pytest.fail("incompatible sequence rendered"),
+    )
+
+    with pytest.raises(ValueError, match="incompatible"):
+        generate_observer_time_chart_sequence(
+            incompatible,
+            restart_policy="resume",
+        )
+
+
+def test_restart_renders_every_frame_even_when_manifest_is_complete(
+    tmp_path,
+    monkeypatch,
+):
+    planned = ObserverTimeChartSequenceRequest(
+        chart=chart_request(tmp_path / "frames"),
+        timeline=timeline(count=2),
+    )
+    monkeypatch.setattr(
+        sequence_module,
+        "generate_chart_request",
+        _file_generator([]),
+    )
+    generate_observer_time_chart_sequence(planned)
+    restart_calls = []
+    monkeypatch.setattr(
+        sequence_module,
+        "generate_chart_request",
+        _file_generator(restart_calls),
+    )
+
+    restarted = generate_observer_time_chart_sequence(
+        planned,
+        restart_policy="restart",
+    )
+
+    assert restart_calls == list(restarted.outputs)
+    assert restarted.rendered_count == 2
+    assert restarted.reused_count == 0

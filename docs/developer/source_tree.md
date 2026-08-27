@@ -757,3 +757,19 @@ Celestial realization epochs for proper motion/precession and provider
 evaluation instants for moving objects are separate future owners. They must
 not enter through the observer-time sequence API.
 
+
+
+### Sequence manifest and resume (Milestone 49G.3)
+
+- `src/wenu/charts/sequence_manifest.py` owns deterministic JSON plan
+  identity, schema validation, verified completion records, and atomic
+  manifest persistence.
+- `src/wenu/charts/sequence.py` remains the canonical repeated-static
+  orchestrator and now selects explicit restart or manifest-verified resume.
+- `tests/test_sequence_manifest.py` verifies deterministic serialization,
+  portability, tamper rejection, compatibility, and completion records.
+- `tests/test_chart_sequence.py` verifies restart/resume orchestration,
+  selective rerendering, incompatible-plan rejection, and real-frame reuse.
+
+Manifest logic does not construct or cache sky state and does not render,
+project, clip, style, encode, or infer astronomical equivalence.

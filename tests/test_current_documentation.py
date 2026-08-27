@@ -725,3 +725,40 @@ def test_observer_time_sequence_reserves_astrometric_epoch_ownership():
     assert "Observer-time chart sequence (Milestone 49G.2)" in implementation
     assert "Observer-time sequence orchestration" in source_tree
 
+
+
+def test_sequence_manifest_documents_safe_restart_and_resume():
+    contract = (
+        DEVELOPER / "sequence_manifest_49g3.md"
+    ).read_text(encoding="utf-8")
+    roadmap = (
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).read_text(encoding="utf-8")
+    implementation = (
+        DEVELOPER / "implementation_reference.md"
+    ).read_text(encoding="utf-8")
+    source_tree = (
+        DEVELOPER / "source_tree.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "ObserverTimeSequenceManifest",
+        "SequenceRestartPolicy",
+        "restart_policy=\"restart\"",
+        "recorded filename, byte count, and SHA-256",
+        "incompatible manifest before rendering",
+        "real canonical PNG generation",
+        "CLI/configuration exposure remains Milestone 49G.4",
+        "real restart/resume acceptance complete",
+        "selective resume",
+        "82 passed in 27.29s",
+        "1721 passed in 83.03s",
+    ):
+        assert value in contract
+
+    assert "49G.3 deterministic manifest" in roadmap
+    assert "acceptance complete" in roadmap
+    assert "Deterministic sequence manifests (Milestone 49G.3)" in (
+        implementation
+    )
+    assert "Sequence manifest and resume (Milestone 49G.3)" in source_tree

@@ -88,15 +88,17 @@ No sequence code:
 49G.2 does not yet add:
 
 - CLI or configuration;
-- a frame manifest;
 - title-time templating;
-- restart/resume policy;
 - multi-product sequences;
 - scientific reuse or caching;
 - celestial-epoch or moving-provider sequences.
 
 The complete independent-frame path remains the correctness oracle for later
 optimization.
+
+Milestone 49G.3 now adds deterministic manifests and verified restart/resume
+without changing this observer-time or canonical-render boundary. See
+`sequence_manifest_49g3.md`.
 
 ## Real-render acceptance
 

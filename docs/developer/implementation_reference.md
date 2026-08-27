@@ -1443,3 +1443,22 @@ reference epoch, time scale, astrometric propagation, frame, and provenance
 policy. Moving-object providers likewise require their own explicit evaluation
 instant. Neither role is represented by relabelling observer time.
 
+
+
+### Deterministic sequence manifests (Milestone 49G.3)
+
+`ObserverTimeSequenceManifest.from_sequence()` creates the schema-versioned
+portable identity of an `ObserverTimeChartSequenceRequest`. The canonical
+identity includes chart/product choices, timeline, display timezone, playback,
+and ordered frames while excluding only the base observer time and output
+directory owned by the sequence plan.
+
+`write_observer_time_sequence_manifest()` writes a fresh manifest atomically;
+`read_observer_time_sequence_manifest()` validates schema and identity;
+`update_observer_time_sequence_manifest()` atomically persists verified frame
+byte counts and SHA-256 values without changing plan identity.
+
+`generate_observer_time_chart_sequence(..., restart_policy="restart")`
+renders all frames. With `restart_policy="resume"`, it rejects incompatible
+plans and reuses only outputs whose complete file bytes match their manifest
+record. Missing or changed outputs return to canonical static generation.
