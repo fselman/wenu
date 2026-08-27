@@ -84,6 +84,29 @@ def test_geometry_is_closed_and_transformed(catalogue, observer):
     assert geometry.metadata["semantic_entity_display_names"] == (
         "M 1", "M 31", "M 42"
     )
+    assert geometry.metadata["semantic_entity_categories"] == (
+        "supernova_remnants", "galaxies", "nebulae"
+    )
+
+
+@pytest.mark.parametrize(
+    ("object_type", "category"),
+    (
+        ("Galaxy", "galaxies"),
+        ("Open Cluster", "open_clusters"),
+        ("GC", "globular_clusters"),
+        ("Planetary Nebula", "planetary_nebulae"),
+        ("SNR", "supernova_remnants"),
+        ("Emission Nebula", "nebulae"),
+        ("H II region", "nebulae"),
+        ("Unclassified", "other_objects"),
+        (None, "other_objects"),
+    ),
+)
+def test_catalog_object_types_use_shared_astronomical_categories(
+    object_type, category
+):
+    assert NonStellar.semantic_category(object_type) == category
 
 
 def test_unknown_position_angle_does_not_invent_orientation():
@@ -104,6 +127,9 @@ def test_selection(catalogue, observer):
     assert list(geometry.ids) == ["M 31"]
     assert geometry.metadata["semantic_entity_keys"] == ("M 31",)
     assert geometry.metadata["semantic_entity_display_names"] == ("M 31",)
+    assert geometry.metadata["semantic_entity_categories"] == (
+        "galaxies",
+    )
 
 
 def test_outline_sampling_is_render_local_and_bounded(catalogue, observer):
