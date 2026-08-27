@@ -613,6 +613,22 @@ def _consolidate_designer_hierarchy(root):
             ),
         )
         target[:] = ordered
+        title = next(
+            (
+                element
+                for element in target.iter()
+                if element.get("data-wenu-semantic-path")
+                == "furniture/title"
+            ),
+            None,
+        )
+        if title is not None:
+            title_text = " ".join("".join(title.itertext()).split())
+            if title_text:
+                figure.set(
+                    f"{{{_INKSCAPE_NAMESPACE}}}label",
+                    f"{figure_label} - {title_text}",
+                )
 
 
 def _flatten_semantic_text_artists(root):
