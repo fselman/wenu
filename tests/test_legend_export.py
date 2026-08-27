@@ -1231,7 +1231,7 @@ def test_composition_rejects_wrong_chart_and_ambiguous_legacy_arguments():
 
 
 def test_regional_furniture_declares_title_and_legend_hierarchy():
-    from wenu.charts.regional import _assign_furniture_semantics
+    from wenu.chart_document import assign_furniture_semantics
 
     assigned = []
     title = SimpleNamespace(get_text=lambda: "Chart title")
@@ -1250,7 +1250,7 @@ def test_regional_furniture_declares_title_and_legend_hierarchy():
         )
     )
 
-    _assign_furniture_semantics(renderer, rendering)
+    assign_furniture_semantics(renderer, rendering)
 
     assert [identity.semantic_path for _, identity in assigned] == [
         ("furniture", "title"),
