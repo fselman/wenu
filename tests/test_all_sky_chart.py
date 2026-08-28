@@ -30,12 +30,15 @@ def test_all_sky_render_transforms_geometry_before_projection(monkeypatch):
     source = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC, lon_deg=[1.0], lat_deg=[2.0])
     galactic = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC, lon_deg=[3.0], lat_deg=[4.0])
 
-    def transform(geometry, observer):
-        calls.setdefault("transforms", []).append((geometry, observer))
+    def transform(_service, geometry, observer, target_frame, **kwargs):
+        calls.setdefault("transforms", []).append(
+            (geometry, observer, target_frame)
+        )
         return galactic
 
     monkeypatch.setattr(
-        "wenu.charts.all_sky.horizontal_to_galactic", transform
+        "wenu.charts.all_sky.CoordinateService.transform_observer_geometry",
+        transform,
     )
 
     class Renderer:
@@ -56,7 +59,7 @@ def test_all_sky_render_transforms_geometry_before_projection(monkeypatch):
     assert result.x == pytest.approx(
         AllSkyChart().projection.project_geometry(galactic).x
     )
-    assert calls["transforms"] == [(source, observer)]
+    assert calls["transforms"] == [(source, observer, "galactic")]
     assert calls["draw"]["observer"] is observer
     assert calls["boundary"].name == "all_sky_boundary"
 

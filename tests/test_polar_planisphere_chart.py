@@ -149,12 +149,12 @@ def test_render_transforms_canonical_altaz_before_selected_projection(
     equatorial = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC, lon_deg=[30.0], lat_deg=[-40.0])
     calls = {}
 
-    def transform(geometry, observer):
-        calls["transform"] = (geometry, observer)
+    def transform(_service, geometry, observer, target_frame, **kwargs):
+        calls["transform"] = (geometry, observer, target_frame)
         return equatorial
 
     monkeypatch.setattr(
-        "wenu.charts.polar_planisphere.horizontal_to_equatorial",
+        "wenu.charts.polar_planisphere.CoordinateService.transform_observer_geometry",
         transform,
     )
 
@@ -176,7 +176,7 @@ def test_render_transforms_canonical_altaz_before_selected_projection(
     expected = chart.projection.project_geometry(equatorial)
     np.testing.assert_allclose(result.x, expected.x)
     np.testing.assert_allclose(result.y, expected.y)
-    assert calls["transform"] == (source, observer)
+    assert calls["transform"] == (source, observer, "icrs")
     assert calls["draw"]["observer"] is observer
     assert calls["boundary"].name == "declination_20"
 
