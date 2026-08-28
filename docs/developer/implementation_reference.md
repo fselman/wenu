@@ -1502,3 +1502,22 @@ against `PngFrameComparisonTolerance`; exact equality is the default.
 Other chart families remain outside this oracle until stable-camera
 equivalence is proved.
 
+
+
+## Fixed-sky reference rendering (Milestone 49H.3)
+
+`fixed_sky_circumpolar_orientation()` derives one anchor-relative
+circumpolar position angle from the actual celestial-to-horizontal
+transformation at the anchor and frame instants. It keeps a fixed celestial
+reference at identical projected coordinates while rotating local horizon and
+AltAz geometry. It does not use a 15-degree-per-hour approximation.
+
+`resolve_fixed_sky_rotating_horizon_frame()` preserves dual-time ownership
+while producing an ordinary frame-local `ChartRequest` whose only projection
+change is `position_angle_deg`.
+
+`generate_fixed_sky_rotating_horizon_sequence()` is the accepted uncached
+reference executor. It sends every resolved frame through
+`generate_chart_request()`; no alternate sphere, projection, renderer,
+furniture, or export path exists. Scientifically keyed reuse and
+restart/resume support remain future work.
