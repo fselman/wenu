@@ -145,7 +145,7 @@ def test_current_diagrams_are_an_inspection_interface():
     assert "49B introduces typed astronomical-state vocabulary" in readme
     assert "49C introduces one coordinate service" in readme
     assert "every astronomical object obtains its native position" in readme
-    assert "observer context enters only" in readme
+    assert "`ObservationContext` enters only" in readme
     assert "actual classes" in readme
     assert "inherits" in readme
     assert "runtime calls or returns" in readme
