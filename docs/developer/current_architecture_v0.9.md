@@ -168,6 +168,10 @@ Current work reads this document together with:
 - `implementation_reference.md` for public and advanced API contracts;
 - `source_tree.md` for responsibility ownership;
 - `post_v0.9_architecture_roadmap.md` for active milestone sequencing;
+- `target_architecture_v0.9.5.md` for the proposed coordinate-rationalization
+  target and minimal 49B/49C roadmap;
+- `coordinate_system_guide_v0.9.5.md` for living equations, coordinate
+  conventions, code ownership, object inventory, and provenance;
 - `coordinate_transformation_audit_09a2afd.md` for scientific coordinate
   evidence;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product evidence.

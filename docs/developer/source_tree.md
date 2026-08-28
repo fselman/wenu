@@ -12,7 +12,12 @@ The current ownership and execution overview is
 as-is state and planned 49B/49C change seams are
 `diagrams/coordinate_transformation_as_is_v0.9.svg`. Actual coordinate
 classes, dataclasses, functions, inheritance, and module placement are shown
-in `diagrams/coordinate_static_structure_as_is_v0.9.svg`.
+in `diagrams/coordinate_static_structure_as_is_v0.9.svg`. The proposed
+architecture 0.9.5 ownership is frozen in
+`target_architecture_v0.9.5.md`; its living scientific equations, current
+code map, object inventory, and provenance are maintained in
+`coordinate_system_guide_v0.9.5.md` with a generated OpenDocument review
+edition under `review/`.
 
 The source tree is organized by responsibility. Astronomical objects and sky
 layers do not import chart or renderer policy, and all chart styles and modes

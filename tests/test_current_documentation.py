@@ -18,6 +18,9 @@ V09_CURRENT = DEVELOPER / "current_architecture_v0.9.md"
 V09_TARGET = ARCHIVE / "architecture_history/target_architecture_v0.9.md"
 V09_ROADMAP = ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md"
 FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
+V095_TARGET = DEVELOPER / "target_architecture_v0.9.5.md"
+COORDINATE_GUIDE = DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+COORDINATE_GUIDE_ODT = DEVELOPER / "review" / "coordinate_system_guide_v0.9.5.odt"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -75,6 +78,9 @@ def test_current_architecture_authorities_exist_and_cross_reference():
             V09_TARGET,
             V09_ROADMAP,
             FUTURE_ROADMAP,
+            V095_TARGET,
+            COORDINATE_GUIDE,
+            COORDINATE_GUIDE_ODT,
             INSTRUCTIONS,
         )
         if not path.is_file()
@@ -158,6 +164,37 @@ def test_current_diagrams_are_an_inspection_interface():
     assert not (DIAGRAMS / "target_architecture_v0.5_combined.dot").exists()
     assert not (DIAGRAMS / "target_architecture_v0.5_combined.svg").exists()
 
+
+
+def test_v095_coordinate_target_and_living_guide_are_reviewable():
+    target = read(V095_TARGET)
+    guide = read(COORDINATE_GUIDE)
+
+    assert "**Status:** Proposed review baseline; not implemented" in target
+    assert "PositionProvider" in target
+    assert "CoordinateService" in target
+    assert "49B.1" in target
+    assert "49C.4" in target
+    assert "does not claim a\n`v0.9.5` Git tag" in target
+
+    for phrase in (
+        "Position generation versus coordinate transformation",
+        "International Celestial Reference System",
+        "FK5 equatorial coordinates",
+        "Galactic coordinates",
+        "Ecliptic coordinates",
+        "Horizontal AltAz coordinates",
+        "TEME",
+        "Current transformation inventory and 0.9.5 destination",
+        "Wenu object catalogue and provenance",
+        "ESA Hipparcos Catalogue I/239",
+        "OpenNGC",
+        "Gaia DR3",
+        "Minimal architecture 0.9.5 roadmap",
+    ):
+        assert phrase in guide
+
+    assert COORDINATE_GUIDE_ODT.stat().st_size > 10_000
 
 def test_v08_release_evidence_remains_closed():
     target = read(TARGET)

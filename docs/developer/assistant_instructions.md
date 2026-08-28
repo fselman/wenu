@@ -38,8 +38,11 @@ For current work, read and follow:
 - `source_tree.md` as the current responsibility map;
 - `diagrams/README.md` and its current SVGs as the human inspection view of
   ownership, process flow, and architectural change seams;
-- `coordinate_transformation_audit_09a2afd.md` for coordinate, frame, time,
-  observer, astrometry, planet, or satellite work;
+- `target_architecture_v0.9.5.md` and
+  `coordinate_system_guide_v0.9.5.md` for proposed 49B/49C coordinate,
+  provider, frame, time, provenance, planet, or satellite work;
+- `coordinate_transformation_audit_09a2afd.md` for the as-is coordinate
+  evidence that motivates that target;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,
