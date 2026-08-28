@@ -7,6 +7,7 @@ import re
 from zoneinfo import ZoneInfo
 
 from astropy import units as u
+from astropy.coordinates import Angle
 from astropy.time import Time
 
 from wenu.coordinate_service import CoordinateService
@@ -129,10 +130,10 @@ def _center_coordinates(chart, sky, observer=None) -> tuple[str, str]:
         ),
         observation_context(resolved_observer),
     )
-    ra = (center.lon_deg[0] * u.deg).to_string(
+    ra = Angle(center.lon_deg[0] * u.deg).to_string(
         unit=u.hour, sep="hms", precision=0
     )
-    dec = (center.lat_deg[0] * u.deg).to_string(
+    dec = Angle(center.lat_deg[0] * u.deg).to_string(
         unit=u.deg,
         sep="°′″",
         precision=0,
