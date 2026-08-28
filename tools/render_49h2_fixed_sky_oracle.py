@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate and audit the 49H.2 complete-render circumpolar oracle."""
+"""Generate and characterize the 49H.2 complete-render baseline."""
 
 from __future__ import annotations
 
@@ -58,7 +58,7 @@ def aware_datetime(value: str, *, option: str) -> datetime:
     return instant
 
 
-def oracle_request(arguments: argparse.Namespace):
+def baseline_request(arguments: argparse.Namespace):
     start = aware_datetime(arguments.start, option="--start")
     stop = aware_datetime(arguments.stop, option="--stop")
     timeline = TemporalTimeline.uniform(
@@ -92,6 +92,7 @@ def oracle_request(arguments: argparse.Namespace):
                 "constellation_labels",
                 "equatorial_grid",
                 "altaz_grid",
+                "horizon",
             }),
             grid_label_layers=frozenset({
                 "equatorial_grid",
@@ -123,7 +124,7 @@ def png_record(path: Path) -> dict:
 
 
 def audit(arguments: argparse.Namespace) -> Path:
-    request = oracle_request(arguments)
+    request = baseline_request(arguments)
     baseline_directory = arguments.output / "complete-render-baseline"
     generation = generate_fixed_sky_complete_render_baseline(
         request,
@@ -137,6 +138,8 @@ def audit(arguments: argparse.Namespace) -> Path:
     report = {
         "schema_version": 1,
         "audit_kind": "fixed_sky_complete_render_baseline",
+        "role": "unregistered_complete_render_baseline",
+        "target_pixel_oracle": False,
         "celestial_anchor_time": request.celestial_anchor_time.isoformat(),
         "baseline_directory": str(baseline_directory),
         "manifest": str(generation.manifest_path),
@@ -159,9 +162,9 @@ def audit(arguments: argparse.Namespace) -> Path:
         }),
     }
     if not report["uniform_dimensions"]:
-        raise RuntimeError("Oracle frame dimensions are not uniform.")
+        raise RuntimeError("Baseline frame dimensions are not uniform.")
     if report["distinct_frame_hashes"] < 2:
-        raise RuntimeError("Oracle frames do not change across observer time.")
+        raise RuntimeError("Baseline frames do not change across observer time.")
     destination = arguments.output / "fixed-sky-baseline-audit.json"
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(
