@@ -67,3 +67,17 @@ prepared-request/export boundaries. Before caching is added, it must:
 
 Caching remains prohibited until these comparisons pass without shared
 candidate/oracle preparation.
+
+## Reproducible real-render audit
+
+`tools/render_49h2_fixed_sky_oracle.py` builds a three-frame south
+circumpolar reference by default. It deliberately includes fixed celestial
+content, an equatorial grid, the observer-local AltAz grid, and the semantic
+horizon. It writes complete PNG frames and the ordinary sequence manifest
+under `complete-render-oracle/`, reserving a different candidate directory.
+
+The adjacent `fixed-sky-oracle-audit.json` records the manifest identity,
+anchor, simulation and display instants, dimensions, byte counts, SHA-256
+hashes, render/reuse counts, and the number of distinct frame hashes. The audit
+fails if dimensions differ or observer-time frames do not change.
+
