@@ -220,6 +220,13 @@ second. Presentation speed must never be mistaken for physical time.
 
 ## 11. Milestone 49H - Fixed sky and rotating horizon
 
+**Status:** 49H.1 fixed celestial-anchor and frame-local observer planning
+contract implemented; canonical rendering and scientifically keyed reuse remain
+pending.
+
+The ownership contract is documented in
+`fixed_sky_rotating_horizon_49h1.md`.
+
 Use the temporal contract to support the Earth-rotation presentation:
 
 - stars, constellation geometry, and celestial reference grids remain fixed
