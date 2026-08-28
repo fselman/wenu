@@ -27,7 +27,7 @@ def arguments(tmp_path, **overrides):
 
 
 def test_audit_request_selects_time_sensitive_circumpolar_content(tmp_path):
-    request = tool.oracle_request(arguments(tmp_path))
+    request = tool.baseline_request(arguments(tmp_path))
 
     assert request.chart.family == "circumpolar"
     assert request.chart.horizon
@@ -40,6 +40,7 @@ def test_audit_request_selects_time_sensitive_circumpolar_content(tmp_path):
         "constellation_labels",
         "equatorial_grid",
         "altaz_grid",
+        "horizon",
     })
     assert request.chart.detail.grid_label_layers == frozenset({
         "equatorial_grid",
