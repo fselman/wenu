@@ -7,6 +7,7 @@ import pytest
 
 from wenu.charts.fixed_sky_sequence import (
     FixedSkyRotatingHorizonSequenceRequest,
+    resolve_fixed_sky_rotating_horizon_frame,
 )
 from wenu.charts.product_options import ChartProductOptions
 from wenu.charts.request import (
@@ -157,3 +158,66 @@ def test_fixed_sky_sequence_retains_single_product_constraints(tmp_path):
             timeline=timeline(),
             celestial_anchor_time=timeline().instants[0],
         )
+
+
+
+def test_resolved_frames_use_local_time_and_anchor_relative_rotation(tmp_path):
+    sequence = FixedSkyRotatingHorizonSequenceRequest(
+        chart=chart_request(tmp_path / "frames"),
+        timeline=timeline(),
+        celestial_anchor_time=timeline().instants[0],
+    )
+
+    first = resolve_fixed_sky_rotating_horizon_frame(sequence.frames[0])
+    last = resolve_fixed_sky_rotating_horizon_frame(sequence.frames[-1])
+
+    assert first.chart_request.observer == sequence.frames[0].local_observer
+    assert last.chart_request.observer == sequence.frames[-1].local_observer
+    assert first.orientation.position_angle_deg == 0.0
+    assert first.chart_request.frame.position_angle_deg == 0.0
+    assert last.orientation.position_angle_deg != 0.0
+    assert (
+        last.chart_request.frame.position_angle_deg
+        == last.orientation.position_angle_deg
+    )
+    assert all(
+        frame.celestial_request.observer.time
+        == sequence.celestial_anchor_time
+        for frame in sequence.frames
+    )
+
+
+def test_resolved_frame_preserves_explicit_anchor_position_angle(tmp_path):
+    request = chart_request(tmp_path / "frames")
+    request = replace(
+        request,
+        frame=replace(request.frame, position_angle_deg=17.5),
+    )
+    sequence = FixedSkyRotatingHorizonSequenceRequest(
+        chart=request,
+        timeline=timeline(),
+        celestial_anchor_time=timeline().instants[1],
+    )
+
+    resolved = resolve_fixed_sky_rotating_horizon_frame(sequence.frames[1])
+
+    assert resolved.orientation.position_angle_deg == 17.5
+    assert resolved.chart_request.frame.position_angle_deg == 17.5
+
+
+def test_resolved_frame_rejects_unproved_chart_families(tmp_path):
+    request = chart_request(tmp_path / "frames")
+    frame = sequence_frame = FixedSkyRotatingHorizonSequenceRequest(
+        chart=request,
+        timeline=timeline(),
+        celestial_anchor_time=timeline().instants[0],
+    ).frames[0]
+    unsupported_request = replace(
+        sequence_frame.celestial_request,
+        family="planisphere",
+        frame=ChartFrameRequest(),
+    )
+    unsupported = replace(frame, celestial_request=unsupported_request)
+
+    with pytest.raises(ValueError, match="currently supports circumpolar"):
+        resolve_fixed_sky_rotating_horizon_frame(unsupported)
