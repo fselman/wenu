@@ -45,19 +45,13 @@ src/wenu/
 └── utils/                      general utilities
 ```
 
-`coordinate_service.py` owns the 49C.1 Astropy-backed transformation boundary
-for every `SphericalGeometry` kind. It preserves concrete geometry type,
-semantic arrays, metadata, curve segmentation, polygon rings, and grid
-component names. Existing production callers remain on their current paths
-until 49C.2.
+`coordinate_service.py` owns the accepted 49C.1 Astropy-backed transformation boundary for every `SphericalGeometry` kind. It preserves concrete geometry type, semantic arrays, metadata, curve segmentation, polygon rings, and grid component names. The 49C.2 candidate routes reference geometry, chart conversions, deep-sky geometry, constellation references, caches, and chart-orientation reference directions through this service.
 
 `coordinates.py` owns the 49B.1 immutable `CoordinateSpec`,
 `PositionStatus`, and `ObservationContext` vocabulary while retaining the
 legacy `radec_to_altaz()` function unchanged until 49C.3. `positions.py`
 owns the structural `PositionProvider` protocol. In 49B.3,
-`Stars`, `NonStellar`, and `OpenClusters` implement native ICRS point
-providers; extended morphology and constructed reference geometry remain
-outside the boundary. `geometry/spherical.py` exports the
+`Stars`, `NonStellar`, and `OpenClusters` implement native ICRS point providers; extended morphology and constructed reference geometry remain outside the boundary. Skyfield's apparent topocentric Hipparcos realization remains specialized stellar provider work and is reused by constellation lines; it is not duplicated by `CoordinateService`. `geometry/spherical.py` exports the
 `SphericalGeometry` type union, and every record carries mandatory coordinate
 identity.
 

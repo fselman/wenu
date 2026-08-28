@@ -8,7 +8,7 @@ lang: en
 
 # Status and purpose
 
-**Status:** Living review edition; 49B.1–49B.3 are accepted and 49C.1 is a candidate.
+**Status:** Living review edition; 49B.1–49B.3 and 49C.1 are merged, and the 49C.2 implementation is accepted pending merge.
 
 This is the living scientific guide for Wenu's coordinate systems,
 transformations, astronomical objects, and constructed celestial references.
@@ -325,7 +325,7 @@ provider evaluation instant.
 | `observer.py::Observer` | Constructs ICRS, Galactic, ecliptic, AltAz and Skyfield contexts | Construct `ObservationContext`; no transform authority |
 | `charts/coordinate_frames.py` | AltAz geometry to ICRS/Galactic via Astropy | Retire or temporary service wrapper |
 | `geometry/frame.py::SphericalFrame` | Pure spherical rotation for projection alignment | Retain unchanged |
-| `objects/stars.py::Stars` | Hipparcos loading; Skyfield apparent topocentric AltAz | Implement common `PositionProvider`; service transforms |
+| `objects/stars.py::Stars` | Hipparcos loading; Skyfield apparent topocentric AltAz | Native ICRS `PositionProvider`; Skyfield apparent realization remains provider work |
 | `objects/nonstellar.py::NonStellar` | ICRS centres/outlines to AltAz via Astropy/cache | Provider for centres; morphology remains geometry; service transforms |
 | `sky/coordinate_grids.py` | Native AltAz/equatorial/ecliptic/Galactic definitions and mixed conversion | Reference geometry with `CoordinateSpec`; service transforms |
 | `sky/points.py::CelestialPoints` | Astropy native-to-ICRS then handwritten AltAz | Reference geometry; service transforms |
@@ -339,8 +339,7 @@ provider evaluation instant.
 protocol. 49B.2 attached mandatory `CoordinateSpec` identity to all spherical
 geometry records without changing numerical transformations. 49B.3 makes existing stellar and deep-sky centre catalogues implement
 `PositionProvider`; morphology and constructed references remain separate.
-The 49C.1 candidate adds the central Astropy-backed transformation service
-without migrating existing callers.
+The accepted 49C.1 milestone adds the central Astropy-backed transformation service. The 49C.2 candidate migrates production astronomical transformations while preserving Skyfield apparent stellar realization as provider work and native AltAz horizon construction as reference geometry.
 
 ## 7.1 CoordinateSpec
 

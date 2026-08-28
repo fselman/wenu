@@ -18,6 +18,7 @@ from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.resources import nonstellar_catalog_path
 from wenu.sky.observed_cache import (
     catalogue_point_altaz,
+    icrs_curve_arrays_to_altaz,
     observed_polygon_arrays,
 )
 
@@ -493,12 +494,13 @@ class NonStellar(AstronomicalObject):
                     minimum_size_arcmin=minimum_size_arcmin,
                 )
             )
-        native = concatenate(outlines)
-        horizontal = native.transform_to(observer.altaz_frame)
+        native = concatenate(outlines).icrs
         splits = np.arange(1, len(table)) * samples
-        return (
-            np.split(horizontal.az.to_value(u.deg), splits),
-            np.split(horizontal.alt.to_value(u.deg), splits),
+        return icrs_curve_arrays_to_altaz(
+            np.split(native.ra.to_value(u.deg), splits),
+            np.split(native.dec.to_value(u.deg), splits),
+            observer,
+            provider=f"astropy {self.catalog_name} outlines",
         )
 
     def _observed_outlines(

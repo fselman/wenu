@@ -5,18 +5,16 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
-import astropy.units as u
 import numpy as np
-from astropy.coordinates import (
-    BarycentricTrueEcliptic,
-    FK5,
-    Galactic,
-    ICRS,
-    SkyCoord,
-)
 from astropy.time import Time
 
-from wenu.coordinates import observer_altaz_spec, radec_to_altaz
+from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import (
+    CoordinateSpec,
+    PositionStatus,
+    observation_context,
+    observer_altaz_spec,
+)
 from wenu.sky.geometrical_object import GeometricalObject
 from wenu.geometry.spherical import SphericalCurves, SphericalGrid
 
@@ -156,26 +154,20 @@ class CoordinatesGrid(GeometricalObject, ABC):
         observer=None,
     ) -> SphericalCurves:
         resolved_observer = self._resolve_observer(observer)
-        azimuths = []
-        altitudes = []
-        for longitude, latitude in zip(
-            longitude_deg, latitude_deg
-        ):
-            altitude, azimuth = self._native_to_altaz(
-                np.asarray(longitude, dtype=float),
-                np.asarray(latitude, dtype=float),
-                observer=resolved_observer,
-            )
-            azimuths.append(np.asarray(azimuth, dtype=float))
-            altitudes.append(np.asarray(altitude, dtype=float))
-        return SphericalCurves(
-            lon_deg=tuple(azimuths),
-            lat_deg=tuple(altitudes),
-            coordinate_spec=observer_altaz_spec(
-                resolved_observer,
-                provider="wenu coordinate grid",
-                model=f"{self.coordinate_system} to AltAz",
+        source_spec = self._native_coordinate_spec()
+        target_spec = observer_altaz_spec(
+            resolved_observer,
+            provider="wenu coordinate grid",
+            model=f"{self.coordinate_system} to AltAz",
+        )
+        native = SphericalCurves(
+            lon_deg=tuple(
+                np.asarray(value, dtype=float) for value in longitude_deg
             ),
+            lat_deg=tuple(
+                np.asarray(value, dtype=float) for value in latitude_deg
+            ),
+            coordinate_spec=source_spec,
             names=names,
             closed=closed,
             metadata={
@@ -185,6 +177,13 @@ class CoordinatesGrid(GeometricalObject, ABC):
                     for style in styles
                 ),
             },
+        )
+        if source_spec == target_spec:
+            return native
+        return CoordinateService().transform(
+            native,
+            target_spec,
+            observation=observation_context(resolved_observer),
         )
 
     def _combine(self, collections) -> SphericalCurves:
@@ -223,26 +222,6 @@ class CoordinatesGrid(GeometricalObject, ABC):
             model=f"{self.coordinate_system} to AltAz",
         )
 
-    def _native_to_altaz(
-        self,
-        longitude_deg,
-        latitude_deg,
-        *,
-        observer,
-    ):
-        ra_deg, dec_deg = self._native_to_icrs(
-            longitude_deg,
-            latitude_deg,
-        )
-        alt_deg, az_deg = radec_to_altaz(
-            ra_deg,
-            dec_deg,
-            observer.t,
-            observer.lat_deg,
-            observer.lon_deg,
-        )
-        return np.asarray(alt_deg), np.asarray(az_deg)
-
     def _resolve_observer(self, observer):
         resolved = self.observer if observer is None else observer
         if resolved is None:
@@ -258,7 +237,7 @@ class CoordinatesGrid(GeometricalObject, ABC):
         }
 
     @abstractmethod
-    def _native_to_icrs(self, longitude_deg, latitude_deg):
+    def _native_coordinate_spec(self) -> CoordinateSpec:
         raise NotImplementedError
 
 
@@ -343,27 +322,8 @@ class AltAzGrid(CoordinatesGrid):
             metadata=geometry.metadata,
         )
 
-    def _native_to_altaz(
-        self,
-        longitude_deg,
-        latitude_deg,
-        *,
-        observer,
-    ):
-        del observer
-        return (
-            np.asarray(latitude_deg, dtype=float),
-            np.asarray(longitude_deg, dtype=float),
-        )
-
-    def _native_to_icrs(self, longitude_deg, latitude_deg):
-        coordinates = SkyCoord(
-            az=np.asarray(longitude_deg, dtype=float) * u.deg,
-            alt=np.asarray(latitude_deg, dtype=float) * u.deg,
-            frame=self._resolve_observer(None).altaz_frame,
-        )
-        icrs = coordinates.icrs
-        return np.asarray(icrs.ra.deg), np.asarray(icrs.dec.deg)
+    def _native_coordinate_spec(self):
+        return self._coordinate_spec()
 
 
 # Compatibility name retained while callers migrate.
@@ -508,21 +468,21 @@ class EquatorialGrid(CoordinatesGrid):
             metadata=geometry.metadata,
         )
 
-    def _native_to_icrs(self, longitude_deg, latitude_deg):
+    def _native_coordinate_spec(self):
         if self.frame == "icrs":
-            coordinates = SkyCoord(
-                ra=longitude_deg * u.deg,
-                dec=latitude_deg * u.deg,
-                frame=ICRS(),
+            return CoordinateSpec(
+                frame="icrs",
+                origin="solar-system-barycenter",
+                position_status=PositionStatus.ASTROMETRIC,
+                provider="wenu equatorial grid",
             )
-        else:
-            coordinates = SkyCoord(
-                ra=longitude_deg * u.deg,
-                dec=latitude_deg * u.deg,
-                frame=FK5(equinox=self._equinox_time()),
-            )
-        icrs = coordinates.icrs
-        return np.asarray(icrs.ra.deg), np.asarray(icrs.dec.deg)
+        return CoordinateSpec(
+            frame="fk5",
+            origin="solar-system-barycenter",
+            position_status=PositionStatus.ASTROMETRIC,
+            equinox=str(self._equinox_time()),
+            provider="wenu equatorial grid",
+        )
 
     def _equinox_time(self):
         if isinstance(self.equinox, Time):
@@ -648,16 +608,14 @@ class EclipticGrid(CoordinatesGrid):
             metadata=geometry.metadata,
         )
 
-    def _native_to_icrs(self, longitude_deg, latitude_deg):
-        coordinates = SkyCoord(
-            lon=longitude_deg * u.deg,
-            lat=latitude_deg * u.deg,
-            frame=BarycentricTrueEcliptic(
-                equinox=self._equinox_time()
-            ),
+    def _native_coordinate_spec(self):
+        return CoordinateSpec(
+            frame="barycentric-true-ecliptic",
+            origin="solar-system-barycenter",
+            position_status=PositionStatus.ASTROMETRIC,
+            equinox=str(self._equinox_time()),
+            provider="wenu ecliptic grid",
         )
-        icrs = coordinates.icrs
-        return np.asarray(icrs.ra.deg), np.asarray(icrs.dec.deg)
 
     def _equinox_time(self):
         if isinstance(self.equinox, Time):
@@ -777,11 +735,10 @@ class GalacticGrid(CoordinatesGrid):
             parallel_style=parallel_style,
         )
 
-    def _native_to_icrs(self, longitude_deg, latitude_deg):
-        coordinates = SkyCoord(
-            l=longitude_deg * u.deg,
-            b=latitude_deg * u.deg,
-            frame=Galactic(),
+    def _native_coordinate_spec(self):
+        return CoordinateSpec(
+            frame="galactic",
+            origin="galactic-center",
+            position_status=PositionStatus.ASTROMETRIC,
+            provider="wenu galactic grid",
         )
-        icrs = coordinates.icrs
-        return np.asarray(icrs.ra.deg), np.asarray(icrs.dec.deg)

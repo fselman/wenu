@@ -107,9 +107,9 @@ def test_boundary_selections_share_maximal_observed_geometry(monkeypatch):
     original = boundaries._transform_sampled_boundaries
     calls = []
 
-    def transform(rings, b1875, altaz_frame):
+    def transform(rings, resolved_observer):
         calls.append(len(rings))
-        return original(rings, b1875, altaz_frame)
+        return original(rings, resolved_observer)
 
     monkeypatch.setattr(
         boundaries, "_transform_sampled_boundaries", transform

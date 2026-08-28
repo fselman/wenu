@@ -1,6 +1,6 @@
 # Wenu target architecture v0.9.5
 
-**Status:** Proposed review baseline; not implemented
+**Status:** Partially implemented; 49B and 49C.1 accepted, 49C.2 candidate
 
 **Date:** 2026-08-28
 
@@ -70,8 +70,7 @@ constructed reference geometry separate.
 
 ### 49C.1 — Implement one coordinate service
 
-**Implementation status:** Candidate on the dedicated 49C.1 branch;
-acceptance is pending.
+**Implementation status:** Accepted and merged in `5131500`.
 
 Implement an Astropy-backed `transform()` accepting every spherical geometry
 kind and returning the same kind while preserving IDs, metadata, curve
@@ -79,13 +78,17 @@ segmentation, polygon rings, and semantic topology.
 
 ### 49C.2 — Migrate transformations
 
+**Implementation status:** Accepted on the dedicated 49C.2 branch; merge pending.
+
 Migrate in this order:
 
 1. reference points and grids;
 2. chart-level equatorial/Galactic conversions;
 3. deep-sky centres and outlines;
-4. stars and observer-local AltAz;
-5. horizon and physical-planisphere furniture.
+4. preserve Skyfield apparent stellar realization as provider work and reuse
+   it for constellation lines;
+5. preserve native AltAz horizon construction while routing celestial
+   conversion and physical-planisphere furniture through the service.
 
 ### 49C.3 — Retire competing transformation owners
 

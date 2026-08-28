@@ -2,9 +2,15 @@
 
 from __future__ import annotations
 
-import astropy.units as u
 import numpy as np
-from astropy.coordinates import SkyCoord
+
+from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import (
+    icrs_catalogue_spec,
+    observation_context,
+    observer_altaz_spec,
+)
+from wenu.geometry.spherical import SphericalCurves, SphericalPoints
 
 
 def observer_geometry_key(observer):
@@ -70,16 +76,61 @@ def _immutable_float_array(values):
 
 
 def _icrs_catalogue_altaz(table, observer):
-    coordinates = SkyCoord(
-        ra=np.asarray(table["ra_deg"], dtype=float) * u.deg,
-        dec=np.asarray(table["dec_deg"], dtype=float) * u.deg,
-        frame="icrs",
+    return icrs_point_arrays_to_altaz(
+        np.asarray(table["ra_deg"], dtype=float),
+        np.asarray(table["dec_deg"], dtype=float),
+        observer,
+        provider="wenu observed catalogue",
     )
-    horizontal = coordinates.transform_to(observer.altaz_frame)
-    return (
-        horizontal.az.to_value(u.deg),
-        horizontal.alt.to_value(u.deg),
+
+
+def icrs_point_arrays_to_altaz(
+    longitude,
+    latitude,
+    observer,
+    *,
+    provider,
+):
+    """Transform ICRS point arrays through CoordinateService."""
+    native = SphericalPoints(
+        lon_deg=np.asarray(longitude, dtype=float),
+        lat_deg=np.asarray(latitude, dtype=float),
+        coordinate_spec=icrs_catalogue_spec(provider),
     )
+    horizontal = CoordinateService().transform(
+        native,
+        observer_altaz_spec(observer, provider=provider),
+        observation=observation_context(observer),
+    )
+    return horizontal.lon_deg, horizontal.lat_deg
+
+
+def icrs_curve_arrays_to_altaz(
+    longitudes,
+    latitudes,
+    observer,
+    *,
+    provider,
+):
+    """Transform disconnected ICRS curves through CoordinateService."""
+    if not longitudes:
+        return (), ()
+    native = SphericalCurves(
+        lon_deg=tuple(
+            np.mod(np.asarray(values, dtype=float), 360.0)
+            for values in longitudes
+        ),
+        lat_deg=tuple(
+            np.asarray(values, dtype=float) for values in latitudes
+        ),
+        coordinate_spec=icrs_catalogue_spec(provider),
+    )
+    horizontal = CoordinateService().transform(
+        native,
+        observer_altaz_spec(observer, provider=provider),
+        observation=observation_context(observer),
+    )
+    return horizontal.lon_deg, horizontal.lat_deg
 
 
 def catalogue_point_altaz(

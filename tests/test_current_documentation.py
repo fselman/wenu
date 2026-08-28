@@ -171,12 +171,14 @@ def test_v095_coordinate_target_and_living_guide_are_reviewable():
     target = read(V095_TARGET)
     guide = read(COORDINATE_GUIDE)
 
-    assert "**Status:** Proposed review baseline; not implemented" in target
+    assert "**Status:** Partially implemented; 49B and 49C.1 accepted, 49C.2 candidate" in target
     assert "PositionProvider" in target
     assert "CoordinateService" in target
     assert "49B.1" in target
     assert "49C.4" in target
     assert "does not claim a\n`v0.9.5` Git tag" in target
+    assert "Skyfield apparent stellar realization as provider work" in target
+    assert "native AltAz horizon construction" in target
 
     for phrase in (
         "Position generation versus coordinate transformation",
@@ -289,7 +291,7 @@ def test_assistant_instructions_name_current_architecture_authorities():
 
 
 def test_post_v09_roadmap_records_coordinate_svg_and_temporal_direction():
-    roadmap = read(FUTURE_ROADMAP)
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
     for phrase in (
         "Two independent development tracks",
         "One astronomical coordinate service",
@@ -303,6 +305,9 @@ def test_post_v09_roadmap_records_coordinate_svg_and_temporal_direction():
         "TEME",
         "SGP4",
         "complete-render path as a correctness oracle",
+        "Milestone 49C.2 — Migrate production transformations",
+        "1809 tests in 86.11 seconds",
+        "visually accepted by Fernando on 2026-08-28",
     ):
         assert phrase in roadmap
 

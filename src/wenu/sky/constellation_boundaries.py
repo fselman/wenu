@@ -9,14 +9,24 @@ from pathlib import Path
 import astropy.units as u
 import numpy as np
 
-from wenu.coordinates import observer_altaz_spec
-from astropy.coordinates import AltAz, EarthLocation, FK4, SkyCoord
-from astropy.time import Time
+from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import (
+    CoordinateSpec,
+    ICRS_ASTROMETRIC_SPEC,
+    PositionStatus,
+    observation_context,
+    observer_altaz_spec,
+)
+from astropy.coordinates import SkyCoord
 
 from wenu.resources import boundary_path
 from wenu.sky.observed_cache import observed_polygon_arrays
 from wenu.sky.geometrical_object import GeometricalObject
-from wenu.geometry.spherical import SphericalPolygons
+from wenu.geometry.spherical import (
+    SphericalCurves,
+    SphericalPoints,
+    SphericalPolygons,
+)
 from wenu.sky.semantic_identity import semantic_key
 
 
@@ -307,17 +317,6 @@ class ConstellationBoundaries(GeometricalObject):
         if not self.sampled_vertices:
             self.sample()
 
-        b1875 = FK4(equinox=Time("B1875.0"))
-        location = EarthLocation.from_geodetic(
-            lon=resolved_observer.lon_deg * u.deg,
-            lat=resolved_observer.lat_deg * u.deg,
-            height=resolved_observer.elevation_m * u.m,
-        )
-        altaz_frame = AltAz(
-            obstime=resolved_observer.t_astropy,
-            location=location,
-        )
-
         requested = self._expand_constellation_names(selected)
         if requested is None:
             identifiers = list(self.sampled_vertices)
@@ -352,8 +351,7 @@ class ConstellationBoundaries(GeometricalObject):
             ),
             build=lambda: self._transform_sampled_boundaries(
                 native_rings,
-                b1875,
-                altaz_frame,
+                resolved_observer,
             ),
         )
         positions = {
@@ -384,22 +382,36 @@ class ConstellationBoundaries(GeometricalObject):
         )
 
     @staticmethod
-    def _transform_sampled_boundaries(rings, b1875, altaz_frame):
+    def _transform_sampled_boundaries(rings, observer):
         if not rings:
             return (), ()
-        lengths = [len(ring) for ring in rings]
-        vertices = np.concatenate(rings, axis=0)
-        native = SkyCoord(
-            ra=vertices[:, 0] * u.hourangle,
-            dec=vertices[:, 1] * u.deg,
-            frame=b1875,
+        source_spec = CoordinateSpec(
+            frame="fk4",
+            origin="solar-system-barycenter",
+            position_status=PositionStatus.ASTROMETRIC,
+            equinox="B1875.0",
+            provider="IAU constellation boundaries",
         )
-        horizontal = native.transform_to(altaz_frame)
-        splits = np.cumsum(lengths)[:-1]
-        return (
-            np.split(horizontal.az.to_value(u.deg), splits),
-            np.split(horizontal.alt.to_value(u.deg), splits),
+        native = SphericalCurves(
+            lon_deg=tuple(
+                np.asarray(ring[:, 0], dtype=float) * 15.0
+                for ring in rings
+            ),
+            lat_deg=tuple(
+                np.asarray(ring[:, 1], dtype=float) for ring in rings
+            ),
+            coordinate_spec=source_spec,
+            closed=np.ones(len(rings), dtype=bool),
         )
+        horizontal = CoordinateService().transform(
+            native,
+            observer_altaz_spec(
+                observer,
+                provider="astropy IAU constellation boundaries",
+            ),
+            observation=observation_context(observer),
+        )
+        return horizontal.lon_deg, horizontal.lat_deg
 
     def region_of(
         self,
@@ -432,16 +444,23 @@ class ConstellationBoundaries(GeometricalObject):
         if not np.any(finite):
             return result
 
-        coordinate = SkyCoord(
-            ra=ra_deg[finite] * u.deg,
-            dec=dec_deg[finite] * u.deg,
-            frame="icrs",
+        native = SphericalPoints(
+            lon_deg=ra_deg[finite],
+            lat_deg=dec_deg[finite],
+            coordinate_spec=ICRS_ASTROMETRIC_SPEC,
         )
-        b1875 = coordinate.transform_to(
-            FK4(equinox=Time("B1875.0"))
+        b1875 = CoordinateService().transform(
+            native,
+            CoordinateSpec(
+                frame="fk4",
+                origin="solar-system-barycenter",
+                position_status=PositionStatus.ASTROMETRIC,
+                equinox="B1875.0",
+                provider="IAU constellation lookup",
+            ),
         )
-        ra_hours = b1875.ra.to_value(u.hourangle) % 24.0
-        dec_degrees = b1875.dec.to_value(u.deg)
+        ra_hours = np.mod(b1875.lon_deg / 15.0, 24.0)
+        dec_degrees = b1875.lat_deg
 
         identifiers = tuple(
             self.vertices

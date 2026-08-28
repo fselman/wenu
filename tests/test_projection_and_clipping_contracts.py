@@ -201,29 +201,47 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
+from wenu.geometry.spherical import SphericalCurves
 from wenu.sky.coordinate_grids import EquatorialGrid
 
 
-def grid_with_identity_altaz(**kwargs):
-    grid = EquatorialGrid(
-        SimpleNamespace(
-            t_astropy=SimpleNamespace(
-                isot="2026-08-28T00:00:00.000", scale="utc"
-            )
+def grid_with_identity_altaz(monkeypatch, **kwargs):
+    observer = SimpleNamespace(
+        t_astropy=SimpleNamespace(
+            isot="2026-08-28T00:00:00.000", scale="utc"
         ),
+        lat_deg=-33.0,
+        lon_deg=-71.5,
+        elevation_m=0.0,
+    )
+
+    def identity_transform(self, geometry, target_spec, observation=None):
+        return SphericalCurves(
+            lon_deg=geometry.lon_deg,
+            lat_deg=geometry.lat_deg,
+            coordinate_spec=target_spec,
+            names=geometry.names,
+            closed=geometry.closed,
+            metadata=geometry.metadata,
+        )
+
+    monkeypatch.setattr(
+        "wenu.sky.coordinate_grids.CoordinateService.transform",
+        identity_transform,
+    )
+    return EquatorialGrid(
+        observer,
         samples=9,
         equinox="J2000",
         **kwargs,
     )
-    grid._native_to_altaz = (
-        lambda longitude, latitude, observer:
-        (np.asarray(latitude), np.asarray(longitude))
-    )
-    return grid
 
 
-def test_equatorial_meridian_honors_configured_declination_extent():
+def test_equatorial_meridian_honors_configured_declination_extent(
+    monkeypatch,
+):
     grid = grid_with_identity_altaz(
+        monkeypatch,
         meridian_dec_min=-75.0,
         meridian_dec_max=90.0,
     )
@@ -232,8 +250,9 @@ def test_equatorial_meridian_honors_configured_declination_extent():
     assert meridian.lat_deg[0][-1] == pytest.approx(90.0)
 
 
-def test_equatorial_grid_meridians_use_configured_extent():
+def test_equatorial_grid_meridians_use_configured_extent(monkeypatch):
     grid = grid_with_identity_altaz(
+        monkeypatch,
         ra=(0.0, 30.0),
         dec=(-75.0,),
         meridian_dec_min=-75.0,

@@ -8,6 +8,15 @@ import astropy.units as u
 from astropy.coordinates import SkyCoord
 import numpy as np
 
+from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import (
+    CoordinateSpec,
+    PositionStatus,
+    observation_context,
+    observer_altaz_spec,
+)
+from wenu.geometry.spherical import SphericalPoints
+
 from .regional import target_up_position_angle
 
 
@@ -45,17 +54,33 @@ def circumpolar_orientation_reference(pole: str) -> SkyCoord:
 
 
 def _reference_position_angle_deg(observer, pole: str) -> float:
-    center = circumpolar_pole_coordinate(pole).transform_to(
-        observer.altaz_frame
+    declinations = np.asarray(
+        (_pole_declination_deg(pole), 80.0 if pole == "north" else -80.0)
     )
-    reference = circumpolar_orientation_reference(pole).transform_to(
-        observer.altaz_frame
+    celestial = SphericalPoints(
+        lon_deg=np.zeros(2),
+        lat_deg=declinations,
+        coordinate_spec=CoordinateSpec(
+            frame="fk5",
+            origin="solar-system-barycenter",
+            position_status=PositionStatus.ASTROMETRIC,
+            equinox="J2000.0",
+            provider="wenu fixed-sky orientation reference",
+        ),
+    )
+    horizontal = CoordinateService().transform(
+        celestial,
+        observer_altaz_spec(
+            observer,
+            provider="astropy coordinate service",
+        ),
+        observation_context(observer),
     )
     return target_up_position_angle(
-        center_alt_deg=float(center.alt.deg),
-        center_az_deg=float(center.az.deg),
-        target_alt_deg=float(reference.alt.deg),
-        target_az_deg=float(reference.az.deg),
+        center_alt_deg=float(horizontal.lat_deg[0]),
+        center_az_deg=float(horizontal.lon_deg[0]),
+        target_alt_deg=float(horizontal.lat_deg[1]),
+        target_az_deg=float(horizontal.lon_deg[1]),
     )
 
 

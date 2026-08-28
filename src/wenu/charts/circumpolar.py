@@ -9,6 +9,14 @@ from astropy.coordinates import SkyCoord
 from astropy import units as u
 
 from wenu.charts.binocular import BinocularChart
+from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import (
+    CoordinateSpec,
+    PositionStatus,
+    observation_context,
+    observer_altaz_spec,
+)
+from wenu.geometry.spherical import SphericalCurves
 from wenu.charts.boundaries import (
     CircularGridLabelAnchor,
     resolved_circular_boundary_style,
@@ -91,19 +99,32 @@ class CircumpolarChart:
             360.0,
             int(self.boundary_samples),
         )
-        coordinate = SkyCoord(
-            ra=right_ascension * u.deg,
-            dec=np.full_like(
+        celestial = SphericalCurves(
+            lon_deg=(right_ascension,),
+            lat_deg=(np.full_like(
                 right_ascension,
                 self.limiting_declination_deg,
-            ) * u.deg,
-            frame="fk5",
-            equinox="J2000",
+            ),),
+            coordinate_spec=CoordinateSpec(
+                frame="fk5",
+                origin="solar-system-barycenter",
+                position_status=PositionStatus.ASTROMETRIC,
+                equinox="J2000.0",
+                provider="wenu circumpolar boundary",
+            ),
+            closed=(True,),
         )
-        horizontal = coordinate.transform_to(self.observer.altaz_frame)
+        horizontal = CoordinateService().transform(
+            celestial,
+            observer_altaz_spec(
+                self.observer,
+                provider="astropy coordinate service",
+            ),
+            observation_context(self.observer),
+        )
         x, y = self.projection.project_spherical(
-            horizontal.az.deg,
-            horizontal.alt.deg,
+            horizontal.lon_deg[0],
+            horizontal.lat_deg[0],
         )
         return ProjectedCurve(
             x,

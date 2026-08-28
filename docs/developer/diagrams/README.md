@@ -1,6 +1,6 @@
 # Wenu architecture diagrams
 
-**Status:** Current as of the v0.9 closure baseline `5da93cc`
+**Status:** v0.9 as-is baseline plus architecture 0.9.5 implementation tracking through the 49C.2 candidate
 
 These diagrams are a human inspection interface for the as-is software. They
 are intended to let Fernando inspect architecture ownership, principal data
@@ -94,11 +94,17 @@ The deliberately large canvas shows the complete proposed ownership and
 linkage: all astronomical-object classes implement the common
 `PositionProvider` protocol in `positions.py`; constructed reference
 geometry remains distinct; existing `Spherical*` records gain an immutable
-`CoordinateSpec`; `coordinates.py` becomes the one `CoordinateService`
-owner; and `ObservationContext` is supplied only for observer-local
+`CoordinateSpec`; `coordinate_service.py` is the one `CoordinateService`
+owner, while `coordinates.py` retains the immutable vocabulary; and `ObservationContext` is supplied only for observer-local
 transformations. The existing `SkyLayer` hierarchy and downstream projection
 and rendering classes remain visible and retained. No parallel astronomical
 state hierarchy is proposed.
+
+Implemented migration boundary at 49C.2: reference geometry, chart
+compatibility conversions, deep-sky geometry, constellation references,
+observer caches, and chart-orientation reference directions now use the
+service. Skyfield apparent stellar realization remains provider work, and
+native AltAz horizon construction remains reference geometry.
 
 Static-structure notation:
 
