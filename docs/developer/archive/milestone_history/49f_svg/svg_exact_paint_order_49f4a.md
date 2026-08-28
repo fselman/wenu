@@ -1,8 +1,8 @@
 # Milestone 49F.4A: Exact paint order without coarse grouping
 
-**Status:** Implemented; full-suite and real-SVG verification complete  
-**Base:** `c88c4df`  
-**Branch:** `feature/svg-product-documentation`  
+**Status:** Implemented; full-suite and real-SVG verification complete
+**Base:** `c88c4df`
+**Branch:** `feature/svg-product-documentation`
 **Decision date:** 2026-08-26
 
 ## Decision

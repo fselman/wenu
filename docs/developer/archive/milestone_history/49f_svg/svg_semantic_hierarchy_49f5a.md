@@ -1,8 +1,8 @@
 # Milestone 49F.5A: Sky-propagated semantic hierarchy metadata
 
-**Status:** Implemented; focused and real-SVG verification complete  
-**Base:** `e577b19`  
-**Branch:** `feature/svg-semantic-hierarchy`  
+**Status:** Implemented; focused and real-SVG verification complete
+**Base:** `e577b19`
+**Branch:** `feature/svg-semantic-hierarchy`
 **Acceptance date:** 2026-08-27
 
 ## Purpose
@@ -95,7 +95,7 @@ agnostic entity groups. Component and system are combined into one useful
 designer level, such as `Lines-Western`, rather than deepening the hierarchy
 to `Lines / Western`. Individual source keys then form concise children such
 as `Cru`. Visible labels must be unique among siblings and must not repeat
-their ancestors. See `svg_semantic_naming_ledger_49f5a.md`.
+their ancestors. See `archive/milestone_history/49f_svg/svg_semantic_naming_ledger_49f5a.md`.
 
 Later slices must separately implement and verify:
 

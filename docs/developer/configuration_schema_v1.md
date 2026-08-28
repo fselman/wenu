@@ -8,7 +8,7 @@ product, and export pipeline
 
 This document is the authoritative structural contract for Wenu's first
 versioned TOML configuration. It derives its public paths from
-`configuration_default_audit.md`. It specifies names, types, ordering, and
+`archive/audits/configuration_default_audit.md`. It specifies names, types, ordering, and
 validation without creating a runtime registry or changing current defaults.
 
 ## Document boundary

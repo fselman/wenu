@@ -1,7 +1,7 @@
 # SVG cross-product acceptance
 
-**Milestone:** 49F.6  
-**Status:** implemented and accepted  
+**Milestone:** 49F.6
+**Status:** implemented and accepted
 **Acceptance date:** 2026-08-27
 
 ## Purpose

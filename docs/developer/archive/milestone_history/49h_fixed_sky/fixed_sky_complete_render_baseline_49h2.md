@@ -1,7 +1,7 @@
 # Circumpolar complete-render baseline
 
-**Milestone:** 49H.2  
-**Status:** Baseline implemented, visually characterized, and accepted  
+**Milestone:** 49H.2
+**Status:** Baseline implemented, visually characterized, and accepted
 **Base:** 49H.1 on `feature/fixed-sky-rotating-horizon`
 
 ## Purpose

@@ -162,7 +162,7 @@ trabajo admitido en Inkscape y las limitaciones de portabilidad tipográfica.
 La referencia
 técnica vigente es `docs/developer/implementation_reference.md`; la
 arquitectura implementada se describe en
-`docs/developer/target_architecture_v0.8.md`.
+`docs/developer/archive/architecture_history/target_architecture_v0.8.md`.
 
 ---
 

@@ -1,7 +1,7 @@
 # Fixed sky and rotating horizon planning contract
 
-**Milestone:** 49H.1  
-**Status:** Planning contract implemented; rendering and caching pending  
+**Milestone:** 49H.1
+**Status:** Planning contract implemented; rendering and caching pending
 **Base:** `f4832dc`
 
 ## Purpose

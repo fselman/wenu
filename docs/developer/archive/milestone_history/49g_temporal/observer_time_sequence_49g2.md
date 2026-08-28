@@ -1,7 +1,7 @@
 # Observer-time chart sequences
 
-**Milestone:** 49G.2  
-**Status:** implemented and real-render acceptance complete  
+**Milestone:** 49G.2
+**Status:** implemented and real-render acceptance complete
 **Base:** `c70cb29`
 
 ## Purpose
@@ -98,7 +98,7 @@ optimization.
 
 Milestone 49G.3 now adds deterministic manifests and verified restart/resume
 without changing this observer-time or canonical-render boundary. See
-`sequence_manifest_49g3.md`.
+`archive/milestone_history/49g_temporal/sequence_manifest_49g3.md`.
 
 ## Real-render acceptance
 

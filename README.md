@@ -200,8 +200,8 @@ Developer references:
   and temporal roadmap);
 - `docs/developer/implementation_reference.md` (current public APIs);
 - `docs/developer/source_tree.md` (current responsibility map);
-- `docs/developer/target_architecture_v0.9.md` (accepted design record);
-- `docs/developer/wenu_migration_0.8_to_0.9.md` (completed migration);
+- `docs/developer/archive/architecture_history/target_architecture_v0.9.md` (accepted design record);
+- `docs/developer/archive/migration_history/wenu_migration_0.8_to_0.9.md` (completed migration);
 - `docs/developer/archive/README.md` (historical architecture and migration
   index);
 - `docs/developer/deprecations_v0.5.md`.

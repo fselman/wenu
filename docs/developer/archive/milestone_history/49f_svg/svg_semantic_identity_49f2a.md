@@ -1,8 +1,8 @@
 # Milestone 49F.2A semantic SVG identity
 
-**Status:** Implemented; focused tests and Mac visual acceptance complete  
-**Base:** `3c6f834`  
-**Branch:** `feature/svg-semantic-identity`  
+**Status:** Implemented; focused tests and Mac visual acceptance complete
+**Base:** `3c6f834`
+**Branch:** `feature/svg-semantic-identity`
 **Acceptance date:** 2026-08-26
 
 ## Scope

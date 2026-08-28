@@ -1,6 +1,6 @@
 # SVG semantic naming ledger
 
-**Milestone:** 49F.5A  
+**Milestone:** 49F.5A
 **Status:** implementation contract under verification
 
 This ledger is the acceptance inventory for Wenu's designer-facing SVG

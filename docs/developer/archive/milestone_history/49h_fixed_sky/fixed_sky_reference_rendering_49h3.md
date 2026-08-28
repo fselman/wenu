@@ -1,8 +1,8 @@
 # Fixed-sky and rotating-horizon reference rendering
 
-**Milestone:** 49H.3  
+**Milestone:** 49H.3
 **Status:** Renderer-neutral transformation implemented; uncached canonical
-reference rendering visually accepted  
+reference rendering visually accepted
 **Acceptance date:** 2026-08-28
 
 ## Accepted behavior

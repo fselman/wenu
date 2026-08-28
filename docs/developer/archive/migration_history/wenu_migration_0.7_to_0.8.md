@@ -2,7 +2,7 @@
 
 **Status:** Complete
 **Source:** `archive/architecture_history/current_architecture_v0.7.md`
-**Target:** `target_architecture_v0.8.md`
+**Target:** `archive/architecture_history/target_architecture_v0.8.md`
 **Base commit:** `b72eef8`
 
 ## Milestone 46A — Add the semantic AltAz grid
@@ -55,7 +55,7 @@ ownership boundary.
 - reserve the same layer contract for future planets, Moon, artificial
   satellites, tracks, and time sequences;
 - record the regional, binocular, and masked-planisphere adaptation evidence
-  in `wenu_chart_request_audit_20260810.md` and derive the declarative request
+  in `archive/audits/wenu_chart_request_audit_20260810.md` and derive the declarative request
   requirements from actual usage;
 - add characterization tests only where the implemented boundary is not
   already enforced.

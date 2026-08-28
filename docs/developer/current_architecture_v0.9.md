@@ -1,9 +1,9 @@
 # Wenu current architecture v0.9
 
 **Status:** Implemented current architecture
-**Previous baseline:** `current_architecture_v0.8.md`
-**Completed migration:** `wenu_migration_0.8_to_0.9.md`
-**Accepted design:** `target_architecture_v0.9.md`
+**Previous baseline:** `archive/architecture_history/current_architecture_v0.8.md`
+**Completed migration:** `archive/migration_history/wenu_migration_0.8_to_0.9.md`
+**Accepted design:** `archive/architecture_history/target_architecture_v0.9.md`
 **Baseline commit:** `5da93cc`
 **Closure date:** 2026-08-28
 
@@ -164,7 +164,7 @@ Current work reads this document together with:
 - `post_v0.9_architecture_roadmap.md` for active milestone sequencing;
 - `coordinate_transformation_audit_09a2afd.md` for scientific coordinate
   evidence;
-- `svg_output_audit_and_plan.md` for SVG product evidence.
+- `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product evidence.
 
 The v0.8 architecture, v0.9 target, and v0.8-to-v0.9 migration documents are
 provenance. They do not override this implemented baseline.

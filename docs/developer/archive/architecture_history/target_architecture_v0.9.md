@@ -1,8 +1,8 @@
 # Wenu target architecture v0.9
 
 **Status:** Implemented; retained as the accepted design record
-**Source:** `current_architecture_v0.8.md`
-**Migration plan:** `wenu_migration_0.8_to_0.9.md`
+**Source:** `archive/architecture_history/current_architecture_v0.8.md`
+**Migration plan:** `archive/migration_history/wenu_migration_0.8_to_0.9.md`
 **Current authority:** `current_architecture_v0.9.md`
 **Closure baseline:** `5da93cc`
 **Closure date:** 2026-08-28

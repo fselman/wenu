@@ -1,8 +1,8 @@
 # Wenu SVG output audit and plan
 
-**Milestone:** 49F.0  
-**Status:** 49F.1–49F.3 implemented and accepted; 49F.4 product acceptance in progress  
-**Planning baseline:** `d315c51`  
+**Milestone:** 49F.0
+**Status:** 49F.1–49F.3 implemented and accepted; 49F.4 product acceptance in progress
+**Planning baseline:** `d315c51`
 **Decision date:** 2026-08-25
 
 ## 1. Purpose and authority

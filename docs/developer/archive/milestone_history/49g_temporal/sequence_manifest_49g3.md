@@ -1,7 +1,7 @@
 # Deterministic sequence manifests and resume
 
-**Milestone:** 49G.3  
-**Status:** implemented; real restart/resume acceptance complete  
+**Milestone:** 49G.3
+**Status:** implemented; real restart/resume acceptance complete
 **Base:** `542a97f`
 
 ## Purpose

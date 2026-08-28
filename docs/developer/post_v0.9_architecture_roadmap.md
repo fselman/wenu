@@ -23,7 +23,7 @@ its own small, testable milestone.
 
 The coordinate decisions in `coordinate_transformation_audit_09a2afd.md`
 remain authoritative scientific input. The longer-term astrometry sequence in
-`polar_delivery_and_astrometry_roadmap.md` is consolidated here so that it no
+`archive/roadmap_history/polar_delivery_and_astrometry_roadmap.md` is consolidated here so that it no
 longer depends on the urgent polar-delivery numbering.
 
 ## 2. Two independent development tracks
@@ -154,7 +154,7 @@ through undocumented downstream paths, project, clip, style, or render.
 
 The detailed as-is audit, product contract, font policy, verification matrix,
 2D/3D boundary, constellation-artwork relationship, and implementation stages
-are recorded in `svg_output_audit_and_plan.md`.
+are recorded in `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md`.
 
 Wenu already reaches Matplotlib's SVG backend when an `.svg` output path or
 configured SVG extension is selected. This milestone promotes that incidental
@@ -197,10 +197,10 @@ implemented and accepted.
 implemented and accepted; scientifically keyed reuse remains pending.
 
 The implemented contracts are documented in
-`temporal_sequence_contract_49g1.md`,
-`observer_time_sequence_49g2.md`,
-`sequence_manifest_49g3.md`, and
-`temporal_sequence_cli_49g4.md`.
+`archive/milestone_history/49g_temporal/temporal_sequence_contract_49g1.md`,
+`archive/milestone_history/49g_temporal/observer_time_sequence_49g2.md`,
+`archive/milestone_history/49g_temporal/sequence_manifest_49g3.md`, and
+`archive/milestone_history/49g_temporal/temporal_sequence_cli_49g4.md`.
 
 Represent a sequence as one immutable product definition plus an ordered set
 of explicit instants. Separate state by its physical cadence:
@@ -231,9 +231,9 @@ celestial scene remains fixed while the horizon and AltAz grid rotate.
 Scientifically keyed reuse remains pending.
 
 The ownership, baseline, and accepted reference contracts are documented in
-`fixed_sky_rotating_horizon_49h1.md`,
-`fixed_sky_complete_render_baseline_49h2.md`, and
-`fixed_sky_reference_rendering_49h3.md`.
+`archive/milestone_history/49h_fixed_sky/fixed_sky_rotating_horizon_49h1.md`,
+`archive/milestone_history/49h_fixed_sky/fixed_sky_complete_render_baseline_49h2.md`, and
+`archive/milestone_history/49h_fixed_sky/fixed_sky_reference_rendering_49h3.md`.
 
 Use the temporal contract to support the Earth-rotation presentation:
 

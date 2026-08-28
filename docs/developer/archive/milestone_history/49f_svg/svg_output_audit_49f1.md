@@ -1,9 +1,9 @@
 # Milestone 49F.1 SVG structural audit
 
 **Status:** Remote structural harness implemented; representative rendering and
-Mac acceptance pending  
-**Base:** `929a88c`  
-**Branch:** `feature/svg-structural-audit`  
+Mac acceptance pending
+**Base:** `929a88c`
+**Branch:** `feature/svg-structural-audit`
 **Audit date:** 2026-08-26
 
 ## Scope

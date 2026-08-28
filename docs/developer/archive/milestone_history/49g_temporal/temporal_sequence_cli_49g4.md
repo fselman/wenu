@@ -1,7 +1,7 @@
 # Installed temporal sequence CLI and configuration
 
-**Milestone:** 49G.4  
-**Status:** implemented; installed-CLI restart/resume acceptance complete  
+**Milestone:** 49G.4
+**Status:** implemented; installed-CLI restart/resume acceptance complete
 **Base:** `46eba51`
 
 ## Purpose

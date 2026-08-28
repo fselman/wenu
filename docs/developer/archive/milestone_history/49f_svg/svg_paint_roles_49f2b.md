@@ -1,8 +1,8 @@
 # Milestone 49F.2B semantic paint roles
 
-**Status:** Implemented; full-suite verification complete  
-**Base:** `d28eff6`  
-**Branch:** `feature/svg-paint-roles`  
+**Status:** Implemented; full-suite verification complete
+**Base:** `d28eff6`
+**Branch:** `feature/svg-paint-roles`
 **Date:** 2026-08-26
 
 ## Purpose

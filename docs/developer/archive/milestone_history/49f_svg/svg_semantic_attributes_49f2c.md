@@ -1,8 +1,8 @@
 # Milestone 49F.2C semantic SVG attributes
 
-**Status:** Implemented; full-suite and Mac editor acceptance complete  
-**Base:** `e4fdbcf`  
-**Branch:** `feature/svg-semantic-attributes`  
+**Status:** Implemented; full-suite and Mac editor acceptance complete
+**Base:** `e4fdbcf`
+**Branch:** `feature/svg-semantic-attributes`
 **Acceptance date:** 2026-08-26
 
 ## Scope

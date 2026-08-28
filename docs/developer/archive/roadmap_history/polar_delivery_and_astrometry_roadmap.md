@@ -8,7 +8,7 @@
 
 **Immediate print date:** Tuesday, 2026-08-18
 
-**Related migration:** `wenu_migration_0.8_to_0.9.md`
+**Related migration:** `archive/migration_history/wenu_migration_0.8_to_0.9.md`
 
 **Committed audit:** `coordinate_transformation_audit_09a2afd.md`
 

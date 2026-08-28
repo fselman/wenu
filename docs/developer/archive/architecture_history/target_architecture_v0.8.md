@@ -5,7 +5,7 @@
 **Release:** 0.8.0
 **Implementation baseline:** `v0.8.0`
 **Source:** `archive/architecture_history/current_architecture_v0.7.md`
-**Migration plan:** `wenu_migration_0.7_to_0.8.md`
+**Migration plan:** `archive/migration_history/wenu_migration_0.7_to_0.8.md`
 
 Version 0.8 begins by completing the semantic coordinate-grid family with an
 observer-local `AltAzGrid`. Its semantic detail name is `altaz_grid`, its

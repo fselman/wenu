@@ -1,7 +1,7 @@
 # Temporal sequence contract
 
-**Milestone:** 49G.1  
-**Status:** implemented; focused verification complete  
+**Milestone:** 49G.1
+**Status:** implemented; focused verification complete
 **Base:** `c70cb29`
 
 ## Purpose

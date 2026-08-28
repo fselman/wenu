@@ -1,8 +1,8 @@
 # Wenu migration roadmap: v0.8 to v0.9
 
 **Status:** Complete
-**Source:** `current_architecture_v0.8.md`
-**Target:** `target_architecture_v0.9.md`
+**Source:** `archive/architecture_history/current_architecture_v0.8.md`
+**Target:** `archive/architecture_history/target_architecture_v0.9.md`
 **Current authority:** `current_architecture_v0.9.md`
 **Base commit:** `c169162`
 **Closure baseline:** `5da93cc`
@@ -63,8 +63,8 @@ and incremental roadmap before runtime changes.
 
 ### Work
 
-- add `current_architecture_v0.8.md`;
-- add `target_architecture_v0.9.md`;
+- add `archive/architecture_history/current_architecture_v0.8.md`;
+- add `archive/architecture_history/target_architecture_v0.9.md`;
 - add this roadmap;
 - update assistant authority and documentation contracts;
 - record the urgent disk-first sequence and the deferred horizon decision.
@@ -256,7 +256,7 @@ restrained constellation figures and labels, and no legend. Other chart
 families and atlas presentation mode retain their established appearance.
 `tools/render_48e2_polar_preview.py` renders genuine north/south catalogue
 checkpoints with the resolved calendar ring; approval is recorded through
-`visual_acceptance_48e2.md` before further visual tuning.
+`archive/acceptance_history/visual_acceptance_48e2.md` before further visual tuning.
 
 Fernando accepted the physical palette and overall appearance after the first
 real preview. Calendar spacing, boundary-label containment, overlap,
@@ -286,7 +286,7 @@ and the relevant ecliptic and Galactic poles after explicit ICRS preparation.
 Constellation-label anchors are suppressed near the date ring. Calendar day
 numbers move toward their ticks, labelled-day ticks gain weight without
 length, and month names occupy the same band at twice the day-label size.
-The second review is recorded in `visual_acceptance_48e3.md`.
+The second review is recorded in `archive/acceptance_history/visual_acceptance_48e3.md`.
 Its focused correction moves month names slightly outward; makes declination
 marks projected disk furniture so equidistant rendering cannot create full
 parallels; selects only the relevant face pole; unifies principal-reference
@@ -344,7 +344,7 @@ destination. `export_composed_chart()` now accepts an optional resolved-
 furniture callable immediately before its existing final save; this is the
 only canonical extension. The review tool writes two non-tight A4 PDFs and one
 checksum manifest with an explicit source revision. Physical acceptance is
-recorded separately in `visual_acceptance_48e4.md`.
+recorded separately in `archive/acceptance_history/visual_acceptance_48e4.md`.
 
 - export deterministic north and south pages at an explicit physical size;
 - target an initial 190-200 mm common disk diameter on A4;
@@ -568,7 +568,7 @@ This is deliberately the last feature stage.
 - approve canonical north/south disks, horizon overlay, optional bright-star
   result, curated deep-sky content, typography, night test, and English/Spanish
   products according to their completed scopes;
-- mark `target_architecture_v0.9.md` implemented and this roadmap complete;
+- mark `archive/architecture_history/target_architecture_v0.9.md` implemented and this roadmap complete;
 - assign the release version through the existing Git-tag/setuptools-scm
   authority.
 

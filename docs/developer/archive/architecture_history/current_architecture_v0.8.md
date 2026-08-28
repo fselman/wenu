@@ -4,14 +4,14 @@
 **Baseline commit:** `c169162`
 **Release:** `v0.8.0`
 **Date:** 2026-08-15
-**Target:** `target_architecture_v0.9.md`
-**Migration plan:** `wenu_migration_0.8_to_0.9.md`
+**Target:** `archive/architecture_history/target_architecture_v0.9.md`
+**Migration plan:** `archive/migration_history/wenu_migration_0.8_to_0.9.md`
 
 ## Purpose
 
 This document records the implemented starting point for the physical
 polar-planisphere work. The complete v0.8 architecture remains described in
-`target_architecture_v0.8.md`; this baseline identifies the parts that v0.9
+`archive/architecture_history/target_architecture_v0.8.md`; this baseline identifies the parts that v0.9
 will reuse and the gaps it must close.
 
 Wenu is a static chart-generation package. It has one canonical pipeline from

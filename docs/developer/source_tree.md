@@ -429,7 +429,7 @@ packaged resource; `tests/test_user_guide.py` owns its guide contract.
 
 ## Test-suite responsibility and tiers
 
-`docs/developer/configuration_default_audit.md` is the Milestone 46D authority
+`docs/developer/archive/audits/configuration_default_audit.md` is the Milestone 46D authority
 map for public defaults. It separates public values from derived values,
 invariants, and implementation details; inventories every responsibility and
 appearance source; and records duplications that must be removed as TOML
@@ -517,16 +517,16 @@ drawing work.
 visual handoff. The tool drives the actual command module in fresh processes
 and writes 18 untracked PNGs plus a checksum manifest. The test verifies the
 matrix shape and role coverage without rendering; human acceptance is recorded
-in `docs/developer/visual_acceptance_46d8.md` only after Mac review.
+in `docs/developer/archive/acceptance_history/visual_acceptance_46d8.md` only after Mac review.
 
 `tools/render_48e2_polar_preview.py` owns the v0.9 physical-style checkpoint.
 It drives the canonical generated sphere, paired charts, atlas-print
 composition, and calendar geometry to write two untracked PNGs and a checksum
 manifest. It is a diagnostic only; product export and physical A4 assembly
 remain later milestones. Human review is recorded in
-`docs/developer/visual_acceptance_48e2.md`.
+`docs/developer/archive/acceptance_history/visual_acceptance_48e2.md`.
 Milestone 48E.3 reuses that genuine two-face diagnostic; its separate review
-criteria and disposition live in `docs/developer/visual_acceptance_48e3.md`.
+criteria and disposition live in `docs/developer/archive/acceptance_history/visual_acceptance_48e3.md`.
 `tests/test_polar_classroom_disk_freeze.py` records commit `09a2afd` as the
 accepted classroom astronomical checkpoint. It freezes the paired projection,
 limits, physical scale, handedness, and face-neutral content policy, and proves
@@ -537,7 +537,7 @@ so later page furniture can be reviewed without silently moving the sky.
 It resolves the accepted paired disk, calendar, and A4 page information, calls
 the paired canonical exporter, and writes exactly two PDF pages plus a checksum
 manifest outside the repository. Physical review is recorded in
-`docs/developer/visual_acceptance_48e4.md`.
+`docs/developer/archive/acceptance_history/visual_acceptance_48e4.md`.
 `tools/render_48g2_polar_pouch.py` is the actual-size folded-pouch review
 entry point. It resolves the ordinary paired disk, page, canonical horizon,
 and pouch furniture owners. It writes one clean, one-sided A4 fabrication PDF
@@ -637,7 +637,7 @@ Milestone 46D.8I keeps binocular remediation distributed by responsibility:
 The canonical example declares those public policies without drawing them.
 
 Milestone 46D.8J leaves runtime ownership unchanged.
-`docs/developer/visual_acceptance_46d8.md` owns the truthful closure record:
+`docs/developer/archive/acceptance_history/visual_acceptance_46d8.md` owns the truthful closure record:
 accepted source, reviewer, date, and explicit full-matrix deferral.
 `tests/test_visual_acceptance_matrix.py` prevents that disposition from being
 silently rewritten as a completed rerun.

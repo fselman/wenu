@@ -1,8 +1,8 @@
 # Milestone 49F.2D SVG editing classification
 
-**Status:** Implemented; full-suite and Mac editor acceptance complete  
-**Base:** `b4b95e2`  
-**Branch:** `feature/svg-edit-policy`  
+**Status:** Implemented; full-suite and Mac editor acceptance complete
+**Base:** `b4b95e2`
+**Branch:** `feature/svg-edit-policy`
 **Acceptance date:** 2026-08-26
 
 ## Purpose
