@@ -122,9 +122,20 @@ from .charts.fixed_sky_baseline import (
     fixed_sky_complete_render_baseline_request,
     generate_fixed_sky_complete_render_baseline,
 )
+from .charts.fixed_sky_orientation import (
+    FixedSkyCircumpolarOrientation,
+    circumpolar_orientation_reference,
+    circumpolar_pole_coordinate,
+    fixed_sky_circumpolar_orientation,
+)
 from .charts.fixed_sky_sequence import (
     FixedSkyRotatingHorizonFrame,
+    FixedSkyRotatingHorizonFrameResult,
+    FixedSkyRotatingHorizonGeneration,
     FixedSkyRotatingHorizonSequenceRequest,
+    ResolvedFixedSkyRotatingHorizonFrame,
+    generate_fixed_sky_rotating_horizon_sequence,
+    resolve_fixed_sky_rotating_horizon_frame,
 )
 from .charts.sequence import (
     ObserverTimeChartSequenceFrame,
@@ -512,6 +523,17 @@ __all__ = [
     "SamplingKind",
     "TemporalTimeline",
     "TimeScale",
+    "FixedSkyCircumpolarOrientation",
+    "circumpolar_orientation_reference",
+    "circumpolar_pole_coordinate",
+    "fixed_sky_circumpolar_orientation",
+    "FixedSkyRotatingHorizonFrame",
+    "FixedSkyRotatingHorizonFrameResult",
+    "FixedSkyRotatingHorizonGeneration",
+    "FixedSkyRotatingHorizonSequenceRequest",
+    "ResolvedFixedSkyRotatingHorizonFrame",
+    "generate_fixed_sky_rotating_horizon_sequence",
+    "resolve_fixed_sky_rotating_horizon_frame",
     "ObserverTimeChartSequenceFrame",
     "ObserverTimeChartSequenceFrameResult",
     "ObserverTimeChartSequenceGeneration",
