@@ -1,60 +1,98 @@
-digraph coordinate_static_target {
+digraph coordinate_static_target_detailed {
   graph [rankdir=LR, bgcolor="white", fontname="Helvetica", fontsize=15,
-    label="Wenu coordinate static structure after 49B/49C — proposed types and placement",
-    labelloc="t", nodesep=0.35, ranksep=0.6, pad=0.25];
+    label="Wenu coordinate static structure after 49B/49C — proposed classes, data, and modules",
+    labelloc="t", nodesep=0.30, ranksep=0.48, pad=0.25];
   node [shape=record, style="filled", fillcolor="#f7f7f7", color="#555555",
-    fontname="Helvetica", fontsize=8.5];
-  edge [color="#555555", fontname="Helvetica", fontsize=7.5, arrowsize=0.7];
+    fontname="Helvetica", fontsize=8.2];
+  edge [color="#555555", fontname="Helvetica", fontsize=7, arrowsize=0.65];
 
-  subgraph cluster_state {
-    label="PROPOSED src/wenu/astronomy/state.py — 49B immutable vocabulary";
+  subgraph cluster_root {
+    label="src/wenu/ — changed roles"; color="#c55a11"; style="rounded,dashed";
+    Observer [label="{observer.py::Observer|constructs ObservationContext; no transform authority}", fillcolor="#fff2cc"];
+    Coordinates [shape=box, label="coordinates.py\nradec_to_altaz() retired or temporary service wrapper", fillcolor="#fce4d6", color="#c55a11"];
+    Cache [shape=box, label="sky/observed_cache.py\nscientifically keyed state reuse", fillcolor="#fff2cc"];
+  }
+  subgraph cluster_layers {
+    label="sky/ + objects/ — inheritance retained; transform authority removed";
+    color="#7030a0"; style="rounded,dashed";
+    SkyLayer [label="{SkyLayer «ABC»|produces typed state or geometry}", fillcolor="#e4dfec"];
+    AstronomicalObject [label="AstronomicalObject", fillcolor="#e4dfec"];
+    GeometricalObject [label="GeometricalObject", fillcolor="#e4dfec"];
+    Stars [label="{Stars|load catalogue; produce native typed state}", fillcolor="#e4dfec"];
+    NonStellar [label="{NonStellar|load catalogue; produce native typed state}", fillcolor="#e4dfec"];
+    CoordinatesGrid [label="{CoordinatesGrid «ABC»|native definitions; request service transform}", fillcolor="#e4dfec"];
+    CelestialPoints [label="{CelestialPoints|typed point definitions; no handwritten transform}", fillcolor="#e4dfec"];
+    AltAzGrid [label="AltAzGrid", fillcolor="#e4dfec"];
+    EquatorialGrid [label="EquatorialGrid", fillcolor="#e4dfec"];
+    EclipticGrid [label="EclipticGrid", fillcolor="#e4dfec"];
+    GalacticGrid [label="GalacticGrid", fillcolor="#e4dfec"];
+    CelestialSphere [label="{CelestialSphere|contains 0..* SkyLayer; orchestration unchanged}", fillcolor="#e4dfec"];
+    AstronomicalObject -> SkyLayer [arrowhead=empty, label="inherits"];
+    GeometricalObject -> SkyLayer [arrowhead=empty, label="inherits"];
+    Stars -> AstronomicalObject [arrowhead=empty];
+    NonStellar -> AstronomicalObject [arrowhead=empty];
+    CoordinatesGrid -> GeometricalObject [arrowhead=empty];
+    CelestialPoints -> GeometricalObject [arrowhead=empty];
+    AltAzGrid -> CoordinatesGrid [arrowhead=empty];
+    EquatorialGrid -> CoordinatesGrid [arrowhead=empty];
+    EclipticGrid -> CoordinatesGrid [arrowhead=empty];
+    GalacticGrid -> CoordinatesGrid [arrowhead=empty];
+    CelestialSphere -> SkyLayer [dir=both, arrowtail=diamond, arrowhead=none, label="contains 0..*"];
+  }
+  subgraph cluster_astronomy {
+    label="PROPOSED astronomy/ — new 49B/49C owner";
     color="#548235"; style="rounded,dashed";
-    FrameSpec [label="{FrameSpec «frozen dataclass»|frame name; origin; equinox/epoch policy}", fillcolor="#e2f0d9"];
-    ObservationContext [label="{ObservationContext «frozen dataclass»|instant; time scale; Earth location; atmosphere policy}", fillcolor="#e2f0d9"];
-    PositionPolicy [label="{PositionPolicy «frozen dataclass»|geometric/astrometric/apparent/topocentric; corrections}", fillcolor="#e2f0d9"];
-    Provenance [label="{StateProvenance «frozen dataclass»|provider/model; source revision; assumptions}", fillcolor="#e2f0d9"];
-    ScientificIdentity [label="{ScientificIdentity «frozen dataclass»|frame: FrameSpec; epoch; units; representation; position policy}", fillcolor="#e2f0d9"];
-    AstronomicalState [label="{AstronomicalState «frozen dataclass»|coordinates; identity: ScientificIdentity; provenance: StateProvenance}", fillcolor="#e2f0d9"];
-    ProductFrameRequest [label="{ProductFrameRequest «frozen dataclass»|target: FrameSpec; observer_context: optional; requested policy}", fillcolor="#d9eaf7"];
+    FrameSpec [label="{FrameSpec|frame; origin; epoch/equinox}", fillcolor="#e2f0d9"];
+    ObservationContext [label="{ObservationContext|instant; scale; location; atmosphere}", fillcolor="#e2f0d9"];
+    ScientificIdentity [label="{ScientificIdentity|FrameSpec; units; representation; PositionPolicy}", fillcolor="#e2f0d9"];
+    AstronomicalState [label="{AstronomicalState|coordinates; identity; provenance}", fillcolor="#e2f0d9"];
+    ProductFrameRequest [label="{ProductFrameRequest|target FrameSpec; optional context}", fillcolor="#d9eaf7"];
+    CoordinateService [label="{CoordinateService|sole validation and transformation owner}", fillcolor="#e2f0d9"];
+    AstropyAdapter [label="AstropyAdapter", fillcolor="#e2f0d9"];
+    SkyfieldAdapter [label="SkyfieldAdapter", fillcolor="#e2f0d9"];
+    Transformer [label="AstronomicalTransformer «Protocol»", fillcolor="#ffffff"];
     ScientificIdentity -> FrameSpec [dir=both, arrowtail=diamond, arrowhead=none, label="contains"];
-    ScientificIdentity -> PositionPolicy [dir=both, arrowtail=diamond, arrowhead=none, label="contains"];
     AstronomicalState -> ScientificIdentity [dir=both, arrowtail=diamond, arrowhead=none, label="contains"];
-    AstronomicalState -> Provenance [dir=both, arrowtail=diamond, arrowhead=none, label="contains"];
     ProductFrameRequest -> FrameSpec [dir=both, arrowtail=diamond, arrowhead=none, label="contains"];
     ProductFrameRequest -> ObservationContext [dir=both, arrowtail=odiamond, arrowhead=none, label="optional"];
+    CoordinateService -> AstropyAdapter [dir=both, arrowtail=diamond, arrowhead=none, label="owns"];
+    CoordinateService -> SkyfieldAdapter [dir=both, arrowtail=diamond, arrowhead=none, label="owns"];
+    CoordinateService -> Transformer [arrowhead=empty, style=dashed, label="implements"];
   }
-
-  subgraph cluster_service {
-    label="PROPOSED src/wenu/astronomy/service.py and adapters.py — 49C";
+  subgraph cluster_geometry {
+    label="geometry/ — records retained, typed identity added";
     color="#548235"; style="rounded,dashed";
-    Transformer [label="{AstronomicalTransformer «Protocol»|transform_state(); transform_geometry(); realize_altaz()}", fillcolor="#e2f0d9"];
-    Service [label="{CoordinateService|transform(state, request); transform_geometry(geometry, request)}", fillcolor="#e2f0d9"];
-    AstropyAdapter [label="{AstropyTransformAdapter|supported frame transformations}", fillcolor="#e2f0d9"];
-    SkyfieldAdapter [label="{SkyfieldStateAdapter|explicit apparent/topocentric state adaptation}", fillcolor="#e2f0d9"];
-    Service -> Transformer [arrowhead=empty, style=dashed, label="implements"];
-    Service -> AstropyAdapter [dir=both, arrowtail=diamond, arrowhead=none, label="owns"];
-    Service -> SkyfieldAdapter [dir=both, arrowtail=diamond, arrowhead=none, label="owns"];
+    Points [label="{SphericalPoints|lon/lat; ids; labels; ScientificIdentity}", fillcolor="#d9eaf7"];
+    Curves [label="{SphericalCurves|collections; topology; ScientificIdentity}", fillcolor="#d9eaf7"];
+    Polygons [label="{SphericalPolygons|rings; topology; ScientificIdentity}", fillcolor="#d9eaf7"];
+    Grid [label="{SphericalGrid|mapping of typed SphericalCurves}", fillcolor="#d9eaf7"];
+    SphericalCoordinates [label="{SphericalCoordinates|coordinate-neutral rotation result}", fillcolor="#e2f0d9"];
+    SphericalFrame [label="{SphericalFrame|projection alignment only}", fillcolor="#e2f0d9"];
+    Grid -> Curves [dir=both, arrowtail=diamond, arrowhead=none, label="contains"];
   }
-
-  subgraph cluster_existing {
-    label="EXISTING OWNERS AFTER MIGRATION";
-    color="#5b9bd5";
-    Observer [label="{observer.py::Observer|supplies ObservationContext; no transform authority}", fillcolor="#fff2cc"];
-    SkyLayer [label="{sky_layer.py::SkyLayer|produces AstronomicalState or typed geometry}", fillcolor="#e4dfec"];
-    Geometry [label="{geometry/spherical.py::Spherical*|structure + ScientificIdentity; preserves topology/labels}", fillcolor="#d9eaf7"];
-    ProjectionSelection [label="{charts/projection_selection.py::ProjectionSelection|projection identity + ProductFrameRequest}", fillcolor="#d9eaf7"];
-    SphericalFrame [label="{geometry/frame.py::SphericalFrame|projection alignment only}", fillcolor="#e2f0d9"];
+  subgraph cluster_charts {
+    label="charts/ — request frames; never transform";
+    color="#2f75b5"; style="rounded,dashed";
+    ProjectionSelection [label="{ProjectionSelection|projection identity; ProductFrameRequest}", fillcolor="#d9eaf7"];
+    CoordinateFrames [shape=box, label="coordinate_frames.py\nremoved or delegates during migration", fillcolor="#fce4d6", color="#c55a11"];
+    Owners [shape=box, label="chart + furniture owners\nconstruct ProductFrameRequest; do not transform", fillcolor="#d9eaf7"];
+    Pipeline [shape=box, label="projection pipeline\nuses SphericalFrame; unchanged", fillcolor="#e2f0d9"];
   }
-
-  Observer -> ObservationContext [style=dashed, label="constructs"];
-  SkyLayer -> AstronomicalState [style=dashed, label="produces"];
-  ProjectionSelection -> ProductFrameRequest [style=dashed, label="declares"];
-  Service -> AstronomicalState [style=dashed, label="consumes/returns"];
-  Service -> ProductFrameRequest [style=dashed, label="consumes"];
-  Service -> Geometry [style=dashed, label="transforms, preserving structure"];
-  Geometry -> ScientificIdentity [dir=both, arrowtail=diamond, arrowhead=none, label="carries"];
-  Geometry -> SphericalFrame [style=dashed, label="then aligns for projection"];
-
-  note [shape=note, label="No deep inheritance tree is proposed.\n49B types compose immutable scientific meaning.\n49C service uses protocols/adapters and returns typed state.", fillcolor="#ffffff"];
+  Observer -> ObservationContext [style=dashed, label="constructs", color="#c55a11"];
+  Coordinates -> CoordinateService [style=dashed, label="retires/delegates", color="#c55a11"];
+  Cache -> AstronomicalState [style=dashed, label="keys"];
+  Stars -> AstronomicalState [style=dashed, label="produces"];
+  NonStellar -> AstronomicalState [style=dashed, label="produces"];
+  CoordinatesGrid -> CoordinateService [style=dashed, label="requests transform"];
+  CelestialPoints -> CoordinateService [style=dashed, label="requests transform"];
+  AstronomicalState -> CoordinateService [style=dashed, label="typed input"];
+  ProductFrameRequest -> CoordinateService [style=dashed, label="declares output"];
+  CoordinateService -> Points [style=dashed, label="returns typed geometry"];
+  CoordinateService -> Curves [style=dashed, label="preserves topology"];
+  Owners -> ProductFrameRequest [style=dashed, label="declares"];
+  ProjectionSelection -> ProductFrameRequest [style=dashed, label="contains"];
+  CoordinateFrames -> CoordinateService [style=dashed, label="delegates during migration", color="#c55a11"];
+  ProjectionSelection -> SphericalFrame [style=dashed, label="requests alignment"];
+  SphericalFrame -> Pipeline [style=dashed, label="unchanged"];
 }
 

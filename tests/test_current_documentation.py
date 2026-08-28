@@ -144,6 +144,8 @@ def test_current_diagrams_are_an_inspection_interface():
     assert "inherits" in readme
     assert "runtime calls or returns" in readme
     assert "design proposals to freeze during 49B/49C" in readme
+    assert "direct counterpart to the current static-structure" in readme
+    assert "retains the same `SkyLayer` inheritance hierarchy" in readme
     assert (
         ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.dot"
     ).is_file()

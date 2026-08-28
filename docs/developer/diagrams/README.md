@@ -78,11 +78,16 @@ It distinguishes the real `SkyLayer` inheritance tree from the independent
 
 Source: `coordinate_static_structure_target_49bc.dot`
 
-This view maps proposed immutable state types and the coordinate service into a
-candidate `src/wenu/astronomy/` package. That package name, its module split,
-and the type names are design proposals to freeze during 49B/49C—not claims
-about current code. The intended design uses composition and small protocols;
-it does not introduce a deep inheritance hierarchy.
+This is the direct counterpart to the current static-structure diagram. It
+retains the same `SkyLayer` inheritance hierarchy, `CelestialSphere`,
+`Spherical*` record family, observer, cache, and chart/projection columns.
+It then shows which current owners lose transformation authority and where the
+proposed immutable state types, coordinate service, and adapters enter.
+
+The candidate `src/wenu/astronomy/` package name, its module split, and the
+new type names are design proposals to freeze during 49B/49C—not claims about
+current code. The intended design adds composition and small protocols rather
+than replacing the retained hierarchy with a second deep inheritance tree.
 
 Static-structure notation:
 
