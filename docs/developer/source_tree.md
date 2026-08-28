@@ -811,3 +811,17 @@ characterization adapter for that baseline. It selects both celestial and observ
 content, invokes only the public oracle boundary, and records hashes,
 dimensions, timeline instants, and manifest identity in JSON.
 
+
+
+### Fixed-sky reference rendering (Milestone 49H.3)
+
+- `charts/fixed_sky_orientation.py` owns the renderer-neutral astronomical
+  anchor rotation and its explicit provenance.
+- `charts/fixed_sky_sequence.py` resolves planned dual-time frames into
+  ordinary local-time chart requests and provides the deliberately uncached
+  canonical reference executor.
+- `tests/test_fixed_sky_orientation.py` proves fixed celestial projection and
+  moving local-horizon projection without asserting a guessed sidereal angle.
+- `tools/render_49h3_fixed_sky_reference.py` produces the visually accepted
+  fixed-sky/rotating-horizon audit and records per-frame orientation metadata,
+  dimensions, and hashes.
