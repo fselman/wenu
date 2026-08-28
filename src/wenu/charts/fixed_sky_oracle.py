@@ -1,4 +1,4 @@
-"""Independent full-render oracle and PNG comparison for fixed-sky work."""
+"""Independent complete-render baseline and PNG comparison for fixed-sky work."""
 
 from __future__ import annotations
 
@@ -49,10 +49,10 @@ class PngFrameComparisonTolerance:
 
 @dataclass(frozen=True)
 class PngFrameComparison:
-    """Measured graphical difference between candidate and oracle frames."""
+    """Measured graphical difference between candidate and baseline frames."""
 
     candidate: Path
-    oracle: Path
+    baseline: Path
     dimensions: tuple[int, int]
     changed_pixels: int
     pixel_count: int
@@ -61,7 +61,7 @@ class PngFrameComparison:
 
     def __post_init__(self):
         object.__setattr__(self, "candidate", Path(self.candidate))
-        object.__setattr__(self, "oracle", Path(self.oracle))
+        object.__setattr__(self, "baseline", Path(self.baseline))
 
     @property
     def changed_pixel_fraction(self) -> float:
@@ -85,7 +85,7 @@ class PngFrameComparison:
         )
 
 
-def fixed_sky_full_render_oracle_request(
+def fixed_sky_complete_render_baseline_request(
     request: FixedSkyRotatingHorizonSequenceRequest,
     output: Path,
 ) -> ObserverTimeChartSequenceRequest:
@@ -100,7 +100,7 @@ def fixed_sky_full_render_oracle_request(
         )
     output = Path(output)
     if output.suffix:
-        raise ValueError("The oracle output must be a directory.")
+        raise ValueError("The baseline output must be a directory.")
     chart = replace(
         request.chart,
         product=replace(request.chart.product, output=output),
@@ -113,51 +113,51 @@ def fixed_sky_full_render_oracle_request(
     )
 
 
-def generate_fixed_sky_full_render_oracle(
+def generate_fixed_sky_complete_render_baseline(
     request: FixedSkyRotatingHorizonSequenceRequest,
     output: Path,
     *,
     restart_policy="restart",
 ) -> ObserverTimeChartSequenceGeneration:
     """Generate the independent oracle through the canonical static pipeline."""
-    oracle = fixed_sky_full_render_oracle_request(request, output)
+    oracle = fixed_sky_complete_render_baseline_request(request, output)
     return generate_observer_time_chart_sequence(
         oracle,
         restart_policy=restart_policy,
     )
 
 
-def compare_png_frames(candidate: Path, oracle: Path) -> PngFrameComparison:
+def compare_png_frames(candidate: Path, baseline: Path) -> PngFrameComparison:
     """Compare two PNG frames in canonical RGBA pixel space."""
     candidate = Path(candidate)
-    oracle = Path(oracle)
+    oracle = Path(baseline)
     with Image.open(candidate) as candidate_image:
         candidate_rgba = np.asarray(
             candidate_image.convert("RGBA"), dtype=np.int16
         )
-    with Image.open(oracle) as oracle_image:
-        oracle_rgba = np.asarray(
-            oracle_image.convert("RGBA"), dtype=np.int16
+    with Image.open(oracle) as baseline_image:
+        baseline_rgba = np.asarray(
+            baseline_image.convert("RGBA"), dtype=np.int16
         )
-    if candidate_rgba.shape != oracle_rgba.shape:
+    if candidate_rgba.shape != baseline_rgba.shape:
         candidate_size = (
             int(candidate_rgba.shape[1]),
             int(candidate_rgba.shape[0]),
         )
-        oracle_size = (
-            int(oracle_rgba.shape[1]),
-            int(oracle_rgba.shape[0]),
+        baseline_size = (
+            int(baseline_rgba.shape[1]),
+            int(baseline_rgba.shape[0]),
         )
         raise ValueError(
             "PNG frame dimensions differ: "
-            f"candidate {candidate_size}, oracle {oracle_size}."
+            f"candidate {candidate_size}, oracle {baseline_size}."
         )
-    absolute = np.abs(candidate_rgba - oracle_rgba)
+    absolute = np.abs(candidate_rgba - baseline_rgba)
     changed = np.any(absolute != 0, axis=2)
     height, width, _ = absolute.shape
     return PngFrameComparison(
         candidate=candidate,
-        oracle=oracle,
+        baseline=baseline,
         dimensions=(width, height),
         changed_pixels=int(np.count_nonzero(changed)),
         pixel_count=int(width * height),
