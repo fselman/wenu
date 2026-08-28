@@ -128,6 +128,7 @@ def test_historical_documents_are_archived_and_not_active_authorities():
 
 def test_current_diagrams_are_an_inspection_interface():
     readme = read(DIAGRAMS / "README.md")
+    normalized = " ".join(readme.split())
 
     for name in (
         "current_architecture_v0.9_overview",
@@ -148,12 +149,12 @@ def test_current_diagrams_are_an_inspection_interface():
     assert "`ObservationContext` enters only" in readme
     assert "actual classes" in readme
     assert "inherits" in readme
-    assert "runtime calls or returns" in readme
-    assert "No parallel astronomical\nstate hierarchy is proposed" in readme
+    assert "runtime calls or returns" in normalized
+    assert "No parallel astronomical state hierarchy is proposed" in normalized
     assert "direct counterpart to the current static-structure" in readme
     assert "retains the same `SkyLayer` inheritance hierarchy" in readme
     assert "`PositionProvider` is the boundary for all astronomical objects" in readme
-    assert "requires only another\nprovider implementation" in readme
+    assert "requires only another provider implementation" in normalized
     assert "deliberately large canvas" in readme
     assert (
         ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.dot"
