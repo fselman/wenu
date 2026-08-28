@@ -114,11 +114,9 @@ def test_historical_documents_are_archived_and_not_active_authorities():
     assert (ARCHIVE / "pre_versioned" / "architecture.md").is_file()
 
 
-def test_v08_architecture_and_migration_are_closed():
+def test_v08_release_evidence_remains_closed():
     target = read(TARGET)
     roadmap = read(ROADMAP)
-    implementation = read(DEVELOPER / "implementation_reference.md")
-    source_tree = read(DEVELOPER / "source_tree.md")
     readme = read(ROOT / "README.md")
 
     assert "**Status:** Implemented" in target
@@ -126,9 +124,7 @@ def test_v08_architecture_and_migration_are_closed():
     assert "**Status:** Complete" in roadmap
     assert "Milestone 46E" in roadmap
     assert "annotated Git tag `v0.8.0`" in roadmap
-    assert "**Architecture version:** 0.8" in implementation
-    assert "**Architecture version:** 0.8" in source_tree
-    assert "Wenu v0.8 user guide" in readme
+    assert "Version 0.8.0 remains the latest tagged" in readme
 
 
 def test_v09_architecture_is_closed_and_current():
