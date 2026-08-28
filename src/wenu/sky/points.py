@@ -9,7 +9,14 @@ import astropy.units as u
 import numpy as np
 from astropy.coordinates import SkyCoord, get_sun
 
-from wenu.coordinates import observer_altaz_spec, radec_to_altaz
+from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import (
+    CoordinateSpec,
+    ICRS_ASTROMETRIC_SPEC,
+    PositionStatus,
+    observation_context,
+    observer_altaz_spec,
+)
 from wenu.sky.geometrical_object import GeometricalObject
 from wenu.geometry.spherical import SphericalPoints
 
@@ -280,12 +287,10 @@ class CelestialPoints(GeometricalObject):
         zorder=None,
         **style,
     ):
-        sun = get_sun(self.obs.t_astropy).transform_to(
-            self.obs.icrs_frame
-        )
+        sun = self._to_icrs(get_sun(self.obs.t_astropy))
         coord = SkyCoord(
-            ra=(sun.ra + 180.0 * u.deg).wrap_at(360.0 * u.deg),
-            dec=-sun.dec,
+            ra=(sun.lon_deg[0] + 180.0) % 360.0 * u.deg,
+            dec=-sun.lat_deg[0] * u.deg,
             frame=self.obs.icrs_frame,
         )
         return self._append_point(
@@ -313,28 +318,80 @@ class CelestialPoints(GeometricalObject):
                 metadata=self._style_metadata(),
             )
 
-        icrs = [
-            point.coord.transform_to(resolved_observer.icrs_frame)
-            for point in self._points
-        ]
-        ra_deg = np.asarray([coord.ra.deg for coord in icrs])
-        dec_deg = np.asarray([coord.dec.deg for coord in icrs])
-        alt_deg, az_deg = radec_to_altaz(
-            ra_deg,
-            dec_deg,
-            resolved_observer.t,
-            resolved_observer.lat_deg,
-            resolved_observer.lon_deg,
-        )
-
-        return SphericalPoints(
-            lon_deg=np.asarray(az_deg, dtype=float),
-            lat_deg=np.asarray(alt_deg, dtype=float),
-            coordinate_spec=observer_altaz_spec(
-                resolved_observer, provider="wenu celestial points"
-            ),
+        icrs = [self._to_icrs(point.coord) for point in self._points]
+        native = SphericalPoints(
+            lon_deg=np.asarray([value.lon_deg[0] for value in icrs]),
+            lat_deg=np.asarray([value.lat_deg[0] for value in icrs]),
+            coordinate_spec=ICRS_ASTROMETRIC_SPEC,
             labels=[point.label for point in self._points],
             metadata=self._style_metadata(),
+        )
+        return CoordinateService().transform(
+            native,
+            observer_altaz_spec(
+                resolved_observer, provider="wenu celestial points"
+            ),
+            observation=observation_context(resolved_observer),
+        )
+
+    @staticmethod
+    def _native_spec(coord):
+        frame = coord.frame
+        name = frame.name
+        common = {
+            "position_status": PositionStatus.ASTROMETRIC,
+            "provider": "wenu celestial point",
+        }
+        if name == "icrs":
+            return ICRS_ASTROMETRIC_SPEC
+        if name == "galactic":
+            return CoordinateSpec(
+                frame="galactic", origin="galactic-center", **common
+            )
+        if name == "fk5":
+            return CoordinateSpec(
+                frame="fk5",
+                origin="solar-system-barycenter",
+                equinox=str(frame.equinox),
+                **common,
+            )
+        if name in {
+            "barycentricmeanecliptic",
+            "barycentrictrueecliptic",
+        }:
+            kind = (
+                "barycentric-mean-ecliptic"
+                if name == "barycentricmeanecliptic"
+                else "barycentric-true-ecliptic"
+            )
+            return CoordinateSpec(
+                frame=kind,
+                origin="solar-system-barycenter",
+                equinox=str(frame.equinox),
+                **common,
+            )
+        if name == "gcrs":
+            return CoordinateSpec(
+                frame="gcrs",
+                origin="earth-center",
+                instant=str(frame.obstime.isot),
+                time_scale=str(frame.obstime.scale),
+                **common,
+            )
+        raise ValueError(
+            f"Unsupported celestial-point frame: {name!r}."
+        )
+
+    @classmethod
+    def _to_icrs(cls, coord):
+        spherical = coord.spherical
+        native = SphericalPoints(
+            lon_deg=np.asarray([spherical.lon.to_value(u.deg)]),
+            lat_deg=np.asarray([spherical.lat.to_value(u.deg)]),
+            coordinate_spec=cls._native_spec(coord),
+        )
+        return CoordinateService().transform(
+            native, ICRS_ASTROMETRIC_SPEC
         )
 
     def _style_metadata(self):

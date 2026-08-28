@@ -18,9 +18,12 @@ def make_observer(latitude=-33.0):
         galactic_frame="galactic",
         ecliptic_frame="geocentrictrueecliptic",
         t=object(),
-        t_astropy=object(),
+        t_astropy=SimpleNamespace(
+            isot="2026-08-28T00:00:00.000", scale="utc"
+        ),
         lat_deg=latitude,
         lon_deg=-71.5,
+        elevation_m=100.0,
     )
 
 
@@ -52,14 +55,28 @@ def test_single_point_returns_collection_and_style_metadata(monkeypatch):
         fontsize=11,
     )
 
-    def fake_radec_to_altaz(ra, dec, t, lat, lon):
-        np.testing.assert_allclose(ra, [10.0])
-        np.testing.assert_allclose(dec, [-20.0])
-        return np.asarray([35.0]), np.asarray([140.0])
+    def fake_transform(self, geometry, target_spec, observation=None):
+        if target_spec.frame == "icrs":
+            np.testing.assert_allclose(geometry.lon_deg, [10.0])
+            np.testing.assert_allclose(geometry.lat_deg, [-20.0])
+            return SphericalPoints(
+                lon_deg=geometry.lon_deg,
+                lat_deg=geometry.lat_deg,
+                coordinate_spec=target_spec,
+            )
+        assert target_spec.frame == "altaz"
+        assert observation.longitude_deg == observer.lon_deg
+        return SphericalPoints(
+            lon_deg=np.asarray([140.0]),
+            lat_deg=np.asarray([35.0]),
+            coordinate_spec=target_spec,
+            labels=geometry.labels,
+            metadata=geometry.metadata,
+        )
 
     monkeypatch.setattr(
-        "wenu.sky.points.radec_to_altaz",
-        fake_radec_to_altaz,
+        "wenu.sky.points.CoordinateService.transform",
+        fake_transform,
     )
     geometry = points.spherical_geometry(observer)
 

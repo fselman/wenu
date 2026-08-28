@@ -10,6 +10,7 @@ from astropy.coordinates import (
     BarycentricTrueEcliptic,
     EarthLocation,
     FK5,
+    GCRS,
     Galactic,
     ICRS,
     SkyCoord,
@@ -139,6 +140,12 @@ class CoordinateService:
             return ICRS()
         if frame == "galactic":
             return Galactic()
+        if frame == "gcrs":
+            if spec.instant is None:
+                raise ValueError("GCRS coordinates require an instant.")
+            return GCRS(
+                obstime=Time(spec.instant, scale=spec.time_scale)
+            )
         if frame == "fk5":
             return FK5(equinox=Time(spec.equinox or "J2000.0"))
         if frame in {
