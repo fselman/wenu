@@ -11,15 +11,20 @@ DEVELOPER = ROOT / "docs" / "developer"
 ARCHIVE = DEVELOPER / "archive"
 CURRENT = ARCHIVE / "architecture_history" / "current_architecture_v0.7.md"
 IMPLEMENTED = ARCHIVE / "architecture_history" / "target_architecture_v0.7.md"
-V08_CURRENT = DEVELOPER / "current_architecture_v0.8.md"
-TARGET = DEVELOPER / "target_architecture_v0.8.md"
-ROADMAP = DEVELOPER / "wenu_migration_0.7_to_0.8.md"
-V09_TARGET = DEVELOPER / "target_architecture_v0.9.md"
-V09_ROADMAP = DEVELOPER / "wenu_migration_0.8_to_0.9.md"
+V08_CURRENT = ARCHIVE / "architecture_history/current_architecture_v0.8.md"
+TARGET = ARCHIVE / "architecture_history/target_architecture_v0.8.md"
+ROADMAP = ARCHIVE / "migration_history/wenu_migration_0.7_to_0.8.md"
+V09_CURRENT = DEVELOPER / "current_architecture_v0.9.md"
+V09_TARGET = ARCHIVE / "architecture_history/target_architecture_v0.9.md"
+V09_ROADMAP = ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md"
 FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
+V095_TARGET = DEVELOPER / "target_architecture_v0.9.5.md"
+COORDINATE_GUIDE = DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+COORDINATE_GUIDE_ODT = DEVELOPER / "review" / "coordinate_system_guide_v0.9.5.odt"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
-CONFIGURATION_AUDIT = DEVELOPER / "configuration_default_audit.md"
+CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
+DIAGRAMS = DEVELOPER / "diagrams"
 PUBLIC_DOCUMENTS = (
     ROOT / "README.md",
     ROOT / "README.es.md",
@@ -69,9 +74,13 @@ def test_current_architecture_authorities_exist_and_cross_reference():
             V08_CURRENT,
             TARGET,
             ROADMAP,
+            V09_CURRENT,
             V09_TARGET,
             V09_ROADMAP,
             FUTURE_ROADMAP,
+            V095_TARGET,
+            COORDINATE_GUIDE,
+            COORDINATE_GUIDE_ODT,
             INSTRUCTIONS,
         )
         if not path.is_file()
@@ -82,10 +91,10 @@ def test_current_architecture_authorities_exist_and_cross_reference():
     roadmap = read(V09_ROADMAP)
 
     assert "target_architecture_v0.7.md" in current
-    assert "current_architecture_v0.8.md" in target
-    assert "wenu_migration_0.8_to_0.9.md" in target
-    assert "current_architecture_v0.8.md" in roadmap
-    assert "target_architecture_v0.9.md" in roadmap
+    assert "archive/architecture_history/current_architecture_v0.8.md" in target
+    assert "archive/migration_history/wenu_migration_0.8_to_0.9.md" in target
+    assert "archive/architecture_history/current_architecture_v0.8.md" in roadmap
+    assert "archive/architecture_history/target_architecture_v0.9.md" in roadmap
 
 
 def test_historical_documents_are_archived_and_not_active_authorities():
@@ -99,6 +108,9 @@ def test_historical_documents_are_archived_and_not_active_authorities():
         "target_architecture_v0.5.md",
         "target_architecture_v0.6.md",
         "target_architecture_v0.7.md",
+        "current_architecture_v0.8.md",
+        "target_architecture_v0.8.md",
+        "target_architecture_v0.9.md",
     ):
         assert (ARCHIVE / "architecture_history" / name).is_file()
         assert not (DEVELOPER / name).exists()
@@ -106,17 +118,88 @@ def test_historical_documents_are_archived_and_not_active_authorities():
         "wenu_migration_0.4_to_0.5.md",
         "wenu_migration_0.5_to_0.6.md",
         "wenu_migration_0.6_to_0.7.md",
+        "wenu_migration_0.7_to_0.8.md",
+        "wenu_migration_0.8_to_0.9.md",
     ):
         assert (ARCHIVE / "migration_history" / name).is_file()
         assert not (DEVELOPER / name).exists()
     assert (ARCHIVE / "pre_versioned" / "architecture.md").is_file()
 
 
-def test_v08_architecture_and_migration_are_closed():
+def test_current_diagrams_are_an_inspection_interface():
+    readme = read(DIAGRAMS / "README.md")
+    normalized = " ".join(readme.split())
+
+    for name in (
+        "current_architecture_v0.9_overview",
+        "coordinate_transformation_as_is_v0.9",
+        "coordinate_transformation_target_49bc",
+        "coordinate_static_structure_as_is_v0.9",
+        "coordinate_static_structure_target_49bc",
+        "coordinate_runtime_sequence_target_49bc",
+    ):
+        assert (DIAGRAMS / f"{name}.dot").is_file()
+        assert (DIAGRAMS / f"{name}.svg").is_file()
+        assert name in readme
+
+    assert "human inspection interface" in readme
+    assert "49B introduces typed astronomical-state vocabulary" in readme
+    assert "49C introduces one coordinate service" in readme
+    assert "every astronomical object obtains its native position" in readme
+    assert "`ObservationContext` enters only" in readme
+    assert "actual classes" in readme
+    assert "inherits" in readme
+    assert "runtime calls or returns" in normalized
+    assert "No parallel astronomical state hierarchy is proposed" in normalized
+    assert "direct counterpart to the current static-structure" in readme
+    assert "retains the same `SkyLayer` inheritance hierarchy" in readme
+    assert "`PositionProvider` is the boundary for all astronomical objects" in readme
+    assert "requires only another provider implementation" in normalized
+    assert "deliberately large canvas" in readme
+    assert (
+        ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.dot"
+    ).is_file()
+    assert (
+        ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.svg"
+    ).is_file()
+    assert not (DIAGRAMS / "target_architecture_v0.5_combined.dot").exists()
+    assert not (DIAGRAMS / "target_architecture_v0.5_combined.svg").exists()
+
+
+
+def test_v095_coordinate_target_and_living_guide_are_reviewable():
+    target = read(V095_TARGET)
+    guide = read(COORDINATE_GUIDE)
+
+    assert "**Status:** Proposed review baseline; not implemented" in target
+    assert "PositionProvider" in target
+    assert "CoordinateService" in target
+    assert "49B.1" in target
+    assert "49C.4" in target
+    assert "does not claim a\n`v0.9.5` Git tag" in target
+
+    for phrase in (
+        "Position generation versus coordinate transformation",
+        "International Celestial Reference System",
+        "FK5 equatorial coordinates",
+        "Galactic coordinates",
+        "Ecliptic coordinates",
+        "Horizontal AltAz coordinates",
+        "TEME",
+        "Current transformation inventory and 0.9.5 destination",
+        "Wenu object catalogue and provenance",
+        "ESA Hipparcos Catalogue I/239",
+        "OpenNGC",
+        "Gaia DR3",
+        "Minimal architecture 0.9.5 roadmap",
+    ):
+        assert phrase in guide
+
+    assert COORDINATE_GUIDE_ODT.stat().st_size > 10_000
+
+def test_v08_release_evidence_remains_closed():
     target = read(TARGET)
     roadmap = read(ROADMAP)
-    implementation = read(DEVELOPER / "implementation_reference.md")
-    source_tree = read(DEVELOPER / "source_tree.md")
     readme = read(ROOT / "README.md")
 
     assert "**Status:** Implemented" in target
@@ -124,9 +207,28 @@ def test_v08_architecture_and_migration_are_closed():
     assert "**Status:** Complete" in roadmap
     assert "Milestone 46E" in roadmap
     assert "annotated Git tag `v0.8.0`" in roadmap
-    assert "**Architecture version:** 0.8" in implementation
-    assert "**Architecture version:** 0.8" in source_tree
-    assert "Wenu v0.8 user guide" in readme
+    assert "Version 0.8.0 remains the latest tagged" in readme
+
+
+def test_v09_architecture_is_closed_and_current():
+    current = read(V09_CURRENT)
+    target = read(V09_TARGET)
+    roadmap = read(V09_ROADMAP)
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+    readme = read(ROOT / "README.md")
+    instructions = read(INSTRUCTIONS)
+
+    assert "**Status:** Implemented current architecture" in current
+    assert "**Baseline commit:** `5da93cc`" in current
+    assert "optional night edition remains a later appearance experiment" in current.lower()
+    assert "**Status:** Implemented; retained as the accepted design record" in target
+    assert "**Status:** Complete" in roadmap
+    assert "**Current authority:** `current_architecture_v0.9.md`" in roadmap
+    assert "**Architecture version:** 0.9" in implementation
+    assert "**Architecture version:** 0.9" in source_tree
+    assert "v0.9 architecture is complete" in readme
+    assert "current_architecture_v0.9.md" in instructions
 
 
 def test_v09_plan_records_paired_physical_planisphere_contract():
@@ -174,11 +276,9 @@ def test_release_version_comes_from_scm_with_v08_archive_fallback():
 def test_assistant_instructions_name_current_architecture_authorities():
     instructions = read(INSTRUCTIONS)
     for name in (
-        "current_architecture_v0.8.md",
-        "target_architecture_v0.9.md",
-        "wenu_migration_0.8_to_0.9.md",
-        "target_architecture_v0.8.md",
-        "wenu_migration_0.7_to_0.8.md",
+        "current_architecture_v0.9.md",
+        "archive/architecture_history/target_architecture_v0.9.md",
+        "archive/migration_history/wenu_migration_0.8_to_0.9.md",
         "implementation_reference.md",
         "source_tree.md",
         "coordinate_transformation_audit_09a2afd.md",
@@ -528,10 +628,10 @@ def test_public_documents_do_not_recommend_obsolete_imports():
 
 
 def test_polar_physical_style_checkpoint_is_documented():
-    roadmap = read(DEVELOPER / "wenu_migration_0.8_to_0.9.md")
-    architecture = read(DEVELOPER / "current_architecture_v0.8.md")
+    roadmap = read(ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md")
+    architecture = read(ARCHIVE / "architecture_history/current_architecture_v0.8.md")
     reference = read(DEVELOPER / "implementation_reference.md")
-    acceptance = read(DEVELOPER / "visual_acceptance_48e2.md")
+    acceptance = read(ARCHIVE / "acceptance_history/visual_acceptance_48e2.md")
 
     for phrase in (
         "Milestone 48E.2",
@@ -549,9 +649,9 @@ def test_polar_physical_style_checkpoint_is_documented():
 
 
 def test_polar_reference_review_corrections_are_documented():
-    roadmap = read(DEVELOPER / "wenu_migration_0.8_to_0.9.md")
-    target = read(DEVELOPER / "target_architecture_v0.9.md")
-    acceptance = read(DEVELOPER / "visual_acceptance_48e3.md")
+    roadmap = read(ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md")
+    target = read(ARCHIVE / "architecture_history/target_architecture_v0.9.md")
+    acceptance = read(ARCHIVE / "acceptance_history/visual_acceptance_48e3.md")
 
     for phrase in (
         "Milestone 48E.3",
@@ -565,7 +665,7 @@ def test_polar_reference_review_corrections_are_documented():
 
 def test_current_svg_documents_use_one_editable_text_contract():
     roadmap = " ".join(
-        (DEVELOPER / "svg_output_audit_and_plan.md")
+        (ARCHIVE / "milestone_history/49f_svg/svg_output_audit_and_plan.md")
         .read_text(encoding="utf-8")
         .split()
     )
@@ -598,7 +698,7 @@ def test_readmes_advertise_the_svg_user_contract():
 
 def test_svg_paint_order_record_rejects_semantic_inference():
     record = (
-        DEVELOPER / "svg_exact_paint_order_49f4a.md"
+        ARCHIVE / "milestone_history/49f_svg/svg_exact_paint_order_49f4a.md"
     ).read_text(encoding="utf-8")
     normalized = " ".join(record.split())
 
@@ -615,7 +715,7 @@ def test_svg_paint_order_record_rejects_semantic_inference():
 
 def test_svg_semantic_naming_ledger_records_designer_contract():
     ledger = (
-        DEVELOPER / "svg_semantic_naming_ledger_49f5a.md"
+        ARCHIVE / "milestone_history/49f_svg/svg_semantic_naming_ledger_49f5a.md"
     ).read_text(encoding="utf-8")
 
     for value in (
@@ -633,7 +733,7 @@ def test_svg_semantic_naming_ledger_records_designer_contract():
 
 def test_svg_cross_product_acceptance_records_all_products():
     text = (
-        DEVELOPER / "svg_cross_product_acceptance_49f6.md"
+        ARCHIVE / "milestone_history/49f_svg/svg_cross_product_acceptance_49f6.md"
     ).read_text(encoding="utf-8")
 
     for value in (
@@ -655,13 +755,13 @@ def test_svg_cross_product_acceptance_records_all_products():
 
 def test_temporal_sequence_contract_separates_physical_and_playback_time():
     contract = (
-        DEVELOPER / "temporal_sequence_contract_49g1.md"
+        ARCHIVE / "milestone_history/49g_temporal/temporal_sequence_contract_49g1.md"
     ).read_text(encoding="utf-8")
     roadmap = (
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
     ).read_text(encoding="utf-8")
     legacy = (
-        DEVELOPER / "polar_delivery_and_astrometry_roadmap.md"
+        ARCHIVE / "roadmap_history/polar_delivery_and_astrometry_roadmap.md"
     ).read_text(encoding="utf-8")
     implementation = (
         DEVELOPER / "implementation_reference.md"
@@ -688,10 +788,10 @@ def test_temporal_sequence_contract_separates_physical_and_playback_time():
 
 def test_observer_time_sequence_reserves_astrometric_epoch_ownership():
     contract = (
-        DEVELOPER / "observer_time_sequence_49g2.md"
+        ARCHIVE / "milestone_history/49g_temporal/observer_time_sequence_49g2.md"
     ).read_text(encoding="utf-8")
     timeline = (
-        DEVELOPER / "temporal_sequence_contract_49g1.md"
+        ARCHIVE / "milestone_history/49g_temporal/temporal_sequence_contract_49g1.md"
     ).read_text(encoding="utf-8")
     roadmap = (
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
@@ -729,7 +829,7 @@ def test_observer_time_sequence_reserves_astrometric_epoch_ownership():
 
 def test_sequence_manifest_documents_safe_restart_and_resume():
     contract = (
-        DEVELOPER / "sequence_manifest_49g3.md"
+        ARCHIVE / "milestone_history/49g_temporal/sequence_manifest_49g3.md"
     ).read_text(encoding="utf-8")
     roadmap = (
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
@@ -766,7 +866,7 @@ def test_sequence_manifest_documents_safe_restart_and_resume():
 
 def test_temporal_sequence_cli_documents_shared_translation_and_acceptance():
     contract = (
-        DEVELOPER / "temporal_sequence_cli_49g4.md"
+        ARCHIVE / "milestone_history/49g_temporal/temporal_sequence_cli_49g4.md"
     ).read_text(encoding="utf-8")
     roadmap = (
         DEVELOPER / "post_v0.9_architecture_roadmap.md"

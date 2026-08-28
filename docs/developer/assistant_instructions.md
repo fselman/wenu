@@ -28,20 +28,24 @@ Previous conversations may explain intent but do not override the repository.
 
 ## Architectural authority
 
-For the active v0.9 migration, read and follow:
+For current work, read and follow:
 
-- `current_architecture_v0.8.md` as the implemented baseline;
-- `target_architecture_v0.9.md` as the proposed target;
-- `wenu_migration_0.8_to_0.9.md` as the active roadmap;
-- `target_architecture_v0.8.md` as the implemented architecture;
-- `wenu_migration_0.7_to_0.8.md` as the completed roadmap;
+- `current_architecture_v0.9.md` as the implemented architecture authority;
+- `post_v0.9_architecture_roadmap.md` as the active milestone roadmap;
+- `archive/architecture_history/target_architecture_v0.9.md` and `archive/migration_history/wenu_migration_0.8_to_0.9.md` only as
+  accepted design and completed-migration evidence;
 - `implementation_reference.md` as the current API reference;
 - `source_tree.md` as the current responsibility map;
-- `coordinate_transformation_audit_09a2afd.md` for coordinate, frame, time,
-  observer, astrometry, planet, or satellite work;
-- `post_v0.9_architecture_roadmap.md` for accepted future coordinate, SVG,
+- `diagrams/README.md` and its current SVGs as the human inspection view of
+  ownership, process flow, and architectural change seams;
+- `target_architecture_v0.9.5.md` and
+  `coordinate_system_guide_v0.9.5.md` for proposed 49B/49C coordinate,
+  provider, frame, time, provenance, planet, or satellite work;
+- `coordinate_transformation_audit_09a2afd.md` for the as-is coordinate
+  evidence that motivates that target;
+- `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
-- `svg_output_audit_and_plan.md` for SVG product, font, verification,
+- `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,
   constellation-artwork, or 2D/3D-boundary work.
 
 Documents under `docs/developer/archive/` are historical evidence, not active

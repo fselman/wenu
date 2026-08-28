@@ -14,11 +14,12 @@ southern South America.
 
 ## Project status
 
-Wenu remains under active development. The v0.8 architecture migration is
-complete and released as version 0.8.0.
-One composition and export workflow serves
-all chart types, styles, output modes, detail policies, and legends. Public
-APIs may still change before release.
+Wenu remains under active development. The v0.9 architecture is complete at
+the accepted repository baseline. Version 0.8.0 remains the latest tagged
+release; repository builds derive their version from Git through
+setuptools-scm. One composition and export workflow serves all chart types,
+styles, output modes, detail policies, and legends. Public APIs may still
+change before a future tagged release.
 
 See `LICENSE` for the current usage terms.
 
@@ -194,14 +195,13 @@ The principal packages are:
 
 Developer references:
 
-- `docs/developer/current_architecture_v0.8.md` (implemented baseline);
-- `docs/developer/target_architecture_v0.9.md` (proposed architecture);
-- `docs/developer/wenu_migration_0.8_to_0.9.md` (active roadmap);
-- `docs/developer/post_v0.9_architecture_roadmap.md` (accepted future
-  coordinate, SVG, and temporal direction);
-- `docs/developer/target_architecture_v0.8.md` (implemented architecture);
-- `docs/developer/implementation_reference.md` (current v0.8 APIs);
-- `docs/developer/wenu_migration_0.7_to_0.8.md` (completed roadmap);
+- `docs/developer/current_architecture_v0.9.md` (implemented authority);
+- `docs/developer/post_v0.9_architecture_roadmap.md` (active coordinate, SVG,
+  and temporal roadmap);
+- `docs/developer/implementation_reference.md` (current public APIs);
+- `docs/developer/source_tree.md` (current responsibility map);
+- `docs/developer/archive/architecture_history/target_architecture_v0.9.md` (accepted design record);
+- `docs/developer/archive/migration_history/wenu_migration_0.8_to_0.9.md` (completed migration);
 - `docs/developer/archive/README.md` (historical architecture and migration
   index);
 - `docs/developer/deprecations_v0.5.md`.

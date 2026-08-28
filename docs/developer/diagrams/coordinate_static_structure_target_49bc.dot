@@ -1,0 +1,81 @@
+digraph coordinate_static_target {
+  graph [rankdir=LR, bgcolor="white", fontname="Helvetica", fontsize=17,
+    label="Wenu coordinate static structure after 49B/49C — complete proposed classes, data, procedures, and ownership",
+    labelloc="t", nodesep=0.42, ranksep=0.62, pad=0.35, size="30,18!"];
+  node [shape=record, style="filled", fillcolor="#f7f7f7", color="#555555", fontname="Helvetica", fontsize=9];
+  edge [color="#555555", fontname="Helvetica", fontsize=8, arrowsize=0.72];
+  subgraph cluster_position {
+    label="src/wenu/positions.py — astronomical position generation"; color="#8064a2";
+    PositionProvider [label="{PositionProvider «Protocol»|position(instant) -> SphericalPoints|generates native positions; never transforms/projects}", fillcolor="#e4dfec"];
+    StarProvider [label="{objects/stars.py::Stars|catalogue position; reference epoch; proper motion; parallax; radial motion|position(instant)}", fillcolor="#e4dfec"];
+    DsoProvider [label="{objects/nonstellar.py::NonStellar|catalogue position; native frame; provenance|position(instant)}", fillcolor="#e4dfec"];
+    SolarProvider [label="{SolarSystemEphemerisProvider «later»|Moon and planet ephemeris evaluation|position(instant)}", fillcolor="#fff2cc", style="rounded,dashed,filled"];
+    OrbitProvider [label="{OrbitPositionProvider «later»|asteroid/comet orbit or satellite propagation|position(instant)}", fillcolor="#fff2cc", style="rounded,dashed,filled"];
+    StarProvider -> PositionProvider [arrowhead=empty, style=dashed, label="implements"];
+    DsoProvider -> PositionProvider [arrowhead=empty, style=dashed, label="implements"];
+    SolarProvider -> PositionProvider [arrowhead=empty, style=dashed, label="implements"];
+    OrbitProvider -> PositionProvider [arrowhead=empty, style=dashed, label="implements"];
+  }
+  subgraph cluster_layers {
+    label="src/wenu/sky/ + objects/ — existing composition and inheritance retained"; color="#8064a2";
+    SkyLayer [label="{SkyLayer «ABC»|spherical_geometry(observer)}"];
+    AstronomicalObject [label="AstronomicalObject"]; GeometricalObject [label="GeometricalObject"];
+    CoordinatesGrid [label="{CoordinatesGrid «ABC»|parallel(); meridian(); grid(); spherical_geometry()}"];
+    AltAzGrid [label="AltAzGrid"]; EquatorialGrid [label="EquatorialGrid"];
+    EclipticGrid [label="EclipticGrid"]; GalacticGrid [label="GalacticGrid"];
+    CelestialPoints [label="{CelestialPoints|reference point definitions; spherical_geometry()}"];
+    ReferenceProvider [label="{ReferenceGeometryProvider «Protocol»|geometry() -> Spherical* + CoordinateSpec|constructed references; not object positions}", fillcolor="#d9eaf7"];
+    CelestialSphere [label="{CelestialSphere|layers: tuple[SkyLayer]|add(); draw_chart()}"];
+    AstronomicalObject -> SkyLayer [arrowhead=empty, label="inherits"]; GeometricalObject -> SkyLayer [arrowhead=empty, label="inherits"];
+    StarProvider -> AstronomicalObject [arrowhead=empty, label="inherits"]; DsoProvider -> AstronomicalObject [arrowhead=empty, label="inherits"];
+    CoordinatesGrid -> GeometricalObject [arrowhead=empty, label="inherits"]; CelestialPoints -> GeometricalObject [arrowhead=empty, label="inherits"];
+    AltAzGrid -> CoordinatesGrid [arrowhead=empty]; EquatorialGrid -> CoordinatesGrid [arrowhead=empty];
+    EclipticGrid -> CoordinatesGrid [arrowhead=empty]; GalacticGrid -> CoordinatesGrid [arrowhead=empty];
+    CoordinatesGrid -> ReferenceProvider [arrowhead=empty, style=dashed, label="implements"];
+    CelestialPoints -> ReferenceProvider [arrowhead=empty, style=dashed, label="implements"];
+    CelestialSphere -> SkyLayer [dir=both, arrowtail=diamond, arrowhead=none, label="contains 0..*"];
+  }
+  subgraph cluster_geometry {
+    label="src/wenu/geometry/spherical.py — common interchange geometry"; color="#70ad47";
+    GeometryUnion [label="SphericalGeometry = Points | Curves | Polygons | Grid", fillcolor="#e2f0d9"];
+    Points [label="{SphericalPoints «dataclass»|lon_deg; lat_deg; ids; labels; metadata|coordinate_spec: CoordinateSpec}", fillcolor="#e2f0d9"];
+    Curves [label="{SphericalCurves «dataclass»|coordinate collections; topology; metadata|coordinate_spec: CoordinateSpec}", fillcolor="#e2f0d9"];
+    Polygons [label="{SphericalPolygons «dataclass»|rings; topology; metadata|coordinate_spec: CoordinateSpec}", fillcolor="#e2f0d9"];
+    Grid [label="{SphericalGrid «dataclass»|curves: mapping[str, SphericalCurves]|coordinate_spec: CoordinateSpec}", fillcolor="#e2f0d9"];
+    GeometryUnion -> Points [arrowhead=empty, style=dashed]; GeometryUnion -> Curves [arrowhead=empty, style=dashed];
+    GeometryUnion -> Polygons [arrowhead=empty, style=dashed]; GeometryUnion -> Grid [arrowhead=empty, style=dashed];
+    Grid -> Curves [dir=both, arrowtail=diamond, arrowhead=none, label="contains"];
+    PositionProvider -> Points [style=dashed, label="returns"]; ReferenceProvider -> GeometryUnion [style=dashed, label="returns"];
+  }
+  subgraph cluster_coordinates {
+    label="src/wenu/coordinates.py — sole transformation authority"; color="#548235";
+    CoordinateSpec [label="{CoordinateSpec «frozen dataclass»|frame; origin; epoch/equinox; instant; time scale|position status; units/representation; provenance}", fillcolor="#e2f0d9"];
+    ObservationContext [label="{ObservationContext «frozen dataclass»|location; instant; time scale|atmosphere/refraction and Earth-orientation policy}", fillcolor="#fff2cc"];
+    CoordinateService [label="{CoordinateService|transform(geometry: SphericalGeometry, target: CoordinateSpec, observation: ObservationContext or None = None) -> same geometry kind|validate(); build Astropy frame; transform arrays; preserve topology/metadata}", fillcolor="#e2f0d9"];
+    Observer [label="{observer.py::Observer|location; time|observation_context()}", fillcolor="#fce4d6"];
+    Legacy [label="{coordinates.py::radec_to_altaz()|retired or temporary wrapper}", fillcolor="#f4cccc"];
+    Observer -> ObservationContext [style=dashed, label="constructs"]; Legacy -> CoordinateService [style=dashed, label="delegates"];
+    CoordinateService -> CoordinateSpec [dir=both, arrowtail=diamond, arrowhead=none, label="uses source + target"];
+    CoordinateService -> ObservationContext [style=dashed, label="optional local path"];
+    Points -> CoordinateSpec [style=dashed, label="carries"]; Curves -> CoordinateSpec [style=dashed, label="carries"];
+    Polygons -> CoordinateSpec [style=dashed, label="carries"]; Grid -> CoordinateSpec [style=dashed, label="carries"];
+    GeometryUnion -> CoordinateService [style=dashed, label="transform() input/output"];
+  }
+  subgraph cluster_charts {
+    label="src/wenu/charts/ + geometry/frame.py — consumers; astronomical transformation removed"; color="#5b9bd5";
+    ProjectionSelection [label="{ProjectionSelection «frozen dataclass»|name; target_coordinate_spec: CoordinateSpec|build()}", fillcolor="#d9eaf7"];
+    CoordinateFrames [label="{charts/coordinate_frames.py|removed or temporary CoordinateService wrapper}", fillcolor="#f4cccc"];
+    SphericalCoordinates [label="{SphericalCoordinates «frozen dataclass»|lon_deg; lat_deg}", fillcolor="#e2f0d9"];
+    SphericalFrame [label="{SphericalFrame «frozen dataclass»|pole; position_angle; rotation_matrix|transform(); inverse_transform()|projection alignment only}", fillcolor="#e2f0d9"];
+    Projection [label="{Projection|project(); domain guard|coordinate-neutral}", fillcolor="#d9eaf7"];
+    Clipping [label="{Clipping + viewport|clip projected topology}", fillcolor="#d9eaf7"];
+    Preparation [label="{Chart preparation|prepared graphical records}", fillcolor="#d9eaf7"];
+    Renderer [label="{Renderer + furniture + export|unchanged output realization}", fillcolor="#d9eaf7"];
+    ProjectionSelection -> CoordinateSpec [style=dashed, label="declares target"];
+    CoordinateFrames -> CoordinateService [style=dashed, label="delegates during migration"];
+    CoordinateService -> SphericalFrame [style=dashed, label="resolved geometry"];
+    ProjectionSelection -> SphericalFrame [style=dashed, label="alignment request"];
+    SphericalFrame -> SphericalCoordinates [style=dashed, label="returns"];
+    SphericalFrame -> Projection -> Clipping -> Preparation -> Renderer;
+  }
+}

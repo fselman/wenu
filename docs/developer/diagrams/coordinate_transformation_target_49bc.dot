@@ -1,0 +1,26 @@
+digraph coordinate_target_49bc {
+  graph [rankdir=TB, bgcolor="white", fontname="Helvetica", fontsize=16,
+    label="Wenu coordinate architecture after 49B/49C — common provider boundary",
+    labelloc="t", nodesep=0.42, ranksep=0.58, pad=0.28];
+  node [shape=box, style="rounded,filled", fillcolor="#f7f7f7", color="#555555", fontname="Helvetica", fontsize=10];
+  edge [color="#555555", fontname="Helvetica", fontsize=8, arrowsize=0.72];
+  provider [label="PositionProvider «Protocol»\nposition(instant) -> SphericalPoints + CoordinateSpec", fillcolor="#e4dfec", color="#8064a2"];
+  stars [label="Star catalogue provider\ncatalogue epoch + space motion", fillcolor="#e4dfec"];
+  dso [label="Deep-sky catalogue provider\ncatalogue position", fillcolor="#e4dfec"];
+  solar [label="Solar-system ephemeris provider (later)\nMoon + planets", fillcolor="#fff2cc", style="rounded,dashed,filled"];
+  orbit [label="Orbit provider (later)\nasteroids + comets + satellites", fillcolor="#fff2cc", style="rounded,dashed,filled"];
+  references [label="ReferenceGeometryProvider\ngrids + equators + ecliptic + planes + poles", fillcolor="#d9eaf7"];
+  geometry [label="SphericalPoints / Curves / Polygons / Grid\ncarrying immutable CoordinateSpec", fillcolor="#e2f0d9", color="#548235"];
+  target [label="Target CoordinateSpec\ndeclared by chart/product", fillcolor="#d9eaf7"];
+  observation [label="ObservationContext (optional)\nobserver location + instant + local policy", fillcolor="#fff2cc"];
+  service [label="CoordinateService.transform()\nsole astronomical transformation owner\nAstropy-backed; preserves geometry kind and topology", fillcolor="#e2f0d9", color="#548235"];
+  resolved [label="Same Spherical* kind\ncarrying resolved CoordinateSpec", fillcolor="#e2f0d9"];
+  downstream [label="SphericalFrame alignment -> projection -> clipping\n-> preparation -> renderer -> export\nunchanged and coordinate-neutral", fillcolor="#d9eaf7"];
+  stars -> provider [arrowhead=empty, label="implements"]; dso -> provider [arrowhead=empty, label="implements"];
+  solar -> provider [arrowhead=empty, label="implements later"]; orbit -> provider [arrowhead=empty, label="implements later"];
+  provider -> geometry [label="positions"]; references -> geometry [label="constructed reference geometry"];
+  geometry -> service [label="source spec travels with geometry"]; target -> service [label="target"];
+  observation -> service [style=dashed, label="only when observer-local"];
+  service -> resolved -> downstream;
+  invariant [shape=note, fillcolor="#ffffff", label="Adding a new astronomical object changes only its PositionProvider.\nCoordinateService, geometry, projection, and rendering do not change."];
+}

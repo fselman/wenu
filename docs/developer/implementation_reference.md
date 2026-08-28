@@ -1,8 +1,8 @@
 # Wenu implementation reference
 
-**Architecture version:** 0.8
+**Architecture version:** 0.9
 **Status:** Implemented
-**Date:** 2026-08-15
+**Date:** 2026-08-28
 
 This reference records the implemented public chart workflow. Lower-level
 geometry, projection, preparation, and rendering APIs remain available for
@@ -1350,7 +1350,7 @@ The runner invokes the real command module once per product and writes 18
 PNGs plus `manifest.json` below `output/46d8-visual-matrix/`. Use `--list` to
 inspect the matrix or repeated `--entry NAME` options to rerender selected
 products. The review and approval contract is
-`docs/developer/visual_acceptance_46d8.md`.
+`docs/developer/archive/acceptance_history/visual_acceptance_46d8.md`.
 
 The matrix intentionally assigns one independently visible role to each mask
 diagnostic. Outside-mask openings compose by union, so a constellation opening

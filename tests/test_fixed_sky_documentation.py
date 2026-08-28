@@ -5,11 +5,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEVELOPER = ROOT / "docs" / "developer"
-
+FIXED_SKY_HISTORY = (
+    DEVELOPER / "archive" / "milestone_history" / "49h_fixed_sky"
+)
 
 def test_fixed_sky_contract_separates_celestial_and_local_time_owners():
     contract = (
-        DEVELOPER / "fixed_sky_rotating_horizon_49h1.md"
+        FIXED_SKY_HISTORY / "fixed_sky_rotating_horizon_49h1.md"
     ).read_text(encoding="utf-8")
     roadmap = (
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
@@ -35,10 +37,9 @@ def test_fixed_sky_contract_separates_celestial_and_local_time_owners():
     assert "FixedSkyRotatingHorizonSequenceRequest" in implementation
     assert "charts/fixed_sky_sequence.py" in source_tree
 
-
 def test_fixed_sky_baseline_documents_complete_rendering_limits():
     contract = (
-        DEVELOPER / "fixed_sky_complete_render_baseline_49h2.md"
+        FIXED_SKY_HISTORY / "fixed_sky_complete_render_baseline_49h2.md"
     ).read_text(encoding="utf-8")
     roadmap = (
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
@@ -67,11 +68,9 @@ def test_fixed_sky_baseline_documents_complete_rendering_limits():
     assert "generate_fixed_sky_complete_render_baseline()" in implementation
     assert "charts/fixed_sky_baseline.py" in source_tree
 
-
-
 def test_fixed_sky_reference_documents_accepted_target_behavior():
     contract = (
-        DEVELOPER / "fixed_sky_reference_rendering_49h3.md"
+        FIXED_SKY_HISTORY / "fixed_sky_reference_rendering_49h3.md"
     ).read_text(encoding="utf-8")
     roadmap = (
         DEVELOPER / "post_v0.9_architecture_roadmap.md"

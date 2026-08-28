@@ -177,6 +177,20 @@ choose hidden equinox defaults.
 
 ## 5. Canonical target contract
 
+The target ownership and flow are summarized visually in
+`diagrams/coordinate_transformation_target_49bc.svg`; the Graphviz source is
+`diagrams/coordinate_transformation_target_49bc.dot`. The minimal proposed type placement and runtime calls are shown separately in
+`diagrams/coordinate_static_structure_target_49bc.svg` and
+`diagrams/coordinate_runtime_sequence_target_49bc.svg`. They retain the current hierarchy and geometry family. Every astronomical
+object implements the common `PositionProvider` boundary; constructed grids
+and planes use a distinct `ReferenceGeometryProvider`. Both produce existing
+`Spherical*` geometry carrying `CoordinateSpec`. `coordinates.py` owns
+`CoordinateSpec`, `ObservationContext`, and the sole `CoordinateService`.
+Future Moon, planet, comet, asteroid, and satellite providers enter through
+that same boundary without modifying the service or any projection/rendering
+owner.
+
+
 ### 5.1 Canonical celestial interchange frame
 
 ICRS is Wenu's canonical celestial interchange frame for catalogue objects
