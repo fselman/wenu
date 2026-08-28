@@ -1478,3 +1478,46 @@ schema-version-1 `[sequence]` table. Packaged values disable sequence output.
 User overlays may provide a complete sequence, and explicit CLI values take
 precedence. The effective configuration reaches every frame and participates
 in deterministic manifest identity.
+
+## Fixed-sky rotating-horizon planning
+
+`FixedSkyRotatingHorizonSequenceRequest` plans an Earth-rotation presentation
+with one explicit aware `celestial_anchor_time` and a
+`TemporalTimeline` of observer-local instants. Its frames keep the celestial
+request and camera time fixed while exposing a separate local observer for
+horizon, cardinal, AltAz, visibility, and mask realization.
+
+This is a planning boundary only. The accepted implementation continues to use
+complete observer-time renders as its oracle; optimized canonical rendering
+and scientifically keyed reuse are later 49H increments. The celestial anchor
+is not a catalogue reference epoch and does not replace future provider-owned
+proper-motion realization.
+
+The 49H.2 independent current-behavior baseline is
+`generate_fixed_sky_complete_render_baseline()`, which produces complete canonical circumpolar observer-time renders in a
+separate directory. Visual acceptance showed that celestial content rotates,
+so these frames are not the fixed-sky pixel oracle.
+`compare_png_frames()` reports explicit RGBA difference metrics evaluated
+against `PngFrameComparisonTolerance`; exact equality is the default.
+Other chart families remain outside this oracle until stable-camera
+equivalence is proved.
+
+
+
+## Fixed-sky reference rendering (Milestone 49H.3)
+
+`fixed_sky_circumpolar_orientation()` derives one anchor-relative
+circumpolar position angle from the actual celestial-to-horizontal
+transformation at the anchor and frame instants. It keeps a fixed celestial
+reference at identical projected coordinates while rotating local horizon and
+AltAz geometry. It does not use a 15-degree-per-hour approximation.
+
+`resolve_fixed_sky_rotating_horizon_frame()` preserves dual-time ownership
+while producing an ordinary frame-local `ChartRequest` whose only projection
+change is `position_angle_deg`.
+
+`generate_fixed_sky_rotating_horizon_sequence()` is the accepted uncached
+reference executor. It sends every resolved frame through
+`generate_chart_request()`; no alternate sphere, projection, renderer,
+furniture, or export path exists. Scientifically keyed reuse and
+restart/resume support remain future work.

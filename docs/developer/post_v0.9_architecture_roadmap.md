@@ -220,6 +220,22 @@ second. Presentation speed must never be mistaken for physical time.
 
 ## 11. Milestone 49H - Fixed sky and rotating horizon
 
+**Status:** 49H.1 fixed celestial-anchor and frame-local observer planning
+contract implemented.
+
+**Status:** 49H.2 complete-render circumpolar baseline implemented,
+visually characterized, and accepted as the record of prior behavior.
+
+**Status:** 49H.3 renderer-neutral anchor transformation, canonical uncached
+reference rendering, geometry proof, and visual acceptance complete. The
+celestial scene remains fixed while the horizon and AltAz grid rotate.
+Scientifically keyed reuse remains pending.
+
+The ownership, baseline, and accepted reference contracts are documented in
+`fixed_sky_rotating_horizon_49h1.md`,
+`fixed_sky_complete_render_baseline_49h2.md`, and
+`fixed_sky_reference_rendering_49h3.md`.
+
 Use the temporal contract to support the Earth-rotation presentation:
 
 - stars, constellation geometry, and celestial reference grids remain fixed

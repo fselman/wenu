@@ -792,3 +792,36 @@ immutable `ChartRequest` used by ordinary drawing. The installed
 `cli/chart.py` chooses static drawing or the existing sequence orchestrator
 after this common translation; it does not own another scientific or export
 pipeline.
+
+`charts/fixed_sky_sequence.py` owns the 49H.1 renderer-neutral planning
+contract for one fixed celestial/camera anchor and per-frame observer-local
+instants. It produces separate immutable celestial requests and local observer
+values without rendering, caching, manifest mutation, or a second execution
+pipeline. Catalogue reference epochs and proper-motion policy remain provider
+state rather than UTC timeline values.
+
+`charts/fixed_sky_baseline.py` owns the 49H.2 independent circumpolar
+complete-render baseline adapter and explicit RGBA comparison measurements. It
+delegates baseline generation to the ordinary observer-time static pipeline,
+keeps candidate and baseline directories separate, rejects unproved chart
+families, and contains no optimized renderer or cache.
+
+`tools/render_49h2_complete_render_baseline.py` is the reproducible
+characterization adapter for that baseline. It selects both celestial and observer-local
+content, invokes only the public oracle boundary, and records hashes,
+dimensions, timeline instants, and manifest identity in JSON.
+
+
+
+### Fixed-sky reference rendering (Milestone 49H.3)
+
+- `charts/fixed_sky_orientation.py` owns the renderer-neutral astronomical
+  anchor rotation and its explicit provenance.
+- `charts/fixed_sky_sequence.py` resolves planned dual-time frames into
+  ordinary local-time chart requests and provides the deliberately uncached
+  canonical reference executor.
+- `tests/test_fixed_sky_orientation.py` proves fixed celestial projection and
+  moving local-horizon projection without asserting a guessed sidereal angle.
+- `tools/render_49h3_fixed_sky_reference.py` produces the visually accepted
+  fixed-sky/rotating-horizon audit and records per-frame orientation metadata,
+  dimensions, and hashes.
