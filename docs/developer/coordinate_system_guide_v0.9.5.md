@@ -8,7 +8,7 @@ lang: en
 
 # Status and purpose
 
-**Status:** Living review edition; 49B.1–49B.3 and 49C.1 are accepted, and 49C.2 is a candidate.
+**Status:** Living review edition; 49B.1–49B.3 and 49C.1 are merged, and the 49C.2 implementation is accepted pending merge.
 
 This is the living scientific guide for Wenu's coordinate systems,
 transformations, astronomical objects, and constructed celestial references.
