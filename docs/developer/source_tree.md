@@ -800,14 +800,14 @@ values without rendering, caching, manifest mutation, or a second execution
 pipeline. Catalogue reference epochs and proper-motion policy remain provider
 state rather than UTC timeline values.
 
-`charts/fixed_sky_oracle.py` owns the 49H.2 independent circumpolar
+`charts/fixed_sky_baseline.py` owns the 49H.2 independent circumpolar
 complete-render baseline adapter and explicit RGBA comparison measurements. It
 delegates baseline generation to the ordinary observer-time static pipeline,
 keeps candidate and baseline directories separate, rejects unproved chart
 families, and contains no optimized renderer or cache.
 
-`tools/render_49h2_fixed_sky_oracle.py` is the reproducible real-render
-acceptance adapter for that oracle. It selects both celestial and observer-local
+`tools/render_49h2_complete_render_baseline.py` is the reproducible
+characterization adapter for that baseline. It selects both celestial and observer-local
 content, invokes only the public oracle boundary, and records hashes,
 dimensions, timeline instants, and manifest identity in JSON.
 
