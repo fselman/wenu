@@ -240,6 +240,7 @@ from types import SimpleNamespace
 
 import numpy as np
 
+from wenu.coordinates import ICRS_ASTROMETRIC_SPEC
 from wenu.sky.coordinate_grids import (
     CoordinatesGrid,
     SphericalCoordinatesGrid,
@@ -251,11 +252,8 @@ from wenu.geometry.spherical import SphericalCurves, SphericalGrid
 class StubGrid(CoordinatesGrid):
     coordinate_system = "test"
 
-    def _native_to_icrs(self, longitude_deg, latitude_deg):
-        return (
-            np.asarray(longitude_deg) + 10.0,
-            np.asarray(latitude_deg) - 5.0,
-        )
+    def _native_coordinate_spec(self):
+        return ICRS_ASTROMETRIC_SPEC
 
 
 def observer(time):
@@ -266,6 +264,25 @@ def observer(time):
         ),
         lat_deg=-33.0,
         lon_deg=-71.5,
+        elevation_m=0.0,
+    )
+
+
+def patch_coordinate_service(monkeypatch):
+    def fake_transform(self, geometry, target_spec, observation=None):
+        seconds = float(observation.instant.rsplit(":", 1)[-1])
+        return SphericalCurves(
+            lon_deg=tuple(values + seconds for values in geometry.lon_deg),
+            lat_deg=tuple(values + seconds for values in geometry.lat_deg),
+            coordinate_spec=target_spec,
+            names=geometry.names,
+            closed=geometry.closed,
+            metadata=geometry.metadata,
+        )
+
+    monkeypatch.setattr(
+        "wenu.sky.coordinate_grids.CoordinateService.transform",
+        fake_transform,
     )
 
 
@@ -277,13 +294,7 @@ def test_grid_hierarchy_and_compatibility_alias():
 def test_parallel_and_meridian_return_spherical_collections(monkeypatch):
     grid = StubGrid(observer(1.0), samples=5)
 
-    def fake_transform(ra, dec, time, lat, lon):
-        return np.asarray(dec) + time, np.asarray(ra) + time
-
-    monkeypatch.setattr(
-        "wenu.sky.coordinate_grids.radec_to_altaz",
-        fake_transform,
-    )
+    patch_coordinate_service(monkeypatch)
     parallel = grid.parallel(20.0, style={"linewidth": 1.5})
     meridian = grid.meridian(30.0)
 
@@ -296,10 +307,7 @@ def test_parallel_and_meridian_return_spherical_collections(monkeypatch):
 
 
 def test_complete_grid_preserves_component_groups(monkeypatch):
-    monkeypatch.setattr(
-        "wenu.sky.coordinate_grids.radec_to_altaz",
-        lambda ra, dec, *args: (np.asarray(dec), np.asarray(ra)),
-    )
+    patch_coordinate_service(monkeypatch)
     geometry = StubGrid(observer(0.0), samples=5).grid(
         longitudes=[0.0, 90.0],
         latitudes=[-30.0, 30.0],
@@ -313,13 +321,7 @@ def test_complete_grid_preserves_component_groups(monkeypatch):
 
 
 def test_coordinate_geometry_uses_observer_time(monkeypatch):
-    def fake_transform(ra, dec, time, lat, lon):
-        return np.asarray(dec) + time, np.asarray(ra) + time
-
-    monkeypatch.setattr(
-        "wenu.sky.coordinate_grids.radec_to_altaz",
-        fake_transform,
-    )
+    patch_coordinate_service(monkeypatch)
     first = StubGrid(observer(1.0), samples=5).parallel(0.0)
     second = StubGrid(observer(4.0), samples=5).parallel(0.0)
 
