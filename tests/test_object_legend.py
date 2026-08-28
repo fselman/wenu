@@ -239,7 +239,7 @@ def test_metadata_uses_last_registered_coordinate_grid(monkeypatch):
 def test_explicit_grid_overrides_registered_grid(monkeypatch):
     import wenu.charts.legend_metadata as module
 
-    monkeypatch.setattr(module, "SkyCoord", FakeSkyCoord)
+    patch_center_transform(monkeypatch, module)
     registered = SimpleNamespace(
         coordinate_system="equatorial",
         frame="fk5",
@@ -258,7 +258,7 @@ def test_explicit_grid_overrides_registered_grid(monkeypatch):
 def test_icrs_has_no_fictitious_epoch(monkeypatch):
     import wenu.charts.legend_metadata as module
 
-    monkeypatch.setattr(module, "SkyCoord", FakeSkyCoord)
+    patch_center_transform(monkeypatch, module)
     grid = SimpleNamespace(
         coordinate_system="equatorial",
         frame="icrs",
@@ -341,7 +341,7 @@ def test_compact_chart_context_lines_are_independently_selectable(
 ):
     import wenu.charts.legend_metadata as module
 
-    monkeypatch.setattr(module, "SkyCoord", FakeSkyCoord)
+    patch_center_transform(monkeypatch, module)
     grid = SimpleNamespace(
         coordinate_system="equatorial",
         frame="fk5",
