@@ -115,7 +115,7 @@ from .temporal import (
     TemporalTimeline,
     TimeScale,
 )
-from .charts.fixed_sky_oracle import (
+from .charts.fixed_sky_baseline import (
     PngFrameComparison,
     PngFrameComparisonTolerance,
     compare_png_frames,
