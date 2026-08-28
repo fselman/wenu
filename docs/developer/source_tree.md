@@ -792,3 +792,11 @@ immutable `ChartRequest` used by ordinary drawing. The installed
 `cli/chart.py` chooses static drawing or the existing sequence orchestrator
 after this common translation; it does not own another scientific or export
 pipeline.
+
+`charts/fixed_sky_sequence.py` owns the 49H.1 renderer-neutral planning
+contract for one fixed celestial/camera anchor and per-frame observer-local
+instants. It produces separate immutable celestial requests and local observer
+values without rendering, caching, manifest mutation, or a second execution
+pipeline. Catalogue reference epochs and proper-motion policy remain provider
+state rather than UTC timeline values.
+
