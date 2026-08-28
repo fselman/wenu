@@ -78,7 +78,7 @@ segmentation, polygon rings, and semantic topology.
 
 ### 49C.2 — Migrate transformations
 
-**Implementation status:** Candidate on the dedicated 49C.2 branch.
+**Implementation status:** Accepted on the dedicated 49C.2 branch; merge pending.
 
 Migrate in this order:
 
