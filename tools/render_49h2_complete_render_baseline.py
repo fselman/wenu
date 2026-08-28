@@ -42,7 +42,7 @@ def parser() -> argparse.ArgumentParser:
     value.add_argument("--display-timezone", default=DEFAULT_TIMEZONE)
     value.add_argument("--location", default="La Ligua")
     value.add_argument("--pole", choices=("north", "south"), default="south")
-    value.add_argument("--limiting-declination", type=float, default=-60.0)
+    value.add_argument("--limiting-declination", type=float, default=-50.0)
     value.add_argument(
         "--restart-policy",
         choices=("restart", "resume"),
