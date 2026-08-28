@@ -119,8 +119,8 @@ from .charts.fixed_sky_oracle import (
     PngFrameComparison,
     PngFrameComparisonTolerance,
     compare_png_frames,
-    fixed_sky_full_render_oracle_request,
-    generate_fixed_sky_full_render_oracle,
+    fixed_sky_complete_render_baseline_request,
+    generate_fixed_sky_complete_render_baseline,
 )
 from .charts.fixed_sky_sequence import (
     FixedSkyRotatingHorizonFrame,
