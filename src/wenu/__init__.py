@@ -115,6 +115,10 @@ from .temporal import (
     TemporalTimeline,
     TimeScale,
 )
+from .charts.fixed_sky_sequence import (
+    FixedSkyRotatingHorizonFrame,
+    FixedSkyRotatingHorizonSequenceRequest,
+)
 from .charts.sequence import (
     ObserverTimeChartSequenceFrame,
     ObserverTimeChartSequenceFrameResult,
