@@ -1,6 +1,6 @@
 # Wenu test-suite audit: Milestone 49A.2A
 
-**Status:** Initial classification and routine-gate repair implemented  
+**Status:** Implemented and locally accepted  
 **Baseline:** `8f66f5e`  
 **Audit date:** 2026-08-28
 
@@ -95,6 +95,11 @@ After measuring 49A.2A locally:
 
 ## Acceptance
 
-49A.2A is accepted only if the routine suite passes below 30 seconds on
-Fernando's Mac, the complete suite passes, direct `pytest` collection no
-longer fails, and collected/deselected counts are recorded.
+Fernando ran both gates on the Intel Mac on 2026-08-28:
+
+- direct-`pytest` routine gate: **1744 passed, 30 deselected in 26.68 s**;
+- complete `python -m pytest` gate: **1774 passed in 84.53 s**.
+
+Direct `pytest` collection no longer fails, the routine suite is below the
+30-second target, the complete suite preserves every baseline test, and no
+test was deleted. Milestone 49A.2A is locally accepted.
