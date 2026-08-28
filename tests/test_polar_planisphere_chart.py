@@ -343,4 +343,3 @@ def test_polar_legend_fallback_does_not_copy_existing_family_authority():
     assert default_chart_legend_plan("polar_planisphere") is not (
         defaults.furniture_by_family["circumpolar"].legends.plan
     )
-

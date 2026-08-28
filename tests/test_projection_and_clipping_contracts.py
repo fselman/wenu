@@ -521,4 +521,3 @@ def test_circumpolar_lmc_boundary_crosses_projected_lmc():
     )
     assert np.any(radii < field_radius)
     assert np.any(radii > field_radius)
-

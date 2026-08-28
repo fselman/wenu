@@ -295,4 +295,3 @@ def test_layer_can_declare_no_supported_external_edits():
     )
 
     assert identity.edit_policy is EditPolicy.NONE
-

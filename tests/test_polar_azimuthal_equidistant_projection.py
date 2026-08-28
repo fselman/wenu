@@ -176,4 +176,3 @@ def test_geometry_dispatch_preserves_types_and_metadata():
     assert projected_curves[0].name == "curve"
     assert projected_polygons[0].name == "polygon"
     assert set(projected_grid.components) == {"meridians"}
-

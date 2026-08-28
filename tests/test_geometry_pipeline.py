@@ -249,4 +249,3 @@ def test_radial_label_offset():
         offset(3.0, 4.0),
         (0.06, 0.08),
     )
-

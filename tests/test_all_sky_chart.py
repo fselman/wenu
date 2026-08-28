@@ -134,4 +134,3 @@ def test_all_sky_chart_has_a_stable_composition_identity():
     plan = default_chart_legend_plan("all_sky")
     assert plan.objects.outside is True
     assert plan.stars.outside is True
-

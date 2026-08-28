@@ -168,4 +168,3 @@ def test_galaxies_and_messier_can_coexist_on_one_sky():
     assert galaxies in sky.layers
     assert messier.catalog_name == "messier"
     assert galaxies.catalog_name == "galaxies"
-

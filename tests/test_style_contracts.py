@@ -1341,4 +1341,3 @@ def test_circular_composition_defaults_to_transparent_export():
 
     assert options.transparent is True
     assert options.facecolor == "none"
-

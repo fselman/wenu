@@ -230,4 +230,3 @@ def test_full_sky_chart_is_a_top_level_export():
 
     assert "FullSkyChart" in wenu.__all__
     assert wenu.FullSkyChart is FullSkyChart
-

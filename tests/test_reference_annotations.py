@@ -446,4 +446,3 @@ def test_reference_policy_module_has_no_backend_import():
         root / "src/wenu/charts/reference_furniture.py"
     ).read_text(encoding="utf-8")
     assert "matplotlib" not in source.lower()
-

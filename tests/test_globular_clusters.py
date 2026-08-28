@@ -146,4 +146,3 @@ def test_cluster_zorder_is_between_galaxies_and_stars():
         < layers.GLOBULAR_CLUSTERS
         < layers.STARS
     )
-

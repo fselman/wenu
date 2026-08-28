@@ -115,4 +115,3 @@ def test_spherical_geometry_names_every_existing_geometry_kind():
         SphericalPolygons,
         SphericalGrid,
     }
-

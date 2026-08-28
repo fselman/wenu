@@ -325,4 +325,3 @@ def test_coordinate_geometry_uses_observer_time(monkeypatch):
         second.lat_deg[0] - first.lat_deg[0],
         3.0,
     )
-

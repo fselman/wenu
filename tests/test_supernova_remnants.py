@@ -160,4 +160,3 @@ def test_snr_zorder_is_between_galaxies_and_stars():
         < layers.SUPERNOVA_REMNANTS
         < layers.STARS
     )
-

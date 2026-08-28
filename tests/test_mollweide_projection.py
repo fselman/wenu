@@ -228,4 +228,3 @@ def test_unknown_geometry_and_nonscalar_point_are_rejected():
         value.project_geometry(object())
     with pytest.raises(ValueError, match="scalar"):
         value.project_point([0.0, 1.0], [0.0, 1.0])
-

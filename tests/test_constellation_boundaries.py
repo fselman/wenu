@@ -190,4 +190,3 @@ def test_domain_layer_contains_no_projection_or_rendering_api():
         "horizon_altitude",
     ):
         assert not hasattr(boundaries, name)
-

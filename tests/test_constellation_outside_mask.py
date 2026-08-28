@@ -276,4 +276,3 @@ def test_regional_chart_normalizes_mask_selection():
         outside_mask_constellations=["Cru"],
     )
     assert chart.outside_mask_constellations == ("Cru",)
-

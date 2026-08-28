@@ -189,4 +189,3 @@ def test_empty_collections_and_invalid_inputs_are_explicit():
         horizontal_to_equatorial(
             SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC, lon_deg=[0.0], lat_deg=[0.0]), object()
         )
-

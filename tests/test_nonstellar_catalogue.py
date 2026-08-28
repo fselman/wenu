@@ -247,4 +247,3 @@ def test_celestial_sphere_helper_loads_and_registers(
     layer = sky.add_nonstellar(filename=catalogue, samples=24)
     assert sky.nonstellar is layer
     assert layer in sky.layers
-

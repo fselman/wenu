@@ -125,4 +125,3 @@ def test_magellanic_clouds_produce_no_polygons(observer):
     )
     assert isinstance(geometry, SphericalPolygons)
     assert len(geometry) == 0
-

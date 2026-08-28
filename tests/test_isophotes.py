@@ -281,4 +281,3 @@ def test_level_selections_share_one_maximal_observed_geometry(
     assert set(complete.metadata["level"]) == set(layer.available_levels)
     assert calls == [len(complete)]
     assert len(layer._observed_polygon_cache) == 1
-

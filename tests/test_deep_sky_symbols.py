@@ -594,4 +594,3 @@ def test_object_legend_galaxy_handle_is_elliptical():
     assert handles[0].width > handles[0].height
     assert handles[0].get_facecolor()[-1] > 0.0
     plt.close(figure)
-

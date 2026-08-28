@@ -120,4 +120,3 @@ def test_legacy_altaz_projection_remains_available(projection):
     x, y = projection.project(alt_deg=90.0, az_deg=0.0)
     assert x == pytest.approx(0.0, abs=1e-12)
     assert y == pytest.approx(0.0, abs=1e-12)
-
