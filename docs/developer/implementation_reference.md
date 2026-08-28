@@ -1522,7 +1522,7 @@ reference executor. It sends every resolved frame through
 furniture, or export path exists. Scientifically keyed reuse and
 restart/resume support remain future work.
 
-## Typed coordinate vocabulary and providers (Milestones 49B.1–49B.3)
+## Typed coordinate vocabulary, providers, and service (Milestones 49B.1–49C.1)
 
 `wenu.coordinates.CoordinateSpec` is the immutable scientific identity
 vocabulary for a represented coordinate set. It records frame, origin,
@@ -1553,3 +1553,18 @@ The provider boundary returns native catalogue centres only. Galaxy outlines,
 isophotes, constellation geometry, coordinate grids, and horizon geometry are
 morphology or constructed references and deliberately do not become position
 providers.
+
+## Central coordinate service (Milestone 49C.1)
+
+`wenu.coordinate_service.CoordinateService` is the single new Astropy-backed
+transformation boundary for typed spherical geometry. Its `transform()` method
+accepts points, curves, polygons, or grids and returns the same concrete kind
+in an explicit target `CoordinateSpec`. Identifiers, labels, names, metadata,
+curve segmentation, polygon rings, grid component names, and closure flags are
+preserved.
+
+ICRS, Galactic, barycentric mean ecliptic, and observer-local AltAz frames are
+supported. AltAz requires an explicit `ObservationContext`; vacuum refraction
+and Astropy Earth-orientation policy are currently the only accepted local
+policies. Existing charts and layers do not call the service until 49C.2, so
+49C.1 changes no production rendering path.

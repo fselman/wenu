@@ -124,7 +124,7 @@ This milestone changes no coordinate values or transformation equations.
 
 ### Milestone 49B.3 — Existing position providers
 
-**Status:** Implementation candidate on the dedicated 49B.3 branch.
+**Status:** Accepted and merged in `2492846`.
 
 Adapt the existing stellar catalogue, non-stellar catalogue centres, and
 open-cluster catalogue to the structural `PositionProvider` boundary. Providers
@@ -134,6 +134,16 @@ optional evaluation instant. No existing rendering path or coordinate
 calculation changes.
 
 ## 6. Milestone 49C - One astronomical coordinate service
+
+### Milestone 49C.1 — Central transformation service
+
+**Status:** Implementation candidate on the dedicated 49C.1 branch.
+
+Add one Astropy-backed service accepting every spherical geometry kind and
+returning the same kind. Preserve semantic arrays, metadata, segmentation,
+rings, grid component names, and closure topology. Support ICRS, Galactic,
+barycentric mean ecliptic, and explicit observer-local AltAz transformations.
+Do not migrate production callers in this milestone.
 
 - add one Astropy-backed package service for supported astronomical frame
   transformations;

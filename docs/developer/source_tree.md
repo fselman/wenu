@@ -28,6 +28,7 @@ share the same geometry and rendering pipeline.
 ```text
 src/wenu/
 ├── coordinates.py              coordinate vocabulary and legacy conversion
+├── coordinate_service.py       central Astropy-backed geometry transformation
 ├── positions.py                astronomical PositionProvider protocol and provider boundary
 ├── observer.py                 observing context
 ├── objects/                    catalogues and physical object layers
@@ -43,6 +44,12 @@ src/wenu/
 ├── data/                       distributed astronomical datasets
 └── utils/                      general utilities
 ```
+
+`coordinate_service.py` owns the 49C.1 Astropy-backed transformation boundary
+for every `SphericalGeometry` kind. It preserves concrete geometry type,
+semantic arrays, metadata, curve segmentation, polygon rings, and grid
+component names. Existing production callers remain on their current paths
+until 49C.2.
 
 `coordinates.py` owns the 49B.1 immutable `CoordinateSpec`,
 `PositionStatus`, and `ObservationContext` vocabulary while retaining the

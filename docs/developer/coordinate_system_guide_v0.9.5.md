@@ -8,7 +8,7 @@ lang: en
 
 # Status and purpose
 
-**Status:** Living review edition; 49B.1–49B.2 are accepted and 49B.3 is a candidate.
+**Status:** Living review edition; 49B.1–49B.3 are accepted and 49C.1 is a candidate.
 
 This is the living scientific guide for Wenu's coordinate systems,
 transformations, astronomical objects, and constructed celestial references.
@@ -337,9 +337,10 @@ provider evaluation instant.
 
 **Implementation note:** 49B.1 introduced the frozen vocabulary and structural
 protocol. 49B.2 attached mandatory `CoordinateSpec` identity to all spherical
-geometry records without changing numerical transformations. The 49B.3
-candidate makes existing stellar and deep-sky centre catalogues implement
+geometry records without changing numerical transformations. 49B.3 makes existing stellar and deep-sky centre catalogues implement
 `PositionProvider`; morphology and constructed references remain separate.
+The 49C.1 candidate adds the central Astropy-backed transformation service
+without migrating existing callers.
 
 ## 7.1 CoordinateSpec
 

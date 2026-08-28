@@ -62,14 +62,16 @@ silent relabelling.
 
 ### 49B.3 — Establish existing providers
 
-**Implementation status:** Candidate on the dedicated 49B.3 branch;
-acceptance is pending.
+**Implementation status:** Accepted and merged in `2492846`.
 
 Make star and non-stellar position sources satisfy `PositionProvider` while
 initially retaining their numerical behavior. Keep extended morphology and
 constructed reference geometry separate.
 
 ### 49C.1 — Implement one coordinate service
+
+**Implementation status:** Candidate on the dedicated 49C.1 branch;
+acceptance is pending.
 
 Implement an Astropy-backed `transform()` accepting every spherical geometry
 kind and returning the same kind while preserving IDs, metadata, curve
