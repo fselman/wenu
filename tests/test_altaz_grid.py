@@ -50,7 +50,13 @@ def test_altaz_geometry_is_native_and_horizon_is_opt_in():
         altitude=(15, 30),
         samples=5,
     )
-    geometry = grid.spherical_geometry(object())
+    geometry = grid.spherical_geometry(
+        SimpleNamespace(
+            t_astropy=SimpleNamespace(
+                isot="2026-08-28T00:00:00.000", scale="utc"
+            )
+        )
+    )
 
     assert set(geometry.components) == {"meridians", "parallels"}
     meridians = geometry.components["meridians"]

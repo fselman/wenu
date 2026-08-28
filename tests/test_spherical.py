@@ -3,16 +3,47 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
+from wenu.coordinates import CoordinateSpec, GENERIC_SPHERICAL_SPEC
+
 from wenu.geometry.spherical import (
     SphericalCurves,
+    SphericalGrid,
     SphericalPoints,
     SphericalPolygons,
 )
 
 
+def test_coordinate_spec_is_required() -> None:
+    with pytest.raises(TypeError, match="coordinate_spec"):
+        SphericalPoints(lon_deg=[], lat_deg=[])
+
+
+def test_coordinate_spec_must_be_typed() -> None:
+    with pytest.raises(TypeError, match="CoordinateSpec"):
+        SphericalPoints(
+            lon_deg=[],
+            lat_deg=[],
+            coordinate_spec="altaz",
+        )
+
+
+def test_grid_rejects_component_in_another_coordinate_system() -> None:
+    curves = SphericalCurves(
+        lon_deg=(),
+        lat_deg=(),
+        coordinate_spec=GENERIC_SPHERICAL_SPEC,
+    )
+    altaz = CoordinateSpec(frame="altaz", origin="observer")
+    with pytest.raises(ValueError, match="different coordinate spec"):
+        SphericalGrid(
+            components={"curves": curves},
+            coordinate_spec=altaz,
+        )
+
+
 class TestSphericalPoints:
     def test_constructs_from_python_sequences(self) -> None:
-        points = SphericalPoints(
+        points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=[10.0, 20.0, 30.0],
             lat_deg=[-5.0, 0.0, 5.0],
         )
@@ -31,7 +62,7 @@ class TestSphericalPoints:
         assert len(points) == 3
 
     def test_accepts_empty_collection(self) -> None:
-        points = SphericalPoints(
+        points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=[],
             lat_deg=[],
         )
@@ -40,7 +71,7 @@ class TestSphericalPoints:
         assert points.finite.size == 0
 
     def test_accepts_single_point_collection(self) -> None:
-        points = SphericalPoints(
+        points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=[42.0],
             lat_deg=[-17.0],
         )
@@ -50,7 +81,7 @@ class TestSphericalPoints:
         assert points.lat_deg[0] == pytest.approx(-17.0)
 
     def test_preserves_entity_data(self) -> None:
-        points = SphericalPoints(
+        points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=[10.0, 20.0],
             lat_deg=[-10.0, 10.0],
             ids=[101, 102],
@@ -74,7 +105,7 @@ class TestSphericalPoints:
     def test_copies_metadata_mapping(self) -> None:
         metadata = {"frame": "generic"}
 
-        points = SphericalPoints(
+        points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=[0.0],
             lat_deg=[0.0],
             metadata=metadata,
@@ -86,7 +117,7 @@ class TestSphericalPoints:
     def test_finite_mask_requires_both_coordinates_to_be_finite(
         self,
     ) -> None:
-        points = SphericalPoints(
+        points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=[0.0, np.nan, 2.0, np.inf],
             lat_deg=[0.0, 1.0, np.inf, 3.0],
         )
@@ -101,7 +132,7 @@ class TestSphericalPoints:
             ValueError,
             match="lon_deg must be a one-dimensional array",
         ):
-            SphericalPoints(
+            SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=[[0.0, 1.0]],
                 lat_deg=[0.0, 1.0],
             )
@@ -111,7 +142,7 @@ class TestSphericalPoints:
             ValueError,
             match="lat_deg must be a one-dimensional array",
         ):
-            SphericalPoints(
+            SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=[0.0, 1.0],
                 lat_deg=[[0.0, 1.0]],
             )
@@ -121,7 +152,7 @@ class TestSphericalPoints:
             ValueError,
             match="lon_deg and lat_deg must have the same shape",
         ):
-            SphericalPoints(
+            SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=[0.0, 1.0],
                 lat_deg=[0.0],
             )
@@ -144,7 +175,7 @@ class TestSphericalPoints:
             ValueError,
             match=rf"{field_name} must contain one value per entity",
         ):
-            SphericalPoints(**arguments)
+            SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC, **arguments)
 
     @pytest.mark.parametrize(
         "field_name",
@@ -164,12 +195,12 @@ class TestSphericalPoints:
             ValueError,
             match=rf"{field_name} must be a one-dimensional array",
         ):
-            SphericalPoints(**arguments)
+            SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC, **arguments)
 
 
 class TestSphericalCurves:
     def test_constructs_curve_collection(self) -> None:
-        curves = SphericalCurves(
+        curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=(
                 np.array([0.0, 1.0, 2.0]),
                 np.array([10.0, 20.0]),
@@ -190,7 +221,7 @@ class TestSphericalCurves:
         )
 
     def test_converts_nested_sequences_to_coordinate_arrays(self) -> None:
-        curves = SphericalCurves(
+        curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=([0.0, 1.0], [2.0, 3.0]),
             lat_deg=([4.0, 5.0], [6.0, 7.0]),
         )
@@ -205,7 +236,7 @@ class TestSphericalCurves:
         )
 
     def test_accepts_empty_collection(self) -> None:
-        curves = SphericalCurves(
+        curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=(),
             lat_deg=(),
         )
@@ -215,7 +246,7 @@ class TestSphericalCurves:
         assert curves.finite == ()
 
     def test_accepts_single_curve_collection(self) -> None:
-        curves = SphericalCurves(
+        curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=([0.0, 1.0],),
             lat_deg=([2.0, 3.0],),
         )
@@ -223,7 +254,7 @@ class TestSphericalCurves:
         assert len(curves) == 1
 
     def test_preserves_closed_flags_and_entity_data(self) -> None:
-        curves = SphericalCurves(
+        curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=(
                 [0.0, 1.0],
                 [10.0, 20.0],
@@ -256,7 +287,7 @@ class TestSphericalCurves:
         )
 
     def test_returns_one_finite_mask_per_curve(self) -> None:
-        curves = SphericalCurves(
+        curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=(
                 [0.0, np.nan, 2.0],
                 [10.0, 20.0],
@@ -291,7 +322,7 @@ class TestSphericalCurves:
                 "the same number of curves"
             ),
         ):
-            SphericalCurves(
+            SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=([0.0, 1.0], [2.0, 3.0]),
                 lat_deg=([4.0, 5.0],),
             )
@@ -304,7 +335,7 @@ class TestSphericalCurves:
                 "must have the same shape"
             ),
         ):
-            SphericalCurves(
+            SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=([0.0, 1.0, 2.0],),
                 lat_deg=([3.0, 4.0],),
             )
@@ -314,7 +345,7 @@ class TestSphericalCurves:
             ValueError,
             match="Curve 0 requires at least two samples",
         ):
-            SphericalCurves(
+            SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=([0.0],),
                 lat_deg=([1.0],),
             )
@@ -326,7 +357,7 @@ class TestSphericalCurves:
             ValueError,
             match=r"lon_deg\[0\] must be a one-dimensional array",
         ):
-            SphericalCurves(
+            SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=([[0.0, 1.0]],),
                 lat_deg=([2.0, 3.0],),
             )
@@ -336,7 +367,7 @@ class TestSphericalCurves:
             ValueError,
             match="closed must be a one-dimensional array",
         ):
-            SphericalCurves(
+            SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=([0.0, 1.0],),
                 lat_deg=([2.0, 3.0],),
                 closed=[[True]],
@@ -347,7 +378,7 @@ class TestSphericalCurves:
             ValueError,
             match="closed must contain one value per curve",
         ):
-            SphericalCurves(
+            SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=(
                     [0.0, 1.0],
                     [2.0, 3.0],
@@ -377,12 +408,12 @@ class TestSphericalCurves:
             ValueError,
             match=rf"{field_name} must contain one value per entity",
         ):
-            SphericalCurves(**arguments)
+            SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC, **arguments)
 
 
 class TestSphericalPolygons:
     def test_constructs_polygon_collection(self) -> None:
-        polygons = SphericalPolygons(
+        polygons = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=(
                 [0.0, 1.0, 2.0],
                 [10.0, 20.0, 30.0, 40.0],
@@ -398,7 +429,7 @@ class TestSphericalPolygons:
         assert isinstance(polygons.lat_deg, tuple)
 
     def test_accepts_empty_collection(self) -> None:
-        polygons = SphericalPolygons(
+        polygons = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=(),
             lat_deg=(),
         )
@@ -407,7 +438,7 @@ class TestSphericalPolygons:
         assert polygons.finite == ()
 
     def test_accepts_single_polygon_collection(self) -> None:
-        polygons = SphericalPolygons(
+        polygons = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=([0.0, 1.0, 2.0],),
             lat_deg=([3.0, 4.0, 5.0],),
         )
@@ -415,7 +446,7 @@ class TestSphericalPolygons:
         assert len(polygons) == 1
 
     def test_preserves_entity_data(self) -> None:
-        polygons = SphericalPolygons(
+        polygons = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=(
                 [0.0, 1.0, 2.0],
                 [10.0, 20.0, 30.0],
@@ -443,7 +474,7 @@ class TestSphericalPolygons:
         )
 
     def test_returns_one_finite_mask_per_polygon(self) -> None:
-        polygons = SphericalPolygons(
+        polygons = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=(
                 [0.0, np.nan, 2.0],
                 [10.0, 20.0, 30.0],
@@ -478,7 +509,7 @@ class TestSphericalPolygons:
                 "the same number of polygons"
             ),
         ):
-            SphericalPolygons(
+            SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=(
                     [0.0, 1.0, 2.0],
                     [3.0, 4.0, 5.0],
@@ -496,7 +527,7 @@ class TestSphericalPolygons:
                 "must have the same shape"
             ),
         ):
-            SphericalPolygons(
+            SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=([0.0, 1.0, 2.0],),
                 lat_deg=([3.0, 4.0, 5.0, 6.0],),
             )
@@ -508,7 +539,7 @@ class TestSphericalPolygons:
             ValueError,
             match="Polygon 0 requires at least three vertices",
         ):
-            SphericalPolygons(
+            SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=([0.0, 1.0],),
                 lat_deg=([2.0, 3.0],),
             )
@@ -520,7 +551,7 @@ class TestSphericalPolygons:
             ValueError,
             match=r"lon_deg\[0\] must be a one-dimensional array",
         ):
-            SphericalPolygons(
+            SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=([[0.0, 1.0, 2.0]],),
                 lat_deg=([3.0, 4.0, 5.0],),
             )
@@ -549,6 +580,5 @@ class TestSphericalPolygons:
             ValueError,
             match=rf"{field_name} must contain one value per entity",
         ):
-            SphericalPolygons(**arguments)
-
+            SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC, **arguments)
 

@@ -280,7 +280,13 @@ def test_spherical_geometry_propagates_vertex_metadata():
         np.asarray([30.0, 40.0]),
         np.asarray([100.0, 110.0]),
     )
-    geometry = stars.spherical_geometry(object())
+    geometry = stars.spherical_geometry(
+        SimpleNamespace(
+            t_astropy=SimpleNamespace(
+                isot="2026-08-28T00:00:00.000", scale="utc"
+            )
+        )
+    )
     assert geometry.ids.tolist() == [10, 20]
     assert geometry.metadata["is_constellation_vertex"].tolist() == [
         False,
@@ -404,7 +410,13 @@ def test_missing_vertex_column_defaults_to_aligned_false_values():
             index=[10, 20],
         )
     )
-    geometry = stars.spherical_geometry(SimpleNamespace())
+    geometry = stars.spherical_geometry(
+        SimpleNamespace(
+            t_astropy=SimpleNamespace(
+                isot="2026-08-28T00:00:00.000", scale="utc"
+            )
+        )
+    )
     assert geometry.metadata["is_constellation_vertex"].tolist() == [
         False,
         False,
@@ -421,7 +433,13 @@ def test_existing_vertex_column_is_preserved():
             index=[10, 20],
         )
     )
-    geometry = stars.spherical_geometry(SimpleNamespace())
+    geometry = stars.spherical_geometry(
+        SimpleNamespace(
+            t_astropy=SimpleNamespace(
+                isot="2026-08-28T00:00:00.000", scale="utc"
+            )
+        )
+    )
     assert geometry.metadata["is_constellation_vertex"].tolist() == [
         True,
         False,

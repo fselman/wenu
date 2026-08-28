@@ -6,6 +6,8 @@ import json
 
 import astropy.units as u
 import numpy as np
+
+from wenu.coordinates import observer_altaz_spec
 from astropy.coordinates import SkyCoord
 
 from wenu.geometry.spherical import SphericalPolygons
@@ -145,6 +147,9 @@ class MilkyWayIsophotes(SkyLayer):
         return SphericalPolygons(
             lon_deg=tuple(longitude[index] for index in positions),
             lat_deg=tuple(latitude[index] for index in positions),
+            coordinate_spec=observer_altaz_spec(
+                resolved, provider="astropy Milky Way isophotes"
+            ),
             ids=[ids[index] for index in positions],
             metadata={
                 "source": self.source,

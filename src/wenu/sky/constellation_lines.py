@@ -9,6 +9,8 @@ import warnings
 
 import numpy as np
 
+from wenu.coordinates import PositionStatus, observer_altaz_spec
+
 from wenu.resources import constellation_lines_path
 from wenu.sky.geometrical_object import GeometricalObject
 from wenu.geometry.spherical import SphericalCurves
@@ -334,6 +336,12 @@ class ConstellationLines(GeometricalObject):
         return SphericalCurves(
             lon_deg=tuple(lon_curves),
             lat_deg=tuple(lat_curves),
+            coordinate_spec=observer_altaz_spec(
+                observer,
+                position_status=PositionStatus.APPARENT,
+                provider="skyfield Hipparcos",
+                model="Skyfield apparent AltAz",
+            ),
             ids=identifiers,
             names=names,
             metadata={

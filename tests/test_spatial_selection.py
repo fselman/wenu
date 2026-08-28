@@ -16,6 +16,8 @@ from wenu import (
     resolve_chart_request,
     select_spatial_chart_content,
 )
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.geometry.spherical import SphericalPoints
 from wenu.geometry.projected import ProjectedCurve
 from wenu.geometry.viewport import Viewport
@@ -28,8 +30,9 @@ class Projection:
 
 class Layer:
     def __init__(self, identifiers, longitude, latitude):
-        self.geometry = SphericalPoints(
-            np.asarray(longitude), np.asarray(latitude),
+        self.geometry = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
+            lon_deg=np.asarray(longitude),
+            lat_deg=np.asarray(latitude),
             ids=np.asarray(identifiers, dtype=object),
         )
 

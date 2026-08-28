@@ -239,6 +239,7 @@ def _visible_polygons(spherical, *, minimum):
     return SphericalPolygons(
         lon_deg=tuple(spherical.lon_deg[index] for index in indices),
         lat_deg=tuple(spherical.lat_deg[index] for index in indices),
+        coordinate_spec=spherical.coordinate_spec,
         ids=selected(spherical.ids),
         labels=selected(spherical.labels),
         names=selected(spherical.names),

@@ -6,6 +6,8 @@ from collections import defaultdict
 
 import astropy.units as u
 import numpy as np
+
+from wenu.coordinates import observer_altaz_spec
 from astropy.coordinates import SkyCoord
 
 from wenu.sky.geometrical_object import GeometricalObject
@@ -65,13 +67,13 @@ class ConstellationLabels(GeometricalObject):
             self.stars.hip_df,
         )
         if frame is None or len(frame) == 0:
-            return self._empty()
+            return self._empty(observer)
 
         ra_deg = frame["ra_degrees"].to_numpy(dtype=float)
         dec_deg = frame["dec_degrees"].to_numpy(dtype=float)
         valid_coordinates = np.isfinite(ra_deg) & np.isfinite(dec_deg)
         if not np.any(valid_coordinates):
-            return self._empty()
+            return self._empty(observer)
         coordinates = SkyCoord(
             ra=ra_deg[valid_coordinates] * u.deg,
             dec=dec_deg[valid_coordinates] * u.deg,
@@ -127,6 +129,9 @@ class ConstellationLabels(GeometricalObject):
         return SphericalPoints(
             lon_deg=np.asarray(lon_deg, dtype=float),
             lat_deg=np.asarray(lat_deg, dtype=float),
+            coordinate_spec=observer_altaz_spec(
+                observer, provider="astropy Hipparcos constellation labels"
+            ),
             labels=np.asarray(labels, dtype=object),
             metadata={
                 "kind": "constellation_labels",
@@ -160,10 +165,13 @@ class ConstellationLabels(GeometricalObject):
             float(np.degrees(np.arcsin(mean[2]))),
         )
 
-    def _empty(self):
+    def _empty(self, observer):
         return SphericalPoints(
             lon_deg=np.asarray([], dtype=float),
             lat_deg=np.asarray([], dtype=float),
+            coordinate_spec=observer_altaz_spec(
+                observer, provider="astropy Hipparcos constellation labels"
+            ),
             labels=np.asarray([], dtype=object),
             metadata={
                 "kind": "constellation_labels",

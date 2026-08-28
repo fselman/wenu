@@ -6,6 +6,8 @@ import numpy as np
 import pytest
 
 from wenu import AllSkyChart
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.charts.legend_plan import chart_type_name, default_chart_legend_plan
 from wenu.geometry.spherical import SphericalPoints
 
@@ -25,8 +27,8 @@ def test_all_sky_chart_owns_the_complete_mollweide_ellipse():
 
 def test_all_sky_render_transforms_geometry_before_projection(monkeypatch):
     calls = {}
-    source = SphericalPoints(lon_deg=[1.0], lat_deg=[2.0])
-    galactic = SphericalPoints(lon_deg=[3.0], lat_deg=[4.0])
+    source = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC, lon_deg=[1.0], lat_deg=[2.0])
+    galactic = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC, lon_deg=[3.0], lat_deg=[4.0])
 
     def transform(geometry, observer):
         calls.setdefault("transforms", []).append((geometry, observer))

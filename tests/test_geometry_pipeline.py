@@ -7,6 +7,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.geometry.projected import (
     ProjectedCurve,
     ProjectedCurves,
@@ -32,7 +34,7 @@ class Layer(SkyLayer):
     layer_name = "test"
 
     def spherical_geometry(self, observer, *, minimum=-10.0):
-        return SphericalPoints(
+        return SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=[0.0, 1.0],
             lat_deg=[minimum, 20.0],
         )
@@ -105,7 +107,7 @@ def test_render_options_may_be_derived_from_geometry():
 
 
 def test_curve_clipping_preserves_visible_runs():
-    spherical = SphericalCurves(
+    spherical = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 1.0, 2.0, 3.0],),
         lat_deg=([-1.0, 1.0, 2.0, -1.0],),
     )
@@ -126,7 +128,7 @@ def test_curve_clipping_preserves_visible_runs():
 
 
 def test_curve_clipping_subsets_all_per_entity_metadata():
-    spherical = SphericalCurves(
+    spherical = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=(
             [0.0, 1.0, 2.0],
             [0.0, 1.0, 2.0, 3.0, 4.0],
@@ -171,7 +173,7 @@ def test_curve_clipping_subsets_all_per_entity_metadata():
 
 
 def test_polygon_boundary_clipping_subsets_entity_metadata():
-    spherical = SphericalPolygons(
+    spherical = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=(
             [0.0, 1.0, 1.0, 0.0],
             [2.0, 3.0, 3.0, 2.0],
@@ -208,7 +210,7 @@ def test_polygon_boundary_clipping_subsets_entity_metadata():
 
 
 def test_curve_clipping_supports_a_maximum_latitude():
-    spherical = SphericalCurves(
+    spherical = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 1.0, 2.0, 3.0],),
         lat_deg=([1.0, -1.0, -2.0, 1.0],),
     )

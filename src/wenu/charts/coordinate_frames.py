@@ -6,6 +6,8 @@ import numpy as np
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 
+from wenu.coordinates import observer_celestial_spec
+
 from wenu.geometry.spherical import (
     SphericalCurves,
     SphericalGrid,
@@ -47,6 +49,11 @@ def _horizontal_to_frame(
         raise TypeError(
             f"observer must provide altaz_frame and {target_attribute}."
         )
+    coordinate_spec = observer_celestial_spec(
+        observer,
+        "icrs" if coordinate_system == "equatorial" else coordinate_system,
+        model=f"Astropy AltAz to {coordinate_system}",
+    )
     if isinstance(geometry, SphericalPoints):
         longitude, latitude = _transform(
             geometry.lon_deg,
@@ -57,6 +64,7 @@ def _horizontal_to_frame(
         return SphericalPoints(
             lon_deg=longitude,
             lat_deg=latitude,
+            coordinate_spec=coordinate_spec,
             ids=_copy(geometry.ids),
             labels=_copy(geometry.labels),
             names=_copy(geometry.names),
@@ -72,6 +80,7 @@ def _horizontal_to_frame(
         return SphericalCurves(
             lon_deg=longitude,
             lat_deg=latitude,
+            coordinate_spec=coordinate_spec,
             closed=geometry.closed.copy(),
             ids=_copy(geometry.ids),
             labels=_copy(geometry.labels),
@@ -88,6 +97,7 @@ def _horizontal_to_frame(
         return SphericalPolygons(
             lon_deg=longitude,
             lat_deg=latitude,
+            coordinate_spec=coordinate_spec,
             ids=_copy(geometry.ids),
             labels=_copy(geometry.labels),
             names=_copy(geometry.names),
@@ -104,6 +114,7 @@ def _horizontal_to_frame(
                 )
                 for name, curves in geometry.components.items()
             },
+            coordinate_spec=coordinate_spec,
             metadata=_metadata(geometry.metadata, coordinate_system),
         )
     raise TypeError(

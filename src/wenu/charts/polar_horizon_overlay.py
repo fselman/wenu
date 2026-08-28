@@ -6,6 +6,8 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from wenu.coordinates import observer_altaz_spec
+
 from wenu.charts.coordinate_frames import horizontal_to_equatorial
 from wenu.charts.polar_page_furniture import PolarPagePairFurniture
 from wenu.charts.polar_planisphere_pair import PolarPlanispherePair
@@ -124,6 +126,9 @@ def _equatorial_references(observer):
     horizontal = SphericalPoints(
         lon_deg=np.asarray((0.0, 180.0, 0.0)),
         lat_deg=np.asarray((0.0, 0.0, 90.0)),
+        coordinate_spec=observer_altaz_spec(
+            observer, provider="wenu polar horizon reference"
+        ),
         labels=np.asarray(("N", "S", "ZENITH"), dtype=object),
         metadata={"coordinate_system": "altaz"},
     )
@@ -138,6 +143,7 @@ def _relative_right_ascension(curves, zenith_ra_deg):
             for longitude in curves.lon_deg
         ),
         lat_deg=tuple(latitude.copy() for latitude in curves.lat_deg),
+        coordinate_spec=curves.coordinate_spec,
         closed=curves.closed.copy(),
         ids=None if curves.ids is None else curves.ids.copy(),
         labels=None if curves.labels is None else curves.labels.copy(),

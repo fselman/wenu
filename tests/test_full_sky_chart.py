@@ -9,6 +9,8 @@ import numpy as np
 import pytest
 
 from wenu import FullSkyChart
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.geometry.projected import (
     ProjectedCurve,
     ProjectedCurves,
@@ -52,7 +54,7 @@ def test_tangent_point_must_not_expose_projection_antipode():
 
 
 def test_latitude_clipping_interpolates_horizon_crossings():
-    spherical = SphericalCurves(
+    spherical = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 0.0, 0.0],),
         lat_deg=([-10.0, 10.0, -10.0],),
     )
@@ -79,7 +81,7 @@ def test_latitude_clipping_interpolates_horizon_crossings():
 
 
 def test_complete_sphere_latitude_floor_preserves_split_curves():
-    spherical = SphericalCurves(
+    spherical = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([170.0, -170.0],),
         lat_deg=([0.0, 0.0],),
     )
@@ -96,7 +98,7 @@ def test_complete_sphere_latitude_floor_preserves_split_curves():
 
 
 def test_complete_sphere_polygon_layer_remains_boundary_only():
-    spherical = SphericalPolygons(
+    spherical = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 1.0, 1.0, 0.0],),
         lat_deg=([0.0, 0.0, 1.0, 1.0],),
     )

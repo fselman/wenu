@@ -4,6 +4,8 @@
 import numpy as np
 import pytest
 
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.geometry.clipping import (
     clip_curve_to_viewport,
     clip_polygon_to_viewport,
@@ -63,7 +65,7 @@ def test_arbitrary_frame_applies_to_geometry_collections():
         flip_ew=False,
         frame=frame,
     )
-    points = SphericalPoints(
+    points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=[45.0],
         lat_deg=[20.0],
         ids=["center"],
@@ -194,6 +196,8 @@ def test_frame_argument_validation():
 # Contracts consolidated from test_milestone39g_equatorial_meridian_extent.py.
 """Tests for bounded equatorial meridians."""
 
+from types import SimpleNamespace
+
 import numpy as np
 import pytest
 
@@ -202,7 +206,11 @@ from wenu.sky.coordinate_grids import EquatorialGrid
 
 def grid_with_identity_altaz(**kwargs):
     grid = EquatorialGrid(
-        object(),
+        SimpleNamespace(
+            t_astropy=SimpleNamespace(
+                isot="2026-08-28T00:00:00.000", scale="utc"
+            )
+        ),
         samples=9,
         equinox="J2000",
         **kwargs,
@@ -266,7 +274,7 @@ from wenu.rendering import clip_polygons_to_projection_cap
 
 
 def polygons():
-    return SphericalPolygons(
+    return SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=(
             [-10.0, 10.0, 10.0, -10.0],
             [-10.0, 10.0, 10.0, -10.0],
@@ -376,7 +384,7 @@ from wenu.sky.sky_layer import SkyLayer
 
 class PolygonLayer(SkyLayer):
     def spherical_geometry(self, observer):
-        return SphericalPolygons(
+        return SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=(
                 [-10.0, 10.0, 10.0, -10.0],
                 [-10.0, 10.0, 10.0, -10.0],

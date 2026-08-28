@@ -8,6 +8,8 @@ import re
 
 import astropy.units as u
 import numpy as np
+
+from wenu.coordinates import observer_altaz_spec
 from astropy.coordinates import SkyCoord, concatenate
 from astropy.table import Table
 
@@ -558,6 +560,9 @@ class NonStellar(AstronomicalObject):
         return SphericalCurves(
             lon_deg=tuple(longitude[index] for index in positions),
             lat_deg=tuple(latitude[index] for index in positions),
+            coordinate_spec=observer_altaz_spec(
+                resolved, provider="astropy OpenNGC"
+            ),
             closed=np.ones(len(table), dtype=bool),
             ids=identifiers,
             names=identifiers,
@@ -605,6 +610,9 @@ class NonStellar(AstronomicalObject):
         return SphericalPoints(
             lon_deg=longitude,
             lat_deg=latitude,
+            coordinate_spec=observer_altaz_spec(
+                resolved, provider="astropy OpenNGC"
+            ),
             ids=identifiers,
             names=identifiers,
             metadata={

@@ -143,6 +143,9 @@ def make_lines(tmp_path):
     observer = SimpleNamespace(
         skyfield=ObserverVector(),
         t=0.0,
+        t_astropy=SimpleNamespace(
+            isot="2026-08-28T00:00:00.000", scale="utc"
+        ),
     )
     return ConstellationLines(
         stars=stars,
@@ -258,6 +261,9 @@ class StubGrid(CoordinatesGrid):
 def observer(time):
     return SimpleNamespace(
         t=time,
+        t_astropy=SimpleNamespace(
+            isot=f"2026-08-28T00:00:{float(time):06.3f}", scale="utc"
+        ),
         lat_deg=-33.0,
         lon_deg=-71.5,
     )

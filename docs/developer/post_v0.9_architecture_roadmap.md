@@ -87,7 +87,7 @@ a correctness defect that must be isolated separately.
 
 ### Milestone 49B.1 — Frozen coordinate vocabulary
 
-**Status:** Implementation candidate on the dedicated 49B.1 branch.
+**Status:** Accepted and merged in `d63c300`.
 
 Add `CoordinateSpec`, `ObservationContext`, `PositionStatus`, the
 structural `PositionProvider` protocol, and the `SphericalGeometry` union.
@@ -110,6 +110,17 @@ Static celestial products resolve an explicit observer-independent product
 frame. Local observing products resolve an explicit observer and AltAz
 policy. Frame-less astronomical longitude/latitude must not cross the new
 public boundary.
+
+### Milestone 49B.2 — Typed spherical geometry
+
+**Status:** Implementation candidate on the dedicated 49B.2 branch.
+
+Make `CoordinateSpec` a required keyword-only member of every
+`SphericalPoints`, `SphericalCurves`, `SphericalPolygons`, and
+`SphericalGrid` record. Every production constructor supplies an explicit
+scientific identity; derived geometry preserves or deliberately replaces it,
+and grids reject components whose identity differs from the grid identity.
+This milestone changes no coordinate values or transformation equations.
 
 ## 6. Milestone 49C - One astronomical coordinate service
 

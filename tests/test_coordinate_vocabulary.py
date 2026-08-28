@@ -6,6 +6,8 @@ from typing import get_args
 import numpy as np
 import pytest
 
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.coordinates import (
     CoordinateSpec,
     ObservationContext,
@@ -95,7 +97,7 @@ def test_observation_context_rejects_invalid_latitude():
 def test_position_provider_is_one_structural_object_boundary():
     class ExampleProvider:
         def position(self, instant=None):
-            return SphericalPoints(
+            return SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=np.array([1.0]),
                 lat_deg=np.array([2.0]),
             )

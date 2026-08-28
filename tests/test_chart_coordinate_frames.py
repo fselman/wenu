@@ -8,6 +8,8 @@ from astropy.time import Time
 import numpy as np
 import pytest
 
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.charts.coordinate_frames import (
     horizontal_to_equatorial,
     horizontal_to_galactic,
@@ -35,7 +37,7 @@ def observer(*, time, latitude, longitude):
 
 def horizontal_points(coordinates, actual_observer):
     horizontal = coordinates.transform_to(actual_observer.altaz_frame)
-    return SphericalPoints(
+    return SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=horizontal.az.deg,
         lat_deg=horizontal.alt.deg,
         ids=("a", "b"),
@@ -103,7 +105,7 @@ def test_equatorial_result_recovers_observer_independent_icrs():
         longitude=-71.230289,
     )
     horizontal = fixed.transform_to(actual_observer.altaz_frame)
-    points = SphericalPoints(
+    points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=horizontal.az.deg,
         lat_deg=horizontal.alt.deg,
         metadata={"catalogue": "test"},
@@ -126,7 +128,7 @@ def test_curve_polygon_and_grid_structure_and_identity_are_preserved():
         latitude=-32.443342,
         longitude=-71.230289,
     )
-    curves = SphericalCurves(
+    curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([10.0, 20.0], [30.0, 40.0, 50.0]),
         lat_deg=([5.0, 6.0], [7.0, 8.0, 9.0]),
         closed=(False, True),
@@ -134,13 +136,13 @@ def test_curve_polygon_and_grid_structure_and_identity_are_preserved():
         names=("first", "second"),
         metadata={"kind": "curves"},
     )
-    polygons = SphericalPolygons(
+    polygons = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([10.0, 20.0, 15.0],),
         lat_deg=([5.0, 5.0, 10.0],),
         names=("region",),
         metadata={"kind": "polygons"},
     )
-    grid = SphericalGrid(
+    grid = SphericalGrid(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         components={"meridians": curves},
         metadata={"kind": "grid"},
     )
@@ -173,7 +175,7 @@ def test_empty_collections_and_invalid_inputs_are_explicit():
         longitude=-71.230289,
     )
     empty = horizontal_to_galactic(
-        SphericalCurves(lon_deg=(), lat_deg=()), actual_observer
+        SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC, lon_deg=(), lat_deg=()), actual_observer
     )
 
     assert len(empty) == 0
@@ -181,9 +183,9 @@ def test_empty_collections_and_invalid_inputs_are_explicit():
         horizontal_to_galactic(object(), actual_observer)
     with pytest.raises(TypeError, match="altaz_frame and galactic_frame"):
         horizontal_to_galactic(
-            SphericalPoints(lon_deg=[0.0], lat_deg=[0.0]), object()
+            SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC, lon_deg=[0.0], lat_deg=[0.0]), object()
         )
     with pytest.raises(TypeError, match="altaz_frame and icrs_frame"):
         horizontal_to_equatorial(
-            SphericalPoints(lon_deg=[0.0], lat_deg=[0.0]), object()
+            SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC, lon_deg=[0.0], lat_deg=[0.0]), object()
         )

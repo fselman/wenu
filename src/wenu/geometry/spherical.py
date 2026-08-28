@@ -7,10 +7,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import KW_ONLY, dataclass, field
 from typing import Any, Mapping, Sequence, TypeAlias
 
 import numpy as np
+
+from wenu.coordinates import CoordinateSpec
 
 
 def _coordinate_array(values: Any, *, name: str) -> np.ndarray:
@@ -98,12 +100,15 @@ class SphericalPoints:
 
     lon_deg: np.ndarray
     lat_deg: np.ndarray
+    _: KW_ONLY
+    coordinate_spec: CoordinateSpec
     ids: np.ndarray | None = None
     labels: np.ndarray | None = None
     names: np.ndarray | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
+        _validate_coordinate_spec(self.coordinate_spec)
         self.lon_deg = _coordinate_array(
             self.lon_deg,
             name="lon_deg",
@@ -163,6 +168,8 @@ class SphericalCurves:
 
     lon_deg: tuple[np.ndarray, ...]
     lat_deg: tuple[np.ndarray, ...]
+    _: KW_ONLY
+    coordinate_spec: CoordinateSpec
     closed: np.ndarray | None = None
     ids: np.ndarray | None = None
     labels: np.ndarray | None = None
@@ -170,6 +177,7 @@ class SphericalCurves:
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
+        _validate_coordinate_spec(self.coordinate_spec)
         self.lon_deg = _coordinate_collection(
             self.lon_deg,
             name="lon_deg",
@@ -260,12 +268,15 @@ class SphericalPolygons:
 
     lon_deg: tuple[np.ndarray, ...]
     lat_deg: tuple[np.ndarray, ...]
+    _: KW_ONLY
+    coordinate_spec: CoordinateSpec
     ids: np.ndarray | None = None
     labels: np.ndarray | None = None
     names: np.ndarray | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
+        _validate_coordinate_spec(self.coordinate_spec)
         self.lon_deg = _coordinate_collection(
             self.lon_deg,
             name="lon_deg",
@@ -338,9 +349,12 @@ class SphericalGrid:
     """
 
     components: Mapping[str, SphericalCurves]
+    _: KW_ONLY
+    coordinate_spec: CoordinateSpec
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
+        _validate_coordinate_spec(self.coordinate_spec)
         components = dict(self.components)
 
         for name, curves in components.items():
@@ -354,6 +368,11 @@ class SphericalGrid:
                     "Every grid component must be a SphericalCurves instance."
                 )
 
+            if curves.coordinate_spec != self.coordinate_spec:
+                raise ValueError(
+                    f"Grid component {name!r} has a different coordinate spec."
+                )
+
         self.components = components
         self.metadata = dict(self.metadata)
 
@@ -362,6 +381,11 @@ class SphericalGrid:
 
     def __getitem__(self, name: str) -> SphericalCurves:
         return self.components[name]
+
+
+def _validate_coordinate_spec(value: CoordinateSpec) -> None:
+    if not isinstance(value, CoordinateSpec):
+        raise TypeError("coordinate_spec must be a CoordinateSpec instance.")
 
 SphericalGeometry: TypeAlias = (
     SphericalPoints

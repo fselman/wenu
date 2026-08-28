@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from wenu import ChartStyle, MatplotlibRenderer, PublicationStyle
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.charts.style_components import (
     CanvasStyle,
     DeepSkyStyle,
@@ -699,7 +701,7 @@ class SpyLayer(SkyLayer):
 
     def __init__(self):
         self.received = None
-        self.output = SphericalPoints(
+        self.output = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=np.asarray([20.0]),
             lat_deg=np.asarray([30.0]),
         )

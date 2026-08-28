@@ -41,7 +41,7 @@ def prepared(chart, actual_observer=None, *, samples=73):
         projection=chart.projection,
         viewport=chart.viewport,
         boundary=getattr(chart, "field_stop", None),
-        observer=object() if actual_observer is None else actual_observer,
+        observer=observer() if actual_observer is None else actual_observer,
         samples=samples,
         radial_step_deg=15.0,
     )
@@ -49,7 +49,7 @@ def prepared(chart, actual_observer=None, *, samples=73):
 
 def test_visible_hemisphere_is_native_altaz_opening_geometry():
     geometry = HorizonReference(samples=13).visible_hemisphere_geometry(
-        object(), radial_step_deg=30.0
+        observer(), radial_step_deg=30.0
     )
 
     assert len(geometry) == 13

@@ -6,6 +6,8 @@ from importlib.resources import as_file
 from io import BytesIO
 
 import numpy as np
+
+from wenu.coordinates import PositionStatus, observer_altaz_spec
 from skyfield.api import Star
 from skyfield.data import hipparcos
 
@@ -267,6 +269,9 @@ class Stars(AstronomicalObject):
         include_constellation_vertices=None,
     ) -> SphericalPoints:
         """Return observer-dependent stellar positions as spherical points."""
+        resolved_observer = self.observer if observer is None else observer
+        if resolved_observer is None:
+            raise RuntimeError("An Observer is required for stellar geometry.")
         if getattr(self, "source_catalog", None) is None:
             if any(
                 value is not None
@@ -336,6 +341,12 @@ class Stars(AstronomicalObject):
         return SphericalPoints(
             lon_deg=az_deg,
             lat_deg=alt_deg,
+            coordinate_spec=observer_altaz_spec(
+                resolved_observer,
+                position_status=PositionStatus.APPARENT,
+                provider="skyfield Hipparcos",
+                model="Skyfield apparent AltAz",
+            ),
             ids=hip_ids,
             metadata=metadata,
         )

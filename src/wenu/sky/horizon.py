@@ -67,6 +67,7 @@ class HorizonReference(GeometricalObject):
         return SphericalPolygons(
             lon_deg=tuple(longitudes),
             lat_deg=tuple(latitudes),
+            coordinate_spec=horizon.coordinate_spec,
             ids=np.asarray(
                 [f"above_horizon_{index}" for index in range(count)],
                 dtype=object,

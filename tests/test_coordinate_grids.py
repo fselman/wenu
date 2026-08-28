@@ -23,6 +23,10 @@ def test_make_curves_preserves_native_to_horizontal_conversion(
 ):
     observer = SimpleNamespace(
         t=object(),
+        t_astropy=SimpleNamespace(
+            isot="2026-08-28T00:00:00.000",
+            scale="utc",
+        ),
         lat_deg=-33.0,
         lon_deg=-71.5,
     )

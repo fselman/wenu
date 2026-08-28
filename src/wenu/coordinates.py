@@ -123,6 +123,82 @@ class CoordinateSpec:
         object.__setattr__(self, "corrections", corrections)
 
 
+GENERIC_SPHERICAL_SPEC = CoordinateSpec(
+    frame="generic-spherical",
+    origin="unit-sphere",
+    provider="wenu synthetic geometry",
+)
+
+
+ICRS_ASTROMETRIC_SPEC = CoordinateSpec(
+    frame="icrs",
+    origin="solar-system-barycenter",
+    position_status=PositionStatus.ASTROMETRIC,
+    epoch="J2000.0",
+    provider="catalogue",
+)
+
+
+def observer_altaz_spec(
+    observer,
+    *,
+    position_status=PositionStatus.TOPOCENTRIC,
+    provider=None,
+    model=None,
+    provenance=(),
+    corrections=frozenset(),
+):
+    """Describe observer-local AltAz geometry at the observer instant."""
+    instant, time_scale = _observer_instant(observer)
+    return CoordinateSpec(
+        frame="altaz",
+        origin="observer",
+        position_status=position_status,
+        instant=instant,
+        time_scale=time_scale,
+        provider=provider,
+        model=model,
+        provenance=provenance,
+        corrections=corrections,
+    )
+
+
+def observer_celestial_spec(
+    observer,
+    frame,
+    *,
+    provider="astropy",
+    model=None,
+    provenance=(),
+    corrections=frozenset(),
+):
+    """Describe an observer-instant direction expressed in a celestial frame."""
+    instant, time_scale = _observer_instant(observer)
+    return CoordinateSpec(
+        frame=frame,
+        origin="topocentric-direction",
+        position_status=PositionStatus.ASTROMETRIC,
+        instant=instant,
+        time_scale=time_scale,
+        provider=provider,
+        model=model,
+        provenance=provenance,
+        corrections=corrections,
+    )
+
+
+def _observer_instant(observer):
+    time = getattr(observer, "t_astropy", None)
+    if time is None:
+        frame = getattr(observer, "altaz_frame", None)
+        time = getattr(frame, "obstime", None)
+    if time is None:
+        raise TypeError("observer must provide t_astropy or AltAz obstime.")
+    instant = getattr(time, "isot", None) or str(time)
+    time_scale = getattr(time, "scale", None) or "utc"
+    return str(instant), str(time_scale)
+
+
 @dataclass(frozen=True)
 class ObservationContext:
     """Immutable observer-local input to an astronomical transformation."""
