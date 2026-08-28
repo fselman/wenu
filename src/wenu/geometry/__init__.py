@@ -12,6 +12,7 @@ from .projected import (
 )
 from .spherical import (
     SphericalCurves,
+    SphericalGeometry,
     SphericalGrid,
     SphericalPoints,
     SphericalPolygons,
@@ -21,6 +22,7 @@ from .viewport import Viewport
 __all__ = [
     "SphericalCoordinates",
     "SphericalFrame",
+    "SphericalGeometry",
     "SphericalPoints",
     "SphericalCurves",
     "SphericalGrid",

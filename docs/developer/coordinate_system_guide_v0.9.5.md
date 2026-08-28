@@ -335,6 +335,12 @@ provider evaluation instant.
 
 # 7. Proposed 0.9.5 contracts
 
+**49B.1 implementation note:** The first candidate introduces only the frozen
+vocabulary and structural protocol. Existing geometry does not carry
+`CoordinateSpec` until 49B.2, and existing objects do not implement
+`PositionProvider` until 49B.3. No numerical transformation changes in
+49B.1.
+
 ## 7.1 CoordinateSpec
 
 `CoordinateSpec` is immutable and includes frame, origin, epoch/equinox,

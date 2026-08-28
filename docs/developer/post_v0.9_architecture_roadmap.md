@@ -85,6 +85,16 @@ a correctness defect that must be isolated separately.
 
 ## 5. Milestone 49B - Explicit astronomical-state vocabulary
 
+### Milestone 49B.1 — Frozen coordinate vocabulary
+
+**Status:** Implementation candidate on the dedicated 49B.1 branch.
+
+Add `CoordinateSpec`, `ObservationContext`, `PositionStatus`, the
+structural `PositionProvider` protocol, and the `SphericalGeometry` union.
+This milestone changes no numerical transformation, geometry constructor, or
+chart output. Attaching coordinate identity to geometry remains 49B.2, and
+adapting existing astronomical objects remains 49B.3.
+
 Introduce immutable specifications for:
 
 - reference frame and origin;

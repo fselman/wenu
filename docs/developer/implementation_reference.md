@@ -1521,3 +1521,21 @@ reference executor. It sends every resolved frame through
 `generate_chart_request()`; no alternate sphere, projection, renderer,
 furniture, or export path exists. Scientifically keyed reuse and
 restart/resume support remain future work.
+
+## Coordinate vocabulary (Milestone 49B.1 candidate)
+
+`wenu.coordinates.CoordinateSpec` is the immutable scientific identity
+vocabulary for a represented coordinate set. It records frame, origin,
+position status, optional epoch/equinox and instant/time-scale pairs,
+representation and units, provider/model provenance, and declared correction
+policies. It does not transform coordinates.
+
+`wenu.coordinates.ObservationContext` is the immutable observer-local input
+vocabulary. It records normalized terrestrial longitude, latitude, elevation,
+physical instant/time scale, refraction policy, and Earth-orientation policy.
+It is not yet constructed by `Observer` in 49B.1.
+
+`wenu.positions.PositionProvider` is a runtime-checkable structural protocol
+for native astronomical position generation. Existing objects are not adapted
+until 49B.3. `wenu.geometry.SphericalGeometry` names the existing point,
+curve, polygon, and grid record union without changing any constructor.
