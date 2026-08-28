@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import numpy as np
 
+from wenu.coordinates import observer_altaz_spec
+
 from wenu.geometry.spherical import SphericalPolygons
 from wenu.objects.nonstellar import NonStellar
 
@@ -174,6 +176,9 @@ class Galaxies(NonStellar):
         return SphericalPolygons(
             lon_deg=tuple(longitude[index] for index in positions),
             lat_deg=tuple(latitude[index] for index in positions),
+            coordinate_spec=observer_altaz_spec(
+                resolved, provider="astropy OpenNGC"
+            ),
             ids=identifiers,
             names=identifiers,
             metadata=self._geometry_metadata(

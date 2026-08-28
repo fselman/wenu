@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import numpy as np
 
+from wenu.coordinates import observer_altaz_spec
+
 from wenu.geometry.spherical import SphericalPolygons
 from wenu.sky.coordinate_grids import AltAzGrid
 from wenu.sky.geometrical_object import GeometricalObject
@@ -67,6 +69,9 @@ class HorizonReference(GeometricalObject):
         return SphericalPolygons(
             lon_deg=tuple(longitudes),
             lat_deg=tuple(latitudes),
+            coordinate_spec=observer_altaz_spec(
+                resolved, provider="wenu analytic horizon"
+            ),
             ids=np.asarray(
                 [f"above_horizon_{index}" for index in range(count)],
                 dtype=object,

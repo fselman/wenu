@@ -454,3 +454,4 @@ def _expanded_metadata(geometry, source_indices):
             continue
         expanded[name] = value
     return expanded
+

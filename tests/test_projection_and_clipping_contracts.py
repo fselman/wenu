@@ -4,6 +4,8 @@
 import numpy as np
 import pytest
 
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.geometry.clipping import (
     clip_curve_to_viewport,
     clip_polygon_to_viewport,
@@ -63,7 +65,7 @@ def test_arbitrary_frame_applies_to_geometry_collections():
         flip_ew=False,
         frame=frame,
     )
-    points = SphericalPoints(
+    points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=[45.0],
         lat_deg=[20.0],
         ids=["center"],
@@ -266,7 +268,7 @@ from wenu.rendering import clip_polygons_to_projection_cap
 
 
 def polygons():
-    return SphericalPolygons(
+    return SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=(
             [-10.0, 10.0, 10.0, -10.0],
             [-10.0, 10.0, 10.0, -10.0],
@@ -376,7 +378,7 @@ from wenu.sky.sky_layer import SkyLayer
 
 class PolygonLayer(SkyLayer):
     def spherical_geometry(self, observer):
-        return SphericalPolygons(
+        return SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=(
                 [-10.0, 10.0, 10.0, -10.0],
                 [-10.0, 10.0, 10.0, -10.0],
@@ -519,3 +521,4 @@ def test_circumpolar_lmc_boundary_crosses_projected_lmc():
     )
     assert np.any(radii < field_radius)
     assert np.any(radii > field_radius)
+

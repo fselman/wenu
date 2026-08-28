@@ -16,7 +16,7 @@ from astropy.coordinates import (
 )
 from astropy.time import Time
 
-from wenu.coordinates import radec_to_altaz
+from wenu.coordinates import observer_altaz_spec, radec_to_altaz
 from wenu.sky.geometrical_object import GeometricalObject
 from wenu.geometry.spherical import SphericalCurves, SphericalGrid
 
@@ -127,6 +127,7 @@ class CoordinatesGrid(GeometricalObject, ABC):
             )
         return SphericalGrid(
             components=components,
+            coordinate_spec=self._coordinate_spec(),
             metadata=self._grid_metadata(),
         )
 
@@ -140,6 +141,7 @@ class CoordinatesGrid(GeometricalObject, ABC):
         self._resolve_observer(observer)
         return SphericalGrid(
             components={},
+            coordinate_spec=self._coordinate_spec(),
             metadata=self._grid_metadata(),
         )
 
@@ -169,6 +171,11 @@ class CoordinatesGrid(GeometricalObject, ABC):
         return SphericalCurves(
             lon_deg=tuple(azimuths),
             lat_deg=tuple(altitudes),
+            coordinate_spec=observer_altaz_spec(
+                resolved_observer,
+                provider="wenu coordinate grid",
+                model=f"{self.coordinate_system} to AltAz",
+            ),
             names=names,
             closed=closed,
             metadata={
@@ -180,10 +187,13 @@ class CoordinatesGrid(GeometricalObject, ABC):
             },
         )
 
-    @staticmethod
-    def _combine(collections) -> SphericalCurves:
+    def _combine(self, collections) -> SphericalCurves:
         if not collections:
-            return SphericalCurves(lon_deg=(), lat_deg=())
+            return SphericalCurves(
+                lon_deg=(),
+                lat_deg=(),
+                coordinate_spec=self._coordinate_spec(),
+            )
         lon_deg = []
         lat_deg = []
         names = []
@@ -200,9 +210,17 @@ class CoordinatesGrid(GeometricalObject, ABC):
         return SphericalCurves(
             lon_deg=tuple(lon_deg),
             lat_deg=tuple(lat_deg),
+            coordinate_spec=collections[0].coordinate_spec,
             names=names,
             closed=closed,
             metadata=metadata,
+        )
+
+    def _coordinate_spec(self):
+        return observer_altaz_spec(
+            self._resolve_observer(None),
+            provider="wenu coordinate grid",
+            model=f"{self.coordinate_system} to AltAz",
         )
 
     def _native_to_altaz(
@@ -321,6 +339,7 @@ class AltAzGrid(CoordinatesGrid):
             components["reference"] = self.horizon()
         return SphericalGrid(
             components=components,
+            coordinate_spec=geometry.coordinate_spec,
             metadata=geometry.metadata,
         )
 
@@ -461,6 +480,7 @@ class EquatorialGrid(CoordinatesGrid):
             )
         return SphericalGrid(
             components=components,
+            coordinate_spec=self._coordinate_spec(),
             metadata=self._grid_metadata(),
         )
 
@@ -484,6 +504,7 @@ class EquatorialGrid(CoordinatesGrid):
             components["reference"] = self.equator()
         return SphericalGrid(
             components=components,
+            coordinate_spec=geometry.coordinate_spec,
             metadata=geometry.metadata,
         )
 
@@ -623,6 +644,7 @@ class EclipticGrid(CoordinatesGrid):
             components["reference"] = self.ecliptic()
         return SphericalGrid(
             components=components,
+            coordinate_spec=geometry.coordinate_spec,
             metadata=geometry.metadata,
         )
 
@@ -691,6 +713,7 @@ class GalacticGrid(CoordinatesGrid):
             components["reference"] = self.galactic_plane()
         return SphericalGrid(
             components=components,
+            coordinate_spec=geometry.coordinate_spec,
             metadata=geometry.metadata,
         )
 

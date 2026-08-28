@@ -153,3 +153,4 @@ def test_selected_clusters_render_as_one_path_collection():
     assert isinstance(artists[0], PathCollection)
     assert len(artists[0].get_offsets()) == 2
     plt.close(fig)
+

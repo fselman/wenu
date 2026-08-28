@@ -6,6 +6,8 @@ import numpy as np
 import pytest
 
 from wenu import PolarPlanisphereChart
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.charts.context import BoundaryKind
 from wenu.charts.legend_plan import chart_type_name, default_chart_legend_plan
 from wenu.geometry.projected import ProjectedPoints
@@ -97,7 +99,7 @@ def test_face_cap_removes_outside_curve_chords_before_rendering(
         pole=pole,
         projection_name=projection_name,
     )
-    curves = SphericalCurves(
+    curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=(np.asarray((20.0, 200.0)),),
         lat_deg=(np.asarray((outside_declination, outside_declination)),),
     )
@@ -120,7 +122,7 @@ def test_face_cap_suppresses_reference_points_outside_declination_limit(
     finite,
 ):
     chart = PolarPlanisphereChart(pole=pole)
-    points = SphericalPoints(
+    points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=np.asarray((0.0, 0.0)),
         lat_deg=np.asarray(declinations),
     )
@@ -143,8 +145,8 @@ def test_physical_diameter_does_not_change_projection_geometry():
 def test_render_transforms_canonical_altaz_before_selected_projection(
     monkeypatch,
 ):
-    source = SphericalPoints(lon_deg=[1.0], lat_deg=[2.0])
-    equatorial = SphericalPoints(lon_deg=[30.0], lat_deg=[-40.0])
+    source = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC, lon_deg=[1.0], lat_deg=[2.0])
+    equatorial = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC, lon_deg=[30.0], lat_deg=[-40.0])
     calls = {}
 
     def transform(geometry, observer):
@@ -341,3 +343,4 @@ def test_polar_legend_fallback_does_not_copy_existing_family_authority():
     assert default_chart_legend_plan("polar_planisphere") is not (
         defaults.furniture_by_family["circumpolar"].legends.plan
     )
+

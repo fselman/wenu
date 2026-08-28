@@ -47,13 +47,15 @@ not a coordinate, projection, or renderer modification.
 
 ### 49B.1 — Freeze scientific contracts
 
-**Implementation status:** Candidate vocabulary isolated on the dedicated
-49B.1 branch; acceptance is pending.
+**Implementation status:** Accepted and merged in `d63c300`.
 
 Add `CoordinateSpec`, `ObservationContext`, `PositionProvider`, and the
 `SphericalGeometry` union without changing numerical transformations.
 
 ### 49B.2 — Attach identity to geometry
+
+**Implementation status:** Candidate on the dedicated 49B.2 branch;
+acceptance is pending.
 
 Add mandatory coordinate identity to `SphericalPoints`,
 `SphericalCurves`, `SphericalPolygons`, and `SphericalGrid`. Prevent

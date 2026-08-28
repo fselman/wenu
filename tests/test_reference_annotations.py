@@ -29,6 +29,8 @@ from wenu import (
     compose_chart,
     LegendOptions,
 )
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.geometry.projected import ProjectedCurve, ProjectedPoints
 from wenu.geometry.spherical import SphericalPoints
 from wenu.charts.reference_furniture import _reference_layer_options
@@ -201,7 +203,7 @@ def test_rectangular_reference_furniture_preserves_all_keypoint_altitudes():
     )
     options = _reference_layer_options(overlay, composition, subject)
     labels = np.asarray(["♈", "♋", "♎", "♑"], dtype=object)
-    spherical = SphericalPoints(
+    spherical = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=np.asarray([91.0, 190.0, 271.0, 10.0]),
         lat_deg=np.asarray([-1.51, -80.86, 1.50, 80.86]),
         labels=labels,
@@ -444,3 +446,4 @@ def test_reference_policy_module_has_no_backend_import():
         root / "src/wenu/charts/reference_furniture.py"
     ).read_text(encoding="utf-8")
     assert "matplotlib" not in source.lower()
+

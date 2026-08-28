@@ -8,6 +8,8 @@ from pathlib import Path
 
 import astropy.units as u
 import numpy as np
+
+from wenu.coordinates import observer_altaz_spec
 from astropy.coordinates import AltAz, EarthLocation, FK4, SkyCoord
 from astropy.time import Time
 
@@ -362,6 +364,10 @@ class ConstellationBoundaries(GeometricalObject):
         return SphericalPolygons(
             lon_deg=tuple(lon_deg[positions[item]] for item in identifiers),
             lat_deg=tuple(lat_deg[positions[item]] for item in identifiers),
+            coordinate_spec=observer_altaz_spec(
+                resolved_observer,
+                provider="astropy IAU constellation boundaries",
+            ),
             ids=identifiers,
             names=identifiers,
             metadata={

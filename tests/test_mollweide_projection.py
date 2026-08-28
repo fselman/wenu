@@ -4,6 +4,8 @@ import numpy as np
 import pytest
 
 from wenu import MollweideProjection
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.geometry.projected import (
     ProjectedCurves,
     ProjectedGrid,
@@ -87,7 +89,7 @@ def test_small_cells_have_equal_area_scale():
 
 
 def test_points_are_vectorized_and_preserve_identity():
-    points = SphericalPoints(
+    points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=[0.0, 90.0],
         lat_deg=[0.0, 30.0],
         ids=[1, 2],
@@ -106,7 +108,7 @@ def test_points_are_vectorized_and_preserve_identity():
 
 
 def test_curve_crossing_seam_becomes_two_short_segments():
-    curves = SphericalCurves(
+    curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([170.0, -170.0], [10.0, 20.0]),
         lat_deg=([5.0, 15.0], [0.0, 0.0]),
         ids=("cross", "plain"),
@@ -131,7 +133,7 @@ def test_curve_crossing_seam_becomes_two_short_segments():
 
 
 def test_closed_seam_crossing_curve_opens_only_its_split_pieces():
-    curves = SphericalCurves(
+    curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([170.0, -170.0, -175.0], [10.0, 20.0, 15.0]),
         lat_deg=([0.0, 5.0, -5.0], [0.0, 5.0, -5.0]),
         closed=(True, True),
@@ -146,7 +148,7 @@ def test_closed_seam_crossing_curve_opens_only_its_split_pieces():
 
 
 def test_nonfinite_curve_breaks_remain_disconnected():
-    curves = SphericalCurves(
+    curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([10.0, 20.0, np.nan, 170.0, -170.0],),
         lat_deg=([0.0, 0.0, np.nan, 5.0, 5.0],),
         ids=("broken",),
@@ -161,13 +163,13 @@ def test_nonfinite_curve_breaks_remain_disconnected():
 
 
 def test_grid_components_retain_separate_split_collections():
-    grid = SphericalGrid(
+    grid = SphericalGrid(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         components={
-            "meridians": SphericalCurves(
+            "meridians": SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=([170.0, -170.0],),
                 lat_deg=([0.0, 0.0],),
             ),
-            "parallels": SphericalCurves(
+            "parallels": SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=([0.0, 20.0],),
                 lat_deg=([30.0, 30.0],),
             ),
@@ -184,7 +186,7 @@ def test_grid_components_retain_separate_split_collections():
 
 
 def test_seam_crossing_polygon_becomes_valid_closed_pieces():
-    polygons = SphericalPolygons(
+    polygons = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([170.0, -170.0, -170.0, 170.0],),
         lat_deg=([-10.0, -10.0, 10.0, 10.0],),
         ids=("region",),
@@ -226,3 +228,4 @@ def test_unknown_geometry_and_nonscalar_point_are_rejected():
         value.project_geometry(object())
     with pytest.raises(ValueError, match="scalar"):
         value.project_point([0.0, 1.0], [0.0, 1.0])
+

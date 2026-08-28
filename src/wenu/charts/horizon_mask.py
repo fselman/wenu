@@ -214,3 +214,4 @@ def _viewport_polygon(viewport):
         )),
         name="above_horizon",
     )
+

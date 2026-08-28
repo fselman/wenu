@@ -6,6 +6,8 @@ from importlib.resources import as_file
 from io import BytesIO
 
 import numpy as np
+
+from wenu.coordinates import PositionStatus, observer_altaz_spec
 from skyfield.api import Star
 from skyfield.data import hipparcos
 
@@ -336,6 +338,12 @@ class Stars(AstronomicalObject):
         return SphericalPoints(
             lon_deg=az_deg,
             lat_deg=alt_deg,
+            coordinate_spec=observer_altaz_spec(
+                resolved_observer,
+                position_status=PositionStatus.APPARENT,
+                provider="skyfield Hipparcos",
+                model="Skyfield apparent AltAz",
+            ),
             ids=hip_ids,
             metadata=metadata,
         )

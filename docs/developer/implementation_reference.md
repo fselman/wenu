@@ -1522,7 +1522,7 @@ reference executor. It sends every resolved frame through
 furniture, or export path exists. Scientifically keyed reuse and
 restart/resume support remain future work.
 
-## Coordinate vocabulary (Milestone 49B.1 candidate)
+## Typed coordinate vocabulary (Milestones 49B.1–49B.2)
 
 `wenu.coordinates.CoordinateSpec` is the immutable scientific identity
 vocabulary for a represented coordinate set. It records frame, origin,
@@ -1538,4 +1538,13 @@ It is not yet constructed by `Observer` in 49B.1.
 `wenu.positions.PositionProvider` is a runtime-checkable structural protocol
 for native astronomical position generation. Existing objects are not adapted
 until 49B.3. `wenu.geometry.SphericalGeometry` names the existing point,
-curve, polygon, and grid record union without changing any constructor.
+curve, polygon, and grid record union.
+
+Milestone 49B.2 makes `CoordinateSpec` a required keyword-only member of all
+four spherical geometry records. Production layers declare the coordinate
+identity at construction, transformations declare their target identity,
+selection and relative-longitude operations preserve identity, and
+`SphericalGrid` rejects components with a different specification. Synthetic
+projection tests use an explicitly named generic spherical specification;
+there is no implicit or inferred fallback. Coordinate values and equations
+remain unchanged.

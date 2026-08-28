@@ -34,6 +34,7 @@ class _PolarEquatorialGrid(EquatorialGrid):
         )
         return SphericalGrid(
             components={"meridians": meridians},
+            coordinate_spec=meridians.coordinate_spec,
             metadata=self._grid_metadata(),
         )
 

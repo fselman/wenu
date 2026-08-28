@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.chart_document import EditPolicy
 from wenu.sky.rendering_results import ChartRenderingResult
 from wenu.geometry.projected import ProjectedPoints
@@ -34,7 +36,7 @@ class StubLayer(SkyLayer):
 
     def spherical_geometry(self, observer):
         self.calls.append(("geometry", self.layer_name, observer))
-        return SphericalPoints(
+        return SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
             lon_deg=[self.longitude],
             lat_deg=[45.0],
             metadata={"layer": self.layer_name},
@@ -293,3 +295,4 @@ def test_layer_can_declare_no_supported_external_edits():
     )
 
     assert identity.edit_policy is EditPolicy.NONE
+

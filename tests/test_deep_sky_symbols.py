@@ -8,6 +8,8 @@ import numpy as np
 import pytest
 from astropy.coordinates import SkyCoord
 
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.charts.styles import PublicationStyle
 from wenu.objects.nonstellar import NonStellar
 
@@ -70,7 +72,7 @@ from wenu.rendering.preparation import (
 
 
 def polygon_collections():
-    spherical = SphericalPolygons(
+    spherical = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 1.0, 1.0, 0.0],),
         lat_deg=([-1.0, -1.0, 1.0, 1.0],),
         names=["test"],
@@ -332,7 +334,7 @@ def test_filled_style_uses_named_fill_zorder_and_independent_alpha():
 def test_galaxy_style_uses_filled_polygon_clipping():
     sky = fake_sky()
     options = PublicationStyle().layer_options(sky)[sky.galaxies]
-    spherical = SphericalPolygons(
+    spherical = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 1.0, 1.0, 0.0],),
         lat_deg=([-1.0, -1.0, 1.0, 1.0],),
     )
@@ -592,3 +594,4 @@ def test_object_legend_galaxy_handle_is_elliptical():
     assert handles[0].width > handles[0].height
     assert handles[0].get_facecolor()[-1] > 0.0
     plt.close(figure)
+

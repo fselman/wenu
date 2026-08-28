@@ -98,3 +98,4 @@ def test_sequential_nebula_selections_share_observed_catalogue():
     assert first.ids.tolist() == ["PN G063.1+13.9"]
     assert second.ids.tolist() == ["PN G036.1-57.1"]
     assert len(layer._observed_point_cache) == 1
+

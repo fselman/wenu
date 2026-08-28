@@ -331,3 +331,4 @@ class StereographicProjection:
             )
         x, y = self.project_spherical(lon_deg, lat_deg)
         return ProjectedPolygon(x=x, y=y, name=name)
+

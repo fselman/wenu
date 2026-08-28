@@ -9,7 +9,7 @@ import astropy.units as u
 import numpy as np
 from astropy.coordinates import SkyCoord, get_sun
 
-from wenu.coordinates import radec_to_altaz
+from wenu.coordinates import observer_altaz_spec, radec_to_altaz
 from wenu.sky.geometrical_object import GeometricalObject
 from wenu.geometry.spherical import SphericalPoints
 
@@ -306,6 +306,9 @@ class CelestialPoints(GeometricalObject):
             return SphericalPoints(
                 lon_deg=np.asarray([], dtype=float),
                 lat_deg=np.asarray([], dtype=float),
+                coordinate_spec=observer_altaz_spec(
+                    resolved_observer, provider="wenu celestial points"
+                ),
                 labels=np.asarray([], dtype=object),
                 metadata=self._style_metadata(),
             )
@@ -327,6 +330,9 @@ class CelestialPoints(GeometricalObject):
         return SphericalPoints(
             lon_deg=np.asarray(az_deg, dtype=float),
             lat_deg=np.asarray(alt_deg, dtype=float),
+            coordinate_spec=observer_altaz_spec(
+                resolved_observer, provider="wenu celestial points"
+            ),
             labels=[point.label for point in self._points],
             metadata=self._style_metadata(),
         )

@@ -967,3 +967,4 @@ def _visible_segments(x, y, latitude, *, closed, minimum):
 
     finish()
     return segments
+

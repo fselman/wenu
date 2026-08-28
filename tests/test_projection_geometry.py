@@ -1,6 +1,8 @@
 import numpy as np
 import pytest
 
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.geometry.projected import (
     ProjectedCurves,
     ProjectedGrid,
@@ -22,7 +24,7 @@ def projection():
 
 
 def test_projects_points_vectorially_and_preserves_attributes(projection):
-    points = SphericalPoints(
+    points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=[0.0, 90.0],
         lat_deg=[90.0, 0.0],
         ids=[101, 102],
@@ -43,7 +45,7 @@ def test_projects_points_vectorially_and_preserves_attributes(projection):
 
 
 def test_projects_curves_and_preserves_structure(projection):
-    curves = SphericalCurves(
+    curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 90.0], [180.0, 270.0]),
         lat_deg=([0.0, 0.0], [0.0, 0.0]),
         closed=[False, True],
@@ -67,15 +69,15 @@ def test_projects_curves_and_preserves_structure(projection):
 
 
 def test_projects_grid_without_losing_component_groups(projection):
-    meridians = SphericalCurves(
+    meridians = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 0.0],),
         lat_deg=([0.0, 45.0],),
     )
-    parallels = SphericalCurves(
+    parallels = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 90.0],),
         lat_deg=([30.0, 30.0],),
     )
-    grid = SphericalGrid(
+    grid = SphericalGrid(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         components={
             "meridians": meridians,
             "parallels": parallels,
@@ -92,7 +94,7 @@ def test_projects_grid_without_losing_component_groups(projection):
 
 
 def test_projects_polygons_and_preserves_metadata(projection):
-    polygons = SphericalPolygons(
+    polygons = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 90.0, 180.0],),
         lat_deg=([0.0, 0.0, 0.0],),
         ids=["p1"],
@@ -118,3 +120,4 @@ def test_legacy_altaz_projection_remains_available(projection):
     x, y = projection.project(alt_deg=90.0, az_deg=0.0)
     assert x == pytest.approx(0.0, abs=1e-12)
     assert y == pytest.approx(0.0, abs=1e-12)
+

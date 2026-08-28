@@ -201,3 +201,4 @@ def test_stars_contains_no_projection_or_rendering_api():
         "sizes",
     ):
         assert not hasattr(stars, name)
+

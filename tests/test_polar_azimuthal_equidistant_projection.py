@@ -4,6 +4,8 @@ import numpy as np
 import pytest
 
 from wenu import PolarAzimuthalEquidistantProjection
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.geometry.projected import (
     ProjectedCurves,
     ProjectedGrid,
@@ -140,7 +142,7 @@ def test_projection_rejects_invalid_configuration_and_domain():
 
 def test_geometry_dispatch_preserves_types_and_metadata():
     value = projection()
-    points = SphericalPoints(
+    points = SphericalPoints(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=[0.0],
         lat_deg=[30.0],
         ids=[1],
@@ -148,17 +150,17 @@ def test_geometry_dispatch_preserves_types_and_metadata():
         names=["alpha"],
         metadata={"kind": "points"},
     )
-    curves = SphericalCurves(
+    curves = SphericalCurves(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 10.0],),
         lat_deg=([30.0, 30.0],),
         names=["curve"],
     )
-    polygons = SphericalPolygons(
+    polygons = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 10.0, 5.0],),
         lat_deg=([30.0, 30.0, 40.0],),
         names=["polygon"],
     )
-    grid = SphericalGrid(components={"meridians": curves})
+    grid = SphericalGrid(coordinate_spec=GENERIC_SPHERICAL_SPEC, components={"meridians": curves})
 
     projected_points = value.project_geometry(points)
     projected_curves = value.project_geometry(curves)
@@ -174,3 +176,4 @@ def test_geometry_dispatch_preserves_types_and_metadata():
     assert projected_curves[0].name == "curve"
     assert projected_polygons[0].name == "polygon"
     assert set(projected_grid.components) == {"meridians"}
+

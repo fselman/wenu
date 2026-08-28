@@ -11,6 +11,8 @@ import pytest
 from astropy.coordinates import AltAz, EarthLocation
 from astropy.time import Time
 
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.charts.styles import PublicationStyle
 from wenu.geometry.projected import ProjectedPolygon, ProjectedPolygons
 from wenu.rendering import layers
@@ -199,7 +201,7 @@ def test_style_clips_isophotes_before_planar_rendering(tmp_path):
     })()
     prepare = PublicationStyle().layer_options(sky)[layer]["prepare"]
 
-    spherical = SphericalPolygons(
+    spherical = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=(
             np.asarray([0.0, 1.0, 1.0, 0.0]),
             np.asarray([2.0, 3.0, 3.0, 2.0]),
@@ -279,3 +281,4 @@ def test_level_selections_share_one_maximal_observed_geometry(
     assert set(complete.metadata["level"]) == set(layer.available_levels)
     assert calls == [len(complete)]
     assert len(layer._observed_polygon_cache) == 1
+

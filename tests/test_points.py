@@ -126,3 +126,4 @@ def test_domain_layer_has_no_projection_or_rendering_api():
     points = CelestialPoints(make_observer())
     for name in ("draw", "project", "artist", "artists"):
         assert not hasattr(points, name)
+

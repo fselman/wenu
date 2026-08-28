@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
+from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+
 from wenu.charts._masking import (
     _expanded_names,
     compose_projected_mask_openings,
@@ -129,7 +131,7 @@ def test_renderer_can_shade_chart_with_no_visible_openings():
 
 def test_full_sky_mask_discards_hidden_regions_before_projection():
     calls = {}
-    spherical = SphericalPolygons(
+    spherical = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=(
             [0.0, 1.0, 0.0],
             [2.0, 3.0, 2.0],
@@ -192,7 +194,7 @@ def test_full_sky_mask_discards_hidden_regions_before_projection():
 def test_all_hidden_regions_produce_a_mask_without_openings():
     class Boundaries:
         def spherical_geometry(self, observer, *, selected):
-            return SphericalPolygons(
+            return SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
                 lon_deg=([0.0, 1.0, 0.0],),
                 lat_deg=([-20.0, -10.0, -15.0],),
                 names=("UMA",),
@@ -227,12 +229,12 @@ def test_serpens_selection_expands_to_both_regions():
 
 
 def test_mask_can_transform_selected_geometry_before_projection():
-    spherical = SphericalPolygons(
+    spherical = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([0.0, 1.0, 0.0],),
         lat_deg=([0.0, 0.0, 1.0],),
         names=("CRU",),
     )
-    transformed = SphericalPolygons(
+    transformed = SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC,
         lon_deg=([10.0, 11.0, 10.0],),
         lat_deg=([20.0, 20.0, 21.0],),
         names=("CRU",),
@@ -274,3 +276,4 @@ def test_regional_chart_normalizes_mask_selection():
         outside_mask_constellations=["Cru"],
     )
     assert chart.outside_mask_constellations == ("Cru",)
+

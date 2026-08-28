@@ -75,3 +75,4 @@ def test_make_curves_preserves_native_to_horizontal_conversion(
     assert curves.names.tolist() == ["test_grid_curve"]
     assert curves.closed.tolist() == [True]
     assert curves.metadata["styles"] == ({"linewidth": 1.5},)
+

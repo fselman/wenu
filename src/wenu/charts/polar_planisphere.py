@@ -489,3 +489,4 @@ class PolarPlanisphereChart:
             options = replace(options, svg_provenance=svg_provenance)
         output = options.save(renderer.ax.figure, path)
         return result, output
+
