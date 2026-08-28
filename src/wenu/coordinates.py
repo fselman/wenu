@@ -202,17 +202,26 @@ def observer_celestial_spec(
 def observation_context(observer):
     """Build the immutable transformation context for an Observer-like value."""
     instant, time_scale = _observer_instant(observer)
-    try:
-        longitude = observer.lon_deg
-        latitude = observer.lat_deg
-    except AttributeError as error:
-        raise TypeError(
-            "observer must provide lon_deg and lat_deg."
-        ) from error
+    longitude = getattr(observer, "lon_deg", None)
+    latitude = getattr(observer, "lat_deg", None)
+    elevation = getattr(observer, "elevation_m", None)
+    if longitude is None or latitude is None:
+        frame = getattr(observer, "altaz_frame", None)
+        location = getattr(frame, "location", None)
+        if location is None:
+            raise TypeError(
+                "observer must provide longitude/latitude attributes "
+                "or an AltAz frame with a location."
+            )
+        geodetic = location.to_geodetic()
+        longitude = geodetic.lon.deg
+        latitude = geodetic.lat.deg
+        if elevation is None:
+            elevation = geodetic.height.to_value("m")
     return ObservationContext(
         longitude_deg=longitude,
         latitude_deg=latitude,
-        elevation_m=getattr(observer, "elevation_m", 0.0),
+        elevation_m=0.0 if elevation is None else elevation,
         instant=instant,
         time_scale=time_scale,
     )
