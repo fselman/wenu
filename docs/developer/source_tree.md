@@ -800,3 +800,9 @@ values without rendering, caching, manifest mutation, or a second execution
 pipeline. Catalogue reference epochs and proper-motion policy remain provider
 state rather than UTC timeline values.
 
+`charts/fixed_sky_oracle.py` owns the 49H.2 independent circumpolar
+complete-render oracle adapter and explicit RGBA comparison measurements. It
+delegates oracle generation to the ordinary observer-time static pipeline,
+keeps candidate and oracle directories separate, rejects unproved chart
+families, and contains no optimized renderer or cache.
+
