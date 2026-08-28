@@ -1,4 +1,4 @@
-"""Independent full-render oracle and PNG comparison tests."""
+"""Independent complete-render baseline and PNG comparison tests."""
 
 from datetime import datetime, timezone
 from pathlib import Path
@@ -12,8 +12,8 @@ import wenu.charts.fixed_sky_oracle as oracle_module
 from wenu.charts.fixed_sky_oracle import (
     PngFrameComparisonTolerance,
     compare_png_frames,
-    fixed_sky_full_render_oracle_request,
-    generate_fixed_sky_full_render_oracle,
+    fixed_sky_complete_render_baseline_request,
+    generate_fixed_sky_complete_render_baseline,
 )
 from wenu.charts.fixed_sky_sequence import (
     FixedSkyRotatingHorizonSequenceRequest,
@@ -69,12 +69,12 @@ def write_rgba(path: Path, values):
 
 def test_oracle_is_an_independent_complete_observer_time_plan(tmp_path):
     fixed = fixed_request(tmp_path / "candidate")
-    oracle = fixed_sky_full_render_oracle_request(
+    oracle = fixed_sky_complete_render_baseline_request(
         fixed,
-        tmp_path / "oracle",
+        tmp_path / "baseline",
     )
 
-    assert oracle.chart.product.output == tmp_path / "oracle"
+    assert oracle.chart.product.output == tmp_path / "baseline"
     assert oracle.timeline is fixed.timeline
     assert tuple(
         frame.request.observer.time for frame in oracle.frames
@@ -82,7 +82,7 @@ def test_oracle_is_an_independent_complete_observer_time_plan(tmp_path):
     assert tuple(
         frame.request.product.output for frame in oracle.frames
     ) == tuple(
-        tmp_path / "oracle" / f"frame-{index:04d}.png"
+        tmp_path / "baseline" / f"frame-{index:04d}.png"
         for index in range(3)
     )
     assert all(
@@ -109,14 +109,14 @@ def test_oracle_generation_delegates_to_observer_time_pipeline(
         generate,
     )
 
-    result = generate_fixed_sky_full_render_oracle(
+    result = generate_fixed_sky_complete_render_baseline(
         fixed,
-        tmp_path / "oracle",
+        tmp_path / "baseline",
         restart_policy="resume",
     )
 
     assert len(calls) == 1
-    assert calls[0][0].chart.product.output == tmp_path / "oracle"
+    assert calls[0][0].chart.product.output == tmp_path / "baseline"
     assert calls[0][1] == "resume"
     assert result.request is calls[0][0]
 
@@ -125,14 +125,14 @@ def test_first_oracle_rejects_unproved_chart_families(tmp_path):
     fixed = fixed_request(tmp_path / "candidate", family="regional")
 
     with pytest.raises(ValueError, match="only for circumpolar"):
-        fixed_sky_full_render_oracle_request(
+        fixed_sky_complete_render_baseline_request(
             fixed,
-            tmp_path / "oracle",
+            tmp_path / "baseline",
         )
 
 
 def test_png_comparison_reports_exact_rgba_metrics(tmp_path):
-    oracle = tmp_path / "oracle.png"
+    oracle = tmp_path / "baseline.png"
     candidate = tmp_path / "candidate.png"
     pixels = np.zeros((2, 2, 4), dtype=np.uint8)
     pixels[:, :, 3] = 255
