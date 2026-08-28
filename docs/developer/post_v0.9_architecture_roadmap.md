@@ -221,11 +221,15 @@ second. Presentation speed must never be mistaken for physical time.
 ## 11. Milestone 49H - Fixed sky and rotating horizon
 
 **Status:** 49H.1 fixed celestial-anchor and frame-local observer planning
-contract implemented; canonical rendering and scientifically keyed reuse remain
-pending.
+contract implemented.
 
-The ownership contract is documented in
-`fixed_sky_rotating_horizon_49h1.md`.
+**Status:** 49H.2 independent complete-render circumpolar oracle and explicit
+PNG comparison implemented; canonical fixed-sky rendering and scientifically
+keyed reuse remain pending.
+
+The ownership and oracle contracts are documented in
+`fixed_sky_rotating_horizon_49h1.md` and
+`fixed_sky_oracle_49h2.md`.
 
 Use the temporal contract to support the Earth-rotation presentation:
 
