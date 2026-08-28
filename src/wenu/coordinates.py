@@ -199,6 +199,25 @@ def observer_celestial_spec(
     )
 
 
+def observation_context(observer):
+    """Build the immutable transformation context for an Observer-like value."""
+    instant, time_scale = _observer_instant(observer)
+    try:
+        longitude = observer.lon_deg
+        latitude = observer.lat_deg
+    except AttributeError as error:
+        raise TypeError(
+            "observer must provide lon_deg and lat_deg."
+        ) from error
+    return ObservationContext(
+        longitude_deg=longitude,
+        latitude_deg=latitude,
+        elevation_m=getattr(observer, "elevation_m", 0.0),
+        instant=instant,
+        time_scale=time_scale,
+    )
+
+
 def _observer_instant(observer):
     time = getattr(observer, "t_astropy", None)
     if time is None:

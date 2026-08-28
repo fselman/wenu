@@ -7,7 +7,9 @@ from astropy import units as u
 from astropy.coordinates import (
     AltAz,
     BarycentricMeanEcliptic,
+    BarycentricTrueEcliptic,
     EarthLocation,
+    FK5,
     Galactic,
     ICRS,
     SkyCoord,
@@ -137,6 +139,19 @@ class CoordinateService:
             return ICRS()
         if frame == "galactic":
             return Galactic()
+        if frame == "fk5":
+            return FK5(equinox=Time(spec.equinox or "J2000.0"))
+        if frame in {
+            "true-ecliptic",
+            "barycentric-true-ecliptic",
+            "barycentrictrueecliptic",
+        }:
+            equinox = spec.equinox or spec.instant
+            if equinox is None and observation is not None:
+                equinox = observation.instant
+            return BarycentricTrueEcliptic(
+                equinox=Time(equinox or "J2000.0")
+            )
         if frame in {
             "ecliptic",
             "barycentric-mean-ecliptic",

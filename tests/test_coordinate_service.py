@@ -3,7 +3,15 @@ from __future__ import annotations
 import numpy as np
 import pytest
 from astropy import units as u
-from astropy.coordinates import AltAz, EarthLocation, Galactic, ICRS, SkyCoord
+from astropy.coordinates import (
+    AltAz,
+    BarycentricTrueEcliptic,
+    EarthLocation,
+    FK5,
+    Galactic,
+    ICRS,
+    SkyCoord,
+)
 from astropy.time import Time
 
 from wenu.coordinate_service import CoordinateService
@@ -232,3 +240,50 @@ def test_unsupported_coordinate_contracts_fail_explicitly(spec, message):
 
     with pytest.raises(ValueError, match=message):
         CoordinateService().transform(points, spec)
+
+
+@pytest.mark.parametrize(
+    "source_spec, source_frame",
+    [
+        (
+            CoordinateSpec(
+                frame="fk5",
+                origin="solar-system-barycenter",
+                position_status=PositionStatus.ASTROMETRIC,
+                equinox="J2050.0",
+            ),
+            FK5(equinox=Time("J2050.0")),
+        ),
+        (
+            CoordinateSpec(
+                frame="barycentric-true-ecliptic",
+                origin="solar-system-barycenter",
+                position_status=PositionStatus.ASTROMETRIC,
+                equinox="J2050.0",
+            ),
+            BarycentricTrueEcliptic(equinox=Time("J2050.0")),
+        ),
+    ],
+)
+def test_reference_frames_match_astropy(source_spec, source_frame):
+    points = SphericalPoints(
+        lon_deg=np.array([15.0, 120.0]),
+        lat_deg=np.array([-20.0, 35.0]),
+        coordinate_spec=source_spec,
+    )
+
+    transformed = CoordinateService().transform(
+        points, ICRS_ASTROMETRIC_SPEC
+    )
+    expected = SkyCoord(
+        points.lon_deg * u.deg,
+        points.lat_deg * u.deg,
+        frame=source_frame,
+    ).transform_to(ICRS()).spherical
+
+    np.testing.assert_allclose(
+        transformed.lon_deg, expected.lon.to_value(u.deg), atol=1e-10
+    )
+    np.testing.assert_allclose(
+        transformed.lat_deg, expected.lat.to_value(u.deg), atol=1e-10
+    )

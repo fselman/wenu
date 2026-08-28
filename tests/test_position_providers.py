@@ -7,10 +7,12 @@ from astropy.table import Table
 
 from wenu.geometry import SphericalPoints
 from wenu.objects.galaxies import Galaxies
+from wenu.objects.globular_clusters import GlobularClusters
 from wenu.objects.nonstellar import NonStellar
 from wenu.objects.open_clusters import OpenClusters
 from wenu.objects.planetary_nebulae import PlanetaryNebulae
 from wenu.objects.stars import Stars
+from wenu.objects.supernova_remnants import SupernovaRemnants
 from wenu.positions import PositionProvider
 from wenu.sky.horizon import HorizonReference
 
@@ -80,7 +82,9 @@ def test_open_clusters_provide_selected_native_centres():
 
 def test_nonstellar_subclasses_share_the_centre_provider_boundary():
     assert Galaxies.position is NonStellar.position
+    assert GlobularClusters.position is NonStellar.position
     assert PlanetaryNebulae.position is NonStellar.position
+    assert SupernovaRemnants.position is NonStellar.position
 
 
 def test_constructed_reference_geometry_is_not_a_position_provider():
