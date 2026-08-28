@@ -1,4 +1,4 @@
-"""Independent complete-render baseline and PNG comparison for fixed-sky characterization."""
+"""Complete-render baseline and PNG comparison for fixed-sky work."""
 
 from __future__ import annotations
 
@@ -96,7 +96,8 @@ def fixed_sky_complete_render_baseline_request(
         )
     if request.chart.family != "circumpolar":
         raise ValueError(
-            "The first complete-render baseline is limited to circumpolar charts."
+            "The first complete-render baseline is limited to "
+            "circumpolar charts."
         )
     output = Path(output)
     if output.suffix:
@@ -119,7 +120,7 @@ def generate_fixed_sky_complete_render_baseline(
     *,
     restart_policy="restart",
 ) -> ObserverTimeChartSequenceGeneration:
-    """Generate the independent baseline through the canonical static pipeline."""
+    """Generate the baseline through the canonical static pipeline."""
     baseline = fixed_sky_complete_render_baseline_request(request, output)
     return generate_observer_time_chart_sequence(
         baseline,
