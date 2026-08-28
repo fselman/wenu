@@ -1,4 +1,4 @@
-# Fixed-sky complete-render oracle
+# Fixed-sky complete-render baseline
 
 **Milestone:** 49H.2  
 **Status:** Oracle planning and PNG comparison implemented; optimized rendering pending  
@@ -19,18 +19,18 @@ stable-camera equivalence is independently proved.
 
 ## Separate oracle products
 
-`fixed_sky_full_render_oracle_request()` derives an ordinary
+`fixed_sky_complete_render_baseline_request()` derives an ordinary
 `ObserverTimeChartSequenceRequest` from the 49H.1 request but requires a
-separate output directory. Candidate frames and oracle frames therefore cannot
+separate output directory. Candidate frames and baseline frames therefore cannot
 silently overwrite or reuse each other.
 
-`generate_fixed_sky_full_render_oracle()` delegates only to
+`generate_fixed_sky_complete_render_baseline()` delegates only to
 `generate_observer_time_chart_sequence()`. It does not call a fixed-sky
 renderer, share prepared candidate geometry, or introduce another export path.
 The existing sequence manifest and restart/resume verification remain in
 force.
 
-The full-render oracle uses each timeline simulation instant as the ordinary
+The complete-render baseline uses each timeline simulation instant as the ordinary
 chart observer time. The explicit celestial anchor remains candidate policy;
 it is not substituted into the oracle and is not confused with a catalogue
 reference epoch.
@@ -60,13 +60,13 @@ correctness.
 prepared-request/export boundaries. Before caching is added, it must:
 
 1. produce candidate frames in a directory separate from this oracle;
-2. compare all candidate frames against complete oracle frames;
+2. compare all candidate frames against complete baseline frames;
 3. demonstrate that celestial geometry is anchor-stable;
 4. demonstrate that horizon/local geometry follows every simulation instant;
 5. retain ordinary furniture, output, and manifest behavior.
 
 Caching remains prohibited until these comparisons pass without shared
-candidate/oracle preparation.
+candidate/baseline preparation.
 
 ## Reproducible real-render audit
 
@@ -74,9 +74,9 @@ candidate/oracle preparation.
 circumpolar reference by default. It deliberately includes fixed celestial
 content, an equatorial grid, the observer-local AltAz grid, and the semantic
 horizon. It writes complete PNG frames and the ordinary sequence manifest
-under `complete-render-oracle/`, reserving a different candidate directory.
+under `complete-render-baseline/`, reserving a different candidate directory.
 
-The adjacent `fixed-sky-oracle-audit.json` records the manifest identity,
+The adjacent `fixed-sky-baseline-audit.json` records the manifest identity,
 anchor, simulation and display instants, dimensions, byte counts, SHA-256
 hashes, render/reuse counts, and the number of distinct frame hashes. The audit
 fails if dimensions differ or observer-time frames do not change.
