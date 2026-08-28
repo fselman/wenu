@@ -36,7 +36,7 @@ def test_fixed_sky_contract_separates_celestial_and_local_time_owners():
     assert "charts/fixed_sky_sequence.py" in source_tree
 
 
-def test_fixed_sky_oracle_documents_independent_complete_rendering():
+def test_fixed_sky_baseline_documents_complete_rendering_limits():
     contract = (
         DEVELOPER / "fixed_sky_complete_render_baseline_49h2.md"
     ).read_text(encoding="utf-8")
