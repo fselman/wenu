@@ -1,7 +1,7 @@
 # Circumpolar complete-render baseline
 
 **Milestone:** 49H.2  
-**Status:** Baseline implemented and characterized; fixed-sky oracle pending  
+**Status:** Baseline implemented, visually characterized, and accepted  
 **Base:** 49H.1 on `feature/fixed-sky-rotating-horizon`
 
 ## Purpose
@@ -16,18 +16,21 @@ for the requested fixed-sky presentation.
 
 ## Visual characterization
 
-The 2026-08-27 real-render audit established that:
+The 2026-08-27 and 2026-08-28 real-render audits established that:
 
 - the stellar sky rotates in the viewport;
-- celestial constellation content rotates with it;
+- celestial constellation content and the equatorial grid rotate with it;
+- the semantic horizon and AltAz geometry remain fixed in the local viewport;
+- title and other page furniture remain fixed and upright;
 - the initial audit accidentally hid the semantic horizon because its explicit
   enabled-layer set omitted `horizon`;
-- therefore direct pixel equality with these frames would preserve the wrong
-  presentation.
+- the widened declination -50 degree audit visibly shows the horizon as the
+  dashed arc near the lower edge of all three frames.
 
-The audit selection now explicitly includes the semantic horizon. A repeated
-visual audit must characterize the horizon and AltAz behavior, but it cannot
-turn this baseline into the target oracle.
+This is the exact inverse of the requested fixed-sky presentation. Direct pixel
+equality with these frames would therefore preserve the wrong behavior. The
+accepted characterization is instead an independent input to deriving the
+required anchor transformation.
 
 ## Baseline API
 
@@ -91,16 +94,21 @@ A fixed-sky oracle must independently express the requested invariants:
 - catalogue epoch and proper-motion realization remain separate provider
   policy.
 
-The likely circumpolar relation is a time-dependent rotation between the
-frame-time horizontal realization and an anchor-time celestial viewport.
-That relation must be derived and tested in renderer-neutral geometry before
-it is used for projection or image comparison. Rotating completed raster
-frames is not the production architecture because it would also rotate
-furniture and introduce resampling.
+For a circumpolar chart, Wenu can keep the established pole-centred
+stereographic projection and vary only its spherical-frame position angle. The
+angle must be derived from a fixed celestial reference direction transformed
+into the local horizontal frame at both the celestial anchor and the frame
+instant. Subtracting those tangent-plane position angles gives a renderer-
+neutral correction that is zero at the anchor and follows the actual
+astronomical transformation. It must not be approximated as elapsed hours
+multiplied by 15 degrees.
+
+Rotating completed raster frames is not the production architecture because it
+would also rotate furniture and introduce resampling.
 
 ## Stop condition
 
 49H.3 fixed-sky rendering and all caching remain blocked until the
-renderer-neutral anchor transformation and a true target oracle are defined.
-The complete-render baseline remains an independent scientific input to that
-derivation, not its expected pixel output.
+renderer-neutral anchor transformation and a true target oracle are defined
+and tested. The complete-render baseline remains an independent scientific
+input to that derivation, not its expected pixel output.
