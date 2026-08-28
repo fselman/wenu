@@ -158,6 +158,38 @@ Do not migrate production callers in this milestone.
 Projection classes must not import astronomical frames or infer them from
 longitude/latitude argument names.
 
+### Milestone 49C.2 — Migrate production transformations
+
+**Status:** Implementation accepted on the dedicated 49C.2 branch; merge pending.
+
+The accepted candidate routes reference points and grids, chart compatibility
+conversions, deep-sky centres and morphology, constellation labels and
+boundaries, observer-keyed caches, circumpolar boundaries, fixed-sky
+orientation references, and regional celestial-north orientation through
+`CoordinateService`.
+
+Skyfield's Hipparcos apparent topocentric realization remains position-provider
+work rather than being replaced by a second Astropy calculation. Constellation
+lines reuse that single stellar realization. Native AltAz horizon geometry
+also remains direct reference construction; only conversion of that geometry
+to a celestial product frame passes through the service.
+
+Acceptance evidence: the routine suite passed 1779 tests with 30 deselected in
+26.99 seconds; the complete suite passed 1809 tests in 86.11 seconds; the
+49H.3 fixed-sky/rotating-horizon reference frames were visually accepted by
+Fernando on 2026-08-28.
+
+### Milestone 49C.3 — Retire compatibility authorities
+
+Retire `radec_to_altaz()`, remove the chart-owned compatibility wrappers, and
+reduce `Observer` to explicit context construction without changing numerical
+results or product appearance.
+
+### Milestone 49C.4 — Accept architecture 0.9.5
+
+Refresh the as-is diagrams, rerun scientific and visual acceptance, and close
+architecture 0.9.5 only after the compatibility authorities are absent.
+
 ## 7. Milestone 49D - Observer-independent celestial realization
 
 - realize catalogue stars and deep-sky geometry directly in the canonical
