@@ -6,9 +6,8 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from wenu.coordinate_service import CoordinateService
 from wenu.coordinates import observer_altaz_spec
-
-from wenu.charts.coordinate_frames import horizontal_to_equatorial
 from wenu.charts.polar_page_furniture import PolarPagePairFurniture
 from wenu.charts.polar_planisphere_pair import PolarPlanispherePair
 from wenu.geometry.spherical import SphericalCurves, SphericalPoints
@@ -92,7 +91,9 @@ class PolarHorizonOverlayRequest:
         horizon = HorizonReference(samples=self.samples).spherical_geometry(
             observer
         )
-        equatorial = horizontal_to_equatorial(horizon, observer)
+        equatorial = CoordinateService().transform_observer_geometry(
+            horizon, observer, "icrs"
+        )
         references, zenith_ra_deg = _equatorial_references(observer)
         normalized_horizon = _relative_right_ascension(
             equatorial, zenith_ra_deg
@@ -132,7 +133,9 @@ def _equatorial_references(observer):
         labels=np.asarray(("N", "S", "ZENITH"), dtype=object),
         metadata={"coordinate_system": "altaz"},
     )
-    equatorial = horizontal_to_equatorial(horizontal, observer)
+    equatorial = CoordinateService().transform_observer_geometry(
+        horizontal, observer, "icrs"
+    )
     return equatorial, float(equatorial.lon_deg[-1])
 
 

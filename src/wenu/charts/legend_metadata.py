@@ -7,8 +7,16 @@ import re
 from zoneinfo import ZoneInfo
 
 from astropy import units as u
-from astropy.coordinates import FK5, SkyCoord
 from astropy.time import Time
+
+from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import (
+    CoordinateSpec,
+    PositionStatus,
+    observation_context,
+    observer_altaz_spec,
+)
+from wenu.geometry.spherical import SphericalPoints
 
 
 @dataclass(frozen=True)
@@ -102,14 +110,29 @@ def _center_coordinates(chart, sky, observer=None) -> tuple[str, str]:
     resolved_observer = getattr(sky, "observer", None) if observer is None else observer
     if resolved_observer is None:
         raise TypeError("chart metadata requires an observer.")
-    horizontal = SkyCoord(
-        az=float(azimuth) * u.deg,
-        alt=float(altitude) * u.deg,
-        frame=resolved_observer.altaz_frame,
+    horizontal = SphericalPoints(
+        lon_deg=[float(azimuth)],
+        lat_deg=[float(altitude)],
+        coordinate_spec=observer_altaz_spec(
+            resolved_observer,
+            provider="wenu chart center",
+        ),
     )
-    center = horizontal.transform_to(FK5(equinox=Time("J2000")))
-    ra = center.ra.to_string(unit=u.hour, sep="hms", precision=0)
-    dec = center.dec.to_string(
+    center = CoordinateService().transform(
+        horizontal,
+        CoordinateSpec(
+            frame="fk5",
+            origin="solar-system-barycenter",
+            position_status=PositionStatus.ASTROMETRIC,
+            equinox="J2000.0",
+            provider="astropy coordinate service",
+        ),
+        observation_context(resolved_observer),
+    )
+    ra = (center.lon_deg[0] * u.deg).to_string(
+        unit=u.hour, sep="hms", precision=0
+    )
+    dec = (center.lat_deg[0] * u.deg).to_string(
         unit=u.deg,
         sep="°′″",
         precision=0,
