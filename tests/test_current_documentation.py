@@ -14,6 +14,7 @@ IMPLEMENTED = ARCHIVE / "architecture_history" / "target_architecture_v0.7.md"
 V08_CURRENT = DEVELOPER / "current_architecture_v0.8.md"
 TARGET = DEVELOPER / "target_architecture_v0.8.md"
 ROADMAP = DEVELOPER / "wenu_migration_0.7_to_0.8.md"
+V09_CURRENT = DEVELOPER / "current_architecture_v0.9.md"
 V09_TARGET = DEVELOPER / "target_architecture_v0.9.md"
 V09_ROADMAP = DEVELOPER / "wenu_migration_0.8_to_0.9.md"
 FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
@@ -69,6 +70,7 @@ def test_current_architecture_authorities_exist_and_cross_reference():
             V08_CURRENT,
             TARGET,
             ROADMAP,
+            V09_CURRENT,
             V09_TARGET,
             V09_ROADMAP,
             FUTURE_ROADMAP,
@@ -129,6 +131,27 @@ def test_v08_architecture_and_migration_are_closed():
     assert "Wenu v0.8 user guide" in readme
 
 
+def test_v09_architecture_is_closed_and_current():
+    current = read(V09_CURRENT)
+    target = read(V09_TARGET)
+    roadmap = read(V09_ROADMAP)
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+    readme = read(ROOT / "README.md")
+    instructions = read(INSTRUCTIONS)
+
+    assert "**Status:** Implemented current architecture" in current
+    assert "**Baseline commit:** `5da93cc`" in current
+    assert "optional night edition remains a later appearance experiment" in current.lower()
+    assert "**Status:** Implemented; retained as the accepted design record" in target
+    assert "**Status:** Complete" in roadmap
+    assert "**Current authority:** `current_architecture_v0.9.md`" in roadmap
+    assert "**Architecture version:** 0.9" in implementation
+    assert "**Architecture version:** 0.9" in source_tree
+    assert "v0.9 architecture is complete" in readme
+    assert "current_architecture_v0.9.md" in instructions
+
+
 def test_v09_plan_records_paired_physical_planisphere_contract():
     current = read(V08_CURRENT)
     target = read(V09_TARGET)
@@ -174,11 +197,9 @@ def test_release_version_comes_from_scm_with_v08_archive_fallback():
 def test_assistant_instructions_name_current_architecture_authorities():
     instructions = read(INSTRUCTIONS)
     for name in (
-        "current_architecture_v0.8.md",
+        "current_architecture_v0.9.md",
         "target_architecture_v0.9.md",
         "wenu_migration_0.8_to_0.9.md",
-        "target_architecture_v0.8.md",
-        "wenu_migration_0.7_to_0.8.md",
         "implementation_reference.md",
         "source_tree.md",
         "coordinate_transformation_audit_09a2afd.md",

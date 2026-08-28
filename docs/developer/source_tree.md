@@ -1,6 +1,6 @@
 # Wenu source organization
 
-**Architecture version:** 0.8
+**Architecture version:** 0.9
 
 Milestone 46A extends the registered coordinate-grid family with native
 observer-local `AltAzGrid` geometry. Selection remains in render-local detail,

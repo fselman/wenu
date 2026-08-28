@@ -17,10 +17,11 @@ A diferencia de los programas planetario interactivos, Wenu está orientada a la
 ## Estado del proyecto
 
 **Wenu** se encuentra actualmente en una etapa activa de diseño y desarrollo.
-La migración de arquitectura v0.8 está completa y se publica como la versión
-0.8.0. Tipos de carta, estilos, modos de salida,
-políticas de detalle y leyendas se resuelven mediante un único flujo de
-composición y exportación.
+La arquitectura v0.9 está completa en la línea base aceptada del repositorio.
+La versión 0.8.0 sigue siendo la última versión etiquetada; las compilaciones
+del repositorio derivan su versión de Git mediante setuptools-scm. Tipos de
+carta, estilos, modos de salida, políticas de detalle y leyendas se resuelven
+mediante un único flujo de composición y exportación.
 
 Este repositorio es temporalmente público con el único propósito de facilitar
 la revisión de la arquitectura, la discusión técnica y la colaboración durante

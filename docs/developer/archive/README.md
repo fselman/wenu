@@ -7,10 +7,10 @@ planning ordinary work.
 
 Use the active documents in the parent directory for current decisions:
 
-- `current_architecture_v0.8.md` records the implemented baseline;
-- `target_architecture_v0.9.md` records the active product target;
-- `wenu_migration_0.8_to_0.9.md` records the active migration;
-- `post_v0.9_architecture_roadmap.md` records accepted future directions;
+- `current_architecture_v0.9.md` records the implemented baseline;
+- `post_v0.9_architecture_roadmap.md` records the active milestone sequence;
+- `target_architecture_v0.9.md` and `wenu_migration_0.8_to_0.9.md` preserve
+  the accepted design and completed migration;
 - `implementation_reference.md` and `source_tree.md` record current APIs and
   responsibilities.
 

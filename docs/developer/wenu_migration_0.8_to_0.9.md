@@ -1,9 +1,25 @@
 # Wenu migration roadmap: v0.8 to v0.9
 
-**Status:** Active
+**Status:** Complete
 **Source:** `current_architecture_v0.8.md`
 **Target:** `target_architecture_v0.9.md`
+**Current authority:** `current_architecture_v0.9.md`
 **Base commit:** `c169162`
+**Closure baseline:** `5da93cc`
+**Closure date:** 2026-08-28
+
+## Closure record
+
+The implemented canonical scope is complete: paired disks, calendar and page
+furniture, the accepted folded horizon pouch and interaction, physical-print
+appearance, curated polar content, shared localization, command/export paths,
+and current regression coverage. Fernando's physical and visual acceptance
+records remain the human authority for the corresponding products.
+
+The night edition in Milestone 48I.2 was optional and remains deferred. It is
+not part of the canonical white-background v0.9 acceptance baseline. This
+closure records no `v0.9.0` tag; Git tags and setuptools-scm remain the sole
+release-version authority.
 
 ## 1. Objective and delivery order
 

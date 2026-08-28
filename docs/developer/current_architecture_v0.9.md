@@ -1,11 +1,26 @@
-# Wenu target architecture v0.9
+# Wenu current architecture v0.9
 
-**Status:** Implemented; retained as the accepted design record
-**Source:** `current_architecture_v0.8.md`
-**Migration plan:** `wenu_migration_0.8_to_0.9.md`
-**Current authority:** `current_architecture_v0.9.md`
-**Closure baseline:** `5da93cc`
+**Status:** Implemented current architecture
+**Previous baseline:** `current_architecture_v0.8.md`
+**Completed migration:** `wenu_migration_0.8_to_0.9.md`
+**Accepted design:** `target_architecture_v0.9.md`
+**Baseline commit:** `5da93cc`
 **Closure date:** 2026-08-28
+
+## Closure scope
+
+The v0.9 architecture is closed around the accepted canonical physical
+polar-planisphere product: paired celestial disks, civil calendar and page
+furniture, the latitude-specific folded horizon pouch, reviewed physical
+appearance, curated bright and deep-sky content, and shared localization.
+The optional night edition remains a later appearance experiment and is not a
+condition of the canonical v0.9 architecture. Post-v0.9 coordinate, SVG, and
+temporal work is governed separately by
+`post_v0.9_architecture_roadmap.md`.
+
+This closure records architecture and implementation state. It does not claim
+that a `v0.9.0` Git tag or distribution release exists; package versions remain
+governed by Git tags and setuptools-scm.
 
 ## 1. Objective
 

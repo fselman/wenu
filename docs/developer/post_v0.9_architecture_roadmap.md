@@ -1,6 +1,6 @@
 # Wenu post-v0.9 architecture roadmap
 
-**Status:** Active; 49F complete and 49G.2 implemented
+**Status:** Active; 49F and 49G complete, 49H.3 accepted
 
 **Planning baseline:** `52e9411`
 
@@ -17,9 +17,8 @@ polar-planisphere work:
 3. support time sequences in which celestial geometry, the observer horizon,
    and moving phenomena evolve on explicitly different timescales.
 
-It records direction and sequencing. It does not supersede the active v0.9
-target or authorize implementation while `wenu_migration_0.8_to_0.9.md`
-remains open. Each implementation stage requires a fresh as-is assessment and
+It records the active direction and sequencing after the closed v0.9
+architecture. Each implementation stage requires a fresh as-is assessment and
 its own small, testable milestone.
 
 The coordinate decisions in `coordinate_transformation_audit_09a2afd.md`
