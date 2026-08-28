@@ -31,6 +31,7 @@ def observer():
     )
 
 
+@pytest.mark.integration
 def test_galaxies_emit_polygons(observer):
     layer = Galaxies(observer, samples=36)
     layer.load()
@@ -45,6 +46,7 @@ def test_galaxies_emit_polygons(observer):
     assert geometry.metadata["catalog"] == "galaxies"
 
 
+@pytest.mark.integration
 def test_nonstellar_messier_geometry_remains_curves(observer):
     layer = NonStellar(observer, samples=24)
     layer.load()
@@ -113,6 +115,7 @@ def test_minimum_size_preserves_axis_ratio():
     assert np.min(separations) == pytest.approx(4.0)
 
 
+@pytest.mark.integration
 def test_magellanic_clouds_produce_no_polygons(observer):
     layer = Galaxies(observer, samples=24)
     layer.load()

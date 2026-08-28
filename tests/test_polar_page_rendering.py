@@ -182,6 +182,8 @@ def test_rendered_page_text_extents_remain_inside_the_safe_page():
         plt.close(figure)
 
 
+@pytest.mark.visual
+@pytest.mark.slow
 def test_larger_calendar_labels_remain_inside_the_physical_disk():
     pair, calendar, pages = resolved_values()
     chart = pair.south

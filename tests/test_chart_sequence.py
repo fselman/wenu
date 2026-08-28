@@ -183,6 +183,8 @@ def test_sequence_rejects_static_output_different_from_plan(
         generate_observer_time_chart_sequence(sequence)
 
 
+@pytest.mark.integration
+@pytest.mark.slow
 def test_observer_time_sequence_generates_real_canonical_frames(tmp_path):
     sequence = ObserverTimeChartSequenceRequest(
         chart=chart_request(tmp_path / "frames"),

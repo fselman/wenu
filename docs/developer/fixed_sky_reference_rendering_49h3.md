@@ -102,6 +102,15 @@ geometry invariants and reproduce its visual behavior while retaining the
 complete-render route as a correctness reference.
 
 
+## User visual acceptance
+
+Fernando generated the canonical three-frame reference locally from clean
+`main` on 2026-08-28 and inspected all frames directly. He confirmed that the
+celestial scene and equatorial grid remain fixed, the semantic horizon and
+AltAz grid rotate together, furniture remains stationary, and no layer
+flickers, disappears, or changes style. The reference behavior is explicitly
+accepted.
+
 ## Final verification
 
 The accepted branch was verified from a clean working tree on 2026-08-28:

@@ -193,6 +193,7 @@ def test_polar_star_ranges_remap_to_the_requested_existing_areas():
     )
 
 
+@pytest.mark.integration
 def test_bright_cut_selects_rigel_and_every_brighter_hipparcos_star():
     from wenu.objects.stars import Stars
 

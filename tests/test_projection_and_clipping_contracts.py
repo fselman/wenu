@@ -500,6 +500,7 @@ def test_summer_triangle_is_part_of_chart_regression_suite():
     assert "clip_polygons_to_projection_cap" not in source
 
 
+@pytest.mark.integration
 def test_circumpolar_lmc_boundary_crosses_projected_lmc():
     namespace = {}
     source = Path("tests/fixtures/example_regressions/circumpolar_atlas.py").read_text(
