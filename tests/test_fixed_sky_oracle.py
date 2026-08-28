@@ -23,6 +23,7 @@ from wenu.charts.request import (
     ChartFrameRequest,
     ChartObserverRequest,
     ChartRequest,
+    ChartSubjectRequest,
 )
 from wenu.output_policy import OutputFormat
 from wenu.temporal import TemporalTimeline
@@ -36,6 +37,11 @@ def fixed_request(output, *, family="circumpolar"):
                 location="La Ligua",
             ),
             family=family,
+            subject=(
+                ChartSubjectRequest(constellations=("CRU",))
+                if family == "regional"
+                else ChartSubjectRequest()
+            ),
             frame=ChartFrameRequest(
                 pole="south",
                 limiting_declination_deg=-60,
