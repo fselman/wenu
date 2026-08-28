@@ -1,0 +1,77 @@
+digraph coordinate_static_as_is {
+  graph [rankdir=LR, bgcolor="white", fontname="Helvetica", fontsize=15,
+    label="Wenu v0.9 coordinate static structure — actual classes, data, and modules",
+    labelloc="t", nodesep=0.35, ranksep=0.55, pad=0.25];
+  node [shape=record, style="filled", fillcolor="#f7f7f7", color="#555555",
+    fontname="Helvetica", fontsize=8.5];
+  edge [color="#555555", fontname="Helvetica", fontsize=7.5, arrowsize=0.7];
+
+  subgraph cluster_observer {
+    label="src/wenu/";
+    color="#c55a11";
+    Observer [label="{observer.py::Observer|location; time; Astropy frames; Skyfield context|altaz_frame(); resolve_scientific_identity()}",
+      fillcolor="#fce4d6"];
+    radec [shape=box, label="coordinates.py\nradec_to_altaz()", fillcolor="#f4cccc"];
+  }
+
+  subgraph cluster_layers {
+    label="src/wenu/sky/ and src/wenu/objects/";
+    color="#8064a2";
+    SkyLayer [label="{sky_layer.py::SkyLayer «ABC»|spherical_geometry(observer)}"];
+    AstronomicalObject [label="astronomical_object.py::AstronomicalObject"];
+    GeometricalObject [label="geometrical_object.py::GeometricalObject"];
+    Stars [label="{stars.py::Stars|compute_altaz(); observed_altaz(); spherical_geometry()}"];
+    NonStellar [label="{nonstellar.py::NonStellar|spherical_geometry(); spherical_centers()}"];
+    CoordinatesGrid [label="{coordinate_grids.py::CoordinatesGrid «ABC»|parallel(); meridian(); grid(); spherical_geometry()}"];
+    AltAzGrid [label="AltAzGrid"];
+    EquatorialGrid [label="EquatorialGrid"];
+    EclipticGrid [label="EclipticGrid"];
+    GalacticGrid [label="GalacticGrid"];
+    CelestialPoints [label="{points.py::CelestialPoints|add_*_point(); spherical_geometry()}"];
+    CelestialSphere [label="{celestial_sphere.py::CelestialSphere|layers: tuple[SkyLayer]|add(); draw_chart()}"];
+
+    AstronomicalObject -> SkyLayer [arrowhead=empty, label="inherits"];
+    GeometricalObject -> SkyLayer [arrowhead=empty, label="inherits"];
+    Stars -> AstronomicalObject [arrowhead=empty, label="inherits"];
+    NonStellar -> AstronomicalObject [arrowhead=empty, label="inherits"];
+    CoordinatesGrid -> GeometricalObject [arrowhead=empty, label="inherits"];
+    AltAzGrid -> CoordinatesGrid [arrowhead=empty];
+    EquatorialGrid -> CoordinatesGrid [arrowhead=empty];
+    EclipticGrid -> CoordinatesGrid [arrowhead=empty];
+    GalacticGrid -> CoordinatesGrid [arrowhead=empty];
+    CelestialPoints -> GeometricalObject [arrowhead=empty, label="inherits"];
+    CelestialSphere -> SkyLayer [dir=both, arrowtail=diamond, arrowhead=none, label="contains 0..*"];
+  }
+
+  subgraph cluster_geometry {
+    label="src/wenu/geometry/";
+    color="#70ad47";
+    Points [label="{spherical.py::SphericalPoints «dataclass»|lon_deg; lat_deg; ids; labels; metadata}", fillcolor="#e2f0d9"];
+    Curves [label="{SphericalCurves «dataclass»|longitude/latitude collections; metadata}", fillcolor="#e2f0d9"];
+    Polygons [label="{SphericalPolygons «dataclass»|rings; metadata}", fillcolor="#e2f0d9"];
+    Grid [label="{SphericalGrid «dataclass»|curves: mapping[str, SphericalCurves]}", fillcolor="#e2f0d9"];
+    SphericalCoordinates [label="{frame.py::SphericalCoordinates «frozen dataclass»|lon_deg; lat_deg}", fillcolor="#e2f0d9"];
+    SphericalFrame [label="{frame.py::SphericalFrame «frozen dataclass»|pole; position_angle; rotation_matrix|transform(); inverse_transform()}", fillcolor="#e2f0d9"];
+    Grid -> Curves [dir=both, arrowtail=diamond, arrowhead=none, label="contains"];
+    SphericalFrame -> SphericalCoordinates [style=dashed, label="returns"];
+  }
+
+  subgraph cluster_charts {
+    label="src/wenu/charts/";
+    color="#5b9bd5";
+    ProjectionSelection [label="{projection_selection.py::ProjectionSelection «frozen dataclass»|name: str; coordinate_frame: str|build()}", fillcolor="#d9eaf7"];
+    coordinate_frames [shape=box, label="coordinate_frames.py\nhorizontal_to_equatorial()\nhorizontal_to_galactic()", fillcolor="#d9eaf7"];
+  }
+
+  Stars -> Observer [style=dashed, label="uses Skyfield context"];
+  NonStellar -> Observer [style=dashed, label="uses Astropy AltAz"];
+  CoordinatesGrid -> Observer [style=dashed, label="uses frames"];
+  CelestialPoints -> radec [style=dashed, label="calls"];
+  coordinate_frames -> Observer [style=dashed, label="uses Astropy frames"];
+  coordinate_frames -> Points [style=dashed, label="copies/transforms geometry"];
+  CoordinatesGrid -> Grid [style=dashed, label="produces"];
+  Stars -> Points [style=dashed, label="produces"];
+  NonStellar -> Points [style=dashed, label="produces centers"];
+  ProjectionSelection -> SphericalFrame [style=dashed, label="projection alignment"];
+}
+

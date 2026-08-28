@@ -17,7 +17,9 @@ and file ownership remain in `implementation_reference.md` and
 seams are rendered in `diagrams/current_architecture_v0.9_overview.svg` and
 `diagrams/coordinate_transformation_as_is_v0.9.svg`. The intended result after
 49B/49C is rendered separately in
-`diagrams/coordinate_transformation_target_49bc.svg`.
+`diagrams/coordinate_transformation_target_49bc.svg`. Source-level as-is and
+proposed structures plus the target runtime call sequence are indexed in
+`diagrams/README.md`.
 
 The v0.9 architecture is closed around the accepted canonical physical
 polar-planisphere product: paired celestial disks, civil calendar and page

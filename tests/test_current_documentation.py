@@ -127,6 +127,9 @@ def test_current_diagrams_are_an_inspection_interface():
         "current_architecture_v0.9_overview",
         "coordinate_transformation_as_is_v0.9",
         "coordinate_transformation_target_49bc",
+        "coordinate_static_structure_as_is_v0.9",
+        "coordinate_static_structure_target_49bc",
+        "coordinate_runtime_sequence_target_49bc",
     ):
         assert (DIAGRAMS / f"{name}.dot").is_file()
         assert (DIAGRAMS / f"{name}.svg").is_file()
@@ -137,6 +140,10 @@ def test_current_diagrams_are_an_inspection_interface():
     assert "49C introduces one coordinate service" in readme
     assert "all sources produce one typed `AstronomicalState`" in readme
     assert "observer context enters only" in readme
+    assert "actual classes" in readme
+    assert "inherits" in readme
+    assert "runtime calls or returns" in readme
+    assert "design proposals to freeze during 49B/49C" in readme
     assert (
         ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.dot"
     ).is_file()

@@ -55,6 +55,53 @@ rationalization:
 The ephemeris and orbit adapters are shown as later consumers of the same
 boundary; 49B/49C do not implement those providers.
 
+## Software-engineering views
+
+The coordinate diagrams use three complementary, UML-inspired views. They
+must be read together; no single diagram is expected to encode structure,
+ownership, and runtime order simultaneously.
+
+### Static structure: current implementation
+
+[Open the current coordinate static-structure SVG](coordinate_static_structure_as_is_v0.9.svg)
+
+Source: `coordinate_static_structure_as_is_v0.9.dot`
+
+This source-backed view names the current Python modules, actual classes,
+dataclasses, functions, inheritance hierarchy, composition, and dependencies.
+It distinguishes the real `SkyLayer` inheritance tree from the independent
+`Spherical*` geometry records.
+
+### Static structure: proposed 49B/49C result
+
+[Open the proposed coordinate static-structure SVG](coordinate_static_structure_target_49bc.svg)
+
+Source: `coordinate_static_structure_target_49bc.dot`
+
+This view maps proposed immutable state types and the coordinate service into a
+candidate `src/wenu/astronomy/` package. That package name, its module split,
+and the type names are design proposals to freeze during 49B/49C—not claims
+about current code. The intended design uses composition and small protocols;
+it does not introduce a deep inheritance hierarchy.
+
+Static-structure notation:
+
+- `inherits`: a real subclass/generalization relationship;
+- `contains` or `composes`: lifecycle or value ownership;
+- dashed dependency: a call, construction, protocol implementation, or use;
+- package boundary: the source directory in which the type or procedure lives.
+
+### Runtime sequence: proposed 49B/49C calls
+
+[Open the proposed coordinate runtime-sequence SVG](coordinate_runtime_sequence_target_49bc.svg)
+
+Source: `coordinate_runtime_sequence_target_49bc.dot`
+
+This sequence view shows procedures and returned values in time order for both
+an observer-independent celestial product and an explicitly observer-local
+product. Its horizontal arrows are runtime calls or returns, never inheritance.
+The two paths deliberately converge before projection and rendering.
+
 ## Maintenance contract
 
 The diagrams must be updated whenever a milestone changes any of:

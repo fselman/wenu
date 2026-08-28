@@ -1,0 +1,32 @@
+digraph coordinate_runtime_target {
+  graph [rankdir=LR, bgcolor="white", fontname="Helvetica", fontsize=15,
+    label="Wenu coordinate runtime after 49B/49C — two legitimate call sequences",
+    labelloc="t", nodesep=0.45, ranksep=0.7, pad=0.25];
+  node [shape=box, style="rounded,filled", fillcolor="#f7f7f7", color="#555555",
+    fontname="Helvetica", fontsize=9];
+  edge [color="#555555", fontname="Helvetica", fontsize=8, arrowsize=0.7];
+
+  request [label="Chart request resolver\ncreates ProductFrameRequest", fillcolor="#d9eaf7"];
+  layer [label="SkyLayer / source adapter\ncreates typed AstronomicalState", fillcolor="#e4dfec"];
+  service [label="CoordinateService\nvalidates + transforms", fillcolor="#e2f0d9"];
+  adapter [label="Astropy/Skyfield adapter\nphysical transform engine", fillcolor="#e2f0d9"];
+  geometry [label="Geometry adapter\npreserves topology + semantics", fillcolor="#d9eaf7"];
+  projection [label="Projection alignment + projection\nastronomically neutral", fillcolor="#e2f0d9"];
+  renderer [label="Preparation + renderer + export", fillcolor="#e2f0d9"];
+
+  request -> layer [label="1. resolve content"];
+  layer -> service [label="2. state + frame request"];
+  service -> adapter [label="3. transform typed coordinates"];
+  adapter -> service [label="4. transformed typed state"];
+  service -> geometry [label="5. rebuild same geometry kind"];
+  geometry -> projection [label="6. typed spherical geometry"];
+  projection -> renderer [label="7. projected records"];
+
+  observer [label="Observer\nObservationContext", fillcolor="#fff2cc"];
+  observer -> service [style=dashed, color="#c55a11",
+    label="LOCAL PATH ONLY\nAltAz policy + site + instant"];
+
+  celestial [shape=note, label="Celestial product:\nrequest has no observer context;\noutput remains observer-independent", fillcolor="#ffffff"];
+  local [shape=note, label="Observer-local product:\nrequest explicitly includes context;\noutput is typed AltAz", fillcolor="#ffffff"];
+}
+
