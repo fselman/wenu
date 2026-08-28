@@ -291,7 +291,7 @@ def test_assistant_instructions_name_current_architecture_authorities():
 
 
 def test_post_v09_roadmap_records_coordinate_svg_and_temporal_direction():
-    roadmap = read(FUTURE_ROADMAP)
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
     for phrase in (
         "Two independent development tracks",
         "One astronomical coordinate service",
