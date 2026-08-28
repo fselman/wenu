@@ -137,7 +137,7 @@ calculation changes.
 
 ### Milestone 49C.1 — Central transformation service
 
-**Status:** Implementation candidate on the dedicated 49C.1 branch.
+**Status:** Accepted and merged in `5131500`.
 
 Add one Astropy-backed service accepting every spherical geometry kind and
 returning the same kind. Preserve semantic arrays, metadata, segmentation,

@@ -171,12 +171,14 @@ def test_v095_coordinate_target_and_living_guide_are_reviewable():
     target = read(V095_TARGET)
     guide = read(COORDINATE_GUIDE)
 
-    assert "**Status:** Proposed review baseline; not implemented" in target
+    assert "**Status:** Partially implemented; 49B and 49C.1 accepted, 49C.2 candidate" in target
     assert "PositionProvider" in target
     assert "CoordinateService" in target
     assert "49B.1" in target
     assert "49C.4" in target
     assert "does not claim a\n`v0.9.5` Git tag" in target
+    assert "Skyfield apparent stellar realization as provider work" in target
+    assert "native AltAz horizon construction" in target
 
     for phrase in (
         "Position generation versus coordinate transformation",

@@ -1568,3 +1568,24 @@ supported. AltAz requires an explicit `ObservationContext`; vacuum refraction
 and Astropy Earth-orientation policy are currently the only accepted local
 policies. Existing charts and layers do not call the service until 49C.2, so
 49C.1 changes no production rendering path.
+
+
+## Coordinate ownership during architecture 0.9.5
+
+The accepted 49C.1 `CoordinateService` is the single Astropy-backed owner of
+astronomical frame transformations. The 49C.2 candidate routes reference
+points and grids, chart compatibility conversions, deep-sky geometry,
+constellation references, observer caches, and chart-orientation reference
+directions through that service while preserving concrete `Spherical*` kinds,
+topology, semantic arrays, metadata, and provenance.
+
+Position generation remains separate. `Stars.position()` supplies native
+Hipparcos ICRS catalogue positions. Skyfield continues to generate the one
+apparent topocentric stellar realization, and constellation lines reuse those
+same cached arrays. Native AltAz horizon construction likewise remains
+reference geometry; a service call is required only when a product requests
+that geometry in another astronomical frame.
+
+The compatibility functions in `charts/coordinate_frames.py` currently
+delegate to `CoordinateService`. Their retirement, together with the legacy
+handwritten `coordinates.py::radec_to_altaz()`, belongs to 49C.3.

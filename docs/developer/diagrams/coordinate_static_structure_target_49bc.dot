@@ -7,7 +7,7 @@ digraph coordinate_static_target {
   subgraph cluster_position {
     label="src/wenu/positions.py — astronomical position generation"; color="#8064a2";
     PositionProvider [label="{PositionProvider «Protocol»|position(instant) -> SphericalPoints|generates native positions; never transforms/projects}", fillcolor="#e4dfec"];
-    StarProvider [label="{objects/stars.py::Stars|catalogue position; reference epoch; proper motion; parallax; radial motion|position(instant)}", fillcolor="#e4dfec"];
+    StarProvider [label="{objects/stars.py::Stars|native ICRS catalogue position; Skyfield apparent topocentric realization|position(instant)}", fillcolor="#e4dfec"];
     DsoProvider [label="{objects/nonstellar.py::NonStellar|catalogue position; native frame; provenance|position(instant)}", fillcolor="#e4dfec"];
     SolarProvider [label="{SolarSystemEphemerisProvider «later»|Moon and planet ephemeris evaluation|position(instant)}", fillcolor="#fff2cc", style="rounded,dashed,filled"];
     OrbitProvider [label="{OrbitPositionProvider «later»|asteroid/comet orbit or satellite propagation|position(instant)}", fillcolor="#fff2cc", style="rounded,dashed,filled"];
@@ -48,10 +48,10 @@ digraph coordinate_static_target {
     PositionProvider -> Points [style=dashed, label="returns"]; ReferenceProvider -> GeometryUnion [style=dashed, label="returns"];
   }
   subgraph cluster_coordinates {
-    label="src/wenu/coordinates.py — sole transformation authority"; color="#548235";
+    label="src/wenu/coordinates.py vocabulary + coordinate_service.py transformation authority"; color="#548235";
     CoordinateSpec [label="{CoordinateSpec «frozen dataclass»|frame; origin; epoch/equinox; instant; time scale|position status; units/representation; provenance}", fillcolor="#e2f0d9"];
     ObservationContext [label="{ObservationContext «frozen dataclass»|location; instant; time scale|atmosphere/refraction and Earth-orientation policy}", fillcolor="#fff2cc"];
-    CoordinateService [label="{CoordinateService|transform(geometry: SphericalGeometry, target: CoordinateSpec, observation: ObservationContext or None = None) -> same geometry kind|validate(); build Astropy frame; transform arrays; preserve topology/metadata}", fillcolor="#e2f0d9"];
+    CoordinateService [label="{coordinate_service.py::CoordinateService|transform(geometry: SphericalGeometry, target: CoordinateSpec, observation: ObservationContext or None = None) -> same geometry kind|validate(); build Astropy frame; transform arrays; preserve topology/metadata}", fillcolor="#e2f0d9"];
     Observer [label="{observer.py::Observer|location; time|observation_context()}", fillcolor="#fce4d6"];
     Legacy [label="{coordinates.py::radec_to_altaz()|retired or temporary wrapper}", fillcolor="#f4cccc"];
     Observer -> ObservationContext [style=dashed, label="constructs"]; Legacy -> CoordinateService [style=dashed, label="delegates"];
