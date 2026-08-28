@@ -179,11 +179,14 @@ choose hidden equinox defaults.
 
 The target ownership and flow are summarized visually in
 `diagrams/coordinate_transformation_target_49bc.svg`; the Graphviz source is
-`diagrams/coordinate_transformation_target_49bc.dot`. Proposed type/module
-placement and runtime calls are shown separately in
+`diagrams/coordinate_transformation_target_49bc.dot`. The minimal proposed type placement and runtime calls are shown separately in
 `diagrams/coordinate_static_structure_target_49bc.svg` and
-`diagrams/coordinate_runtime_sequence_target_49bc.svg`; their names and the
-candidate `src/wenu/astronomy/` placement remain subject to 49B review.
+`diagrams/coordinate_runtime_sequence_target_49bc.svg`. They retain the
+current hierarchy and geometry family: `coordinates.py` owns
+`CoordinateSpec`, `ObservationContext`, and the sole `CoordinateService`.
+A future Moon or planet provider must enter through the same
+`SphericalPoints + CoordinateSpec` boundary without modifying that service or
+any projection/rendering owner.
 
 
 ### 5.1 Canonical celestial interchange frame

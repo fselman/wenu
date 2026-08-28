@@ -44,16 +44,18 @@ Source: `coordinate_transformation_target_49bc.dot`
 This companion diagram shows the intended ownership after the first coordinate
 rationalization:
 
-- all sources produce one typed `AstronomicalState`;
-- products declare a `ProductFrameRequest` instead of transforming data;
-- one coordinate service validates, normalizes, and transforms;
-- observer context enters only the explicitly observer-local AltAz path;
-- celestial and observer-local realizations retain typed scientific identity;
+- every source produces an existing `Spherical*` geometry kind carrying one
+  immutable `CoordinateSpec`;
+- products declare a target `CoordinateSpec` instead of transforming data;
+- one `CoordinateService` validates and transforms all geometry kinds while
+  preserving topology;
+- `ObservationContext` enters only the explicitly observer-local path;
 - projection alignment and every downstream rendering stage remain
   astronomically neutral.
 
-The ephemeris and orbit adapters are shown as later consumers of the same
-boundary; 49B/49C do not implement those providers.
+A future Moon or planet `PositionProvider` is shown only as another producer
+of `SphericalPoints + CoordinateSpec`. Adding that provider must require no
+change to the coordinate service, geometry records, projection, or renderer.
 
 ## Software-engineering views
 
@@ -81,13 +83,11 @@ Source: `coordinate_static_structure_target_49bc.dot`
 This is the direct counterpart to the current static-structure diagram. It
 retains the same `SkyLayer` inheritance hierarchy, `CelestialSphere`,
 `Spherical*` record family, observer, cache, and chart/projection columns.
-It then shows which current owners lose transformation authority and where the
-proposed immutable state types, coordinate service, and adapters enter.
-
-The candidate `src/wenu/astronomy/` package name, its module split, and the
-new type names are design proposals to freeze during 49B/49C—not claims about
-current code. The intended design adds composition and small protocols rather
-than replacing the retained hierarchy with a second deep inheritance tree.
+It then shows the minimal change: existing `Spherical*` records gain an
+immutable `CoordinateSpec`, `coordinates.py` becomes the one
+`CoordinateService` owner, and `ObservationContext` is supplied only for
+observer-local transformations. No new package or parallel state hierarchy is
+proposed.
 
 Static-structure notation:
 
@@ -102,10 +102,11 @@ Static-structure notation:
 
 Source: `coordinate_runtime_sequence_target_49bc.dot`
 
-This sequence view shows procedures and returned values in time order for both
-an observer-independent celestial product and an explicitly observer-local
-product. Its horizontal arrows are runtime calls or returns, never inheritance.
-The two paths deliberately converge before projection and rendering.
+This sequence view shows one procedure order for every source. Existing layers
+and future Moon/planet providers both enter by producing `Spherical*` geometry
+with a source `CoordinateSpec`. Its horizontal arrows are runtime calls or
+returns, never inheritance. Optional observer context changes only the service
+input; the downstream sequence is identical.
 
 ## Maintenance contract
 

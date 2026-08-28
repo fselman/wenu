@@ -129,7 +129,7 @@ fixed-sky reference keeps the celestial scene and equatorial grid anchored
 while the observer-local horizon and AltAz grid rotate. Complete independent
 renders remain the correctness oracle for later reuse optimization.
 
-Future typed-state, coordinate-service, provider, moving-object, and reuse
+Future `CoordinateSpec`, coordinate-service, provider, moving-object, and reuse
 work is governed by `post_v0.9_architecture_roadmap.md` and must preserve this
 v0.9 pipeline.
 
