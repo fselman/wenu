@@ -87,8 +87,8 @@ Migrate in this order:
 3. deep-sky centres and outlines;
 4. preserve Skyfield apparent stellar realization as provider work and reuse
    it for constellation lines;
-5. keep horizon construction native AltAz while routing celestial conversion
-   and physical-planisphere furniture through the service.
+5. preserve native AltAz horizon construction while routing celestial
+   conversion and physical-planisphere furniture through the service.
 
 ### 49C.3 — Retire competing transformation owners
 
