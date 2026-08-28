@@ -35,6 +35,26 @@ observer-dependent detour. Green boxes identify the planned ownership seams:
 - projection alignment, projection, clipping, and rendering remain
   coordinate-neutral and outside the rationalization.
 
+### Coordinate target after 49B/49C
+
+[Open the coordinate target-state SVG](coordinate_transformation_target_49bc.svg)
+
+Source: `coordinate_transformation_target_49bc.dot`
+
+This companion diagram shows the intended ownership after the first coordinate
+rationalization:
+
+- all sources produce one typed `AstronomicalState`;
+- products declare a `ProductFrameRequest` instead of transforming data;
+- one coordinate service validates, normalizes, and transforms;
+- observer context enters only the explicitly observer-local AltAz path;
+- celestial and observer-local realizations retain typed scientific identity;
+- projection alignment and every downstream rendering stage remain
+  astronomically neutral.
+
+The ephemeris and orbit adapters are shown as later consumers of the same
+boundary; 49B/49C do not implement those providers.
+
 ## Maintenance contract
 
 The diagrams must be updated whenever a milestone changes any of:

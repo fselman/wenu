@@ -177,6 +177,11 @@ choose hidden equinox defaults.
 
 ## 5. Canonical target contract
 
+The target ownership and flow are summarized visually in
+`diagrams/coordinate_transformation_target_49bc.svg`; the Graphviz source is
+`diagrams/coordinate_transformation_target_49bc.dot`.
+
+
 ### 5.1 Canonical celestial interchange frame
 
 ICRS is Wenu's canonical celestial interchange frame for catalogue objects

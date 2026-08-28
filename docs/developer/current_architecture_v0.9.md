@@ -15,7 +15,9 @@ boundaries that current and post-v0.9 work must preserve. Detailed public APIs
 and file ownership remain in `implementation_reference.md` and
 `source_tree.md`. The reviewable as-is structure and coordinate-rationalization
 seams are rendered in `diagrams/current_architecture_v0.9_overview.svg` and
-`diagrams/coordinate_transformation_as_is_v0.9.svg`.
+`diagrams/coordinate_transformation_as_is_v0.9.svg`. The intended result after
+49B/49C is rendered separately in
+`diagrams/coordinate_transformation_target_49bc.svg`.
 
 The v0.9 architecture is closed around the accepted canonical physical
 polar-planisphere product: paired celestial disks, civil calendar and page

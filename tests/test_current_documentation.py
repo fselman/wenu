@@ -126,6 +126,7 @@ def test_current_diagrams_are_an_inspection_interface():
     for name in (
         "current_architecture_v0.9_overview",
         "coordinate_transformation_as_is_v0.9",
+        "coordinate_transformation_target_49bc",
     ):
         assert (DIAGRAMS / f"{name}.dot").is_file()
         assert (DIAGRAMS / f"{name}.svg").is_file()
@@ -134,6 +135,8 @@ def test_current_diagrams_are_an_inspection_interface():
     assert "human inspection interface" in readme
     assert "49B introduces typed astronomical-state vocabulary" in readme
     assert "49C introduces one coordinate service" in readme
+    assert "all sources produce one typed `AstronomicalState`" in readme
+    assert "observer context enters only" in readme
     assert (
         ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.dot"
     ).is_file()

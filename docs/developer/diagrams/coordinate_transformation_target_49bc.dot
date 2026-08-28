@@ -1,0 +1,60 @@
+digraph coordinate_target_49bc {
+  graph [rankdir=TB, bgcolor="white", fontname="Helvetica", fontsize=15,
+    label="Wenu coordinates after 49B/49C — target ownership and flow",
+    labelloc="t", nodesep=0.38, ranksep=0.55, pad=0.25];
+  node [shape=box, style="rounded,filled", fillcolor="#f7f7f7",
+    color="#555555", fontname="Helvetica", fontsize=9.5, margin="0.12,0.08"];
+  edge [color="#555555", fontname="Helvetica", fontsize=8, arrowsize=0.7];
+
+  subgraph cluster_sources {
+    label="POSITION SOURCES — provide values and provenance, never project";
+    color="#8064a2"; style="rounded";
+    catalogue [label="Catalogue adapter\nstatic stars / DSO / boundaries", fillcolor="#e4dfec"];
+    ephemeris [label="Ephemeris adapter\nMoon / planets (later)", fillcolor="#e4dfec"];
+    orbit [label="Orbit adapter\nartificial satellites (later)", fillcolor="#e4dfec"];
+    references [label="Reference definitions\ngrids / planes / poles", fillcolor="#e4dfec"];
+  }
+
+  state [label="Typed AstronomicalState\ncoordinates + FrameSpec + Origin + Epoch\nObservationInstant + TimeScale + PositionStatus + provenance",
+    fillcolor="#e2f0d9", color="#548235"];
+  observer [label="ObserverContext\nEarth location + physical instant + atmosphere/refraction policy",
+    fillcolor="#fff2cc"];
+  request [label="ProductFrameRequest\nrequested celestial frame or explicit observer-local AltAz",
+    fillcolor="#d9eaf7"];
+
+  subgraph cluster_service {
+    label="ONE COORDINATE SERVICE — sole astronomical transformation owner";
+    color="#548235"; style="rounded,bold";
+    validate [label="Validate scientific identity\nreject missing or incompatible metadata", fillcolor="#e2f0d9"];
+    normalize [label="Normalize native state\nthrough explicit Astropy/Skyfield adapters", fillcolor="#e2f0d9"];
+    transform [label="Transform to requested celestial frame\nor realize observer-local AltAz", fillcolor="#e2f0d9"];
+    validate -> normalize -> transform;
+  }
+
+  celestial [label="Celestial realization\nobserver-independent ICRS / FK / Galactic / ecliptic state",
+    fillcolor="#d9eaf7"];
+  local [label="Observer-local realization\nexplicit AltAz state for horizon / visibility / local grids",
+    fillcolor="#d9eaf7"];
+  geometry [label="Spherical geometry with typed scientific identity\nstructure + immutable state metadata",
+    fillcolor="#d9eaf7"];
+  cache [label="Scientifically keyed reuse\nsource + frame + epoch + instant + observer + policy",
+    fillcolor="#fff2cc"];
+
+  alignment [label="Projection alignment\npure coordinate-neutral rotation", fillcolor="#e2f0d9"];
+  projection [label="Projection -> domain guard -> clipping -> preparation", fillcolor="#e2f0d9"];
+  render [label="Renderer -> furniture -> export", fillcolor="#e2f0d9"];
+
+  catalogue -> state; ephemeris -> state; orbit -> state; references -> state;
+  state -> validate [label="typed input"];
+  observer -> transform [label="only for local realization", color="#c55a11"];
+  request -> transform [label="declares output frame", color="#2f75b5"];
+  transform -> celestial [label="celestial path", color="#2f75b5"];
+  transform -> local [label="observer-local path", color="#c55a11"];
+  celestial -> geometry; local -> geometry;
+  transform -> cache [dir=both, label="lookup/store"];
+  geometry -> alignment -> projection -> render;
+
+  invariant [shape=note, fillcolor="#ffffff",
+    label="Charts request frames; they do not transform.\nGeometry carries identity; it is never relabelled.\nProjection and rendering remain astronomically neutral."];
+}
+
