@@ -57,10 +57,10 @@ def test_fixed_sky_oracle_documents_independent_complete_rendering():
         "default is exact pixel equality",
         "Caching remains prohibited",
         "tools/render_49h2_fixed_sky_oracle.py",
-        "fixed-sky-oracle-audit.json",
+        "fixed-sky-baseline-audit.json",
     ):
         assert value in contract
 
     assert "49H.2 independent complete-render" in roadmap
-    assert "generate_fixed_sky_full_render_oracle()" in implementation
+    assert "generate_fixed_sky_complete_render_baseline()" in implementation
     assert "charts/fixed_sky_oracle.py" in source_tree
