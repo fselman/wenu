@@ -37,10 +37,7 @@ class FixedSkyRotatingHorizonFrame:
             raise TypeError("celestial_request must be a ChartRequest.")
         if not isinstance(self.local_observer, ChartObserverRequest):
             raise TypeError("local_observer must be a ChartObserverRequest.")
-        if self.celestial_request.observer.time == self.local_observer.time:
-            # Equality is allowed for the anchor frame, but ownership remains
-            # deliberately represented by two separate request values.
-            return
+        object.__setattr__(self, "expected_output", Path(self.expected_output))
 
 
 @dataclass(frozen=True)
