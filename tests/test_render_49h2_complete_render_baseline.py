@@ -26,6 +26,13 @@ def arguments(tmp_path, **overrides):
     return Namespace(**values)
 
 
+
+def test_real_audit_default_field_intersects_la_ligua_horizon():
+    options = tool.parser().parse_args([])
+
+    assert options.limiting_declination == -50.0
+
+
 def test_audit_request_selects_time_sensitive_circumpolar_content(tmp_path):
     request = tool.baseline_request(arguments(tmp_path))
 
