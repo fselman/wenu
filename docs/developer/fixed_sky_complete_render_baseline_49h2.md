@@ -58,8 +58,12 @@ acceptance test.
 ## Reproducible audit
 
 `tools/render_49h2_complete_render_baseline.py` builds a three-frame south
-circumpolar baseline by default. It includes stars, constellation lines and
-labels, equatorial and AltAz grids, and the semantic horizon.
+circumpolar baseline limited to declination -50 degrees by default. At La
+Ligua the south celestial pole is about 32 degrees above the horizon, so this
+40-degree-radius field visibly intersects the semantic horizon. The earlier
+-60-degree limit had a 30-degree radius and correctly placed the nearest
+horizon just outside the viewport. The baseline includes stars, constellation
+lines and labels, equatorial and AltAz grids, and the semantic horizon.
 
 It writes:
 
