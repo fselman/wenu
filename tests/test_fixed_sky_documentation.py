@@ -93,6 +93,7 @@ def test_fixed_sky_reference_documents_accepted_target_behavior():
         "tools/render_49h3_fixed_sky_reference.py",
         "proper-motion realization remain independent",
         "49H.4 may introduce scientifically keyed reuse",
+        "1774 passed in 83.10s",
     ):
         assert value in contract
 
