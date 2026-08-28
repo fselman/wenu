@@ -74,4 +74,3 @@ digraph coordinate_static_as_is {
   NonStellar -> Points [style=dashed, label="produces centers"];
   ProjectionSelection -> SphericalFrame [style=dashed, label="projection alignment"];
 }
-

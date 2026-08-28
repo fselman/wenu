@@ -74,4 +74,3 @@ digraph coordinate_as_is_v09 {
   legend [shape=note, label="Red dashed: current rationalization problem\nGreen: planned 49B/49C ownership\nProjection alignment remains unchanged",
     fillcolor="#ffffff"];
 }
-

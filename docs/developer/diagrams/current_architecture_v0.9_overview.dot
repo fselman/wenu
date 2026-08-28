@@ -72,4 +72,3 @@ digraph current_architecture_v09 {
   resolved -> polar [color="#2f75b5"];
   polar -> pouch [label="shared scale + horizon"];
 }
-
