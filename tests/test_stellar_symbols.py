@@ -138,7 +138,13 @@ def test_stellar_geometry_exposes_aligned_semantic_metadata():
         np.asarray((30.0, 40.0)),
         np.asarray((120.0, 130.0)),
     )
-    geometry = stars.spherical_geometry(SimpleNamespace())
+    geometry = stars.spherical_geometry(
+        SimpleNamespace(
+            t_astropy=SimpleNamespace(
+                isot="2026-08-28T00:00:00.000", scale="utc"
+            )
+        )
+    )
     assert geometry.ids.tolist() == [100, 200]
     assert geometry.metadata["is_variable"].tolist() == [True, False]
     assert geometry.metadata["is_multiple"].tolist() == [False, True]
@@ -169,7 +175,13 @@ def test_stellar_geometry_supplies_defaults_for_minimal_dataframe():
         np.asarray((30.0, 40.0)),
         np.asarray((120.0, 130.0)),
     )
-    geometry = stars.spherical_geometry(SimpleNamespace())
+    geometry = stars.spherical_geometry(
+        SimpleNamespace(
+            t_astropy=SimpleNamespace(
+                isot="2026-08-28T00:00:00.000", scale="utc"
+            )
+        )
+    )
     assert geometry.metadata["is_variable"].tolist() == [False, False]
     assert geometry.metadata["is_multiple"].tolist() == [False, False]
     assert geometry.metadata["variability_type"].tolist() == ["", ""]

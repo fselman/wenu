@@ -269,6 +269,9 @@ class Stars(AstronomicalObject):
         include_constellation_vertices=None,
     ) -> SphericalPoints:
         """Return observer-dependent stellar positions as spherical points."""
+        resolved_observer = self.observer if observer is None else observer
+        if resolved_observer is None:
+            raise RuntimeError("An Observer is required for stellar geometry.")
         if getattr(self, "source_catalog", None) is None:
             if any(
                 value is not None

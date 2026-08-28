@@ -196,6 +196,8 @@ def test_frame_argument_validation():
 # Contracts consolidated from test_milestone39g_equatorial_meridian_extent.py.
 """Tests for bounded equatorial meridians."""
 
+from types import SimpleNamespace
+
 import numpy as np
 import pytest
 
@@ -204,7 +206,11 @@ from wenu.sky.coordinate_grids import EquatorialGrid
 
 def grid_with_identity_altaz(**kwargs):
     grid = EquatorialGrid(
-        object(),
+        SimpleNamespace(
+            t_astropy=SimpleNamespace(
+                isot="2026-08-28T00:00:00.000", scale="utc"
+            )
+        ),
         samples=9,
         equinox="J2000",
         **kwargs,

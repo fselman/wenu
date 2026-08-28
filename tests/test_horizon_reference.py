@@ -1,10 +1,20 @@
 """Semantic observer-horizon geometry contracts."""
 
+from types import SimpleNamespace
+
 import numpy as np
 import pytest
 
 from wenu import AltAzGrid, CelestialSphere, HorizonReference
 from wenu.sky.geometrical_object import GeometricalObject
+
+
+def coordinate_observer():
+    return SimpleNamespace(
+        t_astropy=SimpleNamespace(
+            isot="2026-08-28T00:00:00.000", scale="utc"
+        )
+    )
 
 
 def test_horizon_is_an_independent_semantic_geometry_layer():
@@ -14,7 +24,7 @@ def test_horizon_is_an_independent_semantic_geometry_layer():
 
 
 def test_horizon_reuses_native_altitude_zero_geometry():
-    observer = object()
+    observer = coordinate_observer()
     geometry = HorizonReference(samples=9).spherical_geometry(observer)
 
     assert len(geometry.lon_deg) == 1
@@ -35,7 +45,7 @@ def test_observerless_horizon_requires_an_explicit_observer():
 
 
 def test_bound_horizon_retains_compatibility_observer():
-    observer = object()
+    observer = coordinate_observer()
     geometry = HorizonReference(observer, samples=5).spherical_geometry(None)
 
     np.testing.assert_allclose(geometry.lat_deg[0], 0.0)
