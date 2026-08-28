@@ -5,8 +5,12 @@ from pathlib import Path
 import sys
 
 
-PATH = Path("tools/render_46d8_visual_matrix.py")
-REVIEW = Path("docs/developer/visual_acceptance_46d8.md")
+ROOT = Path(__file__).resolve().parents[1]
+PATH = ROOT / "tools" / "render_46d8_visual_matrix.py"
+REVIEW = (
+    ROOT / "docs" / "developer" / "archive" / "acceptance_history"
+    / "visual_acceptance_46d8.md"
+)
 FAMILIES = {
     "all-sky", "planisphere", "regional-single", "regional-group",
     "circumpolar", "binocular",
