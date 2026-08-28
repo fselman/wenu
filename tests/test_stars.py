@@ -6,6 +6,7 @@ from types import SimpleNamespace
 
 import numpy as np
 import pandas as pd
+from astropy.time import Time
 import pytest
 
 from wenu.objects.astronomical_object import AstronomicalObject
@@ -60,9 +61,7 @@ def make_stars():
     observer = SimpleNamespace(
         skyfield=FakeSkyfieldObserver(apparent),
         t=object(),
-        t_astropy=SimpleNamespace(
-            isot="2026-08-28T00:00:00.000", scale="utc"
-        ),
+        t_astropy=Time("2026-08-28T00:00:00", scale="utc"),
     )
     stars = Stars(observer=observer)
     stars.catalog = pd.DataFrame(
