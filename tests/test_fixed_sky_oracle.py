@@ -67,20 +67,20 @@ def write_rgba(path: Path, values):
     Image.fromarray(np.asarray(values, dtype=np.uint8), "RGBA").save(path)
 
 
-def test_oracle_is_an_independent_complete_observer_time_plan(tmp_path):
+def test_baseline_is_an_independent_complete_observer_time_plan(tmp_path):
     fixed = fixed_request(tmp_path / "candidate")
-    oracle = fixed_sky_complete_render_baseline_request(
+    baseline = fixed_sky_complete_render_baseline_request(
         fixed,
         tmp_path / "baseline",
     )
 
-    assert oracle.chart.product.output == tmp_path / "baseline"
-    assert oracle.timeline is fixed.timeline
+    assert baseline.chart.product.output == tmp_path / "baseline"
+    assert baseline.timeline is fixed.timeline
     assert tuple(
-        frame.request.observer.time for frame in oracle.frames
+        frame.request.observer.time for frame in baseline.frames
     ) == fixed.timeline.instants
     assert tuple(
-        frame.request.product.output for frame in oracle.frames
+        frame.request.product.output for frame in baseline.frames
     ) == tuple(
         tmp_path / "baseline" / f"frame-{index:04d}.png"
         for index in range(3)
@@ -88,11 +88,11 @@ def test_oracle_is_an_independent_complete_observer_time_plan(tmp_path):
     assert all(
         frame.request.observer.time
         == fixed.frames[frame.index].local_observer.time
-        for frame in oracle.frames
+        for frame in baseline.frames
     )
 
 
-def test_oracle_generation_delegates_to_observer_time_pipeline(
+def test_baseline_generation_delegates_to_observer_time_pipeline(
     tmp_path,
     monkeypatch,
 ):
@@ -121,10 +121,10 @@ def test_oracle_generation_delegates_to_observer_time_pipeline(
     assert result.request is calls[0][0]
 
 
-def test_first_oracle_rejects_unproved_chart_families(tmp_path):
+def test_first_baseline_rejects_unproved_chart_families(tmp_path):
     fixed = fixed_request(tmp_path / "candidate", family="regional")
 
-    with pytest.raises(ValueError, match="only for circumpolar"):
+    with pytest.raises(ValueError, match="limited to circumpolar"):
         fixed_sky_complete_render_baseline_request(
             fixed,
             tmp_path / "baseline",
@@ -132,17 +132,17 @@ def test_first_oracle_rejects_unproved_chart_families(tmp_path):
 
 
 def test_png_comparison_reports_exact_rgba_metrics(tmp_path):
-    oracle = tmp_path / "baseline.png"
+    baseline = tmp_path / "baseline.png"
     candidate = tmp_path / "candidate.png"
     pixels = np.zeros((2, 2, 4), dtype=np.uint8)
     pixels[:, :, 3] = 255
-    write_rgba(oracle, pixels)
+    write_rgba(baseline, pixels)
     changed = pixels.copy()
     changed[0, 1, 0] = 20
     changed[1, 0, 2] = 4
     write_rgba(candidate, changed)
 
-    comparison = compare_png_frames(candidate, oracle)
+    comparison = compare_png_frames(candidate, baseline)
 
     assert comparison.dimensions == (2, 2)
     assert comparison.pixel_count == 4
