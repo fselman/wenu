@@ -200,3 +200,61 @@ class FixedSkyRotatingHorizonSequenceRequest:
                 )
             )
         return tuple(frames)
+
+
+
+@dataclass(frozen=True)
+class FixedSkyRotatingHorizonFrameResult:
+    """One completed uncached reference-render frame."""
+
+    resolved: ResolvedFixedSkyRotatingHorizonFrame
+    generation: object
+    output: Path
+
+
+@dataclass(frozen=True)
+class FixedSkyRotatingHorizonGeneration:
+    """Completed uncached reference rendering of a fixed-sky sequence."""
+
+    frames: tuple[FixedSkyRotatingHorizonFrameResult, ...]
+
+    @property
+    def outputs(self) -> tuple[Path, ...]:
+        return tuple(frame.output for frame in self.frames)
+
+
+def generate_fixed_sky_rotating_horizon_sequence(
+    request: FixedSkyRotatingHorizonSequenceRequest,
+) -> FixedSkyRotatingHorizonGeneration:
+    """Render the fixed-sky reference sequence through canonical requests.
+
+    This intentionally performs a complete independent chart generation for
+    every frame. It is the behavior-validation renderer, not a caching or
+    resume implementation.
+    """
+    if not isinstance(request, FixedSkyRotatingHorizonSequenceRequest):
+        raise TypeError(
+            "request must be a FixedSkyRotatingHorizonSequenceRequest."
+        )
+    from .request_generation import generate_chart_request
+
+    results = []
+    for frame in request.frames:
+        resolved = resolve_fixed_sky_rotating_horizon_frame(frame)
+        generation = generate_chart_request(
+            resolved.chart_request,
+            configuration=request.configuration,
+        )
+        outputs = tuple(generation.outputs)
+        if outputs != (frame.expected_output,):
+            raise RuntimeError(
+                "Fixed-sky frame generation returned an unexpected output."
+            )
+        results.append(
+            FixedSkyRotatingHorizonFrameResult(
+                resolved=resolved,
+                generation=generation,
+                output=outputs[0],
+            )
+        )
+    return FixedSkyRotatingHorizonGeneration(frames=tuple(results))
