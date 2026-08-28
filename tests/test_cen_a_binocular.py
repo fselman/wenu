@@ -12,6 +12,9 @@ import matplotlib.pyplot as plt
 import pytest
 
 
+pytestmark = pytest.mark.integration
+
+
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = ROOT / "tests" / "fixtures" / "example_regressions" / "cen_a_binocular.py"
 

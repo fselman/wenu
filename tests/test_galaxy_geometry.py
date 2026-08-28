@@ -7,6 +7,7 @@ from types import SimpleNamespace
 
 import astropy.units as u
 import numpy as np
+import pytest
 from astropy.coordinates import AltAz, EarthLocation
 from astropy.time import Time
 
@@ -35,6 +36,7 @@ def test_galaxies_is_a_nonstellar_specialization():
     assert Galaxies.layer_name == "galaxies"
 
 
+@pytest.mark.integration
 def test_galaxy_catalogue_retains_openngc_metadata():
     layer = Galaxies(observer=None)
     catalogue = layer.load()
@@ -54,6 +56,7 @@ def test_galaxy_catalogue_retains_openngc_metadata():
     assert np.max(catalogue["magnitude"]) <= 12.0
 
 
+@pytest.mark.integration
 def test_default_geometry_excludes_two_isophote_systems():
     layer = Galaxies(observer(), samples=24)
     layer.load()
@@ -62,6 +65,7 @@ def test_default_geometry_excludes_two_isophote_systems():
     assert set(table["rendering_class"]) == {"ellipse"}
 
 
+@pytest.mark.integration
 def test_magellanic_clouds_do_not_generate_ellipse_geometry():
     current_observer = observer()
     layer = Galaxies(current_observer, samples=24)
@@ -74,6 +78,7 @@ def test_magellanic_clouds_do_not_generate_ellipse_geometry():
     assert len(geometry) == 0
 
 
+@pytest.mark.integration
 def test_selected_galaxy_geometry_preserves_catalogue_metadata():
     current_observer = observer()
     layer = Galaxies(current_observer, samples=24)
@@ -97,6 +102,7 @@ def test_selected_galaxy_geometry_preserves_catalogue_metadata():
     )
 
 
+@pytest.mark.integration
 def test_galaxy_outline_sampling_can_be_reduced_per_render():
     current_observer = observer()
     layer = Galaxies(current_observer, samples=24)
@@ -117,6 +123,7 @@ def test_galaxy_outline_sampling_can_be_reduced_per_render():
     assert layer.samples == 24
 
 
+@pytest.mark.integration
 def test_galaxy_selections_reuse_inherited_maximal_outline_cache(
     monkeypatch,
 ):
@@ -149,6 +156,7 @@ def test_galaxy_selections_reuse_inherited_maximal_outline_cache(
     assert calls == [1056]
 
 
+@pytest.mark.integration
 def test_galaxies_and_messier_can_coexist_on_one_sky():
     sky = CelestialSphere(observer())
     messier = sky.add_nonstellar(samples=24)

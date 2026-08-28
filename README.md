@@ -208,8 +208,24 @@ Developer references:
 
 ## Tests
 
+Run the routine regression suite during development:
+
 ```bash
-pytest
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q \
+  -m "not integration and not visual and not slow"
+```
+
+Run the complete suite before milestone closure:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q
+```
+
+Scientific, visual, and physical acceptance may additionally require real
+rendering, print inspection, or the focused commands documented by the active
+milestone. Representative manual render checks remain:
+
+```bash
 python examples/planisphere.py --style atlas --mode print
 python examples/binocular_object.py --target omega-centauri
 ```

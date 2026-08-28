@@ -39,6 +39,7 @@ exclude = [
 
 [tool.pytest.ini_options]
 addopts = "-p no:remotedata"
+pythonpath = ["."]
 filterwarnings = [
     "error::FutureWarning",
 ]
