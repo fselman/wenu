@@ -1493,9 +1493,10 @@ and scientifically keyed reuse are later 49H increments. The celestial anchor
 is not a catalogue reference epoch and does not replace future provider-owned
 proper-motion realization.
 
-The 49H.2 comparison authority is
-`generate_fixed_sky_complete_render_baseline()`, which produces complete canonical
-circumpolar observer-time renders in a separate directory.
+The 49H.2 independent current-behavior baseline is
+`generate_fixed_sky_complete_render_baseline()`, which produces complete canonical circumpolar observer-time renders in a
+separate directory. Visual acceptance showed that celestial content rotates,
+so these frames are not the fixed-sky pixel oracle.
 `compare_png_frames()` reports explicit RGBA difference metrics evaluated
 against `PngFrameComparisonTolerance`; exact equality is the default.
 Other chart families remain outside this oracle until stable-camera
