@@ -115,6 +115,13 @@ from .temporal import (
     TemporalTimeline,
     TimeScale,
 )
+from .charts.fixed_sky_oracle import (
+    PngFrameComparison,
+    PngFrameComparisonTolerance,
+    compare_png_frames,
+    fixed_sky_full_render_oracle_request,
+    generate_fixed_sky_full_render_oracle,
+)
 from .charts.fixed_sky_sequence import (
     FixedSkyRotatingHorizonFrame,
     FixedSkyRotatingHorizonSequenceRequest,
