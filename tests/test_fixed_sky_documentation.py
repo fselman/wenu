@@ -56,6 +56,8 @@ def test_fixed_sky_oracle_documents_independent_complete_rendering():
         "PngFrameComparisonTolerance",
         "default is exact pixel equality",
         "Caching remains prohibited",
+        "tools/render_49h2_fixed_sky_oracle.py",
+        "fixed-sky-oracle-audit.json",
     ):
         assert value in contract
 
