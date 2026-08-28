@@ -1478,3 +1478,18 @@ schema-version-1 `[sequence]` table. Packaged values disable sequence output.
 User overlays may provide a complete sequence, and explicit CLI values take
 precedence. The effective configuration reaches every frame and participates
 in deterministic manifest identity.
+
+## Fixed-sky rotating-horizon planning
+
+`FixedSkyRotatingHorizonSequenceRequest` plans an Earth-rotation presentation
+with one explicit aware `celestial_anchor_time` and a
+`TemporalTimeline` of observer-local instants. Its frames keep the celestial
+request and camera time fixed while exposing a separate local observer for
+horizon, cardinal, AltAz, visibility, and mask realization.
+
+This is a planning boundary only. The accepted implementation continues to use
+complete observer-time renders as its oracle; optimized canonical rendering
+and scientifically keyed reuse are later 49H increments. The celestial anchor
+is not a catalogue reference epoch and does not replace future provider-owned
+proper-motion realization.
+
