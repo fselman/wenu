@@ -100,3 +100,16 @@ provider policy. They must not be inferred from either timeline instant.
 accepted uncached reference. Any optimized result must preserve the 49H.3
 geometry invariants and reproduce its visual behavior while retaining the
 complete-render route as a correctness reference.
+
+
+## Final verification
+
+The accepted branch was verified from a clean working tree on 2026-08-28:
+
+- `git diff --check` produced no diagnostics;
+- the full plugin-isolated suite passed;
+- **1774 passed in 83.10s**.
+
+This record covers the 49H.1 ownership contract, 49H.2 independent baseline,
+49H.3 astronomical orientation, canonical uncached reference rendering,
+documentation, and all pre-existing Wenu behavior.
