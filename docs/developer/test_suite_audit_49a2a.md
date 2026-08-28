@@ -1,7 +1,8 @@
 # Wenu test-suite audit: Milestone 49A.2A
 
-**Status:** Implemented and locally accepted  
-**Baseline:** `8f66f5e`  
+**Status:** Implemented and locally accepted
+
+**Baseline:** `8f66f5e`
 **Audit date:** 2026-08-28
 
 ## Purpose
