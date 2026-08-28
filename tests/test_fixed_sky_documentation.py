@@ -58,7 +58,7 @@ def test_fixed_sky_baseline_documents_complete_rendering_limits():
         "target_pixel_oracle = false",
         "tools/render_49h2_complete_render_baseline.py",
         "fixed-sky-baseline-audit.json",
-        "celestial content rotates",
+        "content rotates with it",
         "fixed-sky oracle must independently express",
     ):
         assert value in contract
