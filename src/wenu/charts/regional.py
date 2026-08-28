@@ -9,6 +9,13 @@ from typing import Any
 from astropy.coordinates import SkyCoord
 import numpy as np
 
+from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import (
+    icrs_catalogue_spec,
+    observation_context,
+    observer_altaz_spec,
+)
+from wenu.geometry.spherical import SphericalPoints
 from wenu.charts.boundaries import (
     RectangularLabelAnchor,
     apply_coordinate_label_anchor,
@@ -90,18 +97,26 @@ def celestial_north_position_angle(
     center_az_deg,
 ):
     """Return the rotation placing celestial north at chart top."""
-    north = SkyCoord(
-        ra=0.0,
-        dec=90.0,
-        unit="deg",
-        frame="icrs",
-    ).transform_to(observer.altaz_frame)
+    north = CoordinateService().transform(
+        SphericalPoints(
+            lon_deg=np.asarray((0.0,)),
+            lat_deg=np.asarray((90.0,)),
+            coordinate_spec=icrs_catalogue_spec(
+                "wenu celestial-north reference"
+            ),
+        ),
+        observer_altaz_spec(
+            observer,
+            provider="astropy coordinate service",
+        ),
+        observation_context(observer),
+    )
 
     return target_up_position_angle(
         center_alt_deg=center_alt_deg,
         center_az_deg=center_az_deg,
-        target_alt_deg=float(north.alt.deg),
-        target_az_deg=float(north.az.deg),
+        target_alt_deg=float(north.lat_deg[0]),
+        target_az_deg=float(north.lon_deg[0]),
     )
 
 
