@@ -7,6 +7,11 @@ observer-local `AltAzGrid` geometry. Selection remains in render-local detail,
 appearance remains in style, and the chart type continues to own the horizon.
 **Status:** Implemented
 
+The current ownership and execution overview is
+`diagrams/current_architecture_v0.9_overview.svg`. The coordinate-transformation
+as-is state and planned 49B/49C change seams are
+`diagrams/coordinate_transformation_as_is_v0.9.svg`.
+
 The source tree is organized by responsibility. Astronomical objects and sky
 layers do not import chart or renderer policy, and all chart styles and modes
 share the same geometry and rendering pipeline.

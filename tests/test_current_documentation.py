@@ -21,6 +21,7 @@ FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
+DIAGRAMS = DEVELOPER / "diagrams"
 PUBLIC_DOCUMENTS = (
     ROOT / "README.md",
     ROOT / "README.es.md",
@@ -117,6 +118,30 @@ def test_historical_documents_are_archived_and_not_active_authorities():
         assert (ARCHIVE / "migration_history" / name).is_file()
         assert not (DEVELOPER / name).exists()
     assert (ARCHIVE / "pre_versioned" / "architecture.md").is_file()
+
+
+def test_current_diagrams_are_an_inspection_interface():
+    readme = read(DIAGRAMS / "README.md")
+
+    for name in (
+        "current_architecture_v0.9_overview",
+        "coordinate_transformation_as_is_v0.9",
+    ):
+        assert (DIAGRAMS / f"{name}.dot").is_file()
+        assert (DIAGRAMS / f"{name}.svg").is_file()
+        assert name in readme
+
+    assert "human inspection interface" in readme
+    assert "49B introduces typed astronomical-state vocabulary" in readme
+    assert "49C introduces one coordinate service" in readme
+    assert (
+        ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.dot"
+    ).is_file()
+    assert (
+        ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.svg"
+    ).is_file()
+    assert not (DIAGRAMS / "target_architecture_v0.5_combined.dot").exists()
+    assert not (DIAGRAMS / "target_architecture_v0.5_combined.svg").exists()
 
 
 def test_v08_release_evidence_remains_closed():

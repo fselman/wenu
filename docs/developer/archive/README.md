@@ -26,6 +26,7 @@ Use the small active set in the parent directory:
   architectures through the accepted v0.9 design;
 - `migration_history/` contains completed version-to-version roadmaps;
 - `roadmap_history/` contains superseded sequencing and background roadmaps;
+- `diagram_history/` contains superseded architecture diagrams;
 - `audits/` contains completed as-is, configuration, request, and test-suite
   audits;
 - `acceptance_history/` contains completed visual and physical acceptance

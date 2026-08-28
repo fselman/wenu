@@ -1,22 +1,68 @@
-# UML Diagrams
+# Wenu architecture diagrams
 
-These diagrams are generated automatically from the source code using
-`pyreverse`.
+**Status:** Current as of the v0.9 closure baseline `5da93cc`
 
-They describe the current implementation and should not be edited manually.
+These diagrams are a human inspection interface for the as-is software. They
+are intended to let Fernando inspect architecture ownership, principal data
+flow, preserved boundaries, and the exact areas affected by an upcoming
+architectural change without first reconstructing the system from source.
 
-To regenerate:
+## Current diagrams
+
+### Architecture and execution flow
+
+[Open the current v0.9 architecture SVG](current_architecture_v0.9_overview.svg)
+
+Source: `current_architecture_v0.9_overview.dot`
+
+This diagram separates request resolution, astronomical-state realization,
+the shared geometry/rendering pipeline, and product orchestration. It shows
+which products reuse the canonical path and where observer-local state enters.
+
+### Coordinate transformations and 49B/49C seams
+
+[Open the coordinate as-is SVG](coordinate_transformation_as_is_v0.9.svg)
+
+Source: `coordinate_transformation_as_is_v0.9.dot`
+
+Red boxes identify the current overlapping transformation authorities and
+observer-dependent detour. Green boxes identify the planned ownership seams:
+
+- 49B introduces typed astronomical-state vocabulary and enforceable
+  scientific identity;
+- 49C introduces one coordinate service and explicit celestial versus
+  observer-local transformation paths;
+- projection alignment, projection, clipping, and rendering remain
+  coordinate-neutral and outside the rationalization.
+
+## Maintenance contract
+
+The diagrams must be updated whenever a milestone changes any of:
+
+- package or type ownership;
+- astronomical frame, origin, epoch, instant, time-scale, or position-status
+  responsibility;
+- the canonical request, geometry, preparation, rendering, or export flow;
+- observer-independent versus observer-local realization;
+- product reuse or cache boundaries.
+
+For an architectural migration, preserve an explicit as-is diagram before
+implementation, then update the current diagram in the closure milestone.
+The before/after diagrams must make moved responsibilities visible rather than
+merely changing version labels.
+
+The hand-maintained Graphviz sources are authoritative because automated class
+diagrams do not express runtime ownership or scientific meaning. Regenerate
+the SVGs from the repository root with:
 
 ```bash
-cd wenu
-pyreverse src/wenu
-dot -Tsvg classes.dot -o classes.svg
-dot -Tsvg packages.dot -o packages.svg
+dot -Tsvg docs/developer/diagrams/current_architecture_v0.9_overview.dot \
+  -o docs/developer/diagrams/current_architecture_v0.9_overview.svg
+dot -Tsvg docs/developer/diagrams/coordinate_transformation_as_is_v0.9.dot \
+  -o docs/developer/diagrams/coordinate_transformation_as_is_v0.9.svg
 ```
 
-These diagrams complement, but do not replace,
-
-- `../archive/architecture_history/target_architecture_v0.5.md`
-- `implementation_reference.md`
-
-because UML shows the static structure but not the runtime execution flow.
+The current diagrams complement `../current_architecture_v0.9.md`,
+`../implementation_reference.md`, `../source_tree.md`, and
+`../coordinate_transformation_audit_09a2afd.md`; they do not replace the
+precise contracts in those documents.

@@ -1,0 +1,77 @@
+digraph coordinate_as_is_v09 {
+  graph [rankdir=TB, bgcolor="white", fontname="Helvetica", fontsize=15,
+    label="Wenu v0.9 — astronomical coordinates as-is and 49B/49C change seams",
+    labelloc="t", nodesep=0.32, ranksep=0.55, pad=0.25];
+  node [shape=box, style="rounded,filled", fillcolor="#f7f7f7",
+    color="#555555", fontname="Helvetica", fontsize=9.5, margin="0.12,0.08"];
+  edge [color="#666666", fontname="Helvetica", fontsize=8, arrowsize=0.7];
+
+  sources [label="Native astronomical sources\nHipparcos / DSO / IAU B1875 / grids / ephemerides",
+    fillcolor="#fff2cc"];
+  context [label="Observer context\nsite + UTC instant + Earth orientation", fillcolor="#fff2cc"];
+
+  subgraph cluster_engines {
+    label="AS-IS TRANSFORMATION AUTHORITIES — overlapping assumptions";
+    color="#c00000"; style="rounded,dashed";
+    astropy [label="Astropy transforms\nobjects/*, grids, points, Milky Way,\nMagellanic Clouds, boundaries"];
+    skyfield [label="Skyfield observation\nobserver.py + stars.py\ntopocentric apparent AltAz"];
+    manual [label="Hand-written radec_to_altaz()\nGMST + hour-angle trigonometry",
+      fillcolor="#f4cccc", color="#c00000"];
+    chart_frames [label="charts/coordinate_frames.py\nAltAz -> ICRS or Galactic"];
+    furniture [label="Chart + furniture frame choices\nICRS / FK5 J2000 / FK5 of date /\nmean or true ecliptic"];
+  }
+
+  subgraph cluster_geometry {
+    label="CURRENT REPRESENTATION AND PRODUCT PATHS";
+    color="#5b9bd5"; style="rounded";
+    geometry [label="Spherical geometry\nlongitude/latitude + free-form frame metadata",
+      fillcolor="#d9eaf7"];
+    detour [label="Observer-independent product detour\nnative/ICRS -> AltAz(observer,time) -> ICRS",
+      fillcolor="#fce4d6"];
+    local [label="Observer-local product\ncelestial -> AltAz(observer,time)"];
+    align [label="SphericalFrame projection alignment\npure coordinate-neutral rotation"];
+    project [label="Projection + clipping + rendering"];
+    geometry -> align -> project;
+    detour -> geometry;
+    local -> geometry;
+  }
+
+  sources -> astropy; sources -> skyfield; sources -> manual;
+  context -> astropy; context -> skyfield; context -> manual;
+  astropy -> geometry; skyfield -> geometry; manual -> geometry;
+  chart_frames -> detour; furniture -> geometry;
+  astropy -> detour; skyfield -> local;
+
+  subgraph cluster_49b {
+    label="49B CHANGE SEAM — typed astronomical-state vocabulary";
+    color="#70ad47"; style="rounded,bold";
+    state [label="AstronomicalState / FrameSpec / Origin / Epoch\nObservationInstant / TimeScale / PositionStatus",
+      fillcolor="#e2f0d9"];
+    invariants [label="Geometry must declare scientific identity\nNo relabelling; explicit apparent/geometric policy",
+      fillcolor="#e2f0d9"];
+    state -> invariants;
+  }
+
+  subgraph cluster_49c {
+    label="49C CHANGE SEAM — one coordinate service";
+    color="#70ad47"; style="rounded,bold";
+    service [label="Canonical coordinate transformer\nAstropy authority + explicit Skyfield/provider adapters",
+      fillcolor="#e2f0d9"];
+    direct [label="Observer-independent path\nnative -> canonical ICRS -> requested celestial frame",
+      fillcolor="#e2f0d9"];
+    observed [label="Observer-local path\ncelestial state -> explicit AltAz realization",
+      fillcolor="#e2f0d9"];
+    service -> direct; service -> observed;
+  }
+
+  sources -> state [style=dashed, color="#548235", label="49B wraps meaning"];
+  context -> state [style=dashed, color="#548235"];
+  state -> service [style=dashed, color="#548235", label="49C consumes typed state"];
+  service -> geometry [style=dashed, color="#548235", label="replaces distributed transforms"];
+  direct -> geometry [style=dashed, color="#548235"];
+  observed -> geometry [style=dashed, color="#548235"];
+
+  legend [shape=note, label="Red dashed: current rationalization problem\nGreen: planned 49B/49C ownership\nProjection alignment remains unchanged",
+    fillcolor="#ffffff"];
+}
+

@@ -36,6 +36,8 @@ For current work, read and follow:
   accepted design and completed-migration evidence;
 - `implementation_reference.md` as the current API reference;
 - `source_tree.md` as the current responsibility map;
+- `diagrams/README.md` and its current SVGs as the human inspection view of
+  ownership, process flow, and architectural change seams;
 - `coordinate_transformation_audit_09a2afd.md` for coordinate, frame, time,
   observer, astrometry, planet, or satellite work;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,

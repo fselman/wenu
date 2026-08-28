@@ -1,0 +1,75 @@
+digraph current_architecture_v09 {
+  graph [rankdir=TB, bgcolor="white", fontname="Helvetica", fontsize=15,
+    label="Wenu v0.9 — current architecture and execution flow",
+    labelloc="t", nodesep=0.35, ranksep=0.55, pad=0.25];
+  node [shape=box, style="rounded,filled", fillcolor="#f7f7f7",
+    color="#555555", fontname="Helvetica", fontsize=10, margin="0.13,0.09"];
+  edge [color="#555555", fontname="Helvetica", fontsize=8, arrowsize=0.7];
+
+  request [label="User / CLI / canonical example\nChart request", fillcolor="#fff2cc"];
+
+  subgraph cluster_resolution {
+    label="REQUEST RESOLUTION — immutable policy";
+    color="#5b9bd5"; style="rounded";
+    chart [label="Chart type\nframing + boundary"];
+    observer [label="Observer\nsite + instant"];
+    selection [label="Content + detail\nlayer selection"];
+    appearance [label="Style + mode\nappearance + medium"];
+    config [label="Schema v1 + user overlay\nexplicit values win"];
+    resolved [label="Resolved chart request", fillcolor="#d9eaf7"];
+    chart -> resolved; observer -> resolved; selection -> resolved;
+    appearance -> resolved; config -> resolved;
+  }
+
+  subgraph cluster_science {
+    label="ASTRONOMICAL STATE — current distributed ownership";
+    color="#c55a11"; style="rounded";
+    catalogues [label="Catalogues / packaged data\nnative celestial coordinates"];
+    sphere [label="CelestialSphere + SkyLayer\nobserver-independent content", fillcolor="#fce4d6"];
+    realization [label="Layer realization\nICRS / AltAz / Galactic paths"];
+    local [label="Observer-local geometry\nhorizon + AltAz grid"];
+    catalogues -> sphere -> realization;
+    observer -> realization [color="#c55a11"];
+    observer -> local [color="#c55a11"];
+  }
+
+  subgraph cluster_geometry {
+    label="GEOMETRY AND RENDERING — shared canonical path";
+    color="#70ad47"; style="rounded";
+    spherical [label="Typed-by-contract spherical geometry\nmetadata currently partly free-form"];
+    alignment [label="Projection alignment\ncoordinate-neutral rotation"];
+    guard [label="Projection-domain guard"];
+    projection [label="Projection"];
+    projected [label="Projected geometry + clipping"];
+    prepared [label="Prepared graphical records"];
+    renderer [label="Matplotlib renderer"];
+    export [label="Furniture + one final export", fillcolor="#e2f0d9"];
+    spherical -> alignment -> guard -> projection -> projected -> prepared -> renderer -> export;
+  }
+
+  subgraph cluster_products {
+    label="PRODUCT-SPECIFIC ORCHESTRATION — no second renderer";
+    color="#8064a2"; style="rounded";
+    ordinary [label="Ordinary static charts\nregional / full / all / circumpolar / binocular"];
+    polar [label="Physical polar planisphere\ndisks + calendar + A4 pages"];
+    pouch [label="Folded horizon pouch\nwindow + hour scale + assembly"];
+    sequence [label="Temporal sequences\nmanifest + resume + CLI"];
+    fixed [label="Fixed sky sequence\ncelestial anchor + rotating local layers"];
+    ordinary -> export [color="#8064a2"];
+    polar -> export [color="#8064a2"];
+    pouch -> export [color="#8064a2"];
+    sequence -> ordinary [label="frame requests", color="#8064a2"];
+    fixed -> sequence [label="dual-time planning", color="#8064a2"];
+  }
+
+  request -> resolved;
+  resolved -> sphere [label="load profile", color="#2f75b5"];
+  resolved -> realization [label="frame request", color="#2f75b5"];
+  resolved -> spherical [label="chart + grids", color="#2f75b5"];
+  realization -> spherical;
+  local -> spherical;
+  resolved -> ordinary [color="#2f75b5"];
+  resolved -> polar [color="#2f75b5"];
+  polar -> pouch [label="shared scale + horizon"];
+}
+
