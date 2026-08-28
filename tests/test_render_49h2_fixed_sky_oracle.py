@@ -56,7 +56,7 @@ def test_audit_records_manifest_times_dimensions_and_hashes(
     monkeypatch,
 ):
     options = arguments(tmp_path)
-    oracle = options.output / "complete-render-oracle"
+    oracle = options.output / "complete-render-baseline"
     oracle.mkdir(parents=True)
     outputs = []
     for index, color in enumerate(((10, 20, 30), (30, 20, 10))):
@@ -81,7 +81,7 @@ def test_audit_records_manifest_times_dimensions_and_hashes(
 
     monkeypatch.setattr(
         tool,
-        "generate_fixed_sky_full_render_oracle",
+        "generate_fixed_sky_complete_render_baseline",
         generate,
     )
     options.frames = 2
@@ -89,7 +89,7 @@ def test_audit_records_manifest_times_dimensions_and_hashes(
     destination = tool.audit(options)
     report = json.loads(destination.read_text(encoding="utf-8"))
 
-    assert report["audit_kind"] == "fixed_sky_complete_render_oracle"
+    assert report["audit_kind"] == "fixed_sky_complete_render_baseline"
     assert report["manifest_identity_sha256"] == "abc123"
     assert report["frame_count"] == 2
     assert report["rendered_count"] == 2
@@ -109,7 +109,7 @@ def test_audit_rejects_an_oracle_that_does_not_change(
     monkeypatch,
 ):
     options = arguments(tmp_path, frames=2)
-    oracle = options.output / "complete-render-oracle"
+    oracle = options.output / "complete-render-baseline"
     oracle.mkdir(parents=True)
     outputs = []
     for index in range(2):
@@ -123,7 +123,7 @@ def test_audit_rejects_an_oracle_that_does_not_change(
     )
     monkeypatch.setattr(
         tool,
-        "generate_fixed_sky_full_render_oracle",
+        "generate_fixed_sky_complete_render_baseline",
         lambda *args, **kwargs: SimpleNamespace(
             outputs=tuple(outputs),
             manifest_path=manifest,
@@ -137,4 +137,4 @@ def test_audit_rejects_an_oracle_that_does_not_change(
     except RuntimeError as error:
         assert "do not change" in str(error)
     else:
-        raise AssertionError("Identical oracle frames must be rejected.")
+        raise AssertionError("Identical baseline frames must be rejected.")
