@@ -76,18 +76,30 @@ def _immutable_float_array(values):
 
 
 def _icrs_catalogue_altaz(table, observer):
+    return icrs_point_arrays_to_altaz(
+        np.asarray(table["ra_deg"], dtype=float),
+        np.asarray(table["dec_deg"], dtype=float),
+        observer,
+        provider="wenu observed catalogue",
+    )
+
+
+def icrs_point_arrays_to_altaz(
+    longitude,
+    latitude,
+    observer,
+    *,
+    provider,
+):
+    """Transform ICRS point arrays through CoordinateService."""
     native = SphericalPoints(
-        lon_deg=np.asarray(table["ra_deg"], dtype=float),
-        lat_deg=np.asarray(table["dec_deg"], dtype=float),
-        coordinate_spec=icrs_catalogue_spec(
-            "wenu observed catalogue"
-        ),
+        lon_deg=np.asarray(longitude, dtype=float),
+        lat_deg=np.asarray(latitude, dtype=float),
+        coordinate_spec=icrs_catalogue_spec(provider),
     )
     horizontal = CoordinateService().transform(
         native,
-        observer_altaz_spec(
-            observer, provider="wenu observed catalogue"
-        ),
+        observer_altaz_spec(observer, provider=provider),
         observation=observation_context(observer),
     )
     return horizontal.lon_deg, horizontal.lat_deg

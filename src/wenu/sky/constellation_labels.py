@@ -12,6 +12,7 @@ from astropy.coordinates import SkyCoord
 
 from wenu.sky.geometrical_object import GeometricalObject
 from wenu.geometry.spherical import SphericalPoints
+from wenu.sky.observed_cache import icrs_point_arrays_to_altaz
 from wenu.sky.semantic_identity import semantic_key
 
 
@@ -83,9 +84,12 @@ class ConstellationLabels(GeometricalObject):
             coordinates.get_constellation(short_name=True),
             dtype=object,
         )
-        apparent = coordinates.transform_to(observer.altaz_frame)
-        apparent_lon_deg = apparent.az.to_value(u.deg)
-        apparent_lat_deg = apparent.alt.to_value(u.deg)
+        apparent_lon_deg, apparent_lat_deg = icrs_point_arrays_to_altaz(
+            ra_deg[valid_coordinates],
+            dec_deg[valid_coordinates],
+            observer,
+            provider="wenu constellation labels",
+        )
         groups = defaultdict(list)
         group_labels = np.asarray(abbreviations, dtype=object).copy()
         if self.boundaries is not None:

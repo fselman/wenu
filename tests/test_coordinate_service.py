@@ -7,6 +7,7 @@ from astropy.coordinates import (
     AltAz,
     BarycentricTrueEcliptic,
     EarthLocation,
+    FK4,
     FK5,
     Galactic,
     ICRS,
@@ -245,6 +246,15 @@ def test_unsupported_coordinate_contracts_fail_explicitly(spec, message):
 @pytest.mark.parametrize(
     "source_spec, source_frame",
     [
+        (
+            CoordinateSpec(
+                frame="fk4",
+                origin="solar-system-barycenter",
+                position_status=PositionStatus.ASTROMETRIC,
+                equinox="B1875.0",
+            ),
+            FK4(equinox=Time("B1875.0")),
+        ),
         (
             CoordinateSpec(
                 frame="fk5",

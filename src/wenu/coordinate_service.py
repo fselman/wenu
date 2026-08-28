@@ -9,6 +9,7 @@ from astropy.coordinates import (
     BarycentricMeanEcliptic,
     BarycentricTrueEcliptic,
     EarthLocation,
+    FK4,
     FK5,
     GCRS,
     Galactic,
@@ -146,6 +147,8 @@ class CoordinateService:
             return GCRS(
                 obstime=Time(spec.instant, scale=spec.time_scale)
             )
+        if frame == "fk4":
+            return FK4(equinox=Time(spec.equinox or "B1950.0"))
         if frame == "fk5":
             return FK5(equinox=Time(spec.equinox or "J2000.0"))
         if frame in {
