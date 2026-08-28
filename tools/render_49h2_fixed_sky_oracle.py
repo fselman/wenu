@@ -19,7 +19,7 @@ from wenu import (
     DetailOverrides,
     FixedSkyRotatingHorizonSequenceRequest,
     TemporalTimeline,
-    generate_fixed_sky_full_render_oracle,
+    generate_fixed_sky_complete_render_baseline,
 )
 from wenu.output_policy import OutputFormat
 
@@ -99,7 +99,7 @@ def oracle_request(arguments: argparse.Namespace):
             }),
             equatorial_declination_step_deg=10.0,
         ),
-        title="49H.2 fixed-sky complete-render oracle",
+        title="49H.2 fixed-sky complete-render baseline",
     )
     return FixedSkyRotatingHorizonSequenceRequest(
         chart=chart,
@@ -124,10 +124,10 @@ def png_record(path: Path) -> dict:
 
 def audit(arguments: argparse.Namespace) -> Path:
     request = oracle_request(arguments)
-    oracle_directory = arguments.output / "complete-render-oracle"
-    generation = generate_fixed_sky_full_render_oracle(
+    baseline_directory = arguments.output / "complete-render-baseline"
+    generation = generate_fixed_sky_complete_render_baseline(
         request,
-        oracle_directory,
+        baseline_directory,
         restart_policy=arguments.restart_policy,
     )
     manifest = json.loads(
@@ -136,9 +136,9 @@ def audit(arguments: argparse.Namespace) -> Path:
     records = [png_record(path) for path in generation.outputs]
     report = {
         "schema_version": 1,
-        "audit_kind": "fixed_sky_complete_render_oracle",
+        "audit_kind": "fixed_sky_complete_render_baseline",
         "celestial_anchor_time": request.celestial_anchor_time.isoformat(),
-        "oracle_directory": str(oracle_directory),
+        "baseline_directory": str(baseline_directory),
         "manifest": str(generation.manifest_path),
         "manifest_identity_sha256": manifest["identity_sha256"],
         "frame_count": request.frame_count,
@@ -162,7 +162,7 @@ def audit(arguments: argparse.Namespace) -> Path:
         raise RuntimeError("Oracle frame dimensions are not uniform.")
     if report["distinct_frame_hashes"] < 2:
         raise RuntimeError("Oracle frames do not change across observer time.")
-    destination = arguments.output / "fixed-sky-oracle-audit.json"
+    destination = arguments.output / "fixed-sky-baseline-audit.json"
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(
         json.dumps(report, indent=2, sort_keys=True) + "\n",
