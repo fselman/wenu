@@ -806,3 +806,8 @@ delegates oracle generation to the ordinary observer-time static pipeline,
 keeps candidate and oracle directories separate, rejects unproved chart
 families, and contains no optimized renderer or cache.
 
+`tools/render_49h2_fixed_sky_oracle.py` is the reproducible real-render
+acceptance adapter for that oracle. It selects both celestial and observer-local
+content, invokes only the public oracle boundary, and records hashes,
+dimensions, timeline instants, and manifest identity in JSON.
+
