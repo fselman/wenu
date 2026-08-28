@@ -1494,7 +1494,7 @@ is not a catalogue reference epoch and does not replace future provider-owned
 proper-motion realization.
 
 The 49H.2 comparison authority is
-`generate_fixed_sky_full_render_oracle()`, which produces complete canonical
+`generate_fixed_sky_complete_render_baseline()`, which produces complete canonical
 circumpolar observer-time renders in a separate directory.
 `compare_png_frames()` reports explicit RGBA difference metrics evaluated
 against `PngFrameComparisonTolerance`; exact equality is the default.
