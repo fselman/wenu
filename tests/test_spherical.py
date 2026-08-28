@@ -581,3 +581,4 @@ class TestSphericalPolygons:
             match=rf"{field_name} must contain one value per entity",
         ):
             SphericalPolygons(coordinate_spec=GENERIC_SPHERICAL_SPEC, **arguments)
+
