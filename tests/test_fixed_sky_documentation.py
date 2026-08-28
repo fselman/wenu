@@ -38,7 +38,7 @@ def test_fixed_sky_contract_separates_celestial_and_local_time_owners():
 
 def test_fixed_sky_oracle_documents_independent_complete_rendering():
     contract = (
-        DEVELOPER / "fixed_sky_oracle_49h2.md"
+        DEVELOPER / "fixed_sky_complete_render_baseline_49h2.md"
     ).read_text(encoding="utf-8")
     roadmap = (
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
@@ -54,13 +54,15 @@ def test_fixed_sky_oracle_documents_independent_complete_rendering():
         "generate_observer_time_chart_sequence()",
         "separate output directory",
         "PngFrameComparisonTolerance",
-        "default is exact pixel equality",
-        "Caching remains prohibited",
-        "tools/render_49h2_fixed_sky_oracle.py",
+        "Exact pixel equality is the default",
+        "target_pixel_oracle = false",
+        "tools/render_49h2_complete_render_baseline.py",
         "fixed-sky-baseline-audit.json",
+        "celestial content rotates",
+        "fixed-sky oracle must independently express",
     ):
         assert value in contract
 
-    assert "49H.2 independent complete-render" in roadmap
+    assert "49H.2 complete-render circumpolar baseline" in roadmap
     assert "generate_fixed_sky_complete_render_baseline()" in implementation
-    assert "charts/fixed_sky_oracle.py" in source_tree
+    assert "charts/fixed_sky_baseline.py" in source_tree
