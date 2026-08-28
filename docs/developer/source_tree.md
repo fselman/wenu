@@ -28,7 +28,7 @@ share the same geometry and rendering pipeline.
 ```text
 src/wenu/
 ├── coordinates.py              coordinate vocabulary and legacy conversion
-├── positions.py                astronomical PositionProvider protocol
+├── positions.py                astronomical PositionProvider protocol and provider boundary
 ├── observer.py                 observing context
 ├── objects/                    catalogues and physical object layers
 ├── sky/                        celestial layers and draw orchestration
@@ -47,10 +47,12 @@ src/wenu/
 `coordinates.py` owns the 49B.1 immutable `CoordinateSpec`,
 `PositionStatus`, and `ObservationContext` vocabulary while retaining the
 legacy `radec_to_altaz()` function unchanged until 49C.3. `positions.py`
-owns only the structural `PositionProvider` protocol. Existing astronomical
-objects implement it in 49B.3, not 49B.1. `geometry/spherical.py` exports the
-`SphericalGeometry` type union without changing existing records or runtime
-behavior.
+owns the structural `PositionProvider` protocol. In 49B.3,
+`Stars`, `NonStellar`, and `OpenClusters` implement native ICRS point
+providers; extended morphology and constructed reference geometry remain
+outside the boundary. `geometry/spherical.py` exports the
+`SphericalGeometry` type union, and every record carries mandatory coordinate
+identity.
 
 `projections/mollweide.py` owns coordinate-neutral equal-area projection and
 longitude-seam topology for points, curves, grids, and polygon rings. It has

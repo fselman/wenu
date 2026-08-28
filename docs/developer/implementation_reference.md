@@ -1522,7 +1522,7 @@ reference executor. It sends every resolved frame through
 furniture, or export path exists. Scientifically keyed reuse and
 restart/resume support remain future work.
 
-## Typed coordinate vocabulary (Milestones 49B.1–49B.2)
+## Typed coordinate vocabulary and providers (Milestones 49B.1–49B.3)
 
 `wenu.coordinates.CoordinateSpec` is the immutable scientific identity
 vocabulary for a represented coordinate set. It records frame, origin,
@@ -1536,8 +1536,9 @@ physical instant/time scale, refraction policy, and Earth-orientation policy.
 It is not yet constructed by `Observer` in 49B.1.
 
 `wenu.positions.PositionProvider` is a runtime-checkable structural protocol
-for native astronomical position generation. Existing objects are not adapted
-until 49B.3. `wenu.geometry.SphericalGeometry` names the existing point,
+for native astronomical position generation. Milestone 49B.3 adapts `Stars`, `NonStellar`, and `OpenClusters` as native
+ICRS point providers; all `NonStellar` subclasses inherit the centre provider.
+`wenu.geometry.SphericalGeometry` names the existing point,
 curve, polygon, and grid record union.
 
 Milestone 49B.2 makes `CoordinateSpec` a required keyword-only member of all
@@ -1546,5 +1547,9 @@ identity at construction, transformations declare their target identity,
 selection and relative-longitude operations preserve identity, and
 `SphericalGrid` rejects components with a different specification. Synthetic
 projection tests use an explicitly named generic spherical specification;
-there is no implicit or inferred fallback. Coordinate values and equations
-remain unchanged.
+there is no implicit or inferred fallback. Coordinate values and equations remain unchanged.
+
+The provider boundary returns native catalogue centres only. Galaxy outlines,
+isophotes, constellation geometry, coordinate grids, and horizon geometry are
+morphology or constructed references and deliberately do not become position
+providers.

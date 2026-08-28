@@ -54,14 +54,16 @@ Add `CoordinateSpec`, `ObservationContext`, `PositionProvider`, and the
 
 ### 49B.2 — Attach identity to geometry
 
-**Implementation status:** Candidate on the dedicated 49B.2 branch;
-acceptance is pending.
+**Implementation status:** Accepted and merged in `db946cc`.
 
 Add mandatory coordinate identity to `SphericalPoints`,
 `SphericalCurves`, `SphericalPolygons`, and `SphericalGrid`. Prevent
 silent relabelling.
 
 ### 49B.3 — Establish existing providers
+
+**Implementation status:** Candidate on the dedicated 49B.3 branch;
+acceptance is pending.
 
 Make star and non-stellar position sources satisfy `PositionProvider` while
 initially retaining their numerical behavior. Keep extended morphology and

@@ -139,6 +139,18 @@ ICRS_ASTROMETRIC_SPEC = CoordinateSpec(
 )
 
 
+def icrs_catalogue_spec(provider, *, epoch="J2000.0", provenance=()):
+    """Describe static native catalogue positions in ICRS."""
+    return CoordinateSpec(
+        frame="icrs",
+        origin="solar-system-barycenter",
+        position_status=PositionStatus.ASTROMETRIC,
+        epoch=epoch,
+        provider=provider,
+        provenance=provenance,
+    )
+
+
 def observer_altaz_spec(
     observer,
     *,
