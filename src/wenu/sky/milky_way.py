@@ -4,15 +4,16 @@ from __future__ import annotations
 
 import json
 
-import astropy.units as u
 import numpy as np
 
 from wenu.coordinates import observer_altaz_spec
-from astropy.coordinates import SkyCoord
 
 from wenu.geometry.spherical import SphericalPolygons
 from wenu.resources import milky_way_isophotes_path
-from wenu.sky.observed_cache import observed_polygon_arrays
+from wenu.sky.observed_cache import (
+    icrs_curve_arrays_to_altaz,
+    observed_polygon_arrays,
+)
 from wenu.sky.sky_layer import SkyLayer
 
 
@@ -173,16 +174,9 @@ class MilkyWayIsophotes(SkyLayer):
     def _transform_rings(rings, observer):
         if not rings:
             return (), ()
-        lengths = [len(ring) for ring in rings]
-        coordinates = np.concatenate(rings, axis=0)
-        equatorial = SkyCoord(
-            ra=np.mod(coordinates[:, 0], 360.0) * u.deg,
-            dec=coordinates[:, 1] * u.deg,
-            frame="icrs",
-        )
-        horizontal = equatorial.transform_to(observer.altaz_frame)
-        splits = np.cumsum(lengths)[:-1]
-        return (
-            np.split(horizontal.az.to_value(u.deg), splits),
-            np.split(horizontal.alt.to_value(u.deg), splits),
+        return icrs_curve_arrays_to_altaz(
+            tuple(np.asarray(ring[:, 0], dtype=float) for ring in rings),
+            tuple(np.asarray(ring[:, 1], dtype=float) for ring in rings),
+            observer,
+            provider="Milky Way isophotes",
         )
