@@ -1,23 +1,21 @@
 digraph coordinate_runtime_target {
   graph [rankdir=LR, bgcolor="white", fontname="Helvetica", fontsize=15,
-    label="Wenu coordinate runtime after 49B/49C — one sequence for every source",
+    label="Wenu coordinate runtime after 49B/49C — one sequence for every astronomical object",
     labelloc="t", nodesep=0.45, ranksep=0.7, pad=0.25];
   node [shape=box, style="rounded,filled", fillcolor="#f7f7f7", color="#555555", fontname="Helvetica", fontsize=9];
   edge [color="#555555", fontname="Helvetica", fontsize=8, arrowsize=0.7];
   request [label="Chart request resolver\ndeclares target CoordinateSpec", fillcolor="#d9eaf7"];
-  source [label="SkyLayer / catalogue source\nor future Moon/planet PositionProvider", fillcolor="#e4dfec"];
+  provider [label="PositionProvider.position(instant)\nstar / DSO / ephemeris / orbit", fillcolor="#e4dfec"];
+  references [label="ReferenceGeometryProvider\ngrids / planes / poles", fillcolor="#d9eaf7"];
   geometry [label="Spherical* geometry\ncarrying source CoordinateSpec", fillcolor="#e2f0d9"];
   service [label="CoordinateService.transform()\nAstropy internal detail", fillcolor="#e2f0d9"];
   resolved [label="same Spherical* kind\ncarrying target CoordinateSpec", fillcolor="#e2f0d9"];
   projection [label="SphericalFrame + projection + clipping\nunchanged", fillcolor="#d9eaf7"];
   renderer [label="Preparation + renderer + export\nunchanged", fillcolor="#d9eaf7"];
   observation [label="ObservationContext\noptional local-path input", fillcolor="#fff2cc"];
-  source -> geometry [label="1. produce"];
-  request -> service [label="2. target spec"];
-  geometry -> service [label="3. transform"];
+  provider -> geometry [label="1a. positions"]; references -> geometry [label="1b. reference geometry"];
+  request -> service [label="2. target spec"]; geometry -> service [label="3. transform"];
   observation -> service [style=dashed, label="3a. only if local"];
   service -> resolved [label="4. preserve kind/topology"];
-  resolved -> projection [label="5. resolved geometry"];
-  projection -> renderer [label="6. projected records"];
-  invariant [shape=note, fillcolor="#ffffff", label="Moon and planets enter at Source.\nSteps 2–6 do not change."];
+  resolved -> projection [label="5. resolved geometry"]; projection -> renderer [label="6. projected records"];
 }

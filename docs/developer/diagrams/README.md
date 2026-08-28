@@ -44,7 +44,13 @@ Source: `coordinate_transformation_target_49bc.dot`
 This companion diagram shows the intended ownership after the first coordinate
 rationalization:
 
-- every source produces an existing `Spherical*` geometry kind carrying one
+- every astronomical object obtains its native position through the common
+  `PositionProvider` protocol;
+- star and deep-sky catalogue providers implement it now, while solar-system
+  ephemeris and orbit providers implement the same boundary later;
+- constructed grids, planes, and poles remain a separate
+  `ReferenceGeometryProvider` family;
+- both source families produce existing `Spherical*` geometry carrying one
   immutable `CoordinateSpec`;
 - products declare a target `CoordinateSpec` instead of transforming data;
 - one `CoordinateService` validates and transforms all geometry kinds while
@@ -53,9 +59,10 @@ rationalization:
 - projection alignment and every downstream rendering stage remain
   astronomically neutral.
 
-A future Moon or planet `PositionProvider` is shown only as another producer
-of `SphericalPoints + CoordinateSpec`. Adding that provider must require no
-change to the coordinate service, geometry records, projection, or renderer.
+`PositionProvider` is the boundary for all astronomical objects, not a
+Moon/planet special case. Adding a new object family requires only another
+provider implementation; the coordinate service, geometry records, projection,
+and renderer do not change.
 
 ## Software-engineering views
 
@@ -83,11 +90,15 @@ Source: `coordinate_static_structure_target_49bc.dot`
 This is the direct counterpart to the current static-structure diagram. It
 retains the same `SkyLayer` inheritance hierarchy, `CelestialSphere`,
 `Spherical*` record family, observer, cache, and chart/projection columns.
-It then shows the minimal change: existing `Spherical*` records gain an
-immutable `CoordinateSpec`, `coordinates.py` becomes the one
-`CoordinateService` owner, and `ObservationContext` is supplied only for
-observer-local transformations. No new package or parallel state hierarchy is
-proposed.
+The deliberately large canvas shows the complete proposed ownership and
+linkage: all astronomical-object classes implement the common
+`PositionProvider` protocol in `positions.py`; constructed reference
+geometry remains distinct; existing `Spherical*` records gain an immutable
+`CoordinateSpec`; `coordinates.py` becomes the one `CoordinateService`
+owner; and `ObservationContext` is supplied only for observer-local
+transformations. The existing `SkyLayer` hierarchy and downstream projection
+and rendering classes remain visible and retained. No parallel astronomical
+state hierarchy is proposed.
 
 Static-structure notation:
 

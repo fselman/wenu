@@ -138,14 +138,17 @@ def test_current_diagrams_are_an_inspection_interface():
     assert "human inspection interface" in readme
     assert "49B introduces typed astronomical-state vocabulary" in readme
     assert "49C introduces one coordinate service" in readme
-    assert "every source produces an existing `Spherical*` geometry kind" in readme
+    assert "every astronomical object obtains its native position" in readme
     assert "observer context enters only" in readme
     assert "actual classes" in readme
     assert "inherits" in readme
     assert "runtime calls or returns" in readme
-    assert "No new package or parallel state hierarchy is" in readme
+    assert "No parallel astronomical\nstate hierarchy is proposed" in readme
     assert "direct counterpart to the current static-structure" in readme
-    assert "retains the same `SkyLayer` inheritance hierarchy" in readme\n    assert "Moon or planet `PositionProvider`" in readme\n    assert "require no change to the coordinate service" in readme
+    assert "retains the same `SkyLayer` inheritance hierarchy" in readme
+    assert "`PositionProvider` is the boundary for all astronomical objects" in readme
+    assert "requires only another\nprovider implementation" in readme
+    assert "deliberately large canvas" in readme
     assert (
         ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.dot"
     ).is_file()
