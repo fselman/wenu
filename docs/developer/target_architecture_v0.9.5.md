@@ -47,6 +47,9 @@ not a coordinate, projection, or renderer modification.
 
 ### 49B.1 — Freeze scientific contracts
 
+**Implementation status:** Candidate vocabulary isolated on the dedicated
+49B.1 branch; acceptance is pending.
+
 Add `CoordinateSpec`, `ObservationContext`, `PositionProvider`, and the
 `SphericalGeometry` union without changing numerical transformations.
 

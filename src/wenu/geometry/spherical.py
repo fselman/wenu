@@ -8,7 +8,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Sequence, TypeAlias
 
 import numpy as np
 
@@ -363,4 +363,9 @@ class SphericalGrid:
     def __getitem__(self, name: str) -> SphericalCurves:
         return self.components[name]
 
-
+SphericalGeometry: TypeAlias = (
+    SphericalPoints
+    | SphericalCurves
+    | SphericalPolygons
+    | SphericalGrid
+)
