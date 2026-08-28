@@ -223,13 +223,15 @@ second. Presentation speed must never be mistaken for physical time.
 **Status:** 49H.1 fixed celestial-anchor and frame-local observer planning
 contract implemented.
 
-**Status:** 49H.2 independent complete-render circumpolar oracle and explicit
-PNG comparison implemented; canonical fixed-sky rendering and scientifically
-keyed reuse remain pending.
+**Status:** 49H.2 complete-render circumpolar baseline implemented and
+visually characterized. It is not the fixed-sky oracle: the current product
+rotates celestial content in the viewport. Anchor transformation, target
+oracle, canonical fixed-sky rendering, and scientifically keyed reuse remain
+pending.
 
 The ownership and oracle contracts are documented in
 `fixed_sky_rotating_horizon_49h1.md` and
-`fixed_sky_oracle_49h2.md`.
+`fixed_sky_complete_render_baseline_49h2.md`.
 
 Use the temporal contract to support the Earth-rotation presentation:
 
