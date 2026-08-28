@@ -2,11 +2,13 @@
 
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
+from types import SimpleNamespace
 
 import pytest
 
 from wenu.charts.fixed_sky_sequence import (
     FixedSkyRotatingHorizonSequenceRequest,
+    generate_fixed_sky_rotating_horizon_sequence,
     resolve_fixed_sky_rotating_horizon_frame,
 )
 from wenu.charts.product_options import ChartProductOptions
@@ -221,3 +223,58 @@ def test_resolved_frame_rejects_unproved_chart_families(tmp_path):
 
     with pytest.raises(ValueError, match="currently supports circumpolar"):
         resolve_fixed_sky_rotating_horizon_frame(unsupported)
+
+
+
+def test_uncached_reference_renderer_uses_canonical_request_per_frame(
+    tmp_path,
+    monkeypatch,
+):
+    sequence = FixedSkyRotatingHorizonSequenceRequest(
+        chart=chart_request(tmp_path / "frames"),
+        timeline=timeline(),
+        celestial_anchor_time=timeline().instants[0],
+    )
+    rendered = []
+
+    def fake_generate(request, *, configuration=None):
+        rendered.append((request, configuration))
+        return SimpleNamespace(outputs=(request.product.output,))
+
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.generate_chart_request",
+        fake_generate,
+    )
+
+    result = generate_fixed_sky_rotating_horizon_sequence(sequence)
+
+    assert result.outputs == tuple(
+        frame.expected_output for frame in sequence.frames
+    )
+    assert tuple(
+        request.observer.time for request, _ in rendered
+    ) == sequence.timeline.instants
+    assert rendered[0][0].frame.position_angle_deg == 0.0
+    assert rendered[-1][0].frame.position_angle_deg != 0.0
+    assert all(configuration is None for _, configuration in rendered)
+
+
+def test_uncached_reference_renderer_rejects_unexpected_output(
+    tmp_path,
+    monkeypatch,
+):
+    sequence = FixedSkyRotatingHorizonSequenceRequest(
+        chart=chart_request(tmp_path / "frames"),
+        timeline=timeline(),
+        celestial_anchor_time=timeline().instants[0],
+    )
+
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.generate_chart_request",
+        lambda request, **kwargs: SimpleNamespace(
+            outputs=(tmp_path / "wrong.png",)
+        ),
+    )
+
+    with pytest.raises(RuntimeError, match="unexpected output"):
+        generate_fixed_sky_rotating_horizon_sequence(sequence)
