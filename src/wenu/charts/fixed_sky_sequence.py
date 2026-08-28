@@ -7,8 +7,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from wenu.configuration import ConfigurationDefaults
+from wenu.observer import Observer
 from wenu.temporal import PlaybackSpec, TemporalTimeline
 
+from .fixed_sky_orientation import (
+    FixedSkyCircumpolarOrientation,
+    fixed_sky_circumpolar_orientation,
+)
 from .request import ChartObserverRequest, ChartRequest
 
 
@@ -41,10 +46,70 @@ class FixedSkyRotatingHorizonFrame:
 
 
 @dataclass(frozen=True)
+class ResolvedFixedSkyRotatingHorizonFrame:
+    """One canonical render request plus its anchor-rotation provenance."""
+
+    frame: FixedSkyRotatingHorizonFrame
+    chart_request: ChartRequest
+    orientation: FixedSkyCircumpolarOrientation
+
+
+def resolve_fixed_sky_rotating_horizon_frame(
+    frame: FixedSkyRotatingHorizonFrame,
+) -> ResolvedFixedSkyRotatingHorizonFrame:
+    """Resolve one circumpolar frame through the established request seam.
+
+    Celestial and local observer ownership remain explicit in the input frame.
+    The returned canonical request uses the frame observer so horizon, AltAz
+    geometry, visibility, and furniture retain their normal local-time
+    behavior. Only the chart position angle is corrected relative to the
+    celestial anchor.
+    """
+    if not isinstance(frame, FixedSkyRotatingHorizonFrame):
+        raise TypeError("frame must be a FixedSkyRotatingHorizonFrame.")
+    request = frame.celestial_request
+    if request.family != "circumpolar":
+        raise ValueError(
+            "Fixed-sky frame resolution currently supports circumpolar charts."
+        )
+    anchor_observer = Observer(
+        **request.observer.observer_kwargs()
+    )
+    local_observer = Observer(
+        **frame.local_observer.observer_kwargs()
+    )
+    try:
+        anchor_position_angle = request.frame.position_angle_deg or 0.0
+        orientation = fixed_sky_circumpolar_orientation(
+            anchor_observer,
+            local_observer,
+            pole=request.frame.pole,
+            anchor_position_angle_deg=anchor_position_angle,
+        )
+    finally:
+        anchor_observer.close()
+        local_observer.close()
+    chart_request = replace(
+        request,
+        observer=frame.local_observer,
+        frame=replace(
+            request.frame,
+            orientation=None,
+            position_angle_deg=orientation.position_angle_deg,
+        ),
+    )
+    return ResolvedFixedSkyRotatingHorizonFrame(
+        frame=frame,
+        chart_request=chart_request,
+        orientation=orientation,
+    )
+
+
+@dataclass(frozen=True)
 class FixedSkyRotatingHorizonSequenceRequest:
     """One fixed celestial/camera anchor paired with local observer instants.
 
-    This is a planning contract.  It does not render frames, cache geometry,
+    This is a planning contract. It does not render frames, cache geometry,
     or introduce an alternate chart pipeline.
     """
 
