@@ -96,7 +96,7 @@ def fixed_sky_complete_render_baseline_request(
         )
     if request.chart.family != "circumpolar":
         raise ValueError(
-            "The first fixed-sky oracle is proved only for circumpolar charts."
+            "The first complete-render baseline is limited to circumpolar charts."
         )
     output = Path(output)
     if output.suffix:
@@ -119,10 +119,10 @@ def generate_fixed_sky_complete_render_baseline(
     *,
     restart_policy="restart",
 ) -> ObserverTimeChartSequenceGeneration:
-    """Generate the independent oracle through the canonical static pipeline."""
-    oracle = fixed_sky_complete_render_baseline_request(request, output)
+    """Generate the independent baseline through the canonical static pipeline."""
+    baseline = fixed_sky_complete_render_baseline_request(request, output)
     return generate_observer_time_chart_sequence(
-        oracle,
+        baseline,
         restart_policy=restart_policy,
     )
 
@@ -130,12 +130,12 @@ def generate_fixed_sky_complete_render_baseline(
 def compare_png_frames(candidate: Path, baseline: Path) -> PngFrameComparison:
     """Compare two PNG frames in canonical RGBA pixel space."""
     candidate = Path(candidate)
-    oracle = Path(baseline)
+    baseline = Path(baseline)
     with Image.open(candidate) as candidate_image:
         candidate_rgba = np.asarray(
             candidate_image.convert("RGBA"), dtype=np.int16
         )
-    with Image.open(oracle) as baseline_image:
+    with Image.open(baseline) as baseline_image:
         baseline_rgba = np.asarray(
             baseline_image.convert("RGBA"), dtype=np.int16
         )
@@ -150,7 +150,7 @@ def compare_png_frames(candidate: Path, baseline: Path) -> PngFrameComparison:
         )
         raise ValueError(
             "PNG frame dimensions differ: "
-            f"candidate {candidate_size}, oracle {baseline_size}."
+            f"candidate {candidate_size}, baseline {baseline_size}."
         )
     absolute = np.abs(candidate_rgba - baseline_rgba)
     changed = np.any(absolute != 0, axis=2)
