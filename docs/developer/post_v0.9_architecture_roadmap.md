@@ -113,7 +113,7 @@ public boundary.
 
 ### Milestone 49B.2 — Typed spherical geometry
 
-**Status:** Implementation candidate on the dedicated 49B.2 branch.
+**Status:** Accepted and merged in `db946cc`.
 
 Make `CoordinateSpec` a required keyword-only member of every
 `SphericalPoints`, `SphericalCurves`, `SphericalPolygons`, and
@@ -121,6 +121,17 @@ Make `CoordinateSpec` a required keyword-only member of every
 scientific identity; derived geometry preserves or deliberately replaces it,
 and grids reject components whose identity differs from the grid identity.
 This milestone changes no coordinate values or transformation equations.
+
+### Milestone 49B.3 — Existing position providers
+
+**Status:** Implementation candidate on the dedicated 49B.3 branch.
+
+Adapt the existing stellar catalogue, non-stellar catalogue centres, and
+open-cluster catalogue to the structural `PositionProvider` boundary. Providers
+return native ICRS `SphericalPoints`; extended morphology and constructed
+reference geometry remain separate. Static catalogues accept but do not use the
+optional evaluation instant. No existing rendering path or coordinate
+calculation changes.
 
 ## 6. Milestone 49C - One astronomical coordinate service
 

@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 from astropy.table import Table
 
-from wenu.coordinates import observer_altaz_spec
+from wenu.coordinates import icrs_catalogue_spec, observer_altaz_spec
 from wenu.geometry.spherical import SphericalPoints
 from wenu.objects.astronomical_object import AstronomicalObject
 from wenu.resources import nonstellar_catalog_path
@@ -43,6 +43,37 @@ class OpenClusters(AstronomicalObject):
         self._source_revision += 1
         self._observed_point_cache.clear()
         return self.catalog
+
+    def position(self, instant=None) -> SphericalPoints:
+        """Return selected native open-cluster catalogue centres in ICRS."""
+        del instant
+        if self.catalog is None:
+            raise RuntimeError(
+                "The catalogue has not been loaded. "
+                "Call open_clusters.load() first."
+            )
+        table = self._selected_table(None)
+        identifiers = np.asarray(table["identifier"], dtype=object)
+        metadata = {
+            "catalog": "openclust",
+            "coordinate_system": "icrs",
+        }
+        for name in table.colnames:
+            if name not in ("identifier", "ra_deg", "dec_deg"):
+                metadata[name] = np.asarray(table[name])
+        provenance = () if self.source is None else (str(self.source),)
+        return SphericalPoints(
+            lon_deg=np.asarray(table["ra_deg"], dtype=float),
+            lat_deg=np.asarray(table["dec_deg"], dtype=float),
+            coordinate_spec=icrs_catalogue_spec(
+                "Dias/HEASARC open-cluster catalogue",
+                provenance=provenance,
+            ),
+            ids=identifiers,
+            labels=identifiers,
+            names=identifiers,
+            metadata=metadata,
+        )
 
     @staticmethod
     def _validate(table):

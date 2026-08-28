@@ -7,7 +7,11 @@ from io import BytesIO
 
 import numpy as np
 
-from wenu.coordinates import PositionStatus, observer_altaz_spec
+from wenu.coordinates import (
+    PositionStatus,
+    icrs_catalogue_spec,
+    observer_altaz_spec,
+)
 from skyfield.api import Star
 from skyfield.data import hipparcos
 
@@ -178,6 +182,33 @@ class Stars(AstronomicalObject):
         self._observed_altaz_cache.clear()
 
         return self.catalog
+
+    def position(self, instant=None) -> SphericalPoints:
+        """Return the stable native Hipparcos catalogue positions in ICRS."""
+        del instant
+        if self.catalog is None:
+            raise RuntimeError(
+                "The stellar catalogue has not been loaded. "
+                "Call stars.load() first."
+            )
+        metadata = {
+            "catalog": self.catalog_name,
+            "coordinate_system": "icrs",
+        }
+        for name in ("magnitude", *_HIPPARCOS_SEMANTIC_DEFAULTS):
+            if name in self.catalog.columns:
+                metadata[name] = self.catalog[name].to_numpy(copy=True)
+        provenance = ("ESA Hipparcos Catalogue I/239",)
+        return SphericalPoints(
+            lon_deg=self.catalog["ra_hours"].to_numpy(dtype=float) * 15.0,
+            lat_deg=self.catalog["dec_degrees"].to_numpy(dtype=float),
+            coordinate_spec=icrs_catalogue_spec(
+                f"{self.catalog_name} stellar catalogue",
+                provenance=provenance,
+            ),
+            ids=self.catalog.index.to_numpy(copy=True),
+            metadata=metadata,
+        )
 
     def set_constellation_vertices(self, identifiers, *, reload=True):
         """Store vertices for the active constellation-line configuration."""
