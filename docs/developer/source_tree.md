@@ -75,6 +75,13 @@ Its ordinary `generate_celestial_sphere()` entry point leaves the sphere and
 every canonical layer observer-independent. The compatibility
 `build_maximal_sphere(observer, ...)` entry point remains available while the
 request facade migrates.
+`docs/developer/celestial_scene_dependency_audit_49d1.md` records that this is
+a load-time ownership boundary: ordinary spherical realization still flows
+through `CelestialSphere.draw_chart()` and
+`layer.spherical_geometry(observer, ...)`. It classifies celestial
+background, future dynamic astronomical objects, and observer-local geometry,
+and fixes their sole convergence before projection in an explicit spherical
+product frame. Milestone 49D.1 adds no runtime module or alternate scene graph.
 `sky/observed_cache.py` defines observer/time/source cache-key identity and
 freezes shared point and polygon arrays; individual layers continue to own
 their cached spherical realizations.
