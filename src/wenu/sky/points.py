@@ -7,6 +7,7 @@ from typing import Any
 
 import astropy.units as u
 import numpy as np
+from astropy.time import Time
 from astropy.coordinates import (
     BarycentricMeanEcliptic,
     Galactic,
@@ -140,7 +141,12 @@ class CelestialPoints(GeometricalObject):
         **style,
     ):
         frame = (
-            BarycentricMeanEcliptic(equinox=self.obs.t_astropy)
+            BarycentricMeanEcliptic(
+                equinox=Time(
+                    observation_context(self.obs).instant,
+                    scale=observation_context(self.obs).time_scale,
+                )
+            )
             if frame is None
             else frame
         )
