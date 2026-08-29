@@ -129,9 +129,9 @@ fixed-sky reference keeps the celestial scene and equatorial grid anchored
 while the observer-local horizon and AltAz grid rotate. Complete independent
 renders remain the correctness oracle for later reuse optimization.
 
-Future `CoordinateSpec`, coordinate-service, provider, moving-object, and reuse
-work is governed by `post_v0.9_architecture_roadmap.md` and must preserve this
-v0.9 pipeline.
+Implemented `CoordinateSpec` and coordinate-service ownership plus future
+provider, moving-object, public-coordinate, and reuse work are governed by
+`post_v0.9_architecture_roadmap.md` and must preserve this v0.9 pipeline.
 
 ## Configuration and public boundaries
 
@@ -174,6 +174,8 @@ Current work reads this document together with:
   conventions, code ownership, object inventory, and provenance;
 - `coordinate_transformation_audit_09a2afd.md` for scientific coordinate
   evidence;
+- `public_interface_audit_v0.9.5.md` for the accepted executable inventory and
+  public system, frame, equinox, and epoch boundary;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product evidence.
 
 The v0.8 architecture, v0.9 target, and v0.8-to-v0.9 migration documents are
