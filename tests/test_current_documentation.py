@@ -171,7 +171,7 @@ def test_v095_coordinate_target_and_living_guide_are_reviewable():
     target = read(V095_TARGET)
     guide = read(COORDINATE_GUIDE)
 
-    assert "**Status:** Partially implemented; 49B–49C.2 merged, 49C.3 candidate" in target
+    assert "**Status:** Partially implemented; 49B–49C.2 merged, 49C.3 accepted pending merge" in target
     assert "PositionProvider" in target
     assert "CoordinateService" in target
     assert "49B.1" in target
