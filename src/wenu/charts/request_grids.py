@@ -135,7 +135,7 @@ def _grid_specifications(family, frame=None, detail=None, *, equinox="J2000"):
     }
 
 
-def configure_chart_request_grids(sky, request, *, frame=None):
+def configure_chart_request_grids(sky, request, *, frame=None, observer=None):
     """Replace request-time grids with the selected family configuration."""
     if not isinstance(request, ChartRequest):
         raise TypeError("request must be a ChartRequest.")
@@ -150,7 +150,7 @@ def configure_chart_request_grids(sky, request, *, frame=None):
     specifications = _grid_specifications(
         request.family, frame, request.detail,
         equinox=request.reference_policy.resolved_equinox(
-            getattr(sky, "observer", None)
+            getattr(sky, "observer", None) if observer is None else observer
         ),
     )
     configured = []
