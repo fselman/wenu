@@ -20,6 +20,7 @@ V09_ROADMAP = ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md"
 FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
 V095_TARGET = DEVELOPER / "target_architecture_v0.9.5.md"
 COORDINATE_GUIDE = DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+PUBLIC_INTERFACE_AUDIT = DEVELOPER / "public_interface_audit_v0.9.5.md"
 COORDINATE_GUIDE_ODT = DEVELOPER / "review" / "coordinate_system_guide_v0.9.5.odt"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
@@ -78,6 +79,7 @@ def test_current_architecture_authorities_exist_and_cross_reference():
             V09_TARGET,
             V09_ROADMAP,
             FUTURE_ROADMAP,
+            PUBLIC_INTERFACE_AUDIT,
             V095_TARGET,
             COORDINATE_GUIDE,
             COORDINATE_GUIDE_ODT,
@@ -178,7 +180,7 @@ def test_v095_coordinate_target_and_living_guide_are_reviewable():
     target = read(V095_TARGET)
     guide = read(COORDINATE_GUIDE)
 
-    assert "**Status:** Implemented and accepted; 49C.4 closure merge pending" in target
+    assert "**Status:** Implemented and accepted; 49C.4 merged in `1a15076`" in target
     assert "PositionProvider" in target
     assert "CoordinateService" in target
     assert "49B.1" in target
@@ -331,6 +333,46 @@ def test_post_v09_roadmap_records_coordinate_svg_and_temporal_direction():
         "coordinate system, frame, epoch/equinox",
     ):
         assert phrase in roadmap
+
+
+def test_public_interface_audit_records_as_is_and_scientific_boundary():
+    audit = " ".join(read(PUBLIC_INTERFACE_AUDIT).split())
+    for phrase in (
+        "**Audit baseline:** `1a15076`",
+        "The six canonical Python examples",
+        "Reproducible user recipes currently under `tools/`",
+        "Diagnostics, acceptance, and benchmarks",
+        "Catalogue and repository maintenance",
+        "The public chart interface does not yet expose that vocabulary",
+        "coordinate system",
+        "reference frame",
+        "equinox",
+        "position epoch",
+        "observation instant",
+        "ICRS has no caller-selected equinox",
+        "`of_date` resolves from the declared product or observation time",
+        "It must never relabel native catalogue coordinates",
+        "Reference-policy contract",
+        "Product-frame selection",
+        "Provider realization epoch",
+        "Physical-product command",
+    ):
+        assert phrase in audit
+
+
+def test_architecture_v095_closure_and_example_count_are_current():
+    roadmap = read(FUTURE_ROADMAP)
+    target = read(V095_TARGET)
+    guide = read(COORDINATE_GUIDE)
+    diagrams = read(DIAGRAMS / "README.md")
+    implementation = read(DEVELOPER / "implementation_reference.md")
+
+    for text in (roadmap, target, guide, diagrams):
+        assert "merge pending" not in text
+        assert "1a15076" in text
+    normalized = " ".join(implementation.split())
+    assert "installs these six scripts" in normalized
+    assert "- `all_sky.py`;" in implementation
 
 
 def test_v08_roadmap_records_ordinary_interface_and_static_sequences():
