@@ -45,11 +45,9 @@ src/wenu/
 └── utils/                      general utilities
 ```
 
-`coordinate_service.py` owns the accepted 49C.1 Astropy-backed transformation boundary for every `SphericalGeometry` kind. It preserves concrete geometry type, semantic arrays, metadata, curve segmentation, polygon rings, and grid component names. The 49C.2 candidate routes reference geometry, chart conversions, deep-sky geometry, constellation references, caches, and chart-orientation reference directions through this service.
+`coordinate_service.py` owns the accepted 49C.1 Astropy-backed transformation boundary for every `SphericalGeometry` kind. It preserves concrete geometry type, semantic arrays, metadata, curve segmentation, polygon rings, and grid component names. The merged 49C.2 milestone routes reference geometry, chart conversions, deep-sky geometry, constellation references, caches, and chart-orientation reference directions through this service. The 49C.3 candidate also owns the external `SkyCoord` compatibility adapter and every remaining production Astropy `transform_to()` call.
 
-`coordinates.py` owns the 49B.1 immutable `CoordinateSpec`,
-`PositionStatus`, and `ObservationContext` vocabulary while retaining the
-legacy `radec_to_altaz()` function unchanged until 49C.3. `positions.py`
+`coordinates.py` owns the immutable `CoordinateSpec`, `PositionStatus`, and `ObservationContext` vocabulary. The handwritten `radec_to_altaz()` authority is removed in 49C.3. `positions.py`
 owns the structural `PositionProvider` protocol. In 49B.3,
 `Stars`, `NonStellar`, and `OpenClusters` implement native ICRS point providers; extended morphology and constructed reference geometry remain outside the boundary. Skyfield's apparent topocentric Hipparcos realization remains specialized stellar provider work and is reused by constellation lines; it is not duplicated by `CoordinateService`. `geometry/spherical.py` exports the
 `SphericalGeometry` type union, and every record carries mandatory coordinate
@@ -302,14 +300,7 @@ owns no content selection, projection, calendar geometry, renderer, or export.
 `rendering/symbols.py` owns the normalized filled five-point path alongside
 the established semantic markers. Generic stellar style and preparation own
 its threshold and magnitude-area mapping; the polar renderer owns none of it.
-`charts/coordinate_frames.py` owns astronomical transformation of canonical
-AltAz spherical geometry into a chart-selected celestial frame before
-projection. Its Galactic and equatorial adapters preserve geometry structure
-and metadata and contain no map projection, seam, viewport, renderer, or style
-implementation.
-`charts/reference_furniture.py` retains the single reference-overlay path. For
-polar disks it configures the four canonical RA meridians and uses the shared
-horizontal-to-equatorial adapter before polar projection. Short 20-degree
+`charts/coordinate_frames.py` is removed in 49C.3. Charts and furniture call `CoordinateService` directly; no chart package owns astronomical transformation. `charts/reference_furniture.py` retains the single reference-overlay path. For polar disks it configures the four canonical RA meridians and requests the service transformation before polar projection. Short 20-degree
 declination marks are projected disk furniture rather than spherical
 parallels. Principal-plane labels, ecliptic cardinal points, and explicitly
 selected north/south pole annotations remain semantic furniture rather than
