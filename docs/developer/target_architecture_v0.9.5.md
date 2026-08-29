@@ -1,6 +1,6 @@
 # Wenu target architecture v0.9.5
 
-**Status:** Partially implemented; 49B–49C.2 merged, 49C.3 candidate
+**Status:** Partially implemented; 49B–49C.2 merged, 49C.3 accepted pending merge
 
 **Date:** 2026-08-28
 
