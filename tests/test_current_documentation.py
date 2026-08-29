@@ -21,6 +21,9 @@ FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
 V095_TARGET = DEVELOPER / "target_architecture_v0.9.5.md"
 COORDINATE_GUIDE = DEVELOPER / "coordinate_system_guide_v0.9.5.md"
 PUBLIC_INTERFACE_AUDIT = DEVELOPER / "public_interface_audit_v0.9.5.md"
+SCENE_DEPENDENCY_AUDIT = (
+    DEVELOPER / "celestial_scene_dependency_audit_49d1.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -79,6 +82,7 @@ def test_current_architecture_authorities_exist_and_cross_reference():
             V09_ROADMAP,
             FUTURE_ROADMAP,
             PUBLIC_INTERFACE_AUDIT,
+            SCENE_DEPENDENCY_AUDIT,
             V095_TARGET,
             COORDINATE_GUIDE,
             INSTRUCTIONS,
@@ -330,6 +334,61 @@ def test_post_v09_roadmap_records_coordinate_svg_and_temporal_direction():
         "coordinate system, frame, epoch/equinox",
     ):
         assert phrase in roadmap
+
+
+def test_49d1_audits_scene_dependencies_without_runtime_change():
+    audit = " ".join(read(SCENE_DEPENDENCY_AUDIT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(
+        read(DEVELOPER / "source_tree.md").split()
+    )
+
+    for phrase in (
+        "**Audit baseline:** `b4af627`",
+        "load-time ownership",
+        "observer-independent loaded sphere currently produces an "
+        "observer-dependent render realization",
+        "Source identity",
+        "Provider epoch",
+        "Evaluation instant",
+        "Reference policy",
+        "Product frame",
+        "Celestial background",
+        "Dynamic astronomical objects",
+        "Observer-local geometry",
+        "before projection and after provider evaluation",
+        "one explicit spherical product frame",
+        "controlled test provider",
+        "must preserve the current call",
+        "This audit classifies dependencies; it does not authorize caching",
+        "does not introduce a scene graph",
+    ):
+        assert phrase in audit
+
+    for phrase in (
+        "Milestone 49D.1 — Celestial-scene dependency and ownership audit",
+        "Completing every 49D migration is not a prerequisite",
+        "real ephemeris provider remains Milestone 49E",
+    ):
+        assert phrase in roadmap
+
+    for phrase in (
+        "Scene dependencies and moving astronomical objects",
+        "A planet therefore does not belong in the renderer",
+        "The planet-enabling insertion point is after provider evaluation",
+        "Wenu implementation box — 49D.1 dependency boundary",
+    ):
+        assert phrase in guide
+
+    assert "Celestial-scene dependencies (Milestone 49D.1)" in implementation
+    assert "does not enter through the renderer, furniture, command" in (
+        implementation
+    )
+    assert "Milestone 49D.1 adds no runtime module" in source_tree
 
 
 def test_public_interface_audit_records_as_is_and_scientific_boundary():
