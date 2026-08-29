@@ -257,7 +257,7 @@ propagate them physically.
 ### Milestone 49D.1 — Celestial-scene dependency and ownership audit
 
 **Status:** Scientifically and pedagogically accepted on the dedicated 49D.1
-branch; merge pending.
+branch; PR #33 awaits explicit merge.
 
 The as-is inventory and minimum planet-enabling scene boundary are recorded in
 `celestial_scene_dependency_audit_49d1.md`. It distinguishes the reusable
