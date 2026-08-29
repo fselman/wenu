@@ -16,8 +16,8 @@ in `diagrams/coordinate_static_structure_as_is_v0.9.svg`. The proposed
 architecture 0.9.5 ownership is frozen in
 `target_architecture_v0.9.5.md`; its living scientific equations, current
 code map, object inventory, and provenance are maintained in
-`coordinate_system_guide_v0.9.5.md` with a generated OpenDocument review
-edition under `review/`.
+`coordinate_system_guide_v0.9.5.md` as the sole canonical source; other
+review formats are generated from it on demand.
 
 The source tree is organized by responsibility. Astronomical objects and sky
 layers do not import chart or renderer policy, and all chart styles and modes
