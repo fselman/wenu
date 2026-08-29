@@ -433,6 +433,9 @@ def test_49d2_records_minimal_realization_context_and_non_goals():
         "A chart-wide frame choice alone cannot replace",
         "does not add or choose a JPL ephemeris",
         "does not thread the context through ordinary",
+        "Output-neutral and SVG contract",
+        "`solar-system/sun`",
+        "No future moving object may be drawn by a separate SVG generator",
     ):
         assert phrase in contract
 
@@ -440,12 +443,16 @@ def test_49d2_records_minimal_realization_context_and_non_goals():
         "Milestone 49D.2 — Minimal layer-realization context",
         "Ordinary chart requests do not supply one in 49D.2",
         "Real ephemerides, installed moving-object layers",
+        "SVG product may serialize the reserved",
+        "no post-export overlay is acceptable",
     ):
         assert phrase in roadmap
 
     for phrase in (
         "optional immutable `LayerRealizationContext` before projection",
         "no current astronomical layer",
+        "single export path",
+        "must not infer astronomical identity",
     ):
         assert phrase in architecture
 
@@ -455,6 +462,7 @@ def test_49d2_records_minimal_realization_context_and_non_goals():
         "controlled test object",
         "This proves ownership and ordering, not planetary accuracy",
         "Wenu implementation box — 49D.2 realization context",
+        "SVG is not a second astronomy engine",
     ):
         assert phrase in guide
 
@@ -462,6 +470,8 @@ def test_49d2_records_minimal_realization_context_and_non_goals():
         implementation
     )
     assert "Supplying no `realization_context`" in implementation
+    assert "downstream annotator serializes the reserved" in implementation
+    assert "No separate SVG astronomy generator" in source_tree
     assert "`sky/realization.py` owns the frozen 49D.2" in source_tree
     assert "exist only in `tests/test_layer_realization.py`" in source_tree
 
