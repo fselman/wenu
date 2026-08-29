@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import astropy.units as u
 from astropy.coordinates import BarycentricTrueEcliptic, SkyCoord
+from astropy.time import Time
 
 from wenu import (
     ChartFurnitureOptions,
@@ -93,7 +94,7 @@ def _projected_anchor(chart, observer, *, frame, angle_deg):
             SkyCoord(
                 lon=float(angle_deg) * u.deg,
                 lat=0.0 * u.deg,
-                frame=BarycentricTrueEcliptic(equinox=observer.t_astropy),
+                frame=BarycentricTrueEcliptic(equinox=Time("J2000")),
             ),
             ICRS_ASTROMETRIC_SPEC,
         )
