@@ -141,6 +141,10 @@ reserved `solar-system/sun`, `solar-system/moon`, and
 recompute coordinates, add a post-export overlay, or invoke a separate SVG
 generator.
 
+The 49D.2 handoff and this output-neutral moving-object boundary were
+scientifically, pedagogically, and technically accepted by Fernando on
+2026-08-29. They remain review-branch additions until merged.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored
