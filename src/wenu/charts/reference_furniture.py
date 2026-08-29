@@ -356,6 +356,7 @@ def build_celestial_reference_sky(
         reference_sky.add(
             EclipticGrid(
                 resolved_observer,
+                equinox="J2000",
                 longitude=(),
                 latitude=(),
                 include_ecliptic=True,
@@ -421,7 +422,7 @@ def build_celestial_reference_sky(
         )
         if references.ecliptic_keypoints_enabled or legacy_polar_keypoints:
             ecliptic_frame = BarycentricTrueEcliptic(
-                equinox=resolved_observer.t_astropy
+                equinox=Time("J2000")
             )
             points.add_ecliptic_keypoints(
                 marker="x",
