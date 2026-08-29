@@ -8,7 +8,7 @@ lang: en
 
 # Status and purpose
 
-**Status:** Living accepted edition; architecture 0.9.5 merged in `1a15076`.
+**Status:** Living accepted edition; architecture 0.9.5 merged in `1a15076`; public celestial-reference policy implemented and scientifically accepted on its review branch.
 
 This is the living scientific guide for Wenu's coordinate systems,
 transformations, astronomical objects, and constructed celestial references.
@@ -392,10 +392,10 @@ equinox.
 > | Apply aberration, light deflection, light-time, and related apparent-place corrections | Current Skyfield stellar provider where already used; future object-specific providers and explicit `CoordinateSpec.corrections` | **Partly implemented/delegated.** These effects belong to the provider or declared transformation model, never to projection or rendering. |
 > | Apply Earth orientation to observer-local AltAz | `CoordinateService` plus Astropy Earth-orientation data, using `ObservationContext.earth_orientation_policy` | **Implemented for the Astropy policy.** The current public transformation uses vacuum AltAz. |
 > | Apply atmospheric refraction | `ObservationContext.refraction_policy` and the AltAz construction in `CoordinateService` | **Contract implemented; physical refraction future.** Only `vacuum` is currently accepted and Astropy receives zero pressure. |
-> | Select J2000, `of_date`, or another supported equinox for coupled chart references | `charts/reference_policy.py::CelestialReferencePolicy`; CLI translation in `charts/chart_arguments.py`; TOML translation in `configuration/translation.py` | **Implementation candidate in this milestone.** It changes reference representation, not provider epoch. |
+> | Select J2000, `of_date`, or another supported equinox for coupled chart references | `charts/reference_policy.py::CelestialReferencePolicy`; CLI translation in `charts/chart_arguments.py`; TOML translation in `configuration/translation.py` | **Implemented and accepted.** It changes reference representation, not provider epoch. |
 > | Construct equatorial, ecliptic, Galactic, and AltAz grid geometry | `sky/coordinate_grids.py::{EquatorialGrid,EclipticGrid,GalacticGrid,AltAzGrid}` | **Implemented.** Each grid creates typed spherical geometry and uses `CoordinateService` when another frame is requested. |
-> | Apply a request's reference policy to ordinary grids | `charts/request_grids.py::configure_chart_request_grids()` | **Implementation candidate.** Equatorial FK5 and true-ecliptic grids receive the same resolved equinox. |
-> | Construct celestial equator, ecliptic, seasonal keypoints, and poles | `charts/reference_furniture.py::build_celestial_reference_sky()` and `sky/points.py` | **Implemented; policy coupling is a candidate.** Reference furniture uses the same equinox as request grids. |
+> | Apply a request's reference policy to ordinary grids | `charts/request_grids.py::configure_chart_request_grids()` | **Implemented and accepted.** Equatorial FK5 and true-ecliptic grids receive the same resolved equinox; `of_date` receives the authoritative chart-view observer explicitly. |
+> | Construct celestial equator, ecliptic, seasonal keypoints, and poles | `charts/reference_furniture.py::build_celestial_reference_sky()` and `sky/points.py` | **Implemented and accepted.** Reference furniture uses the same equinox as request grids. |
 > | Describe active grid/frame/equinox in chart furniture | `charts/legend_metadata.py::resolve_legend_metadata()` | **Implemented.** Metadata reports the selected representation; it does not infer a provider epoch. |
 > | Convert a TEME satellite state to Earth-fixed, celestial, and topocentric coordinates | Future specialized TEME adapter owned beside `CoordinateService`, then the ordinary service for supported downstream frames | **Future, Milestone 49I.** TEME must not be relabelled ICRS or passed through an undocumented approximation. |
 > | Represent ITRS/ITRF and explicit EOP provenance for satellite work | Future Earth-fixed state/adapter contract under Milestones 49E/49I | **Future.** Current Astropy AltAz transformations already consume its Earth-orientation authority internally, but Wenu does not yet expose a general ITRS product state. |
@@ -894,3 +894,30 @@ positions and proper motions and documents its alignment to ICRF3.
 The [IERS Conventions](https://iers-conventions.obspm.fr/archive/2003/chapter2/tn32_c2.pdf)
 document the ICRS right-ascension origin, its intended proximity to the
 dynamical equinox at J2000.0, and the measured frame-bias offset between them.
+
+
+### 13.1.6 Implementation and scientific acceptance
+
+The public reference policy was accepted on 2026-08-29 through the installed
+`wenu_chart regional` command. Default `J2000` and explicit `J2000.0`
+produced the same graphical SVG records after excluding timestamps,
+provenance spelling, generated backend identifiers, and serialization order.
+Charts at `J2016.0` and `of_date` visibly moved the coupled FK5 and
+true-ecliptic grids while the apparent stellar directions and constellation
+figures remained fixed. This is the expected physical result: changing the
+reference axes changes the coordinates assigned to a direction, not the
+observed direction itself.
+
+The first `of_date` public render also supplied useful negative acceptance
+evidence: it exposed that reusable chart views carried their authoritative
+observer separately from the celestial-sphere fallback. Wenu now passes
+`ChartView.observer` explicitly to
+`configure_chart_request_grids(..., observer=...)`; regression tests cover
+that handoff and both coupled grids.
+
+Final acceptance evidence was 1,786 routine tests passed with 30 deselected in
+25.26 seconds and 1,816 complete tests passed in 86.71 seconds. Independent
+SVG runs may serialize equivalent same-style star markers in a different
+order; the normalized graphical-record comparison was identical. That
+reproducibility observation is separate from coordinate correctness and does
+not alter the rendered chart.
