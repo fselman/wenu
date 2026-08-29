@@ -357,6 +357,25 @@ def test_public_interface_audit_records_as_is_and_scientific_boundary():
         assert phrase in audit
 
 
+def test_coordinate_guide_has_a_navigable_table_of_contents():
+    guide = read(COORDINATE_GUIDE)
+    toc_position = guide.index("# Table of contents")
+    status_position = guide.index("# Status and purpose")
+    assert toc_position < status_position
+
+    for link in (
+        "[1. Scientific vocabulary](#1-scientific-vocabulary)",
+        "[2. Coordinate systems used or reserved by Wenu]",
+        "[4. Mathematical foundations](#4-mathematical-foundations)",
+        "[5. Time vocabulary](#5-time-vocabulary)",
+        "[5.6 Julian and Besselian epochs]",
+        "[8. Wenu object catalogue and provenance]",
+        "[12. Maintenance rule](#12-maintenance-rule)",
+        "[13. Practical guide to reference systems, equinoxes, and epochs]",
+    ):
+        assert link in guide
+
+
 def test_coordinate_guide_teaches_calendars_for_historical_use():
     guide = " ".join(read(COORDINATE_GUIDE).split())
     for phrase in (
