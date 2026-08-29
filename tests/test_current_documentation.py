@@ -137,6 +137,9 @@ def test_current_diagrams_are_an_inspection_interface():
         "coordinate_static_structure_as_is_v0.9",
         "coordinate_static_structure_target_49bc",
         "coordinate_runtime_sequence_target_49bc",
+        "coordinate_transformation_as_is_v0.9.5",
+        "coordinate_static_structure_as_is_v0.9.5",
+        "coordinate_runtime_sequence_as_is_v0.9.5",
     ):
         assert (DIAGRAMS / f"{name}.dot").is_file()
         assert (DIAGRAMS / f"{name}.svg").is_file()
@@ -156,6 +159,10 @@ def test_current_diagrams_are_an_inspection_interface():
     assert "`PositionProvider` is the boundary for all astronomical objects" in readme
     assert "requires only another provider implementation" in normalized
     assert "deliberately large canvas" in readme
+    assert "sole production astronomical transformation owner" in readme
+    assert "fictitious protocol" in readme
+    assert "The retired handwritten and chart-owned authorities are\nabsent" in readme
+    assert "does not modify `CoordinateService`" in normalized
     assert (
         ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.dot"
     ).is_file()
@@ -171,7 +178,7 @@ def test_v095_coordinate_target_and_living_guide_are_reviewable():
     target = read(V095_TARGET)
     guide = read(COORDINATE_GUIDE)
 
-    assert "**Status:** Partially implemented; 49B–49C.2 merged, 49C.3 accepted pending merge" in target
+    assert "**Status:** 49B–49C.3 implemented and merged; 49C.4 acceptance candidate" in target
     assert "PositionProvider" in target
     assert "CoordinateService" in target
     assert "49B.1" in target
