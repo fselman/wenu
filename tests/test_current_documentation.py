@@ -310,6 +310,7 @@ def test_post_v09_roadmap_records_coordinate_svg_and_temporal_direction():
         "Milestone 49C.2 — Migrate production transformations",
         "1809 tests in 86.11 seconds",
         "visually accepted by Fernando on 2026-08-28",
+        "1805 tests in 86.29 seconds",
     ):
         assert phrase in roadmap
 
