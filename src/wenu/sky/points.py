@@ -301,7 +301,7 @@ class CelestialPoints(GeometricalObject):
         coord = SkyCoord(
             ra=(sun.lon_deg[0] + 180.0) % 360.0 * u.deg,
             dec=-sun.lat_deg[0] * u.deg,
-            frame=self.obs.icrs_frame,
+            frame=ICRS(),
         )
         return self._append_point(
             coord,
