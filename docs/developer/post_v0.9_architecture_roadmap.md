@@ -338,6 +338,13 @@ chart layers.
 Providers compute or propagate states. They do not select charts, transform
 through undocumented downstream paths, project, clip, style, or render.
 
+The same boundary governs every output format. Future solar-system layers must
+declare their semantic identity before projection and then use the existing
+projection, preparation, Matplotlib renderer, and single exporter for PNG,
+PDF, and SVG. The SVG product may serialize the reserved
+`solar-system/sun`, `solar-system/moon`, and `solar-system/planets` paths;
+it must not recompute moving-object geometry or use a separate SVG-only path.
+
 ## 9. Milestone 49F - SVG product verification
 
 **Status:** Complete at `c70cb29` after eight-product cross-product acceptance.
@@ -454,7 +461,10 @@ Add one object class at a time:
 
 Each slice must test provenance, time scale, origin, coordinate status,
 transformation, visibility, labels, trails where requested, and repeatable
-sequence output before the next class begins.
+sequence output before the next class begins. It must also verify that PNG,
+PDF, and semantic SVG consume the same projected moving-object records, with
+stable upstream object identity and the appropriate reserved
+`solar-system` semantic path; no post-export overlay is acceptable.
 
 ## 13. Milestone 49J - Performance and closure
 
