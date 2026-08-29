@@ -28,6 +28,8 @@ from wenu import (
     generate_celestial_sphere,
 )
 from wenu.configuration import load_packaged_defaults
+from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import ICRS_ASTROMETRIC_SPEC
 
 
 MONTH_NAMES = (
@@ -87,12 +89,16 @@ def _projected_anchor(chart, observer, *, frame, angle_deg):
     if frame == "equatorial":
         ra_deg, dec_deg = float(angle_deg), 0.0
     else:
-        point = SkyCoord(
-            lon=float(angle_deg) * u.deg,
-            lat=0.0 * u.deg,
-            frame=BarycentricTrueEcliptic(equinox=observer.t_astropy),
-        ).transform_to(observer.icrs_frame)
-        ra_deg, dec_deg = float(point.ra.deg), float(point.dec.deg)
+        point = CoordinateService().transform_skycoord(
+            SkyCoord(
+                lon=float(angle_deg) * u.deg,
+                lat=0.0 * u.deg,
+                frame=BarycentricTrueEcliptic(equinox=observer.t_astropy),
+            ),
+            ICRS_ASTROMETRIC_SPEC,
+        )
+        ra_deg = float(point.lon_deg[0])
+        dec_deg = float(point.lat_deg[0])
     x, y = chart.projection.project_spherical(
         np.asarray((ra_deg,)), np.asarray((dec_deg,))
     )
