@@ -1,6 +1,6 @@
 # Wenu target architecture v0.9.5
 
-**Status:** Partially implemented; 49B and 49C.1 accepted, 49C.2 candidate
+**Status:** Partially implemented; 49B–49C.2 merged, 49C.3 candidate
 
 **Date:** 2026-08-28
 
@@ -78,7 +78,7 @@ segmentation, polygon rings, and semantic topology.
 
 ### 49C.2 — Migrate transformations
 
-**Implementation status:** Accepted on the dedicated 49C.2 branch; merge pending.
+**Implementation status:** Accepted and merged in `f42f236`.
 
 Migrate in this order:
 
@@ -92,9 +92,14 @@ Migrate in this order:
 
 ### 49C.3 — Retire competing transformation owners
 
-Retire `radec_to_altaz()`; remove or temporarily wrap
-`charts/coordinate_frames.py`; remove transformation decisions from chart
-and furniture code; reduce `Observer` to context construction.
+**Implementation status:** Candidate on the dedicated 49C.3 branch.
+
+The candidate removes `radec_to_altaz()` and
+`charts/coordinate_frames.py`, routes every remaining production Astropy
+transformation through `CoordinateService`, and removes Observer-owned ICRS,
+Galactic, and ecliptic frame properties. `Observer.observation_context` is the
+explicit immutable service input; AltAz and time properties remain provider
+and public Astropy-coordinate compatibility inputs.
 
 ### 49C.4 — Accept and close
 
