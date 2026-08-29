@@ -1,6 +1,6 @@
 # Wenu post-v0.9 architecture roadmap
 
-**Status:** Active; 49F and 49G complete, 49H.3 accepted
+**Status:** Active; architecture 0.9.5, 49F, and 49G complete; 49H.3 accepted
 
 **Planning baseline:** `52e9411`
 
@@ -194,7 +194,7 @@ Fernando on 2026-08-28.
 
 ### Milestone 49C.4 — Accept architecture 0.9.5
 
-**Status:** Accepted on the dedicated 49C.4 branch; merge pending.
+**Status:** Accepted and merged in `1a15076`.
 
 The current as-is diagrams were reviewed and accepted. Scientific and topology
 checks passed; the routine suite passed 1779 tests with 30 deselected in 27.31
@@ -225,6 +225,13 @@ tool before beginning new astronomical-object work:
 The public frame/equinox controls require their own small milestone and
 scientific acceptance. They do not reopen the accepted internal 0.9.5
 coordinate ownership.
+
+The completed as-is inventory, executable dispositions, public coordinate
+vocabulary, validation constraints, and recommended implementation slices are
+recorded in `public_interface_audit_v0.9.5.md`. Arbitrary supported equinoxes
+are coordinate-representation requests; arbitrary position epochs remain
+provider operations and must be rejected until the relevant provider can
+propagate them physically.
 
 ## 7. Milestone 49D - Observer-independent celestial realization
 
