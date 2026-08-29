@@ -102,9 +102,8 @@ objects.
 
 ## 6. Explicit non-goals
 
-49D.2 does not:
+49D.2 does not add or choose a JPL ephemeris. It also does not:
 
-- add or choose a JPL ephemeris;
 - add the Sun, Moon, planet, satellite, asteroid, or comet;
 - change `PositionProvider`;
 - thread the context through ordinary `ChartRequest` or CLI code;
