@@ -175,7 +175,9 @@ def draw_chart_view_request(view, request):
     if not isinstance(request, ChartRequest):
         raise TypeError("request must be a ChartRequest.")
     _validate_load_profile(view, request.detail)
-    configure_chart_request_grids(view.sky, request, frame=view.frame)
+    configure_chart_request_grids(
+        view.sky, request, frame=view.frame, observer=view.observer
+    )
     configure_chart_request_horizon(view.sky, request)
     prepared = PreparedChartRequest(
         chart=view.chart,
