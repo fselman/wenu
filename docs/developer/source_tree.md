@@ -83,6 +83,10 @@ background, future dynamic astronomical objects, and observer-local geometry,
 and fixes their sole convergence before projection in an explicit spherical
 product frame. Milestone 49D.1 adds no runtime module or alternate scene
 graph.
+`docs/developer/ephemeris_provider_contract_49e1.md` owns the proposed 49E.1
+state-source/direction-realizer audit. No 49E runtime provider, state, or
+realizer module exists yet.
+
 `sky/realization.py` owns the frozen 49D.2 `LayerRealizationContext`.
 `sky/sky_layer.py::SkyLayer.realize()` owns the compatibility adapter, and
 `sky/celestial_sphere.py::CelestialSphere.draw_chart()` selects it only for an
