@@ -1381,4 +1381,12 @@ provenance, and target-`CoordinateSpec` composition.
 > provider proof exists only in `tests/test_layer_realization.py`. No current
 > catalogue, reference, horizon, chart-request, CLI, renderer, or exporter is
 > migrated by this milestone.
+>
+> Future Sun, Moon, and planet layers will declare their semantic identity
+> before projection and use this same realization-to-export route for every
+> format. SVG is not a second astronomy engine: the existing exporter only
+> serializes the already projected records and their upstream identities under
+> the reserved `solar-system/sun`, `solar-system/moon`, or
+> `solar-system/planets` path. A separate SVG generator or post-export
+> coordinate overlay would violate Wenu's architecture.
 
