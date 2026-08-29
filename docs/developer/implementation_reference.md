@@ -693,18 +693,7 @@ in the Galactic frame. Other combinations are rejected explicitly. Style,
 mode, detail, grids, furniture, language, title, and output remain drawing
 concerns.
 
-`charts.coordinate_frames.horizontal_to_galactic(geometry, observer)` is the
-chart-owned astronomical frame adapter reserved for Galactic all-sky views.
-It accepts `SphericalPoints`, `SphericalCurves`, `SphericalGrid`, or
-`SphericalPolygons`, interprets their generic longitude and latitude as the
-canonical AltAz geometry for `observer.altaz_frame`, and returns the same
-geometry form in `observer.galactic_frame`. Entity identifiers, labels,
-names, closed-curve state, component groups, and metadata are preserved;
-metadata records the AltAz source and Galactic result. It performs no seam
-splitting, planar projection, clipping, rendering, or example adaptation.
-`horizontal_to_equatorial(geometry, observer)` applies the same structure- and
-metadata-preserving contract to `observer.icrs_frame`; it is the astronomical
-transformation seam required by static polar disks.
+`CoordinateService.transform_observer_geometry()` is the single AltAz-to-celestial service entry point used by all-sky, polar, horizon, and reference-furniture consumers. It preserves geometry kind, topology, semantic arrays, and metadata while recording the AltAz source and requested celestial result. The former chart-owned `coordinate_frames.py` adapters are removed in 49C.3.
 
 `PolarPlanisphereChart(pole="south", limiting_declination_deg=None,
 projection_name="polar_azimuthal_equidistant", position_angle_deg=0,
@@ -747,8 +736,7 @@ astronomical frame conversion, chart boundary, renderer, or style behavior.
 `AllSkyChart()` owns the complete-sphere Galactic Mollweide view. Its
 projected boundary is the exact 2:1 Mollweide ellipse, and its chart context
 reports 360 by 180 degrees and the full `4 pi` steradians. During canonical
-`CelestialSphere.draw_chart()` execution it applies
-`horizontal_to_galactic()` before projection, retains catalogue centers
+`CelestialSphere.draw_chart()` execution it requests a Galactic transformation from `CoordinateService` before projection, retains catalogue centers
 without horizon rejection, and clips all artists and optional disjoint
 constellation-mask openings at the ellipse. Ordinary drawing selects a
 labeled Galactic grid by default; equatorial and ecliptic overlays remain
@@ -1573,7 +1561,7 @@ policies. Existing charts and layers do not call the service until 49C.2, so
 ## Coordinate ownership during architecture 0.9.5
 
 The accepted 49C.1 `CoordinateService` is the single Astropy-backed owner of
-astronomical frame transformations. The 49C.2 candidate routes reference
+astronomical frame transformations. The merged 49C.2 milestone routes reference
 points and grids, chart compatibility conversions, deep-sky geometry,
 constellation references, observer caches, and chart-orientation reference
 directions through that service while preserving concrete `Spherical*` kinds,
@@ -1586,6 +1574,4 @@ same cached arrays. Native AltAz horizon construction likewise remains
 reference geometry; a service call is required only when a product requests
 that geometry in another astronomical frame.
 
-The compatibility functions in `charts/coordinate_frames.py` currently
-delegate to `CoordinateService`. Their retirement, together with the legacy
-handwritten `coordinates.py::radec_to_altaz()`, belongs to 49C.3.
+The 49C.3 candidate removes `charts/coordinate_frames.py` and the handwritten `coordinates.py::radec_to_altaz()`. Every production Astropy transformation now occurs inside `CoordinateService`. `Observer` supplies immutable `observation_context` and retains only the time, location, Skyfield, and AltAz compatibility state required by providers and public Astropy-coordinate entry points.

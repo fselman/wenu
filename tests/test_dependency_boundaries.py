@@ -29,6 +29,7 @@ REMOVED_PATHS = (
     "src/wenu/renderers/constellation_lines.py",
     "src/wenu/renderers/constellation_boundaries.py",
     "src/wenu/renderers/coordinate_grids.py",
+    "src/wenu/charts/coordinate_frames.py",
 )
 
 
@@ -115,4 +116,4 @@ def test_obsolete_altaz_helpers_are_removed():
         "galactic_center_altaz",
     ):
         assert not hasattr(geometry, name)
-    assert callable(geometry.radec_to_altaz)
+    assert not hasattr(geometry, "radec_to_altaz")

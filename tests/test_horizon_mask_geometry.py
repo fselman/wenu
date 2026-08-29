@@ -17,7 +17,7 @@ from wenu import (
     StereographicProjection,
     prepare_horizon_mask_opening,
 )
-from wenu.charts.coordinate_frames import horizontal_to_galactic
+from wenu.coordinate_service import CoordinateService
 from wenu.geometry.frame import SphericalFrame
 
 
@@ -146,8 +146,10 @@ def test_complete_sphere_transforms_then_uses_mollweide_seam_topology():
         projection=chart.projection,
         viewport=chart.viewport,
         observer=actual_observer,
-        transform_spherical=lambda spherical: horizontal_to_galactic(
-            spherical, actual_observer
+        transform_spherical=lambda spherical: (
+            CoordinateService().transform_observer_geometry(
+                spherical, actual_observer, "galactic"
+            )
         ),
         complete_sphere=True,
         samples=37,

@@ -6,11 +6,13 @@ from dataclasses import dataclass
 from functools import partial
 
 import astropy.units as u
-from astropy.coordinates import BarycentricTrueEcliptic, SkyCoord
 import matplotlib.pyplot as plt
 import numpy as np
 
 from wenu.charts.composition import compose_chart
+from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import CoordinateSpec, observer_celestial_spec
+from wenu.geometry.spherical import SphericalPoints
 from wenu.charts.detail import DetailOverrides
 from wenu.charts.export_workflow import ChartExportResult
 from wenu.charts.furniture import (
@@ -161,13 +163,25 @@ def _projected_anchor(chart, observer, *, frame, angle_deg):
     if frame == "equatorial":
         right_ascension_deg, declination_deg = float(angle_deg), 0.0
     else:
-        point = SkyCoord(
-            lon=float(angle_deg) * u.deg,
-            lat=0.0 * u.deg,
-            frame=BarycentricTrueEcliptic(equinox=observer.t_astropy),
-        ).transform_to(observer.icrs_frame)
-        right_ascension_deg = float(point.ra.deg)
-        declination_deg = float(point.dec.deg)
+        point = CoordinateService().transform(
+            SphericalPoints(
+                lon_deg=np.asarray((float(angle_deg),)),
+                lat_deg=np.asarray((0.0,)),
+                coordinate_spec=CoordinateSpec(
+                    frame="barycentric-true-ecliptic",
+                    origin="solar-system-barycenter",
+                    equinox=str(observer.t_astropy),
+                    provider="wenu polar reference anchor",
+                ),
+            ),
+            observer_celestial_spec(
+                observer,
+                "icrs",
+                model="Astropy ecliptic to ICRS",
+            ),
+        )
+        right_ascension_deg = float(point.lon_deg[0])
+        declination_deg = float(point.lat_deg[0])
     x, y = chart.projection.project_spherical(
         np.asarray((right_ascension_deg,)),
         np.asarray((declination_deg,)),

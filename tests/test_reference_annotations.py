@@ -7,12 +7,7 @@ from types import SimpleNamespace
 
 import numpy as np
 import pytest
-from astropy.coordinates import (
-    BarycentricMeanEcliptic,
-    BarycentricTrueEcliptic,
-    Galactic,
-    ICRS,
-)
+from astropy.coordinates import BarycentricTrueEcliptic
 from astropy.time import Time
 
 from wenu import (
@@ -39,9 +34,9 @@ from wenu.charts.reference_furniture import _reference_layer_options
 def observer():
     return SimpleNamespace(
         lat_deg=-32.0,
-        icrs_frame=ICRS(),
-        ecliptic_frame=BarycentricMeanEcliptic(),
-        galactic_frame=Galactic(),
+        lon_deg=-71.0,
+        elevation_m=0.0,
+        t_astropy=Time("2026-08-28T00:00:00", scale="utc"),
     )
 
 

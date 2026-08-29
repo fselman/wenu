@@ -8,7 +8,7 @@ lang: en
 
 # Status and purpose
 
-**Status:** Living review edition; 49B.1–49B.3 and 49C.1 are merged, and the 49C.2 implementation is accepted pending merge.
+**Status:** Living review edition; 49B.1–49C.2 are merged, and 49C.3 is accepted pending merge.
 
 This is the living scientific guide for Wenu's coordinate systems,
 transformations, astronomical objects, and constructed celestial references.
@@ -168,10 +168,10 @@ A=\operatorname{atan2}
 \right) \bmod 2\pi.
 \]
 
-The current `radec_to_altaz()` uses
+The retired pre-49C.3 `radec_to_altaz()` used
 \(\theta_L=15^\circ(\mathrm{GMST}+\mathrm{longitude}/15^\circ)\).
-It omits the fuller apparent-place and Earth-orientation chain and is scheduled
-for retirement in 49C.
+It omitted the fuller apparent-place and Earth-orientation chain. The equation
+is retained here as historical audit evidence, not production authority.
 
 ## 2.6 TEME and Earth-fixed frames reserved for satellites
 
@@ -321,9 +321,9 @@ provider evaluation instant.
 
 | Present owner | Present operation | 0.9.5 destination |
 |---|---|---|
-| `coordinates.py::radec_to_altaz()` | Handwritten ICRS-like RA/Dec to geometric AltAz | Retire; `CoordinateService` |
-| `observer.py::Observer` | Constructs ICRS, Galactic, ecliptic, AltAz and Skyfield contexts | Construct `ObservationContext`; no transform authority |
-| `charts/coordinate_frames.py` | AltAz geometry to ICRS/Galactic via Astropy | Retire or temporary service wrapper |
+| `coordinates.py::radec_to_altaz()` | Removed in 49C.3 | Historical equation retained only in this guide |
+| `observer.py::Observer` | Location/time, Skyfield state, AltAz compatibility, immutable `observation_context` | Context/provider owner; no transform authority |
+| `charts/coordinate_frames.py` | Removed in 49C.3 | Replaced by `CoordinateService` |
 | `geometry/frame.py::SphericalFrame` | Pure spherical rotation for projection alignment | Retain unchanged |
 | `objects/stars.py::Stars` | Hipparcos loading; Skyfield apparent topocentric AltAz | Native ICRS `PositionProvider`; Skyfield apparent realization remains provider work |
 | `objects/nonstellar.py::NonStellar` | ICRS centres/outlines to AltAz via Astropy/cache | Provider for centres; morphology remains geometry; service transforms |
@@ -339,7 +339,7 @@ provider evaluation instant.
 protocol. 49B.2 attached mandatory `CoordinateSpec` identity to all spherical
 geometry records without changing numerical transformations. 49B.3 makes existing stellar and deep-sky centre catalogues implement
 `PositionProvider`; morphology and constructed references remain separate.
-The accepted 49C.1 milestone adds the central Astropy-backed transformation service. The 49C.2 candidate migrates production astronomical transformations while preserving Skyfield apparent stellar realization as provider work and native AltAz horizon construction as reference geometry.
+The accepted 49C.1 milestone adds the central Astropy-backed transformation service. The merged 49C.2 milestone migrates production astronomical transformations while preserving Skyfield apparent stellar realization as provider work and native AltAz horizon construction as reference geometry. The accepted 49C.3 implementation removes the legacy function and chart wrapper module and exposes immutable context directly from `Observer`.
 
 ## 7.1 CoordinateSpec
 

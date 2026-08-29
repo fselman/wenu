@@ -18,7 +18,12 @@ from astropy.coordinates import (
 )
 from astropy.time import Time
 
-from wenu.coordinates import CoordinateSpec, ObservationContext
+from wenu.coordinates import (
+    CoordinateSpec,
+    ObservationContext,
+    observation_context,
+    observer_celestial_spec,
+)
 from wenu.geometry.spherical import (
     SphericalCurves,
     SphericalGeometry,
@@ -118,6 +123,55 @@ class CoordinateService:
             components=components,
             coordinate_spec=target_spec,
             metadata=dict(geometry.metadata),
+        )
+
+    def transform_observer_geometry(
+        self,
+        geometry: SphericalGeometry,
+        observer,
+        target_frame: str,
+        *,
+        coordinate_system: str | None = None,
+    ) -> SphericalGeometry:
+        """Transform observer-local geometry through the governed service."""
+        frame = str(target_frame).strip().lower()
+        system = (
+            "equatorial" if frame == "icrs" else frame
+            if coordinate_system is None else str(coordinate_system)
+        )
+        transformed = self.transform(
+            geometry,
+            observer_celestial_spec(
+                observer,
+                frame,
+                model=f"Astropy AltAz to {system}",
+            ),
+            observation_context(observer),
+        )
+        _annotate_coordinate_system(transformed, system)
+        return transformed
+
+    def transform_skycoord(
+        self,
+        coordinate: SkyCoord,
+        target_spec: CoordinateSpec,
+        observation: ObservationContext | None = None,
+    ) -> SphericalPoints:
+        """Adapt an external Astropy coordinate at the service boundary."""
+        if not isinstance(coordinate, SkyCoord):
+            raise TypeError("coordinate must be an Astropy SkyCoord.")
+        self._validate_spec(target_spec)
+        target_frame = self._frame(target_spec, observation)
+        transformed = coordinate.transform_to(target_frame).spherical
+        return SphericalPoints(
+            lon_deg=np.atleast_1d(
+                np.asarray(transformed.lon.to_value(u.deg), dtype=float)
+            ),
+            lat_deg=np.atleast_1d(
+                np.asarray(transformed.lat.to_value(u.deg), dtype=float)
+            ),
+            coordinate_spec=target_spec,
+            metadata={"source": "external Astropy SkyCoord"},
         )
 
     @staticmethod
@@ -245,3 +299,14 @@ class CoordinateService:
 
 def _copy(values):
     return None if values is None else values.copy()
+
+
+def _annotate_coordinate_system(geometry, coordinate_system):
+    geometry.metadata = {
+        **dict(geometry.metadata),
+        "source_coordinate_system": "altaz",
+        "coordinate_system": coordinate_system,
+    }
+    if isinstance(geometry, SphericalGrid):
+        for component in geometry.components.values():
+            _annotate_coordinate_system(component, coordinate_system)

@@ -14,7 +14,7 @@ from wenu.charts.boundaries import (
     circular_boundary,
     resolved_circular_boundary_style,
 )
-from wenu.charts.coordinate_frames import horizontal_to_equatorial
+from wenu.coordinate_service import CoordinateService
 from wenu.charts.projection_selection import ProjectionSelection
 from wenu.geometry.frame import SphericalFrame
 from wenu.geometry.projected import ProjectedPoints
@@ -277,9 +277,10 @@ class PolarPlanisphereChart:
         projection = self.projection
 
         def project(spherical):
-            equatorial = horizontal_to_equatorial(
+            equatorial = CoordinateService().transform_observer_geometry(
                 spherical,
                 resolved_observer,
+                "icrs",
             )
             return self.project_equatorial_geometry(equatorial)
 

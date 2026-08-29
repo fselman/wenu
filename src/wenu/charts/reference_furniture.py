@@ -9,7 +9,7 @@ from astropy.coordinates import BarycentricTrueEcliptic
 
 from wenu.chart_document import EditPolicy, SemanticArtistIdentity
 from wenu.charts.context import BoundaryKind
-from wenu.charts.coordinate_frames import horizontal_to_equatorial
+from wenu.coordinate_service import CoordinateService
 from wenu.charts.detail_application import composition_horizon_altitude
 from wenu.geometry.projected import ProjectedCurve, ProjectedCurves
 from wenu.geometry.spherical import SphericalGrid
@@ -588,7 +588,9 @@ def draw_celestial_reference_furniture(
 
     def project(spherical):
         geometry = (
-            horizontal_to_equatorial(spherical, observer)
+            CoordinateService().transform_observer_geometry(
+                spherical, observer, "icrs"
+            )
             if polar
             else spherical
         )

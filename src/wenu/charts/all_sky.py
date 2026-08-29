@@ -14,7 +14,7 @@ from wenu.charts.boundaries import (
 from wenu.charts.constellation_label_placement import (
     apply_visible_constellation_label_anchors,
 )
-from wenu.charts.coordinate_frames import horizontal_to_galactic
+from wenu.coordinate_service import CoordinateService
 from wenu.geometry.projected import ProjectedCurve
 from wenu.geometry.viewport import Viewport
 from wenu.projections.mollweide import MollweideProjection
@@ -168,8 +168,10 @@ class AllSkyChart:
         options = apply_coordinate_label_anchor(
             options, self.coordinate_label_anchor
         )
-        transform = lambda spherical: horizontal_to_galactic(
-            spherical, resolved_observer
+        transform = lambda spherical: CoordinateService().transform_observer_geometry(
+            spherical,
+            resolved_observer,
+            "galactic",
         )
         options = apply_visible_constellation_label_anchors(
             options,

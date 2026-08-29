@@ -371,9 +371,16 @@ class RegionalChart:
         **kwargs,
     ):
         """Create a chart centered on any Astropy sky coordinate."""
-        horizontal = coordinate.transform_to(observer.altaz_frame)
-        altitude = float(np.asarray(horizontal.alt.deg))
-        azimuth = float(np.asarray(horizontal.az.deg))
+        horizontal = CoordinateService().transform_skycoord(
+            coordinate,
+            observer_altaz_spec(
+                observer,
+                provider="external Astropy SkyCoord",
+            ),
+            observation_context(observer),
+        )
+        altitude = float(horizontal.lat_deg[0])
+        azimuth = float(horizontal.lon_deg[0])
         if orientation is None and position_angle_deg is None:
             orientation = "celestial-north-up"
         resolved_orientation = resolve_chart_orientation(
