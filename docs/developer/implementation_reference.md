@@ -906,6 +906,22 @@ result = generate_chart_request(
 print(result.outputs)
 ```
 
+### Proposed ephemeris-provider boundary (Milestone 49E.1)
+
+The current `positions.py::PositionProvider.position(instant)` returns native
+`SphericalPoints` and remains unchanged. It is not sufficient as the sole
+solar-system ephemeris boundary because a raw provider product must retain
+Cartesian position and velocity, target, centre, frame, evaluation instant/time
+scale, units, kernel identity, coverage, and provenance.
+
+The proposed design separates an ephemeris state source from a solar-system
+direction realizer. The realizer owns retarded emission-time evaluation and the
+declared light-time/apparent-place correction policy. It creates typed
+spherical geometry only after observer-relative direction and position status
+are defined. `CoordinateService` then owns the final coordinate representation
+transformation. 49E.1 installs no runtime classes, provider, kernel adapter, or
+moving-object layer.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a
