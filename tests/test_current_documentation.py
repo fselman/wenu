@@ -27,6 +27,9 @@ SCENE_DEPENDENCY_AUDIT = (
 LAYER_REALIZATION_CONTRACT = (
     DEVELOPER / "layer_realization_context_49d2.md"
 )
+EPHEMERIS_PROVIDER_CONTRACT = (
+    DEVELOPER / "ephemeris_provider_contract_49e1.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -479,6 +482,53 @@ def test_49d2_records_minimal_realization_context_and_non_goals():
     assert "No separate SVG astronomy generator" in source_tree
     assert "`sky/realization.py` owns the frozen 49D.2" in source_tree
     assert "exist only in `tests/test_layer_realization.py`" in source_tree
+
+
+def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
+    contract = " ".join(read(EPHEMERIS_PROVIDER_CONTRACT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "**As-is baseline:** `85c7392`",
+        "Required two-stage boundary",
+        "ephemeris state source",
+        "solar-system direction realization",
+        "Centre and frame are not synonyms",
+        "retarded emission times",
+        "one-way light time",
+        "kernel identity",
+        "current `PositionStatus.TOPCENTRIC` spelling",
+        "No correction may be implied",
+        "no hidden network access during rendering",
+        "A raw ephemeris state is not `SphericalGeometry`",
+        "Body geometry deliberately deferred",
+        "49E.2 — minimal runtime contracts",
+        "49E.3 — installed kernel adapter",
+        "49I.1 — first moving-body vertical slice",
+    ):
+        assert phrase in contract
+
+    for phrase in (
+        "Milestone 49E.1 — Ephemeris-provider contract audit",
+        "Cartesian state source",
+        "retarded emission-time evaluation",
+        "49E.1 changes no runtime type or output",
+    ):
+        assert phrase in roadmap
+
+    assert "proposed 49E.1 ephemeris boundary" in architecture
+    assert "raw barycentric vector must never be relabelled" in architecture
+    assert "13.2.4 49E.1 ephemeris-provider design" in guide
+    assert "more like a precise moving map" in guide
+    assert "Wenu implementation box — 49E.1 provider boundary" in guide
+    assert "Proposed ephemeris-provider boundary" in implementation
+    assert "No 49E runtime provider" in source_tree
 
 
 def test_public_interface_audit_records_as_is_and_scientific_boundary():
