@@ -339,7 +339,7 @@ provider evaluation instant.
 protocol. 49B.2 attached mandatory `CoordinateSpec` identity to all spherical
 geometry records without changing numerical transformations. 49B.3 makes existing stellar and deep-sky centre catalogues implement
 `PositionProvider`; morphology and constructed references remain separate.
-The accepted 49C.1 milestone adds the central Astropy-backed transformation service. The merged 49C.2 milestone migrates production astronomical transformations while preserving Skyfield apparent stellar realization as provider work and native AltAz horizon construction as reference geometry. The 49C.3 candidate removes the legacy function and chart wrapper module and exposes immutable context directly from `Observer`.
+The accepted 49C.1 milestone adds the central Astropy-backed transformation service. The merged 49C.2 milestone migrates production astronomical transformations while preserving Skyfield apparent stellar realization as provider work and native AltAz horizon construction as reference geometry. The accepted 49C.3 implementation removes the legacy function and chart wrapper module and exposes immutable context directly from `Observer`.
 
 ## 7.1 CoordinateSpec
 
