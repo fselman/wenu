@@ -32,3 +32,12 @@ def test_polar_preview_resolves_equatorial_and_ecliptic_anchors():
 
     assert np.isfinite(equatorial).all()
     assert np.isfinite(ecliptic).all()
+
+
+def test_polar_preview_accepts_explicit_high_resolution():
+    arguments = tool.parser().parse_args(
+        ["--projection", "stereographic", "--dpi", "540"]
+    )
+
+    assert arguments.projection == "stereographic"
+    assert arguments.dpi == 540
