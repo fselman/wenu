@@ -1,6 +1,6 @@
 # Milestone 49D.1 — Celestial-scene dependency and ownership audit
 
-**Status:** Review candidate; documentation and characterization boundary only
+**Status:** Scientifically and pedagogically accepted on the dedicated 49D.1 branch; merge pending
 
 **Audit baseline:** `b4af627`
 
@@ -263,3 +263,20 @@ This milestone does not:
 After acceptance, 49D.2 may design and implement the smallest typed realization
 context and controlled dynamic-layer test. A real planet remains a later
 49E/49I vertical slice.
+
+## 12. Acceptance evidence
+
+Fernando accepted the three realization classes, the single spherical
+product-frame convergence point, the planet insertion point, and the explicit
+49D.1 non-goals on 2026-08-29.
+
+Mac verification on the accepted branch passed:
+
+- 39 documentation tests in 2.78 seconds;
+- 1,789 routine tests with 30 deselected in 26.62 seconds;
+- all 1,819 tests in 84.41 seconds.
+
+No visual comparison was required because 49D.1 changes no production source,
+numerical geometry, rendering, appearance, or output. The next authorized work
+after merge is a separately bounded 49D.2 design and implementation milestone;
+this acceptance does not itself authorize that runtime change.
