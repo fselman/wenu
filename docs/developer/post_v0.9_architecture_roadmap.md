@@ -181,7 +181,7 @@ Fernando on 2026-08-28.
 
 ### Milestone 49C.3 — Retire compatibility authorities
 
-**Status:** Implementation accepted on the dedicated 49C.3 branch; merge pending.
+**Status:** Accepted and merged in `034bdd8`.
 
 Retire `radec_to_altaz()`, remove the chart-owned compatibility wrappers, and
 reduce `Observer` to explicit context construction without changing numerical
@@ -193,6 +193,8 @@ Acceptance evidence: the routine suite passed 1775 tests with 30 deselected in
 Fernando on 2026-08-28.
 
 ### Milestone 49C.4 — Accept architecture 0.9.5
+
+**Status:** Acceptance candidate on the dedicated 49C.4 branch.
 
 Refresh the as-is diagrams, rerun scientific and visual acceptance, and close
 architecture 0.9.5 only after the compatibility authorities are absent.
