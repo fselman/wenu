@@ -226,9 +226,9 @@ The public frame/equinox controls require their own small milestone and
 scientific acceptance. They do not reopen the accepted internal 0.9.5
 coordinate ownership.
 
-### Public celestial reference policy candidate
+### Public celestial reference policy — implemented and accepted
 
-The first recommended slice now has an implementation candidate. One
+The first recommended slice is implemented and scientifically accepted. One
 `CelestialReferencePolicy` carries a J2000, `of_date`, or explicit supported
 equinox through ordinary request grids and the coupled celestial equator,
 true ecliptic, and seasonal keypoints. The installed command exposes
@@ -236,6 +236,14 @@ true ecliptic, and seasonal keypoints. The installed command exposes
 `[coordinates.references].equinox`. J2000 remains the compatibility default.
 Product-frame selection and provider position-epoch propagation remain out of
 scope pending separate scientific milestones.
+
+Acceptance used default J2000, explicit J2000.0, J2016.0, and `of_date`
+regional SVGs. The default and explicit J2000 requests produced identical
+normalized graphical records; J2016.0 and of-date moved the coupled reference
+axes without moving apparent stellar directions. The first of-date render
+found and closed the missing chart-view observer handoff. Final evidence was
+1,786 routine tests passed with 30 deselected in 25.26 seconds and 1,816 full
+tests passed in 86.71 seconds.
 
 The completed as-is inventory, executable dispositions, public coordinate
 vocabulary, validation constraints, and recommended implementation slices are
