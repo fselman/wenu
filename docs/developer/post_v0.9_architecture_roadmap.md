@@ -160,7 +160,7 @@ longitude/latitude argument names.
 
 ### Milestone 49C.2 — Migrate production transformations
 
-**Status:** Implementation accepted on the dedicated 49C.2 branch; merge pending.
+**Status:** Accepted and merged in `f42f236`.
 
 The accepted candidate routes reference points and grids, chart compatibility
 conversions, deep-sky centres and morphology, constellation labels and
@@ -194,10 +194,37 @@ Fernando on 2026-08-28.
 
 ### Milestone 49C.4 — Accept architecture 0.9.5
 
-**Status:** Acceptance candidate on the dedicated 49C.4 branch.
+**Status:** Accepted on the dedicated 49C.4 branch; merge pending.
 
-Refresh the as-is diagrams, rerun scientific and visual acceptance, and close
-architecture 0.9.5 only after the compatibility authorities are absent.
+The current as-is diagrams were reviewed and accepted. Scientific and topology
+checks passed; the routine suite passed 1779 tests with 30 deselected in 27.31
+seconds; and the complete suite passed 1809 tests in 84.99 seconds. Fernando
+visually accepted both the corrected J2000 equinox intersections in the La
+Ligua stereographic planisphere and the final fixed-sky/rotating-horizon
+reference on 2026-08-28. Compatibility authorities are absent.
+
+## 6.1 Immediate post-v0.9.5 public-interface follow-up
+
+After the 49C.4 closure merge, audit every executable example and developer
+tool before beginning new astronomical-object work:
+
+- make the installed `wenu_chart` command the ordinary public route for every
+  reproducible user example;
+- reserve `tools/` for diagnostics, audits, benchmarks, migrations, and
+  software acceptance rather than user workflows;
+- move the physical planisphere demonstration into the examples area once
+  `wenu_chart` can reproduce it completely;
+- create one examples guide that identifies every supported example, its
+  output, and the documented parameters users may adapt;
+- expose coordinate system, frame, epoch/equinox, and relevant `of_date`
+  policies through validated CLI and configuration values translated into
+  `CoordinateSpec`;
+- prohibit CLI, example, and tool code from constructing an independent
+  astronomical transformation authority.
+
+The public frame/equinox controls require their own small milestone and
+scientific acceptance. They do not reopen the accepted internal 0.9.5
+coordinate ownership.
 
 ## 7. Milestone 49D - Observer-independent celestial realization
 
