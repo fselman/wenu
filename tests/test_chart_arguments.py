@@ -46,6 +46,7 @@ def test_shared_content_and_legends_are_opt_in():
         chart_content_options(arguments).equatorial_declination_step_deg
         is None
     )
+    assert chart_content_options(arguments).reference_equinox is None
     assert chart_legend_selection(arguments).objects is False
     assert chart_legend_selection(arguments).stellar_magnitudes is False
     assert chart_legend_selection(arguments).stellar_counts is False
@@ -70,6 +71,7 @@ def test_shared_content_switches_resolve_independently():
             "--grid-references", "equatorial,ecliptic,galactic",
             "--poles",
             "--pole-labels",
+            "--reference-equinox", "J2050",
         ]
     )
     content = chart_content_options(arguments)
@@ -92,6 +94,7 @@ def test_shared_content_switches_resolve_independently():
     )
     assert content.poles is True
     assert content.pole_labels is True
+    assert content.reference_equinox == "J2050"
 
 
 def test_magnitude_limit_must_be_finite():

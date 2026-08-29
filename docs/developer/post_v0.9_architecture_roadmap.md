@@ -226,6 +226,17 @@ The public frame/equinox controls require their own small milestone and
 scientific acceptance. They do not reopen the accepted internal 0.9.5
 coordinate ownership.
 
+### Public celestial reference policy candidate
+
+The first recommended slice now has an implementation candidate. One
+`CelestialReferencePolicy` carries a J2000, `of_date`, or explicit supported
+equinox through ordinary request grids and the coupled celestial equator,
+true ecliptic, and seasonal keypoints. The installed command exposes
+`--reference-equinox`; schema-version-1 TOML exposes
+`[coordinates.references].equinox`. J2000 remains the compatibility default.
+Product-frame selection and provider position-epoch propagation remain out of
+scope pending separate scientific milestones.
+
 The completed as-is inventory, executable dispositions, public coordinate
 vocabulary, validation constraints, and recommended implementation slices are
 recorded in `public_interface_audit_v0.9.5.md`. Arbitrary supported equinoxes

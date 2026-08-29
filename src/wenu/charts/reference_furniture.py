@@ -6,7 +6,6 @@ from dataclasses import dataclass
 
 import numpy as np
 from astropy.coordinates import BarycentricTrueEcliptic
-from astropy.time import Time
 
 from wenu.chart_document import EditPolicy, SemanticArtistIdentity
 from wenu.charts.context import BoundaryKind
@@ -331,6 +330,12 @@ def build_celestial_reference_sky(
     if resolved_observer is None:
         raise TypeError("celestial reference furniture requires an observer.")
     reference_sky = CelestialSphere(resolved_observer)
+    policy = composition.reference_policy
+    equinox = (
+        "J2000"
+        if policy is None
+        else policy.resolved_equinox(resolved_observer)
+    )
     if polar_grid:
         reference_sky.add(
             _PolarEquatorialGrid(
@@ -339,7 +344,7 @@ def build_celestial_reference_sky(
                 dec=tuple(float(value) for value in range(-80, 81, 20)),
                 include_equator=False,
                 frame="fk5",
-                equinox="J2000",
+                equinox=equinox,
             )
         )
     if references.celestial_equator.enabled:
@@ -350,14 +355,14 @@ def build_celestial_reference_sky(
                 dec=(),
                 include_equator=True,
                 frame="fk5",
-                equinox="J2000",
+                equinox=equinox,
             )
         )
     if references.ecliptic.enabled:
         reference_sky.add(
             EclipticGrid(
                 resolved_observer,
-                equinox="J2000",
+                equinox=equinox,
                 longitude=(),
                 latitude=(),
                 include_ecliptic=True,
@@ -423,7 +428,7 @@ def build_celestial_reference_sky(
         )
         if references.ecliptic_keypoints_enabled or legacy_polar_keypoints:
             ecliptic_frame = BarycentricTrueEcliptic(
-                equinox=Time("J2000")
+                equinox=equinox
             )
             points.add_ecliptic_keypoints(
                 marker="x",

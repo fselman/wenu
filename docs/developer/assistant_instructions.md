@@ -103,6 +103,13 @@ Work in small, independently testable milestones. Each change must:
 - leave the project usable;
 - avoid unrelated refactoring, cleanup, or formatting.
 
+Every medium or major milestone must review
+`coordinate_system_guide_v0.9.5.md`. Update it when scientific meaning,
+implementation ownership, object provenance, or the public coordinate
+explanation changes; otherwise record that it was reviewed and remains
+current. Automated documentation checks do not replace Fernando's scientific
+and pedagogical review.
+
 For visual milestones, compare the mandatory regression charts named in the
 active migration roadmap. Do not accept an unexplained regression.
 

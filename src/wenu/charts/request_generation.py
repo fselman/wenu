@@ -148,6 +148,7 @@ def export_prepared_chart(
                 else product_composition.style_overrides
             ),
             furniture=furniture,
+            reference_policy=request.reference_policy,
         )
         if configuration is not None:
             composition_options["configuration"] = configuration

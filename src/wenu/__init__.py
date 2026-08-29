@@ -173,10 +173,12 @@ from .charts.chart_arguments import (
     add_chart_legend_arguments,
     add_chart_style_arguments,
     chart_content_options,
+    chart_reference_policy,
     chart_detail_overrides,
     chart_legend_selection,
     chart_style_overrides,
 )
+from wenu.charts.reference_policy import CelestialReferencePolicy
 from .charts.subject_arguments import (
     ChartConstellationSubjectOptions,
     add_constellation_subject_arguments,
@@ -563,6 +565,8 @@ __all__ = [
     "add_chart_product_arguments",
     "add_chart_style_arguments",
     "chart_content_options",
+    "chart_reference_policy",
+    "CelestialReferencePolicy",
     "chart_detail_overrides",
     "chart_legend_selection",
     "chart_product_options",

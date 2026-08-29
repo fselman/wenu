@@ -1580,3 +1580,15 @@ reference geometry; a service call is required only when a product requests
 that geometry in another astronomical frame.
 
 The 49C.3 candidate removes `charts/coordinate_frames.py` and the handwritten `coordinates.py::radec_to_altaz()`. Every production Astropy transformation now occurs inside `CoordinateService`. `Observer` supplies immutable `observation_context` and retains only the time, location, Skyfield, and AltAz compatibility state required by providers and public Astropy-coordinate entry points.
+
+# Public celestial reference policy
+
+`CelestialReferencePolicy(equinox="J2000")` is the immutable public contract
+for coupled FK5 equatorial and barycentric true-ecliptic reference geometry.
+`J2000` is the compatibility default; `of_date` resolves from the chart
+observer's declared Astropy time. `ChartRequest.reference_policy` carries the
+resolved request through ordinary grid and furniture construction.
+
+The installed command exposes `--reference-equinox EQUINOX`. The corresponding
+schema-version-1 overlay is `[coordinates.references] equinox = "..."`, with
+the explicit command value taking precedence.

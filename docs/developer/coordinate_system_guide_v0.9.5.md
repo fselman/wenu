@@ -66,22 +66,69 @@ boundary and enter the same geometry and coordinate service afterward.
 
 ## 2.1 ICRS
 
-The International Celestial Reference System is Wenu's intended
-observer-independent celestial interchange frame. Its origin is the Solar
-System barycentre and its axes are fixed by extragalactic radio sources.
-Right ascension \(\alpha\) and declination \(\delta\) are spherical
-coordinates in this frame. ICRS is not simply “J2000 coordinates,” although
-the axes are close to the mean equator and equinox of J2000.
+The International Celestial Reference System is the IAU-defined ideal
+celestial coordinate system and Wenu's intended observer-independent
+celestial interchange frame. Its origin is the Solar System barycentre. Its
+axes are kinematically non-rotating with respect to the distant Universe and
+are realized observationally by catalogued extragalactic sources. Right
+ascension \(\alpha\) and declination \(\delta\) are spherical coordinates in
+this system. ICRS is not simply “J2000 coordinates”: its axes are close to the
+mean equator and equinox of J2000, but ICRS is not defined by Earth's equator,
+equinox, or a caller-selected date.
+
+More precisely, the ICRS origin of right ascension was chosen to lie close to
+the dynamical mean equinox of J2000.0, in order to preserve continuity with
+older catalogues. It is nevertheless an independently realized, fixed
+direction and is measurably offset from that dynamical equinox by the frame
+bias. Therefore ICRS does not have a **defining equinox**, fixed or selectable;
+it has a fixed right-ascension origin whose historical alignment is near the
+J2000.0 equinox. The IERS conventions report an offset of about 55.4
+milliarcseconds between the ICRS right-ascension origin and the inertial mean
+equinox of J2000.0 when compared on the ICRS reference plane.
+
+A **system** is the ideal definition; a **reference frame** is a practical
+realization of its axes from measured sources. ICRF3 is the third radio
+realization of ICRS, based principally on VLBI positions of compact
+extragalactic radio sources. Gaia-CRF3 is its optical realization from Gaia
+EDR3/DR3 quasars. They realize the same ICRS at different wavelengths rather
+than defining independent longitude/latitude systems.
 
 Current uses include Hipparcos catalogue positions, non-stellar catalogue
 centres and outlines, constellation data, Milky Way isophotes, and the
 intermediate representation of several constructed references.
 
+### 2.1.1 Gaia-CRF3
+
+Gaia-CRF3 is the celestial reference frame for positions and proper motions
+in Gaia EDR3 and DR3. Its non-rotating optical axes are established from
+quasar-like extragalactic sources. Its orientation was aligned to the radio
+ICRF3 through sources detected in common. Thus Gaia-CRF3 is a high-precision
+optical realization of ICRS, not a new equatorial system with a Gaia
+equinox.
+
+Gaia catalogue stars are measured relative to this frame. Their five- or
+six-parameter astrometric solutions carry a **position reference epoch**:
+J2015.5 for Gaia DR2 and J2016.0 for Gaia EDR3/DR3. That epoch states when a
+star's tabulated position and proper-motion model are referenced. It does not
+orient the ICRS axes and is not an equinox.
+
+Wenu currently represents Gaia-compatible celestial geometry as `icrs` and
+would record a Gaia release, reference epoch, and provider identity separately
+in `CoordinateSpec`. It does not currently expose `gaia-crf3` as an independent
+transformable frame or provide Gaia epoch propagation. Those require a future
+Gaia position-provider milestone; merely changing a frame label would lose
+the scientific distinction.
+
 ## 2.2 FK5 equatorial coordinates
 
-FK5 is a dynamical equatorial frame whose orientation depends on an equinox.
-Wenu currently permits ICRS or FK5 equatorial grids. An FK5 coordinate must
-therefore carry its equinox; it must never be labelled only “equatorial.”
+FK5 is the Fifth Fundamental Catalogue and the older star-catalogue-based
+equatorial reference frame that replaced FK4. Its conventional coordinates
+are tied to a modeled mean equator and equinox and use an explicit precession
+model. `FK5(equinox=J2000.0)` is close to ICRS but is not identical to it.
+Unlike ICRS, FK5 may be represented for another equinox by precessing its
+axes. Wenu currently permits ICRS or FK5 equatorial grids. An FK5 coordinate
+must therefore carry its equinox; it must never be labelled only
+“equatorial,” and an ICRS coordinate must not be given an FK5 equinox.
 
 ## 2.3 Galactic coordinates
 
@@ -114,10 +161,11 @@ ecliptic definition, origin, and equinox/date. Wenu currently uses:
 
 These are not interchangeable. Architecture 0.9.5 carries the choice in
 `CoordinateSpec`; `Observer` no longer owns an implicit ecliptic frame. The
-canonical celestial-reference furniture uses one J2000 policy for the FK5
+canonical celestial-reference furniture uses one coherent policy for the FK5
 equatorial grid and equator, barycentric true ecliptic, and all four seasonal
-keypoints. An explicit future public `of_date` policy must change the complete
-reference set coherently rather than one component.
+keypoints. The public default is J2000; an explicit `of_date` or other
+supported equinox changes the complete reference set coherently rather than
+one component.
 
 For the elementary mean-equator rotation with obliquity \(\epsilon\),
 
@@ -186,6 +234,194 @@ satellite path requires explicit TEME-to-Earth-fixed/celestial transformation,
 UT1 and polar-motion information where required, and a topocentric observer
 step. Architecture 0.9.5 reserves this through `CoordinateSpec`; it does not
 implement satellite propagation.
+
+## 2.7 Equinox applicability by system and frame
+
+**[Foundation]** An equinox is relevant only when a coordinate frame uses the
+intersection of an equator and an ecliptic to define the zero direction of
+longitude or right ascension. Other frames obtain their axes from distant
+sources, the Milky Way, the observer's horizon, or Earth itself. For those
+frames, “not applicable” is more accurate than supplying an invented equinox.
+
+| System or frame | Defining equinox | Can a Wenu request select it? | What fixes the axes instead? |
+| --- | --- | --- | --- |
+| ICRS | None; its fixed RA origin is historically close to, but not identical with, the J2000.0 dynamical equinox | No | ICRS definition and its extragalactic realizations |
+| ICRF3 | None | No | VLBI radio-source realization of ICRS |
+| Gaia-CRF3 | None | No | Optical quasar realization of ICRS, aligned to ICRF3 |
+| FK5 equatorial | Mean equator and equinox at a stated Julian date | Yes, for reference geometry | FK5 precession model at that equinox |
+| FK4 equatorial | Mean equator and equinox at a stated Besselian date | Not in this public milestone | FK4 conventions and precession model |
+| Barycentric mean/true ecliptic | A stated equinox/date defines the ecliptic orientation and longitude origin | Yes, through the coupled reference policy | Selected mean or true ecliptic definition |
+| Galactic | None | No | Fixed IAU Galactic pole and longitude-zero direction |
+| GCRS | None as a defining frame parameter | No | Geocentric relativistic system kinematically aligned to ICRS |
+| Horizontal AltAz | None | No | Observer's local vertical, geographic north, site, and observation instant |
+| TEME | Mean equinox associated with the state time; not an independently chosen publication equinox | No | SGP4/TEME state and its evaluation instant |
+| Earth-fixed frames | None | No | Terrestrial pole, reference meridian, Earth rotation, and Earth-orientation data |
+
+**[Undergraduate]** “Related to the J2000 equinox” does not mean “defined by
+the J2000 equinox.” The ICRS axes were placed near the FK5 J2000 orientation
+for continuity, but the ICRS right-ascension origin and pole are independent
+fixed directions. The small rotation between ICRS/GCRS axes and the dynamical
+mean equator and equinox of J2000.0 is the frame bias. FK5 and ecliptic frames,
+by contrast, accept equinox as part of their frame construction. TEME is a
+special case whose name includes “mean equinox,” but that equinox follows the
+state time and SGP4 convention; it is not Wenu's selectable celestial-reference
+equinox.
+
+> ### Concept box — How an abstract celestial sphere becomes a measured frame
+>
+> **[Foundation]** A spherical coordinate system begins as a geometrical idea:
+> choose a centre, a north pole, a zero-longitude direction, and an angular
+> scale. That is not yet enough to point a telescope. The axes must be attached
+> to observable directions in the real sky. Very distant quasars are especially
+> useful because their transverse motions are normally negligible for this
+> purpose. Stars can also transfer the frame to users, provided their positions
+> and motions are measured and propagated to a stated epoch.
+>
+> The observatory does not directly read a perfect right ascension and
+> declination. A radio interferometer measures signal-arrival delays between
+> antennas. Gaia measures the times and angles at which source images cross its
+> detectors while the spacecraft scans. A mathematical observation model asks:
+> “For proposed source coordinates, observer position, instrument orientation,
+> and calibration, what delay or detector angle should have been measured?”
+> The parameters are adjusted until the predictions fit millions or billions
+> of observations as well as possible.
+>
+> **[Undergraduate]** Schematically, the residual vector is
+>
+> \[
+> \boldsymbol r = \boldsymbol y_{\rm observed}
+> - \boldsymbol f(\boldsymbol s,\boldsymbol a,\boldsymbol c,
+>                  \boldsymbol g,\boldsymbol t),
+> \]
+>
+> where \(\boldsymbol s\) contains source positions, parallaxes, and proper
+> motions; \(\boldsymbol a\) describes antenna geometry or spacecraft attitude;
+> \(\boldsymbol c\) contains instrument and propagation calibrations;
+> \(\boldsymbol g\) contains global physical parameters; and
+> \(\boldsymbol t\) represents observation times and observer ephemerides. A
+> weighted least-squares or iterative block solution minimizes
+> \(\boldsymbol r^{T}W\boldsymbol r\), estimates covariances, rejects or
+> downweights unsuitable observations, and repeats after calibration updates.
+>
+> A purely internal solution can be rotated without changing its predicted
+> relative angles. Proper-motion solutions can similarly acquire a rigid spin.
+> Least squares alone therefore does not determine the absolute orientation and
+> non-rotation of the sphere. Datum constraints remove these null directions:
+> for example, a **no-net-rotation** condition on defining quasars, or a fit of
+> common optical/radio quasars to an existing frame. Coordinates of the
+> reference sources and orientation of the axes are consequently solved as
+> coupled parts of one global problem, not as two completely independent steps.
+>
+> The observation model must also remove effects that change the measured ray
+> without representing source motion. Depending on the experiment these include
+> the observer's barycentric velocity and **stellar aberration**; gravitational
+> deflection by the Sun, planets, and sometimes higher multipoles; annual
+> parallax; light-time; relativistic time transformations; spacecraft or Earth
+> ephemerides; precession and nutation when moving equator/equinox frames are
+> involved; Earth rotation and polar motion; atmospheric refraction for optical
+> ground observations; and tropospheric, ionospheric, clock, and antenna effects
+> for radio interferometry. The adopted corrections are part of the frame's
+> provenance, not cosmetic plotting options.
+>
+> #### How the principal frames are realized or constructed
+>
+> | Frame/system | How its orientation is obtained in practice |
+> | --- | --- |
+> | ICRS/ICRF3 | **Very Long Baseline Interferometry (VLBI)** group delays from compact radio quasars are globally adjusted together with station, clock, atmosphere, and Earth-orientation parameters. Defining sources and no-net-rotation constraints maintain the ICRS axes. |
+> | Gaia-CRF3 | Gaia's **Astrometric Global Iterative Solution (AGIS)** alternates least-squares blocks for source astrometry, spacecraft attitude, instrument calibration, and global parameters. Quasars suppress frame spin; optical sources common with ICRF3 set the orientation. Ordinary Gaia stars then carry this frame through their positions and proper motions at the catalogue epoch. |
+> | FK5/FK4 | These historical fundamental frames were assembled from selected stars observed by meridian and other catalogues. Catalogue systematic corrections, proper motions, precession constants, and equator/equinox constraints produced the published fundamental-star realization. FK5 means **Fifth Fundamental Catalogue**; FK4 is its predecessor. |
+> | Galactic | The modern Galactic axes are a conventional fixed rotation of ICRS. Wenu/Astropy applies that adopted rotation; it does not refit the Milky Way or a new beacon catalogue for each chart. |
+> | Mean/true ecliptic | The axes are mathematically constructed from an adopted equatorial frame and modeled orbital/ecliptic orientation at the stated equinox. “True” additionally includes the applicable short-period orientation terms. This is a dynamical construction rather than a new least-squares beacon frame. |
+> | GCRS | The **Geocentric Celestial Reference System** is defined relativistically with its origin at Earth's centre and spatial axes kinematically aligned to ICRS. It is computed from IAU/IERS conventions and ephemerides, not independently oriented from a new source fit. |
+> | Horizontal AltAz | **Altitude–azimuth** axes are realized locally from the observer's gravity/vertical direction, geographic north, Earth orientation, and observation instant. Refraction determines whether coordinates are geometric or observed. |
+> | TEME | **True Equator, Mean Equinox** is the Earth-centred frame conventionally returned by **Simplified General Perturbations 4 (SGP4)** satellite propagation. Its pole follows the true equator and its longitude origin follows the associated mean equinox. It is an operational orbit-model frame, not an IAU beacon realization; conversion to terrestrial or observer coordinates must follow a documented TEME convention. |
+> | ITRS/ITRF | The **International Terrestrial Reference System (ITRS)** is Earth-fixed; an **International Terrestrial Reference Frame (ITRF)** realizes it from globally adjusted station positions and velocities measured by geodetic techniques. **Earth Orientation Parameters (EOP)** connect it to celestial systems through polar motion, Earth rotation, and precession-nutation. |
+>
+> #### Acronyms used in this box
+>
+> - **AGIS:** Astrometric Global Iterative Solution.
+> - **AltAz:** altitude–azimuth.
+> - **EOP:** Earth Orientation Parameters.
+> - **EDR3:** Gaia Early Data Release 3.
+> - **FK4/FK5:** Fourth/Fifth Fundamental Catalogue; `FK` comes from the
+>   German *Fundamentalkatalog*.
+> - **GCRS:** Geocentric Celestial Reference System.
+> - **IAU:** International Astronomical Union.
+> - **ICRF3:** third realization of the International Celestial Reference Frame.
+> - **ICRS:** International Celestial Reference System.
+> - **IERS:** International Earth Rotation and Reference Systems Service.
+> - **ITRF/ITRS:** International Terrestrial Reference Frame/System.
+> - **SGP4:** Simplified General Perturbations 4.
+> - **TEME:** True Equator, Mean Equinox.
+> - **VLBI:** Very Long Baseline Interferometry.
+>
+> Further technical reading: the
+> [Gaia EDR3 astrometric-solution paper](https://www.aanda.org/articles/aa/full_html/2021/05/aa39709-20/aa39709-20.html)
+> describes the source, attitude, calibration, and global AGIS solution; the
+> [ICRF3 paper](https://www.aanda.org/articles/aa/full_html/2020/12/aa38368-20/aa38368-20.html)
+> describes the VLBI observations and global radio-frame construction; and the
+> [IERS Conventions](https://iers-conventions.obspm.fr/archive/2003/chapter2/tn32_c2.pdf)
+> define the conventional celestial system/frame relationship and Earth-orientation chain.
+>
+> ### Wenu implementation box — Where each responsibility lives
+>
+> **[Foundation]** Wenu does not rebuild ICRS, Gaia-CRF3, or FK5 from raw
+> telescope measurements. Standards organizations and catalogue teams perform
+> those global astrometric solutions. Wenu consumes their published frames and
+> catalogues, preserves their scientific identity, transforms coordinates
+> through Astropy or an approved specialist provider, and then projects the
+> resulting spherical geometry onto a chart. This boundary prevents a plotting
+> program from silently becoming a second astrometric authority.
+>
+> Status meanings in the table are: **implemented**—owned by current Wenu code;
+> **delegated**—Wenu deliberately relies on a named external scientific
+> authority; and **future**—the accepted architecture identifies an owner, but
+> the operational provider or adapter has not yet been implemented.
+>
+> | Scientific responsibility | Wenu owner or external authority | Status and boundary |
+> | --- | --- | --- |
+> | Describe frame, origin, equinox, epoch, instant, status, corrections, model, and provenance | `coordinates.py::CoordinateSpec`, `PositionStatus`, and `ObservationContext` | **Implemented.** These immutable values carry meaning; they do not calculate positions. |
+> | Define the structural source of astronomical positions | `positions.py::PositionProvider` | **Implemented protocol.** A provider generates native positions; it does not transform, project, or render them. |
+> | Build ICRS/ICRF3 from raw VLBI observations | IAU/IERS and ICRF analysis centres, outside Wenu | **Delegated.** Wenu consumes the published ICRS realization through Astropy; it does not solve VLBI delays or no-net-rotation constraints. |
+> | Build Gaia-CRF3 and solve Gaia source astrometry | Gaia Data Processing and Analysis Consortium AGIS, outside Wenu | **Delegated upstream.** Wenu does not solve Gaia CCD observations, attitude, calibration, or frame spin. |
+> | Load current stellar positions | `objects/stars.py::Stars`; current Hipparcos/Skyfield path | **Implemented for the current catalogue.** Skyfield supplies the existing apparent topocentric stellar realization. |
+> | Load Gaia stellar astrometry with release, J2016.0 epoch, covariance, and motion | A future Gaia implementation of `PositionProvider`, governed by Milestones 49D/49E | **Future.** Existing Gaia-derived Magellanic Cloud isophotes are morphology products, not a Gaia stellar position provider. |
+> | Propagate stellar positions to another epoch | Future catalogue-provider method behind `PositionProvider.position(instant=...)` | **Future.** It must use proper motion, parallax, radial velocity, covariance, and provider provenance where applicable; `CelestialReferencePolicy` must not do this. |
+> | Generate planet, Moon, and natural-satellite states | Future ephemeris providers under Milestones 49E/49I | **Future.** Expected owner is a JPL-or-equivalent provider returning explicit barycentric, geocentric, or planet-centred state. |
+> | Generate artificial-satellite states | Future TLE/OMM plus SGP4 provider under Milestones 49E/49I | **Future.** It will return an explicit TEME state before any observer-local transformation. |
+> | Record observer location, time, and Astropy/Skyfield compatibility state | `observer.py::Observer`; `coordinates.py::observation_context()` | **Implemented.** `Observer` constructs context but is not a competing transformation authority. |
+> | Transform spherical geometry among ICRS, FK4, FK5, Galactic, GCRS, mean/true barycentric ecliptic, and AltAz | `coordinate_service.py::CoordinateService` | **Implemented and delegated numerically to Astropy/ERFA.** It preserves geometry topology and metadata and does not generate physical positions. |
+> | Apply aberration, light deflection, light-time, and related apparent-place corrections | Current Skyfield stellar provider where already used; future object-specific providers and explicit `CoordinateSpec.corrections` | **Partly implemented/delegated.** These effects belong to the provider or declared transformation model, never to projection or rendering. |
+> | Apply Earth orientation to observer-local AltAz | `CoordinateService` plus Astropy Earth-orientation data, using `ObservationContext.earth_orientation_policy` | **Implemented for the Astropy policy.** The current public transformation uses vacuum AltAz. |
+> | Apply atmospheric refraction | `ObservationContext.refraction_policy` and the AltAz construction in `CoordinateService` | **Contract implemented; physical refraction future.** Only `vacuum` is currently accepted and Astropy receives zero pressure. |
+> | Select J2000, `of_date`, or another supported equinox for coupled chart references | `charts/reference_policy.py::CelestialReferencePolicy`; CLI translation in `charts/chart_arguments.py`; TOML translation in `configuration/translation.py` | **Implementation candidate in this milestone.** It changes reference representation, not provider epoch. |
+> | Construct equatorial, ecliptic, Galactic, and AltAz grid geometry | `sky/coordinate_grids.py::{EquatorialGrid,EclipticGrid,GalacticGrid,AltAzGrid}` | **Implemented.** Each grid creates typed spherical geometry and uses `CoordinateService` when another frame is requested. |
+> | Apply a request's reference policy to ordinary grids | `charts/request_grids.py::configure_chart_request_grids()` | **Implementation candidate.** Equatorial FK5 and true-ecliptic grids receive the same resolved equinox. |
+> | Construct celestial equator, ecliptic, seasonal keypoints, and poles | `charts/reference_furniture.py::build_celestial_reference_sky()` and `sky/points.py` | **Implemented; policy coupling is a candidate.** Reference furniture uses the same equinox as request grids. |
+> | Describe active grid/frame/equinox in chart furniture | `charts/legend_metadata.py::resolve_legend_metadata()` | **Implemented.** Metadata reports the selected representation; it does not infer a provider epoch. |
+> | Convert a TEME satellite state to Earth-fixed, celestial, and topocentric coordinates | Future specialized TEME adapter owned beside `CoordinateService`, then the ordinary service for supported downstream frames | **Future, Milestone 49I.** TEME must not be relabelled ICRS or passed through an undocumented approximation. |
+> | Represent ITRS/ITRF and explicit EOP provenance for satellite work | Future Earth-fixed state/adapter contract under Milestones 49E/49I | **Future.** Current Astropy AltAz transformations already consume its Earth-orientation authority internally, but Wenu does not yet expose a general ITRS product state. |
+> | Rotate resolved spherical coordinates for chart centring and orientation | `geometry/frame.py::SphericalFrame` and chart-specific frame construction | **Implemented.** This is coordinate-neutral projection alignment after astronomical transformation; it is not ICRS/FK5/AltAz transformation. |
+> | Project, clip, prepare, render, and export | `projections/`, `geometry/`, `charts/`, `rendering/`, and the canonical `CelestialSphere.draw_chart()` flow | **Implemented.** None of these owners may choose an astronomical frame or compute an orbit. |
+> | Evolve observer time while retaining a fixed celestial scene | `charts/sequence.py`, `charts/fixed_sky_orientation.py`, and `charts/fixed_sky_sequence.py` | **Implemented reference behavior.** Scientifically keyed reuse remains a later optimization. |
+>
+> **[Undergraduate]** The intended future provider path is therefore:
+>
+> ```text
+> external catalogue, ephemeris, or orbit observations
+>     -> PositionProvider native state with CoordinateSpec
+>     -> CoordinateService or documented specialized adapter
+>     -> typed SphericalGeometry in the requested product frame
+>     -> SphericalFrame projection alignment
+>     -> projection, preparation, rendering, and export
+> ```
+>
+> Wenu starts at the published catalogue/provider-state boundary. The VLBI and
+> AGIS least-squares normal equations described in the preceding box remain
+> provenance for the input frame; they are not planned as Wenu chart-generation
+> modules. Future Gaia, planetary, and satellite work extends the provider side
+> of this one pipeline rather than adding a second coordinate or rendering
+> pipeline.
 
 # 3. Origins and position status
 
@@ -474,9 +710,10 @@ equinox markers. The final fixed-sky/rotating-horizon rendering was visually
 accepted. The routine suite passed 1779 tests with 30 deselected in 27.31
 seconds, and the complete suite passed 1809 tests in 84.99 seconds.
 
-Public selection of coordinate system, frame, epoch/equinox, and `of_date`
-policies remains a follow-up interface milestone. Those values must translate
-to `CoordinateSpec`; examples and tools must not create separate frame logic.
+Public reference-equinox selection is implemented by the bounded reference
+policy described in Section 13. Product-frame and provider position-epoch
+selection remain later milestones. Public values translate to
+`CoordinateSpec`; examples and tools do not create separate frame logic.
 
 # 11. Review questions for Fernando
 
@@ -497,3 +734,165 @@ This guide must change whenever Wenu changes a coordinate system, origin,
 epoch/equinox convention, time-scale dependency, position provider,
 transformation engine, object source, provenance field, or code owner. The
 Markdown source is canonical; the ODT is regenerated for human review.
+
+Every medium or major Wenu change must include an explicit review of this
+guide, even when the milestone is not primarily described as coordinate work.
+The change must either update the scientific explanations, implementation
+ownership box, object/provenance inventory, and relevant roadmap statements,
+or record in its acceptance evidence that the guide was reviewed and remains
+accurate. A passing documentation test is not a substitute for Fernando's
+scientific and pedagogical review.
+# 13. Reading depth markers
+
+This guide is both Wenu's scientific reference and a teaching document. New
+coordinate material uses two markers:
+
+- **[Foundation]** gives the high-school-level physical picture and the
+  vocabulary needed to request a scientifically meaningful chart.
+- **[Undergraduate]** adds the astronomical definition, mathematical
+  distinction, and Wenu implementation consequence.
+
+The deeper paragraph extends the first one; it does not replace or contradict
+it.
+
+## 13.1 Public celestial reference policy
+
+### 13.1.1 Coordinate system and reference frame
+
+**[Foundation]** A coordinate system is a way of drawing an imaginary grid on
+the sky. Equatorial coordinates use right ascension and declination, ecliptic
+coordinates follow the apparent yearly path of the Sun, Galactic coordinates
+are aligned with the Milky Way, and horizontal coordinates use altitude and
+azimuth for a particular place and time. A reference frame states precisely
+how such a grid is realized. Two grids may both be called equatorial while
+using different precise frames.
+
+**[Undergraduate]** A coordinate system supplies the coordinate variables and
+their geometric meaning; a reference frame supplies the realized axes,
+origin, and conventions. ICRS is a quasi-inertial celestial reference system
+with a fixed realized pole and right-ascension origin; an equinox is not one
+of its defining frame parameters. FK5 is an equatorial frame whose axes can
+be represented at a stated equinox. Wenu therefore does not accept an equinox
+as decoration on ICRS: the system/frame/equinox combination must be
+semantically valid.
+
+The three frequently confused names can be compared directly:
+
+| Name | What it represents | Relationship to an equinox | Position epoch? |
+| --- | --- | --- | --- |
+| ICRS | IAU ideal barycentric celestial system, fixed relative to the distant Universe | No defining equinox; its fixed RA origin lies close to but not at the J2000.0 dynamical equinox | A catalogue expressed in ICRS may have one |
+| FK5 | Older fundamental-catalogue equatorial frame with modeled mean equator, equinox, and precession | A stated equinox is part of the frame and may be selected | Its stellar data may also have one |
+| Gaia-CRF3 | Optical quasar-based realization of ICRS used by Gaia EDR3/DR3 | No defining equinox; it realizes the fixed ICRS axes | Gaia EDR3/DR3 astrometry is referenced to J2016.0 |
+
+**[Foundation]** One useful analogy is a surveying coordinate system. ICRS is
+the agreed definition of the directions; Gaia-CRF3 is an exceptionally precise
+set of observed optical markers that makes those directions usable. FK5 is an
+older realization built from fundamental stars and an Earth-equator/equinox
+model. The date attached to a moving star says when its listed position is
+valid; it does not redefine the surveying axes.
+
+**[Undergraduate]** ICRS is a barycentric, kinematically non-rotating system.
+ICRF3 and Gaia-CRF3 are radio and optical realizations tied through common
+extragalactic sources. FK5 is a dynamical equatorial frame with precession and
+equinox semantics. A catalogue realization can additionally carry source
+positions and proper motions at a reference epoch. Consequently the complete
+scientific identity is not a single name: it includes system/frame,
+realization/provider, equinox where applicable, and position epoch where
+applicable.
+
+### 13.1.2 Equinox, position epoch, and observation instant
+
+**[Foundation]** Earth's rotation axis slowly changes direction. Consequently,
+the equatorial grid for J2000 and the grid "of date" are slightly rotated with
+respect to each other. The equinox tells Wenu which orientation of the
+celestial reference grid to draw. It does not say that the stars themselves
+have been moved to that date. The observation instant tells Wenu when and from
+where the local horizon is viewed.
+
+**[Undergraduate]** Precession changes the orientation used to express
+equatorial and ecliptic longitude and latitude. A requested equinox is thus a
+coordinate-representation transformation. A position epoch is instead the
+instant at which a catalogue state is realized; changing it can require proper
+motion, parallax, and radial velocity. The observation instant enters
+observer-local transformations such as AltAz. Wenu keeps these three time
+concepts separate and rejects unsupported position propagation rather than
+relabeling catalogue coordinates.
+
+### 13.1.3 Requesting a reference equinox
+
+**[Foundation]** The default remains J2000. To draw coupled equatorial and
+ecliptic references at another supported orientation, use for example:
+
+```console
+wenu_chart planisphere --equatorial-grid --ecliptic-grid \
+  --reference-equinox J2050
+```
+
+`B1950`, an Astropy-readable date, and `of_date` are also accepted. `of_date`
+uses the chart's declared observer time, never the computer clock.
+
+The same default can be placed in a configuration overlay:
+
+```toml
+[coordinates.references]
+equinox = "J2050"
+```
+
+An explicit command-line value overrides the TOML value.
+
+**[Undergraduate]** This first public policy deliberately couples an FK5
+equatorial grid and celestial equator to a barycentric true-ecliptic grid and
+its seasonal keypoints at one resolved `astropy.time.Time`. Galactic references
+remain in the IAU Galactic frame and AltAz remains tied to the observation
+context. The policy controls reference geometry; it does not yet change the
+chart family's projection frame or propagate provider positions to a requested
+epoch.
+
+### 13.1.4 Julian and Besselian year labels
+
+**[Foundation]** The letter in `J2000.0` or `B1950.0` identifies the kind of
+astronomical year used to name the date. `J` means a Julian epoch and `B` means
+a Besselian epoch. They are not two names for exactly the same timeline, so
+the letter must not be dropped. Besselian labels occur mainly with older FK4
+material, especially `B1950.0`; modern FK5 and catalogue work normally uses
+Julian labels such as `J2000.0`, `J2015.5`, or `J2016.0`.
+
+**[Undergraduate]** A Julian year is exactly 365.25 days, and Julian epochs are
+measured from the conventional instant J2000.0. A Besselian epoch belongs to
+the older convention based on the Sun's mean longitude and the tropical year,
+approximately 365.2422 days. Consequently `B1950.0` and `J1950.0` denote
+slightly different instants. The usual association—FK4/Besselian and
+FK5/Julian—is historically and scientifically meaningful, although the year
+label alone never fully specifies a reference frame.
+
+### 13.1.5 The Gaia reference epoch is not an equinox
+
+**[Foundation]** Gaia catalogue coordinates also carry a date, but it answers
+a different question: when were the listed stellar positions defined? Gaia
+DR2 positions use reference epoch `J2015.5`; Gaia EDR3 and DR3 positions use
+`J2016.0`. This is a **position epoch**, not an orientation of the coordinate
+grid. There is therefore no Gaia `J2016.0` equinox that must be selected to
+display Gaia positions correctly.
+
+**[Undergraduate]** Gaia DR3 astrometry is expressed in ICRS at reference
+epoch J2016.0. ICRS has no defining equinox to select: its right-ascension
+origin is a fixed realized direction, historically placed close to the
+J2000.0 dynamical equinox. Propagating a Gaia source
+from J2016.0 to another epoch is a provider operation using its astrometric
+parameters, including proper motion and, where available and relevant,
+parallax and radial velocity. By contrast, requesting
+`--reference-equinox J2016.0` in this Wenu milestone rotates the coupled FK5
+and true-ecliptic reference representation to that equinox; it neither
+selects Gaia nor propagates any star to the Gaia reference epoch.
+
+Authoritative references: [ESA's Gaia DR3 documentation](https://www.cosmos.esa.int/web/gaia/dr3)
+states the 2016.0 reference epoch for EDR3/DR3; the
+[IVOA Coordinates data model](https://www.ivoa.net/documents/Coords/20221004/Coords-v1.0.html)
+defines epoch labels as `J` (Julian) or `B` (Besselian) followed by a decimal
+year. The peer-reviewed
+[Gaia-CRF3 reference-frame paper](https://www.aanda.org/articles/aa/full_html/2022/11/aa43483-22/aa43483-22.html)
+describes Gaia-CRF3 as the celestial reference frame for Gaia EDR3/DR3
+positions and proper motions and documents its alignment to ICRF3.
+The [IERS Conventions](https://iers-conventions.obspm.fr/archive/2003/chapter2/tn32_c2.pdf)
+document the ICRS right-ascension origin, its intended proximity to the
+dynamical equinox at J2000.0, and the measured frame-bias offset between them.

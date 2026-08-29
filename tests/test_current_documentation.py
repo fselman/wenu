@@ -349,7 +349,7 @@ def test_public_interface_audit_records_as_is_and_scientific_boundary():
         "equinox",
         "position epoch",
         "observation instant",
-        "ICRS has no caller-selected equinox",
+        "an equinox is not a defining parameter of ICRS",
         "`of_date` resolves from the declared product or observation time",
         "It must never relabel native catalogue coordinates",
         "Reference-policy contract",
@@ -358,6 +358,47 @@ def test_public_interface_audit_records_as_is_and_scientific_boundary():
         "Physical-product command",
     ):
         assert phrase in audit
+
+
+def test_coordinate_guide_teaches_reference_policy_at_two_depths():
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    for phrase in (
+        "**[Foundation]**",
+        "**[Undergraduate]**",
+        "Julian and Besselian year labels",
+        "A Julian year is exactly 365.25 days",
+        "Gaia DR2 positions use reference epoch `J2015.5`",
+        "Gaia EDR3 and DR3 positions use `J2016.0`",
+        "The Gaia reference epoch is not an equinox",
+        "an equinox is not one of its defining frame parameters",
+        "Gaia-CRF3 is a high-precision optical realization of ICRS",
+        "ICRF3 is the third radio realization of ICRS",
+        "`FK5(equinox=J2000.0)` is close to ICRS but is not identical",
+        "Wenu currently represents Gaia-compatible celestial geometry as `icrs`",
+        "Equinox applicability by system and frame",
+        "ICRS does not have a **defining equinox**, fixed or selectable",
+        "The small rotation between ICRS/GCRS axes and the dynamical mean equator",
+        "TEME is a special case whose name includes “mean equinox,”",
+        "Concept box — How an abstract celestial sphere becomes a measured frame",
+        "Least squares alone therefore does not determine the absolute orientation",
+        "Astrometric Global Iterative Solution (AGIS)",
+        "True Equator, Mean Equinox",
+        "Simplified General Perturbations 4 (SGP4)",
+        "`FK` comes from the German *Fundamentalkatalog*",
+        "The adopted corrections are part of the frame's provenance",
+        "Wenu implementation box — Where each responsibility lives",
+        "Wenu does not rebuild ICRS, Gaia-CRF3, or FK5",
+        "`coordinates.py::CoordinateSpec`",
+        "`coordinate_service.py::CoordinateService`",
+        "`charts/reference_policy.py::CelestialReferencePolicy`",
+        "Existing Gaia-derived Magellanic Cloud isophotes are morphology products",
+        "Only `vacuum` is currently accepted",
+        "Future specialized TEME adapter",
+        "Wenu starts at the published catalogue/provider-state boundary",
+        "Every medium or major Wenu change must include an explicit review",
+        "A passing documentation test is not a substitute for Fernando's",
+    ):
+        assert phrase in guide
 
 
 def test_architecture_v095_closure_and_example_count_are_current():

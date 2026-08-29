@@ -29,6 +29,7 @@ class ConfigurationDefaults:
     geometry_detail: GeometryDetailDefaults
     furniture_product_export: FurnitureProductExportDefaults
     sequence: SequenceDefaults
+    reference_policy: Any
 
 
 def translate_configuration_defaults(
@@ -36,6 +37,7 @@ def translate_configuration_defaults(
 ) -> ConfigurationDefaults:
     """Translate one complete configuration through all existing owners."""
     values = validate_configuration(configuration)
+    from wenu.charts.reference_policy import CelestialReferencePolicy
     return ConfigurationDefaults(
         style_mode=translate_style_mode_defaults(values),
         geometry_detail=translate_geometry_detail_defaults(values),
@@ -43,6 +45,9 @@ def translate_configuration_defaults(
             translate_furniture_product_export_defaults(values)
         ),
         sequence=translate_sequence_defaults(values),
+        reference_policy=CelestialReferencePolicy(
+            values["coordinates"]["references"]["equinox"]
+        ),
     )
 
 

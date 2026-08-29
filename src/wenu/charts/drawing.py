@@ -73,6 +73,7 @@ def chart_view_request(
     title=None,
     language=None,
     output_format=None,
+    reference_policy=None,
 ):
     """Translate one prepared view and product into an immutable request."""
     if not isinstance(view, ChartView):
@@ -151,6 +152,10 @@ def chart_view_request(
         ),),
         title=defaults.title if title is None else title,
         language=defaults.language if language is None else language,
+        reference_policy=(
+            view._prepared.resolved.request.reference_policy
+            if reference_policy is None else reference_policy
+        ),
     )
     if output_format is not None:
         request = replace(

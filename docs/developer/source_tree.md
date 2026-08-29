@@ -848,3 +848,12 @@ dimensions, timeline instants, and manifest identity in JSON.
 - `tools/render_49h3_fixed_sky_reference.py` produces the visually accepted
   fixed-sky/rotating-horizon audit and records per-frame orientation metadata,
   dimensions, and hashes.
+
+# Public celestial reference policy
+
+- `src/wenu/charts/reference_policy.py`: validates and resolves the coupled
+  FK5/ecliptic reference equinox and translates it to coordinate identities.
+- `src/wenu/charts/request_grids.py`: applies the request policy to ordinary
+  equatorial and ecliptic grids.
+- `src/wenu/charts/reference_furniture.py`: applies the same resolved equinox
+  to the celestial equator, ecliptic, and seasonal keypoints.

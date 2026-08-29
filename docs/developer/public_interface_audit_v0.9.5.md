@@ -1,6 +1,6 @@
 # Wenu public-interface audit after architecture v0.9.5
 
-**Status:** Review candidate for the as-is audit and follow-up contract
+**Status:** Accepted as-is audit; reference-policy implementation in progress
 
 **Audit baseline:** `1a15076`
 
@@ -172,7 +172,8 @@ rendering. In particular:
 
 - an equatorial system may select an applicable equatorial frame, but a
   Galactic system cannot be relabelled as FK5;
-- ICRS has no caller-selected equinox;
+- an equinox is not a defining parameter of ICRS and must not be supplied as
+  though ICRS had a fixed or selectable dynamical equinox;
 - FK4, FK5, and ecliptic frames require coherent equinox handling;
 - `of_date` resolves from the declared product or observation time, never the
   computer clock;

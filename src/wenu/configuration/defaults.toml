@@ -808,6 +808,9 @@ include_galactic_reference = false
 requested_longitudes = "none"
 requested_latitudes = "none"
 
+[coordinates.references]
+equinox = "J2000"
+
 [grids_references.references]
 state = "none"
 anchor = "none"

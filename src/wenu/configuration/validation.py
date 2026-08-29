@@ -363,6 +363,13 @@ def _validate_semantics(configuration: Mapping[str, Any]) -> None:
             f"unsupported value {configuration.get('schema_version')!r}; "
             f"expected {SCHEMA_VERSION}",
         )
+    from wenu.charts.reference_policy import CelestialReferencePolicy
+    try:
+        CelestialReferencePolicy(
+            configuration["coordinates"]["references"]["equinox"]
+        )
+    except ValueError as error:
+        _error("coordinates.references.equinox", str(error))
 
     for parts, value in _walk(configuration):
         path = _path(parts)
