@@ -254,6 +254,32 @@ propagate them physically.
 
 ## 7. Milestone 49D - Observer-independent celestial realization
 
+### Milestone 49D.1 — Celestial-scene dependency and ownership audit
+
+**Status:** Review candidate on the dedicated 49D.1 branch; documentation and
+characterization only.
+
+The as-is inventory and minimum planet-enabling scene boundary are recorded in
+`celestial_scene_dependency_audit_49d1.md`. It distinguishes the reusable
+loaded sphere from its currently observer-bound spherical realizations and
+classifies content as celestial background, dynamic astronomical objects, or
+observer-local geometry.
+
+All enabled layers must converge in one explicit spherical product frame
+before the existing projection and preparation path. A future planet enters
+after provider evaluation and coordinate transformation as an ordinary
+semantic sky layer; it does not enter through the renderer, furniture, command,
+or a parallel scene graph. This audit changes no runtime behavior and
+authorizes no caching.
+
+49D.2 may add the smallest immutable layer-realization context and a controlled
+test provider while preserving the current
+`layer.spherical_geometry(observer, **geometry_options)` compatibility call.
+A real ephemeris provider remains Milestone 49E and the first planet remains a
+49I vertical slice. Completing every 49D migration is not a prerequisite for
+that planet, but this bounded dependency contract prevents the provider from
+being attached at the wrong architectural layer.
+
 - realize catalogue stars and deep-sky geometry directly in the canonical
   celestial product frame;
 - migrate constellations, boundaries, labels, the Milky Way, and Magellanic
