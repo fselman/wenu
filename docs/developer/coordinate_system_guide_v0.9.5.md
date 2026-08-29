@@ -24,6 +24,20 @@ numerical authority for standards-based transformations; equations reproduced
 here explain and audit those transformations and must not become competing
 approximate production implementations.
 
+## How to read the depth markers
+
+This guide is both Wenu's scientific reference and a teaching document.
+Coordinate material uses two complementary depth markers:
+
+- **[Foundation]** gives the high-school-level physical picture and the
+  vocabulary needed to request a scientifically meaningful chart.
+- **[Undergraduate]** adds the astronomical definition, mathematical
+  distinction, and Wenu implementation consequence.
+
+The undergraduate explanation extends the foundation explanation; it does not
+replace or contradict it. A reader may follow only the foundation paragraphs
+on a first reading and return to the undergraduate material later.
+
 # 1. Scientific vocabulary
 
 ## 1.1 A position is more than two angles
@@ -742,18 +756,7 @@ ownership box, object/provenance inventory, and relevant roadmap statements,
 or record in its acceptance evidence that the guide was reviewed and remains
 accurate. A passing documentation test is not a substitute for Fernando's
 scientific and pedagogical review.
-# 13. Reading depth markers
-
-This guide is both Wenu's scientific reference and a teaching document. New
-coordinate material uses two markers:
-
-- **[Foundation]** gives the high-school-level physical picture and the
-  vocabulary needed to request a scientifically meaningful chart.
-- **[Undergraduate]** adds the astronomical definition, mathematical
-  distinction, and Wenu implementation consequence.
-
-The deeper paragraph extends the first one; it does not replace or contradict
-it.
+# 13. Practical guide to celestial reference systems, equinoxes, and epochs
 
 ## 13.1 Public celestial reference policy
 
