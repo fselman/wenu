@@ -409,8 +409,9 @@ all four chart families.
 `ReferenceAnnotations.ecliptic_keypoints` independently selects `none`,
 `markers`, or `labeled`. The reference-furniture owner delegates the four
 equinox/solstice positions to `CelestialPoints.add_ecliptic_keypoints()` and
-supplies the same barycentric true-ecliptic-of-date frame used by the rendered
-ecliptic curve. Celestial-reference layers use the same composition-resolved
+supplies the same barycentric true-ecliptic J2000 frame used by the rendered
+ecliptic curve. The FK5 equatorial grid and celestial equator use the matching
+J2000 policy, so the March and September markers are genuine intersections. Celestial-reference layers use the same composition-resolved
 horizon altitude as ordinary layers: rectangular regional charts resolve to
 -90 degrees, so seasonal points are not discarded merely because they are
 below the observer's physical horizon. Ordinary projection and viewport
@@ -1258,7 +1259,9 @@ that the complete Spanish month names remain inside the cut line.
 
 Run `python tools/render_48e2_polar_preview.py` for the canonical equidistant
 north/south diagnostic. The tool may also render `--projection stereographic`
-for comparison. It writes only below `output/` and saves each face once.
+for comparison and accepts `--dpi 540` for three-times-linear-resolution
+inspection. It routes its ecliptic label anchors through `CoordinateService`,
+writes only below the requested output directory, and saves each face once.
 
 For Milestone 48E.3, `PolarPlanispherePairRequest` defaults to symmetric
 limits of +20 and -20 degrees. A default stereographic pair selects its
@@ -1306,8 +1309,9 @@ comparatively sparse 3h/15h sectors rather than near their crossings. The
 configuration stores equatorial right ascension and ecliptic longitude so the
 anchors remain independent of page size and projection scale.
 Ecliptic anchors and cardinal keypoints share the reference grid's barycentric
-true-ecliptic-of-date frame; the observer's mean-ecliptic convenience frame is
-not used for this physical reference furniture.
+true-ecliptic J2000 frame. The equatorial grid and celestial equator are FK5
+J2000, so the equinox markers coincide with both curves. A future explicit
+`of_date` product policy must change the whole reference set together.
 
 ## 12. Compatibility and deprecation
 

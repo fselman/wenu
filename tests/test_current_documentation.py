@@ -137,6 +137,9 @@ def test_current_diagrams_are_an_inspection_interface():
         "coordinate_static_structure_as_is_v0.9",
         "coordinate_static_structure_target_49bc",
         "coordinate_runtime_sequence_target_49bc",
+        "coordinate_transformation_as_is_v0.9.5",
+        "coordinate_static_structure_as_is_v0.9.5",
+        "coordinate_runtime_sequence_as_is_v0.9.5",
     ):
         assert (DIAGRAMS / f"{name}.dot").is_file()
         assert (DIAGRAMS / f"{name}.svg").is_file()
@@ -156,6 +159,10 @@ def test_current_diagrams_are_an_inspection_interface():
     assert "`PositionProvider` is the boundary for all astronomical objects" in readme
     assert "requires only another provider implementation" in normalized
     assert "deliberately large canvas" in readme
+    assert "sole production astronomical transformation owner" in normalized
+    assert "fictitious protocol" in readme
+    assert "The retired handwritten and chart-owned authorities are absent" in normalized
+    assert "does not modify `CoordinateService`" in normalized
     assert (
         ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.dot"
     ).is_file()
@@ -171,7 +178,7 @@ def test_v095_coordinate_target_and_living_guide_are_reviewable():
     target = read(V095_TARGET)
     guide = read(COORDINATE_GUIDE)
 
-    assert "**Status:** Partially implemented; 49B–49C.2 merged, 49C.3 accepted pending merge" in target
+    assert "**Status:** Implemented and accepted; 49C.4 closure merge pending" in target
     assert "PositionProvider" in target
     assert "CoordinateService" in target
     assert "49B.1" in target
@@ -181,6 +188,9 @@ def test_v095_coordinate_target_and_living_guide_are_reviewable():
     assert "native AltAz horizon construction" in target
     assert "Removed in 49C.3" in guide
     assert "Observer.observation_context" in target
+    assert "1779 tests with 30 deselected in 27.31 seconds" in target
+    assert "1809 tests in 84.99 seconds" in target
+    assert "mixed\nJ2000-equator/ecliptic-of-date policy" in target
 
     for phrase in (
         "Position generation versus coordinate transformation",
@@ -196,6 +206,8 @@ def test_v095_coordinate_target_and_living_guide_are_reviewable():
         "OpenNGC",
         "Gaia DR3",
         "Minimal architecture 0.9.5 roadmap",
+        "canonical celestial-reference furniture uses one J2000 policy",
+        "Architecture 0.9.5 acceptance",
     ):
         assert phrase in guide
 
@@ -311,6 +323,12 @@ def test_post_v09_roadmap_records_coordinate_svg_and_temporal_direction():
         "1809 tests in 86.11 seconds",
         "visually accepted by Fernando on 2026-08-28",
         "1805 tests in 86.29 seconds",
+        "1779 tests with 30 deselected in 27.31 seconds",
+        "1809 tests in 84.99 seconds",
+        "Immediate post-v0.9.5 public-interface follow-up",
+        "make the installed `wenu_chart` command the ordinary public route",
+        "reserve `tools/` for diagnostics",
+        "coordinate system, frame, epoch/equinox",
     ):
         assert phrase in roadmap
 

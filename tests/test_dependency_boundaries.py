@@ -117,3 +117,31 @@ def test_obsolete_altaz_helpers_are_removed():
     ):
         assert not hasattr(geometry, name)
     assert not hasattr(geometry, "radec_to_altaz")
+
+
+def test_tools_and_examples_use_no_retired_coordinate_authorities():
+    roots = tuple(
+        path for path in (
+            ROOT / "tools",
+            ROOT / "examples",
+            ROOT / "example_scripts",
+        )
+        if path.is_dir()
+    )
+    retired = (
+        ".icrs_frame",
+        ".galactic_frame",
+        ".ecliptic_frame",
+        "wenu.charts.coordinate_frames",
+        "radec_to_altaz",
+    )
+    violations = []
+    for root in roots:
+        for path in root.rglob("*.py"):
+            source = path.read_text(encoding="utf-8")
+            for token in retired:
+                if token in source:
+                    violations.append(
+                        f"{path.relative_to(ROOT)} contains {token}"
+                    )
+    assert violations == []

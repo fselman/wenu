@@ -1,19 +1,19 @@
 # Wenu target architecture v0.9.5
 
-**Status:** Partially implemented; 49B–49C.2 merged, 49C.3 accepted pending merge
+**Status:** Implemented and accepted; 49C.4 closure merge pending
 
 **Date:** 2026-08-28
 
-**Release status:** Architecture target only. This document does not claim a
-`v0.9.5` Git tag, package release, or completed migration.
+**Release status:** Architecture implementation accepted. This document does not claim a
+`v0.9.5` Git tag or package release.
 
 ## Why this work exists
 
-Wenu currently distributes coordinate transformations across Astropy,
+Before 49B/49C, Wenu distributed coordinate transformations across Astropy,
 Skyfield, a handwritten RA/Dec-to-AltAz function, chart helpers, astronomical
-objects, reference grids, and observer-keyed caches. Coordinate arrays do not
-yet carry one enforceable statement of frame, origin, epoch/equinox, instant,
-time scale, observer dependence, position status, and provenance.
+objects, reference grids, and observer-keyed caches. Coordinate arrays did not
+carry one enforceable statement of frame, origin, epoch/equinox, instant, time
+scale, observer dependence, position status, and provenance.
 
 The polar-planisphere equinox discrepancy demonstrated that independently
 valid-looking geometry can reach one product through inconsistent scientific
@@ -92,9 +92,9 @@ Migrate in this order:
 
 ### 49C.3 — Retire competing transformation owners
 
-**Implementation status:** Accepted on the dedicated 49C.3 branch; merge pending.
+**Implementation status:** Accepted and merged in `034bdd8`.
 
-The candidate removes `radec_to_altaz()` and
+The merged implementation removes `radec_to_altaz()` and
 `charts/coordinate_frames.py`, routes every remaining production Astropy
 transformation through `CoordinateService`, and removes Observer-owned ICRS,
 Galactic, and ecliptic frame properties. `Observer.observation_context` is the
@@ -103,10 +103,17 @@ and public Astropy-coordinate compatibility inputs.
 
 ### 49C.4 — Accept and close
 
-Require scientific comparison with Astropy, topology/provenance preservation,
-fixed-sky/rotating-horizon visual acceptance, routine tests below 30 seconds,
-the complete test suite, and replacement of target diagrams by current as-is
-diagrams.
+**Implementation status:** Accepted on the dedicated 49C.4 branch; merge pending.
+
+Scientific comparison with Astropy, topology/provenance preservation, current
+as-is diagram review, and fixed-sky/rotating-horizon visual acceptance passed.
+The final routine suite passed 1779 tests with 30 deselected in 27.31 seconds;
+the complete suite passed 1809 tests in 84.99 seconds. The La Ligua
+stereographic planisphere exposed and then verified the correction of a mixed
+J2000-equator/ecliptic-of-date policy: its equatorial grid, celestial equator,
+ecliptic, and four seasonal keypoints now share the J2000 policy. Fernando
+visually accepted the corrected equinox intersections and the final fixed-sky
+reference on 2026-08-28.
 
 ## Scientific companion
 
