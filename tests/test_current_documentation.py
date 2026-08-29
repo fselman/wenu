@@ -433,6 +433,8 @@ def test_49d2_records_minimal_realization_context_and_non_goals():
         "A chart-wide frame choice alone cannot replace",
         "does not add or choose a JPL ephemeris",
         "does not thread the context through ordinary",
+        "Scientifically, pedagogically, and technically accepted",
+        "all 1,828 tests in 90.00 seconds",
         "Output-neutral and SVG contract",
         "`solar-system/sun`",
         "No future moving object may be drawn by a separate SVG generator",
@@ -445,6 +447,7 @@ def test_49d2_records_minimal_realization_context_and_non_goals():
         "Real ephemerides, installed moving-object layers",
         "SVG product may serialize the reserved",
         "no post-export overlay is acceptable",
+        "Acceptance evidence is 48 focused tests",
     ):
         assert phrase in roadmap
 
@@ -453,6 +456,7 @@ def test_49d2_records_minimal_realization_context_and_non_goals():
         "no current astronomical layer",
         "single export path",
         "must not infer astronomical identity",
+        "accepted by Fernando on",
     ):
         assert phrase in architecture
 
@@ -463,6 +467,7 @@ def test_49d2_records_minimal_realization_context_and_non_goals():
         "This proves ownership and ordering, not planetary accuracy",
         "Wenu implementation box — 49D.2 realization context",
         "SVG is not a second astronomy engine",
+        "13.2.3 49D.2 scientific and pedagogical acceptance",
     ):
         assert phrase in guide
 
