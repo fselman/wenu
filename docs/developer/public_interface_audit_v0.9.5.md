@@ -1,6 +1,6 @@
 # Wenu public-interface audit after architecture v0.9.5
 
-**Status:** Accepted as-is audit; reference-policy implementation in progress
+**Status:** Accepted as-is audit; first reference-policy slice implemented and scientifically accepted
 
 **Audit baseline:** `1a15076`
 
@@ -111,19 +111,19 @@ The internal vocabulary is richer than the public interface:
   where the required context is present;
 - each `Spherical*` geometry record carries its source coordinate identity.
 
-The public chart interface does not yet expose that vocabulary:
+The first bounded part of that vocabulary is now public:
 
-- each family configuration has a `coordinate_frame` string, but validation
-  currently permits only its single implemented value;
-- there is no installed CLI option for coordinate system, astronomical frame,
-  equinox, or catalogue realization epoch;
-- ordinary request-time equatorial and ecliptic grids currently select J2000
-  in `charts/request_grids.py`;
-- the packaged `grids_references.coordinate_grid` table still declares
-  `frame = "fk5"` and `equinox = "of_date"`, but those values are not
-  translated into the ordinary request-grid path;
-- the accepted celestial equator, ecliptic, and four seasonal keypoints use
-  one coherent J2000 reference policy.
+- each family configuration still has a `coordinate_frame` string whose
+  validation permits only its implemented product-frame value;
+- the installed CLI exposes `--reference-equinox`, and schema-version-1 TOML
+  exposes `[coordinates.references].equinox`;
+- `CelestialReferencePolicy` validates J2000, `of_date`, or another
+  Astropy-readable equinox and carries it through the ordinary request;
+- ordinary FK5 equatorial grids, barycentric true-ecliptic grids, celestial
+  equator, ecliptic, seasonal keypoints, and applicable poles share that one
+  resolved equinox;
+- product coordinate-system/frame selection and catalogue realization epoch
+  remain deliberately unexposed.
 
 The public `coordinate_frame` name must not be expanded merely as another
 projection option. A chart product frame, a displayed reference grid, and the
@@ -195,10 +195,10 @@ relabel native catalogue coordinates with a different epoch.
 
 Public coordinate selection should proceed in independently accepted slices:
 
-1. **Reference-policy contract.** Define and validate system, frame, and
-   equinox values; translate them to `CoordinateSpec`; expose a coherent
-   J2000, `of_date`, or explicit-equinox selection for the equatorial grid,
-   celestial equator, ecliptic, and seasonal keypoints.
+1. **Reference-policy contract — complete.** Validate and carry a coherent
+   J2000, `of_date`, or explicit-equinox selection through the FK5 equatorial
+   grid, celestial equator, true ecliptic, seasonal keypoints, and applicable
+   poles.
 2. **Product-frame selection.** Generalize only chart families whose
    projection and framing semantics are proven valid for the selected
    celestial product frames. Preserve family-specific constraints.
@@ -220,6 +220,25 @@ This audit closes the documentation drift after merge `1a15076`: architecture
 0.9.5 is accepted and merged, and Wenu has six canonical examples. It does not
 claim a package release or `v0.9.5` tag.
 
-The next safe implementation start is the reference-policy contract described
-above. Milestone 49D observer-independent celestial realization remains after
-this public-interface contract; new moving-object providers remain later work.
+The reference-policy contract described above is implemented and accepted.
+The next public-interface slice is bounded product-frame selection; Milestone
+49D observer-independent celestial realization remains the architectural
+prerequisite where celestial products would otherwise retain the current
+AltAz detour. Provider position-epoch propagation and new moving-object
+providers remain later work.
+
+
+## 9. Reference-policy acceptance evidence
+
+Scientific acceptance compared installed-command regional SVGs at default
+J2000, explicit J2000.0, J2016.0, and `of_date`. Default and explicit J2000
+had identical normalized graphical records. The later equinoxes moved the
+coupled FK5/ecliptic references while apparent stars and constellation figures
+remained fixed. The initial of-date render exposed and then closed a missing
+explicit observer handoff from reusable `ChartView` drawing to request-grid
+configuration.
+
+Final verification passed 1,786 routine tests with 30 deselected in 25.26
+seconds and all 1,816 tests in 86.71 seconds. SVG timestamps, literal J2000
+versus J2000.0 provenance, generated identifiers, and ordering of equivalent
+same-style star markers are not scientific geometry differences.
