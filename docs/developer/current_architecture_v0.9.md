@@ -131,6 +131,16 @@ provider evaluation instant/time scale, and resolved reference equinox.
 supply the context and follow the exact legacy branch; no current astronomical
 layer, numerical geometry, or public product changes in this milestone.
 
+Future Sun, Moon, and planet layers must preserve the same output-neutral
+boundary. They acquire provider states, transform exactly once into the
+requested spherical product frame, and declare Wenu semantic identity before
+projection. PNG, PDF, and SVG then share the existing projection, preparation,
+Matplotlib rendering, and single export path. SVG annotation may expose the
+reserved `solar-system/sun`, `solar-system/moon`, and
+`solar-system/planets` hierarchy, but it must not infer astronomical identity,
+recompute coordinates, add a post-export overlay, or invoke a separate SVG
+generator.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored
