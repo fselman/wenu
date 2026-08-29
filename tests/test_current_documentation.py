@@ -159,9 +159,9 @@ def test_current_diagrams_are_an_inspection_interface():
     assert "`PositionProvider` is the boundary for all astronomical objects" in readme
     assert "requires only another provider implementation" in normalized
     assert "deliberately large canvas" in readme
-    assert "sole production astronomical transformation owner" in readme
+    assert "sole production astronomical transformation owner" in normalized
     assert "fictitious protocol" in readme
-    assert "The retired handwritten and chart-owned authorities are\nabsent" in readme
+    assert "The retired handwritten and chart-owned authorities are absent" in normalized
     assert "does not modify `CoordinateService`" in normalized
     assert (
         ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.dot"
