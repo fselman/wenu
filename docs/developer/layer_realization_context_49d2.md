@@ -102,11 +102,11 @@ objects.
 
 ## 6. Explicit non-goals
 
-49D.2 does not add or choose a JPL ephemeris. It also does not:
+49D.2 does not add or choose a JPL ephemeris and does not thread the
+context through ordinary `ChartRequest` or CLI code. It also does not:
 
 - add the Sun, Moon, planet, satellite, asteroid, or comet;
 - change `PositionProvider`;
-- thread the context through ordinary `ChartRequest` or CLI code;
 - migrate any current catalogue, morphology, grid, point, or horizon layer;
 - make the current observer optional;
 - add caching, cadence optimization, or a reusable scene graph;
