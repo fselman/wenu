@@ -48,6 +48,8 @@ For current work, read and follow:
 - `celestial_scene_dependency_audit_49d1.md` for celestial-background,
   moving-object, observer-local, product-frame, planet, Moon, or scene-reuse
   dependency work;
+- `layer_realization_context_49d2.md` for the optional pre-projection layer
+  context, compatibility dispatch, or controlled-provider integration point;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,
