@@ -287,7 +287,7 @@ all 1,819 tests in 84.41 seconds. No visual comparison was required because
 
 ### Milestone 49D.2 — Minimal layer-realization context
 
-**Status:** Implementation review candidate on the dedicated 49D.2 branch.
+**Status:** Scientifically, pedagogically, and technically accepted on the dedicated 49D.2 branch; not yet merged.
 
 The exact contract and acceptance requirements are recorded in
 `layer_realization_context_49d2.md`. A frozen `LayerRealizationContext`
@@ -337,6 +337,13 @@ chart layers.
 
 Providers compute or propagate states. They do not select charts, transform
 through undocumented downstream paths, project, clip, style, or render.
+
+Fernando accepted the context fields, exact legacy compatibility branch,
+controlled-provider proof, deferred 49E responsibilities, pedagogical guide,
+and canonical SVG path on 2026-08-29. Acceptance evidence is 48 focused tests
+in 2.21 seconds, 1,798 routine tests with 30 deselected in 27.61 seconds, and
+all 1,828 tests in 90.00 seconds. No visual comparison was required because no
+ordinary request can activate the context and production geometry is unchanged.
 
 The same boundary governs every output format. Future solar-system layers must
 declare their semantic identity before projection and then use the existing
