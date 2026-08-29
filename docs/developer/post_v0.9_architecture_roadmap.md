@@ -335,7 +335,7 @@ spherical directions but cannot by itself preserve the Cartesian state,
 target, centre, frame, distance, velocity, time scale, kernel coverage, and
 provenance required by solar-system ephemerides.
 
-The proposed boundary separates an **ephemeris state source** from a
+The proposed boundary separates a **Cartesian state source** from a
 **solar-system direction realizer**. The source returns an explicitly identified
 Cartesian state. The realizer owns observer-relative geometry, retarded
 emission-time evaluation, light-time, aberration, gravitational deflection,
