@@ -119,5 +119,5 @@ reference on 2026-08-28.
 
 The living equations, conventions, current code map, object inventory, and
 provenance record are maintained in
-`coordinate_system_guide_v0.9.5.md` and its generated OpenDocument edition
-under `review/`.
+`coordinate_system_guide_v0.9.5.md` as the sole canonical source. Other
+review formats are generated from that Markdown on demand.

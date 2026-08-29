@@ -160,6 +160,7 @@ class ChartComposition:
     legends: ResolvedLegendOptions | None = None
     furniture: ResolvedChartFurnitureOptions | None = None
     configuration: Any | None = None
+    reference_policy: Any | None = None
 
     def layer_options(
         self,
@@ -190,6 +191,7 @@ def compose_chart(
     legends: LegendOptions | ChartLegendPlan | None = None,
     furniture: ChartFurnitureOptions | None = None,
     configuration=None,
+    reference_policy=None,
 ) -> ChartComposition:
     """Resolve independent chart concerns without rendering the chart."""
     if configuration is not None:
@@ -351,4 +353,5 @@ def compose_chart(
         legends=resolved_legends,
         furniture=resolved_furniture,
         configuration=configuration,
+        reference_policy=reference_policy,
     )

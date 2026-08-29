@@ -65,8 +65,8 @@ def test_drawing_translates_direct_options_to_one_canonical_export(
 
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_grids",
-        lambda sky, request, *, frame: configured.append(
-            (sky, request, frame)
+        lambda sky, request, *, frame, observer: configured.append(
+            (sky, request, frame, observer)
         ),
     )
     monkeypatch.setattr(
@@ -101,6 +101,7 @@ def test_drawing_translates_direct_options_to_one_canonical_export(
     request = configured[0][1]
     assert request.product.output == output
     assert configured[0][2] is chart_view.frame
+    assert configured[0][3] is chart_view.observer
     assert request.product.style == "cartoon"
     assert request.product.mode == "presentation"
     assert request.detail.enabled_layer_additions == {
@@ -126,7 +127,7 @@ def test_ordinary_drawing_uses_packaged_neutral_furniture_by_default(
     requests = []
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_grids",
-        lambda sky, request, *, frame: requests.append(request),
+        lambda sky, request, *, frame, observer: requests.append(request),
     )
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_horizon",
@@ -159,7 +160,7 @@ def test_repeated_drawings_reuse_geometry_without_request_state_leak(
     prepared = []
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_grids",
-        lambda sky, request, *, frame: requests.append(request),
+        lambda sky, request, *, frame, observer: requests.append(request),
     )
 
     def export(sky, value, *, observer):
@@ -234,7 +235,7 @@ def test_all_sky_drawing_defaults_to_labeled_galactic_grid(
     requests = []
     monkeypatch.setattr(
         "wenu.charts.drawing.configure_chart_request_grids",
-        lambda sky, request, *, frame: requests.append(request),
+        lambda sky, request, *, frame, observer: requests.append(request),
     )
     monkeypatch.setattr(
         "wenu.charts.drawing.export_prepared_chart",

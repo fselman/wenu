@@ -24,9 +24,10 @@ by these top-level tables in this exact order:
 6. `styles`
 7. `modes`
 8. `grids_references`
-9. `furniture`
-10. `products`
-11. `export`
+9. `coordinates`
+10. `furniture`
+11. `products`
+12. `export`
 
 The packaged document is complete. A user document is a partial overlay but
 must still declare `schema_version`. Tables and keys are emitted in the order
@@ -288,3 +289,11 @@ retains validation behavior, scientific invariants, derived values, catalogue
 operations, geometry, projection, preparation, rendering, and export. It may
 define schema types and translators, but it must not copy public default
 literals into a second registry.
+## Celestial reference policy
+
+`[coordinates.references]` owns the ordinary coupled celestial-reference
+orientation. Its required `equinox` string defaults to `J2000` and accepts an
+Astropy-readable equinox/date or `of_date`. `of_date` is resolved from the
+declared chart observer time. This value controls reference representation,
+not catalogue position propagation. An explicit `--reference-equinox` command
+value overrides it.

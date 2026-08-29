@@ -27,6 +27,7 @@ TOP_LEVEL_ORDER = (
     "styles",
     "modes",
     "grids_references",
+    "coordinates",
     "furniture",
     "products",
     "export",
@@ -70,6 +71,7 @@ def test_packaged_defaults_are_resource_loadable_and_ordered():
         "frames_per_second": "none",
         "restart_policy": "restart",
     }
+    assert defaults["coordinates"]["references"] == {"equinox": "J2000"}
 
 
 def test_packaged_defaults_cover_schema_responsibilities():

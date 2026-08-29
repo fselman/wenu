@@ -11,6 +11,7 @@ from .detail import DetailOverrides, SkyContentSelection
 from .furniture import ChartFurnitureOptions
 from .product_options import ChartProductOptions
 from .request_composition import ChartProductCompositionOptions
+from .reference_policy import CelestialReferencePolicy
 
 
 CHART_FAMILIES = frozenset(
@@ -363,6 +364,7 @@ class ChartRequest:
     title: str | None = None
     projection: str = "stereographic"
     coordinate_frame: str = "horizontal"
+    reference_policy: CelestialReferencePolicy = CelestialReferencePolicy()
 
     def __post_init__(self):
         family = str(self.family).strip().lower()
@@ -402,6 +404,7 @@ class ChartRequest:
             ("exclusions", self.exclusions, ChartContentExclusions),
             ("detail", self.detail, DetailOverrides),
             ("furniture", self.furniture, ChartFurnitureOptions),
+            ("reference_policy", self.reference_policy, CelestialReferencePolicy),
         )
         for name, value, kind in expected:
             if not isinstance(value, kind):

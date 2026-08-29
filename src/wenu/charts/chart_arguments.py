@@ -9,6 +9,7 @@ from math import isfinite
 from .product_options import add_chart_product_arguments
 from .detail import DetailOverrides
 from .style_overrides import ChartStyleOverrides
+from .reference_policy import CelestialReferencePolicy
 
 
 GRID_REFERENCES = frozenset({"equatorial", "ecliptic", "galactic"})
@@ -68,6 +69,7 @@ class ChartContentOptions:
     altaz_grid: bool = False
     altaz_grid_labels: bool = False
     equatorial_declination_step_deg: float | None = None
+    reference_equinox: str | None = None
 
     def __post_init__(self):
         if (
@@ -110,6 +112,14 @@ class ChartLegendSelection:
 
 def add_chart_content_arguments(parser):
     """Add shared astronomical-content arguments to ``parser``."""
+    parser.add_argument(
+        "--reference-equinox",
+        metavar="EQUINOX",
+        help=(
+            "use one FK5/ecliptic reference equinox "
+            "(for example J2000, B1950, or of_date)"
+        ),
+    )
     parser.add_argument(
         "--magnitude-limit",
         type=float,
@@ -284,7 +294,16 @@ def chart_content_options(arguments) -> ChartContentOptions:
         poles=bool(arguments.poles),
         pole_labels=bool(arguments.pole_labels),
         equatorial_declination_step_deg=arguments.declination_step,
+        reference_equinox=arguments.reference_equinox,
     )
+
+
+def chart_reference_policy(arguments, *, default=None):
+    """Resolve the CLI value over one configured immutable default."""
+    value = getattr(arguments, "reference_equinox", None)
+    if value is not None:
+        return CelestialReferencePolicy(value)
+    return default or CelestialReferencePolicy()
 
 
 def chart_style_overrides(

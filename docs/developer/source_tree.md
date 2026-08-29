@@ -16,8 +16,8 @@ in `diagrams/coordinate_static_structure_as_is_v0.9.svg`. The proposed
 architecture 0.9.5 ownership is frozen in
 `target_architecture_v0.9.5.md`; its living scientific equations, current
 code map, object inventory, and provenance are maintained in
-`coordinate_system_guide_v0.9.5.md` with a generated OpenDocument review
-edition under `review/`.
+`coordinate_system_guide_v0.9.5.md` as the sole canonical source; other
+review formats are generated from it on demand.
 
 The source tree is organized by responsibility. Astronomical objects and sky
 layers do not import chart or renderer policy, and all chart styles and modes
@@ -848,3 +848,12 @@ dimensions, timeline instants, and manifest identity in JSON.
 - `tools/render_49h3_fixed_sky_reference.py` produces the visually accepted
   fixed-sky/rotating-horizon audit and records per-frame orientation metadata,
   dimensions, and hashes.
+
+# Public celestial reference policy
+
+- `src/wenu/charts/reference_policy.py`: validates and resolves the coupled
+  FK5/ecliptic reference equinox and translates it to coordinate identities.
+- `src/wenu/charts/request_grids.py`: applies the request policy to ordinary
+  equatorial and ecliptic grids.
+- `src/wenu/charts/reference_furniture.py`: applies the same resolved equinox
+  to the celestial equator, ecliptic, and seasonal keypoints.

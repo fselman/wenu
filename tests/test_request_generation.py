@@ -79,9 +79,10 @@ def test_prepared_request_exports_the_shared_product_matrix_once(
 
     def composition(
         chart, *, style, mode, detail, detail_overrides,
-        style_overrides, furniture,
+        style_overrides, furniture, reference_policy,
     ):
         assert detail_overrides.content_selection == resolved.request.content
+        assert reference_policy is resolved.request.reference_policy
         return SimpleNamespace(
             mode=SimpleNamespace(width_inches=8.0, height_inches=6.0),
             style=SimpleNamespace(

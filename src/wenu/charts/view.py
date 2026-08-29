@@ -13,6 +13,7 @@ from .request import (
 )
 from .request_chart import prepare_chart_request
 from .request_resolver import resolve_chart_request
+from .reference_policy import CelestialReferencePolicy
 from .view_defaults import chart_view_defaults
 
 
@@ -169,6 +170,11 @@ def get_chart_view(
         ),
         mask=mask,
         product=ChartProductOptions(output=Path(".")),
+        reference_policy=(
+            configuration.reference_policy
+            if configuration is not None
+            else CelestialReferencePolicy()
+        ),
     )
     resolved = resolve_chart_request(request, profile)
     prepared = prepare_chart_request(

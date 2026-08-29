@@ -1580,3 +1580,26 @@ reference geometry; a service call is required only when a product requests
 that geometry in another astronomical frame.
 
 The 49C.3 candidate removes `charts/coordinate_frames.py` and the handwritten `coordinates.py::radec_to_altaz()`. Every production Astropy transformation now occurs inside `CoordinateService`. `Observer` supplies immutable `observation_context` and retains only the time, location, Skyfield, and AltAz compatibility state required by providers and public Astropy-coordinate entry points.
+
+# Public celestial reference policy
+
+`CelestialReferencePolicy(equinox="J2000")` is the immutable public contract
+for coupled FK5 equatorial and barycentric true-ecliptic reference geometry.
+`J2000` is the compatibility default; `of_date` resolves from the chart
+observer's declared Astropy time. `ChartRequest.reference_policy` carries the
+resolved request through ordinary grid and furniture construction.
+
+The installed command exposes `--reference-equinox EQUINOX`. The corresponding
+schema-version-1 overlay is `[coordinates.references] equinox = "..."`, with
+the explicit command value taking precedence.
+
+Reusable view drawing passes `ChartView.observer` explicitly to
+`configure_chart_request_grids(..., observer=...)`. Direct library callers
+may continue to rely on `sky.observer` as the fallback. This distinction is
+required for `of_date`, which always resolves from the declared chart
+observer's `t_astropy` and never from the computer clock.
+
+Scientific acceptance compared default J2000, explicit J2000.0, J2016.0, and
+of-date SVGs. The coupled references moved coherently while apparent stars
+remained fixed. Final verification passed 1,786 routine tests with 30
+deselected and 1,816 complete tests.

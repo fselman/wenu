@@ -13,6 +13,7 @@ from .chart_arguments import (
     chart_content_options,
     chart_detail_overrides,
     chart_legend_selection,
+    chart_reference_policy,
     chart_style_overrides,
 )
 from .drawing import chart_view_request, draw_chart_view
@@ -284,6 +285,9 @@ def _chart_view_argument_plans(
     )
     detail_overrides = chart_detail_overrides(effective_arguments)
     content = chart_content_options(effective_arguments)
+    configured_policy = (
+        None if configuration is None else configuration.reference_policy
+    )
     parsed_style = chart_style_overrides(arguments)
     if style_overrides is not None:
         if not isinstance(style_overrides, ChartStyleOverrides):
@@ -335,6 +339,9 @@ def _chart_view_argument_plans(
                 "title": title,
                 "language": language,
                 "output_format": options.output_format,
+                "reference_policy": chart_reference_policy(
+                    arguments, default=configured_policy
+                ),
             },
         ))
     return tuple(plans)

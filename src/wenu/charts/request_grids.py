@@ -72,7 +72,7 @@ def _view_span_deg(family, frame):
     return 180.0 if family == "planisphere" else 60.0
 
 
-def _grid_specifications(family, frame=None, detail=None):
+def _grid_specifications(family, frame=None, detail=None, *, equinox="J2000"):
     span = _view_span_deg(family, frame)
     if family == "circumpolar":
         step = 30
@@ -108,7 +108,7 @@ def _grid_specifications(family, frame=None, detail=None):
             "ra": longitudes,
             "dec": equatorial_latitudes,
             "frame": "fk5",
-            "equinox": "J2000",
+            "equinox": equinox,
             "samples": samples,
             "meridian_dec_min": -75.0,
             "meridian_dec_max": 90.0,
@@ -116,7 +116,7 @@ def _grid_specifications(family, frame=None, detail=None):
         "ecliptic_grid": {
             "longitude": longitudes,
             "latitude": latitudes,
-            "equinox": "J2000",
+            "equinox": equinox,
             "samples": samples,
             "include_ecliptic": False,
         },
@@ -135,7 +135,7 @@ def _grid_specifications(family, frame=None, detail=None):
     }
 
 
-def configure_chart_request_grids(sky, request, *, frame=None):
+def configure_chart_request_grids(sky, request, *, frame=None, observer=None):
     """Replace request-time grids with the selected family configuration."""
     if not isinstance(request, ChartRequest):
         raise TypeError("request must be a ChartRequest.")
@@ -148,7 +148,10 @@ def configure_chart_request_grids(sky, request, *, frame=None):
 
     requested = requested_coordinate_grids(request.detail)
     specifications = _grid_specifications(
-        request.family, frame, request.detail
+        request.family, frame, request.detail,
+        equinox=request.reference_policy.resolved_equinox(
+            getattr(sky, "observer", None) if observer is None else observer
+        ),
     )
     configured = []
     for name, method_name in (

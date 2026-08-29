@@ -21,7 +21,6 @@ FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
 V095_TARGET = DEVELOPER / "target_architecture_v0.9.5.md"
 COORDINATE_GUIDE = DEVELOPER / "coordinate_system_guide_v0.9.5.md"
 PUBLIC_INTERFACE_AUDIT = DEVELOPER / "public_interface_audit_v0.9.5.md"
-COORDINATE_GUIDE_ODT = DEVELOPER / "review" / "coordinate_system_guide_v0.9.5.odt"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -82,7 +81,6 @@ def test_current_architecture_authorities_exist_and_cross_reference():
             PUBLIC_INTERFACE_AUDIT,
             V095_TARGET,
             COORDINATE_GUIDE,
-            COORDINATE_GUIDE_ODT,
             INSTRUCTIONS,
         )
         if not path.is_file()
@@ -208,12 +206,11 @@ def test_v095_coordinate_target_and_living_guide_are_reviewable():
         "OpenNGC",
         "Gaia DR3",
         "Minimal architecture 0.9.5 roadmap",
-        "canonical celestial-reference furniture uses one J2000 policy",
+        "canonical celestial-reference furniture uses one coherent policy",
         "Architecture 0.9.5 acceptance",
     ):
         assert phrase in guide
 
-    assert COORDINATE_GUIDE_ODT.stat().st_size > 10_000
 
 def test_v08_release_evidence_remains_closed():
     target = read(TARGET)
@@ -343,13 +340,13 @@ def test_public_interface_audit_records_as_is_and_scientific_boundary():
         "Reproducible user recipes currently under `tools/`",
         "Diagnostics, acceptance, and benchmarks",
         "Catalogue and repository maintenance",
-        "The public chart interface does not yet expose that vocabulary",
+        "The first bounded part of that vocabulary is now public",
         "coordinate system",
         "reference frame",
         "equinox",
         "position epoch",
         "observation instant",
-        "ICRS has no caller-selected equinox",
+        "an equinox is not a defining parameter of ICRS",
         "`of_date` resolves from the declared product or observation time",
         "It must never relabel native catalogue coordinates",
         "Reference-policy contract",
@@ -358,6 +355,103 @@ def test_public_interface_audit_records_as_is_and_scientific_boundary():
         "Physical-product command",
     ):
         assert phrase in audit
+
+
+def test_coordinate_guide_has_a_navigable_table_of_contents():
+    guide = read(COORDINATE_GUIDE)
+    toc_position = guide.index("# Table of contents")
+    status_position = guide.index("# Status and purpose")
+    assert toc_position < status_position
+
+    for link in (
+        "[1. Scientific vocabulary](#1-scientific-vocabulary)",
+        "[2. Coordinate systems used or reserved by Wenu]",
+        "[4. Mathematical foundations](#4-mathematical-foundations)",
+        "[5. Time vocabulary](#5-time-vocabulary)",
+        "[5.6 Julian and Besselian epochs]",
+        "[8. Wenu object catalogue and provenance]",
+        "[12. Maintenance rule](#12-maintenance-rule)",
+        "[13. Practical guide to reference systems, equinoxes, and epochs]",
+    ):
+        assert link in guide
+
+
+def test_coordinate_guide_teaches_calendars_for_historical_use():
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    for phrase in (
+        "Calendars are historical coordinate systems for time",
+        "There was no single timeless “Sumerian calendar.”",
+        "Babylonian and Assyrian",
+        "five epagomenal days",
+        "There was no single ancient Greek civil calendar",
+        "Roman Republican calendar",
+        "Did Augustus steal a day from February?",
+        "there is no historical year in which Augustus “stole” the day",
+        "Sextilis was renamed *Augustus* in 8 BCE",
+        "February was already the exceptional short month",
+        "supposed transfer of a day from February is an unsupported legend",
+        "Britain and its colonies changed in September 1752",
+        "A historian's minimum date record",
+        "No year zero in ordinary BCE/CE history",
+        "Julian calendar is not Julian Date",
+        "UTC is not an ancient time scale",
+        "Delta T = \\mathrm{TT}-\\mathrm{UT1}",
+        "Julian and Besselian epochs are not calendars",
+        "Tropical, sidereal, and Besselian years",
+        "measured from the moving equinox",
+        "roughly 20 minutes longer",
+        "fictitious mean Sun",
+        "mean right ascension 18h 40m",
+        "365.242198781",
+        "must not be treated as an immutable modern measurement",
+        "`B1950.0` denotes the instant obtained from this mean-Sun convention",
+        "Wenu implementation box — Calendars and historical chronology",
+        "It is **not** a general historical-calendar converter",
+        "HistoricalDateSpec",
+        "years 1–9999",
+    ):
+        assert phrase in guide
+
+
+def test_coordinate_guide_teaches_reference_policy_at_two_depths():
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    for phrase in (
+        "**[Foundation]**",
+        "**[Undergraduate]**",
+        "Julian and Besselian year labels",
+        "A Julian year is exactly 365.25 days",
+        "Gaia DR2 positions use reference epoch `J2015.5`",
+        "Gaia EDR3 and DR3 positions use `J2016.0`",
+        "The Gaia reference epoch is not an equinox",
+        "an equinox is not one of its defining frame parameters",
+        "Gaia-CRF3 is a high-precision optical realization of ICRS",
+        "ICRF3 is the third radio realization of ICRS",
+        "`FK5(equinox=J2000.0)` is close to ICRS but is not identical",
+        "Wenu currently represents Gaia-compatible celestial geometry as `icrs`",
+        "Equinox applicability by system and frame",
+        "ICRS does not have a **defining equinox**, fixed or selectable",
+        "The small rotation between ICRS/GCRS axes and the dynamical mean equator",
+        "TEME is a special case whose name includes “mean equinox,”",
+        "Concept box — How an abstract celestial sphere becomes a measured frame",
+        "Least squares alone therefore does not determine the absolute orientation",
+        "Astrometric Global Iterative Solution (AGIS)",
+        "True Equator, Mean Equinox",
+        "Simplified General Perturbations 4 (SGP4)",
+        "`FK` comes from the German *Fundamentalkatalog*",
+        "The adopted corrections are part of the frame's provenance",
+        "Wenu implementation box — Where each responsibility lives",
+        "Wenu does not rebuild ICRS, Gaia-CRF3, or FK5",
+        "`coordinates.py::CoordinateSpec`",
+        "`coordinate_service.py::CoordinateService`",
+        "`charts/reference_policy.py::CelestialReferencePolicy`",
+        "Existing Gaia-derived Magellanic Cloud isophotes are morphology products",
+        "Only `vacuum` is currently accepted",
+        "Future specialized TEME adapter",
+        "Wenu starts at the published catalogue/provider-state boundary",
+        "Every medium or major Wenu change must include an explicit review",
+        "A passing documentation test is not a substitute for Fernando's",
+    ):
+        assert phrase in guide
 
 
 def test_architecture_v095_closure_and_example_count_are_current():

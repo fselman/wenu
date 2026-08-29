@@ -1,11 +1,14 @@
 """Request-time semantic grid configuration contracts."""
 
+from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+from astropy.time import Time
 
 from wenu import (
+    CelestialReferencePolicy,
     ChartObserverRequest,
     ChartProductOptions,
     ChartRequest,
@@ -237,6 +240,25 @@ def test_request_without_grids_clears_previous_request_geometry():
 
     assert configured == ()
     assert grids(sky) == ()
+
+
+def test_of_date_policy_accepts_the_explicit_view_observer():
+    selected = DetailOverrides(
+        enabled_layer_additions={"equatorial_grid", "ecliptic_grid"}
+    )
+    chart_request = replace(
+        request("regional", detail=selected),
+        reference_policy=CelestialReferencePolicy("of_date"),
+    )
+    instant = Time("2026-08-16T01:00:00", scale="utc")
+    observer = SimpleNamespace(t_astropy=instant)
+
+    configured = configure_chart_request_grids(
+        CelestialSphere(object()), chart_request, observer=observer
+    )
+
+    assert configured[0].equinox == instant
+    assert configured[1].equinox == instant
 
 
 def test_grid_configuration_rejects_untyped_inputs():
