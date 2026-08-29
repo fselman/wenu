@@ -357,6 +357,30 @@ def test_public_interface_audit_records_as_is_and_scientific_boundary():
         assert phrase in audit
 
 
+def test_coordinate_guide_teaches_calendars_for_historical_use():
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    for phrase in (
+        "Calendars are historical coordinate systems for time",
+        "There was no single timeless “Sumerian calendar.”",
+        "Babylonian and Assyrian",
+        "five epagomenal days",
+        "There was no single ancient Greek civil calendar",
+        "Roman Republican calendar",
+        "Britain and its colonies changed in September 1752",
+        "A historian's minimum date record",
+        "No year zero in ordinary BCE/CE history",
+        "Julian calendar is not Julian Date",
+        "UTC is not an ancient time scale",
+        "Delta T = \\mathrm{TT}-\\mathrm{UT1}",
+        "Julian and Besselian epochs are not calendars",
+        "Wenu implementation box — Calendars and historical chronology",
+        "It is **not** a general historical-calendar converter",
+        "HistoricalDateSpec",
+        "years 1–9999",
+    ):
+        assert phrase in guide
+
+
 def test_coordinate_guide_teaches_reference_policy_at_two_depths():
     guide = " ".join(read(COORDINATE_GUIDE).split())
     for phrase in (
