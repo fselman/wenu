@@ -1,0 +1,28 @@
+digraph coordinate_runtime_v095 {
+  graph [rankdir=LR, bgcolor="white", fontname="Helvetica", fontsize=15,
+    label="Wenu v0.9.5 coordinate runtime — implemented call and return sequence",
+    labelloc="t", nodesep=0.45, ranksep=0.7, pad=0.25];
+  node [shape=box, style="rounded,filled", fillcolor="#f7f7f7", color="#555555", fontname="Helvetica", fontsize=9];
+  edge [color="#555555", fontname="Helvetica", fontsize=8, arrowsize=0.7];
+
+  request [label="Chart request / ProjectionSelection\ndeclares target CoordinateSpec", fillcolor="#d9eaf7"];
+  provider [label="PositionProvider.position(instant)\nStars / NonStellar / OpenClusters", fillcolor="#e4dfec"];
+  references [label="Reference constructors\ngrids / planes / poles / horizon", fillcolor="#d9eaf7"];
+  geometry [label="Spherical* geometry\ncarrying source CoordinateSpec", fillcolor="#e2f0d9"];
+  service [label="CoordinateService.transform()\nonly astronomical transformation authority", fillcolor="#e2f0d9"];
+  resolved [label="same Spherical* kind\ncarrying target CoordinateSpec", fillcolor="#e2f0d9"];
+  alignment [label="SphericalFrame alignment\ncoordinate-neutral rotation", fillcolor="#d9eaf7"];
+  projection [label="Projection + clipping\nprojected topology", fillcolor="#d9eaf7"];
+  renderer [label="Preparation + renderer + furniture + export", fillcolor="#d9eaf7"];
+  observer [label="Observer.observation_context\noptional local-path input", fillcolor="#fff2cc"];
+
+  provider -> geometry [label="1a. returns native positions"];
+  references -> geometry [label="1b. returns native references"];
+  request -> service [label="2. target spec"];
+  geometry -> service [label="3. source geometry"];
+  observer -> service [style=dashed, label="3a. local transforms only"];
+  service -> resolved [label="4. same kind + preserved topology"];
+  resolved -> alignment [label="5. resolved geometry"];
+  alignment -> projection [label="6. aligned coordinates"];
+  projection -> renderer [label="7. projected records"];
+}
