@@ -389,6 +389,17 @@ def test_49d1_audits_scene_dependencies_without_runtime_change():
         implementation
     )
     assert "Milestone 49D.1 adds no runtime module" in source_tree
+    for phrase in (
+        "Scientifically and pedagogically accepted",
+        "39 documentation tests in 2.78 seconds",
+        "1,789 routine tests with 30 deselected in 26.62 seconds",
+        "all 1,819 tests in 84.41 seconds",
+        "this acceptance does not itself authorize that runtime change",
+    ):
+        assert phrase in audit
+    assert "49D.1 scientific and pedagogical acceptance" in guide
+    assert "accepted the scene-dependency explanation" in guide
+    assert "No visual comparison was required" in roadmap
 
 
 def test_public_interface_audit_records_as_is_and_scientific_boundary():
