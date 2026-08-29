@@ -1331,3 +1331,13 @@ reuse keyed by immutable scientific identity.
 > integration point in 49D.2. Selection of a real JPL-or-equivalent ephemeris
 > and the first planet belong to later 49E/49I milestones.
 
+### 13.2.1 49D.1 scientific and pedagogical acceptance
+
+Fernando accepted the scene-dependency explanation on 2026-08-29. In
+particular, the accepted boundary distinguishes observer-independent catalogue
+loading from observer-bound realization, keeps celestial background, dynamic
+astronomical objects, and observer-local geometry scientifically separate, and
+requires their convergence in one explicit spherical product frame before
+projection. Verification passed 39 documentation tests, 1,789 routine tests
+with 30 deselected, and all 1,819 tests. Because the milestone changes no
+runtime geometry or appearance, no visual comparison was required.
