@@ -1341,3 +1341,44 @@ requires their convergence in one explicit spherical product frame before
 projection. Verification passed 39 documentation tests, 1,789 routine tests
 with 30 deselected, and all 1,819 tests. Because the milestone changes no
 runtime geometry or appearance, no visual comparison was required.
+
+### 13.2.2 49D.2 minimal realization handoff
+
+**[Foundation]** Wenu now has a small sealed “instruction card” that can
+accompany a sky layer before it is projected. The card can state the desired
+coordinate identity, the observer when one is needed, the time at which a
+moving object must be calculated, that time's scale, and the resolved reference
+equinox. It contains no instructions about colour, page layout, projection, or
+drawing.
+
+Present charts do not yet issue this card. They continue through their existing
+observer-based path. A controlled test object uses it to prove where a future
+planet will enter, but that object is not an installed planet or ephemeris.
+
+**[Undergraduate]** The frozen
+`sky/realization.py::LayerRealizationContext` contains a product
+`CoordinateSpec`, optional `ObservationContext`, paired provider evaluation
+instant/time scale, and optional resolved reference equinox.
+`SkyLayer.realize()` defaults to the established
+`spherical_geometry(observer, ...)` method, so unmigrated layers retain their
+current numerical realization. `CelestialSphere.draw_chart()` selects the
+new hook only when a typed context is explicitly supplied.
+
+The test-only dynamic layer asks its deterministic `PositionProvider` for an
+ICRS point at the declared instant, transforms that point once through
+`CoordinateService` into the requested Galactic product frame, and then
+continues through the ordinary projection and renderer. This proves ownership
+and ordering, not planetary accuracy. A real ephemeris still requires 49E to
+define provider time arguments, origins, apparent-place policy, kernel
+provenance, and target-`CoordinateSpec` composition.
+
+> **Wenu implementation box — 49D.2 realization context**
+>
+> `LayerRealizationContext` is owned by `sky/realization.py`; compatibility
+> adaptation is owned by `sky/sky_layer.py::SkyLayer.realize()`; conditional
+> dispatch remains inside
+> `sky/celestial_sphere.py::CelestialSphere.draw_chart()`; and the controlled
+> provider proof exists only in `tests/test_layer_realization.py`. No current
+> catalogue, reference, horizon, chart-request, CLI, renderer, or exporter is
+> migrated by this milestone.
+
