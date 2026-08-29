@@ -1390,3 +1390,12 @@ provenance, and target-`CoordinateSpec` composition.
 > `solar-system/planets` path. A separate SVG generator or post-export
 > coordinate overlay would violate Wenu's architecture.
 
+### 13.2.3 49D.2 scientific and pedagogical acceptance
+
+Fernando accepted the minimal realization handoff, exact compatibility branch,
+deferred ephemeris-provider decisions, and shared SVG/export boundary on
+2026-08-29. Verification passed 48 focused tests in 2.21 seconds, 1,798 routine
+tests with 30 deselected in 27.61 seconds, and all 1,828 tests in 90.00
+seconds. No visual comparison was required because production requests and
+geometry are unchanged.
+
