@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 import numpy as np
 from astropy.coordinates import BarycentricTrueEcliptic
+from astropy.time import Time
 
 from wenu.chart_document import EditPolicy, SemanticArtistIdentity
 from wenu.charts.context import BoundaryKind
