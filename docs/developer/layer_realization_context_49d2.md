@@ -1,6 +1,6 @@
 # Milestone 49D.2 — Minimal layer-realization context
 
-**Status:** Implementation review candidate; runtime and scientific acceptance pending
+**Status:** Scientifically, pedagogically, and technically accepted on the review branch; not yet merged
 
 **Implementation baseline:** `9e16ed2`
 
@@ -150,6 +150,17 @@ context through ordinary `ChartRequest` or CLI code. It also does not:
    49E provider decisions;
 5. the coordinate guide is reviewed pedagogically and scientifically;
 6. no unexplained chart or output change is observed.
+
+### Acceptance evidence
+
+Fernando accepted the 49D.2 scientific boundary, compatibility behavior,
+pedagogical explanation, deferred 49E decisions, and canonical SVG path on
+2026-08-29. The Mac verification passed 48 focused realization and
+documentation tests in 2.21 seconds, 1,798 routine tests with 30 deselected in
+27.61 seconds, and all 1,828 tests in 90.00 seconds. The controlled provider
+and dynamic layer remain test-only. No visual comparison was required because
+ordinary requests still cannot activate the new context and production
+geometry is unchanged.
 
 No new visual product is required because ordinary requests cannot yet supply
 the context. The complete existing test suite remains the regression
