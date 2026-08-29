@@ -8,7 +8,7 @@ lang: en
 
 # Status and purpose
 
-**Status:** Living review edition; 49B.1–49C.2 are merged, and 49C.3 is accepted pending merge.
+**Status:** Living accepted edition; architecture 0.9.5 closure merge pending.
 
 This is the living scientific guide for Wenu's coordinate systems,
 transformations, astronomical objects, and constructed celestial references.
@@ -108,11 +108,16 @@ realization to Astropy rather than embedding this rounded matrix.
 Ecliptic longitude \(\lambda\) and latitude \(\beta\) require an explicit
 ecliptic definition, origin, and equinox/date. Wenu currently uses:
 
-- `BarycentricMeanEcliptic(equinox=obstime)` in `Observer`;
-- `BarycentricTrueEcliptic(equinox=...)` for ecliptic grids.
+- `BarycentricMeanEcliptic(equinox=...)` when a product explicitly requests
+  the supported mean-ecliptic frame;
+- `BarycentricTrueEcliptic(equinox=...)` for ecliptic reference geometry.
 
-These are not interchangeable. Architecture 0.9.5 must force the choice into
-`CoordinateSpec`.
+These are not interchangeable. Architecture 0.9.5 carries the choice in
+`CoordinateSpec`; `Observer` no longer owns an implicit ecliptic frame. The
+canonical celestial-reference furniture uses one J2000 policy for the FK5
+equatorial grid and equator, barycentric true ecliptic, and all four seasonal
+keypoints. An explicit future public `of_date` policy must change the complete
+reference set coherently rather than one component.
 
 For the elementary mean-equator rotation with obliquity \(\epsilon\),
 
@@ -460,6 +465,18 @@ Coordinate tests must cover:
 7. **49C.4 — Accept and close:** scientific comparisons, fixed-sky visual
    acceptance, routine suite below 30 seconds, full suite, and updated as-is
    diagrams.
+
+# 10.1 Architecture 0.9.5 acceptance
+
+The as-is diagrams and scientific structure were reviewed. The corrected La
+Ligua stereographic planisphere verified coincident J2000 equator/ecliptic
+equinox markers. The final fixed-sky/rotating-horizon rendering was visually
+accepted. The routine suite passed 1779 tests with 30 deselected in 27.31
+seconds, and the complete suite passed 1809 tests in 84.99 seconds.
+
+Public selection of coordinate system, frame, epoch/equinox, and `of_date`
+policies remains a follow-up interface milestone. Those values must translate
+to `CoordinateSpec`; examples and tools must not create separate frame logic.
 
 # 11. Review questions for Fernando
 
