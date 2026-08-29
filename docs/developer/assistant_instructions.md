@@ -45,6 +45,9 @@ For current work, read and follow:
   evidence that motivates that target;
 - `public_interface_audit_v0.9.5.md` for public examples, tools, coordinate
   system, frame, equinox, or epoch interface work;
+- `celestial_scene_dependency_audit_49d1.md` for celestial-background,
+  moving-object, observer-local, product-frame, planet, Moon, or scene-reuse
+  dependency work;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,

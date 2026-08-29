@@ -673,6 +673,31 @@ but neither it nor its canonical layers select an observer or instant. The
 compatibility `build_maximal_sphere(observer, profile=...)` retains the prior
 observer-bound behavior.
 
+### Celestial-scene dependencies (Milestone 49D.1)
+
+Observer-independent loading is not yet observer-independent spherical
+realization. `CelestialSphere.draw_chart()` still resolves one observer and
+calls `layer.spherical_geometry(observer, ...)` for every enabled layer.
+Hipparcos stars, constellation geometry, catalogue objects, Milky Way
+isophotes, and Magellanic Cloud isophotes therefore use their established
+observer-bound realization paths during ordinary rendering.
+
+`docs/developer/celestial_scene_dependency_audit_49d1.md` classifies three
+scientific realization groups: celestial background, dynamic astronomical
+objects, and observer-local geometry. All three must converge in one explicit
+spherical product frame before the existing projection and preparation path.
+A future planet enters after provider evaluation and
+`CoordinateService` transformation as an ordinary semantic sky layer; it
+does not enter through the renderer, furniture, command, or a parallel scene
+graph.
+
+49D.1 adds no runtime type and changes no geometry. The next 49D.2 slice may
+introduce only the minimum immutable layer-realization context and controlled
+test provider while preserving the current
+`layer.spherical_geometry(observer, **geometry_options)` compatibility call.
+Caching, real ephemeris selection, and the first planet remain later
+milestones.
+
 `tools/benchmark_reusable_sphere.py` is the reproducible diagnostic for that
 contract. It builds one sphere, prepares and exports six chart families for
 three observer/instant identities, prints progress for 37 operations, and

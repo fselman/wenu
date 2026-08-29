@@ -49,6 +49,7 @@ lang: en
 - [12. Maintenance rule](#12-maintenance-rule)
 - [13. Practical guide to reference systems, equinoxes, and epochs](#13-practical-guide-to-celestial-reference-systems-equinoxes-and-epochs)
   - [13.1 Public celestial reference policy](#131-public-celestial-reference-policy)
+  - [13.2 Scene dependencies and moving astronomical objects](#132-scene-dependencies-and-moving-astronomical-objects)
 
 # Status and purpose
 
@@ -1254,3 +1255,89 @@ SVG runs may serialize equivalent same-style star markers in a different
 order; the normalized graphical-record comparison was identical. That
 reproducibility observation is separate from coordinate correctness and does
 not alter the rendered chart.
+
+## 13.2 Scene dependencies and moving astronomical objects
+
+**[Foundation]** A sky chart brings together things that change for different
+reasons. Catalogue stars, constellation figures, and the Milky Way form a
+celestial background. A planet or the Moon changes position because an
+ephemeris predicts its motion at a stated time. The horizon and altitude–
+azimuth grid change because the observer and Earth rotate. These are not three
+drawing styles for the same object: they are three different scientific
+dependencies.
+
+Before Wenu flattens the sphere onto a page, every enabled layer must be
+expressed in one common spherical product frame. A planet therefore does not
+belong in the renderer or in the star catalogue. Its provider calculates its
+state at the requested instant, Wenu transforms that state into the product
+frame, and only then does the ordinary projection draw it together with the
+background and observer-local references.
+
+| Realization class | Typical members | What can change it? |
+| --- | --- | --- |
+| Celestial background | Stars, constellation geometry, deep-sky catalogues, Milky Way and Magellanic Cloud morphology | Catalogue or morphology source, provider epoch, physical propagation, content selection, and requested product frame |
+| Dynamic astronomical objects | Sun, Moon, planets, natural satellites, minor bodies, and artificial satellites | Ephemeris or orbit model, evaluation instant, origin, position status, time scale, and sometimes observer |
+| Observer-local geometry | Horizon, AltAz grid, cardinal directions, landscape, and visibility mask | Observer location, observation instant, Earth orientation, and refraction policy |
+
+**[Undergraduate]** The observer-independent
+`generate_celestial_sphere()` factory currently means that catalogue resources
+and layer owners are loaded without selecting one observer. It does not yet
+mean that every layer returns observer-independent coordinates during
+rendering. The canonical
+`CelestialSphere.draw_chart()` loop still resolves an observer and calls
+`layer.spherical_geometry(observer, ...)`; most catalogue and morphology
+layers then produce AltAz geometry for that observer and instant.
+
+Milestone 49D.1 records this distinction and the dependency inventory without
+changing numerical behavior. The future convergence is
+
+```text
+native catalogue/morphology geometry
+provider-evaluated moving-object state
+observer-local constructed geometry
+              |
+              v
+       CoordinateService
+              |
+              v
+ explicit spherical product frame
+              |
+              v
+  projection, preparation, rendering
+```
+
+The planet-enabling insertion point is after provider evaluation and
+`CoordinateService` transformation, but before projection. The returned value
+remains typed `SphericalGeometry` carrying a complete `CoordinateSpec`,
+semantic identifiers, topology, metadata, and provenance. Existing draw order,
+projection, clipping, masking, styles, and export remain unchanged.
+
+This boundary does not require every observer-independent-background migration
+to finish before the first planet. It does require Wenu to establish which
+inputs depend on catalogue epoch, provider instant, observer, reference
+equinox, and product frame. That prevents an ephemeris calculation from leaking
+into chart commands or rendering code and later permits safe time-sequence
+reuse keyed by immutable scientific identity.
+
+> **Wenu implementation box — 49D.1 dependency boundary**
+>
+> The documentation-only 49D.1 audit is maintained in
+> `celestial_scene_dependency_audit_49d1.md`. Current orchestration remains in
+> `sky/celestial_sphere.py::CelestialSphere.draw_chart()`; native position
+> generation remains behind `positions.py::PositionProvider`; astronomical
+> transformation remains solely in
+> `coordinate_service.py::CoordinateService`; and projection and rendering
+> remain downstream consumers. A controlled test provider may prove the future
+> integration point in 49D.2. Selection of a real JPL-or-equivalent ephemeris
+> and the first planet belong to later 49E/49I milestones.
+
+### 13.2.1 49D.1 scientific and pedagogical acceptance
+
+Fernando accepted the scene-dependency explanation on 2026-08-29. In
+particular, the accepted boundary distinguishes observer-independent catalogue
+loading from observer-bound realization, keeps celestial background, dynamic
+astronomical objects, and observer-local geometry scientifically separate, and
+requires their convergence in one explicit spherical product frame before
+projection. Verification passed 39 documentation tests, 1,789 routine tests
+with 30 deselected, and all 1,819 tests. Because the milestone changes no
+runtime geometry or appearance, no visual comparison was required.
