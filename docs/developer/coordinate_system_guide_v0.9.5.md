@@ -6,6 +6,50 @@ date: "2026-08-28"
 lang: en
 ---
 
+# Table of contents
+
+- [Status and purpose](#status-and-purpose)
+- [How to read the depth markers](#how-to-read-the-depth-markers)
+- [1. Scientific vocabulary](#1-scientific-vocabulary)
+  - [1.1 A position is more than two angles](#11-a-position-is-more-than-two-angles)
+  - [1.2 Position generation versus coordinate transformation](#12-position-generation-versus-coordinate-transformation)
+- [2. Coordinate systems used or reserved by Wenu](#2-coordinate-systems-used-or-reserved-by-wenu)
+  - [2.1 ICRS and Gaia-CRF3](#21-icrs)
+  - [2.2 FK5 equatorial coordinates](#22-fk5-equatorial-coordinates)
+  - [2.3 Galactic coordinates](#23-galactic-coordinates)
+  - [2.4 Ecliptic coordinates](#24-ecliptic-coordinates)
+  - [2.5 Horizontal AltAz coordinates](#25-horizontal-altaz-coordinates)
+  - [2.6 TEME and Earth-fixed frames](#26-teme-and-earth-fixed-frames-reserved-for-satellites)
+  - [2.7 Equinox applicability by system and frame](#27-equinox-applicability-by-system-and-frame)
+- [3. Origins and position status](#3-origins-and-position-status)
+  - [3.1 Origins](#31-origins)
+  - [3.2 Position states](#32-position-states)
+- [4. Mathematical foundations](#4-mathematical-foundations)
+  - [4.1 Spherical and Cartesian representation](#41-spherical-and-cartesian-representation)
+  - [4.2 Orthogonal frame rotations](#42-orthogonal-frame-rotations)
+  - [4.3 Local sidereal angle](#43-local-sidereal-angle)
+  - [4.4 Topocentric parallax](#44-topocentric-parallax)
+  - [4.5 Stellar space motion](#45-stellar-space-motion)
+- [5. Time vocabulary](#5-time-vocabulary)
+  - [5.1 Calendars as historical coordinates](#51-calendars-are-historical-coordinate-systems-for-time)
+  - [5.2 Sumer, Babylonia, Egypt, and Greece](#52-from-sumer-and-babylonia-to-egypt-and-greece)
+  - [5.3 Roman, Julian, and Gregorian calendars](#53-roman-julian-and-gregorian-calendars)
+  - [5.4 A historian's minimum date record](#54-a-historians-minimum-date-record)
+  - [5.5 Year numbering, day counts, and astronomical time](#55-year-numbering-day-counts-and-astronomical-time)
+  - [5.6 Julian and Besselian epochs](#56-julian-and-besselian-epochs-are-not-calendars)
+  - [5.7 Present Wenu boundary and future support](#57-present-wenu-boundary-and-future-historical-date-support)
+  - [5.8 Sources and limits](#58-sources-and-limits)
+- [6. Transformation inventory and destination](#6-current-transformation-inventory-and-095-destination)
+- [7. Proposed 0.9.5 contracts](#7-proposed-095-contracts)
+- [8. Wenu object catalogue and provenance](#8-wenu-object-catalogue-and-provenance)
+- [9. Verification requirements](#9-verification-requirements)
+- [10. Minimal architecture 0.9.5 roadmap](#10-minimal-architecture-095-roadmap)
+- [10.1 Architecture 0.9.5 acceptance](#101-architecture-095-acceptance)
+- [11. Review questions for Fernando](#11-review-questions-for-fernando)
+- [12. Maintenance rule](#12-maintenance-rule)
+- [13. Practical guide to reference systems, equinoxes, and epochs](#13-practical-guide-to-celestial-reference-systems-equinoxes-and-epochs)
+  - [13.1 Public celestial reference policy](#131-public-celestial-reference-policy)
+
 # Status and purpose
 
 **Status:** Living accepted edition; architecture 0.9.5 merged in `1a15076`; public celestial-reference policy implemented and scientifically accepted on its review branch.
