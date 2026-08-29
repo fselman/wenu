@@ -81,7 +81,8 @@ through `CelestialSphere.draw_chart()` and
 `layer.spherical_geometry(observer, ...)`. It classifies celestial
 background, future dynamic astronomical objects, and observer-local geometry,
 and fixes their sole convergence before projection in an explicit spherical
-product frame.
+product frame. Milestone 49D.1 adds no runtime module or alternate scene
+graph.
 `sky/realization.py` owns the frozen 49D.2 `LayerRealizationContext`.
 `sky/sky_layer.py::SkyLayer.realize()` owns the compatibility adapter, and
 `sky/celestial_sphere.py::CelestialSphere.draw_chart()` selects it only for an
