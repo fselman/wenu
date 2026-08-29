@@ -538,7 +538,8 @@ in `docs/developer/archive/acceptance_history/visual_acceptance_46d8.md` only af
 `tools/render_48e2_polar_preview.py` owns the v0.9 physical-style checkpoint.
 It drives the canonical generated sphere, paired charts, atlas-print
 composition, and calendar geometry to write two untracked PNGs and a checksum
-manifest. It is a diagnostic only; product export and physical A4 assembly
+manifest. It supports explicit DPI and routes external Astropy anchor input
+through `CoordinateService`. It is a diagnostic only; product export and physical A4 assembly
 remain later milestones. Human review is recorded in
 `docs/developer/archive/acceptance_history/visual_acceptance_48e2.md`.
 Milestone 48E.3 reuses that genuine two-face diagnostic; its separate review
