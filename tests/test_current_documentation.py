@@ -343,7 +343,7 @@ def test_public_interface_audit_records_as_is_and_scientific_boundary():
         "Reproducible user recipes currently under `tools/`",
         "Diagnostics, acceptance, and benchmarks",
         "Catalogue and repository maintenance",
-        "The public chart interface does not yet expose that vocabulary",
+        "The first bounded part of that vocabulary is now public",
         "coordinate system",
         "reference frame",
         "equinox",
