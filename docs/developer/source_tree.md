@@ -761,7 +761,10 @@ canonical chart family.
   rendering to the final SVG annotation boundary.
 
 SVG remains a downstream 2D product. It is not Wenu's scientific scene, an
-internal `.wenu` representation, or the interchange format for Wenu3D.
+internal `.wenu` representation, or the interchange format for Wenu3D. Future
+Sun, Moon, and planet layers must supply their semantic identities upstream
+and reach SVG through this same renderer/export boundary. No separate SVG
+astronomy generator or post-export coordinate overlay is permitted.
 
 ## Temporal sequence modules (Milestone 49G.1)
 
