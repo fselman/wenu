@@ -1,6 +1,6 @@
 # Wenu architecture diagrams
 
-**Status:** v0.9 as-is baseline plus architecture 0.9.5 implementation tracking through the 49C.2 candidate
+**Status:** v0.9 as-is baseline plus architecture 0.9.5 implementation tracking through the 49C.3 candidate
 
 These diagrams are a human inspection interface for the as-is software. They
 are intended to let Fernando inspect architecture ownership, principal data
@@ -105,6 +105,8 @@ compatibility conversions, deep-sky geometry, constellation references,
 observer caches, and chart-orientation reference directions now use the
 service. Skyfield apparent stellar realization remains provider work, and
 native AltAz horizon construction remains reference geometry.
+
+49C.3 removes the red legacy `radec_to_altaz()` and chart-wrapper authorities shown in the target planning view. `Observer` now exposes immutable `observation_context`; its ICRS, Galactic, and ecliptic frame properties are gone. The target SVG retains the red retirement boxes as migration history until 49C.4 replaces the target views with newly generated current as-is diagrams.
 
 Static-structure notation:
 
