@@ -133,7 +133,7 @@ def _polar_reference_annotations(chart, observer):
     )
 
 
-def _render_face(chart, furniture, sky, observer, destination):
+def _render_face(chart, furniture, sky, observer, destination, *, dpi):
     composition = compose_chart(
         chart,
         style="atlas",
@@ -203,7 +203,7 @@ def _render_face(chart, furniture, sky, observer, destination):
         color=composition.style.canvas.foreground_color,
     )
     output = ExportOptions(
-        dpi=180,
+        dpi=dpi,
         bbox_inches="tight",
         facecolor=composition.style.canvas.sky_color,
         padding=0.02,
@@ -212,7 +212,7 @@ def _render_face(chart, furniture, sky, observer, destination):
     return output
 
 
-def render_preview(destination, *, projection_name):
+def render_preview(destination, *, projection_name, dpi=180):
     """Render two deterministic diagnostic PNGs and one manifest."""
     destination.mkdir(parents=True, exist_ok=True)
     pair = PolarPlanispherePairRequest(
@@ -230,6 +230,7 @@ def render_preview(destination, *, projection_name):
                 sky,
                 observer,
                 destination / f"polar-planisphere-{name}.png",
+                dpi=dpi,
             )
             for name, chart, furniture in (
                 ("south", pair.south, calendar.south),
@@ -243,6 +244,7 @@ def render_preview(destination, *, projection_name):
         json.dumps(
             {
                 "projection": projection_name,
+                "dpi": dpi,
                 "outputs": [
                     {
                         "path": str(path),
@@ -273,6 +275,12 @@ def parser():
         choices=("polar_azimuthal_equidistant", "stereographic"),
         default="polar_azimuthal_equidistant",
     )
+    value.add_argument(
+        "--dpi",
+        type=int,
+        default=180,
+        help="PNG resolution in dots per inch (default: 180).",
+    )
     return value
 
 
@@ -281,6 +289,7 @@ def main(argv=None):
     outputs, manifest = render_preview(
         arguments.output,
         projection_name=arguments.projection,
+        dpi=arguments.dpi,
     )
     print(*(str(path) for path in (*outputs, manifest)), sep="\n")
 
