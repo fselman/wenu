@@ -1,6 +1,6 @@
 # Wenu architecture diagrams
 
-**Status:** Architecture 0.9.5 acceptance candidate; v0.9 baseline and 49B/49C planning views retained as history
+**Status:** Architecture 0.9.5 diagrams accepted; closure merge pending; v0.9 baseline and 49B/49C planning views retained as history
 
 These diagrams are a human inspection interface for the as-is software. They
 are intended to let Fernando inspect architecture ownership, principal data
@@ -23,7 +23,7 @@ Source: `coordinate_static_structure_as_is_v0.9.5.dot`
 
 Source: `coordinate_runtime_sequence_as_is_v0.9.5.dot`
 
-These three source-backed views are the 49C.4 acceptance candidate. Together
+These three source-backed views are the accepted 49C.4 inspection authority. Together
 they show the actual classes and package placement, inheritance and composition,
 and runtime calls or returns after 49C.3. The implemented provider boundary is
 `Stars`, `NonStellar`, and `OpenClusters`; constructed grids, planes, poles,
