@@ -1592,3 +1592,14 @@ resolved request through ordinary grid and furniture construction.
 The installed command exposes `--reference-equinox EQUINOX`. The corresponding
 schema-version-1 overlay is `[coordinates.references] equinox = "..."`, with
 the explicit command value taking precedence.
+
+Reusable view drawing passes `ChartView.observer` explicitly to
+`configure_chart_request_grids(..., observer=...)`. Direct library callers
+may continue to rely on `sky.observer` as the fallback. This distinction is
+required for `of_date`, which always resolves from the declared chart
+observer's `t_astropy` and never from the computer clock.
+
+Scientific acceptance compared default J2000, explicit J2000.0, J2016.0, and
+of-date SVGs. The coupled references moved coherently while apparent stars
+remained fixed. Final verification passed 1,786 routine tests with 30
+deselected and 1,816 complete tests.
