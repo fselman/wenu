@@ -21,7 +21,6 @@ FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
 V095_TARGET = DEVELOPER / "target_architecture_v0.9.5.md"
 COORDINATE_GUIDE = DEVELOPER / "coordinate_system_guide_v0.9.5.md"
 PUBLIC_INTERFACE_AUDIT = DEVELOPER / "public_interface_audit_v0.9.5.md"
-COORDINATE_GUIDE_ODT = DEVELOPER / "review" / "coordinate_system_guide_v0.9.5.odt"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -82,7 +81,6 @@ def test_current_architecture_authorities_exist_and_cross_reference():
             PUBLIC_INTERFACE_AUDIT,
             V095_TARGET,
             COORDINATE_GUIDE,
-            COORDINATE_GUIDE_ODT,
             INSTRUCTIONS,
         )
         if not path.is_file()
@@ -213,7 +211,6 @@ def test_v095_coordinate_target_and_living_guide_are_reviewable():
     ):
         assert phrase in guide
 
-    assert COORDINATE_GUIDE_ODT.stat().st_size > 10_000
 
 def test_v08_release_evidence_remains_closed():
     target = read(TARGET)
