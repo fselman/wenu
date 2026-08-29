@@ -256,8 +256,8 @@ propagate them physically.
 
 ### Milestone 49D.1 — Celestial-scene dependency and ownership audit
 
-**Status:** Review candidate on the dedicated 49D.1 branch; documentation and
-characterization only.
+**Status:** Scientifically and pedagogically accepted on the dedicated 49D.1
+branch; merge pending.
 
 The as-is inventory and minimum planet-enabling scene boundary are recorded in
 `celestial_scene_dependency_audit_49d1.md`. It distinguishes the reusable
@@ -279,6 +279,12 @@ A real ephemeris provider remains Milestone 49E and the first planet remains a
 49I vertical slice. Completing every 49D migration is not a prerequisite for
 that planet, but this bounded dependency contract prevents the provider from
 being attached at the wrong architectural layer.
+
+Fernando accepted the dependency classification, convergence point, insertion
+point, and non-goals on 2026-08-29. Verification passed 39 documentation tests
+in 2.78 seconds, 1,789 routine tests with 30 deselected in 26.62 seconds, and
+all 1,819 tests in 84.41 seconds. No visual comparison was required because
+49D.1 changes no production source or runtime output.
 
 - realize catalogue stars and deep-sky geometry directly in the canonical
   celestial product frame;
