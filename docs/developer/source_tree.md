@@ -430,6 +430,12 @@ facades. Historical component demonstrations that still provide regression
 coverage live under `tests/fixtures/example_regressions/`; they are test-local
 fixtures, not supported user examples.
 
+`docs/developer/public_interface_audit_v0.9.5.md` classifies every executable
+public example, user recipe, diagnostic, benchmark, catalogue-maintenance
+utility, and repository tool after architecture 0.9.5. It also records the
+as-is gap between internal `CoordinateSpec` capability and public system,
+frame, equinox, and epoch selection.
+
 `examples/circumpolar.py` and its byte-identical packaged resource expose the
 family's existing limiting-declination framing value as an ordinary argument.
 They still only declare a view and delegate horizon controls to the shared
