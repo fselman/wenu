@@ -100,7 +100,32 @@ provider instant and provenance remain explicit. 49E must define how a real
 provider and product request compose that target identity for several moving
 objects.
 
-## 6. Explicit non-goals
+## 6. Output-neutral and SVG contract
+
+The future Sun, Moon, and planet implementation must remain an ordinary
+semantic sky-layer path:
+
+1. an ephemeris provider evaluates a state at the explicit instant and time
+   scale;
+2. the layer transforms that state exactly once into
+   `product_coordinate_spec` through `CoordinateService`;
+3. the layer supplies upstream semantic identity before projection; and
+4. the existing projection, preparation, Matplotlib renderer, and single
+   exporter create PNG, PDF, or SVG from the same projected records.
+
+For SVG, moving objects belong under the reserved semantic hierarchy
+`solar-system/sun`, `solar-system/moon`, and `solar-system/planets`.
+Those names must originate in the future layer's `SemanticLayerIdentity` (and
+stable per-object entity keys where applicable). The downstream SVG annotator
+may serialize that identity but must not infer it from coordinates, marker
+appearance, labels, paint order, or object names.
+
+No future moving object may be drawn by a separate SVG generator, injected as
+a post-export coordinate overlay, or assigned SVG-only astronomical geometry.
+This is the active 49D.2 application of the accepted Milestone 49F product
+contract.
+
+## 7. Explicit non-goals
 
 49D.2 does not add or choose a JPL ephemeris and does not thread the
 context through ordinary `ChartRequest` or CLI code. It also does not:
@@ -114,7 +139,7 @@ context through ordinary `ChartRequest` or CLI code. It also does not:
   appearance, semantic SVG, furniture, or export;
 - change any existing product geometry.
 
-## 7. Acceptance requirements
+## 8. Acceptance requirements
 
 49D.2 is accepted when:
 
