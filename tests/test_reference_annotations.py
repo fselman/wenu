@@ -7,7 +7,7 @@ from types import SimpleNamespace
 
 import numpy as np
 import pytest
-from astropy.coordinates import BarycentricTrueEcliptic
+from astropy.coordinates import BarycentricTrueEcliptic, FK5
 from astropy.time import Time
 
 from wenu import (
@@ -147,7 +147,7 @@ def test_both_poles_use_conventional_labels():
     assert labels == ["NCP", "SCP", "NEP", "SEP", "NGP", "SGP"]
 
 
-def test_labeled_ecliptic_keypoints_use_the_reference_ecliptic_frame():
+def test_labeled_ecliptic_keypoints_use_the_j2000_reference_frame():
     resolved_observer = observer()
     resolved_observer.t_astropy = Time("2026-08-16")
     composition = compose_chart(
@@ -167,9 +167,7 @@ def test_labeled_ecliptic_keypoints_use_the_reference_ecliptic_frame():
     )
 
     assert len(overlay.points) == 4
-    expected = BarycentricTrueEcliptic(
-        equinox=resolved_observer.t_astropy
-    )
+    expected = BarycentricTrueEcliptic(equinox=Time("J2000"))
     assert all(
         point.coord.frame.is_equivalent_frame(expected)
         for point in overlay.points._points
@@ -177,7 +175,44 @@ def test_labeled_ecliptic_keypoints_use_the_reference_ecliptic_frame():
     assert [point.label for point in overlay.points._points] == [
         "♈", "♋", "♎", "♑"
     ]
+    equinoxes = [
+        overlay.points._points[index].coord.transform_to(
+            FK5(equinox=Time("J2000"))
+        )
+        for index in (0, 2)
+    ]
+    assert [point.dec.deg for point in equinoxes] == pytest.approx(
+        [0.0, 0.0],
+        abs=0.01,
+    )
 
+
+
+def test_ecliptic_curve_and_keypoints_share_the_j2000_policy():
+    resolved_observer = observer()
+    composition = compose_chart(
+        chart(),
+        style="cartoon",
+        furniture=ChartFurnitureOptions(
+            references=ReferenceAnnotations(
+                ecliptic=ReferencePlaneAnnotation(state="line"),
+                ecliptic_keypoints="labeled",
+            ),
+            poles=PoleAnnotations(labels=False),
+        ),
+    )
+
+    overlay = build_celestial_reference_sky(
+        SimpleNamespace(observer=resolved_observer),
+        composition,
+    )
+
+    assert overlay.layers[0].equinox == "J2000"
+    expected = BarycentricTrueEcliptic(equinox=Time("J2000"))
+    assert all(
+        point.coord.frame.is_equivalent_frame(expected)
+        for point in overlay.points._points
+    )
 
 def test_rectangular_reference_furniture_preserves_all_keypoint_altitudes():
     resolved_observer = observer()
