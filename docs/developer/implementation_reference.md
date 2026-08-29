@@ -716,6 +716,14 @@ dynamic layer is test-local: it evaluates a deterministic structural
 Caching, real ephemeris selection, installed moving-object layers, public
 request exposure, and the first planet remain later milestones.
 
+Future Sun, Moon, and planet layers must attach renderer-neutral
+`SemanticLayerIdentity` before projection and then use the same canonical
+projection, preparation, Matplotlib rendering, and single export path as every
+other layer. For SVG, the downstream annotator serializes the reserved
+`solar-system/sun`, `solar-system/moon`, and `solar-system/planets`
+hierarchy; it does not evaluate ephemerides, transform positions, infer object
+identity, or add a post-export overlay.
+
 `tools/benchmark_reusable_sphere.py` is the reproducible diagnostic for that
 contract. It builds one sphere, prepares and exports six chart families for
 three observer/instant identities, prints progress for 37 operations, and
