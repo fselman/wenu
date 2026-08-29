@@ -622,6 +622,28 @@ candidate-event comparison as separate evidential layers.
 | Gregorian calendar | The 1582 reform retained the month system but changed the leap rule: century years are leap years only when divisible by 400 | The reform was adopted by jurisdiction, not by the whole world on one day. In the first adopting countries, Thursday 4 October 1582 Julian was followed by Friday 15 October Gregorian; Britain and its colonies changed in September 1752. Always record place and whether a source uses Old Style or New Style. |
 | Proleptic Julian or Gregorian calendar | A modern calendar rule mathematically extended earlier than its historical introduction | Useful for computation, but it is not the calendar an ancient author used. Label it explicitly as proleptic. |
 
+### 5.3.1 Did Augustus steal a day from February?
+
+**[Foundation]** The familiar story says that Julius Caesar gave July 31 days,
+Augustus then demanded an equally long August, and a day was taken from
+February to supply it. There is no reliable contemporary evidence that this
+happened, so there is no historical year in which Augustus “stole” the day.
+Sextilis was renamed *Augustus* in 8 BCE, but renaming the month is not evidence
+that its length was changed then. February was already the exceptional short
+month in the Roman calendar and had long been associated with intercalation.
+
+**[Undergraduate]** The alternating month-length story is a late explanatory
+tradition, not a secure record of Caesar's or Augustus's legislation. The
+Julian arrangement of month lengths is generally understood to predate the
+renaming of Sextilis. What Augustus did correct was a different error: Roman
+officials initially applied Caesar's fourth-year leap rule too frequently,
+apparently through inclusive counting. Augustus suspended intercalation until
+the sequence was brought back into alignment. A historian should therefore
+distinguish three claims: the Julian reform began in 45 BCE; Sextilis was
+renamed Augustus in 8 BCE; and the supposed transfer of a day from February is
+an unsupported legend. Wenu should never encode that legend as a calendar
+conversion rule.
+
 The Gregorian year averages 365.2425 days because it contains 97 leap days in
 400 years. The Julian calendar averages 365.25 days. Neither number should be
 confused with a measured ancient tropical year, whose value and definition
@@ -710,11 +732,63 @@ coordinate axes; they do not supply month names, leap-day rules, or a civil
 calendar for historians.
 
 **[Undergraduate]** A Julian epoch advances in exact units of 365.25 days from
-J2000.0. A Besselian epoch uses the older tropical-year/Sun-based convention.
-Consequently a Besselian label is not obtained by applying the Julian calendar
-to an old date, and `B1950.0` is not another spelling of either
-`J1950.0` or 1950-01-01. The epoch label must travel with its reference-frame
-or catalogue meaning.
+J2000.0. A Besselian epoch uses the older Newcomb mean-Sun convention related
+to the tropical year. Consequently a Besselian label is not obtained by
+applying the Julian calendar to an old date, and `B1950.0` is not another
+spelling of either `J1950.0` or 1950-01-01. The epoch label must travel with
+its reference-frame or catalogue meaning.
+
+### 5.6.1 Tropical, sidereal, and Besselian years
+
+**[Foundation]** A tropical year follows the cycle of the seasons. It is the
+time required for the Sun's ecliptic longitude, measured from the moving
+equinox, to increase by 360 degrees. Near the modern era its mean length is
+about 365 days, 5 hours, 48 minutes, and 45 seconds, or about 365.24219 days.
+A sidereal year instead measures Earth's revolution relative to nearly fixed
+background directions and is roughly 20 minutes longer. The difference arises
+mainly because precession moves the equinox westward while Earth travels
+around the Sun.
+
+“Time from one observed March equinox to the next” is a useful first picture,
+but not the full definition. Earth's orbital speed is not uniform, the
+equinox itself moves, and perturbations change the orbit. Intervals beginning
+at different seasonal longitudes are therefore not exactly equal. The
+**mean tropical year** smooths those variations by using the mean Sun and mean
+equinox, and its length also changes slowly with epoch. The Gregorian average
+of 365.2425 days is a civil approximation, not a claim that every tropical
+year has that duration.
+
+**[Undergraduate]** Newcomb's **fictitious mean Sun** is an ideal point moving
+uniformly so that irregular apparent solar motion can be replaced by a smooth
+mean motion. The Besselian year is one complete revolution in right ascension
+of that fictitious mean Sun. By convention its beginning occurs when the
+fictitious mean Sun has mean right ascension 18h 40m. The conventional linear
+Besselian epoch relation is
+
+\[
+B = 1900.0 +
+    \frac{\mathrm{JD}-2415020.31352}{365.242198781},
+\]
+
+where the day argument must be supplied on the time-scale convention required
+by the legacy reduction. The denominator is the conventional Besselian-year
+length near B1900.0; it must not be treated as an immutable modern measurement
+of every tropical year. The U.S. Naval Observatory notes that Newcomb's
+Besselian year differs slightly from the tropical year as epoch changes.
+
+Thus `B1950.0` denotes the instant obtained from this mean-Sun convention, not
+midnight at the beginning of civil 1950. Besselian epochs belong especially to
+legacy FK4-era catalogues and reductions. Modern work normally uses Julian
+epochs,
+
+\[
+J = 2000.0 +
+    \frac{\mathrm{JD}-2451545.0}{365.25},
+\]
+
+with the exact 365.25-day unit; `J2000.0` is JD 2451545.0 on the applicable
+dynamical time scale. The exact unit makes the epoch label a transparent
+linear coordinate in time rather than a changing model of the seasonal year.
 
 The five expressions below answer different questions:
 
@@ -762,6 +836,11 @@ pages on [Julian/Gregorian conversion](https://aa.usno.navy.mil/faq/JD_formula),
 [historical calendar conversion and adoption](https://aa.usno.navy.mil/data/JulianDate),
 [leap-year rules](https://aa.usno.navy.mil/faq/leap_years), and
 [year numbering and calendrical eras](https://aa.usno.navy.mil/faq/millennium).
+The [Encyclopaedia Romana discussion of Augustus and the calendar](https://penelope.uchicago.edu/encyclopaedia_romana/calendar/augustus.html)
+is a useful entry point for separating the late month-length story from the
+Roman evidence. The USNO [Astronomical Almanac glossary](https://aa.usno.navy.mil/faq/asa_glossary)
+defines the tropical, sidereal, Julian, and Besselian years and the fictitious
+mean Sun used in the Besselian convention.
 For Greek material, specialist civic-calendar, epigraphic, and prosopographic
 publications remain necessary; a general calendar table cannot replace the
 local inscriptional evidence.
