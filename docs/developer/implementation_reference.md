@@ -220,6 +220,7 @@ behavior.
 
 The supported user examples are exactly:
 
+- `all_sky.py`;
 - `planisphere.py`;
 - `regional_constellation_group.py`;
 - `regional_constellation.py`;
@@ -227,7 +228,7 @@ The supported user examples are exactly:
 - `binocular_object.py`.
 
 An installed Wenu distribution provides the `wenu_examples` command. Running
-it creates `wenu_examples/` in the current directory and installs these five
+it creates `wenu_examples/` in the current directory and installs these six
 scripts from package resources. Existing scripts are preserved unless the
 caller supplies `--force`.
 
