@@ -208,7 +208,7 @@ def test_v095_coordinate_target_and_living_guide_are_reviewable():
         "OpenNGC",
         "Gaia DR3",
         "Minimal architecture 0.9.5 roadmap",
-        "canonical celestial-reference furniture uses one J2000 policy",
+        "canonical celestial-reference furniture uses one coherent policy",
         "Architecture 0.9.5 acceptance",
     ):
         assert phrase in guide

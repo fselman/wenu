@@ -343,8 +343,7 @@ equinox.
 > - **AltAz:** altitude–azimuth.
 > - **EOP:** Earth Orientation Parameters.
 > - **EDR3:** Gaia Early Data Release 3.
-> - **FK4/FK5:** Fourth/Fifth Fundamental Catalogue; `FK` comes from the
->   German *Fundamentalkatalog*.
+> - **FK4/FK5:** Fourth/Fifth Fundamental Catalogue; `FK` comes from the German *Fundamentalkatalog*.
 > - **GCRS:** Geocentric Celestial Reference System.
 > - **IAU:** International Astronomical Union.
 > - **ICRF3:** third realization of the International Celestial Reference Frame.
