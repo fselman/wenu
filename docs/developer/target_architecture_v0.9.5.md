@@ -92,7 +92,7 @@ Migrate in this order:
 
 ### 49C.3 — Retire competing transformation owners
 
-**Implementation status:** Candidate on the dedicated 49C.3 branch.
+**Implementation status:** Accepted on the dedicated 49C.3 branch; merge pending.
 
 The candidate removes `radec_to_altaz()` and
 `charts/coordinate_frames.py`, routes every remaining production Astropy
