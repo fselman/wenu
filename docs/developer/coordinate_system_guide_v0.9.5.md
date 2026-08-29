@@ -570,6 +570,207 @@ The existing temporal sequence classes preserve physical versus playback time,
 but coordinate architecture must additionally preserve catalogue epoch and
 provider evaluation instant.
 
+## 5.1 Calendars are historical coordinate systems for time
+
+**[Foundation]** A written date is not yet a unique instant. Just as a pair of
+sky angles needs a reference frame, a historical date needs a calendar, a
+place, a rule for numbering years, and often the name of a ruler or official.
+The same day can have different names in different calendars, and two records
+with the same month and day words need not refer to the same season or even
+begin their day at the same moment.
+
+**[Undergraduate]** A calendar maps culturally defined years, months, and days
+to a sequence of physical days. That map may depend on observations of the
+Moon, an intercalation decision, a regnal-year convention, a local sunset or
+sunrise, and a reform adopted on different dates in different jurisdictions.
+A historian should therefore preserve the attested date and its provenance
+separately from every converted date. Conversion is an interpretation with an
+uncertainty, not a replacement for the source.
+
+## 5.2 From Sumer and Babylonia to Egypt and Greece
+
+The following table is a guide to the questions that must be asked, not a
+universal conversion table. Ancient practice changed across cities and
+centuries, and surviving evidence is uneven.
+
+| Tradition | Broad structure | How events were commonly located | Principal conversion hazards |
+| --- | --- | --- | --- |
+| Sumerian and early Mesopotamian city calendars | Mostly lunisolar month systems, tied to visible lunar phases and the agricultural/cultic year; month names and year names could be local | Ruler's regnal year or a named year-event, local month, and day | There was no single timeless “Sumerian calendar.” Identify city, dynasty, king list, year-name sequence, intercalary decisions, and scholarly chronology. Competing High, Middle, Low, or Ultra-Low chronologies can move an absolute date by decades. |
+| Babylonian and Assyrian | Twelve lunar months with an intercalary month when needed to keep months in the seasonal year; later practice became increasingly regular | Regnal year, Babylonian month name or number, and day; astronomical diaries may add observations | Month start depended on lunar visibility; intercalation was historically contingent before later regularization. Accession-year versus first-regnal-year counting, damaged tablets, and uncertain king-list synchronisms must remain explicit. |
+| Ancient Egyptian civil | Twelve 30-day months plus five epagomenal days: a 365-day civil year without a leap day in its older form | Regnal year, season, month within season, and day; documents may also use lunar or religious reckonings | The 365-day civil year moved through the seasons—the “wandering year.” Conversion needs the ruler's chronology and synchronisms; a season name must not be treated as a fixed modern season. The later Alexandrian/Coptic calendar added a regular leap day. |
+| Greek poleis | Usually local lunisolar civic and festival calendars, alongside seasonal, astronomical, and administrative reckonings | Eponymous archon or other magistrate, local month, day, festival, Olympiad, or synchronism | There was no single ancient Greek civil calendar. Month names, year starts, intercalation, and magistrate lists differed by polis; political authorities could adjust civic months. A modern “Attic date” is a reconstruction, not an original universal Greek timestamp. |
+
+**[Foundation]** The shared astronomical problem was that a lunar month is
+about 29.5 days, twelve lunar months are about eleven days shorter than a
+seasonal year, and a solar year is not an integer number of days. Different
+societies solved that mismatch differently: insert an extra month, allow the
+calendar to wander through the seasons, or adopt a leap-day rule.
+
+**[Undergraduate]** Mesopotamian astronomical observations are especially
+valuable for chronology, but the circularity must be controlled: one should
+not use a proposed chronology to identify an eclipse and then cite that same
+eclipse as independent proof of the chronology. Preserve the tablet reading,
+philological restoration, calendar reconstruction, astronomical model, and
+candidate-event comparison as separate evidential layers.
+
+## 5.3 Roman, Julian, and Gregorian calendars
+
+| System | Rule and historical role | Historian's caution |
+| --- | --- | --- |
+| Roman Republican calendar | A civic calendar preceding Caesar's reform, with months and politically administered intercalation | Dates require consular or other synchronisms and a reconstruction of irregular intercalations. Projecting the later Julian calendar backward silently is an anachronism. |
+| Julian calendar | Caesar's reform established a 365-day common year and a leap day every fourth year; the reformed year began in 45 BCE | Early implementation of the leap rule was not perfectly regular. “Julian” must identify the calendar, not merely an old-looking European date. |
+| Gregorian calendar | The 1582 reform retained the month system but changed the leap rule: century years are leap years only when divisible by 400 | The reform was adopted by jurisdiction, not by the whole world on one day. In the first adopting countries, Thursday 4 October 1582 Julian was followed by Friday 15 October Gregorian; Britain and its colonies changed in September 1752. Always record place and whether a source uses Old Style or New Style. |
+| Proleptic Julian or Gregorian calendar | A modern calendar rule mathematically extended earlier than its historical introduction | Useful for computation, but it is not the calendar an ancient author used. Label it explicitly as proleptic. |
+
+The Gregorian year averages 365.2425 days because it contains 97 leap days in
+400 years. The Julian calendar averages 365.25 days. Neither number should be
+confused with a measured ancient tropical year, whose value and definition
+belong to astronomical modeling rather than civil calendar naming.
+
+European records add further traps. The civil year did not always begin on
+1 January; a year labelled in a source can therefore differ from a modern year
+number for January, February, or March. Religious feasts may follow an
+ecclesiastical rather than an observed astronomical Moon. “Old Style” can
+refer to the Julian calendar, a non-January year start, or both, depending on
+the editor and jurisdiction. A responsible conversion states the convention
+used instead of silently correcting the document.
+
+## 5.4 A historian's minimum date record
+
+For every date used to connect a text, inscription, observation, or event to a
+Wenu chart, retain at least:
+
+1. the source's date exactly as written, with damaged or restored characters
+   marked;
+2. source, edition, translation, document location, and scholarly citation;
+3. polity or jurisdiction and geographic place;
+4. calendar and local variant, including month name rather than only a number;
+5. era, king, regnal year, eponymous official, Olympiad, indiction, or other
+   year-counting authority;
+6. accession-year/non-accession-year rule and civil new-year rule;
+7. intercalary month or day and whether it was observed, decreed, inferred, or
+   reconstructed;
+8. day boundary—midnight, sunset, sunrise, noon, or unknown—and the local time
+   convention if a clock time is given;
+9. converted Julian/Gregorian date, explicitly labelled as historical or
+   proleptic, together with the conversion authority;
+10. earliest/latest possible instant or another uncertainty representation;
+11. the astronomical time scale and Earth-rotation model used for a computed
+    phenomenon;
+12. every proposed synchronism and competing chronology, rather than only the
+    preferred result.
+
+A useful machine record therefore has separate fields such as
+`source_date_text`, `calendar`, `calendar_variant`, `era`, `regnal_year`,
+`month_name`, `intercalation_status`, `day_start`, `place`,
+`converted_calendar`, `converted_interval`, `conversion_authority`, and
+`uncertainty_note`. One ISO string cannot faithfully contain all of this.
+
+## 5.5 Year numbering, day counts, and astronomical time
+
+**No year zero in ordinary BCE/CE history.** The year 1 BCE is followed by
+1 CE. Astronomical year numbering instead uses year 0 for 1 BCE, year -1 for
+2 BCE, and so forth. Thus a numerical year must declare which numbering rule
+it uses.
+
+**Julian calendar is not Julian Date.** The Julian calendar is a civil calendar.
+The Julian Date (JD) is a continuous day count whose integer changes at noon;
+JD 2451545.0 is 2000-01-01 12:00 on the applicable astronomical time scale.
+A calendar date converted to JD still needs a time scale. Modified Julian Date
+is 
+
+\[
+\mathrm{MJD}=\mathrm{JD}-2\,400\,000.5,
+\]
+
+so its integer changes at midnight. Neither JD nor MJD tells the reader which
+ancient calendar appeared in the source.
+
+**UTC is not an ancient time scale.** UTC with leap seconds is a modern civil
+scale. Ancient local time may instead be expressed by seasonal hours, watches,
+or a solar phenomenon. To compare an ancient eclipse or occultation with a
+calculation, the model must relate uniform dynamical time (usually TT) to Earth
+rotation (UT1). The uncertain historical quantity is commonly summarized by
+
+\[
+\Delta T = \mathrm{TT}-\mathrm{UT1}.
+\]
+
+For remote antiquity, uncertainty in \(\Delta T\) can shift the reconstructed
+terrestrial longitude or local clock time of a phenomenon substantially.
+Wenu must not print a modern-looking second-precise UTC timestamp for an
+ancient event unless the precision and time-scale conversion are genuinely
+supported.
+
+## 5.6 Julian and Besselian epochs are not calendars
+
+**[Foundation]** `J2000.0`, `J2016.0`, and `B1950.0` label astronomical
+epochs. They identify instants or frame conventions used for positions and
+coordinate axes; they do not supply month names, leap-day rules, or a civil
+calendar for historians.
+
+**[Undergraduate]** A Julian epoch advances in exact units of 365.25 days from
+J2000.0. A Besselian epoch uses the older tropical-year/Sun-based convention.
+Consequently a Besselian label is not obtained by applying the Julian calendar
+to an old date, and `B1950.0` is not another spelling of either
+`J1950.0` or 1950-01-01. The epoch label must travel with its reference-frame
+or catalogue meaning.
+
+The five expressions below answer different questions:
+
+| Expression | What it is |
+| --- | --- |
+| Julian calendar date | A civil year-month-day under the Julian leap rule |
+| Gregorian calendar date | A civil year-month-day under the Gregorian leap rule |
+| Julian Date | A continuous astronomical day number |
+| Julian epoch, such as J2000.0 | An astronomical epoch label based on exact 365.25-day Julian years |
+| Besselian epoch, such as B1950.0 | An older astronomical epoch convention related to the tropical year and mean Sun |
+
+## 5.7 Present Wenu boundary and future historical-date support
+
+> **Wenu implementation box — Calendars and historical chronology**
+>
+> Wenu currently accepts an ISO-format date/time through
+> `observer.py::Observer._resolve_time()`, parsed by Python
+> `datetime.fromisoformat()`. A naive time is interpreted in the declared IANA
+> time zone; an offset-aware value is converted to UTC and then to
+> `astropy.time.Time`. This is appropriate for current modern observing charts.
+>
+> It is **not** a general historical-calendar converter. The public observer
+> path uses Python's proleptic Gregorian `datetime`, supports years 1–9999,
+> has no BCE/year-zero input contract, and does not accept Sumerian,
+> Babylonian, Egyptian, Greek, Roman Republican, historical Julian, regnal,
+> or jurisdiction-specific Gregorian dates. `--reference-equinox` selects a
+> coordinate reference orientation; it must never be used to smuggle a
+> historical event date into the observer parser.
+>
+> Future historical support should introduce a separate provenance-rich
+> `HistoricalDateSpec` or equivalent translation boundary. It should preserve
+> the source date and uncertainty, use a specialist calendar/chronology
+> authority, and produce an interval or distribution on a declared continuous
+> time scale before calling the ordinary Wenu observer and coordinate
+> machinery. Wenu should not invent ancient-calendar algorithms inside chart
+> rendering code.
+
+## 5.8 Sources and limits
+
+Authoritative starting points include the [UCL Digital Egypt calendar guide](https://www.ucl.ac.uk/museums-static/digitalegypt/chronology/calendar.html)
+for the Egyptian civil and Alexandrian/Coptic calendars; the
+[ORACC Assyrian Empire Builders technical glossary](https://oracc.museum.upenn.edu/saao/aebp/Technicalterms/index.html)
+for Mesopotamian intercalation terminology; and the U.S. Naval Observatory
+pages on [Julian/Gregorian conversion](https://aa.usno.navy.mil/faq/JD_formula),
+[historical calendar conversion and adoption](https://aa.usno.navy.mil/data/JulianDate),
+[leap-year rules](https://aa.usno.navy.mil/faq/leap_years), and
+[year numbering and calendrical eras](https://aa.usno.navy.mil/faq/millennium).
+For Greek material, specialist civic-calendar, epigraphic, and prosopographic
+publications remain necessary; a general calendar table cannot replace the
+local inscriptional evidence.
+
+These sources explain conventions and supply starting points; they do not make
+a disputed ancient chronology certain. Every conversion used in historical
+argument should cite the specific edition, chronology, and algorithm actually
+used.
+
 # 6. Current transformation inventory and 0.9.5 destination
 
 | Present owner | Present operation | 0.9.5 destination |
@@ -852,6 +1053,10 @@ chart family's projection frame or propagate provider positions to a requested
 epoch.
 
 ### 13.1.4 Julian and Besselian year labels
+
+Section 5 distinguishes civil calendars, continuous day counts, and
+astronomical epoch labels and gives the historian's required provenance. This
+subsection applies that distinction specifically to coordinate references.
 
 **[Foundation]** The letter in `J2000.0` or `B1950.0` identifies the kind of
 astronomical year used to name the date. `J` means a Julian epoch and `B` means
