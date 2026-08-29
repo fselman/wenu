@@ -16,6 +16,16 @@ class SkyLayer(ABC):
 
     layer_name: ClassVar[str | None] = None
 
+    def realize(
+        self,
+        context: Any,
+        observer: Any,
+        **geometry_options: Any,
+    ) -> Any:
+        """Adapt an explicit realization context to the legacy layer call."""
+        del context
+        return self.spherical_geometry(observer, **geometry_options)
+
     @abstractmethod
     def spherical_geometry(self, observer: Any) -> Any:
         """Return this layer's spherical geometry for ``observer``."""

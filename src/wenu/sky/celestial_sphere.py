@@ -6,6 +6,7 @@ from collections.abc import Iterable
 
 from wenu.sky.rendering_results import ChartRenderingResult, LayerRenderingResult
 from wenu.sky.semantic_identity import semantic_layer_identity
+from wenu.sky.realization import LayerRealizationContext
 from wenu.objects.nonstellar import NonStellar
 from wenu.objects.galaxies import Galaxies
 from wenu.objects.globular_clusters import GlobularClusters
@@ -87,6 +88,7 @@ class CelestialSphere:
         projection,
         renderer,
         observer=None,
+        realization_context=None,
         viewport=None,
         layer_options=None,
         project_geometry=None,
@@ -107,6 +109,17 @@ class CelestialSphere:
         resolved_observer = self.observer if observer is None else observer
         if resolved_observer is None:
             raise TypeError("draw_chart requires an observer.")
+        if (
+            realization_context is not None
+            and not isinstance(
+                realization_context,
+                LayerRealizationContext,
+            )
+        ):
+            raise TypeError(
+                "realization_context must be a "
+                "LayerRealizationContext or None."
+            )
 
         if viewport is not None:
             apply = getattr(renderer, "apply_viewport", None)
@@ -130,9 +143,17 @@ class CelestialSphere:
             geometry_options, prepare, render_options = (
                 self._pipeline_options(configured)
             )
-            spherical = layer.spherical_geometry(
-                resolved_observer,
-                **geometry_options,
+            spherical = (
+                layer.spherical_geometry(
+                    resolved_observer,
+                    **geometry_options,
+                )
+                if realization_context is None
+                else layer.realize(
+                    realization_context,
+                    resolved_observer,
+                    **geometry_options,
+                )
             )
             projected = (
                 projection.project_geometry(spherical)

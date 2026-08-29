@@ -123,6 +123,28 @@ instant, time scale, observer, and apparent/geometric status where applicable.
 Projection code remains coordinate-neutral and may not select or relabel an
 astronomical frame.
 
+Milestone 49D.2 adds an optional immutable `LayerRealizationContext` before
+projection. It can carry product coordinate identity, observation context,
+provider evaluation instant/time scale, and resolved reference equinox.
+`SkyLayer.realize()` adapts that input to the existing
+`spherical_geometry(observer, ...)` contract. Ordinary requests do not yet
+supply the context and follow the exact legacy branch; no current astronomical
+layer, numerical geometry, or public product changes in this milestone.
+
+Future Sun, Moon, and planet layers must preserve the same output-neutral
+boundary. They acquire provider states, transform exactly once into the
+requested spherical product frame, and declare Wenu semantic identity before
+projection. PNG, PDF, and SVG then share the existing projection, preparation,
+Matplotlib rendering, and single export path. SVG annotation may expose the
+reserved `solar-system/sun`, `solar-system/moon`, and
+`solar-system/planets` hierarchy, but it must not infer astronomical identity,
+recompute coordinates, add a post-export overlay, or invoke a separate SVG
+generator.
+
+The 49D.2 handoff and this output-neutral moving-object boundary were
+scientifically, pedagogically, and technically accepted by Fernando on
+2026-08-29. They remain review-branch additions until merged.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored
@@ -176,6 +198,9 @@ Current work reads this document together with:
   evidence;
 - `public_interface_audit_v0.9.5.md` for the accepted executable inventory and
   public system, frame, equinox, and epoch boundary;
+- `celestial_scene_dependency_audit_49d1.md` and
+  `layer_realization_context_49d2.md` for scene dependencies and the minimal
+  pre-projection realization handoff;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product evidence.
 
 The v0.8 architecture, v0.9 target, and v0.8-to-v0.9 migration documents are

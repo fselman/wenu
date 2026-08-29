@@ -24,6 +24,9 @@ PUBLIC_INTERFACE_AUDIT = DEVELOPER / "public_interface_audit_v0.9.5.md"
 SCENE_DEPENDENCY_AUDIT = (
     DEVELOPER / "celestial_scene_dependency_audit_49d1.md"
 )
+LAYER_REALIZATION_CONTRACT = (
+    DEVELOPER / "layer_realization_context_49d2.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -83,6 +86,7 @@ def test_current_architecture_authorities_exist_and_cross_reference():
             FUTURE_ROADMAP,
             PUBLIC_INTERFACE_AUDIT,
             SCENE_DEPENDENCY_AUDIT,
+            LAYER_REALIZATION_CONTRACT,
             V095_TARGET,
             COORDINATE_GUIDE,
             INSTRUCTIONS,
@@ -400,6 +404,81 @@ def test_49d1_audits_scene_dependencies_without_runtime_change():
     assert "49D.1 scientific and pedagogical acceptance" in guide
     assert "accepted the scene-dependency explanation" in guide
     assert "No visual comparison was required" in roadmap
+
+
+def test_49d2_records_minimal_realization_context_and_non_goals():
+    contract = " ".join(read(LAYER_REALIZATION_CONTRACT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(
+        read(DEVELOPER / "source_tree.md").split()
+    )
+
+    for phrase in (
+        "**Implementation baseline:** `9e16ed2`",
+        "product_coordinate_spec",
+        "evaluation_instant",
+        "evaluation_time_scale",
+        "reference_equinox",
+        "contains no projection, viewport, renderer, style",
+        "Context omitted",
+        "Typed context supplied",
+        "exact legacy branch",
+        "deterministic test-only provider",
+        "transforms it exactly once through `CoordinateService`",
+        "A chart-wide frame choice alone cannot replace",
+        "does not add or choose a JPL ephemeris",
+        "does not thread the context through ordinary",
+        "Scientifically, pedagogically, and technically accepted",
+        "all 1,828 tests in 90.00 seconds",
+        "Output-neutral and SVG contract",
+        "`solar-system/sun`",
+        "No future moving object may be drawn by a separate SVG generator",
+    ):
+        assert phrase in contract
+
+    for phrase in (
+        "Milestone 49D.2 — Minimal layer-realization context",
+        "Ordinary chart requests do not supply one in 49D.2",
+        "Real ephemerides, installed moving-object layers",
+        "SVG product may serialize the reserved",
+        "no post-export overlay is acceptable",
+        "Acceptance evidence is 48 focused tests",
+    ):
+        assert phrase in roadmap
+
+    for phrase in (
+        "optional immutable `LayerRealizationContext` before projection",
+        "no current astronomical layer",
+        "single export path",
+        "must not infer astronomical identity",
+        "accepted by Fernando on",
+    ):
+        assert phrase in architecture
+
+    for phrase in (
+        "49D.2 minimal realization handoff",
+        "small sealed “instruction card”",
+        "controlled test object",
+        "This proves ownership and ordering, not planetary accuracy",
+        "Wenu implementation box — 49D.2 realization context",
+        "SVG is not a second astronomy engine",
+        "13.2.3 49D.2 scientific and pedagogical acceptance",
+    ):
+        assert phrase in guide
+
+    assert "Minimal layer-realization context (Milestone 49D.2)" in (
+        implementation
+    )
+    assert "Supplying no `realization_context`" in implementation
+    assert "downstream annotator serializes the reserved" in implementation
+    assert "No separate SVG astronomy generator" in source_tree
+    assert "`sky/realization.py` owns the frozen 49D.2" in source_tree
+    assert "exist only in `tests/test_layer_realization.py`" in source_tree
 
 
 def test_public_interface_audit_records_as_is_and_scientific_boundary():

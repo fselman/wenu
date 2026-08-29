@@ -256,8 +256,7 @@ propagate them physically.
 
 ### Milestone 49D.1 — Celestial-scene dependency and ownership audit
 
-**Status:** Scientifically and pedagogically accepted on the dedicated 49D.1
-branch; PR #33 awaits explicit merge.
+**Status:** Accepted and merged in `9e16ed2`.
 
 The as-is inventory and minimum planet-enabling scene boundary are recorded in
 `celestial_scene_dependency_audit_49d1.md`. It distinguishes the reusable
@@ -285,6 +284,29 @@ point, and non-goals on 2026-08-29. Verification passed 39 documentation tests
 in 2.78 seconds, 1,789 routine tests with 30 deselected in 26.62 seconds, and
 all 1,819 tests in 84.41 seconds. No visual comparison was required because
 49D.1 changes no production source or runtime output.
+
+### Milestone 49D.2 — Minimal layer-realization context
+
+**Status:** Scientifically, pedagogically, and technically accepted on the dedicated 49D.2 branch; not yet merged.
+
+The exact contract and acceptance requirements are recorded in
+`layer_realization_context_49d2.md`. A frozen `LayerRealizationContext`
+carries product coordinate identity, optional observation context, a paired
+provider evaluation instant/time scale, and an optional resolved reference
+equinox. It deliberately carries no projection, appearance, furniture, output,
+or cache policy.
+
+`SkyLayer.realize()` is the compatibility adapter to the existing
+`spherical_geometry(observer, ...)` call.
+`CelestialSphere.draw_chart(..., realization_context=None)` uses the new hook
+only when a typed context is explicitly supplied. Ordinary chart requests do
+not supply one in 49D.2 and therefore retain the exact existing dispatch.
+
+A deterministic test-only provider and dynamic layer prove evaluation at the
+declared instant, one `CoordinateService` transformation into the requested
+product frame, preservation of identifiers, and entry through the canonical
+projection/rendering path. Real ephemerides, installed moving-object layers,
+request/CLI exposure, current-layer migration, and caching remain out of scope.
 
 - realize catalogue stars and deep-sky geometry directly in the canonical
   celestial product frame;
@@ -315,6 +337,20 @@ chart layers.
 
 Providers compute or propagate states. They do not select charts, transform
 through undocumented downstream paths, project, clip, style, or render.
+
+Fernando accepted the context fields, exact legacy compatibility branch,
+controlled-provider proof, deferred 49E responsibilities, pedagogical guide,
+and canonical SVG path on 2026-08-29. Acceptance evidence is 48 focused tests
+in 2.21 seconds, 1,798 routine tests with 30 deselected in 27.61 seconds, and
+all 1,828 tests in 90.00 seconds. No visual comparison was required because no
+ordinary request can activate the context and production geometry is unchanged.
+
+The same boundary governs every output format. Future solar-system layers must
+declare their semantic identity before projection and then use the existing
+projection, preparation, Matplotlib renderer, and single exporter for PNG,
+PDF, and SVG. The SVG product may serialize the reserved
+`solar-system/sun`, `solar-system/moon`, and `solar-system/planets` paths;
+it must not recompute moving-object geometry or use a separate SVG-only path.
 
 ## 9. Milestone 49F - SVG product verification
 
@@ -432,7 +468,10 @@ Add one object class at a time:
 
 Each slice must test provenance, time scale, origin, coordinate status,
 transformation, visibility, labels, trails where requested, and repeatable
-sequence output before the next class begins.
+sequence output before the next class begins. It must also verify that PNG,
+PDF, and semantic SVG consume the same projected moving-object records, with
+stable upstream object identity and the appropriate reserved
+`solar-system` semantic path; no post-export overlay is acceptable.
 
 ## 13. Milestone 49J - Performance and closure
 

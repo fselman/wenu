@@ -691,12 +691,38 @@ A future planet enters after provider evaluation and
 does not enter through the renderer, furniture, command, or a parallel scene
 graph.
 
-49D.1 adds no runtime type and changes no geometry. The next 49D.2 slice may
-introduce only the minimum immutable layer-realization context and controlled
-test provider while preserving the current
-`layer.spherical_geometry(observer, **geometry_options)` compatibility call.
-Caching, real ephemeris selection, and the first planet remain later
-milestones.
+49D.1 added no runtime type and changed no geometry.
+
+### Minimal layer-realization context (Milestone 49D.2)
+
+`LayerRealizationContext(product_coordinate_spec, observation=None,
+evaluation_instant=None, evaluation_time_scale=None,
+reference_equinox=None)` is the frozen scientific input available to a layer
+before projection. Evaluation instant and time scale must be supplied together.
+The value contains no projection, viewport, renderer, style, furniture, output,
+or cache policy.
+
+`SkyLayer.realize(context, observer, **geometry_options)` is a concrete
+compatibility adapter that delegates to the layer's established
+`spherical_geometry(observer, **geometry_options)`. Supplying no
+`realization_context` to `CelestialSphere.draw_chart()` calls
+`spherical_geometry()` directly, preserving the pre-49D.2 route exactly.
+Supplying a typed context selects `realize()`; an untyped value is rejected.
+
+No ordinary chart facade supplies this context yet. The only specialized
+dynamic layer is test-local: it evaluates a deterministic structural
+`PositionProvider`, transforms its native point once through
+`CoordinateService`, and then uses the existing projection and renderer path.
+Caching, real ephemeris selection, installed moving-object layers, public
+request exposure, and the first planet remain later milestones.
+
+Future Sun, Moon, and planet layers must attach renderer-neutral
+`SemanticLayerIdentity` before projection and then use the same canonical
+projection, preparation, Matplotlib rendering, and single export path as every
+other layer. For SVG, the downstream annotator serializes the reserved
+`solar-system/sun`, `solar-system/moon`, and `solar-system/planets`
+hierarchy; it does not evaluate ephemerides, transform positions, infer object
+identity, or add a post-export overlay.
 
 `tools/benchmark_reusable_sphere.py` is the reproducible diagnostic for that
 contract. It builds one sphere, prepares and exports six chart families for
