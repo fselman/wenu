@@ -1,6 +1,6 @@
 # Wenu architecture diagrams
 
-**Status:** v0.9 as-is baseline plus architecture 0.9.5 implementation tracking through accepted 49C.3
+**Status:** Architecture 0.9.5 acceptance candidate; v0.9 baseline and 49B/49C planning views retained as history
 
 These diagrams are a human inspection interface for the as-is software. They
 are intended to let Fernando inspect architecture ownership, principal data
@@ -8,6 +8,35 @@ flow, preserved boundaries, and the exact areas affected by an upcoming
 architectural change without first reconstructing the system from source.
 
 ## Current diagrams
+
+### Architecture 0.9.5 coordinate authority
+
+[Open the v0.9.5 coordinate transformation SVG](coordinate_transformation_as_is_v0.9.5.svg)
+
+Source: `coordinate_transformation_as_is_v0.9.5.dot`
+
+[Open the v0.9.5 coordinate static-structure SVG](coordinate_static_structure_as_is_v0.9.5.svg)
+
+Source: `coordinate_static_structure_as_is_v0.9.5.dot`
+
+[Open the v0.9.5 coordinate runtime-sequence SVG](coordinate_runtime_sequence_as_is_v0.9.5.svg)
+
+Source: `coordinate_runtime_sequence_as_is_v0.9.5.dot`
+
+These three source-backed views are the 49C.4 acceptance candidate. Together
+they show the actual classes and package placement, inheritance and composition,
+and runtime calls or returns after 49C.3. The implemented provider boundary is
+`Stars`, `NonStellar`, and `OpenClusters`; constructed grids, planes, poles,
+and horizon geometry remain direct reference constructors rather than a
+fictitious protocol. `CoordinateService` is the sole production astronomical
+transformation owner. The retired handwritten and chart-owned authorities are
+absent.
+
+The dashed future-provider note is an extension seam, not an implemented class.
+A Moon, planet, comet, asteroid, or satellite provider supplies native typed
+positions through `PositionProvider`; it requires only another provider
+implementation and does not modify `CoordinateService`, spherical geometry,
+projection, clipping, preparation, or rendering.
 
 ### Architecture and execution flow
 
@@ -19,7 +48,7 @@ This diagram separates request resolution, astronomical-state realization,
 the shared geometry/rendering pipeline, and product orchestration. It shows
 which products reuse the canonical path and where observer-local state enters.
 
-### Coordinate transformations and 49B/49C seams
+### Historical v0.9 coordinate transformations and 49B/49C seams
 
 [Open the coordinate as-is SVG](coordinate_transformation_as_is_v0.9.svg)
 
@@ -35,7 +64,7 @@ observer-dependent detour. Green boxes identify the planned ownership seams:
 - projection alignment, projection, clipping, and rendering remain
   coordinate-neutral and outside the rationalization.
 
-### Coordinate target after 49B/49C
+### Historical coordinate target after 49B/49C
 
 [Open the coordinate target-state SVG](coordinate_transformation_target_49bc.svg)
 
@@ -70,7 +99,7 @@ The coordinate diagrams use three complementary, UML-inspired views. They
 must be read together; no single diagram is expected to encode structure,
 ownership, and runtime order simultaneously.
 
-### Static structure: current implementation
+### Static structure: historical v0.9 implementation
 
 [Open the current coordinate static-structure SVG](coordinate_static_structure_as_is_v0.9.svg)
 
@@ -81,7 +110,7 @@ dataclasses, functions, inheritance hierarchy, composition, and dependencies.
 It distinguishes the real `SkyLayer` inheritance tree from the independent
 `Spherical*` geometry records.
 
-### Static structure: proposed 49B/49C result
+### Static structure: historical 49B/49C proposal
 
 [Open the proposed coordinate static-structure SVG](coordinate_static_structure_target_49bc.svg)
 
@@ -106,7 +135,7 @@ observer caches, and chart-orientation reference directions now use the
 service. Skyfield apparent stellar realization remains provider work, and
 native AltAz horizon construction remains reference geometry.
 
-49C.3 removes the red legacy `radec_to_altaz()` and chart-wrapper authorities shown in the target planning view. `Observer` now exposes immutable `observation_context`; its ICRS, Galactic, and ecliptic frame properties are gone. The target SVG retains the red retirement boxes as migration history until 49C.4 replaces the target views with newly generated current as-is diagrams.
+49C.3 removes the red legacy `radec_to_altaz()` and chart-wrapper authorities shown in the target planning view. `Observer` now exposes immutable `observation_context`; its ICRS, Galactic, and ecliptic frame properties are gone. The target SVG retains the red retirement boxes as migration history. The v0.9.5 as-is views above replace it as the current inspection authority.
 
 Static-structure notation:
 
@@ -115,7 +144,7 @@ Static-structure notation:
 - dashed dependency: a call, construction, protocol implementation, or use;
 - package boundary: the source directory in which the type or procedure lives.
 
-### Runtime sequence: proposed 49B/49C calls
+### Runtime sequence: historical 49B/49C proposal
 
 [Open the proposed coordinate runtime-sequence SVG](coordinate_runtime_sequence_target_49bc.svg)
 
@@ -152,6 +181,12 @@ dot -Tsvg docs/developer/diagrams/current_architecture_v0.9_overview.dot \
   -o docs/developer/diagrams/current_architecture_v0.9_overview.svg
 dot -Tsvg docs/developer/diagrams/coordinate_transformation_as_is_v0.9.dot \
   -o docs/developer/diagrams/coordinate_transformation_as_is_v0.9.svg
+dot -Tsvg docs/developer/diagrams/coordinate_transformation_as_is_v0.9.5.dot \\
+  -o docs/developer/diagrams/coordinate_transformation_as_is_v0.9.5.svg
+dot -Tsvg docs/developer/diagrams/coordinate_static_structure_as_is_v0.9.5.dot \\
+  -o docs/developer/diagrams/coordinate_static_structure_as_is_v0.9.5.svg
+dot -Tsvg docs/developer/diagrams/coordinate_runtime_sequence_as_is_v0.9.5.dot \\
+  -o docs/developer/diagrams/coordinate_runtime_sequence_as_is_v0.9.5.svg
 ```
 
 The current diagrams complement `../current_architecture_v0.9.md`,
