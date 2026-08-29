@@ -1,6 +1,6 @@
 # Wenu architecture diagrams
 
-**Status:** v0.9 as-is baseline plus architecture 0.9.5 implementation tracking through the 49C.3 candidate
+**Status:** v0.9 as-is baseline plus architecture 0.9.5 implementation tracking through accepted 49C.3
 
 These diagrams are a human inspection interface for the as-is software. They
 are intended to let Fernando inspect architecture ownership, principal data
