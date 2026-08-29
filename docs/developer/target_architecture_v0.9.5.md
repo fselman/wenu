@@ -1,6 +1,6 @@
 # Wenu target architecture v0.9.5
 
-**Status:** Implemented and accepted; 49C.4 closure merge pending
+**Status:** Implemented and accepted; 49C.4 merged in `1a15076`
 
 **Date:** 2026-08-28
 
@@ -103,7 +103,7 @@ and public Astropy-coordinate compatibility inputs.
 
 ### 49C.4 — Accept and close
 
-**Implementation status:** Accepted on the dedicated 49C.4 branch; merge pending.
+**Implementation status:** Accepted and merged in `1a15076`.
 
 Scientific comparison with Astropy, topology/provenance preservation, current
 as-is diagram review, and fixed-sky/rotating-horizon visual acceptance passed.

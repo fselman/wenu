@@ -43,6 +43,8 @@ For current work, read and follow:
   provider, frame, time, provenance, planet, or satellite work;
 - `coordinate_transformation_audit_09a2afd.md` for the as-is coordinate
   evidence that motivates that target;
+- `public_interface_audit_v0.9.5.md` for public examples, tools, coordinate
+  system, frame, equinox, or epoch interface work;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,

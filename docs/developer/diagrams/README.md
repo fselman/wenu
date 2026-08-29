@@ -1,6 +1,6 @@
 # Wenu architecture diagrams
 
-**Status:** Architecture 0.9.5 diagrams accepted; closure merge pending; v0.9 baseline and 49B/49C planning views retained as history
+**Status:** Architecture 0.9.5 diagrams accepted and merged in `1a15076`; v0.9 baseline and 49B/49C planning views retained as history
 
 These diagrams are a human inspection interface for the as-is software. They
 are intended to let Fernando inspect architecture ownership, principal data

@@ -8,7 +8,7 @@ lang: en
 
 # Status and purpose
 
-**Status:** Living accepted edition; architecture 0.9.5 closure merge pending.
+**Status:** Living accepted edition; architecture 0.9.5 merged in `1a15076`.
 
 This is the living scientific guide for Wenu's coordinate systems,
 transformations, astronomical objects, and constructed celestial references.
