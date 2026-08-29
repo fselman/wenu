@@ -8,15 +8,11 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from astropy import units as u
-from astropy.coordinates import (
-    AltAz,
-    BarycentricMeanEcliptic,
-    EarthLocation,
-    Galactic,
-    ICRS,
-)
+from astropy.coordinates import AltAz, EarthLocation
 from astropy.time import Time
 from skyfield.api import Loader, wgs84
+
+from wenu.coordinates import observation_context
 
 
 DEFAULT_EPHEMERIS = "de440s.bsp"
@@ -292,23 +288,9 @@ class Observer:
         )
 
     @property
-    def icrs_frame(self) -> ICRS:
-        return ICRS()
-
-    @property
-    def galactic_frame(self) -> Galactic:
-        return Galactic()
-
-    @property
-    def ecliptic_frame(
-        self,
-    ) -> BarycentricMeanEcliptic:
-        """
-        Barycentric mean ecliptic of the observation date.
-        """
-        return BarycentricMeanEcliptic(
-            equinox=self.t_astropy,
-        )
+    def observation_context(self):
+        """Return the immutable coordinate-service context for this observer."""
+        return observation_context(self)
 
     @property
     def altaz_frame(self) -> AltAz:

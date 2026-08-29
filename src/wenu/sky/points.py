@@ -7,7 +7,13 @@ from typing import Any
 
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import SkyCoord, get_sun
+from astropy.coordinates import (
+    BarycentricMeanEcliptic,
+    Galactic,
+    ICRS,
+    SkyCoord,
+    get_sun,
+)
 
 from wenu.coordinate_service import CoordinateService
 from wenu.coordinates import (
@@ -86,7 +92,7 @@ class CelestialPoints(GeometricalObject):
             coord=SkyCoord(
                 ra=float(ra_deg) * u.deg,
                 dec=float(dec_deg) * u.deg,
-                frame=self.obs.icrs_frame,
+                frame=ICRS(),
             ),
             label=label,
             marker=marker,
@@ -111,7 +117,7 @@ class CelestialPoints(GeometricalObject):
             coord=SkyCoord(
                 l=float(lon_deg) * u.deg,
                 b=float(lat_deg) * u.deg,
-                frame=self.obs.galactic_frame,
+                frame=Galactic(),
             ),
             label=label,
             marker=marker,
@@ -133,7 +139,11 @@ class CelestialPoints(GeometricalObject):
         frame=None,
         **style,
     ):
-        frame = self.obs.ecliptic_frame if frame is None else frame
+        frame = (
+            BarycentricMeanEcliptic(equinox=self.obs.t_astropy)
+            if frame is None
+            else frame
+        )
         return self._append_point(
             coord=SkyCoord(
                 lon=float(lon_deg) * u.deg,
