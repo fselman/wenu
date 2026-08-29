@@ -181,6 +181,8 @@ Fernando on 2026-08-28.
 
 ### Milestone 49C.3 — Retire compatibility authorities
 
+**Status:** Implementation candidate on the dedicated 49C.3 branch.
+
 Retire `radec_to_altaz()`, remove the chart-owned compatibility wrappers, and
 reduce `Observer` to explicit context construction without changing numerical
 results or product appearance.
