@@ -1,0 +1,26 @@
+digraph coordinate_transformation_v095 {
+  graph [rankdir=TB, bgcolor="white", fontname="Helvetica", fontsize=16,
+    label="Wenu v0.9.5 coordinate transformation flow — implemented ownership",
+    labelloc="t", nodesep=0.42, ranksep=0.58, pad=0.28];
+  node [shape=box, style="rounded,filled", fillcolor="#f7f7f7", color="#555555", fontname="Helvetica", fontsize=10];
+  edge [color="#555555", fontname="Helvetica", fontsize=8, arrowsize=0.72];
+
+  providers [label="PositionProvider implementations\nStars / NonStellar / OpenClusters", fillcolor="#e4dfec", color="#8064a2"];
+  references [label="Constructed reference geometry\ncoordinate grids / planes / poles / horizon", fillcolor="#d9eaf7"];
+  geometry [label="SphericalPoints / Curves / Polygons / Grid\ncarrying immutable source CoordinateSpec", fillcolor="#e2f0d9", color="#548235"];
+  target [label="Target CoordinateSpec\ndeclared by chart/product", fillcolor="#d9eaf7"];
+  observation [label="ObservationContext\nlocation + instant + local policy", fillcolor="#fff2cc"];
+  service [label="CoordinateService\nsole production astronomical transformation owner\nAstropy-backed; preserves geometry kind and topology", fillcolor="#e2f0d9", color="#548235"];
+  resolved [label="Same Spherical* kind\ncarrying resolved CoordinateSpec", fillcolor="#e2f0d9"];
+  downstream [label="SphericalFrame alignment -> projection -> clipping\n-> preparation -> renderer -> export\ncoordinate-neutral", fillcolor="#d9eaf7"];
+
+  providers -> geometry [label="native catalogue positions"];
+  references -> geometry [label="native reference geometry"];
+  geometry -> service [label="source spec travels with geometry"];
+  target -> service [label="requested target"];
+  observation -> service [style=dashed, label="only for observer-local transforms"];
+  service -> resolved -> downstream;
+
+  absent [shape=note, fillcolor="#ffffff", label="Retired authorities are absent:\nno handwritten radec_to_altaz();\nno charts/coordinate_frames.py;\nno chart-owned Astropy transform_to()."];
+  extension [shape=note, fillcolor="#fff2cc", style="dashed,filled", label="Future moving objects provide native positions through PositionProvider.\nNo change to CoordinateService, geometry, projection, or rendering."];
+}
