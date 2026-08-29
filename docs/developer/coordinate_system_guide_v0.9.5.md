@@ -731,7 +731,9 @@ selection remain later milestones. Public values translate to
 This guide must change whenever Wenu changes a coordinate system, origin,
 epoch/equinox convention, time-scale dependency, position provider,
 transformation engine, object source, provenance field, or code owner. The
-Markdown source is canonical; the ODT is regenerated for human review.
+Markdown source is the only canonical guide; PDF, OpenDocument, Word, or
+other review formats are generated from it on demand and are not maintained
+as parallel repository authorities.
 
 Every medium or major Wenu change must include an explicit review of this
 guide, even when the milestone is not primarily described as coordinate work.
