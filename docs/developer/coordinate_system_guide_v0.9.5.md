@@ -320,8 +320,7 @@ equinox.
 > ephemerides; precession and nutation when moving equator/equinox frames are
 > involved; Earth rotation and polar motion; atmospheric refraction for optical
 > ground observations; and tropospheric, ionospheric, clock, and antenna effects
-> for radio interferometry. The adopted corrections are part of the frame's
-> provenance, not cosmetic plotting options.
+> for radio interferometry. The adopted corrections are part of the frame's provenance, not cosmetic plotting options.
 >
 > #### How the principal frames are realized or constructed
 >
