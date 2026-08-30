@@ -33,6 +33,9 @@ EPHEMERIS_PROVIDER_CONTRACT = (
 EPHEMERIS_RUNTIME_CONTRACT = (
     DEVELOPER / "ephemeris_runtime_contracts_49e2.md"
 )
+SKYFIELD_EPHEMERIS_CONTRACT = (
+    DEVELOPER / "skyfield_ephemeris_adapter_49e3.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -607,6 +610,54 @@ def test_49e2_records_minimal_runtime_contracts_and_non_goals():
     assert "requires explicit status at every" in source_tree
     assert "only concrete source exists in `tests/test_ephemeris.py`" in source_tree
 
+
+
+def test_49e3_records_borrowed_skyfield_adapter_and_non_goals():
+    contract = " ".join(read(SKYFIELD_EPHEMERIS_CONTRACT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "**Implementation baseline:** `7a978a0`",
+        "Borrowed Skyfield ephemeris adapter",
+        "relative to what?",
+        "three for position and three for velocity",
+        "simultaneous geometric difference",
+        "opens no second kernel",
+        "conservative common intersection",
+        "only `frame=\"icrf\"`",
+        "position in AU",
+        "velocity in AU/day",
+        "separate deterministic Wenu exceptions",
+        "refuses to download a missing kernel",
+        "does not independently revalidate the DE440 dynamical solution",
+        "not a sky direction and is not drawable",
+        "Venus rendering remains 49I.1",
+    ):
+        assert phrase in contract
+
+    for phrase in (
+        "Milestone 49E.3 — Borrowed Skyfield ephemeris adapter",
+        "fingerprints the exact BSP bytes once",
+        "Venus-relative-to-SSB",
+        "adds no direction realizer",
+    ):
+        assert phrase in roadmap
+
+    assert "49E.3 installs `SkyfieldEphemerisStateSource`" in architecture
+    assert "13.2.6 49E.3 borrowed Skyfield kernel adapter" in guide
+    assert "DE440` identifies the astronomical solution family" in guide
+    assert "common intersection of all SPK segment intervals" in guide
+    assert "Wenu implementation box — 49E.3 installed adapter" in guide
+    assert "Borrowed Skyfield ephemeris adapter (Milestone 49E.3)" in implementation
+    assert "The adapter has no `close()`" in implementation
+    assert "`skyfield_ephemeris.py` now owns the first real" in source_tree
+    assert "no-download installed-kernel Venus/SSB acceptance check" in source_tree
 
 def test_public_interface_audit_records_as_is_and_scientific_boundary():
     audit = " ".join(read(PUBLIC_INTERFACE_AUDIT).split())
