@@ -7,8 +7,6 @@
 **Last updated:** `2026-08-30T15:49:40Z`  
 **Language:** English
 
-
-
 # Table of contents
 
 - [Status and purpose](#status-and-purpose)
