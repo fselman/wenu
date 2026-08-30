@@ -36,6 +36,9 @@ EPHEMERIS_RUNTIME_CONTRACT = (
 SKYFIELD_EPHEMERIS_CONTRACT = (
     DEVELOPER / "skyfield_ephemeris_adapter_49e3.md"
 )
+SOLAR_SYSTEM_DIRECTION_CONTRACT = (
+    DEVELOPER / "solar_system_direction_realizer_49e4.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -63,6 +66,46 @@ OBSOLETE_IMPORTS = (
 
 def read(path):
     return path.read_text(encoding="utf-8")
+
+
+def test_49e4_audits_the_observer_relative_direction_boundary():
+    contract = " ".join(read(SOLAR_SYSTEM_DIRECTION_CONTRACT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "**As-is baseline:** `644bac7`",
+        "astrometric Venus direction",
+        "observer state at reception",
+        "target state at retarded emission time",
+        "one-way light time",
+        "Distance and timing data",
+        "The observer is not synonymous with Earth",
+        "Astrometric and apparent are separate statuses",
+        "`frame=\"icrs\"`",
+        "`epoch` remains absent",
+        "`equinox` remains absent",
+        "49E.5 — Astrometric direction runtime",
+        "49E.6 — Apparent direction runtime",
+        "49I.1 — Venus vertical slice",
+        "No future Sun, Moon, or planet",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49E.4 — Solar-System direction-realizer audit" in roadmap
+    assert "49E.4 changes no runtime type or output" in roadmap
+    assert "The 49E.4 review candidate" in architecture
+    assert "13.2.8 49E.4 observer-relative direction audit" in guide
+    assert "Skyfield's `observe()` corresponds to the astrometric" in guide
+    assert "reception instant is neither a position reference epoch" in guide
+    assert "Guide version:** `0.9.5.20260830.4`" in guide
+    assert "Solar-System direction-realizer audit" in implementation
+    assert "documentation-only: no runtime realizer" in source_tree
 
 
 def fenced_python(path):
