@@ -58,6 +58,9 @@ MOON_SHARED_PIPELINE_AUDIT = (
 MOON_DIRECTION_VALIDATION = (
     DEVELOPER / "moon_direction_validation_49i2a.md"
 )
+SHARED_SOLAR_SYSTEM_POINT_LAYER = (
+    DEVELOPER / "shared_solar_system_point_layer_49i2b.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -122,7 +125,7 @@ def test_49e4_audits_the_observer_relative_direction_boundary():
     assert "13.2.8 49E.4 observer-relative direction audit" in guide
     assert "Skyfield's `observe()` corresponds to the astrometric" in guide
     assert "reception instant is neither a position reference epoch" in guide
-    assert "Guide version:** `0.9.5.20260830.21`" in guide
+    assert "Guide version:** `0.9.5.20260830.23`" in guide
     assert "49E.4 scientific acceptance" in guide
     assert "All 45 current-documentation tests passed in 2.03 seconds" in guide
     assert "45 current-documentation tests in 2.03" in contract
@@ -165,7 +168,7 @@ def test_49e5_records_astrometric_runtime_and_output_boundary():
     assert "13.2.9 49E.5 astrometric direction runtime" in guide
     assert "Neither is a position reference epoch" in guide
     assert "neither is an equinox" in guide
-    assert "Guide version:** `0.9.5.20260830.21`" in guide
+    assert "Guide version:** `0.9.5.20260830.23`" in guide
     assert "49E.5 scientific acceptance" in guide
     assert "converged in four iterations" in contract
     assert "`3.149e-11` degree" in contract
@@ -204,7 +207,7 @@ def test_49e6_records_apparent_runtime_and_single_light_time_authority():
     assert "13.2.10 49E.6 apparent direction runtime" in guide
     assert "Apparent direction runtime (Milestone 49E.6)" in implementation
     assert "without a second `observe()` call" in source_tree
-    assert "Guide version:** `0.9.5.20260830.21`" in guide
+    assert "Guide version:** `0.9.5.20260830.23`" in guide
     assert "Scientifically accepted by Fernando on 2026-08-30" in contract
     assert "`-3.152e-11` degree" in contract
     assert "95 focused tests in 3.79 seconds" in contract
@@ -237,7 +240,7 @@ def test_49i1_audits_the_first_drawable_venus_vertical_slice():
     assert "Milestone 49I.1 — Drawable Venus vertical slice" in roadmap
     assert "The 49I.1 audit identifies" in architecture
     assert "13.2.11 49I.1 drawable Venus audit" in guide
-    assert "Guide version:** `0.9.5.20260830.21`" in guide
+    assert "Guide version:** `0.9.5.20260830.23`" in guide
     assert "adds no runtime layer" in source_tree
     assert "Scientifically and architecturally accepted by Fernando" in audit
     assert "all 48 current-documentation tests in 3.30" in audit
@@ -274,7 +277,7 @@ def test_49i1a_records_the_output_neutral_ordinary_context_handoff():
     assert "Ordinary realization-context handoff (Milestone 49I.1A)" in implementation
     assert "request_realization.py` owns the 49I.1A" in source_tree
     assert "13.2.12 49I.1A ordinary realization context" in guide
-    assert "Guide version:** `0.9.5.20260830.21`" in guide
+    assert "Guide version:** `0.9.5.20260830.23`" in guide
     assert "49I.1A scientific and architectural acceptance" in guide
 
 
@@ -303,7 +306,7 @@ def test_49i1b_records_the_first_drawable_venus_boundary():
     assert "all 1,898 tests in 82.01 seconds" in roadmap
     assert "PNG, PDF, and semantic SVG looked the same" in architecture
     assert "13.2.13 49I.1B first drawable Venus" in guide
-    assert "Guide version:** `0.9.5.20260830.21`" in guide
+    assert "Guide version:** `0.9.5.20260830.23`" in guide
     assert "not a position reference epoch and not an equinox" in guide
     assert "Fernando scientifically and visually accepted" in guide
 
@@ -349,7 +352,7 @@ def test_49i2_audits_one_pipeline_without_flattening_body_science():
     assert "The proposed 49I.2 audit" in architecture
     assert "Fernando scientifically and architecturally accepted" in architecture
     assert "13.2.14 49I.2 Moon and shared body pipeline" in guide
-    assert "Guide version:** `0.9.5.20260830.21`" in guide
+    assert "Guide version:** `0.9.5.20260830.23`" in guide
     assert (
         "One pipeline” does not mean that all objects move in the same way"
         in guide
@@ -403,8 +406,52 @@ def test_49i2a_validates_moon_direction_without_installing_a_layer():
     assert "Numerical Moon-direction validation (Milestone 49I.2A)" in implementation
     assert "No `sky/moon.py` exists in 49I.2A" in source_tree
     assert "13.2.15 49I.2A numerical Moon direction" in guide
-    assert "Guide version:** `0.9.5.20260830.21`" in guide
+    assert "Guide version:** `0.9.5.20260830.23`" in guide
     assert "topocentric parallax rather than confusing origin with reference frame" in guide
+
+
+def test_49i2b_extracts_shared_point_orchestration_without_moon_content():
+    contract = " ".join(read(SHARED_SOLAR_SYSTEM_POINT_LAYER).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "**Implementation baseline:** `b0d1dd4`",
+        "`SolarSystemPointDescriptor`",
+        "`SolarSystemPointLayer`",
+        "transform exactly once into the product coordinate specification",
+        "`layer_name = \"venus\"`",
+        "sky/solar_system/planets/venus",
+        "test-only Moon descriptor",
+        "does not add `sky/moon.py`",
+        "13 direct shared-layer and Venus parity tests in 1.86 seconds",
+        "82 focused scientific and integration tests in 1.82 seconds",
+        "1,881 routine tests with 30 deselected in 27.67 seconds",
+        "53 current-documentation tests in 2.16 seconds",
+        "all 1,912 tests in 91.04 seconds",
+        "The PNG files were byte-identical",
+        "zero differing pixels or channel values",
+        "SVG semantic and graphical content was byte-identical",
+        "Fernando accepted the frozen descriptor",
+        "does not authorize a production Moon layer",
+        "adds no Moon layer, `--moon`",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.2B — Shared Solar-System point layer" in roadmap
+    assert "Fernando scientifically and architecturally accepted 49I.2B" in roadmap
+    assert "The accepted 49I.2B implementation extracts" in architecture
+    assert "Shared Solar-System point layer (Milestone 49I.2B)" in implementation
+    assert "tests/test_solar_system_point_layer.py" in source_tree
+    assert "13.2.16 49I.2B shared Solar-System point layer" in guide
+    assert "Guide version:** `0.9.5.20260830.23`" in guide
+    assert "`--moon` remains 49I.2C" in guide
+    assert "Fernando scientifically and architecturally accepted 49I.2B" in guide
 
 
 def fenced_python(path):
@@ -1085,8 +1132,8 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
     for target in targets:
         assert f'<a id="{target}"></a>' in guide
 
-    assert "**Guide version:** `0.9.5.20260830.21`" in guide
-    assert "**Last updated:** `2026-08-30T23:05:04Z`" in guide
+    assert "**Guide version:** `0.9.5.20260830.23`" in guide
+    assert "**Last updated:** `2026-08-30T23:47:41Z`" in guide
     assert "reference epoch or equinox" not in guide
     assert "epoch/equinox" not in guide
     assert "- coordinate system and representation;" in guide
@@ -1100,8 +1147,8 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
         "**Subtitle:** Living scientific and implementation guide for architecture 0.9.5  ",
         "**Author:** Wenu project  ",
         "**Architecture version:** `0.9.5`  ",
-        "**Guide version:** `0.9.5.20260830.21`  ",
-        "**Last updated:** `2026-08-30T23:05:04Z`  ",
+        "**Guide version:** `0.9.5.20260830.23`  ",
+        "**Last updated:** `2026-08-30T23:47:41Z`  ",
         "**Language:** English",
     ]
 

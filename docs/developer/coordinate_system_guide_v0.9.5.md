@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.21`  
-**Last updated:** `2026-08-30T23:05:04Z`  
+**Guide version:** `0.9.5.20260830.23`  
+**Last updated:** `2026-08-30T23:47:41Z`  
 **Language:** English
 
 # Table of contents
@@ -82,6 +82,7 @@
     - [13.2.13 49I.1B first drawable Venus](#49i1b-venus-layer)
     - [13.2.14 49I.2 Moon and shared body pipeline](#49i2-moon-shared-pipeline)
     - [13.2.15 49I.2A numerical Moon direction](#49i2a-moon-direction)
+    - [13.2.16 49I.2B shared Solar-System point layer](#49i2b-shared-point-layer)
 
 <a id="status-and-purpose"></a>
 
@@ -2151,3 +2152,34 @@ topocentric parallax rather than confusing origin with reference frame.
 > and `0.0624` mas in declination; topocentric-geocentric parallax was
 > `0.9500231004` degree, and the 52 m minus 0 m displacement was `27.91` mas.
 > The complete suite then passed all 1,902 tests in 89.59 seconds.
+
+
+<a id="49i2b-shared-point-layer"></a>
+
+### 13.2.16 49I.2B shared Solar-System point layer
+
+**[Foundation]** Venus and the Moon need different names and may later need
+different physical drawings, but locating either symbolic point follows the
+same route: identify the body, determine its observer-relative direction, and
+then place that direction on the requested chart. Wenu now keeps that common
+route in one component while leaving each body's identity and correction
+policy explicit.
+
+**[Undergraduate]** `SolarSystemPointDescriptor` freezes target, centre,
+entity key, display name, selection key, and `ApparentCorrectionPolicy`.
+`SolarSystemPointLayer` composes the accepted state source, reception-time
+observer state, retarded astrometric direction, apparent correction, semantic
+point metadata, and exactly one `CoordinateService` transformation into the
+product frame. It owns no projection, visibility, appearance, renderer, or
+export policy.
+
+> **Wenu implementation box — 49I.2B shared symbolic point**
+>
+> `src/wenu/sky/solar_system_points.py` owns the shared pre-projection
+> orchestration. `src/wenu/sky/venus.py` now supplies only the frozen Venus
+> descriptor and thin layer specialization. A test-only Moon descriptor proves
+> reuse without installing Moon chart content; `--moon` remains 49I.2C.
+>
+> Fernando scientifically and architecturally accepted 49I.2B on 2026-08-30
+> after all 1,912 tests passed and PNG, rendered-PDF, and normalized semantic-SVG
+> Venus parity against `main` was exact.

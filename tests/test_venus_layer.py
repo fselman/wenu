@@ -13,7 +13,8 @@ from wenu.geometry.spherical import SphericalPoints
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.realization import LayerRealizationContext
 from wenu.sky.semantic_identity import semantic_layer_identity
-from wenu.sky.venus import VenusLayer
+from wenu.sky.solar_system_points import SolarSystemPointLayer
+from wenu.sky.venus import VENUS_POINT, VenusLayer
 
 
 def context():
@@ -71,9 +72,10 @@ def test_venus_uses_one_accepted_chain_and_one_product_transform():
             return astrometric
 
     class Apparent:
-        def direction(self, value, *, observer, source):
+        def direction(self, value, *, observer, source, policy):
             calls.append(("apparent", observer))
             assert value is astrometric
+            assert policy is VENUS_POINT.correction_policy
             return apparent
 
     class Coordinates:
@@ -99,6 +101,12 @@ def test_venus_uses_one_accepted_chain_and_one_product_transform():
     assert [name for name, _ in calls] == [
         "astrometric", "apparent", "transform"
     ]
+
+
+def test_venus_is_a_thin_shared_point_specialization():
+    layer = VenusLayer()
+    assert isinstance(layer, SolarSystemPointLayer)
+    assert layer.descriptor is VENUS_POINT
 
 
 def test_venus_requires_the_typed_context_and_never_uses_legacy_geometry():

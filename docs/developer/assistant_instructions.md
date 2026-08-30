@@ -67,6 +67,8 @@ For current work, read and follow:
   request-to-layer context mapping and its output-neutral acceptance;
 - `venus_layer_49i1b.md` for the first production Venus layer, opt-in planet
   selection, symbolic appearance, semantic identity, or visual acceptance;
+- `shared_solar_system_point_layer_49i2b.md` for the shared symbolic-point
+  descriptor, renderer-neutral orchestration, or Venus migration boundary;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,

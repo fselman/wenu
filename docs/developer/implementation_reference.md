@@ -1057,6 +1057,16 @@ observer-height evidence. `tests/test_moon_direction_validation.py` supplies
 the deterministic provider-neutral contract proof. Neither owns chart content
 or production geometry.
 
+### Shared Solar-System point layer (Milestone 49I.2B)
+
+`sky/solar_system_points.py` defines frozen `SolarSystemPointDescriptor` body
+data and `SolarSystemPointLayer` orchestration from typed realization context
+through one product-frame transformation. `sky/venus.py::VenusLayer` is the
+first thin specialization. The shared layer attaches stable point identity and
+provenance; projection, visibility, appearance, semantic scene placement,
+rendering, and export remain in their established owners. No Moon chart layer
+exists.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a
