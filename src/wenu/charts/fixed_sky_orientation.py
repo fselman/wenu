@@ -72,6 +72,7 @@ def _reference_position_angle_deg(observer, pole: str) -> float:
         celestial,
         observer_altaz_spec(
             observer,
+            position_status=PositionStatus.APPARENT,
             provider="astropy coordinate service",
         ),
         observation_context(observer),
