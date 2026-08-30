@@ -718,12 +718,13 @@ does not pre-accept its correction policy or numerical results.
 
 ##### Milestone 49I.2A — Numerical Moon-direction validation
 
-**Status:** Scientifically accepted by Fernando on 2026-08-30; full-suite
-verification remains.
+**Status:** Scientifically accepted and full-suite verified; ready for
+integration.
 
 The existing provider-neutral astrometric and apparent direction machinery is
 now exercised with target `moon`/NAIF 301 in deterministic tests. All 102
-focused tests passed in 1.99 seconds. The installed-DE440 validator agreed with
+focused tests passed in 1.99 seconds, and all 1,902 tests passed in 89.59
+seconds. The installed-DE440 validator agreed with
 direct Skyfield to 0.1503 mas in right ascension and 0.0624 mas in declination,
 measured 0.9500231004-degree topocentric-geocentric parallax, and measured a
 27.91-mas displacement between the 52 m observer and zero elevation. Fernando

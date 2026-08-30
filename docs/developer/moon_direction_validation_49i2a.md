@@ -1,7 +1,7 @@
 # Milestone 49I.2A — Numerical Moon-direction validation
 
-**Status:** Scientifically accepted by Fernando on 2026-08-30; full-suite
-verification remains.
+**Status:** Scientifically accepted and full-suite verified; ready for
+integration.
 **Implementation baseline:** `fbf4dd9`  
 **Date:** 2026-08-30
 
@@ -90,6 +90,7 @@ Fernando scientifically accepted the 49I.2A direction result and `1e-7`-degree
 component tolerance on 2026-08-30. The accepted Mac evidence is:
 
 - 102 focused tests passed in 1.99 seconds;
+- all 1,902 tests passed in 89.59 seconds;
 - installed kernel DE440, file `de440s.bsp`, SHA-256
   `c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`;
 - direct-Skyfield residuals `-4.176e-08` degree in right ascension and
@@ -100,8 +101,8 @@ component tolerance on 2026-08-30. The accepted Mac evidence is:
 - Moon target NAIF 301, barycentre NAIF 0, and convergence in three iterations.
 
 This accepts the correction policy and numerical Moon direction for the
-installed-kernel case. Full-suite verification and merge remain delivery
-checks, not unresolved scientific questions.
+installed-kernel case. Full-suite verification is complete; integration is the
+remaining delivery step.
 
 ## Non-goals
 

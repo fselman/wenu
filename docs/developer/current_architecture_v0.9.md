@@ -272,8 +272,9 @@ Fernando scientifically accepted 49I.2A on 2026-08-30 after 102 focused tests
 passed in 1.99 seconds and the installed-DE440 validator agreed with direct
 Skyfield to 0.1503 mas in right ascension and 0.0624 mas in declination. The
 accepted validation measured 0.9500231004-degree topocentric-geocentric
-parallax and a 27.91-mas 52 m minus 0 m observer-height displacement. It adds
-no runtime production type or chart content.
+parallax and a 27.91-mas 52 m minus 0 m observer-height displacement. The
+complete suite then passed all 1,902 tests in 89.59 seconds. It adds no runtime
+production type or chart content.
 
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
