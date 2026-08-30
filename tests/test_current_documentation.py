@@ -646,6 +646,9 @@ def test_49e3_records_borrowed_skyfield_adapter_and_non_goals():
         "1,830 routine tests",
         "all 1,860 tests in 84.78 seconds",
         "explicit stable HTML anchors",
+        "Accepted living-guide revision",
+        "coordinate guide version `0.9.5.20260830.3`",
+        "All 44 current-documentation tests passed in 1.70 seconds",
     ):
         assert phrase in contract
 
