@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.8`  
-**Last updated:** `2026-08-30T17:30:00Z`  
+**Guide version:** `0.9.5.20260830.9`  
+**Last updated:** `2026-08-30T17:31:00Z`  
 **Language:** English
 
 # Table of contents
@@ -1920,3 +1920,13 @@ generic date.
 > product frame and then use the existing projection, Matplotlib renderer, and
 > shared PNG/PDF/SVG exporter. A separate planetary SVG generator or
 > post-export overlay is forbidden.
+
+> **49E.6 scientific acceptance**
+>
+> Fernando accepted the single light-time authority, explicit deflection and
+> aberration policy, ICRS/status/time distinctions, retained evidence, and
+> canonical output boundary on 2026-08-30. Installed-DE440 Venus agreed with
+> direct Skyfield to `3.152e-11` degree in right ascension and `1.544e-12`
+> degree in declination. Verification passed 95 focused tests and all 1,883
+> tests. No visual render was required because no production layer consumes
+> the result.
