@@ -564,6 +564,8 @@ def test_49e2_records_minimal_runtime_contracts_and_non_goals():
         "EphemerisStateSource",
         "There is no default or optional velocity",
         "This is an atomic internal correction",
+        "`observer_altaz_spec()` now requires an explicit `position_status`",
+        "Native observer-local horizon",
         "The new state is geometric Cartesian provider output",
         "deterministic Venus state",
         "solar-system/planets/venus",
@@ -580,6 +582,7 @@ def test_49e2_records_minimal_runtime_contracts_and_non_goals():
         "No real file is opened or hashed",
         "`PositionStatus.TOPOCENTRIC` member is removed atomically",
         "test-only Venus source",
+        "requires every caller to declare `position_status`",
     ):
         assert phrase in roadmap
 
@@ -587,9 +590,13 @@ def test_49e2_records_minimal_runtime_contracts_and_non_goals():
     assert "13.2.5 49E.2 minimal runtime state contracts" in guide
     assert "state in space—not yet the direction" in guide
     assert "Wenu implementation box — 49E.2 runtime boundary" in guide
+    assert "deliberately has no status default" in guide
+    assert "future refracted products" in guide
     assert "Minimal ephemeris runtime contracts (Milestone 49E.2)" in implementation
-    assert "defaults to `PositionStatus.APPARENT`" in implementation
+    assert "requires an explicit `position_status`" in implementation
+    assert "native horizon" in implementation
     assert "`ephemeris.py` owns the frozen 49E.2" in source_tree
+    assert "requires explicit status at every" in source_tree
     assert "only concrete source exists in `tests/test_ephemeris.py`" in source_tree
 
 
