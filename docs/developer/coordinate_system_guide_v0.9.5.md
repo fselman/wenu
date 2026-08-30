@@ -1791,8 +1791,9 @@ representation change after the physical direction has been realized.
 > **49E.4 scientific acceptance**
 >
 > Fernando accepted the astrometric/apparent separation, explicit observer
-> state, retained distance and light-time evidence, epoch/equinox/instant
-> distinctions, Venus-first sequence, and shared output path on 2026-08-30.
+> state, retained distance and light-time evidence, and the distinctions among
+> position reference epoch, equinox, and observation instant. He also accepted
+> the Venus-first sequence and shared output path on 2026-08-30.
 > All 45 current-documentation tests passed in 2.03 seconds. This accepts the
 > design boundary, not the future 49E.5 runtime implementation or its
 > numerical results.
