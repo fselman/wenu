@@ -1451,3 +1451,35 @@ physics.
 > The revised scientific and pedagogical review was accepted on 2026-08-30.
 > All 41 documentation tests passed in 3.26 seconds. No visual comparison was
 > required because this design audit changes no runtime geometry or output.
+
+### 13.2.5 49E.2 minimal runtime state contracts
+
+**[Foundation]** Wenu can now describe one ephemeris calculation without yet
+performing it. The request says which body, relative to which centre, in which
+three-dimensional frame, and at what instant. The result must contain three
+position numbers and three velocity numbers, together with their units and the
+identity of the exact ephemeris resource. It is still a state in space—not yet
+the direction in which an observer sees Venus.
+
+**[Undergraduate]** `ephemeris.py` implements frozen
+`EphemerisResourceIdentity`, `EphemerisStateRequest`, and
+`EphemerisState` contracts plus structural `EphemerisStateSource`. State
+vectors require exactly three finite position and three finite velocity
+components. Resource identity requires provider/model, filename, SHA-256,
+coverage interval and scale, and provenance. A later owner calculates the
+digest and opens the kernel; a later realizer owns retarded-time and
+apparent-place physics.
+
+The misleading `PositionStatus.TOPOCENTRIC` member has been removed.
+Topocentricity remains explicit as `origin="observer"`, while the default
+vacuum AltAz product is `APPARENT`. This separates where the coordinate begins
+from which physical corrections its direction represents.
+
+> **Wenu implementation box — 49E.2 runtime boundary**
+>
+> `src/wenu/ephemeris.py` owns the immutable types and source protocol.
+> `src/wenu/coordinates.py::observer_altaz_spec()` owns the corrected observer
+> origin/apparent-status composition. `tests/test_ephemeris.py` owns the only
+> deterministic Venus source. No installed code opens a new kernel, calculates
+> a digest, realizes a planet direction, registers a Venus layer, or changes
+> PNG/PDF/SVG output.
