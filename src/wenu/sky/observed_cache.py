@@ -100,7 +100,11 @@ def icrs_point_arrays_to_altaz(
     )
     horizontal = CoordinateService().transform(
         native,
-        observer_altaz_spec(observer, position_status=PositionStatus.APPARENT, provider=provider),
+        observer_altaz_spec(
+            observer,
+            position_status=PositionStatus.APPARENT,
+            provider=provider,
+        ),
         observation=observation_context(observer),
     )
     return horizontal.lon_deg, horizontal.lat_deg
