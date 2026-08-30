@@ -922,6 +922,14 @@ are defined. `CoordinateService` then owns the final coordinate representation
 transformation. 49E.1 installs no runtime classes, provider, kernel adapter, or
 moving-object layer.
 
+The accepted next-step contract requires six-component states and a resolved
+resource identity containing provider/model, filename, SHA-256 content digest,
+coverage, and provenance. SHA-256 is calculated once per resolved kernel
+resource. 49E.2 will atomically remove the unreleased
+`PositionStatus.TOPOCENTRIC` member and migrate its single helper default and
+two focused tests, representing topocentricity through origin instead. The
+first later vertical slice is Venus, followed by the Moon.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a
