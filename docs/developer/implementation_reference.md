@@ -1048,6 +1048,15 @@ It keeps provider-specific orbit evaluation and body-specific physical
 appearance behind separate contracts. No shared runtime layer or Moon is
 installed by the audit.
 
+### Numerical Moon-direction validation (Milestone 49I.2A)
+
+`tools/validate_49i2a_moon_direction.py` composes the existing state source,
+observer-state adapter, astrometric realizer, and apparent realizer for
+`moon`/NAIF 301. It compares against direct Skyfield and reports parallax and
+observer-height evidence. `tests/test_moon_direction_validation.py` supplies
+the deterministic provider-neutral contract proof. Neither owns chart content
+or production geometry.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a
