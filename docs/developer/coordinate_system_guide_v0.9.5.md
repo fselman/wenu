@@ -1523,3 +1523,14 @@ an observer sees Venus.
 > downloads and validates Venus against direct Skyfield evaluation.
 > `tests/test_skyfield_ephemeris.py` owns deterministic unit coverage. No
 > planet layer, projection, renderer, or SVG-only path exists in this milestone.
+
+
+> **49E.3 real-resource evidence**
+>
+> Fernando's installed `de440s.bsp` resolved as model `DE440`, with SHA-256
+> `c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`
+> and common coverage JD 2396752.5–2506352.5 TDB. At
+> 2026-08-30T00:00:00 TDB, all six Venus/SSB adapter components matched direct
+> Skyfield evaluation with zero residual within an absolute tolerance of
+> (10^{-15}). This validates Wenu's adapter handoff, not the DE440 dynamical
+> solution independently.
