@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.19`  
-**Last updated:** `2026-08-30T22:33:58Z`  
+**Guide version:** `0.9.5.20260830.20`  
+**Last updated:** `2026-08-30T22:56:47Z`  
 **Language:** English
 
 # Table of contents
@@ -2145,3 +2145,8 @@ topocentric parallax rather than confusing origin with reference frame.
 > emission instants, light time, corrections, direct residuals, parallax, and
 > the 52 m minus 0 m displacement. It installs no Moon layer, `--moon` option,
 > marker, physical disk, or output change.
+>
+> Fernando scientifically accepted 49I.2A on 2026-08-30. With installed
+> DE440, Wenu agreed with direct Skyfield to `0.1503` mas in right ascension
+> and `0.0624` mas in declination; topocentric-geocentric parallax was
+> `0.9500231004` degree, and the 52 m minus 0 m displacement was `27.91` mas.

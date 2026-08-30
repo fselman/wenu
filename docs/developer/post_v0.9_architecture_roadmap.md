@@ -718,15 +718,17 @@ does not pre-accept its correction policy or numerical results.
 
 ##### Milestone 49I.2A — Numerical Moon-direction validation
 
-**Status:** Implementation and scientific review candidate.
+**Status:** Scientifically accepted by Fernando on 2026-08-30; merge pending
+full-suite verification.
 
 The existing provider-neutral astrometric and apparent direction machinery is
-now exercised with target `moon`/NAIF 301 in deterministic tests. The explicit
-installed-DE440 validator compares Wenu against direct Skyfield, reports
-topocentric-geocentric parallax, and proves that the observer's 52 m height
-participates by comparison with the same geodetic latitude/longitude at zero
-height. No Moon layer, public option, shared point abstraction, or output
-change is added.
+now exercised with target `moon`/NAIF 301 in deterministic tests. All 102
+focused tests passed in 1.99 seconds. The installed-DE440 validator agreed with
+direct Skyfield to 0.1503 mas in right ascension and 0.0624 mas in declination,
+measured 0.9500231004-degree topocentric-geocentric parallax, and measured a
+27.91-mas displacement between the 52 m observer and zero elevation. Fernando
+accepted the result and the `1e-7`-degree component tolerance. No Moon layer,
+public option, shared point abstraction, or output change is added.
 
 Add one object class at a time:
 

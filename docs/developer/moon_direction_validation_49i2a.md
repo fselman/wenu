@@ -1,6 +1,7 @@
 # Milestone 49I.2A — Numerical Moon-direction validation
 
-**Status:** Implementation and scientific review candidate.
+**Status:** Scientifically accepted by Fernando on 2026-08-30; merge pending
+full-suite verification.
 **Implementation baseline:** `fbf4dd9`  
 **Date:** 2026-08-30
 
@@ -82,6 +83,25 @@ coordinates and height, reception and emission instants, iteration count,
 target and centre NAIF IDs, distance, light time, correction policy, apparent
 ICRS direction, direct-Skyfield residuals, topocentric-geocentric parallax,
 and the 52 m minus 0 m height displacement.
+
+## Scientific acceptance
+
+Fernando scientifically accepted the 49I.2A direction result and `1e-7`-degree
+component tolerance on 2026-08-30. The accepted Mac evidence is:
+
+- 102 focused tests passed in 1.99 seconds;
+- installed kernel DE440, file `de440s.bsp`, SHA-256
+  `c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`;
+- direct-Skyfield residuals `-4.176e-08` degree in right ascension and
+  `-1.734e-08` degree in declination (`0.1503` mas and `0.0624` mas in
+  magnitude);
+- topocentric-geocentric parallax `0.9500231004` degree;
+- 52 m minus 0 m displacement `7.751704800e-06` degree (`27.91` mas);
+- Moon target NAIF 301, barycentre NAIF 0, and convergence in three iterations.
+
+This accepts the correction policy and numerical Moon direction for the
+installed-kernel case. Full-suite verification and merge remain delivery
+checks, not unresolved scientific questions.
 
 ## Non-goals
 
