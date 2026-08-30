@@ -157,7 +157,7 @@ def test_altaz_requires_explicit_observation_context():
     altaz_spec = CoordinateSpec(
         frame="altaz",
         origin="observer",
-        position_status=PositionStatus.TOPOCENTRIC,
+        position_status=PositionStatus.APPARENT,
         instant="2026-08-28T00:00:00",
         time_scale="utc",
     )
@@ -176,7 +176,7 @@ def test_altaz_matches_astropy_for_explicit_observation():
     altaz_spec = CoordinateSpec(
         frame="altaz",
         origin="observer",
-        position_status=PositionStatus.TOPOCENTRIC,
+        position_status=PositionStatus.APPARENT,
         instant=context.instant,
         time_scale=context.time_scale,
     )
