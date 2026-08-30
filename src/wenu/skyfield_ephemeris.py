@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from hashlib import sha256
+from math import isfinite
 from pathlib import Path
 import re
 
@@ -43,10 +44,14 @@ def _kernel_coverage(kernel):
         raise TypeError(
             "kernel segments must expose finite start_jd and end_jd values."
         ) from error
-    start = min(starts)
-    end = max(ends)
+    if not all(isfinite(value) for value in starts + ends):
+        raise ValueError("kernel segment coverage must be finite.")
+    start = max(starts)
+    end = min(ends)
     if not start < end:
-        raise ValueError("kernel coverage must have a positive interval.")
+        raise ValueError(
+            "kernel segments have no common coverage interval."
+        )
     return start, end
 
 
