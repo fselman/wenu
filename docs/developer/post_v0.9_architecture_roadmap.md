@@ -287,7 +287,7 @@ all 1,819 tests in 84.41 seconds. No visual comparison was required because
 
 ### Milestone 49D.2 — Minimal layer-realization context
 
-**Status:** Scientifically, pedagogically, and technically accepted on the dedicated 49D.2 branch; not yet merged.
+**Status:** Accepted and merged in `85c7392`.
 
 The exact contract and acceptance requirements are recorded in
 `layer_realization_context_49d2.md`. A frozen `LayerRealizationContext`
@@ -317,6 +317,13 @@ request/CLI exposure, current-layer migration, and caching remain out of scope.
 - prove that changing observer location or time does not change their
   pre-furniture astronomical geometry;
 - establish an immutable reusable celestial-scene or maximal-sphere boundary.
+
+Fernando accepted the context fields, exact legacy compatibility branch,
+controlled-provider proof, deferred 49E responsibilities, pedagogical guide,
+and canonical SVG path on 2026-08-29. Acceptance evidence is 48 focused tests
+in 2.21 seconds, 1,798 routine tests with 30 deselected in 27.61 seconds, and
+all 1,828 tests in 90.00 seconds. No visual comparison was required because no
+ordinary request can activate the context and production geometry is unchanged.
 
 Gaia may replace or complement Hipparcos only through an explicit catalogue
 milestone with provenance, epoch, proper-motion, magnitude, identifier, and
@@ -359,7 +366,7 @@ first charted body remains the separately approved 49I.1 Venus vertical slice.
 
 ### Milestone 49E.2 — Minimal ephemeris runtime contracts
 
-**Status:** Scientifically accepted by Fernando on 2026-08-30; merge pending.
+**Status:** Scientifically accepted by Fernando on 2026-08-30; ready for integration.
 
 `ephemeris.py` adds frozen `EphemerisResourceIdentity`,
 `EphemerisStateRequest`, and complete six-component `EphemerisState` values,
