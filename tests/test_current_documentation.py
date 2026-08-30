@@ -786,8 +786,8 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
     for target in targets:
         assert f'<a id="{target}"></a>' in guide
 
-    assert "**Guide version:** `0.9.5.20260830.3`" in guide
-    assert "**Last updated:** `2026-08-30T15:52:29Z`" in guide
+    assert "**Guide version:** `0.9.5.20260830.4`" in guide
+    assert "**Last updated:** `2026-08-30T16:04:34Z`" in guide
     assert "reference epoch or equinox" not in guide
     assert "epoch/equinox" not in guide
     assert "- coordinate system and representation;" in guide
@@ -801,8 +801,8 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
         "**Subtitle:** Living scientific and implementation guide for architecture 0.9.5  ",
         "**Author:** Wenu project  ",
         "**Architecture version:** `0.9.5`  ",
-        "**Guide version:** `0.9.5.20260830.3`  ",
-        "**Last updated:** `2026-08-30T15:52:29Z`  ",
+        "**Guide version:** `0.9.5.20260830.4`  ",
+        "**Last updated:** `2026-08-30T16:04:34Z`  ",
         "**Language:** English",
     ]
 
