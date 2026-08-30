@@ -417,6 +417,27 @@ PDF, and SVG. The SVG product may serialize the reserved
 `solar-system/sun`, `solar-system/moon`, and `solar-system/planets` paths;
 it must not recompute moving-object geometry or use a separate SVG-only path.
 
+### Milestone 49E.3 — Borrowed Skyfield ephemeris adapter
+
+**Status:** Implementation review candidate; real-kernel acceptance pending.
+
+`skyfield_ephemeris.py` adapts the already-open `Observer` Skyfield/JPL SPK
+resource to `EphemerisStateSource`. Resolution fingerprints the exact BSP
+bytes once, separates DE model from filename, and records the conservative
+common SPK-segment coverage in TDB. Evaluation supports explicit geometric
+ICRF target-minus-centre states in AU and AU/day with NAIF identifiers.
+
+The adapter borrows but does not open, download, or close the kernel. Unknown
+targets, unsupported frames, and coverage failures are explicit. The
+deterministic tests use fake SPK structures; the controlled
+`validate_49e3_skyfield_adapter.py` check refuses downloads and compares all
+six Venus-relative-to-SSB components with direct Skyfield evaluation at a
+fixed TDB instant.
+
+The exact contract is `skyfield_ephemeris_adapter_49e3.md`. This milestone
+adds no direction realizer, chart layer, CLI/TOML control, or output change.
+Venus rendering remains 49I.1 and must use the canonical PNG/PDF/SVG path.
+
 ## 9. Milestone 49F - SVG product verification
 
 **Status:** Complete at `c70cb29` after eight-product cross-product acceptance.
