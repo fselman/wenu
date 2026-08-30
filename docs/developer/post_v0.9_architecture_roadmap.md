@@ -651,6 +651,11 @@ angular diameter, trails, the Moon, and other bodies remain later work. PNG,
 PDF, and SVG must consume the same projected record, with upstream semantic
 path `sky/solar_system/planets/venus` and no post-export overlay.
 
+Fernando scientifically and architecturally accepted this audit on
+2026-08-30 after all 48 current-documentation tests passed in 3.30 seconds.
+The next bounded implementation is 49I.1A; acceptance of the audit does not
+pre-accept the output-neutral runtime handoff or the later Venus chart.
+
 Add one object class at a time:
 
 1. Moon or one planet through an ephemeris provider;
