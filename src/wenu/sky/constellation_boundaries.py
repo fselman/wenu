@@ -364,6 +364,7 @@ class ConstellationBoundaries(GeometricalObject):
             lat_deg=tuple(lat_deg[positions[item]] for item in identifiers),
             coordinate_spec=observer_altaz_spec(
                 resolved_observer,
+                position_status=PositionStatus.APPARENT,
                 provider="astropy IAU constellation boundaries",
             ),
             ids=identifiers,
@@ -407,6 +408,7 @@ class ConstellationBoundaries(GeometricalObject):
             native,
             observer_altaz_spec(
                 observer,
+                position_status=PositionStatus.APPARENT,
                 provider="astropy IAU constellation boundaries",
             ),
             observation=observation_context(observer),
