@@ -33,6 +33,9 @@ EPHEMERIS_PROVIDER_CONTRACT = (
 EPHEMERIS_RUNTIME_CONTRACT = (
     DEVELOPER / "ephemeris_runtime_contracts_49e2.md"
 )
+SKYFIELD_EPHEMERIS_CONTRACT = (
+    DEVELOPER / "skyfield_ephemeris_adapter_49e3.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -543,7 +546,7 @@ def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
     assert "All 41 documentation tests passed in 3.26 seconds" in guide
     assert "Proposed ephemeris-provider boundary" in implementation
     assert "first later vertical slice is Venus" in implementation
-    assert "no real 49E kernel adapter" in source_tree
+    assert "`skyfield_ephemeris.py` now owns the first real" in source_tree
 
 
 def test_49e2_records_minimal_runtime_contracts_and_non_goals():
@@ -605,8 +608,82 @@ def test_49e2_records_minimal_runtime_contracts_and_non_goals():
     assert "native horizon" in implementation
     assert "`ephemeris.py` owns the frozen 49E.2" in source_tree
     assert "requires explicit status at every" in source_tree
-    assert "only concrete source exists in `tests/test_ephemeris.py`" in source_tree
+    assert "deterministic contract source remains in `tests/test_ephemeris.py`" in source_tree
 
+
+
+def test_49e3_records_borrowed_skyfield_adapter_and_non_goals():
+    contract = " ".join(read(SKYFIELD_EPHEMERIS_CONTRACT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "**Implementation baseline:** `7a978a0`",
+        "Borrowed Skyfield ephemeris adapter",
+        "relative to what?",
+        "three for position and three for velocity",
+        "simultaneous geometric difference",
+        "opens no second kernel",
+        "conservative common intersection",
+        "only `frame=\"icrf\"`",
+        "position in AU",
+        "velocity in AU/day",
+        "separate deterministic Wenu exceptions",
+        "refuses to download a missing kernel",
+        "does not independently revalidate the DE440 dynamical solution",
+        "not a sky direction and is not drawable",
+        "Venus rendering remains 49I.1",
+        "c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2",
+        "common coverage JD 2396752.5 through JD 2506352.5 TDB",
+        "residual was zero within that tolerance",
+        "Scientifically accepted by Fernando on 2026-08-30",
+        "72 focused tests in 1.73 seconds",
+        "1,830 routine tests",
+        "all 1,860 tests in 84.78 seconds",
+        "explicit stable HTML anchors",
+        "Accepted living-guide revision",
+        "coordinate guide version `0.9.5.20260830.3`",
+        "All 44 current-documentation tests passed in 1.70 seconds",
+    ):
+        assert phrase in contract
+
+    for phrase in (
+        "Milestone 49E.3 — Borrowed Skyfield ephemeris adapter",
+        "fingerprints the exact BSP bytes once",
+        "Venus-relative-to-SSB",
+        "adds no direction realizer",
+    ):
+        assert phrase in roadmap
+
+    assert "49E.3 installs `SkyfieldEphemerisStateSource`" in architecture
+    assert "13.2.6 49E.3 borrowed Skyfield kernel adapter" in guide
+    assert "DE440` identifies the astronomical solution family" in guide
+    assert "common intersection of all SPK segment intervals" in guide
+    assert "Wenu implementation box — 49E.3 installed adapter" in guide
+    assert "49E.3 real-resource evidence" in guide
+    assert "zero residual within an absolute tolerance" in guide
+    assert "Terminology contract — four different questions" in guide
+    assert "`CoordinateSpec.epoch` means a **position reference epoch**" in guide
+    assert "NAIF and SPICE identifiers" in guide
+    assert "Navigation and Ancillary Information Facility" in guide
+    assert "Spacecraft, Planet, Instrument, C-matrix, Events" in guide
+    for anchor in (
+        "#coordinate-system-vs-reference-frame",
+        "#epoch-vs-equinox",
+        "#49e3-skyfield-adapter",
+        "#naif-spice-identifiers",
+    ):
+        assert anchor in guide
+        assert f'<a id="{anchor[1:]}"></a>' in guide
+    assert "Borrowed Skyfield ephemeris adapter (Milestone 49E.3)" in implementation
+    assert "The adapter has no `close()`" in implementation
+    assert "`skyfield_ephemeris.py` now owns the first real" in source_tree
+    assert "no-download installed-kernel Venus/SSB acceptance check" in source_tree
 
 def test_public_interface_audit_records_as_is_and_scientific_boundary():
     audit = " ".join(read(PUBLIC_INTERFACE_AUDIT).split())
@@ -650,6 +727,41 @@ def test_coordinate_guide_has_a_navigable_table_of_contents():
         "[13. Practical guide to reference systems, equinoxes, and epochs]",
     ):
         assert link in guide
+
+
+
+def test_coordinate_guide_toc_uses_explicit_portable_anchors():
+    guide = read(COORDINATE_GUIDE)
+    toc = guide[
+        guide.index("# Table of contents"):
+        guide.index("# Status and purpose")
+    ]
+    targets = re.findall(r"\]\(#([^)]+)\)", toc)
+
+    assert len(targets) >= 60
+    assert len(targets) == len(set(targets))
+    for target in targets:
+        assert f'<a id="{target}"></a>' in guide
+
+    assert "**Guide version:** `0.9.5.20260830.3`" in guide
+    assert "**Last updated:** `2026-08-30T15:52:29Z`" in guide
+    assert "reference epoch or equinox" not in guide
+    assert "epoch/equinox" not in guide
+    assert "- coordinate system and representation;" in guide
+    assert "- reference frame and its physical realization;" in guide
+    assert "equinox, only for a frame whose axes are equinox-based" in guide
+    assert "position reference epoch, only for a catalogue state" in guide
+    header = guide[:guide.index("# Table of contents")]
+    assert header.splitlines()[:8] == [
+        "# Wenu Coordinate Systems and Astronomical Objects",
+        "",
+        "**Subtitle:** Living scientific and implementation guide for architecture 0.9.5  ",
+        "**Author:** Wenu project  ",
+        "**Architecture version:** `0.9.5`  ",
+        "**Guide version:** `0.9.5.20260830.3`  ",
+        "**Last updated:** `2026-08-30T15:52:29Z`  ",
+        "**Language:** English",
+    ]
 
 
 def test_coordinate_guide_teaches_calendars_for_historical_use():
@@ -696,9 +808,9 @@ def test_coordinate_guide_teaches_reference_policy_at_two_depths():
         "**[Undergraduate]**",
         "Julian and Besselian year labels",
         "A Julian year is exactly 365.25 days",
-        "Gaia DR2 positions use reference epoch `J2015.5`",
+        "Gaia DR2 positions use position reference epoch `J2015.5`",
         "Gaia EDR3 and DR3 positions use `J2016.0`",
-        "The Gaia reference epoch is not an equinox",
+        "The Gaia position reference epoch is not an equinox",
         "an equinox is not one of its defining frame parameters",
         "Gaia-CRF3 is a high-precision optical realization of ICRS",
         "ICRF3 is the third radio realization of ICRS",

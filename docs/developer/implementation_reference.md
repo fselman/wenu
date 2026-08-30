@@ -947,6 +947,21 @@ cardinal/zenith, polar-horizon, and AltAz-grid products declare `GEOMETRIC`. The
 in `tests/test_ephemeris.py`; no real provider, kernel adapter, direction
 realizer, or moving-body layer is installed.
 
+### Borrowed Skyfield ephemeris adapter (Milestone 49E.3)
+
+`src/wenu/skyfield_ephemeris.py::SkyfieldEphemerisStateSource` borrows the
+already-open `Observer.ephemeris` and `Observer.timescale`. Its factory
+calculates SHA-256 once, infers a conventional DE model separately from the BSP
+filename, and records the common SPK-segment coverage interval in TDB.
+`state()` supports explicit geometric ICRF target-minus-centre states and
+returns AU, AU/day, NAIF identifiers, and immutable resource provenance.
+
+The adapter has no `close()`: `Observer` owns resource lifetime. It performs
+no kernel load or network operation. `tools/validate_49e3_skyfield_adapter.py`
+refuses to download a missing kernel and compares the six-component Venus/SSB
+state with direct Skyfield evaluation. Direction realization and any Venus
+layer remain later milestones.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a

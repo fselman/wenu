@@ -1,10 +1,11 @@
----
-title: "Wenu Coordinate Systems and Astronomical Objects"
-subtitle: "Living scientific and implementation guide for architecture 0.9.5"
-author: "Wenu project"
-date: "2026-08-28"
-lang: en
----
+# Wenu Coordinate Systems and Astronomical Objects
+
+**Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
+**Author:** Wenu project  
+**Architecture version:** `0.9.5`  
+**Guide version:** `0.9.5.20260830.3`  
+**Last updated:** `2026-08-30T15:52:29Z`  
+**Language:** English
 
 # Table of contents
 
@@ -14,7 +15,8 @@ lang: en
   - [1.1 A position is more than two angles](#11-a-position-is-more-than-two-angles)
   - [1.2 Position generation versus coordinate transformation](#12-position-generation-versus-coordinate-transformation)
 - [2. Coordinate systems used or reserved by Wenu](#2-coordinate-systems-used-or-reserved-by-wenu)
-  - [2.1 ICRS and Gaia-CRF3](#21-icrs)
+  - [2.1 ICRS](#21-icrs)
+    - [2.1.1 Gaia-CRF3](#211-gaia-crf3)
   - [2.2 FK5 equatorial coordinates](#22-fk5-equatorial-coordinates)
   - [2.3 Galactic coordinates](#23-galactic-coordinates)
   - [2.4 Ecliptic coordinates](#24-ecliptic-coordinates)
@@ -34,22 +36,46 @@ lang: en
   - [5.1 Calendars as historical coordinates](#51-calendars-are-historical-coordinate-systems-for-time)
   - [5.2 Sumer, Babylonia, Egypt, and Greece](#52-from-sumer-and-babylonia-to-egypt-and-greece)
   - [5.3 Roman, Julian, and Gregorian calendars](#53-roman-julian-and-gregorian-calendars)
+    - [5.3.1 Did Augustus steal a day from February?](#531-did-augustus-steal-a-day-from-february)
   - [5.4 A historian's minimum date record](#54-a-historians-minimum-date-record)
   - [5.5 Year numbering, day counts, and astronomical time](#55-year-numbering-day-counts-and-astronomical-time)
   - [5.6 Julian and Besselian epochs](#56-julian-and-besselian-epochs-are-not-calendars)
+    - [5.6.1 Tropical, sidereal, and Besselian years](#561-tropical-sidereal-and-besselian-years)
   - [5.7 Present Wenu boundary and future support](#57-present-wenu-boundary-and-future-historical-date-support)
   - [5.8 Sources and limits](#58-sources-and-limits)
 - [6. Transformation inventory and destination](#6-current-transformation-inventory-and-095-destination)
 - [7. Proposed 0.9.5 contracts](#7-proposed-095-contracts)
+  - [7.1 CoordinateSpec](#71-coordinatespec)
+  - [7.2 ObservationContext](#72-observationcontext)
+  - [7.3 PositionProvider](#73-positionprovider)
+  - [7.4 CoordinateService](#74-coordinateservice)
 - [8. Wenu object catalogue and provenance](#8-wenu-object-catalogue-and-provenance)
+  - [8.1 Astronomical objects](#81-astronomical-objects)
+  - [8.2 Constructed and cultural/reference objects](#82-constructed-and-culturalreference-objects)
+  - [8.3 Provenance requirements](#83-provenance-requirements)
 - [9. Verification requirements](#9-verification-requirements)
 - [10. Minimal architecture 0.9.5 roadmap](#10-minimal-architecture-095-roadmap)
-- [10.1 Architecture 0.9.5 acceptance](#101-architecture-095-acceptance)
+  - [10.1 Architecture 0.9.5 acceptance](#101-architecture-095-acceptance)
 - [11. Review questions for Fernando](#11-review-questions-for-fernando)
 - [12. Maintenance rule](#12-maintenance-rule)
 - [13. Practical guide to reference systems, equinoxes, and epochs](#13-practical-guide-to-celestial-reference-systems-equinoxes-and-epochs)
-  - [13.1 Public celestial reference policy](#131-public-celestial-reference-policy)
-  - [13.2 Scene dependencies and moving astronomical objects](#132-scene-dependencies-and-moving-astronomical-objects)
+  - [13.1 Public celestial reference policy](#public-celestial-reference-policy)
+    - [13.1.1 Coordinate system versus reference frame](#coordinate-system-vs-reference-frame)
+    - [13.1.2 Equinox versus position epoch and observation instant](#epoch-vs-equinox)
+    - [13.1.3 Requesting a reference equinox](#requesting-reference-equinox)
+    - [13.1.4 Julian and Besselian year labels](#julian-besselian-labels)
+    - [13.1.5 Gaia position reference epoch is not an equinox](#gaia-epoch-not-equinox)
+    - [13.1.6 Implementation and scientific acceptance](#reference-policy-acceptance)
+  - [13.2 Scene dependencies and moving astronomical objects](#moving-object-architecture)
+    - [13.2.1 49D.1 scientific and pedagogical acceptance](#49d1-acceptance)
+    - [13.2.2 49D.2 minimal realization handoff](#49d2-handoff)
+    - [13.2.3 49D.2 scientific and pedagogical acceptance](#49d2-acceptance)
+    - [13.2.4 49E.1 ephemeris-provider design](#49e1-provider-design)
+    - [13.2.5 49E.2 minimal runtime state contracts](#49e2-runtime-contracts)
+    - [13.2.6 49E.3 borrowed Skyfield kernel adapter](#49e3-skyfield-adapter)
+    - [13.2.7 NAIF and SPICE identifiers](#naif-spice-identifiers)
+
+<a id="status-and-purpose"></a>
 
 # Status and purpose
 
@@ -69,6 +95,8 @@ numerical authority for standards-based transformations; equations reproduced
 here explain and audit those transformations and must not become competing
 approximate production implementations.
 
+<a id="how-to-read-the-depth-markers"></a>
+
 ## How to read the depth markers
 
 This guide is both Wenu's scientific reference and a teaching document.
@@ -83,16 +111,22 @@ The undergraduate explanation extends the foundation explanation; it does not
 replace or contradict it. A reader may follow only the foundation paragraphs
 on a first reading and return to the undergraduate material later.
 
+<a id="1-scientific-vocabulary"></a>
+
 # 1. Scientific vocabulary
+
+<a id="11-a-position-is-more-than-two-angles"></a>
 
 ## 1.1 A position is more than two angles
 
 Every astronomical coordinate record must identify, where applicable:
 
-- reference frame;
+- coordinate system and representation;
+- reference frame and its physical realization;
 - coordinate origin;
-- reference epoch or equinox;
-- evaluation instant and time scale;
+- equinox, only for a frame whose axes are equinox-based;
+- position reference epoch, only for a catalogue state or motion model;
+- evaluation or observation instant and its time scale;
 - observer location;
 - geometric, astrometric, apparent, or observed status;
 - angular units and representation;
@@ -100,6 +134,8 @@ Every astronomical coordinate record must identify, where applicable:
 
 Two arrays called longitude and latitude are not interchangeable merely
 because both are measured in degrees.
+
+<a id="12-position-generation-versus-coordinate-transformation"></a>
 
 ## 1.2 Position generation versus coordinate transformation
 
@@ -121,7 +157,11 @@ Constructed references—grids, equators, ecliptics, planes, and poles—are not
 astronomical objects. They are generated by a separate reference-geometry
 boundary and enter the same geometry and coordinate service afterward.
 
+<a id="2-coordinate-systems-used-or-reserved-by-wenu"></a>
+
 # 2. Coordinate systems used or reserved by Wenu
+
+<a id="21-icrs"></a>
 
 ## 2.1 ICRS
 
@@ -156,6 +196,8 @@ Current uses include Hipparcos catalogue positions, non-stellar catalogue
 centres and outlines, constellation data, Milky Way isophotes, and the
 intermediate representation of several constructed references.
 
+<a id="211-gaia-crf3"></a>
+
 ### 2.1.1 Gaia-CRF3
 
 Gaia-CRF3 is the celestial reference frame for positions and proper motions
@@ -172,11 +214,13 @@ star's tabulated position and proper-motion model are referenced. It does not
 orient the ICRS axes and is not an equinox.
 
 Wenu currently represents Gaia-compatible celestial geometry as `icrs` and
-would record a Gaia release, reference epoch, and provider identity separately
+would record a Gaia release, position reference epoch, and provider identity separately
 in `CoordinateSpec`. It does not currently expose `gaia-crf3` as an independent
 transformable frame or provide Gaia epoch propagation. Those require a future
 Gaia position-provider milestone; merely changing a frame label would lose
 the scientific distinction.
+
+<a id="22-fk5-equatorial-coordinates"></a>
 
 ## 2.2 FK5 equatorial coordinates
 
@@ -188,6 +232,8 @@ Unlike ICRS, FK5 may be represented for another equinox by precessing its
 axes. Wenu currently permits ICRS or FK5 equatorial grids. An FK5 coordinate
 must therefore carry its equinox; it must never be labelled only
 “equatorial,” and an ICRS coordinate must not be given an FK5 equinox.
+
+<a id="23-galactic-coordinates"></a>
 
 ## 2.3 Galactic coordinates
 
@@ -208,6 +254,8 @@ For an ICRS unit vector \(\mathbf r_I\),
 \(\mathbf r_G=R_{G\leftarrow I}\mathbf r_I\), followed by the spherical
 recovery equations in Section 4.1. Production code delegates the authoritative
 realization to Astropy rather than embedding this rounded matrix.
+
+<a id="24-ecliptic-coordinates"></a>
 
 ## 2.4 Ecliptic coordinates
 
@@ -251,6 +299,8 @@ Thus
 The inverse uses the transpose of the orthogonal rotation. Nutation and the
 precise mean/true ecliptic definitions are delegated to Astropy/ERFA.
 
+<a id="25-horizontal-altaz-coordinates"></a>
+
 ## 2.5 Horizontal AltAz coordinates
 
 Horizontal coordinates are observer-local. Wenu stores azimuth \(A\) and
@@ -285,6 +335,8 @@ The retired pre-49C.3 `radec_to_altaz()` used
 It omitted the fuller apparent-place and Earth-orientation chain. The equation
 is retained here as historical audit evidence, not production authority.
 
+<a id="26-teme-and-earth-fixed-frames-reserved-for-satellites"></a>
+
 ## 2.6 TEME and Earth-fixed frames reserved for satellites
 
 Artificial-satellite providers may produce TEME states from SGP4. TEME is not
@@ -293,6 +345,8 @@ satellite path requires explicit TEME-to-Earth-fixed/celestial transformation,
 UT1 and polar-motion information where required, and a topocentric observer
 step. Architecture 0.9.5 reserves this through `CoordinateSpec`; it does not
 implement satellite propagation.
+
+<a id="27-equinox-applicability-by-system-and-frame"></a>
 
 ## 2.7 Equinox applicability by system and frame
 
@@ -480,7 +534,11 @@ equinox.
 > of this one pipeline rather than adding a second coordinate or rendering
 > pipeline.
 
+<a id="3-origins-and-position-status"></a>
+
 # 3. Origins and position status
+
+<a id="31-origins"></a>
 
 ## 3.1 Origins
 
@@ -490,6 +548,8 @@ equinox.
 - **Projection-aligned:** a Wenu-local rotated basis used only after the
   astronomical coordinates have been resolved; it is not an astronomical
   frame.
+
+<a id="32-position-states"></a>
 
 ## 3.2 Position states
 
@@ -506,7 +566,11 @@ equinox.
 These terms must be tied to the provider and transformation engine rather than
 inferred from a method name.
 
+<a id="4-mathematical-foundations"></a>
+
 # 4. Mathematical foundations
+
+<a id="41-spherical-and-cartesian-representation"></a>
 
 ## 4.1 Spherical and Cartesian representation
 
@@ -532,6 +596,8 @@ These equations are implemented directly by
 `geometry/frame.py::SphericalFrame._spherical_to_cartesian()` and
 `_cartesian_to_spherical()`.
 
+<a id="42-orthogonal-frame-rotations"></a>
+
 ## 4.2 Orthogonal frame rotations
 
 An astronomical frame transformation or a projection-alignment rotation may
@@ -545,6 +611,8 @@ provided \(R\) is an orthogonal direction-cosine matrix. Wenu's
 `SphericalFrame` performs this purely geometric rotation for projection
 alignment. It must not decide epoch, equinox, precession, nutation, aberration,
 parallax, or refraction.
+
+<a id="43-local-sidereal-angle"></a>
 
 ## 4.3 Local sidereal angle
 
@@ -564,6 +632,8 @@ H = \mathrm{LST}-\alpha.
 Architecture 0.9.5 delegates authoritative Earth rotation, UT1 dependencies,
 and apparent/mean distinctions to Astropy/ERFA.
 
+<a id="44-topocentric-parallax"></a>
+
 ## 4.4 Topocentric parallax
 
 Conceptually, if \(\mathbf r_{object}\) and \(\mathbf r_{observer}\) are
@@ -582,6 +652,8 @@ near-Earth objects and negligible for many deep-sky catalogue positions.
 Production code must use the provider/coordinate engine's consistent units,
 origins, light-time policy, and Earth ephemeris.
 
+<a id="45-stellar-space-motion"></a>
+
 ## 4.5 Stellar space motion
 
 A star provider begins from catalogue epoch, direction, proper motion,
@@ -596,6 +668,8 @@ chain. The actual propagation must respect catalogue conventions; for
 Hipparcos and future Gaia inputs it must not treat UTC chart times as catalogue
 epochs or silently discard time-scale metadata.
 
+<a id="5-time-vocabulary"></a>
+
 # 5. Time vocabulary
 
 Wenu must distinguish:
@@ -606,14 +680,16 @@ Wenu must distinguish:
 - **UT1:** Earth rotation angle;
 - **TDB:** barycentric dynamical ephemeris arguments;
 - **TCB:** barycentric coordinate time; relevant to Gaia catalogue metadata;
-- **catalogue reference epoch:** such as Hipparcos J1991.25 or Gaia J2016.0;
+- **catalogue position reference epoch:** such as Hipparcos J1991.25 or Gaia J2016.0;
 - **provider evaluation instant:** when a moving-object state is requested;
 - **display time:** human-facing civil label;
 - **playback time:** media pacing, never an astronomical time scale.
 
 The existing temporal sequence classes preserve physical versus playback time,
-but coordinate architecture must additionally preserve catalogue epoch and
+but coordinate architecture must additionally preserve catalogue position epoch and
 provider evaluation instant.
+
+<a id="51-calendars-are-historical-coordinate-systems-for-time"></a>
 
 ## 5.1 Calendars are historical coordinate systems for time
 
@@ -631,6 +707,8 @@ sunrise, and a reform adopted on different dates in different jurisdictions.
 A historian should therefore preserve the attested date and its provenance
 separately from every converted date. Conversion is an interpretation with an
 uncertainty, not a replacement for the source.
+
+<a id="52-from-sumer-and-babylonia-to-egypt-and-greece"></a>
 
 ## 5.2 From Sumer and Babylonia to Egypt and Greece
 
@@ -658,6 +736,8 @@ eclipse as independent proof of the chronology. Preserve the tablet reading,
 philological restoration, calendar reconstruction, astronomical model, and
 candidate-event comparison as separate evidential layers.
 
+<a id="53-roman-julian-and-gregorian-calendars"></a>
+
 ## 5.3 Roman, Julian, and Gregorian calendars
 
 | System | Rule and historical role | Historian's caution |
@@ -666,6 +746,8 @@ candidate-event comparison as separate evidential layers.
 | Julian calendar | Caesar's reform established a 365-day common year and a leap day every fourth year; the reformed year began in 45 BCE | Early implementation of the leap rule was not perfectly regular. “Julian” must identify the calendar, not merely an old-looking European date. |
 | Gregorian calendar | The 1582 reform retained the month system but changed the leap rule: century years are leap years only when divisible by 400 | The reform was adopted by jurisdiction, not by the whole world on one day. In the first adopting countries, Thursday 4 October 1582 Julian was followed by Friday 15 October Gregorian; Britain and its colonies changed in September 1752. Always record place and whether a source uses Old Style or New Style. |
 | Proleptic Julian or Gregorian calendar | A modern calendar rule mathematically extended earlier than its historical introduction | Useful for computation, but it is not the calendar an ancient author used. Label it explicitly as proleptic. |
+
+<a id="531-did-augustus-steal-a-day-from-february"></a>
 
 ### 5.3.1 Did Augustus steal a day from February?
 
@@ -702,6 +784,8 @@ refer to the Julian calendar, a non-January year start, or both, depending on
 the editor and jurisdiction. A responsible conversion states the convention
 used instead of silently correcting the document.
 
+<a id="54-a-historians-minimum-date-record"></a>
+
 ## 5.4 A historian's minimum date record
 
 For every date used to connect a text, inscription, observation, or event to a
@@ -732,6 +816,8 @@ A useful machine record therefore has separate fields such as
 `month_name`, `intercalation_status`, `day_start`, `place`,
 `converted_calendar`, `converted_interval`, `conversion_authority`, and
 `uncertainty_note`. One ISO string cannot faithfully contain all of this.
+
+<a id="55-year-numbering-day-counts-and-astronomical-time"></a>
 
 ## 5.5 Year numbering, day counts, and astronomical time
 
@@ -769,6 +855,8 @@ Wenu must not print a modern-looking second-precise UTC timestamp for an
 ancient event unless the precision and time-scale conversion are genuinely
 supported.
 
+<a id="56-julian-and-besselian-epochs-are-not-calendars"></a>
+
 ## 5.6 Julian and Besselian epochs are not calendars
 
 **[Foundation]** `J2000.0`, `J2016.0`, and `B1950.0` label astronomical
@@ -782,6 +870,8 @@ to the tropical year. Consequently a Besselian label is not obtained by
 applying the Julian calendar to an old date, and `B1950.0` is not another
 spelling of either `J1950.0` or 1950-01-01. The epoch label must travel with
 its reference-frame or catalogue meaning.
+
+<a id="561-tropical-sidereal-and-besselian-years"></a>
 
 ### 5.6.1 Tropical, sidereal, and Besselian years
 
@@ -845,6 +935,8 @@ The five expressions below answer different questions:
 | Julian epoch, such as J2000.0 | An astronomical epoch label based on exact 365.25-day Julian years |
 | Besselian epoch, such as B1950.0 | An older astronomical epoch convention related to the tropical year and mean Sun |
 
+<a id="57-present-wenu-boundary-and-future-historical-date-support"></a>
+
 ## 5.7 Present Wenu boundary and future historical-date support
 
 > **Wenu implementation box — Calendars and historical chronology**
@@ -871,6 +963,8 @@ The five expressions below answer different questions:
 > machinery. Wenu should not invent ancient-calendar algorithms inside chart
 > rendering code.
 
+<a id="58-sources-and-limits"></a>
+
 ## 5.8 Sources and limits
 
 Authoritative starting points include the [UCL Digital Egypt calendar guide](https://www.ucl.ac.uk/museums-static/digitalegypt/chronology/calendar.html)
@@ -895,6 +989,8 @@ a disputed ancient chronology certain. Every conversion used in historical
 argument should cite the specific edition, chronology, and algorithm actually
 used.
 
+<a id="6-current-transformation-inventory-and-095-destination"></a>
+
 # 6. Current transformation inventory and 0.9.5 destination
 
 | Present owner | Present operation | 0.9.5 destination |
@@ -911,6 +1007,8 @@ used.
 | `sky/milky_way.py` | ICRS GeoJSON rings to AltAz | ICRS polygons carrying provenance; service transforms |
 | `sky/magellanic_clouds.py` | Gaia-derived ICRS rings to AltAz | ICRS polygons carrying provenance; service transforms |
 
+<a id="7-proposed-095-contracts"></a>
+
 # 7. Proposed 0.9.5 contracts
 
 **Implementation note:** 49B.1 introduced the frozen vocabulary and structural
@@ -919,17 +1017,24 @@ geometry records without changing numerical transformations. 49B.3 makes existin
 `PositionProvider`; morphology and constructed references remain separate.
 The accepted 49C.1 milestone adds the central Astropy-backed transformation service. The merged 49C.2 milestone migrates production astronomical transformations while preserving Skyfield apparent stellar realization as provider work and native AltAz horizon construction as reference geometry. The accepted 49C.3 implementation removes the legacy function and chart wrapper module and exposes immutable context directly from `Observer`.
 
+<a id="71-coordinatespec"></a>
+
 ## 7.1 CoordinateSpec
 
-`CoordinateSpec` is immutable and includes frame, origin, epoch/equinox,
-evaluation instant and time scale where applicable, position status,
+`CoordinateSpec` is immutable and includes coordinate frame and origin,
+equinox where the frame requires one, position reference epoch where the state
+requires one, evaluation instant and time scale where applicable, position status,
 units/representation, and provenance/policy identity.
+
+<a id="72-observationcontext"></a>
 
 ## 7.2 ObservationContext
 
 `ObservationContext` is immutable and includes site, physical instant, time
 scale, atmosphere/refraction policy, and Earth-orientation policy. It is
 required only for observer-local transformations.
+
+<a id="73-positionprovider"></a>
 
 ## 7.3 PositionProvider
 
@@ -945,6 +1050,8 @@ The returned points carry their native `CoordinateSpec`. Existing star and
 deep-sky sources implement the boundary; future ephemeris and orbit providers
 use the same boundary.
 
+<a id="74-coordinateservice"></a>
+
 ## 7.4 CoordinateService
 
 ```python
@@ -958,7 +1065,11 @@ transform(
 The result has the same concrete geometry kind and preserves identifiers,
 metadata, curve segmentation, polygon rings, and semantic topology.
 
+<a id="8-wenu-object-catalogue-and-provenance"></a>
+
 # 8. Wenu object catalogue and provenance
+
+<a id="81-astronomical-objects"></a>
 
 ## 8.1 Astronomical objects
 
@@ -977,6 +1088,8 @@ metadata, curve segmentation, polygon rings, and semantic topology.
 | Comets and asteroids | Not implemented; future orbit/ephemeris provider | Reserved | Provider must declare orbit solution/model and epoch |
 | Artificial satellites | Not implemented; future SGP4/orbit provider | Reserved | TEME state, epoch, Earth-orientation and topocentric policy must remain explicit |
 
+<a id="82-constructed-and-culturalreference-objects"></a>
+
 ## 8.2 Constructed and cultural/reference objects
 
 | Wenu object/layer | Provenance | Current owner | Coordinate meaning |
@@ -991,6 +1104,8 @@ metadata, curve segmentation, polygon rings, and semantic topology.
 | Celestial/ecliptic/Galactic poles and keypoints | Analytic frame definitions; antisolar point uses Astropy `get_sun()` | `sky/points.py::CelestialPoints` | Native frame must accompany every point |
 | Physical planisphere horizon | Latitude/site-specific constructed local geometry | polar horizon/pouch owners | Separate observer-local layer over an observer-independent celestial disk |
 
+<a id="83-provenance-requirements"></a>
+
 ## 8.3 Provenance requirements
 
 Every packaged or generated object should eventually expose:
@@ -1003,6 +1118,8 @@ Every packaged or generated object should eventually expose:
 - transformation engine/version and requested target specification;
 - selection or sampling policy that changed representation without changing
   the scientific source.
+
+<a id="9-verification-requirements"></a>
 
 # 9. Verification requirements
 
@@ -1018,6 +1135,8 @@ Coordinate tests must cover:
 8. cache separation by scientifically relevant identity;
 9. provider substitution without projection or renderer changes;
 10. the accepted fixed-sky/rotating-horizon visual reference.
+
+<a id="10-minimal-architecture-095-roadmap"></a>
 
 # 10. Minimal architecture 0.9.5 roadmap
 
@@ -1039,6 +1158,8 @@ Coordinate tests must cover:
    acceptance, routine suite below 30 seconds, full suite, and updated as-is
    diagrams.
 
+<a id="101-architecture-095-acceptance"></a>
+
 # 10.1 Architecture 0.9.5 acceptance
 
 The as-is diagrams and scientific structure were reviewed. The corrected La
@@ -1051,6 +1172,8 @@ Public reference-equinox selection is implemented by the bounded reference
 policy described in Section 13. Product-frame and provider position-epoch
 selection remain later milestones. Public values translate to
 `CoordinateSpec`; examples and tools do not create separate frame logic.
+
+<a id="11-review-questions-for-fernando"></a>
 
 # 11. Review questions for Fernando
 
@@ -1065,10 +1188,13 @@ selection remain later milestones. Public values translate to
    guide or in a linked cultural-content guide with only their coordinate
    contract retained here?
 
+<a id="12-maintenance-rule"></a>
+
 # 12. Maintenance rule
 
-This guide must change whenever Wenu changes a coordinate system, origin,
-epoch/equinox convention, time-scale dependency, position provider,
+This guide must change whenever Wenu changes a coordinate system, reference
+frame, origin, equinox convention, position-epoch convention, time-scale
+dependency, position provider,
 transformation engine, object source, provenance field, or code owner. The
 Markdown source is the only canonical guide; PDF, OpenDocument, Word, or
 other review formats are generated from it on demand and are not maintained
@@ -1081,9 +1207,15 @@ ownership box, object/provenance inventory, and relevant roadmap statements,
 or record in its acceptance evidence that the guide was reviewed and remains
 accurate. A passing documentation test is not a substitute for Fernando's
 scientific and pedagogical review.
+<a id="13-practical-guide-to-celestial-reference-systems-equinoxes-and-epochs"></a>
+
 # 13. Practical guide to celestial reference systems, equinoxes, and epochs
 
+<a id="public-celestial-reference-policy"></a>
+
 ## 13.1 Public celestial reference policy
+
+<a id="coordinate-system-vs-reference-frame"></a>
 
 ### 13.1.1 Coordinate system and reference frame
 
@@ -1123,12 +1255,29 @@ valid; it does not redefine the surveying axes.
 ICRF3 and Gaia-CRF3 are radio and optical realizations tied through common
 extragalactic sources. FK5 is a dynamical equatorial frame with precession and
 equinox semantics. A catalogue realization can additionally carry source
-positions and proper motions at a reference epoch. Consequently the complete
+positions and proper motions at a position reference epoch. Consequently the complete
 scientific identity is not a single name: it includes system/frame,
 realization/provider, equinox where applicable, and position epoch where
 applicable.
 
+<a id="epoch-vs-equinox"></a>
+
 ### 13.1.2 Equinox, position epoch, and observation instant
+
+> **Terminology contract — four different questions**
+>
+> - **Coordinate system:** Which coordinate variables and geometry are used?
+> - **Reference frame:** Which physically realized axes, origin, and conventions
+>   make that system operational?
+> - **Equinox:** For an equinox-based frame such as FK5, which orientation of
+>   the equator/ecliptic reference axes is used?
+> - **Position epoch:** At what instant is a catalogue object's stated position
+>   and motion model referenced?
+>
+> In Wenu, `CoordinateSpec.epoch` means a **position reference epoch**; it must
+> never be used as a synonym for `CoordinateSpec.equinox`. The observation
+> instant is a third time concept: it says when an observer-dependent physical
+> realization is evaluated.
 
 **[Foundation]** Earth's rotation axis slowly changes direction. Consequently,
 the equatorial grid for J2000 and the grid "of date" are slightly rotated with
@@ -1145,6 +1294,8 @@ motion, parallax, and radial velocity. The observation instant enters
 observer-local transformations such as AltAz. Wenu keeps these three time
 concepts separate and rejects unsupported position propagation rather than
 relabeling catalogue coordinates.
+
+<a id="requesting-reference-equinox"></a>
 
 ### 13.1.3 Requesting a reference equinox
 
@@ -1176,6 +1327,8 @@ context. The policy controls reference geometry; it does not yet change the
 chart family's projection frame or propagate provider positions to a requested
 epoch.
 
+<a id="julian-besselian-labels"></a>
+
 ### 13.1.4 Julian and Besselian year labels
 
 Section 5 distinguishes civil calendars, continuous day counts, and
@@ -1197,16 +1350,18 @@ slightly different instants. The usual association—FK4/Besselian and
 FK5/Julian—is historically and scientifically meaningful, although the year
 label alone never fully specifies a reference frame.
 
-### 13.1.5 The Gaia reference epoch is not an equinox
+<a id="gaia-epoch-not-equinox"></a>
+
+### 13.1.5 The Gaia position reference epoch is not an equinox
 
 **[Foundation]** Gaia catalogue coordinates also carry a date, but it answers
 a different question: when were the listed stellar positions defined? Gaia
-DR2 positions use reference epoch `J2015.5`; Gaia EDR3 and DR3 positions use
+DR2 positions use position reference epoch `J2015.5`; Gaia EDR3 and DR3 positions use
 `J2016.0`. This is a **position epoch**, not an orientation of the coordinate
 grid. There is therefore no Gaia `J2016.0` equinox that must be selected to
 display Gaia positions correctly.
 
-**[Undergraduate]** Gaia DR3 astrometry is expressed in ICRS at reference
+**[Undergraduate]** Gaia DR3 astrometry is expressed in ICRS at position reference
 epoch J2016.0. ICRS has no defining equinox to select: its right-ascension
 origin is a fixed realized direction, historically placed close to the
 J2000.0 dynamical equinox. Propagating a Gaia source
@@ -1215,10 +1370,10 @@ parameters, including proper motion and, where available and relevant,
 parallax and radial velocity. By contrast, requesting
 `--reference-equinox J2016.0` in this Wenu milestone rotates the coupled FK5
 and true-ecliptic reference representation to that equinox; it neither
-selects Gaia nor propagates any star to the Gaia reference epoch.
+selects Gaia nor propagates any star to the Gaia position reference epoch.
 
 Authoritative references: [ESA's Gaia DR3 documentation](https://www.cosmos.esa.int/web/gaia/dr3)
-states the 2016.0 reference epoch for EDR3/DR3; the
+states the 2016.0 position reference epoch for EDR3/DR3; the
 [IVOA Coordinates data model](https://www.ivoa.net/documents/Coords/20221004/Coords-v1.0.html)
 defines epoch labels as `J` (Julian) or `B` (Besselian) followed by a decimal
 year. The peer-reviewed
@@ -1229,6 +1384,8 @@ The [IERS Conventions](https://iers-conventions.obspm.fr/archive/2003/chapter2/t
 document the ICRS right-ascension origin, its intended proximity to the
 dynamical equinox at J2000.0, and the measured frame-bias offset between them.
 
+
+<a id="reference-policy-acceptance"></a>
 
 ### 13.1.6 Implementation and scientific acceptance
 
@@ -1255,6 +1412,8 @@ SVG runs may serialize equivalent same-style star markers in a different
 order; the normalized graphical-record comparison was identical. That
 reproducibility observation is separate from coordinate correctness and does
 not alter the rendered chart.
+
+<a id="moving-object-architecture"></a>
 
 ## 13.2 Scene dependencies and moving astronomical objects
 
@@ -1331,6 +1490,8 @@ reuse keyed by immutable scientific identity.
 > integration point in 49D.2. Selection of a real JPL-or-equivalent ephemeris
 > and the first planet belong to later 49E/49I milestones.
 
+<a id="49d1-acceptance"></a>
+
 ### 13.2.1 49D.1 scientific and pedagogical acceptance
 
 Fernando accepted the scene-dependency explanation on 2026-08-29. In
@@ -1341,6 +1502,8 @@ requires their convergence in one explicit spherical product frame before
 projection. Verification passed 39 documentation tests, 1,789 routine tests
 with 30 deselected, and all 1,819 tests. Because the milestone changes no
 runtime geometry or appearance, no visual comparison was required.
+
+<a id="49d2-handoff"></a>
 
 ### 13.2.2 49D.2 minimal realization handoff
 
@@ -1390,6 +1553,8 @@ provenance, and target-`CoordinateSpec` composition.
 > `solar-system/planets` path. A separate SVG generator or post-export
 > coordinate overlay would violate Wenu's architecture.
 
+<a id="49d2-acceptance"></a>
+
 ### 13.2.3 49D.2 scientific and pedagogical acceptance
 
 Fernando accepted the minimal realization handoff, exact compatibility branch,
@@ -1399,6 +1564,8 @@ tests with 30 deselected in 27.61 seconds, and all 1,828 tests in 90.00
 seconds. No visual comparison was required because production requests and
 geometry are unchanged.
 
+
+<a id="49e1-provider-design"></a>
 
 ### 13.2.4 49E.1 ephemeris-provider design
 
@@ -1452,6 +1619,8 @@ physics.
 > All 41 documentation tests passed in 3.26 seconds. No visual comparison was
 > required because this design audit changes no runtime geometry or output.
 
+<a id="49e2-runtime-contracts"></a>
+
 ### 13.2.5 49E.2 minimal runtime state contracts
 
 **[Foundation]** Wenu can now describe one ephemeris calculation without yet
@@ -1486,3 +1655,80 @@ physical corrections its direction represents.
 > deterministic Venus source. No installed code opens a new kernel, calculates
 > a digest, realizes a planet direction, registers a Venus layer, or changes
 > PNG/PDF/SVG output.
+
+
+<a id="49e3-skyfield-adapter"></a>
+
+### 13.2.6 49E.3 borrowed Skyfield kernel adapter
+
+**[Foundation]** Wenu can now read a real planetary state from the ephemeris
+file that an observer session already opened. A question must name the body,
+the centre from which it is measured, the instant, and the three-dimensional
+axes. For example, “Venus relative to the Solar-System barycentre” is a
+different vector from “Venus relative to Earth.”
+
+Wenu fingerprints the exact file with SHA-256. `DE440` identifies the
+astronomical solution family; `de440s.bsp` identifies a particular
+short-distribution filename; the digest identifies the exact bytes actually
+used.
+
+**[Undergraduate]** `SkyfieldEphemerisStateSource` borrows the open
+`SpiceKernel` and `Timescale` from `Observer`. It converts the declared
+instant through Astropy and `Timescale.from_astropy()`, resolves target and
+centre to NAIF identifiers, and evaluates the simultaneous geometric
+target-minus-centre state in ICRF axes. Position is returned in AU and velocity
+in AU/day.
+
+The recorded kernel coverage is the conservative common intersection of all
+SPK segment intervals, not their potentially misleading union envelope.
+Skyfield still checks the particular target-centre segment path. This state
+contains no one-way light time, aberration, gravitational deflection,
+topocentric displacement, or refraction; it is not yet the direction in which
+an observer sees Venus.
+
+> **Wenu implementation box — 49E.3 installed adapter**
+>
+> `src/wenu/skyfield_ephemeris.py` owns resource fingerprinting, the borrowed
+> adapter, and deterministic adapter errors. `Observer` still owns and closes
+> the kernel. `tools/validate_49e3_skyfield_adapter.py` refuses hidden
+> downloads and validates Venus against direct Skyfield evaluation.
+> `tests/test_skyfield_ephemeris.py` owns deterministic unit coverage. No
+> planet layer, projection, renderer, or SVG-only path exists in this milestone.
+
+
+> **49E.3 real-resource evidence**
+>
+> Fernando's installed `de440s.bsp` resolved as model `DE440`, with SHA-256
+> `c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`
+> and common coverage JD 2396752.5–2506352.5 TDB. At
+> 2026-08-30T00:00:00 TDB, all six Venus/SSB adapter components matched direct
+> Skyfield evaluation with zero residual within an absolute tolerance of
+> (10^{-15}). This validates Wenu's adapter handoff, not the DE440 dynamical
+> solution independently.
+
+
+<a id="naif-spice-identifiers"></a>
+
+### 13.2.7 NAIF and SPICE identifiers
+
+**[Foundation]** **NAIF** is an acronym for NASA's **Navigation and Ancillary
+Information Facility**, a group at the Jet Propulsion Laboratory. NAIF leads
+the development and distribution of **SPICE**, whose name expands to
+**Spacecraft, Planet, Instrument, C-matrix, Events**. SPICE organizes the
+geometric information needed to interpret planetary and spacecraft
+observations.
+
+A **NAIF ID** is a stable integer used by SPICE to identify a body or
+barycentre. In the 49E.3 Venus check, 299 identifies Venus and 0 identifies the
+Solar-System barycentre. The integer identifies the object; it does not by
+itself specify a coordinate system, reference frame, centre, epoch, equinox,
+time scale, or correction policy.
+
+**[Undergraduate]** NAIF body codes are provider-native identifiers retained as
+provenance alongside Wenu's stable object keys. An `EphemerisStateRequest`
+separately declares target, centre, frame, instant, and time scale. Thus
+“target NAIF 299, centre NAIF 0, ICRF, 2026-08-30 TDB” is scientifically
+meaningful, whereas “NAIF 299 coordinates” is incomplete.
+
+Official background: [NASA/JPL About NAIF](https://naif.jpl.nasa.gov/naif/about.html)
+and [The SPICE concept](https://naif.jpl.nasa.gov/naif/spiceconcept.html).

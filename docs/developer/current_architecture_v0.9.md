@@ -170,6 +170,12 @@ observer-transformed celestial directions explicitly use `APPARENT`, native
 observer-local references use `GEOMETRIC`, and `OBSERVED` remains reserved for
 future atmospheric realization.
 
+49E.3 installs `SkyfieldEphemerisStateSource` as a borrowed-resource adapter.
+It hashes the exact already-open BSP file once, records conservative common
+segment coverage in TDB, and returns simultaneous geometric target-minus-centre
+ICRF states in AU and AU/day. It owns no observer-relative direction physics,
+moving-object layer, projection, renderer, or output path.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored

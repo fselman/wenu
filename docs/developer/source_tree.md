@@ -87,9 +87,12 @@ graph.
 state-source/direction-realizer audit. `ephemeris.py` owns the frozen 49E.2
 resource identity, geometric state request, complete position-velocity state,
 and structural state-source protocol. It owns no kernel I/O, direction
-realization, coordinate transformation, chart, or output policy. The only
-concrete source exists in `tests/test_ephemeris.py`; no real 49E kernel adapter
-or installed moving-body provider exists yet. `coordinates.py::observer_altaz_spec()` requires explicit status at every
+realization, coordinate transformation, chart, or output policy. The deterministic contract source remains in
+`tests/test_ephemeris.py`. `skyfield_ephemeris.py` now owns the first real
+49E.3 adapter: it borrows the already-open Observer kernel, fingerprints its
+exact bytes, records conservative common SPK coverage, and returns geometric
+ICRF Cartesian states. It owns no kernel close, direction realization, or
+installed moving-body layer. `coordinates.py::observer_altaz_spec()` requires explicit status at every
 call site; no observer-local physical status is inferred from origin.
 
 `sky/realization.py` owns the frozen 49D.2 `LayerRealizationContext`.
@@ -884,3 +887,7 @@ dimensions, timeline instants, and manifest identity in JSON.
   equatorial and ecliptic grids.
 - `src/wenu/charts/reference_furniture.py`: applies the same resolved equinox
   to the celestial equator, ecliptic, and seasonal keypoints.
+
+`docs/developer/skyfield_ephemeris_adapter_49e3.md` owns the 49E.3 scientific
+contract. `tools/validate_49e3_skyfield_adapter.py` is the explicit
+no-download installed-kernel Venus/SSB acceptance check.

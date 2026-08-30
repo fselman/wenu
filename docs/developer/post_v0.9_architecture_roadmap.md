@@ -417,6 +417,42 @@ PDF, and SVG. The SVG product may serialize the reserved
 `solar-system/sun`, `solar-system/moon`, and `solar-system/planets` paths;
 it must not recompute moving-object geometry or use a separate SVG-only path.
 
+### Milestone 49E.3 — Borrowed Skyfield ephemeris adapter
+
+**Status:** Scientifically accepted by Fernando on 2026-08-30; integration pending.
+
+`skyfield_ephemeris.py` adapts the already-open `Observer` Skyfield/JPL SPK
+resource to `EphemerisStateSource`. Resolution fingerprints the exact BSP
+bytes once, separates DE model from filename, and records the conservative
+common SPK-segment coverage in TDB. Evaluation supports explicit geometric
+ICRF target-minus-centre states in AU and AU/day with NAIF identifiers.
+
+The adapter borrows but does not open, download, or close the kernel. Unknown
+targets, unsupported frames, and coverage failures are explicit. The
+deterministic tests use fake SPK structures; the controlled
+`validate_49e3_skyfield_adapter.py` check refuses downloads and compares all
+six Venus-relative-to-SSB components with direct Skyfield evaluation at a
+fixed TDB instant.
+
+The controlled Mac run identified the exact `de440s.bsp` bytes as
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`,
+resolved NAIF 299 relative to NAIF 0, and obtained zero adapter/direct residual
+within `1e-15` for all six components at the fixed TDB instant.
+
+The exact contract is `skyfield_ephemeris_adapter_49e3.md`. This milestone
+adds no direction realizer, chart layer, CLI/TOML control, or output change.
+Venus rendering remains 49I.1 and must use the canonical PNG/PDF/SVG path.
+
+Acceptance evidence is 72 focused tests in 1.73 seconds, 1,830 routine tests
+with 30 deselected in 25.80 seconds, and all 1,860 tests in 84.78 seconds.
+Fernando accepted the scientific boundary after the installed DE440 comparison
+reported zero residual within `1e-15` for all six components.
+
+Fernando also accepted living coordinate-guide version
+`0.9.5.20260830.3` after MacDown verification of its separate-line header and
+all explicit table-of-contents anchors. The final documentation gate passed
+all 44 tests in 1.70 seconds.
+
 ## 9. Milestone 49F - SVG product verification
 
 **Status:** Complete at `c70cb29` after eight-product cross-product acceptance.
