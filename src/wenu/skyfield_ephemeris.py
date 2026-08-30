@@ -151,7 +151,11 @@ class SkyfieldEphemerisStateSource:
     def _body(self, key, *, role):
         try:
             provider_id = self._kernel.decode(key)
-            vector = self._kernel[provider_id]
+            vector = (
+                None
+                if provider_id == 0
+                else self._kernel[provider_id]
+            )
         except (KeyError, TypeError, ValueError) as error:
             raise EphemerisTargetError(
                 f"kernel cannot resolve {role} {key!r}."
@@ -180,16 +184,47 @@ class SkyfieldEphemerisStateSource:
         target, target_id = self._body(request.target, role="target")
         centre, centre_id = self._body(request.centre, role="centre")
         try:
-            state = (target - centre).at(time)
+            target_state = None if target is None else target.at(time)
+            centre_state = None if centre is None else centre.at(time)
         except EphemerisRangeError as error:
             raise EphemerisCoverageError(
                 "requested target-centre state is outside segment coverage."
             ) from error
 
+        zero = (0.0, 0.0, 0.0)
+        target_position = (
+            zero if target_state is None else tuple(target_state.position.au)
+        )
+        target_velocity = (
+            zero
+            if target_state is None
+            else tuple(target_state.velocity.au_per_d)
+        )
+        centre_position = (
+            zero if centre_state is None else tuple(centre_state.position.au)
+        )
+        centre_velocity = (
+            zero
+            if centre_state is None
+            else tuple(centre_state.velocity.au_per_d)
+        )
+
         return EphemerisState(
             request=request,
-            position=tuple(state.position.au),
-            velocity=tuple(state.velocity.au_per_d),
+            position=tuple(
+                target_component - centre_component
+                for target_component, centre_component in zip(
+                    target_position,
+                    centre_position,
+                )
+            ),
+            velocity=tuple(
+                target_component - centre_component
+                for target_component, centre_component in zip(
+                    target_velocity,
+                    centre_velocity,
+                )
+            ),
             position_unit="au",
             velocity_unit="au/day",
             resource=self.resource,
