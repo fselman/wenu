@@ -353,9 +353,31 @@ test. Acceptance verification passed all 41 documentation
 tests in 3.26 seconds on Fernando's Mac. No visual comparison was required
 because the audit changes no runtime code, geometry, or output.
 
-49E.1 changes no runtime type or output. After scientific acceptance, 49E.2 may
-add minimal frozen request/state/provenance contracts with deterministic test
-sources; 49E.3 may adapt one installed kernel. The first charted body remains a
+49E.1 changed no runtime type or output. 49E.2 implements the minimal frozen
+request/state/provenance contracts; 49E.3 may adapt one installed kernel. The
+first charted body remains the separately approved 49I.1 Venus vertical slice.
+
+### Milestone 49E.2 — Minimal ephemeris runtime contracts
+
+**Status:** Implementation review candidate on the dedicated 49E.2 branch.
+
+`ephemeris.py` adds frozen `EphemerisResourceIdentity`,
+`EphemerisStateRequest`, and complete six-component `EphemerisState` values,
+plus the runtime-checkable structural `EphemerisStateSource` protocol. The
+resource identity requires provider, model, filename, a structurally valid
+SHA-256 digest, coverage and coverage scale, and provenance. No real file is
+opened or hashed in this milestone.
+
+The unreleased `PositionStatus.TOPOCENTRIC` member is removed atomically.
+Observer origin remains `origin="observer"`; the default vacuum AltAz helper
+and its two direct coordinate-service tests now use `APPARENT`. A deterministic
+test-only Venus source proves the contract shape without installing a kernel
+adapter, direction realizer, moving-object layer, or output change.
+
+The exact contract and acceptance requirements are recorded in
+`ephemeris_runtime_contracts_49e2.md`. 49E.3 remains responsible for one real
+resolved-kernel resource/adapter and numerical validation. Venus remains a
+later 49I.1 slice.
 
 Define a protocol for time-dependent position sources before adding their
 chart layers.
