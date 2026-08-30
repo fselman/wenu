@@ -503,14 +503,17 @@ def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
         "retarded emission times",
         "one-way light time",
         "kernel identity",
-        "current `PositionStatus.TOPCENTRIC` spelling",
+        "`PositionStatus.TOPOCENTRIC` is scientifically misplaced",
         "No correction may be implied",
         "no hidden network access during rendering",
         "A raw ephemeris state is not `SphericalGeometry`",
         "Body geometry deliberately deferred",
         "49E.2 — minimal runtime contracts",
         "49E.3 — installed kernel adapter",
-        "49I.1 — first moving-body vertical slice",
+        "six-component position-velocity",
+        "SHA-256 content fingerprint",
+        "use Venus for 49I.1",
+        "49I.1 — Venus vertical slice",
     ):
         assert phrase in contract
 
@@ -519,15 +522,21 @@ def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
         "Cartesian state source",
         "retarded emission-time evaluation",
         "49E.1 changes no runtime type or output",
+        "Venus is the first 49I.1 body",
     ):
         assert phrase in roadmap
 
     assert "proposed 49E.1 ephemeris boundary" in architecture
     assert "raw barycentric vector must never be relabelled" in architecture
+    assert "`PositionStatus.TOPOCENTRIC` will be removed atomically" in architecture
+    assert "Venus is the first planned 49I.1 body" in architecture
     assert "13.2.4 49E.1 ephemeris-provider design" in guide
     assert "more like a precise moving map" in guide
     assert "Wenu implementation box — 49E.1 provider boundary" in guide
+    assert "SHA-256 is computed once" in guide
+    assert "Venus is the first planned moving-body" in guide
     assert "Proposed ephemeris-provider boundary" in implementation
+    assert "first later vertical slice is Venus" in implementation
     assert "No 49E runtime provider" in source_tree
 
 
