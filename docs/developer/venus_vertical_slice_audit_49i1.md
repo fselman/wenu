@@ -1,6 +1,6 @@
 # Milestone 49I.1 — Drawable Venus vertical-slice audit
 
-**Status:** Architecture and scientific review candidate.  
+**Status:** Scientifically and architecturally accepted by Fernando on 2026-08-30; ready for integration.  
 **As-is baseline:** `17f5c10`  
 **Date:** 2026-08-30
 
@@ -140,3 +140,16 @@ available.
 
 The Moon follows Venus because its stronger topocentric parallax, angular
 extent, phase, and orientation require additional explicit contracts.
+
+## 8. Scientific and architectural acceptance
+
+Fernando accepted the 49I.1A-before-49I.1B sequence, typed ordinary
+realization-context handoff, one product-frame transformation, opt-in
+`--planet venus` interface, stable `sky/solar_system/planets/venus` identity,
+symbolic marker and optional label, existing visibility/clipping ownership,
+shared PNG/PDF/SVG path, and all stated non-goals on 2026-08-30.
+
+The documentation gate passed all 48 current-documentation tests in 3.30
+seconds on Fernando's Mac. This acceptance authorizes the bounded 49I.1A
+implementation; it does not pre-accept its runtime result, 49I.1B Venus
+geometry, or any visual chart.
