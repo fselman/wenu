@@ -243,6 +243,11 @@ must not silently invoke a second light-time solution. Treat apparent status,
 position reference epoch, equinox, and observation instant as separate
 concepts in code and documentation.
 
+Planets, the Moon, minor bodies, and comets must converge on one typed
+pre-projection and output pipeline. Allow interchangeable state providers and
+body-specific physical geometry; never copy the Venus chart path into
+body-specific projection, renderer, or exporter implementations.
+
 When several rendering solutions work, choose the simplest one that preserves
 the established visual hierarchy and scientific meaning.
 

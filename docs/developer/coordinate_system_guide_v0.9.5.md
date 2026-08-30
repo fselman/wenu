@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.16`  
-**Last updated:** `2026-08-30T22:02:00Z`  
+**Guide version:** `0.9.5.20260830.17`  
+**Last updated:** `2026-08-30T22:13:27Z`  
 **Language:** English
 
 # Table of contents
@@ -80,6 +80,7 @@
     - [13.2.11 49I.1 drawable Venus audit](#49i1-venus-audit)
     - [13.2.12 49I.1A ordinary realization context](#49i1a-realization-context)
     - [13.2.13 49I.1B first drawable Venus](#49i1b-venus-layer)
+    - [13.2.14 49I.2 Moon and shared body pipeline](#49i2-moon-shared-pipeline)
 
 <a id="status-and-purpose"></a>
 
@@ -2075,3 +2076,35 @@ reference equinox remains separate chart-furniture metadata.
 > in 82.01 seconds passed. The SVG review also corrected two Green-catalogue
 > remnants whose signed Galactic latitudes had previously collapsed to one
 > semantic key; their displayed scientific designations did not change.
+
+<a id="49i2-moon-shared-pipeline"></a>
+
+### 13.2.14 49I.2 Moon and shared body pipeline
+
+**[Foundation]** Wenu should not need a different kind of chart for Venus,
+the Moon, Mars, an asteroid, or a comet. Each object supplies a position from
+an appropriate astronomical model; after Wenu has obtained the apparent
+direction for the declared observer and time, every object enters the same
+coordinate transformation, projection, visibility, drawing, and file-output
+path. “One pipeline” does not mean that all objects move in the same way.
+
+**[Undergraduate]** The invariant contract begins with a typed geometric
+position-velocity state, resource identity, centre, frame, instant, and time
+scale. A JPL SPK adapter can supply major-planet and Moon states, while a
+future minor-body or comet provider may propagate orbital elements. Once each
+provider returns the common state contract, the observer-relative light-time
+and apparent-place services can converge on observer-origin apparent ICRS
+geometry, which is transformed exactly once into the product coordinate
+system. Provider realization, reference frame, position reference epoch,
+observation instant, and equinox remain distinct concepts.
+
+> **Wenu implementation box — proposed 49I.2 shared pipeline**
+>
+> `ephemeris.py::EphemerisStateSource` is the provider-neutral state boundary;
+> `solar_system_directions.py` owns light time and typed direction results;
+> `skyfield_ephemeris.py` is the installed JPL/Skyfield adapter and apparent
+> realizer; and `sky/venus.py` is the first concrete chart consumer. The Moon
+> audit will validate NAIF target 301, strong topocentric parallax, observer
+> height, and a Moon-appropriate apparent correction policy before extracting
+> shared `SolarSystemPointLayer` machinery. Phase, angular diameter,
+> illuminated limb, and physical disk geometry remain a later milestone.
