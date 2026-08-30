@@ -328,7 +328,7 @@ class CelestialPoints(GeometricalObject):
                 lon_deg=np.asarray([], dtype=float),
                 lat_deg=np.asarray([], dtype=float),
                 coordinate_spec=observer_altaz_spec(
-                    resolved_observer, provider="wenu celestial points"
+                    resolved_observer, position_status=PositionStatus.APPARENT, provider="wenu celestial points"
                 ),
                 labels=np.asarray([], dtype=object),
                 metadata=self._style_metadata(),
@@ -345,7 +345,7 @@ class CelestialPoints(GeometricalObject):
         return CoordinateService().transform(
             native,
             observer_altaz_spec(
-                resolved_observer, provider="wenu celestial points"
+                resolved_observer, position_status=PositionStatus.APPARENT, provider="wenu celestial points"
             ),
             observation=observation_context(resolved_observer),
         )
