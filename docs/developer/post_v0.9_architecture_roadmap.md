@@ -504,7 +504,7 @@ seconds, and all 1,878 tests in 85.55 seconds. No visual render was required.
 
 ### Milestone 49E.6 — Apparent direction runtime
 
-**Status:** Implementation and scientific review candidate.
+**Status:** Scientifically accepted by Fernando on 2026-08-30; ready for integration.
 
 `ApparentCorrectionPolicy`, `ApparentDirection`, and
 `SkyfieldApparentDirectionRealizer` apply declared gravitational deflection and
@@ -519,6 +519,12 @@ does not select an equinox of date. Deterministic tests and the no-download
 installed-kernel Venus comparison protect the boundary. 49E.6 creates no
 moving-body layer or output change. 49I.1 remains the first drawable Venus and
 must use the canonical shared PNG/PDF/SVG path.
+
+The installed DE440 Venus comparison produced apparent ICRS coordinates
+`198.3663730463236`, `-11.16330410839704` degrees and agreed with direct
+Skyfield to `3.152e-11` degree in right ascension and `1.544e-12` degree in
+declination. Fernando scientifically accepted 49E.6 on 2026-08-30 after 95
+focused tests in 3.79 seconds and all 1,883 tests in 91.21 seconds passed.
 
 ## 9. Milestone 49F - SVG product verification
 
