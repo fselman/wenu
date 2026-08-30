@@ -1447,3 +1447,7 @@ physics.
 > topocentric belongs to the origin, while astrometric, apparent, or observed
 > describes physical realization. Venus is the first planned moving-body
 > slice, with the Moon following as the stronger parallax test.
+>
+> The revised scientific and pedagogical review was accepted on 2026-08-30.
+> All 41 documentation tests passed in 3.26 seconds. No visual comparison was
+> required because this design audit changes no runtime geometry or output.
