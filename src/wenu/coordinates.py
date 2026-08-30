@@ -151,7 +151,7 @@ def icrs_catalogue_spec(provider, *, epoch="J2000.0", provenance=()):
 def observer_altaz_spec(
     observer,
     *,
-    position_status=PositionStatus.APPARENT,
+    position_status,
     provider=None,
     model=None,
     provenance=(),
