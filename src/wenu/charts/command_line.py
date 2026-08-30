@@ -14,6 +14,7 @@ from .chart_arguments import (
     chart_detail_overrides,
     chart_legend_selection,
     chart_reference_policy,
+    chart_sky_content,
     chart_style_overrides,
 )
 from .drawing import chart_view_request, draw_chart_view
@@ -342,6 +343,7 @@ def _chart_view_argument_plans(
                 "reference_policy": chart_reference_policy(
                     arguments, default=configured_policy
                 ),
+                "content": chart_sky_content(arguments),
             },
         ))
     return tuple(plans)

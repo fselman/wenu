@@ -65,6 +65,8 @@ For current work, read and follow:
   `--planet venus` work;
 - `ordinary_realization_context_49i1a.md` for the implemented ordinary
   request-to-layer context mapping and its output-neutral acceptance;
+- `venus_layer_49i1b.md` for the first production Venus layer, opt-in planet
+  selection, symbolic appearance, semantic identity, or visual acceptance;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,

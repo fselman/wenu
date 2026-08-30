@@ -676,6 +676,23 @@ adds no Venus layer or visible output change. Acceptance verification passed
 The next bounded implementation after integration is 49I.1B, the opt-in Venus
 layer.
 
+#### Milestone 49I.1B — First drawable Venus layer
+
+**Status:** Scientifically and visually accepted by Fernando on 2026-08-30;
+ready for integration.
+
+The opt-in `VenusLayer` now consumes the accepted 49E.3–49E.6 direction chain
+through the 49I.1A context and transforms once into the product frame. Public
+selection is `--planet venus`; default charts remain unchanged. The same
+projected point feeds PNG, PDF, and semantic SVG. Physical appearance remains
+explicitly deferred. Scientific, numerical, semantic-SVG, and visual
+acceptance passed. The 148-test implementation review and 35-test focused
+post-correction regression passed, followed by all 1,898 tests in 82.01
+seconds. Fernando confirmed that Venus agrees with Stellarium at the declared
+La Ligua observation instant and that PNG, PDF, and SVG look the same. The SVG
+run additionally exposed and closed a signed Green-catalogue semantic-key
+collision without weakening hierarchy validation.
+
 Add one object class at a time:
 
 1. Moon or one planet through an ephemeris provider;

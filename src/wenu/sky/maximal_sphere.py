@@ -120,6 +120,7 @@ def build_maximal_sphere(
 
     sky = CelestialSphere(observer)
     sky.load_profile = profile
+    sky.add_venus()
     sky.add_milky_way_isophotes(
         filename=profile.milky_way_filename,
         levels=MilkyWayIsophotes.available_levels,

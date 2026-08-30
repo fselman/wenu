@@ -245,6 +245,16 @@ after 166 focused tests, 1,859 routine tests with 30 deselected, and all 1,890
 tests passed. The full suite also verified UTC-datetime normalization for the
 ordinary chart-view observer contract. 49I.1B is the next bounded slice.
 
+The accepted 49I.1B implementation installs one dormant `VenusLayer` in the canonical
+sphere. `--planet venus` enables it; the layer borrows the observer kernel,
+uses the accepted astrometric/apparent chain, and transforms once into the
+49I.1A product coordinate specification before ordinary projection. It adds
+no physical disk or alternative SVG path and is scientifically and visually
+accepted. Fernando's installed-DE440 comparison placed Venus at the
+Stellarium position for the declared La Ligua instant; PNG, PDF, and semantic
+SVG looked the same. Acceptance passed the 148-test implementation review, 35
+focused post-correction tests, and all 1,898 tests in 82.01 seconds.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored

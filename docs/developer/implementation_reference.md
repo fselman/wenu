@@ -1025,6 +1025,20 @@ Fernando accepted this output-neutral handoff on 2026-08-30 after 166 focused,
 that observer instants supplied as `utc_datetime`, `t_astropy`, or AltAz
 `obstime` normalize through the same scientific context boundary.
 
+### First drawable Venus layer (Milestone 49I.1B)
+
+`sky/venus.py::VenusLayer.realize()` is the first production consumer of
+`LayerRealizationContext`. `SkyContentSelection.planets` and CLI
+`--planet venus` own opt-in selection. The layer returns ordinary
+`SphericalPoints` in the product specification; style owns its symbolic marker
+and label, and the existing renderer/exporter owns all output formats.
+
+Fernando scientifically and visually accepted the slice on 2026-08-30. The
+installed-DE440 regional Venus agreed with Stellarium at the declared La Ligua
+instant, and PNG, PDF, and semantic SVG looked the same. Acceptance evidence is
+148 implementation-review tests, 35 focused post-correction tests, and all
+1,898 tests in 82.01 seconds.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a

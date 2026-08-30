@@ -28,6 +28,7 @@ _SELECTION_OPTIONS = {
     "planetary_nebulae": "planetary_nebulae",
     "supernova_remnants": "supernova_remnants",
     "constellation_labels": "constellation_labels",
+    "venus": "planets",
 }
 
 
@@ -226,6 +227,7 @@ _DETAIL_LAYER_NAMES = {
 }
 
 _REQUEST_GEOMETRY_LAYERS = frozenset({"horizon"})
+_DEFAULT_DISABLED_LAYERS = frozenset({"venus"})
 
 
 def _detail_layer_name(layer):
@@ -280,7 +282,14 @@ def apply_resolved_detail(
             "enabled": (
                 True
                 if name in _REQUEST_GEOMETRY_LAYERS
-                else detail.layer_enabled(_detail_layer_name(layer))
+                else (
+                    False
+                    if (
+                        name in _DEFAULT_DISABLED_LAYERS
+                        and detail.enabled_layers is None
+                    )
+                    else detail.layer_enabled(_detail_layer_name(layer))
+                )
             ),
         }
         detail_name = _detail_layer_name(layer)

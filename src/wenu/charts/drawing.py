@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from .detail import DetailOverrides
+from .detail import DetailOverrides, SkyContentSelection
 from .furniture import ChartFurnitureOptions
 from .product_options import ChartProduct, ChartProductOptions
 from .request import ChartRequest
@@ -74,6 +74,7 @@ def chart_view_request(
     language=None,
     output_format=None,
     reference_policy=None,
+    content=None,
 ):
     """Translate one prepared view and product into an immutable request."""
     if not isinstance(view, ChartView):
@@ -124,6 +125,8 @@ def chart_view_request(
         raise TypeError(
             "style_overrides must be a ChartStyleOverrides value."
         )
+    if content is not None and not isinstance(content, SkyContentSelection):
+        raise TypeError("content must be a SkyContentSelection or None.")
 
     defaults = (
         _product_defaults()
@@ -142,6 +145,10 @@ def chart_view_request(
             mode=product.mode,
         ),
         detail=overrides,
+        content=(
+            view._prepared.resolved.request.content
+            if content is None else content
+        ),
         horizon=bool(horizon),
         horizon_mask=bool(horizon_mask),
         furniture=furniture,

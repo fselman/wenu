@@ -44,6 +44,14 @@ def test_regional_accepts_one_or_many_constellations():
     assert many.constellations == ("Cyg", "Lyr", "Aql")
 
 
+def test_every_chart_family_exposes_the_venus_selector():
+    for family in EXPECTED_COMMANDS - {"defaults"}:
+        arguments = chart.parser().parse_args(
+            [family, "--planet", "venus"]
+        )
+        assert arguments.planet == ["venus"]
+
+
 def test_regional_orientation_is_named_or_a_literal_angle():
     named = chart.parser().parse_args([
         "regional", "--orientation", "zenith-up",

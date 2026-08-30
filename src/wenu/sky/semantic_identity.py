@@ -115,6 +115,12 @@ _NONSTELLAR_CATEGORY_CONTRACTS = {
 
 
 _LAYER_CONTRACTS = {
+    "venus": SemanticLayerContract(
+        ("sky", "solar_system", "planets", "venus"),
+        "Venus",
+        39,
+        "planet",
+    ),
     "galaxies": SemanticLayerContract(
         ("sky", "galaxies"), "Galaxies", 10, "galaxies"
     ),

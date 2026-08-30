@@ -122,6 +122,7 @@ class SkyContentSelection:
     milky_way_levels: frozenset[str] | None = None
     lmc_levels: frozenset[int] | None = None
     smc_levels: frozenset[int] | None = None
+    planets: frozenset[str] | None = None
 
     def __post_init__(self):
         for name in (
@@ -134,6 +135,7 @@ class SkyContentSelection:
             "globular_clusters",
             "planetary_nebulae",
             "supernova_remnants",
+            "planets",
         ):
             object.__setattr__(
                 self,

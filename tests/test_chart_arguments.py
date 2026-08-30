@@ -47,6 +47,7 @@ def test_shared_content_and_legends_are_opt_in():
         is None
     )
     assert chart_content_options(arguments).reference_equinox is None
+    assert chart_content_options(arguments).planets == frozenset()
     assert chart_legend_selection(arguments).objects is False
     assert chart_legend_selection(arguments).stellar_magnitudes is False
     assert chart_legend_selection(arguments).stellar_counts is False
@@ -102,6 +103,18 @@ def test_magnitude_limit_must_be_finite():
         chart_content_options(
             parser().parse_args(["--magnitude-limit", "nan"])
         )
+
+
+def test_venus_is_one_opt_in_planet_content_selection():
+    arguments = parser().parse_args(["--planet", "venus"])
+
+    assert chart_content_options(arguments).planets == {"venus"}
+    detail = chart_detail_overrides(arguments)
+    assert "venus" in detail.enabled_layer_additions
+    assert "venus" not in detail.disabled_layers
+
+    with pytest.raises(SystemExit):
+        parser().parse_args(["--planet", "mars"])
 
 
 @pytest.mark.parametrize("value", ["0", "-10", "nan", "91"])

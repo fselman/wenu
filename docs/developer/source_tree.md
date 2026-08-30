@@ -928,3 +928,8 @@ planet work yet. The detailed contract is
 `docs/developer/ordinary_realization_context_49i1a.md`.
 Fernando accepted the output-neutral implementation on 2026-08-30 after the
 complete 1,890-test Mac suite passed.
+
+`src/wenu/sky/venus.py` owns the bounded 49I.1B moving-body layer. It composes
+the existing ephemeris and direction services and returns product-frame
+spherical geometry without projecting or rendering. The layer's stable
+semantic path is `sky/solar_system/planets/venus`.
