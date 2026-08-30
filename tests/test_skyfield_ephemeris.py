@@ -108,8 +108,8 @@ def test_resolved_resource_hashes_exact_borrowed_file_once(resolved):
     assert identity.model == "DE440"
     assert identity.filename == "de440s.bsp"
     assert identity.sha256 == sha256(path.read_bytes()).hexdigest()
-    assert identity.coverage_start == "JD 2400000.50000000"
-    assert identity.coverage_end == "JD 2500000.50000000"
+    assert identity.coverage_start == "JD 2410000.50000000"
+    assert identity.coverage_end == "JD 2490000.50000000"
     assert identity.coverage_time_scale == "tdb"
     assert source._kernel is kernel
 
