@@ -7,6 +7,7 @@ from collections import defaultdict
 import astropy.units as u
 import numpy as np
 
+from wenu.coordinates import PositionStatus
 from wenu.coordinates import observer_altaz_spec
 from astropy.coordinates import SkyCoord
 
@@ -134,7 +135,9 @@ class ConstellationLabels(GeometricalObject):
             lon_deg=np.asarray(lon_deg, dtype=float),
             lat_deg=np.asarray(lat_deg, dtype=float),
             coordinate_spec=observer_altaz_spec(
-                observer, provider="astropy Hipparcos constellation labels"
+                observer,
+                position_status=PositionStatus.APPARENT,
+                provider="astropy Hipparcos constellation labels"
             ),
             labels=np.asarray(labels, dtype=object),
             metadata={
@@ -174,7 +177,9 @@ class ConstellationLabels(GeometricalObject):
             lon_deg=np.asarray([], dtype=float),
             lat_deg=np.asarray([], dtype=float),
             coordinate_spec=observer_altaz_spec(
-                observer, provider="astropy Hipparcos constellation labels"
+                observer,
+                position_status=PositionStatus.APPARENT,
+                provider="astropy Hipparcos constellation labels"
             ),
             labels=np.asarray([], dtype=object),
             metadata={

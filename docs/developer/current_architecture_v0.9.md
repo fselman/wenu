@@ -157,9 +157,18 @@ The accepted 49E.1 decisions require complete position-velocity states,
 provider/model plus filename/SHA-256/coverage kernel identity, and a shared
 request/session ephemeris resource. Because Wenu is unreleased and the as-is
 runtime has only one helper default plus two tests using it,
-`PositionStatus.TOPOCENTRIC` will be removed atomically in 49E.2;
+`PositionStatus.TOPOCENTRIC` is removed atomically in 49E.2;
 observer-centred origin and physical correction status remain separate. Venus
 is the first planned 49I.1 body, followed by the Moon.
+
+49E.2 installs only renderer-neutral Cartesian boundary types in
+`ephemeris.py`: resolved resource identity, geometric state request, complete
+position-velocity state, and structural state source. The types own no kernel
+I/O, observer-relative direction realization, coordinate transformation,
+chart, or output policy. A deterministic source exists only in tests. `observer_altaz_spec()` has no status default:
+observer-transformed celestial directions explicitly use `APPARENT`, native
+observer-local references use `GEOMETRIC`, and `OBSERVED` remains reserved for
+future atmospheric realization.
 
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted

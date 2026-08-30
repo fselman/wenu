@@ -53,6 +53,9 @@ For current work, read and follow:
 - `ephemeris_provider_contract_49e1.md` for ephemeris state, target/centre,
   kernel provenance, apparent-place corrections, or Sun/Moon/planet provider
   boundary work;
+- `ephemeris_runtime_contracts_49e2.md` for the frozen ephemeris resource,
+  state request, six-component state, structural source, or `TOPOCENTRIC`
+  removal work;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,

@@ -930,6 +930,23 @@ resource. 49E.2 will atomically remove the unreleased
 two focused tests, representing topocentricity through origin instead. The
 first later vertical slice is Venus, followed by the Moon.
 
+### Minimal ephemeris runtime contracts (Milestone 49E.2)
+
+`src/wenu/ephemeris.py` owns frozen `EphemerisResourceIdentity`,
+`EphemerisStateRequest`, and `EphemerisState` values and the structural
+`EphemerisStateSource` protocol. A state requires typed request/resource,
+three finite position components, three finite velocity components, explicit
+units, and optional provider-native identifiers and provenance. The resource
+identity validates a 64-hex SHA-256 and explicit coverage scale but performs no
+file I/O.
+
+`PositionStatus.TOPOCENTRIC` is removed. `observer_altaz_spec()` retains
+`origin="observer"` and requires an explicit `position_status`. Astropy/Skyfield
+observer-transformed celestial products declare `APPARENT`; native horizon,
+cardinal/zenith, polar-horizon, and AltAz-grid products declare `GEOMETRIC`. The deterministic source remains
+in `tests/test_ephemeris.py`; no real provider, kernel adapter, direction
+realizer, or moving-body layer is installed.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a

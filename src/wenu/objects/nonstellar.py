@@ -9,6 +9,7 @@ import re
 import astropy.units as u
 import numpy as np
 
+from wenu.coordinates import PositionStatus
 from wenu.coordinates import icrs_catalogue_spec, observer_altaz_spec
 from astropy.coordinates import SkyCoord, concatenate
 from astropy.table import Table
@@ -593,7 +594,9 @@ class NonStellar(AstronomicalObject):
             lon_deg=tuple(longitude[index] for index in positions),
             lat_deg=tuple(latitude[index] for index in positions),
             coordinate_spec=observer_altaz_spec(
-                resolved, provider="astropy OpenNGC"
+                resolved,
+                position_status=PositionStatus.APPARENT,
+                provider="astropy OpenNGC"
             ),
             closed=np.ones(len(table), dtype=bool),
             ids=identifiers,
@@ -643,7 +646,9 @@ class NonStellar(AstronomicalObject):
             lon_deg=longitude,
             lat_deg=latitude,
             coordinate_spec=observer_altaz_spec(
-                resolved, provider="astropy OpenNGC"
+                resolved,
+                position_status=PositionStatus.APPARENT,
+                provider="astropy OpenNGC"
             ),
             ids=identifiers,
             names=identifiers,

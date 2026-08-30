@@ -157,6 +157,7 @@ class CoordinatesGrid(GeometricalObject, ABC):
         source_spec = self._native_coordinate_spec()
         target_spec = observer_altaz_spec(
             resolved_observer,
+            position_status=self._output_position_status(),
             provider="wenu coordinate grid",
             model=f"{self.coordinate_system} to AltAz",
         )
@@ -218,9 +219,13 @@ class CoordinatesGrid(GeometricalObject, ABC):
     def _coordinate_spec(self):
         return observer_altaz_spec(
             self._resolve_observer(None),
+            position_status=self._output_position_status(),
             provider="wenu coordinate grid",
             model=f"{self.coordinate_system} to AltAz",
         )
+
+    def _output_position_status(self):
+        return PositionStatus.APPARENT
 
     def _resolve_observer(self, observer):
         resolved = self.observer if observer is None else observer
@@ -321,6 +326,9 @@ class AltAzGrid(CoordinatesGrid):
             coordinate_spec=geometry.coordinate_spec,
             metadata=geometry.metadata,
         )
+
+    def _output_position_status(self):
+        return PositionStatus.GEOMETRIC
 
     def _native_coordinate_spec(self):
         return self._coordinate_spec()

@@ -125,7 +125,9 @@ class PlanetaryNebulae(NonStellar):
                 lon_deg=np.asarray([], dtype=float),
                 lat_deg=np.asarray([], dtype=float),
                 coordinate_spec=observer_altaz_spec(
-                    resolved, provider="astropy HASH planetary nebulae"
+                    resolved,
+                    position_status=PositionStatus.APPARENT,
+                    provider="astropy HASH planetary nebulae"
                 ),
                 ids=identifiers,
                 labels=identifiers,
@@ -144,7 +146,9 @@ class PlanetaryNebulae(NonStellar):
             lon_deg=azimuth,
             lat_deg=altitude,
             coordinate_spec=observer_altaz_spec(
-                resolved, provider="astropy HASH planetary nebulae"
+                resolved,
+                position_status=PositionStatus.APPARENT,
+                provider="astropy HASH planetary nebulae"
             ),
             ids=identifiers,
             labels=identifiers,
@@ -173,4 +177,5 @@ class PlanetaryNebulae(NonStellar):
                     dtype=object,
                 )
         return metadata
+from wenu.coordinates import PositionStatus
 from wenu.coordinates import observer_altaz_spec

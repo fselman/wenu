@@ -30,6 +30,9 @@ LAYER_REALIZATION_CONTRACT = (
 EPHEMERIS_PROVIDER_CONTRACT = (
     DEVELOPER / "ephemeris_provider_contract_49e1.md"
 )
+EPHEMERIS_RUNTIME_CONTRACT = (
+    DEVELOPER / "ephemeris_runtime_contracts_49e2.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -522,7 +525,7 @@ def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
         "Milestone 49E.1 — Ephemeris-provider contract audit",
         "Cartesian state source",
         "retarded emission-time evaluation",
-        "49E.1 changes no runtime type or output",
+        "49E.1 changed no runtime type or output",
         "Venus is the first 49I.1 body",
         "Acceptance verification passed all 41 documentation",
     ):
@@ -530,7 +533,7 @@ def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
 
     assert "proposed 49E.1 ephemeris boundary" in architecture
     assert "raw barycentric vector must never be relabelled" in architecture
-    assert "`PositionStatus.TOPOCENTRIC` will be removed atomically" in architecture
+    assert "`PositionStatus.TOPOCENTRIC` is removed atomically" in architecture
     assert "Venus is the first planned 49I.1 body" in architecture
     assert "13.2.4 49E.1 ephemeris-provider design" in guide
     assert "more like a precise moving map" in guide
@@ -540,7 +543,69 @@ def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
     assert "All 41 documentation tests passed in 3.26 seconds" in guide
     assert "Proposed ephemeris-provider boundary" in implementation
     assert "first later vertical slice is Venus" in implementation
-    assert "No 49E runtime provider" in source_tree
+    assert "no real 49E kernel adapter" in source_tree
+
+
+def test_49e2_records_minimal_runtime_contracts_and_non_goals():
+    contract = " ".join(read(EPHEMERIS_RUNTIME_CONTRACT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "**Implementation baseline:** `d14ca52`",
+        "EphemerisResourceIdentity",
+        "EphemerisStateRequest",
+        "EphemerisState",
+        "EphemerisStateSource",
+        "There is no default or optional velocity",
+        "This is an atomic internal correction",
+        "`observer_altaz_spec()` now requires an explicit `position_status`",
+        "Native observer-local horizon",
+        "The new state is geometric Cartesian provider output",
+        "deterministic Venus state",
+        "solar-system/planets/venus",
+        "This proves contract shape and ownership, not ephemeris accuracy",
+        "does not create it",
+        "calculate a SHA-256 digest from a file",
+        "No new visual render was required",
+        "scientifically accepted 49E.2 on 2026-08-30",
+        "92 focused tests in 2.72 seconds",
+        "1,821 routine tests",
+        "all 1,851 tests in 84.12 seconds",
+        "future Venus, Moon, planet, and Sun products",
+    ):
+        assert phrase in contract
+
+    for phrase in (
+        "Milestone 49E.2 — Minimal ephemeris runtime contracts",
+        "complete six-component `EphemerisState`",
+        "No real file is opened or hashed",
+        "`PositionStatus.TOPOCENTRIC` member is removed atomically",
+        "test-only Venus source",
+        "requires every caller to declare `position_status`",
+        "Scientifically accepted by Fernando on 2026-08-30",
+        "1,821 routine tests with 30 deselected",
+        "all 1,851 tests in 84.12 seconds",
+    ):
+        assert phrase in roadmap
+
+    assert "49E.2 installs only renderer-neutral" in architecture
+    assert "13.2.5 49E.2 minimal runtime state contracts" in guide
+    assert "state in space—not yet the direction" in guide
+    assert "Wenu implementation box — 49E.2 runtime boundary" in guide
+    assert "deliberately has no status default" in guide
+    assert "future refracted products" in guide
+    assert "Minimal ephemeris runtime contracts (Milestone 49E.2)" in implementation
+    assert "requires an explicit `position_status`" in implementation
+    assert "native horizon" in implementation
+    assert "`ephemeris.py` owns the frozen 49E.2" in source_tree
+    assert "requires explicit status at every" in source_tree
+    assert "only concrete source exists in `tests/test_ephemeris.py`" in source_tree
 
 
 def test_public_interface_audit_records_as_is_and_scientific_boundary():

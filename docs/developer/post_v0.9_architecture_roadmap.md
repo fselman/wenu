@@ -287,7 +287,7 @@ all 1,819 tests in 84.41 seconds. No visual comparison was required because
 
 ### Milestone 49D.2 — Minimal layer-realization context
 
-**Status:** Scientifically, pedagogically, and technically accepted on the dedicated 49D.2 branch; not yet merged.
+**Status:** Accepted and merged in `85c7392`.
 
 The exact contract and acceptance requirements are recorded in
 `layer_realization_context_49d2.md`. A frozen `LayerRealizationContext`
@@ -318,6 +318,13 @@ request/CLI exposure, current-layer migration, and caching remain out of scope.
   pre-furniture astronomical geometry;
 - establish an immutable reusable celestial-scene or maximal-sphere boundary.
 
+Fernando accepted the context fields, exact legacy compatibility branch,
+controlled-provider proof, deferred 49E responsibilities, pedagogical guide,
+and canonical SVG path on 2026-08-29. Acceptance evidence is 48 focused tests
+in 2.21 seconds, 1,798 routine tests with 30 deselected in 27.61 seconds, and
+all 1,828 tests in 90.00 seconds. No visual comparison was required because no
+ordinary request can activate the context and production geometry is unchanged.
+
 Gaia may replace or complement Hipparcos only through an explicit catalogue
 milestone with provenance, epoch, proper-motion, magnitude, identifier, and
 cross-match policies.
@@ -326,7 +333,7 @@ cross-match policies.
 
 ### Milestone 49E.1 — Ephemeris-provider contract audit
 
-**Status:** Scientifically and pedagogically accepted on the dedicated 49E.1 branch; not yet merged.
+**Status:** Accepted and merged in `d14ca52`.
 
 The as-is audit and proposed scientific contract are recorded in
 `ephemeris_provider_contract_49e1.md`. The existing generic
@@ -353,11 +360,33 @@ test. Acceptance verification passed all 41 documentation
 tests in 3.26 seconds on Fernando's Mac. No visual comparison was required
 because the audit changes no runtime code, geometry, or output.
 
-49E.1 changes no runtime type or output. After scientific acceptance, 49E.2 may
-add minimal frozen request/state/provenance contracts with deterministic test
-sources; 49E.3 may adapt one installed kernel. The first charted body remains a
-separately approved 49I.1 vertical slice.
+49E.1 changed no runtime type or output. 49E.2 implements the minimal frozen
+request/state/provenance contracts; 49E.3 may adapt one installed kernel. The
+first charted body remains the separately approved 49I.1 Venus vertical slice.
 
+### Milestone 49E.2 — Minimal ephemeris runtime contracts
+
+**Status:** Scientifically accepted by Fernando on 2026-08-30; ready for integration.
+
+`ephemeris.py` adds frozen `EphemerisResourceIdentity`,
+`EphemerisStateRequest`, and complete six-component `EphemerisState` values,
+plus the runtime-checkable structural `EphemerisStateSource` protocol. The
+resource identity requires provider, model, filename, a structurally valid
+SHA-256 digest, coverage and coverage scale, and provenance. No real file is
+opened or hashed in this milestone.
+
+The unreleased `PositionStatus.TOPOCENTRIC` member is removed atomically.
+Observer origin remains `origin="observer"`; `observer_altaz_spec()` now
+requires every caller to declare `position_status`. Observer-transformed
+celestial directions use `APPARENT`, while native horizon and AltAz-grid
+references use `GEOMETRIC`. A deterministic test-only Venus source proves the
+contract shape without installing a kernel
+adapter, direction realizer, moving-object layer, or output change.
+
+The exact contract and acceptance requirements are recorded in
+`ephemeris_runtime_contracts_49e2.md`. 49E.3 remains responsible for one real
+resolved-kernel resource/adapter and numerical validation. Venus remains a
+later 49I.1 slice.
 
 Define a protocol for time-dependent position sources before adding their
 chart layers.
@@ -373,12 +402,13 @@ chart layers.
 Providers compute or propagate states. They do not select charts, transform
 through undocumented downstream paths, project, clip, style, or render.
 
-Fernando accepted the context fields, exact legacy compatibility branch,
-controlled-provider proof, deferred 49E responsibilities, pedagogical guide,
-and canonical SVG path on 2026-08-29. Acceptance evidence is 48 focused tests
-in 2.21 seconds, 1,798 routine tests with 30 deselected in 27.61 seconds, and
-all 1,828 tests in 90.00 seconds. No visual comparison was required because no
-ordinary request can activate the context and production geometry is unchanged.
+Fernando scientifically accepted the immutable resource/request/state fields,
+mandatory velocity, SHA-256 identity boundary, atomic removal of the unreleased
+`TOPOCENTRIC` category, and explicit geometric/apparent observer-local
+classifications on 2026-08-30. Acceptance evidence is 92 focused tests in 2.72
+seconds, 1,821 routine tests with 30 deselected in 25.25 seconds, and all 1,851
+tests in 84.12 seconds. No visual comparison was required because numerical
+chart geometry and the canonical output path are unchanged.
 
 The same boundary governs every output format. Future solar-system layers must
 declare their semantic identity before projection and then use the existing

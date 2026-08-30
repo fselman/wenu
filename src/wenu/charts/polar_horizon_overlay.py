@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import PositionStatus
 from wenu.coordinates import observer_altaz_spec
 from wenu.charts.polar_page_furniture import PolarPagePairFurniture
 from wenu.charts.polar_planisphere_pair import PolarPlanispherePair
@@ -128,7 +129,9 @@ def _equatorial_references(observer):
         lon_deg=np.asarray((0.0, 180.0, 0.0)),
         lat_deg=np.asarray((0.0, 0.0, 90.0)),
         coordinate_spec=observer_altaz_spec(
-            observer, provider="wenu polar horizon reference"
+            observer,
+            position_status=PositionStatus.GEOMETRIC,
+            provider="wenu polar horizon reference"
         ),
         labels=np.asarray(("N", "S", "ZENITH"), dtype=object),
         metadata={"coordinate_system": "altaz"},

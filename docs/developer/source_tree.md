@@ -83,9 +83,14 @@ background, future dynamic astronomical objects, and observer-local geometry,
 and fixes their sole convergence before projection in an explicit spherical
 product frame. Milestone 49D.1 adds no runtime module or alternate scene
 graph.
-`docs/developer/ephemeris_provider_contract_49e1.md` owns the proposed 49E.1
-state-source/direction-realizer audit. No 49E runtime provider, state, or
-realizer module exists yet.
+`docs/developer/ephemeris_provider_contract_49e1.md` owns the accepted 49E.1
+state-source/direction-realizer audit. `ephemeris.py` owns the frozen 49E.2
+resource identity, geometric state request, complete position-velocity state,
+and structural state-source protocol. It owns no kernel I/O, direction
+realization, coordinate transformation, chart, or output policy. The only
+concrete source exists in `tests/test_ephemeris.py`; no real 49E kernel adapter
+or installed moving-body provider exists yet. `coordinates.py::observer_altaz_spec()` requires explicit status at every
+call site; no observer-local physical status is inferred from origin.
 
 `sky/realization.py` owns the frozen 49D.2 `LayerRealizationContext`.
 `sky/sky_layer.py::SkyLayer.realize()` owns the compatibility adapter, and

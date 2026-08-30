@@ -10,6 +10,7 @@ from astropy.coordinates import SkyCoord
 import numpy as np
 
 from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import PositionStatus
 from wenu.coordinates import (
     icrs_catalogue_spec,
     observation_context,
@@ -107,6 +108,7 @@ def celestial_north_position_angle(
         ),
         observer_altaz_spec(
             observer,
+            position_status=PositionStatus.APPARENT,
             provider="astropy coordinate service",
         ),
         observation_context(observer),
@@ -375,6 +377,7 @@ class RegionalChart:
             coordinate,
             observer_altaz_spec(
                 observer,
+                position_status=PositionStatus.APPARENT,
                 provider="external Astropy SkyCoord",
             ),
             observation_context(observer),

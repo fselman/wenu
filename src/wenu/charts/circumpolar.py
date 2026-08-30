@@ -118,6 +118,7 @@ class CircumpolarChart:
             celestial,
             observer_altaz_spec(
                 self.observer,
+                position_status=PositionStatus.APPARENT,
                 provider="astropy coordinate service",
             ),
             observation_context(self.observer),
