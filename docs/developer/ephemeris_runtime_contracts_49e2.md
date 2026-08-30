@@ -1,6 +1,6 @@
 # Milestone 49E.2 — Minimal ephemeris runtime contracts
 
-**Status:** Scientifically accepted by Fernando on 2026-08-30; merge pending
+**Status:** Scientifically accepted by Fernando on 2026-08-30; ready for integration
 
 **Implementation baseline:** `d14ca52`
 
