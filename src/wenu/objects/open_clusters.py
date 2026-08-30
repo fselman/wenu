@@ -159,7 +159,9 @@ class OpenClusters(AstronomicalObject):
                 lon_deg=np.asarray([], dtype=float),
                 lat_deg=np.asarray([], dtype=float),
                 coordinate_spec=observer_altaz_spec(
-                    resolved, position_status=PositionStatus.APPARENT, provider="astropy OpenClust"
+                    resolved,
+                    position_status=PositionStatus.APPARENT,
+                    provider="astropy OpenClust"
                 ),
                 ids=identifiers,
                 labels=identifiers,
@@ -178,7 +180,9 @@ class OpenClusters(AstronomicalObject):
             lon_deg=azimuth,
             lat_deg=altitude,
             coordinate_spec=observer_altaz_spec(
-                resolved, position_status=PositionStatus.APPARENT, provider="astropy OpenClust"
+                resolved,
+                position_status=PositionStatus.APPARENT,
+                provider="astropy OpenClust"
             ),
             ids=identifiers,
             labels=identifiers,
