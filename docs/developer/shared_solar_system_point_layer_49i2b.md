@@ -1,6 +1,6 @@
 # Milestone 49I.2B — Shared Solar-System point layer
 
-**Status:** Implementation and architectural review candidate.
+**Status:** Verification complete; scientific and architectural acceptance pending.
 **Implementation baseline:** `b0d1dd4`  
 **Date:** 2026-08-30
 
@@ -68,11 +68,17 @@ The implementation candidate passed:
 
 - 13 direct shared-layer and Venus parity tests in 1.86 seconds;
 - 82 focused scientific and integration tests in 1.82 seconds;
-- 1,881 routine tests with 30 deselected in 27.67 seconds.
+- 1,881 routine tests with 30 deselected in 27.67 seconds;
+- 53 current-documentation tests in 2.16 seconds; and
+- all 1,912 tests in 91.04 seconds.
 
-Documentation closure, complete-suite verification, and explicit comparison of
-the same canonical Venus PNG/PDF/SVG request across `main` and this branch
-remain acceptance checks.
+The same La Ligua regional Venus request at `2026-08-30T00:00:00Z` was
+rendered from baseline `b0d1dd4` and this branch in PNG, PDF, and semantic SVG.
+The PNG files were byte-identical. PDF rasterization produced equal
+`315 x 402` RGBA arrays with zero differing pixels or channel values. After
+normalizing only creation time, source revision, output pathname, and generated
+Matplotlib reference IDs, the SVG semantic and graphical content was
+byte-identical. Scientific and architectural acceptance remains pending.
 
 ## Non-goals
 

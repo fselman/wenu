@@ -432,6 +432,11 @@ def test_49i2b_extracts_shared_point_orchestration_without_moon_content():
         "13 direct shared-layer and Venus parity tests in 1.86 seconds",
         "82 focused scientific and integration tests in 1.82 seconds",
         "1,881 routine tests with 30 deselected in 27.67 seconds",
+        "53 current-documentation tests in 2.16 seconds",
+        "all 1,912 tests in 91.04 seconds",
+        "The PNG files were byte-identical",
+        "zero differing pixels or channel values",
+        "SVG semantic and graphical content was byte-identical",
         "adds no Moon layer, `--moon`",
     ):
         assert phrase in contract
