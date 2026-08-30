@@ -326,7 +326,7 @@ cross-match policies.
 
 ### Milestone 49E.1 — Ephemeris-provider contract audit
 
-**Status:** Scientifically and pedagogically accepted on the dedicated 49E.1 branch; not yet merged.
+**Status:** Accepted and merged in `d14ca52`.
 
 The as-is audit and proposed scientific contract are recorded in
 `ephemeris_provider_contract_49e1.md`. The existing generic
@@ -356,8 +356,6 @@ because the audit changes no runtime code, geometry, or output.
 49E.1 changes no runtime type or output. After scientific acceptance, 49E.2 may
 add minimal frozen request/state/provenance contracts with deterministic test
 sources; 49E.3 may adapt one installed kernel. The first charted body remains a
-separately approved 49I.1 vertical slice.
-
 
 Define a protocol for time-dependent position sources before adding their
 chart layers.
