@@ -941,8 +941,9 @@ identity validates a 64-hex SHA-256 and explicit coverage scale but performs no
 file I/O.
 
 `PositionStatus.TOPOCENTRIC` is removed. `observer_altaz_spec()` retains
-`origin="observer"` and defaults to `PositionStatus.APPARENT`, matching the
-vacuum Astropy AltAz products that consume it. The deterministic source remains
+`origin="observer"` and requires an explicit `position_status`. Astropy/Skyfield
+observer-transformed celestial products declare `APPARENT`; native horizon,
+cardinal/zenith, polar-horizon, and AltAz-grid products declare `GEOMETRIC`. The deterministic source remains
 in `tests/test_ephemeris.py`; no real provider, kernel adapter, direction
 realizer, or moving-body layer is installed.
 
