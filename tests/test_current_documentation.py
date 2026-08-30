@@ -641,6 +641,11 @@ def test_49e3_records_borrowed_skyfield_adapter_and_non_goals():
         "c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2",
         "common coverage JD 2396752.5 through JD 2506352.5 TDB",
         "residual was zero within that tolerance",
+        "Scientifically accepted by Fernando on 2026-08-30",
+        "72 focused tests in 1.73 seconds",
+        "1,830 routine tests",
+        "all 1,860 tests in 84.78 seconds",
+        "explicit stable HTML anchors",
     ):
         assert phrase in contract
 
@@ -659,6 +664,19 @@ def test_49e3_records_borrowed_skyfield_adapter_and_non_goals():
     assert "Wenu implementation box — 49E.3 installed adapter" in guide
     assert "49E.3 real-resource evidence" in guide
     assert "zero residual within an absolute tolerance" in guide
+    assert "Terminology contract — four different questions" in guide
+    assert "`CoordinateSpec.epoch` means a **position reference epoch**" in guide
+    assert "NAIF and SPICE identifiers" in guide
+    assert "Navigation and Ancillary Information Facility" in guide
+    assert "Spacecraft, Planet, Instrument, C-matrix, Events" in guide
+    for anchor in (
+        "#coordinate-system-vs-reference-frame",
+        "#epoch-vs-equinox",
+        "#49e3-skyfield-adapter",
+        "#naif-spice-identifiers",
+    ):
+        assert anchor in guide
+        assert f'<a id="{anchor[1:]}"></a>' in guide
     assert "Borrowed Skyfield ephemeris adapter (Milestone 49E.3)" in implementation
     assert "The adapter has no `close()`" in implementation
     assert "`skyfield_ephemeris.py` now owns the first real" in source_tree
