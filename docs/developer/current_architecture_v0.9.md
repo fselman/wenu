@@ -176,6 +176,15 @@ segment coverage in TDB, and returns simultaneous geometric target-minus-centre
 ICRF states in AU and AU/day. It owns no observer-relative direction physics,
 moving-object layer, projection, renderer, or output path.
 
+The 49E.4 review candidate defines the next boundary without changing runtime
+code. Astrometric direction realization combines the observer's barycentric
+state at reception with iterated target states at retarded emission times and
+retains distance, one-way light time, both instants, convergence policy, and
+resource provenance. Apparent-place realization is a later explicit step that
+adds gravitational deflection and aberration. Neither step selects an equinox:
+native spherical directions use fixed ICRS axes before `CoordinateService`
+performs any requested product-frame transformation.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored
