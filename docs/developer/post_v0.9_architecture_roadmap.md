@@ -326,7 +326,7 @@ cross-match policies.
 
 ### Milestone 49E.1 — Ephemeris-provider contract audit
 
-**Status:** Design review candidate on the dedicated 49E.1 branch.
+**Status:** Scientific design decisions accepted on the dedicated 49E.1 branch; documentation verification pending.
 
 The as-is audit and proposed scientific contract are recorded in
 `ephemeris_provider_contract_49e1.md`. The existing generic
@@ -342,6 +342,14 @@ emission-time evaluation, light-time, aberration, gravitational deflection,
 and declared apparent-place policy. Only then does `CoordinateService`
 transform the resulting native spherical direction into the requested product
 frame.
+
+Fernando accepted the two-stage boundary on 2026-08-30. The accepted 49E.2
+direction requires a six-component position-velocity state, exact kernel
+identity including SHA-256 and coverage, atomic removal of the unreleased
+`PositionStatus.TOPOCENTRIC` abstraction, and one request/session-scoped
+resource that may initially reuse the already-open Observer kernel. Venus is
+the first 49I.1 body; the Moon follows as the stronger topocentric-parallax
+test.
 
 49E.1 changes no runtime type or output. After scientific acceptance, 49E.2 may
 add minimal frozen request/state/provenance contracts with deterministic test
