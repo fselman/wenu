@@ -179,7 +179,21 @@ def test_topocentric_status_is_removed_and_altaz_uses_apparent_status():
             {"isot": "2026-08-30T00:00:00", "scale": "utc"},
         )()
 
-    spec = observer_altaz_spec(Observer())
+    spec = observer_altaz_spec(
+        Observer(), position_status=PositionStatus.APPARENT
+    )
 
     assert spec.origin == "observer"
     assert spec.position_status is PositionStatus.APPARENT
+
+
+def test_observer_altaz_spec_requires_explicit_position_status():
+    class Observer:
+        t_astropy = type(
+            "Time",
+            (),
+            {"isot": "2026-08-30T00:00:00", "scale": "utc"},
+        )()
+
+    with pytest.raises(TypeError, match="position_status"):
+        observer_altaz_spec(Observer())
