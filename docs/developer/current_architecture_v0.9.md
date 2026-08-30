@@ -145,6 +145,22 @@ The 49D.2 handoff and this output-neutral moving-object boundary were
 scientifically, pedagogically, and technically accepted by Fernando on
 2026-08-29. They remain review-branch additions until merged.
 
+The proposed 49E.1 ephemeris boundary distinguishes a Cartesian state source
+from observer-relative direction realization. A source state must preserve
+its target, centre, frame, instant/time scale, position/velocity units, kernel
+identity, coverage, and provenance. Light-time and apparent-place physics are
+resolved before the result becomes spherical chart geometry; a raw
+barycentric vector must never be relabelled as an ICRS sky direction. This is
+a design candidate only and changes no installed runtime path.
+
+The accepted 49E.1 decisions require complete position-velocity states,
+provider/model plus filename/SHA-256/coverage kernel identity, and a shared
+request/session ephemeris resource. Because Wenu is unreleased and the as-is
+runtime has only one helper default plus two tests using it,
+`PositionStatus.TOPOCENTRIC` will be removed atomically in 49E.2;
+observer-centred origin and physical correction status remain separate. Venus
+is the first planned 49I.1 body, followed by the Moon.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored

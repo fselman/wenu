@@ -50,6 +50,9 @@ For current work, read and follow:
   dependency work;
 - `layer_realization_context_49d2.md` for the optional pre-projection layer
   context, compatibility dispatch, or controlled-provider integration point;
+- `ephemeris_provider_contract_49e1.md` for ephemeris state, target/centre,
+  kernel provenance, apparent-place corrections, or Sun/Moon/planet provider
+  boundary work;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,

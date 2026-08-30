@@ -324,6 +324,41 @@ cross-match policies.
 
 ## 8. Milestone 49E - Position-provider boundary
 
+### Milestone 49E.1 — Ephemeris-provider contract audit
+
+**Status:** Scientifically and pedagogically accepted on the dedicated 49E.1 branch; not yet merged.
+
+The as-is audit and proposed scientific contract are recorded in
+`ephemeris_provider_contract_49e1.md`. The existing generic
+`PositionProvider.position(instant)` is suitable for native catalogue
+spherical directions but cannot by itself preserve the Cartesian state,
+target, centre, frame, distance, velocity, time scale, kernel coverage, and
+provenance required by solar-system ephemerides.
+
+The proposed boundary separates a **Cartesian state source** from a
+**solar-system direction realizer**. The source returns an explicitly identified
+Cartesian state. The realizer owns observer-relative geometry, retarded
+emission-time evaluation, light-time, aberration, gravitational deflection,
+and declared apparent-place policy. Only then does `CoordinateService`
+transform the resulting native spherical direction into the requested product
+frame.
+
+Fernando accepted the two-stage boundary on 2026-08-30. The accepted 49E.2
+direction requires a six-component position-velocity state, exact kernel
+identity including SHA-256 and coverage, atomic removal of the unreleased
+`PositionStatus.TOPOCENTRIC` abstraction, and one request/session-scoped
+resource that may initially reuse the already-open Observer kernel. Venus is
+the first 49I.1 body; the Moon follows as the stronger topocentric-parallax
+test. Acceptance verification passed all 41 documentation
+tests in 3.26 seconds on Fernando's Mac. No visual comparison was required
+because the audit changes no runtime code, geometry, or output.
+
+49E.1 changes no runtime type or output. After scientific acceptance, 49E.2 may
+add minimal frozen request/state/provenance contracts with deterministic test
+sources; 49E.3 may adapt one installed kernel. The first charted body remains a
+separately approved 49I.1 vertical slice.
+
+
 Define a protocol for time-dependent position sources before adding their
 chart layers.
 

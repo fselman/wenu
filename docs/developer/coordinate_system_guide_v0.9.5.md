@@ -1399,3 +1399,55 @@ tests with 30 deselected in 27.61 seconds, and all 1,828 tests in 90.00
 seconds. No visual comparison was required because production requests and
 geometry are unchanged.
 
+
+### 13.2.4 49E.1 ephemeris-provider design
+
+**[Foundation]** A planetary ephemeris is more like a precise moving map than
+a list of points on the sky. It first tells us where a body is in three-dimensional
+space relative to a named centre. To know where it appears in our sky, Wenu must
+also know where and when we observe, allow for the time light needed to reach
+us, and apply the explicitly chosen corrections. Only then is there a direction
+that can be placed on a chart.
+
+“Barycentric,” “geocentric,” and “topocentric” answer **where the origin is**.
+ICRS, GCRS, ITRS, or a provider's J2000 convention answer **how the axes are
+oriented**. Neither statement alone says whether the position is geometric,
+astrometric, apparent, or affected by atmospheric refraction.
+
+**[Undergraduate]** The proposed 49E.1 contract separates an ephemeris state
+source from a solar-system direction realizer. The state source preserves the
+target-minus-centre Cartesian position and velocity, frame, epoch/time scale,
+units, kernel identity, coverage, and provenance. The direction realizer may
+iterate the target state at retarded emission time and applies the declared
+light-time, aberration, and gravitational-deflection policy for the selected
+observer. `CoordinateService` then performs the coordinate-frame
+representation transformation; it does not manufacture missing apparent-place
+physics.
+
+> **Wenu implementation box — 49E.1 provider boundary**
+>
+> The as-is generic protocol remains `positions.py::PositionProvider`.
+> `observer.py::Observer` currently loads the configurable Skyfield kernel,
+> whose default is `de440s.bsp`, but that compatibility ownership is not yet
+> the final provider API. The proposed contract is documented in
+> `ephemeris_provider_contract_49e1.md`; runtime request/state types are
+> deferred to 49E.2, a real kernel adapter to 49E.3, and the first Sun, Moon,
+> or planet layer to 49I.1. Every body must then use the existing semantic,
+> projection, renderer, and PNG/PDF/SVG export route.
+>
+> Fernando accepted the design choices on 2026-08-30. A future
+> `EphemerisState` is a complete position-velocity state. The resolved kernel
+> identity records the scientific model (for example DE440), actual filename
+> (for example `de440s.bsp`), SHA-256 fingerprint of the exact file bytes,
+> coverage, and provider provenance. SHA-256 is computed once when the kernel
+> resource is resolved, not for every planet position.
+>
+> Because Wenu has not released this interface, 49E.2 will remove
+> `PositionStatus.TOPOCENTRIC` rather than preserve a misleading category:
+> topocentric belongs to the origin, while astrometric, apparent, or observed
+> describes physical realization. Venus is the first planned moving-body
+> slice, with the Moon following as the stronger parallax test.
+>
+> The revised scientific and pedagogical review was accepted on 2026-08-30.
+> All 41 documentation tests passed in 3.26 seconds. No visual comparison was
+> required because this design audit changes no runtime geometry or output.
