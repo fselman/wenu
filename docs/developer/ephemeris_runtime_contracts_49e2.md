@@ -1,6 +1,6 @@
 # Milestone 49E.2 — Minimal ephemeris runtime contracts
 
-**Status:** Implementation review candidate; runtime and scientific acceptance pending
+**Status:** Scientifically accepted by Fernando on 2026-08-30; merge pending
 
 **Implementation baseline:** `d14ca52`
 
@@ -184,6 +184,23 @@ boundary.
 5. no current numerical or visual output changes unexpectedly; and
 6. the coordinate guide remains scientifically and pedagogically correct.
 
-No new visual render is required because no ordinary chart request or layer
-uses the new state boundary. After acceptance and merge, 49E.3 may add one real
-resolved-kernel adapter; Venus remains a later 49I.1 slice.
+No new visual render was required because no ordinary chart request or layer
+uses the new state boundary and numerical chart geometry did not change.
+
+## 9. Acceptance outcome
+
+Fernando scientifically accepted 49E.2 on 2026-08-30. Acceptance confirms:
+
+- the immutable resource, request, and complete position-velocity state fields;
+- SHA-256 resource identity and coverage provenance;
+- atomic removal of the unreleased `TOPOCENTRIC` status;
+- independence of observer origin from geometric, apparent, and observed status;
+- explicit `GEOMETRIC` native AltAz references and `APPARENT`
+  observer-transformed celestial directions; and
+- the canonical layer, composition, renderer, and PNG/PDF/SVG export path for
+  future Venus, Moon, planet, and Sun products.
+
+Verification evidence was 92 focused tests in 2.72 seconds, 1,821 routine tests
+with 30 deselected in 25.25 seconds, and all 1,851 tests in 84.12 seconds.
+After merge, 49E.3 may add one real resolved-kernel adapter; Venus remains a
+later 49I.1 slice.
