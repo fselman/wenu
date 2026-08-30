@@ -513,6 +513,7 @@ def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
         "six-component position-velocity",
         "SHA-256 content fingerprint",
         "use Venus for 49I.1",
+        "all 41 current-documentation tests in 3.26",
         "49I.1 — Venus vertical slice",
     ):
         assert phrase in contract
@@ -523,6 +524,7 @@ def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
         "retarded emission-time evaluation",
         "49E.1 changes no runtime type or output",
         "Venus is the first 49I.1 body",
+        "Acceptance verification passed all 41 documentation",
     ):
         assert phrase in roadmap
 
@@ -535,6 +537,7 @@ def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
     assert "Wenu implementation box — 49E.1 provider boundary" in guide
     assert "SHA-256 is computed once" in guide
     assert "Venus is the first planned moving-body" in guide
+    assert "All 41 documentation tests passed in 3.26 seconds" in guide
     assert "Proposed ephemeris-provider boundary" in implementation
     assert "first later vertical slice is Venus" in implementation
     assert "No 49E runtime provider" in source_tree
