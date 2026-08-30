@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.11`  
-**Last updated:** `2026-08-30T18:15:00Z`  
+**Guide version:** `0.9.5.20260830.13`  
+**Last updated:** `2026-08-30T21:13:22Z`  
 **Language:** English
 
 # Table of contents
@@ -78,6 +78,7 @@
     - [13.2.9 49E.5 astrometric direction runtime](#49e5-astrometric-runtime)
     - [13.2.10 49E.6 apparent direction runtime](#49e6-apparent-runtime)
     - [13.2.11 49I.1 drawable Venus audit](#49i1-venus-audit)
+    - [13.2.12 49I.1A ordinary realization context](#49i1a-realization-context)
 
 <a id="status-and-purpose"></a>
 
@@ -1980,3 +1981,48 @@ test.
 > physical-appearance models on 2026-08-30. All 48 current-documentation tests
 > passed in 3.30 seconds. This accepts the design, not the future runtime or
 > visual result.
+
+<a id="49i1a-realization-context"></a>
+
+### 13.2.12 49I.1A ordinary realization context
+
+**[Foundation]** Before any sky object is projected onto a page, Wenu now
+hands its layer a small description of the chart's astronomical setting. It
+says which spherical coordinates the projection expects, who and where the
+observer is, and at what instant a moving object must be evaluated. Existing
+stars and deep-sky objects ignore this new envelope and are drawn exactly as
+before. Venus will use it in the next milestone.
+
+**[Undergraduate]** `chart_request_realization_context()` constructs one
+`LayerRealizationContext` per ordinary request export. Current ordinary
+planisphere, regional, circumpolar, and binocular charts project apparent
+observer-local AltAz geometry. The all-sky Mollweide chart projects apparent
+observer-origin Galactic geometry. Those are the actual pre-projection frames
+in the current public request contract.
+
+The product `CoordinateSpec` carries observer origin, apparent status,
+reception instant, and time scale. It has no position reference epoch and no
+equinox. The reference equinox requested for equatorial/ecliptic furniture is
+stored separately as `reference_equinox`; it does not define AltAz or Galactic
+axes. Thus position reference epoch, equinox, and observation instant remain
+distinct even though one request carries all three kinds of information.
+
+> **Wenu implementation box — 49I.1A context handoff**
+>
+> `src/wenu/charts/request_realization.py` builds the scientific context.
+> `request_generation.py` constructs it once before exporting products;
+> `export_workflow.py` and each chart facade pass it to
+> `CelestialSphere.draw_chart()`. Existing layers inherit
+> `SkyLayer.realize()`, which calls their unchanged spherical method.
+>
+> No planet, marker, label, or output change is installed. 49I.1B will be the
+> first consumer that evaluates and transforms Venus before the existing
+> projection, renderer, and shared PNG/PDF/SVG exporter.
+
+> **49I.1A scientific and architectural acceptance**
+>
+> Fernando accepted the output-neutral context handoff on 2026-08-30 after
+> 166 focused tests, 1,859 routine tests with 30 deselected, and all 1,890
+> tests passed. The complete suite verified that a chart-view `utc_datetime`
+> is normalized consistently with `t_astropy` and AltAz `obstime`. This does
+> not pre-accept the 49I.1B Venus layer or its visual result.

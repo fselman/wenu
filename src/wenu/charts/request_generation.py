@@ -15,12 +15,13 @@ from .composition import compose_chart
 from .export_workflow import ChartExportResult
 from .request import ChartRequest
 from .request_chart import PreparedChartRequest, prepare_chart_request
-from .request_grids import configure_chart_request_grids
-from .request_horizon import configure_chart_request_horizon
 from .request_furniture import (
     binocular_product_title,
     resolve_request_furniture_context,
 )
+from .request_grids import configure_chart_request_grids
+from .request_horizon import configure_chart_request_horizon
+from .request_realization import chart_request_realization_context
 from .request_resolver import resolve_chart_request
 
 
@@ -109,7 +110,9 @@ def export_prepared_chart(
     """Compose and export every requested product exactly once."""
     if not isinstance(prepared, PreparedChartRequest):
         raise TypeError("prepared must be a PreparedChartRequest.")
-    resolved_observer = getattr(sky, "observer", None) if observer is None else observer
+    resolved_observer = (
+        getattr(sky, "observer", None) if observer is None else observer
+    )
     if resolved_observer is None:
         raise TypeError("request export requires an observer.")
 
@@ -117,6 +120,10 @@ def export_prepared_chart(
 
     chart = prepared.chart
     request = prepared.resolved.request
+    realization_context = chart_request_realization_context(
+        request,
+        resolved_observer,
+    )
     detail = replace(
         request.detail,
         content_selection=request.content,
@@ -162,6 +169,7 @@ def export_prepared_chart(
             export_options = {
                 "composition": composition,
                 "horizon_mask": request.horizon_mask,
+                "realization_context": realization_context,
             }
             if observer is not None:
                 export_options["observer"] = resolved_observer

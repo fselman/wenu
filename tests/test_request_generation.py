@@ -13,8 +13,8 @@ from wenu import (
     ChartProductCompositionOptions,
     ChartProductOptions,
     ChartRequest,
-    ChartSubjectRequest,
     ChartStyleOverrides,
+    ChartSubjectRequest,
     FixedDetailPolicy,
     ResolvedDetail,
 )
@@ -29,6 +29,16 @@ from wenu.charts.request_generation import (
 )
 from wenu.charts.request_resolver import resolve_chart_request
 from wenu.sky.maximal_sphere import CANONICAL_MAXIMAL_SPHERE_PROFILE
+
+
+@pytest.fixture(autouse=True)
+def _request_realization_context(monkeypatch):
+    context = SimpleNamespace(name="request-realization-context")
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.chart_request_realization_context",
+        lambda request, observer: context,
+    )
+    return context
 
 
 def _request(tmp_path, *, all_products=False, product_compositions=()):
@@ -49,7 +59,7 @@ def _request(tmp_path, *, all_products=False, product_compositions=()):
 
 
 def test_prepared_request_exports_the_shared_product_matrix_once(
-    monkeypatch, tmp_path
+    monkeypatch, tmp_path, _request_realization_context
 ):
     request = _request(tmp_path, all_products=True)
     resolved = resolve_chart_request(
@@ -64,9 +74,10 @@ def test_prepared_request_exports_the_shared_product_matrix_once(
 
         def export(
             self, sky, renderer, output, *, composition, horizon_mask,
-            svg_provenance,
+            svg_provenance, realization_context,
         ):
             assert horizon_mask is False
+            assert realization_context is _request_realization_context
             assert svg_provenance.product_name == "binocular"
             exported.append((sky, output, composition))
             return ChartExportResult(
@@ -167,7 +178,7 @@ def test_prepared_request_applies_exact_product_composition_options(
 
         def export(
             self, sky, renderer, output, *, composition, horizon_mask,
-            svg_provenance,
+            svg_provenance, realization_context,
         ):
             assert horizon_mask is False
             assert svg_provenance.product_name == "binocular"
@@ -235,7 +246,7 @@ def test_prepared_request_resolves_generic_context_after_chart_construction(
 
         def export(
             self, sky, renderer, output, *, composition, horizon_mask,
-            svg_provenance,
+            svg_provenance, realization_context,
         ):
             assert horizon_mask is False
             assert svg_provenance.product_name == "binocular"

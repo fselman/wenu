@@ -63,6 +63,8 @@ For current work, read and follow:
 - `venus_vertical_slice_audit_49i1.md` for the first drawable Venus,
   ordinary realization-context handoff, planet semantic identity, or
   `--planet venus` work;
+- `ordinary_realization_context_49i1a.md` for the implemented ordinary
+  request-to-layer context mapping and its output-neutral acceptance;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,
