@@ -245,6 +245,13 @@ after 166 focused tests, 1,859 routine tests with 30 deselected, and all 1,890
 tests passed. The full suite also verified UTC-datetime normalization for the
 ordinary chart-view observer contract. 49I.1B is the next bounded slice.
 
+The 49I.1B review candidate installs one dormant `VenusLayer` in the canonical
+sphere. `--planet venus` enables it; the layer borrows the observer kernel,
+uses the accepted astrometric/apparent chain, and transforms once into the
+49I.1A product coordinate specification before ordinary projection. It adds
+no physical disk or alternative SVG path and remains scientifically and
+visually unaccepted.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored

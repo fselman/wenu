@@ -80,6 +80,7 @@ def test_factory_registers_complete_content_without_chart_decisions(
     assert sphere.observer is observer
     assert sphere.load_profile is CANONICAL_MAXIMAL_SPHERE_PROFILE
     assert [name for name, _, _ in calls] == [
+        "add_venus",
         "add_milky_way_isophotes",
         "add_magellanic_cloud_isophotes",
         "add_magellanic_cloud_isophotes",
@@ -141,7 +142,8 @@ def test_ordinary_factory_loads_canonical_layers_without_an_observer():
 
     assert sphere.observer is None
     assert sphere.load_profile is CANONICAL_MAXIMAL_SPHERE_PROFILE
-    assert len(sphere.layers) == 13
+    assert len(sphere.layers) == 14
+    assert sphere.venus in sphere.layers
     assert all(
         getattr(layer, "observer", None) is None
         for layer in sphere.layers

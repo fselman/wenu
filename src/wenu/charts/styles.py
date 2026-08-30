@@ -123,6 +123,13 @@ class PublicationStyle:
     open_cluster_draw_labels: bool = False
     open_cluster_label_color: str | None = None
     open_cluster_label_fontsize: float = 6.0
+    venus_color: str = "#8c5a00"
+    venus_marker: str = "o"
+    venus_symbol_size: float = 42.0
+    venus_linewidth: float = 0.8
+    venus_alpha: float = 1.0
+    venus_draw_label: bool = True
+    venus_label_fontsize: float = 7.0
     boundary_color: str = "white"
     boundary_linewidth: float = 0.3
     boundary_linestyle: str = "-"
@@ -237,6 +244,30 @@ class PublicationStyle:
             minimum=minimum,
         )
         options = {}
+        if getattr(sky, "venus", None) is not None:
+            options[sky.venus] = {
+                "prepare": clip,
+                "render": {
+                    "style": {
+                        "marker": self.venus_marker,
+                        "s": self.venus_symbol_size,
+                        "facecolors": "none",
+                        "edgecolors": self.venus_color,
+                        "linewidths": self.venus_linewidth,
+                        "alpha": self.venus_alpha,
+                        "zorder": layers.POINTS,
+                    },
+                    "draw_labels": self.venus_draw_label,
+                    "label_style": {
+                        "color": self.venus_color,
+                        "fontsize": self.venus_label_fontsize,
+                        "ha": "center",
+                        "va": "bottom",
+                        "zorder": layers.LABELS,
+                    },
+                    "label_offset": (0.0, 0.02),
+                },
+            }
         if sky.stars is not None:
             options[sky.stars] = {
                 "geometry": {

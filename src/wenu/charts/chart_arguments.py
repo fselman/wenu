@@ -6,11 +6,10 @@ import argparse
 from dataclasses import dataclass
 from math import isfinite
 
+from .detail import DetailOverrides, SkyContentSelection
 from .product_options import add_chart_product_arguments
-from .detail import DetailOverrides
-from .style_overrides import ChartStyleOverrides
 from .reference_policy import CelestialReferencePolicy
-
+from .style_overrides import ChartStyleOverrides
 
 GRID_REFERENCES = frozenset({"equatorial", "ecliptic", "galactic"})
 
@@ -70,6 +69,7 @@ class ChartContentOptions:
     altaz_grid_labels: bool = False
     equatorial_declination_step_deg: float | None = None
     reference_equinox: str | None = None
+    planets: frozenset[str] = frozenset()
 
     def __post_init__(self):
         if (
@@ -88,6 +88,14 @@ class ChartContentOptions:
                 "or galactic."
             )
         object.__setattr__(self, "grid_references", references)
+        planets = frozenset(
+            str(name).strip().lower()
+            for name in self.planets
+            if str(name).strip()
+        )
+        if planets - {"venus"}:
+            raise ValueError("planets currently supports only venus.")
+        object.__setattr__(self, "planets", planets)
         step = self.equatorial_declination_step_deg
         if step is not None:
             step = float(step)
@@ -124,6 +132,13 @@ def add_chart_content_arguments(parser):
         "--magnitude-limit",
         type=float,
         help="override the style/family stellar magnitude limit",
+    )
+    parser.add_argument(
+        "--planet",
+        action="append",
+        choices=("venus",),
+        default=[],
+        help="draw a selected planet (currently: venus)",
     )
     parser.add_argument(
         "--constellation-lines",
@@ -295,6 +310,7 @@ def chart_content_options(arguments) -> ChartContentOptions:
         pole_labels=bool(arguments.pole_labels),
         equatorial_declination_step_deg=arguments.declination_step,
         reference_equinox=arguments.reference_equinox,
+        planets=frozenset(getattr(arguments, "planet", ())),
     )
 
 
@@ -344,6 +360,7 @@ def chart_detail_overrides(
             ("constellation_labels", content.constellation_labels),
             ("constellation_boundaries", content.constellation_boundaries),
             *grids.items(),
+            ("venus", "venus" in content.planets),
         )
         if enabled
     }
@@ -353,6 +370,7 @@ def chart_detail_overrides(
         "constellation_boundaries",
         "coordinate_grids",
         *grids,
+        "venus",
     }
     labels = frozenset(
         name
@@ -375,6 +393,13 @@ def chart_detail_overrides(
         constellation_star_mode=(
             "selected" if content.constellation_lines else "none"
         ),
+    )
+
+
+def chart_sky_content(arguments) -> SkyContentSelection:
+    """Resolve selected moving bodies into request-owned sky content."""
+    return SkyContentSelection(
+        planets=chart_content_options(arguments).planets
     )
 
 

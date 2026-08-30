@@ -163,6 +163,19 @@ class DeepSkyStyle:
 
 
 @dataclass(frozen=True)
+class SolarSystemStyle:
+    """Symbolic appearance for moving Solar-System objects."""
+
+    venus_color: str = "#8c5a00"
+    venus_marker: str = "o"
+    venus_symbol_size: float = 42.0
+    venus_linewidth: float = 0.8
+    venus_alpha: float = 1.0
+    venus_draw_label: bool = True
+    venus_label_fontsize: float = 7.0
+
+
+@dataclass(frozen=True)
 class GridStyle:
     """Coordinate grids, celestial references, and boundaries."""
 
@@ -253,6 +266,7 @@ class ChartStyle:
     stars: StellarStyle = field(default_factory=StellarStyle)
     isophotes: IsophoteStyle = field(default_factory=IsophoteStyle)
     deep_sky: DeepSkyStyle = field(default_factory=DeepSkyStyle)
+    solar_system: SolarSystemStyle = field(default_factory=SolarSystemStyle)
     grids: GridStyle = field(default_factory=GridStyle)
     mask: MaskStyle = field(default_factory=MaskStyle)
     legend: LegendStyle = field(default_factory=LegendStyle)
@@ -266,6 +280,7 @@ class ChartStyle:
         stars = self.stars
         iso = self.isophotes
         deep = self.deep_sky
+        solar = self.solar_system
         grids = self.grids
         mask = self.mask
         return PublicationStyle(
@@ -390,6 +405,13 @@ class ChartStyle:
             open_cluster_draw_labels=deep.open_cluster_draw_labels,
             open_cluster_label_color=deep.open_cluster_label_color,
             open_cluster_label_fontsize=deep.open_cluster_label_fontsize,
+            venus_color=solar.venus_color,
+            venus_marker=solar.venus_marker,
+            venus_symbol_size=solar.venus_symbol_size,
+            venus_linewidth=solar.venus_linewidth,
+            venus_alpha=solar.venus_alpha,
+            venus_draw_label=solar.venus_draw_label,
+            venus_label_fontsize=solar.venus_label_fontsize,
             boundary_color=grids.boundary_color,
             boundary_linewidth=grids.boundary_linewidth,
             boundary_linestyle=grids.boundary_linestyle,

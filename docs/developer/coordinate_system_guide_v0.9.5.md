@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.13`  
-**Last updated:** `2026-08-30T21:13:22Z`  
+**Guide version:** `0.9.5.20260830.14`  
+**Last updated:** `2026-08-30T21:27:06Z`  
 **Language:** English
 
 # Table of contents
@@ -79,6 +79,7 @@
     - [13.2.10 49E.6 apparent direction runtime](#49e6-apparent-runtime)
     - [13.2.11 49I.1 drawable Venus audit](#49i1-venus-audit)
     - [13.2.12 49I.1A ordinary realization context](#49i1a-realization-context)
+    - [13.2.13 49I.1B first drawable Venus](#49i1b-venus-layer)
 
 <a id="status-and-purpose"></a>
 
@@ -2026,3 +2027,31 @@ distinct even though one request carries all three kinds of information.
 > tests passed. The complete suite verified that a chart-view `utc_datetime`
 > is normalized consistently with `t_astropy` and AltAz `obstime`. This does
 > not pre-accept the 49I.1B Venus layer or its visual result.
+
+<a id="49i1b-venus-layer"></a>
+
+### 13.2.13 49I.1B first drawable Venus
+
+**[Foundation]** Wenu can now be asked to draw Venus with `--planet venus`.
+The mark is deliberately a symbol, not a miniature picture: Wenu determines
+where Venus appears but does not yet claim its brightness, phase, size, or
+orientation. If Venus lies outside the chart or behind an existing mask, the
+same chart rules used for every other point decide whether it is visible.
+
+**[Undergraduate]** `VenusLayer` borrows the observer's already-open JPL
+kernel. It computes the retarded astrometric direction, applies the accepted
+gravitational-deflection and aberration policy once, and transforms the
+observer-origin apparent ICRS `SphericalPoints` once through
+`CoordinateService` into the request's product frame. The reception instant
+is an observation instant, not a position reference epoch and not an equinox.
+The AltAz or Galactic product specification itself has no equinox; a requested
+reference equinox remains separate chart-furniture metadata.
+
+> **Wenu implementation box — 49I.1B Venus layer**
+>
+> `src/wenu/sky/venus.py` owns realization but no projection or appearance.
+> Chart detail owns opt-in selection, chart style owns the hollow marker and
+> label, and the canonical renderer plus shared exporter produce PNG, PDF, and
+> semantic SVG from the same projected point. The stable semantic path is
+> `sky/solar_system/planets/venus`. Scientific and visual acceptance remain
+> pending.

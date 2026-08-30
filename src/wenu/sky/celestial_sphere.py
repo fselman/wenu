@@ -28,6 +28,7 @@ from wenu.sky.coordinate_grids import (
 )
 from wenu.sky.points import CelestialPoints
 from wenu.sky.sky_layer import SkyLayer
+from wenu.sky.venus import VenusLayer
 
 
 class CelestialSphere:
@@ -51,6 +52,7 @@ class CelestialSphere:
         self.constellation_lines = None
         self.constellation_labels = None
         self.horizon_reference = None
+        self.venus = None
         self._layers: list[SkyLayer] = []
 
     @property
@@ -238,6 +240,12 @@ class CelestialSphere:
         self.stars.load(filename=filename)
         self.add(self.stars)
         return self.stars
+
+    def add_venus(self) -> VenusLayer:
+        """Register the opt-in apparent Venus layer."""
+        self.venus = VenusLayer()
+        self.add(self.venus)
+        return self.venus
 
     def add_nonstellar(
         self,
