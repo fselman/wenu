@@ -1,6 +1,8 @@
 """Ordinary chart-request layer-realization context contracts."""
 
+from datetime import datetime, timezone
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from astropy.time import Time
@@ -84,3 +86,26 @@ def test_request_context_rejects_an_unmatched_observer(monkeypatch):
 
     with pytest.raises(ValueError, match="does not match"):
         chart_request_realization_context(request("horizontal"), Observer())
+
+
+def test_request_context_accepts_the_chart_view_utc_datetime_contract(
+    monkeypatch,
+):
+    monkeypatch.setattr(
+        ChartObserverRequest, "matches", lambda self, observer: True
+    )
+    observer = SimpleNamespace(
+        utc_datetime=datetime(
+            2026, 8, 30, 0, 0, tzinfo=timezone.utc
+        ),
+        lat_deg=-33.0,
+        lon_deg=-71.0,
+        elevation_m=100.0,
+    )
+
+    context = chart_request_realization_context(
+        request("horizontal"), observer
+    )
+
+    assert context.observation.instant == "2026-08-30T00:00:00.000"
+    assert context.observation.time_scale == "utc"

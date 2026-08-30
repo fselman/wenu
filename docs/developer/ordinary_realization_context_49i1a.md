@@ -18,6 +18,11 @@ one immutable context from the resolved `ChartRequest` and matching observer.
 the same value through `export_composed_chart()`, each chart facade, and
 `CelestialSphere.draw_chart()`.
 
+Observer-like chart views may supply the reception instant as `t_astropy`, an
+AltAz frame `obstime`, or a timezone-aware `utc_datetime`; the shared
+coordinate vocabulary normalizes all three to the context's instant and time
+scale.
+
 The context contains the actual pre-projection product `CoordinateSpec`, the
 observer `ObservationContext`, provider evaluation/reception instant and time
 scale, and the independently resolved reference equinox. It contains no

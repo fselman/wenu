@@ -230,7 +230,16 @@ def _observer_instant(observer):
         frame = getattr(observer, "altaz_frame", None)
         time = getattr(frame, "obstime", None)
     if time is None:
-        raise TypeError("observer must provide t_astropy or AltAz obstime.")
+        utc_datetime = getattr(observer, "utc_datetime", None)
+        if utc_datetime is not None:
+            from astropy.time import Time
+
+            time = Time(utc_datetime, scale="utc")
+    if time is None:
+        raise TypeError(
+            "observer must provide t_astropy, AltAz obstime, or "
+            "utc_datetime."
+        )
     instant = getattr(time, "isot", None) or str(time)
     time_scale = getattr(time, "scale", None) or "utc"
     return str(instant), str(time_scale)
