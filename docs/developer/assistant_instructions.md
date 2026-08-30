@@ -60,6 +60,9 @@ For current work, read and follow:
   `astrometric_direction_runtime_49e5.md` for observer state, retarded emission
   time, light-time iteration, astrometric direction, or Venus-first runtime
   work;
+- `venus_vertical_slice_audit_49i1.md` for the first drawable Venus,
+  ordinary realization-context handoff, planet semantic identity, or
+  `--planet venus` work;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,
