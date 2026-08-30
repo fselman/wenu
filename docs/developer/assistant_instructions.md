@@ -230,6 +230,12 @@ errors. Preserve coordinate transformations, projection-domain clipping,
 chart preparation, viewport clipping, catalogue provenance, and semantic
 metadata.
 
+For Solar-System directions, preserve the explicit astrometric-to-apparent
+handoff. Apparent correction must consume the accepted astrometric result and
+must not silently invoke a second light-time solution. Treat apparent status,
+position reference epoch, equinox, and observation instant as separate
+concepts in code and documentation.
+
 When several rendering solutions work, choose the simplest one that preserves
 the established visual hierarchy and scientific meaning.
 
