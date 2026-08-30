@@ -1,6 +1,6 @@
 # Milestone 49E.1 — Ephemeris-provider contract audit
 
-**Status:** Scientifically and pedagogically accepted on the review branch; not yet merged
+**Status:** Scientifically and pedagogically accepted; merged in `d14ca52`
 
 **As-is baseline:** `85c7392`
 
