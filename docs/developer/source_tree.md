@@ -946,3 +946,10 @@ that Moon/NAIF 301 traverses the generic astrometric and apparent contracts.
 `tools/validate_49i2a_moon_direction.py` is the explicit no-download
 installed-kernel comparison against direct Skyfield, geocentric direction,
 and zero-height observer. No `sky/moon.py` exists in 49I.2A.
+
+
+`src/wenu/sky/solar_system_points.py` owns the 49I.2B frozen symbolic-body
+descriptor and shared renderer-neutral direction-to-product-frame
+orchestration. `src/wenu/sky/venus.py` is the thin Venus specialization.
+`tests/test_solar_system_point_layer.py` proves generic reuse with a test-only
+Moon descriptor; no production Moon layer exists in 49I.2B.

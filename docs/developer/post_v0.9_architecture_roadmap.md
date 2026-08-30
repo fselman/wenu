@@ -731,6 +731,20 @@ measured 0.9500231004-degree topocentric-geocentric parallax, and measured a
 accepted the result and the `1e-7`-degree component tolerance. No Moon layer,
 public option, shared point abstraction, or output change is added.
 
+##### Milestone 49I.2B — Shared Solar-System point layer
+
+**Status:** Implementation and architectural review candidate.
+
+`SolarSystemPointDescriptor` now freezes body target, centre, selection and
+entity keys, display name, and explicit apparent-correction policy.
+`SolarSystemPointLayer` owns the shared renderer-neutral orchestration through
+one product-frame transformation. Venus is migrated to a thin specialization;
+a test-only Moon descriptor proves reuse without installing Moon content.
+Current verification passed 13 direct tests in 1.86 seconds, 82 focused tests
+in 1.82 seconds, and 1,881 routine tests with 30 deselected in 27.67 seconds.
+Documentation closure, complete-suite verification, and explicit Venus product
+parity remain acceptance checks.
+
 Add one object class at a time:
 
 1. Moon or one planet through an ephemeris provider;
