@@ -109,7 +109,7 @@ def test_49e4_audits_the_observer_relative_direction_boundary():
     assert "13.2.8 49E.4 observer-relative direction audit" in guide
     assert "Skyfield's `observe()` corresponds to the astrometric" in guide
     assert "reception instant is neither a position reference epoch" in guide
-    assert "Guide version:** `0.9.5.20260830.8`" in guide
+    assert "Guide version:** `0.9.5.20260830.9`" in guide
     assert "49E.4 scientific acceptance" in guide
     assert "All 45 current-documentation tests passed in 2.03 seconds" in guide
     assert "45 current-documentation tests in 2.03" in contract
@@ -152,7 +152,7 @@ def test_49e5_records_astrometric_runtime_and_output_boundary():
     assert "13.2.9 49E.5 astrometric direction runtime" in guide
     assert "Neither is a position reference epoch" in guide
     assert "neither is an equinox" in guide
-    assert "Guide version:** `0.9.5.20260830.8`" in guide
+    assert "Guide version:** `0.9.5.20260830.9`" in guide
     assert "49E.5 scientific acceptance" in guide
     assert "converged in four iterations" in contract
     assert "`3.149e-11` degree" in contract
@@ -187,11 +187,16 @@ def test_49e6_records_apparent_runtime_and_single_light_time_authority():
         assert phrase in contract
 
     assert "Milestone 49E.6 — Apparent direction runtime" in roadmap
-    assert "The 49E.6 review candidate" in architecture
+    assert "The accepted 49E.6 implementation" in architecture
     assert "13.2.10 49E.6 apparent direction runtime" in guide
     assert "Apparent direction runtime (Milestone 49E.6)" in implementation
     assert "without a second `observe()` call" in source_tree
-    assert "Guide version:** `0.9.5.20260830.8`" in guide
+    assert "Guide version:** `0.9.5.20260830.9`" in guide
+    assert "Scientifically accepted by Fernando on 2026-08-30" in contract
+    assert "`-3.152e-11` degree" in contract
+    assert "95 focused tests in 3.79 seconds" in contract
+    assert "all 1,883 tests in 91.21 seconds" in contract
+    assert "49E.6 scientific acceptance" in guide
 
 
 def fenced_python(path):
@@ -872,8 +877,8 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
     for target in targets:
         assert f'<a id="{target}"></a>' in guide
 
-    assert "**Guide version:** `0.9.5.20260830.8`" in guide
-    assert "**Last updated:** `2026-08-30T17:30:00Z`" in guide
+    assert "**Guide version:** `0.9.5.20260830.9`" in guide
+    assert "**Last updated:** `2026-08-30T17:31:00Z`" in guide
     assert "reference epoch or equinox" not in guide
     assert "epoch/equinox" not in guide
     assert "- coordinate system and representation;" in guide
@@ -887,8 +892,8 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
         "**Subtitle:** Living scientific and implementation guide for architecture 0.9.5  ",
         "**Author:** Wenu project  ",
         "**Architecture version:** `0.9.5`  ",
-        "**Guide version:** `0.9.5.20260830.8`  ",
-        "**Last updated:** `2026-08-30T17:30:00Z`  ",
+        "**Guide version:** `0.9.5.20260830.9`  ",
+        "**Last updated:** `2026-08-30T17:31:00Z`  ",
         "**Language:** English",
     ]
 
