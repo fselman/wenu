@@ -1011,7 +1011,7 @@ def test_coordinate_guide_teaches_calendars_for_historical_use():
         "There was no single ancient Greek civil calendar",
         "Roman Republican calendar",
         "*Proleptic* means that a rule is extended to dates before the rule was historically introduced",
-        "Greek *prolepsis*, “anticipation” or “taking beforehand,”",
+        "Greek *prolepsis*, “anticipation” or “taking beforehand.”",
         "not a historical reconstruction",
         "Did Augustus steal a day from February?",
         "there is no historical year in which Augustus “stole” the day",
