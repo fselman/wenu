@@ -6,6 +6,7 @@ import json
 
 import numpy as np
 
+from wenu.coordinates import PositionStatus
 from wenu.coordinates import observer_altaz_spec
 
 from wenu.geometry.spherical import SphericalPolygons
@@ -214,7 +215,7 @@ class MagellanicCloudIsophotes(SkyLayer):
             lon_deg=tuple(longitude[index] for index in positions),
             lat_deg=tuple(latitude[index] for index in positions),
             coordinate_spec=observer_altaz_spec(
-                resolved, provider="astropy Magellanic Cloud isophotes"
+                resolved, position_status=PositionStatus.APPARENT, provider="astropy Magellanic Cloud isophotes"
             ),
             ids=[ids[index] for index in positions],
             metadata={
