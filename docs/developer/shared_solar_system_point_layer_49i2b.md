@@ -1,6 +1,7 @@
 # Milestone 49I.2B — Shared Solar-System point layer
 
-**Status:** Verification complete; scientific and architectural acceptance pending.
+**Status:** Verification complete; scientific and architectural acceptance
+pending.
 **Implementation baseline:** `b0d1dd4`  
 **Date:** 2026-08-30
 
