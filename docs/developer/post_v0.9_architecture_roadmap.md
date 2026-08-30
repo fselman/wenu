@@ -633,6 +633,24 @@ must reproduce that baseline rather than bypass the canonical pipeline.
 
 ## 12. Milestone 49I - Moving-object vertical slices
 
+### Milestone 49I.1 — Drawable Venus vertical slice
+
+**Status:** Architecture and scientific audit candidate.
+
+The as-is audit is recorded in `venus_vertical_slice_audit_49i1.md`. The
+accepted 49E.3–49E.6 provider/direction chain is ready, but ordinary chart
+facades do not yet supply the 49D.2 `LayerRealizationContext`. 49I.1 therefore
+has two bounded steps: 49I.1A threads one output-neutral product-frame context
+through every canonical chart family; 49I.1B adds one opt-in semantic Venus
+layer that transforms the accepted apparent direction exactly once before
+projection.
+
+The proposed public selector is `--planet venus`. The initial Venus is a
+symbolic marker with optional label, not a physical disk. Phase, magnitude,
+angular diameter, trails, the Moon, and other bodies remain later work. PNG,
+PDF, and SVG must consume the same projected record, with upstream semantic
+path `sky/solar_system/planets/venus` and no post-export overlay.
+
 Add one object class at a time:
 
 1. Moon or one planet through an ephemeris provider;
