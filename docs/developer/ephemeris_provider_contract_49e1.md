@@ -1,6 +1,6 @@
 # Milestone 49E.1 — Ephemeris-provider contract audit
 
-**Status:** Scientific design decisions accepted; documentation verification pending
+**Status:** Scientifically and pedagogically accepted on the review branch; not yet merged
 
 **As-is baseline:** `85c7392`
 
@@ -310,3 +310,9 @@ Fernando accepted the revised 49E.1 design on 2026-08-30:
 
 No visual comparison is required because this audit changes no runtime code or
 output.
+
+Acceptance verification passed all 41 current-documentation tests in 3.26
+seconds on Fernando's Mac. The review confirmed the scientific distinctions,
+accepted decisions, kernel-identity explanation, implementation ownership, and
+pedagogical treatment. No visual comparison was required because 49E.1 changes
+no runtime code, geometry, or output.
