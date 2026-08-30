@@ -726,6 +726,26 @@ def test_coordinate_guide_has_a_navigable_table_of_contents():
         assert link in guide
 
 
+
+def test_coordinate_guide_toc_uses_explicit_portable_anchors():
+    guide = read(COORDINATE_GUIDE)
+    toc = guide[
+        guide.index("# Table of contents"):
+        guide.index("# Status and purpose")
+    ]
+    targets = re.findall(r"\]\(#([^)]+)\)", toc)
+
+    assert len(targets) >= 60
+    assert len(targets) == len(set(targets))
+    for target in targets:
+        assert f'<a id="{target}"></a>' in guide
+
+    assert 'version: "0.9.5.20260830.1"' in guide
+    assert 'last_updated: "2026-08-30T15:44:18Z"' in guide
+    assert "**Guide version:** `0.9.5.20260830.1`" in guide
+    assert "**Last updated:** `2026-08-30T15:44:18Z`" in guide
+
+
 def test_coordinate_guide_teaches_calendars_for_historical_use():
     guide = " ".join(read(COORDINATE_GUIDE).split())
     for phrase in (
