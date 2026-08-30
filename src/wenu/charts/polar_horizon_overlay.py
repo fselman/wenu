@@ -129,7 +129,9 @@ def _equatorial_references(observer):
         lon_deg=np.asarray((0.0, 180.0, 0.0)),
         lat_deg=np.asarray((0.0, 0.0, 90.0)),
         coordinate_spec=observer_altaz_spec(
-            observer, position_status=PositionStatus.GEOMETRIC, provider="wenu polar horizon reference"
+            observer,
+            position_status=PositionStatus.GEOMETRIC,
+            provider="wenu polar horizon reference"
         ),
         labels=np.asarray(("N", "S", "ZENITH"), dtype=object),
         metadata={"coordinate_system": "altaz"},
