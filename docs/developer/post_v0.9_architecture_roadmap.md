@@ -635,8 +635,8 @@ must reproduce that baseline rather than bypass the canonical pipeline.
 
 ### Milestone 49I.1 — Drawable Venus vertical slice
 
-**Status:** Scientifically and architecturally accepted by Fernando on
-2026-08-30; ready for integration.
+**Status:** Scientifically and visually accepted; completed through 49I.1B and
+merged in `e7fa6ab` on 2026-08-30.
 
 The as-is audit is recorded in `venus_vertical_slice_audit_49i1.md`. The
 accepted 49E.3–49E.6 provider/direction chain is ready, but ordinary chart
@@ -696,7 +696,8 @@ collision without weakening hierarchy validation.
 
 #### Milestone 49I.2 — Moon and shared solar-system-body pipeline
 
-**Status:** Architecture and scientific audit candidate.
+**Status:** Scientifically and architecturally accepted by Fernando and merged
+in `fbf4dd9` on 2026-08-30.
 
 `moon_shared_body_pipeline_audit_49i2.md` tests the single-pipeline goal
 against the merged Venus implementation. The target is one typed downstream
@@ -714,6 +715,18 @@ Fernando accepted all four audit decisions on 2026-08-30 after all 51
 current-documentation tests passed in 1.88 seconds. The next bounded
 implementation is 49I.2A Moon numerical direction validation; this acceptance
 does not pre-accept its correction policy or numerical results.
+
+##### Milestone 49I.2A — Numerical Moon-direction validation
+
+**Status:** Implementation and scientific review candidate.
+
+The existing provider-neutral astrometric and apparent direction machinery is
+now exercised with target `moon`/NAIF 301 in deterministic tests. The explicit
+installed-DE440 validator compares Wenu against direct Skyfield, reports
+topocentric-geocentric parallax, and proves that the observer's 52 m height
+participates by comparison with the same geodetic latitude/longitude at zero
+height. No Moon layer, public option, shared point abstraction, or output
+change is added.
 
 Add one object class at a time:
 

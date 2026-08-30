@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.18`  
-**Last updated:** `2026-08-30T22:24:53Z`  
+**Guide version:** `0.9.5.20260830.19`  
+**Last updated:** `2026-08-30T22:33:58Z`  
 **Language:** English
 
 # Table of contents
@@ -81,6 +81,7 @@
     - [13.2.12 49I.1A ordinary realization context](#49i1a-realization-context)
     - [13.2.13 49I.1B first drawable Venus](#49i1b-venus-layer)
     - [13.2.14 49I.2 Moon and shared body pipeline](#49i2-moon-shared-pipeline)
+    - [13.2.15 49I.2A numerical Moon direction](#49i2a-moon-direction)
 
 <a id="status-and-purpose"></a>
 
@@ -2114,3 +2115,33 @@ observation instant, and equinox remain distinct concepts.
 > The accepted first Moon is a symbolic point; public `--moon` adapts into a
 > general internal solar-system selection; and physical disk/phase geometry
 > remains 49I.3. Acceptance changes no runtime or output.
+
+<a id="49i2a-moon-direction"></a>
+
+### 13.2.15 49I.2A numerical Moon direction
+
+**[Foundation]** The Moon is close enough that two observers at different
+places on Earth see it against slightly different background stars. This is
+parallax. Wenu therefore checks the Moon from La Ligua against both the centre
+of Earth and a direct Skyfield calculation before it attempts to draw a Moon
+symbol. Even the observer's height is carried through the calculation,
+although changing 52 metres is far too small to matter visually on an ordinary
+chart.
+
+**[Undergraduate]** The validation requests geometric ICRF state for target
+NAIF 301 relative to the solar-system barycentre, combines it with the WGS84
+observer barycentric state at reception, iterates the target at retarded
+emission time, and applies the explicit apparent-place policy. The result is
+observer-origin apparent ICRS at the observation instant, with no position
+reference epoch and no equinox. Direct Skyfield `observe(moon).apparent()` is
+the numerical authority; a separate geocentric comparison measures
+topocentric parallax rather than confusing origin with reference frame.
+
+> **Wenu implementation box — 49I.2A Moon validation**
+>
+> `tests/test_moon_direction_validation.py` proves that NAIF 301 uses the
+> existing provider-neutral contracts. `tools/validate_49i2a_moon_direction.py`
+> records kernel identity, observer coordinates and height, reception and
+> emission instants, light time, corrections, direct residuals, parallax, and
+> the 52 m minus 0 m displacement. It installs no Moon layer, `--moon` option,
+> marker, physical disk, or output change.

@@ -248,6 +248,10 @@ pre-projection and output pipeline. Allow interchangeable state providers and
 body-specific physical geometry; never copy the Venus chart path into
 body-specific projection, renderer, or exporter implementations.
 
+For the Moon, do not infer correction-policy validity from Venus. Require an
+installed-kernel comparison with direct Skyfield and explicit topocentric
+parallax evidence before installing Moon chart content.
+
 When several rendering solutions work, choose the simplest one that preserves
 the established visual hierarchy and scientific meaning.
 

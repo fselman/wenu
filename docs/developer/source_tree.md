@@ -940,3 +940,9 @@ Moon validation and shared solar-system point-layer boundary. It records what
 is invariant across bodies, what varies by typed state provider, and what
 belongs to later physical-appearance geometry. It adds no runtime module or
 output.
+
+`tests/test_moon_direction_validation.py` is the deterministic 49I.2A proof
+that Moon/NAIF 301 traverses the generic astrometric and apparent contracts.
+`tools/validate_49i2a_moon_direction.py` is the explicit no-download
+installed-kernel comparison against direct Skyfield, geocentric direction,
+and zero-height observer. No `sky/moon.py` exists in 49I.2A.
