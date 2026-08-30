@@ -66,10 +66,6 @@ def main():
             result.light_time_days - direct_light_time_days
         )
 
-        assert abs(ra_residual_deg) <= 1.0e-10
-        assert abs(dec_residual_deg) <= 1.0e-10
-        assert abs(distance_residual_au) <= 1.0e-12
-        assert abs(light_time_residual_days) <= 1.0e-12
         expected_emission = Time(observer.t_astropy) - TimeDelta(
             direct_light_time_days,
             format="jd",
@@ -78,9 +74,9 @@ def main():
             result.emission_instant,
             scale=result.emission_time_scale,
         )
-        assert abs(
-            float((actual_emission - expected_emission).to_value("day"))
-        ) <= 1.0e-12
+        emission_residual_days = float(
+            (actual_emission - expected_emission).to_value("day")
+        )
 
         print(f"model: {source.resource.model}")
         print(f"file: {source.resource.filename}")
@@ -101,6 +97,13 @@ def main():
         print(f"Dec residual deg: {dec_residual_deg:.3e}")
         print(f"distance residual AU: {distance_residual_au:.3e}")
         print(f"light-time residual days: {light_time_residual_days:.3e}")
+        print(f"emission residual days: {emission_residual_days:.3e}")
+
+        assert abs(ra_residual_deg) <= 1.0e-10
+        assert abs(dec_residual_deg) <= 1.0e-10
+        assert abs(distance_residual_au) <= 1.0e-12
+        assert abs(light_time_residual_days) <= 1.0e-12
+        assert abs(emission_residual_days) <= 1.0e-12
 
 
 if __name__ == "__main__":
