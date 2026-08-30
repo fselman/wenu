@@ -89,7 +89,8 @@ resource identity, geometric state request, complete position-velocity state,
 and structural state-source protocol. It owns no kernel I/O, direction
 realization, coordinate transformation, chart, or output policy. The only
 concrete source exists in `tests/test_ephemeris.py`; no real 49E kernel adapter
-or installed moving-body provider exists yet.
+or installed moving-body provider exists yet. `coordinates.py::observer_altaz_spec()` requires explicit status at every
+call site; no observer-local physical status is inferred from origin.
 
 `sky/realization.py` owns the frozen 49D.2 `LayerRealizationContext`.
 `sky/sky_layer.py::SkyLayer.realize()` owns the compatibility adapter, and
