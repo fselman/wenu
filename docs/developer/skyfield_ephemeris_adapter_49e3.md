@@ -180,3 +180,13 @@ coordinate system and reference frame, and between position epoch and equinox.
 Its section-13 table of contents uses explicit stable HTML anchors so navigation
 does not depend on GitHub, MacDown, or another renderer's generated heading
 rules.
+
+
+### Accepted living-guide revision
+
+Fernando accepted coordinate guide version `0.9.5.20260830.3` after verifying
+in MacDown that the metadata header renders on separate contiguous lines and
+that the complete table of contents navigates through explicit portable
+anchors. The accepted guide keeps coordinate system distinct from reference
+frame, and equinox distinct from position reference epoch and observation
+instant. All 44 current-documentation tests passed in 1.70 seconds.
