@@ -572,7 +572,12 @@ def test_49e2_records_minimal_runtime_contracts_and_non_goals():
         "This proves contract shape and ownership, not ephemeris accuracy",
         "does not create it",
         "calculate a SHA-256 digest from a file",
-        "No new visual render is required",
+        "No new visual render was required",
+        "scientifically accepted 49E.2 on 2026-08-30",
+        "92 focused tests in 2.72 seconds",
+        "1,821 routine tests",
+        "all 1,851 tests in 84.12 seconds",
+        "future Venus, Moon, planet, and Sun products",
     ):
         assert phrase in contract
 
@@ -583,6 +588,9 @@ def test_49e2_records_minimal_runtime_contracts_and_non_goals():
         "`PositionStatus.TOPOCENTRIC` member is removed atomically",
         "test-only Venus source",
         "requires every caller to declare `position_status`",
+        "Scientifically accepted by Fernando on 2026-08-30",
+        "1,821 routine tests with 30 deselected",
+        "all 1,851 tests in 84.12 seconds",
     ):
         assert phrase in roadmap
 
