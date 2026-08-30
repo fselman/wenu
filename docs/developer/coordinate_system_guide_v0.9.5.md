@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.10`  
-**Last updated:** `2026-08-30T18:00:00Z`  
+**Guide version:** `0.9.5.20260830.11`  
+**Last updated:** `2026-08-30T18:15:00Z`  
 **Language:** English
 
 # Table of contents
@@ -1971,3 +1971,12 @@ test.
 > PNG, PDF, and semantic SVG must consume the same projected Venus record
 > through the existing Matplotlib renderer and shared exporter. No separate
 > planetary SVG generator or post-export overlay is permitted.
+
+> **49I.1 audit acceptance**
+>
+> Fernando accepted the context-first sequence, one product-frame transform,
+> `--planet venus` request, symbolic marker and optional label, existing
+> visibility ownership, semantic identity, shared output path, and deferred
+> physical-appearance models on 2026-08-30. All 48 current-documentation tests
+> passed in 3.30 seconds. This accepts the design, not the future runtime or
+> visual result.
