@@ -359,7 +359,7 @@ first charted body remains the separately approved 49I.1 Venus vertical slice.
 
 ### Milestone 49E.2 — Minimal ephemeris runtime contracts
 
-**Status:** Implementation review candidate on the dedicated 49E.2 branch.
+**Status:** Scientifically accepted by Fernando on 2026-08-30; merge pending.
 
 `ephemeris.py` adds frozen `EphemerisResourceIdentity`,
 `EphemerisStateRequest`, and complete six-component `EphemerisState` values,
@@ -395,12 +395,13 @@ chart layers.
 Providers compute or propagate states. They do not select charts, transform
 through undocumented downstream paths, project, clip, style, or render.
 
-Fernando accepted the context fields, exact legacy compatibility branch,
-controlled-provider proof, deferred 49E responsibilities, pedagogical guide,
-and canonical SVG path on 2026-08-29. Acceptance evidence is 48 focused tests
-in 2.21 seconds, 1,798 routine tests with 30 deselected in 27.61 seconds, and
-all 1,828 tests in 90.00 seconds. No visual comparison was required because no
-ordinary request can activate the context and production geometry is unchanged.
+Fernando scientifically accepted the immutable resource/request/state fields,
+mandatory velocity, SHA-256 identity boundary, atomic removal of the unreleased
+`TOPOCENTRIC` category, and explicit geometric/apparent observer-local
+classifications on 2026-08-30. Acceptance evidence is 92 focused tests in 2.72
+seconds, 1,821 routine tests with 30 deselected in 25.25 seconds, and all 1,851
+tests in 84.12 seconds. No visual comparison was required because numerical
+chart geometry and the canonical output path are unchanged.
 
 The same boundary governs every output format. Future solar-system layers must
 declare their semantic identity before projection and then use the existing
