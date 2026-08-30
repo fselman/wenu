@@ -1,6 +1,6 @@
 # Milestone 49E.3 — Borrowed Skyfield ephemeris adapter
 
-**Status:** Implementation review candidate; real-kernel acceptance pending
+**Status:** Scientifically accepted by Fernando on 2026-08-30; integration pending
 
 **Implementation baseline:** `7a978a0`
 
@@ -164,3 +164,19 @@ Acceptance requires:
 No visual render is required because no chart layer can consume the adapter in
 49E.3. After acceptance, the next scientific milestone is the
 observer-relative direction realizer; Venus rendering remains 49I.1.
+
+
+## 10. Scientific acceptance
+
+Fernando accepted the 49E.3 centre, frame, time, units, common-coverage,
+borrowed-resource, NAIF-zero, and canonical-output decisions on 2026-08-30.
+Verification evidence is 72 focused tests in 1.73 seconds, 1,830 routine tests
+with 30 deselected in 25.80 seconds, and all 1,860 tests in 84.78 seconds. The
+installed DE440 comparison produced zero adapter/direct residual within
+`1e-15` for all six components.
+
+Acceptance also requires the living guide to preserve the distinctions between
+coordinate system and reference frame, and between position epoch and equinox.
+Its section-13 table of contents uses explicit stable HTML anchors so navigation
+does not depend on GitHub, MacDown, or another renderer's generated heading
+rules.
