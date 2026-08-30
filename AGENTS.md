@@ -29,3 +29,11 @@ In particular:
 9. Use the Finder-safe Mac ZIP patch handoff in
    `docs/developer/assistant_instructions.md` only when direct GitHub delivery
    is unavailable or the user specifically requests a patch.
+10. When direct GitHub delivery is available, inspect repository files and make
+    repository changes through that connection. Do not ask the user to paste
+    repository files or to execute file-editing commands on the assistant's
+    behalf.
+11. If direct GitHub access is unavailable, stop and state that access is
+    unavailable. Do not silently substitute a manual copy-and-paste workflow.
+    Use the documented ZIP fallback only when the user specifically requests it
+    or direct GitHub delivery is genuinely unavailable.
