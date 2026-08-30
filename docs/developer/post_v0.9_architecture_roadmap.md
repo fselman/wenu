@@ -434,6 +434,11 @@ deterministic tests use fake SPK structures; the controlled
 six Venus-relative-to-SSB components with direct Skyfield evaluation at a
 fixed TDB instant.
 
+The controlled Mac run identified the exact `de440s.bsp` bytes as
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`,
+resolved NAIF 299 relative to NAIF 0, and obtained zero adapter/direct residual
+within `1e-15` for all six components at the fixed TDB instant.
+
 The exact contract is `skyfield_ephemeris_adapter_49e3.md`. This milestone
 adds no direction realizer, chart layer, CLI/TOML control, or output change.
 Venus rendering remains 49I.1 and must use the canonical PNG/PDF/SVG path.
