@@ -64,7 +64,7 @@
     - [13.1.2 Equinox versus position epoch and observation instant](#epoch-vs-equinox)
     - [13.1.3 Requesting a reference equinox](#requesting-reference-equinox)
     - [13.1.4 Julian and Besselian year labels](#julian-besselian-labels)
-    - [13.1.5 Gaia reference epoch is not an equinox](#gaia-epoch-not-equinox)
+    - [13.1.5 Gaia position reference epoch is not an equinox](#gaia-epoch-not-equinox)
     - [13.1.6 Implementation and scientific acceptance](#reference-policy-acceptance)
   - [13.2 Scene dependencies and moving astronomical objects](#moving-object-architecture)
     - [13.2.1 49D.1 scientific and pedagogical acceptance](#49d1-acceptance)
@@ -1352,7 +1352,7 @@ label alone never fully specifies a reference frame.
 
 <a id="gaia-epoch-not-equinox"></a>
 
-### 13.1.5 The Gaia reference epoch is not an equinox
+### 13.1.5 The Gaia position reference epoch is not an equinox
 
 **[Foundation]** Gaia catalogue coordinates also carry a date, but it answers
 a different question: when were the listed stellar positions defined? Gaia
@@ -1370,10 +1370,10 @@ parameters, including proper motion and, where available and relevant,
 parallax and radial velocity. By contrast, requesting
 `--reference-equinox J2016.0` in this Wenu milestone rotates the coupled FK5
 and true-ecliptic reference representation to that equinox; it neither
-selects Gaia nor propagates any star to the Gaia reference epoch.
+selects Gaia nor propagates any star to the Gaia position reference epoch.
 
 Authoritative references: [ESA's Gaia DR3 documentation](https://www.cosmos.esa.int/web/gaia/dr3)
-states the 2016.0 reference epoch for EDR3/DR3; the
+states the 2016.0 position reference epoch for EDR3/DR3; the
 [IVOA Coordinates data model](https://www.ivoa.net/documents/Coords/20221004/Coords-v1.0.html)
 defines epoch labels as `J` (Julian) or `B` (Besselian) followed by a decimal
 year. The peer-reviewed
