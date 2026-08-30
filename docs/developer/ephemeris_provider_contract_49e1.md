@@ -1,6 +1,6 @@
 # Milestone 49E.1 — Ephemeris-provider contract audit
 
-**Status:** Design review candidate; no runtime contract or moving object added
+**Status:** Scientific design decisions accepted; documentation verification pending
 
 **As-is baseline:** `85c7392`
 
@@ -158,10 +158,14 @@ The following meanings are required for solar-system work.
 | topocentric direction | Origin is the terrestrial observing site; this alone does not say which corrections were applied |
 | observed AltAz | Topocentric apparent direction plus the declared atmospheric/refraction policy |
 
-The current `PositionStatus.TOPCENTRIC` spelling is a compatibility fact, but
-topocentricity is fundamentally an origin choice rather than a complete
-correction status. 49E.2 must decide whether to refine the enum or document a
-compatible composition without silently conflating these dimensions.
+`PositionStatus.TOPOCENTRIC` is scientifically misplaced because
+topocentricity is an origin choice rather than a correction status. The as-is
+usage audit found only the enum declaration, the default in
+`observer_altaz_spec()`, and two focused tests. Wenu has not released this
+interface, so 49E.2 must remove the enum member and migrate those uses
+atomically instead of preserving or deprecating a faulty abstraction. New
+observer-centred products combine an explicit observer/topocentre origin with
+`ASTROMETRIC`, `APPARENT`, or `OBSERVED` status.
 
 Correction provenance must enumerate applied physics, including where
 applicable:
@@ -191,6 +195,20 @@ final public design. Whichever owner is selected must guarantee:
 - clean resource closing;
 - no hidden network access during rendering;
 - recorded kernel/model provenance in exported metadata where supported.
+
+A kernel's **model**, **file identity**, and **content identity** are distinct.
+For example, `DE440` names the astronomical solution family;
+`de440s.bsp` names a particular short-coverage distribution; and a SHA-256
+digest fingerprints the exact bytes that Wenu opened. The resolved resource
+must record all three, plus coverage and provider/segment provenance. A
+filename alone is not reproducible because files can be renamed or replaced;
+a model name alone does not identify which subset or coverage was used.
+
+The SHA-256 digest is computed once when the resource is resolved, retained in
+its immutable identity, and reused for every body evaluation. It is not
+recomputed for each coordinate. Full provenance belongs in a manifest and
+machine-readable SVG/PDF metadata where supported; a printed chart may show
+only a concise credit such as “JPL DE440.”
 
 Loading order matters when ephemeris datasets contain competing segments.
 Therefore “a JPL ephemeris was used” is not sufficient reproducibility
@@ -250,11 +268,14 @@ Adapt one resolved Skyfield/JPL kernel behind the contract, verify target
 identity, coverage, units, time-scale conversion, resource ownership, and
 numerical state comparisons. Still no chart layer unless separately approved.
 
-### 49I.1 — first moving-body vertical slice
+### 49I.1 — Venus vertical slice
 
-Add exactly one Sun, Moon, or planet layer through the accepted realization,
-coordinate, semantic, projection, renderer, and export path. Selection of the
-first body requires a separate scientific decision.
+Add Venus first through the accepted realization, coordinate, semantic,
+projection, renderer, and export path. Begin with an accurately realized
+planetary position/symbol; retain the three-dimensional distance and state
+needed for a later resolved illuminated disk, angular diameter, phase, and
+elongation validation. The Moon follows as the strongest topocentric-parallax
+and rapidly varying resolved-body test.
 
 ## 11. Explicit non-goals
 
@@ -271,17 +292,21 @@ first body requires a separate scientific decision.
 - create an SVG-specific astronomical path;
 - change numerical or visual baselines.
 
-## 12. Decisions required for acceptance
+## 12. Accepted scientific decisions
 
-Fernando's scientific review should decide whether:
+Fernando accepted the revised 49E.1 design on 2026-08-30:
 
-1. the two-stage source/realizer separation is correct;
-2. a provider state must require velocity or permit position-only sources;
-3. kernel identity should require a checksum in reproducible products;
-4. the current position-status vocabulary should be refined in 49E.2;
-5. Wenu should first adapt Skyfield's already loaded kernel or use an
-   independent provider owner;
-6. Sun, Moon, or which planet should be the first 49I.1 vertical slice.
+1. preserve the two-stage state-source/direction-realizer separation;
+2. define `EphemerisState` as a complete six-component position-velocity
+   state; a future position-only source must use a differently named type;
+3. require resolved kernel identity to include provider/model, filename,
+   SHA-256 content fingerprint, coverage, and provenance;
+4. remove `PositionStatus.TOPOCENTRIC` atomically in 49E.2 because Wenu is
+   unreleased and topocentricity belongs in the origin dimension;
+5. move toward one request/session-scoped ephemeris resource while permitting
+   the first adapter to reuse the already-open Observer kernel without loading
+   a duplicate; and
+6. use Venus for 49I.1, followed by the Moon.
 
 No visual comparison is required because this audit changes no runtime code or
 output.
