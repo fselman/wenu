@@ -56,6 +56,10 @@ For current work, read and follow:
 - `ephemeris_runtime_contracts_49e2.md` for the frozen ephemeris resource,
   state request, six-component state, structural source, or `TOPOCENTRIC`
   removal work;
+- `solar_system_direction_realizer_49e4.md` and
+  `astrometric_direction_runtime_49e5.md` for observer state, retarded emission
+  time, light-time iteration, astrometric direction, or Venus-first runtime
+  work;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,

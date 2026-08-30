@@ -476,6 +476,32 @@ frame, timing, provenance, Venus-first, and canonical output boundaries on
 seconds. No visual comparison was required because the milestone changes no
 runtime geometry or product.
 
+### Milestone 49E.5 — Astrometric direction runtime
+
+**Status:** Scientifically accepted by Fernando on 2026-08-30; ready for integration.
+
+`solar_system_directions.py` implements frozen observer-state, request, and
+result contracts plus a bounded one-way-light-time realizer. The observer is
+evaluated once at reception; the target is repeatedly requested from the
+existing `EphemerisStateSource` at retarded emission times. The result retains
+ICRS `SphericalPoints`, distance, light time, both instants, iteration evidence,
+observer/target identity, and exact resource provenance.
+
+`skyfield_observer_barycentric_state()` borrows the same Observer kernel as the
+49E.3 source and evaluates Earth plus the WGS84 site. Deterministic tests and a
+no-download installed-DE440 Venus comparison protect the boundary. 49E.5 adds
+no apparent-place correction, moving-body layer, command, projection,
+renderer, or output change. 49E.6 remains apparent direction realization and
+49I.1 remains the first drawable Venus.
+
+The installed DE440 Venus comparison converged in four iterations and agreed
+with direct Skyfield to `3.149e-11` degree in right ascension,
+`1.544e-12` degree in declination, `1.348e-12` AU in distance,
+`7.783e-15` day in light time, and `7.994e-15` day in emission time.
+Fernando scientifically accepted 49E.5 on 2026-08-30. Verification passed 111
+focused tests in 4.33 seconds, 1,848 routine tests with 30 deselected in 27.03
+seconds, and all 1,878 tests in 85.55 seconds. No visual render was required.
+
 ## 9. Milestone 49F - SVG product verification
 
 **Status:** Complete at `c70cb29` after eight-product cross-product acceptance.

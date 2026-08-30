@@ -10,6 +10,7 @@ from wenu.skyfield_ephemeris import (
     SkyfieldEphemerisStateSource,
     UnsupportedEphemerisFrameError,
     resolve_skyfield_resource_identity,
+    skyfield_observer_barycentric_state,
 )
 
 
@@ -188,3 +189,44 @@ def test_adapter_does_not_claim_or_close_borrowed_resource(resolved):
 
     assert source._kernel is kernel
     assert not hasattr(source, "close")
+
+
+def test_observer_state_adapter_preserves_site_and_reception_state(resolved):
+    source, _, _, _ = resolved
+    skyfield_state = SimpleNamespace(
+        position=SimpleNamespace(au=(1.0, 2.0, 3.0)),
+        velocity=SimpleNamespace(au_per_d=(0.1, 0.2, 0.3)),
+    )
+    observer = SimpleNamespace(
+        ephemeris=source._kernel,
+        skyfield=SimpleNamespace(at=lambda time: skyfield_state),
+        t=object(),
+        t_astropy=SimpleNamespace(
+            isot="2026-08-30T00:00:00.000",
+            scale="utc",
+        ),
+        location_name="La Ligua",
+    )
+
+    state = skyfield_observer_barycentric_state(
+        observer,
+        source=source,
+    )
+
+    assert state.observer_id == "La Ligua"
+    assert state.centre == "solar system barycenter"
+    assert state.frame == "icrf"
+    assert state.instant == "2026-08-30T00:00:00.000"
+    assert state.time_scale == "utc"
+    assert state.position == (1.0, 2.0, 3.0)
+    assert state.velocity == (0.1, 0.2, 0.3)
+    assert state.resource is source.resource
+    assert "Earth plus WGS84 site" in state.provenance[0]
+
+
+def test_observer_state_adapter_requires_the_same_borrowed_kernel(resolved):
+    source, _, _, _ = resolved
+    observer = SimpleNamespace(ephemeris=object())
+
+    with pytest.raises(ValueError, match="same ephemeris"):
+        skyfield_observer_barycentric_state(observer, source=source)

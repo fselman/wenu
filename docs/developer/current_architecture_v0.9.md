@@ -189,6 +189,18 @@ Fernando scientifically accepted that boundary on 2026-08-30 after all 45
 current-documentation tests passed in 2.03 seconds. Runtime realization remains
 49E.5 and is not part of the implemented as-is architecture yet.
 
+The accepted 49E.5 implementation supplies the renderer-neutral astrometric stage.
+One typed observer barycentric state at reception and repeated typed target
+states at retarded emission times produce an observer-origin ICRS
+`SphericalPoints` value plus retained distance, light-time, emission-time,
+iteration, target, observer, and exact resource evidence. The candidate is not
+connected to a production sky layer and changes no chart or output.
+
+Fernando scientifically accepted the implementation and installed-DE440 Venus
+comparison on 2026-08-30 after 111 focused tests, 1,848 routine tests with 30
+deselected, and all 1,878 tests passed. Apparent place remains 49E.6; drawable
+Venus remains 49I.1.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored

@@ -897,3 +897,10 @@ no-download installed-kernel Venus/SSB acceptance check.
 runtime realizer or moving-body layer exists yet. The proposed astrometric
 result retains distance, light time, reception/emission instants, observer
 state, and resource provenance before any product-frame transformation.
+
+`src/wenu/solar_system_directions.py` owns the 49E.5 typed observer state,
+astrometric request/result, bounded light-time iteration, and deterministic
+direction errors. `src/wenu/skyfield_ephemeris.py` additionally owns the
+same-kernel Skyfield observer-state adapter. The detailed contract is
+`docs/developer/astrometric_direction_runtime_49e5.md`; the controlled
+real-resource check is `tools/validate_49e5_astrometric_direction.py`.

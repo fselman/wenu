@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+import re
 from hashlib import sha256
 from math import isfinite
 from pathlib import Path
-import re
 
 from astropy.time import Time
 from skyfield.errors import EphemerisRangeError
@@ -15,6 +15,7 @@ from wenu.ephemeris import (
     EphemerisState,
     EphemerisStateRequest,
 )
+from wenu.solar_system_directions import ObserverBarycentricState
 
 
 class EphemerisAdapterError(ValueError):
@@ -235,3 +236,48 @@ class SkyfieldEphemerisStateSource:
                 "Skyfield ICRF axes",
             ),
         )
+
+
+def skyfield_observer_barycentric_state(observer, *, source):
+    """Borrow one Observer and expose its reception-time ICRF state."""
+    if not isinstance(source, SkyfieldEphemerisStateSource):
+        raise TypeError("source must be a SkyfieldEphemerisStateSource.")
+    try:
+        if source._kernel is not observer.ephemeris:
+            raise ValueError(
+                "source and observer must borrow the same ephemeris."
+            )
+        state = observer.skyfield.at(observer.t)
+        instant = observer.t_astropy
+    except AttributeError as error:
+        raise TypeError(
+            "observer must expose skyfield, t, and t_astropy values."
+        ) from error
+    location_name = getattr(observer, "location_name", None)
+    observer_id = (
+        str(location_name)
+        if location_name
+        else (
+            f"WGS84 {observer.lat_deg:.12g},"
+            f"{observer.lon_deg:.12g},"
+            f"{observer.elevation_m:.12g}m"
+        )
+    )
+    return ObserverBarycentricState(
+        observer_id=observer_id,
+        centre="solar system barycenter",
+        frame="icrf",
+        instant=instant.isot,
+        time_scale=instant.scale,
+        position=tuple(state.position.au),
+        velocity=tuple(state.velocity.au_per_d),
+        position_unit="au",
+        velocity_unit="au/day",
+        resource=source.resource,
+        provider_observer_id="WGS84 terrestrial site",
+        provider_centre_id="0",
+        provenance=(
+            "Skyfield Earth plus WGS84 site at reception time",
+            "Skyfield ICRF axes",
+        ),
+    )
