@@ -1,12 +1,13 @@
----
-title: "Wenu Coordinate Systems and Astronomical Objects"
-subtitle: "Living scientific and implementation guide for architecture 0.9.5"
-author: "Wenu project"
-date: "2026-08-28"
-version: "0.9.5.20260830.1"
-last_updated: "2026-08-30T15:44:18Z"
-lang: en
----
+# Wenu Coordinate Systems and Astronomical Objects
+
+**Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
+**Author:** Wenu project  
+**Architecture version:** `0.9.5`  
+**Guide version:** `0.9.5.20260830.2`  
+**Last updated:** `2026-08-30T15:49:40Z`  
+**Language:** English
+
+
 
 # Table of contents
 
@@ -80,9 +81,6 @@ lang: en
 
 # Status and purpose
 
-**Guide version:** `0.9.5.20260830.1`  
-**Last updated:** `2026-08-30T15:44:18Z`
-
 **Status:** Living accepted edition; architecture 0.9.5 merged in `1a15076`; public celestial-reference policy implemented and scientifically accepted on its review branch.
 
 This is the living scientific guide for Wenu's coordinate systems,
@@ -125,10 +123,12 @@ on a first reading and return to the undergraduate material later.
 
 Every astronomical coordinate record must identify, where applicable:
 
-- reference frame;
+- coordinate system and representation;
+- reference frame and its physical realization;
 - coordinate origin;
-- reference epoch or equinox;
-- evaluation instant and time scale;
+- equinox, only for a frame whose axes are equinox-based;
+- position reference epoch, only for a catalogue state or motion model;
+- evaluation or observation instant and its time scale;
 - observer location;
 - geometric, astrometric, apparent, or observed status;
 - angular units and representation;
@@ -216,7 +216,7 @@ star's tabulated position and proper-motion model are referenced. It does not
 orient the ICRS axes and is not an equinox.
 
 Wenu currently represents Gaia-compatible celestial geometry as `icrs` and
-would record a Gaia release, reference epoch, and provider identity separately
+would record a Gaia release, position reference epoch, and provider identity separately
 in `CoordinateSpec`. It does not currently expose `gaia-crf3` as an independent
 transformable frame or provide Gaia epoch propagation. Those require a future
 Gaia position-provider milestone; merely changing a frame label would lose
@@ -682,13 +682,13 @@ Wenu must distinguish:
 - **UT1:** Earth rotation angle;
 - **TDB:** barycentric dynamical ephemeris arguments;
 - **TCB:** barycentric coordinate time; relevant to Gaia catalogue metadata;
-- **catalogue reference epoch:** such as Hipparcos J1991.25 or Gaia J2016.0;
+- **catalogue position reference epoch:** such as Hipparcos J1991.25 or Gaia J2016.0;
 - **provider evaluation instant:** when a moving-object state is requested;
 - **display time:** human-facing civil label;
 - **playback time:** media pacing, never an astronomical time scale.
 
 The existing temporal sequence classes preserve physical versus playback time,
-but coordinate architecture must additionally preserve catalogue epoch and
+but coordinate architecture must additionally preserve catalogue position epoch and
 provider evaluation instant.
 
 <a id="51-calendars-are-historical-coordinate-systems-for-time"></a>
@@ -1023,8 +1023,9 @@ The accepted 49C.1 milestone adds the central Astropy-backed transformation serv
 
 ## 7.1 CoordinateSpec
 
-`CoordinateSpec` is immutable and includes frame, origin, epoch/equinox,
-evaluation instant and time scale where applicable, position status,
+`CoordinateSpec` is immutable and includes coordinate frame and origin,
+equinox where the frame requires one, position reference epoch where the state
+requires one, evaluation instant and time scale where applicable, position status,
 units/representation, and provenance/policy identity.
 
 <a id="72-observationcontext"></a>
@@ -1193,8 +1194,9 @@ selection remain later milestones. Public values translate to
 
 # 12. Maintenance rule
 
-This guide must change whenever Wenu changes a coordinate system, origin,
-epoch/equinox convention, time-scale dependency, position provider,
+This guide must change whenever Wenu changes a coordinate system, reference
+frame, origin, equinox convention, position-epoch convention, time-scale
+dependency, position provider,
 transformation engine, object source, provenance field, or code owner. The
 Markdown source is the only canonical guide; PDF, OpenDocument, Word, or
 other review formats are generated from it on demand and are not maintained
@@ -1255,7 +1257,7 @@ valid; it does not redefine the surveying axes.
 ICRF3 and Gaia-CRF3 are radio and optical realizations tied through common
 extragalactic sources. FK5 is a dynamical equatorial frame with precession and
 equinox semantics. A catalogue realization can additionally carry source
-positions and proper motions at a reference epoch. Consequently the complete
+positions and proper motions at a position reference epoch. Consequently the complete
 scientific identity is not a single name: it includes system/frame,
 realization/provider, equinox where applicable, and position epoch where
 applicable.
@@ -1356,12 +1358,12 @@ label alone never fully specifies a reference frame.
 
 **[Foundation]** Gaia catalogue coordinates also carry a date, but it answers
 a different question: when were the listed stellar positions defined? Gaia
-DR2 positions use reference epoch `J2015.5`; Gaia EDR3 and DR3 positions use
+DR2 positions use position reference epoch `J2015.5`; Gaia EDR3 and DR3 positions use
 `J2016.0`. This is a **position epoch**, not an orientation of the coordinate
 grid. There is therefore no Gaia `J2016.0` equinox that must be selected to
 display Gaia positions correctly.
 
-**[Undergraduate]** Gaia DR3 astrometry is expressed in ICRS at reference
+**[Undergraduate]** Gaia DR3 astrometry is expressed in ICRS at position reference
 epoch J2016.0. ICRS has no defining equinox to select: its right-ascension
 origin is a fixed realized direction, historically placed close to the
 J2000.0 dynamical equinox. Propagating a Gaia source
