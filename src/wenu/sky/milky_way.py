@@ -150,7 +150,9 @@ class MilkyWayIsophotes(SkyLayer):
             lon_deg=tuple(longitude[index] for index in positions),
             lat_deg=tuple(latitude[index] for index in positions),
             coordinate_spec=observer_altaz_spec(
-                resolved, position_status=PositionStatus.APPARENT, provider="astropy Milky Way isophotes"
+                resolved,
+                position_status=PositionStatus.APPARENT,
+                provider="astropy Milky Way isophotes"
             ),
             ids=[ids[index] for index in positions],
             metadata={
