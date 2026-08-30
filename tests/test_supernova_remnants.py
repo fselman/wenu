@@ -74,6 +74,33 @@ def test_catalogue_snapshot_contains_green_2024_rows():
     assert "flux_1ghz_jy" in table.colnames
 
 
+def test_signed_green_designations_have_distinct_semantic_keys(
+    tmp_path,
+    observer,
+):
+    table = Table()
+    table["identifier"] = ["G024.7-00.6", "G024.7+00.6"]
+    table["ra_deg"] = [279.679, 278.542]
+    table["dec_deg"] = [-7.533, -7.083]
+    table["major_axis_arcmin"] = [15.0, 30.0]
+    table["minor_axis_arcmin"] = [15.0, 15.0]
+    path = tmp_path / "signed-snr.ecsv"
+    table.write(path, format="ascii.ecsv")
+
+    layer = SupernovaRemnants(observer)
+    layer.load(filename=path)
+    geometry = layer.spherical_geometry(observer)
+
+    assert geometry.metadata["semantic_entity_keys"] == (
+        "G024.7_minus_00.6",
+        "G024.7_plus_00.6",
+    )
+    assert geometry.metadata["semantic_entity_display_names"] == (
+        "G024.7-00.6",
+        "G024.7+00.6",
+    )
+
+
 def test_normalization_preserves_radio_metadata(catalogue, observer):
     layer = SupernovaRemnants(observer, samples=48)
     table = layer.load(filename=catalogue)

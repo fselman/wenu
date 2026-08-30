@@ -411,6 +411,11 @@ class NonStellar(AstronomicalObject):
             return "nebulae"
         return "other_objects"
 
+    @staticmethod
+    def semantic_entity_key(identifier):
+        """Return the source-owned semantic key for one catalogue entity."""
+        return str(identifier)
+
     def _geometry_metadata(
         self,
         table,
@@ -418,13 +423,14 @@ class NonStellar(AstronomicalObject):
         minimum_size_arcmin=None,
     ):
         """Return per-object metadata accompanying generated geometry."""
-        identifiers = tuple(
-            str(value) for value in table["identifier"]
+        identifiers = tuple(str(value) for value in table["identifier"])
+        semantic_keys = tuple(
+            self.semantic_entity_key(value) for value in identifiers
         )
         return {
             "catalog": self.catalog_name,
             "coordinate_system": "altaz",
-            "semantic_entity_keys": identifiers,
+            "semantic_entity_keys": semantic_keys,
             "semantic_entity_display_names": identifiers,
             "semantic_entity_categories": tuple(
                 self.semantic_category(
@@ -639,8 +645,10 @@ class NonStellar(AstronomicalObject):
                 selected_table=table,
                 source_key=(self.catalog_name, self._source_revision),
             )
-        semantic_identifiers = tuple(
-            str(value) for value in identifiers
+        semantic_identifiers = tuple(str(value) for value in identifiers)
+        semantic_keys = tuple(
+            self.semantic_entity_key(value)
+            for value in semantic_identifiers
         )
         return SphericalPoints(
             lon_deg=longitude,
@@ -654,7 +662,7 @@ class NonStellar(AstronomicalObject):
             names=identifiers,
             metadata={
                 "coordinate_system": "altaz",
-                "semantic_entity_keys": semantic_identifiers,
+                "semantic_entity_keys": semantic_keys,
                 "semantic_entity_display_names": semantic_identifiers,
                 "semantic_entity_categories": tuple(
                     self.semantic_category(

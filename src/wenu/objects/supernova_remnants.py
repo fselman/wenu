@@ -71,6 +71,15 @@ class SupernovaRemnants(NonStellar):
         )
 
     @staticmethod
+    def semantic_entity_key(identifier):
+        """Preserve the signed Galactic latitude in Green designations."""
+        return (
+            str(identifier)
+            .replace("+", "_plus_")
+            .replace("-", "_minus_")
+        )
+
+    @staticmethod
     def _source_column(source, name):
         names = {column.casefold(): column for column in source.colnames}
         actual = names.get(name.casefold())
