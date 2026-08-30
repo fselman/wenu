@@ -1434,3 +1434,16 @@ physics.
 > deferred to 49E.2, a real kernel adapter to 49E.3, and the first Sun, Moon,
 > or planet layer to 49I.1. Every body must then use the existing semantic,
 > projection, renderer, and PNG/PDF/SVG export route.
+>
+> Fernando accepted the design choices on 2026-08-30. A future
+> `EphemerisState` is a complete position-velocity state. The resolved kernel
+> identity records the scientific model (for example DE440), actual filename
+> (for example `de440s.bsp`), SHA-256 fingerprint of the exact file bytes,
+> coverage, and provider provenance. SHA-256 is computed once when the kernel
+> resource is resolved, not for every planet position.
+>
+> Because Wenu has not released this interface, 49E.2 will remove
+> `PositionStatus.TOPOCENTRIC` rather than preserve a misleading category:
+> topocentric belongs to the origin, while astrometric, apparent, or observed
+> describes physical realization. Venus is the first planned moving-body
+> slice, with the Moon following as the stronger parallax test.
