@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.3`  
-**Last updated:** `2026-08-30T15:52:29Z`  
+**Guide version:** `0.9.5.20260830.4`  
+**Last updated:** `2026-08-30T16:04:34Z`  
 **Language:** English
 
 # Table of contents
@@ -74,6 +74,7 @@
     - [13.2.5 49E.2 minimal runtime state contracts](#49e2-runtime-contracts)
     - [13.2.6 49E.3 borrowed Skyfield kernel adapter](#49e3-skyfield-adapter)
     - [13.2.7 NAIF and SPICE identifiers](#naif-spice-identifiers)
+    - [13.2.8 49E.4 observer-relative direction audit](#49e4-direction-audit)
 
 <a id="status-and-purpose"></a>
 
@@ -1732,3 +1733,57 @@ meaningful, whereas “NAIF 299 coordinates” is incomplete.
 
 Official background: [NASA/JPL About NAIF](https://naif.jpl.nasa.gov/naif/about.html)
 and [The SPICE concept](https://naif.jpl.nasa.gov/naif/spiceconcept.html).
+
+
+<a id="49e4-direction-audit"></a>
+
+### 13.2.8 49E.4 observer-relative direction audit
+
+**[Foundation]** The geometric ephemeris state answers where Venus and the
+observer are in space. It is not yet what reaches the eye. Light takes time to
+travel, so the Venus we receive at an observation instant left Venus at an
+earlier emission instant. Wenu must keep both instants, the travel time, and
+the distance rather than reducing the answer immediately to two angles.
+
+An **astrometric direction** includes that one-way light-time solution. An
+**apparent direction** starts with the astrometric direction and additionally
+accounts for aberration caused by observer motion and gravitational bending of
+light. Atmospheric refraction is a later observed-AltAz correction, not part
+of either fixed-axis ICRS direction.
+
+**[Undergraduate]** At reception time \(t_r\), the astrometric line-of-sight
+vector is
+
+\[
+\boldsymbol\rho = \boldsymbol r_t(t_e)-\boldsymbol r_o(t_r),
+\qquad
+t_e=t_r-\lVert\boldsymbol\rho\rVert/c.
+\]
+
+The target's retarded emission time \(t_e\) is solved iteratively. The
+terrestrial observer state is barycentric and includes the Earth's state plus
+the site's displacement and velocity; it is not interchangeable with the
+geocentre. This explicit state is needed so the later Moon test preserves
+topocentric parallax and diurnal effects.
+
+Skyfield's `observe()` corresponds to the astrometric light-time stage;
+`apparent()` is the distinct aberration and gravitational-deflection stage.
+The proposed Wenu result retains ICRS-oriented spherical geometry, distance,
+light time, emission and reception instants, iteration policy, observer
+identity, and the exact DE model/filename/SHA-256 provenance.
+
+The reception instant is neither a position reference epoch nor an equinox.
+The native direction uses fixed ICRS axes, so `CoordinateSpec.epoch` and
+`CoordinateSpec.equinox` remain absent. If a product later requests FK5 or
+ecliptic coordinates with an equinox, `CoordinateService` performs that
+representation change after the physical direction has been realized.
+
+> **Wenu implementation box — 49E.4 direction boundary**
+>
+> `docs/developer/solar_system_direction_realizer_49e4.md` owns the proposed
+> scientific contract. It adds no runtime realizer. Proposed 49E.5 supplies
+> the typed observer state and astrometric Venus direction; proposed 49E.6
+> adds apparent-place corrections. The later 49I.1 Venus layer transforms the
+> result once into the product frame and enters the existing projection,
+> Matplotlib renderer, and shared PNG/PDF/SVG exporter. No separate SVG
+> generator or post-export planetary overlay is permitted.
