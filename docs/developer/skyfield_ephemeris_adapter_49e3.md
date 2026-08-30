@@ -103,6 +103,21 @@ check. It refuses to download a missing kernel. With the installed
 direct Skyfield evaluation to absolute tolerance `1e-15` in AU and AU/day.
 It prints model, filename, SHA-256, coverage, NAIF identifiers, and the state.
 
+On Fernando's Mac, the installed `de440s.bsp` acceptance run resolved
+`DE440`, SHA-256
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`,
+and common coverage JD 2396752.5 through JD 2506352.5 TDB. At
+`2026-08-30T00:00:00 TDB`, Venus (NAIF 299) relative to the Solar-System
+barycentre (NAIF 0) was:
+
+- position AU:
+  `(0.3925912533858422, -0.5535374749397038, -0.2738181276850454)`;
+- velocity AU/day:
+  `(0.016873198219205025, 0.010316441911703824, 0.003574843186544155)`.
+
+All six adapter components agreed with direct Skyfield evaluation to absolute
+tolerance `1e-15`; the reported residual was zero within that tolerance.
+
 This comparison validates Wenu's adapter, identity, units, centre, frame, and
 time handoff. It does not independently revalidate the DE440 dynamical solution.
 
