@@ -740,10 +740,27 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
     for target in targets:
         assert f'<a id="{target}"></a>' in guide
 
-    assert 'version: "0.9.5.20260830.1"' in guide
-    assert 'last_updated: "2026-08-30T15:44:18Z"' in guide
-    assert "**Guide version:** `0.9.5.20260830.1`" in guide
-    assert "**Last updated:** `2026-08-30T15:44:18Z`" in guide
+    assert '**Guide version:** `0.9.5.20260830.2`' in guide
+    assert '**Last updated:** `2026-08-30T15:49:40Z`' in guide
+    assert "**Guide version:** `0.9.5.20260830.2`" in guide
+    assert "**Last updated:** `2026-08-30T15:49:40Z`" in guide
+    assert "reference epoch or equinox" not in guide
+    assert "epoch/equinox" not in guide
+    assert "- coordinate system and representation;" in guide
+    assert "- reference frame and its physical realization;" in guide
+    assert "equinox, only for a frame whose axes are equinox-based" in guide
+    assert "position reference epoch, only for a catalogue state" in guide
+    header = guide[:guide.index("# Table of contents")]
+    assert header.splitlines()[:8] == [
+        "# Wenu Coordinate Systems and Astronomical Objects",
+        "",
+        "**Subtitle:** Living scientific and implementation guide for architecture 0.9.5  ",
+        "**Author:** Wenu project  ",
+        "**Architecture version:** `0.9.5`  ",
+        "**Guide version:** `0.9.5.20260830.2`  ",
+        "**Last updated:** `2026-08-30T15:49:40Z`  ",
+        "**Language:** English",
+    ]
 
 
 def test_coordinate_guide_teaches_calendars_for_historical_use():
