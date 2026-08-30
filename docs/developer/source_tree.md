@@ -912,3 +912,9 @@ the retained 49E.5 vector without a second `observe()` call. The detailed
 contract is `docs/developer/apparent_direction_runtime_49e6.md`; the controlled
 installed-resource comparison is
 `tools/validate_49e6_apparent_direction.py`. No moving-body layer exists yet.
+
+`docs/developer/venus_vertical_slice_audit_49i1.md` owns the proposed first
+drawable Venus boundary. It identifies the missing ordinary-request
+`LayerRealizationContext` handoff and reserves upstream semantic path
+`sky/solar_system/planets/venus`. It adds no runtime layer, CLI option, or
+output change.

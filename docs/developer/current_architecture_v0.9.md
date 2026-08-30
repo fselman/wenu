@@ -218,6 +218,19 @@ comparison on 2026-08-30 after 95 focused tests and all 1,883 tests passed.
 Residuals from direct Skyfield were `3.152e-11` degree in right ascension and
 `1.544e-12` degree in declination. Drawable Venus remains 49I.1.
 
+The 49I.1 audit identifies one remaining chart-side prerequisite. Although
+`LayerRealizationContext` and `SkyLayer.realize()` exist, ordinary chart
+facades do not yet construct and pass the product-frame context. The proposed
+49I.1A closes that output-neutral handoff; 49I.1B then adds one opt-in Venus
+layer using the accepted provider, astrometric, apparent, transformation,
+projection, renderer, and shared-export sequence. No 49I.1 runtime or visible
+planet is part of the implemented architecture yet.
+
+Fernando scientifically and architecturally accepted the 49I.1 audit on
+2026-08-30 after all 48 current-documentation tests passed in 3.30 seconds.
+The accepted audit changes no runtime type or output; 49I.1A remains the next
+implementation milestone.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored
