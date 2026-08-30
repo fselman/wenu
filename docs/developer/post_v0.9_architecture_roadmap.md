@@ -448,6 +448,11 @@ with 30 deselected in 25.80 seconds, and all 1,860 tests in 84.78 seconds.
 Fernando accepted the scientific boundary after the installed DE440 comparison
 reported zero residual within `1e-15` for all six components.
 
+Fernando also accepted living coordinate-guide version
+`0.9.5.20260830.3` after MacDown verification of its separate-line header and
+all explicit table-of-contents anchors. The final documentation gate passed
+all 44 tests in 1.70 seconds.
+
 ## 9. Milestone 49F - SVG product verification
 
 **Status:** Complete at `c70cb29` after eight-product cross-product acceptance.
