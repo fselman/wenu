@@ -525,7 +525,7 @@ def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
         "Milestone 49E.1 — Ephemeris-provider contract audit",
         "Cartesian state source",
         "retarded emission-time evaluation",
-        "49E.1 changes no runtime type or output",
+        "49E.1 changed no runtime type or output",
         "Venus is the first 49I.1 body",
         "Acceptance verification passed all 41 documentation",
     ):
