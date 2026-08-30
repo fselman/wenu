@@ -226,6 +226,11 @@ layer using the accepted provider, astrometric, apparent, transformation,
 projection, renderer, and shared-export sequence. No 49I.1 runtime or visible
 planet is part of the implemented architecture yet.
 
+Fernando scientifically and architecturally accepted the 49I.1 audit on
+2026-08-30 after all 48 current-documentation tests passed in 3.30 seconds.
+The accepted audit changes no runtime type or output; 49I.1A remains the next
+implementation milestone.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored
