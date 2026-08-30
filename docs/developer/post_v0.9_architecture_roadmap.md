@@ -733,7 +733,8 @@ public option, shared point abstraction, or output change is added.
 
 ##### Milestone 49I.2B — Shared Solar-System point layer
 
-**Status:** Implementation and architectural review candidate.
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-30; ready for integration.
 
 `SolarSystemPointDescriptor` now freezes body target, centre, selection and
 entity keys, display name, and explicit apparent-correction policy.
@@ -745,8 +746,8 @@ in 1.82 seconds, and 1,881 routine tests with 30 deselected in 27.67 seconds.
 Documentation verification passed 53 tests in 2.16 seconds and the complete
 suite passed all 1,912 tests in 91.04 seconds. Main-versus-branch Venus parity
 was exact: byte-identical PNG, zero differing PDF raster pixels, and identical
-normalized SVG semantic and graphical content. Scientific and architectural
-acceptance remains pending.
+normalized SVG semantic and graphical content. Fernando scientifically and
+architecturally accepted 49I.2B and its stated non-goals on 2026-08-30.
 
 Add one object class at a time:
 

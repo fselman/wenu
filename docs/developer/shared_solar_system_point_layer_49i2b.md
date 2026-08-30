@@ -1,7 +1,7 @@
 # Milestone 49I.2B — Shared Solar-System point layer
 
-**Status:** Verification complete; scientific and architectural acceptance
-pending.
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-30; ready for integration.
 **Implementation baseline:** `b0d1dd4`  
 **Date:** 2026-08-30
 
@@ -79,7 +79,15 @@ The PNG files were byte-identical. PDF rasterization produced equal
 `315 x 402` RGBA arrays with zero differing pixels or channel values. After
 normalizing only creation time, source revision, output pathname, and generated
 Matplotlib reference IDs, the SVG semantic and graphical content was
-byte-identical. Scientific and architectural acceptance remains pending.
+byte-identical.
+
+## Scientific and architectural acceptance
+
+Fernando accepted the frozen descriptor, shared renderer-neutral orchestration,
+thin Venus specialization, exact output parity, test-only Moon reuse proof, and
+all stated non-goals on 2026-08-30. This acceptance authorizes integration of
+49I.2B; it does not authorize a production Moon layer or any deferred 49I.2C
+surface.
 
 ## Non-goals
 

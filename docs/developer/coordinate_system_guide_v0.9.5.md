@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.22`  
-**Last updated:** `2026-08-30T23:22:53Z`  
+**Guide version:** `0.9.5.20260830.23`  
+**Last updated:** `2026-08-30T23:47:41Z`  
 **Language:** English
 
 # Table of contents
@@ -2179,3 +2179,7 @@ export policy.
 > orchestration. `src/wenu/sky/venus.py` now supplies only the frozen Venus
 > descriptor and thin layer specialization. A test-only Moon descriptor proves
 > reuse without installing Moon chart content; `--moon` remains 49I.2C.
+>
+> Fernando scientifically and architecturally accepted 49I.2B on 2026-08-30
+> after all 1,912 tests passed and PNG, rendered-PDF, and normalized semantic-SVG
+> Venus parity against `main` was exact.
