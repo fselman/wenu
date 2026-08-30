@@ -718,8 +718,8 @@ does not pre-accept its correction policy or numerical results.
 
 ##### Milestone 49I.2A — Numerical Moon-direction validation
 
-**Status:** Scientifically accepted by Fernando on 2026-08-30; merge pending
-full-suite verification.
+**Status:** Scientifically accepted by Fernando on 2026-08-30; full-suite
+verification remains.
 
 The existing provider-neutral astrometric and apparent direction machinery is
 now exercised with target `moon`/NAIF 301 in deterministic tests. All 102

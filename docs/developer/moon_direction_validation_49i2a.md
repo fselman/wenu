@@ -1,7 +1,7 @@
 # Milestone 49I.2A — Numerical Moon-direction validation
 
-**Status:** Scientifically accepted by Fernando on 2026-08-30; merge pending
-full-suite verification.
+**Status:** Scientifically accepted by Fernando on 2026-08-30; full-suite
+verification remains.
 **Implementation baseline:** `fbf4dd9`  
 **Date:** 2026-08-30
 
