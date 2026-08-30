@@ -369,9 +369,11 @@ SHA-256 digest, coverage and coverage scale, and provenance. No real file is
 opened or hashed in this milestone.
 
 The unreleased `PositionStatus.TOPOCENTRIC` member is removed atomically.
-Observer origin remains `origin="observer"`; the default vacuum AltAz helper
-and its two direct coordinate-service tests now use `APPARENT`. A deterministic
-test-only Venus source proves the contract shape without installing a kernel
+Observer origin remains `origin="observer"`; `observer_altaz_spec()` now
+requires every caller to declare `position_status`. Observer-transformed
+celestial directions use `APPARENT`, while native horizon and AltAz-grid
+references use `GEOMETRIC`. A deterministic test-only Venus source proves the
+contract shape without installing a kernel
 adapter, direction realizer, moving-object layer, or output change.
 
 The exact contract and acceptance requirements are recorded in
