@@ -61,10 +61,12 @@ class FakeKernel:
         self._ids = {
             "solar system barycenter": 0,
             "venus": 299,
+            "earth": 399,
         }
         self._vectors = {
             0: FakeVector((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)),
             299: FakeVector((1.0, 2.0, 3.0), (0.1, 0.2, 0.3)),
+            399: FakeVector((0.4, 0.5, 0.6), (0.01, 0.02, 0.03)),
         }
 
     def decode(self, key):
@@ -129,6 +131,16 @@ def test_adapter_returns_complete_geometric_icrf_state(resolved):
     assert state.resource is source.resource
     assert "simultaneous geometric" in state.provenance[0]
     assert timescale.received[0].scale == "tdb"
+
+
+def test_adapter_subtracts_independent_barycentric_states(resolved):
+    source, _, _, _ = resolved
+
+    state = source.state(request(centre="earth"))
+
+    assert state.position == pytest.approx((0.6, 1.5, 2.4))
+    assert state.velocity == pytest.approx((0.09, 0.18, 0.27))
+    assert state.provider_centre_id == "399"
 
 
 def test_adapter_rejects_unsupported_cartesian_frame(resolved):
