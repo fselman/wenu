@@ -1,6 +1,6 @@
 # Milestone 49E.4 — Solar-System direction-realizer audit
 
-**Status:** Scientific review candidate; documentation and tests only
+**Status:** Scientifically accepted by Fernando on 2026-08-30; ready for integration
 
 **As-is baseline:** `644bac7`
 
@@ -188,4 +188,18 @@ do not perform astronomy.
 4. **49I.2 — Moon vertical slice:** topocentric parallax, angular size, phase,
    and stronger observer-location acceptance.
 
-Scientific acceptance of this audit is required before 49E.5 implementation.
+## 11. Scientific acceptance
+
+Fernando accepted the astrometric/apparent separation, explicit terrestrial
+observer-state boundary, retained distance/light-time/emission metadata,
+ICRS frame identity, epoch/equinox/instant distinctions, Venus-first order,
+and canonical PNG/PDF/SVG path on 2026-08-30.
+
+Acceptance verification passed all 45 current-documentation tests in 2.03
+seconds on Fernando's Mac. No visual comparison was required because 49E.4
+changes documentation and tests only and creates no runtime direction or
+chart geometry.
+
+This acceptance authorizes the separately reviewed 49E.5 astrometric-direction
+runtime milestone; it does not pre-accept that implementation or its numerical
+results.
