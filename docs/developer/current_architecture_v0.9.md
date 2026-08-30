@@ -165,7 +165,10 @@ is the first planned 49I.1 body, followed by the Moon.
 `ephemeris.py`: resolved resource identity, geometric state request, complete
 position-velocity state, and structural state source. The types own no kernel
 I/O, observer-relative direction realization, coordinate transformation,
-chart, or output policy. A deterministic source exists only in tests.
+chart, or output policy. A deterministic source exists only in tests. `observer_altaz_spec()` has no status default:
+observer-transformed celestial directions explicitly use `APPARENT`, native
+observer-local references use `GEOMETRIC`, and `OBSERVED` remains reserved for
+future atmospheric realization.
 
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
