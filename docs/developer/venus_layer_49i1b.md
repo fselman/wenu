@@ -1,6 +1,7 @@
 # Milestone 49I.1B — First drawable Venus layer
 
-**Status:** Implementation and scientific/visual review candidate.  
+**Status:** Scientifically and visually accepted by Fernando on 2026-08-30;
+ready for integration.
 **Implementation baseline:** `94d5e99`  
 **Date:** 2026-08-30
 
@@ -28,8 +29,15 @@ animation reuse remain later milestones.
 
 ## Acceptance
 
-Deterministic tests must prove one provider chain, one apparent correction,
-one coordinate transformation, opt-in/default-off behavior, and stable
-semantics. Fernando's Mac must run the focused, routine, and full suites plus
-an installed-DE440 regional PNG/PDF/SVG visual comparison. This document and
-the implementation remain unaccepted until that scientific and visual review.
+Deterministic tests prove one provider chain, one apparent correction, one
+coordinate transformation, opt-in/default-off behavior, and stable semantics.
+Fernando's Mac passed the 148-test implementation review, the 35-test focused
+regression after the signed-Green-designation SVG correction, and all 1,898
+tests in 82.01 seconds.
+
+The installed-DE440 regional acceptance chart placed Venus at the same
+position shown by Stellarium for La Ligua at the declared observation instant.
+The PNG, PDF, and semantic SVG products looked the same. SVG acceptance also
+exposed and closed a pre-existing collision between `G024.7-00.6` and
+`G024.7+00.6`; their scientific display names remain unchanged while their
+source-owned semantic keys now preserve `minus` and `plus`.
