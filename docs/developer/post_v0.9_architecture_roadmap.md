@@ -658,7 +658,8 @@ pre-accept the output-neutral runtime handoff or the later Venus chart.
 
 #### Milestone 49I.1A — Ordinary realization-context handoff
 
-**Status:** Implementation and scientific review candidate.
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-30; ready for integration.
 
 `chart_request_realization_context()` now constructs one immutable
 `LayerRealizationContext` before a declarative request's product loop. The
@@ -670,8 +671,10 @@ The current ordinary product vocabulary maps planisphere, regional,
 circumpolar, and binocular to observer-local AltAz, and all-sky to
 observer-origin Galactic coordinates. The separately resolved reference
 equinox remains context metadata; it is not assigned to either frame. 49I.1A
-adds no Venus layer or visible output change. Focused verification passes 109
-tests; Mac routine and full regression remain required.
+adds no Venus layer or visible output change. Acceptance verification passed
+166 focused tests, 1,859 routine tests with 30 deselected, and all 1,890 tests.
+The next bounded implementation after integration is 49I.1B, the opt-in Venus
+layer.
 
 Add one object class at a time:
 

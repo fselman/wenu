@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.12`  
-**Last updated:** `2026-08-30T18:45:00Z`  
+**Guide version:** `0.9.5.20260830.13`  
+**Last updated:** `2026-08-30T21:13:22Z`  
 **Language:** English
 
 # Table of contents
@@ -2018,3 +2018,11 @@ distinct even though one request carries all three kinds of information.
 > No planet, marker, label, or output change is installed. 49I.1B will be the
 > first consumer that evaluates and transforms Venus before the existing
 > projection, renderer, and shared PNG/PDF/SVG exporter.
+
+> **49I.1A scientific and architectural acceptance**
+>
+> Fernando accepted the output-neutral context handoff on 2026-08-30 after
+> 166 focused tests, 1,859 routine tests with 30 deselected, and all 1,890
+> tests passed. The complete suite verified that a chart-view `utc_datetime`
+> is normalized consistently with `t_astropy` and AltAz `obstime`. This does
+> not pre-accept the 49I.1B Venus layer or its visual result.

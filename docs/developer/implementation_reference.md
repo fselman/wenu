@@ -1020,6 +1020,11 @@ continue through `SkyLayer.realize()` to their unchanged
 `spherical_geometry()` method. Direct low-level calls may still omit the
 context. 49I.1A installs no moving-body layer.
 
+Fernando accepted this output-neutral handoff on 2026-08-30 after 166 focused,
+1,859 routine, and 1,890 complete tests passed. The complete suite verifies
+that observer instants supplied as `utc_datetime`, `t_astropy`, or AltAz
+`obstime` normalize through the same scientific context boundary.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a

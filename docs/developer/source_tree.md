@@ -926,3 +926,5 @@ ordinary resolved request and matching observer to one output-neutral
 to `CelestialSphere.draw_chart()`. No installed layer overrides `realize()` for
 planet work yet. The detailed contract is
 `docs/developer/ordinary_realization_context_49i1a.md`.
+Fernando accepted the output-neutral implementation on 2026-08-30 after the
+complete 1,890-test Mac suite passed.

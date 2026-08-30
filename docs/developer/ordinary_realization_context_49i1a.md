@@ -1,6 +1,6 @@
 # Milestone 49I.1A — Ordinary realization-context handoff
 
-**Status:** Implementation and scientific review candidate.  
+**Status:** Scientifically and architecturally accepted by Fernando on 2026-08-30; ready for integration.  
 **Implementation baseline:** `62da7b9`  
 **Date:** 2026-08-30
 
@@ -67,9 +67,15 @@ construction before a multi-product export; forwarding through the common
 composed-export boundary; unchanged legacy-layer behavior; and existing chart,
 masking, execution, and request-generation behavior.
 
-Focused verification passes 109 tests. The routine and full suites remain for
-Fernando's Mac because this workspace intentionally lacks the installed DE440
-kernel used by ordinary observer construction.
+Final Mac acceptance verification passed 166 focused tests in 4.97 seconds,
+1,859 routine tests with 30 deselected in 28.55 seconds, and all 1,890 tests in
+88.37 seconds. The full suite exposed and then verified the correction that
+normalizes a chart-view `utc_datetime` alongside `t_astropy` and AltAz
+`obstime`.
+
+Fernando scientifically and architecturally accepted the output-neutral
+49I.1A handoff on 2026-08-30. This acceptance does not pre-accept the 49I.1B
+Venus layer or its future visual result.
 
 ## Non-goals
 
