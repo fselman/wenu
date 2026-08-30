@@ -904,3 +904,11 @@ direction errors. `src/wenu/skyfield_ephemeris.py` additionally owns the
 same-kernel Skyfield observer-state adapter. The detailed contract is
 `docs/developer/astrometric_direction_runtime_49e5.md`; the controlled
 real-resource check is `tools/validate_49e5_astrometric_direction.py`.
+
+`src/wenu/solar_system_directions.py` also owns the 49E.6 apparent-policy and
+result contracts, while
+`src/wenu/skyfield_ephemeris.py::SkyfieldApparentDirectionRealizer` consumes
+the retained 49E.5 vector without a second `observe()` call. The detailed
+contract is `docs/developer/apparent_direction_runtime_49e6.md`; the controlled
+installed-resource comparison is
+`tools/validate_49e6_apparent_direction.py`. No moving-body layer exists yet.
