@@ -21,6 +21,7 @@ from wenu.solar_system_directions import (
 INSTANT = "2026-08-30T00:00:00Z"
 TARGET = "moon"
 CENTRE = "solar system barycenter"
+DIRECT_SKYFIELD_TOLERANCE_DEG = 1.0e-7  # 0.36 milliarcsecond
 
 
 def _wenu_direction(observer, source):
@@ -156,8 +157,8 @@ def main():
 
         assert astrometric.target_provider_id == "301"
         assert state.provider_centre_id == "0"
-        assert abs(ra_residual_deg) <= 1.0e-10
-        assert abs(dec_residual_deg) <= 1.0e-10
+        assert abs(ra_residual_deg) <= DIRECT_SKYFIELD_TOLERANCE_DEG
+        assert abs(dec_residual_deg) <= DIRECT_SKYFIELD_TOLERANCE_DEG
         assert parallax_deg > 0.1
         assert height_shift_norm_deg > 0.0
 

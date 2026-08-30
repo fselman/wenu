@@ -380,7 +380,7 @@ def test_49i2a_validates_moon_direction_without_installing_a_layer():
         "same latitude/longitude at zero elevation",
         "requires a non-zero height effect",
         "does not accept this policy for the Moon by analogy with Venus",
-        "within `1e-10` degree",
+        "within `1e-7` degree (`0.36` milliarcsecond)",
         "observation instant is neither a position reference epoch nor an equinox",
         "test-only NAIF-301 state",
         "without invoking a second `observe()`",
