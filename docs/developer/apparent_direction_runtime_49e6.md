@@ -1,6 +1,6 @@
 # Milestone 49E.6 — Apparent direction runtime
 
-**Status:** Implementation and scientific review candidate.  
+**Status:** Scientifically accepted by Fernando on 2026-08-30; ready for integration.  
 **Implementation baseline:** `3752142`  
 **Date:** 2026-08-30
 
@@ -67,3 +67,23 @@ may be drawn by a separate SVG generator or post-export overlay. 49I.1 must
 transform this renderer-neutral spherical geometry once into the product
 frame, then use the existing projection, Matplotlib renderer, and shared
 PNG/PDF/SVG exporter.
+
+## Scientific acceptance
+
+Fernando accepted the explicit astrometric-to-apparent handoff, retained
+relative velocity, single light-time authority, default deflector policy,
+correction provenance, fixed ICRS-oriented result, and canonical output
+boundary on 2026-08-30.
+
+The installed `de440s.bsp` Venus comparison from La Ligua at
+`2026-08-30T00:00:00Z` produced apparent ICRS right ascension
+`198.3663730463236` degrees and declination `-11.16330410839704` degrees. The
+apparent-minus-astrometric displacement was `-3.871250345e-03` degree in right
+ascension and `1.316336232e-03` degree in declination. Residuals from direct
+Skyfield `observe().apparent()` were `-3.152e-11` degree in right ascension and
+`-1.544e-12` degree in declination.
+
+Verification passed 95 focused tests in 3.79 seconds and all 1,883 tests in
+91.21 seconds on Fernando's Mac. No visual comparison was required because no
+production sky layer or output path consumes the result. This acceptance does
+not pre-accept the 49I.1 drawable Venus layer.
