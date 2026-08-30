@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.4`  
-**Last updated:** `2026-08-30T16:04:34Z`  
+**Guide version:** `0.9.5.20260830.5`  
+**Last updated:** `2026-08-30T16:12:39Z`  
 **Language:** English
 
 # Table of contents
@@ -1787,3 +1787,12 @@ representation change after the physical direction has been realized.
 > result once into the product frame and enters the existing projection,
 > Matplotlib renderer, and shared PNG/PDF/SVG exporter. No separate SVG
 > generator or post-export planetary overlay is permitted.
+
+> **49E.4 scientific acceptance**
+>
+> Fernando accepted the astrometric/apparent separation, explicit observer
+> state, retained distance and light-time evidence, epoch/equinox/instant
+> distinctions, Venus-first sequence, and shared output path on 2026-08-30.
+> All 45 current-documentation tests passed in 2.03 seconds. This accepts the
+> design boundary, not the future 49E.5 runtime implementation or its
+> numerical results.
