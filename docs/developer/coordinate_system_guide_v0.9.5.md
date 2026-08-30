@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.5`  
-**Last updated:** `2026-08-30T16:12:39Z`  
+**Guide version:** `0.9.5.20260830.6`  
+**Last updated:** `2026-08-30T16:23:25Z`  
 **Language:** English
 
 # Table of contents
@@ -75,6 +75,7 @@
     - [13.2.6 49E.3 borrowed Skyfield kernel adapter](#49e3-skyfield-adapter)
     - [13.2.7 NAIF and SPICE identifiers](#naif-spice-identifiers)
     - [13.2.8 49E.4 observer-relative direction audit](#49e4-direction-audit)
+    - [13.2.9 49E.5 astrometric direction runtime](#49e5-astrometric-runtime)
 
 <a id="status-and-purpose"></a>
 
@@ -1797,3 +1798,62 @@ representation change after the physical direction has been realized.
 > All 45 current-documentation tests passed in 2.03 seconds. This accepts the
 > design boundary, not the future 49E.5 runtime implementation or its
 > numerical results.
+
+
+<a id="49e5-astrometric-runtime"></a>
+
+### 13.2.9 49E.5 astrometric direction runtime
+
+**[Foundation]** Wenu can now calculate the direction from a named observer to
+a Solar-System body after allowing for the time its light needed to arrive.
+The observer is located once at the reception instant. Venus is then located
+at an earlier trial emission instant; the distance supplies a better travel
+time, and the calculation repeats until the travel time stops changing by more
+than the declared tolerance.
+
+The answer keeps more than two angles. It also keeps the distance, light time,
+reception instant, emission instant, observer, Venus identity, iteration count,
+and exact ephemeris fingerprint. This makes it possible to explain and
+reproduce how the plotted direction was obtained.
+
+**[Undergraduate]** `AstrometricDirectionRealizer` evaluates
+
+\[
+\boldsymbol\rho_n =
+\boldsymbol r_t(t_r-\tau_{n-1})-\boldsymbol r_o(t_r),
+\qquad
+\tau_n=\lVert\boldsymbol\rho_n\rVert/c,
+\]
+
+with a default convergence tolerance of `1e-12` day and a maximum of ten
+iterations. The observer state includes Earth plus the WGS84 terrestrial site
+and uses ICRF-oriented barycentric position and velocity. Each target state is
+requested from the already-resolved `EphemerisStateSource`; coverage failures
+therefore remain explicit at every trial emission instant.
+
+The spherical result uses fixed ICRS axes, observer origin, and astrometric
+status. `one-way-light-time` is its only declared correction. Aberration and
+gravitational deflection are deliberately absent until 49E.6; atmospheric
+refraction belongs to a later observed AltAz product.
+
+Reception and emission are observation-related physical instants. Neither is
+a position reference epoch, and neither is an equinox. Consequently the
+native `CoordinateSpec` has no `epoch` and no `equinox`. A later
+`CoordinateService` transformation may express the realized direction in an
+equinox-based product frame without changing the light-time solution.
+
+> **Wenu implementation box — 49E.5 astrometric runtime**
+>
+> `src/wenu/solar_system_directions.py` owns the frozen observer-state,
+> request, result, errors, and numerical realizer.
+> `src/wenu/skyfield_ephemeris.py::skyfield_observer_barycentric_state()`
+> borrows the same kernel as the 49E.3 source and evaluates the terrestrial
+> site at reception. `tests/test_solar_system_directions.py` protects the
+> deterministic physics and identities.
+> `tools/validate_49e5_astrometric_direction.py` performs the no-download
+> installed-DE440 Venus comparison with direct Skyfield `observe()`.
+>
+> No sky layer consumes this result yet. Future Venus, Moon, Sun, and planet
+> geometry must still transform once into the product frame and use the shared
+> projection, Matplotlib renderer, and PNG/PDF/SVG exporter. There is no
+> SVG-only astronomical path or post-export overlay.
