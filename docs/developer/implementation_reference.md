@@ -962,6 +962,20 @@ refuses to download a missing kernel and compares the six-component Venus/SSB
 state with direct Skyfield evaluation. Direction realization and any Venus
 layer remain later milestones.
 
+### Solar-System direction-realizer audit (Milestone 49E.4)
+
+`docs/developer/solar_system_direction_realizer_49e4.md` defines the proposed
+handoff from geometric Cartesian states to observer-relative directions. The
+astrometric stage owns the observer state at reception, iterative target state
+at retarded emission time, one-way light time, distance, convergence policy,
+and immutable resource provenance. A subsequent apparent stage adds declared
+aberration and gravitational deflection.
+
+49E.4 installs no runtime class. The proposed 49E.5 result surrounds one
+ICRS-oriented `SphericalPoints` value with distance and timing metadata before
+`CoordinateService` transforms it into the product frame. Neither reception
+nor emission instant is stored as a position reference epoch or equinox.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a
