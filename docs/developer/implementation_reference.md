@@ -991,6 +991,20 @@ kernel. `tools/validate_49e5_astrometric_direction.py` is the explicit
 no-download Venus comparison with direct Skyfield `observe()`. No installed
 layer consumes the result in 49E.5.
 
+### Apparent direction runtime (Milestone 49E.6)
+
+`src/wenu/solar_system_directions.py` owns frozen
+`ApparentCorrectionPolicy` and `ApparentDirection`. The accepted astrometric
+result also retains relative target-minus-observer velocity in AU/day.
+
+`src/wenu/skyfield_ephemeris.py::SkyfieldApparentDirectionRealizer` rebuilds a
+Skyfield astrometric value from that retained result and calls only
+`apparent()`. It verifies kernel, resource, observer state, and reception
+instant identity; it does not call `observe()` or repeat light-time iteration.
+The result is observer-origin apparent ICRS `SphericalPoints` with explicit
+deflection, aberration, and resource provenance. No production layer consumes
+it in 49E.6.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a
