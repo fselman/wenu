@@ -976,6 +976,21 @@ ICRS-oriented `SphericalPoints` value with distance and timing metadata before
 `CoordinateService` transforms it into the product frame. Neither reception
 nor emission instant is stored as a position reference epoch or equinox.
 
+### Astrometric direction runtime (Milestone 49E.5)
+
+`src/wenu/solar_system_directions.py` owns frozen
+`ObserverBarycentricState`, `AstrometricDirectionRequest`, and
+`AstrometricDirection`, plus `AstrometricDirectionRealizer`. The realizer
+evaluates the observer once at reception, requests ICRF/AU target states at
+iterated emission instants, and returns observer-origin ICRS spherical geometry
+with only `one-way-light-time` declared as a correction.
+
+`src/wenu/skyfield_ephemeris.py::skyfield_observer_barycentric_state()`
+borrows `Observer.skyfield` and accepts only a state source using the same open
+kernel. `tools/validate_49e5_astrometric_direction.py` is the explicit
+no-download Venus comparison with direct Skyfield `observe()`. No installed
+layer consumes the result in 49E.5.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a
