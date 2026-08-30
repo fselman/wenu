@@ -1471,15 +1471,18 @@ digest and opens the kernel; a later realizer owns retarded-time and
 apparent-place physics.
 
 The misleading `PositionStatus.TOPOCENTRIC` member has been removed.
-Topocentricity remains explicit as `origin="observer"`, while the default
-vacuum AltAz product is `APPARENT`. This separates where the coordinate begins
-from which physical corrections its direction represents.
+Topocentricity remains explicit as `origin="observer"`.
+`observer_altaz_spec()` deliberately has no status default: transformed
+celestial directions must declare `APPARENT`; native horizon, zenith/cardinal,
+and AltAz-grid references declare `GEOMETRIC`; and future refracted products
+will declare `OBSERVED`. This separates where the coordinate begins from which
+physical corrections its direction represents.
 
 > **Wenu implementation box — 49E.2 runtime boundary**
 >
 > `src/wenu/ephemeris.py` owns the immutable types and source protocol.
-> `src/wenu/coordinates.py::observer_altaz_spec()` owns the corrected observer
-> origin/apparent-status composition. `tests/test_ephemeris.py` owns the only
+> `src/wenu/coordinates.py::observer_altaz_spec()` owns the observer origin
+> while requiring each caller to declare its physical status explicitly. `tests/test_ephemeris.py` owns the only
 > deterministic Venus source. No installed code opens a new kernel, calculates
 > a digest, realizes a planet direction, registers a Venus layer, or changes
 > PNG/PDF/SVG output.
