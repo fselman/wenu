@@ -116,6 +116,7 @@ def _center_coordinates(chart, sky, observer=None) -> tuple[str, str]:
         lat_deg=[float(altitude)],
         coordinate_spec=observer_altaz_spec(
             resolved_observer,
+            position_status=PositionStatus.GEOMETRIC,
             provider="wenu chart center",
         ),
     )
