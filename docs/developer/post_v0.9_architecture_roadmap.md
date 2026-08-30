@@ -656,6 +656,23 @@ Fernando scientifically and architecturally accepted this audit on
 The next bounded implementation is 49I.1A; acceptance of the audit does not
 pre-accept the output-neutral runtime handoff or the later Venus chart.
 
+#### Milestone 49I.1A — Ordinary realization-context handoff
+
+**Status:** Implementation and scientific review candidate.
+
+`chart_request_realization_context()` now constructs one immutable
+`LayerRealizationContext` before a declarative request's product loop. The
+common export workflow and every canonical chart facade pass it to
+`CelestialSphere.draw_chart()`. Existing layers use the accepted compatibility
+adapter and retain their exact `spherical_geometry()` call.
+
+The current ordinary product vocabulary maps planisphere, regional,
+circumpolar, and binocular to observer-local AltAz, and all-sky to
+observer-origin Galactic coordinates. The separately resolved reference
+equinox remains context metadata; it is not assigned to either frame. 49I.1A
+adds no Venus layer or visible output change. Focused verification passes 109
+tests; Mac routine and full regression remain required.
+
 Add one object class at a time:
 
 1. Moon or one planet through an ephemeris provider;

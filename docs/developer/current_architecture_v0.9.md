@@ -231,6 +231,15 @@ Fernando scientifically and architecturally accepted the 49I.1 audit on
 The accepted audit changes no runtime type or output; 49I.1A remains the next
 implementation milestone.
 
+The 49I.1A review candidate closes the ordinary request-to-layer context
+handoff. One request-derived `LayerRealizationContext` reaches every canonical
+chart facade before `CelestialSphere.draw_chart()`. Existing layers ignore it
+through the concrete compatibility adapter and retain their established
+geometry. Ordinary pre-projection products are currently horizontal for
+planisphere, regional, circumpolar, and binocular, and Galactic for all-sky;
+the reference equinox remains a separate field. No Venus layer or visible
+output is installed by 49I.1A.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored

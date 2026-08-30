@@ -48,6 +48,9 @@ APPARENT_DIRECTION_CONTRACT = (
 VENUS_VERTICAL_SLICE_AUDIT = (
     DEVELOPER / "venus_vertical_slice_audit_49i1.md"
 )
+ORDINARY_REALIZATION_CONTEXT = (
+    DEVELOPER / "ordinary_realization_context_49i1a.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -112,7 +115,7 @@ def test_49e4_audits_the_observer_relative_direction_boundary():
     assert "13.2.8 49E.4 observer-relative direction audit" in guide
     assert "Skyfield's `observe()` corresponds to the astrometric" in guide
     assert "reception instant is neither a position reference epoch" in guide
-    assert "Guide version:** `0.9.5.20260830.11`" in guide
+    assert "Guide version:** `0.9.5.20260830.12`" in guide
     assert "49E.4 scientific acceptance" in guide
     assert "All 45 current-documentation tests passed in 2.03 seconds" in guide
     assert "45 current-documentation tests in 2.03" in contract
@@ -155,7 +158,7 @@ def test_49e5_records_astrometric_runtime_and_output_boundary():
     assert "13.2.9 49E.5 astrometric direction runtime" in guide
     assert "Neither is a position reference epoch" in guide
     assert "neither is an equinox" in guide
-    assert "Guide version:** `0.9.5.20260830.11`" in guide
+    assert "Guide version:** `0.9.5.20260830.12`" in guide
     assert "49E.5 scientific acceptance" in guide
     assert "converged in four iterations" in contract
     assert "`3.149e-11` degree" in contract
@@ -194,7 +197,7 @@ def test_49e6_records_apparent_runtime_and_single_light_time_authority():
     assert "13.2.10 49E.6 apparent direction runtime" in guide
     assert "Apparent direction runtime (Milestone 49E.6)" in implementation
     assert "without a second `observe()` call" in source_tree
-    assert "Guide version:** `0.9.5.20260830.11`" in guide
+    assert "Guide version:** `0.9.5.20260830.12`" in guide
     assert "Scientifically accepted by Fernando on 2026-08-30" in contract
     assert "`-3.152e-11` degree" in contract
     assert "95 focused tests in 3.79 seconds" in contract
@@ -227,11 +230,42 @@ def test_49i1_audits_the_first_drawable_venus_vertical_slice():
     assert "Milestone 49I.1 — Drawable Venus vertical slice" in roadmap
     assert "The 49I.1 audit identifies" in architecture
     assert "13.2.11 49I.1 drawable Venus audit" in guide
-    assert "Guide version:** `0.9.5.20260830.11`" in guide
+    assert "Guide version:** `0.9.5.20260830.12`" in guide
     assert "adds no runtime layer" in source_tree
     assert "Scientifically and architecturally accepted by Fernando" in audit
     assert "all 48 current-documentation tests in 3.30" in audit
     assert "49I.1 audit acceptance" in guide
+
+
+def test_49i1a_records_the_output_neutral_ordinary_context_handoff():
+    contract = " ".join(read(ORDINARY_REALIZATION_CONTEXT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "**Implementation baseline:** `62da7b9`",
+        "constructs it once before the product loop",
+        "observer-local vacuum AltAz",
+        "observer-origin Galactic",
+        "position reference epoch and equinox are absent",
+        "does not currently expose equatorial",
+        "unchanged `spherical_geometry",
+        "Focused verification passes 109 tests",
+        "adds no Venus layer",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.1A — Ordinary realization-context handoff" in roadmap
+    assert "The 49I.1A review candidate" in architecture
+    assert "Ordinary realization-context handoff (Milestone 49I.1A)" in implementation
+    assert "request_realization.py` owns the 49I.1A" in source_tree
+    assert "13.2.12 49I.1A ordinary realization context" in guide
+    assert "Guide version:** `0.9.5.20260830.12`" in guide
 
 
 def fenced_python(path):
@@ -912,8 +946,8 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
     for target in targets:
         assert f'<a id="{target}"></a>' in guide
 
-    assert "**Guide version:** `0.9.5.20260830.11`" in guide
-    assert "**Last updated:** `2026-08-30T18:15:00Z`" in guide
+    assert "**Guide version:** `0.9.5.20260830.12`" in guide
+    assert "**Last updated:** `2026-08-30T18:45:00Z`" in guide
     assert "reference epoch or equinox" not in guide
     assert "epoch/equinox" not in guide
     assert "- coordinate system and representation;" in guide
@@ -927,8 +961,8 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
         "**Subtitle:** Living scientific and implementation guide for architecture 0.9.5  ",
         "**Author:** Wenu project  ",
         "**Architecture version:** `0.9.5`  ",
-        "**Guide version:** `0.9.5.20260830.11`  ",
-        "**Last updated:** `2026-08-30T18:15:00Z`  ",
+        "**Guide version:** `0.9.5.20260830.12`  ",
+        "**Last updated:** `2026-08-30T18:45:00Z`  ",
         "**Language:** English",
     ]
 

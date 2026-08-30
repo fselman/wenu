@@ -209,6 +209,7 @@ class CircumpolarChart:
         layer_options = kwargs.pop("layer_options", None)
         export_options = kwargs.pop("export_options", None)
         observer = kwargs.pop("observer", None)
+        realization_context = kwargs.pop("realization_context", None)
         boundary_style = kwargs.pop("boundary_style", None)
         horizon_mask = kwargs.pop("horizon_mask", False)
         svg_provenance = kwargs.pop("svg_provenance", None)
@@ -223,6 +224,7 @@ class CircumpolarChart:
             renderer,
             path,
             observer=observer,
+            realization_context=realization_context,
             composition=composition,
             layer_options=layer_options,
             export_options=export_options,

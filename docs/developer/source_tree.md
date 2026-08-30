@@ -918,3 +918,11 @@ drawable Venus boundary. It identifies the missing ordinary-request
 `LayerRealizationContext` handoff and reserves upstream semantic path
 `sky/solar_system/planets/venus`. It adds no runtime layer, CLI option, or
 output change.
+
+`src/wenu/charts/request_realization.py` owns the 49I.1A translation from an
+ordinary resolved request and matching observer to one output-neutral
+`LayerRealizationContext`. `charts/request_generation.py`,
+`charts/export_workflow.py`, and the existing chart facades forward that value
+to `CelestialSphere.draw_chart()`. No installed layer overrides `realize()` for
+planet work yet. The detailed contract is
+`docs/developer/ordinary_realization_context_49i1a.md`.

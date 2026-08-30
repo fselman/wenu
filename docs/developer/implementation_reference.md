@@ -1005,6 +1005,21 @@ The result is observer-origin apparent ICRS `SphericalPoints` with explicit
 deflection, aberration, and resource provenance. No production layer consumes
 it in 49E.6.
 
+### Ordinary realization-context handoff (Milestone 49I.1A)
+
+`charts/request_realization.py::chart_request_realization_context(request,
+observer)` returns the immutable pre-projection `LayerRealizationContext` for
+one matching ordinary request and observer. Horizontal products receive an
+observer-local apparent AltAz specification; all-sky receives an
+observer-origin apparent Galactic specification. The reference equinox remains
+separate from both product specifications.
+
+`export_prepared_chart()` constructs the context once and forwards it through
+the shared composition/export boundary and chart facade. Existing layers
+continue through `SkyLayer.realize()` to their unchanged
+`spherical_geometry()` method. Direct low-level calls may still omit the
+context. 49I.1A installs no moving-body layer.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a
