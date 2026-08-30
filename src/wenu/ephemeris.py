@@ -69,7 +69,9 @@ class EphemerisResourceIdentity:
                 _text(getattr(self, name), name=name),
             )
 
-        digest = _text(self.sha256, name="sha256").lower()
+        if not isinstance(self.sha256, str):
+            raise TypeError("sha256 must be a string.")
+        digest = self.sha256.strip().lower()
         if len(digest) != 64 or any(
             character not in "0123456789abcdef" for character in digest
         ):
