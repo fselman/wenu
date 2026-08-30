@@ -594,7 +594,9 @@ class NonStellar(AstronomicalObject):
             lon_deg=tuple(longitude[index] for index in positions),
             lat_deg=tuple(latitude[index] for index in positions),
             coordinate_spec=observer_altaz_spec(
-                resolved, position_status=PositionStatus.APPARENT, provider="astropy OpenNGC"
+                resolved,
+                position_status=PositionStatus.APPARENT,
+                provider="astropy OpenNGC"
             ),
             closed=np.ones(len(table), dtype=bool),
             ids=identifiers,
@@ -644,7 +646,9 @@ class NonStellar(AstronomicalObject):
             lon_deg=longitude,
             lat_deg=latitude,
             coordinate_spec=observer_altaz_spec(
-                resolved, position_status=PositionStatus.APPARENT, provider="astropy OpenNGC"
+                resolved,
+                position_status=PositionStatus.APPARENT,
+                provider="astropy OpenNGC"
             ),
             ids=identifiers,
             names=identifiers,
