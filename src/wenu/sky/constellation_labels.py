@@ -135,7 +135,9 @@ class ConstellationLabels(GeometricalObject):
             lon_deg=np.asarray(lon_deg, dtype=float),
             lat_deg=np.asarray(lat_deg, dtype=float),
             coordinate_spec=observer_altaz_spec(
-                observer, position_status=PositionStatus.APPARENT, provider="astropy Hipparcos constellation labels"
+                observer,
+                position_status=PositionStatus.APPARENT,
+                provider="astropy Hipparcos constellation labels"
             ),
             labels=np.asarray(labels, dtype=object),
             metadata={
@@ -175,7 +177,9 @@ class ConstellationLabels(GeometricalObject):
             lon_deg=np.asarray([], dtype=float),
             lat_deg=np.asarray([], dtype=float),
             coordinate_spec=observer_altaz_spec(
-                observer, position_status=PositionStatus.APPARENT, provider="astropy Hipparcos constellation labels"
+                observer,
+                position_status=PositionStatus.APPARENT,
+                provider="astropy Hipparcos constellation labels"
             ),
             labels=np.asarray([], dtype=object),
             metadata={
