@@ -92,13 +92,18 @@ The as-is executable inventory contained only:
 2. the default status in `observer_altaz_spec()`; and
 3. two focused coordinate-service tests.
 
-There is no released interface to preserve. The helper and tests now use
-`PositionStatus.APPARENT`, matching vacuum AltAz directions transformed for
-an observer through Astropy. Existing callers already set
-`origin="observer"` through the helper. Skyfield stellar and constellation
-paths had already requested `APPARENT` explicitly.
+There is no released interface to preserve. `observer_altaz_spec()` now requires an explicit `position_status`; it has no
+scientific default. Catalogue and celestial directions transformed for an
+observer declare `APPARENT`. Native observer-local horizon, cardinal/zenith,
+and AltAz-grid constructions declare `GEOMETRIC`. The helper continues to set
+`origin="observer"` independently. Skyfield stellar and constellation paths
+had already requested `APPARENT` explicitly.
 
 This is an atomic internal correction, not a compatibility deprecation.
+
+Requiring the keyword prevents future callers from silently assigning one
+physical meaning to unlike geometry. It also leaves `OBSERVED` reserved for a
+future non-vacuum atmospheric/refraction realization.
 
 ## 4. Scientific boundary preserved
 
@@ -130,7 +135,8 @@ the structural protocol and returns a deterministic Venus state. Tests protect:
 - rejection of position-only construction;
 - structural provider conformance;
 - removal of `TOPOCENTRIC`; and
-- apparent status plus observer origin for default vacuum AltAz.
+- mandatory explicit AltAz status, apparent observer-transformed directions,
+  and geometric native observer-local references.
 
 This proves contract shape and ownership, not ephemeris accuracy.
 
