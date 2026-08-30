@@ -40,10 +40,8 @@ def main():
         state = source.state(request)
 
         time = observer.timescale.from_astropy(Time(INSTANT, scale="tdb"))
-        direct = (
-            observer.ephemeris["venus"]
-            - observer.ephemeris["solar system barycenter"]
-        ).at(time)
+        # NAIF 0 is the exact zero origin of a barycentric state.
+        direct = observer.ephemeris["venus"].at(time)
         np.testing.assert_allclose(
             state.position,
             direct.position.au,
