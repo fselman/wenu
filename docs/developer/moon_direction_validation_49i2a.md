@@ -41,8 +41,8 @@ height effect. The requirement proves data flow, not a claim that the small
 The current explicit policy carries deflector NAIF IDs `(10, 599, 699)`, Earth
 deflection enabled, and aberration enabled. 49I.2A does not accept this policy
 for the Moon by analogy with Venus. Acceptance requires the Wenu apparent
-direction to agree with direct Skyfield `apparent()` within `1e-7` degree (`0.36` milliarcsecond) in right ascension and
-declination for the declared installed-kernel case. This deliberately sub-mas
+direction to agree with direct Skyfield `apparent()` within `1e-7` degree
+(`0.36` milliarcsecond) in right ascension and declination for the declared installed-kernel case. This deliberately sub-mas
 threshold allows small numerical differences between Wenu’s explicit generic
 light-time realization and Skyfield’s integrated `observe()` path while still
 rejecting any scientifically meaningful chart-position disagreement.
