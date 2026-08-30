@@ -276,8 +276,8 @@ parallax and a 27.91-mas 52 m minus 0 m observer-height displacement. The
 complete suite then passed all 1,902 tests in 89.59 seconds. It adds no runtime
 production type or chart content.
 
-The accepted 49I.2B implementation extracts the shared renderer-neutral symbolic-point
-orchestration into `sky/solar_system_points.py`. A frozen descriptor owns body
+The accepted 49I.2B implementation extracts the shared renderer-neutral
+symbolic-point orchestration into `sky/solar_system_points.py`. A frozen descriptor owns body
 identity, declared centre, selection key, and explicit correction policy.
 `VenusLayer` is now a thin specialization with unchanged downstream ownership;
 a test-only Moon descriptor proves reuse without installing Moon content.
