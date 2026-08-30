@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.6`  
-**Last updated:** `2026-08-30T16:23:25Z`  
+**Guide version:** `0.9.5.20260830.7`  
+**Last updated:** `2026-08-30T16:43:56Z`  
 **Language:** English
 
 # Table of contents
@@ -1857,3 +1857,15 @@ equinox-based product frame without changing the light-time solution.
 > geometry must still transform once into the product frame and use the shared
 > projection, Matplotlib renderer, and PNG/PDF/SVG exporter. There is no
 > SVG-only astronomical path or post-export overlay.
+
+> **49E.5 scientific acceptance**
+>
+> Fernando accepted the observer-state, light-time, ICRS identity, retained
+> evidence, and output-boundary decisions on 2026-08-30. The installed DE440
+> Venus comparison converged in four iterations. Its absolute residuals from
+> direct Skyfield were `3.149e-11` degree in right ascension,
+> `1.544e-12` degree in declination, `1.348e-12` AU in distance,
+> `7.783e-15` day in light time, and `7.994e-15` day in emission time.
+> Verification passed 111 focused tests, 1,848 routine tests with 30
+> deselected, and all 1,878 tests. No visual render was required because the
+> result is not connected to a production layer.
