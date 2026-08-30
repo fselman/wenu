@@ -419,7 +419,7 @@ it must not recompute moving-object geometry or use a separate SVG-only path.
 
 ### Milestone 49E.3 — Borrowed Skyfield ephemeris adapter
 
-**Status:** Implementation review candidate; real-kernel acceptance pending.
+**Status:** Scientifically accepted by Fernando on 2026-08-30; integration pending.
 
 `skyfield_ephemeris.py` adapts the already-open `Observer` Skyfield/JPL SPK
 resource to `EphemerisStateSource`. Resolution fingerprints the exact BSP
@@ -442,6 +442,11 @@ within `1e-15` for all six components at the fixed TDB instant.
 The exact contract is `skyfield_ephemeris_adapter_49e3.md`. This milestone
 adds no direction realizer, chart layer, CLI/TOML control, or output change.
 Venus rendering remains 49I.1 and must use the canonical PNG/PDF/SVG path.
+
+Acceptance evidence is 72 focused tests in 1.73 seconds, 1,830 routine tests
+with 30 deselected in 25.80 seconds, and all 1,860 tests in 84.78 seconds.
+Fernando accepted the scientific boundary after the installed DE440 comparison
+reported zero residual within `1e-15` for all six components.
 
 ## 9. Milestone 49F - SVG product verification
 
