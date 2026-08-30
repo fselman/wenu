@@ -1,6 +1,6 @@
 # Milestone 49E.5 — Astrometric direction runtime
 
-**Status:** Implementation and scientific review candidate
+**Status:** Scientifically accepted by Fernando on 2026-08-30; ready for integration
 
 **Implementation baseline:** `888ca2c`
 
@@ -153,3 +153,33 @@ Acceptance requires:
 5. pedagogical review of coordinate-guide version `0.9.5.20260830.6`; and
 6. confirmation that no visual render is required because no chart layer can
    consume the result.
+
+## 10. Scientific acceptance
+
+Fernando accepted the typed terrestrial observer state, bounded retarded-time
+iteration, observer-origin astrometric ICRS identity, retained distance and
+timing evidence, exact resource provenance, correction set, non-goals, and
+canonical output boundary on 2026-08-30. He also accepted coordinate-guide
+version `0.9.5.20260830.7`.
+
+The installed `de440s.bsp` Venus comparison from La Ligua at
+`2026-08-30T00:00:00Z` converged in four iterations. Against direct Skyfield
+`observe()`, absolute residuals were:
+
+- right ascension: `3.149e-11` degree;
+- declination: `1.544e-12` degree;
+- distance: `1.348e-12` AU, approximately 0.20 metre;
+- one-way light time: `7.783e-15` day; and
+- emission instant: `7.994e-15` day.
+
+The distance gate is physically coupled to the declared light-time tolerance
+as \(c\,\Delta\tau\), rather than imposing an unrelated AU tolerance. The
+actual residual is much smaller than that allowed bound.
+
+Verification passed 111 focused tests in 4.33 seconds, 1,848 routine tests
+with 30 deselected in 27.03 seconds, and all 1,878 tests in 85.55 seconds on
+Fernando's Mac. No visual comparison was required because no production layer
+or output path consumes the result.
+
+This acceptance does not pre-accept 49E.6 apparent-place corrections or the
+49I.1 drawable Venus layer.
