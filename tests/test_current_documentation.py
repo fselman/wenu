@@ -638,6 +638,9 @@ def test_49e3_records_borrowed_skyfield_adapter_and_non_goals():
         "does not independently revalidate the DE440 dynamical solution",
         "not a sky direction and is not drawable",
         "Venus rendering remains 49I.1",
+        "c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2",
+        "common coverage JD 2396752.5 through JD 2506352.5 TDB",
+        "residual was zero within that tolerance",
     ):
         assert phrase in contract
 
@@ -654,6 +657,8 @@ def test_49e3_records_borrowed_skyfield_adapter_and_non_goals():
     assert "DE440` identifies the astronomical solution family" in guide
     assert "common intersection of all SPK segment intervals" in guide
     assert "Wenu implementation box — 49E.3 installed adapter" in guide
+    assert "49E.3 real-resource evidence" in guide
+    assert "zero residual within an absolute tolerance" in guide
     assert "Borrowed Skyfield ephemeris adapter (Milestone 49E.3)" in implementation
     assert "The adapter has no `close()`" in implementation
     assert "`skyfield_ephemeris.py` now owns the first real" in source_tree
