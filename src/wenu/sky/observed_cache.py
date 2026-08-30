@@ -5,6 +5,7 @@ from __future__ import annotations
 import numpy as np
 
 from wenu.coordinate_service import CoordinateService
+from wenu.coordinates import PositionStatus
 from wenu.coordinates import (
     icrs_catalogue_spec,
     observation_context,
@@ -99,7 +100,7 @@ def icrs_point_arrays_to_altaz(
     )
     horizontal = CoordinateService().transform(
         native,
-        observer_altaz_spec(observer, provider=provider),
+        observer_altaz_spec(observer, position_status=PositionStatus.APPARENT, provider=provider),
         observation=observation_context(observer),
     )
     return horizontal.lon_deg, horizontal.lat_deg
@@ -127,7 +128,7 @@ def icrs_curve_arrays_to_altaz(
     )
     horizontal = CoordinateService().transform(
         native,
-        observer_altaz_spec(observer, provider=provider),
+        observer_altaz_spec(observer, position_status=PositionStatus.APPARENT, provider=provider),
         observation=observation_context(observer),
     )
     return horizontal.lon_deg, horizontal.lat_deg
