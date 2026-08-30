@@ -635,7 +635,8 @@ must reproduce that baseline rather than bypass the canonical pipeline.
 
 ### Milestone 49I.1 — Drawable Venus vertical slice
 
-**Status:** Architecture and scientific audit candidate.
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-30; ready for integration.
 
 The as-is audit is recorded in `venus_vertical_slice_audit_49i1.md`. The
 accepted 49E.3–49E.6 provider/direction chain is ready, but ordinary chart
@@ -678,8 +679,8 @@ layer.
 
 #### Milestone 49I.1B — First drawable Venus layer
 
-**Status:** Scientifically and visually accepted by Fernando on 2026-08-30;
-ready for integration.
+**Status:** Scientifically and visually accepted by Fernando and merged in
+`e7fa6ab` on 2026-08-30.
 
 The opt-in `VenusLayer` now consumes the accepted 49E.3–49E.6 direction chain
 through the 49I.1A context and transforms once into the product frame. Public
@@ -692,6 +693,27 @@ seconds. Fernando confirmed that Venus agrees with Stellarium at the declared
 La Ligua observation instant and that PNG, PDF, and SVG look the same. The SVG
 run additionally exposed and closed a signed Green-catalogue semantic-key
 collision without weakening hierarchy validation.
+
+#### Milestone 49I.2 — Moon and shared solar-system-body pipeline
+
+**Status:** Architecture and scientific audit candidate.
+
+`moon_shared_body_pipeline_audit_49i2.md` tests the single-pipeline goal
+against the merged Venus implementation. The target is one typed downstream
+path with interchangeable geometric-state sources and body-appearance
+strategies, not one hard-coded algorithm pretending that JPL planets, orbital
+elements, comets, and TEME satellites are scientifically identical.
+
+The proposed sequence is 49I.2A Moon numerical direction validation, 49I.2B
+shared renderer-neutral point-layer extraction with exact Venus parity, and
+49I.2C the first opt-in drawable Moon point. Physical disk, phase,
+illumination, angular diameter, and limb orientation remain 49I.3. The audit
+adds no runtime or output change.
+
+Fernando accepted all four audit decisions on 2026-08-30 after all 51
+current-documentation tests passed in 1.88 seconds. The next bounded
+implementation is 49I.2A Moon numerical direction validation; this acceptance
+does not pre-accept its correction policy or numerical results.
 
 Add one object class at a time:
 

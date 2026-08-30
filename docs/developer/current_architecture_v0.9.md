@@ -255,6 +255,19 @@ Stellarium position for the declared La Ligua instant; PNG, PDF, and semantic
 SVG looked the same. Acceptance passed the 148-test implementation review, 35
 focused post-correction tests, and all 1,898 tests in 82.01 seconds.
 
+The proposed 49I.2 audit now distinguishes the common moving-body chart
+pipeline from its interchangeable state-source and appearance policies.
+Current code proves one installed JPL/Skyfield Venus route only. The Moon is
+the next proposed body because strong topocentric parallax tests observer
+ownership; its correction policy must be compared with direct Skyfield rather
+than inherited from Venus by assumption. No Moon or generic body layer is part
+of the implemented architecture yet.
+
+Fernando scientifically and architecturally accepted the 49I.2 audit on
+2026-08-30 after all 51 current-documentation tests passed in 1.88 seconds.
+The accepted audit changes no runtime type or output. 49I.2A Moon numerical
+direction validation is the next bounded implementation.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored

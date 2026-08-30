@@ -1039,6 +1039,15 @@ instant, and PNG, PDF, and semantic SVG looked the same. Acceptance evidence is
 148 implementation-review tests, 35 focused post-correction tests, and all
 1,898 tests in 82.01 seconds.
 
+### Proposed Moon and shared-body boundary (Milestone 49I.2)
+
+`moon_shared_body_pipeline_audit_49i2.md` identifies the invariant path from a
+typed state source through observer-relative astrometric and apparent
+direction, one product-frame transformation, and ordinary rendering/export.
+It keeps provider-specific orbit evaluation and body-specific physical
+appearance behind separate contracts. No shared runtime layer or Moon is
+installed by the audit.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a

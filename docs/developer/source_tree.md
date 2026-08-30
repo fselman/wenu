@@ -923,8 +923,9 @@ output change.
 ordinary resolved request and matching observer to one output-neutral
 `LayerRealizationContext`. `charts/request_generation.py`,
 `charts/export_workflow.py`, and the existing chart facades forward that value
-to `CelestialSphere.draw_chart()`. No installed layer overrides `realize()` for
-planet work yet. The detailed contract is
+to `CelestialSphere.draw_chart()`. `VenusLayer` is now the first installed
+moving-body override of `realize()`; no Moon or generic shared-body layer is
+installed. The detailed context contract is
 `docs/developer/ordinary_realization_context_49i1a.md`.
 Fernando accepted the output-neutral implementation on 2026-08-30 after the
 complete 1,890-test Mac suite passed.
@@ -933,3 +934,9 @@ complete 1,890-test Mac suite passed.
 the existing ephemeris and direction services and returns product-frame
 spherical geometry without projecting or rendering. The layer's stable
 semantic path is `sky/solar_system/planets/venus`.
+
+`docs/developer/moon_shared_body_pipeline_audit_49i2.md` owns the proposed
+Moon validation and shared solar-system point-layer boundary. It records what
+is invariant across bodies, what varies by typed state provider, and what
+belongs to later physical-appearance geometry. It adds no runtime module or
+output.
