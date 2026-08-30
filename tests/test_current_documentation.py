@@ -740,8 +740,6 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
     for target in targets:
         assert f'<a id="{target}"></a>' in guide
 
-    assert '**Guide version:** `0.9.5.20260830.2`' in guide
-    assert '**Last updated:** `2026-08-30T15:49:40Z`' in guide
     assert "**Guide version:** `0.9.5.20260830.2`" in guide
     assert "**Last updated:** `2026-08-30T15:49:40Z`" in guide
     assert "reference epoch or equinox" not in guide
