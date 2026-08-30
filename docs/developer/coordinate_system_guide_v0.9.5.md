@@ -48,8 +48,21 @@ lang: en
 - [11. Review questions for Fernando](#11-review-questions-for-fernando)
 - [12. Maintenance rule](#12-maintenance-rule)
 - [13. Practical guide to reference systems, equinoxes, and epochs](#13-practical-guide-to-celestial-reference-systems-equinoxes-and-epochs)
-  - [13.1 Public celestial reference policy](#131-public-celestial-reference-policy)
-  - [13.2 Scene dependencies and moving astronomical objects](#132-scene-dependencies-and-moving-astronomical-objects)
+  - [13.1 Public celestial reference policy](#public-celestial-reference-policy)
+    - [13.1.1 Coordinate system versus reference frame](#coordinate-system-vs-reference-frame)
+    - [13.1.2 Equinox versus position epoch and observation instant](#epoch-vs-equinox)
+    - [13.1.3 Requesting a reference equinox](#requesting-reference-equinox)
+    - [13.1.4 Julian and Besselian year labels](#julian-besselian-labels)
+    - [13.1.5 Gaia reference epoch is not an equinox](#gaia-epoch-not-equinox)
+    - [13.1.6 Implementation and scientific acceptance](#reference-policy-acceptance)
+  - [13.2 Scene dependencies and moving astronomical objects](#moving-object-architecture)
+    - [13.2.1 49D.1 scientific and pedagogical acceptance](#49d1-acceptance)
+    - [13.2.2 49D.2 minimal realization handoff](#49d2-handoff)
+    - [13.2.3 49D.2 scientific and pedagogical acceptance](#49d2-acceptance)
+    - [13.2.4 49E.1 ephemeris-provider design](#49e1-provider-design)
+    - [13.2.5 49E.2 minimal runtime state contracts](#49e2-runtime-contracts)
+    - [13.2.6 49E.3 borrowed Skyfield kernel adapter](#49e3-skyfield-adapter)
+    - [13.2.7 NAIF and SPICE identifiers](#naif-spice-identifiers)
 
 # Status and purpose
 
@@ -1083,7 +1096,11 @@ accurate. A passing documentation test is not a substitute for Fernando's
 scientific and pedagogical review.
 # 13. Practical guide to celestial reference systems, equinoxes, and epochs
 
+<a id="public-celestial-reference-policy"></a>
+
 ## 13.1 Public celestial reference policy
+
+<a id="coordinate-system-vs-reference-frame"></a>
 
 ### 13.1.1 Coordinate system and reference frame
 
@@ -1128,7 +1145,24 @@ scientific identity is not a single name: it includes system/frame,
 realization/provider, equinox where applicable, and position epoch where
 applicable.
 
+<a id="epoch-vs-equinox"></a>
+
 ### 13.1.2 Equinox, position epoch, and observation instant
+
+> **Terminology contract — four different questions**
+>
+> - **Coordinate system:** Which coordinate variables and geometry are used?
+> - **Reference frame:** Which physically realized axes, origin, and conventions
+>   make that system operational?
+> - **Equinox:** For an equinox-based frame such as FK5, which orientation of
+>   the equator/ecliptic reference axes is used?
+> - **Position epoch:** At what instant is a catalogue object's stated position
+>   and motion model referenced?
+>
+> In Wenu, `CoordinateSpec.epoch` means a **position reference epoch**; it must
+> never be used as a synonym for `CoordinateSpec.equinox`. The observation
+> instant is a third time concept: it says when an observer-dependent physical
+> realization is evaluated.
 
 **[Foundation]** Earth's rotation axis slowly changes direction. Consequently,
 the equatorial grid for J2000 and the grid "of date" are slightly rotated with
@@ -1145,6 +1179,8 @@ motion, parallax, and radial velocity. The observation instant enters
 observer-local transformations such as AltAz. Wenu keeps these three time
 concepts separate and rejects unsupported position propagation rather than
 relabeling catalogue coordinates.
+
+<a id="requesting-reference-equinox"></a>
 
 ### 13.1.3 Requesting a reference equinox
 
@@ -1176,6 +1212,8 @@ context. The policy controls reference geometry; it does not yet change the
 chart family's projection frame or propagate provider positions to a requested
 epoch.
 
+<a id="julian-besselian-labels"></a>
+
 ### 13.1.4 Julian and Besselian year labels
 
 Section 5 distinguishes civil calendars, continuous day counts, and
@@ -1196,6 +1234,8 @@ approximately 365.2422 days. Consequently `B1950.0` and `J1950.0` denote
 slightly different instants. The usual association—FK4/Besselian and
 FK5/Julian—is historically and scientifically meaningful, although the year
 label alone never fully specifies a reference frame.
+
+<a id="gaia-epoch-not-equinox"></a>
 
 ### 13.1.5 The Gaia reference epoch is not an equinox
 
@@ -1230,6 +1270,8 @@ document the ICRS right-ascension origin, its intended proximity to the
 dynamical equinox at J2000.0, and the measured frame-bias offset between them.
 
 
+<a id="reference-policy-acceptance"></a>
+
 ### 13.1.6 Implementation and scientific acceptance
 
 The public reference policy was accepted on 2026-08-29 through the installed
@@ -1255,6 +1297,8 @@ SVG runs may serialize equivalent same-style star markers in a different
 order; the normalized graphical-record comparison was identical. That
 reproducibility observation is separate from coordinate correctness and does
 not alter the rendered chart.
+
+<a id="moving-object-architecture"></a>
 
 ## 13.2 Scene dependencies and moving astronomical objects
 
@@ -1331,6 +1375,8 @@ reuse keyed by immutable scientific identity.
 > integration point in 49D.2. Selection of a real JPL-or-equivalent ephemeris
 > and the first planet belong to later 49E/49I milestones.
 
+<a id="49d1-acceptance"></a>
+
 ### 13.2.1 49D.1 scientific and pedagogical acceptance
 
 Fernando accepted the scene-dependency explanation on 2026-08-29. In
@@ -1341,6 +1387,8 @@ requires their convergence in one explicit spherical product frame before
 projection. Verification passed 39 documentation tests, 1,789 routine tests
 with 30 deselected, and all 1,819 tests. Because the milestone changes no
 runtime geometry or appearance, no visual comparison was required.
+
+<a id="49d2-handoff"></a>
 
 ### 13.2.2 49D.2 minimal realization handoff
 
@@ -1390,6 +1438,8 @@ provenance, and target-`CoordinateSpec` composition.
 > `solar-system/planets` path. A separate SVG generator or post-export
 > coordinate overlay would violate Wenu's architecture.
 
+<a id="49d2-acceptance"></a>
+
 ### 13.2.3 49D.2 scientific and pedagogical acceptance
 
 Fernando accepted the minimal realization handoff, exact compatibility branch,
@@ -1399,6 +1449,8 @@ tests with 30 deselected in 27.61 seconds, and all 1,828 tests in 90.00
 seconds. No visual comparison was required because production requests and
 geometry are unchanged.
 
+
+<a id="49e1-provider-design"></a>
 
 ### 13.2.4 49E.1 ephemeris-provider design
 
@@ -1452,6 +1504,8 @@ physics.
 > All 41 documentation tests passed in 3.26 seconds. No visual comparison was
 > required because this design audit changes no runtime geometry or output.
 
+<a id="49e2-runtime-contracts"></a>
+
 ### 13.2.5 49E.2 minimal runtime state contracts
 
 **[Foundation]** Wenu can now describe one ephemeris calculation without yet
@@ -1487,6 +1541,8 @@ physical corrections its direction represents.
 > a digest, realizes a planet direction, registers a Venus layer, or changes
 > PNG/PDF/SVG output.
 
+
+<a id="49e3-skyfield-adapter"></a>
 
 ### 13.2.6 49E.3 borrowed Skyfield kernel adapter
 
@@ -1534,3 +1590,30 @@ an observer sees Venus.
 > Skyfield evaluation with zero residual within an absolute tolerance of
 > (10^{-15}). This validates Wenu's adapter handoff, not the DE440 dynamical
 > solution independently.
+
+
+<a id="naif-spice-identifiers"></a>
+
+### 13.2.7 NAIF and SPICE identifiers
+
+**[Foundation]** **NAIF** is an acronym for NASA's **Navigation and Ancillary
+Information Facility**, a group at the Jet Propulsion Laboratory. NAIF leads
+the development and distribution of **SPICE**, whose name expands to
+**Spacecraft, Planet, Instrument, C-matrix, Events**. SPICE organizes the
+geometric information needed to interpret planetary and spacecraft
+observations.
+
+A **NAIF ID** is a stable integer used by SPICE to identify a body or
+barycentre. In the 49E.3 Venus check, 299 identifies Venus and 0 identifies the
+Solar-System barycentre. The integer identifies the object; it does not by
+itself specify a coordinate system, reference frame, centre, epoch, equinox,
+time scale, or correction policy.
+
+**[Undergraduate]** NAIF body codes are provider-native identifiers retained as
+provenance alongside Wenu's stable object keys. An `EphemerisStateRequest`
+separately declares target, centre, frame, instant, and time scale. Thus
+“target NAIF 299, centre NAIF 0, ICRF, 2026-08-30 TDB” is scientifically
+meaningful, whereas “NAIF 299 coordinates” is incomplete.
+
+Official background: [NASA/JPL About NAIF](https://naif.jpl.nasa.gov/naif/about.html)
+and [The SPICE concept](https://naif.jpl.nasa.gov/naif/spiceconcept.html).
