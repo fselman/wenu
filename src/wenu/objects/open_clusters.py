@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 from astropy.table import Table
 
+from wenu.coordinates import PositionStatus
 from wenu.coordinates import icrs_catalogue_spec, observer_altaz_spec
 from wenu.geometry.spherical import SphericalPoints
 from wenu.objects.astronomical_object import AstronomicalObject
@@ -158,7 +159,7 @@ class OpenClusters(AstronomicalObject):
                 lon_deg=np.asarray([], dtype=float),
                 lat_deg=np.asarray([], dtype=float),
                 coordinate_spec=observer_altaz_spec(
-                    resolved, provider="astropy OpenClust"
+                    resolved, position_status=PositionStatus.APPARENT, provider="astropy OpenClust"
                 ),
                 ids=identifiers,
                 labels=identifiers,
@@ -177,7 +178,7 @@ class OpenClusters(AstronomicalObject):
             lon_deg=azimuth,
             lat_deg=altitude,
             coordinate_spec=observer_altaz_spec(
-                resolved, provider="astropy OpenClust"
+                resolved, position_status=PositionStatus.APPARENT, provider="astropy OpenClust"
             ),
             ids=identifiers,
             labels=identifiers,
