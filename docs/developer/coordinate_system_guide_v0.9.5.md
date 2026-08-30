@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.7`  
-**Last updated:** `2026-08-30T16:43:56Z`  
+**Guide version:** `0.9.5.20260830.9`  
+**Last updated:** `2026-08-30T17:31:00Z`  
 **Language:** English
 
 # Table of contents
@@ -76,6 +76,7 @@
     - [13.2.7 NAIF and SPICE identifiers](#naif-spice-identifiers)
     - [13.2.8 49E.4 observer-relative direction audit](#49e4-direction-audit)
     - [13.2.9 49E.5 astrometric direction runtime](#49e5-astrometric-runtime)
+    - [13.2.10 49E.6 apparent direction runtime](#49e6-apparent-runtime)
 
 <a id="status-and-purpose"></a>
 
@@ -1869,3 +1870,63 @@ equinox-based product frame without changing the light-time solution.
 > Verification passed 111 focused tests, 1,848 routine tests with 30
 > deselected, and all 1,878 tests. No visual render was required because the
 > result is not connected to a production layer.
+
+<a id="49e6-apparent-runtime"></a>
+
+### 13.2.10 49E.6 apparent direction runtime
+
+**[Foundation]** Light-time correction tells Wenu where Venus was when the
+light now reaching the observer left it. Two further effects slightly change
+the direction in which that light appears to arrive. Gravity bends the ray,
+especially near the Sun, and the observer's motion changes the apparent
+direction through aberration. Wenu applies these effects to the already-solved
+astrometric direction; it does not ask a second calculation to decide again
+when the light left Venus.
+
+The word *apparent* describes which physical corrections have been applied.
+It does not name a coordinate system or reference frame, and it does not mean
+that an equinox of date has been selected. The answer remains expressed on
+fixed ICRS-oriented axes unless a later, explicit product-frame transformation
+requests something else.
+
+**[Undergraduate]** `AstrometricDirection` now retains
+\(\boldsymbol v_t(t_e)-\boldsymbol v_o(t_r)\) as well as
+\(\boldsymbol r_t(t_e)-\boldsymbol r_o(t_r)\). The retained position,
+velocity, reception time, light time, observer barycentric state, and kernel
+identity are sufficient to reconstruct Skyfield's astrometric value.
+`SkyfieldApparentDirectionRealizer` then calls `apparent()` with explicit
+deflectors: NAIF 10, 599, and 699 (Sun, Jupiter, Saturn). Skyfield applies
+gravitational deflection and then special-relativistic aberration using the
+observer's barycentric velocity. Near-Earth deflection is also declared.
+
+The resulting `CoordinateSpec` uses `frame="icrs"`, `origin="observer"`, and
+`PositionStatus.APPARENT`, and records `one-way-light-time`, `aberration`, and
+gravitational-deflection corrections. The reception instant remains an
+observation instant. There is no position reference epoch and no equinox in
+the native result. These distinct fields must not be collapsed into one
+generic date.
+
+> **Wenu implementation box — 49E.6 apparent runtime**
+>
+> `src/wenu/solar_system_directions.py` owns the correction policy and result.
+> `src/wenu/skyfield_ephemeris.py::SkyfieldApparentDirectionRealizer` verifies
+> kernel, resource, observer state, and reception instant before consuming the
+> accepted 49E.5 vector. `tests/test_apparent_directions.py` protects the
+> deterministic handoff, and
+> `tools/validate_49e6_apparent_direction.py` compares installed-DE440 Venus
+> with direct Skyfield `observe().apparent()` without permitting a download.
+>
+> No planet is drawable yet. 49I.1 must transform Venus once into the selected
+> product frame and then use the existing projection, Matplotlib renderer, and
+> shared PNG/PDF/SVG exporter. A separate planetary SVG generator or
+> post-export overlay is forbidden.
+
+> **49E.6 scientific acceptance**
+>
+> Fernando accepted the single light-time authority, explicit deflection and
+> aberration policy, ICRS/status/time distinctions, retained evidence, and
+> canonical output boundary on 2026-08-30. Installed-DE440 Venus agreed with
+> direct Skyfield to `3.152e-11` degree in right ascension and `1.544e-12`
+> degree in declination. Verification passed 95 focused tests and all 1,883
+> tests. No visual render was required because no production layer consumes
+> the result.

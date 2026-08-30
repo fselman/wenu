@@ -114,6 +114,7 @@ def test_realizer_iterates_light_time_and_retains_scientific_identity():
     assert result.geometry.lon_deg == pytest.approx((45.0,))
     assert result.geometry.lat_deg == pytest.approx((0.0,))
     assert result.distance_au == pytest.approx(expected_distance)
+    assert result.relative_velocity_au_per_day == (0.0, 0.0, 0.0)
     assert result.light_time_days == pytest.approx(expected_light_time)
     assert result.iterations == 2
     assert len(source.requests) == 2

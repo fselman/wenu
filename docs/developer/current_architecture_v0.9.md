@@ -201,6 +201,23 @@ comparison on 2026-08-30 after 111 focused tests, 1,848 routine tests with 30
 deselected, and all 1,878 tests passed. Apparent place remains 49E.6; drawable
 Venus remains 49I.1.
 
+The accepted 49E.6 implementation adds the renderer-neutral apparent stage. It
+consumes the accepted 49E.5 astrometric result, including retained relative
+velocity, and uses Skyfield `apparent()` for explicit gravitational deflection
+and aberration without invoking `observe()` again. Same-kernel, same-resource,
+same-observer-state, and same-reception-instant checks protect the handoff.
+
+The result is an observer-origin apparent direction on fixed ICRS-oriented
+axes. Apparent is a physical correction status, not a reference frame or an
+equinox-of-date selection. No sky layer or output path consumes the candidate;
+future Venus geometry must still pass once through the product-frame,
+projection, renderer, and shared PNG/PDF/SVG pipeline.
+
+Fernando scientifically accepted 49E.6 and its installed-DE440 Venus
+comparison on 2026-08-30 after 95 focused tests and all 1,883 tests passed.
+Residuals from direct Skyfield were `3.152e-11` degree in right ascension and
+`1.544e-12` degree in declination. Drawable Venus remains 49I.1.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored

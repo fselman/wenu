@@ -4,18 +4,27 @@ from __future__ import annotations
 
 import re
 from hashlib import sha256
-from math import isfinite
+from math import cos, isfinite, radians, sin
 from pathlib import Path
 
+import numpy as np
 from astropy.time import Time
 from skyfield.errors import EphemerisRangeError
+from skyfield.positionlib import Astrometric as SkyfieldAstrometric
 
+from wenu.coordinates import CoordinateSpec, PositionStatus
 from wenu.ephemeris import (
     EphemerisResourceIdentity,
     EphemerisState,
     EphemerisStateRequest,
 )
-from wenu.solar_system_directions import ObserverBarycentricState
+from wenu.geometry.spherical import SphericalPoints
+from wenu.solar_system_directions import (
+    ApparentCorrectionPolicy,
+    ApparentDirection,
+    AstrometricDirection,
+    ObserverBarycentricState,
+)
 
 
 class EphemerisAdapterError(ValueError):
@@ -281,3 +290,138 @@ def skyfield_observer_barycentric_state(observer, *, source):
             "Skyfield ICRF axes",
         ),
     )
+
+
+class SkyfieldApparentDirectionRealizer:
+    """Apply Skyfield apparent-place corrections without repeating observe()."""
+
+    def direction(self, astrometric, *, observer, source, policy=None):
+        if not isinstance(astrometric, AstrometricDirection):
+            raise TypeError("astrometric must be an AstrometricDirection.")
+        if not isinstance(source, SkyfieldEphemerisStateSource):
+            raise TypeError("source must be a SkyfieldEphemerisStateSource.")
+        if source._kernel is not getattr(observer, "ephemeris", None):
+            raise ValueError(
+                "source and observer must borrow the same ephemeris."
+            )
+        resolved_policy = (
+            ApparentCorrectionPolicy() if policy is None else policy
+        )
+        if not isinstance(resolved_policy, ApparentCorrectionPolicy):
+            raise TypeError("policy must be an ApparentCorrectionPolicy.")
+        if astrometric.observer_state.resource != source.resource:
+            raise ValueError(
+                "astrometric result and source must use the same resource."
+            )
+        try:
+            reception = observer.t_astropy
+            centre = observer.skyfield.at(observer.t)
+        except AttributeError as error:
+            raise TypeError(
+                "observer must expose t_astropy, skyfield, and t."
+            ) from error
+        requested_reception = Time(
+            astrometric.request.reception_instant,
+            scale=astrometric.request.reception_time_scale,
+        )
+        offset_days = float((reception - requested_reception).to_value("day"))
+        if abs(offset_days) > 1.0e-12:
+            raise ValueError(
+                "observer must be evaluated at the astrometric reception instant."
+            )
+        self._validate_observer_state(astrometric, centre)
+
+        lon = radians(float(astrometric.geometry.lon_deg[0]))
+        lat = radians(float(astrometric.geometry.lat_deg[0]))
+        distance = astrometric.distance_au
+        cos_latitude = cos(lat)
+        position = (
+            distance * cos_latitude * cos(lon),
+            distance * cos_latitude * sin(lon),
+            distance * sin(lat),
+        )
+        try:
+            target = int(astrometric.target_provider_id)
+        except (TypeError, ValueError) as error:
+            raise ValueError(
+                "astrometric target_provider_id must be an integer NAIF ID."
+            ) from error
+
+        skyfield_astrometric = SkyfieldAstrometric(
+            position,
+            astrometric.relative_velocity_au_per_day,
+            observer.t,
+            centre.target,
+            target,
+        )
+        skyfield_astrometric._ephemeris = observer.ephemeris
+        skyfield_astrometric.center_barycentric = centre
+        skyfield_astrometric.light_time = astrometric.light_time_days
+        apparent = skyfield_astrometric.apparent(
+            deflectors=resolved_policy.deflector_naif_ids
+        )
+        ra, dec, _ = apparent.radec()
+        resource = source.resource
+        corrections = {
+            "one-way-light-time",
+            "aberration",
+            "gravitational-deflection",
+        }
+        if resolved_policy.earth_deflection:
+            corrections.add("earth-gravitational-deflection")
+        coordinate_spec = CoordinateSpec(
+            frame="icrs",
+            origin="observer",
+            position_status=PositionStatus.APPARENT,
+            instant=astrometric.geometry.coordinate_spec.instant,
+            time_scale=astrometric.geometry.coordinate_spec.time_scale,
+            provider=resource.provider,
+            model=resource.model,
+            provenance=(
+                f"ephemeris file: {resource.filename}",
+                f"ephemeris sha256: {resource.sha256}",
+                f"apparent model: {resolved_policy.model}",
+                "deflector NAIF IDs: "
+                + ",".join(
+                    str(value)
+                    for value in resolved_policy.deflector_naif_ids
+                ),
+                f"observer: {astrometric.observer_state.observer_id}",
+                f"target: {astrometric.request.target}",
+            ),
+            corrections=frozenset(corrections),
+        )
+        geometry = SphericalPoints(
+            np.array((float(ra.hours) * 15.0,)),
+            np.array((float(dec.degrees),)),
+            coordinate_spec=coordinate_spec,
+            ids=np.array((astrometric.request.target,), dtype=object),
+        )
+        return ApparentDirection(
+            astrometric=astrometric,
+            policy=resolved_policy,
+            geometry=geometry,
+            provenance=(
+                "consumed accepted astrometric vector without observe()",
+                "Skyfield apparent() applied deflection then aberration",
+            ),
+        )
+
+    @staticmethod
+    def _validate_observer_state(astrometric, centre):
+        state = astrometric.observer_state
+        position_residual = max(
+            abs(actual - retained)
+            for actual, retained in zip(centre.position.au, state.position)
+        )
+        velocity_residual = max(
+            abs(actual - retained)
+            for actual, retained in zip(
+                centre.velocity.au_per_d,
+                state.velocity,
+            )
+        )
+        if position_residual > 1.0e-15 or velocity_residual > 1.0e-15:
+            raise ValueError(
+                "observer barycentric state does not match the astrometric result."
+            )

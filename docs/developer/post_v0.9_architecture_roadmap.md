@@ -502,6 +502,30 @@ Fernando scientifically accepted 49E.5 on 2026-08-30. Verification passed 111
 focused tests in 4.33 seconds, 1,848 routine tests with 30 deselected in 27.03
 seconds, and all 1,878 tests in 85.55 seconds. No visual render was required.
 
+### Milestone 49E.6 — Apparent direction runtime
+
+**Status:** Scientifically accepted by Fernando on 2026-08-30; ready for integration.
+
+`ApparentCorrectionPolicy`, `ApparentDirection`, and
+`SkyfieldApparentDirectionRealizer` apply declared gravitational deflection and
+aberration to the accepted 49E.5 result. The realizer reconstructs the retained
+astrometric vector and calls `apparent()` without calling `observe()` or solving
+light time a second time. 49E.5 now retains its already-computed relative
+velocity so that this handoff is complete.
+
+The output remains observer-origin, apparent, and ICRS-oriented. Its reception
+instant is neither a position reference epoch nor an equinox; apparent status
+does not select an equinox of date. Deterministic tests and the no-download
+installed-kernel Venus comparison protect the boundary. 49E.6 creates no
+moving-body layer or output change. 49I.1 remains the first drawable Venus and
+must use the canonical shared PNG/PDF/SVG path.
+
+The installed DE440 Venus comparison produced apparent ICRS coordinates
+`198.3663730463236`, `-11.16330410839704` degrees and agreed with direct
+Skyfield to `3.152e-11` degree in right ascension and `1.544e-12` degree in
+declination. Fernando scientifically accepted 49E.6 on 2026-08-30 after 95
+focused tests in 3.79 seconds and all 1,883 tests in 91.21 seconds passed.
+
 ## 9. Milestone 49F - SVG product verification
 
 **Status:** Complete at `c70cb29` after eight-product cross-product acceptance.

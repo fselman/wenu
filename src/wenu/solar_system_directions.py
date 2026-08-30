@@ -161,6 +161,7 @@ class AstrometricDirection:
     observer_state: ObserverBarycentricState
     geometry: SphericalPoints
     distance_au: float
+    relative_velocity_au_per_day: tuple[float, float, float]
     light_time_days: float
     emission_instant: str
     emission_time_scale: str
@@ -182,6 +183,14 @@ class AstrometricDirection:
             if not isfinite(value) or value <= 0.0:
                 raise ValueError(f"{name} must be positive and finite.")
             object.__setattr__(self, name, value)
+        object.__setattr__(
+            self,
+            "relative_velocity_au_per_day",
+            _vector3(
+                self.relative_velocity_au_per_day,
+                name="relative_velocity_au_per_day",
+            ),
+        )
         object.__setattr__(
             self,
             "emission_instant",
@@ -345,6 +354,13 @@ class AstrometricDirectionRealizer:
             observer_state=observer_state,
             geometry=geometry,
             distance_au=distance_au,
+            relative_velocity_au_per_day=tuple(
+                target - observer
+                for target, observer in zip(
+                    target_state.velocity,
+                    observer_state.velocity,
+                )
+            ),
             light_time_days=light_time_days,
             emission_instant=_isot(emission),
             emission_time_scale=emission.scale,
@@ -392,3 +408,76 @@ class AstrometricDirectionRealizer:
             raise AstrometricDirectionIdentityError(
                 "target and observer states must use the same provider centre."
             )
+
+
+@dataclass(frozen=True)
+class ApparentCorrectionPolicy:
+    """Explicit Skyfield aberration and gravitational-deflection policy."""
+
+    model: str = "Skyfield apparent"
+    deflector_naif_ids: tuple[int, ...] = (10, 599, 699)
+    earth_deflection: bool = True
+    aberration: bool = True
+
+    def __post_init__(self):
+        object.__setattr__(self, "model", _text(self.model, name="model"))
+        try:
+            deflectors = tuple(self.deflector_naif_ids)
+        except TypeError as error:
+            raise TypeError(
+                "deflector_naif_ids must be an iterable of integers."
+            ) from error
+        if any(
+            isinstance(value, bool) or not isinstance(value, int)
+            for value in deflectors
+        ):
+            raise TypeError("deflector_naif_ids must contain only integers.")
+        if len(deflectors) != len(set(deflectors)):
+            raise ValueError("deflector_naif_ids must not contain duplicates.")
+        object.__setattr__(self, "deflector_naif_ids", deflectors)
+        for name in ("earth_deflection", "aberration"):
+            if not isinstance(getattr(self, name), bool):
+                raise TypeError(f"{name} must be a boolean.")
+            if not getattr(self, name):
+                raise ValueError(
+                    f"{name} must be enabled for an apparent direction."
+                )
+
+
+@dataclass(frozen=True)
+class ApparentDirection:
+    """One apparent ICRS direction derived from an astrometric result."""
+
+    astrometric: AstrometricDirection
+    policy: ApparentCorrectionPolicy
+    geometry: SphericalPoints
+    provenance: tuple[str, ...] = field(default_factory=tuple)
+
+    def __post_init__(self):
+        if not isinstance(self.astrometric, AstrometricDirection):
+            raise TypeError("astrometric must be an AstrometricDirection.")
+        if not isinstance(self.policy, ApparentCorrectionPolicy):
+            raise TypeError("policy must be an ApparentCorrectionPolicy.")
+        if not isinstance(self.geometry, SphericalPoints):
+            raise TypeError("geometry must be a SphericalPoints.")
+        spec = self.geometry.coordinate_spec
+        if (
+            spec.frame != "icrs"
+            or spec.origin != "observer"
+            or spec.position_status is not PositionStatus.APPARENT
+        ):
+            raise ValueError(
+                "geometry must be an observer-origin apparent ICRS direction."
+            )
+        if spec.epoch is not None or spec.equinox is not None:
+            raise ValueError(
+                "apparent ICRS geometry must not declare epoch or equinox."
+            )
+        object.__setattr__(
+            self,
+            "provenance",
+            tuple(
+                _text(value, name="provenance entry")
+                for value in self.provenance
+            ),
+        )
