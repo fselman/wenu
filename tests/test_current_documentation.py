@@ -546,7 +546,7 @@ def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
     assert "All 41 documentation tests passed in 3.26 seconds" in guide
     assert "Proposed ephemeris-provider boundary" in implementation
     assert "first later vertical slice is Venus" in implementation
-    assert "no real 49E kernel adapter" in source_tree
+    assert "`skyfield_ephemeris.py` now owns the first real" in source_tree
 
 
 def test_49e2_records_minimal_runtime_contracts_and_non_goals():
@@ -608,7 +608,7 @@ def test_49e2_records_minimal_runtime_contracts_and_non_goals():
     assert "native horizon" in implementation
     assert "`ephemeris.py` owns the frozen 49E.2" in source_tree
     assert "requires explicit status at every" in source_tree
-    assert "only concrete source exists in `tests/test_ephemeris.py`" in source_tree
+    assert "deterministic contract source remains in `tests/test_ephemeris.py`" in source_tree
 
 
 
