@@ -453,6 +453,29 @@ Fernando also accepted living coordinate-guide version
 all explicit table-of-contents anchors. The final documentation gate passed
 all 44 tests in 1.70 seconds.
 
+### Milestone 49E.4 — Solar-System direction-realizer audit
+
+**Status:** Scientifically accepted by Fernando on 2026-08-30; ready for integration.
+
+The proposed contract is recorded in
+`solar_system_direction_realizer_49e4.md`. It separates the retarded-emission
+light-time solution that produces an astrometric observer-relative direction
+from the later aberration and gravitational-deflection operation that produces
+an apparent direction. Reception instant, retarded emission instant, distance,
+one-way light time, iteration policy, observer state, and exact ephemeris
+resource identity remain explicit.
+
+The first runtime slice is 49E.5 astrometric Venus direction realization,
+validated against direct Skyfield. 49E.6 adds explicit apparent-place policy;
+49I.1 remains the first drawable Venus layer. The Moon follows as the stronger
+topocentric-parallax test. 49E.4 changes no runtime type or output.
+
+Fernando accepted the observer-state, retarded-emission, astrometric/apparent,
+frame, timing, provenance, Venus-first, and canonical output boundaries on
+2026-08-30. Verification passed all 45 current-documentation tests in 2.03
+seconds. No visual comparison was required because the milestone changes no
+runtime geometry or product.
+
 ## 9. Milestone 49F - SVG product verification
 
 **Status:** Complete at `c70cb29` after eight-product cross-product acceptance.

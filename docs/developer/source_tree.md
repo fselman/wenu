@@ -891,3 +891,9 @@ dimensions, timeline instants, and manifest identity in JSON.
 `docs/developer/skyfield_ephemeris_adapter_49e3.md` owns the 49E.3 scientific
 contract. `tools/validate_49e3_skyfield_adapter.py` is the explicit
 no-download installed-kernel Venus/SSB acceptance check.
+
+`docs/developer/solar_system_direction_realizer_49e4.md` owns the proposed
+49E.4 observer-relative direction boundary. It is documentation-only: no
+runtime realizer or moving-body layer exists yet. The proposed astrometric
+result retains distance, light time, reception/emission instants, observer
+state, and resource provenance before any product-frame transformation.
