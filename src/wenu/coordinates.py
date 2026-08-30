@@ -37,7 +37,6 @@ class PositionStatus(str, Enum):
     GEOMETRIC = "geometric"
     ASTROMETRIC = "astrometric"
     APPARENT = "apparent"
-    TOPOCENTRIC = "topocentric"
     OBSERVED = "observed"
 
 
@@ -152,7 +151,7 @@ def icrs_catalogue_spec(provider, *, epoch="J2000.0", provenance=()):
 def observer_altaz_spec(
     observer,
     *,
-    position_status=PositionStatus.TOPOCENTRIC,
+    position_status=PositionStatus.APPARENT,
     provider=None,
     model=None,
     provenance=(),
