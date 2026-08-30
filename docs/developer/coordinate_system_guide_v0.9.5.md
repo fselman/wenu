@@ -1486,3 +1486,40 @@ physical corrections its direction represents.
 > deterministic Venus source. No installed code opens a new kernel, calculates
 > a digest, realizes a planet direction, registers a Venus layer, or changes
 > PNG/PDF/SVG output.
+
+
+### 13.2.6 49E.3 borrowed Skyfield kernel adapter
+
+**[Foundation]** Wenu can now read a real planetary state from the ephemeris
+file that an observer session already opened. A question must name the body,
+the centre from which it is measured, the instant, and the three-dimensional
+axes. For example, “Venus relative to the Solar-System barycentre” is a
+different vector from “Venus relative to Earth.”
+
+Wenu fingerprints the exact file with SHA-256. `DE440` identifies the
+astronomical solution family; `de440s.bsp` identifies a particular
+short-distribution filename; the digest identifies the exact bytes actually
+used.
+
+**[Undergraduate]** `SkyfieldEphemerisStateSource` borrows the open
+`SpiceKernel` and `Timescale` from `Observer`. It converts the declared
+instant through Astropy and `Timescale.from_astropy()`, resolves target and
+centre to NAIF identifiers, and evaluates the simultaneous geometric
+target-minus-centre state in ICRF axes. Position is returned in AU and velocity
+in AU/day.
+
+The recorded kernel coverage is the conservative common intersection of all
+SPK segment intervals, not their potentially misleading union envelope.
+Skyfield still checks the particular target-centre segment path. This state
+contains no one-way light time, aberration, gravitational deflection,
+topocentric displacement, or refraction; it is not yet the direction in which
+an observer sees Venus.
+
+> **Wenu implementation box — 49E.3 installed adapter**
+>
+> `src/wenu/skyfield_ephemeris.py` owns resource fingerprinting, the borrowed
+> adapter, and deterministic adapter errors. `Observer` still owns and closes
+> the kernel. `tools/validate_49e3_skyfield_adapter.py` refuses hidden
+> downloads and validates Venus against direct Skyfield evaluation.
+> `tests/test_skyfield_ephemeris.py` owns deterministic unit coverage. No
+> planet layer, projection, renderer, or SVG-only path exists in this milestone.
