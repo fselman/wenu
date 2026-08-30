@@ -635,7 +635,8 @@ must reproduce that baseline rather than bypass the canonical pipeline.
 
 ### Milestone 49I.1 — Drawable Venus vertical slice
 
-**Status:** Architecture and scientific audit candidate.
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-30; ready for integration.
 
 The as-is audit is recorded in `venus_vertical_slice_audit_49i1.md`. The
 accepted 49E.3–49E.6 provider/direction chain is ready, but ordinary chart
@@ -708,6 +709,11 @@ shared renderer-neutral point-layer extraction with exact Venus parity, and
 49I.2C the first opt-in drawable Moon point. Physical disk, phase,
 illumination, angular diameter, and limb orientation remain 49I.3. The audit
 adds no runtime or output change.
+
+Fernando accepted all four audit decisions on 2026-08-30 after all 51
+current-documentation tests passed in 1.88 seconds. The next bounded
+implementation is 49I.2A Moon numerical direction validation; this acceptance
+does not pre-accept its correction policy or numerical results.
 
 Add one object class at a time:
 

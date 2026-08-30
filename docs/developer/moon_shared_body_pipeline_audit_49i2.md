@@ -1,6 +1,7 @@
 # Milestone 49I.2 — Moon and shared solar-system-body pipeline audit
 
-**Status:** Architecture and scientific review candidate.  
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-30; ready for integration.
 **As-is baseline:** `e7fa6ab`  
 **Date:** 2026-08-30
 
@@ -151,9 +152,10 @@ orbit propagator, phase model, physical disk, comet tail, trail, projection,
 renderer, or output change. It does not claim that a shared chart pipeline
 makes all astronomical models interchangeable.
 
-## Acceptance questions
+## Acceptance
 
-Fernando should accept or amend these points before 49I.2A:
+Fernando accepted the audit on 2026-08-30 after all 51 current-documentation
+tests passed in 1.88 seconds. He accepted all four governing decisions:
 
 1. Does “one pipeline” mean one downstream typed path with interchangeable
    providers and appearance strategies, as specified here?
@@ -161,3 +163,9 @@ Fernando should accept or amend these points before 49I.2A:
 3. Should the public CLI use `--moon` while the internal request uses a general
    solar-system selection?
 4. Is physical disk/phase geometry correctly deferred to 49I.3?
+
+The answers are yes: one downstream typed pipeline with interchangeable
+providers and appearance strategies; Moon next; symbolic point first;
+`--moon` adapting into general internal solar-system selection; and physical
+disk/phase geometry deferred to 49I.3. The next bounded implementation is
+49I.2A Moon numerical direction validation.

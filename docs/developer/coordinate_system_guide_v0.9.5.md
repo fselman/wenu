@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.17`  
-**Last updated:** `2026-08-30T22:13:27Z`  
+**Guide version:** `0.9.5.20260830.18`  
+**Last updated:** `2026-08-30T22:24:53Z`  
 **Language:** English
 
 # Table of contents
@@ -2108,3 +2108,9 @@ observation instant, and equinox remain distinct concepts.
 > height, and a Moon-appropriate apparent correction policy before extracting
 > shared `SolarSystemPointLayer` machinery. Phase, angular diameter,
 > illuminated limb, and physical disk geometry remain a later milestone.
+>
+> Fernando scientifically and architecturally accepted this boundary on
+> 2026-08-30 after all 51 current-documentation tests passed in 1.88 seconds.
+> The accepted first Moon is a symbolic point; public `--moon` adapts into a
+> general internal solar-system selection; and physical disk/phase geometry
+> remains 49I.3. Acceptance changes no runtime or output.

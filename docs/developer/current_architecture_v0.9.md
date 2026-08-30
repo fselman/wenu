@@ -263,6 +263,11 @@ ownership; its correction policy must be compared with direct Skyfield rather
 than inherited from Venus by assumption. No Moon or generic body layer is part
 of the implemented architecture yet.
 
+Fernando scientifically and architecturally accepted the 49I.2 audit on
+2026-08-30 after all 51 current-documentation tests passed in 1.88 seconds.
+The accepted audit changes no runtime type or output. 49I.2A Moon numerical
+direction validation is the next bounded implementation.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored
