@@ -1,6 +1,6 @@
 # Drawable resolved Venus disk — Milestone 49I.3C.2
 
-**Status:** Visual review in progress  
+**Status:** Scientifically, architecturally, and visually accepted  
 **Implementation baseline:** `da0e332`  
 **Review date:** 2026-08-31
 
@@ -72,8 +72,8 @@ At this epoch:
 - limb: thin short dashes;
 - terminator: thin solid curve.
 
-The magnification-200 rendering was visually accepted as a useful scale
-calibrator: the phase is immediately legible while the disk remains small
+Fernando accepted the magnification-200 rendering as the normative visual
+and angular-scale calibrator: the phase is immediately legible while the disk remains small
 relative to Virgo and the surrounding chart structure.
 
 ### Reproduction command
@@ -110,7 +110,7 @@ wenu_chart regional \
   --output venus-virgo-calibrator.png
 ```
 
-## Public contract under review
+## Accepted public contract
 
 - `--planet-appearance venus=resolved` explicitly selects resolved display.
 - `--planet-disk-magnification venus=FACTOR` supplies the object-specific
@@ -120,3 +120,13 @@ wenu_chart regional \
 - Symbolic and resolved Venus cannot be requested simultaneously.
 - Resolved disks are restricted to regional and binocular products.
 - Planisphere and all-sky products retain symbolic representation.
+
+
+## Verification recorded before suite closure
+
+- 39 focused disk-display and physical-appearance tests passed in 2.50 seconds.
+- 177 chart-pipeline regression tests passed in 7.18 seconds.
+- 89 display and style tests passed after the cream-palette change.
+- 171 closure-focused request, execution, style, semantic, and dependency tests
+  passed in 5.75 seconds.
+- The 600-dpi Virgo rendering was visually accepted with magnification 200.
