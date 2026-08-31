@@ -163,7 +163,9 @@ class Apparent:
 
 def observer_state(sample_observer, *, source):
     del source
-    instant = sample_observer.t_astropy.isot
+    precise = sample_observer.t_astropy.copy()
+    precise.precision = 9
+    instant = precise.isot
     return ObserverBarycentricState(
         observer_id="La Ligua",
         centre="solar system barycenter",
