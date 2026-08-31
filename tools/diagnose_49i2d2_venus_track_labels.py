@@ -115,7 +115,7 @@ def main():
             *expected_tick_labels,
             "♀ 2026-08-30",
         )
-        assert len(instants) == len(result.sample_instants) == 1345
+        assert len(instants) == len(result.sample_instants) == 113
         assert tuple(tick.name for tick in prepared["ticks"]) == (
             expected_tick_labels
         )
