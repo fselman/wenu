@@ -2314,7 +2314,7 @@ def test_49i3c3_audits_two_mode_planet_disk_sequences():
         "n_steps = 8",
         "nine disk samples",
         "There is no minor step",
-        "one common magnification",
+        "One common magnification",
         "frozen-observer geometric direction",
         "central six-point Sun",
         "sky/solar_system/star/sun",
