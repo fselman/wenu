@@ -476,7 +476,7 @@ def composition_layer_options(
                             "fontsize": 9.0,
                             "zorder": 38.2,
                         },
-                        "label_offset": (0.01 * viewport.width, 0.01 * viewport.height),
+                        "label_offset": (0.0, 0.0),
                     },
                 }
             },
