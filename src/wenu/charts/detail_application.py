@@ -11,7 +11,7 @@ from .context import BoundaryKind
 from .detail import ResolvedDetail
 from .style_components import StellarMagnitudeSizing
 from wenu.rendering.preparation import configured_magnitude_sizes
-from wenu.sky.solar_system_track_layer import (
+from .solar_system_track_annotations import (
     TrackLabelAnchor,
     prepare_projected_track,
 )
