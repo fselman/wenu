@@ -24,6 +24,10 @@ from wenu.solar_system_directions import (
 )
 
 INSTANT = "2026-08-30T00:00:00Z"
+ANGULAR_DIAMETER_TOLERANCE_ARCSEC = 1.0e-8
+PHASE_ANGLE_TOLERANCE_DEG = 1.0e-9
+ILLUMINATED_FRACTION_TOLERANCE = 1.0e-11
+POSITION_ANGLE_TOLERANCE_DEG = 1.0e-9
 
 
 def _direction(observer, source, observer_state, *, target, policy):
@@ -193,10 +197,19 @@ def main():
 
         assert venus_direction.astrometric.target_provider_id == "299"
         assert sun_direction.astrometric.target_provider_id == "10"
-        assert abs(diameter_residual) <= 1.0e-8
-        assert abs(phase_residual) <= 1.0e-10
-        assert abs(fraction_residual) <= 1.0e-12
-        assert abs(position_angle_residual) <= 1.0e-10
+        assert (
+            abs(diameter_residual)
+            <= ANGULAR_DIAMETER_TOLERANCE_ARCSEC
+        )
+        assert abs(phase_residual) <= PHASE_ANGLE_TOLERANCE_DEG
+        assert (
+            abs(fraction_residual)
+            <= ILLUMINATED_FRACTION_TOLERANCE
+        )
+        assert (
+            abs(position_angle_residual)
+            <= POSITION_ANGLE_TOLERANCE_DEG
+        )
 
 
 if __name__ == "__main__":
