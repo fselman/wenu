@@ -133,8 +133,8 @@ class PublicationStyle:
     venus_disk_face_color: str = "#FFE6A3"
     venus_disk_face_alpha: float = 1.0
     venus_disk_limb_color: str = "#FFE6A3"
-    venus_disk_limb_linewidth: float = 1.0
-    venus_disk_limb_linestyle: object = (0.0, (0.4, 1.6))
+    venus_disk_limb_linewidth: float = 0.45
+    venus_disk_limb_linestyle: object = (0.0, (2.0, 1.25))
     venus_disk_terminator_color: str = "#FFE6A3"
     venus_disk_terminator_linewidth: float = 0.7
     venus_disk_terminator_linestyle: str = "-"
