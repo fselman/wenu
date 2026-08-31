@@ -1927,3 +1927,19 @@ The default is 720 physical limb samples. Geometry preserves the appearance
 coordinate specification, physical angular radius, phase, bright-limb
 orientation, model identity, and provenance. It applies no display
 magnification and owns no chart or rendering policy.
+
+
+## Drawable resolved Venus disk (Milestone 49I.3C.2)
+
+`sky/venus_disk.py::VenusDiskRealization` realizes one accepted Venus
+appearance and physical disk geometry, transforms all components into the
+product frame, and shares that state across the illuminated-face, limb, and
+terminator layers.
+
+`charts/request_disks.py::SolarSystemDiskDisplayRequest` owns the explicit
+target and governed magnification. `charts/solar_system_disk_preparation.py`
+projects the separately transformed physical centre through the chart's exact
+projector and scales only projected component offsets about it. Factor 1 is
+physical angular scale. The accepted public controls are
+`--planet-appearance venus=resolved` and
+`--planet-disk-magnification venus=FACTOR`.
