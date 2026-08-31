@@ -367,6 +367,9 @@ def _chart_view_argument_plans(
                 ),
                 "content": chart_sky_content(arguments),
                 "solar_system_track": track_request,
+                "solar_system_track_tick_labels": (
+                    False if parsed_track is None else parsed_track.label_ticks
+                ),
             },
         ))
     return tuple(plans)
