@@ -77,6 +77,9 @@ PHYSICAL_APPARENT_DISK_AUDIT = (
 VENUS_PHYSICAL_APPEARANCE = (
     DEVELOPER / "venus_physical_appearance_49i3b.md"
 )
+RESOLVED_VENUS_DISK_AUDIT = (
+    DEVELOPER / "resolved_venus_disk_audit_49i3c.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -2141,3 +2144,43 @@ def test_49i3b_records_accepted_venus_physical_appearance_state():
     assert "Guide version:** `0.9.5.20260831.35`" in guide
     assert "venus_physical_appearance_49i3b.md" in instructions
     assert "Scientifically and architecturally accepted" in contract
+
+
+def test_49i3c_audits_resolved_venus_disk_geometry():
+    contract = " ".join(read(RESOLVED_VENUS_DISK_AUDIT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `a9d8342`",
+        "Candidate architecture for scientific review",
+        "illuminated-face `SphericalPolygons` layer",
+        "limb `SphericalCurves` layer",
+        "terminator `SphericalCurves` layer",
+        "`SphericalGrid` is deliberately curve-only",
+        "positive finite, object-specific display magnification",
+        "factor of `1` means physical angular scale",
+        "Magnification alone must not silently enable a disk",
+        "regional and binocular",
+        "planisphere and all-sky",
+        "49I.3C.1 — Resolved Venus spherical geometry",
+        "49I.3C.2 — First drawable resolved Venus disk",
+        "scatter-marker size",
+        "Only after this audit is accepted",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C — Resolved Venus disk audit" in roadmap
+    assert "Candidate resolved Venus disk boundary" in architecture
+    assert "Candidate resolved Venus disk boundary" in implementation
+    assert "Milestone 49I.3C audit ownership" in source_tree
+    assert "13.2.23 49I.3C resolved Venus disk audit" in guide
+    assert "Guide version:** `0.9.5.20260831.36`" in guide
+    assert "resolved_venus_disk_audit_49i3c.md" in instructions
+    assert "changes no runtime type, public command" in contract
