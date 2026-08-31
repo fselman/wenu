@@ -1078,7 +1078,7 @@ Moon once, style owns its provisional hollow marker and label, and semantic
 identity owns `sky/solar_system/natural_satellites/moon`.
 
 
-### Proposed Solar-System track contract (Milestone 49I.2D)
+### Accepted Solar-System track contract (Milestone 49I.2D)
 
 `solar_system_track_audit_49i2d.md` proposes one renderer-neutral request
 containing body identity, start instant, sample cadence, tick cadence, and tick
@@ -1092,7 +1092,9 @@ batching is only an optimization. Existing curve transformation, projection,
 clipping, renderer, and export contracts require no parallel implementation.
 Exact tick anchors and per-sample instants are scientific metadata. Visible
 perpendicular ticks, line appearance, start glyph, and date-label appearance
-remain projected/style concerns. This audit installs no runtime API or output.
+remain projected/style concerns. Fernando accepted this documentation-only
+boundary after all 1,919 tests passed. The audit installs no runtime API or
+output.
 
 ## 8.1 Packaged configuration validation
 
