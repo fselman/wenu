@@ -1913,3 +1913,17 @@ The accepted physical angular diameter remains in
 `SolarSystemApparentDisk`; future request/detail policy owns a separate
 Venus-specific display magnification. Multiple epochs use independently
 realized states in one fixed chart frame. This audit installs no runtime API.
+
+
+## Venus spherical disk geometry (Milestone 49I.3C.1)
+
+`solar_system_disk_geometry.py::SolarSystemDiskGeometryRealizer.geometry()`
+accepts one `SolarSystemApparentDisk` and an optional even sample count of at
+least 16. It returns a frozen `SolarSystemDiskGeometry` containing ordinary
+`SphericalPoints`, `SphericalCurves`, and `SphericalPolygons` records for
+the centre, limb, terminator, and illuminated face.
+
+The default is 720 physical limb samples. Geometry preserves the appearance
+coordinate specification, physical angular radius, phase, bright-limb
+orientation, model identity, and provenance. It applies no display
+magnification and owns no chart or rendering policy.
