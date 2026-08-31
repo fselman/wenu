@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.24`  
-**Last updated:** `2026-08-31T00:26:44Z`  
+**Guide version:** `0.9.5.20260831.25`  
+**Last updated:** `2026-08-31T00:30:11Z`  
 **Language:** English
 
 # Table of contents
@@ -2210,3 +2210,7 @@ product-frame transformation sequence before ordinary projection.
 > `2026-08-30T00:00:00Z`—2026-08-29 20:00 in La Ligua—PNG, PDF, and semantic
 > SVG agreed visually, and comparison with Stellarium placed the Moon closely
 > against the same nearby Pisces stars. Physical disk and phase remain 49I.3.
+>
+> Fernando scientifically, architecturally, and visually accepted this first
+> symbolic Moon slice on 2026-08-30 after all 1,917 tests and 54 documentation
+> tests passed.

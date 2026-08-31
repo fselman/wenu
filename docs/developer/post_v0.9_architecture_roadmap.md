@@ -751,17 +751,20 @@ architecturally accepted 49I.2B and its stated non-goals on 2026-08-30.
 
 ##### Milestone 49I.2C — First drawable Moon point
 
-**Status:** Implementation and visual-review candidate.
+**Status:** Scientifically, architecturally, and visually accepted by Fernando
+on 2026-08-30; ready for integration.
 
 A frozen Moon descriptor now specializes the accepted shared point layer.
 Class-aware `--planet venus` and `--moon` inputs converge into one internal
 `solar_system_objects` selection, while the Moon retains the stable
 `sky/solar_system/natural_satellites/moon` identity. Verification passed 89
 direct tests, 219 broader architectural tests, 1,887 routine tests with 30
-deselected, and all 1,917 tests. Installed-DE440 PNG/PDF/SVG products agreed
+deselected, all 1,917 tests, and 54 documentation tests. Installed-DE440
+PNG/PDF/SVG products agreed
 visually, and the correctly time-matched Stellarium comparison placed the Moon
-closely against the same Pisces stars. Physical disk and phase remain 49I.3;
-scientific, architectural, and visual acceptance remains pending.
+closely against the same Pisces stars. Fernando scientifically,
+architecturally, and visually accepted 49I.2C and its stated non-goals on
+2026-08-30. Physical disk and phase remain 49I.3.
 
 Add one object class at a time:
 
