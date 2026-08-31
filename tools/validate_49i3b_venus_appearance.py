@@ -87,6 +87,56 @@ def _wrapped_angle_residual(actual, reference):
     return (actual - reference + 180.0) % 360.0 - 180.0
 
 
+def _local_position_angle(target, sun):
+    target_alt, target_az, _ = target.altaz()
+    sun_alt, sun_az, _ = sun.altaz()
+    altitude = radians(float(target_alt.degrees))
+    azimuth = radians(float(target_az.degrees))
+    sun_altitude = radians(float(sun_alt.degrees))
+    sun_azimuth = radians(float(sun_az.degrees))
+
+    target_vector = (
+        cos(altitude) * sin(azimuth),
+        cos(altitude) * cos(azimuth),
+        sin(altitude),
+    )
+    sun_vector = (
+        cos(sun_altitude) * sin(sun_azimuth),
+        cos(sun_altitude) * cos(sun_azimuth),
+        sin(sun_altitude),
+    )
+    toward_zenith = (
+        -sin(altitude) * sin(azimuth),
+        -sin(altitude) * cos(azimuth),
+        cos(altitude),
+    )
+    toward_increasing_azimuth = (
+        cos(azimuth),
+        -sin(azimuth),
+        0.0,
+    )
+    dot = sum(a * b for a, b in zip(sun_vector, target_vector))
+    tangent = tuple(
+        sun_component - dot * target_component
+        for sun_component, target_component in zip(
+            sun_vector,
+            target_vector,
+        )
+    )
+    zenith_component = sum(
+        a * b for a, b in zip(tangent, toward_zenith)
+    )
+    azimuth_component = sum(
+        a * b for a, b in zip(
+            tangent,
+            toward_increasing_azimuth,
+        )
+    )
+    return (
+        degrees(atan2(azimuth_component, zenith_component)) % 360.0
+    )
+
+
 def main():
     path = Path(DEFAULT_DATA_DIRECTORY) / DEFAULT_EPHEMERIS
     if not path.is_file():
@@ -158,6 +208,15 @@ def main():
             direct_sun,
         )
 
+        direct_local_position_angle_deg = _local_position_angle(
+            direct_venus,
+            direct_sun,
+        )
+        venus_ra, venus_dec, _ = direct_venus.radec()
+        sun_ra, sun_dec, _ = direct_sun.radec()
+        venus_alt, venus_az, _ = direct_venus.altaz()
+        sun_alt, sun_az, _ = direct_sun.altaz()
+
         diameter_residual = (
             result.angular_diameter_arcsec - direct_diameter_arcsec
         )
@@ -185,6 +244,34 @@ def main():
         print(
             "bright-limb position angle deg: "
             f"{result.bright_limb_position_angle_deg:.12f}"
+        )
+        print(
+            "Venus apparent ICRS RA/Dec deg: "
+            f"{float(venus_ra.hours) * 15.0:.12f}, "
+            f"{float(venus_dec.degrees):.12f}"
+        )
+        print(
+            "Sun apparent ICRS RA/Dec deg: "
+            f"{float(sun_ra.hours) * 15.0:.12f}, "
+            f"{float(sun_dec.degrees):.12f}"
+        )
+        print(
+            "Venus local altitude/azimuth deg: "
+            f"{float(venus_alt.degrees):.12f}, "
+            f"{float(venus_az.degrees):.12f}"
+        )
+        print(
+            "Sun local altitude/azimuth deg: "
+            f"{float(sun_alt.degrees):.12f}, "
+            f"{float(sun_az.degrees):.12f}"
+        )
+        print(
+            "Sun-from-Venus local position angle deg: "
+            f"{direct_local_position_angle_deg:.12f}"
+        )
+        print(
+            "local position-angle convention: zero toward zenith; "
+            "positive toward increasing azimuth"
         )
         print(f"angular-diameter residual arcsec: {diameter_residual:.3e}")
         print(f"phase-angle residual deg: {phase_residual:.3e}")
