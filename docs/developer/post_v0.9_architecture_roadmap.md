@@ -889,7 +889,10 @@ Direct-Skyfield residuals are 6.927e-11 arcsec in diameter, 1.353e-10 degree
 in phase, -1.158e-12 in illuminated fraction, and 2.080e-11 degree in
 bright-limb angle. Fernando accepted the model, conventions, calibrated
 comparison tolerances, values, and output-neutral boundary after all 9
-deterministic appearance tests passed in 1.38 seconds. 49I.3B adds no layer,
+deterministic appearance tests passed in 1.38 seconds. Final verification
+passed 116 focused architectural tests in 4.73 seconds, 1,936 routine tests
+with 30 deselected in 27.32 seconds, and all 1,966 tests in 89.97 seconds.
+49I.3B adds no layer,
 disk geometry, display magnification, request, style, or visible output.
 49I.3C remains separately authorized.
 
