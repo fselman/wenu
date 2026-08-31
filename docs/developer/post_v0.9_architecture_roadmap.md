@@ -831,7 +831,8 @@ chart. 49I.2D.2 remains separately authorized.
 
 ### Milestone 49I.3A — Physical apparent-disk contract audit
 
-**Status:** Proposed for scientific and architectural review.
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-31; ready for integration.
 
 `physical_apparent_disk_audit_49i3a.md` separates the accepted apparent
 centre direction from a future renderer-neutral physical-appearance state.
@@ -854,6 +855,12 @@ The proposed sequence is 49I.3B Venus physical-appearance state, 49I.3C first
 resolved Venus disk, 49I.3D symbolic photometry and planet glyphs, 49I.3E Moon
 physical-appearance state, and 49I.3F first resolved Moon disk. The ordering of
 49I.3C and 49I.3D remains a review choice. 49I.3A changes no runtime or output.
+
+
+Fernando accepted all eight audit decisions on 2026-08-31 after all 58
+current-documentation tests passed in 2.51 seconds. This acceptance authorizes
+the separately bounded 49I.3B numerical Venus appearance-state milestone; it
+does not pre-accept that model, its tolerances, runtime API, or visible output.
 
 Add one object class at a time:
 
