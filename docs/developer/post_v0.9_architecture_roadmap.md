@@ -1025,3 +1025,22 @@ validated Mercury support. Fernando accepted this audit after all 63 current-doc
 in 2.04 seconds. Final verification passed 63 documentation tests in 1.88
 seconds, 1,971 routine tests with 30 deselected in 27.08 seconds, and all 2,001
 tests in 85.97 seconds. This audit changes no runtime or output.
+
+
+## Milestone 49I.3C.3.1A — Output-neutral observed Venus disk sequence
+
+**Status:** Scientifically and architecturally accepted on 2026-08-31.
+
+The immutable sequence request includes the start and produces
+`n_steps + 1` exact major samples. Every epoch independently reevaluates the
+topocentric observer, Venus and Sun apparent directions, physical appearance,
+and spherical disk geometry. Full observer/AU distances and provenance are
+retained for 2D science and possible future separately governed 3D use.
+
+The four-epoch installed-DE440 validator agreed with direct Skyfield to
+`4.615e-10 deg` in right ascension, `1.946e-10 deg` in declination,
+`3.128e-12 AU` in distance, `3.795e-10 arcsec` in diameter,
+`7.096e-10 deg` in phase, `4.823e-12` in illuminated fraction, and
+`4.301e-09 deg` in bright-limb angle. All 51 focused scientific tests and 91
+architectural tests passed. No public request or visible output is added;
+drawable observed Venus sequences remain 49I.3C.3.1B.
