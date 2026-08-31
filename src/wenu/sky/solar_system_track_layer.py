@@ -122,6 +122,143 @@ def track_label_anchor(curve, ax):
     )
 
 
+
+class TrackLabelAnchor:
+    """Render-local collision-aware placement for track date labels."""
+
+    def __init__(self, *, fontsize):
+        self.fontsize = float(fontsize)
+        if not np.isfinite(self.fontsize) or self.fontsize <= 0.0:
+            raise ValueError("fontsize must be positive and finite.")
+        self._axes = None
+        self._claimed = []
+
+    def __call__(self, curve, ax):
+        if ax is not self._axes:
+            self._axes = ax
+            self._claimed = []
+        finite = np.flatnonzero(curve.finite)
+        if finite.size == 0:
+            return None
+        points = ax.transData.transform(
+            np.column_stack((curve.x[finite], curve.y[finite]))
+        )
+        if len(points) == 2:
+            direction = points[1] - points[0]
+            norm = float(np.hypot(*direction))
+            if norm > 1.0e-9:
+                return self._place_tick(curve, ax, points, direction / norm)
+        return self._place_point(curve, ax, np.mean(points, axis=0))
+
+    def _place_tick(self, curve, ax, points, preferred):
+        candidates = []
+        pixels_per_point = ax.figure.dpi / 72.0
+        for direction, endpoint in (
+            (preferred, points[1]),
+            (-preferred, points[0]),
+        ):
+            for distance_em in (0.55, 1.35, 2.25, 3.25):
+                display = (
+                    endpoint
+                    + direction
+                    * distance_em
+                    * self.fontsize
+                    * pixels_per_point
+                )
+                candidates.append((display, direction))
+        return self._choose(curve, ax, candidates)
+
+    def _place_point(self, curve, ax, center):
+        directions = np.asarray((
+            (1.0, 1.0), (-1.0, 1.0),
+            (1.0, -1.0), (-1.0, -1.0),
+            (1.0, 0.0), (-1.0, 0.0),
+            (0.0, 1.0), (0.0, -1.0),
+        ))
+        directions /= np.maximum(
+            np.hypot(directions[:, 0], directions[:, 1])[:, None],
+            1.0e-12,
+        )
+        pixels_per_point = ax.figure.dpi / 72.0
+        candidates = [
+            (
+                center
+                + direction * distance_em * self.fontsize * pixels_per_point,
+                direction,
+            )
+            for distance_em in (0.65, 1.5, 2.5)
+            for direction in directions
+        ]
+        return self._choose(curve, ax, candidates)
+
+    def _choose(self, curve, ax, candidates):
+        evaluated = [
+            self._candidate(curve, ax, display, direction)
+            for display, direction in candidates
+        ]
+        available = [
+            value for value in evaluated
+            if value["inside"] and value["overlap"] == 0.0
+        ]
+        chosen = (
+            available[0]
+            if available
+            else min(
+                evaluated,
+                key=lambda value: (
+                    not value["inside"],
+                    value["overlap"],
+                ),
+            )
+        )
+        self._claimed.append(chosen["box"])
+        x, y = ax.transData.inverted().transform(chosen["display"])
+        dx, dy = chosen["direction"]
+        return CurveLabelPlacement(
+            x=float(x),
+            y=float(y),
+            horizontal_alignment="left" if dx >= 0.0 else "right",
+            vertical_alignment="bottom" if dy >= 0.0 else "top",
+        )
+
+    def _candidate(self, curve, ax, display, direction):
+        pixels_per_point = ax.figure.dpi / 72.0
+        width = (
+            max(len(str(curve.name or "")), 1)
+            * 0.58
+            * self.fontsize
+            * pixels_per_point
+        )
+        height = 1.15 * self.fontsize * pixels_per_point
+        dx, dy = direction
+        left = display[0] if dx >= 0.0 else display[0] - width
+        bottom = display[1] if dy >= 0.0 else display[1] - height
+        box = (left, bottom, left + width, bottom + height)
+        axes_points = ax.transData.transform((
+            (ax.get_xlim()[0], ax.get_ylim()[0]),
+            (ax.get_xlim()[1], ax.get_ylim()[1]),
+        ))
+        x_min, x_max = sorted(axes_points[:, 0])
+        y_min, y_max = sorted(axes_points[:, 1])
+        inside = (
+            box[0] >= x_min and box[2] <= x_max
+            and box[1] >= y_min and box[3] <= y_max
+        )
+        overlap = sum(_box_overlap(box, claimed) for claimed in self._claimed)
+        return {
+            "display": display,
+            "direction": direction,
+            "box": box,
+            "inside": inside,
+            "overlap": overlap,
+        }
+
+
+def _box_overlap(left, right):
+    width = max(0.0, min(left[2], right[2]) - max(left[0], right[0]))
+    height = max(0.0, min(left[3], right[3]) - max(left[1], right[1]))
+    return width * height
+
 def start_label_anchor(curve, ax):
     """Compatibility name for the shared track label placement."""
     return track_label_anchor(curve, ax)
