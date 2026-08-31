@@ -2308,12 +2308,14 @@ def test_49i3c3_audits_two_mode_planet_disk_sequences():
 
     for phrase in (
         "**Implementation baseline:** `6745403`",
-        "Candidate architecture for scientific review",
+        "Scientifically and architecturally accepted",
         "observed sequence",
         "frozen-Earth ecliptic sequence",
         "n_steps = 8",
         "nine disk samples",
         "There is no minor step",
+        "full physical distance with declared origin and unit",
+        "future 3D Solar-System visualizer",
         "One common magnification",
         "frozen-observer geometric direction",
         "central six-point Sun",
@@ -2328,9 +2330,11 @@ def test_49i3c3_audits_two_mode_planet_disk_sequences():
         assert phrase in contract
 
     assert "Milestone 49I.3C.3 — Multi-epoch resolved planet-disk audit" in roadmap
-    assert "Candidate multi-epoch resolved planet-disk boundary" in architecture
-    assert "Candidate multi-epoch planet-disk sequence" in implementation
+    assert "Accepted multi-epoch resolved planet-disk boundary" in architecture
+    assert "Accepted multi-epoch planet-disk sequence" in implementation
     assert "Milestone 49I.3C.3 audit ownership" in source_tree
     assert "13.2.26 49I.3C.3 multi-epoch resolved planet-disk audit" in guide
     assert "Guide version:** `0.9.5.20260831.42`" in guide
     assert "planet_disk_sequence_audit_49i3c3.md" in instructions
+
+    assert "all 63 current-documentation tests passed in 2.04 seconds" in contract
