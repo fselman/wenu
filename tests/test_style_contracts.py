@@ -1350,8 +1350,24 @@ def test_track_style_resolves_without_custom_stellar_sizing():
         label_ticks = True
 
     track = Track()
-    sky = EmptySky()
-    sky.layers = (track,)
+    sky = SimpleNamespace(
+        venus=None,
+        moon=None,
+        stars=None,
+        nonstellar=None,
+        galaxies=None,
+        milky_way_isophotes=None,
+        magellanic_cloud_isophotes={},
+        globular_clusters=None,
+        open_clusters=None,
+        supernova_remnants=None,
+        planetary_nebulae=None,
+        constellation_lines=None,
+        constellation_labels=None,
+        constellation_boundaries=None,
+        points=None,
+        layers=(track,),
+    )
     value = SimpleNamespace(
         style=PublicationStyle(),
         detail=ResolvedDetail(),
