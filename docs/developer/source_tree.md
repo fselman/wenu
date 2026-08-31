@@ -1067,9 +1067,10 @@ owns deterministic contract coverage;
 
 ## Milestone 49I.3C.3 audit ownership
 
-- `docs/developer/planet_disk_sequence_audit_49i3c3.md` owns the candidate
+- `docs/developer/planet_disk_sequence_audit_49i3c3.md` owns the accepted
   distinction between observed and frozen-Earth ecliptic resolved disk
   sequences, common sequence evidence, permitted content, Sun semantics,
-  proposed command vocabulary, validation gates, and bounded runtime slices.
+  proposed command vocabulary, physical-distance preservation, validation
+  gates, and bounded runtime slices.
 - No production source file owns this candidate yet; 49I.3C.3 changes no
   runtime type, chart, geometry, renderer, or output.
