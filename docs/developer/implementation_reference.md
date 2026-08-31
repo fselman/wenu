@@ -1064,8 +1064,18 @@ data and `SolarSystemPointLayer` orchestration from typed realization context
 through one product-frame transformation. `sky/venus.py::VenusLayer` is the
 first thin specialization. The shared layer attaches stable point identity and
 provenance; projection, visibility, appearance, semantic scene placement,
-rendering, and export remain in their established owners. No Moon chart layer
-exists.
+rendering, and export remain in their established owners. 49I.2B itself
+installed no Moon chart layer; 49I.2C below adds the first.
+
+### First drawable Moon point (Milestone 49I.2C)
+
+`sky/moon.py` defines frozen `MOON_POINT` data and the thin
+`MoonLayer(SolarSystemPointLayer)` specialization. Public `--moon` and
+`--planet venus` controls adapt into
+`SkyContentSelection.solar_system_objects`; detail application keeps both
+layers default-off and forwards exact selection. The maximal sphere registers
+Moon once, style owns its provisional hollow marker and label, and semantic
+identity owns `sky/solar_system/natural_satellites/moon`.
 
 ## 8.1 Packaged configuration validation
 

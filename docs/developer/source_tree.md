@@ -953,3 +953,11 @@ descriptor and shared renderer-neutral direction-to-product-frame
 orchestration. `src/wenu/sky/venus.py` is the thin Venus specialization.
 `tests/test_solar_system_point_layer.py` proves generic reuse with a test-only
 Moon descriptor; no production Moon layer exists in 49I.2B.
+
+
+`src/wenu/sky/moon.py` owns only the 49I.2C frozen Moon descriptor and thin
+shared-point specialization. `src/wenu/charts/chart_arguments.py` adapts
+class-aware `--moon` and `--planet venus` controls into the request-owned
+`solar_system_objects` selection. `sky/maximal_sphere.py` registers the
+default-off layer once; existing detail, style, semantic, projection, renderer,
+and exporter owners complete the canonical path.

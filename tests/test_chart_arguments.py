@@ -4,6 +4,7 @@ import argparse
 
 import pytest
 
+from wenu.charts.chart_arguments import chart_sky_content
 from wenu import (
     ChartStyleOverrides,
     RegionalChart,
@@ -48,6 +49,7 @@ def test_shared_content_and_legends_are_opt_in():
     )
     assert chart_content_options(arguments).reference_equinox is None
     assert chart_content_options(arguments).planets == frozenset()
+    assert chart_content_options(arguments).moon is False
     assert chart_legend_selection(arguments).objects is False
     assert chart_legend_selection(arguments).stellar_magnitudes is False
     assert chart_legend_selection(arguments).stellar_counts is False
@@ -105,13 +107,20 @@ def test_magnitude_limit_must_be_finite():
         )
 
 
-def test_venus_is_one_opt_in_planet_content_selection():
-    arguments = parser().parse_args(["--planet", "venus"])
+def test_class_aware_selectors_share_one_solar_system_selection():
+    arguments = parser().parse_args([
+        "--planet", "venus", "--moon",
+    ])
 
-    assert chart_content_options(arguments).planets == {"venus"}
+    content = chart_content_options(arguments)
+    assert content.planets == {"venus"}
+    assert content.moon is True
+    assert chart_sky_content(arguments).solar_system_objects == {
+        "venus", "moon",
+    }
     detail = chart_detail_overrides(arguments)
-    assert "venus" in detail.enabled_layer_additions
-    assert "venus" not in detail.disabled_layers
+    assert {"venus", "moon"} <= detail.enabled_layer_additions
+    assert not {"venus", "moon"} & detail.disabled_layers
 
     with pytest.raises(SystemExit):
         parser().parse_args(["--planet", "mars"])

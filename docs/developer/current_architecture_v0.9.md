@@ -285,6 +285,16 @@ Verification passed all 1,912 tests, and main-versus-branch Venus products
 were identical at the PNG, rendered-PDF, and normalized semantic-SVG levels.
 Fernando scientifically and architecturally accepted 49I.2B on 2026-08-30.
 
+The accepted 49I.2C implementation installs a thin default-off Moon
+specialization and
+replaces planet-only internal selection with one request-owned
+`solar_system_objects` set. Class-aware `--planet venus` and `--moon` inputs
+therefore converge before detail application. The Moon retains natural-
+satellite semantics and the ordinary style, projection, renderer, and exporter
+owners; physical disk and phase remain deferred. Fernando scientifically,
+architecturally, and visually accepted this symbolic Moon slice on 2026-08-30
+after all 1,917 tests and the PNG/PDF/SVG comparison passed.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored

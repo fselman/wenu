@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260830.23`  
-**Last updated:** `2026-08-30T23:47:41Z`  
+**Guide version:** `0.9.5.20260831.25`  
+**Last updated:** `2026-08-31T00:30:11Z`  
 **Language:** English
 
 # Table of contents
@@ -83,6 +83,7 @@
     - [13.2.14 49I.2 Moon and shared body pipeline](#49i2-moon-shared-pipeline)
     - [13.2.15 49I.2A numerical Moon direction](#49i2a-moon-direction)
     - [13.2.16 49I.2B shared Solar-System point layer](#49i2b-shared-point-layer)
+    - [13.2.17 49I.2C first drawable Moon point](#49i2c-moon-point)
 
 <a id="status-and-purpose"></a>
 
@@ -2183,3 +2184,33 @@ export policy.
 > Fernando scientifically and architecturally accepted 49I.2B on 2026-08-30
 > after all 1,912 tests passed and PNG, rendered-PDF, and normalized semantic-SVG
 > Venus parity against `main` was exact.
+
+
+<a id="49i2c-moon-point"></a>
+
+### 13.2.17 49I.2C first drawable Moon point
+
+**[Foundation]** The first drawable Moon deliberately appears as a named
+symbol, not a miniature photograph. Wenu now places that symbol through the
+same observer-relative path as Venus while retaining the scientific fact that
+the Moon is a natural satellite rather than a planet.
+
+**[Undergraduate]** `--planet venus` and `--moon` remain clear public
+vocabulary but adapt into one
+`SkyContentSelection.solar_system_objects` request field.
+`MoonLayer` supplies frozen Moon identity to `SolarSystemPointLayer`, which
+performs the accepted light-time, apparent-place, provenance, and one
+product-frame transformation sequence before ordinary projection.
+
+> **Wenu implementation box — 49I.2C symbolic Moon**
+>
+> The semantic path is
+> `sky/solar_system/natural_satellites/moon`. The hollow marker is
+> style-owned and has no angular-size meaning. At
+> `2026-08-30T00:00:00Z`—2026-08-29 20:00 in La Ligua—PNG, PDF, and semantic
+> SVG agreed visually, and comparison with Stellarium placed the Moon closely
+> against the same nearby Pisces stars. Physical disk and phase remain 49I.3.
+>
+> Fernando scientifically, architecturally, and visually accepted this first
+> symbolic Moon slice on 2026-08-30 after all 1,917 tests and 54 documentation
+> tests passed.

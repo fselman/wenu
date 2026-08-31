@@ -234,3 +234,13 @@ def test_constellation_hierarchy_is_shallow_and_system_agnostic():
         "Lines-Polynesian Navigation", "Manu"
     )
     assert entity.svg_id == "polynesian-navigation-lines-manu"
+
+
+def test_moon_is_a_natural_satellite_not_a_planet():
+    resolved = identity("moon")
+
+    assert resolved.semantic_path == (
+        "sky", "solar_system", "natural_satellites", "moon"
+    )
+    assert resolved.display_name == "Moon"
+    assert resolved.style_role == "moon"
