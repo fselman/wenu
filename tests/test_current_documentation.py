@@ -2080,7 +2080,7 @@ def test_49i3a_audits_symbolic_and_resolved_solar_system_appearance():
         "apparent magnitude",
         "display magnification",
         "object-specific and opt-in",
-        "factor `1` means physical angular scale",
+        "Factor `1` means physical angular scale",
         "regional and binocular charts",
         "Planisphere and all-sky products retain symbolic representation",
         "not merely a large scatter marker",
