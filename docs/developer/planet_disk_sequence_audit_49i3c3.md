@@ -1,7 +1,8 @@
 # Multi-epoch resolved planet-disk audit — Milestone 49I.3C.3
 
-**Status:** Candidate architecture for scientific review  
+**Status:** Scientifically and architecturally accepted  
 **Audit date:** 2026-08-31  
+**Acceptance date:** 2026-08-31  
 **Implementation baseline:** `6745403`
 
 ## 1. Purpose
@@ -61,10 +62,17 @@ The result retains, for every sample:
 - realization-model identity;
 - target, centre, observer, resource, and kernel provenance;
 - typed direction and its coordinate status;
-- distance, physical angular diameter, phase angle, illuminated fraction, and
-  bright-limb orientation;
+- full physical distance with declared origin and unit, physical angular
+  diameter, phase angle, illuminated fraction, and bright-limb orientation;
 - physical centre, illuminated-face polygon, limb curve, and terminator curve;
 - stable object-and-epoch semantic identity.
+
+The full physical distance is retained even though the present 2D chart uses
+it chiefly to derive angular size. It must not be discarded after projection:
+a future 3D Solar-System visualizer may consume the same scientifically
+provenanced sequence state without reconstructing distance from page geometry.
+That future visualizer remains outside this milestone and must receive its own
+architecture and validation.
 
 One common magnification applies to all samples of one object in one request.
 This preserves their relative physical angular-size changes. Factor `1` means
@@ -261,6 +269,19 @@ trajectory, adaptive sampling, multiple bodies in one request, planisphere or
 all-sky resolved sequences, physical Sun geometry, Earth-orbit integration,
 post-export annotations, or performance caching.
 
-It also does not make the frozen construction a general planetarium mode. Wenu
+It also does not implement the possible future 3D Solar-System visualizer for
+which physical distances are deliberately preserved, and it does not make the
+frozen construction a general planetarium mode. Wenu
 remains a static-chart system, and both products must pass through the canonical
 static projection, rendering, and export machinery.
+
+
+## 14. Acceptance
+
+Fernando scientifically and architecturally accepted this audit on 2026-08-31,
+including preservation of full physical distance and provenance for possible
+future 3D Solar-System visualization. All 63 current-documentation tests passed
+in 2.04 seconds. This acceptance authorizes only the separately bounded
+49I.3C.3.1 observed multi-epoch Venus implementation; it does not pre-accept
+runtime types, numerical tolerances, public command spelling, visible output,
+the frozen-Earth implementation, Mercury support, or a 3D visualizer.
