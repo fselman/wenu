@@ -353,6 +353,10 @@ def _native_curve(request, directions, sample_times, source):
     first = directions[0].geometry.coordinate_spec
     for direction in directions:
         spec = direction.geometry.coordinate_spec
+        if direction.astrometric.observer_state.resource != source.resource:
+            raise ValueError(
+                "all samples must use the track ephemeris resource."
+            )
         if (
             spec.frame != "icrs"
             or spec.origin != "observer"
@@ -412,6 +416,13 @@ def _native_curve(request, directions, sample_times, source):
             "sample_instants": sample_instants,
             "sample_time_scale": sample_times[0].scale,
             "tick_offsets_days": request.tick_offsets_days,
+            "tick_sample_indices": tuple(
+                _offset_index(
+                    request.sample_offsets_days,
+                    offset,
+                )
+                for offset in request.tick_offsets_days
+            ),
             "ephemeris_sha256": source.resource.sha256,
         },
     )
