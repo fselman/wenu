@@ -77,6 +77,7 @@ def chart_view_request(
     reference_policy=None,
     content=None,
     solar_system_track=None,
+    solar_system_track_tick_labels=False,
 ):
     """Translate one prepared view and product into an immutable request."""
     if not isinstance(view, ChartView):
@@ -152,6 +153,7 @@ def chart_view_request(
             if content is None else content
         ),
         solar_system_track=solar_system_track,
+        solar_system_track_tick_labels=bool(solar_system_track_tick_labels),
         horizon=bool(horizon),
         horizon_mask=bool(horizon_mask),
         furniture=furniture,
