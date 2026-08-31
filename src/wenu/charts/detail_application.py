@@ -11,6 +11,7 @@ from .context import BoundaryKind
 from .detail import ResolvedDetail
 from .style_components import StellarMagnitudeSizing
 from wenu.rendering.preparation import configured_magnitude_sizes
+from .solar_system_disk_preparation import MagnifyProjectedDisk
 from .solar_system_track_annotations import (
     TrackLabelAnchor,
     prepare_projected_track,
@@ -231,7 +232,13 @@ _DETAIL_LAYER_NAMES = {
     "magellanic_cloud_isophotes": "magellanic_clouds",
 }
 
-_REQUEST_GEOMETRY_LAYERS = frozenset({"horizon", "solar_system_track"})
+_REQUEST_GEOMETRY_LAYERS = frozenset({
+    "horizon",
+    "solar_system_track",
+    "venus_disk_illuminated",
+    "venus_disk_limb",
+    "venus_disk_terminator",
+})
 _DEFAULT_DISABLED_LAYERS = frozenset({"venus", "moon"})
 
 
@@ -492,6 +499,57 @@ def composition_layer_options(
                 }
             },
         )
+    disk_layers = tuple(
+        layer for layer in sky.layers
+        if getattr(layer, "layer_name", "").startswith("venus_disk_")
+    )
+    if disk_layers:
+        disk_options = {}
+        for layer in disk_layers:
+            name = layer.layer_name
+            preparation = MagnifyProjectedDisk(
+                layer.disk_realization,
+                layer.magnification,
+            )
+            if name == "venus_disk_illuminated":
+                render = {
+                    "style": {
+                        "facecolor": publication.venus_disk_face_color,
+                        "edgecolor": "none",
+                        "alpha": publication.venus_disk_face_alpha,
+                        "zorder": 39.0,
+                    },
+                }
+            else:
+                render = {
+                    "style": {
+                        "color": (
+                            publication.venus_disk_limb_color
+                            if name == "venus_disk_limb"
+                            else publication.venus_disk_terminator_color
+                        ),
+                        "linewidth": (
+                            publication.venus_disk_limb_linewidth
+                            if name == "venus_disk_limb"
+                            else publication.venus_disk_terminator_linewidth
+                        ),
+                        "linestyle": (
+                            publication.venus_disk_limb_linestyle
+                            if name == "venus_disk_limb"
+                            else publication.venus_disk_terminator_linestyle
+                        ),
+                        "dash_capstyle": "butt",
+                        "alpha": publication.venus_alpha,
+                        "zorder": (
+                            39.2 if name == "venus_disk_limb" else 39.1
+                        ),
+                    },
+                }
+            disk_options[layer] = {
+                "prepare": preparation,
+                "render": render,
+            }
+        base = merge_sky_layer_options(sky, base, disk_options)
     return apply_resolved_detail(
         sky,
         composition.detail,

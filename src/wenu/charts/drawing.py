@@ -10,6 +10,7 @@ from .product_options import ChartProduct, ChartProductOptions
 from .request import ChartRequest
 from .request_chart import PreparedChartRequest
 from .request_composition import ChartProductCompositionOptions
+from .request_disks import configure_chart_request_disks
 from .request_generation import export_prepared_chart
 from .request_grids import configure_chart_request_grids
 from .request_horizon import configure_chart_request_horizon
@@ -78,6 +79,7 @@ def chart_view_request(
     content=None,
     solar_system_track=None,
     solar_system_track_tick_labels=False,
+    solar_system_disks=(),
 ):
     """Translate one prepared view and product into an immutable request."""
     if not isinstance(view, ChartView):
@@ -154,6 +156,7 @@ def chart_view_request(
         ),
         solar_system_track=solar_system_track,
         solar_system_track_tick_labels=bool(solar_system_track_tick_labels),
+        solar_system_disks=tuple(solar_system_disks),
         horizon=bool(horizon),
         horizon_mask=bool(horizon_mask),
         furniture=furniture,
@@ -192,6 +195,7 @@ def draw_chart_view_request(view, request):
     )
     configure_chart_request_horizon(view.sky, request)
     configure_chart_request_track(view.sky, request)
+    configure_chart_request_disks(view.sky, request)
     prepared = PreparedChartRequest(
         chart=view.chart,
         resolved=replace(view._prepared.resolved, request=request),

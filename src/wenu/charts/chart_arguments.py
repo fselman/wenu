@@ -10,6 +10,7 @@ import re
 from .detail import DetailOverrides, SkyContentSelection
 from .product_options import add_chart_product_arguments
 from .reference_policy import CelestialReferencePolicy
+from .request_disks import SolarSystemDiskDisplayRequest
 from .style_overrides import ChartStyleOverrides
 
 GRID_REFERENCES = frozenset({"equatorial", "ecliptic", "galactic"})
@@ -167,6 +168,26 @@ def add_chart_content_arguments(parser):
         choices=("venus",),
         default=[],
         help="draw a selected planet (currently: venus)",
+    )
+    parser.add_argument(
+        "--planet-appearance",
+        action="append",
+        default=[],
+        metavar="PLANET=MODE",
+        help=(
+            "select a planet appearance (currently: venus=resolved; "
+            "regional/binocular only)"
+        ),
+    )
+    parser.add_argument(
+        "--planet-disk-magnification",
+        action="append",
+        default=[],
+        metavar="PLANET=FACTOR",
+        help=(
+            "magnify one resolved disk after projection "
+            "(factor 1 is physical scale)"
+        ),
     )
     parser.add_argument(
         "--planet-track",
@@ -358,6 +379,55 @@ def chart_content_options(arguments) -> ChartContentOptions:
         reference_equinox=arguments.reference_equinox,
         planets=frozenset(getattr(arguments, "planet", ())),
         moon=bool(getattr(arguments, "moon", False)),
+    )
+
+
+def _key_value_options(values, *, option):
+    result = {}
+    for raw in values or ():
+        text = str(raw).strip()
+        if text.count("=") != 1:
+            raise ValueError(f"{option} requires PLANET=VALUE.")
+        key, value = (part.strip().lower() for part in text.split("=", 1))
+        if not key or not value:
+            raise ValueError(f"{option} requires PLANET=VALUE.")
+        if key in result:
+            raise ValueError(f"{option} cannot repeat {key}.")
+        result[key] = value
+    return result
+
+
+def chart_disk_options(arguments):
+    """Resolve object-specific opt-in resolved-disk display requests."""
+    appearances = _key_value_options(
+        getattr(arguments, "planet_appearance", ()),
+        option="planet-appearance",
+    )
+    magnifications = _key_value_options(
+        getattr(arguments, "planet_disk_magnification", ()),
+        option="planet-disk-magnification",
+    )
+    unknown = set(appearances) - {"venus"}
+    if unknown:
+        raise ValueError("planet-appearance currently supports only venus.")
+    invalid_modes = {
+        target: mode
+        for target, mode in appearances.items()
+        if mode != "resolved"
+    }
+    if invalid_modes:
+        raise ValueError("planet appearance mode must be resolved.")
+    unselected = set(magnifications) - set(appearances)
+    if unselected:
+        raise ValueError(
+            "planet-disk-magnification requires resolved appearance."
+        )
+    return tuple(
+        SolarSystemDiskDisplayRequest(
+            target,
+            float(magnifications.get(target, 1.0)),
+        )
+        for target in appearances
     )
 
 

@@ -431,3 +431,19 @@ output-neutral physical centre, limb, visible terminator, and illuminated-face
 spherical geometry bundle. No sky layer, chart request, magnification, style,
 renderer, or output behavior consumes it yet. Current symbolic Venus output
 remains authoritative.
+
+
+## Drawable resolved Venus disk
+
+Milestone 49I.3C.2 installs one opt-in resolved Venus disk for regional and
+binocular charts. Three sky layers share one physical appearance realization:
+an illuminated polygon, a closed limb curve, and a visible terminator curve.
+The ordinary projection pipeline projects each component and the physical
+centre; chart preparation then scales projected offsets by the Venus-specific
+display magnification about that exact projected centre.
+
+Symbolic Venus remains the default. A request cannot select symbolic and
+resolved Venus simultaneously. Magnification alone cannot enable the disk,
+factor 1 retains physical angular scale, and planisphere/all-sky products
+retain symbolic representation. Direct Python chart requests and the CLI
+install the same request-owned layers.

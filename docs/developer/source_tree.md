@@ -1047,3 +1047,19 @@ owns deterministic contract coverage;
   scientific and architectural contract.
 - No sky layer, chart request, magnification, style, renderer, or exporter
   consumes the geometry in 49I.3C.1.
+
+
+## Milestone 49I.3C.2 ownership
+
+- `src/wenu/sky/venus_disk.py` owns the shared Venus appearance realization
+  and the illuminated-face, limb, and terminator sky layers.
+- `src/wenu/charts/request_disks.py` owns opt-in, object-specific resolved
+  display selection and dynamic request-layer installation.
+- `src/wenu/charts/solar_system_disk_preparation.py` owns exact
+  post-projection scaling around the separately projected physical centre.
+- `src/wenu/sky/celestial_sphere.py` exposes the canonical projector to
+  projector-aware chart preparation without changing ordinary callables.
+- `tests/test_venus_disk_display.py` owns CLI, scale, semantics, replacement,
+  and centre-preserving magnification regressions.
+- `docs/developer/drawable_venus_disk_49i3c2.md` owns the accepted runtime,
+  visual, and angular-scale calibration evidence.
