@@ -28,7 +28,9 @@ class SolarSystemTrackLayer(SkyLayer):
         del observer
         raise RuntimeError("SolarSystemTrackLayer requires a LayerRealizationContext.")
 
-def prepare_projected_track(\n    spherical, projected, *, tick_length, include_start_tick=False, label_ticks=False\n):
+def prepare_projected_track(
+    spherical, projected, *, tick_length, include_start_tick=False, label_ticks=False
+):
     """Return path and perpendicular projected tick components."""
     if not isinstance(projected, ProjectedCurves) or len(projected) != 1:
         raise TypeError("projected must contain exactly one track curve.")
@@ -49,7 +51,11 @@ def prepare_projected_track(\n    spherical, projected, *, tick_length, include_
         tx, ty = tangent
         half = 0.5 * tick_length
         nx, ny = -ty * half, tx * half
-        ticks.append(ProjectedCurve(\n            x=np.asarray((source.x[index] - nx, source.x[index] + nx)),\n            y=np.asarray((source.y[index] - ny, source.y[index] + ny)),\n            name=_tick_label(spherical, index) if label_ticks else None,\n        ))
+        ticks.append(ProjectedCurve(
+            x=np.asarray((source.x[index] - nx, source.x[index] + nx)),
+            y=np.asarray((source.y[index] - ny, source.y[index] + ny)),
+            name=_tick_label(spherical, index) if label_ticks else None,
+        ))
     path = ProjectedCurve(
         x=source.x, y=source.y, closed=False, name=_start_label(spherical)
     )
