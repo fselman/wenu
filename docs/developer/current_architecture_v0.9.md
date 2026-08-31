@@ -416,13 +416,16 @@ appearance remains the existing symbolic points. There is no resolved disk,
 request, style, renderer, or output change in 49I.3B.
 
 
-## Candidate resolved Venus disk boundary
+## Accepted resolved Venus disk boundary
 
-Milestone 49I.3C is an audit only. It proposes an illuminated
-`SphericalPolygons` layer plus limb and terminator `SphericalCurves` layers,
-constructed before projection from the accepted 49I.3B state. This avoids
-forcing mixed geometry into the curve-only `SphericalGrid` contract and
-avoids renderer-specific disk artists.
+Milestone 49I.3C accepts an illuminated `SphericalPolygons` layer plus limb
+and terminator `SphericalCurves` layers sampled at the physical angular radius.
+After ordinary projection, chart preparation applies Venus-specific display
+magnification about the projected physical centre. This avoids forcing mixed
+geometry into the curve-only `SphericalGrid` contract and avoids
+renderer-specific disk artists.
 
-No runtime layer, request, magnification, style, renderer, or output behavior
-is installed by this audit. Current symbolic Venus output remains authoritative.
+The accepted future capability includes several independently realized Venus
+disks in one fixed chart frame. No runtime layer, request, magnification,
+style, renderer, or output behavior is installed by this audit. Current
+symbolic Venus output remains authoritative.
