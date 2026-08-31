@@ -11,7 +11,7 @@ from .context import BoundaryKind
 from .detail import ResolvedDetail
 from .style_components import StellarMagnitudeSizing
 from wenu.rendering.preparation import configured_magnitude_sizes
-from wenu.sky.solar_system_track_layer import prepare_projected_track, start_label_anchor
+from wenu.sky.solar_system_track_layer import prepare_projected_track, track_label_anchor
 
 
 _SIZE_OPTIONS = {
@@ -453,14 +453,14 @@ def composition_layer_options(
                     "render": {
                         "component_styles": {
                             "path": {
-                                "color": "#C44E52",
-                                "linewidth": 1.2,
-                                "linestyle": "-",
+                                "color": publication.solar_system_track_color,
+                                "linewidth": publication.solar_system_track_linewidth,
+                                "linestyle": publication.solar_system_track_linestyle,
                                 "zorder": 38.0,
                             },
                             "ticks": {
-                                "color": "#C44E52",
-                                "linewidth": 1.0,
+                                "color": publication.solar_system_track_color,
+                                "linewidth": publication.solar_system_track_tick_linewidth,
                                 "zorder": 38.1,
                             },
                             "labels": {
@@ -470,10 +470,10 @@ def composition_layer_options(
                             },
                         },
                         "draw_labels": True,
-                        "label_anchor": start_label_anchor,
+                        "label_anchor": track_label_anchor,
                         "label_style": {
-                            "color": "#C44E52",
-                            "fontsize": 9.0,
+                            "color": publication.solar_system_track_color,
+                            "fontsize": publication.solar_system_track_label_fontsize,
                             "zorder": 38.2,
                         },
                         "label_offset": (0.0, 0.0),
