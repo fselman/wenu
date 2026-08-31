@@ -42,6 +42,10 @@ chart, projection, preparation, rendering, style, or export packages.
 It deliberately contains no display magnification, projection coordinates,
 page units, marker size, chart family, colour, output path, or caching policy.
 
+`SolarSystemAppearanceRealizer` computes this state from the accepted target
+and Sun directions plus one reception-time Sun state. It owns no chart or
+rendering policy.
+
 ## 4. Venus radius and angular diameter
 
 The adopted spherical Venus radius is `6051.8 km`, the mean radius reported
