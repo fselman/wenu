@@ -171,7 +171,8 @@ Fernando accepted the geometry model, 720-sample default, numerical
 tolerances, installed-DE440 result, and output-neutral boundary on
 2026-08-31.
 
-Final routine and complete-suite verification remain to be recorded before
-the pull request is ready. Acceptance of 49I.3C.1 does not pre-accept the
-future 49I.3C.2 request, magnification range, style, semantic output, or visual
+Final verification passed all 61 current-documentation tests in 2.35 seconds,
+1,958 routine tests with 30 deselected in 27.07 seconds, and all 1,988 tests
+in 89.21 seconds. Acceptance of 49I.3C.1 does not pre-accept the future
+49I.3C.2 request, magnification range, style, semantic output, or visual
 result.
