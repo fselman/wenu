@@ -254,7 +254,7 @@ def test_adapter_delegates_selected_products_to_ordinary_drawing(
         disabled_layers=frozenset({
             "constellation_lines", "constellation_labels",
             "constellation_boundaries", "coordinate_grids",
-            "altaz_grid", "galactic_grid", "venus",
+            "altaz_grid", "galactic_grid", "venus", "moon",
         }),
         grid_label_layers=frozenset({
             "equatorial_grid", "ecliptic_grid"
