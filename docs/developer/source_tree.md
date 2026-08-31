@@ -1074,3 +1074,16 @@ owns deterministic contract coverage;
   gates, and bounded runtime slices.
 - No production source file owns this candidate yet; 49I.3C.3 changes no
   runtime type, chart, geometry, renderer, or output.
+
+
+## Milestone 49I.3C.3.1A ownership
+
+- `src/wenu/sky/solar_system_disk_sequences.py` owns the immutable observed
+  sequence request/result and independent per-epoch observer, direction,
+  appearance, disk-geometry, and distance realization.
+- `tests/test_solar_system_disk_sequences.py` owns deterministic count,
+  identity, distance, and orchestration evidence.
+- `tools/validate_49i3c3_1a_observed_venus_sequence.py` owns the installed
+  four-epoch direct-Skyfield comparison.
+- `docs/developer/observed_venus_disk_sequence_49i3c31a.md` owns acceptance
+  evidence and the boundary to drawable 49I.3C.3.1B.
