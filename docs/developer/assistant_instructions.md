@@ -71,6 +71,8 @@ For current work, read and follow:
   descriptor, renderer-neutral orchestration, or Venus migration boundary;
 - `moon_layer_49i2c.md` for the first production Moon point, shared internal
   Solar-System selection, natural-satellite semantics, or visual review;
+- `solar_system_track_audit_49i2d.md` for Solar-System trajectories,
+  per-sample time provenance, fixed chart-frame tracks, or projected ticks;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,
