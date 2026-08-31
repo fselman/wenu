@@ -11,7 +11,10 @@ from .context import BoundaryKind
 from .detail import ResolvedDetail
 from .style_components import StellarMagnitudeSizing
 from wenu.rendering.preparation import configured_magnitude_sizes
-from wenu.sky.solar_system_track_layer import prepare_projected_track, track_label_anchor
+from wenu.sky.solar_system_track_layer import (
+    TrackLabelAnchor,
+    prepare_projected_track,
+)
 
 
 _SIZE_OPTIONS = {
@@ -472,7 +475,11 @@ def composition_layer_options(
                             },
                         },
                         "draw_labels": True,
-                        "label_anchor": track_label_anchor,
+                        "label_anchor": TrackLabelAnchor(
+                            fontsize=(
+                                publication.solar_system_track_label_fontsize
+                            )
+                        ),
                         "label_style": {
                             "color": publication.solar_system_track_color,
                             "fontsize": publication.solar_system_track_label_fontsize,
