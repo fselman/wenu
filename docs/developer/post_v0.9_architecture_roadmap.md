@@ -857,8 +857,11 @@ physical-appearance state, and 49I.3F first resolved Moon disk. The ordering of
 49I.3C and 49I.3D remains a review choice. 49I.3A changes no runtime or output.
 
 
-Fernando accepted all eight audit decisions on 2026-08-31 after all 58
-current-documentation tests passed in 2.51 seconds. This acceptance authorizes
+Fernando accepted all eight audit decisions on 2026-08-31. Initial acceptance
+verification passed 58 current-documentation tests in 2.51 seconds. Final
+verification passed 58 current-documentation tests in 1.95 seconds, 1,926
+routine tests with 30 deselected in 28.95 seconds, and all 1,956 tests in 91.38
+seconds. This acceptance authorizes
 the separately bounded 49I.3B numerical Venus appearance-state milestone; it
 does not pre-accept that model, its tolerances, runtime API, or visible output.
 
