@@ -92,25 +92,31 @@ def test_label_anchor_turns_inward_near_upper_right_field_edge():
     assert anchor.vertical_alignment == "top"
 
 
-def test_successive_tick_labels_alternate_across_the_track():
-    source = spherical()
-    source.metadata["sample_instants"] = tuple(
-        f"2026-09-{day:02d}T00:00:00.000" for day in range(1, 6)
+def test_two_pass_layout_keeps_one_side_when_labels_are_clear():
+    figure, axes = plt.subplots(figsize=(4.0, 4.0), dpi=100)
+    axes.set_xlim(-1.0, 1.0)
+    axes.set_ylim(-1.0, 1.0)
+    track = ProjectedCurve(
+        x=np.linspace(-0.8, 0.8, 41),
+        y=np.zeros(41),
     )
-    result = prepare_projected_track(
-        source, projected(), tick_length=2.0, label_ticks=True
+    ticks = tuple(
+        ProjectedCurve(
+            x=np.asarray((x, x)),
+            y=np.asarray((-0.04, 0.04)),
+            name=f"2026-09-{day:02d}",
+        )
+        for x, day in ((-0.6, 6), (0.0, 13), (0.6, 20))
     )
-    axes = SimpleNamespace(
-        get_xlim=lambda: (-5.0, 5.0),
-        get_ylim=lambda: (-5.0, 5.0),
-    )
-    first = track_label_anchor(result["ticks"][0], axes)
-    second = track_label_anchor(result["ticks"][1], axes)
-    assert first.y > 1.0
-    assert first.vertical_alignment == "bottom"
-    assert second.y < -1.0
-    assert second.vertical_alignment == "top"
-
+    anchor = TrackLabelAnchor(fontsize=9.0)
+    anchor.set_geometry(track, ticks)
+    try:
+        placements = tuple(anchor(tick, axes) for tick in ticks)
+        assert len({
+            placement.vertical_alignment for placement in placements
+        }) == 1
+    finally:
+        plt.close(figure)
 
 def test_publication_style_owns_projection_friendly_track_appearance():
     style = PublicationStyle()
@@ -137,31 +143,40 @@ def test_tick_label_switches_sides_to_remain_inside_viewport():
 
 
 
-def test_collision_aware_anchor_chooses_only_perpendicular_tick_sides():
+def test_two_pass_layout_switches_only_between_perpendicular_sides():
     figure, axes = plt.subplots(figsize=(4.0, 4.0), dpi=100)
     axes.set_xlim(-1.0, 1.0)
     axes.set_ylim(-1.0, 1.0)
-    anchor = TrackLabelAnchor(fontsize=9.0)
-    tick = ProjectedCurve(
-        x=np.asarray((-0.03, 0.03)),
-        y=np.asarray((-0.01, 0.01)),
-        name="2026-10-04",
+    track = ProjectedCurve(
+        x=np.linspace(-0.8, 0.8, 41),
+        y=np.full(41, -0.5),
     )
+    ticks = tuple(
+        ProjectedCurve(
+            x=np.asarray((-0.03, 0.03)),
+            y=np.asarray((-0.01, 0.01)),
+            name=name,
+        )
+        for name in ("2026-10-04", "2026-10-11")
+    )
+    anchor = TrackLabelAnchor(fontsize=9.0)
+    anchor.set_geometry(track, ticks)
     try:
-        first = anchor(tick, axes)
-        second = anchor(tick, axes)
+        placements = tuple(anchor(tick, axes) for tick in ticks)
         midpoint = axes.transData.transform((0.0, 0.0))
         direction = axes.transData.transform((0.03, 0.01)) - midpoint
-        for placement in (first, second):
+        for placement in placements:
             offset = axes.transData.transform(
                 (placement.x, placement.y)
             ) - midpoint
             assert abs(np.cross(direction, offset)) < 1.0e-8
-        assert first.horizontal_alignment != second.horizontal_alignment
+        assert (
+            placements[0].horizontal_alignment
+            != placements[1].horizontal_alignment
+        )
         assert _boxes_do_not_overlap(*anchor._claimed)
     finally:
         plt.close(figure)
-
 
 def _boxes_do_not_overlap(left, right):
     return not (
