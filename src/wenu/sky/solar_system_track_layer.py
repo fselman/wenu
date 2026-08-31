@@ -78,8 +78,13 @@ def start_label_anchor(curve, ax):
     if finite.size == 0:
         return None
     index = int(finite[0])
+    x = float(curve.x[index])
+    y = float(curve.y[index])
+    if len(curve) == 2 and finite.size == 2:
+        x = float(np.mean(curve.x[finite]))
+        y = float(np.mean(curve.y[finite]))
     return CurveLabelPlacement(
-        x=float(curve.x[index]), y=float(curve.y[index]),
+        x=x, y=y,
         horizontal_alignment="left", vertical_alignment="bottom",
     )
 
