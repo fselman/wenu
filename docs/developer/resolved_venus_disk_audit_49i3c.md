@@ -247,7 +247,10 @@ Fernando accepted this boundary on 2026-08-31 with two explicit revisions:
 He also accepted the separate illuminated-face, limb, and terminator
 geometries because they permit distinct fill and stroke policies.
 
-Acceptance verification passed all 60 current-documentation tests in 1.80
-seconds. Runtime geometry, command vocabulary, supported magnification range,
-and visible output remain separately authorized implementation work.
+Initial acceptance verification passed all 60 current-documentation tests in
+1.80 seconds. After recording the accepted revisions, all 60 documentation
+tests passed in 2.81 seconds, 1,937 routine tests passed with 30 deselected in
+28.40 seconds, and all 1,967 tests passed in 89.14 seconds. Runtime geometry,
+command vocabulary, supported magnification range, and visible output remain
+separately authorized implementation work.
 
