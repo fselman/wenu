@@ -1875,9 +1875,9 @@ Appearance is owned by `PublicationStyle`; PNG, PDF, and semantic SVG use the
 ordinary renderer and exporter.
 
 
-## Proposed physical apparent-disk boundary (Milestone 49I.3A)
+## Accepted physical apparent-disk boundary (Milestone 49I.3A)
 
-`physical_apparent_disk_audit_49i3a.md` is the active proposed contract for
+`physical_apparent_disk_audit_49i3a.md` is the active accepted contract for
 future resolved Venus and Moon appearance. It separates apparent centre,
 physical angular diameter, illumination, tangent-plane orientation,
 body-specific orientation, photometry, and object-specific display
