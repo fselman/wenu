@@ -401,3 +401,16 @@ The accepted boundary keeps a future physical-appearance state renderer-neutral
 and keeps object-specific display magnification outside that scientific state.
 Any resolved disk must become ordinary semantic geometry before the existing
 projection, clipping, renderer, and shared exporter.
+
+
+## Accepted Venus physical-appearance state
+
+Milestone 49I.3B installs `wenu.solar_system_appearance` as a
+renderer-neutral numerical boundary. `SolarSystemApparentDisk` accompanies
+the accepted Venus direction with physical radius, angular diameter, phase,
+illuminated fraction, and apparent-ICRS bright-limb position angle. It carries
+no display magnification or chart/output policy.
+
+No production layer consumes the state yet. Current Venus and Moon chart
+appearance remains the existing symbolic points. There is no resolved disk,
+request, style, renderer, or output change in 49I.3B.

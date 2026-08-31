@@ -865,6 +865,37 @@ seconds. This acceptance authorizes
 the separately bounded 49I.3B numerical Venus appearance-state milestone; it
 does not pre-accept that model, its tolerances, runtime API, or visible output.
 
+
+#### Milestone 49I.3B — Venus physical-appearance state
+
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-31; integration verification in progress.
+
+`venus_physical_appearance_49i3b.md` adds one frozen renderer-neutral
+`SolarSystemApparentDisk` and realizer. The accepted retarded Venus direction
+remains the centre and distance authority. JPL's 6051.8-km mean Venus radius
+sets physical angular diameter; the Sun–target–observer phase angle sets the
+spherical illuminated fraction; and the bright-limb direction is measured
+from celestial north toward east in the apparent ICRS tangent plane.
+
+Installed DE440 at La Ligua on 2026-08-30 gives 29.287846514361 arcsec angular
+diameter, 101.448595072558 degrees phase angle, 0.400755659841 illuminated
+fraction, and 295.354967208388 degrees bright-limb position angle. The same
+tangent direction is 185.355190511946 degrees from the local zenith toward
+increasing azimuth, confirming that 49I.3C must transform it rather than use it
+as a page rotation.
+
+Direct-Skyfield residuals are 6.927e-11 arcsec in diameter, 1.353e-10 degree
+in phase, -1.158e-12 in illuminated fraction, and 2.080e-11 degree in
+bright-limb angle. Fernando accepted the model, conventions, calibrated
+comparison tolerances, values, and output-neutral boundary after all 9
+deterministic appearance tests passed in 1.38 seconds. Final verification
+passed 116 focused architectural tests in 4.73 seconds, 1,936 routine tests
+with 30 deselected in 27.32 seconds, and all 1,966 tests in 89.97 seconds.
+49I.3B adds no layer,
+disk geometry, display magnification, request, style, or visible output.
+49I.3C remains separately authorized.
+
 Add one object class at a time:
 
 1. Moon or one planet through an ephemeris provider;

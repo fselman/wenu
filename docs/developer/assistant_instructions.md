@@ -81,6 +81,9 @@ For current work, read and follow:
 - `physical_apparent_disk_audit_49i3a.md` for symbolic-versus-resolved
   Solar-System appearance, angular diameter, phase, limb orientation,
   photometry, or object-specific display magnification;
+- `venus_physical_appearance_49i3b.md` for the accepted Venus radius,
+  angular-diameter, phase, illuminated-fraction, bright-limb convention,
+  numerical tolerances, or output-neutral physical-appearance state;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,

@@ -1887,3 +1887,16 @@ No runtime API is installed by 49I.3A. Existing Venus and Moon layers continue
 to return symbolic `SphericalPoints`, and their current fixed hollow markers
 remain unchanged. Future resolved disks must become ordinary semantic geometry
 before the canonical projection and shared PNG/PDF/SVG path.
+
+
+## Venus physical-appearance state (Milestone 49I.3B)
+
+`solar_system_appearance.py::SolarSystemApparentDisk` is the frozen
+renderer-neutral physical state. `SolarSystemAppearanceRealizer.appearance()`
+accepts one ephemeris source, accepted target and Sun apparent directions,
+display identity, physical radius, and radius-model identity.
+
+The result records angular diameter, Sun–target–observer phase angle,
+spherical illuminated fraction, and bright-limb position angle measured from
+apparent celestial north toward east. `VENUS_MEAN_RADIUS_KM` is 6051.8 km.
+No chart request or layer consumes this API in 49I.3B.
