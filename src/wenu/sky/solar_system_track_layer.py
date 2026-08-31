@@ -83,8 +83,8 @@ def prepare_projected_track(
         },
     )
 
-def track_label_anchor(curve, ax):
-    """Place track labels away from the path and inward at field edges."""
+def _start_label_anchor(curve, ax):
+    """Anchor the start label inward from the nearest field edge."""
     finite = np.flatnonzero(curve.finite)
     if finite.size == 0:
         return None
@@ -92,36 +92,18 @@ def track_label_anchor(curve, ax):
     y = float(np.mean(curve.y[finite]))
     x_min, x_max = sorted(ax.get_xlim())
     y_min, y_max = sorted(ax.get_ylim())
-    if finite.size == 2:
-        first, last = (int(value) for value in finite)
-        dx = float(curve.x[last] - curve.x[first])
-        dy = float(curve.y[last] - curve.y[first])
-        norm = float(np.hypot(dx, dy))
-        if norm > 1.0e-12:
-            padding = 0.012 * min(x_max - x_min, y_max - y_min)
-            x = float(curve.x[last]) + padding * dx / norm
-            y = float(curve.y[last]) + padding * dy / norm
-            if not (x_min <= x <= x_max and y_min <= y <= y_max):
-                dx, dy = -dx, -dy
-                x = float(curve.x[first]) + padding * dx / norm
-                y = float(curve.y[first]) + padding * dy / norm
-            return CurveLabelPlacement(
-                x=x,
-                y=y,
-                horizontal_alignment="left" if dx >= 0.0 else "right",
-                vertical_alignment="bottom" if dy >= 0.0 else "top",
-            )
-    x_margin = 0.12 * abs(x_max - x_min)
-    y_margin = 0.10 * abs(y_max - y_min)
-    horizontal = "right" if x > x_max - x_margin else "left"
-    vertical = "top" if y > y_max - y_margin else "bottom"
+    x_margin = 0.12 * (x_max - x_min)
+    y_margin = 0.10 * (y_max - y_min)
     return CurveLabelPlacement(
-        x=x, y=y,
-        horizontal_alignment=horizontal,
-        vertical_alignment=vertical,
+        x=x,
+        y=y,
+        horizontal_alignment=(
+            "right" if x > x_max - x_margin else "left"
+        ),
+        vertical_alignment=(
+            "top" if y > y_max - y_margin else "bottom"
+        ),
     )
-
-
 
 class TrackLabelAnchor:
     """Choose a coherent two-sided layout for ordered track labels."""
@@ -153,7 +135,7 @@ class TrackLabelAnchor:
         placement = self._placements.get(curve.name)
         if placement is not None:
             return placement
-        return track_label_anchor(curve, ax)
+        return _start_label_anchor(curve, ax)
 
     def _build_layout(self, ax):
         self._axes = ax
@@ -297,18 +279,17 @@ class TrackLabelAnchor:
         return int(np.count_nonzero(below_label))
 
 
+
 def _box_overlap(left, right):
     width = max(0.0, min(left[2], right[2]) - max(left[0], right[0]))
     height = max(0.0, min(left[3], right[3]) - max(left[1], right[1]))
     return width * height
 
-def start_label_anchor(curve, ax):
-    """Compatibility name for the shared track label placement."""
-    return track_label_anchor(curve, ax)
 
 def _tick_label(spherical, index):
     instants = tuple(spherical.metadata.get("sample_instants", ()))
     return instants[index][:10] if index < len(instants) else None
+
 
 def _start_label(spherical):
     instants = tuple(spherical.metadata.get("sample_instants", ()))
@@ -316,6 +297,7 @@ def _start_label(spherical):
     display_name = str(spherical.names[0]) if spherical.names is not None else "Venus"
     glyph = {"Venus": "\N{FEMALE SIGN}"}.get(display_name, display_name)
     return f"{glyph} {date}".strip()
+
 
 def _projected_tangent(curve, index):
     if index < 0 or index >= len(curve) or not curve.finite[index]:
