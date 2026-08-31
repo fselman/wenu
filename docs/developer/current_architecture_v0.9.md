@@ -426,6 +426,8 @@ geometry into the curve-only `SphericalGrid` contract and avoids
 renderer-specific disk artists.
 
 The accepted future capability includes several independently realized Venus
-disks in one fixed chart frame. No runtime layer, request, magnification,
-style, renderer, or output behavior is installed by this audit. Current
-symbolic Venus output remains authoritative.
+disks in one fixed chart frame. Milestone 49I.3C.1 now installs the
+output-neutral physical centre, limb, visible terminator, and illuminated-face
+spherical geometry bundle. No sky layer, chart request, magnification, style,
+renderer, or output behavior consumes it yet. Current symbolic Venus output
+remains authoritative.

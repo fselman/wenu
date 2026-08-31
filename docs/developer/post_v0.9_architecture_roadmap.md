@@ -969,3 +969,15 @@ chart preparation. The accepted sequence is 49I.3C.1 physical spherical
 geometry, 49I.3C.2 one drawable regional/binocular disk, and 49I.3C.3 several
 independently realized disks in one fixed chart frame. Symbolic defaults and
 planisphere/all-sky behavior remain unchanged.
+
+
+## Milestone 49I.3C.1 — Venus spherical disk geometry
+
+**Status:** Scientifically and architecturally accepted on 2026-08-31.
+
+`SolarSystemDiskGeometryRealizer` now constructs the physical apparent
+centre, closed limb, visible terminator, and illuminated-face polygon from the
+accepted 49I.3B state. The default 720-sample orthographic phase with radial
+angular-offset mapping passed deterministic and installed-DE440 validation.
+The slice adds no layer, request, magnification, style, renderer, or visible
+output. 49I.3C.2 remains separately authorized.

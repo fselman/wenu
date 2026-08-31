@@ -1032,3 +1032,18 @@ owns deterministic contract coverage;
   magnification; style will own appearance.
 - Multi-epoch disks will reuse one fixed chart frame with independent physical
   appearance states. No production source file changes in this audit.
+
+
+## Milestone 49I.3C.1 ownership
+
+- `src/wenu/solar_system_disk_geometry.py` owns the frozen physical geometry
+  bundle, 720-sample default, tangent-basis phase construction, radial
+  angular-offset mapping, validation, and metadata.
+- `tests/test_solar_system_appearance.py` owns deterministic limb,
+  terminator, illuminated-area, orientation, provenance, and failure coverage.
+- `tools/validate_49i3c1_venus_disk_geometry.py` owns installed-DE440
+  physical-radius, closure, area, and orientation evidence.
+- `docs/developer/venus_disk_spherical_geometry_49i3c1.md` owns the accepted
+  scientific and architectural contract.
+- No sky layer, chart request, magnification, style, renderer, or exporter
+  consumes the geometry in 49I.3C.1.
