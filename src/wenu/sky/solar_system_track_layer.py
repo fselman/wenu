@@ -39,13 +39,11 @@ def prepare_projected_track(
     if not np.isfinite(tick_length) or tick_length <= 0.0:
         raise ValueError("tick_length must be positive and finite.")
     source = projected[0]
-    if label_anchor is not None:
-        label_anchor.set_track(source)
     indices = tuple(spherical.metadata.get("tick_sample_indices", ()))
     if not include_start_tick:
         indices = indices[1:]
     ticks, omitted = [], []
-    for tick_number, index in enumerate(indices):
+    for index in indices:
         index = int(index)
         tangent = _projected_tangent(source, index)
         if tangent is None:
@@ -56,14 +54,13 @@ def prepare_projected_track(
         nx, ny = -ty * half, tx * half
         x = (source.x[index] - nx, source.x[index] + nx)
         y = (source.y[index] - ny, source.y[index] + ny)
-        if tick_number % 2:
-            x = x[::-1]
-            y = y[::-1]
         ticks.append(ProjectedCurve(
             x=np.asarray(x),
             y=np.asarray(y),
             name=_tick_label(spherical, index) if label_ticks else None,
         ))
+    if label_anchor is not None:
+        label_anchor.set_geometry(source, ticks)
     path = ProjectedCurve(
         x=source.x, y=source.y, closed=False, name=None
     )
@@ -127,74 +124,120 @@ def track_label_anchor(curve, ax):
 
 
 class TrackLabelAnchor:
-    """Choose one of the two perpendicular sides for each track label."""
+    """Choose a coherent two-sided layout for ordered track labels."""
 
     def __init__(self, *, fontsize):
         self.fontsize = float(fontsize)
         if not np.isfinite(self.fontsize) or self.fontsize <= 0.0:
             raise ValueError("fontsize must be positive and finite.")
-        self._axes = None
-        self._claimed = []
         self._track = None
-
-    def set_track(self, curve):
-        if not isinstance(curve, ProjectedCurve):
-            raise TypeError("curve must be a ProjectedCurve.")
-        self._track = curve
+        self._ticks = ()
         self._axes = None
+        self._placements = {}
+        self._claimed = []
+
+    def set_geometry(self, track, ticks):
+        if not isinstance(track, ProjectedCurve):
+            raise TypeError("track must be a ProjectedCurve.")
+        if not all(isinstance(tick, ProjectedCurve) for tick in ticks):
+            raise TypeError("ticks must contain ProjectedCurve values.")
+        self._track = track
+        self._ticks = tuple(ticks)
+        self._axes = None
+        self._placements = {}
         self._claimed = []
 
     def __call__(self, curve, ax):
         if ax is not self._axes:
-            self._axes = ax
-            self._claimed = []
-        finite = np.flatnonzero(curve.finite)
-        if finite.size == 0:
-            return None
+            self._build_layout(ax)
+        placement = self._placements.get(curve.name)
+        if placement is not None:
+            return placement
+        return track_label_anchor(curve, ax)
+
+    def _build_layout(self, ax):
+        self._axes = ax
+        layouts = tuple(self._layout(ax, side) for side in (0, 1))
+        chosen = min(layouts, key=lambda value: value["score"])
+        self._placements = chosen["placements"]
+        self._claimed = chosen["boxes"]
+
+    def _layout(self, ax, starting_side):
+        current_side = starting_side
+        claimed = []
+        placements = {}
+        curve_conflicts = 0
+        label_conflicts = 0
+        boundary_conflicts = 0
+        switches = 0
+        total_overlap = 0.0
+        for tick in self._ticks:
+            candidates = tuple(
+                self._candidate(tick, ax, side, claimed)
+                for side in (0, 1)
+            )
+            preferred = candidates[current_side]
+            other_side = 1 - current_side
+            other = candidates[other_side]
+            if self._obstruction(other) < self._obstruction(preferred):
+                selected = other
+                current_side = other_side
+                switches += 1
+            else:
+                selected = preferred
+            claimed.append(selected["box"])
+            placements[tick.name] = selected["placement"]
+            curve_conflicts += int(selected["track_hits"] > 0)
+            label_conflicts += int(selected["overlap"] > 0.0)
+            boundary_conflicts += int(not selected["inside"])
+            total_overlap += selected["overlap"]
+        return {
+            "placements": placements,
+            "boxes": claimed,
+            "score": (
+                curve_conflicts,
+                label_conflicts,
+                boundary_conflicts,
+                switches,
+                total_overlap,
+                starting_side,
+            ),
+        }
+
+    @staticmethod
+    def _obstruction(candidate):
+        return (
+            candidate["track_hits"] > 0,
+            candidate["overlap"] > 0.0,
+            not candidate["inside"],
+            candidate["track_hits"],
+            candidate["overlap"],
+        )
+
+    def _candidate(self, tick, ax, side, claimed):
+        finite = np.flatnonzero(tick.finite)
         points = ax.transData.transform(
-            np.column_stack((curve.x[finite], curve.y[finite]))
+            np.column_stack((tick.x[finite], tick.y[finite]))
         )
         if len(points) != 2:
-            return track_label_anchor(curve, ax)
+            raise ValueError("track ticks must contain two finite endpoints.")
         direction = points[1] - points[0]
         norm = float(np.hypot(*direction))
         if norm <= 1.0e-9:
-            return track_label_anchor(curve, ax)
-        preferred = direction / norm
+            raise ValueError("track tick endpoints must be distinct.")
+        direction /= norm
+        if side == 0:
+            endpoint = points[1]
+        else:
+            endpoint = points[0]
+            direction = -direction
         pixels_per_point = ax.figure.dpi / 72.0
-        padding = 0.55 * self.fontsize * pixels_per_point
-        candidates = (
-            (points[1] + preferred * padding, preferred),
-            (points[0] - preferred * padding, -preferred),
+        display = (
+            endpoint
+            + direction * 0.55 * self.fontsize * pixels_per_point
         )
-        evaluated = [
-            self._candidate(curve, ax, display, side, order)
-            for order, (display, side) in enumerate(candidates)
-        ]
-        chosen = min(
-            evaluated,
-            key=lambda value: (
-                not value["inside"],
-                value["overlap"] > 0.0,
-                value["overlap"],
-                value["track_hits"],
-                value["order"],
-            ),
-        )
-        self._claimed.append(chosen["box"])
-        x, y = ax.transData.inverted().transform(chosen["display"])
-        dx, dy = chosen["direction"]
-        return CurveLabelPlacement(
-            x=float(x),
-            y=float(y),
-            horizontal_alignment="left" if dx >= 0.0 else "right",
-            vertical_alignment="bottom" if dy >= 0.0 else "top",
-        )
-
-    def _candidate(self, curve, ax, display, direction, order):
-        pixels_per_point = ax.figure.dpi / 72.0
         width = (
-            max(len(str(curve.name or "")), 1)
+            max(len(str(tick.name or "")), 1)
             * 0.58
             * self.fontsize
             * pixels_per_point
@@ -214,30 +257,44 @@ class TrackLabelAnchor:
             box[0] >= x_min and box[2] <= x_max
             and box[1] >= y_min and box[3] <= y_max
         )
-        overlap = sum(_box_overlap(box, claimed) for claimed in self._claimed)
-        track_hits = 0
-        if self._track is not None:
-            finite = self._track.finite
-            track = ax.transData.transform(np.column_stack((
-                self._track.x[finite],
-                self._track.y[finite],
-            )))
-            margin = 0.20 * self.fontsize * pixels_per_point
-            track_hits = int(np.count_nonzero(
-                (track[:, 0] >= box[0] - margin)
-                & (track[:, 0] <= box[2] + margin)
-                & (track[:, 1] >= box[1] - margin)
-                & (track[:, 1] <= box[3] + margin)
-            ))
+        overlap = sum(_box_overlap(box, previous) for previous in claimed)
+        track_hits = self._track_hits(ax, box, np.mean(points, axis=0), norm)
+        x, y = ax.transData.inverted().transform(display)
         return {
-            "display": display,
-            "direction": direction,
+            "placement": CurveLabelPlacement(
+                x=float(x),
+                y=float(y),
+                horizontal_alignment="left" if dx >= 0.0 else "right",
+                vertical_alignment="bottom" if dy >= 0.0 else "top",
+            ),
             "box": box,
             "inside": inside,
             "overlap": overlap,
             "track_hits": track_hits,
-            "order": order,
         }
+
+    def _track_hits(self, ax, box, tick_center, tick_length):
+        if self._track is None:
+            return 0
+        finite = self._track.finite
+        track = ax.transData.transform(np.column_stack((
+            self._track.x[finite],
+            self._track.y[finite],
+        )))
+        local = np.hypot(
+            track[:, 0] - tick_center[0],
+            track[:, 1] - tick_center[1],
+        ) <= 1.5 * tick_length
+        pixels_per_point = ax.figure.dpi / 72.0
+        margin = 0.20 * self.fontsize * pixels_per_point
+        below_label = (
+            (track[:, 0] >= box[0] - margin)
+            & (track[:, 0] <= box[2] + margin)
+            & (track[:, 1] >= box[1] - margin)
+            & (track[:, 1] <= box[3] + margin)
+            & ~local
+        )
+        return int(np.count_nonzero(below_label))
 
 
 def _box_overlap(left, right):
