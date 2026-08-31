@@ -446,6 +446,9 @@ def composition_layer_options(
     if track is not None:
         viewport = composition.context.viewport
         tick_length = 0.018 * min(viewport.width, viewport.height)
+        label_anchor = TrackLabelAnchor(
+            fontsize=publication.solar_system_track_label_fontsize
+        )
         base = merge_sky_layer_options(
             sky,
             base,
@@ -454,6 +457,7 @@ def composition_layer_options(
                     "prepare": lambda spherical, projected: prepare_projected_track(
                         spherical, projected, tick_length=tick_length,
                         label_ticks=track.label_ticks,
+                        label_anchor=label_anchor,
                     ),
                     "render": {
                         "component_styles": {
@@ -475,11 +479,7 @@ def composition_layer_options(
                             },
                         },
                         "draw_labels": True,
-                        "label_anchor": TrackLabelAnchor(
-                            fontsize=(
-                                publication.solar_system_track_label_fontsize
-                            )
-                        ),
+                        "label_anchor": label_anchor,
                         "label_style": {
                             "color": publication.solar_system_track_color,
                             "fontsize": publication.solar_system_track_label_fontsize,
