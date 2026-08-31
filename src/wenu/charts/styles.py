@@ -131,11 +131,11 @@ class PublicationStyle:
     venus_draw_label: bool = True
     venus_label_fontsize: float = 7.0
     venus_disk_face_color: str = "#FFE6A3"
-    venus_disk_face_alpha: float = 0.78
-    venus_disk_limb_color: str = "#FFD166"
+    venus_disk_face_alpha: float = 1.0
+    venus_disk_limb_color: str = "#FFE6A3"
     venus_disk_limb_linewidth: float = 1.0
-    venus_disk_limb_linestyle: str = ":"
-    venus_disk_terminator_color: str = "#FFF0C2"
+    venus_disk_limb_linestyle: object = (0.0, (0.4, 1.6))
+    venus_disk_terminator_color: str = "#FFE6A3"
     venus_disk_terminator_linewidth: float = 0.7
     venus_disk_terminator_linestyle: str = "-"
     solar_system_track_color: str = "#FFB000"
