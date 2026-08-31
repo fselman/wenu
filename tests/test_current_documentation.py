@@ -1305,7 +1305,7 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
         "**Author:** Wenu project  ",
         "**Architecture version:** `0.9.5`  ",
         "**Guide version:** `0.9.5.20260831.30`  ",
-        "**Last updated:** `2026-08-31T01:55:00Z`  ",
+        "**Last updated:** `2026-08-31T12:10:00Z`  ",
         "**Language:** English",
     ]
 
