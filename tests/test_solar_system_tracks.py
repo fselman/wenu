@@ -124,13 +124,19 @@ class ApparentRealizer:
         )
 
 
+def precise_isot(value):
+    precise = value.copy()
+    precise.precision = 9
+    return precise.isot
+
+
 def observer_state(sample_observer, *, source):
     instant = sample_observer.t_astropy
     return ObserverBarycentricState(
         observer_id="La Ligua",
         centre="solar system barycenter",
         frame="icrf",
-        instant=instant.isot,
+        instant=precise_isot(instant),
         time_scale=instant.scale,
         position=(0.0, 0.0, 0.0),
         velocity=(0.0, 0.0, 0.0),
@@ -255,7 +261,7 @@ def test_realizer_uses_one_source_and_reevaluates_observer_for_each_sample():
         return source
 
     def state_factory(sample, *, source):
-        observer_instants.append(sample.t_astropy.isot)
+        observer_instants.append(precise_isot(sample.t_astropy))
         return observer_state(sample, source=source)
 
     result = SolarSystemTrackRealizer(
