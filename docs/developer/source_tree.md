@@ -1018,3 +1018,15 @@ owns deterministic contract coverage;
   scientific and architectural contract.
 - No sky layer, chart request, style, renderer, or exporter consumes the new
   state in 49I.3B.
+
+
+## Milestone 49I.3C audit ownership
+
+- `docs/developer/resolved_venus_disk_audit_49i3c.md` owns the candidate
+  geometry, magnification, product, semantic, validation, and implementation
+  split for the first resolved Venus disk.
+- The proposed runtime ownership is not installed: scientific construction
+  will produce one illuminated spherical polygon and separate limb and
+  terminator spherical curves; chart policy will own opt-in representation
+  and Venus-specific magnification; style will own appearance.
+- No production source file changes in this audit.
