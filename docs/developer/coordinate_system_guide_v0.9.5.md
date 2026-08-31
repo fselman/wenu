@@ -2569,6 +2569,11 @@ one fixed ecliptic frame centred on the fixed Sun direction. It is not an
 apparent sky. Only the resolved planet sequence, a central six-point Sun symbol,
 and the equatorial grid expressed in that ecliptic frame are permitted.
 
+Every sample retains full physical distance, origin, unit, instant, and
+provider provenance so a separately governed future 3D visualizer can consume
+scientific state rather than infer distance from a 2D chart. No 3D visualizer
+is implemented by this milestone.
+
 Both models reuse the accepted physical spherical disk geometry and apply one
 object-specific display magnification after projection around each sample's
 separately projected centre. Mercury requires separate physical and numerical
