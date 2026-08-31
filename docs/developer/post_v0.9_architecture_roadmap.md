@@ -803,8 +803,8 @@ authorized.
 
 ###### Milestone 49I.2D.1 — Scientific Solar-System track curve
 
-**Status:** Implementation candidate; awaiting local verification and
-scientific acceptance.
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-31; ready for integration.
 
 `solar_system_track_curve_49i2d1.md` adds frozen sampling request/result
 contracts and one renderer-neutral realizer. The accepted scalar
@@ -819,6 +819,13 @@ compares every retained apparent direction with direct Skyfield. 49I.2D.1 adds
 no public command, registered layer, projected tick, style, label, semantic
 SVG path, or visible output. Drawable Venus tracks remain 49I.2D.2 and require
 separate authorization.
+
+Fernando accepted 49I.2D.1 after the installed-DE440 29-sample Venus validator
+agreed with direct Skyfield to `4.293e-10` degree in right ascension and
+`8.471e-11` degree in declination. Verification passed 40 focused tests, 56
+documentation tests, 1,899 routine tests with 30 deselected, and all 1,929
+tests. No visual comparison was required because the slice cannot draw a
+chart. 49I.2D.2 remains separately authorized.
 
 
 
