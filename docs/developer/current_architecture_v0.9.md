@@ -414,3 +414,15 @@ no display magnification or chart/output policy.
 No production layer consumes the state yet. Current Venus and Moon chart
 appearance remains the existing symbolic points. There is no resolved disk,
 request, style, renderer, or output change in 49I.3B.
+
+
+## Candidate resolved Venus disk boundary
+
+Milestone 49I.3C is an audit only. It proposes an illuminated
+`SphericalPolygons` layer plus limb and terminator `SphericalCurves` layers,
+constructed before projection from the accepted 49I.3B state. This avoids
+forcing mixed geometry into the curve-only `SphericalGrid` contract and
+avoids renderer-specific disk artists.
+
+No runtime layer, request, magnification, style, renderer, or output behavior
+is installed by this audit. Current symbolic Venus output remains authoritative.
