@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.34`  
-**Last updated:** `2026-08-31T13:49:00Z`  
+**Guide version:** `0.9.5.20260831.35`  
+**Last updated:** `2026-08-31T13:58:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2434,5 +2434,8 @@ metadata, not a renderer rotation.
 >
 > Fernando accepted the numerical model, conventions, tolerances, results,
 > and output-neutral boundary on 2026-08-31 after all 9 deterministic tests
-> passed in 1.38 seconds and the installed-DE440 comparison passed. 49I.3B
-> adds no visible output; 49I.3C remains separately authorized.
+> passed in 1.38 seconds and the installed-DE440 comparison passed. Final
+> verification passed 116 focused architectural tests in 4.73 seconds, 1,936
+> routine tests with 30 deselected in 27.32 seconds, and all 1,966 tests in
+> 89.97 seconds. 49I.3B adds no visible output; 49I.3C remains separately
+> authorized.
