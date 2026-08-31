@@ -295,6 +295,17 @@ owners; physical disk and phase remain deferred. Fernando scientifically,
 architecturally, and visually accepted this symbolic Moon slice on 2026-08-30
 after all 1,917 tests and the PNG/PDF/SVG comparison passed.
 
+The accepted 49I.2D audit places a shared Solar-System trajectory contract
+before physical-disk work. It distinguishes each body's sample reception
+instants from the single fixed chart-frame instant, assembles accepted apparent
+directions as one typed spherical curve, and reuses the existing vectorized
+coordinate, projection, clipping, renderer, and export path. Major-time anchors
+remain scientific metadata; visible perpendicular ticks and the starting-date
+label are projected annotations. Fernando scientifically and architecturally
+accepted the audit on 2026-08-31 after 55 documentation tests, 1,889 routine
+tests with 30 deselected, and all 1,919 tests passed. The audit changes no
+runtime source, public interface, numerical geometry, or output.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored

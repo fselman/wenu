@@ -1077,6 +1077,25 @@ layers default-off and forwards exact selection. The maximal sphere registers
 Moon once, style owns its provisional hollow marker and label, and semantic
 identity owns `sky/solar_system/natural_satellites/moon`.
 
+
+### Accepted Solar-System track contract (Milestone 49I.2D)
+
+`solar_system_track_audit_49i2d.md` proposes one renderer-neutral request
+containing body identity, start instant, sample cadence, tick cadence, and tick
+count. Body and observer states are reevaluated at every sample instant. Their
+apparent ICRS-oriented directions are assembled into one `SphericalCurves`
+record and transformed into the static chart's single product frame before the
+ordinary projection path.
+
+The current scalar direction realizer remains the correctness path; later
+batching is only an optimization. Existing curve transformation, projection,
+clipping, renderer, and export contracts require no parallel implementation.
+Exact tick anchors and per-sample instants are scientific metadata. Visible
+perpendicular ticks, line appearance, start glyph, and date-label appearance
+remain projected/style concerns. Fernando accepted this documentation-only
+boundary after all 1,919 tests passed. The audit installs no runtime API or
+output.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a

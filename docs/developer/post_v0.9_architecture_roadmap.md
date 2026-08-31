@@ -765,6 +765,43 @@ closely against the same Pisces stars. Fernando scientifically,
 architecturally, and visually accepted 49I.2C and its stated non-goals on
 2026-08-30. Physical disk and phase remain 49I.3.
 
+
+##### Milestone 49I.2D — Solar-System trajectory contract
+
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-31; ready for integration.
+
+`solar_system_track_audit_49i2d.md` defines a shared, time-parameterized path
+before physical-disk work. The proposed request names one body, a start instant,
+a curve-sampling cadence, a major-tick cadence, and a tick count. Each sample
+reevaluates the observer and body at its own physical reception instant, while
+the assembled celestial path is transformed once into the fixed product frame
+of the static chart. This distinction shows motion against the chart's stellar
+field instead of tracing the Earth's rotation.
+
+The completed path must become one ordinary `SphericalCurves` value before
+projection. Existing vectorized coordinate transformation, projection-domain
+guards, projection, clipping, renderer, and PNG/PDF/SVG export remain
+authoritative. Exact major-time anchors remain scientific metadata; visible
+perpendicular ticks and the starting-date label are constructed after
+projection because they are page-space annotations.
+
+The first proposed runtime target is one Venus track in regional and binocular
+charts. Planisphere and all-sky tracks, multiple simultaneous CLI track
+specifications, adaptive cadence, provider batching, physical disks, phase,
+photometry, and visible output are not part of this audit. Proposed runtime
+slices remain separately authorized; 49I.3 remains the physical
+apparent-disk contract.
+
+Fernando accepted the time semantics, fixed-frame meaning, ordinary
+`SphericalCurves` reuse, exact tick anchors, projected tick ownership,
+regional/binocular first scope, proposed CLI vocabulary, and non-goals.
+Verification passed 55 documentation tests, 1,889 routine tests with 30
+deselected, and all 1,919 tests. No visual comparison was required because
+49I.2D changes no runtime source or output. Runtime slices remain separately
+authorized.
+
+
 Add one object class at a time:
 
 1. Moon or one planet through an ephemeris provider;
