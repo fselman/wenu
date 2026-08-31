@@ -101,6 +101,10 @@ def track_label_anchor(curve, ax):
             padding = 0.012 * min(x_max - x_min, y_max - y_min)
             x = float(curve.x[last]) + padding * dx / norm
             y = float(curve.y[last]) + padding * dy / norm
+            if not (x_min <= x <= x_max and y_min <= y <= y_max):
+                dx, dy = -dx, -dy
+                x = float(curve.x[first]) + padding * dx / norm
+                y = float(curve.y[first]) + padding * dy / norm
             return CurveLabelPlacement(
                 x=x,
                 y=y,
