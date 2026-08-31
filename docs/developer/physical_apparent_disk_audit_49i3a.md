@@ -1,6 +1,6 @@
 # Physical apparent-disk audit — Milestone 49I.3A
 
-**Status:** Proposed for scientific and architectural review
+**Status:** Scientifically and architecturally accepted
 
 **Audit date:** 2026-08-31
 
@@ -321,3 +321,18 @@ Stop and re-audit if an implementation would:
 - copy the Venus physical model into the Moon without separate validation;
 - bypass spherical geometry, projection, clipping, or the shared exporter;
 - make PNG, PDF, and SVG consume different body geometry.
+
+
+## 15. Scientific and architectural acceptance
+
+Fernando accepted the symbolic-versus-resolved distinction, separation of
+physical angular diameter from object-specific display magnification,
+regional/binocular first scope, symbolic planisphere/all-sky behavior,
+explicit semantic geometry through the canonical pipeline, Venus-first
+physical validation, separate Moon validation, photometry prerequisite, and
+proposed implementation sequence on 2026-08-31.
+
+All 58 current-documentation tests passed in 2.51 seconds on Fernando's Mac.
+This accepts the audit contract and sequence. It does not pre-accept the future
+49I.3B numerical model, tolerance, runtime contract, public interface, or any
+resolved visual result.
