@@ -1354,7 +1354,7 @@ def test_track_style_resolves_without_custom_stellar_sizing():
     sky.layers = (track,)
     value = SimpleNamespace(
         style=PublicationStyle(),
-        detail=ResolvedDetail(enabled_layers=frozenset()),
+        detail=ResolvedDetail(),
         context=SimpleNamespace(
             viewport=Viewport(-1.0, 1.0, -1.0, 1.0),
             boundary_kind=BoundaryKind.RECTANGULAR,
