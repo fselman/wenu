@@ -75,6 +75,9 @@ For current work, read and follow:
   per-sample time provenance, fixed chart-frame tracks, or projected ticks;
 - `solar_system_track_curve_49i2d1.md` for sampled track contracts, scalar
   direction evidence, exact tick anchors, or fixed-frame curve realization;
+- `drawable_venus_track_49i2d2.md` for the visible Venus track request,
+  projected perpendicular ticks, two-pass date placement, style, semantic
+  identity, or visual acceptance;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,
