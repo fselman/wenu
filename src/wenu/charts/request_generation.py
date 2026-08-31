@@ -20,6 +20,7 @@ from .request_furniture import (
     resolve_request_furniture_context,
 )
 from .request_grids import configure_chart_request_grids
+from .request_disks import configure_chart_request_disks
 from .request_horizon import configure_chart_request_horizon
 from .request_realization import chart_request_realization_context
 from .request_resolver import resolve_chart_request
@@ -207,6 +208,7 @@ def _prepare_with_sphere(request, sky, profile, *, owns_observer):
         frame=getattr(resolved, "frame", None),
     )
     configure_chart_request_horizon(sky, resolved.request)
+    configure_chart_request_disks(sky, resolved.request)
     prepared = prepare_chart_request(sky, resolved)
     return ChartRequestBuild(
         sky=sky,
