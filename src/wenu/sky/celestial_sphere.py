@@ -26,6 +26,7 @@ from wenu.sky.coordinate_grids import (
     EquatorialGrid,
     GalacticGrid,
 )
+from wenu.sky.moon import MoonLayer
 from wenu.sky.points import CelestialPoints
 from wenu.sky.sky_layer import SkyLayer
 from wenu.sky.venus import VenusLayer
@@ -53,6 +54,7 @@ class CelestialSphere:
         self.constellation_labels = None
         self.horizon_reference = None
         self.venus = None
+        self.moon = None
         self._layers: list[SkyLayer] = []
 
     @property
@@ -246,6 +248,12 @@ class CelestialSphere:
         self.venus = VenusLayer()
         self.add(self.venus)
         return self.venus
+
+    def add_moon(self) -> MoonLayer:
+        """Register the opt-in apparent Moon symbolic-point layer."""
+        self.moon = MoonLayer()
+        self.add(self.moon)
+        return self.moon
 
     def add_nonstellar(
         self,

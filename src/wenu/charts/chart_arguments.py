@@ -70,6 +70,7 @@ class ChartContentOptions:
     equatorial_declination_step_deg: float | None = None
     reference_equinox: str | None = None
     planets: frozenset[str] = frozenset()
+    moon: bool = False
 
     def __post_init__(self):
         if (
@@ -96,6 +97,7 @@ class ChartContentOptions:
         if planets - {"venus"}:
             raise ValueError("planets currently supports only venus.")
         object.__setattr__(self, "planets", planets)
+        object.__setattr__(self, "moon", bool(self.moon))
         step = self.equatorial_declination_step_deg
         if step is not None:
             step = float(step)
@@ -139,6 +141,11 @@ def add_chart_content_arguments(parser):
         choices=("venus",),
         default=[],
         help="draw a selected planet (currently: venus)",
+    )
+    parser.add_argument(
+        "--moon",
+        action="store_true",
+        help="draw the Moon as a symbolic point",
     )
     parser.add_argument(
         "--constellation-lines",
@@ -311,6 +318,7 @@ def chart_content_options(arguments) -> ChartContentOptions:
         equatorial_declination_step_deg=arguments.declination_step,
         reference_equinox=arguments.reference_equinox,
         planets=frozenset(getattr(arguments, "planet", ())),
+        moon=bool(getattr(arguments, "moon", False)),
     )
 
 
@@ -361,6 +369,7 @@ def chart_detail_overrides(
             ("constellation_boundaries", content.constellation_boundaries),
             *grids.items(),
             ("venus", "venus" in content.planets),
+            ("moon", content.moon),
         )
         if enabled
     }
@@ -371,6 +380,7 @@ def chart_detail_overrides(
         "coordinate_grids",
         *grids,
         "venus",
+        "moon",
     }
     labels = frozenset(
         name
@@ -398,8 +408,12 @@ def chart_detail_overrides(
 
 def chart_sky_content(arguments) -> SkyContentSelection:
     """Resolve selected moving bodies into request-owned sky content."""
+    content = chart_content_options(arguments)
+    selected = set(content.planets)
+    if content.moon:
+        selected.add("moon")
     return SkyContentSelection(
-        planets=chart_content_options(arguments).planets
+        solar_system_objects=frozenset(selected)
     )
 
 

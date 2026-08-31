@@ -115,6 +115,12 @@ _NONSTELLAR_CATEGORY_CONTRACTS = {
 
 
 _LAYER_CONTRACTS = {
+    "moon": SemanticLayerContract(
+        ("sky", "solar_system", "natural_satellites", "moon"),
+        "Moon",
+        39,
+        "moon",
+    ),
     "venus": SemanticLayerContract(
         ("sky", "solar_system", "planets", "venus"),
         "Venus",

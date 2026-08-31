@@ -130,6 +130,13 @@ class PublicationStyle:
     venus_alpha: float = 1.0
     venus_draw_label: bool = True
     venus_label_fontsize: float = 7.0
+    moon_color: str = "#6f6f6f"
+    moon_marker: str = "o"
+    moon_symbol_size: float = 42.0
+    moon_linewidth: float = 0.8
+    moon_alpha: float = 1.0
+    moon_draw_label: bool = True
+    moon_label_fontsize: float = 7.0
     boundary_color: str = "white"
     boundary_linewidth: float = 0.3
     boundary_linestyle: str = "-"
@@ -261,6 +268,30 @@ class PublicationStyle:
                     "label_style": {
                         "color": self.venus_color,
                         "fontsize": self.venus_label_fontsize,
+                        "ha": "center",
+                        "va": "bottom",
+                        "zorder": layers.LABELS,
+                    },
+                    "label_offset": (0.0, 0.02),
+                },
+            }
+        if getattr(sky, "moon", None) is not None:
+            options[sky.moon] = {
+                "prepare": clip,
+                "render": {
+                    "style": {
+                        "marker": self.moon_marker,
+                        "s": self.moon_symbol_size,
+                        "facecolors": "none",
+                        "edgecolors": self.moon_color,
+                        "linewidths": self.moon_linewidth,
+                        "alpha": self.moon_alpha,
+                        "zorder": layers.POINTS,
+                    },
+                    "draw_labels": self.moon_draw_label,
+                    "label_style": {
+                        "color": self.moon_color,
+                        "fontsize": self.moon_label_fontsize,
                         "ha": "center",
                         "va": "bottom",
                         "zorder": layers.LABELS,

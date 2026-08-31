@@ -28,7 +28,8 @@ _SELECTION_OPTIONS = {
     "planetary_nebulae": "planetary_nebulae",
     "supernova_remnants": "supernova_remnants",
     "constellation_labels": "constellation_labels",
-    "venus": "planets",
+    "venus": "solar_system_objects",
+    "moon": "solar_system_objects",
 }
 
 
@@ -227,7 +228,7 @@ _DETAIL_LAYER_NAMES = {
 }
 
 _REQUEST_GEOMETRY_LAYERS = frozenset({"horizon"})
-_DEFAULT_DISABLED_LAYERS = frozenset({"venus"})
+_DEFAULT_DISABLED_LAYERS = frozenset({"venus", "moon"})
 
 
 def _detail_layer_name(layer):

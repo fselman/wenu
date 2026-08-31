@@ -135,7 +135,9 @@ def test_venus_is_default_off_and_style_owns_symbol_and_label():
         sky,
         ResolvedDetail(
             enabled_layers={"venus"},
-            content_selection=SkyContentSelection(planets={"venus"}),
+            content_selection=SkyContentSelection(
+                solar_system_objects={"venus"}
+            ),
         ),
         base_layer_options=PublicationStyle().layer_options(sky),
     )
