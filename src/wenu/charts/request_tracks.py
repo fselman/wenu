@@ -9,6 +9,9 @@ def configure_chart_request_track(sky, request):
             sky.remove(layer)
     if request.solar_system_track is None:
         return None
-    layer = SolarSystemTrackLayer(\n        request.solar_system_track,\n        label_ticks=request.solar_system_track_tick_labels,\n    )
+    layer = SolarSystemTrackLayer(
+        request.solar_system_track,
+        label_ticks=request.solar_system_track_tick_labels,
+    )
     sky.add(layer)
     return layer
