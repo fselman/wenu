@@ -1227,7 +1227,7 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
         assert f'<a id="{target}"></a>' in guide
 
     assert "**Guide version:** `0.9.5.20260831.26`" in guide
-    assert "**Last updated:** `2026-08-31T00:30:11Z`" in guide
+    assert "**Last updated:** `2026-08-31T22:00:00Z`" in guide
     assert "reference epoch or equinox" not in guide
     assert "epoch/equinox" not in guide
     assert "- coordinate system and representation;" in guide
@@ -1242,7 +1242,7 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
         "**Author:** Wenu project  ",
         "**Architecture version:** `0.9.5`  ",
         "**Guide version:** `0.9.5.20260831.26`  ",
-        "**Last updated:** `2026-08-31T00:30:11Z`  ",
+        "**Last updated:** `2026-08-31T22:00:00Z`  ",
         "**Language:** English",
     ]
 
