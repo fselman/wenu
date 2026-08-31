@@ -7,6 +7,8 @@ from wenu.sky.solar_system_tracks import SolarSystemTrackRealizer, SolarSystemTr
 from wenu.sky.solar_system_track_layer import prepare_projected_track
 from wenu.sky.venus import VENUS_POINT
 from wenu.charts.regional import RegionalChart
+from wenu.rendering.matplotlib import MatplotlibRenderer
+from wenu.sky.solar_system_track_layer import start_label_anchor
 
 START = "2026-08-30T00:00:00Z"
 
@@ -70,6 +72,28 @@ def main():
         print(
             f"start label: {label.name!r}, "
             f"x {label.x.mean():.12f}, y {label.y.mean():.12f}"
+        )
+        import matplotlib.pyplot as plt
+        figure, axes = plt.subplots()
+        renderer = MatplotlibRenderer(axes)
+        renderer.apply_viewport(chart.viewport)
+        renderer.draw(
+            prepared,
+            component_styles={
+                "path": {"color": "#C44E52"},
+                "ticks": {"color": "#C44E52"},
+                "labels": {"alpha": 0.0, "linewidth": 0.0},
+            },
+            draw_labels=True,
+            label_anchor=start_label_anchor,
+            label_style={"color": "#C44E52"},
+        )
+        rendered_text = tuple(artist.get_text() for artist in axes.texts)
+        print(f"renderer text artists: {rendered_text!r}")
+        plt.close(figure)
+        assert rendered_text == (
+            "2026-09-06", "2026-09-13", "2026-09-20", "2026-09-27",
+            "♀ 2026-08-30",
         )
         assert len(instants) == len(result.sample_instants) == 673
         assert tuple(tick.name for tick in prepared["ticks"]) == (
