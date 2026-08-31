@@ -2089,5 +2089,5 @@ def test_49i3a_audits_symbolic_and_resolved_solar_system_appearance():
     assert "Guide version:** `0.9.5.20260831.32`" in guide
     assert "physical_apparent_disk_audit_49i3a.md" in instructions
     assert "Scientifically and architecturally accepted" in contract
-    assert "all 58 current-documentation tests passed in 2.51 seconds" in contract
+    assert "All 58 current-documentation tests passed in 2.51 seconds" in contract
     assert "does not pre-accept the future" in contract
