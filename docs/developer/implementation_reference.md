@@ -1873,3 +1873,17 @@ Regional and binocular `wenu_chart` requests accept
 perpendicular ticks, start label, and two-pass perpendicular date layout.
 Appearance is owned by `PublicationStyle`; PNG, PDF, and semantic SVG use the
 ordinary renderer and exporter.
+
+
+## Proposed physical apparent-disk boundary (Milestone 49I.3A)
+
+`physical_apparent_disk_audit_49i3a.md` is the active proposed contract for
+future resolved Venus and Moon appearance. It separates apparent centre,
+physical angular diameter, illumination, tangent-plane orientation,
+body-specific orientation, photometry, and object-specific display
+magnification.
+
+No runtime API is installed by 49I.3A. Existing Venus and Moon layers continue
+to return symbolic `SphericalPoints`, and their current fixed hollow markers
+remain unchanged. Future resolved disks must become ordinary semantic geometry
+before the canonical projection and shared PNG/PDF/SVG path.
