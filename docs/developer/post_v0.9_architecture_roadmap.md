@@ -959,12 +959,13 @@ tests passed. Physical apparent disks remain 49I.3.
 
 ## Milestone 49I.3C — Resolved Venus disk audit
 
-**Status:** Candidate architecture for scientific review on 2026-08-31.
+**Status:** Scientifically and architecturally accepted on 2026-08-31.
 
-`resolved_venus_disk_audit_49i3c.md` proposes a renderer-neutral semantic
-group containing an illuminated spherical polygon plus limb and terminator
-spherical curves. Display magnification is Venus-specific, positive, finite,
-and separate from the unchanged physical angular diameter. The proposed
-runtime work is split into output-neutral 49I.3C.1 spherical geometry and
-49I.3C.2 opt-in regional/binocular drawing. Symbolic defaults and
+`resolved_venus_disk_audit_49i3c.md` accepts a renderer-neutral semantic group
+containing an illuminated spherical polygon plus limb and terminator spherical
+curves. Physical geometry is sampled before projection; Venus-specific display
+magnification scales projected offsets about the projected physical centre in
+chart preparation. The accepted sequence is 49I.3C.1 physical spherical
+geometry, 49I.3C.2 one drawable regional/binocular disk, and 49I.3C.3 several
+independently realized disks in one fixed chart frame. Symbolic defaults and
 planisphere/all-sky behavior remain unchanged.
