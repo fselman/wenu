@@ -278,3 +278,11 @@ Before an architectural change, explain its reasoning, tradeoffs, and expected
 benefit. If the implementation does not clearly support a requested change,
 inspect further and ask for clarification when the choice would materially
 alter the result. Never guess.
+
+
+For resolved Solar-System disks, consult
+`resolved_venus_disk_audit_49i3c.md` after the accepted 49I.3A and 49I.3B
+contracts. Keep physical angular diameter immutable, keep object-specific
+display magnification in chart policy, and construct illuminated face, limb,
+and terminator as ordinary pre-projection semantic geometry. Do not use a
+large scatter marker or a format-specific geometry path.
