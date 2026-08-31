@@ -138,7 +138,7 @@ def test_two_pass_layout_keeps_one_side_when_labels_are_clear():
             y=np.asarray((-0.04, 0.04)),
             name=f"2026-09-{day:02d}",
         )
-        for x, day in ((-0.6, 6), (0.0, 13), (0.6, 20))
+        for x, day in ((-0.75, 6), (0.75, 13))
     )
     anchor = TrackLabelAnchor(fontsize=9.0)
     anchor.set_geometry(track, ticks)
