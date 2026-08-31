@@ -67,7 +67,7 @@ def prepare_projected_track(
     )
     return ProjectedGrid(
         components={
-            "path": ProjectedCurves(items=[path], metadata=dict(projected.metadata)),
+            "path": ProjectedCurves(items=[path]),
             "ticks": ProjectedCurves(items=ticks),
             "labels": ProjectedCurves(items=[start_label]),
         },
