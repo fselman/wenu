@@ -2029,7 +2029,7 @@ def test_49i2d2_records_accepted_drawable_venus_track():
         "sixteen-week stress test",
         "127 focused track, style, request, and command tests",
         "1,924 routine tests with 30 deselected",
-        "all 1,954 tests",
+        "all 1,955 tests",
     ):
         assert phrase in contract
 
