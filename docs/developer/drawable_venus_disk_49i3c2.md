@@ -130,3 +130,5 @@ wenu_chart regional \
 - 171 closure-focused request, execution, style, semantic, and dependency tests
   passed in 5.75 seconds.
 - The 600-dpi Virgo rendering was visually accepted with magnification 200.
+
+Multi-epoch resolved disks remain deferred to milestone 49I.3C.3.
