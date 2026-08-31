@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.40`  
-**Last updated:** `2026-08-31T17:00:00Z`  
+**Guide version:** `0.9.5.20260831.41`  
+**Last updated:** `2026-08-31T21:30:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2520,3 +2520,33 @@ centre. The normalized polygon area follows `(1 + cos(i)) / 2`.
 > 1,958 routine tests with 30 deselected in 27.07 seconds, and all 1,988 tests
 > in 89.21 seconds. 49I.3C.1 adds no visible output; post-projection
 > magnification remains 49I.3C.2.
+
+
+<a id="49i3c2-drawable-venus-disk"></a>
+
+### 13.2.25 49I.3C.2 first drawable resolved Venus disk
+
+> **[Foundation]** Venus is normally drawn as a symbolic point. Regional and
+> binocular charts can now explicitly replace that symbol with a resolved
+> phase disk. A separate Venus-specific magnification makes the phase visible
+> without changing the physical apparent diameter stored by the scientific
+> model.
+>
+> **[Undergraduate]** The illuminated face, limb, and visible terminator share
+> one accepted physical appearance state and enter the ordinary spherical
+> geometry and projection pipeline independently. Chart preparation projects
+> the physical centre through the same exact projector and then scales each
+> projected component offset about that centre. Factor 1 therefore retains
+> physical angular scale; factor M displays M times the physical diameter.
+>
+> For the accepted La Ligua case at `2026-08-30T00:00:00Z`, Venus has physical
+> diameter `29.287846514361 arcsec` and illuminated fraction
+> `0.400755659841`. Magnification 200 gives nominal displayed diameter
+> `1.62710258413117 deg`. Fernando accepted the 55-by-45-degree, 600-dpi Virgo
+> rendering as the reusable angular-scale calibrator.
+>
+> The controls are `--planet-appearance venus=resolved` and
+> `--planet-disk-magnification venus=FACTOR`. Resolved display is restricted
+> to regional and binocular charts. Symbolic Venus remains the default;
+> magnification alone cannot enable the disk; planisphere and all-sky output
+> remains symbolic. Multi-epoch resolved disks remain 49I.3C.3.
