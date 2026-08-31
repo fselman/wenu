@@ -1022,4 +1022,6 @@ geometry, per-centre post-projection magnification, ordinary renderer, and
 shared export. Proposed runtime slices are 49I.3C.3.1 observed Venus,
 49I.3C.3.2 frozen-Earth ecliptic Venus and Sun, and 49I.3C.3.3 independently
 validated Mercury support. Fernando accepted this audit after all 63 current-documentation tests passed
-in 2.04 seconds. This audit changes no runtime or output.
+in 2.04 seconds. Final verification passed 63 documentation tests in 1.88
+seconds, 1,971 routine tests with 30 deselected in 27.08 seconds, and all 2,001
+tests in 85.97 seconds. This audit changes no runtime or output.
