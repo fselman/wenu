@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.37`  
-**Last updated:** `2026-08-31T15:30:00Z`  
+**Guide version:** `0.9.5.20260831.38`  
+**Last updated:** `2026-08-31T16:00:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2476,7 +2476,9 @@ to every projected vertex.
 > Symbolic Venus remains the default and planisphere/all-sky products remain
 > symbolic.
 >
-> Fernando accepted the boundary on 2026-08-31 after all 60
-> current-documentation tests passed in 1.80 seconds. Runtime geometry, public
-> commands, supported magnification range, style, and visible output remain
-> separately authorized.
+> Fernando accepted the boundary on 2026-08-31. Initial acceptance passed all
+> 60 current-documentation tests in 1.80 seconds. Final verification passed 60
+> documentation tests in 2.81 seconds, 1,937 routine tests with 30 deselected
+> in 28.40 seconds, and all 1,967 tests in 89.14 seconds. Runtime geometry,
+> public commands, supported magnification range, style, and visible output
+> remain separately authorized.
