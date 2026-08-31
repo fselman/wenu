@@ -13,7 +13,7 @@ from wenu.geometry.projected import (
     ProjectedCurves,
     ProjectedGrid,
 )
-from wenu.sky.solar_system_track_layer import (
+from wenu.charts.solar_system_track_annotations import (
     TrackLabelAnchor,
     _start_label_anchor,
     prepare_projected_track,
