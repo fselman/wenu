@@ -42,7 +42,7 @@ def prepare_projected_track(
     if not include_start_tick:
         indices = indices[1:]
     ticks, omitted = [], []
-    for index in indices:
+    for tick_number, index in enumerate(indices):
         index = int(index)
         tangent = _projected_tangent(source, index)
         if tangent is None:
@@ -51,9 +51,14 @@ def prepare_projected_track(
         tx, ty = tangent
         half = 0.5 * tick_length
         nx, ny = -ty * half, tx * half
+        x = (source.x[index] - nx, source.x[index] + nx)
+        y = (source.y[index] - ny, source.y[index] + ny)
+        if tick_number % 2:
+            x = x[::-1]
+            y = y[::-1]
         ticks.append(ProjectedCurve(
-            x=np.asarray((source.x[index] - nx, source.x[index] + nx)),
-            y=np.asarray((source.y[index] - ny, source.y[index] + ny)),
+            x=np.asarray(x),
+            y=np.asarray(y),
             name=_tick_label(spherical, index) if label_ticks else None,
         ))
     path = ProjectedCurve(
@@ -78,19 +83,30 @@ def prepare_projected_track(
         },
     )
 
-def start_label_anchor(curve, ax):
-    """Anchor a track label inward from the nearest projected field edge."""
+def track_label_anchor(curve, ax):
+    """Place track labels away from the path and inward at field edges."""
     finite = np.flatnonzero(curve.finite)
     if finite.size == 0:
         return None
-    index = int(finite[0])
-    x = float(curve.x[index])
-    y = float(curve.y[index])
-    if len(curve) == 2 and finite.size == 2:
-        x = float(np.mean(curve.x[finite]))
-        y = float(np.mean(curve.y[finite]))
-    x_min, x_max = ax.get_xlim()
-    y_min, y_max = ax.get_ylim()
+    x = float(np.mean(curve.x[finite]))
+    y = float(np.mean(curve.y[finite]))
+    x_min, x_max = sorted(ax.get_xlim())
+    y_min, y_max = sorted(ax.get_ylim())
+    if finite.size == 2:
+        first, last = (int(value) for value in finite)
+        dx = float(curve.x[last] - curve.x[first])
+        dy = float(curve.y[last] - curve.y[first])
+        norm = float(np.hypot(dx, dy))
+        if norm > 1.0e-12:
+            padding = 0.012 * min(x_max - x_min, y_max - y_min)
+            x = float(curve.x[last]) + padding * dx / norm
+            y = float(curve.y[last]) + padding * dy / norm
+            return CurveLabelPlacement(
+                x=x,
+                y=y,
+                horizontal_alignment="left" if dx >= 0.0 else "right",
+                vertical_alignment="bottom" if dy >= 0.0 else "top",
+            )
     x_margin = 0.12 * abs(x_max - x_min)
     y_margin = 0.10 * abs(y_max - y_min)
     horizontal = "right" if x > x_max - x_margin else "left"
@@ -100,6 +116,11 @@ def start_label_anchor(curve, ax):
         horizontal_alignment=horizontal,
         vertical_alignment=vertical,
     )
+
+
+def start_label_anchor(curve, ax):
+    """Compatibility name for the shared track label placement."""
+    return track_label_anchor(curve, ax)
 
 def _tick_label(spherical, index):
     instants = tuple(spherical.metadata.get("sample_instants", ()))
