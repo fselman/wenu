@@ -159,13 +159,23 @@ class CelestialSphere:
                     **geometry_options,
                 )
             )
-            projected = (
-                projection.project_geometry(spherical)
+            project = (
+                projection.project_geometry
                 if project_geometry is None
-                else project_geometry(spherical)
+                else project_geometry
             )
+            resolved_prepare = prepare
             if prepare is not None:
-                projected = prepare(spherical, projected)
+                bind = getattr(prepare, "bind_project_geometry", None)
+                if callable(bind):
+                    resolved_prepare = bind(project)
+                    if not callable(resolved_prepare):
+                        raise TypeError(
+                            "bind_project_geometry() must return a callable."
+                        )
+            projected = project(spherical)
+            if resolved_prepare is not None:
+                projected = resolved_prepare(spherical, projected)
             if callable(render_options):
                 render_options = render_options(spherical, projected)
             artists = renderer.draw(
