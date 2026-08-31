@@ -36,6 +36,7 @@ class ChartTrackOptions:
     sample_step_days: float
     tick_step_days: float
     tick_count: int
+    label_ticks: bool = False
 
 
 
@@ -176,6 +177,10 @@ def add_chart_content_arguments(parser):
     parser.add_argument("--track-sample-step", type=_duration_days, metavar="DURATION")
     parser.add_argument("--track-tick-step", type=_duration_days, metavar="DURATION")
     parser.add_argument("--track-tick-count", type=int, metavar="COUNT")
+    parser.add_argument(
+        "--track-tick-labels", action="store_true",
+        help="label every major planet-track tick with its ISO date",
+    )
     parser.add_argument(
         "--moon",
         action="store_true",
@@ -373,6 +378,7 @@ def chart_track_options(arguments):
         body=values[0], start_instant=str(values[1]).strip(),
         sample_step_days=float(values[2]), tick_step_days=float(values[3]),
         tick_count=int(values[4]),
+        label_ticks=bool(getattr(arguments, "track_tick_labels", False)),
     )
 
 def chart_reference_policy(arguments, *, default=None):
