@@ -463,6 +463,11 @@ def composition_layer_options(
                                 "linewidth": 1.0,
                                 "zorder": 38.1,
                             },
+                            "labels": {
+                                "alpha": 0.0,
+                                "linewidth": 0.0,
+                                "zorder": 38.1,
+                            },
                         },
                         "draw_labels": True,
                         "label_anchor": start_label_anchor,
