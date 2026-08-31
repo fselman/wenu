@@ -147,7 +147,7 @@ def test_49e4_audits_the_observer_relative_direction_boundary():
     assert "13.2.8 49E.4 observer-relative direction audit" in guide
     assert "Skyfield's `observe()` corresponds to the astrometric" in guide
     assert "reception instant is neither a position reference epoch" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "49E.4 scientific acceptance" in guide
     assert "All 45 current-documentation tests passed in 2.03 seconds" in guide
     assert "45 current-documentation tests in 2.03" in contract
@@ -190,7 +190,7 @@ def test_49e5_records_astrometric_runtime_and_output_boundary():
     assert "13.2.9 49E.5 astrometric direction runtime" in guide
     assert "Neither is a position reference epoch" in guide
     assert "neither is an equinox" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "49E.5 scientific acceptance" in guide
     assert "converged in four iterations" in contract
     assert "`3.149e-11` degree" in contract
@@ -229,7 +229,7 @@ def test_49e6_records_apparent_runtime_and_single_light_time_authority():
     assert "13.2.10 49E.6 apparent direction runtime" in guide
     assert "Apparent direction runtime (Milestone 49E.6)" in implementation
     assert "without a second `observe()` call" in source_tree
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "Scientifically accepted by Fernando on 2026-08-30" in contract
     assert "`-3.152e-11` degree" in contract
     assert "95 focused tests in 3.79 seconds" in contract
@@ -262,7 +262,7 @@ def test_49i1_audits_the_first_drawable_venus_vertical_slice():
     assert "Milestone 49I.1 — Drawable Venus vertical slice" in roadmap
     assert "The 49I.1 audit identifies" in architecture
     assert "13.2.11 49I.1 drawable Venus audit" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "adds no runtime layer" in source_tree
     assert "Scientifically and architecturally accepted by Fernando" in audit
     assert "all 48 current-documentation tests in 3.30" in audit
@@ -299,7 +299,7 @@ def test_49i1a_records_the_output_neutral_ordinary_context_handoff():
     assert "Ordinary realization-context handoff (Milestone 49I.1A)" in implementation
     assert "request_realization.py` owns the 49I.1A" in source_tree
     assert "13.2.12 49I.1A ordinary realization context" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "49I.1A scientific and architectural acceptance" in guide
 
 
@@ -328,7 +328,7 @@ def test_49i1b_records_the_first_drawable_venus_boundary():
     assert "all 1,898 tests in 82.01 seconds" in roadmap
     assert "PNG, PDF, and semantic SVG looked the same" in architecture
     assert "13.2.13 49I.1B first drawable Venus" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "not a position reference epoch and not an equinox" in guide
     assert "Fernando scientifically and visually accepted" in guide
 
@@ -374,7 +374,7 @@ def test_49i2_audits_one_pipeline_without_flattening_body_science():
     assert "The proposed 49I.2 audit" in architecture
     assert "Fernando scientifically and architecturally accepted" in architecture
     assert "13.2.14 49I.2 Moon and shared body pipeline" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert (
         "One pipeline” does not mean that all objects move in the same way"
         in guide
@@ -428,7 +428,7 @@ def test_49i2a_validates_moon_direction_without_installing_a_layer():
     assert "Numerical Moon-direction validation (Milestone 49I.2A)" in implementation
     assert "No `sky/moon.py` exists in 49I.2A" in source_tree
     assert "13.2.15 49I.2A numerical Moon direction" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "topocentric parallax rather than confusing origin with reference frame" in guide
 
 
@@ -471,7 +471,7 @@ def test_49i2b_extracts_shared_point_orchestration_without_moon_content():
     assert "Shared Solar-System point layer (Milestone 49I.2B)" in implementation
     assert "tests/test_solar_system_point_layer.py" in source_tree
     assert "13.2.16 49I.2B shared Solar-System point layer" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "`--moon` remains 49I.2C" in guide
     assert "Fernando scientifically and architecturally accepted 49I.2B" in guide
 
@@ -516,7 +516,7 @@ def test_49i2c_installs_one_symbolic_moon_without_physical_disk_claims():
     assert "First drawable Moon point (Milestone 49I.2C)" in implementation
     assert "src/wenu/sky/moon.py" in source_tree
     assert "13.2.17 49I.2C first drawable Moon point" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "Physical disk and phase remain 49I.3" in guide
     assert (
         "Fernando scientifically, architecturally, and visually accepted"
@@ -562,7 +562,7 @@ def test_49i2d_audits_fixed_frame_vectorized_solar_system_tracks():
     )
     assert "solar_system_track_audit_49i2d.md" in source_tree
     assert "13.2.18 49I.2D Solar-System trajectories" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "per-sample time provenance" in instructions
     assert "Scientifically and architecturally accepted" in contract
     assert "55 current-documentation tests in 3.02 seconds" in contract
@@ -610,7 +610,7 @@ def test_49i2d1_implements_scientific_curve_without_drawing():
     )
     assert "src/wenu/sky/solar_system_tracks.py" in source_tree
     assert "13.2.19 49I.2D.1 scientific track curve" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "solar_system_track_curve_49i2d1.md" in instructions
     assert "Scientifically and architecturally accepted" in contract
     assert "`4.293e-10` degree in right ascension" in contract
@@ -1301,8 +1301,8 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
     for target in targets:
         assert f'<a id="{target}"></a>' in guide
 
-    assert "**Guide version:** `0.9.5.20260831.39`" in guide
-    assert "**Last updated:** `2026-08-31T16:30:00Z`" in guide
+    assert "**Guide version:** `0.9.5.20260831.40`" in guide
+    assert "**Last updated:** `2026-08-31T17:00:00Z`" in guide
     assert "reference epoch or equinox" not in guide
     assert "epoch/equinox" not in guide
     assert "- coordinate system and representation;" in guide
@@ -1316,8 +1316,8 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
         "**Subtitle:** Living scientific and implementation guide for architecture 0.9.5  ",
         "**Author:** Wenu project  ",
         "**Architecture version:** `0.9.5`  ",
-        "**Guide version:** `0.9.5.20260831.39`  ",
-        "**Last updated:** `2026-08-31T16:30:00Z`  ",
+        "**Guide version:** `0.9.5.20260831.40`  ",
+        "**Last updated:** `2026-08-31T17:00:00Z`  ",
         "**Language:** English",
     ]
 
@@ -2050,7 +2050,7 @@ def test_49i2d2_records_accepted_drawable_venus_track():
     assert "Accepted drawable Venus track" in implementation
     assert "solar_system_track_annotations.py" in source_tree
     assert "13.2.20 49I.2D.2 drawable Venus track" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "drawable_venus_track_49i2d2.md" in instructions
     assert "Scientifically, architecturally, and visually accepted" in contract
 
@@ -2095,7 +2095,7 @@ def test_49i3a_audits_symbolic_and_resolved_solar_system_appearance():
     assert "Accepted physical apparent-disk boundary" in implementation
     assert "Milestone 49I.3A audit ownership" in source_tree
     assert "13.2.21 49I.3A physical apparent-disk audit" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "physical_apparent_disk_audit_49i3a.md" in instructions
     assert "Scientifically and architecturally accepted" in contract
     assert "Initial acceptance verification passed all 58" in contract
@@ -2144,7 +2144,7 @@ def test_49i3b_records_accepted_venus_physical_appearance_state():
     assert "Venus physical-appearance state" in implementation
     assert "Milestone 49I.3B ownership" in source_tree
     assert "13.2.22 49I.3B Venus physical-appearance state" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "venus_physical_appearance_49i3b.md" in instructions
     assert "Scientifically and architecturally accepted" in contract
 
@@ -2193,7 +2193,7 @@ def test_49i3c_audits_resolved_venus_disk_geometry():
     assert "Accepted resolved Venus disk boundary" in implementation
     assert "Milestone 49I.3C audit ownership" in source_tree
     assert "13.2.23 49I.3C resolved Venus disk audit" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "resolved_venus_disk_audit_49i3c.md" in instructions
     assert "Fernando accepted this boundary on 2026-08-31" in contract
 
@@ -2230,6 +2230,9 @@ def test_49i3c1_records_accepted_venus_spherical_disk_geometry():
         "`1e-9 deg`",
         "All 29 appearance and disk-geometry tests passed in 1.94 seconds",
         "All 54 focused appearance, coordinate-service, and dependency-boundary tests passed in 4.80 seconds",
+        "all 61 current-documentation tests in 2.35 seconds",
+        "1,958 routine tests with 30 deselected in 27.07 seconds",
+        "all 1,988 tests in 89.21 seconds",
         "adds no sky layer, chart request, display magnification",
         "49I.3C.2",
     ):
@@ -2240,6 +2243,6 @@ def test_49i3c1_records_accepted_venus_spherical_disk_geometry():
     assert "Venus spherical disk geometry" in implementation
     assert "Milestone 49I.3C.1 ownership" in source_tree
     assert "13.2.24 49I.3C.1 Venus spherical disk geometry" in guide
-    assert "Guide version:** `0.9.5.20260831.39`" in guide
+    assert "Guide version:** `0.9.5.20260831.40`" in guide
     assert "venus_disk_spherical_geometry_49i3c1.md" in instructions
     assert "Fernando accepted the geometry model" in contract
