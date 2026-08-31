@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.27`  
-**Last updated:** `2026-08-31T01:25:00Z`  
+**Guide version:** `0.9.5.20260831.28`  
+**Last updated:** `2026-08-31T01:40:00Z`  
 **Language:** English
 
 # Table of contents
@@ -85,6 +85,7 @@
     - [13.2.16 49I.2B shared Solar-System point layer](#49i2b-shared-point-layer)
     - [13.2.17 49I.2C first drawable Moon point](#49i2c-moon-point)
     - [13.2.18 49I.2D Solar-System trajectories](#49i2d-solar-system-tracks)
+    - [13.2.19 49I.2D.1 scientific track curve](#49i2d1-track-curve)
 
 <a id="status-and-purpose"></a>
 
@@ -2267,3 +2268,39 @@ points, and retrograde loops.
 > deferred runtime on 2026-08-31. Verification passed 55 documentation tests,
 > 1,889 routine tests with 30 deselected, and all 1,919 tests. No visual
 > comparison was required because this audit changes no runtime or output.
+
+<a id="49i2d1-track-curve"></a>
+
+### 13.2.19 49I.2D.1 scientific track curve
+
+**[Foundation]** Wenu now has a candidate scientific representation of a
+planet's future path, but it does not draw that path yet. It calculates the
+planet anew at every requested date, keeps those dated positions together as
+one curve on the celestial sphere, and only then expresses the whole curve in
+the fixed coordinate frame of the chart.
+
+**[Undergraduate]** Each apparent direction has its own reception instant,
+observer barycentric state, retarded emission instant, light time, correction
+policy, and ephemeris evidence. Since those vertices do not share one physical
+instant, the native curve does not claim a false common instant in its source
+`CoordinateSpec`. Instead, the common specification declares fixed
+ICRS-oriented axes, observer origin, apparent status, provider, model, and
+corrections; exact reception times remain per-vertex evidence.
+
+Regular cadence vertices and exact major-time anchors are merged before
+realization. The accepted scalar direction chain remains the correctness
+authority. After all directions are available, Wenu assembles exactly one open
+`SphericalCurves` and performs exactly one transformation into the chart's
+fixed product frame.
+
+> **Wenu implementation box — proposed 49I.2D.1 curve**
+>
+> `src/wenu/sky/solar_system_tracks.py` owns the frozen request/result and
+> renderer-neutral realizer. `tests/test_solar_system_tracks.py` proves
+> non-commensurate anchor insertion, per-sample observer evaluation, complete
+> apparent evidence, and one curve transformation.
+>
+> `tools/validate_49i2d1_venus_track.py` requires installed DE440 and compares
+> a 28-day La Ligua Venus path with direct Skyfield. No CLI, layer, projected
+> tick, label, style, or visible output is added. Drawable tracks remain
+> 49I.2D.2.
