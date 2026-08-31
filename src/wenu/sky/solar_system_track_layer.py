@@ -233,15 +233,27 @@ class TrackLabelAnchor:
         )
         height = 1.15 * self.fontsize * pixels_per_point
         dx, dy = direction
-        left = display[0] if dx >= 0.0 else display[0] - width
-        bottom = display[1] if dy >= 0.0 else display[1] - height
-        box = (left, bottom, left + width, bottom + height)
         axes_points = ax.transData.transform((
             (ax.get_xlim()[0], ax.get_ylim()[0]),
             (ax.get_xlim()[1], ax.get_ylim()[1]),
         ))
         x_min, x_max = sorted(axes_points[:, 0])
         y_min, y_max = sorted(axes_points[:, 1])
+        horizontal = (
+            ("left" if dx > 0.0 else "right")
+            if abs(dx) > 1.0e-9
+            else ("right" if display[0] > 0.5 * (x_min + x_max) else "left")
+        )
+        vertical = (
+            ("bottom" if dy > 0.0 else "top")
+            if abs(dy) > 1.0e-9
+            else ("top" if display[1] > 0.5 * (y_min + y_max) else "bottom")
+        )
+        left = display[0] if horizontal == "left" else display[0] - width
+        bottom = (
+            display[1] if vertical == "bottom" else display[1] - height
+        )
+        box = (left, bottom, left + width, bottom + height)
         inside = (
             box[0] >= x_min and box[2] <= x_max
             and box[1] >= y_min and box[3] <= y_max
@@ -253,8 +265,8 @@ class TrackLabelAnchor:
             "placement": CurveLabelPlacement(
                 x=float(x),
                 y=float(y),
-                horizontal_alignment="left" if dx >= 0.0 else "right",
-                vertical_alignment="bottom" if dy >= 0.0 else "top",
+                horizontal_alignment=horizontal,
+                vertical_alignment=vertical,
             ),
             "box": box,
             "inside": inside,
