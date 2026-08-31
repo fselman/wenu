@@ -391,13 +391,13 @@ semantic SVG at `sky/solar_system/planets/venus/track`.
 
 ## Deferred physical Solar-System appearance
 
-Milestone 49I.3A is a proposed contract audit, not implemented architecture.
+Milestone 49I.3A is an accepted contract audit, not implemented architecture.
 The current runtime still realizes Venus and the Moon as apparent centre
 points and style still draws provisional fixed hollow symbols. No current
 record carries physical angular diameter, illuminated fraction, bright-limb
 orientation, body orientation, photometry, or display magnification.
 
-The proposed boundary keeps a future physical-appearance state renderer-neutral
+The accepted boundary keeps a future physical-appearance state renderer-neutral
 and keeps object-specific display magnification outside that scientific state.
 Any resolved disk must become ordinary semantic geometry before the existing
 projection, clipping, renderer, and shared exporter.
