@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.41`  
-**Last updated:** `2026-08-31T21:30:00Z`  
+**Guide version:** `0.9.5.20260831.42`  
+**Last updated:** `2026-08-31T23:30:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2552,3 +2552,29 @@ centre. The normalized polygon area follows `(1 + cos(i)) / 2`.
 > remains symbolic. Multi-epoch resolved disks remain 49I.3C.3. Final
 > verification passed 1,970 routine tests with 30 deselected in 28.32 seconds
 > and all 2,000 tests in 90.30 seconds.
+
+
+<a id="49i3c3-multi-epoch-resolved-planet-disk-audit"></a>
+## 13.2.26 49I.3C.3 multi-epoch resolved planet-disk audit
+
+A resolved disk sequence has exact major sample instants and no minor curve
+cadence. In the observed model, each topocentric observer state, apparent
+planet direction, and physical appearance is independently evaluated at its
+sample instant, then transformed into one fixed ordinary chart frame.
+
+The frozen-Earth ecliptic model is instead a constructed geometric diagram.
+Earth's heliocentric position is fixed at the start instant, the planet advances
+at its requested epochs, and the direction from frozen Earth is represented in
+one fixed ecliptic frame centred on the fixed Sun direction. It is not an
+apparent sky. Only the resolved planet sequence, a central six-point Sun symbol,
+and the equatorial grid expressed in that ecliptic frame are permitted.
+
+Every sample retains full physical distance, origin, unit, instant, and
+provider provenance so a separately governed future 3D visualizer can consume
+scientific state rather than infer distance from a 2D chart. No 3D visualizer
+is implemented by this milestone.
+
+Both models reuse the accepted physical spherical disk geometry and apply one
+object-specific display magnification after projection around each sample's
+separately projected centre. Mercury requires separate physical and numerical
+validation before reuse.

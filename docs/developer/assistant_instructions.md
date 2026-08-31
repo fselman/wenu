@@ -303,3 +303,11 @@ object-specific post-projection magnification about the exact projected
 physical centre, independent illuminated/limb/terminator semantics, and
 regional/binocular scope. Keep symbolic Venus as the default and keep
 multi-epoch disk display in 49I.3C.3.
+
+
+For multi-epoch resolved planet disks, consult
+`planet_disk_sequence_audit_49i3c3.md`. Keep observed topocentric sequences
+scientifically distinct from frozen-Earth ecliptic constructions. Both may
+share typed sequence, disk geometry, projection, preparation, renderer, and
+export owners only after their different direction and appearance states are
+resolved. Never label a frozen-observer geometric direction as apparent sky.

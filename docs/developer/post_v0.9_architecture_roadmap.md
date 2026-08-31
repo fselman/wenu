@@ -999,3 +999,29 @@ The accepted Virgo calibration uses La Ligua at
 `29.287846514361 arcsec`, magnification 200, and therefore a nominal
 displayed diameter of `1.62710258413117 deg`. Multi-epoch disks remain 49I.3C.3. Final verification passed 1,970 routine
 tests with 30 deselected and all 2,000 tests.
+
+
+## Milestone 49I.3C.3 — Multi-epoch resolved planet-disk audit
+
+**Status:** Scientifically and architecturally accepted on 2026-08-31.
+
+`planet_disk_sequence_audit_49i3c3.md` distinguishes an observed sequence
+from a frozen-Earth ecliptic construction. Observed samples independently
+reevaluate the topocentric observer, apparent direction, and physical
+appearance at every exact major instant before entering one fixed chart frame.
+Frozen mode fixes Earth's heliocentric position at the start, advances the
+planet geometrically in a fixed ecliptic frame, and restricts content to planet
+disks, a central six-point Sun, and the transformed equatorial grid.
+
+Every sample preserves full physical distance, origin, unit, instant, and
+provider provenance so later scientifically governed 3D work need not
+reconstruct distance from 2D geometry. No 3D visualizer is implemented here.
+
+Both policies converge on one typed sequence, accepted spherical disk
+geometry, per-centre post-projection magnification, ordinary renderer, and
+shared export. Proposed runtime slices are 49I.3C.3.1 observed Venus,
+49I.3C.3.2 frozen-Earth ecliptic Venus and Sun, and 49I.3C.3.3 independently
+validated Mercury support. Fernando accepted this audit after all 63 current-documentation tests passed
+in 2.04 seconds. Final verification passed 63 documentation tests in 1.88
+seconds, 1,971 routine tests with 30 deselected in 27.08 seconds, and all 2,001
+tests in 85.97 seconds. This audit changes no runtime or output.

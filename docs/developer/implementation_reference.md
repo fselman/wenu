@@ -1943,3 +1943,14 @@ projector and scales only projected component offsets about it. Factor 1 is
 physical angular scale. The accepted public controls are
 `--planet-appearance venus=resolved` and
 `--planet-disk-magnification venus=FACTOR`.
+
+
+## Accepted multi-epoch planet-disk sequence (Milestone 49I.3C.3)
+
+`planet_disk_sequence_audit_49i3c3.md` defines a proposed immutable sequence
+request and result for exact major instants, with no minor curve cadence. The
+candidate has two model policies: independently observed topocentric states in
+one fixed ordinary chart frame, and frozen-Earth geometric states in one fixed
+ecliptic construction. Each sample preserves full physical distance and provenance for possible
+future 3D use. Runtime types, CLI names, and 3D visualization are not yet
+installed.

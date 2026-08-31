@@ -447,3 +447,24 @@ resolved Venus simultaneously. Magnification alone cannot enable the disk,
 factor 1 retains physical angular scale, and planisphere/all-sky products
 retain symbolic representation. Direct Python chart requests and the CLI
 install the same request-owned layers.
+
+
+## Accepted multi-epoch resolved planet-disk boundary
+
+Milestone 49I.3C.3 audits two distinct static sequence products. Observed
+sequences independently realize the topocentric observer and planet appearance
+at every sample before transformation into one fixed chart frame. Frozen-Earth
+ecliptic sequences instead freeze Earth's heliocentric position at the start,
+advance the planet geometrically, and permit only the planet disks, a central
+six-point Sun symbol, and the equatorial grid in the fixed ecliptic frame.
+
+Every accepted sample retains full physical distance, origin, unit, instant,
+and provider provenance for possible future independently governed 3D
+Solar-System visualization. No 3D runtime is installed.
+
+Both policies reuse the accepted per-epoch spherical disk geometry and
+object-specific post-projection magnification around each separately projected
+centre. The frozen construction is not apparent sky and must retain that status
+in labels and metadata. Fernando accepted the audit on 2026-08-31 after all 63
+current-documentation tests passed in 2.04 seconds. It changes no implemented
+runtime or output.
