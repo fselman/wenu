@@ -56,7 +56,16 @@ def prepare_projected_track(
             y=np.asarray((source.y[index] - ny, source.y[index] + ny)),
             name=_tick_label(spherical, index) if label_ticks else None,
         ))
-    path = ProjectedCurve(\n        x=source.x, y=source.y, closed=False, name=None\n    )\n    start_label = ProjectedCurve(\n        x=np.asarray((source.x[0], source.x[0])),\n        y=np.asarray((source.y[0], source.y[0])),\n        closed=False,\n        name=_start_label(spherical),\n    )\n    return ProjectedGrid(
+    path = ProjectedCurve(
+        x=source.x, y=source.y, closed=False, name=None
+    )
+    start_label = ProjectedCurve(
+        x=np.asarray((source.x[0], source.x[0])),
+        y=np.asarray((source.y[0], source.y[0])),
+        closed=False,
+        name=_start_label(spherical),
+    )
+    return ProjectedGrid(
         components={
             "path": ProjectedCurves(items=[path], metadata=dict(projected.metadata)),
             "ticks": ProjectedCurves(items=ticks),
