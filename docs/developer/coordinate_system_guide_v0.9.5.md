@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.42`  
-**Last updated:** `2026-08-31T23:30:00Z`  
+**Guide version:** `0.9.5.20260831.43`  
+**Last updated:** `2026-08-31T23:55:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2578,3 +2578,24 @@ Both models reuse the accepted physical spherical disk geometry and apply one
 object-specific display magnification after projection around each sample's
 separately projected centre. Mercury requires separate physical and numerical
 validation before reuse.
+
+
+<a id="49i3c31a-observed-venus-disk-sequence"></a>
+## 13.2.27 49I.3C.3.1A observed Venus disk sequence
+
+An observed resolved-disk sequence contains exact major instants, including the
+start, with no minor path cadence. At every epoch Wenu independently evaluates
+the geographic observer, Venus and Sun apparent directions, physical
+appearance, and spherical disk geometry.
+
+The native physical geometries remain separate because each apparent direction
+has its own observation instant. A drawable fixed-frame chart must later
+transform each epoch independently into the chart's one product frame before
+combining components.
+
+Every sample retains the full observer-target distance with origin
+`observer`, unit `au`, instant, and ephemeris provenance. The 2D chart uses
+distance to determine angular scale, but the scientific record does not discard
+it; a separately designed future 3D visualizer may reuse it without inferring
+distance from projected geometry. This milestone adds no drawable layer or
+public option.
