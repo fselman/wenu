@@ -73,10 +73,14 @@ def _angle_between(left, right):
         raise SolarSystemAppearanceGeometryError(
             "phase vectors must have positive length."
         )
-    cosine = sum(a * b for a, b in zip(left, right))
-    cosine /= left_length * right_length
-    cosine = min(1.0, max(-1.0, cosine))
-    return degrees(atan2(sqrt(max(0.0, 1.0 - cosine * cosine)), cosine))
+    cross = (
+        left[1] * right[2] - left[2] * right[1],
+        left[2] * right[0] - left[0] * right[2],
+        left[0] * right[1] - left[1] * right[0],
+    )
+    cross_length = sqrt(sum(value * value for value in cross))
+    dot = sum(a * b for a, b in zip(left, right))
+    return degrees(atan2(cross_length, dot))
 
 
 def _bright_limb_position_angle(target, sun):
