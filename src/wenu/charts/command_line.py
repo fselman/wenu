@@ -16,6 +16,7 @@ from .chart_arguments import (
     chart_reference_policy,
     chart_sky_content,
     chart_style_overrides,
+    chart_track_options,
 )
 from .drawing import chart_view_request, draw_chart_view
 from .furniture import (
@@ -30,6 +31,8 @@ from .legend_plan import LegendOptions
 from .product_options import ChartProduct, chart_product_options
 from .style_overrides import ChartStyleOverrides
 from wenu.translations import translate_label
+from wenu.sky.solar_system_tracks import SolarSystemTrackRequest
+from wenu.sky.venus import VENUS_POINT
 
 
 _REFERENCE_LABELS = {
@@ -286,6 +289,25 @@ def _chart_view_argument_plans(
     )
     detail_overrides = chart_detail_overrides(effective_arguments)
     content = chart_content_options(effective_arguments)
+    parsed_track = chart_track_options(effective_arguments)
+    track_request = (
+        None
+        if parsed_track is None
+        else SolarSystemTrackRequest(
+            descriptor=VENUS_POINT,
+            start_instant=parsed_track.start_instant,
+            start_time_scale="utc",
+            sample_step_days=parsed_track.sample_step_days,
+            tick_step_days=parsed_track.tick_step_days,
+            tick_count=parsed_track.tick_count,
+        )
+    )
+    if track_request is not None and getattr(view, "family", None) not in {
+        "regional", "binocular"
+    }:
+        raise ValueError(
+            "--planet-track is supported only by regional and binocular charts."
+        )
     configured_policy = (
         None if configuration is None else configuration.reference_policy
     )
@@ -344,6 +366,10 @@ def _chart_view_argument_plans(
                     arguments, default=configured_policy
                 ),
                 "content": chart_sky_content(arguments),
+                "solar_system_track": track_request,
+                "solar_system_track_tick_labels": (
+                    False if parsed_track is None else parsed_track.label_ticks
+                ),
             },
         ))
     return tuple(plans)

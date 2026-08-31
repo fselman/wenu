@@ -369,7 +369,29 @@ def apply_coordinate_label_anchor(layer_options, anchor):
         layer: dict(options)
         for layer, options in layer_options.items()
     }
+    coordinate_grid_names = {
+        "coordinates_grid",
+        "altaz_grid",
+        "equatorial_grid",
+        "ecliptic_grid",
+        "galactic_grid",
+    }
     for layer, options in resolved.items():
+        layer_name = (
+            layer if isinstance(layer, str)
+            else getattr(layer, "layer_name", None)
+        )
+        coordinate_system = (
+            None if isinstance(layer, str)
+            else getattr(layer, "coordinate_system", None)
+        )
+        if (
+            layer_name not in coordinate_grid_names
+            and coordinate_system not in {
+                "altaz", "equatorial", "ecliptic", "galactic"
+            }
+        ):
+            continue
         render = options.get("render")
         if not isinstance(render, dict):
             continue

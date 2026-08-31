@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass
 from math import isfinite
+import re
 
 from .detail import DetailOverrides, SkyContentSelection
 from .product_options import add_chart_product_arguments
@@ -12,6 +13,31 @@ from .reference_policy import CelestialReferencePolicy
 from .style_overrides import ChartStyleOverrides
 
 GRID_REFERENCES = frozenset({"equatorial", "ecliptic", "galactic"})
+_DURATION = re.compile(r"^(?P<value>(?:\d+(?:\.\d*)?|\.\d+))(?P<unit>h|d|hour|hours|day|days)$", re.IGNORECASE)
+
+def _duration_days(value):
+    """Parse one positive governed hour/day duration into days."""
+    match = _DURATION.fullmatch(str(value).strip())
+    if match is None:
+        raise argparse.ArgumentTypeError(
+            "duration must be a positive number followed by h or d"
+        )
+    amount = float(match.group("value"))
+    if not isfinite(amount) or amount <= 0.0:
+        raise argparse.ArgumentTypeError("duration must be positive and finite")
+    unit = match.group("unit").lower()
+    return amount / 24.0 if unit in {"h", "hour", "hours"} else amount
+
+@dataclass(frozen=True)
+class ChartTrackOptions:
+    """Shared physical sampling request parsed from the chart CLI."""
+    body: str
+    start_instant: str
+    sample_step_days: float
+    tick_step_days: float
+    tick_count: int
+    label_ticks: bool = False
+
 
 
 class _ExplicitEquatorialGrid(argparse.Action):
@@ -141,6 +167,19 @@ def add_chart_content_arguments(parser):
         choices=("venus",),
         default=[],
         help="draw a selected planet (currently: venus)",
+    )
+    parser.add_argument(
+        "--planet-track",
+        choices=("venus",),
+        help="draw the apparent path of a planet (regional/binocular only)",
+    )
+    parser.add_argument("--track-start", metavar="ISO_TIME")
+    parser.add_argument("--track-sample-step", type=_duration_days, metavar="DURATION")
+    parser.add_argument("--track-tick-step", type=_duration_days, metavar="DURATION")
+    parser.add_argument("--track-tick-count", type=int, metavar="COUNT")
+    parser.add_argument(
+        "--track-tick-labels", action="store_true",
+        help="label every major planet-track tick with its ISO date",
     )
     parser.add_argument(
         "--moon",
@@ -321,6 +360,26 @@ def chart_content_options(arguments) -> ChartContentOptions:
         moon=bool(getattr(arguments, "moon", False)),
     )
 
+
+def chart_track_options(arguments):
+    """Resolve the optional complete planet-track CLI group."""
+    names = ("planet_track", "track_start", "track_sample_step", "track_tick_step", "track_tick_count")
+    values = tuple(getattr(arguments, name, None) for name in names)
+    if all(value is None for value in values):
+        return None
+    if any(value is None for value in values):
+        missing = [name.replace("_", "-") for name, value in zip(names, values) if value is None]
+        raise ValueError("a planet track requires all track options; missing: " + ", ".join(missing))
+    if isinstance(values[4], bool) or values[4] < 1:
+        raise ValueError("track-tick-count must be a positive integer")
+    if not str(values[1]).strip():
+        raise ValueError("track-start must be non-empty")
+    return ChartTrackOptions(
+        body=values[0], start_instant=str(values[1]).strip(),
+        sample_step_days=float(values[2]), tick_step_days=float(values[3]),
+        tick_count=int(values[4]),
+        label_ticks=bool(getattr(arguments, "track_tick_labels", False)),
+    )
 
 def chart_reference_policy(arguments, *, default=None):
     """Resolve the CLI value over one configured immutable default."""

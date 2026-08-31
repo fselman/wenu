@@ -96,6 +96,34 @@ def main():
         print(f"end: {result.sample_instants[-1]} {result.sample_time_scale.upper()}")
         print(f"samples: {len(result.sample_instants)}")
         print(f"tick sample indices: {result.tick_sample_indices}")
+        print("major ticks in fixed chart frame:")
+        previous = None
+        latitude_deltas = []
+        longitude_deltas = []
+        for ordinal, index in enumerate(result.tick_sample_indices):
+            longitude = float(result.geometry.lon_deg[0][index])
+            latitude = float(result.geometry.lat_deg[0][index])
+            print(
+                f"  {ordinal}: sample {index:3d}, "
+                f"{result.sample_instants[index]} "
+                f"{result.sample_time_scale.upper()}, "
+                f"lon {longitude:.12f} deg, "
+                f"lat {latitude:.12f} deg"
+            )
+            if previous is not None:
+                longitude_deltas.append(
+                    _wrapped_longitude_residual(longitude, previous[0])
+                )
+                latitude_deltas.append(latitude - previous[1])
+            previous = (longitude, latitude)
+        print(
+            "successive major-tick longitude deltas deg: "
+            + ", ".join(f"{value:+.12f}" for value in longitude_deltas)
+        )
+        print(
+            "successive major-tick latitude deltas deg: "
+            + ", ".join(f"{value:+.12f}" for value in latitude_deltas)
+        )
         print(
             "maximum direct-Skyfield RA residual deg: "
             f"{max(abs(value) for value in ra_residuals):.3e}"

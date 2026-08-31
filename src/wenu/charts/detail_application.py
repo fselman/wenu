@@ -11,6 +11,10 @@ from .context import BoundaryKind
 from .detail import ResolvedDetail
 from .style_components import StellarMagnitudeSizing
 from wenu.rendering.preparation import configured_magnitude_sizes
+from .solar_system_track_annotations import (
+    TrackLabelAnchor,
+    prepare_projected_track,
+)
 
 
 _SIZE_OPTIONS = {
@@ -227,7 +231,7 @@ _DETAIL_LAYER_NAMES = {
     "magellanic_cloud_isophotes": "magellanic_clouds",
 }
 
-_REQUEST_GEOMETRY_LAYERS = frozenset({"horizon"})
+_REQUEST_GEOMETRY_LAYERS = frozenset({"horizon", "solar_system_track"})
 _DEFAULT_DISABLED_LAYERS = frozenset({"venus", "moon"})
 
 
@@ -389,6 +393,10 @@ def composition_layer_options(
             composition
         ),
     )
+    converter = getattr(composition.style, "as_publication_style", None)
+    publication = (
+        converter() if callable(converter) else composition.style
+    )
     stars = getattr(composition.style, "stars", None)
     sizing = getattr(stars, "magnitude_sizing", None)
     if (
@@ -408,8 +416,6 @@ def composition_layer_options(
             raise ValueError(
                 "Normalized stellar sizing requires a magnitude limit."
             )
-        publication = composition.style.as_publication_style()
-
         def render_stars(spherical, projected):
             ordinary_sizes, bright_sizes, _ = (
                 configured_stellar_symbol_sizes(
@@ -429,6 +435,62 @@ def composition_layer_options(
             sky,
             base,
             {"stars": {"render": render_stars}},
+        )
+    track = next(
+        (
+            layer for layer in sky.layers
+            if getattr(layer, "layer_name", None) == "solar_system_track"
+        ),
+        None,
+    )
+    if track is not None:
+        viewport = composition.context.viewport
+        tick_length = 0.018 * min(viewport.width, viewport.height)
+        label_anchor = TrackLabelAnchor(
+            fontsize=publication.solar_system_track_label_fontsize
+        )
+        base = merge_sky_layer_options(
+            sky,
+            base,
+            {
+                track: {
+                    "prepare": lambda spherical, projected: prepare_projected_track(
+                        spherical, projected, tick_length=tick_length,
+                        label_ticks=track.label_ticks,
+                        label_anchor=label_anchor,
+                    ),
+                    "render": {
+                        "component_styles": {
+                            "path": {
+                                "color": publication.solar_system_track_color,
+                                "linewidth": publication.solar_system_track_linewidth,
+                                "linestyle": publication.solar_system_track_linestyle,
+                                "zorder": 38.0,
+                            },
+                            "ticks": {
+                                "color": publication.solar_system_track_color,
+                                "linewidth": (
+                                    publication.solar_system_track_tick_linewidth
+                                ),
+                                "zorder": 38.1,
+                            },
+                            "labels": {
+                                "alpha": 0.0,
+                                "linewidth": 0.0,
+                                "zorder": 38.1,
+                            },
+                        },
+                        "draw_labels": True,
+                        "label_anchor": label_anchor,
+                        "label_style": {
+                            "color": publication.solar_system_track_color,
+                            "fontsize": publication.solar_system_track_label_fontsize,
+                            "zorder": 38.2,
+                        },
+                        "label_offset": (0.0, 0.0),
+                    },
+                }
+            },
         )
     return apply_resolved_detail(
         sky,

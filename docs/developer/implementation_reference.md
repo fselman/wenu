@@ -1860,3 +1860,16 @@ Scientific acceptance compared default J2000, explicit J2000.0, J2016.0, and
 of-date SVGs. The coupled references moved coherently while apparent stars
 remained fixed. Final verification passed 1,786 routine tests with 30
 deselected and 1,816 complete tests.
+
+## Accepted drawable Venus track (Milestone 49I.2D.2)
+
+Regional and binocular `wenu_chart` requests accept
+`--planet-track venus`, `--track-start`, `--track-sample-step`,
+`--track-tick-step`, `--track-tick-count`, and optional
+`--track-tick-labels`. The track request is independent of `--planet venus`.
+
+`SolarSystemTrackLayer` realizes the scientific curve.
+`solar_system_track_annotations.py` prepares its projected path,
+perpendicular ticks, start label, and two-pass perpendicular date layout.
+Appearance is owned by `PublicationStyle`; PNG, PDF, and semantic SVG use the
+ordinary renderer and exporter.

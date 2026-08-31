@@ -1341,3 +1341,47 @@ def test_circular_composition_defaults_to_transparent_export():
 
     assert options.transparent is True
     assert options.facecolor == "none"
+
+
+
+def test_track_style_resolves_without_custom_stellar_sizing():
+    class Track:
+        layer_name = "solar_system_track"
+        label_ticks = True
+
+    track = Track()
+    sky = SimpleNamespace(
+        venus=None,
+        moon=None,
+        stars=None,
+        nonstellar=None,
+        galaxies=None,
+        milky_way_isophotes=None,
+        magellanic_cloud_isophotes={},
+        globular_clusters=None,
+        open_clusters=None,
+        supernova_remnants=None,
+        planetary_nebulae=None,
+        constellation_lines=None,
+        constellation_labels=None,
+        constellation_boundaries=None,
+        points=None,
+        layers=(track,),
+    )
+    value = SimpleNamespace(
+        style=PublicationStyle(),
+        detail=ResolvedDetail(),
+        context=SimpleNamespace(
+            viewport=Viewport(-1.0, 1.0, -1.0, 1.0),
+            boundary_kind=BoundaryKind.RECTANGULAR,
+        ),
+    )
+
+    application = composition_layer_options(
+        value, sky, reload_catalogues=False
+    )
+
+    render = application.layer_options[track]["render"]
+    assert render["component_styles"]["path"]["color"] == "#FFB000"
+    assert render["component_styles"]["ticks"]["color"] == "#FFB000"
+    assert render["label_style"]["color"] == "#FFB000"

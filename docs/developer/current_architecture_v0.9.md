@@ -378,3 +378,12 @@ Current work reads this document together with:
 
 The v0.8 architecture, v0.9 target, and v0.8-to-v0.9 migration documents are
 provenance. They do not override this implemented baseline.
+
+## Accepted drawable Solar-System trajectory
+
+Milestone 49I.2D.2 installs the first visible Venus trajectory in regional and
+binocular charts. The scientific `SolarSystemTrackLayer` remains in
+`wenu.sky`; projected ticks and two-pass perpendicular date placement belong
+to `wenu.charts.solar_system_track_annotations`. Style owns the accepted
+amber-orange appearance. The same prepared geometry reaches PNG, PDF, and
+semantic SVG at `sky/solar_system/planets/venus/track`.
