@@ -29,7 +29,8 @@ class SolarSystemTrackLayer(SkyLayer):
         raise RuntimeError("SolarSystemTrackLayer requires a LayerRealizationContext.")
 
 def prepare_projected_track(
-    spherical, projected, *, tick_length, include_start_tick=False, label_ticks=False
+    spherical, projected, *, tick_length, include_start_tick=False,
+    label_ticks=False, label_anchor=None,
 ):
     """Return path and perpendicular projected tick components."""
     if not isinstance(projected, ProjectedCurves) or len(projected) != 1:
@@ -38,6 +39,8 @@ def prepare_projected_track(
     if not np.isfinite(tick_length) or tick_length <= 0.0:
         raise ValueError("tick_length must be positive and finite.")
     source = projected[0]
+    if label_anchor is not None:
+        label_anchor.set_track(source)
     indices = tuple(spherical.metadata.get("tick_sample_indices", ()))
     if not include_start_tick:
         indices = indices[1:]
@@ -124,12 +127,20 @@ def track_label_anchor(curve, ax):
 
 
 class TrackLabelAnchor:
-    """Render-local collision-aware placement for track date labels."""
+    """Choose one of the two perpendicular sides for each track label."""
 
     def __init__(self, *, fontsize):
         self.fontsize = float(fontsize)
         if not np.isfinite(self.fontsize) or self.fontsize <= 0.0:
             raise ValueError("fontsize must be positive and finite.")
+        self._axes = None
+        self._claimed = []
+        self._track = None
+
+    def set_track(self, curve):
+        if not isinstance(curve, ProjectedCurve):
+            raise TypeError("curve must be a ProjectedCurve.")
+        self._track = curve
         self._axes = None
         self._claimed = []
 
@@ -143,77 +154,32 @@ class TrackLabelAnchor:
         points = ax.transData.transform(
             np.column_stack((curve.x[finite], curve.y[finite]))
         )
-        if len(points) == 2:
-            direction = points[1] - points[0]
-            norm = float(np.hypot(*direction))
-            if norm > 1.0e-9:
-                return self._place_tick(curve, ax, points, direction / norm)
-        return self._place_point(curve, ax, np.mean(points, axis=0))
-
-    def _place_tick(self, curve, ax, points, preferred):
-        candidates = []
+        if len(points) != 2:
+            return track_label_anchor(curve, ax)
+        direction = points[1] - points[0]
+        norm = float(np.hypot(*direction))
+        if norm <= 1.0e-9:
+            return track_label_anchor(curve, ax)
+        preferred = direction / norm
         pixels_per_point = ax.figure.dpi / 72.0
-        for direction, endpoint in (
-            (preferred, points[1]),
-            (-preferred, points[0]),
-        ):
-            tangent = np.asarray((-direction[1], direction[0]))
-            for lane in (0, 1, -1, 2, -2, 3, -3):
-                for distance_em in (0.55, 1.35, 2.25):
-                    display = (
-                        endpoint
-                        + (
-                            direction * distance_em
-                            + tangent * lane * 1.35
-                        )
-                        * self.fontsize
-                        * pixels_per_point
-                    )
-                    candidates.append((display, direction))
-        return self._choose(curve, ax, candidates)
-
-    def _place_point(self, curve, ax, center):
-        directions = np.asarray((
-            (1.0, 1.0), (-1.0, 1.0),
-            (1.0, -1.0), (-1.0, -1.0),
-            (1.0, 0.0), (-1.0, 0.0),
-            (0.0, 1.0), (0.0, -1.0),
-        ))
-        directions /= np.maximum(
-            np.hypot(directions[:, 0], directions[:, 1])[:, None],
-            1.0e-12,
+        padding = 0.55 * self.fontsize * pixels_per_point
+        candidates = (
+            (points[1] + preferred * padding, preferred),
+            (points[0] - preferred * padding, -preferred),
         )
-        pixels_per_point = ax.figure.dpi / 72.0
-        candidates = [
-            (
-                center
-                + direction * distance_em * self.fontsize * pixels_per_point,
-                direction,
-            )
-            for distance_em in (0.65, 1.5, 2.5)
-            for direction in directions
-        ]
-        return self._choose(curve, ax, candidates)
-
-    def _choose(self, curve, ax, candidates):
         evaluated = [
-            self._candidate(curve, ax, display, direction)
-            for display, direction in candidates
+            self._candidate(curve, ax, display, side, order)
+            for order, (display, side) in enumerate(candidates)
         ]
-        available = [
-            value for value in evaluated
-            if value["inside"] and value["overlap"] == 0.0
-        ]
-        chosen = (
-            available[0]
-            if available
-            else min(
-                evaluated,
-                key=lambda value: (
-                    not value["inside"],
-                    value["overlap"],
-                ),
-            )
+        chosen = min(
+            evaluated,
+            key=lambda value: (
+                not value["inside"],
+                value["overlap"] > 0.0,
+                value["overlap"],
+                value["track_hits"],
+                value["order"],
+            ),
         )
         self._claimed.append(chosen["box"])
         x, y = ax.transData.inverted().transform(chosen["display"])
@@ -225,7 +191,7 @@ class TrackLabelAnchor:
             vertical_alignment="bottom" if dy >= 0.0 else "top",
         )
 
-    def _candidate(self, curve, ax, display, direction):
+    def _candidate(self, curve, ax, display, direction, order):
         pixels_per_point = ax.figure.dpi / 72.0
         width = (
             max(len(str(curve.name or "")), 1)
@@ -249,12 +215,28 @@ class TrackLabelAnchor:
             and box[1] >= y_min and box[3] <= y_max
         )
         overlap = sum(_box_overlap(box, claimed) for claimed in self._claimed)
+        track_hits = 0
+        if self._track is not None:
+            finite = self._track.finite
+            track = ax.transData.transform(np.column_stack((
+                self._track.x[finite],
+                self._track.y[finite],
+            )))
+            margin = 0.20 * self.fontsize * pixels_per_point
+            track_hits = int(np.count_nonzero(
+                (track[:, 0] >= box[0] - margin)
+                & (track[:, 0] <= box[2] + margin)
+                & (track[:, 1] >= box[1] - margin)
+                & (track[:, 1] <= box[3] + margin)
+            ))
         return {
             "display": display,
             "direction": direction,
             "box": box,
             "inside": inside,
             "overlap": overlap,
+            "track_hits": track_hits,
+            "order": order,
         }
 
 
