@@ -7,7 +7,10 @@ import numpy as np
 import pytest
 
 from wenu.charts.chart_arguments import chart_disk_options
-from wenu.charts.request_disks import SolarSystemDiskDisplayRequest
+from wenu.charts.request_disks import (
+    SolarSystemDiskDisplayRequest,
+    configure_chart_request_disks,
+)
 from wenu.charts.solar_system_disk_preparation import MagnifyProjectedDisk
 from wenu.geometry.projected import (
     ProjectedCurve,
@@ -125,3 +128,35 @@ def test_disk_components_have_independent_semantic_paths():
         "sky/solar_system/planets/venus/disk/limb",
         "sky/solar_system/planets/venus/disk/terminator",
     )
+
+
+def test_request_disk_configuration_replaces_prior_dynamic_layers():
+    class Sky:
+        def __init__(self):
+            self._layers = []
+
+        @property
+        def layers(self):
+            return tuple(self._layers)
+
+        def add(self, layer):
+            self._layers.append(layer)
+
+        def remove(self, layer):
+            self._layers.remove(layer)
+
+    sky = Sky()
+    first = SimpleNamespace(
+        solar_system_disks=(SolarSystemDiskDisplayRequest("venus", 20),)
+    )
+    second = SimpleNamespace(
+        solar_system_disks=(SolarSystemDiskDisplayRequest("venus", 200),)
+    )
+    configure_chart_request_disks(sky, first)
+    configure_chart_request_disks(sky, second)
+
+    assert len(sky.layers) == 3
+    assert {layer.magnification for layer in sky.layers} == {200.0}
+    assert sky.venus_disk_illuminated in sky.layers
+    assert sky.venus_disk_limb in sky.layers
+    assert sky.venus_disk_terminator in sky.layers
