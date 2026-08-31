@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.26`  
-**Last updated:** `2026-08-31T01:10:00Z`  
+**Guide version:** `0.9.5.20260831.27`  
+**Last updated:** `2026-08-31T01:25:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2258,4 +2258,12 @@ points, and retrograde loops.
 > --track-tick-step 7d --track-tick-count 4` for the first regional/binocular
 > Venus slice. It changes no current runtime or chart. Physical disks remain
 > 49I.3.
-
+>
+> **49I.2D scientific and architectural acceptance**
+>
+> Fernando accepted the two temporal roles, fixed static-chart frame, complete
+> spherical-curve handoff, exact major-time anchors, projected perpendicular
+> ticks, regional/binocular first scope, proposed command vocabulary, and
+> deferred runtime on 2026-08-31. Verification passed 55 documentation tests,
+> 1,889 routine tests with 30 deselected, and all 1,919 tests. No visual
+> comparison was required because this audit changes no runtime or output.
