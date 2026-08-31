@@ -2,7 +2,12 @@
 from types import SimpleNamespace
 import numpy as np
 from wenu.geometry.projected import ProjectedCurve, ProjectedCurves, ProjectedGrid
-from wenu.sky.solar_system_track_layer import prepare_projected_track, start_label_anchor
+from wenu.charts.styles import PublicationStyle
+from wenu.sky.solar_system_track_layer import (
+    prepare_projected_track,
+    start_label_anchor,
+    track_label_anchor,
+)
 
 def spherical(indices=(0, 2, 4)):
     return SimpleNamespace(
@@ -81,3 +86,31 @@ def test_label_anchor_turns_inward_near_upper_right_field_edge():
     anchor = start_label_anchor(curve, axes)
     assert anchor.horizontal_alignment == "right"
     assert anchor.vertical_alignment == "top"
+
+
+def test_successive_tick_labels_alternate_across_the_track():
+    source = spherical()
+    source.metadata["sample_instants"] = tuple(
+        f"2026-09-{day:02d}T00:00:00.000" for day in range(1, 6)
+    )
+    result = prepare_projected_track(
+        source, projected(), tick_length=2.0, label_ticks=True
+    )
+    axes = SimpleNamespace(
+        get_xlim=lambda: (-5.0, 5.0),
+        get_ylim=lambda: (-5.0, 5.0),
+    )
+    first = track_label_anchor(result["ticks"][0], axes)
+    second = track_label_anchor(result["ticks"][1], axes)
+    assert first.y > 1.0
+    assert first.vertical_alignment == "bottom"
+    assert second.y < -1.0
+    assert second.vertical_alignment == "top"
+
+
+def test_publication_style_owns_projection_friendly_track_appearance():
+    style = PublicationStyle()
+    assert style.solar_system_track_color == "#FFB000"
+    assert style.solar_system_track_linewidth == 1.2
+    assert style.solar_system_track_tick_linewidth == 1.0
+    assert style.solar_system_track_label_fontsize == 9.0
