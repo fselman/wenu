@@ -12,6 +12,7 @@ from .furniture import ChartFurnitureOptions
 from .product_options import ChartProductOptions
 from .request_composition import ChartProductCompositionOptions
 from .reference_policy import CelestialReferencePolicy
+from .request_disks import SolarSystemDiskDisplayRequest
 from wenu.sky.solar_system_tracks import SolarSystemTrackRequest
 
 
@@ -359,6 +360,7 @@ class ChartRequest:
     content: SkyContentSelection = SkyContentSelection()
     solar_system_track: SolarSystemTrackRequest | None = None
     solar_system_track_tick_labels: bool = False
+    solar_system_disks: tuple[SolarSystemDiskDisplayRequest, ...] = ()
     exclusions: ChartContentExclusions = ChartContentExclusions()
     detail: DetailOverrides = DetailOverrides()
     furniture: ChartFurnitureOptions = ChartFurnitureOptions()
@@ -422,6 +424,27 @@ class ChartRequest:
         ):
             raise ValueError(
                 "Solar-System tracks are supported only by regional and binocular charts."
+            )
+        solar_system_disks = tuple(self.solar_system_disks)
+        if any(
+            not isinstance(value, SolarSystemDiskDisplayRequest)
+            for value in solar_system_disks
+        ):
+            raise TypeError(
+                "solar_system_disks must contain only "
+                "SolarSystemDiskDisplayRequest values."
+            )
+        targets = tuple(value.target for value in solar_system_disks)
+        if len(set(targets)) != len(targets):
+            raise ValueError("solar_system_disks cannot repeat a target.")
+        if solar_system_disks and family not in {"regional", "binocular"}:
+            raise ValueError(
+                "Resolved disks are supported only by regional and "
+                "binocular charts."
+            )
+        if set(targets) & set(self.content.solar_system_objects or ()):
+            raise ValueError(
+                "A Solar-System object cannot be both symbolic and resolved."
             )
         for name, value, kind in expected:
             if not isinstance(value, kind):
@@ -507,6 +530,7 @@ class ChartRequest:
         if self.solar_system_track_tick_labels and self.solar_system_track is None:
             raise ValueError("track tick labels require a Solar-System track.")
         object.__setattr__(self, "solar_system_track_tick_labels", bool(self.solar_system_track_tick_labels))
+        object.__setattr__(self, "solar_system_disks", solar_system_disks)
         object.__setattr__(self, "mask", bool(self.mask))
         object.__setattr__(self, "horizon", bool(self.horizon))
         object.__setattr__(self, "horizon_mask", bool(self.horizon_mask))
