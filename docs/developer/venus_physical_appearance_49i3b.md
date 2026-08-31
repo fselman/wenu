@@ -189,8 +189,9 @@ runtime boundary on 2026-08-31.
 
 Initial verification passed all 9 deterministic appearance tests in 1.38
 seconds. The installed-DE440 validator passed with the values and residuals
-recorded above. Broader architectural, documentation, routine, and complete
-suite verification remain integration gates.
+recorded above. Final verification passed 116 focused architectural tests in
+4.73 seconds, 1,936 routine tests with 30 deselected in 27.32 seconds, and all
+1,966 tests in 89.97 seconds.
 
 ## 11. Non-goals
 
