@@ -48,3 +48,20 @@ def test_preparation_omits_unresolved_tick_deterministically():
 def test_preparation_omits_start_tick_by_default():
     result = prepare_projected_track(spherical(), projected(), tick_length=1.0)
     assert result.metadata["tick_sample_indices"] == (2, 4)
+
+
+def test_major_tick_labels_use_exact_sample_dates_when_enabled():
+    source = spherical()
+    source.metadata["sample_instants"] = (
+        "2026-08-30T00:00:00.000",
+        "2026-09-01T00:00:00.000",
+        "2026-09-06T00:00:00.000",
+        "2026-09-13T00:00:00.000",
+        "2026-09-27T00:00:00.000",
+    )
+    result = prepare_projected_track(
+        source, projected(), tick_length=1.0, label_ticks=True
+    )
+    assert tuple(curve.name for curve in result["ticks"]) == (
+        "2026-09-06", "2026-09-27"
+    )
