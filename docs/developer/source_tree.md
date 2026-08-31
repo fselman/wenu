@@ -1003,3 +1003,18 @@ owns deterministic contract coverage;
   bright-limb orientation, body orientation, photometry, or disk
   magnification yet.
 - `tests/test_current_documentation.py` protects the accepted boundary.
+
+
+## Milestone 49I.3B ownership
+
+- `src/wenu/solar_system_appearance.py` owns the frozen physical state,
+  angular-diameter and spherical-phase realization, identity validation, and
+  apparent-ICRS bright-limb convention.
+- `tests/test_solar_system_appearance.py` owns deterministic state,
+  convention, validation, and failure coverage.
+- `tools/validate_49i3b_venus_appearance.py` owns installed-DE440 comparison
+  and celestial-versus-local orientation diagnostics.
+- `docs/developer/venus_physical_appearance_49i3b.md` owns the accepted
+  scientific and architectural contract.
+- No sky layer, chart request, style, renderer, or exporter consumes the new
+  state in 49I.3B.
