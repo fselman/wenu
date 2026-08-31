@@ -514,20 +514,29 @@ def composition_layer_options(
             if name == "venus_disk_illuminated":
                 render = {
                     "style": {
-                        "facecolor": publication.venus_color,
+                        "facecolor": publication.venus_disk_face_color,
                         "edgecolor": "none",
-                        "alpha": 0.72,
+                        "alpha": publication.venus_disk_face_alpha,
                         "zorder": 39.0,
                     },
                 }
             else:
                 render = {
                     "style": {
-                        "color": publication.venus_color,
-                        "linewidth": (
-                            publication.venus_linewidth
+                        "color": (
+                            publication.venus_disk_limb_color
                             if name == "venus_disk_limb"
-                            else 0.75 * publication.venus_linewidth
+                            else publication.venus_disk_terminator_color
+                        ),
+                        "linewidth": (
+                            publication.venus_disk_limb_linewidth
+                            if name == "venus_disk_limb"
+                            else publication.venus_disk_terminator_linewidth
+                        ),
+                        "linestyle": (
+                            publication.venus_disk_limb_linestyle
+                            if name == "venus_disk_limb"
+                            else publication.venus_disk_terminator_linestyle
                         ),
                         "alpha": publication.venus_alpha,
                         "zorder": (
