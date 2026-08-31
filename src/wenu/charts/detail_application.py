@@ -469,7 +469,10 @@ def composition_layer_options(
                             },
                             "ticks": {
                                 "color": publication.solar_system_track_color,
-                                "linewidth": publication.solar_system_track_tick_linewidth,
+                                "linewidth": (
+                                    publication
+                                    .solar_system_track_tick_linewidth
+                                ),
                                 "zorder": 38.1,
                             },
                             "labels": {
