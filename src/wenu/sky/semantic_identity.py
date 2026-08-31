@@ -115,6 +115,12 @@ _NONSTELLAR_CATEGORY_CONTRACTS = {
 
 
 _LAYER_CONTRACTS = {
+    "solar_system_track": SemanticLayerContract(
+        ("sky", "solar_system", "planets", "venus", "track"),
+        "Venus track",
+        38,
+        "planet_track",
+    ),
     "moon": SemanticLayerContract(
         ("sky", "solar_system", "natural_satellites", "moon"),
         "Moon",
@@ -452,7 +458,7 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
         "style_role": contract.style_role,
         "component_contracts": (
             tuple(_GRID_COMPONENT_CONTRACTS.items())
-            if name.endswith("_grid")
+            if name.endswith("_grid") or name == "solar_system_track"
             else ()
         ),
         "entity_category_contracts": (
