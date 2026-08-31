@@ -34,9 +34,9 @@ def main():
             descriptor=VENUS_POINT,
             start_instant=START,
             start_time_scale="utc",
-            sample_step_days=1.0 / 24.0,
+            sample_step_days=12.0 / 24.0,
             tick_step_days=7.0,
-            tick_count=4,
+            tick_count=8,
         )
         result = SolarSystemTrackRealizer().curve(
             request, context=context, observer=observer
@@ -60,13 +60,25 @@ def main():
         print(f"geometry metadata sample instants: {len(instants)}")
         print(f"tick sample indices: {result.tick_sample_indices}")
         print(f"prepared ticks: {len(prepared['ticks'])}")
+        viewport = chart.viewport
+        print(
+            "viewport: "
+            f"x [{viewport.x_min:.12f}, {viewport.x_max:.12f}], "
+            f"y [{viewport.y_min:.12f}, {viewport.y_max:.12f}]"
+        )
         for ordinal, (index, tick) in enumerate(
             zip(result.tick_sample_indices[1:], prepared["ticks"]), start=1
         ):
+            x = float(tick.x.mean())
+            y = float(tick.y.mean())
+            inside = (
+                viewport.x_min <= x <= viewport.x_max
+                and viewport.y_min <= y <= viewport.y_max
+            )
             print(
                 f"  {ordinal}: index {index}, instant {instants[index]}, "
                 f"label {tick.name!r}, "
-                f"x {tick.x.mean():.12f}, y {tick.y.mean():.12f}"
+                f"x {x:.12f}, y {y:.12f}, inside {inside}"
             )
         label = prepared["labels"][0]
         print(
@@ -91,13 +103,21 @@ def main():
         rendered_text = tuple(artist.get_text() for artist in axes.texts)
         print(f"renderer text artists: {rendered_text!r}")
         plt.close(figure)
+        expected_tick_labels = tuple(
+            instant[:10]
+            for instant in result.sample_instants
+            if instant in tuple(
+                result.sample_instants[index]
+                for index in result.tick_sample_indices[1:]
+            )
+        )
         assert rendered_text == (
-            "2026-09-06", "2026-09-13", "2026-09-20", "2026-09-27",
+            *expected_tick_labels,
             "♀ 2026-08-30",
         )
-        assert len(instants) == len(result.sample_instants) == 673
+        assert len(instants) == len(result.sample_instants) == 1345
         assert tuple(tick.name for tick in prepared["ticks"]) == (
-            "2026-09-06", "2026-09-13", "2026-09-20", "2026-09-27"
+            expected_tick_labels
         )
 
 if __name__ == "__main__":
