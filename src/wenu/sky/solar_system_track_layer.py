@@ -10,12 +10,13 @@ class SolarSystemTrackLayer(SkyLayer):
     """Realize one scientific track as an ordinary spherical curve."""
     layer_name = "solar_system_track"
 
-    def __init__(self, request, *, realizer=None):
+    def __init__(self, request, *, realizer=None, label_ticks=False):
         if not isinstance(request, SolarSystemTrackRequest):
             raise TypeError("request must be a SolarSystemTrackRequest.")
         self.request = request
         self.realizer = SolarSystemTrackRealizer() if realizer is None else realizer
         self.last_result = None
+        self.label_ticks = bool(label_ticks)
 
     def realize(self, context, observer, **geometry_options):
         if geometry_options:
@@ -27,7 +28,7 @@ class SolarSystemTrackLayer(SkyLayer):
         del observer
         raise RuntimeError("SolarSystemTrackLayer requires a LayerRealizationContext.")
 
-def prepare_projected_track(spherical, projected, *, tick_length, include_start_tick=False):
+def prepare_projected_track(\n    spherical, projected, *, tick_length, include_start_tick=False, label_ticks=False\n):
     """Return path and perpendicular projected tick components."""
     if not isinstance(projected, ProjectedCurves) or len(projected) != 1:
         raise TypeError("projected must contain exactly one track curve.")
@@ -48,10 +49,7 @@ def prepare_projected_track(spherical, projected, *, tick_length, include_start_
         tx, ty = tangent
         half = 0.5 * tick_length
         nx, ny = -ty * half, tx * half
-        ticks.append(ProjectedCurve(
-            x=np.asarray((source.x[index] - nx, source.x[index] + nx)),
-            y=np.asarray((source.y[index] - ny, source.y[index] + ny)),
-        ))
+        ticks.append(ProjectedCurve(\n            x=np.asarray((source.x[index] - nx, source.x[index] + nx)),\n            y=np.asarray((source.y[index] - ny, source.y[index] + ny)),\n            name=_tick_label(spherical, index) if label_ticks else None,\n        ))
     path = ProjectedCurve(
         x=source.x, y=source.y, closed=False, name=_start_label(spherical)
     )
@@ -78,6 +76,10 @@ def start_label_anchor(curve, ax):
         x=float(curve.x[index]), y=float(curve.y[index]),
         horizontal_alignment="left", vertical_alignment="bottom",
     )
+
+def _tick_label(spherical, index):
+    instants = tuple(spherical.metadata.get("sample_instants", ()))
+    return instants[index][:10] if index < len(instants) else None
 
 def _start_label(spherical):
     instants = tuple(spherical.metadata.get("sample_instants", ()))
