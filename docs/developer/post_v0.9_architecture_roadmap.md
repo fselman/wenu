@@ -985,8 +985,8 @@ output. 49I.3C.2 remains separately authorized.
 
 ## Milestone 49I.3C.2 — First drawable resolved Venus disk
 
-**Status:** Scientifically, architecturally, and visually accepted on
-2026-08-31; final suite closure pending.
+**Status:** Scientifically, architecturally, visually, and operationally
+accepted on 2026-08-31.
 
 Regional and binocular requests can now opt into one resolved Venus disk.
 Illuminated face, limb, and terminator share one physical state and retain
@@ -997,5 +997,5 @@ Symbolic defaults and planisphere/all-sky behavior remain unchanged.
 The accepted Virgo calibration uses La Ligua at
 `2026-08-30T00:00:00Z`, a physical diameter of
 `29.287846514361 arcsec`, magnification 200, and therefore a nominal
-displayed diameter of `1.62710258413117 deg`. Multi-epoch disks remain
-49I.3C.3.
+displayed diameter of `1.62710258413117 deg`. Multi-epoch disks remain 49I.3C.3. Final verification passed 1,970 routine
+tests with 30 deselected and all 2,000 tests.
