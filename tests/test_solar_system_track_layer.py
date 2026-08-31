@@ -2,7 +2,7 @@
 from types import SimpleNamespace
 import numpy as np
 from wenu.geometry.projected import ProjectedCurve, ProjectedCurves, ProjectedGrid
-from wenu.sky.solar_system_track_layer import prepare_projected_track
+from wenu.sky.solar_system_track_layer import prepare_projected_track, start_label_anchor
 
 def spherical(indices=(0, 2, 4)):
     return SimpleNamespace(
@@ -68,3 +68,16 @@ def test_major_tick_labels_use_exact_sample_dates_when_enabled():
     assert tuple(curve.name for curve in result["ticks"]) == (
         "2026-09-06", "2026-09-27"
     )
+
+
+def test_label_anchor_turns_inward_near_upper_right_field_edge():
+    curve = ProjectedCurve(
+        x=np.asarray((0.95, 0.95)), y=np.asarray((0.95, 0.95))
+    )
+    axes = SimpleNamespace(
+        get_xlim=lambda: (-1.0, 1.0),
+        get_ylim=lambda: (-1.0, 1.0),
+    )
+    anchor = start_label_anchor(curve, axes)
+    assert anchor.horizontal_alignment == "right"
+    assert anchor.vertical_alignment == "top"
