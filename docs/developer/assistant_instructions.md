@@ -295,3 +295,11 @@ For 49I.3C.1 physical disk geometry, consult
 renderer-neutral centre, limb, visible terminator, and illuminated-face
 contract. Do not move post-projection magnification, chart selection, style,
 or rendering policy into `solar_system_disk_geometry.py`.
+
+
+For 49I.3C.2 drawable Venus disks, consult
+`drawable_venus_disk_49i3c2.md`. Preserve explicit resolved selection,
+object-specific post-projection magnification about the exact projected
+physical centre, independent illuminated/limb/terminator semantics, and
+regional/binocular scope. Keep symbolic Venus as the default and keep
+multi-epoch disk display in 49I.3C.3.
