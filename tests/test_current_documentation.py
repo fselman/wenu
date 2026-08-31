@@ -2083,7 +2083,7 @@ def test_49i3a_audits_symbolic_and_resolved_solar_system_appearance():
 
     assert "Milestone 49I.3A — Physical apparent-disk contract audit" in roadmap
     assert "Deferred physical Solar-System appearance" in architecture
-    assert "Proposed physical apparent-disk boundary" in implementation
+    assert "Accepted physical apparent-disk boundary" in implementation
     assert "Milestone 49I.3A audit ownership" in source_tree
     assert "13.2.21 49I.3A physical apparent-disk audit" in guide
     assert "Guide version:** `0.9.5.20260831.32`" in guide
