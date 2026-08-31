@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.38`  
-**Last updated:** `2026-08-31T16:00:00Z`  
+**Guide version:** `0.9.5.20260831.39`  
+**Last updated:** `2026-08-31T16:30:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2482,3 +2482,39 @@ to every projected vertex.
 > in 28.40 seconds, and all 1,967 tests in 89.14 seconds. Runtime geometry,
 > public commands, supported magnification range, style, and visible output
 > remain separately authorized.
+
+
+<a id="49i3c1-venus-spherical-disk-geometry"></a>
+
+### 13.2.24 49I.3C.1 Venus spherical disk geometry
+
+**[Foundation]** Wenu can now describe Venus's physical illuminated shape
+without drawing or enlarging it. The result keeps four ordinary celestial
+geometries: the centre, round limb, day-night terminator, and illuminated
+face.
+
+**[Undergraduate]** The accepted bright-limb angle supplies tangent directions
+toward the Sun and perpendicular to it. The phase angle compresses the
+terminator by `cos(i)`. A 720-vertex physical boundary is mapped radially
+from the local disk plane to angular offsets around the accepted apparent
+centre. The normalized polygon area follows `(1 + cos(i)) / 2`.
+
+> **Wenu implementation box — 49I.3C.1 physical geometry**
+>
+> `SolarSystemDiskGeometryRealizer` returns a frozen bundle containing one
+> `SphericalPoints` centre, closed `SphericalCurves` limb, open
+> `SphericalCurves` terminator, and `SphericalPolygons` illuminated face.
+> Every component retains the appearance coordinate specification, identity,
+> model, sample count, and provenance.
+>
+> For the accepted La Ligua DE440 case, the physical radius is
+> `14.643923257181 arcsec`. Maximum limb-radius residual is
+> `9.799e-11 arcsec`, terminator endpoint residual is zero, normalized-area
+> residual is `-5.087e-06`, and bright-limb orientation residual is
+> `-1.495e-10 deg`.
+>
+> Fernando accepted the model, 720-sample default, tolerances, validation, and
+> output-neutral boundary on 2026-08-31 after 29 deterministic tests passed in
+> 1.94 seconds and 54 focused architectural tests passed in 4.80 seconds.
+> 49I.3C.1 adds no visible output; post-projection magnification remains
+> 49I.3C.2.
