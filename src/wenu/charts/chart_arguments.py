@@ -13,7 +13,7 @@ from .reference_policy import CelestialReferencePolicy
 from .style_overrides import ChartStyleOverrides
 
 GRID_REFERENCES = frozenset({"equatorial", "ecliptic", "galactic"})
-_DURATION = re.compile(r"^(?P<value>(?:\\d+(?:\\.\\d*)?|\\.\\d+))(?P<unit>h|d|hour|hours|day|days)$", re.IGNORECASE)
+_DURATION = re.compile(r"^(?P<value>(?:\d+(?:\.\d*)?|\.\d+))(?P<unit>h|d|hour|hours|day|days)$", re.IGNORECASE)
 
 def _duration_days(value):
     """Parse one positive governed hour/day duration into days."""
