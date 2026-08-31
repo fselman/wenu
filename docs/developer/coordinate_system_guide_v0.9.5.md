@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.29`  
-**Last updated:** `2026-08-31T01:55:00Z`  
+**Guide version:** `0.9.5.20260831.30`  
+**Last updated:** `2026-08-31T12:10:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2315,3 +2315,36 @@ fixed product frame.
 > declination. Verification passed 40 focused tests, 56 documentation tests,
 > 1,899 routine tests with 30 deselected, and all 1,929 tests. The slice has no
 > visible output; 49I.2D.2 remains separately authorized.
+
+<a id="49i2d2-drawable-track"></a>
+
+### 13.2.20 49I.2D.2 drawable Venus track
+
+**[Foundation]** Wenu can now draw the future path of Venus across a fixed
+regional or binocular star chart. Each point is calculated for its own date,
+but the stellar map, orientation, and viewpoint remain fixed at the chart
+observation instant. The result therefore shows Venus moving among the stars,
+not the daily turning of the local sky.
+
+**[Undergraduate]** The accepted multi-instant apparent directions still form
+one fixed-product-frame `SphericalCurves` before projection. Major-time
+anchors become short segments perpendicular to the local projected tangent.
+Optional dates remain at one of the two ends of that perpendicular tick. Wenu
+evaluates chronological layouts beginning from both sides and retains a side
+until the nonlocal curve, an earlier date, or the viewport justifies switching.
+
+> **Wenu implementation box — 49I.2D.2 visible track**
+>
+> `SolarSystemTrackLayer` owns only scientific realization.
+> `charts/solar_system_track_annotations.py` owns projected ticks and date
+> layout. Style owns the accepted amber-orange `#FFB000` appearance. Regional
+> and binocular requests use `--planet-track venus` plus the track time
+> controls; `--track-tick-labels` is optional. The semantic path is
+> `sky/solar_system/planets/venus/track`.
+>
+> Fernando accepted the scientific, architectural, and visual result on
+> 2026-08-31 after eight- and sixteen-week La Ligua reviews, including the
+> retrograde loop and crowded perpendicular labels. Verification passed 127
+> focused tests, 1,924 routine tests with 30 deselected, and all 1,954 tests.
+> Physical apparent disks, phase, illumination, angular diameter, and
+> planisphere/all-sky tracks remain deferred.
