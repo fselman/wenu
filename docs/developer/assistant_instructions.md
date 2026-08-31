@@ -311,3 +311,10 @@ scientifically distinct from frozen-Earth ecliptic constructions. Both may
 share typed sequence, disk geometry, projection, preparation, renderer, and
 export owners only after their different direction and appearance states are
 resolved. Never label a frozen-observer geometric direction as apparent sky.
+
+
+For the output-neutral observed Venus disk sequence, consult
+`observed_venus_disk_sequence_49i3c31a.md`. Preserve exact start-inclusive
+major instants, independent topocentric observer and physical-appearance
+realization at every epoch, and explicit observer/AU distances. Do not combine
+native per-epoch geometry under a false common coordinate instant.
