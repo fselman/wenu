@@ -2337,4 +2337,7 @@ def test_49i3c3_audits_two_mode_planet_disk_sequences():
     assert "Guide version:** `0.9.5.20260831.42`" in guide
     assert "planet_disk_sequence_audit_49i3c3.md" in instructions
 
-    assert "All 63 current-documentation tests passed in 2.04 seconds" in contract
+    assert "Initial acceptance verification passed all 63" in contract
+    assert "current-documentation tests in 1.88 seconds" in contract
+    assert "1,971 routine tests with 30 deselected in 27.08 seconds" in contract
+    assert "all 2,001 tests in 85.97 seconds" in contract
