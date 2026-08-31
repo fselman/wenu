@@ -1,8 +1,10 @@
 # Resolved Venus disk audit — Milestone 49I.3C
 
-**Status:** Candidate architecture for scientific review
+**Status:** Scientifically and architecturally accepted
 
 **Audit date:** 2026-08-31
+
+**Acceptance date:** 2026-08-31
 
 **Implementation baseline:** `a9d8342`
 
@@ -32,38 +34,46 @@ The existing geometry vocabulary already contains `SphericalCurves` and
 support. A `SphericalGrid` is deliberately curve-only, so one grid cannot
 honestly contain both the illuminated face and its boundary curves.
 
-## 3. Accepted ownership boundary proposed for review
+## 3. Accepted ownership boundary
 
-The resolved disk should be a small semantic layer group produced from one
-physical appearance state:
+The resolved disk is a small semantic layer group produced from one physical
+appearance state:
 
 - an illuminated-face `SphericalPolygons` layer;
 - a limb `SphericalCurves` layer;
 - a terminator `SphericalCurves` layer.
 
-All three share the accepted apparent centre, physical state, display policy,
-sampling contract, and semantic parent. They are transformed and projected by
-the ordinary machinery. No layer may calculate page coordinates or call a
-renderer.
+This separation permits independent fill and stroke policies for the
+illuminated face, limb, and terminator while keeping their geometry and
+identity explicit. The three records share the accepted apparent centre,
+physical state, sampling contract, and semantic parent. No scientific layer
+calculates page coordinates or calls a renderer.
 
-A dedicated scientific disk-geometry module may construct the three spherical
-records. Chart request/detail code may select resolved representation and
-provide Venus-specific magnification. Style owns fill, stroke, widths, alpha,
-and drawing order. The renderer remains body-agnostic.
+A dedicated scientific disk-geometry module constructs the three physical
+spherical records. The ordinary machinery transforms and projects them.
+Chart preparation then applies the Venus-specific display magnification around
+the projected physical centre. Style owns fill, stroke, widths, alpha, and
+drawing order. The renderer remains body-agnostic.
 
-## 4. Physical and display radius
+## 4. Physical and displayed radius
 
 Let `rho = d / 2` be the accepted physical angular radius, where `d` is
-the 49I.3B angular diameter. Let `M_venus` be the positive finite,
-object-specific display magnification. The sampled display radius is
-`rho_display = M_venus * rho`.
+the 49I.3B angular diameter. The spherical limb, terminator, and illuminated
+face are sampled at this physical radius.
 
-The physical state retains `d` unchanged. Magnification changes only the
-angular offsets used to build display geometry. It must not change the centre,
-phase, illumination, visibility, ephemeris state, or provenance.
+Let `M_venus` be the positive finite, object-specific display
+magnification. After ordinary projection, chart preparation scales every
+projected vertex around the separately projected physical centre:
 
-A factor of `1` means physical angular scale. Resolved mode and magnification
-are separate choices. Magnification alone must not silently enable a disk.
+`q_display = q_center + M_venus * (q_physical - q_center)`.
+
+The physical state and pre-projection spherical geometry retain `d`
+unchanged. Magnification must not change the centre, phase, illumination,
+visibility, ephemeris state, provenance, or sampling topology.
+
+A factor of `1` means physical projected scale. Resolved mode and
+magnification are separate choices. Magnification alone must not silently
+enable a disk.
 
 ## 5. Renderer-neutral spherical construction
 
@@ -96,23 +106,28 @@ cases without choosing a page rotation. At quarter phase the projected
 terminator is a diameter. The illuminated side must point toward the apparent
 Sun after every product-frame transformation and projection.
 
-## 6. Projection and clipping
+## 6. Projection, magnification, and clipping
 
-The complete magnified geometry is created before projection. This lets the
-existing non-linear projection act on every sampled boundary point and avoids a
-post-projection circular-marker approximation.
+The physical disk is sampled on the celestial sphere and passed through the
+ordinary product-frame transformation and projection. Magnification occurs
+after projection, in chart preparation, by scaling projected vertex offsets
+about the projected physical centre. It is therefore neither a scatter-marker
+approximation nor a renderer transform.
 
-Projection-domain clipping and viewport clipping remain ordinary pipeline
-responsibilities. A resolved disk whose centre is outside a viewport can still
-have visible geometry inside it; selection must therefore use the disk
-geometry, not centre-only rejection.
+Pre-projection sampling must be fine enough that the enlarged projected limb,
+terminator, and illuminated boundary remain smooth at the accepted maximum
+magnification and output resolution. The sampling count is a deterministic
+geometry parameter retained in metadata. The first implementation must derive
+or validate a conservative minimum from the supported magnification range;
+adaptive sampling is deferred unless fixed sampling proves inadequate.
 
-Sampling is a deterministic geometry parameter. The first slice should use one
-documented default dense enough for accepted regional/binocular output and
-retain the value in metadata. Adaptive sampling is deferred unless evidence
-shows the fixed contract inadequate.
+Projection-domain clipping acts on the physical spherical geometry before
+projection. Viewport clipping acts on the magnified prepared geometry. A
+resolved disk whose physical centre lies outside a viewport can still have
+magnified geometry inside it, so final visibility cannot use centre-only
+rejection.
 
-## 7. Product and request policy
+## 7. Product, request, and multi-epoch policy
 
 The first drawable slice should:
 
@@ -122,12 +137,22 @@ The first drawable slice should:
 - use a positive finite Venus-specific magnification;
 - preserve the ordinary Venus point unless the resolved representation
   explicitly replaces it;
-- avoid a second centre-direction or appearance realization.
+- avoid a second centre-direction or appearance realization for an instant.
+
+Wenu must also be able to place magnified resolved Venus disks for several
+requested instants in one chart. Each instant owns its apparent centre and
+physical appearance state. All centres and disk geometries are transformed
+into one fixed chart product frame, following the accepted trajectory
+principle, so the chart itself does not rotate between samples. The same
+Venus-specific magnification policy is applied after projection to each disk;
+a future extension may permit per-sample styling without changing the
+scientific state.
 
 Illustrative command vocabulary remains provisional until the runtime slice,
-for example `--planet-appearance venus=resolved` and
-`--planet-disk-magnification venus=40`. This audit does not install or accept
-those spellings.
+for example `--planet-appearance venus=resolved`,
+`--planet-disk-magnification venus=40`, and an explicit list or regular
+sequence of disk instants. This audit does not install or accept those
+spellings.
 
 ## 8. Semantic identity and output parity
 
@@ -148,10 +173,10 @@ The geometry owns neither colour nor line width.
 
 ## 9. Validation and acceptance plan
 
-The geometry slice must test:
+The geometry and preparation slices must test:
 
 1. unchanged accepted centre and physical state;
-2. factor-one and magnified angular radii;
+2. factor-one and magnified projected radii;
 3. limb radius and closure;
 4. terminator endpoints on the limb;
 5. visible and illuminated inequalities;
@@ -159,28 +184,42 @@ The geometry slice must test:
 7. bright side toward the accepted Sun direction;
 8. rotation through equatorial, horizontal, and a nontrivial chart
    orientation;
-9. projection-domain and viewport-edge behavior;
-10. semantic identity and shared-output parity;
-11. rejection of invalid magnification and unsupported chart families;
-12. unchanged symbolic defaults and output-neutral behavior when unresolved.
+9. post-projection scaling about the projected physical centre;
+10. sampling adequacy at the supported maximum magnification;
+11. projection-domain and magnified viewport-edge behavior;
+12. semantic identity and shared-output parity;
+13. rejection of invalid magnification and unsupported chart families;
+14. unchanged symbolic defaults and output-neutral behavior when unresolved;
+15. multiple epochs in one fixed chart frame, with independently correct
+    centre, phase, orientation, and date identity at every sample.
 
 Scientific validation must compare at least the accepted La Ligua DE440 Venus
 case with an independently constructed tangent-plane phase geometry. Visual
-acceptance must include factor `1` and at least one useful magnification in
-regional and binocular charts.
+acceptance must include factor `1`, at least one useful magnification in
+regional and binocular charts, and a multi-epoch chart that makes changing
+position, angular diameter, phase, and bright-limb direction inspectable.
 
-## 10. Proposed implementation slices
+## 10. Accepted implementation slices
 
 ### 49I.3C.1 — Resolved Venus spherical geometry
 
-Add renderer-neutral limb, terminator, and illuminated-face construction plus
-deterministic geometry tests. Add no chart request or visible output.
+Add renderer-neutral, physically sampled limb, terminator, illuminated-face,
+and centre construction plus deterministic geometry tests. Add no chart
+request or visible output.
 
 ### 49I.3C.2 — First drawable resolved Venus disk
 
-Install the opt-in regional/binocular request, Venus-specific magnification,
-layer group, style, semantic SVG descendants, validation command, and visual
-acceptance. Preserve symbolic defaults and planisphere/all-sky behavior.
+Install the opt-in regional/binocular request, post-projection Venus-specific
+magnification, layer group, style, semantic SVG descendants, validation
+command, and visual acceptance. Preserve symbolic defaults and
+planisphere/all-sky behavior.
+
+### 49I.3C.3 — Multi-epoch resolved Venus disks
+
+Allow an explicit list or regular sequence of instants to place several
+independently realized, magnified Venus disks in one fixed chart frame. Reuse
+the accepted track-time and fixed-frame principles; do not create a second
+projection, renderer, or export path.
 
 ## 11. Non-goals
 
@@ -196,16 +235,19 @@ acceptance. Preserve symbolic defaults and planisphere/all-sky behavior.
 - pre-accept the illustrative command vocabulary or a production
   magnification default.
 
-## 12. Review questions
+## 12. Acceptance
 
-Fernando should review and accept:
+Fernando accepted this boundary on 2026-08-31 with two explicit revisions:
 
-1. the three-part semantic geometry group rather than one mixed grid;
-2. pre-projection magnified spherical geometry;
-3. the physical/display radius separation;
-4. resolved-mode and per-object magnification as separate choices;
-5. regional/binocular-only first scope;
-6. the proposed `49I.3C.1` and `49I.3C.2` split;
-7. validation, semantics, and non-goals.
+1. display magnification occurs after ordinary projection, with physical
+   pre-projection sampling fine enough for the enlarged result;
+2. the roadmap includes several magnified, independently realized Venus disks
+   at different instants in one fixed chart.
 
-Only after this audit is accepted should runtime geometry be implemented.
+He also accepted the separate illuminated-face, limb, and terminator
+geometries because they permit distinct fill and stroke policies.
+
+Acceptance verification passed all 60 current-documentation tests in 1.80
+seconds. Runtime geometry, command vocabulary, supported magnification range,
+and visible output remain separately authorized implementation work.
+
