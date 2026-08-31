@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.35`  
-**Last updated:** `2026-08-31T13:58:00Z`  
+**Guide version:** `0.9.5.20260831.36`  
+**Last updated:** `2026-08-31T15:00:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2439,3 +2439,37 @@ metadata, not a renderer rotation.
 > routine tests with 30 deselected in 27.32 seconds, and all 1,966 tests in
 > 89.97 seconds. 49I.3B adds no visible output; 49I.3C remains separately
 > authorized.
+
+
+<a id="49i3c-resolved-venus-disk-audit"></a>
+
+### 13.2.23 49I.3C resolved Venus disk audit
+
+**[Foundation]** The first resolved Venus drawing should be built from the
+same apparent centre and physical phase already validated in 49I.3B. The
+physical angular diameter stays unchanged. A separate Venus-specific display
+magnification only makes that angular geometry easier to see.
+
+The visible result has three semantic parts: the filled illuminated face, the
+round limb, and the terminator between day and night. They are celestial
+geometry before projection, not a large circular plotting symbol.
+
+**[Undergraduate]** In the tangent plane at Venus, the accepted bright-limb
+position angle defines the direction toward the Sun. The phase angle defines
+the terminator plane. Sampling the visible and illuminated hemispheres gives a
+closed illuminated polygon plus limb and terminator curves. Mapping those
+samples back to spherical coordinates before projection preserves arbitrary
+chart orientation and non-linear projections.
+
+> **Wenu implementation box — 49I.3C candidate boundary**
+>
+> `SphericalGrid` is curve-only, so the resolved disk is proposed as a small
+> semantic layer group: one `SphericalPolygons` illuminated face and separate
+> `SphericalCurves` limb and terminator. The first runtime work is split into
+> output-neutral 49I.3C.1 spherical geometry and 49I.3C.2 opt-in
+> regional/binocular drawing.
+>
+> The audit changes no runtime type, public command, chart, style, renderer, or
+> output. Symbolic Venus remains the default; planisphere and all-sky products
+> remain symbolic. Command spellings and a production magnification default
+> are not yet accepted.
