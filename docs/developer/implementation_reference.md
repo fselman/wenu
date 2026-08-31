@@ -1109,7 +1109,8 @@ direction chain per vertex, retains every `ApparentDirection`, assembles one
 open native `SphericalCurves`, and calls `CoordinateService.transform()`
 once for the fixed product frame. The result retains sample instants, exact tick
 indices, resource identity, and scalar evidence. No installed layer or public
-chart request consumes it in 49I.2D.1.
+chart request consumes it in 49I.2D.1. Fernando accepted the scientific
+contract and installed-DE440 validation after all 1,929 tests passed.
 
 ## 8.1 Packaged configuration validation
 
