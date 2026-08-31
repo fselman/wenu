@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.31`  
-**Last updated:** `2026-08-31T12:50:00Z`  
+**Guide version:** `0.9.5.20260831.32`  
+**Last updated:** `2026-08-31T13:00:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2385,5 +2385,11 @@ separate photometric quantity used by the symbolic hierarchy.
 > The proposed sequence validates Venus physical appearance before drawing its
 > first resolved disk, then treats symbolic photometry and customary glyphs as
 > a separate slice. The Moon follows with its own angular-size, phase,
-> bright-limb, and orientation validation. 49I.3A changes no runtime or output
-> and remains subject to Fernando's scientific and architectural acceptance.
+> bright-limb, and orientation validation. 49I.3A changes no runtime or output.
+>
+> **49I.3A scientific and architectural acceptance**
+>
+> Fernando accepted the eight audit decisions on 2026-08-31 after all 58
+> current-documentation tests passed in 2.51 seconds. The next separately
+> bounded slice is 49I.3B numerical Venus physical-appearance validation; its
+> model, tolerances, runtime contract, and visible result are not pre-accepted.
