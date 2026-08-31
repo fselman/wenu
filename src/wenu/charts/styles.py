@@ -130,6 +130,11 @@ class PublicationStyle:
     venus_alpha: float = 1.0
     venus_draw_label: bool = True
     venus_label_fontsize: float = 7.0
+    solar_system_track_color: str = "#FFB000"
+    solar_system_track_linewidth: float = 1.2
+    solar_system_track_linestyle: str = "-"
+    solar_system_track_tick_linewidth: float = 1.0
+    solar_system_track_label_fontsize: float = 9.0
     moon_color: str = "#6f6f6f"
     moon_marker: str = "o"
     moon_symbol_size: float = 42.0
