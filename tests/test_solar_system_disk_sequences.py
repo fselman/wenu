@@ -17,7 +17,7 @@ from wenu.solar_system_directions import (
     AstrometricDirection,
     ObserverBarycentricState,
 )
-from wenu.solar_system_disk_sequences import (
+from wenu.sky.solar_system_disk_sequences import (
     ObservedSolarSystemDiskSequence,
     ObservedSolarSystemDiskSequenceRealizer,
     ObservedSolarSystemDiskSequenceRequest,
