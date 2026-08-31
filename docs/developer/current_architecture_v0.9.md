@@ -285,7 +285,8 @@ Verification passed all 1,912 tests, and main-versus-branch Venus products
 were identical at the PNG, rendered-PDF, and normalized semantic-SVG levels.
 Fernando scientifically and architecturally accepted 49I.2B on 2026-08-30.
 
-The accepted 49I.2C implementation installs a thin default-off Moon specialization and
+The accepted 49I.2C implementation installs a thin default-off Moon
+specialization and
 replaces planet-only internal selection with one request-owned
 `solar_system_objects` set. Class-aware `--planet venus` and `--moon` inputs
 therefore converge before detail application. The Moon retains natural-

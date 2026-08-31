@@ -760,8 +760,7 @@ Class-aware `--planet venus` and `--moon` inputs converge into one internal
 `sky/solar_system/natural_satellites/moon` identity. Verification passed 89
 direct tests, 219 broader architectural tests, 1,887 routine tests with 30
 deselected, all 1,917 tests, and 54 documentation tests. Installed-DE440
-PNG/PDF/SVG products agreed
-visually, and the correctly time-matched Stellarium comparison placed the Moon
+PNG/PDF/SVG products agreed visually, and the correctly time-matched Stellarium comparison placed the Moon
 closely against the same Pisces stars. Fernando scientifically,
 architecturally, and visually accepted 49I.2C and its stated non-goals on
 2026-08-30. Physical disk and phase remain 49I.3.

@@ -487,14 +487,20 @@ def test_49i2c_installs_one_symbolic_moon_without_physical_disk_claims():
         assert phrase in contract
 
     assert "Milestone 49I.2C — First drawable Moon point" in roadmap
-    assert "Fernando scientifically, architecturally, and visually accepted" in roadmap
+    assert (
+        "Fernando scientifically, architecturally, and visually accepted"
+        in roadmap
+    )
     assert "The accepted 49I.2C implementation installs" in architecture
     assert "First drawable Moon point (Milestone 49I.2C)" in implementation
     assert "src/wenu/sky/moon.py" in source_tree
     assert "13.2.17 49I.2C first drawable Moon point" in guide
     assert "Guide version:** `0.9.5.20260831.25`" in guide
     assert "Physical disk and phase remain 49I.3" in guide
-    assert "Fernando scientifically, architecturally, and visually accepted" in guide
+    assert (
+        "Fernando scientifically, architecturally, and visually accepted"
+        in guide
+    )
 
 
 def fenced_python(path):
