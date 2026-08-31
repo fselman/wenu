@@ -192,7 +192,11 @@ def test_rectangular_anchor_separates_bottom_left_grid_labels():
 
 
 def test_regional_chart_applies_rectangular_coordinate_label_anchor():
-    layer = object()
+    class Layer:
+        layer_name = "coordinates_grid"
+        coordinate_system = "equatorial"
+
+    layer = Layer()
     captured = {}
 
     class Style:
@@ -300,7 +304,11 @@ def test_elliptical_anchor_rejects_false_split_longitude_segments(name, x):
 
 
 def test_grid_anchor_application_does_not_mutate_input():
-    layer = object()
+    class Layer:
+        layer_name = "coordinates_grid"
+        coordinate_system = "equatorial"
+
+    layer = Layer()
     original_anchor = object()
     options = {
         layer: {
