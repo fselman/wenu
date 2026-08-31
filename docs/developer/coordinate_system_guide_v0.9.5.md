@@ -2549,4 +2549,6 @@ centre. The normalized polygon area follows `(1 + cos(i)) / 2`.
 > `--planet-disk-magnification venus=FACTOR`. Resolved display is restricted
 > to regional and binocular charts. Symbolic Venus remains the default;
 > magnification alone cannot enable the disk; planisphere and all-sky output
-> remains symbolic. Multi-epoch resolved disks remain 49I.3C.3.
+> remains symbolic. Multi-epoch resolved disks remain 49I.3C.3. Final
+> verification passed 1,970 routine tests with 30 deselected in 28.32 seconds
+> and all 2,000 tests in 90.30 seconds.
