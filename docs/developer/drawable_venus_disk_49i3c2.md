@@ -132,3 +132,6 @@ wenu_chart regional \
 - The 600-dpi Virgo rendering was visually accepted with magnification 200.
 
 Multi-epoch resolved disks remain deferred to milestone 49I.3C.3.
+
+- 1,970 routine tests passed with 30 deselected in 28.32 seconds.
+- All 2,000 tests passed in 90.30 seconds.
