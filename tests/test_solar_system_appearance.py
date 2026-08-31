@@ -396,12 +396,16 @@ def test_quarter_phase_terminator_is_a_diameter_with_limb_endpoints():
     assert y[0] == pytest.approx(1.0)
     assert y[-1] == pytest.approx(-1.0)
     assert np.min(np.hypot(x, y)) == pytest.approx(0.0, abs=2.0e-13)
-    face_lon = result.illuminated_face.lon_deg[0]
-    face_lat = result.illuminated_face.lat_deg[0]
-    assert result.terminator.lon_deg[0][0] == pytest.approx(face_lon[60])
-    assert result.terminator.lat_deg[0][0] == pytest.approx(face_lat[60])
-    assert result.terminator.lon_deg[0][-1] == pytest.approx(face_lon[0])
-    assert result.terminator.lat_deg[0][-1] == pytest.approx(face_lat[0])
+    face_vectors = _vector(
+        result.illuminated_face.lon_deg[0],
+        result.illuminated_face.lat_deg[0],
+    )
+    terminator_vectors = _vector(
+        result.terminator.lon_deg[0],
+        result.terminator.lat_deg[0],
+    )
+    assert terminator_vectors[0] == pytest.approx(face_vectors[60])
+    assert terminator_vectors[-1] == pytest.approx(face_vectors[0])
 
 
 @pytest.mark.parametrize(
