@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.30`  
-**Last updated:** `2026-08-31T12:10:00Z`  
+**Guide version:** `0.9.5.20260831.33`  
+**Last updated:** `2026-08-31T13:09:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2348,3 +2348,51 @@ until the nonlocal curve, an earlier date, or the viewport justifies switching.
 > focused tests, 1,924 routine tests with 30 deselected, and all 1,955 tests.
 > Physical apparent disks, phase, illumination, angular diameter, and
 > planisphere/all-sky tracks remain deferred.
+
+
+<a id="49i3a-physical-apparent-disk-audit"></a>
+
+### 13.2.21 49I.3A physical apparent-disk audit
+
+**[Foundation]** A planet symbol and a picture of the planet's visible disk
+answer different questions. A symbol says where the object is and can express
+how bright it appears. A resolved disk also claims a physical apparent size,
+phase, and orientation. Wenu must never obtain the second merely by enlarging
+the first.
+
+A future regional or binocular chart may explicitly enlarge a resolved disk so
+that its phase is easy to see. That display magnification belongs to the
+particular body and changes only the drawing. The recorded physical angular
+diameter and position remain unchanged. Planisphere and all-sky charts retain
+symbols in the first implementation slices.
+
+**[Undergraduate]** The accepted apparent direction remains the disk centre.
+A separate renderer-neutral physical-appearance state must carry angular
+diameter, illuminated fraction, bright-limb position angle, provenance, and
+the convention used for tangent-plane orientation. Body-axis orientation is
+optional and requires a validated body-specific model. Apparent magnitude is a
+separate photometric quantity used by the symbolic hierarchy.
+
+> **Wenu design box — proposed 49I.3A boundary**
+>
+> A resolved limb and illuminated region become ordinary semantic spherical
+> geometry before projection. Projection-domain guarding, projection,
+> clipping, preparation, rendering, and PNG/PDF/SVG export remain canonical.
+> Display magnification stays in request/detail policy; colour, line, fill, and
+> glyph stay in style. No enlarged scatter marker or post-export overlay may
+> claim to be a physical disk.
+>
+> The proposed sequence validates Venus physical appearance before drawing its
+> first resolved disk, then treats symbolic photometry and customary glyphs as
+> a separate slice. The Moon follows with its own angular-size, phase,
+> bright-limb, and orientation validation. 49I.3A changes no runtime or output.
+>
+> **49I.3A scientific and architectural acceptance**
+>
+> Fernando accepted the eight audit decisions on 2026-08-31. Initial
+> acceptance verification passed 58 current-documentation tests in 2.51
+> seconds. Final verification passed 58 current-documentation tests in 1.95
+> seconds, 1,926 routine tests with 30 deselected in 28.95 seconds, and all
+> 1,956 tests in 91.38 seconds. The next separately bounded slice is 49I.3B
+> numerical Venus physical-appearance validation; its model, tolerances,
+> runtime contract, and visible result are not pre-accepted.

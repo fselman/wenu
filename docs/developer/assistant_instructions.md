@@ -78,6 +78,9 @@ For current work, read and follow:
 - `drawable_venus_track_49i2d2.md` for the visible Venus track request,
   projected perpendicular ticks, two-pass date placement, style, semantic
   identity, or visual acceptance;
+- `physical_apparent_disk_audit_49i3a.md` for symbolic-versus-resolved
+  Solar-System appearance, angular diameter, phase, limb orientation,
+  photometry, or object-specific display magnification;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,

@@ -992,3 +992,14 @@ owns deterministic contract coverage;
   `tests/test_chart_request_tracks.py` cover public request plumbing.
 - `tools/diagnose_49i2d2_venus_track_labels.py` reports retained tick and
   renderer-label evidence without owning production behavior.
+
+
+## Milestone 49I.3A audit ownership
+
+- `docs/developer/physical_apparent_disk_audit_49i3a.md` owns the accepted
+  symbolic-versus-resolved appearance contract, scientific/display quantity
+  separation, canonical geometry route, Venus/Moon sequence, and non-goals.
+- No production source file owns physical angular diameter, phase,
+  bright-limb orientation, body orientation, photometry, or disk
+  magnification yet.
+- `tests/test_current_documentation.py` protects the accepted boundary.

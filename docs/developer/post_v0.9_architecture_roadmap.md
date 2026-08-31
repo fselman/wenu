@@ -829,6 +829,42 @@ chart. 49I.2D.2 remains separately authorized.
 
 
 
+### Milestone 49I.3A — Physical apparent-disk contract audit
+
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-31; ready for integration.
+
+`physical_apparent_disk_audit_49i3a.md` separates the accepted apparent
+centre direction from a future renderer-neutral physical-appearance state.
+Physical angular diameter, illuminated fraction, bright-limb position angle,
+body orientation, photometry, and display magnification remain distinct
+quantities with distinct owners.
+
+Default planets remain symbolic objects. Honest integration with the stellar
+magnitude hierarchy requires a validated apparent-magnitude model; the current
+fixed hollow Venus and Moon markers remain explicitly provisional until that
+work. Regional and binocular charts may later opt into resolved disks.
+Planisphere and all-sky charts retain symbols in the first slices.
+
+Resolved disks must be explicit semantic geometry before projection, not
+enlarged scatter markers or post-export overlays. Display magnification is a
+positive, bounded, object-specific presentation factor and never changes the
+recorded physical angular diameter, apparent centre, or visibility.
+
+The proposed sequence is 49I.3B Venus physical-appearance state, 49I.3C first
+resolved Venus disk, 49I.3D symbolic photometry and planet glyphs, 49I.3E Moon
+physical-appearance state, and 49I.3F first resolved Moon disk. The ordering of
+49I.3C and 49I.3D remains a review choice. 49I.3A changes no runtime or output.
+
+
+Fernando accepted all eight audit decisions on 2026-08-31. Initial acceptance
+verification passed 58 current-documentation tests in 2.51 seconds. Final
+verification passed 58 current-documentation tests in 1.95 seconds, 1,926
+routine tests with 30 deselected in 28.95 seconds, and all 1,956 tests in 91.38
+seconds. This acceptance authorizes
+the separately bounded 49I.3B numerical Venus appearance-state milestone; it
+does not pre-accept that model, its tolerances, runtime API, or visible output.
+
 Add one object class at a time:
 
 1. Moon or one planet through an ephemeris provider;
@@ -886,5 +922,5 @@ fixed-frame spherical curve, ordinary projection, projected perpendicular
 ticks, and shared output path. Optional dates use two chronological layouts
 starting from opposite perpendicular sides and retain one side until curve,
 label, or viewport obstruction justifies switching. The accepted colour is
-amber orange `#FFB000`. A sixteen-week La Ligua stress test and all 1,954
+amber orange `#FFB000`. A sixteen-week La Ligua stress test and all 1,955
 tests passed. Physical apparent disks remain 49I.3.
