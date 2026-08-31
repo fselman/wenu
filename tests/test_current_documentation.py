@@ -2273,7 +2273,7 @@ def test_49i3c2_records_accepted_drawable_venus_disk():
         "Planisphere and all-sky products retain symbolic representation",
         "`29.287846514361 arcsec`",
         "`0.400755659841`",
-        "`1.62710258413117",
+        "1.62710258413117",
         "600-dpi Virgo rendering",
         "171 closure-focused request, execution, style, semantic, and dependency tests passed in 5.75 seconds",
         "49I.3C.3",
