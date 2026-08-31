@@ -112,22 +112,22 @@ move through that fixed chart.
 This model is a constructed orbital-geometry diagram, not an observed sky.
 
 At the start instant, freeze Earth's heliocentric position vector
-(mathbf{r}_{E,0}). For each requested epoch (t_i), evaluate the planet's
-heliocentric geometric position (mathbf{r}_{P}(t_i)) and form
+\(\mathbf{r}_{E,0}\). For each requested epoch \(t_i\), evaluate the planet's
+heliocentric geometric position \(\mathbf{r}_{P}(t_i)\) and form
 
-[
-mathbf{d}_i = mathbf{r}_{P}(t_i) - mathbf{r}_{E,0}.
-]
+\[
+\mathbf{d}_i = \mathbf{r}_{P}(t_i) - \mathbf{r}_{E,0}.
+\]
 
 The Sun direction is the fixed vector from frozen Earth to the heliocentric
 origin,
 
-[
-mathbf{d}_{Sun} = -mathbf{r}_{E,0}.
-]
+\[
+\mathbf{d}_{Sun} = -\mathbf{r}_{E,0}.
+\]
 
 The diagram uses one explicitly declared fixed ecliptic reference frame and is
-centred on (mathbf{d}_{Sun}). The planet direction must be described as a
+centred on \(\mathbf{d}_{Sun}\). The planet direction must be described as a
 **frozen-observer geometric direction**, never as an apparent direction.
 Distance, angular diameter, phase, illuminated fraction, and bright-limb
 orientation are computed consistently from the frozen observer and the
@@ -271,8 +271,7 @@ post-export annotations, or performance caching.
 
 It also does not implement the possible future 3D Solar-System visualizer for
 which physical distances are deliberately preserved, and it does not make the
-frozen construction a general planetarium mode. Wenu
-remains a static-chart system, and both products must pass through the canonical
+frozen construction a general planetarium mode. Wenu remains a static-chart system, and both products must pass through the canonical
 static projection, rendering, and export machinery.
 
 
