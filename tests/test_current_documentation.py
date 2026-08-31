@@ -2276,6 +2276,8 @@ def test_49i3c2_records_accepted_drawable_venus_disk():
         "1.62710258413117",
         "600-dpi Virgo rendering",
         "171 closure-focused request, execution, style, semantic, and dependency tests passed in 5.75 seconds",
+        "1,970 routine tests passed with 30 deselected in 28.32 seconds",
+        "All 2,000 tests passed in 90.30 seconds",
         "49I.3C.3",
     ):
         assert phrase in contract
