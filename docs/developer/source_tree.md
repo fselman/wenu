@@ -961,3 +961,11 @@ class-aware `--moon` and `--planet venus` controls into the request-owned
 `solar_system_objects` selection. `sky/maximal_sphere.py` registers the
 default-off layer once; existing detail, style, semantic, projection, renderer,
 and exporter owners complete the canonical path.
+
+`docs/developer/solar_system_track_audit_49i2d.md` owns the proposed
+documentation-only Solar-System trajectory boundary. It reuses
+`geometry/spherical.py::SphericalCurves`,
+`coordinate_service.py::CoordinateService`, and the existing projection,
+preparation, renderer, and exporter owners. It adds no runtime module. A later
+implementation may add one shared track realizer under `sky/`; it must not add
+body-specific projection or rendering code.
