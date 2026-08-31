@@ -53,21 +53,12 @@ and drawing order. The renderer remains body-agnostic.
 
 ## 4. Physical and display radius
 
-Let the accepted physical angular radius be
+Let `rho = d / 2` be the accepted physical angular radius, where `d` is
+the 49I.3B angular diameter. Let `M_venus` be the positive finite,
+object-specific display magnification. The sampled display radius is
+`rho_display = M_venus * rho`.
 
-[
-ho = rac{1}{2}d,
-]
-
-where (d) is the 49I.3B angular diameter. Let the positive finite,
-object-specific display magnification be (M_{m Venus}). The sampled
-display radius is
-
-[
-ho_{m display}=M_{m Venus}ho.
-]
-
-The physical state retains (d) unchanged. Magnification changes only the
+The physical state retains `d` unchanged. Magnification changes only the
 angular offsets used to build display geometry. It must not change the centre,
 phase, illumination, visibility, ephemeris state, or provenance.
 
@@ -78,32 +69,24 @@ are separate choices: magnification alone must not silently enable a disk.
 
 At the accepted apparent centre, construct an orthonormal tangent basis:
 
-- (hat n): apparent celestial north;
-- (hat e): apparent celestial east;
-- (hat l): the tangent direction toward the midpoint of the bright limb,
+- `n`: apparent celestial north;
+- `e`: apparent celestial east;
+- `l`: the tangent direction toward the midpoint of the bright limb,
   obtained from the accepted position angle;
-- (hat m): the tangent direction 90 degrees counterclockwise from
-  (hat l);
-- (hat z): the observer-to-target centre direction.
+- `m`: the tangent direction 90 degrees counterclockwise from `l`;
+- `z`: the observer-to-target centre direction.
 
-For bright-limb position angle (chi), measured from north toward east,
+For bright-limb position angle `chi`, measured from north toward east, use
+`l = cos(chi) * n + sin(chi) * e`.
 
-[
-hat l=coschi,hat n+sinchi,hat e.
-]
+For phase angle `i`, the target-to-Sun direction in this local basis is
+`s = sin(i) * l + cos(i) * z`.
 
-For phase angle (i), the target-to-Sun direction in this local basis is
-
-[
-hat s=sin i,hat l+cos i,hat z.
-]
-
-A sampled point on the spherical body's unit surface is visible when its
-(hat z) component is non-negative and illuminated when
-(hat scdothat pge0).
+A sampled point `p` on the spherical body's unit surface is visible when its
+`z` component is non-negative and illuminated when `dot(s, p) >= 0`.
 
 The limb is the complete visible circle. The visible terminator is the
-intersection (hat scdothat p=0) on the observer-facing hemisphere. The
+intersection `dot(s, p) = 0` on the observer-facing hemisphere. The
 illuminated face is the closed boundary made from the illuminated limb arc and
 the visible terminator. These local disk-plane samples are mapped to angular
 offsets around the accepted centre and then to ordinary spherical coordinates.
