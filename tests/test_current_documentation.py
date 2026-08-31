@@ -557,7 +557,6 @@ def test_49i2d_audits_fixed_frame_vectorized_solar_system_tracks():
     assert "Runtime slices remain separately authorized" in roadmap
 
 
-
 def test_49i2d1_implements_scientific_curve_without_drawing():
     contract = " ".join(read(SOLAR_SYSTEM_TRACK_CURVE).split())
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
@@ -590,11 +589,15 @@ def test_49i2d1_implements_scientific_curve_without_drawing():
 
     assert "Milestone 49I.2D.1 — Scientific Solar-System track curve" in roadmap
     assert "The 49I.2D.1 candidate implements" in architecture
-    assert "Scientific Solar-System track curve (Milestone 49I.2D.1)" in implementation
+    assert (
+        "Scientific Solar-System track curve (Milestone 49I.2D.1)"
+        in implementation
+    )
     assert "src/wenu/sky/solar_system_tracks.py" in source_tree
     assert "13.2.19 49I.2D.1 scientific track curve" in guide
     assert "Guide version:** `0.9.5.20260831.28`" in guide
     assert "solar_system_track_curve_49i2d1.md" in instructions
+
 
 def fenced_python(path):
     """Return Python code blocks from one Markdown document."""
