@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.28`  
-**Last updated:** `2026-08-31T01:40:00Z`  
+**Guide version:** `0.9.5.20260831.29`  
+**Last updated:** `2026-08-31T01:55:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2293,7 +2293,7 @@ authority. After all directions are available, Wenu assembles exactly one open
 `SphericalCurves` and performs exactly one transformation into the chart's
 fixed product frame.
 
-> **Wenu implementation box — proposed 49I.2D.1 curve**
+> **Wenu implementation box — 49I.2D.1 curve**
 >
 > `src/wenu/sky/solar_system_tracks.py` owns the frozen request/result and
 > renderer-neutral realizer. `tests/test_solar_system_tracks.py` proves
@@ -2304,3 +2304,14 @@ fixed product frame.
 > a 28-day La Ligua Venus path with direct Skyfield. No CLI, layer, projected
 > tick, label, style, or visible output is added. Drawable tracks remain
 > 49I.2D.2.
+>
+> **49I.2D.1 scientific and architectural acceptance**
+>
+> Fernando accepted the scalar per-vertex authority, one resource, exact
+> anchors, complete apparent evidence, multi-instant source identity, one curve
+> assembly, one fixed-frame transformation, numerical tolerance, and non-goals
+> on 2026-08-31. Installed DE440 agreed with direct Skyfield to
+> `4.293e-10` degree in right ascension and `8.471e-11` degree in
+> declination. Verification passed 40 focused tests, 56 documentation tests,
+> 1,899 routine tests with 30 deselected, and all 1,929 tests. The slice has no
+> visible output; 49I.2D.2 remains separately authorized.
