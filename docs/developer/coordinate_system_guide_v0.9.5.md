@@ -2345,6 +2345,6 @@ until the nonlocal curve, an earlier date, or the viewport justifies switching.
 > Fernando accepted the scientific, architectural, and visual result on
 > 2026-08-31 after eight- and sixteen-week La Ligua reviews, including the
 > retrograde loop and crowded perpendicular labels. Verification passed 127
-> focused tests, 1,924 routine tests with 30 deselected, and all 1,954 tests.
+> focused tests, 1,924 routine tests with 30 deselected, and all 1,955 tests.
 > Physical apparent disks, phase, illumination, angular diameter, and
 > planisphere/all-sky tracks remain deferred.
