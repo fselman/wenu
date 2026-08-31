@@ -79,8 +79,7 @@ def prepare_projected_track(
     )
 
 def start_label_anchor(curve, ax):
-    """Anchor the track label at its first finite projected vertex."""
-    del ax
+    """Anchor a track label inward from the nearest projected field edge."""
     finite = np.flatnonzero(curve.finite)
     if finite.size == 0:
         return None
@@ -90,9 +89,16 @@ def start_label_anchor(curve, ax):
     if len(curve) == 2 and finite.size == 2:
         x = float(np.mean(curve.x[finite]))
         y = float(np.mean(curve.y[finite]))
+    x_min, x_max = ax.get_xlim()
+    y_min, y_max = ax.get_ylim()
+    x_margin = 0.12 * abs(x_max - x_min)
+    y_margin = 0.10 * abs(y_max - y_min)
+    horizontal = "right" if x > x_max - x_margin else "left"
+    vertical = "top" if y > y_max - y_margin else "bottom"
     return CurveLabelPlacement(
         x=x, y=y,
-        horizontal_alignment="left", vertical_alignment="bottom",
+        horizontal_alignment=horizontal,
+        vertical_alignment=vertical,
     )
 
 def _tick_label(spherical, index):
