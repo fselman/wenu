@@ -4,7 +4,10 @@ import numpy as np
 from wenu.geometry.projected import ProjectedCurve, ProjectedCurves, ProjectedGrid
 from wenu.rendering.label_placement import CurveLabelPlacement
 from wenu.sky.sky_layer import SkyLayer
-from wenu.sky.solar_system_tracks import SolarSystemTrackRealizer, SolarSystemTrackRequest
+from wenu.sky.solar_system_tracks import (
+    SolarSystemTrackRealizer,
+    SolarSystemTrackRequest,
+)
 
 class SolarSystemTrackLayer(SkyLayer):
     """Realize one scientific track as an ordinary spherical curve."""
@@ -21,7 +24,11 @@ class SolarSystemTrackLayer(SkyLayer):
     def realize(self, context, observer, **geometry_options):
         if geometry_options:
             raise TypeError("SolarSystemTrackLayer accepts no geometry options.")
-        self.last_result = self.realizer.curve(self.request, context=context, observer=observer)
+        self.last_result = self.realizer.curve(
+            self.request,
+            context=context,
+            observer=observer,
+        )
         return self.last_result.geometry
 
     def spherical_geometry(self, observer):
