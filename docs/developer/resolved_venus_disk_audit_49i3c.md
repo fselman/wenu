@@ -63,7 +63,7 @@ angular offsets used to build display geometry. It must not change the centre,
 phase, illumination, visibility, ephemeris state, or provenance.
 
 A factor of `1` means physical angular scale. Resolved mode and magnification
-are separate choices: magnification alone must not silently enable a disk.
+are separate choices. Magnification alone must not silently enable a disk.
 
 ## 5. Renderer-neutral spherical construction
 
