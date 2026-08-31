@@ -978,3 +978,17 @@ accepted direction chain at every sample, returns one fixed-product-frame
 annotation, style, renderer, or output. `tests/test_solar_system_tracks.py`
 owns deterministic contract coverage;
 `tools/validate_49i2d1_venus_track.py` owns the installed-DE440 comparison.
+
+## Milestone 49I.2D.2 ownership
+
+- `src/wenu/sky/solar_system_track_layer.py` owns only the context-required
+  scientific layer and track realizer handoff.
+- `src/wenu/charts/solar_system_track_annotations.py` owns projected path
+  assembly, perpendicular ticks, the start anchor, and chronological two-pass
+  date placement.
+- `src/wenu/charts/request_tracks.py` installs the request-owned layer.
+- `tests/test_solar_system_track_layer.py` covers projected preparation and
+  label layout; `tests/test_solar_system_track_cli.py` and
+  `tests/test_chart_request_tracks.py` cover public request plumbing.
+- `tools/diagnose_49i2d2_venus_track_labels.py` reports retained tick and
+  renderer-label evidence without owning production behavior.
