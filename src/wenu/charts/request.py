@@ -12,6 +12,7 @@ from .furniture import ChartFurnitureOptions
 from .product_options import ChartProductOptions
 from .request_composition import ChartProductCompositionOptions
 from .reference_policy import CelestialReferencePolicy
+from wenu.sky.solar_system_tracks import SolarSystemTrackRequest
 
 
 CHART_FAMILIES = frozenset(
@@ -356,6 +357,7 @@ class ChartRequest:
     horizon: bool = False
     horizon_mask: bool = False
     content: SkyContentSelection = SkyContentSelection()
+    solar_system_track: SolarSystemTrackRequest | None = None
     exclusions: ChartContentExclusions = ChartContentExclusions()
     detail: DetailOverrides = DetailOverrides()
     furniture: ChartFurnitureOptions = ChartFurnitureOptions()
@@ -406,6 +408,20 @@ class ChartRequest:
             ("furniture", self.furniture, ChartFurnitureOptions),
             ("reference_policy", self.reference_policy, CelestialReferencePolicy),
         )
+        if (
+            self.solar_system_track is not None
+            and not isinstance(self.solar_system_track, SolarSystemTrackRequest)
+        ):
+            raise TypeError(
+                "solar_system_track must be a SolarSystemTrackRequest or None."
+            )
+        if (
+            self.solar_system_track is not None
+            and family not in {"regional", "binocular"}
+        ):
+            raise ValueError(
+                "Solar-System tracks are supported only by regional and binocular charts."
+            )
         for name, value, kind in expected:
             if not isinstance(value, kind):
                 raise TypeError(f"{name} must be a {kind.__name__} value.")
