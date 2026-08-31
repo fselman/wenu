@@ -157,15 +157,19 @@ class TrackLabelAnchor:
             (preferred, points[1]),
             (-preferred, points[0]),
         ):
-            for distance_em in (0.55, 1.35, 2.25, 3.25):
-                display = (
-                    endpoint
-                    + direction
-                    * distance_em
-                    * self.fontsize
-                    * pixels_per_point
-                )
-                candidates.append((display, direction))
+            tangent = np.asarray((-direction[1], direction[0]))
+            for lane in (0, 1, -1, 2, -2, 3, -3):
+                for distance_em in (0.55, 1.35, 2.25):
+                    display = (
+                        endpoint
+                        + (
+                            direction * distance_em
+                            + tangent * lane * 1.35
+                        )
+                        * self.fontsize
+                        * pixels_per_point
+                    )
+                    candidates.append((display, direction))
         return self._choose(curve, ax, candidates)
 
     def _place_point(self, curve, ax, center):
