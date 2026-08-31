@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.39`  
-**Last updated:** `2026-08-31T16:30:00Z`  
+**Guide version:** `0.9.5.20260831.40`  
+**Last updated:** `2026-08-31T17:00:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2516,5 +2516,7 @@ centre. The normalized polygon area follows `(1 + cos(i)) / 2`.
 > Fernando accepted the model, 720-sample default, tolerances, validation, and
 > output-neutral boundary on 2026-08-31 after 29 deterministic tests passed in
 > 1.94 seconds and 54 focused architectural tests passed in 4.80 seconds.
-> 49I.3C.1 adds no visible output; post-projection magnification remains
-> 49I.3C.2.
+> Final verification passed 61 current-documentation tests in 2.35 seconds,
+> 1,958 routine tests with 30 deselected in 27.07 seconds, and all 1,988 tests
+> in 89.21 seconds. 49I.3C.1 adds no visible output; post-projection
+> magnification remains 49I.3C.2.
