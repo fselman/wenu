@@ -4,7 +4,7 @@
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
 **Guide version:** `0.9.5.20260831.26`  
-**Last updated:** `2026-08-31T22:00:00Z`  
+**Last updated:** `2026-08-31T01:10:00Z`  
 **Language:** English
 
 # Table of contents
