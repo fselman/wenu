@@ -538,9 +538,7 @@ def composition_layer_options(
                             if name == "venus_disk_limb"
                             else publication.venus_disk_terminator_linestyle
                         ),
-                        "dash_capstyle": (
-                            "round" if name == "venus_disk_limb" else "butt"
-                        ),
+                        "dash_capstyle": "butt",
                         "alpha": publication.venus_alpha,
                         "zorder": (
                             39.2 if name == "venus_disk_limb" else 39.1
