@@ -90,7 +90,7 @@ Mac verification passed:
 - 4 package-boundary and coordinate-anchor regressions in 1.83 seconds;
 - 127 focused track, style, request, and command tests in 3.09 seconds;
 - 1,924 routine tests with 30 deselected in 27.29 seconds; and
-- all 1,954 tests in 91.96 seconds.
+- all 1,955 tests in 92.40 seconds.
 
 The coordinate-system guide was reviewed. The milestone changes no scientific
 frame, origin, observation-time, equinox, or provider meaning; it documents
