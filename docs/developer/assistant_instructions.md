@@ -288,3 +288,10 @@ object-specific display magnification only after projection around the
 projected physical centre. Multi-epoch disks must use independent appearance
 states in one fixed chart frame. Do not use a large scatter marker or a
 format-specific geometry path.
+
+
+For 49I.3C.1 physical disk geometry, consult
+`venus_disk_spherical_geometry_49i3c1.md`. Preserve the 720-sample
+renderer-neutral centre, limb, visible terminator, and illuminated-face
+contract. Do not move post-projection magnification, chart selection, style,
+or rendering policy into `solar_system_disk_geometry.py`.
