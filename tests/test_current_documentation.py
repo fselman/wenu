@@ -532,7 +532,7 @@ def test_49i2d_audits_fixed_frame_vectorized_solar_system_tracks():
         "regional and binocular charts",
         "Planisphere and all-sky products remain outside",
         "49I.3 physical apparent-disk contract",
-        "adds no runtime source",
+        "add runtime source",
     ):
         assert phrase in contract
 
