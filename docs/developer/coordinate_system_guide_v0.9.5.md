@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.33`  
-**Last updated:** `2026-08-31T13:09:00Z`  
+**Guide version:** `0.9.5.20260831.34`  
+**Last updated:** `2026-08-31T13:49:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2396,3 +2396,43 @@ separate photometric quantity used by the symbolic hierarchy.
 > 1,956 tests in 91.38 seconds. The next separately bounded slice is 49I.3B
 > numerical Venus physical-appearance validation; its model, tolerances,
 > runtime contract, and visible result are not pre-accepted.
+
+
+<a id="49i3b-venus-physical-appearance"></a>
+
+### 13.2.22 49I.3B Venus physical-appearance state
+
+**[Foundation]** Wenu can now calculate how large Venus appears and how much
+of its round disk is illuminated, without drawing that disk yet. The physical
+diameter remains separate from any later enlargement used to make the phase
+visible on a chart.
+
+The illuminated side points toward the Sun. That direction can have one angle
+when measured from celestial north and another when measured from the local
+zenith; both describe the same tangent direction on the sky.
+
+**[Undergraduate]** The accepted retarded observer–Venus distance and JPL's
+6051.8-km mean radius give the angular diameter. The phase angle is
+Sun–Venus–observer, and a spherical body has illuminated fraction
+((1+cos i)/2). The bright-limb position angle is zero at apparent celestial
+north and positive toward celestial east. It is scientific tangent-plane
+metadata, not a renderer rotation.
+
+> **Wenu implementation box — 49I.3B numerical appearance**
+>
+> `SolarSystemApparentDisk` retains the accepted target and Sun directions,
+> physical radius and model, angular diameter, phase, illuminated fraction,
+> bright-limb angle, convention, and provenance. It carries no display
+> magnification or page policy. No sky layer consumes it yet.
+>
+> For La Ligua at `2026-08-30T00:00:00Z`, installed DE440 gives a
+> `29.287846514361`-arcsecond Venus diameter, `101.448595072558`-degree
+> phase angle, `0.400755659841` illuminated fraction, and
+> `295.354967208388`-degree apparent-ICRS bright-limb angle. In the local
+> zenith-referenced tangent plane the same direction is
+> `185.355190511946` degrees, pointing almost straight down toward the Sun.
+>
+> Fernando accepted the numerical model, conventions, tolerances, results,
+> and output-neutral boundary on 2026-08-31 after all 9 deterministic tests
+> passed in 1.38 seconds and the installed-DE440 comparison passed. 49I.3B
+> adds no visible output; 49I.3C remains separately authorized.
