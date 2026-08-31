@@ -969,3 +969,12 @@ documentation-only Solar-System trajectory boundary. It reuses
 preparation, renderer, and exporter owners. It adds no runtime module. A later
 implementation may add one shared track realizer under `sky/`; it must not add
 body-specific projection or rendering code.
+
+`src/wenu/sky/solar_system_tracks.py` owns the 49I.2D.1 frozen scientific
+sampling request/result and scalar track realizer. It shares
+`SolarSystemPointDescriptor`, borrows one ephemeris source, reevaluates the
+accepted direction chain at every sample, returns one fixed-product-frame
+`SphericalCurves`, and owns no installed layer, chart request, projection,
+annotation, style, renderer, or output. `tests/test_solar_system_tracks.py`
+owns deterministic contract coverage;
+`tools/validate_49i2d1_venus_track.py` owns the installed-DE440 comparison.
