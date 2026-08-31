@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from math import isfinite
 
 from wenu.coordinate_service import CoordinateService
 from wenu.sky.realization import LayerRealizationContext
@@ -83,6 +84,13 @@ class VenusDiskRealization:
         self._context = None
         self._observer = None
         self._transformed = None
+
+    @property
+    def transformed(self):
+        """Return the shared transformed state after component realization."""
+        if self._transformed is None:
+            raise RuntimeError("Venus disk has not been realized.")
+        return self._transformed
 
     def realize(self, context, observer):
         if not isinstance(context, LayerRealizationContext):
@@ -193,12 +201,18 @@ class VenusDiskComponentLayer(SkyLayer):
     component = None
     layer_name = None
 
-    def __init__(self, realization):
+    def __init__(self, realization, *, magnification=1.0):
         if not isinstance(realization, VenusDiskRealization):
             raise TypeError(
                 "realization must be a VenusDiskRealization."
             )
+        magnification = float(magnification)
+        if not isfinite(magnification) or not 1.0 <= magnification <= 1000.0:
+            raise ValueError(
+                "magnification must be finite and between 1 and 1000."
+            )
         self.disk_realization = realization
+        self.magnification = magnification
 
     def spherical_geometry(self, observer):
         del observer
@@ -236,11 +250,15 @@ class VenusDiskTerminatorLayer(VenusDiskComponentLayer):
     layer_name = "venus_disk_terminator"
 
 
-def venus_disk_layers():
+def venus_disk_layers(*, magnification=1.0):
     """Return ordered face, limb, and terminator layers sharing one state."""
     realization = VenusDiskRealization()
     return (
-        VenusDiskIlluminatedLayer(realization),
-        VenusDiskLimbLayer(realization),
-        VenusDiskTerminatorLayer(realization),
+        VenusDiskIlluminatedLayer(
+            realization, magnification=magnification
+        ),
+        VenusDiskLimbLayer(realization, magnification=magnification),
+        VenusDiskTerminatorLayer(
+            realization, magnification=magnification
+        ),
     )
