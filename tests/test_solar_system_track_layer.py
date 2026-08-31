@@ -22,7 +22,7 @@ def test_preparation_builds_one_path_and_perpendicular_major_ticks():
     result = prepare_projected_track(spherical(), projected(), tick_length=2.0)
     assert isinstance(result, ProjectedGrid)
     assert result["path"][0].name is None
-    assert result["labels"][0].name == "\\N{FEMALE SIGN} 2026-08-30"
+    assert result["labels"][0].name == "♀ 2026-08-30"
     assert np.allclose(result["labels"][0].x, (0.0, 0.0))
     assert np.allclose(result["labels"][0].y, (0.0, 0.0))
     assert len(result["ticks"]) == 2
