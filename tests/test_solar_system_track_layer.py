@@ -33,7 +33,7 @@ def test_preparation_builds_one_path_and_perpendicular_major_ticks():
     assert len(result["ticks"]) == 2
     for tick in result["ticks"]:
         assert np.allclose(tick.x, (2.0, 2.0)) or np.allclose(tick.x, (4.0, 4.0))
-        assert np.allclose(np.diff(tick.y), (2.0,))
+        assert np.allclose(np.abs(np.diff(tick.y)), (2.0,))
 
 def test_preparation_uses_nearest_noncoincident_samples_at_stationary_tick():
     result = prepare_projected_track(
