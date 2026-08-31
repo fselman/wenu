@@ -137,25 +137,35 @@ def test_tick_label_switches_sides_to_remain_inside_viewport():
 
 
 
-def test_collision_aware_anchor_claims_nonoverlapping_display_boxes():
+def test_collision_aware_anchor_chooses_only_perpendicular_tick_sides():
     figure, axes = plt.subplots(figsize=(4.0, 4.0), dpi=100)
     axes.set_xlim(-1.0, 1.0)
     axes.set_ylim(-1.0, 1.0)
     anchor = TrackLabelAnchor(fontsize=9.0)
+    tick = ProjectedCurve(
+        x=np.asarray((-0.03, 0.03)),
+        y=np.asarray((-0.01, 0.01)),
+        name="2026-10-04",
+    )
     try:
-        for index, x in enumerate((0.00, 0.02, 0.04, 0.06)):
-            tick = ProjectedCurve(
-                x=np.asarray((x - 0.03, x + 0.03)),
-                y=np.asarray((-0.01, 0.01)),
-                name=f"2026-10-{4 + 7 * index:02d}",
-            )
-            assert anchor(tick, axes) is not None
-        assert len(anchor._claimed) == 4
-        for index, left in enumerate(anchor._claimed):
-            for right in anchor._claimed[index + 1:]:
-                assert not (
-                    min(left[2], right[2]) > max(left[0], right[0])
-                    and min(left[3], right[3]) > max(left[1], right[1])
-                )
+        first = anchor(tick, axes)
+        second = anchor(tick, axes)
+        midpoint = axes.transData.transform((0.0, 0.0))
+        direction = axes.transData.transform((0.03, 0.01)) - midpoint
+        for placement in (first, second):
+            offset = axes.transData.transform(
+                (placement.x, placement.y)
+            ) - midpoint
+            assert abs(np.cross(direction, offset)) < 1.0e-8
+        assert first.horizontal_alignment != second.horizontal_alignment
+        assert _boxes_do_not_overlap(*anchor._claimed)
     finally:
         plt.close(figure)
+
+
+def _boxes_do_not_overlap(left, right):
+    return not (
+        min(left[2], right[2]) > max(left[0], right[0])
+        and min(left[3], right[3]) > max(left[1], right[1])
+    )
+
