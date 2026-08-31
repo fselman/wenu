@@ -390,6 +390,10 @@ def composition_layer_options(
             composition
         ),
     )
+    converter = getattr(composition.style, "as_publication_style", None)
+    publication = (
+        converter() if callable(converter) else composition.style
+    )
     stars = getattr(composition.style, "stars", None)
     sizing = getattr(stars, "magnitude_sizing", None)
     if (
@@ -409,8 +413,6 @@ def composition_layer_options(
             raise ValueError(
                 "Normalized stellar sizing requires a magnitude limit."
             )
-        publication = composition.style.as_publication_style()
-
         def render_stars(spherical, projected):
             ordinary_sizes, bright_sizes, _ = (
                 configured_stellar_symbol_sizes(
