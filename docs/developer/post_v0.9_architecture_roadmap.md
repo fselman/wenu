@@ -981,3 +981,21 @@ accepted 49I.3B state. The default 720-sample orthographic phase with radial
 angular-offset mapping passed deterministic and installed-DE440 validation.
 The slice adds no layer, request, magnification, style, renderer, or visible
 output. 49I.3C.2 remains separately authorized.
+
+
+## Milestone 49I.3C.2 — First drawable resolved Venus disk
+
+**Status:** Scientifically, architecturally, and visually accepted on
+2026-08-31; final suite closure pending.
+
+Regional and binocular requests can now opt into one resolved Venus disk.
+Illuminated face, limb, and terminator share one physical state and retain
+independent semantic paths and styles. Display magnification occurs after
+ordinary projection around the exact separately projected physical centre.
+Symbolic defaults and planisphere/all-sky behavior remain unchanged.
+
+The accepted Virgo calibration uses La Ligua at
+`2026-08-30T00:00:00Z`, a physical diameter of
+`29.287846514361 arcsec`, magnification 200, and therefore a nominal
+displayed diameter of `1.62710258413117 deg`. Multi-epoch disks remain
+49I.3C.3.
