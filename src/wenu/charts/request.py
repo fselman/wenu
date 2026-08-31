@@ -358,6 +358,7 @@ class ChartRequest:
     horizon_mask: bool = False
     content: SkyContentSelection = SkyContentSelection()
     solar_system_track: SolarSystemTrackRequest | None = None
+    solar_system_track_tick_labels: bool = False
     exclusions: ChartContentExclusions = ChartContentExclusions()
     detail: DetailOverrides = DetailOverrides()
     furniture: ChartFurnitureOptions = ChartFurnitureOptions()
@@ -503,6 +504,9 @@ class ChartRequest:
         object.__setattr__(self, "family", family)
         object.__setattr__(self, "projection", projection)
         object.__setattr__(self, "coordinate_frame", coordinate_frame)
+        if self.solar_system_track_tick_labels and self.solar_system_track is None:
+            raise ValueError("track tick labels require a Solar-System track.")
+        object.__setattr__(self, "solar_system_track_tick_labels", bool(self.solar_system_track_tick_labels))
         object.__setattr__(self, "mask", bool(self.mask))
         object.__setattr__(self, "horizon", bool(self.horizon))
         object.__setattr__(self, "horizon_mask", bool(self.horizon_mask))
