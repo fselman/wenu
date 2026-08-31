@@ -1954,3 +1954,14 @@ one fixed ordinary chart frame, and frozen-Earth geometric states in one fixed
 ecliptic construction. Each sample preserves full physical distance and provenance for possible
 future 3D use. Runtime types, CLI names, and 3D visualization are not yet
 installed.
+
+
+## Observed Venus disk sequence (Milestone 49I.3C.3.1A)
+
+`ObservedSolarSystemDiskSequenceRequest` declares a start instant, major step,
+interval count, body descriptor, physical radius, and radius model.
+`ObservedSolarSystemDiskSequenceRealizer.sequence()` returns
+`ObservedSolarSystemDiskSequence` with `n_steps + 1` exact per-epoch
+appearances, physical spherical disk geometries, and explicit observer/AU
+distances. The API is output-neutral; drawable request integration remains
+49I.3C.3.1B.
