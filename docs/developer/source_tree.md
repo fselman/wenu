@@ -996,10 +996,10 @@ owns deterministic contract coverage;
 
 ## Milestone 49I.3A audit ownership
 
-- `docs/developer/physical_apparent_disk_audit_49i3a.md` owns the proposed
+- `docs/developer/physical_apparent_disk_audit_49i3a.md` owns the accepted
   symbolic-versus-resolved appearance contract, scientific/display quantity
   separation, canonical geometry route, Venus/Moon sequence, and non-goals.
 - No production source file owns physical angular diameter, phase,
   bright-limb orientation, body orientation, photometry, or disk
   magnification yet.
-- `tests/test_current_documentation.py` protects the proposed boundary.
+- `tests/test_current_documentation.py` protects the accepted boundary.
