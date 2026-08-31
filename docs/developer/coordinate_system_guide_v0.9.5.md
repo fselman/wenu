@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.25`  
-**Last updated:** `2026-08-31T00:30:11Z`  
+**Guide version:** `0.9.5.20260831.26`  
+**Last updated:** `2026-08-31T22:00:00Z`  
 **Language:** English
 
 # Table of contents
@@ -84,6 +84,7 @@
     - [13.2.15 49I.2A numerical Moon direction](#49i2a-moon-direction)
     - [13.2.16 49I.2B shared Solar-System point layer](#49i2b-shared-point-layer)
     - [13.2.17 49I.2C first drawable Moon point](#49i2c-moon-point)
+    - [13.2.18 49I.2D Solar-System trajectories](#49i2d-solar-system-tracks)
 
 <a id="status-and-purpose"></a>
 
@@ -2214,3 +2215,47 @@ product-frame transformation sequence before ordinary projection.
 > Fernando scientifically, architecturally, and visually accepted this first
 > symbolic Moon slice on 2026-08-30 after all 1,917 tests and 54 documentation
 > tests passed.
+
+<a id="49i2d-solar-system-tracks"></a>
+
+### 13.2.18 49I.2D Solar-System trajectories
+
+**[Foundation]** A planetary path on a static star chart answers: “Where will
+the planet appear against this fixed map of the stars at several dates?” The
+planet must therefore be recalculated at every date while the map itself stays
+fixed. If Wenu rotated the regional chart to the local sky at every sample
+time, the curve would mostly show the daily rotation of the Earth rather than
+the slower motion of the planet among the stars.
+
+**[Undergraduate]** The proposed track retains two distinct temporal roles.
+Every vertex has its own physical reception instant and a newly evaluated
+topocentric apparent direction. The chart has one separate observation instant
+that fixes its product coordinate frame, projection orientation, viewport, and
+background. Apparent directions on fixed ICRS-oriented axes are assembled in
+time order and transformed into that one product frame.
+
+The requested sample cadence controls the piecewise approximation of the
+ephemeris-defined path. Major tick instants are evaluated exactly even when
+they do not fall on the regular cadence. Longitude/latitude splines are not
+scientific authorities because they can overshoot at seams, poles, stationary
+points, and retrograde loops.
+
+> **Wenu design box — proposed 49I.2D track**
+>
+> The completed path becomes one ordinary `SphericalCurves` value before
+> projection. `CoordinateService` already transforms complete curve arrays,
+> and every current projection already accepts that geometry. Existing
+> projection-domain guarding, clipping, preparation, rendering, and PNG/PDF/SVG
+> export therefore remain unchanged.
+>
+> Exact tick times and anchors belong to the scientific track. The visible
+> short tick is made perpendicular to the projected local tangent because map
+> projections do not generally preserve a perpendicular direction constructed
+> on the sphere. Tick length and line/date appearance remain style policy.
+>
+> The audit proposes
+> `--planet-track venus --track-start ... --track-sample-step 1h
+> --track-tick-step 7d --track-tick-count 4` for the first regional/binocular
+> Venus slice. It changes no current runtime or chart. Physical disks remain
+> 49I.3.
+
