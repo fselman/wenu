@@ -115,6 +115,24 @@ _NONSTELLAR_CATEGORY_CONTRACTS = {
 
 
 _LAYER_CONTRACTS = {
+    "venus_disk_illuminated": SemanticLayerContract(
+        ("sky", "solar_system", "planets", "venus", "disk", "illuminated"),
+        "Venus illuminated face",
+        38,
+        "planet_disk_illuminated",
+    ),
+    "venus_disk_terminator": SemanticLayerContract(
+        ("sky", "solar_system", "planets", "venus", "disk", "terminator"),
+        "Venus terminator",
+        38,
+        "planet_disk_terminator",
+    ),
+    "venus_disk_limb": SemanticLayerContract(
+        ("sky", "solar_system", "planets", "venus", "disk", "limb"),
+        "Venus limb",
+        38,
+        "planet_disk_limb",
+    ),
     "solar_system_track": SemanticLayerContract(
         ("sky", "solar_system", "planets", "venus", "track"),
         "Venus track",
