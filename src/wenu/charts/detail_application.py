@@ -11,6 +11,7 @@ from .context import BoundaryKind
 from .detail import ResolvedDetail
 from .style_components import StellarMagnitudeSizing
 from wenu.rendering.preparation import configured_magnitude_sizes
+from wenu.sky.solar_system_track_layer import prepare_projected_track, start_label_anchor
 
 
 _SIZE_OPTIONS = {
@@ -227,7 +228,7 @@ _DETAIL_LAYER_NAMES = {
     "magellanic_cloud_isophotes": "magellanic_clouds",
 }
 
-_REQUEST_GEOMETRY_LAYERS = frozenset({"horizon"})
+_REQUEST_GEOMETRY_LAYERS = frozenset({"horizon", "solar_system_track"})
 _DEFAULT_DISABLED_LAYERS = frozenset({"venus", "moon"})
 
 
@@ -429,6 +430,50 @@ def composition_layer_options(
             sky,
             base,
             {"stars": {"render": render_stars}},
+        )
+    track = next(
+        (
+            layer for layer in sky.layers
+            if getattr(layer, "layer_name", None) == "solar_system_track"
+        ),
+        None,
+    )
+    if track is not None:
+        viewport = composition.context.viewport
+        tick_length = 0.018 * min(viewport.width, viewport.height)
+        base = merge_sky_layer_options(
+            sky,
+            base,
+            {
+                track: {
+                    "prepare": lambda spherical, projected: prepare_projected_track(
+                        spherical, projected, tick_length=tick_length
+                    ),
+                    "render": {
+                        "component_styles": {
+                            "path": {
+                                "color": "#C44E52",
+                                "linewidth": 1.2,
+                                "linestyle": "-",
+                                "zorder": 38.0,
+                            },
+                            "ticks": {
+                                "color": "#C44E52",
+                                "linewidth": 1.0,
+                                "zorder": 38.1,
+                            },
+                        },
+                        "draw_labels": True,
+                        "label_anchor": start_label_anchor,
+                        "label_style": {
+                            "color": "#C44E52",
+                            "fontsize": 9.0,
+                            "zorder": 38.2,
+                        },
+                        "label_offset": (0.01 * viewport.width, 0.01 * viewport.height),
+                    },
+                }
+            },
         )
     return apply_resolved_detail(
         sky,
