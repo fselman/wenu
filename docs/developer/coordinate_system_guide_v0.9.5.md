@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.32`  
-**Last updated:** `2026-08-31T13:00:00Z`  
+**Guide version:** `0.9.5.20260831.33`  
+**Last updated:** `2026-08-31T13:09:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2389,7 +2389,10 @@ separate photometric quantity used by the symbolic hierarchy.
 >
 > **49I.3A scientific and architectural acceptance**
 >
-> Fernando accepted the eight audit decisions on 2026-08-31 after all 58
-> current-documentation tests passed in 2.51 seconds. The next separately
-> bounded slice is 49I.3B numerical Venus physical-appearance validation; its
-> model, tolerances, runtime contract, and visible result are not pre-accepted.
+> Fernando accepted the eight audit decisions on 2026-08-31. Initial
+> acceptance verification passed 58 current-documentation tests in 2.51
+> seconds. Final verification passed 58 current-documentation tests in 1.95
+> seconds, 1,926 routine tests with 30 deselected in 28.95 seconds, and all
+> 1,956 tests in 91.38 seconds. The next separately bounded slice is 49I.3B
+> numerical Venus physical-appearance validation; its model, tolerances,
+> runtime contract, and visible result are not pre-accepted.
