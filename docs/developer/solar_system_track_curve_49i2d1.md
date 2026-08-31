@@ -1,7 +1,7 @@
 # Milestone 49I.2D.1 — Scientific Solar-System track curve
 
-**Status:** Implementation candidate; awaiting local numerical verification and
-scientific acceptance  
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-31; ready for integration  
 **Implementation baseline:** `ea03400`  
 **Date:** 2026-08-31
 
@@ -131,3 +131,29 @@ results before acceptance.
 4. routine and complete suites pass;
 5. documentation is current; and
 6. no visual comparison is required because the slice cannot draw anything.
+
+## Scientific and architectural acceptance
+
+Fernando accepted the scalar per-vertex direction authority, one borrowed
+ephemeris resource, exact major-time anchors, complete per-sample
+`ApparentDirection` evidence, native multi-instant ICRS curve without a false
+common instant, one open `SphericalCurves` assembly, exactly one fixed-product-
+frame transformation, the `1e-7`-degree component tolerance, and all stated
+non-goals on 2026-08-31.
+
+The installed DE440 validator used 29 daily samples from
+`2026-08-30T00:00:00Z` through `2026-09-27T00:00:00Z`, with exact weekly
+indices `(0, 7, 14, 21, 28)`. Maximum direct-Skyfield residuals were
+`4.293e-10` degree in right ascension and `8.471e-11` degree in declination.
+
+Mac verification passed:
+
+- 40 focused scientific tests in 2.12 seconds;
+- 56 current-documentation tests in 1.86 seconds;
+- 1,899 routine tests with 30 deselected in 26.92 seconds; and
+- all 1,929 tests in 89.19 seconds.
+
+No visual comparison was required because 49I.2D.1 cannot draw a chart. This
+acceptance authorizes integration of the scientific curve. It does not
+authorize the 49I.2D.2 public request, drawable track, projected ticks, date
+label, style, semantic SVG surface, or visible output.
