@@ -1096,6 +1096,22 @@ remain projected/style concerns. Fernando accepted this documentation-only
 boundary after all 1,919 tests passed. The audit installs no runtime API or
 output.
 
+### Scientific Solar-System track curve (Milestone 49I.2D.1)
+
+`sky/solar_system_tracks.py` defines frozen
+`SolarSystemTrackRequest` and `SolarSystemTrackResult` contracts plus
+`SolarSystemTrackRealizer.curve()`. The request normalizes one start instant,
+positive sample/tick steps in days, and a positive tick count. Its sample
+sequence includes both endpoints and every exact major-time anchor.
+
+The realizer borrows one source, reevaluates the observer and accepted scalar
+direction chain per vertex, retains every `ApparentDirection`, assembles one
+open native `SphericalCurves`, and calls `CoordinateService.transform()`
+once for the fixed product frame. The result retains sample instants, exact tick
+indices, resource identity, and scalar evidence. No installed layer or public
+chart request consumes it in 49I.2D.1. Fernando accepted the scientific
+contract and installed-DE440 validation after all 1,929 tests passed.
+
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a

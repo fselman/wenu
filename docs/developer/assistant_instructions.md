@@ -73,6 +73,8 @@ For current work, read and follow:
   Solar-System selection, natural-satellite semantics, or visual review;
 - `solar_system_track_audit_49i2d.md` for Solar-System trajectories,
   per-sample time provenance, fixed chart-frame tracks, or projected ticks;
+- `solar_system_track_curve_49i2d1.md` for sampled track contracts, scalar
+  direction evidence, exact tick anchors, or fixed-frame curve realization;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,

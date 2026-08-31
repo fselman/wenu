@@ -306,6 +306,18 @@ accepted the audit on 2026-08-31 after 55 documentation tests, 1,889 routine
 tests with 30 deselected, and all 1,919 tests passed. The audit changes no
 runtime source, public interface, numerical geometry, or output.
 
+The accepted 49I.2D.1 implementation adds the renderer-neutral
+scientific curve only. One frozen request merges regular samples and exact
+major-time anchors. The accepted scalar observer-state, astrometric, and
+apparent chain is reevaluated at every vertex using one borrowed ephemeris
+resource. Complete apparent directions are assembled as one open
+`SphericalCurves`, then transformed exactly once into the fixed product
+frame. The installed-DE440 validator agreed with direct Skyfield to
+`4.293e-10` degree in right ascension and `8.471e-11` degree in
+declination. Fernando accepted the slice after all 1,929 tests passed. It adds
+no registered layer, public option, projected annotation, style, renderer, or
+output change.
+
 The implemented temporal sequence contracts distinguish physical instants,
 civil/display time, sampling cadence, and playback cadence. The accepted
 fixed-sky reference keeps the celestial scene and equatorial grid anchored

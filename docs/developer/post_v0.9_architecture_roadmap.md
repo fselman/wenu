@@ -801,6 +801,33 @@ deselected, and all 1,919 tests. No visual comparison was required because
 49I.2D changes no runtime source or output. Runtime slices remain separately
 authorized.
 
+###### Milestone 49I.2D.1 — Scientific Solar-System track curve
+
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-31; ready for integration.
+
+`solar_system_track_curve_49i2d1.md` adds frozen sampling request/result
+contracts and one renderer-neutral realizer. The accepted scalar
+astrometric/apparent chain is reevaluated at every sample instant, exact
+major-time anchors are merged into the cadence, and complete per-sample
+evidence is retained. The apparent ICRS-oriented samples become one open
+`SphericalCurves`, followed by exactly one transformation into the fixed
+chart product frame.
+
+The first validator uses installed DE440 for a 28-day La Ligua Venus path and
+compares every retained apparent direction with direct Skyfield. 49I.2D.1 adds
+no public command, registered layer, projected tick, style, label, semantic
+SVG path, or visible output. Drawable Venus tracks remain 49I.2D.2 and require
+separate authorization.
+
+Fernando accepted 49I.2D.1 after the installed-DE440 29-sample Venus validator
+agreed with direct Skyfield to `4.293e-10` degree in right ascension and
+`8.471e-11` degree in declination. Verification passed 40 focused tests, 56
+documentation tests, 1,899 routine tests with 30 deselected, and all 1,929
+tests. No visual comparison was required because the slice cannot draw a
+chart. 49I.2D.2 remains separately authorized.
+
+
 
 Add one object class at a time:
 
