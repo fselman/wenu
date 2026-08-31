@@ -1,6 +1,7 @@
 # Milestone 49I.2D — Solar-System track contract
 
-**Status:** Proposed audit; documentation only  
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-08-31; ready for integration  
 **Implementation baseline:** `d1971f5`  
 **Date:** 2026-08-31
 
@@ -238,3 +239,22 @@ The 49I.2D audit is accepted when Fernando agrees that:
 7. runtime implementation remains separately authorized; and
 8. current documentation tests and the complete suite pass without visual or
    numerical output changes.
+
+## 13. Scientific and architectural acceptance
+
+Fernando accepted the two-instant distinction, fixed static-chart frame,
+complete `SphericalCurves` handoff, exact major-time anchors, projected
+perpendicular ticks, regional/binocular first scope, proposed CLI vocabulary,
+and all stated non-goals on 2026-08-31.
+
+Mac verification passed:
+
+- 55 current-documentation tests in 3.02 seconds;
+- 1,889 routine tests with 30 deselected in 28.02 seconds; and
+- all 1,919 tests in 90.48 seconds.
+
+No visual comparison was required because the audit changes no runtime source,
+numerical geometry, appearance, or output. This acceptance authorizes
+integration of the documentation audit. It does not authorize 49I.2D.1
+scientific-curve runtime, 49I.2D.2 drawable Venus tracks, or 49I.3 physical
+apparent-disk work.
