@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.36`  
-**Last updated:** `2026-08-31T15:00:00Z`  
+**Guide version:** `0.9.5.20260831.37`  
+**Last updated:** `2026-08-31T15:30:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2445,31 +2445,38 @@ metadata, not a renderer rotation.
 
 ### 13.2.23 49I.3C resolved Venus disk audit
 
-**[Foundation]** The first resolved Venus drawing should be built from the
-same apparent centre and physical phase already validated in 49I.3B. The
-physical angular diameter stays unchanged. A separate Venus-specific display
-magnification only makes that angular geometry easier to see.
+**[Foundation]** The first resolved Venus drawing will be built from the same
+apparent centre and physical phase validated in 49I.3B. The physical angular
+diameter stays unchanged. A separate Venus-specific display magnification
+enlarges the already projected disk around its projected centre.
 
 The visible result has three semantic parts: the filled illuminated face, the
-round limb, and the terminator between day and night. They are celestial
-geometry before projection, not a large circular plotting symbol.
+round limb, and the terminator between day and night. Their separation allows
+independent fill and stroke policy. They begin as celestial geometry, not as a
+large plotting symbol.
 
 **[Undergraduate]** In the tangent plane at Venus, the accepted bright-limb
-position angle defines the direction toward the Sun. The phase angle defines
-the terminator plane. Sampling the visible and illuminated hemispheres gives a
-closed illuminated polygon plus limb and terminator curves. Mapping those
-samples back to spherical coordinates before projection preserves arbitrary
-chart orientation and non-linear projections.
+position angle defines the direction toward the Sun and the phase angle defines
+the terminator plane. Sampling the physical visible and illuminated
+hemispheres gives a closed illuminated polygon plus limb and terminator curves.
+The ordinary machinery transforms and projects those samples. Chart
+preparation then applies `q_display = q_center + M * (q_physical - q_center)`
+to every projected vertex.
 
-> **Wenu implementation box — 49I.3C candidate boundary**
+> **Wenu implementation box — 49I.3C accepted boundary**
 >
-> `SphericalGrid` is curve-only, so the resolved disk is proposed as a small
-> semantic layer group: one `SphericalPolygons` illuminated face and separate
-> `SphericalCurves` limb and terminator. The first runtime work is split into
-> output-neutral 49I.3C.1 spherical geometry and 49I.3C.2 opt-in
-> regional/binocular drawing.
+> `SphericalGrid` is curve-only, so the resolved disk is a small semantic
+> layer group: one `SphericalPolygons` illuminated face and separate
+> `SphericalCurves` limb and terminator. Pre-projection sampling must remain
+> fine enough at the supported maximum post-projection magnification.
 >
-> The audit changes no runtime type, public command, chart, style, renderer, or
-> output. Symbolic Venus remains the default; planisphere and all-sky products
-> remain symbolic. Command spellings and a production magnification default
-> are not yet accepted.
+> The accepted implementation slices are 49I.3C.1 physical spherical geometry,
+> 49I.3C.2 one opt-in regional/binocular disk, and 49I.3C.3 several
+> independently realized disks at different instants in one fixed chart frame.
+> Symbolic Venus remains the default and planisphere/all-sky products remain
+> symbolic.
+>
+> Fernando accepted the boundary on 2026-08-31 after all 60
+> current-documentation tests passed in 1.80 seconds. Runtime geometry, public
+> commands, supported magnification range, style, and visible output remain
+> separately authorized.
