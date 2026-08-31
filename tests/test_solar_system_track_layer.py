@@ -114,3 +114,19 @@ def test_publication_style_owns_projection_friendly_track_appearance():
     assert style.solar_system_track_linewidth == 1.2
     assert style.solar_system_track_tick_linewidth == 1.0
     assert style.solar_system_track_label_fontsize == 9.0
+
+
+
+def test_tick_label_switches_sides_to_remain_inside_viewport():
+    tick = ProjectedCurve(
+        x=np.asarray((0.95, 0.95)),
+        y=np.asarray((0.90, 1.00)),
+        name="2026-09-06",
+    )
+    axes = SimpleNamespace(
+        get_xlim=lambda: (-1.0, 1.0),
+        get_ylim=lambda: (-1.0, 1.0),
+    )
+    anchor = track_label_anchor(tick, axes)
+    assert anchor.y < 0.90
+    assert anchor.vertical_alignment == "top"
