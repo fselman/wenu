@@ -1022,11 +1022,13 @@ owns deterministic contract coverage;
 
 ## Milestone 49I.3C audit ownership
 
-- `docs/developer/resolved_venus_disk_audit_49i3c.md` owns the candidate
-  geometry, magnification, product, semantic, validation, and implementation
-  split for the first resolved Venus disk.
-- The proposed runtime ownership is not installed: scientific construction
-  will produce one illuminated spherical polygon and separate limb and
-  terminator spherical curves; chart policy will own opt-in representation
-  and Venus-specific magnification; style will own appearance.
-- No production source file changes in this audit.
+- `docs/developer/resolved_venus_disk_audit_49i3c.md` owns the accepted
+  geometry, post-projection magnification, product, multi-epoch, semantic,
+  validation, and implementation split for resolved Venus disks.
+- Runtime ownership is not installed: scientific construction will produce
+  one physically sampled illuminated spherical polygon and separate limb and
+  terminator spherical curves; chart preparation will magnify projected
+  offsets; chart policy will own opt-in representation and Venus-specific
+  magnification; style will own appearance.
+- Multi-epoch disks will reuse one fixed chart frame with independent physical
+  appearance states. No production source file changes in this audit.
