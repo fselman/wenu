@@ -332,7 +332,10 @@ explicit semantic geometry through the canonical pipeline, Venus-first
 physical validation, separate Moon validation, photometry prerequisite, and
 proposed implementation sequence on 2026-08-31.
 
-All 58 current-documentation tests passed in 2.51 seconds on Fernando's Mac.
-This accepts the audit contract and sequence. It does not pre-accept the future
+Initial acceptance verification passed all 58 current-documentation tests in
+2.51 seconds on Fernando's Mac. At the accepted branch head, all 58
+current-documentation tests passed in 1.95 seconds, the routine suite passed
+1,926 tests with 30 deselected in 28.95 seconds, and the complete suite passed
+all 1,956 tests in 91.38 seconds. This accepts the audit contract and sequence. It does not pre-accept the future
 49I.3B numerical model, tolerance, runtime contract, public interface, or any
 resolved visual result.
