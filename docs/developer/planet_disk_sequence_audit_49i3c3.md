@@ -279,8 +279,11 @@ static projection, rendering, and export machinery.
 
 Fernando scientifically and architecturally accepted this audit on 2026-08-31,
 including preservation of full physical distance and provenance for possible
-future 3D Solar-System visualization. All 63 current-documentation tests passed
-in 2.04 seconds. This acceptance authorizes only the separately bounded
+future 3D Solar-System visualization. Initial acceptance verification passed all 63 current-documentation tests in
+2.04 seconds. Final verification passed all 63 current-documentation tests in
+1.88 seconds, 1,971 routine tests with 30 deselected in 27.08 seconds, and all
+2,001 tests in 85.97 seconds. This acceptance authorizes only the separately
+bounded
 49I.3C.3.1 observed multi-epoch Venus implementation; it does not pre-accept
 runtime types, numerical tolerances, public command spelling, visible output,
 the frozen-Earth implementation, Mercury support, or a 3D visualizer.
