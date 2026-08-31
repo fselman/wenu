@@ -875,3 +875,16 @@ The post-v0.9 program is complete when Wenu has one governed astronomical
 state and transformation architecture, documented and verified SVG output,
 and reproducible time sequences that reuse scientifically invariant state
 while correctly recomputing observer-local and moving-object phenomena.
+
+## Milestone 49I.2D.2 — Drawable Venus track
+
+**Status:** Scientifically, architecturally, and visually accepted on
+2026-08-31.
+
+Regional and binocular requests now expose one Venus track through the accepted
+fixed-frame spherical curve, ordinary projection, projected perpendicular
+ticks, and shared output path. Optional dates use two chronological layouts
+starting from opposite perpendicular sides and retain one side until curve,
+label, or viewport obstruction justifies switching. The accepted colour is
+amber orange `#FFB000`. A sixteen-week La Ligua stress test and all 1,954
+tests passed. Physical apparent disks remain 49I.3.
