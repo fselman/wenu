@@ -506,7 +506,6 @@ def test_49i2c_installs_one_symbolic_moon_without_physical_disk_claims():
     )
 
 
-
 def test_49i2d_audits_fixed_frame_vectorized_solar_system_tracks():
     contract = " ".join(read(SOLAR_SYSTEM_TRACK_AUDIT).split())
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
@@ -529,7 +528,7 @@ def test_49i2d_audits_fixed_frame_vectorized_solar_system_tracks():
         "Chart-frame instant",
         "one fixed observer-local product frame",
         "one ordinary `SphericalCurves` value before projection",
-        "visible perpendicular ticks belong to projected display geometry",
+        "visible perpendicular ticks are projected annotations",
         "regional and binocular charts",
         "Planisphere and all-sky products remain outside",
         "49I.3 physical apparent-disk contract",
@@ -539,11 +538,15 @@ def test_49i2d_audits_fixed_frame_vectorized_solar_system_tracks():
 
     assert "Milestone 49I.2D — Solar-System trajectory contract" in roadmap
     assert "The proposed 49I.2D audit places" in architecture
-    assert "Proposed Solar-System track contract (Milestone 49I.2D)" in implementation
+    assert (
+        "Proposed Solar-System track contract (Milestone 49I.2D)"
+        in implementation
+    )
     assert "solar_system_track_audit_49i2d.md" in source_tree
     assert "13.2.18 49I.2D Solar-System trajectories" in guide
     assert "Guide version:** `0.9.5.20260831.26`" in guide
     assert "per-sample time provenance" in instructions
+
 
 def fenced_python(path):
     """Return Python code blocks from one Markdown document."""
