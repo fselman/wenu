@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.35`  
-**Last updated:** `2026-08-31T13:58:00Z`  
+**Guide version:** `0.9.5.20260831.38`  
+**Last updated:** `2026-08-31T16:00:00Z`  
 **Language:** English
 
 # Table of contents
@@ -2439,3 +2439,46 @@ metadata, not a renderer rotation.
 > routine tests with 30 deselected in 27.32 seconds, and all 1,966 tests in
 > 89.97 seconds. 49I.3B adds no visible output; 49I.3C remains separately
 > authorized.
+
+
+<a id="49i3c-resolved-venus-disk-audit"></a>
+
+### 13.2.23 49I.3C resolved Venus disk audit
+
+**[Foundation]** The first resolved Venus drawing will be built from the same
+apparent centre and physical phase validated in 49I.3B. The physical angular
+diameter stays unchanged. A separate Venus-specific display magnification
+enlarges the already projected disk around its projected centre.
+
+The visible result has three semantic parts: the filled illuminated face, the
+round limb, and the terminator between day and night. Their separation allows
+independent fill and stroke policy. They begin as celestial geometry, not as a
+large plotting symbol.
+
+**[Undergraduate]** In the tangent plane at Venus, the accepted bright-limb
+position angle defines the direction toward the Sun and the phase angle defines
+the terminator plane. Sampling the physical visible and illuminated
+hemispheres gives a closed illuminated polygon plus limb and terminator curves.
+The ordinary machinery transforms and projects those samples. Chart
+preparation then applies `q_display = q_center + M * (q_physical - q_center)`
+to every projected vertex.
+
+> **Wenu implementation box — 49I.3C accepted boundary**
+>
+> `SphericalGrid` is curve-only, so the resolved disk is a small semantic
+> layer group: one `SphericalPolygons` illuminated face and separate
+> `SphericalCurves` limb and terminator. Pre-projection sampling must remain
+> fine enough at the supported maximum post-projection magnification.
+>
+> The accepted implementation slices are 49I.3C.1 physical spherical geometry,
+> 49I.3C.2 one opt-in regional/binocular disk, and 49I.3C.3 several
+> independently realized disks at different instants in one fixed chart frame.
+> Symbolic Venus remains the default and planisphere/all-sky products remain
+> symbolic.
+>
+> Fernando accepted the boundary on 2026-08-31. Initial acceptance passed all
+> 60 current-documentation tests in 1.80 seconds. Final verification passed 60
+> documentation tests in 2.81 seconds, 1,937 routine tests with 30 deselected
+> in 28.40 seconds, and all 1,967 tests in 89.14 seconds. Runtime geometry,
+> public commands, supported magnification range, style, and visible output
+> remain separately authorized.

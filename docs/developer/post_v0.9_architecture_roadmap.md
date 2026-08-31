@@ -955,3 +955,17 @@ starting from opposite perpendicular sides and retain one side until curve,
 label, or viewport obstruction justifies switching. The accepted colour is
 amber orange `#FFB000`. A sixteen-week La Ligua stress test and all 1,955
 tests passed. Physical apparent disks remain 49I.3.
+
+
+## Milestone 49I.3C — Resolved Venus disk audit
+
+**Status:** Scientifically and architecturally accepted on 2026-08-31.
+
+`resolved_venus_disk_audit_49i3c.md` accepts a renderer-neutral semantic group
+containing an illuminated spherical polygon plus limb and terminator spherical
+curves. Physical geometry is sampled before projection; Venus-specific display
+magnification scales projected offsets about the projected physical centre in
+chart preparation. The accepted sequence is 49I.3C.1 physical spherical
+geometry, 49I.3C.2 one drawable regional/binocular disk, and 49I.3C.3 several
+independently realized disks in one fixed chart frame. Symbolic defaults and
+planisphere/all-sky behavior remain unchanged.

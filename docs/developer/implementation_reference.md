@@ -1900,3 +1900,16 @@ The result records angular diameter, Sun–target–observer phase angle,
 spherical illuminated fraction, and bright-limb position angle measured from
 apparent celestial north toward east. `VENUS_MEAN_RADIUS_KM` is 6051.8 km.
 No chart request or layer consumes this API in 49I.3B.
+
+
+## Accepted resolved Venus disk boundary (Milestone 49I.3C)
+
+`resolved_venus_disk_audit_49i3c.md` accepts three ordinary semantic
+geometries: illuminated face, limb, and terminator. They are sampled at the
+physical angular radius, transformed, and projected ordinarily. Chart
+preparation then scales projected offsets around the projected physical centre.
+
+The accepted physical angular diameter remains in
+`SolarSystemApparentDisk`; future request/detail policy owns a separate
+Venus-specific display magnification. Multiple epochs use independently
+realized states in one fixed chart frame. This audit installs no runtime API.
