@@ -154,6 +154,28 @@ def test_renderer_groups_rings_into_one_compound_patch():
     plt.close(figure)
 
 
+def test_renderer_can_retain_compound_contour_without_face_fill():
+    polygons = ProjectedPolygons(
+        items=[ProjectedPolygon(x=[0, 2, 1], y=[0, 0, 1])],
+        metadata={
+            "compound_id": np.asarray(["outer"], dtype=object),
+            "compound_fill": np.asarray([False]),
+        },
+    )
+    figure, ax = plt.subplots()
+
+    artists = MatplotlibRenderer(ax).draw(
+        polygons,
+        compound_by="compound_id",
+        polygon_fill_style={"facecolor": "white"},
+        polygon_marker_style={"color": "white"},
+    )
+
+    assert len(ax.patches) == 0
+    assert len(artists) == 1
+    plt.close(figure)
+
+
 def test_publication_style_uses_named_milky_way_zorder(tmp_path):
     layer = MilkyWayIsophotes(Observer())
     layer.load(_catalogue(tmp_path / "mw.json"))
@@ -245,6 +267,16 @@ def test_default_levels_include_complete_outer_envelope(tmp_path):
     assert set(geometry.metadata["level"]) == {
         "ol1", "ol2", "ol3", "ol4", "ol5"
     }
+    assert not np.any(
+        geometry.metadata["compound_fill"][
+            geometry.metadata["level"] == "ol1"
+        ]
+    )
+    assert np.all(
+        geometry.metadata["compound_fill"][
+            geometry.metadata["level"] != "ol1"
+        ]
+    )
 
 
 def test_outer_level_remains_explicitly_available(tmp_path):
