@@ -13,26 +13,27 @@ from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
 
 
 EXPECTED = {
-    "mercury": ("mercury", "199", "Mercurio"),
-    "venus": ("venus", "299", "Venus"),
-    "mars": ("mars barycenter", "499", "Marte"),
-    "jupiter": ("jupiter barycenter", "599", "Júpiter"),
-    "saturn": ("saturn barycenter", "699", "Saturno"),
-    "uranus": ("uranus barycenter", "799", "Urano"),
-    "neptune": ("neptune barycenter", "899", "Neptuno"),
+    "mercury": ("mercury", "199", "Mercurio", "☿"),
+    "venus": ("venus", "299", "Venus", "♀"),
+    "mars": ("mars barycenter", "499", "Marte", "♂"),
+    "jupiter": ("jupiter barycenter", "599", "Júpiter", "♃"),
+    "saturn": ("saturn barycenter", "699", "Saturno", "♄"),
+    "uranus": ("uranus barycenter", "799", "Urano", "♅"),
+    "neptune": ("neptune barycenter", "899", "Neptuno", "♆"),
 }
 
 
 def test_catalog_data_separates_provider_targets_from_physical_planet_ids():
     assert set(_SYMBOLIC_BODY_KEYS) == set(EXPECTED)
     assert "earth" not in _SYMBOLIC_BODY_KEYS
-    for key, (target, physical_id, spanish_name) in EXPECTED.items():
+    for key, (target, physical_id, spanish_name, symbol) in EXPECTED.items():
         descriptor = SOLAR_SYSTEM_BODY_CATALOG.resolve(key)
         assert descriptor.target == target
         assert descriptor.physical_body_id == physical_id
         assert descriptor.body_class == "planet"
         assert descriptor.supports(SYMBOLIC_POINT)
         assert descriptor.display_name_for("es") == spanish_name
+        assert descriptor.astronomical_symbol == symbol
     assert MERCURY_BODY not in APPARENT_MAJOR_PLANETS
 
 
@@ -58,6 +59,7 @@ def test_every_planet_uses_one_generic_layer_style_and_semantic_path():
         assert options["enabled"] is True
         assert options["geometry"]["selected"] == set(EXPECTED)
         assert options["render"]["style"]["marker"] == "o"
+        assert options["render"]["style"]["s"] == 10.5
         identity = semantic_layer_identity(layer)
         assert identity.semantic_path_text == (
             f"sky/solar_system/planets/{key}"
