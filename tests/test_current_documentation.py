@@ -2650,6 +2650,7 @@ def test_49i3d1_proposes_shared_apparent_major_planets():
         "only `ol1` produces the unnatural broad envelope",
         "replace only explicitly supplied fields",
         "`--mw-lowest-contour OL1|OL2|OL3|OL4|OL5`",
+        "single-feature GeoJSON file",
     ):
         assert phrase in contract
     assert "Milestone 49I.3D.1 apparent major planets" in source_tree
