@@ -201,8 +201,25 @@ def test_face_cap_applies_source_owned_topology_inversions():
 
     projected = chart.project_equatorial_geometry(polygons)
 
+    assert len(projected) == 3
     np.testing.assert_array_equal(
-        projected.metadata["is_hole"], (True, False)
+        projected.metadata["is_hole"], (True, False, False)
+    )
+    np.testing.assert_array_equal(
+        projected.metadata["projection_cap_topology_inversion"],
+        (True, True, False),
+    )
+    source_latitudes = projected.metadata[
+        "projection_source_latitudes"
+    ]
+    assert len(source_latitudes) == 3
+    assert len(source_latitudes[-1]) == len(projected[-1].x)
+    assert np.ptp(source_latitudes[-1]) > 1.0
+    boundary = projected[-1]
+    np.testing.assert_allclose(
+        np.hypot(boundary.x, boundary.y),
+        chart.boundary_radius,
+        atol=1.0e-10,
     )
 
 
