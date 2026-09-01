@@ -20,6 +20,7 @@ from wenu.ephemeris import EphemerisStateRequest, EphemerisStateSource
 from wenu.solar_system_directions import ApparentDirection
 
 AU_KM = 149_597_870.7
+MERCURY_MEAN_RADIUS_KM = 2439.4
 VENUS_MEAN_RADIUS_KM = 6051.8
 BRIGHT_LIMB_POSITION_ANGLE_CONVENTION = (
     "observer-origin apparent ICRS tangent plane; "
