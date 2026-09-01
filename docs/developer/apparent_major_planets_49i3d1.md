@@ -68,13 +68,13 @@ glyph.
 The preferred compact syntax is
 `--planet mercury,venus,mars,jupiter,saturn,uranus,neptune`.
 
-The first all-sky and planisphere calibrations also exposed a pre-existing
-Milky Way topology error. Wenu had classified every source ring after the
-first ring of an isophote as a hole. The D3-Celestial snapshot instead contains
-many disjoint exterior components and encodes its few holes by opposite ring
-winding. Wenu now derives `is_hole` from that governed source winding, avoiding
-the artificial filled swath that connected the extremes of unrelated contour
-components in both projections.
+The first all-sky and planisphere calibrations also exposed a request-overlay
+error. The maximal sphere intentionally loads every Milky Way level, including
+the normally excluded outer `ol1` band. A CLI planet selection replaced the
+complete resolved `SkyContentSelection`, resetting `milky_way_levels` to
+`None`; this allowed `ol1` to leak into both projections. Request overlays now
+replace only explicitly supplied fields, so selecting planets preserves the
+resolved default levels `ol2` through `ol5` and other unrelated sky content.
 
 ```bash
 wenu_chart all-sky \
