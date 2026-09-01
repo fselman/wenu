@@ -367,3 +367,9 @@ metadata, and capabilities through the body catalog. Do not add a body-specific
 point, disk, sequence, projection, renderer, or exporter when the generic
 moving-body machinery applies. Classification is metadata; capability and the
 validated scientific model govern behavior.
+
+For ordinary apparent major planets, consult
+`apparent_major_planets_49i3d1.md`. Register data and symbolic-point capability
+through the catalog; preserve provider barycentre IDs separately from physical
+planet IDs; reuse the shared apparent point layer; and do not infer resolved
+disk, photometry, rings, track, or sequence capabilities from classification.
