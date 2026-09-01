@@ -68,6 +68,13 @@ glyph.
 The preferred compact syntax is
 `--planet mercury,venus,mars,jupiter,saturn,uranus,neptune`.
 
+The first planisphere calibration also exposed a pre-existing filled-polygon
+artifact: latitude clipping closed a partially visible Milky Way ring with a
+straight chord between its horizon intersections. Observer-visible full-sky
+charts now preserve the projected isophote rings and delegate the final cut
+to their exact circular renderer clip path. Regional and binocular products
+retain their governed geometric latitude preparation.
+
 ```bash
 wenu_chart all-sky \
   --observer-location "La Ligua" \
