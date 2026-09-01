@@ -1063,3 +1063,22 @@ The accepted four-epoch Virgo calibration used 28-day steps, magnification
 200, an ecliptic-only reference, and no default equatorial grid. Verification
 passed 211 focused tests, 1,988 routine tests with 30 deselected, and all 2,018
 tests. Frozen-Earth Venus remains 49I.3C.3.2; Mercury remains 49I.3C.3.3.
+
+
+## Milestone 49I.3C.3.2A — Output-neutral frozen-Earth Venus sequence
+
+**Status:** Scientifically and architecturally accepted on 2026-09-01.
+
+Earth's heliocentric ICRF vector is evaluated once at the sequence start and
+retained unchanged. Same-epoch Venus heliocentric vectors at exact major steps
+produce frozen-observer geometric directions, distances, physical appearance,
+and fixed J2000 mean-ecliptic orientation. The fixed Sun vector is the negative
+frozen-Earth vector. Full vectors and frozen-earth/AU distances remain
+available for possible future separately governed 3D use.
+
+The installed-DE440 comparison agreed to `4.337e-12 AU` in target vectors,
+`1.968e-10 deg` in ecliptic longitude, `2.064e-11 deg` in latitude,
+`1.274e-12 AU` in distance, and `1.627e-10 deg` in limb angle. Verification
+passed 63 focused tests, 1,997 routine tests with 30 deselected, and all 2,027
+tests. This slice adds no public request or visible output; drawable restricted
+ecliptic presentation remains 49I.3C.3.2B, and Mercury remains 49I.3C.3.3.

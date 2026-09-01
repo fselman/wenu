@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260901.44`  
-**Last updated:** `2026-09-01T00:35:00Z`  
+**Guide version:** `0.9.5.20260901.45`  
+**Last updated:** `2026-09-01T01:25:00Z`  
 **Language:** English
 
 # Table of contents
@@ -87,6 +87,7 @@
     - [13.2.18 49I.2D Solar-System trajectories](#49i2d-solar-system-tracks)
     - [13.2.19 49I.2D.1 scientific track curve](#49i2d1-track-curve)
     - [13.2.28 49I.3C.3.1B drawable observed Venus sequence](#49i3c31b-drawable-observed-venus-sequence)
+    - [13.2.29 49I.3C.3.2A frozen-Earth Venus state](#49i3c32a-frozen-earth-venus-state)
 
 <a id="status-and-purpose"></a>
 
@@ -2621,3 +2622,27 @@ Regional and binocular products expose exact start-inclusive major steps with
 no minor cadence. The accepted Virgo calibration drew only the ecliptic
 reference after suppressing the regional default equatorial grid. Frozen-Earth
 ecliptic construction and Mercury remain later, separately validated work.
+
+
+<a id="49i3c32a-frozen-earth-venus-state"></a>
+## 13.2.29 49I.3C.3.2A frozen-Earth Venus state
+
+**[Foundation]** This construction holds Earth at its starting position while
+Venus continues around the Sun. It is therefore a deliberately constructed
+geometric view, not what an observer sees in the sky at each later date. The
+Sun stays in one direction and Venus's position, distance, apparent size, and
+phase change at the requested major steps.
+
+**[Undergraduate]** The start-time Earth heliocentric ICRF vector is frozen.
+At each epoch the same-epoch Venus heliocentric vector is measured from that
+fixed origin, while the Sun vector is its fixed negative. Both directions are
+transformed into fixed J2000 mean-ecliptic axes and explicitly carry geometric
+status. The model retains complete ICRF vectors and frozen-earth/AU distances;
+it applies no light-time, aberration, gravitational deflection, topocentric
+site, or apparent-place correction.
+
+The accepted output-neutral state also computes internally consistent angular
+diameter, Sun–Venus–frozen-Earth phase, illuminated fraction, and bright-limb
+orientation. A later slice will govern the restricted drawable scene, central
+six-point Sun, grid, labels, projection, and magnification. Mercury remains a
+separate validation milestone.

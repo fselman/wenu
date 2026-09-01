@@ -1945,6 +1945,20 @@ physical angular scale. The accepted public controls are
 `--planet-disk-magnification venus=FACTOR`.
 
 
+## Frozen-Earth Venus sequence state (Milestone 49I.3C.3.2A)
+
+`FrozenEarthDiskSequenceRequest` declares exact start-inclusive major samples
+and a fixed ecliptic equinox. `FrozenEarthDiskSequenceRealizer.sequence()`
+evaluates one start-time Earth heliocentric state and one same-epoch planet
+heliocentric state per sample. It returns `FrozenEarthDiskSequence` containing
+`FrozenEarthGeometricDisk` values, complete ICRF vectors, frozen-earth/AU
+distances, fixed Sun direction, physical appearance, and provenance.
+
+All directions declare geometric status in fixed J2000 mean-ecliptic axes;
+none use the apparent-direction pipeline. The API is output-neutral. Drawable
+restricted-scene integration remains 49I.3C.3.2B.
+
+
 ## Accepted multi-epoch planet-disk sequence (Milestone 49I.3C.3)
 
 `planet_disk_sequence_audit_49i3c3.md` defines a proposed immutable sequence

@@ -326,3 +326,12 @@ epoch independently into one fixed product frame before aggregation, preserve
 observer/AU distance evidence, and magnify each projected disk only around its
 own separately projected centre. Keep frozen-Earth mode and Mercury outside
 this accepted slice.
+
+
+For the output-neutral frozen-Earth Venus sequence, consult
+`frozen_earth_venus_sequence_49i3c32a.md`. Preserve the one start-time Earth
+heliocentric vector, same-epoch planet heliocentric vectors, complete retained
+ICRF evidence, frozen-earth/AU distances, geometric status, and fixed J2000
+mean-ecliptic axes. Never pass this state through the apparent-direction chain.
+Keep public request, Sun glyph, restricted scene, and visible output in
+49I.3C.3.2B.
