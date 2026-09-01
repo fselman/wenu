@@ -3,6 +3,12 @@
 from argparse import Namespace
 
 from wenu.charts.chart_arguments import chart_disk_sequence_options
+from wenu.charts.drawing import _frozen_furniture, _frozen_title
+from wenu.charts.furniture import (
+    ChartFurnitureOptions,
+    ReferenceAnnotations,
+    ReferencePlaneAnnotation,
+)
 from wenu.charts.request_disks import FrozenEarthSolarSystemDiskSequenceDisplayRequest
 from wenu.sky.frozen_earth_venus_disk_sequence import (
     frozen_earth_venus_disk_sequence_layers,
@@ -67,3 +73,38 @@ def test_frozen_component_semantics_are_distinct_from_observed_sequence():
         "sky/solar_system/planets/venus/frozen_earth_sequence/limb",
         "sky/solar_system/planets/venus/frozen_earth_sequence/terminator",
     )
+
+
+def test_frozen_title_uses_resolved_language():
+    assert _frozen_title("en") == "Frozen-Earth Venus sequence"
+    assert _frozen_title("es") == "Secuencia de Venus desde una Tierra fija"
+
+
+def test_frozen_furniture_preserves_only_requested_ecliptic_reference():
+    ecliptic = ReferencePlaneAnnotation(
+        state="labeled",
+        label="Eclíptica",
+    )
+    source = ChartFurnitureOptions(
+        references=ReferenceAnnotations(
+            celestial_equator=ReferencePlaneAnnotation(
+                state="labeled",
+                label="Ecuador celeste",
+            ),
+            ecliptic=ecliptic,
+            galactic_plane=ReferencePlaneAnnotation(
+                state="labeled",
+                label="Plano galáctico",
+            ),
+        ),
+    )
+
+    result = _frozen_furniture(source)
+
+    assert result.references.ecliptic is ecliptic
+    assert result.references.celestial_equator.state == "none"
+    assert result.references.galactic_plane.state == "none"
+    assert result.references.ecliptic_keypoints == "none"
+    assert result.references.ecliptic_keypoint_legend is False
+    assert result.legends is None
+    assert result.context is None
