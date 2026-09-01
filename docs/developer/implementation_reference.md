@@ -278,7 +278,9 @@ Resolved chart requests use all five established Milky Way levels when no
 levels are supplied. The two source rings in `ol1` form the valid faint outer
 envelope, while `ol2` through `ol5` provide successively inner structure.
 Explicit level requests retain precedence and may omit `ol1` when a narrower
-render is wanted.
+render is wanted. The sphere-spanning `ol1` compound is contour-only: its
+valid boundaries are retained, but its GeoJSON exterior is not face-filled as
+an ordinary planar polygon. Inner compounds remain filled.
 
 `ResolvedDetail.extended_object_samples` may request a lower render-local
 sampling density for extended-object outlines. It applies to Messier-style
