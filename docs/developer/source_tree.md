@@ -1168,3 +1168,15 @@ owns deterministic contract coverage;
   Skyfield comparison and refuses kernel downloads.
 - `docs/developer/mercury_catalog_validation_49i3c33b.md` records the accepted
   numerical evidence and bounded runtime ownership.
+
+
+## Milestone 49I.3C.3.3C drawable frozen-Earth Mercury
+
+- The body catalog supplies Mercury capability and localized display metadata.
+- Existing generic frozen-Earth sequence layers, disk preparation, semantic
+  identity, chart integration, projection, styles, renderer, and exporters own
+  the complete drawable path.
+- `tests/test_frozen_earth_mercury_sequence_display.py` owns capability,
+  conflict, semantic, magnification, fixed-Sun, and localization contracts.
+- `docs/developer/drawable_frozen_earth_mercury_sequence_49i3c33c.md` records
+  the proposed visual and operational acceptance gate.
