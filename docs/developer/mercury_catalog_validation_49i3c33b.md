@@ -1,8 +1,10 @@
 # Mercury catalog and numerical validation — Milestone 49I.3C.3.3B
 
-**Status:** Implementation proposed; installed-DE440 validation pending
+**Status:** Scientifically and architecturally accepted
 
 **Implementation date:** 2026-09-01
+
+**Acceptance date:** 2026-09-01
 
 ## Purpose
 
@@ -38,6 +40,18 @@ thin-phase peak plus material distance spans.
 
 ## Acceptance boundary
 
-Scientific acceptance remains pending until Fernando runs the installed-DE440
-validator on the Mac and reviews its complete output. Public/drawable Mercury
-remains a later, separately reviewed milestone.
+Fernando accepted this descriptor-only Mercury slice scientifically and
+architecturally after the installed-DE440 validator completed on the Mac. It
+used `de440s.bsp` with SHA-256
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`,
+resolved Mercury through provider target/centre `199/10`, and found an interior
+thin-phase peak of `168.696859831 deg`. The Earth-Mercury distance spanned
+`0.623127744760..1.374640492885 AU` and the Sun-Mercury distance spanned
+`0.307535936142..0.466683324039 AU`.
+
+Every independent residual passed its declared tolerance. The largest phase,
+illuminated-fraction, and bright-limb-position-angle residuals were
+`8.099e-10 deg`, `7.006e-12`, and `5.272e-09 deg`, respectively. The complete
+Mac regression suite then passed all 2,047 tests in 97.93 seconds.
+
+Public/drawable Mercury remains a later, separately reviewed milestone.
