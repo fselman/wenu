@@ -236,14 +236,15 @@ def test_style_clips_isophotes_before_planar_rendering(tmp_path):
     assert np.all(np.isfinite(clipped[0].x))
     assert np.all(np.isfinite(clipped[0].y))
 
-def test_default_levels_include_complete_outer_envelope(tmp_path):
+def test_default_levels_start_at_ol2(tmp_path):
     layer = MilkyWayIsophotes(Observer())
-    assert layer.levels == MilkyWayIsophotes.available_levels
+    assert layer.levels == ("ol2", "ol3", "ol4", "ol5")
 
     layer.load(_catalogue(tmp_path / "mw.json"))
     geometry = layer.spherical_geometry(Observer())
+    assert "ol1" not in geometry.metadata["level"]
     assert set(geometry.metadata["level"]) == {
-        "ol1", "ol2", "ol3", "ol4", "ol5"
+        "ol2", "ol3", "ol4", "ol5"
     }
 
 
