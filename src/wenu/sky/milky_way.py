@@ -110,6 +110,7 @@ class MilkyWayIsophotes(SkyLayer):
         compounds = []
         ring_indices = []
         holes = []
+        projection_cap_topology_inversions = []
         source_values = []
 
         selected_levels = (
@@ -144,6 +145,22 @@ class MilkyWayIsophotes(SkyLayer):
                     compounds.append(compound)
                     ring_indices.append(ring_index)
                     holes.append(ring_index > 0)
+                    unwrapped_longitude = np.degrees(
+                        np.unwrap(
+                            np.radians(coordinates[:, 0]),
+                            discont=np.pi,
+                        )
+                    )
+                    projection_cap_topology_inversions.append(
+                        abs(int(np.round(
+                            (
+                                unwrapped_longitude[-1]
+                                - unwrapped_longitude[0]
+                            )
+                            / 360.0
+                        )))
+                        >= 1
+                    )
                     source_values.append(self.sources[level])
 
         longitude, latitude = observed_polygon_arrays(
@@ -177,6 +194,10 @@ class MilkyWayIsophotes(SkyLayer):
                 "compound_id": np.asarray(compounds, dtype=object)[positions],
                 "ring_index": np.asarray(ring_indices, dtype=int)[positions],
                 "is_hole": np.asarray(holes, dtype=bool)[positions],
+                "projection_cap_topology_inversion": np.asarray(
+                    projection_cap_topology_inversions,
+                    dtype=bool,
+                )[positions],
                 "semantic_entity_keys": np.asarray(
                     [f"isophote_{level}" for level in level_values],
                     dtype=object,
