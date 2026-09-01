@@ -86,6 +86,10 @@ one rendered: supplying the option replaces the governed default contour set
 with exactly that level. Comparing otherwise identical `OL1` and `OL2`
 renders therefore compares the two source isophotes directly without changing
 the projection, viewport, or planet selection.
+Each level is packaged as its own single-feature GeoJSON file. An explicit
+selection sends only the chosen file's rings into the coordinate and
+projection pipeline, while the original combined D3-Celestial snapshot is
+retained unchanged as provenance authority.
 
 ```bash
 wenu_chart all-sky \
