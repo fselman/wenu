@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260901.45`  
-**Last updated:** `2026-09-01T01:25:00Z`  
+**Guide version:** `0.9.5.20260901.46`
+**Last updated:** `2026-09-01T13:30:00Z`
 **Language:** English
 
 # Table of contents
@@ -88,6 +88,7 @@
     - [13.2.19 49I.2D.1 scientific track curve](#49i2d1-track-curve)
     - [13.2.28 49I.3C.3.1B drawable observed Venus sequence](#49i3c31b-drawable-observed-venus-sequence)
     - [13.2.29 49I.3C.3.2A frozen-Earth Venus state](#49i3c32a-frozen-earth-venus-state)
+    - [13.2.30 49I.3C.3.2B drawable frozen-Earth Venus sequence](#49i3c32b-drawable-frozen-earth-venus-sequence)
 
 <a id="status-and-purpose"></a>
 
@@ -2646,3 +2647,28 @@ diameter, Sun–Venus–frozen-Earth phase, illuminated fraction, and bright-lim
 orientation. A later slice will govern the restricted drawable scene, central
 six-point Sun, grid, labels, projection, and magnification. Mercury remains a
 separate validation milestone.
+
+
+<a id="49i3c32b-drawable-frozen-earth-venus-sequence"></a>
+## 13.2.30 49I.3C.3.2B drawable frozen-Earth Venus sequence
+
+**[Foundation]** The completed diagram holds Earth fixed while Venus advances
+at equal time steps. It draws the Sun at the fixed centre, enlarges every Venus
+disk by the same display factor, and can show both the ecliptic and the
+equatorial grid. The ecliptic passes through the Sun because it is latitude
+zero in the coordinate system used for the construction. This is a geometric
+teaching diagram, not a sequence of views from La Ligua at the later dates.
+
+**[Undergraduate]** The product coordinate specification has origin
+`frozen-earth`, geometric position status, and fixed J2000 mean-ecliptic axes.
+The ecliptic reference is constructed directly at product latitude zero. The
+FK5 equatorial grid is transformed directly into the same product axes without
+an observer-dependent AltAz intermediate. Venus disk magnification remains a
+post-projection operation about each independently projected physical centre;
+it does not alter angular diameter, distance, exact instant, or provenance.
+
+Regional drawing suppresses catalogue sky, horizon, tracks, ordinary disks,
+unrelated furniture, context, legends, and footer. The fixed Sun, Venus disk
+components, optional dates, explicitly requested ecliptic, optional equatorial
+grid, and localized title are the accepted drawable scene. Mercury remains a
+separate independently validated milestone.

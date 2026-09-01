@@ -1116,3 +1116,21 @@ owns deterministic contract coverage;
   direct-vector and fixed-ecliptic comparison.
 - `docs/developer/frozen_earth_venus_sequence_49i3c32a.md` owns scientific,
   architectural, numerical, and regression acceptance evidence.
+
+
+## Milestone 49I.3C.3.2B ownership
+
+- `src/wenu/sky/frozen_earth_venus_disk_sequence.py` owns the shared drawable
+  disk components and fixed six-point Sun geometry.
+- `src/wenu/sky/frozen_earth_reference_grids.py` owns the observer-independent
+  product-frame ecliptic and transformed FK5 equatorial grid.
+- `src/wenu/charts/request_disks.py`, `request_grids.py`,
+  `request_realization.py`, `reference_furniture.py`, and `drawing.py` own
+  request integration, restricted content, localized title, and furniture.
+- `src/wenu/charts/solar_system_disk_preparation.py` owns per-centre projected
+  Venus magnification.
+- `tests/test_frozen_earth_venus_sequence_display.py` and
+  `tests/test_frozen_earth_reference_grids.py` own drawable, semantic,
+  localization, and fixed-reference regressions.
+- `docs/developer/drawable_frozen_earth_venus_sequence_49i3c32b.md` owns
+  scientific, visual, operational, and regression acceptance evidence.
