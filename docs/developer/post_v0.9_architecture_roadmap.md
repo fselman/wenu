@@ -1152,10 +1152,15 @@ added in this slice.
 
 ## Milestone 49I.3C.3.3C — Drawable frozen-Earth Mercury
 
-**Status:** Implementation proposed; visual and operational acceptance pending.
+**Status:** Scientifically, architecturally, visually, and operationally
+accepted on 2026-09-01.
 
 Expose Mercury only for the accepted frozen-Earth model through catalog
 capability, generic drawable factories, generic semantics, and descriptor-owned
 localized display names. Observed Mercury and every other unvalidated Mercury
 capability remain rejected. No Mercury-specific drawable infrastructure is
 authorized.
+
+Fernando accepted the shared implementation after 119 focused tests passed in
+3.06 seconds, PNG/PDF/SVG calibration parity passed visual review, and all
+2,052 Mac tests passed in 89.90 seconds.
