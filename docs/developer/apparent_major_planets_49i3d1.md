@@ -81,9 +81,9 @@ broad envelope. Governed defaults therefore begin at `ol2`; `ol1` remains
 explicitly selectable for inspection or specialized use.
 
 For visual diagnosis and ordinary chart control, every chart family accepts
-`--mw-lowest-contour OL1|OL2|OL3|OL4|OL5`. The chosen isophote is the faintest
-one rendered: supplying the option replaces the governed default contour set
-with exactly that level. Comparing otherwise identical `OL1` and `OL2`
+`--mw-contour OL1|OL2|OL3|OL4|OL5|all`. A numbered choice replaces the
+governed default contour set with exactly that level; `all` draws all five.
+Comparing otherwise identical `OL1` and `OL2`
 renders therefore compares the two source isophotes directly without changing
 the projection, viewport, or planet selection.
 Each level is packaged as its own single-feature GeoJSON file. An explicit
