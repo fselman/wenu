@@ -58,6 +58,20 @@ def test_center_longitude_orientation_radius_and_validation():
         centered.project_spherical(0.0, 91.0)
 
 
+def test_seam_preparation_tolerates_only_floating_point_boundary_noise():
+    value = projection()
+    x, y = value._project_normalized(
+        np.asarray((-180.0 - 5.0e-12, 180.0 + 5.0e-12)),
+        np.asarray((0.0, 0.0)),
+    )
+    assert x.tolist() == pytest.approx(
+        (-2.0 * np.sqrt(2.0), 2.0 * np.sqrt(2.0))
+    )
+    assert y.tolist() == pytest.approx((0.0, 0.0))
+    with pytest.raises(ValueError, match="normalized longitude"):
+        value._project_normalized(180.0 + 1.0e-6, 0.0)
+
+
 def test_projection_converges_smoothly_close_to_poles():
     x, y = projection().project_spherical(
         45.0, [89.999, 89.9999999]
