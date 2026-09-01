@@ -71,6 +71,9 @@ def test_layer_preserves_compound_ring_topology(tmp_path):
         "ol1:0", "ol1:0"
     ]
     assert geometry.metadata["is_hole"].tolist()[:2] == [False, True]
+    assert geometry.metadata[
+        "projection_cap_topology_inversion"
+    ].tolist()[:2] == [False, False]
     assert geometry.metadata["semantic_entity_keys"].tolist()[:2] == [
         "isophote_ol1", "isophote_ol1"
     ]
@@ -187,6 +190,18 @@ def test_packaged_snapshot_has_expected_levels():
         document = json.loads(path.read_text(encoding="utf-8"))
         assert [feature["id"] for feature in document["features"]] == [level]
         assert layer.sources[level] == str(path)
+
+
+def test_packaged_ol1_records_its_two_source_pole_windings():
+    geometry = MilkyWayIsophotes(Observer()).load().spherical_geometry(
+        Observer(), levels={"ol1"}
+    )
+
+    inversions = geometry.metadata[
+        "projection_cap_topology_inversion"
+    ]
+    assert inversions[:2].tolist() == [True, True]
+    assert not np.any(inversions[2:])
 
 
 def test_explicit_level_geometry_names_only_its_single_level_file():
