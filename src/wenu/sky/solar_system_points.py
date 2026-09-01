@@ -114,11 +114,11 @@ class SolarSystemPointLayer(SkyLayer):
         selected = geometry_options.pop("selected", None)
         if (
             selected is not None
-            and frozenset(selected) != {self.descriptor.selection_key}
+            and self.descriptor.selection_key not in frozenset(selected)
         ):
             raise ValueError(
                 f"{self.descriptor.display_name} selection must contain "
-                f"only {self.descriptor.selection_key}."
+                f"{self.descriptor.selection_key}."
             )
         if geometry_options:
             raise TypeError(
