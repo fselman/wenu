@@ -36,13 +36,19 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
     radius_model: str | None = None
     capabilities: frozenset[str] = field(default_factory=frozenset)
     localized_display_names: tuple[tuple[str, str], ...] = ()
+    astronomical_symbol: str | None = None
 
     def __post_init__(self):
         super().__post_init__()
         for name in ("body_class",):
             value = _optional_text(getattr(self, name), name=name)
             object.__setattr__(self, name, value)
-        for name in ("physical_body_id", "parent_body_key", "radius_model"):
+        for name in (
+            "physical_body_id",
+            "parent_body_key",
+            "radius_model",
+            "astronomical_symbol",
+        ):
             object.__setattr__(
                 self, name, _optional_text(getattr(self, name), name=name)
             )

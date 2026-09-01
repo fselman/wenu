@@ -8,6 +8,7 @@ import pytest
 from wenu.coordinates import CoordinateSpec, ObservationContext, PositionStatus
 from wenu.geometry.spherical import SphericalPoints
 from wenu.sky.realization import LayerRealizationContext
+from wenu.sky.solar_system_bodies import SolarSystemBodyDescriptor
 from wenu.sky.solar_system_points import (
     SolarSystemPointDescriptor,
     SolarSystemPointLayer,
@@ -82,11 +83,12 @@ def test_descriptor_rejects_missing_or_untyped_identity(field, value, error):
 
 
 def test_shared_layer_realizes_a_body_without_projection_or_rendering():
-    descriptor = SolarSystemPointDescriptor(
-        target="moon",
-        entity_key="moon",
-        display_name="Moon",
-        selection_key="moon",
+    descriptor = SolarSystemBodyDescriptor(
+        target="venus",
+        entity_key="venus",
+        display_name="Venus",
+        selection_key="venus",
+        astronomical_symbol="♀",
     )
     calls = []
     source = SimpleNamespace(
@@ -104,7 +106,7 @@ def test_shared_layer_realizes_a_body_without_projection_or_rendering():
                 position_status=PositionStatus.APPARENT,
                 instant="2026-08-30T00:00:00.000",
                 time_scale="utc",
-                provenance=("accepted apparent Moon",),
+                provenance=("accepted apparent Venus",),
             ),
         )
     )
@@ -115,7 +117,7 @@ def test_shared_layer_realizes_a_body_without_projection_or_rendering():
             calls.append("astrometric")
             assert actual_source is source
             assert actual_state is observer_state
-            assert request.target == "moon"
+            assert request.target == "venus"
             assert request.centre == "solar system barycenter"
             return astrometric
 
@@ -129,18 +131,18 @@ def test_shared_layer_realizes_a_body_without_projection_or_rendering():
     class Coordinates:
         def transform(self, geometry, target, observation):
             calls.append("transform")
-            assert geometry.ids.tolist() == ["moon"]
-            assert geometry.labels.tolist() == ["Moon"]
-            assert geometry.names.tolist() == ["Moon"]
+            assert geometry.ids.tolist() == ["venus"]
+            assert geometry.labels.tolist() == ["♀"]
+            assert geometry.names.tolist() == ["Venus"]
             assert geometry.metadata["semantic_entity_keys"].tolist() == [
-                "moon"
+                "venus"
             ]
             assert geometry.metadata[
                 "semantic_entity_display_names"
-            ].tolist() == ["Moon"]
+            ].tolist() == ["Venus"]
             assert geometry.metadata["ephemeris_sha256"] == "b" * 64
             assert geometry.metadata["apparent_provenance"] == (
-                "accepted apparent Moon",
+                "accepted apparent Venus",
             )
             assert target is realization.product_coordinate_spec
             assert observation is realization.observation
@@ -160,7 +162,7 @@ def test_shared_layer_realizes_a_body_without_projection_or_rendering():
     assert layer.realize(
         realization,
         observer,
-        selected={"moon"},
+        selected={"mercury", "venus"},
     ) is transformed
     assert calls == ["astrometric", "apparent", "transform"]
 
@@ -178,7 +180,7 @@ def test_shared_layer_validates_selection_context_and_geometry_options():
         layer.spherical_geometry(object())
     with pytest.raises(TypeError, match="LayerRealizationContext"):
         layer.realize(object(), object())
-    with pytest.raises(ValueError, match="only moon"):
+    with pytest.raises(ValueError, match="contain moon"):
         layer.realize(context(), object(), selected={"venus"})
     with pytest.raises(TypeError, match="accepts no geometry options"):
         layer.realize(context(), object(), unexpected=True)

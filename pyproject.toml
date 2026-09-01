@@ -51,7 +51,10 @@ markers = [
 
 [tool.setuptools.package-data]
 "wenu.configuration" = ["defaults.toml"]
-"wenu.data" = ["*.json"]
+"wenu.data" = ["*.json", "*.geojson"]
+"wenu.data.isophotes.milky_way" = [
+    "*.json", "*.geojson", "*.txt", "README.md",
+]
 
 [tool.setuptools_scm]
 fallback_version = "0.8.0"

@@ -20,7 +20,10 @@ from wenu.geometry.frame import SphericalFrame
 from wenu.geometry.projected import ProjectedPoints
 from wenu.geometry.spherical import SphericalPolygons
 from wenu.geometry.viewport import Viewport
-from wenu.rendering.preparation import clip_to_latitude
+from wenu.rendering.preparation import (
+    clip_to_latitude,
+    project_polygons_to_projection_cap,
+)
 from wenu.rendering.label_placement import rotation_with_down_toward
 from wenu.charts.polar_label_curation import (
     SOUTH_CONSTELLATION_LABEL_OFFSETS,
@@ -297,9 +300,13 @@ class PolarPlanisphereChart:
 
     def project_equatorial_geometry(self, spherical):
         """Project geometry after clipping it to this face's sky cap."""
-        projected = self.projection.project_geometry(spherical)
         if isinstance(spherical, SphericalPolygons):
-            return projected
+            return project_polygons_to_projection_cap(
+                spherical,
+                projection=self.projection,
+                angular_radius_deg=self.angular_radius_deg,
+            )
+        projected = self.projection.project_geometry(spherical)
         if self.pole == "north":
             return clip_to_latitude(
                 spherical,

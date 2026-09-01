@@ -518,6 +518,114 @@ def test_complete_sphere_latitude_floor_preserves_seam_topology():
     ) is projected
 
 
+def test_inverted_cap_ring_closes_along_planisphere_horizon():
+    angles = np.radians((-150.0, -90.0, -30.0, 30.0, 90.0, 150.0))
+    latitude = np.asarray((-10.0, -10.0, 10.0, 10.0, -10.0, -10.0))
+    radii = np.where(latitude >= 0.0, 0.8, 1.2)
+    ring = ProjectedPolygon(
+        x=radii * np.cos(angles),
+        y=radii * np.sin(angles),
+        name="ol1",
+    )
+    boundary_angles = np.linspace(0.0, 2.0 * np.pi, 1441, endpoint=False)
+    boundary = ProjectedPolygon(
+        x=np.cos(boundary_angles),
+        y=np.sin(boundary_angles),
+        name="projection_cap",
+    )
+    projected = ProjectedPolygons(
+        (ring, boundary),
+        metadata={
+            "projection_source_latitudes": (
+                latitude,
+                np.full(len(boundary_angles), 0.001),
+            ),
+            "projection_cap_topology_inversion": np.asarray((True, False)),
+        },
+    )
+    spherical = SphericalPolygons(
+        coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        lon_deg=(np.degrees(angles), np.degrees(boundary_angles)),
+        lat_deg=(latitude, np.full(len(boundary_angles), 0.001)),
+    )
+
+    clipped = clip_polygons_to_latitude(spherical, projected, minimum=0.0)
+
+    clipped_radii = np.hypot(clipped[0].x, clipped[0].y)
+    assert np.count_nonzero(np.isclose(clipped_radii, 1.0)) > 500
+    on_horizon = np.isclose(clipped_radii, 1.0)
+    horizon = np.column_stack(
+        (clipped[0].x[on_horizon], clipped[0].y[on_horizon])
+    )
+    assert np.max(np.linalg.norm(np.diff(horizon, axis=0), axis=1)) < 0.02
+
+
+def test_opposite_winding_boundaries_are_stitched_into_one_band():
+    spherical = SphericalPolygons(
+        coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        lon_deg=(
+            np.asarray((-160.0, -80.0, 0.0, 80.0, 160.0)),
+            np.asarray((170.0, 90.0, 10.0, -70.0, -150.0)),
+        ),
+        lat_deg=(
+            np.asarray((-10.0, 10.0, 20.0, 10.0, -10.0)),
+            np.asarray((-10.0, 10.0, 20.0, 10.0, -10.0)),
+        ),
+        metadata={
+            "compound_id": np.asarray(("ol1", "ol1"), dtype=object),
+            "is_hole": np.asarray((False, True)),
+            "projection_cap_topology_inversion": np.asarray((True, True)),
+        },
+    )
+
+    projected = project_polygons_to_projection_cap(
+        spherical,
+        projection=StereographicProjection(),
+        angular_radius_deg=90.0,
+    )
+
+    assert len(projected) == 1
+    assert projected.metadata["is_hole"].tolist() == [False]
+    assert projected.metadata[
+        "projection_cap_topology_inversion"
+    ].tolist() == [False]
+    assert projected[0].name != "projection_cap"
+    assert len(projected.metadata["projection_source_latitudes"][0]) == len(
+        projected[0].x
+    )
+
+
+def test_winding_band_preserves_an_extra_visible_outer_fragment():
+    spherical = SphericalPolygons(
+        coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        lon_deg=(
+            np.asarray((-170.0, -130.0, -90.0, -50.0, -10.0, 30.0, 90.0, 150.0)),
+            np.asarray((170.0, 90.0, 10.0, -70.0, -150.0)),
+        ),
+        lat_deg=(
+            np.asarray((-10.0, 8.0, -8.0, 15.0, 25.0, 15.0, -10.0, -10.0)),
+            np.asarray((-10.0, 10.0, 20.0, 10.0, -10.0)),
+        ),
+        metadata={
+            "compound_id": np.asarray(("ol1", "ol1"), dtype=object),
+            "is_hole": np.asarray((False, True)),
+            "projection_cap_topology_inversion": np.asarray((True, True)),
+        },
+    )
+
+    projected = project_polygons_to_projection_cap(
+        spherical,
+        projection=StereographicProjection(),
+        angular_radius_deg=90.0,
+    )
+
+    assert len(projected) == 2
+    assert projected.metadata["is_hole"].tolist() == [False, False]
+    assert projected.metadata[
+        "projection_cap_topology_inversion"
+    ].tolist() == [False, False]
+
+
 def test_summer_triangle_is_part_of_chart_regression_suite():
     source = Path("tests/fixtures/example_regressions/atlas_summer_triangle.py").read_text(
         encoding="utf-8"

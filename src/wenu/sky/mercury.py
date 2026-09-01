@@ -2,6 +2,7 @@
 
 from wenu.sky.solar_system_bodies import (
     FROZEN_EARTH_DISK_SEQUENCE,
+    SYMBOLIC_POINT,
     SolarSystemBodyDescriptor,
 )
 
@@ -18,9 +19,10 @@ MERCURY_BODY = SolarSystemBodyDescriptor(
     selection_key="mercury",
     body_class="planet",
     physical_body_id=MERCURY_NAIF_BODY_ID,
+    astronomical_symbol="☿",
     classifications=frozenset({"planet"}),
     physical_radius_km=MERCURY_MEAN_RADIUS_KM,
     radius_model=MERCURY_RADIUS_MODEL,
     localized_display_names=(("en", "Mercury"), ("es", "Mercurio")),
-    capabilities=frozenset({FROZEN_EARTH_DISK_SEQUENCE}),
+    capabilities=frozenset({SYMBOLIC_POINT, FROZEN_EARTH_DISK_SEQUENCE}),
 )

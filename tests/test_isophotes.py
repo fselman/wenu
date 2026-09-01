@@ -17,6 +17,7 @@ from wenu.charts.styles import PublicationStyle
 from wenu.geometry.projected import ProjectedPolygon, ProjectedPolygons
 from wenu.rendering import layers
 from wenu.rendering.matplotlib import MatplotlibRenderer
+from wenu.resources import milky_way_isophote_path
 from wenu.sky.milky_way import MilkyWayIsophotes
 
 
@@ -70,6 +71,9 @@ def test_layer_preserves_compound_ring_topology(tmp_path):
         "ol1:0", "ol1:0"
     ]
     assert geometry.metadata["is_hole"].tolist()[:2] == [False, True]
+    assert geometry.metadata[
+        "projection_cap_topology_inversion"
+    ].tolist()[:2] == [False, False]
     assert geometry.metadata["semantic_entity_keys"].tolist()[:2] == [
         "isophote_ol1", "isophote_ol1"
     ]
@@ -180,6 +184,38 @@ def test_publication_style_uses_named_milky_way_zorder(tmp_path):
 def test_packaged_snapshot_has_expected_levels():
     layer = MilkyWayIsophotes(Observer()).load()
     assert tuple(layer.features) == layer.available_levels
+    assert set(layer.sources) == set(layer.available_levels)
+    for level in layer.available_levels:
+        path = milky_way_isophote_path(level)
+        document = json.loads(path.read_text(encoding="utf-8"))
+        assert [feature["id"] for feature in document["features"]] == [level]
+        assert layer.sources[level] == str(path)
+
+
+def test_packaged_ol1_records_its_two_source_pole_windings():
+    geometry = MilkyWayIsophotes(Observer()).load().spherical_geometry(
+        Observer(), levels={"ol1"}
+    )
+
+    inversions = geometry.metadata[
+        "projection_cap_topology_inversion"
+    ]
+    assert inversions[:2].tolist() == [True, True]
+    assert not np.any(inversions[2:])
+
+
+def test_explicit_level_geometry_names_only_its_single_level_file():
+    layer = MilkyWayIsophotes(
+        Observer(), levels=MilkyWayIsophotes.available_levels
+    ).load()
+
+    geometry = layer.spherical_geometry(Observer(), levels={"ol3"})
+
+    assert set(geometry.metadata["level"]) == {"ol3"}
+    assert set(geometry.metadata["source"]) == {
+        str(milky_way_isophote_path("ol3"))
+    }
+
 
 def test_style_clips_isophotes_before_planar_rendering(tmp_path):
     """Below-horizon complements must not tint the visible sky."""
@@ -235,7 +271,7 @@ def test_style_clips_isophotes_before_planar_rendering(tmp_path):
     assert np.all(np.isfinite(clipped[0].x))
     assert np.all(np.isfinite(clipped[0].y))
 
-def test_default_levels_exclude_outer_complement(tmp_path):
+def test_default_levels_start_at_ol2(tmp_path):
     layer = MilkyWayIsophotes(Observer())
     assert layer.levels == ("ol2", "ol3", "ol4", "ol5")
 
@@ -257,7 +293,7 @@ def test_outer_level_remains_explicitly_available(tmp_path):
     assert set(geometry.metadata["level"]) == {"ol1"}
 
 
-def test_level_selections_share_one_maximal_observed_geometry(
+def test_level_selections_transform_and_cache_only_requested_files(
     tmp_path, monkeypatch
 ):
     layer = MilkyWayIsophotes(Observer()).load(
@@ -276,8 +312,10 @@ def test_level_selections_share_one_maximal_observed_geometry(
     complete = layer.spherical_geometry(
         observer, levels=layer.available_levels
     )
+    selected_again = layer.spherical_geometry(observer, levels={"ol2"})
 
     assert set(selected.metadata["level"]) == {"ol2"}
+    assert set(selected_again.metadata["level"]) == {"ol2"}
     assert set(complete.metadata["level"]) == set(layer.available_levels)
-    assert calls == [len(complete)]
-    assert len(layer._observed_polygon_cache) == 1
+    assert calls == [len(selected), len(complete)]
+    assert len(layer._observed_polygon_cache) == 2

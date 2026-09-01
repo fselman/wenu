@@ -58,6 +58,20 @@ def test_center_longitude_orientation_radius_and_validation():
         centered.project_spherical(0.0, 91.0)
 
 
+def test_seam_preparation_tolerates_only_floating_point_boundary_noise():
+    value = projection()
+    x, y = value._project_normalized(
+        np.asarray((-180.0 - 5.0e-12, 180.0 + 5.0e-12)),
+        np.asarray((0.0, 0.0)),
+    )
+    assert x.tolist() == pytest.approx(
+        (-2.0 * np.sqrt(2.0), 2.0 * np.sqrt(2.0))
+    )
+    assert y.tolist() == pytest.approx((0.0, 0.0))
+    with pytest.raises(ValueError, match="normalized longitude"):
+        value._project_normalized(180.0 + 1.0e-6, 0.0)
+
+
 def test_projection_converges_smoothly_close_to_poles():
     x, y = projection().project_spherical(
         45.0, [89.999, 89.9999999]
@@ -219,6 +233,29 @@ def test_seam_crossing_polygon_becomes_valid_closed_pieces():
         projected.metadata["projection_source_latitudes"], projected
     ):
         assert len(latitude) == len(polygon)
+
+
+def test_longitude_winding_polygon_closes_along_map_edge_not_across_map():
+    longitude = np.linspace(179.5, -180.0, 720)
+    latitude = 11.0 + np.sin(np.radians(longitude))
+    polygons = SphericalPolygons(
+        coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        lon_deg=(np.append(longitude, longitude[0]),),
+        lat_deg=(np.append(latitude, latitude[0]),),
+        ids=("winding",),
+    )
+
+    projected = projection().project_geometry(polygons)
+
+    assert len(projected) == 1
+    polygon = projected[0]
+    closed_x = np.append(polygon.x, polygon.x[0])
+    closed_y = np.append(polygon.y, polygon.y[0])
+    steps = np.hypot(np.diff(closed_x), np.diff(closed_y))
+    assert np.max(steps) < 0.11
+    assert np.min(closed_y) == pytest.approx(
+        -np.sqrt(2.0), abs=1.0e-12
+    )
 
 
 def test_unknown_geometry_and_nonscalar_point_are_rejected():

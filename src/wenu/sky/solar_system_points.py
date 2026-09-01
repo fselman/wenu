@@ -114,11 +114,11 @@ class SolarSystemPointLayer(SkyLayer):
         selected = geometry_options.pop("selected", None)
         if (
             selected is not None
-            and frozenset(selected) != {self.descriptor.selection_key}
+            and self.descriptor.selection_key not in frozenset(selected)
         ):
             raise ValueError(
                 f"{self.descriptor.display_name} selection must contain "
-                f"only {self.descriptor.selection_key}."
+                f"{self.descriptor.selection_key}."
             )
         if geometry_options:
             raise TypeError(
@@ -170,7 +170,16 @@ class SolarSystemPointLayer(SkyLayer):
             native.lat_deg,
             coordinate_spec=native.coordinate_spec,
             ids=np.asarray((self.descriptor.entity_key,), dtype=object),
-            labels=np.asarray((self.descriptor.display_name,), dtype=object),
+            labels=np.asarray(
+                (
+                    getattr(
+                        self.descriptor,
+                        "astronomical_symbol",
+                        None,
+                    ) or self.descriptor.display_name,
+                ),
+                dtype=object,
+            ),
             names=np.asarray((self.descriptor.display_name,), dtype=object),
             metadata={
                 **native.metadata,

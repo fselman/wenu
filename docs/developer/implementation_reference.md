@@ -274,10 +274,21 @@ constellation-label selections already supported by layer geometry. It also
 applies constellation-line and boundary subsets and Milky Way, LMC, and SMC
 isophote levels as render-local geometry options. These selections do not
 change the registered layers' loaded content or defaults.
-Resolved chart requests use the established `ol2` through `ol5` Milky Way
-levels when no levels are supplied, thereby omitting the outer complement
-without removing it from maximal loaded content. Explicit level requests
-retain precedence.
+Resolved chart requests use `ol2` through `ol5` when no Milky Way levels are
+supplied. Comparative Mollweide and stereographic renders established that
+the D3-Celestial `ol1` geometry itself produces a very broad, nearly
+Galactic-latitude-bounded faint envelope; no distant vertex, projection jump,
+or clipping closure creates it. `ol1` remains available as explicit catalogue
+content, but is not a governed display default. Explicit level requests retain
+precedence. The public CLI exposes this nested selection as
+`--mw-contour OL1[,OL2,...]|all`; a comma-separated numbered selection draws
+exactly those isophotes, while `all` draws all five instead of the governed
+default set.
+The runtime catalogue is mechanically exported into five independent,
+plain-text GeoJSON resources, `milky_way_ol1.geojson` through
+`milky_way_ol5.geojson`. Explicit selection sends only rings from the chosen
+file into coordinate transformation and projection; the combined pinned
+snapshot remains provenance authority.
 
 `ResolvedDetail.extended_object_samples` may request a lower render-local
 sampling density for extended-object outlines. It applies to Messier-style

@@ -107,6 +107,43 @@ def test_magnitude_limit_must_be_finite():
         )
 
 
+@pytest.mark.parametrize(
+    ("contour", "expected"),
+    [
+        ("OL1", {"ol1"}),
+        ("ol2", {"ol2"}),
+        ("ol4", {"ol4"}),
+        ("ol5", {"ol5"}),
+        ("all", {"ol1", "ol2", "ol3", "ol4", "ol5"}),
+    ],
+)
+def test_milky_way_contour_selects_one_level_or_all(
+    contour, expected
+):
+    arguments = parser().parse_args(["--mw-contour", contour])
+
+    assert chart_sky_content(arguments).milky_way_levels == expected
+
+
+def test_milky_way_contour_accepts_one_comma_separated_selection():
+    arguments = parser().parse_args(["--mw-contour", "OL1,ol2,OL4"])
+
+    assert chart_sky_content(arguments).milky_way_levels == {
+        "ol1", "ol2", "ol4",
+    }
+
+
+def test_omitted_milky_way_contour_preserves_resolved_default():
+    arguments = parser().parse_args([])
+
+    assert chart_sky_content(arguments).milky_way_levels is None
+
+
+def test_unknown_milky_way_contour_is_rejected():
+    with pytest.raises(SystemExit):
+        parser().parse_args(["--mw-contour", "ol6"])
+
+
 def test_class_aware_selectors_share_one_solar_system_selection():
     arguments = parser().parse_args([
         "--planet", "venus", "--moon",
@@ -122,8 +159,38 @@ def test_class_aware_selectors_share_one_solar_system_selection():
     assert {"venus", "moon"} <= detail.enabled_layer_additions
     assert not {"venus", "moon"} & detail.disabled_layers
 
+    all_planets = parser().parse_args([
+        "--planet", "mercury",
+        "--planet", "venus",
+        "--planet", "mars",
+        "--planet", "jupiter",
+        "--planet", "saturn",
+        "--planet", "uranus",
+        "--planet", "neptune",
+    ])
+    assert chart_content_options(all_planets).planets == {
+        "mercury", "venus", "mars", "jupiter", "saturn", "uranus",
+        "neptune",
+    }
+
+    comma_planets = parser().parse_args([
+        "--planet",
+        "mercury,venus,mars,jupiter,saturn,uranus,neptune",
+    ])
+    assert chart_content_options(comma_planets).planets == {
+        "mercury", "venus", "mars", "jupiter", "saturn", "uranus",
+        "neptune",
+    }
+
+    mixed_planets = parser().parse_args([
+        "--planet", "mercury,venus", "--planet", "mars",
+    ])
+    assert chart_content_options(mixed_planets).planets == {
+        "mercury", "venus", "mars",
+    }
+
     with pytest.raises(SystemExit):
-        parser().parse_args(["--planet", "mars"])
+        parser().parse_args(["--planet", "earth"])
 
 
 @pytest.mark.parametrize("value", ["0", "-10", "nan", "91"])

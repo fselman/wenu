@@ -104,6 +104,7 @@ MOVING_BODY_ARCHITECTURE = (
 DRAWABLE_FROZEN_EARTH_MERCURY_SEQUENCE = (
     DEVELOPER / "drawable_frozen_earth_mercury_sequence_49i3c33c.md"
 )
+APPARENT_MAJOR_PLANETS = DEVELOPER / "apparent_major_planets_49i3d1.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -2625,3 +2626,48 @@ def test_49i3c33c_proposes_descriptor_driven_drawable_mercury():
     assert "Milestone 49I.3C.3.3C drawable frozen-Earth Mercury" in source_tree
     assert "Milestone 49I.3C.3.3C — Drawable frozen-Earth Mercury" in roadmap
     assert "drawable_frozen_earth_mercury_sequence_49i3c33c.md" in instructions
+
+
+def test_49i3d1_proposes_shared_apparent_major_planets():
+    contract = " ".join(read(APPARENT_MAJOR_PLANETS).split())
+    user_guide = " ".join(
+        read(ROOT / "docs/user_guide/configuration.md").split()
+    )
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    for phrase in (
+        "DE440 validation passed; compact-glyph visual acceptance pending",
+        "Mercury, Venus, Mars, Jupiter, Saturn, Uranus, and Neptune",
+        "Earth is not a drawable apparent target",
+        "same apparent symbolic-point machinery",
+        "barycentre targets: Mars `4`, Jupiter `5`, Saturn `6`",
+        "physical planet IDs `499`, `599`, `699`, `799`, and `899`",
+        "`solar_system_objects` selection",
+        "sky/solar_system/planets/<planet>",
+        "`1e-7 deg` component tolerance",
+        "`--planet mercury,venus,mars,jupiter,saturn,uranus,neptune`",
+        "conventional astronomical symbol",
+        "accepted Venus cream `#FFE6A3`",
+        "corresponding `planisphere` render",
+        "only `ol1` produces the unnatural broad envelope",
+        "replace only explicitly supplied fields",
+        "`--mw-contour OL1[,OL2,...]|all`",
+        "single-feature GeoJSON file",
+    ):
+        assert phrase in contract
+    assert "Milestone 49I.3D.1 apparent major planets" in source_tree
+    assert "Milestone 49I.3D.1 — Apparent major-planet symbolic points" in roadmap
+    assert "apparent_major_planets_49i3d1.md" in instructions
+    for phrase in (
+        "## Planet symbols",
+        "`mercury` | Mercury | ☿",
+        "`venus` | Venus | ♀",
+        "`mars` | Mars | ♂",
+        "`jupiter` | Jupiter | ♃",
+        "`saturn` | Saturn | ♄",
+        "`uranus` | Uranus | ♅",
+        "`neptune` | Neptune | ♆",
+        "Earth is the observer's reference body",
+    ):
+        assert phrase in user_guide

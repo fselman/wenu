@@ -13,6 +13,9 @@ from wenu.geometry.projected import (
     ProjectedPolygon,
     ProjectedPolygons,
 )
+
+
+_BOUNDARY_TOLERANCE_DEG = 1.0e-10
 from wenu.geometry.spherical import (
     SphericalCurves,
     SphericalGrid,
@@ -70,10 +73,18 @@ class MollweideProjection:
             np.asarray(lon_deg, dtype=float),
             np.asarray(lat_deg, dtype=float),
         )
-        if np.any(np.isfinite(longitude) & (np.abs(longitude) > 180.0)):
+        if np.any(
+            np.isfinite(longitude)
+            & (np.abs(longitude) > 180.0 + _BOUNDARY_TOLERANCE_DEG)
+        ):
             raise ValueError(
                 "normalized longitude must be between -180 and 180 degrees."
             )
+        longitude = np.where(
+            np.isfinite(longitude),
+            np.clip(longitude, -180.0, 180.0),
+            longitude,
+        )
         if np.any(np.isfinite(latitude) & (np.abs(latitude) > 90.0)):
             raise ValueError("latitude must be between -90 and 90 degrees.")
         theta = _auxiliary_angle(np.radians(latitude))
@@ -343,7 +354,19 @@ def _split_polygon_at_seam(longitude, latitude):
     latitude = latitude[finite]
     if len(longitude) < 3:
         return []
+    source_closed = np.allclose(
+        (longitude[0], latitude[0]),
+        (longitude[-1], latitude[-1]),
+    )
+    if not source_closed:
+        longitude = np.concatenate((longitude, longitude[:1]))
+        latitude = np.concatenate((latitude, latitude[:1]))
     longitude = _unwrap(longitude)
+    winding = int(np.round(
+        (longitude[-1] - longitude[0]) / 360.0
+    ))
+    if winding:
+        return _split_winding_polygon(longitude, latitude, winding=winding)
     rings = []
     for slab in _slab_indices(longitude):
         low = -180.0 + 360.0 * slab
@@ -360,6 +383,113 @@ def _split_polygon_at_seam(longitude, latitude):
         )) > 1.0e-12:
             rings.append((ring_lon - 360.0 * slab, ring_lat))
     return rings
+
+
+def _split_winding_polygon(longitude, latitude, *, winding):
+    """Cut a longitude-winding spherical ring into the map interval.
+
+    A ring that encloses a coordinate pole is closed on the longitude
+    cylinder even though its unwrapped first and last longitudes differ by
+    one turn.  Treating those endpoints as an ordinary planar edge draws a
+    false chord across the map.  Periodic copies supply the complete contour
+    inside the central slab; the remaining opening is closed along the map
+    boundary through the enclosed pole.
+    """
+    segments = []
+    minimum_shift = int(np.floor(
+        (-180.0 - float(np.nanmax(longitude))) / 360.0
+    ))
+    maximum_shift = int(np.ceil(
+        (180.0 - float(np.nanmin(longitude))) / 360.0
+    ))
+    for shift in range(minimum_shift, maximum_shift + 1):
+        shifted = longitude + 360.0 * shift
+        segments.extend(_clip_polyline_to_slab(
+            shifted, latitude, low=-180.0, high=180.0
+        ))
+    segments = _merge_connected_segments(segments)
+    rings = []
+    pole_latitude = -90.0 if winding < 0 else 90.0
+    for ring_lon, ring_lat in segments:
+        ring_lon, ring_lat = _close_ring_along_seam(
+            ring_lon, ring_lat, pole_latitude=pole_latitude
+        )
+        ring_lon, ring_lat = _clean_ring(ring_lon, ring_lat)
+        if len(ring_lon) >= 3 and abs(_ring_area(
+            ring_lon, ring_lat
+        )) > 1.0e-12:
+            rings.append((ring_lon, ring_lat))
+    return rings
+
+
+def _merge_connected_segments(segments):
+    pending = [
+        (np.asarray(lon), np.asarray(lat)) for lon, lat in segments
+        if len(lon) >= 2
+    ]
+    merged = []
+    while pending:
+        longitude, latitude = pending.pop(0)
+        changed = True
+        while changed:
+            changed = False
+            for index, (other_lon, other_lat) in enumerate(pending):
+                if np.allclose(
+                    (longitude[-1], latitude[-1]),
+                    (other_lon[0], other_lat[0]),
+                ):
+                    longitude = np.concatenate((longitude, other_lon[1:]))
+                    latitude = np.concatenate((latitude, other_lat[1:]))
+                elif np.allclose(
+                    (other_lon[-1], other_lat[-1]),
+                    (longitude[0], latitude[0]),
+                ):
+                    longitude = np.concatenate((other_lon[:-1], longitude))
+                    latitude = np.concatenate((other_lat[:-1], latitude))
+                else:
+                    continue
+                pending.pop(index)
+                changed = True
+                break
+        merged.append((longitude, latitude))
+    return merged
+
+
+def _close_ring_along_seam(longitude, latitude, *, pole_latitude):
+    if np.allclose(
+        (longitude[0], latitude[0]),
+        (longitude[-1], latitude[-1]),
+    ):
+        return longitude, latitude
+    start_boundary = 180.0 if longitude[0] > 0.0 else -180.0
+    end_boundary = 180.0 if longitude[-1] > 0.0 else -180.0
+    if start_boundary == end_boundary:
+        return (
+            np.concatenate((longitude, [longitude[0]])),
+            np.concatenate((latitude, [latitude[0]])),
+        )
+
+    end_arc = _latitude_arc(latitude[-1], pole_latitude)
+    start_arc = _latitude_arc(pole_latitude, latitude[0])
+    return (
+        np.concatenate((
+            longitude,
+            np.full(len(end_arc) - 1, end_boundary),
+            np.full(len(start_arc) - 1, start_boundary),
+            [longitude[0]],
+        )),
+        np.concatenate((
+            latitude,
+            end_arc[1:],
+            start_arc[1:],
+            [latitude[0]],
+        )),
+    )
+
+
+def _latitude_arc(start, stop, *, maximum_step=0.25):
+    count = max(1, int(np.ceil(abs(stop - start) / maximum_step)))
+    return np.linspace(start, stop, count + 1)
 
 
 def _clip_polygon_vertical(

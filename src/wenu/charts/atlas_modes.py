@@ -174,6 +174,17 @@ def atlas_chart_style(
             style.deep_sky.open_cluster_label_fontsize * font_scale
         ),
     )
+    solar_system = replace(
+        style.solar_system,
+        venus_color="#FFE6A3",
+        venus_symbol_size=(
+            style.solar_system.venus_symbol_size * symbol_scale
+        ),
+        venus_linewidth=style.solar_system.venus_linewidth * line_scale,
+        venus_label_fontsize=(
+            style.solar_system.venus_label_fontsize * font_scale
+        ),
+    )
     grids = replace(
         style.grids,
         boundary_color=palette.frame,
@@ -209,6 +220,7 @@ def atlas_chart_style(
         stars=stars,
         isophotes=isophotes,
         deep_sky=deep_sky,
+        solar_system=solar_system,
         grids=grids,
         legend=legend,
         mask=mask,

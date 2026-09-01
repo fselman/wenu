@@ -10,7 +10,7 @@ from wenu.coordinates import PositionStatus
 from wenu.coordinates import observer_altaz_spec
 
 from wenu.geometry.spherical import SphericalPolygons
-from wenu.resources import milky_way_isophotes_path
+from wenu.resources import milky_way_isophote_path
 from wenu.sky.observed_cache import (
     icrs_curve_arrays_to_altaz,
     observed_polygon_arrays,
@@ -23,6 +23,10 @@ class MilkyWayIsophotes(SkyLayer):
 
     layer_name = "milky_way_isophotes"
     available_levels = ("ol1", "ol2", "ol3", "ol4", "ol5")
+    # D3-Celestial OL1 is a very faint, full-longitude envelope whose two
+    # principal boundaries produce an unnaturally broad band in ordinary
+    # charts.  Retain it as explicit catalogue content, but start governed
+    # defaults at OL2.
     default_levels = ("ol2", "ol3", "ol4", "ol5")
 
     def __init__(self, observer, *, levels=None):
@@ -30,6 +34,7 @@ class MilkyWayIsophotes(SkyLayer):
         self.levels = self._validate_levels(levels)
         self.features = None
         self.source = None
+        self.sources = {}
         self._source_revision = 0
         self._observed_polygon_cache = {}
 
@@ -52,30 +57,39 @@ class MilkyWayIsophotes(SkyLayer):
 
     def load(self, filename=None):
         """Load and validate the canonical GeoJSON snapshot."""
-        path = milky_way_isophotes_path() if filename is None else filename
-        with open(path, encoding="utf-8") as stream:
-            document = json.load(stream)
-        if document.get("type") != "FeatureCollection":
-            raise ValueError("Milky Way data must be a FeatureCollection.")
-
         features = {}
-        for feature in document.get("features", ()):
-            level = str(
-                feature.get("id")
-                or feature.get("properties", {}).get("id")
-            )
-            geometry = feature.get("geometry", {})
-            if level not in self.available_levels:
-                raise ValueError(f"Unexpected isophote level: {level!r}.")
-            if geometry.get("type") != "MultiPolygon":
-                raise ValueError(
-                    f"{level} must use GeoJSON MultiPolygon geometry."
+        sources = {}
+        paths = (
+            tuple(milky_way_isophote_path(level) for level in self.available_levels)
+            if filename is None
+            else (filename,)
+        )
+        for path in paths:
+            with open(path, encoding="utf-8") as stream:
+                document = json.load(stream)
+            if document.get("type") != "FeatureCollection":
+                raise ValueError("Milky Way data must be a FeatureCollection.")
+            for feature in document.get("features", ()):
+                level = str(
+                    feature.get("id")
+                    or feature.get("properties", {}).get("id")
                 )
-            features[level] = geometry["coordinates"]
+                geometry = feature.get("geometry", {})
+                if level not in self.available_levels:
+                    raise ValueError(f"Unexpected isophote level: {level!r}.")
+                if level in features:
+                    raise ValueError(f"Duplicate isophote level: {level!r}.")
+                if geometry.get("type") != "MultiPolygon":
+                    raise ValueError(
+                        f"{level} must use GeoJSON MultiPolygon geometry."
+                    )
+                features[level] = geometry["coordinates"]
+                sources[level] = str(path)
         if tuple(level for level in self.available_levels if level in features) != self.available_levels:
             raise ValueError("Milky Way data must contain ol1 through ol5.")
         self.features = features
-        self.source = str(path)
+        self.sources = sources
+        self.source = tuple(sources[level] for level in self.available_levels)
         self._source_revision += 1
         self._observed_polygon_cache.clear()
         return self
@@ -96,6 +110,8 @@ class MilkyWayIsophotes(SkyLayer):
         compounds = []
         ring_indices = []
         holes = []
+        projection_cap_topology_inversions = []
+        source_values = []
 
         selected_levels = (
             self.levels
@@ -103,6 +119,8 @@ class MilkyWayIsophotes(SkyLayer):
             else self._validate_levels(levels)
         )
         for level in self.available_levels:
+            if level not in selected_levels:
+                continue
             for polygon_index, polygon in enumerate(self.features[level]):
                 compound = f"{level}:{polygon_index}"
                 for ring_index, ring in enumerate(polygon):
@@ -127,6 +145,23 @@ class MilkyWayIsophotes(SkyLayer):
                     compounds.append(compound)
                     ring_indices.append(ring_index)
                     holes.append(ring_index > 0)
+                    unwrapped_longitude = np.degrees(
+                        np.unwrap(
+                            np.radians(coordinates[:, 0]),
+                            discont=np.pi,
+                        )
+                    )
+                    projection_cap_topology_inversions.append(
+                        abs(int(np.round(
+                            (
+                                unwrapped_longitude[-1]
+                                - unwrapped_longitude[0]
+                            )
+                            / 360.0
+                        )))
+                        >= 1
+                    )
+                    source_values.append(self.sources[level])
 
         longitude, latitude = observed_polygon_arrays(
             self._observed_polygon_cache,
@@ -135,16 +170,13 @@ class MilkyWayIsophotes(SkyLayer):
                 self.layer_name,
                 self.source,
                 self._source_revision,
+                selected_levels,
             ),
             build=lambda: self._transform_rings(
                 native_rings, resolved
             ),
         )
-        positions = [
-            index
-            for index, level in enumerate(level_values)
-            if level in selected_levels
-        ]
+        positions = list(range(len(level_values)))
 
         return SphericalPolygons(
             lon_deg=tuple(longitude[index] for index in positions),
@@ -156,12 +188,16 @@ class MilkyWayIsophotes(SkyLayer):
             ),
             ids=[ids[index] for index in positions],
             metadata={
-                "source": self.source,
+                "source": np.asarray(source_values, dtype=object)[positions],
                 "coordinate_system": "altaz",
                 "level": np.asarray(level_values, dtype=object)[positions],
                 "compound_id": np.asarray(compounds, dtype=object)[positions],
                 "ring_index": np.asarray(ring_indices, dtype=int)[positions],
                 "is_hole": np.asarray(holes, dtype=bool)[positions],
+                "projection_cap_topology_inversion": np.asarray(
+                    projection_cap_topology_inversions,
+                    dtype=bool,
+                )[positions],
                 "semantic_entity_keys": np.asarray(
                     [f"isophote_{level}" for level in level_values],
                     dtype=object,

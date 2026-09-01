@@ -24,6 +24,7 @@ VENUS_POINT = SolarSystemBodyDescriptor(
     selection_key="venus",
     body_class="planet",
     physical_body_id="299",
+    astronomical_symbol="♀",
     classifications=frozenset({"planet"}),
     physical_radius_km=VENUS_MEAN_RADIUS_KM,
     radius_model=VENUS_RADIUS_MODEL,

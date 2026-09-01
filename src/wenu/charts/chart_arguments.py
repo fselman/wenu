@@ -29,6 +29,7 @@ from wenu.sky.solar_system_bodies import (
 from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
 
 GRID_REFERENCES = frozenset({"equatorial", "ecliptic", "galactic"})
+MILKY_WAY_CONTOUR_LEVELS = ("ol1", "ol2", "ol3", "ol4", "ol5")
 _SYMBOLIC_BODY_KEYS = tuple(
     body.selection_key
     for body in SOLAR_SYSTEM_BODY_CATALOG.supporting(SYMBOLIC_POINT)
@@ -104,6 +105,72 @@ def _grid_references(value):
     return names
 
 
+def _planet_selection(value):
+    """Parse one comma-separated set of catalog-backed planet keys."""
+    names = tuple(
+        item.strip().lower()
+        for item in str(value).split(",")
+        if item.strip()
+    )
+    if not names:
+        raise argparse.ArgumentTypeError("planet selection cannot be empty")
+    unknown = set(names) - set(_SYMBOLIC_BODY_KEYS)
+    if unknown:
+        raise argparse.ArgumentTypeError(
+            "unknown planet: " + ", ".join(sorted(unknown))
+        )
+    return names
+
+
+def _selected_planets(values):
+    """Flatten parsed comma groups while accepting direct Namespace values."""
+    selected = []
+    for value in values or ():
+        if isinstance(value, str):
+            selected.extend(_planet_selection(value))
+        else:
+            selected.extend(value)
+    return frozenset(selected)
+
+
+def _milky_way_contour_selection(value):
+    levels = tuple(
+        item.strip().lower() for item in str(value).split(",")
+        if item.strip()
+    )
+    if not levels:
+        raise argparse.ArgumentTypeError(
+            "Milky Way contour selection cannot be empty"
+        )
+    unknown = set(levels).difference(
+        {*MILKY_WAY_CONTOUR_LEVELS, "all"}
+    )
+    if unknown:
+        raise argparse.ArgumentTypeError(
+            "Milky Way contours must be selected from "
+            "ol1, ol2, ol3, ol4, ol5, all"
+        )
+    if "all" in levels and len(levels) != 1:
+        raise argparse.ArgumentTypeError(
+            "all cannot be combined with numbered Milky Way contours"
+        )
+    return levels
+
+
+def _selected_milky_way_contours(values):
+    if values is None:
+        return None
+    selected = []
+    for value in values:
+        if isinstance(value, str):
+            selected.extend(_milky_way_contour_selection(value))
+        else:
+            selected.extend(value)
+    if "all" in selected:
+        return frozenset(MILKY_WAY_CONTOUR_LEVELS)
+    return frozenset(selected)
+
+
 @dataclass(frozen=True)
 class ChartContentOptions:
     """Shared astronomical-content choices parsed by canonical examples."""
@@ -129,6 +196,7 @@ class ChartContentOptions:
     reference_equinox: str | None = None
     planets: frozenset[str] = frozenset()
     moon: bool = False
+    mw_contours: frozenset[str] | None = None
 
     def __post_init__(self):
         if (
@@ -156,6 +224,16 @@ class ChartContentOptions:
             raise ValueError("planets contains an unsupported body.")
         object.__setattr__(self, "planets", planets)
         object.__setattr__(self, "moon", bool(self.moon))
+        contours = self.mw_contours
+        if contours is not None:
+            contours = frozenset(
+                str(level).strip().lower() for level in contours
+            )
+            if contours.difference(MILKY_WAY_CONTOUR_LEVELS):
+                raise ValueError(
+                    "mw_contours must contain only ol1 through ol5."
+                )
+            object.__setattr__(self, "mw_contours", contours)
         step = self.equatorial_declination_step_deg
         if step is not None:
             step = float(step)
@@ -194,11 +272,25 @@ def add_chart_content_arguments(parser):
         help="override the style/family stellar magnitude limit",
     )
     parser.add_argument(
+        "--mw-contour",
+        action="append",
+        type=_milky_way_contour_selection,
+        metavar="OL1[,OL2,...]|all",
+        help=(
+            "draw one selected Milky Way isophote, or all five isophotes, "
+            "instead of the governed default contour set"
+        ),
+    )
+    parser.add_argument(
         "--planet",
         action="append",
-        choices=_SYMBOLIC_BODY_KEYS,
+        type=_planet_selection,
         default=[],
-        help="draw a selected planet (currently: venus)",
+        metavar="PLANET[,PLANET...]",
+        help=(
+            "draw apparent planets from a comma-separated list; the option "
+            "may also be repeated"
+        ),
     )
     parser.add_argument(
         "--planet-appearance",
@@ -432,8 +524,11 @@ def chart_content_options(arguments) -> ChartContentOptions:
         pole_labels=bool(arguments.pole_labels),
         equatorial_declination_step_deg=arguments.declination_step,
         reference_equinox=arguments.reference_equinox,
-        planets=frozenset(getattr(arguments, "planet", ())),
+        planets=_selected_planets(getattr(arguments, "planet", ())),
         moon=bool(getattr(arguments, "moon", False)),
+        mw_contours=_selected_milky_way_contours(
+            getattr(arguments, "mw_contour", None)
+        ),
     )
 
 
@@ -688,7 +783,8 @@ def chart_sky_content(arguments) -> SkyContentSelection:
     if content.moon:
         selected.add("moon")
     return SkyContentSelection(
-        solar_system_objects=frozenset(selected)
+        solar_system_objects=frozenset(selected),
+        milky_way_levels=content.mw_contours,
     )
 
 
