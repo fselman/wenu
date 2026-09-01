@@ -168,7 +168,7 @@ class SolarSystemStyle:
 
     venus_color: str = "#8c5a00"
     venus_marker: str = "o"
-    venus_symbol_size: float = 42.0
+    venus_symbol_size: float = 10.5
     venus_linewidth: float = 0.8
     venus_alpha: float = 1.0
     venus_draw_label: bool = True
