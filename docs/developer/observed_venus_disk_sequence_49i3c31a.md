@@ -126,3 +126,11 @@ It does not pre-accept 49I.3C.3.1B request vocabulary, fixed-frame
 transformation/aggregation, component layers, projected per-centre
 magnification, date labels, semantic SVG identity, styles, or visible output.
 Frozen-Earth ecliptic mode remains 49I.3C.3.2; Mercury remains 49I.3C.3.3.
+
+
+## Regression closure
+
+Documentation verification passed all 64 current-documentation tests in 2.23
+seconds. The routine suite passed 1,985 tests with 30 deselected in 25.46
+seconds, preserving the sub-30-second gate. The complete suite passed all 2,015
+tests in 84.38 seconds.
