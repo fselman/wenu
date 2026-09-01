@@ -48,11 +48,16 @@ def _is_frozen_sequence(value):
     return isinstance(value, FrozenEarthSolarSystemDiskSequenceDisplayRequest)
 
 
-def _frozen_title(language):
+def _frozen_title(language, descriptor=None):
     """Return the automatic frozen-Earth sequence title."""
+    if descriptor is None:
+        from wenu.sky.venus import VENUS_POINT
+
+        descriptor = VENUS_POINT
+    name = descriptor.display_name_for(language)
     if language == "es":
-        return "Secuencia de Venus desde una Tierra fija"
-    return "Frozen-Earth Venus sequence"
+        return f"Secuencia de {name} desde una Tierra fija"
+    return f"Frozen-Earth {name} sequence"
 
 
 def _frozen_furniture(furniture):
@@ -234,7 +239,10 @@ def chart_view_request(
             style_overrides=style_overrides,
         ),),
         title=(
-            _frozen_title(resolved_language)
+            _frozen_title(
+                resolved_language,
+                solar_system_disk_sequence.sequence.descriptor,
+            )
             if frozen and title is None
             else (defaults.title if title is None else title)
         ),

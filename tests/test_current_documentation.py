@@ -101,6 +101,9 @@ MERCURY_DISK_SEQUENCE_AUDIT = (
 MOVING_BODY_ARCHITECTURE = (
     DEVELOPER / "moving_body_architecture_49i3c33a.md"
 )
+DRAWABLE_FROZEN_EARTH_MERCURY_SEQUENCE = (
+    DEVELOPER / "drawable_frozen_earth_mercury_sequence_49i3c33c.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -2594,3 +2597,31 @@ def test_49i3c33a_records_descriptor_driven_moving_body_foundation():
     assert "13.2.32 49I.3C.3.3A moving-body foundation" in guide
     assert "Milestone 49I.3C.3.3A moving-body ownership" in source_tree
     assert "moving_body_architecture_49i3c33a.md" in instructions
+
+
+def test_49i3c33c_proposes_descriptor_driven_drawable_mercury():
+    contract = " ".join(
+        read(DRAWABLE_FROZEN_EARTH_MERCURY_SEQUENCE).split()
+    )
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    for phrase in (
+        "Scientifically, architecturally, visually, and operationally accepted",
+        "adds no Mercury-specific layer, factory, projection, preparation",
+        "`frozen_earth_disk_sequence` capability",
+        "`--disk-sequence-model observed`",
+        "`Mercury` and `Mercurio`",
+        "sky/solar_system/planets/mercury/frozen_earth_sequence",
+        "sky/solar_system/star/sun",
+        "`--planet-disk-sequence mercury`",
+        "`--disk-sequence-step 2d`",
+        "`--disk-sequence-n-steps 44`",
+        "PNG/PDF/SVG parity",
+        "all 2,052 tests in 89.90 seconds",
+        "same frozen-state realizer, disk-geometry realizer",
+    ):
+        assert phrase in contract
+    assert "Milestone 49I.3C.3.3C drawable frozen-Earth Mercury" in source_tree
+    assert "Milestone 49I.3C.3.3C — Drawable frozen-Earth Mercury" in roadmap
+    assert "drawable_frozen_earth_mercury_sequence_49i3c33c.md" in instructions

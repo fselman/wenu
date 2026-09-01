@@ -21,5 +21,6 @@ MERCURY_BODY = SolarSystemBodyDescriptor(
     classifications=frozenset({"planet"}),
     physical_radius_km=MERCURY_MEAN_RADIUS_KM,
     radius_model=MERCURY_RADIUS_MODEL,
+    localized_display_names=(("en", "Mercury"), ("es", "Mercurio")),
     capabilities=frozenset({FROZEN_EARTH_DISK_SEQUENCE}),
 )

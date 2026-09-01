@@ -1110,8 +1110,9 @@ frozen-sequence and disk-geometry seams, the remaining Venus-specific drawable
 owners, Mercury body identity `199`, proposed JPL mean radius `2439.4 km`, and
 the provider body-versus-barycentre distinction.
 
-The proposed bounded slices are 49I.3C.3.3A output-neutral Mercury state plus
-installed-DE440 comparison, followed only after acceptance by 49I.3C.3.3B
+The moving-body foundation was inserted as 49I.3C.3.3A. The bounded Mercury
+slices are therefore 49I.3C.3.3B output-neutral Mercury state plus
+installed-DE440 comparison, followed only after acceptance by 49I.3C.3.3C
 drawable frozen-Earth Mercury. Observed Mercury, symbolic Mercury, tracks,
 single disks, photometry, rotation, multiple bodies, animation, and 3D remain
 outside this audit. The audit changes no runtime or visible output.
@@ -1136,3 +1137,30 @@ register Mercury or expose another CLI body in this slice.
 Fernando accepted the abstraction after all 2,045 Mac tests passed in 86.49
 seconds and human review confirmed unchanged frozen-Earth, single resolved,
 and observed-sequence Venus output.
+
+
+## Milestone 49I.3C.3.3B — Mercury catalog and numerical validation
+
+**Status:** Scientifically and architecturally accepted on 2026-09-01.
+
+Mercury is one immutable descriptor with physical body ID `199`, JPL
+equal-volume mean radius `2439.4 km`, and frozen-Earth capability only. Direct
+installed-DE440 validation passed every declared tolerance and the complete
+Mac suite passed all 2,047 tests in 97.93 seconds. No public Mercury CLI was
+added in this slice.
+
+
+## Milestone 49I.3C.3.3C — Drawable frozen-Earth Mercury
+
+**Status:** Scientifically, architecturally, visually, and operationally
+accepted on 2026-09-01.
+
+Expose Mercury only for the accepted frozen-Earth model through catalog
+capability, generic drawable factories, generic semantics, and descriptor-owned
+localized display names. Observed Mercury and every other unvalidated Mercury
+capability remain rejected. No Mercury-specific drawable infrastructure is
+authorized.
+
+Fernando accepted the shared implementation after 119 focused tests passed in
+3.06 seconds, PNG/PDF/SVG calibration parity passed visual review, and all
+2,052 Mac tests passed in 89.90 seconds.

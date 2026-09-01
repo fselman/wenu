@@ -22,7 +22,6 @@ from wenu.sky.solar_system_bodies import (
     RESOLVED_SPHERICAL_DISK,
     SYMBOLIC_POINT,
 )
-from wenu.charts.chart_arguments import _SEQUENCE_BODY_KEYS
 from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
 from wenu.solar_system_appearance import AU_KM
 
@@ -95,7 +94,6 @@ def test_mercury_is_one_immutable_output_neutral_catalog_registration():
     assert MERCURY_MEAN_RADIUS_KM != 2440.53
     assert "equal-volume mean radius" in MERCURY_RADIUS_MODEL
     assert MERCURY_BODY.capabilities == {FROZEN_EARTH_DISK_SEQUENCE}
-    assert "mercury" not in _SEQUENCE_BODY_KEYS
     for capability in (
         SYMBOLIC_POINT,
         RESOLVED_SPHERICAL_DISK,
