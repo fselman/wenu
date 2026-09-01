@@ -42,7 +42,7 @@ def product():
 
 def test_content_overlay_preserves_resolved_milky_way_defaults():
     resolved = SkyContentSelection(
-        milky_way_levels={"ol2", "ol3", "ol4", "ol5"},
+        milky_way_levels={"ol1", "ol2", "ol3", "ol4", "ol5"},
         solar_system_objects=frozenset(),
     )
     planets = SkyContentSelection(
@@ -51,7 +51,7 @@ def test_content_overlay_preserves_resolved_milky_way_defaults():
 
     merged = _merge_sky_content(resolved, planets)
 
-    assert merged.milky_way_levels == {"ol2", "ol3", "ol4", "ol5"}
+    assert merged.milky_way_levels == {"ol1", "ol2", "ol3", "ol4", "ol5"}
     assert merged.solar_system_objects == {"mercury", "venus"}
 
 
