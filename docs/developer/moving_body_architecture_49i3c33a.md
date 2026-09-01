@@ -1,6 +1,6 @@
 # Descriptor-driven moving-body architecture — Milestone 49I.3C.3.3A
 
-**Status:** Implementation proposed for review
+**Status:** Scientifically, architecturally, and visually accepted
 
 **Decision date:** 2026-09-01
 
@@ -71,3 +71,20 @@ This milestone does not add Mercury, another public CLI body, a minor-body
 ephemeris provider, SGP4, TEME conversion, cometary appearance, satellite
 shadow state, rotational orientation, or new visible output. It does not claim
 that all moving bodies share the same state provider or appearance model.
+
+## Acceptance
+
+Fernando accepted the descriptor/catalog boundary, relationship model,
+capability policy, generic drawable factories, and preservation of
+provider-specific upstream science on 2026-09-01. The complete Mac suite passed
+all 2,045 tests in 86.49 seconds.
+
+Human visual regression accepted the Spanish 31-sample frozen-Earth Venus
+sequence, the ordinary resolved Venus crescent in its regional celestial
+scene, and the four-epoch observed Venus sequence with date labels. The
+observed calibration retains the existing fixed-label crowding; it is not a
+generalization regression. Mercury remains the next independently validated
+catalog registration.
+
+All three Venus compatibility renders were accepted without a body-specific
+projection, renderer, or exporter.
