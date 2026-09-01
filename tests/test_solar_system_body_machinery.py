@@ -45,6 +45,7 @@ TEST_BODY = SolarSystemBodyDescriptor(
         OBSERVED_DISK_SEQUENCE,
         FROZEN_EARTH_DISK_SEQUENCE,
     }),
+    localized_display_names=(("en", "Test Body"), ("es", "Cuerpo de prueba")),
 )
 
 
@@ -86,6 +87,8 @@ def test_catalog_records_classification_and_relationship_without_containment():
     assert catalog.resolve("test-body") is TEST_BODY
     assert catalog.children_of("sun") == (TEST_BODY,)
     assert TEST_BODY.classifications == {"minor_planet", "dwarf_planet"}
+    assert TEST_BODY.display_name_for("es") == "Cuerpo de prueba"
+    assert TEST_BODY.display_name_for("fr") == "Test Body"
 
 
 def test_symbolic_point_and_semantics_are_descriptor_driven():
