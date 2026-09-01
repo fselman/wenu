@@ -3,6 +3,8 @@
 # Contracts consolidated from test_milestone26_nonstellar_symbols.py.
 """Tests for visible NonStellar symbols and label options."""
 
+from types import SimpleNamespace
+
 import astropy.units as u
 import numpy as np
 import pytest
@@ -132,6 +134,38 @@ def test_complete_sphere_polygon_clipping_is_an_identity():
     assert clip_polygons_to_latitude(
         spherical, projected, minimum=-90.0
     ) is projected
+
+
+def test_exact_renderer_boundary_can_own_filled_polygon_clipping():
+    spherical, projected = polygon_collections()
+    layer = object()
+    sky = SimpleNamespace(
+        stars=None,
+        nonstellar=None,
+        milky_way_isophotes=layer,
+        magellanic_cloud_isophotes={},
+        galaxies=None,
+        solar_system_bodies={},
+        venus=None,
+        moon=None,
+        open_clusters=None,
+        planetary_nebulae=None,
+        supernova_remnants=None,
+        globular_clusters=None,
+        constellation_lines=None,
+        constellation_labels=None,
+        constellation_boundaries=None,
+        points=None,
+        layers=(),
+    )
+
+    options = PublicationStyle().layer_options(
+        sky,
+        horizon_altitude_deg=0.0,
+        clip_filled_polygons=False,
+    )
+
+    assert options[layer]["prepare"](spherical, projected) is projected
 
 
 def test_renderer_draws_fill_and_continuous_outline_separately():
