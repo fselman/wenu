@@ -2607,7 +2607,7 @@ def test_49i3c33c_proposes_descriptor_driven_drawable_mercury():
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     instructions = " ".join(read(INSTRUCTIONS).split())
     for phrase in (
-        "Implementation proposed; visual and operational acceptance pending",
+        "Scientifically, architecturally, visually, and operationally accepted",
         "adds no Mercury-specific layer, factory, projection, preparation",
         "`frozen_earth_disk_sequence` capability",
         "`--disk-sequence-model observed`",
@@ -2618,6 +2618,8 @@ def test_49i3c33c_proposes_descriptor_driven_drawable_mercury():
         "`--disk-sequence-step 2d`",
         "`--disk-sequence-n-steps 44`",
         "PNG/PDF/SVG parity",
+        "all 2,052 tests in 89.90 seconds",
+        "same frozen-state realizer, disk-geometry realizer",
     ):
         assert phrase in contract
     assert "Milestone 49I.3C.3.3C drawable frozen-Earth Mercury" in source_tree
