@@ -162,14 +162,6 @@ class MilkyWayIsophotes(SkyLayer):
                 "compound_id": np.asarray(compounds, dtype=object)[positions],
                 "ring_index": np.asarray(ring_indices, dtype=int)[positions],
                 "is_hole": np.asarray(holes, dtype=bool)[positions],
-                # OL1 supplies the valid outer contour, but its
-                # sphere-spanning GeoJSON exterior cannot be face-filled
-                # safely as an ordinary planar compound path.  Retain all
-                # of its boundaries while filling the nested inner levels.
-                "compound_fill": np.asarray(
-                    [level != "ol1" for level in level_values],
-                    dtype=bool,
-                )[positions],
                 "semantic_entity_keys": np.asarray(
                     [f"isophote_{level}" for level in level_values],
                     dtype=object,
