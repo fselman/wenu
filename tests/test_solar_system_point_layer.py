@@ -8,6 +8,7 @@ import pytest
 from wenu.coordinates import CoordinateSpec, ObservationContext, PositionStatus
 from wenu.geometry.spherical import SphericalPoints
 from wenu.sky.realization import LayerRealizationContext
+from wenu.sky.solar_system_bodies import SolarSystemBodyDescriptor
 from wenu.sky.solar_system_points import (
     SolarSystemPointDescriptor,
     SolarSystemPointLayer,
@@ -38,11 +39,12 @@ def context():
 
 
 def test_descriptor_freezes_body_identity_centre_and_correction_policy():
-    descriptor = SolarSystemPointDescriptor(
-        target="moon",
-        entity_key="moon",
-        display_name="Moon",
-        selection_key="moon",
+    descriptor = SolarSystemBodyDescriptor(
+        target="venus",
+        entity_key="venus",
+        display_name="Venus",
+        selection_key="venus",
+        astronomical_symbol="♀",
     )
 
     assert descriptor.target == "moon"
@@ -115,7 +117,7 @@ def test_shared_layer_realizes_a_body_without_projection_or_rendering():
             calls.append("astrometric")
             assert actual_source is source
             assert actual_state is observer_state
-            assert request.target == "moon"
+            assert request.target == "venus"
             assert request.centre == "solar system barycenter"
             return astrometric
 
@@ -129,15 +131,15 @@ def test_shared_layer_realizes_a_body_without_projection_or_rendering():
     class Coordinates:
         def transform(self, geometry, target, observation):
             calls.append("transform")
-            assert geometry.ids.tolist() == ["moon"]
-            assert geometry.labels.tolist() == ["Moon"]
-            assert geometry.names.tolist() == ["Moon"]
+            assert geometry.ids.tolist() == ["venus"]
+            assert geometry.labels.tolist() == ["♀"]
+            assert geometry.names.tolist() == ["Venus"]
             assert geometry.metadata["semantic_entity_keys"].tolist() == [
-                "moon"
+                "venus"
             ]
             assert geometry.metadata[
                 "semantic_entity_display_names"
-            ].tolist() == ["Moon"]
+            ].tolist() == ["Venus"]
             assert geometry.metadata["ephemeris_sha256"] == "b" * 64
             assert geometry.metadata["apparent_provenance"] == (
                 "accepted apparent Moon",
@@ -160,7 +162,7 @@ def test_shared_layer_realizes_a_body_without_projection_or_rendering():
     assert layer.realize(
         realization,
         observer,
-        selected={"moon", "venus"},
+        selected={"mercury", "venus"},
     ) is transformed
     assert calls == ["astrometric", "apparent", "transform"]
 
