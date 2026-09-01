@@ -1166,5 +1166,5 @@ owns deterministic contract coverage;
   and generic frozen state without public CLI exposure.
 - `tools/validate_49i3c3_3b_mercury.py` owns the installed-DE440 direct
   Skyfield comparison and refuses kernel downloads.
-- `docs/developer/mercury_catalog_validation_49i3c33b.md` records the pending
-  numerical acceptance boundary.
+- `docs/developer/mercury_catalog_validation_49i3c33b.md` records the accepted
+  numerical evidence and bounded runtime ownership.
