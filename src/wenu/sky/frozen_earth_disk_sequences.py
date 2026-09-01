@@ -186,6 +186,8 @@ class FrozenEarthGeometricDirection:
     vector_icrf_au: tuple[float, float, float]
     distance_au: float
     frozen_earth_heliocentric_icrf_au: tuple[float, float, float]
+    provider_target_id: str
+    provider_centre_id: str
 
     def __post_init__(self):
         if (
@@ -225,6 +227,16 @@ class FrozenEarthGeometricDirection:
         )
         object.__setattr__(self, "vector_icrf_au", tuple(vector))
         object.__setattr__(self, "distance_au", distance)
+        object.__setattr__(
+            self,
+            "provider_target_id",
+            _text(self.provider_target_id, name="provider_target_id"),
+        )
+        object.__setattr__(
+            self,
+            "provider_centre_id",
+            _text(self.provider_centre_id, name="provider_centre_id"),
+        )
         object.__setattr__(
             self,
             "frozen_earth_heliocentric_icrf_au",
@@ -330,7 +342,7 @@ class FrozenEarthGeometricDisk:
 
 @dataclass(frozen=True)
 class FrozenEarthDiskSequence:
-    """Frozen Earth, fixed Sun direction, and same-epoch Venus states."""
+    """Frozen Earth, fixed Sun direction, and same-epoch planet states."""
 
     request: FrozenEarthDiskSequenceRequest
     frozen_earth_state: EphemerisState
@@ -396,7 +408,7 @@ class FrozenEarthDiskSequence:
 
 
 class FrozenEarthDiskSequenceRealizer:
-    """Realize a geometric Venus sequence from one frozen Earth vector."""
+    """Realize a geometric planet sequence from one frozen Earth vector."""
 
     def __init__(
         self,
@@ -444,7 +456,8 @@ class FrozenEarthDiskSequenceRealizer:
             planet = _vector(planet_state.position, name="planet position")
             direction_vector = planet - earth
             direction = self._direction(
-                request, source, direction_vector, earth, isot, instant.scale
+                request, source, planet_state, direction_vector, earth, isot,
+                instant.scale,
             )
             sun = self._spherical(
                 request, source, sun_vector, "sun", isot, instant.scale
@@ -490,12 +503,15 @@ class FrozenEarthDiskSequenceRealizer:
                 "Earth heliocentric ICRF position frozen at sequence start",
                 "planet heliocentric geometric state evaluated at every epoch",
                 "directions are frozen-observer geometric, not apparent sky",
+                f"target: {request.descriptor.target}",
                 f"ephemeris model: {source.resource.model}",
                 f"ephemeris sha256: {source.resource.sha256}",
             ),
         )
 
-    def _direction(self, request, source, vector, earth, instant, scale):
+    def _direction(
+        self, request, source, state, vector, earth, instant, scale
+    ):
         geometry = self._spherical(
             request, source, vector, request.descriptor.target, instant, scale
         )
@@ -507,6 +523,8 @@ class FrozenEarthDiskSequenceRealizer:
             vector_icrf_au=tuple(vector),
             distance_au=_length(vector, name="frozen-Earth target vector"),
             frozen_earth_heliocentric_icrf_au=tuple(earth),
+            provider_target_id=state.provider_target_id,
+            provider_centre_id=state.provider_centre_id,
         )
 
     def _spherical(self, request, source, vector, target, instant, scale):
