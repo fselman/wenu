@@ -1164,3 +1164,19 @@ authorized.
 Fernando accepted the shared implementation after 119 focused tests passed in
 3.06 seconds, PNG/PDF/SVG calibration parity passed visual review, and all
 2,052 Mac tests passed in 89.90 seconds.
+
+
+## Milestone 49I.3D.1 — Apparent major-planet symbolic points
+
+**Status:** Implementation proposed; installed-DE440 and visual acceptance
+pending.
+
+Register Mercury, Mars, Jupiter, Saturn, Uranus, and Neptune for the same
+ordinary apparent symbolic-point capability used by Venus. Earth remains the
+observer body. Preserve the DE440s barycentre targets for Mars through Neptune
+separately from physical planet identity, and reuse one generic point-layer,
+correction, transformation, semantic, style, renderer, and export path.
+
+This slice preserves the provisional Venus hollow marker for every planet.
+Validated apparent photometry, planet glyphs, resolved disks, rings, tracks,
+and observed sequences remain later capability-specific work.
