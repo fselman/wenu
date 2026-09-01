@@ -22,6 +22,7 @@ from wenu import (
     SkyContentSelection,
 )
 from wenu.observer import Observer
+from wenu.charts.drawing import _merge_sky_content
 
 
 def observer():
@@ -37,6 +38,21 @@ def product():
         style="atlas",
         mode="presentation",
     )
+
+
+def test_content_overlay_preserves_resolved_milky_way_defaults():
+    resolved = SkyContentSelection(
+        milky_way_levels={"ol2", "ol3", "ol4", "ol5"},
+        solar_system_objects=frozenset(),
+    )
+    planets = SkyContentSelection(
+        solar_system_objects={"mercury", "venus"},
+    )
+
+    merged = _merge_sky_content(resolved, planets)
+
+    assert merged.milky_way_levels == {"ol2", "ol3", "ol4", "ol5"}
+    assert merged.solar_system_objects == {"mercury", "venus"}
 
 
 def test_named_observer_is_independent_of_display_furniture():
