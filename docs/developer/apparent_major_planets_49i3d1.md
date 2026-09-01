@@ -62,7 +62,7 @@ wenu_chart all-sky \
   --observer-time "2026-08-30T00:00:00Z" \
   --style atlas \
   --mode presentation \
-  --language es \
+  --language en \
   --planet mercury \
   --planet venus \
   --planet mars \
