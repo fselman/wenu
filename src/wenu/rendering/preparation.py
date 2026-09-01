@@ -475,11 +475,11 @@ def project_polygons_to_projection_cap(
     if (
         not np.isfinite(angular_radius_deg)
         or angular_radius_deg <= 0.0
-        or angular_radius_deg >= 90.0
+        or angular_radius_deg >= 180.0
     ):
         raise ValueError(
             "angular_radius_deg must be finite and between "
-            "0 and 90 degrees."
+            "0 and 180 degrees."
         )
 
     minimum_z = np.cos(np.radians(angular_radius_deg))
@@ -541,10 +541,12 @@ def _clip_one_polygon_to_projection_cap(
     if not np.all(finite) or longitude.size < 3:
         return None
 
-    aligned = projection.transform_spherical(longitude, latitude)
+    aligned_lon, aligned_lat = _projection_aligned_coordinates(
+        projection, longitude, latitude
+    )
     vectors = _unit_vectors(
-        aligned.lon_deg,
-        aligned.lat_deg,
+        aligned_lon,
+        aligned_lat,
     )
     source_vectors = _unit_vectors(longitude, latitude)
     if (
@@ -558,6 +560,7 @@ def _clip_one_polygon_to_projection_cap(
 
     output = []
     output_source = []
+    pending_exit = False
     previous = vectors[-1]
     previous_source = source_vectors[-1]
     previous_inside = previous[2] >= minimum_z
@@ -571,14 +574,23 @@ def _clip_one_polygon_to_projection_cap(
                     minimum_z,
                     return_fraction=True,
                 )
-                output.append(intersection)
-                output_source.append(
-                    _slerp(
-                        previous_source,
-                        current_source,
-                        fraction,
-                    )
+                intersection_source = _slerp(
+                    previous_source,
+                    current_source,
+                    fraction,
                 )
+                if pending_exit and output:
+                    arc = _projection_cap_arc(
+                        output[-1], intersection, minimum_z
+                    )
+                    source_arc = _source_vectors_for_aligned_arc(
+                        arc, projection
+                    )
+                    output.extend(arc[1:-1])
+                    output_source.extend(source_arc[1:-1])
+                output.append(intersection)
+                output_source.append(intersection_source)
+                pending_exit = False
             output.append(current)
             output_source.append(current_source)
         elif previous_inside:
@@ -596,9 +608,26 @@ def _clip_one_polygon_to_projection_cap(
                     fraction,
                 )
             )
+            pending_exit = True
         previous = current
         previous_source = current_source
         previous_inside = current_inside
+
+    if pending_exit and output:
+        first_crossing = next(
+            (
+                index for index, vector in enumerate(output)
+                if np.isclose(vector[2], minimum_z)
+            ),
+            None,
+        )
+        if first_crossing is not None:
+            arc = _projection_cap_arc(
+                output[-1], output[first_crossing], minimum_z
+            )
+            source_arc = _source_vectors_for_aligned_arc(arc, projection)
+            output.extend(arc[1:-1])
+            output_source.extend(source_arc[1:-1])
 
     output, output_source = _deduplicate_vector_pairs(
         output,
@@ -606,25 +635,61 @@ def _clip_one_polygon_to_projection_cap(
     )
     if len(output) < 3:
         return None
-    clipped = np.asarray(output, dtype=float)
-    aligned_lon = np.degrees(
-        np.arctan2(clipped[:, 1], clipped[:, 0])
-    )
-    aligned_lat = np.degrees(
-        np.arcsin(np.clip(clipped[:, 2], -1.0, 1.0))
-    )
-    x, y = projection._project_aligned(
-        aligned_lon,
-        aligned_lat,
-    )
-    polygon = ProjectedPolygon(x=x, y=y, name=name)
-    if not return_source_latitudes:
-        return polygon
     output_source = np.asarray(output_source, dtype=float)
+    source_longitude = np.degrees(
+        np.arctan2(output_source[:, 1], output_source[:, 0])
+    )
     source_latitude = np.degrees(
         np.arcsin(np.clip(output_source[:, 2], -1.0, 1.0))
     )
+    x, y = projection.project_spherical(source_longitude, source_latitude)
+    polygon = ProjectedPolygon(x=x, y=y, name=name)
+    if not return_source_latitudes:
+        return polygon
     return polygon, source_latitude
+
+
+def _projection_cap_arc(start, end, minimum_z, *, maximum_step_deg=0.25):
+    """Return the shorter constant-radius cap arc between crossings."""
+    start_angle = float(np.arctan2(start[1], start[0]))
+    end_angle = float(np.arctan2(end[1], end[0]))
+    delta = (end_angle - start_angle + np.pi) % (2.0 * np.pi) - np.pi
+    count = max(
+        1,
+        int(np.ceil(abs(np.degrees(delta)) / maximum_step_deg)),
+    )
+    angle = np.linspace(start_angle, start_angle + delta, count + 1)
+    radius = np.sqrt(max(0.0, 1.0 - minimum_z * minimum_z))
+    return np.column_stack((
+        radius * np.cos(angle),
+        radius * np.sin(angle),
+        np.full_like(angle, minimum_z),
+    ))
+
+
+def _source_vectors_for_aligned_arc(vectors, projection):
+    longitude = np.degrees(np.arctan2(vectors[:, 1], vectors[:, 0]))
+    latitude = np.degrees(
+        np.arcsin(np.clip(vectors[:, 2], -1.0, 1.0))
+    )
+    frame = getattr(projection, "frame", None)
+    if frame is not None:
+        source = frame.inverse_transform(longitude, latitude)
+        longitude = source.lon_deg
+        latitude = source.lat_deg
+    elif getattr(projection, "pole", None) == "south":
+        latitude = -latitude
+    return _unit_vectors(longitude, latitude)
+
+
+def _projection_aligned_coordinates(projection, longitude, latitude):
+    frame = getattr(projection, "frame", None)
+    if frame is not None:
+        aligned = projection.transform_spherical(longitude, latitude)
+        return aligned.lon_deg, aligned.lat_deg
+    if getattr(projection, "pole", None) == "south":
+        return longitude, -np.asarray(latitude, dtype=float)
+    return longitude, latitude
 
 
 def _unit_vectors(longitude_deg, latitude_deg):
