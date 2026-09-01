@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import replace
+from dataclasses import fields, replace
 
 from .detail import DetailOverrides, SkyContentSelection
 from .furniture import ChartFurnitureOptions, ReferenceAnnotations
@@ -42,6 +42,22 @@ def _empty_sky_content():
         milky_way_levels=empty, lmc_levels=empty, smc_levels=empty,
         solar_system_objects=empty,
     )
+
+
+def _merge_sky_content(base, override):
+    """Overlay explicit content fields without erasing resolved defaults."""
+    if not isinstance(base, SkyContentSelection):
+        raise TypeError("base must be a SkyContentSelection.")
+    if not isinstance(override, SkyContentSelection):
+        raise TypeError("override must be a SkyContentSelection.")
+    return SkyContentSelection(**{
+        field.name: (
+            getattr(base, field.name)
+            if getattr(override, field.name) is None
+            else getattr(override, field.name)
+        )
+        for field in fields(SkyContentSelection)
+    })
 
 
 def _is_frozen_sequence(value):
@@ -223,7 +239,10 @@ def chart_view_request(
         content=(
             _empty_sky_content() if frozen else (
                 view._prepared.resolved.request.content
-                if content is None else content
+                if content is None else _merge_sky_content(
+                    view._prepared.resolved.request.content,
+                    content,
+                )
             )
         ),
         solar_system_track=solar_system_track,
