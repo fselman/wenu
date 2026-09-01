@@ -136,6 +136,22 @@ def test_class_aware_selectors_share_one_solar_system_selection():
         "neptune",
     }
 
+    comma_planets = parser().parse_args([
+        "--planet",
+        "mercury,venus,mars,jupiter,saturn,uranus,neptune",
+    ])
+    assert chart_content_options(comma_planets).planets == {
+        "mercury", "venus", "mars", "jupiter", "saturn", "uranus",
+        "neptune",
+    }
+
+    mixed_planets = parser().parse_args([
+        "--planet", "mercury,venus", "--planet", "mars",
+    ])
+    assert chart_content_options(mixed_planets).planets == {
+        "mercury", "venus", "mars",
+    }
+
     with pytest.raises(SystemExit):
         parser().parse_args(["--planet", "earth"])
 
