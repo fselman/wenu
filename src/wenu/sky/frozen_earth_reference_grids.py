@@ -7,9 +7,8 @@ import numpy as np
 from wenu.coordinate_service import CoordinateService
 from wenu.coordinates import CoordinateSpec
 from wenu.geometry.spherical import SphericalCurves, SphericalGrid
-from wenu.sky.coordinate_grids import EquatorialGrid
+from wenu.sky.coordinate_grids import CoordinatesGrid, EquatorialGrid
 from wenu.sky.realization import LayerRealizationContext
-from wenu.sky.sky_layer import SkyLayer
 
 
 def _fixed_ecliptic_spec(value):
@@ -93,11 +92,19 @@ class FrozenEarthEquatorialGrid(EquatorialGrid):
         )
 
 
-class FrozenEarthEclipticReference(SkyLayer):
+class FrozenEarthEclipticReference(CoordinatesGrid):
     """The latitude-zero ecliptic in the frozen product frame."""
 
     layer_name = "coordinates_grid"
     coordinate_system = "ecliptic"
+
+    def __init__(self):
+        super().__init__(observer=None)
+
+    def _native_coordinate_spec(self):
+        raise TypeError(
+            "frozen-Earth ecliptic reference has no observer-native frame."
+        )
 
     def spherical_geometry(self, observer):
         del observer

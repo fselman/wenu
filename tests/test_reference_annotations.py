@@ -164,6 +164,10 @@ def test_frozen_reference_overlay_uses_product_frame_ecliptic():
 
     assert len(overlay.layers) == 1
     assert isinstance(overlay.layers[0], FrozenEarthEclipticReference)
+    options = _reference_layer_options(overlay, composition, chart())
+    render = options[overlay.layers[0]]["render"]
+    assert render["draw_labels"] is True
+    assert render["label_formatter"]("ecliptic") == "Eclíptica"
 
 
 def test_both_poles_use_conventional_labels():
