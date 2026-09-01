@@ -1,6 +1,6 @@
 # Apparent major-planet symbolic points — Milestone 49I.3D.1
 
-**Status:** Implementation proposed; installed-DE440 and visual acceptance pending
+**Status:** DE440 validation passed; compact-glyph visual acceptance pending
 
 **Implementation date:** 2026-09-01
 
@@ -8,9 +8,11 @@
 
 Expose every non-Earth major planet on ordinary observer-bound charts through
 the same apparent symbolic-point machinery already accepted for Venus. The
-public `--planet` selector may be repeated for Mercury, Venus, Mars, Jupiter,
-Saturn, Uranus, and Neptune. Earth is not a drawable apparent target because
-it is the observer body.
+public `--planet` selector accepts a comma-separated list of Mercury, Venus,
+Mars, Jupiter, Saturn, Uranus, and Neptune; the option may still be repeated.
+Earth is not a drawable apparent target because it is the observer body. The
+same selector and request path apply to all-sky, planisphere, regional,
+circumpolar, and binocular products.
 
 This slice adds catalog data, not planet-specific layers. Every planet uses
 `SolarSystemPointLayer`, the shared astrometric/apparent correction chain, one
@@ -51,10 +53,17 @@ ICRS direction with an independent direct-Skyfield observation, prints the
 physical and actual provider identities, and applies the previously accepted
 `1e-7 deg` component tolerance.
 
-## Proposed visual calibration
+## Symbol and presentation policy
 
-The calibration repeats `--planet mercury` and the corresponding selector for
-each remaining non-Earth planet.
+Each catalog descriptor owns its conventional astronomical symbol: `☿`, `♀`,
+`♂`, `♃`, `♄`, `♅`, and `♆`. Visual labels use these glyphs while semantic
+names and exported identity remain the full localized planet names. All
+symbolic planets share the Venus point style. Its marker diameter is one half
+of the earlier provisional size (Matplotlib area `42.0` to `10.5`), and atlas
+presentation mode uses the accepted Venus cream `#FFE6A3` for both marker and
+glyph.
+
+## Visual calibration
 
 ```bash
 wenu_chart all-sky \
@@ -63,18 +72,12 @@ wenu_chart all-sky \
   --style atlas \
   --mode presentation \
   --language en \
-  --planet mercury \
-  --planet venus \
-  --planet mars \
-  --planet jupiter \
-  --planet saturn \
-  --planet uranus \
-  --planet neptune \
+  --planet mercury,venus,mars,jupiter,saturn,uranus,neptune \
   --output /Users/fselman/Downloads/apparent-major-planets.png
 ```
 
 Visual review must confirm that every selected body appears once at the
 correct sky position, no unselected planet appears, labels and symbols remain
-legible, and PNG/PDF/SVG use the same projected records. Because photometry
-and glyph policy remain 49I.3D work, this slice intentionally preserves the
-same provisional hollow marker and style used by Venus.
+legible, and PNG/PDF/SVG use the same projected records. A corresponding
+`planisphere` render must confirm identical catalog selection and styling on
+both faces.
