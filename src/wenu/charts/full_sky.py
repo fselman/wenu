@@ -231,7 +231,6 @@ class FullSkyChart:
             else resolved_style.layer_options(
                 sky,
                 horizon_altitude_deg=self.horizon_altitude_deg,
-                clip_filled_polygons=False,
             )
         )
         if layer_options is not None:
