@@ -170,7 +170,7 @@ def test_presentation_uses_high_contrast_atlas_palette():
     assert style.isophotes.milky_way_color == palette.milky_way
     assert style.deep_sky.galaxy_edge_color == palette.foreground
     assert style.deep_sky.supernova_remnant_color == palette.structure
-    assert style.solar.venus_color == "#FFE6A3"
+    assert style.solar_system.venus_color == "#FFE6A3"
     assert "#b43b37" not in _style_colors(style)
 
 
@@ -211,8 +211,8 @@ def test_presentation_applies_mode_visual_scales_and_screen_output():
     assert composition.style.stars.area_scale == pytest.approx(
         baseline.stars.area_scale * 1.3
     )
-    assert composition.style.solar.venus_symbol_size == pytest.approx(
-        baseline.solar.venus_symbol_size * 1.3
+    assert composition.style.solar_system.venus_symbol_size == pytest.approx(
+        baseline.solar_system.venus_symbol_size * 1.3
     )
 
 
