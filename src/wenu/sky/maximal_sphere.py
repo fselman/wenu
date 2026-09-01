@@ -8,6 +8,8 @@ from pathlib import Path
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.magellanic_clouds import MagellanicCloudIsophotes
 from wenu.sky.milky_way import MilkyWayIsophotes
+from wenu.sky.solar_system_bodies import SYMBOLIC_POINT
+from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
 
 
 def _source(value):
@@ -121,6 +123,9 @@ def build_maximal_sphere(
     sky = CelestialSphere(observer)
     sky.load_profile = profile
     sky.add_venus()
+    for descriptor in SOLAR_SYSTEM_BODY_CATALOG.supporting(SYMBOLIC_POINT):
+        if descriptor.selection_key != "venus":
+            sky.add_solar_system_body(descriptor)
     sky.add_moon()
     sky.add_milky_way_isophotes(
         filename=profile.milky_way_filename,
