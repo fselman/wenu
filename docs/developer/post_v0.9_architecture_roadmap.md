@@ -1082,3 +1082,20 @@ The installed-DE440 comparison agreed to `4.337e-12 AU` in target vectors,
 passed 63 focused tests, 1,997 routine tests with 30 deselected, and all 2,027
 tests. This slice adds no public request or visible output; drawable restricted
 ecliptic presentation remains 49I.3C.3.2B, and Mercury remains 49I.3C.3.3.
+
+
+## Milestone 49I.3C.3.2B — Drawable frozen-Earth Venus sequence
+
+**Status:** Scientifically, architecturally, visually, and operationally
+accepted on 2026-09-01.
+
+Regional charts now expose the start-inclusive frozen-Earth construction with
+exact major steps, one central fixed Sun, optional date labels, and per-centre
+Venus display magnification. The restricted scene permits an explicitly
+requested product-frame ecliptic and optional fixed-frame equatorial grid.
+Automatic titles and reference labels are localized after language resolution.
+
+Fernando accepted the 31-disk La Ligua Virgo calibration with seven-day steps,
+magnification 200, the ecliptic through the Sun, the distinct equatorial grid,
+and Spanish labeling. Verification passed 156 focused tests and all 2,037 Mac
+tests in 84.41 seconds. Mercury remains 49I.3C.3.3.

@@ -335,3 +335,12 @@ ICRF evidence, frozen-earth/AU distances, geometric status, and fixed J2000
 mean-ecliptic axes. Never pass this state through the apparent-direction chain.
 Keep public request, Sun glyph, restricted scene, and visible output in
 49I.3C.3.2B.
+
+
+For the drawable frozen-Earth Venus sequence, consult
+`drawable_frozen_earth_venus_sequence_49i3c32b.md`. Preserve frozen-Earth
+public request integration, restricted regional content, fixed Sun,
+per-centre magnification, localized title, and product-frame
+ecliptic/equatorial references. Never introduce an observer AltAz intermediate
+into fixed-frame reference geometry. Keep Mercury in the independently
+validated 49I.3C.3.3 milestone.

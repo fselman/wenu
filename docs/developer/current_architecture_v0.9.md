@@ -512,3 +512,21 @@ This state remains output-neutral. Public request integration, resolved disk
 adaptation, per-centre projected magnification, central six-point Sun,
 equatorial grid, restricted scene, semantics, and rendering remain
 49I.3C.3.2B. Mercury remains 49I.3C.3.3; no 3D visualizer is installed.
+
+
+## Drawable frozen-Earth Venus disk sequence
+
+Milestone 49I.3C.3.2B installs the accepted frozen construction in regional
+charts. Exact start-inclusive Venus states share ordinary illuminated, limb,
+terminator, optional-label, and central fixed-Sun spherical layers. Each Venus
+disk is magnified after projection about its own physical centre.
+
+The restricted scene permits only those sequence layers, the fixed Sun, an
+optional equatorial grid, and an explicitly requested ecliptic reference. The
+ecliptic is latitude zero in the fixed product frame; the equatorial grid is
+transformed directly from FK5 into those same J2000 mean-ecliptic axes. Neither
+reference depends on observer AltAz geometry. Automatic English and Spanish
+titles and reference labels use the resolved chart language.
+
+All retained directions remain frozen-observer geometric, not apparent sky.
+Mercury remains 49I.3C.3.3; no 3D visualizer is installed.

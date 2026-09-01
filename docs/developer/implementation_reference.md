@@ -1959,6 +1959,24 @@ none use the apparent-direction pipeline. The API is output-neutral. Drawable
 restricted-scene integration remains 49I.3C.3.2B.
 
 
+## Drawable frozen-Earth Venus sequence (Milestone 49I.3C.3.2B)
+
+`FrozenEarthSolarSystemDiskSequenceDisplayRequest` combines the accepted
+scientific request with governed magnification and optional dates.
+`FrozenEarthVenusDiskSequenceRealization` exposes shared illuminated-face,
+limb, terminator, centre, and fixed-Sun spherical geometry in the frozen-Earth
+product frame.
+
+Regional drawing restricts content to those layers, an optional
+`FrozenEarthEquatorialGrid`, and an explicitly requested
+`FrozenEarthEclipticReference`. `MagnifyProjectedDiskSequence` magnifies every
+Venus disk around its own projected physical centre. Public controls use
+`--planet-disk-sequence venus`, `--disk-sequence-model
+frozen-earth-ecliptic`, `--disk-sequence-start`, `--disk-sequence-step`,
+`--disk-sequence-n-steps`, optional `--disk-sequence-labels`, and
+`--planet-disk-magnification venus=FACTOR`.
+
+
 ## Accepted multi-epoch planet-disk sequence (Milestone 49I.3C.3)
 
 `planet_disk_sequence_audit_49i3c3.md` defines a proposed immutable sequence
