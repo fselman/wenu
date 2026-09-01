@@ -145,8 +145,15 @@ def test_render_delegates_with_chart_horizon():
             calls["boundary_style"] = style
 
     class Style:
-        def layer_options(self, sky, *, horizon_altitude_deg):
+        def layer_options(
+            self,
+            sky,
+            *,
+            horizon_altitude_deg,
+            clip_filled_polygons,
+        ):
             calls["minimum"] = horizon_altitude_deg
+            calls["clip_filled_polygons"] = clip_filled_polygons
             return {"base": {"render": {"style": {"color": "white"}}}}
 
     class Sky:
@@ -166,6 +173,7 @@ def test_render_delegates_with_chart_horizon():
     )
     assert result == "result"
     assert calls["minimum"] == 5.0
+    assert calls["clip_filled_polygons"] is False
     assert calls["boundary"].closed
     assert "base" in calls["draw"]["layer_options"]
     assert "override" in calls["draw"]["layer_options"]
