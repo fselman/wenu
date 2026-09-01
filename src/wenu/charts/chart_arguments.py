@@ -133,21 +133,42 @@ def _selected_planets(values):
     return frozenset(selected)
 
 
-def _milky_way_contour(value):
-    level = str(value).strip().lower()
-    if level != "all" and level not in MILKY_WAY_CONTOUR_LEVELS:
+def _milky_way_contour_selection(value):
+    levels = tuple(
+        item.strip().lower() for item in str(value).split(",")
+        if item.strip()
+    )
+    if not levels:
         raise argparse.ArgumentTypeError(
-            "Milky Way contour must be one of ol1, ol2, ol3, ol4, ol5, all"
+            "Milky Way contour selection cannot be empty"
         )
-    return level
+    unknown = set(levels).difference(
+        {*MILKY_WAY_CONTOUR_LEVELS, "all"}
+    )
+    if unknown:
+        raise argparse.ArgumentTypeError(
+            "Milky Way contours must be selected from "
+            "ol1, ol2, ol3, ol4, ol5, all"
+        )
+    if "all" in levels and len(levels) != 1:
+        raise argparse.ArgumentTypeError(
+            "all cannot be combined with numbered Milky Way contours"
+        )
+    return levels
 
 
-def _milky_way_levels_from_selection(selection):
-    if selection is None:
+def _selected_milky_way_contours(values):
+    if values is None:
         return None
-    if selection == "all":
+    selected = []
+    for value in values:
+        if isinstance(value, str):
+            selected.extend(_milky_way_contour_selection(value))
+        else:
+            selected.extend(value)
+    if "all" in selected:
         return frozenset(MILKY_WAY_CONTOUR_LEVELS)
-    return frozenset({selection})
+    return frozenset(selected)
 
 
 @dataclass(frozen=True)
@@ -175,7 +196,7 @@ class ChartContentOptions:
     reference_equinox: str | None = None
     planets: frozenset[str] = frozenset()
     moon: bool = False
-    mw_contour: str | None = None
+    mw_contours: frozenset[str] | None = None
 
     def __post_init__(self):
         if (
@@ -203,17 +224,16 @@ class ChartContentOptions:
             raise ValueError("planets contains an unsupported body.")
         object.__setattr__(self, "planets", planets)
         object.__setattr__(self, "moon", bool(self.moon))
-        contour = self.mw_contour
-        if contour is not None:
-            contour = str(contour).strip().lower()
-            if (
-                contour != "all"
-                and contour not in MILKY_WAY_CONTOUR_LEVELS
-            ):
+        contours = self.mw_contours
+        if contours is not None:
+            contours = frozenset(
+                str(level).strip().lower() for level in contours
+            )
+            if contours.difference(MILKY_WAY_CONTOUR_LEVELS):
                 raise ValueError(
-                    "mw_contour must be ol1, ol2, ol3, ol4, ol5, or all."
+                    "mw_contours must contain only ol1 through ol5."
                 )
-            object.__setattr__(self, "mw_contour", contour)
+            object.__setattr__(self, "mw_contours", contours)
         step = self.equatorial_declination_step_deg
         if step is not None:
             step = float(step)
@@ -253,8 +273,9 @@ def add_chart_content_arguments(parser):
     )
     parser.add_argument(
         "--mw-contour",
-        type=_milky_way_contour,
-        metavar="OL1|OL2|OL3|OL4|OL5|all",
+        action="append",
+        type=_milky_way_contour_selection,
+        metavar="OL1[,OL2,...]|all",
         help=(
             "draw one selected Milky Way isophote, or all five isophotes, "
             "instead of the governed default contour set"
@@ -505,7 +526,9 @@ def chart_content_options(arguments) -> ChartContentOptions:
         reference_equinox=arguments.reference_equinox,
         planets=_selected_planets(getattr(arguments, "planet", ())),
         moon=bool(getattr(arguments, "moon", False)),
-        mw_contour=getattr(arguments, "mw_contour", None),
+        mw_contours=_selected_milky_way_contours(
+            getattr(arguments, "mw_contour", None)
+        ),
     )
 
 
@@ -761,9 +784,7 @@ def chart_sky_content(arguments) -> SkyContentSelection:
         selected.add("moon")
     return SkyContentSelection(
         solar_system_objects=frozenset(selected),
-        milky_way_levels=_milky_way_levels_from_selection(
-            content.mw_contour
-        ),
+        milky_way_levels=content.mw_contours,
     )
 
 
