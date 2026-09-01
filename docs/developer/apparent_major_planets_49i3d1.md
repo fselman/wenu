@@ -65,6 +65,9 @@ glyph.
 
 ## Visual calibration
 
+The preferred compact syntax is
+`--planet mercury,venus,mars,jupiter,saturn,uranus,neptune`.
+
 ```bash
 wenu_chart all-sky \
   --observer-location "La Ligua" \
