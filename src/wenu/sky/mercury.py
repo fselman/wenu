@@ -19,6 +19,7 @@ MERCURY_BODY = SolarSystemBodyDescriptor(
     selection_key="mercury",
     body_class="planet",
     physical_body_id=MERCURY_NAIF_BODY_ID,
+    astronomical_symbol="☿",
     classifications=frozenset({"planet"}),
     physical_radius_km=MERCURY_MEAN_RADIUS_KM,
     radius_model=MERCURY_RADIUS_MODEL,
