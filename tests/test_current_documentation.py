@@ -2647,7 +2647,7 @@ def test_49i3d1_proposes_shared_apparent_major_planets():
         "conventional astronomical symbol",
         "accepted Venus cream `#FFE6A3`",
         "corresponding `planisphere` render",
-        "valid faint outer `ol1` envelope",
+        "only `ol1` produces the unnatural broad envelope",
         "replace only explicitly supplied fields",
         "`--mw-lowest-contour OL1|OL2|OL3|OL4|OL5`",
     ):
