@@ -486,16 +486,9 @@ class ChartStyle:
         """Return presentation options for the semantic horizon."""
         return self.as_publication_style().horizon_reference_style()
 
-    def layer_options(
-        self,
-        sky,
-        *,
-        horizon_altitude_deg=None,
-        clip_filled_polygons=True,
-    ):
+    def layer_options(self, sky, *, horizon_altitude_deg=None):
         """Build renderer options for layers registered in ``sky``."""
         return self.as_publication_style().layer_options(
             sky,
             horizon_altitude_deg=horizon_altitude_deg,
-            clip_filled_polygons=clip_filled_polygons,
         )
