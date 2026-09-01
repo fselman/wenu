@@ -1,8 +1,10 @@
 # Mercury disk-sequence generalization audit — Milestone 49I.3C.3.3
 
-**Status:** Proposed for scientific and architectural review
+**Status:** Scientifically and architecturally accepted
 
 **Audit date:** 2026-09-01
+
+**Acceptance date:** 2026-09-01
 
 **As-is baseline:** `3a713fb`
 
@@ -176,12 +178,13 @@ Stop and re-audit if implementation would:
 - select numerical tolerances from desired test outcomes rather than the
   independent comparison.
 
-## 9. Review decision
+## 9. Acceptance
 
-Fernando's review must decide whether this two-slice boundary, mean-radius
-authority, provider-ID distinction, frozen-only first drawable scope, and
-explicit non-goals are scientifically and architecturally acceptable. Merging
-this audit authorizes only separately reviewed 49I.3C.3.3A work; it does not
-pre-accept Mercury runtime values, tolerances, public output, or visual design.
+Fernando scientifically and architecturally accepted the two-slice boundary,
+JPL equal-volume mean-radius authority, physical-body versus provider-
+barycentre identity distinction, frozen-only first drawable scope, and
+explicit non-goals on 2026-09-01. Merging this audit authorizes only separately
+reviewed 49I.3C.3.3A work; it does not pre-accept Mercury runtime values,
+tolerances, public output, or visual design.
 
 Audit preparation verification passed all 68 current-documentation tests.

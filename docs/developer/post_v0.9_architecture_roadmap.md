@@ -1103,7 +1103,7 @@ tests in 84.41 seconds. Mercury remains 49I.3C.3.3.
 
 ## Milestone 49I.3C.3.3 — Mercury generalization and validation audit
 
-**Status:** Proposed for scientific and architectural review on 2026-09-01.
+**Status:** Scientifically and architecturally accepted on 2026-09-01.
 
 `mercury_disk_sequence_audit_49i3c33.md` identifies the accepted generic
 frozen-sequence and disk-geometry seams, the remaining Venus-specific drawable
@@ -1115,3 +1115,8 @@ installed-DE440 comparison, followed only after acceptance by 49I.3C.3.3B
 drawable frozen-Earth Mercury. Observed Mercury, symbolic Mercury, tracks,
 single disks, photometry, rotation, multiple bodies, animation, and 3D remain
 outside this audit. The audit changes no runtime or visible output.
+
+Fernando accepted the two-slice boundary, JPL equal-volume mean radius,
+physical-body/provider-barycentre distinction, frozen-only first drawable
+scope, and explicit non-goals after all 68 current-documentation tests passed
+on his Mac in 2.19 seconds.

@@ -2546,7 +2546,7 @@ def test_49i3c33_audits_mercury_generalization_and_validation():
 
     for phrase in (
         "**As-is baseline:** `3a713fb`",
-        "Proposed for scientific and architectural review",
+        "Scientifically and architecturally accepted",
         "`2439.4 km`",
         "equatorial radius `2440.53 km`",
         "NAIF body code `199`",
@@ -2559,6 +2559,7 @@ def test_49i3c33_audits_mercury_generalization_and_validation():
         "does not authorize observed/topocentric Mercury sequences",
         "changes no runtime type",
         "all 68 current-documentation tests",
+        "Fernando scientifically and architecturally accepted",
     ):
         assert phrase in audit
 
