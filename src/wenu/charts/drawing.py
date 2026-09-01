@@ -157,11 +157,13 @@ def chart_view_request(
             raise ValueError(
                 "frozen-Earth ecliptic sequences permit only the equatorial grid."
             )
+        body_key = solar_system_disk_sequence.sequence.descriptor.entity_key
+        prefix = f"{body_key}_disk_sequence_frozen_"
         frozen_layers = {
-            "venus_disk_sequence_frozen_illuminated",
-            "venus_disk_sequence_frozen_limb",
-            "venus_disk_sequence_frozen_terminator",
-            "venus_disk_sequence_frozen_labels",
+            f"{prefix}illuminated",
+            f"{prefix}limb",
+            f"{prefix}terminator",
+            f"{prefix}labels",
             "frozen_earth_sun",
         }
         if "equatorial_grid" in (
