@@ -115,6 +115,32 @@ _NONSTELLAR_CATEGORY_CONTRACTS = {
 
 
 _LAYER_CONTRACTS = {
+    "frozen_earth_sun": SemanticLayerContract(
+        ("sky", "solar_system", "star", "sun"),
+        "Sun", 38, "sun_symbol",
+    ),
+    "venus_disk_sequence_frozen_illuminated": SemanticLayerContract(
+        (
+            "sky", "solar_system", "planets", "venus",
+            "frozen_earth_sequence", "illuminated",
+        ),
+        "Frozen-Earth Venus illuminated faces", 38, "planet_disk_sequence_illuminated",
+    ),
+    "venus_disk_sequence_frozen_terminator": SemanticLayerContract(
+        (
+            "sky", "solar_system", "planets", "venus",
+            "frozen_earth_sequence", "terminator",
+        ),
+        "Frozen-Earth Venus terminators", 38, "planet_disk_sequence_terminator",
+    ),
+    "venus_disk_sequence_frozen_limb": SemanticLayerContract(
+        ("sky", "solar_system", "planets", "venus", "frozen_earth_sequence", "limb"),
+        "Frozen-Earth Venus limbs", 38, "planet_disk_sequence_limb",
+    ),
+    "venus_disk_sequence_frozen_labels": SemanticLayerContract(
+        ("sky", "solar_system", "planets", "venus", "frozen_earth_sequence", "labels"),
+        "Frozen-Earth Venus date labels", 38, "planet_disk_sequence_labels",
+    ),
     "venus_disk_sequence_illuminated": SemanticLayerContract(
         ("sky", "solar_system", "planets", "venus", "disk_sequence", "illuminated"),
         "Venus sequence illuminated faces", 38, "planet_disk_sequence_illuminated",

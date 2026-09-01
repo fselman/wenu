@@ -8,9 +8,10 @@ from .detail import DetailOverrides, SkyContentSelection
 from .furniture import ChartFurnitureOptions
 from .product_options import ChartProduct, ChartProductOptions
 from .request import ChartRequest
-from .request_chart import PreparedChartRequest
+from .request_chart import PreparedChartRequest, _chart_from_resolved
 from .request_composition import ChartProductCompositionOptions
 from .request_disks import configure_chart_request_disks
+from .request_disks import FrozenEarthSolarSystemDiskSequenceDisplayRequest
 from .request_generation import export_prepared_chart
 from .request_grids import configure_chart_request_grids
 from .request_horizon import configure_chart_request_horizon
@@ -29,6 +30,22 @@ _GRID_NAMES = {
     "galactic": "galactic_grid",
     "galactic_grid": "galactic_grid",
 }
+
+
+def _empty_sky_content():
+    empty = frozenset()
+    return SkyContentSelection(
+        constellation_lines=empty, constellation_boundaries=empty,
+        constellation_labels=empty, nonstellar_objects=empty,
+        galaxies=empty, open_clusters=empty, globular_clusters=empty,
+        planetary_nebulae=empty, supernova_remnants=empty,
+        milky_way_levels=empty, lmc_levels=empty, smc_levels=empty,
+        solar_system_objects=empty,
+    )
+
+
+def _is_frozen_sequence(value):
+    return isinstance(value, FrozenEarthSolarSystemDiskSequenceDisplayRequest)
 
 
 def _furniture_product_export_defaults(configuration=None):
@@ -110,6 +127,32 @@ def chart_view_request(
         requested_labels = requested_grids
     additions = frozenset(overrides.enabled_layer_additions or ())
     labels = frozenset(overrides.grid_label_layers or ())
+    frozen = _is_frozen_sequence(solar_system_disk_sequence)
+    if frozen:
+        if horizon or horizon_mask or solar_system_track or solar_system_disks:
+            raise ValueError(
+                "frozen-Earth ecliptic sequences exclude horizon, tracks, "
+                "and ordinary resolved disks."
+            )
+        forbidden = (requested_grids | requested_labels | additions | labels) - {
+            "equatorial_grid"
+        }
+        if forbidden:
+            raise ValueError(
+                "frozen-Earth ecliptic sequences permit only the equatorial grid."
+            )
+        frozen_layers = {
+            "venus_disk_sequence_frozen_illuminated",
+            "venus_disk_sequence_frozen_limb",
+            "venus_disk_sequence_frozen_terminator",
+            "venus_disk_sequence_frozen_labels",
+            "frozen_earth_sun",
+        }
+        if "equatorial_grid" in (
+            requested_grids | requested_labels | additions | labels
+        ):
+            frozen_layers.add("equatorial_grid")
+        overrides = replace(overrides, enabled_layers=frozenset(frozen_layers))
     overrides = replace(
         overrides,
         enabled_layer_additions=additions | requested_grids,
@@ -123,6 +166,8 @@ def chart_view_request(
         )
         if furniture is None else furniture
     )
+    if frozen:
+        furniture = ChartFurnitureOptions()
     if not isinstance(furniture, ChartFurnitureOptions):
         raise TypeError("furniture must be a ChartFurnitureOptions value.")
     if style_overrides is not None and not isinstance(
@@ -152,8 +197,10 @@ def chart_view_request(
         ),
         detail=overrides,
         content=(
-            view._prepared.resolved.request.content
-            if content is None else content
+            _empty_sky_content() if frozen else (
+                view._prepared.resolved.request.content
+                if content is None else content
+            )
         ),
         solar_system_track=solar_system_track,
         solar_system_track_tick_labels=bool(solar_system_track_tick_labels),
@@ -167,11 +214,20 @@ def chart_view_request(
             detail=detail,
             style_overrides=style_overrides,
         ),),
-        title=defaults.title if title is None else title,
+        title=(
+            "Frozen-Earth Venus sequence"
+            if frozen and title is None
+            else (defaults.title if title is None else title)
+        ),
         language=defaults.language if language is None else language,
         reference_policy=(
             view._prepared.resolved.request.reference_policy
             if reference_policy is None else reference_policy
+        ),
+        coordinate_frame=(
+            "ecliptic"
+            if frozen
+            else view._prepared.resolved.request.coordinate_frame
         ),
     )
     if output_format is not None:
@@ -198,8 +254,15 @@ def draw_chart_view_request(view, request):
     configure_chart_request_horizon(view.sky, request)
     configure_chart_request_track(view.sky, request)
     configure_chart_request_disks(view.sky, request)
+    chart = view.chart
+    if _is_frozen_sequence(request.solar_system_disk_sequence):
+        chart = _chart_from_resolved(
+            view.sky,
+            replace(view._prepared.resolved, request=request),
+            view.observer,
+        )
     prepared = PreparedChartRequest(
-        chart=view.chart,
+        chart=chart,
         resolved=replace(view._prepared.resolved, request=request),
     )
     export_options = {"observer": view.observer}

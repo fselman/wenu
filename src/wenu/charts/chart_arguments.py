@@ -11,6 +11,7 @@ from .detail import DetailOverrides, SkyContentSelection
 from .product_options import add_chart_product_arguments
 from .reference_policy import CelestialReferencePolicy
 from .request_disks import (
+    FrozenEarthSolarSystemDiskSequenceDisplayRequest,
     ObservedSolarSystemDiskSequenceDisplayRequest,
     SolarSystemDiskDisplayRequest,
 )
@@ -18,6 +19,7 @@ from .style_overrides import ChartStyleOverrides
 from wenu.sky.solar_system_disk_sequences import (
     ObservedSolarSystemDiskSequenceRequest,
 )
+from wenu.sky.frozen_earth_disk_sequences import FrozenEarthDiskSequenceRequest
 from wenu.sky.venus import VENUS_POINT
 from wenu.sky.venus_disk import VENUS_RADIUS_MODEL
 from wenu.solar_system_appearance import VENUS_MEAN_RADIUS_KM
@@ -208,8 +210,8 @@ def add_chart_content_arguments(parser):
     )
     parser.add_argument(
         "--disk-sequence-model",
-        choices=("observed",),
-        help="scientific sequence model (currently: observed)",
+        choices=("observed", "frozen-earth-ecliptic"),
+        help="scientific sequence model",
     )
     parser.add_argument("--disk-sequence-start", metavar="ISO_TIME")
     parser.add_argument(
@@ -496,10 +498,8 @@ def chart_disk_sequence_options(arguments):
             + ", ".join(missing)
         )
     target, model, start, step_days, n_steps = values
-    if model != "observed":
-        raise ValueError(
-            "disk-sequence-model currently supports only observed."
-        )
+    if model not in {"observed", "frozen-earth-ecliptic"}:
+        raise ValueError("unsupported disk-sequence-model.")
     if isinstance(n_steps, bool) or n_steps < 0:
         raise ValueError("disk-sequence-n-steps must be a nonnegative integer")
     appearances, magnifications = _disk_selections(arguments)
@@ -507,8 +507,18 @@ def chart_disk_sequence_options(arguments):
         raise ValueError(
             "a planet cannot be both a single resolved disk and a disk sequence."
         )
-    return ObservedSolarSystemDiskSequenceDisplayRequest(
-        ObservedSolarSystemDiskSequenceRequest(
+    request_type = (
+        FrozenEarthDiskSequenceRequest
+        if model == "frozen-earth-ecliptic"
+        else ObservedSolarSystemDiskSequenceRequest
+    )
+    display_type = (
+        FrozenEarthSolarSystemDiskSequenceDisplayRequest
+        if model == "frozen-earth-ecliptic"
+        else ObservedSolarSystemDiskSequenceDisplayRequest
+    )
+    return display_type(
+        request_type(
             descriptor=VENUS_POINT,
             start_instant=str(start).strip(),
             start_time_scale="utc",

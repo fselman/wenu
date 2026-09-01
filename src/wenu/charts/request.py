@@ -13,6 +13,7 @@ from .product_options import ChartProductOptions
 from .request_composition import ChartProductCompositionOptions
 from .reference_policy import CelestialReferencePolicy
 from .request_disks import (
+    FrozenEarthSolarSystemDiskSequenceDisplayRequest,
     ObservedSolarSystemDiskSequenceDisplayRequest,
     SolarSystemDiskDisplayRequest,
 )
@@ -26,7 +27,7 @@ CHART_PROJECTIONS = frozenset(
     {"stereographic", "mollweide", "polar_azimuthal_equidistant"}
 )
 CHART_COORDINATE_FRAMES = frozenset(
-    {"horizontal", "galactic", "equatorial"}
+    {"horizontal", "galactic", "equatorial", "ecliptic"}
 )
 CHART_LANGUAGES = frozenset({"en", "es"})
 EXCLUDABLE_CATALOGUE_FAMILIES = (
@@ -365,7 +366,9 @@ class ChartRequest:
     solar_system_track_tick_labels: bool = False
     solar_system_disks: tuple[SolarSystemDiskDisplayRequest, ...] = ()
     solar_system_disk_sequence: (
-        ObservedSolarSystemDiskSequenceDisplayRequest | None
+        ObservedSolarSystemDiskSequenceDisplayRequest
+        | FrozenEarthSolarSystemDiskSequenceDisplayRequest
+        | None
     ) = None
     exclusions: ChartContentExclusions = ChartContentExclusions()
     detail: DetailOverrides = DetailOverrides()
@@ -393,14 +396,19 @@ class ChartRequest:
         coordinate_frame = str(self.coordinate_frame).strip().lower()
         if coordinate_frame not in CHART_COORDINATE_FRAMES:
             raise ValueError(
-                "coordinate_frame must be 'horizontal', 'galactic', or "
-                "'equatorial'."
+                "coordinate_frame must be horizontal, galactic, equatorial, "
+                "or ecliptic."
             )
-        expected_geometry = (
-            ("mollweide", "galactic")
-            if family == "all_sky"
-            else ("stereographic", "horizontal")
+        frozen_sequence = isinstance(
+            self.solar_system_disk_sequence,
+            FrozenEarthSolarSystemDiskSequenceDisplayRequest,
         )
+        if frozen_sequence:
+            expected_geometry = ("stereographic", "ecliptic")
+        elif family == "all_sky":
+            expected_geometry = ("mollweide", "galactic")
+        else:
+            expected_geometry = ("stereographic", "horizontal")
         if (projection, coordinate_frame) != expected_geometry:
             raise ValueError(
                 f"{family} requires projection={expected_geometry[0]!r} "
@@ -450,16 +458,23 @@ class ChartRequest:
             )
         sequence = self.solar_system_disk_sequence
         if sequence is not None and not isinstance(
-            sequence, ObservedSolarSystemDiskSequenceDisplayRequest
+            sequence, (
+                ObservedSolarSystemDiskSequenceDisplayRequest,
+                FrozenEarthSolarSystemDiskSequenceDisplayRequest,
+            )
         ):
             raise TypeError(
                 "solar_system_disk_sequence must be an "
-                "ObservedSolarSystemDiskSequenceDisplayRequest or None."
+                "supported disk-sequence display request or None."
             )
         if sequence is not None and family not in {"regional", "binocular"}:
             raise ValueError(
                 "Observed disk sequences are supported only by regional "
                 "and binocular charts."
+            )
+        if frozen_sequence and family != "regional":
+            raise ValueError(
+                "Frozen-Earth ecliptic sequences require a regional chart."
             )
         if sequence is not None and sequence.target in targets:
             raise ValueError(
