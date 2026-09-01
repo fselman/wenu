@@ -2388,3 +2388,6 @@ def test_49i3c31a_records_observed_venus_disk_sequence():
     assert "13.2.27 49I.3C.3.1A observed Venus disk sequence" in guide
     assert "Guide version:** `0.9.5.20260831.43`" in guide
     assert "observed_venus_disk_sequence_49i3c31a.md" in instructions
+    assert "all 64 current-documentation tests in 2.23 seconds" in contract
+    assert "1,985 tests with 30 deselected in 25.46 seconds" in contract
+    assert "all 2,015 tests in 84.38 seconds" in contract
