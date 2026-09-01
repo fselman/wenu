@@ -23,7 +23,7 @@ class MilkyWayIsophotes(SkyLayer):
 
     layer_name = "milky_way_isophotes"
     available_levels = ("ol1", "ol2", "ol3", "ol4", "ol5")
-    default_levels = ("ol2", "ol3", "ol4", "ol5")
+    default_levels = available_levels
 
     def __init__(self, observer, *, levels=None):
         self.observer = observer
