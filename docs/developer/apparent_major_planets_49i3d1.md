@@ -69,12 +69,15 @@ The preferred compact syntax is
 `--planet mercury,venus,mars,jupiter,saturn,uranus,neptune`.
 
 The first all-sky and planisphere calibrations also exposed a request-overlay
-error. The maximal sphere intentionally loads every Milky Way level, including
-the normally excluded outer `ol1` band. A CLI planet selection replaced the
-complete resolved `SkyContentSelection`, resetting `milky_way_levels` to
-`None`; this allowed `ol1` to leak into both projections. Request overlays now
-replace only explicitly supplied fields, so selecting planets preserves the
-resolved default levels `ol2` through `ol5` and other unrelated sky content.
+error. A CLI planet selection replaced the complete resolved
+`SkyContentSelection`, resetting unrelated fields such as
+`milky_way_levels` to `None`. Request overlays now replace only explicitly
+supplied fields, so selecting planets preserves the resolved Milky Way levels
+and other unrelated sky content. Direct comparison with the source geometry
+confirmed that the two `ol1` rings are the valid faint outer `ol1` envelope,
+not a viewport edge or an artificial closing segment. All five levels are
+therefore governed defaults; an explicit request can still select a narrower
+subset.
 
 ```bash
 wenu_chart all-sky \
