@@ -2647,8 +2647,8 @@ def test_49i3d1_proposes_shared_apparent_major_planets():
         "conventional astronomical symbol",
         "accepted Venus cream `#FFE6A3`",
         "corresponding `planisphere` render",
-        "straight chord between its horizon intersections",
-        "exact circular renderer clip path",
+        "many disjoint exterior components",
+        "derives `is_hole` from that governed source winding",
     ):
         assert phrase in contract
     assert "Milestone 49I.3D.1 apparent major planets" in source_tree
