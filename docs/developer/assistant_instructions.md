@@ -355,6 +355,12 @@ without copying its projection, preparation, renderer, or exporter. Do not
 enable observed Mercury, symbolic Mercury, tracks, single disks, photometry,
 rotation, multiple bodies, animation, or 3D behavior under this milestone.
 
+For drawable frozen-Earth Mercury, also consult
+`drawable_frozen_earth_mercury_sequence_49i3c33c.md`. Keep public exposure
+capability-driven, reject observed Mercury, derive localized body text and
+semantic identity from its descriptor, and reuse the shared fixed-Earth
+layers, projection, preparation, style, renderer, and exporters.
+
 Before registering another moving body, consult
 `moving_body_architecture_49i3c33a.md`. Add identity, relationships, physical
 metadata, and capabilities through the body catalog. Do not add a body-specific
