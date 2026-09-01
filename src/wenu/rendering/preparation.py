@@ -570,33 +570,36 @@ def _stitch_projection_cap_winding_bands(projected):
     if not pairs:
         return projected
 
-    skipped = set(pairs.values())
     items = []
     source_indices = []
     stitched_latitudes = []
-    stitched_positions = []
+    stitched_roles = {}
+    consumed = set()
     for index, polygon in enumerate(projected):
-        if index in skipped:
+        if index in consumed:
             continue
         if index in pairs:
             other = pairs[index]
-            stitched, stitched_latitude = _stitch_winding_band(
+            pieces = _stitch_winding_band(
                 polygon,
                 latitudes[index],
                 projected[other],
                 latitudes[other],
             )
-            if stitched is not None:
-                polygon = stitched
-                latitude = stitched_latitude
-                stitched_positions.append(len(items))
-            else:
-                latitude = latitudes[index]
-        else:
-            latitude = latitudes[index]
+            if pieces:
+                consumed.add(other)
+                for piece, latitude, is_hole, source_index in pieces:
+                    position = len(items)
+                    items.append(piece)
+                    source_indices.append(
+                        index if source_index == 0 else other
+                    )
+                    stitched_latitudes.append(latitude)
+                    stitched_roles[position] = is_hole
+                continue
         items.append(polygon)
         source_indices.append(index)
-        stitched_latitudes.append(latitude)
+        stitched_latitudes.append(latitudes[index])
 
     metadata = _subset_metadata(
         projected.metadata,
@@ -604,13 +607,14 @@ def _stitch_projection_cap_winding_bands(projected):
         len(projected),
     )
     metadata["projection_source_latitudes"] = tuple(stitched_latitudes)
-    if stitched_positions:
+    if stitched_roles:
         holes = np.asarray(metadata["is_hole"], dtype=bool).copy()
         retained_inversions = np.asarray(
             metadata["projection_cap_topology_inversion"], dtype=bool
         ).copy()
-        holes[stitched_positions] = False
-        retained_inversions[stitched_positions] = False
+        for position, is_hole in stitched_roles.items():
+            holes[position] = is_hole
+            retained_inversions[position] = False
         metadata["is_hole"] = holes
         metadata["projection_cap_topology_inversion"] = retained_inversions
     return ProjectedPolygons(items=items, metadata=metadata)
@@ -622,10 +626,12 @@ def _stitch_winding_band(
     second,
     second_latitude,
 ):
-    first_path = _projection_cap_interior_path(first, first_latitude)
-    second_path = _projection_cap_interior_path(second, second_latitude)
-    if first_path is None or second_path is None:
-        return None, None
+    first_paths = _projection_cap_interior_paths(first, first_latitude)
+    second_paths = _projection_cap_interior_paths(second, second_latitude)
+    if not first_paths or not second_paths:
+        return ()
+    first_path = max(first_paths, key=lambda path: len(path[0]))
+    second_path = max(second_paths, key=lambda path: len(path[0]))
     first_xy, first_source_latitude, radius = first_path
     second_xy, second_source_latitude, second_radius = second_path
     radius = 0.5 * (radius + second_radius)
@@ -666,37 +672,65 @@ def _stitch_winding_band(
         second_source_latitude,
         np.full(max(0, len(join_two) - 2), second_source_latitude[-1]),
     ))
-    return (
+    pieces = [(
         ProjectedPolygon(x=points[:, 0], y=points[:, 1], name=first.name),
+        latitude,
+        False,
+        0,
+    )]
+    for path in first_paths:
+        if path is first_path:
+            continue
+        pieces.append((*_close_projection_cap_path(path, first.name), False, 0))
+    for path in second_paths:
+        if path is second_path:
+            continue
+        pieces.append((*_close_projection_cap_path(path, second.name), True, 1))
+    return tuple(pieces)
+
+
+def _close_projection_cap_path(path, name):
+    points, source_latitude, radius = path
+    arc = _projected_boundary_arc(
+        points[-1], points[0], radius, traversal_points=()
+    )
+    closed = np.vstack((points, arc[1:-1]))
+    latitude = np.concatenate((
+        source_latitude,
+        np.full(max(0, len(arc) - 2), source_latitude[-1]),
+    ))
+    return (
+        ProjectedPolygon(x=closed[:, 0], y=closed[:, 1], name=name),
         latitude,
     )
 
 
-def _projection_cap_interior_path(polygon, source_latitude):
+def _projection_cap_interior_paths(polygon, source_latitude):
     points = np.column_stack((polygon.x, polygon.y))
     source_latitude = np.asarray(source_latitude, dtype=float)
     if len(points) != len(source_latitude) or len(points) < 3:
-        return None
+        return ()
     radii = np.hypot(points[:, 0], points[:, 1])
     radius = float(np.max(radii))
     tolerance = max(1.0e-10, radius * 1.0e-8)
     interior = radii < radius - tolerance
     starts = np.flatnonzero(interior & ~np.roll(interior, 1))
-    if len(starts) != 1:
-        return None
-    start = int(starts[0])
-    run = []
-    index = start
-    while interior[index]:
-        run.append(index)
-        index = (index + 1) % len(points)
-        if index == start:
-            return None
-    indices = np.asarray(
-        ([(start - 1) % len(points)] + run + [index]),
-        dtype=int,
-    )
-    return points[indices], source_latitude[indices], radius
+    paths = []
+    for raw_start in starts:
+        start = int(raw_start)
+        run = []
+        index = start
+        while interior[index]:
+            run.append(index)
+            index = (index + 1) % len(points)
+            if index == start:
+                return ()
+        indices = np.asarray(
+            ([(start - 1) % len(points)] + run + [index]),
+            dtype=int,
+        )
+        paths.append((points[indices], source_latitude[indices], radius))
+    return tuple(paths)
 
 
 def _apply_projection_cap_topology_complements(
