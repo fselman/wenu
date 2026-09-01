@@ -163,7 +163,7 @@ def test_resolution_selects_default_milky_way_levels_render_locally():
 
     assert original.content.milky_way_levels is None
     assert resolved.request.content.milky_way_levels == {
-        "ol1", "ol2", "ol3", "ol4", "ol5"
+        "ol2", "ol3", "ol4", "ol5"
     }
 
 
