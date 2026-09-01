@@ -497,3 +497,18 @@ Combined geometry retains exact instants, time scale, observer/AU distances,
 and provenance. Symbolic Venus, one resolved Venus disk, and a resolved Venus
 sequence are mutually exclusive. Frozen-Earth mode, Mercury, and 3D
 visualization remain unimplemented.
+
+
+## Accepted output-neutral frozen-Earth Venus sequence
+
+Milestone 49I.3C.3.2A freezes Earth's heliocentric ICRF vector at the start
+and evaluates Venus heliocentrically at exact major epochs. Each result retains
+the frozen Earth vector, relative target vector, frozen-earth/AU distance,
+physical diameter, phase, illuminated fraction, and fixed-ecliptic limb
+orientation. Target and fixed-Sun directions are geometric in J2000
+mean-ecliptic axes and must never be described as apparent sky.
+
+This state remains output-neutral. Public request integration, resolved disk
+adaptation, per-centre projected magnification, central six-point Sun,
+equatorial grid, restricted scene, semantics, and rendering remain
+49I.3C.3.2B. Mercury remains 49I.3C.3.3; no 3D visualizer is installed.

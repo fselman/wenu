@@ -1103,3 +1103,16 @@ owns deterministic contract coverage;
   state, semantic paths, and per-centre magnification regressions.
 - `docs/developer/drawable_observed_venus_sequence_49i3c31b.md` owns accepted
   scientific, visual, operational, and regression evidence.
+
+
+## Milestone 49I.3C.3.2A ownership
+
+- `src/wenu/sky/frozen_earth_disk_sequences.py` owns the immutable request,
+  frozen-Earth geometric direction and disk records, fixed-ecliptic transform,
+  same-epoch physical state, retained vectors, distances, and provenance.
+- `tests/test_frozen_earth_disk_sequences.py` owns deterministic cadence,
+  freeze, identity, physical-state, immutability, and boundary evidence.
+- `tools/validate_49i3c3_2a_frozen_earth_venus.py` owns the installed-DE440
+  direct-vector and fixed-ecliptic comparison.
+- `docs/developer/frozen_earth_venus_sequence_49i3c32a.md` owns scientific,
+  architectural, numerical, and regression acceptance evidence.
