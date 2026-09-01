@@ -160,7 +160,7 @@ def test_shared_layer_realizes_a_body_without_projection_or_rendering():
     assert layer.realize(
         realization,
         observer,
-        selected={"moon"},
+        selected={"moon", "venus"},
     ) is transformed
     assert calls == ["astrometric", "apparent", "transform"]
 
@@ -178,7 +178,7 @@ def test_shared_layer_validates_selection_context_and_geometry_options():
         layer.spherical_geometry(object())
     with pytest.raises(TypeError, match="LayerRealizationContext"):
         layer.realize(object(), object())
-    with pytest.raises(ValueError, match="only moon"):
+    with pytest.raises(ValueError, match="contain moon"):
         layer.realize(context(), object(), selected={"venus"})
     with pytest.raises(TypeError, match="accepts no geometry options"):
         layer.realize(context(), object(), unexpected=True)
