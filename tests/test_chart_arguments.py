@@ -108,31 +108,32 @@ def test_magnitude_limit_must_be_finite():
 
 
 @pytest.mark.parametrize(
-    ("lowest", "expected"),
+    ("contour", "expected"),
     [
         ("OL1", {"ol1"}),
         ("ol2", {"ol2"}),
         ("ol4", {"ol4"}),
         ("ol5", {"ol5"}),
+        ("all", {"ol1", "ol2", "ol3", "ol4", "ol5"}),
     ],
 )
-def test_lowest_milky_way_contour_selects_exactly_one_level(
-    lowest, expected
+def test_milky_way_contour_selects_one_level_or_all(
+    contour, expected
 ):
-    arguments = parser().parse_args(["--mw-lowest-contour", lowest])
+    arguments = parser().parse_args(["--mw-contour", contour])
 
     assert chart_sky_content(arguments).milky_way_levels == expected
 
 
-def test_omitted_lowest_milky_way_contour_preserves_resolved_default():
+def test_omitted_milky_way_contour_preserves_resolved_default():
     arguments = parser().parse_args([])
 
     assert chart_sky_content(arguments).milky_way_levels is None
 
 
-def test_unknown_lowest_milky_way_contour_is_rejected():
+def test_unknown_milky_way_contour_is_rejected():
     with pytest.raises(SystemExit):
-        parser().parse_args(["--mw-lowest-contour", "ol6"])
+        parser().parse_args(["--mw-contour", "ol6"])
 
 
 def test_class_aware_selectors_share_one_solar_system_selection():
