@@ -175,6 +175,34 @@ def test_face_cap_closes_filled_polygon_along_circular_boundary(
     assert np.max(boundary_steps) < 0.02
 
 
+def test_face_cap_inverts_hole_roles_for_pole_winding_rings():
+    chart = PolarPlanisphereChart(
+        pole="south",
+        projection_name="stereographic",
+    )
+    winding_longitude = np.asarray(
+        (170.0, 90.0, 0.0, -90.0, -179.0)
+    )
+    polygons = SphericalPolygons(
+        coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        lon_deg=(winding_longitude, winding_longitude),
+        lat_deg=(
+            np.full(5, 5.0),
+            np.full(5, -5.0),
+        ),
+        metadata={
+            "compound_id": np.asarray(("level", "level")),
+            "is_hole": np.asarray((False, True)),
+        },
+    )
+
+    projected = chart.project_equatorial_geometry(polygons)
+
+    np.testing.assert_array_equal(
+        projected.metadata["is_hole"], (True, False)
+    )
+
+
 def test_physical_diameter_does_not_change_projection_geometry():
     small = PolarPlanisphereChart(physical_diameter_mm=180.0)
     large = PolarPlanisphereChart(physical_diameter_mm=210.0)
