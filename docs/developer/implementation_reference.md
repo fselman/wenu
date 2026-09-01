@@ -278,7 +278,9 @@ Resolved chart requests use all five established Milky Way levels when no
 levels are supplied. The two source rings in `ol1` form the valid faint outer
 envelope, while `ol2` through `ol5` provide successively inner structure.
 Explicit level requests retain precedence and may omit `ol1` when a narrower
-render is wanted.
+render is wanted. The public CLI exposes this nested selection as
+`--mw-lowest-contour OL1|OL2|OL3|OL4|OL5`; the selected level and every
+brighter inner level are drawn.
 
 `ResolvedDetail.extended_object_samples` may request a lower render-local
 sampling density for extended-object outlines. It applies to Messier-style
