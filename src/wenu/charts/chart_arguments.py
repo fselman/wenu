@@ -145,8 +145,7 @@ def _milky_way_contour(value):
 def _milky_way_levels_from_lowest(level):
     if level is None:
         return None
-    index = MILKY_WAY_CONTOUR_LEVELS.index(level)
-    return frozenset(MILKY_WAY_CONTOUR_LEVELS[index:])
+    return frozenset({level})
 
 
 @dataclass(frozen=True)
@@ -252,8 +251,8 @@ def add_chart_content_arguments(parser):
         type=_milky_way_contour,
         metavar="OL1|OL2|OL3|OL4|OL5",
         help=(
-            "select the faintest Milky Way isophote to draw; all brighter "
-            "inner contours are included"
+            "draw exactly one selected Milky Way isophote instead of the "
+            "governed default contour set"
         ),
     )
     parser.add_argument(
