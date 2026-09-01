@@ -110,13 +110,13 @@ def test_magnitude_limit_must_be_finite():
 @pytest.mark.parametrize(
     ("lowest", "expected"),
     [
-        ("OL1", {"ol1", "ol2", "ol3", "ol4", "ol5"}),
-        ("ol2", {"ol2", "ol3", "ol4", "ol5"}),
-        ("ol4", {"ol4", "ol5"}),
+        ("OL1", {"ol1"}),
+        ("ol2", {"ol2"}),
+        ("ol4", {"ol4"}),
         ("ol5", {"ol5"}),
     ],
 )
-def test_lowest_milky_way_contour_selects_it_and_brighter_levels(
+def test_lowest_milky_way_contour_selects_exactly_one_level(
     lowest, expected
 ):
     arguments = parser().parse_args(["--mw-lowest-contour", lowest])
