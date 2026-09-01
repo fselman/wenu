@@ -68,12 +68,13 @@ glyph.
 The preferred compact syntax is
 `--planet mercury,venus,mars,jupiter,saturn,uranus,neptune`.
 
-The first planisphere calibration also exposed a pre-existing filled-polygon
-artifact: latitude clipping closed a partially visible Milky Way ring with a
-straight chord between its horizon intersections. Observer-visible full-sky
-charts now preserve the projected isophote rings and delegate the final cut
-to their exact circular renderer clip path. Regional and binocular products
-retain their governed geometric latitude preparation.
+The first all-sky and planisphere calibrations also exposed a pre-existing
+Milky Way topology error. Wenu had classified every source ring after the
+first ring of an isophote as a hole. The D3-Celestial snapshot instead contains
+many disjoint exterior components and encodes its few holes by opposite ring
+winding. Wenu now derives `is_hole` from that governed source winding, avoiding
+the artificial filled swath that connected the extremes of unrelated contour
+components in both projections.
 
 ```bash
 wenu_chart all-sky \
