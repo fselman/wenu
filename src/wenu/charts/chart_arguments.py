@@ -135,17 +135,19 @@ def _selected_planets(values):
 
 def _milky_way_contour(value):
     level = str(value).strip().lower()
-    if level not in MILKY_WAY_CONTOUR_LEVELS:
+    if level != "all" and level not in MILKY_WAY_CONTOUR_LEVELS:
         raise argparse.ArgumentTypeError(
-            "Milky Way contour must be one of ol1, ol2, ol3, ol4, ol5"
+            "Milky Way contour must be one of ol1, ol2, ol3, ol4, ol5, all"
         )
     return level
 
 
-def _milky_way_levels_from_lowest(level):
-    if level is None:
+def _milky_way_levels_from_selection(selection):
+    if selection is None:
         return None
-    return frozenset({level})
+    if selection == "all":
+        return frozenset(MILKY_WAY_CONTOUR_LEVELS)
+    return frozenset({selection})
 
 
 @dataclass(frozen=True)
@@ -173,7 +175,7 @@ class ChartContentOptions:
     reference_equinox: str | None = None
     planets: frozenset[str] = frozenset()
     moon: bool = False
-    mw_lowest_contour: str | None = None
+    mw_contour: str | None = None
 
     def __post_init__(self):
         if (
@@ -201,14 +203,17 @@ class ChartContentOptions:
             raise ValueError("planets contains an unsupported body.")
         object.__setattr__(self, "planets", planets)
         object.__setattr__(self, "moon", bool(self.moon))
-        lowest = self.mw_lowest_contour
-        if lowest is not None:
-            lowest = str(lowest).strip().lower()
-            if lowest not in MILKY_WAY_CONTOUR_LEVELS:
+        contour = self.mw_contour
+        if contour is not None:
+            contour = str(contour).strip().lower()
+            if (
+                contour != "all"
+                and contour not in MILKY_WAY_CONTOUR_LEVELS
+            ):
                 raise ValueError(
-                    "mw_lowest_contour must be ol1, ol2, ol3, ol4, or ol5."
+                    "mw_contour must be ol1, ol2, ol3, ol4, ol5, or all."
                 )
-            object.__setattr__(self, "mw_lowest_contour", lowest)
+            object.__setattr__(self, "mw_contour", contour)
         step = self.equatorial_declination_step_deg
         if step is not None:
             step = float(step)
@@ -247,12 +252,12 @@ def add_chart_content_arguments(parser):
         help="override the style/family stellar magnitude limit",
     )
     parser.add_argument(
-        "--mw-lowest-contour",
+        "--mw-contour",
         type=_milky_way_contour,
-        metavar="OL1|OL2|OL3|OL4|OL5",
+        metavar="OL1|OL2|OL3|OL4|OL5|all",
         help=(
-            "draw exactly one selected Milky Way isophote instead of the "
-            "governed default contour set"
+            "draw one selected Milky Way isophote, or all five isophotes, "
+            "instead of the governed default contour set"
         ),
     )
     parser.add_argument(
@@ -500,7 +505,7 @@ def chart_content_options(arguments) -> ChartContentOptions:
         reference_equinox=arguments.reference_equinox,
         planets=_selected_planets(getattr(arguments, "planet", ())),
         moon=bool(getattr(arguments, "moon", False)),
-        mw_lowest_contour=getattr(arguments, "mw_lowest_contour", None),
+        mw_contour=getattr(arguments, "mw_contour", None),
     )
 
 
@@ -756,8 +761,8 @@ def chart_sky_content(arguments) -> SkyContentSelection:
         selected.add("moon")
     return SkyContentSelection(
         solar_system_objects=frozenset(selected),
-        milky_way_levels=_milky_way_levels_from_lowest(
-            content.mw_lowest_contour
+        milky_way_levels=_milky_way_levels_from_selection(
+            content.mw_contour
         ),
     )
 
