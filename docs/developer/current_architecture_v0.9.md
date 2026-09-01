@@ -468,3 +468,18 @@ centre. The frozen construction is not apparent sky and must retain that status
 in labels and metadata. Fernando accepted the audit on 2026-08-31 after all 63
 current-documentation tests passed in 2.04 seconds. It changes no implemented
 runtime or output.
+
+
+## Accepted output-neutral observed Venus disk sequence
+
+Milestone 49I.3C.3.1A adds immutable start-inclusive major sampling and
+independently realizes the observer, apparent Venus and Sun directions,
+physical appearance, and spherical disk geometry at every epoch. The result
+retains full observer/AU distances with provider and instant evidence for
+possible future independently governed 3D use.
+
+The native physical geometries deliberately remain per epoch because their
+apparent coordinate identities carry different instants. A later drawable
+slice must transform each independently into one fixed product frame before
+aggregation. No request option, registered layer, chart transformation,
+projection, magnification, renderer, or visible output is installed.
