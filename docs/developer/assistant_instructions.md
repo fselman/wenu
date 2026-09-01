@@ -318,3 +318,11 @@ For the output-neutral observed Venus disk sequence, consult
 major instants, independent topocentric observer and physical-appearance
 realization at every epoch, and explicit observer/AU distances. Do not combine
 native per-epoch geometry under a false common coordinate instant.
+
+
+For the drawable observed Venus sequence, consult
+`drawable_observed_venus_sequence_49i3c31b.md`. Transform every physical
+epoch independently into one fixed product frame before aggregation, preserve
+observer/AU distance evidence, and magnify each projected disk only around its
+own separately projected centre. Keep frozen-Earth mode and Mercury outside
+this accepted slice.

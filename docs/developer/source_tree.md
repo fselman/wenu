@@ -1087,3 +1087,19 @@ owns deterministic contract coverage;
   four-epoch direct-Skyfield comparison.
 - `docs/developer/observed_venus_disk_sequence_49i3c31a.md` owns acceptance
   evidence and the boundary to drawable 49I.3C.3.1B.
+
+
+## Milestone 49I.3C.3.1B ownership
+
+- `src/wenu/sky/venus_disk_sequence.py` owns independent fixed-frame
+  transformation, aggregation, shared realization, and sequence layers.
+- `src/wenu/charts/request_disks.py` owns the drawable sequence request and
+  dynamic layer installation.
+- `src/wenu/charts/solar_system_disk_preparation.py` owns per-sample projected
+  magnification around separately projected centres.
+- `src/wenu/charts/chart_arguments.py`, `command_line.py`, `request.py`, and
+  `drawing.py` own public request and regional/binocular translation.
+- `tests/test_observed_venus_disk_sequence_display.py` owns cadence, shared
+  state, semantic paths, and per-centre magnification regressions.
+- `docs/developer/drawable_observed_venus_sequence_49i3c31b.md` owns accepted
+  scientific, visual, operational, and regression evidence.

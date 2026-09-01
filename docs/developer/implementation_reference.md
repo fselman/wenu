@@ -1965,3 +1965,19 @@ interval count, body descriptor, physical radius, and radius model.
 appearances, physical spherical disk geometries, and explicit observer/AU
 distances. The API is output-neutral; drawable request integration remains
 49I.3C.3.1B.
+
+
+## Drawable observed Venus disk sequence (Milestone 49I.3C.3.1B)
+
+`ObservedSolarSystemDiskSequenceDisplayRequest` combines the accepted
+scientific sequence with one magnification and optional date labels.
+`ObservedVenusDiskSequenceRealization` independently transforms each physical
+epoch into the fixed product frame and exposes combined centres, limbs,
+terminators, and illuminated faces.
+
+`MagnifyProjectedDiskSequence` projects every physical centre and magnifies
+each corresponding projected component around that centre. Public controls
+are `--planet-disk-sequence venus`, `--disk-sequence-model observed`,
+`--disk-sequence-start`, `--disk-sequence-step`,
+`--disk-sequence-n-steps`, optional `--disk-sequence-labels`, and
+`--planet-disk-magnification venus=FACTOR`.

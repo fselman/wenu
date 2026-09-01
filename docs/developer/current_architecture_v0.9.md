@@ -483,3 +483,17 @@ apparent coordinate identities carry different instants. A later drawable
 slice must transform each independently into one fixed product frame before
 aggregation. No request option, registered layer, chart transformation,
 projection, magnification, renderer, or visible output is installed.
+
+
+## Drawable observed Venus disk sequence
+
+Milestone 49I.3C.3.1B installs the accepted observed sequence in regional and
+binocular charts. Each physical epoch is transformed independently into the
+fixed product frame before illuminated faces, limbs, terminators, and optional
+date centres are aggregated. Chart preparation magnifies each projected
+component around its own projected physical centre.
+
+Combined geometry retains exact instants, time scale, observer/AU distances,
+and provenance. Symbolic Venus, one resolved Venus disk, and a resolved Venus
+sequence are mutually exclusive. Frozen-Earth mode, Mercury, and 3D
+visualization remain unimplemented.

@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260831.43`  
-**Last updated:** `2026-08-31T23:55:00Z`  
+**Guide version:** `0.9.5.20260901.44`  
+**Last updated:** `2026-09-01T00:35:00Z`  
 **Language:** English
 
 # Table of contents
@@ -86,6 +86,7 @@
     - [13.2.17 49I.2C first drawable Moon point](#49i2c-moon-point)
     - [13.2.18 49I.2D Solar-System trajectories](#49i2d-solar-system-tracks)
     - [13.2.19 49I.2D.1 scientific track curve](#49i2d1-track-curve)
+    - [13.2.28 49I.3C.3.1B drawable observed Venus sequence](#49i3c31b-drawable-observed-venus-sequence)
 
 <a id="status-and-purpose"></a>
 
@@ -2599,3 +2600,24 @@ distance to determine angular scale, but the scientific record does not discard
 it; a separately designed future 3D visualizer may reuse it without inferring
 distance from projected geometry. This milestone adds no drawable layer or
 public option.
+
+
+<a id="49i3c31b-drawable-observed-venus-sequence"></a>
+## 13.2.28 49I.3C.3.1B drawable observed Venus sequence
+
+**[Foundation]** An observed sequence draws the planet as it would appear from
+the selected place at several exact dates. Each disk changes position, apparent
+size, phase, and illuminated direction. One common display factor may enlarge
+all disks so these physical differences remain visible.
+
+**[Undergraduate]** Every physical epoch carries its own apparent instant and
+is transformed independently into one fixed chart product frame. Only then are
+the illuminated polygons, limb curves, terminator curves, and optional label
+centres combined. Each projected component is magnified about its own projected
+physical centre; angular diameter and observer/AU distance remain unchanged
+scientific state.
+
+Regional and binocular products expose exact start-inclusive major steps with
+no minor cadence. The accepted Virgo calibration drew only the ecliptic
+reference after suppressing the regional default equatorial grid. Frozen-Earth
+ecliptic construction and Mercury remain later, separately validated work.

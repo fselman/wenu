@@ -1046,3 +1046,20 @@ architectural tests passed. Final verification passed 64 documentation tests
 in 2.23 seconds, 1,985 routine tests with 30 deselected in 25.46 seconds, and
 all 2,015 tests in 84.38 seconds. No public request or visible output is added;
 drawable observed Venus sequences remain 49I.3C.3.1B.
+
+
+## Milestone 49I.3C.3.1B — Drawable observed Venus disk sequence
+
+**Status:** Scientifically, architecturally, visually, and operationally
+accepted on 2026-08-31.
+
+Regional and binocular charts now expose start-inclusive observed Venus disk
+sequences with exact major steps, optional dates, and one object-specific
+post-projection magnification. Every epoch is independently transformed into
+one fixed chart frame before aggregation; observer/AU distances and provenance
+remain preserved.
+
+The accepted four-epoch Virgo calibration used 28-day steps, magnification
+200, an ecliptic-only reference, and no default equatorial grid. Verification
+passed 211 focused tests, 1,988 routine tests with 30 deselected, and all 2,018
+tests. Frozen-Earth Venus remains 49I.3C.3.2; Mercury remains 49I.3C.3.3.
