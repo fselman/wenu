@@ -264,8 +264,13 @@ class PublicationStyle:
             minimum=minimum,
         )
         options = {}
-        if getattr(sky, "venus", None) is not None:
-            options[sky.venus] = {
+        moving_bodies = tuple(
+            getattr(sky, "solar_system_bodies", {}).values()
+        )
+        if not moving_bodies and getattr(sky, "venus", None) is not None:
+            moving_bodies = (sky.venus,)
+        for body_layer in moving_bodies:
+            options[body_layer] = {
                 "prepare": clip,
                 "render": {
                     "style": {

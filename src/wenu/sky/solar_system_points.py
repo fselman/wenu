@@ -84,6 +84,10 @@ class SolarSystemPointLayer(SkyLayer):
                 "descriptor must be a SolarSystemPointDescriptor."
             )
         self.descriptor = descriptor
+        self.layer_name = descriptor.entity_key
+        if hasattr(descriptor, "body_class"):
+            self.body_descriptor = descriptor
+            self.display_kind = "symbolic_point"
         self.source_factory = source_factory
         self.observer_state_factory = observer_state_factory
         self.astrometric_realizer = (

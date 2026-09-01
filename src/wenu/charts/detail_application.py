@@ -347,6 +347,12 @@ def apply_resolved_detail(
         ):
             geometry["samples"] = detail.extended_object_samples
         selection_field = _SELECTION_OPTIONS.get(name)
+        if (
+            selection_field is None
+            and getattr(layer, "body_descriptor", None) is not None
+            and getattr(layer, "display_kind", None) == "symbolic_point"
+        ):
+            selection_field = "solar_system_objects"
         if selection_field is not None:
             selected = getattr(
                 detail.content_selection,
@@ -514,7 +520,11 @@ def composition_layer_options(
     disk_layers = tuple(
         layer for layer in sky.layers
         if (
-            getattr(layer, "layer_name", "").startswith("venus_disk_")
+            getattr(layer, "display_kind", None) in {
+                "resolved_disk",
+                "observed_disk_sequence",
+                "frozen_earth_disk_sequence",
+            }
             or getattr(layer, "layer_name", "") == "frozen_earth_sun"
         )
     )
@@ -522,7 +532,12 @@ def composition_layer_options(
         disk_options = {}
         for layer in disk_layers:
             name = layer.layer_name
-            sequence_layer = name.startswith("venus_disk_sequence_")
+            display_kind = getattr(layer, "display_kind", None)
+            component_role = getattr(layer, "component_role", None)
+            sequence_layer = display_kind in {
+                "observed_disk_sequence",
+                "frozen_earth_disk_sequence",
+            }
             if name == "frozen_earth_sun":
                 disk_options[layer] = {
                     "render": {
@@ -547,10 +562,7 @@ def composition_layer_options(
                     layer.disk_realization, layer.magnification
                 )
             )
-            if name in {
-                "venus_disk_sequence_labels",
-                "venus_disk_sequence_frozen_labels",
-            }:
+            if component_role == "labels":
                 disk_options[layer] = {
                     "render": {
                         "style": {"s": 0.0, "alpha": 0.0, "zorder": 39.3},
@@ -564,10 +576,7 @@ def composition_layer_options(
                     },
                 }
                 continue
-            if name in {
-                "venus_disk_illuminated", "venus_disk_sequence_illuminated",
-                "venus_disk_sequence_frozen_illuminated",
-            }:
+            if component_role == "illuminated":
                 render = {
                     "style": {
                         "facecolor": publication.venus_disk_face_color,
@@ -581,23 +590,23 @@ def composition_layer_options(
                     "style": {
                         "color": (
                             publication.venus_disk_limb_color
-                            if name.endswith("_limb")
+                            if component_role == "limb"
                             else publication.venus_disk_terminator_color
                         ),
                         "linewidth": (
                             publication.venus_disk_limb_linewidth
-                            if name.endswith("_limb")
+                            if component_role == "limb"
                             else publication.venus_disk_terminator_linewidth
                         ),
                         "linestyle": (
                             publication.venus_disk_limb_linestyle
-                            if name.endswith("_limb")
+                            if component_role == "limb"
                             else publication.venus_disk_terminator_linestyle
                         ),
                         "dash_capstyle": "butt",
                         "alpha": publication.venus_alpha,
                         "zorder": (
-                            39.2 if name.endswith("_limb") else 39.1
+                            39.2 if component_role == "limb" else 39.1
                         ),
                     },
                 }

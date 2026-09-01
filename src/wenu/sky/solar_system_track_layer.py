@@ -20,6 +20,9 @@ class SolarSystemTrackLayer(SkyLayer):
                 "request must be a SolarSystemTrackRequest."
             )
         self.request = request
+        if hasattr(request.descriptor, "body_class"):
+            self.body_descriptor = request.descriptor
+            self.display_kind = "apparent_track"
         self.realizer = (
             SolarSystemTrackRealizer()
             if realizer is None

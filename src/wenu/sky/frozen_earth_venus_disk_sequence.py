@@ -1,4 +1,4 @@
-"""Drawable frozen-Earth Venus sequence in fixed J2000 ecliptic axes."""
+"""Generic drawable frozen-Earth body sequence in fixed ecliptic axes."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from wenu.solar_system_disk_geometry import SolarSystemDiskGeometryRealizer
 
 
 @dataclass(frozen=True)
-class FrozenEarthVenusDiskSequenceGeometry:
+class FrozenEarthSolarSystemDiskSequenceGeometry:
     """Ordinary spherical components plus the fixed Sun direction."""
 
     physical: FrozenEarthDiskSequence
@@ -59,13 +59,14 @@ def _combine(sequence, geometries):
     )
     ids = np.asarray(
         tuple(
-            f"venus_{value[:10].replace('-', '_')}"
+            f"{sequence.request.descriptor.entity_key}_"
+            f"{value[:10].replace('-', '_')}"
             for value in sequence.sample_instants
         ),
         dtype=object,
     )
     metadata = _metadata(sequence)
-    return FrozenEarthVenusDiskSequenceGeometry(
+    return FrozenEarthSolarSystemDiskSequenceGeometry(
         physical=sequence,
         centres=SphericalPoints(
             np.asarray(tuple(item.centre.lon_deg[0] for item in geometries)),
@@ -113,7 +114,7 @@ def _combine(sequence, geometries):
     )
 
 
-class FrozenEarthVenusDiskSequenceRealization:
+class FrozenEarthSolarSystemDiskSequenceRealization:
     """Share one frozen construction across all drawable components."""
 
     def __init__(
@@ -138,7 +139,7 @@ class FrozenEarthVenusDiskSequenceRealization:
     def transformed(self):
         if self._transformed is None:
             raise RuntimeError(
-                "frozen-Earth Venus sequence has not been realized."
+                "frozen-Earth body sequence has not been realized."
             )
         return self._transformed
 
@@ -170,15 +171,17 @@ class FrozenEarthVenusDiskSequenceRealization:
         return self._transformed
 
 
-class FrozenEarthVenusDiskSequenceLayer(SkyLayer):
+class FrozenEarthSolarSystemDiskSequenceLayer(SkyLayer):
     component = None
-    layer_name = None
+    component_role = None
 
     def __init__(self, realization, *, magnification=1.0):
-        if not isinstance(realization, FrozenEarthVenusDiskSequenceRealization):
+        if not isinstance(
+            realization, FrozenEarthSolarSystemDiskSequenceRealization
+        ):
             raise TypeError(
                 "realization must be a "
-                "FrozenEarthVenusDiskSequenceRealization."
+                "FrozenEarthSolarSystemDiskSequenceRealization."
             )
         magnification = float(magnification)
         if not isfinite(magnification) or not 1.0 <= magnification <= 1000.0:
@@ -186,7 +189,16 @@ class FrozenEarthVenusDiskSequenceLayer(SkyLayer):
                 "magnification must be finite and between 1 and 1000."
             )
         self.disk_realization = realization
+        self.body_descriptor = realization.request.descriptor
         self.magnification = magnification
+        self.display_kind = "frozen_earth_disk_sequence"
+        if self.component_role == "sun":
+            self.layer_name = "frozen_earth_sun"
+        else:
+            self.layer_name = (
+                f"{self.body_descriptor.entity_key}_disk_sequence_frozen_"
+                f"{self.component_role}"
+            )
 
     def spherical_geometry(self, observer):
         del observer
@@ -202,55 +214,83 @@ class FrozenEarthVenusDiskSequenceLayer(SkyLayer):
         return getattr(realized, self.component)
 
 
-class FrozenEarthVenusSequenceIlluminatedLayer(FrozenEarthVenusDiskSequenceLayer):
+class FrozenEarthSolarSystemSequenceIlluminatedLayer(
+    FrozenEarthSolarSystemDiskSequenceLayer
+):
     component = "illuminated_faces"
-    layer_name = "venus_disk_sequence_frozen_illuminated"
+    component_role = "illuminated"
 
 
-class FrozenEarthVenusSequenceLimbLayer(FrozenEarthVenusDiskSequenceLayer):
+class FrozenEarthSolarSystemSequenceLimbLayer(
+    FrozenEarthSolarSystemDiskSequenceLayer
+):
     component = "limbs"
-    layer_name = "venus_disk_sequence_frozen_limb"
+    component_role = "limb"
 
 
-class FrozenEarthVenusSequenceTerminatorLayer(FrozenEarthVenusDiskSequenceLayer):
+class FrozenEarthSolarSystemSequenceTerminatorLayer(
+    FrozenEarthSolarSystemDiskSequenceLayer
+):
     component = "terminators"
-    layer_name = "venus_disk_sequence_frozen_terminator"
+    component_role = "terminator"
 
 
-class FrozenEarthVenusSequenceLabelsLayer(FrozenEarthVenusDiskSequenceLayer):
+class FrozenEarthSolarSystemSequenceLabelsLayer(
+    FrozenEarthSolarSystemDiskSequenceLayer
+):
     component = "centres"
-    layer_name = "venus_disk_sequence_frozen_labels"
+    component_role = "labels"
 
 
-class FrozenEarthSunSymbolLayer(FrozenEarthVenusDiskSequenceLayer):
+class FrozenEarthSunSymbolLayer(FrozenEarthSolarSystemDiskSequenceLayer):
     component = "sun"
-    layer_name = "frozen_earth_sun"
+    component_role = "sun"
 
 
-def frozen_earth_venus_disk_sequence_layers(
+def frozen_earth_solar_system_disk_sequence_layers(
     request,
     *,
     magnification=1.0,
     label_dates=False,
 ):
-    """Return the fixed-Sun symbol and shared frozen Venus components."""
-    realization = FrozenEarthVenusDiskSequenceRealization(request)
+    """Return the fixed Sun and generic shared body-disk components."""
+    realization = FrozenEarthSolarSystemDiskSequenceRealization(request)
     layers = [
-        FrozenEarthVenusSequenceIlluminatedLayer(
+        FrozenEarthSolarSystemSequenceIlluminatedLayer(
             realization, magnification=magnification
         ),
-        FrozenEarthVenusSequenceLimbLayer(
+        FrozenEarthSolarSystemSequenceLimbLayer(
             realization, magnification=magnification
         ),
-        FrozenEarthVenusSequenceTerminatorLayer(
+        FrozenEarthSolarSystemSequenceTerminatorLayer(
             realization, magnification=magnification
         ),
     ]
     if label_dates:
         layers.append(
-            FrozenEarthVenusSequenceLabelsLayer(
+            FrozenEarthSolarSystemSequenceLabelsLayer(
                 realization, magnification=magnification
             )
         )
     layers.append(FrozenEarthSunSymbolLayer(realization, magnification=1.0))
     return tuple(layers)
+
+
+def frozen_earth_venus_disk_sequence_layers(request, **options):
+    """Compatibility factory preserving accepted Venus public output."""
+    return frozen_earth_solar_system_disk_sequence_layers(request, **options)
+
+
+FrozenEarthVenusDiskSequenceGeometry = FrozenEarthSolarSystemDiskSequenceGeometry
+FrozenEarthVenusDiskSequenceRealization = (
+    FrozenEarthSolarSystemDiskSequenceRealization
+)
+FrozenEarthVenusDiskSequenceLayer = FrozenEarthSolarSystemDiskSequenceLayer
+FrozenEarthVenusSequenceIlluminatedLayer = (
+    FrozenEarthSolarSystemSequenceIlluminatedLayer
+)
+FrozenEarthVenusSequenceLimbLayer = FrozenEarthSolarSystemSequenceLimbLayer
+FrozenEarthVenusSequenceTerminatorLayer = (
+    FrozenEarthSolarSystemSequenceTerminatorLayer
+)
+FrozenEarthVenusSequenceLabelsLayer = FrozenEarthSolarSystemSequenceLabelsLayer

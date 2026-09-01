@@ -5,38 +5,55 @@ from __future__ import annotations
 from dataclasses import dataclass
 from math import isfinite
 
-from wenu.sky.venus_disk import venus_disk_layers
+from wenu.sky.solar_system_bodies import (
+    FROZEN_EARTH_DISK_SEQUENCE,
+    OBSERVED_DISK_SEQUENCE,
+    RESOLVED_SPHERICAL_DISK,
+    SolarSystemBodyDescriptor,
+)
+from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
+from wenu.sky.venus_disk import solar_system_disk_layers
 from wenu.sky.solar_system_disk_sequences import (
     ObservedSolarSystemDiskSequenceRequest,
 )
-from wenu.sky.venus_disk_sequence import observed_venus_disk_sequence_layers
+from wenu.sky.venus_disk_sequence import (
+    observed_solar_system_disk_sequence_layers,
+)
 from wenu.sky.frozen_earth_disk_sequences import FrozenEarthDiskSequenceRequest
 from wenu.sky.frozen_earth_venus_disk_sequence import (
-    frozen_earth_venus_disk_sequence_layers,
+    frozen_earth_solar_system_disk_sequence_layers,
 )
-
-
-SUPPORTED_RESOLVED_DISKS = frozenset({"venus"})
 
 
 @dataclass(frozen=True)
 class SolarSystemDiskDisplayRequest:
-    """One object-specific opt-in resolved disk display."""
+    """One descriptor-driven opt-in resolved disk display."""
 
-    target: str
+    descriptor: SolarSystemBodyDescriptor | str
     magnification: float = 1.0
 
     def __post_init__(self):
-        target = str(self.target).strip().lower()
-        if target not in SUPPORTED_RESOLVED_DISKS:
-            raise ValueError("resolved disks currently support only venus.")
+        descriptor = self.descriptor
+        if not isinstance(descriptor, SolarSystemBodyDescriptor):
+            try:
+                descriptor = SOLAR_SYSTEM_BODY_CATALOG.resolve(descriptor)
+            except KeyError as error:
+                raise ValueError(str(error)) from error
+        if not descriptor.supports(RESOLVED_SPHERICAL_DISK):
+            raise ValueError(
+                f"{descriptor.display_name} does not support resolved disks."
+            )
         magnification = float(self.magnification)
         if not isfinite(magnification) or not 1.0 <= magnification <= 1000.0:
             raise ValueError(
                 "disk magnification must be finite and between 1 and 1000."
             )
-        object.__setattr__(self, "target", target)
+        object.__setattr__(self, "descriptor", descriptor)
         object.__setattr__(self, "magnification", magnification)
+
+    @property
+    def target(self):
+        return self.descriptor.target
 
 
 @dataclass(frozen=True)
@@ -52,9 +69,14 @@ class ObservedSolarSystemDiskSequenceDisplayRequest:
             raise TypeError(
                 "sequence must be an ObservedSolarSystemDiskSequenceRequest."
             )
-        if self.sequence.descriptor.target != "venus":
+        descriptor = self.sequence.descriptor
+        if (
+            isinstance(descriptor, SolarSystemBodyDescriptor)
+            and not descriptor.supports(OBSERVED_DISK_SEQUENCE)
+        ):
             raise ValueError(
-                "drawable observed sequences currently support only venus."
+                f"{descriptor.display_name} does not support observed "
+                "disk sequences."
             )
         magnification = float(self.magnification)
         if not isfinite(magnification) or not 1.0 <= magnification <= 1000.0:
@@ -82,9 +104,14 @@ class FrozenEarthSolarSystemDiskSequenceDisplayRequest:
             raise TypeError(
                 "sequence must be a FrozenEarthDiskSequenceRequest."
             )
-        if self.sequence.descriptor.target != "venus":
+        descriptor = self.sequence.descriptor
+        if (
+            isinstance(descriptor, SolarSystemBodyDescriptor)
+            and not descriptor.supports(FROZEN_EARTH_DISK_SEQUENCE)
+        ):
             raise ValueError(
-                "drawable frozen-Earth sequences currently support only venus."
+                f"{descriptor.display_name} does not support frozen-Earth "
+                "disk sequences."
             )
         magnification = float(self.magnification)
         if not isfinite(magnification) or not 1.0 <= magnification <= 1000.0:
@@ -107,8 +134,17 @@ def configure_chart_request_disks(sky, request):
     """Replace request-owned disk layers with the current request selection."""
     for layer in tuple(sky.layers):
         name = getattr(layer, "layer_name", "")
-        if name.startswith("venus_disk_") or name == "frozen_earth_sun":
+        if (
+            getattr(layer, "display_kind", None) in {
+                "resolved_disk",
+                "observed_disk_sequence",
+                "frozen_earth_disk_sequence",
+            }
+            or name == "frozen_earth_sun"
+        ):
             sky.remove(layer)
+            if name:
+                setattr(sky, name, None)
 
     for name in (
         "venus_disk_illuminated",
@@ -127,9 +163,10 @@ def configure_chart_request_disks(sky, request):
         setattr(sky, name, None)
 
     for disk in request.solar_system_disks:
-        if disk.target != "venus":
-            raise ValueError(f"unsupported resolved disk: {disk.target!r}.")
-        layers = venus_disk_layers(magnification=disk.magnification)
+        layers = solar_system_disk_layers(
+            disk.descriptor,
+            magnification=disk.magnification,
+        )
         for layer in layers:
             setattr(sky, layer.layer_name, layer)
             sky.add(layer)
@@ -137,12 +174,12 @@ def configure_chart_request_disks(sky, request):
     sequence = getattr(request, "solar_system_disk_sequence", None)
     if sequence is not None:
         factory = (
-            frozen_earth_venus_disk_sequence_layers
+            frozen_earth_solar_system_disk_sequence_layers
             if isinstance(
                 sequence,
                 FrozenEarthSolarSystemDiskSequenceDisplayRequest,
             )
-            else observed_venus_disk_sequence_layers
+            else observed_solar_system_disk_sequence_layers
         )
         layers = factory(
             sequence.sequence,

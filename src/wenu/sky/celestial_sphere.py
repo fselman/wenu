@@ -29,7 +29,9 @@ from wenu.sky.coordinate_grids import (
 from wenu.sky.moon import MoonLayer
 from wenu.sky.points import CelestialPoints
 from wenu.sky.sky_layer import SkyLayer
-from wenu.sky.venus import VenusLayer
+from wenu.sky.solar_system_bodies import SolarSystemBodyDescriptor
+from wenu.sky.solar_system_points import SolarSystemPointLayer
+from wenu.sky.venus import VENUS_POINT, VenusLayer
 
 
 class CelestialSphere:
@@ -55,6 +57,7 @@ class CelestialSphere:
         self.horizon_reference = None
         self.venus = None
         self.moon = None
+        self.solar_system_bodies = {}
         self._layers: list[SkyLayer] = []
 
     @property
@@ -255,9 +258,20 @@ class CelestialSphere:
 
     def add_venus(self) -> VenusLayer:
         """Register the opt-in apparent Venus layer."""
-        self.venus = VenusLayer()
-        self.add(self.venus)
+        self.venus = self.add_solar_system_body(VENUS_POINT)
         return self.venus
+
+    def add_solar_system_body(
+        self, descriptor: SolarSystemBodyDescriptor
+    ) -> SolarSystemPointLayer:
+        """Register one descriptor-driven apparent moving-body layer."""
+        if not isinstance(descriptor, SolarSystemBodyDescriptor):
+            raise TypeError("descriptor must be a SolarSystemBodyDescriptor.")
+        layer = SolarSystemPointLayer(descriptor)
+        self.solar_system_bodies[descriptor.selection_key] = layer
+        setattr(self, descriptor.entity_key, layer)
+        self.add(layer)
+        return layer
 
     def add_moon(self) -> MoonLayer:
         """Register the opt-in apparent Moon symbolic-point layer."""

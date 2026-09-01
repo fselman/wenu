@@ -1120,3 +1120,19 @@ Fernando accepted the two-slice boundary, JPL equal-volume mean radius,
 physical-body/provider-barycentre distinction, frozen-only first drawable
 scope, and explicit non-goals after all 68 current-documentation tests passed
 on his Mac in 2.19 seconds.
+
+
+## Milestone 49I.3C.3.3A — Descriptor-driven moving-body foundation
+
+**Status:** Scientifically, architecturally, and visually accepted on
+2026-09-01.
+
+Before Mercury numerical state, replace the remaining Venus-specific drawable
+control flow with a body descriptor, immutable catalog, capability resolution,
+and generic point, track, disk, and disk-sequence factories. Preserve Venus
+output. Prove extensibility with a deterministic synthetic minor body; do not
+register Mercury or expose another CLI body in this slice.
+
+Fernando accepted the abstraction after all 2,045 Mac tests passed in 86.49
+seconds and human review confirmed unchanged frozen-Earth, single resolved,
+and observed-sequence Venus output.

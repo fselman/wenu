@@ -34,7 +34,7 @@ from .product_options import ChartProduct, chart_product_options
 from .style_overrides import ChartStyleOverrides
 from wenu.translations import translate_label
 from wenu.sky.solar_system_tracks import SolarSystemTrackRequest
-from wenu.sky.venus import VENUS_POINT
+from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
 
 
 _REFERENCE_LABELS = {
@@ -296,7 +296,7 @@ def _chart_view_argument_plans(
         None
         if parsed_track is None
         else SolarSystemTrackRequest(
-            descriptor=VENUS_POINT,
+            descriptor=SOLAR_SYSTEM_BODY_CATALOG.resolve(parsed_track.body),
             start_instant=parsed_track.start_instant,
             start_time_scale="utc",
             sample_step_days=parsed_track.sample_step_days,

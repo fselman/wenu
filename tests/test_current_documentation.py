@@ -98,6 +98,9 @@ DRAWABLE_FROZEN_EARTH_VENUS_SEQUENCE = (
 MERCURY_DISK_SEQUENCE_AUDIT = (
     DEVELOPER / "mercury_disk_sequence_audit_49i3c33.md"
 )
+MOVING_BODY_ARCHITECTURE = (
+    DEVELOPER / "moving_body_architecture_49i3c33a.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -2569,3 +2572,25 @@ def test_49i3c33_audits_mercury_generalization_and_validation():
     assert "13.2.31 49I.3C.3.3 Mercury generalization audit" in guide
     assert "Guide version:** `0.9.5.20260901.47`" in guide
     assert "mercury_disk_sequence_audit_49i3c33.md" in instructions
+
+
+def test_49i3c33a_records_descriptor_driven_moving_body_foundation():
+    contract = " ".join(read(MOVING_BODY_ARCHITECTURE).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    for phrase in (
+        "SolarSystemBodyDescriptor",
+        "A planet does not contain its satellites",
+        "Capabilities, not classification",
+        "synthetic minor body",
+        "Mercury remains unregistered",
+        "does not add Mercury",
+        "all 2,045 tests in 86.49 seconds",
+        "Scientifically, architecturally, and visually accepted",
+        "three Venus compatibility renders",
+    ):
+        assert phrase in contract
+    assert "13.2.32 49I.3C.3.3A moving-body foundation" in guide
+    assert "Milestone 49I.3C.3.3A moving-body ownership" in source_tree
+    assert "moving_body_architecture_49i3c33a.md" in instructions
