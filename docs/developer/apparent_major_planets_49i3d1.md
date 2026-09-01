@@ -79,6 +79,12 @@ not a viewport edge or an artificial closing segment. All five levels are
 therefore governed defaults; an explicit request can still select a narrower
 subset.
 
+For visual diagnosis and ordinary chart control, every chart family accepts
+`--mw-lowest-contour OL1|OL2|OL3|OL4|OL5`. The chosen isophote is the faintest
+one included, so `OL2` selects `ol2` through `ol5`. Comparing otherwise
+identical `OL1` and `OL2` renders isolates the complete `ol1` contribution
+without changing the projection, viewport, or planet selection.
+
 ```bash
 wenu_chart all-sky \
   --observer-location "La Ligua" \
