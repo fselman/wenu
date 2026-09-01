@@ -29,6 +29,7 @@ from wenu.sky.solar_system_bodies import (
 from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
 
 GRID_REFERENCES = frozenset({"equatorial", "ecliptic", "galactic"})
+MILKY_WAY_CONTOUR_LEVELS = ("ol1", "ol2", "ol3", "ol4", "ol5")
 _SYMBOLIC_BODY_KEYS = tuple(
     body.selection_key
     for body in SOLAR_SYSTEM_BODY_CATALOG.supporting(SYMBOLIC_POINT)
@@ -132,6 +133,22 @@ def _selected_planets(values):
     return frozenset(selected)
 
 
+def _milky_way_contour(value):
+    level = str(value).strip().lower()
+    if level not in MILKY_WAY_CONTOUR_LEVELS:
+        raise argparse.ArgumentTypeError(
+            "Milky Way contour must be one of ol1, ol2, ol3, ol4, ol5"
+        )
+    return level
+
+
+def _milky_way_levels_from_lowest(level):
+    if level is None:
+        return None
+    index = MILKY_WAY_CONTOUR_LEVELS.index(level)
+    return frozenset(MILKY_WAY_CONTOUR_LEVELS[index:])
+
+
 @dataclass(frozen=True)
 class ChartContentOptions:
     """Shared astronomical-content choices parsed by canonical examples."""
@@ -157,6 +174,7 @@ class ChartContentOptions:
     reference_equinox: str | None = None
     planets: frozenset[str] = frozenset()
     moon: bool = False
+    mw_lowest_contour: str | None = None
 
     def __post_init__(self):
         if (
@@ -184,6 +202,14 @@ class ChartContentOptions:
             raise ValueError("planets contains an unsupported body.")
         object.__setattr__(self, "planets", planets)
         object.__setattr__(self, "moon", bool(self.moon))
+        lowest = self.mw_lowest_contour
+        if lowest is not None:
+            lowest = str(lowest).strip().lower()
+            if lowest not in MILKY_WAY_CONTOUR_LEVELS:
+                raise ValueError(
+                    "mw_lowest_contour must be ol1, ol2, ol3, ol4, or ol5."
+                )
+            object.__setattr__(self, "mw_lowest_contour", lowest)
         step = self.equatorial_declination_step_deg
         if step is not None:
             step = float(step)
@@ -220,6 +246,15 @@ def add_chart_content_arguments(parser):
         "--magnitude-limit",
         type=float,
         help="override the style/family stellar magnitude limit",
+    )
+    parser.add_argument(
+        "--mw-lowest-contour",
+        type=_milky_way_contour,
+        metavar="OL1|OL2|OL3|OL4|OL5",
+        help=(
+            "select the faintest Milky Way isophote to draw; all brighter "
+            "inner contours are included"
+        ),
     )
     parser.add_argument(
         "--planet",
@@ -466,6 +501,7 @@ def chart_content_options(arguments) -> ChartContentOptions:
         reference_equinox=arguments.reference_equinox,
         planets=_selected_planets(getattr(arguments, "planet", ())),
         moon=bool(getattr(arguments, "moon", False)),
+        mw_lowest_contour=getattr(arguments, "mw_lowest_contour", None),
     )
 
 
@@ -720,7 +756,10 @@ def chart_sky_content(arguments) -> SkyContentSelection:
     if content.moon:
         selected.add("moon")
     return SkyContentSelection(
-        solar_system_objects=frozenset(selected)
+        solar_system_objects=frozenset(selected),
+        milky_way_levels=_milky_way_levels_from_lowest(
+            content.mw_lowest_contour
+        ),
     )
 
 
