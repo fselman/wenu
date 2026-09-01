@@ -251,6 +251,7 @@ class PublicationStyle:
         sky,
         *,
         horizon_altitude_deg=None,
+        clip_filled_polygons=True,
     ):
         """Build explicit options for the layers registered in ``sky``."""
         minimum = (
@@ -263,6 +264,14 @@ class PublicationStyle:
             projected,
             minimum=minimum,
         )
+        def prepare_filled(spherical, projected):
+            if not clip_filled_polygons:
+                return projected
+            return clip_polygons_to_latitude(
+                spherical,
+                projected,
+                minimum=minimum,
+            )
         options = {}
         moving_bodies = tuple(
             getattr(sky, "solar_system_bodies", {}).values()
@@ -394,14 +403,7 @@ class PublicationStyle:
                     "zorder": layers.MILKY_WAY + 0.1,
                 }
             options[sky.milky_way_isophotes] = {
-                "prepare": (
-                    lambda spherical, projected:
-                    clip_polygons_to_latitude(
-                        spherical,
-                        projected,
-                        minimum=minimum,
-                    )
-                ),
+                "prepare": prepare_filled,
                 "render": milky_way_render,
             }
         for cloud, cloud_layer in getattr(
@@ -442,14 +444,7 @@ class PublicationStyle:
                     "zorder": layers.MAGELLANIC_CLOUDS,
                 }
             options[cloud_layer] = {
-                "prepare": (
-                    lambda spherical, projected:
-                    clip_polygons_to_latitude(
-                        spherical,
-                        projected,
-                        minimum=minimum,
-                    )
-                ),
+                "prepare": prepare_filled,
                 "render": cloud_render,
             }
         if getattr(sky, "galaxies", None) is not None:
@@ -487,14 +482,7 @@ class PublicationStyle:
                         self.galaxy_minimum_size_arcmin
                     ),
                 },
-                "prepare": (
-                    lambda spherical, projected:
-                    clip_polygons_to_latitude(
-                        spherical,
-                        projected,
-                        minimum=minimum,
-                    )
-                ),
+                "prepare": prepare_filled,
                 "render": galaxy_render,
             }
 
