@@ -281,8 +281,8 @@ Galactic-latitude-bounded faint envelope; no distant vertex, projection jump,
 or clipping closure creates it. `ol1` remains available as explicit catalogue
 content, but is not a governed display default. Explicit level requests retain
 precedence. The public CLI exposes this nested selection as
-`--mw-lowest-contour OL1|OL2|OL3|OL4|OL5`; supplying the option draws exactly
-the selected isophote instead of the governed default contour set.
+`--mw-contour OL1|OL2|OL3|OL4|OL5|all`; a numbered choice draws exactly that
+isophote, while `all` draws all five instead of the governed default set.
 The runtime catalogue is mechanically exported into five independent,
 plain-text GeoJSON resources, `milky_way_ol1.geojson` through
 `milky_way_ol5.geojson`. Explicit selection sends only rings from the chosen
