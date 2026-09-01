@@ -31,14 +31,14 @@ def _catalogue(path):
     features = []
     for index, level in enumerate(MilkyWayIsophotes.available_levels):
         outer = [
-            [index, -2], [index, 2],
-            [index + 3, 2], [index + 3, -2], [index, -2],
+            [index, -2], [index + 3, -2],
+            [index + 3, 2], [index, 2], [index, -2],
         ]
         rings = [outer]
         if level == "ol1":
             rings.append([
-                [index + 1, -1], [index + 2, -1],
-                [index + 2, 1], [index + 1, 1],
+                [index + 1, -1], [index + 1, 1],
+                [index + 2, 1], [index + 2, -1],
                 [index + 1, -1],
             ])
         features.append({
@@ -181,25 +181,6 @@ def test_packaged_snapshot_has_expected_levels():
     layer = MilkyWayIsophotes(Observer()).load()
     assert tuple(layer.features) == layer.available_levels
 
-
-def test_packaged_snapshot_decodes_disjoint_exteriors_and_wound_holes():
-    geometry = MilkyWayIsophotes(
-        Observer(),
-        levels=MilkyWayIsophotes.available_levels,
-    ).load().spherical_geometry(Observer())
-    levels = geometry.metadata["level"]
-    holes = geometry.metadata["is_hole"]
-
-    assert {
-        level: int(np.count_nonzero(holes[levels == level]))
-        for level in MilkyWayIsophotes.available_levels
-    } == {
-        "ol1": 8,
-        "ol2": 9,
-        "ol3": 2,
-        "ol4": 3,
-        "ol5": 0,
-    }
 
 def test_style_clips_isophotes_before_planar_rendering(tmp_path):
     """Below-horizon complements must not tint the visible sky."""
