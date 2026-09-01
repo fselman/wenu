@@ -125,6 +125,14 @@ def test_milky_way_contour_selects_one_level_or_all(
     assert chart_sky_content(arguments).milky_way_levels == expected
 
 
+def test_milky_way_contour_accepts_one_comma_separated_selection():
+    arguments = parser().parse_args(["--mw-contour", "OL1,ol2,OL4"])
+
+    assert chart_sky_content(arguments).milky_way_levels == {
+        "ol1", "ol2", "ol4",
+    }
+
+
 def test_omitted_milky_way_contour_preserves_resolved_default():
     arguments = parser().parse_args([])
 
