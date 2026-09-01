@@ -74,10 +74,11 @@ error. A CLI planet selection replaced the complete resolved
 `milky_way_levels` to `None`. Request overlays now replace only explicitly
 supplied fields, so selecting planets preserves the resolved Milky Way levels
 and other unrelated sky content. Direct comparison with the source geometry
-confirmed that the two `ol1` rings are the valid faint outer `ol1` envelope,
-not a viewport edge or an artificial closing segment. All five levels are
-therefore governed defaults; an explicit request can still select a narrower
-subset.
+confirmed that the two principal `ol1` rings belong to the source geometry,
+not a viewport edge or an artificial closing segment. Comparative renders of
+each lowest level then established that only `ol1` produces the unnatural
+broad envelope. Governed defaults therefore begin at `ol2`; `ol1` remains
+explicitly selectable for inspection or specialized use.
 
 For visual diagnosis and ordinary chart control, every chart family accepts
 `--mw-lowest-contour OL1|OL2|OL3|OL4|OL5`. The chosen isophote is the faintest
