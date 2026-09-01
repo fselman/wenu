@@ -1143,3 +1143,16 @@ owns deterministic contract coverage;
   numerical and visual validation gates, non-goals, and stop conditions.
 - Existing source files remain authoritative for the as-is implementation;
   this audit assigns no Mercury runtime owner and changes no production code.
+
+
+## Milestone 49I.3C.3.3A moving-body ownership
+
+- `src/wenu/sky/solar_system_bodies.py` owns typed body metadata,
+  capabilities, classifications, relationships, and immutable catalog logic.
+- `src/wenu/sky/solar_system_catalog.py` owns built-in registrations.
+- Existing point, track, disk, and sequence modules own generic factories;
+  Venus-named factories and class names are compatibility aliases only.
+- `tests/test_solar_system_body_machinery.py` proves that a synthetic minor
+  body needs no body-specific drawable machinery.
+- `docs/developer/moving_body_architecture_49i3c33a.md` owns the accepted
+  architectural boundary and non-goals.
