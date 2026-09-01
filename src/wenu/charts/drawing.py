@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import replace
 
 from .detail import DetailOverrides, SkyContentSelection
-from .furniture import ChartFurnitureOptions
+from .furniture import ChartFurnitureOptions, ReferenceAnnotations
 from .product_options import ChartProduct, ChartProductOptions
 from .request import ChartRequest
 from .request_chart import PreparedChartRequest, _chart_from_resolved
@@ -46,6 +46,22 @@ def _empty_sky_content():
 
 def _is_frozen_sequence(value):
     return isinstance(value, FrozenEarthSolarSystemDiskSequenceDisplayRequest)
+
+
+def _frozen_title(language):
+    """Return the automatic frozen-Earth sequence title."""
+    if language == "es":
+        return "Secuencia de Venus desde una Tierra fija"
+    return "Frozen-Earth Venus sequence"
+
+
+def _frozen_furniture(furniture):
+    """Keep only an explicitly selected ecliptic reference plane."""
+    return ChartFurnitureOptions(
+        references=ReferenceAnnotations(
+            ecliptic=furniture.references.ecliptic,
+        ),
+    )
 
 
 def _furniture_product_export_defaults(configuration=None):
@@ -167,7 +183,7 @@ def chart_view_request(
         if furniture is None else furniture
     )
     if frozen:
-        furniture = ChartFurnitureOptions()
+        furniture = _frozen_furniture(furniture)
     if not isinstance(furniture, ChartFurnitureOptions):
         raise TypeError("furniture must be a ChartFurnitureOptions value.")
     if style_overrides is not None and not isinstance(
@@ -184,6 +200,7 @@ def chart_view_request(
         if view.configuration is None
         else _product_defaults(view.configuration)
     )
+    resolved_language = defaults.language if language is None else language
     product = ChartProduct(
         defaults.product.style if style is None else style,
         defaults.product.mode if mode is None else mode,
@@ -215,11 +232,11 @@ def chart_view_request(
             style_overrides=style_overrides,
         ),),
         title=(
-            "Frozen-Earth Venus sequence"
+            _frozen_title(resolved_language)
             if frozen and title is None
             else (defaults.title if title is None else title)
         ),
-        language=defaults.language if language is None else language,
+        language=resolved_language,
         reference_policy=(
             view._prepared.resolved.request.reference_policy
             if reference_policy is None else reference_policy
