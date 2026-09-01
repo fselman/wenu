@@ -198,7 +198,7 @@ def add_chart_content_arguments(parser):
         action="append",
         choices=_SYMBOLIC_BODY_KEYS,
         default=[],
-        help="draw a selected planet (currently: venus)",
+        help="draw a selected apparent planet; repeat for multiple planets",
     )
     parser.add_argument(
         "--planet-appearance",
