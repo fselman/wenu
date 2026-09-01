@@ -83,7 +83,11 @@ def test_venus_uses_one_accepted_chain_and_one_product_transform():
             calls.append(("transform", geometry))
             assert target is realization.product_coordinate_spec
             assert observation is realization.observation
-            assert geometry.labels.tolist() == ["Venus"]
+            assert geometry.labels.tolist() == ["♀"]
+            assert geometry.names.tolist() == ["Venus"]
+            assert geometry.metadata[
+                "semantic_entity_display_names"
+            ].tolist() == ["Venus"]
             assert geometry.metadata["ephemeris_sha256"] == "a" * 64
             return transformed
 
