@@ -18,23 +18,6 @@ from wenu.sky.observed_cache import (
 from wenu.sky.sky_layer import SkyLayer
 
 
-def _source_ring_is_hole(coordinates):
-    """Decode D3-Celestial ring topology from its governed winding."""
-    longitude = np.degrees(
-        np.unwrap(np.radians(coordinates[:, 0]))
-    )
-    latitude = coordinates[:, 1]
-    twice_area = np.sum(
-        longitude * np.roll(latitude, -1)
-        - np.roll(longitude, -1) * latitude
-    )
-    if np.isclose(twice_area, 0.0, atol=1.0e-12):
-        raise ValueError("Milky Way isophote ring has zero signed area.")
-    # The canonical D3-Celestial snapshot uses clockwise exterior rings
-    # and counter-clockwise holes in its source celestial coordinates.
-    return bool(twice_area > 0.0)
-
-
 class MilkyWayIsophotes(SkyLayer):
     """Nested Milky Way isophotes with GeoJSON ring topology preserved."""
 
@@ -143,7 +126,7 @@ class MilkyWayIsophotes(SkyLayer):
                     level_values.append(level)
                     compounds.append(compound)
                     ring_indices.append(ring_index)
-                    holes.append(_source_ring_is_hole(coordinates))
+                    holes.append(ring_index > 0)
 
         longitude, latitude = observed_polygon_arrays(
             self._observed_polygon_cache,
