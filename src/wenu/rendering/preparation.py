@@ -486,6 +486,7 @@ def project_polygons_to_projection_cap(
     items = []
     source_indices = []
     source_latitudes = []
+    topology_inversions = []
     for index, (longitude, latitude) in enumerate(
         zip(spherical.lon_deg, spherical.lat_deg)
     ):
@@ -507,6 +508,11 @@ def project_polygons_to_projection_cap(
             items.append(clipped)
             source_indices.append(index)
             source_latitudes.append(clipped_latitude)
+            topology_inversions.append(
+                _polygon_winds_around_projection_pole(
+                    longitude, latitude, projection
+                )
+            )
 
     metadata = _spherical_collection_metadata(spherical)
     metadata = _subset_metadata(
@@ -517,7 +523,28 @@ def project_polygons_to_projection_cap(
     metadata["projection_domain_clipped"] = True
     metadata["projection_cap_deg"] = angular_radius_deg
     metadata["projection_source_latitudes"] = tuple(source_latitudes)
+    if "is_hole" in metadata:
+        metadata["is_hole"] = np.logical_xor(
+            np.asarray(metadata["is_hole"], dtype=bool),
+            np.asarray(topology_inversions, dtype=bool),
+        )
     return ProjectedPolygons(items=items, metadata=metadata)
+
+
+def _polygon_winds_around_projection_pole(
+    longitude, latitude, projection
+):
+    aligned_longitude, _ = _projection_aligned_coordinates(
+        projection, longitude, latitude
+    )
+    aligned_longitude = np.asarray(aligned_longitude, dtype=float)
+    if aligned_longitude.size < 3:
+        return False
+    unwrapped = np.degrees(
+        np.unwrap(np.radians(aligned_longitude), discont=np.pi)
+    )
+    turns = (unwrapped[-1] - unwrapped[0]) / 360.0
+    return bool(abs(int(np.round(turns))) >= 1)
 
 
 def _clip_one_polygon_to_projection_cap(
