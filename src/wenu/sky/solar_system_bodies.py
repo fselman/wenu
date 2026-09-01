@@ -35,6 +35,7 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
     physical_radius_km: float | None = None
     radius_model: str | None = None
     capabilities: frozenset[str] = field(default_factory=frozenset)
+    localized_display_names: tuple[tuple[str, str], ...] = ()
 
     def __post_init__(self):
         super().__post_init__()
@@ -55,6 +56,20 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
         )
         object.__setattr__(self, "classifications", classifications)
         object.__setattr__(self, "capabilities", capabilities)
+        localized = []
+        languages = set()
+        for language, display_name in self.localized_display_names:
+            language = _optional_text(language, name="display language").lower()
+            display_name = _optional_text(
+                display_name, name="localized display name"
+            )
+            if language in languages:
+                raise ValueError(
+                    f"duplicate localized display language: {language!r}."
+                )
+            languages.add(language)
+            localized.append((language, display_name))
+        object.__setattr__(self, "localized_display_names", tuple(localized))
         radius = self.physical_radius_km
         if radius is not None:
             radius = float(radius)
@@ -70,6 +85,11 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
 
     def supports(self, capability):
         return capability in self.capabilities
+
+    def display_name_for(self, language):
+        """Return catalog-owned localized display text with stable fallback."""
+        names = dict(self.localized_display_names)
+        return names.get(str(language).strip().lower(), self.display_name)
 
 
 class SolarSystemBodyCatalog:
