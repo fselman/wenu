@@ -175,7 +175,7 @@ def test_face_cap_closes_filled_polygon_along_circular_boundary(
     assert np.max(boundary_steps) < 0.02
 
 
-def test_face_cap_inverts_hole_roles_for_pole_winding_rings():
+def test_face_cap_applies_source_owned_topology_inversions():
     chart = PolarPlanisphereChart(
         pole="south",
         projection_name="stereographic",
@@ -193,6 +193,9 @@ def test_face_cap_inverts_hole_roles_for_pole_winding_rings():
         metadata={
             "compound_id": np.asarray(("level", "level")),
             "is_hole": np.asarray((False, True)),
+            "projection_cap_topology_inversion": np.asarray(
+                (True, True)
+            ),
         },
     )
 
