@@ -274,10 +274,11 @@ constellation-label selections already supported by layer geometry. It also
 applies constellation-line and boundary subsets and Milky Way, LMC, and SMC
 isophote levels as render-local geometry options. These selections do not
 change the registered layers' loaded content or defaults.
-Resolved chart requests use the established `ol2` through `ol5` Milky Way
-levels when no levels are supplied, thereby omitting the outer complement
-without removing it from maximal loaded content. Explicit level requests
-retain precedence.
+Resolved chart requests use all five established Milky Way levels when no
+levels are supplied. The two source rings in `ol1` form the valid faint outer
+envelope, while `ol2` through `ol5` provide successively inner structure.
+Explicit level requests retain precedence and may omit `ol1` when a narrower
+render is wanted.
 
 `ResolvedDetail.extended_object_samples` may request a lower render-local
 sampling density for extended-object outlines. It applies to Messier-style
