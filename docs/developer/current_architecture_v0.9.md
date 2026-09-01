@@ -530,3 +530,18 @@ titles and reference labels use the resolved chart language.
 
 All retained directions remain frozen-observer geometric, not apparent sky.
 Mercury remains 49I.3C.3.3; no 3D visualizer is installed.
+
+
+## Mercury generalization audit boundary
+
+Milestone 49I.3C.3.3 audits, but does not implement, Mercury reuse. The
+accepted sequence request/result and physical spherical disk geometry are
+already target-parameterized. CLI selection, body constants, drawable layers,
+style lookup, cleanup, semantic roots, localization, and installed-kernel
+evidence remain Venus-specific.
+
+The proposed first runtime slice is output-neutral Mercury descriptor/radius
+state plus an installed-DE440 frozen-Earth comparison. Only a separately
+accepted second slice may generalize the drawable frozen sequence. No Mercury
+runtime, public request, style, semantic output, or chart is currently
+installed.

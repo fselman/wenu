@@ -1099,3 +1099,19 @@ Fernando accepted the 31-disk La Ligua Virgo calibration with seven-day steps,
 magnification 200, the ecliptic through the Sun, the distinct equatorial grid,
 and Spanish labeling. Verification passed 156 focused tests and all 2,037 Mac
 tests in 84.41 seconds. Mercury remains 49I.3C.3.3.
+
+
+## Milestone 49I.3C.3.3 — Mercury generalization and validation audit
+
+**Status:** Proposed for scientific and architectural review on 2026-09-01.
+
+`mercury_disk_sequence_audit_49i3c33.md` identifies the accepted generic
+frozen-sequence and disk-geometry seams, the remaining Venus-specific drawable
+owners, Mercury body identity `199`, proposed JPL mean radius `2439.4 km`, and
+the provider body-versus-barycentre distinction.
+
+The proposed bounded slices are 49I.3C.3.3A output-neutral Mercury state plus
+installed-DE440 comparison, followed only after acceptance by 49I.3C.3.3B
+drawable frozen-Earth Mercury. Observed Mercury, symbolic Mercury, tracks,
+single disks, photometry, rotation, multiple bodies, animation, and 3D remain
+outside this audit. The audit changes no runtime or visible output.

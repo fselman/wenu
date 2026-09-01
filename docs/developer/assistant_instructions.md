@@ -344,3 +344,13 @@ per-centre magnification, localized title, and product-frame
 ecliptic/equatorial references. Never introduce an observer AltAz intermediate
 into fixed-frame reference geometry. Keep Mercury in the independently
 validated 49I.3C.3.3 milestone.
+
+
+For Mercury disk-sequence work, consult
+`mercury_disk_sequence_audit_49i3c33.md`. Preserve the distinction between
+NAIF physical body `199` and a kernel-resolved Mercury barycentre, use the
+separately sourced mean spherical radius, validate output-neutral frozen-Earth
+state before drawable integration, and generalize the Venus orchestration
+without copying its projection, preparation, renderer, or exporter. Do not
+enable observed Mercury, symbolic Mercury, tracks, single disks, photometry,
+rotation, multiple bodies, animation, or 3D behavior under this milestone.

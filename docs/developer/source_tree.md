@@ -1134,3 +1134,12 @@ owns deterministic contract coverage;
   localization, and fixed-reference regressions.
 - `docs/developer/drawable_frozen_earth_venus_sequence_49i3c32b.md` owns
   scientific, visual, operational, and regression acceptance evidence.
+
+
+## Milestone 49I.3C.3.3 audit ownership
+
+- `docs/developer/mercury_disk_sequence_audit_49i3c33.md` owns the proposed
+  Mercury body/radius authority, provider-ID distinction, two-slice boundary,
+  numerical and visual validation gates, non-goals, and stop conditions.
+- Existing source files remain authoritative for the as-is implementation;
+  this audit assigns no Mercury runtime owner and changes no production code.
