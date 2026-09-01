@@ -1,8 +1,10 @@
 # Drawable frozen-Earth Mercury sequence — Milestone 49I.3C.3.3C
 
-**Status:** Implementation proposed; visual and operational acceptance pending
+**Status:** Scientifically, architecturally, visually, and operationally accepted
 
 **Implementation date:** 2026-09-01
+
+**Acceptance date:** 2026-09-01
 
 ## Purpose
 
@@ -67,8 +69,15 @@ wenu_chart regional \
   --output /Users/fselman/Downloads/frozen-earth-mercury.png
 ```
 
-Visual acceptance must confirm a Spanish title naming Mercurio, a fixed Sun,
-the labeled fixed ecliptic, the transformed fixed-frame equatorial grid,
-legible changing phases and angular sizes, unclipped disks, and no ordinary
-sky content. PNG/PDF/SVG parity and the final cadence, field, magnification,
-and date-label policy remain pending human review.
+Fernando accepted the 44-step, two-day, 200-times calibration after inspecting
+PNG/PDF/SVG parity. The Spanish title names Mercurio correctly; the fixed
+Sun, labeled fixed ecliptic, transformed fixed-frame equatorial grid, changing
+phases and angular sizes, unclipped disks, and restricted scene all passed
+visual review. The focused contracts passed all 119 tests in 3.06 seconds and
+the complete Mac regression suite passed all 2,052 tests in 89.90 seconds.
+
+The accepted implementation uses the same frozen-state realizer, disk-geometry
+realizer, drawable layer factory, projection, per-centre magnification,
+semantic resolver, styles, renderer, and exporters as Venus. Only catalog
+metadata, ephemeris state, and request parameters differ. Public Mercury
+remains frozen-Earth-only.
