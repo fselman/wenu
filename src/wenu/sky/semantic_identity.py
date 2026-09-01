@@ -454,6 +454,77 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
                 f"Unsupported semantic edit policy: {configured_policy!r}."
             ) from error
     contract = _LAYER_CONTRACTS.get(name)
+    body = getattr(layer, "body_descriptor", None)
+    display_kind = getattr(layer, "display_kind", None)
+    component_role = getattr(layer, "component_role", None)
+    if (
+        body is not None
+        and display_kind is not None
+        and component_role != "sun"
+    ):
+        branches = {
+            "planet": "planets",
+            "dwarf_planet": "dwarf_planets",
+            "minor_body": "minor_bodies",
+            "natural_satellite": "natural_satellites",
+            "artificial_satellite": "artificial_satellites",
+        }
+        branch = branches.get(body.body_class, "moving_bodies")
+        kind_paths = {
+            "symbolic_point": None,
+            "apparent_track": "track",
+            "resolved_disk": "disk",
+            "observed_disk_sequence": "disk_sequence",
+            "frozen_earth_disk_sequence": "frozen_earth_sequence",
+        }
+        kind_titles = {
+            "symbolic_point": "",
+            "apparent_track": "",
+            "resolved_disk": "",
+            "observed_disk_sequence": " sequence",
+            "frozen_earth_disk_sequence": "Frozen-Earth ",
+        }
+        component_titles = {
+            "illuminated": "illuminated face",
+            "limb": "limb",
+            "terminator": "terminator",
+            "labels": "date labels",
+        }
+        path_kind = kind_paths[display_kind]
+        if display_kind == "symbolic_point":
+            contract = SemanticLayerContract(
+                ("sky", "solar_system", branch, body.entity_key),
+                body.display_name,
+                39,
+                body.body_class,
+            )
+        elif display_kind == "apparent_track":
+            contract = SemanticLayerContract(
+                (
+                    "sky", "solar_system", branch, body.entity_key,
+                    "track",
+                ),
+                f"{body.display_name} track",
+                38,
+                "moving_body_track",
+            )
+        else:
+            component_title = component_titles[component_role]
+            prefix = kind_titles[display_kind]
+            display = (
+                f"{prefix}{body.display_name}"
+                f"{' sequence' if display_kind == 'observed_disk_sequence' else ''} "
+                f"{component_title}"
+            ).strip()
+            contract = SemanticLayerContract(
+                (
+                    "sky", "solar_system", branch, body.entity_key,
+                    path_kind, component_role,
+                ),
+                display,
+                38,
+                f"planet_{path_kind}_{component_role}",
+            )
     svg_id = f"wenu-layer-{name.replace('_', '-')}"
     if name == "magellanic_cloud_isophotes":
         cloud_key = semantic_key(
