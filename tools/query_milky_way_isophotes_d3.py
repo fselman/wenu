@@ -92,7 +92,11 @@ def main():
         }
         level_path = destination / f"milky_way_{level}.geojson"
         level_path.write_text(
-            json.dumps(single, ensure_ascii=False, indent=2) + "\n",
+            json.dumps(
+                single,
+                ensure_ascii=False,
+                separators=(",", ":"),
+            ) + "\n",
             encoding="utf-8",
         )
         level_files[level] = level_path.name
