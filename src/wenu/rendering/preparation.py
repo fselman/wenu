@@ -287,6 +287,14 @@ def clip_polygons_to_latitude(
     items = []
     source_indices = []
     latitudes = _polygon_latitudes(spherical, projected)
+    inversions = np.asarray(
+        projected.metadata.get(
+            "projection_cap_topology_inversion",
+            np.zeros(len(projected), dtype=bool),
+        ),
+        dtype=bool,
+    )
+    boundary_radius = _projection_cap_boundary_radius(projected)
     for index, (latitude, polygon) in enumerate(
         zip(latitudes, projected)
     ):
@@ -294,6 +302,12 @@ def clip_polygons_to_latitude(
             polygon,
             latitude,
             minimum,
+            boundary_radius=(
+                boundary_radius
+                if inversions.shape == (len(projected),)
+                and inversions[index]
+                else None
+            ),
         )
         if clipped is not None:
             items.append(clipped)
@@ -947,7 +961,24 @@ def _deduplicate_vector_pairs(vectors, source_vectors):
     return cleaned, cleaned_source
 
 
-def _clip_one_polygon_to_latitude(polygon, latitude, minimum):
+def _projection_cap_boundary_radius(projected):
+    for polygon in projected:
+        if polygon.name != "projection_cap":
+            continue
+        radii = np.hypot(polygon.x, polygon.y)
+        finite = radii[np.isfinite(radii)]
+        if finite.size:
+            return float(np.median(finite))
+    return None
+
+
+def _clip_one_polygon_to_latitude(
+    polygon,
+    latitude,
+    minimum,
+    *,
+    boundary_radius=None,
+):
     """Clip one projected polygon using corresponding vertex latitudes."""
     latitude = np.asarray(latitude, dtype=float)
     x = np.asarray(polygon.x, dtype=float)
@@ -961,6 +992,13 @@ def _clip_one_polygon_to_latitude(polygon, latitude, minimum):
     finite = np.isfinite(x) & np.isfinite(y) & np.isfinite(latitude)
     if not np.all(finite) or x.size < 3:
         return None
+    if boundary_radius is not None:
+        return _clip_one_polygon_to_circular_latitude(
+            polygon,
+            latitude,
+            minimum,
+            float(boundary_radius),
+        )
 
     output = []
     previous = (x[-1], y[-1], latitude[-1])
@@ -1007,6 +1045,127 @@ def _clip_one_polygon_to_latitude(polygon, latitude, minimum):
         y=np.asarray(clipped_y, dtype=float),
         name=polygon.name,
     )
+
+
+def _clip_one_polygon_to_circular_latitude(
+    polygon,
+    latitude,
+    minimum,
+    boundary_radius,
+):
+    """Clip a winding ring and close excursions along a circular horizon."""
+    x = np.asarray(polygon.x, dtype=float)
+    y = np.asarray(polygon.y, dtype=float)
+    latitude = np.asarray(latitude, dtype=float)
+    output = []
+    pending_exit = False
+    outside_points = []
+    leading_outside_points = []
+    previous = (x[-1], y[-1], latitude[-1])
+    previous_inside = previous[2] >= minimum
+
+    for current in zip(x, y, latitude):
+        current_inside = current[2] >= minimum
+        if current_inside:
+            if not previous_inside:
+                crossing = _latitude_intersection(
+                    previous, current, minimum
+                )
+                if pending_exit and output:
+                    arc = _projected_boundary_arc(
+                        output[-1],
+                        crossing,
+                        boundary_radius,
+                        traversal_points=outside_points + [crossing],
+                    )
+                    output.extend(map(tuple, arc[1:-1]))
+                elif not pending_exit:
+                    leading_outside_points.append(crossing)
+                output.append(crossing)
+                pending_exit = False
+                outside_points = []
+            output.append((float(current[0]), float(current[1])))
+        elif previous_inside:
+            crossing = _latitude_intersection(
+                previous, current, minimum
+            )
+            output.append(crossing)
+            pending_exit = True
+            outside_points = [
+                crossing,
+                (float(current[0]), float(current[1])),
+            ]
+        elif pending_exit:
+            outside_points.append(
+                (float(current[0]), float(current[1]))
+            )
+        else:
+            if not leading_outside_points:
+                leading_outside_points.append(
+                    (float(previous[0]), float(previous[1]))
+                )
+            leading_outside_points.append(
+                (float(current[0]), float(current[1]))
+            )
+        previous = current
+        previous_inside = current_inside
+
+    if pending_exit and output:
+        first_crossing = next(
+            (
+                vertex for vertex in output
+                if np.isclose(np.hypot(*vertex), boundary_radius)
+            ),
+            output[0],
+        )
+        arc = _projected_boundary_arc(
+            output[-1],
+            first_crossing,
+            boundary_radius,
+            traversal_points=(
+                outside_points + leading_outside_points
+            ),
+        )
+        output.extend(map(tuple, arc[1:-1]))
+
+    cleaned = []
+    for vertex in output:
+        if not cleaned or not np.allclose(vertex, cleaned[-1]):
+            cleaned.append(vertex)
+    if len(cleaned) > 1 and np.allclose(cleaned[0], cleaned[-1]):
+        cleaned.pop()
+    if len(cleaned) < 3:
+        return None
+    clipped_x, clipped_y = zip(*cleaned)
+    return ProjectedPolygon(
+        x=np.asarray(clipped_x, dtype=float),
+        y=np.asarray(clipped_y, dtype=float),
+        name=polygon.name,
+    )
+
+
+def _projected_boundary_arc(
+    start,
+    end,
+    radius,
+    *,
+    traversal_points,
+    maximum_step_deg=0.25,
+):
+    start_angle = float(np.arctan2(start[1], start[0]))
+    traversal = np.asarray(traversal_points, dtype=float)
+    if len(traversal) >= 2:
+        angles = np.unwrap(np.arctan2(traversal[:, 1], traversal[:, 0]))
+        delta = float(angles[-1] - angles[0])
+    else:
+        end_angle = float(np.arctan2(end[1], end[0]))
+        delta = (end_angle - start_angle + np.pi) % (2.0 * np.pi) - np.pi
+    count = max(
+        1,
+        int(np.ceil(abs(np.degrees(delta)) / maximum_step_deg)),
+    )
+    angles = np.linspace(start_angle, start_angle + delta, count + 1)
+    return np.column_stack((radius * np.cos(angles), radius * np.sin(angles)))
 
 
 def _latitude_intersection(start, end, minimum):
