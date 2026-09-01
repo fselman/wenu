@@ -1179,4 +1179,4 @@ owns deterministic contract coverage;
 - `tests/test_frozen_earth_mercury_sequence_display.py` owns capability,
   conflict, semantic, magnification, fixed-Sun, and localization contracts.
 - `docs/developer/drawable_frozen_earth_mercury_sequence_49i3c33c.md` records
-  the proposed visual and operational acceptance gate.
+  the accepted architectural, visual, operational, and regression evidence.
