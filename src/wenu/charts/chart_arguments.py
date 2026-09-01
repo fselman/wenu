@@ -39,8 +39,7 @@ _TRACK_BODY_KEYS = tuple(
 )
 _SEQUENCE_BODY_KEYS = tuple(
     body.selection_key
-    for body in SOLAR_SYSTEM_BODY_CATALOG.supporting(OBSERVED_DISK_SEQUENCE)
-    if body.supports(FROZEN_EARTH_DISK_SEQUENCE)
+    for body in SOLAR_SYSTEM_BODY_CATALOG.supporting(FROZEN_EARTH_DISK_SEQUENCE)
 )
 _DURATION = re.compile(
     r"^(?P<value>(?:\d+(?:\.\d*)?|\.\d+))"
@@ -225,7 +224,7 @@ def add_chart_content_arguments(parser):
         "--planet-disk-sequence",
         choices=_SEQUENCE_BODY_KEYS,
         help=(
-            "draw observed resolved disks at major epochs "
+            "draw resolved body disks at major epochs "
             "(regional/binocular only)"
         ),
     )
@@ -522,6 +521,16 @@ def chart_disk_sequence_options(arguments):
     descriptor = SOLAR_SYSTEM_BODY_CATALOG.resolve(target)
     if model not in {"observed", "frozen-earth-ecliptic"}:
         raise ValueError("unsupported disk-sequence-model.")
+    capability = (
+        FROZEN_EARTH_DISK_SEQUENCE
+        if model == "frozen-earth-ecliptic"
+        else OBSERVED_DISK_SEQUENCE
+    )
+    if not descriptor.supports(capability):
+        raise ValueError(
+            f"{descriptor.display_name} does not support the {model} "
+            "disk-sequence model."
+        )
     if isinstance(n_steps, bool) or n_steps < 0:
         raise ValueError("disk-sequence-n-steps must be a nonnegative integer")
     appearances, magnifications = _disk_selections(arguments)
