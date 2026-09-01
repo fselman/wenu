@@ -83,6 +83,35 @@ When one chart needs choices from several themes, keep a dedicated combined
 profile. An inheritance feature should be added only if experience with these
 ordinary single-file overlays demonstrates that it is necessary.
 
+## Planet symbols
+
+Every ordinary chart family can add apparent major planets with `--planet`.
+Supply a comma-separated list, repeat the option, or combine both forms:
+
+```bash
+wenu_chart planisphere \
+  --planet mercury,venus,mars,jupiter \
+  --planet saturn,uranus,neptune \
+  --output output/planets.png
+```
+
+Wenu plots the conventional astronomical symbol while retaining the complete
+planet name in the chart's semantic metadata:
+
+| CLI name | English name | Symbol |
+|---|---|:---:|
+| `mercury` | Mercury | ☿ |
+| `venus` | Venus | ♀ |
+| `mars` | Mars | ♂ |
+| `jupiter` | Jupiter | ♃ |
+| `saturn` | Saturn | ♄ |
+| `uranus` | Uranus | ♅ |
+| `neptune` | Neptune | ♆ |
+
+Planet names are case-insensitive. Earth is the observer's reference body and
+is not a drawable apparent target. In atlas presentation mode, planet symbols
+use the same Venus cream as the chart's other planetary marks.
+
 
 ## Output format in profiles
 
