@@ -560,6 +560,41 @@ def test_inverted_cap_ring_closes_along_planisphere_horizon():
     assert np.max(np.linalg.norm(np.diff(horizon, axis=0), axis=1)) < 0.02
 
 
+def test_opposite_winding_boundaries_are_stitched_into_one_band():
+    spherical = SphericalPolygons(
+        coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        lon_deg=(
+            np.asarray((-160.0, -80.0, 0.0, 80.0, 160.0)),
+            np.asarray((170.0, 90.0, 10.0, -70.0, -150.0)),
+        ),
+        lat_deg=(
+            np.asarray((-10.0, 10.0, 20.0, 10.0, -10.0)),
+            np.asarray((-10.0, 10.0, 20.0, 10.0, -10.0)),
+        ),
+        metadata={
+            "compound_id": np.asarray(("ol1", "ol1"), dtype=object),
+            "is_hole": np.asarray((False, True)),
+            "projection_cap_topology_inversion": np.asarray((True, True)),
+        },
+    )
+
+    projected = project_polygons_to_projection_cap(
+        spherical,
+        projection=StereographicProjection(),
+        angular_radius_deg=90.0,
+    )
+
+    assert len(projected) == 1
+    assert projected.metadata["is_hole"].tolist() == [False]
+    assert projected.metadata[
+        "projection_cap_topology_inversion"
+    ].tolist() == [False]
+    assert projected[0].name != "projection_cap"
+    assert len(projected.metadata["projection_source_latitudes"][0]) == len(
+        projected[0].x
+    )
+
+
 def test_summer_triangle_is_part_of_chart_regression_suite():
     source = Path("tests/fixtures/example_regressions/atlas_summer_triangle.py").read_text(
         encoding="utf-8"
