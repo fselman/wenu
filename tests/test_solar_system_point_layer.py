@@ -39,12 +39,11 @@ def context():
 
 
 def test_descriptor_freezes_body_identity_centre_and_correction_policy():
-    descriptor = SolarSystemBodyDescriptor(
-        target="venus",
-        entity_key="venus",
-        display_name="Venus",
-        selection_key="venus",
-        astronomical_symbol="♀",
+    descriptor = SolarSystemPointDescriptor(
+        target="moon",
+        entity_key="moon",
+        display_name="Moon",
+        selection_key="moon",
     )
 
     assert descriptor.target == "moon"
@@ -84,11 +83,12 @@ def test_descriptor_rejects_missing_or_untyped_identity(field, value, error):
 
 
 def test_shared_layer_realizes_a_body_without_projection_or_rendering():
-    descriptor = SolarSystemPointDescriptor(
-        target="moon",
-        entity_key="moon",
-        display_name="Moon",
-        selection_key="moon",
+    descriptor = SolarSystemBodyDescriptor(
+        target="venus",
+        entity_key="venus",
+        display_name="Venus",
+        selection_key="venus",
+        astronomical_symbol="♀",
     )
     calls = []
     source = SimpleNamespace(
@@ -106,7 +106,7 @@ def test_shared_layer_realizes_a_body_without_projection_or_rendering():
                 position_status=PositionStatus.APPARENT,
                 instant="2026-08-30T00:00:00.000",
                 time_scale="utc",
-                provenance=("accepted apparent Moon",),
+                provenance=("accepted apparent Venus",),
             ),
         )
     )
@@ -142,7 +142,7 @@ def test_shared_layer_realizes_a_body_without_projection_or_rendering():
             ].tolist() == ["Venus"]
             assert geometry.metadata["ephemeris_sha256"] == "b" * 64
             assert geometry.metadata["apparent_provenance"] == (
-                "accepted apparent Moon",
+                "accepted apparent Venus",
             )
             assert target is realization.product_coordinate_spec
             assert observation is realization.observation
