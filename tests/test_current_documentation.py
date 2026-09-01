@@ -2634,7 +2634,7 @@ def test_49i3d1_proposes_shared_apparent_major_planets():
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     instructions = " ".join(read(INSTRUCTIONS).split())
     for phrase in (
-        "installed-DE440 and visual acceptance pending",
+        "DE440 validation passed; compact-glyph visual acceptance pending",
         "Mercury, Venus, Mars, Jupiter, Saturn, Uranus, and Neptune",
         "Earth is not a drawable apparent target",
         "same apparent symbolic-point machinery",
@@ -2643,8 +2643,10 @@ def test_49i3d1_proposes_shared_apparent_major_planets():
         "`solar_system_objects` selection",
         "sky/solar_system/planets/<planet>",
         "`1e-7 deg` component tolerance",
-        "`--planet mercury`",
-        "provisional hollow marker",
+        "`--planet mercury,venus,mars,jupiter,saturn,uranus,neptune`",
+        "conventional astronomical symbol",
+        "accepted Venus cream `#FFE6A3`",
+        "corresponding `planisphere` render",
     ):
         assert phrase in contract
     assert "Milestone 49I.3D.1 apparent major planets" in source_tree
