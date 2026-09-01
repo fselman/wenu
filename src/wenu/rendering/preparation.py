@@ -517,15 +517,127 @@ def project_polygons_to_projection_cap(
     metadata["projection_domain_clipped"] = True
     metadata["projection_cap_deg"] = angular_radius_deg
     metadata["projection_source_latitudes"] = tuple(source_latitudes)
-    topology_inversions = metadata.get(
+    projected = ProjectedPolygons(items=items, metadata=metadata)
+    return _apply_projection_cap_topology_complements(
+        projected, projection, minimum_z
+    )
+
+
+def _apply_projection_cap_topology_complements(
+    projected, projection, minimum_z
+):
+    inversions = projected.metadata.get(
         "projection_cap_topology_inversion"
     )
-    if "is_hole" in metadata and topology_inversions is not None:
-        metadata["is_hole"] = np.logical_xor(
-            np.asarray(metadata["is_hole"], dtype=bool),
-            np.asarray(topology_inversions, dtype=bool),
+    groups = projected.metadata.get("compound_id")
+    holes = projected.metadata.get("is_hole")
+    if inversions is None or groups is None or holes is None:
+        return projected
+    inversions = np.asarray(inversions, dtype=bool)
+    groups = np.asarray(groups, dtype=object)
+    holes = np.asarray(holes, dtype=bool)
+    if not (
+        inversions.shape == groups.shape == holes.shape == (len(projected),)
+    ):
+        raise ValueError(
+            "Projection-cap topology metadata must contain one value "
+            "per polygon ring."
+        )
+    inverted_groups = tuple(dict.fromkeys(groups[inversions].tolist()))
+    if not inverted_groups:
+        return projected
+
+    metadata = dict(projected.metadata)
+    complemented_holes = holes.copy()
+    boundary_source_indices = []
+    items = list(projected.items)
+    boundary, boundary_latitude = _projection_cap_boundary(
+        projection, minimum_z
+    )
+    for group in inverted_groups:
+        positions = np.flatnonzero(groups == group)
+        complemented_holes[positions] = ~complemented_holes[positions]
+        items.append(boundary)
+        boundary_source_indices.append(int(positions[0]))
+
+    source_length = len(projected)
+    metadata["is_hole"] = _append_metadata_values(
+        complemented_holes,
+        boundary_source_indices,
+        source_length=source_length,
+        appended_value=False,
+    )
+    for name, value in tuple(metadata.items()):
+        if name == "is_hole":
+            continue
+        appended_value = None
+        if name == "projection_source_latitudes":
+            appended_value = boundary_latitude
+        elif name == "projection_cap_topology_inversion":
+            appended_value = False
+        metadata[name] = _append_metadata_values(
+            value,
+            boundary_source_indices,
+            source_length=source_length,
+            appended_value=appended_value,
         )
     return ProjectedPolygons(items=items, metadata=metadata)
+
+
+def _append_metadata_values(
+    value,
+    source_indices,
+    *,
+    source_length,
+    appended_value=None,
+):
+    count = len(source_indices)
+    if count == 0:
+        return value
+    if (
+        isinstance(value, np.ndarray)
+        and value.ndim >= 1
+        and len(value) == source_length
+    ):
+        additions = (
+            np.full(count, appended_value, dtype=value.dtype)
+            if appended_value is not None
+            else value[np.asarray(source_indices, dtype=int)]
+        )
+        return np.concatenate((value, additions))
+    if isinstance(value, tuple) and len(value) == source_length:
+        additions = tuple(
+            appended_value if appended_value is not None else value[index]
+            for index in source_indices
+        )
+        return value + additions
+    if isinstance(value, list) and len(value) == source_length:
+        additions = [
+            appended_value if appended_value is not None else value[index]
+            for index in source_indices
+        ]
+        return value + additions
+    return value
+
+
+def _projection_cap_boundary(projection, minimum_z, *, samples=1441):
+    angle = np.linspace(0.0, 2.0 * np.pi, samples, endpoint=False)
+    radius = np.sqrt(max(0.0, 1.0 - minimum_z * minimum_z))
+    aligned = np.column_stack((
+        radius * np.cos(angle),
+        radius * np.sin(angle),
+        np.full_like(angle, minimum_z),
+    ))
+    source = _source_vectors_for_aligned_arc(aligned, projection)
+    longitude = np.degrees(np.arctan2(source[:, 1], source[:, 0]))
+    latitude = np.degrees(
+        np.arcsin(np.clip(source[:, 2], -1.0, 1.0))
+    )
+    x, y = projection.project_spherical(longitude, latitude)
+    return (
+        ProjectedPolygon(x=x, y=y, name="projection_cap"),
+        latitude,
+    )
 
 
 def _clip_one_polygon_to_projection_cap(
