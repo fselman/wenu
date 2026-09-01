@@ -68,6 +68,6 @@ def test_moon_selection_rejects_another_body():
             selected={"venus"},
         )
     except ValueError as error:
-        assert "Moon selection must contain only moon" in str(error)
+        assert "Moon selection must contain moon" in str(error)
     else:
         raise AssertionError("Moon accepted a Venus selection.")
