@@ -20,12 +20,33 @@ from wenu.sky.solar_system_disk_sequences import (
     ObservedSolarSystemDiskSequenceRequest,
 )
 from wenu.sky.frozen_earth_disk_sequences import FrozenEarthDiskSequenceRequest
-from wenu.sky.venus import VENUS_POINT
-from wenu.sky.venus_disk import VENUS_RADIUS_MODEL
-from wenu.solar_system_appearance import VENUS_MEAN_RADIUS_KM
+from wenu.sky.solar_system_bodies import (
+    APPARENT_TRACK,
+    FROZEN_EARTH_DISK_SEQUENCE,
+    OBSERVED_DISK_SEQUENCE,
+    SYMBOLIC_POINT,
+)
+from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
 
 GRID_REFERENCES = frozenset({"equatorial", "ecliptic", "galactic"})
-_DURATION = re.compile(r"^(?P<value>(?:\d+(?:\.\d*)?|\.\d+))(?P<unit>h|d|hour|hours|day|days)$", re.IGNORECASE)
+_SYMBOLIC_BODY_KEYS = tuple(
+    body.selection_key
+    for body in SOLAR_SYSTEM_BODY_CATALOG.supporting(SYMBOLIC_POINT)
+)
+_TRACK_BODY_KEYS = tuple(
+    body.selection_key
+    for body in SOLAR_SYSTEM_BODY_CATALOG.supporting(APPARENT_TRACK)
+)
+_SEQUENCE_BODY_KEYS = tuple(
+    body.selection_key
+    for body in SOLAR_SYSTEM_BODY_CATALOG.supporting(OBSERVED_DISK_SEQUENCE)
+    if body.supports(FROZEN_EARTH_DISK_SEQUENCE)
+)
+_DURATION = re.compile(
+    r"^(?P<value>(?:\d+(?:\.\d*)?|\.\d+))"
+    r"(?P<unit>h|d|hour|hours|day|days)$",
+    re.IGNORECASE,
+)
 
 def _duration_days(value):
     """Parse one positive governed hour/day duration into days."""
@@ -132,8 +153,8 @@ class ChartContentOptions:
             for name in self.planets
             if str(name).strip()
         )
-        if planets - {"venus"}:
-            raise ValueError("planets currently supports only venus.")
+        if planets - set(_SYMBOLIC_BODY_KEYS):
+            raise ValueError("planets contains an unsupported body.")
         object.__setattr__(self, "planets", planets)
         object.__setattr__(self, "moon", bool(self.moon))
         step = self.equatorial_declination_step_deg
@@ -176,7 +197,7 @@ def add_chart_content_arguments(parser):
     parser.add_argument(
         "--planet",
         action="append",
-        choices=("venus",),
+        choices=_SYMBOLIC_BODY_KEYS,
         default=[],
         help="draw a selected planet (currently: venus)",
     )
@@ -202,7 +223,7 @@ def add_chart_content_arguments(parser):
     )
     parser.add_argument(
         "--planet-disk-sequence",
-        choices=("venus",),
+        choices=_SEQUENCE_BODY_KEYS,
         help=(
             "draw observed resolved disks at major epochs "
             "(regional/binocular only)"
@@ -226,7 +247,7 @@ def add_chart_content_arguments(parser):
     )
     parser.add_argument(
         "--planet-track",
-        choices=("venus",),
+        choices=_TRACK_BODY_KEYS,
         help="draw the apparent path of a planet (regional/binocular only)",
     )
     parser.add_argument("--track-start", metavar="ISO_TIME")
@@ -498,6 +519,7 @@ def chart_disk_sequence_options(arguments):
             + ", ".join(missing)
         )
     target, model, start, step_days, n_steps = values
+    descriptor = SOLAR_SYSTEM_BODY_CATALOG.resolve(target)
     if model not in {"observed", "frozen-earth-ecliptic"}:
         raise ValueError("unsupported disk-sequence-model.")
     if isinstance(n_steps, bool) or n_steps < 0:
@@ -519,14 +541,14 @@ def chart_disk_sequence_options(arguments):
     )
     return display_type(
         request_type(
-            descriptor=VENUS_POINT,
+            descriptor=descriptor,
             start_instant=str(start).strip(),
             start_time_scale="utc",
             step_days=float(step_days),
             n_steps=int(n_steps),
-            display_name=VENUS_POINT.display_name,
-            physical_radius_km=VENUS_MEAN_RADIUS_KM,
-            radius_model=VENUS_RADIUS_MODEL,
+            display_name=descriptor.display_name,
+            physical_radius_km=descriptor.physical_radius_km,
+            radius_model=descriptor.radius_model,
         ),
         magnification=float(magnifications.get(target, 1.0)),
         label_dates=bool(getattr(arguments, "disk_sequence_labels", False)),
@@ -535,13 +557,26 @@ def chart_disk_sequence_options(arguments):
 
 def chart_track_options(arguments):
     """Resolve the optional complete planet-track CLI group."""
-    names = ("planet_track", "track_start", "track_sample_step", "track_tick_step", "track_tick_count")
+    names = (
+        "planet_track",
+        "track_start",
+        "track_sample_step",
+        "track_tick_step",
+        "track_tick_count",
+    )
     values = tuple(getattr(arguments, name, None) for name in names)
     if all(value is None for value in values):
         return None
     if any(value is None for value in values):
-        missing = [name.replace("_", "-") for name, value in zip(names, values) if value is None]
-        raise ValueError("a planet track requires all track options; missing: " + ", ".join(missing))
+        missing = [
+            name.replace("_", "-")
+            for name, value in zip(names, values)
+            if value is None
+        ]
+        raise ValueError(
+            "a planet track requires all track options; missing: "
+            + ", ".join(missing)
+        )
     if isinstance(values[4], bool) or values[4] < 1:
         raise ValueError("track-tick-count must be a positive integer")
     if not str(values[1]).strip():
@@ -599,7 +634,7 @@ def chart_detail_overrides(
             ("constellation_labels", content.constellation_labels),
             ("constellation_boundaries", content.constellation_boundaries),
             *grids.items(),
-            ("venus", "venus" in content.planets),
+            *((name, name in content.planets) for name in _SYMBOLIC_BODY_KEYS),
             ("moon", content.moon),
         )
         if enabled
@@ -610,7 +645,7 @@ def chart_detail_overrides(
         "constellation_boundaries",
         "coordinate_grids",
         *grids,
-        "venus",
+        *_SYMBOLIC_BODY_KEYS,
         "moon",
     }
     labels = frozenset(
