@@ -1180,3 +1180,16 @@ owns deterministic contract coverage;
   conflict, semantic, magnification, fixed-Sun, and localization contracts.
 - `docs/developer/drawable_frozen_earth_mercury_sequence_49i3c33c.md` records
   the accepted architectural, visual, operational, and regression evidence.
+
+
+## Milestone 49I.3D.1 apparent major planets
+
+- `src/wenu/sky/major_planets.py` owns descriptor-only Mars-through-Neptune
+  catalog data and preserves provider-barycentre versus physical-body IDs.
+- The existing catalog, maximal sphere, `SolarSystemPointLayer`, correction
+  chain, semantics, style, projection, renderer, and exporters own the runtime.
+- `tests/test_apparent_major_planets.py` proves shared registration, selection,
+  styling, semantics, and identity; the installed-DE440 validator owns direct
+  numerical comparison.
+- `docs/developer/apparent_major_planets_49i3d1.md` owns the proposed acceptance
+  boundary and explicit non-goals.
