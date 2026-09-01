@@ -49,8 +49,20 @@ def test_every_chart_family_exposes_solar_system_selectors():
         arguments = chart.parser().parse_args(
             [family, "--planet", "venus", "--moon"]
         )
-        assert arguments.planet == ["venus"]
+        assert arguments.planet == [("venus",)]
         assert arguments.moon is True
+
+
+def test_planisphere_accepts_one_comma_separated_planet_selection():
+    arguments = chart.parser().parse_args([
+        "planisphere",
+        "--planet", "mercury,venus,mars,jupiter,saturn,uranus,neptune",
+    ])
+
+    assert arguments.planet == [(
+        "mercury", "venus", "mars", "jupiter", "saturn", "uranus",
+        "neptune",
+    )]
 
 
 def test_regional_orientation_is_named_or_a_literal_angle():
