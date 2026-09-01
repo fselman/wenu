@@ -70,7 +70,7 @@ def test_all_chart_families_accept_milky_way_contour():
         arguments = chart.parser().parse_args([
             family, "--mw-contour", "OL2",
         ])
-        assert arguments.mw_contour == "ol2"
+        assert arguments.mw_contour == [("ol2",)]
 
 
 def test_regional_orientation_is_named_or_a_literal_angle():
