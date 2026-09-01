@@ -354,3 +354,10 @@ state before drawable integration, and generalize the Venus orchestration
 without copying its projection, preparation, renderer, or exporter. Do not
 enable observed Mercury, symbolic Mercury, tracks, single disks, photometry,
 rotation, multiple bodies, animation, or 3D behavior under this milestone.
+
+Before registering another moving body, consult
+`moving_body_architecture_49i3c33a.md`. Add identity, relationships, physical
+metadata, and capabilities through the body catalog. Do not add a body-specific
+point, disk, sequence, projection, renderer, or exporter when the generic
+moving-body machinery applies. Classification is metadata; capability and the
+validated scientific model govern behavior.
