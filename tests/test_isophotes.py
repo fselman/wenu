@@ -17,6 +17,7 @@ from wenu.charts.styles import PublicationStyle
 from wenu.geometry.projected import ProjectedPolygon, ProjectedPolygons
 from wenu.rendering import layers
 from wenu.rendering.matplotlib import MatplotlibRenderer
+from wenu.resources import milky_way_isophote_path
 from wenu.sky.milky_way import MilkyWayIsophotes
 
 
@@ -180,6 +181,25 @@ def test_publication_style_uses_named_milky_way_zorder(tmp_path):
 def test_packaged_snapshot_has_expected_levels():
     layer = MilkyWayIsophotes(Observer()).load()
     assert tuple(layer.features) == layer.available_levels
+    assert set(layer.sources) == set(layer.available_levels)
+    for level in layer.available_levels:
+        path = milky_way_isophote_path(level)
+        document = json.loads(path.read_text(encoding="utf-8"))
+        assert [feature["id"] for feature in document["features"]] == [level]
+        assert layer.sources[level] == str(path)
+
+
+def test_explicit_level_geometry_names_only_its_single_level_file():
+    layer = MilkyWayIsophotes(
+        Observer(), levels=MilkyWayIsophotes.available_levels
+    ).load()
+
+    geometry = layer.spherical_geometry(Observer(), levels={"ol3"})
+
+    assert set(geometry.metadata["level"]) == {"ol3"}
+    assert set(geometry.metadata["source"]) == {
+        str(milky_way_isophote_path("ol3"))
+    }
 
 
 def test_style_clips_isophotes_before_planar_rendering(tmp_path):
