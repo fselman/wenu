@@ -13,6 +13,9 @@ from wenu.geometry.projected import (
     ProjectedPolygon,
     ProjectedPolygons,
 )
+
+
+_BOUNDARY_TOLERANCE_DEG = 1.0e-10
 from wenu.geometry.spherical import (
     SphericalCurves,
     SphericalGrid,
@@ -70,10 +73,18 @@ class MollweideProjection:
             np.asarray(lon_deg, dtype=float),
             np.asarray(lat_deg, dtype=float),
         )
-        if np.any(np.isfinite(longitude) & (np.abs(longitude) > 180.0)):
+        if np.any(
+            np.isfinite(longitude)
+            & (np.abs(longitude) > 180.0 + _BOUNDARY_TOLERANCE_DEG)
+        ):
             raise ValueError(
                 "normalized longitude must be between -180 and 180 degrees."
             )
+        longitude = np.where(
+            np.isfinite(longitude),
+            np.clip(longitude, -180.0, 180.0),
+            longitude,
+        )
         if np.any(np.isfinite(latitude) & (np.abs(latitude) > 90.0)):
             raise ValueError("latitude must be between -90 and 90 degrees.")
         theta = _auxiliary_angle(np.radians(latitude))
