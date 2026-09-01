@@ -77,7 +77,10 @@ and other unrelated sky content. Direct comparison with the source geometry
 confirmed that the two `ol1` rings are the valid faint outer `ol1` envelope,
 not a viewport edge or an artificial closing segment. All five levels are
 therefore governed defaults; an explicit request can still select a narrower
-subset.
+subset. Because the sphere-spanning `ol1` exterior selects the wrong face when
+reduced to an ordinary planar compound path, `ol1` is contour-only: its valid
+outer boundary remains visible without the artificial straight-sided fill.
+The nested `ol2` through `ol5` compounds remain filled.
 
 ```bash
 wenu_chart all-sky \
