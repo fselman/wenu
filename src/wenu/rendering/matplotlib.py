@@ -952,12 +952,26 @@ class MatplotlibRenderer:
             raise ValueError(
                 "is_hole must contain one value per polygon ring."
             )
+        compound_fill = polygons.metadata.get(
+            "compound_fill",
+            np.ones(len(polygons), dtype=bool),
+        )
+        compound_fill = np.asarray(compound_fill, dtype=bool)
+        if compound_fill.shape != groups.shape:
+            raise ValueError(
+                "compound_fill must contain one value per polygon ring."
+            )
 
         ordered_groups = tuple(dict.fromkeys(groups.tolist()))
         artists = []
         for group in ordered_groups:
             group_indices = np.flatnonzero(groups == group)
             representative_index = int(group_indices[0])
+            group_fill = compound_fill[group_indices]
+            if not np.all(group_fill == group_fill[0]):
+                raise ValueError(
+                    "compound_fill must be consistent within a compound."
+                )
             vertices = []
             codes = []
             for index in group_indices:
@@ -1007,7 +1021,7 @@ class MatplotlibRenderer:
                 patch = PathPatch(path, **self._polygon_style(style))
                 register(patch)
                 continue
-            if fill_style is not None:
+            if fill_style is not None and bool(group_fill[0]):
                 fill = {**style, **fill_style}
                 fill.setdefault("edgecolor", "none")
                 patch = PathPatch(path, **self._polygon_style(fill))
