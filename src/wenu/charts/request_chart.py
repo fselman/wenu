@@ -91,6 +91,33 @@ def _regional_chart(sky, resolved, observer):
 def _chart_from_resolved(sky, resolved, observer):
     request = resolved.request
     frame = resolved.frame
+    from .request_disks import FrozenEarthSolarSystemDiskSequenceDisplayRequest
+
+    if isinstance(
+        request.solar_system_disk_sequence,
+        FrozenEarthSolarSystemDiskSequenceDisplayRequest,
+    ):
+        from .request_realization import chart_request_realization_context
+
+        sun_layers = tuple(
+            layer for layer in sky.layers
+            if getattr(layer, "layer_name", "") == "frozen_earth_sun"
+        )
+        if len(sun_layers) != 1:
+            raise RuntimeError(
+                "frozen-Earth sequence requires one fixed Sun layer."
+            )
+        geometry = sun_layers[0].disk_realization.realize(
+            chart_request_realization_context(request, observer), observer
+        )
+        return RegionalChart(
+            center_alt_deg=float(geometry.sun.lat_deg[0]),
+            center_az_deg=float(geometry.sun.lon_deg[0]),
+            field_width_deg=frame.field_width_deg or 90.0,
+            field_height_deg=frame.field_height_deg or 70.0,
+            position_angle_deg=0.0,
+            flip_ew=False,
+        )
     if request.family == "planisphere":
         mask = (
             resolved.constellations.boundary_constellations

@@ -245,6 +245,11 @@ _REQUEST_GEOMETRY_LAYERS = frozenset({
     "venus_disk_sequence_limb",
     "venus_disk_sequence_terminator",
     "venus_disk_sequence_labels",
+    "venus_disk_sequence_frozen_illuminated",
+    "venus_disk_sequence_frozen_limb",
+    "venus_disk_sequence_frozen_terminator",
+    "venus_disk_sequence_frozen_labels",
+    "frozen_earth_sun",
 })
 _DEFAULT_DISABLED_LAYERS = frozenset({"venus", "moon"})
 
@@ -508,13 +513,31 @@ def composition_layer_options(
         )
     disk_layers = tuple(
         layer for layer in sky.layers
-        if getattr(layer, "layer_name", "").startswith("venus_disk_")
+        if (
+            getattr(layer, "layer_name", "").startswith("venus_disk_")
+            or getattr(layer, "layer_name", "") == "frozen_earth_sun"
+        )
     )
     if disk_layers:
         disk_options = {}
         for layer in disk_layers:
             name = layer.layer_name
             sequence_layer = name.startswith("venus_disk_sequence_")
+            if name == "frozen_earth_sun":
+                disk_options[layer] = {
+                    "render": {
+                        "style": {
+                            "marker": (6, 1, 0),
+                            "s": 90.0,
+                            "facecolors": publication.venus_disk_face_color,
+                            "edgecolors": publication.venus_disk_limb_color,
+                            "linewidths": publication.venus_disk_limb_linewidth,
+                            "zorder": 39.4,
+                        },
+                        "draw_labels": False,
+                    },
+                }
+                continue
             preparation = (
                 MagnifyProjectedDiskSequence(
                     layer.disk_realization, layer.magnification
@@ -524,7 +547,10 @@ def composition_layer_options(
                     layer.disk_realization, layer.magnification
                 )
             )
-            if name == "venus_disk_sequence_labels":
+            if name in {
+                "venus_disk_sequence_labels",
+                "venus_disk_sequence_frozen_labels",
+            }:
                 disk_options[layer] = {
                     "render": {
                         "style": {"s": 0.0, "alpha": 0.0, "zorder": 39.3},
@@ -538,7 +564,10 @@ def composition_layer_options(
                     },
                 }
                 continue
-            if name in {"venus_disk_illuminated", "venus_disk_sequence_illuminated"}:
+            if name in {
+                "venus_disk_illuminated", "venus_disk_sequence_illuminated",
+                "venus_disk_sequence_frozen_illuminated",
+            }:
                 render = {
                     "style": {
                         "facecolor": publication.venus_disk_face_color,

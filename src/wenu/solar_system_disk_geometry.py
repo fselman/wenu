@@ -22,6 +22,32 @@ SOLAR_SYSTEM_DISK_GEOMETRY_MODEL = (
 )
 
 
+def _disk_direction(value):
+    """Return the spherical centre from an accepted apparent/geometric state."""
+    apparent = getattr(value, "apparent_direction", None)
+    if apparent is not None:
+        return getattr(apparent, "geometry", None)
+    geometric = getattr(value, "direction", None)
+    return getattr(geometric, "geometry", None)
+
+
+def _is_disk_state(value):
+    if isinstance(value, SolarSystemApparentDisk):
+        return True
+    direction = _disk_direction(value)
+    required = (
+        "target", "display_name", "radius_model",
+        "angular_diameter_arcsec", "phase_angle_deg",
+        "illuminated_fraction", "bright_limb_position_angle_deg",
+        "position_angle_convention",
+    )
+    return (
+        isinstance(direction, SphericalPoints)
+        and len(direction) == 1
+        and all(hasattr(value, name) for name in required)
+    )
+
+
 def _sample_count(value):
     if isinstance(value, bool):
         raise TypeError("samples must be an integer.")
@@ -110,7 +136,7 @@ def _offset_coordinates(
 class SolarSystemDiskGeometry:
     """One physical apparent disk expressed as ordinary spherical records."""
 
-    appearance: SolarSystemApparentDisk
+    appearance: object
     centre: SphericalPoints
     limb: SphericalCurves
     terminator: SphericalCurves
@@ -118,9 +144,9 @@ class SolarSystemDiskGeometry:
     samples: int
 
     def __post_init__(self):
-        if not isinstance(self.appearance, SolarSystemApparentDisk):
+        if not _is_disk_state(self.appearance):
             raise TypeError(
-                "appearance must be a SolarSystemApparentDisk."
+                "appearance must be a supported Solar-System disk state."
             )
         expected = (
             ("centre", self.centre, SphericalPoints),
@@ -163,12 +189,12 @@ class SolarSystemDiskGeometryRealizer:
         *,
         samples=DEFAULT_SOLAR_SYSTEM_DISK_SAMPLES,
     ):
-        if not isinstance(appearance, SolarSystemApparentDisk):
+        if not _is_disk_state(appearance):
             raise TypeError(
-                "appearance must be a SolarSystemApparentDisk."
+                "appearance must be a supported Solar-System disk state."
             )
         samples = _sample_count(samples)
-        direction = appearance.apparent_direction.geometry
+        direction = _disk_direction(appearance)
         if len(direction) != 1:
             raise ValueError(
                 "appearance direction must contain exactly one point."
@@ -266,7 +292,7 @@ class SolarSystemDiskGeometryRealizer:
             "samples": samples,
             "geometry_model": SOLAR_SYSTEM_DISK_GEOMETRY_MODEL,
             "radius_model": appearance.radius_model,
-            "provenance": appearance.provenance,
+            "provenance": tuple(getattr(appearance, "provenance", ())),
         }
 
         def metadata(component):

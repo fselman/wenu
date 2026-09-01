@@ -10,6 +10,10 @@ from wenu.sky.solar_system_disk_sequences import (
     ObservedSolarSystemDiskSequenceRequest,
 )
 from wenu.sky.venus_disk_sequence import observed_venus_disk_sequence_layers
+from wenu.sky.frozen_earth_disk_sequences import FrozenEarthDiskSequenceRequest
+from wenu.sky.frozen_earth_venus_disk_sequence import (
+    frozen_earth_venus_disk_sequence_layers,
+)
 
 
 SUPPORTED_RESOLVED_DISKS = frozenset({"venus"})
@@ -65,10 +69,45 @@ class ObservedSolarSystemDiskSequenceDisplayRequest:
         return self.sequence.descriptor.target
 
 
+@dataclass(frozen=True)
+class FrozenEarthSolarSystemDiskSequenceDisplayRequest:
+    """Drawable frozen-Earth sequence in fixed J2000 ecliptic axes."""
+
+    sequence: FrozenEarthDiskSequenceRequest
+    magnification: float = 1.0
+    label_dates: bool = False
+
+    def __post_init__(self):
+        if not isinstance(self.sequence, FrozenEarthDiskSequenceRequest):
+            raise TypeError(
+                "sequence must be a FrozenEarthDiskSequenceRequest."
+            )
+        if self.sequence.descriptor.target != "venus":
+            raise ValueError(
+                "drawable frozen-Earth sequences currently support only venus."
+            )
+        magnification = float(self.magnification)
+        if not isfinite(magnification) or not 1.0 <= magnification <= 1000.0:
+            raise ValueError(
+                "disk magnification must be finite and between 1 and 1000."
+            )
+        object.__setattr__(self, "magnification", magnification)
+        object.__setattr__(self, "label_dates", bool(self.label_dates))
+
+    @property
+    def target(self):
+        return self.sequence.descriptor.target
+
+    @property
+    def model(self):
+        return "frozen-earth-ecliptic"
+
+
 def configure_chart_request_disks(sky, request):
     """Replace request-owned disk layers with the current request selection."""
     for layer in tuple(sky.layers):
-        if getattr(layer, "layer_name", "").startswith("venus_disk_"):
+        name = getattr(layer, "layer_name", "")
+        if name.startswith("venus_disk_") or name == "frozen_earth_sun":
             sky.remove(layer)
 
     for name in (
@@ -79,6 +118,11 @@ def configure_chart_request_disks(sky, request):
         "venus_disk_sequence_limb",
         "venus_disk_sequence_terminator",
         "venus_disk_sequence_labels",
+        "venus_disk_sequence_frozen_illuminated",
+        "venus_disk_sequence_frozen_limb",
+        "venus_disk_sequence_frozen_terminator",
+        "venus_disk_sequence_frozen_labels",
+        "frozen_earth_sun",
     ):
         setattr(sky, name, None)
 
@@ -92,7 +136,15 @@ def configure_chart_request_disks(sky, request):
 
     sequence = getattr(request, "solar_system_disk_sequence", None)
     if sequence is not None:
-        layers = observed_venus_disk_sequence_layers(
+        factory = (
+            frozen_earth_venus_disk_sequence_layers
+            if isinstance(
+                sequence,
+                FrozenEarthSolarSystemDiskSequenceDisplayRequest,
+            )
+            else observed_venus_disk_sequence_layers
+        )
+        layers = factory(
             sequence.sequence,
             magnification=sequence.magnification,
             label_dates=sequence.label_dates,

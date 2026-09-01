@@ -41,6 +41,21 @@ def chart_request_realization_context(request, observer):
             provider="wenu chart request",
             model="observer-origin galactic product frame",
         )
+    elif frame == "ecliptic":
+        sequence = request.solar_system_disk_sequence
+        start = sequence.sequence.start_instant
+        scale = sequence.sequence.start_time_scale
+        product_spec = CoordinateSpec(
+            frame="barycentric-mean-ecliptic",
+            origin="frozen-earth",
+            position_status=PositionStatus.GEOMETRIC,
+            equinox=sequence.sequence.ecliptic_equinox,
+            instant=start,
+            time_scale=scale,
+            provider="wenu chart request",
+            model="fixed-Earth J2000 ecliptic construction",
+            provenance=("Earth position frozen at sequence start",),
+        )
     else:
         raise ValueError(
             f"Unsupported chart coordinate frame: {frame!r}."
