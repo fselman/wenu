@@ -144,6 +144,23 @@ def milky_way_isophotes_path():
     return resource
 
 
+def milky_way_isophote_path(level):
+    """Return one packaged single-level Milky Way GeoJSON snapshot."""
+    normalized = str(level).strip().lower()
+    if normalized not in {"ol1", "ol2", "ol3", "ol4", "ol5"}:
+        raise ValueError("Milky Way isophote level must be ol1 through ol5.")
+    resource = (
+        files("wenu.data.isophotes.milky_way")
+        / f"milky_way_{normalized}.geojson"
+    )
+    if not resource.is_file():
+        raise FileNotFoundError(
+            f"Milky Way {normalized} resource not found. Run "
+            "tools/query_milky_way_isophotes_d3.py."
+        )
+    return resource
+
+
 def magellanic_cloud_isophotes_path(cloud):
     """Return one packaged Gaia-derived Magellanic Cloud snapshot."""
     cloud = str(cloud).lower()
