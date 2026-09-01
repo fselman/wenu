@@ -82,9 +82,10 @@ explicitly selectable for inspection or specialized use.
 
 For visual diagnosis and ordinary chart control, every chart family accepts
 `--mw-lowest-contour OL1|OL2|OL3|OL4|OL5`. The chosen isophote is the faintest
-one included, so `OL2` selects `ol2` through `ol5`. Comparing otherwise
-identical `OL1` and `OL2` renders isolates the complete `ol1` contribution
-without changing the projection, viewport, or planet selection.
+one rendered: supplying the option replaces the governed default contour set
+with exactly that level. Comparing otherwise identical `OL1` and `OL2`
+renders therefore compares the two source isophotes directly without changing
+the projection, viewport, or planet selection.
 
 ```bash
 wenu_chart all-sky \
