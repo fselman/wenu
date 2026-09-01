@@ -149,6 +149,8 @@ def test_sequence_retains_vectors_distances_and_fixed_sun():
     for sample, disk in enumerate(result.disks, start=1):
         assert disk.direction.vector_icrf_au == (0.0, float(sample), 0.0)
         assert disk.direction.distance_au == float(sample)
+        assert disk.direction.provider_target_id == "299"
+        assert disk.direction.provider_centre_id == "10"
         assert disk.direction.frozen_earth_heliocentric_icrf_au == (
             1.0,
             0.0,
