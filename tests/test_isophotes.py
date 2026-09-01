@@ -278,7 +278,7 @@ def test_outer_level_remains_explicitly_available(tmp_path):
     assert set(geometry.metadata["level"]) == {"ol1"}
 
 
-def test_level_selections_share_one_maximal_observed_geometry(
+def test_level_selections_transform_and_cache_only_requested_files(
     tmp_path, monkeypatch
 ):
     layer = MilkyWayIsophotes(Observer()).load(
@@ -297,8 +297,10 @@ def test_level_selections_share_one_maximal_observed_geometry(
     complete = layer.spherical_geometry(
         observer, levels=layer.available_levels
     )
+    selected_again = layer.spherical_geometry(observer, levels={"ol2"})
 
     assert set(selected.metadata["level"]) == {"ol2"}
+    assert set(selected_again.metadata["level"]) == {"ol2"}
     assert set(complete.metadata["level"]) == set(layer.available_levels)
-    assert calls == [len(complete)]
-    assert len(layer._observed_polygon_cache) == 1
+    assert calls == [len(selected), len(complete)]
+    assert len(layer._observed_polygon_cache) == 2
