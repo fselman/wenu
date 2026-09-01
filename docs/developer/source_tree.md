@@ -1156,3 +1156,15 @@ owns deterministic contract coverage;
   body needs no body-specific drawable machinery.
 - `docs/developer/moving_body_architecture_49i3c33a.md` owns the accepted
   architectural boundary and non-goals.
+
+
+## Milestone 49I.3C.3.3B Mercury catalog validation
+
+- `src/wenu/sky/mercury.py` owns Mercury's immutable physical descriptor,
+  NAIF body identity, equal-volume mean radius, and frozen-only capability.
+- `tests/test_mercury_catalog_state.py` proves descriptor-only registration
+  and generic frozen state without public CLI exposure.
+- `tools/validate_49i3c3_3b_mercury.py` owns the installed-DE440 direct
+  Skyfield comparison and refuses kernel downloads.
+- `docs/developer/mercury_catalog_validation_49i3c33b.md` records the accepted
+  numerical evidence and bounded runtime ownership.
