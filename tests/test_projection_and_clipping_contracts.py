@@ -595,6 +595,37 @@ def test_opposite_winding_boundaries_are_stitched_into_one_band():
     )
 
 
+def test_winding_band_preserves_an_extra_visible_outer_fragment():
+    spherical = SphericalPolygons(
+        coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        lon_deg=(
+            np.asarray((-170.0, -130.0, -90.0, -50.0, -10.0, 30.0, 90.0, 150.0)),
+            np.asarray((170.0, 90.0, 10.0, -70.0, -150.0)),
+        ),
+        lat_deg=(
+            np.asarray((-10.0, 8.0, -8.0, 15.0, 25.0, 15.0, -10.0, -10.0)),
+            np.asarray((-10.0, 10.0, 20.0, 10.0, -10.0)),
+        ),
+        metadata={
+            "compound_id": np.asarray(("ol1", "ol1"), dtype=object),
+            "is_hole": np.asarray((False, True)),
+            "projection_cap_topology_inversion": np.asarray((True, True)),
+        },
+    )
+
+    projected = project_polygons_to_projection_cap(
+        spherical,
+        projection=StereographicProjection(),
+        angular_radius_deg=90.0,
+    )
+
+    assert len(projected) == 2
+    assert projected.metadata["is_hole"].tolist() == [False, False]
+    assert projected.metadata[
+        "projection_cap_topology_inversion"
+    ].tolist() == [False, False]
+
+
 def test_summer_triangle_is_part_of_chart_regression_suite():
     source = Path("tests/fixtures/example_regressions/atlas_summer_triangle.py").read_text(
         encoding="utf-8"
