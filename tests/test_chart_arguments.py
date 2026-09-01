@@ -107,6 +107,34 @@ def test_magnitude_limit_must_be_finite():
         )
 
 
+@pytest.mark.parametrize(
+    ("lowest", "expected"),
+    [
+        ("OL1", {"ol1", "ol2", "ol3", "ol4", "ol5"}),
+        ("ol2", {"ol2", "ol3", "ol4", "ol5"}),
+        ("ol4", {"ol4", "ol5"}),
+        ("ol5", {"ol5"}),
+    ],
+)
+def test_lowest_milky_way_contour_selects_it_and_brighter_levels(
+    lowest, expected
+):
+    arguments = parser().parse_args(["--mw-lowest-contour", lowest])
+
+    assert chart_sky_content(arguments).milky_way_levels == expected
+
+
+def test_omitted_lowest_milky_way_contour_preserves_resolved_default():
+    arguments = parser().parse_args([])
+
+    assert chart_sky_content(arguments).milky_way_levels is None
+
+
+def test_unknown_lowest_milky_way_contour_is_rejected():
+    with pytest.raises(SystemExit):
+        parser().parse_args(["--mw-lowest-contour", "ol6"])
+
+
 def test_class_aware_selectors_share_one_solar_system_selection():
     arguments = parser().parse_args([
         "--planet", "venus", "--moon",
