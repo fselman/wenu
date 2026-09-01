@@ -11,7 +11,11 @@ from wenu.coordinates import GENERIC_SPHERICAL_SPEC
 from wenu.charts.context import BoundaryKind
 from wenu.charts.legend_plan import chart_type_name, default_chart_legend_plan
 from wenu.geometry.projected import ProjectedPoints
-from wenu.geometry.spherical import SphericalCurves, SphericalPoints
+from wenu.geometry.spherical import (
+    SphericalCurves,
+    SphericalPoints,
+    SphericalPolygons,
+)
 from wenu.projections import (
     PolarAzimuthalEquidistantProjection,
     StereographicProjection,
@@ -131,6 +135,41 @@ def test_face_cap_suppresses_reference_points_outside_declination_limit(
 
     assert tuple(np.isfinite(projected.x)) == finite
     assert tuple(np.isfinite(projected.y)) == finite
+
+
+@pytest.mark.parametrize(
+    "projection_name",
+    ("polar_azimuthal_equidistant", "stereographic"),
+)
+def test_face_cap_closes_filled_polygon_along_circular_boundary(
+    projection_name,
+):
+    chart = PolarPlanisphereChart(
+        pole="south",
+        projection_name=projection_name,
+    )
+    polygons = SphericalPolygons(
+        coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        lon_deg=([-60.0, -60.0, 60.0, 60.0],),
+        lat_deg=([-20.0, 40.0, 40.0, -20.0],),
+        ids=("crossing",),
+    )
+
+    projected = chart.project_equatorial_geometry(polygons)
+
+    assert len(projected) == 1
+    radii = np.hypot(projected[0].x, projected[0].y)
+    on_boundary = np.isclose(
+        radii, chart.boundary_radius, atol=1.0e-10
+    )
+    assert np.count_nonzero(on_boundary) > 100
+    boundary_points = np.column_stack(
+        (projected[0].x[on_boundary], projected[0].y[on_boundary])
+    )
+    boundary_steps = np.linalg.norm(
+        np.diff(boundary_points, axis=0), axis=1
+    )
+    assert np.max(boundary_steps) < 0.02
 
 
 def test_physical_diameter_does_not_change_projection_geometry():
