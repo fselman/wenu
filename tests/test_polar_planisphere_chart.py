@@ -214,7 +214,7 @@ def test_face_cap_applies_source_owned_topology_inversions():
     ]
     assert len(source_latitudes) == 3
     assert len(source_latitudes[-1]) == len(projected[-1].x)
-    assert np.ptp(source_latitudes[-1]) > 1.0
+    np.testing.assert_allclose(source_latitudes[-1], 20.0, atol=1.0e-10)
     boundary = projected[-1]
     np.testing.assert_allclose(
         np.hypot(boundary.x, boundary.y),
