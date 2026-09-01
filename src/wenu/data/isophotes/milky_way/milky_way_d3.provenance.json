@@ -21,5 +21,12 @@
     46,
     27,
     6
-  ]
+  ],
+  "single_level_files": {
+    "ol1": "milky_way_ol1.geojson",
+    "ol2": "milky_way_ol2.geojson",
+    "ol3": "milky_way_ol3.geojson",
+    "ol4": "milky_way_ol4.geojson",
+    "ol5": "milky_way_ol5.geojson"
+  }
 }
