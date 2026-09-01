@@ -170,7 +170,16 @@ class SolarSystemPointLayer(SkyLayer):
             native.lat_deg,
             coordinate_spec=native.coordinate_spec,
             ids=np.asarray((self.descriptor.entity_key,), dtype=object),
-            labels=np.asarray((self.descriptor.display_name,), dtype=object),
+            labels=np.asarray(
+                (
+                    getattr(
+                        self.descriptor,
+                        "astronomical_symbol",
+                        None,
+                    ) or self.descriptor.display_name,
+                ),
+                dtype=object,
+            ),
             names=np.asarray((self.descriptor.display_name,), dtype=object),
             metadata={
                 **native.metadata,
