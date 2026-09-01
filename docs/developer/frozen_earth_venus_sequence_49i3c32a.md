@@ -73,7 +73,7 @@ illuminated fraction, and `1.627e-10 deg` in bright-limb position angle.
 
 ## Regression closure
 
-All 66 current-documentation tests passed in 1.14 seconds.
+All 66 current-documentation tests passed in 2.07 seconds.
 The routine suite passed 1,997 tests with 30 deselected in 26.69 seconds,
 preserving the sub-30-second gate. The complete suite passed all 2,027 tests
 in 84.73 seconds.

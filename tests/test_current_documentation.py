@@ -2481,4 +2481,4 @@ def test_49i3c32a_records_frozen_earth_venus_sequence_state():
     assert "13.2.29 49I.3C.3.2A frozen-Earth Venus state" in guide
     assert "Guide version:** `0.9.5.20260901.45`" in guide
     assert "frozen_earth_venus_sequence_49i3c32a.md" in instructions
-    assert "All 66 current-documentation tests passed in 1.14 seconds" in contract
+    assert "All 66 current-documentation tests passed in 2.07 seconds" in contract
