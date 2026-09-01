@@ -104,6 +104,34 @@ def _grid_references(value):
     return names
 
 
+def _planet_selection(value):
+    """Parse one comma-separated set of catalog-backed planet keys."""
+    names = tuple(
+        item.strip().lower()
+        for item in str(value).split(",")
+        if item.strip()
+    )
+    if not names:
+        raise argparse.ArgumentTypeError("planet selection cannot be empty")
+    unknown = set(names) - set(_SYMBOLIC_BODY_KEYS)
+    if unknown:
+        raise argparse.ArgumentTypeError(
+            "unknown planet: " + ", ".join(sorted(unknown))
+        )
+    return names
+
+
+def _selected_planets(values):
+    """Flatten parsed comma groups while accepting direct Namespace values."""
+    selected = []
+    for value in values or ():
+        if isinstance(value, str):
+            selected.extend(_planet_selection(value))
+        else:
+            selected.extend(value)
+    return frozenset(selected)
+
+
 @dataclass(frozen=True)
 class ChartContentOptions:
     """Shared astronomical-content choices parsed by canonical examples."""
@@ -196,9 +224,13 @@ def add_chart_content_arguments(parser):
     parser.add_argument(
         "--planet",
         action="append",
-        choices=_SYMBOLIC_BODY_KEYS,
+        type=_planet_selection,
         default=[],
-        help="draw a selected apparent planet; repeat for multiple planets",
+        metavar="PLANET[,PLANET...]",
+        help=(
+            "draw apparent planets from a comma-separated list; the option "
+            "may also be repeated"
+        ),
     )
     parser.add_argument(
         "--planet-appearance",
@@ -432,7 +464,7 @@ def chart_content_options(arguments) -> ChartContentOptions:
         pole_labels=bool(arguments.pole_labels),
         equatorial_declination_step_deg=arguments.declination_step,
         reference_equinox=arguments.reference_equinox,
-        planets=frozenset(getattr(arguments, "planet", ())),
+        planets=_selected_planets(getattr(arguments, "planet", ())),
         moon=bool(getattr(arguments, "moon", False)),
     )
 
