@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260901.46`
-**Last updated:** `2026-09-01T13:30:00Z`
+**Guide version:** `0.9.5.20260901.47`
+**Last updated:** `2026-09-01T12:55:00Z`
 **Language:** English
 
 # Table of contents
@@ -89,6 +89,7 @@
     - [13.2.28 49I.3C.3.1B drawable observed Venus sequence](#49i3c31b-drawable-observed-venus-sequence)
     - [13.2.29 49I.3C.3.2A frozen-Earth Venus state](#49i3c32a-frozen-earth-venus-state)
     - [13.2.30 49I.3C.3.2B drawable frozen-Earth Venus sequence](#49i3c32b-drawable-frozen-earth-venus-sequence)
+    - [13.2.31 49I.3C.3.3 Mercury generalization audit](#49i3c33-mercury-generalization-audit)
 
 <a id="status-and-purpose"></a>
 
@@ -2672,3 +2673,28 @@ unrelated furniture, context, legends, and footer. The fixed Sun, Venus disk
 components, optional dates, explicitly requested ecliptic, optional equatorial
 grid, and localized title are the accepted drawable scene. Mercury remains a
 separate independently validated milestone.
+
+
+<a id="49i3c33-mercury-generalization-audit"></a>
+## 13.2.31 49I.3C.3.3 Mercury generalization audit
+
+**[Foundation]** Mercury can use the same kind of fixed-Earth diagram as
+Venus, but not by changing the planet's name. Mercury has a different physical
+radius, moves more quickly, changes distance and phase differently, and must be
+checked independently. The first proposed step computes and compares Mercury's
+physical sequence without drawing it.
+
+**[Undergraduate]** The proposed spherical radius is JPL's equal-volume mean
+radius `2439.4 km`, not its equatorial radius `2440.53 km`. Mercury's NAIF
+physical-body code is `199`. A planetary SPK may expose its translational state
+through Mercury barycentre code `1`; because Mercury has no satellite the
+locations coincide, but NAIF warns that body and barycentre identifiers are
+not interchangeable. Wenu must retain the actual provider ID while attaching
+physical radius and semantic identity to Mercury the body.
+
+49I.3C.3.3A will require an installed-DE440 direct-vector comparison of the
+frozen Earth, every same-epoch Mercury state, fixed-ecliptic direction,
+distance, angular diameter, phase, illuminated fraction, and bright-limb
+orientation. Only separately accepted 49I.3C.3.3B may generalize the drawable
+restricted scene. No implemented coordinate transformation changes in this
+audit.
