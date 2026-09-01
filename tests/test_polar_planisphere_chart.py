@@ -150,8 +150,8 @@ def test_face_cap_closes_filled_polygon_along_circular_boundary(
     )
     polygons = SphericalPolygons(
         coordinate_spec=GENERIC_SPHERICAL_SPEC,
-        lon_deg=([-60.0, -60.0, 60.0, 60.0],),
-        lat_deg=([-20.0, 40.0, 40.0, -20.0],),
+        lon_deg=([100.0, 100.0, 0.0, -100.0, -100.0],),
+        lat_deg=([-20.0, 40.0, 50.0, 40.0, -20.0],),
         ids=("crossing",),
     )
 
@@ -162,7 +162,10 @@ def test_face_cap_closes_filled_polygon_along_circular_boundary(
     on_boundary = np.isclose(
         radii, chart.boundary_radius, atol=1.0e-10
     )
-    assert np.count_nonzero(on_boundary) > 100
+    # The outside source path traverses 200 degrees.  Preserving that
+    # traversal, rather than substituting the shorter complementary arc,
+    # retains the polygon interior and therefore the intended fill.
+    assert np.count_nonzero(on_boundary) > 700
     boundary_points = np.column_stack(
         (projected[0].x[on_boundary], projected[0].y[on_boundary])
     )
