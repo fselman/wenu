@@ -1042,5 +1042,7 @@ The four-epoch installed-DE440 validator agreed with direct Skyfield to
 `3.128e-12 AU` in distance, `3.795e-10 arcsec` in diameter,
 `7.096e-10 deg` in phase, `4.823e-12` in illuminated fraction, and
 `4.301e-09 deg` in bright-limb angle. All 51 focused scientific tests and 91
-architectural tests passed. No public request or visible output is added;
+architectural tests passed. Final verification passed 64 documentation tests
+in 2.23 seconds, 1,985 routine tests with 30 deselected in 25.46 seconds, and
+all 2,015 tests in 84.38 seconds. No public request or visible output is added;
 drawable observed Venus sequences remain 49I.3C.3.1B.
