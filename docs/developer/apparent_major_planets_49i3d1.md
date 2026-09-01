@@ -81,8 +81,9 @@ broad envelope. Governed defaults therefore begin at `ol2`; `ol1` remains
 explicitly selectable for inspection or specialized use.
 
 For visual diagnosis and ordinary chart control, every chart family accepts
-`--mw-contour OL1|OL2|OL3|OL4|OL5|all`. A numbered choice replaces the
-governed default contour set with exactly that level; `all` draws all five.
+`--mw-contour OL1[,OL2,...]|all`. A comma-separated numbered selection
+replaces the governed default contour set with exactly those levels; `all`
+draws all five.
 Comparing otherwise identical `OL1` and `OL2`
 renders therefore compares the two source isophotes directly without changing
 the projection, viewport, or planet selection.
