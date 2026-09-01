@@ -83,10 +83,17 @@ class CartoonModeChartStyle(CartoonChartStyle):
             "linewidth": self.grids.constellation_linewidth,
         }
 
-    def layer_options(self, sky, *, horizon_altitude_deg=None):
+    def layer_options(
+        self,
+        sky,
+        *,
+        horizon_altitude_deg=None,
+        clip_filled_polygons=True,
+    ):
         options = super().layer_options(
             sky,
             horizon_altitude_deg=horizon_altitude_deg,
+            clip_filled_polygons=clip_filled_polygons,
         )
         layer = getattr(sky, "constellation_labels", None)
         if layer is None or layer not in options:
