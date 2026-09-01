@@ -161,6 +161,34 @@ def configure_chart_request_grids(sky, request, *, frame=None, observer=None):
         ("altaz_grid", "add_altaz_grid"),
     ):
         if name in requested:
+            if (
+                name == "equatorial_grid"
+                and request.coordinate_frame == "ecliptic"
+            ):
+                from wenu.sky.frozen_earth_reference_grids import (
+                    FrozenEarthEquatorialGrid,
+                )
+                from .request_realization import (
+                    chart_request_realization_context,
+                )
+
+                resolved_observer = (
+                    getattr(sky, "observer", None)
+                    if observer is None else observer
+                )
+                context = chart_request_realization_context(
+                    request, resolved_observer
+                )
+                layer = FrozenEarthEquatorialGrid(
+                    resolved_observer,
+                    product_coordinate_spec=(
+                        context.product_coordinate_spec
+                    ),
+                    **specifications[name],
+                )
+                sky.add(layer)
+                configured.append(layer)
+                continue
             configured.append(
                 getattr(sky, method_name)(**specifications[name])
             )

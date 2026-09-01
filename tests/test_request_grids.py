@@ -1,5 +1,6 @@
 """Request-time semantic grid configuration contracts."""
 
+from argparse import Namespace
 from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
@@ -17,8 +18,10 @@ from wenu import (
     configure_chart_request_grids,
     requested_coordinate_grids,
 )
+from wenu.charts.chart_arguments import chart_disk_sequence_options
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.coordinate_grids import CoordinatesGrid
+from wenu.sky.frozen_earth_reference_grids import FrozenEarthEquatorialGrid
 
 
 def request(family, *, detail=None):
@@ -259,6 +262,57 @@ def test_of_date_policy_accepts_the_explicit_view_observer():
 
     assert configured[0].equinox == instant
     assert configured[1].equinox == instant
+
+
+def test_frozen_request_installs_fixed_frame_equatorial_grid():
+    sequence = chart_disk_sequence_options(Namespace(
+        planet_appearance=[],
+        planet_disk_magnification=["venus=200"],
+        planet_disk_sequence="venus",
+        disk_sequence_model="frozen-earth-ecliptic",
+        disk_sequence_start="2026-08-30T00:00:00Z",
+        disk_sequence_step=7.0,
+        disk_sequence_n_steps=30,
+        disk_sequence_labels=False,
+    ))
+    selected = DetailOverrides(
+        enabled_layer_additions={"equatorial_grid"}
+    )
+    chart_request = replace(
+        request("regional", detail=selected),
+        coordinate_frame="ecliptic",
+        solar_system_disk_sequence=sequence,
+    )
+    latitude, longitude, elevation, instant = (
+        chart_request.observer.scientific_identity()
+    )
+    observer = SimpleNamespace(
+        lat_deg=latitude,
+        lon_deg=longitude,
+        elevation_m=elevation,
+        utc_datetime=instant,
+        timezone_name="America/Santiago",
+    )
+    sky = CelestialSphere(observer)
+
+    configured = configure_chart_request_grids(
+        sky,
+        chart_request,
+        frame=SimpleNamespace(
+            field_width_deg=120.0,
+            field_height_deg=45.0,
+            field_diameter_deg=None,
+            limiting_declination_deg=None,
+        ),
+        observer=observer,
+    )
+
+    assert len(configured) == 1
+    assert isinstance(configured[0], FrozenEarthEquatorialGrid)
+    assert configured[0].product_coordinate_spec.frame == (
+        "barycentric-mean-ecliptic"
+    )
+    assert configured[0].product_coordinate_spec.origin == "frozen-earth"
 
 
 def test_grid_configuration_rejects_untyped_inputs():

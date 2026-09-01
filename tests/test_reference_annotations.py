@@ -24,11 +24,19 @@ from wenu import (
     compose_chart,
     LegendOptions,
 )
-from wenu.coordinates import GENERIC_SPHERICAL_SPEC
+from wenu.coordinates import (
+    CoordinateSpec,
+    GENERIC_SPHERICAL_SPEC,
+    PositionStatus,
+)
 
 from wenu.geometry.projected import ProjectedCurve, ProjectedPoints
 from wenu.geometry.spherical import SphericalPoints
 from wenu.charts.reference_furniture import _reference_layer_options
+from wenu.sky.frozen_earth_reference_grids import (
+    FrozenEarthEclipticReference,
+)
+from wenu.sky.realization import LayerRealizationContext
 
 
 def observer():
@@ -124,6 +132,38 @@ def test_reference_sky_contains_only_requested_semantic_geometry():
     metadata = overlay.points._style_metadata()
     assert metadata["marker"][:2].tolist() == ["+", "+"]
     assert set(metadata["marker"][2:]) == {"x"}
+
+
+def test_frozen_reference_overlay_uses_product_frame_ecliptic():
+    composition = compose_chart(
+        chart(),
+        style="atlas",
+        furniture=ChartFurnitureOptions(
+            references=ReferenceAnnotations(
+                ecliptic=ReferencePlaneAnnotation(
+                    state="labeled",
+                    label="Eclíptica",
+                ),
+            ),
+        ),
+    )
+    context = LayerRealizationContext(CoordinateSpec(
+        frame="barycentric-mean-ecliptic",
+        origin="frozen-earth",
+        position_status=PositionStatus.GEOMETRIC,
+        equinox="J2000",
+        provider="test",
+        model="fixed-Earth J2000 ecliptic construction",
+    ))
+
+    overlay = build_celestial_reference_sky(
+        SimpleNamespace(observer=observer()),
+        composition,
+        realization_context=context,
+    )
+
+    assert len(overlay.layers) == 1
+    assert isinstance(overlay.layers[0], FrozenEarthEclipticReference)
 
 
 def test_both_poles_use_conventional_labels():

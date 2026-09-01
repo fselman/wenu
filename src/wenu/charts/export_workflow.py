@@ -128,6 +128,7 @@ def export_composed_chart(
             renderer,
             composition,
             observer=observer,
+            realization_context=realization_context,
         )
     if composition.legends is not None:
         from .chart_legend_workflow import draw_resolved_chart_legends

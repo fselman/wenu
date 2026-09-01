@@ -294,7 +294,12 @@ def _add_selected_poles(points, system, selection, **style):
 
 
 def build_celestial_reference_sky(
-    sky, composition, *, observer=None, chart=None
+    sky,
+    composition,
+    *,
+    observer=None,
+    chart=None,
+    realization_context=None,
 ):
     """Build an unregistered reference-only sky for one composition."""
     furniture = composition.furniture
@@ -359,15 +364,29 @@ def build_celestial_reference_sky(
             )
         )
     if references.ecliptic.enabled:
-        reference_sky.add(
-            EclipticGrid(
-                resolved_observer,
-                equinox=equinox,
-                longitude=(),
-                latitude=(),
-                include_ecliptic=True,
-            )
+        product_spec = getattr(
+            realization_context, "product_coordinate_spec", None
         )
+        if (
+            product_spec is not None
+            and product_spec.frame == "barycentric-mean-ecliptic"
+            and product_spec.origin == "frozen-earth"
+        ):
+            from wenu.sky.frozen_earth_reference_grids import (
+                FrozenEarthEclipticReference,
+            )
+
+            reference_sky.add(FrozenEarthEclipticReference())
+        else:
+            reference_sky.add(
+                EclipticGrid(
+                    resolved_observer,
+                    equinox=equinox,
+                    longitude=(),
+                    latitude=(),
+                    include_ecliptic=True,
+                )
+            )
     if references.galactic_plane.enabled:
         reference_sky.add(
             GalacticGrid(
@@ -582,10 +601,15 @@ def draw_celestial_reference_furniture(
     composition,
     *,
     observer=None,
+    realization_context=None,
 ):
     """Draw requested references through the canonical geometry pipeline."""
     reference_sky = build_celestial_reference_sky(
-        sky, composition, observer=observer, chart=chart
+        sky,
+        composition,
+        observer=observer,
+        chart=chart,
+        realization_context=realization_context,
     )
     if reference_sky is None:
         return None
@@ -620,6 +644,7 @@ def draw_celestial_reference_furniture(
             chart,
         ),
         project_geometry=project,
+        realization_context=realization_context,
     )
     from .reference_keypoint_legend import (
         draw_ecliptic_keypoint_legend,
