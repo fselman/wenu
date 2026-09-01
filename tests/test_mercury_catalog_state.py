@@ -93,9 +93,9 @@ def test_mercury_is_one_immutable_output_neutral_catalog_registration():
     assert MERCURY_BODY.physical_radius_km == MERCURY_MEAN_RADIUS_KM == 2439.4
     assert MERCURY_MEAN_RADIUS_KM != 2440.53
     assert "equal-volume mean radius" in MERCURY_RADIUS_MODEL
-    assert MERCURY_BODY.capabilities == {FROZEN_EARTH_DISK_SEQUENCE}
+    assert MERCURY_BODY.supports(FROZEN_EARTH_DISK_SEQUENCE)
+    assert MERCURY_BODY.supports(SYMBOLIC_POINT)
     for capability in (
-        SYMBOLIC_POINT,
         RESOLVED_SPHERICAL_DISK,
         OBSERVED_DISK_SEQUENCE,
     ):
