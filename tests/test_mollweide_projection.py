@@ -235,6 +235,29 @@ def test_seam_crossing_polygon_becomes_valid_closed_pieces():
         assert len(latitude) == len(polygon)
 
 
+def test_longitude_winding_polygon_closes_along_map_edge_not_across_map():
+    longitude = np.linspace(179.5, -180.0, 720)
+    latitude = 11.0 + np.sin(np.radians(longitude))
+    polygons = SphericalPolygons(
+        coordinate_spec=GENERIC_SPHERICAL_SPEC,
+        lon_deg=(np.append(longitude, longitude[0]),),
+        lat_deg=(np.append(latitude, latitude[0]),),
+        ids=("winding",),
+    )
+
+    projected = projection().project_geometry(polygons)
+
+    assert len(projected) == 1
+    polygon = projected[0]
+    closed_x = np.append(polygon.x, polygon.x[0])
+    closed_y = np.append(polygon.y, polygon.y[0])
+    steps = np.hypot(np.diff(closed_x), np.diff(closed_y))
+    assert np.max(steps) < 0.11
+    assert np.min(closed_y) == pytest.approx(
+        -np.sqrt(2.0), abs=1.0e-12
+    )
+
+
 def test_unknown_geometry_and_nonscalar_point_are_rejected():
     value = projection()
 
