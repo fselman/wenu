@@ -2630,6 +2630,9 @@ def test_49i3c33c_proposes_descriptor_driven_drawable_mercury():
 
 def test_49i3d1_proposes_shared_apparent_major_planets():
     contract = " ".join(read(APPARENT_MAJOR_PLANETS).split())
+    user_guide = " ".join(
+        read(ROOT / "docs/user_guide/configuration.md").split()
+    )
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     instructions = " ".join(read(INSTRUCTIONS).split())
@@ -2656,3 +2659,15 @@ def test_49i3d1_proposes_shared_apparent_major_planets():
     assert "Milestone 49I.3D.1 apparent major planets" in source_tree
     assert "Milestone 49I.3D.1 — Apparent major-planet symbolic points" in roadmap
     assert "apparent_major_planets_49i3d1.md" in instructions
+    for phrase in (
+        "## Planet symbols",
+        "`mercury` | Mercury | ☿",
+        "`venus` | Venus | ♀",
+        "`mars` | Mars | ♂",
+        "`jupiter` | Jupiter | ♃",
+        "`saturn` | Saturn | ♄",
+        "`uranus` | Uranus | ♅",
+        "`neptune` | Neptune | ♆",
+        "Earth is the observer's reference body",
+    ):
+        assert phrase in user_guide
