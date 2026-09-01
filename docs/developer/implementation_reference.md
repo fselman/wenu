@@ -274,11 +274,13 @@ constellation-label selections already supported by layer geometry. It also
 applies constellation-line and boundary subsets and Milky Way, LMC, and SMC
 isophote levels as render-local geometry options. These selections do not
 change the registered layers' loaded content or defaults.
-Resolved chart requests use all five established Milky Way levels when no
-levels are supplied. The two source rings in `ol1` form the valid faint outer
-envelope, while `ol2` through `ol5` provide successively inner structure.
-Explicit level requests retain precedence and may omit `ol1` when a narrower
-render is wanted. The public CLI exposes this nested selection as
+Resolved chart requests use `ol2` through `ol5` when no Milky Way levels are
+supplied. Comparative Mollweide and stereographic renders established that
+the D3-Celestial `ol1` geometry itself produces a very broad, nearly
+Galactic-latitude-bounded faint envelope; no distant vertex, projection jump,
+or clipping closure creates it. `ol1` remains available as explicit catalogue
+content, but is not a governed display default. Explicit level requests retain
+precedence. The public CLI exposes this nested selection as
 `--mw-lowest-contour OL1|OL2|OL3|OL4|OL5`; the selected level and every
 brighter inner level are drawn.
 
