@@ -74,7 +74,11 @@ physical-body identifier.
 
 ## 4. Bounded implementation sequence
 
-### 49I.3C.3.3A — Output-neutral Mercury state and numerical validation
+### 49I.3C.3.3B — Output-neutral Mercury state and numerical validation
+
+The descriptor-driven moving-body foundation was inserted as 49I.3C.3.3A
+after this audit. The originally proposed A/B slices therefore become B/C;
+their scientific and architectural boundaries are unchanged.
 
 Add one Mercury point descriptor and the accepted mean-radius constant/model.
 Construct a frozen-Earth Mercury request through the existing generic sequence
@@ -98,9 +102,9 @@ on both sides of at least one conjunction-like thin-phase geometry and samples
 spanning materially different Mercury-Sun and frozen-Earth-Mercury distances.
 Undefined exact alignment is an explicit diagnostic, not a value to suppress.
 
-### 49I.3C.3.3B — Drawable frozen-Earth Mercury sequence
+### 49I.3C.3.3C — Drawable frozen-Earth Mercury sequence
 
-Only after 49I.3C.3.3A scientific acceptance, extract or generalize the
+Only after 49I.3C.3.3B scientific acceptance, extract or generalize the
 Venus-named drawable orchestration so one body descriptor supplies target,
 display name, physical radius, radius model, semantic root, and style identity.
 Do not copy the Venus projection, preparation, renderer, or export path.
@@ -140,7 +144,7 @@ titles, and rejection of forbidden scene content.
 
 ## 6. Human visual acceptance
 
-Before 49I.3C.3.3B can close, Fernando must inspect a calibration spanning
+Before 49I.3C.3.3C can close, Fernando must inspect a calibration spanning
 enough exact epochs to show Mercury's faster orbital motion, varying distance,
 angular size, phase, and bright-limb orientation. The final cadence,
 magnification, field, and label policy are selected after 49I.3C.3.3A reports
@@ -184,7 +188,7 @@ Fernando scientifically and architecturally accepted the two-slice boundary,
 JPL equal-volume mean-radius authority, physical-body versus provider-
 barycentre identity distinction, frozen-only first drawable scope, and
 explicit non-goals on 2026-09-01. Merging this audit authorizes only separately
-reviewed 49I.3C.3.3A work; it does not pre-accept Mercury runtime values,
+reviewed 49I.3C.3.3B work; it does not pre-accept Mercury runtime values,
 tolerances, public output, or visual design.
 
 Audit preparation verification passed all 68 current-documentation tests.
