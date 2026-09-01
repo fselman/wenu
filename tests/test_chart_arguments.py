@@ -122,8 +122,22 @@ def test_class_aware_selectors_share_one_solar_system_selection():
     assert {"venus", "moon"} <= detail.enabled_layer_additions
     assert not {"venus", "moon"} & detail.disabled_layers
 
+    all_planets = parser().parse_args([
+        "--planet", "mercury",
+        "--planet", "venus",
+        "--planet", "mars",
+        "--planet", "jupiter",
+        "--planet", "saturn",
+        "--planet", "uranus",
+        "--planet", "neptune",
+    ])
+    assert chart_content_options(all_planets).planets == {
+        "mercury", "venus", "mars", "jupiter", "saturn", "uranus",
+        "neptune",
+    }
+
     with pytest.raises(SystemExit):
-        parser().parse_args(["--planet", "mars"])
+        parser().parse_args(["--planet", "earth"])
 
 
 @pytest.mark.parametrize("value", ["0", "-10", "nan", "91"])
