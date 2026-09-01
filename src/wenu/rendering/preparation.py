@@ -561,6 +561,8 @@ def _clip_one_polygon_to_projection_cap(
     output = []
     output_source = []
     pending_exit = False
+    outside_angles = []
+    leading_outside_angles = []
     previous = vectors[-1]
     previous_source = source_vectors[-1]
     previous_inside = previous[2] >= minimum_z
@@ -581,7 +583,12 @@ def _clip_one_polygon_to_projection_cap(
                 )
                 if pending_exit and output:
                     arc = _projection_cap_arc(
-                        output[-1], intersection, minimum_z
+                        output[-1],
+                        intersection,
+                        minimum_z,
+                        traversal_angles=outside_angles + [
+                            _vector_angle(intersection)
+                        ],
                     )
                     source_arc = _source_vectors_for_aligned_arc(
                         arc, projection
@@ -590,7 +597,12 @@ def _clip_one_polygon_to_projection_cap(
                     output_source.extend(source_arc[1:-1])
                 output.append(intersection)
                 output_source.append(intersection_source)
+                if not pending_exit:
+                    leading_outside_angles.append(
+                        _vector_angle(intersection)
+                    )
                 pending_exit = False
+                outside_angles = []
             output.append(current)
             output_source.append(current_source)
         elif previous_inside:
@@ -609,6 +621,16 @@ def _clip_one_polygon_to_projection_cap(
                 )
             )
             pending_exit = True
+            outside_angles = [
+                _vector_angle(intersection),
+                _vector_angle(current),
+            ]
+        elif pending_exit:
+            outside_angles.append(_vector_angle(current))
+        elif not current_inside:
+            if not leading_outside_angles:
+                leading_outside_angles.append(_vector_angle(previous))
+            leading_outside_angles.append(_vector_angle(current))
         previous = current
         previous_source = current_source
         previous_inside = current_inside
@@ -623,7 +645,12 @@ def _clip_one_polygon_to_projection_cap(
         )
         if first_crossing is not None:
             arc = _projection_cap_arc(
-                output[-1], output[first_crossing], minimum_z
+                output[-1],
+                output[first_crossing],
+                minimum_z,
+                traversal_angles=(
+                    outside_angles + leading_outside_angles
+                ),
             )
             source_arc = _source_vectors_for_aligned_arc(arc, projection)
             output.extend(arc[1:-1])
@@ -649,11 +676,24 @@ def _clip_one_polygon_to_projection_cap(
     return polygon, source_latitude
 
 
-def _projection_cap_arc(start, end, minimum_z, *, maximum_step_deg=0.25):
-    """Return the shorter constant-radius cap arc between crossings."""
+def _projection_cap_arc(
+    start,
+    end,
+    minimum_z,
+    *,
+    traversal_angles=None,
+    maximum_step_deg=0.25,
+):
+    """Follow the source traversal along a constant-radius cap arc."""
     start_angle = float(np.arctan2(start[1], start[0]))
     end_angle = float(np.arctan2(end[1], end[0]))
-    delta = (end_angle - start_angle + np.pi) % (2.0 * np.pi) - np.pi
+    if traversal_angles:
+        traversal = np.unwrap(np.asarray(traversal_angles, dtype=float))
+        delta = float(traversal[-1] - traversal[0])
+    else:
+        delta = (
+            end_angle - start_angle + np.pi
+        ) % (2.0 * np.pi) - np.pi
     count = max(
         1,
         int(np.ceil(abs(np.degrees(delta)) / maximum_step_deg)),
@@ -665,6 +705,10 @@ def _projection_cap_arc(start, end, minimum_z, *, maximum_step_deg=0.25):
         radius * np.sin(angle),
         np.full_like(angle, minimum_z),
     ))
+
+
+def _vector_angle(vector):
+    return float(np.arctan2(vector[1], vector[0]))
 
 
 def _source_vectors_for_aligned_arc(vectors, projection):
