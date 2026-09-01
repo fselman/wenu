@@ -283,6 +283,11 @@ content, but is not a governed display default. Explicit level requests retain
 precedence. The public CLI exposes this nested selection as
 `--mw-lowest-contour OL1|OL2|OL3|OL4|OL5`; supplying the option draws exactly
 the selected isophote instead of the governed default contour set.
+The runtime catalogue is mechanically exported into five independent,
+plain-text GeoJSON resources, `milky_way_ol1.geojson` through
+`milky_way_ol5.geojson`. Explicit selection sends only rings from the chosen
+file into coordinate transformation and projection; the combined pinned
+snapshot remains provenance authority.
 
 `ResolvedDetail.extended_object_samples` may request a lower render-local
 sampling density for extended-object outlines. It applies to Messier-style
