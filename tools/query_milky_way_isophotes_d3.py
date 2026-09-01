@@ -83,6 +83,19 @@ def main():
     ) + "\n"
     data_path = destination / "milky_way_d3.json"
     data_path.write_text(canonical, encoding="utf-8")
+    level_files = {}
+    for feature in document["features"]:
+        level = _level(feature)
+        single = {
+            "type": "FeatureCollection",
+            "features": [feature],
+        }
+        level_path = destination / f"milky_way_{level}.geojson"
+        level_path.write_text(
+            json.dumps(single, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        level_files[level] = level_path.name
 
     license_text = _download(LICENSE_URL).decode("utf-8")
     (destination / "BSD-3-Clause.txt").write_text(
@@ -115,6 +128,7 @@ def main():
             canonical.encode("utf-8")
         ).hexdigest(),
         "levels": list(levels),
+        "single_level_files": level_files,
         "ring_counts": list(ring_counts),
     }
     (destination / "milky_way_d3.provenance.json").write_text(
