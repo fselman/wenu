@@ -6,6 +6,10 @@ from dataclasses import dataclass
 from math import isfinite
 
 from wenu.sky.venus_disk import venus_disk_layers
+from wenu.sky.solar_system_disk_sequences import (
+    ObservedSolarSystemDiskSequenceRequest,
+)
+from wenu.sky.venus_disk_sequence import observed_venus_disk_sequence_layers
 
 
 SUPPORTED_RESOLVED_DISKS = frozenset({"venus"})
@@ -31,6 +35,36 @@ class SolarSystemDiskDisplayRequest:
         object.__setattr__(self, "magnification", magnification)
 
 
+@dataclass(frozen=True)
+class ObservedSolarSystemDiskSequenceDisplayRequest:
+    """Drawable observed major-step disk sequence."""
+
+    sequence: ObservedSolarSystemDiskSequenceRequest
+    magnification: float = 1.0
+    label_dates: bool = False
+
+    def __post_init__(self):
+        if not isinstance(self.sequence, ObservedSolarSystemDiskSequenceRequest):
+            raise TypeError(
+                "sequence must be an ObservedSolarSystemDiskSequenceRequest."
+            )
+        if self.sequence.descriptor.target != "venus":
+            raise ValueError(
+                "drawable observed sequences currently support only venus."
+            )
+        magnification = float(self.magnification)
+        if not isfinite(magnification) or not 1.0 <= magnification <= 1000.0:
+            raise ValueError(
+                "disk magnification must be finite and between 1 and 1000."
+            )
+        object.__setattr__(self, "magnification", magnification)
+        object.__setattr__(self, "label_dates", bool(self.label_dates))
+
+    @property
+    def target(self):
+        return self.sequence.descriptor.target
+
+
 def configure_chart_request_disks(sky, request):
     """Replace request-owned disk layers with the current request selection."""
     for layer in tuple(sky.layers):
@@ -41,6 +75,10 @@ def configure_chart_request_disks(sky, request):
         "venus_disk_illuminated",
         "venus_disk_limb",
         "venus_disk_terminator",
+        "venus_disk_sequence_illuminated",
+        "venus_disk_sequence_limb",
+        "venus_disk_sequence_terminator",
+        "venus_disk_sequence_labels",
     ):
         setattr(sky, name, None)
 
@@ -48,6 +86,17 @@ def configure_chart_request_disks(sky, request):
         if disk.target != "venus":
             raise ValueError(f"unsupported resolved disk: {disk.target!r}.")
         layers = venus_disk_layers(magnification=disk.magnification)
+        for layer in layers:
+            setattr(sky, layer.layer_name, layer)
+            sky.add(layer)
+
+    sequence = getattr(request, "solar_system_disk_sequence", None)
+    if sequence is not None:
+        layers = observed_venus_disk_sequence_layers(
+            sequence.sequence,
+            magnification=sequence.magnification,
+            label_dates=sequence.label_dates,
+        )
         for layer in layers:
             setattr(sky, layer.layer_name, layer)
             sky.add(layer)

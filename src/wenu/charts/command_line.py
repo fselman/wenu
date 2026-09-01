@@ -13,6 +13,7 @@ from .chart_arguments import (
     chart_content_options,
     chart_detail_overrides,
     chart_disk_options,
+    chart_disk_sequence_options,
     chart_legend_selection,
     chart_reference_policy,
     chart_sky_content,
@@ -310,11 +311,19 @@ def _chart_view_argument_plans(
             "--planet-track is supported only by regional and binocular charts."
         )
     disk_requests = chart_disk_options(arguments)
+    disk_sequence = chart_disk_sequence_options(arguments)
     if disk_requests and getattr(view, "family", None) not in {
         "regional", "binocular"
     }:
         raise ValueError(
             "--planet-appearance is supported only by regional and "
+            "binocular charts."
+        )
+    if disk_sequence is not None and getattr(view, "family", None) not in {
+        "regional", "binocular"
+    }:
+        raise ValueError(
+            "--planet-disk-sequence is supported only by regional and "
             "binocular charts."
         )
     configured_policy = (
@@ -377,6 +386,7 @@ def _chart_view_argument_plans(
                 "content": chart_sky_content(arguments),
                 "solar_system_track": track_request,
                 "solar_system_disks": disk_requests,
+                "solar_system_disk_sequence": disk_sequence,
                 "solar_system_track_tick_labels": (
                     False if parsed_track is None else parsed_track.label_ticks
                 ),

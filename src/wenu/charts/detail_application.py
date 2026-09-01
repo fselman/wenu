@@ -11,7 +11,10 @@ from .context import BoundaryKind
 from .detail import ResolvedDetail
 from .style_components import StellarMagnitudeSizing
 from wenu.rendering.preparation import configured_magnitude_sizes
-from .solar_system_disk_preparation import MagnifyProjectedDisk
+from .solar_system_disk_preparation import (
+    MagnifyProjectedDisk,
+    MagnifyProjectedDiskSequence,
+)
 from .solar_system_track_annotations import (
     TrackLabelAnchor,
     prepare_projected_track,
@@ -238,6 +241,10 @@ _REQUEST_GEOMETRY_LAYERS = frozenset({
     "venus_disk_illuminated",
     "venus_disk_limb",
     "venus_disk_terminator",
+    "venus_disk_sequence_illuminated",
+    "venus_disk_sequence_limb",
+    "venus_disk_sequence_terminator",
+    "venus_disk_sequence_labels",
 })
 _DEFAULT_DISABLED_LAYERS = frozenset({"venus", "moon"})
 
@@ -507,11 +514,31 @@ def composition_layer_options(
         disk_options = {}
         for layer in disk_layers:
             name = layer.layer_name
-            preparation = MagnifyProjectedDisk(
-                layer.disk_realization,
-                layer.magnification,
+            sequence_layer = name.startswith("venus_disk_sequence_")
+            preparation = (
+                MagnifyProjectedDiskSequence(
+                    layer.disk_realization, layer.magnification
+                )
+                if sequence_layer
+                else MagnifyProjectedDisk(
+                    layer.disk_realization, layer.magnification
+                )
             )
-            if name == "venus_disk_illuminated":
+            if name == "venus_disk_sequence_labels":
+                disk_options[layer] = {
+                    "render": {
+                        "style": {"s": 0.0, "alpha": 0.0, "zorder": 39.3},
+                        "draw_labels": True,
+                        "label_style": {
+                            "color": publication.venus_disk_limb_color,
+                            "fontsize": publication.venus_label_fontsize,
+                            "zorder": 39.3,
+                        },
+                        "label_offset": (0.01, 0.01),
+                    },
+                }
+                continue
+            if name in {"venus_disk_illuminated", "venus_disk_sequence_illuminated"}:
                 render = {
                     "style": {
                         "facecolor": publication.venus_disk_face_color,
@@ -525,23 +552,23 @@ def composition_layer_options(
                     "style": {
                         "color": (
                             publication.venus_disk_limb_color
-                            if name == "venus_disk_limb"
+                            if name.endswith("_limb")
                             else publication.venus_disk_terminator_color
                         ),
                         "linewidth": (
                             publication.venus_disk_limb_linewidth
-                            if name == "venus_disk_limb"
+                            if name.endswith("_limb")
                             else publication.venus_disk_terminator_linewidth
                         ),
                         "linestyle": (
                             publication.venus_disk_limb_linestyle
-                            if name == "venus_disk_limb"
+                            if name.endswith("_limb")
                             else publication.venus_disk_terminator_linestyle
                         ),
                         "dash_capstyle": "butt",
                         "alpha": publication.venus_alpha,
                         "zorder": (
-                            39.2 if name == "venus_disk_limb" else 39.1
+                            39.2 if name.endswith("_limb") else 39.1
                         ),
                     },
                 }

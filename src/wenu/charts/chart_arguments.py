@@ -10,8 +10,17 @@ import re
 from .detail import DetailOverrides, SkyContentSelection
 from .product_options import add_chart_product_arguments
 from .reference_policy import CelestialReferencePolicy
-from .request_disks import SolarSystemDiskDisplayRequest
+from .request_disks import (
+    ObservedSolarSystemDiskSequenceDisplayRequest,
+    SolarSystemDiskDisplayRequest,
+)
 from .style_overrides import ChartStyleOverrides
+from wenu.sky.solar_system_disk_sequences import (
+    ObservedSolarSystemDiskSequenceRequest,
+)
+from wenu.sky.venus import VENUS_POINT
+from wenu.sky.venus_disk import VENUS_RADIUS_MODEL
+from wenu.solar_system_appearance import VENUS_MEAN_RADIUS_KM
 
 GRID_REFERENCES = frozenset({"equatorial", "ecliptic", "galactic"})
 _DURATION = re.compile(r"^(?P<value>(?:\d+(?:\.\d*)?|\.\d+))(?P<unit>h|d|hour|hours|day|days)$", re.IGNORECASE)
@@ -188,6 +197,30 @@ def add_chart_content_arguments(parser):
             "magnify one resolved disk after projection "
             "(factor 1 is physical scale)"
         ),
+    )
+    parser.add_argument(
+        "--planet-disk-sequence",
+        choices=("venus",),
+        help=(
+            "draw observed resolved disks at major epochs "
+            "(regional/binocular only)"
+        ),
+    )
+    parser.add_argument(
+        "--disk-sequence-model",
+        choices=("observed",),
+        help="scientific sequence model (currently: observed)",
+    )
+    parser.add_argument("--disk-sequence-start", metavar="ISO_TIME")
+    parser.add_argument(
+        "--disk-sequence-step",
+        type=_duration_days,
+        metavar="DURATION",
+    )
+    parser.add_argument("--disk-sequence-n-steps", type=int, metavar="COUNT")
+    parser.add_argument(
+        "--disk-sequence-labels", action="store_true",
+        help="label every resolved disk with its ISO date",
     )
     parser.add_argument(
         "--planet-track",
@@ -397,8 +430,7 @@ def _key_value_options(values, *, option):
     return result
 
 
-def chart_disk_options(arguments):
-    """Resolve object-specific opt-in resolved-disk display requests."""
+def _disk_selections(arguments):
     appearances = _key_value_options(
         getattr(arguments, "planet_appearance", ()),
         option="planet-appearance",
@@ -407,6 +439,12 @@ def chart_disk_options(arguments):
         getattr(arguments, "planet_disk_magnification", ()),
         option="planet-disk-magnification",
     )
+    return appearances, magnifications
+
+
+def chart_disk_options(arguments):
+    """Resolve object-specific opt-in resolved-disk display requests."""
+    appearances, magnifications = _disk_selections(arguments)
     unknown = set(appearances) - {"venus"}
     if unknown:
         raise ValueError("planet-appearance currently supports only venus.")
@@ -417,7 +455,11 @@ def chart_disk_options(arguments):
     }
     if invalid_modes:
         raise ValueError("planet appearance mode must be resolved.")
-    unselected = set(magnifications) - set(appearances)
+    sequence_target = getattr(arguments, "planet_disk_sequence", None)
+    selected = set(appearances) | (
+        {sequence_target} if sequence_target else set()
+    )
+    unselected = set(magnifications) - selected
     if unselected:
         raise ValueError(
             "planet-disk-magnification requires resolved appearance."
@@ -428,6 +470,56 @@ def chart_disk_options(arguments):
             float(magnifications.get(target, 1.0)),
         )
         for target in appearances
+    )
+
+
+def chart_disk_sequence_options(arguments):
+    """Resolve the optional complete observed disk-sequence CLI group."""
+    names = (
+        "planet_disk_sequence",
+        "disk_sequence_model",
+        "disk_sequence_start",
+        "disk_sequence_step",
+        "disk_sequence_n_steps",
+    )
+    values = tuple(getattr(arguments, name, None) for name in names)
+    if all(value is None for value in values):
+        return None
+    if any(value is None for value in values):
+        missing = [
+            name.replace("_", "-")
+            for name, value in zip(names, values)
+            if value is None
+        ]
+        raise ValueError(
+            "a planet disk sequence requires all sequence options; missing: "
+            + ", ".join(missing)
+        )
+    target, model, start, step_days, n_steps = values
+    if model != "observed":
+        raise ValueError(
+            "disk-sequence-model currently supports only observed."
+        )
+    if isinstance(n_steps, bool) or n_steps < 0:
+        raise ValueError("disk-sequence-n-steps must be a nonnegative integer")
+    appearances, magnifications = _disk_selections(arguments)
+    if target in appearances:
+        raise ValueError(
+            "a planet cannot be both a single resolved disk and a disk sequence."
+        )
+    return ObservedSolarSystemDiskSequenceDisplayRequest(
+        ObservedSolarSystemDiskSequenceRequest(
+            descriptor=VENUS_POINT,
+            start_instant=str(start).strip(),
+            start_time_scale="utc",
+            step_days=float(step_days),
+            n_steps=int(n_steps),
+            display_name=VENUS_POINT.display_name,
+            physical_radius_km=VENUS_MEAN_RADIUS_KM,
+            radius_model=VENUS_RADIUS_MODEL,
+        ),
+        magnification=float(magnifications.get(target, 1.0)),
+        label_dates=bool(getattr(arguments, "disk_sequence_labels", False)),
     )
 
 

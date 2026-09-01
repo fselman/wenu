@@ -12,7 +12,10 @@ from .furniture import ChartFurnitureOptions
 from .product_options import ChartProductOptions
 from .request_composition import ChartProductCompositionOptions
 from .reference_policy import CelestialReferencePolicy
-from .request_disks import SolarSystemDiskDisplayRequest
+from .request_disks import (
+    ObservedSolarSystemDiskSequenceDisplayRequest,
+    SolarSystemDiskDisplayRequest,
+)
 from wenu.sky.solar_system_tracks import SolarSystemTrackRequest
 
 
@@ -361,6 +364,9 @@ class ChartRequest:
     solar_system_track: SolarSystemTrackRequest | None = None
     solar_system_track_tick_labels: bool = False
     solar_system_disks: tuple[SolarSystemDiskDisplayRequest, ...] = ()
+    solar_system_disk_sequence: (
+        ObservedSolarSystemDiskSequenceDisplayRequest | None
+    ) = None
     exclusions: ChartContentExclusions = ChartContentExclusions()
     detail: DetailOverrides = DetailOverrides()
     furniture: ChartFurnitureOptions = ChartFurnitureOptions()
@@ -442,9 +448,35 @@ class ChartRequest:
                 "Resolved disks are supported only by regional and "
                 "binocular charts."
             )
+        sequence = self.solar_system_disk_sequence
+        if sequence is not None and not isinstance(
+            sequence, ObservedSolarSystemDiskSequenceDisplayRequest
+        ):
+            raise TypeError(
+                "solar_system_disk_sequence must be an "
+                "ObservedSolarSystemDiskSequenceDisplayRequest or None."
+            )
+        if sequence is not None and family not in {"regional", "binocular"}:
+            raise ValueError(
+                "Observed disk sequences are supported only by regional "
+                "and binocular charts."
+            )
+        if sequence is not None and sequence.target in targets:
+            raise ValueError(
+                "A Solar-System object cannot be both a single resolved disk "
+                "and a resolved sequence."
+            )
         if set(targets) & set(self.content.solar_system_objects or ()):
             raise ValueError(
                 "A Solar-System object cannot be both symbolic and resolved."
+            )
+        if (
+            sequence is not None
+            and sequence.target in set(self.content.solar_system_objects or ())
+        ):
+            raise ValueError(
+                "A Solar-System object cannot be both symbolic and a "
+                "resolved sequence."
             )
         for name, value, kind in expected:
             if not isinstance(value, kind):
