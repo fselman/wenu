@@ -2586,6 +2586,9 @@ def test_49i3c33a_records_descriptor_driven_moving_body_foundation():
         "synthetic minor body",
         "Mercury remains unregistered",
         "does not add Mercury",
+        "all 2,045 tests in 86.49 seconds",
+        "Scientifically, architecturally, and visually accepted",
+        "three Venus compatibility renders",
     ):
         assert phrase in contract
     assert "13.2.32 49I.3C.3.3A moving-body foundation" in guide
