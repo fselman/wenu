@@ -7,6 +7,7 @@ from wenu.sky.solar_system_bodies import (
     FROZEN_EARTH_DISK_SEQUENCE,
     OBSERVED_DISK_SEQUENCE,
     RESOLVED_SPHERICAL_DISK,
+    SPHERICAL_PHYSICAL_APPEARANCE,
     SYMBOLIC_POINT,
     SolarSystemBodyDescriptor,
 )
@@ -33,6 +34,7 @@ VENUS_POINT = SolarSystemBodyDescriptor(
         SYMBOLIC_POINT,
         APPARENT_TRACK,
         RESOLVED_SPHERICAL_DISK,
+        SPHERICAL_PHYSICAL_APPEARANCE,
         OBSERVED_DISK_SEQUENCE,
         FROZEN_EARTH_DISK_SEQUENCE,
     }),

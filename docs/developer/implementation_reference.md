@@ -1956,6 +1956,28 @@ physical angular scale. The accepted public controls are
 `--planet-disk-magnification venus=FACTOR`.
 
 
+## Lunar physical-appearance state (Milestone 49I.3E.1)
+
+`sky/moon.py::MOON_BODY` is the immutable catalog identity shared by the
+accepted symbolic Moon layer and future physical appearance. It records NAIF
+body ID `301`, Earth parent key, equal-volume mean radius `1737.4 km`, and the
+output-neutral `spherical_physical_appearance` capability.
+
+`sky/earth.py::EARTH_BODY` supplies non-drawable NAIF body identity `399` so
+catalog relationship queries are complete. `SolarSystemAppearanceRealizer`
+uses the accepted topocentric Moon and Sun apparent directions with
+descriptor-owned radius data to return `SolarSystemApparentDisk`. No chart
+request consumes this state in 49I.3E.1.
+
+Fernando scientifically accepted the eight-case installed-DE440 validation
+on 2026-09-02. The maximum apparent-centre residual was `1.338e-07 deg`, the
+maximum physical angular-diameter residual was `2.994e-06 arcsec`, and the
+minimum explicit topocentric parallax was `0.272607 deg`. The accepted state
+remains output-neutral. Final verification passed 73 documentation tests, 124
+focused tests, 2,051 routine tests with 30 deselected, and all 2,081 tests;
+integration remains.
+
+
 ## Frozen-Earth Venus sequence state (Milestone 49I.3C.3.2A)
 
 `FrozenEarthDiskSequenceRequest` declares exact start-inclusive major samples

@@ -1180,3 +1180,31 @@ correction, transformation, semantic, style, renderer, and export path.
 This slice preserves the provisional Venus hollow marker for every planet.
 Validated apparent photometry, planet glyphs, resolved disks, rings, tracks,
 and observed sequences remain later capability-specific work.
+
+
+## Milestone 49I.3E.1 — Output-neutral lunar physical appearance
+
+**Status:** Scientifically accepted and regression-verified; ready for
+integration.
+
+Register one catalog Moon identity with Earth relationship, NAIF physical body
+ID `301`, JPL equal-volume mean radius `1737.4 km`, localization, symbolic
+compatibility, and output-neutral spherical-appearance capability. Reuse the
+generic `SolarSystemAppearanceRealizer` for centre, distance, diameter, phase,
+illuminated fraction, and apparent-ICRS bright-limb orientation.
+
+Validate a deterministic phase/distance/orientation case set against direct
+Skyfield using the installed kernel and explicit topocentric parallax. Add no
+disk geometry, CLI, magnification, chart-family change, style, renderer,
+exporter, sequence, or visible output.
+
+Fernando accepted the eight-case installed-DE440 validation on 2026-09-02.
+Maximum residuals were `1.338e-07 deg` in apparent right ascension,
+`2.885e-08 deg` in apparent declination, `4.427e-12 au` in distance,
+`2.994e-06 arcsec` in angular diameter, `9.726e-08 deg` in phase,
+`2.606e-10` in illuminated fraction, and `2.268e-06 deg` in wrapped
+bright-limb position angle. Minimum topocentric parallax was `0.272607 deg`.
+All values satisfy the accepted revised envelope. Final verification passed
+73 documentation tests, 124 focused tests, 2,051 routine tests with 30
+deselected, and all 2,081 tests. Integration remains; 49I.3E.2 is not
+authorized by this acceptance.

@@ -124,7 +124,7 @@ def build_maximal_sphere(
     sky.load_profile = profile
     sky.add_venus()
     for descriptor in SOLAR_SYSTEM_BODY_CATALOG.supporting(SYMBOLIC_POINT):
-        if descriptor.selection_key != "venus":
+        if descriptor.selection_key not in {"venus", "moon"}:
             sky.add_solar_system_body(descriptor)
     sky.add_moon()
     sky.add_milky_way_isophotes(

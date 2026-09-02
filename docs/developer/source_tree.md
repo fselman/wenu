@@ -1193,3 +1193,21 @@ owns deterministic contract coverage;
   numerical comparison.
 - `docs/developer/apparent_major_planets_49i3d1.md` owns the proposed acceptance
   boundary and explicit non-goals.
+
+
+## Milestone 49I.3E.1 lunar appearance ownership
+
+- `src/wenu/sky/earth.py` owns the non-drawable Earth parent identity.
+- `src/wenu/sky/moon.py` owns the immutable Moon descriptor, NAIF body ID,
+  equal-volume mean radius, radius authority, relationship, localization, and
+  output-neutral appearance capability.
+- `src/wenu/solar_system_appearance.py` remains the generic immutable physical
+  state and realization owner; no Moon-specific appearance realizer exists.
+- `tests/test_moon_appearance_state.py` owns deterministic identity,
+  capability, radius, relationship, immutability, and generic-state evidence.
+- `tools/validate_49i3e1_lunar_appearance.py` owns installed-DE440 comparison
+  and refuses downloads.
+- `docs/developer/lunar_physical_appearance_49i3e1.md` records the bounded
+  implementation and numerical acceptance gate.
+- No disk geometry, chart request, magnification, style, renderer, exporter,
+  or visible output is added in 49I.3E.1.

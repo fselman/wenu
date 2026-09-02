@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260901.47`
-**Last updated:** `2026-09-01T12:55:00Z`
+**Guide version:** `0.9.5.20260902.50`
+**Last updated:** `2026-09-02T01:23:13Z`
 **Language:** English
 
 # Table of contents
@@ -91,6 +91,7 @@
     - [13.2.30 49I.3C.3.2B drawable frozen-Earth Venus sequence](#49i3c32b-drawable-frozen-earth-venus-sequence)
     - [13.2.31 49I.3C.3.3 Mercury generalization audit](#49i3c33-mercury-generalization-audit)
     - [13.2.32 49I.3C.3.3A moving-body foundation](#49i3c33a-moving-body-foundation)
+    - [13.2.33 49I.3E.1 lunar physical appearance](#49i3e1-lunar-physical-appearance)
 
 <a id="status-and-purpose"></a>
 
@@ -2717,3 +2718,35 @@ provenance before the common direction, geometry, projection, and renderer
 pipeline. Satellites are catalog entries related to a primary, not objects
 nested inside a planet instance. No coordinate transformation changes in this
 slice.
+
+
+<a id="49i3e1-lunar-physical-appearance"></a>
+## 13.2.33 49I.3E.1 lunar physical appearance
+
+**[Foundation]** Wenu now records the Moon's real spherical size and can
+compute how large and illuminated it appears from a specific place and time.
+This state is not yet drawn. The familiar symbolic Moon remains unchanged
+until a later milestone explicitly connects physical geometry to charts.
+
+**[Undergraduate]** The Moon is one catalog body with NAIF ID `301`, parent
+Earth (`399`), and JPL equal-volume mean radius `1737.4 km`. The accepted
+observer-origin apparent ICRS centre retains topocentric parallax and the
+retarded observer–Moon distance. `SolarSystemAppearanceRealizer` combines it
+with the matching apparent Sun direction to compute exact spherical angular
+diameter, Sun–Moon–observer phase angle, illuminated fraction, and
+bright-limb position angle from celestial north toward east.
+
+The appearance capability is output-neutral. It is neither a selectable
+equinox nor a position reference epoch, and its bright-limb angle is a tangent
+direction rather than a page rotation. No coordinate transformation, disk
+geometry, magnification, public request, or visible output changes in
+49I.3E.1.
+
+Fernando scientifically accepted the eight-case installed-DE440 comparison
+on 2026-09-02. Maximum residuals were `1.338e-07 deg` in apparent right
+ascension and `2.994e-06 arcsec` in physical angular diameter; the minimum
+explicit topocentric parallax was `0.272607 deg`. All quantities satisfied the
+accepted validation envelope. Final verification passed 73 documentation
+tests, 124 focused tests, 2,051 routine tests with 30 deselected, and all 2,081
+tests. Integration remains; no drawable Moon behavior is accepted by this
+result.

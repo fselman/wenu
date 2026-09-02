@@ -384,3 +384,11 @@ bright-limb angle as frame-invariant. Reuse the descriptor-driven appearance,
 disk geometry, observed sequence, projection, per-centre magnification,
 renderer, semantics, and exporters. Do not add runtime Moon behavior under
 49I.3E.0.
+
+For the output-neutral lunar appearance state, also consult
+`lunar_physical_appearance_49i3e1.md`. Preserve the single catalog Moon
+identity, Earth parent relationship, JPL equal-volume mean radius, and generic
+`SolarSystemApparentDisk` realization. Require the installed-DE440 validator
+and explicit parallax evidence before acceptance. Do not add resolved disk
+geometry, Moon display controls, magnification, sequence requests, or visible
+output under 49I.3E.1.

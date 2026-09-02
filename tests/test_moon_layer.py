@@ -6,7 +6,9 @@ from wenu.charts.detail import ResolvedDetail, SkyContentSelection
 from wenu.charts.detail_application import apply_resolved_detail
 from wenu.charts.styles import PublicationStyle
 from wenu.sky.celestial_sphere import CelestialSphere
-from wenu.sky.moon import MOON_POINT, MoonLayer
+from wenu.sky.moon import MOON_BODY, MOON_POINT, MoonLayer
+from wenu.sky.solar_system_bodies import SolarSystemBodyDescriptor
+from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
 from wenu.sky.semantic_identity import semantic_layer_identity
 from wenu.sky.solar_system_points import SolarSystemPointLayer
 
@@ -16,6 +18,9 @@ def test_moon_is_a_thin_shared_point_specialization():
 
     assert isinstance(layer, SolarSystemPointLayer)
     assert layer.descriptor is MOON_POINT
+    assert MOON_POINT is MOON_BODY
+    assert isinstance(MOON_BODY, SolarSystemBodyDescriptor)
+    assert SOLAR_SYSTEM_BODY_CATALOG.resolve("moon") is MOON_BODY
     assert MOON_POINT.target == "moon"
     assert MOON_POINT.centre == "solar system barycenter"
     assert MOON_POINT.entity_key == "moon"

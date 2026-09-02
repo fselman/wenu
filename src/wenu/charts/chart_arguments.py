@@ -33,6 +33,7 @@ MILKY_WAY_CONTOUR_LEVELS = ("ol1", "ol2", "ol3", "ol4", "ol5")
 _SYMBOLIC_BODY_KEYS = tuple(
     body.selection_key
     for body in SOLAR_SYSTEM_BODY_CATALOG.supporting(SYMBOLIC_POINT)
+    if body.body_class == "planet"
 )
 _TRACK_BODY_KEYS = tuple(
     body.selection_key
