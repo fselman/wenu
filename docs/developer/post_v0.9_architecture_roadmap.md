@@ -914,7 +914,7 @@ stable upstream object identity and the appropriate reserved
 
 ### Milestone 49J.0 — Performance and closure audit
 
-**Status:** Architecturally accepted by Fernando on 2026-09-02; documentation and regression verification pending.
+**Status:** Architecturally accepted and regression-verified on 2026-09-02; ready for integration.
 
 `performance_and_closure_audit_49j0.md` distinguishes the existing
 reusable-sphere diagnostic from the required cold independent-frame oracle. It
@@ -943,6 +943,11 @@ post-v0.9 closure. Every slice remains separately authorized.
 
 49J.0 changes no runtime behavior, timing threshold, test classification,
 cache, or output.
+
+Final Mac verification passed 94 combined documentation/user-guide tests,
+2,092 routine tests with 30 deselected, and all 2,122 tests. The observed
+37.88-second routine run is retained as later characterization evidence; it
+does not authorize weakening tests or optimizing under 49J.0.
 
 ## 14. Stop conditions
 
