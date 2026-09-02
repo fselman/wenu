@@ -295,7 +295,7 @@ All four authorized slices are complete:
 Fernando scientifically and visually accepted the completed program on
 2026-09-02. Final 49I.3E.3 closure passed 75 documentation tests, 161 expanded
 focused tests, 2,088 routine tests with 30 deselected, and all 2,118 tests.
-PRs #70 through #73 are merged; the final merge is `bc45cc0`.
+PRs #70 through #73 are merged; the final merge is `bc45cc0`. Parent-closure verification passed 76 documentation tests in 3.32 seconds, 2,089 routine tests with 30 deselected in 31.89 seconds, and all 2,119 tests in 87.44 seconds.
 
 The parent milestone adds no capability beyond its accepted slices. Frozen-Earth lunar sequences, interpolation, animation, surface texture, libration,
 eclipses, refraction across the disk, and occultation prediction remain
