@@ -578,6 +578,12 @@ def composition_layer_options(
                 f"{style_prefix}_label_fontsize",
                 publication.venus_label_fontsize,
             )
+            if sequence_layer:
+                body_label_fontsize = getattr(
+                    publication,
+                    f"{style_prefix}_disk_sequence_label_fontsize",
+                    body_label_fontsize,
+                )
             preparation = (
                 MagnifyProjectedDiskSequence(
                     layer.disk_realization, layer.magnification
