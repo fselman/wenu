@@ -2845,7 +2845,7 @@ def test_49i3e3_records_observed_fixed_chart_moon_sequence():
     )
 
     for phrase in (
-        "Scientifically, architecturally, and visually accepted; regression pending",
+        "Scientifically, architecturally, visually, operationally, and regression accepted",
         "`--moon-disk-sequence`",
         "--disk-sequence-model observed",
         "`COUNT + 1` independently realized samples",
@@ -2861,6 +2861,10 @@ def test_49i3e3_records_observed_fixed_chart_moon_sequence():
         "python tools/render_49i3e3_observed_moon_sequence_review.py",
         "35 sequence, output-mode, and compatibility tests passed in 3.58 seconds",
         "accepted all five chart-family sequences",
+        "75 current-documentation tests in 2.23 seconds",
+        "161 expanded focused tests in 5.73 seconds",
+        "2,088 routine tests with 30 deselected",
+        "all 2,118 tests in 88.61 seconds",
         "Frozen-Earth",
     ):
         assert phrase in contract
