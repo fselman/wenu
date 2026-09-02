@@ -105,6 +105,7 @@ DRAWABLE_FROZEN_EARTH_MERCURY_SEQUENCE = (
     DEVELOPER / "drawable_frozen_earth_mercury_sequence_49i3c33c.md"
 )
 APPARENT_MAJOR_PLANETS = DEVELOPER / "apparent_major_planets_49i3d1.md"
+RESOLVED_MOON_AUDIT = DEVELOPER / "resolved_moon_audit_49i3e0.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -2671,3 +2672,49 @@ def test_49i3d1_proposes_shared_apparent_major_planets():
         "Earth is the observer's reference body",
     ):
         assert phrase in user_guide
+
+
+def test_49i3e0_audits_resolved_moon_science_and_generic_reuse():
+    audit = " ".join(read(RESOLVED_MOON_AUDIT).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**As-is baseline:** `a8296f5`",
+        "changes no runtime type",
+        "No runtime Moon behavior is authorized",
+        "`SolarSystemBodyDescriptor`",
+        "`natural_satellite`",
+        "physical body ID `301`",
+        "parent `earth`",
+        "equal-volume mean radius `1737.4 km`",
+        "quoted uncertainty `0.1 km`",
+        "Topocentric parallax is essential",
+        "`d = 2 asin(R / Delta)`",
+        "`k = (1 + cos(i)) / 2`",
+        "zero at celestial north and increases toward apparent east",
+        "`t_j = start + j * step`",
+        "`n_steps + 1` physical samples",
+        "one product coordinate specification and projection fixed at `t_c`",
+        "Transforming every spherical vertex",
+        "must not transform the scalar `chi_j`",
+        "--moon-appearance resolved|symbolic",
+        "--moon-disk-sequence",
+        "Only `observed` is accepted",
+        "`1 <= M_moon <= 1000`",
+        "refuses downloads",
+        "`1e-7 deg`",
+        "sky/solar_system/natural_satellites/moon",
+        "all five chart-family enablement",
+        "changes no implemented coordinate transformation",
+        "frozen-Earth lunar sequences",
+        "authorizes only 49I.3E.1",
+    ):
+        assert phrase in audit
+
+    for phrase in (
+        "resolved_moon_audit_49i3e0.md",
+        "one fixed chart-epoch product frame",
+        "do not treat the scalar bright-limb angle as frame-invariant",
+        "Do not add runtime Moon behavior under 49I.3E.0",
+    ):
+        assert phrase in instructions
