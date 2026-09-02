@@ -1232,4 +1232,4 @@ owns deterministic contract coverage;
   legibly magnified, symbolic, star-only, and vector-export review matrix;
   automated request contracts exercise factor 1000 in every family.
 - `docs/developer/drawable_resolved_moon_49i3e2.md` records the boundary and
-  pending acceptance. Multi-epoch Moon behavior remains 49I.3E.3.
+  accepted verification. Multi-epoch Moon behavior remains 49I.3E.3.
