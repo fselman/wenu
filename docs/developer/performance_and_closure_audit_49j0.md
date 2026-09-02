@@ -1,6 +1,6 @@
 # Performance and post-v0.9 closure audit — Milestone 49J.0
 
-**Status:** Architecturally accepted by Fernando on 2026-09-02; documentation verification pending  
+**Status:** Architecturally accepted and regression-verified on 2026-09-02  
 **Audit baseline:** `ea6f340`  
 **Scope:** Documentation, conservative archive moves, guide updates, and documentation tests only  
 **Runtime effect:** None  
@@ -320,3 +320,18 @@ runnable examples for every ordinary chart family.
 
 Documentation, routine, and complete regression verification remain required
 before 49J.0 integration. Only then may 49J.1 begin.
+
+
+## 14. Verification and integration readiness
+
+The accepted audit, conservative developer-document archive, active-document
+index, and complete chart-examples guide passed the following Mac gates:
+
+- 94 combined current-documentation and user-guide tests in 2.61 seconds;
+- 2,092 routine tests with 30 deselected in 37.88 seconds;
+- all 2,122 tests in 93.31 seconds.
+
+The 37.88-second routine result is evidence for later repeated 49J
+characterization, not a reason to weaken tests or optimize under 49J.0.
+The working branch changed documentation and tests only. 49J.0 is ready for
+integration; 49J.1 remains separately authorized after merge.
