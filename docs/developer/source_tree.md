@@ -1262,5 +1262,4 @@ owns deterministic contract coverage;
 - Generic Solar-System appearance, disk geometry, request, transformation,
   projection, preparation, rendering, semantic identity, and export owners
   serve both the resolved single Moon and observed Moon sequence.
-- Documentation records closure of 49I.3E.0 through 49I.3E.3; excluded lunar
-  models remain unimplemented and separately governed.
+- Documentation records closure of 49I.3E.0 through 49I.3E.3. Frozen-Earth lunar sequences and other excluded models remain unimplemented and separately governed.
