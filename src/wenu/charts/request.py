@@ -471,10 +471,14 @@ class ChartRequest:
                 "solar_system_disk_sequence must be an "
                 "supported disk-sequence display request or None."
             )
-        if sequence is not None and family not in {"regional", "binocular"}:
+        if (
+            sequence is not None
+            and not sequence.supports_chart_family(family)
+        ):
             raise ValueError(
-                "Observed disk sequences are supported only by regional "
-                "and binocular charts."
+                f"{sequence.sequence.descriptor.display_name} "
+                f"{sequence.model if frozen_sequence else 'observed'} disk "
+                f"sequences are not supported by {family} charts."
             )
         if frozen_sequence and family != "regional":
             raise ValueError(
