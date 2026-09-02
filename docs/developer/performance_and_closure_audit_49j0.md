@@ -3,7 +3,8 @@
 **Status:** Proposed for architectural acceptance  
 **Audit baseline:** `ea6f340`  
 **Scope:** Documentation and documentation tests only  
-**Runtime effect:** None
+**Runtime effect:** None  
+**Coordinate guide review:** Reviewed; no scientific meaning, coordinate ownership, object provenance, or public coordinate explanation changes
 
 ## 1. Decision requested
 
