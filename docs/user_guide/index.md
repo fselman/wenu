@@ -1,8 +1,10 @@
-# Wenu v0.8 user guide
+# Wenu v0.9.5 user guide
 
-Wenu produces reproducible static sky charts through six canonical example
-families. Each example uses the same chart composition and export pipeline and
-supports atlas and cartoon styles in print and presentation modes.
+Wenu produces reproducible static sky charts through five ordinary chart
+families and six canonical example scripts. Regional charts have separate
+single-constellation and constellation-group examples. Every example uses the
+same chart composition and export pipeline and supports atlas and cartoon
+styles in print and presentation modes.
 
 ## Install and run
 
@@ -13,7 +15,8 @@ pip install -e .
 python examples/planisphere.py --style atlas --mode print
 ```
 
-The canonical examples are:
+Start with [runnable examples for every chart family](chart_examples.md).
+The canonical Python examples are:
 
 | Chart family | Example | Guide |
 |---|---|---|
@@ -44,6 +47,10 @@ content, appearance, legend, reference, and credit options. See
 font portability, semantic metadata, and safe Inkscape workflow. See
 [Observer-time chart sequences](temporal_sequences.md) for uniform physical
 time sampling, civil display time, manifests, and verified resume.
+
+Resolved Moon, observed Moon-sequence, and apparent major-planet examples are
+included in the [chart examples](chart_examples.md) and
+[configuration guide](configuration.md).
 
 Use [`wenu_chart` and editable TOML profiles](configuration.md) to generate
 any family through one installed command and keep publication, presentation,
