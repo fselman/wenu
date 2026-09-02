@@ -37,6 +37,7 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
     radius_model: str | None = None
     capabilities: frozenset[str] = field(default_factory=frozenset)
     resolved_disk_chart_families: frozenset[str] | None = None
+    observed_disk_sequence_chart_families: frozenset[str] | None = None
     localized_display_names: tuple[tuple[str, str], ...] = ()
     astronomical_symbol: str | None = None
 
@@ -90,6 +91,36 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
                 "resolved_disk_chart_families requires resolved disk capability."
             )
         object.__setattr__(self, "resolved_disk_chart_families", families)
+        sequence_families = self.observed_disk_sequence_chart_families
+        if sequence_families is None:
+            sequence_families = (
+                frozenset(("regional", "binocular"))
+                if OBSERVED_DISK_SEQUENCE in capabilities
+                else frozenset()
+            )
+        else:
+            sequence_families = frozenset(
+                _optional_text(
+                    value, name="observed disk sequence chart family"
+                ).lower()
+                for value in sequence_families
+            )
+        unknown_families = sequence_families - allowed_families
+        if unknown_families:
+            raise ValueError(
+                "unknown observed disk sequence chart families: "
+                + ", ".join(sorted(unknown_families))
+            )
+        if sequence_families and OBSERVED_DISK_SEQUENCE not in capabilities:
+            raise ValueError(
+                "observed_disk_sequence_chart_families requires observed "
+                "disk sequence capability."
+            )
+        object.__setattr__(
+            self,
+            "observed_disk_sequence_chart_families",
+            sequence_families,
+        )
         localized = []
         languages = set()
         for language, display_name in self.localized_display_names:
@@ -122,6 +153,12 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
 
     def supports_resolved_disk_in(self, family):
         return str(family).strip().lower() in self.resolved_disk_chart_families
+
+    def supports_observed_disk_sequence_in(self, family):
+        return (
+            str(family).strip().lower()
+            in self.observed_disk_sequence_chart_families
+        )
 
     def display_name_for(self, language):
         """Return catalog-owned localized display text with stable fallback."""
