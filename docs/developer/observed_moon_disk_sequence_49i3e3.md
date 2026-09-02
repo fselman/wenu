@@ -12,7 +12,7 @@ Wenu's existing generic observed multi-epoch disk sequence. It adds
 projection, preparation, renderer, semantic exporter, or output backend.
 
 Only the observed model is implemented. Frozen-Earth lunar sequences,
-interpolation, animation, texture,Click, albedo, craters, libration, axes, eclipses,
+interpolation, animation, texture, albedo, craters, libration, axes, eclipses,
 refraction, occultations, animation, and simultaneous sequences remain outside
 this milestone.
 
@@ -37,7 +37,7 @@ sequence. It scales each projected disk about its own physical centre.
 
 The complete group is required. A Moon sequence conflicts with single resolved
 `--moon`, symbolic Moon appearance, and a simultaneous planet sequence.
-`frozen-earthMapping` is rejected because the Moon's orbital relation to Earth
+`frozen-earth-ecliptic` is rejected because the Moon's orbital relation to Earth
 requires a separately defined model.
 
 ## Fixed-chart scientific contract
