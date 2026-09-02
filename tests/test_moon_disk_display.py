@@ -1,6 +1,9 @@
 """Contracts for milestone 49I.3E.2 resolved single-epoch Moon display."""
 
 import argparse
+import importlib.util
+from pathlib import Path
+import sys
 from types import SimpleNamespace
 
 import pytest
@@ -189,3 +192,53 @@ def test_moon_disk_style_is_body_owned_not_a_venus_alias():
     assert publication.moon_disk_face_color != publication.venus_disk_face_color
     assert application.layer_options[sky.moon_disk_illuminated]["enabled"] is True
     assert render["style"]["facecolor"] == publication.moon_disk_face_color
+
+
+def review_tool():
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "tools"
+        / "render_49i3e2_resolved_moon_review.py"
+    )
+    specification = importlib.util.spec_from_file_location(
+        "render_49i3e2_resolved_moon_review", path
+    )
+    module = importlib.util.module_from_spec(specification)
+    sys.modules[specification.name] = module
+    specification.loader.exec_module(module)
+    return module
+
+
+def option_value(arguments, option):
+    return arguments[arguments.index(option) + 1]
+
+
+def test_review_tool_centres_close_fields_on_exact_topocentric_moon():
+    tool = review_tool()
+    regional = tool.FAMILIES["regional"]
+    binocular = tool.FAMILIES["binocular"]
+
+    assert option_value(regional, "--center-altitude") == tool.MOON_ALTITUDE
+    assert option_value(regional, "--center-azimuth") == tool.MOON_AZIMUTH
+    assert option_value(binocular, "--ra") == tool.MOON_RA
+    assert option_value(binocular, "--dec") == tool.MOON_DEC
+
+    resolved = tool._centred_arguments(
+        (*regional, *binocular),
+        {
+            tool.MOON_RA: "240.25",
+            tool.MOON_DEC: "-21.5",
+            tool.MOON_ALTITUDE: "32.75",
+            tool.MOON_AZIMUTH: "279.5",
+        },
+    )
+    assert not any(value.startswith("__MOON_") for value in resolved)
+
+
+def test_review_tool_uses_family_appropriate_star_limits_without_dsos():
+    tool = review_tool()
+
+    assert option_value(tool.FAMILIES["binocular"], "--field-diameter") == "7.5"
+    assert option_value(tool.FAMILIES["binocular"], "--magnitude-limit") == "11.0"
+    for family in ("regional", "circumpolar", "planisphere", "all-sky"):
+        assert option_value(tool.FAMILIES[family], "--magnitude-limit") == "5.0"
