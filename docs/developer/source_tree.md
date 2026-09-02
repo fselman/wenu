@@ -1263,3 +1263,16 @@ owns deterministic contract coverage;
   projection, preparation, rendering, semantic identity, and export owners
   serve both the resolved single Moon and observed Moon sequence.
 - Documentation records closure of 49I.3E.0 through 49I.3E.3. Frozen-Earth lunar sequences and other excluded models remain unimplemented and separately governed.
+
+
+## Milestone 49J.0 performance-audit ownership
+
+- `tools/benchmark_reusable_sphere.py` remains the shared-sphere diagnostic;
+  its profiler categories are intentionally overlapping and non-additive.
+- `charts/request_generation.py` remains the complete static build/export
+  authority and the cold independent-frame oracle.
+- `charts/fixed_sky_sequence.py` remains the deliberately uncached first
+  repeated-static workload.
+- `performance_and_closure_audit_49j0.md` defines future diagnostic timing
+  vocabulary and cache constraints without adding a source owner or runtime
+  behavior.
