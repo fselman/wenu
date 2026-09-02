@@ -140,7 +140,7 @@ def test_moon_and_earth_share_one_catalog_relationship_and_identity():
     assert MOON_BODY.supports(SYMBOLIC_POINT)
     assert MOON_BODY.supports(SPHERICAL_PHYSICAL_APPEARANCE)
     assert MOON_BODY.supports(RESOLVED_SPHERICAL_DISK)
-    assert not MOON_BODY.supports(OBSERVED_DISK_SEQUENCE)
+    assert MOON_BODY.supports(OBSERVED_DISK_SEQUENCE)
     with pytest.raises(FrozenInstanceError):
         MOON_BODY.physical_radius_km = 1.0
 
