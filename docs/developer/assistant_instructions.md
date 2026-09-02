@@ -419,3 +419,11 @@ evidence and preserve the implemented shared single-disk and observed-sequence
 paths. Parent closure authorizes no new runtime behavior. Any Frozen-Earth
 lunar sequence, interpolation, animation, texture, libration, eclipse,
 resolved-disk refraction, or occultation work requires a new bounded milestone.
+
+
+For performance or post-v0.9 closure work, consult
+`performance_and_closure_audit_49j0.md`. Keep the reusable-sphere diagnostic
+separate from a cold independent-frame oracle, report exclusive wall-time spans
+separately from overlapping profiler totals, and preserve
+`generate_chart_request()` as the complete-render correctness route. Do not
+add caching or optimization under 49J.0.
