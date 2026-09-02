@@ -2807,7 +2807,7 @@ def test_49i3e2_records_pending_drawable_resolved_moon_contract():
         "unrelated to Wenu's `presentation` output mode",
         "There is no Moon-specific renderer",
         "python tools/render_49i3e2_resolved_moon_review.py",
-        "factor-1000 Moon is present in every family",
+        "magnified Moon is present and legible in every family",
         "Milestone 49I.3E.3 multi-epoch Moon behavior remains unimplemented",
     ):
         assert phrase in contract

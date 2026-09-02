@@ -1229,6 +1229,7 @@ owns deterministic contract coverage;
 - `tests/test_moon_disk_display.py` owns selection, validation, semantics,
   sampling, family-policy, and compatibility contracts.
 - `tools/render_49i3e2_resolved_moon_review.py` owns the five-family physical,
-  factor-1000, symbolic, and vector-export review matrix.
+  legibly magnified, symbolic, star-only, and vector-export review matrix;
+  automated request contracts exercise factor 1000 in every family.
 - `docs/developer/drawable_resolved_moon_49i3e2.md` records the boundary and
   pending acceptance. Multi-epoch Moon behavior remains 49I.3E.3.

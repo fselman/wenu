@@ -302,10 +302,18 @@ def apply_resolved_detail(
         name = getattr(layer, "layer_name", None)
         if not name:
             continue
+        request_geometry = (
+            name in _REQUEST_GEOMETRY_LAYERS
+            or getattr(layer, "display_kind", None) in {
+                "resolved_disk",
+                "observed_disk_sequence",
+                "frozen_earth_disk_sequence",
+            }
+        )
         configured = {
             "enabled": (
                 True
-                if name in _REQUEST_GEOMETRY_LAYERS
+                if request_geometry
                 else (
                     False
                     if (

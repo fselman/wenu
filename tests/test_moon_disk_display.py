@@ -150,7 +150,7 @@ def request_for(family, disk):
     ("regional", "binocular", "circumpolar", "planisphere", "all_sky"),
 )
 def test_resolved_moon_is_authorized_in_all_five_chart_families(family):
-    disk = SolarSystemDiskDisplayRequest(MOON_BODY)
+    disk = SolarSystemDiskDisplayRequest(MOON_BODY, 1000)
 
     assert request_for(family, disk).solar_system_disks == (disk,)
 
@@ -187,4 +187,5 @@ def test_moon_disk_style_is_body_owned_not_a_venus_alias():
     ]["render"]
 
     assert publication.moon_disk_face_color != publication.venus_disk_face_color
+    assert application.layer_options[sky.moon_disk_illuminated]["enabled"] is True
     assert render["style"]["facecolor"] == publication.moon_disk_face_color

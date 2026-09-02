@@ -82,15 +82,17 @@ Run:
 python tools/render_49i3e2_resolved_moon_review.py
 ```
 
-The tool renders physical scale, magnification `1000`, and explicit symbolic
-compatibility in all five chart families at
-`2026-12-24T00:00:00Z` for La Ligua. It also renders magnified regional PDF
-and semantic SVG parity products and writes `manifest.json` under
-`output/49i3e2-resolved-moon-review/`.
+The tool renders physical scale, visually legible magnification `60`, and
+explicit symbolic compatibility in all five chart families at
+`2026-01-19T00:00:00Z` for La Ligua. Its generated configuration restricts
+content to stars through magnitude `5.0`; deep-sky objects are omitted. It also
+renders magnified regional PDF and semantic SVG parity products and writes
+`manifest.json` under `output/49i3e2-resolved-moon-review/`. Automated request
+contracts separately exercise the maximum factor `1000` in every family.
 
 Human review must confirm:
 
-1. the factor-1000 Moon is present in every family;
+1. the magnified Moon is present and legible in every family;
 2. phase orientation and centre placement are coherent across projections;
 3. magnification changes size without moving the centre;
 4. limb and terminator remain legible at seams and circular boundaries;

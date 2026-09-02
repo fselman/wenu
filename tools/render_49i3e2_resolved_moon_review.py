@@ -13,18 +13,24 @@ import sys
 
 OBSERVER = (
     "--observer-location", "La Ligua",
-    "--observer-time", "2026-12-24T00:00:00Z",
+    "--observer-time", "2026-01-19T00:00:00Z",
 )
-COMMON = (*OBSERVER, "--style", "atlas", "--mode", "presentation")
+COMMON = (
+    *OBSERVER,
+    "--magnitude-limit", "5.0",
+    "--style", "atlas",
+    "--mode", "presentation",
+)
+VISUAL_MAGNIFICATION = "60"
 FAMILIES = {
     "regional": (
-        "regional", "--constellations", "Sgr",
+        "regional", "--constellations", "Cap",
         "--field-width", "55", "--field-height", "45",
         "--orientation", "zenith-up",
     ),
     "binocular": (
-        "binocular", "--ra", "275", "--dec", "-24",
-        "--display-name", "Moon review field", "--field-diameter", "20",
+        "binocular", "--ra", "301", "--dec", "-20",
+        "--display-name", "Moon review field", "--field-diameter", "45",
     ),
     "circumpolar": (
         "circumpolar", "--pole", "south",
@@ -45,28 +51,28 @@ class ReviewEntry:
     proves: str
 
 
-def _entries():
+def _entries(common):
     entries = []
     for family, family_arguments in FAMILIES.items():
         entries.append(ReviewEntry(
             f"{family}-physical",
-            (*family_arguments, *COMMON, "--moon"),
+            (*family_arguments, *common, "--moon"),
             ".png",
             f"{family} accepts physical-scale resolved Moon display",
         ))
         entries.append(ReviewEntry(
             f"{family}-magnified",
             (
-                *family_arguments, *COMMON, "--moon",
-                "--moon-disk-magnification", "1000",
+                *family_arguments, *common, "--moon",
+                "--moon-disk-magnification", VISUAL_MAGNIFICATION,
             ),
             ".png",
-            f"{family} preserves the Moon centre at magnification 1000",
+            f"{family} shows a large Moon without moving its centre",
         ))
         entries.append(ReviewEntry(
             f"{family}-symbolic",
             (
-                *family_arguments, *COMMON, "--moon",
+                *family_arguments, *common, "--moon",
                 "--moon-appearance", "symbolic",
             ),
             ".png",
@@ -77,8 +83,8 @@ def _entries():
         entries.append(ReviewEntry(
             f"regional-magnified-{suffix[1:]}",
             (
-                *regional, *COMMON, "--moon",
-                "--moon-disk-magnification", "1000",
+                *regional, *common, "--moon",
+                "--moon-disk-magnification", VISUAL_MAGNIFICATION,
             ),
             suffix,
             f"regional magnified Moon {suffix[1:].upper()} export parity",
@@ -86,7 +92,7 @@ def _entries():
     return tuple(entries)
 
 
-MATRIX = _entries()
+MATRIX = _entries(COMMON)
 
 
 def _commit():
@@ -102,18 +108,32 @@ def _commit():
 def render_matrix(destination, entries=MATRIX):
     """Render entries in isolated command processes and write a manifest."""
     destination.mkdir(parents=True, exist_ok=True)
+    configuration = destination / "review-config.toml"
+    configuration.write_text(
+        "schema_version = 1\n\n"
+        "[detail.content]\n"
+        'default_layers = ["stars"]\n'
+        'cartoon_layers = ["stars"]\n',
+        encoding="utf-8",
+    )
     records = []
     for index, entry in enumerate(entries, start=1):
         output = destination / f"{entry.name}{entry.suffix}"
         command = (
             sys.executable, "-m", "wenu.cli.chart",
-            *entry.arguments, "--output", str(output),
+            *entry.arguments,
+            "--config", str(configuration),
+            "--output", str(output),
         )
         print(f"[{index}/{len(entries)}] {entry.name}", flush=True)
         subprocess.run(command, check=True)
         records.append({
             **asdict(entry),
-            "command": ("wenu_chart", *entry.arguments, "--output", str(output)),
+            "command": (
+                "wenu_chart", *entry.arguments,
+                "--config", str(configuration),
+                "--output", str(output),
+            ),
             "output": str(output),
             "bytes": output.stat().st_size,
             "sha256": sha256(output.read_bytes()).hexdigest(),

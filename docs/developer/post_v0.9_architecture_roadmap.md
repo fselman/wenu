@@ -1220,6 +1220,7 @@ driven 720-sample disk geometry, ordinary transforms, post-projection
 magnification, rendering, semantic identity, and PNG/PDF/SVG export.
 
 Authorize the Moon in all five chart families through descriptor policy while
-leaving Venus family support unchanged. Require factor-1000 visual review in
-regional, binocular, circumpolar, planisphere, and Mollweide all-sky products.
+leaving Venus family support unchanged. Exercise factor 1000 in automated
+contracts for regional, binocular, circumpolar, planisphere, and Mollweide
+all-sky products, and use a legible calibrated factor for human visual review.
 Do not add any multi-epoch Moon behavior; that remains 49I.3E.3.
