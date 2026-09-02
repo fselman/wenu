@@ -303,6 +303,9 @@ def cartoon_chart_style(
         moon_label_fontsize=(
             style.solar_system.moon_label_fontsize * font_scale
         ),
+        moon_disk_sequence_label_fontsize=(
+            style.solar_system.moon_disk_sequence_label_fontsize * font_scale
+        ),
     )
     legend = replace(
         style.legend,
