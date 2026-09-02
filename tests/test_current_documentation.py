@@ -20,98 +20,98 @@ V09_ROADMAP = ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md"
 FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
 V095_TARGET = DEVELOPER / "target_architecture_v0.9.5.md"
 COORDINATE_GUIDE = DEVELOPER / "coordinate_system_guide_v0.9.5.md"
-PUBLIC_INTERFACE_AUDIT = DEVELOPER / "public_interface_audit_v0.9.5.md"
+PUBLIC_INTERFACE_AUDIT = DEVELOPER / "archive/audits/public_interface_audit_v0.9.5.md"
 SCENE_DEPENDENCY_AUDIT = (
-    DEVELOPER / "celestial_scene_dependency_audit_49d1.md"
+    DEVELOPER / "archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md"
 )
 LAYER_REALIZATION_CONTRACT = (
-    DEVELOPER / "layer_realization_context_49d2.md"
+    DEVELOPER / "archive/milestone_history/49d_scene/layer_realization_context_49d2.md"
 )
 EPHEMERIS_PROVIDER_CONTRACT = (
-    DEVELOPER / "ephemeris_provider_contract_49e1.md"
+    DEVELOPER / "archive/milestone_history/49e_ephemeris/ephemeris_provider_contract_49e1.md"
 )
 EPHEMERIS_RUNTIME_CONTRACT = (
-    DEVELOPER / "ephemeris_runtime_contracts_49e2.md"
+    DEVELOPER / "archive/milestone_history/49e_ephemeris/ephemeris_runtime_contracts_49e2.md"
 )
 SKYFIELD_EPHEMERIS_CONTRACT = (
-    DEVELOPER / "skyfield_ephemeris_adapter_49e3.md"
+    DEVELOPER / "archive/milestone_history/49e_ephemeris/skyfield_ephemeris_adapter_49e3.md"
 )
 SOLAR_SYSTEM_DIRECTION_CONTRACT = (
-    DEVELOPER / "solar_system_direction_realizer_49e4.md"
+    DEVELOPER / "archive/milestone_history/49e_ephemeris/solar_system_direction_realizer_49e4.md"
 )
 ASTROMETRIC_DIRECTION_CONTRACT = (
-    DEVELOPER / "astrometric_direction_runtime_49e5.md"
+    DEVELOPER / "archive/milestone_history/49e_ephemeris/astrometric_direction_runtime_49e5.md"
 )
 APPARENT_DIRECTION_CONTRACT = (
-    DEVELOPER / "apparent_direction_runtime_49e6.md"
+    DEVELOPER / "archive/milestone_history/49e_ephemeris/apparent_direction_runtime_49e6.md"
 )
 VENUS_VERTICAL_SLICE_AUDIT = (
-    DEVELOPER / "venus_vertical_slice_audit_49i1.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/venus_vertical_slice_audit_49i1.md"
 )
 ORDINARY_REALIZATION_CONTEXT = (
-    DEVELOPER / "ordinary_realization_context_49i1a.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/ordinary_realization_context_49i1a.md"
 )
-VENUS_LAYER_CONTRACT = DEVELOPER / "venus_layer_49i1b.md"
+VENUS_LAYER_CONTRACT = DEVELOPER / "archive/milestone_history/49i_solar_system/venus_layer_49i1b.md"
 MOON_SHARED_PIPELINE_AUDIT = (
-    DEVELOPER / "moon_shared_body_pipeline_audit_49i2.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/moon_shared_body_pipeline_audit_49i2.md"
 )
 MOON_DIRECTION_VALIDATION = (
-    DEVELOPER / "moon_direction_validation_49i2a.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/moon_direction_validation_49i2a.md"
 )
 SHARED_SOLAR_SYSTEM_POINT_LAYER = (
-    DEVELOPER / "shared_solar_system_point_layer_49i2b.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/shared_solar_system_point_layer_49i2b.md"
 )
-MOON_LAYER = DEVELOPER / "moon_layer_49i2c.md"
+MOON_LAYER = DEVELOPER / "archive/milestone_history/49i_solar_system/moon_layer_49i2c.md"
 SOLAR_SYSTEM_TRACK_AUDIT = (
-    DEVELOPER / "solar_system_track_audit_49i2d.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/solar_system_track_audit_49i2d.md"
 )
 SOLAR_SYSTEM_TRACK_CURVE = (
-    DEVELOPER / "solar_system_track_curve_49i2d1.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/solar_system_track_curve_49i2d1.md"
 )
 DRAWABLE_VENUS_TRACK = (
-    DEVELOPER / "drawable_venus_track_49i2d2.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_venus_track_49i2d2.md"
 )
 PHYSICAL_APPARENT_DISK_AUDIT = (
-    DEVELOPER / "physical_apparent_disk_audit_49i3a.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/physical_apparent_disk_audit_49i3a.md"
 )
 VENUS_PHYSICAL_APPEARANCE = (
-    DEVELOPER / "venus_physical_appearance_49i3b.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/venus_physical_appearance_49i3b.md"
 )
 RESOLVED_VENUS_DISK_AUDIT = (
-    DEVELOPER / "resolved_venus_disk_audit_49i3c.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/resolved_venus_disk_audit_49i3c.md"
 )
 VENUS_DISK_SPHERICAL_GEOMETRY = (
-    DEVELOPER / "venus_disk_spherical_geometry_49i3c1.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/venus_disk_spherical_geometry_49i3c1.md"
 )
 DRAWABLE_VENUS_DISK = (
-    DEVELOPER / "drawable_venus_disk_49i3c2.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_venus_disk_49i3c2.md"
 )
 DRAWABLE_OBSERVED_VENUS_SEQUENCE = (
-    DEVELOPER / "drawable_observed_venus_sequence_49i3c31b.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_observed_venus_sequence_49i3c31b.md"
 )
 FROZEN_EARTH_VENUS_SEQUENCE = (
-    DEVELOPER / "frozen_earth_venus_sequence_49i3c32a.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/frozen_earth_venus_sequence_49i3c32a.md"
 )
 DRAWABLE_FROZEN_EARTH_VENUS_SEQUENCE = (
-    DEVELOPER / "drawable_frozen_earth_venus_sequence_49i3c32b.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_frozen_earth_venus_sequence_49i3c32b.md"
 )
 MERCURY_DISK_SEQUENCE_AUDIT = (
-    DEVELOPER / "mercury_disk_sequence_audit_49i3c33.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/mercury_disk_sequence_audit_49i3c33.md"
 )
 MOVING_BODY_ARCHITECTURE = (
-    DEVELOPER / "moving_body_architecture_49i3c33a.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/moving_body_architecture_49i3c33a.md"
 )
 DRAWABLE_FROZEN_EARTH_MERCURY_SEQUENCE = (
-    DEVELOPER / "drawable_frozen_earth_mercury_sequence_49i3c33c.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_frozen_earth_mercury_sequence_49i3c33c.md"
 )
-APPARENT_MAJOR_PLANETS = DEVELOPER / "apparent_major_planets_49i3d1.md"
-RESOLVED_MOON_PLAN = DEVELOPER / "resolved_moon_plan_49i3e.md"
-RESOLVED_MOON_AUDIT = DEVELOPER / "resolved_moon_audit_49i3e0.md"
+APPARENT_MAJOR_PLANETS = DEVELOPER / "archive/milestone_history/49i_solar_system/apparent_major_planets_49i3d1.md"
+RESOLVED_MOON_PLAN = DEVELOPER / "archive/milestone_history/49i_solar_system/resolved_moon_plan_49i3e.md"
+RESOLVED_MOON_AUDIT = DEVELOPER / "archive/milestone_history/49i_solar_system/resolved_moon_audit_49i3e0.md"
 LUNAR_PHYSICAL_APPEARANCE = (
-    DEVELOPER / "lunar_physical_appearance_49i3e1.md"
+    DEVELOPER / "archive/milestone_history/49i_solar_system/lunar_physical_appearance_49i3e1.md"
 )
-DRAWABLE_RESOLVED_MOON = DEVELOPER / "drawable_resolved_moon_49i3e2.md"
-OBSERVED_MOON_SEQUENCE = DEVELOPER / "observed_moon_disk_sequence_49i3e3.md"
+DRAWABLE_RESOLVED_MOON = DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_resolved_moon_49i3e2.md"
+OBSERVED_MOON_SEQUENCE = DEVELOPER / "archive/milestone_history/49i_solar_system/observed_moon_disk_sequence_49i3e3.md"
 PERFORMANCE_CLOSURE_AUDIT = (
     DEVELOPER / "performance_and_closure_audit_49j0.md"
 )
@@ -2323,7 +2323,7 @@ def test_49i3c2_records_accepted_drawable_venus_disk():
 def test_49i3c3_audits_two_mode_planet_disk_sequences():
     contract = " ".join(
         read(
-            DEVELOPER / "planet_disk_sequence_audit_49i3c3.md"
+            DEVELOPER / "archive/milestone_history/49i_solar_system/planet_disk_sequence_audit_49i3c3.md"
         ).split()
     )
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
@@ -2375,7 +2375,7 @@ def test_49i3c3_audits_two_mode_planet_disk_sequences():
 def test_49i3c31a_records_observed_venus_disk_sequence():
     contract = " ".join(
         read(
-            DEVELOPER / "observed_venus_disk_sequence_49i3c31a.md"
+            DEVELOPER / "archive/milestone_history/49i_solar_system/observed_venus_disk_sequence_49i3c31a.md"
         ).split()
     )
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
