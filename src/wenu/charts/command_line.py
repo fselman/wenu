@@ -322,12 +322,18 @@ def _chart_view_argument_plans(
             f"resolved {unsupported_disks[0].descriptor.display_name} disks "
             f"are not supported by {family} charts."
         )
-    if disk_sequence is not None and getattr(view, "family", None) not in {
-        "regional", "binocular"
-    }:
+    if (
+        disk_sequence is not None
+        and not disk_sequence.supports_chart_family(family)
+    ):
+        selector = (
+            "--moon-disk-sequence"
+            if disk_sequence.target == "moon"
+            else "--planet-disk-sequence"
+        )
         raise ValueError(
-            "--planet-disk-sequence is supported only by regional and "
-            "binocular charts."
+            f"{selector} is not supported by {family} charts for "
+            f"{disk_sequence.sequence.descriptor.display_name}."
         )
     configured_policy = (
         None if configuration is None else configuration.reference_policy
