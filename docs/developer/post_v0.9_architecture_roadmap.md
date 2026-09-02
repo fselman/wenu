@@ -912,6 +912,24 @@ stable upstream object identity and the appropriate reserved
 
 ## 13. Milestone 49J - Performance and closure
 
+### Milestone 49J.0 — Performance and closure audit
+
+**Status:** Proposed for architectural acceptance; documentation only.
+
+`performance_and_closure_audit_49j0.md` distinguishes the existing
+reusable-sphere diagnostic from the required cold independent-frame oracle. It
+freezes mutually exclusive wall-time spans for resource loading, provider
+evaluation, transformation, projection, preparation, rendering, and encoding;
+requires immutable scientific cache keys; and retains complete rendering as
+the correctness authority.
+
+The proposed sequence is 49J.1 independent-frame measurement, optional 49J.2
+routine-suite remediation when repeated evidence justifies it, 49J.3 one
+bounded scientifically keyed fixed-sky circumpolar reuse candidate, and 49J.4
+post-v0.9 closure. Every slice remains separately authorized.
+
+49J continues to require:
+
 - benchmark complete independent frames before optimizing;
 - measure catalogue loading, provider evaluation, transformation, projection,
   preparation, rendering, and encoding separately;
@@ -919,9 +937,12 @@ stable upstream object identity and the appropriate reserved
   state;
 - retain the complete-render path as a correctness oracle;
 - update current architecture, implementation reference, source tree, user
-  documentation, and examples;
+  documentation, examples, and diagrams when ownership changes;
 - close or supersede this roadmap only after focused, full, scientific, SVG,
   visual, and sequence tests pass.
+
+49J.0 changes no runtime behavior, timing threshold, test classification,
+cache, or output.
 
 ## 14. Stop conditions
 
