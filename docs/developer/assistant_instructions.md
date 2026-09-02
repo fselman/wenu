@@ -411,3 +411,11 @@ Preserve descriptor-owned all-five-family Moon policy, per-centre
 post-projection magnification, concise SVG hierarchy labels, and rejection of
 frozen-Earth lunar requests. Do not add a Moon-specific sequence realizer,
 projector, renderer, exporter, interpolation, or animation path.
+
+
+The resolved-Moon program 49I.3E.0 through 49I.3E.3 is closed. Treat
+`resolved_moon_plan_49i3e.md` as accepted historical planning plus closure
+evidence and preserve the implemented shared single-disk and observed-sequence
+paths. Parent closure authorizes no new runtime behavior. Any frozen-Earth
+lunar sequence, interpolation, animation, texture, libration, eclipse,
+resolved-disk refraction, or occultation work requires a new bounded milestone.
