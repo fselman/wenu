@@ -693,7 +693,7 @@ Hipparcos stars, constellation geometry, catalogue objects, Milky Way
 isophotes, and Magellanic Cloud isophotes therefore use their established
 observer-bound realization paths during ordinary rendering.
 
-`docs/developer/celestial_scene_dependency_audit_49d1.md` classifies three
+`docs/developer/archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md` classifies three
 scientific realization groups: celestial background, dynamic astronomical
 objects, and observer-local geometry. All three must converge in one explicit
 spherical product frame before the existing projection and preparation path.
@@ -975,7 +975,7 @@ layer remain later milestones.
 
 ### Solar-System direction-realizer audit (Milestone 49E.4)
 
-`docs/developer/solar_system_direction_realizer_49e4.md` defines the proposed
+`docs/developer/archive/milestone_history/49e_ephemeris/solar_system_direction_realizer_49e4.md` defines the proposed
 handoff from geometric Cartesian states to observer-relative directions. The
 astrometric stage owns the observer state at reception, iterative target state
 at retarded emission time, one-way light time, distance, convergence policy,
@@ -1052,7 +1052,7 @@ instant, and PNG, PDF, and semantic SVG looked the same. Acceptance evidence is
 
 ### Proposed Moon and shared-body boundary (Milestone 49I.2)
 
-`moon_shared_body_pipeline_audit_49i2.md` identifies the invariant path from a
+`archive/milestone_history/49i_solar_system/moon_shared_body_pipeline_audit_49i2.md` identifies the invariant path from a
 typed state source through observer-relative astrometric and apparent
 direction, one product-frame transformation, and ordinary rendering/export.
 It keeps provider-specific orbit evaluation and body-specific physical
@@ -1091,7 +1091,7 @@ identity owns `sky/solar_system/natural_satellites/moon`.
 
 ### Accepted Solar-System track contract (Milestone 49I.2D)
 
-`solar_system_track_audit_49i2d.md` proposes one renderer-neutral request
+`archive/milestone_history/49i_solar_system/solar_system_track_audit_49i2d.md` proposes one renderer-neutral request
 containing body identity, start instant, sample cadence, tick cadence, and tick
 count. Body and observer states are reevaluated at every sample instant. Their
 apparent ICRS-oriented directions are assembled into one `SphericalCurves`
@@ -1586,7 +1586,7 @@ J2000, so the equinox markers coincide with both curves. A future explicit
 
 The legacy `cartoon_output_mode()` and `compose_cartoon_chart()` wrappers
 remain functional but emit `DeprecationWarning`. Their replacements and the
-v0.5 compatibility policy are recorded in `deprecations_v0.5.md`.
+v0.5 compatibility policy are recorded in `archive/migration_history/deprecations_v0.5.md`.
 
 ## 13. User documentation and reference image
 
@@ -1888,7 +1888,7 @@ ordinary renderer and exporter.
 
 ## Accepted physical apparent-disk boundary (Milestone 49I.3A)
 
-`physical_apparent_disk_audit_49i3a.md` is the active accepted contract for
+`archive/milestone_history/49i_solar_system/physical_apparent_disk_audit_49i3a.md` is the active accepted contract for
 future resolved Venus and Moon appearance. It separates apparent centre,
 physical angular diameter, illumination, tangent-plane orientation,
 body-specific orientation, photometry, and object-specific display
@@ -1915,7 +1915,7 @@ No chart request or layer consumes this API in 49I.3B.
 
 ## Accepted resolved Venus disk boundary (Milestone 49I.3C)
 
-`resolved_venus_disk_audit_49i3c.md` accepts three ordinary semantic
+`archive/milestone_history/49i_solar_system/resolved_venus_disk_audit_49i3c.md` accepts three ordinary semantic
 geometries: illuminated face, limb, and terminator. They are sampled at the
 physical angular radius, transformed, and projected ordinarily. Chart
 preparation then scales projected offsets around the projected physical centre.
@@ -2035,7 +2035,7 @@ frozen-earth-ecliptic`, `--disk-sequence-start`, `--disk-sequence-step`,
 
 ## Accepted multi-epoch planet-disk sequence (Milestone 49I.3C.3)
 
-`planet_disk_sequence_audit_49i3c3.md` defines a proposed immutable sequence
+`archive/milestone_history/49i_solar_system/planet_disk_sequence_audit_49i3c3.md` defines a proposed immutable sequence
 request and result for exact major instants, with no minor curve cadence. The
 candidate has two model policies: independently observed topocentric states in
 one fixed ordinary chart frame, and frozen-Earth geometric states in one fixed
