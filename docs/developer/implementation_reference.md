@@ -2098,3 +2098,17 @@ and export contracts.
 
 This closure introduces no API or runtime change. Frozen-Earth lunar sequences
 and other excluded lunar models require separately accepted contracts.
+
+
+## Performance diagnostics and oracle (Milestone 49J.0)
+
+`tools/benchmark_reusable_sphere.py` remains the existing no-threshold
+diagnostic for one shared observer-independent sphere, 18 prepared views, and
+18 atlas-print PNG exports. Its cProfile groups may overlap and are not an
+additive decomposition of wall time.
+
+The authoritative cold-frame route remains a fresh
+`generate_chart_request()` call for each frame. The accepted uncached
+fixed-sky executor supplies the first repeated-static correctness workload.
+49J.0 documents a future exclusive-span benchmark but adds no public API,
+instrumentation, cache, optimization, or output change.
