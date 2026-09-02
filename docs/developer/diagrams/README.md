@@ -191,5 +191,5 @@ dot -Tsvg docs/developer/diagrams/coordinate_runtime_sequence_as_is_v0.9.5.dot \
 
 The current diagrams complement `../current_architecture_v0.9.md`,
 `../implementation_reference.md`, `../source_tree.md`, and
-`../coordinate_transformation_audit_09a2afd.md`; they do not replace the
+`../archive/audits/coordinate_transformation_audit_09a2afd.md`; they do not replace the
 precise contracts in those documents.
