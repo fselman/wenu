@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260902.49`
-**Last updated:** `2026-09-02T01:10:35Z`
+**Guide version:** `0.9.5.20260902.50`
+**Last updated:** `2026-09-02T01:23:13Z`
 **Language:** English
 
 # Table of contents
@@ -2746,5 +2746,7 @@ Fernando scientifically accepted the eight-case installed-DE440 comparison
 on 2026-09-02. Maximum residuals were `1.338e-07 deg` in apparent right
 ascension and `2.994e-06 arcsec` in physical angular diameter; the minimum
 explicit topocentric parallax was `0.272607 deg`. All quantities satisfied the
-accepted validation envelope. Regression verification and integration remain;
-no drawable Moon behavior is accepted by this result.
+accepted validation envelope. Final verification passed 73 documentation
+tests, 124 focused tests, 2,051 routine tests with 30 deselected, and all 2,081
+tests. Integration remains; no drawable Moon behavior is accepted by this
+result.

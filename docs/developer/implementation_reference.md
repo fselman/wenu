@@ -1973,7 +1973,9 @@ Fernando scientifically accepted the eight-case installed-DE440 validation
 on 2026-09-02. The maximum apparent-centre residual was `1.338e-07 deg`, the
 maximum physical angular-diameter residual was `2.994e-06 arcsec`, and the
 minimum explicit topocentric parallax was `0.272607 deg`. The accepted state
-remains output-neutral; regression verification and integration remain.
+remains output-neutral. Final verification passed 73 documentation tests, 124
+focused tests, 2,051 routine tests with 30 deselected, and all 2,081 tests;
+integration remains.
 
 
 ## Frozen-Earth Venus sequence state (Milestone 49I.3C.3.2A)

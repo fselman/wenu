@@ -1,6 +1,6 @@
 # Lunar physical-appearance state — Milestone 49I.3E.1
 
-**Status:** Scientifically accepted; regression verification pending
+**Status:** Scientifically accepted and regression-verified; ready for integration
 
 **Implementation date:** 2026-09-02
 
@@ -116,8 +116,11 @@ The rerun completed cleanly, and Fernando scientifically accepted the
   cases reaching `1.023322 deg`.
 
 All residuals satisfy the accepted envelope. This accepts only the
-output-neutral physical state; regression verification remains before
-integration, and 49I.3E.2 remains a separate drawable milestone.
+output-neutral physical state; 49I.3E.2 remains a separate drawable milestone.
+
+Final regression evidence on Fernando's Mac is 73 documentation tests in
+`2.75 s`, 124 focused tests in `8.36 s`, 2,051 routine tests with 30 deselected
+in `31.09 s`, and all 2,081 tests in `91.18 s`.
 
 Run from the repository root:
 
@@ -125,8 +128,8 @@ Run from the repository root:
 python tools/validate_49i3e1_lunar_appearance.py
 ```
 
-The numerical results and scientific acceptance above close the installed
-kernel gate. Regression verification and integration remain before 49I.3E.2.
+The numerical results, scientific acceptance, and regression evidence above
+close 49I.3E.1 for integration. They do not authorize 49I.3E.2.
 
 ## Coordinate-guide review
 
