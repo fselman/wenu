@@ -75,7 +75,7 @@ Its ordinary `generate_celestial_sphere()` entry point leaves the sphere and
 every canonical layer observer-independent. The compatibility
 `build_maximal_sphere(observer, ...)` entry point remains available while the
 request facade migrates.
-`docs/developer/celestial_scene_dependency_audit_49d1.md` records that this is
+`docs/developer/archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md` records that this is
 a load-time ownership boundary: ordinary spherical realization still flows
 through `CelestialSphere.draw_chart()` and
 `layer.spherical_geometry(observer, ...)`. It classifies celestial
@@ -83,7 +83,7 @@ background, future dynamic astronomical objects, and observer-local geometry,
 and fixes their sole convergence before projection in an explicit spherical
 product frame. Milestone 49D.1 adds no runtime module or alternate scene
 graph.
-`docs/developer/ephemeris_provider_contract_49e1.md` owns the accepted 49E.1
+`docs/developer/archive/milestone_history/49e_ephemeris/ephemeris_provider_contract_49e1.md` owns the accepted 49E.1
 state-source/direction-realizer audit. `ephemeris.py` owns the frozen 49E.2
 resource identity, geometric state request, complete position-velocity state,
 and structural state-source protocol. It owns no kernel I/O, direction
@@ -457,7 +457,7 @@ facades. Historical component demonstrations that still provide regression
 coverage live under `tests/fixtures/example_regressions/`; they are test-local
 fixtures, not supported user examples.
 
-`docs/developer/public_interface_audit_v0.9.5.md` classifies every executable
+`docs/developer/archive/audits/public_interface_audit_v0.9.5.md` classifies every executable
 public example, user recipe, diagnostic, benchmark, catalogue-maintenance
 utility, and repository tool after architecture 0.9.5. It also records the
 as-is gap between internal `CoordinateSpec` capability and public system,
@@ -888,11 +888,11 @@ dimensions, timeline instants, and manifest identity in JSON.
 - `src/wenu/charts/reference_furniture.py`: applies the same resolved equinox
   to the celestial equator, ecliptic, and seasonal keypoints.
 
-`docs/developer/skyfield_ephemeris_adapter_49e3.md` owns the 49E.3 scientific
+`docs/developer/archive/milestone_history/49e_ephemeris/skyfield_ephemeris_adapter_49e3.md` owns the 49E.3 scientific
 contract. `tools/validate_49e3_skyfield_adapter.py` is the explicit
 no-download installed-kernel Venus/SSB acceptance check.
 
-`docs/developer/solar_system_direction_realizer_49e4.md` owns the proposed
+`docs/developer/archive/milestone_history/49e_ephemeris/solar_system_direction_realizer_49e4.md` owns the proposed
 49E.4 observer-relative direction boundary. It is documentation-only: no
 runtime realizer or moving-body layer exists yet. The proposed astrometric
 result retains distance, light time, reception/emission instants, observer
@@ -902,18 +902,18 @@ state, and resource provenance before any product-frame transformation.
 astrometric request/result, bounded light-time iteration, and deterministic
 direction errors. `src/wenu/skyfield_ephemeris.py` additionally owns the
 same-kernel Skyfield observer-state adapter. The detailed contract is
-`docs/developer/astrometric_direction_runtime_49e5.md`; the controlled
+`docs/developer/archive/milestone_history/49e_ephemeris/astrometric_direction_runtime_49e5.md`; the controlled
 real-resource check is `tools/validate_49e5_astrometric_direction.py`.
 
 `src/wenu/solar_system_directions.py` also owns the 49E.6 apparent-policy and
 result contracts, while
 `src/wenu/skyfield_ephemeris.py::SkyfieldApparentDirectionRealizer` consumes
 the retained 49E.5 vector without a second `observe()` call. The detailed
-contract is `docs/developer/apparent_direction_runtime_49e6.md`; the controlled
+contract is `docs/developer/archive/milestone_history/49e_ephemeris/apparent_direction_runtime_49e6.md`; the controlled
 installed-resource comparison is
 `tools/validate_49e6_apparent_direction.py`. No moving-body layer exists yet.
 
-`docs/developer/venus_vertical_slice_audit_49i1.md` owns the proposed first
+`docs/developer/archive/milestone_history/49i_solar_system/venus_vertical_slice_audit_49i1.md` owns the proposed first
 drawable Venus boundary. It identifies the missing ordinary-request
 `LayerRealizationContext` handoff and reserves upstream semantic path
 `sky/solar_system/planets/venus`. It adds no runtime layer, CLI option, or
@@ -926,7 +926,7 @@ ordinary resolved request and matching observer to one output-neutral
 to `CelestialSphere.draw_chart()`. `VenusLayer` is now the first installed
 moving-body override of `realize()`; no Moon or generic shared-body layer is
 installed. The detailed context contract is
-`docs/developer/ordinary_realization_context_49i1a.md`.
+`docs/developer/archive/milestone_history/49i_solar_system/ordinary_realization_context_49i1a.md`.
 Fernando accepted the output-neutral implementation on 2026-08-30 after the
 complete 1,890-test Mac suite passed.
 
@@ -935,7 +935,7 @@ the existing ephemeris and direction services and returns product-frame
 spherical geometry without projecting or rendering. The layer's stable
 semantic path is `sky/solar_system/planets/venus`.
 
-`docs/developer/moon_shared_body_pipeline_audit_49i2.md` owns the proposed
+`docs/developer/archive/milestone_history/49i_solar_system/moon_shared_body_pipeline_audit_49i2.md` owns the proposed
 Moon validation and shared solar-system point-layer boundary. It records what
 is invariant across bodies, what varies by typed state provider, and what
 belongs to later physical-appearance geometry. It adds no runtime module or
@@ -962,7 +962,7 @@ class-aware `--moon` and `--planet venus` controls into the request-owned
 default-off layer once; existing detail, style, semantic, projection, renderer,
 and exporter owners complete the canonical path.
 
-`docs/developer/solar_system_track_audit_49i2d.md` owns the accepted
+`docs/developer/archive/milestone_history/49i_solar_system/solar_system_track_audit_49i2d.md` owns the accepted
 documentation-only Solar-System trajectory boundary. It reuses
 `geometry/spherical.py::SphericalCurves`,
 `coordinate_service.py::CoordinateService`, and the existing projection,
@@ -996,7 +996,7 @@ owns deterministic contract coverage;
 
 ## Milestone 49I.3A audit ownership
 
-- `docs/developer/physical_apparent_disk_audit_49i3a.md` owns the accepted
+- `docs/developer/archive/milestone_history/49i_solar_system/physical_apparent_disk_audit_49i3a.md` owns the accepted
   symbolic-versus-resolved appearance contract, scientific/display quantity
   separation, canonical geometry route, Venus/Moon sequence, and non-goals.
 - No production source file owns physical angular diameter, phase,
@@ -1014,7 +1014,7 @@ owns deterministic contract coverage;
   convention, validation, and failure coverage.
 - `tools/validate_49i3b_venus_appearance.py` owns installed-DE440 comparison
   and celestial-versus-local orientation diagnostics.
-- `docs/developer/venus_physical_appearance_49i3b.md` owns the accepted
+- `docs/developer/archive/milestone_history/49i_solar_system/venus_physical_appearance_49i3b.md` owns the accepted
   scientific and architectural contract.
 - No sky layer, chart request, style, renderer, or exporter consumes the new
   state in 49I.3B.
@@ -1022,7 +1022,7 @@ owns deterministic contract coverage;
 
 ## Milestone 49I.3C audit ownership
 
-- `docs/developer/resolved_venus_disk_audit_49i3c.md` owns the accepted
+- `docs/developer/archive/milestone_history/49i_solar_system/resolved_venus_disk_audit_49i3c.md` owns the accepted
   geometry, post-projection magnification, product, multi-epoch, semantic,
   validation, and implementation split for resolved Venus disks.
 - Runtime ownership is not installed: scientific construction will produce
@@ -1043,7 +1043,7 @@ owns deterministic contract coverage;
   terminator, illuminated-area, orientation, provenance, and failure coverage.
 - `tools/validate_49i3c1_venus_disk_geometry.py` owns installed-DE440
   physical-radius, closure, area, and orientation evidence.
-- `docs/developer/venus_disk_spherical_geometry_49i3c1.md` owns the accepted
+- `docs/developer/archive/milestone_history/49i_solar_system/venus_disk_spherical_geometry_49i3c1.md` owns the accepted
   scientific and architectural contract.
 - No sky layer, chart request, magnification, style, renderer, or exporter
   consumes the geometry in 49I.3C.1.
@@ -1061,13 +1061,13 @@ owns deterministic contract coverage;
   projector-aware chart preparation without changing ordinary callables.
 - `tests/test_venus_disk_display.py` owns CLI, scale, semantics, replacement,
   and centre-preserving magnification regressions.
-- `docs/developer/drawable_venus_disk_49i3c2.md` owns the accepted runtime,
+- `docs/developer/archive/milestone_history/49i_solar_system/drawable_venus_disk_49i3c2.md` owns the accepted runtime,
   visual, and angular-scale calibration evidence.
 
 
 ## Milestone 49I.3C.3 audit ownership
 
-- `docs/developer/planet_disk_sequence_audit_49i3c3.md` owns the accepted
+- `docs/developer/archive/milestone_history/49i_solar_system/planet_disk_sequence_audit_49i3c3.md` owns the accepted
   distinction between observed and frozen-Earth ecliptic resolved disk
   sequences, common sequence evidence, permitted content, Sun semantics,
   proposed command vocabulary, physical-distance preservation, validation
@@ -1085,7 +1085,7 @@ owns deterministic contract coverage;
   identity, distance, and orchestration evidence.
 - `tools/validate_49i3c3_1a_observed_venus_sequence.py` owns the installed
   four-epoch direct-Skyfield comparison.
-- `docs/developer/observed_venus_disk_sequence_49i3c31a.md` owns acceptance
+- `docs/developer/archive/milestone_history/49i_solar_system/observed_venus_disk_sequence_49i3c31a.md` owns acceptance
   evidence and the boundary to drawable 49I.3C.3.1B.
 
 
@@ -1101,7 +1101,7 @@ owns deterministic contract coverage;
   `drawing.py` own public request and regional/binocular translation.
 - `tests/test_observed_venus_disk_sequence_display.py` owns cadence, shared
   state, semantic paths, and per-centre magnification regressions.
-- `docs/developer/drawable_observed_venus_sequence_49i3c31b.md` owns accepted
+- `docs/developer/archive/milestone_history/49i_solar_system/drawable_observed_venus_sequence_49i3c31b.md` owns accepted
   scientific, visual, operational, and regression evidence.
 
 
@@ -1114,7 +1114,7 @@ owns deterministic contract coverage;
   freeze, identity, physical-state, immutability, and boundary evidence.
 - `tools/validate_49i3c3_2a_frozen_earth_venus.py` owns the installed-DE440
   direct-vector and fixed-ecliptic comparison.
-- `docs/developer/frozen_earth_venus_sequence_49i3c32a.md` owns scientific,
+- `docs/developer/archive/milestone_history/49i_solar_system/frozen_earth_venus_sequence_49i3c32a.md` owns scientific,
   architectural, numerical, and regression acceptance evidence.
 
 
@@ -1132,13 +1132,13 @@ owns deterministic contract coverage;
 - `tests/test_frozen_earth_venus_sequence_display.py` and
   `tests/test_frozen_earth_reference_grids.py` own drawable, semantic,
   localization, and fixed-reference regressions.
-- `docs/developer/drawable_frozen_earth_venus_sequence_49i3c32b.md` owns
+- `docs/developer/archive/milestone_history/49i_solar_system/drawable_frozen_earth_venus_sequence_49i3c32b.md` owns
   scientific, visual, operational, and regression acceptance evidence.
 
 
 ## Milestone 49I.3C.3.3 audit ownership
 
-- `docs/developer/mercury_disk_sequence_audit_49i3c33.md` owns the proposed
+- `docs/developer/archive/milestone_history/49i_solar_system/mercury_disk_sequence_audit_49i3c33.md` owns the proposed
   Mercury body/radius authority, provider-ID distinction, two-slice boundary,
   numerical and visual validation gates, non-goals, and stop conditions.
 - Existing source files remain authoritative for the as-is implementation;
@@ -1154,7 +1154,7 @@ owns deterministic contract coverage;
   Venus-named factories and class names are compatibility aliases only.
 - `tests/test_solar_system_body_machinery.py` proves that a synthetic minor
   body needs no body-specific drawable machinery.
-- `docs/developer/moving_body_architecture_49i3c33a.md` owns the accepted
+- `docs/developer/archive/milestone_history/49i_solar_system/moving_body_architecture_49i3c33a.md` owns the accepted
   architectural boundary and non-goals.
 
 
@@ -1166,7 +1166,7 @@ owns deterministic contract coverage;
   and generic frozen state without public CLI exposure.
 - `tools/validate_49i3c3_3b_mercury.py` owns the installed-DE440 direct
   Skyfield comparison and refuses kernel downloads.
-- `docs/developer/mercury_catalog_validation_49i3c33b.md` records the accepted
+- `docs/developer/archive/milestone_history/49i_solar_system/mercury_catalog_validation_49i3c33b.md` records the accepted
   numerical evidence and bounded runtime ownership.
 
 
@@ -1178,7 +1178,7 @@ owns deterministic contract coverage;
   the complete drawable path.
 - `tests/test_frozen_earth_mercury_sequence_display.py` owns capability,
   conflict, semantic, magnification, fixed-Sun, and localization contracts.
-- `docs/developer/drawable_frozen_earth_mercury_sequence_49i3c33c.md` records
+- `docs/developer/archive/milestone_history/49i_solar_system/drawable_frozen_earth_mercury_sequence_49i3c33c.md` records
   the accepted architectural, visual, operational, and regression evidence.
 
 
@@ -1191,7 +1191,7 @@ owns deterministic contract coverage;
 - `tests/test_apparent_major_planets.py` proves shared registration, selection,
   styling, semantics, and identity; the installed-DE440 validator owns direct
   numerical comparison.
-- `docs/developer/apparent_major_planets_49i3d1.md` owns the proposed acceptance
+- `docs/developer/archive/milestone_history/49i_solar_system/apparent_major_planets_49i3d1.md` owns the proposed acceptance
   boundary and explicit non-goals.
 
 
@@ -1207,7 +1207,7 @@ owns deterministic contract coverage;
   capability, radius, relationship, immutability, and generic-state evidence.
 - `tools/validate_49i3e1_lunar_appearance.py` owns installed-DE440 comparison
   and refuses downloads.
-- `docs/developer/lunar_physical_appearance_49i3e1.md` records the bounded
+- `docs/developer/archive/milestone_history/49i_solar_system/lunar_physical_appearance_49i3e1.md` records the bounded
   implementation and numerical acceptance gate.
 - No disk geometry, chart request, magnification, style, renderer, exporter,
   or visible output is added in 49I.3E.1.
@@ -1231,7 +1231,7 @@ owns deterministic contract coverage;
 - `tools/render_49i3e2_resolved_moon_review.py` owns the five-family physical,
   legibly magnified, symbolic, star-only, and vector-export review matrix;
   automated request contracts exercise factor 1000 in every family.
-- `docs/developer/drawable_resolved_moon_49i3e2.md` records the boundary and
+- `docs/developer/archive/milestone_history/49i_solar_system/drawable_resolved_moon_49i3e2.md` records the boundary and
   accepted verification. Multi-epoch Moon behavior remains 49I.3E.3.
 
 
@@ -1249,7 +1249,7 @@ owns deterministic contract coverage;
 - `tools/validate_49i3e3_observed_moon_sequence.py` owns the installed-DE440
   comparison; `tools/render_49i3e3_observed_moon_sequence_review.py` owns
   the five-family fixed-chart review matrix.
-- `docs/developer/observed_moon_disk_sequence_49i3e3.md` records the boundary,
+- `docs/developer/archive/milestone_history/49i_solar_system/observed_moon_disk_sequence_49i3e3.md` records the boundary,
   accepted science, visuals, operation, and regression closure.
 
 
