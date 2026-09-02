@@ -613,3 +613,16 @@ complete tangent geometry. No Moon-specific projection, renderer, or exporter
 exists. Parent closure adds no runtime behavior; Frozen-Earth lunar sequences,
 interpolation, animation, texture, libration, eclipses, disk refraction, and
 occultation prediction remain unimplemented.
+
+
+## Performance baseline boundary (Milestone 49J.0)
+
+The current complete-frame authority remains `generate_chart_request()`;
+fixed-sky and observer-time sequences call that static path for every frame.
+`tools/benchmark_reusable_sphere.py` is a separate shared-sphere diagnostic
+whose overlapping profiler categories are non-additive. It is not a cold
+independent-frame oracle.
+
+`performance_and_closure_audit_49j0.md` proposes exclusive stage timing and
+one later fixed-sky circumpolar reuse candidate. 49J.0 adds no instrumentation,
+cache, optimization, test reclassification, or runtime/output change.
