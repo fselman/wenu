@@ -6,6 +6,7 @@ from pathlib import Path
 
 from wenu.observer import DEFAULT_DATA_DIRECTORY, DEFAULT_EPHEMERIS, Observer
 from wenu.sky.moon import MOON_BODY
+from wenu.skyfield_ephemeris import SkyfieldEphemerisStateSource
 from wenu.sky.solar_system_disk_sequences import (
     ObservedSolarSystemDiskSequenceRealizer,
     ObservedSolarSystemDiskSequenceRequest,
@@ -72,9 +73,17 @@ def main():
         result = ObservedSolarSystemDiskSequenceRealizer().sequence(
             _request(), observer=observer
         )
-        resource = observer.ephemeris
-        print(f"model: {DEFAULT_EPHEMERIS.removesuffix('.bsp').upper()}")
-        print(f"file: {path.name}")
+        resource = SkyfieldEphemerisStateSource.from_observer(
+            observer
+        ).resource
+        print(f"model: {resource.model}")
+        print(f"file: {resource.filename}")
+        print(f"sha256: {resource.sha256}")
+        print(
+            "coverage: "
+            f"{resource.coverage_start} through {resource.coverage_end} "
+            f"{resource.coverage_time_scale.upper()}"
+        )
         print(f"chart epoch: {CHART_EPOCH}")
         print(
             "observer: La Ligua; "
@@ -86,7 +95,6 @@ def main():
         print(f"Moon mean radius km: {MOON_BODY.physical_radius_km:.1f}")
         print(f"radius model: {MOON_BODY.radius_model}")
         print(f"sample count: {len(result.sample_instants)}")
-        del resource
 
         assert len(result.sample_instants) == N_STEPS + 1
         assert CHART_EPOCH.replace("Z", "") not in result.sample_instants
