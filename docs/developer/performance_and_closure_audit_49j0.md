@@ -1,8 +1,8 @@
 # Performance and post-v0.9 closure audit — Milestone 49J.0
 
-**Status:** Proposed for architectural acceptance  
+**Status:** Architecturally accepted by Fernando on 2026-09-02; documentation verification pending  
 **Audit baseline:** `ea6f340`  
-**Scope:** Documentation and documentation tests only  
+**Scope:** Documentation, conservative archive moves, guide updates, and documentation tests only  
 **Runtime effect:** None  
 **Coordinate guide review:** Archival document paths updated; no scientific meaning, coordinate ownership, object provenance, or public coordinate explanation changes
 
@@ -303,17 +303,20 @@ Stop and re-audit if a candidate would:
 - deletion or reclassification of tests;
 - roadmap closure.
 
-## 13. Acceptance gate
+## 13. Acceptance record
 
-Fernando must accept:
+Fernando accepted the seven 49J.0 decisions on 2026-09-02: the independent-
+frame distinction, exclusive timing vocabulary, separated workloads,
+scientific cache identity and invalidation, fixed-sky circumpolar first scope,
+separately accepted implementation slices, and all stop conditions/non-goals.
 
-1. the independent-frame versus reusable-sphere distinction;
-2. the exclusive timing vocabulary;
-3. the cold-frame, reusable-sphere, and test-loop workload separation;
-4. the immutable scientific cache-key and invalidation rules;
-5. fixed-sky circumpolar scope for the first optimization;
-6. the four separately accepted implementation slices;
-7. the stop conditions and non-goals.
+Fernando also selected conservative documentation cleanup. Completed 49D,
+49E, and 49I records move into organized milestone archives; completed audits,
+deprecations, and backlogs move into their existing archive families. The
+developer-directory root retains only current authority, target direction, the
+active roadmap, the living coordinate guide, contribution rules, and current
+work in progress. `docs/user_guide/` remains separate and now provides
+runnable examples for every ordinary chart family.
 
-After acceptance, run documentation tests, the routine gate, and the complete
-suite. Only then may 49J.1 begin.
+Documentation, routine, and complete regression verification remain required
+before 49J.0 integration. Only then may 49J.1 begin.
