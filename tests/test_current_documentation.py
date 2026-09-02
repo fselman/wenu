@@ -2900,6 +2900,9 @@ def test_49i3e_parent_milestone_is_closed_without_new_runtime_scope():
         "161 expanded focused tests",
         "2,088 routine tests with 30 deselected",
         "all 2,118 tests",
+        "Parent-closure verification passed 76 documentation tests in 3.32 seconds",
+        "2,089 routine tests with 30 deselected in 31.89 seconds",
+        "all 2,119 tests in 87.44 seconds",
         "No additional runtime behavior is authorized by this parent closure",
     ):
         assert phrase in roadmap
