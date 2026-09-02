@@ -90,6 +90,10 @@ class ObservedSolarSystemDiskSequenceDisplayRequest:
     def target(self):
         return self.sequence.descriptor.target
 
+    @property
+    def model(self):
+        return "observed"
+
     def supports_chart_family(self, family):
         return self.sequence.descriptor.supports_observed_disk_sequence_in(
             family
