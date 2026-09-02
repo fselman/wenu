@@ -1266,7 +1266,6 @@ PRs #70 through #73 are merged, ending at `bc45cc0`. Parent closure records
 the already accepted final verification: 75 documentation tests, 161 expanded
 focused tests, 2,088 routine tests with 30 deselected, and all 2,118 tests.
 
-No additional runtime behavior is authorized by this parent closure. Frozen-
-Earth lunar sequences, interpolation, animation, texture, libration, eclipses,
+No additional runtime behavior is authorized by this parent closure. Frozen-Earth lunar sequences, interpolation, animation, texture, libration, eclipses,
 refraction across the resolved disk, and occultation prediction remain outside
 49I.3E.
