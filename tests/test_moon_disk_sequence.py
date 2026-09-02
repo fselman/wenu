@@ -139,13 +139,15 @@ def test_moon_sequence_layers_are_generic_and_semantically_stable():
         "moon_disk_sequence_labels",
     )
     assert len({id(layer.disk_realization) for layer in layers}) == 1
-    assert tuple(
-        semantic_layer_identity(layer).semantic_path_text for layer in layers
-    ) == (
+    identities = tuple(semantic_layer_identity(layer) for layer in layers)
+    assert tuple(value.semantic_path_text for value in identities) == (
         "sky/solar_system/natural_satellites/moon/disk_sequence/illuminated",
         "sky/solar_system/natural_satellites/moon/disk_sequence/limb",
         "sky/solar_system/natural_satellites/moon/disk_sequence/terminator",
         "sky/solar_system/natural_satellites/moon/disk_sequence/labels",
+    )
+    assert tuple(value.path_display_names[-1] for value in identities) == (
+        "Illuminated face", "Limb", "Terminator", "Date labels",
     )
 
 
