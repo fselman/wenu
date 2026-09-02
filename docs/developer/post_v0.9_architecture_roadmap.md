@@ -21,9 +21,6 @@ It records the active direction and sequencing after the closed v0.9
 architecture. Each implementation stage requires a fresh as-is assessment and
 its own small, testable milestone.
 
-Closure passed 75 documentation tests, 161 expanded focused tests, 2,088
-routine tests with 30 deselected, and all 2,118 tests.
-
 The coordinate decisions in `coordinate_transformation_audit_09a2afd.md`
 remain authoritative scientific input. The longer-term astrometry sequence in
 `archive/roadmap_history/polar_delivery_and_astrometry_roadmap.md` is consolidated here so that it no
@@ -1247,3 +1244,6 @@ Fernando accepted the installed-DE440 comparison and all sequence review
 renders on 2026-09-02. Frozen-Earth lunar sequences, interpolation, animation,
 texture, libration, eclipses, refraction, and occultation remain outside this
 milestone.
+
+Closure passed 75 documentation tests, 161 expanded focused tests, 2,088
+routine tests with 30 deselected, and all 2,118 tests.
