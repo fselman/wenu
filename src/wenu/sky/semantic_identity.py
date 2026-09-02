@@ -454,6 +454,7 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
                 f"Unsupported semantic edit policy: {configured_policy!r}."
             ) from error
     contract = _LAYER_CONTRACTS.get(name)
+    path_display_names = ()
     body = getattr(layer, "body_descriptor", None)
     display_kind = getattr(layer, "display_kind", None)
     component_role = getattr(layer, "component_role", None)
@@ -525,6 +526,10 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
                 38,
                 f"planet_{path_kind}_{component_role}",
             )
+            path_display_names = (
+                *tuple(_path_display_name(value) for value in contract.path[:-1]),
+                component_title.capitalize(),
+            )
     svg_id = f"wenu-layer-{name.replace('_', '-')}"
     if name == "magellanic_cloud_isophotes":
         cloud_key = semantic_key(
@@ -587,6 +592,7 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
         "display_name": contract.display_name,
         "presentation_order": contract.presentation_order,
         "style_role": contract.style_role,
+        "path_display_names": path_display_names,
         "component_contracts": (
             tuple(_GRID_COMPONENT_CONTRACTS.items())
             if name.endswith("_grid") or name == "solar_system_track"
