@@ -373,3 +373,14 @@ For ordinary apparent major planets, consult
 through the catalog; preserve provider barycentre IDs separately from physical
 planet IDs; reuse the shared apparent point layer; and do not infer resolved
 disk, photometry, rings, track, or sequence capabilities from classification.
+
+
+For resolved Moon work, consult `resolved_moon_audit_49i3e0.md` after the
+planning handoff in `resolved_moon_plan_49i3e.md`. Preserve the JPL
+equal-volume mean radius, topocentric apparent centre, independent physical
+state at every sample epoch, and one fixed chart-epoch product frame. Transport
+the complete sample tangent geometry into that frame; do not treat the scalar
+bright-limb angle as frame-invariant. Reuse the descriptor-driven appearance,
+disk geometry, observed sequence, projection, per-centre magnification,
+renderer, semantics, and exporters. Do not add runtime Moon behavior under
+49I.3E.0.
