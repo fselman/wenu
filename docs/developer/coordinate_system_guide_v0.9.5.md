@@ -2777,3 +2777,7 @@ Stable semantic descendants identify the illuminated face, limb, and
 terminator below `sky/solar_system/natural_satellites/moon/disk`. No coordinate
 transformation formula changes, and no multi-epoch Moon behavior is introduced
 in 49I.3E.2.
+
+Fernando accepted the five-family single-epoch result on 2026-09-02. Closure
+verification passed 69 focused tests, 74 documentation tests, 2,074 routine
+tests with 30 deselected, and all 2,104 tests.
