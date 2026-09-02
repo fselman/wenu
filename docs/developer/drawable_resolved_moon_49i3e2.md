@@ -84,13 +84,14 @@ python tools/render_49i3e2_resolved_moon_review.py
 
 The tool renders physical scale, visually legible magnification `8`, and
 explicit symbolic compatibility in all five chart families at
-`2026-09-19T00:00:00Z` for La Ligua. This accepted numerical case has phase
-angle about `88.6 deg`, so the terminator should be unmistakable. The generated
-configuration restricts
+`2026-09-16T00:00:00Z` for La Ligua. The review epoch is approximately five
+days after new Moon, so the waxing crescent and terminator should be
+unmistakable. The generated configuration restricts
 content to stars through magnitude `5.0`; deep-sky objects are omitted. It also
 renders magnified regional PDF and semantic SVG parity products and writes
 `manifest.json` under `output/49i3e2-resolved-moon-review/`. Automated request
 contracts separately exercise the maximum factor `1000` in every family.
+The binocular diagnostic uses the accepted `7.5 deg` field diameter.
 
 Human review must confirm:
 
