@@ -2976,7 +2976,11 @@ def test_49j0_freezes_performance_measurement_before_optimization():
 
 
 def test_developer_root_contains_only_active_authority_and_wip_documents():
-    assert {\n        path.name\n        for path in DEVELOPER.iterdir()\n        if path.is_file() and not path.name.startswith(".")\n    } == {
+    assert {
+        path.name
+        for path in DEVELOPER.iterdir()
+        if path.is_file() and not path.name.startswith(".")
+    } == {
         "README.md",
         "assistant_instructions.md",
         "configuration_schema_v1.md",
