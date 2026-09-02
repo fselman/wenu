@@ -1,5 +1,7 @@
 # Regional charts
 
+The [complete chart examples](chart_examples.md) include a runnable installed-command example for this family.
+
 Regional charts use a tangent-plane view around one constellation or an
 arbitrary constellation set. The chart owns projection and framing; the
 examples only select the requested region and content.
