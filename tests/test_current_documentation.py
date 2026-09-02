@@ -2680,6 +2680,7 @@ def test_49i3e0_audits_resolved_moon_science_and_generic_reuse():
 
     for phrase in (
         "**As-is baseline:** `a8296f5`",
+        "**Status:** Scientifically and architecturally accepted",
         "changes no runtime type",
         "No runtime Moon behavior is authorized",
         "`SolarSystemBodyDescriptor`",
@@ -2701,13 +2702,17 @@ def test_49i3e0_audits_resolved_moon_science_and_generic_reuse():
         "--moon-disk-sequence",
         "Only `observed` is accepted",
         "`1 <= M_moon <= 1000`",
+        "display-only",
+        "unrelated to Wenu's `presentation` output mode",
+        "same rule applies in atlas and presentation modes",
         "refuses downloads",
         "`1e-7 deg`",
         "sky/solar_system/natural_satellites/moon",
         "all five chart-family enablement",
         "changes no implemented coordinate transformation",
         "frozen-Earth lunar sequences",
-        "authorizes only 49I.3E.1",
+        "Fernando scientifically and architecturally accepted this audit on 2026-09-02",
+        "acceptance authorizes only 49I.3E.1",
     ):
         assert phrase in audit
 

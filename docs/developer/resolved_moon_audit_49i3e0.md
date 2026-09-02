@@ -1,6 +1,6 @@
 # Resolved Moon scientific and architecture audit — Milestone 49I.3E.0
 
-**Status:** Proposed for scientific and architectural review
+**Status:** Scientifically and architecturally accepted
 
 **Audit date:** 2026-09-02
 
@@ -222,9 +222,12 @@ requests; internal science must not branch on public spelling.
 ## 7. Magnification and sampling
 
 Freeze finite `1 <= M_moon <= 1000`, default `1`. It is Moon-specific,
-dimensionless, common to one sequence, presentation-only, and applied after
-projection about each separate centre. It cannot change centre, visibility,
-distance, diameter, phase, fraction, angle, provenance, or topology.
+dimensionless, common to one sequence, display-only, and applied after
+projection about each separate centre. Here **display-only** means graphical
+scaling rather than a physical change; it is unrelated to Wenu's
+`presentation` output mode. The same rule applies in atlas and presentation
+modes. Magnification cannot change centre, visibility, distance, diameter,
+phase, fraction, angle, provenance, or topology.
 
 Retain the generic deterministic 720 samples initially. 49I.3E.2 must verify
 smoothness and clipping at `M_moon = 1000` in all five families before the
@@ -294,9 +297,15 @@ before projection or alter physical state; replace resolved all-sky geometry
 with a crescent glyph; infer lunar correction validity from Venus; download an
 ephemeris; enable frozen-Earth Moon; or give output formats different geometry.
 
-## 12. Review gate
+## 12. Scientific and architectural acceptance
 
-Fernando's acceptance authorizes only 49I.3E.1 output-neutral lunar state and
+Fernando scientifically and architecturally accepted this audit on
+2026-09-02, including the radius authority, equations, topocentric correction
+requirement, chart/sample epoch separation, tangent-geometry transport,
+generic reuse boundary, public vocabulary, magnification bounds, declared
+tolerances, non-goals, and stop conditions.
+
+This acceptance authorizes only 49I.3E.1 output-neutral lunar state and
 installed-DE440 validation. It does not pre-accept runtime values, drawable
 behavior, maximum-magnification visual quality, sequence drawing, or any
 visual result.
