@@ -82,7 +82,7 @@ Run:
 python tools/render_49i3e2_resolved_moon_review.py
 ```
 
-The tool renders physical scale, visually legible magnification `60`, and
+The tool renders physical scale, visually legible magnification `8`, and
 explicit symbolic compatibility in all five chart families at
 `2026-01-19T00:00:00Z` for La Ligua. Its generated configuration restricts
 content to stars through magnitude `5.0`; deep-sky objects are omitted. It also

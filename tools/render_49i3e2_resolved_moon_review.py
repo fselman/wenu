@@ -21,7 +21,7 @@ COMMON = (
     "--style", "atlas",
     "--mode", "presentation",
 )
-VISUAL_MAGNIFICATION = "60"
+VISUAL_MAGNIFICATION = "8"
 FAMILIES = {
     "regional": (
         "regional", "--constellations", "Cap",
