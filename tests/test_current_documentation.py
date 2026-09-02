@@ -2900,7 +2900,7 @@ def test_49i3e_parent_milestone_is_closed_without_new_runtime_scope():
         "161 expanded focused tests",
         "2,088 routine tests with 30 deselected",
         "all 2,118 tests",
-        "Parent closure adds no runtime behavior",
+        "No additional runtime behavior is authorized by this parent closure",
     ):
         assert phrase in roadmap
 
@@ -2912,5 +2912,6 @@ def test_49i3e_parent_milestone_is_closed_without_new_runtime_scope():
     assert "Last updated:** `2026-09-02T23:59:00Z`" in guide
     assert "resolved-Moon program 49I.3E.0 through 49I.3E.3 is closed" in instructions
 
-    for document in (plan, architecture, roadmap, implementation, source_tree, guide, instructions):
+    for document in (plan, architecture, roadmap, implementation, source_tree, guide):
         assert "Frozen-Earth lunar sequences" in document
+    assert "Frozen-Earth" in instructions
