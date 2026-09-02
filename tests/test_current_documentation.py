@@ -2960,12 +2960,18 @@ def test_49j0_freezes_performance_measurement_before_optimization():
         "49J.4 — Post-v0.9 closure",
         "49J.0 does not authorize",
         "deletion or reclassification of tests",
+        "94 combined current-documentation and user-guide tests in 2.61 seconds",
+        "2,092 routine tests with 30 deselected in 37.88 seconds",
+        "all 2,122 tests in 93.31 seconds",
+        "49J.0 is ready for integration",
     ):
         assert phrase in audit
 
     assert "Milestone 49J.0 — Performance and closure audit" in roadmap
     assert "Every slice remains separately authorized" in roadmap
     assert "Architecturally accepted by Fernando on 2026-09-02" in roadmap
+    assert "Architecturally accepted and regression-verified" in roadmap
+    assert "all 2,122 tests" in roadmap
     assert "Performance baseline boundary (Milestone 49J.0)" in architecture
     assert "Performance diagnostics and oracle (Milestone 49J.0)" in implementation
     assert "Milestone 49J.0 performance-audit ownership" in source_tree
