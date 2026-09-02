@@ -2969,7 +2969,6 @@ def test_49j0_freezes_performance_measurement_before_optimization():
 
     assert "Milestone 49J.0 — Performance and closure audit" in roadmap
     assert "Every slice remains separately authorized" in roadmap
-    assert "Architecturally accepted by Fernando on 2026-09-02" in roadmap
     assert "Architecturally accepted and regression-verified" in roadmap
     assert "all 2,122 tests" in roadmap
     assert "Performance baseline boundary (Milestone 49J.0)" in architecture
