@@ -112,6 +112,9 @@ LUNAR_PHYSICAL_APPEARANCE = (
 )
 DRAWABLE_RESOLVED_MOON = DEVELOPER / "drawable_resolved_moon_49i3e2.md"
 OBSERVED_MOON_SEQUENCE = DEVELOPER / "observed_moon_disk_sequence_49i3e3.md"
+PERFORMANCE_CLOSURE_AUDIT = (
+    DEVELOPER / "performance_and_closure_audit_49j0.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -2918,3 +2921,51 @@ def test_49i3e_parent_milestone_is_closed_without_new_runtime_scope():
     for document in (plan, architecture, roadmap, implementation, source_tree, guide):
         assert "Frozen-Earth lunar sequences" in document
     assert "Frozen-Earth" in instructions
+
+
+def test_49j0_freezes_performance_measurement_before_optimization():
+    audit = " ".join(read(PERFORMANCE_CLOSURE_AUDIT).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    guide = read(COORDINATE_GUIDE)
+
+    for phrase in (
+        "**Audit baseline:** `ea6f340`",
+        "**Runtime effect:** None",
+        "76 passed",
+        "2,089 passed; 30 deselected",
+        "31.89 s",
+        "2,119 passed",
+        "87.44 s",
+        "about 6.3 percent",
+        "not the 49J independent-frame baseline",
+        "non-overlapping wall-time spans",
+        "`time.perf_counter_ns()`",
+        "Cold independent-frame oracle",
+        "Reusable-sphere comparison",
+        "Test-loop characterization",
+        "identical projected records",
+        "immutable key",
+        "49J.1 — Independent-frame benchmark harness",
+        "49J.2 — Routine-suite characterization and remediation",
+        "49J.3 — First scientifically keyed reuse",
+        "49J.4 — Post-v0.9 closure",
+        "49J.0 does not authorize",
+        "deletion or reclassification of tests",
+    ):
+        assert phrase in audit
+
+    assert "Milestone 49J.0 — Performance and closure audit" in roadmap
+    assert "Every slice remains separately authorized" in roadmap
+    assert "Performance baseline boundary (Milestone 49J.0)" in architecture
+    assert "Performance diagnostics and oracle (Milestone 49J.0)" in implementation
+    assert "Milestone 49J.0 performance-audit ownership" in source_tree
+    assert "performance_and_closure_audit_49j0.md" in instructions
+    assert "Do not add caching or optimization under 49J.0" in instructions
+    assert "Guide version:** `0.9.5.20260902.53`" in guide
+    assert "Last updated:** `2026-09-02T23:59:00Z`" in guide
