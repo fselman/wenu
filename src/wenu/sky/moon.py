@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from wenu.sky.solar_system_bodies import (
+    OBSERVED_DISK_SEQUENCE,
     RESOLVED_SPHERICAL_DISK,
     SPHERICAL_PHYSICAL_APPEARANCE,
     SYMBOLIC_POINT,
@@ -33,8 +34,12 @@ MOON_BODY = SolarSystemBodyDescriptor(
         SYMBOLIC_POINT,
         SPHERICAL_PHYSICAL_APPEARANCE,
         RESOLVED_SPHERICAL_DISK,
+        OBSERVED_DISK_SEQUENCE,
     }),
     resolved_disk_chart_families=frozenset({
+        "regional", "binocular", "circumpolar", "planisphere", "all_sky",
+    }),
+    observed_disk_sequence_chart_families=frozenset({
         "regional", "binocular", "circumpolar", "planisphere", "all_sky",
     }),
 )
