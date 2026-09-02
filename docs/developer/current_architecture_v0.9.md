@@ -578,3 +578,18 @@ Generic 720-sample geometry, transformation, preparation, rendering,
 semantics, and exporters own the output. Multi-epoch Moon behavior remains
 unimplemented under 49I.3E.3. Fernando accepted the single-epoch scientific,
 architectural, visual, operational, and regression result on 2026-09-02.
+
+
+## Observed multi-epoch Moon sequence
+
+Milestone 49I.3E.3 adapts `--moon-disk-sequence` into the generic
+`ObservedSolarSystemDiskSequenceRequest`. Every sample independently realizes
+the topocentric Moon and its physical appearance, then transforms complete
+spherical disk geometry into the one product frame fixed at the chart epoch.
+The background, horizon, projection, and furniture therefore do not rotate
+between samples.
+
+Descriptor policy authorizes observed Moon sequences in all five chart
+families while preserving Venus's regional/binocular boundary. Shared labels,
+per-centre post-projection magnification, semantics, clipping, and PNG/PDF/SVG
+export remain generic. Frozen-Earth lunar sequences remain unimplemented.
