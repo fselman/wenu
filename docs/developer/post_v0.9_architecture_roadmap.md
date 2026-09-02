@@ -1266,7 +1266,7 @@ PRs #70 through #73 are merged, ending at `bc45cc0`. Parent closure records
 the already accepted final verification: 75 documentation tests, 161 expanded
 focused tests, 2,088 routine tests with 30 deselected, and all 2,118 tests.
 
-Parent-closure verification passed 76 documentation tests in 3.32 seconds, 2,089 routine tests with 30 deselected in 31.89 seconds, and all 2,119 tests in 87.44 seconds.
+Parent-closure verification passed 76 documentation tests in 9.55 seconds, 2,089 routine tests with 30 deselected in 31.89 seconds, and all 2,119 tests in 87.44 seconds.
 
 No additional runtime behavior is authorized by this parent closure. Frozen-Earth lunar sequences, interpolation, animation, texture, libration, eclipses,
 refraction across the resolved disk, and occultation prediction remain outside
