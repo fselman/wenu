@@ -1,6 +1,6 @@
 # Observed Moon disk sequence — Milestone 49I.3E.3
 
-**Status:** Scientifically, architecturally, and visually accepted; regression pending  
+**Status:** Scientifically, architecturally, visually, operationally, and regression accepted  
 **Implementation base:** `eba3bd9`  
 **Scientific acceptance date:** `2026-09-02`
 
@@ -132,6 +132,9 @@ tests passed in 3.58 seconds. Fernando accepted all five chart-family sequences
 on 2026-09-02, including the smaller date labels and concise component-only SVG
 child labels.
 
-Documentation and routine/full regression remain pending. Do not merge until
-those gates pass. This milestone does not authorize any frozen-Earth or other
-new lunar sequence model.
+Final verification passed 75 current-documentation tests in 2.23 seconds, 161
+expanded focused tests in 5.73 seconds, 2,088 routine tests with 30 deselected
+in 28.60 seconds, and all 2,118 tests in 88.61 seconds.
+
+This acceptance closes the planned resolved-Moon milestone through 49I.3E.3.
+It does not authorize any frozen-Earth or other new lunar sequence model.
