@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260902.52`
-**Last updated:** `2026-09-02T23:55:00Z`
+**Guide version:** `0.9.5.20260902.53`
+**Last updated:** `2026-09-02T23:59:00Z`
 **Language:** English
 
 # Table of contents
@@ -94,6 +94,7 @@
     - [13.2.33 49I.3E.1 lunar physical appearance](#49i3e1-lunar-physical-appearance)
     - [13.2.34 49I.3E.2 drawable resolved Moon](#49i3e2-drawable-resolved-moon)
     - [13.2.35 49I.3E.3 observed Moon sequence](#49i3e3-observed-moon-sequence)
+    - [13.2.36 49I.3E resolved Moon closure](#49i3e-resolved-moon-closure)
 
 <a id="status-and-purpose"></a>
 
@@ -2806,3 +2807,31 @@ layers already used for resolved planetary sequences. Descriptor policy permits
 the Moon in all five ordinary chart families without expanding Venus support.
 Magnification remains post-projection and per-centre. Frozen-Earth lunar
 sequences remain scientifically distinct and unsupported.
+
+
+<a id="49i3e-resolved-moon-closure"></a>
+
+## 13.2.36 49I.3E resolved Moon closure
+
+**[Foundation]** The Moon capability is now complete for its accepted scope.
+Wenu can draw one resolved Moon or a sequence of observed Moons, and it can
+still draw the earlier symbolic Moon when explicitly requested. A sequence
+shows the Moon at independently calculated times against one fixed chart; it
+does not rotate or rebuild the background for each Moon.
+
+Magnification remains presentation-only: it enlarges each drawn lunar disk
+about its true plotted centre so that its phase can be seen, without changing
+the Moon's calculated position, distance, physical angular diameter, phase, or
+illumination.
+
+**[Undergraduate]** Milestones 49I.3E.0 through 49I.3E.3 share one
+descriptor-driven physical-appearance and spherical-geometry pipeline. Each
+observed sample has its own topocentric apparent centre and tangent geometry,
+which are transported into one chart-epoch product frame before ordinary
+projection. PNG, PDF, and semantic SVG therefore consume the same projected
+records in regional, binocular, circumpolar, planisphere, and all-sky charts.
+
+The parent closure introduces no new calculation or output behavior.
+Frozen-Earth lunar sequences, interpolation, animation, texture, libration,
+eclipses, resolved-disk refraction, and occultation prediction remain outside
+the accepted capability.

@@ -1251,3 +1251,15 @@ owns deterministic contract coverage;
   the five-family fixed-chart review matrix.
 - `docs/developer/observed_moon_disk_sequence_49i3e3.md` records the boundary,
   accepted science, visuals, operation, and regression closure.
+
+
+
+## Milestone 49I.3E resolved Moon ownership closure
+
+- No new source owner is introduced by parent closure.
+- `sky/moon.py` and the Solar-System body catalog own lunar identity,
+  relationship, constants, and accepted capabilities.
+- Generic Solar-System appearance, disk geometry, request, transformation,
+  projection, preparation, rendering, semantic identity, and export owners
+  serve both the resolved single Moon and observed Moon sequence.
+- Documentation records closure of 49I.3E.0 through 49I.3E.3. Frozen-Earth lunar sequences and other excluded models remain unimplemented and separately governed.

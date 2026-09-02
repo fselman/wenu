@@ -1184,8 +1184,7 @@ and observed sequences remain later capability-specific work.
 
 ## Milestone 49I.3E.1 — Output-neutral lunar physical appearance
 
-**Status:** Scientifically accepted and regression-verified; ready for
-integration.
+**Status:** Scientifically accepted, regression-verified, integrated, and superseded by the completed parent milestone.
 
 Register one catalog Moon identity with Earth relationship, NAIF physical body
 ID `301`, JPL equal-volume mean radius `1737.4 km`, localization, symbolic
@@ -1206,8 +1205,8 @@ Maximum residuals were `1.338e-07 deg` in apparent right ascension,
 bright-limb position angle. Minimum topocentric parallax was `0.272607 deg`.
 All values satisfy the accepted revised envelope. Final verification passed
 73 documentation tests, 124 focused tests, 2,051 routine tests with 30
-deselected, and all 2,081 tests. Integration remains; 49I.3E.2 is not
-authorized by this acceptance.
+deselected, and all 2,081 tests. Integration subsequently completed in PR #71;
+this slice alone did not pre-authorize 49I.3E.2.
 
 
 ## Milestone 49I.3E.2 — Drawable resolved single-epoch Moon
@@ -1247,3 +1246,28 @@ milestone.
 
 Closure passed 75 documentation tests, 161 expanded focused tests, 2,088
 routine tests with 30 deselected, and all 2,118 tests.
+
+
+
+## Milestone 49I.3E — Resolved apparent Moon and fixed-chart sequence
+
+**Status:** Complete; all authorized slices scientifically, architecturally,
+visually, operationally, and regression accepted on 2026-09-02.
+
+49I.3E.0 through 49I.3E.3 now form one closed capability: authoritative lunar
+physical state, a resolved single-epoch Moon in all five ordinary chart
+families, explicit symbolic compatibility, and observed independently realized
+Moon samples projected through one fixed chart-epoch product frame. The work
+reuses the shared descriptor, appearance, spherical-disk, projection,
+preparation, renderer, semantic SVG, and export machinery without a Moon-
+specific parallel pipeline.
+
+PRs #70 through #73 are merged, ending at `bc45cc0`. Parent closure records
+the already accepted final verification: 75 documentation tests, 161 expanded
+focused tests, 2,088 routine tests with 30 deselected, and all 2,118 tests.
+
+Parent-closure verification passed 76 documentation tests in 9.55 seconds, 2,089 routine tests with 30 deselected in 31.89 seconds, and all 2,119 tests in 87.44 seconds.
+
+No additional runtime behavior is authorized by this parent closure. Frozen-Earth lunar sequences, interpolation, animation, texture, libration, eclipses,
+refraction across the resolved disk, and occultation prediction remain outside
+49I.3E.
