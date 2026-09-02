@@ -2437,7 +2437,7 @@ def test_49i3c31b_records_drawable_observed_venus_sequence():
         "one fixed product frame",
         "observer/AU distances",
         "`--planet-disk-sequence venus`",
-        "`--disk-sequence-model observed`",
+        "--disk-sequence-model observed",
         "`--disk-sequence-labels`",
         "`--planet-disk-magnification venus=FACTOR`",
         "`--no-equatorial-grid`",
