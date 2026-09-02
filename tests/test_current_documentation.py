@@ -2795,7 +2795,7 @@ def test_49i3e2_records_pending_drawable_resolved_moon_contract():
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
-        "Implemented for review; scientific, visual, and regression acceptance pending",
+        "Scientifically, architecturally, visually, operationally, and regression accepted",
         "Supplying `--moon` now requests one resolved physical Moon by default",
         "`--moon-appearance symbolic` preserves the earlier point",
         "equal-volume mean radius `1737.4 km`",
@@ -2811,6 +2811,10 @@ def test_49i3e2_records_pending_drawable_resolved_moon_contract():
         "horizontal coordinates center the regional chart",
         "magnitude `11.0`",
         "magnified Moon is present and legible in every family",
+        "69 focused Moon/display tests in 2.43 seconds",
+        "74 current-documentation tests in 3.19 seconds",
+        "2,074 routine tests with 30 deselected in 31.19 seconds",
+        "all 2,104 tests in 100.17 seconds",
         "Milestone 49I.3E.3 multi-epoch Moon behavior remains unimplemented",
     ):
         assert phrase in contract
