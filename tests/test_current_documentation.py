@@ -2936,7 +2936,7 @@ def test_49j0_freezes_performance_measurement_before_optimization():
 
     for phrase in (
         "**Audit baseline:** `ea6f340`",
-        "**Status:** Architecturally accepted by Fernando on 2026-09-02",
+        "**Status:** Architecturally accepted and regression-verified on 2026-09-02",
         "**Runtime effect:** None",
         "Fernando also selected conservative documentation cleanup",
         "`docs/user_guide/` remains separate",
