@@ -100,6 +100,11 @@ products.
 
 This contract generates complete independent static frames. It introduces no
 alternate sky, projection, rendering, or export pipeline and performs no
-scientific caching. Proper motion, precession, planets, satellites, fixed-sky
-presentations, video encoding, and scientifically keyed reuse are later
-milestones.
+scientific caching.
+
+Observed Moon disks within one fixed chart are supported separately from
+observer-time sequences; see
+[configuration and Solar-System controls](configuration.md). Fixed-sky
+presentation remains a separately governed reference path, and scientifically
+keyed reuse remains future 49J work. Video encoding, interpolation, and
+artificial-satellite sequences remain outside this contract.
