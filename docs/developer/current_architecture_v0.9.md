@@ -593,3 +593,23 @@ Descriptor policy authorizes observed Moon sequences in all five chart
 families while preserving Venus's regional/binocular boundary. Shared labels,
 per-centre post-projection magnification, semantics, clipping, and PNG/PDF/SVG
 export remain generic. Frozen-Earth lunar sequences remain unimplemented.
+
+
+
+## Completed resolved Moon capability (Milestone 49I.3E)
+
+Milestones 49I.3E.0 through 49I.3E.3 are closed. The implemented architecture
+has one catalog Moon identity and Earth relationship, one renderer-neutral
+physical appearance state, shared illuminated spherical-disk geometry, a
+resolved single-epoch request, symbolic compatibility, and an observed
+multi-epoch request. Single disks and independently realized sequence samples
+use ordinary transformation, projection, per-centre post-projection
+magnification, rendering, semantic SVG, and export owners in all five ordinary
+chart families.
+
+The sequence preserves one chart-epoch product frame while each sample retains
+its own apparent centre, distance, diameter, phase, illuminated fraction, and
+complete tangent geometry. No Moon-specific projection, renderer, or exporter
+exists. Parent closure adds no runtime behavior; frozen-Earth lunar sequences,
+interpolation, animation, texture, libration, eclipses, disk refraction, and
+occultation prediction remain unimplemented.
