@@ -30,6 +30,8 @@ Previous conversations may explain intent but do not override the repository.
 
 For current work, read and follow:
 
+- `README.md` as the active developer-document index and top-level placement policy;
+
 - `current_architecture_v0.9.md` as the implemented architecture authority;
 - `post_v0.9_architecture_roadmap.md` as the active milestone roadmap;
 - `archive/architecture_history/target_architecture_v0.9.md` and `archive/migration_history/wenu_migration_0.8_to_0.9.md` only as
