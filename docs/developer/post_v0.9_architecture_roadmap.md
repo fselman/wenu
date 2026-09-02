@@ -1180,3 +1180,20 @@ correction, transformation, semantic, style, renderer, and export path.
 This slice preserves the provisional Venus hollow marker for every planet.
 Validated apparent photometry, planet glyphs, resolved disks, rings, tracks,
 and observed sequences remain later capability-specific work.
+
+
+## Milestone 49I.3E.1 — Output-neutral lunar physical appearance
+
+**Status:** Implementation complete; installed-DE440 and scientific acceptance
+pending.
+
+Register one catalog Moon identity with Earth relationship, NAIF physical body
+ID `301`, JPL equal-volume mean radius `1737.4 km`, localization, symbolic
+compatibility, and output-neutral spherical-appearance capability. Reuse the
+generic `SolarSystemAppearanceRealizer` for centre, distance, diameter, phase,
+illuminated fraction, and apparent-ICRS bright-limb orientation.
+
+Validate a deterministic phase/distance/orientation case set against direct
+Skyfield using the installed kernel and explicit topocentric parallax. Add no
+disk geometry, CLI, magnification, chart-family change, style, renderer,
+exporter, sequence, or visible output.

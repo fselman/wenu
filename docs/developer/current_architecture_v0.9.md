@@ -546,3 +546,19 @@ state plus an installed-DE440 frozen-Earth comparison. Only a separately
 accepted second slice may generalize the drawable frozen sequence. No Mercury
 runtime, public request, style, semantic output, or chart is currently
 installed.
+
+
+## Output-neutral lunar physical appearance
+
+Milestone 49I.3E.1 registers one immutable Moon body descriptor with physical
+body ID `301`, Earth parent relationship, JPL equal-volume mean radius
+`1737.4 km`, localization, symbolic compatibility, and an output-neutral
+spherical-appearance capability. A non-drawable Earth descriptor with body ID
+`399` completes the catalog relationship without exposing Earth as a chart
+target.
+
+The generic `SolarSystemAppearanceRealizer` produces the lunar
+`SolarSystemApparentDisk` from accepted topocentric Moon and Sun directions.
+The physical state remains renderer-neutral and contains no magnification or
+page policy. Resolved geometry, public Moon appearance controls, sequences,
+styles, rendering, and visible output remain later 49I.3E slices.

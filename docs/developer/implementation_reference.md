@@ -1956,6 +1956,20 @@ physical angular scale. The accepted public controls are
 `--planet-disk-magnification venus=FACTOR`.
 
 
+## Lunar physical-appearance state (Milestone 49I.3E.1)
+
+`sky/moon.py::MOON_BODY` is the immutable catalog identity shared by the
+accepted symbolic Moon layer and future physical appearance. It records NAIF
+body ID `301`, Earth parent key, equal-volume mean radius `1737.4 km`, and the
+output-neutral `spherical_physical_appearance` capability.
+
+`sky/earth.py::EARTH_BODY` supplies non-drawable NAIF body identity `399` so
+catalog relationship queries are complete. `SolarSystemAppearanceRealizer`
+uses the accepted topocentric Moon and Sun apparent directions with
+descriptor-owned radius data to return `SolarSystemApparentDisk`. No chart
+request consumes this state in 49I.3E.1.
+
+
 ## Frozen-Earth Venus sequence state (Milestone 49I.3C.3.2A)
 
 `FrozenEarthDiskSequenceRequest` declares exact start-inclusive major samples

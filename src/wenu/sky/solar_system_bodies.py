@@ -11,6 +11,7 @@ from wenu.sky.solar_system_points import SolarSystemPointDescriptor
 
 SYMBOLIC_POINT = "symbolic_point"
 APPARENT_TRACK = "apparent_track"
+SPHERICAL_PHYSICAL_APPEARANCE = "spherical_physical_appearance"
 RESOLVED_SPHERICAL_DISK = "resolved_spherical_disk"
 OBSERVED_DISK_SEQUENCE = "observed_disk_sequence"
 FROZEN_EARTH_DISK_SEQUENCE = "frozen_earth_disk_sequence"
