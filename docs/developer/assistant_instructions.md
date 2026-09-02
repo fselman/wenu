@@ -30,6 +30,8 @@ Previous conversations may explain intent but do not override the repository.
 
 For current work, read and follow:
 
+- `README.md` as the active developer-document index and top-level placement policy;
+
 - `current_architecture_v0.9.md` as the implemented architecture authority;
 - `post_v0.9_architecture_roadmap.md` as the active milestone roadmap;
 - `archive/architecture_history/target_architecture_v0.9.md` and `archive/migration_history/wenu_migration_0.8_to_0.9.md` only as
@@ -41,47 +43,47 @@ For current work, read and follow:
 - `target_architecture_v0.9.5.md` and
   `coordinate_system_guide_v0.9.5.md` for proposed 49B/49C coordinate,
   provider, frame, time, provenance, planet, or satellite work;
-- `coordinate_transformation_audit_09a2afd.md` for the as-is coordinate
+- `archive/audits/coordinate_transformation_audit_09a2afd.md` for the as-is coordinate
   evidence that motivates that target;
-- `public_interface_audit_v0.9.5.md` for public examples, tools, coordinate
+- `archive/audits/public_interface_audit_v0.9.5.md` for public examples, tools, coordinate
   system, frame, equinox, or epoch interface work;
-- `celestial_scene_dependency_audit_49d1.md` for celestial-background,
+- `archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md` for celestial-background,
   moving-object, observer-local, product-frame, planet, Moon, or scene-reuse
   dependency work;
-- `layer_realization_context_49d2.md` for the optional pre-projection layer
+- `archive/milestone_history/49d_scene/layer_realization_context_49d2.md` for the optional pre-projection layer
   context, compatibility dispatch, or controlled-provider integration point;
-- `ephemeris_provider_contract_49e1.md` for ephemeris state, target/centre,
+- `archive/milestone_history/49e_ephemeris/ephemeris_provider_contract_49e1.md` for ephemeris state, target/centre,
   kernel provenance, apparent-place corrections, or Sun/Moon/planet provider
   boundary work;
-- `ephemeris_runtime_contracts_49e2.md` for the frozen ephemeris resource,
+- `archive/milestone_history/49e_ephemeris/ephemeris_runtime_contracts_49e2.md` for the frozen ephemeris resource,
   state request, six-component state, structural source, or `TOPOCENTRIC`
   removal work;
-- `solar_system_direction_realizer_49e4.md` and
-  `astrometric_direction_runtime_49e5.md` for observer state, retarded emission
+- `archive/milestone_history/49e_ephemeris/solar_system_direction_realizer_49e4.md` and
+  `archive/milestone_history/49e_ephemeris/astrometric_direction_runtime_49e5.md` for observer state, retarded emission
   time, light-time iteration, astrometric direction, or Venus-first runtime
   work;
-- `venus_vertical_slice_audit_49i1.md` for the first drawable Venus,
+- `archive/milestone_history/49i_solar_system/venus_vertical_slice_audit_49i1.md` for the first drawable Venus,
   ordinary realization-context handoff, planet semantic identity, or
   `--planet venus` work;
-- `ordinary_realization_context_49i1a.md` for the implemented ordinary
+- `archive/milestone_history/49i_solar_system/ordinary_realization_context_49i1a.md` for the implemented ordinary
   request-to-layer context mapping and its output-neutral acceptance;
-- `venus_layer_49i1b.md` for the first production Venus layer, opt-in planet
+- `archive/milestone_history/49i_solar_system/venus_layer_49i1b.md` for the first production Venus layer, opt-in planet
   selection, symbolic appearance, semantic identity, or visual acceptance;
-- `shared_solar_system_point_layer_49i2b.md` for the shared symbolic-point
+- `archive/milestone_history/49i_solar_system/shared_solar_system_point_layer_49i2b.md` for the shared symbolic-point
   descriptor, renderer-neutral orchestration, or Venus migration boundary;
-- `moon_layer_49i2c.md` for the first production Moon point, shared internal
+- `archive/milestone_history/49i_solar_system/moon_layer_49i2c.md` for the first production Moon point, shared internal
   Solar-System selection, natural-satellite semantics, or visual review;
-- `solar_system_track_audit_49i2d.md` for Solar-System trajectories,
+- `archive/milestone_history/49i_solar_system/solar_system_track_audit_49i2d.md` for Solar-System trajectories,
   per-sample time provenance, fixed chart-frame tracks, or projected ticks;
-- `solar_system_track_curve_49i2d1.md` for sampled track contracts, scalar
+- `archive/milestone_history/49i_solar_system/solar_system_track_curve_49i2d1.md` for sampled track contracts, scalar
   direction evidence, exact tick anchors, or fixed-frame curve realization;
-- `drawable_venus_track_49i2d2.md` for the visible Venus track request,
+- `archive/milestone_history/49i_solar_system/drawable_venus_track_49i2d2.md` for the visible Venus track request,
   projected perpendicular ticks, two-pass date placement, style, semantic
   identity, or visual acceptance;
-- `physical_apparent_disk_audit_49i3a.md` for symbolic-versus-resolved
+- `archive/milestone_history/49i_solar_system/physical_apparent_disk_audit_49i3a.md` for symbolic-versus-resolved
   Solar-System appearance, angular diameter, phase, limb orientation,
   photometry, or object-specific display magnification;
-- `venus_physical_appearance_49i3b.md` for the accepted Venus radius,
+- `archive/milestone_history/49i_solar_system/venus_physical_appearance_49i3b.md` for the accepted Venus radius,
   angular-diameter, phase, illuminated-fraction, bright-limb convention,
   numerical tolerances, or output-neutral physical-appearance state;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
@@ -281,7 +283,7 @@ alter the result. Never guess.
 
 
 For resolved Solar-System disks, consult
-`resolved_venus_disk_audit_49i3c.md` after the accepted 49I.3A and 49I.3B
+`archive/milestone_history/49i_solar_system/resolved_venus_disk_audit_49i3c.md` after the accepted 49I.3A and 49I.3B
 contracts. Keep physical angular diameter immutable, sample illuminated face, limb, and
 terminator as ordinary physical pre-projection semantic geometry, and apply
 object-specific display magnification only after projection around the
@@ -291,14 +293,14 @@ format-specific geometry path.
 
 
 For 49I.3C.1 physical disk geometry, consult
-`venus_disk_spherical_geometry_49i3c1.md`. Preserve the 720-sample
+`archive/milestone_history/49i_solar_system/venus_disk_spherical_geometry_49i3c1.md`. Preserve the 720-sample
 renderer-neutral centre, limb, visible terminator, and illuminated-face
 contract. Do not move post-projection magnification, chart selection, style,
 or rendering policy into `solar_system_disk_geometry.py`.
 
 
 For 49I.3C.2 drawable Venus disks, consult
-`drawable_venus_disk_49i3c2.md`. Preserve explicit resolved selection,
+`archive/milestone_history/49i_solar_system/drawable_venus_disk_49i3c2.md`. Preserve explicit resolved selection,
 object-specific post-projection magnification about the exact projected
 physical centre, independent illuminated/limb/terminator semantics, and
 regional/binocular scope. Keep symbolic Venus as the default and keep
@@ -306,7 +308,7 @@ multi-epoch disk display in 49I.3C.3.
 
 
 For multi-epoch resolved planet disks, consult
-`planet_disk_sequence_audit_49i3c3.md`. Keep observed topocentric sequences
+`archive/milestone_history/49i_solar_system/planet_disk_sequence_audit_49i3c3.md`. Keep observed topocentric sequences
 scientifically distinct from frozen-Earth ecliptic constructions. Both may
 share typed sequence, disk geometry, projection, preparation, renderer, and
 export owners only after their different direction and appearance states are
@@ -314,14 +316,14 @@ resolved. Never label a frozen-observer geometric direction as apparent sky.
 
 
 For the output-neutral observed Venus disk sequence, consult
-`observed_venus_disk_sequence_49i3c31a.md`. Preserve exact start-inclusive
+`archive/milestone_history/49i_solar_system/observed_venus_disk_sequence_49i3c31a.md`. Preserve exact start-inclusive
 major instants, independent topocentric observer and physical-appearance
 realization at every epoch, and explicit observer/AU distances. Do not combine
 native per-epoch geometry under a false common coordinate instant.
 
 
 For the drawable observed Venus sequence, consult
-`drawable_observed_venus_sequence_49i3c31b.md`. Transform every physical
+`archive/milestone_history/49i_solar_system/drawable_observed_venus_sequence_49i3c31b.md`. Transform every physical
 epoch independently into one fixed product frame before aggregation, preserve
 observer/AU distance evidence, and magnify each projected disk only around its
 own separately projected centre. Keep frozen-Earth mode and Mercury outside
@@ -329,7 +331,7 @@ this accepted slice.
 
 
 For the output-neutral frozen-Earth Venus sequence, consult
-`frozen_earth_venus_sequence_49i3c32a.md`. Preserve the one start-time Earth
+`archive/milestone_history/49i_solar_system/frozen_earth_venus_sequence_49i3c32a.md`. Preserve the one start-time Earth
 heliocentric vector, same-epoch planet heliocentric vectors, complete retained
 ICRF evidence, frozen-earth/AU distances, geometric status, and fixed J2000
 mean-ecliptic axes. Never pass this state through the apparent-direction chain.
@@ -338,7 +340,7 @@ Keep public request, Sun glyph, restricted scene, and visible output in
 
 
 For the drawable frozen-Earth Venus sequence, consult
-`drawable_frozen_earth_venus_sequence_49i3c32b.md`. Preserve frozen-Earth
+`archive/milestone_history/49i_solar_system/drawable_frozen_earth_venus_sequence_49i3c32b.md`. Preserve frozen-Earth
 public request integration, restricted regional content, fixed Sun,
 per-centre magnification, localized title, and product-frame
 ecliptic/equatorial references. Never introduce an observer AltAz intermediate
@@ -347,7 +349,7 @@ validated 49I.3C.3.3 milestone.
 
 
 For Mercury disk-sequence work, consult
-`mercury_disk_sequence_audit_49i3c33.md`. Preserve the distinction between
+`archive/milestone_history/49i_solar_system/mercury_disk_sequence_audit_49i3c33.md`. Preserve the distinction between
 NAIF physical body `199` and a kernel-resolved Mercury barycentre, use the
 separately sourced mean spherical radius, validate output-neutral frozen-Earth
 state before drawable integration, and generalize the Venus orchestration
@@ -356,27 +358,27 @@ enable observed Mercury, symbolic Mercury, tracks, single disks, photometry,
 rotation, multiple bodies, animation, or 3D behavior under this milestone.
 
 For drawable frozen-Earth Mercury, also consult
-`drawable_frozen_earth_mercury_sequence_49i3c33c.md`. Keep public exposure
+`archive/milestone_history/49i_solar_system/drawable_frozen_earth_mercury_sequence_49i3c33c.md`. Keep public exposure
 capability-driven, reject observed Mercury, derive localized body text and
 semantic identity from its descriptor, and reuse the shared fixed-Earth
 layers, projection, preparation, style, renderer, and exporters.
 
 Before registering another moving body, consult
-`moving_body_architecture_49i3c33a.md`. Add identity, relationships, physical
+`archive/milestone_history/49i_solar_system/moving_body_architecture_49i3c33a.md`. Add identity, relationships, physical
 metadata, and capabilities through the body catalog. Do not add a body-specific
 point, disk, sequence, projection, renderer, or exporter when the generic
 moving-body machinery applies. Classification is metadata; capability and the
 validated scientific model govern behavior.
 
 For ordinary apparent major planets, consult
-`apparent_major_planets_49i3d1.md`. Register data and symbolic-point capability
+`archive/milestone_history/49i_solar_system/apparent_major_planets_49i3d1.md`. Register data and symbolic-point capability
 through the catalog; preserve provider barycentre IDs separately from physical
 planet IDs; reuse the shared apparent point layer; and do not infer resolved
 disk, photometry, rings, track, or sequence capabilities from classification.
 
 
-For resolved Moon work, consult `resolved_moon_audit_49i3e0.md` after the
-planning handoff in `resolved_moon_plan_49i3e.md`. Preserve the JPL
+For resolved Moon work, consult `archive/milestone_history/49i_solar_system/resolved_moon_audit_49i3e0.md` after the
+planning handoff in `archive/milestone_history/49i_solar_system/resolved_moon_plan_49i3e.md`. Preserve the JPL
 equal-volume mean radius, topocentric apparent centre, independent physical
 state at every sample epoch, and one fixed chart-epoch product frame. Transport
 the complete sample tangent geometry into that frame; do not treat the scalar
@@ -386,7 +388,7 @@ renderer, semantics, and exporters. Do not add runtime Moon behavior under
 49I.3E.0.
 
 For the output-neutral lunar appearance state, also consult
-`lunar_physical_appearance_49i3e1.md`. Preserve the single catalog Moon
+`archive/milestone_history/49i_solar_system/lunar_physical_appearance_49i3e1.md`. Preserve the single catalog Moon
 identity, Earth parent relationship, JPL equal-volume mean radius, and generic
 `SolarSystemApparentDisk` realization. Require the installed-DE440 validator
 and explicit parallax evidence before acceptance. Do not add resolved disk
@@ -394,7 +396,7 @@ geometry, Moon display controls, magnification, sequence requests, or visible
 output under 49I.3E.1.
 
 For the drawable resolved single-epoch Moon, also consult
-`drawable_resolved_moon_49i3e2.md`. Keep bare `--moon` resolved by default,
+`archive/milestone_history/49i_solar_system/drawable_resolved_moon_49i3e2.md`. Keep bare `--moon` resolved by default,
 preserve explicit symbolic compatibility, and apply Moon magnification only
 after projection about the physical centre. Authorize chart families through
 the body descriptor and reuse generic disk geometry/rendering/export. Exercise
@@ -404,7 +406,7 @@ multi-epoch Moon behavior under 49I.3E.2.
 
 
 For observed multi-epoch Moon sequences, consult
-`observed_moon_disk_sequence_49i3e3.md`. Adapt `--moon-disk-sequence` into
+`archive/milestone_history/49i_solar_system/observed_moon_disk_sequence_49i3e3.md`. Adapt `--moon-disk-sequence` into
 the generic observed request, independently realize every sample, and
 transform complete tangent geometry into one chart-epoch product frame.
 Preserve descriptor-owned all-five-family Moon policy, per-centre
@@ -414,8 +416,16 @@ projector, renderer, exporter, interpolation, or animation path.
 
 
 The resolved-Moon program 49I.3E.0 through 49I.3E.3 is closed. Treat
-`resolved_moon_plan_49i3e.md` as accepted historical planning plus closure
+`archive/milestone_history/49i_solar_system/resolved_moon_plan_49i3e.md` as accepted historical planning plus closure
 evidence and preserve the implemented shared single-disk and observed-sequence
 paths. Parent closure authorizes no new runtime behavior. Any Frozen-Earth
 lunar sequence, interpolation, animation, texture, libration, eclipse,
 resolved-disk refraction, or occultation work requires a new bounded milestone.
+
+
+For performance or post-v0.9 closure work, consult
+`performance_and_closure_audit_49j0.md`. Keep the reusable-sphere diagnostic
+separate from a cold independent-frame oracle, report exclusive wall-time spans
+separately from overlapping profiler totals, and preserve
+`generate_chart_request()` as the complete-render correctness route. Do not
+add caching or optimization under 49J.0.

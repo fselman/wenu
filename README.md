@@ -83,8 +83,9 @@ python examples/planisphere.py \
 The image's exact command, source commit, dimensions, checksum, and visual
 approval are recorded in the
 [planisphere guide](docs/user_guide/planisphere.md#readme-image-provenance).
-The complete [Wenu v0.8 user guide](docs/user_guide/index.md) covers all six
-canonical chart families and their shared controls. Use `--format svg` for
+The complete [Wenu v0.9.5 user guide](docs/user_guide/index.md) covers all five ordinary chart families, the six canonical Python examples,
+and their shared controls. The [chart examples](docs/user_guide/chart_examples.md)
+provide one runnable installed-command example per family. Use `--format svg` for
 editable vector output; see [SVG output and editing](docs/user_guide/svg_output.md)
 for the supported Inkscape workflow and font-portability limits.
 
@@ -195,6 +196,7 @@ The principal packages are:
 
 Developer references:
 
+- `docs/developer/README.md` (active developer-document index);
 - `docs/developer/current_architecture_v0.9.md` (implemented authority);
 - `docs/developer/post_v0.9_architecture_roadmap.md` (active coordinate, SVG,
   and temporal roadmap);
@@ -204,7 +206,7 @@ Developer references:
 - `docs/developer/archive/migration_history/wenu_migration_0.8_to_0.9.md` (completed migration);
 - `docs/developer/archive/README.md` (historical architecture and migration
   index);
-- `docs/developer/deprecations_v0.5.md`.
+- `docs/developer/archive/migration_history/deprecations_v0.5.md`.
 
 ## Tests
 

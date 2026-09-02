@@ -1,5 +1,7 @@
 # Circumpolar charts
 
+The [complete chart examples](chart_examples.md) include a runnable installed-command example for this family.
+
 `examples/circumpolar.py` renders the southern sky down to declination
 −69.75°, a boundary chosen to cross the Large Magellanic Cloud. The chart owns
 its declination boundary, circular clipping, and framing.

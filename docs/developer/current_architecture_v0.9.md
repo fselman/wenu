@@ -367,12 +367,12 @@ Current work reads this document together with:
   target and minimal 49B/49C roadmap;
 - `coordinate_system_guide_v0.9.5.md` for living equations, coordinate
   conventions, code ownership, object inventory, and provenance;
-- `coordinate_transformation_audit_09a2afd.md` for scientific coordinate
+- `archive/audits/coordinate_transformation_audit_09a2afd.md` for scientific coordinate
   evidence;
-- `public_interface_audit_v0.9.5.md` for the accepted executable inventory and
+- `archive/audits/public_interface_audit_v0.9.5.md` for the accepted executable inventory and
   public system, frame, equinox, and epoch boundary;
-- `celestial_scene_dependency_audit_49d1.md` and
-  `layer_realization_context_49d2.md` for scene dependencies and the minimal
+- `archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md` and
+  `archive/milestone_history/49d_scene/layer_realization_context_49d2.md` for scene dependencies and the minimal
   pre-projection realization handoff;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product evidence.
 
@@ -613,3 +613,16 @@ complete tangent geometry. No Moon-specific projection, renderer, or exporter
 exists. Parent closure adds no runtime behavior; Frozen-Earth lunar sequences,
 interpolation, animation, texture, libration, eclipses, disk refraction, and
 occultation prediction remain unimplemented.
+
+
+## Performance baseline boundary (Milestone 49J.0)
+
+The current complete-frame authority remains `generate_chart_request()`;
+fixed-sky and observer-time sequences call that static path for every frame.
+`tools/benchmark_reusable_sphere.py` is a separate shared-sphere diagnostic
+whose overlapping profiler categories are non-additive. It is not a cold
+independent-frame oracle.
+
+`performance_and_closure_audit_49j0.md` proposes exclusive stage timing and
+one later fixed-sky circumpolar reuse candidate. 49J.0 adds no instrumentation,
+cache, optimization, test reclassification, or runtime/output change.

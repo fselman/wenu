@@ -1,5 +1,7 @@
 # Planisphere
 
+The [complete chart examples](chart_examples.md) include a runnable installed-command example for this family.
+
 `examples/planisphere.py` produces the visible sky from La Ligua at 21:00 local
 time on 15 August 2026. The observer defines the horizon and the chart remains
 zenith-centred. Content switches never remove or alter the circular horizon.

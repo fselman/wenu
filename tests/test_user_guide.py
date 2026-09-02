@@ -13,6 +13,7 @@ IMAGE_SHA256 = (
 )
 GUIDE_PAGES = (
     "index.md",
+    "chart_examples.md",
     "all_sky.md",
     "planisphere.md",
     "regional_charts.md",

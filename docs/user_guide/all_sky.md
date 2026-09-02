@@ -1,5 +1,7 @@
 # Galactic Mollweide all-sky map
 
+The [complete chart examples](chart_examples.md) include a runnable installed-command example for this family.
+
 `examples/all_sky.py` draws the complete celestial sphere in Galactic
 longitude and latitude. The example requests `family="all_sky"`,
 `projection="mollweide"`, and `coordinate_frame="galactic"`; it does not

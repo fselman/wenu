@@ -21,7 +21,7 @@ It records the active direction and sequencing after the closed v0.9
 architecture. Each implementation stage requires a fresh as-is assessment and
 its own small, testable milestone.
 
-The coordinate decisions in `coordinate_transformation_audit_09a2afd.md`
+The coordinate decisions in `archive/audits/coordinate_transformation_audit_09a2afd.md`
 remain authoritative scientific input. The longer-term astrometry sequence in
 `archive/roadmap_history/polar_delivery_and_astrometry_roadmap.md` is consolidated here so that it no
 longer depends on the urgent polar-delivery numbering.
@@ -247,7 +247,7 @@ tests passed in 86.71 seconds.
 
 The completed as-is inventory, executable dispositions, public coordinate
 vocabulary, validation constraints, and recommended implementation slices are
-recorded in `public_interface_audit_v0.9.5.md`. Arbitrary supported equinoxes
+recorded in `archive/audits/public_interface_audit_v0.9.5.md`. Arbitrary supported equinoxes
 are coordinate-representation requests; arbitrary position epochs remain
 provider operations and must be rejected until the relevant provider can
 propagate them physically.
@@ -259,7 +259,7 @@ propagate them physically.
 **Status:** Accepted and merged in `9e16ed2`.
 
 The as-is inventory and minimum planet-enabling scene boundary are recorded in
-`celestial_scene_dependency_audit_49d1.md`. It distinguishes the reusable
+`archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md`. It distinguishes the reusable
 loaded sphere from its currently observer-bound spherical realizations and
 classifies content as celestial background, dynamic astronomical objects, or
 observer-local geometry.
@@ -290,7 +290,7 @@ all 1,819 tests in 84.41 seconds. No visual comparison was required because
 **Status:** Accepted and merged in `85c7392`.
 
 The exact contract and acceptance requirements are recorded in
-`layer_realization_context_49d2.md`. A frozen `LayerRealizationContext`
+`archive/milestone_history/49d_scene/layer_realization_context_49d2.md`. A frozen `LayerRealizationContext`
 carries product coordinate identity, optional observation context, a paired
 provider evaluation instant/time scale, and an optional resolved reference
 equinox. It deliberately carries no projection, appearance, furniture, output,
@@ -336,7 +336,7 @@ cross-match policies.
 **Status:** Accepted and merged in `d14ca52`.
 
 The as-is audit and proposed scientific contract are recorded in
-`ephemeris_provider_contract_49e1.md`. The existing generic
+`archive/milestone_history/49e_ephemeris/ephemeris_provider_contract_49e1.md`. The existing generic
 `PositionProvider.position(instant)` is suitable for native catalogue
 spherical directions but cannot by itself preserve the Cartesian state,
 target, centre, frame, distance, velocity, time scale, kernel coverage, and
@@ -384,7 +384,7 @@ contract shape without installing a kernel
 adapter, direction realizer, moving-object layer, or output change.
 
 The exact contract and acceptance requirements are recorded in
-`ephemeris_runtime_contracts_49e2.md`. 49E.3 remains responsible for one real
+`archive/milestone_history/49e_ephemeris/ephemeris_runtime_contracts_49e2.md`. 49E.3 remains responsible for one real
 resolved-kernel resource/adapter and numerical validation. Venus remains a
 later 49I.1 slice.
 
@@ -439,7 +439,7 @@ The controlled Mac run identified the exact `de440s.bsp` bytes as
 resolved NAIF 299 relative to NAIF 0, and obtained zero adapter/direct residual
 within `1e-15` for all six components at the fixed TDB instant.
 
-The exact contract is `skyfield_ephemeris_adapter_49e3.md`. This milestone
+The exact contract is `archive/milestone_history/49e_ephemeris/skyfield_ephemeris_adapter_49e3.md`. This milestone
 adds no direction realizer, chart layer, CLI/TOML control, or output change.
 Venus rendering remains 49I.1 and must use the canonical PNG/PDF/SVG path.
 
@@ -458,7 +458,7 @@ all 44 tests in 1.70 seconds.
 **Status:** Scientifically accepted by Fernando on 2026-08-30; ready for integration.
 
 The proposed contract is recorded in
-`solar_system_direction_realizer_49e4.md`. It separates the retarded-emission
+`archive/milestone_history/49e_ephemeris/solar_system_direction_realizer_49e4.md`. It separates the retarded-emission
 light-time solution that produces an astrometric observer-relative direction
 from the later aberration and gravitational-deflection operation that produces
 an apparent direction. Reception instant, retarded emission instant, distance,
@@ -638,7 +638,7 @@ must reproduce that baseline rather than bypass the canonical pipeline.
 **Status:** Scientifically and visually accepted; completed through 49I.1B and
 merged in `e7fa6ab` on 2026-08-30.
 
-The as-is audit is recorded in `venus_vertical_slice_audit_49i1.md`. The
+The as-is audit is recorded in `archive/milestone_history/49i_solar_system/venus_vertical_slice_audit_49i1.md`. The
 accepted 49E.3–49E.6 provider/direction chain is ready, but ordinary chart
 facades do not yet supply the 49D.2 `LayerRealizationContext`. 49I.1 therefore
 has two bounded steps: 49I.1A threads one output-neutral product-frame context
@@ -699,7 +699,7 @@ collision without weakening hierarchy validation.
 **Status:** Scientifically and architecturally accepted by Fernando and merged
 in `fbf4dd9` on 2026-08-30.
 
-`moon_shared_body_pipeline_audit_49i2.md` tests the single-pipeline goal
+`archive/milestone_history/49i_solar_system/moon_shared_body_pipeline_audit_49i2.md` tests the single-pipeline goal
 against the merged Venus implementation. The target is one typed downstream
 path with interchangeable geometric-state sources and body-appearance
 strategies, not one hard-coded algorithm pretending that JPL planets, orbital
@@ -771,7 +771,7 @@ architecturally, and visually accepted 49I.2C and its stated non-goals on
 **Status:** Scientifically and architecturally accepted by Fernando on
 2026-08-31; ready for integration.
 
-`solar_system_track_audit_49i2d.md` defines a shared, time-parameterized path
+`archive/milestone_history/49i_solar_system/solar_system_track_audit_49i2d.md` defines a shared, time-parameterized path
 before physical-disk work. The proposed request names one body, a start instant,
 a curve-sampling cadence, a major-tick cadence, and a tick count. Each sample
 reevaluates the observer and body at its own physical reception instant, while
@@ -806,7 +806,7 @@ authorized.
 **Status:** Scientifically and architecturally accepted by Fernando on
 2026-08-31; ready for integration.
 
-`solar_system_track_curve_49i2d1.md` adds frozen sampling request/result
+`archive/milestone_history/49i_solar_system/solar_system_track_curve_49i2d1.md` adds frozen sampling request/result
 contracts and one renderer-neutral realizer. The accepted scalar
 astrometric/apparent chain is reevaluated at every sample instant, exact
 major-time anchors are merged into the cadence, and complete per-sample
@@ -834,7 +834,7 @@ chart. 49I.2D.2 remains separately authorized.
 **Status:** Scientifically and architecturally accepted by Fernando on
 2026-08-31; ready for integration.
 
-`physical_apparent_disk_audit_49i3a.md` separates the accepted apparent
+`archive/milestone_history/49i_solar_system/physical_apparent_disk_audit_49i3a.md` separates the accepted apparent
 centre direction from a future renderer-neutral physical-appearance state.
 Physical angular diameter, illuminated fraction, bright-limb position angle,
 body orientation, photometry, and display magnification remain distinct
@@ -871,7 +871,7 @@ does not pre-accept that model, its tolerances, runtime API, or visible output.
 **Status:** Scientifically and architecturally accepted by Fernando on
 2026-08-31; integration verification in progress.
 
-`venus_physical_appearance_49i3b.md` adds one frozen renderer-neutral
+`archive/milestone_history/49i_solar_system/venus_physical_appearance_49i3b.md` adds one frozen renderer-neutral
 `SolarSystemApparentDisk` and realizer. The accepted retarded Venus direction
 remains the centre and distance authority. JPL's 6051.8-km mean Venus radius
 sets physical angular diameter; the Sun–target–observer phase angle sets the
@@ -912,6 +912,24 @@ stable upstream object identity and the appropriate reserved
 
 ## 13. Milestone 49J - Performance and closure
 
+### Milestone 49J.0 — Performance and closure audit
+
+**Status:** Architecturally accepted and regression-verified on 2026-09-02; ready for integration.
+
+`performance_and_closure_audit_49j0.md` distinguishes the existing
+reusable-sphere diagnostic from the required cold independent-frame oracle. It
+freezes mutually exclusive wall-time spans for resource loading, provider
+evaluation, transformation, projection, preparation, rendering, and encoding;
+requires immutable scientific cache keys; and retains complete rendering as
+the correctness authority.
+
+The proposed sequence is 49J.1 independent-frame measurement, optional 49J.2
+routine-suite remediation when repeated evidence justifies it, 49J.3 one
+bounded scientifically keyed fixed-sky circumpolar reuse candidate, and 49J.4
+post-v0.9 closure. Every slice remains separately authorized.
+
+49J continues to require:
+
 - benchmark complete independent frames before optimizing;
 - measure catalogue loading, provider evaluation, transformation, projection,
   preparation, rendering, and encoding separately;
@@ -919,9 +937,17 @@ stable upstream object identity and the appropriate reserved
   state;
 - retain the complete-render path as a correctness oracle;
 - update current architecture, implementation reference, source tree, user
-  documentation, and examples;
+  documentation, examples, and diagrams when ownership changes;
 - close or supersede this roadmap only after focused, full, scientific, SVG,
   visual, and sequence tests pass.
+
+49J.0 changes no runtime behavior, timing threshold, test classification,
+cache, or output.
+
+Final Mac verification passed 94 combined documentation/user-guide tests,
+2,092 routine tests with 30 deselected, and all 2,122 tests. The observed
+37.88-second routine run is retained as later characterization evidence; it
+does not authorize weakening tests or optimizing under 49J.0.
 
 ## 14. Stop conditions
 
@@ -961,7 +987,7 @@ tests passed. Physical apparent disks remain 49I.3.
 
 **Status:** Scientifically and architecturally accepted on 2026-08-31.
 
-`resolved_venus_disk_audit_49i3c.md` accepts a renderer-neutral semantic group
+`archive/milestone_history/49i_solar_system/resolved_venus_disk_audit_49i3c.md` accepts a renderer-neutral semantic group
 containing an illuminated spherical polygon plus limb and terminator spherical
 curves. Physical geometry is sampled before projection; Venus-specific display
 magnification scales projected offsets about the projected physical centre in
@@ -1005,7 +1031,7 @@ tests with 30 deselected and all 2,000 tests.
 
 **Status:** Scientifically and architecturally accepted on 2026-08-31.
 
-`planet_disk_sequence_audit_49i3c3.md` distinguishes an observed sequence
+`archive/milestone_history/49i_solar_system/planet_disk_sequence_audit_49i3c3.md` distinguishes an observed sequence
 from a frozen-Earth ecliptic construction. Observed samples independently
 reevaluate the topocentric observer, apparent direction, and physical
 appearance at every exact major instant before entering one fixed chart frame.
@@ -1105,7 +1131,7 @@ tests in 84.41 seconds. Mercury remains 49I.3C.3.3.
 
 **Status:** Scientifically and architecturally accepted on 2026-09-01.
 
-`mercury_disk_sequence_audit_49i3c33.md` identifies the accepted generic
+`archive/milestone_history/49i_solar_system/mercury_disk_sequence_audit_49i3c33.md` identifies the accepted generic
 frozen-sequence and disk-geometry seams, the remaining Venus-specific drawable
 owners, Mercury body identity `199`, proposed JPL mean radius `2439.4 km`, and
 the provider body-versus-barycentre distinction.
