@@ -90,6 +90,11 @@ class ObservedSolarSystemDiskSequenceDisplayRequest:
     def target(self):
         return self.sequence.descriptor.target
 
+    def supports_chart_family(self, family):
+        return self.sequence.descriptor.supports_observed_disk_sequence_in(
+            family
+        )
+
 
 @dataclass(frozen=True)
 class FrozenEarthSolarSystemDiskSequenceDisplayRequest:
@@ -128,6 +133,9 @@ class FrozenEarthSolarSystemDiskSequenceDisplayRequest:
     @property
     def model(self):
         return "frozen-earth-ecliptic"
+
+    def supports_chart_family(self, family):
+        return str(family).strip().lower() == "regional"
 
 
 def configure_chart_request_disks(sky, request):
