@@ -576,4 +576,5 @@ The Moon descriptor authorizes its disk in regional, binocular, circumpolar,
 planisphere, and Mollweide all-sky products without broadening Venus support.
 Generic 720-sample geometry, transformation, preparation, rendering,
 semantics, and exporters own the output. Multi-epoch Moon behavior remains
-unimplemented under 49I.3E.3.
+unimplemented under 49I.3E.3. Fernando accepted the single-epoch scientific,
+architectural, visual, operational, and regression result on 2026-09-02.
