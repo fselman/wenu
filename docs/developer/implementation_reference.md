@@ -2084,3 +2084,17 @@ realizer independently computes every physical sample and transforms each
 complete geometry into the chart epoch's fixed product frame. The existing
 sequence layers, per-centre preparation, renderer, semantics, and exporters
 remain authoritative. Frozen-Earth Moon requests are rejected.
+
+
+
+## Resolved Moon integration closure (Milestone 49I.3E)
+
+The resolved-Moon program is complete through 49I.3E.3. Public selection
+supports the resolved single Moon by default, explicit symbolic compatibility,
+Moon-specific presentation magnification, and the observed fixed-chart disk
+sequence. All five ordinary chart families consume the same descriptor-driven
+appearance, spherical geometry, projection, preparation, renderer, semantic,
+and export contracts.
+
+This closure introduces no API or runtime change. Frozen-Earth lunar sequences
+and other excluded lunar models require separately accepted contracts.
