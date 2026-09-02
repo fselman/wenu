@@ -84,6 +84,13 @@ diameter, phase angle, illuminated fraction, and wrapped bright-limb angle. It
 also reports nonzero geocentric/topocentric parallax, resource coverage,
 actual provider IDs, observer height, and the frozen radius authority.
 
+The validation requests use a `1e-14 day` one-way light-time convergence
+tolerance. This is intentionally stricter than the reusable direction
+request's generic default: the independent comparison must resolve the frozen
+scientific tolerances rather than spend their error budget on the iteration
+stopping threshold. This changes only the validator request, not the generic
+runtime contract.
+
 The predeclared tolerances are:
 
 | Quantity | Maximum absolute residual |

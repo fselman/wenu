@@ -35,6 +35,7 @@ DIAMETER_TOLERANCE_ARCSEC = 1.0e-6
 PHASE_TOLERANCE_DEG = 1.0e-7
 FRACTION_TOLERANCE = 1.0e-10
 POSITION_ANGLE_TOLERANCE_DEG = 1.0e-6
+LIGHT_TIME_TOLERANCE_DAYS = 1.0e-14
 
 
 def _sample_observer(base, instant):
@@ -60,6 +61,7 @@ def _direction(observer, source, observer_state, *, target, policy):
         centre="solar system barycenter",
         reception_instant=observer.t_astropy.isot,
         reception_time_scale=observer.t_astropy.scale,
+        light_time_tolerance_days=LIGHT_TIME_TOLERANCE_DAYS,
     )
     astrometric = AstrometricDirectionRealizer().direction(
         source, request, observer_state
@@ -208,6 +210,10 @@ def main():
         print(f"Moon physical body ID: {MOON_BODY.physical_body_id}")
         print(f"Moon mean radius km: {MOON_BODY.physical_radius_km:.1f}")
         print(f"radius model: {MOON_BODY.radius_model}")
+        print(
+            "validation light-time tolerance days: "
+            f"{LIGHT_TIME_TOLERANCE_DAYS:.1e}"
+        )
         print(f"selected cases: {len(cases)}")
 
         for instant, candidate_phase, candidate_distance, candidate_angle in cases:
