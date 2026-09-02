@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260902.50`
-**Last updated:** `2026-09-02T01:23:13Z`
+**Guide version:** `0.9.5.20260902.51`
+**Last updated:** `2026-09-02T22:30:00Z`
 **Language:** English
 
 # Table of contents
@@ -92,6 +92,7 @@
     - [13.2.31 49I.3C.3.3 Mercury generalization audit](#49i3c33-mercury-generalization-audit)
     - [13.2.32 49I.3C.3.3A moving-body foundation](#49i3c33a-moving-body-foundation)
     - [13.2.33 49I.3E.1 lunar physical appearance](#49i3e1-lunar-physical-appearance)
+    - [13.2.34 49I.3E.2 drawable resolved Moon](#49i3e2-drawable-resolved-moon)
 
 <a id="status-and-purpose"></a>
 
@@ -2750,3 +2751,29 @@ accepted validation envelope. Final verification passed 73 documentation
 tests, 124 focused tests, 2,051 routine tests with 30 deselected, and all 2,081
 tests. Integration remains; no drawable Moon behavior is accepted by this
 result.
+
+
+<a id="49i3e2-drawable-resolved-moon"></a>
+## 13.2.34 49I.3E.2 drawable resolved Moon
+
+**[Foundation]** Bare `--moon` now draws the Moon's illuminated physical disk
+instead of a fixed symbol. `--moon-appearance symbolic` retains the earlier
+point when that simpler representation is wanted. At physical scale the Moon
+is often tiny on a whole-sky chart, so a bounded display magnification can
+make its phase readable without claiming that the Moon is physically larger.
+
+**[Undergraduate]** Wenu computes the accepted topocentric apparent centre and
+physical appearance first, samples the spherical limb and illuminated
+boundary, and transforms every vertex into the chart product frame. Only after
+projection does `MagnifyProjectedDisk` scale offsets about the separately
+projected centre. Consequently magnification changes neither apparent
+direction, distance, angular diameter, phase, nor the product coordinate
+system. It is display-only and unrelated to Wenu's presentation output mode.
+
+The Moon descriptor authorizes this same geometry in regional, binocular,
+circumpolar, stereographic planisphere, and galactic Mollweide all-sky charts.
+Projection seams and boundaries still use the ordinary clipping pipeline.
+Stable semantic descendants identify the illuminated face, limb, and
+terminator below `sky/solar_system/natural_satellites/moon/disk`. No coordinate
+transformation formula changes, and no multi-epoch Moon behavior is introduced
+in 49I.3E.2.

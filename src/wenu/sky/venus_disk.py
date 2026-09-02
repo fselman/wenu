@@ -12,7 +12,7 @@ from wenu.sky.solar_system_bodies import (
     RESOLVED_SPHERICAL_DISK,
     SolarSystemBodyDescriptor,
 )
-from wenu.sky.venus import VENUS_POINT, VENUS_RADIUS_MODEL
+from wenu.sky.venus import VENUS_POINT
 from wenu.skyfield_ephemeris import (
     SkyfieldApparentDirectionRealizer,
     SkyfieldEphemerisStateSource,
@@ -245,7 +245,7 @@ class SolarSystemDiskComponentLayer(SkyLayer):
 
 
 class SolarSystemDiskIlluminatedLayer(SolarSystemDiskComponentLayer):
-    """Illuminated Venus face polygon."""
+    """Illuminated body-face polygon."""
 
     component = "illuminated"
 
@@ -260,13 +260,13 @@ class SolarSystemDiskIlluminatedLayer(SolarSystemDiskComponentLayer):
 
 
 class SolarSystemDiskLimbLayer(SolarSystemDiskComponentLayer):
-    """Closed physical Venus limb."""
+    """Closed physical body limb."""
 
     component = "limb"
 
 
 class SolarSystemDiskTerminatorLayer(SolarSystemDiskComponentLayer):
-    """Visible Venus day-night terminator."""
+    """Visible body day-night terminator."""
 
     component = "terminator"
 

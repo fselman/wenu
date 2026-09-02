@@ -1211,3 +1211,24 @@ owns deterministic contract coverage;
   implementation and numerical acceptance gate.
 - No disk geometry, chart request, magnification, style, renderer, exporter,
   or visible output is added in 49I.3E.1.
+
+
+## Milestone 49I.3E.2 resolved single-Moon ownership
+
+- `src/wenu/sky/moon.py` grants the accepted generic resolved-disk capability
+  and all-five-family display policy to the existing Moon descriptor.
+- `src/wenu/sky/solar_system_bodies.py` owns descriptor-level resolved-disk
+  family authorization without inferring behavior from classification.
+- `src/wenu/charts/chart_arguments.py` owns resolved-by-default Moon CLI
+  adaptation, explicit symbolic compatibility, and magnification selection.
+- Existing request disks, generic disk layers, physical geometry,
+  transformations, projection preparation, renderer, semantic identity, and
+  exporters own the drawable pipeline.
+- `src/wenu/charts/styles.py` owns Moon disk presentation values; generic
+  detail application selects them by descriptor entity key.
+- `tests/test_moon_disk_display.py` owns selection, validation, semantics,
+  sampling, family-policy, and compatibility contracts.
+- `tools/render_49i3e2_resolved_moon_review.py` owns the five-family physical,
+  factor-1000, symbolic, and vector-export review matrix.
+- `docs/developer/drawable_resolved_moon_49i3e2.md` records the boundary and
+  pending acceptance. Multi-epoch Moon behavior remains 49I.3E.3.

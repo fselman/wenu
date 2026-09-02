@@ -553,6 +553,23 @@ def composition_layer_options(
                     },
                 }
                 continue
+            body_key = layer.body_descriptor.entity_key
+            style_prefix = (
+                body_key
+                if hasattr(publication, f"{body_key}_disk_face_color")
+                else "venus"
+            )
+            def disk_style(suffix):
+                return getattr(publication, f"{style_prefix}_disk_{suffix}")
+
+            body_alpha = getattr(
+                publication, f"{style_prefix}_alpha", publication.venus_alpha
+            )
+            body_label_fontsize = getattr(
+                publication,
+                f"{style_prefix}_label_fontsize",
+                publication.venus_label_fontsize,
+            )
             preparation = (
                 MagnifyProjectedDiskSequence(
                     layer.disk_realization, layer.magnification
@@ -568,8 +585,8 @@ def composition_layer_options(
                         "style": {"s": 0.0, "alpha": 0.0, "zorder": 39.3},
                         "draw_labels": True,
                         "label_style": {
-                            "color": publication.venus_disk_limb_color,
-                            "fontsize": publication.venus_label_fontsize,
+                            "color": disk_style("limb_color"),
+                            "fontsize": body_label_fontsize,
                             "zorder": 39.3,
                         },
                         "label_offset": (0.01, 0.01),
@@ -579,9 +596,9 @@ def composition_layer_options(
             if component_role == "illuminated":
                 render = {
                     "style": {
-                        "facecolor": publication.venus_disk_face_color,
+                        "facecolor": disk_style("face_color"),
                         "edgecolor": "none",
-                        "alpha": publication.venus_disk_face_alpha,
+                        "alpha": disk_style("face_alpha"),
                         "zorder": 39.0,
                     },
                 }
@@ -589,22 +606,22 @@ def composition_layer_options(
                 render = {
                     "style": {
                         "color": (
-                            publication.venus_disk_limb_color
+                            disk_style("limb_color")
                             if component_role == "limb"
-                            else publication.venus_disk_terminator_color
+                            else disk_style("terminator_color")
                         ),
                         "linewidth": (
-                            publication.venus_disk_limb_linewidth
+                            disk_style("limb_linewidth")
                             if component_role == "limb"
-                            else publication.venus_disk_terminator_linewidth
+                            else disk_style("terminator_linewidth")
                         ),
                         "linestyle": (
-                            publication.venus_disk_limb_linestyle
+                            disk_style("limb_linestyle")
                             if component_role == "limb"
-                            else publication.venus_disk_terminator_linestyle
+                            else disk_style("terminator_linestyle")
                         ),
                         "dash_capstyle": "butt",
-                        "alpha": publication.venus_alpha,
+                        "alpha": body_alpha,
                         "zorder": (
                             39.2 if component_role == "limb" else 39.1
                         ),

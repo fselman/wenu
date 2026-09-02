@@ -562,3 +562,18 @@ The generic `SolarSystemAppearanceRealizer` produces the lunar
 The physical state remains renderer-neutral and contains no magnification or
 page policy. Resolved geometry, public Moon appearance controls, sequences,
 styles, rendering, and visible output remain later 49I.3E slices.
+
+
+## Drawable resolved single-epoch Moon
+
+Milestone 49I.3E.2 adapts the accepted lunar physical appearance into the
+generic resolved-disk layers. Bare `--moon` selects the resolved disk at
+physical scale; `--moon-appearance symbolic` preserves the compatibility
+point. Moon-specific magnification is display-only, post-projection, bounded
+from 1 through 1000, and independent of output mode.
+
+The Moon descriptor authorizes its disk in regional, binocular, circumpolar,
+planisphere, and Mollweide all-sky products without broadening Venus support.
+Generic 720-sample geometry, transformation, preparation, rendering,
+semantics, and exporters own the output. Multi-epoch Moon behavior remains
+unimplemented under 49I.3E.3.

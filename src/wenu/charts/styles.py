@@ -150,6 +150,14 @@ class PublicationStyle:
     moon_alpha: float = 1.0
     moon_draw_label: bool = True
     moon_label_fontsize: float = 7.0
+    moon_disk_face_color: str = "#E6E1D3"
+    moon_disk_face_alpha: float = 1.0
+    moon_disk_limb_color: str = "#E6E1D3"
+    moon_disk_limb_linewidth: float = 0.45
+    moon_disk_limb_linestyle: object = (0.0, (2.0, 1.25))
+    moon_disk_terminator_color: str = "#E6E1D3"
+    moon_disk_terminator_linewidth: float = 0.7
+    moon_disk_terminator_linestyle: str = "-"
     boundary_color: str = "white"
     boundary_linewidth: float = 0.3
     boundary_linestyle: str = "-"
