@@ -1514,7 +1514,7 @@ reuse keyed by immutable scientific identity.
 > **Wenu implementation box — 49D.1 dependency boundary**
 >
 > The documentation-only 49D.1 audit is maintained in
-> `celestial_scene_dependency_audit_49d1.md`. Current orchestration remains in
+> `archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md`. Current orchestration remains in
 > `sky/celestial_sphere.py::CelestialSphere.draw_chart()`; native position
 > generation remains behind `positions.py::PositionProvider`; astronomical
 > transformation remains solely in
@@ -1630,7 +1630,7 @@ physics.
 > `observer.py::Observer` currently loads the configurable Skyfield kernel,
 > whose default is `de440s.bsp`, but that compatibility ownership is not yet
 > the final provider API. The proposed contract is documented in
-> `ephemeris_provider_contract_49e1.md`; runtime request/state types are
+> `archive/milestone_history/49e_ephemeris/ephemeris_provider_contract_49e1.md`; runtime request/state types are
 > deferred to 49E.2, a real kernel adapter to 49E.3, and the first Sun, Moon,
 > or planet layer to 49I.1. Every body must then use the existing semantic,
 > projection, renderer, and PNG/PDF/SVG export route.
@@ -1812,7 +1812,7 @@ representation change after the physical direction has been realized.
 
 > **Wenu implementation box — 49E.4 direction boundary**
 >
-> `docs/developer/solar_system_direction_realizer_49e4.md` owns the proposed
+> `docs/developer/archive/milestone_history/49e_ephemeris/solar_system_direction_realizer_49e4.md` owns the proposed
 > scientific contract. It adds no runtime realizer. Proposed 49E.5 supplies
 > the typed observer state and astrometric Venus direction; proposed 49E.6
 > adds apparent-place corrections. The later 49I.1 Venus layer transforms the
@@ -1991,7 +1991,7 @@ test.
 
 > **Wenu implementation box — proposed 49I.1 Venus path**
 >
-> `docs/developer/venus_vertical_slice_audit_49i1.md` owns the review
+> `docs/developer/archive/milestone_history/49i_solar_system/venus_vertical_slice_audit_49i1.md` owns the review
 > contract. Proposed 49I.1A closes the ordinary chart-to-layer realization
 > context handoff. Proposed 49I.1B adds one opt-in `VenusLayer` and public
 > selector `--planet venus`. Its upstream semantic identity is
