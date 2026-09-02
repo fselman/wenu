@@ -1228,3 +1228,19 @@ Do not add any multi-epoch Moon behavior; that remains 49I.3E.3.
 Fernando accepted the five-family visual matrix on 2026-09-02. Final
 verification passed 69 focused tests, 74 documentation tests, 2,074 routine
 tests with 30 deselected, and all 2,104 tests. This closes only 49I.3E.2.
+
+
+## Milestone 49I.3E.3 — Observed fixed-chart Moon sequence
+
+**Status:** Scientifically, architecturally, and visually accepted; regression pending.
+
+Add `--moon-disk-sequence` as a public adapter into the shared observed
+sequence request. Preserve start-inclusive cadence, independent physical state
+at every sample, one distinct chart-epoch product frame, complete tangent
+geometry transport, per-centre display magnification, date labels, stable
+natural-satellite semantics, and all-five-family rendering/export.
+
+Fernando accepted the installed-DE440 comparison and all sequence review
+renders on 2026-09-02. Frozen-Earth lunar sequences, interpolation, animation,
+texture, libration, eclipses, refraction, and occultation remain outside this
+milestone.
