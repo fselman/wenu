@@ -1,5 +1,7 @@
 # Binocular charts
 
+The [complete chart examples](chart_examples.md) include a runnable installed-command example for this family.
+
 `examples/binocular_object.py` centers a north-up circular binocular field on
 a selected packaged catalogue object. Centaurus A (`NGC 5128`) and Omega
 Centauri (`NGC 5139`) are the documented regression targets, but `--target`
