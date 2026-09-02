@@ -370,6 +370,11 @@ def add_chart_content_arguments(parser):
         ),
     )
     parser.add_argument(
+        "--moon-disk-sequence",
+        action="store_true",
+        help="draw observed resolved Moon disks at major epochs",
+    )
+    parser.add_argument(
         "--constellation-lines",
         action="store_true",
         help="draw constellation line figures",
@@ -519,8 +524,17 @@ def add_chart_arguments(parser, *, default_output):
 
 def _moon_display_options(arguments):
     selected = bool(getattr(arguments, "moon", False))
+    sequence_selected = bool(
+        getattr(arguments, "moon_disk_sequence", False)
+    )
     mode = getattr(arguments, "moon_appearance", None)
     magnification = getattr(arguments, "moon_disk_magnification", None)
+    if sequence_selected:
+        if selected or mode is not None:
+            raise ValueError(
+                "the Moon cannot be both a single disk and a disk sequence."
+            )
+        return None, magnification
     if not selected:
         if mode is not None:
             raise ValueError("moon-appearance requires --moon.")
@@ -633,17 +647,28 @@ def chart_disk_options(arguments):
 
 
 def chart_disk_sequence_options(arguments):
-    """Resolve the optional complete observed disk-sequence CLI group."""
+    """Resolve one complete descriptor-driven disk-sequence CLI group."""
+    planet_target = getattr(arguments, "planet_disk_sequence", None)
+    moon_selected = bool(getattr(arguments, "moon_disk_sequence", False))
+    if planet_target is not None and moon_selected:
+        raise ValueError(
+            "select either --planet-disk-sequence or "
+            "--moon-disk-sequence, not both."
+        )
     names = (
-        "planet_disk_sequence",
         "disk_sequence_model",
         "disk_sequence_start",
         "disk_sequence_step",
         "disk_sequence_n_steps",
     )
     values = tuple(getattr(arguments, name, None) for name in names)
-    if all(value is None for value in values):
-        return None
+    if planet_target is None and not moon_selected:
+        if all(value is None for value in values):
+            return None
+        raise ValueError(
+            "a disk sequence requires --planet-disk-sequence or "
+            "--moon-disk-sequence."
+        )
     if any(value is None for value in values):
         missing = [
             name.replace("_", "-")
@@ -651,10 +676,12 @@ def chart_disk_sequence_options(arguments):
             if value is None
         ]
         raise ValueError(
-            "a planet disk sequence requires all sequence options; missing: "
+            "a disk sequence requires all sequence options; missing: "
             + ", ".join(missing)
         )
-    target, model, start, step_days, n_steps = values
+
+    model, start, step_days, n_steps = values
+    target = "moon" if moon_selected else planet_target
     descriptor = SOLAR_SYSTEM_BODY_CATALOG.resolve(target)
     if model not in {"observed", "frozen-earth-ecliptic"}:
         raise ValueError("unsupported disk-sequence-model.")
@@ -670,11 +697,21 @@ def chart_disk_sequence_options(arguments):
         )
     if isinstance(n_steps, bool) or n_steps < 0:
         raise ValueError("disk-sequence-n-steps must be a nonnegative integer")
+
     appearances, magnifications = _disk_selections(arguments)
     if target in appearances:
         raise ValueError(
-            "a planet cannot be both a single resolved disk and a disk sequence."
+            "a Solar-System body cannot be both a single resolved disk "
+            "and a disk sequence."
         )
+    if moon_selected:
+        _, moon_magnification = _moon_display_options(arguments)
+        magnification = (
+            1.0 if moon_magnification is None else moon_magnification
+        )
+    else:
+        magnification = float(magnifications.get(target, 1.0))
+
     request_type = (
         FrozenEarthDiskSequenceRequest
         if model == "frozen-earth-ecliptic"
@@ -696,7 +733,7 @@ def chart_disk_sequence_options(arguments):
             physical_radius_km=descriptor.physical_radius_km,
             radius_model=descriptor.radius_model,
         ),
-        magnification=float(magnifications.get(target, 1.0)),
+        magnification=magnification,
         label_dates=bool(getattr(arguments, "disk_sequence_labels", False)),
     )
 
