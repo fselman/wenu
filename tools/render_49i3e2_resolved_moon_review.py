@@ -17,27 +17,34 @@ OBSERVER = (
 )
 COMMON = (
     *OBSERVER,
-    "--magnitude-limit", "5.0",
     "--style", "atlas",
     "--mode", "presentation",
 )
 VISUAL_MAGNIFICATION = "8"
+MOON_RA = "__MOON_RA__"
+MOON_DEC = "__MOON_DEC__"
+MOON_ALTITUDE = "__MOON_ALTITUDE__"
+MOON_AZIMUTH = "__MOON_AZIMUTH__"
 FAMILIES = {
     "regional": (
         "regional", "--constellations", "Sco",
         "--field-width", "55", "--field-height", "45",
-        "--orientation", "zenith-up",
+        "--center-altitude", MOON_ALTITUDE,
+        "--center-azimuth", MOON_AZIMUTH,
+        "--orientation", "zenith-up", "--magnitude-limit", "5.0",
     ),
     "binocular": (
-        "binocular", "--ra", "233", "--dec", "-20",
+        "binocular", "--ra", MOON_RA, "--dec", MOON_DEC,
         "--display-name", "Moon review field", "--field-diameter", "7.5",
+        "--magnitude-limit", "11.0",
     ),
     "circumpolar": (
         "circumpolar", "--pole", "south",
         "--limiting-declination", "-15",
+        "--magnitude-limit", "5.0",
     ),
-    "planisphere": ("planisphere",),
-    "all-sky": ("all-sky",),
+    "planisphere": ("planisphere", "--magnitude-limit", "5.0"),
+    "all-sky": ("all-sky", "--magnitude-limit", "5.0"),
 }
 
 
@@ -105,6 +112,31 @@ def _commit():
     return result.stdout.strip()
 
 
+def _moon_centre_arguments():
+    """Return exact topocentric review centres from the installed kernel."""
+    from wenu.observer import Observer
+
+    with Observer(
+        location="La Ligua",
+        time="2026-09-16T00:00:00Z",
+    ) as observer:
+        apparent = observer.skyfield.at(observer.t).observe(
+            observer.ephemeris["moon"]
+        ).apparent()
+        ra, dec, _ = apparent.radec()
+        altitude, azimuth, _ = apparent.altaz()
+    return {
+        MOON_RA: f"{float(ra.hours) * 15.0:.12g}",
+        MOON_DEC: f"{float(dec.degrees):.12g}",
+        MOON_ALTITUDE: f"{float(altitude.degrees):.12g}",
+        MOON_AZIMUTH: f"{float(azimuth.degrees):.12g}",
+    }
+
+
+def _centred_arguments(arguments, centres):
+    return tuple(centres.get(value, value) for value in arguments)
+
+
 def render_matrix(destination, entries=MATRIX):
     """Render entries in isolated command processes and write a manifest."""
     destination.mkdir(parents=True, exist_ok=True)
@@ -116,12 +148,21 @@ def render_matrix(destination, entries=MATRIX):
         'cartoon_layers = ["stars"]\n',
         encoding="utf-8",
     )
+    centres = _moon_centre_arguments()
+    print(
+        "Moon centre: "
+        f"RA {centres[MOON_RA]} deg; Dec {centres[MOON_DEC]} deg; "
+        f"altitude {centres[MOON_ALTITUDE]} deg; "
+        f"azimuth {centres[MOON_AZIMUTH]} deg",
+        flush=True,
+    )
     records = []
     for index, entry in enumerate(entries, start=1):
         output = destination / f"{entry.name}{entry.suffix}"
+        arguments = _centred_arguments(entry.arguments, centres)
         command = (
             sys.executable, "-m", "wenu.cli.chart",
-            *entry.arguments,
+            *arguments,
             "--config", str(configuration),
             "--output", str(output),
         )
@@ -130,7 +171,7 @@ def render_matrix(destination, entries=MATRIX):
         records.append({
             **asdict(entry),
             "command": (
-                "wenu_chart", *entry.arguments,
+                "wenu_chart", *arguments,
                 "--config", str(configuration),
                 "--output", str(output),
             ),
