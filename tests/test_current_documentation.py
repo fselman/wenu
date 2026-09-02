@@ -2847,7 +2847,7 @@ def test_49i3e3_records_observed_fixed_chart_moon_sequence():
     for phrase in (
         "Scientifically, architecturally, and visually accepted; regression pending",
         "`--moon-disk-sequence`",
-        "`--disk-sequence-model observed`",
+        "--disk-sequence-model observed",
         "`COUNT + 1` independently realized samples",
         "one chart-epoch product frame",
         "never treats the scalar bright-limb position angle as frame-invariant",
