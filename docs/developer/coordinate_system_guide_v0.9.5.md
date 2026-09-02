@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260902.51`
-**Last updated:** `2026-09-02T22:30:00Z`
+**Guide version:** `0.9.5.20260902.52`
+**Last updated:** `2026-09-02T23:55:00Z`
 **Language:** English
 
 # Table of contents
@@ -93,6 +93,7 @@
     - [13.2.32 49I.3C.3.3A moving-body foundation](#49i3c33a-moving-body-foundation)
     - [13.2.33 49I.3E.1 lunar physical appearance](#49i3e1-lunar-physical-appearance)
     - [13.2.34 49I.3E.2 drawable resolved Moon](#49i3e2-drawable-resolved-moon)
+    - [13.2.35 49I.3E.3 observed Moon sequence](#49i3e3-observed-moon-sequence)
 
 <a id="status-and-purpose"></a>
 
@@ -2781,3 +2782,27 @@ in 49I.3E.2.
 Fernando accepted the five-family single-epoch result on 2026-09-02. Closure
 verification passed 69 focused tests, 74 documentation tests, 2,074 routine
 tests with 30 deselected, and all 2,104 tests.
+
+
+<a id="49i3e3-observed-moon-sequence"></a>
+## 13.2.35 49I.3E.3 observed Moon sequence
+
+**[Foundation]** A Moon sequence is several independently observed Moons drawn
+on one unchanged chart. The stars, horizon, coordinate grids, projection, and
+page remain fixed while the Moon moves and its apparent size, phase, and
+bright-limb direction change.
+
+**[Undergraduate]** The chart observer time defines one product coordinate
+specification and tangent plane. Each declared sequence epoch independently
+realizes a topocentric apparent Moon and Sun, distance, spherical appearance,
+and complete 720-sample disk geometry. Wenu transforms every sample's centre
+and tangent geometry into the chart-epoch product frame before aggregation.
+It does not transport the scalar bright-limb angle as though position angle
+were frame-invariant, and it does not substitute a sample-epoch AltAz frame
+for the frozen chart frame.
+
+`--moon-disk-sequence` adapts into the same generic observed request and
+layers already used for resolved planetary sequences. Descriptor policy permits
+the Moon in all five ordinary chart families without expanding Venus support.
+Magnification remains post-projection and per-centre. Frozen-Earth lunar
+sequences remain scientifically distinct and unsupported.

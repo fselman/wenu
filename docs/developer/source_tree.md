@@ -1233,3 +1233,21 @@ owns deterministic contract coverage;
   automated request contracts exercise factor 1000 in every family.
 - `docs/developer/drawable_resolved_moon_49i3e2.md` records the boundary and
   accepted verification. Multi-epoch Moon behavior remains 49I.3E.3.
+
+
+## Milestone 49I.3E.3 observed Moon sequence ownership
+
+- `src/wenu/sky/moon.py` and `solar_system_bodies.py` own observed-sequence
+  capability and chart-family policy.
+- `src/wenu/charts/chart_arguments.py` adapts Moon-specific public spelling
+  into the shared observed sequence request and rejects conflicts.
+- Existing generic sequence state, complete-geometry fixed-frame transport,
+  projection, per-centre magnification, labels, rendering, semantics, and
+  exporters own runtime behavior.
+- `tests/test_moon_disk_sequence.py` owns Moon adapter, conflict, family,
+  generic-layer, and concise semantic-label contracts.
+- `tools/validate_49i3e3_observed_moon_sequence.py` owns the installed-DE440
+  comparison; `tools/render_49i3e3_observed_moon_sequence_review.py` owns
+  the five-family fixed-chart review matrix.
+- `docs/developer/observed_moon_disk_sequence_49i3e3.md` records the boundary,
+  accepted science, visuals, operation, and regression closure.

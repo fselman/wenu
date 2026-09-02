@@ -2069,3 +2069,18 @@ are `--planet-disk-sequence venus`, `--disk-sequence-model observed`,
 `--disk-sequence-start`, `--disk-sequence-step`,
 `--disk-sequence-n-steps`, optional `--disk-sequence-labels`, and
 `--planet-disk-magnification venus=FACTOR`.
+
+
+## Observed Moon disk sequence (Milestone 49I.3E.3)
+
+`--moon-disk-sequence` selects one generic
+`ObservedSolarSystemDiskSequenceDisplayRequest` for `MOON_BODY`. The shared
+sequence options define start-inclusive physical epochs; optional labels and
+`--moon-disk-magnification` retain the established shared behavior.
+
+`MOON_BODY.observed_disk_sequence_chart_families` authorizes regional,
+binocular, circumpolar, planisphere, and all-sky output. The generic observed
+realizer independently computes every physical sample and transforms each
+complete geometry into the chart epoch's fixed product frame. The existing
+sequence layers, per-centre preparation, renderer, semantics, and exporters
+remain authoritative. Frozen-Earth Moon requests are rejected.

@@ -401,3 +401,13 @@ the body descriptor and reuse generic disk geometry/rendering/export. Exercise
 factor 1000 in automated contracts for all five families; use a calibrated,
 legible factor for human visual review. Do not add a Moon sequence or any other
 multi-epoch Moon behavior under 49I.3E.2.
+
+
+For observed multi-epoch Moon sequences, consult
+`observed_moon_disk_sequence_49i3e3.md`. Adapt `--moon-disk-sequence` into
+the generic observed request, independently realize every sample, and
+transform complete tangent geometry into one chart-epoch product frame.
+Preserve descriptor-owned all-five-family Moon policy, per-centre
+post-projection magnification, concise SVG hierarchy labels, and rejection of
+frozen-Earth lunar requests. Do not add a Moon-specific sequence realizer,
+projector, renderer, exporter, interpolation, or animation path.

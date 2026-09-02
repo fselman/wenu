@@ -150,6 +150,7 @@ class PublicationStyle:
     moon_alpha: float = 1.0
     moon_draw_label: bool = True
     moon_label_fontsize: float = 7.0
+    moon_disk_sequence_label_fontsize: float = 4.5
     moon_disk_face_color: str = "#E6E1D3"
     moon_disk_face_alpha: float = 1.0
     moon_disk_limb_color: str = "#E6E1D3"
