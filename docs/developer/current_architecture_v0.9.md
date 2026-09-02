@@ -610,6 +610,6 @@ chart families.
 The sequence preserves one chart-epoch product frame while each sample retains
 its own apparent centre, distance, diameter, phase, illuminated fraction, and
 complete tangent geometry. No Moon-specific projection, renderer, or exporter
-exists. Parent closure adds no runtime behavior; frozen-Earth lunar sequences,
+exists. Parent closure adds no runtime behavior; Frozen-Earth lunar sequences,
 interpolation, animation, texture, libration, eclipses, disk refraction, and
 occultation prediction remain unimplemented.
