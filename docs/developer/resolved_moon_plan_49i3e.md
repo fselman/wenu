@@ -1,7 +1,7 @@
 # Resolved apparent Moon and fixed-chart multi-epoch sequence plan
 
 **Proposed milestone:** 49I.3E  
-**Status:** Planning handoff  
+**Status:** Accepted and closed on 2026-09-02  
 **Prerequisite:** 49I.3D.1 apparent major-planet symbolic points, merged in PR #69 at `926d17b`
 
 ## 1. Objective
@@ -279,14 +279,25 @@ After acceptance:
 - record numerical validator results, focused/full suites, and visual acceptance
 - mark 49I.3E accepted only after all authorized slices pass
 
-## 13. First action in the next chat
+## 13. Closure
 
-Start from clean `main`, confirm merge `926d17b` or later, and create a bounded audit branch:
+All four authorized slices are complete:
 
-```bash
-git switch main
-git pull --ff-only
-git switch -c docs/resolved-moon-audit
-```
+- 49I.3E.0 froze the scientific and architectural contract without runtime
+  changes.
+- 49I.3E.1 added and independently validated output-neutral lunar appearance
+  state.
+- 49I.3E.2 made the resolved single-epoch Moon drawable in all five ordinary
+  chart families while preserving symbolic compatibility.
+- 49I.3E.3 added the observed fixed-chart Moon sequence through the shared
+  descriptor-driven sequence machinery.
 
-The first change should be 49I.3E.0 only: inspect the accepted generic appearance and sequence machinery, write the scientific/architecture audit, and add current-documentation tests. Do not implement lunar runtime behavior until Fernando accepts the audit.
+Fernando scientifically and visually accepted the completed program on
+2026-09-02. Final 49I.3E.3 closure passed 75 documentation tests, 161 expanded
+focused tests, 2,088 routine tests with 30 deselected, and all 2,118 tests.
+PRs #70 through #73 are merged; the final merge is `bc45cc0`.
+
+The parent milestone adds no capability beyond its accepted slices. Frozen-
+Earth lunar sequences, interpolation, animation, surface texture, libration,
+eclipses, refraction across the disk, and occultation prediction remain
+separately governed non-goals.
