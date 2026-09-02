@@ -113,6 +113,37 @@ is not a drawable apparent target. In atlas presentation mode, planet symbols
 use the same Venus cream as the chart's other planetary marks.
 
 
+## Resolved Moon and observed sequences
+
+Bare `--moon` draws the Moon's physical illuminated disk. Use
+`--moon-appearance symbolic` for the compatibility point, or apply bounded
+display scaling with `--moon-disk-magnification FACTOR`.
+
+An observed multi-epoch Moon sequence uses one complete group:
+
+```bash
+wenu_chart regional \
+  --constellations Sgr,Sco,Oph \
+  --observer-location "La Ligua" \
+  --observer-time 2026-09-16T12:00:00Z \
+  --moon-disk-sequence \
+  --disk-sequence-model observed \
+  --disk-sequence-start 2026-09-12T00:00:00Z \
+  --disk-sequence-step 1d \
+  --disk-sequence-n-steps 7 \
+  --disk-sequence-labels \
+  --moon-disk-magnification 8 \
+  --output output/moon-sequence.png
+```
+
+The start is included, so seven intervals draw eight independently realized
+Moons. The ordinary observer time fixes the chart background, horizon,
+projection, and tangent plane. Every sequence epoch supplies a new topocentric
+Moon position, distance, size, phase, and orientation, all projected into that
+one fixed chart frame. Magnification is graphical only; it changes no physical
+Moon value. Frozen-Earth lunar sequences are not supported.
+
+
 ## Output format in profiles
 
 For a one-off command, select the public format explicitly:
