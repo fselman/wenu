@@ -297,7 +297,6 @@ Fernando scientifically and visually accepted the completed program on
 focused tests, 2,088 routine tests with 30 deselected, and all 2,118 tests.
 PRs #70 through #73 are merged; the final merge is `bc45cc0`.
 
-The parent milestone adds no capability beyond its accepted slices. Frozen-
-Earth lunar sequences, interpolation, animation, surface texture, libration,
+The parent milestone adds no capability beyond its accepted slices. Frozen-Earth lunar sequences, interpolation, animation, surface texture, libration,
 eclipses, refraction across the disk, and occultation prediction remain
 separately governed non-goals.
