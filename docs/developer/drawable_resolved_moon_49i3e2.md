@@ -1,8 +1,8 @@
 # Drawable resolved Moon — Milestone 49I.3E.2
 
-**Status:** Implemented for review; scientific, visual, and regression acceptance pending  
+**Status:** Scientifically, architecturally, visually, operationally, and regression accepted  
 **Implementation base:** `b83459a`  
-**Review date:** pending
+**Review date:** `2026-09-02`
 
 ## Purpose and boundary
 
@@ -107,12 +107,13 @@ Human review must confirm:
 5. explicit symbolic output preserves the compatibility representation;
 6. PNG, PDF, and SVG agree for the regional parity case.
 
-## Acceptance gate
+## Acceptance
 
-Before integration, Fernando must accept the visual matrix and report focused
-Moon/display tests, current-documentation tests, the routine suite with
-intentional deselections, and the complete suite with deselections enabled.
+Fernando accepted the five-family visual matrix on 2026-09-02 after the
+regional and binocular diagnostics were centered on the exact topocentric
+Moon. Final verification passed 69 focused Moon/display tests in 2.43 seconds,
+74 current-documentation tests in 3.19 seconds, 2,074 routine tests with 30
+deselected in 31.19 seconds, and all 2,104 tests in 100.17 seconds.
 
-Until those results and the human visual decision are recorded, this document
-does not claim scientific, visual, operational, or regression acceptance.
-Milestone 49I.3E.3 multi-epoch Moon behavior remains unimplemented.
+This acceptance closes only the drawable single-epoch slice. Milestone
+49I.3E.3 multi-epoch Moon behavior remains unimplemented.
