@@ -1250,4 +1250,4 @@ owns deterministic contract coverage;
   comparison; `tools/render_49i3e3_observed_moon_sequence_review.py` owns
   the five-family fixed-chart review matrix.
 - `docs/developer/observed_moon_disk_sequence_49i3e3.md` records the boundary,
-  accepted science and visuals, and pending regression closure.
+  accepted science, visuals, operation, and regression closure.
