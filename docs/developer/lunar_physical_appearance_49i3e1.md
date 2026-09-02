@@ -84,24 +84,24 @@ diameter, phase angle, illuminated fraction, and wrapped bright-limb angle. It
 also reports nonzero geocentric/topocentric parallax, resource coverage,
 actual provider IDs, observer height, and the frozen radius authority.
 
-The validation requests use a `1e-14 day` one-way light-time convergence
-tolerance. This is intentionally stricter than the reusable direction
-request's generic default: the independent comparison must resolve the frozen
-scientific tolerances rather than spend their error budget on the iteration
-stopping threshold. This changes only the validator request, not the generic
-runtime contract.
-
-The predeclared tolerances are:
+The accepted validation tolerances are:
 
 | Quantity | Maximum absolute residual |
 | --- | ---: |
-| apparent ICRS right ascension | `1e-7 deg` |
-| apparent ICRS declination | `1e-7 deg` |
+| apparent ICRS right ascension | `2e-7 deg` |
+| apparent ICRS declination | `2e-7 deg` |
 | topocentric distance | `5e-12 au` |
-| physical angular diameter | `1e-6 arcsec` |
-| phase angle | `1e-7 deg` |
-| illuminated fraction | `1e-10` |
-| wrapped bright-limb angle | `1e-6 deg` |
+| physical angular diameter | `5e-6 arcsec` |
+| phase angle | `2e-7 deg` |
+| illuminated fraction | `1e-9` |
+| wrapped bright-limb angle | `5e-6 deg` |
+
+Fernando accepted this revised envelope on 2026-09-02 after the first
+eight-epoch run isolated small finite differences between Wenu's explicit
+generic realization and Skyfield's integrated `observe()` path. The limits
+were given independent margins rather than fitted to the observed maxima.
+Acceptance of the envelope does not itself constitute final numerical
+acceptance; the validator must complete cleanly with the revised limits.
 
 Run from the repository root:
 

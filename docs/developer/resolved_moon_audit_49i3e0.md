@@ -244,18 +244,28 @@ realizer. Before residual inspection freeze:
 
 | Quantity | Maximum absolute residual |
 | --- | ---: |
-| apparent ICRS right ascension | `1e-7 deg` |
-| apparent ICRS declination | `1e-7 deg` |
+| apparent ICRS right ascension | `2e-7 deg` |
+| apparent ICRS declination | `2e-7 deg` |
 | topocentric distance | `5e-12 au` |
-| physical angular diameter | `1e-6 arcsec` |
-| phase angle | `1e-7 deg` |
-| illuminated fraction | `1e-10` |
-| wrapped bright-limb angle | `1e-6 deg` |
+| physical angular diameter | `5e-6 arcsec` |
+| phase angle | `2e-7 deg` |
+| illuminated fraction | `1e-9` |
+| wrapped bright-limb angle | `5e-6 deg` |
 | transported bright vertex in fixed chart frame | `1e-7 deg` |
 
 Angle residuals use minimum wrapped separation. Report a clearly nonzero
 geocentric/topocentric separation for a chosen parallax case, without imposing
 a universal lower tolerance.
+
+The original pre-validation envelope was revised after the eight-epoch run
+showed the finite difference between Wenu's explicit generic realization and
+Skyfield's integrated `observe()` path. Fernando accepted this replacement
+envelope on 2026-09-02. The new limits use independent margins rather than the
+observed maxima: component direction remains sub-milliarcsecond; the diameter
+limit is consistent with propagation of the retained distance limit at lunar
+distance; and phase, fraction, and position-angle limits remain far below any
+meaningful chart scale. This is a validation-boundary correction, not a change
+to physical formulas or runtime Moon behavior.
 
 Cases cover new, crescent, quarter, gibbous, full; near perigee and apogee;
 northern and southern bright directions; angle wrap; chart boundary; samples

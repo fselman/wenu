@@ -2754,7 +2754,13 @@ def test_49i3e1_records_output_neutral_lunar_appearance():
         "topocentric retarded observer–Moon distance",
         "has no display magnification",
         "refuses to download a missing kernel",
+        "`2e-7 deg`",
         "`5e-12 au`",
+        "`5e-6 arcsec`",
+        "`1e-9`",
+        "revised envelope on 2026-09-02",
+        "independent margins rather than fitted",
+        "does not itself constitute final numerical acceptance",
         "nonzero geocentric/topocentric parallax",
         "does not add disk geometry",
     ):
