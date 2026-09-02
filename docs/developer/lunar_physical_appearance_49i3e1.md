@@ -1,6 +1,6 @@
 # Lunar physical-appearance state — Milestone 49I.3E.1
 
-**Status:** Implementation complete; installed-DE440 acceptance pending
+**Status:** Scientifically accepted; regression verification pending
 
 **Implementation date:** 2026-09-02
 
@@ -100,8 +100,24 @@ Fernando accepted this revised envelope on 2026-09-02 after the first
 eight-epoch run isolated small finite differences between Wenu's explicit
 generic realization and Skyfield's integrated `observe()` path. The limits
 were given independent margins rather than fitted to the observed maxima.
-Acceptance of the envelope does not itself constitute final numerical
-acceptance; the validator must complete cleanly with the revised limits.
+The rerun completed cleanly, and Fernando scientifically accepted the
+49I.3E.1 numerical validation on 2026-09-02. The accepted evidence is:
+
+- model `DE440`, file `de440s.bsp`, SHA-256
+  `c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`;
+- eight deterministic cases spanning phase, sampled distance extrema,
+  bright-limb quadrants, and angle wrap;
+- maximum residuals `1.338e-07 deg` in apparent right ascension,
+  `2.885e-08 deg` in apparent declination, `4.427e-12 au` in topocentric
+  distance, `2.994e-06 arcsec` in angular diameter, `9.726e-08 deg` in
+  phase angle, `2.606e-10` in illuminated fraction, and `2.268e-06 deg`
+  in wrapped bright-limb position angle;
+- minimum reported topocentric parallax `0.272607 deg`, with the selected
+  cases reaching `1.023322 deg`.
+
+All residuals satisfy the accepted envelope. This accepts only the
+output-neutral physical state; regression verification remains before
+integration, and 49I.3E.2 remains a separate drawable milestone.
 
 Run from the repository root:
 
@@ -109,8 +125,8 @@ Run from the repository root:
 python tools/validate_49i3e1_lunar_appearance.py
 ```
 
-The numerical results and scientific acceptance must be recorded before
-49I.3E.2 begins.
+The numerical results and scientific acceptance above close the installed
+kernel gate. Regression verification and integration remain before 49I.3E.2.
 
 ## Coordinate-guide review
 

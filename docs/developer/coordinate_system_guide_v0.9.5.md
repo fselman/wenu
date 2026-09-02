@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260902.48`
-**Last updated:** `2026-09-02T00:30:00Z`
+**Guide version:** `0.9.5.20260902.49`
+**Last updated:** `2026-09-02T01:10:35Z`
 **Language:** English
 
 # Table of contents
@@ -2740,5 +2740,11 @@ The appearance capability is output-neutral. It is neither a selectable
 equinox nor a position reference epoch, and its bright-limb angle is a tangent
 direction rather than a page rotation. No coordinate transformation, disk
 geometry, magnification, public request, or visible output changes in
-49I.3E.1. Installed-DE440 comparison and explicit geocentric/topocentric
-parallax evidence remain the scientific acceptance gate.
+49I.3E.1.
+
+Fernando scientifically accepted the eight-case installed-DE440 comparison
+on 2026-09-02. Maximum residuals were `1.338e-07 deg` in apparent right
+ascension and `2.994e-06 arcsec` in physical angular diameter; the minimum
+explicit topocentric parallax was `0.272607 deg`. All quantities satisfied the
+accepted validation envelope. Regression verification and integration remain;
+no drawable Moon behavior is accepted by this result.
