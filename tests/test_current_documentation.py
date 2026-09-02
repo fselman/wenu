@@ -2936,7 +2936,10 @@ def test_49j0_freezes_performance_measurement_before_optimization():
 
     for phrase in (
         "**Audit baseline:** `ea6f340`",
+        "**Status:** Architecturally accepted by Fernando on 2026-09-02",
         "**Runtime effect:** None",
+        "Fernando also selected conservative documentation cleanup",
+        "`docs/user_guide/` remains separate",
         "76 passed",
         "2,089 passed; 30 deselected",
         "31.89 s",
@@ -2962,6 +2965,7 @@ def test_49j0_freezes_performance_measurement_before_optimization():
 
     assert "Milestone 49J.0 — Performance and closure audit" in roadmap
     assert "Every slice remains separately authorized" in roadmap
+    assert "Architecturally accepted by Fernando on 2026-09-02" in roadmap
     assert "Performance baseline boundary (Milestone 49J.0)" in architecture
     assert "Performance diagnostics and oracle (Milestone 49J.0)" in implementation
     assert "Milestone 49J.0 performance-audit ownership" in source_tree
