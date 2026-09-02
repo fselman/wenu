@@ -289,6 +289,21 @@ def cartoon_chart_style(
         open_cluster_color=palette.foreground,
         open_cluster_label_color=palette.foreground,
     )
+    solar_system = replace(
+        style.solar_system,
+        moon_color=(
+            "#E6E1D3"
+            if name == "presentation"
+            else style.solar_system.moon_color
+        ),
+        moon_symbol_size=(
+            style.solar_system.moon_symbol_size * symbol_scale
+        ),
+        moon_linewidth=style.solar_system.moon_linewidth * line_scale,
+        moon_label_fontsize=(
+            style.solar_system.moon_label_fontsize * font_scale
+        ),
+    )
     legend = replace(
         style.legend,
         fontsize=style.legend.fontsize * font_scale,
@@ -303,6 +318,7 @@ def cartoon_chart_style(
         "grids": grids,
         "isophotes": isophotes,
         "deep_sky": deep_sky,
+        "solar_system": solar_system,
         "legend": legend,
     }
     replacements["output_mode_name"] = name

@@ -24,6 +24,7 @@ def test_print_cartoon_uses_white_paper_palette():
     )
     assert not style.stars.draw_variable_symbols
     assert not style.stars.draw_multiple_symbols
+    assert style.solar_system.moon_color == "#6f6f6f"
 
 
 def test_presentation_uses_agreed_projector_palette():
@@ -35,6 +36,7 @@ def test_presentation_uses_agreed_projector_palette():
     assert style.canvas.foreground_color == "#FFE066"
     assert style.canvas.footer_color == "#FFFFFF"
     assert style.isophotes.milky_way_color == "#FFE066"
+    assert style.solar_system.moon_color == "#E6E1D3"
 
 
 def test_presentation_contains_no_red_primary_chart_colors():
@@ -76,6 +78,7 @@ def test_publication_styles_preserve_mode_colors():
     assert publication.star_color == "#FFE066"
     assert publication.constellation_line_color == "#FFE066"
     assert publication.constellation_label_color == "#FFE066"
+    assert publication.moon_color == "#E6E1D3"
 
 # Contracts consolidated from test_milestone43d_atlas_presentation.py.
 """Milestone 43D contracts for atlas presentation output."""
@@ -171,6 +174,7 @@ def test_presentation_uses_high_contrast_atlas_palette():
     assert style.deep_sky.galaxy_edge_color == palette.foreground
     assert style.deep_sky.supernova_remnant_color == palette.structure
     assert style.solar_system.venus_color == "#FFE6A3"
+    assert style.solar_system.moon_color == "#E6E1D3"
     assert "#b43b37" not in _style_colors(style)
 
 

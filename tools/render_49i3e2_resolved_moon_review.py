@@ -13,7 +13,7 @@ import sys
 
 OBSERVER = (
     "--observer-location", "La Ligua",
-    "--observer-time", "2026-01-19T00:00:00Z",
+    "--observer-time", "2026-09-19T00:00:00Z",
 )
 COMMON = (
     *OBSERVER,
@@ -24,12 +24,12 @@ COMMON = (
 VISUAL_MAGNIFICATION = "8"
 FAMILIES = {
     "regional": (
-        "regional", "--constellations", "Cap",
+        "regional", "--constellations", "Sgr",
         "--field-width", "55", "--field-height", "45",
         "--orientation", "zenith-up",
     ),
     "binocular": (
-        "binocular", "--ra", "301", "--dec", "-20",
+        "binocular", "--ra", "270", "--dec", "-25",
         "--display-name", "Moon review field", "--field-diameter", "45",
     ),
     "circumpolar": (
