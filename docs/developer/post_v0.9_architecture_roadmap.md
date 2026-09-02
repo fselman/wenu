@@ -21,6 +21,9 @@ It records the active direction and sequencing after the closed v0.9
 architecture. Each implementation stage requires a fresh as-is assessment and
 its own small, testable milestone.
 
+Closure passed 75 documentation tests, 161 expanded focused tests, 2,088
+routine tests with 30 deselected, and all 2,118 tests.
+
 The coordinate decisions in `coordinate_transformation_audit_09a2afd.md`
 remain authoritative scientific input. The longer-term astrometry sequence in
 `archive/roadmap_history/polar_delivery_and_astrometry_roadmap.md` is consolidated here so that it no
@@ -1232,7 +1235,7 @@ tests with 30 deselected, and all 2,104 tests. This closes only 49I.3E.2.
 
 ## Milestone 49I.3E.3 — Observed fixed-chart Moon sequence
 
-**Status:** Scientifically, architecturally, and visually accepted; regression pending.
+**Status:** Scientifically, architecturally, visually, operationally, and regression accepted.
 
 Add `--moon-disk-sequence` as a public adapter into the shared observed
 sequence request. Preserve start-inclusive cadence, independent physical state
