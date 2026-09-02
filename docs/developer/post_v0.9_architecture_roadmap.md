@@ -914,7 +914,7 @@ stable upstream object identity and the appropriate reserved
 
 ### Milestone 49J.0 — Performance and closure audit
 
-**Status:** Proposed for architectural acceptance; documentation only.
+**Status:** Architecturally accepted by Fernando on 2026-09-02; documentation and regression verification pending.
 
 `performance_and_closure_audit_49j0.md` distinguishes the existing
 reusable-sphere diagnostic from the required cold independent-frame oracle. It
