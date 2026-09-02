@@ -1,5 +1,8 @@
 # Unified command and editable configuration
 
+For one runnable command per chart family, begin with the
+[complete chart examples](chart_examples.md).
+
 Installing Wenu provides one command for every ordinary chart family:
 
 ```text
