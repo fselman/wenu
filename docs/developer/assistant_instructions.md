@@ -392,3 +392,12 @@ identity, Earth parent relationship, JPL equal-volume mean radius, and generic
 and explicit parallax evidence before acceptance. Do not add resolved disk
 geometry, Moon display controls, magnification, sequence requests, or visible
 output under 49I.3E.1.
+
+For the drawable resolved single-epoch Moon, also consult
+`drawable_resolved_moon_49i3e2.md`. Keep bare `--moon` resolved by default,
+preserve explicit symbolic compatibility, and apply Moon magnification only
+after projection about the physical centre. Authorize chart families through
+the body descriptor and reuse generic disk geometry/rendering/export. Exercise
+factor 1000 in automated contracts for all five families; use a calibrated,
+legible factor for human visual review. Do not add a Moon sequence or any other
+multi-epoch Moon behavior under 49I.3E.2.

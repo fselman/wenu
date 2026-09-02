@@ -312,12 +312,15 @@ def _chart_view_argument_plans(
         )
     disk_requests = chart_disk_options(arguments)
     disk_sequence = chart_disk_sequence_options(arguments)
-    if disk_requests and getattr(view, "family", None) not in {
-        "regional", "binocular"
-    }:
+    family = getattr(view, "family", None)
+    unsupported_disks = tuple(
+        disk for disk in disk_requests
+        if not disk.descriptor.supports_resolved_disk_in(family)
+    )
+    if unsupported_disks:
         raise ValueError(
-            "--planet-appearance is supported only by regional and "
-            "binocular charts."
+            f"resolved {unsupported_disks[0].descriptor.display_name} disks "
+            f"are not supported by {family} charts."
         )
     if disk_sequence is not None and getattr(view, "family", None) not in {
         "regional", "binocular"

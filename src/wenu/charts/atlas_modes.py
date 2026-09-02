@@ -184,6 +184,14 @@ def atlas_chart_style(
         venus_label_fontsize=(
             style.solar_system.venus_label_fontsize * font_scale
         ),
+        moon_color="#E6E1D3",
+        moon_symbol_size=(
+            style.solar_system.moon_symbol_size * symbol_scale
+        ),
+        moon_linewidth=style.solar_system.moon_linewidth * line_scale,
+        moon_label_fontsize=(
+            style.solar_system.moon_label_fontsize * font_scale
+        ),
     )
     grids = replace(
         style.grids,

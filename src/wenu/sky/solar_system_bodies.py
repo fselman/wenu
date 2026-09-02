@@ -36,6 +36,7 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
     physical_radius_km: float | None = None
     radius_model: str | None = None
     capabilities: frozenset[str] = field(default_factory=frozenset)
+    resolved_disk_chart_families: frozenset[str] | None = None
     localized_display_names: tuple[tuple[str, str], ...] = ()
     astronomical_symbol: str | None = None
 
@@ -63,6 +64,32 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
         )
         object.__setattr__(self, "classifications", classifications)
         object.__setattr__(self, "capabilities", capabilities)
+        families = self.resolved_disk_chart_families
+        if families is None:
+            families = (
+                frozenset(("regional", "binocular"))
+                if RESOLVED_SPHERICAL_DISK in capabilities
+                else frozenset()
+            )
+        else:
+            families = frozenset(
+                _optional_text(value, name="resolved disk chart family").lower()
+                for value in families
+            )
+        allowed_families = frozenset({
+            "regional", "binocular", "circumpolar", "planisphere", "all_sky",
+        })
+        unknown_families = families - allowed_families
+        if unknown_families:
+            raise ValueError(
+                "unknown resolved disk chart families: "
+                + ", ".join(sorted(unknown_families))
+            )
+        if families and RESOLVED_SPHERICAL_DISK not in capabilities:
+            raise ValueError(
+                "resolved_disk_chart_families requires resolved disk capability."
+            )
+        object.__setattr__(self, "resolved_disk_chart_families", families)
         localized = []
         languages = set()
         for language, display_name in self.localized_display_names:
@@ -92,6 +119,9 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
 
     def supports(self, capability):
         return capability in self.capabilities
+
+    def supports_resolved_disk_in(self, family):
+        return str(family).strip().lower() in self.resolved_disk_chart_families
 
     def display_name_for(self, language):
         """Return catalog-owned localized display text with stable fallback."""

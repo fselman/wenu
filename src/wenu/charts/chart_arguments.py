@@ -353,7 +353,21 @@ def add_chart_content_arguments(parser):
     parser.add_argument(
         "--moon",
         action="store_true",
-        help="draw the Moon as a symbolic point",
+        help="draw the Moon as a resolved physical disk",
+    )
+    parser.add_argument(
+        "--moon-appearance",
+        choices=("resolved", "symbolic"),
+        help="select resolved Moon or the compatibility symbolic point",
+    )
+    parser.add_argument(
+        "--moon-disk-magnification",
+        type=float,
+        metavar="FACTOR",
+        help=(
+            "magnify the resolved Moon after projection "
+            "(factor 1 is physical scale)"
+        ),
     )
     parser.add_argument(
         "--constellation-lines",
@@ -503,6 +517,26 @@ def add_chart_arguments(parser, *, default_output):
     return parser
 
 
+def _moon_display_options(arguments):
+    selected = bool(getattr(arguments, "moon", False))
+    mode = getattr(arguments, "moon_appearance", None)
+    magnification = getattr(arguments, "moon_disk_magnification", None)
+    if not selected:
+        if mode is not None:
+            raise ValueError("moon-appearance requires --moon.")
+        if magnification is not None:
+            raise ValueError("moon-disk-magnification requires --moon.")
+        return None, None
+    resolved_mode = "resolved" if mode is None else str(mode).strip().lower()
+    if resolved_mode not in {"resolved", "symbolic"}:
+        raise ValueError("moon appearance mode must be resolved or symbolic.")
+    if resolved_mode == "symbolic" and magnification is not None:
+        raise ValueError(
+            "moon-disk-magnification requires resolved Moon appearance."
+        )
+    return resolved_mode, magnification
+
+
 def chart_content_options(arguments) -> ChartContentOptions:
     """Resolve shared parsed content arguments into an immutable value."""
     return ChartContentOptions(
@@ -526,7 +560,7 @@ def chart_content_options(arguments) -> ChartContentOptions:
         equatorial_declination_step_deg=arguments.declination_step,
         reference_equinox=arguments.reference_equinox,
         planets=_selected_planets(getattr(arguments, "planet", ())),
-        moon=bool(getattr(arguments, "moon", False)),
+        moon=_moon_display_options(arguments)[0] == "symbolic",
         mw_contours=_selected_milky_way_contours(
             getattr(arguments, "mw_contour", None)
         ),
@@ -582,13 +616,20 @@ def chart_disk_options(arguments):
         raise ValueError(
             "planet-disk-magnification requires resolved appearance."
         )
-    return tuple(
+    disks = [
         SolarSystemDiskDisplayRequest(
             target,
             float(magnifications.get(target, 1.0)),
         )
         for target in appearances
-    )
+    ]
+    moon_mode, moon_magnification = _moon_display_options(arguments)
+    if moon_mode == "resolved":
+        disks.append(SolarSystemDiskDisplayRequest(
+            "moon",
+            1.0 if moon_magnification is None else moon_magnification,
+        ))
+    return tuple(disks)
 
 
 def chart_disk_sequence_options(arguments):

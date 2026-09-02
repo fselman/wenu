@@ -451,10 +451,14 @@ class ChartRequest:
         targets = tuple(value.target for value in solar_system_disks)
         if len(set(targets)) != len(targets):
             raise ValueError("solar_system_disks cannot repeat a target.")
-        if solar_system_disks and family not in {"regional", "binocular"}:
+        unsupported_disks = tuple(
+            value for value in solar_system_disks
+            if not value.descriptor.supports_resolved_disk_in(family)
+        )
+        if unsupported_disks:
             raise ValueError(
-                "Resolved disks are supported only by regional and "
-                "binocular charts."
+                f"Resolved {unsupported_disks[0].descriptor.display_name} "
+                f"disks are not supported by {family} charts."
             )
         sequence = self.solar_system_disk_sequence
         if sequence is not None and not isinstance(

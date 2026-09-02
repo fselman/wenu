@@ -173,6 +173,13 @@ class SolarSystemStyle:
     venus_alpha: float = 1.0
     venus_draw_label: bool = True
     venus_label_fontsize: float = 7.0
+    moon_color: str = "#6f6f6f"
+    moon_marker: str = "o"
+    moon_symbol_size: float = 42.0
+    moon_linewidth: float = 0.8
+    moon_alpha: float = 1.0
+    moon_draw_label: bool = True
+    moon_label_fontsize: float = 7.0
 
 
 @dataclass(frozen=True)
@@ -412,6 +419,13 @@ class ChartStyle:
             venus_alpha=solar.venus_alpha,
             venus_draw_label=solar.venus_draw_label,
             venus_label_fontsize=solar.venus_label_fontsize,
+            moon_color=solar.moon_color,
+            moon_marker=solar.moon_marker,
+            moon_symbol_size=solar.moon_symbol_size,
+            moon_linewidth=solar.moon_linewidth,
+            moon_alpha=solar.moon_alpha,
+            moon_draw_label=solar.moon_draw_label,
+            moon_label_fontsize=solar.moon_label_fontsize,
             boundary_color=grids.boundary_color,
             boundary_linewidth=grids.boundary_linewidth,
             boundary_linestyle=grids.boundary_linestyle,

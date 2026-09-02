@@ -146,7 +146,7 @@ def test_unknown_milky_way_contour_is_rejected():
 
 def test_class_aware_selectors_share_one_solar_system_selection():
     arguments = parser().parse_args([
-        "--planet", "venus", "--moon",
+        "--planet", "venus", "--moon", "--moon-appearance", "symbolic",
     ])
 
     content = chart_content_options(arguments)

@@ -1208,3 +1208,23 @@ All values satisfy the accepted revised envelope. Final verification passed
 73 documentation tests, 124 focused tests, 2,051 routine tests with 30
 deselected, and all 2,081 tests. Integration remains; 49I.3E.2 is not
 authorized by this acceptance.
+
+
+## Milestone 49I.3E.2 — Drawable resolved single-epoch Moon
+
+**Status:** Scientifically, architecturally, visually, operationally, and regression accepted.
+
+Make bare `--moon` resolve to one physical lunar disk while preserving the
+explicit `--moon-appearance symbolic` compatibility mode. Reuse descriptor-
+driven 720-sample disk geometry, ordinary transforms, post-projection
+magnification, rendering, semantic identity, and PNG/PDF/SVG export.
+
+Authorize the Moon in all five chart families through descriptor policy while
+leaving Venus family support unchanged. Exercise factor 1000 in automated
+contracts for regional, binocular, circumpolar, planisphere, and Mollweide
+all-sky products, and use a legible calibrated factor for human visual review.
+Do not add any multi-epoch Moon behavior; that remains 49I.3E.3.
+
+Fernando accepted the five-family visual matrix on 2026-09-02. Final
+verification passed 69 focused tests, 74 documentation tests, 2,074 routine
+tests with 30 deselected, and all 2,104 tests. This closes only 49I.3E.2.
