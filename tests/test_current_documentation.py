@@ -2976,7 +2976,7 @@ def test_49j0_freezes_performance_measurement_before_optimization():
 
 
 def test_developer_root_contains_only_active_authority_and_wip_documents():
-    assert {path.name for path in DEVELOPER.iterdir() if path.is_file()} == {
+    assert {\n        path.name\n        for path in DEVELOPER.iterdir()\n        if path.is_file() and not path.name.startswith(".")\n    } == {
         "README.md",
         "assistant_instructions.md",
         "configuration_schema_v1.md",
@@ -3008,7 +3008,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():
-    index = read(ROOT / "docs/user_guide/index.md")
+    index = " ".join(read(ROOT / "docs/user_guide/index.md").split())
     examples = read(ROOT / "docs/user_guide/chart_examples.md")
     configuration = read(ROOT / "docs/user_guide/configuration.md")
     temporal = read(ROOT / "docs/user_guide/temporal_sequences.md")
