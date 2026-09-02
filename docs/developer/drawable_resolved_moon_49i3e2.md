@@ -86,12 +86,17 @@ The tool renders physical scale, visually legible magnification `8`, and
 explicit symbolic compatibility in all five chart families at
 `2026-09-16T00:00:00Z` for La Ligua. The review epoch is approximately five
 days after new Moon, so the waxing crescent and terminator should be
-unmistakable. The generated configuration restricts
-content to stars through magnitude `5.0`; deep-sky objects are omitted. It also
-renders magnified regional PDF and semantic SVG parity products and writes
-`manifest.json` under `output/49i3e2-resolved-moon-review/`. Automated request
-contracts separately exercise the maximum factor `1000` in every family.
-The binocular diagnostic uses the accepted `7.5 deg` field diameter.
+unmistakable. The tool computes the Moon's exact topocentric apparent
+coordinates from the installed ephemeris: equatorial coordinates center the
+binocular chart and horizontal coordinates center the regional chart. This
+keeps both diagnostics centered on the Moon instead of relying on a nearby
+constellation or a rounded coordinate. The generated configuration omits
+deep-sky objects. The `7.5 deg` binocular field includes stars through
+magnitude `11.0`; the other chart families include stars through magnitude
+`5.0`. The tool also renders magnified regional PDF and semantic SVG parity
+products and writes `manifest.json` under
+`output/49i3e2-resolved-moon-review/`. Automated request contracts separately
+exercise the maximum factor `1000` in every family.
 
 Human review must confirm:
 
