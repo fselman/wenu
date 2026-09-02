@@ -128,7 +128,7 @@ class SunSource:
         )
 
 
-def test_moon_and_earth_are_one_catalog_relationship_without_display_enablement():
+def test_moon_and_earth_share_one_catalog_relationship_and_identity():
     assert SOLAR_SYSTEM_BODY_CATALOG.resolve("earth") is EARTH_BODY
     assert SOLAR_SYSTEM_BODY_CATALOG.resolve("moon") is MOON_BODY
     assert SOLAR_SYSTEM_BODY_CATALOG.children_of("earth") == (MOON_BODY,)
@@ -139,7 +139,7 @@ def test_moon_and_earth_are_one_catalog_relationship_without_display_enablement(
     assert MOON_BODY.display_name_for("es") == "Luna"
     assert MOON_BODY.supports(SYMBOLIC_POINT)
     assert MOON_BODY.supports(SPHERICAL_PHYSICAL_APPEARANCE)
-    assert not MOON_BODY.supports(RESOLVED_SPHERICAL_DISK)
+    assert MOON_BODY.supports(RESOLVED_SPHERICAL_DISK)
     assert not MOON_BODY.supports(OBSERVED_DISK_SEQUENCE)
     with pytest.raises(FrozenInstanceError):
         MOON_BODY.physical_radius_km = 1.0
