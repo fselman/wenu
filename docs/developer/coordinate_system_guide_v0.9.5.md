@@ -3,8 +3,8 @@
 **Subtitle:** Living scientific and implementation guide for architecture 0.9.5  
 **Author:** Wenu project  
 **Architecture version:** `0.9.5`  
-**Guide version:** `0.9.5.20260902.53`
-**Last updated:** `2026-09-02T23:59:00Z`
+**Guide version:** `0.9.5.20260902.54`
+**Last updated:** `2026-09-02T23:59:30Z`
 **Language:** English
 
 # Table of contents
