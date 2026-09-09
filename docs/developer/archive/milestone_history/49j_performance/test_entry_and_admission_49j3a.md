@@ -1,6 +1,6 @@
 # Reproducible test entry and admission rules (Milestone 49J.3A)
 
-**Status:** Verification complete; awaiting Fernando's review  
+**Status:** Accepted and merged in `21ee528`
 **Implementation baseline:** `fd0b262`  
 **Runtime effect:** None  
 **Test behavior effect:** None
@@ -93,5 +93,6 @@ The coordinate-system guide was reviewed. This milestone changes no scientific
 meaning, provenance, ownership, or public coordinate explanation, so the guide
 remains current.
 
-Final focused Mac verification passed all 83 current-documentation tests in
-2.12 seconds.
+Initial focused Mac verification passed all 83 current-documentation tests in
+2.12 seconds. Final pre-merge verification passed the same 83 tests in 2.43
+seconds.

@@ -95,8 +95,11 @@ For current work, read and follow:
   evidence;
 - `archive/milestone_history/49j_performance/test_practice_decisions_49j2.md`
   for the accepted test policy;
-- `test_entry_and_admission_49j3a.md` for the active reproducible test-entry
-  and new-test admission implementation.
+- `marker_truthfulness_49j3b.md` for the active marker-semantics audit and
+  gate-membership correction;
+- `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
+  for the completed reproducible test-entry and new-test admission
+  implementation.
 
 Documents under `docs/developer/archive/` are historical evidence, not active
 architectural authority. Do not read them routinely. Consult them only when a

@@ -127,7 +127,11 @@ TEST_PRACTICE_DECISIONS = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/test_practice_decisions_49j2.md"
 )
-TEST_ENTRY_ADMISSION = DEVELOPER / "test_entry_and_admission_49j3a.md"
+TEST_ENTRY_ADMISSION = (
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md"
+)
+MARKER_TRUTHFULNESS = DEVELOPER / "marker_truthfulness_49j3b.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -3009,7 +3013,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "test_entry_and_admission_49j3a.md",
+        "marker_truthfulness_49j3b.md",
     }
 
     archived = {
@@ -3024,6 +3028,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md",
         "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md",
         "archive/milestone_history/49j_performance/test_practice_decisions_49j2.md",
+        "archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3143,7 +3148,7 @@ def test_49j3a_installs_reproducible_entry_and_new_test_admission_rules():
 
     for phrase in (
         "Reproducible test entry and admission rules (Milestone 49J.3A)",
-        "**Status:** Verification complete; awaiting Fernando's review",
+        "**Status:** Accepted and merged in `21ee528`",
         "**Runtime effect:** None",
         "**Test behavior effect:** None",
         "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest",
@@ -3153,6 +3158,7 @@ def test_49j3a_installs_reproducible_entry_and_new_test_admission_rules():
         "cannot claim a performance improvement",
         "coordinate-system guide was reviewed",
         "83 current-documentation tests in 2.12 seconds",
+        "same 83 tests in 2.43 seconds",
     ):
         assert phrase in record
 
@@ -3161,8 +3167,64 @@ def test_49j3a_installs_reproducible_entry_and_new_test_admission_rules():
     assert "Which marker and gate" in instructions
     assert "Any required plugin must be explicitly loaded" in instructions
     assert source_tree.count("PYTEST_DISABLE_PLUGIN_AUTOLOAD=1") >= 4
-    assert "49J.3A implements only" in roadmap
-    assert "83 current-documentation tests in 2.12" in roadmap
+    assert "49J.3A implemented only" in roadmap
+    assert "83 current-documentation tests in 2.43" in roadmap
+
+
+def test_49j3b_records_truthful_marker_scope_without_changing_assertions():
+    record = " ".join(read(MARKER_TRUTHFULNESS).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Test-marker truthfulness (Milestone 49J.3B)",
+        "**Runtime effect:** None",
+        "**Test assertion and fixture effect:** None",
+        "Markers describe work and resources",
+        "does not by itself require `visual`",
+        "canonical observer-time sequence remains both `integration` and `slow`",
+        "calendar-label containment check remains both `visual` and `slow`",
+        "focused constants contract returns to the routine gate",
+        "2,103 routine cases with 24 deselected",
+        "21 integration cases, 3 visual cases, 2 slow cases",
+        "No committed pytest case requires an installed DE440 kernel",
+        "coordinate-system guide was reviewed",
+        "94 focused tests in 9.21 seconds",
+        "all 2,127 tests in 88.79 seconds",
+    ):
+        assert phrase in record
+
+    assert "49J.3B audits marker truthfulness" in roadmap
+    assert "2,103 routine tests with 24 deselected" in roadmap
+    assert "all 2,127 tests" in roadmap
+    assert "marker_truthfulness_49j3b.md" in architecture
+    assert "Marker corrections change gate membership only" in source_tree
+
+    planisphere = ast.parse(
+        read(ROOT / "tests/test_planisphere_composition.py")
+    )
+    cen_a = ast.parse(read(ROOT / "tests/test_cen_a_binocular.py"))
+
+    def marked_functions(tree, marker):
+        return {
+            node.name
+            for node in tree.body
+            if isinstance(node, ast.FunctionDef)
+            and any(
+                ast.unparse(decorator) == f"pytest.mark.{marker}"
+                for decorator in node.decorator_list
+            )
+        }
+
+    assert marked_functions(planisphere, "visual") == {
+        "test_planisphere_export_has_transparent_corner_and_opaque_center",
+        "test_default_planisphere_legends_are_outside_and_disjoint_from_axes",
+    }
+    assert marked_functions(cen_a, "integration") == {
+        "test_chart_is_centered_on_cen_a_and_is_square",
+        "test_circular_aperture_has_expected_projected_radius",
+    }
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

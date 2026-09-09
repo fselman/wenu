@@ -45,8 +45,8 @@ filterwarnings = [
 ]
 markers = [
     "integration: crosses architectural component boundaries",
-    "visual: validates rendered appearance or image structure",
-    "slow: excluded from the normal development loop",
+    "visual: validates rendered appearance, physical layout, or image structure",
+    "slow: intrinsically expensive after accepted optimization",
 ]
 
 [tool.setuptools.package-data]

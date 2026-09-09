@@ -12,9 +12,6 @@ from wenu.charts.legend_composition import apply_legend_placement
 from wenu.charts.legend_plan import default_chart_legend_plan
 
 
-pytestmark = pytest.mark.visual
-
-
 class RecordingRenderer:
     def __init__(self):
         self.calls = []
@@ -72,6 +69,7 @@ def test_full_sky_uses_shared_opaque_circular_background(style, mode):
     assert boundary[2]["edgecolor"] is not None
 
 
+@pytest.mark.visual
 def test_planisphere_export_has_transparent_corner_and_opaque_center(tmp_path):
     chart = FullSkyChart()
     composition = compose_chart(
@@ -98,6 +96,7 @@ def test_planisphere_export_has_transparent_corner_and_opaque_center(tmp_path):
     plt.close(figure)
 
 
+@pytest.mark.visual
 def test_default_planisphere_legends_are_outside_and_disjoint_from_axes():
     plan = default_chart_legend_plan("planisphere")
     assert plan.objects.outside is True
