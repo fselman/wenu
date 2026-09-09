@@ -971,6 +971,10 @@ the Cen A example/chart boundary. Five structural planisphere cases and one
 constants contract return to the routine gate. No assertion, fixture, runtime
 code, cache, or output changes.
 
+Mac verification passed 94 focused tests, 21 integration tests, 3 visual
+tests, 2,103 routine tests with 24 deselected, and all 2,127 tests. Fernando's
+review remains pending.
+
 49J continues to require:
 
 - benchmark complete independent frames before optimizing;

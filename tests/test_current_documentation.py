@@ -3186,14 +3186,18 @@ def test_49j3b_records_truthful_marker_scope_without_changing_assertions():
         "canonical observer-time sequence remains both `integration` and `slow`",
         "calendar-label containment check remains both `visual` and `slow`",
         "focused constants contract returns to the routine gate",
-        "2,101 routine cases with 24 deselected",
+        "2,103 routine cases with 24 deselected",
         "21 integration cases, 3 visual cases, 2 slow cases",
         "No committed pytest case requires an installed DE440 kernel",
         "coordinate-system guide was reviewed",
+        "94 focused tests in 9.21 seconds",
+        "all 2,127 tests in 88.79 seconds",
     ):
         assert phrase in record
 
     assert "49J.3B audits marker truthfulness" in roadmap
+    assert "2,103 routine tests with 24 deselected" in roadmap
+    assert "all 2,127 tests" in roadmap
     assert "marker_truthfulness_49j3b.md" in architecture
     assert "Marker corrections change gate membership only" in source_tree
 

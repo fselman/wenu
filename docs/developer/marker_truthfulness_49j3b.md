@@ -1,6 +1,6 @@
 # Test-marker truthfulness (Milestone 49J.3B)
 
-**Status:** Implementation complete; Mac verification pending
+**Status:** Mac verification complete; awaiting Fernando's review
 **Implementation baseline:** `21ee528`
 **Runtime effect:** None
 **Test assertion and fixture effect:** None
@@ -67,12 +67,11 @@ its absence or skip must then be reported explicitly.
 
 Before this change, the visual module marker selected all seven cases in
 `test_planisphere_composition.py`; afterwards it selects two. The Cen A module
-marker selected three integration cases; afterwards it selects two. The 49J.1
-baseline plus this milestone's documentation contract therefore predicts
-2,101 routine cases with 24 deselected, 21 integration cases, 3 visual cases,
-2 slow cases, and 2,125 complete cases.
-Mac collection is the acceptance authority for these counts. The complete
-suite membership remains unchanged.
+marker selected three integration cases; afterwards it selects two. Mac
+verification observed 2,103 routine cases with 24 deselected, 21 integration
+cases, 3 visual cases, 2 slow cases, and 2,127 complete cases. The complete
+suite membership remains unchanged by reclassification; its increase over the
+earlier 49J.1 measurement comes from subsequently accepted tests.
 
 Acceptance requires:
 
@@ -88,3 +87,7 @@ The coordinate-system guide was reviewed. This milestone changes no
 scientific meaning, provenance, implementation ownership, coordinate
 transformation, or public coordinate explanation, so the guide remains
 current.
+
+Final Mac verification passed 94 focused tests in 9.21 seconds, 21 integration
+tests in 54.36 seconds, 3 visual tests in 11.57 seconds, 2,103 routine tests
+with 24 deselected in 27.70 seconds, and all 2,127 tests in 88.79 seconds.
