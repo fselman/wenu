@@ -90,9 +90,12 @@ For current work, read and follow:
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,
   constellation-artwork, or 2D/3D-boundary work.
-- `test_architecture_and_accepted_practice_audit_49j1.md` for the active test
-  fixture, marker, duplication, timing, accepted-practice, or Mac measurement
-  audit. It is evidence for 49J.2 and authorizes no test change by itself.
+- `archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md`
+  for accepted fixture, marker, duplication, timing, and Mac-measurement
+  evidence;
+- `test_practice_decisions_49j2.md` for the active proposed test policy,
+  including new-test admission and duplication control. It authorizes no test
+  change until Fernando accepts its dispositions.
 
 Documents under `docs/developer/archive/` are historical evidence, not active
 architectural authority. Do not read them routinely. Consult them only when a

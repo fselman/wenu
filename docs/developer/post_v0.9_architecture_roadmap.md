@@ -940,12 +940,19 @@ production optimization. The active sequence is therefore:
 decision ledger, ordering, and stop conditions. Every slice remains separately
 authorized.
 
-49J.1 is in progress at
-`test_architecture_and_accepted_practice_audit_49j1.md`. Its static audit is
-complete. Three routine runs had a 27.16-second median and 3.42-second range;
+49J.1 is accepted and archived at
+`archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md`.
+Three routine runs had a 27.16-second median and 3.42-second range;
 three complete runs had an 85.49-second median and 2.19-second range. Evidence
-awaits Fernando's review. The audit changes no test, marker, fixture scope,
-runtime code, cache, output, or timing threshold.
+included an incompatible ambient pytest plugin and a mismatch between the
+documented session registry and committed fixtures. The audit changes no test,
+marker, fixture scope, runtime code, cache, output, or timing threshold.
+
+49J.2 is proposed in `test_practice_decisions_49j2.md`. Its decision ledger
+includes explicit new-test admission and duplication control: a capability
+that composes already-tested functions should test its new seam and fault
+models rather than copy every lower-level test. No disposition becomes
+implementation authority until Fernando accepts the ledger.
 
 49J continues to require:
 
