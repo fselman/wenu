@@ -2120,8 +2120,12 @@ measurement, first reuse, and the later 50A/50B programs are governed by
 `test_performance_and_future_program_49j_50.md`. The planning document changes
 no installed interface or runtime owner.
 
-The active 49J.1 report is
-`test_architecture_and_accepted_practice_audit_49j1.md`. It inventories the
+The accepted 49J.1 report is
+`archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md`.
+It inventories the
 committed fixture and marker topology, static repeated-work leads, maintained
 testing guidance, and the repeated Mac `--durations` protocol. It adds no
 installed interface, fixture, marker, benchmark threshold, or runtime owner.
+The accepted `test_practice_decisions_49j2.md` is likewise documentation-only;
+its dispositions are implemented only through separately reviewed 49J.3
+slices.

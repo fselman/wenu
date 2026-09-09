@@ -750,18 +750,17 @@ benchmark: each entry launches `python -m wenu.cli.chart` in a fresh process,
 and its output directory remains ignored rather than becoming a golden-image
 test fixture.
 
-Canonical integration tests use a session-scoped build registry to reuse an
-identical example sphere and chart across read-only contracts. Distinct
-observer, catalogue-depth, constellation-selection, target, mask, or framing
-requests remain distinct builds. The registry closes every owned observer at
-session teardown and does not replace the full builder smoke coverage for any
-canonical chart family.
+The committed suite has no session-scoped fixture or `tests/conftest.py`.
+`test_reusable_canonical_sphere.py` uses module-scoped fixtures for its
+intentional reuse and order contracts. The accepted evidence is archived in
+`archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md`.
 
-Milestone 49J.1 is auditing this statement against the committed fixture
-topology. `test_architecture_and_accepted_practice_audit_49j1.md` records that
-no session-scoped fixture or `tests/conftest.py` is currently present and
-reserves correction or implementation for the 49J.2 decision ledger. No test
-behavior changes under the audit.
+The accepted `test_practice_decisions_49j2.md` policy permits a narrowly
+keyed session-scoped registry only after immutability, teardown, order
+independence, isolated-execution, and retained cold-builder evidence exists.
+It also proposes a new-test admission rule: composing already-tested
+functionality justifies tests for the new seam and fault model, not automatic
+duplication of every lower-level contract. Neither policy is implemented yet.
 
 
 ## SVG product modules (Milestones 49F.2C–49F.3)

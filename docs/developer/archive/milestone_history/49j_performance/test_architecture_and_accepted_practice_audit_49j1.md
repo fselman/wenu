@@ -1,9 +1,13 @@
 # Test architecture and accepted-practice audit (Milestone 49J.1)
 
-**Status:** Evidence complete; awaiting Fernando's 49J.1 review  
+**Status:** Accepted and merged in PR #77 on 2026-09-09  
 **Audit baseline:** `d92f393`  
 **Access date for external sources:** 2026-09-09  
 **Runtime effect:** None
+
+Fernando accepted the evidence after three routine runs, three complete runs,
+and 81 focused documentation tests passed on the Mac. Integration completed at
+merge commit `3bab45b`.
 
 ## 1. Purpose and boundary
 

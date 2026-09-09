@@ -631,9 +631,11 @@ test-practice review, adoption decisions, measurement, optimization, and later
 minor-body and publication work. Planning adds no instrumentation, cache,
 optimization, test reclassification, or runtime/output change.
 
-The active 49J.1 evidence is recorded in
-`test_architecture_and_accepted_practice_audit_49j1.md`. Static inspection
+The accepted 49J.1 evidence is recorded in
+`archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md`.
+Static inspection
 found no session-scoped fixture or `tests/conftest.py`, despite the older
 source-tree description of a session-scoped canonical build registry. Repeated
-Mac duration evidence and any correction are pending; the audit changes no
-implemented architecture.
+Mac evidence found 27.16-second routine and 85.49-second complete medians.
+`test_practice_decisions_49j2.md` contains Fernando's accepted policy; neither
+document changes implemented architecture.

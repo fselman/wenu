@@ -120,8 +120,10 @@ TEST_PERFORMANCE_PROGRAM = (
     DEVELOPER / "test_performance_and_future_program_49j_50.md"
 )
 TEST_PRACTICE_AUDIT = (
-    DEVELOPER / "test_architecture_and_accepted_practice_audit_49j1.md"
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md"
 )
+TEST_PRACTICE_DECISIONS = DEVELOPER / "test_practice_decisions_49j2.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -3002,8 +3004,8 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
-        "test_architecture_and_accepted_practice_audit_49j1.md",
         "test_performance_and_future_program_49j_50.md",
+        "test_practice_decisions_49j2.md",
     }
 
     archived = {
@@ -3016,6 +3018,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49i_solar_system/resolved_moon_plan_49i3e.md",
         "archive/milestone_history/49i_solar_system/observed_moon_disk_sequence_49i3e3.md",
         "archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md",
+        "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3097,10 +3100,34 @@ def test_49j1_records_current_practice_static_evidence_and_pending_timings():
     ):
         assert phrase in audit
 
-    assert "49J.1 is in progress" in roadmap
-    assert "Evidence awaits Fernando's review" in roadmap
-    assert "auditing this statement" in source_tree
-    assert "no session-scoped fixture" in source_tree
+    assert "49J.1 is accepted and archived" in roadmap
+    assert "The committed suite has no session-scoped fixture" in source_tree
+
+
+def test_49j2_records_proposed_test_policy_and_duplication_control():
+    decisions = " ".join(read(TEST_PRACTICE_DECISIONS).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Status:** Accepted by Fernando on 2026-09-09; ready for integration",
+        "D4 — External pytest plugins: **Adopt**",
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1",
+        "D6 — Reuse of expensive immutable setup: **Adapt**",
+        "D9 — Independent scientific recomputation: **Adopt**",
+        "D12 — New-test admission and duplication control: **Adopt**",
+        "does **not** automatically duplicate all lower-level tests",
+        "What fault would this test catch that existing tests would not?",
+        "D13 — Deleting or consolidating tests: **Adopt**",
+        "D20 — Parallel execution: **Defer**",
+        "D22 — Canonical observer-time sequence: **Reject** test removal",
+        "Each materially different implementation group",
+        "reviewed and accepted the ledger in five groups",
+    ):
+        assert phrase in decisions
+
+    assert "Fernando accepted 49J.2 on 2026-09-09" in roadmap
+    assert "new-test admission and duplication control" in instructions
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():
