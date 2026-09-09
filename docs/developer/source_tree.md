@@ -724,10 +724,10 @@ that are intrinsically slow, not for inefficient tests that should be fixed.
 The supported validation loops are:
 
 ```bash
-pytest -q -m "not integration and not visual and not slow"
-pytest -q -m integration
-pytest -q -m visual
-pytest -q
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q -m "not integration and not visual and not slow"
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q -m integration
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q -m visual
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q
 ```
 
 The full suite remains the release authority. Atlas print remains the visual
@@ -755,7 +755,9 @@ The committed suite has no session-scoped fixture or `tests/conftest.py`.
 intentional reuse and order contracts. The accepted evidence is archived in
 `archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md`.
 
-The accepted `test_practice_decisions_49j2.md` policy permits a narrowly
+The accepted
+`archive/milestone_history/49j_performance/test_practice_decisions_49j2.md`
+policy permits a narrowly
 keyed session-scoped registry only after immutability, teardown, order
 independence, isolated-execution, and retained cold-builder evidence exists.
 It also proposes a new-test admission rule: composing already-tested

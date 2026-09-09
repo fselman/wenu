@@ -635,7 +635,9 @@ The accepted 49J.1 evidence is recorded in
 `archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md`.
 Static inspection
 found no session-scoped fixture or `tests/conftest.py`, despite the older
-source-tree description of a session-scoped canonical build registry. Repeated
-Mac evidence found 27.16-second routine and 85.49-second complete medians.
-`test_practice_decisions_49j2.md` contains Fernando's accepted policy; neither
-document changes implemented architecture.
+source-tree description of a session-scoped canonical build registry; 49J.2
+corrected that description. Repeated Mac evidence found 27.16-second routine
+and 85.49-second complete medians. The accepted policy is archived at
+`archive/milestone_history/49j_performance/test_practice_decisions_49j2.md`.
+`test_entry_and_admission_49j3a.md` implements reproducible documented test
+entry and admission rules without changing tests or runtime architecture.

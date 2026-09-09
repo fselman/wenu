@@ -93,9 +93,10 @@ For current work, read and follow:
 - `archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md`
   for accepted fixture, marker, duplication, timing, and Mac-measurement
   evidence;
-- `test_practice_decisions_49j2.md` for the accepted test policy, including
-  new-test admission and duplication control. Apply it only through separately
-  reviewed 49J.3 implementation slices.
+- `archive/milestone_history/49j_performance/test_practice_decisions_49j2.md`
+  for the accepted test policy;
+- `test_entry_and_admission_49j3a.md` for the active reproducible test-entry
+  and new-test admission implementation.
 
 Documents under `docs/developer/archive/` are historical evidence, not active
 architectural authority. Do not read them routinely. Consult them only when a
@@ -156,6 +157,33 @@ implementation ownership, object provenance, or the public coordinate
 explanation changes; otherwise record that it was reviewed and remains
 current. Automated documentation checks do not replace Fernando's scientific
 and pedagogical review.
+
+Before adding a test, answer:
+
+1. What new contract, boundary, or fault does it protect?
+2. Which existing test is closest, and why is extension or parametrization
+   insufficient?
+3. Does the capability change lower-level behavior, or merely compose behavior
+   already tested?
+4. Can the assertion inspect an existing immutable artifact without obscuring
+   ownership or independence?
+5. Which marker and gate describe the work actually performed?
+
+A capability that merely composes already-tested functions does not repeat all
+lower-level tests. Add evidence for the new seam, composition, boundary,
+provenance, state-isolation obligation, or newly possible failure. Repeat a
+lower-level or complete path only when the context changes its inputs,
+invariants, tolerance, ownership, failure modes, public route, scientific
+oracle, cold-state obligation, or order-independence contract.
+
+Run Wenu tests with ambient pytest plugins disabled:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest
+```
+
+Any required plugin must be explicitly loaded, version constrained,
+documented, and accepted before it becomes part of a Wenu gate.
 
 For visual milestones, compare the mandatory regression charts named in the
 active migration roadmap. Do not accept an unexplained regression.
