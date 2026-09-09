@@ -623,6 +623,10 @@ fixed-sky and observer-time sequences call that static path for every frame.
 whose overlapping profiler categories are non-additive. It is not a cold
 independent-frame oracle.
 
-`performance_and_closure_audit_49j0.md` proposes exclusive stage timing and
-one later fixed-sky circumpolar reuse candidate. 49J.0 adds no instrumentation,
-cache, optimization, test reclassification, or runtime/output change.
+The accepted historical audit at
+`archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md`
+freezes exclusive stage timing and the first fixed-sky circumpolar reuse
+candidate. `test_performance_and_future_program_49j_50.md` governs the current
+test-practice review, adoption decisions, measurement, optimization, and later
+minor-body and publication work. Planning adds no instrumentation, cache,
+optimization, test reclassification, or runtime/output change.

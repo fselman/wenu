@@ -2112,3 +2112,10 @@ The authoritative cold-frame route remains a fresh
 fixed-sky executor supplies the first repeated-static correctness workload.
 49J.0 documents a future exclusive-span benchmark but adds no public API,
 instrumentation, cache, optimization, or output change.
+
+The accepted audit is archived at
+`archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md`.
+Current 49J sequencing, test-practice review and decisions, production
+measurement, first reuse, and the later 50A/50B programs are governed by
+`test_performance_and_future_program_49j_50.md`. The planning document changes
+no installed interface or runtime owner.

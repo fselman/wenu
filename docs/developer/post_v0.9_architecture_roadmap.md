@@ -916,17 +916,29 @@ stable upstream object identity and the appropriate reserved
 
 **Status:** Architecturally accepted and regression-verified on 2026-09-02; ready for integration.
 
-`performance_and_closure_audit_49j0.md` distinguishes the existing
+`archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md`
+distinguishes the existing
 reusable-sphere diagnostic from the required cold independent-frame oracle. It
 freezes mutually exclusive wall-time spans for resource loading, provider
 evaluation, transformation, projection, preparation, rendering, and encoding;
 requires immutable scientific cache keys; and retains complete rendering as
 the correctness authority.
 
-The proposed sequence is 49J.1 independent-frame measurement, optional 49J.2
-routine-suite remediation when repeated evidence justifies it, 49J.3 one
-bounded scientifically keyed fixed-sky circumpolar reuse candidate, and 49J.4
-post-v0.9 closure. Every slice remains separately authorized.
+Fernando subsequently requested that current accepted practice be reviewed
+before changing the test architecture, that Wenu decide explicitly which
+recommendations to incorporate, and that the test loop be rationalized before
+production optimization. The active sequence is therefore:
+
+1. 49J.1 test architecture and accepted-practice audit;
+2. 49J.2 explicit Wenu test-practice decisions;
+3. 49J.3 accepted test-suite optimization;
+4. 49J.4 cold independent chart and sequence measurement;
+5. 49J.5 one bounded scientifically keyed fixed-sky circumpolar reuse;
+6. 49J.6 performance closure.
+
+`test_performance_and_future_program_49j_50.md` governs the scope, evidence,
+decision ledger, ordering, and stop conditions. Every slice remains separately
+authorized.
 
 49J continues to require:
 
@@ -948,6 +960,27 @@ Final Mac verification passed 94 combined documentation/user-guide tests,
 2,092 routine tests with 30 deselected, and all 2,122 tests. The observed
 37.88-second routine run is retained as later characterization evidence; it
 does not authorize weakening tests or optimizing under 49J.0.
+
+## 13.1 Program 50A - Asteroids and comets
+
+After 49J closure, extend the descriptor-driven moving-body architecture to
+minor bodies. Audit provider accuracy and provenance first; then implement a
+generic state provider, validate asteroids, add the first symbolic asteroid and
+track, validate comets, add the first symbolic comet and track, and close the
+public and scientific contract. Coma and tail morphology remain separate from
+nucleus position.
+
+## 13.2 Program 50B - Publication legibility and economical printing
+
+After the minor-body symbols and tracks are available, review current accepted
+printing, typography, contrast, accessibility, cartographic, and astronomical-
+atlas practice. Decide explicitly which recommendations Wenu adopts, adapts,
+rejects, or defers before defining physical-output profiles. Then measure the
+as-is products, implement monochrome and limited-grayscale styles, perform
+actual-size print and reduction acceptance, and close the numerical standard.
+
+The active detailed sequence and decision requirements for 50A and 50B are in
+`test_performance_and_future_program_49j_50.md`.
 
 ## 14. Stop conditions
 

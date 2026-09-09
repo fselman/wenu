@@ -113,7 +113,11 @@ LUNAR_PHYSICAL_APPEARANCE = (
 DRAWABLE_RESOLVED_MOON = DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_resolved_moon_49i3e2.md"
 OBSERVED_MOON_SEQUENCE = DEVELOPER / "archive/milestone_history/49i_solar_system/observed_moon_disk_sequence_49i3e3.md"
 PERFORMANCE_CLOSURE_AUDIT = (
-    DEVELOPER / "performance_and_closure_audit_49j0.md"
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md"
+)
+TEST_PERFORMANCE_PROGRAM = (
+    DEVELOPER / "test_performance_and_future_program_49j_50.md"
 )
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
@@ -2973,7 +2977,7 @@ def test_49j0_freezes_performance_measurement_before_optimization():
     assert "all 2,122 tests" in roadmap
     assert "Performance baseline boundary (Milestone 49J.0)" in architecture
     assert "Performance diagnostics and oracle (Milestone 49J.0)" in implementation
-    assert "Milestone 49J.0 performance-audit ownership" in source_tree
+    assert "Milestone 49J performance-program ownership" in source_tree
     assert "performance_and_closure_audit_49j0.md" in instructions
     assert "Do not add caching or optimization under 49J.0" in instructions
     assert "Guide version:** `0.9.5.20260902.54`" in guide
@@ -2992,10 +2996,10 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
         "implementation_reference.md",
-        "performance_and_closure_audit_49j0.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
+        "test_performance_and_future_program_49j_50.md",
     }
 
     archived = {
@@ -3007,13 +3011,49 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49e_ephemeris/ephemeris_provider_contract_49e1.md",
         "archive/milestone_history/49i_solar_system/resolved_moon_plan_49i3e.md",
         "archive/milestone_history/49i_solar_system/observed_moon_disk_sequence_49i3e3.md",
+        "archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
 
     archive_index = read(ARCHIVE / "README.md")
-    for folder in ("49d_scene", "49e_ephemeris", "49i_solar_system"):
+    for folder in (
+        "49d_scene",
+        "49e_ephemeris",
+        "49i_solar_system",
+        "49j_performance",
+    ):
         assert f"`milestone_history/{folder}/`" in archive_index
+
+
+def test_current_49j_50_program_records_research_decisions_and_order():
+    program = " ".join(read(TEST_PERFORMANCE_PROGRAM).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+
+    for phrase in (
+        "Adopt",
+        "Adapt",
+        "Reject",
+        "Defer",
+        "49J.1 — Test architecture and accepted-practice audit",
+        "49J.2 — Wenu test-practice decisions",
+        "49J.3 — Test-suite optimization",
+        "49J.4 — Cold chart and sequence performance baseline",
+        "49J.5 — First scientifically keyed chart reuse",
+        "49J.6 — Performance closure",
+        "Program 50A — Asteroids and comets",
+        "50B.0 — Accepted-practice review",
+        "50B.1 — Wenu publication-standard decisions",
+        "PDF/X",
+        "WCAG",
+        "printed star atlases",
+        "Screen PNG review is not sufficient",
+    ):
+        assert phrase in program
+
+    assert "49J.1 test architecture and accepted-practice audit" in roadmap
+    assert "Program 50A - Asteroids and comets" in roadmap
+    assert "Program 50B - Publication legibility" in roadmap
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():
