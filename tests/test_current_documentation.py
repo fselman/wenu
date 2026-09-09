@@ -119,6 +119,9 @@ PERFORMANCE_CLOSURE_AUDIT = (
 TEST_PERFORMANCE_PROGRAM = (
     DEVELOPER / "test_performance_and_future_program_49j_50.md"
 )
+TEST_PRACTICE_AUDIT = (
+    DEVELOPER / "test_architecture_and_accepted_practice_audit_49j1.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -2999,6 +3002,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
+        "test_architecture_and_accepted_practice_audit_49j1.md",
         "test_performance_and_future_program_49j_50.md",
     }
 
@@ -3054,6 +3058,43 @@ def test_current_49j_50_program_records_research_decisions_and_order():
     assert "49J.1 test architecture and accepted-practice audit" in roadmap
     assert "Program 50A - Asteroids and comets" in roadmap
     assert "Program 50B - Publication legibility" in roadmap
+
+
+def test_49j1_records_current_practice_static_evidence_and_pending_timings():
+    audit = " ".join(read(TEST_PRACTICE_AUDIT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "**Audit baseline:** `d92f393`",
+        "**Runtime effect:** None",
+        "187 `test_*.py` modules",
+        "1,767 test-function definitions",
+        "2,123 test cases",
+        "16 declared fixtures",
+        "No class-, package-, or session-scoped fixture",
+        "no `tests/conftest.py`",
+        "127 parametrization decorators",
+        "Adopt",
+        "Adapt",
+        "Reject",
+        "Defer",
+        "pytest: How to use fixtures",
+        "pytest: Flaky tests",
+        "coverage.py: Dynamic contexts",
+        "ISO/IEC/IEEE 29119-1:2022",
+        "three consecutive routine runs",
+        "three consecutive complete runs",
+        "--durations=50",
+        "No answer is adopted by this document",
+        "coordinate-system guide was reviewed",
+    ):
+        assert phrase in audit
+
+    assert "49J.1 is in progress" in roadmap
+    assert "repeated Mac duration evidence is pending" in roadmap
+    assert "auditing this statement" in source_tree
+    assert "no session-scoped fixture" in source_tree
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

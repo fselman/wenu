@@ -2119,3 +2119,9 @@ Current 49J sequencing, test-practice review and decisions, production
 measurement, first reuse, and the later 50A/50B programs are governed by
 `test_performance_and_future_program_49j_50.md`. The planning document changes
 no installed interface or runtime owner.
+
+The active 49J.1 report is
+`test_architecture_and_accepted_practice_audit_49j1.md`. It inventories the
+committed fixture and marker topology, static repeated-work leads, maintained
+testing guidance, and the repeated Mac `--durations` protocol. It adds no
+installed interface, fixture, marker, benchmark threshold, or runtime owner.

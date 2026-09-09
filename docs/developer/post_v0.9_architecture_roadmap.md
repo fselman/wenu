@@ -940,6 +940,11 @@ production optimization. The active sequence is therefore:
 decision ledger, ordering, and stop conditions. Every slice remains separately
 authorized.
 
+49J.1 is in progress at
+`test_architecture_and_accepted_practice_audit_49j1.md`. Its static audit is
+complete and its repeated Mac duration evidence is pending. It changes no
+test, marker, fixture scope, runtime code, cache, output, or timing threshold.
+
 49J continues to require:
 
 - benchmark complete independent frames before optimizing;
