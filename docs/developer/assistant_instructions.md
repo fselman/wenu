@@ -424,8 +424,22 @@ resolved-disk refraction, or occultation work requires a new bounded milestone.
 
 
 For performance or post-v0.9 closure work, consult
-`performance_and_closure_audit_49j0.md`. Keep the reusable-sphere diagnostic
+`test_performance_and_future_program_49j_50.md` and the accepted historical
+audit at
+`archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md`.
+Keep the reusable-sphere diagnostic
 separate from a cold independent-frame oracle, report exclusive wall-time spans
 separately from overlapping profiler totals, and preserve
 `generate_chart_request()` as the complete-render correctness route. Do not
 add caching or optimization under 49J.0.
+
+For 49J test changes, complete the accepted-practice audit and Fernando's
+Adopt/Adapt/Reject/Defer decision milestone before changing fixture scope,
+markers, test reuse, or execution policy. Faster execution must retain
+independent public-path and scientific fault-detection evidence.
+
+For 50B publication-style work, complete the print, typography, contrast,
+accessibility, cartographic, and astronomical-atlas practice review plus
+Fernando's adoption decisions before installing numerical physical-output
+standards. Screen review alone cannot accept a print profile; style and output
+mode must not change astronomical geometry.

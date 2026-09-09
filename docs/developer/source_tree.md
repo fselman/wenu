@@ -1265,7 +1265,7 @@ owns deterministic contract coverage;
 - Documentation records closure of 49I.3E.0 through 49I.3E.3. Frozen-Earth lunar sequences and other excluded models remain unimplemented and separately governed.
 
 
-## Milestone 49J.0 performance-audit ownership
+## Milestone 49J performance-program ownership
 
 - `tools/benchmark_reusable_sphere.py` remains the shared-sphere diagnostic;
   its profiler categories are intentionally overlapping and non-additive.
@@ -1273,6 +1273,8 @@ owns deterministic contract coverage;
   authority and the cold independent-frame oracle.
 - `charts/fixed_sky_sequence.py` remains the deliberately uncached first
   repeated-static workload.
-- `performance_and_closure_audit_49j0.md` defines future diagnostic timing
-  vocabulary and cache constraints without adding a source owner or runtime
-  behavior.
+- `archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md`
+  retains the accepted diagnostic timing vocabulary and cache constraints.
+- `test_performance_and_future_program_49j_50.md` owns current planning,
+  accepted-practice review requirements, adoption decisions, ordering, and
+  stop conditions without adding a source owner or runtime behavior.

@@ -27,8 +27,12 @@ milestone evidence are under [`archive/`](archive/README.md).
 
 - [`post_v0.9_architecture_roadmap.md`](post_v0.9_architecture_roadmap.md) —
   active milestone roadmap.
-- [`performance_and_closure_audit_49j0.md`](performance_and_closure_audit_49j0.md)
-  — current 49J work-in-progress audit.
+- [`test_performance_and_future_program_49j_50.md`](test_performance_and_future_program_49j_50.md)
+  — current 49J test/performance program and the ordered 50A minor-body and
+  50B publication-legibility programs.
+
+The accepted 49J.0 audit is archived under
+[`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/).
 
 Do not place completed milestone records directly in this directory. Move them
 to the matching archive family and update active links and documentation tests
