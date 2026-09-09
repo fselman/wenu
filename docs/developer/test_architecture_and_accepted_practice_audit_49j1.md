@@ -1,6 +1,6 @@
 # Test architecture and accepted-practice audit (Milestone 49J.1)
 
-**Status:** Work in progress; static audit complete, repeated Mac timing pending  
+**Status:** Evidence complete; awaiting Fernando's 49J.1 review  
 **Audit baseline:** `d92f393`  
 **Access date for external sources:** 2026-09-09  
 **Runtime effect:** None
@@ -39,10 +39,10 @@ cases. There is no committed CI workflow, so the documented Mac gates are the
 present acceptance authority.
 
 The assistant environment does not contain the repository's pytest runtime and
-cannot supply comparable durations. Repeated timings must therefore be
-captured in Fernando's established Mac environment. Section 8 freezes the
-commands and reporting format; conclusions about individual slow tests remain
-pending those observations.
+could not supply comparable durations. Fernando therefore captured three
+routine and three complete runs in the established Mac environment. Section 6
+records the observations. Static evidence and timing together identify
+decision candidates, not authorized optimizations.
 
 ## 3. Sources and evaluated guidance
 
@@ -231,26 +231,116 @@ The following classifications remain hypotheses until timed and traced:
 | Must remain fresh | Mutable chart selection/style, observers with owned resources, Matplotlib figures, output paths, and installed-kernel validators are risk areas. | Which must start cold and which can use a controlled factory? |
 | Tier disagreement leads | Rendering/file-encoding and cross-component work appears outside the small explicit marker set. | Is the test actually mocked/unit-level, or is its declared tier incomplete? |
 
-## 6. Evidence still required
+## 6. Mac measurement evidence
 
-49J.1 is not complete until the Mac supplies:
+### 6.1 Environment and collection isolation
 
-- three consecutive routine runs with slowest setup/call/teardown entries;
-- three consecutive complete runs with the same report;
-- Python, pytest, operating-system, processor, and Matplotlib versions;
-- collected/deselected counts for every run;
-- median and range for total wall time and each repeatedly dominant item;
-- confirmation that no other Wenu or rendering process was active; and
-- a follow-up static-to-runtime mapping for repeated catalogue, ephemeris,
-  sphere, observer, transformation, preparation, rendering, and encoding work.
+Fernando measured commit `09b97f1` on macOS
+`10.16-x86_64-i386-64bit`, Python 3.11.7, pytest 9.1.1, and Matplotlib 3.8.0.
+`platform.processor()` returned an empty string, so this report does not infer
+a more specific processor identity. Power state and competing-process state
+were not recorded; this prevents machine-level benchmark claims but does not
+invalidate the within-session diagnostic ranking.
 
-The already observed single-run values are retained as context, not a timing
-baseline: routine `2,093 passed, 30 deselected in 58.32 s`; complete
-`2,123 passed in 87.66 s`. The earlier 49J.0 routine observation was 37.88 s
-while its complete run was 93.31 s. That variation demonstrates why a single
-elapsed value cannot support an optimization conclusion.
+The first invocation, without plugin isolation, failed before collection.
+pytest automatically loaded the environment's `pytest_filter_subpackage`
+plugin, whose legacy `pytest_ignore_collect(path, config)` hook is incompatible
+with pytest 9.1.1's hookspec. All six successful runs therefore used
+`PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`. This is evidence that Wenu acceptance must
+control external plugin loading; whether to encode that policy elsewhere is a
+49J.2 decision.
 
-## 7. Measurement protocol
+### 6.2 Routine gate
+
+The command was:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q \
+  -m "not integration and not visual and not slow" \
+  --durations=50 --durations-min=0.05
+```
+
+| Run | Passed | Deselected | Wall time |
+|---|---:|---:|---:|
+| 1 | 2,094 | 30 | 30.40 s |
+| 2 | 2,094 | 30 | 27.16 s |
+| 3 | 2,094 | 30 | 26.98 s |
+| **Median** | **2,094** | **30** | **27.16 s** |
+| **Range** | — | — | **3.42 s** |
+
+Recurring leading call phases were:
+
+| Test | Median | Range |
+|---|---:|---:|
+| obsolete imports and dynamic import-string scan | 2.11 s | 0.04 s |
+| canonical cartoon legacy-import scan | 1.54 s | 0.04 s |
+| native B1875 boundary sampling and transformation | 0.81 s | 0.13 s |
+| rendered page-text physical extents | 0.41 s | 0.02 s |
+
+No setup or teardown phase exceeded the 0.05-second reporting floor in the
+routine runs. The two source scans were stable while total wall time fell by
+3.42 seconds from the first to third run. The first-run excess is therefore
+distributed warm-up or accumulated overhead, not one demonstrated slow node.
+
+The routine list includes SVG writes, visual-reference writes, Matplotlib
+artist checks, and physical-page rendering checks. Some are likely focused
+contract tests whose names contain “visual”; others may cross the declared
+visual or integration boundary. Timing alone cannot classify them, but their
+presence confirms the need for the 49J.2 semantic marker review.
+
+### 6.3 Complete gate
+
+The command was:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q \
+  --durations=50 --durations-min=0.05
+```
+
+| Run | Passed | Wall time |
+|---|---:|---:|
+| 1 | 2,124 | 87.12 s |
+| 2 | 2,124 | 85.49 s |
+| 3 | 2,124 | 84.93 s |
+| **Median** | **2,124** | **85.49 s** |
+| **Range** | — | **2.19 s** |
+
+Recurring dominant phases were:
+
+| Test phase | Median | Range |
+|---|---:|---:|
+| real canonical observer-time sequence, call | 21.00 s | 0.34 s |
+| larger calendar labels inside physical disk, call | 7.86 s | 1.23 s |
+| ordinary maximal-sphere factory, call | 3.42 s | 0.04 s |
+| reusable canonical sphere, setup | 3.39 s | 0.21 s |
+| circumpolar LMC projection/clipping contract, call | 3.25 s | 0.24 s |
+| reused-sphere horizon order independence, call | 3.26 s | 0.20 s |
+| reduced galaxy-outline sampling, call | 2.73 s | 0.03 s |
+| Cen A binocular centering, call | 2.40 s | 0.05 s |
+
+The canonical observer-time sequence alone accounts for about 24.6 percent of
+the median complete-suite wall time; the first two tests together account for
+about 33.8 percent. That does not make them redundant. The sequence test is an
+explicit complete-route oracle, while the calendar test protects physical
+layout. 49J.2 must decide their gate placement and required independence before
+49J.3 attempts to reduce their cost.
+
+The reusable-sphere module exposes its expensive construction cleanly as a
+setup phase. The ordinary maximal factory, horizon-order, projection/clipping,
+galaxy, deep-sky polygon, and Cen A tests expose repeated catalogue, sphere, and
+geometry work as calls. This runtime ranking confirms the static leads but does
+not yet prove that two tests use identical inputs or may share mutable state.
+
+### 6.4 Historical context
+
+The pre-audit single-run observations remain characterization only: routine
+`2,093 passed, 30 deselected in 58.32 s`; complete `2,123 passed in 87.66 s`.
+The earlier 49J.0 observations were 37.88 s routine and 93.31 s complete. The
+new repeated medians are 27.16 s and 85.49 s. The substantial differences
+among single sessions reinforce the decision not to enforce a suite wall-time
+threshold from this evidence.
+
+## 7. Reproducible measurement protocol
 
 Run from a clean checkout at the audit branch head, in the same established
 environment used for acceptance. Do not add plugins or clear shared operating-
@@ -279,9 +369,11 @@ Then run the complete gate three times, one command at a time:
 python -m pytest -q --durations=50 --durations-min=0.05
 ```
 
-Preserve every report verbatim. 49J.1 will tabulate all six wall times, medians,
-ranges, and recurring phase-qualified node IDs. It will not compare selectively
-chosen fastest runs or enforce a pass/fail duration.
+The six reports were preserved in the review conversation and summarized
+above. Future comparisons must preserve every report, tabulate medians and
+ranges, and retain phase-qualified node IDs. They must not compare selectively
+chosen fastest runs or enforce a pass/fail duration without a later accepted
+policy.
 
 ## 8. Questions reserved for the 49J.2 decision ledger
 

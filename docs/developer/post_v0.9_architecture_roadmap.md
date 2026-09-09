@@ -942,8 +942,10 @@ authorized.
 
 49J.1 is in progress at
 `test_architecture_and_accepted_practice_audit_49j1.md`. Its static audit is
-complete and its repeated Mac duration evidence is pending. It changes no
-test, marker, fixture scope, runtime code, cache, output, or timing threshold.
+complete. Three routine runs had a 27.16-second median and 3.42-second range;
+three complete runs had an 85.49-second median and 2.19-second range. Evidence
+awaits Fernando's review. The audit changes no test, marker, fixture scope,
+runtime code, cache, output, or timing threshold.
 
 49J continues to require:
 

@@ -3083,8 +3083,14 @@ def test_49j1_records_current_practice_static_evidence_and_pending_timings():
         "pytest: Flaky tests",
         "coverage.py: Dynamic contexts",
         "ISO/IEC/IEEE 29119-1:2022",
-        "three consecutive routine runs",
-        "three consecutive complete runs",
+        "2,094",
+        "27.16 s",
+        "3.42 s",
+        "2,124",
+        "85.49 s",
+        "2.19 s",
+        "pytest_filter_subpackage",
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1",
         "--durations=50",
         "No answer is adopted by this document",
         "coordinate-system guide was reviewed",
@@ -3092,7 +3098,7 @@ def test_49j1_records_current_practice_static_evidence_and_pending_timings():
         assert phrase in audit
 
     assert "49J.1 is in progress" in roadmap
-    assert "repeated Mac duration evidence is pending" in roadmap
+    assert "Evidence awaits Fernando's review" in roadmap
     assert "auditing this statement" in source_tree
     assert "no session-scoped fixture" in source_tree
 
