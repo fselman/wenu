@@ -30,9 +30,9 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`test_performance_and_future_program_49j_50.md`](test_performance_and_future_program_49j_50.md)
   — current 49J test/performance program and the ordered 50A minor-body and
   50B publication-legibility programs.
-- [`test_practice_decisions_49j2.md`](test_practice_decisions_49j2.md) — active
-  49J.2 Adopt/Adapt/Reject/Defer policy proposal, including the new-test
-  admission and duplication-control rule.
+- [`test_practice_decisions_49j2.md`](test_practice_decisions_49j2.md) — accepted
+  49J.2 Adopt/Adapt/Reject/Defer policy, including the new-test admission and
+  duplication-control rule; ready for integration.
 
 The accepted 49J.0 and 49J.1 audits are archived under
 [`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/).

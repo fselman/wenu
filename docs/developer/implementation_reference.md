@@ -2126,5 +2126,6 @@ It inventories the
 committed fixture and marker topology, static repeated-work leads, maintained
 testing guidance, and the repeated Mac `--durations` protocol. It adds no
 installed interface, fixture, marker, benchmark threshold, or runtime owner.
-The active `test_practice_decisions_49j2.md` is likewise documentation-only
-until its proposed dispositions are accepted and implemented separately.
+The accepted `test_practice_decisions_49j2.md` is likewise documentation-only;
+its dispositions are implemented only through separately reviewed 49J.3
+slices.

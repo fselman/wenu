@@ -93,9 +93,9 @@ For current work, read and follow:
 - `archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md`
   for accepted fixture, marker, duplication, timing, and Mac-measurement
   evidence;
-- `test_practice_decisions_49j2.md` for the active proposed test policy,
-  including new-test admission and duplication control. It authorizes no test
-  change until Fernando accepts its dispositions.
+- `test_practice_decisions_49j2.md` for the accepted test policy, including
+  new-test admission and duplication control. Apply it only through separately
+  reviewed 49J.3 implementation slices.
 
 Documents under `docs/developer/archive/` are historical evidence, not active
 architectural authority. Do not read them routinely. Consult them only when a

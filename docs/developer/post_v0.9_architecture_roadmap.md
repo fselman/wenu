@@ -948,11 +948,12 @@ included an incompatible ambient pytest plugin and a mismatch between the
 documented session registry and committed fixtures. The audit changes no test,
 marker, fixture scope, runtime code, cache, output, or timing threshold.
 
-49J.2 is proposed in `test_practice_decisions_49j2.md`. Its decision ledger
-includes explicit new-test admission and duplication control: a capability
-that composes already-tested functions should test its new seam and fault
-models rather than copy every lower-level test. No disposition becomes
-implementation authority until Fernando accepts the ledger.
+Fernando accepted 49J.2 on 2026-09-09 as recorded in
+`test_practice_decisions_49j2.md`. Its ledger includes explicit new-test
+admission and duplication control: a capability that composes already-tested
+functions should test its new seam and fault models rather than copy every
+lower-level test. The policy is ready for integration; later 49J.3 changes
+remain separately reviewable.
 
 49J continues to require:
 

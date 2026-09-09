@@ -1,9 +1,9 @@
 # Wenu test-practice decisions (Milestone 49J.2)
 
-**Status:** Proposed decision ledger; awaiting Fernando's review  
+**Status:** Accepted by Fernando on 2026-09-09; ready for integration  
 **Decision baseline:** `3bab45b`  
 **Runtime effect:** None  
-**Implementation authority:** None until Fernando accepts this ledger
+**Implementation authority:** Governs separately reviewed 49J.3 slices after integration
 
 ## 1. Purpose
 
@@ -40,7 +40,7 @@ Test independence has two distinct meanings:
 Sharing immutable setup can preserve both. Repeating the same assertion over
 the same route does not necessarily provide either.
 
-## 3. Proposed decision ledger
+## 3. Accepted decision ledger
 
 ### D1 — Test portfolio: **Adapt**
 
@@ -280,7 +280,7 @@ Completed milestone phrase checks should move with their record to appropriate
 archive-integrity coverage instead of accumulating indefinitely in the active
 authority test.
 
-## 4. 49J.3 implementation order if accepted
+## 4. Accepted 49J.3 implementation order
 
 The decisions above imply this bounded order:
 
@@ -299,18 +299,18 @@ The decisions above imply this bounded order:
 Each materially different implementation group should be a separately
 reviewable 49J.3 slice rather than one broad test rewrite.
 
-## 5. Acceptance questions for Fernando
+## 5. Acceptance record
 
-Fernando's review should explicitly confirm or amend:
+Fernando reviewed and accepted the ledger in five groups on 2026-09-09:
 
-1. the D12 new-test admission rule;
-2. permission for a narrowly keyed session-scoped canonical registry under D6
-   and D7;
-3. preservation of independent installed-kernel recomputation under D9;
-4. the proposed marker meanings and possible `scientific_validation` marker;
-5. diagnostic-only suite timing and deferred parallel execution;
-6. preservation of the real canonical observer-time sequence; and
-7. the ordered, separately reviewable 49J.3 implementation slices.
+1. D1–D4, portfolio and execution environment;
+2. D5–D10, fixture scope and scientific independence;
+3. D11–D13, parametrization, new-test admission, duplication control, and
+   consolidation;
+4. D14–D20, markers, validation, coverage, flaky tests, timing, and
+   parallelism; and
+5. D21–D24 plus the ordered 49J.3 implementation slices.
 
-Until that review is recorded, this ledger is a proposal and authorizes no
-test-suite optimization.
+Acceptance authorizes 49J.3 planning under these constraints; it does not
+modify any test or authorize one broad rewrite. Each materially different
+implementation slice remains separately reviewable.

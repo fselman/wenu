@@ -755,7 +755,7 @@ The committed suite has no session-scoped fixture or `tests/conftest.py`.
 intentional reuse and order contracts. The accepted evidence is archived in
 `archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md`.
 
-The active `test_practice_decisions_49j2.md` proposal would permit a narrowly
+The accepted `test_practice_decisions_49j2.md` policy permits a narrowly
 keyed session-scoped registry only after immutability, teardown, order
 independence, isolated-execution, and retained cold-builder evidence exists.
 It also proposes a new-test admission rule: composing already-tested

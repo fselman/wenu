@@ -637,5 +637,5 @@ Static inspection
 found no session-scoped fixture or `tests/conftest.py`, despite the older
 source-tree description of a session-scoped canonical build registry. Repeated
 Mac evidence found 27.16-second routine and 85.49-second complete medians.
-`test_practice_decisions_49j2.md` contains the active policy proposal; neither
+`test_practice_decisions_49j2.md` contains Fernando's accepted policy; neither
 document changes implemented architecture.

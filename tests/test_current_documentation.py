@@ -3110,7 +3110,7 @@ def test_49j2_records_proposed_test_policy_and_duplication_control():
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
-        "**Status:** Proposed decision ledger; awaiting Fernando's review",
+        "**Status:** Accepted by Fernando on 2026-09-09; ready for integration",
         "D4 — External pytest plugins: **Adopt**",
         "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1",
         "D6 — Reuse of expensive immutable setup: **Adapt**",
@@ -3122,11 +3122,11 @@ def test_49j2_records_proposed_test_policy_and_duplication_control():
         "D20 — Parallel execution: **Defer**",
         "D22 — Canonical observer-time sequence: **Reject** test removal",
         "Each materially different implementation group",
-        "authorizes no test-suite optimization",
+        "reviewed and accepted the ledger in five groups",
     ):
         assert phrase in decisions
 
-    assert "49J.2 is proposed" in roadmap
+    assert "Fernando accepted 49J.2 on 2026-09-09" in roadmap
     assert "new-test admission and duplication control" in instructions
 
 
