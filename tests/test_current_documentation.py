@@ -123,7 +123,11 @@ TEST_PRACTICE_AUDIT = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md"
 )
-TEST_PRACTICE_DECISIONS = DEVELOPER / "test_practice_decisions_49j2.md"
+TEST_PRACTICE_DECISIONS = (
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/test_practice_decisions_49j2.md"
+)
+TEST_ENTRY_ADMISSION = DEVELOPER / "test_entry_and_admission_49j3a.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -3005,7 +3009,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "test_practice_decisions_49j2.md",
+        "test_entry_and_admission_49j3a.md",
     }
 
     archived = {
@@ -3019,6 +3023,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49i_solar_system/observed_moon_disk_sequence_49i3e3.md",
         "archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md",
         "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md",
+        "archive/milestone_history/49j_performance/test_practice_decisions_49j2.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3127,7 +3132,37 @@ def test_49j2_records_proposed_test_policy_and_duplication_control():
         assert phrase in decisions
 
     assert "Fernando accepted 49J.2 on 2026-09-09" in roadmap
-    assert "new-test admission and duplication control" in instructions
+    assert "Before adding a test" in instructions
+
+
+def test_49j3a_installs_reproducible_entry_and_new_test_admission_rules():
+    record = " ".join(read(TEST_ENTRY_ADMISSION).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+
+    for phrase in (
+        "Reproducible test entry and admission rules (Milestone 49J.3A)",
+        "**Status:** Verification complete; awaiting Fernando's review",
+        "**Runtime effect:** None",
+        "**Test behavior effect:** None",
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest",
+        "distinct contract or fault model",
+        "closest existing coverage",
+        "does not repeat all lower-level tests",
+        "cannot claim a performance improvement",
+        "coordinate-system guide was reviewed",
+        "83 current-documentation tests in 2.12 seconds",
+    ):
+        assert phrase in record
+
+    assert "Before adding a test" in instructions
+    assert "Which existing test is closest" in instructions
+    assert "Which marker and gate" in instructions
+    assert "Any required plugin must be explicitly loaded" in instructions
+    assert source_tree.count("PYTEST_DISABLE_PLUGIN_AUTOLOAD=1") >= 4
+    assert "49J.3A implements only" in roadmap
+    assert "83 current-documentation tests in 2.12" in roadmap
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

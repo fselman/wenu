@@ -37,8 +37,8 @@ coordinate guide, contribution rules, and current work in progress.
 - `milestone_history/49i_solar_system/` contains completed Venus, Mercury,
   major-planet, and Moon audits, contracts, validation, and acceptance records;
 - `milestone_history/49j_performance/` contains accepted performance and
-  closure audits plus the accepted 49J.1 test-practice evidence superseded by
-  the current 49J.2 decision proposal;
+  closure audits, the accepted 49J.1 evidence, and the accepted 49J.2
+  test-practice policy;
 - `pre_versioned/` contains the original unversioned architecture, roadmap,
   and UML material;
 - files directly under this directory are older records retained from the

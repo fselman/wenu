@@ -949,11 +949,17 @@ documented session registry and committed fixtures. The audit changes no test,
 marker, fixture scope, runtime code, cache, output, or timing threshold.
 
 Fernando accepted 49J.2 on 2026-09-09 as recorded in
-`test_practice_decisions_49j2.md`. Its ledger includes explicit new-test
-admission and duplication control: a capability that composes already-tested
-functions should test its new seam and fault models rather than copy every
-lower-level test. The policy is ready for integration; later 49J.3 changes
+`archive/milestone_history/49j_performance/test_practice_decisions_49j2.md`.
+Its ledger includes explicit new-test admission and duplication control: a
+capability that composes already-tested functions should test its new seam and
+fault models rather than copy every lower-level test. Later 49J.3 changes
 remain separately reviewable.
+
+49J.3A implements only the reproducible test-entry and new-test admission
+documentation in `test_entry_and_admission_49j3a.md`. It changes no test,
+marker, fixture, runtime code, cache, output, or timing and claims no speedup.
+Focused Mac verification passed all 83 current-documentation tests in 2.12
+seconds; Fernando's review remains pending.
 
 49J continues to require:
 

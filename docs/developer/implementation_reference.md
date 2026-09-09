@@ -2126,6 +2126,8 @@ It inventories the
 committed fixture and marker topology, static repeated-work leads, maintained
 testing guidance, and the repeated Mac `--durations` protocol. It adds no
 installed interface, fixture, marker, benchmark threshold, or runtime owner.
-The accepted `test_practice_decisions_49j2.md` is likewise documentation-only;
-its dispositions are implemented only through separately reviewed 49J.3
-slices.
+The accepted
+`archive/milestone_history/49j_performance/test_practice_decisions_49j2.md` is
+likewise documentation-only. `test_entry_and_admission_49j3a.md` installs its
+reproducible command and test-admission rules in contributor documentation but
+changes no installed interface, test behavior, or runtime owner.
