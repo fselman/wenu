@@ -757,6 +757,12 @@ requests remain distinct builds. The registry closes every owned observer at
 session teardown and does not replace the full builder smoke coverage for any
 canonical chart family.
 
+Milestone 49J.1 is auditing this statement against the committed fixture
+topology. `test_architecture_and_accepted_practice_audit_49j1.md` records that
+no session-scoped fixture or `tests/conftest.py` is currently present and
+reserves correction or implementation for the 49J.2 decision ledger. No test
+behavior changes under the audit.
+
 
 ## SVG product modules (Milestones 49F.2C–49F.3)
 

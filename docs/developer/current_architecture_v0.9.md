@@ -630,3 +630,10 @@ candidate. `test_performance_and_future_program_49j_50.md` governs the current
 test-practice review, adoption decisions, measurement, optimization, and later
 minor-body and publication work. Planning adds no instrumentation, cache,
 optimization, test reclassification, or runtime/output change.
+
+The active 49J.1 evidence is recorded in
+`test_architecture_and_accepted_practice_audit_49j1.md`. Static inspection
+found no session-scoped fixture or `tests/conftest.py`, despite the older
+source-tree description of a session-scoped canonical build registry. Repeated
+Mac duration evidence and any correction are pending; the audit changes no
+implemented architecture.
