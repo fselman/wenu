@@ -958,6 +958,8 @@ remain separately reviewable.
 49J.3A implements only the reproducible test-entry and new-test admission
 documentation in `test_entry_and_admission_49j3a.md`. It changes no test,
 marker, fixture, runtime code, cache, output, or timing and claims no speedup.
+Focused Mac verification passed all 83 current-documentation tests in 2.12
+seconds; Fernando's review remains pending.
 
 49J continues to require:
 

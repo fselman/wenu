@@ -3143,6 +3143,7 @@ def test_49j3a_installs_reproducible_entry_and_new_test_admission_rules():
 
     for phrase in (
         "Reproducible test entry and admission rules (Milestone 49J.3A)",
+        "**Status:** Verification complete; awaiting Fernando's review",
         "**Runtime effect:** None",
         "**Test behavior effect:** None",
         "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest",
@@ -3151,6 +3152,7 @@ def test_49j3a_installs_reproducible_entry_and_new_test_admission_rules():
         "does not repeat all lower-level tests",
         "cannot claim a performance improvement",
         "coordinate-system guide was reviewed",
+        "83 current-documentation tests in 2.12 seconds",
     ):
         assert phrase in record
 
@@ -3160,6 +3162,7 @@ def test_49j3a_installs_reproducible_entry_and_new_test_admission_rules():
     assert "Any required plugin must be explicitly loaded" in instructions
     assert source_tree.count("PYTEST_DISABLE_PLUGIN_AUTOLOAD=1") >= 4
     assert "49J.3A implements only" in roadmap
+    assert "83 current-documentation tests in 2.12" in roadmap
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():
