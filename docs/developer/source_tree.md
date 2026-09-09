@@ -1285,3 +1285,5 @@ owns deterministic contract coverage;
 - `test_performance_and_future_program_49j_50.md` owns current planning,
   accepted-practice review requirements, adoption decisions, ordering, and
   stop conditions without adding a source owner or runtime behavior.
+- `marker_truthfulness_49j3b.md` owns the active marker audit. Marker
+  corrections change gate membership only; they do not create a runtime owner.

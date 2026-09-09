@@ -12,9 +12,6 @@ import matplotlib.pyplot as plt
 import pytest
 
 
-pytestmark = pytest.mark.integration
-
-
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = ROOT / "tests" / "fixtures" / "example_regressions" / "cen_a_binocular.py"
 
@@ -36,6 +33,7 @@ def test_binocular_field_constants():
     assert example.STAR_MAGNITUDE_LIMIT == pytest.approx(11.0)
 
 
+@pytest.mark.integration
 def test_chart_is_centered_on_cen_a_and_is_square():
     example = _example()
     observer, sky, chart = example.build_chart()
@@ -51,6 +49,7 @@ def test_chart_is_centered_on_cen_a_and_is_square():
     assert sky.stars.magnitude_limit == pytest.approx(11.0)
 
 
+@pytest.mark.integration
 def test_circular_aperture_has_expected_projected_radius():
     example = _example()
     _, _, chart = example.build_chart()

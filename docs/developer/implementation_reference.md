@@ -2128,6 +2128,10 @@ testing guidance, and the repeated Mac `--durations` protocol. It adds no
 installed interface, fixture, marker, benchmark threshold, or runtime owner.
 The accepted
 `archive/milestone_history/49j_performance/test_practice_decisions_49j2.md` is
-likewise documentation-only. `test_entry_and_admission_49j3a.md` installs its
-reproducible command and test-admission rules in contributor documentation but
-changes no installed interface, test behavior, or runtime owner.
+likewise documentation-only.
+`archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
+installs its reproducible command and test-admission rules in contributor
+documentation but changes no installed interface or runtime owner.
+`marker_truthfulness_49j3b.md` audits marker meaning and narrows an overbroad
+module-level `visual` classification without changing an installed interface,
+test assertion, fixture, or runtime owner.

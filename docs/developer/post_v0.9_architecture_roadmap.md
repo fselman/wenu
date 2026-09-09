@@ -955,11 +955,21 @@ capability that composes already-tested functions should test its new seam and
 fault models rather than copy every lower-level test. Later 49J.3 changes
 remain separately reviewable.
 
-49J.3A implements only the reproducible test-entry and new-test admission
-documentation in `test_entry_and_admission_49j3a.md`. It changes no test,
-marker, fixture, runtime code, cache, output, or timing and claims no speedup.
-Focused Mac verification passed all 83 current-documentation tests in 2.12
-seconds; Fernando's review remains pending.
+49J.3A implemented only the reproducible test-entry and new-test admission
+documentation now archived at
+`archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`.
+It changed no test, marker, fixture, runtime code, cache, output, or timing and
+claimed no speedup. Focused Mac verification passed all 83
+current-documentation tests in 2.43 seconds, and the slice was merged in
+`21ee528`.
+
+49J.3B audits marker truthfulness in `marker_truthfulness_49j3b.md`. It narrows
+an overbroad module-level `visual` marker to the two tests that actually inspect
+raster image structure or rendered physical layout, and an overbroad
+module-level `integration` marker to the two tests that actually build across
+the Cen A example/chart boundary. Five structural planisphere cases and one
+constants contract return to the routine gate. No assertion, fixture, runtime
+code, cache, or output changes.
 
 49J continues to require:
 

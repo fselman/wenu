@@ -30,10 +30,10 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`test_performance_and_future_program_49j_50.md`](test_performance_and_future_program_49j_50.md)
   — current 49J test/performance program and the ordered 50A minor-body and
   50B publication-legibility programs.
-- [`test_entry_and_admission_49j3a.md`](test_entry_and_admission_49j3a.md) —
-  active 49J.3A reproducible test-entry and new-test admission implementation.
+- [`marker_truthfulness_49j3b.md`](marker_truthfulness_49j3b.md) — active
+  49J.3B marker-semantics audit and gate-membership correction.
 
-The accepted 49J.0, 49J.1, and 49J.2 records are archived under
+The accepted 49J.0 through 49J.3A records are archived under
 [`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/).
 
 Do not place completed milestone records directly in this directory. Move them
