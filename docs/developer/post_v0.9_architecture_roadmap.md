@@ -985,10 +985,17 @@ exact full-inventory coverage proof. The separate subprocess import-isolation
 oracle is unchanged. Fernando's Mac verification passed 2,105 routine tests
 with 24 deselected and all 2,129 tests; the slice was merged in `23d1b32`.
 
-49J.3D is active in `immutable_catalogue_fixture_49j3d.md`. It shares only a
-nested read-only catalogue-position summary between two polar-binocular
-assertions. Mutable Astropy tables and canonical spheres remain unshared;
-independent cold factory, reuse/order, and horizon-mutation oracles remain.
+49J.3D completed in
+`archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md`.
+It shares only a nested read-only catalogue-position summary between two
+polar-binocular assertions. Mutable Astropy tables and canonical spheres remain
+unshared; the slice was merged in `63beb17`.
+
+49J.3E is active in `cold_builder_kernel_oracles_49j3e.md`. Its audit preserves
+the independent cold factory, reusable-sphere order, horizon-mutation,
+complete-render, and observer-time sequence oracles. Standalone installed-DE440
+validators retain fresh observers and direct Skyfield recomputation; no new
+fixture, registry, cache, or speedup claim is introduced.
 
 49J continues to require:
 
