@@ -162,6 +162,9 @@ COLD_FRAME_PERFORMANCE_BASELINE = (
     / "archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md"
 )
 LOADED_SPHERE_REUSE = DEVELOPER / "loaded_sphere_reuse_49j5a.md"
+FIXED_SKY_REUSE_EQUIVALENCE = (
+    DEVELOPER / "fixed_sky_reuse_equivalence_49j5b.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -3044,6 +3047,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
         "loaded_sphere_reuse_49j5a.md",
+        "fixed_sky_reuse_equivalence_49j5b.md",
     }
 
     archived = {
@@ -3584,10 +3588,41 @@ def test_49j5a_defines_only_the_loaded_sphere_reuse_seam():
     ):
         assert phrase in record
 
-    assert "49J.5A is active" in roadmap
+    assert "49J.5A is accepted" in roadmap
     assert "loaded_sphere_reuse_49j5a.md" in architecture
     assert "FixedSkySequenceExecution.REUSE_LOADED_SPHERE" in implementation
     assert "observer-independent loaded-sphere sequence policy" in source_tree
+
+
+def test_49j5b_defines_exact_reuse_equivalence_and_raw_measurement():
+    record = " ".join(read(FIXED_SKY_REUSE_EQUIVALENCE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Fixed-sky reuse equivalence (Milestone 49J.5B)",
+        "awaiting Mac acceptance and visual review",
+        "same sequence orchestrator",
+        "not an installed interface or second executor",
+        "Raw sequence durations and ratios",
+        "no timing threshold",
+        "spherical and projected records",
+        "composition, clipping",
+        "PNG pixels in RGBA space",
+        "volatile marker and clip identifiers",
+        "Wenu semantic identifiers",
+        "`pdftoppm` at 150 DPI",
+        "fails closed",
+        "Cold remains the default",
+        "all three frames matched exactly",
+        "Runtime effect:** None",
+    ):
+        assert phrase in record
+
+    assert "fixed_sky_reuse_equivalence_49j5b.md" in roadmap
+    assert "fixed_sky_reuse_equivalence_49j5b.md" in architecture
+    assert "tools/benchmark_fixed_sky_reuse.py" in source_tree
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

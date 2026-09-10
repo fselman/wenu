@@ -4,6 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from pathlib import Path
+import re
+import shutil
+import subprocess
+from xml.etree import ElementTree
 
 import numpy as np
 from PIL import Image
@@ -165,3 +169,122 @@ def compare_png_frames(candidate: Path, baseline: Path) -> PngFrameComparison:
         max_channel_delta=int(np.max(absolute, initial=0)),
         mean_absolute_channel_delta=float(np.mean(absolute)),
     )
+
+
+_VOLATILE_SVG_ID = re.compile(r"[mp][0-9a-f]+")
+
+
+def normalized_svg_graphical_record(path: Path) -> bytes:
+    """Return deterministic SVG structure without exporter volatility.
+
+    Dublin Core metadata is non-graphical. Matplotlib's random marker and clip
+    identifiers are replaced in document order, including their references.
+    Wenu semantic identifiers and every graphical attribute remain intact.
+    """
+    root = ElementTree.parse(Path(path)).getroot()
+    for parent in root.iter():
+        for child in tuple(parent):
+            if child.tag.endswith("}metadata") or child.tag == "metadata":
+                parent.remove(child)
+    replacements = {}
+    for element in root.iter():
+        identifier = element.attrib.get("id")
+        if identifier and _VOLATILE_SVG_ID.fullmatch(identifier):
+            replacements[identifier] = f"volatile-{len(replacements):04d}"
+    for element in root.iter():
+        for name, value in tuple(element.attrib.items()):
+            for old, new in replacements.items():
+                value = value.replace(f"#{old}", f"#{new}")
+            if name == "id" and value in replacements:
+                value = replacements[value]
+            element.attrib[name] = value
+    return ElementTree.tostring(root, encoding="utf-8")
+
+
+def compare_normalized_svg(candidate: Path, baseline: Path) -> bool:
+    """Compare semantic and graphical SVG structure after safe normalization."""
+    return normalized_svg_graphical_record(candidate) == (
+        normalized_svg_graphical_record(baseline)
+    )
+
+
+def available_pdf_page_renderer() -> str:
+    """Return the available deterministic PDF-page rasterizer."""
+    if shutil.which("pdftoppm"):
+        return "pdftoppm"
+    if shutil.which("sips"):
+        return "sips"
+    raise RuntimeError(
+        "Rendered-PDF comparison requires 'pdftoppm' or macOS 'sips'."
+    )
+
+
+def render_pdf_page_rgba(
+    path: Path,
+    destination: Path,
+    *,
+    dpi: int = 150,
+    renderer: str | None = None,
+) -> Path:
+    """Rasterize a one-page PDF for graphical comparison."""
+    if dpi <= 0:
+        raise ValueError("dpi must be positive.")
+    path = Path(path)
+    destination = Path(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    renderer = available_pdf_page_renderer() if renderer is None else renderer
+    if renderer == "sips":
+        try:
+            subprocess.run(
+                (
+                    "sips", "-s", "format", "png", str(path),
+                    "--out", str(destination),
+                ),
+                check=True,
+                capture_output=True,
+            )
+        except FileNotFoundError as error:
+            raise RuntimeError(
+                "The selected PDF renderer 'sips' is unavailable."
+            ) from error
+        except subprocess.CalledProcessError as error:
+            message = error.stderr.decode("utf-8", "replace").strip()
+            raise RuntimeError(
+                f"PDF rasterization failed: {message}"
+            ) from error
+        if not destination.is_file():
+            raise RuntimeError(
+                "PDF rasterization did not create its PNG output."
+            )
+        return destination
+    if renderer != "pdftoppm":
+        raise ValueError("renderer must be 'pdftoppm' or 'sips'.")
+    prefix = destination.with_suffix("")
+    try:
+        subprocess.run(
+            (
+                "pdftoppm",
+                "-f", "1",
+                "-l", "1",
+                "-singlefile",
+                "-r", str(dpi),
+                "-png",
+                str(path),
+                str(prefix),
+            ),
+            check=True,
+            capture_output=True,
+        )
+    except FileNotFoundError as error:
+        raise RuntimeError(
+            "Rendered-PDF comparison requires the 'pdftoppm' executable."
+        ) from error
+    except subprocess.CalledProcessError as error:
+        message = error.stderr.decode("utf-8", "replace").strip()
+        raise RuntimeError(f"PDF rasterization failed: {message}") from error
+    rendered = prefix.with_suffix(".png")
+    if not rendered.is_file():
+        raise RuntimeError("PDF rasterization did not create its PNG output.")
+    if rendered != destination:
+        rendered.replace(destination)
+    return destination
