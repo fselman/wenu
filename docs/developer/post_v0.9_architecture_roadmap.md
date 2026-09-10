@@ -963,7 +963,8 @@ claimed no speedup. Focused Mac verification passed all 83
 current-documentation tests in 2.43 seconds, and the slice was merged in
 `21ee528`.
 
-49J.3B audits marker truthfulness in `marker_truthfulness_49j3b.md`. It narrows
+49J.3B audited marker truthfulness in
+`archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md`. It narrowed
 an overbroad module-level `visual` marker to the two tests that actually inspect
 raster image structure or rendered physical layout, and an overbroad
 module-level `integration` marker to the two tests that actually build across
@@ -972,8 +973,14 @@ constants contract return to the routine gate. No assertion, fixture, runtime
 code, cache, or output changes.
 
 Mac verification passed 94 focused tests, 21 integration tests, 3 visual
-tests, 2,103 routine tests with 24 deselected, and all 2,127 tests. Fernando's
-review remains pending.
+tests, 2,103 routine tests with 24 deselected, and all 2,127 tests. Fernando
+accepted the slice; it was merged in `6fc8bee`.
+
+49J.3C is active in `repository_source_index_49j3c.md`. It consolidates the
+immutable repository Python-file inventory and lazily cached source/AST index
+while preserving independently named architectural assertions and adding an
+exact full-inventory coverage proof. The separate subprocess import-isolation
+oracle is unchanged.
 
 49J continues to require:
 
