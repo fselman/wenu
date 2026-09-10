@@ -688,7 +688,7 @@ rendering remains offline and no two-body element propagator is an implicit
 fallback. The next authorized implementation is the 50A.1 provider/resource
 seam only.
 
-## Minor-body state-provider seam (Milestone 50A.1 review candidate)
+## Minor-body state-provider seam (Milestone 50A.1 accepted)
 
 `ephemeris.py` now admits either one `EphemerisResourceIdentity` or an explicit
 `EphemerisResourceChain` on a geometric state. Existing planetary states retain

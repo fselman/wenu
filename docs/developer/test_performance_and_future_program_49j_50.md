@@ -158,8 +158,8 @@ position from coma and tail appearance. Add no visible object.
 
 ### 50A.1 — Generic minor-body state provider
 
-**Status:** Implemented in `minor_body_state_provider_50a1.md`; awaiting
-Fernando's architectural review before 50A.2 numerical validation.
+**Status:** Accepted by Fernando on 2026-09-10 as recorded in
+`minor_body_state_provider_50a1.md`; 50A.2 numerical validation is next.
 
 Produce the existing typed state consumed by the shared moving-body direction
 machinery. Do not add asteroid- or comet-specific coordinate, projection,

@@ -1,6 +1,6 @@
 # Generic minor-body state provider (Milestone 50A.1)
 
-**Status:** Implemented for Fernando's architectural review
+**Status:** Accepted by Fernando on 2026-09-10
 
 **Base:** `9097d4f`
 
@@ -111,7 +111,8 @@ The coordinate-system guide records the implemented state semantics and keeps
 
 ## 7. Acceptance
 
-Fernando's review must confirm that the explicit target-segment-centre plus
-planetary-centre composition is the correct first implementation of the
-accepted Horizons-SPK boundary. Acceptance authorizes 50A.2 numerical
+Fernando accepted the explicit target-segment-centre plus planetary-centre
+composition as the correct first implementation of the accepted Horizons-SPK
+boundary on 2026-09-10. The focused macOS gate passed 144 tests and the full
+macOS suite passed all 2166 tests. This acceptance authorizes 50A.2 numerical
 validation; it does not authorize a drawable asteroid.

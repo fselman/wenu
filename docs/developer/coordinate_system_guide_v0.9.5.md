@@ -2895,8 +2895,8 @@ the next authorized slice.
 
 ## 13.2.38 50A.1 generic minor-body state provider
 
-**Status:** Implemented for Fernando's architectural review; not yet connected
-to any drawable object.
+**Status:** Accepted by Fernando on 2026-09-10; not yet connected to any
+drawable object. Milestone 50A.2 numerical validation is next.
 
 **[Foundation]** The first minor-body provider keeps two files visibly
 separate: one Horizons SPK supplies the asteroid or comet relative to the

@@ -3764,7 +3764,7 @@ def test_50a1_installs_only_the_offline_minor_body_state_provider_seam():
 
     for phrase in (
         "Generic minor-body state provider (Milestone 50A.1)",
-        "**Status:** Implemented for Fernando's architectural review",
+        "**Status:** Accepted by Fernando on 2026-09-10",
         "**Base:** `9097d4f`",
         "One resolved Horizons small-body SPK",
         "EphemerisResourceChain",
@@ -3778,15 +3778,16 @@ def test_50a1_installs_only_the_offline_minor_body_state_provider_seam():
         "performs no network access",
         "User documentation and examples remain unchanged",
         "50A.2 numerical validation",
+        "full macOS suite passed all 2166 tests",
         "No body, chart request, CLI option, direction, projection, rendering, or output",
     ):
         assert phrase in record
 
-    assert "50A.1 is implemented for review" in roadmap
-    assert "Minor-body state-provider seam (Milestone 50A.1 review candidate)" in architecture
+    assert "50A.1 is accepted" in roadmap
+    assert "Minor-body state-provider seam (Milestone 50A.1 accepted)" in architecture
     assert "Generic minor-body state provider (Milestone 50A.1)" in implementation
     assert "50A.1 minor-body state-provider ownership" in source_tree
-    assert "50A.1 review candidate" in instructions
+    assert "accepted 50A.1 seam" in instructions
     assert "50A.1 generic minor-body state provider" in guide
     assert "r_{BO}=\\mathbf r_{BC}+\\mathbf r_{CO}" in guide
     assert "resource-chain and geometric-state provider seam" in diagrams

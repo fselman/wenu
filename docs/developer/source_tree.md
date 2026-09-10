@@ -1349,7 +1349,7 @@ owns deterministic contract coverage;
 - `sky/solar_system_bodies.py` and `sky/solar_system_catalog.py` remain the
   descriptor and catalog owners for later independently validated registration.
 
-## 50A.1 minor-body state-provider ownership (review candidate)
+## 50A.1 minor-body state-provider ownership (accepted)
 
 - `ephemeris.py` owns the new immutable primary-plus-dependency resource chain
   while preserving the original single-resource state contract;

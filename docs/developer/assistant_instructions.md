@@ -534,10 +534,10 @@ add only the generic state-provider/resource seam: keep acquisition outside
 rendering, preserve explicit state-resource chains, and never use an
 unvalidated two-body orbit as a silent production fallback. Body registration,
 CLI options, and visible objects remain later separately reviewed slices.
-The 50A.1 review candidate is documented in
+The accepted 50A.1 seam is documented in
 `minor_body_state_provider_50a1.md`; preserve its explicit SPK segment-centre
 composition and do not connect it to direction or chart machinery before
-Fernando accepts the slice and 50A.2 validates installed-resource numerics.
+50A.2 validates installed-resource numerics.
 
 For 50B publication-style work, complete the print, typography, contrast,
 accessibility, cartographic, and astronomical-atlas practice review plus
