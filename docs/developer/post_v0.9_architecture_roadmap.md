@@ -1008,11 +1008,18 @@ retaining 300 dpi renderer extents for every label, millimetre conversion, the
 97.5 mm disk boundary, `visual` and `slow` markers, and deliberate fault
 detection; the slice was merged in `a190a09`.
 
-49J.3G is active in `observer_time_sequence_oracle_49j3g.md`. It retains the
+49J.3G completed in
+`archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md`.
+It retains the
 two-frame real canonical observer-time sequence unchanged: each instant still
 uses the complete public generation route, produces a distinct PNG, and proves
 manifest resume. Fixed-sky reuse remains sequenced after the independent-frame
-baseline in 49J.4.
+baseline in 49J.4; the slice was merged in `d7ba1d5`.
+
+49J.3H is active in `test_suite_optimization_closure_49j3h.md`. It maps every
+49J.3 change to retained fault detection, installs durable test-file placement
+and growth rules, and requires three routine plus three complete Mac runs
+before closing test-suite optimization.
 
 49J continues to require:
 

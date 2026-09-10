@@ -1309,5 +1309,7 @@ owns deterministic contract coverage;
 - `archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md`
   owns the accepted proof that the calendar containment test removes only
   redundant full-canvas redraws.
-- `observer_time_sequence_oracle_49j3g.md` owns the active decision to preserve
-  the cold complete observer-time route until 49J.4 measures independent frames.
+- `archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md`
+  owns the accepted decision to preserve the cold complete observer-time route.
+- `test_suite_optimization_closure_49j3h.md` owns the active 49J.3 fault-model,
+  repeated-run, and future test-file-growth closure.
