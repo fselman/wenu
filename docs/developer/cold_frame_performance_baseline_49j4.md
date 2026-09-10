@@ -1,7 +1,6 @@
 # Cold independent-frame performance baseline (Milestone 49J.4)
 
-**Status:** Implementation complete; awaiting Mac measurement and Fernando's
-review.
+**Status:** Mac baseline verified; awaiting Fernando's review.
 
 ## Scope
 
@@ -70,10 +69,28 @@ is desired. Do not reinterpret either harness as a pass/fail benchmark.
 
 ## Acceptance
 
-Mac acceptance must confirm three completed frames, closed exclusive accounts,
-environment and resource identity, output hashes and dimensions, and a clean
-working tree. Record the raw report summary here before integration. No 49J.5
-reuse work is authorized until Fernando accepts this baseline.
+Fernando's Intel Mac ran commit `db830c9` with Python 3.11.7 on
+`macOS-10.16-x86_64-i386-64bit`. All three frames completed with zero-nanosecond
+accounting deltas and identical 1677 by 1740 pixel dimensions. Their PNG sizes
+were 466,888, 466,978, and 466,900 bytes, and their distinct SHA-256 digests
+began `a3323334`, `73f7e7ea`, and `c9416a16`. The ephemeris was `de440s.bsp`
+with SHA-256 `c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`.
+
+Median complete-frame time was 25.509 seconds, with a 24.870-second minimum,
+30.739-second maximum, and 5.869-second range. Median exclusive spans were
+0.057 seconds request/orchestration, 8.447 catalogue/resource loading, 6.661
+provider evaluation, 0.962 astronomical transformation, 0.644 projection,
+3.604 chart preparation, 2.421 rendering, and 2.685 encoding/export. The
+first-run-sensitive astronomical-transformation range of 2.889 seconds remains
+visible rather than being discarded or averaged away.
+
+Mac regression acceptance passed 139 focused tests in 7.31 seconds; 2,114
+routine tests with 24 deselected in 28.03 seconds; and all 2,138 tests in
+79.21 seconds. The retained real observer-time sequence remained the slowest
+complete-suite test at 20.96 seconds. These values characterize the accepted
+cold baseline; they introduce no timing threshold or optimization claim.
+
+No 49J.5 reuse work is authorized until Fernando accepts this baseline.
 
 The coordinate-system guide was reviewed and remains current: this diagnostic
 observes the existing coordinate and rendering owners without changing

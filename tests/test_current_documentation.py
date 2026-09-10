@@ -3509,7 +3509,7 @@ def test_49j4_defines_a_cold_exclusive_nonoptimizing_harness():
 
     for phrase in (
         "Cold independent-frame performance baseline (Milestone 49J.4)",
-        "awaiting Mac measurement and Fernando's review",
+        "Mac baseline verified; awaiting Fernando's review",
         "adds no cache, performance threshold, alternate renderer",
         "three accepted fixed-sky circumpolar frames",
         "`generate_chart_request()` complete-render oracle",
@@ -3525,6 +3525,20 @@ def test_49j4_defines_a_cold_exclusive_nonoptimizing_harness():
         "canonical catalogue load profile, and DE440s ephemeris identity",
         "Three unit contracts were added to the existing fixed-sky baseline",
         "No 49J.5 reuse work is authorized",
+        "Python 3.11.7",
+        "zero-nanosecond accounting deltas",
+        "1677 by 1740 pixel dimensions",
+        "`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`",
+        "Median complete-frame time was 25.509 seconds",
+        "5.869-second range",
+        "8.447 catalogue/resource loading",
+        "6.661 provider evaluation",
+        "first-run-sensitive astronomical-transformation range",
+        "139 focused tests in 7.31 seconds",
+        "2,114 routine tests with 24 deselected in 28.03 seconds",
+        "all 2,138 tests in 79.21 seconds",
+        "slowest complete-suite test at 20.96 seconds",
+        "no timing threshold or optimization claim",
         "**Runtime effect:** None outside explicit diagnostic execution",
     ):
         assert phrase in record
