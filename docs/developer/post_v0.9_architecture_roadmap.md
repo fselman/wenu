@@ -976,11 +976,19 @@ Mac verification passed 94 focused tests, 21 integration tests, 3 visual
 tests, 2,103 routine tests with 24 deselected, and all 2,127 tests. Fernando
 accepted the slice; it was merged in `6fc8bee`.
 
-49J.3C is active in `repository_source_index_49j3c.md`. It consolidates the
+49J.3C completed in
+`archive/milestone_history/49j_performance/repository_source_index_49j3c.md`.
+It consolidated the
 immutable repository Python-file inventory and lazily cached source/AST index
 while preserving independently named architectural assertions and adding an
 exact full-inventory coverage proof. The separate subprocess import-isolation
-oracle is unchanged.
+oracle is unchanged. Fernando's Mac verification passed 2,105 routine tests
+with 24 deselected and all 2,129 tests; the slice was merged in `23d1b32`.
+
+49J.3D is active in `immutable_catalogue_fixture_49j3d.md`. It shares only a
+nested read-only catalogue-position summary between two polar-binocular
+assertions. Mutable Astropy tables and canonical spheres remain unshared;
+independent cold factory, reuse/order, and horizon-mutation oracles remain.
 
 49J continues to require:
 

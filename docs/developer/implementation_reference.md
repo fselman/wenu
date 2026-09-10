@@ -2136,6 +2136,10 @@ documentation but changes no installed interface or runtime owner.
 records the completed marker audit and narrowed overbroad
 module-level `visual` classification without changing an installed interface,
 test assertion, fixture, or runtime owner.
-`repository_source_index_49j3c.md` documents the test-only immutable
+`archive/milestone_history/49j_performance/repository_source_index_49j3c.md`
+documents the completed test-only immutable
 repository-source inventory and lazy parsed-source index. It adds no installed
 interface or runtime owner.
+`immutable_catalogue_fixture_49j3d.md` documents one test-module immutable
+catalogue-summary fixture and the rejection of unsafe session-scoped sphere or
+mutable-table reuse. It adds no installed interface or runtime owner.
