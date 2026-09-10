@@ -1,6 +1,6 @@
 # Canonical observer-time sequence oracle (Milestone 49J.3G)
 
-**Status:** Audit complete; awaiting Mac regression evidence.
+**Status:** Mac regression-verified; awaiting Fernando's review.
 
 ## Scope and decision
 
@@ -40,6 +40,15 @@ sequence/manifest contracts, the routine gate, and the complete gate to pass
 on Mac with unchanged scientific and output assertions. No speedup is claimed.
 The coordinate-system guide was reviewed and remains current because no
 observer, instant, frame, coordinate, provider, or output meaning changes.
+
+Fernando's Mac verification passed the isolated real canonical sequence in
+24.69 seconds, with 22.90 seconds in the test call. The combined documentation,
+sequence, and manifest slice passed 101 tests in 25.30 seconds; the routine gate
+passed 2,109 tests with 24 deselected in 26.54 seconds; and all 2,133 tests
+passed in 76.85 seconds. The complete suite continued to report the real
+canonical sequence as its slowest test at 20.79 seconds. That retained cost is
+the expected evidence that the complete-route oracle was neither removed,
+mocked, nor hidden.
 
 **Runtime effect:** None.
 

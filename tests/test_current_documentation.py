@@ -3406,7 +3406,7 @@ def test_49j3g_preserves_the_canonical_observer_time_sequence_oracle():
 
     for phrase in (
         "Canonical observer-time sequence oracle (Milestone 49J.3G)",
-        "**Status:** Audit complete; awaiting Mac regression evidence",
+        "**Status:** Mac regression-verified; awaiting Fernando's review",
         "retain the test unchanged",
         "minimum scientifically meaningful sequence of two instants",
         "`generate_observer_time_chart_sequence()`",
@@ -3417,6 +3417,13 @@ def test_49j3g_preserves_the_canonical_observer_time_sequence_oracle():
         "would violate D22 directly",
         "independent-frame timing harness in 49J.4",
         "first fixed-sky reuse in 49J.5",
+        "isolated real canonical sequence in 24.69 seconds",
+        "22.90 seconds in the test call",
+        "101 tests in 25.30 seconds",
+        "2,109 tests with 24 deselected in 26.54 seconds",
+        "all 2,133 tests passed in 76.85 seconds",
+        "slowest test at 20.79 seconds",
+        "neither removed, mocked, nor hidden",
         "No speedup is claimed",
         "**Runtime effect:** None",
         "**Test behavior effect:** None",
