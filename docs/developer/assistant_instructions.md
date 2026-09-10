@@ -95,8 +95,10 @@ For current work, read and follow:
   evidence;
 - `archive/milestone_history/49j_performance/test_practice_decisions_49j2.md`
   for the accepted test policy;
-- `marker_truthfulness_49j3b.md` for the active marker-semantics audit and
-  gate-membership correction;
+- `archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md` for
+  the completed marker-semantics audit and gate-membership correction;
+- `repository_source_index_49j3c.md` for the active immutable
+  repository-source inventory and parsed-source-index work;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
   for the completed reproducible test-entry and new-test admission
   implementation.

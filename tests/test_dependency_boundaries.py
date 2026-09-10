@@ -8,6 +8,8 @@ from pathlib import Path
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.constellations import Constellations
 
+from repository_sources import sources_below
+
 
 ROOT = Path(__file__).parents[1]
 DOMAIN_ROOTS = (
@@ -33,9 +35,9 @@ REMOVED_PATHS = (
 )
 
 
-def _domain_modules():
+def _domain_sources():
     for root in DOMAIN_ROOTS:
-        yield from root.rglob("*.py")
+        yield from sources_below(root)
 
 
 def _imports(tree):
@@ -48,27 +50,25 @@ def _imports(tree):
 
 def test_domain_packages_have_no_reverse_dependencies():
     violations = []
-    for path in _domain_modules():
-        tree = ast.parse(path.read_text(), filename=str(path))
-        for imported in _imports(tree):
+    for source in _domain_sources():
+        for imported in _imports(source.tree):
             if imported.startswith(FORBIDDEN_IMPORTS):
                 violations.append(
-                    f"{path.relative_to(ROOT)} imports {imported}"
+                    f"{source.path.relative_to(ROOT)} imports {imported}"
                 )
     assert violations == []
 
 
 def test_domain_layers_have_no_direct_draw_methods():
     violations = []
-    for path in _domain_modules():
-        if path.name == "celestial_sphere.py":
+    for source in _domain_sources():
+        if source.path.name == "celestial_sphere.py":
             continue
-        tree = ast.parse(path.read_text(), filename=str(path))
-        for node in ast.walk(tree):
+        for node in ast.walk(source.tree):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 if node.name == "draw":
                     violations.append(
-                        f"{path.relative_to(ROOT)}:{node.lineno}"
+                        f"{source.path.relative_to(ROOT)}:{node.lineno}"
                     )
     assert violations == []
 
@@ -137,11 +137,10 @@ def test_tools_and_examples_use_no_retired_coordinate_authorities():
     )
     violations = []
     for root in roots:
-        for path in root.rglob("*.py"):
-            source = path.read_text(encoding="utf-8")
+        for source in sources_below(root):
             for token in retired:
-                if token in source:
+                if token in source.text:
                     violations.append(
-                        f"{path.relative_to(ROOT)} contains {token}"
+                        f"{source.path.relative_to(ROOT)} contains {token}"
                     )
     assert violations == []

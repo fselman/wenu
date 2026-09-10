@@ -131,7 +131,10 @@ TEST_ENTRY_ADMISSION = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md"
 )
-MARKER_TRUTHFULNESS = DEVELOPER / "marker_truthfulness_49j3b.md"
+MARKER_TRUTHFULNESS = (
+    DEVELOPER / "archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md"
+)
+REPOSITORY_SOURCE_INDEX = DEVELOPER / "repository_source_index_49j3c.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -3013,7 +3016,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "marker_truthfulness_49j3b.md",
+        "repository_source_index_49j3c.md",
     }
 
     archived = {
@@ -3029,6 +3032,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md",
         "archive/milestone_history/49j_performance/test_practice_decisions_49j2.md",
         "archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md",
+        "archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3195,7 +3199,7 @@ def test_49j3b_records_truthful_marker_scope_without_changing_assertions():
     ):
         assert phrase in record
 
-    assert "49J.3B audits marker truthfulness" in roadmap
+    assert "49J.3B audited marker truthfulness" in roadmap
     assert "2,103 routine tests with 24 deselected" in roadmap
     assert "all 2,127 tests" in roadmap
     assert "marker_truthfulness_49j3b.md" in architecture
@@ -3225,6 +3229,31 @@ def test_49j3b_records_truthful_marker_scope_without_changing_assertions():
         "test_chart_is_centered_on_cen_a_and_is_square",
         "test_circular_aperture_has_expected_projected_radius",
     }
+
+
+def test_49j3c_records_complete_shared_source_index_and_retained_faults():
+    record = " ".join(read(REPOSITORY_SOURCE_INDEX).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Repository source index (Milestone 49J.3C)",
+        "**Status:** Implemented for review",
+        "changes no installed package",
+        "independent subprocess/import-isolation oracle",
+        "all Python paths below `src`, `tests`, `examples`, `tools`, and `example_scripts`",
+        "lazily caches its UTF-8 text and parsed AST",
+        "proves exact inventory equality",
+        "median 2.39 seconds",
+        "three routine and three complete Mac runs",
+        "coordinate-system guide was reviewed",
+    ):
+        assert phrase in record
+
+    assert "49J.3C is active" in roadmap
+    assert "repository_source_index_49j3c.md" in architecture
+    assert "tests/repository_sources.py" in source_tree
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

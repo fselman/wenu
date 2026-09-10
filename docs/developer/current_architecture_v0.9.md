@@ -641,6 +641,9 @@ and 85.49-second complete medians. The accepted policy is archived at
 `archive/milestone_history/49j_performance/test_practice_decisions_49j2.md`.
 `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
 implements reproducible documented test entry and admission rules without
-changing tests or runtime architecture. `marker_truthfulness_49j3b.md` owns
-the active marker audit and gate-membership correction; it changes no
-assertion, fixture, installed interface, or runtime architecture.
+changing tests or runtime architecture.
+`archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md` records
+the completed marker audit and gate-membership correction.
+`repository_source_index_49j3c.md` owns the active test-only immutable source
+inventory and lazy parsed-source index; it changes no installed interface or
+runtime architecture.

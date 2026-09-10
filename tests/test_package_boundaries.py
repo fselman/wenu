@@ -8,6 +8,8 @@ from pathlib import Path
 
 import wenu
 
+from repository_sources import repository_sources, sources_below
+
 
 ROOT = Path(__file__).parents[1]
 SOURCE = ROOT / "src/wenu"
@@ -133,12 +135,7 @@ PUBLIC_EXPORTS = (
 )
 
 
-def _python_files(path):
-    yield from sorted(path.rglob("*.py"))
-
-
-def _imports(path):
-    tree = ast.parse(path.read_text(), filename=str(path))
+def _imports(tree):
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             yield from (alias.name for alias in node.names)
@@ -146,8 +143,7 @@ def _imports(path):
             yield node.module
 
 
-def _dynamic_import_references(path):
-    tree = ast.parse(path.read_text(), filename=str(path))
+def _dynamic_import_references(tree):
     for node in ast.walk(tree):
         if not isinstance(node, ast.Call) or not node.args:
             continue
@@ -198,11 +194,11 @@ def test_obsolete_paths_are_absent():
 def test_package_dependency_directions():
     violations = []
     for package, forbidden in PACKAGE_RULES.items():
-        for path in _python_files(SOURCE / package):
-            for imported in _imports(path):
+        for source in sources_below(SOURCE / package):
+            for imported in _imports(source.tree):
                 if imported.startswith(forbidden):
                     violations.append(
-                        f"{path.relative_to(ROOT)} imports {imported}"
+                        f"{source.path.relative_to(ROOT)} imports {imported}"
                     )
     assert violations == []
 
@@ -215,22 +211,23 @@ def test_obsolete_imports_and_dynamic_import_strings_are_absent():
         ROOT / "examples",
     )
     this_test = Path(__file__).resolve()
-    for root in roots:
-        for path in _python_files(root):
-            if path.resolve() == this_test:
-                continue
-            for imported in _imports(path):
-                if imported in OBSOLETE_MODULES or any(
-                    imported.startswith(name + ".")
-                    for name in OBSOLETE_MODULES
-                ):
-                    violations.append(
-                        f"{path.relative_to(ROOT)} imports {imported}"
-                    )
-            for referenced in _dynamic_import_references(path):
+    for source in repository_sources():
+        if not any(source.path.is_relative_to(root) for root in roots):
+            continue
+        if source.path.resolve() == this_test:
+            continue
+        for imported in _imports(source.tree):
+            if imported in OBSOLETE_MODULES or any(
+                imported.startswith(name + ".")
+                for name in OBSOLETE_MODULES
+            ):
                 violations.append(
-                    f"{path.relative_to(ROOT)} references {referenced}"
+                    f"{source.path.relative_to(ROOT)} imports {imported}"
                 )
+        for referenced in _dynamic_import_references(source.tree):
+            violations.append(
+                f"{source.path.relative_to(ROOT)} references {referenced}"
+            )
     assert violations == []
 
 

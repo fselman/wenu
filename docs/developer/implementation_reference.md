@@ -2132,6 +2132,10 @@ likewise documentation-only.
 `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
 installs its reproducible command and test-admission rules in contributor
 documentation but changes no installed interface or runtime owner.
-`marker_truthfulness_49j3b.md` audits marker meaning and narrows an overbroad
+`archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md`
+records the completed marker audit and narrowed overbroad
 module-level `visual` classification without changing an installed interface,
 test assertion, fixture, or runtime owner.
+`repository_source_index_49j3c.md` documents the test-only immutable
+repository-source inventory and lazy parsed-source index. It adds no installed
+interface or runtime owner.

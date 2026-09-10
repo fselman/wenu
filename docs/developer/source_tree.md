@@ -1285,5 +1285,15 @@ owns deterministic contract coverage;
 - `test_performance_and_future_program_49j_50.md` owns current planning,
   accepted-practice review requirements, adoption decisions, ordering, and
   stop conditions without adding a source owner or runtime behavior.
-- `marker_truthfulness_49j3b.md` owns the active marker audit. Marker
+- `archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md`
+  records the completed marker audit. Marker
   corrections change gate membership only; they do not create a runtime owner.
+- `tests/repository_sources.py` owns the test-session immutable Python-file
+  inventory, lazy UTF-8 source text, lazy AST index, and cached directory
+  subsets used by independent architectural assertions.
+- `tests/test_repository_sources.py` proves that every applicable repository
+  Python file is included; `tests/test_package_boundaries.py` and
+  `tests/test_dependency_boundaries.py` retain their separate package, domain,
+  legacy-import, draw-method, and retired-coordinate fault models.
+- `repository_source_index_49j3c.md` owns the active 49J.3C audit,
+  measurements, retained-fault map, and acceptance boundary.
