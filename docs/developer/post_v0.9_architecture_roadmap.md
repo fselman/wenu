@@ -1000,11 +1000,19 @@ validators retain fresh observers and direct Skyfield recomputation; no new
 fixture, registry, cache, or speedup claim was introduced; the slice was merged
 in `6db2272`.
 
-49J.3F is active in `calendar_layout_cost_49j3f.md`. It removes repeated
+49J.3F completed in
+`archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md`. It
+removes repeated
 full-canvas redraws from the physical calendar-label containment test while
 retaining 300 dpi renderer extents for every label, millimetre conversion, the
 97.5 mm disk boundary, `visual` and `slow` markers, and deliberate fault
-detection.
+detection; the slice was merged in `a190a09`.
+
+49J.3G is active in `observer_time_sequence_oracle_49j3g.md`. It retains the
+two-frame real canonical observer-time sequence unchanged: each instant still
+uses the complete public generation route, produces a distinct PNG, and proves
+manifest resume. Fixed-sky reuse remains sequenced after the independent-frame
+baseline in 49J.4.
 
 49J continues to require:
 

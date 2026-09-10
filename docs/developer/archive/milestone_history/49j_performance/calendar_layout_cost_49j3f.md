@@ -1,6 +1,6 @@
 # Calendar layout cost (Milestone 49J.3F)
 
-**Status:** Mac regression-verified; awaiting Fernando's review.
+**Status:** Accepted and merged in `a190a09`.
 
 ## Scope and retained oracle
 
