@@ -1,6 +1,6 @@
 # Immutable catalogue fixture (Milestone 49J.3D)
 
-**Status:** Mac regression-verified; awaiting Fernando's review.
+**Status:** Accepted and merged in `63beb17`.
 
 ## Scope and audit result
 

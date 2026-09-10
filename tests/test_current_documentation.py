@@ -137,7 +137,11 @@ MARKER_TRUTHFULNESS = (
 REPOSITORY_SOURCE_INDEX = (
     DEVELOPER / "archive/milestone_history/49j_performance/repository_source_index_49j3c.md"
 )
-IMMUTABLE_CATALOGUE_FIXTURE = DEVELOPER / "immutable_catalogue_fixture_49j3d.md"
+IMMUTABLE_CATALOGUE_FIXTURE = (
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md"
+)
+COLD_BUILDER_KERNEL_ORACLES = DEVELOPER / "cold_builder_kernel_oracles_49j3e.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -3019,7 +3023,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "immutable_catalogue_fixture_49j3d.md",
+        "cold_builder_kernel_oracles_49j3e.md",
     }
 
     archived = {
@@ -3037,6 +3041,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md",
         "archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md",
         "archive/milestone_history/49j_performance/repository_source_index_49j3c.md",
+        "archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3272,7 +3277,7 @@ def test_49j3d_records_only_proved_immutable_catalogue_fixture_reuse():
 
     for phrase in (
         "Immutable catalogue fixture (Milestone 49J.3D)",
-        "**Status:** Mac regression-verified; awaiting Fernando's review",
+        "**Status:** Accepted and merged in `63beb17`",
         "canonical sphere is not eligible for session scope",
         "No sphere/build registry is installed",
         "nested `MappingProxyType` values",
@@ -3295,9 +3300,51 @@ def test_49j3d_records_only_proved_immutable_catalogue_fixture_reuse():
     ):
         assert phrase in record
 
-    assert "49J.3D is active" in roadmap
+    assert "49J.3D completed" in roadmap
     assert "immutable_catalogue_fixture_49j3d.md" in architecture
     assert "catalogue_positions" in source_tree
+
+
+def test_49j3e_preserves_cold_builders_and_independent_kernel_oracles():
+    record = " ".join(read(COLD_BUILDER_KERNEL_ORACLES).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Cold builders and installed-kernel oracles (Milestone 49J.3E)",
+        "**Status:** Mac regression-verified; awaiting Fernando's review",
+        "no new fixture, build registry, kernel cache, observer cache",
+        "independently recomputes its direct Skyfield comparison",
+        "Direction, light-time, apparent-place, parallax, physical appearance",
+        "commands run in separate processes",
+        "refuse an unavailable kernel instead of downloading one",
+        "Sharing an observer, requested time, direct Skyfield result",
+        "retains the independent cold ordinary factory",
+        "temporary horizon mutation and restoration",
+        "real independent observer-time frames",
+        "3.43 seconds for the cold ordinary factory",
+        "20.72 seconds for the real observer-time sequence",
+        "87 current-documentation tests in 2.54 seconds",
+        "2,107 routine tests with 24 deselected in 28.34 seconds",
+        "all 2,131 tests in 85.58 seconds",
+        "3.42 seconds for the ordinary canonical factory",
+        "21.27 seconds for the real observer-time sequence",
+        "evidence supports preservation rather than consolidation",
+        "No speedup is claimed",
+        "**Runtime effect:** None",
+        "**Test behavior effect:** None",
+        "coordinate-system guide was reviewed",
+    ):
+        assert phrase in record
+
+    assert "49J.3E is active" in roadmap
+    assert "cold_builder_kernel_oracles_49j3e.md" in architecture
+    assert "direct installed-kernel recomputation" in implementation
+    assert "independently recomputed installed-DE440" in source_tree
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

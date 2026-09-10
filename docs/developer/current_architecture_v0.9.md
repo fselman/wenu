@@ -646,7 +646,10 @@ changing tests or runtime architecture.
 the completed marker audit and gate-membership correction.
 `archive/milestone_history/49j_performance/repository_source_index_49j3c.md`
 records the completed test-only immutable source inventory and lazy
-parsed-source index. `immutable_catalogue_fixture_49j3d.md` owns the active
-catalogue-summary fixture audit and rejects session-scoped canonical-sphere
-reuse while mutable layer/cache state remains; neither changes an installed
-interface or runtime architecture.
+parsed-source index.
+`archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md`
+records the accepted catalogue-summary fixture and rejection of session-scoped
+canonical-sphere reuse. `cold_builder_kernel_oracles_49j3e.md` owns the active
+audit that preserves distinct cold builders and independently recomputed
+installed-kernel scientific validators; none changes an installed interface or
+runtime architecture.

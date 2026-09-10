@@ -99,8 +99,11 @@ For current work, read and follow:
   the completed marker-semantics audit and gate-membership correction;
 - `archive/milestone_history/49j_performance/repository_source_index_49j3c.md`
   for the completed immutable repository-source inventory work;
-- `immutable_catalogue_fixture_49j3d.md` for the active immutable
-  catalogue-summary fixture audit and canonical-sphere rejection boundary;
+- `archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md`
+  for the accepted immutable catalogue-summary fixture and canonical-sphere
+  rejection boundary;
+- `cold_builder_kernel_oracles_49j3e.md` for the active cold-builder and
+  installed-kernel independent-oracle audit;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
   for the completed reproducible test-entry and new-test admission
   implementation.

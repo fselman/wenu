@@ -1300,5 +1300,9 @@ owns deterministic contract coverage;
 - `tests/test_polar_binocular_targets.py::catalogue_positions` owns the one
   module-scoped immutable catalogue summary accepted by 49J.3D; it exposes
   nested read-only family/identifier/declination mappings, not mutable tables.
-- `immutable_catalogue_fixture_49j3d.md` owns the active safety proof and the
-  rejection of a session-scoped canonical sphere/build registry.
+- `archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md`
+  owns the accepted safety proof and rejection of a session-scoped canonical
+  sphere/build registry.
+- `cold_builder_kernel_oracles_49j3e.md` owns the active preservation decision
+  for distinct cold builders and independently recomputed installed-DE440
+  validators; it installs no fixture, registry, cache, or runtime owner.

@@ -2140,6 +2140,9 @@ test assertion, fixture, or runtime owner.
 documents the completed test-only immutable
 repository-source inventory and lazy parsed-source index. It adds no installed
 interface or runtime owner.
-`immutable_catalogue_fixture_49j3d.md` documents one test-module immutable
-catalogue-summary fixture and the rejection of unsafe session-scoped sphere or
-mutable-table reuse. It adds no installed interface or runtime owner.
+`archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md`
+documents one accepted test-module immutable catalogue-summary fixture and the
+rejection of unsafe session-scoped sphere or mutable-table reuse.
+`cold_builder_kernel_oracles_49j3e.md` documents the active preservation of
+independent cold builders and direct installed-kernel recomputation. It adds no
+fixture, cache, installed interface, or runtime owner.
