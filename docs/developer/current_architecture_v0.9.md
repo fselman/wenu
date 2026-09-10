@@ -615,7 +615,7 @@ interpolation, animation, texture, libration, eclipses, disk refraction, and
 occultation prediction remain unimplemented.
 
 
-## Performance baseline boundary (Milestone 49J.0)
+## Performance closure boundary (Milestone 49J)
 
 The current complete-frame authority remains `generate_chart_request()`;
 fixed-sky and observer-time sequences call that static path for every frame.
@@ -626,9 +626,9 @@ independent-frame oracle.
 The accepted historical audit at
 `archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md`
 freezes exclusive stage timing and the first fixed-sky circumpolar reuse
-candidate. `test_performance_and_future_program_49j_50.md` governs the current
-test-practice review, adoption decisions, measurement, optimization, and later
-minor-body and publication work. Planning adds no instrumentation, cache,
+candidate. `test_performance_and_future_program_49j_50.md` records the accepted
+test-practice, measurement, and optimization sequence and governs the current
+minor-body and publication programs. Planning adds no instrumentation, cache,
 optimization, test reclassification, or runtime/output change.
 
 The accepted 49J.1 evidence is recorded in
@@ -666,8 +666,12 @@ records the accepted diagnostic harness:
 three fresh circumpolar frames traverse `generate_chart_request()`, while
 exclusive nanosecond spans and residual are observed without changing an
 installed interface, runtime owner, cache, or chart output.
-`loaded_sphere_reuse_49j5a.md` owns the accepted opt-in execution seam. Active
-`fixed_sky_reuse_equivalence_49j5b.md` compares it exactly with the cold oracle.
+`archive/milestone_history/49j_performance/loaded_sphere_reuse_49j5a.md` owns
+the accepted opt-in execution seam. The accepted comparison in
+`archive/milestone_history/49j_performance/fixed_sky_reuse_equivalence_49j5b.md`
+matches it exactly with the cold oracle, and
+`archive/milestone_history/49j_performance/performance_closure_49j6.md` closes
+49J.
 The fixed-sky orchestrator may reuse one observer-independent canonical sphere,
 but each frame supplies a fresh observer to the unchanged complete request
 route. The cold independent-frame execution remains the default oracle.

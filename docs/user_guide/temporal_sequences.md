@@ -105,6 +105,7 @@ scientific caching.
 Observed Moon disks within one fixed chart are supported separately from
 observer-time sequences; see
 [configuration and Solar-System controls](configuration.md). Fixed-sky
-presentation remains a separately governed reference path, and scientifically
-keyed reuse remains future 49J work. Video encoding, interpolation, and
+presentation remains a separately governed reference path. Its internal,
+opt-in scientifically keyed reuse changes no CLI default or output. Video
+encoding, interpolation, and
 artificial-satellite sequences remain outside this contract.

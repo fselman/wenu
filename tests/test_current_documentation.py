@@ -161,9 +161,17 @@ COLD_FRAME_PERFORMANCE_BASELINE = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md"
 )
-LOADED_SPHERE_REUSE = DEVELOPER / "loaded_sphere_reuse_49j5a.md"
+LOADED_SPHERE_REUSE = (
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/loaded_sphere_reuse_49j5a.md"
+)
 FIXED_SKY_REUSE_EQUIVALENCE = (
-    DEVELOPER / "fixed_sky_reuse_equivalence_49j5b.md"
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/fixed_sky_reuse_equivalence_49j5b.md"
+)
+PERFORMANCE_CLOSURE = (
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/performance_closure_49j6.md"
 )
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
@@ -3021,7 +3029,7 @@ def test_49j0_freezes_performance_measurement_before_optimization():
     assert "Every slice remains separately authorized" in roadmap
     assert "Architecturally accepted and regression-verified" in roadmap
     assert "all 2,122 tests" in roadmap
-    assert "Performance baseline boundary (Milestone 49J.0)" in architecture
+    assert "Performance closure boundary (Milestone 49J)" in architecture
     assert "Performance diagnostics and oracle (Milestone 49J.0)" in implementation
     assert "Milestone 49J performance-program ownership" in source_tree
     assert "performance_and_closure_audit_49j0.md" in instructions
@@ -3046,8 +3054,6 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "loaded_sphere_reuse_49j5a.md",
-        "fixed_sky_reuse_equivalence_49j5b.md",
     }
 
     archived = {
@@ -3567,7 +3573,7 @@ def test_49j5a_defines_only_the_loaded_sphere_reuse_seam():
 
     for phrase in (
         "Loaded-sphere reuse seam (Milestone 49J.5A)",
-        "**Status:** Mac regression verified; awaiting Fernando's review",
+        "**Status:** Accepted and merged in `de78e14` through PR #88",
         "`cold` remains the independent complete-render oracle",
         "`reuse_loaded_sphere` loads one observer-independent canonical celestial sphere",
         "fresh scientific observer to every canonical frame request",
@@ -3577,19 +3583,19 @@ def test_49j5a_defines_only_the_loaded_sphere_reuse_seam():
         "rejects an unbound sphere without an observer",
         "canonical sphere build count",
         "no milestone-named test file",
-        "does not yet claim performance improvement",
-        "49J.5B before 49J.5 can be accepted as a whole",
+        "did not itself claim performance improvement",
+        "49J.5B before 49J.5 was accepted as a whole",
         "135 tests in 7.50 seconds",
         "2,118 selected tests with 24 deselected in 27.92 seconds",
         "all 2,142 tests in 79.04 seconds",
         "slowest complete test at 20.84 seconds",
-        "not performance acceptance for 49J.5",
+        "final performance acceptance for 49J.5",
         "default cold route is unchanged",
     ):
         assert phrase in record
 
-    assert "49J.5A is accepted" in roadmap
-    assert "loaded_sphere_reuse_49j5a.md" in architecture
+    assert "49J.5 is accepted" in roadmap
+    assert "archive/milestone_history/49j_performance/loaded_sphere_reuse_49j5a.md" in architecture
     assert "FixedSkySequenceExecution.REUSE_LOADED_SPHERE" in implementation
     assert "observer-independent loaded-sphere sequence policy" in source_tree
 
@@ -3602,7 +3608,7 @@ def test_49j5b_defines_exact_reuse_equivalence_and_raw_measurement():
 
     for phrase in (
         "Fixed-sky reuse equivalence (Milestone 49J.5B)",
-        "awaiting Mac acceptance and visual review",
+        "**Status:** Accepted and merged in `a028e89` through PR #89",
         "same sequence orchestrator",
         "not an installed interface or second executor",
         "Raw sequence durations and ratios",
@@ -3616,13 +3622,59 @@ def test_49j5b_defines_exact_reuse_equivalence_and_raw_measurement():
         "fails closed",
         "Cold remains the default",
         "all three frames matched exactly",
+        "macOS-10.16-x86_64-i386-64bit",
+        "35.897 versus 25.267 seconds for PNG",
+        "Fernando also visually accepted the six paired PNG frames",
         "Runtime effect:** None",
     ):
         assert phrase in record
 
-    assert "fixed_sky_reuse_equivalence_49j5b.md" in roadmap
-    assert "fixed_sky_reuse_equivalence_49j5b.md" in architecture
+    assert "archive/milestone_history/49j_performance/fixed_sky_reuse_equivalence_49j5b.md" in roadmap
+    assert "archive/milestone_history/49j_performance/fixed_sky_reuse_equivalence_49j5b.md" in architecture
     assert "tools/benchmark_fixed_sky_reuse.py" in source_tree
+
+
+def test_49j6_closes_performance_and_preserves_both_execution_routes():
+    record = " ".join(read(PERFORMANCE_CLOSURE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    user_sequences = " ".join(
+        read(ROOT / "docs/user_guide/temporal_sequences.md").split()
+    )
+
+    for phrase in (
+        "Performance closure (Milestone 49J.6)",
+        "PR #88, merged as `de78e14`",
+        "`a028e8945f5f2903702adbc2cbd2a46e3bffff06`",
+        "Cold execution remains the default complete-render correctness oracle",
+        "one observer-independent loaded canonical celestial sphere",
+        "fresh `Observer`",
+        "macOS-10.16-x86_64-i386-64bit",
+        "normalized semantic SVG",
+        "macOS `sips` renderer",
+        "Fernando also visually accepted the six paired PNG frames",
+        "| PNG | 35.897 s | 25.267 s | 1.421x |",
+        "characterization evidence, not enforced performance thresholds",
+        "2,122 passed, 24 deselected in 33.24 seconds",
+        "24 passed, 2,122 deselected in 56.47 seconds",
+        "all 2,146 collected tests",
+        "No CLI example changes are required",
+        "No architecture-diagram change is required",
+        "Program 50A.0",
+        "**Runtime effect:** None",
+    ):
+        assert phrase in record
+
+    assert "49J.6 is accepted and archived" in roadmap
+    assert "49J is closed. Program 50A.0 is next" in roadmap
+    assert "performance_closure_49j6.md" in architecture
+    assert "performance_closure_49j6.md" in implementation
+    assert "performance_closure_49j6.md" in instructions
+    assert "changes no CLI default or output" in user_sequences
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

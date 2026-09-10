@@ -28,14 +28,11 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`post_v0.9_architecture_roadmap.md`](post_v0.9_architecture_roadmap.md) —
   active milestone roadmap.
 - [`test_performance_and_future_program_49j_50.md`](test_performance_and_future_program_49j_50.md)
-  — current 49J test/performance program and the ordered 50A minor-body and
-  50B publication-legibility programs.
-- [`fixed_sky_reuse_equivalence_49j5b.md`](fixed_sky_reuse_equivalence_49j5b.md)
-  — active 49J.5B scientific, graphical, and performance comparison.
-- [`loaded_sphere_reuse_49j5a.md`](loaded_sphere_reuse_49j5a.md) — accepted
-  49J.5A observer-independent loaded-sphere reuse seam.
+  — accepted 49J test/performance program and the current ordered 50A
+  minor-body and 50B publication-legibility programs.
 
-The accepted 49J.0 through 49J.4 records are archived under
+The accepted 49J.0 through 49J.6 records, including the final closure, are
+archived under
 [`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/).
 
 Do not place completed milestone records directly in this directory. Move them

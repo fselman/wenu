@@ -1,6 +1,6 @@
 # Fixed-sky reuse equivalence (Milestone 49J.5B)
 
-**Status:** Linux characterized; awaiting Mac acceptance and visual review.
+**Status:** Accepted and merged in `a028e89` through PR #89.
 
 49J.5B measures `reuse_loaded_sphere` against the retained `cold` oracle on
 the accepted three-frame La Ligua circumpolar workload.
@@ -29,7 +29,17 @@ clipping, furniture, PNG, normalized semantic-SVG, and rendered-PDF evidence.
 At commit `de78e14` with Python 3.12.14, cold versus reused sequence times were
 19.004 versus 14.603 seconds for PNG (1.301x speedup), 27.659 versus 23.358
 seconds for SVG, and 20.938 versus 16.591 seconds for PDF. Final Mac measurement
-and visual acceptance remain pending.
+and visual acceptance remained pending at that checkpoint.
+
+Fernando's final Mac run at commit `167d379` used Python 3.11.7 on
+macOS-10.16-x86_64-i386-64bit. All three frames matched exactly for scientific
+evidence and for PNG, normalized semantic SVG, and rendered PDF; PDF comparison
+used the built-in macOS `sips` renderer. Cold execution built three canonical
+spheres and reuse execution built one. Cold versus reused sequence times were
+35.897 versus 25.267 seconds for PNG (1.421x), 55.511 versus 49.019 seconds for
+SVG (1.132x), and 34.934 versus 28.094 seconds for PDF (1.243x). Fernando also
+visually accepted the six paired PNG frames. These values are characterization
+evidence, not enforced thresholds.
 
 **Runtime effect:** None; the 49J.5A execution modes are unchanged.
 

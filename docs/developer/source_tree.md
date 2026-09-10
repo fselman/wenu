@@ -1324,7 +1324,7 @@ owns deterministic contract coverage;
   closure.
 - `archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md`
   owns the accepted 49J.4 cold-frame diagnostic evidence;
-- `charts/fixed_sky_sequence.py` owns the accepted 49J.5A explicit cold versus
+- `charts/fixed_sky_sequence.py` owns the accepted 49J.5 explicit cold versus
   observer-independent loaded-sphere sequence policy and fresh-observer
   lifecycle;
 - `charts/request_generation.py` accepts that reusable sphere plus explicit
@@ -1332,5 +1332,7 @@ owns deterministic contract coverage;
 - `tools/benchmark_cold_frames.py` remains the cold diagnostic;
   `charts/request_generation.py` remains its complete-render oracle and
   `tools/benchmark_reusable_sphere.py` remains non-additive and separate;
-- `tools/benchmark_fixed_sky_reuse.py` owns active 49J.5B exact scientific,
-  normalized-SVG, PNG, rendered-PDF, and raw performance comparison.
+- `tools/benchmark_fixed_sky_reuse.py` owns the accepted 49J.5B exact
+  scientific, normalized-SVG, PNG, rendered-PDF, and raw performance
+  comparison; archived 49J.6 evidence records closure without changing that
+  ownership.
