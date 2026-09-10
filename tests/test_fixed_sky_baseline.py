@@ -1,6 +1,9 @@
 """Independent complete-render baseline and PNG comparison tests."""
 
+from dataclasses import replace
 from datetime import datetime, timezone
+import importlib.util
+import json
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -18,6 +21,9 @@ from wenu.charts.fixed_sky_baseline import (
 from wenu.charts.fixed_sky_sequence import (
     FixedSkyRotatingHorizonSequenceRequest,
 )
+from wenu.charts.fixed_sky_orientation import (
+    FixedSkyCircumpolarOrientation,
+)
 from wenu.charts.product_options import ChartProductOptions
 from wenu.charts.request import (
     ChartFrameRequest,
@@ -27,6 +33,19 @@ from wenu.charts.request import (
 )
 from wenu.output_policy import OutputFormat
 from wenu.temporal import TemporalTimeline
+
+
+def cold_benchmark_module():
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "tools/benchmark_cold_frames.py"
+    )
+    spec = importlib.util.spec_from_file_location(
+        "benchmark_cold_frames", path
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def fixed_request(output, *, family="circumpolar"):
@@ -197,3 +216,119 @@ def test_png_comparison_normalizes_color_modes_and_rejects_size(tmp_path):
 def test_png_comparison_tolerances_are_bounded(kwargs, message):
     with pytest.raises(ValueError, match=message):
         PngFrameComparisonTolerance(**kwargs)
+
+
+def test_cold_benchmark_uses_three_independent_canonical_frames(
+    tmp_path,
+    monkeypatch,
+    capsys,
+):
+    module = cold_benchmark_module()
+    calls = []
+
+    class Timer:
+        def measure(self, operation):
+            value = operation()
+            return value, {
+                **{stage: 1 for stage in module.STAGES},
+                "unclassified_residual": 1,
+                "complete_frame": len(module.STAGES) + 1,
+            }
+
+    def generate(request, *, configuration=None):
+        del configuration
+        calls.append(request)
+        output = request.product.output
+        output.parent.mkdir(parents=True, exist_ok=True)
+        Image.new("RGBA", (3, 2), (10, 20, 30, 255)).save(output)
+        rendering = SimpleNamespace(layers=())
+        export = SimpleNamespace(rendering=rendering)
+        return SimpleNamespace(outputs=(output,), exports=(export,))
+
+    monkeypatch.setattr(module, "ExclusiveStageTimer", Timer)
+    monkeypatch.setattr(module, "generate_chart_request", generate)
+    monkeypatch.setattr(module, "_commit", lambda: "abc123")
+    monkeypatch.setattr(
+        module,
+        "resolve_fixed_sky_rotating_horizon_frame",
+        lambda frame: SimpleNamespace(
+            chart_request=replace(
+                frame.celestial_request,
+                observer=frame.local_observer,
+            ),
+            orientation=FixedSkyCircumpolarOrientation(
+                pole="south",
+                anchor_reference_position_angle_deg=0.0,
+                frame_reference_position_angle_deg=0.0,
+                position_angle_deg=0.0,
+            ),
+        ),
+    )
+
+    report = module.benchmark(tmp_path / "outside-repository")
+
+    assert report["schema"].endswith(".v1")
+    assert report["environment"]["commit"] == "abc123"
+    assert report["measurement"]["exclusive"] is True
+    assert report["measurement"]["threshold"] is None
+    assert len(report["frames"]) == 3
+    assert report["measurement"]["summary"]["complete_frame"] == {
+        "median_ns": 9,
+        "minimum_ns": 9,
+        "maximum_ns": 9,
+        "range_ns": 0,
+    }
+    assert len(calls) == 3
+    assert len({id(request) for request in calls}) == 3
+    assert tuple(request.observer.time.isoformat() for request in calls) == (
+        tuple(frame["simulation_time"] for frame in report["frames"])
+    )
+    json.dumps(report, default=module._json_value)
+    progress = capsys.readouterr().out
+    assert "[0/3 0%] starting frame 1" in progress
+    assert "[3/3 100%] frame complete" in progress
+    assert "accounting closed=True" in progress
+
+
+def test_exclusive_timer_closes_accounting_without_overlapping_stages():
+    module = cold_benchmark_module()
+    namespace = {}
+    clock_calls = []
+
+    def clock():
+        clock_calls.append(len(clock_calls) + 1)
+        return clock_calls[-1]
+
+    exec(
+        compile(
+            "def transform():\n"
+            "    total = 0\n"
+            "    for value in range(2000):\n"
+            "        total += value\n"
+            "    return total\n",
+            "/tmp/wenu/coordinate_service.py",
+            "exec",
+        ),
+        namespace,
+    )
+
+    result, timings = module.ExclusiveStageTimer(clock=clock).measure(
+        namespace["transform"]
+    )
+
+    assert result == sum(range(2000))
+    assert timings["astronomical_transformation"] > 0
+    assert timings["complete_frame"] == sum(
+        timings[name]
+        for name in module.STAGES + ("unclassified_residual",)
+    )
+    assert len(clock_calls) <= 6
+
+
+def test_cold_benchmark_products_must_remain_outside_repository():
+    module = cold_benchmark_module()
+
+    with pytest.raises(ValueError, match="output must be outside"):
+        module.benchmark(
+            Path(__file__).resolve().parents[1] / "output" / "cold-frames"
+        )

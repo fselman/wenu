@@ -744,6 +744,14 @@ covers one catalogue load, 18 view preparations, and 18 atlas-print exports.
 The regional-single and regional-group requests explicitly exercise outside
 masks; the other four families remain unmasked.
 
+`tools/benchmark_cold_frames.py` is the separate 49J.4 cold independent-frame
+diagnostic. It sends three resolved circumpolar requests through the unchanged
+complete static generator, attributes every profiled interval to one exclusive
+stage or residual, and records raw/summary timings with environment, resource,
+request, semantic/projection, and output identities. It introduces no cache,
+alternate chart path, or pass/fail threshold; caller-selected products and JSON
+belong outside the repository.
+
 `tools/render_46d8_visual_matrix.py` is the final command-surface visual
 acceptance harness. It is intentionally separate from the reusable-sphere
 benchmark: each entry launches `python -m wenu.cli.chart` in a fresh process,
@@ -1311,5 +1319,9 @@ owns deterministic contract coverage;
   redundant full-canvas redraws.
 - `archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md`
   owns the accepted decision to preserve the cold complete observer-time route.
-- `test_suite_optimization_closure_49j3h.md` owns the active 49J.3 fault-model,
-  repeated-run, and future test-file-growth closure.
+- `archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md`
+  owns the accepted 49J.3 fault-model, repeated-run, and future test-file-growth
+  closure.
+- `tools/benchmark_cold_frames.py` owns the active 49J.4 cold-frame diagnostic;
+  `charts/request_generation.py` remains its complete-render oracle and
+  `tools/benchmark_reusable_sphere.py` remains non-additive and separate.

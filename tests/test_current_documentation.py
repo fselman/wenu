@@ -153,7 +153,13 @@ OBSERVER_TIME_SEQUENCE_ORACLE = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md"
 )
-TEST_SUITE_OPTIMIZATION_CLOSURE = DEVELOPER / "test_suite_optimization_closure_49j3h.md"
+TEST_SUITE_OPTIMIZATION_CLOSURE = (
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md"
+)
+COLD_FRAME_PERFORMANCE_BASELINE = (
+    DEVELOPER / "cold_frame_performance_baseline_49j4.md"
+)
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -3035,7 +3041,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "test_suite_optimization_closure_49j3h.md",
+        "cold_frame_performance_baseline_49j4.md",
     }
 
     archived = {
@@ -3057,6 +3063,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md",
         "archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md",
         "archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md",
+        "archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3450,7 +3457,7 @@ def test_49j3h_closes_fault_models_and_governs_test_file_growth():
 
     for phrase in (
         "Test-suite optimization closure (Milestone 49J.3H)",
-        "**Status:** Mac closure-verified; awaiting Fernando's review",
+        "**Status:** Accepted and merged in `2c524d2`",
         "188 `test_*.py` files",
         "does not reorganize them retrospectively",
         "Retained fault-model map",
@@ -3487,8 +3494,59 @@ def test_49j3h_closes_fault_models_and_governs_test_file_growth():
     ):
         assert phrase in instructions
 
-    assert "49J.3H is active" in roadmap
+    assert "49J.3H completed" in roadmap
     assert "test_suite_optimization_closure_49j3h.md" in architecture
+
+
+def test_49j4_defines_a_cold_exclusive_nonoptimizing_harness():
+    record = " ".join(read(COLD_FRAME_PERFORMANCE_BASELINE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Cold independent-frame performance baseline (Milestone 49J.4)",
+        "Mac baseline verified; awaiting Fernando's review",
+        "adds no cache, performance threshold, alternate renderer",
+        "three accepted fixed-sky circumpolar frames",
+        "`generate_chart_request()` complete-render oracle",
+        "`tools/benchmark_reusable_sphere.py` remains a separate",
+        "`time.perf_counter_ns()`",
+        "deepest declared owner",
+        "`unclassified_residual`",
+        "equal `complete_frame` exactly",
+        "median, minimum, maximum, and range",
+        "Console progress advances from 0 to 100 percent",
+        "La Ligua and three UTC instants",
+        "SHA-256 digest, semantic paths, and projected record types",
+        "canonical catalogue load profile, and DE440s ephemeris identity",
+        "Three unit contracts were added to the existing fixed-sky baseline",
+        "No 49J.5 reuse work is authorized",
+        "Python 3.11.7",
+        "zero-nanosecond accounting deltas",
+        "1677 by 1740 pixel dimensions",
+        "`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`",
+        "Median complete-frame time was 25.509 seconds",
+        "5.869-second range",
+        "8.447 catalogue/resource loading",
+        "6.661 provider evaluation",
+        "first-run-sensitive astronomical-transformation range",
+        "139 focused tests in 7.31 seconds",
+        "2,114 routine tests with 24 deselected in 28.03 seconds",
+        "all 2,138 tests in 79.21 seconds",
+        "slowest complete-suite test at 20.96 seconds",
+        "no timing threshold or optimization claim",
+        "**Runtime effect:** None outside explicit diagnostic execution",
+    ):
+        assert phrase in record
+
+    assert "49J.4 is active" in roadmap
+    assert "cold_frame_performance_baseline_49j4.md" in architecture
+    assert "raw exclusive `perf_counter_ns` observations" in implementation
+    assert "attributes every profiled interval to one exclusive" in source_tree
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():
