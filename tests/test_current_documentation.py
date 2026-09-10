@@ -3563,6 +3563,7 @@ def test_49j5a_defines_only_the_loaded_sphere_reuse_seam():
 
     for phrase in (
         "Loaded-sphere reuse seam (Milestone 49J.5A)",
+        "**Status:** Mac regression verified; awaiting Fernando's review",
         "`cold` remains the independent complete-render oracle",
         "`reuse_loaded_sphere` loads one observer-independent canonical celestial sphere",
         "fresh scientific observer to every canonical frame request",
@@ -3574,6 +3575,11 @@ def test_49j5a_defines_only_the_loaded_sphere_reuse_seam():
         "no milestone-named test file",
         "does not yet claim performance improvement",
         "49J.5B before 49J.5 can be accepted as a whole",
+        "135 tests in 7.50 seconds",
+        "2,118 selected tests with 24 deselected in 27.92 seconds",
+        "all 2,142 tests in 79.04 seconds",
+        "slowest complete test at 20.84 seconds",
+        "not performance acceptance for 49J.5",
         "default cold route is unchanged",
     ):
         assert phrase in record

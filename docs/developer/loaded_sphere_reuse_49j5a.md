@@ -1,6 +1,6 @@
 # Loaded-sphere reuse seam (Milestone 49J.5A)
 
-**Status:** Implemented on the task branch; awaiting Mac verification and Fernando's review.
+**Status:** Mac regression verified; awaiting Fernando's review.
 
 ## Scope
 
@@ -42,6 +42,20 @@ observable identity only. It does not yet claim performance improvement or
 candidate-versus-oracle scientific, semantic, normalized-SVG, PNG, PDF,
 clipping, furniture, or visual equivalence. Those comparisons and the Mac
 measurement belong to 49J.5B before 49J.5 can be accepted as a whole.
+
+## Mac regression evidence
+
+Fernando's Intel Mac verified commit `607cfce` with Python 3.11.7 and
+Matplotlib 3.8.0. The focused architecture, request-generation, fixed-sky,
+documentation, repository-source, package-boundary, and dependency-boundary
+set passed all 135 tests in 7.50 seconds. The routine gate passed all 2,118
+selected tests with 24 deselected in 27.92 seconds. The complete suite passed
+all 2,142 tests in 79.04 seconds.
+
+The retained independent observer-time sequence remained the slowest complete
+test at 20.84 seconds. This confirms that the new default does not hide or
+replace the cold complete-render oracle. These timings are regression and
+characterization evidence, not performance acceptance for 49J.5.
 
 The coordinate-system guide was reviewed and remains current. The seam changes
 no coordinate meaning, reference epoch, equinox, product frame, projection,
