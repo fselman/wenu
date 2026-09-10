@@ -991,11 +991,20 @@ It shares only a nested read-only catalogue-position summary between two
 polar-binocular assertions. Mutable Astropy tables and canonical spheres remain
 unshared; the slice was merged in `63beb17`.
 
-49J.3E is active in `cold_builder_kernel_oracles_49j3e.md`. Its audit preserves
+49J.3E completed in
+`archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md`.
+Its audit preserves
 the independent cold factory, reusable-sphere order, horizon-mutation,
 complete-render, and observer-time sequence oracles. Standalone installed-DE440
 validators retain fresh observers and direct Skyfield recomputation; no new
-fixture, registry, cache, or speedup claim is introduced.
+fixture, registry, cache, or speedup claim was introduced; the slice was merged
+in `6db2272`.
+
+49J.3F is active in `calendar_layout_cost_49j3f.md`. It removes repeated
+full-canvas redraws from the physical calendar-label containment test while
+retaining 300 dpi renderer extents for every label, millimetre conversion, the
+97.5 mm disk boundary, `visual` and `slow` markers, and deliberate fault
+detection.
 
 49J continues to require:
 

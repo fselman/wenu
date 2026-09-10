@@ -40,7 +40,8 @@ coordinate guide, contribution rules, and current work in progress.
   closure audits, the accepted 49J.1 evidence and 49J.2 test-practice policy,
   the completed 49J.3A contributor-entry implementation, and the completed
   49J.3B marker-semantics audit, the completed 49J.3C source-index
-  consolidation, and the accepted 49J.3D immutable catalogue fixture;
+  consolidation, the accepted 49J.3D immutable catalogue fixture, and the
+  accepted 49J.3E cold-oracle preservation audit;
 - `pre_versioned/` contains the original unversioned architecture, roadmap,
   and UML material;
 - files directly under this directory are older records retained from the

@@ -30,10 +30,10 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`test_performance_and_future_program_49j_50.md`](test_performance_and_future_program_49j_50.md)
   — current 49J test/performance program and the ordered 50A minor-body and
   50B publication-legibility programs.
-- [`cold_builder_kernel_oracles_49j3e.md`](cold_builder_kernel_oracles_49j3e.md)
-  — active 49J.3E cold-builder and installed-kernel oracle audit.
+- [`calendar_layout_cost_49j3f.md`](calendar_layout_cost_49j3f.md) — active
+  49J.3F physical calendar-layout test optimization.
 
-The accepted 49J.0 through 49J.3D records are archived under
+The accepted 49J.0 through 49J.3E records are archived under
 [`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/).
 
 Do not place completed milestone records directly in this directory. Move them
