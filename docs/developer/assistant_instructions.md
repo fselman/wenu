@@ -110,7 +110,9 @@ For current work, read and follow:
   for the accepted cold canonical observer-time sequence decision;
 - `archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md` for the accepted 49J.3 fault-model,
   repeated-measurement, and test-file-growth closure;
-- `loaded_sphere_reuse_49j5a.md` for the active explicit cold-versus-loaded-sphere
+- `fixed_sky_reuse_equivalence_49j5b.md` for the active exact comparison of the
+  loaded-sphere candidate with the retained cold oracle;
+- `loaded_sphere_reuse_49j5a.md` for the accepted explicit cold-versus-loaded-sphere
   fixed-sky sequence seam and its observer lifecycle boundaries;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
   for the completed reproducible test-entry and new-test admission

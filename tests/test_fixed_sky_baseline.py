@@ -15,8 +15,10 @@ import wenu.charts.fixed_sky_baseline as baseline_module
 from wenu.charts.fixed_sky_baseline import (
     PngFrameComparisonTolerance,
     compare_png_frames,
+    compare_normalized_svg,
     fixed_sky_complete_render_baseline_request,
     generate_fixed_sky_complete_render_baseline,
+    render_pdf_page_rgba,
 )
 from wenu.charts.fixed_sky_sequence import (
     FixedSkyRotatingHorizonSequenceRequest,
@@ -200,6 +202,60 @@ def test_png_comparison_normalizes_color_modes_and_rejects_size(tmp_path):
     Image.new("RGBA", (2, 2), (10, 20, 30, 255)).save(wrong)
     with pytest.raises(ValueError, match="dimensions differ"):
         compare_png_frames(wrong, rgba)
+
+
+def test_svg_comparison_removes_only_metadata_and_volatile_exporter_ids(
+    tmp_path,
+):
+    first = tmp_path / "first.svg"
+    second = tmp_path / "second.svg"
+    template = """<svg xmlns="http://www.w3.org/2000/svg">
+      <metadata>{date}</metadata>
+      <g id="wenu-layer-sky" data-wenu-layer="sky">
+        <defs><clipPath id="{clip}"><path d="M 0 0"/></clipPath></defs>
+        <path id="{marker}" clip-path="url(#{clip})" d="M 1 1"/>
+      </g>
+    </svg>"""
+    first.write_text(
+        template.format(date="one", clip="p123abc", marker="m456def")
+    )
+    second.write_text(
+        template.format(date="two", clip="p987abc", marker="m654def")
+    )
+
+    assert compare_normalized_svg(first, second)
+
+    second.write_text(
+        template.format(date="two", clip="p987abc", marker="m654def")
+        .replace('data-wenu-layer="sky"', 'data-wenu-layer="horizon"')
+    )
+    assert not compare_normalized_svg(first, second)
+
+
+def test_pdf_page_rendering_uses_declared_poppler_arguments(
+    tmp_path,
+    monkeypatch,
+):
+    calls = []
+
+    def run(command, **options):
+        calls.append((command, options))
+        Path(command[-1]).with_suffix(".png").write_bytes(b"png")
+
+    monkeypatch.setattr(baseline_module.subprocess, "run", run)
+    destination = tmp_path / "rendered.png"
+
+    assert render_pdf_page_rgba(
+        tmp_path / "frame.pdf", destination, dpi=144
+    ) == destination
+    assert calls == [(
+        (
+            "pdftoppm", "-f", "1", "-l", "1", "-singlefile",
+            "-r", "144", "-png", str(tmp_path / "frame.pdf"),
+            str(tmp_path / "rendered"),
+        ),
+        {"check": True, "capture_output": True},
+    )]
 
 
 @pytest.mark.parametrize(

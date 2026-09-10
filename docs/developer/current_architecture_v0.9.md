@@ -666,7 +666,8 @@ records the accepted diagnostic harness:
 three fresh circumpolar frames traverse `generate_chart_request()`, while
 exclusive nanosecond spans and residual are observed without changing an
 installed interface, runtime owner, cache, or chart output.
-`loaded_sphere_reuse_49j5a.md` owns the active opt-in execution seam. The
-fixed-sky orchestrator may reuse one observer-independent canonical sphere,
+`loaded_sphere_reuse_49j5a.md` owns the accepted opt-in execution seam. Active
+`fixed_sky_reuse_equivalence_49j5b.md` compares it exactly with the cold oracle.
+The fixed-sky orchestrator may reuse one observer-independent canonical sphere,
 but each frame supplies a fresh observer to the unchanged complete request
 route. The cold independent-frame execution remains the default oracle.

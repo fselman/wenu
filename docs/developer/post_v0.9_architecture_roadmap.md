@@ -1031,12 +1031,13 @@ transformation, projection, preparation, rendering, export, and residual
 accounting. It adds no cache, output change, or threshold; the slice was merged
 in `f4dcf11`.
 
-49J.5A is active in `loaded_sphere_reuse_49j5a.md`. It introduces an explicit
+49J.5A is accepted in `loaded_sphere_reuse_49j5a.md`. It introduces an explicit
 opt-in mode that reuses only one observer-independent loaded canonical sphere.
 Every frame retains a fresh observer and the complete canonical realization,
 projection, preparation, rendering, and export route. Cold execution remains
 the default correctness oracle. Performance and cross-format equivalence
-remain for 49J.5B; 49J.5 is not closed by this seam alone.
+are measured by active 49J.5B in `fixed_sky_reuse_equivalence_49j5b.md` before
+49J.5 can close.
 
 49J continues to require:
 

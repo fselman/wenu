@@ -2168,3 +2168,9 @@ per frame, and passes both to `generate_chart_request()`. The generation result
 records the mode, canonical-sphere build count, and immutable reused load
 profile. Supplying an explicit observer to `generate_chart_request()` is valid
 only with an observer-independent supplied sphere.
+
+49J.5B adds `tools/benchmark_fixed_sky_reuse.py`. The outside-repository
+diagnostic invokes those same modes for PNG, semantic SVG, and PDF; compares
+scientific and projected records, clipping, furniture, and request provenance;
+normalizes only SVG metadata and volatile Matplotlib internal identifiers; and
+compares PDF after Poppler rendering at 150 DPI. Raw timings have no threshold.
