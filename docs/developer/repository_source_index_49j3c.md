@@ -1,6 +1,6 @@
 # Repository source index (Milestone 49J.3C)
 
-**Status:** Implemented for review.
+**Status:** Mac regression-verified; awaiting Fernando's review.
 
 ## Scope
 
@@ -54,6 +54,21 @@ The broader Linux routine gate reached 2,091 passes and 24 deselections, but
 environment's failing TLS certificate path or depended on a different
 Matplotlib SVG serialization. Those environment failures do not touch the
 changed boundary tests and are not recorded as acceptance.
+
+Fernando's Mac measurement at branch commit `c81e7dd` supplied the required
+same-environment comparison. The unchanged `main` baseline passed 13 boundary
+tests in 4.28, 4.00, and 4.18 seconds (median 4.18 seconds; range 0.28 seconds).
+49J.3C, including the new full-inventory test, passed 14 tests in 5.39, 3.80,
+and 3.70 seconds (median 3.80 seconds; range 1.69 seconds). The observed median
+improvement is 0.38 seconds, or about 9.1 percent, while increasing coverage.
+
+Three Mac routine runs each passed 2,105 tests with 24 deselected in 33.20,
+33.22, and 36.05 seconds (median 33.22 seconds; range 2.85 seconds). Three Mac
+complete runs each passed all 2,129 tests in 89.59, 89.10, and 90.39 seconds
+(median 89.59 seconds; range 1.29 seconds). The canonical observer-time sequence
+remained the leading complete-suite node at 21.48--22.77 seconds, and the
+independent cartoon subprocess/import-isolation oracle remained at
+2.03--2.08 seconds.
 
 Acceptance requires focused boundary and documentation tests, three routine
 and three complete Mac runs, unchanged gate semantics, order checks, and a

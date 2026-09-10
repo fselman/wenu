@@ -3239,13 +3239,17 @@ def test_49j3c_records_complete_shared_source_index_and_retained_faults():
 
     for phrase in (
         "Repository source index (Milestone 49J.3C)",
-        "**Status:** Implemented for review",
+        "**Status:** Mac regression-verified; awaiting Fernando's review",
         "changes no installed package",
         "independent subprocess/import-isolation oracle",
         "all Python paths below `src`, `tests`, `examples`, `tools`, and `example_scripts`",
         "lazily caches its UTF-8 text and parsed AST",
         "proves exact inventory equality",
         "median 2.39 seconds",
+        "observed median improvement is 0.38 seconds, or about 9.1 percent",
+        "2,105 tests with 24 deselected",
+        "all 2,129 tests",
+        "median 89.59 seconds; range 1.29 seconds",
         "three routine and three complete Mac runs",
         "coordinate-system guide was reviewed",
     ):
