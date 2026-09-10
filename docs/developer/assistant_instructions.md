@@ -97,8 +97,10 @@ For current work, read and follow:
   for the accepted test policy;
 - `archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md` for
   the completed marker-semantics audit and gate-membership correction;
-- `repository_source_index_49j3c.md` for the active immutable
-  repository-source inventory and parsed-source-index work;
+- `archive/milestone_history/49j_performance/repository_source_index_49j3c.md`
+  for the completed immutable repository-source inventory work;
+- `immutable_catalogue_fixture_49j3d.md` for the active immutable
+  catalogue-summary fixture audit and canonical-sphere rejection boundary;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
   for the completed reproducible test-entry and new-test admission
   implementation.

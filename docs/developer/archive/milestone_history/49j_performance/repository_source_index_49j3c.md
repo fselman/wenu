@@ -1,6 +1,6 @@
 # Repository source index (Milestone 49J.3C)
 
-**Status:** Mac regression-verified; awaiting Fernando's review.
+**Status:** Accepted and merged in `23d1b32`.
 
 ## Scope
 

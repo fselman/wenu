@@ -134,7 +134,10 @@ TEST_ENTRY_ADMISSION = (
 MARKER_TRUTHFULNESS = (
     DEVELOPER / "archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md"
 )
-REPOSITORY_SOURCE_INDEX = DEVELOPER / "repository_source_index_49j3c.md"
+REPOSITORY_SOURCE_INDEX = (
+    DEVELOPER / "archive/milestone_history/49j_performance/repository_source_index_49j3c.md"
+)
+IMMUTABLE_CATALOGUE_FIXTURE = DEVELOPER / "immutable_catalogue_fixture_49j3d.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -3016,7 +3019,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "repository_source_index_49j3c.md",
+        "immutable_catalogue_fixture_49j3d.md",
     }
 
     archived = {
@@ -3033,6 +3036,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/test_practice_decisions_49j2.md",
         "archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md",
         "archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md",
+        "archive/milestone_history/49j_performance/repository_source_index_49j3c.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3239,7 +3243,7 @@ def test_49j3c_records_complete_shared_source_index_and_retained_faults():
 
     for phrase in (
         "Repository source index (Milestone 49J.3C)",
-        "**Status:** Mac regression-verified; awaiting Fernando's review",
+        "**Status:** Accepted and merged in `23d1b32`",
         "changes no installed package",
         "independent subprocess/import-isolation oracle",
         "all Python paths below `src`, `tests`, `examples`, `tools`, and `example_scripts`",
@@ -3255,9 +3259,39 @@ def test_49j3c_records_complete_shared_source_index_and_retained_faults():
     ):
         assert phrase in record
 
-    assert "49J.3C is active" in roadmap
+    assert "49J.3C completed" in roadmap
     assert "repository_source_index_49j3c.md" in architecture
     assert "tests/repository_sources.py" in source_tree
+
+
+def test_49j3d_records_only_proved_immutable_catalogue_fixture_reuse():
+    record = " ".join(read(IMMUTABLE_CATALOGUE_FIXTURE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Immutable catalogue fixture (Milestone 49J.3D)",
+        "**Status:** Implemented for review",
+        "canonical sphere is not eligible for session scope",
+        "No sphere/build registry is installed",
+        "nested `MappingProxyType` values",
+        "outer and inner mutation attempts",
+        "one assertion owns exact identifier presence and order",
+        "other owns north/south overlap counts",
+        "retains an independent cold canonical factory build",
+        "forward, reverse, and isolated execution",
+        "coordinate-system guide was reviewed",
+        "median 1.27 seconds",
+        "median 1.18 seconds",
+        "local diagnostic reduction of about 7 percent",
+        "exact missing identifier",
+    ):
+        assert phrase in record
+
+    assert "49J.3D is active" in roadmap
+    assert "immutable_catalogue_fixture_49j3d.md" in architecture
+    assert "catalogue_positions" in source_tree
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

@@ -644,6 +644,9 @@ implements reproducible documented test entry and admission rules without
 changing tests or runtime architecture.
 `archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md` records
 the completed marker audit and gate-membership correction.
-`repository_source_index_49j3c.md` owns the active test-only immutable source
-inventory and lazy parsed-source index; it changes no installed interface or
-runtime architecture.
+`archive/milestone_history/49j_performance/repository_source_index_49j3c.md`
+records the completed test-only immutable source inventory and lazy
+parsed-source index. `immutable_catalogue_fixture_49j3d.md` owns the active
+catalogue-summary fixture audit and rejects session-scoped canonical-sphere
+reuse while mutable layer/cache state remains; neither changes an installed
+interface or runtime architecture.

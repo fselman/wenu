@@ -30,10 +30,10 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`test_performance_and_future_program_49j_50.md`](test_performance_and_future_program_49j_50.md)
   — current 49J test/performance program and the ordered 50A minor-body and
   50B publication-legibility programs.
-- [`repository_source_index_49j3c.md`](repository_source_index_49j3c.md) —
-  active 49J.3C immutable repository-source inventory and parsed-source index.
+- [`immutable_catalogue_fixture_49j3d.md`](immutable_catalogue_fixture_49j3d.md)
+  — active 49J.3D immutable catalogue-summary fixture audit.
 
-The accepted 49J.0 through 49J.3B records are archived under
+The accepted 49J.0 through 49J.3C records are archived under
 [`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/).
 
 Do not place completed milestone records directly in this directory. Move them

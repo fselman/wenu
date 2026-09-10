@@ -1,6 +1,9 @@
 """Packaged binocular selection for the paired physical star disks."""
 
+from types import MappingProxyType
+
 import numpy as np
+import pytest
 
 from wenu import PolarPlanisphereDetailPolicy
 from wenu.objects.galaxies import Galaxies
@@ -28,7 +31,10 @@ def _positions(table, selected):
     return coordinates
 
 
-def test_every_curated_identifier_exists_in_its_canonical_catalogue():
+@pytest.fixture(scope="module")
+def catalogue_positions():
+    """Freeze the read-only catalogue evidence shared by two assertions."""
+
     selection = PolarPlanisphereDetailPolicy().resolve(
         object(), object()
     ).content_selection
@@ -39,27 +45,44 @@ def test_every_curated_identifier_exists_in_its_canonical_catalogue():
         "globular_clusters": _loaded_catalogue(GlobularClusters(None)),
         "planetary_nebulae": _loaded_catalogue(PlanetaryNebulae(None)),
     }
-
-    for name, table in catalogues.items():
-        _positions(table, getattr(selection, name))
-
-
-def test_default_overlap_places_at_most_fifteen_targets_on_each_face():
-    selection = PolarPlanisphereDetailPolicy().resolve(
-        object(), object()
-    ).content_selection
-    catalogues = {
-        "nonstellar_objects": _loaded_catalogue(NonStellar(None)),
-        "galaxies": _loaded_catalogue(Galaxies(None)),
-        "open_clusters": _loaded_catalogue(OpenClusters(None)),
-        "globular_clusters": _loaded_catalogue(GlobularClusters(None)),
-        "planetary_nebulae": _loaded_catalogue(PlanetaryNebulae(None)),
-    }
-    declinations = []
-    for name, table in catalogues.items():
-        declinations.extend(
-            _positions(table, getattr(selection, name)).values()
+    return MappingProxyType({
+        name: MappingProxyType(
+            _positions(table, getattr(selection, name))
         )
+        for name, table in catalogues.items()
+    })
+
+
+def test_every_curated_identifier_exists_in_its_canonical_catalogue(
+    catalogue_positions,
+):
+    selection = PolarPlanisphereDetailPolicy().resolve(
+        object(), object()
+    ).content_selection
+
+    assert set(catalogue_positions) == {
+        "nonstellar_objects",
+        "galaxies",
+        "open_clusters",
+        "globular_clusters",
+        "planetary_nebulae",
+    }
+    for name, positions in catalogue_positions.items():
+        assert tuple(positions) == tuple(getattr(selection, name))
+    with pytest.raises(TypeError):
+        catalogue_positions["galaxies"] = {}
+    with pytest.raises(TypeError):
+        catalogue_positions["galaxies"]["NGC0224"] = 0.0
+
+
+def test_default_overlap_places_at_most_fifteen_targets_on_each_face(
+    catalogue_positions,
+):
+    declinations = [
+        declination
+        for positions in catalogue_positions.values()
+        for declination in positions.values()
+    ]
 
     north_count = sum(value >= -20.0 for value in declinations)
     south_count = sum(value <= 20.0 for value in declinations) + 2

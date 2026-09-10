@@ -1295,5 +1295,10 @@ owns deterministic contract coverage;
   Python file is included; `tests/test_package_boundaries.py` and
   `tests/test_dependency_boundaries.py` retain their separate package, domain,
   legacy-import, draw-method, and retired-coordinate fault models.
-- `repository_source_index_49j3c.md` owns the active 49J.3C audit,
-  measurements, retained-fault map, and acceptance boundary.
+- `archive/milestone_history/49j_performance/repository_source_index_49j3c.md`
+  records the completed 49J.3C audit and acceptance evidence.
+- `tests/test_polar_binocular_targets.py::catalogue_positions` owns the one
+  module-scoped immutable catalogue summary accepted by 49J.3D; it exposes
+  nested read-only family/identifier/declination mappings, not mutable tables.
+- `immutable_catalogue_fixture_49j3d.md` owns the active safety proof and the
+  rejection of a session-scoped canonical sphere/build registry.
