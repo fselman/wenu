@@ -58,14 +58,11 @@ def _outside_repository(path, *, name):
     return resolved
 
 
-def _normalized_filename(frame):
-    return frame.f_code.co_filename.replace("\\", "/")
-
-
-def _stage_for_frame(frame):
-    """Classify one active Python frame by its narrowest timing owner."""
-    filename = _normalized_filename(frame)
-    name = frame.f_code.co_name
+def _stage_for_code(code):
+    """Classify one Python code object by its narrowest timing owner."""
+    filename = code.co_filename.replace("\\", "/")
+    basename = filename.rsplit("/", 1)[-1]
+    name = code.co_name
     if name == "save" and filename.endswith("/wenu/charts/regional.py"):
         return "encoding_export"
     if "/matplotlib/backends/" in filename:
@@ -87,7 +84,7 @@ def _stage_for_frame(frame):
     if (
         "/wenu/rendering/" in filename
         or "_furniture.py" in filename
-        or "legend" in Path(filename).name
+        or "legend" in basename
         or filename.endswith("/wenu/chart_document.py")
         or ("/wenu/charts/" in filename and name == "render")
     ):
@@ -122,22 +119,16 @@ class ExclusiveStageTimer:
         self.clock = clock
         self.stage_ns = {stage: 0 for stage in STAGES}
         self.residual_ns = 0
-        self._stack = []
+        self._code_stages = {}
+        self._owner = None
+        self._owners = []
         self._last_ns = None
 
-    def _owner(self):
-        for frame in reversed(self._stack):
-            stage = _stage_for_frame(frame)
-            if stage is not None:
-                return stage
-        return None
-
-    def _charge(self, now):
+    def _charge(self, now, owner):
         if self._last_ns is None:
             self._last_ns = now
             return
         elapsed = now - self._last_ns
-        owner = self._owner()
         if owner is None:
             self.residual_ns += elapsed
         else:
@@ -146,13 +137,25 @@ class ExclusiveStageTimer:
 
     def __call__(self, frame, event, argument):
         del argument
-        now = self.clock()
-        self._charge(now)
         if event == "call":
-            self._stack.append(frame)
-        elif event in {"return", "exception"}:
-            if self._stack and self._stack[-1] is frame:
-                self._stack.pop()
+            previous = self._owner
+            self._owners.append(previous)
+            code = frame.f_code
+            stage = self._code_stages.get(code)
+            if code not in self._code_stages:
+                stage = _stage_for_code(code)
+                self._code_stages[code] = stage
+            current = previous if stage is None else stage
+            if current != previous:
+                now = self.clock()
+                self._charge(now, previous)
+                self._owner = current
+        elif event == "return":
+            previous = self._owners.pop() if self._owners else None
+            if previous != self._owner:
+                now = self.clock()
+                self._charge(now, self._owner)
+                self._owner = previous
         return self
 
     def measure(self, operation):
@@ -165,7 +168,7 @@ class ExclusiveStageTimer:
         finally:
             sys.setprofile(None)
             finished = self.clock()
-            self._charge(finished)
+            self._charge(finished, self._owner)
         complete = finished - started
         classified = sum(self.stage_ns.values())
         # Profiler callback overhead and the final unprofiled edge are made
@@ -248,7 +251,17 @@ def benchmark(destination):
     destination.mkdir(parents=True, exist_ok=True)
     sequence = default_sequence(destination)
     frames = []
-    for frame in sequence.frames:
+    planned_frames = sequence.frames
+    benchmark_started = perf_counter_ns()
+    for frame in planned_frames:
+        completed = frame.index
+        percent = round(100 * completed / len(planned_frames))
+        print(
+            f"[{completed}/{len(planned_frames)} {percent}%] "
+            f"starting frame {frame.index + 1}: "
+            f"{frame.simulation_time.isoformat()}",
+            flush=True,
+        )
         measured = {}
 
         def generate_frame():
@@ -262,6 +275,22 @@ def benchmark(destination):
         timer = ExclusiveStageTimer()
         generation, timings = timer.measure(generate_frame)
         resolved = measured["resolved"]
+        elapsed = timings["complete_frame"] / 1_000_000_000
+        closed = timings["complete_frame"] == sum(
+            timings[name]
+            for name in STAGES + ("unclassified_residual",)
+        )
+        completed = frame.index + 1
+        percent = round(100 * completed / len(planned_frames))
+        cumulative = (
+            perf_counter_ns() - benchmark_started
+        ) / 1_000_000_000
+        print(
+            f"[{completed}/{len(planned_frames)} {percent}%] "
+            f"frame complete in {elapsed:.3f}s; "
+            f"elapsed {cumulative:.3f}s; accounting closed={closed}",
+            flush=True,
+        )
         output = generation.outputs[0]
         rendering = generation.exports[0].rendering
         with Image.open(output) as image:

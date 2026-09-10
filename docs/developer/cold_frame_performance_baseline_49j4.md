@@ -37,6 +37,8 @@ work, is reported as `unclassified_residual`. For every raw observation, the
 eight spans plus residual equal `complete_frame` exactly. The report retains
 raw nanoseconds and derives median, minimum, maximum, and range for every span.
 These are characterization values, not additive cProfile totals or test gates.
+Console progress advances from 0 to 100 percent by frame and reports frame and
+cumulative elapsed time plus the closed-accounting result.
 
 ## Reproducible evidence
 

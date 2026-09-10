@@ -221,6 +221,7 @@ def test_png_comparison_tolerances_are_bounded(kwargs, message):
 def test_cold_benchmark_uses_three_independent_canonical_frames(
     tmp_path,
     monkeypatch,
+    capsys,
 ):
     module = cold_benchmark_module()
     calls = []
@@ -283,11 +284,21 @@ def test_cold_benchmark_uses_three_independent_canonical_frames(
         tuple(frame["simulation_time"] for frame in report["frames"])
     )
     json.dumps(report, default=module._json_value)
+    progress = capsys.readouterr().out
+    assert "[0/3 0%] starting frame 1" in progress
+    assert "[3/3 100%] frame complete" in progress
+    assert "accounting closed=True" in progress
 
 
 def test_exclusive_timer_closes_accounting_without_overlapping_stages():
     module = cold_benchmark_module()
     namespace = {}
+    clock_calls = []
+
+    def clock():
+        clock_calls.append(len(clock_calls) + 1)
+        return clock_calls[-1]
+
     exec(
         compile(
             "def transform():\n"
@@ -301,7 +312,7 @@ def test_exclusive_timer_closes_accounting_without_overlapping_stages():
         namespace,
     )
 
-    result, timings = module.ExclusiveStageTimer().measure(
+    result, timings = module.ExclusiveStageTimer(clock=clock).measure(
         namespace["transform"]
     )
 
@@ -311,6 +322,7 @@ def test_exclusive_timer_closes_accounting_without_overlapping_stages():
         timings[name]
         for name in module.STAGES + ("unclassified_residual",)
     )
+    assert len(clock_calls) <= 6
 
 
 def test_cold_benchmark_products_must_remain_outside_repository():

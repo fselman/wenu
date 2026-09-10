@@ -3519,6 +3519,7 @@ def test_49j4_defines_a_cold_exclusive_nonoptimizing_harness():
         "`unclassified_residual`",
         "equal `complete_frame` exactly",
         "median, minimum, maximum, and range",
+        "Console progress advances from 0 to 100 percent",
         "La Ligua and three UTC instants",
         "SHA-256 digest, semantic paths, and projected record types",
         "canonical catalogue load profile, and DE440s ephemeris identity",
