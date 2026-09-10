@@ -3316,7 +3316,7 @@ def test_49j3e_preserves_cold_builders_and_independent_kernel_oracles():
 
     for phrase in (
         "Cold builders and installed-kernel oracles (Milestone 49J.3E)",
-        "**Status:** Implementation complete; awaiting Mac regression evidence",
+        "**Status:** Mac regression-verified; awaiting Fernando's review",
         "no new fixture, build registry, kernel cache, observer cache",
         "independently recomputes its direct Skyfield comparison",
         "Direction, light-time, apparent-place, parallax, physical appearance",
@@ -3328,6 +3328,12 @@ def test_49j3e_preserves_cold_builders_and_independent_kernel_oracles():
         "real independent observer-time frames",
         "3.43 seconds for the cold ordinary factory",
         "20.72 seconds for the real observer-time sequence",
+        "87 current-documentation tests in 2.54 seconds",
+        "2,107 routine tests with 24 deselected in 28.34 seconds",
+        "all 2,131 tests in 85.58 seconds",
+        "3.42 seconds for the ordinary canonical factory",
+        "21.27 seconds for the real observer-time sequence",
+        "evidence supports preservation rather than consolidation",
         "No speedup is claimed",
         "**Runtime effect:** None",
         "**Test behavior effect:** None",

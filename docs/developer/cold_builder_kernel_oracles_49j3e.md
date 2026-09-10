@@ -1,6 +1,6 @@
 # Cold builders and installed-kernel oracles (Milestone 49J.3E)
 
-**Status:** Implementation complete; awaiting Mac regression evidence.
+**Status:** Mac regression-verified; awaiting Fernando's review.
 
 ## Scope and audit result
 
@@ -58,6 +58,14 @@ gates with unchanged counts. No speedup is claimed. The coordinate-system
 guide was reviewed and remains current because this audit changes no scientific
 meaning, provenance, coordinate, frame, epoch, equinox, installed interface,
 runtime owner, test behavior, marker, output, or cache.
+
+Fernando's Mac verification passed all 87 current-documentation tests in 2.54
+seconds, 2,107 routine tests with 24 deselected in 28.34 seconds, and all 2,131
+tests in 85.58 seconds. Complete-suite durations retained the distinct cold
+oracles: 3.42 seconds for the ordinary canonical factory, 3.83 seconds for
+reusable-sphere setup, 3.22 seconds for the horizon mutation/restoration case,
+and 21.27 seconds for the real observer-time sequence. The evidence supports
+preservation rather than consolidation and changes no performance claim.
 
 **Runtime effect:** None.
 
