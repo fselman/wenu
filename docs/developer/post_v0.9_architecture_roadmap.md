@@ -1077,6 +1077,14 @@ track, validate comets, add the first symbolic comet and track, and close the
 public and scientific contract. Coma and tail morphology remain separate from
 nucleus position.
 
+50A.0 is accepted and archived in
+`archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md`.
+It selects a bounded, locally resolved Horizons small-body SPK plus explicit
+companion planetary-resource provenance for the first provider; rejects live
+network access during rendering and silent two-body fallback; and records
+validity, uncertainty, identifiers, photometry, and comet non-gravitational
+policy. It adds no runtime behavior or visible object. 50A.1 is next.
+
 ## 13.2 Program 50B - Publication legibility and economical printing
 
 After the minor-body symbols and tracks are available, review current accepted

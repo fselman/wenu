@@ -118,6 +118,9 @@ For current work, read and follow:
   and its observer lifecycle boundaries;
 - `archive/milestone_history/49j_performance/performance_closure_49j6.md`
   for the accepted 49J closure evidence and transition to 50A.0;
+- `archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md`
+  for accepted asteroid/comet state-source, resource-chain, validity,
+  uncertainty, identifier, photometry, and non-gravitational-model decisions;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
   for the completed reproducible test-entry and new-test admission
   implementation.
@@ -525,6 +528,12 @@ For 49J test changes, complete the accepted-practice audit and Fernando's
 Adopt/Adapt/Reject/Defer decision milestone before changing fixture scope,
 markers, test reuse, or execution policy. Faster execution must retain
 independent public-path and scientific fault-detection evidence.
+
+For 50A minor-body work, follow the accepted 50A.0 audit. Milestone 50A.1 may
+add only the generic state-provider/resource seam: keep acquisition outside
+rendering, preserve explicit state-resource chains, and never use an
+unvalidated two-body orbit as a silent production fallback. Body registration,
+CLI options, and visible objects remain later separately reviewed slices.
 
 For 50B publication-style work, complete the print, typography, contrast,
 accessibility, cartographic, and astronomical-atlas practice review plus

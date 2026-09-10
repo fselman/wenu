@@ -119,6 +119,10 @@ PERFORMANCE_CLOSURE_AUDIT = (
 TEST_PERFORMANCE_PROGRAM = (
     DEVELOPER / "test_performance_and_future_program_49j_50.md"
 )
+MINOR_BODY_PROVIDER_AUDIT = (
+    DEVELOPER
+    / "archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md"
+)
 TEST_PRACTICE_AUDIT = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md"
@@ -3675,6 +3679,65 @@ def test_49j6_closes_performance_and_preserves_both_execution_routes():
     assert "performance_closure_49j6.md" in implementation
     assert "performance_closure_49j6.md" in instructions
     assert "changes no CLI default or output" in user_sequences
+
+
+def test_50a0_accepts_one_offline_minor_body_provider_boundary():
+    audit = " ".join(read(MINOR_BODY_PROVIDER_AUDIT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+
+    for phrase in (
+        "Minor-body scientific and provider audit (Milestone 50A.0)",
+        "**Status:** Accepted by Fernando",
+        "Fernando accepted the scientific and architectural decisions",
+        "Milestone 50A.0 is closed",
+        "**Baseline:** `b96a033`",
+        "bounded Horizons-generated small-body SPK",
+        "Live Horizons/SBDB during rendering: Reject",
+        "Orbital-element provider: Defer",
+        "two-body Keplerian propagator",
+        "simultaneous **geometric** Cartesian state",
+        "Production state output converges on ICRF axes and TDB evaluation",
+        "Wenu identity stays distinct from all provider-native identifiers",
+        "Fail closed outside SPK segment coverage",
+        "Asteroid photometry: Adapt",
+        "Comet photometry and appearance: Defer",
+        "Comet non-gravitational dynamics: Adapt",
+        "Nucleus, coma, and tail semantics: Adopt",
+        "No visual comparison is required",
+        "The user guide and examples require no edit",
+        "Architecture diagrams require no edit",
+        "**Runtime effect:** None",
+    ):
+        assert phrase in audit
+
+    for url in (
+        "https://ssd-api.jpl.nasa.gov/doc/horizons.html",
+        "https://ssd.jpl.nasa.gov/horizons/manual.html",
+        "https://ssd-api.jpl.nasa.gov/doc/sbdb.html",
+        "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/spk.html",
+        "https://docs.minorplanetcenter.net/",
+        "https://doi.org/10.1086/111402",
+    ):
+        assert url in read(MINOR_BODY_PROVIDER_AUDIT)
+
+    assert "50A.0 is accepted and archived" in roadmap
+    assert "Minor-body provider boundary (accepted Milestone 50A.0)" in architecture
+    assert "archive/milestone_history/50a_minor_bodies/" in implementation
+    assert "Accepted 50A minor-body ownership" in source_tree
+    assert "For 50A minor-body work" in instructions
+    assert "50A.0 minor-body scientific and provider audit" in guide
+    assert "Accepted by Fernando on 2026-09-10" in guide
+    assert "Requests outside coverage fail closed" in guide
+    assert "cannot become a silent two-body fallback" in guide
+    assert "Wenu must neither discard nor reapply them" in guide
+    assert "changes no coordinate calculation or visible output" in guide
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

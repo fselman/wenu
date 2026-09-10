@@ -146,6 +146,10 @@ and governed suite.
 
 ### 50A.0 — Scientific and provider audit
 
+**Status:** Accepted. The record is archived in
+`archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md`.
+Milestone 50A.1 is next.
+
 Decide orbital-element versus SPK/JPL state sources, provenance and validity
 intervals, osculating epoch and frame, perturbation model, light time,
 apparent-place treatment, topocentric parallax, magnitude models, uncertainty,

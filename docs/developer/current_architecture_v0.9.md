@@ -675,3 +675,15 @@ matches it exactly with the cold oracle, and
 The fixed-sky orchestrator may reuse one observer-independent canonical sphere,
 but each frame supplies a fresh observer to the unchanged complete request
 route. The cold independent-frame execution remains the default oracle.
+
+## Minor-body provider boundary (accepted Milestone 50A.0)
+
+`archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md`
+accepts the provider boundary without changing implemented architecture.
+Asteroids and comets must still produce the existing geometric
+`EphemerisState`, then use the accepted astrometric/apparent realization and
+descriptor-driven moving-body pipeline. The first source is a bounded local
+Horizons small-body SPK with an explicit companion planetary-resource chain;
+rendering remains offline and no two-body element propagator is an implicit
+fallback. The next authorized implementation is the 50A.1 provider/resource
+seam only.

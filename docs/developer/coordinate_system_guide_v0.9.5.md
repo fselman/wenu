@@ -95,6 +95,7 @@
     - [13.2.34 49I.3E.2 drawable resolved Moon](#49i3e2-drawable-resolved-moon)
     - [13.2.35 49I.3E.3 observed Moon sequence](#49i3e3-observed-moon-sequence)
     - [13.2.36 49I.3E resolved Moon closure](#49i3e-resolved-moon-closure)
+    - [13.2.37 50A.0 minor-body scientific and provider audit](#50a0-minor-body-provider-audit)
 
 <a id="status-and-purpose"></a>
 
@@ -1117,8 +1118,8 @@ metadata, curve segmentation, polygon rings, and semantic topology.
 | Planetary nebulae | Acker/HEASARC-derived snapshot | `data/catalogs/planetary_nebulae/` | Normalized catalogue ICRS |
 | Milky Way isophotes | D3-Celestial GeoJSON snapshot | `data/isophotes/milky_way/milky_way_d3.json`; `sky/milky_way.py` | ICRS polygon rings with source path/revision |
 | Large and Small Magellanic Clouds | Gaia DR3-derived isophote snapshots | `data/isophotes/magellanic_clouds/{lmc,smc}_gaia_dr3.json` | ICRS nested polygon rings with source path/revision |
-| Moon and planets | Not implemented; future solar-system ephemeris provider | Reserved by architecture 0.9.5 | Provider must declare ephemeris, origin, instant/time scale and position status |
-| Comets and asteroids | Not implemented; future orbit/ephemeris provider | Reserved | Provider must declare orbit solution/model and epoch |
+| Moon and planets | JPL DE440 SPK through the accepted Skyfield state/apparent-direction machinery | `ephemeris.py`; `skyfield_ephemeris.py`; shared moving-body layers | Provider declares ephemeris, origin, instant/time scale, position status, and exact resource identity |
+| Comets and asteroids | Not implemented; accepted 50A.0 selects bounded local Horizons small-body SPK resources | `archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md` | Provider must declare the small-body and companion planetary resource chain, solution/model, coverage, frame, TDB instant, and uncertainty provenance |
 | Artificial satellites | Not implemented; future SGP4/orbit provider | Reserved | TEME state, epoch, Earth-orientation and topocentric policy must remain explicit |
 
 <a id="82-constructed-and-culturalreference-objects"></a>
@@ -2722,7 +2723,6 @@ pipeline. Satellites are catalog entries related to a primary, not objects
 nested inside a planet instance. No coordinate transformation changes in this
 slice.
 
-
 <a id="49i3e1-lunar-physical-appearance"></a>
 ## 13.2.33 49I.3E.1 lunar physical appearance
 
@@ -2835,3 +2835,57 @@ The parent closure introduces no new calculation or output behavior.
 Frozen-Earth lunar sequences, interpolation, animation, texture, libration,
 eclipses, resolved-disk refraction, and occultation prediction remain outside
 the accepted capability.
+
+<a id="50a0-minor-body-provider-audit"></a>
+
+## 13.2.37 50A.0 minor-body scientific and provider audit
+
+**Status:** Accepted by Fernando on 2026-09-10. The historical decision record
+is
+`archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md`.
+
+**[Foundation]** An asteroid or comet does not need a new kind of chart. It
+needs a trustworthy position source. The accepted first source is a local,
+time-bounded JPL Horizons SPK acquired before rendering. Wenu records which
+orbit solution and files produced the position and refuses times outside the
+declared coverage. A chart never contacts an online service while it is being
+drawn.
+
+**[Undergraduate]** The small-body SPK and companion planetary ephemeris form
+an explicit resource chain. Their target, centre, frame, segment coverage,
+load priority, filenames, and content digests remain provenance. The provider
+returns a simultaneous geometric ICRF position-velocity state at a TDB instant;
+the existing direction machinery then owns retarded emission time, apparent-
+place corrections, and topocentric parallax. Osculating-element epoch and
+ecliptic reference are source metadata, not an alternative product frame.
+
+Comet non-gravitational parameters belong to the selected orbit model. They
+must not be silently discarded or applied twice. Asteroid `H,G`, comet total
+coma magnitude, and comet nuclear magnitude are distinct photometric models;
+none changes the dynamical state. Coma and tail geometry remain separate from
+the modeled nucleus direction.
+
+The accepted provider boundary has these operational consequences:
+
+1. 50A.1 may produce only the existing complete, finite, simultaneous
+   geometric Cartesian `EphemerisState`; it adds no drawable body.
+2. The small-body SPK and companion planetary ephemeris must each retain file
+   identity, SHA-256 digest, target, centre, frame, segment/load provenance,
+   and exact coverage. Requests outside coverage fail closed.
+3. Observation UTC, state-evaluation TDB, osculating epoch, element reference
+   ecliptic/equinox, chart epoch, and product frame remain distinct concepts.
+4. The existing realizer—not the provider—owns iterative light time, observer
+   state, apparent-place corrections, and topocentric parallax.
+5. Live Horizons, SBDB, or MPC access is an acquisition concern and is never
+   part of chart rendering. An orbital-element propagator remains deferred and
+   cannot become a silent two-body fallback.
+6. Orbit uncertainty and validity are provenance. SPK interpolation coverage
+   alone is not an assertion of uniform ephemeris accuracy.
+7. Dynamics, asteroid brightness, comet coma/nuclear brightness, and coma/tail
+   appearance are separate models. A nucleus point or track makes no coma,
+   tail, photocentre, or visibility claim.
+8. A comet SPK that already incorporates non-gravitational terms retains that
+   model identity and parameters; Wenu must neither discard nor reapply them.
+
+50A.0 changes no coordinate calculation or visible output. Milestone 50A.1 is
+the next authorized slice.

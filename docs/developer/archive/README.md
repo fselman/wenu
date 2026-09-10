@@ -40,6 +40,8 @@ coordinate guide, contribution rules, and current work in progress.
   test-practice policy, test-suite changes and retained fault evidence, cold
   baseline, bounded loaded-sphere reuse, exact equivalence measurement, and
   final performance closure;
+- `milestone_history/50a_minor_bodies/` contains the accepted asteroid/comet
+  scientific and provider audit and later completed 50A milestone records;
 - `pre_versioned/` contains the original unversioned architecture, roadmap,
   and UML material;
 - files directly under this directory are older records retained from the

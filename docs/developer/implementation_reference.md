@@ -2183,5 +2183,12 @@ have no threshold.
 
 `archive/milestone_history/49j_performance/performance_closure_49j6.md`
 records exact Mac equivalence, raw characterization timings, complete gate
-coverage, retained cold/reuse ownership, and the closure of 49J. The next
-authorized program is the 50A.0 minor-body scientific and provider audit.
+coverage, retained cold/reuse ownership, and the closure of 49J. The accepted
+50A.0 audit now authorizes the bounded 50A.1 generic minor-body
+state-provider/resource seam.
+
+`archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md`
+accepts no installed API. It requires the 50A.1 minor-body provider to return
+the existing uncorrected `EphemerisState`, keep a locally resolved small-body/
+planetary resource chain explicit, and leave light time, apparent place,
+projection, rendering, and export with their current owners.

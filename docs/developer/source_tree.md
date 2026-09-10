@@ -1336,3 +1336,15 @@ owns deterministic contract coverage;
   scientific, normalized-SVG, PNG, rendered-PDF, and raw performance
   comparison; archived 49J.6 evidence records closure without changing that
   ownership.
+
+## Accepted 50A minor-body ownership
+
+- `archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md`
+  owns the accepted provider, resource-chain, provenance, validity,
+  uncertainty, photometry, and comet non-gravitational decisions; it changes
+  no source-tree ownership;
+- `ephemeris.py` remains the geometric state contract;
+- `solar_system_directions.py` remains the light-time and astrometric-direction
+  owner, while `skyfield_ephemeris.py` remains the apparent-place adapter;
+- `sky/solar_system_bodies.py` and `sky/solar_system_catalog.py` remain the
+  descriptor and catalog owners for later independently validated registration.
