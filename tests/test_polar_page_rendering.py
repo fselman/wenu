@@ -210,7 +210,6 @@ def test_larger_calendar_labels_remain_inside_the_physical_disk():
         for artist in result.calendar_labels:
             rotation = artist.get_rotation()
             artist.set_rotation(0.0)
-            figure.canvas.draw()
             bounds = artist.get_window_extent(renderer=canvas_renderer)
             anchor = ax.transData.transform(artist.get_position())
             artist.set_rotation(rotation)

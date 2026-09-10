@@ -102,8 +102,10 @@ For current work, read and follow:
 - `archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md`
   for the accepted immutable catalogue-summary fixture and canonical-sphere
   rejection boundary;
-- `cold_builder_kernel_oracles_49j3e.md` for the active cold-builder and
-  installed-kernel independent-oracle audit;
+- `archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md`
+  for the accepted cold-builder and installed-kernel oracle decision;
+- `calendar_layout_cost_49j3f.md` for the active optimization of calendar text
+  extent measurement without weakening physical containment;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
   for the completed reproducible test-entry and new-test admission
   implementation.

@@ -1303,6 +1303,8 @@ owns deterministic contract coverage;
 - `archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md`
   owns the accepted safety proof and rejection of a session-scoped canonical
   sphere/build registry.
-- `cold_builder_kernel_oracles_49j3e.md` owns the active preservation decision
-  for distinct cold builders and independently recomputed installed-DE440
-  validators; it installs no fixture, registry, cache, or runtime owner.
+- `archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md`
+  owns the accepted preservation decision for distinct cold builders and
+  independently recomputed installed-DE440 validators.
+- `calendar_layout_cost_49j3f.md` owns the active proof that the calendar
+  containment test removes only redundant full-canvas redraws.

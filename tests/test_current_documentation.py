@@ -141,7 +141,11 @@ IMMUTABLE_CATALOGUE_FIXTURE = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md"
 )
-COLD_BUILDER_KERNEL_ORACLES = DEVELOPER / "cold_builder_kernel_oracles_49j3e.md"
+COLD_BUILDER_KERNEL_ORACLES = (
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md"
+)
+CALENDAR_LAYOUT_COST = DEVELOPER / "calendar_layout_cost_49j3f.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -3023,7 +3027,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "cold_builder_kernel_oracles_49j3e.md",
+        "calendar_layout_cost_49j3f.md",
     }
 
     archived = {
@@ -3042,6 +3046,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md",
         "archive/milestone_history/49j_performance/repository_source_index_49j3c.md",
         "archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md",
+        "archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3316,7 +3321,7 @@ def test_49j3e_preserves_cold_builders_and_independent_kernel_oracles():
 
     for phrase in (
         "Cold builders and installed-kernel oracles (Milestone 49J.3E)",
-        "**Status:** Mac regression-verified; awaiting Fernando's review",
+        "**Status:** Accepted and merged in `6db2272`",
         "no new fixture, build registry, kernel cache, observer cache",
         "independently recomputes its direct Skyfield comparison",
         "Direction, light-time, apparent-place, parallax, physical appearance",
@@ -3341,10 +3346,40 @@ def test_49j3e_preserves_cold_builders_and_independent_kernel_oracles():
     ):
         assert phrase in record
 
-    assert "49J.3E is active" in roadmap
+    assert "49J.3E completed" in roadmap
     assert "cold_builder_kernel_oracles_49j3e.md" in architecture
     assert "direct installed-kernel recomputation" in implementation
     assert "independently recomputed installed-DE440" in source_tree
+
+
+def test_49j3f_removes_only_redundant_calendar_canvas_redraws():
+    record = " ".join(read(CALENDAR_LAYOUT_COST).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Calendar layout cost (Milestone 49J.3F)",
+        "**Status:** Implementation complete; awaiting Mac regression evidence",
+        "all 83 day and month labels",
+        "97.5 mm physical disk",
+        "83 redundant full-canvas redraws",
+        "`Text.get_window_extent(renderer=...)`",
+        "anchors, font metrics, tangential/outward extents",
+        "Median elapsed time fell from 6.77 to 1.88 seconds",
+        "median call time fell from 5.98 to 0.90 seconds",
+        "about 85 percent",
+        "outer corner of 106.64 mm",
+        "mutation was reverted before commit",
+        "**Runtime effect:** None",
+        "**Test behavior effect:** None",
+        "does not reduce dpi, sample labels",
+    ):
+        assert phrase in record
+
+    assert "49J.3F is active" in roadmap
+    assert "calendar_layout_cost_49j3f.md" in architecture
+    assert "redundant full-canvas redraws" in source_tree
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

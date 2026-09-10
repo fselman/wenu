@@ -649,7 +649,10 @@ records the completed test-only immutable source inventory and lazy
 parsed-source index.
 `archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md`
 records the accepted catalogue-summary fixture and rejection of session-scoped
-canonical-sphere reuse. `cold_builder_kernel_oracles_49j3e.md` owns the active
-audit that preserves distinct cold builders and independently recomputed
-installed-kernel scientific validators; none changes an installed interface or
+canonical-sphere reuse.
+`archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md`
+records the accepted preservation of distinct cold builders and independently
+recomputed installed-kernel scientific validators. `calendar_layout_cost_49j3f.md`
+owns the active removal of redundant test-only canvas redraws while retaining
+physical text-containment measurement; none changes an installed interface or
 runtime architecture.

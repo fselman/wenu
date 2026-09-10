@@ -1,6 +1,6 @@
 # Cold builders and installed-kernel oracles (Milestone 49J.3E)
 
-**Status:** Mac regression-verified; awaiting Fernando's review.
+**Status:** Accepted and merged in `6db2272`.
 
 ## Scope and audit result
 

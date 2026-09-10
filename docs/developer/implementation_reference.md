@@ -2143,6 +2143,9 @@ interface or runtime owner.
 `archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md`
 documents one accepted test-module immutable catalogue-summary fixture and the
 rejection of unsafe session-scoped sphere or mutable-table reuse.
-`cold_builder_kernel_oracles_49j3e.md` documents the active preservation of
-independent cold builders and direct installed-kernel recomputation. It adds no
-fixture, cache, installed interface, or runtime owner.
+`archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md`
+documents the accepted preservation of independent cold builders and direct
+installed-kernel recomputation. `calendar_layout_cost_49j3f.md` documents the
+active test-only removal of redundant canvas redraws while retaining all
+physical calendar-label extent measurements. Neither adds a fixture, cache,
+installed interface, or runtime owner.
