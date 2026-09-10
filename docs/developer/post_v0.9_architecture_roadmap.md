@@ -1085,6 +1085,14 @@ network access during rendering and silent two-body fallback; and records
 validity, uncertainty, identifiers, photometry, and comet non-gravitational
 policy. It adds no runtime behavior or visible object. 50A.1 is next.
 
+50A.1 is accepted in `minor_body_state_provider_50a1.md`. It adds
+a typed primary-plus-dependency resource chain, a Horizons solution identity,
+and an offline borrowed-kernel state provider. The provider composes the
+small-body target-relative-to-segment-centre state with that centre's state
+from the declared planetary dependency. It remains unconnected to bodies,
+directions, charts, CLI, and output. Fernando accepted the explicit composition
+on 2026-09-10, authorizing 50A.2 numerical validation as the next slice.
+
 ## 13.2 Program 50B - Publication legibility and economical printing
 
 After the minor-body symbols and tracks are available, review current accepted

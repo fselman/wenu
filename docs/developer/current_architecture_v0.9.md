@@ -687,3 +687,21 @@ Horizons small-body SPK with an explicit companion planetary-resource chain;
 rendering remains offline and no two-body element propagator is an implicit
 fallback. The next authorized implementation is the 50A.1 provider/resource
 seam only.
+
+## Minor-body state-provider seam (Milestone 50A.1 accepted)
+
+`ephemeris.py` now admits either one `EphemerisResourceIdentity` or an explicit
+`EphemerisResourceChain` on a geometric state. Existing planetary states retain
+their original single-resource identity. `minor_body_ephemeris.py` adds a
+frozen Horizons solution identity and an unconnected
+`SkyfieldMinorBodyStateSource` that borrows a small-body kernel, a planetary
+state source, and a timescale.
+Its frozen `MinorBodyEphemerisState` remains an `EphemerisState` while retaining
+the typed orbit solution and selected SPK segment on each result.
+
+The small-body segment supplies target relative to its declared centre. The
+planetary source supplies that numeric centre relative to the requested centre
+at the same TDB instant. Their positions and velocities are composed only after
+the dependency request, resource, frame, and AU/AU-day units are validated.
+No observer, light-time, apparent-place, spherical-geometry, catalog, chart, or
+output owner consumes this provider yet.

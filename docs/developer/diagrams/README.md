@@ -48,6 +48,17 @@ This diagram separates request resolution, astronomical-state realization,
 the shared geometry/rendering pipeline, and product orchestration. It shows
 which products reuse the canonical path and where observer-local state enters.
 
+### Minor-body state-provider seam
+
+[Open the 50A.1 minor-body provider SVG](minor_body_state_provider_50a1.svg)
+
+Source: `minor_body_state_provider_50a1.dot`
+
+This focused view records the 50A.1 resource-chain and geometric-state provider
+seam. The minor-body provider is deliberately unconnected to a body or chart;
+its dashed downstream edge is the accepted later direction-realizer boundary,
+not current minor-body output.
+
 ### Historical v0.9 coordinate transformations and 49B/49C seams
 
 [Open the coordinate as-is SVG](coordinate_transformation_as_is_v0.9.svg)

@@ -91,6 +91,49 @@ class EphemerisResourceIdentity:
 
 
 @dataclass(frozen=True)
+class EphemerisResourceChain:
+    """One primary ephemeris resource plus explicit dependencies."""
+
+    primary: EphemerisResourceIdentity
+    dependencies: tuple[EphemerisResourceIdentity, ...]
+    provenance: tuple[str, ...] = ()
+
+    def __post_init__(self):
+        if not isinstance(self.primary, EphemerisResourceIdentity):
+            raise TypeError(
+                "primary must be an EphemerisResourceIdentity."
+            )
+        try:
+            dependencies = tuple(self.dependencies)
+        except TypeError as error:
+            raise TypeError(
+                "dependencies must be an iterable of "
+                "EphemerisResourceIdentity values."
+            ) from error
+        if not dependencies:
+            raise ValueError(
+                "dependencies must contain at least one resource."
+            )
+        if any(
+            not isinstance(item, EphemerisResourceIdentity)
+            for item in dependencies
+        ):
+            raise TypeError(
+                "dependencies must contain only "
+                "EphemerisResourceIdentity values."
+            )
+        resources = (self.primary,) + dependencies
+        keys = tuple((item.filename, item.sha256) for item in resources)
+        if len(keys) != len(set(keys)):
+            raise ValueError("resource chain entries must be distinct.")
+        object.__setattr__(self, "dependencies", dependencies)
+        object.__setattr__(self, "provenance", _provenance(self.provenance))
+
+
+EphemerisResource = EphemerisResourceIdentity | EphemerisResourceChain
+
+
+@dataclass(frozen=True)
 class EphemerisStateRequest:
     """One geometric Cartesian state evaluation request."""
 
@@ -128,7 +171,7 @@ class EphemerisState:
     velocity: tuple[float, float, float]
     position_unit: str
     velocity_unit: str
-    resource: EphemerisResourceIdentity
+    resource: EphemerisResource
     provider_target_id: str | None = None
     provider_centre_id: str | None = None
     provenance: tuple[str, ...] = field(default_factory=tuple)
@@ -138,9 +181,13 @@ class EphemerisState:
             raise TypeError(
                 "request must be an EphemerisStateRequest."
             )
-        if not isinstance(self.resource, EphemerisResourceIdentity):
+        if not isinstance(
+            self.resource,
+            (EphemerisResourceIdentity, EphemerisResourceChain),
+        ):
             raise TypeError(
-                "resource must be an EphemerisResourceIdentity."
+                "resource must be an EphemerisResourceIdentity or "
+                "EphemerisResourceChain."
             )
         object.__setattr__(
             self,

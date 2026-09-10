@@ -6,6 +6,7 @@ import pytest
 
 from wenu.coordinates import PositionStatus, observer_altaz_spec
 from wenu.ephemeris import (
+    EphemerisResourceChain,
     EphemerisResourceIdentity,
     EphemerisState,
     EphemerisStateRequest,
@@ -87,6 +88,33 @@ def test_resource_identity_is_frozen():
 
     with pytest.raises(FrozenInstanceError):
         resource.model = "DE441"
+
+
+def test_resource_chain_preserves_primary_dependencies_and_provenance():
+    primary = _resource(filename="small-body.bsp", sha256="b" * 64)
+    dependency = _resource()
+
+    chain = EphemerisResourceChain(
+        primary=primary,
+        dependencies=[dependency],
+        provenance=[" explicit composition "],
+    )
+
+    assert chain.primary is primary
+    assert chain.dependencies == (dependency,)
+    assert chain.provenance == ("explicit composition",)
+    assert _state(resource=chain).resource is chain
+
+
+def test_resource_chain_rejects_missing_duplicate_or_untyped_dependencies():
+    primary = _resource(filename="small-body.bsp", sha256="b" * 64)
+
+    with pytest.raises(ValueError, match="at least one"):
+        EphemerisResourceChain(primary=primary, dependencies=())
+    with pytest.raises(ValueError, match="distinct"):
+        EphemerisResourceChain(primary=primary, dependencies=(primary,))
+    with pytest.raises(TypeError, match="only EphemerisResourceIdentity"):
+        EphemerisResourceChain(primary=primary, dependencies=(object(),))
 
 
 def test_state_request_keeps_target_centre_frame_and_dynamical_time():

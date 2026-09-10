@@ -159,8 +159,11 @@ class SkyfieldEphemerisStateSource:
         )
 
     def _body(self, key, *, role):
+        provider_key = key
+        if isinstance(key, str) and re.fullmatch(r"[+-]?\d+", key.strip()):
+            provider_key = int(key)
         try:
-            provider_id = self._kernel.decode(key)
+            provider_id = self._kernel.decode(provider_key)
             vector = (
                 None
                 if provider_id == 0

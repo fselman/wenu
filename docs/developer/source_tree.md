@@ -1348,3 +1348,16 @@ owns deterministic contract coverage;
   owner, while `skyfield_ephemeris.py` remains the apparent-place adapter;
 - `sky/solar_system_bodies.py` and `sky/solar_system_catalog.py` remain the
   descriptor and catalog owners for later independently validated registration.
+
+## 50A.1 minor-body state-provider ownership (accepted)
+
+- `ephemeris.py` owns the new immutable primary-plus-dependency resource chain
+  while preserving the original single-resource state contract;
+- `minor_body_ephemeris.py` owns the Horizons solution identity, ordered
+  target-segment selection, explicit planetary-centre composition, TDB/ICRF
+  boundary, result subtype retaining solution/segment identity, and
+  deterministic composition failures;
+- `skyfield_ephemeris.py` additionally accepts explicit numeric provider IDs
+  while retaining its borrowed single-planetary-kernel ownership;
+- no descriptor, catalog, layer, direction realizer, coordinate service,
+  projection, renderer, exporter, CLI, or data-package owner changes.
