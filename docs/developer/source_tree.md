@@ -1306,5 +1306,8 @@ owns deterministic contract coverage;
 - `archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md`
   owns the accepted preservation decision for distinct cold builders and
   independently recomputed installed-DE440 validators.
-- `calendar_layout_cost_49j3f.md` owns the active proof that the calendar
-  containment test removes only redundant full-canvas redraws.
+- `archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md`
+  owns the accepted proof that the calendar containment test removes only
+  redundant full-canvas redraws.
+- `observer_time_sequence_oracle_49j3g.md` owns the active decision to preserve
+  the cold complete observer-time route until 49J.4 measures independent frames.

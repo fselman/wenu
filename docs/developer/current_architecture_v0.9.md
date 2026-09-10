@@ -652,7 +652,10 @@ records the accepted catalogue-summary fixture and rejection of session-scoped
 canonical-sphere reuse.
 `archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md`
 records the accepted preservation of distinct cold builders and independently
-recomputed installed-kernel scientific validators. `calendar_layout_cost_49j3f.md`
-owns the active removal of redundant test-only canvas redraws while retaining
-physical text-containment measurement; none changes an installed interface or
-runtime architecture.
+recomputed installed-kernel scientific validators.
+`archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md`
+records the accepted removal of redundant test-only canvas redraws while
+retaining physical text-containment measurement.
+`observer_time_sequence_oracle_49j3g.md` owns the active decision to retain the
+cold two-frame canonical observer-time route unchanged; none changes an
+installed interface or runtime architecture.

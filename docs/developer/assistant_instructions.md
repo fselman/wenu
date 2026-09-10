@@ -104,8 +104,10 @@ For current work, read and follow:
   rejection boundary;
 - `archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md`
   for the accepted cold-builder and installed-kernel oracle decision;
-- `calendar_layout_cost_49j3f.md` for the active optimization of calendar text
-  extent measurement without weakening physical containment;
+- `archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md`
+  for the accepted calendar text-extent optimization;
+- `observer_time_sequence_oracle_49j3g.md` for the active decision preserving
+  the cold canonical observer-time sequence oracle;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
   for the completed reproducible test-entry and new-test admission
   implementation.

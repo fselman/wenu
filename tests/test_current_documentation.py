@@ -145,7 +145,11 @@ COLD_BUILDER_KERNEL_ORACLES = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md"
 )
-CALENDAR_LAYOUT_COST = DEVELOPER / "calendar_layout_cost_49j3f.md"
+CALENDAR_LAYOUT_COST = (
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md"
+)
+OBSERVER_TIME_SEQUENCE_ORACLE = DEVELOPER / "observer_time_sequence_oracle_49j3g.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -3027,7 +3031,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "calendar_layout_cost_49j3f.md",
+        "observer_time_sequence_oracle_49j3g.md",
     }
 
     archived = {
@@ -3047,6 +3051,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/repository_source_index_49j3c.md",
         "archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md",
         "archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md",
+        "archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3360,7 +3365,7 @@ def test_49j3f_removes_only_redundant_calendar_canvas_redraws():
 
     for phrase in (
         "Calendar layout cost (Milestone 49J.3F)",
-        "**Status:** Mac regression-verified; awaiting Fernando's review",
+        "**Status:** Accepted and merged in `a190a09`",
         "all 83 day and month labels",
         "97.5 mm physical disk",
         "83 redundant full-canvas redraws",
@@ -3385,9 +3390,51 @@ def test_49j3f_removes_only_redundant_calendar_canvas_redraws():
     ):
         assert phrase in record
 
-    assert "49J.3F is active" in roadmap
+    assert "49J.3F completed" in roadmap
     assert "calendar_layout_cost_49j3f.md" in architecture
     assert "redundant full-canvas redraws" in source_tree
+
+
+def test_49j3g_preserves_the_canonical_observer_time_sequence_oracle():
+    record = " ".join(read(OBSERVER_TIME_SEQUENCE_ORACLE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Canonical observer-time sequence oracle (Milestone 49J.3G)",
+        "**Status:** Mac regression-verified; awaiting Fernando's review",
+        "retain the test unchanged",
+        "minimum scientifically meaningful sequence of two instants",
+        "`generate_observer_time_chart_sequence()`",
+        "`generate_chart_request()`",
+        "equal image dimensions, different image bytes",
+        "detect per-frame observer time errors",
+        "current complete route binds each sphere",
+        "would violate D22 directly",
+        "independent-frame timing harness in 49J.4",
+        "first fixed-sky reuse in 49J.5",
+        "isolated real canonical sequence in 24.69 seconds",
+        "22.90 seconds in the test call",
+        "101 tests in 25.30 seconds",
+        "2,109 tests with 24 deselected in 26.54 seconds",
+        "all 2,133 tests passed in 76.85 seconds",
+        "slowest test at 20.79 seconds",
+        "neither removed, mocked, nor hidden",
+        "No speedup is claimed",
+        "**Runtime effect:** None",
+        "**Test behavior effect:** None",
+        "does not optimize chart generation",
+    ):
+        assert phrase in record
+
+    assert "49J.3G is active" in roadmap
+    assert "observer_time_sequence_oracle_49j3g.md" in architecture
+    assert "cold two-frame canonical sequence" in implementation
+    assert "cold complete observer-time route" in source_tree
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():
