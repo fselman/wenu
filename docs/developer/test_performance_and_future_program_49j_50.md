@@ -118,6 +118,9 @@ diagnostic and preserve `generate_chart_request()` as the correctness oracle.
 
 ### 49J.5 — First scientifically keyed chart reuse
 
+**Status:** Accepted. The 49J.5A seam and 49J.5B equivalence records are
+archived under `archive/milestone_history/49j_performance/`.
+
 Optimize only the accepted fixed-sky circumpolar workload. Reuse state proved
 invariant by 49J.4, recompute observer-local and moving-object state at their
 declared instants, use immutable scientific keys, and keep the cold complete
@@ -125,6 +128,10 @@ route selectable. Require scientific, projected-record, normalized SVG, PNG,
 rendered-PDF, clipping, furniture, and visual equivalence.
 
 ### 49J.6 — Performance closure
+
+**Status:** Accepted. Final evidence is archived in
+`archive/milestone_history/49j_performance/performance_closure_49j6.md`; 50A.0
+is the next authorized milestone.
 
 Repeat focused, routine, complete, scientific, SVG, visual, and sequence
 acceptance. Update architecture, implementation reference, source tree, user

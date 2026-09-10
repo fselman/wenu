@@ -1,6 +1,6 @@
 # Loaded-sphere reuse seam (Milestone 49J.5A)
 
-**Status:** Mac regression verified; awaiting Fernando's review.
+**Status:** Accepted and merged in `de78e14` through PR #88.
 
 ## Scope
 
@@ -35,13 +35,13 @@ existing request-generation and fixed-sky sequence owners; no milestone-named
 test file, global cache, session fixture, timing threshold, or parallel
 astronomical/rendering pipeline is introduced.
 
-## Non-goals and next acceptance
+## Non-goals and completed acceptance
 
-This slice establishes ownership, lifecycle, rejection boundaries, and
-observable identity only. It does not yet claim performance improvement or
+This slice established ownership, lifecycle, rejection boundaries, and
+observable identity only. It did not itself claim performance improvement or
 candidate-versus-oracle scientific, semantic, normalized-SVG, PNG, PDF,
 clipping, furniture, or visual equivalence. Those comparisons and the Mac
-measurement belong to 49J.5B before 49J.5 can be accepted as a whole.
+measurement were completed by 49J.5B before 49J.5 was accepted as a whole.
 
 ## Mac regression evidence
 
@@ -55,7 +55,9 @@ all 2,142 tests in 79.04 seconds.
 The retained independent observer-time sequence remained the slowest complete
 test at 20.84 seconds. This confirms that the new default does not hide or
 replace the cold complete-render oracle. These timings are regression and
-characterization evidence, not performance acceptance for 49J.5.
+characterization evidence; final performance acceptance for 49J.5 is recorded
+in `fixed_sky_reuse_equivalence_49j5b.md` and
+`performance_closure_49j6.md`.
 
 The coordinate-system guide was reviewed and remains current. The seam changes
 no coordinate meaning, reference epoch, equinox, product frame, projection,

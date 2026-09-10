@@ -36,14 +36,10 @@ coordinate guide, contribution rules, and current work in progress.
   rotating-horizon work;
 - `milestone_history/49i_solar_system/` contains completed Venus, Mercury,
   major-planet, and Moon audits, contracts, validation, and acceptance records;
-- `milestone_history/49j_performance/` contains accepted performance and
-  closure audits, the accepted 49J.1 evidence and 49J.2 test-practice policy,
-  the completed 49J.3A contributor-entry implementation, and the completed
-  49J.3B marker-semantics audit, the completed 49J.3C source-index
-  consolidation, the accepted 49J.3D immutable catalogue fixture, and the
-  accepted 49J.3E cold-oracle preservation audit, and the accepted 49J.3F
-  calendar-layout optimization, and the accepted 49J.3G observer-time oracle
-  preservation audit;
+- `milestone_history/49j_performance/` contains the accepted 49J audit,
+  test-practice policy, test-suite changes and retained fault evidence, cold
+  baseline, bounded loaded-sphere reuse, exact equivalence measurement, and
+  final performance closure;
 - `pre_versioned/` contains the original unversioned architecture, roadmap,
   and UML material;
 - files directly under this directory are older records retained from the

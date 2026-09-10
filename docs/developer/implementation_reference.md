@@ -2159,7 +2159,9 @@ writes raw exclusive `perf_counter_ns` observations plus residual, environment,
 resource, semantic/projection, and output evidence. It is not an installed
 interface, cache, alternate executor, or timing threshold.
 
-49J.5A adds `FixedSkySequenceExecution.COLD` and
+The accepted 49J.5A record at
+`archive/milestone_history/49j_performance/loaded_sphere_reuse_49j5a.md` adds
+`FixedSkySequenceExecution.COLD` and
 `FixedSkySequenceExecution.REUSE_LOADED_SPHERE` to
 `generate_fixed_sky_rotating_horizon_sequence()`. Cold remains the default and
 builds an independent canonical sphere per frame. Reuse mode loads one
@@ -2169,10 +2171,17 @@ records the mode, canonical-sphere build count, and immutable reused load
 profile. Supplying an explicit observer to `generate_chart_request()` is valid
 only with an observer-independent supplied sphere.
 
-49J.5B adds `tools/benchmark_fixed_sky_reuse.py`. The outside-repository
+The accepted 49J.5B record at
+`archive/milestone_history/49j_performance/fixed_sky_reuse_equivalence_49j5b.md`
+adds `tools/benchmark_fixed_sky_reuse.py`. The outside-repository
 diagnostic invokes those same modes for PNG, semantic SVG, and PDF; compares
 scientific and projected records, clipping, furniture, and request provenance;
 normalizes only SVG metadata and volatile Matplotlib internal identifiers; and
 compares PDF after Poppler rendering at 150 DPI or the built-in macOS `sips`
 fallback. Renderer availability is checked before work begins. Raw timings
 have no threshold.
+
+`archive/milestone_history/49j_performance/performance_closure_49j6.md`
+records exact Mac equivalence, raw characterization timings, complete gate
+coverage, retained cold/reuse ownership, and the closure of 49J. The next
+authorized program is the 50A.0 minor-body scientific and provider audit.

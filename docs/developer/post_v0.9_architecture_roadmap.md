@@ -1031,15 +1031,23 @@ transformation, projection, preparation, rendering, export, and residual
 accounting. It adds no cache, output change, or threshold; the slice was merged
 in `f4dcf11`.
 
-49J.5A is accepted in `loaded_sphere_reuse_49j5a.md`. It introduces an explicit
-opt-in mode that reuses only one observer-independent loaded canonical sphere.
-Every frame retains a fresh observer and the complete canonical realization,
-projection, preparation, rendering, and export route. Cold execution remains
-the default correctness oracle. Performance and cross-format equivalence
-are measured by active 49J.5B in `fixed_sky_reuse_equivalence_49j5b.md` before
-49J.5 can close.
+49J.5 is accepted and archived in
+`archive/milestone_history/49j_performance/loaded_sphere_reuse_49j5a.md` and
+`archive/milestone_history/49j_performance/fixed_sky_reuse_equivalence_49j5b.md`.
+It introduces an explicit opt-in mode that reuses only one observer-independent
+loaded canonical sphere. Every frame retains a fresh observer and the complete
+canonical realization, projection, preparation, rendering, and export route.
+Cold execution remains the default correctness oracle. Exact scientific, PNG,
+normalized-SVG, and rendered-PDF equivalence plus measured Mac improvement
+closed the candidate comparison.
 
-49J continues to require:
+49J.6 is accepted and archived at
+`archive/milestone_history/49j_performance/performance_closure_49j6.md`. Final
+non-overlapping Mac gates covered all 2,146 collected tests, documentation and
+ownership were reconciled, both execution routes were retained, and 49J is
+closed. Program 50A.0 is next.
+
+The closed 49J program retains these requirements:
 
 - benchmark complete independent frames before optimizing;
 - measure catalogue loading, provider evaluation, transformation, projection,
