@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
+from enum import Enum
 from pathlib import Path
 
 from wenu.configuration import ConfigurationDefaults
@@ -212,11 +213,58 @@ class FixedSkyRotatingHorizonFrameResult:
     output: Path
 
 
+class FixedSkySequenceExecution(str, Enum):
+    """Cold-oracle and narrowly reused fixed-sky execution modes."""
+
+    COLD = "cold"
+    REUSE_LOADED_SPHERE = "reuse_loaded_sphere"
+
+
 @dataclass(frozen=True)
 class FixedSkyRotatingHorizonGeneration:
-    """Completed uncached reference rendering of a fixed-sky sequence."""
+    """Completed cold-oracle or loaded-sphere fixed-sky rendering."""
 
     frames: tuple[FixedSkyRotatingHorizonFrameResult, ...]
+    execution: FixedSkySequenceExecution = FixedSkySequenceExecution.COLD
+    canonical_sphere_build_count: int | None = None
+    reused_load_profile: object | None = None
+
+    def __post_init__(self):
+        object.__setattr__(
+            self,
+            "execution",
+            FixedSkySequenceExecution(self.execution),
+        )
+        expected = (
+            len(self.frames)
+            if self.execution is FixedSkySequenceExecution.COLD
+            else 1
+        )
+        count = (
+            expected
+            if self.canonical_sphere_build_count is None
+            else int(self.canonical_sphere_build_count)
+        )
+        if count != expected:
+            raise ValueError(
+                "canonical sphere build count contradicts execution mode."
+            )
+        object.__setattr__(self, "canonical_sphere_build_count", count)
+        if self.execution is FixedSkySequenceExecution.COLD:
+            if self.reused_load_profile is not None:
+                raise ValueError(
+                    "cold execution cannot claim a reused load profile."
+                )
+        else:
+            from wenu.sky.maximal_sphere import CelestialSphereLoadProfile
+
+            if not isinstance(
+                self.reused_load_profile,
+                CelestialSphereLoadProfile,
+            ):
+                raise TypeError(
+                    "reused execution requires its immutable load profile."
+                )
 
     @property
     def outputs(self) -> tuple[Path, ...]:
@@ -225,26 +273,54 @@ class FixedSkyRotatingHorizonGeneration:
 
 def generate_fixed_sky_rotating_horizon_sequence(
     request: FixedSkyRotatingHorizonSequenceRequest,
+    *,
+    execution=FixedSkySequenceExecution.COLD,
 ) -> FixedSkyRotatingHorizonGeneration:
-    """Render the fixed-sky reference sequence through canonical requests.
+    """Render cold or loaded-sphere frames through canonical requests.
 
-    This intentionally performs a complete independent chart generation for
-    every frame. It is the behavior-validation renderer, not a caching or
-    resume implementation.
+    Cold execution performs a complete independent chart generation for every
+    frame and remains the behavior-validation oracle. Loaded-sphere execution
+    reuses only the immutable canonical catalogue container; every frame still
+    owns a fresh observer and complete realization, projection, preparation,
+    rendering, and export.
     """
     if not isinstance(request, FixedSkyRotatingHorizonSequenceRequest):
         raise TypeError(
             "request must be a FixedSkyRotatingHorizonSequenceRequest."
         )
+    try:
+        execution = FixedSkySequenceExecution(execution)
+    except ValueError as error:
+        raise ValueError(
+            "execution must be 'cold' or 'reuse_loaded_sphere'."
+        ) from error
+
     from .request_generation import generate_chart_request
+
+    sky = None
+    if execution is FixedSkySequenceExecution.REUSE_LOADED_SPHERE:
+        from wenu.sky.maximal_sphere import generate_celestial_sphere
+
+        sky = generate_celestial_sphere()
 
     results = []
     for frame in request.frames:
         resolved = resolve_fixed_sky_rotating_horizon_frame(frame)
-        generation = generate_chart_request(
-            resolved.chart_request,
-            configuration=request.configuration,
-        )
+        generation_options = {"configuration": request.configuration}
+        observer = None
+        if sky is not None:
+            observer = Observer(
+                **resolved.chart_request.observer.observer_kwargs()
+            )
+            generation_options.update(sky=sky, observer=observer)
+        try:
+            generation = generate_chart_request(
+                resolved.chart_request,
+                **generation_options,
+            )
+        finally:
+            if observer is not None:
+                observer.close()
         outputs = tuple(generation.outputs)
         if outputs != (frame.expected_output,):
             raise RuntimeError(
@@ -257,4 +333,10 @@ def generate_fixed_sky_rotating_horizon_sequence(
                 output=outputs[0],
             )
         )
-    return FixedSkyRotatingHorizonGeneration(frames=tuple(results))
+    return FixedSkyRotatingHorizonGeneration(
+        frames=tuple(results),
+        execution=execution,
+        reused_load_profile=(
+            None if sky is None else sky.load_profile
+        ),
+    )

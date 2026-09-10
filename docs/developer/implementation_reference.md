@@ -2158,3 +2158,13 @@ the unchanged `generate_chart_request()` once per fresh resolved frame and
 writes raw exclusive `perf_counter_ns` observations plus residual, environment,
 resource, semantic/projection, and output evidence. It is not an installed
 interface, cache, alternate executor, or timing threshold.
+
+49J.5A adds `FixedSkySequenceExecution.COLD` and
+`FixedSkySequenceExecution.REUSE_LOADED_SPHERE` to
+`generate_fixed_sky_rotating_horizon_sequence()`. Cold remains the default and
+builds an independent canonical sphere per frame. Reuse mode loads one
+observer-independent canonical sphere, creates and closes a fresh `Observer`
+per frame, and passes both to `generate_chart_request()`. The generation result
+records the mode, canonical-sphere build count, and immutable reused load
+profile. Supplying an explicit observer to `generate_chart_request()` is valid
+only with an observer-independent supplied sphere.

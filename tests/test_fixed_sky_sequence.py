@@ -7,7 +7,9 @@ from types import SimpleNamespace
 import pytest
 
 from wenu.charts.fixed_sky_sequence import (
+    FixedSkyRotatingHorizonGeneration,
     FixedSkyRotatingHorizonSequenceRequest,
+    FixedSkySequenceExecution,
     generate_fixed_sky_rotating_horizon_sequence,
     resolve_fixed_sky_rotating_horizon_frame,
 )
@@ -18,6 +20,7 @@ from wenu.charts.request import (
     ChartRequest,
 )
 from wenu.output_policy import OutputFormat
+from wenu.sky.maximal_sphere import CANONICAL_MAXIMAL_SPHERE_PROFILE
 from wenu.temporal import PlaybackSpec, TemporalTimeline
 
 
@@ -278,3 +281,109 @@ def test_uncached_reference_renderer_rejects_unexpected_output(
 
     with pytest.raises(RuntimeError, match="unexpected output"):
         generate_fixed_sky_rotating_horizon_sequence(sequence)
+
+
+def test_reuse_mode_loads_one_unbound_sphere_and_closes_each_observer(
+    tmp_path,
+    monkeypatch,
+):
+    sequence = FixedSkyRotatingHorizonSequenceRequest(
+        chart=chart_request(tmp_path / "frames"),
+        timeline=timeline(),
+        celestial_anchor_time=timeline().instants[0],
+    )
+    sky = SimpleNamespace(
+        observer=None,
+        load_profile=CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    )
+    loaded = []
+    observers = []
+    rendered = []
+
+    class FrameObserver:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+            self.closed = False
+            observers.append(self)
+
+        def close(self):
+            self.closed = True
+
+    monkeypatch.setattr(
+        "wenu.sky.maximal_sphere.generate_celestial_sphere",
+        lambda: loaded.append(True) or sky,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.fixed_sky_sequence.Observer",
+        FrameObserver,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.fixed_sky_sequence.resolve_fixed_sky_rotating_horizon_frame",
+        lambda frame: SimpleNamespace(
+            chart_request=replace(
+                frame.celestial_request,
+                observer=frame.local_observer,
+            ),
+            orientation=object(),
+        ),
+    )
+
+    def generate(request, *, configuration, sky, observer):
+        rendered.append((request, configuration, sky, observer))
+        return SimpleNamespace(outputs=(request.product.output,))
+
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.generate_chart_request",
+        generate,
+    )
+
+    result = generate_fixed_sky_rotating_horizon_sequence(
+        sequence,
+        execution="reuse_loaded_sphere",
+    )
+
+    assert result.execution is FixedSkySequenceExecution.REUSE_LOADED_SPHERE
+    assert result.canonical_sphere_build_count == 1
+    assert result.reused_load_profile is CANONICAL_MAXIMAL_SPHERE_PROFILE
+    assert loaded == [True]
+    assert len(rendered) == sequence.frame_count
+    assert all(item[2] is sky for item in rendered)
+    assert [item[3] for item in rendered] == observers
+    assert all(observer.closed for observer in observers)
+    assert sky.observer is None
+
+    def fail(request, *, configuration, sky, observer):
+        del request, configuration, sky, observer
+        raise RuntimeError("render failure")
+
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.generate_chart_request",
+        fail,
+    )
+    with pytest.raises(RuntimeError, match="render failure"):
+        generate_fixed_sky_rotating_horizon_sequence(
+            sequence,
+            execution=FixedSkySequenceExecution.REUSE_LOADED_SPHERE,
+        )
+    assert observers[-1].closed is True
+
+
+def test_fixed_sky_execution_mode_is_explicit_and_consistent(tmp_path):
+    sequence = FixedSkyRotatingHorizonSequenceRequest(
+        chart=chart_request(tmp_path / "frames"),
+        timeline=timeline(),
+        celestial_anchor_time=timeline().instants[0],
+    )
+
+    with pytest.raises(ValueError, match="execution must be"):
+        generate_fixed_sky_rotating_horizon_sequence(
+            sequence,
+            execution="automatic",
+        )
+
+    with pytest.raises(ValueError, match="build count contradicts"):
+        FixedSkyRotatingHorizonGeneration(
+            frames=(),
+            execution=FixedSkySequenceExecution.REUSE_LOADED_SPHERE,
+            canonical_sphere_build_count=2,
+        )

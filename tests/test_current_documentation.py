@@ -158,8 +158,10 @@ TEST_SUITE_OPTIMIZATION_CLOSURE = (
     / "archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md"
 )
 COLD_FRAME_PERFORMANCE_BASELINE = (
-    DEVELOPER / "cold_frame_performance_baseline_49j4.md"
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md"
 )
+LOADED_SPHERE_REUSE = DEVELOPER / "loaded_sphere_reuse_49j5a.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -3041,7 +3043,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "cold_frame_performance_baseline_49j4.md",
+        "loaded_sphere_reuse_49j5a.md",
     }
 
     archived = {
@@ -3064,6 +3066,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md",
         "archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md",
         "archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md",
+        "archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3509,7 +3512,7 @@ def test_49j4_defines_a_cold_exclusive_nonoptimizing_harness():
 
     for phrase in (
         "Cold independent-frame performance baseline (Milestone 49J.4)",
-        "Mac baseline verified; awaiting Fernando's review",
+        "**Status:** Accepted and merged in `f4dcf11`",
         "adds no cache, performance threshold, alternate renderer",
         "three accepted fixed-sky circumpolar frames",
         "`generate_chart_request()` complete-render oracle",
@@ -3524,7 +3527,7 @@ def test_49j4_defines_a_cold_exclusive_nonoptimizing_harness():
         "SHA-256 digest, semantic paths, and projected record types",
         "canonical catalogue load profile, and DE440s ephemeris identity",
         "Three unit contracts were added to the existing fixed-sky baseline",
-        "No 49J.5 reuse work is authorized",
+        "49J.5 reuse work is authorized only through separately reviewed bounded slices",
         "Python 3.11.7",
         "zero-nanosecond accounting deltas",
         "1677 by 1740 pixel dimensions",
@@ -3543,10 +3546,48 @@ def test_49j4_defines_a_cold_exclusive_nonoptimizing_harness():
     ):
         assert phrase in record
 
-    assert "49J.4 is active" in roadmap
+    assert "49J.4 completed" in roadmap
     assert "cold_frame_performance_baseline_49j4.md" in architecture
     assert "raw exclusive `perf_counter_ns` observations" in implementation
     assert "attributes every profiled interval to one exclusive" in source_tree
+
+
+def test_49j5a_defines_only_the_loaded_sphere_reuse_seam():
+    record = " ".join(read(LOADED_SPHERE_REUSE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Loaded-sphere reuse seam (Milestone 49J.5A)",
+        "**Status:** Mac regression verified; awaiting Fernando's review",
+        "`cold` remains the independent complete-render oracle",
+        "`reuse_loaded_sphere` loads one observer-independent canonical celestial sphere",
+        "fresh scientific observer to every canonical frame request",
+        "contains no bound observer",
+        "creates and closes an `Observer`",
+        "`generate_chart_request()` remains the complete static route",
+        "rejects an unbound sphere without an observer",
+        "canonical sphere build count",
+        "no milestone-named test file",
+        "does not yet claim performance improvement",
+        "49J.5B before 49J.5 can be accepted as a whole",
+        "135 tests in 7.50 seconds",
+        "2,118 selected tests with 24 deselected in 27.92 seconds",
+        "all 2,142 tests in 79.04 seconds",
+        "slowest complete test at 20.84 seconds",
+        "not performance acceptance for 49J.5",
+        "default cold route is unchanged",
+    ):
+        assert phrase in record
+
+    assert "49J.5A is active" in roadmap
+    assert "loaded_sphere_reuse_49j5a.md" in architecture
+    assert "FixedSkySequenceExecution.REUSE_LOADED_SPHERE" in implementation
+    assert "observer-independent loaded-sphere sequence policy" in source_tree
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

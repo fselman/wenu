@@ -1,6 +1,6 @@
 # Cold independent-frame performance baseline (Milestone 49J.4)
 
-**Status:** Mac baseline verified; awaiting Fernando's review.
+**Status:** Accepted and merged in `f4dcf11`.
 
 ## Scope
 
@@ -90,7 +90,8 @@ routine tests with 24 deselected in 28.03 seconds; and all 2,138 tests in
 complete-suite test at 20.96 seconds. These values characterize the accepted
 cold baseline; they introduce no timing threshold or optimization claim.
 
-No 49J.5 reuse work is authorized until Fernando accepts this baseline.
+Fernando accepted this baseline; 49J.5 reuse work is authorized only through
+separately reviewed bounded slices.
 
 The coordinate-system guide was reviewed and remains current: this diagnostic
 observes the existing coordinate and rendering owners without changing
