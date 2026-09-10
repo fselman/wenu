@@ -1,6 +1,6 @@
 # Immutable catalogue fixture (Milestone 49J.3D)
 
-**Status:** Implemented for review.
+**Status:** Mac regression-verified; awaiting Fernando's review.
 
 ## Scope and audit result
 
@@ -49,8 +49,23 @@ seconds. Three post-change runs passed in 1.11, 1.18, and 1.20 seconds (median
 1.18 seconds), a local diagnostic reduction of about 7 percent. Reverse and
 isolated orders also passed. Replacing `NGC0224` in a temporary copy of the
 packaged galaxy catalogue caused immutable-summary construction to fail with
-the exact missing identifier. Post-change Mac measurements remain the
-acceptance authority.
+the exact missing identifier.
+
+Fernando's Mac measurement at branch commit `72340d6` passed three cold module
+runs in 2.69, 1.78, and 2.11 seconds (median 2.11 seconds; range 0.91 seconds).
+The unchanged `main` baseline passed in 2.33, 2.62, and 2.22 seconds (median
+2.33 seconds; range 0.40 seconds). Total median elapsed time fell by 0.22
+seconds, about 9.4 percent, but process-start variability is larger than that
+difference. The directly attributed catalogue work is clearer: two baseline
+loads had a combined median near 0.76 seconds, while the shared setup had a
+0.38-second median, an approximately 50-percent reduction in the intended
+work.
+
+Mac verification passed 159 focused documentation, catalogue, geometry, and
+cold-factory tests in 17.49 seconds; 2,106 routine tests with 24 deselected in
+26.66 seconds; and all 2,130 tests in 85.61 seconds. Complete-suite durations
+continued to report the cold canonical factory, module-scoped reusable sphere,
+and independently mutated horizon sphere as three distinct nodes.
 
 ## Non-goals
 

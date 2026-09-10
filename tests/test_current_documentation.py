@@ -3272,7 +3272,7 @@ def test_49j3d_records_only_proved_immutable_catalogue_fixture_reuse():
 
     for phrase in (
         "Immutable catalogue fixture (Milestone 49J.3D)",
-        "**Status:** Implemented for review",
+        "**Status:** Mac regression-verified; awaiting Fernando's review",
         "canonical sphere is not eligible for session scope",
         "No sphere/build registry is installed",
         "nested `MappingProxyType` values",
@@ -3286,6 +3286,12 @@ def test_49j3d_records_only_proved_immutable_catalogue_fixture_reuse():
         "median 1.18 seconds",
         "local diagnostic reduction of about 7 percent",
         "exact missing identifier",
+        "about 9.4 percent",
+        "approximately 50-percent reduction",
+        "159 focused documentation, catalogue, geometry, and cold-factory tests",
+        "2,106 routine tests with 24 deselected",
+        "all 2,130 tests in 85.61 seconds",
+        "three distinct nodes",
     ):
         assert phrase in record
 
