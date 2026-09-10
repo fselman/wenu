@@ -1,6 +1,6 @@
 # Calendar layout cost (Milestone 49J.3F)
 
-**Status:** Implementation complete; awaiting Mac regression evidence.
+**Status:** Mac regression-verified; awaiting Fernando's review.
 
 ## Scope and retained oracle
 
@@ -38,6 +38,21 @@ Acceptance requires three Mac runs of the isolated visual/slow test, the full
 page-rendering module, the routine gate, and the complete gate with unchanged
 counts. The coordinate-system guide was reviewed and remains current because
 the change affects only how a test queries already-realized text extents.
+
+Fernando's Mac baseline passed three isolated runs in 15.47, 15.27, and 14.72
+seconds (median 15.27 seconds), with call times of 14.00, 13.86, and 13.33
+seconds (median 13.86 seconds). The branch passed in 3.91, 3.14, and 3.09
+seconds (median 3.14 seconds), with calls of 1.83, 1.67, and 1.59 seconds
+(median 1.67 seconds). The comparable median reductions are 79.4 percent in
+elapsed time and 88.0 percent in call time.
+
+Mac regression verification passed 93 focused documentation and page-rendering
+tests in 4.77 seconds, 2,108 routine tests with 24 deselected in 27.45 seconds,
+and all 2,132 tests in 77.94 seconds. In the complete suite the retained
+calendar-containment oracle took 0.41 seconds rather than the baseline
+13--14-second call range. The complete total was 7.64 seconds below the prior
+49J.3E acceptance run of 85.58 seconds; that single-run difference is
+characterization evidence, not a threshold.
 
 **Runtime effect:** None.
 

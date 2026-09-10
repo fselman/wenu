@@ -3360,7 +3360,7 @@ def test_49j3f_removes_only_redundant_calendar_canvas_redraws():
 
     for phrase in (
         "Calendar layout cost (Milestone 49J.3F)",
-        "**Status:** Implementation complete; awaiting Mac regression evidence",
+        "**Status:** Mac regression-verified; awaiting Fernando's review",
         "all 83 day and month labels",
         "97.5 mm physical disk",
         "83 redundant full-canvas redraws",
@@ -3371,6 +3371,14 @@ def test_49j3f_removes_only_redundant_calendar_canvas_redraws():
         "about 85 percent",
         "outer corner of 106.64 mm",
         "mutation was reverted before commit",
+        "median 15.27 seconds",
+        "median 3.14 seconds",
+        "79.4 percent in elapsed time",
+        "88.0 percent in call time",
+        "93 focused documentation and page-rendering tests",
+        "2,108 routine tests with 24 deselected",
+        "all 2,132 tests in 77.94 seconds",
+        "characterization evidence, not a threshold",
         "**Runtime effect:** None",
         "**Test behavior effect:** None",
         "does not reduce dpi, sample labels",
