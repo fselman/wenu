@@ -1016,10 +1016,17 @@ uses the complete public generation route, produces a distinct PNG, and proves
 manifest resume. Fixed-sky reuse remains sequenced after the independent-frame
 baseline in 49J.4; the slice was merged in `d7ba1d5`.
 
-49J.3H is active in `test_suite_optimization_closure_49j3h.md`. It maps every
-49J.3 change to retained fault detection, installs durable test-file placement
-and growth rules, and requires three routine plus three complete Mac runs
-before closing test-suite optimization.
+49J.3H completed in
+`archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md`.
+It maps every 49J.3 change to retained fault detection, installs durable
+test-file placement and growth rules, and closed with three routine plus three
+complete Mac runs; the slice was merged in `2c524d2`.
+
+49J.4 is active in `cold_frame_performance_baseline_49j4.md`. The diagnostic
+measures three fresh fixed-sky circumpolar frames through the unchanged
+complete-render oracle with exclusive request, resource, provider,
+transformation, projection, preparation, rendering, export, and residual
+accounting. It adds no cache, output change, or threshold.
 
 49J continues to require:
 

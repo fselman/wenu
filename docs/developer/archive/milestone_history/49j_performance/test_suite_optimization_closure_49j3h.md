@@ -1,6 +1,6 @@
 # Test-suite optimization closure (Milestone 49J.3H)
 
-**Status:** Mac closure-verified; awaiting Fernando's review.
+**Status:** Accepted and merged in `2c524d2`.
 
 ## Scope
 

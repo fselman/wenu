@@ -658,6 +658,10 @@ records the accepted removal of redundant test-only canvas redraws while
 retaining physical text-containment measurement.
 `archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md`
 records the accepted decision to retain the cold two-frame canonical
-observer-time route unchanged. `test_suite_optimization_closure_49j3h.md` owns
-the active 49J.3 fault-model and test-file-growth closure; none changes an
-installed interface or runtime architecture.
+observer-time route unchanged.
+`archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md`
+records the accepted 49J.3 fault-model and test-file-growth closure.
+`cold_frame_performance_baseline_49j4.md` owns the active diagnostic harness:
+three fresh circumpolar frames traverse `generate_chart_request()`, while
+exclusive nanosecond spans and residual are observed without changing an
+installed interface, runtime owner, cache, or chart output.

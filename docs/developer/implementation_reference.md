@@ -2151,6 +2151,10 @@ documents the accepted test-only removal of redundant canvas redraws while
 retaining all physical calendar-label extent measurements.
 `archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md`
 documents the accepted preservation of the cold two-frame canonical sequence.
-`test_suite_optimization_closure_49j3h.md` documents the active 49J.3 closure
-and durable test-file placement rules. None adds a fixture, cache, installed
-interface, or runtime owner.
+`archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md`
+documents the accepted 49J.3 closure and durable test-file placement rules.
+`tools/benchmark_cold_frames.py` is the 49J.4 diagnostic entry point. It calls
+the unchanged `generate_chart_request()` once per fresh resolved frame and
+writes raw exclusive `perf_counter_ns` observations plus residual, environment,
+resource, semantic/projection, and output evidence. It is not an installed
+interface, cache, alternate executor, or timing threshold.
