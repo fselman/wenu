@@ -108,8 +108,10 @@ For current work, read and follow:
   for the accepted calendar text-extent optimization;
 - `archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md`
   for the accepted cold canonical observer-time sequence decision;
-- `test_suite_optimization_closure_49j3h.md` for the active 49J.3 fault-model,
+- `archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md` for the accepted 49J.3 fault-model,
   repeated-measurement, and test-file-growth closure;
+- `loaded_sphere_reuse_49j5a.md` for the active explicit cold-versus-loaded-sphere
+  fixed-sky sequence seam and its observer lifecycle boundaries;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
   for the completed reproducible test-entry and new-test admission
   implementation.

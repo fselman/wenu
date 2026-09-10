@@ -1022,11 +1022,21 @@ It maps every 49J.3 change to retained fault detection, installs durable
 test-file placement and growth rules, and closed with three routine plus three
 complete Mac runs; the slice was merged in `2c524d2`.
 
-49J.4 is active in `cold_frame_performance_baseline_49j4.md`. The diagnostic
+49J.4 completed in
+`archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md`.
+The diagnostic
 measures three fresh fixed-sky circumpolar frames through the unchanged
 complete-render oracle with exclusive request, resource, provider,
 transformation, projection, preparation, rendering, export, and residual
-accounting. It adds no cache, output change, or threshold.
+accounting. It adds no cache, output change, or threshold; the slice was merged
+in `f4dcf11`.
+
+49J.5A is active in `loaded_sphere_reuse_49j5a.md`. It introduces an explicit
+opt-in mode that reuses only one observer-independent loaded canonical sphere.
+Every frame retains a fresh observer and the complete canonical realization,
+projection, preparation, rendering, and export route. Cold execution remains
+the default correctness oracle. Performance and cross-format equivalence
+remain for 49J.5B; 49J.5 is not closed by this seam alone.
 
 49J continues to require:
 

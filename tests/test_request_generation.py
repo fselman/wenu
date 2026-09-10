@@ -493,6 +493,76 @@ def test_generation_reuses_a_compatible_supplied_sphere(
     ]
 
 
+def test_generation_reuses_an_observer_independent_sphere_explicitly(
+    monkeypatch,
+    tmp_path,
+):
+    request = _request(tmp_path)
+    observer = SimpleNamespace(
+        lat_deg=-33.0,
+        lon_deg=-71.0,
+        elevation_m=0.0,
+        utc_datetime=request.observer.scientific_identity()[-1],
+    )
+    sky = SimpleNamespace(
+        observer=None,
+        load_profile=CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    )
+    resolved = SimpleNamespace(request=request)
+    prepared = object()
+    generation = ChartRequestGeneration(exports=())
+    events = []
+
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.build_maximal_sphere",
+        lambda *args, **kwargs: pytest.fail("must reuse supplied sphere"),
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.resolve_chart_request",
+        lambda actual, profile: resolved,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.configure_chart_request_grids",
+        lambda actual, value, *, frame, observer: events.append(
+            ("grids", observer)
+        ),
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.configure_chart_request_horizon",
+        lambda actual, value: None,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.configure_chart_request_disks",
+        lambda actual, value: None,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.prepare_chart_request",
+        lambda actual, value, *, observer: events.append(
+            ("prepare", observer)
+        ) or prepared,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_generation.export_prepared_chart",
+        lambda actual, value, *, observer: events.append(
+            ("export", observer)
+        ) or generation,
+    )
+
+    result = generate_chart_request(
+        request,
+        sky=sky,
+        observer=observer,
+    )
+
+    assert result is generation
+    assert events == [
+        ("grids", observer),
+        ("prepare", observer),
+        ("export", observer),
+    ]
+    assert sky.observer is None
+
+
 def test_supplied_sphere_must_match_observer_and_profile(tmp_path):
     request = _request(tmp_path)
     observer = SimpleNamespace(
@@ -509,6 +579,17 @@ def test_supplied_sphere_must_match_observer_and_profile(tmp_path):
     with pytest.raises(ValueError, match="observer does not match"):
         generate_chart_request(request, sky=sky)
 
+    with pytest.raises(ValueError, match="observer-independent sky"):
+        generate_chart_request(request, sky=sky, observer=observer)
+
+    sky.observer = None
+    with pytest.raises(TypeError, match="requires an explicit observer"):
+        generate_chart_request(request, sky=sky)
+
+    with pytest.raises(ValueError, match="only with a reusable sky"):
+        generate_chart_request(request, observer=observer)
+
+    sky.observer = observer
     observer.lat_deg = -33.0
     sky.load_profile = None
     with pytest.raises(ValueError, match="does not declare a load profile"):

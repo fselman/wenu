@@ -744,7 +744,7 @@ covers one catalogue load, 18 view preparations, and 18 atlas-print exports.
 The regional-single and regional-group requests explicitly exercise outside
 masks; the other four families remain unmasked.
 
-`tools/benchmark_cold_frames.py` is the separate 49J.4 cold independent-frame
+`tools/benchmark_cold_frames.py` is the accepted 49J.4 cold independent-frame
 diagnostic. It sends three resolved circumpolar requests through the unchanged
 complete static generator, attributes every profiled interval to one exclusive
 stage or residual, and records raw/summary timings with environment, resource,
@@ -1322,6 +1322,13 @@ owns deterministic contract coverage;
 - `archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md`
   owns the accepted 49J.3 fault-model, repeated-run, and future test-file-growth
   closure.
-- `tools/benchmark_cold_frames.py` owns the active 49J.4 cold-frame diagnostic;
+- `archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md`
+  owns the accepted 49J.4 cold-frame diagnostic evidence;
+- `charts/fixed_sky_sequence.py` owns the active 49J.5A explicit cold versus
+  observer-independent loaded-sphere sequence policy and fresh-observer
+  lifecycle;
+- `charts/request_generation.py` accepts that reusable sphere plus explicit
+  observer while remaining the complete static request route;
+- `tools/benchmark_cold_frames.py` remains the cold diagnostic;
   `charts/request_generation.py` remains its complete-render oracle and
   `tools/benchmark_reusable_sphere.py` remains non-additive and separate.

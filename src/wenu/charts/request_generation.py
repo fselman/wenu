@@ -200,16 +200,29 @@ def export_prepared_chart(
     return ChartRequestGeneration(exports=tuple(exports))
 
 
-def _prepare_with_sphere(request, sky, profile, *, owns_observer):
+def _prepare_with_sphere(
+    request,
+    sky,
+    profile,
+    *,
+    owns_observer,
+    observer=None,
+):
     resolved = resolve_chart_request(request, profile)
+    grid_options = {"frame": getattr(resolved, "frame", None)}
+    if observer is not None:
+        grid_options["observer"] = observer
     configure_chart_request_grids(
         sky,
         resolved.request,
-        frame=getattr(resolved, "frame", None),
+        **grid_options,
     )
     configure_chart_request_horizon(sky, resolved.request)
     configure_chart_request_disks(sky, resolved.request)
-    prepared = prepare_chart_request(sky, resolved)
+    prepare_options = {}
+    if observer is not None:
+        prepare_options["observer"] = observer
+    prepared = prepare_chart_request(sky, resolved, **prepare_options)
     return ChartRequestBuild(
         sky=sky,
         prepared=prepared,
@@ -217,15 +230,24 @@ def _prepare_with_sphere(request, sky, profile, *, owns_observer):
     )
 
 
-def build_chart_request(request, *, sky=None, profile=None):
+def build_chart_request(request, *, sky=None, profile=None, observer=None):
     """Prepare any chart request using an owned or supplied maximal sphere."""
     if not isinstance(request, ChartRequest):
         raise TypeError("request must be a ChartRequest.")
     if sky is not None:
-        observer = getattr(sky, "observer", None)
-        if observer is None:
-            raise TypeError("sky must provide its scientific observer.")
-        if not request.observer.matches(observer):
+        bound_observer = getattr(sky, "observer", None)
+        if bound_observer is not None and observer is not None:
+            raise ValueError(
+                "an explicit observer requires an observer-independent sky."
+            )
+        resolved_observer = (
+            bound_observer if observer is None else observer
+        )
+        if resolved_observer is None:
+            raise TypeError(
+                "an observer-independent sky requires an explicit observer."
+            )
+        if not request.observer.matches(resolved_observer):
             raise ValueError(
                 "The supplied sphere observer does not match the chart "
                 "request."
@@ -240,7 +262,16 @@ def build_chart_request(request, *, sky=None, profile=None):
                 "The supplied sphere load profile does not match profile."
             )
         return _prepare_with_sphere(
-            request, sky, available_profile, owns_observer=False
+            request,
+            sky,
+            available_profile,
+            owns_observer=False,
+            observer=observer,
+        )
+
+    if observer is not None:
+        raise ValueError(
+            "an explicit observer may be supplied only with a reusable sky."
         )
 
     profile = (
@@ -263,13 +294,21 @@ def generate_chart_request(
     sky=None,
     profile=None,
     configuration=None,
+    observer=None,
 ):
     """Resolve and export a request using an owned or supplied sphere."""
-    build = build_chart_request(request, sky=sky, profile=profile)
+    build = build_chart_request(
+        request,
+        sky=sky,
+        profile=profile,
+        observer=observer,
+    )
     try:
         export_options = {}
         if configuration is not None:
             export_options["configuration"] = configuration
+        if observer is not None:
+            export_options["observer"] = observer
         return export_prepared_chart(
             build.sky,
             build.prepared,
