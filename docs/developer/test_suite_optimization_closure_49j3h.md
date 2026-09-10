@@ -1,6 +1,6 @@
 # Test-suite optimization closure (Milestone 49J.3H)
 
-**Status:** Implementation complete; awaiting repeated Mac acceptance.
+**Status:** Mac closure-verified; awaiting Fernando's review.
 
 ## Scope
 
@@ -37,6 +37,16 @@ medians, and ranges. It also requires the documentation contract, one reverse
 and isolated order check for the shared catalogue consumers, and confirmation
 that the working tree is clean. Timings remain characterization evidence, not
 enforced thresholds.
+
+Fernando's Mac closure run passed all 90 current-documentation tests in 2.95
+seconds. The shared catalogue module passed all three tests in 1.72 seconds;
+the two consumers passed in reverse order in 1.67 seconds and each passed
+isolated in 1.72 seconds. Three routine gates each passed 2,110 tests with 24
+deselected in 27.42, 26.41, and 27.06 seconds: median 27.06 seconds, range 1.01
+seconds. Three complete gates each passed all 2,134 tests in 78.95, 79.56, and
+78.37 seconds: median 78.95 seconds, range 1.19 seconds. The canonical
+observer-time oracle remained the slowest test at 20.72, 21.35, and 20.43
+seconds, confirming that closure did not hide the retained complete route.
 
 The coordinate-system guide was reviewed and remains current because this
 documentation-only placement policy changes no scientific meaning, provenance,
