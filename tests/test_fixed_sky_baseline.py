@@ -14,6 +14,7 @@ import pytest
 import wenu.charts.fixed_sky_baseline as baseline_module
 from wenu.charts.fixed_sky_baseline import (
     PngFrameComparisonTolerance,
+    available_pdf_page_renderer,
     compare_png_frames,
     compare_normalized_svg,
     fixed_sky_complete_render_baseline_request,
@@ -243,6 +244,7 @@ def test_pdf_page_rendering_uses_declared_poppler_arguments(
         Path(command[-1]).with_suffix(".png").write_bytes(b"png")
 
     monkeypatch.setattr(baseline_module.subprocess, "run", run)
+    monkeypatch.setattr(baseline_module.shutil, "which", lambda name: name)
     destination = tmp_path / "rendered.png"
 
     assert render_pdf_page_rgba(
@@ -256,6 +258,28 @@ def test_pdf_page_rendering_uses_declared_poppler_arguments(
         ),
         {"check": True, "capture_output": True},
     )]
+
+
+def test_pdf_page_rendering_falls_back_to_macos_sips(tmp_path, monkeypatch):
+    calls = []
+
+    def which(name):
+        return "/usr/bin/sips" if name == "sips" else None
+
+    def run(command, **options):
+        calls.append((command, options))
+        Path(command[-1]).write_bytes(b"png")
+
+    monkeypatch.setattr(baseline_module.shutil, "which", which)
+    monkeypatch.setattr(baseline_module.subprocess, "run", run)
+    destination = tmp_path / "rendered.png"
+
+    assert available_pdf_page_renderer() == "sips"
+    assert render_pdf_page_rgba(tmp_path / "frame.pdf", destination) == destination
+    assert calls[0][0] == (
+        "sips", "-s", "format", "png", str(tmp_path / "frame.pdf"),
+        "--out", str(destination),
+    )
 
 
 @pytest.mark.parametrize(

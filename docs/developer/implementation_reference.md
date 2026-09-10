@@ -2173,4 +2173,6 @@ only with an observer-independent supplied sphere.
 diagnostic invokes those same modes for PNG, semantic SVG, and PDF; compares
 scientific and projected records, clipping, furniture, and request provenance;
 normalizes only SVG metadata and volatile Matplotlib internal identifiers; and
-compares PDF after Poppler rendering at 150 DPI. Raw timings have no threshold.
+compares PDF after Poppler rendering at 150 DPI or the built-in macOS `sips`
+fallback. Renderer availability is checked before work begins. Raw timings
+have no threshold.

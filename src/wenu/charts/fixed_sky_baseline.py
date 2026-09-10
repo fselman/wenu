@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from pathlib import Path
 import re
+import shutil
 import subprocess
 from xml.etree import ElementTree
 
@@ -207,18 +208,57 @@ def compare_normalized_svg(candidate: Path, baseline: Path) -> bool:
     )
 
 
+def available_pdf_page_renderer() -> str:
+    """Return the available deterministic PDF-page rasterizer."""
+    if shutil.which("pdftoppm"):
+        return "pdftoppm"
+    if shutil.which("sips"):
+        return "sips"
+    raise RuntimeError(
+        "Rendered-PDF comparison requires 'pdftoppm' or macOS 'sips'."
+    )
+
+
 def render_pdf_page_rgba(
     path: Path,
     destination: Path,
     *,
     dpi: int = 150,
+    renderer: str | None = None,
 ) -> Path:
-    """Rasterize a one-page PDF with Poppler for graphical comparison."""
+    """Rasterize a one-page PDF for graphical comparison."""
     if dpi <= 0:
         raise ValueError("dpi must be positive.")
     path = Path(path)
     destination = Path(destination)
     destination.parent.mkdir(parents=True, exist_ok=True)
+    renderer = available_pdf_page_renderer() if renderer is None else renderer
+    if renderer == "sips":
+        try:
+            subprocess.run(
+                (
+                    "sips", "-s", "format", "png", str(path),
+                    "--out", str(destination),
+                ),
+                check=True,
+                capture_output=True,
+            )
+        except FileNotFoundError as error:
+            raise RuntimeError(
+                "The selected PDF renderer 'sips' is unavailable."
+            ) from error
+        except subprocess.CalledProcessError as error:
+            message = error.stderr.decode("utf-8", "replace").strip()
+            raise RuntimeError(
+                f"PDF rasterization failed: {message}"
+            ) from error
+        if not destination.is_file():
+            raise RuntimeError(
+                "PDF rasterization did not create its PNG output."
+            )
+        return destination
+    if renderer != "pdftoppm":
+        raise ValueError("renderer must be 'pdftoppm' or 'sips'.")
     prefix = destination.with_suffix("")
     try:
         subprocess.run(

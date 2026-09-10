@@ -23,6 +23,7 @@ import numpy as np
 
 from benchmark_cold_frames import default_sequence
 from wenu.charts.fixed_sky_baseline import (
+    available_pdf_page_renderer,
     compare_normalized_svg,
     compare_png_frames,
     render_pdf_page_rgba,
@@ -206,6 +207,7 @@ def _run(root: Path, output_format, execution, completed, total):
 
 def benchmark(destination: Path):
     """Run both modes and return comparison plus raw performance evidence."""
+    pdf_renderer = available_pdf_page_renderer()
     root = _outside_repository(destination, name="output")
     root.mkdir(parents=True, exist_ok=True)
     runs = {}
@@ -269,15 +271,19 @@ def benchmark(destination: Path):
                     / f"frame-{cold.resolved.frame.index:04d}"
                 )
                 cold_png = render_pdf_page_rgba(
-                    cold.output, rendered.with_name(rendered.name + "-cold.png")
+                    cold.output,
+                    rendered.with_name(rendered.name + "-cold.png"),
+                    renderer=pdf_renderer,
                 )
                 reuse_png = render_pdf_page_rgba(
-                    reuse.output, rendered.with_name(rendered.name + "-reuse.png")
+                    reuse.output,
+                    rendered.with_name(rendered.name + "-reuse.png"),
+                    renderer=pdf_renderer,
                 )
                 comparison = compare_png_frames(reuse_png, cold_png)
                 evidence = {
-                    "renderer": "pdftoppm",
-                    "dpi": 150,
+                    "renderer": pdf_renderer,
+                    "dpi": 150 if pdf_renderer == "pdftoppm" else None,
                     "dimensions": comparison.dimensions,
                     "changed_pixels": comparison.changed_pixels,
                     "max_channel_delta": comparison.max_channel_delta,

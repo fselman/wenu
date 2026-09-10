@@ -16,7 +16,9 @@ export policy, and furniture records; and PNG pixels in RGBA space. SVG
 comparison removes only non-graphical metadata and deterministically renames
 Matplotlib's volatile marker and clip identifiers, preserving Wenu semantic
 identifiers and every graphical attribute. PDF pages are rasterized by Poppler
-`pdftoppm` at 150 DPI and compared in the same exact RGBA space. Different
+`pdftoppm` at 150 DPI or the built-in macOS `sips` fallback and compared in the
+same exact RGBA space. Renderer availability is checked before the expensive
+sequences begin. Different
 output parent directories normalize to their common frame name.
 
 The report fails closed on unsupported scientific evidence or any difference.
