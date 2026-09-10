@@ -42,7 +42,8 @@ coordinate guide, contribution rules, and current work in progress.
   49J.3B marker-semantics audit, the completed 49J.3C source-index
   consolidation, the accepted 49J.3D immutable catalogue fixture, and the
   accepted 49J.3E cold-oracle preservation audit, and the accepted 49J.3F
-  calendar-layout optimization;
+  calendar-layout optimization, and the accepted 49J.3G observer-time oracle
+  preservation audit;
 - `pre_versioned/` contains the original unversioned architecture, roadmap,
   and UML material;
 - files directly under this directory are older records retained from the

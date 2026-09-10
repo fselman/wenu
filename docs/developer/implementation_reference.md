@@ -2149,6 +2149,8 @@ installed-kernel recomputation.
 `archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md`
 documents the accepted test-only removal of redundant canvas redraws while
 retaining all physical calendar-label extent measurements.
-`observer_time_sequence_oracle_49j3g.md` documents the active preservation of
-the cold two-frame canonical sequence. None adds a fixture, cache, installed
+`archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md`
+documents the accepted preservation of the cold two-frame canonical sequence.
+`test_suite_optimization_closure_49j3h.md` documents the active 49J.3 closure
+and durable test-file placement rules. None adds a fixture, cache, installed
 interface, or runtime owner.

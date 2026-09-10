@@ -106,8 +106,10 @@ For current work, read and follow:
   for the accepted cold-builder and installed-kernel oracle decision;
 - `archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md`
   for the accepted calendar text-extent optimization;
-- `observer_time_sequence_oracle_49j3g.md` for the active decision preserving
-  the cold canonical observer-time sequence oracle;
+- `archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md`
+  for the accepted cold canonical observer-time sequence decision;
+- `test_suite_optimization_closure_49j3h.md` for the active 49J.3 fault-model,
+  repeated-measurement, and test-file-growth closure;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
   for the completed reproducible test-entry and new-test admission
   implementation.
@@ -189,6 +191,36 @@ provenance, state-isolation obligation, or newly possible failure. Repeat a
 lower-level or complete path only when the context changes its inputs,
 invariants, tolerance, ownership, failure modes, public route, scientific
 oracle, cold-state obligation, or order-independence contract.
+
+### Test-file placement and growth
+
+Add a test to the existing file that owns the closest stable product
+responsibility, architectural boundary, public route, or scientific oracle.
+Do not create a test file merely for a milestone, pull request, bug, method, or
+individual scientific example. Milestone history belongs in its developer
+record; tests remain organized by current architecture.
+
+Create a new test file only when it will own at least one durable distinction:
+
+- a new component or module with its own responsibility;
+- a new architectural boundary or independently supported public route;
+- a distinct scientific oracle or state-isolation obligation; or
+- materially different environmental, resource, marker, or gate requirements.
+
+Before creating the file, record the closest existing test file, why extending
+or parametrizing it would obscure ownership or independence, and the stable
+responsibility named by the new file. Prefer extending an existing immutable
+artifact when setup, oracle, tier, and failure meaning agree. Keep tests
+separate when their public routes, scientific recomputation, mutable state,
+cold-state obligations, or order/isolation fault models differ.
+
+Name test files for enduring responsibilities, such as
+`test_chart_sequence.py`, never for chronological milestone identifiers. If a
+file becomes unwieldy, split it by stable internal responsibilities rather than
+by age or implementation history. At every major closure, review test-file
+count, new files added, complete-route duplication, and whether superseded
+historical phrase checks can move to bounded archive-integrity coverage. Do not
+reorganize existing tests solely to reduce the number of files.
 
 Run Wenu tests with ambient pytest plugins disabled:
 

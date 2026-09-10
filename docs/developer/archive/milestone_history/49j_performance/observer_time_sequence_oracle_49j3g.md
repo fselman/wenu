@@ -1,6 +1,6 @@
 # Canonical observer-time sequence oracle (Milestone 49J.3G)
 
-**Status:** Mac regression-verified; awaiting Fernando's review.
+**Status:** Accepted and merged in `d7ba1d5`.
 
 ## Scope and decision
 

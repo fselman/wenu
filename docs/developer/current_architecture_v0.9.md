@@ -656,6 +656,8 @@ recomputed installed-kernel scientific validators.
 `archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md`
 records the accepted removal of redundant test-only canvas redraws while
 retaining physical text-containment measurement.
-`observer_time_sequence_oracle_49j3g.md` owns the active decision to retain the
-cold two-frame canonical observer-time route unchanged; none changes an
+`archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md`
+records the accepted decision to retain the cold two-frame canonical
+observer-time route unchanged. `test_suite_optimization_closure_49j3h.md` owns
+the active 49J.3 fault-model and test-file-growth closure; none changes an
 installed interface or runtime architecture.

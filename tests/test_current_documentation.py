@@ -149,7 +149,11 @@ CALENDAR_LAYOUT_COST = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md"
 )
-OBSERVER_TIME_SEQUENCE_ORACLE = DEVELOPER / "observer_time_sequence_oracle_49j3g.md"
+OBSERVER_TIME_SEQUENCE_ORACLE = (
+    DEVELOPER
+    / "archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md"
+)
+TEST_SUITE_OPTIMIZATION_CLOSURE = DEVELOPER / "test_suite_optimization_closure_49j3h.md"
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
 CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
@@ -3031,7 +3035,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "observer_time_sequence_oracle_49j3g.md",
+        "test_suite_optimization_closure_49j3h.md",
     }
 
     archived = {
@@ -3052,6 +3056,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md",
         "archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md",
         "archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md",
+        "archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3406,7 +3411,7 @@ def test_49j3g_preserves_the_canonical_observer_time_sequence_oracle():
 
     for phrase in (
         "Canonical observer-time sequence oracle (Milestone 49J.3G)",
-        "**Status:** Mac regression-verified; awaiting Fernando's review",
+        "**Status:** Accepted and merged in `d7ba1d5`",
         "retain the test unchanged",
         "minimum scientifically meaningful sequence of two instants",
         "`generate_observer_time_chart_sequence()`",
@@ -3431,10 +3436,59 @@ def test_49j3g_preserves_the_canonical_observer_time_sequence_oracle():
     ):
         assert phrase in record
 
-    assert "49J.3G is active" in roadmap
+    assert "49J.3G completed" in roadmap
     assert "observer_time_sequence_oracle_49j3g.md" in architecture
     assert "cold two-frame canonical sequence" in implementation
     assert "cold complete observer-time route" in source_tree
+
+
+def test_49j3h_closes_fault_models_and_governs_test_file_growth():
+    record = " ".join(read(TEST_SUITE_OPTIMIZATION_CLOSURE).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+
+    for phrase in (
+        "Test-suite optimization closure (Milestone 49J.3H)",
+        "**Status:** Mac closure-verified; awaiting Fernando's review",
+        "188 `test_*.py` files",
+        "does not reorganize them retrospectively",
+        "Retained fault-model map",
+        "exact inventory coverage was added",
+        "a 40-point mutation still fails",
+        "Two real canonical frames",
+        "three fresh routine runs and three fresh complete runs",
+        "Timings remain characterization evidence, not enforced thresholds",
+        "90 current-documentation tests in 2.95 seconds",
+        "two consumers passed in reverse order in 1.67 seconds",
+        "each passed isolated in 1.72 seconds",
+        "2,110 tests with 24 deselected",
+        "median 27.06 seconds, range 1.01 seconds",
+        "all 2,134 tests",
+        "median 78.95 seconds, range 1.19 seconds",
+        "20.72, 21.35, and 20.43 seconds",
+        "did not hide the retained complete route",
+        "49J.4 may then add the independent cold chart/frame timing harness",
+        "first such optimization remains 49J.5",
+        "**Runtime effect:** None",
+        "**Test behavior effect:** None",
+    ):
+        assert phrase in record
+
+    for phrase in (
+        "Test-file placement and growth",
+        "existing file that owns the closest stable product responsibility",
+        "Do not create a test file merely for a milestone",
+        "Create a new test file only when",
+        "closest existing test file",
+        "Name test files for enduring responsibilities",
+        "review test-file count, new files added, complete-route duplication",
+        "Do not reorganize existing tests solely to reduce the number of files",
+    ):
+        assert phrase in instructions
+
+    assert "49J.3H is active" in roadmap
+    assert "test_suite_optimization_closure_49j3h.md" in architecture
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():
