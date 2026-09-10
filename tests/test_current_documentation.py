@@ -1,3714 +1,748 @@
-"""Current public-documentation and architecture-authority contracts."""
-
-from pathlib import Path
-import ast
-import re
-import tomllib
-
-
-ROOT = Path(__file__).resolve().parents[1]
-DEVELOPER = ROOT / "docs" / "developer"
-ARCHIVE = DEVELOPER / "archive"
-CURRENT = ARCHIVE / "architecture_history" / "current_architecture_v0.7.md"
-IMPLEMENTED = ARCHIVE / "architecture_history" / "target_architecture_v0.7.md"
-V08_CURRENT = ARCHIVE / "architecture_history/current_architecture_v0.8.md"
-TARGET = ARCHIVE / "architecture_history/target_architecture_v0.8.md"
-ROADMAP = ARCHIVE / "migration_history/wenu_migration_0.7_to_0.8.md"
-V09_CURRENT = DEVELOPER / "current_architecture_v0.9.md"
-V09_TARGET = ARCHIVE / "architecture_history/target_architecture_v0.9.md"
-V09_ROADMAP = ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md"
-FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
-V095_TARGET = DEVELOPER / "target_architecture_v0.9.5.md"
-COORDINATE_GUIDE = DEVELOPER / "coordinate_system_guide_v0.9.5.md"
-PUBLIC_INTERFACE_AUDIT = DEVELOPER / "archive/audits/public_interface_audit_v0.9.5.md"
-SCENE_DEPENDENCY_AUDIT = (
-    DEVELOPER / "archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md"
-)
-LAYER_REALIZATION_CONTRACT = (
-    DEVELOPER / "archive/milestone_history/49d_scene/layer_realization_context_49d2.md"
-)
-EPHEMERIS_PROVIDER_CONTRACT = (
-    DEVELOPER / "archive/milestone_history/49e_ephemeris/ephemeris_provider_contract_49e1.md"
-)
-EPHEMERIS_RUNTIME_CONTRACT = (
-    DEVELOPER / "archive/milestone_history/49e_ephemeris/ephemeris_runtime_contracts_49e2.md"
-)
-SKYFIELD_EPHEMERIS_CONTRACT = (
-    DEVELOPER / "archive/milestone_history/49e_ephemeris/skyfield_ephemeris_adapter_49e3.md"
-)
-SOLAR_SYSTEM_DIRECTION_CONTRACT = (
-    DEVELOPER / "archive/milestone_history/49e_ephemeris/solar_system_direction_realizer_49e4.md"
-)
-ASTROMETRIC_DIRECTION_CONTRACT = (
-    DEVELOPER / "archive/milestone_history/49e_ephemeris/astrometric_direction_runtime_49e5.md"
-)
-APPARENT_DIRECTION_CONTRACT = (
-    DEVELOPER / "archive/milestone_history/49e_ephemeris/apparent_direction_runtime_49e6.md"
-)
-VENUS_VERTICAL_SLICE_AUDIT = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/venus_vertical_slice_audit_49i1.md"
-)
-ORDINARY_REALIZATION_CONTEXT = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/ordinary_realization_context_49i1a.md"
-)
-VENUS_LAYER_CONTRACT = DEVELOPER / "archive/milestone_history/49i_solar_system/venus_layer_49i1b.md"
-MOON_SHARED_PIPELINE_AUDIT = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/moon_shared_body_pipeline_audit_49i2.md"
-)
-MOON_DIRECTION_VALIDATION = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/moon_direction_validation_49i2a.md"
-)
-SHARED_SOLAR_SYSTEM_POINT_LAYER = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/shared_solar_system_point_layer_49i2b.md"
-)
-MOON_LAYER = DEVELOPER / "archive/milestone_history/49i_solar_system/moon_layer_49i2c.md"
-SOLAR_SYSTEM_TRACK_AUDIT = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/solar_system_track_audit_49i2d.md"
-)
-SOLAR_SYSTEM_TRACK_CURVE = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/solar_system_track_curve_49i2d1.md"
-)
-DRAWABLE_VENUS_TRACK = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_venus_track_49i2d2.md"
-)
-PHYSICAL_APPARENT_DISK_AUDIT = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/physical_apparent_disk_audit_49i3a.md"
-)
-VENUS_PHYSICAL_APPEARANCE = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/venus_physical_appearance_49i3b.md"
-)
-RESOLVED_VENUS_DISK_AUDIT = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/resolved_venus_disk_audit_49i3c.md"
-)
-VENUS_DISK_SPHERICAL_GEOMETRY = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/venus_disk_spherical_geometry_49i3c1.md"
-)
-DRAWABLE_VENUS_DISK = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_venus_disk_49i3c2.md"
-)
-DRAWABLE_OBSERVED_VENUS_SEQUENCE = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_observed_venus_sequence_49i3c31b.md"
-)
-FROZEN_EARTH_VENUS_SEQUENCE = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/frozen_earth_venus_sequence_49i3c32a.md"
-)
-DRAWABLE_FROZEN_EARTH_VENUS_SEQUENCE = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_frozen_earth_venus_sequence_49i3c32b.md"
-)
-MERCURY_DISK_SEQUENCE_AUDIT = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/mercury_disk_sequence_audit_49i3c33.md"
-)
-MOVING_BODY_ARCHITECTURE = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/moving_body_architecture_49i3c33a.md"
-)
-DRAWABLE_FROZEN_EARTH_MERCURY_SEQUENCE = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_frozen_earth_mercury_sequence_49i3c33c.md"
-)
-APPARENT_MAJOR_PLANETS = DEVELOPER / "archive/milestone_history/49i_solar_system/apparent_major_planets_49i3d1.md"
-RESOLVED_MOON_PLAN = DEVELOPER / "archive/milestone_history/49i_solar_system/resolved_moon_plan_49i3e.md"
-RESOLVED_MOON_AUDIT = DEVELOPER / "archive/milestone_history/49i_solar_system/resolved_moon_audit_49i3e0.md"
-LUNAR_PHYSICAL_APPEARANCE = (
-    DEVELOPER / "archive/milestone_history/49i_solar_system/lunar_physical_appearance_49i3e1.md"
-)
-DRAWABLE_RESOLVED_MOON = DEVELOPER / "archive/milestone_history/49i_solar_system/drawable_resolved_moon_49i3e2.md"
-OBSERVED_MOON_SEQUENCE = DEVELOPER / "archive/milestone_history/49i_solar_system/observed_moon_disk_sequence_49i3e3.md"
-PERFORMANCE_CLOSURE_AUDIT = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md"
-)
-TEST_PERFORMANCE_PROGRAM = (
-    DEVELOPER / "test_performance_and_future_program_49j_50.md"
-)
-TEST_PRACTICE_AUDIT = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md"
-)
-TEST_PRACTICE_DECISIONS = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/test_practice_decisions_49j2.md"
-)
-TEST_ENTRY_ADMISSION = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md"
-)
-MARKER_TRUTHFULNESS = (
-    DEVELOPER / "archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md"
-)
-REPOSITORY_SOURCE_INDEX = (
-    DEVELOPER / "archive/milestone_history/49j_performance/repository_source_index_49j3c.md"
-)
-IMMUTABLE_CATALOGUE_FIXTURE = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md"
-)
-COLD_BUILDER_KERNEL_ORACLES = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md"
-)
-CALENDAR_LAYOUT_COST = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md"
-)
-OBSERVER_TIME_SEQUENCE_ORACLE = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md"
-)
-TEST_SUITE_OPTIMIZATION_CLOSURE = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md"
-)
-COLD_FRAME_PERFORMANCE_BASELINE = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md"
-)
-LOADED_SPHERE_REUSE = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/loaded_sphere_reuse_49j5a.md"
-)
-FIXED_SKY_REUSE_EQUIVALENCE = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/fixed_sky_reuse_equivalence_49j5b.md"
-)
-PERFORMANCE_CLOSURE = (
-    DEVELOPER
-    / "archive/milestone_history/49j_performance/performance_closure_49j6.md"
-)
-INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
-CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
-CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
-DIAGRAMS = DEVELOPER / "diagrams"
-PUBLIC_DOCUMENTS = (
-    ROOT / "README.md",
-    ROOT / "README.es.md",
-    DEVELOPER / "implementation_reference.md",
-    DEVELOPER / "source_tree.md",
-    *sorted((ROOT / "docs" / "user_guide").glob("*.md")),
-)
-OBSOLETE_IMPORTS = (
-    "wenu.spherical",
-    "wenu.projected",
-    "wenu.spherical_frame",
-    "wenu.clipping",
-    "wenu.viewport",
-    "wenu.projection",
-    "wenu.chart",
-    "wenu.regional",
-    "wenu.styles",
-    "wenu.renderers",
-)
-
-
-def read(path):
-    return path.read_text(encoding="utf-8")
-
-
-def test_49e4_audits_the_observer_relative_direction_boundary():
-    contract = " ".join(read(SOLAR_SYSTEM_DIRECTION_CONTRACT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "**As-is baseline:** `644bac7`",
-        "astrometric Venus direction",
-        "observer state at reception",
-        "target state at retarded emission time",
-        "one-way light time",
-        "Distance and timing data",
-        "The observer is not synonymous with Earth",
-        "Astrometric and apparent are separate statuses",
-        "`frame=\"icrs\"`",
-        "`epoch` remains absent",
-        "`equinox` remains absent",
-        "49E.5 â€” Astrometric direction runtime",
-        "49E.6 â€” Apparent direction runtime",
-        "49I.1 â€” Venus vertical slice",
-        "No future Sun, Moon, or planet",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49E.4 â€” Solar-System direction-realizer audit" in roadmap
-    assert "49E.4 changes no runtime type or output" in roadmap
-    assert "The accepted 49E.4 audit" in architecture
-    assert "13.2.8 49E.4 observer-relative direction audit" in guide
-    assert "Skyfield's `observe()` corresponds to the astrometric" in guide
-    assert "reception instant is neither a position reference epoch" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "49E.4 scientific acceptance" in guide
-    assert "All 45 current-documentation tests passed in 2.03 seconds" in guide
-    assert "45 current-documentation tests in 2.03" in contract
-
-
-def test_49e5_records_astrometric_runtime_and_output_boundary():
-    contract = " ".join(read(ASTROMETRIC_DIRECTION_CONTRACT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "**Implementation baseline:** `888ca2c`",
-        "ObserverBarycentricState",
-        "AstrometricDirectionRequest",
-        "AstrometricDirection",
-        "AstrometricDirectionRealizer",
-        "Earth-plus-WGS84-site",
-        "same `Observer.ephemeris` object",
-        "observer state is evaluated exactly once at reception",
-        "target is evaluated repeatedly at emission times",
-        "default is `1e-12` day with at most 10 iterations",
-        "nanosecond decimal precision",
-        "AstrometricDirectionConvergenceError",
-        "AstrometricDirectionIdentityError",
-        "not position reference epochs and not equinoxes",
-        "one-way-light-time",
-        "direct Skyfield `observe()`",
-        "No future Venus, Moon, Sun, or planet",
-        "Apparent-place realization remains 49E.6",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49E.5 â€” Astrometric direction runtime" in roadmap
-    assert "The accepted 49E.5 implementation" in architecture
-    assert "13.2.9 49E.5 astrometric direction runtime" in guide
-    assert "Neither is a position reference epoch" in guide
-    assert "neither is an equinox" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "49E.5 scientific acceptance" in guide
-    assert "converged in four iterations" in contract
-    assert "`3.149e-11` degree" in contract
-    assert "`1.348e-12` AU" in contract
-    assert "111 focused tests in 4.33 seconds" in contract
-    assert "all 1,878 tests in 85.55 seconds" in contract
-    assert "Astrometric direction runtime (Milestone 49E.5)" in implementation
-    assert "same-kernel Skyfield observer-state adapter" in source_tree
-    assert "Solar-System direction-realizer audit" in implementation
-    assert "documentation-only: no runtime realizer" in source_tree
-
-
-def test_49e6_records_apparent_runtime_and_single_light_time_authority():
-    contract = " ".join(read(APPARENT_DIRECTION_CONTRACT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "**Implementation baseline:** `3752142`",
-        "does not solve light time again",
-        "calls Skyfield `apparent()`â€”never `observe()`",
-        "Sun, Jupiter, and Saturn",
-        "apparent status does not mean â€œequinox of dateâ€",
-        "relative velocity in AU/day",
-        "shared PNG/PDF/SVG exporter",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49E.6 â€” Apparent direction runtime" in roadmap
-    assert "The accepted 49E.6 implementation" in architecture
-    assert "13.2.10 49E.6 apparent direction runtime" in guide
-    assert "Apparent direction runtime (Milestone 49E.6)" in implementation
-    assert "without a second `observe()` call" in source_tree
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "Scientifically accepted by Fernando on 2026-08-30" in contract
-    assert "`-3.152e-11` degree" in contract
-    assert "95 focused tests in 3.79 seconds" in contract
-    assert "all 1,883 tests in 91.21 seconds" in contract
-    assert "49E.6 scientific acceptance" in guide
-
-
-def test_49i1_audits_the_first_drawable_venus_vertical_slice():
-    audit = " ".join(read(VENUS_VERTICAL_SLICE_AUDIT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "**As-is baseline:** `17f5c10`",
-        "Ordinary chart facades, however, do not construct",
-        "49I.1A â€” Ordinary realization-context handoff",
-        "49I.1B â€” One Venus layer",
-        "transform the resulting `SphericalPoints` exactly once",
-        "sky/solar_system/planets/venus",
-        "must not implement a second altitude test",
-        "one fixed Venus marker plus an optional `Venus` label",
-        "`--planet venus`",
-        "not a physical disk",
-        "same projected record",
-    ):
-        assert phrase in audit
-
-    assert "Milestone 49I.1 â€” Drawable Venus vertical slice" in roadmap
-    assert "The 49I.1 audit identifies" in architecture
-    assert "13.2.11 49I.1 drawable Venus audit" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "adds no runtime layer" in source_tree
-    assert "Scientifically and architecturally accepted by Fernando" in audit
-    assert "all 48 current-documentation tests in 3.30" in audit
-    assert "49I.1 audit acceptance" in guide
-
-
-def test_49i1a_records_the_output_neutral_ordinary_context_handoff():
-    contract = " ".join(read(ORDINARY_REALIZATION_CONTEXT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "**Implementation baseline:** `62da7b9`",
-        "constructs it once before the product loop",
-        "observer-local vacuum AltAz",
-        "observer-origin Galactic",
-        "position reference epoch and equinox are absent",
-        "does not currently expose equatorial",
-        "unchanged `spherical_geometry",
-        "Final Mac acceptance verification passed 166 focused tests",
-        "all 1,890 tests in 88.37 seconds",
-        "Scientifically and architecturally accepted by Fernando",
-        "adds no Venus layer",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.1A â€” Ordinary realization-context handoff" in roadmap
-    assert "The accepted 49I.1A implementation" in architecture
-    assert "Ordinary realization-context handoff (Milestone 49I.1A)" in implementation
-    assert "request_realization.py` owns the 49I.1A" in source_tree
-    assert "13.2.12 49I.1A ordinary realization context" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "49I.1A scientific and architectural acceptance" in guide
-
-
-def test_49i1b_records_the_first_drawable_venus_boundary():
-    contract = " ".join(read(VENUS_LAYER_CONTRACT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-
-    for phrase in (
-        "**Implementation baseline:** `94d5e99`",
-        "`--planet venus`",
-        "transforms the resulting apparent ICRS point exactly once",
-        "sky/solar_system/planets/venus",
-        "fixed hollow circular marker",
-        "no magnitude, phase, illuminated fraction",
-        "Scientifically and visually accepted by Fernando",
-        "all 1,898 tests in 82.01 seconds",
-        "same position shown by Stellarium",
-        "G024.7-00.6",
-        "G024.7+00.6",
-    ):
-        assert phrase in contract
-    assert "Milestone 49I.1B â€” First drawable Venus layer" in roadmap
-    assert "The accepted 49I.1B implementation" in architecture
-    assert "all 1,898 tests in 82.01 seconds" in roadmap
-    assert "PNG, PDF, and semantic SVG looked the same" in architecture
-    assert "13.2.13 49I.1B first drawable Venus" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "not a position reference epoch and not an equinox" in guide
-    assert "Fernando scientifically and visually accepted" in guide
-
-
-def test_49i2_audits_one_pipeline_without_flattening_body_science():
-    audit = " ".join(read(MOON_SHARED_PIPELINE_AUDIT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-
-    for phrase in (
-        "**As-is baseline:** `e7fa6ab`",
-        "one canonical moving-body chart pipeline",
-        "interchangeable state source",
-        "different physical-appearance strategies",
-        "does not mean relabelling every orbit source as a JPL kernel",
-        "Major planet",
-        "Minor planet",
-        "Comet",
-        "Artificial satellite",
-        "target provider identity `moon`, expected NAIF ID `301`",
-        "common state centre `solar system barycenter`, NAIF ID `0`",
-        "strong topocentric parallax",
-        "observer geodetic location and height",
-        "direct Skyfield `observe(...).apparent()`",
-        "The Moon must not be implemented by copying `VenusLayer`",
-        "CLI ergonomics may remain class-aware",
-        "49I.2A â€” Moon numerical direction validation",
-        "49I.2B â€” Shared solar-system point layer",
-        "49I.2C â€” First drawable Moon point",
-        "49I.3 â€” Physical apparent-disk contract",
-        "adds no runtime type, Moon layer, public option",
-        "Scientifically and architecturally accepted by Fernando",
-        "51 current-documentation tests passed in 1.88 seconds",
-        "The answers are yes",
-    ):
-        assert phrase in audit
-
-    assert (
-        "Milestone 49I.2 â€” Moon and shared solar-system-body pipeline"
-        in roadmap
-    )
-    assert "The proposed 49I.2 audit" in architecture
-    assert "Fernando scientifically and architecturally accepted" in architecture
-    assert "13.2.14 49I.2 Moon and shared body pipeline" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert (
-        "One pipelineâ€ does not mean that all objects move in the same way"
-        in guide
-    )
-    assert "position reference epoch" in guide
-    assert "observation instant" in guide
-    assert "equinox remain distinct concepts" in guide
-    assert "accepted first Moon is a symbolic point" in guide
-
-
-def test_49i2a_validates_moon_direction_without_installing_a_layer():
-    contract = " ".join(read(MOON_DIRECTION_VALIDATION).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "**Implementation baseline:** `fbf4dd9`",
-        "target `moon`, expected NAIF ID `301`",
-        "centre `solar system barycenter`, expected NAIF ID `0`",
-        "direct Skyfield `observer.skyfield.at(t).observe(moon).apparent()`",
-        "topocentric and geocentric apparent directions",
-        "registered 52 m La Ligua observer",
-        "same latitude/longitude at zero elevation",
-        "requires a non-zero height effect",
-        "does not accept this policy for the Moon by analogy with Venus",
-        "within `1e-7` degree (`0.36` milliarcsecond)",
-        "observation instant is neither a position reference epoch nor an equinox",
-        "test-only NAIF-301 state",
-        "without invoking a second `observe()`",
-        "102 focused tests passed in 1.99 seconds",
-        "all 1,902 tests passed in 89.59 seconds",
-        "`0.9500231004` degree",
-        "`27.91` mas",
-        "does not extract `SolarSystemPointLayer`",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.1 â€” Drawable Venus vertical slice" in roadmap
-    assert "merged in `e7fa6ab`" in roadmap
-    assert "Milestone 49I.2 â€” Moon and shared solar-system-body pipeline" in roadmap
-    assert "in `fbf4dd9`" in roadmap
-    assert "Milestone 49I.2A â€” Numerical Moon-direction validation" in roadmap
-    assert "Scientifically accepted and full-suite verified" in roadmap
-    assert "all 1,902 tests passed in 89.59 seconds" in roadmap
-    assert "Fernando scientifically accepted 49I.2A" in architecture
-    assert "Numerical Moon-direction validation (Milestone 49I.2A)" in implementation
-    assert "No `sky/moon.py` exists in 49I.2A" in source_tree
-    assert "13.2.15 49I.2A numerical Moon direction" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "topocentric parallax rather than confusing origin with reference frame" in guide
-
-
-def test_49i2b_extracts_shared_point_orchestration_without_moon_content():
-    contract = " ".join(read(SHARED_SOLAR_SYSTEM_POINT_LAYER).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "**Implementation baseline:** `b0d1dd4`",
-        "`SolarSystemPointDescriptor`",
-        "`SolarSystemPointLayer`",
-        "transform exactly once into the product coordinate specification",
-        "`layer_name = \"venus\"`",
-        "sky/solar_system/planets/venus",
-        "test-only Moon descriptor",
-        "does not add `sky/moon.py`",
-        "13 direct shared-layer and Venus parity tests in 1.86 seconds",
-        "82 focused scientific and integration tests in 1.82 seconds",
-        "1,881 routine tests with 30 deselected in 27.67 seconds",
-        "53 current-documentation tests in 2.16 seconds",
-        "all 1,912 tests in 91.04 seconds",
-        "The PNG files were byte-identical",
-        "zero differing pixels or channel values",
-        "SVG semantic and graphical content was byte-identical",
-        "Fernando accepted the frozen descriptor",
-        "does not authorize a production Moon layer",
-        "adds no Moon layer, `--moon`",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.2B â€” Shared Solar-System point layer" in roadmap
-    assert "Fernando scientifically and architecturally accepted 49I.2B" in roadmap
-    assert "The accepted 49I.2B implementation extracts" in architecture
-    assert "Shared Solar-System point layer (Milestone 49I.2B)" in implementation
-    assert "tests/test_solar_system_point_layer.py" in source_tree
-    assert "13.2.16 49I.2B shared Solar-System point layer" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "`--moon` remains 49I.2C" in guide
-    assert "Fernando scientifically and architecturally accepted 49I.2B" in guide
-
-
-def test_49i2c_installs_one_symbolic_moon_without_physical_disk_claims():
-    contract = " ".join(read(MOON_LAYER).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "**Implementation baseline:** `0416474`",
-        "`MoonLayer` is a thin specialization",
-        "`SkyContentSelection.solar_system_objects`",
-        "`--planet venus` selects Venus",
-        "`--moon` selects the Moon",
-        "sky/solar_system/natural_satellites/moon",
-        "89 direct Moon, shared-point, Venus, CLI",
-        "219 request, detail, style, realization",
-        "1,887 routine tests with 30 deselected",
-        "all 1,917 tests in 92.36 seconds",
-        "54 current-documentation tests in 1.91 seconds",
-        "2026-08-29 20:00 local time at UTC-4",
-        "relative position against nearby Pisces stars corresponded closely",
-        "Fernando accepted the shared internal Solar-System selection",
-        "does not authorize physical lunar-disk or phase geometry",
-        "adds no physical lunar disk",
-        "remain 49I.3",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.2C â€” First drawable Moon point" in roadmap
-    assert (
-        "Fernando scientifically, architecturally, and visually accepted"
-        in roadmap
-    )
-    assert "The accepted 49I.2C implementation installs" in architecture
-    assert "First drawable Moon point (Milestone 49I.2C)" in implementation
-    assert "src/wenu/sky/moon.py" in source_tree
-    assert "13.2.17 49I.2C first drawable Moon point" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "Physical disk and phase remain 49I.3" in guide
-    assert (
-        "Fernando scientifically, architecturally, and visually accepted"
-        in guide
-    )
-
-
-def test_49i2d_audits_fixed_frame_vectorized_solar_system_tracks():
-    contract = " ".join(read(SOLAR_SYSTEM_TRACK_AUDIT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `d1971f5`",
-        "--planet-track venus",
-        "--track-start 2026-08-30T00:00:00Z",
-        "--track-sample-step 1h",
-        "--track-tick-step 7d",
-        "--track-tick-count 4",
-        "Sample instants",
-        "Chart-frame instant",
-        "one fixed observer-local product frame",
-        "one ordinary `SphericalCurves` value before projection",
-        "visible perpendicular ticks are projected annotations",
-        "regional and binocular charts",
-        "Planisphere and all-sky products remain outside",
-        "49I.3 physical apparent-disk contract",
-        "add runtime source",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.2D â€” Solar-System trajectory contract" in roadmap
-    assert "The accepted 49I.2D audit places" in architecture
-    assert (
-        "Accepted Solar-System track contract (Milestone 49I.2D)"
-        in implementation
-    )
-    assert "solar_system_track_audit_49i2d.md" in source_tree
-    assert "13.2.18 49I.2D Solar-System trajectories" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "per-sample time provenance" in instructions
-    assert "Scientifically and architecturally accepted" in contract
-    assert "55 current-documentation tests in 3.02 seconds" in contract
-    assert "1,889 routine tests with 30 deselected in 28.02 seconds" in contract
-    assert "all 1,919 tests in 90.48 seconds" in contract
-    assert "49I.2D scientific and architectural acceptance" in guide
-    assert "Runtime slices remain separately authorized" in roadmap
-
-
-def test_49i2d1_implements_scientific_curve_without_drawing():
-    contract = " ".join(read(SOLAR_SYSTEM_TRACK_CURVE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `ea03400`",
-        "`SolarSystemTrackRequest`",
-        "`SolarSystemTrackResult`",
-        "`SolarSystemTrackRealizer.curve()`",
-        "Regular samples include both endpoints",
-        "Exact tick offsets",
-        "observer barycentric state",
-        "one open `SphericalCurves`",
-        "`CoordinateService.transform()` is then invoked exactly once",
-        "complete `ApparentDirection` per vertex",
-        "`tests/test_solar_system_tracks.py`",
-        "`tools/validate_49i2d1_venus_track.py`",
-        "`1e-7` degree per ICRS component",
-        "adds no:",
-        "public `--planet-track`",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.2D.1 â€” Scientific Solar-System track curve" in roadmap
-    assert "The accepted 49I.2D.1 implementation adds" in architecture
-    assert (
-        "Scientific Solar-System track curve (Milestone 49I.2D.1)"
-        in implementation
-    )
-    assert "src/wenu/sky/solar_system_tracks.py" in source_tree
-    assert "13.2.19 49I.2D.1 scientific track curve" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "solar_system_track_curve_49i2d1.md" in instructions
-    assert "Scientifically and architecturally accepted" in contract
-    assert "`4.293e-10` degree in right ascension" in contract
-    assert "`8.471e-11` degree in declination" in contract
-    assert "40 focused scientific tests in 2.12 seconds" in contract
-    assert "56 current-documentation tests in 1.86 seconds" in contract
-    assert "1,899 routine tests with 30 deselected in 26.92 seconds" in contract
-    assert "all 1,929 tests in 89.19 seconds" in contract
-    assert "49I.2D.1 scientific and architectural acceptance" in guide
-    assert "49I.2D.2 remains separately authorized" in roadmap
-
-
-def fenced_python(path):
-    """Return Python code blocks from one Markdown document."""
-    blocks = []
-    current = None
-    for line in read(path).splitlines():
-        if line == "```python":
-            current = []
-        elif line == "```" and current is not None:
-            blocks.append("\n".join(current))
-            current = None
-        elif current is not None:
-            current.append(line)
-    return blocks
-
-
-def test_current_architecture_authorities_exist_and_cross_reference():
-    assert [
-        path
-        for path in (
-            CURRENT,
-            IMPLEMENTED,
-            V08_CURRENT,
-            TARGET,
-            ROADMAP,
-            V09_CURRENT,
-            V09_TARGET,
-            V09_ROADMAP,
-            FUTURE_ROADMAP,
-            PUBLIC_INTERFACE_AUDIT,
-            SCENE_DEPENDENCY_AUDIT,
-            LAYER_REALIZATION_CONTRACT,
-            V095_TARGET,
-            COORDINATE_GUIDE,
-            INSTRUCTIONS,
-        )
-        if not path.is_file()
-    ] == []
-
-    current = read(CURRENT)
-    target = read(V09_TARGET)
-    roadmap = read(V09_ROADMAP)
-
-    assert "target_architecture_v0.7.md" in current
-    assert "archive/architecture_history/current_architecture_v0.8.md" in target
-    assert "archive/migration_history/wenu_migration_0.8_to_0.9.md" in target
-    assert "archive/architecture_history/current_architecture_v0.8.md" in roadmap
-    assert "archive/architecture_history/target_architecture_v0.9.md" in roadmap
-
-
-def test_historical_documents_are_archived_and_not_active_authorities():
-    assert (ARCHIVE / "README.md").is_file()
-    assert not (ROOT / "docs" / "obsolete").exists()
-    for name in (
-        "current_architecture_v0.4.md",
-        "current_architecture_v0.5.md",
-        "current_architecture_v0.6.md",
-        "current_architecture_v0.7.md",
-        "target_architecture_v0.5.md",
-        "target_architecture_v0.6.md",
-        "target_architecture_v0.7.md",
-        "current_architecture_v0.8.md",
-        "target_architecture_v0.8.md",
-        "target_architecture_v0.9.md",
-    ):
-        assert (ARCHIVE / "architecture_history" / name).is_file()
-        assert not (DEVELOPER / name).exists()
-    for name in (
-        "wenu_migration_0.4_to_0.5.md",
-        "wenu_migration_0.5_to_0.6.md",
-        "wenu_migration_0.6_to_0.7.md",
-        "wenu_migration_0.7_to_0.8.md",
-        "wenu_migration_0.8_to_0.9.md",
-    ):
-        assert (ARCHIVE / "migration_history" / name).is_file()
-        assert not (DEVELOPER / name).exists()
-    assert (ARCHIVE / "pre_versioned" / "architecture.md").is_file()
-
-
-def test_current_diagrams_are_an_inspection_interface():
-    readme = read(DIAGRAMS / "README.md")
-    normalized = " ".join(readme.split())
-
-    for name in (
-        "current_architecture_v0.9_overview",
-        "coordinate_transformation_as_is_v0.9",
-        "coordinate_transformation_target_49bc",
-        "coordinate_static_structure_as_is_v0.9",
-        "coordinate_static_structure_target_49bc",
-        "coordinate_runtime_sequence_target_49bc",
-        "coordinate_transformation_as_is_v0.9.5",
-        "coordinate_static_structure_as_is_v0.9.5",
-        "coordinate_runtime_sequence_as_is_v0.9.5",
-    ):
-        assert (DIAGRAMS / f"{name}.dot").is_file()
-        assert (DIAGRAMS / f"{name}.svg").is_file()
-        assert name in readme
-
-    assert "human inspection interface" in readme
-    assert "49B introduces typed astronomical-state vocabulary" in readme
-    assert "49C introduces one coordinate service" in readme
-    assert "every astronomical object obtains its native position" in readme
-    assert "`ObservationContext` enters only" in readme
-    assert "actual classes" in readme
-    assert "inherits" in readme
-    assert "runtime calls or returns" in normalized
-    assert "No parallel astronomical state hierarchy is proposed" in normalized
-    assert "direct counterpart to the current static-structure" in readme
-    assert "retains the same `SkyLayer` inheritance hierarchy" in readme
-    assert "`PositionProvider` is the boundary for all astronomical objects" in readme
-    assert "requires only another provider implementation" in normalized
-    assert "deliberately large canvas" in readme
-    assert "sole production astronomical transformation owner" in normalized
-    assert "fictitious protocol" in readme
-    assert "The retired handwritten and chart-owned authorities are absent" in normalized
-    assert "does not modify `CoordinateService`" in normalized
-    assert (
-        ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.dot"
-    ).is_file()
-    assert (
-        ARCHIVE / "diagram_history" / "target_architecture_v0.5_combined.svg"
-    ).is_file()
-    assert not (DIAGRAMS / "target_architecture_v0.5_combined.dot").exists()
-    assert not (DIAGRAMS / "target_architecture_v0.5_combined.svg").exists()
-
-
-
-def test_v095_coordinate_target_and_living_guide_are_reviewable():
-    target = read(V095_TARGET)
-    guide = read(COORDINATE_GUIDE)
-
-    assert "**Status:** Implemented and accepted; 49C.4 merged in `1a15076`" in target
-    assert "PositionProvider" in target
-    assert "CoordinateService" in target
-    assert "49B.1" in target
-    assert "49C.4" in target
-    assert "does not claim a\n`v0.9.5` Git tag" in target
-    assert "Skyfield apparent stellar realization as provider work" in target
-    assert "native AltAz horizon construction" in target
-    assert "Removed in 49C.3" in guide
-    assert "Observer.observation_context" in target
-    assert "1779 tests with 30 deselected in 27.31 seconds" in target
-    assert "1809 tests in 84.99 seconds" in target
-    assert "mixed\nJ2000-equator/ecliptic-of-date policy" in target
-
-    for phrase in (
-        "Position generation versus coordinate transformation",
-        "International Celestial Reference System",
-        "FK5 equatorial coordinates",
-        "Galactic coordinates",
-        "Ecliptic coordinates",
-        "Horizontal AltAz coordinates",
-        "TEME",
-        "Current transformation inventory and 0.9.5 destination",
-        "Wenu object catalogue and provenance",
-        "ESA Hipparcos Catalogue I/239",
-        "OpenNGC",
-        "Gaia DR3",
-        "Minimal architecture 0.9.5 roadmap",
-        "canonical celestial-reference furniture uses one coherent policy",
-        "Architecture 0.9.5 acceptance",
-    ):
-        assert phrase in guide
-
-
-def test_v08_release_evidence_remains_closed():
-    target = read(TARGET)
-    roadmap = read(ROADMAP)
-    readme = read(ROOT / "README.md")
-
-    assert "**Status:** Implemented" in target
-    assert "**Release:** 0.8.0" in target
-    assert "**Status:** Complete" in roadmap
-    assert "Milestone 46E" in roadmap
-    assert "annotated Git tag `v0.8.0`" in roadmap
-    assert "Version 0.8.0 remains the latest tagged" in readme
-
-
-def test_v09_architecture_is_closed_and_current():
-    current = read(V09_CURRENT)
-    target = read(V09_TARGET)
-    roadmap = read(V09_ROADMAP)
-    implementation = read(DEVELOPER / "implementation_reference.md")
-    source_tree = read(DEVELOPER / "source_tree.md")
-    readme = read(ROOT / "README.md")
-    instructions = read(INSTRUCTIONS)
-
-    assert "**Status:** Implemented current architecture" in current
-    assert "**Baseline commit:** `5da93cc`" in current
-    assert "optional night edition remains a later appearance experiment" in current.lower()
-    assert "**Status:** Implemented; retained as the accepted design record" in target
-    assert "**Status:** Complete" in roadmap
-    assert "**Current authority:** `current_architecture_v0.9.md`" in roadmap
-    assert "**Architecture version:** 0.9" in implementation
-    assert "**Architecture version:** 0.9" in source_tree
-    assert "v0.9 architecture is complete" in readme
-    assert "current_architecture_v0.9.md" in instructions
-
-
-def test_v09_plan_records_paired_physical_planisphere_contract():
-    current = read(V08_CURRENT)
-    target = read(V09_TARGET)
-    roadmap = read(V09_ROADMAP)
-
-    for phrase in (
-        "**Baseline commit:** `c169162`",
-        "Projection gap",
-        "Physical-product gap",
-    ):
-        assert phrase in current
-    for phrase in (
-        "polar azimuthal-equidistant projection",
-        "-90 degrees through +20 degrees",
-        "+90 degrees through -20 degrees",
-        "glued back to back",
-        "opposite",
-        "365 daily ticks",
-        "20:00 through 04:00",
-        "Localization is the last",
-    ):
-        assert phrase in target
-    for phrase in (
-        "Milestone 48B",
-        "Milestone 48C",
-        "Milestone 48D",
-        "Milestone 48E",
-        "Wednesday, 2026-08-19",
-        "Milestone 48G",
-        "Milestone 48J",
-        "Milestone 48K",
-    ):
-        assert phrase in roadmap
-
-
-def test_release_version_comes_from_scm_with_v08_archive_fallback():
-    project = tomllib.loads(read(ROOT / "pyproject.toml"))
-
-    assert project["project"]["dynamic"] == ["version"]
-    assert project["tool"]["setuptools_scm"]["fallback_version"] == "0.8.0"
-
-
-def test_assistant_instructions_name_current_architecture_authorities():
-    instructions = read(INSTRUCTIONS)
-    for name in (
-        "current_architecture_v0.9.md",
-        "archive/architecture_history/target_architecture_v0.9.md",
-        "archive/migration_history/wenu_migration_0.8_to_0.9.md",
-        "implementation_reference.md",
-        "source_tree.md",
-        "coordinate_transformation_audit_09a2afd.md",
-        "post_v0.9_architecture_roadmap.md",
-    ):
-        assert name in instructions
-    assert "historical evidence, not active" in instructions
-
-
-def test_post_v09_roadmap_records_coordinate_svg_and_temporal_direction():
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    for phrase in (
-        "Two independent development tracks",
-        "One astronomical coordinate service",
-        "Position-provider boundary",
-        "SVG product verification",
-        "Temporal sequence contract",
-        "Fixed sky and rotating horizon",
-        "tools/render_circumpolar_movie.py",
-        "simulation time",
-        "time scale",
-        "TEME",
-        "SGP4",
-        "complete-render path as a correctness oracle",
-        "Milestone 49C.2 â€” Migrate production transformations",
-        "1809 tests in 86.11 seconds",
-        "visually accepted by Fernando on 2026-08-28",
-        "1805 tests in 86.29 seconds",
-        "1779 tests with 30 deselected in 27.31 seconds",
-        "1809 tests in 84.99 seconds",
-        "Immediate post-v0.9.5 public-interface follow-up",
-        "make the installed `wenu_chart` command the ordinary public route",
-        "reserve `tools/` for diagnostics",
-        "coordinate system, frame, epoch/equinox",
-    ):
-        assert phrase in roadmap
-
-
-def test_49d1_audits_scene_dependencies_without_runtime_change():
-    audit = " ".join(read(SCENE_DEPENDENCY_AUDIT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(
-        read(DEVELOPER / "source_tree.md").split()
-    )
-
-    for phrase in (
-        "**Audit baseline:** `b4af627`",
-        "load-time ownership",
-        "observer-independent loaded sphere currently produces an "
-        "observer-dependent render realization",
-        "Source identity",
-        "Provider epoch",
-        "Evaluation instant",
-        "Reference policy",
-        "Product frame",
-        "Celestial background",
-        "Dynamic astronomical objects",
-        "Observer-local geometry",
-        "before projection and after provider evaluation",
-        "one explicit spherical product frame",
-        "controlled test provider",
-        "must preserve the current call",
-        "This audit classifies dependencies; it does not authorize caching",
-        "does not introduce a scene graph",
-    ):
-        assert phrase in audit
-
-    for phrase in (
-        "Milestone 49D.1 â€” Celestial-scene dependency and ownership audit",
-        "Completing every 49D migration is not a prerequisite",
-        "real ephemeris provider remains Milestone 49E",
-    ):
-        assert phrase in roadmap
-
-    for phrase in (
-        "Scene dependencies and moving astronomical objects",
-        "A planet therefore does not belong in the renderer",
-        "The planet-enabling insertion point is after provider evaluation",
-        "Wenu implementation box â€” 49D.1 dependency boundary",
-    ):
-        assert phrase in guide
-
-    assert "Celestial-scene dependencies (Milestone 49D.1)" in implementation
-    assert "does not enter through the renderer, furniture, command" in (
-        implementation
-    )
-    assert "Milestone 49D.1 adds no runtime module" in source_tree
-    for phrase in (
-        "Scientifically and pedagogically accepted",
-        "39 documentation tests in 2.78 seconds",
-        "1,789 routine tests with 30 deselected in 26.62 seconds",
-        "all 1,819 tests in 84.41 seconds",
-        "this acceptance does not itself authorize that runtime change",
-    ):
-        assert phrase in audit
-    assert "49D.1 scientific and pedagogical acceptance" in guide
-    assert "accepted the scene-dependency explanation" in guide
-    assert "No visual comparison was required" in roadmap
-
-
-def test_49d2_records_minimal_realization_context_and_non_goals():
-    contract = " ".join(read(LAYER_REALIZATION_CONTRACT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(
-        read(DEVELOPER / "source_tree.md").split()
-    )
-
-    for phrase in (
-        "**Implementation baseline:** `9e16ed2`",
-        "product_coordinate_spec",
-        "evaluation_instant",
-        "evaluation_time_scale",
-        "reference_equinox",
-        "contains no projection, viewport, renderer, style",
-        "Context omitted",
-        "Typed context supplied",
-        "exact legacy branch",
-        "deterministic test-only provider",
-        "transforms it exactly once through `CoordinateService`",
-        "A chart-wide frame choice alone cannot replace",
-        "does not add or choose a JPL ephemeris",
-        "does not thread the context through ordinary",
-        "Scientifically, pedagogically, and technically accepted",
-        "all 1,828 tests in 90.00 seconds",
-        "Output-neutral and SVG contract",
-        "`solar-system/sun`",
-        "No future moving object may be drawn by a separate SVG generator",
-    ):
-        assert phrase in contract
-
-    for phrase in (
-        "Milestone 49D.2 â€” Minimal layer-realization context",
-        "Ordinary chart requests do not supply one in 49D.2",
-        "Real ephemerides, installed moving-object layers",
-        "SVG product may serialize the reserved",
-        "no post-export overlay is acceptable",
-        "Acceptance evidence is 48 focused tests",
-    ):
-        assert phrase in roadmap
-
-    for phrase in (
-        "optional immutable `LayerRealizationContext` before projection",
-        "no current astronomical layer",
-        "single export path",
-        "must not infer astronomical identity",
-        "accepted by Fernando on",
-    ):
-        assert phrase in architecture
-
-    for phrase in (
-        "49D.2 minimal realization handoff",
-        "small sealed â€œinstruction cardâ€",
-        "controlled test object",
-        "This proves ownership and ordering, not planetary accuracy",
-        "Wenu implementation box â€” 49D.2 realization context",
-        "SVG is not a second astronomy engine",
-        "13.2.3 49D.2 scientific and pedagogical acceptance",
-    ):
-        assert phrase in guide
-
-    assert "Minimal layer-realization context (Milestone 49D.2)" in (
-        implementation
-    )
-    assert "Supplying no `realization_context`" in implementation
-    assert "downstream annotator serializes the reserved" in implementation
-    assert "No separate SVG astronomy generator" in source_tree
-    assert "`sky/realization.py` owns the frozen 49D.2" in source_tree
-    assert "exist only in `tests/test_layer_realization.py`" in source_tree
-
-
-def test_49e1_records_ephemeris_source_and_direction_realizer_boundary():
-    contract = " ".join(read(EPHEMERIS_PROVIDER_CONTRACT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "**As-is baseline:** `85c7392`",
-        "Required two-stage boundary",
-        "ephemeris state source",
-        "solar-system direction realization",
-        "Centre and frame are not synonyms",
-        "retarded emission times",
-        "one-way light time",
-        "kernel identity",
-        "`PositionStatus.TOPOCENTRIC` is scientifically misplaced",
-        "No correction may be implied",
-        "no hidden network access during rendering",
-        "A raw ephemeris state is not `SphericalGeometry`",
-        "Body geometry deliberately deferred",
-        "49E.2 â€” minimal runtime contracts",
-        "49E.3 â€” installed kernel adapter",
-        "six-component position-velocity",
-        "SHA-256 content fingerprint",
-        "use Venus for 49I.1",
-        "all 41 current-documentation tests in 3.26",
-        "49I.1 â€” Venus vertical slice",
-    ):
-        assert phrase in contract
-
-    for phrase in (
-        "Milestone 49E.1 â€” Ephemeris-provider contract audit",
-        "Cartesian state source",
-        "retarded emission-time evaluation",
-        "49E.1 changed no runtime type or output",
-        "Venus is the first 49I.1 body",
-        "Acceptance verification passed all 41 documentation",
-    ):
-        assert phrase in roadmap
-
-    assert "proposed 49E.1 ephemeris boundary" in architecture
-    assert "raw barycentric vector must never be relabelled" in architecture
-    assert "`PositionStatus.TOPOCENTRIC` is removed atomically" in architecture
-    assert "Venus is the first planned 49I.1 body" in architecture
-    assert "13.2.4 49E.1 ephemeris-provider design" in guide
-    assert "more like a precise moving map" in guide
-    assert "Wenu implementation box â€” 49E.1 provider boundary" in guide
-    assert "SHA-256 is computed once" in guide
-    assert "Venus is the first planned moving-body" in guide
-    assert "All 41 documentation tests passed in 3.26 seconds" in guide
-    assert "Proposed ephemeris-provider boundary" in implementation
-    assert "first later vertical slice is Venus" in implementation
-    assert "`skyfield_ephemeris.py` now owns the first real" in source_tree
-
-
-def test_49e2_records_minimal_runtime_contracts_and_non_goals():
-    contract = " ".join(read(EPHEMERIS_RUNTIME_CONTRACT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "**Implementation baseline:** `d14ca52`",
-        "EphemerisResourceIdentity",
-        "EphemerisStateRequest",
-        "EphemerisState",
-        "EphemerisStateSource",
-        "There is no default or optional velocity",
-        "This is an atomic internal correction",
-        "`observer_altaz_spec()` now requires an explicit `position_status`",
-        "Native observer-local horizon",
-        "The new state is geometric Cartesian provider output",
-        "deterministic Venus state",
-        "solar-system/planets/venus",
-        "This proves contract shape and ownership, not ephemeris accuracy",
-        "does not create it",
-        "calculate a SHA-256 digest from a file",
-        "No new visual render was required",
-        "scientifically accepted 49E.2 on 2026-08-30",
-        "92 focused tests in 2.72 seconds",
-        "1,821 routine tests",
-        "all 1,851 tests in 84.12 seconds",
-        "future Venus, Moon, planet, and Sun products",
-    ):
-        assert phrase in contract
-
-    for phrase in (
-        "Milestone 49E.2 â€” Minimal ephemeris runtime contracts",
-        "complete six-component `EphemerisState`",
-        "No real file is opened or hashed",
-        "`PositionStatus.TOPOCENTRIC` member is removed atomically",
-        "test-only Venus source",
-        "requires every caller to declare `position_status`",
-        "Scientifically accepted by Fernando on 2026-08-30",
-        "1,821 routine tests with 30 deselected",
-        "all 1,851 tests in 84.12 seconds",
-    ):
-        assert phrase in roadmap
-
-    assert "49E.2 installs only renderer-neutral" in architecture
-    assert "13.2.5 49E.2 minimal runtime state contracts" in guide
-    assert "state in spaceâ€”not yet the direction" in guide
-    assert "Wenu implementation box â€” 49E.2 runtime boundary" in guide
-    assert "deliberately has no status default" in guide
-    assert "future refracted products" in guide
-    assert "Minimal ephemeris runtime contracts (Milestone 49E.2)" in implementation
-    assert "requires an explicit `position_status`" in implementation
-    assert "native horizon" in implementation
-    assert "`ephemeris.py` owns the frozen 49E.2" in source_tree
-    assert "requires explicit status at every" in source_tree
-    assert "deterministic contract source remains in `tests/test_ephemeris.py`" in source_tree
-
-
-
-def test_49e3_records_borrowed_skyfield_adapter_and_non_goals():
-    contract = " ".join(read(SKYFIELD_EPHEMERIS_CONTRACT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "**Implementation baseline:** `7a978a0`",
-        "Borrowed Skyfield ephemeris adapter",
-        "relative to what?",
-        "three for position and three for velocity",
-        "simultaneous geometric difference",
-        "opens no second kernel",
-        "conservative common intersection",
-        "only `frame=\"icrf\"`",
-        "position in AU",
-        "velocity in AU/day",
-        "separate deterministic Wenu exceptions",
-        "refuses to download a missing kernel",
-        "does not independently revalidate the DE440 dynamical solution",
-        "not a sky direction and is not drawable",
-        "Venus rendering remains 49I.1",
-        "c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2",
-        "common coverage JD 2396752.5 through JD 2506352.5 TDB",
-        "residual was zero within that tolerance",
-        "Scientifically accepted by Fernando on 2026-08-30",
-        "72 focused tests in 1.73 seconds",
-        "1,830 routine tests",
-        "all 1,860 tests in 84.78 seconds",
-        "explicit stable HTML anchors",
-        "Accepted living-guide revision",
-        "coordinate guide version `0.9.5.20260830.3`",
-        "All 44 current-documentation tests passed in 1.70 seconds",
-    ):
-        assert phrase in contract
-
-    for phrase in (
-        "Milestone 49E.3 â€” Borrowed Skyfield ephemeris adapter",
-        "fingerprints the exact BSP bytes once",
-        "Venus-relative-to-SSB",
-        "adds no direction realizer",
-    ):
-        assert phrase in roadmap
-
-    assert "49E.3 installs `SkyfieldEphemerisStateSource`" in architecture
-    assert "13.2.6 49E.3 borrowed Skyfield kernel adapter" in guide
-    assert "DE440` identifies the astronomical solution family" in guide
-    assert "common intersection of all SPK segment intervals" in guide
-    assert "Wenu implementation box â€” 49E.3 installed adapter" in guide
-    assert "49E.3 real-resource evidence" in guide
-    assert "zero residual within an absolute tolerance" in guide
-    assert "Terminology contract â€” four different questions" in guide
-    assert "`CoordinateSpec.epoch` means a **position reference epoch**" in guide
-    assert "NAIF and SPICE identifiers" in guide
-    assert "Navigation and Ancillary Information Facility" in guide
-    assert "Spacecraft, Planet, Instrument, C-matrix, Events" in guide
-    for anchor in (
-        "#coordinate-system-vs-reference-frame",
-        "#epoch-vs-equinox",
-        "#49e3-skyfield-adapter",
-        "#naif-spice-identifiers",
-    ):
-        assert anchor in guide
-        assert f'<a id="{anchor[1:]}"></a>' in guide
-    assert "Borrowed Skyfield ephemeris adapter (Milestone 49E.3)" in implementation
-    assert "The adapter has no `close()`" in implementation
-    assert "`skyfield_ephemeris.py` now owns the first real" in source_tree
-    assert "no-download installed-kernel Venus/SSB acceptance check" in source_tree
-
-def test_public_interface_audit_records_as_is_and_scientific_boundary():
-    audit = " ".join(read(PUBLIC_INTERFACE_AUDIT).split())
-    for phrase in (
-        "**Audit baseline:** `1a15076`",
-        "The six canonical Python examples",
-        "Reproducible user recipes currently under `tools/`",
-        "Diagnostics, acceptance, and benchmarks",
-        "Catalogue and repository maintenance",
-        "The first bounded part of that vocabulary is now public",
-        "coordinate system",
-        "reference frame",
-        "equinox",
-        "position epoch",
-        "observation instant",
-        "an equinox is not a defining parameter of ICRS",
-        "`of_date` resolves from the declared product or observation time",
-        "It must never relabel native catalogue coordinates",
-        "Reference-policy contract",
-        "Product-frame selection",
-        "Provider realization epoch",
-        "Physical-product command",
-    ):
-        assert phrase in audit
-
-
-def test_coordinate_guide_has_a_navigable_table_of_contents():
-    guide = read(COORDINATE_GUIDE)
-    toc_position = guide.index("# Table of contents")
-    status_position = guide.index("# Status and purpose")
-    assert toc_position < status_position
-
-    for link in (
-        "[1. Scientific vocabulary](#1-scientific-vocabulary)",
-        "[2. Coordinate systems used or reserved by Wenu]",
-        "[4. Mathematical foundations](#4-mathematical-foundations)",
-        "[5. Time vocabulary](#5-time-vocabulary)",
-        "[5.6 Julian and Besselian epochs]",
-        "[8. Wenu object catalogue and provenance]",
-        "[12. Maintenance rule](#12-maintenance-rule)",
-        "[13. Practical guide to reference systems, equinoxes, and epochs]",
-    ):
-        assert link in guide
-
-
-
-def test_coordinate_guide_toc_uses_explicit_portable_anchors():
-    guide = read(COORDINATE_GUIDE)
-    toc = guide[
-        guide.index("# Table of contents"):
-        guide.index("# Status and purpose")
-    ]
-    targets = re.findall(r"\]\(#([^)]+)\)", toc)
-
-    assert len(targets) >= 60
-    assert len(targets) == len(set(targets))
-    for target in targets:
-        assert f'<a id="{target}"></a>' in guide
-
-    assert "**Guide version:** `0.9.5.20260902.54`" in guide
-    assert "**Last updated:** `2026-09-02T23:59:30Z`" in guide
-    assert "reference epoch or equinox" not in guide
-    assert "epoch/equinox" not in guide
-    assert "- coordinate system and representation;" in guide
-    assert "- reference frame and its physical realization;" in guide
-    assert "equinox, only for a frame whose axes are equinox-based" in guide
-    assert "position reference epoch, only for a catalogue state" in guide
-    header = guide[:guide.index("# Table of contents")]
-    assert header.splitlines()[:8] == [
-        "# Wenu Coordinate Systems and Astronomical Objects",
-        "",
-        "**Subtitle:** Living scientific and implementation guide for architecture 0.9.5  ",
-        "**Author:** Wenu project  ",
-        "**Architecture version:** `0.9.5`  ",
-            "**Guide version:** `0.9.5.20260902.54`",
-            "**Last updated:** `2026-09-02T23:59:30Z`",
-        "**Language:** English",
-    ]
-
-
-def test_coordinate_guide_teaches_calendars_for_historical_use():
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    for phrase in (
-        "Calendars are historical coordinate systems for time",
-        "There was no single timeless â€œSumerian calendar.â€",
-        "Babylonian and Assyrian",
-        "five epagomenal days",
-        "There was no single ancient Greek civil calendar",
-        "Roman Republican calendar",
-        "*Proleptic* means that a rule is extended to dates before the rule was historically introduced",
-        "Greek *prolepsis*, â€œanticipationâ€ or â€œtaking beforehand.â€",
-        "not a historical reconstruction",
-        "Did Augustus steal a day from February?",
-        "there is no historical year in which Augustus â€œstoleâ€ the day",
-        "Sextilis was renamed *Augustus* in 8 BCE",
-        "February was already the exceptional short month",
-        "supposed transfer of a day from February is an unsupported legend",
-        "Britain and its colonies changed in September 1752",
-        "A historian's minimum date record",
-        "No year zero in ordinary BCE/CE history",
-        "Julian calendar is not Julian Date",
-        "UTC is not an ancient time scale",
-        "Delta T = \\mathrm{TT}-\\mathrm{UT1}",
-        "Julian and Besselian epochs are not calendars",
-        "Tropical, sidereal, and Besselian years",
-        "measured from the moving equinox",
-        "roughly 20 minutes longer",
-        "fictitious mean Sun",
-        "mean right ascension 18h 40m",
-        "365.242198781",
-        "must not be treated as an immutable modern measurement",
-        "`B1950.0` denotes the instant obtained from this mean-Sun convention",
-        "Wenu implementation box â€” Calendars and historical chronology",
-        "It is **not** a general historical-calendar converter",
-        "HistoricalDateSpec",
-        "years 1â€“9999",
-    ):
-        assert phrase in guide
-
-
-def test_coordinate_guide_teaches_reference_policy_at_two_depths():
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    for phrase in (
-        "**[Foundation]**",
-        "**[Undergraduate]**",
-        "Julian and Besselian year labels",
-        "A Julian year is exactly 365.25 days",
-        "Gaia DR2 positions use position reference epoch `J2015.5`",
-        "Gaia EDR3 and DR3 positions use `J2016.0`",
-        "The Gaia position reference epoch is not an equinox",
-        "an equinox is not one of its defining frame parameters",
-        "Gaia-CRF3 is a high-precision optical realization of ICRS",
-        "ICRF3 is the third radio realization of ICRS",
-        "`FK5(equinox=J2000.0)` is close to ICRS but is not identical",
-        "Wenu currently represents Gaia-compatible celestial geometry as `icrs`",
-        "Equinox applicability by system and frame",
-        "ICRS does not have a **defining equinox**, fixed or selectable",
-        "The small rotation between ICRS/GCRS axes and the dynamical mean equator",
-        "TEME is a special case whose name includes â€œmean equinox,â€",
-        "Concept box â€” How an abstract celestial sphere becomes a measured frame",
-        "Least squares alone therefore does not determine the absolute orientation",
-        "Astrometric Global Iterative Solution (AGIS)",
-        "True Equator, Mean Equinox",
-        "Simplified General Perturbations 4 (SGP4)",
-        "`FK` comes from the German *Fundamentalkatalog*",
-        "The adopted corrections are part of the frame's provenance",
-        "Wenu implementation box â€” Where each responsibility lives",
-        "Wenu does not rebuild ICRS, Gaia-CRF3, or FK5",
-        "`coordinates.py::CoordinateSpec`",
-        "`coordinate_service.py::CoordinateService`",
-        "`charts/reference_policy.py::CelestialReferencePolicy`",
-        "Existing Gaia-derived Magellanic Cloud isophotes are morphology products",
-        "Only `vacuum` is currently accepted",
-        "Future specialized TEME adapter",
-        "Wenu starts at the published catalogue/provider-state boundary",
-        "Every medium or major Wenu change must include an explicit review",
-        "A passing documentation test is not a substitute for Fernando's",
-    ):
-        assert phrase in guide
-
-
-def test_architecture_v095_closure_and_example_count_are_current():
-    roadmap = read(FUTURE_ROADMAP)
-    target = read(V095_TARGET)
-    guide = read(COORDINATE_GUIDE)
-    diagrams = read(DIAGRAMS / "README.md")
-    implementation = read(DEVELOPER / "implementation_reference.md")
-
-    for text in (roadmap, target, guide, diagrams):
-        assert "merge pending" not in text
-        assert "1a15076" in text
-    normalized = " ".join(implementation.split())
-    assert "installs these six scripts" in normalized
-    assert "- `all_sky.py`;" in implementation
-
-
-def test_v08_roadmap_records_ordinary_interface_and_static_sequences():
-    target = read(TARGET)
-    roadmap = read(ROADMAP)
-
-    for phrase in (
-        "Three-stage ordinary Python interface",
-        "observer-independent loaded-content container",
-        "Defining a projection and applying it are separate operations",
-        "fewer than 70 lines",
-        "Reproducible image-frame sequences",
-        "does not encode movies",
-    ):
-        assert phrase in target
-
-    for phrase in (
-        "Milestone 46C.8G",
-        "Milestone 46C.8O",
-        "Pass observer explicitly through canonical execution",
-        "Decouple maximal-sphere construction",
-        "one observer-independent canonical maximal sphere",
-        "fewer-than-70-line declarative examples",
-        "movie encoding",
-        "Hawaii-to-Tahiti",
-        "coordinate-epoch precession",
-    ):
-        assert phrase in roadmap
-
-
-def test_horizon_roadmap_separates_boundary_reference_and_mask_roles():
-    target = read(TARGET)
-    roadmap = read(ROADMAP)
-
-    for phrase in (
-        "Observer-horizon roles",
-        "`--horizon`",
-        "`--horizon-mask`",
-        "deliberately not opaque",
-        "paints one effective outside mask exactly once",
-        "idempotent no-ops for a planisphere",
-    ):
-        assert phrase in target
-    for phrase in (
-        "Milestone 46C.8Q.1",
-        "Milestone 46C.8Q.3",
-        "Milestone 46C.8Q.4",
-        "Milestone 46C.8Q.5",
-        "Milestone 46C.8Q.9",
-        "preventing accumulated opacity",
-        "runtime behavior remains",
-        "declaration and adapter plumbing",
-        "reference appearance and mask behavior remain",
-        "mask-opening geometry preparation",
-    ):
-        assert phrase in roadmap
-
-
-def test_configuration_default_audit_covers_every_public_responsibility():
-    audit = read(CONFIGURATION_AUDIT)
-    roadmap = read(ROADMAP)
-
-    for phrase in (
-        "public default",
-        "derived value",
-        "invariant",
-        "implementation detail",
-        "observer",
-        "subject",
-        "family geometry",
-        "detail",
-        "style",
-        "output mode",
-        "grids/references",
-        "furniture",
-        "product",
-        "export",
-        "line_width",
-        "line_style",
-        "Duplication and conflict register",
-        "Output-mode transformation inventory",
-    ):
-        assert phrase in audit
-    assert "Milestone 46D.1A" in roadmap
-    assert "Milestone 46D.1B" in roadmap
-    for phrase in (
-        "Exact ordered value inventory",
-        "Atlas-print semantic style",
-        "Mode palettes and transformations",
-        "Furniture, legends, grids, and implementation constants",
-        "minimum area `1.0`, maximum area `40.0`",
-        "style `dotted`",
-        "style `solid`",
-        "style `dashed`",
-    ):
-        assert phrase in audit
-    assert "**Final status:** Implemented" in roadmap
-
-
-def test_user_overlay_boundary_is_currently_documented():
-    current = read(CURRENT)
-    roadmap = read(ROADMAP)
-    implementation = read(DEVELOPER / "implementation_reference.md")
-    source_tree = read(DEVELOPER / "source_tree.md")
-
-    for phrase in (
-        "Milestone 46D.5A",
-        "strict partial-user-document boundary",
-        "Sequential loads share no mutable",
-        "Milestone 46D.5B",
-    ):
-        assert phrase in current
-    for phrase in (
-        "Milestone 46D.5A",
-        "recursive non-mutating merge",
-        "omitted-versus-explicit argument precedence",
-    ):
-        assert phrase in roadmap
-    for phrase in (
-        "load_configuration(path=None)",
-        "load_configuration_defaults(path=None)",
-        "ConfigurationDefaults",
-    ):
-        assert phrase in implementation
-    assert "src/wenu/configuration/translation.py" in source_tree
-
-
-def test_user_overlay_runtime_precedence_is_currently_documented():
-    current = read(CURRENT)
-    roadmap = read(ROADMAP)
-    implementation = read(DEVELOPER / "implementation_reference.md")
-    source_tree = read(DEVELOPER / "source_tree.md")
-
-    for phrase in (
-        "Milestone 46D.5B",
-        "one frozen aggregate",
-        "`--config PATH`",
-        "before maximal-sphere construction",
-    ):
-        assert phrase in current
-    for phrase in (
-        "**Final status:** Implemented",
-        "product arguments retain `None` as the omission sentinel",
-        "packaged-only behavior is unchanged",
-    ):
-        assert phrase in roadmap
-    for phrase in (
-        "load_configuration_defaults(\"my-wenu.toml\")",
-        "configuration=configuration",
-        "explicitly present on the command line override it",
-    ):
-        assert phrase in implementation
-    for phrase in (
-        "Milestone 46D.5B",
-        "no active-configuration singleton exists",
-    ):
-        assert phrase in source_tree
-
-
-def test_installed_wenu_chart_boundary_is_currently_documented():
-    current = read(CURRENT)
-    roadmap = read(ROADMAP)
-    implementation = read(DEVELOPER / "implementation_reference.md")
-    source_tree = read(DEVELOPER / "source_tree.md")
-
-    for phrase in (
-        "Milestone 46D.6",
-        "one `wenu_chart` command",
-        "never imports\nexample modules",
-    ):
-        assert phrase in current
-    for phrase in (
-        "**Final status:** Implemented",
-        "all five chart-family subcommands plus `defaults`",
-        "deterministic `--write` output remains Milestone 46D.7",
-    ):
-        assert phrase in roadmap
-    for phrase in (
-        "wenu_chart regional --constellations Cen,Cru,Mus",
-        "`--observer-location`",
-        "does not import or execute example scripts",
-    ):
-        assert phrase in implementation
-    for phrase in (
-        "src/wenu/cli/chart.py",
-        "`generate_celestial_sphere()`",
-        "do not import `example_scripts`",
-    ):
-        assert phrase in source_tree
-
-
-def test_editable_configuration_template_is_currently_documented():
-    current = read(CURRENT)
-    roadmap = read(ROADMAP)
-    implementation = read(DEVELOPER / "implementation_reference.md")
-    source_tree = read(DEVELOPER / "source_tree.md")
-
-    for phrase in (
-        "Milestone 46D.7",
-        "exact UTF-8 bytes",
-        "profile inheritance is deliberately deferred",
-    ):
-        assert phrase in current
-    for phrase in (
-        "**Final status:** Implemented",
-        "`wenu_chart defaults --write PATH`",
-        "overlay per invocation and no inheritance",
-    ):
-        assert phrase in roadmap
-    for phrase in (
-        "`dashed`, `dotted`, `dash_dot`, and `none`",
-        "deterministically replaced",
-        "One invocation accepts one overlay",
-    ):
-        assert phrase in implementation
-    for phrase in (
-        "`write_defaults_template()`",
-        "exact UTF-8 bytes",
-        "does not\nserialize typed translations",
-    ):
-        assert phrase in source_tree
-
-
-def test_configuration_schema_v1_freezes_structure_and_validation():
-    schema = read(CONFIGURATION_SCHEMA)
-    roadmap = read(ROADMAP)
-
-    assert "**Schema version:** `1`" in schema
-    ordered_sections = (
-        "`observer`",
-        "`subjects`",
-        "`families`",
-        "`detail`",
-        "`styles`",
-        "`modes`",
-        "`grids_references`",
-        "`furniture`",
-        "`products`",
-        "`export`",
-    )
-    positions = [schema.index(f"### {section}") for section in ordered_sections]
-    assert positions == sorted(positions)
-
-    for phrase in (
-        "schema_version = 1",
-        "color`, `line_width`, and `line_style`",
-        "`solid`, `dashed`, `dotted`, `dash_dot`, or `none`",
-        "Unknown sections and keys are errors",
-        "complete configuration path",
-        "invalid colors",
-        "contradictory combinations",
-        "executable expressions",
-        "Python class names",
-        "renderer operations",
-        "catalogue joins",
-        "imports",
-        "arbitrary code",
-        "styles.atlas.horizon.line_style",
-    ):
-        assert phrase in schema
-
-    assert "### Milestone 46D.2" in roadmap
-    assert "configuration_schema_v1.md" in roadmap
-    assert "This milestone adds no parser" in roadmap
-
-
-def test_configuration_runtime_migration_is_closed_before_user_overlays():
-    roadmap = read(ROADMAP)
-    architecture = read(CURRENT)
-
-    for phrase in (
-        "Milestone 46D.4D",
-        "[products.default]",
-        "compatibility API",
-        "canonical runtime",
-        "Explicit values retain precedence",
-    ):
-        assert phrase in roadmap
-        assert phrase in architecture
-    assert "**Final status:** Implemented" in roadmap
-
-
-def test_documented_python_is_syntactically_valid():
-    for document in (
-        ROOT / "README.md",
-        DEVELOPER / "implementation_reference.md",
-    ):
-        for block in fenced_python(document):
-            ast.parse(block, filename=str(document))
-
-
-def test_documented_canonical_public_imports_execute():
-    namespace = {}
-    import_block = fenced_python(
-        DEVELOPER / "implementation_reference.md"
-    )[0]
-    exec(import_block, namespace)
-    for name in (
-        "AllSkyChart",
-        "compose_chart",
-        "LegendOptions",
-        "RegionalChart",
-        "FullSkyChart",
-        "CircumpolarChart",
-        "BinocularChart",
-    ):
-        assert name in namespace
-
-
-def test_public_documents_do_not_recommend_obsolete_imports():
-    violations = []
-    for path in PUBLIC_DOCUMENTS:
-        text = read(path)
-        for obsolete in OBSOLETE_IMPORTS:
-            pattern = re.compile(
-                rf"\b(?:from|import)\s+{re.escape(obsolete)}(?=\s|$)"
-            )
-            if pattern.search(text):
-                violations.append(f"{path.relative_to(ROOT)}: {obsolete}")
-    assert violations == []
-
-
-def test_polar_physical_style_checkpoint_is_documented():
-    roadmap = read(ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md")
-    architecture = read(ARCHIVE / "architecture_history/current_architecture_v0.8.md")
-    reference = read(DEVELOPER / "implementation_reference.md")
-    acceptance = read(ARCHIVE / "acceptance_history/visual_acceptance_48e2.md")
-
-    for phrase in (
-        "Milestone 48E.2",
-        "PolarPlanisphereStylePalette",
-        "render_48e2_polar_preview.py",
-    ):
-        assert (
-            phrase in roadmap
-            or phrase in architecture
-            or phrase in reference
-        )
-    assert "polar-planisphere-south.png" in acceptance
-    assert "polar-planisphere-north.png" in acceptance
-    assert "--projection stereographic" in acceptance
-
-
-def test_polar_reference_review_corrections_are_documented():
-    roadmap = read(ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md")
-    target = read(ARCHIVE / "architecture_history/target_architecture_v0.9.md")
-    acceptance = read(ARCHIVE / "acceptance_history/visual_acceptance_48e3.md")
-
-    for phrase in (
-        "Milestone 48E.3",
-        "+20/-20-degree overlap",
-        "0h/6h/12h/18h meridians",
-        "short declination ticks",
-        "corrected stereographic handedness",
-    ):
-        assert phrase in roadmap or phrase in target or phrase in acceptance
-
-
-def test_current_svg_documents_use_one_editable_text_contract():
-    roadmap = " ".join(
-        (ARCHIVE / "milestone_history/49f_svg/svg_output_audit_and_plan.md")
-        .read_text(encoding="utf-8")
-        .split()
-    )
-    implementation = (DEVELOPER / "implementation_reference.md").read_text(
-        encoding="utf-8"
-    )
-    source_tree = (DEVELOPER / "source_tree.md").read_text(encoding="utf-8")
-
-    for value in (
-        "SVG has one public text contract",
-        "--format {png,pdf,svg}",
-        "PDF is the publication product",
-        "SVG is the editable vector product",
-    ):
-        assert value in roadmap
-
-    assert "support two explicit SVG font policies" not in roadmap
-    assert "wenu.output_policy.OutputFormat" in implementation
-    assert "wenu.svg_document.annotate_semantic_svg()" in implementation
-    assert "src/wenu/output_policy.py" in source_tree
-    assert "src/wenu/svg_document.py" in source_tree
-
-
-def test_readmes_advertise_the_svg_user_contract():
-    for filename in ("README.md", "README.es.md"):
-        text = (ROOT / filename).read_text(encoding="utf-8")
-        assert "--format svg" in text
-        assert "docs/user_guide/svg_output.md" in text
-
-
-def test_svg_paint_order_record_rejects_semantic_inference():
-    record = (
-        ARCHIVE / "milestone_history/49f_svg/svg_exact_paint_order_49f4a.md"
-    ).read_text(encoding="utf-8")
-    normalized = " ".join(record.split())
-
-    for value in (
-        "What is the object?",
-        "When is it drawn?",
-        "does not classify the object",
-        "must never be inferred to be a star",
-        "does not contain or reconstruct astronomical knowledge",
-        "Hierarchical grouping remains a later",
-    ):
-        assert value in normalized
-
-
-def test_svg_semantic_naming_ledger_records_designer_contract():
-    ledger = (
-        ARCHIVE / "milestone_history/49f_svg/svg_semantic_naming_ledger_49f5a.md"
-    ).read_text(encoding="utf-8")
-
-    for value in (
-        "unique among its siblings",
-        "does not repeat information",
-        "only when a designer can usefully style",
-        "Lines-Western",
-        "system agnostic",
-        "mag-minus-1",
-        "count does not change identity",
-        "unexpected generic editable Matplotlib objects",
-    ):
-        assert value in ledger
-
-
-def test_svg_cross_product_acceptance_records_all_products():
-    text = (
-        ARCHIVE / "milestone_history/49f_svg/svg_cross_product_acceptance_49f6.md"
-    ).read_text(encoding="utf-8")
-
-    for value in (
-        "Milestone 49F.6",
-        "all-sky",
-        "planisphere",
-        "regional",
-        "circumpolar",
-        "binocular",
-        "polar page, south",
-        "polar page, north",
-        "polar pouch",
-        "catalog_1636_283",
-        "Inkscape 1.4.4",
-        "1688 passed in 58.90s",
-    ):
-        assert value in text
-
-
-def test_temporal_sequence_contract_separates_physical_and_playback_time():
-    contract = (
-        ARCHIVE / "milestone_history/49g_temporal/temporal_sequence_contract_49g1.md"
-    ).read_text(encoding="utf-8")
-    roadmap = (
-        DEVELOPER / "post_v0.9_architecture_roadmap.md"
-    ).read_text(encoding="utf-8")
-    legacy = (
-        ARCHIVE / "roadmap_history/polar_delivery_and_astrometry_roadmap.md"
-    ).read_text(encoding="utf-8")
-    implementation = (
-        DEVELOPER / "implementation_reference.md"
-    ).read_text(encoding="utf-8")
-    source_tree = (
-        DEVELOPER / "source_tree.md"
-    ).read_text(encoding="utf-8")
-
-    for value in (
-        "TemporalTimeline",
-        "PlaybackSpec",
-        "simulation duration",
-        "Playback speed must never be interpreted as physical time",
-        "CelestialSphere.draw_chart()",
-        "29 passed in 3.42s",
-    ):
-        assert value in contract
-
-    assert "49G.1 immutable timeline and playback vocabulary" in roadmap
-    assert "does not compete" in legacy
-    assert "Temporal sequence vocabulary (Milestone 49G.1)" in implementation
-    assert "Temporal sequence modules (Milestone 49G.1)" in source_tree
-
-
-def test_observer_time_sequence_reserves_astrometric_epoch_ownership():
-    contract = (
-        ARCHIVE / "milestone_history/49g_temporal/observer_time_sequence_49g2.md"
-    ).read_text(encoding="utf-8")
-    timeline = (
-        ARCHIVE / "milestone_history/49g_temporal/temporal_sequence_contract_49g1.md"
-    ).read_text(encoding="utf-8")
-    roadmap = (
-        DEVELOPER / "post_v0.9_architecture_roadmap.md"
-    ).read_text(encoding="utf-8")
-    implementation = (
-        DEVELOPER / "implementation_reference.md"
-    ).read_text(encoding="utf-8")
-    source_tree = (
-        DEVELOPER / "source_tree.md"
-    ).read_text(encoding="utf-8")
-
-    for value in (
-        "ObserverTimeChartSequenceRequest",
-        "generate_observer_time_chart_sequence()",
-        "catalogue reference epoch",
-        "celestial realization epoch",
-        "provider evaluation instant",
-        "Gaia DR3 J2016.0 TCB",
-        "must not be forced into UTC datetimes",
-        "Real-render acceptance",
-        "894 Ã— 927",
-        "expected six-hour sky",
-        "permanent integration test",
-        "74 passed in 26.69s",
-        "1708 passed in 81.99s",
-    ):
-        assert value in contract
-
-    assert "Proper motion must not be expressed" in timeline
-    assert "49G.2 observer-time" in roadmap
-    assert "Observer-time chart sequence (Milestone 49G.2)" in implementation
-    assert "Observer-time sequence orchestration" in source_tree
-
-
-
-def test_sequence_manifest_documents_safe_restart_and_resume():
-    contract = (
-        ARCHIVE / "milestone_history/49g_temporal/sequence_manifest_49g3.md"
-    ).read_text(encoding="utf-8")
-    roadmap = (
-        DEVELOPER / "post_v0.9_architecture_roadmap.md"
-    ).read_text(encoding="utf-8")
-    implementation = (
-        DEVELOPER / "implementation_reference.md"
-    ).read_text(encoding="utf-8")
-    source_tree = (
-        DEVELOPER / "source_tree.md"
-    ).read_text(encoding="utf-8")
-
-    for value in (
-        "ObserverTimeSequenceManifest",
-        "SequenceRestartPolicy",
-        "restart_policy=\"restart\"",
-        "recorded filename, byte count, and SHA-256",
-        "incompatible manifest before rendering",
-        "real canonical PNG generation",
-        "CLI/configuration exposure is implemented downstream in Milestone 49G.4",
-        "real restart/resume acceptance complete",
-        "selective resume",
-        "82 passed in 27.29s",
-        "1721 passed in 83.03s",
-    ):
-        assert value in contract
-
-    assert "49G.3 deterministic manifest" in roadmap
-    assert "acceptance complete" in roadmap
-    assert "Deterministic sequence manifests (Milestone 49G.3)" in (
-        implementation
-    )
-    assert "Sequence manifest and resume (Milestone 49G.3)" in source_tree
-
-
-def test_temporal_sequence_cli_documents_shared_translation_and_acceptance():
-    contract = (
-        ARCHIVE / "milestone_history/49g_temporal/temporal_sequence_cli_49g4.md"
-    ).read_text(encoding="utf-8")
-    roadmap = (
-        DEVELOPER / "post_v0.9_architecture_roadmap.md"
-    ).read_text(encoding="utf-8")
-    implementation = (
-        DEVELOPER / "implementation_reference.md"
-    ).read_text(encoding="utf-8")
-    source_tree = (
-        DEVELOPER / "source_tree.md"
-    ).read_text(encoding="utf-8")
-    schema = (
-        DEVELOPER / "configuration_schema_v1.md"
-    ).read_text(encoding="utf-8")
-
-    for value in (
-        "49G.4",
-        "--sequence-stop",
-        "--sequence-frames",
-        "same immutable `ChartRequest`",
-        "complete translated effective configuration",
-        "eaf7f6d8cfbfb27376baf85bfb80613a86b67f0f0a40458961386299efac2f68",
-        "pixel-identical decoded RGBA",
-        "compressed PNG bytes differed",
-        "163 passed in 28.30s",
-        "1744 passed in 80.10s",
-    ):
-        assert value in contract
-
-    assert "49G.4 installed CLI" in roadmap
-    assert "implemented and accepted" in roadmap
-    assert "Temporal sequence CLI and configuration (Milestone 49G.4)" in (
-        implementation
-    )
-    assert "Temporal sequence CLI modules (Milestone 49G.4)" in source_tree
-
-    assert "### `sequence`" in schema
-    assert "playback_duration" in schema
-
-
-
-def test_49i2d2_records_accepted_drawable_venus_track():
-    contract = " ".join(read(DRAWABLE_VENUS_TRACK).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "Milestone 49I.2D.2 â€” Drawable Venus track",
-        "--planet-track venus",
-        "--track-tick-labels",
-        "exactly two possible anchors",
-        "two complete passes",
-        "amber orange",
-        "#FFB000",
-        "sky/solar_system/planets/venus/track",
-        "sixteen-week stress test",
-        "127 focused track, style, request, and command tests",
-        "1,924 routine tests with 30 deselected",
-        "all 1,955 tests",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.2D.2 â€” Drawable Venus track" in roadmap
-    assert "Accepted drawable Solar-System trajectory" in architecture
-    assert "Accepted drawable Venus track" in implementation
-    assert "solar_system_track_annotations.py" in source_tree
-    assert "13.2.20 49I.2D.2 drawable Venus track" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "drawable_venus_track_49i2d2.md" in instructions
-    assert "Scientifically, architecturally, and visually accepted" in contract
-
-
-def test_49i3a_audits_symbolic_and_resolved_solar_system_appearance():
-    contract = " ".join(read(PHYSICAL_APPARENT_DISK_AUDIT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `449a3c9`",
-        "**Symbolic representation.**",
-        "**Resolved representation.**",
-        "physical angular diameter",
-        "illuminated fraction",
-        "bright-limb position angle",
-        "body-axis orientation",
-        "apparent magnitude",
-        "display magnification",
-        "object-specific and opt-in",
-        "factor `1` means physical angular scale",
-        "regional and binocular charts",
-        "Planisphere and all-sky products retain symbolic representation",
-        "not merely a large scatter marker",
-        "49I.3B â€” Venus physical-appearance state",
-        "49I.3C â€” First resolved Venus disk",
-        "49I.3D â€” Symbolic photometry and planet glyphs",
-        "49I.3E â€” Moon physical-appearance state",
-        "49I.3F â€” First resolved Moon disk",
-        "changes no runtime type, public command, style, geometry, chart, or output",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3A â€” Physical apparent-disk contract audit" in roadmap
-    assert "Deferred physical Solar-System appearance" in architecture
-    assert "Accepted physical apparent-disk boundary" in implementation
-    assert "Milestone 49I.3A audit ownership" in source_tree
-    assert "13.2.21 49I.3A physical apparent-disk audit" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "physical_apparent_disk_audit_49i3a.md" in instructions
-    assert "Scientifically and architecturally accepted" in contract
-    assert "Initial acceptance verification passed all 58" in contract
-    assert "current-documentation tests passed in 1.95 seconds" in contract
-    assert "1,926 tests with 30 deselected in 28.95 seconds" in contract
-    assert "all 1,956 tests in 91.38 seconds" in contract
-    assert "does not pre-accept the future" in contract
-
-
-def test_49i3b_records_accepted_venus_physical_appearance_state():
-    contract = " ".join(read(VENUS_PHYSICAL_APPEARANCE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `217abbe`",
-        "`SolarSystemApparentDisk`",
-        "`SolarSystemAppearanceRealizer`",
-        "`6051.8 km`",
-        "Sunâ€“targetâ€“observer",
-        "`29.287846514361 arcsec`",
-        "`101.448595072558 deg`",
-        "`0.400755659841`",
-        "`295.354967208388 deg`",
-        "`185.355190511946 deg`",
-        "`1e-8 arcsec`",
-        "`1e-9 deg`",
-        "`1e-11`",
-        "all 9 deterministic appearance tests in 1.38 seconds",
-        "116 focused architectural tests in 4.73 seconds",
-        "1,936 routine tests with 30 deselected in 27.32 seconds",
-        "all 1,966 tests in 89.97 seconds",
-        "adds no disk geometry, chart layer, request option, style",
-        "49I.3C remains responsible",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3B â€” Venus physical-appearance state" in roadmap
-    assert "Accepted Venus physical-appearance state" in architecture
-    assert "Venus physical-appearance state" in implementation
-    assert "Milestone 49I.3B ownership" in source_tree
-    assert "13.2.22 49I.3B Venus physical-appearance state" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "venus_physical_appearance_49i3b.md" in instructions
-    assert "Scientifically and architecturally accepted" in contract
-
-
-def test_49i3c_audits_resolved_venus_disk_geometry():
-    contract = " ".join(read(RESOLVED_VENUS_DISK_AUDIT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `a9d8342`",
-        "Scientifically and architecturally accepted",
-        "illuminated-face `SphericalPolygons` layer",
-        "limb `SphericalCurves` layer",
-        "terminator `SphericalCurves` layer",
-        "`SphericalGrid` is deliberately curve-only",
-        "positive finite, object-specific display magnification",
-        "scales every projected vertex around the separately projected",
-        "factor of `1` means physical projected scale",
-        "Magnification alone must not silently enable a disk",
-        "Pre-projection sampling must be fine enough",
-        "regional and binocular",
-        "planisphere and all-sky",
-        "several requested instants in one chart",
-        "one fixed chart product frame",
-        "49I.3C.1 â€” Resolved Venus spherical geometry",
-        "49I.3C.2 â€” First drawable resolved Venus disk",
-        "49I.3C.3 â€” Multi-epoch resolved Venus disks",
-        "scatter-marker approximation",
-        "all 60 current-documentation tests in 1.80 seconds",
-        "all 60 documentation tests passed in 2.81 seconds",
-        "1,937 routine tests passed with 30 deselected in 28.40 seconds",
-        "all 1,967 tests passed in 89.14 seconds",
-        "Runtime geometry, command vocabulary",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C â€” Resolved Venus disk audit" in roadmap
-    assert "Accepted resolved Venus disk boundary" in architecture
-    assert "Accepted resolved Venus disk boundary" in implementation
-    assert "Milestone 49I.3C audit ownership" in source_tree
-    assert "13.2.23 49I.3C resolved Venus disk audit" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "resolved_venus_disk_audit_49i3c.md" in instructions
-    assert "Fernando accepted this boundary on 2026-08-31" in contract
-
-
-def test_49i3c1_records_accepted_venus_spherical_disk_geometry():
-    contract = " ".join(read(VENUS_DISK_SPHERICAL_GEOMETRY).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `a308ba2`",
-        "Scientifically and architecturally accepted",
-        "`SolarSystemDiskGeometry`",
-        "`SolarSystemDiskGeometryRealizer.geometry()`",
-        "`DEFAULT_SOLAR_SYSTEM_DISK_SAMPLES = 720`",
-        "orthographic spherical phase with radial angular-offset mapping",
-        "one-point `SphericalPoints` centre",
-        "one-curve closed `SphericalCurves` limb",
-        "one-curve open `SphericalCurves` terminator",
-        "one-polygon `SphericalPolygons` illuminated face",
-        "`14.643923257181 arcsec`",
-        "`9.799e-11 arcsec`",
-        "`0.000e+00 arcsec`",
-        "`-5.087e-06`",
-        "`-1.495e-10 deg`",
-        "`1e-7 arcsec`",
-        "`2e-5`",
-        "`1e-9 deg`",
-        "All 29 appearance and disk-geometry tests passed in 1.94 seconds",
-        "All 54 focused appearance, coordinate-service, and dependency-boundary tests passed in 4.80 seconds",
-        "all 61 current-documentation tests in 2.35 seconds",
-        "1,958 routine tests with 30 deselected in 27.07 seconds",
-        "all 1,988 tests in 89.21 seconds",
-        "adds no sky layer, chart request, display magnification",
-        "49I.3C.2",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.1 â€” Venus spherical disk geometry" in roadmap
-    assert "output-neutral physical centre" in architecture
-    assert "Venus spherical disk geometry" in implementation
-    assert "Milestone 49I.3C.1 ownership" in source_tree
-    assert "13.2.24 49I.3C.1 Venus spherical disk geometry" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "venus_disk_spherical_geometry_49i3c1.md" in instructions
-    assert "Fernando accepted the geometry model" in contract
-
-
-def test_49i3c2_records_accepted_drawable_venus_disk():
-    contract = " ".join(read(DRAWABLE_VENUS_DISK).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `da0e332`",
-        "Scientifically, architecturally, and visually accepted",
-        "`--planet-appearance venus=resolved`",
-        "`--planet-disk-magnification venus=FACTOR`",
-        "Factor `1` means physical angular scale",
-        "Magnification alone cannot enable a resolved disk",
-        "regional and binocular",
-        "Planisphere and all-sky products retain symbolic representation",
-        "`29.287846514361 arcsec`",
-        "`0.400755659841`",
-        "1.62710258413117",
-        "600-dpi Virgo rendering",
-        "171 closure-focused request, execution, style, semantic, and dependency tests passed in 5.75 seconds",
-        "1,970 routine tests passed with 30 deselected in 28.32 seconds",
-        "All 2,000 tests passed in 90.30 seconds",
-        "49I.3C.3",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.2 â€” First drawable resolved Venus disk" in roadmap
-    assert "Drawable resolved Venus disk" in architecture
-    assert "Drawable resolved Venus disk (Milestone 49I.3C.2)" in implementation
-    assert "Milestone 49I.3C.2 ownership" in source_tree
-    assert "13.2.25 49I.3C.2 first drawable resolved Venus disk" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "drawable_venus_disk_49i3c2.md" in instructions
-
-
-def test_49i3c3_audits_two_mode_planet_disk_sequences():
-    contract = " ".join(
-        read(
-            DEVELOPER / "archive/milestone_history/49i_solar_system/planet_disk_sequence_audit_49i3c3.md"
-        ).split()
-    )
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `6745403`",
-        "Scientifically and architecturally accepted",
-        "observed sequence",
-        "frozen-Earth ecliptic sequence",
-        "n_steps = 8",
-        "nine disk samples",
-        "There is no minor step",
-        "full physical distance with declared origin and unit",
-        "future 3D Solar-System visualizer",
-        "One common magnification",
-        "frozen-observer geometric direction",
-        "central six-point Sun",
-        "sky/solar_system/star/sun",
-        "--planet-disk-sequence venus",
-        "--disk-sequence-model observed|frozen-earth-ecliptic",
-        "49I.3C.3.1 â€” Observed multi-epoch Venus disks",
-        "49I.3C.3.2 â€” Frozen-Earth ecliptic Venus sequence",
-        "49I.3C.3.3 â€” Mercury generalization and validation",
-        "changes no runtime type, public command, geometry, style, chart",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.3 â€” Multi-epoch resolved planet-disk audit" in roadmap
-    assert "Accepted multi-epoch resolved planet-disk boundary" in architecture
-    assert "Accepted multi-epoch planet-disk sequence" in implementation
-    assert "Milestone 49I.3C.3 audit ownership" in source_tree
-    assert "13.2.26 49I.3C.3 multi-epoch resolved planet-disk audit" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "planet_disk_sequence_audit_49i3c3.md" in instructions
-
-    assert "Initial acceptance verification passed all 63" in contract
-    assert "current-documentation tests in 1.88 seconds" in contract
-    assert "1,971 routine tests with 30 deselected in 27.08 seconds" in contract
-    assert "all 2,001 tests in 85.97 seconds" in contract
-
-
-def test_49i3c31a_records_observed_venus_disk_sequence():
-    contract = " ".join(
-        read(
-            DEVELOPER / "archive/milestone_history/49i_solar_system/observed_venus_disk_sequence_49i3c31a.md"
-        ).split()
-    )
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `8a6cb0f`",
-        "Scientifically and architecturally accepted",
-        "`ObservedSolarSystemDiskSequenceRequest`",
-        "`ObservedSolarSystemDiskSequenceRealizer.sequence()`",
-        "`ObservedSolarSystemDiskSequence`",
-        "`n_steps = 8` produces nine exact sample instants",
-        "origin `observer` and unit `au`",
-        "future 3D Solar-System visualizer",
-        "`4.615e-10 deg`",
-        "`1.946e-10 deg`",
-        "`3.128e-12 AU`",
-        "`3.795e-10 arcsec`",
-        "`7.096e-10 deg`",
-        "`4.823e-12`",
-        "`4.301e-09 deg`",
-        "all 51 focused tests passed in 1.89 seconds",
-        "All 91 focused sequence",
-        "49I.3C.3.1B",
-        "adds no public command",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.3.1A" in roadmap
-    assert "Accepted output-neutral observed Venus disk sequence" in architecture
-    assert "Observed Venus disk sequence (Milestone 49I.3C.3.1A)" in implementation
-    assert "Milestone 49I.3C.3.1A ownership" in source_tree
-    assert "13.2.27 49I.3C.3.1A observed Venus disk sequence" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "observed_venus_disk_sequence_49i3c31a.md" in instructions
-    assert "all 64 current-documentation tests in 2.23 seconds" in contract
-    assert "1,985 tests with 30 deselected in 25.46 seconds" in contract
-    assert "all 2,015 tests in 84.38 seconds" in contract
-
-
-def test_49i3c31b_records_drawable_observed_venus_sequence():
-    contract = " ".join(read(DRAWABLE_OBSERVED_VENUS_SEQUENCE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `7fd2a6a`",
-        "Scientifically, architecturally, visually, and operationally accepted",
-        "`ObservedVenusDiskSequenceRealization`",
-        "`MagnifyProjectedDiskSequence`",
-        "one fixed product frame",
-        "observer/AU distances",
-        "`--planet-disk-sequence venus`",
-        "--disk-sequence-model observed",
-        "`--disk-sequence-labels`",
-        "`--planet-disk-magnification venus=FACTOR`",
-        "`--no-equatorial-grid`",
-        "`--grid-references ecliptic`",
-        "All 211 focused tests passed in 5.74 seconds",
-        "1,988 tests with 30 deselected in 25.91 seconds",
-        "all 2,018 tests in 85.27 seconds",
-        "Frozen-Earth ecliptic mode",
-        "Mercury",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.3.1B" in roadmap
-    assert "Drawable observed Venus disk sequence" in architecture
-    assert "Drawable observed Venus disk sequence (Milestone 49I.3C.3.1B)" in implementation
-    assert "Milestone 49I.3C.3.1B ownership" in source_tree
-    assert "13.2.28 49I.3C.3.1B drawable observed Venus sequence" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "drawable_observed_venus_sequence_49i3c31b.md" in instructions
-
-
-def test_49i3c32a_records_frozen_earth_venus_sequence_state():
-    contract = " ".join(read(FROZEN_EARTH_VENUS_SEQUENCE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `447e701`",
-        "Scientifically and architecturally accepted",
-        "`FrozenEarthDiskSequenceRequest`",
-        "`FrozenEarthDiskSequenceRealizer.sequence()`",
-        "`FrozenEarthGeometricDisk`",
-        "origin `frozen-earth` and unit `au`",
-        "fixed J2000 mean-ecliptic axes",
-        "future 3D Solar-System visualizer",
-        "not topocentric, astrometric, apparent",
-        "`4.337e-12 AU`",
-        "`1.968e-10 deg`",
-        "`2.064e-11 deg`",
-        "`1.274e-12 AU`",
-        "`1.627e-10 deg`",
-        "All 63 focused sequence",
-        "1,997 tests with 30 deselected in 26.69 seconds",
-        "all 2,027 tests in 84.73 seconds",
-        "49I.3C.3.2B",
-        "49I.3C.3.3",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.3.2A" in roadmap
-    assert "Accepted output-neutral frozen-Earth Venus sequence" in architecture
-    assert "Frozen-Earth Venus sequence state (Milestone 49I.3C.3.2A)" in implementation
-    assert "Milestone 49I.3C.3.2A ownership" in source_tree
-    assert "13.2.29 49I.3C.3.2A frozen-Earth Venus state" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "frozen_earth_venus_sequence_49i3c32a.md" in instructions
-    assert "All 66 current-documentation tests passed in 2.07 seconds" in contract
-
-
-def test_49i3c32b_records_drawable_frozen_earth_venus_sequence():
-    contract = " ".join(
-        read(DRAWABLE_FROZEN_EARTH_VENUS_SEQUENCE).split()
-    )
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `c30785c`",
-        "Scientifically, architecturally, visually, and operationally accepted",
-        "`FrozenEarthVenusDiskSequenceRealization`",
-        "fixed J2000 mean-ecliptic axes",
-        "product-frame latitude zero",
-        "neither reference passes through observer-dependent AltAz geometry",
-        "Secuencia de Venus desde una Tierra fija",
-        "31 independently realized disks",
-        "all 2,037 tests in 84.41 seconds",
-        "All 67 current-documentation tests passed",
-        "49I.3C.3.3",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.3.2B" in roadmap
-    assert "Drawable frozen-Earth Venus disk sequence" in architecture
-    assert (
-        "Drawable frozen-Earth Venus sequence (Milestone 49I.3C.3.2B)"
-        in implementation
-    )
-    assert "Milestone 49I.3C.3.2B ownership" in source_tree
-    assert (
-        "13.2.30 49I.3C.3.2B drawable frozen-Earth Venus sequence"
-        in guide
-    )
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert (
-        "drawable_frozen_earth_venus_sequence_49i3c32b.md"
-        in instructions
-    )
-
-
-def test_49i3c33_audits_mercury_generalization_and_validation():
-    audit = " ".join(read(MERCURY_DISK_SEQUENCE_AUDIT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**As-is baseline:** `3a713fb`",
-        "Scientifically and architecturally accepted",
-        "`2439.4 km`",
-        "equatorial radius `2440.53 km`",
-        "NAIF body code `199`",
-        "Mercury barycentre code `1`",
-        "actual `provider_target_id`",
-            "49I.3C.3.3B â€” Output-neutral Mercury state",
-            "49I.3C.3.3C â€” Drawable frozen-Earth Mercury sequence",
-        "`--planet-disk-sequence mercury`",
-        "sky/solar_system/planets/mercury/frozen_earth_sequence",
-        "does not authorize observed/topocentric Mercury sequences",
-        "changes no runtime type",
-        "all 68 current-documentation tests",
-        "Fernando scientifically and architecturally accepted",
-    ):
-        assert phrase in audit
-
-    assert "Milestone 49I.3C.3.3" in roadmap
-    assert "Mercury generalization audit boundary" in architecture
-    assert "Milestone 49I.3C.3.3 audit ownership" in source_tree
-    assert "13.2.31 49I.3C.3.3 Mercury generalization audit" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "mercury_disk_sequence_audit_49i3c33.md" in instructions
-
-
-def test_49i3c33a_records_descriptor_driven_moving_body_foundation():
-    contract = " ".join(read(MOVING_BODY_ARCHITECTURE).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-    for phrase in (
-        "SolarSystemBodyDescriptor",
-        "A planet does not contain its satellites",
-        "Capabilities, not classification",
-        "synthetic minor body",
-        "Mercury remains unregistered",
-        "does not add Mercury",
-        "all 2,045 tests in 86.49 seconds",
-        "Scientifically, architecturally, and visually accepted",
-        "three Venus compatibility renders",
-    ):
-        assert phrase in contract
-    assert "13.2.32 49I.3C.3.3A moving-body foundation" in guide
-    assert "Milestone 49I.3C.3.3A moving-body ownership" in source_tree
-    assert "moving_body_architecture_49i3c33a.md" in instructions
-
-
-def test_49i3c33c_proposes_descriptor_driven_drawable_mercury():
-    contract = " ".join(
-        read(DRAWABLE_FROZEN_EARTH_MERCURY_SEQUENCE).split()
-    )
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-    for phrase in (
-        "Scientifically, architecturally, visually, and operationally accepted",
-        "adds no Mercury-specific layer, factory, projection, preparation",
-        "`frozen_earth_disk_sequence` capability",
-        "`--disk-sequence-model observed`",
-        "`Mercury` and `Mercurio`",
-        "sky/solar_system/planets/mercury/frozen_earth_sequence",
-        "sky/solar_system/star/sun",
-        "`--planet-disk-sequence mercury`",
-        "`--disk-sequence-step 2d`",
-        "`--disk-sequence-n-steps 44`",
-        "PNG/PDF/SVG parity",
-        "all 2,052 tests in 89.90 seconds",
-        "same frozen-state realizer, disk-geometry realizer",
-    ):
-        assert phrase in contract
-    assert "Milestone 49I.3C.3.3C drawable frozen-Earth Mercury" in source_tree
-    assert "Milestone 49I.3C.3.3C â€” Drawable frozen-Earth Mercury" in roadmap
-    assert "drawable_frozen_earth_mercury_sequence_49i3c33c.md" in instructions
-
-
-def test_49i3d1_proposes_shared_apparent_major_planets():
-    contract = " ".join(read(APPARENT_MAJOR_PLANETS).split())
-    user_guide = " ".join(
-        read(ROOT / "docs/user_guide/configuration.md").split()
-    )
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-    for phrase in (
-        "DE440 validation passed; compact-glyph visual acceptance pending",
-        "Mercury, Venus, Mars, Jupiter, Saturn, Uranus, and Neptune",
-        "Earth is not a drawable apparent target",
-        "same apparent symbolic-point machinery",
-        "barycentre targets: Mars `4`, Jupiter `5`, Saturn `6`",
-        "physical planet IDs `499`, `599`, `699`, `799`, and `899`",
-        "`solar_system_objects` selection",
-        "sky/solar_system/planets/<planet>",
-        "`1e-7 deg` component tolerance",
-        "`--planet mercury,venus,mars,jupiter,saturn,uranus,neptune`",
-        "conventional astronomical symbol",
-        "accepted Venus cream `#FFE6A3`",
-        "corresponding `planisphere` render",
-        "only `ol1` produces the unnatural broad envelope",
-        "replace only explicitly supplied fields",
-        "`--mw-contour OL1[,OL2,...]|all`",
-        "single-feature GeoJSON file",
-    ):
-        assert phrase in contract
-    assert "Milestone 49I.3D.1 apparent major planets" in source_tree
-    assert "Milestone 49I.3D.1 â€” Apparent major-planet symbolic points" in roadmap
-    assert "apparent_major_planets_49i3d1.md" in instructions
-    for phrase in (
-        "## Planet symbols",
-        "`mercury` | Mercury | â˜¿",
-        "`venus` | Venus | â™€",
-        "`mars` | Mars | â™‚",
-        "`jupiter` | Jupiter | â™ƒ",
-        "`saturn` | Saturn | â™„",
-        "`uranus` | Uranus | â™…",
-        "`neptune` | Neptune | â™†",
-        "Earth is the observer's reference body",
-    ):
-        assert phrase in user_guide
-
-
-def test_49i3e0_audits_resolved_moon_science_and_generic_reuse():
-    audit = " ".join(read(RESOLVED_MOON_AUDIT).split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**As-is baseline:** `a8296f5`",
-        "**Status:** Scientifically and architecturally accepted",
-        "changes no runtime type",
-        "No runtime Moon behavior is authorized",
-        "`SolarSystemBodyDescriptor`",
-        "`natural_satellite`",
-        "physical body ID `301`",
-        "parent `earth`",
-        "equal-volume mean radius `1737.4 km`",
-        "quoted uncertainty `0.1 km`",
-        "Topocentric parallax is essential",
-        "`d = 2 asin(R / Delta)`",
-        "`k = (1 + cos(i)) / 2`",
-        "zero at celestial north and increases toward apparent east",
-        "`t_j = start + j * step`",
-        "`n_steps + 1` physical samples",
-        "one product coordinate specification and projection fixed at `t_c`",
-        "Transforming every spherical vertex",
-        "must not transform the scalar `chi_j`",
-        "--moon-appearance resolved|symbolic",
-        "--moon-disk-sequence",
-        "Only `observed` is accepted",
-        "`1 <= M_moon <= 1000`",
-        "display-only",
-        "unrelated to Wenu's `presentation` output mode",
-        "same rule applies in atlas and presentation modes",
-        "refuses downloads",
-        "`1e-7 deg`",
-        "sky/solar_system/natural_satellites/moon",
-        "all five chart-family enablement",
-        "changes no implemented coordinate transformation",
-        "frozen-Earth lunar sequences",
-        "Fernando scientifically and architecturally accepted this audit on 2026-09-02",
-        "acceptance authorizes only 49I.3E.1",
-    ):
-        assert phrase in audit
-
-    for phrase in (
-        "resolved_moon_audit_49i3e0.md",
-        "one fixed chart-epoch product frame",
-        "do not treat the scalar bright-limb angle as frame-invariant",
-        "Do not add runtime Moon behavior under 49I.3E.0",
-    ):
-        assert phrase in instructions
-
-
-def test_49i3e1_records_output_neutral_lunar_appearance():
-    contract = " ".join(read(LUNAR_PHYSICAL_APPEARANCE).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "Scientifically accepted and regression-verified; ready for integration",
-        "**Implementation baseline:** `86bbbf1`",
-        "NAIF physical body ID `301`",
-        "parent key `earth`",
-        "English `Moon` and Spanish `Luna`",
-        "equal-volume mean radius `1737.4 km`",
-        "`spherical_physical_appearance`",
-        "`EARTH_BODY`",
-        "NAIF body ID `399`",
-        "does not yet advertise `resolved_spherical_disk`",
-        "No lunar appearance class was added",
-        "topocentric retarded observerâ€“Moon distance",
-        "has no display magnification",
-        "refuses to download a missing kernel",
-        "`2e-7 deg`",
-        "`5e-12 au`",
-        "`5e-6 arcsec`",
-        "`1e-9`",
-        "revised envelope on 2026-09-02",
-        "independent margins rather than fitted",
-        "scientifically accepted the 49I.3E.1 numerical validation",
-        "`1.338e-07 deg`",
-        "`2.994e-06 arcsec`",
-        "`0.272607 deg`",
-        "All residuals satisfy the accepted envelope",
-        "73 documentation tests in `2.75 s`",
-        "124 focused tests in `8.36 s`",
-        "all 2,081 tests in `91.18 s`",
-        "nonzero geocentric/topocentric parallax",
-        "does not add disk geometry",
-    ):
-        assert phrase in contract
-
-    assert "Output-neutral lunar physical appearance" in architecture
-    assert "Milestone 49I.3E.1 â€” Output-neutral lunar" in roadmap
-    assert "Lunar physical-appearance state (Milestone 49I.3E.1)" in implementation
-    assert "Milestone 49I.3E.1 lunar appearance ownership" in source_tree
-    assert "13.2.33 49I.3E.1 lunar physical appearance" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "lunar_physical_appearance_49i3e1.md" in instructions
-
-
-def test_49i3e2_records_pending_drawable_resolved_moon_contract():
-    contract = " ".join(read(DRAWABLE_RESOLVED_MOON).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "Scientifically, architecturally, visually, operationally, and regression accepted",
-        "Supplying `--moon` now requests one resolved physical Moon by default",
-        "`--moon-appearance symbolic` preserves the earlier point",
-        "equal-volume mean radius `1737.4 km`",
-        "shared default of `720` samples",
-        "sky/solar_system/natural_satellites/moon/disk/illuminated",
-        "`regional`, `binocular`, `circumpolar`, `planisphere`, and `all_sky`",
-        "`1 <= M_moon <= 1000`",
-        "display-only",
-        "unrelated to Wenu's `presentation` output mode",
-        "There is no Moon-specific renderer",
-        "python tools/render_49i3e2_resolved_moon_review.py",
-        "equatorial coordinates center the binocular chart",
-        "horizontal coordinates center the regional chart",
-        "magnitude `11.0`",
-        "magnified Moon is present and legible in every family",
-        "69 focused Moon/display tests in 2.43 seconds",
-        "74 current-documentation tests in 3.19 seconds",
-        "2,074 routine tests with 30 deselected in 31.19 seconds",
-        "all 2,104 tests in 100.17 seconds",
-        "Milestone 49I.3E.3 multi-epoch Moon behavior remains unimplemented",
-    ):
-        assert phrase in contract
-
-    assert "Drawable resolved single-epoch Moon" in architecture
-    assert "Milestone 49I.3E.2 â€” Drawable resolved" in roadmap
-    assert "Drawable resolved Moon (Milestone 49I.3E.2)" in implementation
-    assert "Milestone 49I.3E.2 resolved single-Moon ownership" in source_tree
-    assert "13.2.34 49I.3E.2 drawable resolved Moon" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "drawable_resolved_moon_49i3e2.md" in instructions
-
-
-
-def test_49i3e3_records_observed_fixed_chart_moon_sequence():
-    contract = " ".join(read(OBSERVED_MOON_SEQUENCE).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-    user_guide = " ".join(
-        read(ROOT / "docs/user_guide/configuration.md").split()
-    )
-
-    for phrase in (
-        "Scientifically, architecturally, visually, operationally, and regression accepted",
-        "`--moon-disk-sequence`",
-        "--disk-sequence-model observed",
-        "`COUNT + 1` independently realized samples",
-        "one chart-epoch product frame",
-        "never treats the scalar bright-limb position angle as frame-invariant",
-        "regional, binocular, circumpolar, planisphere, and all-sky",
-        "sky/solar_system/natural_satellites/moon/disk_sequence",
-        "python tools/validate_49i3e3_observed_moon_sequence.py",
-        "`5.458e-08 deg`",
-        "`3.800e-12 au`",
-        "`1.193e-07 deg`",
-        "`0.196988 deg`",
-        "python tools/render_49i3e3_observed_moon_sequence_review.py",
-        "35 sequence, output-mode, and compatibility tests passed in 3.58 seconds",
-        "accepted all five chart-family sequences",
-        "75 current-documentation tests in 2.23 seconds",
-        "161 expanded focused tests in 5.73 seconds",
-        "2,088 routine tests with 30 deselected",
-        "all 2,118 tests in 88.61 seconds",
-        "Frozen-Earth",
-    ):
-        assert phrase in contract
-
-    assert "Observed multi-epoch Moon sequence" in architecture
-    assert "Milestone 49I.3E.3 â€” Observed fixed-chart Moon sequence" in roadmap
-    assert "Observed Moon disk sequence (Milestone 49I.3E.3)" in implementation
-    assert "Milestone 49I.3E.3 observed Moon sequence ownership" in source_tree
-    assert "13.2.35 49I.3E.3 observed Moon sequence" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "observed_moon_disk_sequence_49i3e3.md" in instructions
-    assert "## Resolved Moon and observed sequences" in user_guide
-
-
-def test_49i3e_parent_milestone_is_closed_without_new_runtime_scope():
-    plan = " ".join(read(RESOLVED_MOON_PLAN).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    assert "**Status:** Accepted and closed on 2026-09-02" in plan
-    for phrase in (
-        "49I.3E.0 through 49I.3E.3",
-        "PRs #70 through #73",
-        "`bc45cc0`",
-        "75 documentation tests",
-        "161 expanded focused tests",
-        "2,088 routine tests with 30 deselected",
-        "all 2,118 tests",
-        "Parent-closure verification passed 76 documentation tests in 9.55 seconds",
-        "2,089 routine tests with 30 deselected in 31.89 seconds",
-        "all 2,119 tests in 87.44 seconds",
-        "No additional runtime behavior is authorized by this parent closure",
-    ):
-        assert phrase in roadmap
-
-    assert "Completed resolved Moon capability (Milestone 49I.3E)" in architecture
-    assert "Resolved Moon integration closure (Milestone 49I.3E)" in implementation
-    assert "Milestone 49I.3E resolved Moon ownership closure" in source_tree
-    assert "13.2.36 49I.3E resolved Moon closure" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "Last updated:** `2026-09-02T23:59:30Z`" in guide
-    assert "resolved-Moon program 49I.3E.0 through 49I.3E.3 is closed" in instructions
-
-    for document in (plan, architecture, roadmap, implementation, source_tree, guide):
-        assert "Frozen-Earth lunar sequences" in document
-    assert "Frozen-Earth" in instructions
-
-
-def test_49j0_freezes_performance_measurement_before_optimization():
-    audit = " ".join(read(PERFORMANCE_CLOSURE_AUDIT).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-    guide = read(COORDINATE_GUIDE)
-
-    for phrase in (
-        "**Audit baseline:** `ea6f340`",
-        "**Status:** Architecturally accepted and regression-verified on 2026-09-02",
-        "**Runtime effect:** None",
-        "Fernando also selected conservative documentation cleanup",
-        "`docs/user_guide/` remains separate",
-        "76 passed",
-        "2,089 passed; 30 deselected",
-        "31.89 s",
-        "2,119 passed",
-        "87.44 s",
-        "about 6.3 percent",
-        "not the 49J independent-frame baseline",
-        "non-overlapping wall-time spans",
-        "`time.perf_counter_ns()`",
-        "Cold independent-frame oracle",
-        "Reusable-sphere comparison",
-        "Test-loop characterization",
-        "identical projected records",
-        "immutable key",
-        "49J.1 â€” Independent-frame benchmark harness",
-        "49J.2 â€” Routine-suite characterization and remediation",
-        "49J.3 â€” First scientifically keyed reuse",
-        "49J.4 â€” Post-v0.9 closure",
-        "49J.0 does not authorize",
-        "deletion or reclassification of tests",
-        "94 combined current-documentation and user-guide tests in 2.61 seconds",
-        "2,092 routine tests with 30 deselected in 37.88 seconds",
-        "all 2,122 tests in 93.31 seconds",
-        "49J.0 is ready for integration",
-    ):
-        assert phrase in audit
-
-    assert "Milestone 49J.0 â€” Performance and closure audit" in roadmap
-    assert "Every slice remains separately authorized" in roadmap
-    assert "Architecturally accepted and regression-verified" in roadmap
-    assert "all 2,122 tests" in roadmap
-    assert "Performance closure boundary (Milestone 49J)" in architecture
-    assert "Performance diagnostics and oracle (Milestone 49J.0)" in implementation
-    assert "Milestone 49J performance-program ownership" in source_tree
-    assert "performance_and_closure_audit_49j0.md" in instructions
-    assert "Do not add caching or optimization under 49J.0" in instructions
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "Last updated:** `2026-09-02T23:59:30Z`" in guide
-
-
-def test_developer_root_contains_only_active_authority_and_wip_documents():
-    assert {
-        path.name
-        for path in DEVELOPER.iterdir()
-        if path.is_file() and not path.name.startswith(".")
-    } == {
-        "README.md",
-        "assistant_instructions.md",
-        "configuration_schema_v1.md",
-        "coordinate_system_guide_v0.9.5.md",
-        "current_architecture_v0.9.md",
-        "implementation_reference.md",
-        "post_v0.9_architecture_roadmap.md",
-        "source_tree.md",
-        "target_architecture_v0.9.5.md",
-        "test_performance_and_future_program_49j_50.md",
-    }
-
-    archived = {
-        "archive/audits/coordinate_transformation_audit_09a2afd.md",
-        "archive/audits/public_interface_audit_v0.9.5.md",
-        "archive/migration_history/deprecations_v0.5.md",
-        "archive/roadmap_history/wenu_cli_feature_requests.md",
-        "archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md",
-        "archive/milestone_history/49e_ephemeris/ephemeris_provider_contract_49e1.md",
-        "archive/milestone_history/49i_solar_system/resolved_moon_plan_49i3e.md",
-        "archive/milestone_history/49i_solar_system/observed_moon_disk_sequence_49i3e3.md",
-        "archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md",
-        "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md",
-        "archive/milestone_history/49j_performance/test_practice_decisions_49j2.md",
-        "archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md",
-        "archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md",
-        "archive/milestone_history/49j_performance/repository_source_index_49j3c.md",
-        "archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md",
-        "archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md",
-        "archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md",
-        "archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md",
-        "archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md",
-        "archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md",
-    }
-    for relative in archived:
-        assert (DEVELOPER / relative).is_file()
-
-    archive_index = read(ARCHIVE / "README.md")
-    for folder in (
-        "49d_scene",
-        "49e_ephemeris",
-        "49i_solar_system",
-        "49j_performance",
-    ):
-        assert f"`milestone_history/{folder}/`" in archive_index
-
-
-def test_current_49j_50_program_records_research_decisions_and_order():
-    program = " ".join(read(TEST_PERFORMANCE_PROGRAM).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-
-    for phrase in (
-        "Adopt",
-        "Adapt",
-        "Reject",
-        "Defer",
-        "49J.1 â€” Test architecture and accepted-practice audit",
-        "49J.2 â€” Wenu test-practice decisions",
-        "49J.3 â€” Test-suite optimization",
-        "49J.4 â€” Cold chart and sequence performance baseline",
-        "49J.5 â€” First scientifically keyed chart reuse",
-        "49J.6 â€” Performance closure",
-        "Program 50A â€” Asteroids and comets",
-        "50B.0 â€” Accepted-practice review",
-        "50B.1 â€” Wenu publication-standard decisions",
-        "PDF/X",
-        "WCAG",
-        "printed star atlases",
-        "Screen PNG review is not sufficient",
-    ):
-        assert phrase in program
-
-    assert "49J.1 test architecture and accepted-practice audit" in roadmap
-    assert "Program 50A - Asteroids and comets" in roadmap
-    assert "Program 50B - Publication legibility" in roadmap
-
-
-def test_49j1_records_current_practice_static_evidence_and_pending_timings():
-    audit = " ".join(read(TEST_PRACTICE_AUDIT).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "**Audit baseline:** `d92f393`",
-        "**Runtime effect:** None",
-        "187 `test_*.py` modules",
-        "1,767 test-function definitions",
-        "2,123 test cases",
-        "16 declared fixtures",
-        "No class-, package-, or session-scoped fixture",
-        "no `tests/conftest.py`",
-        "127 parametrization decorators",
-        "Adopt",
-        "Adapt",
-        "Reject",
-        "Defer",
-        "pytest: How to use fixtures",
-        "pytest: Flaky tests",
-        "coverage.py: Dynamic contexts",
-        "ISO/IEC/IEEE 29119-1:2022",
-        "2,094",
-        "27.16 s",
-        "3.42 s",
-        "2,124",
-        "85.49 s",
-        "2.19 s",
-        "pytest_filter_subpackage",
-        "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1",
-        "--durations=50",
-        "No answer is adopted by this document",
-        "coordinate-system guide was reviewed",
-    ):
-        assert phrase in audit
-
-    assert "49J.1 is accepted and archived" in roadmap
-    assert "The committed suite has no session-scoped fixture" in source_tree
-
-
-def test_49j2_records_proposed_test_policy_and_duplication_control():
-    decisions = " ".join(read(TEST_PRACTICE_DECISIONS).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Status:** Accepted by Fernando on 2026-09-09; ready for integration",
-        "D4 â€” External pytest plugins: **Adopt**",
-        "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1",
-        "D6 â€” Reuse of expensive immutable setup: **Adapt**",
-        "D9 â€” Independent scientific recomputation: **Adopt**",
-        "D12 â€” New-test admission and duplication control: **Adopt**",
-        "does **not** automatically duplicate all lower-level tests",
-        "What fault would this test catch that existing tests would not?",
-        "D13 â€” Deleting or consolidating tests: **Adopt**",
-        "D20 â€” Parallel execution: **Defer**",
-        "D22 â€” Canonical observer-time sequence: **Reject** test removal",
-        "Each materially different implementation group",
-        "reviewed and accepted the ledger in five groups",
-    ):
-        assert phrase in decisions
-
-    assert "Fernando accepted 49J.2 on 2026-09-09" in roadmap
-    assert "Before adding a test" in instructions
-
-
-def test_49j3a_installs_reproducible_entry_and_new_test_admission_rules():
-    record = " ".join(read(TEST_ENTRY_ADMISSION).split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-
-    for phrase in (
-        "Reproducible test entry and admission rules (Milestone 49J.3A)",
-        "**Status:** Accepted and merged in `21ee528`",
-        "**Runtime effect:** None",
-        "**Test behavior effect:** None",
-        "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest",
-        "distinct contract or fault model",
-        "closest existing coverage",
-        "does not repeat all lower-level tests",
-        "cannot claim a performance improvement",
-        "coordinate-system guide was reviewed",
-        "83 current-documentation tests in 2.12 seconds",
-        "same 83 tests in 2.43 seconds",
-    ):
-        assert phrase in record
-
-    assert "Before adding a test" in instructions
-    assert "Which existing test is closest" in instructions
-    assert "Which marker and gate" in instructions
-    assert "Any required plugin must be explicitly loaded" in instructions
-    assert source_tree.count("PYTEST_DISABLE_PLUGIN_AUTOLOAD=1") >= 4
-    assert "49J.3A implemented only" in roadmap
-    assert "83 current-documentation tests in 2.43" in roadmap
-
-
-def test_49j3b_records_truthful_marker_scope_without_changing_assertions():
-    record = " ".join(read(MARKER_TRUTHFULNESS).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "Test-marker truthfulness (Milestone 49J.3B)",
-        "**Runtime effect:** None",
-        "**Test assertion and fixture effect:** None",
-        "Markers describe work and resources",
-        "does not by itself require `visual`",
-        "canonical observer-time sequence remains both `integration` and `slow`",
-        "calendar-label containment check remains both `visual` and `slow`",
-        "focused constants contract returns to the routine gate",
-        "2,103 routine cases with 24 deselected",
-        "21 integration cases, 3 visual cases, 2 slow cases",
-        "No committed pytest case requires an installed DE440 kernel",
-        "coordinate-system guide was reviewed",
-        "94 focused tests in 9.21 seconds",
-        "all 2,127 tests in 88.79 seconds",
-    ):
-        assert phrase in record
-
-    assert "49J.3B audited marker truthfulness" in roadmap
-    assert "2,103 routine tests with 24 deselected" in roadmap
-    assert "all 2,127 tests" in roadmap
-    assert "marker_truthfulness_49j3b.md" in architecture
-    assert "Marker corrections change gate membership only" in source_tree
-
-    planisphere = ast.parse(
-        read(ROOT / "tests/test_planisphere_composition.py")
-    )
-    cen_a = ast.parse(read(ROOT / "tests/test_cen_a_binocular.py"))
-
-    def marked_functions(tree, marker):
-        return {
-            node.name
-            for node in tree.body
-            if isinstance(node, ast.FunctionDef)
-            and any(
-                ast.unparse(decorator) == f"pytest.mark.{marker}"
-                for decorator in node.decorator_list
-            )
-        }
-
-    assert marked_functions(planisphere, "visual") == {
-        "test_planisphere_export_has_transparent_corner_and_opaque_center",
-        "test_default_planisphere_legends_are_outside_and_disjoint_from_axes",
-    }
-    assert marked_functions(cen_a, "integration") == {
-        "test_chart_is_centered_on_cen_a_and_is_square",
-        "test_circular_aperture_has_expected_projected_radius",
-    }
-
-
-def test_49j3c_records_complete_shared_source_index_and_retained_faults():
-    record = " ".join(read(REPOSITORY_SOURCE_INDEX).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "Repository source index (Milestone 49J.3C)",
-        "**Status:** Accepted and merged in `23d1b32`",
-        "changes no installed package",
-        "independent subprocess/import-isolation oracle",
-        "all Python paths below `src`, `tests`, `examples`, `tools`, and `example_scripts`",
-        "lazily caches its UTF-8 text and parsed AST",
-        "proves exact inventory equality",
-        "median 2.39 seconds",
-        "observed median improvement is 0.38 seconds, or about 9.1 percent",
-        "2,105 tests with 24 deselected",
-        "all 2,129 tests",
-        "median 89.59 seconds; range 1.29 seconds",
-        "three routine and three complete Mac runs",
-        "coordinate-system guide was reviewed",
-    ):
-        assert phrase in record
-
-    assert "49J.3C completed" in roadmap
-    assert "repository_source_index_49j3c.md" in architecture
-    assert "tests/repository_sources.py" in source_tree
-
-
-def test_49j3d_records_only_proved_immutable_catalogue_fixture_reuse():
-    record = " ".join(read(IMMUTABLE_CATALOGUE_FIXTURE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "Immutable catalogue fixture (Milestone 49J.3D)",
-        "**Status:** Accepted and merged in `63beb17`",
-        "canonical sphere is not eligible for session scope",
-        "No sphere/build registry is installed",
-        "nested `MappingProxyType` values",
-        "outer and inner mutation attempts",
-        "one assertion owns exact identifier presence and order",
-        "other owns north/south overlap counts",
-        "retains an independent cold canonical factory build",
-        "forward, reverse, and isolated execution",
-        "coordinate-system guide was reviewed",
-        "median 1.27 seconds",
-        "median 1.18 seconds",
-        "local diagnostic reduction of about 7 percent",
-        "exact missing identifier",
-        "about 9.4 percent",
-        "approximately 50-percent reduction",
-        "159 focused documentation, catalogue, geometry, and cold-factory tests",
-        "2,106 routine tests with 24 deselected",
-        "all 2,130 tests in 85.61 seconds",
-        "three distinct nodes",
-    ):
-        assert phrase in record
-
-    assert "49J.3D completed" in roadmap
-    assert "immutable_catalogue_fixture_49j3d.md" in architecture
-    assert "catalogue_positions" in source_tree
-
-
-def test_49j3e_preserves_cold_builders_and_independent_kernel_oracles():
-    record = " ".join(read(COLD_BUILDER_KERNEL_ORACLES).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "Cold builders and installed-kernel oracles (Milestone 49J.3E)",
-        "**Status:** Accepted and merged in `6db2272`",
-        "no new fixture, build registry, kernel cache, observer cache",
-        "independently recomputes its direct Skyfield comparison",
-        "Direction, light-time, apparent-place, parallax, physical appearance",
-        "commands run in separate processes",
-        "refuse an unavailable kernel instead of downloading one",
-        "Sharing an observer, requested time, direct Skyfield result",
-        "retains the independent cold ordinary factory",
-        "temporary horizon mutation and restoration",
-        "real independent observer-time frames",
-        "3.43 seconds for the cold ordinary factory",
-        "20.72 seconds for the real observer-time sequence",
-        "87 current-documentation tests in 2.54 seconds",
-        "2,107 routine tests with 24 deselected in 28.34 seconds",
-        "all 2,131 tests in 85.58 seconds",
-        "3.42 seconds for the ordinary canonical factory",
-        "21.27 seconds for the real observer-time sequence",
-        "evidence supports preservation rather than consolidation",
-        "No speedup is claimed",
-        "**Runtime effect:** None",
-        "**Test behavior effect:** None",
-        "coordinate-system guide was reviewed",
-    ):
-        assert phrase in record
-
-    assert "49J.3E completed" in roadmap
-    assert "cold_builder_kernel_oracles_49j3e.md" in architecture
-    assert "direct installed-kernel recomputation" in implementation
-    assert "independently recomputed installed-DE440" in source_tree
-
-
-def test_49j3f_removes_only_redundant_calendar_canvas_redraws():
-    record = " ".join(read(CALENDAR_LAYOUT_COST).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "Calendar layout cost (Milestone 49J.3F)",
-        "**Status:** Accepted and merged in `a190a09`",
-        "all 83 day and month labels",
-        "97.5 mm physical disk",
-        "83 redundant full-canvas redraws",
-        "`Text.get_window_extent(renderer=...)`",
-        "anchors, font metrics, tangential/outward extents",
-        "Median elapsed time fell from 6.77 to 1.88 seconds",
-        "median call time fell from 5.98 to 0.90 seconds",
-        "about 85 percent",
-        "outer corner of 106.64 mm",
-        "mutation was reverted before commit",
-        "median 15.27 seconds",
-        "median 3.14 seconds",
-        "79.4 percent in elapsed time",
-        "88.0 percent in call time",
-        "93 focused documentation and page-rendering tests",
-        "2,108 routine tests with 24 deselected",
-        "all 2,132 tests in 77.94 seconds",
-        "characterization evidence, not a threshold",
-        "**Runtime effect:** None",
-        "**Test behavior effect:** None",
-        "does not reduce dpi, sample labels",
-    ):
-        assert phrase in record
-
-    assert "49J.3F completed" in roadmap
-    assert "calendar_layout_cost_49j3f.md" in architecture
-    assert "redundant full-canvas redraws" in source_tree
-
-
-def test_49j3g_preserves_the_canonical_observer_time_sequence_oracle():
-    record = " ".join(read(OBSERVER_TIME_SEQUENCE_ORACLE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "Canonical observer-time sequence oracle (Milestone 49J.3G)",
-        "**Status:** Accepted and merged in `d7ba1d5`",
-        "retain the test unchanged",
-        "minimum scientifically meaningful sequence of two instants",
-        "`generate_observer_time_chart_sequence()`",
-        "`generate_chart_request()`",
-        "equal image dimensions, different image bytes",
-        "detect per-frame observer time errors",
-        "current complete route binds each sphere",
-        "would violate D22 directly",
-        "independent-frame timing harness in 49J.4",
-        "first fixed-sky reuse in 49J.5",
-        "isolated real canonical sequence in 24.69 seconds",
-        "22.90 seconds in the test call",
-        "101 tests in 25.30 seconds",
-        "2,109 tests with 24 deselected in 26.54 seconds",
-        "all 2,133 tests passed in 76.85 seconds",
-        "slowest test at 20.79 seconds",
-        "neither removed, mocked, nor hidden",
-        "No speedup is claimed",
-        "**Runtime effect:** None",
-        "**Test behavior effect:** None",
-        "does not optimize chart generation",
-    ):
-        assert phrase in record
-
-    assert "49J.3G completed" in roadmap
-    assert "observer_time_sequence_oracle_49j3g.md" in architecture
-    assert "cold two-frame canonical sequence" in implementation
-    assert "cold complete observer-time route" in source_tree
-
-
-def test_49j3h_closes_fault_models_and_governs_test_file_growth():
-    record = " ".join(read(TEST_SUITE_OPTIMIZATION_CLOSURE).split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-
-    for phrase in (
-        "Test-suite optimization closure (Milestone 49J.3H)",
-        "**Status:** Accepted and merged in `2c524d2`",
-        "188 `test_*.py` files",
-        "does not reorganize them retrospectively",
-        "Retained fault-model map",
-        "exact inventory coverage was added",
-        "a 40-point mutation still fails",
-        "Two real canonical frames",
-        "three fresh routine runs and three fresh complete runs",
-        "Timings remain characterization evidence, not enforced thresholds",
-        "90 current-documentation tests in 2.95 seconds",
-        "two consumers passed in reverse order in 1.67 seconds",
-        "each passed isolated in 1.72 seconds",
-        "2,110 tests with 24 deselected",
-        "median 27.06 seconds, range 1.01 seconds",
-        "all 2,134 tests",
-        "median 78.95 seconds, range 1.19 seconds",
-        "20.72, 21.35, and 20.43 seconds",
-        "did not hide the retained complete route",
-        "49J.4 may then add the independent cold chart/frame timing harness",
-        "first such optimization remains 49J.5",
-        "**Runtime effect:** None",
-        "**Test behavior effect:** None",
-    ):
-        assert phrase in record
-
-    for phrase in (
-        "Test-file placement and growth",
-        "existing file that owns the closest stable product responsibility",
-        "Do not create a test file merely for a milestone",
-        "Create a new test file only when",
-        "closest existing test file",
-        "Name test files for enduring responsibilities",
-        "review test-file count, new files added, complete-route duplication",
-        "Do not reorganize existing tests solely to reduce the number of files",
-    ):
-        assert phrase in instructions
-
-    assert "49J.3H completed" in roadmap
-    assert "test_suite_optimization_closure_49j3h.md" in architecture
-
-
-def test_49j4_defines_a_cold_exclusive_nonoptimizing_harness():
-    record = " ".join(read(COLD_FRAME_PERFORMANCE_BASELINE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "Cold independent-frame performance baseline (Milestone 49J.4)",
-        "**Status:** Accepted and merged in `f4dcf11`",
-        "adds no cache, performance threshold, alternate renderer",
-        "three accepted fixed-sky circumpolar frames",
-        "`generate_chart_request()` complete-render oracle",
-        "`tools/benchmark_reusable_sphere.py` remains a separate",
-        "`time.perf_counter_ns()`",
-        "deepest declared owner",
-        "`unclassified_residual`",
-        "equal `complete_frame` exactly",
-        "median, minimum, maximum, and range",
-        "Console progress advances from 0 to 100 percent",
-        "La Ligua and three UTC instants",
-        "SHA-256 digest, semantic paths, and projected record types",
-        "canonical catalogue load profile, and DE440s ephemeris identity",
-        "Three unit contracts were added to the existing fixed-sky baseline",
-        "49J.5 reuse work is authorized only through separately reviewed bounded slices",
-        "Python 3.11.7",
-        "zero-nanosecond accounting deltas",
-        "1677 by 1740 pixel dimensions",
-        "`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`",
-        "Median complete-frame time was 25.509 seconds",
-        "5.869-second range",
-        "8.447 catalogue/resource loading",
-        "6.661 provider evaluation",
-        "first-run-sensitive astronomical-transformation range",
-        "139 focused tests in 7.31 seconds",
-        "2,114 routine tests with 24 deselected in 28.03 seconds",
-        "all 2,138 tests in 79.21 seconds",
-        "slowest complete-suite test at 20.96 seconds",
-        "no timing threshold or optimization claim",
-        "**Runtime effect:** None outside explicit diagnostic execution",
-    ):
-        assert phrase in record
-
-    assert "49J.4 completed" in roadmap
-    assert "cold_frame_performance_baseline_49j4.md" in architecture
-    assert "raw exclusive `perf_counter_ns` observations" in implementation
-    assert "attributes every profiled interval to one exclusive" in source_tree
-
-
-def test_49j5a_defines_only_the_loaded_sphere_reuse_seam():
-    record = " ".join(read(LOADED_SPHERE_REUSE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "Loaded-sphere reuse seam (Milestone 49J.5A)",
-        "**Status:** Accepted and merged in `de78e14` through PR #88",
-        "`cold` remains the independent complete-render oracle",
-        "`reuse_loaded_sphere` loads one observer-independent canonical celestial sphere",
-        "fresh scientific observer to every canonical frame request",
-        "contains no bound observer",
-        "creates and closes an `Observer`",
-        "`generate_chart_request()` remains the complete static route",
-        "rejects an unbound sphere without an observer",
-        "canonical sphere build count",
-        "no milestone-named test file",
-        "did not itself claim performance improvement",
-        "49J.5B before 49J.5 was accepted as a whole",
-        "135 tests in 7.50 seconds",
-        "2,118 selected tests with 24 deselected in 27.92 seconds",
-        "all 2,142 tests in 79.04 seconds",
-        "slowest complete test at 20.84 seconds",
-        "final performance acceptance for 49J.5",
-        "default cold route is unchanged",
-    ):
-        assert phrase in record
-
-    assert "49J.5 is accepted" in roadmap
-    assert "archive/milestone_history/49j_performance/loaded_sphere_reuse_49j5a.md" in architecture
-    assert "FixedSkySequenceExecution.REUSE_LOADED_SPHERE" in implementation
-    assert "observer-independent loaded-sphere sequence policy" in source_tree
-
-
-def test_49j5b_defines_exact_reuse_equivalence_and_raw_measurement():
-    record = " ".join(read(FIXED_SKY_REUSE_EQUIVALENCE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-
-    for phrase in (
-        "Fixed-sky reuse equivalence (Milestone 49J.5B)",
-        "**Status:** Accepted and merged in `a028e89` through PR #89",
-        "same sequence orchestrator",
-        "not an installed interface or second executor",
-        "Raw sequence durations and ratios",
-        "no timing threshold",
-        "spherical and projected records",
-        "composition, clipping",
-        "PNG pixels in RGBA space",
-        "volatile marker and clip identifiers",
-        "Wenu semantic identifiers",
-        "`pdftoppm` at 150 DPI",
-        "fails closed",
-        "Cold remains the default",
-        "all three frames matched exactly",
-        "macOS-10.16-x86_64-i386-64bit",
-        "35.897 versus 25.267 seconds for PNG",
-        "Fernando also visually accepted the six paired PNG frames",
-        "Runtime effect:** None",
-    ):
-        assert phrase in record
-
-    assert "archive/milestone_history/49j_performance/fixed_sky_reuse_equivalence_49j5b.md" in roadmap
-    assert "archive/milestone_history/49j_performance/fixed_sky_reuse_equivalence_49j5b.md" in architecture
-    assert "tools/benchmark_fixed_sky_reuse.py" in source_tree
-
-
-def test_49j6_closes_performance_and_preserves_both_execution_routes():
-    record = " ".join(read(PERFORMANCE_CLOSURE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    instructions = " ".join(read(INSTRUCTIONS).split())
-    user_sequences = " ".join(
-        read(ROOT / "docs/user_guide/temporal_sequences.md").split()
-    )
-
-    for phrase in (
-        "Performance closure (Milestone 49J.6)",
-        "PR #88, merged as `de78e14`",
-        "`a028e8945f5f2903702adbc2cbd2a46e3bffff06`",
-        "Cold execution remains the default complete-render correctness oracle",
-        "one observer-independent loaded canonical celestial sphere",
-        "fresh `Observer`",
-        "macOS-10.16-x86_64-i386-64bit",
-        "normalized semantic SVG",
-        "macOS `sips` renderer",
-        "Fernando also visually accepted the six paired PNG frames",
-        "| PNG | 35.897 s | 25.267 s | 1.421x |",
-        "characterization evidence, not enforced performance thresholds",
-        "2,122 passed, 24 deselected in 33.24 seconds",
-        "24 passed, 2,122 deselected in 56.47 seconds",
-        "all 2,146 collected tests",
-        "No CLI example changes are required",
-        "No architecture-diagram change is required",
-        "Program 50A.0",
-        "**Runtime effect:** None",
-    ):
-        assert phrase in record
-
-    assert "49J.6 is accepted and archived" in roadmap
-    assert "49J is closed. Program 50A.0 is next" in roadmap
-    assert "performance_closure_49j6.md" in architecture
-    assert "performance_closure_49j6.md" in implementation
-    assert "performance_closure_49j6.md" in instructions
-    assert "changes no CLI default or output" in user_sequences
-
-
-def test_user_guide_documents_every_chart_family_with_runnable_examples():
-    index = " ".join(read(ROOT / "docs/user_guide/index.md").split())
-    examples = read(ROOT / "docs/user_guide/chart_examples.md")
-    configuration = read(ROOT / "docs/user_guide/configuration.md")
-    temporal = read(ROOT / "docs/user_guide/temporal_sequences.md")
-
-    assert "# Wenu v0.9.5 user guide" in index
-    assert "five ordinary chart families and six canonical example scripts" in index
-    assert "[runnable examples for every chart family](chart_examples.md)" in index
-
-    for heading, command in (
-        ("## Galactic all-sky map", "wenu_chart all-sky"),
-        ("## Visible-sky planisphere", "wenu_chart planisphere"),
-        ("## Regional chart", "wenu_chart regional"),
-        ("## Circumpolar chart", "wenu_chart circumpolar"),
-        ("## Binocular chart", "wenu_chart binocular"),
-    ):
-        assert heading in examples
-        assert command in examples
-
-    for script in (
-        "examples/all_sky.py",
-        "examples/planisphere.py",
-        "examples/regional_constellation.py",
-        "examples/regional_constellation_group.py",
-        "examples/circumpolar.py",
-        "examples/binocular_object.py",
-    ):
-        assert script in examples
-
-    assert "--field-diameter 7.5" in examples
-    assert "--magnitude-limit 11" in examples
-    assert "--moon --moon-disk-magnification 8" in examples
-    assert "[complete chart examples](chart_examples.md)" in configuration
-    assert "Observed Moon disks within one fixed chart are supported separately" in temporal
+YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éíç~:Õ:-jZ.¶›­–)Ş³nûğˆˆ‰ÕÉÉ•¹ĞÁÕ‰±¥Œµ‘½Õµ•¹Ñ…Ñ¥½¸…¹…É¡¥Ñ•ÑÕÉ”µ…ÕÑ¡½É¥Ñä½¹ÑÉ…ÑÌ¸ˆˆˆ()™É½´Á…Ñ¡±¥ˆ¥µÁ½ÉĞA…Ñ )¥µÁ½ÉĞ…ÍĞ)¥µÁ½ÉĞÉ”)¥µÁ½ÉĞÑ½µ±±¥ˆ(()I==P€ôA…Ñ ¡}}™¥±•}|¤¹É•Í½±Ù” ¤¹Á…É•¹ÑÍlÅt)Y1=AH€ôI==P€¼€‰‘½Ìˆ€¼€‰‘•Ù•±½Á•Èˆ)I!%Y€ôY1=AH€¼€‰…É¡¥Ù”ˆ)UII9P€ôI!%Y€¼€‰…É¡¥Ñ•ÑÕÉ•}¡¥ÍÑ½Éäˆ€¼€‰ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Ü¹µˆ)%5A159Q€ôI!%Y€¼€‰…É¡¥Ñ•ÑÕÉ•}¡¥ÍÑ½Éäˆ€¼€‰Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Ü¹µˆ)XÀá}UII9P€ôI!%Y€¼€‰…É¡¥Ñ•ÑÕÉ•}¡¥ÍÑ½Éä½ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸à¹µˆ)QIP€ôI!%Y€¼€‰…É¡¥Ñ•ÑÕÉ•}¡¥ÍÑ½Éä½Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸à¹µˆ)I=5@€ôI!%Y€¼€‰µ¥É…Ñ¥½¹}¡¥ÍÑ½Éä½İ•¹Õ}µ¥É…Ñ¥½¹|À¸İ}Ñ½|À¸à¹µˆ)XÀå}UII9P€ôY1=AH€¼€‰ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸ä¹µˆ)XÀå}QIP€ôI!%Y€¼€‰…É¡¥Ñ•ÑÕÉ•}¡¥ÍÑ½Éä½Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸ä¹µˆ)XÀå}I=5@€ôI!%Y€¼€‰µ¥É…Ñ¥½¹}¡¥ÍÑ½Éä½İ•¹Õ}µ¥É…Ñ¥½¹|À¸á}Ñ½|À¸ä¹µˆ)UQUI}I=5@€ôY1=AH€¼€‰Á½ÍÑ}ØÀ¸å}…É¡¥Ñ•ÑÕÉ•}É½…‘µ…À¹µˆ)XÀäÕ}QIP€ôY1=AH€¼€‰Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸ä¸Ô¹µˆ)==I%9Q}U%€ôY1=AH€¼€‰½½É‘¥¹…Ñ•}ÍåÍÑ•µ}Õ¥‘•}ØÀ¸ä¸Ô¹µˆ)AU	1%}%9QI}U%P€ôY1=AH€¼€‰…É¡¥Ù”½…Õ‘¥ÑÌ½ÁÕ‰±¥}¥¹Ñ•É™…•}…Õ‘¥Ñ}ØÀ¸ä¸Ô¹µˆ)M9}A99e}U%P€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå‘}Í•¹”½•±•ÍÑ¥…±}Í•¹•}‘•Á•¹‘•¹å}…Õ‘¥Ñ|ĞåÄ¹µˆ(¤)1eI}I1%iQ%=9}=9QIP€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå‘}Í•¹”½±…å•É}É•…±¥é…Ñ¥½¹}½¹Ñ•áÑ|ĞåÈ¹µˆ(¤)A!5I%M}AI=Y%I}=9QIP€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå•}•Á¡•µ•É¥Ì½•Á¡•µ•É¥Í}ÁÉ½Ù¥‘•É}½¹ÑÉ…Ñ|Ğå”Ä¹µˆ(¤)A!5I%M}IU9Q%5}=9QIP€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå•}•Á¡•µ•É¥Ì½•Á¡•µ•É¥Í}ÉÕ¹Ñ¥µ•}½¹ÑÉ…ÑÍ|Ğå”È¹µˆ(¤)M-e%1}A!5I%M}=9QIP€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå•}•Á¡•µ•É¥Ì½Í­å™¥•±‘}•Á¡•µ•É¥Í}…‘…ÁÑ•É|Ğå”Ì¹µˆ(¤)M=1I}MeMQ5}%IQ%=9}=9QIP€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå•}•Á¡•µ•É¥Ì½Í½±…É}ÍåÍÑ•µ}‘¥É•Ñ¥½¹}É•…±¥é•É|Ğå”Ğ¹µˆ(¤)MQI=5QI%}%IQ%=9}=9QIP€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå•}•Á¡•µ•É¥Ì½…ÍÑÉ½µ•ÑÉ¥}‘¥É•Ñ¥½¹}ÉÕ¹Ñ¥µ•|Ğå”Ô¹µˆ(¤)AAI9Q}%IQ%=9}=9QIP€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå•}•Á¡•µ•É¥Ì½…ÁÁ…É•¹Ñ}‘¥É•Ñ¥½¹}ÉÕ¹Ñ¥µ•|Ğå”Ø¹µˆ(¤)Y9UM}YIQ%1}M1%}U%P€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½Ù•¹ÕÍ}Ù•ÉÑ¥…±}Í±¥•}…Õ‘¥Ñ|Ğå¤Ä¹µˆ(¤)=I%9Ie}I1%iQ%=9}=9QaP€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½½É‘¥¹…Éå}É•…±¥é…Ñ¥½¹}½¹Ñ•áÑ|Ğå¤Å„¹µˆ(¤)Y9UM}1eI}=9QIP€ôY1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½Ù•¹ÕÍ}±…å•É|Ğå¤Åˆ¹µˆ)5==9}M!I}A%A1%9}U%P€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½µ½½¹}Í¡…É•‘}‰½‘å}Á¥Á•±¥¹•}…Õ‘¥Ñ|Ğå¤È¹µˆ(¤)5==9}%IQ%=9}Y1%Q%=8€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½µ½½¹}‘¥É•Ñ¥½¹}Ù…±¥‘…Ñ¥½¹|Ğå¤É„¹µˆ(¤)M!I}M=1I}MeMQ5}A=%9Q}1eH€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½Í¡…É•‘}Í½±…É}ÍåÍÑ•µ}Á½¥¹Ñ}±…å•É|Ğå¤Éˆ¹µˆ(¤)5==9}1eH€ôY1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½µ½½¹}±…å•É|Ğå¤ÉŒ¹µˆ)M=1I}MeMQ5}QI-}U%P€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½Í½±…É}ÍåÍÑ•µ}ÑÉ…­}…Õ‘¥Ñ|Ğå¤É¹µˆ(¤)M=1I}MeMQ5}QI-}UIY€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½Í½±…É}ÍåÍÑ•µ}ÑÉ…­}ÕÉÙ•|Ğå¤ÉÄ¹µˆ(¤)I]	1}Y9UM}QI,€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½‘É…İ…‰±•}Ù•¹ÕÍ}ÑÉ…­|Ğå¤ÉÈ¹µˆ(¤)A!eM%1}AAI9Q}%M-}U%P€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½Á¡åÍ¥…±}…ÁÁ…É•¹Ñ}‘¥Í­}…Õ‘¥Ñ|Ğå¤Í„¹µˆ(¤)Y9UM}A!eM%1}AAI9€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½Ù•¹ÕÍ}Á¡åÍ¥…±}…ÁÁ•…É…¹•|Ğå¤Íˆ¹µˆ(¤)IM=1Y}Y9UM}%M-}U%P€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½É•Í½±Ù•‘}Ù•¹ÕÍ}‘¥Í­}…Õ‘¥Ñ|Ğå¤ÍŒ¹µˆ(¤)Y9UM}%M-}MA!I%1}=5QId€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½Ù•¹ÕÍ}‘¥Í­}ÍÁ¡•É¥…±}•½µ•ÑÉå|Ğå¤ÍŒÄ¹µˆ(¤)I]	1}Y9UM}%M,€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½‘É…İ…‰±•}Ù•¹ÕÍ}‘¥Í­|Ğå¤ÍŒÈ¹µˆ(¤)I]	1}=	MIY}Y9UM}MEU9€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½‘É…İ…‰±•}½‰Í•ÉÙ•‘}Ù•¹ÕÍ}Í•ÅÕ•¹•|Ğå¤ÍŒÌÅˆ¹µˆ(¤)I=i9}IQ!}Y9UM}MEU9€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½™É½é•¹}•…ÉÑ¡}Ù•¹ÕÍ}Í•ÅÕ•¹•|Ğå¤ÍŒÌÉ„¹µˆ(¤)I]	1}I=i9}IQ!}Y9UM}MEU9€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½‘É…İ…‰±•}™É½é•¹}•…ÉÑ¡}Ù•¹ÕÍ}Í•ÅÕ•¹•|Ğå¤ÍŒÌÉˆ¹µˆ(¤)5IUIe}%M-}MEU9}U%P€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½µ•ÉÕÉå}‘¥Í­}Í•ÅÕ•¹•}…Õ‘¥Ñ|Ğå¤ÍŒÌÌ¹µˆ(¤)5=Y%9}	=e}I!%QQUI€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½µ½Ù¥¹}‰½‘å}…É¡¥Ñ•ÑÕÉ•|Ğå¤ÍŒÌÍ„¹µˆ(¤)I]	1}I=i9}IQ!}5IUIe}MEU9€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½‘É…İ…‰±•}™É½é•¹}•…ÉÑ¡}µ•ÉÕÉå}Í•ÅÕ•¹•|Ğå¤ÍŒÌÍŒ¹µˆ(¤)AAI9Q}5)=I}A19QL€ôY1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½…ÁÁ…É•¹Ñ}µ…©½É}Á±…¹•ÑÍ|Ğå¤ÍÄ¹µˆ)IM=1Y}5==9}A18€ôY1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½É•Í½±Ù•‘}µ½½¹}Á±…¹|Ğå¤Í”¹µˆ)IM=1Y}5==9}U%P€ôY1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½É•Í½±Ù•‘}µ½½¹}…Õ‘¥Ñ|Ğå¤Í”À¹µˆ)1U9I}A!eM%1}AAI9€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½±Õ¹…É}Á¡åÍ¥…±}…ÁÁ•…É…¹•|Ğå¤Í”Ä¹µˆ(¤)I]	1}IM=1Y}5==8€ôY1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½‘É…İ…‰±•}É•Í½±Ù•‘}µ½½¹|Ğå¤Í”È¹µˆ)=	MIY}5==9}MEU9€ôY1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå¥}Í½±…É}ÍåÍÑ•´½½‰Í•ÉÙ•‘}µ½½¹}‘¥Í­}Í•ÅÕ•¹•|Ğå¤Í”Ì¹µˆ)AI=I59}1=MUI}U%P€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½Á•É™½Éµ…¹•}…¹‘}±½ÍÕÉ•}…Õ‘¥Ñ|Ğå¨À¹µˆ(¤)QMQ}AI=I59}AI=I4€ô€ (€€€Y1=AH€¼€‰Ñ•ÍÑ}Á•É™½Éµ…¹•}…¹‘}™ÕÑÕÉ•}ÁÉ½É…µ|Ğå©|ÔÀ¹µˆ(¤)5%9=I}	=e}AI=Y%I}U%P€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼ÔÁ…}µ¥¹½É}‰½‘¥•Ì½µ¥¹½É}‰½‘å}Í¥•¹Ñ¥™¥}ÁÉ½Ù¥‘•É}…Õ‘¥Ñ|ÔÁ„À¹µˆ(¤)QMQ}AIQ%}U%P€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½Ñ•ÍÑ}…É¡¥Ñ•ÑÕÉ•}…¹‘}…•ÁÑ•‘}ÁÉ…Ñ¥•}…Õ‘¥Ñ|Ğå¨Ä¹µˆ(¤)QMQ}AIQ%}%M%=9L€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½Ñ•ÍÑ}ÁÉ…Ñ¥•}‘•¥Í¥½¹Í|Ğå¨È¹µˆ(¤)QMQ}9QIe}5%MM%=8€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½Ñ•ÍÑ}•¹ÑÉå}…¹‘}…‘µ¥ÍÍ¥½¹|Ğå¨Í„¹µˆ(¤)5I-I}QIUQ!U19ML€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½µ…É­•É}ÑÉÕÑ¡™Õ±¹•ÍÍ|Ğå¨Íˆ¹µˆ(¤)IA=M%Q=Ie}M=UI}%9`€ô€ (€€€Y1=AH€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½É•Á½Í¥Ñ½Éå}Í½ÕÉ•}¥¹‘•á|Ğå¨ÍŒ¹µˆ(¤)%55UQ	1}Q1=U}%aQUI€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½¥µµÕÑ…‰±•}…Ñ…±½Õ•}™¥áÑÕÉ•|Ğå¨Í¹µˆ(¤)=1}	U%1I}-I91}=I1L€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½½±‘}‰Õ¥±‘•É}­•É¹•±}½É…±•Í|Ğå¨Í”¹µˆ(¤)19I}1e=UQ}=MP€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½…±•¹‘…É}±…å½ÕÑ}½ÍÑ|Ğå¨Í˜¹µˆ(¤)=	MIYI}Q%5}MEU9}=I1€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½½‰Í•ÉÙ•É}Ñ¥µ•}Í•ÅÕ•¹•}½É…±•|Ğå¨Íœ¹µˆ(¤)QMQ}MU%Q}=AQ%5%iQ%=9}1=MUI€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½Ñ•ÍÑ}ÍÕ¥Ñ•}½ÁÑ¥µ¥é…Ñ¥½¹}±½ÍÕÉ•|Ğå¨Í ¹µˆ(¤)=1}I5}AI=I59}	M1%9€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½½±‘}™É…µ•}Á•É™½Éµ…¹•}‰…Í•±¥¹•|Ğå¨Ğ¹µˆ(¤)1=}MA!I}IUM€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½±½…‘•‘}ÍÁ¡•É•}É•ÕÍ•|Ğå¨Õ„¹µˆ(¤)%a}M-e}IUM}EU%Y19€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½™¥á•‘}Í­å}É•ÕÍ•}•ÅÕ¥Ù…±•¹•|Ğå¨Õˆ¹µˆ(¤)AI=I59}1=MUI€ô€ (€€€Y1=AH(€€€€¼€‰…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ğå©}Á•É™½Éµ…¹”½Á•É™½Éµ…¹•}±½ÍÕÉ•|Ğå¨Ø¹µˆ(¤)%9MQIUQ%=9L€ôY1=AH€¼€‰…ÍÍ¥ÍÑ…¹Ñ}¥¹ÍÑÉÕÑ¥½¹Ì¹µˆ)=9%UIQ%=9}U%P€ôI!%Y€¼€‰…Õ‘¥ÑÌ½½¹™¥ÕÉ…Ñ¥½¹}‘•™…Õ±Ñ}…Õ‘¥Ğ¹µˆ)=9%UIQ%=9}M!5€ôY1=AH€¼€‰½¹™¥ÕÉ…Ñ¥½¹}Í¡•µ…}ØÄ¹µˆ)%I5L€ôY1=AH€¼€‰‘¥…É…µÌˆ)AU	1%}=U59QL€ô€ (€€€I==P€¼€‰I5¹µˆ°(€€€I==P€¼€‰I5¹•Ì¹µˆ°(€€€Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ°(€€€Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ°(€€€€©Í½ÉÑ• ¡I==P€¼€‰‘½Ìˆ€¼€‰ÕÍ•É}Õ¥‘”ˆ¤¹±½ˆ ˆ¨¹µˆ¤¤°(¤)=	M=1Q}%5A=IQL€ô€ (€€€€‰İ•¹Ô¹ÍÁ¡•É¥…°ˆ°(€€€€‰İ•¹Ô¹ÁÉ½©•Ñ•ˆ°(€€€€‰İ•¹Ô¹ÍÁ¡•É¥…±}™É…µ”ˆ°(€€€€‰İ•¹Ô¹±¥ÁÁ¥¹œˆ°(€€€€‰İ•¹Ô¹Ù¥•İÁ½ÉĞˆ°(€€€€‰İ•¹Ô¹ÁÉ½©•Ñ¥½¸ˆ°(€€€€‰İ•¹Ô¹¡…ÉĞˆ°(€€€€‰İ•¹Ô¹É•¥½¹…°ˆ°(€€€€‰İ•¹Ô¹ÍÑå±•Ìˆ°(€€€€‰İ•¹Ô¹É•¹‘•É•ÉÌˆ°(¤(()‘•˜É•…¡Á…Ñ ¤è(€€€É•ÑÕÉ¸Á…Ñ ¹É•…‘}Ñ•áĞ¡•¹½‘¥¹œô‰ÕÑ˜´àˆ¤(()‘•˜Ñ•ÍÑ|Ğå”Ñ}…Õ‘¥ÑÍ}Ñ¡•}½‰Í•ÉÙ•É}É•±…Ñ¥Ù•}‘¥É•Ñ¥½¹}‰½Õ¹‘…Éä ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡M=1I}MeMQ5}%IQ%=9}=9QIP¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©Ìµ¥Ì‰…Í•±¥¹”è¨¨€ØĞÑ‰…Œİ€ˆ°(€€€€€€€€‰…ÍÑÉ½µ•ÑÉ¥ŒY•¹ÕÌ‘¥É•Ñ¥½¸ˆ°(€€€€€€€€‰½‰Í•ÉÙ•ÈÍÑ…Ñ”…ĞÉ••ÁÑ¥½¸ˆ°(€€€€€€€€‰Ñ…É•ĞÍÑ…Ñ”…ĞÉ•Ñ…É‘••µ¥ÍÍ¥½¸Ñ¥µ”ˆ°(€€€€€€€€‰½¹”µİ…ä±¥¡ĞÑ¥µ”ˆ°(€€€€€€€€‰¥ÍÑ…¹”…¹Ñ¥µ¥¹œ‘…Ñ„ˆ°(€€€€€€€€‰Q¡”½‰Í•ÉÙ•È¥Ì¹½ĞÍå¹½¹åµ½ÕÌİ¥Ñ …ÉÑ ˆ°(€€€€€€€€‰ÍÑÉ½µ•ÑÉ¥Œ…¹…ÁÁ…É•¹Ğ…É”Í•Á…É…Ñ”ÍÑ…ÑÕÍ•Ìˆ°(€€€€€€€€‰™É…µ”õp‰¥ÉÍp‰€ˆ°(€€€€€€€€‰•Á½¡€É•µ…¥¹Ì…‰Í•¹Ğˆ°(€€€€€€€€‰•ÅÕ¥¹½á€É•µ…¥¹Ì…‰Í•¹Ğˆ°(€€€€€€€€ˆĞå¸ÔƒŠPÍÑÉ½µ•ÑÉ¥Œ‘¥É•Ñ¥½¸ÉÕ¹Ñ¥µ”ˆ°(€€€€€€€€ˆĞå¸ØƒŠPÁÁ…É•¹Ğ‘¥É•Ñ¥½¸ÉÕ¹Ñ¥µ”ˆ°(€€€€€€€€ˆĞå$¸ÄƒŠPY•¹ÕÌÙ•ÉÑ¥…°Í±¥”ˆ°(€€€€€€€€‰9¼™ÕÑÕÉ”MÕ¸°5½½¸°½ÈÁ±…¹•Ğˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå¸ĞƒŠPM½±…ÈµMåÍÑ•´‘¥É•Ñ¥½¸µÉ•…±¥é•È…Õ‘¥Ğˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€ˆĞå¸Ğ¡…¹•Ì¹¼ÉÕ¹Ñ¥µ”ÑåÁ”½È½ÕÑÁÕĞˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰Q¡”…•ÁÑ•€Ğå¸Ğ…Õ‘¥Ğˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸à€Ğå¸Ğ½‰Í•ÉÙ•ÈµÉ•±…Ñ¥Ù”‘¥É•Ñ¥½¸…Õ‘¥Ğˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰M­å™¥•±Ì½‰Í•ÉÙ” ¥€½ÉÉ•ÍÁ½¹‘ÌÑ¼Ñ¡”…ÍÑÉ½µ•ÑÉ¥Œˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰É••ÁÑ¥½¸¥¹ÍÑ…¹Ğ¥Ì¹•¥Ñ¡•È„Á½Í¥Ñ¥½¸É•™•É•¹”•Á½ ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€ˆĞå¸ĞÍ¥•¹Ñ¥™¥Œ…•ÁÑ…¹”ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰±°€ĞÔÕÉÉ•¹Ğµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌÁ…ÍÍ•¥¸€È¸ÀÌÍ•½¹‘Ìˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€ˆĞÔÕÉÉ•¹Ğµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌ¥¸€È¸ÀÌˆ¥¸½¹ÑÉ…Ğ(()‘•˜Ñ•ÍÑ|Ğå”Õ}É•½É‘Í}…ÍÑÉ½µ•ÑÉ¥}ÉÕ¹Ñ¥µ•}…¹‘}½ÕÑÁÕÑ}‰½Õ¹‘…Éä ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡MQI=5QI%}%IQ%=9}=9QIP¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©%µÁ±•µ•¹Ñ…Ñ¥½¸‰…Í•±¥¹”è¨¨€ààá„É€ˆ°(€€€€€€€€‰=‰Í•ÉÙ•É	…Éå•¹ÑÉ¥MÑ…Ñ”ˆ°(€€€€€€€€‰ÍÑÉ½µ•ÑÉ¥¥É•Ñ¥½¹I•ÅÕ•ÍĞˆ°(€€€€€€€€‰ÍÑÉ½µ•ÑÉ¥¥É•Ñ¥½¸ˆ°(€€€€€€€€‰ÍÑÉ½µ•ÑÉ¥¥É•Ñ¥½¹I•…±¥é•Èˆ°(€€€€€€€€‰…ÉÑ µÁ±ÕÌµ]LàĞµÍ¥Ñ”ˆ°(€€€€€€€€‰Í…µ”=‰Í•ÉÙ•È¹•Á¡•µ•É¥Í€½‰©•Ğˆ°(€€€€€€€€‰½‰Í•ÉÙ•ÈÍÑ…Ñ”¥Ì•Ù…±Õ…Ñ••á…Ñ±ä½¹”…ĞÉ••ÁÑ¥½¸ˆ°(€€€€€€€€‰Ñ…É•Ğ¥Ì•Ù…±Õ…Ñ•É•Á•…Ñ•‘±ä…Ğ•µ¥ÍÍ¥½¸Ñ¥µ•Ìˆ°(€€€€€€€€‰‘•™…Õ±Ğ¥Ì€Å”´ÄÉ€‘…äİ¥Ñ …Ğµ½ÍĞ€ÄÀ¥Ñ•É…Ñ¥½¹Ìˆ°(€€€€€€€€‰¹…¹½Í•½¹‘•¥µ…°ÁÉ•¥Í¥½¸ˆ°(€€€€€€€€‰ÍÑÉ½µ•ÑÉ¥¥É•Ñ¥½¹½¹Ù•É•¹•ÉÉ½Èˆ°(€€€€€€€€‰ÍÑÉ½µ•ÑÉ¥¥É•Ñ¥½¹%‘•¹Ñ¥ÑåÉÉ½Èˆ°(€€€€€€€€‰¹½ĞÁ½Í¥Ñ¥½¸É•™•É•¹”•Á½¡Ì…¹¹½Ğ•ÅÕ¥¹½á•Ìˆ°(€€€€€€€€‰½¹”µİ…äµ±¥¡ĞµÑ¥µ”ˆ°(€€€€€€€€‰‘¥É•ĞM­å™¥•±½‰Í•ÉÙ” ¥€ˆ°(€€€€€€€€‰9¼™ÕÑÕÉ”Y•¹ÕÌ°5½½¸°MÕ¸°½ÈÁ±…¹•Ğˆ°(€€€€€€€€‰ÁÁ…É•¹ĞµÁ±…”É•…±¥é…Ñ¥½¸É•µ…¥¹Ì€Ğå¸Øˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå¸ÔƒŠPÍÑÉ½µ•ÑÉ¥Œ‘¥É•Ñ¥½¸ÉÕ¹Ñ¥µ”ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰Q¡”…•ÁÑ•€Ğå¸Ô¥µÁ±•µ•¹Ñ…Ñ¥½¸ˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸ä€Ğå¸Ô…ÍÑÉ½µ•ÑÉ¥Œ‘¥É•Ñ¥½¸ÉÕ¹Ñ¥µ”ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰9•¥Ñ¡•È¥Ì„Á½Í¥Ñ¥½¸É•™•É•¹”•Á½ ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰¹•¥Ñ¡•È¥Ì…¸•ÅÕ¥¹½àˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€ˆĞå¸ÔÍ¥•¹Ñ¥™¥Œ…•ÁÑ…¹”ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰½¹Ù•É•¥¸™½ÕÈ¥Ñ•É…Ñ¥½¹Ìˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€‰€Ì¸ÄĞå”´ÄÅ€‘•É•”ˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€‰€Ä¸ÌĞá”´ÄÉ€Tˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€ˆÄÄÄ™½ÕÍ•Ñ•ÍÑÌ¥¸€Ğ¸ÌÌÍ•½¹‘Ìˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€‰…±°€Ä°àÜàÑ•ÍÑÌ¥¸€àÔ¸ÔÔÍ•½¹‘Ìˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€‰ÍÑÉ½µ•ÑÉ¥Œ‘¥É•Ñ¥½¸ÉÕ¹Ñ¥µ”€¡5¥±•ÍÑ½¹”€Ğå¸Ô¤ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰Í…µ”µ­•É¹•°M­å™¥•±½‰Í•ÉÙ•ÈµÍÑ…Ñ”…‘…ÁÑ•Èˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€‰M½±…ÈµMåÍÑ•´‘¥É•Ñ¥½¸µÉ•…±¥é•È…Õ‘¥Ğˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰‘½Õµ•¹Ñ…Ñ¥½¸µ½¹±äè¹¼ÉÕ¹Ñ¥µ”É•…±¥é•Èˆ¥¸Í½ÕÉ•}ÑÉ•”(()‘•˜Ñ•ÍÑ|Ğå”Ù}É•½É‘Í}…ÁÁ…É•¹Ñ}ÉÕ¹Ñ¥µ•}…¹‘}Í¥¹±•}±¥¡Ñ}Ñ¥µ•}…ÕÑ¡½É¥Ñä ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡AAI9Q}%IQ%=9}=9QIP¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©%µÁ±•µ•¹Ñ…Ñ¥½¸‰…Í•±¥¹”è¨¨€ÌÜÔÈÄĞÉ€ˆ°(€€€€€€€€‰‘½•Ì¹½ĞÍ½±Ù”±¥¡ĞÑ¥µ”……¥¸ˆ°(€€€€€€€€‰…±±ÌM­å™¥•±…ÁÁ…É•¹Ğ ¥ƒŠQ¹•Ù•È½‰Í•ÉÙ” ¥€ˆ°(€€€€€€€€‰MÕ¸°)ÕÁ¥Ñ•È°…¹M…ÑÕÉ¸ˆ°(€€€€€€€€‰…ÁÁ…É•¹ĞÍÑ…ÑÕÌ‘½•Ì¹½Ğµ•…¸ƒŠq•ÅÕ¥¹½à½˜‘…Ñ—Štˆ°(€€€€€€€€‰É•±…Ñ¥Ù”Ù•±½¥Ñä¥¸T½‘…äˆ°(€€€€€€€€‰Í¡…É•A9½A½MY•áÁ½ÉÑ•Èˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå¸ØƒŠPÁÁ…É•¹Ğ‘¥É•Ñ¥½¸ÉÕ¹Ñ¥µ”ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰Q¡”…•ÁÑ•€Ğå¸Ø¥µÁ±•µ•¹Ñ…Ñ¥½¸ˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸ÄÀ€Ğå¸Ø…ÁÁ…É•¹Ğ‘¥É•Ñ¥½¸ÉÕ¹Ñ¥µ”ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰ÁÁ…É•¹Ğ‘¥É•Ñ¥½¸ÉÕ¹Ñ¥µ”€¡5¥±•ÍÑ½¹”€Ğå¸Ø¤ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰İ¥Ñ¡½ÕĞ„Í•½¹½‰Í•ÉÙ” ¥€…±°ˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€‰Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰M¥•¹Ñ¥™¥…±±ä…•ÁÑ•‰ä•É¹…¹‘¼½¸€ÈÀÈØ´Àà´ÌÀˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€‰€´Ì¸ÄÔÉ”´ÄÅ€‘•É•”ˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€ˆäÔ™½ÕÍ•Ñ•ÍÑÌ¥¸€Ì¸ÜäÍ•½¹‘Ìˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€‰…±°€Ä°ààÌÑ•ÍÑÌ¥¸€äÄ¸ÈÄÍ•½¹‘Ìˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€ˆĞå¸ØÍ¥•¹Ñ¥™¥Œ…•ÁÑ…¹”ˆ¥¸Õ¥‘”(()‘•˜Ñ•ÍÑ|Ğå¤Å}…Õ‘¥ÑÍ}Ñ¡•}™¥ÉÍÑ}‘É…İ…‰±•}Ù•¹ÕÍ}Ù•ÉÑ¥…±}Í±¥” ¤è(€€€…Õ‘¥Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y9UM}YIQ%1}M1%}U%P¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©Ìµ¥Ì‰…Í•±¥¹”è¨¨€Äİ˜ÕŒÄÁ€ˆ°(€€€€€€€€‰=É‘¥¹…Éä¡…ÉĞ™……‘•Ì°¡½İ•Ù•È°‘¼¹½Ğ½¹ÍÑÉÕĞˆ°(€€€€€€€€ˆĞå$¸ÅƒŠP=É‘¥¹…ÉäÉ•…±¥é…Ñ¥½¸µ½¹Ñ•áĞ¡…¹‘½™˜ˆ°(€€€€€€€€ˆĞå$¸ÅƒŠP=¹”Y•¹ÕÌ±…å•Èˆ°(€€€€€€€€‰ÑÉ…¹Í™½É´Ñ¡”É•ÍÕ±Ñ¥¹œMÁ¡•É¥…±A½¥¹ÑÍ€•á…Ñ±ä½¹”ˆ°(€€€€€€€€‰Í­ä½Í½±…É}ÍåÍÑ•´½Á±…¹•ÑÌ½Ù•¹ÕÌˆ°(€€€€€€€€‰µÕÍĞ¹½Ğ¥µÁ±•µ•¹Ğ„Í•½¹…±Ñ¥ÑÕ‘”Ñ•ÍĞˆ°(€€€€€€€€‰½¹”™¥á•Y•¹ÕÌµ…É­•ÈÁ±ÕÌ…¸½ÁÑ¥½¹…°Y•¹ÕÍ€±…‰•°ˆ°(€€€€€€€€‰€´µÁ±…¹•ĞÙ•¹ÕÍ€ˆ°(€€€€€€€€‰¹½Ğ„Á¡åÍ¥…°‘¥Í¬ˆ°(€€€€€€€€‰Í…µ”ÁÉ½©•Ñ•É•½Éˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸…Õ‘¥Ğ((€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå$¸ÄƒŠPÉ…İ…‰±”Y•¹ÕÌÙ•ÉÑ¥…°Í±¥”ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰Q¡”€Ğå$¸Ä…Õ‘¥Ğ¥‘•¹Ñ¥™¥•Ìˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸ÄÄ€Ğå$¸Ä‘É…İ…‰±”Y•¹ÕÌ…Õ‘¥Ğˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰…‘‘Ì¹¼ÉÕ¹Ñ¥µ”±…å•Èˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€‰M¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•‰ä•É¹…¹‘¼ˆ¥¸…Õ‘¥Ğ(€€€…ÍÍ•ÉĞ€‰…±°€ĞàÕÉÉ•¹Ğµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌ¥¸€Ì¸ÌÀˆ¥¸…Õ‘¥Ğ(€€€…ÍÍ•ÉĞ€ˆĞå$¸Ä…Õ‘¥Ğ…•ÁÑ…¹”ˆ¥¸Õ¥‘”(()‘•˜Ñ•ÍÑ|Ğå¤Å…}É•½É‘Í}Ñ¡•}½ÕÑÁÕÑ}¹•ÕÑÉ…±}½É‘¥¹…Éå}½¹Ñ•áÑ}¡…¹‘½™˜ ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡=I%9Ie}I1%iQ%=9}=9QaP¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©%µÁ±•µ•¹Ñ…Ñ¥½¸‰…Í•±¥¹”è¨¨€ØÉ‘„İˆå€ˆ°(€€€€€€€€‰½¹ÍÑÉÕÑÌ¥Ğ½¹”‰•™½É”Ñ¡”ÁÉ½‘ÕĞ±½½Àˆ°(€€€€€€€€‰½‰Í•ÉÙ•Èµ±½…°Ù…ÕÕ´±Ñèˆ°(€€€€€€€€‰½‰Í•ÉÙ•Èµ½É¥¥¸…±…Ñ¥Œˆ°(€€€€€€€€‰Á½Í¥Ñ¥½¸É•™•É•¹”•Á½ …¹•ÅÕ¥¹½à…É”…‰Í•¹Ğˆ°(€€€€€€€€‰‘½•Ì¹½ĞÕÉÉ•¹Ñ±ä•áÁ½Í”•ÅÕ…Ñ½É¥…°ˆ°(€€€€€€€€‰Õ¹¡…¹•ÍÁ¡•É¥…±}•½µ•ÑÉäˆ°(€€€€€€€€‰¥¹…°5…Œ…•ÁÑ…¹”Ù•É¥™¥…Ñ¥½¸Á…ÍÍ•€ÄØØ™½ÕÍ•Ñ•ÍÑÌˆ°(€€€€€€€€‰…±°€Ä°àäÀÑ•ÍÑÌ¥¸€àà¸ÌÜÍ•½¹‘Ìˆ°(€€€€€€€€‰M¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•‰ä•É¹…¹‘¼ˆ°(€€€€€€€€‰…‘‘Ì¹¼Y•¹ÕÌ±…å•Èˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå$¸ÅƒŠP=É‘¥¹…ÉäÉ•…±¥é…Ñ¥½¸µ½¹Ñ•áĞ¡…¹‘½™˜ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰Q¡”…•ÁÑ•€Ğå$¸Å¥µÁ±•µ•¹Ñ…Ñ¥½¸ˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€‰=É‘¥¹…ÉäÉ•…±¥é…Ñ¥½¸µ½¹Ñ•áĞ¡…¹‘½™˜€¡5¥±•ÍÑ½¹”€Ğå$¸Å¤ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰É•ÅÕ•ÍÑ}É•…±¥é…Ñ¥½¸¹Áå€½İ¹ÌÑ¡”€Ğå$¸Åˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸ÄÈ€Ğå$¸Å½É‘¥¹…ÉäÉ•…±¥é…Ñ¥½¸½¹Ñ•áĞˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€ˆĞå$¸ÅÍ¥•¹Ñ¥™¥Œ…¹…É¡¥Ñ•ÑÕÉ…°…•ÁÑ…¹”ˆ¥¸Õ¥‘”(()‘•˜Ñ•ÍÑ|Ğå¤Å‰}É•½É‘Í}Ñ¡•}™¥ÉÍÑ}‘É…İ…‰±•}Ù•¹ÕÍ}‰½Õ¹‘…Éä ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y9UM}1eI}=9QIP¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©%µÁ±•µ•¹Ñ…Ñ¥½¸‰…Í•±¥¹”è¨¨€äÑÕ”äå€ˆ°(€€€€€€€€‰€´µÁ±…¹•ĞÙ•¹ÕÍ€ˆ°(€€€€€€€€‰ÑÉ…¹Í™½ÉµÌÑ¡”É•ÍÕ±Ñ¥¹œ…ÁÁ…É•¹Ğ%ILÁ½¥¹Ğ•á…Ñ±ä½¹”ˆ°(€€€€€€€€‰Í­ä½Í½±…É}ÍåÍÑ•´½Á±…¹•ÑÌ½Ù•¹ÕÌˆ°(€€€€€€€€‰™¥á•¡½±±½Ü¥ÉÕ±…Èµ…É­•Èˆ°(€€€€€€€€‰¹¼µ…¹¥ÑÕ‘”°Á¡…Í”°¥±±Õµ¥¹…Ñ•™É…Ñ¥½¸ˆ°(€€€€€€€€‰M¥•¹Ñ¥™¥…±±ä…¹Ù¥ÍÕ…±±ä…•ÁÑ•‰ä•É¹…¹‘¼ˆ°(€€€€€€€€‰…±°€Ä°àäàÑ•ÍÑÌ¥¸€àÈ¸ÀÄÍ•½¹‘Ìˆ°(€€€€€€€€‰Í…µ”Á½Í¥Ñ¥½¸Í¡½İ¸‰äMÑ•±±…É¥Õ´ˆ°(€€€€€€€€‰ÀÈĞ¸Ü´ÀÀ¸Øˆ°(€€€€€€€€‰ÀÈĞ¸Ü¬ÀÀ¸Øˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå$¸ÅƒŠP¥ÉÍĞ‘É…İ…‰±”Y•¹ÕÌ±…å•Èˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰Q¡”…•ÁÑ•€Ğå$¸Å¥µÁ±•µ•¹Ñ…Ñ¥½¸ˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€‰…±°€Ä°àäàÑ•ÍÑÌ¥¸€àÈ¸ÀÄÍ•½¹‘Ìˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰A9°A°…¹Í•µ…¹Ñ¥ŒMY±½½­•Ñ¡”Í…µ”ˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸ÄÌ€Ğå$¸Å™¥ÉÍĞ‘É…İ…‰±”Y•¹ÕÌˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰¹½Ğ„Á½Í¥Ñ¥½¸É•™•É•¹”•Á½ …¹¹½Ğ…¸•ÅÕ¥¹½àˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹Ù¥ÍÕ…±±ä…•ÁÑ•ˆ¥¸Õ¥‘”(()‘•˜Ñ•ÍÑ|Ğå¤É}…Õ‘¥ÑÍ}½¹•}Á¥Á•±¥¹•}İ¥Ñ¡½ÕÑ}™±…ÑÑ•¹¥¹}‰½‘å}Í¥•¹” ¤è(€€€…Õ‘¥Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡5==9}M!I}A%A1%9}U%P¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©Ìµ¥Ì‰…Í•±¥¹”è¨¨”İ™„Ù…‰€ˆ°(€€€€€€€€‰½¹”…¹½¹¥…°µ½Ù¥¹œµ‰½‘ä¡…ÉĞÁ¥Á•±¥¹”ˆ°(€€€€€€€€‰¥¹Ñ•É¡…¹•…‰±”ÍÑ…Ñ”Í½ÕÉ”ˆ°(€€€€€€€€‰‘¥™™•É•¹ĞÁ¡åÍ¥…°µ…ÁÁ•…É…¹”ÍÑÉ…Ñ•¥•Ìˆ°(€€€€€€€€‰‘½•Ì¹½Ğµ•…¸É•±…‰•±±¥¹œ•Ù•Éä½É‰¥ĞÍ½ÕÉ”…Ì„)A0­•É¹•°ˆ°(€€€€€€€€‰5…©½ÈÁ±…¹•Ğˆ°(€€€€€€€€‰5¥¹½ÈÁ±…¹•Ğˆ°(€€€€€€€€‰½µ•Ğˆ°(€€€€€€€€‰ÉÑ¥™¥¥…°Í…Ñ•±±¥Ñ”ˆ°(€€€€€€€€‰Ñ…É•ĞÁÉ½Ù¥‘•È¥‘•¹Ñ¥Ñäµ½½¹€°•áÁ•Ñ•9%%€ÌÀÅ€ˆ°(€€€€€€€€‰½µµ½¸ÍÑ…Ñ”•¹ÑÉ”Í½±…ÈÍåÍÑ•´‰…Éå•¹Ñ•É€°9%%€Á€ˆ°(€€€€€€€€‰ÍÑÉ½¹œÑ½Á½•¹ÑÉ¥ŒÁ…É…±±…àˆ°(€€€€€€€€‰½‰Í•ÉÙ•È•½‘•Ñ¥Œ±½…Ñ¥½¸…¹¡•¥¡Ğˆ°(€€€€€€€€‰‘¥É•ĞM­å™¥•±½‰Í•ÉÙ” ¸¸¸¤¹…ÁÁ…É•¹Ğ ¥€ˆ°(€€€€€€€€‰Q¡”5½½¸µÕÍĞ¹½Ğ‰”¥µÁ±•µ•¹Ñ•‰ä½Áå¥¹œY•¹ÕÍ1…å•É€ˆ°(€€€€€€€€‰1$•É½¹½µ¥Ìµ…äÉ•µ…¥¸±…ÍÌµ…İ…É”ˆ°(€€€€€€€€ˆĞå$¸ÉƒŠP5½½¸¹Õµ•É¥…°‘¥É•Ñ¥½¸Ù…±¥‘…Ñ¥½¸ˆ°(€€€€€€€€ˆĞå$¸ÉƒŠPM¡…É•Í½±…ÈµÍåÍÑ•´Á½¥¹Ğ±…å•Èˆ°(€€€€€€€€ˆĞå$¸ÉƒŠP¥ÉÍĞ‘É…İ…‰±”5½½¸Á½¥¹Ğˆ°(€€€€€€€€ˆĞå$¸ÌƒŠPA¡åÍ¥…°…ÁÁ…É•¹Ğµ‘¥Í¬½¹ÑÉ…Ğˆ°(€€€€€€€€‰…‘‘Ì¹¼ÉÕ¹Ñ¥µ”ÑåÁ”°5½½¸±…å•È°ÁÕ‰±¥Œ½ÁÑ¥½¸ˆ°(€€€€€€€€‰M¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•‰ä•É¹…¹‘¼ˆ°(€€€€€€€€ˆÔÄÕÉÉ•¹Ğµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌÁ…ÍÍ•¥¸€Ä¸ààÍ•½¹‘Ìˆ°(€€€€€€€€‰Q¡”…¹Íİ•ÉÌ…É”å•Ìˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸…Õ‘¥Ğ((€€€…ÍÍ•ÉĞ€ (€€€€€€€€‰5¥±•ÍÑ½¹”€Ğå$¸ÈƒŠP5½½¸…¹Í¡…É•Í½±…ÈµÍåÍÑ•´µ‰½‘äÁ¥Á•±¥¹”ˆ(€€€€€€€¥¸É½…‘µ…À(€€€€¤(€€€…ÍÍ•ÉĞ€‰Q¡”ÁÉ½Á½Í•€Ğå$¸È…Õ‘¥Ğˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€‰•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•ˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸ÄĞ€Ğå$¸È5½½¸…¹Í¡…É•‰½‘äÁ¥Á•±¥¹”ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€ (€€€€€€€€‰=¹”Á¥Á•±¥¹—Št‘½•Ì¹½Ğµ•…¸Ñ¡…Ğ…±°½‰©•ÑÌµ½Ù”¥¸Ñ¡”Í…µ”İ…äˆ(€€€€€€€¥¸Õ¥‘”(€€€€¤(€€€…ÍÍ•ÉĞ€‰Á½Í¥Ñ¥½¸É•™•É•¹”•Á½ ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰½‰Í•ÉÙ…Ñ¥½¸¥¹ÍÑ…¹Ğˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰•ÅÕ¥¹½àÉ•µ…¥¸‘¥ÍÑ¥¹Ğ½¹•ÁÑÌˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰…•ÁÑ•™¥ÉÍĞ5½½¸¥Ì„Íåµ‰½±¥ŒÁ½¥¹Ğˆ¥¸Õ¥‘”(()‘•˜Ñ•ÍÑ|Ğå¤É…}Ù…±¥‘…Ñ•Í}µ½½¹}‘¥É•Ñ¥½¹}İ¥Ñ¡½ÕÑ}¥¹ÍÑ…±±¥¹}…}±…å•È ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡5==9}%IQ%=9}Y1%Q%=8¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©%µÁ±•µ•¹Ñ…Ñ¥½¸‰…Í•±¥¹”è¨¨™‰˜Ñ‘å€ˆ°(€€€€€€€€‰Ñ…É•Ğµ½½¹€°•áÁ•Ñ•9%%€ÌÀÅ€ˆ°(€€€€€€€€‰•¹ÑÉ”Í½±…ÈÍåÍÑ•´‰…Éå•¹Ñ•É€°•áÁ•Ñ•9%%€Á€ˆ°(€€€€€€€€‰‘¥É•ĞM­å™¥•±½‰Í•ÉÙ•È¹Í­å™¥•±¹…Ğ¡Ğ¤¹½‰Í•ÉÙ”¡µ½½¸¤¹…ÁÁ…É•¹Ğ ¥€ˆ°(€€€€€€€€‰Ñ½Á½•¹ÑÉ¥Œ…¹•½•¹ÑÉ¥Œ…ÁÁ…É•¹Ğ‘¥É•Ñ¥½¹Ìˆ°(€€€€€€€€‰É•¥ÍÑ•É•€ÔÈ´1„1¥Õ„½‰Í•ÉÙ•Èˆ°(€€€€€€€€‰Í…µ”±…Ñ¥ÑÕ‘”½±½¹¥ÑÕ‘”…Ğé•É¼•±•Ù…Ñ¥½¸ˆ°(€€€€€€€€‰É•ÅÕ¥É•Ì„¹½¸µé•É¼¡•¥¡Ğ•™™•Ğˆ°(€€€€€€€€‰‘½•Ì¹½Ğ…•ÁĞÑ¡¥ÌÁ½±¥ä™½ÈÑ¡”5½½¸‰ä…¹…±½äİ¥Ñ Y•¹ÕÌˆ°(€€€€€€€€‰İ¥Ñ¡¥¸€Å”´İ€‘•É•”€¡€À¸ÌÙ€µ¥±±¥…ÉÍ•½¹¤ˆ°(€€€€€€€€‰½‰Í•ÉÙ…Ñ¥½¸¥¹ÍÑ…¹Ğ¥Ì¹•¥Ñ¡•È„Á½Í¥Ñ¥½¸É•™•É•¹”•Á½ ¹½È…¸•ÅÕ¥¹½àˆ°(€€€€€€€€‰Ñ•ÍĞµ½¹±ä9%´ÌÀÄÍÑ…Ñ”ˆ°(€€€€€€€€‰İ¥Ñ¡½ÕĞ¥¹Ù½­¥¹œ„Í•½¹½‰Í•ÉÙ” ¥€ˆ°(€€€€€€€€ˆÄÀÈ™½ÕÍ•Ñ•ÍÑÌÁ…ÍÍ•¥¸€Ä¸ääÍ•½¹‘Ìˆ°(€€€€€€€€‰…±°€Ä°äÀÈÑ•ÍÑÌÁ…ÍÍ•¥¸€àä¸ÔäÍ•½¹‘Ìˆ°(€€€€€€€€‰€À¸äÔÀÀÈÌÄÀÀÑ€‘•É•”ˆ°(€€€€€€€€‰€ÈÜ¸äÅ€µ…Ìˆ°(€€€€€€€€‰‘½•Ì¹½Ğ•áÑÉ…ĞM½±…ÉMåÍÑ•µA½¥¹Ñ1…å•É€ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå$¸ÄƒŠPÉ…İ…‰±”Y•¹ÕÌÙ•ÉÑ¥…°Í±¥”ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰µ•É•¥¸”İ™„Ù…‰€ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå$¸ÈƒŠP5½½¸…¹Í¡…É•Í½±…ÈµÍåÍÑ•´µ‰½‘äÁ¥Á•±¥¹”ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰¥¸™‰˜Ñ‘å€ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå$¸ÉƒŠP9Õµ•É¥…°5½½¸µ‘¥É•Ñ¥½¸Ù…±¥‘…Ñ¥½¸ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰M¥•¹Ñ¥™¥…±±ä…•ÁÑ•…¹™Õ±°µÍÕ¥Ñ”Ù•É¥™¥•ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰…±°€Ä°äÀÈÑ•ÍÑÌÁ…ÍÍ•¥¸€àä¸ÔäÍ•½¹‘Ìˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…•ÁÑ•€Ğå$¸Éˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€‰9Õµ•É¥…°5½½¸µ‘¥É•Ñ¥½¸Ù…±¥‘…Ñ¥½¸€¡5¥±•ÍÑ½¹”€Ğå$¸É¤ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰9¼Í­ä½µ½½¸¹Áå€•á¥ÍÑÌ¥¸€Ğå$¸Éˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸ÄÔ€Ğå$¸É¹Õµ•É¥…°5½½¸‘¥É•Ñ¥½¸ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Ñ½Á½•¹ÑÉ¥ŒÁ…É…±±…àÉ…Ñ¡•ÈÑ¡…¸½¹™ÕÍ¥¹œ½É¥¥¸İ¥Ñ É•™•É•¹”™É…µ”ˆ¥¸Õ¥‘”(()‘•˜Ñ•ÍÑ|Ğå¤É‰}•áÑÉ…ÑÍ}Í¡…É•‘}Á½¥¹Ñ}½É¡•ÍÑÉ…Ñ¥½¹}İ¥Ñ¡½ÕÑ}µ½½¹}½¹Ñ•¹Ğ ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡M!I}M=1I}MeMQ5}A=%9Q}1eH¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©%µÁ±•µ•¹Ñ…Ñ¥½¸‰…Í•±¥¹”è¨¨ˆÁÅ‘Ñ€ˆ°(€€€€€€€€‰M½±…ÉMåÍÑ•µA½¥¹Ñ•ÍÉ¥ÁÑ½É€ˆ°(€€€€€€€€‰M½±…ÉMåÍÑ•µA½¥¹Ñ1…å•É€ˆ°(€€€€€€€€‰ÑÉ…¹Í™½É´•á…Ñ±ä½¹”¥¹Ñ¼Ñ¡”ÁÉ½‘ÕĞ½½É‘¥¹…Ñ”ÍÁ•¥™¥…Ñ¥½¸ˆ°(€€€€€€€€‰±…å•É}¹…µ”€ôp‰Ù•¹ÕÍp‰€ˆ°(€€€€€€€€‰Í­ä½Í½±…É}ÍåÍÑ•´½Á±…¹•ÑÌ½Ù•¹ÕÌˆ°(€€€€€€€€‰Ñ•ÍĞµ½¹±ä5½½¸‘•ÍÉ¥ÁÑ½Èˆ°(€€€€€€€€‰‘½•Ì¹½Ğ…‘Í­ä½µ½½¸¹Áå€ˆ°(€€€€€€€€ˆÄÌ‘¥É•ĞÍ¡…É•µ±…å•È…¹Y•¹ÕÌÁ…É¥ÑäÑ•ÍÑÌ¥¸€Ä¸àØÍ•½¹‘Ìˆ°(€€€€€€€€ˆàÈ™½ÕÍ•Í¥•¹Ñ¥™¥Œ…¹¥¹Ñ•É…Ñ¥½¸Ñ•ÍÑÌ¥¸€Ä¸àÈÍ•½¹‘Ìˆ°(€€€€€€€€ˆÄ°ààÄÉ½ÕÑ¥¹”Ñ•ÍÑÌİ¥Ñ €ÌÀ‘•Í•±•Ñ•¥¸€ÈÜ¸ØÜÍ•½¹‘Ìˆ°(€€€€€€€€ˆÔÌÕÉÉ•¹Ğµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌ¥¸€È¸ÄØÍ•½¹‘Ìˆ°(€€€€€€€€‰…±°€Ä°äÄÈÑ•ÍÑÌ¥¸€äÄ¸ÀĞÍ•½¹‘Ìˆ°(€€€€€€€€‰Q¡”A9™¥±•Ìİ•É”‰åÑ”µ¥‘•¹Ñ¥…°ˆ°(€€€€€€€€‰é•É¼‘¥™™•É¥¹œÁ¥á•±Ì½È¡…¹¹•°Ù…±Õ•Ìˆ°(€€€€€€€€‰MYÍ•µ…¹Ñ¥Œ…¹É…Á¡¥…°½¹Ñ•¹Ğİ…Ì‰åÑ”µ¥‘•¹Ñ¥…°ˆ°(€€€€€€€€‰•É¹…¹‘¼…•ÁÑ•Ñ¡”™É½é•¸‘•ÍÉ¥ÁÑ½Èˆ°(€€€€€€€€‰‘½•Ì¹½Ğ…ÕÑ¡½É¥é”„ÁÉ½‘ÕÑ¥½¸5½½¸±…å•Èˆ°(€€€€€€€€‰…‘‘Ì¹¼5½½¸±…å•È°€´µµ½½¹€ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå$¸ÉƒŠPM¡…É•M½±…ÈµMåÍÑ•´Á½¥¹Ğ±…å•Èˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€Ğå$¸Éˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰Q¡”…•ÁÑ•€Ğå$¸É¥µÁ±•µ•¹Ñ…Ñ¥½¸•áÑÉ…ÑÌˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€‰M¡…É•M½±…ÈµMåÍÑ•´Á½¥¹Ğ±…å•È€¡5¥±•ÍÑ½¹”€Ğå$¸É¤ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰Ñ•ÍÑÌ½Ñ•ÍÑ}Í½±…É}ÍåÍÑ•µ}Á½¥¹Ñ}±…å•È¹Áäˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸ÄØ€Ğå$¸ÉÍ¡…É•M½±…ÈµMåÍÑ•´Á½¥¹Ğ±…å•Èˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰€´µµ½½¹€É•µ…¥¹Ì€Ğå$¸Éˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€Ğå$¸Éˆ¥¸Õ¥‘”(()‘•˜Ñ•ÍÑ|Ğå¤É}¥¹ÍÑ…±±Í}½¹•}Íåµ‰½±¥}µ½½¹}İ¥Ñ¡½ÕÑ}Á¡åÍ¥…±}‘¥Í­}±…¥µÌ ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡5==9}1eH¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©%µÁ±•µ•¹Ñ…Ñ¥½¸‰…Í•±¥¹”è¨¨€ÀĞÄØĞÜÑ€ˆ°(€€€€€€€€‰5½½¹1…å•É€¥Ì„Ñ¡¥¸ÍÁ•¥…±¥é…Ñ¥½¸ˆ°(€€€€€€€€‰M­å½¹Ñ•¹ÑM•±•Ñ¥½¸¹Í½±…É}ÍåÍÑ•µ}½‰©•ÑÍ€ˆ°(€€€€€€€€‰€´µÁ±…¹•ĞÙ•¹ÕÍ€Í•±•ÑÌY•¹ÕÌˆ°(€€€€€€€€‰€´µµ½½¹€Í•±•ÑÌÑ¡”5½½¸ˆ°(€€€€€€€€‰Í­ä½Í½±…É}ÍåÍÑ•´½¹…ÑÕÉ…±}Í…Ñ•±±¥Ñ•Ì½µ½½¸ˆ°(€€€€€€€€ˆàä‘¥É•Ğ5½½¸°Í¡…É•µÁ½¥¹Ğ°Y•¹ÕÌ°1$ˆ°(€€€€€€€€ˆÈÄäÉ•ÅÕ•ÍĞ°‘•Ñ…¥°°ÍÑå±”°É•…±¥é…Ñ¥½¸ˆ°(€€€€€€€€ˆÄ°ààÜÉ½ÕÑ¥¹”Ñ•ÍÑÌİ¥Ñ €ÌÀ‘•Í•±•Ñ•ˆ°(€€€€€€€€‰…±°€Ä°äÄÜÑ•ÍÑÌ¥¸€äÈ¸ÌØÍ•½¹‘Ìˆ°(€€€€€€€€ˆÔĞÕÉÉ•¹Ğµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌ¥¸€Ä¸äÄÍ•½¹‘Ìˆ°(€€€€€€€€ˆÈÀÈØ´Àà´Èä€ÈÀèÀÀ±½…°Ñ¥µ”…ĞUQ´Ğˆ°(€€€€€€€€‰É•±…Ñ¥Ù”Á½Í¥Ñ¥½¸……¥¹ÍĞ¹•…É‰äA¥Í•ÌÍÑ…ÉÌ½ÉÉ•ÍÁ½¹‘•±½Í•±äˆ°(€€€€€€€€‰•É¹…¹‘¼…•ÁÑ•Ñ¡”Í¡…É•¥¹Ñ•É¹…°M½±…ÈµMåÍÑ•´Í•±•Ñ¥½¸ˆ°(€€€€€€€€‰‘½•Ì¹½Ğ…ÕÑ¡½É¥é”Á¡åÍ¥…°±Õ¹…Èµ‘¥Í¬½ÈÁ¡…Í”•½µ•ÑÉäˆ°(€€€€€€€€‰…‘‘Ì¹¼Á¡åÍ¥…°±Õ¹…È‘¥Í¬ˆ°(€€€€€€€€‰É•µ…¥¸€Ğå$¸Ìˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå$¸ÉƒŠP¥ÉÍĞ‘É…İ…‰±”5½½¸Á½¥¹Ğˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€ (€€€€€€€€‰•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä°…É¡¥Ñ•ÑÕÉ…±±ä°…¹Ù¥ÍÕ…±±ä…•ÁÑ•ˆ(€€€€€€€¥¸É½…‘µ…À(€€€€¤(€€€…ÍÍ•ÉĞ€‰Q¡”…•ÁÑ•€Ğå$¸É¥µÁ±•µ•¹Ñ…Ñ¥½¸¥¹ÍÑ…±±Ìˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€‰¥ÉÍĞ‘É…İ…‰±”5½½¸Á½¥¹Ğ€¡5¥±•ÍÑ½¹”€Ğå$¸É¤ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰ÍÉŒ½İ•¹Ô½Í­ä½µ½½¸¹Áäˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸ÄÜ€Ğå$¸É™¥ÉÍĞ‘É…İ…‰±”5½½¸Á½¥¹Ğˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰A¡åÍ¥…°‘¥Í¬…¹Á¡…Í”É•µ…¥¸€Ğå$¸Ìˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€ (€€€€€€€€‰•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä°…É¡¥Ñ•ÑÕÉ…±±ä°…¹Ù¥ÍÕ…±±ä…•ÁÑ•ˆ(€€€€€€€¥¸Õ¥‘”(€€€€¤(()‘•˜Ñ•ÍÑ|Ğå¤É‘}…Õ‘¥ÑÍ}™¥á•‘}™É…µ•}Ù•Ñ½É¥é•‘}Í½±…É}ÍåÍÑ•µ}ÑÉ…­Ì ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡M=1I}MeMQ5}QI-}U%P¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤(€€€¥¹ÍÑÉÕÑ¥½¹Ì€ô€ˆ€ˆ¹©½¥¸¡É•…¡%9MQIUQ%=9L¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©%µÁ±•µ•¹Ñ…Ñ¥½¸‰…Í•±¥¹”è¨¨ÄäÜÅ˜Õ€ˆ°(€€€€€€€€ˆ´µÁ±…¹•ĞµÑÉ…¬Ù•¹ÕÌˆ°(€€€€€€€€ˆ´µÑÉ…¬µÍÑ…ÉĞ€ÈÀÈØ´Àà´ÌÁPÀÀèÀÀèÀÁhˆ°(€€€€€€€€ˆ´µÑÉ…¬µÍ…µÁ±”µÍÑ•À€Å ˆ°(€€€€€€€€ˆ´µÑÉ…¬µÑ¥¬µÍÑ•À€İˆ°(€€€€€€€€ˆ´µÑÉ…¬µÑ¥¬µ½Õ¹Ğ€Ğˆ°(€€€€€€€€‰M…µÁ±”¥¹ÍÑ…¹ÑÌˆ°(€€€€€€€€‰¡…ÉĞµ™É…µ”¥¹ÍÑ…¹Ğˆ°(€€€€€€€€‰½¹”™¥á•½‰Í•ÉÙ•Èµ±½…°ÁÉ½‘ÕĞ™É…µ”ˆ°(€€€€€€€€‰½¹”½É‘¥¹…ÉäMÁ¡•É¥…±ÕÉÙ•Í€Ù…±Õ”‰•™½É”ÁÉ½©•Ñ¥½¸ˆ°(€€€€€€€€‰Ù¥Í¥‰±”Á•ÉÁ•¹‘¥Õ±…ÈÑ¥­Ì…É”ÁÉ½©•Ñ•…¹¹½Ñ…Ñ¥½¹Ìˆ°(€€€€€€€€‰É•¥½¹…°…¹‰¥¹½Õ±…È¡…ÉÑÌˆ°(€€€€€€€€‰A±…¹¥ÍÁ¡•É”…¹…±°µÍ­äÁÉ½‘ÕÑÌÉ•µ…¥¸½ÕÑÍ¥‘”ˆ°(€€€€€€€€ˆĞå$¸ÌÁ¡åÍ¥…°…ÁÁ…É•¹Ğµ‘¥Í¬½¹ÑÉ…Ğˆ°(€€€€€€€€‰…‘ÉÕ¹Ñ¥µ”Í½ÕÉ”ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå$¸ÉƒŠPM½±…ÈµMåÍÑ•´ÑÉ…©•Ñ½Éä½¹ÑÉ…Ğˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰Q¡”…•ÁÑ•€Ğå$¸É…Õ‘¥ĞÁ±…•Ìˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€ (€€€€€€€€‰•ÁÑ•M½±…ÈµMåÍÑ•´ÑÉ…¬½¹ÑÉ…Ğ€¡5¥±•ÍÑ½¹”€Ğå$¸É¤ˆ(€€€€€€€¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€€¤(€€€…ÍÍ•ÉĞ€‰Í½±…É}ÍåÍÑ•µ}ÑÉ…­}…Õ‘¥Ñ|Ğå¤É¹µˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸Äà€Ğå$¸ÉM½±…ÈµMåÍÑ•´ÑÉ…©•Ñ½É¥•Ìˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Á•ÈµÍ…µÁ±”Ñ¥µ”ÁÉ½Ù•¹…¹”ˆ¥¸¥¹ÍÑÉÕÑ¥½¹Ì(€€€…ÍÍ•ÉĞ€‰M¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•ˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€ˆÔÔÕÉÉ•¹Ğµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌ¥¸€Ì¸ÀÈÍ•½¹‘Ìˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€ˆÄ°ààäÉ½ÕÑ¥¹”Ñ•ÍÑÌİ¥Ñ €ÌÀ‘•Í•±•Ñ•¥¸€Èà¸ÀÈÍ•½¹‘Ìˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€‰…±°€Ä°äÄäÑ•ÍÑÌ¥¸€äÀ¸ĞàÍ•½¹‘Ìˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€ˆĞå$¸ÉÍ¥•¹Ñ¥™¥Œ…¹…É¡¥Ñ•ÑÕÉ…°…•ÁÑ…¹”ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰IÕ¹Ñ¥µ”Í±¥•ÌÉ•µ…¥¸Í•Á…É…Ñ•±ä…ÕÑ¡½É¥é•ˆ¥¸É½…‘µ…À(()‘•˜Ñ•ÍÑ|Ğå¤ÉÅ}¥µÁ±•µ•¹ÑÍ}Í¥•¹Ñ¥™¥}ÕÉÙ•}İ¥Ñ¡½ÕÑ}‘É…İ¥¹œ ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡M=1I}MeMQ5}QI-}UIY¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤(€€€¥¹ÍÑÉÕÑ¥½¹Ì€ô€ˆ€ˆ¹©½¥¸¡É•…¡%9MQIUQ%=9L¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©%µÁ±•µ•¹Ñ…Ñ¥½¸‰…Í•±¥¹”è¨¨•„ÀÌĞÀÁ€ˆ°(€€€€€€€€‰M½±…ÉMåÍÑ•µQÉ…­I•ÅÕ•ÍÑ€ˆ°(€€€€€€€€‰M½±…ÉMåÍÑ•µQÉ…­I•ÍÕ±Ñ€ˆ°(€€€€€€€€‰M½±…ÉMåÍÑ•µQÉ…­I•…±¥é•È¹ÕÉÙ” ¥€ˆ°(€€€€€€€€‰I•Õ±…ÈÍ…µÁ±•Ì¥¹±Õ‘”‰½Ñ •¹‘Á½¥¹ÑÌˆ°(€€€€€€€€‰á…ĞÑ¥¬½™™Í•ÑÌˆ°(€€€€€€€€‰½‰Í•ÉÙ•È‰…Éå•¹ÑÉ¥ŒÍÑ…Ñ”ˆ°(€€€€€€€€‰½¹”½Á•¸MÁ¡•É¥…±ÕÉÙ•Í€ˆ°(€€€€€€€€‰½½É‘¥¹…Ñ•M•ÉÙ¥”¹ÑÉ…¹Í™½É´ ¥€¥ÌÑ¡•¸¥¹Ù½­••á…Ñ±ä½¹”ˆ°(€€€€€€€€‰½µÁ±•Ñ”ÁÁ…É•¹Ñ¥É•Ñ¥½¹€Á•ÈÙ•ÉÑ•àˆ°(€€€€€€€€‰Ñ•ÍÑÌ½Ñ•ÍÑ}Í½±…É}ÍåÍÑ•µ}ÑÉ…­Ì¹Áå€ˆ°(€€€€€€€€‰Ñ½½±Ì½Ù…±¥‘…Ñ•|Ğå¤ÉÅ}Ù•¹ÕÍ}ÑÉ…¬¹Áå€ˆ°(€€€€€€€€‰€Å”´İ€‘•É•”Á•È%IL½µÁ½¹•¹Ğˆ°(€€€€€€€€‰…‘‘Ì¹¼èˆ°(€€€€€€€€‰ÁÕ‰±¥Œ€´µÁ±…¹•ĞµÑÉ…­€ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå$¸É¸ÄƒŠPM¥•¹Ñ¥™¥ŒM½±…ÈµMåÍÑ•´ÑÉ…¬ÕÉÙ”ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰Q¡”…•ÁÑ•€Ğå$¸É¸Ä¥µÁ±•µ•¹Ñ…Ñ¥½¸…‘‘Ìˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€ (€€€€€€€€‰M¥•¹Ñ¥™¥ŒM½±…ÈµMåÍÑ•´ÑÉ…¬ÕÉÙ”€¡5¥±•ÍÑ½¹”€Ğå$¸É¸Ä¤ˆ(€€€€€€€¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€€¤(€€€…ÍÍ•ÉĞ€‰ÍÉŒ½İ•¹Ô½Í­ä½Í½±…É}ÍåÍÑ•µ}ÑÉ…­Ì¹Áäˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸Ää€Ğå$¸É¸ÄÍ¥•¹Ñ¥™¥ŒÑÉ…¬ÕÉÙ”ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Í½±…É}ÍåÍÑ•µ}ÑÉ…­}ÕÉÙ•|Ğå¤ÉÄ¹µˆ¥¸¥¹ÍÑÉÕÑ¥½¹Ì(€€€…ÍÍ•ÉĞ€‰M¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•ˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€‰€Ğ¸ÈäÍ”´ÄÁ€‘•É•”¥¸É¥¡Ğ…Í•¹Í¥½¸ˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€‰€à¸ĞÜÅ”´ÄÅ€‘•É•”¥¸‘•±¥¹…Ñ¥½¸ˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€ˆĞÀ™½ÕÍ•Í¥•¹Ñ¥™¥ŒÑ•ÍÑÌ¥¸€È¸ÄÈÍ•½¹‘Ìˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€ˆÔØÕÉÉ•¹Ğµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌ¥¸€Ä¸àØÍ•½¹‘Ìˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€ˆÄ°àääÉ½ÕÑ¥¹”Ñ•ÍÑÌİ¥Ñ €ÌÀ‘•Í•±•Ñ•¥¸€ÈØ¸äÈÍ•½¹‘Ìˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€‰…±°€Ä°äÈäÑ•ÍÑÌ¥¸€àä¸ÄäÍ•½¹‘Ìˆ¥¸½¹ÑÉ…Ğ(€€€…ÍÍ•ÉĞ€ˆĞå$¸É¸ÄÍ¥•¹Ñ¥™¥Œ…¹…É¡¥Ñ•ÑÕÉ…°…•ÁÑ…¹”ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€ˆĞå$¸É¸ÈÉ•µ…¥¹ÌÍ•Á…É…Ñ•±ä…ÕÑ¡½É¥é•ˆ¥¸É½…‘µ…À(()‘•˜™•¹•‘}ÁåÑ¡½¸¡Á…Ñ ¤è(€€€€ˆˆ‰I•ÑÕÉ¸AåÑ¡½¸½‘”‰±½­Ì™É½´½¹”5…É­‘½İ¸‘½Õµ•¹Ğ¸ˆˆˆ(€€€‰±½­Ì€ômt(€€€ÕÉÉ•¹Ğ€ô9½¹”(€€€™½È±¥¹”¥¸É•…¡Á…Ñ ¤¹ÍÁ±¥Ñ±¥¹•Ì ¤è(€€€€€€€¥˜±¥¹”€ôô€‰ÁåÑ¡½¸ˆè(€€€€€€€€€€€ÕÉÉ•¹Ğ€ômt(€€€€€€€•±¥˜±¥¹”€ôô€‰€ˆ…¹ÕÉÉ•¹Ğ¥Ì¹½Ğ9½¹”è(€€€€€€€€€€€‰±½­Ì¹…ÁÁ•¹ ‰q¸ˆ¹©½¥¸¡ÕÉÉ•¹Ğ¤¤(€€€€€€€€€€€ÕÉÉ•¹Ğ€ô9½¹”(€€€€€€€•±¥˜ÕÉÉ•¹Ğ¥Ì¹½Ğ9½¹”è(€€€€€€€€€€€ÕÉÉ•¹Ğ¹…ÁÁ•¹¡±¥¹”¤(€€€É•ÑÕÉ¸‰±½­Ì(()‘•˜Ñ•ÍÑ}ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}…ÕÑ¡½É¥Ñ¥•Í}•á¥ÍÑ}…¹‘}É½ÍÍ}É•™•É•¹” ¤è(€€€…ÍÍ•ÉĞl(€€€€€€€Á…Ñ (€€€€€€€™½ÈÁ…Ñ ¥¸€ (€€€€€€€€€€€UII9P°(€€€€€€€€€€€%5A159Q°(€€€€€€€€€€€XÀá}UII9P°(€€€€€€€€€€€QIP°(€€€€€€€€€€€I=5@°(€€€€€€€€€€€XÀå}UII9P°(€€€€€€€€€€€XÀå}QIP°(€€€€€€€€€€€XÀå}I=5@°(€€€€€€€€€€€UQUI}I=5@°(€€€€€€€€€€€AU	1%}%9QI}U%P°(€€€€€€€€€€€M9}A99e}U%P°(€€€€€€€€€€€1eI}I1%iQ%=9}=9QIP°(€€€€€€€€€€€XÀäÕ}QIP°(€€€€€€€€€€€==I%9Q}U%°(€€€€€€€€€€€%9MQIUQ%=9L°(€€€€€€€€¤(€€€€€€€¥˜¹½ĞÁ…Ñ ¹¥Í}™¥±” ¤(€€€t€ôômt((€€€ÕÉÉ•¹Ğ€ôÉ•…¡UII9P¤(€€€Ñ…É•Ğ€ôÉ•…¡XÀå}QIP¤(€€€É½…‘µ…À€ôÉ•…¡XÀå}I=5@¤((€€€…ÍÍ•ÉĞ€‰Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Ü¹µˆ¥¸ÕÉÉ•¹Ğ(€€€…ÍÍ•ÉĞ€‰…É¡¥Ù”½…É¡¥Ñ•ÑÕÉ•}¡¥ÍÑ½Éä½ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸à¹µˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€‰…É¡¥Ù”½µ¥É…Ñ¥½¹}¡¥ÍÑ½Éä½İ•¹Õ}µ¥É…Ñ¥½¹|À¸á}Ñ½|À¸ä¹µˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€‰…É¡¥Ù”½…É¡¥Ñ•ÑÕÉ•}¡¥ÍÑ½Éä½ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸à¹µˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰…É¡¥Ù”½…É¡¥Ñ•ÑÕÉ•}¡¥ÍÑ½Éä½Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸ä¹µˆ¥¸É½…‘µ…À(()‘•˜Ñ•ÍÑ}¡¥ÍÑ½É¥…±}‘½Õµ•¹ÑÍ}…É•}…É¡¥Ù•‘}…¹‘}¹½Ñ}…Ñ¥Ù•}…ÕÑ¡½É¥Ñ¥•Ì ¤è(€€€…ÍÍ•ÉĞ€¡I!%Y€¼€‰I5¹µˆ¤¹¥Í}™¥±” ¤(€€€…ÍÍ•ÉĞ¹½Ğ€¡I==P€¼€‰‘½Ìˆ€¼€‰½‰Í½±•Ñ”ˆ¤¹•á¥ÍÑÌ ¤(€€€™½È¹…µ”¥¸€ (€€€€€€€€‰ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Ğ¹µˆ°(€€€€€€€€‰ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Ô¹µˆ°(€€€€€€€€‰ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Ø¹µˆ°(€€€€€€€€‰ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Ü¹µˆ°(€€€€€€€€‰Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Ô¹µˆ°(€€€€€€€€‰Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Ø¹µˆ°(€€€€€€€€‰Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Ü¹µˆ°(€€€€€€€€‰ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸à¹µˆ°(€€€€€€€€‰Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸à¹µˆ°(€€€€€€€€‰Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸ä¹µˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞ€¡I!%Y€¼€‰…É¡¥Ñ•ÑÕÉ•}¡¥ÍÑ½Éäˆ€¼¹…µ”¤¹¥Í}™¥±” ¤(€€€€€€€…ÍÍ•ÉĞ¹½Ğ€¡Y1=AH€¼¹…µ”¤¹•á¥ÍÑÌ ¤(€€€™½È¹…µ”¥¸€ (€€€€€€€€‰İ•¹Õ}µ¥É…Ñ¥½¹|À¸Ñ}Ñ½|À¸Ô¹µˆ°(€€€€€€€€‰İ•¹Õ}µ¥É…Ñ¥½¹|À¸Õ}Ñ½|À¸Ø¹µˆ°(€€€€€€€€‰İ•¹Õ}µ¥É…Ñ¥½¹|À¸Ù}Ñ½|À¸Ü¹µˆ°(€€€€€€€€‰İ•¹Õ}µ¥É…Ñ¥½¹|À¸İ}Ñ½|À¸à¹µˆ°(€€€€€€€€‰İ•¹Õ}µ¥É…Ñ¥½¹|À¸á}Ñ½|À¸ä¹µˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞ€¡I!%Y€¼€‰µ¥É…Ñ¥½¹}¡¥ÍÑ½Éäˆ€¼¹…µ”¤¹¥Í}™¥±” ¤(€€€€€€€…ÍÍ•ÉĞ¹½Ğ€¡Y1=AH€¼¹…µ”¤¹•á¥ÍÑÌ ¤(€€€…ÍÍ•ÉĞ€¡I!%Y€¼€‰ÁÉ•}Ù•ÉÍ¥½¹•ˆ€¼€‰…É¡¥Ñ•ÑÕÉ”¹µˆ¤¹¥Í}™¥±” ¤(()‘•˜Ñ•ÍÑ}ÕÉÉ•¹Ñ}‘¥…É…µÍ}…É•}…¹}¥¹ÍÁ•Ñ¥½¹}¥¹Ñ•É™…” ¤è(€€€É•…‘µ”€ôÉ•…¡%I5L€¼€‰I5¹µˆ¤(€€€¹½Éµ…±¥é•€ô€ˆ€ˆ¹©½¥¸¡É•…‘µ”¹ÍÁ±¥Ğ ¤¤((€€€™½È¹…µ”¥¸€ (€€€€€€€€‰ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸å}½Ù•ÉÙ¥•Üˆ°(€€€€€€€€‰½½É‘¥¹…Ñ•}ÑÉ…¹Í™½Éµ…Ñ¥½¹}…Í}¥Í}ØÀ¸äˆ°(€€€€€€€€‰½½É‘¥¹…Ñ•}ÑÉ…¹Í™½Éµ…Ñ¥½¹}Ñ…É•Ñ|Ğå‰Œˆ°(€€€€€€€€‰½½É‘¥¹…Ñ•}ÍÑ…Ñ¥}ÍÑÉÕÑÕÉ•}…Í}¥Í}ØÀ¸äˆ°(€€€€€€€€‰½½É‘¥¹…Ñ•}ÍÑ…Ñ¥}ÍÑÉÕÑÕÉ•}Ñ…É•Ñ|Ğå‰Œˆ°(€€€€€€€€‰½½É‘¥¹…Ñ•}ÉÕ¹Ñ¥µ•}Í•ÅÕ•¹•}Ñ…É•Ñ|Ğå‰Œˆ°(€€€€€€€€‰½½É‘¥¹…Ñ•}ÑÉ…¹Í™½Éµ…Ñ¥½¹}…Í}¥Í}ØÀ¸ä¸Ôˆ°(€€€€€€€€‰½½É‘¥¹…Ñ•}ÍÑ…Ñ¥}ÍÑÉÕÑÕÉ•}…Í}¥Í}ØÀ¸ä¸Ôˆ°(€€€€€€€€‰½½É‘¥¹…Ñ•}ÉÕ¹Ñ¥µ•}Í•ÅÕ•¹•}…Í}¥Í}ØÀ¸ä¸Ôˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞ€¡%I5L€¼˜‰í¹…µ•ô¹‘½Ğˆ¤¹¥Í}™¥±” ¤(€€€€€€€…ÍÍ•ÉĞ€¡%I5L€¼˜‰í¹…µ•ô¹ÍÙœˆ¤¹¥Í}™¥±” ¤(€€€€€€€…ÍÍ•ÉĞ¹…µ”¥¸É•…‘µ”((€€€…ÍÍ•ÉĞ€‰¡Õµ…¸¥¹ÍÁ•Ñ¥½¸¥¹Ñ•É™…”ˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€ˆĞå¥¹ÑÉ½‘Õ•ÌÑåÁ•…ÍÑÉ½¹½µ¥…°µÍÑ…Ñ”Ù½…‰Õ±…Éäˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€ˆĞå¥¹ÑÉ½‘Õ•Ì½¹”½½É‘¥¹…Ñ”Í•ÉÙ¥”ˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€‰•Ù•Éä…ÍÑÉ½¹½µ¥…°½‰©•Ğ½‰Ñ…¥¹Ì¥ÑÌ¹…Ñ¥Ù”Á½Í¥Ñ¥½¸ˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€‰=‰Í•ÉÙ…Ñ¥½¹½¹Ñ•áÑ€•¹Ñ•ÉÌ½¹±äˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€‰…ÑÕ…°±…ÍÍ•Ìˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€‰¥¹¡•É¥ÑÌˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€‰ÉÕ¹Ñ¥µ”…±±Ì½ÈÉ•ÑÕÉ¹Ìˆ¥¸¹½Éµ…±¥é•(€€€…ÍÍ•ÉĞ€‰9¼Á…É…±±•°…ÍÑÉ½¹½µ¥…°ÍÑ…Ñ”¡¥•É…É¡ä¥ÌÁÉ½Á½Í•ˆ¥¸¹½Éµ…±¥é•(€€€…ÍÍ•ÉĞ€‰‘¥É•Ğ½Õ¹Ñ•ÉÁ…ÉĞÑ¼Ñ¡”ÕÉÉ•¹ĞÍÑ…Ñ¥ŒµÍÑÉÕÑÕÉ”ˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€‰É•Ñ…¥¹ÌÑ¡”Í…µ”M­å1…å•É€¥¹¡•É¥Ñ…¹”¡¥•É…É¡äˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€‰A½Í¥Ñ¥½¹AÉ½Ù¥‘•É€¥ÌÑ¡”‰½Õ¹‘…Éä™½È…±°…ÍÑÉ½¹½µ¥…°½‰©•ÑÌˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€‰É•ÅÕ¥É•Ì½¹±ä…¹½Ñ¡•ÈÁÉ½Ù¥‘•È¥µÁ±•µ•¹Ñ…Ñ¥½¸ˆ¥¸¹½Éµ…±¥é•(€€€…ÍÍ•ÉĞ€‰‘•±¥‰•É…Ñ•±ä±…É”…¹Ù…Ìˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€‰Í½±”ÁÉ½‘ÕÑ¥½¸…ÍÑÉ½¹½µ¥…°ÑÉ…¹Í™½Éµ…Ñ¥½¸½İ¹•Èˆ¥¸¹½Éµ…±¥é•(€€€…ÍÍ•ÉĞ€‰™¥Ñ¥Ñ¥½ÕÌÁÉ½Ñ½½°ˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€‰Q¡”É•Ñ¥É•¡…¹‘İÉ¥ÑÑ•¸…¹¡…ÉĞµ½İ¹•…ÕÑ¡½É¥Ñ¥•Ì…É”…‰Í•¹Ğˆ¥¸¹½Éµ…±¥é•(€€€…ÍÍ•ÉĞ€‰‘½•Ì¹½Ğµ½‘¥™ä½½É‘¥¹…Ñ•M•ÉÙ¥•€ˆ¥¸¹½Éµ…±¥é•(€€€…ÍÍ•ÉĞ€ (€€€€€€€I!%Y€¼€‰‘¥…É…µ}¡¥ÍÑ½Éäˆ€¼€‰Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Õ}½µ‰¥¹•¹‘½Ğˆ(€€€€¤¹¥Í}™¥±” ¤(€€€…ÍÍ•ÉĞ€ (€€€€€€€I!%Y€¼€‰‘¥…É…µ}¡¥ÍÑ½Éäˆ€¼€‰Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Õ}½µ‰¥¹•¹ÍÙœˆ(€€€€¤¹¥Í}™¥±” ¤(€€€…ÍÍ•ÉĞ¹½Ğ€¡%I5L€¼€‰Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Õ}½µ‰¥¹•¹‘½Ğˆ¤¹•á¥ÍÑÌ ¤(€€€…ÍÍ•ÉĞ¹½Ğ€¡%I5L€¼€‰Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸Õ}½µ‰¥¹•¹ÍÙœˆ¤¹•á¥ÍÑÌ ¤((()‘•˜Ñ•ÍÑ}ØÀäÕ}½½É‘¥¹…Ñ•}Ñ…É•Ñ}…¹‘}±¥Ù¥¹}Õ¥‘•}…É•}É•Ù¥•İ…‰±” ¤è(€€€Ñ…É•Ğ€ôÉ•…¡XÀäÕ}QIP¤(€€€Õ¥‘”€ôÉ•…¡==I%9Q}U%¤((€€€…ÍÍ•ÉĞ€ˆ¨©MÑ…ÑÕÌè¨¨%µÁ±•µ•¹Ñ•…¹…•ÁÑ•ì€Ğå¸Ğµ•É•¥¸€Å„ÄÔÀÜÙ€ˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€‰A½Í¥Ñ¥½¹AÉ½Ù¥‘•Èˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€‰½½É‘¥¹…Ñ•M•ÉÙ¥”ˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€ˆĞå¸Äˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€ˆĞå¸Ğˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€‰‘½•Ì¹½Ğ±…¥´…q¹ØÀ¸ä¸Õ€¥ĞÑ…œˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€‰M­å™¥•±…ÁÁ…É•¹ĞÍÑ•±±…ÈÉ•…±¥é…Ñ¥½¸…ÌÁÉ½Ù¥‘•Èİ½É¬ˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€‰¹…Ñ¥Ù”±Ñè¡½É¥é½¸½¹ÍÑÉÕÑ¥½¸ˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€‰I•µ½Ù•¥¸€Ğå¸Ìˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰=‰Í•ÉÙ•È¹½‰Í•ÉÙ…Ñ¥½¹}½¹Ñ•áĞˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€ˆÄÜÜäÑ•ÍÑÌİ¥Ñ €ÌÀ‘•Í•±•Ñ•¥¸€ÈÜ¸ÌÄÍ•½¹‘Ìˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€ˆÄàÀäÑ•ÍÑÌ¥¸€àĞ¸ääÍ•½¹‘Ìˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€‰µ¥á•‘q¹(ÈÀÀÀµ•ÅÕ…Ñ½È½•±¥ÁÑ¥Œµ½˜µ‘…Ñ”Á½±¥äˆ¥¸Ñ…É•Ğ((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€‰A½Í¥Ñ¥½¸•¹•É…Ñ¥½¸Ù•ÉÍÕÌ½½É‘¥¹…Ñ”ÑÉ…¹Í™½Éµ…Ñ¥½¸ˆ°(€€€€€€€€‰%¹Ñ•É¹…Ñ¥½¹…°•±•ÍÑ¥…°I•™•É•¹”MåÍÑ•´ˆ°(€€€€€€€€‰,Ô•ÅÕ…Ñ½É¥…°½½É‘¥¹…Ñ•Ìˆ°(€€€€€€€€‰…±…Ñ¥Œ½½É‘¥¹…Ñ•Ìˆ°(€€€€€€€€‰±¥ÁÑ¥Œ½½É‘¥¹…Ñ•Ìˆ°(€€€€€€€€‰!½É¥é½¹Ñ…°±Ñè½½É‘¥¹…Ñ•Ìˆ°(€€€€€€€€‰Q5ˆ°(€€€€€€€€‰ÕÉÉ•¹ĞÑÉ…¹Í™½Éµ…Ñ¥½¸¥¹Ù•¹Ñ½Éä…¹€À¸ä¸Ô‘•ÍÑ¥¹…Ñ¥½¸ˆ°(€€€€€€€€‰]•¹Ô½‰©•Ğ…Ñ…±½Õ”…¹ÁÉ½Ù•¹…¹”ˆ°(€€€€€€€€‰M!¥ÁÁ…É½Ì…Ñ…±½Õ”$¼ÈÌäˆ°(€€€€€€€€‰=Á•¹9ˆ°(€€€€€€€€‰…¥„HÌˆ°(€€€€€€€€‰5¥¹¥µ…°…É¡¥Ñ•ÑÕÉ”€À¸ä¸ÔÉ½…‘µ…Àˆ°(€€€€€€€€‰…¹½¹¥…°•±•ÍÑ¥…°µÉ•™•É•¹”™ÕÉ¹¥ÑÕÉ”ÕÍ•Ì½¹”½¡•É•¹ĞÁ½±¥äˆ°(€€€€€€€€‰É¡¥Ñ•ÑÕÉ”€À¸ä¸Ô…•ÁÑ…¹”ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸Õ¥‘”(()‘•˜Ñ•ÍÑ}ØÀá}É•±•…Í•}•Ù¥‘•¹•}É•µ…¥¹Í}±½Í• ¤è(€€€Ñ…É•Ğ€ôÉ•…¡QIP¤(€€€É½…‘µ…À€ôÉ•…¡I=5@¤(€€€É•…‘µ”€ôÉ•…¡I==P€¼€‰I5¹µˆ¤((€€€…ÍÍ•ÉĞ€ˆ¨©MÑ…ÑÕÌè¨¨%µÁ±•µ•¹Ñ•ˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€ˆ¨©I•±•…Í”è¨¨€À¸à¸Àˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€ˆ¨©MÑ…ÑÕÌè¨¨½µÁ±•Ñ”ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€ĞÙˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰…¹¹½Ñ…Ñ•¥ĞÑ…œØÀ¸à¸Á€ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€‰Y•ÉÍ¥½¸€À¸à¸ÀÉ•µ…¥¹ÌÑ¡”±…Ñ•ÍĞÑ…•ˆ¥¸É•…‘µ”(()‘•˜Ñ•ÍÑ}ØÀå}…É¡¥Ñ•ÑÕÉ•}¥Í}±½Í•‘}…¹‘}ÕÉÉ•¹Ğ ¤è(€€€ÕÉÉ•¹Ğ€ôÉ•…¡XÀå}UII9P¤(€€€Ñ…É•Ğ€ôÉ•…¡XÀå}QIP¤(€€€É½…‘µ…À€ôÉ•…¡XÀå}I=5@¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ôÉ•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤(€€€Í½ÕÉ•}ÑÉ•”€ôÉ•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤(€€€É•…‘µ”€ôÉ•…¡I==P€¼€‰I5¹µˆ¤(€€€¥¹ÍÑÉÕÑ¥½¹Ì€ôÉ•…¡%9MQIUQ%=9L¤((€€€…ÍÍ•ÉĞ€ˆ¨©MÑ…ÑÕÌè¨¨%µÁ±•µ•¹Ñ•ÕÉÉ•¹Ğ…É¡¥Ñ•ÑÕÉ”ˆ¥¸ÕÉÉ•¹Ğ(€€€…ÍÍ•ÉĞ€ˆ¨©	…Í•±¥¹”½µµ¥Ğè¨¨€Õ‘„äÍ€ˆ¥¸ÕÉÉ•¹Ğ(€€€…ÍÍ•ÉĞ€‰½ÁÑ¥½¹…°¹¥¡Ğ•‘¥Ñ¥½¸É•µ…¥¹Ì„±…Ñ•È…ÁÁ•…É…¹”•áÁ•É¥µ•¹Ğˆ¥¸ÕÉÉ•¹Ğ¹±½İ•È ¤(€€€…ÍÍ•ÉĞ€ˆ¨©MÑ…ÑÕÌè¨¨%µÁ±•µ•¹Ñ•ìÉ•Ñ…¥¹•…ÌÑ¡”…•ÁÑ•‘•Í¥¸É•½Éˆ¥¸Ñ…É•Ğ(€€€…ÍÍ•ÉĞ€ˆ¨©MÑ…ÑÕÌè¨¨½µÁ±•Ñ”ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€ˆ¨©ÕÉÉ•¹Ğ…ÕÑ¡½É¥Ñäè¨¨ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸ä¹µ‘€ˆ¥¸É½…‘µ…À(€€€…ÍÍ•ÉĞ€ˆ¨©É¡¥Ñ•ÑÕÉ”Ù•ÉÍ¥½¸è¨¨€À¸äˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€ˆ¨©É¡¥Ñ•ÑÕÉ”Ù•ÉÍ¥½¸è¨¨€À¸äˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€‰ØÀ¸ä…É¡¥Ñ•ÑÕÉ”¥Ì½µÁ±•Ñ”ˆ¥¸É•…‘µ”(€€€…ÍÍ•ÉĞ€‰ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸ä¹µˆ¥¸¥¹ÍÑÉÕÑ¥½¹Ì(()‘•˜Ñ•ÍÑ}ØÀå}Á±…¹}É•½É‘Í}Á…¥É•‘}Á¡åÍ¥…±}Á±…¹¥ÍÁ¡•É•}½¹ÑÉ…Ğ ¤è(€€€ÕÉÉ•¹Ğ€ôÉ•…¡XÀá}UII9P¤(€€€Ñ…É•Ğ€ôÉ•…¡XÀå}QIP¤(€€€É½…‘µ…À€ôÉ•…¡XÀå}I=5@¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©	…Í•±¥¹”½µµ¥Ğè¨¨ŒÄØäÄØÉ€ˆ°(€€€€€€€€‰AÉ½©•Ñ¥½¸…Àˆ°(€€€€€€€€‰A¡åÍ¥…°µÁÉ½‘ÕĞ…Àˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸ÕÉÉ•¹Ğ(€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€‰Á½±…È…é¥µÕÑ¡…°µ•ÅÕ¥‘¥ÍÑ…¹ĞÁÉ½©•Ñ¥½¸ˆ°(€€€€€€€€ˆ´äÀ‘•É••ÌÑ¡É½Õ €¬ÈÀ‘•É••Ìˆ°(€€€€€€€€ˆ¬äÀ‘•É••ÌÑ¡É½Õ €´ÈÀ‘•É••Ìˆ°(€€€€€€€€‰±Õ•‰…¬Ñ¼‰…¬ˆ°(€€€€€€€€‰½ÁÁ½Í¥Ñ”ˆ°(€€€€€€€€ˆÌØÔ‘…¥±äÑ¥­Ìˆ°(€€€€€€€€ˆÈÀèÀÀÑ¡É½Õ €ÀĞèÀÀˆ°(€€€€€€€€‰1½…±¥é…Ñ¥½¸¥ÌÑ¡”±…ÍĞˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸Ñ…É•Ğ(€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€‰5¥±•ÍÑ½¹”€Ğáˆ°(€€€€€€€€‰5¥±•ÍÑ½¹”€Ğáˆ°(€€€€€€€€‰5¥±•ÍÑ½¹”€Ğáˆ°(€€€€€€€€‰5¥±•ÍÑ½¹”€Ğáˆ°(€€€€€€€€‰]•‘¹•Í‘…ä°€ÈÀÈØ´Àà´Ääˆ°(€€€€€€€€‰5¥±•ÍÑ½¹”€Ğáˆ°(€€€€€€€€‰5¥±•ÍÑ½¹”€Ğá(ˆ°(€€€€€€€€‰5¥±•ÍÑ½¹”€Ğá,ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸É½…‘µ…À(()‘•˜Ñ•ÍÑ}É•±•…Í•}Ù•ÉÍ¥½¹}½µ•Í}™É½µ}Íµ}İ¥Ñ¡}ØÀá}…É¡¥Ù•}™…±±‰…¬ ¤è(€€€ÁÉ½©•Ğ€ôÑ½µ±±¥ˆ¹±½…‘Ì¡É•…¡I==P€¼€‰ÁåÁÉ½©•Ğ¹Ñ½µ°ˆ¤¤((€€€…ÍÍ•ÉĞÁÉ½©•Ñl‰ÁÉ½©•Ğ‰ul‰‘å¹…µ¥Œ‰t€ôôl‰Ù•ÉÍ¥½¸‰t(€€€…ÍÍ•ÉĞÁÉ½©•Ñl‰Ñ½½°‰ul‰Í•ÑÕÁÑ½½±Í}Í´‰ul‰™…±±‰…­}Ù•ÉÍ¥½¸‰t€ôô€ˆÀ¸à¸Àˆ(()‘•˜Ñ•ÍÑ}…ÍÍ¥ÍÑ…¹Ñ}¥¹ÍÑÉÕÑ¥½¹Í}¹…µ•}ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}…ÕÑ¡½É¥Ñ¥•Ì ¤è(€€€¥¹ÍÑÉÕÑ¥½¹Ì€ôÉ•…¡%9MQIUQ%=9L¤(€€€™½È¹…µ”¥¸€ (€€€€€€€€‰ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸ä¹µˆ°(€€€€€€€€‰…É¡¥Ù”½…É¡¥Ñ•ÑÕÉ•}¡¥ÍÑ½Éä½Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸ä¹µˆ°(€€€€€€€€‰…É¡¥Ù”½µ¥É…Ñ¥½¹}¡¥ÍÑ½Éä½İ•¹Õ}µ¥É…Ñ¥½¹|À¸á}Ñ½|À¸ä¹µˆ°(€€€€€€€€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ°(€€€€€€€€‰Í½ÕÉ•}ÑÉ•”¹µˆ°(€€€€€€€€‰½½É‘¥¹…Ñ•}ÑÉ…¹Í™½Éµ…Ñ¥½¹}…Õ‘¥Ñ|Àå„É…™¹µˆ°(€€€€€€€€‰Á½ÍÑ}ØÀ¸å}…É¡¥Ñ•ÑÕÉ•}É½…‘µ…À¹µˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞ¹…µ”¥¸¥¹ÍÑÉÕÑ¥½¹Ì(€€€…ÍÍ•ÉĞ€‰¡¥ÍÑ½É¥…°•Ù¥‘•¹”°¹½Ğ…Ñ¥Ù”ˆ¥¸¥¹ÍÑÉÕÑ¥½¹Ì(()‘•˜Ñ•ÍÑ}Á½ÍÑ}ØÀå}É½…‘µ…Á}É•½É‘Í}½½É‘¥¹…Ñ•}ÍÙ}…¹‘}Ñ•µÁ½É…±}‘¥É•Ñ¥½¸ ¤è(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€‰Qİ¼¥¹‘•Á•¹‘•¹Ğ‘•Ù•±½Áµ•¹ĞÑÉ…­Ìˆ°(€€€€€€€€‰=¹”…ÍÑÉ½¹½µ¥…°½½É‘¥¹…Ñ”Í•ÉÙ¥”ˆ°(€€€€€€€€‰A½Í¥Ñ¥½¸µÁÉ½Ù¥‘•È‰½Õ¹‘…Éäˆ°(€€€€€€€€‰MYÁÉ½‘ÕĞÙ•É¥™¥…Ñ¥½¸ˆ°(€€€€€€€€‰Q•µÁ½É…°Í•ÅÕ•¹”½¹ÑÉ…Ğˆ°(€€€€€€€€‰¥á•Í­ä…¹É½Ñ…Ñ¥¹œ¡½É¥é½¸ˆ°(€€€€€€€€‰Ñ½½±Ì½É•¹‘•É}¥ÉÕµÁ½±…É}µ½Ù¥”¹Áäˆ°(€€€€€€€€‰Í¥µÕ±…Ñ¥½¸Ñ¥µ”ˆ°(€€€€€€€€‰Ñ¥µ”Í…±”ˆ°(€€€€€€€€‰Q5ˆ°(€€€€€€€€‰M@Ğˆ°(€€€€€€€€‰½µÁ±•Ñ”µÉ•¹‘•ÈÁ…Ñ …Ì„½ÉÉ•Ñ¹•ÍÌ½É…±”ˆ°(€€€€€€€€‰5¥±•ÍÑ½¹”€Ğå¸ÈƒŠP5¥É…Ñ”ÁÉ½‘ÕÑ¥½¸ÑÉ…¹Í™½Éµ…Ñ¥½¹Ìˆ°(€€€€€€€€ˆÄàÀäÑ•ÍÑÌ¥¸€àØ¸ÄÄÍ•½¹‘Ìˆ°(€€€€€€€€‰Ù¥ÍÕ…±±ä…•ÁÑ•‰ä•É¹…¹‘¼½¸€ÈÀÈØ´Àà´Èàˆ°(€€€€€€€€ˆÄàÀÔÑ•ÍÑÌ¥¸€àØ¸ÈäÍ•½¹‘Ìˆ°(€€€€€€€€ˆÄÜÜäÑ•ÍÑÌİ¥Ñ €ÌÀ‘•Í•±•Ñ•¥¸€ÈÜ¸ÌÄÍ•½¹‘Ìˆ°(€€€€€€€€ˆÄàÀäÑ•ÍÑÌ¥¸€àĞ¸ääÍ•½¹‘Ìˆ°(€€€€€€€€‰%µµ•‘¥…Ñ”Á½ÍĞµØÀ¸ä¸ÔÁÕ‰±¥Œµ¥¹Ñ•É™…”™½±±½ÜµÕÀˆ°(€€€€€€€€‰µ…­”Ñ¡”¥¹ÍÑ…±±•İ•¹Õ}¡…ÉÑ€½µµ…¹Ñ¡”½É‘¥¹…ÉäÁÕ‰±¥ŒÉ½ÕÑ”ˆ°(€€€€€€€€‰É•Í•ÉÙ”Ñ½½±Ì½€™½È‘¥…¹½ÍÑ¥Ìˆ°(€€€€€€€€‰½½É‘¥¹…Ñ”ÍåÍÑ•´°™É…µ”°•Á½ ½•ÅÕ¥¹½àˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸É½…‘µ…À(()‘•˜Ñ•ÍÑ|ĞåÅ}…Õ‘¥ÑÍ}Í•¹•}‘•Á•¹‘•¹¥•Í}İ¥Ñ¡½ÕÑ}ÉÕ¹Ñ¥µ•}¡…¹” ¤è(€€€…Õ‘¥Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡M9}A99e}U%P¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©Õ‘¥Ğ‰…Í•±¥¹”è¨¨ˆÑ…˜ØÈİ€ˆ°(€€€€€€€€‰±½…µÑ¥µ”½İ¹•ÉÍ¡¥Àˆ°(€€€€€€€€‰½‰Í•ÉÙ•Èµ¥¹‘•Á•¹‘•¹Ğ±½…‘•ÍÁ¡•É”ÕÉÉ•¹Ñ±äÁÉ½‘Õ•Ì…¸€ˆ(€€€€€€€€‰½‰Í•ÉÙ•Èµ‘•Á•¹‘•¹ĞÉ•¹‘•ÈÉ•…±¥é…Ñ¥½¸ˆ°(€€€€€€€€‰M½ÕÉ”¥‘•¹Ñ¥Ñäˆ°(€€€€€€€€‰AÉ½Ù¥‘•È•Á½ ˆ°(€€€€€€€€‰Ù…±Õ…Ñ¥½¸¥¹ÍÑ…¹Ğˆ°(€€€€€€€€‰I•™•É•¹”Á½±¥äˆ°(€€€€€€€€‰AÉ½‘ÕĞ™É…µ”ˆ°(€€€€€€€€‰•±•ÍÑ¥…°‰…­É½Õ¹ˆ°(€€€€€€€€‰å¹…µ¥Œ…ÍÑÉ½¹½µ¥…°½‰©•ÑÌˆ°(€€€€€€€€‰=‰Í•ÉÙ•Èµ±½…°•½µ•ÑÉäˆ°(€€€€€€€€‰‰•™½É”ÁÉ½©•Ñ¥½¸…¹…™Ñ•ÈÁÉ½Ù¥‘•È•Ù…±Õ…Ñ¥½¸ˆ°(€€€€€€€€‰½¹”•áÁ±¥¥ĞÍÁ¡•É¥…°ÁÉ½‘ÕĞ™É…µ”ˆ°(€€€€€€€€‰½¹ÑÉ½±±•Ñ•ÍĞÁÉ½Ù¥‘•Èˆ°(€€€€€€€€‰µÕÍĞÁÉ•Í•ÉÙ”Ñ¡”ÕÉÉ•¹Ğ…±°ˆ°(€€€€€€€€‰Q¡¥Ì…Õ‘¥Ğ±…ÍÍ¥™¥•Ì‘•Á•¹‘•¹¥•Ìì¥Ğ‘½•Ì¹½Ğ…ÕÑ¡½É¥é”…¡¥¹œˆ°(€€€€€€€€‰‘½•Ì¹½Ğ¥¹ÑÉ½‘Õ”„Í•¹”É…Á ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸…Õ‘¥Ğ((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€‰5¥±•ÍÑ½¹”€Ğå¸ÄƒŠP•±•ÍÑ¥…°µÍ•¹”‘•Á•¹‘•¹ä…¹½İ¹•ÉÍ¡¥À…Õ‘¥Ğˆ°(€€€€€€€€‰½µÁ±•Ñ¥¹œ•Ù•Éä€Ğåµ¥É…Ñ¥½¸¥Ì¹½Ğ„ÁÉ•É•ÅÕ¥Í¥Ñ”ˆ°(€€€€€€€€‰É•…°•Á¡•µ•É¥ÌÁÉ½Ù¥‘•ÈÉ•µ…¥¹Ì5¥±•ÍÑ½¹”€Ğåˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸É½…‘µ…À((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€‰M•¹”‘•Á•¹‘•¹¥•Ì…¹µ½Ù¥¹œ…ÍÑÉ½¹½µ¥…°½‰©•ÑÌˆ°(€€€€€€€€‰Á±…¹•ĞÑ¡•É•™½É”‘½•Ì¹½Ğ‰•±½¹œ¥¸Ñ¡”É•¹‘•É•Èˆ°(€€€€€€€€‰Q¡”Á±…¹•Ğµ•¹…‰±¥¹œ¥¹Í•ÉÑ¥½¸Á½¥¹Ğ¥Ì…™Ñ•ÈÁÉ½Ù¥‘•È•Ù…±Õ…Ñ¥½¸ˆ°(€€€€€€€€‰]•¹Ô¥µÁ±•µ•¹Ñ…Ñ¥½¸‰½àƒŠP€Ğå¸Ä‘•Á•¹‘•¹ä‰½Õ¹‘…Éäˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸Õ¥‘”((€€€…ÍÍ•ÉĞ€‰•±•ÍÑ¥…°µÍ•¹”‘•Á•¹‘•¹¥•Ì€¡5¥±•ÍÑ½¹”€Ğå¸Ä¤ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰‘½•Ì¹½Ğ•¹Ñ•ÈÑ¡É½Õ Ñ¡”É•¹‘•É•È°™ÕÉ¹¥ÑÕÉ”°½µµ…¹ˆ¥¸€ (€€€€€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€€¤(€€€…ÍÍ•ÉĞ€‰5¥±•ÍÑ½¹”€Ğå¸Ä…‘‘Ì¹¼ÉÕ¹Ñ¥µ”µ½‘Õ±”ˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€‰M¥•¹Ñ¥™¥…±±ä…¹Á•‘…½¥…±±ä…•ÁÑ•ˆ°(€€€€€€€€ˆÌä‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌ¥¸€È¸ÜàÍ•½¹‘Ìˆ°(€€€€€€€€ˆÄ°ÜàäÉ½ÕÑ¥¹”Ñ•ÍÑÌİ¥Ñ €ÌÀ‘•Í•±•Ñ•¥¸€ÈØ¸ØÈÍ•½¹‘Ìˆ°(€€€€€€€€‰…±°€Ä°àÄäÑ•ÍÑÌ¥¸€àĞ¸ĞÄÍ•½¹‘Ìˆ°(€€€€€€€€‰Ñ¡¥Ì…•ÁÑ…¹”‘½•Ì¹½Ğ¥ÑÍ•±˜…ÕÑ¡½É¥é”Ñ¡…ĞÉÕ¹Ñ¥µ”¡…¹”ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸…Õ‘¥Ğ(€€€…ÍÍ•ÉĞ€ˆĞå¸ÄÍ¥•¹Ñ¥™¥Œ…¹Á•‘…½¥…°…•ÁÑ…¹”ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰…•ÁÑ•Ñ¡”Í•¹”µ‘•Á•¹‘•¹ä•áÁ±…¹…Ñ¥½¸ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰9¼Ù¥ÍÕ…°½µÁ…É¥Í½¸İ…ÌÉ•ÅÕ¥É•ˆ¥¸É½…‘µ…À(()‘•˜Ñ•ÍÑ|ĞåÉ}É•½É‘Í}µ¥¹¥µ…±}É•…±¥é…Ñ¥½¹}½¹Ñ•áÑ}…¹‘}¹½¹}½…±Ì ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡1eI}I1%iQ%=9}=9QIP¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©%µÁ±•µ•¹Ñ…Ñ¥½¸‰…Í•±¥¹”è¨¨€å”ÄÙ•É€ˆ°(€€€€€€€€‰ÁÉ½‘ÕÑ}½½É‘¥¹…Ñ•}ÍÁ•Œˆ°(€€€€€€€€‰•Ù…±Õ…Ñ¥½¹}¥¹ÍÑ…¹Ğˆ°(€€€€€€€€‰•Ù…±Õ…Ñ¥½¹}Ñ¥µ•}Í…±”ˆ°(€€€€€€€€‰É•™•É•¹•}•ÅÕ¥¹½àˆ°(€€€€€€€€‰½¹Ñ…¥¹Ì¹¼ÁÉ½©•Ñ¥½¸°Ù¥•İÁ½ÉĞ°É•¹‘•É•È°ÍÑå±”ˆ°(€€€€€€€€‰½¹Ñ•áĞ½µ¥ÑÑ•ˆ°(€€€€€€€€‰QåÁ•½¹Ñ•áĞÍÕÁÁ±¥•ˆ°(€€€€€€€€‰•á…Ğ±•…ä‰É…¹ ˆ°(€€€€€€€€‰‘•Ñ•Éµ¥¹¥ÍÑ¥ŒÑ•ÍĞµ½¹±äÁÉ½Ù¥‘•Èˆ°(€€€€€€€€‰ÑÉ…¹Í™½ÉµÌ¥Ğ•á…Ñ±ä½¹”Ñ¡É½Õ ½½É‘¥¹…Ñ•M•ÉÙ¥•€ˆ°(€€€€€€€€‰¡…ÉĞµİ¥‘”™É…µ”¡½¥”…±½¹”…¹¹½ĞÉ•Á±…”ˆ°(€€€€€€€€‰‘½•Ì¹½Ğ…‘½È¡½½Í”„)A0•Á¡•µ•É¥Ìˆ°(€€€€€€€€‰‘½•Ì¹½ĞÑ¡É•…Ñ¡”½¹Ñ•áĞÑ¡É½Õ ½É‘¥¹…Éäˆ°(€€€€€€€€‰M¥•¹Ñ¥™¥…±±ä°Á•‘…½¥…±±ä°…¹Ñ•¡¹¥…±±ä…•ÁÑ•ˆ°(€€€€€€€€‰…±°€Ä°àÈàÑ•ÍÑÌ¥¸€äÀ¸ÀÀÍ•½¹‘Ìˆ°(€€€€€€€€‰=ÕÑÁÕĞµ¹•ÕÑÉ…°…¹MY½¹ÑÉ…Ğˆ°(€€€€€€€€‰Í½±…ÈµÍåÍÑ•´½ÍÕ¹€ˆ°(€€€€€€€€‰9¼™ÕÑÕÉ”µ½Ù¥¹œ½‰©•Ğµ…ä‰”‘É…İ¸‰ä„Í•Á…É…Ñ”MY•¹•É…Ñ½Èˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€‰5¥±•ÍÑ½¹”€Ğå¸ÈƒŠP5¥¹¥µ…°±…å•ÈµÉ•…±¥é…Ñ¥½¸½¹Ñ•áĞˆ°(€€€€€€€€‰=É‘¥¹…Éä¡…ÉĞÉ•ÅÕ•ÍÑÌ‘¼¹½ĞÍÕÁÁ±ä½¹”¥¸€Ğå¸Èˆ°(€€€€€€€€‰I•…°•Á¡•µ•É¥‘•Ì°¥¹ÍÑ…±±•µ½Ù¥¹œµ½‰©•Ğ±…å•ÉÌˆ°(€€€€€€€€‰MYÁÉ½‘ÕĞµ…äÍ•É¥…±¥é”Ñ¡”É•Í•ÉÙ•ˆ°(€€€€€€€€‰¹¼Á½ÍĞµ•áÁ½ÉĞ½Ù•É±…ä¥Ì…•ÁÑ…‰±”ˆ°(€€€€€€€€‰•ÁÑ…¹”•Ù¥‘•¹”¥Ì€Ğà™½ÕÍ•Ñ•ÍÑÌˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸É½…‘µ…À((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€‰½ÁÑ¥½¹…°¥µµÕÑ…‰±”1…å•ÉI•…±¥é…Ñ¥½¹½¹Ñ•áÑ€‰•™½É”ÁÉ½©•Ñ¥½¸ˆ°(€€€€€€€€‰¹¼ÕÉÉ•¹Ğ…ÍÑÉ½¹½µ¥…°±…å•Èˆ°(€€€€€€€€‰Í¥¹±”•áÁ½ÉĞÁ…Ñ ˆ°(€€€€€€€€‰µÕÍĞ¹½Ğ¥¹™•È…ÍÑÉ½¹½µ¥…°¥‘•¹Ñ¥Ñäˆ°(€€€€€€€€‰…•ÁÑ•‰ä•É¹…¹‘¼½¸ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸…É¡¥Ñ•ÑÕÉ”((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆĞå¸Èµ¥¹¥µ…°É•…±¥é…Ñ¥½¸¡…¹‘½™˜ˆ°(€€€€€€€€‰Íµ…±°Í•…±•ƒŠq¥¹ÍÑÉÕÑ¥½¸…É“Štˆ°(€€€€€€€€‰½¹ÑÉ½±±•Ñ•ÍĞ½‰©•Ğˆ°(€€€€€€€€‰Q¡¥ÌÁÉ½Ù•Ì½İ¹•ÉÍ¡¥À…¹½É‘•É¥¹œ°¹½ĞÁ±…¹•Ñ…Éä…ÕÉ…äˆ°(€€€€€€€€‰]•¹Ô¥µÁ±•µ•¹Ñ…Ñ¥½¸‰½àƒŠP€Ğå¸ÈÉ•…±¥é…Ñ¥½¸½¹Ñ•áĞˆ°(€€€€€€€€‰MY¥Ì¹½Ğ„Í•½¹…ÍÑÉ½¹½µä•¹¥¹”ˆ°(€€€€€€€€ˆÄÌ¸È¸Ì€Ğå¸ÈÍ¥•¹Ñ¥™¥Œ…¹Á•‘…½¥…°…•ÁÑ…¹”ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸Õ¥‘”((€€€…ÍÍ•ÉĞ€‰5¥¹¥µ…°±…å•ÈµÉ•…±¥é…Ñ¥½¸½¹Ñ•áĞ€¡5¥±•ÍÑ½¹”€Ğå¸È¤ˆ¥¸€ (€€€€€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€€¤(€€€…ÍÍ•ÉĞ€‰MÕÁÁ±å¥¹œ¹¼É•…±¥é…Ñ¥½¹}½¹Ñ•áÑ€ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰‘½İ¹ÍÑÉ•…´…¹¹½Ñ…Ñ½ÈÍ•É¥…±¥é•ÌÑ¡”É•Í•ÉÙ•ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰9¼Í•Á…É…Ñ”MY…ÍÑÉ½¹½µä•¹•É…Ñ½Èˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€‰Í­ä½É•…±¥é…Ñ¥½¸¹Áå€½İ¹ÌÑ¡”™É½é•¸€Ğå¸Èˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€‰•á¥ÍĞ½¹±ä¥¸Ñ•ÍÑÌ½Ñ•ÍÑ}±…å•É}É•…±¥é…Ñ¥½¸¹Áå€ˆ¥¸Í½ÕÉ•}ÑÉ•”(()‘•˜Ñ•ÍÑ|Ğå”Å}É•½É‘Í}•Á¡•µ•É¥Í}Í½ÕÉ•}…¹‘}‘¥É•Ñ¥½¹}É•…±¥é•É}‰½Õ¹‘…Éä ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡A!5I%M}AI=Y%I}=9QIP¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©Ìµ¥Ì‰…Í•±¥¹”è¨¨€àÕŒÜÌäÉ€ˆ°(€€€€€€€€‰I•ÅÕ¥É•Ñİ¼µÍÑ…”‰½Õ¹‘…Éäˆ°(€€€€€€€€‰•Á¡•µ•É¥ÌÍÑ…Ñ”Í½ÕÉ”ˆ°(€€€€€€€€‰Í½±…ÈµÍåÍÑ•´‘¥É•Ñ¥½¸É•…±¥é…Ñ¥½¸ˆ°(€€€€€€€€‰•¹ÑÉ”…¹™É…µ”…É”¹½ĞÍå¹½¹åµÌˆ°(€€€€€€€€‰É•Ñ…É‘••µ¥ÍÍ¥½¸Ñ¥µ•Ìˆ°(€€€€€€€€‰½¹”µİ…ä±¥¡ĞÑ¥µ”ˆ°(€€€€€€€€‰­•É¹•°¥‘•¹Ñ¥Ñäˆ°(€€€€€€€€‰A½Í¥Ñ¥½¹MÑ…ÑÕÌ¹Q=A=9QI%€¥ÌÍ¥•¹Ñ¥™¥…±±äµ¥ÍÁ±…•ˆ°(€€€€€€€€‰9¼½ÉÉ•Ñ¥½¸µ…ä‰”¥µÁ±¥•ˆ°(€€€€€€€€‰¹¼¡¥‘‘•¸¹•Ñİ½É¬…•ÍÌ‘ÕÉ¥¹œÉ•¹‘•É¥¹œˆ°(€€€€€€€€‰É…Ü•Á¡•µ•É¥ÌÍÑ…Ñ”¥Ì¹½ĞMÁ¡•É¥…±•½µ•ÑÉå€ˆ°(€€€€€€€€‰	½‘ä•½µ•ÑÉä‘•±¥‰•É…Ñ•±ä‘•™•ÉÉ•ˆ°(€€€€€€€€ˆĞå¸ÈƒŠPµ¥¹¥µ…°ÉÕ¹Ñ¥µ”½¹ÑÉ…ÑÌˆ°(€€€€€€€€ˆĞå¸ÌƒŠP¥¹ÍÑ…±±•­•É¹•°…‘…ÁÑ•Èˆ°(€€€€€€€€‰Í¥àµ½µÁ½¹•¹ĞÁ½Í¥Ñ¥½¸µÙ•±½¥Ñäˆ°(€€€€€€€€‰M!´ÈÔØ½¹Ñ•¹Ğ™¥¹•ÉÁÉ¥¹Ğˆ°(€€€€€€€€‰ÕÍ”Y•¹ÕÌ™½È€Ğå$¸Äˆ°(€€€€€€€€‰…±°€ĞÄÕÉÉ•¹Ğµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌ¥¸€Ì¸ÈØˆ°(€€€€€€€€ˆĞå$¸ÄƒŠPY•¹ÕÌÙ•ÉÑ¥…°Í±¥”ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€‰5¥±•ÍÑ½¹”€Ğå¸ÄƒŠPÁ¡•µ•É¥ÌµÁÉ½Ù¥‘•È½¹ÑÉ…Ğ…Õ‘¥Ğˆ°(€€€€€€€€‰…ÉÑ•Í¥…¸ÍÑ…Ñ”Í½ÕÉ”ˆ°(€€€€€€€€‰É•Ñ…É‘••µ¥ÍÍ¥½¸µÑ¥µ”•Ù…±Õ…Ñ¥½¸ˆ°(€€€€€€€€ˆĞå¸Ä¡…¹•¹¼ÉÕ¹Ñ¥µ”ÑåÁ”½È½ÕÑÁÕĞˆ°(€€€€€€€€‰Y•¹ÕÌ¥ÌÑ¡”™¥ÉÍĞ€Ğå$¸Ä‰½‘äˆ°(€€€€€€€€‰•ÁÑ…¹”Ù•É¥™¥…Ñ¥½¸Á…ÍÍ•…±°€ĞÄ‘½Õµ•¹Ñ…Ñ¥½¸ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸É½…‘µ…À((€€€…ÍÍ•ÉĞ€‰ÁÉ½Á½Í•€Ğå¸Ä•Á¡•µ•É¥Ì‰½Õ¹‘…Éäˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€‰É…Ü‰…Éå•¹ÑÉ¥ŒÙ•Ñ½ÈµÕÍĞ¹•Ù•È‰”É•±…‰•±±•ˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€‰A½Í¥Ñ¥½¹MÑ…ÑÕÌ¹Q=A=9QI%€¥ÌÉ•µ½Ù•…Ñ½µ¥…±±äˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€‰Y•¹ÕÌ¥ÌÑ¡”™¥ÉÍĞÁ±…¹¹•€Ğå$¸Ä‰½‘äˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸Ğ€Ğå¸Ä•Á¡•µ•É¥ÌµÁÉ½Ù¥‘•È‘•Í¥¸ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰µ½É”±¥­”„ÁÉ•¥Í”µ½Ù¥¹œµ…Àˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰]•¹Ô¥µÁ±•µ•¹Ñ…Ñ¥½¸‰½àƒŠP€Ğå¸ÄÁÉ½Ù¥‘•È‰½Õ¹‘…Éäˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰M!´ÈÔØ¥Ì½µÁÕÑ•½¹”ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Y•¹ÕÌ¥ÌÑ¡”™¥ÉÍĞÁ±…¹¹•µ½Ù¥¹œµ‰½‘äˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰±°€ĞÄ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌÁ…ÍÍ•¥¸€Ì¸ÈØÍ•½¹‘Ìˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰AÉ½Á½Í••Á¡•µ•É¥ÌµÁÉ½Ù¥‘•È‰½Õ¹‘…Éäˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰™¥ÉÍĞ±…Ñ•ÈÙ•ÉÑ¥…°Í±¥”¥ÌY•¹ÕÌˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰Í­å™¥•±‘}•Á¡•µ•É¥Ì¹Áå€¹½Ü½İ¹ÌÑ¡”™¥ÉÍĞÉ•…°ˆ¥¸Í½ÕÉ•}ÑÉ•”(()‘•˜Ñ•ÍÑ|Ğå”É}É•½É‘Í}µ¥¹¥µ…±}ÉÕ¹Ñ¥µ•}½¹ÑÉ…ÑÍ}…¹‘}¹½¹}½…±Ì ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡A!5I%M}IU9Q%5}=9QIP¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©%µÁ±•µ•¹Ñ…Ñ¥½¸‰…Í•±¥¹”è¨¨ÄÑ„ÔÉ€ˆ°(€€€€€€€€‰Á¡•µ•É¥ÍI•Í½ÕÉ•%‘•¹Ñ¥Ñäˆ°(€€€€€€€€‰Á¡•µ•É¥ÍMÑ…Ñ•I•ÅÕ•ÍĞˆ°(€€€€€€€€‰Á¡•µ•É¥ÍMÑ…Ñ”ˆ°(€€€€€€€€‰Á¡•µ•É¥ÍMÑ…Ñ•M½ÕÉ”ˆ°(€€€€€€€€‰Q¡•É”¥Ì¹¼‘•™…Õ±Ğ½È½ÁÑ¥½¹…°Ù•±½¥Ñäˆ°(€€€€€€€€‰Q¡¥Ì¥Ì…¸…Ñ½µ¥Œ¥¹Ñ•É¹…°½ÉÉ•Ñ¥½¸ˆ°(€€€€€€€€‰½‰Í•ÉÙ•É}…±Ñ…é}ÍÁ•Œ ¥€¹½ÜÉ•ÅÕ¥É•Ì…¸•áÁ±¥¥ĞÁ½Í¥Ñ¥½¹}ÍÑ…ÑÕÍ€ˆ°(€€€€€€€€‰9…Ñ¥Ù”½‰Í•ÉÙ•Èµ±½…°¡½É¥é½¸ˆ°(€€€€€€€€‰Q¡”¹•ÜÍÑ…Ñ”¥Ì•½µ•ÑÉ¥Œ…ÉÑ•Í¥…¸ÁÉ½Ù¥‘•È½ÕÑÁÕĞˆ°(€€€€€€€€‰‘•Ñ•Éµ¥¹¥ÍÑ¥ŒY•¹ÕÌÍÑ…Ñ”ˆ°(€€€€€€€€‰Í½±…ÈµÍåÍÑ•´½Á±…¹•ÑÌ½Ù•¹ÕÌˆ°(€€€€€€€€‰Q¡¥ÌÁÉ½Ù•Ì½¹ÑÉ…ĞÍ¡…Á”…¹½İ¹•ÉÍ¡¥À°¹½Ğ•Á¡•µ•É¥Ì…ÕÉ…äˆ°(€€€€€€€€‰‘½•Ì¹½ĞÉ•…Ñ”¥Ğˆ°(€€€€€€€€‰…±Õ±…Ñ”„M!´ÈÔØ‘¥•ÍĞ™É½´„™¥±”ˆ°(€€€€€€€€‰9¼¹•ÜÙ¥ÍÕ…°É•¹‘•Èİ…ÌÉ•ÅÕ¥É•ˆ°(€€€€€€€€‰Í¥•¹Ñ¥™¥…±±ä…•ÁÑ•€Ğå¸È½¸€ÈÀÈØ´Àà´ÌÀˆ°(€€€€€€€€ˆäÈ™½ÕÍ•Ñ•ÍÑÌ¥¸€È¸ÜÈÍ•½¹‘Ìˆ°(€€€€€€€€ˆÄ°àÈÄÉ½ÕÑ¥¹”Ñ•ÍÑÌˆ°(€€€€€€€€‰…±°€Ä°àÔÄÑ•ÍÑÌ¥¸€àĞ¸ÄÈÍ•½¹‘Ìˆ°(€€€€€€€€‰™ÕÑÕÉ”Y•¹ÕÌ°5½½¸°Á±…¹•Ğ°…¹MÕ¸ÁÉ½‘ÕÑÌˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€‰5¥±•ÍÑ½¹”€Ğå¸ÈƒŠP5¥¹¥µ…°•Á¡•µ•É¥ÌÉÕ¹Ñ¥µ”½¹ÑÉ…ÑÌˆ°(€€€€€€€€‰½µÁ±•Ñ”Í¥àµ½µÁ½¹•¹ĞÁ¡•µ•É¥ÍMÑ…Ñ•€ˆ°(€€€€€€€€‰9¼É•…°™¥±”¥Ì½Á•¹•½È¡…Í¡•ˆ°(€€€€€€€€‰A½Í¥Ñ¥½¹MÑ…ÑÕÌ¹Q=A=9QI%€µ•µ‰•È¥ÌÉ•µ½Ù•…Ñ½µ¥…±±äˆ°(€€€€€€€€‰Ñ•ÍĞµ½¹±äY•¹ÕÌÍ½ÕÉ”ˆ°(€€€€€€€€‰É•ÅÕ¥É•Ì•Ù•Éä…±±•ÈÑ¼‘•±…É”Á½Í¥Ñ¥½¹}ÍÑ…ÑÕÍ€ˆ°(€€€€€€€€‰M¥•¹Ñ¥™¥…±±ä…•ÁÑ•‰ä•É¹…¹‘¼½¸€ÈÀÈØ´Àà´ÌÀˆ°(€€€€€€€€ˆÄ°àÈÄÉ½ÕÑ¥¹”Ñ•ÍÑÌİ¥Ñ €ÌÀ‘•Í•±•Ñ•ˆ°(€€€€€€€€‰…±°€Ä°àÔÄÑ•ÍÑÌ¥¸€àĞ¸ÄÈÍ•½¹‘Ìˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸É½…‘µ…À((€€€…ÍÍ•ÉĞ€ˆĞå¸È¥¹ÍÑ…±±Ì½¹±äÉ•¹‘•É•Èµ¹•ÕÑÉ…°ˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸Ô€Ğå¸Èµ¥¹¥µ…°ÉÕ¹Ñ¥µ”ÍÑ…Ñ”½¹ÑÉ…ÑÌˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰ÍÑ…Ñ”¥¸ÍÁ…—ŠQ¹½Ğå•ĞÑ¡”‘¥É•Ñ¥½¸ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰]•¹Ô¥µÁ±•µ•¹Ñ…Ñ¥½¸‰½àƒŠP€Ğå¸ÈÉÕ¹Ñ¥µ”‰½Õ¹‘…Éäˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰‘•±¥‰•É…Ñ•±ä¡…Ì¹¼ÍÑ…ÑÕÌ‘•™…Õ±Ğˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰™ÕÑÕÉ”É•™É…Ñ•ÁÉ½‘ÕÑÌˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰5¥¹¥µ…°•Á¡•µ•É¥ÌÉÕ¹Ñ¥µ”½¹ÑÉ…ÑÌ€¡5¥±•ÍÑ½¹”€Ğå¸È¤ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰É•ÅÕ¥É•Ì…¸•áÁ±¥¥ĞÁ½Í¥Ñ¥½¹}ÍÑ…ÑÕÍ€ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰¹…Ñ¥Ù”¡½É¥é½¸ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰•Á¡•µ•É¥Ì¹Áå€½İ¹ÌÑ¡”™É½é•¸€Ğå¸Èˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€‰É•ÅÕ¥É•Ì•áÁ±¥¥ĞÍÑ…ÑÕÌ…Ğ•Ù•Éäˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€‰‘•Ñ•Éµ¥¹¥ÍÑ¥Œ½¹ÑÉ…ĞÍ½ÕÉ”É•µ…¥¹Ì¥¸Ñ•ÍÑÌ½Ñ•ÍÑ}•Á¡•µ•É¥Ì¹Áå€ˆ¥¸Í½ÕÉ•}ÑÉ•”((()‘•˜Ñ•ÍÑ|Ğå”Í}É•½É‘Í}‰½ÉÉ½İ•‘}Í­å™¥•±‘}…‘…ÁÑ•É}…¹‘}¹½¹}½…±Ì ¤è(€€€½¹ÑÉ…Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡M-e%1}A!5I%M}=9QIP¤¹ÍÁ±¥Ğ ¤¤(€€€É½…‘µ…À€ô€ˆ€ˆ¹©½¥¸¡É•…¡UQUI}I=5@¤¹ÍÁ±¥Ğ ¤¤(€€€…É¡¥Ñ•ÑÕÉ”€ô€ˆ€ˆ¹©½¥¸¡É•…¡XÀå}UII9P¤¹ÍÁ±¥Ğ ¤¤(€€€Õ¥‘”€ô€ˆ€ˆ¹©½¥¸¡É•…¡==I%9Q}U%¤¹ÍÁ±¥Ğ ¤¤(€€€¥µÁ±•µ•¹Ñ…Ñ¥½¸€ô€ˆ€ˆ¹©½¥¸ (€€€€€€€É•…¡Y1=AH€¼€‰¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µˆ¤¹ÍÁ±¥Ğ ¤(€€€€¤(€€€Í½ÕÉ•}ÑÉ•”€ô€ˆ€ˆ¹©½¥¸¡É•…¡Y1=AH€¼€‰Í½ÕÉ•}ÑÉ•”¹µˆ¤¹ÍÁ±¥Ğ ¤¤((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©%µÁ±•µ•¹Ñ…Ñ¥½¸‰…Í•±¥¹”è¨¨€İ„äÜá„Á€ˆ°(€€€€€€€€‰	½ÉÉ½İ•M­å™¥•±•Á¡•µ•É¥Ì…‘…ÁÑ•Èˆ°(€€€€€€€€‰É•±…Ñ¥Ù”Ñ¼İ¡…Ğüˆ°(€€€€€€€€‰Ñ¡É•”™½ÈÁ½Í¥Ñ¥½¸…¹Ñ¡É•”™½ÈÙ•±½¥Ñäˆ°(€€€€€€€€‰Í¥µÕ±Ñ…¹•½ÕÌ•½µ•ÑÉ¥Œ‘¥™™•É•¹”ˆ°(€€€€€€€€‰½Á•¹Ì¹¼Í•½¹­•É¹•°ˆ°(€€€€€€€€‰½¹Í•ÉÙ…Ñ¥Ù”½µµ½¸¥¹Ñ•ÉÍ•Ñ¥½¸ˆ°(€€€€€€€€‰½¹±ä™É…µ”õp‰¥É™p‰€ˆ°(€€€€€€€€‰Á½Í¥Ñ¥½¸¥¸Tˆ°(€€€€€€€€‰Ù•±½¥Ñä¥¸T½‘…äˆ°(€€€€€€€€‰Í•Á…É…Ñ”‘•Ñ•Éµ¥¹¥ÍÑ¥Œ]•¹Ô•á•ÁÑ¥½¹Ìˆ°(€€€€€€€€‰É•™ÕÍ•ÌÑ¼‘½İ¹±½…„µ¥ÍÍ¥¹œ­•É¹•°ˆ°(€€€€€€€€‰‘½•Ì¹½Ğ¥¹‘•Á•¹‘•¹Ñ±äÉ•Ù…±¥‘…Ñ”Ñ¡”ĞĞÀ‘å¹…µ¥…°Í½±ÕÑ¥½¸ˆ°(€€€€€€€€‰¹½Ğ„Í­ä‘¥É•Ñ¥½¸…¹¥Ì¹½Ğ‘É…İ…‰±”ˆ°(€€€€€€€€‰Y•¹ÕÌÉ•¹‘•É¥¹œÉ•µ…¥¹Ì€Ğå$¸Äˆ°(€€€€€€€€‰ŒÅŒİ™••…ˆààÈÈØÍ™ŒĞäÍ„åÕ„ÕˆÉ‘‘ÜÅˆÔĞàÈÙ‘˜ØÕáÄİ„ÜØÄÈÙˆÈØÁ„Ğå˜Èˆ°(€€€€€€€€‰½µµ½¸½Ù•É…”)€ÈÌäØÜÔÈ¸ÔÑ¡É½Õ )€ÈÔÀØÌÔÈ¸ÔQˆ°(€€€€€€€€‰É•Í¥‘Õ…°İ…Ìé•É¼İ¥Ñ¡¥¸Ñ¡…ĞÑ½±•É…¹”ˆ°(€€€€€€€€‰M¥•¹Ñ¥™¥…±±ä…•ÁÑ•‰ä•É¹…¹‘¼½¸€ÈÀÈØ´Àà´ÌÀˆ°(€€€€€€€€ˆÜÈ™½ÕÍ•Ñ•ÍÑÌ¥¸€Ä¸ÜÌÍ•½¹‘Ìˆ°(€€€€€€€€ˆÄ°àÌÀÉ½ÕÑ¥¹”Ñ•ÍÑÌˆ°(€€€€€€€€‰…±°€Ä°àØÀÑ•ÍÑÌ¥¸€àĞ¸ÜàÍ•½¹‘Ìˆ°(€€€€€€€€‰•áÁ±¥¥ĞÍÑ…‰±”!Q50…¹¡½ÉÌˆ°(€€€€€€€€‰•ÁÑ•±¥Ù¥¹œµÕ¥‘”É•Ù¥Í¥½¸ˆ°(€€€€€€€€‰½½É‘¥¹…Ñ”Õ¥‘”Ù•ÉÍ¥½¸€À¸ä¸Ô¸ÈÀÈØÀàÌÀ¸Í€ˆ°(€€€€€€€€‰±°€ĞĞÕÉÉ•¹Ğµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌÁ…ÍÍ•¥¸€Ä¸ÜÀÍ•½¹‘Ìˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸½¹ÑÉ…Ğ((€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€‰5¥±•ÍÑ½¹”€Ğå¸ÌƒŠP	½ÉÉ½İ•M­å™¥•±•Á¡•µ•É¥Ì…‘…ÁÑ•Èˆ°(€€€€€€€€‰™¥¹•ÉÁÉ¥¹ÑÌÑ¡”•á…Ğ	M@‰åÑ•Ì½¹”ˆ°(€€€€€€€€‰Y•¹ÕÌµÉ•±…Ñ¥Ù”µÑ¼µMMˆ°(€€€€€€€€‰…‘‘Ì¹¼‘¥É•Ñ¥½¸É•…±¥é•Èˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸É½…‘µ…À((€€€…ÍÍ•ÉĞ€ˆĞå¸Ì¥¹ÍÑ…±±ÌM­å™¥•±‘Á¡•µ•É¥ÍMÑ…Ñ•M½ÕÉ•€ˆ¥¸…É¡¥Ñ•ÑÕÉ”(€€€…ÍÍ•ÉĞ€ˆÄÌ¸È¸Ø€Ğå¸Ì‰½ÉÉ½İ•M­å™¥•±­•É¹•°…‘…ÁÑ•Èˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰ĞĞÁ€¥‘•¹Ñ¥™¥•ÌÑ¡”…ÍÑÉ½¹½µ¥…°Í½±ÕÑ¥½¸™…µ¥±äˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰½µµ½¸¥¹Ñ•ÉÍ•Ñ¥½¸½˜…±°MA,Í•µ•¹Ğ¥¹Ñ•ÉÙ…±Ìˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰]•¹Ô¥µÁ±•µ•¹Ñ…Ñ¥½¸‰½àƒŠP€Ğå¸Ì¥¹ÍÑ…±±•…‘…ÁÑ•Èˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€ˆĞå¸ÌÉ•…°µÉ•Í½ÕÉ”•Ù¥‘•¹”ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰é•É¼É•Í¥‘Õ…°İ¥Ñ¡¥¸…¸…‰Í½±ÕÑ”Ñ½±•É…¹”ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰Q•Éµ¥¹½±½ä½¹ÑÉ…ĞƒŠP™½ÕÈ‘¥™™•É•¹ĞÅÕ•ÍÑ¥½¹Ìˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰½½É‘¥¹…Ñ•MÁ•Œ¹•Á½¡€µ•…¹Ì„€¨©Á½Í¥Ñ¥½¸É•™•É•¹”•Á½ ¨¨ˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰9%…¹MA%¥‘•¹Ñ¥™¥•ÉÌˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰9…Ù¥…Ñ¥½¸…¹¹¥±±…Éä%¹™½Éµ…Ñ¥½¸…¥±¥Ñäˆ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰MÁ…•É…™Ğ°A±…¹•Ğ°%¹ÍÑÉÕµ•¹Ğ°µµ…ÑÉ¥à°Ù•¹ÑÌˆ¥¸Õ¥‘”(€€€™½È…¹¡½È¥¸€ (€€€€€€€€ˆ½½É‘¥¹…Ñ”µÍåÍÑ•´µÙÌµÉ•™•É•¹”µ™É…µ”ˆ°(€€€€€€€€ˆ•Á½ µÙÌµ•ÅÕ¥¹½àˆ°(€€€€€€€€ˆŒĞå”ÌµÍ­å™¥•±µ…‘…ÁÑ•Èˆ°(€€€€€€€€ˆ¹…¥˜µÍÁ¥”µ¥‘•¹Ñ¥™¥•ÉÌˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞ…¹¡½È¥¸Õ¥‘”(€€€€€€€…ÍÍ•ÉĞ˜œñ„¥ô‰í…¹¡½ÉlÄéuôˆøğ½„øœ¥¸Õ¥‘”(€€€…ÍÍ•ÉĞ€‰	½ÉÉ½İ•M­å™¥•±•Á¡•µ•É¥Ì…‘…ÁÑ•È€¡5¥±•ÍÑ½¹”€Ğå¸Ì¤ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰Q¡”…‘…ÁÑ•È¡…Ì¹¼±½Í” ¥€ˆ¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¸(€€€…ÍÍ•ÉĞ€‰Í­å™¥•±‘}•Á¡•µ•É¥Ì¹Áå€¹½Ü½İ¹ÌÑ¡”™¥ÉÍĞÉ•…°ˆ¥¸Í½ÕÉ•}ÑÉ•”(€€€…ÍÍ•ÉĞ€‰¹¼µ‘½İ¹±½…¥¹ÍÑ…±±•µ­•É¹•°Y•¹ÕÌ½MM…•ÁÑ…¹”¡•¬ˆ¥¸Í½ÕÉ•}ÑÉ•”()‘•˜Ñ•ÍÑ}ÁÕ‰±¥}¥¹Ñ•É™…•}…Õ‘¥Ñ}É•½É‘Í}…Í}¥Í}…¹‘}Í¥•¹Ñ¥™¥}‰½Õ¹‘…Éä ¤è(€€€…Õ‘¥Ğ€ô€ˆ€ˆ¹©½¥¸¡É•…¡AU	1%}%9QI}U%P¤¹ÍÁ±¥Ğ ¤¤(€€€™½ÈÁ¡É…Í”¥¸€ (€€€€€€€€ˆ¨©Õ‘¥Ğ‰…Í•±¥¹”è¨¨€Å„ÄÔÀÜÙ€ˆ°(€€€€€€€€‰Q¡”Í¥à…¹½¹¥…°AåÑ¡½¸•á…µÁ±•Ìˆ°(€€€€€€€€‰I•ÁÉ½‘Õ¥‰±”ÕÍ•ÈÉ•¥Á•ÌÕÉÉ•¹Ñ±äÕ¹‘•ÈÑ½½±Ì½€ˆ°(€€€€€€€€‰¥…¹½ÍÑ¥Ì°…•ÁÑ…¹”°…¹‰•¹¡µ…É­Ìˆ°(€€€€€€€€‰…Ñ…±½Õ”…¹É•Á½Í¥Ñ½Éäµ…¥¹Ñ•¹…¹”ˆ°(€€€€€€€€‰Q¡”™¥ÉÍĞ‰½Õ¹‘•Á…ÉĞ½˜Ñ¡…ĞÙ½…‰Õ±…Éä¥Ì¹½ÜÁÕ‰±¥Œˆ°(€€€€€€€€‰½½É‘¥¹…Ñ”ÍåÍÑ•´ˆ°(€€€€€€€€‰É•™•É•¹”™É…µ”ˆ°(€€€€€€€€‰•ÅÕ¥¹½àˆ°(€€€€€€€€‰Á½Í¥Ñ¥½¸•Á½ ˆ°(€€€€€€€€‰½‰Í•ÉÙ…Ñ¥½¸¥¹ÍÑ…¹Ğˆ°(€€€€€€€€‰…¸•ÅÕ¥¹½à¥Ì¹½Ğ„‘•™¥¹¥¹œÁ…É…µ•Ñ•È½˜%ILˆ°(€€€€€€€€‰½™}‘…Ñ•€É•Í½±Ù•Ì™É½´Ñ¡”‘•±…É•ÁÉ½‘ÕĞ½È½‰Í•ÉÙ…Ñ¥½¸Ñ¥µ”ˆ°(€€€€€€€€‰%ĞµÕÍĞ¹•Ù•ÈÉ•±…‰•°¹…Ñ¥Ù”…Ñ…±½Õ”½½É‘¥¹…Ñ•Ìˆ°(€€€€€€€€‰I•™•É•¹”µÁ½±¥ä½¹ÑÉ…Ğˆ°(€€€€€€€€‰AÉ½‘ÕĞµ™É…µ”Í•±•Ñ¥½¸ˆ°(€€€€€€€€‰AÉ½Ù¥‘•ÈÉ•…±¥é…Ñ¥½¸•Á½ ˆ°(€€€€€€€€‰A¡åÍ¥…°µÁÉ½‘ÕĞ½µµ…¹ˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞÁ¡É…Í”¥¸…Õ‘¥Ğ(()‘•˜Ñ•ÍÑ}½½É‘¥¹…Ñ•}Õ¥‘•}¡…Í}…}¹…Ù¥…‰±•}Ñ…‰±•}½™}½¹Ñ•¹ÑÌ ¤è(€€€Õ¥‘”€ôÉ•…¡==I%9Q}U%¤(€€€Ñ½}Á½Í¥Ñ¥½¸€ôÕ¥‘”¹¥¹‘•à ˆŒQ…‰±”½˜½¹Ñ•¹ÑÌˆ¤(€€€ÍÑ…ÑÕÍ}Á½Í¥Ñ¥½¸€ôÕ¥‘”¹¥¹‘•à ˆŒMÑ…ÑÕÌ…¹ÁÕÉÁ½Í”ˆ¤(€€€…ÍÍ•ÉĞÑ½}Á½Í¥Ñ¥½¸€ğÍÑ…ÑÕÍ}Á½Í¥Ñ¥½¸((€€€™½È±¥¹¬¥¸€ (€€€€€€€€‰lÄ¸M¥•¹Ñ¥™¥ŒÙ½…‰Õ±…Éåt ŒÄµÍ¥•¹Ñ¥™¥ŒµÙ½…‰Õ±…Éä¤ˆ°(€€€€€€€€‰lÈ¸½½É‘¥¹…Ñ”ÍåÍÑ•µÌÕÍ•½ÈÉ•Í•ÉÙ•‰ä]•¹Õtˆ°(€€€€€€€€‰lĞ¸5…Ñ¡•µ…Ñ¥…°™½Õ¹‘…Ñ¥½¹Ít ŒĞµµ…Ñ¡•µ…Ñ¥…°µ™½Õ¹‘…Ñ¥½¹Ì¤ˆ°(€€€€€€€€‰lÔ¸Q¥µ”Ù½…‰Õ±…Éåt ŒÔµÑ¥µ”µÙ½…‰Õ±…Éä¤ˆ°(€€€€€€€€‰lÔ¸Ø)Õ±¥…¸…¹	•ÍÍ•±¥…¸•Á½¡Ítˆ°(€€€€€€€€‰là¸]•¹Ô½‰©•Ğ…Ñ…±½Õ”…¹ÁÉ½Ù•¹…¹•tˆ°(€€€€€€€€‰lÄÈ¸5…¥¹Ñ•¹…¹”ÉÕ±•t ŒÄÈµµ…¥¹Ñ•¹…¹”µÉÕ±”¤ˆ°(€€€€€€€€‰lÄÌ¸AÉ…Ñ¥…°Õ¥‘”Ñ¼É•™•É•¹”ÍåÍÑ•µÌ°•ÅÕ¥¹½á•Ì°…¹•Á½¡Ítˆ°(€€€€¤è(€€€€€€€…ÍÍ•ÉĞ±¥¹¬¥¸Õ¥‘”((()‘•˜Ñ•ÍÑ}½½É‘¥¹…Ñ•}Õ¥‘•}Ñ½}ÕÍ•Í}•áÁ±¥¥Ñ}Á½ÉÑ…‰±•}…¹¡½ÉÌ ¤è(€€€Õ¥‘”€ôÉ•…¡==I%9Q}U%¤(€€€Ñ½Œ€ôÕ¥‘•l(€€€€€€€Õ¥‘”¹¥¹‘•à ˆŒQ…‰±”½˜½¹Ñ•¹ÑÌˆ¤è(€€€€€€€Õ¥‘”¹¥¹‘•à ˆŒMÑ…ÑÕÌ…¹ÁÕÉÁ½Í”ˆ¤(€€€t(€€€Ñ…É•ÑÌ€ôÉ”¹™¥¹‘…±°¡È‰qup Œ¡mx¥t¬¥p¤ˆ°Ñ½Œ¤((€€€…ÍÍ•ÉĞ±•¸¡Ñ…É•ÑÌ¤€øô€ØÀ(€€€…ÍÍ•ÉĞ±•¸¡Ñ…É•ÑÌ¤€ôô±•¸¡Í•Ğ¡Ñ…É•ÑÌ¤¤(€€€™½ÈÑ…É•Ğ¥¸Ñ…É•ÑÌè(€€€€€€€…ÍÍ•ÉĞ˜œñ„¥ô‰íÑ…É•Ñôˆøğ½„øœ¥¸Õ¥‘”((€€€…ÍÍ•ÉĞ€ˆ¨©Õ¥‘”Ù•ÉÍ¥½¸è¨¨€À¸ä¸Ô¸ÈÀÈØÀäÀÈ¸ÔÑ€ˆ¥¸Õ¥‘”(€€€µßµ¶‰ËkºwµçWİ™[\×Ù\Ú×ÜÙ\]Y[˜ÙJ
+N‚ˆÛÛ˜XİHˆ‹š›Ú[Šˆ™XY
+ˆU‘SÔTˆÈ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZWÜÛÛ\—ÜŞ\İ[KÛØœÙ\™Yİ™[\×Ù\Ú×ÜÙ\]Y[˜ÙWÍZLØÌÌXK›Y‚ˆ
+KœÜ]
+
+Bˆ
+Bˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆİZYHHˆ‹š›Ú[Š™XY
+ÓÓÔ‘SUWÑÕRQJKœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆŠŠ’[\[Y[][Ûˆ˜\Ù[[™NŠŠˆM˜ØŒ˜‹ˆ”ØÚY[YšXØ[H[™\˜Ú]Xİ\˜[HXØÙ\Y‹ˆ˜ØœÙ\™YÛÛ\”Ş\İ[Q\ÚÔÙ\]Y[˜ÙT™\]Y\İ‹ˆ˜ØœÙ\™YÛÛ\”Ş\İ[Q\ÚÔÙ\]Y[˜ÙT™X[^™\‹œÙ\]Y[˜ÙJ
+X‹ˆ˜ØœÙ\™YÛÛ\”Ş\İ[Q\ÚÔÙ\]Y[˜ÙX‹ˆ˜—Üİ\ÈH›ÙXÙ\Èš[™H^XİØ[\H[œİ[È‹ˆ›ÜšYÚ[ˆØœÙ\™\˜[™[š]]X‹ˆ™]\™HÑÛÛ\‹TŞ\İ[Hš\İX[^™\ˆ‹ˆ˜ŒMYKLLYØ‹ˆ˜KM™KLLYØ‹ˆ˜ËŒLKLLˆUX‹ˆ˜ËÎMYKLL\˜ÜÙXØ‹ˆ˜ËŒM™KLLYØ‹ˆ˜ŒÙKLL˜‹ˆ˜ŒÌYKLHYØ‹ˆ˜[LH›Øİ\ÙY\İÈ\ÜÙY[ˆKHÙXÛÛ™È‹ˆ[LH›Øİ\ÙYÙ\]Y[˜ÙH‹ˆRKŒĞËŒËŒPˆ‹ˆ˜YÈ›ÈX›XÈÛÛ[X[™‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆÛÛ˜Xİ‚ˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒPHˆ[ˆ›ØYX\ˆ\ÜÙ\XØÙ\Yİ]][™]]˜[ØœÙ\™Y™[\È\ÚÈÙ\]Y[˜ÙHˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\“ØœÙ\™Y™[\È\ÚÈÙ\]Y[˜ÙH
+Z[\İÛ™HRKŒĞËŒËŒPJHˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒPHİÛ™\œÚ\ˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\ŒLËŒ‹ŒÈRKŒĞËŒËŒPHØœÙ\™Y™[\È\ÚÈÙ\]Y[˜ÙHˆ[ˆİZYBˆ\ÜÙ\‘İZYH™\œÚ[ÛŠŠˆKKŒŒŒL‹Mˆ[ˆİZYBˆ\ÜÙ\›ØœÙ\™Yİ™[\×Ù\Ú×ÜÙ\]Y[˜ÙWÍZLØÌÌXK›Yˆ[ˆ[œİXİ[ÛœÂˆ\ÜÙ\˜[İ\œ™[YØİ[Y[][Ûˆ\İÈ[ˆ‹ŒŒÈÙXÛÛ™Èˆ[ˆÛÛ˜Xİˆ\ÜÙ\ŒKNH\İÈÚ]Ì\Ù[XİY[ˆKˆÙXÛÛ™Èˆ[ˆÛÛ˜Xİˆ\ÜÙ\˜[‹MH\İÈ[ˆŒÎÙXÛÛ™Èˆ[ˆÛÛ˜Xİ‚‚™Yˆ\İÍZLØÌÌX—Ü™XÛÜ™×Ù˜]ØX›WÛØœÙ\™Yİ™[\×ÜÙ\]Y[˜ÙJ
+N‚ˆÛÛ˜XİHˆ‹š›Ú[Š™XY
+UĞP“WÓĞ”ÑT•‘QÕ‘S•T×ÔÑTUQSÑJKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆİZYHHˆ‹š›Ú[Š™XY
+ÓÓÔ‘SUWÑÕRQJKœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆŠŠ’[\[Y[][Ûˆ˜\Ù[[™NŠŠˆÙ™˜M˜X‹ˆ”ØÚY[YšXØ[K\˜Ú]Xİ\˜[Kš\İX[K[™Ü\˜][Û˜[HXØÙ\Y‹ˆ˜ØœÙ\™Y™[\Ñ\ÚÔÙ\]Y[˜ÙT™X[^˜][Û˜‹ˆ˜XYÛšYT›Ú™XİY\ÚÔÙ\]Y[˜ÙX‹ˆ›Û™Hš^Y›ÙXİœ˜[YH‹ˆ›ØœÙ\™\‹ĞUH\İ[˜Ù\È‹ˆ˜K\[™]Y\ÚË\Ù\]Y[˜ÙH™[\Ø‹ˆ‹KY\ÚË\Ù\]Y[˜ÙK[[Ù[ØœÙ\™Y‹ˆ˜KY\ÚË\Ù\]Y[˜ÙK[X™[Ø‹ˆ˜K\[™]Y\ÚË[XYÛšYšXØ][Ûˆ™[\ÏQPÕÔ˜‹ˆ˜K[›ËY\]X]ÜšX[YÜšY‹ˆ˜KYÜšY\™Y™\™[˜Ù\ÈXÛ\XØ‹ˆ[ŒLH›Øİ\ÙY\İÈ\ÜÙY[ˆKÍÙXÛÛ™È‹ˆŒKN\İÈÚ]Ì\Ù[XİY[ˆKLHÙXÛÛ™È‹ˆ˜[‹N\İÈ[ˆKŒÈÙXÛÛ™È‹ˆ‘œ›Ş™[‹QX\XÛ\XÈ[ÙH‹ˆ“Y\˜İ\H‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆÛÛ˜Xİ‚ˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒPˆˆ[ˆ›ØYX\ˆ\ÜÙ\‘˜]ØX›HØœÙ\™Y™[\È\ÚÈÙ\]Y[˜ÙHˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\‘˜]ØX›HØœÙ\™Y™[\È\ÚÈÙ\]Y[˜ÙH
+Z[\İÛ™HRKŒĞËŒËŒPŠHˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒPˆİÛ™\œÚ\ˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\ŒLËŒ‹ŒRKŒĞËŒËŒPˆ˜]ØX›HØœÙ\™Y™[\ÈÙ\]Y[˜ÙHˆ[ˆİZYBˆ\ÜÙ\‘İZYH™\œÚ[ÛŠŠˆKKŒŒŒL‹Mˆ[ˆİZYBˆ\ÜÙ\™˜]ØX›WÛØœÙ\™Yİ™[\×ÜÙ\]Y[˜ÙWÍZLØÌÌX‹›Yˆ[ˆ[œİXİ[ÛœÂ‚‚™Yˆ\İÍZLØÌÌ˜WÜ™XÛÜ™×Ùœ›Ş™[—ÙX\İ™[\×ÜÙ\]Y[˜ÙWÜİ]J
+N‚ˆÛÛ˜XİHˆ‹š›Ú[Š™XY
+”“Ö‘S—ÑPT•Õ‘S•T×ÔÑTUQSÑJKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆİZYHHˆ‹š›Ú[Š™XY
+ÓÓÔ‘SUWÑÕRQJKœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆŠŠ’[\[Y[][Ûˆ˜\Ù[[™NŠŠˆÙMÌX‹ˆ”ØÚY[YšXØ[H[™\˜Ú]Xİ\˜[HXØÙ\Y‹ˆ˜œ›Ş™[‘X\\ÚÔÙ\]Y[˜ÙT™\]Y\İ‹ˆ˜œ›Ş™[‘X\\ÚÔÙ\]Y[˜ÙT™X[^™\‹œÙ\]Y[˜ÙJ
+X‹ˆ˜œ›Ş™[‘X\Ù[ÛY]šXÑ\ÚØ‹ˆ›ÜšYÚ[ˆœ›Ş™[‹YX\[™[š]]X‹ˆ™š^YŒŒYX[‹YXÛ\XÈ^\È‹ˆ™]\™HÑÛÛ\‹TŞ\İ[Hš\İX[^™\ˆ‹ˆ››İÜØÙ[šXË\İ›ÛY]šXË\\™[‹ˆ˜ŒÌÍÙKLLˆUX‹ˆ˜KMKLLYØ‹ˆ˜‹ŒKLLHYØ‹ˆ˜KŒÍKLLˆUX‹ˆ˜KŒÙKLLYØ‹ˆ[ŒÈ›Øİ\ÙYÙ\]Y[˜ÙH‹ˆŒKNMÈ\İÈÚ]Ì\Ù[XİY[ˆ‹HÙXÛÛ™È‹ˆ˜[‹È\İÈ[ˆÌÈÙXÛÛ™È‹ˆRKŒĞËŒËŒˆ‹ˆRKŒĞËŒËŒÈ‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆÛÛ˜Xİ‚ˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒHˆ[ˆ›ØYX\ˆ\ÜÙ\XØÙ\Yİ]][™]]˜[œ›Ş™[‹QX\™[\ÈÙ\]Y[˜ÙHˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\‘œ›Ş™[‹QX\™[\ÈÙ\]Y[˜ÙHİ]H
+Z[\İÛ™HRKŒĞËŒËŒJHˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒHİÛ™\œÚ\ˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\ŒLËŒ‹ŒHRKŒĞËŒËŒHœ›Ş™[‹QX\™[\Èİ]Hˆ[ˆİZYBˆ\ÜÙ\‘İZYH™\œÚ[ÛŠŠˆKKŒŒŒL‹Mˆ[ˆİZYBˆ\ÜÙ\™œ›Ş™[—ÙX\İ™[\×ÜÙ\]Y[˜ÙWÍZLØÌÌ˜K›Yˆ[ˆ[œİXİ[ÛœÂˆ\ÜÙ\[ˆİ\œ™[YØİ[Y[][Ûˆ\İÈ\ÜÙY[ˆ‹ŒÈÙXÛÛ™Èˆ[ˆÛÛ˜Xİ‚‚™Yˆ\İÍZLØÌÌ˜—Ü™XÛÜ™×Ù˜]ØX›WÙœ›Ş™[—ÙX\İ™[\×ÜÙ\]Y[˜ÙJ
+N‚ˆÛÛ˜XİHˆ‹š›Ú[Šˆ™XY
+UĞP“WÑ”“Ö‘S—ÑPT•Õ‘S•T×ÔÑTUQSÑJKœÜ]
+
+Bˆ
+Bˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆİZYHHˆ‹š›Ú[Š™XY
+ÓÓÔ‘SUWÑÕRQJKœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆŠŠ’[\[Y[][Ûˆ˜\Ù[[™NŠŠˆÌÌÎXØ‹ˆ”ØÚY[YšXØ[K\˜Ú]Xİ\˜[Kš\İX[K[™Ü\˜][Û˜[HXØÙ\Y‹ˆ˜œ›Ş™[‘X\™[\Ñ\ÚÔÙ\]Y[˜ÙT™X[^˜][Û˜‹ˆ™š^YŒŒYX[‹YXÛ\XÈ^\È‹ˆœ›ÙXİYœ˜[YH]]YH™\›È‹ˆ›™Z]\ˆ™Y™\™[˜ÙH\ÜÙ\È›İYÚØœÙ\™\‹Y\[™[[^ˆÙ[ÛY]H‹ˆ”ÙXİY[˜ÚXHH™[\È\ÙH[˜HY\œ˜HšZ˜H‹ˆŒÌH[™\[™[H™X[^™Y\ÚÜÈ‹ˆ˜[‹ÍÈ\İÈ[ˆHÙXÛÛ™È‹ˆ[Èİ\œ™[YØİ[Y[][Ûˆ\İÈ\ÜÙY‹ˆRKŒĞËŒËŒÈ‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆÛÛ˜Xİ‚ˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒˆˆ[ˆ›ØYX\ˆ\ÜÙ\‘˜]ØX›Hœ›Ş™[‹QX\™[\È\ÚÈÙ\]Y[˜ÙHˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\
+ˆ‘˜]ØX›Hœ›Ş™[‹QX\™[\ÈÙ\]Y[˜ÙH
+Z[\İÛ™HRKŒĞËŒËŒŠH‚ˆ[ˆ[\[Y[][Û‚ˆ
+Bˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒˆİÛ™\œÚ\ˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\
+ˆŒLËŒ‹ŒÌRKŒĞËŒËŒˆ˜]ØX›Hœ›Ş™[‹QX\™[\ÈÙ\]Y[˜ÙH‚ˆ[ˆİZYBˆ
+Bˆ\ÜÙ\‘İZYH™\œÚ[ÛŠŠˆKKŒŒŒL‹Mˆ[ˆİZYBˆ\ÜÙ\
+ˆ™˜]ØX›WÙœ›Ş™[—ÙX\İ™[\×ÜÙ\]Y[˜ÙWÍZLØÌÌ˜‹›Y‚ˆ[ˆ[œİXİ[ÛœÂˆ
+B‚‚™Yˆ\İÍZLØÌÌ×Ø]Y]×ÛY\˜İ\WÙÙ[™\˜[^˜][Û—Ø[™İ˜[Y][ÛŠ
+N‚ˆ]Y]Hˆ‹š›Ú[Š™XY
+QTÕT–WÑTÒ×ÔÑTUQSÑWĞUQU
+KœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆİZYHHˆ‹š›Ú[Š™XY
+ÓÓÔ‘SUWÑÕRQJKœÜ]
+
+JBˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆŠŠ\ËZ\È˜\Ù[[™NŠŠˆØMÌLÙ˜˜‹ˆ”ØÚY[YšXØ[H[™\˜Ú]Xİ\˜[HXØÙ\Y‹ˆ˜ÎKÛX‹ˆ™\]X]ÜšX[˜Y]\ÈLÈÛX‹ˆ“RQˆ›ÙHÛÙHNNX‹ˆ“Y\˜İ\H˜\XÙ[™HÛÙHX‹ˆ˜XİX[›İšY\—İ\™Ù]ÚY‹ˆRKŒĞËŒËŒĞˆ8 %İ]][™]]˜[Y\˜İ\Hİ]H‹ˆRKŒĞËŒËŒĞÈ8 %˜]ØX›Hœ›Ş™[‹QX\Y\˜İ\HÙ\]Y[˜ÙH‹ˆ˜K\[™]Y\ÚË\Ù\]Y[˜ÙHY\˜İ\X‹ˆœÚŞKÜÛÛ\—ÜŞ\İ[KÜ[™]ËÛY\˜İ\KÙœ›Ş™[—ÙX\ÜÙ\]Y[˜ÙH‹ˆ™Ù\È›İ]]Üš^™HØœÙ\™YİÜØÙ[šXÈY\˜İ\HÙ\]Y[˜Ù\È‹ˆ˜Ú[™Ù\È›È[[YH\H‹ˆ˜[İ\œ™[YØİ[Y[][Ûˆ\İÈ‹ˆ‘™\›˜[™ÈØÚY[YšXØ[H[™\˜Ú]Xİ\˜[HXØÙ\Y‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ]Y]‚ˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒÈˆ[ˆ›ØYX\ˆ\ÜÙ\“Y\˜İ\HÙ[™\˜[^˜][Ûˆ]Y]›İ[™\Hˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒÈ]Y]İÛ™\œÚ\ˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\ŒLËŒ‹ŒÌHRKŒĞËŒËŒÈY\˜İ\HÙ[™\˜[^˜][Ûˆ]Y]ˆ[ˆİZYBˆ\ÜÙ\‘İZYH™\œÚ[ÛŠŠˆKKŒŒŒL‹Mˆ[ˆİZYBˆ\ÜÙ\›Y\˜İ\WÙ\Ú×ÜÙ\]Y[˜ÙWØ]Y]ÍZLØÌÌË›Yˆ[ˆ[œİXİ[ÛœÂ‚‚™Yˆ\İÍZLØÌÌØWÜ™XÛÜ™×Ù\ØÜš\Ü—Ùš]™[—Û[İš[™×Ø›ÙWÙ›İ[™][ÛŠ
+N‚ˆÛÛ˜XİHˆ‹š›Ú[Š™XY
+SÕ’S‘×Ğ“ÑWĞTÒUPÕT‘JKœÜ]
+
+JBˆİZYHHˆ‹š›Ú[Š™XY
+ÓÓÔ‘SUWÑÕRQJKœÜ]
+
+JBˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JBˆ›Üˆ˜\ÙH[ˆ
+ˆ”ÛÛ\”Ş\İ[P›ÙQ\ØÜš\Üˆ‹ˆH[™]Ù\È›İÛÛZ[ˆ]ÈØ][]\È‹ˆØ\Xš[]Y\Ë›İÛ\ÜÚYšXØ][Ûˆ‹ˆœŞ[]XÈZ[›Üˆ›ÙH‹ˆ“Y\˜İ\H™[XZ[œÈ[œ™YÚ\İ\™Y‹ˆ™Ù\È›İYY\˜İ\H‹ˆ˜[‹H\İÈ[ˆ‹HÙXÛÛ™È‹ˆ”ØÚY[YšXØ[K\˜Ú]Xİ\˜[K[™š\İX[HXØÙ\Y‹ˆ™YH™[\ÈÛÛ\]Xš[]H™[™\œÈ‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆÛÛ˜Xİˆ\ÜÙ\ŒLËŒ‹ŒÌˆRKŒĞËŒËŒĞH[İš[™ËX›ÙH›İ[™][Ûˆˆ[ˆİZYBˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒĞH[İš[™ËX›ÙHİÛ™\œÚ\ˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\›[İš[™×Ø›ÙWØ\˜Ú]Xİ\™WÍZLØÌÌØK›Yˆ[ˆ[œİXİ[ÛœÂ‚‚™Yˆ\İÍZLØÌÌØ×Ü›ÜÜÙ\×Ù\ØÜš\Ü—Ùš]™[—Ù˜]ØX›WÛY\˜İ\J
+N‚ˆÛÛ˜XİHˆ‹š›Ú[Šˆ™XY
+UĞP“WÑ”“Ö‘S—ÑPT•ÓQTÕT–WÔÑTUQSÑJKœÜ]
+
+Bˆ
+Bˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JBˆ›Üˆ˜\ÙH[ˆ
+ˆ”ØÚY[YšXØ[K\˜Ú]Xİ\˜[Kš\İX[K[™Ü\˜][Û˜[HXØÙ\Y‹ˆ˜YÈ›ÈY\˜İ\K\ÜXÚYšXÈ^Y\‹˜XİÜK›Ú™Xİ[Û‹™\\˜][Ûˆ‹ˆ˜œ›Ş™[—ÙX\Ù\Ú×ÜÙ\]Y[˜ÙXØ\Xš[]H‹ˆ˜KY\ÚË\Ù\]Y[˜ÙK[[Ù[ØœÙ\™Y‹ˆ˜Y\˜İ\X[™Y\˜İ\š[Ø‹ˆœÚŞKÜÛÛ\—ÜŞ\İ[KÜ[™]ËÛY\˜İ\KÙœ›Ş™[—ÙX\ÜÙ\]Y[˜ÙH‹ˆœÚŞKÜÛÛ\—ÜŞ\İ[KÜİ\‹Üİ[ˆ‹ˆ˜K\[™]Y\ÚË\Ù\]Y[˜ÙHY\˜İ\X‹ˆ˜KY\ÚË\Ù\]Y[˜ÙK\İ\™‹ˆ˜KY\ÚË\Ù\]Y[˜ÙK[‹\İ\È‹ˆ”‘ËÔ‹ÔÕ‘È\š]H‹ˆ˜[‹Lˆ\İÈ[ˆKLÙXÛÛ™È‹ˆœØ[YHœ›Ş™[‹\İ]H™X[^™\‹\ÚËYÙ[ÛY]H™X[^™\ˆ‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆÛÛ˜Xİˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒĞÈ˜]ØX›Hœ›Ş™[‹QX\Y\˜İ\Hˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\“Z[\İÛ™HRKŒĞËŒËŒĞÈ8 %˜]ØX›Hœ›Ş™[‹QX\Y\˜İ\Hˆ[ˆ›ØYX\ˆ\ÜÙ\™˜]ØX›WÙœ›Ş™[—ÙX\ÛY\˜İ\WÜÙ\]Y[˜ÙWÍZLØÌÌØË›Yˆ[ˆ[œİXİ[ÛœÂ‚‚™Yˆ\İÍZLÙWÜ›ÜÜÙ\×ÜÚ\™YØ\\™[ÛXZ›Ü—Ü[™]Ê
+N‚ˆÛÛ˜XİHˆ‹š›Ú[Š™XY
+TT‘S•ÓPR“Ô—ÔS‘UÊKœÜ]
+
+JBˆ\Ù\—ÙİZYHHˆ‹š›Ú[Šˆ™XY
+“ÓÕÈ™ØÜËİ\Ù\—ÙİZYKØÛÛ™šYİ\˜][Û‹›YŠKœÜ]
+
+Bˆ
+Bˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JBˆ›Üˆ˜\ÙH[ˆ
+ˆ‘M˜[Y][Ûˆ\ÜÙYÈÛÛ\XİYÛ\š\İX[XØÙ\[˜ÙH[™[™È‹ˆ“Y\˜İ\K™[\ËX\œË\]\‹Ø]\›‹\˜[\Ë[™™\[™H‹ˆ‘X\\È›İH˜]ØX›H\\™[\™Ù]‹ˆœØ[YH\\™[Ş[X›ÛXË\Ú[XXÚ[™\H‹ˆ˜˜\XÙ[™H\™Ù]ÎˆX\œÈ\]\ˆXØ]\›ˆ˜‹ˆœ\ÚXØ[[™]QÈNXNNXNXÎNX[™NX‹ˆ˜ÛÛ\—ÜŞ\İ[WÛØš™XİØÙ[Xİ[Ûˆ‹ˆœÚŞKÜÛÛ\—ÜŞ\İ[KÜ[™]ËÏ[™]ˆ‹ˆ˜YKMÈYØÛÛ\Û™[Û\˜[˜ÙH‹ˆ˜K\[™]Y\˜İ\K™[\ËX\œË\]\‹Ø]\›‹\˜[\Ë™\[™X‹ˆ˜ÛÛ™[[Û˜[\İ›Û›ÛZXØ[Ş[X›Û‹ˆ˜XØÙ\Y™[\ÈÜ™X[HÑ‘‘MLØ‹ˆ˜ÛÜœ™\ÜÛ™[™È[š\Ü\™X™[™\ˆ‹ˆ›Û›HÛX›ÙXÙ\ÈH[›˜]\˜[œ›ØY[™[ÜH‹ˆœ™\XÙHÛ›H^XÚ]Hİ\YYšY[È‹ˆ˜K[]ËXÛÛİ\ˆÓVËÓ‹‹‹—_[‹ˆœÚ[™ÛKY™X]\™HÙ[Ò”ÓÓˆš[H‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆÛÛ˜Xİˆ\ÜÙ\“Z[\İÛ™HRKŒÑŒH\\™[XZ›Üˆ[™]Èˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\“Z[\İÛ™HRKŒÑŒH8 %\\™[XZ›Ü‹\[™]Ş[X›ÛXÈÚ[Èˆ[ˆ›ØYX\ˆ\ÜÙ\˜\\™[ÛXZ›Ü—Ü[™]×ÍZLÙK›Yˆ[ˆ[œİXİ[ÛœÂˆ›Üˆ˜\ÙH[ˆ
+ˆˆÈÈ[™]Ş[X›ÛÈ‹ˆ˜Y\˜İ\XY\˜İ\H8¦/È‹ˆ˜™[\Ø™[\È8¦`‹ˆ˜X\œØX\œÈ8¦`ˆ‹ˆ˜\]\˜\]\ˆ8¦`È‹ˆ˜Ø]\›˜Ø]\›ˆ8¦a‹ˆ˜\˜[\Ø\˜[\È8¦aH‹ˆ˜™\[™X™\[™H8¦aˆ‹ˆ‘X\\ÈHØœÙ\™\‰ÜÈ™Y™\™[˜ÙH›ÙH‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ\Ù\—ÙİZYB‚‚™Yˆ\İÍZLÙLØ]Y]×Ü™\ÛÛ™YÛ[ÛÛ—ÜØÚY[˜ÙWØ[™ÙÙ[™\šX×Ü™]\ÙJ
+N‚ˆ]Y]Hˆ‹š›Ú[Š™XY
+‘TÓÓ‘QÓSÓÓ—ĞUQU
+KœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆŠŠ\ËZ\È˜\Ù[[™NŠŠˆNM™X‹ˆŠŠ”İ]\ÎŠŠˆØÚY[YšXØ[H[™\˜Ú]Xİ\˜[HXØÙ\Y‹ˆ˜Ú[™Ù\È›È[[YH\H‹ˆ“›È[[YH[ÛÛˆ™Z]š[Üˆ\È]]Üš^™Y‹ˆ˜ÛÛ\”Ş\İ[P›ÙQ\ØÜš\Ü˜‹ˆ˜˜]\˜[ÜØ][]X‹ˆœ\ÚXØ[›ÙHQÌX‹ˆœ\™[X\‹ˆ™\]X[]›Û[YHYX[ˆ˜Y]\ÈMÌÍËÛX‹ˆœ][İY[˜Ù\Z[HŒHÛX‹ˆ•ÜØÙ[šXÈ\˜[^\È\ÜÙ[X[‹ˆ˜Hˆ\Ú[ŠˆÈ[JX‹ˆ˜ÈH
+H
+ÈÛÜÊJJHÈ˜‹ˆ™\›È]Ù[\İX[›Ü[™[˜Ü™X\Ù\ÈİØ\™\\™[X\İ‹ˆ˜ÚˆHİ\
+Èˆ
+ˆİ\‹ˆ˜—Üİ\È
+ÈX\ÚXØ[Ø[\\È‹ˆ›Û™H›ÙXİÛÛÜ™[˜]HÜXÚYšXØ][Ûˆ[™›Ú™Xİ[Ûˆš^Y]ØØ‹ˆ•˜[œÙ›Ü›Z[™È]™\HÜ\šXØ[™\^‹ˆ›]\İ›İ˜[œÙ›Ü›HHØØ[\ˆÚWÚ˜‹ˆ‹K[[ÛÛ‹X\X\˜[˜ÙH™\ÛÛ™YŞ[X›ÛXÈ‹ˆ‹K[[ÛÛ‹Y\ÚË\Ù\]Y[˜ÙH‹ˆ“Û›HØœÙ\™Y\ÈXØÙ\Y‹ˆ˜HHWÛ[ÛÛˆHL‹ˆ™\Ü^K[Û›H‹ˆ[œ™[]YÈÙ[IÜÈ™\Ù[][Û˜İ]][ÙH‹ˆœØ[YH[H\Y\È[ˆ]\È[™™\Ù[][Ûˆ[Ù\È‹ˆœ™Y\Ù\ÈİÛ›ØYÈ‹ˆ˜YKMÈYØ‹ˆœÚŞKÜÛÛ\—ÜŞ\İ[KÛ˜]\˜[ÜØ][]\ËÛ[ÛÛˆ‹ˆ˜[š]™HÚ\Y˜[Z[H[˜X›[Y[‹ˆ˜Ú[™Ù\È›È[\[Y[YÛÛÜ™[˜]H˜[œÙ›Ü›X][Ûˆ‹ˆ™œ›Ş™[‹QX\[˜\ˆÙ\]Y[˜Ù\È‹ˆ‘™\›˜[™ÈØÚY[YšXØ[H[™\˜Ú]Xİ\˜[HXØÙ\Y\È]Y]ÛˆŒ‹LKLˆ‹ˆ˜XØÙ\[˜ÙH]]Üš^™\ÈÛ›HRKŒÑKŒH‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ]Y]‚ˆ›Üˆ˜\ÙH[ˆ
+ˆœ™\ÛÛ™YÛ[ÛÛ—Ø]Y]ÍZLÙL›Y‹ˆ›Û™Hš^YÚ\Y\ØÚ›ÙXİœ˜[YH‹ˆ™È›İ™X]HØØ[\ˆœšYÚ[[Xˆ[™ÛH\Èœ˜[YKZ[˜\šX[‹ˆ‘È›İY[[YH[ÛÛˆ™Z]š[Üˆ[™\ˆRKŒÑKŒ‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ[œİXİ[ÛœÂ‚‚™Yˆ\İÍZLÙLWÜ™XÛÜ™×Ûİ]]Û™]]˜[Û[˜\—Ø\X\˜[˜ÙJ
+N‚ˆÛÛ˜XİHˆ‹š›Ú[Š™XY
+ST—ÔTÒPĞSĞTPTSÑJKœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆİZYHHˆ‹š›Ú[Š™XY
+ÓÓÔ‘SUWÑÕRQJKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ”ØÚY[YšXØ[HXØÙ\Y[™™YÜ™\ÜÚ[Û‹]™\šYšYYÈ™XYH›Üˆ[YÜ˜][Ûˆ‹ˆŠŠ’[\[Y[][Ûˆ˜\Ù[[™NŠŠˆ˜˜˜™ŒX‹ˆ“RQˆ\ÚXØ[›ÙHQÌX‹ˆœ\™[Ù^HX\‹ˆ‘[™Û\Ú[ÛÛ˜[™Ü[š\Ú[˜X‹ˆ™\]X[]›Û[YHYX[ˆ˜Y]\ÈMÌÍËÛX‹ˆ˜Ü\šXØ[Ü\ÚXØ[Ø\X\˜[˜ÙX‹ˆ˜PT•Ğ“ÑX‹ˆ“RQˆ›ÙHQÎNX‹ˆ™Ù\È›İY]Y™\\ÙH™\ÛÛ™YÜÜ\šXØ[Ù\ÚØ‹ˆ“›È[˜\ˆ\X\˜[˜ÙHÛ\ÜÈØ\ÈYY‹ˆÜØÙ[šXÈ™]\™YØœÙ\™\¸ $Ó[ÛÛˆ\İ[˜ÙH‹ˆš\È›È\Ü^HXYÛšYšXØ][Ûˆ‹ˆœ™Y\Ù\ÈÈİÛ›ØYHZ\ÜÚ[™ÈÙ\›™[‹ˆ˜™KMÈYØ‹ˆ˜YKLLˆ]X‹ˆ˜YKMˆ\˜ÜÙXØ‹ˆ˜YKNX‹ˆœ™]š\ÙY[™[ÜHÛˆŒ‹LKLˆ‹ˆš[™\[™[X\™Ú[œÈ˜]\ˆ[ˆš]Y‹ˆœØÚY[YšXØ[HXØÙ\YHRKŒÑKŒH[Y\šXØ[˜[Y][Ûˆ‹ˆ˜KŒÌÎKLÈYØ‹ˆ˜‹NMKLˆ\˜ÜÙXØ‹ˆ˜ŒÌŒÈYØ‹ˆ[™\ÚYX[ÈØ]\ÙHHXØÙ\Y[™[ÜH‹ˆÌÈØİ[Y[][Ûˆ\İÈ[ˆ‹ÍHØ‹ˆŒL›Øİ\ÙY\İÈ[ˆŒÍˆØ‹ˆ˜[‹H\İÈ[ˆLKŒNØ‹ˆ››Û™\›ÈÙ[ØÙ[šXËİÜØÙ[šXÈ\˜[^‹ˆ™Ù\È›İY\ÚÈÙ[ÛY]H‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆÛÛ˜Xİ‚ˆ\ÜÙ\“İ]][™]]˜[[˜\ˆ\ÚXØ[\X\˜[˜ÙHˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\“Z[\İÛ™HRKŒÑKŒH8 %İ]][™]]˜[[˜\ˆˆ[ˆ›ØYX\ˆ\ÜÙ\“[˜\ˆ\ÚXØ[X\X\˜[˜ÙHİ]H
+Z[\İÛ™HRKŒÑKŒJHˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\“Z[\İÛ™HRKŒÑKŒH[˜\ˆ\X\˜[˜ÙHİÛ™\œÚ\ˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\ŒLËŒ‹ŒÌÈRKŒÑKŒH[˜\ˆ\ÚXØ[\X\˜[˜ÙHˆ[ˆİZYBˆ\ÜÙ\‘İZYH™\œÚ[ÛŠŠˆKKŒŒŒL‹Mˆ[ˆİZYBˆ\ÜÙ\›[˜\—Ü\ÚXØ[Ø\X\˜[˜ÙWÍZLÙLK›Yˆ[ˆ[œİXİ[ÛœÂ‚‚™Yˆ\İÍZLÙL—Ü™XÛÜ™×Ü[™[™×Ù˜]ØX›WÜ™\ÛÛ™YÛ[ÛÛ—ØÛÛ˜Xİ
+
+N‚ˆÛÛ˜XİHˆ‹š›Ú[Š™XY
+UĞP“WÔ‘TÓÓ‘QÓSÓÓŠKœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆİZYHHˆ‹š›Ú[Š™XY
+ÓÓÔ‘SUWÑÕRQJKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ”ØÚY[YšXØ[K\˜Ú]Xİ\˜[Kš\İX[KÜ\˜][Û˜[K[™™YÜ™\ÜÚ[ÛˆXØÙ\Y‹ˆ”İ\Z[™ÈK[[ÛÛ˜›İÈ™\]Y\İÈÛ™H™\ÛÛ™Y\ÚXØ[[ÛÛˆHY˜][‹ˆ˜K[[ÛÛ‹X\X\˜[˜ÙHŞ[X›ÛXØ™\Ù\™\ÈHX\›Y\ˆÚ[‹ˆ™\]X[]›Û[YHYX[ˆ˜Y]\ÈMÌÍËÛX‹ˆœÚ\™YY˜][ÙˆÌŒØ[\\È‹ˆœÚŞKÜÛÛ\—ÜŞ\İ[KÛ˜]\˜[ÜØ][]\ËÛ[ÛÛ‹Ù\ÚËÚ[[Z[˜]Y‹ˆ˜™YÚ[Û˜[š[›Øİ[\˜Ú\˜İ[\Û\˜[š\Ü\™X[™[ÜÚŞX‹ˆ˜HHWÛ[ÛÛˆHL‹ˆ™\Ü^K[Û›H‹ˆ[œ™[]YÈÙ[IÜÈ™\Ù[][Û˜İ]][ÙH‹ˆ•\™H\È›È[ÛÛ‹\ÜXÚYšXÈ™[™\™\ˆ‹ˆœ]ÛˆÛÛËÜ™[™\—ÍZLÙL—Ü™\ÛÛ™YÛ[ÛÛ—Ü™]šY]ËœH‹ˆ™\]X]ÜšX[ÛÛÜ™[˜]\ÈÙ[\ˆHš[›Øİ[\ˆÚ\‹ˆšÜš^›Û[ÛÛÜ™[˜]\ÈÙ[\ˆH™YÚ[Û˜[Ú\‹ˆ›XYÛš]YHLKŒ‹ˆ›XYÛšYšYY[ÛÛˆ\È™\Ù[[™YÚX›H[ˆ]™\H˜[Z[H‹ˆH›Øİ\ÙY[ÛÛ‹Ù\Ü^H\İÈ[ˆ‹ÈÙXÛÛ™È‹ˆÍİ\œ™[YØİ[Y[][Ûˆ\İÈ[ˆËŒNHÙXÛÛ™È‹ˆŒ‹Í›İ][™H\İÈÚ]Ì\Ù[XİY[ˆÌKŒNHÙXÛÛ™È‹ˆ˜[‹L\İÈ[ˆLŒMÈÙXÛÛ™È‹ˆ“Z[\İÛ™HRKŒÑKŒÈ][KY\ØÚ[ÛÛˆ™Z]š[Üˆ™[XZ[œÈ[š[\[Y[Y‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆÛÛ˜Xİ‚ˆ\ÜÙ\‘˜]ØX›H™\ÛÛ™YÚ[™ÛKY\ØÚ[ÛÛˆˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\“Z[\İÛ™HRKŒÑKŒˆ8 %˜]ØX›H™\ÛÛ™Yˆ[ˆ›ØYX\ˆ\ÜÙ\‘˜]ØX›H™\ÛÛ™Y[ÛÛˆ
+Z[\İÛ™HRKŒÑKŒŠHˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\“Z[\İÛ™HRKŒÑKŒˆ™\ÛÛ™YÚ[™ÛKS[ÛÛˆİÛ™\œÚ\ˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\ŒLËŒ‹ŒÍRKŒÑKŒˆ˜]ØX›H™\ÛÛ™Y[ÛÛˆˆ[ˆİZYBˆ\ÜÙ\‘İZYH™\œÚ[ÛŠŠˆKKŒŒŒL‹Mˆ[ˆİZYBˆ\ÜÙ\™˜]ØX›WÜ™\ÛÛ™YÛ[ÛÛ—ÍZLÙL‹›Yˆ[ˆ[œİXİ[ÛœÂ‚‚‚™Yˆ\İÍZLÙL×Ü™XÛÜ™×ÛØœÙ\™YÙš^YØÚ\Û[ÛÛ—ÜÙ\]Y[˜ÙJ
+N‚ˆÛÛ˜XİHˆ‹š›Ú[Š™XY
+Ğ”ÑT•‘QÓSÓÓ—ÔÑTUQSÑJKœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆİZYHHˆ‹š›Ú[Š™XY
+ÓÓÔ‘SUWÑÕRQJKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JBˆ\Ù\—ÙİZYHHˆ‹š›Ú[Šˆ™XY
+“ÓÕÈ™ØÜËİ\Ù\—ÙİZYKØÛÛ™šYİ\˜][Û‹›YŠKœÜ]
+
+Bˆ
+B‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ”ØÚY[YšXØ[K\˜Ú]Xİ\˜[Kš\İX[KÜ\˜][Û˜[K[™™YÜ™\ÜÚ[ÛˆXØÙ\Y‹ˆ˜K[[ÛÛ‹Y\ÚË\Ù\]Y[˜ÙX‹ˆ‹KY\ÚË\Ù\]Y[˜ÙK[[Ù[ØœÙ\™Y‹ˆ˜ÓÕS•
+ÈX[™\[™[H™X[^™YØ[\\È‹ˆ›Û™HÚ\Y\ØÚ›ÙXİœ˜[YH‹ˆ›™]™\ˆ™X]ÈHØØ[\ˆœšYÚ[[XˆÜÚ][Ûˆ[™ÛH\Èœ˜[YKZ[˜\šX[‹ˆœ™YÚ[Û˜[š[›Øİ[\‹Ú\˜İ[\Û\‹[š\Ü\™K[™[\ÚŞH‹ˆœÚŞKÜÛÛ\—ÜŞ\İ[KÛ˜]\˜[ÜØ][]\ËÛ[ÛÛ‹Ù\Ú×ÜÙ\]Y[˜ÙH‹ˆœ]ÛˆÛÛËİ˜[Y]WÍZLÙL×ÛØœÙ\™YÛ[ÛÛ—ÜÙ\]Y[˜ÙKœH‹ˆ˜KNKLYØ‹ˆ˜ËKLLˆ]X‹ˆ˜KŒNLÙKLÈYØ‹ˆ˜ŒNMNYØ‹ˆœ]ÛˆÛÛËÜ™[™\—ÍZLÙL×ÛØœÙ\™YÛ[ÛÛ—ÜÙ\]Y[˜ÙWÜ™]šY]ËœH‹ˆŒÍHÙ\]Y[˜ÙKİ]][[ÙK[™ÛÛ\]Xš[]H\İÈ\ÜÙY[ˆËNÙXÛÛ™È‹ˆ˜XØÙ\Y[š]™HÚ\Y˜[Z[HÙ\]Y[˜Ù\È‹ˆÍHİ\œ™[YØİ[Y[][Ûˆ\İÈ[ˆ‹ŒŒÈÙXÛÛ™È‹ˆŒMŒH^[™Y›Øİ\ÙY\İÈ[ˆKÌÈÙXÛÛ™È‹ˆŒ‹›İ][™H\İÈÚ]Ì\Ù[XİY‹ˆ˜[‹LN\İÈ[ˆŒHÙXÛÛ™È‹ˆ‘œ›Ş™[‹QX\‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆÛÛ˜Xİ‚ˆ\ÜÙ\“ØœÙ\™Y][KY\ØÚ[ÛÛˆÙ\]Y[˜ÙHˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\“Z[\İÛ™HRKŒÑKŒÈ8 %ØœÙ\™Yš^YXÚ\[ÛÛˆÙ\]Y[˜ÙHˆ[ˆ›ØYX\ˆ\ÜÙ\“ØœÙ\™Y[ÛÛˆ\ÚÈÙ\]Y[˜ÙH
+Z[\İÛ™HRKŒÑKŒÊHˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\“Z[\İÛ™HRKŒÑKŒÈØœÙ\™Y[ÛÛˆÙ\]Y[˜ÙHİÛ™\œÚ\ˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\ŒLËŒ‹ŒÍHRKŒÑKŒÈØœÙ\™Y[ÛÛˆÙ\]Y[˜ÙHˆ[ˆİZYBˆ\ÜÙ\‘İZYH™\œÚ[ÛŠŠˆKKŒŒŒL‹Mˆ[ˆİZYBˆ\ÜÙ\›ØœÙ\™YÛ[ÛÛ—Ù\Ú×ÜÙ\]Y[˜ÙWÍZLÙLË›Yˆ[ˆ[œİXİ[ÛœÂˆ\ÜÙ\ˆÈÈ™\ÛÛ™Y[ÛÛˆ[™ØœÙ\™YÙ\]Y[˜Ù\Èˆ[ˆ\Ù\—ÙİZYB‚‚™Yˆ\İÍZLÙWÜ\™[ÛZ[\İÛ™WÚ\×ØÛÜÙYİÚ]İ]Û™]×Ü[[YWÜØÛÜJ
+N‚ˆ[ˆHˆ‹š›Ú[Š™XY
+‘TÓÓ‘QÓSÓÓ—ÔSŠKœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆİZYHHˆ‹š›Ú[Š™XY
+ÓÓÔ‘SUWÑÕRQJKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JB‚ˆ\ÜÙ\ŠŠ”İ]\ÎŠŠˆXØÙ\Y[™ÛÜÙYÛˆŒ‹LKLˆˆ[ˆ[‚ˆ›Üˆ˜\ÙH[ˆ
+ˆRKŒÑKŒ›İYÚRKŒÑKŒÈ‹ˆ”œÈÍÌ›İYÚÍÌÈ‹ˆ˜˜ÍXØÌ‹ˆÍHØİ[Y[][Ûˆ\İÈ‹ˆŒMŒH^[™Y›Øİ\ÙY\İÈ‹ˆŒ‹›İ][™H\İÈÚ]Ì\Ù[XİY‹ˆ˜[‹LN\İÈ‹ˆ”\™[XÛÜİ\™H™\šYšXØ][Ûˆ\ÜÙYÍˆØİ[Y[][Ûˆ\İÈ[ˆKMHÙXÛÛ™È‹ˆŒ‹H›İ][™H\İÈÚ]Ì\Ù[XİY[ˆÌKHÙXÛÛ™È‹ˆ˜[‹LNH\İÈ[ˆËÙXÛÛ™È‹ˆ“›ÈY][Û˜[[[YH™Z]š[Üˆ\È]]Üš^™YH\È\™[ÛÜİ\™H‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ›ØYX\‚ˆ\ÜÙ\ÛÛ\]Y™\ÛÛ™Y[ÛÛˆØ\Xš[]H
+Z[\İÛ™HRKŒÑJHˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\”™\ÛÛ™Y[ÛÛˆ[YÜ˜][ÛˆÛÜİ\™H
+Z[\İÛ™HRKŒÑJHˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\“Z[\İÛ™HRKŒÑH™\ÛÛ™Y[ÛÛˆİÛ™\œÚ\ÛÜİ\™Hˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\ŒLËŒ‹ŒÍˆRKŒÑH™\ÛÛ™Y[ÛÛˆÛÜİ\™Hˆ[ˆİZYBˆ\ÜÙ\‘İZYH™\œÚ[ÛŠŠˆKKŒŒŒL‹Mˆ[ˆİZYBˆ\ÜÙ\“\İ\]YŠŠˆŒ‹LKL•ŒÎNNŒÌ˜ˆ[ˆİZYBˆ\ÜÙ\œ™\ÛÛ™YS[ÛÛˆ›ÙÜ˜[HRKŒÑKŒ›İYÚRKŒÑKŒÈ\ÈÛÜÙYˆ[ˆ[œİXİ[ÛœÂ‚ˆ›ÜˆØİ[Y[[ˆ
+[‹\˜Ú]Xİ\™K›ØYX\[\[Y[][Û‹Ûİ\˜ÙWİ™YKİZYJN‚ˆ\ÜÙ\‘œ›Ş™[‹QX\[˜\ˆÙ\]Y[˜Ù\Èˆ[ˆØİ[Y[ˆ\ÜÙ\‘œ›Ş™[‹QX\ˆ[ˆ[œİXİ[ÛœÂ‚‚™Yˆ\İÍZŒÙœ™Y^™\×Ü\™›Ü›X[˜ÙWÛYX\İ\™[Y[Ø™Y›Ü™WÛÜ[Z^˜][ÛŠ
+N‚ˆ]Y]Hˆ‹š›Ú[Š™XY
+T‘“Ô“PSÑWĞÓÔÕT‘WĞUQU
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JBˆİZYHH™XY
+ÓÓÔ‘SUWÑÕRQJB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆŠŠ]Y]˜\Ù[[™NŠŠˆXM™ŒÍ‹ˆŠŠ”İ]\ÎŠŠˆ\˜Ú]Xİ\˜[HXØÙ\Y[™™YÜ™\ÜÚ[Û‹]™\šYšYYÛˆŒ‹LKLˆ‹ˆŠŠ”[[YHY™™XİŠŠˆ›Û™H‹ˆ‘™\›˜[™È[ÛÈÙ[XİYÛÛœÙ\˜]]™HØİ[Y[][ÛˆÛX[\‹ˆ˜ØÜËİ\Ù\—ÙİZYKØ™[XZ[œÈÙ\\˜]H‹ˆÍˆ\ÜÙY‹ˆŒ‹H\ÜÙYÈÌ\Ù[XİY‹ˆŒÌKHÈ‹ˆŒ‹LNH\ÜÙY‹ˆËÈ‹ˆ˜X›İ]‹ŒÈ\˜Ù[‹ˆ››İHRˆ[™\[™[Yœ˜[YH˜\Ù[[™H‹ˆ››Û‹[İ™\›\[™ÈØ[][YHÜ[œÈ‹ˆ˜[YKœ\™—ØÛİ[\—ÛœÊ
+X‹ˆÛÛ[™\[™[Yœ˜[YHÜ˜XÛH‹ˆ”™]\ØX›K\Ü\™HÛÛ\\š\ÛÛˆ‹ˆ•\İ[ÛÜÚ\˜Xİ\š^˜][Ûˆ‹ˆšY[XØ[›Ú™XİY™XÛÜ™È‹ˆš[[]]X›HÙ^H‹ˆR‹ŒH8 %[™\[™[Yœ˜[YH™[˜ÚX\šÈ\›™\ÜÈ‹ˆR‹Œˆ8 %›İ][™K\İZ]HÚ\˜Xİ\š^˜][Ûˆ[™™[YYX][Ûˆ‹ˆR‹ŒÈ8 %š\œİØÚY[YšXØ[HÙ^YY™]\ÙH‹ˆR‹8 %Üİ]ŒHÛÜİ\™H‹ˆR‹ŒÙ\È›İ]]Üš^™H‹ˆ™[][ÛˆÜˆ™XÛ\ÜÚYšXØ][ÛˆÙˆ\İÈ‹ˆMÛÛXš[™Yİ\œ™[YØİ[Y[][Ûˆ[™\Ù\‹YİZYH\İÈ[ˆ‹ŒHÙXÛÛ™È‹ˆŒ‹Lˆ›İ][™H\İÈÚ]Ì\Ù[XİY[ˆÍËÙXÛÛ™È‹ˆ˜[‹LŒˆ\İÈ[ˆLËŒÌHÙXÛÛ™È‹ˆR‹Œ\È™XYH›Üˆ[YÜ˜][Ûˆ‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ]Y]‚ˆ\ÜÙ\“Z[\İÛ™HR‹Œ8 %\™›Ü›X[˜ÙH[™ÛÜİ\™H]Y]ˆ[ˆ›ØYX\ˆ\ÜÙ\‘]™\HÛXÙH™[XZ[œÈÙ\\˜][H]]Üš^™Yˆ[ˆ›ØYX\ˆ\ÜÙ\\˜Ú]Xİ\˜[HXØÙ\Y[™™YÜ™\ÜÚ[Û‹]™\šYšYYˆ[ˆ›ØYX\ˆ\ÜÙ\˜[‹LŒˆ\İÈˆ[ˆ›ØYX\ˆ\ÜÙ\”\™›Ü›X[˜ÙHÛÜİ\™H›İ[™\H
+Z[\İÛ™HRŠHˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\”\™›Ü›X[˜ÙHXYÛ›ÜİXÜÈ[™Ü˜XÛH
+Z[\İÛ™HR‹Œ
+Hˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\“Z[\İÛ™HRˆ\™›Ü›X[˜ÙK\›ÙÜ˜[HİÛ™\œÚ\ˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\œ\™›Ü›X[˜ÙWØ[™ØÛÜİ\™WØ]Y]ÍZŒ›Yˆ[ˆ[œİXİ[ÛœÂˆ\ÜÙ\‘È›İYØXÚ[™ÈÜˆÜ[Z^˜][Ûˆ[™\ˆR‹Œˆ[ˆ[œİXİ[ÛœÂˆ\ÜÙ\‘İZYH™\œÚ[ÛŠŠˆKKŒŒŒL‹Mˆ[ˆİZYBˆ\ÜÙ\“\İ\]YŠŠˆŒ‹LKL•ŒÎNNŒÌ˜ˆ[ˆİZYB‚‚™Yˆ\İÙ]™[Ü\—Ü›ÛİØÛÛZ[œ×ÛÛ›WØXİ]™WØ]]Üš]WØ[™İÚ\ÙØİ[Y[Ê
+N‚ˆ\ÜÙ\Âˆ]›˜[YBˆ›Üˆ][ˆU‘SÔT‹š]\™\Š
+BˆYˆ]š\×Ùš[J
+H[™›İ]›˜[YKœİ\İÚ]
+‹ˆŠBˆHOHÂˆ”‘PQQK›Y‹ˆ˜\ÜÚ\İ[Ú[œİXİ[ÛœË›Y‹ˆ˜ÛÛ™šYİ\˜][Û—ÜØÚ[XWİŒK›Y‹ˆ˜ÛÛÜ™[˜]WÜŞ\İ[WÙİZYWİŒKK›Y‹ˆ˜İ\œ™[Ø\˜Ú]Xİ\™WİŒK›Y‹ˆš[\[Y[][Û—Ü™Y™\™[˜ÙK›Y‹ˆœÜİİŒWØ\˜Ú]Xİ\™WÜ›ØYX\›Y‹ˆœÛİ\˜ÙWİ™YK›Y‹ˆ\™Ù]Ø\˜Ú]Xİ\™WİŒKK›Y‹ˆ\İÜ\™›Ü›X[˜ÙWØ[™Ù]\™WÜ›ÙÜ˜[WÍZ—ÍL›Y‹ˆB‚ˆ\˜Ú]™YHÂˆ˜\˜Ú]™KØ]Y]ËØÛÛÜ™[˜]Wİ˜[œÙ›Ü›X][Û—Ø]Y]ÌXL˜Y™›Y‹ˆ˜\˜Ú]™KØ]Y]ËÜX›X×Ú[\™˜XÙWØ]Y]İŒKK›Y‹ˆ˜\˜Ú]™KÛZYÜ˜][Û—Ú\İÜKÙ\™XØ][Ûœ×İŒK›Y‹ˆ˜\˜Ú]™KÜ›ØYX\Ú\İÜKİÙ[WØÛWÙ™X]\™WÜ™\]Y\İË›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍYÜØÙ[™KØÙ[\İX[ÜØÙ[™WÙ\[™[˜ŞWØ]Y]ÍYK›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍYWÙ\[Y\š\ËÙ\[Y\š\×Ü›İšY\—ØÛÛ˜XİÍYLK›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZWÜÛÛ\—ÜŞ\İ[KÜ™\ÛÛ™YÛ[ÛÛ—Ü[—ÍZLÙK›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZWÜÛÛ\—ÜŞ\İ[KÛØœÙ\™YÛ[ÛÛ—Ù\Ú×ÜÙ\]Y[˜ÙWÍZLÙLË›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKÜ\™›Ü›X[˜ÙWØ[™ØÛÜİ\™WØ]Y]ÍZŒ›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKİ\İØ\˜Ú]Xİ\™WØ[™ØXØÙ\YÜ˜XİXÙWØ]Y]ÍZŒK›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKİ\İÜ˜XİXÙWÙXÚ\Ú[Ûœ×ÍZŒ‹›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKİ\İÙ[WØ[™ØYZ\ÜÚ[Û—ÍZŒØK›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKÛX\šÙ\—İ][™\Ü×ÍZŒØ‹›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKÜ™\ÜÚ]ÜWÜÛİ\˜ÙWÚ[™^ÍZŒØË›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKÚ[[]]X›WØØ][ÙİYWÙš^\™WÍZŒÙ›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKØÛÛØZ[\—ÚÙ\›™[ÛÜ˜XÛ\×ÍZŒÙK›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKØØ[[™\—Û^[İ]ØÛÜİÍZŒÙ‹›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKÛØœÙ\™\—İ[YWÜÙ\]Y[˜ÙWÛÜ˜XÛWÍZŒÙË›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKİ\İÜİZ]WÛÜ[Z^˜][Û—ØÛÜİ\™WÍZŒÚ›Y‹ˆ˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKØÛÛÙœ˜[YWÜ\™›Ü›X[˜ÙWØ˜\Ù[[™WÍZ›Y‹ˆBˆ›Üˆ™[]]™H[ˆ\˜Ú]™Y‚ˆ\ÜÙ\
+U‘SÔTˆÈ™[]]™JKš\×Ùš[J
+B‚ˆ\˜Ú]™WÚ[™^H™XY
+TÒU‘HÈ”‘PQQK›YŠBˆ›Üˆ›Û\ˆ[ˆ
+ˆYÜØÙ[™H‹ˆYWÙ\[Y\š\È‹ˆZWÜÛÛ\—ÜŞ\İ[H‹ˆZ—Ü\™›Ü›X[˜ÙH‹ˆ
+N‚ˆ\ÜÙ\ˆ˜Z[\İÛ™WÚ\İÜKŞÙ›Û\ŸKØˆ[ˆ\˜Ú]™WÚ[™^‚‚™Yˆ\İØİ\œ™[ÍZ—ÍLÜ›ÙÜ˜[WÜ™XÛÜ™×Ü™\ÙX\˜ÚÙXÚ\Ú[Ûœ×Ø[™ÛÜ™\Š
+N‚ˆ›ÙÜ˜[HHˆ‹š›Ú[Š™XY
+TÕÔT‘“Ô“PSÑWÔ“ÑÔSJKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆYÜ‹ˆY\‹ˆ”™Z™Xİ‹ˆ‘Y™\ˆ‹ˆR‹ŒH8 %\İ\˜Ú]Xİ\™H[™XØÙ\Y\˜XİXÙH]Y]‹ˆR‹Œˆ8 %Ù[H\İ\˜XİXÙHXÚ\Ú[ÛœÈ‹ˆR‹ŒÈ8 %\İ\İZ]HÜ[Z^˜][Ûˆ‹ˆR‹8 %ÛÛÚ\[™Ù\]Y[˜ÙH\™›Ü›X[˜ÙH˜\Ù[[™H‹ˆR‹H8 %š\œİØÚY[YšXØ[HÙ^YYÚ\™]\ÙH‹ˆR‹ˆ8 %\™›Ü›X[˜ÙHÛÜİ\™H‹ˆ”›ÙÜ˜[HLH8 %\İ\›ÚYÈ[™ÛÛY]È‹ˆL‹Œ8 %XØÙ\Y\˜XİXÙH™]šY]È‹ˆL‹ŒH8 %Ù[HX›XØ][Û‹\İ[™\™XÚ\Ú[ÛœÈ‹ˆ”‹Ö‹ˆ•ĞĞQÈ‹ˆœš[Yİ\ˆ]\Ù\È‹ˆ”ØÜ™Y[ˆ‘È™]šY]È\È›İİY™šXÚY[‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ›ÙÜ˜[B‚ˆ\ÜÙ\R‹ŒH\İ\˜Ú]Xİ\™H[™XØÙ\Y\˜XİXÙH]Y]ˆ[ˆ›ØYX\ˆ\ÜÙ\”›ÙÜ˜[HLHH\İ\›ÚYÈ[™ÛÛY]Èˆ[ˆ›ØYX\ˆ\ÜÙ\”›ÙÜ˜[HLˆHX›XØ][ÛˆYÚXš[]Hˆ[ˆ›ØYX\‚‚™Yˆ\İÍZŒWÜ™XÛÜ™×Øİ\œ™[Ü˜XİXÙWÜİ]X×Ù]šY[˜ÙWØ[™Ü[™[™×İ[Z[™ÜÊ
+N‚ˆ]Y]Hˆ‹š›Ú[Š™XY
+TÕÔPÕPÑWĞUQU
+KœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆŠŠ]Y]˜\Ù[[™NŠŠˆL™ŒÎLØ‹ˆŠŠ”[[YHY™™XİŠŠˆ›Û™H‹ˆŒNÈ\İÊ‹œX[Ù[\È‹ˆŒKÍÈ\İY[˜İ[ÛˆYš[š][ÛœÈ‹ˆŒ‹LŒÈ\İØ\Ù\È‹ˆŒMˆXÛ\™Yš^\™\È‹ˆ“›ÈÛ\ÜËKXÚØYÙKKÜˆÙ\ÜÚ[Û‹\ØÛÜYš^\™H‹ˆ››È\İËØÛÛ™\İœX‹ˆŒLÈ\˜[Y]š^˜][ÛˆXÛÜ˜]ÜœÈ‹ˆYÜ‹ˆY\‹ˆ”™Z™Xİ‹ˆ‘Y™\ˆ‹ˆœ]\İˆİÈÈ\ÙHš^\™\È‹ˆœ]\İˆ›ZŞH\İÈ‹ˆ˜Ûİ™\˜YÙKœNˆ[˜[ZXÈÛÛ^È‹ˆ’TÓËÒQPËÒQQQHLLNKLNŒŒŒˆ‹ˆŒ‹M‹ˆŒËŒMˆÈ‹ˆŒËˆÈ‹ˆŒ‹L‹ˆKHÈ‹ˆŒ‹ŒNHÈ‹ˆœ]\İÙš[\—ÜİXœXÚØYÙH‹ˆ”UTÕÑTĞP“WÔQÒS—ĞUUÓĞQLH‹ˆ‹KY\˜][ÛœÏML‹ˆ“›È[œİÙ\ˆ\ÈYÜYH\ÈØİ[Y[‹ˆ˜ÛÛÜ™[˜]K\Ş\İ[HİZYHØ\È™]šY]ÙY‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ]Y]‚ˆ\ÜÙ\R‹ŒH\ÈXØÙ\Y[™\˜Ú]™Yˆ[ˆ›ØYX\ˆ\ÜÙ\•HÛÛ[Z]YİZ]H\È›ÈÙ\ÜÚ[Û‹\ØÛÜYš^\™Hˆ[ˆÛİ\˜ÙWİ™YB‚‚™Yˆ\İÍZŒ—Ü™XÛÜ™×Ü›ÜÜÙYİ\İÜÛXŞWØ[™Ù\XØ][Û—ØÛÛ›Û
+
+N‚ˆXÚ\Ú[ÛœÈHˆ‹š›Ú[Š™XY
+TÕÔPÕPÑWÑPÒTÒSÓ”ÊKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆŠŠ”İ]\ÎŠŠˆXØÙ\YH™\›˜[™ÈÛˆŒ‹LKLNÈ™XYH›Üˆ[YÜ˜][Ûˆ‹ˆ‘8 %^\›˜[]\İYÚ[œÎˆ
+ŠYÜ
+Šˆ‹ˆ”UTÕÑTĞP“WÔQÒS—ĞUUÓĞQLH‹ˆ‘ˆ8 %™]\ÙHÙˆ^[œÚ]™H[[]]X›HÙ]\ˆ
+ŠY\
+Šˆ‹ˆ‘H8 %[™\[™[ØÚY[YšXÈ™XÛÛ\]][Ûˆ
+ŠYÜ
+Šˆ‹ˆ‘Lˆ8 %™]Ë]\İYZ\ÜÚ[Ûˆ[™\XØ][ÛˆÛÛ›Ûˆ
+ŠYÜ
+Šˆ‹ˆ™Ù\È
+Š››İ
+Šˆ]]ÛX]XØ[H\XØ]H[İÙ\‹[]™[\İÈ‹ˆ•Ú]˜][Ûİ[\È\İØ]Ú]^\İ[™È\İÈÛİ[›İÈ‹ˆ‘LÈ8 %[][™ÈÜˆÛÛœÛÛY][™È\İÎˆ
+ŠYÜ
+Šˆ‹ˆ‘Œ8 %\˜[[^Xİ][Ûˆ
+Š‘Y™\ŠŠˆ‹ˆ‘Œˆ8 %Ø[›ÛšXØ[ØœÙ\™\‹][YHÙ\]Y[˜ÙNˆ
+Š”™Z™Xİ
+Šˆ\İ™[[İ˜[‹ˆ‘XXÚX]\šX[HY™™\™[[\[Y[][ÛˆÜ›İ\‹ˆœ™]šY]ÙY[™XØÙ\YHYÙ\ˆ[ˆš]™HÜ›İ\È‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆXÚ\Ú[ÛœÂ‚ˆ\ÜÙ\‘™\›˜[™ÈXØÙ\YR‹ŒˆÛˆŒ‹LKLHˆ[ˆ›ØYX\ˆ\ÜÙ\™Y›Ü™HY[™ÈH\İˆ[ˆ[œİXİ[ÛœÂ‚‚™Yˆ\İÍZŒØWÚ[œİ[×Ü™\›ÙXÚX›WÙ[WØ[™Û™]×İ\İØYZ\ÜÚ[Û—Ü[\Ê
+N‚ˆ™XÛÜ™Hˆ‹š›Ú[Š™XY
+TÕÑS•–WĞQRTÔÒSÓŠKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JBˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ”™\›ÙXÚX›H\İ[H[™YZ\ÜÚ[Ûˆ[\È
+Z[\İÛ™HR‹ŒĞJH‹ˆŠŠ”İ]\ÎŠŠˆXØÙ\Y[™Y\™ÙY[ˆŒYYML‹ˆŠŠ”[[YHY™™XİŠŠˆ›Û™H‹ˆŠŠ•\İ™Z]š[ÜˆY™™XİŠŠˆ›Û™H‹ˆ”UTÕÑTĞP“WÔQÒS—ĞUUÓĞQLH]Ûˆ[H]\İ‹ˆ™\İ[˜İÛÛ˜XİÜˆ˜][[Ù[‹ˆ˜ÛÜÙ\İ^\İ[™ÈÛİ™\˜YÙH‹ˆ™Ù\È›İ™\X][İÙ\‹[]™[\İÈ‹ˆ˜Ø[››İÛZ[HH\™›Ü›X[˜ÙH[\›İ™[Y[‹ˆ˜ÛÛÜ™[˜]K\Ş\İ[HİZYHØ\È™]šY]ÙY‹ˆÈİ\œ™[YØİ[Y[][Ûˆ\İÈ[ˆ‹ŒLˆÙXÛÛ™È‹ˆœØ[YHÈ\İÈ[ˆ‹ÈÙXÛÛ™È‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ™XÛÜ™‚ˆ\ÜÙ\™Y›Ü™HY[™ÈH\İˆ[ˆ[œİXİ[ÛœÂˆ\ÜÙ\•ÚXÚ^\İ[™È\İ\ÈÛÜÙ\İˆ[ˆ[œİXİ[ÛœÂˆ\ÜÙ\•ÚXÚX\šÙ\ˆ[™Ø]Hˆ[ˆ[œİXİ[ÛœÂˆ\ÜÙ\[H™\]Z\™YYÚ[ˆ]\İ™H^XÚ]HØYYˆ[ˆ[œİXİ[ÛœÂˆ\ÜÙ\Ûİ\˜ÙWİ™YK˜Ûİ[
+”UTÕÑTĞP“WÔQÒS—ĞUUÓĞQLHŠHHˆ\ÜÙ\R‹ŒĞH[\[Y[YÛ›Hˆ[ˆ›ØYX\ˆ\ÜÙ\Èİ\œ™[YØİ[Y[][Ûˆ\İÈ[ˆ‹Èˆ[ˆ›ØYX\‚‚™Yˆ\İÍZŒØ—Ü™XÛÜ™×İ][ÛX\šÙ\—ÜØÛÜWİÚ]İ]ØÚ[™Ú[™×Ø\ÜÙ\[ÛœÊ
+N‚ˆ™XÛÜ™Hˆ‹š›Ú[Š™XY
+PT’ÑT—Õ•U•S‘TÔÊKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ•\İ[X\šÙ\ˆ][™\ÜÈ
+Z[\İÛ™HR‹ŒĞŠH‹ˆŠŠ”[[YHY™™XİŠŠˆ›Û™H‹ˆŠŠ•\İ\ÜÙ\[Ûˆ[™š^\™HY™™XİŠŠˆ›Û™H‹ˆ“X\šÙ\œÈ\ØÜšX™HÛÜšÈ[™™\Ûİ\˜Ù\È‹ˆ™Ù\È›İH]Ù[ˆ™\]Z\™Hš\İX[‹ˆ˜Ø[›ÛšXØ[ØœÙ\™\‹][YHÙ\]Y[˜ÙH™[XZ[œÈ›İ[YÜ˜][Û˜[™ÛİØ‹ˆ˜Ø[[™\‹[X™[ÛÛZ[›Y[ÚXÚÈ™[XZ[œÈ›İš\İX[[™ÛİØ‹ˆ™›Øİ\ÙYÛÛœİ[ÈÛÛ˜Xİ™]\›œÈÈH›İ][™HØ]H‹ˆŒ‹LÈ›İ][™HØ\Ù\ÈÚ]\Ù[XİY‹ˆŒŒH[YÜ˜][ÛˆØ\Ù\ËÈš\İX[Ø\Ù\ËˆÛİÈØ\Ù\È‹ˆ“›ÈÛÛ[Z]Y]\İØ\ÙH™\]Z\™\È[ˆ[œİ[YMÙ\›™[‹ˆ˜ÛÛÜ™[˜]K\Ş\İ[HİZYHØ\È™]šY]ÙY‹ˆM›Øİ\ÙY\İÈ[ˆKŒŒHÙXÛÛ™È‹ˆ˜[‹LÈ\İÈ[ˆÎHÙXÛÛ™È‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ™XÛÜ™‚ˆ\ÜÙ\R‹ŒĞˆ]Y]YX\šÙ\ˆ][™\ÜÈˆ[ˆ›ØYX\ˆ\ÜÙ\Œ‹LÈ›İ][™H\İÈÚ]\Ù[XİYˆ[ˆ›ØYX\ˆ\ÜÙ\˜[‹LÈ\İÈˆ[ˆ›ØYX\ˆ\ÜÙ\›X\šÙ\—İ][™\Ü×ÍZŒØ‹›Yˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\“X\šÙ\ˆÛÜœ™Xİ[ÛœÈÚ[™ÙHØ]HY[X™\œÚ\Û›Hˆ[ˆÛİ\˜ÙWİ™YB‚ˆ[š\Ü\™HH\İœ\œÙJˆ™XY
+“ÓÕÈ\İËİ\İÜ[š\Ü\™WØÛÛ\ÜÚ][Û‹œHŠBˆ
+BˆÙ[—ØHH\İœ\œÙJ™XY
+“ÓÕÈ\İËİ\İØÙ[—ØWØš[›Øİ[\‹œHŠJB‚ˆYˆX\šÙYÙ[˜İ[ÛœÊ™YKX\šÙ\ŠN‚ˆ™]\›ˆÂˆ›ÙK›˜[YBˆ›Üˆ›ÙH[ˆ™YK˜›ÙBˆYˆ\Ú[œİ[˜ÙJ›ÙK\İ‘[˜İ[Û‘YŠBˆ[™[Jˆ\İ[œ\œÙJXÛÜ˜]ÜŠHOHˆœ]\İ›X\šËÛX\šÙ\ŸH‚ˆ›ÜˆXÛÜ˜]Üˆ[ˆ›ÙK™XÛÜ˜]Ü—Û\İˆ
+BˆB‚ˆ\ÜÙ\X\šÙYÙ[˜İ[ÛœÊ[š\Ü\™Kš\İX[ŠHOHÂˆ\İÜ[š\Ü\™WÙ^ÜÚ\×İ˜[œÜ\™[ØÛÜ›™\—Ø[™ÛÜ\]YWØÙ[\ˆ‹ˆ\İÙY˜][Ü[š\Ü\™WÛYÙ[™×Ø\™WÛİ]ÚYWØ[™Ù\Ú›Ú[Ùœ›ÛWØ^\È‹ˆBˆ\ÜÙ\X\šÙYÙ[˜İ[ÛœÊÙ[—ØKš[YÜ˜][ÛˆŠHOHÂˆ\İØÚ\Ú\×ØÙ[\™YÛÛ—ØÙ[—ØWØ[™Ú\×ÜÜ]X\™H‹ˆ\İØÚ\˜İ[\—Ø\\\™WÚ\×Ù^XİYÜ›Ú™XİYÜ˜Y]\È‹ˆB‚‚™Yˆ\İÍZŒØ×Ü™XÛÜ™×ØÛÛ\]WÜÚ\™YÜÛİ\˜ÙWÚ[™^Ø[™Ü™]Z[™YÙ˜][Ê
+N‚ˆ™XÛÜ™Hˆ‹š›Ú[Š™XY
+‘TÔÒUÔ–WÔÓÕTÑWÒS‘V
+KœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ”™\ÜÚ]ÜHÛİ\˜ÙH[™^
+Z[\İÛ™HR‹ŒĞÊH‹ˆŠŠ”İ]\ÎŠŠˆXØÙ\Y[™Y\™ÙY[ˆŒÙXŒÌ˜‹ˆ˜Ú[™Ù\È›È[œİ[YXÚØYÙH‹ˆš[™\[™[İXœ›ØÙ\ÜËÚ[\ÜZ\ÛÛ][ÛˆÜ˜XÛH‹ˆ˜[]Ûˆ]È™[İÈÜ˜Ø\İØ^[\\ØÛÛØ[™^[\WÜØÜš\Ø‹ˆ›^š[HØXÚ\È]ÈU‹N^[™\œÙYTÕ‹ˆœ›İ™\È^Xİ[™[ÜH\]X[]H‹ˆ›YYX[ˆ‹ŒÎHÙXÛÛ™È‹ˆ›ØœÙ\™YYYX[ˆ[\›İ™[Y[\ÈŒÎÙXÛÛ™ËÜˆX›İ]KŒH\˜Ù[‹ˆŒ‹LH\İÈÚ]\Ù[XİY‹ˆ˜[‹LH\İÈ‹ˆ›YYX[ˆKNHÙXÛÛ™ÎÈ˜[™ÙHKŒHÙXÛÛ™È‹ˆ™YH›İ][™H[™™YHÛÛ\]HXXÈ[œÈ‹ˆ˜ÛÛÜ™[˜]K\Ş\İ[HİZYHØ\È™]šY]ÙY‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ™XÛÜ™‚ˆ\ÜÙ\R‹ŒĞÈÛÛ\]Yˆ[ˆ›ØYX\ˆ\ÜÙ\œ™\ÜÚ]ÜWÜÛİ\˜ÙWÚ[™^ÍZŒØË›Yˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\\İËÜ™\ÜÚ]ÜWÜÛİ\˜Ù\ËœHˆ[ˆÛİ\˜ÙWİ™YB‚‚™Yˆ\İÍZŒÙÜ™XÛÜ™×ÛÛ›WÜ›İ™YÚ[[]]X›WØØ][ÙİYWÙš^\™WÜ™]\ÙJ
+N‚ˆ™XÛÜ™Hˆ‹š›Ú[Š™XY
+SSUUP“WĞĞUSÑÕQWÑ’VT‘JKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ’[[]]X›HØ][ÙİYHš^\™H
+Z[\İÛ™HR‹ŒÑ
+H‹ˆŠŠ”İ]\ÎŠŠˆXØÙ\Y[™Y\™ÙY[ˆŒØ™XŒMØ‹ˆ˜Ø[›ÛšXØ[Ü\™H\È›İ[YÚX›H›ÜˆÙ\ÜÚ[ÛˆØÛÜH‹ˆ“›ÈÜ\™KØZ[™YÚ\İH\È[œİ[Y‹ˆ›™\İYX\[™Ô›ŞU\X˜[Y\È‹ˆ›İ]\ˆ[™[›™\ˆ]]][Ûˆ][\È‹ˆ›Û™H\ÜÙ\[ÛˆİÛœÈ^XİY[YšY\ˆ™\Ù[˜ÙH[™Ü™\ˆ‹ˆ›İ\ˆİÛœÈ›ÜÜÛİ]İ™\›\Ûİ[È‹ˆœ™]Z[œÈ[ˆ[™\[™[ÛÛØ[›ÛšXØ[˜XİÜHZ[‹ˆ™›ÜØ\™™]™\œÙK[™\ÛÛ]Y^Xİ][Ûˆ‹ˆ˜ÛÛÜ™[˜]K\Ş\İ[HİZYHØ\È™]šY]ÙY‹ˆ›YYX[ˆKŒÈÙXÛÛ™È‹ˆ›YYX[ˆKŒNÙXÛÛ™È‹ˆ›ØØ[XYÛ›ÜİXÈ™YXİ[ÛˆÙˆX›İ]È\˜Ù[‹ˆ™^XİZ\ÜÚ[™ÈY[YšY\ˆ‹ˆ˜X›İ]K\˜Ù[‹ˆ˜\›Ş[X][HL\\˜Ù[™YXİ[Ûˆ‹ˆŒMNH›Øİ\ÙYØİ[Y[][Û‹Ø][ÙİYKÙ[ÛY]K[™ÛÛY˜XİÜH\İÈ‹ˆŒ‹Lˆ›İ][™H\İÈÚ]\Ù[XİY‹ˆ˜[‹LÌ\İÈ[ˆKŒHÙXÛÛ™È‹ˆ™YH\İ[˜İ›Ù\È‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ™XÛÜ™‚ˆ\ÜÙ\R‹ŒÑÛÛ\]Yˆ[ˆ›ØYX\ˆ\ÜÙ\š[[]]X›WØØ][ÙİYWÙš^\™WÍZŒÙ›Yˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\˜Ø][ÙİYWÜÜÚ][ÛœÈˆ[ˆÛİ\˜ÙWİ™YB‚‚™Yˆ\İÍZŒÙWÜ™\Ù\™\×ØÛÛØZ[\œ×Ø[™Ú[™\[™[ÚÙ\›™[ÛÜ˜XÛ\Ê
+N‚ˆ™XÛÜ™Hˆ‹š›Ú[Š™XY
+ÓÓĞ•RST—ÒÑT“‘SÓÔPÓTÊKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆÛÛZ[\œÈ[™[œİ[YZÙ\›™[Ü˜XÛ\È
+Z[\İÛ™HR‹ŒÑJH‹ˆŠŠ”İ]\ÎŠŠˆXØÙ\Y[™Y\™ÙY[ˆ™ŒŒÌ˜‹ˆ››È™]Èš^\™KZ[™YÚ\İKÙ\›™[ØXÚKØœÙ\™\ˆØXÚH‹ˆš[™\[™[H™XÛÛ\]\È]È\™XİÚŞYšY[ÛÛ\\š\ÛÛˆ‹ˆ‘\™Xİ[Û‹YÚ][YK\\™[\XÙK\˜[^\ÚXØ[\X\˜[˜ÙH‹ˆ˜ÛÛ[X[™È[ˆ[ˆÙ\\˜]H›ØÙ\ÜÙ\È‹ˆœ™Y\ÙH[ˆ[˜]˜Z[X›HÙ\›™[[œİXYÙˆİÛ›ØY[™ÈÛ™H‹ˆ”Ú\š[™È[ˆØœÙ\™\‹™\]Y\İY[YK\™XİÚŞYšY[™\İ[‹ˆœ™]Z[œÈH[™\[™[ÛÛÜ™[˜\H˜XİÜH‹ˆ[\Ü˜\HÜš^›Ûˆ]]][Ûˆ[™™\İÜ˜][Ûˆ‹ˆœ™X[[™\[™[ØœÙ\™\‹][YHœ˜[Y\È‹ˆŒËÈÙXÛÛ™È›ÜˆHÛÛÜ™[˜\H˜XİÜH‹ˆŒŒÌˆÙXÛÛ™È›ÜˆH™X[ØœÙ\™\‹][YHÙ\]Y[˜ÙH‹ˆÈİ\œ™[YØİ[Y[][Ûˆ\İÈ[ˆ‹MÙXÛÛ™È‹ˆŒ‹LÈ›İ][™H\İÈÚ]\Ù[XİY[ˆŒÍÙXÛÛ™È‹ˆ˜[‹LÌH\İÈ[ˆKNÙXÛÛ™È‹ˆŒËˆÙXÛÛ™È›ÜˆHÜ™[˜\HØ[›ÛšXØ[˜XİÜH‹ˆŒŒKŒÈÙXÛÛ™È›ÜˆH™X[ØœÙ\™\‹][YHÙ\]Y[˜ÙH‹ˆ™]šY[˜ÙHİ\ÜÈ™\Ù\˜][Ûˆ˜]\ˆ[ˆÛÛœÛÛY][Ûˆ‹ˆ“›ÈÜYY\\ÈÛZ[YY‹ˆŠŠ”[[YHY™™XİŠŠˆ›Û™H‹ˆŠŠ•\İ™Z]š[ÜˆY™™XİŠŠˆ›Û™H‹ˆ˜ÛÛÜ™[˜]K\Ş\İ[HİZYHØ\È™]šY]ÙY‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ™XÛÜ™‚ˆ\ÜÙ\R‹ŒÑHÛÛ\]Yˆ[ˆ›ØYX\ˆ\ÜÙ\˜ÛÛØZ[\—ÚÙ\›™[ÛÜ˜XÛ\×ÍZŒÙK›Yˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\™\™Xİ[œİ[YZÙ\›™[™XÛÛ\]][Ûˆˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\š[™\[™[H™XÛÛ\]Y[œİ[YQMˆ[ˆÛİ\˜ÙWİ™YB‚‚™Yˆ\İÍZŒÙ—Ü™[[İ™\×ÛÛ›WÜ™Y[™[ØØ[[™\—ØØ[˜\×Ü™Y˜]ÜÊ
+N‚ˆ™XÛÜ™Hˆ‹š›Ú[Š™XY
+ĞSS‘T—ÓVSÕUĞÓÔÕ
+KœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆØ[[™\ˆ^[İ]ÛÜİ
+Z[\İÛ™HR‹ŒÑŠH‹ˆŠŠ”İ]\ÎŠŠˆXØÙ\Y[™Y\™ÙY[ˆLNLLX‹ˆ˜[È^H[™[ÛX™[È‹ˆMËH[H\ÚXØ[\ÚÈ‹ˆÈ™Y[™[[XØ[˜\È™Y˜]ÜÈ‹ˆ˜^™Ù]İÚ[™İ×Ù^[
+™[™\™\K‹‹ŠX‹ˆ˜[˜ÚÜœË›ÛY]šXÜË[™Ù[X[Ûİ]Ø\™^[È‹ˆ“YYX[ˆ[\ÙY[YH™[œ›ÛH‹ÍÈÈKÙXÛÛ™È‹ˆ›YYX[ˆØ[[YH™[œ›ÛHKNÈLÙXÛÛ™È‹ˆ˜X›İ]H\˜Ù[‹ˆ›İ]\ˆÛÜ›™\ˆÙˆL‹[H‹ˆ›]]][ÛˆØ\È™]™\Y™Y›Ü™HÛÛ[Z]‹ˆ›YYX[ˆMKŒÈÙXÛÛ™È‹ˆ›YYX[ˆËŒMÙXÛÛ™È‹ˆÎK\˜Ù[[ˆ[\ÙY[YH‹ˆŒ\˜Ù[[ˆØ[[YH‹ˆLÈ›Øİ\ÙYØİ[Y[][Ûˆ[™YÙK\™[™\š[™È\İÈ‹ˆŒ‹L›İ][™H\İÈÚ]\Ù[XİY‹ˆ˜[‹LÌˆ\İÈ[ˆÍËMÙXÛÛ™È‹ˆ˜Ú\˜Xİ\š^˜][Ûˆ]šY[˜ÙK›İH™\ÚÛ‹ˆŠŠ”[[YHY™™XİŠŠˆ›Û™H‹ˆŠŠ•\İ™Z]š[ÜˆY™™XİŠŠˆ›Û™H‹ˆ™Ù\È›İ™YXÙHKØ[\HX™[È‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ™XÛÜ™‚ˆ\ÜÙ\R‹ŒÑˆÛÛ\]Yˆ[ˆ›ØYX\ˆ\ÜÙ\˜Ø[[™\—Û^[İ]ØÛÜİÍZŒÙ‹›Yˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\œ™Y[™[[XØ[˜\È™Y˜]ÜÈˆ[ˆÛİ\˜ÙWİ™YB‚‚™Yˆ\İÍZŒÙ×Ü™\Ù\™\×İWØØ[›ÛšXØ[ÛØœÙ\™\—İ[YWÜÙ\]Y[˜ÙWÛÜ˜XÛJ
+N‚ˆ™XÛÜ™Hˆ‹š›Ú[Š™XY
+Ğ”ÑT•‘T—ÕSQWÔÑTUQSÑWÓÔPÓJKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆØ[›ÛšXØ[ØœÙ\™\‹][YHÙ\]Y[˜ÙHÜ˜XÛH
+Z[\İÛ™HR‹ŒÑÊH‹ˆŠŠ”İ]\ÎŠŠˆXØÙ\Y[™Y\™ÙY[ˆØ˜LYX‹ˆœ™]Z[ˆH\İ[˜Ú[™ÙY‹ˆ›Z[š[][HØÚY[YšXØ[HYX[š[™Ù[Ù\]Y[˜ÙHÙˆÛÈ[œİ[È‹ˆ˜Ù[™\˜]WÛØœÙ\™\—İ[YWØÚ\ÜÙ\]Y[˜ÙJ
+X‹ˆ˜Ù[™\˜]WØÚ\Ü™\]Y\İ
+
+X‹ˆ™\]X[[XYÙH[Y[œÚ[ÛœËY™™\™[[XYÙH]\È‹ˆ™]Xİ\‹Yœ˜[YHØœÙ\™\ˆ[YH\œ›ÜœÈ‹ˆ˜İ\œ™[ÛÛ\]H›İ]Hš[™ÈXXÚÜ\™H‹ˆÛİ[š[Û]HŒˆ\™XİH‹ˆš[™\[™[Yœ˜[YH[Z[™È\›™\ÜÈ[ˆR‹‹ˆ™š\œİš^Y\ÚŞH™]\ÙH[ˆR‹H‹ˆš\ÛÛ]Y™X[Ø[›ÛšXØ[Ù\]Y[˜ÙH[ˆHÙXÛÛ™È‹ˆŒŒ‹LÙXÛÛ™È[ˆH\İØ[‹ˆŒLH\İÈ[ˆKŒÌÙXÛÛ™È‹ˆŒ‹LH\İÈÚ]\Ù[XİY[ˆ‹MÙXÛÛ™È‹ˆ˜[‹LÌÈ\İÈ\ÜÙY[ˆÍ‹HÙXÛÛ™È‹ˆœÛİÙ\İ\İ]ŒÎHÙXÛÛ™È‹ˆ›™Z]\ˆ™[[İ™Y[ØÚÙY›ÜˆY[ˆ‹ˆ“›ÈÜYY\\ÈÛZ[YY‹ˆŠŠ”[[YHY™™XİŠŠˆ›Û™H‹ˆŠŠ•\İ™Z]š[ÜˆY™™XİŠŠˆ›Û™H‹ˆ™Ù\È›İÜ[Z^™HÚ\Ù[™\˜][Ûˆ‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ™XÛÜ™‚ˆ\ÜÙ\R‹ŒÑÈÛÛ\]Yˆ[ˆ›ØYX\ˆ\ÜÙ\›ØœÙ\™\—İ[YWÜÙ\]Y[˜ÙWÛÜ˜XÛWÍZŒÙË›Yˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\˜ÛÛÛËYœ˜[YHØ[›ÛšXØ[Ù\]Y[˜ÙHˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\˜ÛÛÛÛ\]HØœÙ\™\‹][YH›İ]Hˆ[ˆÛİ\˜ÙWİ™YB‚‚™Yˆ\İÍZŒÚØÛÜÙ\×Ù˜][Û[Ù[×Ø[™ÙÛİ™\›œ×İ\İÙš[WÙÜ›İİ
+
+N‚ˆ™XÛÜ™Hˆ‹š›Ú[Š™XY
+TÕÔÕRUWÓÔSRVUSÓ—ĞÓÔÕT‘JKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ•\İ\İZ]HÜ[Z^˜][ÛˆÛÜİ\™H
+Z[\İÛ™HR‹ŒÒ
+H‹ˆŠŠ”İ]\ÎŠŠˆXØÙ\Y[™Y\™ÙY[ˆ˜ÍL˜‹ˆŒN\İÊ‹œXš[\È‹ˆ™Ù\È›İ™[Ü™Ø[š^™H[H™]›ÜÜXİ]™[H‹ˆ”™]Z[™Y˜][[[Ù[X\‹ˆ™^Xİ[™[ÜHÛİ™\˜YÙHØ\ÈYY‹ˆ˜H\Ú[]]][Ûˆİ[˜Z[È‹ˆ•ÛÈ™X[Ø[›ÛšXØ[œ˜[Y\È‹ˆ™YHœ™\Ú›İ][™H[œÈ[™™YHœ™\ÚÛÛ\]H[œÈ‹ˆ•[Z[™ÜÈ™[XZ[ˆÚ\˜Xİ\š^˜][Ûˆ]šY[˜ÙK›İ[™›Ü˜ÙY™\ÚÛÈ‹ˆLİ\œ™[YØİ[Y[][Ûˆ\İÈ[ˆ‹MHÙXÛÛ™È‹ˆÛÈÛÛœİ[Y\œÈ\ÜÙY[ˆ™]™\œÙHÜ™\ˆ[ˆKÈÙXÛÛ™È‹ˆ™XXÚ\ÜÙY\ÛÛ]Y[ˆKÌˆÙXÛÛ™È‹ˆŒ‹LL\İÈÚ]\Ù[XİY‹ˆ›YYX[ˆËŒˆÙXÛÛ™Ë˜[™ÙHKŒHÙXÛÛ™È‹ˆ˜[‹LÍ\İÈ‹ˆ›YYX[ˆÎMHÙXÛÛ™Ë˜[™ÙHKŒNHÙXÛÛ™È‹ˆŒŒÌ‹ŒKŒÍK[™ŒÈÙXÛÛ™È‹ˆ™Y›İYHH™]Z[™YÛÛ\]H›İ]H‹ˆR‹X^H[ˆYH[™\[™[ÛÛÚ\Ùœ˜[YH[Z[™È\›™\ÜÈ‹ˆ™š\œİİXÚÜ[Z^˜][Ûˆ™[XZ[œÈR‹H‹ˆŠŠ”[[YHY™™XİŠŠˆ›Û™H‹ˆŠŠ•\İ™Z]š[ÜˆY™™XİŠŠˆ›Û™H‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ™XÛÜ™‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ•\İYš[HXÙ[Y[[™Ü›İİ‹ˆ™^\İ[™Èš[H]İÛœÈHÛÜÙ\İİX›H›ÙXİ™\ÜÛœÚXš[]H‹ˆ‘È›İÜ™X]HH\İš[HY\™[H›ÜˆHZ[\İÛ™H‹ˆÜ™X]HH™]È\İš[HÛ›HÚ[ˆ‹ˆ˜ÛÜÙ\İ^\İ[™È\İš[H‹ˆ“˜[YH\İš[\È›Üˆ[™\š[™È™\ÜÛœÚXš[]Y\È‹ˆœ™]šY]È\İYš[HÛİ[™]Èš[\ÈYYÛÛ\]K\›İ]H\XØ][Ûˆ‹ˆ‘È›İ™[Ü™Ø[š^™H^\İ[™È\İÈÛÛ[HÈ™YXÙHH[X™\ˆÙˆš[\È‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ[œİXİ[ÛœÂ‚ˆ\ÜÙ\R‹ŒÒÛÛ\]Yˆ[ˆ›ØYX\ˆ\ÜÙ\\İÜİZ]WÛÜ[Z^˜][Û—ØÛÜİ\™WÍZŒÚ›Yˆ[ˆ\˜Ú]Xİ\™B‚‚™Yˆ\İÍZÙYš[™\×ØWØÛÛÙ^Û\Ú]™WÛ›Û›Ü[Z^š[™×Ú\›™\ÜÊ
+N‚ˆ™XÛÜ™Hˆ‹š›Ú[Š™XY
+ÓÓÑ”SQWÔT‘“Ô“PSÑWĞTÑSS‘JKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆÛÛ[™\[™[Yœ˜[YH\™›Ü›X[˜ÙH˜\Ù[[™H
+Z[\İÛ™HR‹
+H‹ˆŠŠ”İ]\ÎŠŠˆXØÙ\Y[™Y\™ÙY[ˆÙŒLX‹ˆ˜YÈ›ÈØXÚK\™›Ü›X[˜ÙH™\ÚÛ[\›˜]H™[™\™\ˆ‹ˆ™YHXØÙ\Yš^Y\ÚŞHÚ\˜İ[\Û\ˆœ˜[Y\È‹ˆ˜Ù[™\˜]WØÚ\Ü™\]Y\İ
+
+XÛÛ\]K\™[™\ˆÜ˜XÛH‹ˆ˜ÛÛËØ™[˜ÚX\š×Ü™]\ØX›WÜÜ\™KœX™[XZ[œÈHÙ\\˜]H‹ˆ˜[YKœ\™—ØÛİ[\—ÛœÊ
+X‹ˆ™Y\\İXÛ\™YİÛ™\ˆ‹ˆ˜[˜Û\ÜÚYšYYÜ™\ÚYX[‹ˆ™\]X[ÛÛ\]WÙœ˜[YX^XİH‹ˆ›YYX[‹Z[š[][KX^[][K[™˜[™ÙH‹ˆÛÛœÛÛH›ÙÜ™\ÜÈY˜[˜Ù\Èœ›ÛHÈL\˜Ù[‹ˆ“HYİXH[™™YHUÈ[œİ[È‹ˆ”ÒKLMˆYÙ\İÙ[X[XÈ]Ë[™›Ú™XİY™XÛÜ™\\È‹ˆ˜Ø[›ÛšXØ[Ø][ÙİYHØY›Ùš[K[™MÈ\[Y\š\ÈY[]H‹ˆ•™YH[š]ÛÛ˜XİÈÙ\™HYYÈH^\İ[™Èš^Y\ÚŞH˜\Ù[[™H‹ˆR‹H™]\ÙHÛÜšÈ\È]]Üš^™YÛ›H›İYÚÙ\\˜][H™]šY]ÙY›İ[™YÛXÙ\È‹ˆ”]ÛˆËŒLKÈ‹ˆ™\›Ë[˜[›ÜÙXÛÛ™XØÛİ[[™È[\È‹ˆŒMÍÈHMÍ^[[Y[œÚ[ÛœÈ‹ˆ˜ÌXÍÙ™YXXŒŒÙ˜ÍLØNYXMXŒ™ÌXM˜ÙYMØMÍŒL˜ŒŒMYŒ˜‹ˆ“YYX[ˆÛÛ\]KYœ˜[YH[YHØ\ÈKLHÙXÛÛ™È‹ˆKK\ÙXÛÛ™˜[™ÙH‹ˆÈØ][ÙİYKÜ™\Ûİ\˜ÙHØY[™È‹ˆ‹ŒH›İšY\ˆ]˜[X][Ûˆ‹ˆ™š\œİ\[‹\Ù[œÚ]]™H\İ›Û›ÛZXØ[]˜[œÙ›Ü›X][Ûˆ˜[™ÙH‹ˆŒLÎH›Øİ\ÙY\İÈ[ˆËŒÌHÙXÛÛ™È‹ˆŒ‹LM›İ][™H\İÈÚ]\Ù[XİY[ˆŒÈÙXÛÛ™È‹ˆ˜[‹LÎ\İÈ[ˆÎKŒŒHÙXÛÛ™È‹ˆœÛİÙ\İÛÛ\]K\İZ]H\İ]ŒMˆÙXÛÛ™È‹ˆ››È[Z[™È™\ÚÛÜˆÜ[Z^˜][ÛˆÛZ[H‹ˆŠŠ”[[YHY™™XİŠŠˆ›Û™Hİ]ÚYH^XÚ]XYÛ›ÜİXÈ^Xİ][Ûˆ‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ™XÛÜ™‚ˆ\ÜÙ\R‹ÛÛ\]Yˆ[ˆ›ØYX\ˆ\ÜÙ\˜ÛÛÙœ˜[YWÜ\™›Ü›X[˜ÙWØ˜\Ù[[™WÍZ›Yˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\œ˜]È^Û\Ú]™H\™—ØÛİ[\—ÛœØØœÙ\˜][ÛœÈˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\˜]šX]\È]™\H›Ùš[Y[\˜[ÈÛ™H^Û\Ú]™Hˆ[ˆÛİ\˜ÙWİ™YB‚‚™Yˆ\İÍZXWÙYš[™\×ÛÛ›WİWÛØYYÜÜ\™WÜ™]\ÙWÜÙX[J
+N‚ˆ™XÛÜ™Hˆ‹š›Ú[Š™XY
+ĞQQÔÔT‘WÔ‘UTÑJKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ“ØYY\Ü\™H™]\ÙHÙX[H
+Z[\İÛ™HR‹PJH‹ˆŠŠ”İ]\ÎŠŠˆXØÙ\Y[™Y\™ÙY[ˆMÎLM›İYÚˆÎ‹ˆ˜ÛÛ™[XZ[œÈH[™\[™[ÛÛ\]K\™[™\ˆÜ˜XÛH‹ˆ˜™]\ÙWÛØYYÜÜ\™XØYÈÛ™HØœÙ\™\‹Z[™\[™[Ø[›ÛšXØ[Ù[\İX[Ü\™H‹ˆ™œ™\ÚØÚY[YšXÈØœÙ\™\ˆÈ]™\HØ[›ÛšXØ[œ˜[YH™\]Y\İ‹ˆ˜ÛÛZ[œÈ›È›İ[™ØœÙ\™\ˆ‹ˆ˜Ü™X]\È[™ÛÜÙ\È[ˆØœÙ\™\˜‹ˆ˜Ù[™\˜]WØÚ\Ü™\]Y\İ
+
+X™[XZ[œÈHÛÛ\]Hİ]XÈ›İ]H‹ˆœ™Z™XİÈ[ˆ[˜›İ[™Ü\™HÚ]İ][ˆØœÙ\™\ˆ‹ˆ˜Ø[›ÛšXØ[Ü\™HZ[Ûİ[‹ˆ››ÈZ[\İÛ™K[˜[YY\İš[H‹ˆ™Y›İ]Ù[ˆÛZ[H\™›Ü›X[˜ÙH[\›İ™[Y[‹ˆR‹Pˆ™Y›Ü™HR‹HØ\ÈXØÙ\Y\ÈHÚÛH‹ˆŒLÍH\İÈ[ˆËLÙXÛÛ™È‹ˆŒ‹LNÙ[XİY\İÈÚ]\Ù[XİY[ˆËLˆÙXÛÛ™È‹ˆ˜[‹Mˆ\İÈ[ˆÎKŒÙXÛÛ™È‹ˆœÛİÙ\İÛÛ\]H\İ]ŒÙXÛÛ™È‹ˆ™š[˜[\™›Ü›X[˜ÙHXØÙ\[˜ÙH›ÜˆR‹H‹ˆ™Y˜][ÛÛ›İ]H\È[˜Ú[™ÙY‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ™XÛÜ™‚ˆ\ÜÙ\R‹H\ÈXØÙ\Yˆ[ˆ›ØYX\ˆ\ÜÙ\˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKÛØYYÜÜ\™WÜ™]\ÙWÍZXK›Yˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\‘š^YÚŞTÙ\]Y[˜ÙQ^Xİ][Û‹”‘UTÑWÓĞQQÔÔT‘Hˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\›ØœÙ\™\‹Z[™\[™[ØYY\Ü\™HÙ\]Y[˜ÙHÛXŞHˆ[ˆÛİ\˜ÙWİ™YB‚‚™Yˆ\İÍZX—ÙYš[™\×Ù^XİÜ™]\ÙWÙ\]Z]˜[[˜ÙWØ[™Ü˜]×ÛYX\İ\™[Y[
+
+N‚ˆ™XÛÜ™Hˆ‹š›Ú[Š™XY
+’VQÔÒÖWÔ‘UTÑWÑTURUSSÑJKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ‘š^Y\ÚŞH™]\ÙH\]Z]˜[[˜ÙH
+Z[\İÛ™HR‹PŠH‹ˆŠŠ”İ]\ÎŠŠˆXØÙ\Y[™Y\™ÙY[ˆLNX›İYÚˆÎH‹ˆœØ[YHÙ\]Y[˜ÙHÜ˜Ú\İ˜]Üˆ‹ˆ››İ[ˆ[œİ[Y[\™˜XÙHÜˆÙXÛÛ™^Xİ]Üˆ‹ˆ”˜]ÈÙ\]Y[˜ÙH\˜][ÛœÈ[™˜][ÜÈ‹ˆ››È[Z[™È™\ÚÛ‹ˆœÜ\šXØ[[™›Ú™XİY™XÛÜ™È‹ˆ˜ÛÛ\ÜÚ][Û‹Û\[™È‹ˆ”‘È^[È[ˆ‘ĞHÜXÙH‹ˆ›Û][HX\šÙ\ˆ[™Û\Y[YšY\œÈ‹ˆ•Ù[HÙ[X[XÈY[YšY\œÈ‹ˆ˜ÜX]MLH‹ˆ™˜Z[ÈÛÜÙY‹ˆÛÛ™[XZ[œÈHY˜][‹ˆ˜[™YHœ˜[Y\ÈX]ÚY^XİH‹ˆ›XXÓÔËLLŒM‹^—ÍZLÎ‹Mš]‹ˆŒÍKMÈ™\œİ\ÈKŒÈÙXÛÛ™È›Üˆ‘È‹ˆ‘™\›˜[™È[ÛÈš\İX[HXØÙ\YHÚ^Z\™Y‘Èœ˜[Y\È‹ˆ”[[YHY™™XİŠŠˆ›Û™H‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ™XÛÜ™‚ˆ\ÜÙ\˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKÙš^YÜÚŞWÜ™]\ÙWÙ\]Z]˜[[˜ÙWÍZX‹›Yˆ[ˆ›ØYX\ˆ\ÜÙ\˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍZ—Ü\™›Ü›X[˜ÙKÙš^YÜÚŞWÜ™]\ÙWÙ\]Z]˜[[˜ÙWÍZX‹›Yˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\ÛÛËØ™[˜ÚX\š×Ùš^YÜÚŞWÜ™]\ÙKœHˆ[ˆÛİ\˜ÙWİ™YB‚‚™Yˆ\İÍZ—ØÛÜÙ\×Ü\™›Ü›X[˜ÙWØ[™Ü™\Ù\™\×Ø›İÙ^Xİ][Û—Ü›İ]\Ê
+N‚ˆ™XÛÜ™Hˆ‹š›Ú[Š™XY
+T‘“Ô“PSÑWĞÓÔÕT‘JKœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+Bˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JBˆ\Ù\—ÜÙ\]Y[˜Ù\ÈHˆ‹š›Ú[Šˆ™XY
+“ÓÕÈ™ØÜËİ\Ù\—ÙİZYKİ[\Ü˜[ÜÙ\]Y[˜Ù\Ë›YŠKœÜ]
+
+Bˆ
+B‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ”\™›Ü›X[˜ÙHÛÜİ\™H
+Z[\İÛ™HR‹ŠH‹ˆ”ˆÎY\™ÙY\ÈMÎLM‹ˆ˜LNMYYŒLÍÌ˜Y˜Ì˜Ø™˜M™LØ™™™™Œ˜‹ˆÛÛ^Xİ][Ûˆ™[XZ[œÈHY˜][ÛÛ\]K\™[™\ˆÛÜœ™Xİ™\ÜÈÜ˜XÛH‹ˆ›Û™HØœÙ\™\‹Z[™\[™[ØYYØ[›ÛšXØ[Ù[\İX[Ü\™H‹ˆ™œ™\ÚØœÙ\™\˜‹ˆ›XXÓÔËLLŒM‹^—ÍZLÎ‹Mš]‹ˆ››Ü›X[^™YÙ[X[XÈÕ‘È‹ˆ›XXÓÔÈÚ\Ø™[™\™\ˆ‹ˆ‘™\›˜[™È[ÛÈš\İX[HXØÙ\YHÚ^Z\™Y‘Èœ˜[Y\È‹ˆŸ‘ÈÍKMÈÈKŒÈÈKŒ^‹ˆ˜Ú\˜Xİ\š^˜][Ûˆ]šY[˜ÙK›İ[™›Ü˜ÙY\™›Ü›X[˜ÙH™\ÚÛÈ‹ˆŒ‹LŒˆ\ÜÙY\Ù[XİY[ˆÌËŒÙXÛÛ™È‹ˆŒ\ÜÙY‹LŒˆ\Ù[XİY[ˆM‹ÈÙXÛÛ™È‹ˆ˜[‹MˆÛÛXİY\İÈ‹ˆ“›ÈÓH^[\HÚ[™Ù\È\™H™\]Z\™Y‹ˆ“›È\˜Ú]Xİ\™KYXYÜ˜[HÚ[™ÙH\È™\]Z\™Y‹ˆ”›ÙÜ˜[HLKŒ‹ˆŠŠ”[[YHY™™XİŠŠˆ›Û™H‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ™XÛÜ™‚ˆ\ÜÙ\R‹ˆ\ÈXØÙ\Y[™\˜Ú]™Yˆ[ˆ›ØYX\ˆ\ÜÙ\Rˆ\ÈÛÜÙYˆ›ÙÜ˜[HLKŒ\È™^ˆ[ˆ›ØYX\ˆ\ÜÙ\œ\™›Ü›X[˜ÙWØÛÜİ\™WÍZ‹›Yˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\œ\™›Ü›X[˜ÙWØÛÜİ\™WÍZ‹›Yˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\œ\™›Ü›X[˜ÙWØÛÜİ\™WÍZ‹›Yˆ[ˆ[œİXİ[ÛœÂˆ\ÜÙ\˜Ú[™Ù\È›ÈÓHY˜][Üˆİ]]ˆ[ˆ\Ù\—ÜÙ\]Y[˜Ù\Â‚‚™Yˆ\İÍLLØXØÙ\×ÛÛ™WÛÙ™›[™WÛZ[›Ü—Ø›ÙWÜ›İšY\—Ø›İ[™\J
+N‚ˆ]Y]Hˆ‹š›Ú[Š™XY
+RS“Ô—Ğ“ÑWÔ“Õ’QT—ĞUQU
+KœÜ]
+
+JBˆ›ØYX\Hˆ‹š›Ú[Š™XY
+•UT‘WÔ“ĞQPT
+KœÜ]
+
+JBˆ\˜Ú]Xİ\™HHˆ‹š›Ú[Š™XY
+ŒWĞÕT”‘S•
+KœÜ]
+
+JBˆ[\[Y[][ÛˆHˆ‹š›Ú[Šˆ™XY
+U‘SÔTˆÈš[\[Y[][Û—Ü™Y™\™[˜ÙK›YŠKœÜ]
+
+Bˆ
+BˆÛİ\˜ÙWİ™YHHˆ‹š›Ú[Š™XY
+U‘SÔTˆÈœÛİ\˜ÙWİ™YK›YŠKœÜ]
+
+JBˆ[œİXİ[ÛœÈHˆ‹š›Ú[Š™XY
+S”Õ•PÕSÓ”ÊKœÜ]
+
+JBˆİZYHHˆ‹š›Ú[Š™XY
+ÓÓÔ‘SUWÑÕRQJKœÜ]
+
+JB‚ˆ›Üˆ˜\ÙH[ˆ
+ˆ“Z[›Ü‹X›ÙHØÚY[YšXÈ[™›İšY\ˆ]Y]
+Z[\İÛ™HLKŒ
+H‹ˆŠŠ”İ]\ÎŠŠˆXØÙ\YH™\›˜[™È‹ˆ‘™\›˜[™ÈXØÙ\YHØÚY[YšXÈ[™\˜Ú]Xİ\˜[XÚ\Ú[ÛœÈ‹ˆ“Z[\İÛ™HLKŒ\ÈÛÜÙY‹ˆŠŠ˜\Ù[[™NŠŠˆM˜LÌØ‹ˆ˜›İ[™YÜš^›ÛœËYÙ[™\˜]YÛX[X›ÙHÔÈ‹ˆ“]™HÜš^›ÛœËÔĞ‘ˆ\š[™È™[™\š[™Îˆ™Z™Xİ‹ˆ“Ü˜š][Y[[Y[›İšY\ˆY™\ˆ‹ˆÛËX›ÙHÙ\\šX[ˆ›ÜYØ]Üˆ‹ˆœÚ[][[™[İ\È
+Š™Ù[ÛY]šXÊŠˆØ\\ÚX[ˆİ]H‹ˆ”›ÙXİ[Ûˆİ]Hİ]]ÛÛ™\™Ù\ÈÛˆPÔ‘ˆ^\È[™ˆ]˜[X][Ûˆ‹ˆ•Ù[HY[]Hİ^\È\İ[˜İœ›ÛH[›İšY\‹[˜]]™HY[YšY\œÈ‹ˆ‘˜Z[ÛÜÙYİ]ÚYHÔÈÙYÛY[Ûİ™\˜YÙH‹ˆ\İ\›ÚYİÛY]NˆY\‹ˆÛÛY]İÛY]H[™\X\˜[˜ÙNˆY™\ˆ‹ˆÛÛY]›Û‹YÜ˜]š]][Û˜[[˜[ZXÜÎˆY\‹ˆ“XÛ]\ËÛÛXK[™Z[Ù[X[XÜÎˆYÜ‹ˆ“›Èš\İX[ÛÛ\\š\ÛÛˆ\È™\]Z\™Y‹ˆ•H\Ù\ˆİZYH[™^[\\È™\]Z\™H›ÈY]‹ˆ\˜Ú]Xİ\™HXYÜ˜[\È™\]Z\™H›ÈY]‹ˆŠŠ”[[YHY™™XİŠŠˆ›Û™H‹ˆ
+N‚ˆ\ÜÙ\˜\ÙH[ˆ]Y]‚ˆ›Üˆ\›[ˆ
+ˆšÎ‹ËÜÜÙX\Kšœ›˜\ØK™Ûİ‹ÙØËÚÜš^›ÛœËš[‹ˆšÎ‹ËÜÜÙšœ›˜\ØK™Ûİ‹ÚÜš^›ÛœËÛX[X[š[‹ˆšÎ‹ËÜÜÙX\Kšœ›˜\ØK™Ûİ‹ÙØËÜØ™‹š[‹ˆšÎ‹ËÛ˜ZY‹šœ›˜\ØK™Ûİ‹ÜX‹Û˜ZY‹İÛÛÚ]ÙØÜËĞËÜ™\KÜÜËš[‹ˆšÎ‹ËÙØÜË›Z[›Üœ[™]Ù[\‹›™]È‹ˆšÎ‹ËÙÚK›Ü™ËÌLŒL‹ÌLLMˆ‹ˆ
+N‚ˆ\ÜÙ\\›[ˆ™XY
+RS“Ô—Ğ“ÑWÔ“Õ’QT—ĞUQU
+B‚ˆ\ÜÙ\LKŒ\ÈXØÙ\Y[™\˜Ú]™Yˆ[ˆ›ØYX\ˆ\ÜÙ\“Z[›Ü‹X›ÙH›İšY\ˆ›İ[™\H
+XØÙ\YZ[\İÛ™HLKŒ
+Hˆ[ˆ\˜Ú]Xİ\™Bˆ\ÜÙ\˜\˜Ú]™KÛZ[\İÛ™WÚ\İÜKÍLWÛZ[›Ü—Ø›ÙY\ËÈˆ[ˆ[\[Y[][Û‚ˆ\ÜÙ\XØÙ\YLHZ[›Ü‹X›ÙHİÛ™\œÚ\ˆ[ˆÛİ\˜ÙWİ™YBˆ\ÜÙ\‘›ÜˆLHZ[›Ü‹X›ÙHÛÜšÈˆ[ˆ[œİXİ[ÛœÂˆ\ÜÙ\LKŒZ[›Ü‹X›ÙHØÚY[YšXÈ[™›İšY\ˆ]Y]ˆ[ˆİZYBˆ\ÜÙ\XØÙ\YH™\›˜[™ÈÛˆŒ‹LKLLˆ[ˆİZYBˆ\ÜÙ\”™\]Y\İÈİ]ÚYHÛİ™\˜YÙH˜Z[ÛÜÙYˆ[ˆİZYBˆ\ÜÙ\˜Ø[››İ™XÛÛYHHÚ[[ÛËX›ÙH˜[˜XÚÈˆ[ˆİZYBˆ\ÜÙ\•Ù[H]\İ™Z]\ˆ\ØØ\™›Üˆ™X\H[Hˆ[ˆİZYBˆ\ÜÙ\˜Ú[™Ù\È›ÈÛÛÜ™[˜]HØ[İ[][ÛˆÜˆš\ÚX›Hİ]]ˆ[ˆİZYB‚‚™Yˆ\İİ\Ù\—ÙİZYWÙØİ[Y[×Ù]™\WØÚ\Ù˜[Z[WİÚ]Ü[›˜X›WÙ^[\\Ê
+N‚ˆ[™^Hˆ‹š›Ú[Š™XY
+“ÓÕÈ™ØÜËİ\Ù\—ÙİZYKÚ[™^›YŠKœÜ]
+
+JBˆ^[\\ÈH™XY
+“ÓÕÈ™ØÜËİ\Ù\—ÙİZYKØÚ\Ù^[\\Ë›YŠBˆÛÛ™šYİ\˜][ÛˆH™XY
+“ÓÕÈ™ØÜËİ\Ù\—ÙİZYKØÛÛ™šYİ\˜][Û‹›YŠBˆ[\Ü˜[H™XY
+“ÓÕÈ™ØÜËİ\Ù\—ÙİZYKİ[\Ü˜[ÜÙ\]Y[˜Ù\Ë›YŠB‚ˆ\ÜÙ\ˆÈÙ[HŒKH\Ù\ˆİZYHˆ[ˆ[™^ˆ\ÜÙ\™š]™HÜ™[˜\HÚ\˜[Z[Y\È[™Ú^Ø[›ÛšXØ[^[\HØÜš\Èˆ[ˆ[™^ˆ\ÜÙ\–Ü[›˜X›H^[\\È›Üˆ]™\HÚ\˜[Z[WJÚ\Ù^[\\Ë›Y
+Hˆ[ˆ[™^‚ˆ›ÜˆXY[™ËÛÛ[X[™[ˆ
+ˆ
+ˆÈÈØ[XİXÈ[\ÚŞHX\‹Ù[WØÚ\[\ÚŞHŠKˆ
+ˆÈÈš\ÚX›K\ÚŞH[š\Ü\™H‹Ù[WØÚ\[š\Ü\™HŠKˆ
+ˆÈÈ™YÚ[Û˜[Ú\‹Ù[WØÚ\™YÚ[Û˜[ŠKˆ
+ˆÈÈÚ\˜İ[\Û\ˆÚ\‹Ù[WØÚ\Ú\˜İ[\Û\ˆŠKˆ
+ˆÈÈš[›Øİ[\ˆÚ\‹Ù[WØÚ\š[›Øİ[\ˆŠKˆ
+N‚ˆ\ÜÙ\XY[™È[ˆ^[\\Âˆ\ÜÙ\ÛÛ[X[™[ˆ^[\\Â‚ˆ›ÜˆØÜš\[ˆ
+ˆ™^[\\ËØ[ÜÚŞKœH‹ˆ™^[\\ËÜ[š\Ü\™KœH‹ˆ™^[\\ËÜ™YÚ[Û˜[ØÛÛœİ[][Û‹œH‹ˆ™^[\\ËÜ™YÚ[Û˜[ØÛÛœİ[][Û—ÙÜ›İ\œH‹ˆ™^[\\ËØÚ\˜İ[\Û\‹œH‹ˆ™^[\\ËØš[›Øİ[\—ÛØš™XİœH‹ˆ
+N‚ˆ\ÜÙ\ØÜš\[ˆ^[\\Â‚ˆ\ÜÙ\‹KYšY[YX[Y]\ˆËHˆ[ˆ^[\\Âˆ\ÜÙ\‹K[XYÛš]YK[[Z]LHˆ[ˆ^[\\Âˆ\ÜÙ\‹K[[ÛÛˆK[[ÛÛ‹Y\ÚË[XYÛšYšXØ][Ûˆˆ[ˆ^[\\Âˆ\ÜÙ\–ØÛÛ\]HÚ\^[\\×JÚ\Ù^[\\Ë›Y
+Hˆ[ˆÛÛ™šYİ\˜][Û‚ˆ\ÜÙ\“ØœÙ\™Y[ÛÛˆ\ÚÜÈÚ][ˆÛ™Hš^YÚ\\™Hİ\ÜYÙ\\˜][Hˆ[ˆ[\Ü˜[
