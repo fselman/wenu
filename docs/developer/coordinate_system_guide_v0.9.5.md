@@ -96,6 +96,7 @@
     - [13.2.35 49I.3E.3 observed Moon sequence](#49i3e3-observed-moon-sequence)
     - [13.2.36 49I.3E resolved Moon closure](#49i3e-resolved-moon-closure)
     - [13.2.37 50A.0 minor-body scientific and provider audit](#50a0-minor-body-provider-audit)
+    - [13.2.38 50A.1 generic minor-body state provider](#50a1-minor-body-state-provider)
 
 <a id="status-and-purpose"></a>
 
@@ -2889,3 +2890,54 @@ The accepted provider boundary has these operational consequences:
 
 50A.0 changes no coordinate calculation or visible output. Milestone 50A.1 is
 the next authorized slice.
+
+<a id="50a1-minor-body-state-provider"></a>
+
+## 13.2.38 50A.1 generic minor-body state provider
+
+**Status:** Implemented for Fernando's architectural review; not yet connected
+to any drawable object.
+
+**[Foundation]** The first minor-body provider keeps two files visibly
+separate: one Horizons SPK supplies the asteroid or comet relative to the
+centre named by that file, and the existing planetary ephemeris locates that
+centre relative to the requested origin. Adding the two positions and the two
+velocities produces one geometric state. Wenu records both files and the orbit
+solution and refuses to calculate outside their available intervals.
+
+**[Undergraduate]** Let the selected small-body segment provide
+
+\[
+  (\mathbf r_{BC},\mathbf v_{BC})
+\]
+
+for body \(B\) relative to segment centre \(C\), and let the declared planetary
+dependency provide
+
+\[
+  (\mathbf r_{CO},\mathbf v_{CO})
+\]
+
+for \(C\) relative to requested centre \(O\), at the same TDB instant in ICRF
+axes. The provider returns
+
+\[
+  \mathbf r_{BO}=\mathbf r_{BC}+\mathbf r_{CO},\qquad
+  \mathbf v_{BO}=\mathbf v_{BC}+\mathbf v_{CO}.
+\]
+
+The later segment in file order wins when overlapping segments cover the same
+instant, matching SPK priority. The primary resource's start/end values bound
+the target segments, while the ordered segment list is the exact authority;
+an uncovered gap within the bounding interval still fails closed. The returned
+`MinorBodyEphemerisState` retains a typed resource chain and the complete typed
+orbit-solution and selected-segment identities, including the exact provider
+SPK target ID and requested provider centre ID. The provider accepts only TDB
+evaluation and geometric ICRF state; UTC observation time, iterative light
+time, topocentric observer state, apparent corrections, and product-frame
+transformation remain downstream responsibilities.
+
+This slice establishes structure and failure behavior only. An independent
+installed-resource comparison for a main-belt asteroid and a fast nearby
+object remains the 50A.2 scientific gate. No minor-body spherical direction,
+point, track, magnitude, CLI selector, or rendered symbol exists yet.

@@ -61,16 +61,20 @@ class FakeKernel:
         )
         self._ids = {
             "solar system barycenter": 0,
+            "sun": 10,
             "venus": 299,
             "earth": 399,
         }
         self._vectors = {
             0: FakeVector((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)),
+            10: FakeVector((0.2, 0.3, 0.4), (0.01, 0.02, 0.03)),
             299: FakeVector((1.0, 2.0, 3.0), (0.1, 0.2, 0.3)),
             399: FakeVector((0.4, 0.5, 0.6), (0.01, 0.02, 0.03)),
         }
 
     def decode(self, key):
+        if isinstance(key, int) and key in self._vectors:
+            return key
         try:
             return self._ids[key]
         except KeyError as error:
@@ -142,6 +146,15 @@ def test_adapter_subtracts_independent_barycentric_states(resolved):
     assert state.position == pytest.approx((0.6, 1.5, 2.4))
     assert state.velocity == pytest.approx((0.09, 0.18, 0.27))
     assert state.provider_centre_id == "399"
+
+
+def test_adapter_accepts_an_explicit_numeric_provider_target(resolved):
+    source, _, _, _ = resolved
+
+    state = source.state(request(target="10"))
+
+    assert state.position == (0.2, 0.3, 0.4)
+    assert state.provider_target_id == "10"
 
 
 def test_adapter_rejects_unsupported_cartesian_frame(resolved):

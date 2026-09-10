@@ -1,0 +1,31 @@
+digraph minor_body_state_provider_50a1 {
+  graph [rankdir=LR, bgcolor="white", fontname="Helvetica", fontsize=15,
+    label="Wenu 50A.1 — offline minor-body state-provider seam",
+    labelloc="t", nodesep=0.4, ranksep=0.55, pad=0.25];
+  node [shape=box, style="rounded,filled", fillcolor="#f7f7f7",
+    color="#555555", fontname="Helvetica", fontsize=10,
+    margin="0.13,0.09"];
+  edge [color="#555555", fontname="Helvetica", fontsize=8,
+    arrowsize=0.7];
+
+  small [label="Resolved Horizons SPK\ntarget segment + SHA-256",
+    fillcolor="#fff2cc"];
+  planet [label="Planetary state source\nresolved dependency",
+    fillcolor="#fff2cc"];
+  chain [label="EphemerisResourceChain\nprimary + dependencies",
+    fillcolor="#d9eaf7"];
+  provider [label="SkyfieldMinorBodyStateSource\nsegment-centre composition",
+    fillcolor="#fce4d6"];
+  state [label="MinorBodyEphemerisState\nICRF + TDB + position/velocity",
+    fillcolor="#e2f0d9"];
+  later [label="Direction realizer + body layer\nlater milestones",
+    style="rounded,dashed,filled", fillcolor="#eeeeee"];
+
+  small -> chain [label="primary identity"];
+  planet -> chain [label="dependency identity"];
+  small -> provider [label="target relative to segment centre"];
+  planet -> provider [label="segment centre relative to request centre"];
+  chain -> provider [label="exact provenance"];
+  provider -> state [label="composed geometric state"];
+  state -> later [style=dashed, label="not connected in 50A.1"];
+}

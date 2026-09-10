@@ -30,6 +30,9 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`test_performance_and_future_program_49j_50.md`](test_performance_and_future_program_49j_50.md)
   — accepted 49J test/performance program and the current ordered 50A
   minor-body and 50B publication-legibility programs.
+- [`minor_body_state_provider_50a1.md`](minor_body_state_provider_50a1.md) —
+  implemented 50A.1 offline resource-chain and geometric state-provider seam
+  awaiting architectural review.
 The accepted 49J.0 through 49J.6 records, including the final closure, are
 archived under
 [`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/).

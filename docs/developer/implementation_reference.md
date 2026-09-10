@@ -2192,3 +2192,31 @@ accepts no installed API. It requires the 50A.1 minor-body provider to return
 the existing uncorrected `EphemerisState`, keep a locally resolved small-body/
 planetary resource chain explicit, and leave light time, apparent place,
 projection, rendering, and export with their current owners.
+
+### Generic minor-body state provider (Milestone 50A.1)
+
+`src/wenu/ephemeris.py::EphemerisResourceChain` freezes one primary resource,
+one or more distinct `EphemerisResourceIdentity` dependencies, and provenance.
+`EphemerisState.resource` accepts that chain without changing existing
+single-resource states.
+
+`src/wenu/minor_body_ephemeris.py::MinorBodySolutionIdentity` separates the
+Wenu target key from provider designations, Horizons command and SPK ID, and
+retains solution epoch/reference, model parameters, quality fields, and source
+provenance. `SkyfieldMinorBodyStateSource.from_kernels()` borrows and
+fingerprints an already-open small-body SPK, borrows an existing planetary
+state source and timescale, and records ordered target/centre/coverage segment
+provenance. It performs no open, download, refresh, close, registration, or
+chart operation.
+
+`MinorBodyEphemerisState` is a frozen `EphemerisState` subtype and therefore
+satisfies the existing provider protocol while retaining the complete typed
+solution and selected ordered `MinorBodySegmentIdentity` on every result.
+
+`state()` requires an exact Wenu target, geometric ICRF, and TDB. It evaluates
+the last covering SPK target segment, requests the segment's numeric centre
+relative to the caller's centre from the declared planetary dependency at the
+same instant, validates the dependency state, and adds the complete position
+and velocity in AU and AU/day. It fails closed outside either resource's
+coverage. The adapter is not connected to direction realization or a body;
+50A.2 retains installed-resource numerical validation.

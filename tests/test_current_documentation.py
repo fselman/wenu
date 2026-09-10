@@ -123,6 +123,7 @@ MINOR_BODY_PROVIDER_AUDIT = (
     DEVELOPER
     / "archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md"
 )
+MINOR_BODY_STATE_PROVIDER = DEVELOPER / "minor_body_state_provider_50a1.md"
 TEST_PRACTICE_AUDIT = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md"
@@ -3058,6 +3059,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
+        "minor_body_state_provider_50a1.md",
     }
 
     archived = {
@@ -3738,6 +3740,64 @@ def test_50a0_accepts_one_offline_minor_body_provider_boundary():
     assert "cannot become a silent two-body fallback" in guide
     assert "Wenu must neither discard nor reapply them" in guide
     assert "changes no coordinate calculation or visible output" in guide
+
+
+def test_50a1_installs_only_the_offline_minor_body_state_provider_seam():
+    record = " ".join(read(MINOR_BODY_STATE_PROVIDER).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    diagrams = " ".join(
+        read(DEVELOPER / "diagrams/README.md").split()
+    )
+    provider_dot = read(
+        DEVELOPER / "diagrams/minor_body_state_provider_50a1.dot"
+    )
+    provider_svg = read(
+        DEVELOPER / "diagrams/minor_body_state_provider_50a1.svg"
+    )
+
+    for phrase in (
+        "Generic minor-body state provider (Milestone 50A.1)",
+        "**Status:** Implemented for Fernando's architectural review",
+        "**Base:** `9097d4f`",
+        "One resolved Horizons small-body SPK",
+        "EphemerisResourceChain",
+        "MinorBodySolutionIdentity",
+        "MinorBodyEphemerisState",
+        "selected `MinorBodySegmentIdentity`",
+        "selects the last covering target segment",
+        "same TDB instant",
+        "It does not extrapolate or silently substitute a two-body orbit",
+        "tests/test_minor_body_ephemeris.py",
+        "performs no network access",
+        "User documentation and examples remain unchanged",
+        "50A.2 numerical validation",
+        "No body, chart request, CLI option, direction, projection, rendering, or output",
+    ):
+        assert phrase in record
+
+    assert "50A.1 is implemented for review" in roadmap
+    assert "Minor-body state-provider seam (Milestone 50A.1 review candidate)" in architecture
+    assert "Generic minor-body state provider (Milestone 50A.1)" in implementation
+    assert "50A.1 minor-body state-provider ownership" in source_tree
+    assert "50A.1 review candidate" in instructions
+    assert "50A.1 generic minor-body state provider" in guide
+    assert "r_{BO}=\\mathbf r_{BC}+\\mathbf r_{CO}" in guide
+    assert "resource-chain and geometric-state provider seam" in diagrams
+    for phrase in (
+        "EphemerisResourceChain",
+        "SkyfieldMinorBodyStateSource",
+        "MinorBodyEphemerisState",
+        "not connected in 50A.1",
+    ):
+        assert phrase in provider_dot
+        assert phrase in provider_svg
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():
