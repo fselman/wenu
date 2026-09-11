@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 43320)
-Total output lines: 4123
-
 """Current public-documentation and architecture-authority contracts."""
 
 import ast
@@ -1421,7 +1418,1359 @@ def test_coordinate_guide_toc_uses_explicit_portable_anchors():
     assert "reference epoch or equinox" not in guide
     assert "epoch/equinox" not in guide
     assert "- coordinate system and representation;" in guide
-    assert "- …13320 tokens truncated…e",
+    assert "- reference frame and its physical realization;" in guide
+    assert "equinox, only for a frame whose axes are equinox-based" in guide
+    assert "position reference epoch, only for a catalogue state" in guide
+    header = guide[:guide.index("# Table of contents")]
+    assert header.splitlines()[:8] == [
+        "# Wenu Coordinate Systems and Astronomical Objects",
+        "",
+        "**Subtitle:** Living scientific and implementation guide for architecture 0.9.5  ",
+        "**Author:** Wenu project  ",
+        "**Architecture version:** `0.9.5`  ",
+            "**Guide version:** `0.9.5.20260902.54`",
+            "**Last updated:** `2026-09-02T23:59:30Z`",
+        "**Language:** English",
+    ]
+
+
+def test_coordinate_guide_teaches_calendars_for_historical_use():
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    for phrase in (
+        "Calendars are historical coordinate systems for time",
+        "There was no single timeless “Sumerian calendar.”",
+        "Babylonian and Assyrian",
+        "five epagomenal days",
+        "There was no single ancient Greek civil calendar",
+        "Roman Republican calendar",
+        "*Proleptic* means that a rule is extended to dates before the rule was historically introduced",
+        "Greek *prolepsis*, “anticipation” or “taking beforehand.”",
+        "not a historical reconstruction",
+        "Did Augustus steal a day from February?",
+        "there is no historical year in which Augustus “stole” the day",
+        "Sextilis was renamed *Augustus* in 8 BCE",
+        "February was already the exceptional short month",
+        "supposed transfer of a day from February is an unsupported legend",
+        "Britain and its colonies changed in September 1752",
+        "A historian's minimum date record",
+        "No year zero in ordinary BCE/CE history",
+        "Julian calendar is not Julian Date",
+        "UTC is not an ancient time scale",
+        "Delta T = \\mathrm{TT}-\\mathrm{UT1}",
+        "Julian and Besselian epochs are not calendars",
+        "Tropical, sidereal, and Besselian years",
+        "measured from the moving equinox",
+        "roughly 20 minutes longer",
+        "fictitious mean Sun",
+        "mean right ascension 18h 40m",
+        "365.242198781",
+        "must not be treated as an immutable modern measurement",
+        "`B1950.0` denotes the instant obtained from this mean-Sun convention",
+        "Wenu implementation box — Calendars and historical chronology",
+        "It is **not** a general historical-calendar converter",
+        "HistoricalDateSpec",
+        "years 1–9999",
+    ):
+        assert phrase in guide
+
+
+def test_coordinate_guide_teaches_reference_policy_at_two_depths():
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    for phrase in (
+        "**[Foundation]**",
+        "**[Undergraduate]**",
+        "Julian and Besselian year labels",
+        "A Julian year is exactly 365.25 days",
+        "Gaia DR2 positions use position reference epoch `J2015.5`",
+        "Gaia EDR3 and DR3 positions use `J2016.0`",
+        "The Gaia position reference epoch is not an equinox",
+        "an equinox is not one of its defining frame parameters",
+        "Gaia-CRF3 is a high-precision optical realization of ICRS",
+        "ICRF3 is the third radio realization of ICRS",
+        "`FK5(equinox=J2000.0)` is close to ICRS but is not identical",
+        "Wenu currently represents Gaia-compatible celestial geometry as `icrs`",
+        "Equinox applicability by system and frame",
+        "ICRS does not have a **defining equinox**, fixed or selectable",
+        "The small rotation between ICRS/GCRS axes and the dynamical mean equator",
+        "TEME is a special case whose name includes “mean equinox,”",
+        "Concept box — How an abstract celestial sphere becomes a measured frame",
+        "Least squares alone therefore does not determine the absolute orientation",
+        "Astrometric Global Iterative Solution (AGIS)",
+        "True Equator, Mean Equinox",
+        "Simplified General Perturbations 4 (SGP4)",
+        "`FK` comes from the German *Fundamentalkatalog*",
+        "The adopted corrections are part of the frame's provenance",
+        "Wenu implementation box — Where each responsibility lives",
+        "Wenu does not rebuild ICRS, Gaia-CRF3, or FK5",
+        "`coordinates.py::CoordinateSpec`",
+        "`coordinate_service.py::CoordinateService`",
+        "`charts/reference_policy.py::CelestialReferencePolicy`",
+        "Existing Gaia-derived Magellanic Cloud isophotes are morphology products",
+        "Only `vacuum` is currently accepted",
+        "Future specialized TEME adapter",
+        "Wenu starts at the published catalogue/provider-state boundary",
+        "Every medium or major Wenu change must include an explicit review",
+        "A passing documentation test is not a substitute for Fernando's",
+    ):
+        assert phrase in guide
+
+
+def test_architecture_v095_closure_and_example_count_are_current():
+    roadmap = read(FUTURE_ROADMAP)
+    target = read(V095_TARGET)
+    guide = read(COORDINATE_GUIDE)
+    diagrams = read(DIAGRAMS / "README.md")
+    implementation = read(DEVELOPER / "implementation_reference.md")
+
+    for text in (roadmap, target, guide, diagrams):
+        assert "merge pending" not in text
+        assert "1a15076" in text
+    normalized = " ".join(implementation.split())
+    assert "installs these six scripts" in normalized
+    assert "- `all_sky.py`;" in implementation
+
+
+def test_v08_roadmap_records_ordinary_interface_and_static_sequences():
+    target = read(TARGET)
+    roadmap = read(ROADMAP)
+
+    for phrase in (
+        "Three-stage ordinary Python interface",
+        "observer-independent loaded-content container",
+        "Defining a projection and applying it are separate operations",
+        "fewer than 70 lines",
+        "Reproducible image-frame sequences",
+        "does not encode movies",
+    ):
+        assert phrase in target
+
+    for phrase in (
+        "Milestone 46C.8G",
+        "Milestone 46C.8O",
+        "Pass observer explicitly through canonical execution",
+        "Decouple maximal-sphere construction",
+        "one observer-independent canonical maximal sphere",
+        "fewer-than-70-line declarative examples",
+        "movie encoding",
+        "Hawaii-to-Tahiti",
+        "coordinate-epoch precession",
+    ):
+        assert phrase in roadmap
+
+
+def test_horizon_roadmap_separates_boundary_reference_and_mask_roles():
+    target = read(TARGET)
+    roadmap = read(ROADMAP)
+
+    for phrase in (
+        "Observer-horizon roles",
+        "`--horizon`",
+        "`--horizon-mask`",
+        "deliberately not opaque",
+        "paints one effective outside mask exactly once",
+        "idempotent no-ops for a planisphere",
+    ):
+        assert phrase in target
+    for phrase in (
+        "Milestone 46C.8Q.1",
+        "Milestone 46C.8Q.3",
+        "Milestone 46C.8Q.4",
+        "Milestone 46C.8Q.5",
+        "Milestone 46C.8Q.9",
+        "preventing accumulated opacity",
+        "runtime behavior remains",
+        "declaration and adapter plumbing",
+        "reference appearance and mask behavior remain",
+        "mask-opening geometry preparation",
+    ):
+        assert phrase in roadmap
+
+
+def test_configuration_default_audit_covers_every_public_responsibility():
+    audit = read(CONFIGURATION_AUDIT)
+    roadmap = read(ROADMAP)
+
+    for phrase in (
+        "public default",
+        "derived value",
+        "invariant",
+        "implementation detail",
+        "observer",
+        "subject",
+        "family geometry",
+        "detail",
+        "style",
+        "output mode",
+        "grids/references",
+        "furniture",
+        "product",
+        "export",
+        "line_width",
+        "line_style",
+        "Duplication and conflict register",
+        "Output-mode transformation inventory",
+    ):
+        assert phrase in audit
+    assert "Milestone 46D.1A" in roadmap
+    assert "Milestone 46D.1B" in roadmap
+    for phrase in (
+        "Exact ordered value inventory",
+        "Atlas-print semantic style",
+        "Mode palettes and transformations",
+        "Furniture, legends, grids, and implementation constants",
+        "minimum area `1.0`, maximum area `40.0`",
+        "style `dotted`",
+        "style `solid`",
+        "style `dashed`",
+    ):
+        assert phrase in audit
+    assert "**Final status:** Implemented" in roadmap
+
+
+def test_user_overlay_boundary_is_currently_documented():
+    current = read(CURRENT)
+    roadmap = read(ROADMAP)
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+
+    for phrase in (
+        "Milestone 46D.5A",
+        "strict partial-user-document boundary",
+        "Sequential loads share no mutable",
+        "Milestone 46D.5B",
+    ):
+        assert phrase in current
+    for phrase in (
+        "Milestone 46D.5A",
+        "recursive non-mutating merge",
+        "omitted-versus-explicit argument precedence",
+    ):
+        assert phrase in roadmap
+    for phrase in (
+        "load_configuration(path=None)",
+        "load_configuration_defaults(path=None)",
+        "ConfigurationDefaults",
+    ):
+        assert phrase in implementation
+    assert "src/wenu/configuration/translation.py" in source_tree
+
+
+def test_user_overlay_runtime_precedence_is_currently_documented():
+    current = read(CURRENT)
+    roadmap = read(ROADMAP)
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+
+    for phrase in (
+        "Milestone 46D.5B",
+        "one frozen aggregate",
+        "`--config PATH`",
+        "before maximal-sphere construction",
+    ):
+        assert phrase in current
+    for phrase in (
+        "**Final status:** Implemented",
+        "product arguments retain `None` as the omission sentinel",
+        "packaged-only behavior is unchanged",
+    ):
+        assert phrase in roadmap
+    for phrase in (
+        "load_configuration_defaults(\"my-wenu.toml\")",
+        "configuration=configuration",
+        "explicitly present on the command line override it",
+    ):
+        assert phrase in implementation
+    for phrase in (
+        "Milestone 46D.5B",
+        "no active-configuration singleton exists",
+    ):
+        assert phrase in source_tree
+
+
+def test_installed_wenu_chart_boundary_is_currently_documented():
+    current = read(CURRENT)
+    roadmap = read(ROADMAP)
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+
+    for phrase in (
+        "Milestone 46D.6",
+        "one `wenu_chart` command",
+        "never imports\nexample modules",
+    ):
+        assert phrase in current
+    for phrase in (
+        "**Final status:** Implemented",
+        "all five chart-family subcommands plus `defaults`",
+        "deterministic `--write` output remains Milestone 46D.7",
+    ):
+        assert phrase in roadmap
+    for phrase in (
+        "wenu_chart regional --constellations Cen,Cru,Mus",
+        "`--observer-location`",
+        "does not import or execute example scripts",
+    ):
+        assert phrase in implementation
+    for phrase in (
+        "src/wenu/cli/chart.py",
+        "`generate_celestial_sphere()`",
+        "do not import `example_scripts`",
+    ):
+        assert phrase in source_tree
+
+
+def test_editable_configuration_template_is_currently_documented():
+    current = read(CURRENT)
+    roadmap = read(ROADMAP)
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+
+    for phrase in (
+        "Milestone 46D.7",
+        "exact UTF-8 bytes",
+        "profile inheritance is deliberately deferred",
+    ):
+        assert phrase in current
+    for phrase in (
+        "**Final status:** Implemented",
+        "`wenu_chart defaults --write PATH`",
+        "overlay per invocation and no inheritance",
+    ):
+        assert phrase in roadmap
+    for phrase in (
+        "`dashed`, `dotted`, `dash_dot`, and `none`",
+        "deterministically replaced",
+        "One invocation accepts one overlay",
+    ):
+        assert phrase in implementation
+    for phrase in (
+        "`write_defaults_template()`",
+        "exact UTF-8 bytes",
+        "does not\nserialize typed translations",
+    ):
+        assert phrase in source_tree
+
+
+def test_configuration_schema_v1_freezes_structure_and_validation():
+    schema = read(CONFIGURATION_SCHEMA)
+    roadmap = read(ROADMAP)
+
+    assert "**Schema version:** `1`" in schema
+    ordered_sections = (
+        "`observer`",
+        "`subjects`",
+        "`families`",
+        "`detail`",
+        "`styles`",
+        "`modes`",
+        "`grids_references`",
+        "`furniture`",
+        "`products`",
+        "`export`",
+    )
+    positions = [schema.index(f"### {section}") for section in ordered_sections]
+    assert positions == sorted(positions)
+
+    for phrase in (
+        "schema_version = 1",
+        "color`, `line_width`, and `line_style`",
+        "`solid`, `dashed`, `dotted`, `dash_dot`, or `none`",
+        "Unknown sections and keys are errors",
+        "complete configuration path",
+        "invalid colors",
+        "contradictory combinations",
+        "executable expressions",
+        "Python class names",
+        "renderer operations",
+        "catalogue joins",
+        "imports",
+        "arbitrary code",
+        "styles.atlas.horizon.line_style",
+    ):
+        assert phrase in schema
+
+    assert "### Milestone 46D.2" in roadmap
+    assert "configuration_schema_v1.md" in roadmap
+    assert "This milestone adds no parser" in roadmap
+
+
+def test_configuration_runtime_migration_is_closed_before_user_overlays():
+    roadmap = read(ROADMAP)
+    architecture = read(CURRENT)
+
+    for phrase in (
+        "Milestone 46D.4D",
+        "[products.default]",
+        "compatibility API",
+        "canonical runtime",
+        "Explicit values retain precedence",
+    ):
+        assert phrase in roadmap
+        assert phrase in architecture
+    assert "**Final status:** Implemented" in roadmap
+
+
+def test_documented_python_is_syntactically_valid():
+    for document in (
+        ROOT / "README.md",
+        DEVELOPER / "implementation_reference.md",
+    ):
+        for block in fenced_python(document):
+            ast.parse(block, filename=str(document))
+
+
+def test_documented_canonical_public_imports_execute():
+    namespace = {}
+    import_block = fenced_python(
+        DEVELOPER / "implementation_reference.md"
+    )[0]
+    exec(import_block, namespace)
+    for name in (
+        "AllSkyChart",
+        "compose_chart",
+        "LegendOptions",
+        "RegionalChart",
+        "FullSkyChart",
+        "CircumpolarChart",
+        "BinocularChart",
+    ):
+        assert name in namespace
+
+
+def test_public_documents_do_not_recommend_obsolete_imports():
+    violations = []
+    for path in PUBLIC_DOCUMENTS:
+        text = read(path)
+        for obsolete in OBSOLETE_IMPORTS:
+            pattern = re.compile(
+                rf"\b(?:from|import)\s+{re.escape(obsolete)}(?=\s|$)"
+            )
+            if pattern.search(text):
+                violations.append(f"{path.relative_to(ROOT)}: {obsolete}")
+    assert violations == []
+
+
+def test_polar_physical_style_checkpoint_is_documented():
+    roadmap = read(ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md")
+    architecture = read(ARCHIVE / "architecture_history/current_architecture_v0.8.md")
+    reference = read(DEVELOPER / "implementation_reference.md")
+    acceptance = read(ARCHIVE / "acceptance_history/visual_acceptance_48e2.md")
+
+    for phrase in (
+        "Milestone 48E.2",
+        "PolarPlanisphereStylePalette",
+        "render_48e2_polar_preview.py",
+    ):
+        assert (
+            phrase in roadmap
+            or phrase in architecture
+            or phrase in reference
+        )
+    assert "polar-planisphere-south.png" in acceptance
+    assert "polar-planisphere-north.png" in acceptance
+    assert "--projection stereographic" in acceptance
+
+
+def test_polar_reference_review_corrections_are_documented():
+    roadmap = read(ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md")
+    target = read(ARCHIVE / "architecture_history/target_architecture_v0.9.md")
+    acceptance = read(ARCHIVE / "acceptance_history/visual_acceptance_48e3.md")
+
+    for phrase in (
+        "Milestone 48E.3",
+        "+20/-20-degree overlap",
+        "0h/6h/12h/18h meridians",
+        "short declination ticks",
+        "corrected stereographic handedness",
+    ):
+        assert phrase in roadmap or phrase in target or phrase in acceptance
+
+
+def test_current_svg_documents_use_one_editable_text_contract():
+    roadmap = " ".join(
+        (ARCHIVE / "milestone_history/49f_svg/svg_output_audit_and_plan.md")
+        .read_text(encoding="utf-8")
+        .split()
+    )
+    implementation = (DEVELOPER / "implementation_reference.md").read_text(
+        encoding="utf-8"
+    )
+    source_tree = (DEVELOPER / "source_tree.md").read_text(encoding="utf-8")
+
+    for value in (
+        "SVG has one public text contract",
+        "--format {png,pdf,svg}",
+        "PDF is the publication product",
+        "SVG is the editable vector product",
+    ):
+        assert value in roadmap
+
+    assert "support two explicit SVG font policies" not in roadmap
+    assert "wenu.output_policy.OutputFormat" in implementation
+    assert "wenu.svg_document.annotate_semantic_svg()" in implementation
+    assert "src/wenu/output_policy.py" in source_tree
+    assert "src/wenu/svg_document.py" in source_tree
+
+
+def test_readmes_advertise_the_svg_user_contract():
+    for filename in ("README.md", "README.es.md"):
+        text = (ROOT / filename).read_text(encoding="utf-8")
+        assert "--format svg" in text
+        assert "docs/user_guide/svg_output.md" in text
+
+
+def test_svg_paint_order_record_rejects_semantic_inference():
+    record = (
+        ARCHIVE / "milestone_history/49f_svg/svg_exact_paint_order_49f4a.md"
+    ).read_text(encoding="utf-8")
+    normalized = " ".join(record.split())
+
+    for value in (
+        "What is the object?",
+        "When is it drawn?",
+        "does not classify the object",
+        "must never be inferred to be a star",
+        "does not contain or reconstruct astronomical knowledge",
+        "Hierarchical grouping remains a later",
+    ):
+        assert value in normalized
+
+
+def test_svg_semantic_naming_ledger_records_designer_contract():
+    ledger = (
+        ARCHIVE / "milestone_history/49f_svg/svg_semantic_naming_ledger_49f5a.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "unique among its siblings",
+        "does not repeat information",
+        "only when a designer can usefully style",
+        "Lines-Western",
+        "system agnostic",
+        "mag-minus-1",
+        "count does not change identity",
+        "unexpected generic editable Matplotlib objects",
+    ):
+        assert value in ledger
+
+
+def test_svg_cross_product_acceptance_records_all_products():
+    text = (
+        ARCHIVE / "milestone_history/49f_svg/svg_cross_product_acceptance_49f6.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "Milestone 49F.6",
+        "all-sky",
+        "planisphere",
+        "regional",
+        "circumpolar",
+        "binocular",
+        "polar page, south",
+        "polar page, north",
+        "polar pouch",
+        "catalog_1636_283",
+        "Inkscape 1.4.4",
+        "1688 passed in 58.90s",
+    ):
+        assert value in text
+
+
+def test_temporal_sequence_contract_separates_physical_and_playback_time():
+    contract = (
+        ARCHIVE / "milestone_history/49g_temporal/temporal_sequence_contract_49g1.md"
+    ).read_text(encoding="utf-8")
+    roadmap = (
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).read_text(encoding="utf-8")
+    legacy = (
+        ARCHIVE / "roadmap_history/polar_delivery_and_astrometry_roadmap.md"
+    ).read_text(encoding="utf-8")
+    implementation = (
+        DEVELOPER / "implementation_reference.md"
+    ).read_text(encoding="utf-8")
+    source_tree = (
+        DEVELOPER / "source_tree.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "TemporalTimeline",
+        "PlaybackSpec",
+        "simulation duration",
+        "Playback speed must never be interpreted as physical time",
+        "CelestialSphere.draw_chart()",
+        "29 passed in 3.42s",
+    ):
+        assert value in contract
+
+    assert "49G.1 immutable timeline and playback vocabulary" in roadmap
+    assert "does not compete" in legacy
+    assert "Temporal sequence vocabulary (Milestone 49G.1)" in implementation
+    assert "Temporal sequence modules (Milestone 49G.1)" in source_tree
+
+
+def test_observer_time_sequence_reserves_astrometric_epoch_ownership():
+    contract = (
+        ARCHIVE / "milestone_history/49g_temporal/observer_time_sequence_49g2.md"
+    ).read_text(encoding="utf-8")
+    timeline = (
+        ARCHIVE / "milestone_history/49g_temporal/temporal_sequence_contract_49g1.md"
+    ).read_text(encoding="utf-8")
+    roadmap = (
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).read_text(encoding="utf-8")
+    implementation = (
+        DEVELOPER / "implementation_reference.md"
+    ).read_text(encoding="utf-8")
+    source_tree = (
+        DEVELOPER / "source_tree.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "ObserverTimeChartSequenceRequest",
+        "generate_observer_time_chart_sequence()",
+        "catalogue reference epoch",
+        "celestial realization epoch",
+        "provider evaluation instant",
+        "Gaia DR3 J2016.0 TCB",
+        "must not be forced into UTC datetimes",
+        "Real-render acceptance",
+        "894 × 927",
+        "expected six-hour sky",
+        "permanent integration test",
+        "74 passed in 26.69s",
+        "1708 passed in 81.99s",
+    ):
+        assert value in contract
+
+    assert "Proper motion must not be expressed" in timeline
+    assert "49G.2 observer-time" in roadmap
+    assert "Observer-time chart sequence (Milestone 49G.2)" in implementation
+    assert "Observer-time sequence orchestration" in source_tree
+
+
+
+def test_sequence_manifest_documents_safe_restart_and_resume():
+    contract = (
+        ARCHIVE / "milestone_history/49g_temporal/sequence_manifest_49g3.md"
+    ).read_text(encoding="utf-8")
+    roadmap = (
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).read_text(encoding="utf-8")
+    implementation = (
+        DEVELOPER / "implementation_reference.md"
+    ).read_text(encoding="utf-8")
+    source_tree = (
+        DEVELOPER / "source_tree.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "ObserverTimeSequenceManifest",
+        "SequenceRestartPolicy",
+        "restart_policy=\"restart\"",
+        "recorded filename, byte count, and SHA-256",
+        "incompatible manifest before rendering",
+        "real canonical PNG generation",
+        "CLI/configuration exposure is implemented downstream in Milestone 49G.4",
+        "real restart/resume acceptance complete",
+        "selective resume",
+        "82 passed in 27.29s",
+        "1721 passed in 83.03s",
+    ):
+        assert value in contract
+
+    assert "49G.3 deterministic manifest" in roadmap
+    assert "acceptance complete" in roadmap
+    assert "Deterministic sequence manifests (Milestone 49G.3)" in (
+        implementation
+    )
+    assert "Sequence manifest and resume (Milestone 49G.3)" in source_tree
+
+
+def test_temporal_sequence_cli_documents_shared_translation_and_acceptance():
+    contract = (
+        ARCHIVE / "milestone_history/49g_temporal/temporal_sequence_cli_49g4.md"
+    ).read_text(encoding="utf-8")
+    roadmap = (
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).read_text(encoding="utf-8")
+    implementation = (
+        DEVELOPER / "implementation_reference.md"
+    ).read_text(encoding="utf-8")
+    source_tree = (
+        DEVELOPER / "source_tree.md"
+    ).read_text(encoding="utf-8")
+    schema = (
+        DEVELOPER / "configuration_schema_v1.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "49G.4",
+        "--sequence-stop",
+        "--sequence-frames",
+        "same immutable `ChartRequest`",
+        "complete translated effective configuration",
+        "eaf7f6d8cfbfb27376baf85bfb80613a86b67f0f0a40458961386299efac2f68",
+        "pixel-identical decoded RGBA",
+        "compressed PNG bytes differed",
+        "163 passed in 28.30s",
+        "1744 passed in 80.10s",
+    ):
+        assert value in contract
+
+    assert "49G.4 installed CLI" in roadmap
+    assert "implemented and accepted" in roadmap
+    assert "Temporal sequence CLI and configuration (Milestone 49G.4)" in (
+        implementation
+    )
+    assert "Temporal sequence CLI modules (Milestone 49G.4)" in source_tree
+
+    assert "### `sequence`" in schema
+    assert "playback_duration" in schema
+
+
+
+def test_49i2d2_records_accepted_drawable_venus_track():
+    contract = " ".join(read(DRAWABLE_VENUS_TRACK).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Milestone 49I.2D.2 — Drawable Venus track",
+        "--planet-track venus",
+        "--track-tick-labels",
+        "exactly two possible anchors",
+        "two complete passes",
+        "amber orange",
+        "#FFB000",
+        "sky/solar_system/planets/venus/track",
+        "sixteen-week stress test",
+        "127 focused track, style, request, and command tests",
+        "1,924 routine tests with 30 deselected",
+        "all 1,955 tests",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.2D.2 — Drawable Venus track" in roadmap
+    assert "Accepted drawable Solar-System trajectory" in architecture
+    assert "Accepted drawable Venus track" in implementation
+    assert "solar_system_track_annotations.py" in source_tree
+    assert "13.2.20 49I.2D.2 drawable Venus track" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "drawable_venus_track_49i2d2.md" in instructions
+    assert "Scientifically, architecturally, and visually accepted" in contract
+
+
+def test_49i3a_audits_symbolic_and_resolved_solar_system_appearance():
+    contract = " ".join(read(PHYSICAL_APPARENT_DISK_AUDIT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `449a3c9`",
+        "**Symbolic representation.**",
+        "**Resolved representation.**",
+        "physical angular diameter",
+        "illuminated fraction",
+        "bright-limb position angle",
+        "body-axis orientation",
+        "apparent magnitude",
+        "display magnification",
+        "object-specific and opt-in",
+        "factor `1` means physical angular scale",
+        "regional and binocular charts",
+        "Planisphere and all-sky products retain symbolic representation",
+        "not merely a large scatter marker",
+        "49I.3B — Venus physical-appearance state",
+        "49I.3C — First resolved Venus disk",
+        "49I.3D — Symbolic photometry and planet glyphs",
+        "49I.3E — Moon physical-appearance state",
+        "49I.3F — First resolved Moon disk",
+        "changes no runtime type, public command, style, geometry, chart, or output",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3A — Physical apparent-disk contract audit" in roadmap
+    assert "Deferred physical Solar-System appearance" in architecture
+    assert "Accepted physical apparent-disk boundary" in implementation
+    assert "Milestone 49I.3A audit ownership" in source_tree
+    assert "13.2.21 49I.3A physical apparent-disk audit" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "physical_apparent_disk_audit_49i3a.md" in instructions
+    assert "Scientifically and architecturally accepted" in contract
+    assert "Initial acceptance verification passed all 58" in contract
+    assert "current-documentation tests passed in 1.95 seconds" in contract
+    assert "1,926 tests with 30 deselected in 28.95 seconds" in contract
+    assert "all 1,956 tests in 91.38 seconds" in contract
+    assert "does not pre-accept the future" in contract
+
+
+def test_49i3b_records_accepted_venus_physical_appearance_state():
+    contract = " ".join(read(VENUS_PHYSICAL_APPEARANCE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `217abbe`",
+        "`SolarSystemApparentDisk`",
+        "`SolarSystemAppearanceRealizer`",
+        "`6051.8 km`",
+        "Sun–target–observer",
+        "`29.287846514361 arcsec`",
+        "`101.448595072558 deg`",
+        "`0.400755659841`",
+        "`295.354967208388 deg`",
+        "`185.355190511946 deg`",
+        "`1e-8 arcsec`",
+        "`1e-9 deg`",
+        "`1e-11`",
+        "all 9 deterministic appearance tests in 1.38 seconds",
+        "116 focused architectural tests in 4.73 seconds",
+        "1,936 routine tests with 30 deselected in 27.32 seconds",
+        "all 1,966 tests in 89.97 seconds",
+        "adds no disk geometry, chart layer, request option, style",
+        "49I.3C remains responsible",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3B — Venus physical-appearance state" in roadmap
+    assert "Accepted Venus physical-appearance state" in architecture
+    assert "Venus physical-appearance state" in implementation
+    assert "Milestone 49I.3B ownership" in source_tree
+    assert "13.2.22 49I.3B Venus physical-appearance state" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "venus_physical_appearance_49i3b.md" in instructions
+    assert "Scientifically and architecturally accepted" in contract
+
+
+def test_49i3c_audits_resolved_venus_disk_geometry():
+    contract = " ".join(read(RESOLVED_VENUS_DISK_AUDIT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `a9d8342`",
+        "Scientifically and architecturally accepted",
+        "illuminated-face `SphericalPolygons` layer",
+        "limb `SphericalCurves` layer",
+        "terminator `SphericalCurves` layer",
+        "`SphericalGrid` is deliberately curve-only",
+        "positive finite, object-specific display magnification",
+        "scales every projected vertex around the separately projected",
+        "factor of `1` means physical projected scale",
+        "Magnification alone must not silently enable a disk",
+        "Pre-projection sampling must be fine enough",
+        "regional and binocular",
+        "planisphere and all-sky",
+        "several requested instants in one chart",
+        "one fixed chart product frame",
+        "49I.3C.1 — Resolved Venus spherical geometry",
+        "49I.3C.2 — First drawable resolved Venus disk",
+        "49I.3C.3 — Multi-epoch resolved Venus disks",
+        "scatter-marker approximation",
+        "all 60 current-documentation tests in 1.80 seconds",
+        "all 60 documentation tests passed in 2.81 seconds",
+        "1,937 routine tests passed with 30 deselected in 28.40 seconds",
+        "all 1,967 tests passed in 89.14 seconds",
+        "Runtime geometry, command vocabulary",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C — Resolved Venus disk audit" in roadmap
+    assert "Accepted resolved Venus disk boundary" in architecture
+    assert "Accepted resolved Venus disk boundary" in implementation
+    assert "Milestone 49I.3C audit ownership" in source_tree
+    assert "13.2.23 49I.3C resolved Venus disk audit" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "resolved_venus_disk_audit_49i3c.md" in instructions
+    assert "Fernando accepted this boundary on 2026-08-31" in contract
+
+
+def test_49i3c1_records_accepted_venus_spherical_disk_geometry():
+    contract = " ".join(read(VENUS_DISK_SPHERICAL_GEOMETRY).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `a308ba2`",
+        "Scientifically and architecturally accepted",
+        "`SolarSystemDiskGeometry`",
+        "`SolarSystemDiskGeometryRealizer.geometry()`",
+        "`DEFAULT_SOLAR_SYSTEM_DISK_SAMPLES = 720`",
+        "orthographic spherical phase with radial angular-offset mapping",
+        "one-point `SphericalPoints` centre",
+        "one-curve closed `SphericalCurves` limb",
+        "one-curve open `SphericalCurves` terminator",
+        "one-polygon `SphericalPolygons` illuminated face",
+        "`14.643923257181 arcsec`",
+        "`9.799e-11 arcsec`",
+        "`0.000e+00 arcsec`",
+        "`-5.087e-06`",
+        "`-1.495e-10 deg`",
+        "`1e-7 arcsec`",
+        "`2e-5`",
+        "`1e-9 deg`",
+        "All 29 appearance and disk-geometry tests passed in 1.94 seconds",
+        "All 54 focused appearance, coordinate-service, and dependency-boundary tests passed in 4.80 seconds",
+        "all 61 current-documentation tests in 2.35 seconds",
+        "1,958 routine tests with 30 deselected in 27.07 seconds",
+        "all 1,988 tests in 89.21 seconds",
+        "adds no sky layer, chart request, display magnification",
+        "49I.3C.2",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.1 — Venus spherical disk geometry" in roadmap
+    assert "output-neutral physical centre" in architecture
+    assert "Venus spherical disk geometry" in implementation
+    assert "Milestone 49I.3C.1 ownership" in source_tree
+    assert "13.2.24 49I.3C.1 Venus spherical disk geometry" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "venus_disk_spherical_geometry_49i3c1.md" in instructions
+    assert "Fernando accepted the geometry model" in contract
+
+
+def test_49i3c2_records_accepted_drawable_venus_disk():
+    contract = " ".join(read(DRAWABLE_VENUS_DISK).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `da0e332`",
+        "Scientifically, architecturally, and visually accepted",
+        "`--planet-appearance venus=resolved`",
+        "`--planet-disk-magnification venus=FACTOR`",
+        "Factor `1` means physical angular scale",
+        "Magnification alone cannot enable a resolved disk",
+        "regional and binocular",
+        "Planisphere and all-sky products retain symbolic representation",
+        "`29.287846514361 arcsec`",
+        "`0.400755659841`",
+        "1.62710258413117",
+        "600-dpi Virgo rendering",
+        "171 closure-focused request, execution, style, semantic, and dependency tests passed in 5.75 seconds",
+        "1,970 routine tests passed with 30 deselected in 28.32 seconds",
+        "All 2,000 tests passed in 90.30 seconds",
+        "49I.3C.3",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.2 — First drawable resolved Venus disk" in roadmap
+    assert "Drawable resolved Venus disk" in architecture
+    assert "Drawable resolved Venus disk (Milestone 49I.3C.2)" in implementation
+    assert "Milestone 49I.3C.2 ownership" in source_tree
+    assert "13.2.25 49I.3C.2 first drawable resolved Venus disk" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "drawable_venus_disk_49i3c2.md" in instructions
+
+
+def test_49i3c3_audits_two_mode_planet_disk_sequences():
+    contract = " ".join(
+        read(
+            DEVELOPER / "archive/milestone_history/49i_solar_system/planet_disk_sequence_audit_49i3c3.md"
+        ).split()
+    )
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `6745403`",
+        "Scientifically and architecturally accepted",
+        "observed sequence",
+        "frozen-Earth ecliptic sequence",
+        "n_steps = 8",
+        "nine disk samples",
+        "There is no minor step",
+        "full physical distance with declared origin and unit",
+        "future 3D Solar-System visualizer",
+        "One common magnification",
+        "frozen-observer geometric direction",
+        "central six-point Sun",
+        "sky/solar_system/star/sun",
+        "--planet-disk-sequence venus",
+        "--disk-sequence-model observed|frozen-earth-ecliptic",
+        "49I.3C.3.1 — Observed multi-epoch Venus disks",
+        "49I.3C.3.2 — Frozen-Earth ecliptic Venus sequence",
+        "49I.3C.3.3 — Mercury generalization and validation",
+        "changes no runtime type, public command, geometry, style, chart",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.3 — Multi-epoch resolved planet-disk audit" in roadmap
+    assert "Accepted multi-epoch resolved planet-disk boundary" in architecture
+    assert "Accepted multi-epoch planet-disk sequence" in implementation
+    assert "Milestone 49I.3C.3 audit ownership" in source_tree
+    assert "13.2.26 49I.3C.3 multi-epoch resolved planet-disk audit" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "planet_disk_sequence_audit_49i3c3.md" in instructions
+
+    assert "Initial acceptance verification passed all 63" in contract
+    assert "current-documentation tests in 1.88 seconds" in contract
+    assert "1,971 routine tests with 30 deselected in 27.08 seconds" in contract
+    assert "all 2,001 tests in 85.97 seconds" in contract
+
+
+def test_49i3c31a_records_observed_venus_disk_sequence():
+    contract = " ".join(
+        read(
+            DEVELOPER / "archive/milestone_history/49i_solar_system/observed_venus_disk_sequence_49i3c31a.md"
+        ).split()
+    )
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `8a6cb0f`",
+        "Scientifically and architecturally accepted",
+        "`ObservedSolarSystemDiskSequenceRequest`",
+        "`ObservedSolarSystemDiskSequenceRealizer.sequence()`",
+        "`ObservedSolarSystemDiskSequence`",
+        "`n_steps = 8` produces nine exact sample instants",
+        "origin `observer` and unit `au`",
+        "future 3D Solar-System visualizer",
+        "`4.615e-10 deg`",
+        "`1.946e-10 deg`",
+        "`3.128e-12 AU`",
+        "`3.795e-10 arcsec`",
+        "`7.096e-10 deg`",
+        "`4.823e-12`",
+        "`4.301e-09 deg`",
+        "all 51 focused tests passed in 1.89 seconds",
+        "All 91 focused sequence",
+        "49I.3C.3.1B",
+        "adds no public command",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.3.1A" in roadmap
+    assert "Accepted output-neutral observed Venus disk sequence" in architecture
+    assert "Observed Venus disk sequence (Milestone 49I.3C.3.1A)" in implementation
+    assert "Milestone 49I.3C.3.1A ownership" in source_tree
+    assert "13.2.27 49I.3C.3.1A observed Venus disk sequence" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "observed_venus_disk_sequence_49i3c31a.md" in instructions
+    assert "all 64 current-documentation tests in 2.23 seconds" in contract
+    assert "1,985 tests with 30 deselected in 25.46 seconds" in contract
+    assert "all 2,015 tests in 84.38 seconds" in contract
+
+
+def test_49i3c31b_records_drawable_observed_venus_sequence():
+    contract = " ".join(read(DRAWABLE_OBSERVED_VENUS_SEQUENCE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `7fd2a6a`",
+        "Scientifically, architecturally, visually, and operationally accepted",
+        "`ObservedVenusDiskSequenceRealization`",
+        "`MagnifyProjectedDiskSequence`",
+        "one fixed product frame",
+        "observer/AU distances",
+        "`--planet-disk-sequence venus`",
+        "--disk-sequence-model observed",
+        "`--disk-sequence-labels`",
+        "`--planet-disk-magnification venus=FACTOR`",
+        "`--no-equatorial-grid`",
+        "`--grid-references ecliptic`",
+        "All 211 focused tests passed in 5.74 seconds",
+        "1,988 tests with 30 deselected in 25.91 seconds",
+        "all 2,018 tests in 85.27 seconds",
+        "Frozen-Earth ecliptic mode",
+        "Mercury",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.3.1B" in roadmap
+    assert "Drawable observed Venus disk sequence" in architecture
+    assert "Drawable observed Venus disk sequence (Milestone 49I.3C.3.1B)" in implementation
+    assert "Milestone 49I.3C.3.1B ownership" in source_tree
+    assert "13.2.28 49I.3C.3.1B drawable observed Venus sequence" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "drawable_observed_venus_sequence_49i3c31b.md" in instructions
+
+
+def test_49i3c32a_records_frozen_earth_venus_sequence_state():
+    contract = " ".join(read(FROZEN_EARTH_VENUS_SEQUENCE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `447e701`",
+        "Scientifically and architecturally accepted",
+        "`FrozenEarthDiskSequenceRequest`",
+        "`FrozenEarthDiskSequenceRealizer.sequence()`",
+        "`FrozenEarthGeometricDisk`",
+        "origin `frozen-earth` and unit `au`",
+        "fixed J2000 mean-ecliptic axes",
+        "future 3D Solar-System visualizer",
+        "not topocentric, astrometric, apparent",
+        "`4.337e-12 AU`",
+        "`1.968e-10 deg`",
+        "`2.064e-11 deg`",
+        "`1.274e-12 AU`",
+        "`1.627e-10 deg`",
+        "All 63 focused sequence",
+        "1,997 tests with 30 deselected in 26.69 seconds",
+        "all 2,027 tests in 84.73 seconds",
+        "49I.3C.3.2B",
+        "49I.3C.3.3",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.3.2A" in roadmap
+    assert "Accepted output-neutral frozen-Earth Venus sequence" in architecture
+    assert "Frozen-Earth Venus sequence state (Milestone 49I.3C.3.2A)" in implementation
+    assert "Milestone 49I.3C.3.2A ownership" in source_tree
+    assert "13.2.29 49I.3C.3.2A frozen-Earth Venus state" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "frozen_earth_venus_sequence_49i3c32a.md" in instructions
+    assert "All 66 current-documentation tests passed in 2.07 seconds" in contract
+
+
+def test_49i3c32b_records_drawable_frozen_earth_venus_sequence():
+    contract = " ".join(
+        read(DRAWABLE_FROZEN_EARTH_VENUS_SEQUENCE).split()
+    )
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `c30785c`",
+        "Scientifically, architecturally, visually, and operationally accepted",
+        "`FrozenEarthVenusDiskSequenceRealization`",
+        "fixed J2000 mean-ecliptic axes",
+        "product-frame latitude zero",
+        "neither reference passes through observer-dependent AltAz geometry",
+        "Secuencia de Venus desde una Tierra fija",
+        "31 independently realized disks",
+        "all 2,037 tests in 84.41 seconds",
+        "All 67 current-documentation tests passed",
+        "49I.3C.3.3",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.3.2B" in roadmap
+    assert "Drawable frozen-Earth Venus disk sequence" in architecture
+    assert (
+        "Drawable frozen-Earth Venus sequence (Milestone 49I.3C.3.2B)"
+        in implementation
+    )
+    assert "Milestone 49I.3C.3.2B ownership" in source_tree
+    assert (
+        "13.2.30 49I.3C.3.2B drawable frozen-Earth Venus sequence"
+        in guide
+    )
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert (
+        "drawable_frozen_earth_venus_sequence_49i3c32b.md"
+        in instructions
+    )
+
+
+def test_49i3c33_audits_mercury_generalization_and_validation():
+    audit = " ".join(read(MERCURY_DISK_SEQUENCE_AUDIT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**As-is baseline:** `3a713fb`",
+        "Scientifically and architecturally accepted",
+        "`2439.4 km`",
+        "equatorial radius `2440.53 km`",
+        "NAIF body code `199`",
+        "Mercury barycentre code `1`",
+        "actual `provider_target_id`",
+            "49I.3C.3.3B — Output-neutral Mercury state",
+            "49I.3C.3.3C — Drawable frozen-Earth Mercury sequence",
+        "`--planet-disk-sequence mercury`",
+        "sky/solar_system/planets/mercury/frozen_earth_sequence",
+        "does not authorize observed/topocentric Mercury sequences",
+        "changes no runtime type",
+        "all 68 current-documentation tests",
+        "Fernando scientifically and architecturally accepted",
+    ):
+        assert phrase in audit
+
+    assert "Milestone 49I.3C.3.3" in roadmap
+    assert "Mercury generalization audit boundary" in architecture
+    assert "Milestone 49I.3C.3.3 audit ownership" in source_tree
+    assert "13.2.31 49I.3C.3.3 Mercury generalization audit" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "mercury_disk_sequence_audit_49i3c33.md" in instructions
+
+
+def test_49i3c33a_records_descriptor_driven_moving_body_foundation():
+    contract = " ".join(read(MOVING_BODY_ARCHITECTURE).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    for phrase in (
+        "SolarSystemBodyDescriptor",
+        "A planet does not contain its satellites",
+        "Capabilities, not classification",
+        "synthetic minor body",
+        "Mercury remains unregistered",
+        "does not add Mercury",
+        "all 2,045 tests in 86.49 seconds",
+        "Scientifically, architecturally, and visually accepted",
+        "three Venus compatibility renders",
+    ):
+        assert phrase in contract
+    assert "13.2.32 49I.3C.3.3A moving-body foundation" in guide
+    assert "Milestone 49I.3C.3.3A moving-body ownership" in source_tree
+    assert "moving_body_architecture_49i3c33a.md" in instructions
+
+
+def test_49i3c33c_proposes_descriptor_driven_drawable_mercury():
+    contract = " ".join(
+        read(DRAWABLE_FROZEN_EARTH_MERCURY_SEQUENCE).split()
+    )
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    for phrase in (
+        "Scientifically, architecturally, visually, and operationally accepted",
+        "adds no Mercury-specific layer, factory, projection, preparation",
+        "`frozen_earth_disk_sequence` capability",
+        "`--disk-sequence-model observed`",
+        "`Mercury` and `Mercurio`",
+        "sky/solar_system/planets/mercury/frozen_earth_sequence",
+        "sky/solar_system/star/sun",
+        "`--planet-disk-sequence mercury`",
+        "`--disk-sequence-step 2d`",
+        "`--disk-sequence-n-steps 44`",
+        "PNG/PDF/SVG parity",
+        "all 2,052 tests in 89.90 seconds",
+        "same frozen-state realizer, disk-geometry realizer",
+    ):
+        assert phrase in contract
+    assert "Milestone 49I.3C.3.3C drawable frozen-Earth Mercury" in source_tree
+    assert "Milestone 49I.3C.3.3C — Drawable frozen-Earth Mercury" in roadmap
+    assert "drawable_frozen_earth_mercury_sequence_49i3c33c.md" in instructions
+
+
+def test_49i3d1_proposes_shared_apparent_major_planets():
+    contract = " ".join(read(APPARENT_MAJOR_PLANETS).split())
+    user_guide = " ".join(
+        read(ROOT / "docs/user_guide/configuration.md").split()
+    )
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    for phrase in (
+        "DE440 validation passed; compact-glyph visual acceptance pending",
+        "Mercury, Venus, Mars, Jupiter, Saturn, Uranus, and Neptune",
+        "Earth is not a drawable apparent target",
+        "same apparent symbolic-point machinery",
+        "barycentre targets: Mars `4`, Jupiter `5`, Saturn `6`",
+        "physical planet IDs `499`, `599`, `699`, `799`, and `899`",
+        "`solar_system_objects` selection",
+        "sky/solar_system/planets/<planet>",
+        "`1e-7 deg` component tolerance",
+        "`--planet mercury,venus,mars,jupiter,saturn,uranus,neptune`",
+        "conventional astronomical symbol",
+        "accepted Venus cream `#FFE6A3`",
+        "corresponding `planisphere` render",
+        "only `ol1` produces the unnatural broad envelope",
+        "replace only explicitly supplied fields",
+        "`--mw-contour OL1[,OL2,...]|all`",
+        "single-feature GeoJSON file",
+    ):
+        assert phrase in contract
+    assert "Milestone 49I.3D.1 apparent major planets" in source_tree
+    assert "Milestone 49I.3D.1 — Apparent major-planet symbolic points" in roadmap
+    assert "apparent_major_planets_49i3d1.md" in instructions
+    for phrase in (
+        "## Planet symbols",
+        "`mercury` | Mercury | ☿",
+        "`venus` | Venus | ♀",
+        "`mars` | Mars | ♂",
+        "`jupiter` | Jupiter | ♃",
+        "`saturn` | Saturn | ♄",
+        "`uranus` | Uranus | ♅",
+        "`neptune` | Neptune | ♆",
+        "Earth is the observer's reference body",
+    ):
+        assert phrase in user_guide
+
+
+def test_49i3e0_audits_resolved_moon_science_and_generic_reuse():
+    audit = " ".join(read(RESOLVED_MOON_AUDIT).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**As-is baseline:** `a8296f5`",
+        "**Status:** Scientifically and architecturally accepted",
+        "changes no runtime type",
         "No runtime Moon behavior is authorized",
         "`SolarSystemBodyDescriptor`",
         "`natural_satellite`",
