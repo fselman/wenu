@@ -111,11 +111,11 @@ Moon's calculated position, distance, physical diameter, phase, or
 illumination. See [configuration and Solar-System controls](configuration.md)
 for symbolic compatibility and observed Moon sequences.
 
-### Ceres point and track
+### Numbered asteroid point and track
 
 After the explicit acquisition step documented in
-[configuration and Solar-System controls](configuration.md#ceres-point-and-dated-track),
-this regional request draws one symbolic Ceres point and its dated apparent
+[configuration and Solar-System controls](configuration.md#installed-numbered-asteroids-and-dated-tracks),
+this regional request draws the unnamed acceptance object `(79989)` and its dated apparent
 track through the same projection and export pipeline:
 
 ```bash
@@ -123,14 +123,17 @@ wenu_chart regional \
   --observer-location "La Ligua" \
   --observer-time 2026-01-15T00:00:00Z \
   --constellations Psc \
-  --asteroid ceres --asteroid-track ceres \
-  --minor-body-resource-directory ~/.cache/wenu/minor_bodies/50a2 \
+  --asteroid 79989 --asteroid-track 79989 \
+  --minor-body-resource-directory ~/.cache/wenu/minor_bodies/numbered-asteroids \
   --track-start 2026-01-15T00:00:00Z \
   --track-sample-step 1d --track-tick-step 7d --track-tick-count 4 \
   --track-tick-labels \
   --style atlas --mode presentation --format png \
-  --output output/ceres-track.png
+  --output output/79989-track.png
 ```
+
+For the accepted compatibility resource set, the corresponding selections are
+`--asteroid ceres` and `--asteroid-track ceres`.
 
 ## Shared controls
 

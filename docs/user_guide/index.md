@@ -49,7 +49,7 @@ font portability, semantic metadata, and safe Inkscape workflow. See
 time sampling, civil display time, manifests, and verified resume.
 
 Resolved Moon, observed Moon-sequence, apparent major-planet, and offline
-Ceres point/track examples are
+installed numbered-asteroid point/track examples are
 included in the [chart examples](chart_examples.md) and
 [configuration guide](configuration.md).
 

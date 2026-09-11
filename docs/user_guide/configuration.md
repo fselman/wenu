@@ -116,41 +116,51 @@ is not a drawable apparent target. In atlas presentation mode, planet symbols
 use the same Venus cream as the chart's other planetary marks.
 
 
-## Ceres point and dated track
+## Installed numbered asteroids and dated tracks
 
-Wenu can draw the apparent position of `(1) Ceres` and, independently, a
-dated track. Chart generation is offline and requires an explicitly acquired
-Horizons resource set:
+Wenu can draw the apparent position and dated track of an explicitly installed
+numbered asteroid. Select it by permanent number or by the exact official name
+stored in its local manifest. Chart generation is offline and requires a
+separate acquisition step:
 
 ```bash
-python tools/acquire_50a2_asteroid_resources.py
+python tools/acquire_numbered_asteroids.py 79989 \
+  --output-directory ~/.cache/wenu/minor_bodies/numbered-asteroids
 ```
 
-The command writes `acquisition-report.json` plus the governed Ceres and
-Apophis SPKs below `~/.cache/wenu/minor_bodies/50a2/`. Acquisition is a
-separate network operation; rendering never downloads, refreshes,
-extrapolates, or substitutes an orbit.
+The tool writes a structured `acquisition-report.json` plus one bounded
+Horizons SPK per requested number. It verifies identity and classification
+against JPL SBDB. Acquisition is a network operation; rendering never
+downloads, discovers, refreshes, extrapolates, or substitutes an orbit.
 
-Select the symbolic hollow diamond with `--asteroid ceres`, the trajectory
-with `--asteroid-track ceres`, or both. The shared track timing options have
-the same meaning as for a planet:
+Select the symbolic hollow diamond with `--asteroid 79989`, the trajectory
+with `--asteroid-track 79989`, or both. If a manifest declares an official
+name, that exact name is also accepted case-insensitively. The permanent number
+remains the identity if the object is named later. The shared track timing
+options have the same meaning as for a planet:
 
 ```bash
 wenu_chart regional \
   --observer-location "La Ligua" \
   --observer-time 2026-01-15T00:00:00Z \
   --constellations Psc \
-  --asteroid ceres \
-  --asteroid-track ceres \
-  --minor-body-resource-directory ~/.cache/wenu/minor_bodies/50a2 \
+  --asteroid 79989 \
+  --asteroid-track 79989 \
+  --minor-body-resource-directory ~/.cache/wenu/minor_bodies/numbered-asteroids \
   --track-start 2026-01-15T00:00:00Z \
   --track-sample-step 1d \
   --track-tick-step 7d \
   --track-tick-count 4 \
   --track-tick-labels \
   --style atlas --mode presentation --format svg \
-  --output output/ceres-track.svg
+  --output output/79989-track.svg
 ```
+
+### Ceres point and dated track compatibility
+
+The accepted 50A.2 resource set remains compatible, so existing
+`--asteroid ceres` commands continue to work with
+`~/.cache/wenu/minor_bodies/50a2`.
 
 The point uses the chart observation time. Track samples use their stated
 epochs and are transformed into the chart's fixed product frame. The diamond
@@ -163,7 +173,7 @@ value takes precedence:
 
 ```toml
 [observer]
-minor_body_resource_directory = "~/.cache/wenu/minor_bodies/50a2"
+minor_body_resource_directory = "~/.cache/wenu/minor_bodies/numbered-asteroids"
 ```
 
 ## Resolved Moon and observed sequences

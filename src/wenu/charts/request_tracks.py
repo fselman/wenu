@@ -40,10 +40,10 @@ def configure_chart_request_track(sky, request, *, source_resolver=None):
             point.request_draw_label = False
     start_label_text = None
     if replaces_start:
-        start_label_text = descriptor.display_name
-        number = getattr(descriptor, "iau_number", None)
-        if number is not None:
-            start_label_text += f" ({number})"
+        start_label_text = (
+            getattr(descriptor, "canonical_designation", None)
+            or descriptor.display_name
+        )
     layer = SolarSystemTrackLayer(
         request.solar_system_track,
         label_ticks=request.solar_system_track_tick_labels,

@@ -3072,6 +3072,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
         "implementation_reference.md",
+        "numbered_asteroids_50a3d.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -4096,6 +4097,43 @@ def test_50a3c_audit_changes_no_runtime_user_guide_or_diagram_contract():
         "acceptance authorizes only the bounded 50A.3D",
     ):
         assert phrase in audit
+
+
+def test_50a3d_documents_request_owned_installed_numbered_asteroids():
+    record = " ".join(
+        read(DEVELOPER / "numbered_asteroids_50a3d.md").split()
+    )
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    user_configuration = " ".join(
+        read(ROOT / "docs/user_guide/configuration.md").split()
+    )
+    dot = read(DIAGRAMS / "numbered_asteroids_50a3d.dot")
+    svg = read(DIAGRAMS / "numbered_asteroids_50a3d.svg")
+    acquisition = read(ROOT / "tools/acquire_numbered_asteroids.py")
+
+    for phrase in (
+        "Generic numbered asteroids (Milestone 50A.3D)",
+        "Candidate implementation; numerical and visual acceptance pending",
+        "permanent number or an exact, case-folded official name",
+        "Rendering remains offline",
+        "`(79989)` is the acceptance specimen, not a special runtime case",
+        "without mutating the built-in catalog",
+        "`Name (number)` for named objects and `(number)` for unnamed",
+        "numerical and visual acceptance pending",
+    ):
+        assert phrase in record
+
+    assert "MinorBodyResourceCollection" in implementation
+    assert "request-owned descriptor" in guide
+    assert "--asteroid 79989" in user_configuration
+    assert "official name" in user_configuration
+    assert "permanent-number identity" in dot
+    assert "request-owned installed asteroid" in svg
+    assert "HORIZONS_API" in acquisition
+    assert "SBDB_API" in acquisition
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

@@ -76,6 +76,16 @@ descriptor-aware separation between Ceres target state and the DE440 observer
 source before both point and track enter Wenu's ordinary projection, rendering,
 and export pipeline.
 
+### Installed numbered-asteroid seam
+
+[Open the 50A.3D numbered-asteroid SVG](numbered_asteroids_50a3d.svg)
+
+Source: `numbered_asteroids_50a3d.dot`
+
+This candidate view shows exact local number/name resolution, manifest-derived
+request identity, temporary layer registration, and reuse of the existing
+minor-body target/observer split and canonical output pipeline.
+
 This focused view records the narrow CSPICE type-21 evaluator, explicit DE440
 dependency, existing direction realizers, and independent direct-Horizons
 oracle. Its body/chart/output edge remains deliberately disconnected.

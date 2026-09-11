@@ -141,12 +141,18 @@ def _selected_planets(values):
 
 
 def _asteroid_selection(value):
-    name = str(value).strip().lower()
+    name = str(value).strip()
     if not name:
         raise argparse.ArgumentTypeError("asteroid selection cannot be empty")
-    if name not in _ASTEROID_KEYS:
-        raise argparse.ArgumentTypeError(f"unknown asteroid: {name}")
-    return name
+    if "," in name or name.startswith(("+", "-")) or re.fullmatch(
+        r"\d*[.]\d+|\d+[PCD]", name, re.IGNORECASE
+    ):
+        raise argparse.ArgumentTypeError(
+            "asteroid must be one positive permanent number or installed name"
+        )
+    if name.isdecimal() and int(name) <= 0:
+        raise argparse.ArgumentTypeError("asteroid number must be positive")
+    return name.casefold()
 
 
 def _milky_way_contour_selection(value):
@@ -245,8 +251,6 @@ class ChartContentOptions:
             for name in self.asteroids
             if str(name).strip()
         )
-        if asteroids - set(_ASTEROID_KEYS):
-            raise ValueError("asteroids contains an unsupported body.")
         object.__setattr__(self, "asteroids", asteroids)
         object.__setattr__(self, "moon", bool(self.moon))
         contours = self.mw_contours
@@ -382,7 +386,7 @@ def add_chart_content_arguments(parser):
     )
     parser.add_argument(
         "--asteroid-track",
-        choices=_ASTEROID_KEYS,
+        type=_asteroid_selection,
         help="draw the apparent path of an asteroid (regional/binocular only)",
     )
     parser.add_argument("--track-start", metavar="ISO_TIME")
@@ -870,7 +874,7 @@ def chart_detail_overrides(
             ("constellation_boundaries", content.constellation_boundaries),
             *grids.items(),
             *((name, name in content.planets) for name in _SYMBOLIC_BODY_KEYS),
-            *((name, name in content.asteroids) for name in _ASTEROID_KEYS),
+            *((name, name in content.asteroids) for name in content.asteroids),
             ("moon", content.moon),
         )
         if enabled
@@ -882,7 +886,7 @@ def chart_detail_overrides(
         "coordinate_grids",
         *grids,
         *_SYMBOLIC_BODY_KEYS,
-        *_ASTEROID_KEYS,
+        *content.asteroids,
         "moon",
     }
     labels = frozenset(

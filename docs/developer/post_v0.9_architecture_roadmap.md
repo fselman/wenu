@@ -1131,7 +1131,9 @@ It defines manifest-backed selection of any installed numbered asteroid by
 permanent number or manifest-declared official name, with unnamed main-belt
 object `(79989)` as the acceptance specimen. Authorized 50A.3D implements and
 validates that contract without object-specific runtime branching or implicit
-network lookup; 50A.4 remains next afterward.
+network lookup. Candidate 50A.3D is documented in
+`numbered_asteroids_50a3d.md`; numerical and visual acceptance remain pending,
+and 50A.4 remains next afterward.
 
 ## 13.2 Program 50B - Publication legibility and economical printing
 

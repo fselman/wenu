@@ -1,0 +1,26 @@
+digraph numbered_asteroids_50a3d {
+  graph [rankdir=LR, bgcolor="white", fontname="Helvetica", fontsize=15,
+    label="Wenu 50A.3D — request-owned installed asteroid",
+    labelloc="t", nodesep=0.4, ranksep=0.55, pad=0.25];
+  node [shape=box, style="rounded,filled", fillcolor="#f7f7f7",
+    color="#555555", fontname="Helvetica", fontsize=10,
+    margin="0.13,0.09"];
+  edge [color="#555555", fontname="Helvetica", fontsize=8,
+    arrowsize=0.7];
+
+  request [label="CLI number or exact installed name",
+    fillcolor="#d9eaf7"];
+  resource [label="Local collection manifest + SPK\nnumber + name + solution + digest",
+    fillcolor="#fff2cc"];
+  descriptor [label="Request-owned descriptor\npermanent-number identity",
+    fillcolor="#fce4d6"];
+  geometry [label="Shared point / track layers\nSPK target + DE440 observer",
+    fillcolor="#e2f0d9"];
+  output [label="Canonical output\nPNG / PDF / semantic SVG",
+    fillcolor="#e2f0d9"];
+
+  request -> resource [label="exact local lookup"];
+  resource -> descriptor [label="validated identity"];
+  descriptor -> geometry [label="temporary registration"];
+  geometry -> output [label="ordinary pipeline"];
+}

@@ -380,6 +380,7 @@ class ChartRequest:
     coordinate_frame: str = "horizontal"
     reference_policy: CelestialReferencePolicy = CelestialReferencePolicy()
     minor_body_resource_directory: Path | None = None
+    minor_body_descriptors: tuple = ()
 
     def __post_init__(self):
         resource_directory = self.minor_body_resource_directory
@@ -388,7 +389,18 @@ class ChartRequest:
             object.__setattr__(
                 self, "minor_body_resource_directory", resource_directory
             )
+        from wenu.sky.solar_system_bodies import SolarSystemBodyDescriptor
         from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
+
+        descriptors = tuple(self.minor_body_descriptors)
+        if any(not isinstance(value, SolarSystemBodyDescriptor) for value in descriptors):
+            raise TypeError(
+                "minor_body_descriptors must contain body descriptors."
+            )
+        descriptor_map = {value.selection_key: value for value in descriptors}
+        if len(descriptor_map) != len(descriptors):
+            raise ValueError("minor_body_descriptors must have unique keys.")
+        object.__setattr__(self, "minor_body_descriptors", descriptors)
 
         selected_body_keys = set(self.content.solar_system_objects or ())
         if self.solar_system_track is not None:
@@ -396,7 +408,7 @@ class ChartRequest:
                 self.solar_system_track.descriptor.selection_key
             )
         needs_minor_body_resource = any(
-            SOLAR_SYSTEM_BODY_CATALOG.resolve(key).ephemeris_source_key
+            (descriptor_map.get(key) or SOLAR_SYSTEM_BODY_CATALOG.resolve(key)).ephemeris_source_key
             == "minor_body_spk"
             for key in selected_body_keys
         )

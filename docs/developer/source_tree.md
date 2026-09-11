@@ -1411,3 +1411,16 @@ owns deterministic contract coverage;
 - `archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md` is the accepted implementation record,
   and `diagrams/drawable_ceres_50a3b.{dot,svg}` depicts the focused ownership
   boundary.
+
+## 50A.3D installed-numbered-asteroid ownership (candidate)
+
+- `minor_body_resources.py` owns structured collection validation, exact
+  number/name lookup, manifest-derived descriptors, and provider lifecycle;
+- chart arguments accept one numeric or candidate official-name spelling;
+  command-line translation resolves it against the explicit resource set;
+- `ChartRequest` owns request-specific descriptors, while request generation
+  and direct drawing own temporary layer registration and restoration;
+- `tools/acquire_numbered_asteroids.py` owns explicit Horizons/SBDB network
+  acquisition and never participates in rendering;
+- the built-in catalog, direction, projection, preparation, rendering, and
+  export owners remain unchanged.

@@ -136,6 +136,7 @@ def chart_view_request(
     solar_system_disks=(),
     solar_system_disk_sequence=None,
     minor_body_resource_directory=None,
+    minor_body_descriptors=(),
 ):
     """Translate one prepared view and product into an immutable request."""
     if not isinstance(view, ChartView):
@@ -277,6 +278,7 @@ def chart_view_request(
             else view._prepared.resolved.request.coordinate_frame
         ),
         minor_body_resource_directory=minor_body_resource_directory,
+        minor_body_descriptors=tuple(minor_body_descriptors),
     )
     if output_format is not None:
         request = replace(
@@ -305,7 +307,13 @@ def draw_chart_view_request(view, request):
 
     session = None
     previous = ()
+    request_layers = []
     if request_minor_body_descriptors(request):
+        for descriptor in request.minor_body_descriptors:
+            if descriptor.selection_key not in view.sky.solar_system_bodies:
+                request_layers.append(
+                    view.sky.add_solar_system_body(descriptor)
+                )
         session = MinorBodyResourceSession(
             request.minor_body_resource_directory,
             view.observer,
@@ -349,6 +357,11 @@ def draw_chart_view_request(view, request):
         restore_sky_source_resolvers(previous)
         if session is not None:
             session.close()
+        for layer in request_layers:
+            view.sky.remove(layer)
+            view.sky.solar_system_bodies.pop(
+                layer.descriptor.selection_key, None
+            )
     if len(generation.exports) != 1:
         raise RuntimeError("A chart-view drawing must export exactly once.")
     return generation.exports[0]
