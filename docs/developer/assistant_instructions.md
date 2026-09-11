@@ -539,8 +539,10 @@ The accepted 50A.1 and 50A.2 records are archived under
 segment-centre composition, narrow CSPICE type-21
 segment evaluator, explicit DE440 dependency, frozen direct-Horizons oracle,
 and calibrated Ceres/Apophis tolerances. 50A.2 is accepted; 50A.3 is the next
-separately reviewed slice for the first drawable asteroid. Follow the active
-50A.3A audit in `first_drawable_asteroid_audit_50a3a.md`: begin with Ceres,
+separately reviewed slice for the first drawable asteroid. Follow the accepted
+50A.3A audit in
+`archive/milestone_history/50a_minor_bodies/first_drawable_asteroid_audit_50a3a.md`:
+begin with Ceres,
 require an explicit local manifest-backed resource directory, reuse the shared
 point and track machinery through descriptor-aware provider resolution, and
 make no photometric or implicit-network claim.

@@ -1105,13 +1105,18 @@ chart, CLI, or output is added. Fernando accepted its scientific tolerances,
 physical interpretation, and hybrid CSPICE/Skyfield ownership on 2026-09-11;
 50A.3 first-drawable-asteroid work is next.
 
-50A.3A is proposed in `first_drawable_asteroid_audit_50a3a.md`. It selects
+50A.3A is accepted and archived in
+`archive/milestone_history/50a_minor_bodies/first_drawable_asteroid_audit_50a3a.md`.
+It selects
 Ceres as the first bounded object and proposes an explicit manifest-backed
 resource directory, class-aware `--asteroid` and `--asteroid-track` selectors,
 descriptor-aware provider binding into the existing point/track route, stable
 minor-body semantics, and fixed symbolic appearance without a magnitude
-claim. It changes no runtime behavior; 50A.3B remains unauthorized pending
-Fernando's review.
+claim. It also preserves a collection-oriented trajectory seam for later
+WCS/instrument-footprint and artificial-satellite planning without confusing
+SPK/TDB minor-body physics with OMM/TLE plus SGP4/TEME satellite physics. It
+changes no runtime behavior; Fernando's 2026-09-11 acceptance authorizes the
+bounded 50A.3B implementation.
 
 ## 13.2 Program 50B - Publication legibility and economical printing
 

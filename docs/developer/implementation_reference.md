@@ -2235,10 +2235,11 @@ compares three Ceres and four Apophis epochs with
 `tests/fixtures/horizons_asteroid_validation_50a2.json`; production rendering
 does not acquire, update, or validate resources implicitly.
 
-`first_drawable_asteroid_audit_50a3a.md` is the active proposed contract for
-connecting Ceres later. It identifies descriptor-aware source resolution as
+`archive/milestone_history/50a_minor_bodies/first_drawable_asteroid_audit_50a3a.md`
+is the accepted contract for connecting Ceres in 50A.3B. It identifies
+descriptor-aware source resolution as
 the only missing generic seam: planetary descriptors retain the existing
 Skyfield source and the Ceres descriptor receives the accepted minor-body
 source. It proposes an explicit manifest-backed resource directory and reuse
 of the existing point, fixed-frame track, projection, preparation, semantic,
-renderer, and export paths. It adds no current API or behavior.
+renderer, and export paths. The audit adds no current API or behavior.

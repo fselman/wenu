@@ -133,7 +133,9 @@ ASTEROID_NUMERICAL_VALIDATION = (
     / "archive/milestone_history/50a_minor_bodies/asteroid_numerical_validation_50a2.md"
 )
 FIRST_DRAWABLE_ASTEROID_AUDIT = (
-    DEVELOPER / "first_drawable_asteroid_audit_50a3a.md"
+    DEVELOPER
+    / "archive/milestone_history/50a_minor_bodies"
+    / "first_drawable_asteroid_audit_50a3a.md"
 )
 TEST_PRACTICE_AUDIT = (
     DEVELOPER
@@ -3070,7 +3072,6 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "first_drawable_asteroid_audit_50a3a.md",
     }
 
     archived = {
@@ -3918,7 +3919,7 @@ def test_50a3a_audits_one_manifest_backed_drawable_ceres_route():
 
     for phrase in (
         "First drawable asteroid audit (Milestone 50A.3A)",
-        "Proposed for Fernando's architectural and product review",
+        "Accepted by Fernando on 2026-09-11",
         "Use **(1) Ceres**",
         "Apophis remains a numerical parallax oracle",
         "descriptor-aware source binding",
@@ -3934,15 +3935,24 @@ def test_50a3a_audits_one_manifest_backed_drawable_ceres_route():
         "Do not repeat 50A.2 CSPICE interpolation",
         "no user-guide or example edit is required yet",
         "No diagram edit is required by this audit",
+        "Future field-planning compatibility",
+        "OmegaCAM/Paranal use case",
+        "current OMM or legacy TLE",
+        "SGP4 evaluation in TEME",
+        "must not be forced through the minor-body SPK/TDB/light-time provider",
+        "collection of one or more targets and many sample instants",
+        "result will be a risk estimate, not a guarantee of a clean exposure",
     ):
         assert phrase in audit
 
-    assert "50A.3A is proposed" in roadmap
-    assert "active proposed contract" in implementation
+    assert "50A.3A is accepted and archived" in roadmap
+    assert "is the accepted contract" in implementation
     assert "50A.3A first-drawable-asteroid audit ownership" in source_tree
-    assert "Follow the active 50A.3A audit" in instructions
+    assert "Follow the accepted 50A.3A audit" in instructions
     assert "13.2.39 50A.3A first drawable asteroid audit" in guide
-    assert "50A.3A audit proposed" in program
+    assert "future collection-of-trajectories seam" in guide
+    assert "WCS/mosaic footprint" in guide
+    assert "50A.3A accepted by Fernando" in program
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

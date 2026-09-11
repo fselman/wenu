@@ -1,6 +1,6 @@
 # First drawable asteroid audit (Milestone 50A.3A)
 
-**Status:** Proposed for Fernando's architectural and product review
+**Status:** Accepted by Fernando on 2026-09-11
 
 **Base:** `50cf383`
 
@@ -180,7 +180,47 @@ is required yet. 50A.3B will require:
 The current diagrams remain truthful during 50A.3A because the provider is
 still not connected. No diagram edit is required by this audit.
 
-## 9. Stop conditions
+## 9. Future field-planning compatibility
+
+The first implementation must not close the architecture around one scalar
+asteroid request. A later observing-planner must be able to accept an exposure
+interval and a distorted instrument footprint, evaluate a collection of
+moving targets, and clip their observed trajectories against that footprint.
+An OmegaCAM/Paranal use case additionally needs detector gaps, dithers,
+angular trail length, time in field, illumination state, source epoch, and
+prediction uncertainty before it can rank candidate observing windows.
+
+Artificial satellites share only the downstream trajectory, projection,
+preparation, semantic-output, and footprint-intersection contracts. Their
+scientific route remains separate: current OMM or legacy TLE general-
+perturbations data, SGP4 evaluation in TEME, explicit Earth-orientation and
+topocentric transformation, and UTC-sensitive element epochs must not be
+forced through the minor-body SPK/TDB/light-time provider. Conversely, an
+asteroid must not be treated as an Earth satellite merely because both become
+sampled apparent directions after their provider-specific calculations.
+
+Therefore 50A.3B must:
+
+- keep target registration open to multiple descriptors rather than encode a
+  closed Ceres-only enumeration;
+- make the provider resolver and opened-resource ownership usable by a
+  collection of one or more targets and many sample instants, even though the
+  bounded public slice exposes only Ceres;
+- keep target discovery, catalogue acquisition, WCS/instrument-footprint
+  ingestion, exposure scheduling, and visibility/risk filtering outside the
+  point and track layers; and
+- preserve an output-neutral collection of independently identified observed
+  trajectories that a later field-planning layer can intersect with an image
+  footprint without adding a second projection or renderer.
+
+The future satellite planner is a separately governed capability, not part of
+50A.3B. It should prefer a versioned OMM snapshot with explicit provenance and
+freshness, while accepting TLE only as a documented compatibility input. Its
+result will be a risk estimate, not a guarantee of a clean exposure: stale
+elements, manoeuvres, attitude-dependent brightness, and uncatalogued or
+restricted objects can all defeat a categorical prediction.
+
+## 10. Stop conditions
 
 Stop and re-audit if implementation would:
 
@@ -191,8 +231,12 @@ Stop and re-audit if implementation would:
 - use color, fixed symbol area, or explicit selection as a magnitude claim;
 - silently extrapolate, propagate a two-body orbit, or substitute Apophis;
 - alter planet, Moon, cold-oracle, or existing track behavior;
+- make source resolution scalar-only or close registration around Ceres in a
+  way that prevents later batch trajectory evaluation;
+- pass an artificial-satellite TEME/SGP4 state through the minor-body
+  SPK/TDB/light-time provider;
 - add a comet, physical disk, uncertainty region, occultation, or photometric
   model under 50A.3A/50A.3B.
 
-Fernando's acceptance of this audit would authorize only the bounded 50A.3B
-implementation described above.
+Fernando accepted this audit on 2026-09-11. That acceptance authorizes only
+the bounded 50A.3B implementation described above.
