@@ -2896,7 +2896,7 @@ the next authorized slice.
 ## 13.2.38 50A.1 generic minor-body state provider
 
 **Status:** Accepted by Fernando on 2026-09-10; not yet connected to any
-drawable object. Milestone 50A.2 numerical validation is next.
+drawable object. Milestone 50A.2 subsequently validated the provider.
 
 **[Foundation]** The first minor-body provider keeps two files visibly
 separate: one Horizons SPK supplies the asteroid or comet relative to the
@@ -2939,7 +2939,7 @@ transformation remain downstream responsibilities.
 
 This slice establishes structure and failure behavior only. An independent
 installed-resource comparison for a main-belt asteroid and a fast nearby
-object is implemented by the active 50A.2 scientific gate. Horizons' type-21
+object was accepted in the 50A.2 scientific gate. Horizons' type-21
 segments require CSPICE evaluation; Wenu selects and evaluates only the exact
 declared descriptor, then performs the same explicit composition above.
 
@@ -2948,5 +2948,7 @@ light-time and Skyfield apparent-place machinery. Resource compatibility means
 that the target's chain must explicitly contain the observer's DE440 identity;
 mere provider-name equality is insufficient. Frozen direct-Horizons ICRF
 Cartesian, astrometric/apparent direction, distance, light-time, and La Ligua-
-versus-geocentre parallax values remain the independent oracle. No minor-body
-point, track, magnitude, CLI selector, or rendered symbol exists yet.
+versus-geocentre parallax values remain the independent oracle. Fernando
+accepted the calibrated envelope and hybrid ownership on 2026-09-11. No
+minor-body point, track, magnitude, CLI selector, or rendered symbol exists
+yet; 50A.3 is next.

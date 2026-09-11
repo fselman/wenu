@@ -1362,7 +1362,7 @@ owns deterministic contract coverage;
 - no descriptor, catalog, layer, direction realizer, coordinate service,
   projection, renderer, exporter, CLI, or data-package owner changes.
 
-## 50A.2 asteroid numerical-validation ownership (review candidate)
+## 50A.2 asteroid numerical-validation ownership (accepted)
 
 - `minor_body_ephemeris.py` additionally owns the CSPICE DAF handle and exact
   selected-segment evaluation, without SPICE global-kernel or path ownership;

@@ -27,5 +27,5 @@ digraph asteroid_validation_50a2 {
   planet -> direction [label="observer + corrections"];
   horizons -> direction [dir=both, arrowtail=none,
     label="independent comparison"];
-  direction -> later [style=dashed, label="50A.3 only after acceptance"];
+  direction -> later [style=dashed, label="50A.3 next; still unconnected"];
 }

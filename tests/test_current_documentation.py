@@ -124,9 +124,13 @@ MINOR_BODY_PROVIDER_AUDIT = (
     DEVELOPER
     / "archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md"
 )
-MINOR_BODY_STATE_PROVIDER = DEVELOPER / "minor_body_state_provider_50a1.md"
+MINOR_BODY_STATE_PROVIDER = (
+    DEVELOPER
+    / "archive/milestone_history/50a_minor_bodies/minor_body_state_provider_50a1.md"
+)
 ASTEROID_NUMERICAL_VALIDATION = (
-    DEVELOPER / "asteroid_numerical_validation_50a2.md"
+    DEVELOPER
+    / "archive/milestone_history/50a_minor_bodies/asteroid_numerical_validation_50a2.md"
 )
 TEST_PRACTICE_AUDIT = (
     DEVELOPER
@@ -3063,8 +3067,6 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "minor_body_state_provider_50a1.md",
-        "asteroid_numerical_validation_50a2.md",
     }
 
     archived = {
@@ -3088,6 +3090,8 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md",
         "archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md",
         "archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md",
+        "archive/milestone_history/50a_minor_bodies/minor_body_state_provider_50a1.md",
+        "archive/milestone_history/50a_minor_bodies/asteroid_numerical_validation_50a2.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3098,6 +3102,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "49e_ephemeris",
         "49i_solar_system",
         "49j_performance",
+        "50a_minor_bodies",
     ):
         assert f"`milestone_history/{folder}/`" in archive_index
 
@@ -3792,7 +3797,7 @@ def test_50a1_installs_only_the_offline_minor_body_state_provider_seam():
     assert "Minor-body state-provider seam (Milestone 50A.1 accepted)" in architecture
     assert "Generic minor-body state provider (Milestone 50A.1)" in implementation
     assert "50A.1 minor-body state-provider ownership" in source_tree
-    assert "accepted 50A.1 seam" in instructions
+    assert "accepted 50A.1 and 50A.2 records" in instructions
     assert "50A.1 generic minor-body state provider" in guide
     assert "r_{BO}=\\mathbf r_{BC}+\\mathbf r_{CO}" in guide
     assert "resource-chain and geometric-state provider seam" in diagrams
@@ -3830,7 +3835,7 @@ def test_50a2_validates_type_21_ceres_and_apophis_without_a_body():
 
     for phrase in (
         "Asteroid numerical validation (Milestone 50A.2)",
-        "Implemented for Fernando's scientific and architectural review",
+        "Accepted by Fernando on 2026-09-11",
         "SpiceyPy/CSPICE evaluates only the exact small-body segment",
         "does not furnish the file to SPICE's global kernel pool",
         "(1) Ceres",
@@ -3846,18 +3851,20 @@ def test_50a2_validates_type_21_ceres_and_apophis_without_a_body():
         "expected `dubious year` warnings",
         "passed 161 tests in 3.67 seconds",
         "passed all 2,170 tests in 84.28 seconds",
+        "final documentation-contract gate passed 97 tests in 2.83 seconds",
+        "does not authorize replacing Skyfield",
         "User documentation and examples require no edit",
         "adds no public selection, default, configuration, symbol, track, or visible result",
     ):
         assert phrase in record
 
-    assert "50A.2 is implemented for review" in roadmap
+    assert "50A.2 is accepted and archived" in roadmap
     assert "Milestone 50A.2 adds `SpiceMinorBodyKernel`" in architecture
     assert "`spiceypy>=6,<9`" in implementation
     assert "50A.2 asteroid numerical-validation ownership" in source_tree
-    assert "active 50A.2 candidate" in instructions
-    assert "active 50A.2 scientific gate" in guide
-    assert "awaiting Fernando's installed-resource" in program
+    assert "50A.2 is accepted; 50A.3 is the next" in instructions
+    assert "accepted in the 50A.2 scientific gate" in guide
+    assert "50A.3 is next" in program
     assert "50A.2 asteroid-validation SVG" in diagrams
     for phrase in (
         "SpiceMinorBodyKernel",

@@ -1,6 +1,6 @@
 # Asteroid numerical validation (Milestone 50A.2)
 
-**Status:** Implemented for Fernando's scientific and architectural review
+**Status:** Accepted by Fernando on 2026-09-11
 
 **Base:** `a175721`
 
@@ -145,9 +145,15 @@ not suppressed or presented as present-day UTC certification.
 
 The focused provider, direction, CSPICE, and documentation gate passed 161
 tests in 3.67 seconds. The complete non-overlapping suite passed all 2,170
-tests in 84.28 seconds. These remain candidate acceptance results until
-Fernando reviews the tolerances and physical interpretation and explicitly
-accepts the slice.
+tests in 84.28 seconds. The final documentation-contract gate passed 97 tests
+in 2.83 seconds.
+
+Fernando accepted the scientific tolerances, physical interpretation, and
+hybrid ownership on 2026-09-11. CSPICE remains bounded to exact type-21 segment
+evaluation; Skyfield remains the DE440, observer, time, and apparent-place
+owner; Wenu retains explicit segment selection, provenance, and
+`BC + CO = BO` composition. This acceptance authorizes 50A.3 as the next
+slice and does not authorize replacing Skyfield.
 
 ## 6. Test and documentation ownership
 

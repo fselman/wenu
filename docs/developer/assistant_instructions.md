@@ -534,16 +534,12 @@ add only the generic state-provider/resource seam: keep acquisition outside
 rendering, preserve explicit state-resource chains, and never use an
 unvalidated two-body orbit as a silent production fallback. Body registration,
 CLI options, and visible objects remain later separately reviewed slices.
-The accepted 50A.1 seam is documented in
-`minor_body_state_provider_50a1.md`; preserve its explicit SPK segment-centre
-composition and do not connect it to direction or chart machinery before
-50A.2 validates installed-resource numerics.
-The active 50A.2 candidate is documented in
-`asteroid_numerical_validation_50a2.md`. Preserve its narrow CSPICE type-21
+The accepted 50A.1 and 50A.2 records are archived under
+`archive/milestone_history/50a_minor_bodies/`. Preserve their explicit SPK
+segment-centre composition, narrow CSPICE type-21
 segment evaluator, explicit DE440 dependency, frozen direct-Horizons oracle,
-and calibrated Ceres/Apophis tolerances. Do not connect a minor body to catalog,
-CLI, chart, or output machinery before Fernando accepts 50A.2 and separately
-reviews 50A.3.
+and calibrated Ceres/Apophis tolerances. 50A.2 is accepted; 50A.3 is the next
+separately reviewed slice for the first drawable asteroid.
 
 For 50B publication-style work, complete the print, typography, contrast,
 accessibility, cartographic, and astronomical-atlas practice review plus

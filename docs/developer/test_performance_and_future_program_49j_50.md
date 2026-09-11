@@ -158,8 +158,8 @@ position from coma and tail appearance. Add no visible object.
 
 ### 50A.1 — Generic minor-body state provider
 
-**Status:** Accepted by Fernando on 2026-09-10 as recorded in
-`minor_body_state_provider_50a1.md`; 50A.2 numerical validation is next.
+**Status:** Accepted by Fernando on 2026-09-10 and archived in
+`archive/milestone_history/50a_minor_bodies/minor_body_state_provider_50a1.md`.
 
 Produce the existing typed state consumed by the shared moving-body direction
 machinery. Do not add asteroid- or comet-specific coordinate, projection,
@@ -167,8 +167,9 @@ renderer, semantic-export, or file-export paths.
 
 ### 50A.2 — Asteroid numerical validation
 
-**Status:** Implemented in `asteroid_numerical_validation_50a2.md`; awaiting
-Fernando's installed-resource scientific and architectural review.
+**Status:** Accepted by Fernando on 2026-09-11 and archived in
+`archive/milestone_history/50a_minor_bodies/asteroid_numerical_validation_50a2.md`;
+50A.3 is next.
 
 Validate a bounded set including a main-belt asteroid and a fast nearby object,
 with an independent authoritative ephemeris comparison where available.
