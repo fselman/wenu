@@ -4116,7 +4116,7 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
 
     for phrase in (
         "Generic numbered asteroids (Milestone 50A.3D)",
-        "visual acceptance complete, numerical acceptance pending",
+        "visual and numerical acceptance complete, test gates pending",
         "permanent number or an exact, case-folded official name",
         "Rendering remains offline",
         "`(79989)` is the acceptance specimen, not a special runtime case",
@@ -4128,8 +4128,26 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
         "SVG-only hierarchy-label conflict",
         "Fernando visually accepted the 7.5-degree binocular PNG and semantic SVG",
         "one `(79989)` label",
+        "three epochs across 2026, 2027, and 2029",
+        "`1.2029932605628346e-11 au`",
+        "`3.6855067608865255e-14 au/day`",
+        "`7.085531775067114e-08 deg`",
+        "`2e-11 au` position tolerance",
+        "does not change the accepted 50A.2 default of `5e-12 au`",
+        "The enforcing run reported `accepted: true`",
+        "Focused and complete test gates remain required",
     ):
         assert phrase in record
+
+    validator = read(ROOT / "tools/validate_50a2_asteroids.py")
+    fixture = read(
+        ROOT
+        / "tests/fixtures/horizons_numbered_asteroid_validation_50a3d.json"
+    )
+    assert 'reference.get("tolerances", {})' in validator
+    assert '"position_au": 2e-11' in fixture
+    assert '"--characterize"' in validator
+    assert '"accepted": not characterize' in validator
 
     assert "MinorBodyResourceCollection" in implementation
     assert "request-owned descriptor" in guide
