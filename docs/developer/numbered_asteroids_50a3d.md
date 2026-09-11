@@ -49,6 +49,10 @@ The first public-path render exposed and then corrected a semantic-boundary
 fault: layer names must begin with a letter, while semantic path components
 may be a permanent decimal number. The internal layer is therefore
 `asteroid_79989` and the stable semantic path component is `79989`.
+The second public-path attempt exposed the matching detail-policy boundary:
+visibility is selected by the descriptor's public selection key, not its safe
+technical layer name. That mapping is now explicit and retains the same
+number-based geometry selection.
 
 Before acceptance, acquire `(79989)`, freeze and run the 50A.2-style numerical
 comparison at at least three epochs, run focused and complete tests, and have

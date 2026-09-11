@@ -256,6 +256,12 @@ _DEFAULT_DISABLED_LAYERS = frozenset({"venus", "moon"})
 
 def _detail_layer_name(layer):
     """Return the semantic content-policy name for a registered layer."""
+    descriptor = getattr(layer, "body_descriptor", None)
+    if (
+        descriptor is not None
+        and getattr(layer, "display_kind", None) == "symbolic_point"
+    ):
+        return descriptor.selection_key
     layer_name = getattr(layer, "layer_name", None)
     if layer_name == "coordinates_grid":
         coordinate_system = getattr(layer, "coordinate_system", None)

@@ -4125,6 +4125,7 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
         "numerical and visual acceptance pending",
         "unnamed main-belt asteroid `1999 FH1`",
         "internal layer is therefore `asteroid_79989`",
+        "visibility is selected by the descriptor's public selection key",
     ):
         assert phrase in record
 
