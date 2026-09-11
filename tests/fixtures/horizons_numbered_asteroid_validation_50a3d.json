@@ -1,0 +1,114 @@
+{
+  "authority": {
+    "api": "NASA/JPL Horizons API",
+    "returned_version": "1.2",
+    "retrieved_utc_date": "2026-09-11",
+    "observer_quantities": [1, 20, 21, 45],
+    "observer_reference_system": "ICRF",
+    "observer_apparent_policy": "AIRLESS",
+    "vector_centre": "solar system barycenter",
+    "vector_corrections": "NONE",
+    "vector_reference_plane": "FRAME",
+    "vector_units": "AU-D"
+  },
+  "observer": {
+    "name": "La Ligua",
+    "longitude_deg_east": -71.230289,
+    "latitude_deg": -32.443342,
+    "elevation_km": 0.052
+  },
+  "objects": [
+    {
+      "key": "79989",
+      "class": "asteroid",
+      "iau_number": 79989,
+      "name": null,
+      "aliases": ["1999 FH1"],
+      "primary_designation": "1999 FH1",
+      "horizons_command": "79989;",
+      "provider_spk_id": "20079989",
+      "orbit_solution_id": "JPL#42",
+      "solution_date": "2026-Jun-06_12:19:06",
+      "osculating_epoch": "2458360.5 TDB",
+      "quality_fields": {
+        "observations": "1456 (1999-2026)",
+        "residual_rms_arcsec": "0.18625"
+      },
+      "spk": {
+        "filename": "79989-jpl42-2025-2030.bsp",
+        "coverage_start_jd_tdb": 2460676.5,
+        "coverage_end_jd_tdb": 2462502.5,
+        "segment_type": 21,
+        "segment_centre_id": 10
+      },
+      "epochs": [
+        {
+          "calendar": "2026-01-15T00:00:00",
+          "vector_jd_tdb": 2461055.5,
+          "position_au": [-0.02869993927776369, 2.867796296759297, 1.526665715602306],
+          "velocity_au_per_day": [-0.009366822382323782, -0.001071390924218043, -0.0001701792606305804],
+          "topocentric": {
+            "astrometric_ra_deg": 79.455439221,
+            "astrometric_dec_deg": 29.335056794,
+            "distance_au": 2.39364837577846,
+            "light_time_min": 19.90736651,
+            "apparent_ra_deg": 79.460998125,
+            "apparent_dec_deg": 29.335734149
+          },
+          "geocentric": {
+            "astrometric_ra_deg": 79.454851725,
+            "astrometric_dec_deg": 29.334241714,
+            "distance_au": 2.39366241176979,
+            "light_time_min": 19.90748324,
+            "apparent_ra_deg": 79.460341363,
+            "apparent_dec_deg": 29.334940852
+          }
+        },
+        {
+          "calendar": "2027-07-01T00:00:00",
+          "vector_jd_tdb": 2461587.5,
+          "position_au": [-2.790249768567576, -0.6242498558399115, -0.2134439589497615],
+          "velocity_au_per_day": [0.002480189628930501, -0.009105196646571735, -0.004949044040952207],
+          "topocentric": {
+            "astrometric_ra_deg": 174.137744086,
+            "astrometric_dec_deg": 3.638342021,
+            "distance_au": 2.96376730099066,
+            "light_time_min": 24.64890102,
+            "apparent_ra_deg": 174.136482389,
+            "apparent_dec_deg": 3.639018201
+          },
+          "geocentric": {
+            "astrometric_ra_deg": 174.138125219,
+            "astrometric_dec_deg": 3.637867878,
+            "distance_au": 2.96379603391095,
+            "light_time_min": 24.64913999,
+            "apparent_ra_deg": 174.136800529,
+            "apparent_dec_deg": 3.638541502
+          }
+        },
+        {
+          "calendar": "2029-01-15T00:00:00",
+          "vector_jd_tdb": 2462151.5,
+          "position_au": [1.761197016730113, -2.372147574822447, -1.336320342195562],
+          "velocity_au_per_day": [0.008416203696220436, 0.003980771769469698, 0.001760684027594641],
+          "topocentric": {
+            "astrometric_ra_deg": 304.230298201,
+            "astrometric_dec_deg": -23.663441627,
+            "distance_au": 4.21374646600882,
+            "light_time_min": 35.04466074,
+            "apparent_ra_deg": 304.224192698,
+            "apparent_dec_deg": -23.664808175
+          },
+          "geocentric": {
+            "astrometric_ra_deg": 304.230825644,
+            "astrometric_dec_deg": -23.663756378,
+            "distance_au": 4.21375048872099,
+            "light_time_min": 35.04469420,
+            "apparent_ra_deg": 304.224732825,
+            "apparent_dec_deg": -23.665093309
+          }
+        }
+      ]
+    }
+  ]
+}
