@@ -53,6 +53,10 @@ The second public-path attempt exposed the matching detail-policy boundary:
 visibility is selected by the descriptor's public selection key, not its safe
 technical layer name. That mapping is now explicit and retains the same
 number-based geometry selection.
+The first successful PNG then exposed an SVG-only hierarchy-label conflict:
+the point called the shared body node `(79989)`, while the track inferred
+`79989`. Point and track identities now explicitly assign the same body-node
+display name and reserve the track wording for the `track` child.
 
 Before acceptance, acquire `(79989)`, freeze and run the 50A.2-style numerical
 comparison at at least three epochs, run focused and complete tests, and have

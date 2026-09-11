@@ -510,6 +510,13 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
                 39,
                 body.body_class,
             )
+            path_display_names = (
+                *tuple(
+                    _path_display_name(value)
+                    for value in contract.path[:-1]
+                ),
+                body.display_name,
+            )
         elif display_kind == "apparent_track":
             contract = SemanticLayerContract(
                 (
@@ -519,6 +526,14 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
                 f"{body.display_name} track",
                 38,
                 "moving_body_track",
+            )
+            path_display_names = (
+                *tuple(
+                    _path_display_name(value)
+                    for value in contract.path[:-2]
+                ),
+                body.display_name,
+                f"{body.display_name} track",
             )
         else:
             component_title = component_titles[component_role]

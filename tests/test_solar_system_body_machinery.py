@@ -136,6 +136,7 @@ def test_installed_asteroid_has_safe_layer_and_numbered_semantic_identity():
     assert semantic_layer_identity(layer).semantic_path_text == (
         "sky/solar_system/minor_bodies/asteroids/79989"
     )
+    assert semantic_layer_identity(layer).path_display_names[-1] == "(79989)"
 
     sky = CelestialSphere(None)
     sky.add(layer)

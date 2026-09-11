@@ -4126,6 +4126,7 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
         "unnamed main-belt asteroid `1999 FH1`",
         "internal layer is therefore `asteroid_79989`",
         "visibility is selected by the descriptor's public selection key",
+        "SVG-only hierarchy-label conflict",
     ):
         assert phrase in record
 
