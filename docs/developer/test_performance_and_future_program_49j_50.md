@@ -186,11 +186,12 @@ point/track selection with an explicit offline resource directory and retains
 the shared fixed-frame moving-body, rendering, and export route. 50A.3B was
 accepted after the documented gates and PNG/semantic-SVG inspection passed.
 
-**Status:** Fernando requested a post-closure generalization before comet
-validation. Active 50A.3C audits generic manifest-backed selection by permanent
-minor-planet number, using unnamed main-belt asteroid `(79989)` as the bounded
-acceptance specimen. If accepted, 50A.3D implements that contract; 50A.4
-remains next after the follow-up closes.
+**Status:** 50A.3C was accepted by Fernando on 2026-09-11 and archived in
+`archive/milestone_history/50a_minor_bodies/numbered_asteroid_generalization_audit_50a3c.md`.
+It defines generic manifest-backed selection by permanent minor-planet number,
+using unnamed main-belt asteroid `(79989)` as the bounded acceptance specimen.
+The authorized 50A.3D implementation is next; 50A.4 remains next after that
+follow-up closes.
 
 Add opt-in symbolic display, designation policy, semantics, and a dated track
 through the shared point and trajectory machinery.

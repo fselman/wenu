@@ -3072,7 +3072,6 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
         "implementation_reference.md",
-        "numbered_asteroid_generalization_audit_50a3c.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -4029,7 +4028,11 @@ def test_50a3b_connects_only_manifest_backed_ceres_through_shared_routes():
 
 
 def test_50a3c_audits_generic_numbered_asteroids_before_comets():
-    audit_path = DEVELOPER / "numbered_asteroid_generalization_audit_50a3c.md"
+    audit_path = (
+        ARCHIVE / "milestone_history"
+        / "50a_minor_bodies"
+        / "numbered_asteroid_generalization_audit_50a3c.md"
+    )
     audit = " ".join(read(audit_path).split())
     index = " ".join(read(DEVELOPER / "README.md").split())
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
@@ -4038,7 +4041,7 @@ def test_50a3c_audits_generic_numbered_asteroids_before_comets():
 
     for phrase in (
         "Numbered-asteroid generalization audit (Milestone 50A.3C)",
-        "Proposed for Fernando's review",
+        "Accepted by Fernando on 2026-09-11",
         "permanent minor-planet number",
         "classifications, not distinct number spaces",
         "must not derive it arithmetically",
@@ -4059,19 +4062,21 @@ def test_50a3c_audits_generic_numbered_asteroids_before_comets():
     ):
         assert phrase in audit
 
-    assert "active audit for manifest-backed generic numbered-asteroid" in index
-    assert "active 50A.3C audits manifest-backed selection" in roadmap
+    assert "accepted 50A.0 through 50A.3C records" in index
+    assert "accepted the bounded 50A.3C generalization audit" in roadmap
     assert (
-        "Follow active `numbered_asteroid_generalization_audit_50a3c.md`"
+        "numbered_asteroid_generalization_audit_50a3c.md`"
         in instructions
     )
-    assert "Active 50A.3C audits generic manifest-backed selection" in program
+    assert "50A.3C was accepted by Fernando" in program
     assert "50A.3B was accepted" in program
 
 
 def test_50a3c_audit_changes_no_runtime_user_guide_or_diagram_contract():
     audit = " ".join(read(
-        DEVELOPER / "numbered_asteroid_generalization_audit_50a3c.md"
+        ARCHIVE / "milestone_history"
+        / "50a_minor_bodies"
+        / "numbered_asteroid_generalization_audit_50a3c.md"
     ).split())
 
     for phrase in (
@@ -4081,7 +4086,7 @@ def test_50a3c_audit_changes_no_runtime_user_guide_or_diagram_contract():
         "coordinate-system guide is reviewed",
         "does not admit provisional-only asteroids",
         "confuse minor-planet numbers with periodic-comet numbers",
-        "authorize only the bounded 50A.3D",
+        "acceptance authorizes only the bounded 50A.3D",
     ):
         assert phrase in audit
 

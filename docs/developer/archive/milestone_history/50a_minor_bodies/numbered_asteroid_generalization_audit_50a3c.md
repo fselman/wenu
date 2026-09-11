@@ -1,6 +1,6 @@
 # Numbered-asteroid generalization audit (Milestone 50A.3C)
 
-**Status:** Proposed for Fernando's review
+**Status:** Accepted by Fernando on 2026-09-11
 
 **Base:** `5b4e44f5b730aaf11b8c32330cf51cf327ae779b`
 
@@ -237,6 +237,7 @@ Stop and re-audit if implementation would:
 - weaken the explicit SPK/DE440 resource chain or accepted 50A.2 oracle;
 - confuse minor-planet numbers with periodic-comet numbers.
 
-Acceptance of this audit would authorize only the bounded 50A.3D generic
-numbered-asteroid implementation and `(79989)` validation. Comet numerical
-validation remains 50A.4 after that follow-up closes.
+Fernando accepted this audit on 2026-09-11. That acceptance authorizes only the
+bounded 50A.3D generic numbered-asteroid implementation and `(79989)`
+validation. Comet numerical validation remains 50A.4 after that follow-up
+closes.
