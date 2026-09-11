@@ -57,7 +57,8 @@ def _download(request, *, timeout=120):
     if str(document.get("spk_file_id")) != request["spk_id"]:
         raise ValueError("Horizons returned an unexpected SPK target ID.")
     try:
-        payload = base64.b64decode(document["spk"], validate=True)
+        encoded = "".join(document["spk"].split()).encode("ascii")
+        payload = base64.b64decode(encoded, validate=True)
     except (KeyError, TypeError, ValueError) as error:
         raise ValueError(
             "Horizons response has no valid SPK payload."

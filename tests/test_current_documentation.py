@@ -3875,6 +3875,9 @@ def test_50a2_validates_type_21_ceres_and_apophis_without_a_body():
     validator = read(ROOT / "tools/validate_50a2_asteroids.py")
     assert "https://ssd.jpl.nasa.gov/api/horizons.api" in acquisition
     assert "refusing to overwrite existing 50A.2 evidence" in acquisition
+    assert '"".join(document["spk"].split()).encode("ascii")' in acquisition
+    assert "base64.b64decode(encoded, validate=True)" in acquisition
+    assert "removes only whitespace before strict base64 decoding" in record
     assert "POSITION_TOLERANCE_AU = 5.0e-12" in validator
     assert "DIRECTION_TOLERANCE_DEG = 5.0e-6" in validator
     assert "SpiceMinorBodyKernel" in validator

@@ -55,6 +55,11 @@ writes the two local files, and records their complete response metadata and
 SHA-256 digests. It refuses to overwrite an existing evidence set. Rendering
 performs none of these operations.
 
+Horizons wraps the JSON `spk` base64 value across lines. The acquisition tool
+removes only whitespace before strict base64 decoding, then requires the
+decoded payload to begin with the DAF signature; non-base64 content and a
+non-DAF payload still fail closed.
+
 Horizons embeds acquisition-specific material in a generated SPK, so a new
 request can have a different whole-file digest even when it identifies the
 same orbit solution. Each validation run therefore verifies its SPK against
