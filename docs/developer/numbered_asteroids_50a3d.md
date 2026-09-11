@@ -1,6 +1,6 @@
 # Generic numbered asteroids (Milestone 50A.3D)
 
-**Status:** Candidate implementation; visual acceptance complete, numerical acceptance pending
+**Status:** Candidate implementation; visual and numerical acceptance complete, test gates pending
 
 **Base:** `d538473869c82e6fe125f7b9d7a69596639c7d97`
 
@@ -38,7 +38,7 @@ Display text is `Name (number)` for named objects and `(number)` for unnamed
 objects. Semantic paths are number-based, for example
 `sky/solar_system/minor_bodies/asteroids/79989` and its `track` child.
 
-## Acceptance still required
+## Acceptance evidence
 
 The explicit macOS acquisition on 2026-09-11 resolved `(79989)` as unnamed
 main-belt asteroid `1999 FH1` (`MBA`), Horizons target `20079989`, solution
@@ -64,8 +64,29 @@ Fernando visually accepted the 7.5-degree binocular PNG and semantic SVG on
 and the shared asteroid track appearance. The point and track make no
 brightness or detectability claim.
 
-Before final acceptance, freeze and run the 50A.2-style numerical comparison
-at at least three epochs and run focused and complete test gates.
+The frozen direct-Horizons comparison was accepted on Fernando's macOS
+`macOS-10.16-x86_64-i386-64bit`, Python 3.11.7 environment on 2026-09-11.
+It exercises three epochs across 2026, 2027, and 2029, the installed type-21
+SPK segment, barycentric position and velocity, geocentric and La Ligua
+topocentric astrometric and apparent directions, distance, light time, and
+parallax. The accepted maximum residuals are:
+
+- position: `1.2029932605628346e-11 au`;
+- velocity: `3.6855067608865255e-14 au/day`;
+- astrometric right ascension and declination:
+  `6.369987204379868e-09 deg` and `3.0405935547150875e-09 deg`;
+- apparent right ascension and declination:
+  `6.717181122439797e-08 deg` and `4.6903810613230235e-08 deg`;
+- distance: `3.8462300011588013e-10 au`;
+- light time: `5.156753246637891e-09 min`;
+- parallax: `7.085531775067114e-08 deg`.
+
+The 50A.3D fixture declares a `2e-11 au` position tolerance, selected after
+an explicit characterization run reported the roughly 1.80 m maximum above.
+It does not change the accepted 50A.2 default of `5e-12 au`; velocity,
+direction, distance, light-time, and parallax tolerances remain unchanged.
+The enforcing run reported `accepted: true`. Focused and complete test gates
+remain required before final milestone acceptance.
 
 No user example implies automatic discovery, catalog sweep, provisional
 designation, comet, dual-status object, photometry, field intersection, or
