@@ -43,7 +43,8 @@ coordinate guide, contribution rules, and current work in progress.
 - `milestone_history/50a_minor_bodies/` contains the accepted 50A.0 scientific
   and provider audit, 50A.1 offline state-provider seam, 50A.2 Ceres and
   Apophis numerical validation, 50A.3A first-drawable-Ceres audit, and the
-  accepted 50A.3B drawable Ceres point-and-track implementation;
+  accepted 50A.3B drawable Ceres point-and-track implementation plus 50A.3C
+  numbered-asteroid generalization audit;
 - `pre_versioned/` contains the original unversioned architecture, roadmap,
   and UML material;
 - files directly under this directory are older records retained from the

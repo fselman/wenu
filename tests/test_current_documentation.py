@@ -4027,6 +4027,77 @@ def test_50a3b_connects_only_manifest_backed_ceres_through_shared_routes():
         assert phrase in svg
 
 
+def test_50a3c_audits_generic_numbered_asteroids_before_comets():
+    audit_path = (
+        ARCHIVE / "milestone_history"
+        / "50a_minor_bodies"
+        / "numbered_asteroid_generalization_audit_50a3c.md"
+    )
+    audit = " ".join(read(audit_path).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    program = " ".join(read(TEST_PERFORMANCE_PROGRAM).split())
+
+    for phrase in (
+        "Numbered-asteroid generalization audit (Milestone 50A.3C)",
+        "Accepted by Fernando on 2026-09-11",
+        "permanent minor-planet number",
+        "manifest-declared official name",
+        "classifications, not distinct number spaces",
+        "must not derive it arithmetically",
+        "--asteroid 79989",
+        "--asteroid-track 79989",
+        "`--asteroid vesta`",
+        "one descriptor whose stable identity is the permanent number",
+        "case-folded for exact lookup",
+        "fuzzy, locale-dependent",
+        "Rendering remains explicit and offline",
+        "manifest, not a Python module named for each asteroid",
+        "request-owned extensions",
+        "must not mutate the process-global built-in catalog",
+        "Ceres (1)",
+        "unnamed object: `(79989)`",
+        "exact local lookup alias for the permanent number",
+        "after an explicit resource refresh",
+        "asteroids/79989/track",
+        "no fewer than three epochs",
+        "topocentric parallax",
+        "no code may branch on `79989`",
+        "Comet numerical validation remains 50A.4",
+    ):
+        assert phrase in audit
+
+    assert "accepted 50A.0 through 50A.3C records" in index
+    assert "accepted the bounded 50A.3C generalization audit" in roadmap
+    assert (
+        "numbered_asteroid_generalization_audit_50a3c.md`"
+        in instructions
+    )
+    assert "50A.3C was accepted by Fernando" in program
+    assert "50A.3B was accepted" in program
+
+
+def test_50a3c_audit_changes_no_runtime_user_guide_or_diagram_contract():
+    audit = " ".join(read(
+        ARCHIVE / "milestone_history"
+        / "50a_minor_bodies"
+        / "numbered_asteroid_generalization_audit_50a3c.md"
+    ).split())
+
+    for phrase in (
+        "This audit changes no runtime behavior",
+        "Ceres remains the only currently drawable asteroid",
+        "no user-guide example or architecture diagram changes in 50A.3C",
+        "coordinate-system guide is reviewed",
+        "does not admit provisional-only asteroids",
+        "uninstalled or fuzzy name search",
+        "confuse minor-planet numbers with periodic-comet numbers",
+        "acceptance authorizes only the bounded 50A.3D",
+    ):
+        assert phrase in audit
+
+
 def test_user_guide_documents_every_chart_family_with_runnable_examples():
     index = " ".join(read(ROOT / "docs/user_guide/index.md").split())
     examples = read(ROOT / "docs/user_guide/chart_examples.md")
