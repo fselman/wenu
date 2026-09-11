@@ -8,6 +8,7 @@ from astropy.time import Time, TimeDelta
 
 from wenu.coordinates import PositionStatus
 from wenu.ephemeris import (
+    EphemerisResourceChain,
     EphemerisResourceIdentity,
     EphemerisState,
 )
@@ -198,6 +199,28 @@ def test_realizer_rejects_target_state_from_another_resource():
             request(),
             observer_state(),
         )
+
+
+def test_realizer_accepts_explicit_target_resource_chain():
+    primary = replace(
+        RESOURCE,
+        filename="minor-body.bsp",
+        sha256="b" * 64,
+    )
+    chain = EphemerisResourceChain(
+        primary=primary,
+        dependencies=(RESOURCE,),
+    )
+
+    result = AstrometricDirectionRealizer().direction(
+        FixedSource(resource=chain),
+        request(target="ceres"),
+        observer_state(),
+    )
+
+    assert result.geometry.coordinate_spec.provider == primary.provider
+    assert result.geometry.coordinate_spec.model == primary.model
+    assert result.target_provider_id == "299"
 
 
 @pytest.mark.parametrize(

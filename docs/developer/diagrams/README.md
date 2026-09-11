@@ -59,6 +59,16 @@ seam. The minor-body provider is deliberately unconnected to a body or chart;
 its dashed downstream edge is the accepted later direction-realizer boundary,
 not current minor-body output.
 
+### Asteroid numerical-validation seam
+
+[Open the 50A.2 asteroid-validation SVG](asteroid_validation_50a2.svg)
+
+Source: `asteroid_validation_50a2.dot`
+
+This focused view records the narrow CSPICE type-21 evaluator, explicit DE440
+dependency, existing direction realizers, and independent direct-Horizons
+oracle. Its body/chart/output edge remains deliberately disconnected.
+
 ### Historical v0.9 coordinate transformations and 49B/49C seams
 
 [Open the coordinate as-is SVG](coordinate_transformation_as_is_v0.9.svg)

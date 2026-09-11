@@ -6,8 +6,13 @@ from dataclasses import dataclass, field
 from hashlib import sha256
 from math import isfinite
 from pathlib import Path
+from threading import RLock
+from types import SimpleNamespace
 
+import numpy as np
+import spiceypy
 from astropy.time import Time
+from skyfield.constants import AU_KM
 from skyfield.errors import EphemerisRangeError
 
 from wenu.ephemeris import (
@@ -30,6 +35,121 @@ class UnsupportedEphemerisTimeScaleError(ValueError):
 
 class EphemerisCompositionError(ValueError):
     """A dependency returned an incompatible state for composition."""
+
+
+_CSPICE_LOCK = RLock()
+_J2000_JD = 2451545.0
+_SECONDS_PER_DAY = 86400.0
+
+
+@dataclass(frozen=True)
+class SpiceMinorBodySegment:
+    """One CSPICE-evaluable SPK segment without kernel-pool composition."""
+
+    kernel: object = field(repr=False, compare=False)
+    descriptor: tuple[float, ...] = field(repr=False)
+    target: int
+    center: int
+    frame_id: int
+    data_type: int
+    start_jd: float
+    end_jd: float
+
+    @property
+    def spk_segment(self):
+        """Expose coverage names shared with Skyfield SPK segments."""
+        return self
+
+    def at(self, time):
+        """Evaluate this exact segment at one Skyfield TDB instant."""
+        return self.kernel._evaluate(self, float(time.tdb))
+
+
+class SpiceMinorBodyKernel:
+    """Explicit owner of one DAF/SPK handle evaluated through CSPICE."""
+
+    def __init__(self, path):
+        self.path = Path(path).expanduser().resolve(strict=True)
+        self._closed = False
+        with _CSPICE_LOCK:
+            self._handle = spiceypy.dafopr(str(self.path))
+            try:
+                spiceypy.dafbfs(self._handle)
+                segments = []
+                while spiceypy.daffna():
+                    descriptor = spiceypy.dafgs(5)
+                    bounds, integers = spiceypy.dafus(descriptor, 2, 6)
+                    target, center, frame_id, data_type, _, _ = (
+                        int(value) for value in integers
+                    )
+                    segments.append(
+                        SpiceMinorBodySegment(
+                            kernel=self,
+                            descriptor=tuple(float(x) for x in descriptor),
+                            target=target,
+                            center=center,
+                            frame_id=frame_id,
+                            data_type=data_type,
+                            start_jd=(
+                                _J2000_JD + float(bounds[0]) / _SECONDS_PER_DAY
+                            ),
+                            end_jd=(
+                                _J2000_JD + float(bounds[1]) / _SECONDS_PER_DAY
+                            ),
+                        )
+                    )
+            except Exception:
+                spiceypy.dafcls(self._handle)
+                self._closed = True
+                raise
+        self.segments = tuple(segments)
+
+    def _evaluate(self, segment, tdb_jd):
+        if self._closed:
+            raise ValueError("minor-body SPK is closed.")
+        et = (tdb_jd - _J2000_JD) * _SECONDS_PER_DAY
+        with _CSPICE_LOCK:
+            frame_id, state, center = spiceypy.spkpvn(
+                self._handle,
+                np.asarray(segment.descriptor),
+                et,
+            )
+        if int(frame_id) != segment.frame_id or int(center) != segment.center:
+            raise EphemerisCompositionError(
+                "CSPICE returned a different segment frame or centre."
+            )
+        state = np.asarray(state, dtype=float)
+        if state.shape != (6,) or not np.all(np.isfinite(state)):
+            raise EphemerisCompositionError(
+                "CSPICE returned a malformed minor-body state."
+            )
+        return SimpleNamespace(
+            position=SimpleNamespace(
+                au=tuple(float(value) / AU_KM for value in state[:3])
+            ),
+            velocity=SimpleNamespace(
+                au_per_d=tuple(
+                    float(value) * _SECONDS_PER_DAY / AU_KM
+                    for value in state[3:]
+                )
+            ),
+        )
+
+    def close(self):
+        """Close this kernel owner's DAF handle exactly once."""
+        if self._closed:
+            return
+        with _CSPICE_LOCK:
+            spiceypy.dafcls(self._handle)
+        self._closed = True
+
+    def __enter__(self):
+        if self._closed:
+            raise ValueError("minor-body SPK is closed.")
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
 
 
 def _text(value, *, name):
@@ -181,12 +301,23 @@ class MinorBodySegmentIdentity:
     centre_id: int
     coverage_start_jd: float
     coverage_end_jd: float
+    frame_id: int = 1
+    data_type: int | None = None
 
     def __post_init__(self):
-        for name in ("index", "target_id", "centre_id"):
+        for name in ("index", "target_id", "centre_id", "frame_id"):
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, int):
                 raise TypeError(f"{name} must be an integer.")
+        if self.frame_id != 1:
+            raise ValueError(
+                "minor-body SPK segments must use ICRF/J2000 frame 1."
+            )
+        if self.data_type is not None and (
+            isinstance(self.data_type, bool)
+            or not isinstance(self.data_type, int)
+        ):
+            raise TypeError("data_type must be an integer or None.")
         start = float(self.coverage_start_jd)
         end = float(self.coverage_end_jd)
         if not isfinite(start) or not isfinite(end) or not start < end:
@@ -315,6 +446,8 @@ class SkyfieldMinorBodyStateSource:
                     centre_id=int(segment.center),
                     coverage_start_jd=raw.start_jd,
                     coverage_end_jd=raw.end_jd,
+                    frame_id=int(getattr(segment, "frame_id", 1)),
+                    data_type=getattr(segment, "data_type", None),
                 )
             except (AttributeError, TypeError, ValueError) as error:
                 raise TypeError(
@@ -330,8 +463,7 @@ class SkyfieldMinorBodyStateSource:
         planetary_resource = getattr(planetary_source, "resource", None)
         if not isinstance(planetary_resource, EphemerisResourceIdentity):
             raise TypeError(
-                "planetary_source must expose one "
-                "EphemerisResourceIdentity."
+                "planetary_source must expose one EphemerisResourceIdentity."
             )
         if planetary_resource not in resource.dependencies:
             raise ValueError(
@@ -377,6 +509,8 @@ class SkyfieldMinorBodyStateSource:
             (
                 f"ordered segment {index}: target {segment.target}, "
                 f"centre {segment.center}, "
+                f"frame {getattr(segment, 'frame_id', 1)}, "
+                f"type {getattr(segment, 'data_type', 'unreported')}, "
                 f"JD {segment.spk_segment.start_jd:.8f} through "
                 f"{segment.spk_segment.end_jd:.8f} TDB"
             )

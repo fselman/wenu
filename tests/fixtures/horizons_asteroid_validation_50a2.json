@@ -1,0 +1,134 @@
+{
+  "authority": {
+    "api": "NASA/JPL Horizons API",
+    "returned_version": "1.2",
+    "retrieved_utc_date": "2026-09-11",
+    "observer_quantities": [1, 20, 21, 45],
+    "observer_reference_system": "ICRF",
+    "observer_apparent_policy": "AIRLESS",
+    "vector_centre": "solar system barycenter",
+    "vector_corrections": "NONE",
+    "vector_reference_plane": "FRAME",
+    "vector_units": "AU-D"
+  },
+  "observer": {
+    "name": "La Ligua",
+    "longitude_deg_east": -71.230289,
+    "latitude_deg": -32.443342,
+    "elevation_km": 0.052
+  },
+  "objects": [
+    {
+      "key": "ceres",
+      "class": "asteroid",
+      "primary_designation": "1 Ceres",
+      "horizons_command": "1;",
+      "provider_spk_id": "20000001",
+      "orbit_solution_id": "JPL#48",
+      "solution_date": "2021-Apr-13_11:04:44",
+      "osculating_epoch": "2458849.5 TDB",
+      "quality_fields": {
+        "observations": "1075 (1995-2021)",
+        "residual_rms_arcsec": "0.24563",
+        "condition_code": "0",
+        "radar": "60 delay, 0 Doppler"
+      },
+      "spk": {
+        "filename": "ceres-jpl48-2025-2030.bsp",
+        "coverage_start_jd_tdb": 2460676.5,
+        "coverage_end_jd_tdb": 2462502.5,
+        "segment_type": 21,
+        "segment_centre_id": 10
+      },
+      "epochs": [
+        {
+          "calendar": "2026-01-15T00:00:00",
+          "vector_jd_tdb": 2461055.5,
+          "position_au": [2.473831190533101, 1.448600462714731, 0.1793693739783349],
+          "velocity_au_per_day": [-0.005294180855317524, 0.007129684922287073, 0.004442116874748654],
+          "topocentric": {"astrometric_ra_deg": 12.361665497, "astrometric_dec_deg": -3.385583227, "distance_au": 2.95798520777751, "light_time_min": 24.60081282, "apparent_ra_deg": 12.360726193, "apparent_dec_deg": -3.386861503},
+          "geocentric": {"astrometric_ra_deg": 12.362020744, "astrometric_dec_deg": -3.385988854, "distance_au": 2.95801746612639, "light_time_min": 24.60108110, "apparent_ra_deg": 12.361016682, "apparent_dec_deg": -3.387265045}
+        },
+        {
+          "calendar": "2026-06-14T00:00:00",
+          "vector_jd_tdb": 2461205.5,
+          "position_au": [1.367325412961537, 2.260035222082511, 0.7875714042962124],
+          "velocity_au_per_day": [-0.009171923103535446, 0.003343017545961858, 0.003445315944421655],
+          "topocentric": {"astrometric_ra_deg": 64.808638155, "astrometric_dec_deg": 18.659961185, "distance_au": 3.71975362717799, "light_time_min": 30.93624758, "apparent_ra_deg": 64.802967055, "apparent_dec_deg": 18.659137965},
+          "geocentric": {"astrometric_ra_deg": 64.809113174, "astrometric_dec_deg": 18.659734935, "distance_au": 3.71972633372225, "light_time_min": 30.93602058, "apparent_ra_deg": 64.803488575, "apparent_dec_deg": 18.658892315}
+        },
+        {
+          "calendar": "2026-11-11T00:00:00",
+          "vector_jd_tdb": 2461355.5,
+          "position_au": [-0.1524354033460557, 2.369631111248590, 1.148820264430179],
+          "velocity_au_per_day": [-0.01054809559006582, -0.002041746465379781, 0.001185159848068660],
+          "topocentric": {"astrometric_ra_deg": 115.546297539, "astrometric_dec_deg": 24.500118790, "distance_au": 2.06657384468259, "light_time_min": 17.18717058, "apparent_ra_deg": 115.548898258, "apparent_dec_deg": 24.499391804},
+          "geocentric": {"astrometric_ra_deg": 115.545550390, "astrometric_dec_deg": 24.499845236, "distance_au": 2.06654044568582, "light_time_min": 17.18689281, "apparent_ra_deg": 115.548211491, "apparent_dec_deg": 24.499139602}
+        }
+      ]
+    },
+    {
+      "key": "apophis",
+      "class": "asteroid",
+      "primary_designation": "99942 Apophis (2004 MN4)",
+      "horizons_command": "99942;",
+      "provider_spk_id": "20099942",
+      "orbit_solution_id": "JPL#220",
+      "solution_date": "2024-Jun-25_10:48:08",
+      "osculating_epoch": "2459215.5 TDB",
+      "quality_fields": {
+        "observations": "7370 (2004-2022)",
+        "residual_rms_arcsec": "0.080135",
+        "condition_code": "0",
+        "radar": "20 delay, 30 Doppler"
+      },
+      "model_parameters": {
+        "earth_gravity": "2x0 (J2 only), EOBL_LIM=1 au",
+        "A1_au_per_day2": "4.999999873689E-13",
+        "A2_au_per_day2": "-2.901766720242E-14",
+        "A3_au_per_day2": "0"
+      },
+      "spk": {
+        "filename": "apophis-jpl220-2028-2030.bsp",
+        "coverage_start_jd_tdb": 2461771.5,
+        "coverage_end_jd_tdb": 2462502.5,
+        "segment_type": 21,
+        "segment_centre_id": 10
+      },
+      "epochs": [
+        {
+          "calendar": "2029-04-10T00:00:00",
+          "vector_jd_tdb": 2462236.5,
+          "position_au": [-0.9500378637037742, -0.3215016742740339, -0.1433755690232308],
+          "velocity_au_per_day": [0.008033869438282548, -0.01325723748598846, -0.004717841712052893],
+          "topocentric": {"astrometric_ra_deg": 212.771120493, "astrometric_dec_deg": -30.088524441, "distance_au": 0.01345628458913, "light_time_min": 0.11191251, "apparent_ra_deg": 212.777075533, "apparent_dec_deg": -30.089779148},
+          "geocentric": {"astrometric_ra_deg": 212.594207566, "astrometric_dec_deg": -30.166220750, "distance_au": 0.01347000795077, "light_time_min": 0.11202664, "apparent_ra_deg": 212.600164974, "apparent_dec_deg": -30.167518388}
+        },
+        {
+          "calendar": "2029-04-11T00:00:00",
+          "vector_jd_tdb": 2462237.5,
+          "position_au": [-0.9418668321472765, -0.3347112623272237, -0.1480713316314956],
+          "velocity_au_per_day": [0.008308638483429363, -0.01316089631681072, -0.004673088178531974],
+          "topocentric": {"astrometric_ra_deg": 212.375098803, "astrometric_dec_deg": -29.880322913, "distance_au": 0.01004887704870, "light_time_min": 0.08357396, "apparent_ra_deg": 212.381078495, "apparent_dec_deg": -29.881638241},
+          "geocentric": {"astrometric_ra_deg": 212.139218045, "astrometric_dec_deg": -29.982090012, "distance_au": 0.01006330322265, "light_time_min": 0.08369394, "apparent_ra_deg": 212.145200134, "apparent_dec_deg": -29.983449991}
+        },
+        {
+          "calendar": "2029-04-12T00:00:00",
+          "vector_jd_tdb": 2462238.5,
+          "position_au": [-0.9334190565848250, -0.3478209935440530, -0.1527201315567825],
+          "velocity_au_per_day": [0.008588248529141636, -0.01305699600195257, -0.004623337190233182],
+          "topocentric": {"astrometric_ra_deg": 211.550516497, "astrometric_dec_deg": -29.425522983, "distance_au": 0.00663834507657, "light_time_min": 0.05520943, "apparent_ra_deg": 211.556510310, "apparent_dec_deg": -29.426924910},
+          "geocentric": {"astrometric_ra_deg": 211.196470363, "astrometric_dec_deg": -29.575469315, "distance_au": 0.00665365232136, "light_time_min": 0.05533674, "apparent_ra_deg": 211.202467697, "apparent_dec_deg": -29.576919317}
+        },
+        {
+          "calendar": "2029-04-13T00:00:00",
+          "vector_jd_tdb": 2462239.5,
+          "position_au": [-0.9246841060995419, -0.3608201923500287, -0.1573134863632335],
+          "velocity_au_per_day": [0.008889261946540581, -0.01293659911690864, -0.004558493098001698],
+          "topocentric": {"astrometric_ra_deg": 208.988685877, "astrometric_dec_deg": -27.929146499, "distance_au": 0.00321312586212, "light_time_min": 0.02672275, "apparent_ra_deg": 208.994650762, "apparent_dec_deg": -27.930736648},
+          "geocentric": {"astrometric_ra_deg": 208.275930427, "astrometric_dec_deg": -28.225763558, "distance_au": 0.00323003643107, "light_time_min": 0.02686339, "apparent_ra_deg": 208.281902061, "apparent_dec_deg": -28.227412037}
+        }
+      ]
+    }
+  ]
+}

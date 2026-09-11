@@ -2939,5 +2939,14 @@ transformation remain downstream responsibilities.
 
 This slice establishes structure and failure behavior only. An independent
 installed-resource comparison for a main-belt asteroid and a fast nearby
-object remains the 50A.2 scientific gate. No minor-body spherical direction,
+object is implemented by the active 50A.2 scientific gate. Horizons' type-21
+segments require CSPICE evaluation; Wenu selects and evaluates only the exact
+declared descriptor, then performs the same explicit composition above.
+
+The 50A.2 validator carries the resulting state through the existing one-way
+light-time and Skyfield apparent-place machinery. Resource compatibility means
+that the target's chain must explicitly contain the observer's DE440 identity;
+mere provider-name equality is insufficient. Frozen direct-Horizons ICRF
+Cartesian, astrometric/apparent direction, distance, light-time, and La Ligua-
+versus-geocentre parallax values remain the independent oracle. No minor-body
 point, track, magnitude, CLI selector, or rendered symbol exists yet.

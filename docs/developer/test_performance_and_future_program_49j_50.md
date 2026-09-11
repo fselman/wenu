@@ -167,6 +167,9 @@ renderer, semantic-export, or file-export paths.
 
 ### 50A.2 — Asteroid numerical validation
 
+**Status:** Implemented in `asteroid_numerical_validation_50a2.md`; awaiting
+Fernando's installed-resource scientific and architectural review.
+
 Validate a bounded set including a main-belt asteroid and a fast nearby object,
 with an independent authoritative ephemeris comparison where available.
 

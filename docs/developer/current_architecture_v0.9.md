@@ -705,3 +705,11 @@ at the same TDB instant. Their positions and velocities are composed only after
 the dependency request, resource, frame, and AU/AU-day units are validated.
 No observer, light-time, apparent-place, spherical-geometry, catalog, chart, or
 output owner consumes this provider yet.
+
+Milestone 50A.2 adds `SpiceMinorBodyKernel` as the explicit owner of one local
+Horizons DAF/SPK handle. It evaluates a selected type-21 descriptor through
+CSPICE `spkpvn()` without furnishing a global kernel or allowing hidden SPICE
+composition. The existing astrometric realizer now accepts a target resource
+chain only when it explicitly contains the observer's planetary resource;
+Skyfield remains the DE440, observer-state, and apparent-place owner. This seam
+is exercised only by the validator and remains unconnected to a body or chart.

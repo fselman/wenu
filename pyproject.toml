@@ -22,6 +22,7 @@ dependencies = [
     "numpy",
     "pandas",
     "skyfield",
+    "spiceypy>=6,<9",
     "tomli>=2; python_version < '3.11'",
 ]
 

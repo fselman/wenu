@@ -129,8 +129,37 @@ class EphemerisResourceChain:
         object.__setattr__(self, "dependencies", dependencies)
         object.__setattr__(self, "provenance", _provenance(self.provenance))
 
+    @property
+    def provider(self):
+        """Return the primary resource provider for scalar provenance."""
+        return self.primary.provider
+
+    @property
+    def model(self):
+        """Return the primary resource model for scalar provenance."""
+        return self.primary.model
+
+    @property
+    def filename(self):
+        """Return the primary resource filename for scalar provenance."""
+        return self.primary.filename
+
+    @property
+    def sha256(self):
+        """Return the primary resource digest for scalar provenance."""
+        return self.primary.sha256
+
 
 EphemerisResource = EphemerisResourceIdentity | EphemerisResourceChain
+
+
+def ephemeris_resource_contains(resource, required):
+    """Return whether a state resource explicitly contains another resource."""
+    if resource == required:
+        return True
+    return isinstance(resource, EphemerisResourceChain) and required in (
+        (resource.primary,) + resource.dependencies
+    )
 
 
 @dataclass(frozen=True)
