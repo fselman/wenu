@@ -140,6 +140,18 @@ def validate(
     characterize=False,
 ):
     reference = json.loads(reference_path.read_text(encoding="utf-8"))
+    tolerances = {
+        "position_au": POSITION_TOLERANCE_AU,
+        "velocity_au_per_day": VELOCITY_TOLERANCE_AU_PER_DAY,
+        "direction_deg": DIRECTION_TOLERANCE_DEG,
+        "distance_au": DISTANCE_TOLERANCE_AU,
+        "light_time_min": LIGHT_TIME_TOLERANCE_MIN,
+        "parallax_deg": PARALLAX_TOLERANCE_DEG,
+    }
+    for name, value in reference.get("tolerances", {}).items():
+        if name not in tolerances:
+            raise ValueError(f"unknown validation tolerance: {name}")
+        tolerances[name] = float(value)
     manifest_path = resource_directory / "acquisition-report.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     acquired = {item["key"]: item for item in manifest["resources"]}
@@ -315,11 +327,11 @@ def validate(
 
         if not characterize:
             _require_within(
-                maxima["position_au"], POSITION_TOLERANCE_AU, "position"
+                maxima["position_au"], tolerances["position_au"], "position"
             )
             _require_within(
                 maxima["velocity_au_per_day"],
-                VELOCITY_TOLERANCE_AU_PER_DAY,
+                tolerances["velocity_au_per_day"],
                 "velocity",
             )
             for label in (
@@ -328,17 +340,17 @@ def validate(
                 "apparent_ra_deg",
                 "apparent_dec_deg",
             ):
-                _require_within(maxima[label], DIRECTION_TOLERANCE_DEG, label)
+                _require_within(maxima[label], tolerances["direction_deg"], label)
             _require_within(
-                maxima["distance_au"], DISTANCE_TOLERANCE_AU, "distance"
+                maxima["distance_au"], tolerances["distance_au"], "distance"
             )
             _require_within(
                 maxima["light_time_min"],
-                LIGHT_TIME_TOLERANCE_MIN,
+                tolerances["light_time_min"],
                 "light time",
             )
             _require_within(
-                maxima["parallax_deg"], PARALLAX_TOLERANCE_DEG, "parallax"
+                maxima["parallax_deg"], tolerances["parallax_deg"], "parallax"
             )
             if key == "apophis" and max(parallaxes) <= 0.1:
                 raise AssertionError(
@@ -363,14 +375,7 @@ def validate(
             "filename": planetary_path.name,
             "sha256": _digest(planetary_path),
         },
-        "tolerances": {
-            "position_au": POSITION_TOLERANCE_AU,
-            "velocity_au_per_day": VELOCITY_TOLERANCE_AU_PER_DAY,
-            "direction_deg": DIRECTION_TOLERANCE_DEG,
-            "distance_au": DISTANCE_TOLERANCE_AU,
-            "light_time_min": LIGHT_TIME_TOLERANCE_MIN,
-            "parallax_deg": PARALLAX_TOLERANCE_DEG,
-        },
+        "tolerances": tolerances,
         "objects": results,
     }
 
