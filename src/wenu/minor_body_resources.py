@@ -165,7 +165,7 @@ class MinorBodyResourceSession:
         result = record["horizons_result"]
         for expected in (
             solution.primary_designation,
-            solution.orbit_solution_id.replace("#", " "),
+            f"soln ref.= {solution.orbit_solution_id}",
             solution.solution_date,
         ):
             if expected not in result:

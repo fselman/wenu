@@ -19,7 +19,8 @@ def manifest_directory(tmp_path, *, digest=None, target="20000001"):
         "sha256": digest or sha256(payload).hexdigest(),
         "spk_file_id": target,
         "horizons_result": (
-            "1 Ceres\nJPL 48\n2021-Apr-13_11:04:44"
+            "1 Ceres\nSoln.date: 2021-Apr-13_11:04:44\n"
+            "soln ref.= JPL#48"
         ),
     }
     (tmp_path / "acquisition-report.json").write_text(
