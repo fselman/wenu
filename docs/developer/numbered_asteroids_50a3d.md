@@ -1,6 +1,6 @@
 # Generic numbered asteroids (Milestone 50A.3D)
 
-**Status:** Candidate implementation; visual and numerical acceptance complete, test gates pending
+**Status:** Candidate implementation; all acceptance evidence complete, Fernando acceptance pending
 
 **Base:** `d538473869c82e6fe125f7b9d7a69596639c7d97`
 
@@ -85,8 +85,18 @@ The 50A.3D fixture declares a `2e-11 au` position tolerance, selected after
 an explicit characterization run reported the roughly 1.80 m maximum above.
 It does not change the accepted 50A.2 default of `5e-12 au`; velocity,
 direction, distance, light-time, and parallax tolerances remain unchanged.
-The enforcing run reported `accepted: true`. Focused and complete test gates
-remain required before final milestone acceptance.
+The enforcing run reported `accepted: true`.
+
+The focused minor-body, request, track, and documentation gate passed all 206
+tests in 3.02 seconds. The complete gate first caught and corrected two
+generalization regressions: the coincident Ceres label had changed from the
+accepted `Ceres (1)` order to `(1) Ceres`, and built-in Ceres had been
+omitted from the explicit optional-layer closure. Targeted regression gates
+then passed 7 tests in 2.49 seconds and 1 test in 1.93 seconds respectively.
+The final complete repository gate passed all 2,201 tests in 81.36 seconds.
+
+All required evidence is complete; final milestone acceptance remains
+Fernando's explicit decision.
 
 No user example implies automatic discovery, catalog sweep, provisional
 designation, comet, dual-status object, photometry, field intersection, or
