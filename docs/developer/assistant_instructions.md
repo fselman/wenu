@@ -557,10 +557,11 @@ before comet work. Follow
 `archive/milestone_history/50a_minor_bodies/numbered_asteroid_generalization_audit_50a3c.md`:
 keep permanent number, optional name, provisional designation, provider target,
 solution, and classification separate; keep rendering offline; derive
-request-owned descriptors only from an explicit verified manifest; preserve
-`ceres` as an alias of number `1`; and use `(79989)` only as a generic
-acceptance specimen. Do not add object-specific branching. The accepted audit
-authorizes 50A.3D; 50A.4 remains next after that implementation.
+request-owned descriptors only from an explicit verified manifest; resolve any
+manifest-declared official name and its permanent number to one descriptor;
+and use `(79989)` only as a generic acceptance specimen. Do not add
+object-specific branching, implicit network lookup, or fuzzy name search. The
+accepted audit authorizes 50A.3D; 50A.4 remains next after that implementation.
 
 For 50B publication-style work, complete the print, typography, contrast,
 accessibility, cartographic, and astronomical-atlas practice review plus

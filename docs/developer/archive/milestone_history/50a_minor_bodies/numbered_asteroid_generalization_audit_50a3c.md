@@ -13,11 +13,11 @@ Solar-System catalog owns the only drawable asteroid descriptor, and
 `minor_body_resources.py` owns a closed Ceres provider specification.
 
 50A.3C recommends one separately reviewed 50A.3D implementation that makes a
-**permanent minor-planet number** the public selection key for an explicitly
-installed asteroid resource. `(79989)`, a small unnamed main-belt asteroid
-selected by Fernando, is the acceptance specimen. It must exercise the same
-generic path as every other supported numbered asteroid; no code may branch on
-`79989`.
+**permanent minor-planet number or manifest-declared official name** a public
+selection key for an explicitly installed asteroid resource. `(79989)`, a
+small unnamed main-belt asteroid selected by Fernando, is the acceptance
+specimen. It must exercise the same generic path as every other supported
+numbered asteroid; no code may branch on `79989`.
 
 This audit changes no runtime behavior. Ceres remains the only currently
 drawable asteroid until 50A.3D is implemented, numerically accepted, and
@@ -71,19 +71,22 @@ existing class-aware options:
 --minor-body-resource-directory PATH
 ```
 
-The same route must support `--asteroid 1` and `--asteroid-track 1`. The
-existing `ceres` spelling remains a compatibility alias for number `1`; it
-must resolve to the same identity rather than create a second Ceres
-descriptor.
+The same route must support both number and installed official name, for
+example `--asteroid 1`, `--asteroid ceres`, `--asteroid 4`, and
+`--asteroid vesta`. Point and track selectors follow the same rule. Every
+spelling resolves to the one descriptor whose stable identity is the permanent
+number; a name must not create a second body descriptor.
 
-Parsing accepts only an unsigned positive decimal integer or an explicitly
-retained alias. It rejects zero, signs, decimals, empty input, comet forms,
-provisional designations, arbitrary names, and comma lists in 50A.3D. A
-syntactically valid number is not a promise that its resource is installed.
+Parsing accepts an unsigned positive decimal integer or a non-empty candidate
+official name. Names are normalized by trimming and case-folded for exact
+lookup; substring, fuzzy, locale-dependent, and punctuation-insensitive
+matching are not admitted. It rejects zero, signs, decimals, empty input,
+comet forms, provisional designations, and comma lists in 50A.3D. Syntactically
+valid input is not a promise that its resource is installed.
 
-Rendering remains explicit and offline. If the selected number is absent from
-the supplied manifest, Wenu must fail before producing output with an
-actionable message. It must not query Horizons, SBDB, MPC, or any other
+Rendering remains explicit and offline. If the selected number or name is
+absent from the supplied manifest, Wenu must fail before producing output with
+an actionable message. It must not query Horizons, SBDB, MPC, or any other
 network service; search a global cache; substitute an osculating-element
 propagator; or fall back to Ceres.
 
@@ -103,10 +106,12 @@ identity and solution fields rather than require chart code to rediscover them
 by parsing a human-readable Horizons result. The original result text remains
 retained as provenance and as a cross-check.
 
-The loader must reject duplicate permanent numbers, aliases that resolve to
-different numbers, missing required identity, a class mismatch, an invalid or
-unsupported solution, a filename escaping the resource directory, digest
-mismatch, target mismatch, unsupported centre/frame/type, and insufficient
+The loader builds its name index from non-null manifest-declared official
+names. It must reject duplicate permanent numbers; duplicate case-folded names;
+aliases, including retained compatibility aliases, that resolve to different
+numbers; missing required identity; a class mismatch; an invalid or
+unsupported solution; a filename escaping the resource directory; digest
+mismatch; target mismatch; unsupported centre/frame/type; and insufficient
 coverage. It opens each selected SPK at most once per chart build and closes
 every opened resource exactly once.
 
@@ -145,9 +150,13 @@ Display text follows the accepted number-on-the-right convention:
 - unnamed object: `(79989)`.
 
 The optional name must never be synthesized from a number or provisional
-designation. The canonical identity retains the permanent number even if a
-proper name is assigned later. A resource refresh may add or change display
-metadata, but it must not silently change the selected permanent identity.
+designation. When present it is both display metadata and an exact local lookup
+alias for the permanent number, never scientific identity. The canonical
+identity retains the permanent number even if a proper name is assigned later.
+A resource refresh may add or change display and lookup metadata, but it must
+not silently change the selected permanent identity. Thus an initially unnamed
+`(79989)` can later be selected by its official name after an explicit resource
+refresh, while `--asteroid 79989` continues to select the same body.
 
 Semantic paths must be stable and number-based, for example:
 
@@ -191,8 +200,8 @@ scientific detectability.
 
 50A.3D should extend existing stable owners:
 
-- chart-argument tests protect numeric syntax, the `ceres` alias, and class-
-  aware rejection;
+- chart-argument tests protect numeric syntax, installed official-name syntax,
+  exact case-folded lookup, and class-aware rejection;
 - request and resource tests protect manifest-derived descriptor identity,
   duplicate/mismatch failures, offline behavior, lifecycle, and coexistence
   with Ceres;
@@ -221,8 +230,8 @@ than a compiled Ceres-only specification.
 
 ## 10. Deferred work and stop conditions
 
-50A.3D does not admit provisional-only asteroids, names other than retained
-aliases, comets, dual-status objects, automatic discovery, catalog sweeps,
+50A.3D does not admit provisional-only asteroids, uninstalled or fuzzy name
+search, comets, dual-status objects, automatic discovery, catalog sweeps,
 field-of-view intersection, exposure-window searches, brightness selection,
 photometry, uncertainty envelopes, occultations, or artificial satellites.
 
