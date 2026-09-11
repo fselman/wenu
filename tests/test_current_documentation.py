@@ -4116,17 +4116,18 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
 
     for phrase in (
         "Generic numbered asteroids (Milestone 50A.3D)",
-        "Candidate implementation; numerical and visual acceptance pending",
+        "visual acceptance complete, numerical acceptance pending",
         "permanent number or an exact, case-folded official name",
         "Rendering remains offline",
         "`(79989)` is the acceptance specimen, not a special runtime case",
         "without mutating the built-in catalog",
         "`Name (number)` for named objects and `(number)` for unnamed",
-        "numerical and visual acceptance pending",
         "unnamed main-belt asteroid `1999 FH1`",
         "internal layer is therefore `asteroid_79989`",
         "visibility is selected by the descriptor's public selection key",
         "SVG-only hierarchy-label conflict",
+        "Fernando visually accepted the 7.5-degree binocular PNG and semantic SVG",
+        "one `(79989)` label",
     ):
         assert phrase in record
 

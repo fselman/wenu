@@ -1,6 +1,6 @@
 # Generic numbered asteroids (Milestone 50A.3D)
 
-**Status:** Candidate implementation; numerical and visual acceptance pending
+**Status:** Candidate implementation; visual acceptance complete, numerical acceptance pending
 
 **Base:** `d538473869c82e6fe125f7b9d7a69596639c7d97`
 
@@ -58,10 +58,14 @@ the point called the shared body node `(79989)`, while the track inferred
 `79989`. Point and track identities now explicitly assign the same body-node
 display name and reserve the track wording for the `track` child.
 
-Before acceptance, acquire `(79989)`, freeze and run the 50A.2-style numerical
-comparison at at least three epochs, run focused and complete tests, and have
-Fernando inspect a regional PNG and semantic SVG containing its point and
-dated track. The point and track make no brightness or detectability claim.
+Fernando visually accepted the 7.5-degree binocular PNG and semantic SVG on
+2026-09-11. The accepted product contains one hollow-diamond start point, one
+`(79989)` label, four dated weekly anchors from 2026-01-15 through 2026-02-12,
+and the shared asteroid track appearance. The point and track make no
+brightness or detectability claim.
+
+Before final acceptance, freeze and run the 50A.2-style numerical comparison
+at at least three epochs and run focused and complete test gates.
 
 No user example implies automatic discovery, catalog sweep, provisional
 designation, comet, dual-status object, photometry, field intersection, or
