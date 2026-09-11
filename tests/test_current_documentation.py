@@ -4123,6 +4123,8 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
         "without mutating the built-in catalog",
         "`Name (number)` for named objects and `(number)` for unnamed",
         "numerical and visual acceptance pending",
+        "unnamed main-belt asteroid `1999 FH1`",
+        "internal layer is therefore `asteroid_79989`",
     ):
         assert phrase in record
 

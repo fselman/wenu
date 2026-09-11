@@ -9,7 +9,7 @@ from wenu.chart_document import EditPolicy
 
 
 _SAFE_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
-_SAFE_PATH_COMPONENT = _SAFE_NAME
+_SAFE_PATH_COMPONENT = re.compile(r"^[a-z0-9][a-z0-9_]*$")
 
 
 def semantic_key(
@@ -494,9 +494,18 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
             "labels": "date labels",
         }
         path_kind = kind_paths[display_kind]
+        body_path_key = (
+            str(body.iau_number)
+            if (
+                body.body_class == "asteroid"
+                and body.iau_number is not None
+                and body.entity_key.startswith("asteroid_")
+            )
+            else body.entity_key
+        )
         if display_kind == "symbolic_point":
             contract = SemanticLayerContract(
-                ("sky", "solar_system", *branch_path, body.entity_key),
+                ("sky", "solar_system", *branch_path, body_path_key),
                 body.display_name,
                 39,
                 body.body_class,
@@ -504,7 +513,7 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
         elif display_kind == "apparent_track":
             contract = SemanticLayerContract(
                 (
-                    "sky", "solar_system", *branch_path, body.entity_key,
+                    "sky", "solar_system", *branch_path, body_path_key,
                     "track",
                 ),
                 f"{body.display_name} track",

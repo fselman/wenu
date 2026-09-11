@@ -160,7 +160,7 @@ def test_collection_resolves_number_and_installed_official_name(tmp_path):
 
     assert named is numbered
     assert numbered.selection_key == "79989"
-    assert numbered.entity_key == "79989"
+    assert numbered.entity_key == "asteroid_79989"
     assert numbered.canonical_designation == "Future Name (79989)"
     assert collection.solution_for(numbered).iau_number == 79989
 

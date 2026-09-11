@@ -40,6 +40,16 @@ objects. Semantic paths are number-based, for example
 
 ## Acceptance still required
 
+The explicit macOS acquisition on 2026-09-11 resolved `(79989)` as unnamed
+main-belt asteroid `1999 FH1` (`MBA`), Horizons target `20079989`, solution
+`JPL#42` dated `2026-Jun-06_12:19:06`, osculating epoch `2458360.5 TDB`, and
+SPK SHA-256
+`d62bbf1aef90560db4cd5fa89dce2b4ddce15a5c807beae909ca75cce7fc9d87`.
+The first public-path render exposed and then corrected a semantic-boundary
+fault: layer names must begin with a letter, while semantic path components
+may be a permanent decimal number. The internal layer is therefore
+`asteroid_79989` and the stable semantic path component is `79989`.
+
 Before acceptance, acquire `(79989)`, freeze and run the 50A.2-style numerical
 comparison at at least three epochs, run focused and complete tests, and have
 Fernando inspect a regional PNG and semantic SVG containing its point and

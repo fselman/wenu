@@ -114,6 +114,27 @@ def test_ceres_identity_capabilities_and_semantics_are_catalog_owned():
     )
 
 
+def test_installed_asteroid_has_safe_layer_and_numbered_semantic_identity():
+    descriptor = SolarSystemBodyDescriptor(
+        target="79989",
+        entity_key="asteroid_79989",
+        display_name="(79989)",
+        selection_key="79989",
+        body_class="asteroid",
+        physical_body_id="20079989",
+        canonical_designation="(79989)",
+        iau_number=79989,
+        capabilities=frozenset({SYMBOLIC_POINT}),
+        ephemeris_source_key="minor_body_spk",
+    )
+    layer = SolarSystemPointLayer(descriptor)
+
+    assert layer.layer_name == "asteroid_79989"
+    assert semantic_layer_identity(layer).semantic_path_text == (
+        "sky/solar_system/minor_bodies/asteroids/79989"
+    )
+
+
 def test_resolved_disk_factory_requires_no_body_specific_class():
     layers = solar_system_disk_layers(TEST_BODY, magnification=4.0)
     assert tuple(layer.layer_name for layer in layers) == (

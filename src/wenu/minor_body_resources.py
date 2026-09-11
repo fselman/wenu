@@ -116,7 +116,7 @@ class MinorBodyResourceCollection:
                 designation = f"({number})" if name is None else f"{name} ({number})"
                 descriptor = SolarSystemBodyDescriptor(
                     target=str(number),
-                    entity_key=str(number),
+                    entity_key=f"asteroid_{number}",
                     display_name=name or f"({number})",
                     selection_key=str(number),
                     body_class="asteroid",
