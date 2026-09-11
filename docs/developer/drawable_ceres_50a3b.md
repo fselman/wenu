@@ -103,3 +103,12 @@ fail without creating output.
 
 Until that evidence is accepted, 50A.3B remains open and this record remains
 in `docs/developer/`.
+
+Fernando's first macOS product review found the scientific track and semantic
+SVG satisfactory but rejected the duplicated Ceres/start-date labels and the
+low-contrast asteroid point label. When a selected point has the same body and
+instant as the track start, the point's hollow diamond and `(1) Ceres` label
+now identify that start and the redundant automatic start label is omitted;
+later dated ticks are unchanged. Atlas presentation uses the accepted
+planetary cream `#FFE6A3` for the asteroid symbol and label. Final visual
+acceptance remains pending a regenerated PNG and SVG.

@@ -14,7 +14,7 @@ from wenu.rendering.label_placement import CurveLabelPlacement
 
 def prepare_projected_track(
     spherical, projected, *, tick_length, include_start_tick=False,
-    label_ticks=False, label_anchor=None,
+    label_ticks=False, label_start=True, label_anchor=None,
 ):
     """Return path and perpendicular projected tick components."""
     if not isinstance(projected, ProjectedCurves) or len(projected) != 1:
@@ -48,17 +48,19 @@ def prepare_projected_track(
     path = ProjectedCurve(
         x=source.x, y=source.y, closed=False, name=None
     )
-    start_label = ProjectedCurve(
-        x=np.asarray((source.x[0], source.x[0])),
-        y=np.asarray((source.y[0], source.y[0])),
-        closed=False,
-        name=_start_label(spherical),
-    )
+    start_labels = []
+    if label_start:
+        start_labels.append(ProjectedCurve(
+            x=np.asarray((source.x[0], source.x[0])),
+            y=np.asarray((source.y[0], source.y[0])),
+            closed=False,
+            name=_start_label(spherical),
+        ))
     return ProjectedGrid(
         components={
             "path": ProjectedCurves(items=[path]),
             "ticks": ProjectedCurves(items=ticks),
-            "labels": ProjectedCurves(items=[start_label]),
+            "labels": ProjectedCurves(items=start_labels),
         },
         metadata={
             **dict(projected.metadata),

@@ -490,6 +490,7 @@ def composition_layer_options(
                     "prepare": lambda spherical, projected: prepare_projected_track(
                         spherical, projected, tick_length=tick_length,
                         label_ticks=track.label_ticks,
+                        label_start=track.label_start,
                         label_anchor=label_anchor,
                     ),
                     "render": {

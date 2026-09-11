@@ -88,6 +88,14 @@ def test_preparation_omits_start_tick_by_default():
     assert result.metadata["tick_sample_indices"] == (2, 4)
 
 
+def test_preparation_can_omit_start_label_when_a_point_identifies_it():
+    result = prepare_projected_track(
+        spherical(), projected(), tick_length=1.0, label_start=False
+    )
+
+    assert len(result["labels"]) == 0
+
+
 def test_major_tick_labels_use_exact_sample_dates_when_enabled():
     source = spherical()
     source.metadata["sample_instants"] = (

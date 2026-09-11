@@ -2,9 +2,11 @@
 from pathlib import Path
 import pytest
 from wenu.charts.product_options import ChartProductOptions
+from wenu.charts.detail import SkyContentSelection
 from wenu.charts.request import ChartObserverRequest, ChartRequest, ChartSubjectRequest
 from wenu.charts.request_tracks import configure_chart_request_track
 from wenu.sky.celestial_sphere import CelestialSphere
+from wenu.sky.ceres import CERES_BODY
 from wenu.sky.solar_system_tracks import SolarSystemTrackRequest
 from wenu.sky.venus import VENUS_POINT
 
@@ -57,3 +59,34 @@ def test_request_registration_replaces_prior_track_and_can_remove_it():
         sky, request("regional", None)
     ) is None
     assert sky.layers == ()
+
+
+def test_coincident_selected_point_replaces_only_the_track_start_label():
+    sky = CelestialSphere(None)
+    ceres_track = SolarSystemTrackRequest(
+        descriptor=CERES_BODY,
+        start_instant="2026-08-30T00:00:00Z",
+        start_time_scale="utc",
+        sample_step_days=1.0,
+        tick_step_days=7.0,
+        tick_count=4,
+    )
+    chart_request = ChartRequest(
+        observer=ChartObserverRequest(
+            location="La Ligua", time="2026-08-30T00:00:00Z"
+        ),
+        family="regional",
+        product=ChartProductOptions(
+            output=Path("ceres.png"), style="atlas", mode="presentation"
+        ),
+        subject=ChartSubjectRequest(constellations=("Psc",)),
+        content=SkyContentSelection(solar_system_objects={"ceres"}),
+        solar_system_track=ceres_track,
+        solar_system_track_tick_labels=True,
+        minor_body_resource_directory=Path("resources"),
+    )
+
+    layer = configure_chart_request_track(sky, chart_request)
+
+    assert layer.label_start is False
+    assert layer.label_ticks is True
