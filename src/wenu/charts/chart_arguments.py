@@ -886,6 +886,7 @@ def chart_detail_overrides(
         "coordinate_grids",
         *grids,
         *_SYMBOLIC_BODY_KEYS,
+        *_ASTEROID_KEYS,
         *content.asteroids,
         "moon",
     }
