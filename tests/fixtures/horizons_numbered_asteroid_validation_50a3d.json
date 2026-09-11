@@ -11,6 +11,9 @@
     "vector_reference_plane": "FRAME",
     "vector_units": "AU-D"
   },
+  "tolerances": {
+    "position_au": 2e-11
+  },
   "observer": {
     "name": "La Ligua",
     "longitude_deg_east": -71.230289,
