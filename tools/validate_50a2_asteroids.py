@@ -1,4 +1,4 @@
-"""Validate Ceres and Apophis against frozen direct-Horizons evidence."""
+"""Validate installed asteroid SPKs against frozen direct-Horizons evidence."""
 
 from __future__ import annotations
 
@@ -83,9 +83,18 @@ def _solution(record, api_version):
         solution_date=record["solution_date"],
         osculating_epoch=record["osculating_epoch"],
         reference_system="ICRF/J2000",
-        iau_number=1 if record["key"] == "ceres" else 99942,
-        name="Ceres" if record["key"] == "ceres" else "Apophis",
-        aliases=() if record["key"] == "ceres" else ("2004 MN4",),
+        iau_number=record.get(
+            "iau_number",
+            1 if record["key"] == "ceres" else 99942,
+        ),
+        name=record.get(
+            "name",
+            "Ceres" if record["key"] == "ceres" else "Apophis",
+        ),
+        aliases=tuple(record.get(
+            "aliases",
+            () if record["key"] == "ceres" else ("2004 MN4",),
+        )),
         model_parameters=model_parameters,
         quality_fields=quality_fields,
         provenance=("frozen direct-Horizons 50A.2 evidence",),
