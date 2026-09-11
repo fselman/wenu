@@ -4116,7 +4116,7 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
 
     for phrase in (
         "Generic numbered asteroids (Milestone 50A.3D)",
-        "visual and numerical acceptance complete, test gates pending",
+        "all acceptance evidence complete, Fernando acceptance pending",
         "permanent number or an exact, case-folded official name",
         "Rendering remains offline",
         "`(79989)` is the acceptance specimen, not a special runtime case",
@@ -4135,7 +4135,14 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
         "`2e-11 au` position tolerance",
         "does not change the accepted 50A.2 default of `5e-12 au`",
         "The enforcing run reported `accepted: true`",
-        "Focused and complete test gates remain required",
+        "focused minor-body, request, track, and documentation gate passed all 206 tests",
+        "coincident Ceres label had changed",
+        "omitted from the explicit optional-layer closure",
+        "passed 7 tests in 2.49 seconds",
+        "1 test in 1.93 seconds",
+        "final complete repository gate passed all 2,201 tests",
+        "81.36 seconds",
+        "final milestone acceptance remains Fernando's explicit decision",
     ):
         assert phrase in record
 
