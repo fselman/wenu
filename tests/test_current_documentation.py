@@ -3999,7 +3999,8 @@ def test_50a3b_connects_only_manifest_backed_ceres_through_shared_routes():
         "single visible label `Ceres (1)` without a date",
         "opposite the initial projected direction of motion",
         "planetary cream `#FFE6A3`",
-        "complete repository gate passed all 2,181 tests",
+        "final complete repository gate passed all 2,184 tests",
+        "88.01 seconds",
         "accepted the regenerated PNG and SVG",
         "This closes 50A.3",
     ):

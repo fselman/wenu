@@ -94,7 +94,8 @@ no unrelated user document or example script requires modification.
 ## 6. macOS acceptance
 
 On macOS 10.16 with Python 3.11.7, the focused implementation gate passed 185
-tests and the complete repository gate passed all 2,181 tests in 94.74 seconds.
+tests. After the accepted label refinements, the final complete repository
+gate passed all 2,184 tests in 88.01 seconds.
 The acquired 50A.2 Ceres resource generated both PNG and semantic SVG. The SVG
 contained the required point and track paths plus their point, line, and label
 subpaths.
