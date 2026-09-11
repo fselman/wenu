@@ -148,6 +148,13 @@ transformation, chart-family tests cover final boundaries, and composed-mask
 tests cover seam grouping, intersection winding, and single-opacity drawing.
 `charts/target_resolver.py` owns offline alias resolution over the packaged
 `data/targets.json` cross-identification resource.
+`charts/object_center.py` owns the overloaded, output-neutral conversion of a
+resolved fixed target or descriptor-driven moving body into one apparent
+observer-horizontal `ObjectCenter`. It delegates coordinates to
+`CoordinateService` and moving directions to `SolarSystemPointLayer`; it owns
+no name lookup, provider acquisition, projection, framing dimensions, style,
+or rendering. `cli/chart.py` resolves an unambiguous moving-body selection
+before `get_chart_view()` when that object must govern a regional center.
 `charts/constellation_resolver.py` owns IAU abbreviation normalization and
 offline teaching-group resolution over `data/constellation_groups.json`.
 It is the sole translation boundary for Serpens line, boundary, and label

@@ -11,6 +11,7 @@ from wenu.charts.command_line import (
     chart_view_requests_from_arguments,
     draw_chart_view_from_arguments,
 )
+from wenu.charts.object_center import get_object_center
 from wenu.charts.request import CHART_LANGUAGES
 from wenu.charts.sequence import (
     ObserverTimeChartSequenceRequest,
@@ -88,6 +89,10 @@ def parser():
     _add_mask_argument(regional)
     regional.add_argument("--field-width", type=float)
     regional.add_argument("--field-height", type=float)
+    regional.add_argument("--target")
+    regional.add_argument("--center-ra", type=float)
+    regional.add_argument("--center-dec", type=float)
+    regional.add_argument("--display-name")
     regional.add_argument(
         "--center-altitude", type=float,
         help="fixed observer-local chart-center altitude in degrees",
@@ -164,6 +169,28 @@ def _subject_arguments(arguments, values):
         subject = chart_constellation_subject(arguments, required=False)
         if subject is not None:
             return subject.view_arguments()
+        if family == "regional":
+            explicit_horizontal = any(
+                getattr(arguments, name, None) is not None
+                for name in ("center_altitude", "center_azimuth")
+            )
+            if explicit_horizontal:
+                return {}
+            explicit_target = any(
+                getattr(arguments, name, None) is not None
+                for name in (
+                    "target", "center_ra", "center_dec", "display_name"
+                )
+            )
+            if explicit_target:
+                return {
+                    "target": arguments.target,
+                    "ra_deg": arguments.center_ra,
+                    "dec_deg": arguments.center_dec,
+                    "display_name": arguments.display_name,
+                }
+            if _selected_center_body_keys(arguments):
+                return {}
         configured_family = (
             "regional_single" if family == "regional" else family
         )
@@ -254,6 +281,76 @@ def _view_arguments(arguments):
     return common
 
 
+def _selected_center_body_keys(arguments):
+    planets = tuple(
+        item for group in (getattr(arguments, "planet", None) or ())
+        for item in group
+    )
+    asteroids = tuple(getattr(arguments, "asteroid", None) or ())
+    moon = ("moon",) if getattr(arguments, "moon", False) else ()
+    return (*planets, *asteroids, *moon)
+
+
+def _implicit_regional_center(
+    arguments, values, configuration, observer, subject
+):
+    if arguments.command != "regional" or subject:
+        return {}
+    explicit_horizontal = any(
+        getattr(arguments, name) is not None
+        for name in ("center_altitude", "center_azimuth")
+    )
+    if explicit_horizontal:
+        return {}
+    keys = _selected_center_body_keys(arguments)
+    if not keys:
+        return {}
+    if len(keys) != 1:
+        raise ValueError(
+            "A regional chart with several selected objects requires an "
+            "explicit center or constellation subject."
+        )
+    key = keys[0]
+    if key in tuple(getattr(arguments, "asteroid", None) or ()):
+        directory = (
+            getattr(arguments, "minor_body_resource_directory", None)
+            or _optional(values.get("minor_body_resource_directory", "none"))
+        )
+        if directory is None:
+            raise ValueError(
+                "selected asteroids require minor_body_resource_directory."
+            )
+        from wenu.minor_body_resources import (
+            MinorBodyResourceSession,
+        )
+
+        with MinorBodyResourceSession(directory, observer) as session:
+            descriptor = session.collection.resolve(key)
+            arguments._resolved_minor_body_selections = {key: descriptor}
+            center = get_object_center(
+                descriptor,
+                observer,
+                source_resolver=session.source_binding,
+                reference_equinox=(
+                    configuration.reference_policy.resolved_equinox(observer)
+                ),
+            )
+    else:
+        from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
+
+        center = get_object_center(
+            SOLAR_SYSTEM_BODY_CATALOG.resolve(key),
+            observer,
+            reference_equinox=(
+                configuration.reference_policy.resolved_equinox(observer)
+            ),
+        )
+    return {
+        "center_altitude_deg": center.altitude_deg,
+        "center_azimuth_deg": center.azimuth_deg,
+    }
+
+
 def _stem(view):
     if view.family == "regional" and view.constellations is not None:
         return f"regional-{view.constellations.key}"
@@ -269,13 +366,18 @@ def generate(arguments):
     observer = _observer(arguments, values)
     try:
         sky = generate_celestial_sphere()
+        subject_arguments = _subject_arguments(arguments, values)
+        view_arguments = _view_arguments(arguments)
+        view_arguments.update(_implicit_regional_center(
+            arguments, values, configuration, observer, subject_arguments
+        ))
         view = get_chart_view(
             sky,
             observer,
             family=arguments.command.replace("-", "_"),
             configuration=configuration,
-            **_subject_arguments(arguments, values),
-            **_view_arguments(arguments),
+            **subject_arguments,
+            **view_arguments,
         )
         sequence_options = chart_sequence_cli_options(
             arguments,

@@ -32,6 +32,8 @@ milestone evidence are under [`archive/`](archive/README.md).
   minor-body and 50B publication-legibility programs.
 - [`numbered_asteroids_50a3d.md`](numbered_asteroids_50a3d.md) — candidate
   generic installed numbered-asteroid implementation and acceptance gates.
+- [`object_centered_regional_charts_50a3e.md`](object_centered_regional_charts_50a3e.md)
+  — candidate generic fixed- and moving-object regional-centering contract.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).

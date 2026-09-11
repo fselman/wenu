@@ -567,8 +567,14 @@ class ChartRequest:
             raise ValueError(
                 "A binocular request requires a target or coordinates."
             )
-        if family == "regional" and self.subject.is_empty:
-            raise ValueError("A regional request requires a subject.")
+        if (
+            family == "regional"
+            and self.subject.is_empty
+            and self.frame.center_altitude_deg is None
+        ):
+            raise ValueError(
+                "A regional request requires a subject or explicit center."
+            )
         if self.frame.center_altitude_deg is not None:
             if family != "regional":
                 raise ValueError("A fixed horizontal center is regional-only.")

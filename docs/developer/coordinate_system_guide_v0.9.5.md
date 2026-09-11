@@ -3027,4 +3027,13 @@ request-owned descriptor. The permanent number owns scientific and semantic
 identity. The small-body SPK still supplies target state in TDB/ICRF, DE440
 still supplies observer state and apparent correction, and every result still
 passes through the fixed chart product frame. `(79989)` numerical and visual
-acceptance remain pending before Milestone 50A.3 closes and 50A.4 begins.
+acceptance are complete and Milestone 50A.3D is closed.
+
+Candidate 50A.3E adds no new astronomical frame. A packaged or explicit ICRS
+point is transformed by the existing coordinate service into the observer's
+apparent AltAz product frame. A planet, Moon, asteroid, or later comet instead
+uses its existing descriptor-selected astrometric-to-apparent realization and
+enters that same product frame. The resulting point determines only the
+regional tangent center; projection, clipping, selection, and rendering remain
+unchanged. Constellation centering continues to derive a spherical center from
+extended authoritative region geometry rather than this point-object path.

@@ -104,6 +104,56 @@ def test_regional_accepts_a_fixed_horizontal_camera_center():
     assert arguments.center_azimuth == pytest.approx(270.0)
 
 
+def test_regional_accepts_named_and_explicit_icrs_centers():
+    named = chart.parser().parse_args([
+        "regional", "--target", "Centaurus A",
+    ])
+    coordinate = chart.parser().parse_args([
+        "regional", "--center-ra", "201.365",
+        "--center-dec", "-43.019", "--display-name", "My field",
+    ])
+
+    assert named.target == "Centaurus A"
+    assert coordinate.center_ra == pytest.approx(201.365)
+    assert coordinate.center_dec == pytest.approx(-43.019)
+    assert coordinate.display_name == "My field"
+
+
+def test_single_selected_planet_can_supply_an_implicit_regional_center(
+    monkeypatch,
+):
+    arguments = chart.parser().parse_args([
+        "regional", "--planet", "venus",
+    ])
+    center = SimpleNamespace(altitude_deg=12.5, azimuth_deg=234.0)
+    monkeypatch.setattr(
+        chart, "get_object_center", lambda *args, **kwargs: center
+    )
+    configuration = SimpleNamespace(
+        reference_policy=SimpleNamespace(
+            resolved_equinox=lambda observer: "J2000"
+        )
+    )
+
+    assert chart._implicit_regional_center(
+        arguments, {}, configuration, object(), {}
+    ) == {
+        "center_altitude_deg": 12.5,
+        "center_azimuth_deg": 234.0,
+    }
+
+
+def test_several_selected_objects_require_an_explicit_regional_center():
+    arguments = chart.parser().parse_args([
+        "regional", "--planet", "venus,mars",
+    ])
+
+    with pytest.raises(ValueError, match="several selected objects"):
+        chart._implicit_regional_center(
+            arguments, {}, object(), object(), {}
+        )
+
+
 def test_binocular_omits_the_shared_grid_default_but_keeps_opt_in():
     omitted = chart.parser().parse_args(["binocular"])
     selected = chart.parser().parse_args([

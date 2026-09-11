@@ -172,6 +172,68 @@ def test_regional_fixed_horizontal_center_does_not_follow_subject(monkeypatch):
     assert prepared.chart.resolved_orientation.source == "zenith-up"
 
 
+def test_regional_fixed_horizontal_center_needs_no_constellation(monkeypatch):
+    monkeypatch.setattr(
+        "wenu.charts.request_chart.select_spatial_chart_content",
+        lambda sky, chart, resolved, observer: resolved,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.regional.celestial_north_position_angle",
+        lambda *args, **kwargs: 0.0,
+    )
+
+    prepared = prepare_chart_request(
+        sky(),
+        resolve(request(
+            "regional",
+            frame=ChartFrameRequest(
+                center_altitude_deg=20.0,
+                center_azimuth_deg=270.0,
+                field_width_deg=60.0,
+                field_height_deg=50.0,
+                orientation="zenith-up",
+            ),
+        )),
+    )
+
+    assert prepared.chart.center_alt_deg == pytest.approx(20.0)
+    assert prepared.chart.center_az_deg == pytest.approx(270.0)
+
+
+def test_regional_named_target_uses_generic_object_center(monkeypatch):
+    center = SimpleNamespace(altitude_deg=25.0, azimuth_deg=120.0)
+    calls = []
+    monkeypatch.setattr(
+        "wenu.charts.object_center.get_object_center",
+        lambda target, observer: calls.append(target) or center,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_chart.select_spatial_chart_content",
+        lambda sky, chart, resolved, observer: resolved,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.regional.celestial_north_position_angle",
+        lambda *args, **kwargs: 0.0,
+    )
+
+    prepared = prepare_chart_request(
+        sky(),
+        resolve(request(
+            "regional",
+            subject=ChartSubjectRequest(target="Centaurus A"),
+            frame=ChartFrameRequest(
+                field_width_deg=20.0,
+                field_height_deg=15.0,
+                orientation="celestial-north-up",
+            ),
+        )),
+    )
+
+    assert calls[0].key == "centaurus-a"
+    assert prepared.chart.center_alt_deg == pytest.approx(25.0)
+    assert prepared.chart.center_az_deg == pytest.approx(120.0)
+
+
 def test_circumpolar_construction_uses_declination_boundary():
     prepared = prepare_chart_request(
         sky(),

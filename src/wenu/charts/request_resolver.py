@@ -19,6 +19,7 @@ from .view_defaults import chart_view_defaults
 
 SUPPORTED_TARGET_FAMILIES = frozenset(
     {
+        "stars",
         "nonstellar_objects",
         "galaxies",
         "open_clusters",

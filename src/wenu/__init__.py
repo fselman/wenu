@@ -77,6 +77,7 @@ from .charts.target_resolver import (
     resolve_target,
     target_catalogue_path,
 )
+from .charts.object_center import ObjectCenter, get_object_center
 from .charts.constellation_resolver import (
     IAU_CONSTELLATIONS,
     ConstellationResolutionError,
@@ -500,6 +501,8 @@ __all__ = [
     "load_target_catalogue",
     "resolve_target",
     "target_catalogue_path",
+    "ObjectCenter",
+    "get_object_center",
     "IAU_CONSTELLATIONS",
     "ConstellationResolutionError",
     "ResolvedConstellationSubject",

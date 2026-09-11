@@ -456,6 +456,16 @@ not empty successful charts.
 publication form. These preserve compatibility builders and titles without
 duplicating coordinates or catalogue spelling in example scripts.
 
+`charts/object_center.py::get_object_center()` is the typed point-subject
+centering boundary. Its `ResolvedTarget` overload transforms fixed packaged or
+explicit ICRS coordinates through `CoordinateService`; its
+`SolarSystemBodyDescriptor` overload realizes the shared symbolic point with
+the accepted astrometric-to-apparent provider chain. Both return one immutable
+`ObjectCenter` in the observer-horizontal product frame with identity and
+provenance. The resolver knows no projection, viewport, style, renderer, or
+exporter. Regional requests may use that center without a constellation;
+constellation sets retain their separate geometry-derived framing contract.
+
 `resolve_constellation_subject(ChartSubjectRequest(...))` accepts either an
 ordered IAU abbreviation set or a packaged teaching-group alias. Its
 `ResolvedConstellationSubject` keeps public region identities separate from

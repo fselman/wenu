@@ -34,18 +34,21 @@ def _target_coordinate(target):
 
 def _regional_chart(sky, resolved, observer):
     subject = resolved.constellations
+    target = resolved.target
     frame = resolved.frame
-    if subject is None:
-        raise ValueError("A regional chart requires resolved constellations.")
     options = {
         "orientation": frame.orientation,
         "position_angle_deg": frame.position_angle_deg,
-        "label_selection": subject.label_constellations,
+        "label_selection": (
+            None if subject is None else subject.label_constellations
+        ),
         "outside_mask_constellations": (
             subject.boundary_constellations
-            if resolved.request.mask else None
+            if resolved.request.mask and subject is not None else None
         ),
-        "framing_constellations": subject.boundary_constellations,
+        "framing_constellations": (
+            None if subject is None else subject.boundary_constellations
+        ),
     }
     if frame.center_altitude_deg is not None:
         from .regional import resolve_chart_orientation
@@ -68,11 +71,37 @@ def _regional_chart(sky, resolved, observer):
             field_height_deg=frame.field_height_deg,
             position_angle_deg=resolved_orientation.position_angle_deg,
             resolved_orientation=resolved_orientation,
-            label_selection=subject.label_constellations,
+            label_selection=(
+                None if subject is None else subject.label_constellations
+            ),
             outside_mask_constellations=(
                 subject.boundary_constellations
-                if resolved.request.mask else None
+                if resolved.request.mask and subject is not None else None
             ),
+        )
+    if target is not None:
+        from .object_center import get_object_center
+        from .regional import resolve_chart_orientation
+
+        center = get_object_center(target, observer)
+        resolved_orientation = resolve_chart_orientation(
+            observer,
+            center_alt_deg=center.altitude_deg,
+            center_az_deg=center.azimuth_deg,
+            orientation=frame.orientation,
+            position_angle_deg=frame.position_angle_deg,
+        )
+        return RegionalChart(
+            center_alt_deg=center.altitude_deg,
+            center_az_deg=center.azimuth_deg,
+            field_width_deg=frame.field_width_deg,
+            field_height_deg=frame.field_height_deg,
+            position_angle_deg=resolved_orientation.position_angle_deg,
+            resolved_orientation=resolved_orientation,
+        )
+    if subject is None:
+        raise ValueError(
+            "A regional chart requires a constellation, target, or center."
         )
     if frame.field_width_deg is None:
         return RegionalChart.from_constellations(

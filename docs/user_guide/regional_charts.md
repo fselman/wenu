@@ -74,6 +74,29 @@ require both field dimensions. `--orientation celestial-north-up` and
 angle and has no hidden meaning. Named orientation and literal position angle
 are mutually exclusive.
 
+A regional field may instead be centered on any packaged target, including a
+star, cluster, nebula, or galaxy, or on an explicit ICRS coordinate:
+
+```bash
+wenu_chart regional --target "Sirius" \
+  --field-width 20 --field-height 15 \
+  --constellation-lines --constellation-labels \
+  --output output/sirius-field.png
+
+wenu_chart regional --center-ra 201.365 --center-dec -43.019 \
+  --display-name "My field" \
+  --field-width 20 --field-height 15 \
+  --output output/coordinate-field.png
+```
+
+When there is no explicit target, coordinate, or constellation subject, one
+selected planet, Moon, or installed asteroid supplies the apparent center at
+`--observer-time`. The same selected object is drawn through the ordinary
+content path. Several selected moving objects require an explicit center or
+constellation because no implicit choice is scientifically distinguished.
+For an observer-time sequence this center remains fixed at the first chart
+epoch; Wenu does not silently introduce a moving camera.
+
 Wenu also resolves the pointwise parallactic angle and the tangent directions
 of celestial north and the local vertical at the chart centre. This milestone
 retains that backend-neutral geometry for later furniture; it draws no
