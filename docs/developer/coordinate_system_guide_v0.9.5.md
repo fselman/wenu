@@ -2952,3 +2952,37 @@ versus-geocentre parallax values remain the independent oracle. Fernando
 accepted the calibrated envelope and hybrid ownership on 2026-09-11. No
 minor-body point, track, magnitude, CLI selector, or rendered symbol exists
 yet; 50A.3 is next.
+
+<a id="50a3a-first-drawable-asteroid-audit"></a>
+
+## 13.2.39 50A.3A first drawable asteroid audit
+
+**Status:** Accepted by Fernando on 2026-09-11; no runtime or visible behavior.
+
+The first drawable asteroid proposal chooses `(1) Ceres` and preserves the
+accepted coordinate chain. Its point uses the chart observation epoch; its
+optional dated track uses explicit sample epochs transformed into the chart's
+single fixed product frame. Both would reuse the existing apparent-direction,
+spherical-geometry, projection, preparation, and output route.
+
+The proposed provider binding is descriptor-aware rather than asteroid-aware:
+planet descriptors keep the Skyfield state source, while Ceres receives the
+accepted CSPICE-type-21 minor-body source plus the observer's DE440 dependency.
+The resource must be an explicit local directory containing a matching
+acquisition manifest and SPK. Missing identity or coverage fails closed; chart
+generation performs no network access.
+
+The proposed point is a fixed-size hollow diamond labeled `(1) Ceres`, with
+semantic path `sky/solar_system/minor_bodies/asteroids/ceres`. It carries no
+angular-size or brightness meaning. Photometry, limiting-magnitude culling,
+physical appearance, uncertainty, and occultations remain later scientific
+work. The proposal also preserves a future collection-of-trajectories seam
+for observation-footprint planning. Asteroids and artificial satellites may
+share downstream clipping, projection, and output only after their different
+physics have produced explicit observed directions: SPK/TDB and minor-body
+light time remain distinct from OMM/TLE, SGP4/TEME, Earth orientation, and
+topocentric satellite evaluation. A future Paranal instrument planner may
+then intersect time-bounded trajectories with a WCS/mosaic footprint and rank
+exposure windows, but its result is a provenance- and freshness-qualified risk
+estimate rather than a guarantee that no satellite trail will occur.
+Fernando's acceptance authorizes only the bounded 50A.3B implementation.

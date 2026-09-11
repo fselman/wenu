@@ -132,6 +132,11 @@ ASTEROID_NUMERICAL_VALIDATION = (
     DEVELOPER
     / "archive/milestone_history/50a_minor_bodies/asteroid_numerical_validation_50a2.md"
 )
+FIRST_DRAWABLE_ASTEROID_AUDIT = (
+    DEVELOPER
+    / "archive/milestone_history/50a_minor_bodies"
+    / "first_drawable_asteroid_audit_50a3a.md"
+)
 TEST_PRACTICE_AUDIT = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md"
@@ -3899,6 +3904,55 @@ def test_50a2_validates_type_21_ceres_and_apophis_without_a_body():
     assert '"--planetary-ephemeris-path"' in validator
     assert "DEFAULT_DATA_DIRECTORY / DEFAULT_EPHEMERIS" in validator
     assert "defaults to `~/.cache/wenu/de440s.bsp`" in record
+
+
+def test_50a3a_audits_one_manifest_backed_drawable_ceres_route():
+    audit = " ".join(read(FIRST_DRAWABLE_ASTEROID_AUDIT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    program = " ".join(read(TEST_PERFORMANCE_PROGRAM).split())
+
+    for phrase in (
+        "First drawable asteroid audit (Milestone 50A.3A)",
+        "Accepted by Fernando on 2026-09-11",
+        "Use **(1) Ceres**",
+        "Apophis remains a numerical parallax oracle",
+        "descriptor-aware source binding",
+        "must not branch on `asteroid`",
+        "sky/solar_system/minor_bodies/asteroids/ceres",
+        "--minor-body-resource-directory PATH",
+        "acquisition-report.json",
+        "must not reopen the SPK per epoch",
+        "--asteroid ceres",
+        "--asteroid-track ceres",
+        "small hollow diamond",
+        "No magnitude field is admitted in 50A.3B",
+        "Do not repeat 50A.2 CSPICE interpolation",
+        "no user-guide or example edit is required yet",
+        "No diagram edit is required by this audit",
+        "Future field-planning compatibility",
+        "OmegaCAM/Paranal use case",
+        "current OMM or legacy TLE",
+        "SGP4 evaluation in TEME",
+        "must not be forced through the minor-body SPK/TDB/light-time provider",
+        "collection of one or more targets and many sample instants",
+        "result will be a risk estimate, not a guarantee of a clean exposure",
+    ):
+        assert phrase in audit
+
+    assert "50A.3A is accepted and archived" in roadmap
+    assert "is the accepted contract" in implementation
+    assert "50A.3A first-drawable-asteroid audit ownership" in source_tree
+    assert "Follow the accepted 50A.3A audit" in instructions
+    assert "13.2.39 50A.3A first drawable asteroid audit" in guide
+    assert "future collection-of-trajectories seam" in guide
+    assert "WCS/mosaic footprint" in guide
+    assert "50A.3A accepted by Fernando" in program
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

@@ -30,9 +30,8 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`test_performance_and_future_program_49j_50.md`](test_performance_and_future_program_49j_50.md)
   — accepted 49J test/performance program and the current ordered 50A
   minor-body and 50B publication-legibility programs.
-The accepted 50A.0 through 50A.2 records are archived under
+The accepted 50A.0 through 50A.3A records are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).
-Milestone 50A.3 first-drawable-asteroid work is next.
 The accepted 49J.0 through 49J.6 records, including the final closure, are
 archived under
 [`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/).
