@@ -87,6 +87,7 @@ def test_factory_registers_complete_content_without_chart_decisions(
         "add_solar_system_body",
         "add_solar_system_body",
         "add_solar_system_body",
+        "add_solar_system_body",
         "add_moon",
         "add_milky_way_isophotes",
         "add_magellanic_cloud_isophotes",
@@ -105,7 +106,10 @@ def test_factory_registers_complete_content_without_chart_decisions(
         args[0].selection_key
         for name, args, _ in calls
         if name == "add_solar_system_body"
-    ) == ("mercury", "mars", "jupiter", "saturn", "uranus", "neptune")
+    ) == (
+        "mercury", "mars", "jupiter", "saturn", "uranus", "neptune",
+        "ceres",
+    )
     assert not any("grid" in name for name, _, _ in calls)
     assert all(
         key not in kwargs
@@ -154,11 +158,14 @@ def test_ordinary_factory_loads_canonical_layers_without_an_observer():
 
     assert sphere.observer is None
     assert sphere.load_profile is CANONICAL_MAXIMAL_SPHERE_PROFILE
-    assert len(sphere.layers) == 21
+    assert len(sphere.layers) == 22
     assert sphere.venus in sphere.layers
     assert all(
         getattr(sphere, key) in sphere.layers
-        for key in ("mercury", "mars", "jupiter", "saturn", "uranus", "neptune")
+        for key in (
+            "mercury", "mars", "jupiter", "saturn", "uranus", "neptune",
+            "ceres",
+        )
     )
     assert sphere.moon in sphere.layers
     assert all(

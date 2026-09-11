@@ -318,13 +318,17 @@ def test_generation_owns_and_closes_its_observer(monkeypatch, tmp_path):
         lambda actual, value: events.append("disks"),
     )
     monkeypatch.setattr(
+        "wenu.charts.request_tracks.configure_chart_request_track",
+        lambda actual, value, *, source_resolver: events.append("track"),
+    )
+    monkeypatch.setattr(
         "wenu.charts.request_generation.export_prepared_chart",
         lambda actual, value: events.append("export") or generation,
     )
 
     assert generate_chart_request(request) is generation
     assert events == [
-        "build", "resolve", "grids", "horizon", "disks", "prepare", "export",
+        "build", "resolve", "grids", "horizon", "disks", "track", "prepare", "export",
         "close",
     ]
 
@@ -396,6 +400,10 @@ def test_public_build_boundary_prepares_without_exporting(
         lambda actual, value: events.append("disks"),
     )
     monkeypatch.setattr(
+        "wenu.charts.request_tracks.configure_chart_request_track",
+        lambda actual, value, *, source_resolver: events.append("track"),
+    )
+    monkeypatch.setattr(
         "wenu.charts.request_generation.prepare_chart_request",
         lambda actual, value: events.append("prepare") or prepared,
     )
@@ -409,7 +417,9 @@ def test_public_build_boundary_prepares_without_exporting(
     assert build.sky is sky
     assert build.prepared is prepared
     assert build.owns_observer is True
-    assert events == ["build", "resolve", "grids", "horizon", "disks", "prepare"]
+    assert events == [
+        "build", "resolve", "grids", "horizon", "disks", "track", "prepare",
+    ]
     build.close()
 
 
@@ -478,6 +488,10 @@ def test_generation_reuses_a_compatible_supplied_sphere(
         lambda actual, value: events.append((actual, value)),
     )
     monkeypatch.setattr(
+        "wenu.charts.request_tracks.configure_chart_request_track",
+        lambda actual, value, *, source_resolver: events.append((actual, value)),
+    )
+    monkeypatch.setattr(
         "wenu.charts.request_generation.export_prepared_chart",
         lambda actual, value: events.append((actual, value)) or generation,
     )
@@ -485,6 +499,7 @@ def test_generation_reuses_a_compatible_supplied_sphere(
     assert generate_chart_request(request, sky=sky) is generation
     assert events == [
         (request, CANONICAL_MAXIMAL_SPHERE_PROFILE),
+        (sky, request),
         (sky, request),
         (sky, request),
         (sky, request),
@@ -534,6 +549,10 @@ def test_generation_reuses_an_observer_independent_sphere_explicitly(
     monkeypatch.setattr(
         "wenu.charts.request_generation.configure_chart_request_disks",
         lambda actual, value: None,
+    )
+    monkeypatch.setattr(
+        "wenu.charts.request_tracks.configure_chart_request_track",
+        lambda actual, value, *, source_resolver: None,
     )
     monkeypatch.setattr(
         "wenu.charts.request_generation.prepare_chart_request",
