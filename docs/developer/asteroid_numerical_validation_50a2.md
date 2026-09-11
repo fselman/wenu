@@ -109,11 +109,17 @@ Wenu's installed DE440/Skyfield realization. It is not SPK interpolation
 precision and must not be generalized silently to another solution, resource,
 site, or time interval.
 
-## 5. Preliminary installed-resource evidence
+## 5. Installed-resource evidence
 
-The 2026-09-11 Linux development run used DE440s digest
+Fernando repeated the acquisition and validation on 2026-09-11 under
+macOS-10.16-x86_64-i386-64bit and Python 3.11.7, using SpiceyPy 6.0.3,
+CSPICE N0067, and DE440s digest
 `c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`.
-All seven epochs passed:
+The acquired Ceres SPK digest was
+`aae80e3c547a419d589eca17a49348c599a883ef41b0d36c6609fa4a489be353`;
+the Apophis SPK digest was
+`d9cdb50eaa5af02e83babefbc0e37cab35f69fa288250b9dbf28bccf9a8bc9e7`.
+Both matched their acquisition report. All seven epochs passed:
 
 | Maximum absolute residual | Ceres | Apophis |
 | --- | ---: | ---: |
@@ -131,9 +137,17 @@ Ceres' topocentric/geocentric apparent parallax spans 0.000497–0.000674
 degrees. Apophis' grows through 0.171625, 0.228366, 0.342703, and 0.695321
 degrees, providing the required material site-dependent evidence.
 
-These are candidate acceptance results until Fernando repeats the acquisition
-and validator on macOS, reviews the tolerances and physical interpretation,
-and accepts the slice.
+ERFA emitted its expected `dubious year` warnings while converting the future
+2029 Apophis epochs because the installed leap-second table cannot certify
+future UTC. The comparison nevertheless used the same explicit epochs and
+completed successfully; the warnings are retained as an environmental limit,
+not suppressed or presented as present-day UTC certification.
+
+The focused provider, direction, CSPICE, and documentation gate passed 161
+tests in 3.67 seconds. The complete non-overlapping suite passed all 2,170
+tests in 84.28 seconds. These remain candidate acceptance results until
+Fernando reviews the tolerances and physical interpretation and explicitly
+accepts the slice.
 
 ## 6. Test and documentation ownership
 
