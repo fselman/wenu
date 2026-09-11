@@ -63,6 +63,7 @@ def test_request_registration_replaces_prior_track_and_can_remove_it():
 
 def test_coincident_selected_point_replaces_only_the_track_start_label():
     sky = CelestialSphere(None)
+    sky.add_solar_system_body(CERES_BODY)
     ceres_track = SolarSystemTrackRequest(
         descriptor=CERES_BODY,
         start_instant="2026-08-30T00:00:00Z",
@@ -88,5 +89,7 @@ def test_coincident_selected_point_replaces_only_the_track_start_label():
 
     layer = configure_chart_request_track(sky, chart_request)
 
-    assert layer.label_start is False
+    assert layer.label_start is True
+    assert layer.start_label_text == "Ceres (1)"
     assert layer.label_ticks is True
+    assert sky.solar_system_bodies["ceres"].request_draw_label is False

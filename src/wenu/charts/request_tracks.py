@@ -16,6 +16,8 @@ def _selected_point_replaces_start_label(request):
 
 def configure_chart_request_track(sky, request, *, source_resolver=None):
     """Replace any prior request track with the request's selected track."""
+    for point in getattr(sky, "solar_system_bodies", {}).values():
+        point.request_draw_label = True
     for layer in tuple(sky.layers):
         if getattr(layer, "layer_name", None) == "solar_system_track":
             sky.remove(layer)
@@ -28,10 +30,25 @@ def configure_chart_request_track(sky, request, *, source_resolver=None):
         options["realizer"] = SolarSystemTrackRealizer(
             source_resolver=source_resolver
         )
+    replaces_start = _selected_point_replaces_start_label(request)
+    descriptor = request.solar_system_track.descriptor
+    if replaces_start:
+        point = getattr(sky, "solar_system_bodies", {}).get(
+            descriptor.selection_key
+        )
+        if point is not None:
+            point.request_draw_label = False
+    start_label_text = None
+    if replaces_start:
+        start_label_text = descriptor.display_name
+        number = getattr(descriptor, "iau_number", None)
+        if number is not None:
+            start_label_text += f" ({number})"
     layer = SolarSystemTrackLayer(
         request.solar_system_track,
         label_ticks=request.solar_system_track_tick_labels,
-        label_start=not _selected_point_replaces_start_label(request),
+        label_start=True,
+        start_label_text=start_label_text,
         **options,
     )
     sky.add(layer)

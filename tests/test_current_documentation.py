@@ -3993,6 +3993,8 @@ def test_50a3b_connects_only_manifest_backed_ceres_through_shared_routes():
         "do not repeat 50A.2 CSPICE interpolation",
         "rejected the duplicated Ceres/start-date labels",
         "same body and instant as the track start",
+        "single visible label `Ceres (1)` without a date",
+        "opposite the initial projected direction of motion",
         "planetary cream `#FFE6A3`",
         "remains open",
     ):

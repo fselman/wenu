@@ -107,8 +107,10 @@ in `docs/developer/`.
 Fernando's first macOS product review found the scientific track and semantic
 SVG satisfactory but rejected the duplicated Ceres/start-date labels and the
 low-contrast asteroid point label. When a selected point has the same body and
-instant as the track start, the point's hollow diamond and `(1) Ceres` label
-now identify that start and the redundant automatic start label is omitted;
-later dated ticks are unchanged. Atlas presentation uses the accepted
-planetary cream `#FFE6A3` for the asteroid symbol and label. Final visual
-acceptance remains pending a regenerated PNG and SVG.
+instant as the track start, its hollow diamond supplies the symbol, the point's
+ordinary label is suppressed, and the track start receives the single visible
+label `Ceres (1)` without a date. That label is placed opposite the initial
+projected direction of motion; later dated ticks are unchanged. `(1) Ceres`
+remains the canonical internal designation. Atlas presentation uses the
+accepted planetary cream `#FFE6A3` for the asteroid symbol and name. Final
+visual acceptance remains pending a regenerated PNG and SVG.

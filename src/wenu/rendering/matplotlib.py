@@ -359,6 +359,7 @@ class MatplotlibRenderer:
         polygon_marker_style=None,
         compound_by=None,
         component_styles=None,
+        component_label_styles=None,
         point_overlays=None,
         draw_markers=True,
         draw_labels=False,
@@ -440,6 +441,7 @@ class MatplotlibRenderer:
                 common,
                 styles=styles,
                 component_styles=component_styles,
+                component_label_styles=component_label_styles,
                 draw_labels=draw_labels,
                 label_style=labels,
                 label_offset=label_offset,
@@ -696,6 +698,7 @@ class MatplotlibRenderer:
         *,
         styles,
         component_styles,
+        component_label_styles,
         draw_labels,
         label_style,
         label_offset,
@@ -704,6 +707,10 @@ class MatplotlibRenderer:
     ):
         component_styles = (
             {} if component_styles is None else component_styles
+        )
+        component_label_styles = (
+            {} if component_label_styles is None
+            else component_label_styles
         )
         per_component_styles = (
             {} if styles is None else styles
@@ -748,7 +755,10 @@ class MatplotlibRenderer:
                     )
                     if anchor is None:
                         continue
-                    label_style_for_curve = label_style
+                    label_style_for_curve = {
+                        **label_style,
+                        **dict(component_label_styles.get(name, {})),
+                    }
                     if isinstance(anchor, CurveLabelPlacement):
                         position = (anchor.x, anchor.y)
                         label_style_for_curve = dict(label_style)

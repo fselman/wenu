@@ -304,7 +304,10 @@ class PublicationStyle:
                         "alpha": getattr(self, f"{prefix}_alpha"),
                         "zorder": layers.POINTS,
                     },
-                    "draw_labels": getattr(self, f"{prefix}_draw_label"),
+                    "draw_labels": (
+                        getattr(self, f"{prefix}_draw_label")
+                        and getattr(body_layer, "request_draw_label", True)
+                    ),
                     "label_style": {
                         "color": getattr(self, f"{prefix}_color"),
                         "fontsize": getattr(self, f"{prefix}_label_fontsize"),
