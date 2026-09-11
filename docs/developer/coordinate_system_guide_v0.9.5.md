@@ -97,6 +97,8 @@
     - [13.2.36 49I.3E resolved Moon closure](#49i3e-resolved-moon-closure)
     - [13.2.37 50A.0 minor-body scientific and provider audit](#50a0-minor-body-provider-audit)
     - [13.2.38 50A.1 generic minor-body state provider](#50a1-minor-body-state-provider)
+    - [13.2.39 50A.3A first drawable asteroid audit](#50a3a-first-drawable-asteroid-audit)
+    - [13.2.40 50A.3B drawable Ceres point and track](#50a3b-drawable-ceres)
 
 <a id="status-and-purpose"></a>
 
@@ -2986,3 +2988,35 @@ then intersect time-bounded trajectories with a WCS/mosaic footprint and rank
 exposure windows, but its result is a provenance- and freshness-qualified risk
 estimate rather than a guarantee that no satellite trail will occur.
 Fernando's acceptance authorizes only the bounded 50A.3B implementation.
+
+<a id="50a3b-drawable-ceres"></a>
+
+## 13.2.40 50A.3B drawable Ceres point and track
+
+**Status:** Accepted by Fernando on 2026-09-11.
+
+The opt-in Ceres point and dated track use one descriptor-aware source
+binding. The target state comes from the explicitly selected Horizons
+small-body SPK. Observer position and velocity, one-way light-time iteration,
+and Skyfield apparent-place correction retain the chart observer's declared
+DE440 resource. This is a source-role split, not a second coordinate pipeline:
+both results continue through the existing spherical direction, fixed chart
+frame, projection, clipping, preparation, semantic, rendering, and export
+owners.
+
+The point epoch is the chart observation time. Track samples have explicit
+epochs but are all expressed in the chart's single fixed product frame, so the
+curve is an observed dated trajectory and not a sequence of rotating chart
+frames. The hollow diamond and `(1) Ceres` label are symbolic only; no
+brightness, magnitude limit, angular diameter, or uncertainty is encoded.
+
+Rendering is offline and fail-closed. The caller must select a local directory
+whose acquisition manifest identifies the expected Ceres solution, target,
+digest, and SPK segment. A chart build opens that kernel at most once, reuses
+it across point and track samples, and closes it once. Missing identity,
+coverage, or compatible planetary resources cannot trigger a download,
+two-body extrapolation, or silent substitution.
+
+Fernando accepted the final macOS PNG and semantic SVG after the start label
+was reduced to one cream `Ceres (1)` label placed opposite the initial
+projected motion. Milestone 50A.3 is closed; 50A.4 is next.

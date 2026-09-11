@@ -23,6 +23,8 @@ from wenu import (
 )
 from wenu.observer import Observer
 from wenu.charts.drawing import _merge_sky_content
+from wenu.sky.ceres import CERES_BODY
+from wenu.sky.solar_system_tracks import SolarSystemTrackRequest
 
 
 def observer():
@@ -38,6 +40,43 @@ def product():
         style="atlas",
         mode="presentation",
     )
+
+
+def ceres_track():
+    return SolarSystemTrackRequest(
+        descriptor=CERES_BODY,
+        start_instant="2026-01-15T00:00:00Z",
+        start_time_scale="utc",
+        sample_step_days=1.0,
+        tick_step_days=7.0,
+        tick_count=4,
+    )
+
+
+def test_minor_body_selection_requires_an_explicit_resource_directory():
+    with pytest.raises(ValueError, match="minor_body_resource_directory"):
+        ChartRequest(
+            observer=observer(), family="regional", product=product(),
+            subject=ChartSubjectRequest(constellations=("TAU",)),
+            content=SkyContentSelection(solar_system_objects={"ceres"}),
+        )
+    with pytest.raises(ValueError, match="minor_body_resource_directory"):
+        ChartRequest(
+            observer=observer(), family="regional", product=product(),
+            subject=ChartSubjectRequest(constellations=("TAU",)),
+            solar_system_track=ceres_track(),
+        )
+
+    request = ChartRequest(
+        observer=observer(), family="regional", product=product(),
+        subject=ChartSubjectRequest(constellations=("TAU",)),
+        content=SkyContentSelection(solar_system_objects={"ceres"}),
+        solar_system_track=ceres_track(),
+        minor_body_resource_directory="~/wenu-minor-bodies",
+    )
+    assert request.minor_body_resource_directory == Path(
+        "~/wenu-minor-bodies"
+    ).expanduser()
 
 
 def test_content_overlay_preserves_resolved_milky_way_defaults():

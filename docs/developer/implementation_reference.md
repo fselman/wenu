@@ -2243,3 +2243,25 @@ Skyfield source and the Ceres descriptor receives the accepted minor-body
 source. It proposes an explicit manifest-backed resource directory and reuse
 of the existing point, fixed-frame track, projection, preparation, semantic,
 renderer, and export paths. The audit adds no current API or behavior.
+
+### Drawable Ceres resource binding (Milestone 50A.3B accepted)
+
+`sky/ceres.py` defines `CERES_BODY` and its accepted Horizons solution
+identity. `minor_body_resources.py` defines `MinorBodyResourceSession`, which
+requires an explicit manifest-backed directory, validates the Ceres file and
+type-21 segment identity, caches one opened kernel for the chart build, and
+closes it once. `request_minor_body_descriptors()` discovers selected
+minor-body descriptors without changing the catalog into a closed Ceres enum.
+
+`EphemerisSourceBinding(target_source, observer_source)` is the generic point
+and track seam. Planetary descriptors bind both roles to the existing
+Skyfield source. Ceres binds `SkyfieldMinorBodyStateSource` only as the target
+source and retains the observer's DE440 `SkyfieldEphemerisStateSource` for
+observer state and apparent-place correction. `ChartRequest` carries the
+optional `minor_body_resource_directory`; request-build and direct-drawing
+owners bind and restore the resolver and close the resource session. The CLI
+selectors are `--asteroid ceres` and `--asteroid-track ceres`. Rendering never
+downloads or silently substitutes a propagator.
+
+The accepted contract is
+`archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md`.

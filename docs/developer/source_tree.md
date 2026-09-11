@@ -1391,3 +1391,23 @@ owns deterministic contract coverage;
   and artificial-satellite OMM/TLE plus SGP4/TEME physics separate;
 - current user documents, examples, and diagrams remain unchanged until an
   accepted implementation creates visible behavior.
+
+## 50A.3B drawable-Ceres ownership (accepted)
+
+- `sky/ceres.py` owns the Ceres descriptor and accepted Horizons solution
+  identity;
+- `minor_body_resources.py` owns explicit acquisition-manifest validation,
+  descriptor-to-provider binding, one-open-kernel-per-build reuse, and
+  deterministic close behavior;
+- `sky/solar_system_points.py` and `sky/solar_system_tracks.py` own the generic
+  target-source versus observer-source binding used by both planets and Ceres;
+- chart arguments, requests, request generation, and drawing own opt-in
+  selectors, resource-directory transport, and request-scoped lifecycle;
+- the existing projection, preparation, renderer, exporter, and fixed-frame
+  track owners remain unchanged;
+- `tests/test_minor_body_resources.py` is a justified new test file because
+  manifest failure and opened-kernel lifecycle are a new durable boundary; it
+  does not repeat the 50A.2 numerical SPK or apparent-place oracles;
+- `archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md` is the accepted implementation record,
+  and `diagrams/drawable_ceres_50a3b.{dot,svg}` depicts the focused ownership
+  boundary.

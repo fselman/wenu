@@ -2,6 +2,7 @@
 
 from wenu.sky.solar_system_bodies import SolarSystemBodyCatalog
 from wenu.sky.earth import EARTH_BODY
+from wenu.sky.ceres import CERES_BODY
 from wenu.sky.mercury import MERCURY_BODY
 from wenu.sky.major_planets import APPARENT_MAJOR_PLANETS
 from wenu.sky.moon import MOON_BODY
@@ -14,4 +15,5 @@ SOLAR_SYSTEM_BODY_CATALOG = SolarSystemBodyCatalog((
     VENUS_POINT,
     MERCURY_BODY,
     *APPARENT_MAJOR_PLANETS,
+    CERES_BODY,
 ))

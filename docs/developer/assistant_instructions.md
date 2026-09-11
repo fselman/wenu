@@ -546,6 +546,13 @@ begin with Ceres,
 require an explicit local manifest-backed resource directory, reuse the shared
 point and track machinery through descriptor-aware provider resolution, and
 make no photometric or implicit-network claim.
+The bounded implementation is accepted and archived in
+`archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md`. Preserve
+the target-source versus observer-source split: the minor-body SPK supplies
+Ceres, while DE440/Skyfield continues to supply observer state and apparent
+correction. Do not add implicit acquisition, a fallback propagator, magnitude
+semantics, discovery, or a second projection/render/export path. Milestone
+50A.3 is closed; 50A.4 comet numerical validation is next.
 
 For 50B publication-style work, complete the print, typography, contrast,
 accessibility, cartographic, and astronomical-atlas practice review plus

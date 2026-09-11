@@ -16,7 +16,10 @@ from wenu.coordinates import (
 from wenu.ephemeris import EphemerisResourceIdentity, EphemerisState
 from wenu.geometry.spherical import SphericalCurves, SphericalPoints
 from wenu.sky.realization import LayerRealizationContext
-from wenu.sky.solar_system_points import SolarSystemPointDescriptor
+from wenu.sky.solar_system_points import (
+    EphemerisSourceBinding,
+    SolarSystemPointDescriptor,
+)
 from wenu.sky.solar_system_tracks import (
     SolarSystemTrackRealizer,
     SolarSystemTrackRequest,
@@ -289,6 +292,33 @@ def test_realizer_uses_one_source_and_reevaluates_observer_for_each_sample():
             result.sample_instants,
         )
     )
+
+
+def test_realizer_keeps_target_and_observer_source_roles_distinct():
+    target_source = TrackSource()
+    observer_source = SimpleNamespace(resource=RESOURCE)
+    observer_sources = []
+
+    def state_factory(sample, *, source):
+        observer_sources.append(source)
+        return observer_state(sample, source=source)
+
+    SolarSystemTrackRealizer(
+        source_resolver=lambda descriptor, observer: EphemerisSourceBinding(
+            target_source=target_source,
+            observer_source=observer_source,
+        ),
+        sample_observer_factory=sample_observer,
+        observer_state_factory=state_factory,
+        apparent_realizer=ApparentRealizer(),
+    ).curve(
+        request(sample_step_days=0.75, tick_step_days=0.75, tick_count=2),
+        context=CONTEXT,
+        observer="base observer",
+    )
+
+    assert len(target_source.requests) == 6
+    assert observer_sources == [observer_source] * 3
 
 
 def test_realizer_requires_typed_context_with_observation():

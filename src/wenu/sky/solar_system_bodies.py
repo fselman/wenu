@@ -40,6 +40,9 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
     observed_disk_sequence_chart_families: frozenset[str] | None = None
     localized_display_names: tuple[tuple[str, str], ...] = ()
     astronomical_symbol: str | None = None
+    canonical_designation: str | None = None
+    iau_number: int | None = None
+    ephemeris_source_key: str = "skyfield"
 
     def __post_init__(self):
         super().__post_init__()
@@ -51,6 +54,8 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
             "parent_body_key",
             "radius_model",
             "astronomical_symbol",
+            "canonical_designation",
+            "ephemeris_source_key",
         ):
             object.__setattr__(
                 self, name, _optional_text(getattr(self, name), name=name)
@@ -147,6 +152,13 @@ class SolarSystemBodyDescriptor(SolarSystemPointDescriptor):
                 "physical_radius_km and radius_model must be supplied together."
             )
         object.__setattr__(self, "physical_radius_km", radius)
+        if self.iau_number is not None:
+            if isinstance(self.iau_number, bool) or not isinstance(
+                self.iau_number, int
+            ):
+                raise TypeError("iau_number must be an integer or None.")
+            if self.iau_number <= 0:
+                raise ValueError("iau_number must be positive.")
 
     def supports(self, capability):
         return capability in self.capabilities

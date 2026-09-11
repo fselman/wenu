@@ -10,6 +10,7 @@ from wenu.geometry.spherical import SphericalPoints
 from wenu.sky.realization import LayerRealizationContext
 from wenu.sky.solar_system_bodies import SolarSystemBodyDescriptor
 from wenu.sky.solar_system_points import (
+    EphemerisSourceBinding,
     SolarSystemPointDescriptor,
     SolarSystemPointLayer,
 )
@@ -184,3 +185,61 @@ def test_shared_layer_validates_selection_context_and_geometry_options():
         layer.realize(context(), object(), selected={"venus"})
     with pytest.raises(TypeError, match="accepts no geometry options"):
         layer.realize(context(), object(), unexpected=True)
+
+
+def test_shared_layer_accepts_distinct_target_and_observer_sources():
+    descriptor = SolarSystemBodyDescriptor(
+        target="ceres",
+        entity_key="ceres",
+        display_name="Ceres",
+        selection_key="ceres",
+        canonical_designation="(1) Ceres",
+    )
+    target_source = SimpleNamespace(
+        resource=SimpleNamespace(primary=SimpleNamespace(sha256="c" * 64))
+    )
+    observer_source = SimpleNamespace(resource=object())
+    astrometric = object()
+    apparent = SimpleNamespace(
+        geometry=SphericalPoints(
+            np.asarray((10.0,)),
+            np.asarray((20.0,)),
+            coordinate_spec=CoordinateSpec(
+                frame="icrs", origin="observer",
+                position_status=PositionStatus.APPARENT,
+            ),
+        )
+    )
+
+    class Astrometric:
+        def direction(self, source, request, observer_state):
+            assert source is target_source
+            assert observer_state == "observer-state"
+            return astrometric
+
+    class Apparent:
+        def direction(self, value, *, observer, source, policy):
+            assert value is astrometric
+            assert source is observer_source
+            return apparent
+
+    class Coordinates:
+        def transform(self, geometry, target, observation):
+            assert geometry.labels.tolist() == ["(1) Ceres"]
+            assert geometry.metadata["ephemeris_sha256"] == "c" * 64
+            return geometry
+
+    layer = SolarSystemPointLayer(
+        descriptor,
+        source_resolver=lambda body, observer: EphemerisSourceBinding(
+            target_source, observer_source
+        ),
+        observer_state_factory=lambda observer, *, source: (
+            "observer-state" if source is observer_source else None
+        ),
+        astrometric_realizer=Astrometric(),
+        apparent_realizer=Apparent(),
+        coordinate_service=Coordinates(),
+    )
+    result = layer.realize(context(), object(), selected={"ceres"})
+    assert result.labels.tolist() == ["(1) Ceres"]

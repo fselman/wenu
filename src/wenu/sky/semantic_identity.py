@@ -467,10 +467,12 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
             "planet": "planets",
             "dwarf_planet": "dwarf_planets",
             "minor_body": "minor_bodies",
+            "asteroid": ("minor_bodies", "asteroids"),
             "natural_satellite": "natural_satellites",
             "artificial_satellite": "artificial_satellites",
         }
         branch = branches.get(body.body_class, "moving_bodies")
+        branch_path = branch if isinstance(branch, tuple) else (branch,)
         kind_paths = {
             "symbolic_point": None,
             "apparent_track": "track",
@@ -494,7 +496,7 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
         path_kind = kind_paths[display_kind]
         if display_kind == "symbolic_point":
             contract = SemanticLayerContract(
-                ("sky", "solar_system", branch, body.entity_key),
+                ("sky", "solar_system", *branch_path, body.entity_key),
                 body.display_name,
                 39,
                 body.body_class,
@@ -502,7 +504,7 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
         elif display_kind == "apparent_track":
             contract = SemanticLayerContract(
                 (
-                    "sky", "solar_system", branch, body.entity_key,
+                    "sky", "solar_system", *branch_path, body.entity_key,
                     "track",
                 ),
                 f"{body.display_name} track",
@@ -519,7 +521,7 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
             ).strip()
             contract = SemanticLayerContract(
                 (
-                    "sky", "solar_system", branch, body.entity_key,
+                    "sky", "solar_system", *branch_path, body.entity_key,
                     path_kind, component_role,
                 ),
                 display,

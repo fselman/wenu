@@ -14,7 +14,10 @@ class SolarSystemTrackLayer(SkyLayer):
 
     layer_name = "solar_system_track"
 
-    def __init__(self, request, *, realizer=None, label_ticks=False):
+    def __init__(
+        self, request, *, realizer=None, label_ticks=False,
+        label_start=True, start_label_text=None,
+    ):
         if not isinstance(request, SolarSystemTrackRequest):
             raise TypeError(
                 "request must be a SolarSystemTrackRequest."
@@ -30,6 +33,8 @@ class SolarSystemTrackLayer(SkyLayer):
         )
         self.last_result = None
         self.label_ticks = bool(label_ticks)
+        self.label_start = bool(label_start)
+        self.start_label_text = start_label_text
 
     def realize(self, context, observer, **geometry_options):
         if geometry_options:

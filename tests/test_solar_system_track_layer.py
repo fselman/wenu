@@ -15,6 +15,7 @@ from wenu.geometry.projected import (
 )
 from wenu.charts.solar_system_track_annotations import (
     TrackLabelAnchor,
+    _opposite_start_label_anchor,
     _start_label_anchor,
     prepare_projected_track,
 )
@@ -88,6 +89,14 @@ def test_preparation_omits_start_tick_by_default():
     assert result.metadata["tick_sample_indices"] == (2, 4)
 
 
+def test_preparation_can_omit_start_label_when_a_point_identifies_it():
+    result = prepare_projected_track(
+        spherical(), projected(), tick_length=1.0, label_start=False
+    )
+
+    assert len(result["labels"]) == 0
+
+
 def test_major_tick_labels_use_exact_sample_dates_when_enabled():
     source = spherical()
     source.metadata["sample_instants"] = (
@@ -122,6 +131,24 @@ def test_start_label_anchor_turns_inward_near_field_edge():
 
     assert anchor.horizontal_alignment == "right"
     assert anchor.vertical_alignment == "top"
+
+
+def test_start_label_is_placed_opposite_initial_track_direction():
+    track = ProjectedCurve(
+        x=np.asarray((0.5, 0.0, -0.5)),
+        y=np.asarray((-0.5, 0.0, 0.5)),
+    )
+    axes = SimpleNamespace(
+        get_xlim=lambda: (-1.0, 1.0),
+        get_ylim=lambda: (-1.0, 1.0),
+    )
+
+    placement = _opposite_start_label_anchor(track, axes)
+
+    assert placement.x > 0.5
+    assert placement.y < -0.5
+    assert placement.horizontal_alignment == "left"
+    assert placement.vertical_alignment == "top"
 
 
 def test_two_pass_layout_keeps_one_side_when_labels_are_clear():

@@ -184,6 +184,16 @@ def atlas_chart_style(
         venus_label_fontsize=(
             style.solar_system.venus_label_fontsize * font_scale
         ),
+        asteroid_color="#FFE6A3",
+        asteroid_symbol_size=(
+            style.solar_system.asteroid_symbol_size * symbol_scale
+        ),
+        asteroid_linewidth=(
+            style.solar_system.asteroid_linewidth * line_scale
+        ),
+        asteroid_label_fontsize=(
+            style.solar_system.asteroid_label_fontsize * font_scale
+        ),
         moon_color="#E6E1D3",
         moon_symbol_size=(
             style.solar_system.moon_symbol_size * symbol_scale

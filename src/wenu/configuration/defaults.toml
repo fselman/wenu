@@ -15,6 +15,7 @@ elevation = "none"
 timezone = "none"
 ephemeris = "none"
 data_directory = "none"
+minor_body_resource_directory = "none"
 
 # Observer-time sequence defaults. "none" keeps ordinary static generation.
 [sequence]

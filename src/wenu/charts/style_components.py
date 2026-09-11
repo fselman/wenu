@@ -181,6 +181,13 @@ class SolarSystemStyle:
     moon_draw_label: bool = True
     moon_label_fontsize: float = 7.0
     moon_disk_sequence_label_fontsize: float = 4.5
+    asteroid_color: str = "#8c5a00"
+    asteroid_marker: str = "D"
+    asteroid_symbol_size: float = 12.0
+    asteroid_linewidth: float = 0.8
+    asteroid_alpha: float = 1.0
+    asteroid_draw_label: bool = True
+    asteroid_label_fontsize: float = 7.0
 
 
 @dataclass(frozen=True)
@@ -420,6 +427,13 @@ class ChartStyle:
             venus_alpha=solar.venus_alpha,
             venus_draw_label=solar.venus_draw_label,
             venus_label_fontsize=solar.venus_label_fontsize,
+            asteroid_color=solar.asteroid_color,
+            asteroid_marker=solar.asteroid_marker,
+            asteroid_symbol_size=solar.asteroid_symbol_size,
+            asteroid_linewidth=solar.asteroid_linewidth,
+            asteroid_alpha=solar.asteroid_alpha,
+            asteroid_draw_label=solar.asteroid_draw_label,
+            asteroid_label_fontsize=solar.asteroid_label_fontsize,
             moon_color=solar.moon_color,
             moon_marker=solar.moon_marker,
             moon_symbol_size=solar.moon_symbol_size,

@@ -1118,6 +1118,15 @@ SPK/TDB minor-body physics with OMM/TLE plus SGP4/TEME satellite physics. It
 changes no runtime behavior; Fernando's 2026-09-11 acceptance authorizes the
 bounded 50A.3B implementation.
 
+50A.3B is accepted and archived in
+`archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md`. It connects only `(1) Ceres` through
+an explicit manifest-backed resource directory and descriptor-aware target
+versus observer source binding. The existing point, fixed-frame track,
+projection, preparation, semantic, rendering, and export routes are retained;
+there is no magnitude, implicit network, fallback propagator, discovery, or
+field-query claim. Fernando accepted the final macOS PNG and semantic SVG on
+2026-09-11; 50A.3 is closed and 50A.4 is next.
+
 ## 13.2 Program 50B - Publication legibility and economical printing
 
 After the minor-body symbols and tracks are available, review current accepted

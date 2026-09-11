@@ -14,7 +14,8 @@ from wenu.rendering.label_placement import CurveLabelPlacement
 
 def prepare_projected_track(
     spherical, projected, *, tick_length, include_start_tick=False,
-    label_ticks=False, label_anchor=None,
+    label_ticks=False, label_start=True, start_label_text=None,
+    label_anchor=None,
 ):
     """Return path and perpendicular projected tick components."""
     if not isinstance(projected, ProjectedCurves) or len(projected) != 1:
@@ -48,17 +49,22 @@ def prepare_projected_track(
     path = ProjectedCurve(
         x=source.x, y=source.y, closed=False, name=None
     )
-    start_label = ProjectedCurve(
-        x=np.asarray((source.x[0], source.x[0])),
-        y=np.asarray((source.y[0], source.y[0])),
-        closed=False,
-        name=_start_label(spherical),
-    )
+    start_labels = []
+    if label_start:
+        start_labels.append(ProjectedCurve(
+            x=np.asarray((source.x[0], source.x[0])),
+            y=np.asarray((source.y[0], source.y[0])),
+            closed=False,
+            name=(
+                _start_label(spherical)
+                if start_label_text is None else str(start_label_text)
+            ),
+        ))
     return ProjectedGrid(
         components={
             "path": ProjectedCurves(items=[path]),
             "ticks": ProjectedCurves(items=ticks),
-            "labels": ProjectedCurves(items=[start_label]),
+            "labels": ProjectedCurves(items=start_labels),
         },
         metadata={
             **dict(projected.metadata),
@@ -88,6 +94,47 @@ def _start_label_anchor(curve, ax):
             "top" if y > y_max - y_margin else "bottom"
         ),
     )
+
+
+def _opposite_start_label_anchor(track, ax):
+    """Place an endpoint label opposite the track's initial direction."""
+    finite = np.flatnonzero(track.finite)
+    if finite.size == 0:
+        return None
+    first = int(finite[0])
+    neighbor = _distinct_projected_neighbor(track, first, 1)
+    if neighbor is None:
+        return _start_label_anchor(track, ax)
+    x = float(track.x[first])
+    y = float(track.y[first])
+    dx = float(track.x[neighbor]) - x
+    dy = float(track.y[neighbor]) - y
+    norm = float(np.hypot(dx, dy))
+    x_span = abs(float(np.diff(ax.get_xlim())[0]))
+    y_span = abs(float(np.diff(ax.get_ylim())[0]))
+    distance = 0.012 * min(x_span, y_span)
+    ox = -dx / norm
+    oy = -dy / norm
+    return CurveLabelPlacement(
+        x=x + distance * ox,
+        y=y + distance * oy,
+        horizontal_alignment="left" if ox >= 0.0 else "right",
+        vertical_alignment="bottom" if oy >= 0.0 else "top",
+    )
+
+
+def _distinct_projected_neighbor(curve, index, step):
+    candidate = index + step
+    while 0 <= candidate < len(curve):
+        if not curve.finite[candidate]:
+            return None
+        if np.hypot(
+            float(curve.x[candidate]) - float(curve.x[index]),
+            float(curve.y[candidate]) - float(curve.y[index]),
+        ) > 1.0e-12:
+            return candidate
+        candidate += step
+    return None
 
 class TrackLabelAnchor:
     """Choose a coherent two-sided layout for ordered track labels."""
@@ -119,7 +166,7 @@ class TrackLabelAnchor:
         placement = self._placements.get(curve.name)
         if placement is not None:
             return placement
-        return _start_label_anchor(curve, ax)
+        return _opposite_start_label_anchor(self._track, ax)
 
     def _build_layout(self, ax):
         self._axes = ax

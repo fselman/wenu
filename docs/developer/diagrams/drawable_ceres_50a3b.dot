@@ -1,0 +1,26 @@
+digraph drawable_ceres_50a3b {
+  graph [rankdir=LR, bgcolor="white", fontname="Helvetica", fontsize=15,
+    label="Wenu 50A.3B — manifest-backed drawable Ceres",
+    labelloc="t", nodesep=0.4, ranksep=0.55, pad=0.25];
+  node [shape=box, style="rounded,filled", fillcolor="#f7f7f7",
+    color="#555555", fontname="Helvetica", fontsize=10,
+    margin="0.13,0.09"];
+  edge [color="#555555", fontname="Helvetica", fontsize=8,
+    arrowsize=0.7];
+
+  request [label="Chart request\nCeres point and/or track",
+    fillcolor="#d9eaf7"];
+  resource [label="Local manifest + Ceres SPK\nidentity + SHA-256 + coverage",
+    fillcolor="#fff2cc"];
+  binding [label="Descriptor-aware source binding\nminor-body target + DE440 observer",
+    fillcolor="#fce4d6"];
+  geometry [label="Shared point / track layers\nobserved spherical geometry",
+    fillcolor="#e2f0d9"];
+  output [label="Canonical output\nPNG / PDF / SVG",
+    fillcolor="#e2f0d9"];
+
+  request -> binding [label="ceres descriptor"];
+  resource -> binding [label="one opened kernel"];
+  binding -> geometry [label="apparent directions"];
+  geometry -> output [label="ordinary pipeline"];
+}

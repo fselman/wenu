@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Mapping
 
 from .furniture_product_export_translation import (
@@ -30,6 +31,7 @@ class ConfigurationDefaults:
     furniture_product_export: FurnitureProductExportDefaults
     sequence: SequenceDefaults
     reference_policy: Any
+    minor_body_resource_directory: Path | None = None
 
 
 def translate_configuration_defaults(
@@ -38,6 +40,9 @@ def translate_configuration_defaults(
     """Translate one complete configuration through all existing owners."""
     values = validate_configuration(configuration)
     from wenu.charts.reference_policy import CelestialReferencePolicy
+    resource_directory = values["observer"][
+        "minor_body_resource_directory"
+    ]
     return ConfigurationDefaults(
         style_mode=translate_style_mode_defaults(values),
         geometry_detail=translate_geometry_detail_defaults(values),
@@ -47,6 +52,11 @@ def translate_configuration_defaults(
         sequence=translate_sequence_defaults(values),
         reference_policy=CelestialReferencePolicy(
             values["coordinates"]["references"]["equinox"]
+        ),
+        minor_body_resource_directory=(
+            None
+            if resource_directory == "none"
+            else Path(resource_directory).expanduser()
         ),
     )
 

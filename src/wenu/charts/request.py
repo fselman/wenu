@@ -379,8 +379,32 @@ class ChartRequest:
     projection: str = "stereographic"
     coordinate_frame: str = "horizontal"
     reference_policy: CelestialReferencePolicy = CelestialReferencePolicy()
+    minor_body_resource_directory: Path | None = None
 
     def __post_init__(self):
+        resource_directory = self.minor_body_resource_directory
+        if resource_directory is not None:
+            resource_directory = Path(resource_directory).expanduser()
+            object.__setattr__(
+                self, "minor_body_resource_directory", resource_directory
+            )
+        from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
+
+        selected_body_keys = set(self.content.solar_system_objects or ())
+        if self.solar_system_track is not None:
+            selected_body_keys.add(
+                self.solar_system_track.descriptor.selection_key
+            )
+        needs_minor_body_resource = any(
+            SOLAR_SYSTEM_BODY_CATALOG.resolve(key).ephemeris_source_key
+            == "minor_body_spk"
+            for key in selected_body_keys
+        )
+        if needs_minor_body_resource and resource_directory is None:
+            raise ValueError(
+                "selected minor bodies require "
+                "minor_body_resource_directory."
+            )
         family = str(self.family).strip().lower()
         if family not in CHART_FAMILIES:
             raise ValueError(

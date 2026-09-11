@@ -713,3 +713,17 @@ composition. The existing astrometric realizer now accepts a target resource
 chain only when it explicitly contains the observer's planetary resource;
 Skyfield remains the DE440, observer-state, and apparent-place owner. This seam
 is exercised only by the validator and remains unconnected to a body or chart.
+
+## Drawable Ceres point and track (Milestone 50A.3B accepted)
+
+`archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md` records the accepted bounded
+Ceres connection. `CERES_BODY` joins the descriptor catalog with a stable
+minor-body identity and symbolic-point plus apparent-track capabilities.
+`MinorBodyResourceSession` validates an explicit local acquisition manifest,
+opens the declared SPK once per chart build, and supplies a descriptor-aware
+`EphemerisSourceBinding`: the Ceres provider owns the target state, while the
+existing DE440/Skyfield provider continues to own observer state and apparent
+corrections. The shared point and track realizers, fixed product frame,
+projection, preparation, semantic SVG, renderers, and exporters remain the
+ordinary route. Fernando accepted the macOS PNG and semantic SVG; 50A.3 is
+closed and 50A.4 comet numerical validation is next.

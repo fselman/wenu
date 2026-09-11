@@ -32,6 +32,9 @@ milestone evidence are under [`archive/`](archive/README.md).
   minor-body and 50B publication-legibility programs.
 The accepted 50A.0 through 50A.3A records are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).
+The accepted 50A.0 through 50A.3 records, including the first drawable Ceres
+point and track, are archived under
+[`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).
 The accepted 49J.0 through 49J.6 records, including the final closure, are
 archived under
 [`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/).

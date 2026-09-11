@@ -45,6 +45,8 @@ class ChartRequestBuild:
     sky: object
     prepared: PreparedChartRequest
     owns_observer: bool = False
+    minor_body_session: object | None = None
+    prior_source_resolvers: tuple = ()
     _closed: bool = field(default=False, init=False, repr=False)
 
     @property
@@ -53,8 +55,17 @@ class ChartRequestBuild:
 
     def close(self):
         """Close an owned observer once; leave supplied spheres untouched."""
-        if self.owns_observer and not self._closed:
-            self.sky.observer.close()
+        if not self._closed:
+            if self.prior_source_resolvers:
+                from wenu.minor_body_resources import (
+                    restore_sky_source_resolvers,
+                )
+
+                restore_sky_source_resolvers(self.prior_source_resolvers)
+            if self.minor_body_session is not None:
+                self.minor_body_session.close()
+            if self.owns_observer:
+                self.sky.observer.close()
         self._closed = True
 
     def __enter__(self):
@@ -208,25 +219,60 @@ def _prepare_with_sphere(
     owns_observer,
     observer=None,
 ):
-    resolved = resolve_chart_request(request, profile)
-    grid_options = {"frame": getattr(resolved, "frame", None)}
-    if observer is not None:
-        grid_options["observer"] = observer
-    configure_chart_request_grids(
-        sky,
-        resolved.request,
-        **grid_options,
+    resolved_observer = getattr(sky, "observer", None) or observer
+    session = None
+    prior = ()
+    from wenu.minor_body_resources import (
+        MinorBodyResourceSession,
+        bind_sky_source_resolver,
+        request_minor_body_descriptors,
     )
-    configure_chart_request_horizon(sky, resolved.request)
-    configure_chart_request_disks(sky, resolved.request)
-    prepare_options = {}
-    if observer is not None:
-        prepare_options["observer"] = observer
-    prepared = prepare_chart_request(sky, resolved, **prepare_options)
+
+    if request_minor_body_descriptors(request):
+        session = MinorBodyResourceSession(
+            request.minor_body_resource_directory,
+            resolved_observer,
+        )
+        prior = bind_sky_source_resolver(sky, session.source_binding)
+    try:
+        resolved = resolve_chart_request(request, profile)
+        grid_options = {"frame": getattr(resolved, "frame", None)}
+        if observer is not None:
+            grid_options["observer"] = observer
+        configure_chart_request_grids(
+            sky,
+            resolved.request,
+            **grid_options,
+        )
+        configure_chart_request_horizon(sky, resolved.request)
+        configure_chart_request_disks(sky, resolved.request)
+        from .request_tracks import configure_chart_request_track
+
+        configure_chart_request_track(
+            sky,
+            resolved.request,
+            source_resolver=(
+                None if session is None else session.source_binding
+            ),
+        )
+        prepare_options = {}
+        if observer is not None:
+            prepare_options["observer"] = observer
+        prepared = prepare_chart_request(sky, resolved, **prepare_options)
+    except BaseException:
+        if prior:
+            from wenu.minor_body_resources import restore_sky_source_resolvers
+
+            restore_sky_source_resolvers(prior)
+        if session is not None:
+            session.close()
+        raise
     return ChartRequestBuild(
         sky=sky,
         prepared=prepared,
         owns_observer=owns_observer,
+        minor_body_session=session,
+        prior_source_resolvers=prior,
     )
 
 

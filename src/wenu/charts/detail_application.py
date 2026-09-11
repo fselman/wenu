@@ -490,6 +490,8 @@ def composition_layer_options(
                     "prepare": lambda spherical, projected: prepare_projected_track(
                         spherical, projected, tick_length=tick_length,
                         label_ticks=track.label_ticks,
+                        label_start=track.label_start,
+                        start_label_text=track.start_label_text,
                         label_anchor=label_anchor,
                     ),
                     "render": {
@@ -519,6 +521,18 @@ def composition_layer_options(
                             "color": publication.solar_system_track_color,
                             "fontsize": publication.solar_system_track_label_fontsize,
                             "zorder": 38.2,
+                        },
+                        "component_label_styles": {
+                            "labels": {
+                                "color": (
+                                    publication.asteroid_color
+                                    if getattr(
+                                        getattr(track, "body_descriptor", None),
+                                        "body_class", None,
+                                    ) == "asteroid"
+                                    else publication.solar_system_track_color
+                                ),
+                            },
                         },
                         "label_offset": (0.0, 0.0),
                     },

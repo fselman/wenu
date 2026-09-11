@@ -137,6 +137,10 @@ FIRST_DRAWABLE_ASTEROID_AUDIT = (
     / "archive/milestone_history/50a_minor_bodies"
     / "first_drawable_asteroid_audit_50a3a.md"
 )
+DRAWABLE_CERES = (
+    DEVELOPER
+    / "archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md"
+)
 TEST_PRACTICE_AUDIT = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md"
@@ -3097,6 +3101,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md",
         "archive/milestone_history/50a_minor_bodies/minor_body_state_provider_50a1.md",
         "archive/milestone_history/50a_minor_bodies/asteroid_numerical_validation_50a2.md",
+        "archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3953,6 +3958,73 @@ def test_50a3a_audits_one_manifest_backed_drawable_ceres_route():
     assert "future collection-of-trajectories seam" in guide
     assert "WCS/mosaic footprint" in guide
     assert "50A.3A accepted by Fernando" in program
+
+
+def test_50a3b_connects_only_manifest_backed_ceres_through_shared_routes():
+    record = " ".join(read(DRAWABLE_CERES).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    program = " ".join(read(TEST_PERFORMANCE_PROGRAM).split())
+    user_configuration = " ".join(
+        read(ROOT / "docs/user_guide/configuration.md").split()
+    )
+    examples = " ".join(read(ROOT / "docs/user_guide/chart_examples.md").split())
+    diagram_index = " ".join(read(DIAGRAMS / "README.md").split())
+    dot = read(DIAGRAMS / "drawable_ceres_50a3b.dot")
+    svg = read(DIAGRAMS / "drawable_ceres_50a3b.svg")
+
+    for phrase in (
+        "Drawable Ceres point and track (Milestone 50A.3B)",
+        "Accepted by Fernando on 2026-09-11",
+        "--asteroid ceres",
+        "--asteroid-track ceres",
+        "sky/solar_system/minor_bodies/asteroids/ceres",
+        "EphemerisSourceBinding",
+        "MinorBodyResourceSession",
+        "opens the Ceres kernel at most once",
+        "closes it exactly once",
+        "Rendering never downloads",
+        "fixed small hollow diamond",
+        "no magnitude or angular-size meaning",
+        "Artificial satellites may later share",
+        "do not repeat 50A.2 CSPICE interpolation",
+        "rejected the duplicated Ceres/start-date labels",
+        "same body and instant as the track start",
+        "single visible label `Ceres (1)` without a date",
+        "opposite the initial projected direction of motion",
+        "planetary cream `#FFE6A3`",
+        "final complete repository gate passed all 2,184 tests",
+        "88.01 seconds",
+        "accepted the regenerated PNG and SVG",
+        "This closes 50A.3",
+    ):
+        assert phrase in record
+
+    assert "50A.3B is accepted and archived" in roadmap
+    assert "Drawable Ceres point and track" in architecture
+    assert "Drawable Ceres resource binding" in implementation
+    assert "50A.3B drawable-Ceres ownership" in source_tree
+    assert "bounded implementation is accepted and archived" in instructions
+    assert "13.2.40 50A.3B drawable Ceres point and track" in guide
+    assert "50A.3B is accepted and archived" in program
+    assert "Ceres point and dated track" in user_configuration
+    assert "--minor-body-resource-directory" in user_configuration
+    assert "--asteroid-track ceres" in examples
+    assert "50A.3B drawable-Ceres" in diagram_index
+    for phrase in (
+        "Ceres point and/or track",
+        "Local manifest + Ceres SPK",
+        "Descriptor-aware source binding",
+        "Canonical output",
+    ):
+        assert phrase in dot
+        assert phrase in svg
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

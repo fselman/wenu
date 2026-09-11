@@ -65,6 +65,17 @@ not current minor-body output.
 
 Source: `asteroid_validation_50a2.dot`
 
+### Drawable Ceres seam
+
+[Open the 50A.3B drawable-Ceres SVG](drawable_ceres_50a3b.svg)
+
+Source: `drawable_ceres_50a3b.dot`
+
+This focused view shows the explicit manifest-backed resource session and the
+descriptor-aware separation between Ceres target state and the DE440 observer
+source before both point and track enter Wenu's ordinary projection, rendering,
+and export pipeline.
+
 This focused view records the narrow CSPICE type-21 evaluator, explicit DE440
 dependency, existing direction realizers, and independent direct-Horizons
 oracle. Its body/chart/output edge remains deliberately disconnected.

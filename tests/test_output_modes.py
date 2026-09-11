@@ -174,6 +174,7 @@ def test_presentation_uses_high_contrast_atlas_palette():
     assert style.deep_sky.galaxy_edge_color == palette.foreground
     assert style.deep_sky.supernova_remnant_color == palette.structure
     assert style.solar_system.venus_color == "#FFE6A3"
+    assert style.solar_system.asteroid_color == "#FFE6A3"
     assert style.solar_system.moon_color == "#E6E1D3"
     assert "#b43b37" not in _style_colors(style)
 
