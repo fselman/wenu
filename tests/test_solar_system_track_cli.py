@@ -1,5 +1,6 @@
 """CLI contract tests for Solar-System tracks."""
 import argparse
+from pathlib import Path
 import pytest
 from wenu.charts.chart_arguments import (
     add_chart_content_arguments,
@@ -65,3 +66,33 @@ def test_major_tick_date_labels_are_explicitly_opt_in():
         "--track-tick-labels",
     ))
     assert options.label_ticks is True
+
+
+def test_ceres_point_track_and_resource_directory_are_independent_options():
+    arguments = parse(
+        "--asteroid", "ceres",
+        "--asteroid-track", "ceres",
+        "--minor-body-resource-directory", "/tmp/wenu-minor-bodies",
+        "--track-start", "2026-01-15T00:00:00Z",
+        "--track-sample-step", "1d",
+        "--track-tick-step", "7d",
+        "--track-tick-count", "4",
+    )
+    options = chart_track_options(arguments)
+    assert arguments.asteroid == ["ceres"]
+    assert arguments.minor_body_resource_directory == Path(
+        "/tmp/wenu-minor-bodies"
+    )
+    assert options.body == "ceres"
+
+
+def test_planet_and_asteroid_tracks_are_mutually_exclusive():
+    with pytest.raises(ValueError, match="either --planet-track"):
+        chart_track_options(parse(
+            "--planet-track", "venus",
+            "--asteroid-track", "ceres",
+            "--track-start", "2026-01-15T00:00:00Z",
+            "--track-sample-step", "1d",
+            "--track-tick-step", "7d",
+            "--track-tick-count", "4",
+        ))

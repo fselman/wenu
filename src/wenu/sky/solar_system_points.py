@@ -32,6 +32,28 @@ def _text(value, *, name):
 
 
 @dataclass(frozen=True)
+class EphemerisSourceBinding:
+    """Target-state source paired with its observer/apparent source."""
+
+    target_source: object
+    observer_source: object
+
+
+def skyfield_source_binding(descriptor, observer):
+    """Resolve the ordinary one-source Skyfield binding."""
+    del descriptor
+    source = SkyfieldEphemerisStateSource.from_observer(observer)
+    return EphemerisSourceBinding(source, source)
+
+
+def _primary_resource_sha256(resource):
+    digest = getattr(resource, "sha256", None)
+    if digest is None:
+        digest = resource.primary.sha256
+    return digest
+
+
+@dataclass(frozen=True)
 class SolarSystemPointDescriptor:
     """Stable body identity and direction policy for one symbolic point."""
 
@@ -73,7 +95,8 @@ class SolarSystemPointLayer(SkyLayer):
         self,
         descriptor,
         *,
-        source_factory=SkyfieldEphemerisStateSource.from_observer,
+        source_factory=None,
+        source_resolver=None,
         observer_state_factory=skyfield_observer_barycentric_state,
         astrometric_realizer=None,
         apparent_realizer=None,
@@ -88,7 +111,12 @@ class SolarSystemPointLayer(SkyLayer):
         if hasattr(descriptor, "body_class"):
             self.body_descriptor = descriptor
             self.display_kind = "symbolic_point"
+        if source_factory is not None and source_resolver is not None:
+            raise ValueError(
+                "supply source_factory or source_resolver, not both."
+            )
         self.source_factory = source_factory
+        self.source_resolver = source_resolver
         self.observer_state_factory = observer_state_factory
         self.astrometric_realizer = (
             AstrometricDirectionRealizer()
@@ -142,10 +170,22 @@ class SolarSystemPointLayer(SkyLayer):
                 "instant and time scale."
             )
 
-        source = self.source_factory(observer)
+        if self.source_resolver is not None:
+            binding = self.source_resolver(self.descriptor, observer)
+        elif self.source_factory is not None:
+            source = self.source_factory(observer)
+            binding = EphemerisSourceBinding(source, source)
+        else:
+            binding = skyfield_source_binding(self.descriptor, observer)
+        if not isinstance(binding, EphemerisSourceBinding):
+            raise TypeError(
+                "source_resolver must return an EphemerisSourceBinding."
+            )
+        source = binding.target_source
+        observer_source = binding.observer_source
         observer_state = self.observer_state_factory(
             observer,
-            source=source,
+            source=observer_source,
         )
         request = AstrometricDirectionRequest(
             target=self.descriptor.target,
@@ -161,7 +201,7 @@ class SolarSystemPointLayer(SkyLayer):
         apparent = self.apparent_realizer.direction(
             astrometric,
             observer=observer,
-            source=source,
+            source=observer_source,
             policy=self.descriptor.correction_policy,
         )
         native = apparent.geometry
@@ -176,7 +216,13 @@ class SolarSystemPointLayer(SkyLayer):
                         self.descriptor,
                         "astronomical_symbol",
                         None,
-                    ) or self.descriptor.display_name,
+                    )
+                    or getattr(
+                        self.descriptor,
+                        "canonical_designation",
+                        None,
+                    )
+                    or self.descriptor.display_name,
                 ),
                 dtype=object,
             ),
@@ -191,7 +237,9 @@ class SolarSystemPointLayer(SkyLayer):
                     (self.descriptor.display_name,),
                     dtype=object,
                 ),
-                "ephemeris_sha256": source.resource.sha256,
+                "ephemeris_sha256": _primary_resource_sha256(
+                    source.resource
+                ),
                 "apparent_provenance": tuple(
                     native.coordinate_spec.provenance
                 ),

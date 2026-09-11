@@ -14,7 +14,11 @@ from wenu.coordinate_service import CoordinateService
 from wenu.coordinates import CoordinateSpec, PositionStatus
 from wenu.geometry.spherical import SphericalCurves
 from wenu.sky.realization import LayerRealizationContext
-from wenu.sky.solar_system_points import SolarSystemPointDescriptor
+from wenu.sky.solar_system_points import (
+    EphemerisSourceBinding,
+    SolarSystemPointDescriptor,
+    skyfield_source_binding,
+)
 from wenu.skyfield_ephemeris import (
     SkyfieldApparentDirectionRealizer,
     SkyfieldEphemerisStateSource,
@@ -233,14 +237,20 @@ class SolarSystemTrackRealizer:
     def __init__(
         self,
         *,
-        source_factory=SkyfieldEphemerisStateSource.from_observer,
+        source_factory=None,
+        source_resolver=None,
         sample_observer_factory=None,
         observer_state_factory=skyfield_observer_barycentric_state,
         astrometric_realizer=None,
         apparent_realizer=None,
         coordinate_service=None,
     ):
+        if source_factory is not None and source_resolver is not None:
+            raise ValueError(
+                "supply source_factory or source_resolver, not both."
+            )
         self.source_factory = source_factory
+        self.source_resolver = source_resolver
         self.sample_observer_factory = (
             _observer_at_time
             if sample_observer_factory is None
@@ -276,7 +286,19 @@ class SolarSystemTrackRealizer:
                 "a Solar-System track requires an observation context."
             )
 
-        source = self.source_factory(observer)
+        if self.source_resolver is not None:
+            binding = self.source_resolver(request.descriptor, observer)
+        elif self.source_factory is not None:
+            source = self.source_factory(observer)
+            binding = EphemerisSourceBinding(source, source)
+        else:
+            binding = skyfield_source_binding(request.descriptor, observer)
+        if not isinstance(binding, EphemerisSourceBinding):
+            raise TypeError(
+                "source_resolver must return an EphemerisSourceBinding."
+            )
+        source = binding.target_source
+        observer_source = binding.observer_source
         start = Time(
             request.start_instant,
             scale=request.start_time_scale,
@@ -293,7 +315,7 @@ class SolarSystemTrackRealizer:
             )
             observer_state = self.observer_state_factory(
                 sample_observer,
-                source=source,
+                source=observer_source,
             )
             direction_request = AstrometricDirectionRequest(
                 target=request.descriptor.target,
@@ -310,7 +332,7 @@ class SolarSystemTrackRealizer:
                 self.apparent_realizer.direction(
                     astrometric,
                     observer=sample_observer,
-                    source=source,
+                    source=observer_source,
                     policy=request.descriptor.correction_policy,
                 )
             )
@@ -321,6 +343,7 @@ class SolarSystemTrackRealizer:
             apparent_directions,
             sample_times,
             source,
+            observer_source,
         )
         geometry = self.coordinate_service.transform(
             native,
@@ -349,11 +372,16 @@ class SolarSystemTrackRealizer:
         )
 
 
-def _native_curve(request, directions, sample_times, source):
+def _native_curve(
+    request, directions, sample_times, source, observer_source
+):
     first = directions[0].geometry.coordinate_spec
     for direction in directions:
         spec = direction.geometry.coordinate_spec
-        if direction.astrometric.observer_state.resource != source.resource:
+        if (
+            direction.astrometric.observer_state.resource
+            != observer_source.resource
+        ):
             raise ValueError(
                 "all samples must use the track ephemeris resource."
             )

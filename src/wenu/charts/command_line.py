@@ -308,7 +308,7 @@ def _chart_view_argument_plans(
         "regional", "binocular"
     }:
         raise ValueError(
-            "--planet-track is supported only by regional and binocular charts."
+            "moving-body tracks are supported only by regional and binocular charts."
         )
     disk_requests = chart_disk_options(arguments)
     disk_sequence = chart_disk_sequence_options(arguments)
@@ -393,6 +393,12 @@ def _chart_view_argument_plans(
                     arguments, default=configured_policy
                 ),
                 "content": chart_sky_content(arguments),
+                "minor_body_resource_directory": getattr(
+                    arguments, "minor_body_resource_directory", None
+                ) or (
+                    None if configuration is None
+                    else configuration.minor_body_resource_directory
+                ),
                 "solar_system_track": track_request,
                 "solar_system_disks": disk_requests,
                 "solar_system_disk_sequence": disk_sequence,

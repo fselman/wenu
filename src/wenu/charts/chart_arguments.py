@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass
 from math import isfinite
+from pathlib import Path
 import re
 
 from .detail import DetailOverrides, SkyContentSelection
@@ -34,6 +35,11 @@ _SYMBOLIC_BODY_KEYS = tuple(
     body.selection_key
     for body in SOLAR_SYSTEM_BODY_CATALOG.supporting(SYMBOLIC_POINT)
     if body.body_class == "planet"
+)
+_ASTEROID_KEYS = tuple(
+    body.selection_key
+    for body in SOLAR_SYSTEM_BODY_CATALOG.supporting(SYMBOLIC_POINT)
+    if body.body_class == "asteroid"
 )
 _TRACK_BODY_KEYS = tuple(
     body.selection_key
@@ -134,6 +140,15 @@ def _selected_planets(values):
     return frozenset(selected)
 
 
+def _asteroid_selection(value):
+    name = str(value).strip().lower()
+    if not name:
+        raise argparse.ArgumentTypeError("asteroid selection cannot be empty")
+    if name not in _ASTEROID_KEYS:
+        raise argparse.ArgumentTypeError(f"unknown asteroid: {name}")
+    return name
+
+
 def _milky_way_contour_selection(value):
     levels = tuple(
         item.strip().lower() for item in str(value).split(",")
@@ -196,6 +211,7 @@ class ChartContentOptions:
     equatorial_declination_step_deg: float | None = None
     reference_equinox: str | None = None
     planets: frozenset[str] = frozenset()
+    asteroids: frozenset[str] = frozenset()
     moon: bool = False
     mw_contours: frozenset[str] | None = None
 
@@ -224,6 +240,14 @@ class ChartContentOptions:
         if planets - set(_SYMBOLIC_BODY_KEYS):
             raise ValueError("planets contains an unsupported body.")
         object.__setattr__(self, "planets", planets)
+        asteroids = frozenset(
+            str(name).strip().lower()
+            for name in self.asteroids
+            if str(name).strip()
+        )
+        if asteroids - set(_ASTEROID_KEYS):
+            raise ValueError("asteroids contains an unsupported body.")
+        object.__setattr__(self, "asteroids", asteroids)
         object.__setattr__(self, "moon", bool(self.moon))
         contours = self.mw_contours
         if contours is not None:
@@ -294,6 +318,20 @@ def add_chart_content_arguments(parser):
         ),
     )
     parser.add_argument(
+        "--asteroid",
+        action="append",
+        type=_asteroid_selection,
+        default=[],
+        metavar="ASTEROID",
+        help="draw an apparent asteroid (currently: ceres)",
+    )
+    parser.add_argument(
+        "--minor-body-resource-directory",
+        type=Path,
+        metavar="PATH",
+        help="use an explicit offline manifest-backed minor-body resource set",
+    )
+    parser.add_argument(
         "--planet-appearance",
         action="append",
         default=[],
@@ -341,6 +379,11 @@ def add_chart_content_arguments(parser):
         "--planet-track",
         choices=_TRACK_BODY_KEYS,
         help="draw the apparent path of a planet (regional/binocular only)",
+    )
+    parser.add_argument(
+        "--asteroid-track",
+        choices=_ASTEROID_KEYS,
+        help="draw the apparent path of an asteroid (regional/binocular only)",
     )
     parser.add_argument("--track-start", metavar="ISO_TIME")
     parser.add_argument("--track-sample-step", type=_duration_days, metavar="DURATION")
@@ -574,6 +617,7 @@ def chart_content_options(arguments) -> ChartContentOptions:
         equatorial_declination_step_deg=arguments.declination_step,
         reference_equinox=arguments.reference_equinox,
         planets=_selected_planets(getattr(arguments, "planet", ())),
+        asteroids=frozenset(getattr(arguments, "asteroid", ())),
         moon=_moon_display_options(arguments)[0] == "symbolic",
         mw_contours=_selected_milky_way_contours(
             getattr(arguments, "mw_contour", None)
@@ -739,35 +783,43 @@ def chart_disk_sequence_options(arguments):
 
 
 def chart_track_options(arguments):
-    """Resolve the optional complete planet-track CLI group."""
+    """Resolve one optional complete moving-body track CLI group."""
+    planet = getattr(arguments, "planet_track", None)
+    asteroid = getattr(arguments, "asteroid_track", None)
+    if planet is not None and asteroid is not None:
+        raise ValueError(
+            "select either --planet-track or --asteroid-track, not both."
+        )
     names = (
-        "planet_track",
         "track_start",
         "track_sample_step",
         "track_tick_step",
         "track_tick_count",
     )
     values = tuple(getattr(arguments, name, None) for name in names)
-    if all(value is None for value in values):
+    body = planet if planet is not None else asteroid
+    if body is None and all(value is None for value in values):
         return None
-    if any(value is None for value in values):
+    if body is None or any(value is None for value in values):
         missing = [
             name.replace("_", "-")
             for name, value in zip(names, values)
             if value is None
         ]
+        if body is None:
+            missing.insert(0, "planet-track or asteroid-track")
         raise ValueError(
-            "a planet track requires all track options; missing: "
+            "a moving-body track requires all track options; missing: "
             + ", ".join(missing)
         )
-    if isinstance(values[4], bool) or values[4] < 1:
+    if isinstance(values[3], bool) or values[3] < 1:
         raise ValueError("track-tick-count must be a positive integer")
-    if not str(values[1]).strip():
+    if not str(values[0]).strip():
         raise ValueError("track-start must be non-empty")
     return ChartTrackOptions(
-        body=values[0], start_instant=str(values[1]).strip(),
-        sample_step_days=float(values[2]), tick_step_days=float(values[3]),
-        tick_count=int(values[4]),
+        body=body, start_instant=str(values[0]).strip(),
+        sample_step_days=float(values[1]), tick_step_days=float(values[2]),
+        tick_count=int(values[3]),
         label_ticks=bool(getattr(arguments, "track_tick_labels", False)),
     )
 
@@ -818,6 +870,7 @@ def chart_detail_overrides(
             ("constellation_boundaries", content.constellation_boundaries),
             *grids.items(),
             *((name, name in content.planets) for name in _SYMBOLIC_BODY_KEYS),
+            *((name, name in content.asteroids) for name in _ASTEROID_KEYS),
             ("moon", content.moon),
         )
         if enabled
@@ -829,6 +882,7 @@ def chart_detail_overrides(
         "coordinate_grids",
         *grids,
         *_SYMBOLIC_BODY_KEYS,
+        *_ASTEROID_KEYS,
         "moon",
     }
     labels = frozenset(
@@ -859,6 +913,7 @@ def chart_sky_content(arguments) -> SkyContentSelection:
     """Resolve selected moving bodies into request-owned sky content."""
     content = chart_content_options(arguments)
     selected = set(content.planets)
+    selected.update(content.asteroids)
     if content.moon:
         selected.add("moon")
     return SkyContentSelection(

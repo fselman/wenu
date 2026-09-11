@@ -546,6 +546,12 @@ begin with Ceres,
 require an explicit local manifest-backed resource directory, reuse the shared
 point and track machinery through descriptor-aware provider resolution, and
 make no photometric or implicit-network claim.
+The bounded implementation is tracked in `drawable_ceres_50a3b.md` and remains
+open until Fernando accepts its macOS scientific and visual evidence. Preserve
+the target-source versus observer-source split: the minor-body SPK supplies
+Ceres, while DE440/Skyfield continues to supply observer state and apparent
+correction. Do not add implicit acquisition, a fallback propagator, magnitude
+semantics, discovery, or a second projection/render/export path during closure.
 
 For 50B publication-style work, complete the print, typography, contrast,
 accessibility, cartographic, and astronomical-atlas practice review plus

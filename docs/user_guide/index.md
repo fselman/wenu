@@ -48,7 +48,8 @@ font portability, semantic metadata, and safe Inkscape workflow. See
 [Observer-time chart sequences](temporal_sequences.md) for uniform physical
 time sampling, civil display time, manifests, and verified resume.
 
-Resolved Moon, observed Moon-sequence, and apparent major-planet examples are
+Resolved Moon, observed Moon-sequence, apparent major-planet, and offline
+Ceres point/track examples are
 included in the [chart examples](chart_examples.md) and
 [configuration guide](configuration.md).
 

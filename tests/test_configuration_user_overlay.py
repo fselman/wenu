@@ -1,6 +1,7 @@
 """Contracts for partial user TOML overlays over packaged authority."""
 
 from dataclasses import FrozenInstanceError
+from pathlib import Path
 
 import pytest
 
@@ -70,7 +71,9 @@ def test_optional_user_file_translates_all_existing_typed_contracts(tmp_path):
         "[detail.neutral]\n"
         "label_density = 1.75\n"
         "[products.default]\n"
-        "language = 'es'\n",
+        "language = 'es'\n"
+        "[observer]\n"
+        "minor_body_resource_directory = '~/wenu-minor-bodies'\n",
         encoding="utf-8",
     )
 
@@ -81,6 +84,9 @@ def test_optional_user_file_translates_all_existing_typed_contracts(tmp_path):
     assert defaults.style_mode.print_mode.dpi == 240
     assert defaults.geometry_detail.neutral_detail.label_density == 1.75
     assert defaults.furniture_product_export.product.language == "es"
+    assert defaults.minor_body_resource_directory == (
+        Path("~/wenu-minor-bodies").expanduser()
+    )
     with pytest.raises(FrozenInstanceError):
         defaults.style_mode.print_mode.dpi = 300
 

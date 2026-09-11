@@ -13,6 +13,7 @@ from wenu.sky.solar_system_bodies import (
     SolarSystemBodyCatalog,
     SolarSystemBodyDescriptor,
 )
+from wenu.sky.ceres import CERES_BODY
 from wenu.sky.solar_system_disk_sequences import (
     ObservedSolarSystemDiskSequenceRequest,
 )
@@ -96,6 +97,20 @@ def test_symbolic_point_and_semantics_are_descriptor_driven():
     assert layer.layer_name == "test_body"
     assert semantic_layer_identity(layer).semantic_path_text == (
         "sky/solar_system/minor_bodies/test_body"
+    )
+
+
+def test_ceres_identity_capabilities_and_semantics_are_catalog_owned():
+    assert CERES_BODY.selection_key == "ceres"
+    assert CERES_BODY.body_class == "asteroid"
+    assert CERES_BODY.canonical_designation == "(1) Ceres"
+    assert CERES_BODY.iau_number == 1
+    assert CERES_BODY.physical_body_id == "20000001"
+    assert CERES_BODY.ephemeris_source_key == "minor_body_spk"
+    assert CERES_BODY.capabilities == {"symbolic_point", "apparent_track"}
+    identity = semantic_layer_identity(SolarSystemPointLayer(CERES_BODY))
+    assert identity.semantic_path_text == (
+        "sky/solar_system/minor_bodies/asteroids/ceres"
     )
 
 

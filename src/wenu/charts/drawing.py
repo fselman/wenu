@@ -135,6 +135,7 @@ def chart_view_request(
     solar_system_track_tick_labels=False,
     solar_system_disks=(),
     solar_system_disk_sequence=None,
+    minor_body_resource_directory=None,
 ):
     """Translate one prepared view and product into an immutable request."""
     if not isinstance(view, ChartView):
@@ -275,6 +276,7 @@ def chart_view_request(
             if frozen
             else view._prepared.resolved.request.coordinate_frame
         ),
+        minor_body_resource_directory=minor_body_resource_directory,
     )
     if output_format is not None:
         request = replace(
@@ -294,31 +296,59 @@ def draw_chart_view_request(view, request):
     if not isinstance(request, ChartRequest):
         raise TypeError("request must be a ChartRequest.")
     _validate_load_profile(view, request.detail)
-    configure_chart_request_grids(
-        view.sky, request, frame=view.frame, observer=view.observer
+    from wenu.minor_body_resources import (
+        MinorBodyResourceSession,
+        bind_sky_source_resolver,
+        request_minor_body_descriptors,
+        restore_sky_source_resolvers,
     )
-    configure_chart_request_horizon(view.sky, request)
-    configure_chart_request_track(view.sky, request)
-    configure_chart_request_disks(view.sky, request)
-    chart = view.chart
-    if _is_frozen_sequence(request.solar_system_disk_sequence):
-        chart = _chart_from_resolved(
-            view.sky,
-            replace(view._prepared.resolved, request=request),
+
+    session = None
+    previous = ()
+    if request_minor_body_descriptors(request):
+        session = MinorBodyResourceSession(
+            request.minor_body_resource_directory,
             view.observer,
         )
-    prepared = PreparedChartRequest(
-        chart=chart,
-        resolved=replace(view._prepared.resolved, request=request),
-    )
-    export_options = {"observer": view.observer}
-    if view.configuration is not None:
-        export_options["configuration"] = view.configuration
-    generation = export_prepared_chart(
-        view.sky,
-        prepared,
-        **export_options,
-    )
+        previous = bind_sky_source_resolver(
+            view.sky, session.source_binding
+        )
+    try:
+        configure_chart_request_grids(
+            view.sky, request, frame=view.frame, observer=view.observer
+        )
+        configure_chart_request_horizon(view.sky, request)
+        configure_chart_request_track(
+            view.sky,
+            request,
+            source_resolver=(
+                None if session is None else session.source_binding
+            ),
+        )
+        configure_chart_request_disks(view.sky, request)
+        chart = view.chart
+        if _is_frozen_sequence(request.solar_system_disk_sequence):
+            chart = _chart_from_resolved(
+                view.sky,
+                replace(view._prepared.resolved, request=request),
+                view.observer,
+            )
+        prepared = PreparedChartRequest(
+            chart=chart,
+            resolved=replace(view._prepared.resolved, request=request),
+        )
+        export_options = {"observer": view.observer}
+        if view.configuration is not None:
+            export_options["configuration"] = view.configuration
+        generation = export_prepared_chart(
+            view.sky,
+            prepared,
+            **export_options,
+        )
+    finally:
+        restore_sky_source_resolvers(previous)
+        if session is not None:
+            session.close()
     if len(generation.exports) != 1:
         raise RuntimeError("A chart-view drawing must export exactly once.")
     return generation.exports[0]

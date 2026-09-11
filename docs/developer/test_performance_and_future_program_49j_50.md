@@ -180,6 +180,12 @@ with an independent authoritative ephemeris comparison where available.
 `archive/milestone_history/50a_minor_bodies/first_drawable_asteroid_audit_50a3a.md`;
 the bounded 50A.3B implementation is authorized.
 
+**Implementation:** 50A.3B is present and awaiting Fernando's macOS scientific
+and visual acceptance in `drawable_ceres_50a3b.md`. It adds only opt-in Ceres
+point/track selection with an explicit offline resource directory and retains
+the shared fixed-frame moving-body, rendering, and export route. 50A.3 is not
+accepted until the documented gates and PNG/semantic-SVG inspection pass.
+
 Add opt-in symbolic display, designation policy, semantics, and a dated track
 through the shared point and trajectory machinery.
 

@@ -81,6 +81,8 @@ its type or its closed vocabulary.
 - `timezone`: optional-string
 - `ephemeris`: optional-string
 - `data_directory`: optional-string
+- `minor_body_resource_directory`: optional-string path to one explicit,
+  manifest-backed offline minor-body resource set
 
 ### `sequence`
 

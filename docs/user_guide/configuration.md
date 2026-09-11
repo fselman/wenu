@@ -116,6 +116,56 @@ is not a drawable apparent target. In atlas presentation mode, planet symbols
 use the same Venus cream as the chart's other planetary marks.
 
 
+## Ceres point and dated track
+
+Wenu can draw the apparent position of `(1) Ceres` and, independently, a
+dated track. Chart generation is offline and requires an explicitly acquired
+Horizons resource set:
+
+```bash
+python tools/acquire_50a2_asteroid_resources.py
+```
+
+The command writes `acquisition-report.json` plus the governed Ceres and
+Apophis SPKs below `~/.cache/wenu/minor_bodies/50a2/`. Acquisition is a
+separate network operation; rendering never downloads, refreshes,
+extrapolates, or substitutes an orbit.
+
+Select the symbolic hollow diamond with `--asteroid ceres`, the trajectory
+with `--asteroid-track ceres`, or both. The shared track timing options have
+the same meaning as for a planet:
+
+```bash
+wenu_chart regional \
+  --observer-location "La Ligua" \
+  --observer-time 2026-01-15T00:00:00Z \
+  --constellations Psc \
+  --asteroid ceres \
+  --asteroid-track ceres \
+  --minor-body-resource-directory ~/.cache/wenu/minor_bodies/50a2 \
+  --track-start 2026-01-15T00:00:00Z \
+  --track-sample-step 1d \
+  --track-tick-step 7d \
+  --track-tick-count 4 \
+  --track-tick-labels \
+  --style atlas --mode presentation --format svg \
+  --output output/ceres-track.svg
+```
+
+The point uses the chart observation time. Track samples use their stated
+epochs and are transformed into the chart's fixed product frame. The diamond
+has no magnitude or angular-size meaning. Requests outside the acquired SPK
+coverage, or with a missing/mismatched manifest, target, hash, solution, or
+segment, fail before output is written.
+
+The resource directory may instead be stored in a profile; an explicit CLI
+value takes precedence:
+
+```toml
+[observer]
+minor_body_resource_directory = "~/.cache/wenu/minor_bodies/50a2"
+```
+
 ## Resolved Moon and observed sequences
 
 Bare `--moon` draws the Moon's physical illuminated disk. Use

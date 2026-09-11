@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="270"
+     viewBox="0 0 900 270" role="img"
+     aria-labelledby="title description">
+  <title id="title">Wenu 50A.3B manifest-backed drawable Ceres</title>
+  <desc id="description">A chart request and a local manifest-backed Ceres
+  SPK enter a descriptor-aware source binding, then the shared point or track
+  layers and canonical output pipeline.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4"
+            orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#555555"/>
+    </marker>
+  </defs>
+  <rect width="900" height="270" fill="white"/>
+  <text x="450" y="28" text-anchor="middle"
+        font-family="Helvetica,Arial,sans-serif" font-size="18">
+    Wenu 50A.3B — manifest-backed drawable Ceres
+  </text>
+  <g font-family="Helvetica,Arial,sans-serif" font-size="12"
+     text-anchor="middle" stroke="#555555">
+    <rect x="25" y="70" width="185" height="58" rx="9" fill="#d9eaf7"/>
+    <text x="117" y="93" stroke="none">Chart request</text>
+    <text x="117" y="111" stroke="none">Ceres point and/or track</text>
+    <rect x="25" y="165" width="185" height="67" rx="9" fill="#fff2cc"/>
+    <text x="117" y="188" stroke="none">Local manifest + Ceres SPK</text>
+    <text x="117" y="206" stroke="none">identity + SHA-256 + coverage</text>
+    <rect x="275" y="105" width="205" height="67" rx="9" fill="#fce4d6"/>
+    <text x="377" y="128" stroke="none">Descriptor-aware source binding</text>
+    <text x="377" y="146" stroke="none">minor-body target + DE440 observer</text>
+    <rect x="545" y="105" width="150" height="67" rx="9" fill="#e2f0d9"/>
+    <text x="620" y="128" stroke="none">Shared point / track</text>
+    <text x="620" y="146" stroke="none">observed geometry</text>
+    <rect x="750" y="105" width="125" height="67" rx="9" fill="#e2f0d9"/>
+    <text x="812" y="128" stroke="none">Canonical output</text>
+    <text x="812" y="146" stroke="none">PNG / PDF / SVG</text>
+    <path d="M210 99 L275 126" fill="none" marker-end="url(#arrow)"/>
+    <path d="M210 198 L275 154" fill="none" marker-end="url(#arrow)"/>
+    <path d="M480 138 L545 138" fill="none" marker-end="url(#arrow)"/>
+    <path d="M695 138 L750 138" fill="none" marker-end="url(#arrow)"/>
+  </g>
+</svg>

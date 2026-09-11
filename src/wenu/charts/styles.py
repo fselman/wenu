@@ -145,6 +145,13 @@ class PublicationStyle:
     solar_system_track_label_fontsize: float = 9.0
     moon_color: str = "#6f6f6f"
     moon_marker: str = "o"
+    asteroid_color: str = "#8c5a00"
+    asteroid_marker: str = "D"
+    asteroid_symbol_size: float = 12.0
+    asteroid_linewidth: float = 0.8
+    asteroid_alpha: float = 1.0
+    asteroid_draw_label: bool = True
+    asteroid_label_fontsize: float = 7.0
     moon_symbol_size: float = 42.0
     moon_linewidth: float = 0.8
     moon_alpha: float = 1.0
@@ -279,22 +286,28 @@ class PublicationStyle:
         if not moving_bodies and getattr(sky, "venus", None) is not None:
             moving_bodies = (sky.venus,)
         for body_layer in moving_bodies:
+            body_class = getattr(
+                getattr(body_layer, "body_descriptor", None),
+                "body_class",
+                "planet",
+            )
+            prefix = "asteroid" if body_class == "asteroid" else "venus"
             options[body_layer] = {
                 "prepare": clip,
                 "render": {
                     "style": {
-                        "marker": self.venus_marker,
-                        "s": self.venus_symbol_size,
+                        "marker": getattr(self, f"{prefix}_marker"),
+                        "s": getattr(self, f"{prefix}_symbol_size"),
                         "facecolors": "none",
-                        "edgecolors": self.venus_color,
-                        "linewidths": self.venus_linewidth,
-                        "alpha": self.venus_alpha,
+                        "edgecolors": getattr(self, f"{prefix}_color"),
+                        "linewidths": getattr(self, f"{prefix}_linewidth"),
+                        "alpha": getattr(self, f"{prefix}_alpha"),
                         "zorder": layers.POINTS,
                     },
-                    "draw_labels": self.venus_draw_label,
+                    "draw_labels": getattr(self, f"{prefix}_draw_label"),
                     "label_style": {
-                        "color": self.venus_color,
-                        "fontsize": self.venus_label_fontsize,
+                        "color": getattr(self, f"{prefix}_color"),
+                        "fontsize": getattr(self, f"{prefix}_label_fontsize"),
                         "ha": "center",
                         "va": "bottom",
                         "zorder": layers.LABELS,
