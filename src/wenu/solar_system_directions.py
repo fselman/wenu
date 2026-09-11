@@ -15,6 +15,7 @@ from wenu.ephemeris import (
     EphemerisResourceIdentity,
     EphemerisStateRequest,
     EphemerisStateSource,
+    ephemeris_resource_contains,
 )
 from wenu.geometry.spherical import SphericalPoints
 
@@ -283,12 +284,13 @@ class AstrometricDirectionRealizer:
         emission = reception
         for iteration in range(1, request.maximum_iterations + 1):
             emission = reception - TimeDelta(light_time_days, format="jd")
+            state_emission = emission.tdb
             state_request = EphemerisStateRequest(
                 target=request.target,
                 centre=request.centre,
                 frame="icrf",
-                instant=_isot(emission),
-                time_scale=emission.scale,
+                instant=_isot(state_emission),
+                time_scale="tdb",
             )
             target_state = source.state(state_request)
             self._validate_target_state(
@@ -395,9 +397,13 @@ class AstrometricDirectionRealizer:
             raise AstrometricDirectionIdentityError(
                 "target velocity must use AU/day."
             )
-        if target_state.resource != observer_state.resource:
+        if not ephemeris_resource_contains(
+            target_state.resource,
+            observer_state.resource,
+        ):
             raise AstrometricDirectionIdentityError(
-                "target and observer states must use the same resource."
+                "target and observer states must use the same resource or "
+                "an explicit chain containing the observer resource."
             )
         if (
             target_state.provider_centre_id is not None

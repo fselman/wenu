@@ -1361,3 +1361,19 @@ owns deterministic contract coverage;
   while retaining its borrowed single-planetary-kernel ownership;
 - no descriptor, catalog, layer, direction realizer, coordinate service,
   projection, renderer, exporter, CLI, or data-package owner changes.
+
+## 50A.2 asteroid numerical-validation ownership (accepted)
+
+- `minor_body_ephemeris.py` additionally owns the CSPICE DAF handle and exact
+  selected-segment evaluation, without SPICE global-kernel or path ownership;
+- `ephemeris.py` exposes primary scalar provenance from a resource chain and
+  owns explicit resource-membership comparison;
+- `solar_system_directions.py` admits a target chain only when it contains the
+  observer resource, while `skyfield_ephemeris.py` preserves target provenance
+  through the existing apparent-place operation;
+- `tools/acquire_50a2_asteroid_resources.py` is the explicit network boundary;
+  `tools/validate_50a2_asteroids.py` is the offline installed-resource oracle;
+- `tests/fixtures/horizons_asteroid_validation_50a2.json` owns frozen direct-
+  Horizons reference values, not generated Wenu values;
+- no descriptor, catalog, body, layer, projection, renderer, exporter, CLI,
+  example, user-documentation, or packaged-data owner changes.

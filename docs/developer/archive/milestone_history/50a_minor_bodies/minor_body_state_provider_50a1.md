@@ -17,8 +17,9 @@ planetary state source and produces the existing complete geometric
 download, update, close, or package an SPK kernel. It reads the already-
 resolved small-body file once to calculate its content digest.
 
-Asteroid numerical acceptance remains 50A.2. Body registration, symbolic
-display, designation policy, public selection, and tracks remain 50A.3.
+Asteroid numerical acceptance was completed in 50A.2. Body registration,
+symbolic display, designation policy, public selection, and tracks remain
+50A.3.
 
 ## 2. Typed resource and solution identity
 
@@ -106,8 +107,8 @@ converted to spherical geometry or connected to `CoordinateService` in 50A.1.
 User documentation and examples remain unchanged because no public request or
 visible capability exists.
 
-The coordinate-system guide records the implemented state semantics and keeps
-50A.2 numerical validation as the next scientific gate.
+The coordinate-system guide records the implemented state semantics; 50A.2
+later completed the numerical scientific gate.
 
 ## 7. Acceptance
 

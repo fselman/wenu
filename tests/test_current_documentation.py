@@ -1,10 +1,11 @@
 """Current public-documentation and architecture-authority contracts."""
 
-from pathlib import Path
 import ast
+import html
+import json
 import re
 import tomllib
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEVELOPER = ROOT / "docs" / "developer"
@@ -123,7 +124,14 @@ MINOR_BODY_PROVIDER_AUDIT = (
     DEVELOPER
     / "archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md"
 )
-MINOR_BODY_STATE_PROVIDER = DEVELOPER / "minor_body_state_provider_50a1.md"
+MINOR_BODY_STATE_PROVIDER = (
+    DEVELOPER
+    / "archive/milestone_history/50a_minor_bodies/minor_body_state_provider_50a1.md"
+)
+ASTEROID_NUMERICAL_VALIDATION = (
+    DEVELOPER
+    / "archive/milestone_history/50a_minor_bodies/asteroid_numerical_validation_50a2.md"
+)
 TEST_PRACTICE_AUDIT = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md"
@@ -3059,7 +3067,6 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-        "minor_body_state_provider_50a1.md",
     }
 
     archived = {
@@ -3083,6 +3090,8 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md",
         "archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md",
         "archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md",
+        "archive/milestone_history/50a_minor_bodies/minor_body_state_provider_50a1.md",
+        "archive/milestone_history/50a_minor_bodies/asteroid_numerical_validation_50a2.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3093,6 +3102,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "49e_ephemeris",
         "49i_solar_system",
         "49j_performance",
+        "50a_minor_bodies",
     ):
         assert f"`milestone_history/{folder}/`" in archive_index
 
@@ -3787,7 +3797,7 @@ def test_50a1_installs_only_the_offline_minor_body_state_provider_seam():
     assert "Minor-body state-provider seam (Milestone 50A.1 accepted)" in architecture
     assert "Generic minor-body state provider (Milestone 50A.1)" in implementation
     assert "50A.1 minor-body state-provider ownership" in source_tree
-    assert "accepted 50A.1 seam" in instructions
+    assert "accepted 50A.1 and 50A.2 records" in instructions
     assert "50A.1 generic minor-body state provider" in guide
     assert "r_{BO}=\\mathbf r_{BC}+\\mathbf r_{CO}" in guide
     assert "resource-chain and geometric-state provider seam" in diagrams
@@ -3799,6 +3809,96 @@ def test_50a1_installs_only_the_offline_minor_body_state_provider_seam():
     ):
         assert phrase in provider_dot
         assert phrase in provider_svg
+
+
+def test_50a2_validates_type_21_ceres_and_apophis_without_a_body():
+    record = " ".join(read(ASTEROID_NUMERICAL_VALIDATION).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    program = " ".join(read(TEST_PERFORMANCE_PROGRAM).split())
+    diagrams = " ".join(read(DEVELOPER / "diagrams/README.md").split())
+    validation_dot = read(
+        DEVELOPER / "diagrams/asteroid_validation_50a2.dot"
+    )
+    validation_svg = html.unescape(
+        read(DEVELOPER / "diagrams/asteroid_validation_50a2.svg")
+    )
+    fixture = json.loads(
+        read(ROOT / "tests/fixtures/horizons_asteroid_validation_50a2.json")
+    )
+
+    for phrase in (
+        "Asteroid numerical validation (Milestone 50A.2)",
+        "Accepted by Fernando on 2026-09-11",
+        "SpiceyPy/CSPICE evaluates only the exact small-body segment",
+        "does not furnish the file to SPICE's global kernel pool",
+        "(1) Ceres",
+        "(99942) Apophis",
+        "5e-6 deg (18 mas)",
+        "0.695321 degrees",
+        "All seven epochs passed",
+        "macOS-10.16-x86_64-i386-64bit and Python 3.11.7",
+        "SpiceyPy 6.0.3",
+        "CSPICE N0067",
+        "aae80e3c547a419d589eca17a49348c599a883ef41b0d36c6609fa4a489be353",
+        "d9cdb50eaa5af02e83babefbc0e37cab35f69fa288250b9dbf28bccf9a8bc9e7",
+        "expected `dubious year` warnings",
+        "passed 161 tests in 3.67 seconds",
+        "passed all 2,170 tests in 84.28 seconds",
+        "final documentation-contract gate passed 97 tests in 2.83 seconds",
+        "does not authorize replacing Skyfield",
+        "User documentation and examples require no edit",
+        "adds no public selection, default, configuration, symbol, track, or visible result",
+    ):
+        assert phrase in record
+
+    assert "50A.2 is accepted and archived" in roadmap
+    assert "Milestone 50A.2 adds `SpiceMinorBodyKernel`" in architecture
+    assert "`spiceypy>=6,<9`" in implementation
+    assert "50A.2 asteroid numerical-validation ownership" in source_tree
+    assert "50A.2 is accepted; 50A.3 is the next" in instructions
+    assert "accepted in the 50A.2 scientific gate" in guide
+    assert "50A.3 is next" in program
+    assert "50A.2 asteroid-validation SVG" in diagrams
+    for phrase in (
+        "SpiceMinorBodyKernel",
+        "exact type-21 descriptor",
+        "Frozen direct Horizons oracle",
+        "not connected in 50A.2",
+    ):
+        assert phrase in validation_dot
+        assert phrase in validation_svg
+
+    assert fixture["authority"]["api"] == "NASA/JPL Horizons API"
+    assert fixture["authority"]["returned_version"] == "1.2"
+    assert [item["key"] for item in fixture["objects"]] == [
+        "ceres",
+        "apophis",
+    ]
+    assert [len(item["epochs"]) for item in fixture["objects"]] == [3, 4]
+    assert {
+        item["spk"]["segment_type"] for item in fixture["objects"]
+    } == {21}
+
+    acquisition = read(ROOT / "tools/acquire_50a2_asteroid_resources.py")
+    validator = read(ROOT / "tools/validate_50a2_asteroids.py")
+    assert "https://ssd.jpl.nasa.gov/api/horizons.api" in acquisition
+    assert "refusing to overwrite existing 50A.2 evidence" in acquisition
+    assert '"".join(document["spk"].split()).encode("ascii")' in acquisition
+    assert "base64.b64decode(encoded, validate=True)" in acquisition
+    assert "removes only whitespace before strict base64 decoding" in record
+    assert "POSITION_TOLERANCE_AU = 5.0e-12" in validator
+    assert "DIRECTION_TOLERANCE_DEG = 5.0e-6" in validator
+    assert "SpiceMinorBodyKernel" in validator
+    assert '"--planetary-ephemeris-path"' in validator
+    assert "DEFAULT_DATA_DIRECTORY / DEFAULT_EPHEMERIS" in validator
+    assert "defaults to `~/.cache/wenu/de440s.bsp`" in record
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

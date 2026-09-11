@@ -11,8 +11,8 @@ from wenu.ephemeris import (
     EphemerisState,
     EphemerisStateRequest,
     EphemerisStateSource,
+    ephemeris_resource_contains,
 )
-
 
 DIGEST = "a" * 64
 
@@ -103,6 +103,13 @@ def test_resource_chain_preserves_primary_dependencies_and_provenance():
     assert chain.primary is primary
     assert chain.dependencies == (dependency,)
     assert chain.provenance == ("explicit composition",)
+    assert chain.provider == primary.provider
+    assert chain.model == primary.model
+    assert chain.filename == primary.filename
+    assert chain.sha256 == primary.sha256
+    assert ephemeris_resource_contains(chain, primary)
+    assert ephemeris_resource_contains(chain, dependency)
+    assert not ephemeris_resource_contains(chain, _resource(sha256="c" * 64))
     assert _state(resource=chain).resource is chain
 
 

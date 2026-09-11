@@ -3,7 +3,9 @@
 from hashlib import sha256
 from types import SimpleNamespace
 
+import numpy as np
 import pytest
+from skyfield.constants import AU_KM
 
 from wenu.ephemeris import (
     EphemerisResourceChain,
@@ -17,6 +19,8 @@ from wenu.minor_body_ephemeris import (
     MinorBodyEphemerisState,
     MinorBodySolutionIdentity,
     SkyfieldMinorBodyStateSource,
+    SpiceMinorBodyKernel,
+    SpiceMinorBodySegment,
     UnsupportedEphemerisTimeScaleError,
 )
 from wenu.skyfield_ephemeris import (
@@ -182,12 +186,13 @@ def test_provider_retains_resource_chain_and_ordered_segments(resolved):
     assert isinstance(source, EphemerisStateSource)
     assert isinstance(source.resource, EphemerisResourceChain)
     assert source.resource.primary.filename == path.name
-    assert source.resource.primary.sha256 == sha256(
-        path.read_bytes()
-    ).hexdigest()
+    assert (
+        source.resource.primary.sha256 == sha256(path.read_bytes()).hexdigest()
+    )
     assert source.resource.dependencies == (planetary.resource,)
-    assert "ordered segment 0: target 2000001, centre 10" in (
-        source.resource.provenance[2]
+    assert (
+        "ordered segment 0: target 2000001, centre 10"
+        in (source.resource.provenance[2])
     )
     assert not hasattr(source, "close")
 
@@ -208,6 +213,8 @@ def test_provider_composes_segment_centre_through_planetary_source(resolved):
     assert state.provider_centre_id == "0"
     assert state.solution is source.solution
     assert state.segment.index == 0
+    assert state.segment.frame_id == 1
+    assert state.segment.data_type is None
     assert state.request == request()
     assert planetary.requests == [
         EphemerisStateRequest(
@@ -318,6 +325,76 @@ def test_provider_rejects_incompatible_planetary_state(resolved):
 
     with pytest.raises(EphemerisCompositionError, match="AU and AU/day"):
         source.state(request())
+
+
+def test_spice_kernel_evaluates_exact_type_21_segment(monkeypatch, tmp_path):
+    path = tmp_path / "horizons-type-21.bsp"
+    path.write_bytes(b"synthetic DAF bytes")
+    start_et = 100.0
+    end_et = 200.0
+    integers = np.array((2000001, 10, 1, 21, 1000, 2000))
+    descriptor = np.arange(5, dtype=float)
+    calls = []
+    found = iter((True, False))
+
+    monkeypatch.setattr("spiceypy.dafopr", lambda value: 7)
+    monkeypatch.setattr(
+        "spiceypy.dafbfs", lambda handle: calls.append(("search", handle))
+    )
+    monkeypatch.setattr("spiceypy.daffna", lambda: next(found))
+    monkeypatch.setattr("spiceypy.dafgs", lambda size: descriptor)
+    monkeypatch.setattr(
+        "spiceypy.dafus",
+        lambda summary, nd, ni: (np.array((start_et, end_et)), integers),
+    )
+    monkeypatch.setattr(
+        "spiceypy.spkpvn",
+        lambda handle, summary, et: (
+            1,
+            np.array((AU_KM, 2 * AU_KM, 3 * AU_KM, AU_KM / 86400, 0, 0)),
+            10,
+        ),
+    )
+    monkeypatch.setattr(
+        "spiceypy.dafcls", lambda handle: calls.append(("close", handle))
+    )
+
+    with SpiceMinorBodyKernel(path) as kernel:
+        assert len(kernel.segments) == 1
+        segment = kernel.segments[0]
+        assert isinstance(segment, SpiceMinorBodySegment)
+        assert segment.target == 2000001
+        assert segment.center == 10
+        assert segment.data_type == 21
+        result = segment.at(SimpleNamespace(tdb=2451545.0))
+
+    assert result.position.au == pytest.approx((1.0, 2.0, 3.0))
+    assert result.velocity.au_per_d == pytest.approx((1.0, 0.0, 0.0))
+    assert calls == [("search", 7), ("close", 7)]
+
+
+def test_spice_kernel_rejects_use_after_close(monkeypatch, tmp_path):
+    path = tmp_path / "closed.bsp"
+    path.write_bytes(b"synthetic DAF bytes")
+    monkeypatch.setattr("spiceypy.dafopr", lambda value: 7)
+    monkeypatch.setattr("spiceypy.dafbfs", lambda handle: None)
+    found = iter((True, False))
+    monkeypatch.setattr("spiceypy.daffna", lambda: next(found))
+    monkeypatch.setattr("spiceypy.dafgs", lambda size: np.zeros(5))
+    monkeypatch.setattr(
+        "spiceypy.dafus",
+        lambda summary, nd, ni: (
+            np.array((0.0, 86400.0)),
+            np.array((2000001, 10, 1, 21, 1, 2)),
+        ),
+    )
+    monkeypatch.setattr("spiceypy.dafcls", lambda handle: None)
+    kernel = SpiceMinorBodyKernel(path)
+    segment = kernel.segments[0]
+    kernel.close()
+
+    with pytest.raises(ValueError, match="closed"):
+        segment.at(SimpleNamespace(tdb=2451545.0))
 
 
 def test_provider_rejects_kernel_without_declared_target(tmp_path):

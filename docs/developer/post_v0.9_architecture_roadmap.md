@@ -1085,13 +1085,25 @@ network access during rendering and silent two-body fallback; and records
 validity, uncertainty, identifiers, photometry, and comet non-gravitational
 policy. It adds no runtime behavior or visible object. 50A.1 is next.
 
-50A.1 is accepted in `minor_body_state_provider_50a1.md`. It adds
+50A.1 is accepted and archived in
+`archive/milestone_history/50a_minor_bodies/minor_body_state_provider_50a1.md`.
+It adds
 a typed primary-plus-dependency resource chain, a Horizons solution identity,
 and an offline borrowed-kernel state provider. The provider composes the
 small-body target-relative-to-segment-centre state with that centre's state
 from the declared planetary dependency. It remains unconnected to bodies,
 directions, charts, CLI, and output. Fernando accepted the explicit composition
 on 2026-09-10, authorizing 50A.2 numerical validation as the next slice.
+
+50A.2 is accepted and archived in
+`archive/milestone_history/50a_minor_bodies/asteroid_numerical_validation_50a2.md`.
+It uses CSPICE only to evaluate exact Horizons type-21 target segments, keeps
+DE440/Skyfield as the explicit planetary and observer dependency, and compares
+Ceres and fast nearby Apophis against frozen direct-Horizons Cartesian,
+astrometric, apparent, distance, light-time, and parallax evidence. No body,
+chart, CLI, or output is added. Fernando accepted its scientific tolerances,
+physical interpretation, and hybrid CSPICE/Skyfield ownership on 2026-09-11;
+50A.3 first-drawable-asteroid work is next.
 
 ## 13.2 Program 50B - Publication legibility and economical printing
 

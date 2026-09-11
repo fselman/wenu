@@ -364,7 +364,7 @@ class SkyfieldApparentDirectionRealizer:
             deflectors=resolved_policy.deflector_naif_ids
         )
         ra, dec, _ = apparent.radec()
-        resource = source.resource
+        astrometric_spec = astrometric.geometry.coordinate_spec
         corrections = {
             "one-way-light-time",
             "aberration",
@@ -378,11 +378,10 @@ class SkyfieldApparentDirectionRealizer:
             position_status=PositionStatus.APPARENT,
             instant=astrometric.geometry.coordinate_spec.instant,
             time_scale=astrometric.geometry.coordinate_spec.time_scale,
-            provider=resource.provider,
-            model=resource.model,
+            provider=astrometric_spec.provider,
+            model=astrometric_spec.model,
             provenance=(
-                f"ephemeris file: {resource.filename}",
-                f"ephemeris sha256: {resource.sha256}",
+                *astrometric_spec.provenance,
                 f"apparent model: {resolved_policy.model}",
                 "deflector NAIF IDs: "
                 + ",".join(
