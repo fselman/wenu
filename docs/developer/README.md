@@ -32,7 +32,8 @@ milestone evidence are under [`archive/`](archive/README.md).
   minor-body and 50B publication-legibility programs.
 The accepted 50A.0 through 50A.2 records are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).
-Milestone 50A.3 first-drawable-asteroid work is next.
+- [`first_drawable_asteroid_audit_50a3a.md`](first_drawable_asteroid_audit_50a3a.md)
+  — active 50A.3A audit for the first opt-in Ceres point and dated track.
 The accepted 49J.0 through 49J.6 records, including the final closure, are
 archived under
 [`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/).

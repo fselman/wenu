@@ -176,6 +176,10 @@ with an independent authoritative ephemeris comparison where available.
 
 ### 50A.3 — First drawable asteroid
 
+**Status:** 50A.3A audit proposed in
+`first_drawable_asteroid_audit_50a3a.md`; implementation awaits Fernando's
+architectural and product decisions.
+
 Add opt-in symbolic display, designation policy, semantics, and a dated track
 through the shared point and trajectory machinery.
 

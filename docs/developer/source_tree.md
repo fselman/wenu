@@ -1377,3 +1377,13 @@ owns deterministic contract coverage;
   Horizons reference values, not generated Wenu values;
 - no descriptor, catalog, body, layer, projection, renderer, exporter, CLI,
   example, user-documentation, or packaged-data owner changes.
+
+## 50A.3A first-drawable-asteroid audit ownership (proposed)
+
+- `first_drawable_asteroid_audit_50a3a.md` owns the proposed Ceres identity,
+  manifest-backed resource, public selector, symbolic appearance, shared
+  point/track reuse, evidence, and stop conditions;
+- it identifies descriptor-aware provider resolution as the later 50A.3B seam
+  and makes no source-tree or runtime ownership change itself;
+- current user documents, examples, and diagrams remain unchanged until an
+  accepted implementation creates visible behavior.

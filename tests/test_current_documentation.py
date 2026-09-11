@@ -132,6 +132,9 @@ ASTEROID_NUMERICAL_VALIDATION = (
     DEVELOPER
     / "archive/milestone_history/50a_minor_bodies/asteroid_numerical_validation_50a2.md"
 )
+FIRST_DRAWABLE_ASTEROID_AUDIT = (
+    DEVELOPER / "first_drawable_asteroid_audit_50a3a.md"
+)
 TEST_PRACTICE_AUDIT = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md"
@@ -3067,6 +3070,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
+        "first_drawable_asteroid_audit_50a3a.md",
     }
 
     archived = {
@@ -3899,6 +3903,46 @@ def test_50a2_validates_type_21_ceres_and_apophis_without_a_body():
     assert '"--planetary-ephemeris-path"' in validator
     assert "DEFAULT_DATA_DIRECTORY / DEFAULT_EPHEMERIS" in validator
     assert "defaults to `~/.cache/wenu/de440s.bsp`" in record
+
+
+def test_50a3a_audits_one_manifest_backed_drawable_ceres_route():
+    audit = " ".join(read(FIRST_DRAWABLE_ASTEROID_AUDIT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    program = " ".join(read(TEST_PERFORMANCE_PROGRAM).split())
+
+    for phrase in (
+        "First drawable asteroid audit (Milestone 50A.3A)",
+        "Proposed for Fernando's architectural and product review",
+        "Use **(1) Ceres**",
+        "Apophis remains a numerical parallax oracle",
+        "descriptor-aware source binding",
+        "must not branch on `asteroid`",
+        "sky/solar_system/minor_bodies/asteroids/ceres",
+        "--minor-body-resource-directory PATH",
+        "acquisition-report.json",
+        "must not reopen the SPK per epoch",
+        "--asteroid ceres",
+        "--asteroid-track ceres",
+        "small hollow diamond",
+        "No magnitude field is admitted in 50A.3B",
+        "Do not repeat 50A.2 CSPICE interpolation",
+        "no user-guide or example edit is required yet",
+        "No diagram edit is required by this audit",
+    ):
+        assert phrase in audit
+
+    assert "50A.3A is proposed" in roadmap
+    assert "active proposed contract" in implementation
+    assert "50A.3A first-drawable-asteroid audit ownership" in source_tree
+    assert "Follow the active 50A.3A audit" in instructions
+    assert "13.2.39 50A.3A first drawable asteroid audit" in guide
+    assert "50A.3A audit proposed" in program
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():
