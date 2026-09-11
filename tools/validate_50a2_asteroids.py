@@ -341,9 +341,9 @@ def validate(
                 maxima["parallax_deg"], PARALLAX_TOLERANCE_DEG, "parallax"
             )
             if key == "apophis" and max(parallaxes) <= 0.1:
-            raise AssertionError(
-                "Apophis validation must exhibit material parallax."
-            )
+                raise AssertionError(
+                    "Apophis validation must exhibit material parallax."
+                )
         results.append(
             {
                 "key": key,
