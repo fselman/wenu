@@ -1125,7 +1125,11 @@ versus observer source binding. The existing point, fixed-frame track,
 projection, preparation, semantic, rendering, and export routes are retained;
 there is no magnitude, implicit network, fallback propagator, discovery, or
 field-query claim. Fernando accepted the final macOS PNG and semantic SVG on
-2026-09-11; 50A.3 is closed and 50A.4 is next.
+2026-09-11. Fernando then requested one bounded post-closure generalization
+before comet work: active 50A.3C audits manifest-backed selection of any
+installed numbered asteroid, with unnamed main-belt object `(79989)` as the
+acceptance specimen. If accepted, 50A.3D implements and validates that contract
+without object-specific runtime branching; 50A.4 remains next afterward.
 
 ## 13.2 Program 50B - Publication legibility and economical printing
 

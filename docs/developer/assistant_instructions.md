@@ -551,8 +551,15 @@ The bounded implementation is accepted and archived in
 the target-source versus observer-source split: the minor-body SPK supplies
 Ceres, while DE440/Skyfield continues to supply observer state and apparent
 correction. Do not add implicit acquisition, a fallback propagator, magnitude
-semantics, discovery, or a second projection/render/export path. Milestone
-50A.3 is closed; 50A.4 comet numerical validation is next.
+semantics, discovery, or a second projection/render/export path. Fernando
+requested a post-closure numbered-asteroid generalization before comet work.
+Follow active `numbered_asteroid_generalization_audit_50a3c.md`: keep permanent
+number, optional name, provisional designation, provider target, solution, and
+classification separate; keep rendering offline; derive request-owned
+descriptors only from an explicit verified manifest; preserve `ceres` as an
+alias of number `1`; and use `(79989)` only as a generic acceptance specimen.
+Do not add object-specific branching. 50A.4 remains next after the accepted
+follow-up implementation.
 
 For 50B publication-style work, complete the print, typography, contrast,
 accessibility, cartographic, and astronomical-atlas practice review plus

@@ -183,9 +183,14 @@ the bounded 50A.3B implementation is authorized.
 **Status:** 50A.3B is accepted and archived in
 `archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md`. It adds only opt-in Ceres
 point/track selection with an explicit offline resource directory and retains
-the shared fixed-frame moving-body, rendering, and export route. 50A.3 is not
+the shared fixed-frame moving-body, rendering, and export route. 50A.3B was
 accepted after the documented gates and PNG/semantic-SVG inspection passed.
-Milestone 50A.3 is closed; 50A.4 comet numerical validation is next.
+
+**Status:** Fernando requested a post-closure generalization before comet
+validation. Active 50A.3C audits generic manifest-backed selection by permanent
+minor-planet number, using unnamed main-belt asteroid `(79989)` as the bounded
+acceptance specimen. If accepted, 50A.3D implements that contract; 50A.4
+remains next after the follow-up closes.
 
 Add opt-in symbolic display, designation policy, semantics, and a dated track
 through the shared point and trajectory machinery.
