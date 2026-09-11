@@ -1,10 +1,14 @@
 """Request and registration boundaries for drawable planet tracks."""
+from dataclasses import replace
 from pathlib import Path
 import pytest
 from wenu.charts.product_options import ChartProductOptions
 from wenu.charts.detail import SkyContentSelection
 from wenu.charts.request import ChartObserverRequest, ChartRequest, ChartSubjectRequest
-from wenu.charts.request_tracks import configure_chart_request_track
+from wenu.charts.request_tracks import (
+    _coincident_start_label,
+    configure_chart_request_track,
+)
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.ceres import CERES_BODY
 from wenu.sky.solar_system_tracks import SolarSystemTrackRequest
@@ -93,3 +97,25 @@ def test_coincident_selected_point_replaces_only_the_track_start_label():
     assert layer.start_label_text == "Ceres (1)"
     assert layer.label_ticks is True
     assert sky.solar_system_bodies["ceres"].request_draw_label is False
+
+
+@pytest.mark.parametrize(
+    ("name", "expected"),
+    (("Future Name", "Future Name (79989)"), ("(79989)", "(79989)")),
+)
+def test_numbered_asteroid_start_label_places_number_after_official_name(
+    name, expected
+):
+    descriptor = replace(
+        CERES_BODY,
+        target="79989",
+        entity_key="asteroid_79989",
+        display_name=name,
+        selection_key="79989",
+        physical_body_id="20079989",
+        canonical_designation=expected,
+        iau_number=79989,
+        localized_display_names=(),
+    )
+
+    assert _coincident_start_label(descriptor) == expected

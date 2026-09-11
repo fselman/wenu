@@ -289,6 +289,49 @@ def _chart_view_argument_plans(
         )
         if furniture is None else furniture
     )
+    resource_directory = getattr(
+        arguments, "minor_body_resource_directory", None
+    ) or (
+        None if configuration is None
+        else configuration.minor_body_resource_directory
+    )
+    asteroid_selections = tuple(getattr(arguments, "asteroid", ()))
+    track_selection = getattr(arguments, "asteroid_track", None)
+    minor_body_descriptors = ()
+    if asteroid_selections or track_selection is not None:
+        if resource_directory is None:
+            raise ValueError(
+                "selected asteroids require minor_body_resource_directory."
+            )
+        from wenu.minor_body_resources import MinorBodyResourceCollection
+
+        collection = MinorBodyResourceCollection(resource_directory)
+        minor_body_descriptors = tuple({
+            descriptor.selection_key: descriptor
+            for descriptor in (
+                collection.resolve(selection)
+                for selection in (
+                    *asteroid_selections,
+                    *((track_selection,) if track_selection is not None else ()),
+                )
+            )
+        }.values())
+        resolved_by_selection = {
+            selection: collection.resolve(selection)
+            for selection in (*asteroid_selections, *((track_selection,) if track_selection is not None else ()))
+        }
+        effective_arguments = copy(effective_arguments)
+        effective_arguments.asteroid = [
+            resolved_by_selection[value].selection_key
+            for value in asteroid_selections
+        ]
+        if track_selection is not None:
+            effective_arguments.asteroid_track = (
+                resolved_by_selection[track_selection].selection_key
+            )
+    descriptor_map = {
+        value.selection_key: value for value in minor_body_descriptors
+    }
     detail_overrides = chart_detail_overrides(effective_arguments)
     content = chart_content_options(effective_arguments)
     parsed_track = chart_track_options(effective_arguments)
@@ -296,7 +339,10 @@ def _chart_view_argument_plans(
         None
         if parsed_track is None
         else SolarSystemTrackRequest(
-            descriptor=SOLAR_SYSTEM_BODY_CATALOG.resolve(parsed_track.body),
+            descriptor=(
+                descriptor_map.get(parsed_track.body)
+                or SOLAR_SYSTEM_BODY_CATALOG.resolve(parsed_track.body)
+            ),
             start_instant=parsed_track.start_instant,
             start_time_scale="utc",
             sample_step_days=parsed_track.sample_step_days,
@@ -393,12 +439,8 @@ def _chart_view_argument_plans(
                     arguments, default=configured_policy
                 ),
                 "content": chart_sky_content(arguments),
-                "minor_body_resource_directory": getattr(
-                    arguments, "minor_body_resource_directory", None
-                ) or (
-                    None if configuration is None
-                    else configuration.minor_body_resource_directory
-                ),
+                "minor_body_resource_directory": resource_directory,
+                "minor_body_descriptors": minor_body_descriptors,
                 "solar_system_track": track_request,
                 "solar_system_disks": disk_requests,
                 "solar_system_disk_sequence": disk_sequence,

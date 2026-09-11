@@ -27,6 +27,9 @@ from wenu.charts.request_disks import (
     SolarSystemDiskDisplayRequest,
     configure_chart_request_disks,
 )
+from wenu.charts.detail import ResolvedDetail, SkyContentSelection
+from wenu.charts.detail_application import apply_resolved_detail
+from wenu.sky.celestial_sphere import CelestialSphere
 
 
 TEST_BODY = SolarSystemBodyDescriptor(
@@ -112,6 +115,44 @@ def test_ceres_identity_capabilities_and_semantics_are_catalog_owned():
     assert identity.semantic_path_text == (
         "sky/solar_system/minor_bodies/asteroids/ceres"
     )
+
+
+def test_installed_asteroid_has_safe_layer_and_numbered_semantic_identity():
+    descriptor = SolarSystemBodyDescriptor(
+        target="79989",
+        entity_key="asteroid_79989",
+        display_name="(79989)",
+        selection_key="79989",
+        body_class="asteroid",
+        physical_body_id="20079989",
+        canonical_designation="(79989)",
+        iau_number=79989,
+        capabilities=frozenset({SYMBOLIC_POINT}),
+        ephemeris_source_key="minor_body_spk",
+    )
+    layer = SolarSystemPointLayer(descriptor)
+
+    assert layer.layer_name == "asteroid_79989"
+    assert semantic_layer_identity(layer).semantic_path_text == (
+        "sky/solar_system/minor_bodies/asteroids/79989"
+    )
+    assert semantic_layer_identity(layer).path_display_names[-1] == "(79989)"
+
+    sky = CelestialSphere(None)
+    sky.add(layer)
+    application = apply_resolved_detail(
+        sky,
+        ResolvedDetail(
+            enabled_layers=frozenset({"79989"}),
+            content_selection=SkyContentSelection(
+                solar_system_objects={"79989"}
+            ),
+        ),
+    )
+    assert application.layer_options[layer]["enabled"] is True
+    assert application.layer_options[layer]["geometry"]["selected"] == {
+        "79989"
+    }
 
 
 def test_resolved_disk_factory_requires_no_body_specific_class():

@@ -14,6 +14,23 @@ def _selected_point_replaces_start_label(request):
     start = Time(track.start_instant, scale=track.start_time_scale)
     return abs((observation.tai - start.tai).to_value("second")) < 1.0e-6
 
+def _coincident_start_label(descriptor):
+    """Return the display label for a selected point at the track start."""
+    number = getattr(descriptor, "iau_number", None)
+    if getattr(descriptor, "body_class", None) == "asteroid" and number:
+        display_name = descriptor.display_name
+        numbered = f"({number})"
+        return (
+            numbered
+            if display_name == numbered
+            else f"{display_name} {numbered}"
+        )
+    return (
+        getattr(descriptor, "canonical_designation", None)
+        or descriptor.display_name
+    )
+
+
 def configure_chart_request_track(sky, request, *, source_resolver=None):
     """Replace any prior request track with the request's selected track."""
     for point in getattr(sky, "solar_system_bodies", {}).values():
@@ -40,10 +57,7 @@ def configure_chart_request_track(sky, request, *, source_resolver=None):
             point.request_draw_label = False
     start_label_text = None
     if replaces_start:
-        start_label_text = descriptor.display_name
-        number = getattr(descriptor, "iau_number", None)
-        if number is not None:
-            start_label_text += f" ({number})"
+        start_label_text = _coincident_start_label(descriptor)
     layer = SolarSystemTrackLayer(
         request.solar_system_track,
         label_ticks=request.solar_system_track_tick_labels,

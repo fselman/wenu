@@ -1,4 +1,4 @@
-"""Validate Ceres and Apophis against frozen direct-Horizons evidence."""
+"""Validate installed asteroid SPKs against frozen direct-Horizons evidence."""
 
 from __future__ import annotations
 
@@ -83,9 +83,18 @@ def _solution(record, api_version):
         solution_date=record["solution_date"],
         osculating_epoch=record["osculating_epoch"],
         reference_system="ICRF/J2000",
-        iau_number=1 if record["key"] == "ceres" else 99942,
-        name="Ceres" if record["key"] == "ceres" else "Apophis",
-        aliases=() if record["key"] == "ceres" else ("2004 MN4",),
+        iau_number=record.get(
+            "iau_number",
+            1 if record["key"] == "ceres" else 99942,
+        ),
+        name=record.get(
+            "name",
+            "Ceres" if record["key"] == "ceres" else "Apophis",
+        ),
+        aliases=tuple(record.get(
+            "aliases",
+            () if record["key"] == "ceres" else ("2004 MN4",),
+        )),
         model_parameters=model_parameters,
         quality_fields=quality_fields,
         provenance=("frozen direct-Horizons 50A.2 evidence",),
@@ -126,8 +135,23 @@ def _direction(observer, minor_source, planetary_source):
     return astrometric, apparent
 
 
-def validate(*, resource_directory, planetary_ephemeris_path, reference_path):
+def validate(
+    *, resource_directory, planetary_ephemeris_path, reference_path,
+    characterize=False,
+):
     reference = json.loads(reference_path.read_text(encoding="utf-8"))
+    tolerances = {
+        "position_au": POSITION_TOLERANCE_AU,
+        "velocity_au_per_day": VELOCITY_TOLERANCE_AU_PER_DAY,
+        "direction_deg": DIRECTION_TOLERANCE_DEG,
+        "distance_au": DISTANCE_TOLERANCE_AU,
+        "light_time_min": LIGHT_TIME_TOLERANCE_MIN,
+        "parallax_deg": PARALLAX_TOLERANCE_DEG,
+    }
+    for name, value in reference.get("tolerances", {}).items():
+        if name not in tolerances:
+            raise ValueError(f"unknown validation tolerance: {name}")
+        tolerances[name] = float(value)
     manifest_path = resource_directory / "acquisition-report.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     acquired = {item["key"]: item for item in manifest["resources"]}
@@ -301,36 +325,37 @@ def validate(*, resource_directory, planetary_ephemeris_path, reference_path):
                     )
                     parallaxes.append(actual_parallax)
 
-        _require_within(
-            maxima["position_au"], POSITION_TOLERANCE_AU, "position"
-        )
-        _require_within(
-            maxima["velocity_au_per_day"],
-            VELOCITY_TOLERANCE_AU_PER_DAY,
-            "velocity",
-        )
-        for label in (
-            "astrometric_ra_deg",
-            "astrometric_dec_deg",
-            "apparent_ra_deg",
-            "apparent_dec_deg",
-        ):
-            _require_within(maxima[label], DIRECTION_TOLERANCE_DEG, label)
-        _require_within(
-            maxima["distance_au"], DISTANCE_TOLERANCE_AU, "distance"
-        )
-        _require_within(
-            maxima["light_time_min"],
-            LIGHT_TIME_TOLERANCE_MIN,
-            "light time",
-        )
-        _require_within(
-            maxima["parallax_deg"], PARALLAX_TOLERANCE_DEG, "parallax"
-        )
-        if key == "apophis" and max(parallaxes) <= 0.1:
-            raise AssertionError(
-                "Apophis validation must exhibit material parallax."
+        if not characterize:
+            _require_within(
+                maxima["position_au"], tolerances["position_au"], "position"
             )
+            _require_within(
+                maxima["velocity_au_per_day"],
+                tolerances["velocity_au_per_day"],
+                "velocity",
+            )
+            for label in (
+                "astrometric_ra_deg",
+                "astrometric_dec_deg",
+                "apparent_ra_deg",
+                "apparent_dec_deg",
+            ):
+                _require_within(maxima[label], tolerances["direction_deg"], label)
+            _require_within(
+                maxima["distance_au"], tolerances["distance_au"], "distance"
+            )
+            _require_within(
+                maxima["light_time_min"],
+                tolerances["light_time_min"],
+                "light time",
+            )
+            _require_within(
+                maxima["parallax_deg"], tolerances["parallax_deg"], "parallax"
+            )
+            if key == "apophis" and max(parallaxes) <= 0.1:
+                raise AssertionError(
+                    "Apophis validation must exhibit material parallax."
+                )
         results.append(
             {
                 "key": key,
@@ -343,20 +368,14 @@ def validate(*, resource_directory, planetary_ephemeris_path, reference_path):
         )
 
     return {
-        "accepted": True,
+        "accepted": not characterize,
+        "characterization": bool(characterize),
         "reference": str(reference_path),
         "planetary_ephemeris": {
             "filename": planetary_path.name,
             "sha256": _digest(planetary_path),
         },
-        "tolerances": {
-            "position_au": POSITION_TOLERANCE_AU,
-            "velocity_au_per_day": VELOCITY_TOLERANCE_AU_PER_DAY,
-            "direction_deg": DIRECTION_TOLERANCE_DEG,
-            "distance_au": DISTANCE_TOLERANCE_AU,
-            "light_time_min": LIGHT_TIME_TOLERANCE_MIN,
-            "parallax_deg": PARALLAX_TOLERANCE_DEG,
-        },
+        "tolerances": tolerances,
         "objects": results,
     }
 
@@ -375,6 +394,10 @@ def main():
     )
     parser.add_argument("--reference", type=Path, default=REFERENCE)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--characterize", action="store_true",
+        help="report all residuals without applying acceptance thresholds",
+    )
     arguments = parser.parse_args()
     report = validate(
         resource_directory=arguments.resource_directory.expanduser().resolve(),
@@ -382,6 +405,7 @@ def main():
             arguments.planetary_ephemeris_path.expanduser().resolve()
         ),
         reference_path=arguments.reference.expanduser().resolve(),
+        characterize=arguments.characterize,
     )
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_text(

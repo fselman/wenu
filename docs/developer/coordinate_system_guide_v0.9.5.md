@@ -3019,4 +3019,12 @@ two-body extrapolation, or silent substitution.
 
 Fernando accepted the final macOS PNG and semantic SVG after the start label
 was reduced to one cream `Ceres (1)` label placed opposite the initial
-projected motion. Milestone 50A.3 is closed; 50A.4 is next.
+projected motion.
+
+Candidate 50A.3D generalizes resource identity without changing coordinates:
+an installed permanent number or exact manifest name resolves to one
+request-owned descriptor. The permanent number owns scientific and semantic
+identity. The small-body SPK still supplies target state in TDB/ICRF, DE440
+still supplies observer state and apparent correction, and every result still
+passes through the fixed chart product frame. `(79989)` numerical and visual
+acceptance remain pending before Milestone 50A.3 closes and 50A.4 begins.

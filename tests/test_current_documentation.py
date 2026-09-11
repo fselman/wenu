@@ -3072,6 +3072,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
         "implementation_reference.md",
+        "numbered_asteroids_50a3d.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -4096,6 +4097,73 @@ def test_50a3c_audit_changes_no_runtime_user_guide_or_diagram_contract():
         "acceptance authorizes only the bounded 50A.3D",
     ):
         assert phrase in audit
+
+
+def test_50a3d_documents_request_owned_installed_numbered_asteroids():
+    record = " ".join(
+        read(DEVELOPER / "numbered_asteroids_50a3d.md").split()
+    )
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    user_configuration = " ".join(
+        read(ROOT / "docs/user_guide/configuration.md").split()
+    )
+    dot = read(DIAGRAMS / "numbered_asteroids_50a3d.dot")
+    svg = read(DIAGRAMS / "numbered_asteroids_50a3d.svg")
+    acquisition = read(ROOT / "tools/acquire_numbered_asteroids.py")
+
+    for phrase in (
+        "Generic numbered asteroids (Milestone 50A.3D)",
+        "all acceptance evidence complete, Fernando acceptance pending",
+        "permanent number or an exact, case-folded official name",
+        "Rendering remains offline",
+        "`(79989)` is the acceptance specimen, not a special runtime case",
+        "without mutating the built-in catalog",
+        "`Name (number)` for named objects and `(number)` for unnamed",
+        "unnamed main-belt asteroid `1999 FH1`",
+        "internal layer is therefore `asteroid_79989`",
+        "visibility is selected by the descriptor's public selection key",
+        "SVG-only hierarchy-label conflict",
+        "Fernando visually accepted the 7.5-degree binocular PNG and semantic SVG",
+        "one `(79989)` label",
+        "three epochs across 2026, 2027, and 2029",
+        "`1.2029932605628346e-11 au`",
+        "`3.6855067608865255e-14 au/day`",
+        "`7.085531775067114e-08 deg`",
+        "`2e-11 au` position tolerance",
+        "does not change the accepted 50A.2 default of `5e-12 au`",
+        "The enforcing run reported `accepted: true`",
+        "focused minor-body, request, track, and documentation gate passed all 206 tests",
+        "coincident Ceres label had changed",
+        "omitted from the explicit optional-layer closure",
+        "passed 7 tests in 2.49 seconds",
+        "1 test in 1.93 seconds",
+        "final complete repository gate passed all 2,201 tests",
+        "81.36 seconds",
+        "final milestone acceptance remains Fernando's explicit decision",
+    ):
+        assert phrase in record
+
+    validator = read(ROOT / "tools/validate_50a2_asteroids.py")
+    fixture = read(
+        ROOT
+        / "tests/fixtures/horizons_numbered_asteroid_validation_50a3d.json"
+    )
+    assert 'reference.get("tolerances", {})' in validator
+    assert '"position_au": 2e-11' in fixture
+    assert '"--characterize"' in validator
+    assert '"accepted": not characterize' in validator
+
+    assert "MinorBodyResourceCollection" in implementation
+    assert "request-owned descriptor" in guide
+    assert "--asteroid 79989" in user_configuration
+    assert "official name" in user_configuration
+    assert "permanent-number identity" in dot
+    assert "request-owned installed asteroid" in svg
+    assert "HORIZONS_API" in acquisition
+    assert "SBDB_API" in acquisition
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

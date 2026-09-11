@@ -47,6 +47,7 @@ class ChartRequestBuild:
     owns_observer: bool = False
     minor_body_session: object | None = None
     prior_source_resolvers: tuple = ()
+    request_minor_body_layers: tuple = ()
     _closed: bool = field(default=False, init=False, repr=False)
 
     @property
@@ -64,6 +65,11 @@ class ChartRequestBuild:
                 restore_sky_source_resolvers(self.prior_source_resolvers)
             if self.minor_body_session is not None:
                 self.minor_body_session.close()
+            for layer in self.request_minor_body_layers:
+                self.sky.remove(layer)
+                self.sky.solar_system_bodies.pop(
+                    layer.descriptor.selection_key, None
+                )
             if self.owns_observer:
                 self.sky.observer.close()
         self._closed = True
@@ -222,6 +228,7 @@ def _prepare_with_sphere(
     resolved_observer = getattr(sky, "observer", None) or observer
     session = None
     prior = ()
+    request_layers = []
     from wenu.minor_body_resources import (
         MinorBodyResourceSession,
         bind_sky_source_resolver,
@@ -229,6 +236,9 @@ def _prepare_with_sphere(
     )
 
     if request_minor_body_descriptors(request):
+        for descriptor in request.minor_body_descriptors:
+            if descriptor.selection_key not in sky.solar_system_bodies:
+                request_layers.append(sky.add_solar_system_body(descriptor))
         session = MinorBodyResourceSession(
             request.minor_body_resource_directory,
             resolved_observer,
@@ -273,6 +283,7 @@ def _prepare_with_sphere(
         owns_observer=owns_observer,
         minor_body_session=session,
         prior_source_resolvers=prior,
+        request_minor_body_layers=tuple(request_layers),
     )
 
 

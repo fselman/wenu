@@ -30,6 +30,8 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`test_performance_and_future_program_49j_50.md`](test_performance_and_future_program_49j_50.md)
   — accepted 49J test/performance program and the current ordered 50A
   minor-body and 50B publication-legibility programs.
+- [`numbered_asteroids_50a3d.md`](numbered_asteroids_50a3d.md) — candidate
+  generic installed numbered-asteroid implementation and acceptance gates.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).

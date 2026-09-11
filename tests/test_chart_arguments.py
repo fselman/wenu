@@ -100,6 +100,21 @@ def test_shared_content_switches_resolve_independently():
     assert content.reference_equinox == "J2050"
 
 
+@pytest.mark.parametrize("selection", ("79989", "Ceres", "Future Name"))
+def test_asteroid_selector_accepts_number_or_candidate_installed_name(selection):
+    arguments = parser().parse_args(["--asteroid", selection])
+
+    assert chart_content_options(arguments).asteroids == frozenset(
+        {selection.casefold()}
+    )
+
+
+@pytest.mark.parametrize("selection", ("0", "-1", "+1", "1.0", "67P", "1,4"))
+def test_asteroid_selector_rejects_non_permanent_number_forms(selection):
+    with pytest.raises(SystemExit):
+        parser().parse_args(["--asteroid", selection])
+
+
 def test_magnitude_limit_must_be_finite():
     with pytest.raises(ValueError):
         chart_content_options(

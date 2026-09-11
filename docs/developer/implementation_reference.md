@@ -2265,3 +2265,17 @@ downloads or silently substitutes a propagator.
 
 The accepted contract is
 `archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md`.
+
+### Installed numbered asteroids (Milestone 50A.3D candidate)
+
+`minor_body_resources.py` adds `MinorBodyResourceCollection`, which validates
+structured manifest identity and solution records and resolves a permanent
+number or exact case-folded installed official name to one number-owned
+descriptor. `ChartRequest.minor_body_descriptors` transports request-owned
+descriptors without extending the global catalog. Request-build and direct
+drawing temporarily register those layers, share one resource session between
+point and track, and restore a reusable sphere on close.
+
+`tools/acquire_numbered_asteroids.py NUMBER [...] --output-directory PATH` is
+the explicit networked acquisition route. Ordinary chart rendering only reads
+that local directory. The 50A.2 Ceres manifest remains a compatibility input.
