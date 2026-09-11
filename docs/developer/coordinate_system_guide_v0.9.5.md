@@ -2993,8 +2993,7 @@ Fernando's acceptance authorizes only the bounded 50A.3B implementation.
 
 ## 13.2.40 50A.3B drawable Ceres point and track
 
-**Status:** Implemented; awaiting Fernando's macOS scientific and visual
-acceptance.
+**Status:** Accepted by Fernando on 2026-09-11.
 
 The opt-in Ceres point and dated track use one descriptor-aware source
 binding. The target state comes from the explicitly selected Horizons
@@ -3017,3 +3016,7 @@ digest, and SPK segment. A chart build opens that kernel at most once, reuses
 it across point and track samples, and closes it once. Missing identity,
 coverage, or compatible planetary resources cannot trigger a download,
 two-body extrapolation, or silent substitution.
+
+Fernando accepted the final macOS PNG and semantic SVG after the start label
+was reduced to one cream `Ceres (1)` label placed opposite the initial
+projected motion. Milestone 50A.3 is closed; 50A.4 is next.

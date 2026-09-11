@@ -1,7 +1,6 @@
 # Drawable Ceres point and track (Milestone 50A.3B)
 
-**Status:** Implemented; awaiting Fernando's macOS scientific and visual
-acceptance
+**Status:** Accepted by Fernando on 2026-09-11
 
 **Base:** `9a57f05`
 
@@ -92,17 +91,13 @@ resource selection, failure behavior, symbol meaning, and a runnable regional
 Ceres point-and-track command. The focused architecture diagram is updated;
 no unrelated user document or example script requires modification.
 
-## 6. macOS acceptance still required
+## 6. macOS acceptance
 
-Fernando must run the focused and complete pytest gates, then generate the
-documented regional Ceres request as PNG and semantic SVG from the acquired
-50A.2 directory. Acceptance requires visual confirmation that the hollow
-diamond, `(1) Ceres` label, track, ticks, and dates are legible; inspection of
-the semantic paths; and confirmation that missing or out-of-coverage resources
-fail without creating output.
-
-Until that evidence is accepted, 50A.3B remains open and this record remains
-in `docs/developer/`.
+On macOS 10.16 with Python 3.11.7, the focused implementation gate passed 185
+tests and the complete repository gate passed all 2,181 tests in 94.74 seconds.
+The acquired 50A.2 Ceres resource generated both PNG and semantic SVG. The SVG
+contained the required point and track paths plus their point, line, and label
+subpaths.
 
 Fernando's first macOS product review found the scientific track and semantic
 SVG satisfactory but rejected the duplicated Ceres/start-date labels and the
@@ -112,5 +107,6 @@ ordinary label is suppressed, and the track start receives the single visible
 label `Ceres (1)` without a date. That label is placed opposite the initial
 projected direction of motion; later dated ticks are unchanged. `(1) Ceres`
 remains the canonical internal designation. Atlas presentation uses the
-accepted planetary cream `#FFE6A3` for the asteroid symbol and name. Final
-visual acceptance remains pending a regenerated PNG and SVG.
+accepted planetary cream `#FFE6A3` for the asteroid symbol and name. Fernando
+accepted the regenerated PNG and SVG on 2026-09-11. This closes 50A.3; comet
+numerical validation in 50A.4 is next.

@@ -1392,7 +1392,7 @@ owns deterministic contract coverage;
 - current user documents, examples, and diagrams remain unchanged until an
   accepted implementation creates visible behavior.
 
-## 50A.3B drawable-Ceres ownership (open)
+## 50A.3B drawable-Ceres ownership (accepted)
 
 - `sky/ceres.py` owns the Ceres descriptor and accepted Horizons solution
   identity;
@@ -1408,6 +1408,6 @@ owns deterministic contract coverage;
 - `tests/test_minor_body_resources.py` is a justified new test file because
   manifest failure and opened-kernel lifecycle are a new durable boundary; it
   does not repeat the 50A.2 numerical SPK or apparent-place oracles;
-- `drawable_ceres_50a3b.md` is the open implementation and acceptance record,
+- `archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md` is the accepted implementation record,
   and `diagrams/drawable_ceres_50a3b.{dot,svg}` depicts the focused ownership
   boundary.

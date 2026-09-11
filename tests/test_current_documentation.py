@@ -137,7 +137,10 @@ FIRST_DRAWABLE_ASTEROID_AUDIT = (
     / "archive/milestone_history/50a_minor_bodies"
     / "first_drawable_asteroid_audit_50a3a.md"
 )
-DRAWABLE_CERES = DEVELOPER / "drawable_ceres_50a3b.md"
+DRAWABLE_CERES = (
+    DEVELOPER
+    / "archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md"
+)
 TEST_PRACTICE_AUDIT = (
     DEVELOPER
     / "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md"
@@ -3068,7 +3071,6 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "configuration_schema_v1.md",
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
-        "drawable_ceres_50a3b.md",
         "implementation_reference.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
@@ -3099,6 +3101,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md",
         "archive/milestone_history/50a_minor_bodies/minor_body_state_provider_50a1.md",
         "archive/milestone_history/50a_minor_bodies/asteroid_numerical_validation_50a2.md",
+        "archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md",
     }
     for relative in archived:
         assert (DEVELOPER / relative).is_file()
@@ -3978,7 +3981,7 @@ def test_50a3b_connects_only_manifest_backed_ceres_through_shared_routes():
 
     for phrase in (
         "Drawable Ceres point and track (Milestone 50A.3B)",
-        "awaiting Fernando's macOS scientific and visual acceptance",
+        "Accepted by Fernando on 2026-09-11",
         "--asteroid ceres",
         "--asteroid-track ceres",
         "sky/solar_system/minor_bodies/asteroids/ceres",
@@ -3996,17 +3999,19 @@ def test_50a3b_connects_only_manifest_backed_ceres_through_shared_routes():
         "single visible label `Ceres (1)` without a date",
         "opposite the initial projected direction of motion",
         "planetary cream `#FFE6A3`",
-        "remains open",
+        "complete repository gate passed all 2,181 tests",
+        "accepted the regenerated PNG and SVG",
+        "This closes 50A.3",
     ):
         assert phrase in record
 
-    assert "50A.3B is implemented" in roadmap
+    assert "50A.3B is accepted and archived" in roadmap
     assert "Drawable Ceres point and track" in architecture
     assert "Drawable Ceres resource binding" in implementation
     assert "50A.3B drawable-Ceres ownership" in source_tree
-    assert "bounded implementation is tracked" in instructions
+    assert "bounded implementation is accepted and archived" in instructions
     assert "13.2.40 50A.3B drawable Ceres point and track" in guide
-    assert "50A.3B is present" in program
+    assert "50A.3B is accepted and archived" in program
     assert "Ceres point and dated track" in user_configuration
     assert "--minor-body-resource-directory" in user_configuration
     assert "--asteroid-track ceres" in examples

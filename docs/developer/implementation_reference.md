@@ -2244,7 +2244,7 @@ source. It proposes an explicit manifest-backed resource directory and reuse
 of the existing point, fixed-frame track, projection, preparation, semantic,
 renderer, and export paths. The audit adds no current API or behavior.
 
-### Drawable Ceres resource binding (Milestone 50A.3B open)
+### Drawable Ceres resource binding (Milestone 50A.3B accepted)
 
 `sky/ceres.py` defines `CERES_BODY` and its accepted Horizons solution
 identity. `minor_body_resources.py` defines `MinorBodyResourceSession`, which
@@ -2263,4 +2263,5 @@ owners bind and restore the resolver and close the resource session. The CLI
 selectors are `--asteroid ceres` and `--asteroid-track ceres`. Rendering never
 downloads or silently substitutes a propagator.
 
-The full open acceptance contract is `drawable_ceres_50a3b.md`.
+The accepted contract is
+`archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md`.
