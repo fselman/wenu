@@ -1,12 +1,17 @@
 # Comet numerical validation audit (Milestone 50A.4)
 
-**Status:** Candidate for Fernando's review
+**Status:** Accepted by Fernando
 
 **Base:** `7b72f36`
 
 **Date:** 2026-09-12
 
 **Runtime effect:** None
+
+**Acceptance:** Fernando accepted the 2P/Encke specimen, bounded 2027
+validation window, mandatory non-gravitational provenance, characterization-
+before-tolerance rule, and numerical-only scope on 2026-09-12. The complete
+focused documentation gate passed all 106 tests in 3.94 seconds.
 
 ## 1. Purpose
 

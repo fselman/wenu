@@ -199,8 +199,8 @@ through the shared point and trajectory machinery.
 
 ### 50A.4 — Comet numerical validation
 
-**Status:** Candidate audit prepared for Fernando's review. No runtime or
-visible behavior changes before its decisions are accepted.
+**Status:** Audit accepted by Fernando on 2026-09-12 after all 106 focused
+documentation tests passed in 3.94 seconds. Numerical implementation is next.
 
 Validate the comet state and document model limits, including non-gravitational
 behavior when relevant.
