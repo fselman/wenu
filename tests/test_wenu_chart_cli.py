@@ -159,6 +159,19 @@ def test_regional_accepts_named_and_explicit_icrs_centers():
     assert coordinate.center_name == "My field"
 
 
+def test_icrs_center_supplies_an_informative_default_title():
+    arguments = chart.parser().parse_args([
+        "regional", "--center-icrs-ra", "201.365deg",
+        "--center-icrs-dec=-43.019deg", "--center-name", "My field",
+    ])
+
+    assert chart._title(arguments) == (
+        "My field — ICRS RA 13:25:27.6, Dec −43:01:08.4"
+    )
+    arguments.title = "Explicit title"
+    assert chart._title(arguments) == "Explicit title"
+
+
 def test_center_forms_are_complete_and_mutually_exclusive():
     half = chart.parser().parse_args([
         "regional", "--center-icrs-ra", "10deg"

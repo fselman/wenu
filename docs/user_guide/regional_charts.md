@@ -93,6 +93,11 @@ wenu_chart regional --center-icrs-ra 201.365deg \
   --output output/coordinate-field.png
 ```
 
+Unless `--title` is supplied, an explicit ICRS field title includes
+`--center-name` (or `ICRS field`) together with the numerical center RA and
+declination. RA uses `hh:mm:ss.s` and declination uses signed `dd:mm:ss.s`.
+An explicit `--title` always has final precedence.
+
 Moving objects never become the center merely because they are selected for
 drawing. Use `--center-on planet:Venus`, `--center-on moon:Moon`, or
 `--center-on asteroid:79989` to request an apparent center at

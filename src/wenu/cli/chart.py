@@ -6,6 +6,9 @@ import argparse
 from importlib.resources import files
 from pathlib import Path
 
+from astropy import units as u
+from astropy.coordinates import Angle
+
 from wenu.charts.command_line import (
     add_chart_cli_arguments,
     chart_view_requests_from_arguments,
@@ -362,6 +365,22 @@ def _stem(view):
     return view.family.replace("_", "-")
 
 
+def _title(arguments):
+    """Return an explicit title or identify one literal ICRS field."""
+    if arguments.title is not None:
+        return arguments.title
+    if getattr(arguments, "center_icrs_ra", None) is None:
+        return None
+    name = arguments.center_name or "ICRS field"
+    right_ascension = Angle(arguments.center_icrs_ra * u.deg).to_string(
+        unit=u.hour, sep=":", precision=1, pad=True
+    )
+    declination = Angle(arguments.center_icrs_dec * u.deg).to_string(
+        unit=u.deg, sep=":", precision=1, pad=True, alwayssign=True
+    ).replace("-", "−")
+    return f"{name} — ICRS RA {right_ascension}, Dec {declination}"
+
+
 def generate(arguments):
     """Generate every requested product through Wenu's ordinary facade."""
     values = load_configuration(arguments.config)
@@ -405,7 +424,7 @@ def generate(arguments):
         )
         common_options = {
             "stem": _stem(view),
-            "title": arguments.title,
+            "title": _title(arguments),
             "language": arguments.language,
         }
         if sequence_options is None:

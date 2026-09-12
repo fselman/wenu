@@ -59,7 +59,9 @@ The output directory and `manifest.json` remain outside the repository.
    apparent point falls inside the field.
 3. `center-venus-draw-mask-virgo` centers and draws Venus independently, and
    applies only the explicitly requested Virgo lines, label, and mask.
-4. `center-icrs-coordinate` honors the literal ICRS center and field.
+4. `center-icrs-coordinate` honors the literal ICRS center and field, and its
+   default title records RA as `hh:mm:ss.s` and declination as signed
+   `dd:mm:ss.s`.
 5. The Sirius, Centaurus A, and Omega Centauri products center the named fixed
    targets without manufacturing an implicit target drawing request.
 6. `center-asteroid-79989` centers and draws the same installed asteroid
