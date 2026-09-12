@@ -22,6 +22,13 @@ NAIF SPK target `1000025`. The acquisition requires the generated kernel to
 contain exactly one segment for `1000025`; it does not silently select a newer
 apparition record.
 
+The SBDB solution retains its 2023 perihelion passage. The validation epochs
+advance that passage by the returned sidereal period to the first recurrence
+in 2027, then sample 90 days before, the derived perihelion day, and 90 days
+after. Direct-table requests transmit numeric Julian dates with an explicit
+time scale and are rejected unless Horizons returns one unique
+`$$SOE`/`$$EOE` data block.
+
 The tool refuses to overwrite any existing evidence directory. No automated
 test invokes the network. Once the raw response format and solution identity
 are inspected, the next commit will derive the compact frozen oracle and add
