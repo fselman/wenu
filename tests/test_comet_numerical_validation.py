@@ -1,6 +1,8 @@
 """Offline 2P/Encke fixture and characterization contracts."""
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -17,6 +19,18 @@ def _result(row):
     return {
         "result": f"header\n$$SOE\n{row}\n$$EOE\n",
     }
+
+
+def test_comet_validator_can_run_as_a_repository_script():
+    result = subprocess.run(
+        [sys.executable, "tools/validate_50a4_comet.py", "--help"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "--characterize" in result.stdout
 
 
 def test_offline_parser_reads_vector_state_and_spaced_negative_declination():

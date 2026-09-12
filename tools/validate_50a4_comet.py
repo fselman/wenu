@@ -6,8 +6,14 @@ import argparse
 import json
 from pathlib import Path
 
-from tools.validate_50a2_asteroids import validate
 from wenu.observer import DEFAULT_DATA_DIRECTORY, DEFAULT_EPHEMERIS
+
+try:
+    from tools.validate_50a2_asteroids import validate
+except ModuleNotFoundError as error:
+    if error.name != "tools":
+        raise
+    from validate_50a2_asteroids import validate
 
 REFERENCE = (
     Path(__file__).parents[1]
