@@ -1,6 +1,12 @@
 # Numbered-asteroid CLI preflight (Milestone 50A.3I)
 
-**Status:** Candidate implementation and macOS acceptance
+**Status:** Accepted by Fernando
+
+**Acceptance:** On 2026-09-12, the focused macOS gate passed all 181 tests
+in 5.12 seconds and the complete repository gate passed all 2,248 tests in
+91.13 seconds. Fernando then accepted the generated charts after verifying
+networked `refresh`, warm-cache `offline`, and automatic acquisition for both
+numbered asteroids `(79989)` and `(79990)`.
 
 ## Scope
 
@@ -56,3 +62,6 @@ request parameters, signatures, solution identity, and requested coverage.
 - an offline warm-cache repeat proving no network dependence;
 - inspection of the produced point/center/track chart and immutable cache;
 - clean branch status before merge.
+
+All gates passed. The focused and complete test counts above, together with
+the accepted cold/refresh and offline/warm-cache renders, close 50A.3I.

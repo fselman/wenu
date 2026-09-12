@@ -1508,7 +1508,7 @@ refraction across the resolved disk, and occultation prediction remain outside
 
 ## Milestone 50A.3I — Automatic numbered-asteroid CLI preflight
 
-**Status:** Candidate implementation and macOS acceptance.
+**Status:** Accepted and complete on 2026-09-12.
 
 Implement accepted 50A.3H for exact positive permanent asteroid numbers. The
 installed CLI may reuse or acquire verified bounded Horizons SPKs under
@@ -1517,3 +1517,7 @@ construction. Immutable content-addressed publication, provider receipts,
 coverage validation, and an authoritative explicit resource directory preserve
 reproducibility and offline rendering. Comets, satellites, name discovery, and
 orbital-element propagation remain deferred.
+
+Fernando accepted automatic acquisition and warm-cache offline reuse for
+`(79989)` and `(79990)`. Closure passed 181 focused tests in 5.12 seconds and
+all 2,248 tests in 91.13 seconds.
