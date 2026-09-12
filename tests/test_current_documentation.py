@@ -3103,6 +3103,24 @@ def test_numbered_asteroid_cli_preflight_contract_is_documented():
         assert phrase.lower() in document.lower()
 
 
+def test_50a4_audits_comet_numerics_before_runtime_behavior():
+    audit = " ".join(read(
+        DEVELOPER / "comet_numerical_validation_audit_50a4.md"
+    ).split())
+    for phrase in (
+        "2P/Encke",
+        "non-gravitational model",
+        "A1`, `A2`, `A3`, or `DT",
+        "geocentric astrometric ICRS",
+        "topocentric astrometric and apparent ICRS",
+        "explicit `--characterize` mode",
+        "not an independent rederivation",
+        "does not add `--comet`",
+        "must never contact SBDB or Horizons",
+    ):
+        assert phrase.lower() in audit.lower()
+
+
 def test_developer_root_contains_only_active_authority_and_wip_documents():
     assert {
         path.name
@@ -3121,6 +3139,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "cli_contract_acceptance_50a3g.md",
         "moving_object_data_resolution_audit_50a3h.md",
         "numbered_asteroid_cli_preflight_50a3i.md",
+        "comet_numerical_validation_audit_50a4.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",

@@ -3044,3 +3044,10 @@ kernel still supplies TDB/ICRF target state and the ordinary planetary source
 still supplies observer state and apparent-place correction. Cache coverage is
 verified against SPK segment epochs in TDB; no network result bypasses the
 existing product-frame, projection, preparation, or rendering path.
+
+Candidate 50A.4 likewise adds no frame. It proposes validating a 2P/Encke
+type-21 SPK against frozen direct-Horizons geometric, astrometric, apparent,
+distance, light-time, and topocentric-parallax evidence. The SPK owns the
+provider's complete selected orbit, including declared non-gravitational
+parameters; Wenu neither reapplies nor removes them. The ephemeris target is
+the modeled nucleus centre, not its coma, tail, or photocentre.
