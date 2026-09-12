@@ -3079,3 +3079,32 @@ Final Mac verification returned `accepted: true`, passed all 151 focused tests
 in 4.99 seconds, and passed the complete 2,262-test suite in 84.96 seconds.
 This closes 50A.4 without changing a coordinate frame or adding drawable comet
 behavior.
+
+Accepted 50A.5A introduces no new coordinate or product frame. A future
+symbolic 2P/Encke nucleus point and track would consume the already validated
+TDB/ICRF provider state and reuse the existing observer, astrometric, apparent,
+fixed-product-frame, projection, and rendering route. Comet identity and
+appearance remain separate from those coordinate operations; a symbolic mark
+makes no coma, tail, photocentre, brightness, or activity claim.
+The designation prefix (`P`, `D`, `I`, `C`, `X`, or `A`) is identity and
+classification metadata, not a coordinate system or proof that an applicable
+ephemeris exists. A recognized designation reaches the coordinate pipeline
+only after a separately validated installed provider supplies the required
+bounded state.
+The proposed comet fan follows the observer-relative apparent antisolar
+position angle at the same instant. That physical tangent direction is derived
+from independently validated apparent Sun and comet directions, transported
+through the fixed product frame, and only then projected into page orientation;
+it is not derived from chart center, page axes, or comet velocity. Multiple
+planet, asteroid, and comet tracks still share one fixed product frame even though
+each descriptor retains its own state source and provenance.
+The circle, radial spokes, three-stroke fan, relative lengths, and opening angle
+are constructed projected symbol geometry. Only rotation of the fan bisector
+has astronomical meaning; the remaining dimensions are style-owned and carry
+no angular-size or tail-morphology claim.
+Wenu stores that normalized geometry as one canonical immutable symbol.
+Individual appearances apply placement, antisolar orientation, and
+magnification after the astronomical direction has been realized; they do not
+rebuild the symbol or create another coordinate path.
+Fernando accepted this identity, orientation, symbol-reuse, and multi-track
+boundary on 2026-09-12, authorizing only the bounded 50A.5B implementation.

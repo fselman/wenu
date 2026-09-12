@@ -1535,3 +1535,27 @@ returned `accepted: true`, passed all 151 focused tests in 4.99 seconds, and
 passed the complete 2,262-test suite in 84.96 seconds. Milestone 50A.4 is
 complete; the first symbolic comet and track remain the next bounded program
 slice.
+
+Accepted 50A.5A audits the first drawable comet before runtime work. It selects
+2P/Encke as one explicitly installed, symbolic nucleus point and dated
+track through the shared minor-body/Solar-System route. Comet identity remains
+distinct from minor-planet numbering and keeps `P`, `D`, `I`, `C`, `X`, and
+`A` designation classes structurally distinct. Syntax recognition does not
+authorize drawing without separately validated installed state. Automatic
+comet acquisition, brightness, coma, tail, photocentre, and physical nucleus
+appearance remain deferred. The audit changes no runtime behavior. Fernando
+accepted it on 2026-09-12, authorizing the bounded 50A.5B implementation.
+Fernando subsequently requested antisolar rotation of the symbolic comet fan
+and simultaneous planet, asteroid, and comet tracks when they share one field.
+The proposed implementation therefore generalizes the singular track request
+to a collection with one shared timeline; artificial satellites and per-track
+timelines remain deferred.
+The proposed symbol is constructed from a hollow circle, short radial spokes,
+and three longer tail spokes; the central tail spoke is 1.5 times the exposed
+length of the two symmetric outer spokes and their initial total fan angle is
+25 degrees, pending visual acceptance. Wenu owns one canonical immutable
+normalized vector definition; each use applies only placement, antisolar
+orientation, and magnification rather than reconstructing the geometry.
+Because antisolar orientation is a physical direction claim, the implementation
+must characterize and accept an independent direct-Horizons position-angle
+oracle before rendering; fixed fan length and opening remain symbolic.
