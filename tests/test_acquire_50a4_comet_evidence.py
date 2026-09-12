@@ -55,12 +55,13 @@ def test_epochs_are_symmetric_around_provider_perihelion_day():
 def test_horizons_requests_freeze_vector_and_observer_policies():
     epochs = ("2026-11-01T00:00:00Z", "2027-02-01T00:00:00Z")
 
-    vectors = _horizons_parameters("vectors", epochs)
+    vectors = _horizons_parameters("vectors", epochs, "1000025")
     topocentric = _horizons_parameters(
-        "observer", epochs, topocentric=True
+        "observer", epochs, "1000025", topocentric=True
     )
 
     assert vectors["CENTER"] == "'@0'"
+    assert vectors["COMMAND"] == "'DES=1000025;'"
     assert vectors["VEC_CORR"] == "'NONE'"
     assert vectors["REF_PLANE"] == "'FRAME'"
     assert vectors["TIME_TYPE"] == "'TDB'"
