@@ -1444,7 +1444,7 @@ owns deterministic contract coverage;
 - `tools/acquire_numbered_asteroids.py` delegates to that acquisition owner;
 - request, coordinate, projection, renderer, and export owners remain offline.
 
-## 50A.4 comet numerical-validation ownership (candidate implementation)
+## 50A.4 comet numerical-validation ownership (accepted implementation)
 
 - `tools/acquire_50a4_comet_evidence.py` alone owns deliberate network
   acquisition of raw 2P/Encke SBDB, Horizons SPK, vector, and observer evidence;

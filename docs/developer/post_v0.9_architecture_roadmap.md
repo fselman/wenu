@@ -1527,8 +1527,11 @@ It requires frozen non-gravitational model provenance, direct-Horizons state
 and observer-table evidence, explicit characterization before tolerances, and
 no drawable or automatically acquired comet behavior.
 Fernando accepted the audit on 2026-09-12 after all 106 focused documentation
-tests passed in 3.94 seconds. The bounded candidate implementation now freezes
+tests passed in 3.94 seconds. The accepted implementation freezes
 the compact oracle, parses raw evidence offline, and provides a validator with
 an optional non-accepting characterization mode. Fernando accepted the
-characterized reproduction tolerances on 2026-09-12; the enforcing Mac run and
-complete Mac suite remain next.
+characterized reproduction tolerances on 2026-09-12. Final Mac verification
+returned `accepted: true`, passed all 151 focused tests in 4.99 seconds, and
+passed the complete 2,262-test suite in 84.96 seconds. Milestone 50A.4 is
+complete; the first symbolic comet and track remain the next bounded program
+slice.
