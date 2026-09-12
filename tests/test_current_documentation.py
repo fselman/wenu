@@ -3077,6 +3077,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "numbered_asteroids_50a3d.md",
         "object_centered_regional_charts_50a3e.md",
         "chart_cli_semantics_audit_50a3f.md",
+        "cli_contract_acceptance_50a3g.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
