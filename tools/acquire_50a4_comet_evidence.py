@@ -79,13 +79,37 @@ def _sbdb_identity(document):
     )
     if perihelion is None:
         raise ValueError("SBDB orbit has no perihelion epoch.")
-    return obj, orbit, float(perihelion)
+    period = next(
+        (
+            value.get("value")
+            for value in orbit.get("elements", ())
+            if isinstance(value, dict) and value.get("name") == "per"
+        ),
+        None,
+    )
+    if period is None or float(period) <= 0:
+        raise ValueError("SBDB orbit has no positive sidereal period.")
+    return obj, orbit, float(perihelion), float(period)
 
 
-def _epochs(perihelion_jd_tdb):
-    middle = Time(perihelion_jd_tdb, format="jd", scale="tdb").utc.to_datetime(
+def _epochs(perihelion_jd_tdb, period_days, validation_year=2027):
+    validation_perihelion = perihelion_jd_tdb
+    while (
+        Time(
+            validation_perihelion, format="jd", scale="tdb"
+        ).utc.datetime.year
+        < validation_year
+    ):
+        validation_perihelion += period_days
+    middle = Time(
+        validation_perihelion, format="jd", scale="tdb"
+    ).utc.to_datetime(
         timezone=timezone.utc
     )
+    if middle.year != validation_year:
+        raise ValueError(
+            f"2P has no derived perihelion in validation year {validation_year}."
+        )
     middle = middle.replace(hour=0, minute=0, second=0, microsecond=0)
     return tuple(
         (middle + timedelta(days=offset)).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -96,15 +120,18 @@ def _epochs(perihelion_jd_tdb):
 def _horizons_parameters(
     kind, epochs, horizons_record, *, topocentric=False,
 ):
+    times = Time(epochs)
+    time_scale = "TDB" if kind == "vectors" else "UT"
+    julian_days = times.tdb.jd if kind == "vectors" else times.utc.jd
     common = {
         "format": "json",
         "COMMAND": f"'{horizons_record};'",
         "OBJ_DATA": "'YES'",
         "MAKE_EPHEM": "'YES'",
-        "TLIST": ",".join(
-            f"'{value.removesuffix('Z')}'" for value in epochs
-        ),
-        "TLIST_TYPE": "'CAL'",
+        "TLIST": "'" + ",".join(
+            f"{value:.9f}" for value in julian_days
+        ) + "'",
+        "TLIST_TYPE": "'JD'",
         "TIME_DIGITS": "'FRACSEC'",
         "CSV_FORMAT": "'YES'",
     }
@@ -118,7 +145,7 @@ def _horizons_parameters(
             "VEC_CORR": "'NONE'",
             "VEC_TABLE": "'2'",
             "OUT_UNITS": "'AU-D'",
-            "TIME_TYPE": "'TDB'",
+            "TIME_TYPE": f"'{time_scale}'",
         }
     centre = "'coord@399'" if topocentric else "'500@399'"
     parameters = {
@@ -131,7 +158,7 @@ def _horizons_parameters(
         "APPARENT": "'AIRLESS'",
         "QUANTITIES": "'1,20,21,45'",
         "RANGE_UNITS": "'AU'",
-        "TIME_TYPE": "'UT'",
+        "TIME_TYPE": f"'{time_scale}'",
     }
     if topocentric:
         parameters.update({
@@ -198,6 +225,18 @@ def _spk_payload(document):
         raise ValueError("Horizons returned an invalid SPK payload.") from error
 
 
+def _table_result(document, name):
+    result = document.get("result")
+    if document.get("error") or not isinstance(result, str):
+        diagnostic = document.get("error") or result or "missing result"
+        raise ValueError(f"Horizons {name} table failed: {diagnostic}")
+    if result.count("$$SOE") != 1 or result.count("$$EOE") != 1:
+        raise ValueError(
+            f"Horizons {name} table has no unique SOE/EOE data block."
+        )
+    return result
+
+
 def acquire(output_directory):
     """Acquire one new evidence directory without replacing prior evidence."""
     output_directory = Path(output_directory).expanduser().resolve()
@@ -216,8 +255,8 @@ def acquire(output_directory):
         "phys-par": "true",
     }
     sbdb, sbdb_url = _request(SBDB_API, sbdb_parameters)
-    obj, orbit, perihelion = _sbdb_identity(sbdb)
-    epochs = _epochs(perihelion)
+    obj, orbit, perihelion, period = _sbdb_identity(sbdb)
+    epochs = _epochs(perihelion, period)
     start = (
         Time(epochs[0]).to_datetime(timezone=timezone.utc)
         - timedelta(days=30)
@@ -257,6 +296,7 @@ def acquire(output_directory):
     ):
         document, url = _request(HORIZONS_API, parameters)
         _signature(document, "NASA/JPL Horizons API")
+        _table_result(document, name)
         tables.append((name, document, url))
 
     evidence = [{
@@ -297,6 +337,7 @@ def acquire(output_directory):
             "orbit_id": orbit.get("orbit_id"),
             "solution_date": orbit.get("soln_date"),
             "perihelion_jd_tdb": perihelion,
+            "sidereal_period_days": period,
             "model_parameters": orbit["model_pars"],
         },
         "observer": OBSERVER,
