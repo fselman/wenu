@@ -9,6 +9,8 @@ from math import acos, cos, radians, sin
 from pathlib import Path
 from types import SimpleNamespace
 
+from astropy.time import Time
+
 from wenu.ephemeris import EphemerisStateRequest
 from wenu.minor_body_ephemeris import (
     MinorBodySolutionIdentity,
@@ -67,10 +69,21 @@ def _separation_deg(first, second):
 
 
 def _solution(record, api_version):
-    model_parameters = tuple(
-        sorted(record.get("model_parameters", {}).items())
+    raw_parameters = record.get("model_parameters", {})
+    if isinstance(raw_parameters, dict):
+        model_parameters = tuple(sorted(raw_parameters.items()))
+    else:
+        model_parameters = tuple(
+            (
+                parameter["name"],
+                json.dumps(parameter, sort_keys=True, separators=(",", ":")),
+            )
+            for parameter in raw_parameters
+        )
+    quality_fields = tuple(
+        (name, "null" if value is None else str(value))
+        for name, value in sorted(record["quality_fields"].items())
     )
-    quality_fields = tuple(sorted(record["quality_fields"].items()))
     return MinorBodySolutionIdentity(
         provider="JPL Horizons",
         service_version=f"Horizons API {api_version}",
@@ -82,7 +95,7 @@ def _solution(record, api_version):
         orbit_solution_id=record["orbit_solution_id"],
         solution_date=record["solution_date"],
         osculating_epoch=record["osculating_epoch"],
-        reference_system="ICRF/J2000",
+        reference_system=record.get("reference_system", "ICRF/J2000"),
         iau_number=record.get(
             "iau_number",
             1 if record["key"] == "ceres" else 99942,
@@ -97,7 +110,10 @@ def _solution(record, api_version):
         )),
         model_parameters=model_parameters,
         quality_fields=quality_fields,
-        provenance=("frozen direct-Horizons 50A.2 evidence",),
+        provenance=(record.get(
+            "provenance",
+            "frozen direct-Horizons 50A.2 evidence",
+        ),),
     )
 
 
@@ -154,7 +170,9 @@ def validate(
         tolerances[name] = float(value)
     manifest_path = resource_directory / "acquisition-report.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    acquired = {item["key"]: item for item in manifest["resources"]}
+    acquired = {
+        item["key"]: item for item in manifest.get("resources", ())
+    }
     planetary_path = planetary_ephemeris_path
     if not planetary_path.is_file():
         raise FileNotFoundError(
@@ -164,7 +182,17 @@ def validate(
 
     for record in reference["objects"]:
         key = record["key"]
-        resource_record = acquired[key]
+        resource_record = acquired.get(key)
+        if resource_record is None:
+            matches = tuple(
+                item for item in manifest.get("evidence", ())
+                if item.get("filename") == record["spk"]["filename"]
+            )
+            if len(matches) != 1:
+                raise ValueError(
+                    f"{key} has no unique SPK in the acquisition report."
+                )
+            resource_record = matches[0]
         spk_path = resource_directory / resource_record["filename"]
         actual_digest = _digest(spk_path)
         if actual_digest != resource_record["sha256"]:
@@ -221,14 +249,18 @@ def validate(
                     planetary = SkyfieldEphemerisStateSource.from_observer(
                         observer
                     )
+                    solution = _solution(
+                        record,
+                        reference["authority"].get(
+                            "returned_version",
+                            reference["authority"].get("horizons_version"),
+                        ),
+                    )
                     source = SkyfieldMinorBodyStateSource.from_kernels(
                         small_body_kernel=kernel,
                         planetary_source=planetary,
                         timescale=observer.timescale,
-                        solution=_solution(
-                            record,
-                            reference["authority"]["returned_version"],
-                        ),
+                        solution=solution,
                         model=f"Horizons {record['orbit_solution_id']}",
                     )
                     geometric = source.state(
@@ -236,10 +268,18 @@ def validate(
                             target=key,
                             centre="solar system barycenter",
                             frame="icrf",
-                            instant=epoch["calendar"],
+                            instant=Time(
+                                epoch["vector_jd_tdb"],
+                                format="jd",
+                                scale="tdb",
+                            ).isot,
                             time_scale="tdb",
                         )
                     )
+                    if geometric.solution is not solution:
+                        raise AssertionError(
+                            f"{key} state discarded its solution identity."
+                        )
                     maxima["position_au"] = max(
                         maxima["position_au"],
                         *(
@@ -364,6 +404,11 @@ def validate(
                 "epochs": len(record["epochs"]),
                 "maximum_residuals": maxima,
                 "parallax_deg": parallaxes,
+                "solution": {
+                    "object_class": solution.object_class,
+                    "model_parameters": dict(solution.model_parameters),
+                    "quality_fields": dict(solution.quality_fields),
+                },
             }
         )
 

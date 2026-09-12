@@ -1527,4 +1527,7 @@ It requires frozen non-gravitational model provenance, direct-Horizons state
 and observer-table evidence, explicit characterization before tolerances, and
 no drawable or automatically acquired comet behavior.
 Fernando accepted the audit on 2026-09-12 after all 106 focused documentation
-tests passed in 3.94 seconds. The bounded numerical implementation is next.
+tests passed in 3.94 seconds. The bounded candidate implementation now freezes
+the compact oracle, parses raw evidence offline, and provides a
+characterization-only validator. Tolerance review and scientific acceptance
+remain next.

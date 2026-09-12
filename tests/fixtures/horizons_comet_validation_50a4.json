@@ -1,0 +1,194 @@
+{
+  "authority": {
+    "horizons_api": "NASA/JPL Horizons API",
+    "horizons_version": "1.2",
+    "observer_apparent_policy": "AIRLESS",
+    "observer_quantities": [
+      1,
+      20,
+      21,
+      45
+    ],
+    "observer_reference_system": "ICRF",
+    "sbdb_api": "NASA/JPL Small-Body Database (SBDB) API",
+    "sbdb_version": "1.3",
+    "vector_centre": "solar system barycenter",
+    "vector_corrections": "NONE",
+    "vector_reference_plane": "FRAME",
+    "vector_units": "AU-D"
+  },
+  "objects": [
+    {
+      "class": "comet",
+      "epochs": [
+        {
+          "calendar": "2026-11-13T00:00:00",
+          "calendar_tdb": "2026-11-13T00:01:09",
+          "geocentric": {
+            "apparent_dec_deg": 11.56149,
+            "apparent_ra_deg": 347.16251,
+            "astrometric_dec_deg": 11.55906,
+            "astrometric_ra_deg": 347.16022,
+            "calendar_utc": "2026-11-13T00:00:00",
+            "distance_au": 0.92719115769851,
+            "light_time_min": 7.71121372
+          },
+          "position_au": [
+            1.517568800760104,
+            0.4916578251373462,
+            0.4865077053018847
+          ],
+          "topocentric": {
+            "apparent_dec_deg": 11.56332,
+            "apparent_ra_deg": 347.16285,
+            "astrometric_dec_deg": 11.56089,
+            "astrometric_ra_deg": 347.16048,
+            "calendar_utc": "2026-11-13T00:00:00",
+            "distance_au": 0.92716073639772,
+            "light_time_min": 7.71096071
+          },
+          "vector_jd_tdb": 2461357.500800726,
+          "velocity_au_per_day": [
+            -0.01461411429203523,
+            0.002653192864892616,
+            0.0002466185120236972
+          ]
+        },
+        {
+          "calendar": "2027-02-11T00:00:00",
+          "calendar_tdb": "2027-02-11T00:01:09",
+          "geocentric": {
+            "apparent_dec_deg": -18.92442,
+            "apparent_ra_deg": 312.65185,
+            "astrometric_dec_deg": -18.92291,
+            "astrometric_ra_deg": 312.65762,
+            "calendar_utc": "2027-02-11T00:00:00",
+            "distance_au": 0.69357786738223,
+            "light_time_min": 5.76831123
+          },
+          "position_au": [
+            -0.3298092036139844,
+            0.0748825721225945,
+            0.0167429555809674
+          ],
+          "topocentric": {
+            "apparent_dec_deg": -18.92222,
+            "apparent_ra_deg": 312.64901,
+            "astrometric_dec_deg": -18.9207,
+            "astrometric_ra_deg": 312.65481,
+            "calendar_utc": "2027-02-11T00:00:00",
+            "distance_au": 0.69358577369992,
+            "light_time_min": 5.76837698
+          },
+          "vector_jd_tdb": 2461447.500800753,
+          "velocity_au_per_day": [
+            -0.01061519003822313,
+            -0.03169484101896915,
+            -0.02221552218873262
+          ]
+        },
+        {
+          "calendar": "2027-05-12T00:00:00",
+          "calendar_tdb": "2027-05-12T00:01:09",
+          "geocentric": {
+            "apparent_dec_deg": -15.70192,
+            "apparent_ra_deg": 339.76768,
+            "astrometric_dec_deg": -15.70194,
+            "astrometric_ra_deg": 339.76937,
+            "calendar_utc": "2027-05-12T00:00:00",
+            "distance_au": 1.63349130979905,
+            "light_time_min": 13.58533297
+          },
+          "position_au": [
+            0.8357520865410502,
+            -1.264944624135273,
+            -0.7546083233423488
+          ],
+          "topocentric": {
+            "apparent_dec_deg": -15.70082,
+            "apparent_ra_deg": 339.76756,
+            "astrometric_dec_deg": -15.70083,
+            "astrometric_ra_deg": 339.76933,
+            "calendar_utc": "2027-05-12T00:00:00",
+            "distance_au": 1.63351988662757,
+            "light_time_min": 13.58557063
+          },
+          "vector_jd_tdb": 2461537.500800756,
+          "velocity_au_per_day": [
+            0.0130652045950607,
+            -0.006202692163401443,
+            -0.002774408252574309
+          ]
+        }
+      ],
+      "horizons_command": "90000091;",
+      "iau_number": 2,
+      "key": "2p-encke",
+      "model_parameters": [
+        {
+          "desc": "non-gravitational radial acceleration parameter",
+          "kind": "EST",
+          "n": 1,
+          "name": "A1",
+          "sigma": "5.834E-11",
+          "title": "non-grav. radial accel.",
+          "units": "au/d^2",
+          "value": "2.229911330751396E-10"
+        },
+        {
+          "desc": "non-gravitational transverse acceleration parameter",
+          "kind": "EST",
+          "n": 2,
+          "name": "A2",
+          "sigma": "7.144E-13",
+          "title": "non-grav. transverse accel.",
+          "units": "au/d^2",
+          "value": "2.020304758924744E-12"
+        }
+      ],
+      "name": "Encke",
+      "orbit_solution_id": "K273/14",
+      "osculating_epoch": "2459936.5 TDB",
+      "primary_designation": "2P",
+      "provider_spk_id": "1000025",
+      "quality_fields": {
+        "condition_code": "1",
+        "data_arc": "2863",
+        "first_obs": "2018-11-05",
+        "last_obs": "2026-09-07",
+        "n_del_obs_used": null,
+        "n_dop_obs_used": null,
+        "n_obs_used": 696,
+        "not_valid_after": null,
+        "not_valid_before": null,
+        "pe_used": "DE441",
+        "producer": "Davide Farnocchia",
+        "rms": ".44303",
+        "sb_used": "SB441-N16",
+        "source": "JPL"
+      },
+      "reference_system": "J2000 ecliptic and equinox",
+      "solution_date": "2026-09-08 14:23:39",
+      "source_evidence_sha256": {
+        "horizons-geocentric.json": "788c6b8536f7e44b317f0c6c3fe2d41913f72a139d501d18c6fb09e80db02742",
+        "horizons-topocentric.json": "1c305a5d0dbd03725a1ac656ab6396d858f01c24f4403595d6a65f54dee31747",
+        "horizons-vectors.json": "ac4c5b6a3e47ac14079d9bf71e9879f813cc58938326b069e5daa746c5675fda",
+        "sbdb-2p.json": "fbdae2888c82a7b5b704244a5aeff76d77f9c0e4da77dc102288e51545ba1bc4"
+      },
+      "spk": {
+        "coverage_end_jd_tdb": 2461567.5,
+        "coverage_start_jd_tdb": 2461327.5,
+        "filename": "2p-encke.bsp",
+        "segment_centre_id": 10,
+        "segment_type": 21,
+        "sha256": "6d83534f66d06490449851f1255c1a624d6cd4a4658716478edd41ee9448507b"
+      }
+    }
+  ],
+  "observer": {
+    "elevation_km": 0.052,
+    "latitude_deg": -32.443342,
+    "longitude_deg_east": -71.230289,
+    "name": "La Ligua"
+  }
+}

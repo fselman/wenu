@@ -1,8 +1,8 @@
 # Comet numerical validation (Milestone 50A.4)
 
-**Status:** Candidate implementation; raw evidence acquisition pending
+**Status:** Initial characterization implementation; tolerance review pending
 
-**Base:** `1049134`
+**Base:** `5aec1fe`
 
 The accepted audit selects 2P/Encke and requires an evidence-first numerical
 validation. `tools/acquire_50a4_comet_evidence.py` is the only networked step.
@@ -30,18 +30,72 @@ time scale and are rejected unless Horizons returns one unique
 `$$SOE`/`$$EOE` data block.
 
 The tool refuses to overwrite any existing evidence directory. No automated
-test invokes the network. Once the raw response format and solution identity
-are inspected, the next commit will derive the compact frozen oracle and add
-the offline validator without duplicating coordinate mathematics.
+test invokes the network.
+
+`tools/build_50a4_comet_fixture.py` parses the inspected raw directory without
+network access. It rejects wrong SBDB, Horizons, solution, SPK, digest, model,
+or epoch identities and writes the compact direct-Horizons oracle at
+`tests/fixtures/horizons_comet_validation_50a4.json`. The parser explicitly
+handles Horizons' whitespace between a minus sign and some negative apparent
+declinations.
+
+`tools/validate_50a4_comet.py` delegates state and direction comparison to the
+existing 50A.2 validator machinery. The shared validator now evaluates each
+geometric vector at its explicit JD TDB while the observer tables remain at
+their stated UTC instants. This distinction is material here because midnight
+UTC is approximately `00:01:09` TDB. The result retains the typed comet
+solution, complete `A1` and `A2` records, quality fields, SPK segment, resource
+chain, and per-product time provenance.
+
+The 50A.4 entry point currently requires `--characterize`, returns
+`"accepted": false`, and reports `"tolerances": null`. Enforced tolerances
+remain deliberately absent until Fernando reviews the characterization.
+
+The initial run against the inspected `50a4-raw-v2` SPK and DE440 records
+these maxima without accepting them as thresholds:
+
+| Quantity | Maximum absolute residual |
+|---|---:|
+| position | `5.218470100487593e-11 au` |
+| velocity | `2.307827540182217e-12 au/day` |
+| astrometric RA | `3.517478546655184e-6 deg` |
+| astrometric Dec | `4.541090646625889e-6 deg` |
+| apparent RA | `2.8297264407228795e-6 deg` |
+| apparent Dec | `4.503201424199688e-6 deg` |
+| distance | `2.968685297588536e-10 au` |
+| light time | `7.085011688445775e-9 min` |
+| parallax | `7.287428584896007e-6 deg` |
+
+The direct observer tables contain angular coordinates to five decimal
+degrees, so their printed precision is material to the directional and
+parallax characterization. The realized topocentric parallax spans
+`0.001112315` through `0.003469527 deg` across the three epochs.
 
 Run the acquisition from the repository root:
 
 ```bash
 python tools/acquire_50a4_comet_evidence.py \
-  --output-directory ~/.cache/wenu/minor_bodies/50a4-raw
+  --output-directory ~/.cache/wenu/minor_bodies/50a4-raw-v2
 ```
 
-The acquisition report is safe to inspect as text. The SPK and four raw JSON
-responses remain local until their identities and redistribution boundary are
-reviewed; only the compact numerical fixture is expected to enter the
-repository.
+Build the compact oracle from that exact inspected directory:
+
+```bash
+python tools/build_50a4_comet_fixture.py \
+  --raw-directory ~/.cache/wenu/minor_bodies/50a4-raw-v2 \
+  --output /tmp/horizons_comet_validation_50a4.json
+```
+
+Run the initial numerical comparison without acceptance thresholds:
+
+```bash
+python tools/validate_50a4_comet.py --characterize \
+  --resource-directory ~/.cache/wenu/minor_bodies/50a4-raw-v2 \
+  --planetary-ephemeris-path ~/.cache/wenu/de440s.bsp \
+  --output /tmp/wenu-50a4-characterization.json
+```
+
+The acquisition report is safe to inspect as text. The SPK and raw JSON
+responses remain local; only the compact numerical fixture enters the
+repository. No descriptor, chart request, CLI selector, drawing, or exporter
+behavior is added by this implementation.
