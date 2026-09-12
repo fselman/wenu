@@ -22,13 +22,13 @@ projection, viewport, field size, style, renderer, or exporter.
 
 ## CLI behavior
 
-- `regional --target NAME` resolves a packaged star or deep-sky target;
-- `--center-ra` and `--center-dec` supply an explicit ICRS point;
+- This milestone's original spelling is superseded by
+  `chart_cli_semantics_audit_50a3f.md`.
+- `regional --center-on IDENTIFIER` resolves one uniquely named center;
+- `--center-icrs-ra` and `--center-icrs-dec` supply an explicit ICRS point;
 - the existing horizontal pair works without a constellation;
-- exactly one selected planet, Moon, or asteroid becomes the implicit center
-  when no explicit fixed-object or coordinate center is present; an explicit
-  constellation may independently supply content and the outside mask;
-- several moving selections without an explicit center fail as ambiguous;
+- a planet, Moon, or asteroid becomes the center only through `--center-on`;
+- selecting one or several bodies for drawing never changes the center;
 - observer-time sequences retain the center at the initial chart epoch.
 
 The object remains ordinary selected chart content. Request-owned asteroid

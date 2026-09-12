@@ -1,4 +1,4 @@
-"""Strict validation for Wenu schema-version-1 configuration data."""
+"""Strict validation for Wenu schema-version-2 configuration data."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ except ModuleNotFoundError:  # pragma: no cover - Python 3.10
     import tomli as tomllib
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 LINE_STYLES = frozenset(
     {"solid", "dashed", "dotted", "dash_dot", "none"}
 )
@@ -37,7 +37,7 @@ LEGEND_LOCATIONS = frozenset(
 
 
 class ConfigurationError(ValueError):
-    """A configuration value failed schema-version-1 validation."""
+    """A configuration value failed schema-version-2 validation."""
 
 
 _OPTIONAL_NUMBERS = frozenset(
@@ -140,6 +140,7 @@ _NONNEGATIVE_NAMES = frozenset(
     }
 )
 _ENUMS = {
+    "constellations.system": {"western"},
     "sequence.restart_policy": {"restart", "resume"},
     "families.all_sky.projection": {"mollweide"},
     "families.all_sky.coordinate_frame": {"galactic"},
@@ -495,8 +496,8 @@ def _validate_semantics(configuration: Mapping[str, Any]) -> None:
             "must be positive for the north pole",
         )
 
-    for name, subject in configuration["subjects"].items():
-        kind = subject["kind"]
+    for name, center in configuration["centers"].items():
+        kind = center["kind"]
         allowed = {
             "all_sky": {"none"},
             "planisphere": {"none"},
@@ -507,36 +508,51 @@ def _validate_semantics(configuration: Mapping[str, Any]) -> None:
         }[name]
         if kind not in allowed:
             _error(
-                f"subjects.{name}.kind",
+                f"centers.{name}.kind",
                 f"unsupported value {kind!r}; expected "
                 f"{', '.join(sorted(allowed))}",
             )
-        constellations = subject.get("constellations")
+        constellations = center.get("constellations")
         if constellations is not None:
             if len(constellations) != len(set(constellations)):
                 _error(
-                    f"subjects.{name}.constellations",
+                    f"centers.{name}.constellations",
                     "identifiers must be unique",
                 )
             if kind == "constellations" and not constellations:
                 _error(
-                    f"subjects.{name}.constellations",
+                    f"centers.{name}.constellations",
                     "must not be empty for kind \"constellations\"",
                 )
         if name == "regional_group":
-            group = subject["group"]
+            group = center["group"]
             if kind == "group" and group == "none":
-                _error("subjects.regional_group.group", "must name a group")
+                _error("centers.regional_group.group", "must name a group")
             if kind == "group" and constellations:
                 _error(
-                    "subjects.regional_group.constellations",
+                    "centers.regional_group.constellations",
                     "must be empty when kind is \"group\"",
                 )
             if kind == "constellations" and group != "none":
                 _error(
-                    "subjects.regional_group.group",
+                    "centers.regional_group.group",
                     "must be \"none\" when kind is \"constellations\"",
                 )
+
+    from wenu.charts.constellation_resolver import normalize_constellations
+
+    for name, mask in configuration["masks"].items():
+        constellations = mask["constellations"]
+        if len(constellations) != len(set(constellations)):
+            _error(
+                f"masks.{name}.constellations",
+                "identifiers must be unique",
+            )
+        if constellations:
+            try:
+                normalize_constellations(constellations)
+            except ValueError as error:
+                _error(f"masks.{name}.constellations", str(error))
 
     levels = configuration["detail"]["adaptive"]["levels"]
     spans = [float(level["span"]) for level in levels]
@@ -627,7 +643,7 @@ def _validate_semantics(configuration: Mapping[str, Any]) -> None:
 def validate_configuration(
     configuration: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """Validate and return one schema-version-1 configuration mapping."""
+    """Validate and return one schema-version-2 configuration mapping."""
     if not isinstance(configuration, Mapping):
         _error("configuration", "root must be a table")
     value = dict(configuration)
@@ -640,7 +656,7 @@ def validate_configuration(
 def validate_configuration_overlay(
     overlay: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """Validate and return one partial schema-version-1 overlay mapping."""
+    """Validate and return one partial schema-version-2 overlay mapping."""
     if not isinstance(overlay, Mapping):
         _error("configuration", "root must be a table")
     value = dict(overlay)
@@ -693,7 +709,7 @@ def parse_configuration_overlay(
     *,
     source: str = "user configuration",
 ) -> dict[str, Any]:
-    """Parse and validate one partial schema-version-1 TOML overlay."""
+    """Parse and validate one partial schema-version-2 TOML overlay."""
     if not isinstance(text, str):
         raise TypeError("text must be a string")
     return validate_configuration_overlay(_parse(text, source=source))

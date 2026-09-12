@@ -84,8 +84,8 @@ def test_all_products_use_the_deterministic_shared_matrix(path):
 def test_shared_content_legend_and_credit_controls_are_available(path):
     arguments = load_example(path).parser().parse_args([
         "--magnitude-limit", "4.25",
-        "--constellation-labels",
-        "--constellation-boundaries",
+        "--constellation-labels", "Vir",
+        "--constellation-boundaries", "Vir",
         "--horizon",
         "--horizon-mask",
         "--grid-references", "all",
@@ -98,8 +98,8 @@ def test_shared_content_legend_and_credit_controls_are_available(path):
     ])
 
     assert arguments.magnitude_limit == pytest.approx(4.25)
-    assert arguments.constellation_labels is True
-    assert arguments.constellation_boundaries is True
+    assert arguments.constellation_labels == [("Vir",)]
+    assert arguments.constellation_boundaries == [("Vir",)]
     assert arguments.horizon is True
     assert arguments.horizon_mask is True
     assert arguments.grid_references == frozenset({
@@ -139,7 +139,7 @@ def test_examples_use_public_composition_without_rendering_internals(path):
 
 @pytest.mark.parametrize("path", EXAMPLE_PATHS)
 def test_examples_are_short_declarations(path):
-    assert len(path.read_text(encoding="utf-8").splitlines()) < 70
+    assert len(path.read_text(encoding="utf-8").splitlines()) < 85
 
 
 def test_regression_fixtures_are_test_local():

@@ -1,7 +1,7 @@
-# Wenu configuration schema version 1
+# Wenu configuration schema version 2
 
 **Status:** Milestone 46D.2 specification
-**Schema version:** `1`
+**Schema version:** `2`
 **Runtime status:** Packaged and optional partial user documents are strictly
 validated and translated through the ordinary view, composition, furniture,
 product, and export pipeline
@@ -13,21 +13,23 @@ validation without creating a runtime registry or changing current defaults.
 
 ## Document boundary
 
-The root is a TOML table containing the scalar `schema_version = 1`, followed
+The root is a TOML table containing the scalar `schema_version = 2`, followed
 by these top-level tables in this exact order:
 
-1. `observer`
-2. `sequence`
-3. `subjects`
-4. `families`
-5. `detail`
-6. `styles`
-7. `modes`
-8. `grids_references`
-9. `coordinates`
-10. `furniture`
-11. `products`
-12. `export`
+1. `constellations`
+2. `observer`
+3. `sequence`
+4. `centers`
+5. `masks`
+6. `families`
+7. `detail`
+8. `styles`
+9. `modes`
+10. `grids_references`
+11. `coordinates`
+12. `furniture`
+13. `products`
+14. `export`
 
 The packaged document is complete. A user document is a partial overlay but
 must still declare `schema_version`. Tables and keys are emitted in the order
@@ -99,9 +101,14 @@ likewise absent or present together, and their product must imply the frame
 count. The ordinary observer time remains the sequence start. Explicit CLI
 values override these defaults.
 
-### `subjects`
+### `constellations`
 
-Each family table has exactly one default public subject declaration:
+`system` selects the constellation vocabulary and line-figure tradition.
+Version 2 accepts `western`. This parameter enables no content by itself.
+
+### `centers`
+
+Each family table has exactly one default public center declaration:
 
 - `all_sky.kind`: `none`
 - `planisphere.kind`: `none`
@@ -113,12 +120,18 @@ Each family table has exactly one default public subject declaration:
 
 Only the fields required by `kind` may be active. `constellations` must be
 nonempty and contain unique IAU abbreviations. A `target`, `group`, and
-`constellations` declaration may not compete within one subject.
+`constellations` declaration may not compete within one center.
+
+### `masks`
+
+Each mask-capable chart-family table contains an independent `constellations`
+string-list. Circumpolar charts do not expose a constellation mask.
+An empty list means that no constellation mask is requested.
 
 ### `families`
 
-Every family contains `projection`, `coordinate_frame`, `orientation`,
-`position_angle`, and `mask`. `orientation` is optional and accepts
+Every family contains `projection`, `coordinate_frame`, `orientation`, and
+`position_angle`. `orientation` is optional and accepts
 `celestial-north-up` or `zenith-up`; `position_angle` is an optional number.
 Regional and binocular families select exactly one of them. Other families
 use `orientation = "none"` and a literal position angle. Family-specific

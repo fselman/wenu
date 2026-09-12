@@ -359,6 +359,8 @@ class ChartRequest:
     subject: ChartSubjectRequest = ChartSubjectRequest()
     frame: ChartFrameRequest = ChartFrameRequest()
     mask: bool = False
+    constellation_mask: tuple[str, ...] | None = None
+    constellation_system: str = "western"
     horizon: bool = False
     horizon_mask: bool = False
     content: SkyContentSelection = SkyContentSelection()
@@ -383,6 +385,25 @@ class ChartRequest:
     minor_body_descriptors: tuple = ()
 
     def __post_init__(self):
+        constellation_system = str(self.constellation_system).strip().lower()
+        if constellation_system != "western":
+            raise ValueError("constellation_system must be 'western'.")
+        constellation_mask = self.constellation_mask
+        if constellation_mask is not None:
+            from .constellation_resolver import normalize_constellations
+
+            constellation_mask = normalize_constellations(
+                constellation_mask
+            )
+        if self.mask and constellation_mask is not None:
+            raise ValueError(
+                "Specify constellation_mask instead of combining it with "
+                "the legacy mask flag."
+            )
+        object.__setattr__(
+            self, "constellation_system", constellation_system
+        )
+        object.__setattr__(self, "constellation_mask", constellation_mask)
         resource_directory = self.minor_body_resource_directory
         if resource_directory is not None:
             resource_directory = Path(resource_directory).expanduser()
@@ -393,7 +414,10 @@ class ChartRequest:
         from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
 
         descriptors = tuple(self.minor_body_descriptors)
-        if any(not isinstance(value, SolarSystemBodyDescriptor) for value in descriptors):
+        if any(
+            not isinstance(value, SolarSystemBodyDescriptor)
+            for value in descriptors
+        ):
             raise TypeError(
                 "minor_body_descriptors must contain body descriptors."
             )
@@ -408,7 +432,10 @@ class ChartRequest:
                 self.solar_system_track.descriptor.selection_key
             )
         needs_minor_body_resource = any(
-            (descriptor_map.get(key) or SOLAR_SYSTEM_BODY_CATALOG.resolve(key)).ephemeris_source_key
+            (
+                descriptor_map.get(key)
+                or SOLAR_SYSTEM_BODY_CATALOG.resolve(key)
+            ).ephemeris_source_key
             == "minor_body_spk"
             for key in selected_body_keys
         )
@@ -473,7 +500,8 @@ class ChartRequest:
             and family not in {"regional", "binocular"}
         ):
             raise ValueError(
-                "Solar-System tracks are supported only by regional and binocular charts."
+                "Solar-System tracks are supported only by regional and "
+                "binocular charts."
             )
         solar_system_disks = tuple(self.solar_system_disks)
         if any(
@@ -562,7 +590,9 @@ class ChartRequest:
                 "product_compositions can configure only selected products."
             )
         if family == "binocular" and (
-            self.subject.target is None and self.subject.ra_deg is None
+            self.subject.target is None
+            and self.subject.ra_deg is None
+            and self.frame.center_altitude_deg is None
         ):
             raise ValueError(
                 "A binocular request requires a target or coordinates."
@@ -575,10 +605,24 @@ class ChartRequest:
             raise ValueError(
                 "A regional request requires a subject or explicit center."
             )
+        if (
+            family == "regional"
+            and (
+                self.subject.target is not None
+                or self.subject.ra_deg is not None
+            )
+            and self.frame.field_width_deg is None
+        ):
+            raise ValueError(
+                "A point-centered regional request requires field width "
+                "and height."
+            )
         if self.frame.center_altitude_deg is not None:
-            if family != "regional":
-                raise ValueError("A fixed horizontal center is regional-only.")
-            if self.frame.field_width_deg is None:
+            if family not in {"regional", "binocular"}:
+                raise ValueError(
+                    "A fixed horizontal center is regional/binocular-only."
+                )
+            if family == "regional" and self.frame.field_width_deg is None:
                 raise ValueError(
                     "A fixed horizontal center requires field width and height."
                 )
@@ -626,7 +670,11 @@ class ChartRequest:
         object.__setattr__(self, "coordinate_frame", coordinate_frame)
         if self.solar_system_track_tick_labels and self.solar_system_track is None:
             raise ValueError("track tick labels require a Solar-System track.")
-        object.__setattr__(self, "solar_system_track_tick_labels", bool(self.solar_system_track_tick_labels))
+        object.__setattr__(
+            self,
+            "solar_system_track_tick_labels",
+            bool(self.solar_system_track_tick_labels),
+        )
         object.__setattr__(self, "solar_system_disks", solar_system_disks)
         object.__setattr__(self, "mask", bool(self.mask))
         object.__setattr__(self, "horizon", bool(self.horizon))

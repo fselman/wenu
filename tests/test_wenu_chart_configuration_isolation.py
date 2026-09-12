@@ -57,7 +57,7 @@ def test_sequential_partial_overlays_do_not_leak_between_commands(
 ):
     first_path = tmp_path / "first.toml"
     first_path.write_text(
-        "schema_version = 1\n"
+        "schema_version = 2\n"
         "[observer]\nlocation = 'Papudo'\n"
         "[families.regional_single]\nwidth = 24.0\nheight = 16.0\n"
         "[products.default]\nstyle = 'cartoon'\n",
@@ -65,7 +65,7 @@ def test_sequential_partial_overlays_do_not_leak_between_commands(
     )
     second_path = tmp_path / "second.toml"
     second_path.write_text(
-        "schema_version = 1\n"
+        "schema_version = 2\n"
         "[styles.atlas.canvas]\nbackground = '#654321'\n",
         encoding="utf-8",
     )
@@ -120,12 +120,12 @@ def test_explicit_command_values_override_conflicting_overlay(
 ):
     path = tmp_path / "conflicting.toml"
     path.write_text(
-        "schema_version = 1\n"
+        "schema_version = 2\n"
         "[observer]\nlocation = 'La Ligua'\ntime = '2026-08-15 21:00'\n"
-        "[subjects.regional_single]\nkind = 'constellations'\n"
+        "[centers.regional_single]\nkind = 'constellations'\n"
         "constellations = ['Cru']\n"
         "[families.regional_group]\nwidth = 40.0\nheight = 25.0\n"
-        "orientation = 'none'\nposition_angle = 0.0\nmask = false\n"
+        "orientation = 'none'\nposition_angle = 0.0\n"
         "[products.default]\nstyle = 'cartoon'\nmode = 'presentation'\n"
         "language = 'es'\ntitle = 'Configured title'\n",
         encoding="utf-8",
@@ -141,9 +141,9 @@ def test_explicit_command_values_override_conflicting_overlay(
         "regional", "--config", str(path),
         "--observer-location", "Papudo",
         "--observer-time", "2026-08-15 22:00",
-        "--constellations", "Cyg,Lyr,Aql",
+        "--center-on", "constellation:Cyg,Lyr,Aql",
         "--field-width", "55.0", "--field-height", "35.0",
-        "--position-angle", "12.5", "--mask",
+        "--position-angle", "12.5", "--constellation-mask", "Cyg,Lyr,Aql",
         "--style", "atlas", "--mode", "print",
         "--title", "Explicit title", "--language", "en",
         "--output", str(output),
@@ -156,7 +156,7 @@ def test_explicit_command_values_override_conflicting_overlay(
     assert request["field_width_deg"] == pytest.approx(55.0)
     assert request["field_height_deg"] == pytest.approx(35.0)
     assert request["position_angle_deg"] == pytest.approx(12.5)
-    assert request["mask"] is True
+    assert request["constellation_mask"] == ("Cyg", "Lyr", "Aql")
 
     view, arguments, values = drawings[0]
     products = chart_product_options(

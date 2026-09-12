@@ -32,16 +32,56 @@ def test_parser_exposes_one_family_subcommand_set():
     assert set(subparsers.choices) == EXPECTED_COMMANDS
 
 
-def test_regional_accepts_one_or_many_constellations():
+def test_regional_accepts_one_named_center():
     one = chart.parser().parse_args([
-        "regional", "--constellations", "Cru",
-    ])
-    many = chart.parser().parse_args([
-        "regional", "--constellations", "Cyg,Lyr,Aql",
+        "regional", "--center-on", "constellation:Cru",
     ])
 
-    assert one.constellations == ("Cru",)
-    assert many.constellations == ("Cyg", "Lyr", "Aql")
+    assert one.center_on == "constellation:Cru"
+
+
+def test_center_content_and_mask_options_are_order_independent():
+    first = chart.parser().parse_args([
+        "regional", "--center-on", "Vir", "--planet", "venus,mars",
+        "--constellation-mask", "Vir",
+    ])
+    second = chart.parser().parse_args([
+        "regional", "--constellation-mask", "Vir",
+        "--planet", "venus,mars", "--center-on", "Vir",
+    ])
+
+    assert vars(first) == vars(second)
+
+
+@pytest.mark.parametrize(
+    "legacy",
+    (
+        ("--constellations", "Vir"),
+        ("--target", "Venus"),
+        ("--center-ra", "10"),
+        ("--mask",),
+    ),
+)
+def test_removed_overloaded_options_are_rejected(legacy):
+    with pytest.raises(SystemExit):
+        chart.parser().parse_args(["regional", *legacy])
+
+
+def test_long_options_do_not_accept_ambiguous_abbreviations():
+    with pytest.raises(SystemExit):
+        chart.parser().parse_args(["regional", "--center-i", "10deg"])
+
+
+def test_constellation_system_is_an_explicit_parameter_not_content():
+    arguments = chart.parser().parse_args([
+        "regional", "--constellation-system", "western"
+    ])
+
+    assert arguments.constellation_system == "western"
+    assert arguments.constellation_lines == []
+    assert arguments.constellation_labels == []
+    assert arguments.constellation_boundaries == []
+    assert arguments.constellation_mask == []
 
 
 def test_every_chart_family_exposes_solar_system_selectors():
@@ -94,8 +134,8 @@ def test_regional_orientation_is_named_or_a_literal_angle():
 
 def test_regional_accepts_a_fixed_horizontal_camera_center():
     arguments = chart.parser().parse_args([
-        "regional", "--constellations", "Vir",
-        "--center-altitude", "20", "--center-azimuth", "270",
+        "regional",
+        "--center-altitude", "20deg", "--center-azimuth", "270deg",
         "--field-width", "60", "--field-height", "50",
         "--orientation", "zenith-up",
     ])
@@ -106,24 +146,39 @@ def test_regional_accepts_a_fixed_horizontal_camera_center():
 
 def test_regional_accepts_named_and_explicit_icrs_centers():
     named = chart.parser().parse_args([
-        "regional", "--target", "Centaurus A",
+        "regional", "--center-on", "target:Centaurus A",
     ])
     coordinate = chart.parser().parse_args([
-        "regional", "--center-ra", "201.365",
-        "--center-dec", "-43.019", "--display-name", "My field",
+        "regional", "--center-icrs-ra", "201.365deg",
+        "--center-icrs-dec=-43.019deg", "--center-name", "My field",
     ])
 
-    assert named.target == "Centaurus A"
-    assert coordinate.center_ra == pytest.approx(201.365)
-    assert coordinate.center_dec == pytest.approx(-43.019)
-    assert coordinate.display_name == "My field"
+    assert named.center_on == "target:Centaurus A"
+    assert coordinate.center_icrs_ra == pytest.approx(201.365)
+    assert coordinate.center_icrs_dec == pytest.approx(-43.019)
+    assert coordinate.center_name == "My field"
 
 
-def test_single_selected_planet_can_supply_an_implicit_regional_center(
+def test_center_forms_are_complete_and_mutually_exclusive():
+    half = chart.parser().parse_args([
+        "regional", "--center-icrs-ra", "10deg"
+    ])
+    competing = chart.parser().parse_args([
+        "regional", "--center-on", "Vir",
+        "--center-altitude", "20deg", "--center-azimuth", "270deg",
+    ])
+
+    with pytest.raises(ValueError, match="must be used together"):
+        chart._coordinate_center(half)
+    with pytest.raises(ValueError, match="exactly one"):
+        chart._coordinate_center(competing)
+
+
+def test_named_planet_supplies_an_explicit_regional_center(
     monkeypatch,
 ):
     arguments = chart.parser().parse_args([
-        "regional", "--planet", "venus",
+        "regional", "--center-on", "planet:venus", "--planet", "venus",
     ])
     center = SimpleNamespace(altitude_deg=12.5, azimuth_deg=234.0)
     monkeypatch.setattr(
@@ -135,21 +190,20 @@ def test_single_selected_planet_can_supply_an_implicit_regional_center(
         )
     )
 
-    assert chart._implicit_regional_center(
-        arguments, {}, configuration, object(), {}
+    assert chart._center_arguments(
+        arguments, {"centers": {}}, configuration, object()
     ) == {
         "center_altitude_deg": 12.5,
         "center_azimuth_deg": 234.0,
     }
 
 
-def test_selected_planet_center_keeps_constellation_mask_subject(monkeypatch):
+def test_planet_center_and_constellation_mask_are_independent(monkeypatch):
     arguments = chart.parser().parse_args([
-        "regional", "--planet", "venus",
-        "--constellations", "Vir", "--mask",
+        "regional", "--center-on", "planet:venus", "--planet", "venus",
+        "--constellation-mask", "Vir",
         "--field-width", "20", "--field-height", "15",
     ])
-    subject = chart._subject_arguments(arguments, {})
     center = SimpleNamespace(altitude_deg=12.5, azimuth_deg=234.0)
     monkeypatch.setattr(
         chart, "get_object_center", lambda *args, **kwargs: center
@@ -160,25 +214,27 @@ def test_selected_planet_center_keeps_constellation_mask_subject(monkeypatch):
         )
     )
 
-    assert subject == {"constellations": ("Vir",), "group": None}
-    assert arguments.mask is True
-    assert chart._implicit_regional_center(
-        arguments, {}, configuration, object(), subject
+    assert chart._view_arguments(arguments)["constellation_mask"] == ("Vir",)
+    assert chart._center_arguments(
+        arguments, {"centers": {}}, configuration, object()
     ) == {
         "center_altitude_deg": 12.5,
         "center_azimuth_deg": 234.0,
     }
 
 
-def test_several_selected_objects_require_an_explicit_regional_center():
+def test_several_selected_objects_do_not_change_the_configured_center():
     arguments = chart.parser().parse_args([
         "regional", "--planet", "venus,mars",
     ])
 
-    with pytest.raises(ValueError, match="several selected objects"):
-        chart._implicit_regional_center(
-            arguments, {}, object(), object(), {}
-        )
+    values = {"centers": {"regional_single": {
+        "kind": "constellations", "constellations": ["Cru"]
+    }}}
+    configuration = SimpleNamespace(minor_body_resource_directory=None)
+    assert chart._center_arguments(
+        arguments, values, configuration, object()
+    ) == {"constellations": ("Cru",)}
 
 
 def test_binocular_omits_the_shared_grid_default_but_keeps_opt_in():
@@ -216,7 +272,7 @@ def test_defaults_prints_packaged_authority_without_generation(
     assert chart.main(["defaults"]) == 0
     output = capsys.readouterr().out
     assert output.startswith("# Wenu authoritative public defaults")
-    assert "schema_version = 1" in output
+    assert "schema_version = 2" in output
 
 
 def test_defaults_write_is_an_exact_deterministic_editable_copy(
@@ -254,7 +310,7 @@ def test_invalid_configuration_fails_before_observer_or_sphere(
     monkeypatch, tmp_path
 ):
     path = tmp_path / "invalid.toml"
-    path.write_text("schema_version = 1\nunknown = true\n", encoding="utf-8")
+    path.write_text("schema_version = 2\nunknown = true\n", encoding="utf-8")
     calls = []
     monkeypatch.setattr(
         chart, "Observer", lambda **kwargs: calls.append("observer")
@@ -313,7 +369,7 @@ def test_command_delegates_to_three_stage_library_interface(monkeypatch):
     )
 
     outputs = chart.generate(chart.parser().parse_args([
-        "regional", "--constellations", "Cyg,Lyr,Aql",
+        "regional", "--center-on", "group:summer-triangle",
         "--observer-location", "Papudo",
         "--observer-time", "2026-08-15 22:00",
         "--style", "cartoon", "--mode", "presentation",
@@ -324,7 +380,7 @@ def test_command_delegates_to_three_stage_library_interface(monkeypatch):
         "observer", "sphere", "view", "draw", "close",
     ]
     assert calls[0][1]["location"] == "Papudo"
-    assert calls[2][2]["constellations"] == ("Cyg", "Lyr", "Aql")
+    assert calls[2][2]["group"] == "summer-triangle"
     assert calls[2][2]["family"] == "regional"
     assert calls[3][2]["stem"] == "regional-cyg-lyr-aql"
 

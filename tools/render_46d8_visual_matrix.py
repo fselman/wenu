@@ -52,12 +52,14 @@ MATRIX = (
     *_canonical("all-sky", "all-sky", (), "5.0"),
     *_canonical("planisphere", "planisphere", (), "5.0"),
     *_canonical(
-        "regional-single", "regional", ("--constellations", "Cru"), "5.0"
+        "regional-single", "regional",
+        ("--center-on", "constellation:Cru"), "5.0"
     ),
     *_canonical(
         "regional-group",
         "regional",
-        ("--constellations", "Sgr,Sco,Oph,Ser", "--mask"),
+        ("--center-on", "constellation:Sgr,Sco,Oph,Ser",
+         "--constellation-mask", "Sgr,Sco,Oph,Ser"),
         "5.0",
     ),
     *_canonical(
@@ -69,14 +71,14 @@ MATRIX = (
     *_canonical(
         "binocular",
         "binocular",
-        ("--target", "centaurus-a", "--field-diameter", "6.5"),
+        ("--center-on", "target:centaurus-a", "--field-diameter", "6.5"),
         "11.0",
     ),
     MatrixEntry(
         "diagnostic-all-sky-constellation-mask",
         (
-            "all-sky", *OBSERVER, "--constellations", "Cru,Cyg,UMa",
-            "--mask",
+            "all-sky", *OBSERVER,
+            "--constellation-mask", "Cru,Cyg,UMa",
             "--magnitude-limit", "5.0",
             "--style", "atlas", "--mode", "print",
         ),
@@ -85,7 +87,9 @@ MATRIX = (
     MatrixEntry(
         "diagnostic-regional-explicit-field-mask",
         (
-            "regional", *OBSERVER, "--constellations", "Oph,Ser", "--mask",
+            "regional", *OBSERVER,
+            "--center-on", "constellation:Oph,Ser",
+            "--constellation-mask", "Oph,Ser",
             "--field-width", "80", "--field-height", "50",
             "--position-angle", "12.5",
             "--magnitude-limit", "5.0",
@@ -96,7 +100,8 @@ MATRIX = (
     MatrixEntry(
         "diagnostic-binocular-field",
         (
-            "binocular", *BINOCULAR_OBSERVER, "--target", "centaurus-a",
+            "binocular", *BINOCULAR_OBSERVER,
+            "--center-on", "target:centaurus-a",
             "--field-diameter", "6.5",
             "--magnitude-limit", "11.0",
             "--style", "atlas", "--mode", "print",
@@ -125,7 +130,8 @@ MATRIX = (
     MatrixEntry(
         "diagnostic-legends-references-grids",
         (
-            "regional", *OBSERVER, "--constellations", "Cru",
+            "regional", *OBSERVER,
+            "--center-on", "constellation:Cru",
             "--altaz-grid", "--altaz-grid-labels",
             "--equatorial-grid", "--equatorial-grid-labels",
             "--ecliptic-grid", "--ecliptic-grid-labels",

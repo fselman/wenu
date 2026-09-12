@@ -53,7 +53,8 @@ def test_labels_and_boundaries_are_opt_in(style):
     hidden = resolved_detail(module.parser().parse_args([]), style=style)
     visible = resolved_detail(
         module.parser().parse_args(
-            ["--constellation-labels", "--constellation-boundaries"]
+            ["--constellation-labels", "Cru",
+             "--constellation-boundaries", "Cru"]
         ),
         style=style,
     )
@@ -72,7 +73,7 @@ def test_cartoon_constellation_vertices_follow_line_switch():
     )
     visible = resolved_detail(
         module.parser().parse_args(
-            ["--magnitude-limit", "4.25", "--constellation-lines"]
+            ["--magnitude-limit", "4.25", "--constellation-lines", "Cru"]
         ),
         style="cartoon",
     )
@@ -97,17 +98,17 @@ def test_planisphere_horizon_is_independent_of_content_switches():
     source = EXAMPLES[0].read_text(encoding="utf-8")
 
     assert 'family="planisphere"' in source
-    assert "mask=arguments.mask" in source
+    assert "constellation_mask=mask" in source
 
 
 def test_regional_mask_does_not_require_visible_boundary_lines():
     module = load(EXAMPLES[2])
     detail = resolved_detail(
-        module.parser().parse_args(["--mask"]),
+        module.parser().parse_args(["--constellation-mask", "Cru"]),
         style="atlas",
     )
 
-    assert "mask=arguments.mask" in EXAMPLES[2].read_text(encoding="utf-8")
+    assert "constellation_mask=mask" in EXAMPLES[2].read_text(encoding="utf-8")
     assert detail.layer_enabled("constellation_boundaries") is False
 
 

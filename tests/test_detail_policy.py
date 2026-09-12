@@ -790,7 +790,10 @@ def test_default_arguments_disable_all_optional_content():
     ),
 )
 def test_each_content_switch_enables_only_its_layer(option, layer):
-    overrides = chart_detail_overrides(parser().parse_args([option]))
+    values = [option]
+    if option.startswith("--constellation-"):
+        values.append("Vir")
+    overrides = chart_detail_overrides(parser().parse_args(values))
     detail = apply_detail_overrides(adaptive_detail(), overrides)
 
     assert detail.layer_enabled(layer)

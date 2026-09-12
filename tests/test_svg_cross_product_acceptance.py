@@ -56,7 +56,7 @@ def test_matrix_exercises_cross_product_svg_risk_surface():
     )
 
     for option in (
-        "--mask",
+        "--constellation-mask",
         "--horizon",
         "--horizon-mask",
         "--constellation-lines",

@@ -330,7 +330,7 @@ provider, moving-object, public-coordinate, and reuse work are governed by
 
 ## Configuration and public boundaries
 
-Packaged defaults and schema-version-1 configuration resolve into immutable
+Packaged defaults and schema-version-2 configuration resolve into immutable
 typed contracts. User overlays merge non-mutatingly; explicit command values
 override overlays; sequential invocations share no active configuration
 singleton.

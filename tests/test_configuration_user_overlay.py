@@ -22,7 +22,7 @@ def test_partial_overlay_requires_schema_version_and_known_paths():
 
     with pytest.raises(ConfigurationError) as error:
         parse_configuration_overlay(
-            "schema_version = 1\n[styles.atlas.horizon]\n"
+            "schema_version = 2\n[styles.atlas.horizon]\n"
             "renderer_operation = 'plot'\n"
         )
     assert (
@@ -34,7 +34,7 @@ def test_partial_overlay_requires_schema_version_and_known_paths():
 def test_overlay_merge_is_recursive_and_does_not_mutate_inputs():
     packaged = load_packaged_defaults()
     overlay = parse_configuration_overlay(
-        "schema_version = 1\n"
+        "schema_version = 2\n"
         "[modes.print]\n"
         "dpi = 240\n"
         "[styles.atlas.horizon]\n"
@@ -53,7 +53,7 @@ def test_overlay_merge_is_recursive_and_does_not_mutate_inputs():
 def test_merged_semantic_validation_reports_complete_overlay_path():
     packaged = load_packaged_defaults()
     overlay = parse_configuration_overlay(
-        "schema_version = 1\n"
+        "schema_version = 2\n"
         "[families.regional_single]\n"
         "width = 12.0\n"
     )
@@ -65,7 +65,7 @@ def test_merged_semantic_validation_reports_complete_overlay_path():
 def test_optional_user_file_translates_all_existing_typed_contracts(tmp_path):
     path = tmp_path / "wenu.toml"
     path.write_text(
-        "schema_version = 1\n"
+        "schema_version = 2\n"
         "[modes.print]\n"
         "dpi = 240\n"
         "[detail.neutral]\n"
@@ -96,12 +96,12 @@ def test_sequential_overlays_do_not_leak_into_each_other_or_packaged_state(
 ):
     first_path = tmp_path / "first.toml"
     first_path.write_text(
-        "schema_version = 1\n[modes.print]\ndpi = 240\n",
+        "schema_version = 2\n[modes.print]\ndpi = 240\n",
         encoding="utf-8",
     )
     second_path = tmp_path / "second.toml"
     second_path.write_text(
-        "schema_version = 1\n[products.default]\nlanguage = 'es'\n",
+        "schema_version = 2\n[products.default]\nlanguage = 'es'\n",
         encoding="utf-8",
     )
 
@@ -120,7 +120,7 @@ def test_sequential_overlays_do_not_leak_into_each_other_or_packaged_state(
 def test_sequence_overlay_translates_as_disabled_or_complete(tmp_path):
     path = tmp_path / "sequence.toml"
     path.write_text(
-        "schema_version = 1\n"
+        "schema_version = 2\n"
         "[sequence]\n"
         "stop = '2026-08-22T07:00:00Z'\n"
         "frames = 3\n"
@@ -175,7 +175,7 @@ def test_sequence_overlay_rejects_incomplete_or_inconsistent_values(
 ):
     path = tmp_path / "invalid-sequence.toml"
     path.write_text(
-        "schema_version = 1\n[sequence]\n" + body,
+        "schema_version = 2\n[sequence]\n" + body,
         encoding="utf-8",
     )
 

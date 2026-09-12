@@ -42,7 +42,7 @@ abbreviations and request the outside mask:
 
 ```bash
 python examples/planisphere.py \
-  --constellations Cru,Cyg,UMa --mask \
+  --constellation-mask Cru,Cyg,UMa \
   --style atlas --mode print \
   --output output/planisphere-regions.png
 ```

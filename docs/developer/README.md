@@ -11,7 +11,7 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`implementation_reference.md`](implementation_reference.md) — current
   public and advanced API reference.
 - [`source_tree.md`](source_tree.md) — current source responsibility map.
-- [`configuration_schema_v1.md`](configuration_schema_v1.md) — implemented
+- [`configuration_schema_v2.md`](configuration_schema_v2.md) — implemented
   configuration schema.
 - [`assistant_instructions.md`](assistant_instructions.md) — contribution and
   delivery rules.

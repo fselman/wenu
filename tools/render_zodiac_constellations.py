@@ -169,15 +169,15 @@ def _title(view, constellation):
     )
 
 
-def _effective_arguments(arguments, destination):
+def _effective_arguments(arguments, destination, constellation="Ari"):
     effective = copy(arguments)
     effective.output = destination
     effective.style = "cartoon"
     effective.mode = "presentation"
     effective.all_products = False
     effective.magnitude_limit = STAR_MAGNITUDE_LIMIT
-    effective.constellation_lines = True
-    effective.constellation_labels = True
+    effective.constellation_lines = [(constellation,)]
+    effective.constellation_labels = [(constellation,)]
     effective.constellation_boundaries = arguments.constellation_boundaries
     effective.equatorial_grid = True
     effective.equatorial_grid_labels = True
@@ -260,12 +260,14 @@ def render_zodiac(arguments, *, sky=None):
                 observer,
                 configuration,
                 constellation,
-                bool(arguments.mask),
+                bool(arguments.constellation_mask),
             )
             destination = output_directory / (
                 f"{index:02d}-{constellation.lower()}.{extension}"
             )
-            effective = _effective_arguments(arguments, destination)
+            effective = _effective_arguments(
+                arguments, destination, constellation
+            )
             results = draw_chart_view_from_arguments(
                 view,
                 effective,
@@ -336,7 +338,7 @@ def parser():
         help="override Wenu's presentation-mode raster resolution",
     )
     value.add_argument(
-        "--mask",
+        "--constellation-mask",
         action="store_true",
         help="shade outside the selected IAU region using Wenu's mask style",
     )

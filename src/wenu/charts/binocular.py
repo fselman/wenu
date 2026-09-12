@@ -37,6 +37,7 @@ class BinocularChart:
     flip_ew: bool = True
     boundary_samples: int = 721
     label_selection: tuple[str, ...] | None = None
+    outside_mask_constellations: tuple[str, ...] | None = None
     target_ra_deg: float | None = None
     target_dec_deg: float | None = None
 
@@ -123,6 +124,7 @@ class BinocularChart:
             projection_radius=self.projection_radius,
             flip_ew=self.flip_ew,
             label_selection=self.label_selection,
+            outside_mask_constellations=self.outside_mask_constellations,
         )
 
     @property

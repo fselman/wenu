@@ -5,11 +5,11 @@ from pathlib import Path
 
 from wenu import (
     Observer, add_chart_cli_arguments,
-    add_constellation_subject_arguments, chart_cli_furniture,
-    chart_configuration,
-    chart_constellation_subject, draw_chart_view_from_arguments,
+    chart_cli_furniture, chart_configuration,
+    draw_chart_view_from_arguments,
     generate_celestial_sphere, get_chart_view,
 )
+from wenu.charts.subject_arguments import parse_constellation_list
 
 LOCAL_TIME = "2026-08-15 21:00"
 DEFAULT_OUTPUT = Path("output/examples/all-sky")
@@ -19,12 +19,13 @@ def chart_view(arguments, *, sky=None):
     configuration = chart_configuration(arguments)
     sky = generate_celestial_sphere() if sky is None else sky
     observer = Observer(location="La Ligua", time=LOCAL_TIME)
-    subject = chart_constellation_subject(arguments, required=False)
+    mask = tuple(
+        name for group in arguments.constellation_mask for name in group
+    ) or None
     return get_chart_view(
         sky, observer, family="all_sky", projection="mollweide",
         coordinate_frame="galactic", position_angle_deg=0.0,
-        mask=arguments.mask, configuration=configuration,
-        **({} if subject is None else subject.view_arguments()),
+        constellation_mask=mask, configuration=configuration,
     )
 
 
@@ -46,8 +47,10 @@ def generate(arguments):
 def parser():
     value = add_chart_cli_arguments(argparse.ArgumentParser(description=__doc__),
                                     default_output=DEFAULT_OUTPUT)
-    add_constellation_subject_arguments(value)
-    value.add_argument("--mask", action="store_true", default=None)
+    value.add_argument(
+        "--constellation-mask", action="append",
+        type=parse_constellation_list, default=[]
+    )
     return value
 
 

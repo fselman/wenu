@@ -24,17 +24,15 @@ def test_geometry_is_explicit_and_detail_uses_shared_family_policy():
     assert "position_angle_deg=0.0" in source
     assert "AdaptiveDetailPolicy" not in source
     assert "star_magnitude_limit" not in source
-    assert module.parser().parse_args([]).mask is None
+    assert module.parser().parse_args([]).constellation_mask == []
 
 
 def test_optional_constellations_define_disjoint_mask_openings():
     arguments = example().parser().parse_args([
-        "--constellations", "Cru,Cyg,UMa", "--mask"
+        "--constellation-mask", "Cru,Cyg,UMa"
     ])
 
-    assert arguments.constellations == ("Cru", "Cyg", "UMa")
-    assert arguments.group is None
-    assert arguments.mask is True
+    assert arguments.constellation_mask == [("Cru", "Cyg", "UMa")]
 
 
 def test_generation_uses_shared_drawing_and_closes_observer(

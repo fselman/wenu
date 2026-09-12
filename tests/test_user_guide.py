@@ -54,8 +54,8 @@ def test_guide_index_names_all_canonical_examples():
 def test_regional_guide_uses_arbitrary_constellation_sets():
     text = (GUIDE / "regional_charts.md").read_text(encoding="utf-8")
 
-    assert "--constellations Sgr,Sco,Oph,Ser" in text
-    assert "--constellations Cen,Cru,Mus --mask" in text
+    assert "--center-on constellation:Sgr,Sco,Oph,Ser" in text
+    assert "--constellation-mask Cen,Cru,Mus" in text
     assert "--group summer-triangle" in text
 
 def test_readme_quick_start_uses_the_canonical_planisphere_interface():
@@ -91,7 +91,7 @@ def test_planisphere_provenance_is_complete_and_reproducible():
 def test_planisphere_guide_documents_disjoint_visible_masks():
     text = (GUIDE / "planisphere.md").read_text(encoding="utf-8")
 
-    assert "--constellations Cru,Cyg,UMa --mask" in text
+    assert "--constellation-mask Cru,Cyg,UMa" in text
     assert "wholly below" in text
     assert "crossing" in text
 
@@ -106,7 +106,7 @@ def test_all_sky_guide_documents_galactic_mollweide_geometry():
         'coordinate_frame="galactic"',
         "Galactic longitude zero",
         "180° seam",
-        "--constellations Cru,Cyg,UMa --mask",
+        "--constellation-mask Cru,Cyg,UMa",
     ):
         assert value in text
 

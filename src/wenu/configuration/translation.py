@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from types import MappingProxyType
 from typing import Any, Mapping
 
 from .furniture_product_export_translation import (
@@ -32,6 +33,8 @@ class ConfigurationDefaults:
     sequence: SequenceDefaults
     reference_policy: Any
     minor_body_resource_directory: Path | None = None
+    constellation_system: str = "western"
+    constellation_masks: Any = None
 
 
 def translate_configuration_defaults(
@@ -58,6 +61,11 @@ def translate_configuration_defaults(
             if resource_directory == "none"
             else Path(resource_directory).expanduser()
         ),
+        constellation_system=values["constellations"]["system"],
+        constellation_masks=MappingProxyType({
+            name: tuple(table["constellations"])
+            for name, table in values["masks"].items()
+        }),
     )
 
 

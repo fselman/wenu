@@ -11,8 +11,14 @@ from wenu.charts.command_line import (
     chart_view_requests_from_arguments,
     draw_chart_view_from_arguments,
 )
+from wenu.charts.center_arguments import (
+    parse_degree_angle,
+    parse_icrs_ra,
+    resolve_named_center,
+)
 from wenu.charts.object_center import get_object_center
 from wenu.charts.request import CHART_LANGUAGES
+from wenu.charts.target_resolver import ResolvedTarget
 from wenu.charts.sequence import (
     ObserverTimeChartSequenceRequest,
     generate_observer_time_chart_sequence,
@@ -21,10 +27,7 @@ from wenu.charts.sequence_arguments import (
     add_chart_sequence_arguments,
     chart_sequence_cli_options,
 )
-from wenu.charts.subject_arguments import (
-    add_constellation_subject_arguments,
-    chart_constellation_subject,
-)
+from wenu.charts.subject_arguments import parse_constellation_list
 from wenu.charts.view import get_chart_view
 from wenu.configuration import (
     load_configuration,
@@ -59,10 +62,20 @@ def _add_common_arguments(parser, *, family):
     add_chart_sequence_arguments(parser)
     parser.add_argument("--title")
     parser.add_argument("--language", choices=CHART_LANGUAGES)
-
-
-def _add_mask_argument(parser):
-    parser.add_argument("--mask", action="store_true", default=None)
+    parser.add_argument(
+        "--constellation-system",
+        choices=("western",),
+        help="constellation vocabulary and line-figure system",
+    )
+    if family != "circumpolar":
+        parser.add_argument(
+            "--constellation-mask",
+            action="append",
+            type=parse_constellation_list,
+            default=[],
+            metavar="IAU[,IAU...]",
+            help="mask outside the selected constellations",
+        )
 
 
 def parser():
@@ -70,35 +83,30 @@ def parser():
     value = argparse.ArgumentParser(
         prog="wenu_chart",
         description="Generate publication-quality static sky charts.",
+        allow_abbrev=False,
     )
     commands = value.add_subparsers(dest="command", required=True)
 
-    all_sky = commands.add_parser("all-sky")
+    all_sky = commands.add_parser("all-sky", allow_abbrev=False)
     _add_common_arguments(all_sky, family="all-sky")
-    add_constellation_subject_arguments(all_sky)
-    _add_mask_argument(all_sky)
 
-    planisphere = commands.add_parser("planisphere")
+    planisphere = commands.add_parser("planisphere", allow_abbrev=False)
     _add_common_arguments(planisphere, family="planisphere")
-    add_constellation_subject_arguments(planisphere)
-    _add_mask_argument(planisphere)
 
-    regional = commands.add_parser("regional")
+    regional = commands.add_parser("regional", allow_abbrev=False)
     _add_common_arguments(regional, family="regional")
-    add_constellation_subject_arguments(regional)
-    _add_mask_argument(regional)
     regional.add_argument("--field-width", type=float)
     regional.add_argument("--field-height", type=float)
-    regional.add_argument("--target")
-    regional.add_argument("--center-ra", type=float)
-    regional.add_argument("--center-dec", type=float)
-    regional.add_argument("--display-name")
+    regional.add_argument("--center-on", metavar="IDENTIFIER")
+    regional.add_argument("--center-icrs-ra", type=parse_icrs_ra)
+    regional.add_argument("--center-icrs-dec", type=parse_degree_angle)
+    regional.add_argument("--center-name")
     regional.add_argument(
-        "--center-altitude", type=float,
+        "--center-altitude", type=parse_degree_angle,
         help="fixed observer-local chart-center altitude in degrees",
     )
     regional.add_argument(
-        "--center-azimuth", type=float,
+        "--center-azimuth", type=parse_degree_angle,
         help="fixed observer-local chart-center azimuth in degrees",
     )
     orientation = regional.add_mutually_exclusive_group()
@@ -112,19 +120,17 @@ def parser():
         help="literal chart rotation in degrees",
     )
 
-    circumpolar = commands.add_parser("circumpolar")
+    circumpolar = commands.add_parser("circumpolar", allow_abbrev=False)
     _add_common_arguments(circumpolar, family="circumpolar")
-    _add_mask_argument(circumpolar)
     circumpolar.add_argument("--limiting-declination", type=float)
     circumpolar.add_argument("--pole", choices=("north", "south"))
 
-    binocular = commands.add_parser("binocular")
+    binocular = commands.add_parser("binocular", allow_abbrev=False)
     _add_common_arguments(binocular, family="binocular")
-    _add_mask_argument(binocular)
-    binocular.add_argument("--target")
-    binocular.add_argument("--ra", type=float)
-    binocular.add_argument("--dec", type=float)
-    binocular.add_argument("--display-name")
+    binocular.add_argument("--center-on", metavar="IDENTIFIER")
+    binocular.add_argument("--center-icrs-ra", type=parse_icrs_ra)
+    binocular.add_argument("--center-icrs-dec", type=parse_degree_angle)
+    binocular.add_argument("--center-name")
     binocular.add_argument("--field-diameter", type=float)
     binocular_orientation = binocular.add_mutually_exclusive_group()
     binocular_orientation.add_argument(
@@ -136,6 +142,7 @@ def parser():
     defaults = commands.add_parser(
         "defaults",
         help="print or write the packaged authoritative TOML defaults",
+        allow_abbrev=False,
     )
     defaults.add_argument(
         "--write",
@@ -146,69 +153,129 @@ def parser():
     return value
 
 
-def _configured_subject(values, family):
+def _configured_center(values, family):
     name = family.replace("-", "_")
-    subject = values["subjects"][name]
-    kind = subject["kind"]
+    center = values["centers"][name]
+    kind = center["kind"]
     if kind == "none":
         return {}
     if kind == "target":
-        return {"target": subject["target"]}
+        return {"target": center["target"]}
     if kind == "constellations":
-        result = {"constellations": tuple(subject["constellations"])}
-        group = _optional(subject.get("group", "none"))
+        result = {"constellations": tuple(center["constellations"])}
+        group = _optional(center.get("group", "none"))
         if group is not None:
             result = {"group": group}
         return result
     raise ValueError(f"Unsupported configured subject kind {kind!r}.")
 
 
-def _subject_arguments(arguments, values):
-    family = arguments.command
-    if family in {"all-sky", "planisphere", "regional"}:
-        subject = chart_constellation_subject(arguments, required=False)
-        if subject is not None:
-            return subject.view_arguments()
-        if family == "regional":
-            explicit_horizontal = any(
-                getattr(arguments, name, None) is not None
-                for name in ("center_altitude", "center_azimuth")
+def _coordinate_center(arguments):
+    icrs = (arguments.center_icrs_ra, arguments.center_icrs_dec)
+    horizontal = (
+        getattr(arguments, "center_altitude", None),
+        getattr(arguments, "center_azimuth", None),
+    )
+    for names, pair in (
+        (("--center-icrs-ra", "--center-icrs-dec"), icrs),
+        (("--center-altitude", "--center-azimuth"), horizontal),
+    ):
+        if (pair[0] is None) != (pair[1] is None):
+            raise ValueError(
+                f"{names[0]} and {names[1]} must be used together."
             )
-            if explicit_horizontal:
-                return {}
-            explicit_target = any(
-                getattr(arguments, name, None) is not None
-                for name in (
-                    "target", "center_ra", "center_dec", "display_name"
-                )
+    forms = sum((
+        arguments.center_on is not None,
+        icrs[0] is not None,
+        horizontal[0] is not None,
+    ))
+    if forms > 1:
+        raise ValueError(
+            "Specify exactly one named, ICRS, or horizontal center."
+        )
+    if arguments.center_name is not None and icrs[0] is None:
+        raise ValueError("--center-name requires an explicit ICRS center.")
+    if icrs[0] is not None:
+        return {
+            "ra_deg": icrs[0], "dec_deg": icrs[1],
+            "display_name": arguments.center_name,
+        }
+    if horizontal[0] is not None:
+        return {
+            "center_altitude_deg": horizontal[0],
+            "center_azimuth_deg": horizontal[1],
+        }
+    return None
+
+
+def _resolved_named_center_arguments(
+    specification, arguments, configuration, observer
+):
+    directory = (
+        arguments.minor_body_resource_directory
+        or getattr(configuration, "minor_body_resource_directory", None)
+    )
+    session = None
+    try:
+        if directory is not None:
+            from wenu.minor_body_resources import MinorBodyResourceSession
+
+            session = MinorBodyResourceSession(directory, observer)
+            session.__enter__()
+        center = resolve_named_center(
+            specification,
+            minor_body_collection=(
+                None if session is None else session.collection
+            ),
+        )
+        if center.is_constellation:
+            if center.kind == "group":
+                return {"group": center.identifier}
+            return {"constellations": center.value.constellations}
+        if isinstance(center.value, ResolvedTarget):
+            return {"target": center.value.key}
+        if (
+            center.value.ephemeris_source_key == "minor_body_spk"
+            and session is None
+        ):
+            raise ValueError(
+                "asteroid centers require "
+                "--minor-body-resource-directory."
             )
-            if explicit_target:
-                return {
-                    "target": arguments.target,
-                    "ra_deg": arguments.center_ra,
-                    "dec_deg": arguments.center_dec,
-                    "display_name": arguments.display_name,
-                }
-            if _selected_center_body_keys(arguments):
-                return {}
-        configured_family = (
-            "regional_single" if family == "regional" else family
+        point = get_object_center(
+            center.value,
+            observer,
+            source_resolver=(
+                None if session is None else session.source_binding
+            ),
+            reference_equinox=configuration.reference_policy.resolved_equinox(
+                observer
+            ),
         )
-        return _configured_subject(values, configured_family)
-    if family == "binocular":
-        explicit = any(
-            getattr(arguments, name) is not None
-            for name in ("target", "ra", "dec", "display_name")
+        return {
+            "center_altitude_deg": point.altitude_deg,
+            "center_azimuth_deg": point.azimuth_deg,
+        }
+    finally:
+        if session is not None:
+            session.__exit__(None, None, None)
+
+
+def _center_arguments(arguments, values, configuration, observer):
+    if arguments.command not in {"regional", "binocular"}:
+        return {}
+    explicit = _coordinate_center(arguments)
+    if explicit is not None:
+        return explicit
+    if arguments.center_on is not None:
+        return _resolved_named_center_arguments(
+            arguments.center_on, arguments, configuration, observer
         )
-        if explicit:
-            return {
-                "target": arguments.target,
-                "ra_deg": arguments.ra,
-                "dec_deg": arguments.dec,
-                "display_name": arguments.display_name,
-            }
-        return _configured_subject(values, family)
-    return {}
+    configured_family = (
+        "regional_single" if arguments.command == "regional"
+        else "binocular"
+    )
+    return _configured_center(values, configured_family)
 
 
 def _observer(arguments, values):
@@ -254,7 +321,15 @@ def _observer(arguments, values):
 
 def _view_arguments(arguments):
     family = arguments.command
-    common = {"mask": arguments.mask}
+    mask = tuple(
+        name
+        for group in getattr(arguments, "constellation_mask", ())
+        for name in group
+    ) or None
+    common = {
+        "constellation_mask": mask,
+        "constellation_system": arguments.constellation_system,
+    }
     if family == "regional":
         return {
             **common,
@@ -281,80 +356,6 @@ def _view_arguments(arguments):
     return common
 
 
-def _selected_center_body_keys(arguments):
-    planets = tuple(
-        item for group in (getattr(arguments, "planet", None) or ())
-        for item in group
-    )
-    asteroids = tuple(getattr(arguments, "asteroid", None) or ())
-    moon = ("moon",) if getattr(arguments, "moon", False) else ()
-    return (*planets, *asteroids, *moon)
-
-
-def _implicit_regional_center(
-    arguments, values, configuration, observer, subject
-):
-    if arguments.command != "regional":
-        return {}
-    if subject and not any(
-        name in subject for name in ("constellations", "group")
-    ):
-        return {}
-    explicit_horizontal = any(
-        getattr(arguments, name) is not None
-        for name in ("center_altitude", "center_azimuth")
-    )
-    if explicit_horizontal:
-        return {}
-    keys = _selected_center_body_keys(arguments)
-    if not keys:
-        return {}
-    if len(keys) != 1:
-        raise ValueError(
-            "A regional chart with several selected objects requires an "
-            "explicit center or constellation subject."
-        )
-    key = keys[0]
-    if key in tuple(getattr(arguments, "asteroid", None) or ()):
-        directory = (
-            getattr(arguments, "minor_body_resource_directory", None)
-            or _optional(values.get("minor_body_resource_directory", "none"))
-        )
-        if directory is None:
-            raise ValueError(
-                "selected asteroids require minor_body_resource_directory."
-            )
-        from wenu.minor_body_resources import (
-            MinorBodyResourceSession,
-        )
-
-        with MinorBodyResourceSession(directory, observer) as session:
-            descriptor = session.collection.resolve(key)
-            arguments._resolved_minor_body_selections = {key: descriptor}
-            center = get_object_center(
-                descriptor,
-                observer,
-                source_resolver=session.source_binding,
-                reference_equinox=(
-                    configuration.reference_policy.resolved_equinox(observer)
-                ),
-            )
-    else:
-        from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
-
-        center = get_object_center(
-            SOLAR_SYSTEM_BODY_CATALOG.resolve(key),
-            observer,
-            reference_equinox=(
-                configuration.reference_policy.resolved_equinox(observer)
-            ),
-        )
-    return {
-        "center_altitude_deg": center.altitude_deg,
-        "center_azimuth_deg": center.azimuth_deg,
-    }
-
-
 def _stem(view):
     if view.family == "regional" and view.constellations is not None:
         return f"regional-{view.constellations.key}"
@@ -370,11 +371,24 @@ def generate(arguments):
     observer = _observer(arguments, values)
     try:
         sky = generate_celestial_sphere()
-        subject_arguments = _subject_arguments(arguments, values)
+        subject_arguments = _center_arguments(
+            arguments, values, configuration, observer
+        )
         view_arguments = _view_arguments(arguments)
-        view_arguments.update(_implicit_regional_center(
-            arguments, values, configuration, observer, subject_arguments
-        ))
+        if view_arguments["constellation_system"] is None:
+            view_arguments["constellation_system"] = (
+                getattr(configuration, "constellation_system", "western")
+            )
+        if view_arguments["constellation_mask"] is None:
+            mask_family = (
+                "regional_single"
+                if arguments.command == "regional"
+                else arguments.command.replace("-", "_")
+            )
+            masks = getattr(configuration, "constellation_masks", {}) or {}
+            view_arguments["constellation_mask"] = (
+                tuple(masks.get(mask_family, ())) or None
+            )
         view = get_chart_view(
             sky,
             observer,

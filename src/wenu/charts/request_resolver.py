@@ -37,6 +37,7 @@ class ResolvedChartRequest:
     request: ChartRequest
     target: ResolvedTarget | None = None
     constellations: ResolvedConstellationSubject | None = None
+    constellation_mask: tuple[str, ...] | None = None
     frame: "ResolvedChartFrame | None" = None
 
 
@@ -84,6 +85,8 @@ def _resolve_frame(request, constellations):
             ),
             orientation=orientation,
             position_angle_deg=position_angle,
+            center_altitude_deg=frame.center_altitude_deg,
+            center_azimuth_deg=frame.center_azimuth_deg,
             source=(
                 "family-default" if frame.field_diameter_deg is None
                 else "request"
@@ -99,7 +102,10 @@ def _resolve_frame(request, constellations):
                 center_altitude_deg=frame.center_altitude_deg,
                 center_azimuth_deg=frame.center_azimuth_deg,
             )
-        if constellations.field_width_deg is not None:
+        if (
+            constellations is not None
+            and constellations.field_width_deg is not None
+        ):
             return ResolvedChartFrame(
                 field_width_deg=constellations.field_width_deg,
                 field_height_deg=constellations.field_height_deg,
@@ -126,13 +132,7 @@ def _resolve_frame(request, constellations):
     )
 
 
-def _union(current, additions):
-    if not additions:
-        return current
-    return frozenset(additions) if current is None else current | additions
-
-
-def _resolved_content(request, *, target=None, constellations=None):
+def _resolved_content(request):
     values = {
         field.name: getattr(request.content, field.name)
         for field in fields(SkyContentSelection)
@@ -141,32 +141,6 @@ def _resolved_content(request, *, target=None, constellations=None):
         values["milky_way_levels"] = frozenset(
             MilkyWayIsophotes.default_levels
         )
-    if target is not None:
-        for component in target.components:
-            values[component.family] = _union(
-                values[component.family], {component.identifier}
-            )
-    if constellations is not None:
-        values["constellation_lines"] = _union(
-            values["constellation_lines"],
-            constellations.line_constellations,
-        )
-        values["constellation_boundaries"] = _union(
-            values["constellation_boundaries"],
-            constellations.boundary_constellations,
-        )
-        values["constellation_labels"] = _union(
-            values["constellation_labels"],
-            constellations.label_constellations,
-        )
-        for name in (
-            "open_clusters",
-            "planetary_nebulae",
-            "supernova_remnants",
-        ):
-            values[name] = _union(
-                values[name], getattr(constellations, name)
-            )
     for name in EXCLUDABLE_CATALOGUE_FAMILIES:
         selected = values[name]
         excluded = getattr(request.exclusions, name)
@@ -175,7 +149,7 @@ def _resolved_content(request, *, target=None, constellations=None):
     return SkyContentSelection(**values)
 
 
-def _validate_exclusions(request, target):
+def _validate_exclusions(request):
     for name in EXCLUDABLE_CATALOGUE_FAMILIES:
         included = getattr(request.content, name)
         excluded = getattr(request.exclusions, name)
@@ -185,15 +159,6 @@ def _validate_exclusions(request, target):
             raise ValueError(
                 f"{name} cannot both include and exclude: {identifiers}."
             )
-    if target is not None:
-        for component in target.components:
-            if component.identifier in getattr(
-                request.exclusions, component.family
-            ):
-                raise ValueError(
-                    "The central target cannot be excluded from its "
-                    f"catalogue family: {component.identifier}."
-                )
 
 
 def resolve_chart_request(request, profile):
@@ -229,15 +194,12 @@ def resolve_chart_request(request, profile):
         galaxy_magnitude_limit=request.detail.galaxy_magnitude_limit,
         extended_object_samples=request.detail.extended_object_samples,
     )
-    _validate_exclusions(request, target)
-    content = _resolved_content(
-        request,
-        target=target,
-        constellations=constellations,
-    )
+    _validate_exclusions(request)
+    content = _resolved_content(request)
     return ResolvedChartRequest(
         request=replace(request, content=content),
         target=target,
         constellations=constellations,
+        constellation_mask=request.constellation_mask,
         frame=_resolve_frame(request, constellations),
     )

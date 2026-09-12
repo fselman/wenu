@@ -36,6 +36,11 @@ def _regional_chart(sky, resolved, observer):
     subject = resolved.constellations
     target = resolved.target
     frame = resolved.frame
+    mask_constellations = resolved.constellation_mask
+    if mask_constellations is None and resolved.request.mask:
+        mask_constellations = (
+            None if subject is None else subject.boundary_constellations
+        )
     options = {
         "orientation": frame.orientation,
         "position_angle_deg": frame.position_angle_deg,
@@ -43,8 +48,7 @@ def _regional_chart(sky, resolved, observer):
             None if subject is None else subject.label_constellations
         ),
         "outside_mask_constellations": (
-            subject.boundary_constellations
-            if resolved.request.mask and subject is not None else None
+            mask_constellations
         ),
         "framing_constellations": (
             None if subject is None else subject.boundary_constellations
@@ -75,8 +79,7 @@ def _regional_chart(sky, resolved, observer):
                 None if subject is None else subject.label_constellations
             ),
             outside_mask_constellations=(
-                subject.boundary_constellations
-                if resolved.request.mask and subject is not None else None
+                mask_constellations
             ),
         )
     if target is not None:
@@ -98,6 +101,7 @@ def _regional_chart(sky, resolved, observer):
             field_height_deg=frame.field_height_deg,
             position_angle_deg=resolved_orientation.position_angle_deg,
             resolved_orientation=resolved_orientation,
+            outside_mask_constellations=mask_constellations,
         )
     if subject is None:
         raise ValueError(
@@ -149,7 +153,9 @@ def _chart_from_resolved(sky, resolved, observer):
         )
     if request.family == "planisphere":
         mask = (
-            resolved.constellations.boundary_constellations
+            resolved.constellation_mask
+            if resolved.constellation_mask is not None
+            else resolved.constellations.boundary_constellations
             if request.mask else None
         )
         return FullSkyChart(
@@ -160,7 +166,9 @@ def _chart_from_resolved(sky, resolved, observer):
         )
     if request.family == "all_sky":
         mask = (
-            resolved.constellations.boundary_constellations
+            resolved.constellation_mask
+            if resolved.constellation_mask is not None
+            else resolved.constellations.boundary_constellations
             if request.mask else None
         )
         return AllSkyChart(outside_mask_constellations=mask)
@@ -176,6 +184,24 @@ def _chart_from_resolved(sky, resolved, observer):
             position_angle_deg=frame.position_angle_deg,
         )
     if request.family == "binocular":
+        if frame.center_altitude_deg is not None:
+            from .regional import resolve_chart_orientation
+
+            orientation = resolve_chart_orientation(
+                observer,
+                center_alt_deg=frame.center_altitude_deg,
+                center_az_deg=frame.center_azimuth_deg,
+                orientation=frame.orientation,
+                position_angle_deg=frame.position_angle_deg,
+            )
+            return BinocularChart(
+                center_alt_deg=frame.center_altitude_deg,
+                center_az_deg=frame.center_azimuth_deg,
+                field_diameter_deg=frame.field_diameter_deg,
+                position_angle_deg=orientation.position_angle_deg,
+                resolved_orientation=orientation,
+                outside_mask_constellations=resolved.constellation_mask,
+            )
         if resolved.target is None:
             raise ValueError("A binocular chart requires a resolved target.")
         return BinocularChart.from_coordinate(
@@ -184,6 +210,7 @@ def _chart_from_resolved(sky, resolved, observer):
             field_diameter_deg=frame.field_diameter_deg,
             orientation=frame.orientation,
             position_angle_deg=frame.position_angle_deg,
+            outside_mask_constellations=resolved.constellation_mask,
         )
     raise ValueError(f"Unsupported chart family {request.family!r}.")
 

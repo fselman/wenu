@@ -220,8 +220,8 @@ def test_review_tool_centres_close_fields_on_exact_topocentric_moon():
 
     assert option_value(regional, "--center-altitude") == tool.MOON_ALTITUDE
     assert option_value(regional, "--center-azimuth") == tool.MOON_AZIMUTH
-    assert option_value(binocular, "--ra") == tool.MOON_RA
-    assert option_value(binocular, "--dec") == tool.MOON_DEC
+    assert option_value(binocular, "--center-icrs-ra") == tool.MOON_RA
+    assert option_value(binocular, "--center-icrs-dec") == tool.MOON_DEC
 
     resolved = tool._centred_arguments(
         (*regional, *binocular),

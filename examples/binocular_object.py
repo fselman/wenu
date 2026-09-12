@@ -10,6 +10,7 @@ from wenu import (
     generate_celestial_sphere, get_chart_view,
 )
 from wenu.charts.request_furniture import binocular_product_title
+from wenu.charts.center_arguments import resolve_named_center
 
 DEFAULT_OUTPUT = Path("output/examples/binocular-object")
 
@@ -17,8 +18,11 @@ def chart_view(arguments, *, sky=None):
     configuration = chart_configuration(arguments)
     sky = generate_celestial_sphere() if sky is None else sky
     observer = Observer(location="La Ligua", time="2026-05-15 22:00")
+    center = resolve_named_center(arguments.center_on)
+    if center.is_constellation or not hasattr(center.value, "key"):
+        raise ValueError("This example requires a packaged fixed target.")
     return get_chart_view(
-        sky, observer, family="binocular", target=arguments.target,
+        sky, observer, family="binocular", target=center.value.key,
         field_diameter_deg=arguments.field_diameter, projection="stereographic",
         configuration=configuration,
     )
@@ -60,7 +64,7 @@ def parser():
     value = add_chart_cli_arguments(argparse.ArgumentParser(description=__doc__),
                                     default_output=DEFAULT_OUTPUT,
                                     default_equatorial_grid=False)
-    value.add_argument("--target", default="centaurus-a")
+    value.add_argument("--center-on", default="target:centaurus-a")
     value.add_argument("--field-diameter", type=float)
     return value
 
