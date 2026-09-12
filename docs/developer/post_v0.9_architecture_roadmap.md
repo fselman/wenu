@@ -1545,3 +1545,11 @@ authorize drawing without separately validated installed state. Automatic
 comet acquisition, brightness, coma, tail, photocentre, and physical nucleus
 appearance remain deferred. The audit changes no runtime behavior and requires
 Fernando's review.
+Fernando subsequently requested antisolar rotation of the symbolic comet fan
+and simultaneous planet, asteroid, and comet tracks when they share one field.
+The proposed implementation therefore generalizes the singular track request
+to a collection with one shared timeline; artificial satellites and per-track
+timelines remain deferred.
+Because antisolar orientation is a physical direction claim, the implementation
+must characterize and accept an independent direct-Horizons position-angle
+oracle before rendering; fixed fan length and opening remain symbolic.

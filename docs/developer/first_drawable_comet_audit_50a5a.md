@@ -127,30 +127,63 @@ Propose the class-aware vocabulary:
 --minor-body-resource-directory PATH
 ```
 
-`--comet` may be repeated; `--comet-track` remains the one optional shared
-moving-body track selection. Planet, asteroid, and comet track selectors are
-mutually exclusive because the current chart request owns one track. Point and
-track selection are independent. Merely supplying resources draws nothing.
+`--comet` may be repeated. The current chart request owns only one track, but
+that restriction is unsuitable when one field contains several moving
+objects. 50A.5B must replace the singular internal track slot with an immutable
+collection and allow planet, asteroid, and comet track selectors together.
+The class-aware options may be repeated, for example:
 
-The point uses the chart observation epoch. The track reuses `--track-start`,
+```text
+--comet-track 2P --planet-track venus --asteroid-track 79989
+```
+
+All selected tracks share the existing `--track-start`, sample step, tick step,
+tick count, and tick-label policy in this bounded slice. Per-track timelines
+remain future work. Exact duplicate selections are rejected or deterministically
+deduplicated before realization; they must never create duplicate layers.
+Point and track selection remain independent. Merely supplying resources draws
+nothing.
+
+The point uses the chart observation epoch. Every track reuses `--track-start`,
 `--track-sample-step`, `--track-tick-step`, `--track-tick-count`, and
 `--track-tick-labels`, evaluates every sample independently, and transforms all
-samples into the chart's single fixed product frame. Tracks remain regional or
-binocular only. Point support may use all chart families already admitted for
-symbolic minor bodies.
+samples into the chart's single fixed product frame. One realization may mix
+Skyfield planet states with manifest-backed asteroid and comet states, while
+each descriptor retains its own target source and provenance. The selected
+minor bodies share one resource session; every selected kernel is opened at
+most once and closed once. Tracks remain regional or binocular only. Point
+support may use all chart families already admitted for symbolic minor bodies.
+Artificial-satellite tracks remain outside this contract.
 
 ## 6. Appearance and physical meaning
 
 The first Encke mark is a fixed-size **symbolic nucleus marker**, not a resolved
-nucleus, coma, tail, brightness, visibility, or activity model. Propose a small
-hollow circular marker with a short fixed three-stroke fan glyph, plus the
-label `2P/Encke`. The fan is a conventional class symbol with page-fixed
-orientation; it does not point antisolar, follow velocity, or encode measured
-tail geometry.
+nucleus, coma, tail, brightness, visibility, or activity model. Fernando
+selects a small hollow circular marker with a short three-stroke fan glyph,
+plus the label `2P/Encke`. At the projected point, rotate the glyph so the fan
+points **antisolar** in the apparent sky: locally away from the apparent
+direction of the Sun at the same observation instant.
 
-This proposal requires Fernando's visual acceptance. If a page-fixed fan is
-judged scientifically misleading, 50A.5B should instead use a distinct neutral
-hollow marker. Either choice must remain identifiable in atlas print,
+This is a physical direction claim and must be computed before projection from
+the observer-relative apparent comet and Sun directions. Transport a short
+local tangent in the antisolar position-angle direction through the ordinary
+fixed product frame, then let projection/preparation rotate the page glyph. Do
+not infer the angle from the chart center, page axes, comet velocity, ecliptic,
+or a projected Sun that may lie outside the viewport. Near exact solar
+conjunction, where the apparent position angle becomes ill-conditioned, fail
+closed or suppress the fan under one documented angular threshold rather than
+invent an orientation.
+
+50A.5B must validate the antisolar position angle before rendering it. Freeze
+independent direct-Horizons apparent Sun and comet directions at several
+accepted epochs, including different chart orientations, and establish an
+explicit angular tolerance after characterization. Existing 50A.4 comet
+position tolerances do not by themselves validate this new directional
+quantity.
+
+Only the fan direction is physical. Its number of strokes, opening angle, and
+page length remain a fixed symbolic class glyph and do not encode measured
+coma or tail geometry. The glyph must remain identifiable in atlas print,
 presentation, grayscale, and semantic SVG without relying on color.
 
 Comet color, marker geometry, size, linewidth, alpha, and label style belong to
@@ -167,8 +200,8 @@ runtime suite:
   aliases, and semantic paths;
 - resource tests: typed comet manifest, preserved `A1`/`A2`, digest, target,
   solution, coverage, alias collision, and one-open/one-close ownership;
-- argument/request tests: `--comet`, `--comet-track`, mutual exclusion, and
-  shared track timing;
+- argument/request tests: `--comet`, repeated mixed-class track selectors,
+  duplicate policy, shared track timing, and satellite exclusion;
 - point/track tests: the existing injected provider and fixed-frame route;
 - style/semantic tests: class-distinct symbol and stable point/track paths;
 - documentation tests: explicit resources, offline failure, and non-goals.
@@ -180,7 +213,8 @@ fault model at that seam.
 
 Before acceptance require focused and complete test gates, explicit missing
 and out-of-coverage failures before output, confirmation of no network access,
-and regional PNG plus semantic SVG review showing the point and dated track.
+and regional PNG plus semantic SVG review showing the antisolar-oriented point
+and simultaneous dated comet, planet, and asteroid tracks.
 
 ## 8. Documentation and coordinate review
 
@@ -204,6 +238,11 @@ Stop and re-audit if implementation would:
 - acquire, refresh, extrapolate, or use two-body fallback during charting;
 - add a comet-specific direction, track, projection, renderer, or exporter;
 - reopen the SPK for every track sample;
+- derive the fan from chart center, velocity, ecliptic direction, or page axes,
+  or render it without accepted antisolar position-angle validation;
+- retain a singular track request or prevent mixed planet, asteroid, and comet
+  tracks in one supported field;
+- admit artificial satellites into the shared multi-track slice;
 - imply that the fixed symbol is measured coma, tail, orientation, magnitude,
   visibility, activity, or physical nucleus size;
 - alter asteroid, planet, Moon, reusable-sphere, or existing track behavior;

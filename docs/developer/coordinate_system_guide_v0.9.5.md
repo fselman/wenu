@@ -3091,3 +3091,10 @@ classification metadata, not a coordinate system or proof that an applicable
 ephemeris exists. A recognized designation reaches the coordinate pipeline
 only after a separately validated installed provider supplies the required
 bounded state.
+The proposed comet fan follows the observer-relative apparent antisolar
+position angle at the same instant. That physical tangent direction is derived
+from independently validated apparent Sun and comet directions, transported
+through the fixed product frame, and only then projected into page orientation;
+it is not derived from chart center, page axes, or comet velocity. Multiple
+planet, asteroid, and comet tracks still share one fixed product frame even though
+each descriptor retains its own state source and provenance.
