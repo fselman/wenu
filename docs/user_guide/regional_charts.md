@@ -105,6 +105,11 @@ drawing. Use `--center-on planet:Venus`, `--center-on moon:Moon`, or
 `--asteroid` to draw an object. Supply `--field-width` and `--field-height`
 for every point center. One or several selected moving objects therefore have
 exactly the same unambiguous behavior.
+For a positive permanent asteroid number, `wenu_chart` automatically resolves
+or acquires a verified bounded SPK before chart construction. Use
+`--data-policy offline` for a strict warm-cache-only run, or `refresh` to
+request a new provider solution. This convenience does not put network I/O in
+the request, geometry, or renderer layers.
 For an observer-time sequence an explicit moving-object center remains fixed
 at the first chart epoch; Wenu does not silently introduce a moving camera.
 

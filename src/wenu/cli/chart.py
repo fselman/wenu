@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+from datetime import timedelta, timezone
 from importlib.resources import files
 from pathlib import Path
+import sys
 
 from astropy import units as u
 from astropy.coordinates import Angle
@@ -14,6 +16,7 @@ from wenu.charts.command_line import (
     chart_view_requests_from_arguments,
     draw_chart_view_from_arguments,
 )
+from wenu.charts.chart_arguments import chart_track_options
 from wenu.charts.center_arguments import (
     parse_degree_angle,
     parse_icrs_ra,
@@ -37,6 +40,12 @@ from wenu.configuration import (
     translate_configuration_defaults,
 )
 from wenu.observer import Observer
+from wenu.minor_body_acquisition import (
+    MovingObjectDataPolicy,
+    coverage_interval,
+    ensure_numbered_asteroid_resources,
+    resource_covers,
+)
 from wenu.sky.maximal_sphere import generate_celestial_sphere
 
 
@@ -53,6 +62,11 @@ def _add_observer_arguments(parser):
     parser.add_argument("--observer-timezone")
     parser.add_argument("--ephemeris")
     parser.add_argument("--data-directory", type=Path)
+    parser.add_argument(
+        "--data-policy",
+        choices=tuple(value.value for value in MovingObjectDataPolicy),
+        help="resolve moving-object data before offline chart construction",
+    )
 
 
 def _add_common_arguments(parser, *, family):
@@ -322,6 +336,116 @@ def _observer(arguments, values):
     })
 
 
+def _numbered_asteroid_selections(arguments):
+    """Return exact numbered asteroids needed by center or chart content."""
+    selections = [
+        *getattr(arguments, "asteroid", ()),
+    ]
+    track = getattr(arguments, "asteroid_track", None)
+    if track is not None:
+        selections.append(track)
+    center = getattr(arguments, "center_on", None)
+    if isinstance(center, str):
+        if ":" in center:
+            kind, identifier = center.split(":", 1)
+            if kind.strip().casefold() == "asteroid":
+                selections.append(identifier.strip())
+        elif center.strip().isdecimal():
+            selections.append(center.strip())
+    if not selections:
+        return ()
+    nonnumeric = tuple(
+        value for value in selections if not str(value).strip().isdecimal()
+    )
+    if nonnumeric:
+        raise ValueError(
+            "automatic asteroid acquisition requires a positive permanent "
+            "number; use an explicit --minor-body-resource-directory for "
+            "installed-name selection."
+        )
+    numbers = tuple(sorted({int(value) for value in selections}))
+    if any(value <= 0 for value in numbers):
+        raise ValueError("asteroid numbers must be positive integers.")
+    return numbers
+
+
+def _minor_body_coverage_instants(arguments, observer, sequence_options):
+    instants = [observer.utc_datetime]
+    if sequence_options is not None:
+        instants.extend(sequence_options.timeline.instants)
+    parsed_track = chart_track_options(arguments)
+    if getattr(arguments, "asteroid_track", None) is not None:
+        from astropy.time import Time
+
+        start = Time(parsed_track.start_instant, scale="utc").to_datetime(
+            timezone=timezone.utc
+        )
+        duration = parsed_track.tick_step_days * parsed_track.tick_count
+        instants.extend((start, start + timedelta(days=duration)))
+    return tuple(instants)
+
+
+def _preflight_minor_body_resources(
+    arguments, configuration, observer, sequence_options
+):
+    """Resolve numbered-asteroid resources before chart construction."""
+    explicit = (
+        arguments.minor_body_resource_directory
+        or configuration.minor_body_resource_directory
+    )
+    policy = (
+        arguments.data_policy or configuration.moving_object_data_policy
+    )
+    if explicit is not None:
+        if policy == MovingObjectDataPolicy.REFRESH.value:
+            raise ValueError(
+                "--data-policy refresh cannot replace an explicit "
+                "--minor-body-resource-directory."
+            )
+        arguments.minor_body_resource_directory = Path(explicit)
+        return None
+    numbers = _numbered_asteroid_selections(arguments)
+    if not numbers:
+        return None
+    start, stop = coverage_interval(
+        _minor_body_coverage_instants(
+            arguments, observer, sequence_options
+        )
+    )
+    legacy = (
+        observer.data_directory / "minor_bodies" / "numbered-asteroids"
+    )
+    if (
+        policy != MovingObjectDataPolicy.REFRESH.value
+        and resource_covers(legacy, numbers, start, stop)
+    ):
+        arguments.minor_body_resource_directory = legacy
+        print(
+            f"wenu_chart: reused numbered-asteroid resources at {legacy}",
+            file=sys.stderr,
+        )
+        return None
+    result = ensure_numbered_asteroid_resources(
+        numbers,
+        (
+            observer.data_directory
+            / "minor_bodies"
+            / "numbered-asteroids-cache"
+        ),
+        start,
+        stop,
+        policy=policy,
+    )
+    arguments.minor_body_resource_directory = result.resource_directory
+    action = "acquired" if result.acquired else "reused"
+    print(
+        f"wenu_chart: {action} numbered-asteroid resources at "
+        f"{result.resource_directory}",
+        file=sys.stderr,
+    )
+    return result
+
+
 def _view_arguments(arguments):
     family = arguments.command
     mask = tuple(
@@ -387,6 +511,17 @@ def generate(arguments):
     configuration = translate_configuration_defaults(values)
     observer = _observer(arguments, values)
     try:
+        sequence_options = chart_sequence_cli_options(
+            arguments,
+            start=getattr(observer, "utc_datetime", None),
+            default_display_timezone=(
+                getattr(observer, "timezone_name", None) or "UTC"
+            ),
+            defaults=configuration.sequence,
+        )
+        _preflight_minor_body_resources(
+            arguments, configuration, observer, sequence_options
+        )
         sky = generate_celestial_sphere()
         subject_arguments = _center_arguments(
             arguments, values, configuration, observer
@@ -413,14 +548,6 @@ def generate(arguments):
             configuration=configuration,
             **subject_arguments,
             **view_arguments,
-        )
-        sequence_options = chart_sequence_cli_options(
-            arguments,
-            start=getattr(observer, "utc_datetime", None),
-            default_display_timezone=(
-                getattr(observer, "timezone_name", None) or "UTC"
-            ),
-            defaults=configuration.sequence,
         )
         common_options = {
             "stem": _stem(view),

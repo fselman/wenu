@@ -155,6 +155,10 @@ observer-horizontal `ObjectCenter`. It delegates coordinates to
 no name lookup, provider acquisition, projection, framing dimensions, style,
 or rendering. `cli/chart.py` resolves an unambiguous moving-body selection
 before `get_chart_view()` when that object must govern a regional center.
+For an exact numbered-asteroid selection it also invokes installed-CLI
+preflight before sphere or view construction. `minor_body_acquisition.py`
+alone owns network access, coverage verification, locking, staging, and
+content-addressed immutable publication. Downstream owners remain offline.
 `charts/constellation_resolver.py` owns IAU abbreviation normalization and
 offline teaching-group resolution over `data/constellation_groups.json`.
 It is the sole translation boundary for Serpens line, boundary, and label
@@ -1431,3 +1435,11 @@ owns deterministic contract coverage;
   acquisition and never participates in rendering;
 - the built-in catalog, direction, projection, preparation, rendering, and
   export owners remain unchanged.
+
+## 50A.3I numbered-asteroid CLI preflight ownership (candidate)
+
+- `minor_body_acquisition.py` owns acquisition, policy, cache verification,
+  coverage, locking, staging, and publication;
+- `cli/chart.py` completes exact-number preflight before chart construction;
+- `tools/acquire_numbered_asteroids.py` delegates to that acquisition owner;
+- request, coordinate, projection, renderer, and export owners remain offline.

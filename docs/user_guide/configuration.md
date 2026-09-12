@@ -122,20 +122,34 @@ use the same Venus cream as the chart's other planetary marks.
 
 ## Installed numbered asteroids and dated tracks
 
-Wenu can draw the apparent position and dated track of an explicitly installed
-numbered asteroid. Select it by permanent number or by the exact official name
-stored in its local manifest. Chart generation is offline and requires a
-separate acquisition step:
+Wenu can draw the apparent position and dated track of a numbered asteroid.
+With the default `acquire-if-missing` policy, the installed `wenu_chart`
+command verifies its immutable cache and downloads a bounded Horizons SPK
+during preflight when necessary. Chart construction and rendering remain
+offline. Selection by permanent number therefore needs no separate download:
 
 ```bash
-python tools/acquire_numbered_asteroids.py 79989 \
-  --output-directory ~/.cache/wenu/minor_bodies/numbered-asteroids
+wenu_chart regional --center-on asteroid:79989 --asteroid 79989 \
+  --observer-time 2026-01-15T00:00:00Z \
+  --field-width 20 --field-height 15 --output output/79989.png
 ```
 
-The tool writes a structured `acquisition-report.json` plus one bounded
-Horizons SPK per requested number. It verifies identity and classification
-against JPL SBDB. Acquisition is a network operation; rendering never
-downloads, discovers, refreshes, extrapolates, or substitutes an orbit.
+The preflight writes a structured `acquisition-report.json` plus bounded,
+content-addressed Horizons SPKs and verifies identity against JPL SBDB.
+Use `--data-policy offline` to prohibit downloads or `--data-policy refresh`
+to request a new provider solution. The same default is configurable as:
+
+```toml
+[data]
+moving_object_policy = "acquire-if-missing"
+```
+
+An explicit `--minor-body-resource-directory` remains authoritative and is
+never modified or refreshed. Exact manifest names remain available only when
+such a directory is explicitly installed; automatic acquisition deliberately
+accepts positive permanent numbers only. The standalone
+`tools/acquire_numbered_asteroids.py` command remains available for controlled
+offline preparation.
 
 Select the symbolic hollow diamond with `--asteroid 79989`, the trajectory
 with `--asteroid-track 79989`, or both. If a manifest declares an official
@@ -150,7 +164,6 @@ wenu_chart regional \
   --center-on constellation:Psc \
   --asteroid 79989 \
   --asteroid-track 79989 \
-  --minor-body-resource-directory ~/.cache/wenu/minor_bodies/numbered-asteroids \
   --track-start 2026-01-15T00:00:00Z \
   --track-sample-step 1d \
   --track-tick-step 7d \

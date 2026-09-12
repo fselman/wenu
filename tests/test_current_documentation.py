@@ -1757,6 +1757,7 @@ def test_configuration_schema_v2_freezes_structure_and_validation():
 
     assert "**Schema version:** `2`" in schema
     ordered_sections = (
+        "`data`",
         "`observer`",
         "`constellations`",
         "`centers`",
@@ -3086,6 +3087,22 @@ def test_moving_object_data_resolution_audit_preserves_offline_rendering():
     assert "Never allow request generation" in instructions
 
 
+def test_numbered_asteroid_cli_preflight_contract_is_documented():
+    document = " ".join(read(
+        DEVELOPER / "numbered_asteroid_cli_preflight_50a3i.md"
+    ).split())
+    for phrase in (
+        "acquire-if-missing",
+        "offline",
+        "refresh",
+        "content-addressed immutable publication",
+        "before sphere, view, request, or rendering construction",
+        "positive permanent",
+        "artificial satellites",
+    ):
+        assert phrase.lower() in document.lower()
+
+
 def test_developer_root_contains_only_active_authority_and_wip_documents():
     assert {
         path.name
@@ -3103,6 +3120,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "chart_cli_semantics_audit_50a3f.md",
         "cli_contract_acceptance_50a3g.md",
         "moving_object_data_resolution_audit_50a3h.md",
+        "numbered_asteroid_cli_preflight_50a3i.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -4142,7 +4160,8 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
     )
     dot = read(DIAGRAMS / "numbered_asteroids_50a3d.dot")
     svg = read(DIAGRAMS / "numbered_asteroids_50a3d.svg")
-    acquisition = read(ROOT / "tools/acquire_numbered_asteroids.py")
+    acquisition_tool = read(ROOT / "tools/acquire_numbered_asteroids.py")
+    acquisition = read(ROOT / "src/wenu/minor_body_acquisition.py")
 
     for phrase in (
         "Generic numbered asteroids (Milestone 50A.3D)",
@@ -4194,6 +4213,7 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
     assert "request-owned installed asteroid" in svg
     assert "HORIZONS_API" in acquisition
     assert "SBDB_API" in acquisition
+    assert "acquire_numbered_asteroids" in acquisition_tool
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():

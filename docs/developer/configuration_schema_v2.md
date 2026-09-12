@@ -16,20 +16,21 @@ validation without creating a runtime registry or changing current defaults.
 The root is a TOML table containing the scalar `schema_version = 2`, followed
 by these top-level tables in this exact order:
 
-1. `constellations`
-2. `observer`
-3. `sequence`
-4. `centers`
-5. `masks`
-6. `families`
-7. `detail`
-8. `styles`
-9. `modes`
-10. `grids_references`
-11. `coordinates`
-12. `furniture`
-13. `products`
-14. `export`
+1. `data`
+2. `constellations`
+3. `observer`
+4. `sequence`
+5. `centers`
+6. `masks`
+7. `families`
+8. `detail`
+9. `styles`
+10. `modes`
+11. `grids_references`
+12. `coordinates`
+13. `furniture`
+14. `products`
+15. `export`
 
 The packaged document is complete. A user document is a partial overlay but
 must still declare `schema_version`. Tables and keys are emitted in the order
@@ -74,6 +75,14 @@ by a hidden global line setting.
 The paths below are ordered first by top-level responsibility and then by
 their appearance in the future packaged document. A leaf annotation gives
 its type or its closed vocabulary.
+
+### `data`
+
+- `moving_object_policy`: exactly `acquire-if-missing`, `offline`, or
+  `refresh`. The default resolves a verified cached numbered-asteroid SPK or
+  acquires it during installed-CLI preflight. `offline` prohibits network
+  access and `refresh` requests a new provider solution. This policy never
+  authorizes network access from request generation or rendering.
 
 ### `observer`
 

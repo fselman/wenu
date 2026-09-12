@@ -44,6 +44,8 @@ See `LICENSE` for the current usage terms.
 - regional, visible-sky, Galactic all-sky, circumpolar, and binocular chart
   types;
 - generic preparation and Matplotlib rendering;
+- automatic verified, immutable-cache preflight for numbered asteroids in the
+  installed CLI, with explicit offline and refresh policies;
 - package-boundary and regression tests.
 
 ## Installation

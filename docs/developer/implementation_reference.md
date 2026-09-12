@@ -2280,3 +2280,16 @@ point and track, and restore a reusable sphere on close.
 `tools/acquire_numbered_asteroids.py NUMBER [...] --output-directory PATH` is
 the explicit networked acquisition route. Ordinary chart rendering only reads
 that local directory. The 50A.2 Ceres manifest remains a compatibility input.
+
+### Automatic numbered-asteroid preflight (Milestone 50A.3I candidate)
+
+The installed CLI accepts `--data-policy acquire-if-missing`, `offline`, or
+`refresh`; the packaged default is `acquire-if-missing`. Before constructing a
+sphere or view, it collects exact permanent numbers required by an asteroid
+center, point, or track and asks `minor_body_acquisition.py` for one verified
+local collection covering every required epoch plus margin.
+
+That module is the only network owner. It validates staging before atomic
+content-addressed publication and serializes concurrent acquisition. An
+explicit `--minor-body-resource-directory` bypasses acquisition and remains
+read-only. Request generation and rendering retain the offline contract.

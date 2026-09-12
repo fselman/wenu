@@ -93,6 +93,14 @@ def test_every_chart_family_exposes_solar_system_selectors():
         assert arguments.moon is True
 
 
+def test_every_chart_family_exposes_moving_object_data_policy():
+    for family in EXPECTED_COMMANDS - {"defaults"}:
+        arguments = chart.parser().parse_args([
+            family, "--data-policy", "offline",
+        ])
+        assert arguments.data_policy == "offline"
+
+
 def test_planisphere_accepts_one_comma_separated_planet_selection():
     arguments = chart.parser().parse_args([
         "planisphere",

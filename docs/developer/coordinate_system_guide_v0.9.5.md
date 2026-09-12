@@ -3037,3 +3037,10 @@ enters that same product frame. The resulting point determines only the
 regional tangent center; projection, clipping, selection, and rendering remain
 unchanged. Constellation centering continues to derive a spherical center from
 extended authoritative region geometry rather than this point-object path.
+
+Candidate 50A.3I changes data availability, not coordinate semantics. CLI
+preflight may obtain a bounded asteroid SPK before chart construction, but the
+kernel still supplies TDB/ICRF target state and the ordinary planetary source
+still supplies observer state and apparent-place correction. Cache coverage is
+verified against SPK segment epochs in TDB; no network result bypasses the
+existing product-frame, projection, preparation, or rendering path.
