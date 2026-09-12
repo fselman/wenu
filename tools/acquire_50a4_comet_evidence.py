@@ -8,11 +8,13 @@ from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from urllib.parse import urlencode
 from urllib.request import urlopen
 
 from astropy.time import Time
 
+from wenu.minor_body_ephemeris import SpiceMinorBodyKernel
 from wenu.observer import DEFAULT_DATA_DIRECTORY
 
 
@@ -148,6 +150,33 @@ def _write_json(path, document):
     return {"filename": path.name, "bytes": len(payload), "sha256": _digest(payload)}
 
 
+def _spk_identity(payload, expected_target):
+    """Read authoritative target identity from the returned SPK segment."""
+    with TemporaryDirectory(prefix="wenu-50a4-spk-") as directory:
+        path = Path(directory) / "2p-encke.bsp"
+        path.write_bytes(payload)
+        with SpiceMinorBodyKernel(path) as kernel:
+            segments = tuple(kernel.segments)
+    matching = tuple(
+        segment for segment in segments
+        if segment.target == int(expected_target)
+    )
+    if len(matching) != 1 or len(segments) != 1:
+        targets = tuple(segment.target for segment in segments)
+        raise ValueError(
+            "Horizons SPK does not contain exactly one SBDB target segment: "
+            f"expected={expected_target!r}, targets={targets!r}."
+        )
+    segment = matching[0]
+    return {
+        "target": str(segment.target),
+        "center": str(segment.center),
+        "segment_type": segment.data_type,
+        "coverage_start_jd_tdb": segment.start_jd,
+        "coverage_end_jd_tdb": segment.end_jd,
+    }
+
+
 def acquire(output_directory):
     """Acquire one new evidence directory without replacing prior evidence."""
     output_directory = Path(output_directory).expanduser().resolve()
@@ -187,13 +216,7 @@ def acquire(output_directory):
     }
     spk_document, spk_url = _request(HORIZONS_API, spk_parameters)
     _signature(spk_document, "NASA/JPL Horizons API")
-    horizons_spk_id = str(spk_document.get("spk_file_id"))
     sbdb_spk_id = str(obj["spkid"])
-    if horizons_spk_id != sbdb_spk_id:
-        raise ValueError(
-            "Horizons and SBDB comet SPK IDs differ: "
-            f"Horizons={horizons_spk_id!r}, SBDB={sbdb_spk_id!r}."
-        )
     try:
         spk = base64.b64decode(
             "".join(spk_document["spk"].split()).encode("ascii"),
@@ -203,6 +226,7 @@ def acquire(output_directory):
         raise ValueError("Horizons returned no valid SPK payload.") from error
     if not spk.startswith(b"DAF/"):
         raise ValueError("Horizons payload is not a DAF/SPK file.")
+    spk_identity = _spk_identity(spk, sbdb_spk_id)
 
     tables = []
     for name, parameters in (
@@ -233,7 +257,8 @@ def acquire(output_directory):
         "bytes": len(spk),
         "sha256": _digest(spk),
         "request_url": spk_url,
-        "spk_file_id": str(obj["spkid"]),
+        "spk_file_id": spk_identity["target"],
+        "spk": spk_identity,
     })
     for name, document, url in tables:
         evidence.append({
