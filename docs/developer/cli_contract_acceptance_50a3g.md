@@ -1,6 +1,6 @@
 # CLI center/content visual acceptance (Milestone 50A.3G)
 
-**Status:** Candidate documentation and visual-acceptance closure
+**Status:** Accepted and complete
 
 **Base:** `c0c78415358322b5a35afabdffc798699fbb0ab6`
 
@@ -71,16 +71,29 @@ The output directory and `manifest.json` remain outside the repository.
 8. The two Sirius orientation products retain the same center and field;
    only celestial-north-up versus zenith-up rotation changes.
 
-## Visual finding under review
+## Acceptance record
 
 Fernando's first atlas-presentation inspection accepted the two Virgo-centered
 products. The Venus-centered masked product exposed a mode-adaptation defect:
 the mask geometry reduced exterior contrast, but its configured light-gray
 veil had been replaced by the blue sky color and was therefore invisible.
-The candidate correction preserves the style-owned mask color and opacity
-through presentation adaptation. The regenerated product must visibly retain
-the semi-transparent light veil while leaving the Virgo opening clear.
+The correction preserves the style-owned mask color and opacity through
+presentation adaptation. The regenerated product visibly retains the
+semi-transparent light veil while leaving the Virgo opening clear.
 
-Fernando's visual acceptance, the complete macOS test gate, and the exact
-accepted source commit must be recorded before this milestone closes. 50A.4
-comet numerical validation remains next and is not authorized by this file.
+Fernando accepted all eleven rendered products on 2026-09-12. The inspection
+also confirmed that the three-planet request retains its Virgo center and
+clips Mercury and Mars, leaving only in-field Venus visible; the two Sirius
+products preserve one field while changing only its requested orientation.
+The literal ICRS product was accepted after its default title recorded the
+center as `RA 13:25:27.6, Dec −43:01:08.4`.
+
+The accepted remote source commit is
+`0068b2c2d48feb4191cba00526075091618f09e5`. The complete macOS gate passed:
+
+```text
+2234 passed in 102.65s (0:01:42)
+```
+
+This closes 50A.3G. Milestone 50A.4 comet numerical validation remains next
+and is not authorized by this acceptance file.
