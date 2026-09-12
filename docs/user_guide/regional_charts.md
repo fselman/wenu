@@ -89,11 +89,14 @@ wenu_chart regional --center-ra 201.365 --center-dec -43.019 \
   --output output/coordinate-field.png
 ```
 
-When there is no explicit target, coordinate, or constellation subject, one
-selected planet, Moon, or installed asteroid supplies the apparent center at
-`--observer-time`. The same selected object is drawn through the ordinary
-content path. Several selected moving objects require an explicit center or
-constellation because no implicit choice is scientifically distinguished.
+When there is no explicit fixed-object or coordinate center, one selected
+planet, Moon, or installed asteroid supplies the apparent center at
+`--observer-time`. An explicitly selected constellation may independently
+supply its lines, labels, and optional `--mask`; the moving object still owns
+the center. Supply `--field-width` and `--field-height` for this combination.
+The same selected object is drawn through the ordinary content path. Several
+selected moving objects require an explicit center because no implicit choice
+is scientifically distinguished.
 For an observer-time sequence this center remains fixed at the first chart
 epoch; Wenu does not silently introduce a moving camera.
 

@@ -26,7 +26,8 @@ projection, viewport, field size, style, renderer, or exporter.
 - `--center-ra` and `--center-dec` supply an explicit ICRS point;
 - the existing horizontal pair works without a constellation;
 - exactly one selected planet, Moon, or asteroid becomes the implicit center
-  when no explicit subject or center is present;
+  when no explicit fixed-object or coordinate center is present; an explicit
+  constellation may independently supply content and the outside mask;
 - several moving selections without an explicit center fail as ambiguous;
 - observer-time sequences retain the center at the initial chart epoch.
 

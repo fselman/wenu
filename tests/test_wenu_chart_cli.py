@@ -143,6 +143,33 @@ def test_single_selected_planet_can_supply_an_implicit_regional_center(
     }
 
 
+def test_selected_planet_center_keeps_constellation_mask_subject(monkeypatch):
+    arguments = chart.parser().parse_args([
+        "regional", "--planet", "venus",
+        "--constellations", "Vir", "--mask",
+        "--field-width", "20", "--field-height", "15",
+    ])
+    subject = chart._subject_arguments(arguments, {})
+    center = SimpleNamespace(altitude_deg=12.5, azimuth_deg=234.0)
+    monkeypatch.setattr(
+        chart, "get_object_center", lambda *args, **kwargs: center
+    )
+    configuration = SimpleNamespace(
+        reference_policy=SimpleNamespace(
+            resolved_equinox=lambda observer: "J2000"
+        )
+    )
+
+    assert subject == {"constellations": ("Vir",), "group": None}
+    assert arguments.mask is True
+    assert chart._implicit_regional_center(
+        arguments, {}, configuration, object(), subject
+    ) == {
+        "center_altitude_deg": 12.5,
+        "center_azimuth_deg": 234.0,
+    }
+
+
 def test_several_selected_objects_require_an_explicit_regional_center():
     arguments = chart.parser().parse_args([
         "regional", "--planet", "venus,mars",

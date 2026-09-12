@@ -294,7 +294,11 @@ def _selected_center_body_keys(arguments):
 def _implicit_regional_center(
     arguments, values, configuration, observer, subject
 ):
-    if arguments.command != "regional" or subject:
+    if arguments.command != "regional":
+        return {}
+    if subject and not any(
+        name in subject for name in ("constellations", "group")
+    ):
         return {}
     explicit_horizontal = any(
         getattr(arguments, name) is not None

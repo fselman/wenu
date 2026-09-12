@@ -163,6 +163,7 @@ def test_regional_fixed_horizontal_center_does_not_follow_subject(monkeypatch):
                 field_height_deg=50.0,
                 orientation="zenith-up",
             ),
+            mask=True,
         )),
     )
 
@@ -170,6 +171,7 @@ def test_regional_fixed_horizontal_center_does_not_follow_subject(monkeypatch):
     assert prepared.chart.center_az_deg == pytest.approx(270.0)
     assert prepared.chart.position_angle_deg == pytest.approx(0.0)
     assert prepared.chart.resolved_orientation.source == "zenith-up"
+    assert prepared.chart.outside_mask_constellations == ("Vir",)
 
 
 def test_regional_fixed_horizontal_center_needs_no_constellation(monkeypatch):
