@@ -3062,6 +3062,29 @@ def test_49j0_freezes_performance_measurement_before_optimization():
     assert "Last updated:** `2026-09-02T23:59:30Z`" in guide
 
 
+def test_moving_object_data_resolution_audit_preserves_offline_rendering():
+    audit = read(DEVELOPER / "moving_object_data_resolution_audit_50a3h.md")
+    roadmap = read(FUTURE_ROADMAP)
+    instructions = read(DEVELOPER / "assistant_instructions.md")
+
+    for phrase in (
+        "acquire-if-missing",
+        "offline",
+        "refresh",
+        "content-addressed immutable cache",
+        "One shell command does not imply one architectural phase",
+        "network I/O",
+        "Keplerian element calculation",
+        "SGP4/SDP4-compatible propagation",
+        "comet numerical validation",
+    ):
+        assert phrase.lower() in audit.lower()
+
+    assert "Candidate 50A.3H" in roadmap
+    assert "installed-CLI preflight phase" in instructions
+    assert "Never allow request generation" in instructions
+
+
 def test_developer_root_contains_only_active_authority_and_wip_documents():
     assert {
         path.name
@@ -3078,6 +3101,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "object_centered_regional_charts_50a3e.md",
         "chart_cli_semantics_audit_50a3f.md",
         "cli_contract_acceptance_50a3g.md",
+        "moving_object_data_resolution_audit_50a3h.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
