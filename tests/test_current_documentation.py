@@ -3169,12 +3169,12 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "numbered_asteroid_cli_preflight_50a3i.md",
         "comet_numerical_validation_audit_50a4.md",
         "comet_numerical_validation_50a4.md",
+        "first_drawable_comet_audit_50a5a.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
         "test_performance_and_future_program_49j_50.md",
-    }
-
+}
     archived = {
         "archive/audits/coordinate_transformation_audit_09a2afd.md",
         "archive/audits/public_interface_audit_v0.9.5.md",
@@ -3212,6 +3212,26 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "50a_minor_bodies",
     ):
         assert f"`milestone_history/{folder}/`" in archive_index
+
+
+def test_50a5a_audits_first_drawable_comet_without_runtime_behavior():
+    audit = " ".join(read(
+        DEVELOPER / "first_drawable_comet_audit_50a5a.md"
+    ).split())
+    for phrase in (
+        "Runtime effect:** None",
+        "2P/Encke",
+        "sky/solar_system/minor_bodies/comets/2p",
+        "--comet 2P",
+        "--comet-track 2P",
+        "explicit installed resource directory",
+        "A1",
+        "A2",
+        "not a resolved nucleus, coma, tail, brightness, visibility",
+        "must not extend the numbered-asteroid automatic preflight",
+        "the existing observer, astrometric, apparent",
+    ):
+        assert phrase.lower() in audit.lower()
 
 
 def test_current_49j_50_program_records_research_decisions_and_order():

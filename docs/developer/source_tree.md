@@ -1456,3 +1456,10 @@ owns deterministic contract coverage;
   optional non-accepting characterization while delegating provider and
   direction comparison to the existing 50A.2 scientific path;
 - no descriptor, catalog, chart, CLI, rendering, or export owner changes.
+
+## 50A.5A first-drawable-comet audit ownership
+
+- `docs/developer/first_drawable_comet_audit_50a5a.md` owns the proposed
+  bounded 2P/Encke identity, resource, point, track, appearance, failure, and
+  acceptance contract;
+- existing runtime owners remain unchanged by the audit.

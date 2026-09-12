@@ -47,7 +47,9 @@ milestone evidence are under [`archive/`](archive/README.md).
   — accepted 2P/Encke nucleus-state, non-gravitational provenance, and
   numerical-validation contract.
 - [`comet_numerical_validation_50a4.md`](comet_numerical_validation_50a4.md)
-  — candidate evidence acquisition and offline numerical implementation.
+  — accepted evidence acquisition and offline numerical validation.
+- [`first_drawable_comet_audit_50a5a.md`](first_drawable_comet_audit_50a5a.md)
+  — proposed first symbolic 2P/Encke nucleus point and track contract.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).

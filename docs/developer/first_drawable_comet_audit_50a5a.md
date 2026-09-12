@@ -1,0 +1,185 @@
+# First drawable comet audit (Milestone 50A.5A)
+
+**Status:** Proposed for Fernando's scientific and architectural review
+
+**Base:** `70a36ee`
+
+**Runtime effect:** None. This audit authorizes no selector, descriptor,
+resource conversion, style, chart layer, track, acquisition, or output change.
+
+## 1. Bounded recommendation
+
+Use **2P/Encke** as Wenu's first drawable comet. A later 50A.5B may add one
+opt-in symbolic nucleus point and one independently opt-in dated nucleus track.
+It must reuse the accepted minor-body provider and shared Solar-System
+point/track pipeline validated in 50A.4.
+
+50A.5B must not add comet discovery, automatic acquisition, orbital-element
+propagation, magnitude or detectability, a physical nucleus disk, coma, tail,
+photocentre, jets, activity, uncertainty region, or occultation behavior.
+
+## 2. As-is reuse assessment
+
+The implemented path is already generic after descriptor and source resolution:
+
+1. `SolarSystemBodyDescriptor` carries identity, capabilities, and source key;
+2. `MinorBodyResourceSession` binds a selected target SPK to the ordinary
+   planetary observer source;
+3. `SolarSystemPointLayer` realizes one apparent point;
+4. `SolarSystemTrackRealizer` samples apparent directions into one fixed chart
+   product frame;
+5. projection, clipping, preparation, rendering, semantic SVG, and export are
+   shared.
+
+No comet-specific direction, track, projection, renderer, or exporter is
+needed. The asteroid-specific assumptions are earlier: CLI fields, positive
+integer parsing, collection identity validation, diagnostics, automatic
+preflight, semantic classification, and style selection. Those boundaries
+must be generalized explicitly rather than treating `2P` as asteroid `(2)`.
+
+## 3. Identity and designation
+
+Adopt these identities for the bounded implementation:
+
+| Role | Value |
+|---|---|
+| selection key | `2p` |
+| body class | `comet` |
+| primary designation | `2P` |
+| canonical/display designation | `2P/Encke` |
+| Horizons apparition command | `90000091;` |
+| permanent NAIF SPK target | `1000025` |
+| accepted orbit solution | `K273/14` |
+| semantic point path | `sky/solar_system/minor_bodies/comets/2p` |
+| semantic track path | `sky/solar_system/minor_bodies/comets/2p/track` |
+
+The periodic-comet number and `P` suffix are one designation. They must not be
+stored or displayed as minor-planet number `(2)`. Exact installed aliases may
+include case-insensitive `2p`, `2p/encke`, and `encke`, but all resolve to one
+descriptor and one solution identity. Apparition record `90000091` remains
+provider provenance; it is not the stable Wenu selection key or physical SPK
+target.
+
+The 50A.4 `A1` and `A2` records remain attached to the provider solution.
+Wenu neither reapplies nor removes their modeled accelerations.
+
+## 4. Resource boundary
+
+50A.5B must use an explicit installed resource directory containing a
+structured collection manifest and the exact validated SPK. The collection
+loader may admit a typed comet record alongside typed asteroid records, but it
+must validate class-specific identity:
+
+- comet designation `2P`, exact provider target `1000025`, solution `K273/14`,
+  model parameters, segment centre `10`, type `21`, digest, and coverage;
+- asteroid permanent-number rules remain unchanged;
+- duplicate aliases across classes fail closed;
+- filenames may not escape the resource directory;
+- one chart build opens the selected kernel once and closes it once.
+
+The raw `50a4-raw-v2` evidence directory is an acquisition/validation artifact,
+not silently a production collection. A bounded offline installer or fixture
+builder may convert the already inspected identity and SPK into the production
+manifest form. It must not contact the network, mutate the raw evidence, or
+weaken digest and solution checks.
+
+Selecting Encke without an explicit compatible resource directory fails before
+output. 50A.5B must not extend the numbered-asteroid automatic preflight to
+comets. A later acquisition milestone must separately govern periodic-comet
+identity, apparition selection, refresh, coverage, and solution changes.
+
+## 5. Public request and time contract
+
+Propose the class-aware vocabulary:
+
+```text
+--comet 2P
+--comet-track 2P
+--minor-body-resource-directory PATH
+```
+
+`--comet` may be repeated; `--comet-track` remains the one optional shared
+moving-body track selection. Planet, asteroid, and comet track selectors are
+mutually exclusive because the current chart request owns one track. Point and
+track selection are independent. Merely supplying resources draws nothing.
+
+The point uses the chart observation epoch. The track reuses `--track-start`,
+`--track-sample-step`, `--track-tick-step`, `--track-tick-count`, and
+`--track-tick-labels`, evaluates every sample independently, and transforms all
+samples into the chart's single fixed product frame. Tracks remain regional or
+binocular only. Point support may use all chart families already admitted for
+symbolic minor bodies.
+
+## 6. Appearance and physical meaning
+
+The first Encke mark is a fixed-size **symbolic nucleus marker**, not a resolved
+nucleus, coma, tail, brightness, visibility, or activity model. Propose a small
+hollow circular marker with a short fixed three-stroke fan glyph, plus the
+label `2P/Encke`. The fan is a conventional class symbol with page-fixed
+orientation; it does not point antisolar, follow velocity, or encode measured
+tail geometry.
+
+This proposal requires Fernando's visual acceptance. If a page-fixed fan is
+judged scientifically misleading, 50A.5B should instead use a distinct neutral
+hollow marker. Either choice must remain identifiable in atlas print,
+presentation, grayscale, and semantic SVG without relying on color.
+
+Comet color, marker geometry, size, linewidth, alpha, and label style belong to
+the Solar-System style contract. Track geometry and annotation remain shared;
+only class-owned color may differ. No code may collapse every non-asteroid body
+to the Venus style fallback.
+
+## 7. Tests and acceptance
+
+Extend existing responsibility-owned tests rather than create a comet-specific
+runtime suite:
+
+- descriptor/catalog tests: `2P` identity, comet class, capabilities, label,
+  aliases, and semantic paths;
+- resource tests: typed comet manifest, preserved `A1`/`A2`, digest, target,
+  solution, coverage, alias collision, and one-open/one-close ownership;
+- argument/request tests: `--comet`, `--comet-track`, mutual exclusion, and
+  shared track timing;
+- point/track tests: the existing injected provider and fixed-frame route;
+- style/semantic tests: class-distinct symbol and stable point/track paths;
+- documentation tests: explicit resources, offline failure, and non-goals.
+
+Do not repeat 50A.4 Cartesian, light-time, apparent-place, parallax, or
+non-gravitational-model numerical oracles. Do not repeat generic projection,
+renderer, exporter, or track-annotation tests unless the new class changes the
+fault model at that seam.
+
+Before acceptance require focused and complete test gates, explicit missing
+and out-of-coverage failures before output, confirmation of no network access,
+and regional PNG plus semantic SVG review showing the point and dated track.
+
+## 8. Documentation and coordinate review
+
+50A.5A changes no public guide because it changes no behavior. 50A.5B must
+document installed-resource use, CLI examples, symbolic meaning, and the
+absence of coma/tail and brightness claims. It must update the minor-body
+architecture diagram without creating a second pipeline.
+
+The Coordinate System Guide has been reviewed. Encke's SPK supplies the same
+TDB/ICRF provider state accepted in 50A.4; the existing observer, astrometric,
+apparent, product-frame, projection, and rendering ownership is unchanged.
+
+## 9. Stop conditions
+
+Stop and re-audit if implementation would:
+
+- interpret `2P` as asteroid `(2)` or derive a provider target arithmetically;
+- discard or reapply `A1`/`A2`, or substitute another apparition/solution;
+- render directly from the raw validation directory without an explicit
+  production manifest boundary;
+- acquire, refresh, extrapolate, or use two-body fallback during charting;
+- add a comet-specific direction, track, projection, renderer, or exporter;
+- reopen the SPK for every track sample;
+- imply that the fixed symbol is measured coma, tail, orientation, magnitude,
+  visibility, activity, or physical nucleus size;
+- alter asteroid, planet, Moon, reusable-sphere, or existing track behavior;
+- admit arbitrary comet designations or automatic comet preflight under the
+  bounded first-Encke implementation.
+
+Fernando's acceptance of this audit would authorize only the bounded 50A.5B
+implementation described here.

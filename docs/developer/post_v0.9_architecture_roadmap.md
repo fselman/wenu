@@ -1535,3 +1535,10 @@ returned `accepted: true`, passed all 151 focused tests in 4.99 seconds, and
 passed the complete 2,262-test suite in 84.96 seconds. Milestone 50A.4 is
 complete; the first symbolic comet and track remain the next bounded program
 slice.
+
+Candidate 50A.5A audits the first drawable comet before runtime work. It
+proposes 2P/Encke as one explicitly installed, symbolic nucleus point and dated
+track through the shared minor-body/Solar-System route. Comet identity remains
+distinct from minor-planet numbering; automatic comet acquisition, brightness,
+coma, tail, photocentre, and physical nucleus appearance remain deferred. The
+audit changes no runtime behavior and requires Fernando's review.

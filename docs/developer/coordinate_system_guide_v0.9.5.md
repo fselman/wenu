@@ -3079,3 +3079,10 @@ Final Mac verification returned `accepted: true`, passed all 151 focused tests
 in 4.99 seconds, and passed the complete 2,262-test suite in 84.96 seconds.
 This closes 50A.4 without changing a coordinate frame or adding drawable comet
 behavior.
+
+Candidate 50A.5A proposes no new coordinate or product frame. A future
+symbolic 2P/Encke nucleus point and track would consume the already validated
+TDB/ICRF provider state and reuse the existing observer, astrometric, apparent,
+fixed-product-frame, projection, and rendering route. Comet identity and
+appearance remain separate from those coordinate operations; a symbolic mark
+makes no coma, tail, photocentre, brightness, or activity claim.
