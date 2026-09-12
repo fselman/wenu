@@ -3088,9 +3088,9 @@ def test_moving_object_data_resolution_audit_preserves_offline_rendering():
 
 
 def test_numbered_asteroid_cli_preflight_contract_is_documented():
-    document = read(
+    document = " ".join(read(
         DEVELOPER / "numbered_asteroid_cli_preflight_50a3i.md"
-    )
+    ).split())
     for phrase in (
         "acquire-if-missing",
         "offline",
@@ -4160,7 +4160,8 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
     )
     dot = read(DIAGRAMS / "numbered_asteroids_50a3d.dot")
     svg = read(DIAGRAMS / "numbered_asteroids_50a3d.svg")
-    acquisition = read(ROOT / "tools/acquire_numbered_asteroids.py")
+    acquisition_tool = read(ROOT / "tools/acquire_numbered_asteroids.py")
+    acquisition = read(ROOT / "src/wenu/minor_body_acquisition.py")
 
     for phrase in (
         "Generic numbered asteroids (Milestone 50A.3D)",
@@ -4212,6 +4213,7 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
     assert "request-owned installed asteroid" in svg
     assert "HORIZONS_API" in acquisition
     assert "SBDB_API" in acquisition
+    assert "acquire_numbered_asteroids" in acquisition_tool
 
 
 def test_user_guide_documents_every_chart_family_with_runnable_examples():
