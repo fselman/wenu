@@ -171,12 +171,27 @@ visibility, or activity model. Fernando specifies:
   `1.5` times the exposed length of either outer tail spoke; and
 - the label `2P/Encke`.
 
-The implementation must construct this geometry explicitly in Wenu-owned
-projected units. It must not depend on a Unicode comet glyph, font outline, or
-backend-specific marker. Normal-spoke count, circle radius, base spoke length,
-outer-tail-spoke length, linewidth, and the final fan angle are style-owned
-parameters to be fixed by visual acceptance; they do not vary with physical
-coma or tail size.
+Wenu must own this geometry as one canonical reusable vector symbol. Define
+the normalized circle-and-spoke geometry once in the established symbol owner
+(or a dedicated immutable symbol value reached through that owner), package it
+with Wenu, and reuse that same definition for every comet instance and output
+backend. It must not depend on a Unicode comet glyph, font outline, bitmap, or
+backend-specific marker.
+
+Using the symbol consists only of **placement, orientation, and
+magnification** of the canonical normalized geometry. Rendering must not
+reconstruct its circle and spokes from scratch for each object, track sample,
+chart, or output format. The symbol value must be immutable and safe to reuse
+across repeated charts without mutable transform or style leakage. A renderer
+may materialize backend path objects from the canonical value at its normal
+adapter boundary, but must not redefine the geometry.
+
+Normal-spoke count, circle radius, base spoke length, outer-tail-spoke length,
+and the final fan angle are initially fixed when the canonical symbol is
+visually accepted. Linewidth and output-mode color remain style-owned. These
+values do not vary with physical coma or tail size. A later deliberate symbol
+revision changes the single canonical definition and its contract fixture,
+not call sites throughout Wenu.
 
 At the projected point, rotate the complete symbol so the central long spoke
 points **antisolar** in the apparent sky: locally away from the apparent
@@ -224,9 +239,10 @@ runtime suite:
 - argument/request tests: `--comet`, repeated mixed-class track selectors,
   duplicate policy, shared track timing, and satellite exclusion;
 - point/track tests: the existing injected provider and fixed-frame route;
-- style/semantic tests: constructed circle/spoke geometry, symmetric tail fan,
-  central `1.5` ratio, rotation, backend independence, one semantic entity,
-  and stable point/track paths;
+- symbol/style/semantic tests: one canonical immutable circle/spoke geometry,
+  symmetric tail fan, central `1.5` ratio, reuse without reconstruction,
+  placement/orientation/magnification transforms, backend independence, no
+  state leakage, one semantic entity, and stable point/track paths;
 - documentation tests: explicit resources, offline failure, and non-goals.
 
 Do not repeat 50A.4 Cartesian, light-time, apparent-place, parallax, or
@@ -265,6 +281,8 @@ Stop and re-audit if implementation would:
   or render it without accepted antisolar position-angle validation;
 - substitute a font or Unicode glyph for the constructed circle-and-spoke
   symbol, or let backend serialization define its geometry;
+- reconstruct or redefine the symbol at each object, sample, chart, renderer,
+  or call site instead of transforming Wenu's canonical immutable definition;
 - retain a singular track request or prevent mixed planet, asteroid, and comet
   tracks in one supported field;
 - admit artificial satellites into the shared multi-track slice;

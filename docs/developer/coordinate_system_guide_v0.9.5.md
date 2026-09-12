@@ -3102,3 +3102,7 @@ The circle, radial spokes, three-stroke fan, relative lengths, and opening angle
 are constructed projected symbol geometry. Only rotation of the fan bisector
 has astronomical meaning; the remaining dimensions are style-owned and carry
 no angular-size or tail-morphology claim.
+Wenu stores that normalized geometry as one canonical immutable symbol.
+Individual appearances apply placement, antisolar orientation, and
+magnification after the astronomical direction has been realized; they do not
+rebuild the symbol or create another coordinate path.

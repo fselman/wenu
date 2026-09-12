@@ -1553,6 +1553,9 @@ timelines remain deferred.
 The proposed symbol is constructed from a hollow circle, short radial spokes,
 and three longer tail spokes; the central tail spoke is 1.5 times the exposed
 length of the two symmetric outer spokes and their initial total fan angle is
-25 degrees, pending visual acceptance. Because antisolar orientation is a physical direction claim, the implementation
+25 degrees, pending visual acceptance. Wenu owns one canonical immutable
+normalized vector definition; each use applies only placement, antisolar
+orientation, and magnification rather than reconstructing the geometry.
+Because antisolar orientation is a physical direction claim, the implementation
 must characterize and accept an independent direct-Horizons position-angle
 oracle before rendering; fixed fan length and opening remain symbolic.
