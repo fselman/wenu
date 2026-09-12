@@ -1,12 +1,18 @@
 # Moving-object data resolution audit (Milestone 50A.3H)
 
-**Status:** Candidate for Fernando's review
+**Status:** Accepted by Fernando
 
 **Base:** `e30f27d`
 
 **Date:** 2026-09-12
 
 **Runtime effect:** None
+
+**Acceptance:** Fernando accepted decisions D50A3H-1 through D50A3H-9 on
+2026-09-12 after the focused macOS documentation gate passed all 104 tests in
+4.19 seconds. This authorizes the bounded 50A.3I numbered-asteroid CLI
+preflight implementation; it does not authorize comet or satellite runtime
+behavior.
 
 ## 1. Purpose
 
@@ -245,4 +251,3 @@ state, apparent-place realization, product frame, and satellite TEME/SGP4
 physics remains correct. After acceptance it should record the new CLI
 preflight versus offline-render boundary. User guides and TOML documentation
 must not change until 50A.3I installs behavior.
-

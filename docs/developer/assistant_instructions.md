@@ -566,9 +566,10 @@ rule that center, content, constellation layers, and masks are independent.
 Milestone 50A.3G owns documentation and visual acceptance; 50A.4 remains next
 after that closure.
 
-Candidate 50A.3H audits one-command moving-object data resolution. Until it is
-accepted and implemented, preserve the existing explicit acquisition route.
-If accepted, keep automatic network access in an installed-CLI preflight phase:
+Accepted 50A.3H audits one-command moving-object data resolution and authorizes
+only the bounded 50A.3I numbered-asteroid CLI preflight implementation. Until
+50A.3I is implemented, preserve the existing explicit acquisition route. Keep
+automatic network access in an installed-CLI preflight phase:
 validate and atomically publish an immutable resource before constructing the
 ordinary offline chart request. Never allow request generation, provider state
 evaluation, direction realization, projection, rendering, or export to query a

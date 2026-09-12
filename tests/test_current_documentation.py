@@ -3080,7 +3080,8 @@ def test_moving_object_data_resolution_audit_preserves_offline_rendering():
     ):
         assert phrase.lower() in audit.lower()
 
-    assert "Candidate 50A.3H" in roadmap
+    assert "Accepted 50A.3H" in roadmap
+    assert "104 focused documentation\ntests passed" in roadmap
     assert "installed-CLI preflight phase" in instructions
     assert "Never allow request generation" in instructions
 
