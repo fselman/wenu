@@ -7,6 +7,12 @@
 
 schema_version = 2
 
+# Moving-object resources are resolved before chart construction. The default
+# may acquire a missing numbered-asteroid SPK; offline prohibits network use,
+# and refresh requests a new provider solution.
+[data]
+moving_object_policy = "acquire-if-missing"
+
 # Vocabulary and line-figure tradition used by explicit constellation
 # operations. This parameter does not enable any constellation layer.
 [constellations]

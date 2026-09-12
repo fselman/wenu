@@ -33,6 +33,7 @@ class ConfigurationDefaults:
     sequence: SequenceDefaults
     reference_policy: Any
     minor_body_resource_directory: Path | None = None
+    moving_object_data_policy: str = "acquire-if-missing"
     constellation_system: str = "western"
     constellation_masks: Any = None
 
@@ -61,6 +62,7 @@ def translate_configuration_defaults(
             if resource_directory == "none"
             else Path(resource_directory).expanduser()
         ),
+        moving_object_data_policy=values["data"]["moving_object_policy"],
         constellation_system=values["constellations"]["system"],
         constellation_masks=MappingProxyType({
             name: tuple(table["constellations"])

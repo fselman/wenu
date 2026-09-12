@@ -741,3 +741,12 @@ Planets, the Moon, installed asteroids, packaged stellar and deep-sky targets,
 and explicit ICRS or horizontal coordinates use the same chart family only
 through an explicit CLI or effective-configuration center.
 Constellation geometry remains the independent extended-region framing case.
+
+## Installed-CLI moving-object preflight
+
+For exact numbered asteroids, `wenu_chart` resolves data before building the
+chart. `minor_body_acquisition.py` is the sole network and immutable-cache
+owner; it returns a verified local manifest-backed directory. The request,
+coordinate, projection, rendering, and export pipeline remains offline. Public
+policies are `acquire-if-missing` (default), `offline`, and `refresh`; an
+explicit resource directory is authoritative and read-only.

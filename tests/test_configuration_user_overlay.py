@@ -35,6 +35,8 @@ def test_overlay_merge_is_recursive_and_does_not_mutate_inputs():
     packaged = load_packaged_defaults()
     overlay = parse_configuration_overlay(
         "schema_version = 2\n"
+        "[data]\n"
+        "moving_object_policy = 'offline'\n"
         "[modes.print]\n"
         "dpi = 240\n"
         "[styles.atlas.horizon]\n"
@@ -66,6 +68,8 @@ def test_optional_user_file_translates_all_existing_typed_contracts(tmp_path):
     path = tmp_path / "wenu.toml"
     path.write_text(
         "schema_version = 2\n"
+        "[data]\n"
+        "moving_object_policy = 'offline'\n"
         "[modes.print]\n"
         "dpi = 240\n"
         "[detail.neutral]\n"
@@ -82,6 +86,7 @@ def test_optional_user_file_translates_all_existing_typed_contracts(tmp_path):
 
     assert values["modes"]["print"]["dpi"] == 240
     assert defaults.style_mode.print_mode.dpi == 240
+    assert defaults.moving_object_data_policy == "offline"
     assert defaults.geometry_detail.neutral_detail.label_density == 1.75
     assert defaults.furniture_product_export.product.language == "es"
     assert defaults.minor_body_resource_directory == (

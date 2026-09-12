@@ -1505,3 +1505,15 @@ Parent-closure verification passed 76 documentation tests in 9.55 seconds, 2,089
 No additional runtime behavior is authorized by this parent closure. Frozen-Earth lunar sequences, interpolation, animation, texture, libration, eclipses,
 refraction across the resolved disk, and occultation prediction remain outside
 49I.3E.
+
+## Milestone 50A.3I — Automatic numbered-asteroid CLI preflight
+
+**Status:** Candidate implementation and macOS acceptance.
+
+Implement accepted 50A.3H for exact positive permanent asteroid numbers. The
+installed CLI may reuse or acquire verified bounded Horizons SPKs under
+`acquire-if-missing`, `offline`, and `refresh` policies before ordinary chart
+construction. Immutable content-addressed publication, provider receipts,
+coverage validation, and an authoritative explicit resource directory preserve
+reproducibility and offline rendering. Comets, satellites, name discovery, and
+orbital-element propagation remain deferred.

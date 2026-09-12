@@ -140,6 +140,9 @@ _NONNEGATIVE_NAMES = frozenset(
     }
 )
 _ENUMS = {
+    "data.moving_object_policy": {
+        "acquire-if-missing", "offline", "refresh",
+    },
     "constellations.system": {"western"},
     "sequence.restart_policy": {"restart", "resume"},
     "families.all_sky.projection": {"mollweide"},
