@@ -335,8 +335,6 @@ def _view_arguments(arguments):
             **common,
             "field_width_deg": arguments.field_width,
             "field_height_deg": arguments.field_height,
-            "center_altitude_deg": arguments.center_altitude,
-            "center_azimuth_deg": arguments.center_azimuth,
             "orientation": arguments.orientation,
             "position_angle_deg": arguments.position_angle,
         }

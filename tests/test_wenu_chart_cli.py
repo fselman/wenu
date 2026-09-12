@@ -214,13 +214,17 @@ def test_planet_center_and_constellation_mask_are_independent(monkeypatch):
         )
     )
 
-    assert chart._view_arguments(arguments)["constellation_mask"] == ("Vir",)
-    assert chart._center_arguments(
+    view_arguments = chart._view_arguments(arguments)
+    center_arguments = chart._center_arguments(
         arguments, {"centers": {}}, configuration, object()
-    ) == {
+    )
+
+    assert view_arguments["constellation_mask"] == ("Vir",)
+    assert center_arguments == {
         "center_altitude_deg": 12.5,
         "center_azimuth_deg": 234.0,
     }
+    assert set(center_arguments).isdisjoint(view_arguments)
 
 
 def test_several_selected_objects_do_not_change_the_configured_center():
