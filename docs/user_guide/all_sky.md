@@ -48,7 +48,9 @@ python examples/all_sky.py \
 
 Every selected official region remains a separate opening. Regions crossing
 the 180° seam are split by the projection and clipped at the chart ellipse.
-Packaged aliases remain available through `--group ALIAS`.
+The installed all-sky command has no center operation and therefore no
+`--group` shortcut. Name every required mask opening explicitly with
+`--constellation-mask IAU,...`.
 
 Use `--all-products` for the four atlas/cartoon and print/presentation
 products. The common magnitude, constellation, reference, pole, legend,

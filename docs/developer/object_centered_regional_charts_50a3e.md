@@ -1,15 +1,16 @@
 # Object-centered regional charts (Milestone 50A.3E)
 
-**Status:** Candidate implementation; Mac and visual acceptance pending
+**Status:** Implemented and merged by PR 98; explicit CLI visual acceptance is
+tracked by Milestone 50A.3G.
 
 **Base:** `cadda4c6b609558a98c2b75e4c72dc026c962958`
 
 ## Contract
 
-Regional charts may be framed by one constellation set, one packaged target,
-one explicit ICRS or horizontal coordinate, or one unambiguous selected moving
-object. Fixed targets include stars and every supported deep-sky catalogue
-family. Moving targets include catalog-backed planets and the Moon plus
+Regional charts may be framed by one explicitly selected constellation set,
+packaged target, moving object, or ICRS or horizontal coordinate. Fixed
+targets include stars and every supported deep-sky catalogue family. Moving
+targets include catalog-backed planets and the Moon plus
 manifest-backed numbered asteroids; comets can later enter through the same
 descriptor overload.
 
@@ -31,9 +32,10 @@ projection, viewport, field size, style, renderer, or exporter.
 - selecting one or several bodies for drawing never changes the center;
 - observer-time sequences retain the center at the initial chart epoch.
 
-The object remains ordinary selected chart content. Request-owned asteroid
-identity is resolved before the chart view and transported into subsequent
-drawing adaptation rather than being rediscovered to decide the center.
+If independently selected for drawing, the object remains ordinary chart
+content. Request-owned asteroid identity is resolved before the chart view and
+transported into subsequent drawing adaptation rather than being rediscovered
+to decide the center.
 
 ## Non-goals
 
@@ -43,8 +45,7 @@ does not treat an extended constellation as a point object.
 
 ## Acceptance
 
-Focused contracts must cover fixed target, explicit ICRS and horizontal
-centers, stellar inclusion beyond a magnitude threshold, a unique moving-body
-center, ambiguous moving selections, and reuse of a pre-resolved asteroid
-descriptor. Fernando must then run the complete Mac suite and inspect one
-planet-centered and one `(79989)`-centered regional PNG.
+The focused implementation contracts and the complete macOS gate passed; the
+final run reported 2,231 tests. Milestone 50A.3G expands the human inspection
+from the two original point-center products to the complete explicit
+center/content/mask/orientation matrix.

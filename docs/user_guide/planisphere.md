@@ -49,7 +49,9 @@ python examples/planisphere.py \
 
 Regions wholly below the observer's horizon are omitted. A region crossing
 the horizon remains an opening clipped at the visible-sky boundary. Packaged
-aliases may be supplied with `--group ALIAS` instead.
+The installed planisphere command has no center operation and therefore no
+`--group` shortcut. Name every required mask opening explicitly with
+`--constellation-mask IAU,...`.
 
 This canonical example supplies Spanish title, reference-curve annotations,
 object-symbol labels, and stellar-legend title through example-local legend

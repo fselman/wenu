@@ -20,7 +20,7 @@ requested; it does not enable lines, labels, boundaries, or masking.
 ## Create an editable template
 
 Create the destination directory, then export Wenu's complete commented
-version-1 configuration:
+version-2 configuration:
 
 ```bash
 mkdir -p profiles
@@ -55,7 +55,7 @@ standard output.
 ## Valid line styles
 
 Every configurable line-bearing element independently declares `color`,
-`line_width`, and `line_style`. The complete version-1 `line_style` vocabulary
+`line_width`, and `line_style`. The complete version-2 `line_style` vocabulary
 is:
 
 - `solid`
@@ -77,7 +77,7 @@ do not require Python changes:
 | `presentation.toml` | presentation mode, canvas, labels and symbols |
 | `outreach.toml` | cartoon style, larger labels, legends and furniture |
 | `papudo.toml` | observer location, elevation, timezone and time |
-| `binocular-observing.toml` | subject, binocular field and detail limits |
+| `binocular-observing.toml` | center, binocular field and detail limits |
 
 Each command accepts one profile:
 
@@ -85,7 +85,7 @@ Each command accepts one profile:
 wenu_chart planisphere --config profiles/papudo.toml
 ```
 
-Version 1 intentionally has no profile inheritance or multi-file stacking.
+Version 2 intentionally has no profile inheritance or multi-file stacking.
 When one chart needs choices from several themes, keep a dedicated combined
 profile. An inheritance feature should be added only if experience with these
 ordinary single-file overlays demonstrates that it is necessary.
@@ -226,7 +226,7 @@ A reusable TOML profile may instead set the existing product extension:
 extension = ".svg"
 ```
 
-Version 1 accepts `.png`, `.pdf`, and `.svg` output extensions. SVG always
+Version 2 accepts `.png`, `.pdf`, and `.svg` output extensions. SVG always
 uses Wenu's editable-text contract; there is no TOML font-policy switch.
 An explicit CLI `--format` overrides extension-based selection for generated
 names and must agree with an explicitly suffixed single-file `--output`.

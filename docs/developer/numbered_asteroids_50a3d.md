@@ -1,6 +1,6 @@
 # Generic numbered asteroids (Milestone 50A.3D)
 
-**Status:** Candidate implementation; all acceptance evidence complete, Fernando acceptance pending
+**Status:** Accepted and merged to `main` before PR 98
 
 **Base:** `d538473869c82e6fe125f7b9d7a69596639c7d97`
 
@@ -95,8 +95,8 @@ omitted from the explicit optional-layer closure. Targeted regression gates
 then passed 7 tests in 2.49 seconds and 1 test in 1.93 seconds respectively.
 The final complete repository gate passed all 2,201 tests in 81.36 seconds.
 
-All required evidence is complete; final milestone acceptance remains
-Fernando's explicit decision.
+Fernando accepted the completed numerical, visual, focused-test, and full-suite
+evidence before the implementation was merged to `main`.
 
 No user example implies automatic discovery, catalog sweep, provisional
 designation, comet, dual-status object, photometry, field intersection, or

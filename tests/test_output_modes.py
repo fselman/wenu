@@ -164,6 +164,7 @@ def assert_same_geometry(left, right):
 def test_presentation_uses_high_contrast_atlas_palette():
     style = atlas_chart_style("presentation")
     palette = ATLAS_PRESENTATION_PALETTE
+    baseline = AtlasChartStyle()
 
     assert style.canvas.sky_color == palette.sky
     assert style.canvas.foreground_color == palette.foreground
@@ -176,6 +177,8 @@ def test_presentation_uses_high_contrast_atlas_palette():
     assert style.solar_system.venus_color == "#FFE6A3"
     assert style.solar_system.asteroid_color == "#FFE6A3"
     assert style.solar_system.moon_color == "#E6E1D3"
+    assert style.mask == baseline.mask
+    assert style.mask.color != palette.sky
     assert "#b43b37" not in _style_colors(style)
 
 

@@ -56,7 +56,7 @@ def test_regional_guide_uses_arbitrary_constellation_sets():
 
     assert "--center-on constellation:Sgr,Sco,Oph,Ser" in text
     assert "--constellation-mask Cen,Cru,Mus" in text
-    assert "--group summer-triangle" in text
+    assert "--center-on group:summer-triangle" in text
 
 def test_readme_quick_start_uses_the_canonical_planisphere_interface():
     text = (ROOT / "README.md").read_text(encoding="utf-8")

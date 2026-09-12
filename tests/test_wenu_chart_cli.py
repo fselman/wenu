@@ -159,6 +159,19 @@ def test_regional_accepts_named_and_explicit_icrs_centers():
     assert coordinate.center_name == "My field"
 
 
+def test_icrs_center_supplies_an_informative_default_title():
+    arguments = chart.parser().parse_args([
+        "regional", "--center-icrs-ra", "201.365deg",
+        "--center-icrs-dec=-43.019deg", "--center-name", "My field",
+    ])
+
+    assert chart._title(arguments) == (
+        "My field — ICRS RA 13:25:27.6, Dec −43:01:08.4"
+    )
+    arguments.title = "Explicit title"
+    assert chart._title(arguments) == "Explicit title"
+
+
 def test_center_forms_are_complete_and_mutually_exclusive():
     half = chart.parser().parse_args([
         "regional", "--center-icrs-ra", "10deg"
@@ -214,13 +227,17 @@ def test_planet_center_and_constellation_mask_are_independent(monkeypatch):
         )
     )
 
-    assert chart._view_arguments(arguments)["constellation_mask"] == ("Vir",)
-    assert chart._center_arguments(
+    view_arguments = chart._view_arguments(arguments)
+    center_arguments = chart._center_arguments(
         arguments, {"centers": {}}, configuration, object()
-    ) == {
+    )
+
+    assert view_arguments["constellation_mask"] == ("Vir",)
+    assert center_arguments == {
         "center_altitude_deg": 12.5,
         "center_azimuth_deg": 234.0,
     }
+    assert set(center_arguments).isdisjoint(view_arguments)
 
 
 def test_several_selected_objects_do_not_change_the_configured_center():

@@ -234,7 +234,6 @@ def atlas_chart_style(
         facecolor=palette.sky,
         edgecolor=palette.frame,
     )
-    mask = replace(style.mask, color=palette.sky)
     return replace(
         style,
         canvas=canvas,
@@ -244,5 +243,4 @@ def atlas_chart_style(
         solar_system=solar_system,
         grids=grids,
         legend=legend,
-        mask=mask,
     )
