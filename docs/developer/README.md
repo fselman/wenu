@@ -38,6 +38,9 @@ milestone evidence are under [`archive/`](archive/README.md).
   — implemented explicit center, content, and mask CLI contract.
 - [`cli_contract_acceptance_50a3g.md`](cli_contract_acceptance_50a3g.md)
   — current documentation and visual-acceptance closure for that contract.
+- [`moving_object_data_resolution_audit_50a3h.md`](moving_object_data_resolution_audit_50a3h.md)
+  — accepted one-command acquisition, immutable-cache, offline-render, and
+  future satellite-provider contract.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).

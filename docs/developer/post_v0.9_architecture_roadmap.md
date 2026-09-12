@@ -1134,7 +1134,16 @@ that contract without object-specific runtime branching or implicit network
 lookup. PR 98 subsequently added explicit fixed- and moving-object centers and
 separated CLI center, content, constellation, and mask responsibilities.
 Milestone 50A.3G is the bounded documentation and visual-acceptance closure;
-50A.4 remains next after it is accepted.
+it was accepted on 2026-09-12 with all eleven visual products and 2,234 tests.
+Accepted 50A.3H audits convenient one-command moving-object resolution
+without admitting network access into chart construction or rendering. It
+proposes a content-addressed local cache, explicit data policies, Horizons-SPK
+preflight as the first implementation, a later separately validated orbital-
+catalog provider, and wholly separate TLE/OMM plus SGP4 satellite dynamics.
+Fernando accepted its decisions on 2026-09-12 after 104 focused documentation
+tests passed. The bounded 50A.3I numbered-asteroid CLI preflight implementation
+is authorized next. 50A.4 comet numerical validation retains its meaning and
+follows that separately accepted implementation slice.
 
 ## 13.2 Program 50B - Publication legibility and economical printing
 
