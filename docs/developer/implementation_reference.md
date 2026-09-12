@@ -2236,6 +2236,16 @@ compares three Ceres and four Apophis epochs with
 `tests/fixtures/horizons_asteroid_validation_50a2.json`; production rendering
 does not acquire, update, or validate resources implicitly.
 
+The candidate 50A.4 comet numerical slice reuses that validator machinery.
+`tools/build_50a4_comet_fixture.py` parses the inspected 2P/Encke SBDB and
+Horizons evidence into a compact frozen oracle, preserving apparition command
+`90000091` separately from NAIF target `1000025`, solution `K273/14`, the
+type-21 solar-centred segment, and complete `A1` and `A2` records.
+`tools/validate_50a4_comet.py` enforces the accepted comet-specific fixture
+tolerances by default. `--characterize` reports residuals without applying the
+matrix and cannot report acceptance. Neither mode adds runtime or drawable
+comet behavior.
+
 `archive/milestone_history/50a_minor_bodies/first_drawable_asteroid_audit_50a3a.md`
 is the accepted contract for connecting Ceres in 50A.3B. It identifies
 descriptor-aware source resolution as

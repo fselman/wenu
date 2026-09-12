@@ -3045,9 +3045,32 @@ still supplies observer state and apparent-place correction. Cache coverage is
 verified against SPK segment epochs in TDB; no network result bypasses the
 existing product-frame, projection, preparation, or rendering path.
 
-Candidate 50A.4 likewise adds no frame. It proposes validating a 2P/Encke
-type-21 SPK against frozen direct-Horizons geometric, astrometric, apparent,
-distance, light-time, and topocentric-parallax evidence. The SPK owns the
-provider's complete selected orbit, including declared non-gravitational
-parameters; Wenu neither reapplies nor removes them. The ephemeris target is
-the modeled nucleus centre, not its coma, tail, or photocentre.
+Candidate 50A.4 likewise adds no frame. Its initial characterization validates
+a 2P/Encke type-21 SPK against frozen direct-Horizons geometric, astrometric,
+apparent, distance, light-time, and topocentric-parallax evidence. Geometric
+state is evaluated at the vector table's explicit JD TDB; geocentric and La
+Ligua directions remain tied to the corresponding UTC reception instant. The
+SPK owns the provider's complete selected orbit, including declared
+non-gravitational parameters; Wenu neither reapplies nor removes them. The
+ephemeris target is the modeled nucleus centre, not its coma, tail, or
+photocentre. This review introduces no new coordinate or product frame.
+
+Fernando accepted the 50A.4 reproduction tolerances after explicit
+characterization. They are part of the numerical provider/direction boundary,
+not chart geometry or an orbit-accuracy claim:
+
+| Comparison | Accepted tolerance |
+|---|---:|
+| barycentric ICRF position | `1e-10 au` |
+| barycentric ICRF velocity | `5e-12 au/day` |
+| astrometric or apparent RA/Dec | `5e-6 deg` |
+| observer distance | `1e-9 au` |
+| one-way light time | `1e-7 min` |
+| geocentric-to-topocentric parallax | `1e-5 deg` |
+
+The angular coordinates in the direct Horizons observer tables are printed to
+five decimal degrees. The direction envelope follows that quantization; the
+parallax envelope allows for its derivation from two independently rounded
+directions. The Cartesian envelopes cover the measured type-21 SPK versus
+direct-vector residuals. `--characterize` deliberately disables enforcement
+and cannot report numerical acceptance.

@@ -1443,3 +1443,16 @@ owns deterministic contract coverage;
 - `cli/chart.py` completes exact-number preflight before chart construction;
 - `tools/acquire_numbered_asteroids.py` delegates to that acquisition owner;
 - request, coordinate, projection, renderer, and export owners remain offline.
+
+## 50A.4 comet numerical-validation ownership (candidate implementation)
+
+- `tools/acquire_50a4_comet_evidence.py` alone owns deliberate network
+  acquisition of raw 2P/Encke SBDB, Horizons SPK, vector, and observer evidence;
+- `tools/build_50a4_comet_fixture.py` owns offline parsing, raw-evidence
+  identity checks, and compact-oracle construction;
+- `tests/fixtures/horizons_comet_validation_50a4.json` owns the frozen compact
+  numerical oracle; the complete raw evidence remains local;
+- `tools/validate_50a4_comet.py` owns accepted 50A.4 tolerance enforcement and
+  optional non-accepting characterization while delegating provider and
+  direction comparison to the existing 50A.2 scientific path;
+- no descriptor, catalog, chart, CLI, rendering, or export owner changes.

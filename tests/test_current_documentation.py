@@ -3121,6 +3121,32 @@ def test_50a4_audits_comet_numerics_before_runtime_behavior():
         assert phrase.lower() in audit.lower()
 
 
+def test_50a4_candidate_is_offline_and_characterization_only():
+    document = " ".join(read(
+        DEVELOPER / "comet_numerical_validation_50a4.md"
+    ).split())
+    source_tree = read(DEVELOPER / "source_tree.md")
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    guide = read(DEVELOPER / "coordinate_system_guide_v0.9.5.md")
+
+    for phrase in (
+        "Accepted tolerances implemented",
+        "build_50a4_comet_fixture.py",
+        "validate_50a4_comet.py",
+        '"accepted": true',
+        '"accepted": false',
+        '"tolerances": null',
+        "explicit JD TDB",
+        "five decimal degrees",
+        "No descriptor, chart request, CLI selector, drawing, or exporter",
+    ):
+        assert phrase.lower() in document.lower()
+    assert "compact-oracle construction" in source_tree
+    assert "apparition command" in implementation
+    assert "This review introduces no new coordinate or product frame" in guide
+    assert "barycentric ICRF position | `1e-10 au`" in guide
+
+
 def test_developer_root_contains_only_active_authority_and_wip_documents():
     assert {
         path.name
@@ -3140,6 +3166,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "moving_object_data_resolution_audit_50a3h.md",
         "numbered_asteroid_cli_preflight_50a3i.md",
         "comet_numerical_validation_audit_50a4.md",
+        "comet_numerical_validation_50a4.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
