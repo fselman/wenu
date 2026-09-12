@@ -1539,6 +1539,9 @@ slice.
 Candidate 50A.5A audits the first drawable comet before runtime work. It
 proposes 2P/Encke as one explicitly installed, symbolic nucleus point and dated
 track through the shared minor-body/Solar-System route. Comet identity remains
-distinct from minor-planet numbering; automatic comet acquisition, brightness,
-coma, tail, photocentre, and physical nucleus appearance remain deferred. The
-audit changes no runtime behavior and requires Fernando's review.
+distinct from minor-planet numbering and keeps `P`, `D`, `I`, `C`, `X`, and
+`A` designation classes structurally distinct. Syntax recognition does not
+authorize drawing without separately validated installed state. Automatic
+comet acquisition, brightness, coma, tail, photocentre, and physical nucleus
+appearance remain deferred. The audit changes no runtime behavior and requires
+Fernando's review.

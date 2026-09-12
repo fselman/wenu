@@ -60,6 +60,35 @@ descriptor and one solution identity. Apparition record `90000091` remains
 provider provenance; it is not the stable Wenu selection key or physical SPK
 target.
 
+The identity model must not encode `P` as the only possible cometary
+designation class. It must be able to represent and validate the IAU/MPC
+prefix vocabulary separately from dynamical state availability. The supported
+identity vocabulary is `P`, `D`, `I`, `C`, `X`, and `A`:
+
+| Prefix | Identity meaning | 50A.5B behavior |
+|---|---|---|
+| `P` | periodic comet | recognize; only installed `2P` is authorized |
+| `D` | defunct, disappeared, disrupted, or lost periodic comet | recognize identity; require a separately valid installed ephemeris and coverage |
+| `I` | interstellar object | recognize identity; require separate scientific validation before drawing |
+| `C` | non-periodic comet | recognize identity; require separate scientific validation before drawing |
+| `X` | comet without a reliable orbit | recognize identity; reject drawing without an authoritative bounded state |
+| `A` | object determined to be asteroidal in the cometary designation system | recognize classification; do not silently route through `--comet` |
+
+Numbered forms such as `2P`, `3D`, and `1I` retain their letter as part of
+identity. Provisional forms such as `C/2020 F3`, `P/2011 NO1`, and fragment
+suffixes such as `-A` or `-B` require structured fields rather than destructive
+punctuation stripping. Normalization may trim spacing and case-fold exact
+aliases, but must preserve the canonical designation and must not collapse
+different prefixes, provisional designations, fragments, or dual-status
+objects onto one integer.
+
+The bounded parser/identity seam may diagnose these classes, but recognizing a
+well-formed designation is not a promise that Wenu can draw it. Only a matching
+installed descriptor, scientifically accepted solution, digest, target, and
+coverage authorize state evaluation. In particular, a `D` object normally
+fails for lack of a current valid state, while a future validated `I` SPK can
+reuse the generic minor-body provider without being called a periodic comet.
+
 The 50A.4 `A1` and `A2` records remain attached to the provider solution.
 Wenu neither reapplies nor removes their modeled accelerations.
 
@@ -179,7 +208,8 @@ Stop and re-audit if implementation would:
   visibility, activity, or physical nucleus size;
 - alter asteroid, planet, Moon, reusable-sphere, or existing track behavior;
 - admit arbitrary comet designations or automatic comet preflight under the
-  bounded first-Encke implementation.
+  bounded first-Encke implementation merely because their syntax is
+  recognized.
 
 Fernando's acceptance of this audit would authorize only the bounded 50A.5B
 implementation described here.

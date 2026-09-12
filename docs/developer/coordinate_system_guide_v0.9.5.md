@@ -3086,3 +3086,8 @@ TDB/ICRF provider state and reuse the existing observer, astrometric, apparent,
 fixed-product-frame, projection, and rendering route. Comet identity and
 appearance remain separate from those coordinate operations; a symbolic mark
 makes no coma, tail, photocentre, brightness, or activity claim.
+The designation prefix (`P`, `D`, `I`, `C`, `X`, or `A`) is identity and
+classification metadata, not a coordinate system or proof that an applicable
+ephemeris exists. A recognized designation reaches the coordinate pipeline
+only after a separately validated installed provider supplies the required
+bounded state.
