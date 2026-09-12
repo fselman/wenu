@@ -21,6 +21,7 @@ from wenu.observer import DEFAULT_DATA_DIRECTORY
 HORIZONS_API = "https://ssd.jpl.nasa.gov/api/horizons.api"
 SBDB_API = "https://ssd-api.jpl.nasa.gov/sbdb.api"
 DESIGNATION = "2P"
+HORIZONS_RECORD = "90000091"
 OBSERVER = {
     "name": "La Ligua",
     "longitude_deg_east": -71.230289,
@@ -93,11 +94,11 @@ def _epochs(perihelion_jd_tdb):
 
 
 def _horizons_parameters(
-    kind, epochs, provider_spk_id, *, topocentric=False,
+    kind, epochs, horizons_record, *, topocentric=False,
 ):
     common = {
         "format": "json",
-        "COMMAND": f"'DES={provider_spk_id};'",
+        "COMMAND": f"'{horizons_record};'",
         "OBJ_DATA": "'YES'",
         "MAKE_EPHEM": "'YES'",
         "TLIST": ",".join(
@@ -227,7 +228,7 @@ def acquire(output_directory):
     ).date()
     spk_parameters = {
         "format": "json",
-        "COMMAND": f"'DES={obj['spkid']};'",
+        "COMMAND": f"'{HORIZONS_RECORD};'",
         "OBJ_DATA": "'YES'",
         "MAKE_EPHEM": "'YES'",
         "EPHEM_TYPE": "'SPK'",
@@ -245,13 +246,13 @@ def acquire(output_directory):
     tables = []
     for name, parameters in (
         ("vectors", _horizons_parameters(
-            "vectors", epochs, sbdb_spk_id
+            "vectors", epochs, HORIZONS_RECORD
         )),
         ("geocentric", _horizons_parameters(
-            "observer", epochs, sbdb_spk_id
+            "observer", epochs, HORIZONS_RECORD
         )),
         ("topocentric", _horizons_parameters(
-            "observer", epochs, sbdb_spk_id, topocentric=True
+            "observer", epochs, HORIZONS_RECORD, topocentric=True
         )),
     ):
         document, url = _request(HORIZONS_API, parameters)
@@ -292,6 +293,7 @@ def acquire(output_directory):
             "fullname": obj.get("fullname"),
             "kind": obj.get("kind"),
             "spk_id": str(obj["spkid"]),
+            "horizons_record": HORIZONS_RECORD,
             "orbit_id": orbit.get("orbit_id"),
             "solution_date": orbit.get("soln_date"),
             "perihelion_jd_tdb": perihelion,
