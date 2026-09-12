@@ -177,6 +177,24 @@ def _spk_identity(payload, expected_target):
     }
 
 
+def _spk_payload(document):
+    encoded = document.get("spk")
+    if not isinstance(encoded, str):
+        diagnostic = document.get("error") or document.get("result") or ""
+        diagnostic = " ".join(str(diagnostic).split())[:2000]
+        raise ValueError(
+            "Horizons returned no SPK payload; "
+            f"keys={tuple(sorted(document))!r}; diagnostic={diagnostic!r}."
+        )
+    try:
+        return base64.b64decode(
+            "".join(encoded.split()).encode("ascii"),
+            validate=True,
+        )
+    except (TypeError, ValueError) as error:
+        raise ValueError("Horizons returned an invalid SPK payload.") from error
+
+
 def acquire(output_directory):
     """Acquire one new evidence directory without replacing prior evidence."""
     output_directory = Path(output_directory).expanduser().resolve()
@@ -217,13 +235,7 @@ def acquire(output_directory):
     spk_document, spk_url = _request(HORIZONS_API, spk_parameters)
     _signature(spk_document, "NASA/JPL Horizons API")
     sbdb_spk_id = str(obj["spkid"])
-    try:
-        spk = base64.b64decode(
-            "".join(spk_document["spk"].split()).encode("ascii"),
-            validate=True,
-        )
-    except (KeyError, TypeError, ValueError) as error:
-        raise ValueError("Horizons returned no valid SPK payload.") from error
+    spk = _spk_payload(spk_document)
     if not spk.startswith(b"DAF/"):
         raise ValueError("Horizons payload is not a DAF/SPK file.")
     spk_identity = _spk_identity(spk, sbdb_spk_id)
