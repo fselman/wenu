@@ -7,6 +7,7 @@ from tools.acquire_50a4_comet_evidence import (
     _horizons_parameters,
     _sbdb_identity,
     _spk_identity,
+    _spk_payload,
 )
 
 
@@ -108,3 +109,11 @@ def test_spk_identity_comes_from_kernel_segment_not_optional_json_field(
         "coverage_start_jd_tdb": 2461000.5,
         "coverage_end_jd_tdb": 2462000.5,
     }
+
+
+def test_missing_spk_payload_preserves_horizons_diagnostic():
+    with pytest.raises(ValueError, match="No ephemeris for target"):
+        _spk_payload({
+            "signature": {"source": "NASA/JPL Horizons API"},
+            "result": "No ephemeris for target over requested interval",
+        })
