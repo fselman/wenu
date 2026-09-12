@@ -1129,11 +1129,12 @@ field-query claim. Fernando accepted the final macOS PNG and semantic SVG on
 `archive/milestone_history/50a_minor_bodies/numbered_asteroid_generalization_audit_50a3c.md`.
 It defines manifest-backed selection of any installed numbered asteroid by
 permanent number or manifest-declared official name, with unnamed main-belt
-object `(79989)` as the acceptance specimen. Authorized 50A.3D implements and
-validates that contract without object-specific runtime branching or implicit
-network lookup. Candidate 50A.3D is documented in
-`numbered_asteroids_50a3d.md`; numerical and visual acceptance remain pending,
-and 50A.4 remains next afterward.
+object `(79989)` as the acceptance specimen. 50A.3D implemented and validated
+that contract without object-specific runtime branching or implicit network
+lookup. PR 98 subsequently added explicit fixed- and moving-object centers and
+separated CLI center, content, constellation, and mask responsibilities.
+Milestone 50A.3G is the bounded documentation and visual-acceptance closure;
+50A.4 remains next after it is accepted.
 
 ## 13.2 Program 50B - Publication legibility and economical printing
 

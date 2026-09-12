@@ -498,8 +498,8 @@ independent color/line-width/line-style keys, and specifies complete-path
 diagnostics and the non-executable data boundary. It is not a parser, packaged
 default file, overlay loader, command implementation, or runtime registry.
 
-`src/wenu/configuration/defaults.toml` is the Milestone 46D.3A complete
-commented version-1 public-default document. Its package contains data only;
+`src/wenu/configuration/defaults.toml` is the complete commented schema-v2
+public-default document. Its package contains data only;
 it has no renderer, catalogue, geometry, or execution dependency. Tests load
 it through `importlib.resources` and TOML parsing. Runtime contracts do not
 consume it until later 46D.3 validation and translation slices are complete.
@@ -534,7 +534,7 @@ the effective document is available. Canonical examples validate it before
 maximal-sphere construction; no active-configuration singleton exists.
 
 Milestone 46D.6 adds `src/wenu/cli/chart.py` as the installed `wenu_chart`
-adapter. It owns the six subcommand parsers, effective observer and subject
+adapter. It owns the six subcommand parsers, effective observer and center
 argument selection, observer lifetime, output-path reporting, and verbatim
 `defaults.toml` display. Chart commands delegate to
 `generate_celestial_sphere()`, `get_chart_view()`, and
@@ -551,7 +551,7 @@ inheritance, catalogue, or chart responsibility.
 front-end-neutral view contract. It executes every canonical example adapter
 and an equivalent `wenu_chart` invocation against the same effective
 configuration, normalizes only documented omitted geometry, and compares the
-observer, subject, projection, coordinate frame, frame, orientation, pole,
+observer, center, projection, coordinate frame, frame, orientation, pole,
 declination-limit, and mask requests before catalogue loading or rendering.
 
 `tests/test_wenu_chart_drawing_parity.py` owns Milestone 46D.8B's downstream
@@ -563,7 +563,7 @@ four-product naming without constructing catalogues or a renderer.
 `tests/test_wenu_chart_configuration_isolation.py` owns Milestone 46D.8C's
 installed-command overlay boundary. It proves sequential partial overlays and
 packaged defaults remain independent on one reused sphere identity and that
-explicit command observer, subject, geometry, product, title, language, and
+explicit command observer, center, geometry, product, title, language, and
 destination values retain final precedence. `tests/test_wenu_chart_cli.py`
 owns the complementary early-failure order before observer, sphere, view, or
 drawing work.

@@ -456,7 +456,7 @@ not empty successful charts.
 publication form. These preserve compatibility builders and titles without
 duplicating coordinates or catalogue spelling in example scripts.
 
-`charts/object_center.py::get_object_center()` is the typed point-subject
+`charts/object_center.py::get_object_center()` is the typed point-center
 centering boundary. Its `ResolvedTarget` overload transforms fixed packaged or
 explicit ICRS coordinates through `CoordinateService`; its
 `SolarSystemBodyDescriptor` overload realizes the shared symbolic point with
@@ -476,10 +476,10 @@ Packaged groups also carry their provenance, legacy canonical framing
 defaults, and curated content identifiers until spatial field selection
 replaces the latter in a later 46C.7 step.
 
-`resolve_chart_request(request, profile)` combines those subject results with
-the request's explicit `SkyContentSelection`. Target components are always
-unioned into the appropriate catalogue family so a central target is not
-lost to general thresholds. It calls the load profile's established
+`resolve_chart_request(request, profile)` combines independently resolved
+center, constellation selections, and explicit `SkyContentSelection`.
+Centered target components are not unioned into drawable content. It calls
+the load profile's established
 `require()` contract for requested stellar depth, galaxy depth, and outline
 sampling, returning a new immutable `ResolvedChartRequest` without modifying
 the input request or constructing a chart.
@@ -1127,7 +1127,7 @@ contract and installed-DE440 validation after all 1,929 tests passed.
 ## 8.1 Packaged configuration validation
 
 `wenu.configuration.load_packaged_defaults()` reads and strictly validates a
-fresh copy of the installed version-1 `defaults.toml`. The related
+fresh copy of the installed schema-v2 `defaults.toml`. The related
 `parse_configuration()` and `validate_configuration()` functions validate
 complete documents and mappings, and raise `ConfigurationError` with the full
 configuration path on failure. `translate_style_mode_defaults()` constructs
@@ -1259,8 +1259,8 @@ Python contracts.
 
 Configuration line styles use the complete public vocabulary `solid`,
 `dashed`, `dotted`, `dash_dot`, and `none`. Named publication, presentation,
-outreach, location, and observing profiles are separate version-1 TOML files
-passed through `--config`. One invocation accepts one overlay. Version 1 has
+outreach, location, and observing profiles are separate schema-v2 TOML files
+passed through `--config`. One invocation accepts one overlay. Version 2 has
 no profile inheritance or multi-file composition; that feature remains
 deferred until ordinary single-file use demonstrates a concrete requirement.
 
@@ -1282,7 +1282,7 @@ Each `wenu_chart` invocation loads and translates a fresh effective document;
 it does not install active configuration globally. Partial overlays therefore
 affect only their named values, a later command may safely use another overlay
 or packaged defaults, and a reused maximal sphere acquires no configuration
-state. Explicit command observer, subject, geometry, product, title, language,
+state. Explicit command observer, center, geometry, product, title, language,
 and output arguments retain final precedence. Invalid documents raise
 `ConfigurationError` before observer or astronomical construction.
 

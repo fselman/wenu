@@ -1,8 +1,9 @@
 # Explicit chart CLI semantics (Milestone 50A.3F audit)
 
-**Status:** Candidate audit; implementation pending
+**Status:** Implemented by PR 98; visual contract acceptance is tracked by
+Milestone 50A.3G.
 
-**Base:** PR 98 head `7c2783486d10c51770d60a6e1e758754718833dc`
+**Implemented main commit:** `c0c78415358322b5a35afabdffc798699fbb0ab6`
 
 ## Problem
 

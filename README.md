@@ -232,6 +232,16 @@ python examples/planisphere.py --style atlas --mode print
 python examples/binocular_object.py --center-on target:omega-centauri
 ```
 
+The installed `wenu_chart` command keeps camera and drawing requests
+independent. Regional and binocular charts use `--center-on IDENTIFIER` (or
+one complete coordinate pair) only for framing. Options such as `--planet`,
+`--asteroid`, `--constellation-lines`, and `--constellation-labels` request
+content but never change the center; `--constellation-mask IAU,...` controls
+only masking. The constellation vocabulary defaults to
+`--constellation-system western`, which by itself draws nothing. See the
+[regional chart guide](docs/user_guide/regional_charts.md) and the
+[CLI semantics contract](docs/developer/chart_cli_semantics_audit_50a3f.md).
+
 Generated chart-output directories should remain outside version control.
 
 ## Data attribution

@@ -7,6 +7,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 PATH = ROOT / "tools" / "render_46d8_visual_matrix.py"
+CLI_CONTRACT_PATH = ROOT / "tools" / "render_50a3g_cli_contract_matrix.py"
 REVIEW = (
     ROOT / "docs" / "developer" / "archive" / "acceptance_history"
     / "visual_acceptance_46d8.md"
@@ -23,6 +24,46 @@ def _module():
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
+
+
+def _cli_contract_module():
+    spec = importlib.util.spec_from_file_location(
+        "cli_contract_visual_matrix", CLI_CONTRACT_PATH
+    )
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_cli_contract_matrix_keeps_center_content_mask_and_orientation_explicit():
+    matrix = _cli_contract_module().MATRIX
+    entries = {entry.name: entry for entry in matrix}
+
+    assert len(matrix) == 11
+    assert len(entries) == len(matrix)
+    assert entries["center-virgo-no-constellation-content"].arguments.count(
+        "--center-on"
+    ) == 1
+    assert "--constellation-lines" not in entries[
+        "center-virgo-no-constellation-content"
+    ].arguments
+    venus = entries["center-venus-draw-mask-virgo"].arguments
+    for option in (
+        "--center-on", "--planet", "--constellation-system",
+        "--constellation-lines",
+        "--constellation-labels", "--constellation-mask",
+    ):
+        assert option in venus
+    planets = entries["center-virgo-draw-three-planets"].arguments
+    assert planets[planets.index("--center-on") + 1] == "constellation:Vir"
+    assert planets[planets.index("--planet") + 1] == "venus,mars,jupiter"
+    assert entries["center-asteroid-79989"].requires_minor_body_resources
+    orientations = {
+        entry.arguments[entry.arguments.index("--orientation") + 1]
+        for entry in matrix if "--orientation" in entry.arguments
+    }
+    assert orientations == {"celestial-north-up", "zenith-up"}
 
 
 def test_matrix_contains_canonical_style_mode_pairs_and_unique_outputs():

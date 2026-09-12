@@ -560,8 +560,11 @@ solution, and classification separate; keep rendering offline; derive
 request-owned descriptors only from an explicit verified manifest; resolve any
 manifest-declared official name and its permanent number to one descriptor;
 and use `(79989)` only as a generic acceptance specimen. Do not add
-object-specific branching, implicit network lookup, or fuzzy name search. The
-accepted audit authorizes 50A.3D; 50A.4 remains next after that implementation.
+object-specific branching, implicit network lookup, or fuzzy name search.
+50A.3D and PR 98's explicit-center CLI contract are implemented. Preserve the
+rule that center, content, constellation layers, and masks are independent.
+Milestone 50A.3G owns documentation and visual acceptance; 50A.4 remains next
+after that closure.
 
 For 50B publication-style work, complete the print, typography, contrast,
 accessibility, cartographic, and astronomical-atlas practice review plus

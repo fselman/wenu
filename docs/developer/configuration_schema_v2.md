@@ -146,7 +146,7 @@ geometry follows:
   number consistent with that pole.
 - `binocular`: positive `field_diameter`.
 
-The listed projection/frame pairs are version-1 invariants. Configuration
+The listed projection/frame pairs are public geometry invariants. Configuration
 may state them for reproducibility but may not invent another pairing.
 
 ### `detail`
@@ -256,7 +256,7 @@ single-file output.
 
 Named product combinations contain only style, mode, detail-policy reference,
 and post-mode visual overrides accepted by existing immutable contracts. They
-may not change observer, subject, family geometry, or masking.
+may not change observer, center, family geometry, or masking.
 
 ### `export`
 

@@ -1,6 +1,7 @@
 # Regional charts
 
-The [complete chart examples](chart_examples.md) include a runnable installed-command example for this family.
+The [complete chart examples](chart_examples.md) include a runnable
+installed-command example for this family.
 
 Regional charts use a tangent-plane view around one constellation or an
 arbitrary constellation set. The chart owns projection and framing; the
@@ -30,8 +31,9 @@ python examples/regional_constellation_group.py \
   --output output/centaurus-crux-musca.png
 ```
 
-Packaged teaching presets remain available through `--group`, for example
-`--group summer-triangle`.
+Packaged teaching presets are selected only as centers, for example
+`--center-on group:summer-triangle`. They do not request constellation lines,
+labels, boundaries, masks, or deep-sky objects.
 
 ## Single constellation
 
@@ -47,8 +49,8 @@ python examples/regional_constellation.py \
 ```
 
 Both regional examples use the same `--center-on IDENTIFIER` control. A
-qualified `constellation:IAU,...` or `group:ALIAS` center derives its default viewport from the
-complete selected constellation geometry. Explicit `--field-width` and
+qualified `constellation:IAU,...` or `group:ALIAS` center derives its default
+viewport from the complete selected constellation geometry. Explicit `--field-width` and
 `--field-height` values override that automatic framing when a wider or fixed
 field is wanted. They also support the common magnitude,
 labels, boundaries,
@@ -91,16 +93,15 @@ wenu_chart regional --center-icrs-ra 201.365deg \
   --output output/coordinate-field.png
 ```
 
-When there is no explicit fixed-object or coordinate center, one selected
-planet, Moon, or installed asteroid supplies the apparent center at
-`--observer-time`. An explicitly selected constellation may independently
-supply its lines, labels, and optional `--constellation-mask`; the moving object still owns
-the center. Supply `--field-width` and `--field-height` for this combination.
-The same selected object is drawn through the ordinary content path. Several
-selected moving objects require an explicit center because no implicit choice
-is scientifically distinguished.
-For an observer-time sequence this center remains fixed at the first chart
-epoch; Wenu does not silently introduce a moving camera.
+Moving objects never become the center merely because they are selected for
+drawing. Use `--center-on planet:Venus`, `--center-on moon:Moon`, or
+`--center-on asteroid:79989` to request an apparent center at
+`--observer-time`, and independently use `--planet`, `--moon`, or
+`--asteroid` to draw an object. Supply `--field-width` and `--field-height`
+for every point center. One or several selected moving objects therefore have
+exactly the same unambiguous behavior.
+For an observer-time sequence an explicit moving-object center remains fixed
+at the first chart epoch; Wenu does not silently introduce a moving camera.
 
 Wenu also resolves the pointwise parallactic angle and the tangent directions
 of celestial north and the local vertical at the chart centre. This milestone

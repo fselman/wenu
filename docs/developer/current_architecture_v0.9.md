@@ -726,16 +726,18 @@ existing DE440/Skyfield provider continues to own observer state and apparent
 corrections. The shared point and track realizers, fixed product frame,
 projection, preparation, semantic SVG, renderers, and exporters remain the
 ordinary route. Fernando accepted the macOS PNG and semantic SVG; 50A.3 is
-closed and 50A.4 comet numerical validation is next.
+closed. Milestone 50A.3G now verifies the merged explicit CLI contract visually
+before 50A.4 comet numerical validation begins.
 
-## Object-centered regional framing (Milestone 50A.3E candidate)
+## Object-centered regional framing and explicit CLI semantics
 
-Point-subject identity is resolved before regional chart construction.
+Explicit point-center identity is resolved before regional chart construction.
 `get_object_center()` overloads fixed `ResolvedTarget` values and
 descriptor-driven Solar-System bodies into the same apparent observer-
 horizontal point contract. Regional framing consumes that result while the
 ordinary detail, spatial-selection, projection, preparation, renderer, and
-export owners remain unchanged. A unique selected planet, Moon, or installed
-asteroid may supply the implicit center; packaged stellar and deep-sky targets
-and explicit ICRS or horizontal coordinates use the same chart family.
+export owners remain unchanged. Drawing selectors never supply a center.
+Planets, the Moon, installed asteroids, packaged stellar and deep-sky targets,
+and explicit ICRS or horizontal coordinates use the same chart family only
+through an explicit CLI or effective-configuration center.
 Constellation geometry remains the independent extended-region framing case.

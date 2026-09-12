@@ -4120,7 +4120,7 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
 
     for phrase in (
         "Generic numbered asteroids (Milestone 50A.3D)",
-        "all acceptance evidence complete, Fernando acceptance pending",
+        "Accepted and merged to `main` before PR 98",
         "permanent number or an exact, case-folded official name",
         "Rendering remains offline",
         "`(79989)` is the acceptance specimen, not a special runtime case",
@@ -4146,7 +4146,7 @@ def test_50a3d_documents_request_owned_installed_numbered_asteroids():
         "1 test in 1.93 seconds",
         "final complete repository gate passed all 2,201 tests",
         "81.36 seconds",
-        "final milestone acceptance remains Fernando's explicit decision",
+        "accepted the completed numerical, visual, focused-test, and full-suite evidence",
     ):
         assert phrase in record
 
@@ -4205,3 +4205,39 @@ def test_user_guide_documents_every_chart_family_with_runnable_examples():
     assert "--moon --moon-disk-magnification 8" in examples
     assert "[complete chart examples](chart_examples.md)" in configuration
     assert "Observed Moon disks within one fixed chart are supported separately" in temporal
+
+
+def test_active_cli_documentation_matches_schema_v2_and_explicit_centers():
+    root_readme = read(ROOT / "README.md")
+    regional = read(ROOT / "docs/user_guide/regional_charts.md")
+    all_sky = read(ROOT / "docs/user_guide/all_sky.md")
+    planisphere = read(ROOT / "docs/user_guide/planisphere.md")
+    configuration = read(ROOT / "docs/user_guide/configuration.md")
+    architecture = read(V09_CURRENT)
+    audit = read(DEVELOPER / "chart_cli_semantics_audit_50a3f.md")
+    acceptance = read(DEVELOPER / "cli_contract_acceptance_50a3g.md")
+    defaults = tomllib.loads(read(
+        ROOT / "src/wenu/configuration/defaults.toml"
+    ))
+
+    for text in (root_readme, regional, architecture, audit, acceptance):
+        assert "drawing selectors never supply a center" in text.lower() or (
+            "content selector never changes the center" in text.lower()
+        ) or "content but never change the center" in text.lower() or (
+            "never become the center merely because" in text.lower()
+        ) or (
+            "no content selector changes the center" in text.lower()
+        )
+    assert "one selected\nplanet, Moon, or installed asteroid supplies" not in regional
+    assert "`--group ALIAS`" not in all_sky
+    assert "`--group ALIAS`" not in planisphere
+    assert "version-1" not in configuration
+    assert "Version 1" not in configuration
+    assert "implementation pending" not in audit
+    assert defaults["schema_version"] == 2
+    assert defaults["constellations"]["system"] == "western"
+    assert "subjects" not in defaults
+    assert all(
+        value["constellations"] == []
+        for value in defaults["masks"].values()
+    )

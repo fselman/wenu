@@ -33,9 +33,11 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`numbered_asteroids_50a3d.md`](numbered_asteroids_50a3d.md) — candidate
   generic installed numbered-asteroid implementation and acceptance gates.
 - [`object_centered_regional_charts_50a3e.md`](object_centered_regional_charts_50a3e.md)
-  — candidate generic fixed- and moving-object regional-centering contract.
+  — implemented generic fixed- and moving-object regional-centering contract.
 - [`chart_cli_semantics_audit_50a3f.md`](chart_cli_semantics_audit_50a3f.md)
-  — candidate explicit center, content, and mask CLI contract.
+  — implemented explicit center, content, and mask CLI contract.
+- [`cli_contract_acceptance_50a3g.md`](cli_contract_acceptance_50a3g.md)
+  — current documentation and visual-acceptance closure for that contract.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).

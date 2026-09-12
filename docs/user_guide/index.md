@@ -56,6 +56,9 @@ included in the [chart examples](chart_examples.md) and
 Use [`wenu_chart` and editable TOML profiles](configuration.md) to generate
 any family through one installed command and keep publication, presentation,
 outreach, location, or observing choices outside Wenu source.
+For regional and binocular charts, center selection is independent of object
+drawing and constellation masking; the complete contract and examples are in
+the [regional chart guide](regional_charts.md).
 
 Generated gallery products belong below `output/` and are not committed. The
 one exception is the approved README image; its exact provenance is recorded
