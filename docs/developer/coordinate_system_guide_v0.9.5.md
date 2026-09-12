@@ -3045,7 +3045,7 @@ still supplies observer state and apparent-place correction. Cache coverage is
 verified against SPK segment epochs in TDB; no network result bypasses the
 existing product-frame, projection, preparation, or rendering path.
 
-Candidate 50A.4 likewise adds no frame. Its initial characterization validates
+Accepted 50A.4 likewise adds no frame. Its characterization validates
 a 2P/Encke type-21 SPK against frozen direct-Horizons geometric, astrometric,
 apparent, distance, light-time, and topocentric-parallax evidence. Geometric
 state is evaluated at the vector table's explicit JD TDB; geocentric and La
@@ -3074,3 +3074,8 @@ parallax envelope allows for its derivation from two independently rounded
 directions. The Cartesian envelopes cover the measured type-21 SPK versus
 direct-vector residuals. `--characterize` deliberately disables enforcement
 and cannot report numerical acceptance.
+
+Final Mac verification returned `accepted: true`, passed all 151 focused tests
+in 4.99 seconds, and passed the complete 2,262-test suite in 84.96 seconds.
+This closes 50A.4 without changing a coordinate frame or adding drawable comet
+behavior.

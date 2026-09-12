@@ -1,6 +1,6 @@
 # Comet numerical validation (Milestone 50A.4)
 
-**Status:** Accepted tolerances implemented; Mac full-suite acceptance pending
+**Status:** Scientifically, operationally, and regression accepted on 2026-09-12
 
 **Base:** `5aec1fe`
 
@@ -128,3 +128,7 @@ The acquisition report is safe to inspect as text. The SPK and raw JSON
 responses remain local; only the compact numerical fixture enters the
 repository. No descriptor, chart request, CLI selector, drawing, or exporter
 behavior is added by this implementation.
+
+Final Mac verification reproduced the compact fixture byte for byte, returned
+`"accepted": true` from the enforcing validator, passed all 151 focused tests
+in 4.99 seconds, and passed the complete 2,262-test suite in 84.96 seconds.

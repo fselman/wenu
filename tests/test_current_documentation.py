@@ -3121,7 +3121,7 @@ def test_50a4_audits_comet_numerics_before_runtime_behavior():
         assert phrase.lower() in audit.lower()
 
 
-def test_50a4_candidate_is_offline_and_characterization_only():
+def test_50a4_closure_is_offline_accepted_and_non_drawable():
     document = " ".join(read(
         DEVELOPER / "comet_numerical_validation_50a4.md"
     ).split())
@@ -3130,7 +3130,7 @@ def test_50a4_candidate_is_offline_and_characterization_only():
     guide = read(DEVELOPER / "coordinate_system_guide_v0.9.5.md")
 
     for phrase in (
-        "Accepted tolerances implemented",
+        "Scientifically, operationally, and regression accepted",
         "build_50a4_comet_fixture.py",
         "validate_50a4_comet.py",
         '"accepted": true',
@@ -3139,6 +3139,8 @@ def test_50a4_candidate_is_offline_and_characterization_only():
         "explicit JD TDB",
         "five decimal degrees",
         "No descriptor, chart request, CLI selector, drawing, or exporter",
+        "151 focused tests",
+        "complete 2,262-test suite",
     ):
         assert phrase.lower() in document.lower()
     assert "compact-oracle construction" in source_tree
