@@ -92,10 +92,12 @@ def _epochs(perihelion_jd_tdb):
     )
 
 
-def _horizons_parameters(kind, epochs, *, topocentric=False):
+def _horizons_parameters(
+    kind, epochs, provider_spk_id, *, topocentric=False,
+):
     common = {
         "format": "json",
-        "COMMAND": f"'{DESIGNATION};'",
+        "COMMAND": f"'DES={provider_spk_id};'",
         "OBJ_DATA": "'YES'",
         "MAKE_EPHEM": "'YES'",
         "TLIST": ",".join(
@@ -225,7 +227,7 @@ def acquire(output_directory):
     ).date()
     spk_parameters = {
         "format": "json",
-        "COMMAND": f"'{DESIGNATION};'",
+        "COMMAND": f"'DES={obj['spkid']};'",
         "OBJ_DATA": "'YES'",
         "MAKE_EPHEM": "'YES'",
         "EPHEM_TYPE": "'SPK'",
@@ -242,10 +244,14 @@ def acquire(output_directory):
 
     tables = []
     for name, parameters in (
-        ("vectors", _horizons_parameters("vectors", epochs)),
-        ("geocentric", _horizons_parameters("observer", epochs)),
+        ("vectors", _horizons_parameters(
+            "vectors", epochs, sbdb_spk_id
+        )),
+        ("geocentric", _horizons_parameters(
+            "observer", epochs, sbdb_spk_id
+        )),
         ("topocentric", _horizons_parameters(
-            "observer", epochs, topocentric=True
+            "observer", epochs, sbdb_spk_id, topocentric=True
         )),
     ):
         document, url = _request(HORIZONS_API, parameters)
