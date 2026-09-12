@@ -121,7 +121,7 @@ For current work, read and follow:
 - `archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md`
   for accepted asteroid/comet state-source, resource-chain, validity,
   uncertainty, identifier, photometry, and non-gravitational-model decisions;
-- `first_drawable_comet_audit_50a5a.md` for proposed 2P/Encke identity,
+- `first_drawable_comet_audit_50a5a.md` for accepted 2P/Encke identity,
   explicit resource, symbolic nucleus, shared point/track, and coma/tail
   separation decisions;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`

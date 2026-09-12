@@ -3220,6 +3220,7 @@ def test_50a5a_audits_first_drawable_comet_without_runtime_behavior():
     ).split())
     for phrase in (
         "Runtime effect:** None",
+        "Scientifically and architecturally accepted",
         "2P/Encke",
         "sky/solar_system/minor_bodies/comets/2p",
         "--comet 2P",
@@ -3257,6 +3258,7 @@ def test_50a5a_audits_first_drawable_comet_without_runtime_behavior():
         "not a resolved nucleus, coma, tail, brightness, visibility",
         "must not extend the numbered-asteroid automatic preflight",
         "the existing observer, astrometric, apparent",
+        "That acceptance authorizes only the bounded 50A.5B",
     ):
         assert phrase.lower() in audit.lower()
 

@@ -1536,15 +1536,15 @@ passed the complete 2,262-test suite in 84.96 seconds. Milestone 50A.4 is
 complete; the first symbolic comet and track remain the next bounded program
 slice.
 
-Candidate 50A.5A audits the first drawable comet before runtime work. It
-proposes 2P/Encke as one explicitly installed, symbolic nucleus point and dated
+Accepted 50A.5A audits the first drawable comet before runtime work. It selects
+2P/Encke as one explicitly installed, symbolic nucleus point and dated
 track through the shared minor-body/Solar-System route. Comet identity remains
 distinct from minor-planet numbering and keeps `P`, `D`, `I`, `C`, `X`, and
 `A` designation classes structurally distinct. Syntax recognition does not
 authorize drawing without separately validated installed state. Automatic
 comet acquisition, brightness, coma, tail, photocentre, and physical nucleus
-appearance remain deferred. The audit changes no runtime behavior and requires
-Fernando's review.
+appearance remain deferred. The audit changes no runtime behavior. Fernando
+accepted it on 2026-09-12, authorizing the bounded 50A.5B implementation.
 Fernando subsequently requested antisolar rotation of the symbolic comet fan
 and simultaneous planet, asteroid, and comet tracks when they share one field.
 The proposed implementation therefore generalizes the singular track request

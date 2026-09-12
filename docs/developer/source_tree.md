@@ -1459,7 +1459,7 @@ owns deterministic contract coverage;
 
 ## 50A.5A first-drawable-comet audit ownership
 
-- `docs/developer/first_drawable_comet_audit_50a5a.md` owns the proposed
+- `docs/developer/first_drawable_comet_audit_50a5a.md` owns the accepted
   bounded 2P/Encke identity, resource, point, track, appearance, failure, and
   acceptance contract;
 - existing runtime owners remain unchanged by the audit.

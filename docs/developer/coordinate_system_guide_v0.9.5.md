@@ -3080,7 +3080,7 @@ in 4.99 seconds, and passed the complete 2,262-test suite in 84.96 seconds.
 This closes 50A.4 without changing a coordinate frame or adding drawable comet
 behavior.
 
-Candidate 50A.5A proposes no new coordinate or product frame. A future
+Accepted 50A.5A introduces no new coordinate or product frame. A future
 symbolic 2P/Encke nucleus point and track would consume the already validated
 TDB/ICRF provider state and reuse the existing observer, astrometric, apparent,
 fixed-product-frame, projection, and rendering route. Comet identity and
@@ -3106,3 +3106,5 @@ Wenu stores that normalized geometry as one canonical immutable symbol.
 Individual appearances apply placement, antisolar orientation, and
 magnification after the astronomical direction has been realized; they do not
 rebuild the symbol or create another coordinate path.
+Fernando accepted this identity, orientation, symbol-reuse, and multi-track
+boundary on 2026-09-12, authorizing only the bounded 50A.5B implementation.

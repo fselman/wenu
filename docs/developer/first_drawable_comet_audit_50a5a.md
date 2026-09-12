@@ -1,6 +1,6 @@
 # First drawable comet audit (Milestone 50A.5A)
 
-**Status:** Proposed for Fernando's scientific and architectural review
+**Status:** Scientifically and architecturally accepted by Fernando on 2026-09-12
 
 **Base:** `70a36ee`
 
@@ -293,5 +293,5 @@ Stop and re-audit if implementation would:
   bounded first-Encke implementation merely because their syntax is
   recognized.
 
-Fernando's acceptance of this audit would authorize only the bounded 50A.5B
-implementation described here.
+Fernando accepted this audit on 2026-09-12. That acceptance authorizes only the
+bounded 50A.5B implementation described here.
