@@ -69,6 +69,16 @@ The output directory and `manifest.json` remain outside the repository.
 8. The two Sirius orientation products retain the same center and field;
    only celestial-north-up versus zenith-up rotation changes.
 
+## Visual finding under review
+
+Fernando's first atlas-presentation inspection accepted the two Virgo-centered
+products. The Venus-centered masked product exposed a mode-adaptation defect:
+the mask geometry reduced exterior contrast, but its configured light-gray
+veil had been replaced by the blue sky color and was therefore invisible.
+The candidate correction preserves the style-owned mask color and opacity
+through presentation adaptation. The regenerated product must visibly retain
+the semi-transparent light veil while leaving the Virgo opening clear.
+
 Fernando's visual acceptance, the complete macOS test gate, and the exact
 accepted source commit must be recorded before this milestone closes. 50A.4
 comet numerical validation remains next and is not authorized by this file.
