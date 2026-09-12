@@ -72,6 +72,38 @@ def test_cli_forwards_independent_horizon_controls(
     assert calls[0]["horizon_mask"] is horizon_mask
 
 
+def test_drawing_reuses_a_minor_body_descriptor_resolved_for_centering(
+    monkeypatch,
+):
+    from wenu.sky.ceres import CERES_BODY
+
+    class Collection:
+        def __init__(self, directory):
+            assert directory == Path("/tmp/minor-bodies")
+
+        def resolve(self, selection):
+            pytest.fail(f"descriptor was resolved again for {selection}")
+
+    calls = []
+    monkeypatch.setattr(
+        "wenu.minor_body_resources.MinorBodyResourceCollection", Collection
+    )
+    monkeypatch.setattr(
+        "wenu.charts.command_line.draw_chart_view",
+        lambda *args, **kwargs: calls.append(kwargs) or object(),
+    )
+    arguments = parser().parse_args([
+        "--asteroid", "ceres",
+        "--minor-body-resource-directory", "/tmp/minor-bodies",
+    ])
+    arguments._resolved_minor_body_selections = {"ceres": CERES_BODY}
+    view = type("View", (), {"family": "regional"})()
+
+    draw_chart_view_from_arguments(view, arguments, stem="map")
+
+    assert calls[0]["minor_body_descriptors"] == (CERES_BODY,)
+
+
 def test_ordinary_cli_can_omit_default_equatorial_grid():
     arguments = parser().parse_args(["--no-equatorial-grid"])
 

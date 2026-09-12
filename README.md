@@ -229,7 +229,7 @@ milestone. Representative manual render checks remain:
 
 ```bash
 python examples/planisphere.py --style atlas --mode print
-python examples/binocular_object.py --target omega-centauri
+python examples/binocular_object.py --center-on target:omega-centauri
 ```
 
 Generated chart-output directories should remain outside version control.

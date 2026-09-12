@@ -4,12 +4,12 @@ The [complete chart examples](chart_examples.md) include a runnable installed-co
 
 `examples/binocular_object.py` centers a north-up circular binocular field on
 a selected packaged catalogue object. Centaurus A (`NGC 5128`) and Omega
-Centauri (`NGC 5139`) are the documented regression targets, but `--target`
+Centauri (`NGC 5139`) are the documented regression targets, but `--center-on`
 accepts any drawable name or alias in Wenu's packaged resolver, such as `M57`.
 
 ```bash
 python examples/binocular_object.py \
-  --target centaurus-a \
+  --center-on target:centaurus-a \
   --style atlas --mode print \
   --output output/centaurus-a.png
 ```
@@ -18,7 +18,7 @@ Select Omega Centauri and change the field diameter:
 
 ```bash
 python examples/binocular_object.py \
-  --target omega-centauri --field-diameter 8.0 \
+  --center-on target:omega-centauri --field-diameter 8.0 \
   --style cartoon --mode presentation \
   --magnitude-legend --credits \
   --output output/omega-centauri.png

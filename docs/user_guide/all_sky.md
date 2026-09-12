@@ -41,7 +41,7 @@ without observer-horizon rejection:
 
 ```bash
 python examples/all_sky.py \
-  --constellations Cru,Cyg,UMa --mask \
+  --constellation-mask Cru,Cyg,UMa \
   --style atlas --mode print \
   --output output/all-sky-regions.png
 ```

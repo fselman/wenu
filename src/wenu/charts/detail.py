@@ -110,6 +110,7 @@ class SkyContentSelection:
     established case-folding and alias rules.
     """
 
+    stars: frozenset[str] | None = None
     constellation_lines: frozenset[str] | None = None
     constellation_boundaries: frozenset[str] | None = None
     constellation_labels: frozenset[str] | None = None
@@ -126,6 +127,7 @@ class SkyContentSelection:
 
     def __post_init__(self):
         for name in (
+            "stars",
             "constellation_lines",
             "constellation_boundaries",
             "constellation_labels",

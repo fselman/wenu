@@ -29,9 +29,9 @@ def test_shared_content_and_legends_are_opt_in():
     arguments = parser().parse_args([])
 
     assert chart_content_options(arguments).magnitude_limit is None
-    assert chart_content_options(arguments).constellation_lines is False
-    assert chart_content_options(arguments).constellation_labels is False
-    assert chart_content_options(arguments).constellation_boundaries is False
+    assert chart_content_options(arguments).constellation_lines == ()
+    assert chart_content_options(arguments).constellation_labels == ()
+    assert chart_content_options(arguments).constellation_boundaries == ()
     assert chart_content_options(arguments).horizon is False
     assert chart_content_options(arguments).horizon_mask is False
     assert chart_content_options(arguments).equatorial_grid is False
@@ -59,9 +59,9 @@ def test_shared_content_switches_resolve_independently():
     arguments = parser().parse_args(
         [
             "--magnitude-limit", "4.5",
-            "--constellation-lines",
-            "--constellation-labels",
-            "--constellation-boundaries",
+            "--constellation-lines", "Vir",
+            "--constellation-labels", "Vir",
+            "--constellation-boundaries", "Vir",
             "--horizon",
             "--horizon-mask",
             "--equatorial-grid",
@@ -80,9 +80,9 @@ def test_shared_content_switches_resolve_independently():
     content = chart_content_options(arguments)
 
     assert content.magnitude_limit == pytest.approx(4.5)
-    assert content.constellation_lines is True
-    assert content.constellation_labels is True
-    assert content.constellation_boundaries is True
+    assert content.constellation_lines == ("Vir",)
+    assert content.constellation_labels == ("Vir",)
+    assert content.constellation_boundaries == ("Vir",)
     assert content.horizon is True
     assert content.horizon_mask is True
     assert content.equatorial_grid is True

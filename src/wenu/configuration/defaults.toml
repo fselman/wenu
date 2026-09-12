@@ -1,11 +1,16 @@
 # Wenu authoritative public defaults
 #
-# Schema version 1. Values use public vocabulary rather than Python,
+# Schema version 2. Values use public vocabulary rather than Python,
 # Matplotlib, renderer, or catalogue implementation names. The initial
 # runtime translation is added incrementally after this packaged document is
 # characterized. "none" represents an intentional absent optional value.
 
-schema_version = 1
+schema_version = 2
+
+# Vocabulary and line-figure tradition used by explicit constellation
+# operations. This parameter does not enable any constellation layer.
+[constellations]
+system = "western"
 
 # Observer defaults used by the canonical examples and future wenu_chart CLI.
 [observer]
@@ -26,28 +31,44 @@ playback_duration = "none"
 frames_per_second = "none"
 restart_policy = "restart"
 
-# Default subjects. Empty arrays mean that no subject is selected.
-[subjects.all_sky]
+# Default centers. Empty families have no center operation.
+[centers.all_sky]
 kind = "none"
 
-[subjects.planisphere]
+[centers.planisphere]
 kind = "none"
 
-[subjects.regional_single]
+[centers.regional_single]
 kind = "constellations"
 constellations = ["Cru"]
 
-[subjects.regional_group]
+[centers.regional_group]
 kind = "constellations"
 constellations = ["Sgr", "Sco", "Oph", "Ser"]
 group = "none"
 
-[subjects.circumpolar]
+[centers.circumpolar]
 kind = "none"
 
-[subjects.binocular]
+[centers.binocular]
 kind = "target"
 target = "centaurus-a"
+
+# Independent default constellation masks. Empty arrays draw no mask.
+[masks.all_sky]
+constellations = []
+
+[masks.planisphere]
+constellations = []
+
+[masks.regional_single]
+constellations = []
+
+[masks.regional_group]
+constellations = []
+
+[masks.binocular]
+constellations = []
 
 # Chart-family geometry. Projection radii, boundary sampling, east-west flip,
 # derived viewports, and automatic region framing remain Python invariants.
@@ -56,21 +77,18 @@ projection = "mollweide"
 coordinate_frame = "galactic"
 orientation = "none"
 position_angle = 0.0
-mask = false
 
 [families.planisphere]
 projection = "stereographic"
 coordinate_frame = "horizontal"
 orientation = "none"
 position_angle = 0.0
-mask = false
 
 [families.regional_single]
 projection = "stereographic"
 coordinate_frame = "horizontal"
 orientation = "celestial-north-up"
 position_angle = "none"
-mask = false
 width = "none"
 height = "none"
 
@@ -79,7 +97,6 @@ projection = "stereographic"
 coordinate_frame = "horizontal"
 orientation = "celestial-north-up"
 position_angle = "none"
-mask = false
 width = "none"
 height = "none"
 
@@ -88,7 +105,6 @@ projection = "stereographic"
 coordinate_frame = "horizontal"
 orientation = "none"
 position_angle = 0.0
-mask = false
 pole = "south"
 limiting_declination = -69.75
 
@@ -97,7 +113,6 @@ projection = "stereographic"
 coordinate_frame = "horizontal"
 orientation = "celestial-north-up"
 position_angle = "none"
-mask = false
 field_diameter = 6.5
 
 # Neutral detail contains no ceilings until a family/product policy supplies

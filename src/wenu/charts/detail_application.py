@@ -337,12 +337,20 @@ def apply_resolved_detail(
             }
         geometry = {}
         if name == "stars":
+            selected_stars = detail.content_selection.stars
             if detail.star_magnitude_limit is not None:
                 geometry["magnitude_limit"] = float(
                     detail.star_magnitude_limit
                 )
+            if (
+                detail.constellation_star_mode is not None
+                or selected_stars is not None
+            ):
+                geometry["include_ids"] = frozenset({
+                    *detail.extra_star_ids,
+                    *(int(value) for value in (selected_stars or ())),
+                })
             if detail.constellation_star_mode is not None:
-                geometry["include_ids"] = detail.extra_star_ids
                 geometry["include_constellation_vertices"] = (
                     detail.constellation_star_mode != "none"
                 )

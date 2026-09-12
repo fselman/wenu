@@ -8,6 +8,7 @@ from math import isfinite
 from pathlib import Path
 import re
 
+from .constellation_resolver import normalize_constellations
 from .detail import DetailOverrides, SkyContentSelection
 from .product_options import add_chart_product_arguments
 from .reference_policy import CelestialReferencePolicy
@@ -155,6 +156,29 @@ def _asteroid_selection(value):
     return name.casefold()
 
 
+def _constellation_selection(value):
+    names = tuple(
+        item.strip() for item in str(value).split(",") if item.strip()
+    )
+    try:
+        return normalize_constellations(names)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(str(error)) from error
+
+
+def _selected_constellations(values):
+    selected = []
+    for group in values or ():
+        names = (
+            _constellation_selection(group)
+            if isinstance(group, str) else group
+        )
+        for name in names:
+            if name not in selected:
+                selected.append(name)
+    return tuple(selected)
+
+
 def _milky_way_contour_selection(value):
     levels = tuple(
         item.strip().lower() for item in str(value).split(",")
@@ -198,9 +222,9 @@ class ChartContentOptions:
     """Shared astronomical-content choices parsed by canonical examples."""
 
     magnitude_limit: float | None = None
-    constellation_lines: bool = False
-    constellation_labels: bool = False
-    constellation_boundaries: bool = False
+    constellation_lines: tuple[str, ...] = ()
+    constellation_labels: tuple[str, ...] = ()
+    constellation_boundaries: tuple[str, ...] = ()
     horizon: bool = False
     horizon_mask: bool = False
     equatorial_grid: bool = False
@@ -423,18 +447,27 @@ def add_chart_content_arguments(parser):
     )
     parser.add_argument(
         "--constellation-lines",
-        action="store_true",
-        help="draw constellation line figures",
+        action="append",
+        type=_constellation_selection,
+        default=[],
+        metavar="IAU[,IAU...]",
+        help="draw line figures for the selected constellations",
     )
     parser.add_argument(
         "--constellation-labels",
-        action="store_true",
-        help="draw constellation labels",
+        action="append",
+        type=_constellation_selection,
+        default=[],
+        metavar="IAU[,IAU...]",
+        help="draw labels for the selected constellations",
     )
     parser.add_argument(
         "--constellation-boundaries",
-        action="store_true",
-        help="draw IAU constellation boundaries",
+        action="append",
+        type=_constellation_selection,
+        default=[],
+        metavar="IAU[,IAU...]",
+        help="draw boundaries for the selected constellations",
     )
     parser.add_argument(
         "--horizon",
@@ -602,9 +635,15 @@ def chart_content_options(arguments) -> ChartContentOptions:
     """Resolve shared parsed content arguments into an immutable value."""
     return ChartContentOptions(
         magnitude_limit=arguments.magnitude_limit,
-        constellation_lines=arguments.constellation_lines,
-        constellation_labels=arguments.constellation_labels,
-        constellation_boundaries=arguments.constellation_boundaries,
+        constellation_lines=_selected_constellations(
+            arguments.constellation_lines
+        ),
+        constellation_labels=_selected_constellations(
+            arguments.constellation_labels
+        ),
+        constellation_boundaries=_selected_constellations(
+            arguments.constellation_boundaries
+        ),
         horizon=arguments.horizon,
         horizon_mask=arguments.horizon_mask,
         altaz_grid=arguments.altaz_grid,
@@ -921,7 +960,31 @@ def chart_sky_content(arguments) -> SkyContentSelection:
     selected.update(content.asteroids)
     if content.moon:
         selected.add("moon")
+    from .constellation_resolver import resolve_constellation_subject
+    from .request import ChartSubjectRequest
+
+    def identities(names, attribute):
+        return frozenset(
+            identity
+            for name in names
+            for identity in getattr(
+                resolve_constellation_subject(ChartSubjectRequest(
+                    constellations=(name,)
+                )),
+                attribute,
+            )
+        )
+
     return SkyContentSelection(
+        constellation_lines=identities(
+            content.constellation_lines, "line_constellations"
+        ),
+        constellation_labels=identities(
+            content.constellation_labels, "label_constellations"
+        ),
+        constellation_boundaries=frozenset(
+            content.constellation_boundaries
+        ),
         solar_system_objects=frozenset(selected),
         milky_way_levels=content.mw_contours,
     )

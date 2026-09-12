@@ -148,6 +148,13 @@ transformation, chart-family tests cover final boundaries, and composed-mask
 tests cover seam grouping, intersection winding, and single-opacity drawing.
 `charts/target_resolver.py` owns offline alias resolution over the packaged
 `data/targets.json` cross-identification resource.
+`charts/object_center.py` owns the overloaded, output-neutral conversion of a
+resolved fixed target or descriptor-driven moving body into one apparent
+observer-horizontal `ObjectCenter`. It delegates coordinates to
+`CoordinateService` and moving directions to `SolarSystemPointLayer`; it owns
+no name lookup, provider acquisition, projection, framing dimensions, style,
+or rendering. `cli/chart.py` resolves an unambiguous moving-body selection
+before `get_chart_view()` when that object must govern a regional center.
 `charts/constellation_resolver.py` owns IAU abbreviation normalization and
 offline teaching-group resolution over `data/constellation_groups.json`.
 It is the sole translation boundary for Serpens line, boundary, and label
@@ -348,9 +355,9 @@ projection, renderer, furniture drawing, or saving procedure.
 arbitrary IAU constellation set or optional packaged-group alias into typed
 friendly view arguments. It does not resolve internal constellation geometry,
 frame a chart, test visibility, project, mask, or clip.
-All constellation-subject examples use this one adapter; a single region is
-represented by a one-element `--constellations` value rather than a parallel
-singular parser.
+Installed commands resolve centers independently through
+`charts/center_arguments.py`; constellation content and masks carry their own
+explicit IAU selections.
 `charts/_masking.py` selects official mask boundaries before projection and
 composes constellation and above-horizon openings into one renderer mask.
 Independent opening groups are retained as compound-path winding metadata so
@@ -484,7 +491,7 @@ invariants, and implementation details; inventories every responsibility and
 appearance source; and records duplications that must be removed as TOML
 becomes authoritative. It is an audit input, not a runtime registry.
 
-`docs/developer/configuration_schema_v1.md` is the Milestone 46D.2 structural
+`docs/developer/configuration_schema_v2.md` is the current structural
 contract for the future authoritative TOML document. It orders every public
 namespace, defines scalar and closed-vocabulary validation, requires
 independent color/line-width/line-style keys, and specifies complete-path
@@ -609,7 +616,7 @@ alter the catalogue anchor or any other chart. Fixed content is Hipparcos
 stars through magnitude 5.5, one figure
 and Spanish label, the ecliptic, celestial equator, and equatorial grid. Titles
 carry the Spanish constellation name and J2000 center RA/Dec to minutes.
-`--mask` therefore receives the packaged cartoon warm-white mask unchanged;
+`--constellation-mask` receives the packaged cartoon warm-white mask unchanged;
 the tool contains no mask color, opacity, polygon, or renderer policy. Its
 cartoon/presentation review overrides strengthen only the ecliptic and enlarge
 coordinate labels through `ChartStyleOverrides`. The optional

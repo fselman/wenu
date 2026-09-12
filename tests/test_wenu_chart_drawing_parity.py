@@ -56,14 +56,15 @@ def test_complete_command_resolves_the_shared_drawing_request(
     destination = tmp_path / "teaching-chart.svg"
 
     outputs = chart.generate(chart.parser().parse_args([
-        "regional", "--constellations", "Cyg,Lyr,Aql",
+        "regional", "--center-on", "constellation:Cyg,Lyr,Aql",
         "--observer-location", "La Ligua",
         "--observer-time", "2026-08-15 21:00",
         "--style", "cartoon", "--mode", "presentation",
         "--output", str(destination),
         "--magnitude-limit", "4.25",
-        "--constellation-lines", "--constellation-labels",
-        "--constellation-boundaries",
+        "--constellation-lines", "Cyg,Lyr,Aql",
+        "--constellation-labels", "Cyg,Lyr,Aql",
+        "--constellation-boundaries", "Cyg,Lyr,Aql",
         "--horizon", "--horizon-mask",
         "--altaz-grid", "--altaz-grid-labels",
         "--equatorial-grid", "--equatorial-grid-labels",
@@ -140,7 +141,7 @@ def test_all_products_resolve_the_canonical_export_matrix(
     destination = tmp_path / "gallery"
 
     outputs = chart.generate(chart.parser().parse_args([
-        "regional", "--constellations", "Cyg,Lyr,Aql",
+        "regional", "--center-on", "constellation:Cyg,Lyr,Aql",
         "--observer-location", "La Ligua",
         "--observer-time", "2026-08-15 21:00",
         "--all-products", "--output", str(destination),

@@ -22,7 +22,7 @@ from wenu.configuration import ConfigurationError
 
 def _configuration(tmp_path, text):
     path = tmp_path / "wenu.toml"
-    path.write_text("schema_version = 1\n" + text, encoding="utf-8")
+    path.write_text("schema_version = 2\n" + text, encoding="utf-8")
     arguments = argparse.Namespace(config=path)
     return chart_configuration(arguments)
 
@@ -114,7 +114,7 @@ def test_omitted_cli_product_values_resolve_from_user_overlay(
 ):
     path = tmp_path / "wenu.toml"
     path.write_text(
-        "schema_version = 1\n"
+        "schema_version = 2\n"
         "[products.default]\n"
         "style = 'cartoon'\n"
         "mode = 'presentation'\n"
@@ -149,7 +149,7 @@ def test_explicit_cli_product_values_override_user_overlay(
 ):
     path = tmp_path / "wenu.toml"
     path.write_text(
-        "schema_version = 1\n"
+        "schema_version = 2\n"
         "[products.default]\n"
         "style = 'cartoon'\n"
         "mode = 'presentation'\n",
@@ -179,7 +179,7 @@ def test_explicit_cli_product_values_override_user_overlay(
 def test_omitted_cli_furniture_values_resolve_from_user_overlay(tmp_path):
     path = tmp_path / "wenu.toml"
     path.write_text(
-        "schema_version = 1\n"
+        "schema_version = 2\n"
         "[grids_references.poles]\nstate = 'visible'\nlabels = false\n"
         "[furniture.footer]\nenabled = true\n"
         "[furniture.context]\ncenter = false\nlocation = true\n",
@@ -208,7 +208,7 @@ def test_sequential_cli_configurations_do_not_share_runtime_state(tmp_path):
     )
     second_path = tmp_path / "second.toml"
     second_path.write_text(
-        "schema_version = 1\n"
+        "schema_version = 2\n"
         "[styles.atlas.canvas]\nbackground = '#654321'\n",
         encoding="utf-8",
     )

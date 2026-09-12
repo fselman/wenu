@@ -300,6 +300,7 @@ def test_named_catalogue_selections_are_render_local_geometry_options():
     remnants = m40d_detail_application_Layer("supernova_remnants")
     sky.layers += (nonstellar, globular, remnants)
     selection = SkyContentSelection(
+        stars={"32349"},
         nonstellar_objects={"M 17"},
         galaxies={"NGC 5128"},
         open_clusters={"NGC 4755"},
@@ -312,6 +313,9 @@ def test_named_catalogue_selections_are_render_local_geometry_options():
 
     applied = apply_resolved_detail(sky, detail)
 
+    assert applied.layer_options["stars"]["geometry"]["include_ids"] == (
+        frozenset({32349})
+    )
     assert applied.layer_options["galaxies"]["geometry"]["selected"] == (
         frozenset({"NGC 5128"})
     )
@@ -786,7 +790,10 @@ def test_default_arguments_disable_all_optional_content():
     ),
 )
 def test_each_content_switch_enables_only_its_layer(option, layer):
-    overrides = chart_detail_overrides(parser().parse_args([option]))
+    values = [option]
+    if option.startswith("--constellation-"):
+        values.append("Vir")
+    overrides = chart_detail_overrides(parser().parse_args(values))
     detail = apply_detail_overrides(adaptive_detail(), overrides)
 
     assert detail.layer_enabled(layer)

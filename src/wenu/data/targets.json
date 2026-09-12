@@ -1,6 +1,7 @@
 {
-  "provenance": "Wenu packaged catalogue cross-identifications, 2026-08-10",
+  "provenance": "Wenu packaged catalogue cross-identifications, 2026-09-11",
   "targets": [
+    {"key": "sirius", "name": "Sirius", "aliases": ["Sirius", "Alpha Canis Majoris", "Alpha CMa", "HIP 32349"], "ra_deg": 101.28715533, "dec_deg": -16.71611586, "components": [{"family": "stars", "identifier": "32349"}]},
     {"key": "centaurus-a", "name": "Centaurus A", "aliases": ["Centaurus A", "Cen A", "NGC 5128", "NGC5128"], "ra_deg": 201.3650833333333, "dec_deg": -43.01911111111111, "components": [{"family": "galaxies", "identifier": "NGC5128"}]},
     {"key": "omega-centauri", "name": "Omega Centauri", "aliases": ["Omega Centauri", "Omega Cen", "NGC 5139", "NGC5139"], "ra_deg": 201.69683333, "dec_deg": -47.47958333, "components": [{"family": "globular_clusters", "identifier": "NGC 5139"}]},
     {"key": "m13", "name": "M13", "aliases": ["M13", "M 13", "NGC 6205", "NGC6205", "Hercules Cluster"], "ra_deg": 250.42183333, "dec_deg": 36.45986111, "components": [{"family": "globular_clusters", "identifier": "NGC 6205"}]},

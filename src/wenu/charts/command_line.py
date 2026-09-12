@@ -306,19 +306,34 @@ def _chart_view_argument_plans(
         from wenu.minor_body_resources import MinorBodyResourceCollection
 
         collection = MinorBodyResourceCollection(resource_directory)
+        previously_resolved = getattr(
+            arguments, "_resolved_minor_body_selections", {}
+        )
+
+        def resolve_selection(selection):
+            return (
+                previously_resolved.get(selection)
+                or collection.resolve(selection)
+            )
+
         minor_body_descriptors = tuple({
             descriptor.selection_key: descriptor
             for descriptor in (
-                collection.resolve(selection)
+                resolve_selection(selection)
                 for selection in (
                     *asteroid_selections,
-                    *((track_selection,) if track_selection is not None else ()),
+                    *((track_selection,)
+                      if track_selection is not None else ()),
                 )
             )
         }.values())
         resolved_by_selection = {
-            selection: collection.resolve(selection)
-            for selection in (*asteroid_selections, *((track_selection,) if track_selection is not None else ()))
+            selection: resolve_selection(selection)
+            for selection in (
+                *asteroid_selections,
+                *((track_selection,)
+                  if track_selection is not None else ()),
+            )
         }
         effective_arguments = copy(effective_arguments)
         effective_arguments.asteroid = [

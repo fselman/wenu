@@ -64,7 +64,7 @@ def _views(configuration: Mapping[str, Any]):
             coordinate_frame=table["coordinate_frame"],
             orientation=_optional(table["orientation"]),
             position_angle_deg=_optional(table["position_angle"]),
-            mask=table["mask"],
+            mask=False,
             field_diameter_deg=(
                 table["field_diameter"] if name == "binocular" else None
             ),

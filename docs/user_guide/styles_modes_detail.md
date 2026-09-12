@@ -25,9 +25,9 @@ These options are shared by all six examples:
 
 ```text
 --magnitude-limit VALUE
---constellation-lines
---constellation-labels
---constellation-boundaries
+--constellation-lines IAU[,IAU...]
+--constellation-labels IAU[,IAU...]
+--constellation-boundaries IAU[,IAU...]
 --horizon
 --horizon-mask
 --equatorial-grid

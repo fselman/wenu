@@ -456,6 +456,16 @@ not empty successful charts.
 publication form. These preserve compatibility builders and titles without
 duplicating coordinates or catalogue spelling in example scripts.
 
+`charts/object_center.py::get_object_center()` is the typed point-subject
+centering boundary. Its `ResolvedTarget` overload transforms fixed packaged or
+explicit ICRS coordinates through `CoordinateService`; its
+`SolarSystemBodyDescriptor` overload realizes the shared symbolic point with
+the accepted astrometric-to-apparent provider chain. Both return one immutable
+`ObjectCenter` in the observer-horizontal product frame with identity and
+provenance. The resolver knows no projection, viewport, style, renderer, or
+exporter. Regional requests may use that center without a constellation;
+constellation sets retain their separate geometry-derived framing contract.
+
 `resolve_constellation_subject(ChartSubjectRequest(...))` accepts either an
 ordered IAU abbreviation set or a packaged teaching-group alias. Its
 `ResolvedConstellationSubject` keeps public region identities separate from
@@ -866,21 +876,12 @@ through `DetailOverrides` and canonical request-grid configuration. It leaves
 right-ascension meridian density and every non-equatorial grid unchanged;
 omission preserves the established family policy.
 
-Constellation-family adapters may add the shared subject contract with
-`add_constellation_subject_arguments(...)`. It accepts mutually exclusive
-`--constellations IAU,...` and `--group ALIAS` forms.
-The underlying public `parse_constellation_list()` adapter is available to
-specialized tools that need the same comma-separated IAU normalization but
-do not support packaged groups; they must not implement a second list parser.
-`chart_constellation_subject(arguments)` returns immutable typed options whose
-`view_arguments()` pass directly to `get_chart_view()`. Arbitrary sets use the
-existing resolver and automatic spherical regional framing; packaged groups
-remain optional aliases and no example owns IAU parsing or group geometry.
-The subject may be optional for a family such as the planisphere by calling
-`chart_constellation_subject(arguments, required=False)`.
-Every canonical example that has a constellation subject uses this adapter,
-including the one-element regional default. There is no separate singular
-`--constellation` parsing path.
+Installed chart commands use `--center-on IDENTIFIER` for framing and the
+independent `--constellation-lines`, `--constellation-labels`,
+`--constellation-boundaries`, and `--constellation-mask` selections for
+content and masking. `parse_constellation_list()` remains the shared IAU-list
+normalizer. Named centers use qualified namespaces when necessary and an
+unqualified identifier only when offline resolution is unique.
 
 A masked stereographic planisphere accepts a possibly disjoint constellation
 set. Its full-sky mask selects official boundary geometry before projection,
@@ -1186,7 +1187,7 @@ fresh packaged mapping, and validates the complete result.
 `parse_configuration_overlay()`, `validate_configuration_overlay()`, and
 `merge_configuration_overlay()` expose the same strict boundary for callers
 that already own text or mappings. Every overlay must declare
-`schema_version = 1`.
+`schema_version = 2`.
 
 `load_configuration_defaults(path=None)` and
 `translate_configuration_defaults()` return one frozen
@@ -1226,9 +1227,9 @@ Installing Wenu provides one command over the ordinary Python facade:
 ```text
 wenu_chart all-sky ...
 wenu_chart planisphere ...
-wenu_chart regional --constellations Cen,Cru,Mus ...
+wenu_chart regional --center-on constellation:Cen,Cru,Mus ...
 wenu_chart circumpolar ...
-wenu_chart binocular --target M13 ...
+wenu_chart binocular --center-on cluster:M13 ...
 wenu_chart defaults
 ```
 
@@ -1628,7 +1629,7 @@ example arguments.
 
 ### Sgr-Sco-Oph-Ser regional product
 
-`examples/regional_constellation_group.py --constellations Sgr,Sco,Oph,Ser`
+`examples/regional_constellation_group.py --center-on constellation:Sgr,Sco,Oph,Ser`
 selects the
 Sagittarius, Scorpius, Ophiuchus, and two-part Serpens region. It does not
 enable any non-equatorial grid by default. Every canonical family exposes `--altaz-grid`,
@@ -1638,7 +1639,7 @@ equatorial grid. The AltAz grid has a black semantic base color, realized
 as gray `#707070` for both lines and labels in print modes so it remains
 subordinate to black stars. It excludes its altitude-zero circle so it does
 not duplicate the chart-owned horizon.
-`--mask` enables the canonical outside-region mask explicitly.
+`--constellation-mask Sgr,Sco,Oph,Ser` enables that mask explicitly.
 
 
 ## SVG output contract (Milestone 49F.3)
@@ -1735,7 +1736,7 @@ plan and `chart_view_request()`; sequence frames then use only
 `generate_observer_time_chart_sequence()` and `generate_chart_request()`.
 
 `ConfigurationDefaults.sequence` carries the immutable translated
-schema-version-1 `[sequence]` table. Packaged values disable sequence output.
+schema-version-2 `[sequence]` table. Packaged values disable sequence output.
 User overlays may provide a complete sequence, and explicit CLI values take
 precedence. The effective configuration reaches every frame and participates
 in deterministic manifest identity.
@@ -1858,7 +1859,7 @@ observer's declared Astropy time. `ChartRequest.reference_policy` carries the
 resolved request through ordinary grid and furniture construction.
 
 The installed command exposes `--reference-equinox EQUINOX`. The corresponding
-schema-version-1 overlay is `[coordinates.references] equinox = "..."`, with
+schema-version-2 overlay is `[coordinates.references] equinox = "..."`, with
 the explicit command value taking precedence.
 
 Reusable view drawing passes `ChartView.observer` explicitly to

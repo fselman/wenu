@@ -13,6 +13,10 @@ wenu_chart circumpolar ...
 wenu_chart binocular ...
 ```
 
+`[constellations].system` defaults to `"western"`. It supplies vocabulary
+and line-figure semantics only when a constellation operation is explicitly
+requested; it does not enable lines, labels, boundaries, or masking.
+
 ## Create an editable template
 
 Create the destination directory, then export Wenu's complete commented
@@ -34,7 +38,7 @@ Use the edited file with any chart family:
 ```bash
 wenu_chart regional \
   --config profiles/publication.toml \
-  --constellations Cen,Cru,Mus \
+  --center-on constellation:Cen,Cru,Mus \
   --output output/centaurus-cross-musca.png
 ```
 
@@ -143,7 +147,7 @@ options have the same meaning as for a planet:
 wenu_chart regional \
   --observer-location "La Ligua" \
   --observer-time 2026-01-15T00:00:00Z \
-  --constellations Psc \
+  --center-on constellation:Psc \
   --asteroid 79989 \
   --asteroid-track 79989 \
   --minor-body-resource-directory ~/.cache/wenu/minor_bodies/numbered-asteroids \
@@ -186,7 +190,7 @@ An observed multi-epoch Moon sequence uses one complete group:
 
 ```bash
 wenu_chart regional \
-  --constellations Sgr,Sco,Oph \
+  --center-on constellation:Sgr,Sco,Oph \
   --observer-location "La Ligua" \
   --observer-time 2026-09-16T12:00:00Z \
   --moon-disk-sequence \

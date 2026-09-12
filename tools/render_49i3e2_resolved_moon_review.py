@@ -27,15 +27,16 @@ MOON_ALTITUDE = "__MOON_ALTITUDE__"
 MOON_AZIMUTH = "__MOON_AZIMUTH__"
 FAMILIES = {
     "regional": (
-        "regional", "--constellations", "Sco",
+        "regional",
         "--field-width", "55", "--field-height", "45",
         "--center-altitude", MOON_ALTITUDE,
         "--center-azimuth", MOON_AZIMUTH,
         "--orientation", "zenith-up", "--magnitude-limit", "5.0",
     ),
     "binocular": (
-        "binocular", "--ra", MOON_RA, "--dec", MOON_DEC,
-        "--display-name", "Moon review field", "--field-diameter", "7.5",
+        "binocular", "--center-icrs-ra", MOON_RA,
+        "--center-icrs-dec", MOON_DEC,
+        "--center-name", "Moon review field", "--field-diameter", "7.5",
         "--magnitude-limit", "11.0",
     ),
     "circumpolar": (
@@ -126,10 +127,10 @@ def _moon_centre_arguments():
         ra, dec, _ = apparent.radec()
         altitude, azimuth, _ = apparent.altaz()
     return {
-        MOON_RA: f"{float(ra.hours) * 15.0:.12g}",
-        MOON_DEC: f"{float(dec.degrees):.12g}",
-        MOON_ALTITUDE: f"{float(altitude.degrees):.12g}",
-        MOON_AZIMUTH: f"{float(azimuth.degrees):.12g}",
+        MOON_RA: f"{float(ra.hours) * 15.0:.12g}deg",
+        MOON_DEC: f"{float(dec.degrees):.12g}deg",
+        MOON_ALTITUDE: f"{float(altitude.degrees):.12g}deg",
+        MOON_AZIMUTH: f"{float(azimuth.degrees):.12g}deg",
     }
 
 

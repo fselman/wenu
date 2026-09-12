@@ -19,10 +19,10 @@ def example():
 def test_packaged_target_and_explicit_geometry_are_cli_data():
     module = example()
     arguments = module.parser().parse_args([
-        "--target", "M57", "--field-diameter", "7.0"
+        "--center-on", "target:M57", "--field-diameter", "7.0"
     ])
 
-    assert arguments.target == "M57"
+    assert arguments.center_on == "target:M57"
     assert arguments.field_diameter == pytest.approx(7.0)
     assert module.parser().parse_args([]).field_diameter is None
     assert not hasattr(module, "TARGETS")
@@ -65,7 +65,9 @@ def test_generation_delegates_to_shared_view_drawing(monkeypatch, tmp_path):
         or (SimpleNamespace(output=output),),
     )
 
-    paths = module.generate(module.parser().parse_args(["--target", "M57"]))
+    paths = module.generate(module.parser().parse_args([
+        "--center-on", "target:M57"
+    ]))
 
     assert paths == (output,)
     assert captured[0][0][0] is view

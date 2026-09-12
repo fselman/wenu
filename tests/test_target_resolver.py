@@ -52,6 +52,17 @@ def test_explicit_coordinate_target_needs_no_packaged_component():
     assert target.provenance == "user-supplied ICRS coordinate"
 
 
+def test_packaged_star_target_resolves_without_a_deep_sky_component():
+    target = resolve_target(ChartSubjectRequest(target="Alpha CMa"))
+
+    assert target.key == "sirius"
+    assert target.display_name == "Sirius"
+    assert target.components[0].family == "stars"
+    assert target.components[0].identifier == "32349"
+    assert target.ra_deg == pytest.approx(101.28715533)
+    assert target.dec_deg == pytest.approx(-16.71611586)
+
+
 def test_resolved_target_exposes_publication_identity_and_icrs_center():
     target = resolve_target(ChartSubjectRequest(target="Centaurus A"))
 
@@ -94,4 +105,4 @@ def test_target_catalogue_is_packaged_and_has_provenance():
     assert target_catalogue_path().is_file()
     provenance, targets = load_target_catalogue()
     assert "Wenu packaged" in provenance
-    assert len(targets) == 8
+    assert len(targets) == 9

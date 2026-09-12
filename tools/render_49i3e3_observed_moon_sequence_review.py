@@ -48,7 +48,7 @@ class ReviewEntry:
 
 
 REGIONAL = (
-    "regional", "--constellations", "Sgr,Sco,Oph",
+    "regional",
     "--field-width", "110", "--field-height", "70",
     "--center-altitude", MOON_ALTITUDE,
     "--center-azimuth", MOON_AZIMUTH,
@@ -56,8 +56,9 @@ REGIONAL = (
     "--magnitude-limit", "5.0",
 )
 BINOCULAR = (
-    "binocular", "--ra", MOON_RA, "--dec", MOON_DEC,
-    "--display-name", "Observed Moon sequence",
+    "binocular", "--center-icrs-ra", MOON_RA,
+    "--center-icrs-dec", MOON_DEC,
+    "--center-name", "Observed Moon sequence",
     "--field-diameter", "7.5",
     "--magnitude-limit", "11.0",
 )
@@ -125,10 +126,10 @@ def _moon_centre_arguments():
         ra, dec, _ = apparent.radec()
         altitude, azimuth, _ = apparent.altaz()
     return {
-        MOON_RA: f"{float(ra.hours) * 15.0:.12g}",
-        MOON_DEC: f"{float(dec.degrees):.12g}",
-        MOON_ALTITUDE: f"{float(altitude.degrees):.12g}",
-        MOON_AZIMUTH: f"{float(azimuth.degrees):.12g}",
+        MOON_RA: f"{float(ra.hours) * 15.0:.12g}deg",
+        MOON_DEC: f"{float(dec.degrees):.12g}deg",
+        MOON_ALTITUDE: f"{float(altitude.degrees):.12g}deg",
+        MOON_AZIMUTH: f"{float(azimuth.degrees):.12g}deg",
     }
 
 

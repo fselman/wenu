@@ -11,7 +11,7 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`implementation_reference.md`](implementation_reference.md) — current
   public and advanced API reference.
 - [`source_tree.md`](source_tree.md) — current source responsibility map.
-- [`configuration_schema_v1.md`](configuration_schema_v1.md) — implemented
+- [`configuration_schema_v2.md`](configuration_schema_v2.md) — implemented
   configuration schema.
 - [`assistant_instructions.md`](assistant_instructions.md) — contribution and
   delivery rules.
@@ -32,6 +32,10 @@ milestone evidence are under [`archive/`](archive/README.md).
   minor-body and 50B publication-legibility programs.
 - [`numbered_asteroids_50a3d.md`](numbered_asteroids_50a3d.md) — candidate
   generic installed numbered-asteroid implementation and acceptance gates.
+- [`object_centered_regional_charts_50a3e.md`](object_centered_regional_charts_50a3e.md)
+  — candidate generic fixed- and moving-object regional-centering contract.
+- [`chart_cli_semantics_audit_50a3f.md`](chart_cli_semantics_audit_50a3f.md)
+  — candidate explicit center, content, and mask CLI contract.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).

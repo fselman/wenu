@@ -43,7 +43,7 @@ def test_diagnostics_cover_every_visual_closure_role():
     )
 
     for option in (
-        "--mask", "--horizon", "--horizon-mask",
+        "--constellation-mask", "--horizon", "--horizon-mask",
         "--field-width", "--field-height", "--position-angle",
         "--altaz-grid", "--equatorial-grid", "--ecliptic-grid",
         "--galactic-grid", "--grid-references", "--poles",
@@ -58,7 +58,7 @@ def test_mask_diagnostics_do_not_conflate_independent_openings():
     regional = entries["diagnostic-regional-explicit-field-mask"].arguments
 
     for arguments in (all_sky, regional):
-        assert "--mask" in arguments
+        assert "--constellation-mask" in arguments
         assert "--horizon-mask" not in arguments
         assert "--horizon" not in arguments
 

@@ -330,7 +330,7 @@ provider, moving-object, public-coordinate, and reuse work are governed by
 
 ## Configuration and public boundaries
 
-Packaged defaults and schema-version-1 configuration resolve into immutable
+Packaged defaults and schema-version-2 configuration resolve into immutable
 typed contracts. User overlays merge non-mutatingly; explicit command values
 override overlays; sequential invocations share no active configuration
 singleton.
@@ -727,3 +727,15 @@ corrections. The shared point and track realizers, fixed product frame,
 projection, preparation, semantic SVG, renderers, and exporters remain the
 ordinary route. Fernando accepted the macOS PNG and semantic SVG; 50A.3 is
 closed and 50A.4 comet numerical validation is next.
+
+## Object-centered regional framing (Milestone 50A.3E candidate)
+
+Point-subject identity is resolved before regional chart construction.
+`get_object_center()` overloads fixed `ResolvedTarget` values and
+descriptor-driven Solar-System bodies into the same apparent observer-
+horizontal point contract. Regional framing consumes that result while the
+ordinary detail, spatial-selection, projection, preparation, renderer, and
+export owners remain unchanged. A unique selected planet, Moon, or installed
+asteroid may supply the implicit center; packaged stellar and deep-sky targets
+and explicit ICRS or horizontal coordinates use the same chart family.
+Constellation geometry remains the independent extended-region framing case.

@@ -101,6 +101,10 @@ def chart_request(family, sequence):
     }
     if family in {"regional", "binocular"}:
         values["subject"] = ChartSubjectRequest(target="moon")
+    if family == "regional":
+        values["frame"] = ChartFrameRequest(
+            field_width_deg=20.0, field_height_deg=20.0
+        )
     if family == "circumpolar":
         values["frame"] = ChartFrameRequest(
             pole="south", limiting_declination_deg=-15

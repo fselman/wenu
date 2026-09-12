@@ -45,15 +45,17 @@ def test_defaults_are_cartoon_presentation_with_canonical_mask_switch():
     assert arguments.style == "cartoon"
     assert arguments.mode == "presentation"
     assert arguments.magnitude_limit == pytest.approx(5.5)
-    assert arguments.mask is False
+    assert arguments.constellation_mask is False
     assert arguments.dpi is None
     assert arguments.constellations == MODULE.ZODIAC_CONSTELLATIONS
 
     svg = MODULE.parser().parse_args(["--format", "svg"])
     assert svg.output_format == "svg"
 
-    selected = MODULE.parser().parse_args(["--mask", "--presentation"])
-    assert selected.mask is True
+    selected = MODULE.parser().parse_args([
+        "--constellation-mask", "--presentation"
+    ])
+    assert selected.constellation_mask is True
     assert selected.mode == "presentation"
 
     colored = MODULE.parser().parse_args(["--sky-color", "#1F699B"])
@@ -108,7 +110,7 @@ def test_ophiuchus_places_serpens_cauda_label_to_the_left():
 
 def test_effective_arguments_preserve_optional_boundaries():
     arguments = MODULE.parser().parse_args([
-        "--mask", "--constellation-boundaries"
+        "--constellation-mask", "--constellation-boundaries", "Ari"
     ])
     effective = MODULE._effective_arguments(
         arguments, Path("output/01-ari.png")
@@ -117,9 +119,9 @@ def test_effective_arguments_preserve_optional_boundaries():
     assert effective.style == "cartoon"
     assert effective.mode == "presentation"
     assert effective.magnitude_limit == pytest.approx(5.5)
-    assert effective.constellation_lines is True
-    assert effective.constellation_labels is True
-    assert effective.constellation_boundaries is True
+    assert effective.constellation_lines == [("Ari",)]
+    assert effective.constellation_labels == [("Ari",)]
+    assert effective.constellation_boundaries == [("Ari",)]
     assert effective.equatorial_grid is True
     assert effective.grid_references == {"equatorial", "ecliptic"}
     assert effective.magnitude_legend is True

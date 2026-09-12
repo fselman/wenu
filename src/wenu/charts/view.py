@@ -99,6 +99,8 @@ def get_chart_view(
     projection=None,
     coordinate_frame=None,
     mask=None,
+    constellation_mask=None,
+    constellation_system="western",
     configuration=None,
 ):
     """Resolve and prepare one observer-bound geometrical chart view."""
@@ -169,6 +171,8 @@ def get_chart_view(
             limiting_declination_deg=limiting_declination_deg,
         ),
         mask=mask,
+        constellation_mask=constellation_mask,
+        constellation_system=constellation_system,
         product=ChartProductOptions(output=Path(".")),
         reference_policy=(
             configuration.reference_policy

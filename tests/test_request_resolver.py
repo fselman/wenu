@@ -36,7 +36,7 @@ def request(
     )
 
 
-def test_target_component_is_retained_independently_of_general_thresholds():
+def test_center_target_does_not_add_implicit_content():
     resolved = resolve_chart_request(
         request(
             detail=DetailOverrides(star_magnitude_limit=6.0),
@@ -48,9 +48,7 @@ def test_target_component_is_retained_independently_of_general_thresholds():
     )
 
     assert resolved.target.key == "m57"
-    assert resolved.request.content.planetary_nebulae == {
-        "another nebula", "PN G063.1+13.9"
-    }
+    assert resolved.request.content.planetary_nebulae == {"another nebula"}
 
 
 def test_named_target_without_a_drawable_component_is_rejected(monkeypatch):
@@ -72,7 +70,7 @@ def test_named_target_without_a_drawable_component_is_rejected(monkeypatch):
         )
 
 
-def test_constellation_resolution_populates_internal_identities_and_content():
+def test_constellation_resolution_populates_center_but_not_content():
     resolved = resolve_chart_request(
         request(
             family="regional",
@@ -84,13 +82,11 @@ def test_constellation_resolution_populates_internal_identities_and_content():
     assert resolved.constellations.line_constellations[-2:] == (
         "Ser1", "Ser2"
     )
-    assert resolved.request.content.constellation_boundaries == {
-        "Sgr", "Sco", "Oph", "Ser"
-    }
-    assert "NGC 6475" in resolved.request.content.open_clusters
+    assert resolved.request.content.constellation_boundaries is None
+    assert resolved.request.content.open_clusters is None
 
 
-def test_group_content_can_be_explicitly_excluded():
+def test_group_center_does_not_manufacture_excluded_content():
     resolved = resolve_chart_request(
         request(
             family="regional",
@@ -102,7 +98,7 @@ def test_group_content_can_be_explicitly_excluded():
         CANONICAL_MAXIMAL_SPHERE_PROFILE,
     )
 
-    assert "NGC 6475" not in resolved.request.content.open_clusters
+    assert resolved.request.content.open_clusters is None
 
 
 def test_conflicting_explicit_content_is_rejected():
@@ -118,16 +114,18 @@ def test_conflicting_explicit_content_is_rejected():
         )
 
 
-def test_central_target_cannot_be_excluded():
-    with pytest.raises(ValueError, match="central target cannot be excluded"):
-        resolve_chart_request(
-            request(
-                exclusions=ChartContentExclusions(
-                    planetary_nebulae={"PN G063.1+13.9"}
-                )
-            ),
-            CANONICAL_MAXIMAL_SPHERE_PROFILE,
-        )
+def test_center_target_can_be_excluded_from_independent_content():
+    resolved = resolve_chart_request(
+        request(
+            exclusions=ChartContentExclusions(
+                planetary_nebulae={"PN G063.1+13.9"}
+            )
+        ),
+        CANONICAL_MAXIMAL_SPHERE_PROFILE,
+    )
+
+    assert resolved.target.key == "m57"
+    assert resolved.request.content.planetary_nebulae is None
 
 
 @pytest.mark.parametrize(

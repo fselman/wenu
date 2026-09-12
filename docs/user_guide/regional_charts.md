@@ -14,17 +14,18 @@ frames the complete set automatically.
 
 ```bash
 python examples/regional_constellation_group.py \
-  --constellations Sgr,Sco,Oph,Ser \
+  --center-on constellation:Sgr,Sco,Oph,Ser \
   --style atlas --mode print \
   --output output/galactic-centre.png
 ```
 
-Use `--mask` to dim the area outside the union of the selected IAU
+Use `--constellation-mask IAU,...` to dim the area outside the union of the selected IAU
 constellation regions. The mask does not require visible boundary lines.
 
 ```bash
 python examples/regional_constellation_group.py \
-  --constellations Cen,Cru,Mus --mask \
+  --center-on constellation:Cen,Cru,Mus \
+  --constellation-mask Cen,Cru,Mus \
   --style cartoon --mode presentation \
   --output output/centaurus-crux-musca.png
 ```
@@ -39,13 +40,14 @@ also requests the canonical outside mask:
 
 ```bash
 python examples/regional_constellation.py \
-  --constellations Cru --mask \
+  --center-on constellation:Cru \
+  --constellation-mask Cru \
   --style atlas --mode print \
   --output output/crux.png
 ```
 
-Both regional examples use the same `--constellations IAU,...` and optional
-`--group ALIAS` subject controls. Both derive their default viewport from the
+Both regional examples use the same `--center-on IDENTIFIER` control. A
+qualified `constellation:IAU,...` or `group:ALIAS` center derives its default viewport from the
 complete selected constellation geometry. Explicit `--field-width` and
 `--field-height` values override that automatic framing when a wider or fixed
 field is wanted. They also support the common magnitude,
@@ -60,8 +62,8 @@ retain constellation-derived centring, or use an explicit observer-local
 centre together with an explicit rectangular field:
 
 ```bash
-wenu_chart regional --constellations Vir \
-  --center-altitude 20 --center-azimuth 270 \
+wenu_chart regional \
+  --center-altitude 20deg --center-azimuth 270deg \
   --field-width 60 --field-height 50 \
   --orientation zenith-up \
   --output output/virgo-western-horizon.png
@@ -73,6 +75,32 @@ require both field dimensions. `--orientation celestial-north-up` and
 `--position-angle DEGREES` supplies a literal rotation; zero is an ordinary
 angle and has no hidden meaning. Named orientation and literal position angle
 are mutually exclusive.
+
+A regional field may instead be centered on any packaged target, including a
+star, cluster, nebula, or galaxy, or on an explicit ICRS coordinate:
+
+```bash
+wenu_chart regional --center-on star:Sirius \
+  --field-width 20 --field-height 15 \
+  --constellation-lines CMa --constellation-labels CMa \
+  --output output/sirius-field.png
+
+wenu_chart regional --center-icrs-ra 201.365deg \
+  --center-icrs-dec=-43.019deg --center-name "My field" \
+  --field-width 20 --field-height 15 \
+  --output output/coordinate-field.png
+```
+
+When there is no explicit fixed-object or coordinate center, one selected
+planet, Moon, or installed asteroid supplies the apparent center at
+`--observer-time`. An explicitly selected constellation may independently
+supply its lines, labels, and optional `--constellation-mask`; the moving object still owns
+the center. Supply `--field-width` and `--field-height` for this combination.
+The same selected object is drawn through the ordinary content path. Several
+selected moving objects require an explicit center because no implicit choice
+is scientifically distinguished.
+For an observer-time sequence this center remains fixed at the first chart
+epoch; Wenu does not silently introduce a moving camera.
 
 Wenu also resolves the pointwise parallactic angle and the tangent directions
 of celestial north and the local vertical at the chart centre. This milestone

@@ -42,7 +42,8 @@ A single official constellation:
 wenu_chart regional \
   --observer-location "La Ligua" \
   --observer-time "2026-08-15T21:00:00-04:00" \
-  --constellations Cru --mask \
+  --center-on constellation:Cru \
+  --constellation-mask Cru \
   --style atlas --mode print --format pdf \
   --output output/crux.pdf
 ```
@@ -53,7 +54,7 @@ A teaching group:
 wenu_chart regional \
   --observer-location "La Ligua" \
   --observer-time "2026-08-15T21:00:00-04:00" \
-  --constellations Sgr,Sco,Oph,Ser \
+  --center-on constellation:Sgr,Sco,Oph,Ser \
   --style cartoon --mode presentation --format png \
   --output output/galactic-centre.png
 ```
@@ -82,7 +83,7 @@ Detailed guide: [Circumpolar charts](circumpolar_charts.md)
 wenu_chart binocular \
   --observer-location "La Ligua" \
   --observer-time "2026-08-15T21:00:00-04:00" \
-  --target omega-centauri --field-diameter 7.5 \
+  --center-on target:omega-centauri --field-diameter 7.5 \
   --magnitude-limit 11 \
   --style atlas --mode print --format png \
   --output output/omega-centauri-binocular.png
@@ -99,7 +100,7 @@ The same chart requests may add apparent planets and the resolved Moon:
 wenu_chart regional \
   --observer-location "La Ligua" \
   --observer-time "2026-09-16T12:00:00Z" \
-  --constellations Sgr,Sco,Oph \
+  --center-on constellation:Sgr,Sco,Oph \
   --planet venus,mars,jupiter,saturn \
   --moon --moon-disk-magnification 8 \
   --style atlas --mode presentation --format svg \
@@ -122,7 +123,7 @@ track through the same projection and export pipeline:
 wenu_chart regional \
   --observer-location "La Ligua" \
   --observer-time 2026-01-15T00:00:00Z \
-  --constellations Psc \
+  --center-on constellation:Psc \
   --asteroid 79989 --asteroid-track 79989 \
   --minor-body-resource-directory ~/.cache/wenu/minor_bodies/numbered-asteroids \
   --track-start 2026-01-15T00:00:00Z \

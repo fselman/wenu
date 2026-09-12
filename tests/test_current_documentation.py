@@ -197,7 +197,7 @@ PERFORMANCE_CLOSURE = (
 )
 INSTRUCTIONS = DEVELOPER / "assistant_instructions.md"
 CONFIGURATION_AUDIT = ARCHIVE / "audits/configuration_default_audit.md"
-CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v1.md"
+CONFIGURATION_SCHEMA = DEVELOPER / "configuration_schema_v2.md"
 DIAGRAMS = DEVELOPER / "diagrams"
 PUBLIC_DOCUMENTS = (
     ROOT / "README.md",
@@ -1706,7 +1706,7 @@ def test_installed_wenu_chart_boundary_is_currently_documented():
     ):
         assert phrase in roadmap
     for phrase in (
-        "wenu_chart regional --constellations Cen,Cru,Mus",
+        "--center-on constellation:Cen,Cru,Mus",
         "`--observer-location`",
         "does not import or execute example scripts",
     ):
@@ -1751,14 +1751,16 @@ def test_editable_configuration_template_is_currently_documented():
         assert phrase in source_tree
 
 
-def test_configuration_schema_v1_freezes_structure_and_validation():
+def test_configuration_schema_v2_freezes_structure_and_validation():
     schema = read(CONFIGURATION_SCHEMA)
     roadmap = read(ROADMAP)
 
-    assert "**Schema version:** `1`" in schema
+    assert "**Schema version:** `2`" in schema
     ordered_sections = (
         "`observer`",
-        "`subjects`",
+        "`constellations`",
+        "`centers`",
+        "`masks`",
         "`families`",
         "`detail`",
         "`styles`",
@@ -1772,7 +1774,7 @@ def test_configuration_schema_v1_freezes_structure_and_validation():
     assert positions == sorted(positions)
 
     for phrase in (
-        "schema_version = 1",
+        "schema_version = 2",
         "color`, `line_width`, and `line_style`",
         "`solid`, `dashed`, `dotted`, `dash_dot`, or `none`",
         "Unknown sections and keys are errors",
@@ -2101,7 +2103,7 @@ def test_temporal_sequence_cli_documents_shared_translation_and_acceptance():
         DEVELOPER / "source_tree.md"
     ).read_text(encoding="utf-8")
     schema = (
-        DEVELOPER / "configuration_schema_v1.md"
+        DEVELOPER / "configuration_schema_v2.md"
     ).read_text(encoding="utf-8")
 
     for value in (
@@ -3068,11 +3070,13 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
     } == {
         "README.md",
         "assistant_instructions.md",
-        "configuration_schema_v1.md",
+        "configuration_schema_v2.md",
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
         "implementation_reference.md",
         "numbered_asteroids_50a3d.md",
+        "object_centered_regional_charts_50a3e.md",
+        "chart_cli_semantics_audit_50a3f.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",

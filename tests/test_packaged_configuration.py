@@ -19,9 +19,11 @@ except ModuleNotFoundError:  # pragma: no cover - Python 3.10
 
 TOP_LEVEL_ORDER = (
     "schema_version",
+    "constellations",
     "observer",
     "sequence",
-    "subjects",
+    "centers",
+    "masks",
     "families",
     "detail",
     "styles",
@@ -62,7 +64,7 @@ def test_packaged_defaults_are_resource_loadable_and_ordered():
 
     defaults = tomllib.loads(text)
     assert tuple(defaults) == TOP_LEVEL_ORDER
-    assert defaults["schema_version"] == 1
+    assert defaults["schema_version"] == 2
     assert defaults["sequence"] == {
         "stop": "none",
         "frames": "none",
@@ -76,7 +78,7 @@ def test_packaged_defaults_are_resource_loadable_and_ordered():
 
 def test_packaged_defaults_cover_schema_responsibilities():
     defaults = _load()
-    assert tuple(defaults["subjects"]) == (
+    assert tuple(defaults["centers"]) == (
         "all_sky",
         "planisphere",
         "regional_single",
@@ -84,7 +86,15 @@ def test_packaged_defaults_cover_schema_responsibilities():
         "circumpolar",
         "binocular",
     )
-    assert tuple(defaults["families"]) == tuple(defaults["subjects"])
+    assert tuple(defaults["families"]) == tuple(defaults["centers"])
+    assert tuple(defaults["masks"]) == (
+        "all_sky", "planisphere", "regional_single", "regional_group",
+        "binocular",
+    )
+    assert all(
+        table["constellations"] == []
+        for table in defaults["masks"].values()
+    )
     assert len(defaults["detail"]["adaptive"]["levels"]) == 7
     assert defaults["detail"]["polar_planisphere"] == {
         "star_magnitude_limit": 5.0,
@@ -187,7 +197,7 @@ def test_every_packaged_line_has_independent_public_fields():
 
 def test_packaged_defaults_preserve_audited_baseline_values():
     defaults = _load()
-    assert defaults["subjects"]["regional_group"]["constellations"] == [
+    assert defaults["centers"]["regional_group"]["constellations"] == [
         "Sgr",
         "Sco",
         "Oph",
@@ -237,8 +247,8 @@ def test_packaged_defaults_pass_strict_validation_without_shared_state():
     ("mutation", "diagnostic"),
     (
         (
-            lambda value: value.update(schema_version=2),
-            "schema_version: unsupported value 2",
+            lambda value: value.update(schema_version=1),
+            "schema_version: unsupported value 1",
         ),
         (
             lambda value: value["styles"]["atlas"]["horizon"].update(

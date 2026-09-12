@@ -28,8 +28,8 @@ For example:
 
 ```bash
 wenu_chart regional \
-  --constellations Cen,Cru,Mus \
-  --mask \
+  --center-on constellation:Cen,Cru,Mus \
+  --constellation-mask Cen,Cru,Mus \
   --field-width 60 \
   --field-height 45 \
   --orientation celestial-north-up \
@@ -37,8 +37,8 @@ wenu_chart regional \
   --observer-longitude -71.231 \
   --observer-time 2026-08-21T21:00:00 \
   --observer-timezone America/Santiago \
-  --constellation-lines \
-  --constellation-labels \
+  --constellation-lines Cen,Cru,Mus \
+  --constellation-labels Cen,Cru,Mus \
   --equatorial-grid \
   --equatorial-grid-labels \
   --format svg \
