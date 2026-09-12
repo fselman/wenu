@@ -1521,3 +1521,8 @@ orbital-element propagation remain deferred.
 Fernando accepted automatic acquisition and warm-cache offline reuse for
 `(79989)` and `(79990)`. Closure passed 181 focused tests in 5.12 seconds and
 all 2,248 tests in 91.13 seconds.
+
+Candidate 50A.4 selects 2P/Encke for bounded comet nucleus-state validation.
+It requires frozen non-gravitational model provenance, direct-Horizons state
+and observer-table evidence, explicit characterization before tolerances, and
+no drawable or automatically acquired comet behavior.

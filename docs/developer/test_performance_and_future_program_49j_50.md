@@ -190,14 +190,17 @@ accepted after the documented gates and PNG/semantic-SVG inspection passed.
 `archive/milestone_history/50a_minor_bodies/numbered_asteroid_generalization_audit_50a3c.md`.
 It defines generic manifest-backed selection by permanent minor-planet number
 or manifest-declared official name, using unnamed main-belt asteroid `(79989)`
-as the bounded acceptance specimen. 50A.3D and the subsequent explicit-center
-CLI work are implemented. Milestone 50A.3G now owns their documentation and
-visual acceptance; 50A.4 remains next after that closure.
+as the bounded acceptance specimen. 50A.3D, the explicit-center CLI work,
+50A.3G acceptance, and 50A.3I automatic numbered-asteroid preflight are
+implemented and accepted. 50A.4 is next.
 
 Add opt-in symbolic display, designation policy, semantics, and a dated track
 through the shared point and trajectory machinery.
 
 ### 50A.4 — Comet numerical validation
+
+**Status:** Candidate audit prepared for Fernando's review. No runtime or
+visible behavior changes before its decisions are accepted.
 
 Validate the comet state and document model limits, including non-gravitational
 behavior when relevant.

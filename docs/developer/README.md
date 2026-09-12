@@ -43,6 +43,9 @@ milestone evidence are under [`archive/`](archive/README.md).
   future satellite-provider contract.
 - [`numbered_asteroid_cli_preflight_50a3i.md`](numbered_asteroid_cli_preflight_50a3i.md)
   — accepted automatic numbered-asteroid CLI preflight and data policies.
+- [`comet_numerical_validation_audit_50a4.md`](comet_numerical_validation_audit_50a4.md)
+  — candidate 2P/Encke nucleus-state, non-gravitational provenance, and
+  numerical-validation contract.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).

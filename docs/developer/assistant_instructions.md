@@ -563,12 +563,16 @@ and use `(79989)` only as a generic acceptance specimen. Do not add
 object-specific branching, implicit network lookup, or fuzzy name search.
 50A.3D and PR 98's explicit-center CLI contract are implemented. Preserve the
 rule that center, content, constellation layers, and masks are independent.
-Milestone 50A.3G owns documentation and visual acceptance; 50A.4 remains next
-after that closure.
+Milestones 50A.3G and 50A.3I are accepted. Preserve their explicit CLI
+semantics and automatic numbered-asteroid preflight contracts.
 
-Accepted 50A.3H audits one-command moving-object data resolution and authorizes
-only the bounded 50A.3I numbered-asteroid CLI preflight implementation. Until
-50A.3I is implemented, preserve the existing explicit acquisition route. Keep
+For 50A.4, follow `comet_numerical_validation_audit_50a4.md`. Until Fernando
+accepts that audit, add no comet runtime, selector, acquisition, fixture, or
+validation implementation. Preserve 2P/Encke as a proposed specimen rather
+than a special runtime case.
+
+Accepted 50A.3H audits one-command moving-object data resolution and governs
+the implemented 50A.3I numbered-asteroid CLI preflight. Keep
 automatic network access in an installed-CLI preflight phase:
 validate and atomically publish an immutable resource before constructing the
 ordinary offline chart request. Never allow request generation, provider state
