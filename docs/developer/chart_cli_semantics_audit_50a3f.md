@@ -55,6 +55,8 @@ References:
    mask spelling is `--constellation-mask`, not `--mask-constellation`.
 9. The reset preserves scientific and rendering APIs where they already have
    single responsibilities, but deliberately provides no obsolete CLI aliases.
+10. Defaults may complete an explicitly requested operation, but may not
+    silently request another operation or another drawable layer.
 
 ## Canonical center grammar
 
@@ -124,6 +126,20 @@ Named center and either coordinate pair are mutually exclusive. Supplying
 half a coordinate pair is an error.
 
 ## Canonical constellation content and mask grammar
+
+The constellation tradition is an explicit shared semantic parameter:
+
+```text
+--constellation-system western
+```
+
+`western` is the configured default and the only initially supported value.
+It identifies the IAU constellation names, boundaries, and Wenu's accepted
+Western line-figure catalogue. Omitting this option therefore does not draw
+anything: it only supplies the system when a center, line, boundary, label, or
+mask operation explicitly names constellation content. Future constellation
+systems must declare their own identifier vocabulary, line figures, labels,
+provenance, and any boundary semantics; they must not reinterpret an IAU name.
 
 Each constellation option owns its own explicit IAU selection:
 
@@ -229,6 +245,8 @@ Contract tests must prove:
 - multiple drawn planets coexist with one explicitly named center;
 - constellation center, four independent constellation content/mask
   selections, and disjoint center/mask constellations;
+- configured default `western` constellation semantics without implicit
+  constellation drawing;
 - complete active documentation and tool migration with no removed spelling;
 - unchanged canonical projection/render/export path;
 - `allow_abbrev=False` for the installed parser;
