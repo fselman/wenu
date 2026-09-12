@@ -157,12 +157,31 @@ Artificial-satellite tracks remain outside this contract.
 
 ## 6. Appearance and physical meaning
 
-The first Encke mark is a fixed-size **symbolic nucleus marker**, not a resolved
-nucleus, coma, tail, brightness, visibility, or activity model. Fernando
-selects a small hollow circular marker with a short three-stroke fan glyph,
-plus the label `2P/Encke`. At the projected point, rotate the glyph so the fan
+The first Encke mark is a fixed-size **constructed vector symbol**, not a
+font-dependent marker and not a resolved nucleus, coma, tail, brightness,
+visibility, or activity model. Fernando specifies:
+
+- one hollow central circle;
+- several evenly distributed short radial spokes beginning at the outside of
+  the circle;
+- three longer adjacent spokes forming the symbolic tail fan;
+- two equal outer tail spokes delimiting an initial total fan angle of
+  `25 deg` (**TBD by visual acceptance**);
+- one central tail spoke on the fan bisector whose exposed radial length is
+  `1.5` times the exposed length of either outer tail spoke; and
+- the label `2P/Encke`.
+
+The implementation must construct this geometry explicitly in Wenu-owned
+projected units. It must not depend on a Unicode comet glyph, font outline, or
+backend-specific marker. Normal-spoke count, circle radius, base spoke length,
+outer-tail-spoke length, linewidth, and the final fan angle are style-owned
+parameters to be fixed by visual acceptance; they do not vary with physical
+coma or tail size.
+
+At the projected point, rotate the complete symbol so the central long spoke
 points **antisolar** in the apparent sky: locally away from the apparent
-direction of the Sun at the same observation instant.
+direction of the Sun at the same observation instant. The two outer long
+spokes remain symmetric about that direction.
 
 This is a physical direction claim and must be computed before projection from
 the observer-relative apparent comet and Sun directions. Transport a short
@@ -181,10 +200,12 @@ explicit angular tolerance after characterization. Existing 50A.4 comet
 position tolerances do not by themselves validate this new directional
 quantity.
 
-Only the fan direction is physical. Its number of strokes, opening angle, and
-page length remain a fixed symbolic class glyph and do not encode measured
-coma or tail geometry. The glyph must remain identifiable in atlas print,
-presentation, grayscale, and semantic SVG without relying on color.
+Only the fan direction is physical. The hollow circle, number of normal
+spokes, `1.5` length ratio, opening angle, and page lengths remain a fixed
+symbolic class glyph and do not encode measured coma or tail geometry. The
+symbol must remain identifiable in atlas print, presentation, grayscale, and
+semantic SVG without relying on color. Circle and spokes form one semantic
+comet-symbol entity even if the renderer requires several path primitives.
 
 Comet color, marker geometry, size, linewidth, alpha, and label style belong to
 the Solar-System style contract. Track geometry and annotation remain shared;
@@ -203,7 +224,9 @@ runtime suite:
 - argument/request tests: `--comet`, repeated mixed-class track selectors,
   duplicate policy, shared track timing, and satellite exclusion;
 - point/track tests: the existing injected provider and fixed-frame route;
-- style/semantic tests: class-distinct symbol and stable point/track paths;
+- style/semantic tests: constructed circle/spoke geometry, symmetric tail fan,
+  central `1.5` ratio, rotation, backend independence, one semantic entity,
+  and stable point/track paths;
 - documentation tests: explicit resources, offline failure, and non-goals.
 
 Do not repeat 50A.4 Cartesian, light-time, apparent-place, parallax, or
@@ -240,6 +263,8 @@ Stop and re-audit if implementation would:
 - reopen the SPK for every track sample;
 - derive the fan from chart center, velocity, ecliptic direction, or page axes,
   or render it without accepted antisolar position-angle validation;
+- substitute a font or Unicode glyph for the constructed circle-and-spoke
+  symbol, or let backend serialization define its geometry;
 - retain a singular track request or prevent mixed planet, asteroid, and comet
   tracks in one supported field;
 - admit artificial satellites into the shared multi-track slice;

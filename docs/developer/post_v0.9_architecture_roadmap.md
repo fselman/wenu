@@ -1550,6 +1550,9 @@ and simultaneous planet, asteroid, and comet tracks when they share one field.
 The proposed implementation therefore generalizes the singular track request
 to a collection with one shared timeline; artificial satellites and per-track
 timelines remain deferred.
-Because antisolar orientation is a physical direction claim, the implementation
+The proposed symbol is constructed from a hollow circle, short radial spokes,
+and three longer tail spokes; the central tail spoke is 1.5 times the exposed
+length of the two symmetric outer spokes and their initial total fan angle is
+25 degrees, pending visual acceptance. Because antisolar orientation is a physical direction claim, the implementation
 must characterize and accept an independent direct-Horizons position-angle
 oracle before rendering; fixed fan length and opening remain symbolic.

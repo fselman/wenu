@@ -3098,3 +3098,7 @@ through the fixed product frame, and only then projected into page orientation;
 it is not derived from chart center, page axes, or comet velocity. Multiple
 planet, asteroid, and comet tracks still share one fixed product frame even though
 each descriptor retains its own state source and provenance.
+The circle, radial spokes, three-stroke fan, relative lengths, and opening angle
+are constructed projected symbol geometry. Only rotation of the fan bisector
+has astronomical meaning; the remaining dimensions are style-owned and carry
+no angular-size or tail-morphology claim.
