@@ -4,7 +4,12 @@ from pathlib import Path
 import pytest
 from wenu.charts.product_options import ChartProductOptions
 from wenu.charts.detail import SkyContentSelection
-from wenu.charts.request import ChartObserverRequest, ChartRequest, ChartSubjectRequest
+from wenu.charts.request import (
+    ChartFrameRequest,
+    ChartObserverRequest,
+    ChartRequest,
+    ChartSubjectRequest,
+)
 from wenu.charts.request_tracks import (
     _coincident_start_label,
     configure_chart_request_track,
@@ -30,6 +35,11 @@ def request(family="regional", selected_track=None):
         if family in {"regional", "binocular"}
         else ChartSubjectRequest()
     )
+    frame = (
+        ChartFrameRequest(field_width_deg=20.0, field_height_deg=20.0)
+        if family == "regional"
+        else ChartFrameRequest()
+    )
     return ChartRequest(
         observer=ChartObserverRequest(location="La Ligua", time="2026-08-30T00:00:00Z"),
         family=family,
@@ -37,6 +47,7 @@ def request(family="regional", selected_track=None):
             output=Path("track.png"), style="atlas", mode="presentation"
         ),
         subject=subject,
+        frame=frame,
         solar_system_track=selected_track,
         projection="mollweide" if family == "all_sky" else "stereographic",
         coordinate_frame="galactic" if family == "all_sky" else "horizontal",
