@@ -1452,7 +1452,7 @@ owns deterministic contract coverage;
   identity checks, and compact-oracle construction;
 - `tests/fixtures/horizons_comet_validation_50a4.json` owns the frozen compact
   numerical oracle; the complete raw evidence remains local;
-- `tools/validate_50a4_comet.py` keeps 50A.4 characterization-only and
-  delegates provider and direction comparison to the existing 50A.2
-  scientific path;
+- `tools/validate_50a4_comet.py` owns accepted 50A.4 tolerance enforcement and
+  optional non-accepting characterization while delegating provider and
+  direction comparison to the existing 50A.2 scientific path;
 - no descriptor, catalog, chart, CLI, rendering, or export owner changes.

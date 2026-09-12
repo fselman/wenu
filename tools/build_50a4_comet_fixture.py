@@ -15,6 +15,14 @@ RAW_FILES = {
     "geocentric": "horizons-geocentric.json",
     "topocentric": "horizons-topocentric.json",
 }
+TOLERANCES = {
+    "position_au": 1.0e-10,
+    "velocity_au_per_day": 5.0e-12,
+    "direction_deg": 5.0e-6,
+    "distance_au": 1.0e-9,
+    "light_time_min": 1.0e-7,
+    "parallax_deg": 1.0e-5,
+}
 
 
 def _digest(path):
@@ -194,6 +202,7 @@ def build_fixture(raw_directory):
             "vector_units": "AU-D",
         },
         "observer": report["observer"],
+        "tolerances": TOLERANCES,
         "objects": [{
             "key": "2p-encke",
             "class": "comet",

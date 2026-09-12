@@ -3130,9 +3130,10 @@ def test_50a4_candidate_is_offline_and_characterization_only():
     guide = read(DEVELOPER / "coordinate_system_guide_v0.9.5.md")
 
     for phrase in (
-        "Initial characterization implementation",
+        "Accepted tolerances implemented",
         "build_50a4_comet_fixture.py",
         "validate_50a4_comet.py",
+        '"accepted": true',
         '"accepted": false',
         '"tolerances": null',
         "explicit JD TDB",
@@ -3143,6 +3144,7 @@ def test_50a4_candidate_is_offline_and_characterization_only():
     assert "compact-oracle construction" in source_tree
     assert "apparition command" in implementation
     assert "This review introduces no new coordinate or product frame" in guide
+    assert "barycentric ICRF position | `1e-10 au`" in guide
 
 
 def test_developer_root_contains_only_active_authority_and_wip_documents():

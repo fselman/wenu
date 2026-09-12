@@ -12,7 +12,7 @@ from tools.build_50a4_comet_fixture import (
     _vector_rows,
 )
 from tools.validate_50a2_asteroids import _solution
-from tools.validate_50a4_comet import REFERENCE, characterize
+from tools.validate_50a4_comet import REFERENCE, characterize, validate_comet
 
 
 def _result(row):
@@ -65,6 +65,14 @@ def test_compact_fixture_preserves_comet_model_and_three_oracle_epochs():
     assert record["orbit_solution_id"] == "K273/14"
     assert record["spk"]["segment_type"] == 21
     assert record["spk"]["segment_centre_id"] == 10
+    assert reference["tolerances"] == {
+        "position_au": 1.0e-10,
+        "velocity_au_per_day": 5.0e-12,
+        "direction_deg": 5.0e-6,
+        "distance_au": 1.0e-9,
+        "light_time_min": 1.0e-7,
+        "parallax_deg": 1.0e-5,
+    }
     assert [epoch["calendar"] for epoch in record["epochs"]] == [
         "2026-11-13T00:00:00",
         "2027-02-11T00:00:00",
@@ -102,5 +110,31 @@ def test_comet_validator_is_characterization_only(monkeypatch, tmp_path):
     assert report["accepted"] is False
     assert report["characterization"] is True
     assert report["tolerances"] is None
-    assert report["tolerance_status"] == "not yet established"
+    assert report["tolerance_status"] == "not enforced during characterization"
     assert report["objects"][0]["solution"]["object_class"] == "comet"
+
+
+def test_comet_validator_enforces_accepted_tolerances(monkeypatch, tmp_path):
+    def fake_validate(**arguments):
+        assert arguments["characterize"] is False
+        return {
+            "accepted": True,
+            "characterization": False,
+            "tolerances": {"position_au": 1.0e-10},
+            "objects": [{
+                "solution": {
+                    "object_class": "comet",
+                    "model_parameters": {"A1": "...", "A2": "..."},
+                },
+            }],
+        }
+
+    monkeypatch.setattr("tools.validate_50a4_comet.validate", fake_validate)
+    report = validate_comet(
+        resource_directory=tmp_path,
+        planetary_ephemeris_path=tmp_path / "de440s.bsp",
+        reference_path=Path("fixture.json"),
+    )
+
+    assert report["accepted"] is True
+    assert report["tolerance_status"] == "accepted and enforced"

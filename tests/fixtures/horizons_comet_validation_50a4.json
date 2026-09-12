@@ -190,5 +190,13 @@
     "latitude_deg": -32.443342,
     "longitude_deg_east": -71.230289,
     "name": "La Ligua"
+  },
+  "tolerances": {
+    "direction_deg": 5e-06,
+    "distance_au": 1e-09,
+    "light_time_min": 1e-07,
+    "parallax_deg": 1e-05,
+    "position_au": 1e-10,
+    "velocity_au_per_day": 5e-12
   }
 }

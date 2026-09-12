@@ -1,6 +1,6 @@
 # Comet numerical validation (Milestone 50A.4)
 
-**Status:** Initial characterization implementation; tolerance review pending
+**Status:** Accepted tolerances implemented; Mac full-suite acceptance pending
 
 **Base:** `5aec1fe`
 
@@ -47,9 +47,11 @@ UTC is approximately `00:01:09` TDB. The result retains the typed comet
 solution, complete `A1` and `A2` records, quality fields, SPK segment, resource
 chain, and per-product time provenance.
 
-The 50A.4 entry point currently requires `--characterize`, returns
-`"accepted": false`, and reports `"tolerances": null`. Enforced tolerances
-remain deliberately absent until Fernando reviews the characterization.
+Fernando accepted the characterized tolerance matrix on 2026-09-12. The
+ordinary entry point now enforces it and returns `"accepted": true` only when
+every comparison passes. `--characterize` remains available, returns
+`"accepted": false`, and reports `"tolerances": null` so that a diagnostic run
+cannot be mistaken for acceptance.
 
 The initial run against the inspected `50a4-raw-v2` SPK and DE440 records
 these maxima without accepting them as thresholds:
@@ -70,6 +72,24 @@ The direct observer tables contain angular coordinates to five decimal
 degrees, so their printed precision is material to the directional and
 parallax characterization. The realized topocentric parallax spans
 `0.001112315` through `0.003469527 deg` across the three epochs.
+
+The accepted enforcement matrix is:
+
+| Quantity | Tolerance |
+|---|---:|
+| position | `1e-10 au` |
+| velocity | `5e-12 au/day` |
+| astrometric/apparent RA or Dec | `5e-6 deg` |
+| distance | `1e-9 au` |
+| light time | `1e-7 min` |
+| parallax | `1e-5 deg` |
+
+The direction, distance, and light-time bounds preserve the accepted 50A.2
+values. Position and velocity receive comet-specific envelopes around the
+type-21 characterization. Parallax uses a `1e-5 deg` envelope because it is
+derived from two directions independently rounded by Horizons to five decimal
+degrees. These are reproduction tolerances for the frozen provider products,
+not an estimate of the physical orbit uncertainty.
 
 Run the acquisition from the repository root:
 
@@ -93,6 +113,15 @@ python tools/validate_50a4_comet.py --characterize \
   --resource-directory ~/.cache/wenu/minor_bodies/50a4-raw-v2 \
   --planetary-ephemeris-path ~/.cache/wenu/de440s.bsp \
   --output /tmp/wenu-50a4-characterization.json
+```
+
+Run the enforcing comparison by omitting `--characterize`:
+
+```bash
+python tools/validate_50a4_comet.py \
+  --resource-directory ~/.cache/wenu/minor_bodies/50a4-raw-v2 \
+  --planetary-ephemeris-path ~/.cache/wenu/de440s.bsp \
+  --output /tmp/wenu-50a4-validation.json
 ```
 
 The acquisition report is safe to inspect as text. The SPK and raw JSON
