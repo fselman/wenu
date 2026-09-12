@@ -187,8 +187,13 @@ def acquire(output_directory):
     }
     spk_document, spk_url = _request(HORIZONS_API, spk_parameters)
     _signature(spk_document, "NASA/JPL Horizons API")
-    if str(spk_document.get("spk_file_id")) != str(obj["spkid"]):
-        raise ValueError("Horizons and SBDB comet SPK IDs differ.")
+    horizons_spk_id = str(spk_document.get("spk_file_id"))
+    sbdb_spk_id = str(obj["spkid"])
+    if horizons_spk_id != sbdb_spk_id:
+        raise ValueError(
+            "Horizons and SBDB comet SPK IDs differ: "
+            f"Horizons={horizons_spk_id!r}, SBDB={sbdb_spk_id!r}."
+        )
     try:
         spk = base64.b64decode(
             "".join(spk_document["spk"].split()).encode("ascii"),
