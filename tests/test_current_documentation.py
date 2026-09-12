@@ -3140,6 +3140,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "moving_object_data_resolution_audit_50a3h.md",
         "numbered_asteroid_cli_preflight_50a3i.md",
         "comet_numerical_validation_audit_50a4.md",
+        "comet_numerical_validation_50a4.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
