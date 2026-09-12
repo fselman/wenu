@@ -6,6 +6,7 @@ from tools.acquire_50a4_comet_evidence import (
     _epochs,
     _horizons_parameters,
     _sbdb_identity,
+    _spk_identity,
 )
 
 
@@ -70,3 +71,40 @@ def test_horizons_requests_freeze_vector_and_observer_policies():
     assert topocentric["QUANTITIES"] == "'1,20,21,45'"
     assert topocentric["TIME_TYPE"] == "'UT'"
     assert topocentric["SITE_COORD"] == "'-71.230289,-32.443342,0.052'"
+
+
+def test_spk_identity_comes_from_kernel_segment_not_optional_json_field(
+    monkeypatch,
+):
+    class Segment:
+        target = 1000025
+        center = 10
+        data_type = 21
+        start_jd = 2461000.5
+        end_jd = 2462000.5
+
+    class Kernel:
+        def __init__(self, path):
+            assert path.read_bytes() == b"DAF/synthetic"
+            self.segments = (Segment(),)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_):
+            return None
+
+    monkeypatch.setattr(
+        "tools.acquire_50a4_comet_evidence.SpiceMinorBodyKernel",
+        Kernel,
+    )
+
+    identity = _spk_identity(b"DAF/synthetic", "1000025")
+
+    assert identity == {
+        "target": "1000025",
+        "center": "10",
+        "segment_type": 21,
+        "coverage_start_jd_tdb": 2461000.5,
+        "coverage_end_jd_tdb": 2462000.5,
+    }
