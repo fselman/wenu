@@ -15,7 +15,7 @@ from astropy.time import Time
 
 
 SBDB_QUERY_API = "https://ssd-api.jpl.nasa.gov/sbdb_query.api"
-SBDB_QUERY_SOURCE = "NASA/JPL SBDB Query API"
+SBDB_QUERY_SOURCE = "NASA/JPL SBDB (Small-Body DataBase) Query API"
 DEFAULT_MAX_PERIHELION_DISTANCE_AU = 5.0
 
 DISCOVERY_FIELDS = (
