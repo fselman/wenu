@@ -7,6 +7,7 @@ from datetime import date, datetime, time, timezone
 from hashlib import sha256
 import json
 import math
+import re
 from typing import Callable
 from urllib.parse import urlencode
 from urllib.request import urlopen
@@ -15,7 +16,7 @@ from astropy.time import Time
 
 
 SBDB_QUERY_API = "https://ssd-api.jpl.nasa.gov/sbdb_query.api"
-SBDB_QUERY_SOURCE = "NASA/JPL SBDB (Small-Body DataBase) Query API"
+SBDB_QUERY_SOURCE = "NASA/JPL SBDB Query API"
 DEFAULT_MAX_PERIHELION_DISTANCE_AU = 5.0
 
 DISCOVERY_FIELDS = (
@@ -49,6 +50,17 @@ class CometDiscoveryRecord:
     magnitude_model_m2: float | None
     magnitude_model_k1: float | None
     magnitude_model_k2: float | None
+
+    @property
+    def canonical_designation(self) -> str:
+        numbered = re.fullmatch(
+            r"\d+[PDI](?:-[A-Z0-9]+)?",
+            self.primary_designation,
+            flags=re.IGNORECASE,
+        )
+        if numbered is not None or self.prefix is None:
+            return self.primary_designation
+        return f"{self.prefix}/{self.primary_designation}"
 
     @property
     def perihelion_date_utc(self) -> str:
@@ -222,7 +234,7 @@ def parse_discovery_response(
         records.append(record)
     records.sort(key=lambda value: (
         value.perihelion_jd_tdb,
-        value.primary_designation.casefold(),
+        value.canonical_designation.casefold(),
     ))
     return (
         str(signature.get("version", "unknown")),
