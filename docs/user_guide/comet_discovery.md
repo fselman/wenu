@@ -27,6 +27,10 @@ wenu_retrieve_comets 2026-01-01 2026-12-31 \
 This command performs network access. It is separate from `wenu_chart` and
 does not install a comet or render a chart.
 
+The `1st obs.` column is SBDB `first_obs`: the earliest observation used by
+the current orbit solution. It is not necessarily the historical discovery
+date.
+
 The table ends with a `Header key` defining its orbital symbols, provider
 codes, photometric parameters, time scale, and units. In particular, `q` is
 perihelion distance, `e` eccentricity, `i` inclination, and Earth `MOID`
