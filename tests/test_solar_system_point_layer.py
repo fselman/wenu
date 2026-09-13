@@ -13,6 +13,7 @@ from wenu.sky.solar_system_points import (
     EphemerisSourceBinding,
     SolarSystemPointDescriptor,
     SolarSystemPointLayer,
+    _provider_gas_tail_position_angle,
 )
 from wenu.solar_system_directions import ApparentCorrectionPolicy
 
@@ -316,3 +317,33 @@ def test_comet_layer_realizes_simultaneous_sun_and_tail_reference():
     assert result.metadata["antisolar_position_angle_deg"] == pytest.approx(
         76.06332619563693
     )
+    assert result.metadata["comet_tail_orientation_source"] == (
+        "Wenu apparent Sun-comet fallback"
+    )
+
+
+def test_provider_psang_is_typed_and_has_precedence_contract():
+    class Source:
+        def apparent_gas_tail_position_angle_deg(
+            self, *, request, observer_state
+        ):
+            assert request == "request"
+            assert observer_state == "observer-state"
+            return 248.649
+
+    assert _provider_gas_tail_position_angle(
+        Source(), "request", "observer-state"
+    ) == pytest.approx(248.649)
+    assert _provider_gas_tail_position_angle(
+        object(), "request", "observer-state"
+    ) is None
+
+    class InvalidSource:
+        def apparent_gas_tail_position_angle_deg(self, **kwargs):
+            del kwargs
+            return 360.0
+
+    with pytest.raises(ValueError, match=r"\[0, 360\)"):
+        _provider_gas_tail_position_angle(
+            InvalidSource(), "request", "observer-state"
+        )

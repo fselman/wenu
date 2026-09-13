@@ -3,15 +3,17 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from math import isfinite
 
 import numpy as np
 
 from wenu.coordinate_service import CoordinateService
 from wenu.antisolar import (
+    ANTISOLAR_TANGENT_OFFSET_DEG,
     angular_separation_deg,
     antisolar_position_angle_deg,
-    antisolar_reference_direction,
     MINIMUM_ANTISOLAR_SEPARATION_DEG,
+    offset_direction_deg,
 )
 from wenu.geometry.spherical import SphericalPoints
 from wenu.sky.realization import LayerRealizationContext
@@ -57,6 +59,24 @@ def _primary_resource_sha256(resource):
     if digest is None:
         digest = resource.primary.sha256
     return digest
+
+
+def _provider_gas_tail_position_angle(source, request, observer_state):
+    """Return an optional provider-owned PsAng-style direction."""
+    resolve = getattr(
+        source, "apparent_gas_tail_position_angle_deg", None
+    )
+    if not callable(resolve):
+        return None
+    value = resolve(request=request, observer_state=observer_state)
+    if value is None:
+        return None
+    value = float(value)
+    if not isfinite(value) or not 0.0 <= value < 360.0:
+        raise ValueError(
+            "Provider gas-tail position angle must be finite in [0, 360)."
+        )
+    return value
 
 
 @dataclass(frozen=True)
@@ -223,39 +243,53 @@ class SolarSystemPointLayer(SkyLayer):
         )
         orientation_metadata = {}
         if is_comet:
-            sun_request = AstrometricDirectionRequest(
-                target="sun",
-                centre=self.descriptor.centre,
-                reception_instant=context.evaluation_instant,
-                reception_time_scale=context.evaluation_time_scale,
-            )
-            sun_astrometric = self.astrometric_realizer.direction(
-                observer_source,
-                sun_request,
-                observer_state,
-            )
-            sun_apparent = self.apparent_realizer.direction(
-                sun_astrometric,
-                observer=observer,
-                source=observer_source,
-                policy=self.descriptor.correction_policy,
-            ).geometry
             comet_direction = (float(lon_deg[0]), float(lat_deg[0]))
-            sun_direction = (
-                float(sun_apparent.lon_deg[0]),
-                float(sun_apparent.lat_deg[0]),
+            provider_angle = _provider_gas_tail_position_angle(
+                source, request, observer_state
             )
-            separation = angular_separation_deg(
-                comet_direction, sun_direction
-            )
-            tail_suppressed = (
-                separation < MINIMUM_ANTISOLAR_SEPARATION_DEG
-                or separation
-                > 180.0 - MINIMUM_ANTISOLAR_SEPARATION_DEG
-            )
-            if not tail_suppressed:
-                reference = antisolar_reference_direction(
+            sun_direction = None
+            separation = None
+            tail_suppressed = False
+            if provider_angle is None:
+                sun_request = AstrometricDirectionRequest(
+                    target="sun",
+                    centre=self.descriptor.centre,
+                    reception_instant=context.evaluation_instant,
+                    reception_time_scale=context.evaluation_time_scale,
+                )
+                sun_astrometric = self.astrometric_realizer.direction(
+                    observer_source,
+                    sun_request,
+                    observer_state,
+                )
+                sun_apparent = self.apparent_realizer.direction(
+                    sun_astrometric,
+                    observer=observer,
+                    source=observer_source,
+                    policy=self.descriptor.correction_policy,
+                ).geometry
+                sun_direction = (
+                    float(sun_apparent.lon_deg[0]),
+                    float(sun_apparent.lat_deg[0]),
+                )
+                separation = angular_separation_deg(
                     comet_direction, sun_direction
+                )
+                tail_suppressed = (
+                    separation < MINIMUM_ANTISOLAR_SEPARATION_DEG
+                    or separation
+                    > 180.0 - MINIMUM_ANTISOLAR_SEPARATION_DEG
+                )
+            if not tail_suppressed:
+                angle = (
+                    provider_angle
+                    if provider_angle is not None
+                    else antisolar_position_angle_deg(
+                        comet_direction, sun_direction
+                    )
+                )
+                reference = offset_direction_deg(
+                    comet_direction, angle, ANTISOLAR_TANGENT_OFFSET_DEG
                 )
                 lon_deg = np.asarray((comet_direction[0], reference[0]))
                 lat_deg = np.asarray((comet_direction[1], reference[1]))
@@ -272,11 +306,14 @@ class SolarSystemPointLayer(SkyLayer):
                     None if tail_suppressed else 1
                 ),
                 "antisolar_position_angle_deg": (
-                    None if tail_suppressed else antisolar_position_angle_deg(
-                        comet_direction, sun_direction
-                    )
+                    None if tail_suppressed else angle
                 ),
                 "sun_apparent_icrf_deg": sun_direction,
+                "comet_tail_orientation_source": (
+                    "provider PsAng"
+                    if provider_angle is not None
+                    else "Wenu apparent Sun-comet fallback"
+                ),
             }
         identified = SphericalPoints(
             lon_deg,

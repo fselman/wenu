@@ -13,6 +13,7 @@ from tools.acquire_50a5b_antisolar_evidence import (
     _sun_table_identity,
 )
 from tools.build_50a5b_antisolar_fixture import (
+    ANTISOLAR_POSITION_ANGLE_TOLERANCE_DEG,
     build_fixture,
 )
 from wenu.antisolar import (
@@ -187,7 +188,10 @@ def test_offline_builder_freezes_independent_sun_and_comet_directions(
 
     fixture = build_fixture(tmp_path, reference)
 
-    assert fixture["tolerances"] is None
+    assert fixture["tolerances"] == {
+        "antisolar_position_angle_deg": 0.01,
+    }
+    assert ANTISOLAR_POSITION_ANGLE_TOLERANCE_DEG == 0.01
     assert fixture["object"] == {
         "key": "2p-encke",
         "primary_designation": "2P",
