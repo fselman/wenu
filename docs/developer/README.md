@@ -54,7 +54,7 @@ milestone evidence are under [`archive/`](archive/README.md).
   — accepted corrective reuse contract for paths, ticks, symbols, labels, and
   observed phase-series anchors.
 - [`second_drawable_comet_audit_50a5c.md`](second_drawable_comet_audit_50a5c.md)
-  — proposed second-comet generalization test using 161P/Hartley-IRAS.
+  — accepted second-comet generalization test using 161P/Hartley-IRAS.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).

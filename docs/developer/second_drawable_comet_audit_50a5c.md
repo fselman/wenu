@@ -1,6 +1,6 @@
 # Second drawable comet audit (Milestone 50A.5C)
 
-**Status:** Proposed for Fernando's review on 2026-09-13
+**Status:** Accepted by Fernando on 2026-09-13
 
 **Runtime effect:** None
 
@@ -15,8 +15,10 @@ Minor Planet Center solution published for that return places perihelion at
 2026-11-27.52819 TT with `q = 1.2650441 au`; September and October therefore
 provide a useful moving-track interval before perihelion.
 
-This audit authorizes no runtime or evidence acquisition until Fernando
-accepts its identity, provenance, reuse, and visual-test boundaries.
+Fernando accepted this identity, provenance, reuse, and visual-test boundary
+on 2026-09-13. That acceptance authorizes only the bounded evidence,
+characterization, generic installation, and 161P visual experiment described
+here.
 
 ## 2. Scientific question
 

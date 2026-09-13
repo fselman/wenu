@@ -4411,6 +4411,7 @@ def test_50a5c_audits_a_second_comet_before_minor_body_closure():
     source_tree = read(DEVELOPER / "source_tree.md")
 
     for phrase in (
+        "Accepted by Fernando on 2026-09-13",
         "161P/Hartley-IRAS",
         "Characterization must precede tolerance selection",
         "Provider `PsAng` has precedence",
@@ -4419,5 +4420,5 @@ def test_50a5c_audits_a_second_comet_before_minor_body_closure():
         "general comet catalogue, live service",
     ):
         assert phrase.lower() in audit.lower()
-    assert "Proposed 50A.5C uses 161P/Hartley-IRAS" in roadmap
-    assert "implementation remains forbidden" in source_tree
+    assert "Accepted 50A.5C uses 161P/Hartley-IRAS" in roadmap
+    assert "bounded evidence acquisition" in source_tree
