@@ -1489,3 +1489,8 @@ owns deterministic contract coverage;
 - Fernando accepted the audit on 2026-09-13; bounded evidence acquisition and
   characterization are authorized, while tolerance selection remains pending
   measured-result review.
+- `tools/acquire_50a5c_comet_identity.py` owns the first deliberate network
+  checkpoint: it preserves signed SBDB and Horizons identity responses for
+  `161P` without guessing or selecting an apparition record;
+- `tests/test_acquire_50a5c_comet_identity.py` protects that new discovery
+  boundary without repeating numerical, projection, or rendering tests.

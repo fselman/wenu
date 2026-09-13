@@ -4418,7 +4418,9 @@ def test_50a5c_audits_a_second_comet_before_minor_body_closure():
         "one target evaluation per track sample",
         "performs no network access",
         "general comet catalogue, live service",
+        "Implemented identity checkpoint",
     ):
         assert phrase.lower() in audit.lower()
     assert "Accepted 50A.5C uses 161P/Hartley-IRAS" in roadmap
     assert "bounded evidence acquisition" in source_tree
+    assert "acquire_50a5c_comet_identity.py" in source_tree

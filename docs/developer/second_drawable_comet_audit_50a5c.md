@@ -199,3 +199,13 @@ Stop and re-audit if implementation would:
 Successful 50A.5C acceptance authorizes 50A.6 minor-body closure. It does not
 authorize a general comet catalogue, live service, orbital-element propagator,
 automatic comet acquisition, or physical comet rendering.
+
+## 11. Implemented identity checkpoint
+
+The first bounded implementation checkpoint deliberately stops before SPK or
+table acquisition. `tools/acquire_50a5c_comet_identity.py` requests the exact
+`161P` designation from SBDB and makes a non-ephemeris Horizons identity query.
+It validates both service signatures and the returned numbered-comet name,
+preserves both complete raw responses with digests and request URLs, and does
+not guess an apparition record. Fernando must inspect those provider results
+before the next acquisition step freezes a Horizons record or solution.

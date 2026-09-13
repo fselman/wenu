@@ -124,6 +124,8 @@ For current work, read and follow:
 - `first_drawable_comet_audit_50a5a.md` for accepted 2P/Encke identity,
   explicit resource, symbolic nucleus, shared point/track, and coma/tail
   separation decisions;
+- `solar_system_temporal_components_audit_50a5b1.md` before changing temporal
+  path, tick, symbol, label, or observed-phase component reuse;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
   for the completed reproducible test-entry and new-test admission
   implementation.
@@ -573,6 +575,15 @@ For 50A.4, follow `comet_numerical_validation_audit_50a4.md`. Until Fernando
 accepts that audit, add no comet runtime, selector, acquisition, fixture, or
 validation implementation. Preserve 2P/Encke as a proposed specimen rather
 than a special runtime case.
+
+For 50A.5C, follow the accepted `second_drawable_comet_audit_50a5c.md`.
+Preserve 161P/Hartley-IRAS as a bounded second installed-resource specimen,
+never a runtime special case. Inspect signed SBDB and Horizons identity
+responses before selecting its apparition record. Characterize new numerical
+and position-angle evidence before proposing tolerances. Do not add automatic
+comet acquisition, fuzzy discovery, photometric claims, physical tail
+morphology, or another direction, temporal, projection, rendering, semantic,
+or export pipeline.
 
 Accepted 50A.3H audits one-command moving-object data resolution and governs
 the implemented 50A.3I numbered-asteroid CLI preflight. Keep
