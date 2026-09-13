@@ -189,7 +189,7 @@ class SolarSystemStyle:
     asteroid_draw_label: bool = True
     asteroid_label_fontsize: float = 7.0
     comet_color: str = "#8c5a00"
-    comet_symbol_size: float = 30.8
+    comet_symbol_size: float = 492.8
     comet_linewidth: float = 0.8
     comet_alpha: float = 1.0
     comet_draw_label: bool = True
