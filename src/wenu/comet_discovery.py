@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from datetime import date, datetime, time, timezone
 from hashlib import sha256
 import json
+import math
 from typing import Callable
 from urllib.parse import urlencode
 from urllib.request import urlopen
@@ -95,7 +96,7 @@ def discovery_query_parameters(
 ) -> dict[str, str]:
     """Build the complete deterministic SBDB query parameter mapping."""
     maximum = float(max_perihelion_distance_au)
-    if maximum <= 0.0:
+    if not math.isfinite(maximum) or maximum <= 0.0:
         raise ValueError("maximum perihelion distance must be positive.")
     start_jd = Time(start_utc, scale="utc").tdb.jd
     stop_jd = Time(stop_utc, scale="utc").tdb.jd
@@ -126,7 +127,24 @@ def _fetch(
 def _optional_float(value: object) -> float | None:
     if value is None or value == "":
         return None
-    return float(value)
+    result = float(value)
+    if not math.isfinite(result):
+        raise ValueError("SBDB numeric value must be finite.")
+    return result
+
+
+def _required_text(value: object) -> str:
+    result = str(value).strip() if value is not None else ""
+    if not result:
+        raise ValueError("SBDB required text value is missing.")
+    return result
+
+
+def _required_float(value: object) -> float:
+    result = _optional_float(value)
+    if result is None:
+        raise ValueError("SBDB required numeric value is missing.")
+    return result
 
 
 def parse_discovery_response(
@@ -170,17 +188,17 @@ def parse_discovery_response(
             )
         try:
             record = CometDiscoveryRecord(
-                spk_id=str(row["spkid"]),
-                full_name=str(row["full_name"]).strip(),
+                spk_id=_required_text(row["spkid"]),
+                full_name=_required_text(row["full_name"]),
                 kind=str(row["kind"]),
-                primary_designation=str(row["pdes"]).strip(),
+                primary_designation=_required_text(row["pdes"]),
                 name=str(row["name"]).strip() if row["name"] else None,
                 prefix=str(row["prefix"]).strip() if row["prefix"] else None,
                 orbit_class=(
                     str(row["class"]).strip() if row["class"] else None
                 ),
-                perihelion_distance_au=float(row["q"]),
-                perihelion_jd_tdb=float(row["tp"]),
+                perihelion_distance_au=_required_float(row["q"]),
+                perihelion_jd_tdb=_required_float(row["tp"]),
                 perihelion_calendar_tdb=(
                     str(row["tp_cal"]).strip() if row["tp_cal"] else None
                 ),
@@ -223,13 +241,22 @@ def discover_comets(
 ) -> CometDiscoveryResult:
     """Retrieve comets meeting the declared perihelion-time/distance filter."""
     start_utc, stop_utc = civil_utc_interval(start, stop)
+    maximum = float(max_perihelion_distance_au)
     parameters = discovery_query_parameters(
-        start_utc, stop_utc, max_perihelion_distance_au
+        start_utc, stop_utc, maximum
     )
     raw = fetch(SBDB_QUERY_API, parameters)
     version, count, records = parse_discovery_response(raw)
     if int(count) != len(records):
         raise ValueError("SBDB discovery count does not match returned rows.")
+    start_jd = float(Time(start_utc, scale="utc").tdb.jd)
+    stop_jd = float(Time(stop_utc, scale="utc").tdb.jd)
+    if any(
+        not start_jd <= record.perihelion_jd_tdb <= stop_jd
+        or record.perihelion_distance_au > maximum
+        for record in records
+    ):
+        raise ValueError("SBDB discovery row falls outside the requested filter.")
     clock = now or (lambda: datetime.now(timezone.utc))
     retrieved = clock()
     if retrieved.tzinfo is None:
@@ -237,7 +264,7 @@ def discover_comets(
     return CometDiscoveryResult(
         start_utc=start_utc,
         stop_utc=stop_utc,
-        max_perihelion_distance_au=float(max_perihelion_distance_au),
+        max_perihelion_distance_au=maximum,
         retrieved_at_utc=retrieved.astimezone(timezone.utc),
         provider=SBDB_QUERY_SOURCE,
         provider_version=version,
