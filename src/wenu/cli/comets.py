@@ -85,6 +85,18 @@ def table_text(result: CometDiscoveryResult) -> str:
             "  designation: canonical comet designation; "
             "name: comet name, if any."
         ),
+        (
+            "  P: periodic; C: non-periodic; D: disappeared; "
+            "X: orbit not meaningfully computable."
+        ),
+        (
+            "  A: object found to be a minor planet; "
+            "I: interstellar object."
+        ),
+        (
+            "  A leading number is the permanent number of a "
+            "periodic comet (for example, 2P)."
+        ),
         "  class: SBDB orbit-class code; orbit: provider orbit-solution ID.",
         (
             "  perihelion UTC: UTC calendar date derived from the "
