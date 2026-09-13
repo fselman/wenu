@@ -1,0 +1,23 @@
+{
+  "signature": {
+    "source": "NASA/JPL Small-Body Database (SBDB) API",
+    "version": "1.3"
+  },
+  "count": 3,
+  "list": [
+    {
+      "name": "9P/Tempel 1",
+      "pdes": "9P"
+    },
+    {
+      "name": "10P/Tempel 2",
+      "pdes": "10P"
+    },
+    {
+      "name": "C/1859 G1 (Tempel)",
+      "pdes": "1859 G1"
+    }
+  ],
+  "code": 300,
+  "message": "specified query matched more than one object"
+}
