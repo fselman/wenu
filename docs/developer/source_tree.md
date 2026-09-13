@@ -1479,3 +1479,11 @@ owns deterministic contract coverage;
   scientific realization;
 - Fernando accepted the Encke and Venus presentations, and the complete Mac
   gate passed all 2,331 tests in 84.56 seconds on 2026-09-13.
+
+## 50A.5C second-drawable-comet audit ownership
+
+- `docs/developer/second_drawable_comet_audit_50a5c.md` alone owns the proposed
+  161P/Hartley-IRAS second-resource evidence, generalization, visual-test, and
+  acceptance boundary;
+- the audit changes no runtime owner, fixture, command, or output;
+- implementation remains forbidden until Fernando accepts the audit.

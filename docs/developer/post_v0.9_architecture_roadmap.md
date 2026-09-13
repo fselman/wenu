@@ -1570,3 +1570,12 @@ orientation, and magnification rather than reconstructing the geometry.
 The antisolar direction claim is enforced against the accepted independent
 direct-Horizons position-angle oracle; fixed fan length and opening remain
 symbolic.
+
+Proposed 50A.5C uses 161P/Hartley-IRAS during September and October 2026 as a
+second independently validated installed comet before Program 50A closure.
+It must prove that identity, provider state, temporal components, per-epoch
+orientation, the canonical symbol, projection, rendering, semantics, and
+export are resource- and descriptor-driven rather than Encke-specific. It
+requires fresh SBDB/Horizons evidence and characterization before tolerances,
+but authorizes no automatic comet acquisition, fuzzy discovery, photometric
+claim, physical tail model, or parallel runtime pipeline.
