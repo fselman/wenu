@@ -5,7 +5,11 @@ from pathlib import Path
 
 import pytest
 
-from tools.acquire_50a5b_antisolar_evidence import EPOCHS, _sun_parameters
+from tools.acquire_50a5b_antisolar_evidence import (
+    EPOCHS,
+    _sun_parameters,
+    _sun_table_identity,
+)
 from tools.build_50a5b_antisolar_fixture import build_fixture
 from wenu.antisolar import (
     antisolar_position_angle_deg,
@@ -16,7 +20,7 @@ from wenu.antisolar import (
 def test_sun_request_matches_accepted_comet_epochs_and_observer():
     parameters = _sun_parameters(EPOCHS)
 
-    assert parameters["COMMAND"] == "'10;'"
+    assert parameters["COMMAND"] == "'10'"
     assert parameters["CENTER"] == "'coord@399'"
     assert parameters["SITE_COORD"] == "'-71.230289,-32.443342,0.052'"
     assert parameters["REF_SYSTEM"] == "'ICRF'"
@@ -24,6 +28,16 @@ def test_sun_request_matches_accepted_comet_epochs_and_observer():
     assert parameters["QUANTITIES"] == "'1,45'"
     assert parameters["TIME_TYPE"] == "'UT'"
     assert len(parameters["TLIST"].split(",")) == 3
+
+
+def test_sun_identity_rejects_minor_planet_10_hygiea():
+    with pytest.raises(ValueError, match=r"Sun \(NAIF 10\)"):
+        _sun_table_identity({
+            "result": (
+                "Target body name: 10 Hygiea\n"
+                "$$SOE\n2027-Feb-11 00:00:00.000,C,m,1,2,3,4,\n$$EOE"
+            )
+        })
 
 
 @pytest.mark.parametrize(
@@ -100,7 +114,9 @@ def test_offline_builder_freezes_independent_sun_and_comet_directions(
             "source": "NASA/JPL Horizons API",
             "version": "1.2",
         },
-        "result": "header\n$$SOE\n" + rows + "$$EOE\n",
+        "result": (
+            "Target body name: Sun (10)\n$$SOE\n" + rows + "$$EOE\n"
+        ),
     }
     sun_path = tmp_path / "horizons-sun-topocentric.json"
     sun_path.write_text(json.dumps(sun), encoding="utf-8")

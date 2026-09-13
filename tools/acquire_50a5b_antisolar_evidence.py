@@ -53,7 +53,15 @@ def _sun_parameters(epochs):
         "observer", epochs, "10", topocentric=True
     )
     parameters["QUANTITIES"] = "'1,45'"
+    parameters["COMMAND"] = "'10'"
     return parameters
+
+
+def _sun_table_identity(document):
+    result = _table_result(document, "topocentric Sun")
+    if "Target body name: Sun (10)" not in result:
+        raise ValueError("Horizons did not return the Sun (NAIF 10).")
+    return result
 
 
 def acquire(output_directory, *, comet_reference):
@@ -71,7 +79,7 @@ def acquire(output_directory, *, comet_reference):
     parameters = _sun_parameters(EPOCHS)
     document, url = _request(HORIZONS_API, parameters)
     signature = _signature(document, "NASA/JPL Horizons API")
-    _table_result(document, "topocentric Sun")
+    _sun_table_identity(document)
     evidence = {
         **_write_json(output_directory / "horizons-sun-topocentric.json", document),
         "request_url": url,
@@ -79,7 +87,7 @@ def acquire(output_directory, *, comet_reference):
     report = {
         "purpose": "Wenu Milestone 50A.5B raw antisolar-direction evidence",
         "retrieved_at_utc": datetime.now(UTC).isoformat(),
-        "target": {"name": "Sun", "horizons_command": "10;"},
+        "target": {"name": "Sun", "horizons_command": "10"},
         "observer": OBSERVER,
         "epochs_utc": EPOCHS,
         "policy": {

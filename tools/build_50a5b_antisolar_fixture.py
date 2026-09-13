@@ -12,12 +12,18 @@ from wenu.antisolar import (
 )
 
 try:
-    from tools.acquire_50a5b_antisolar_evidence import COMET_REFERENCE_SHA256
+    from tools.acquire_50a5b_antisolar_evidence import (
+        COMET_REFERENCE_SHA256,
+        _sun_table_identity,
+    )
     from tools.build_50a4_comet_fixture import _calendar, _data_rows, _number
 except ModuleNotFoundError as error:
     if error.name != "tools":
         raise
-    from acquire_50a5b_antisolar_evidence import COMET_REFERENCE_SHA256
+    from acquire_50a5b_antisolar_evidence import (
+        COMET_REFERENCE_SHA256,
+        _sun_table_identity,
+    )
     from build_50a4_comet_fixture import _calendar, _data_rows, _number
 
 
@@ -59,6 +65,7 @@ def build_fixture(raw_directory, comet_reference):
     signature = sun_document.get("signature", {})
     if signature.get("source") != "NASA/JPL Horizons API":
         raise ValueError("Sun response has no accepted Horizons signature.")
+    _sun_table_identity(sun_document)
     evidence = {item["filename"]: item for item in report["evidence"]}
     if evidence[sun_path.name]["sha256"] != _digest(sun_path):
         raise ValueError("Sun evidence differs from the acquisition report.")
