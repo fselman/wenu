@@ -4486,7 +4486,7 @@ def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
     project = read(ROOT / "pyproject.toml")
 
     for phrase in (
-        "Candidate implementation for Fernando's review",
+        "Accepted by Fernando on 2026-09-13",
         "complete inclusive UTC civil days",
         "not a visibility forecast",
         "sampling policy to a separately reviewed 50A.5D.1B",
