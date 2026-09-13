@@ -164,7 +164,7 @@ def test_cli_uses_resolved_minor_body_key_for_point_selection(monkeypatch):
             assert directory == Path("/tmp/minor-bodies")
 
         def resolve(self, selection):
-            assert selection == "2P"
+            assert selection == "2p"
             return encke
 
     calls = []

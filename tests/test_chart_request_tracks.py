@@ -120,6 +120,7 @@ def test_comet_track_places_one_symbol_at_every_major_epoch():
     encke_track = replace(track(), descriptor=encke)
     chart_request = replace(
         request("regional"),
+        minor_body_descriptors=(encke,),
         solar_system_tracks=(encke_track,),
         minor_body_resource_directory=Path("resources"),
     )
