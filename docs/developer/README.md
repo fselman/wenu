@@ -55,7 +55,7 @@ milestone evidence are under [`archive/`](archive/README.md).
   observed phase-series anchors.
 - [`second_drawable_comet_audit_50a5c.md`](second_drawable_comet_audit_50a5c.md)
   — accepted second-comet generalization test using 161P/Hartley-IRAS.
-- The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
+- [`comet_discovery_and_reporting_audit_50a5d.md`](comet_discovery_and_reporting_audit_50a5d.md)\n  — proposed comet discovery, generic acquisition, and natural moving-object\n  report contract; no runtime change.\n- The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).
 The accepted 49J.0 through 49J.6 records, including the final closure, are
