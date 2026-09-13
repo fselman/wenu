@@ -27,6 +27,11 @@ wenu_retrieve_comets 2026-01-01 2026-12-31 \
 This command performs network access. It is separate from `wenu_chart` and
 does not install a comet or render a chart.
 
+The table ends with a `Header key` defining its orbital symbols, provider
+codes, photometric parameters, time scale, and units. In particular, `q` is
+perihelion distance, `e` eccentricity, `i` inclination, and Earth `MOID`
+the minimum orbit intersection distance from Earth.
+
 The result means only that SBDB reports a perihelion instant inside the chosen
 interval and a perihelion distance inside the chosen bound. It is **not a
 visibility forecast**: it does not evaluate altitude, solar elongation, sky
