@@ -1,6 +1,6 @@
 {
   "signature": {
-    "source": "NASA/JPL SBDB Query API",
+    "source": "NASA/JPL SBDB (Small-Body DataBase) Query API",
     "version": "1.0"
   },
   "fields": [
