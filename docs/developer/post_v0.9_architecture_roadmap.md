@@ -1593,3 +1593,20 @@ complete and symbols-only charts, verified date-owned moving-object centering,
 and passed the complete 2,346-test suite in 83.89 seconds. Milestone 50A.5C is
 closed. Automatic comet discovery/acquisition and generic moving-object
 sidecar reports require a new audit before implementation.
+
+
+## Milestone 50A.5D — Comet discovery, acquisition, and moving-object reports
+
+**Status:** Audit accepted by Fernando on 2026-09-13; 50A.5D.1 authorized.
+
+The proposed audit separates an explicit `wenu_retrieve_comets` SBDB query,
+exact policy-governed comet preflight, and renderer-neutral natural moving-
+object sidecars. Discovery means a declared perihelion-time and perihelion-
+distance filter, not visibility. Automatic resources remain provider-trusted;
+the accepted Encke and 161P fixtures remain the independent numerical oracles.
+Reports must consume the already realized temporal result and may not repeat an
+ephemeris calculation. Artificial satellites remain outside this milestone.
+The accepted report contract additionally requires instantaneous topocentric
+apparent `dRA/dt`, `cos(dec) dRA/dt`, `dDec/dt`, and total sky-plane speed in
+mas/s, with explicit telescope-driver convention warnings. The audit changes
+no runtime behavior and authorizes only 50A.5D.1 discovery.

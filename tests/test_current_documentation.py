@@ -3172,6 +3172,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "first_drawable_comet_audit_50a5a.md",
         "solar_system_temporal_components_audit_50a5b1.md",
         "second_drawable_comet_audit_50a5c.md",
+        "comet_discovery_and_reporting_audit_50a5d.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -4439,3 +4440,30 @@ def test_50a5c_audits_a_second_comet_before_minor_body_closure():
     assert "horizons_comet_validation_50a5c.json" in source_tree
     assert "generic offline comet installer" in source_tree
     assert "Milestone 50A.5C is\nclosed" in roadmap
+
+
+def test_50a5d_audits_comet_discovery_acquisition_and_reports():
+    audit = " ".join(read(
+        DEVELOPER / "comet_discovery_and_reporting_audit_50a5d.md"
+    ).split())
+
+    for phrase in (
+        "Accepted by Fernando on 2026-09-13",
+        "This audit changes no runtime code",
+        "wenu_retrieve_comets START STOP",
+        "perihelion instant `tp` lies within the closed input interval",
+        "It is not a visibility forecast",
+        "provider's comet photometric parameters",
+        "provider-trusted operational path",
+        "P`, `D`, `I`, `C`, `X`, `A`",
+        "10P/Tempel 2",
+        "one report pair",
+        "SolarSystemTrackResult",
+        "must not repeat an ephemeris calculation",
+        "mu_RA* = cos(dec) dRA/dt",
+        "total sky-plane speed",
+        "some request `dRA/dt`, others request `mu_RA*`",
+        "artificial satellites remain outside",
+        "Fernando accepted it on 2026-09-13 with the observed-angular-rate addition, authorizing only 50A.5D.1",
+    ):
+        assert phrase.lower() in audit.lower()

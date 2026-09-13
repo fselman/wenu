@@ -1519,3 +1519,18 @@ owns deterministic contract coverage;
   jointly own generic named moving-center resolution. `--center-on-date`
   selects the apparent center and horizontal-frame instant; the existing
   temporal track owners retain every independent track-sample instant.
+
+
+## 50A.5D comet-discovery and moving-object-report audit ownership
+
+- `docs/developer/comet_discovery_and_reporting_audit_50a5d.md` alone owns the
+  accepted discovery, generic comet preflight, report-sidecar, staged
+  implementation, failure, and acceptance contract;
+- the audit identifies SBDB query, existing minor-body preflight/cache, shared
+  `SolarSystemTrackResult`, completed disk-sequence results, and request export
+  as the future seams;
+- the future scientific realization, not the serializer, owns instantaneous
+  topocentric apparent rates in both right-ascension conventions, declination,
+  and total sky-plane motion;
+- no runtime, command, network, cache, coordinate, projection, renderer,
+  semantic, report, or export owner changes in this audit.
