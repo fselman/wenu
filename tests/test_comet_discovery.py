@@ -74,6 +74,24 @@ def test_provider_signature_schema_and_kind_drift_fail_closed():
             )
 
 
+def test_nonfinite_and_out_of_filter_values_fail_closed():
+    document = json.loads(fixture_bytes())
+    document["data"][0][7] = "nan"
+    with pytest.raises(ValueError, match="invalid values"):
+        comet_discovery.parse_discovery_response(
+            json.dumps(document).encode("utf-8")
+        )
+
+    document = json.loads(fixture_bytes())
+    document["data"][0][7] = "6"
+    with pytest.raises(ValueError, match="outside the requested filter"):
+        comet_discovery.discover_comets(
+            "2026-09-01",
+            "2026-09-30",
+            fetch=lambda *values: json.dumps(document).encode("utf-8"),
+        )
+
+
 def test_discovery_retains_request_and_raw_response_provenance():
     raw = fixture_bytes()
     calls = []
