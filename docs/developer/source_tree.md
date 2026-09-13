@@ -1489,3 +1489,33 @@ owns deterministic contract coverage;
 - Fernando accepted the audit on 2026-09-13; bounded evidence acquisition and
   characterization are authorized, while tolerance selection remains pending
   measured-result review.
+- `tools/acquire_50a5c_comet_identity.py` owns the first deliberate network
+  checkpoint: it preserves signed SBDB and Horizons identity responses for
+  `161P` without guessing or selecting an apparition record;
+- `tests/test_acquire_50a5c_comet_identity.py` protects that new discovery
+  boundary without repeating numerical, projection, or rendering tests.
+- `tools/acquire_50a5c_comet_evidence.py` alone owns the subsequent full
+  network acquisition bound to inspected record `90001107`, NAIF target
+  `1000042`, solution `JPL#71`, and the three accepted 2026 characterization
+  epochs; it publishes no partial evidence directory.
+- `tools/build_50a4_comet_fixture.py` now exposes its existing parser through a
+  parameterized comet specification while preserving the Encke wrapper;
+- `tools/build_50a5c_comet_fixture.py` owns offline 161P identity binding and
+  combines that shared numerical parsing with the accepted Sun/PsAng parser;
+- `tools/validate_50a5c_comet.py` composes the existing minor-body numerical
+  and antisolar validators; Fernando accepted the characterized shared comet
+  envelopes, including `1e-5 deg` for observer-direction components and
+  `0.01 deg` for PsAng, on 2026-09-13.
+- `tests/fixtures/horizons_comet_validation_50a5c.json` is the frozen compact
+  161P numerical, identity, SPK, observer, and provider-angle oracle;
+- `tools/install_comet_resource.py` is the generic offline comet installer: it
+  verifies fixture-declared evidence and the actual SPK segment before atomic
+  publication, with no object-specific runtime branch;
+- `MinorBodyResourceCollection` derives installed comet identity and exact
+  aliases from that verified manifest, while `SkyfieldMinorBodyStateSource`
+  exposes only exact installed provider `PsAng` epochs to the existing comet
+  orientation adapter.
+- `charts/center_arguments.py`, `charts/object_center.py`, and `cli/chart.py`
+  jointly own generic named moving-center resolution. `--center-on-date`
+  selects the apparent center and horizontal-frame instant; the existing
+  temporal track owners retain every independent track-sample instant.

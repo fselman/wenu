@@ -3063,13 +3063,16 @@ not chart geometry or an orbit-accuracy claim:
 |---|---:|
 | barycentric ICRF position | `1e-10 au` |
 | barycentric ICRF velocity | `5e-12 au/day` |
-| astrometric or apparent RA/Dec | `5e-6 deg` |
+| astrometric or apparent RA/Dec | `1e-5 deg` |
 | observer distance | `1e-9 au` |
 | one-way light time | `1e-7 min` |
 | geocentric-to-topocentric parallax | `1e-5 deg` |
 
 The angular coordinates in the direct Horizons observer tables are printed to
-five decimal degrees. The direction envelope follows that quantization; the
+five decimal degrees. After the independent 161P characterization approached
+the theoretical half-step, Fernando accepted one full printed decimal step,
+`1e-5 deg` or `0.036 arcsec`, as the shared robust comet direction envelope.
+The
 parallax envelope allows for its derivation from two independently rounded
 directions. The Cartesian envelopes cover the measured type-21 SPK versus
 direct-vector residuals. `--characterize` deliberately disables enforcement
@@ -3119,3 +3122,21 @@ magnification neither reevaluate a target nor alter sample times, physical
 appearance, provenance, or the fixed chart product frame. Fernando visually
 accepted the Encke and Venus presentations, and final Mac verification passed
 all 2,331 tests in 84.56 seconds on 2026-09-13.
+
+Accepted 50A.5C adds no coordinate or product frame. Provider `PsAng` remains
+a topocentric apparent position angle measured east of celestial north. An
+exact installed provider epoch has precedence; if none exists, Wenu derives
+the same antisolar tangent direction from the comet and Sun apparent ICRF
+directions. The provider and fallback routes therefore share the product-frame
+transform, projection, and reusable symbol-orientation adapter rather than
+introducing a new frame or renderer path.
+
+For a moving named center, `--center-on-date` supplies the observation instant
+used both to evaluate the apparent center and to orient the observer-horizontal
+frame. It therefore controls the horizon and `zenith-up` geometry as well as
+the center point. This does not freeze a track at that instant: every track
+sample is still evaluated at its own sample date against the moving Earth and
+then transported through the chart's fixed product frame. Without
+`--center-on-date`, `--observer-time` remains the chart observation instant.
+Fernando accepted this second-comet and moving-center coordinate behavior after
+visual review; final Mac regression passed all 2,346 tests in 83.89 seconds.

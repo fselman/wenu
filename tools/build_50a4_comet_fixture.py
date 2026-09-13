@@ -23,6 +23,20 @@ TOLERANCES = {
     "light_time_min": 1.0e-7,
     "parallax_deg": 1.0e-5,
 }
+ENCKE_SPEC = {
+    "raw_files": RAW_FILES,
+    "designation": "2P",
+    "kind": "cn",
+    "provider_spk_id": "1000025",
+    "horizons_record": "90000091",
+    "orbit_solution_id": "K273/14",
+    "required_model_parameters": frozenset({"A1", "A2"}),
+    "spk_filename": "2p-encke.bsp",
+    "key": "2p-encke",
+    "name": "Encke",
+    "iau_number": 2,
+    "aliases": ("2P/Encke", "Encke"),
+}
 
 
 def _digest(path):
@@ -104,13 +118,15 @@ def _require_signature(document, source):
     return signature
 
 
-def build_fixture(raw_directory):
+def build_fixture(raw_directory, *, spec=None, tolerances=TOLERANCES):
     """Parse one inspected acquisition directory without network access."""
+    spec = ENCKE_SPEC if spec is None else spec
+    raw_files = spec["raw_files"]
     raw_directory = Path(raw_directory).expanduser().resolve()
     report = _document(raw_directory / "acquisition-report.json")
     documents = {
         key: _document(raw_directory / filename)
-        for key, filename in RAW_FILES.items()
+        for key, filename in raw_files.items()
     }
     sbdb = documents["sbdb"]
     sbdb_signature = _require_signature(
@@ -129,13 +145,13 @@ def build_fixture(raw_directory):
     orbit = sbdb.get("orbit", {})
     acquired_object = report.get("object", {})
     if (
-        obj.get("des") != "2P"
-        or obj.get("kind") != "cn"
-        or str(obj.get("spkid")) != "1000025"
-        or acquired_object.get("horizons_record") != "90000091"
-        or orbit.get("orbit_id") != "K273/14"
+        obj.get("des") != spec["designation"]
+        or obj.get("kind") != spec["kind"]
+        or str(obj.get("spkid")) != spec["provider_spk_id"]
+        or acquired_object.get("horizons_record") != spec["horizons_record"]
+        or str(orbit.get("orbit_id")) != spec["orbit_solution_id"]
     ):
-        raise ValueError("raw evidence is not the accepted 2P/Encke solution.")
+        raise ValueError("raw evidence is not the accepted comet solution.")
 
     model_parameters = orbit.get("model_pars")
     names = {
@@ -143,23 +159,23 @@ def build_fixture(raw_directory):
         for value in model_parameters or ()
         if isinstance(value, dict)
     }
-    if not {"A1", "A2"}.issubset(names):
-        raise ValueError("2P/Encke evidence must preserve A1 and A2.")
+    if not set(spec["required_model_parameters"]).issubset(names):
+        raise ValueError("comet evidence discarded required model parameters.")
 
     evidence = {value["filename"]: value for value in report["evidence"]}
-    for filename in RAW_FILES.values():
+    for filename in raw_files.values():
         if evidence[filename]["sha256"] != _digest(raw_directory / filename):
             raise ValueError(f"{filename} differs from the acquisition report.")
-    spk = evidence.get("2p-encke.bsp", {})
+    spk = evidence.get(spec["spk_filename"], {})
     if (
-        spk.get("spk_file_id") != "1000025"
+        spk.get("spk_file_id") != spec["provider_spk_id"]
         or spk.get("spk", {}).get("center") != "10"
         or spk.get("spk", {}).get("segment_type") != 21
     ):
-        raise ValueError("2P/Encke SPK identity differs from the accepted one.")
+        raise ValueError("comet SPK identity differs from the accepted one.")
     spk_path = raw_directory / spk["filename"]
     if not spk_path.is_file() or _digest(spk_path) != spk["sha256"]:
-        raise ValueError("2P/Encke SPK differs from the acquisition report.")
+        raise ValueError("comet SPK differs from the acquisition report.")
 
     vectors = _vector_rows(documents["vectors"])
     geocentric = _observer_rows(documents["geocentric"], "geocentric")
@@ -202,14 +218,14 @@ def build_fixture(raw_directory):
             "vector_units": "AU-D",
         },
         "observer": report["observer"],
-        "tolerances": TOLERANCES,
+        "tolerances": tolerances,
         "objects": [{
-            "key": "2p-encke",
+            "key": spec["key"],
             "class": "comet",
             "primary_designation": obj["des"],
-            "name": "Encke",
-            "iau_number": 2,
-            "horizons_command": "90000091;",
+            "name": spec["name"],
+            "iau_number": spec["iau_number"],
+            "horizons_command": spec["horizons_record"] + ";",
             "provider_spk_id": str(obj["spkid"]),
             "orbit_solution_id": orbit["orbit_id"],
             "solution_date": orbit["soln_date"],
@@ -229,7 +245,7 @@ def build_fixture(raw_directory):
             },
             "source_evidence_sha256": {
                 filename: evidence[filename]["sha256"]
-                for filename in RAW_FILES.values()
+                for filename in raw_files.values()
             },
             "epochs": epochs,
         }],

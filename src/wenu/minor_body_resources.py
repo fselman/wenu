@@ -131,25 +131,27 @@ class MinorBodyResourceCollection:
                         identity.get("primary_designation")
                     )
                     if (
-                        parsed.canonical != "2P"
-                        or parsed.designation_class != "P"
-                        or parsed.permanent_number != 2
+                        identity.get("designation_class")
+                        != parsed.designation_class
                     ):
                         raise ValueError(
-                            "50A.5B authorizes only installed comet 2P."
+                            "comet manifest designation classes differ."
                         )
-                    if identity.get("designation_class") != "P":
-                        raise ValueError(
-                            "2P manifest must preserve designation class P."
-                        )
-                    if name != "Encke":
-                        raise ValueError("2P installed name must be Encke.")
                     number = parsed.permanent_number
-                    key = "2p"
-                    designation = "2P/Encke"
-                    entity_key = "comet_2p"
+                    key = parsed.canonical.casefold()
+                    designation = (
+                        parsed.canonical
+                        if name is None
+                        else f"{parsed.canonical}/{name}"
+                    )
+                    entity_key = "comet_" + "".join(
+                        character
+                        if character.isalnum()
+                        else "_"
+                        for character in key
+                    ).strip("_")
                     display_name = designation
-                    classifications = ("comet", "periodic_comet")
+                    classifications = identity.get("classifications", ())
                 else:
                     raise ValueError(
                         "minor-body record class must be asteroid or comet."
@@ -176,6 +178,13 @@ class MinorBodyResourceCollection:
                     )
                 if solution.provider_spk_id != str(identity["provider_spk_id"]):
                     raise ValueError("minor-body identity and solution targets differ.")
+                if (
+                    object_class == "comet"
+                    and solution.primary_designation != parsed.canonical
+                ):
+                    raise ValueError(
+                        "comet identity and solution designations differ."
+                    )
             key = descriptor.selection_key
             if key in descriptors:
                 raise ValueError(f"duplicate minor-body selection key: {key}.")
@@ -188,8 +197,6 @@ class MinorBodyResourceCollection:
             names.extend(solution.aliases)
             if key == "ceres":
                 names.append("1")
-            if key == "2p":
-                names.extend(("2P/Encke", "Encke"))
             for candidate in names:
                 normalized = _normalized_selection(candidate)
                 prior = aliases.get(normalized)
@@ -395,6 +402,15 @@ class MinorBodyResourceSession:
                 timescale=self.observer.timescale,
                 solution=solution,
                 model=f"Horizons {solution.orbit_solution_id}",
+                provider_gas_tail_position_angles=tuple(
+                    (
+                        item["calendar_utc"],
+                        item["position_angle_deg"],
+                    )
+                    for item in record.get(
+                        "provider_gas_tail_position_angles", ()
+                    )
+                ),
             )
         except BaseException:
             kernel.close()

@@ -115,6 +115,7 @@ def parser():
     regional.add_argument("--field-width", type=float)
     regional.add_argument("--field-height", type=float)
     regional.add_argument("--center-on", metavar="IDENTIFIER")
+    regional.add_argument("--center-on-date", metavar="ISO_TIME")
     regional.add_argument("--center-icrs-ra", type=parse_icrs_ra)
     regional.add_argument("--center-icrs-dec", type=parse_degree_angle)
     regional.add_argument("--center-name")
@@ -145,6 +146,7 @@ def parser():
     binocular = commands.add_parser("binocular", allow_abbrev=False)
     _add_common_arguments(binocular, family="binocular")
     binocular.add_argument("--center-on", metavar="IDENTIFIER")
+    binocular.add_argument("--center-on-date", metavar="ISO_TIME")
     binocular.add_argument("--center-icrs-ra", type=parse_icrs_ra)
     binocular.add_argument("--center-icrs-dec", type=parse_degree_angle)
     binocular.add_argument("--center-name")
@@ -234,29 +236,41 @@ def _resolved_named_center_arguments(
     )
     session = None
     try:
+        center_date = getattr(arguments, "center_on_date", None)
+        collection = None
+        if directory is not None:
+            from wenu.minor_body_resources import MinorBodyResourceCollection
+
+            collection = MinorBodyResourceCollection(directory)
+        center = resolve_named_center(
+            specification,
+            minor_body_collection=collection,
+        )
+        if center.is_constellation:
+            if center_date is not None:
+                raise ValueError(
+                    "--center-on-date requires a moving Solar-System center."
+                )
+            if center.kind == "group":
+                return {"group": center.identifier}
+            return {"constellations": center.value.constellations}
+        if isinstance(center.value, ResolvedTarget):
+            if center_date is not None:
+                raise ValueError(
+                    "--center-on-date requires a moving Solar-System center."
+                )
+            return {"target": center.value.key}
         if directory is not None:
             from wenu.minor_body_resources import MinorBodyResourceSession
 
             session = MinorBodyResourceSession(directory, observer)
             session.__enter__()
-        center = resolve_named_center(
-            specification,
-            minor_body_collection=(
-                None if session is None else session.collection
-            ),
-        )
-        if center.is_constellation:
-            if center.kind == "group":
-                return {"group": center.identifier}
-            return {"constellations": center.value.constellations}
-        if isinstance(center.value, ResolvedTarget):
-            return {"target": center.value.key}
         if (
             center.value.ephemeris_source_key == "minor_body_spk"
             and session is None
         ):
             raise ValueError(
-                "asteroid centers require "
+                "minor-body centers require "
                 "--minor-body-resource-directory."
             )
         point = get_object_center(
@@ -282,6 +296,11 @@ def _center_arguments(arguments, values, configuration, observer):
     if arguments.command not in {"regional", "binocular"}:
         return {}
     explicit = _coordinate_center(arguments)
+    if (
+        getattr(arguments, "center_on_date", None) is not None
+        and arguments.center_on is None
+    ):
+        raise ValueError("--center-on-date requires --center-on.")
     if explicit is not None:
         return explicit
     if arguments.center_on is not None:
@@ -295,7 +314,7 @@ def _center_arguments(arguments, values, configuration, observer):
     return _configured_center(values, configured_family)
 
 
-def _observer(arguments, values):
+def _observer(arguments, values, *, time=None):
     configured = values["observer"]
     latitude = arguments.observer_latitude
     longitude = arguments.observer_longitude
@@ -311,7 +330,7 @@ def _observer(arguments, values):
             if explicit_coordinates
             else arguments.observer_location or configured["location"]
         ),
-        "time": arguments.observer_time or configured["time"],
+        "time": time or arguments.observer_time or configured["time"],
         "lat_deg": latitude,
         "lon_deg": longitude,
         "elevation_m": (
@@ -511,7 +530,11 @@ def generate(arguments):
     """Generate every requested product through Wenu's ordinary facade."""
     values = load_configuration(arguments.config)
     configuration = translate_configuration_defaults(values)
-    observer = _observer(arguments, values)
+    observer = _observer(
+        arguments,
+        values,
+        time=getattr(arguments, "center_on_date", None),
+    )
     try:
         sequence_options = chart_sequence_cli_options(
             arguments,

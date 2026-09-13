@@ -1,8 +1,10 @@
 # Second drawable comet audit (Milestone 50A.5C)
 
-**Status:** Accepted by Fernando on 2026-09-13
+**Status:** Scientifically, architecturally, visually, operationally, and
+regression accepted by Fernando on 2026-09-13
 
-**Runtime effect:** None
+**Runtime effect:** Generic validated comet installation, a second drawable
+comet, and date-owned moving-object centering
 
 **Acceptance specimen:** 161P/Hartley-IRAS
 
@@ -199,3 +201,73 @@ Stop and re-audit if implementation would:
 Successful 50A.5C acceptance authorizes 50A.6 minor-body closure. It does not
 authorize a general comet catalogue, live service, orbital-element propagator,
 automatic comet acquisition, or physical comet rendering.
+
+## 11. Implemented identity checkpoint
+
+The first bounded implementation checkpoint deliberately stops before SPK or
+table acquisition. `tools/acquire_50a5c_comet_identity.py` requests the exact
+`161P` designation from SBDB and makes a non-ephemeris Horizons identity query.
+It validates both service signatures and the returned numbered-comet name,
+preserves both complete raw responses with digests and request URLs, and does
+not guess an apparition record. Fernando must inspect those provider results
+before the next acquisition step freezes a Horizons record or solution.
+
+Fernando's inspected identity result selects Horizons record `90001107`, NAIF
+target `1000042`, and solution `JPL#71` dated 2026-09-08 09:12:21. SBDB returns
+the Halley-type periodic-comet classification, observation arc 1983-11-23
+through 2026-09-08, and non-gravitational `A1` and `A2`. The complete Horizons
+identity response additionally preserves the non-standard force-law constants
+`ALN`, `NK`, `NM`, `NN`, and `R0`; they are not reconstructed from the smaller
+SBDB model-parameter list.
+
+`tools/acquire_50a5c_comet_evidence.py` binds its full SPK, vector,
+geocentric, La Ligua topocentric, Sun, and `PsAng`/`PsAMV` requests to that
+inspected identity. The characterization epochs are 2026-09-01, 2026-10-02,
+and 2026-10-31. It copies the verified identity documents into a new immutable
+evidence directory and writes nothing until every returned signature, target,
+solution, table, and SPK segment has passed validation.
+
+The offline compact-fixture checkpoint reuses the 50A.4 vector and observer
+table parser through a parameterized comet identity specification. It adds the
+161P Sun and quantity-27 rows to that same numerical record, initially with
+both numerical and antisolar tolerances explicitly null. The combined validator
+delegates to the accepted generic minor-body numerical validator and accepted
+antisolar validator; characterization reports residuals without enforcing or
+reporting candidate thresholds.
+
+Fernando accepted the existing Cartesian, distance, light-time, parallax, and
+`0.01 deg` PsAng envelopes on 2026-09-13. Because the largest 161P coordinate
+residual, `4.9380866053994055e-6 deg`, consumed almost the complete theoretical
+half-step of the five-decimal Horizons table, he accepted `1e-5 deg`
+(`0.036 arcsec`) as the common Encke-and-161P direction envelope. This is a
+source-precision policy, not a 161P-specific fit.
+
+The accepted compact fixture is frozen at
+`tests/fixtures/horizons_comet_validation_50a5c.json`. The reusable
+`tools/install_comet_resource.py` validates every fixture-declared raw digest,
+the SPK digest, target, centre, frame, type, and exact coverage before an
+atomic publication. Installed identity and exact aliases are derived from the
+manifest rather than an Encke or 161P runtime branch. Exact provider `PsAng`
+epochs are retained by the installed source; an absent epoch continues through
+the accepted apparent-Sun fallback.
+
+The generic named-center checkpoint adds `--center-on-date ISO_TIME` beside
+`--center-on` for regional and binocular views. A moving descriptor is
+resolved through the ordinary planet, Moon, asteroid, or installed-comet
+namespace; full installed aliases such as `161P/Hartley-IRAS` are valid.
+The center date is the observation context for the selected apparent point and
+also fixes the chart's horizontal frame and zenith-up orientation. Track
+samples remain independently evaluated at their own track dates, including
+both target and terrestrial-observer motion. Omitting `--center-on-date`
+retains the ordinary `--observer-time` context. The option is rejected for a
+fixed target or constellation and performs no comet acquisition.
+
+Final Mac acceptance reproduced the compact fixture byte for byte, installed
+and resolved 161P through its designation and exact aliases, and visually
+verified complete and symbols-only September--October tracks with independently
+oriented comet symbols. The accepted `--center-on-date` experiment centered
+the chart and its horizontal orientation at the requested moving-object epoch
+while retaining the independent dates of all track samples. The complete Mac
+regression gate passed all 2,346 tests in 83.89 seconds. This closes 50A.5C;
+automatic comet discovery, acquisition, photometry, and moving-object sidecar
+reports remain separately audited future work.

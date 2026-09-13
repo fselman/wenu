@@ -12,6 +12,7 @@ from wenu.minor_body_resources import (
     MinorBodyResourceSession,
 )
 from wenu.sky.ceres import CERES_BODY
+from tools import install_comet_resource
 
 
 def manifest_directory(tmp_path, *, digest=None, target="20000001"):
@@ -177,7 +178,10 @@ def test_collection_rejects_uninstalled_name(tmp_path):
         collection.resolve("not present")
 
 
-def comet_manifest_directory(tmp_path, *, designation="2P", target="1000025"):
+def comet_manifest_directory(
+    tmp_path, *, designation="2P", target="1000025", name="Encke",
+    solution_id="K273/14", aliases=None,
+):
     payload = b"DAF/fake Encke kernel"
     (tmp_path / "encke.bsp").write_bytes(payload)
     record = {
@@ -194,12 +198,13 @@ def comet_manifest_directory(tmp_path, *, designation="2P", target="1000025"):
             "soln ref.= JPL#K273/14"
         ),
         "identity": {
-            "permanent_number": 2,
+            "permanent_number": int(designation[:-1]),
             "primary_designation": designation,
-            "designation_class": "P",
-            "name": "Encke",
+            "designation_class": designation[-1],
+            "name": name,
             "object_class": "comet",
             "provider_spk_id": target,
+            "classifications": ["comet", "periodic_comet"],
         },
         "solution": {
             "provider": "NASA/JPL Horizons API",
@@ -208,11 +213,11 @@ def comet_manifest_directory(tmp_path, *, designation="2P", target="1000025"):
             "primary_designation": designation,
             "horizons_command": "90000091;",
             "provider_spk_id": target,
-            "orbit_solution_id": "K273/14",
+            "orbit_solution_id": solution_id,
             "solution_date": "2026-Sep-08_14:23:39",
             "osculating_epoch": "2459936.5 TDB",
             "reference_system": "J2000 ecliptic and equinox",
-            "aliases": ["2P/Encke", "Encke"],
+            "aliases": aliases or [f"{designation}/{name}", name],
             "model_parameters": {"A1": "radial", "A2": "transverse"},
         },
     }
@@ -270,11 +275,126 @@ def test_session_opens_encke_once_and_checks_comet_coverage(
     assert closes == kernels
 
 
-def test_collection_rejects_unbounded_installed_comet(tmp_path):
-    with pytest.raises(ValueError, match="only installed comet 2P"):
-        MinorBodyResourceCollection(
-            comet_manifest_directory(tmp_path, designation="3D")
-        )
+def test_collection_resolves_second_installed_comet_without_runtime_branch(
+    tmp_path,
+):
+    collection = MinorBodyResourceCollection(comet_manifest_directory(
+        tmp_path,
+        designation="161P",
+        target="1000042",
+        name="Hartley-IRAS",
+        solution_id="71",
+        aliases=["161P/Hartley-IRAS", "Hartley-IRAS"],
+    ))
+
+    hartley = collection.resolve("161P/Hartley-IRAS")
+
+    assert collection.resolve("hartley-iras") is hartley
+    assert hartley.selection_key == "161p"
+    assert hartley.entity_key == "comet_161p"
+    assert hartley.canonical_designation == "161P/Hartley-IRAS"
+    assert hartley.physical_body_id == "1000042"
+    assert collection.solution_for(hartley).orbit_solution_id == "71"
+
+
+def test_generic_comet_installer_publishes_verified_fixture_atomically(
+    tmp_path, monkeypatch,
+):
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    spk = raw / "161p-hartley-iras.bsp"
+    spk.write_bytes(b"DAF/accepted 161P")
+    topocentric = raw / "horizons-topocentric.json"
+    topocentric.write_text(json.dumps({
+        "result": (
+            "161P/Hartley-IRAS\nSoln.date: 2026-Sep-08_09:12:21\n"
+            "soln ref.= JPL#71"
+        ),
+    }), encoding="utf-8")
+    sbdb = raw / "sbdb-161p.json"
+    sbdb.write_text("{}", encoding="utf-8")
+    vectors = raw / "horizons-vectors.json"
+    vectors.write_text("{}", encoding="utf-8")
+    geocentric = raw / "horizons-geocentric.json"
+    geocentric.write_text("{}", encoding="utf-8")
+    source_digests = {
+        path.name: sha256(path.read_bytes()).hexdigest()
+        for path in (sbdb, vectors, geocentric, topocentric)
+    }
+    fixture = tmp_path / "fixture.json"
+    fixture.write_text(json.dumps({
+        "authority": {
+            "horizons_api": "NASA/JPL Horizons API",
+            "horizons_version": "1.2",
+        },
+        "objects": [{
+            "aliases": ["161P/Hartley-IRAS", "Hartley-IRAS"],
+            "class": "comet",
+            "epochs": [{"calendar": "2026-09-01T00:00:00"}],
+            "horizons_command": "90001107;",
+            "iau_number": 161,
+            "key": "161p-hartley-iras",
+            "model_parameters": [
+                {"name": "A1", "value": "1.1e-8"},
+                {"name": "A2", "value": "-3.3e-10"},
+            ],
+            "name": "Hartley-IRAS",
+            "orbit_solution_id": "71",
+            "osculating_epoch": "2455861.5 TDB",
+            "primary_designation": "161P",
+            "provider_spk_id": "1000042",
+            "quality_fields": {"condition_code": "0"},
+            "reference_system": "J2000 ecliptic and equinox",
+            "solution_date": "2026-09-08 09:12:21",
+            "source_evidence_sha256": source_digests,
+            "spk": {
+                "coverage_end_jd_tdb": 2461374.5,
+                "coverage_start_jd_tdb": 2461254.5,
+                "filename": spk.name,
+                "segment_centre_id": 10,
+                "segment_type": 21,
+                "sha256": sha256(spk.read_bytes()).hexdigest(),
+            },
+        }],
+        "antisolar": {
+            "epochs": [{
+                "calendar_utc": "2026-09-01T00:00:00",
+                "horizons_psang_deg": 269.947,
+            }],
+            "source_evidence_sha256": {},
+            "tolerances": {"antisolar_position_angle_deg": 0.01},
+        },
+        "tolerances": {"direction_deg": 1e-5},
+    }), encoding="utf-8")
+
+    segment = SimpleNamespace(
+        target=1000042, center=10, frame_id=1, data_type=21,
+        start_jd=2461254.5, end_jd=2461374.5,
+    )
+    class Kernel:
+        def __init__(self, path):
+            assert path == spk
+            self.segments = (segment,)
+        def __enter__(self):
+            return self
+        def __exit__(self, *args):
+            pass
+    monkeypatch.setattr(install_comet_resource, "SpiceMinorBodyKernel", Kernel)
+    output = tmp_path / "installed"
+
+    manifest = install_comet_resource.install(fixture, raw, output)
+    collection = MinorBodyResourceCollection(output)
+    hartley = collection.resolve("Hartley-IRAS")
+
+    assert manifest == output / "acquisition-report.json"
+    assert collection.resolve("161P") is hartley
+    assert collection.resolve("161P/Hartley-IRAS") is hartley
+    assert collection.solution_for(hartley).orbit_solution_id == "71"
+    record = collection.record_for(hartley)
+    assert record["provider_gas_tail_position_angles"] == [{
+        "calendar_utc": "2026-09-01T00:00:00",
+        "position_angle_deg": 269.947,
+    }]
 
 
 @pytest.mark.parametrize(

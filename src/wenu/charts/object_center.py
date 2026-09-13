@@ -98,6 +98,16 @@ def _(subject: SolarSystemBodyDescriptor, observer, **options):
         subject,
         source_resolver=source_resolver,
     ).realize(context, observer, selected={subject.selection_key})
+    if len(geometry.lon_deg) > 1:
+        geometry = SphericalPoints(
+            lon_deg=geometry.lon_deg[:1],
+            lat_deg=geometry.lat_deg[:1],
+            coordinate_spec=geometry.coordinate_spec,
+            ids=None if geometry.ids is None else geometry.ids[:1],
+            labels=None if geometry.labels is None else geometry.labels[:1],
+            names=None if geometry.names is None else geometry.names[:1],
+            metadata=dict(geometry.metadata),
+        )
     return ObjectCenter(
         geometry=geometry,
         key=subject.selection_key,

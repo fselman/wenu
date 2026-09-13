@@ -79,7 +79,7 @@ The accepted enforcement matrix is:
 |---|---:|
 | position | `1e-10 au` |
 | velocity | `5e-12 au/day` |
-| astrometric/apparent RA or Dec | `5e-6 deg` |
+| astrometric/apparent RA or Dec | `1e-5 deg` |
 | distance | `1e-9 au` |
 | light time | `1e-7 min` |
 | parallax | `1e-5 deg` |
@@ -90,6 +90,13 @@ type-21 characterization. Parallax uses a `1e-5 deg` envelope because it is
 derived from two directions independently rounded by Horizons to five decimal
 degrees. These are reproduction tolerances for the frozen provider products,
 not an estimate of the physical orbit uncertainty.
+
+The later independent 161P characterization placed one coordinate residual at
+`4.9380866053994055e-6 deg`, too close to the theoretical half-step of the
+five-decimal table. Fernando therefore accepted `1e-5 deg`, one full printed
+decimal step or `0.036 arcsec`, as the common robust comet direction envelope
+on 2026-09-13. The revision applies equally to Encke and 161P and does not
+alter the asteroid validation contract.
 
 Run the acquisition from the repository root:
 

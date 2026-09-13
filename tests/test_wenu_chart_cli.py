@@ -167,6 +167,56 @@ def test_regional_accepts_named_and_explicit_icrs_centers():
     assert coordinate.center_name == "My field"
 
 
+def test_moving_center_accepts_an_independent_evaluation_date():
+    arguments = chart.parser().parse_args([
+        "regional", "--center-on", "planet:venus",
+        "--center-on-date", "2027-01-02T03:04:05Z",
+    ])
+
+    assert arguments.center_on_date == "2027-01-02T03:04:05Z"
+
+
+def test_center_date_becomes_the_chart_observer_instant(monkeypatch):
+    calls = []
+    observer = SimpleNamespace(close=lambda: calls.append(("close",)))
+    view = SimpleNamespace(
+        family="regional", constellations=None,
+        target=SimpleNamespace(key="venus"),
+    )
+    result = SimpleNamespace(output=Path("map.png"))
+    monkeypatch.setattr(
+        chart, "_observer",
+        lambda arguments, values, **options: (
+            calls.append(("observer", options)) or observer
+        ),
+    )
+    monkeypatch.setattr(chart, "_preflight_minor_body_resources", lambda *a: None)
+    monkeypatch.setattr(chart, "generate_celestial_sphere", lambda: object())
+    monkeypatch.setattr(
+        chart, "_center_arguments",
+        lambda *args: {
+            "center_altitude_deg": 12.0,
+            "center_azimuth_deg": 34.0,
+        },
+    )
+    monkeypatch.setattr(chart, "get_chart_view", lambda *a, **k: view)
+    monkeypatch.setattr(
+        chart, "draw_chart_view_from_arguments",
+        lambda *a, **k: (result,),
+    )
+
+    output = chart.generate(chart.parser().parse_args([
+        "regional", "--center-on", "planet:venus",
+        "--center-on-date", "2027-01-02T03:04:05Z",
+    ]))
+
+    assert output == (Path("map.png"),)
+    assert calls[0] == (
+        "observer", {"time": "2027-01-02T03:04:05Z"}
+    )
+    assert calls[-1] == ("close",)
+
+
 def test_icrs_center_supplies_an_informative_default_title():
     arguments = chart.parser().parse_args([
         "regional", "--center-icrs-ra", "201.365deg",
@@ -193,6 +243,26 @@ def test_center_forms_are_complete_and_mutually_exclusive():
         chart._coordinate_center(half)
     with pytest.raises(ValueError, match="exactly one"):
         chart._coordinate_center(competing)
+
+
+def test_center_date_requires_a_named_moving_center():
+    missing = chart.parser().parse_args([
+        "regional", "--center-on-date", "2027-01-02T03:04:05Z",
+    ])
+    fixed = chart.parser().parse_args([
+        "regional", "--center-on", "Vir",
+        "--center-on-date", "2027-01-02T03:04:05Z",
+    ])
+    configuration = SimpleNamespace(minor_body_resource_directory=None)
+
+    with pytest.raises(ValueError, match="requires --center-on"):
+        chart._center_arguments(
+            missing, {"centers": {}}, configuration, object()
+        )
+    with pytest.raises(ValueError, match="moving Solar-System"):
+        chart._center_arguments(
+            fixed, {"centers": {}}, configuration, object()
+        )
 
 
 def test_named_planet_supplies_an_explicit_regional_center(

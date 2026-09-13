@@ -30,6 +30,28 @@ from wenu.skyfield_ephemeris import (
 )
 
 
+def test_minor_body_source_exposes_only_exact_installed_provider_psang():
+    source = object.__new__(SkyfieldMinorBodyStateSource)
+    source._provider_gas_tail_position_angles = {
+        "2026-10-02T00:00:00": 65.412,
+    }
+    exact = SimpleNamespace(
+        reception_instant="2026-10-02T00:00:00",
+        reception_time_scale="utc",
+    )
+    absent = SimpleNamespace(
+        reception_instant="2026-10-03T00:00:00",
+        reception_time_scale="utc",
+    )
+
+    assert source.apparent_gas_tail_position_angle_deg(
+        request=exact, observer_state=object()
+    ) == 65.412
+    assert source.apparent_gas_tail_position_angle_deg(
+        request=absent, observer_state=object()
+    ) is None
+
+
 class FakeSegment:
     def __init__(self, target, centre, start, end, position, velocity):
         self.target = target

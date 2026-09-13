@@ -421,6 +421,7 @@ class SkyfieldMinorBodyStateSource:
         timescale,
         resource,
         solution,
+        provider_gas_tail_position_angles=(),
     ):
         if not isinstance(planetary_source, EphemerisStateSource):
             raise TypeError(
@@ -475,6 +476,9 @@ class SkyfieldMinorBodyStateSource:
         self._segments = tuple(matched)
         self.resource = resource
         self.solution = solution
+        self._provider_gas_tail_position_angles = dict(
+            provider_gas_tail_position_angles
+        )
 
     @classmethod
     def from_kernels(
@@ -485,6 +489,7 @@ class SkyfieldMinorBodyStateSource:
         timescale,
         solution,
         model,
+        provider_gas_tail_position_angles=(),
     ):
         """Borrow resolved resources and fingerprint the small-body SPK."""
         if not isinstance(solution, MinorBodySolutionIdentity):
@@ -531,7 +536,21 @@ class SkyfieldMinorBodyStateSource:
             timescale=timescale,
             resource=resource,
             solution=solution,
+            provider_gas_tail_position_angles=(
+                provider_gas_tail_position_angles
+            ),
         )
+
+
+    def apparent_gas_tail_position_angle_deg(self, *, request, observer_state):
+        """Return an exact provider PsAng sample when one was installed."""
+        del observer_state
+        instant = Time(
+            request.reception_instant,
+            scale=request.reception_time_scale,
+        ).utc
+        key = instant.strftime("%Y-%m-%dT%H:%M:%S")
+        return self._provider_gas_tail_position_angles.get(key)
 
     def state(self, request):
         """Return one composed geometric state at a declared TDB instant."""
