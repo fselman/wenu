@@ -4421,9 +4421,12 @@ def test_50a5c_audits_a_second_comet_before_minor_body_closure():
         "Implemented identity checkpoint",
         "Horizons record `90001107`",
         "NAIF\ntarget `1000042`",
+        "both\nnumerical and antisolar tolerances explicitly null",
     ):
         assert phrase.lower() in audit.lower()
     assert "Accepted 50A.5C uses 161P/Hartley-IRAS" in roadmap
     assert "bounded evidence acquisition" in source_tree
     assert "acquire_50a5c_comet_identity.py" in source_tree
     assert "acquire_50a5c_comet_evidence.py" in source_tree
+    assert "build_50a5c_comet_fixture.py" in source_tree
+    assert "validate_50a5c_comet.py" in source_tree

@@ -224,3 +224,11 @@ inspected identity. The characterization epochs are 2026-09-01, 2026-10-02,
 and 2026-10-31. It copies the verified identity documents into a new immutable
 evidence directory and writes nothing until every returned signature, target,
 solution, table, and SPK segment has passed validation.
+
+The offline compact-fixture checkpoint reuses the 50A.4 vector and observer
+table parser through a parameterized comet identity specification. It adds the
+161P Sun and quantity-27 rows to that same numerical record, with both
+numerical and antisolar tolerances explicitly null. The combined validator
+delegates to the accepted generic minor-body numerical validator and accepted
+antisolar validator; characterization reports residuals without enforcing or
+reporting candidate thresholds.

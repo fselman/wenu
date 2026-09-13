@@ -70,7 +70,8 @@ def validate_antisolar(
 ):
     """Validate or characterize Wenu's apparent antisolar direction."""
     reference = json.loads(reference_path.read_text(encoding="utf-8"))
-    tolerances = reference.get("tolerances")
+    antisolar_reference = reference.get("antisolar", reference)
+    tolerances = antisolar_reference.get("tolerances")
     if characterize and tolerances is None:
         tolerance = None
     else:
@@ -85,13 +86,17 @@ def validate_antisolar(
             raise ValueError(
                 "antisolar position-angle tolerance must be positive."
             )
-    record = reference["object"]
-    comet_reference = json.loads(
-        (
-            Path(__file__).parents[1]
-            / "tests/fixtures/horizons_comet_validation_50a4.json"
-        ).read_text(encoding="utf-8")
-    )["objects"][0]
+    record = antisolar_reference["object"]
+    comet_reference = (
+        reference["objects"][0]
+        if "objects" in reference
+        else json.loads(
+            (
+                Path(__file__).parents[1]
+                / "tests/fixtures/horizons_comet_validation_50a4.json"
+            ).read_text(encoding="utf-8")
+        )["objects"][0]
+    )
     manifest = json.loads(
         (resource_directory / "acquisition-report.json").read_text(
             encoding="utf-8"
@@ -110,7 +115,7 @@ def validate_antisolar(
     )
     residuals = []
     with SpiceMinorBodyKernel(spk_path) as kernel:
-        for epoch in reference["epochs"]:
+        for epoch in antisolar_reference["epochs"]:
             with Observer(
                 location="La Ligua",
                 time=epoch["calendar_utc"] + "Z",

@@ -1498,3 +1498,10 @@ owns deterministic contract coverage;
   network acquisition bound to inspected record `90001107`, NAIF target
   `1000042`, solution `JPL#71`, and the three accepted 2026 characterization
   epochs; it publishes no partial evidence directory.
+- `tools/build_50a4_comet_fixture.py` now exposes its existing parser through a
+  parameterized comet specification while preserving the Encke wrapper;
+- `tools/build_50a5c_comet_fixture.py` owns offline 161P identity binding and
+  combines that shared numerical parsing with the accepted Sun/PsAng parser;
+- `tools/validate_50a5c_comet.py` composes the existing minor-body numerical
+  and antisolar validators in non-accepting characterization mode until
+  Fernando explicitly accepts measured tolerances.
