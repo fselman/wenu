@@ -1535,7 +1535,7 @@ owns deterministic contract coverage;
 - no runtime, command, network, cache, coordinate, projection, renderer,
   semantic, report, or export owner changes in this audit.
 
-## 50A.5D.1A deterministic comet-discovery ownership (candidate)
+## 50A.5D.1A deterministic comet-discovery ownership (accepted)
 
 - `comet_discovery.py` owns SBDB query construction, UTC-to-TDB boundaries,
   typed rows, schema validation, sorting, and raw-response provenance;
@@ -1545,3 +1545,13 @@ owns deterministic contract coverage;
   boundary and uses a frozen provider-schema response without network access;
 - `wenu_chart`, minor-body acquisition/cache, coordinate, projection,
   renderer, semantic, report, and export owners remain unchanged.
+
+## 50A.5D.2A exact comet-name-resolution audit ownership
+
+- `docs/developer/comet_name_resolution_audit_50a5d2a.md` alone owns the
+  candidate exact installed/provider identity-resolution contract;
+- `MinorBodyResourceCollection` remains the installed-manifest alias
+  authority, while `comet_discovery.py` remains the interval-set discovery
+  owner;
+- the candidate authorizes no acquisition, cache, SPK, chart, coordinate,
+  magnitude, report, renderer, semantic, or export change.
