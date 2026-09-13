@@ -56,6 +56,7 @@ def test_frozen_response_is_typed_sorted_and_preserves_unknowns():
     assert [record.canonical_designation for record in records] == [
         "C/2026 A1", "2P",
     ]
+    assert records[0].first_observation == "2026-01-03"
     assert records[0].period_days is None
     assert records[0].earth_moid_au is None
     assert records[1].name == "Encke"
@@ -126,6 +127,8 @@ def test_table_labels_model_parameters_and_visibility_limit():
     assert "unknown" in text
     for explanation in (
         "Header key:",
+        "1st obs.: earliest observation used by the current orbit",
+        "not necessarily the discovery date",
         "P: periodic; C: non-periodic; D: disappeared",
         "A: object found to be a minor planet",
         "I: interstellar object",
@@ -153,6 +156,7 @@ def test_json_retains_units_time_scale_and_provider_identity():
     )
     assert document["records"][0]["perihelion"]["time_scale"] == "TDB"
     assert document["records"][0]["canonical_designation"] == "C/2026 A1"
+    assert document["records"][0]["first_observation"] == "2026-01-03"
     assert document["records"][0]["period_days"] == {
         "unit": "d", "value": None,
     }
