@@ -3172,6 +3172,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "first_drawable_comet_audit_50a5a.md",
         "solar_system_temporal_components_audit_50a5b1.md",
         "second_drawable_comet_audit_50a5c.md",
+        "comet_discovery_and_reporting_audit_50a5d.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
