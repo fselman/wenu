@@ -622,7 +622,9 @@ def composition_layer_options(
                 )
             preparation = (
                 MagnifyProjectedDiskSequence(
-                    layer.disk_realization, layer.magnification
+                    layer.disk_realization,
+                    layer.magnification,
+                    getattr(layer, "sample_indices", None),
                 )
                 if sequence_layer
                 else MagnifyProjectedDisk(

@@ -196,3 +196,9 @@ filters only the already realized drawable components. Existing defaults and
 `--disk-sequence-symbols` and `--disk-sequence-label-cadence` adapters expose
 independent phase-symbol and date selection without moving phase physics into
 track code.
+
+Post-projection disk magnification consumes the same selected sample indices
+as the phase component layer. It still projects the realization's physical
+centres through the accepted shared preparation owner, then selects matching
+centres before scaling. This keeps start-only and major-epoch component counts
+aligned without a second scientific realization.

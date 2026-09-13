@@ -105,3 +105,29 @@ def test_post_projection_magnification_uses_each_physical_centre():
     assert np.allclose(result[1].x, (10.0, 13.0))
     assert np.allclose(result[1].y, (5.0, 5.0))
     assert result.metadata["display_magnification"] == 3.0
+
+
+def test_post_projection_magnification_uses_selected_temporal_centres():
+    realization = SimpleNamespace(
+        transformed=SimpleNamespace(centres=object())
+    )
+    preparation = MagnifyProjectedDiskSequence(
+        realization, 3.0, sample_indices=(0,)
+    )
+    projected = ProjectedCurves([
+        ProjectedCurve(
+            x=np.asarray((0.0, 1.0)), y=np.asarray((0.0, 0.0))
+        ),
+    ])
+
+    def project(value):
+        assert value is realization.transformed.centres
+        return ProjectedPoints(
+            x=np.asarray((0.0, 10.0, 20.0, 30.0)),
+            y=np.asarray((0.0, 5.0, 10.0, 15.0)),
+        )
+
+    result = preparation.bind_project_geometry(project)(None, projected)
+
+    assert np.allclose(result[0].x, (0.0, 3.0))
+    assert np.allclose(result[0].y, (0.0, 0.0))
