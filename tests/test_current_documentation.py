@@ -4471,12 +4471,18 @@ def test_50a5d_audits_comet_discovery_acquisition_and_reports():
 
 
 def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
-    implementation = read(DEVELOPER / "comet_discovery_50a5d1a.md")
+    implementation = " ".join(read(
+        DEVELOPER / "comet_discovery_50a5d1a.md"
+    ).split())
     roadmap = read(ROADMAP)
     reference = read(DEVELOPER / "implementation_reference.md")
     source_tree = read(DEVELOPER / "source_tree.md")
-    coordinate_guide = read(DEVELOPER / "coordinate_system_guide_v0.9.5.md")
-    user_guide = read(ROOT / "docs/user_guide/comet_discovery.md")
+    coordinate_guide = " ".join(read(
+        DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+    ).split())
+    user_guide = " ".join(read(
+        ROOT / "docs/user_guide/comet_discovery.md"
+    ).split())
     project = read(ROOT / "pyproject.toml")
 
     for phrase in (
@@ -4484,14 +4490,13 @@ def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
         "complete inclusive UTC civil days",
         "not a visibility forecast",
         "remains deferred to 50A.5D.1B",
-        "does not implement\n\`--observer-location\`",
+        "does not implement `--observer-location`",
         "does not authorize 50A.5D.2 acquisition or 50A.5D.3 reports",
     ):
-        assert phrase.replace("\\", "") in implementation
+        assert phrase in implementation
     assert "50A.5D.1A candidate implementation in review" in roadmap
     assert "Deterministic comet discovery" in reference
     assert "50A.5D.1A deterministic comet-discovery ownership" in source_tree
-    assert "Returned \`tp\` values retain their TDB identity".replace("\\", "") in coordinate_guide
-    assert "not a\nvisibility forecast" in user_guide
+    assert "Returned `tp` values retain their TDB identity" in coordinate_guide
+    assert "not a visibility forecast" in user_guide
     assert 'wenu_retrieve_comets = "wenu.cli.comets:main"' in project
-
