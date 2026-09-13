@@ -174,6 +174,18 @@ def test_class_aware_selectors_share_one_solar_system_selection():
     assert {"venus", "moon"} <= detail.enabled_layer_additions
     assert not {"venus", "moon"} & detail.disabled_layers
 
+
+def test_comet_selector_enables_its_canonical_dynamic_layer():
+    arguments = parser().parse_args(["--comet", "2P"])
+
+    content = chart_content_options(arguments)
+    detail = chart_detail_overrides(arguments)
+
+    assert content.comets == {"2p"}
+    assert chart_sky_content(arguments).solar_system_objects == {"2p"}
+    assert "2p" in detail.enabled_layer_additions
+    assert "2p" not in detail.disabled_layers
+
     all_planets = parser().parse_args([
         "--planet", "mercury",
         "--planet", "venus",

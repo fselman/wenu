@@ -967,6 +967,7 @@ def chart_detail_overrides(
             *grids.items(),
             *((name, name in content.planets) for name in _SYMBOLIC_BODY_KEYS),
             *((name, name in content.asteroids) for name in content.asteroids),
+            *((name, name in content.comets) for name in content.comets),
             ("moon", content.moon),
         )
         if enabled
@@ -980,6 +981,7 @@ def chart_detail_overrides(
         *_SYMBOLIC_BODY_KEYS,
         *_ASTEROID_KEYS,
         *content.asteroids,
+        *content.comets,
         "moon",
     }
     labels = frozenset(

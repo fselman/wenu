@@ -238,6 +238,7 @@ _DETAIL_LAYER_NAMES = {
 _REQUEST_GEOMETRY_LAYERS = frozenset({
     "horizon",
     "solar_system_track",
+    "solar_system_track_symbol",
     "venus_disk_illuminated",
     "venus_disk_limb",
     "venus_disk_terminator",
