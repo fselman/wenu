@@ -4519,7 +4519,7 @@ def test_50a5d2a_audits_exact_comet_name_resolution():
     ).split())
 
     for phrase in (
-        "Candidate audit for Fernando's review",
+        "Accepted by Fernando on 2026-09-13",
         "provider-backed exact comet identity",
         "case-folded after trimming and collapsing whitespace",
         "`10P/Tempel 2` may resolve to the same identity as `10P`",
@@ -4532,5 +4532,5 @@ def test_50a5d2a_audits_exact_comet_name_resolution():
     ):
         assert phrase in audit
 
-    assert "candidate 50A.5D.2A audit" in roadmap
+    assert "accepted 50A.5D.2A audit" in roadmap
     assert "SPK acquisition" in roadmap
