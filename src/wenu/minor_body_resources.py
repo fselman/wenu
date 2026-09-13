@@ -6,6 +6,7 @@ import json
 from hashlib import sha256
 from pathlib import Path
 
+from wenu.comet_designations import parse_comet_designation
 from wenu.minor_body_ephemeris import (
     MinorBodySolutionIdentity,
     SkyfieldMinorBodyStateSource,
@@ -20,7 +21,6 @@ from wenu.sky.solar_system_bodies import (
 from wenu.sky.solar_system_points import EphemerisSourceBinding
 from wenu.skyfield_ephemeris import SkyfieldEphemerisStateSource
 
-
 _MINOR_BODY_SPECS = {
     CERES_BODY.selection_key: (CERES_BODY, CERES_SOLUTION),
 }
@@ -33,11 +33,11 @@ def _normalized_selection(value):
     return value.casefold()
 
 
-def _solution_from_record(record, *, number, name):
+def _solution_from_record(record, *, key, iau_number, name):
     values = record.get("solution")
     if not isinstance(values, dict):
         raise ValueError(
-            f"minor-body manifest record {number!r} requires solution metadata."
+            f"minor-body manifest record {key!r} requires solution metadata."
         )
     pairs = {}
     for field in ("model_parameters", "quality_fields"):
@@ -48,7 +48,7 @@ def _solution_from_record(record, *, number, name):
     return MinorBodySolutionIdentity(
         provider=values["provider"],
         service_version=values["service_version"],
-        wenu_target=str(number),
+        wenu_target=key,
         object_class=values["object_class"],
         primary_designation=values["primary_designation"],
         horizons_command=values["horizons_command"],
@@ -57,7 +57,7 @@ def _solution_from_record(record, *, number, name):
         solution_date=values["solution_date"],
         osculating_epoch=values["osculating_epoch"],
         reference_system=values["reference_system"],
-        iau_number=number,
+        iau_number=iau_number,
         name=name,
         aliases=tuple(values.get("aliases", ())),
         model_parameters=pairs["model_parameters"],
@@ -67,7 +67,7 @@ def _solution_from_record(record, *, number, name):
 
 
 class MinorBodyResourceCollection:
-    """Validated manifest-derived identities for installed asteroids."""
+    """Validated manifest-derived identities for installed minor bodies."""
 
     def __init__(self, resource_directory):
         self.resource_directory = Path(resource_directory).expanduser().resolve(
@@ -102,39 +102,83 @@ class MinorBodyResourceCollection:
                     raise ValueError(
                         "minor-body manifest records require structured identity."
                     )
-                number = identity.get("permanent_number")
-                if isinstance(number, bool) or not isinstance(number, int) or number <= 0:
-                    raise ValueError("permanent minor-planet number must be positive.")
-                if identity.get("object_class") != "asteroid":
-                    raise ValueError("numbered-asteroid records require asteroid class.")
+                object_class = identity.get("object_class")
                 name = identity.get("name")
                 if name is not None and (
                     not isinstance(name, str) or not name.strip()
                 ):
-                    raise ValueError("official asteroid name must be non-empty.")
+                    raise ValueError("official minor-body name must be non-empty.")
                 name = None if name is None else name.strip()
-                designation = f"({number})" if name is None else f"{name} ({number})"
+                if object_class == "asteroid":
+                    number = identity.get("permanent_number")
+                    if (
+                        isinstance(number, bool)
+                        or not isinstance(number, int)
+                        or number <= 0
+                    ):
+                        raise ValueError(
+                            "permanent minor-planet number must be positive."
+                        )
+                    key = str(number)
+                    designation = (
+                        f"({number})" if name is None else f"{name} ({number})"
+                    )
+                    entity_key = f"asteroid_{number}"
+                    display_name = name or f"({number})"
+                    classifications = identity.get("classifications", ())
+                elif object_class == "comet":
+                    parsed = parse_comet_designation(
+                        identity.get("primary_designation")
+                    )
+                    if (
+                        parsed.canonical != "2P"
+                        or parsed.designation_class != "P"
+                        or parsed.permanent_number != 2
+                    ):
+                        raise ValueError(
+                            "50A.5B authorizes only installed comet 2P."
+                        )
+                    if identity.get("designation_class") != "P":
+                        raise ValueError(
+                            "2P manifest must preserve designation class P."
+                        )
+                    if name != "Encke":
+                        raise ValueError("2P installed name must be Encke.")
+                    number = parsed.permanent_number
+                    key = "2p"
+                    designation = "2P/Encke"
+                    entity_key = "comet_2p"
+                    display_name = designation
+                    classifications = ("comet", "periodic_comet")
+                else:
+                    raise ValueError(
+                        "minor-body record class must be asteroid or comet."
+                    )
                 descriptor = SolarSystemBodyDescriptor(
-                    target=str(number),
-                    entity_key=f"asteroid_{number}",
-                    display_name=name or f"({number})",
-                    selection_key=str(number),
-                    body_class="asteroid",
+                    target=key,
+                    entity_key=entity_key,
+                    display_name=display_name,
+                    selection_key=key,
+                    body_class=object_class,
                     physical_body_id=str(identity["provider_spk_id"]),
                     canonical_designation=designation,
                     iau_number=number,
-                    classifications=frozenset(identity.get("classifications", ())),
+                    classifications=frozenset(classifications),
                     capabilities=frozenset({SYMBOLIC_POINT, APPARENT_TRACK}),
                     ephemeris_source_key="minor_body_spk",
                 )
                 solution = _solution_from_record(
-                    record, number=number, name=name
+                    record, key=key, iau_number=number, name=name
                 )
+                if solution.object_class != object_class:
+                    raise ValueError(
+                        "minor-body identity and solution classes differ."
+                    )
                 if solution.provider_spk_id != str(identity["provider_spk_id"]):
                     raise ValueError("minor-body identity and solution targets differ.")
             key = descriptor.selection_key
             if key in descriptors:
-                raise ValueError(f"duplicate permanent minor-planet number: {key}.")
+                raise ValueError(f"duplicate minor-body selection key: {key}.")
             descriptors[key] = descriptor
             solutions[key] = solution
             record_map[key] = record
@@ -144,6 +188,8 @@ class MinorBodyResourceCollection:
             names.extend(solution.aliases)
             if key == "ceres":
                 names.append("1")
+            if key == "2p":
+                names.extend(("2P/Encke", "Encke"))
             for candidate in names:
                 normalized = _normalized_selection(candidate)
                 prior = aliases.get(normalized)
@@ -164,7 +210,7 @@ class MinorBodyResourceCollection:
             key = self._aliases[normalized]
         except KeyError as error:
             raise KeyError(
-                f"minor-body resource set has no installed asteroid {selection!r}."
+                f"minor-body resource set has no installed object {selection!r}."
             ) from error
         return self._descriptors[key]
 
@@ -294,9 +340,14 @@ class MinorBodyResourceSession:
                 f"minor-body manifest target differs for {key!r}."
             )
         result = record["horizons_result"]
+        solution_reference = (
+            f"soln ref.= JPL#{solution.orbit_solution_id}"
+            if solution.object_class == "comet"
+            else f"soln ref.= {solution.orbit_solution_id}"
+        )
         for expected in (
             solution.primary_designation,
-            f"soln ref.= {solution.orbit_solution_id}",
+            solution_reference,
             solution.solution_date,
         ):
             if expected not in result:
@@ -329,6 +380,15 @@ class MinorBodyResourceSession:
                 raise ValueError(
                     f"minor-body SPK segment identity differs for {key!r}."
                 )
+            if solution.object_class == "comet":
+                coverage = record.get("actual_coverage")
+                if not isinstance(coverage, dict) or (
+                    segment.start_jd != coverage.get("start_jd_tdb")
+                    or segment.end_jd != coverage.get("stop_jd_tdb")
+                ):
+                    raise ValueError(
+                        f"minor-body SPK coverage differs for {key!r}."
+                    )
             source = SkyfieldMinorBodyStateSource.from_kernels(
                 small_body_kernel=kernel,
                 planetary_source=self.planetary_source,
