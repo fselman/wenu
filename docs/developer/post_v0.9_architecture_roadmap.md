@@ -1597,7 +1597,7 @@ sidecar reports require a new audit before implementation.
 
 ## Milestone 50A.5D — Comet discovery, acquisition, and moving-object reports
 
-**Status:** Audit accepted; 50A.5D.1A candidate implementation in review.
+**Status:** Audit and 50A.5D.1A accepted by Fernando on 2026-09-13.
 
 The proposed audit separates an explicit `wenu_retrieve_comets` SBDB query,
 exact policy-governed comet preflight, and renderer-neutral natural moving-
@@ -1610,7 +1610,7 @@ The accepted report contract additionally requires instantaneous topocentric
 apparent `dRA/dt`, `cos(dec) dRA/dt`, `dDec/dt`, and total sky-plane speed in
 mas/s, with explicit telescope-driver convention warnings.
 
-The 50A.5D.1A candidate implements only the deterministic SBDB query, typed
+The accepted 50A.5D.1A implementation provides only the deterministic SBDB query, typed
 rows, and table/JSON command. Fernando deferred observer-dependent Horizons
 magnitude and its cadence to 50A.5D.1B. Comet acquisition and moving-object
 reports remain unauthorized later slices.
