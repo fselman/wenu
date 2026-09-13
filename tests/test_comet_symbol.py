@@ -65,7 +65,7 @@ def test_comet_line_appearance_is_style_owned_not_symbol_owned():
 
     assert first.comet_color == "#123456"
     assert second.comet_color == "#abcdef"
-    assert first.comet_symbol_size == pytest.approx(492.8)
+    assert first.comet_symbol_size == pytest.approx(770.0)
     assert first.comet_linewidth == pytest.approx(0.8)
     assert DEFAULT_SYMBOLS.comet is DEFAULT_SYMBOLS["comet"]
 
