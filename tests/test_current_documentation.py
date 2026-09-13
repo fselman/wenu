@@ -4522,7 +4522,7 @@ def test_50a5d2a_audits_exact_comet_name_resolution():
         "Candidate audit for Fernando's review",
         "provider-backed exact comet identity",
         "case-folded after trimming and collapsing whitespace",
-        "`10P`, `10P/Tempel 2`",
+        "`10P/Tempel 2` may resolve to the same identity as `10P`",
         "`Tempel` is not an exact alias",
         "`10` is not `10P`",
         "No failure falls back to the first provider row",
