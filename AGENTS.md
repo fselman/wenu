@@ -37,3 +37,6 @@ In particular:
     unavailable. Do not silently substitute a manual copy-and-paste workflow.
     Use the documented ZIP fallback only when the user specifically requests it
     or direct GitHub delivery is genuinely unavailable.
+12. Whenever Fernando must run local shell commands, provide every command in
+    complete, copy-and-paste-ready blocks through the chat. Never ask him to
+    edit repository files manually or compose an error-prone command himself.
