@@ -3108,3 +3108,14 @@ magnification after the astronomical direction has been realized; they do not
 rebuild the symbol or create another coordinate path.
 Fernando accepted this identity, orientation, symbol-reuse, and multi-track
 boundary on 2026-09-12, authorizing only the bounded 50A.5B implementation.
+
+Accepted 50A.5B.1 adds no coordinate or product frame. One immutable
+`TemporalComponentPolicy` selects start-inclusive path, ticks, symbols, and
+date labels from already realized temporal samples. Comet symbols retain their
+per-epoch provider or apparent-antisolar orientation, while Venus and Moon
+retain observed phase geometry and Mercury retains frozen-Earth-ecliptic phase
+geometry in their existing scientific owners. Selection and post-projection
+magnification neither reevaluate a target nor alter sample times, physical
+appearance, provenance, or the fixed chart product frame. Fernando visually
+accepted the Encke and Venus presentations, and final Mac verification passed
+all 2,331 tests in 84.56 seconds on 2026-09-13.

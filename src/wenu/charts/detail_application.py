@@ -238,6 +238,7 @@ _DETAIL_LAYER_NAMES = {
 _REQUEST_GEOMETRY_LAYERS = frozenset({
     "horizon",
     "solar_system_track",
+    "solar_system_track_symbol",
     "venus_disk_illuminated",
     "venus_disk_limb",
     "venus_disk_terminator",
@@ -371,6 +372,7 @@ def apply_resolved_detail(
         selection_field = _SELECTION_OPTIONS.get(name)
         if (
             selection_field is None
+            and name != "solar_system_track_symbol"
             and getattr(layer, "body_descriptor", None) is not None
             and getattr(layer, "display_kind", None) == "symbolic_point"
         ):
@@ -483,18 +485,25 @@ def composition_layer_options(
             base,
             {"stars": {"render": render_stars}},
         )
-    track = next(
-        (
-            layer for layer in sky.layers
-            if getattr(layer, "layer_name", None) == "solar_system_track"
-        ),
-        None,
+    tracks = tuple(
+        layer for layer in sky.layers
+        if getattr(layer, "layer_name", None) == "solar_system_track"
     )
-    if track is not None:
+    for track in tracks:
         viewport = composition.context.viewport
         tick_length = 0.018 * min(viewport.width, viewport.height)
         label_anchor = TrackLabelAnchor(
             fontsize=publication.solar_system_track_label_fontsize
+        )
+        body_class = getattr(
+            getattr(track, "body_descriptor", None), "body_class", None
+        )
+        track_color = (
+            publication.asteroid_color
+            if body_class == "asteroid"
+            else publication.comet_color
+            if body_class == "comet"
+            else publication.solar_system_track_color
         )
         base = merge_sky_layer_options(
             sky,
@@ -511,15 +520,27 @@ def composition_layer_options(
                     "render": {
                         "component_styles": {
                             "path": {
-                                "color": publication.solar_system_track_color,
-                                "linewidth": publication.solar_system_track_linewidth,
+                                "color": track_color,
+                                "linewidth": (
+                                    publication.solar_system_track_linewidth
+                                    if getattr(track, "draw_path", True) else 0.0
+                                ),
+                                "alpha": (
+                                    1.0 if getattr(track, "draw_path", True)
+                                    else 0.0
+                                ),
                                 "linestyle": publication.solar_system_track_linestyle,
                                 "zorder": 38.0,
                             },
                             "ticks": {
-                                "color": publication.solar_system_track_color,
+                                "color": track_color,
                                 "linewidth": (
                                     publication.solar_system_track_tick_linewidth
+                                    if getattr(track, "draw_ticks", True) else 0.0
+                                ),
+                                "alpha": (
+                                    1.0 if getattr(track, "draw_ticks", True)
+                                    else 0.0
                                 ),
                                 "zorder": 38.1,
                             },
@@ -532,20 +553,13 @@ def composition_layer_options(
                         "draw_labels": True,
                         "label_anchor": label_anchor,
                         "label_style": {
-                            "color": publication.solar_system_track_color,
+                            "color": track_color,
                             "fontsize": publication.solar_system_track_label_fontsize,
                             "zorder": 38.2,
                         },
                         "component_label_styles": {
                             "labels": {
-                                "color": (
-                                    publication.asteroid_color
-                                    if getattr(
-                                        getattr(track, "body_descriptor", None),
-                                        "body_class", None,
-                                    ) == "asteroid"
-                                    else publication.solar_system_track_color
-                                ),
+                                "color": track_color,
                             },
                         },
                         "label_offset": (0.0, 0.0),
@@ -614,7 +628,9 @@ def composition_layer_options(
                 )
             preparation = (
                 MagnifyProjectedDiskSequence(
-                    layer.disk_realization, layer.magnification
+                    layer.disk_realization,
+                    layer.magnification,
+                    getattr(layer, "sample_indices", None),
                 )
                 if sequence_layer
                 else MagnifyProjectedDisk(

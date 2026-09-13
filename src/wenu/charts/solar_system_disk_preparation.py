@@ -122,6 +122,7 @@ class MagnifyProjectedDiskSequence:
 
     realization: object
     factor: float
+    sample_indices: tuple[int, ...] | None = None
 
     def bind_project_geometry(self, project_geometry):
         if not callable(project_geometry):
@@ -131,7 +132,14 @@ class MagnifyProjectedDiskSequence:
             raise TypeError(
                 "resolved sequence centres must project to ProjectedPoints."
             )
-        centres = tuple(zip(centre.x.astype(float), centre.y.astype(float)))
+        indices = self.sample_indices
+        if indices is not None:
+            indices = tuple(indices)
+            centre_x = centre.x[list(indices)]
+            centre_y = centre.y[list(indices)]
+        else:
+            centre_x, centre_y = centre.x, centre.y
+        centres = tuple(zip(centre_x.astype(float), centre_y.astype(float)))
         factor = float(self.factor)
 
         def prepare(spherical, projected):

@@ -1,0 +1,78 @@
+{
+  "authority": {
+    "apparent_policy": "AIRLESS",
+    "dust_tail_diagnostic": "Horizons quantity 27 PsAMV",
+    "gas_tail_orientation": "Horizons quantity 27 PsAng",
+    "horizons_api": "NASA/JPL Horizons API",
+    "horizons_version": "1.2",
+    "position_angle_convention": "degrees east of celestial north",
+    "reference_system": "ICRF"
+  },
+  "epochs": [
+    {
+      "antisolar_position_angle_deg": 76.06,
+      "calculated_antisolar_position_angle_deg": 76.0633227522228,
+      "calendar_utc": "2026-11-13T00:00:00",
+      "comet_apparent_icrf_deg": [
+        347.16285,
+        11.56332
+      ],
+      "horizons_psamv_deg": 168.326,
+      "horizons_psang_deg": 76.06,
+      "sun_apparent_icrf_deg": [
+        227.79604,
+        -17.80098
+      ]
+    },
+    {
+      "antisolar_position_angle_deg": 248.649,
+      "calculated_antisolar_position_angle_deg": 248.65038044455247,
+      "calendar_utc": "2027-02-11T00:00:00",
+      "comet_apparent_icrf_deg": [
+        312.64901,
+        -18.92222
+      ],
+      "horizons_psamv_deg": 61.671,
+      "horizons_psang_deg": 248.649,
+      "sun_apparent_icrf_deg": [
+        324.00981,
+        -14.28918
+      ]
+    },
+    {
+      "antisolar_position_angle_deg": 246.184,
+      "calculated_antisolar_position_angle_deg": 246.18428100507154,
+      "calendar_utc": "2027-05-12T00:00:00",
+      "comet_apparent_icrf_deg": [
+        339.76756,
+        -15.70082
+      ],
+      "horizons_psamv_deg": 133.119,
+      "horizons_psang_deg": 246.184,
+      "sun_apparent_icrf_deg": [
+        48.24897,
+        17.92229
+      ]
+    }
+  ],
+  "object": {
+    "key": "2p-encke",
+    "orbit_solution_id": "K273/14",
+    "primary_designation": "2P",
+    "provider_spk_id": "1000025"
+  },
+  "observer": {
+    "elevation_km": 0.052,
+    "latitude_deg": -32.443342,
+    "longitude_deg_east": -71.230289,
+    "name": "La Ligua"
+  },
+  "source_evidence_sha256": {
+    "horizons-comet-tail-topocentric.json": "24d6c9165eb699755590f88f08b9850b175e86ecbeb82ff624da46bb0b793df4",
+    "horizons-sun-topocentric.json": "43d7eb4d890a87950ae453ddd50764d51701eb92821d3ce08694306220b8fb00",
+    "horizons_comet_validation_50a4.json": "d440eb4b7a56ed4aff79cd062308e8a81463afec5c6055517865c5c033abb4e1"
+  },
+  "tolerances": {
+    "antisolar_position_angle_deg": 0.01
+  }
+}

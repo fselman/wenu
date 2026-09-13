@@ -777,6 +777,24 @@ def test_default_arguments_disable_all_optional_content():
         assert detail.constellation_star_mode == "none"
 
 
+def test_request_owned_comet_track_symbol_is_enabled_by_geometry_contract():
+    class Layer:
+        layer_name = "solar_system_track_symbol"
+        display_kind = "symbolic_point"
+        body_descriptor = SimpleNamespace(selection_key="2p")
+
+    layer = Layer()
+    sky = SimpleNamespace(layers=(layer,))
+    detail = apply_detail_overrides(
+        adaptive_detail(), chart_detail_overrides(parser().parse_args([]))
+    )
+
+    application = apply_resolved_detail(sky, detail)
+
+    assert application.layer_options[layer]["enabled"] is True
+    assert "geometry" not in application.layer_options[layer]
+
+
 @pytest.mark.parametrize(
     ("option", "layer"),
     (

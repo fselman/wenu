@@ -3,20 +3,117 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from math import atan2, degrees
 
 import numpy as np
+from matplotlib.transforms import Affine2D
 
+from wenu.geometry.projected import ProjectedPoints
 from wenu.rendering import layers
 from wenu.rendering.label_placement import CurveLabelPlacement
-from wenu.rendering.symbols import DEFAULT_SYMBOLS
 from wenu.rendering.preparation import (
     clip_polygons_to_latitude,
     clip_to_latitude,
     magnitude_sizes,
     point_styles,
-    radial_label_offset,
 )
+from wenu.rendering.symbols import DEFAULT_SYMBOLS
 from wenu.sky.coordinate_grids import CoordinatesGrid
+
+
+def _comet_symbol_prepare(clip):
+    """Bind projected tail-axis orientation and hide its reference point."""
+    def prepare(spherical, projected):
+        tail_suppressed = bool(
+            projected.metadata.get("comet_tail_suppressed", False)
+        )
+        reference_index = projected.metadata.get(
+            "comet_symbol_orientation_reference_index"
+        )
+        expected_length = 1 if tail_suppressed else 2
+        if (
+            len(projected) != expected_length
+            or (not tail_suppressed and reference_index != 1)
+        ):
+            raise ValueError(
+                "Comet geometry does not match its tail-orientation policy."
+            )
+        metadata = dict(projected.metadata)
+        if tail_suppressed:
+            primary = ProjectedPoints(
+                projected.x[:1], projected.y[:1], metadata=metadata,
+                ids=None if projected.ids is None else projected.ids[:1],
+                labels=(None if projected.labels is None else projected.labels[:1]),
+                names=None if projected.names is None else projected.names[:1],
+            )
+            clipped = clip(spherical, projected)
+            return (
+                primary
+                if len(clipped) and bool(clipped.finite[0])
+                else ProjectedPoints([], [], metadata=metadata)
+            )
+        values = np.asarray(
+            (
+                projected.x[0], projected.y[0],
+                projected.x[1], projected.y[1],
+            ),
+            dtype=float,
+        )
+        if not np.all(np.isfinite(values)):
+            raise ValueError(
+                "The projected comet antisolar direction is not finite."
+            )
+        dx = projected.x[1] - projected.x[0]
+        dy = projected.y[1] - projected.y[0]
+        if dx == 0.0 and dy == 0.0:
+            raise ValueError(
+                "The projected comet antisolar direction is degenerate."
+            )
+        metadata["comet_symbol_rotation_deg"] = degrees(atan2(dy, dx))
+        for key in (
+            "semantic_entity_keys",
+            "semantic_entity_display_names",
+        ):
+            values = metadata.get(key)
+            if values is not None and len(values) == 2:
+                metadata[key] = np.asarray(values[:1], dtype=object)
+        primary = ProjectedPoints(
+            projected.x[:1],
+            projected.y[:1],
+            metadata=metadata,
+            ids=None if projected.ids is None else projected.ids[:1],
+            labels=(
+                None if projected.labels is None else projected.labels[:1]
+            ),
+            names=None if projected.names is None else projected.names[:1],
+        )
+        clipped = clip(spherical, projected)
+        primary_visible = len(clipped) > 0 and bool(clipped.finite[0])
+        if not primary_visible:
+            return ProjectedPoints([], [], metadata=metadata)
+        return primary
+
+    return prepare
+
+
+def _comet_symbol_render_options(base_options, spherical, projected):
+    """Rotate the canonical asset by its projection-derived page angle."""
+    del spherical
+    options = {
+        **base_options,
+        "style": dict(base_options["style"]),
+        "label_style": dict(base_options["label_style"]),
+    }
+    rotation = projected.metadata.get("comet_symbol_rotation_deg")
+    if projected.metadata.get("comet_tail_suppressed", False):
+        options["style"]["marker"] = DEFAULT_SYMBOLS.comet_head
+        return options
+    if rotation is None:
+        raise ValueError("Prepared comet geometry has no symbol rotation.")
+    options["style"]["marker"] = DEFAULT_SYMBOLS.comet.transformed(
+        Affine2D().rotate_deg(float(rotation))
+    )
+    return options
 
 
 def resolved_outside_mask_style(style=None):
@@ -152,6 +249,12 @@ class PublicationStyle:
     asteroid_alpha: float = 1.0
     asteroid_draw_label: bool = True
     asteroid_label_fontsize: float = 7.0
+    comet_color: str = "#8c5a00"
+    comet_symbol_size: float = 770.0
+    comet_linewidth: float = 0.8
+    comet_alpha: float = 1.0
+    comet_draw_label: bool = True
+    comet_label_fontsize: float = 7.0
     moon_symbol_size: float = 42.0
     moon_linewidth: float = 0.8
     moon_alpha: float = 1.0
@@ -280,9 +383,13 @@ class PublicationStyle:
             minimum=minimum,
         )
         options = {}
-        moving_bodies = tuple(
-            getattr(sky, "solar_system_bodies", {}).values()
-        )
+        moving_bodies = tuple(dict.fromkeys((
+            *getattr(sky, "solar_system_bodies", {}).values(),
+            *(
+                layer for layer in getattr(sky, "layers", ())
+                if getattr(layer, "display_kind", None) == "symbolic_point"
+            ),
+        )))
         if not moving_bodies and getattr(sky, "venus", None) is not None:
             moving_bodies = (sky.venus,)
         for body_layer in moving_bodies:
@@ -291,12 +398,19 @@ class PublicationStyle:
                 "body_class",
                 "planet",
             )
-            prefix = "asteroid" if body_class == "asteroid" else "venus"
-            options[body_layer] = {
-                "prepare": clip,
-                "render": {
+            prefix = (
+                body_class
+                if body_class in {"asteroid", "comet"}
+                else "venus"
+            )
+            marker = (
+                DEFAULT_SYMBOLS.comet
+                if body_class == "comet"
+                else getattr(self, f"{prefix}_marker")
+            )
+            body_render_options = {
                     "style": {
-                        "marker": getattr(self, f"{prefix}_marker"),
+                        "marker": marker,
                         "s": getattr(self, f"{prefix}_symbol_size"),
                         "facecolors": "none",
                         "edgecolors": getattr(self, f"{prefix}_color"),
@@ -316,7 +430,22 @@ class PublicationStyle:
                         "zorder": layers.LABELS,
                     },
                     "label_offset": (0.0, 0.02),
-                },
+            }
+            options[body_layer] = {
+                "prepare": (
+                    _comet_symbol_prepare(clip)
+                    if body_class == "comet"
+                    else clip
+                ),
+                "render": (
+                    (lambda spherical, projected, base=body_render_options: (
+                        _comet_symbol_render_options(
+                            base, spherical, projected
+                        )
+                    ))
+                    if body_class == "comet"
+                    else body_render_options
+                ),
             }
         if getattr(sky, "moon", None) is not None:
             options[sky.moon] = {

@@ -38,6 +38,27 @@ def test_cli_builds_start_inclusive_observed_sequence_without_minor_step():
     assert chart_disk_options(arguments()) == ()
 
 
+def test_cli_adapts_phase_component_cadences_to_shared_policy():
+    value = chart_disk_sequence_options(arguments(
+        disk_sequence_labels=False,
+        disk_sequence_symbols="start",
+        disk_sequence_label_cadence="major",
+    ))
+
+    assert value.temporal_components.symbols == "start"
+    assert value.temporal_components.labels == "major"
+
+
+def test_legacy_disk_sequence_labels_reject_conflicting_cadence():
+    import pytest
+
+    with pytest.raises(ValueError, match="conflicts"):
+        chart_disk_sequence_options(arguments(
+            disk_sequence_labels=True,
+            disk_sequence_label_cadence="start",
+        ))
+
+
 def test_sequence_layers_share_state_and_have_stable_semantics():
     request = chart_disk_sequence_options(arguments())
     layers = observed_venus_disk_sequence_layers(
@@ -84,3 +105,29 @@ def test_post_projection_magnification_uses_each_physical_centre():
     assert np.allclose(result[1].x, (10.0, 13.0))
     assert np.allclose(result[1].y, (5.0, 5.0))
     assert result.metadata["display_magnification"] == 3.0
+
+
+def test_post_projection_magnification_uses_selected_temporal_centres():
+    realization = SimpleNamespace(
+        transformed=SimpleNamespace(centres=object())
+    )
+    preparation = MagnifyProjectedDiskSequence(
+        realization, 3.0, sample_indices=(0,)
+    )
+    projected = ProjectedCurves([
+        ProjectedCurve(
+            x=np.asarray((0.0, 1.0)), y=np.asarray((0.0, 0.0))
+        ),
+    ])
+
+    def project(value):
+        assert value is realization.transformed.centres
+        return ProjectedPoints(
+            x=np.asarray((0.0, 10.0, 20.0, 30.0)),
+            y=np.asarray((0.0, 5.0, 10.0, 15.0)),
+        )
+
+    result = preparation.bind_project_geometry(project)(None, projected)
+
+    assert np.allclose(result[0].x, (0.0, 3.0))
+    assert np.allclose(result[0].y, (0.0, 0.0))

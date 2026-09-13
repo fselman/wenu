@@ -1550,12 +1550,23 @@ and simultaneous planet, asteroid, and comet tracks when they share one field.
 The proposed implementation therefore generalizes the singular track request
 to a collection with one shared timeline; artificial satellites and per-track
 timelines remain deferred.
-The proposed symbol is constructed from a hollow circle, short radial spokes,
+
+Visual review of the provisional 50A.5B implementation exposed duplicate
+target evaluation for symbols placed at track anchors. Corrective audit
+50A.5B.1 therefore introduced one shared track realization with independently
+selectable path, tick, symbol, and date-label components. The same exact-major-
+anchor presentation policy is reused by observed Venus and Moon and by the
+frozen-Earth-ecliptic Mercury phase sequence while their physical disk
+realization remains separately owned. Fernando accepted the corrective
+architecture and the Encke and Venus presentations on 2026-09-13. Final Mac
+verification passed the complete 2,331-test suite in 84.56 seconds, closing
+50A.5B.1.
+The accepted symbol is constructed from a hollow circle, short radial spokes,
 and three longer tail spokes; the central tail spoke is 1.5 times the exposed
-length of the two symmetric outer spokes and their initial total fan angle is
-25 degrees, pending visual acceptance. Wenu owns one canonical immutable
+length of the two symmetric outer spokes and their total fan angle is 25
+degrees. Wenu owns one canonical immutable
 normalized vector definition; each use applies only placement, antisolar
 orientation, and magnification rather than reconstructing the geometry.
-Because antisolar orientation is a physical direction claim, the implementation
-must characterize and accept an independent direct-Horizons position-angle
-oracle before rendering; fixed fan length and opening remain symbolic.
+The antisolar direction claim is enforced against the accepted independent
+direct-Horizons position-angle oracle; fixed fan length and opening remain
+symbolic.

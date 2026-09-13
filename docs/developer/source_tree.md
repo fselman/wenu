@@ -1463,3 +1463,19 @@ owns deterministic contract coverage;
   bounded 2P/Encke identity, resource, point, track, appearance, failure, and
   acceptance contract;
 - existing runtime owners remain unchanged by the audit.
+
+## 50A.5B.1 temporal-component corrective audit ownership
+
+- `docs/developer/solar_system_temporal_components_audit_50a5b1.md` owns the
+  accepted common temporal-anchor and independently visible path, tick,
+  symbol, label, and observed-phase reuse contract;
+- `temporal_components.py` owns immutable start-inclusive `none`, `start`, and
+  `major` selection without scientific realization;
+- the generic Solar-System track realization is shared by its path, tick,
+  symbol, and label views, while comet appearance supplies per-epoch
+  orientation without reevaluating the target;
+- the existing observed Venus and Moon and frozen-Earth Mercury sequence
+  owners retain phase physics and apply the same policy only after complete
+  scientific realization;
+- Fernando accepted the Encke and Venus presentations, and the complete Mac
+  gate passed all 2,331 tests in 84.56 seconds on 2026-09-13.

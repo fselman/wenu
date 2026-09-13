@@ -468,6 +468,7 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
             "dwarf_planet": "dwarf_planets",
             "minor_body": "minor_bodies",
             "asteroid": ("minor_bodies", "asteroids"),
+            "comet": ("minor_bodies", "comets"),
             "natural_satellite": "natural_satellites",
             "artificial_satellite": "artificial_satellites",
         }
@@ -501,7 +502,11 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
                 and body.iau_number is not None
                 and body.entity_key.startswith("asteroid_")
             )
-            else body.entity_key
+            else (
+                body.selection_key
+                if body.body_class == "comet"
+                else body.entity_key
+            )
         )
         if display_kind == "symbolic_point":
             contract = SemanticLayerContract(

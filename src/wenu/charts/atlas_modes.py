@@ -194,6 +194,16 @@ def atlas_chart_style(
         asteroid_label_fontsize=(
             style.solar_system.asteroid_label_fontsize * font_scale
         ),
+        comet_color="#FFE6A3",
+        comet_symbol_size=(
+            style.solar_system.comet_symbol_size * symbol_scale
+        ),
+        comet_linewidth=(
+            style.solar_system.comet_linewidth * line_scale
+        ),
+        comet_label_fontsize=(
+            style.solar_system.comet_label_fontsize * font_scale
+        ),
         moon_color="#E6E1D3",
         moon_symbol_size=(
             style.solar_system.moon_symbol_size * symbol_scale

@@ -160,6 +160,8 @@ class SolarSystemTrackResult:
     sample_time_scale: str
     tick_sample_indices: tuple[int, ...]
     apparent_directions: tuple[ApparentDirection, ...]
+    sample_observers: tuple[object, ...]
+    source_binding: EphemerisSourceBinding
     provenance: tuple[str, ...] = field(default_factory=tuple)
 
     def __post_init__(self):
@@ -199,6 +201,14 @@ class SolarSystemTrackResult:
                 "per curve vertex."
             )
         object.__setattr__(self, "apparent_directions", directions)
+        observers = tuple(self.sample_observers)
+        if len(observers) != sample_count:
+            raise ValueError(
+                "sample_observers must contain one observer per curve vertex."
+            )
+        object.__setattr__(self, "sample_observers", observers)
+        if not isinstance(self.source_binding, EphemerisSourceBinding):
+            raise TypeError("source_binding must be an EphemerisSourceBinding.")
         indices = tuple(self.tick_sample_indices)
         if len(indices) != self.request.tick_count + 1:
             raise ValueError(
@@ -308,11 +318,13 @@ class SolarSystemTrackRealizer:
             for offset in request.sample_offsets_days
         )
         apparent_directions = []
+        sample_observers = []
         for sample_time in sample_times:
             sample_observer = self.sample_observer_factory(
                 observer,
                 sample_time,
             )
+            sample_observers.append(sample_observer)
             observer_state = self.observer_state_factory(
                 sample_observer,
                 source=observer_source,
@@ -364,6 +376,8 @@ class SolarSystemTrackRealizer:
             sample_time_scale=start.scale,
             tick_sample_indices=tick_indices,
             apparent_directions=apparent_directions,
+            sample_observers=tuple(sample_observers),
+            source_binding=binding,
             provenance=(
                 "scalar apparent directions evaluated at every sample instant",
                 "assembled once as SphericalCurves before product transformation",

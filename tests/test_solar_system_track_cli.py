@@ -13,7 +13,7 @@ def parse(*values):
     return parser.parse_args(values)
 
 def test_complete_venus_track_group_uses_governed_duration_units():
-    options = chart_track_options(parse(
+    options, = chart_track_options(parse(
         "--planet-track", "venus",
         "--track-start", "2026-08-30T00:00:00Z",
         "--track-sample-step", "1h",
@@ -28,7 +28,7 @@ def test_complete_venus_track_group_uses_governed_duration_units():
     assert options.label_ticks is False
 
 def test_absent_track_group_resolves_to_none():
-    assert chart_track_options(parse()) is None
+    assert chart_track_options(parse()) == ()
 
 def test_partial_track_group_is_rejected():
     with pytest.raises(ValueError, match="requires all track options"):
@@ -57,7 +57,7 @@ def test_tick_count_must_be_positive():
 
 
 def test_major_tick_date_labels_are_explicitly_opt_in():
-    options = chart_track_options(parse(
+    options, = chart_track_options(parse(
         "--planet-track", "venus",
         "--track-start", "2026-08-30T00:00:00Z",
         "--track-sample-step", "1h",
@@ -66,6 +66,25 @@ def test_major_tick_date_labels_are_explicitly_opt_in():
         "--track-tick-labels",
     ))
     assert options.label_ticks is True
+
+
+def test_track_presentation_components_have_independent_cli_controls():
+    arguments = parse(
+        "--planet-track", "venus",
+        "--track-start", "2026-08-30T00:00:00Z",
+        "--track-sample-step", "1h",
+        "--track-tick-step", "7d",
+        "--track-tick-count", "4",
+        "--no-track-path",
+        "--no-track-ticks",
+        "--track-symbols", "major",
+        "--track-labels", "start",
+    )
+
+    assert arguments.track_path is False
+    assert arguments.track_ticks is False
+    assert arguments.track_symbols == "major"
+    assert arguments.track_labels == "start"
 
 
 def test_ceres_point_track_and_resource_directory_are_independent_options():
@@ -78,7 +97,7 @@ def test_ceres_point_track_and_resource_directory_are_independent_options():
         "--track-tick-step", "7d",
         "--track-tick-count", "4",
     )
-    options = chart_track_options(arguments)
+    options, = chart_track_options(arguments)
     assert arguments.asteroid == ["ceres"]
     assert arguments.minor_body_resource_directory == Path(
         "/tmp/wenu-minor-bodies"
@@ -86,11 +105,46 @@ def test_ceres_point_track_and_resource_directory_are_independent_options():
     assert options.body == "ceres"
 
 
-def test_planet_and_asteroid_tracks_are_mutually_exclusive():
-    with pytest.raises(ValueError, match="either --planet-track"):
+def test_planet_asteroid_and_comet_tracks_share_one_timeline():
+    options = chart_track_options(parse(
+        "--planet-track", "venus",
+        "--asteroid-track", "ceres",
+        "--comet-track", "2P",
+        "--track-start", "2026-01-15T00:00:00Z",
+        "--track-sample-step", "1d",
+        "--track-tick-step", "7d",
+        "--track-tick-count", "4",
+    ))
+
+    assert tuple(option.body for option in options) == (
+        "venus", "ceres", "2p",
+    )
+    assert len({option.start_instant for option in options}) == 1
+
+
+@pytest.mark.parametrize(
+    ("selection", "normalized"),
+    (("2P", "2p"), ("2P/Encke", "2p/encke"), ("Encke", "encke")),
+)
+def test_comet_track_accepts_installed_designation_and_name_aliases(
+    selection, normalized
+):
+    options = chart_track_options(parse(
+        "--comet-track", selection,
+        "--track-start", "2026-11-13T00:00:00Z",
+        "--track-sample-step", "12h",
+        "--track-tick-step", "7d",
+        "--track-tick-count", "5",
+    ))
+
+    assert options[0].body == normalized
+
+
+def test_track_target_may_not_be_repeated():
+    with pytest.raises(ValueError, match="cannot repeat"):
         chart_track_options(parse(
             "--planet-track", "venus",
-            "--asteroid-track", "ceres",
+            "--planet-track", "venus",
             "--track-start", "2026-01-15T00:00:00Z",
             "--track-sample-step", "1d",
             "--track-tick-step", "7d",
