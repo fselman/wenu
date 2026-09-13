@@ -4439,4 +4439,26 @@ def test_50a5c_audits_a_second_comet_before_minor_body_closure():
     assert "horizons_comet_validation_50a5c.json" in source_tree
     assert "generic offline comet installer" in source_tree
     assert "Milestone 50A.5C is\nclosed" in roadmap
-\n\ndef test_50a5d_audits_comet_discovery_acquisition_and_reports():\n    audit = \" \".join(read(\n        DEVELOPER / \"comet_discovery_and_reporting_audit_50a5d.md\"\n    ).split())\n\n    for phrase in (\n        \"This audit changes no runtime code\",\n        \"wenu_retrieve_comets START STOP\",\n        \"perihelion instant `tp` lies within the closed input interval\",\n        \"It is not a visibility forecast\",\n        \"provider's comet photometric parameters\",\n        \"provider-trusted operational path\",\n        \"P`, `D`, `I`, `C`, `X`, `A`\",\n        \"10P/Tempel 2\",\n        \"one report pair\",\n        \"SolarSystemTrackResult\",\n        \"must not repeat an ephemeris calculation\",\n        \"artificial satellites remain outside\",\n        \"Fernando's acceptance would authorize only 50A.5D.1\",\n    ):\n        assert phrase.lower() in audit.lower()\n
+
+
+def test_50a5d_audits_comet_discovery_acquisition_and_reports():
+    audit = " ".join(read(
+        DEVELOPER / "comet_discovery_and_reporting_audit_50a5d.md"
+    ).split())
+
+    for phrase in (
+        "This audit changes no runtime code",
+        "wenu_retrieve_comets START STOP",
+        "perihelion instant `tp` lies within the closed input interval",
+        "It is not a visibility forecast",
+        "provider's comet photometric parameters",
+        "provider-trusted operational path",
+        "P`, `D`, `I`, `C`, `X`, `A`",
+        "10P/Tempel 2",
+        "one report pair",
+        "SolarSystemTrackResult",
+        "must not repeat an ephemeris calculation",
+        "artificial satellites remain outside",
+        "Fernando's acceptance would authorize only 50A.5D.1",
+    ):
+        assert phrase.lower() in audit.lower()
