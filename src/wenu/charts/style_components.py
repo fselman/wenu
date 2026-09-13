@@ -188,6 +188,12 @@ class SolarSystemStyle:
     asteroid_alpha: float = 1.0
     asteroid_draw_label: bool = True
     asteroid_label_fontsize: float = 7.0
+    comet_color: str = "#8c5a00"
+    comet_symbol_size: float = 30.8
+    comet_linewidth: float = 0.8
+    comet_alpha: float = 1.0
+    comet_draw_label: bool = True
+    comet_label_fontsize: float = 7.0
 
 
 @dataclass(frozen=True)
@@ -434,6 +440,12 @@ class ChartStyle:
             asteroid_alpha=solar.asteroid_alpha,
             asteroid_draw_label=solar.asteroid_draw_label,
             asteroid_label_fontsize=solar.asteroid_label_fontsize,
+            comet_color=solar.comet_color,
+            comet_symbol_size=solar.comet_symbol_size,
+            comet_linewidth=solar.comet_linewidth,
+            comet_alpha=solar.comet_alpha,
+            comet_draw_label=solar.comet_draw_label,
+            comet_label_fontsize=solar.comet_label_fontsize,
             moon_color=solar.moon_color,
             moon_marker=solar.moon_marker,
             moon_symbol_size=solar.moon_symbol_size,

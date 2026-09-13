@@ -8,14 +8,13 @@ import numpy as np
 
 from wenu.rendering import layers
 from wenu.rendering.label_placement import CurveLabelPlacement
-from wenu.rendering.symbols import DEFAULT_SYMBOLS
 from wenu.rendering.preparation import (
     clip_polygons_to_latitude,
     clip_to_latitude,
     magnitude_sizes,
     point_styles,
-    radial_label_offset,
 )
+from wenu.rendering.symbols import DEFAULT_SYMBOLS
 from wenu.sky.coordinate_grids import CoordinatesGrid
 
 
@@ -152,6 +151,12 @@ class PublicationStyle:
     asteroid_alpha: float = 1.0
     asteroid_draw_label: bool = True
     asteroid_label_fontsize: float = 7.0
+    comet_color: str = "#8c5a00"
+    comet_symbol_size: float = 30.8
+    comet_linewidth: float = 0.8
+    comet_alpha: float = 1.0
+    comet_draw_label: bool = True
+    comet_label_fontsize: float = 7.0
     moon_symbol_size: float = 42.0
     moon_linewidth: float = 0.8
     moon_alpha: float = 1.0
@@ -291,12 +296,21 @@ class PublicationStyle:
                 "body_class",
                 "planet",
             )
-            prefix = "asteroid" if body_class == "asteroid" else "venus"
+            prefix = (
+                body_class
+                if body_class in {"asteroid", "comet"}
+                else "venus"
+            )
+            marker = (
+                DEFAULT_SYMBOLS.comet
+                if body_class == "comet"
+                else getattr(self, f"{prefix}_marker")
+            )
             options[body_layer] = {
                 "prepare": clip,
                 "render": {
                     "style": {
-                        "marker": getattr(self, f"{prefix}_marker"),
+                        "marker": marker,
                         "s": getattr(self, f"{prefix}_symbol_size"),
                         "facecolors": "none",
                         "edgecolors": getattr(self, f"{prefix}_color"),
