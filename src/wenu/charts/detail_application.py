@@ -523,9 +523,12 @@ def composition_layer_options(
                                 "color": track_color,
                                 "linewidth": (
                                     publication.solar_system_track_linewidth
-                                    if track.draw_path else 0.0
+                                    if getattr(track, "draw_path", True) else 0.0
                                 ),
-                                "alpha": 1.0 if track.draw_path else 0.0,
+                                "alpha": (
+                                    1.0 if getattr(track, "draw_path", True)
+                                    else 0.0
+                                ),
                                 "linestyle": publication.solar_system_track_linestyle,
                                 "zorder": 38.0,
                             },
@@ -533,9 +536,12 @@ def composition_layer_options(
                                 "color": track_color,
                                 "linewidth": (
                                     publication.solar_system_track_tick_linewidth
-                                    if track.draw_ticks else 0.0
+                                    if getattr(track, "draw_ticks", True) else 0.0
                                 ),
-                                "alpha": 1.0 if track.draw_ticks else 0.0,
+                                "alpha": (
+                                    1.0 if getattr(track, "draw_ticks", True)
+                                    else 0.0
+                                ),
                                 "zorder": 38.1,
                             },
                             "labels": {

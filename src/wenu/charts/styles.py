@@ -438,11 +438,11 @@ class PublicationStyle:
                     else clip
                 ),
                 "render": (
-                    lambda spherical, projected, base=body_render_options: (
+                    (lambda spherical, projected, base=body_render_options: (
                         _comet_symbol_render_options(
                             base, spherical, projected
                         )
-                    )
+                    ))
                     if body_class == "comet"
                     else body_render_options
                 ),
