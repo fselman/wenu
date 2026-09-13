@@ -1503,5 +1503,6 @@ owns deterministic contract coverage;
 - `tools/build_50a5c_comet_fixture.py` owns offline 161P identity binding and
   combines that shared numerical parsing with the accepted Sun/PsAng parser;
 - `tools/validate_50a5c_comet.py` composes the existing minor-body numerical
-  and antisolar validators in non-accepting characterization mode until
-  Fernando explicitly accepts measured tolerances.
+  and antisolar validators; Fernando accepted the characterized shared comet
+  envelopes, including `1e-5 deg` for observer-direction components and
+  `0.01 deg` for PsAng, on 2026-09-13.

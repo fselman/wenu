@@ -87,6 +87,7 @@ def test_compact_fixture_preserves_comet_model_and_three_oracle_epochs():
 def test_comet_validator_is_characterization_only(monkeypatch, tmp_path):
     def fake_validate(**arguments):
         assert arguments["characterize"] is True
+        assert arguments["tolerance_overrides"] == {"direction_deg": 1.0e-5}
         return {
             "accepted": False,
             "characterization": True,
@@ -117,6 +118,7 @@ def test_comet_validator_is_characterization_only(monkeypatch, tmp_path):
 def test_comet_validator_enforces_accepted_tolerances(monkeypatch, tmp_path):
     def fake_validate(**arguments):
         assert arguments["characterize"] is False
+        assert arguments["tolerance_overrides"] == {"direction_deg": 1.0e-5}
         return {
             "accepted": True,
             "characterization": False,

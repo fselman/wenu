@@ -1582,3 +1582,9 @@ claim, physical tail model, or parallel runtime pipeline.
 Fernando accepted this bounded audit on 2026-09-13, authorizing evidence
 acquisition and characterization but not a numerical tolerance before the
 measured residuals and source precision are reviewed.
+The subsequent 161P characterization remained within the accepted Encke
+Cartesian, distance, light-time, parallax, and `0.01 deg` PsAng envelopes.
+Fernando accepted those common values and relaxed only the common comet
+observer-direction envelope from the theoretical five-decimal half-step to
+one full printed step, `1e-5 deg` (`0.036 arcsec`), avoiding a platform-fragile
+161P-specific fit.

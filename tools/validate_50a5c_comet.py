@@ -10,11 +10,13 @@ from wenu.observer import DEFAULT_DATA_DIRECTORY, DEFAULT_EPHEMERIS
 
 try:
     from tools.validate_50a2_asteroids import validate
+    from tools.validate_50a4_comet import COMET_TOLERANCE_OVERRIDES
     from tools.validate_50a5b_antisolar import validate_antisolar
 except ModuleNotFoundError as error:
     if error.name != "tools":
         raise
     from validate_50a2_asteroids import validate
+    from validate_50a4_comet import COMET_TOLERANCE_OVERRIDES
     from validate_50a5b_antisolar import validate_antisolar
 
 
@@ -28,6 +30,7 @@ def validate_comet(
         planetary_ephemeris_path=planetary_ephemeris_path,
         reference_path=reference_path,
         characterize=characterize,
+        tolerance_overrides=COMET_TOLERANCE_OVERRIDES,
     )
     orientation = validate_antisolar(
         resource_directory=resource_directory,
@@ -42,6 +45,8 @@ def validate_comet(
         raise AssertionError("50A.5C solution identity is not a comet.")
     if not {"A1", "A2"}.issubset(solution["model_parameters"]):
         raise AssertionError("50A.5C solution discarded A1 or A2.")
+    if characterize:
+        numerical["tolerances"] = None
     return {
         "accepted": not characterize,
         "characterization": bool(characterize),

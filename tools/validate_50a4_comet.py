@@ -21,6 +21,7 @@ REFERENCE = (
     / "fixtures"
     / "horizons_comet_validation_50a4.json"
 )
+COMET_TOLERANCE_OVERRIDES = {"direction_deg": 1.0e-5}
 
 
 def validate_comet(
@@ -33,6 +34,7 @@ def validate_comet(
         planetary_ephemeris_path=planetary_ephemeris_path,
         reference_path=reference_path,
         characterize=characterize,
+        tolerance_overrides=COMET_TOLERANCE_OVERRIDES,
     )
     for result in report["objects"]:
         solution = result["solution"]

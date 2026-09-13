@@ -227,8 +227,15 @@ solution, table, and SPK segment has passed validation.
 
 The offline compact-fixture checkpoint reuses the 50A.4 vector and observer
 table parser through a parameterized comet identity specification. It adds the
-161P Sun and quantity-27 rows to that same numerical record, with both
-numerical and antisolar tolerances explicitly null. The combined validator
+161P Sun and quantity-27 rows to that same numerical record, initially with
+both numerical and antisolar tolerances explicitly null. The combined validator
 delegates to the accepted generic minor-body numerical validator and accepted
 antisolar validator; characterization reports residuals without enforcing or
 reporting candidate thresholds.
+
+Fernando accepted the existing Cartesian, distance, light-time, parallax, and
+`0.01 deg` PsAng envelopes on 2026-09-13. Because the largest 161P coordinate
+residual, `4.9380866053994055e-6 deg`, consumed almost the complete theoretical
+half-step of the five-decimal Horizons table, he accepted `1e-5 deg`
+(`0.036 arcsec`) as the common Encke-and-161P direction envelope. This is a
+source-precision policy, not a 161P-specific fit.

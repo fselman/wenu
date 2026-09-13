@@ -153,7 +153,7 @@ def _direction(observer, minor_source, planetary_source):
 
 def validate(
     *, resource_directory, planetary_ephemeris_path, reference_path,
-    characterize=False,
+    characterize=False, tolerance_overrides=None,
 ):
     reference = json.loads(reference_path.read_text(encoding="utf-8"))
     tolerances = {
@@ -172,6 +172,10 @@ def validate(
     for name, value in configured_tolerances.items():
         if name not in tolerances:
             raise ValueError(f"unknown validation tolerance: {name}")
+        tolerances[name] = float(value)
+    for name, value in (tolerance_overrides or {}).items():
+        if name not in tolerances:
+            raise ValueError(f"unknown validation tolerance override: {name}")
         tolerances[name] = float(value)
     manifest_path = resource_directory / "acquisition-report.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))

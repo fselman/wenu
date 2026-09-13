@@ -20,11 +20,13 @@ try:
         _target_table,
     )
     from tools.build_50a4_comet_fixture import (
+        TOLERANCES as COMET_TOLERANCES,
         _digest,
         _document,
         build_fixture as build_numerical_fixture,
     )
     from tools.build_50a5b_antisolar_fixture import (
+        ANTISOLAR_POSITION_ANGLE_TOLERANCE_DEG,
         _comet_tail_rows,
         _sun_rows,
     )
@@ -42,11 +44,13 @@ except ModuleNotFoundError as error:
         _target_table,
     )
     from build_50a4_comet_fixture import (
+        TOLERANCES as COMET_TOLERANCES,
         _digest,
         _document,
         build_fixture as build_numerical_fixture,
     )
     from build_50a5b_antisolar_fixture import (
+        ANTISOLAR_POSITION_ANGLE_TOLERANCE_DEG,
         _comet_tail_rows,
         _sun_rows,
     )
@@ -77,7 +81,9 @@ def build_fixture(raw_directory):
     """Parse inspected 161P evidence without network access or tolerances."""
     raw_directory = Path(raw_directory).expanduser().resolve()
     fixture = build_numerical_fixture(
-        raw_directory, spec=SPEC, tolerances=None
+        raw_directory,
+        spec=SPEC,
+        tolerances={**COMET_TOLERANCES, "direction_deg": 1.0e-5},
     )
     record = fixture["objects"][0]
     record["aliases"] = [FULL_NAME, "Hartley-IRAS"]
@@ -143,7 +149,11 @@ def build_fixture(raw_directory):
             "provider_spk_id": PROVIDER_SPK_ID,
             "orbit_solution_id": ORBIT_SOLUTION_ID,
         },
-        "tolerances": None,
+        "tolerances": {
+            "antisolar_position_angle_deg": (
+                ANTISOLAR_POSITION_ANGLE_TOLERANCE_DEG
+            ),
+        },
         "source_evidence_sha256": {
             sun_path.name: evidence[sun_path.name]["sha256"],
             tail_path.name: evidence[tail_path.name]["sha256"],

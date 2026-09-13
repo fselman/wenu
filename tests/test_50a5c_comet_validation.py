@@ -129,7 +129,7 @@ def test_second_comet_uses_shared_numerical_parser_and_freezes_orientation(
     fixture = build_fixture(_raw_evidence(tmp_path))
     record = fixture["objects"][0]
 
-    assert fixture["tolerances"] is None
+    assert fixture["tolerances"]["direction_deg"] == 1.0e-5
     assert record["primary_designation"] == "161P"
     assert record["provider_spk_id"] == "1000042"
     assert record["orbit_solution_id"] == "71"
@@ -137,4 +137,6 @@ def test_second_comet_uses_shared_numerical_parser_and_freezes_orientation(
     assert [item["horizons_psang_deg"] for item in fixture["antisolar"]["epochs"]] == [
         269.947, 65.412, 75.2,
     ]
-    assert fixture["antisolar"]["tolerances"] is None
+    assert fixture["antisolar"]["tolerances"] == {
+        "antisolar_position_angle_deg": 0.01,
+    }

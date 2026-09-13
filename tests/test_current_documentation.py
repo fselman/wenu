@@ -4421,7 +4421,9 @@ def test_50a5c_audits_a_second_comet_before_minor_body_closure():
         "Implemented identity checkpoint",
         "Horizons record `90001107`",
         "NAIF\ntarget `1000042`",
-        "both\nnumerical and antisolar tolerances explicitly null",
+        "both numerical and antisolar tolerances explicitly null",
+        "common Encke-and-161P direction envelope",
+        "`0.036 arcsec`",
     ):
         assert phrase.lower() in audit.lower()
     assert "Accepted 50A.5C uses 161P/Hartley-IRAS" in roadmap

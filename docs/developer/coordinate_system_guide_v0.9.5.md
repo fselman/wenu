@@ -3063,13 +3063,16 @@ not chart geometry or an orbit-accuracy claim:
 |---|---:|
 | barycentric ICRF position | `1e-10 au` |
 | barycentric ICRF velocity | `5e-12 au/day` |
-| astrometric or apparent RA/Dec | `5e-6 deg` |
+| astrometric or apparent RA/Dec | `1e-5 deg` |
 | observer distance | `1e-9 au` |
 | one-way light time | `1e-7 min` |
 | geocentric-to-topocentric parallax | `1e-5 deg` |
 
 The angular coordinates in the direct Horizons observer tables are printed to
-five decimal degrees. The direction envelope follows that quantization; the
+five decimal degrees. After the independent 161P characterization approached
+the theoretical half-step, Fernando accepted one full printed decimal step,
+`1e-5 deg` or `0.036 arcsec`, as the shared robust comet direction envelope.
+The
 parallax envelope allows for its derivation from two independently rounded
 directions. The Cartesian envelopes cover the measured type-21 SPK versus
 direct-vector residuals. `--characterize` deliberately disables enforcement
