@@ -7,6 +7,8 @@ import pytest
 
 from tools.acquire_50a5b_antisolar_evidence import (
     EPOCHS,
+    _comet_tail_parameters,
+    _comet_tail_table_identity,
     _sun_parameters,
     _sun_table_identity,
 )
@@ -31,6 +33,27 @@ def test_sun_request_matches_accepted_comet_epochs_and_observer():
     assert parameters["QUANTITIES"] == "'1,45'"
     assert parameters["TIME_TYPE"] == "'UT'"
     assert len(parameters["TLIST"].split(",")) == 3
+
+
+def test_comet_tail_request_asks_horizons_for_psang_before_fallback():
+    parameters = _comet_tail_parameters(EPOCHS)
+
+    assert parameters["COMMAND"] == "'90000091;'"
+    assert parameters["CENTER"] == "'coord@399'"
+    assert parameters["SITE_COORD"] == "'-71.230289,-32.443342,0.052'"
+    assert parameters["REF_SYSTEM"] == "'ICRF'"
+    assert parameters["APPARENT"] == "'AIRLESS'"
+    assert parameters["QUANTITIES"] == "'27,45'"
+
+
+def test_comet_tail_identity_requires_psang_and_exact_solution():
+    with pytest.raises(ValueError, match="PsAng/PsAMV"):
+        _comet_tail_table_identity({
+            "result": (
+                "Target body name: 2P/Encke {source: JPL#K273/14}\n"
+                "$$SOE\n2027-Feb-11 00:00:00.000,1,2,\n$$EOE"
+            )
+        })
 
 
 def test_sun_identity_rejects_minor_planet_10_hygiea():

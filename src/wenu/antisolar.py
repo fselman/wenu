@@ -6,6 +6,9 @@ from math import acos, asin, atan2, cos, degrees, radians, sin
 
 
 MINIMUM_ANTISOLAR_SEPARATION_DEG = 0.1
+MAXIMUM_ANTISOLAR_SEPARATION_DEG = (
+    180.0 - MINIMUM_ANTISOLAR_SEPARATION_DEG
+)
 ANTISOLAR_TANGENT_OFFSET_DEG = 1.0 / 60.0
 
 
@@ -61,12 +64,16 @@ def antisolar_reference_direction(
     minimum_separation_deg=MINIMUM_ANTISOLAR_SEPARATION_DEG,
     offset_deg=ANTISOLAR_TANGENT_OFFSET_DEG,
 ):
-    """Return a nearby tail-axis point, failing closed near conjunction."""
+    """Return a nearby tail-axis point, failing closed near alignment."""
     separation = angular_separation_deg(comet, sun)
-    if separation < minimum_separation_deg:
+    if (
+        separation < minimum_separation_deg
+        or separation > 180.0 - minimum_separation_deg
+    ):
         raise ValueError(
-            "Apparent comet-Sun separation is below the antisolar "
-            f"orientation threshold of {minimum_separation_deg:g} degrees."
+            "Apparent comet-Sun geometry is within the antisolar "
+            f"orientation exclusion of {minimum_separation_deg:g} degrees "
+            "from conjunction or opposition."
         )
     angle = antisolar_position_angle_deg(comet, sun)
     return offset_direction_deg(comet, angle, offset_deg)

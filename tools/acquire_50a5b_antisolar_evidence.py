@@ -39,6 +39,7 @@ EPOCHS = (
     "2027-02-11T00:00:00Z",
     "2027-05-12T00:00:00Z",
 )
+HORIZONS_RECORD = "90000091"
 COMET_REFERENCE_SHA256 = (
     "d440eb4b7a56ed4aff79cd062308e8a81463afec5c6055517865c5c033abb4e1"
 )
@@ -57,10 +58,33 @@ def _sun_parameters(epochs):
     return parameters
 
 
+def _comet_tail_parameters(epochs):
+    """Request provider gas/dust-tail angles and apparent comet direction."""
+    parameters = _horizons_parameters(
+        "observer", epochs, HORIZONS_RECORD, topocentric=True
+    )
+    parameters["QUANTITIES"] = "'27,45'"
+    return parameters
+
+
 def _sun_table_identity(document):
     result = _table_result(document, "topocentric Sun")
     if "Target body name: Sun (10)" not in result:
         raise ValueError("Horizons did not return the Sun (NAIF 10).")
+    return result
+
+
+def _comet_tail_table_identity(document):
+    result = _table_result(document, "topocentric 2P/Encke tail")
+    if (
+        "Target body name: 2P/Encke" not in result
+        or "JPL#K273/14" not in result
+        or "PsAng" not in result
+        or "PsAMV" not in result
+    ):
+        raise ValueError(
+            "Horizons did not return 2P/Encke K273/14 with PsAng/PsAMV."
+        )
     return result
 
 
@@ -76,25 +100,52 @@ def acquire(output_directory, *, comet_reference):
             f"refusing to overwrite 50A.5B evidence in {output_directory}"
         )
 
-    parameters = _sun_parameters(EPOCHS)
-    document, url = _request(HORIZONS_API, parameters)
-    signature = _signature(document, "NASA/JPL Horizons API")
-    _sun_table_identity(document)
-    evidence = {
-        **_write_json(output_directory / "horizons-sun-topocentric.json", document),
-        "request_url": url,
-    }
+    requests = (
+        (
+            "horizons-sun-topocentric.json",
+            _sun_parameters(EPOCHS),
+            _sun_table_identity,
+        ),
+        (
+            "horizons-comet-tail-topocentric.json",
+            _comet_tail_parameters(EPOCHS),
+            _comet_tail_table_identity,
+        ),
+    )
+    evidence = []
+    signature = None
+    for filename, parameters, identity in requests:
+        document, url = _request(HORIZONS_API, parameters)
+        current_signature = _signature(document, "NASA/JPL Horizons API")
+        identity(document)
+        if signature is not None and current_signature != signature:
+            raise ValueError("Horizons evidence signatures do not match.")
+        signature = current_signature
+        evidence.append({
+            **_write_json(output_directory / filename, document),
+            "request_url": url,
+        })
     report = {
         "purpose": "Wenu Milestone 50A.5B raw antisolar-direction evidence",
         "retrieved_at_utc": datetime.now(UTC).isoformat(),
-        "target": {"name": "Sun", "horizons_command": "10"},
+        "targets": (
+            {"name": "Sun", "horizons_command": "10"},
+            {
+                "name": "2P/Encke",
+                "horizons_record": HORIZONS_RECORD,
+                "solution": "K273/14",
+            },
+        ),
         "observer": OBSERVER,
         "epochs_utc": EPOCHS,
         "policy": {
             "reference_system": "ICRF",
             "apparent": "AIRLESS",
-            "quantities": [1, 45],
+            "sun_quantities": [1, 45],
+            "comet_quantities": [27, 45],
             "position_angle_convention": "degrees east of celestial north",
+            "gas_tail_authority": "Horizons PsAng",
+            "dust_tail_diagnostic": "Horizons PsAMV",
         },
         "authority": {
             "source": signature["source"],
@@ -104,7 +155,7 @@ def acquire(output_directory, *, comet_reference):
             "filename": comet_reference.name,
             "sha256": COMET_REFERENCE_SHA256,
         },
-        "evidence": [evidence],
+        "evidence": evidence,
     }
     report_path = output_directory / "acquisition-report.json"
     report_path.write_text(

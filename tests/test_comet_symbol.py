@@ -42,6 +42,8 @@ def test_comet_symbol_is_constructed_once_and_reused_by_name():
     assert DEFAULT_SYMBOLS["comet"] is symbol
     assert DEFAULT_SYMBOLS.symbols["comet"] is symbol
     assert symbol is not DEFAULT_SYMBOLS.planetary_nebula
+    assert DEFAULT_SYMBOLS.comet_head is DEFAULT_SYMBOLS["comet_head"]
+    assert DEFAULT_SYMBOLS.comet_head is not symbol
 
 
 def test_comet_symbol_has_one_circle_seven_short_and_three_tail_strokes():
@@ -49,6 +51,8 @@ def test_comet_symbol_has_one_circle_seven_short_and_three_tail_strokes():
 
     assert sum(symbol.codes == Path.MOVETO) == 11
     assert sum(symbol.codes == Path.CLOSEPOLY) == 1
+    assert sum(DEFAULT_SYMBOLS.comet_head.codes == Path.MOVETO) == 8
+    assert sum(DEFAULT_SYMBOLS.comet_head.codes == Path.CLOSEPOLY) == 1
 
 
 def test_comet_line_appearance_is_style_owned_not_symbol_owned():
@@ -125,9 +129,45 @@ def test_antisolar_reference_is_a_small_offset_on_the_tail_axis():
     assert angular_separation_deg(comet, reference) == pytest.approx(1 / 60)
 
 
-def test_antisolar_reference_fails_closed_near_solar_conjunction():
-    with pytest.raises(ValueError, match="orientation threshold"):
-        antisolar_reference_direction((10.0, 20.0), (10.01, 20.0))
+@pytest.mark.parametrize("sun", ((10.01, 20.0), (190.0, -20.0)))
+def test_antisolar_reference_fails_closed_near_solar_alignment(sun):
+    with pytest.raises(ValueError, match="orientation exclusion"):
+        antisolar_reference_direction((10.0, 20.0), sun)
+
+
+def test_suppressed_tail_uses_the_canonical_head_only_symbol():
+    class Layer:
+        body_descriptor = SimpleNamespace(body_class="comet")
+        request_draw_label = True
+
+    class Sky:
+        def __getattr__(self, name):
+            del name
+            return None
+
+    layer = Layer()
+    sky = Sky()
+    sky.solar_system_bodies = {"2p": layer}
+    sky.magellanic_cloud_isophotes = {}
+    sky.coordinate_grids = ()
+    sky.layers = ()
+    options = PublicationStyle().layer_options(sky)[layer]
+    spherical = SphericalPoints(
+        [10.0], [20.0],
+        coordinate_spec=CoordinateSpec(
+            frame="icrs", origin="observer",
+            position_status=PositionStatus.APPARENT,
+        ),
+    )
+    projected = ProjectedPoints(
+        [1.0], [2.0], metadata={"comet_tail_suppressed": True}
+    )
+
+    prepared = options["prepare"](spherical, projected)
+    render = options["render"](spherical, prepared)
+
+    assert len(prepared) == 1
+    assert render["style"]["marker"] is DEFAULT_SYMBOLS.comet_head
 
 
 def test_comet_symbol_orientation_follows_projected_axis_without_mutation():

@@ -8,8 +8,10 @@ import numpy as np
 
 from wenu.coordinate_service import CoordinateService
 from wenu.antisolar import (
+    angular_separation_deg,
     antisolar_position_angle_deg,
     antisolar_reference_direction,
+    MINIMUM_ANTISOLAR_SEPARATION_DEG,
 )
 from wenu.geometry.spherical import SphericalPoints
 from wenu.sky.realization import LayerRealizationContext
@@ -243,21 +245,34 @@ class SolarSystemPointLayer(SkyLayer):
                 float(sun_apparent.lon_deg[0]),
                 float(sun_apparent.lat_deg[0]),
             )
-            reference = antisolar_reference_direction(
+            separation = angular_separation_deg(
                 comet_direction, sun_direction
             )
-            lon_deg = np.asarray((comet_direction[0], reference[0]))
-            lat_deg = np.asarray((comet_direction[1], reference[1]))
-            entity_keys = (
-                self.descriptor.entity_key,
-                f"{self.descriptor.entity_key}__antisolar_reference",
+            tail_suppressed = (
+                separation < MINIMUM_ANTISOLAR_SEPARATION_DEG
+                or separation
+                > 180.0 - MINIMUM_ANTISOLAR_SEPARATION_DEG
             )
-            display_names = (self.descriptor.display_name, None)
-            labels = (labels[0], None)
+            if not tail_suppressed:
+                reference = antisolar_reference_direction(
+                    comet_direction, sun_direction
+                )
+                lon_deg = np.asarray((comet_direction[0], reference[0]))
+                lat_deg = np.asarray((comet_direction[1], reference[1]))
+                entity_keys = (
+                    self.descriptor.entity_key,
+                    f"{self.descriptor.entity_key}__antisolar_reference",
+                )
+                display_names = (self.descriptor.display_name, None)
+                labels = (labels[0], None)
             orientation_metadata = {
-                "comet_symbol_orientation_reference_index": 1,
+                "comet_tail_suppressed": tail_suppressed,
+                "apparent_sun_comet_separation_deg": separation,
+                "comet_symbol_orientation_reference_index": (
+                    None if tail_suppressed else 1
+                ),
                 "antisolar_position_angle_deg": (
-                    antisolar_position_angle_deg(
+                    None if tail_suppressed else antisolar_position_angle_deg(
                         comet_direction, sun_direction
                     )
                 ),

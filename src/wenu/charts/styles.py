@@ -24,12 +24,33 @@ from wenu.sky.coordinate_grids import CoordinatesGrid
 def _comet_symbol_prepare(clip):
     """Bind projected tail-axis orientation and hide its reference point."""
     def prepare(spherical, projected):
+        tail_suppressed = bool(
+            projected.metadata.get("comet_tail_suppressed", False)
+        )
         reference_index = projected.metadata.get(
             "comet_symbol_orientation_reference_index"
         )
-        if reference_index != 1 or len(projected) != 2:
+        expected_length = 1 if tail_suppressed else 2
+        if (
+            len(projected) != expected_length
+            or (not tail_suppressed and reference_index != 1)
+        ):
             raise ValueError(
-                "A comet symbol requires one projected antisolar reference."
+                "Comet geometry does not match its tail-orientation policy."
+            )
+        metadata = dict(projected.metadata)
+        if tail_suppressed:
+            primary = ProjectedPoints(
+                projected.x[:1], projected.y[:1], metadata=metadata,
+                ids=None if projected.ids is None else projected.ids[:1],
+                labels=(None if projected.labels is None else projected.labels[:1]),
+                names=None if projected.names is None else projected.names[:1],
+            )
+            clipped = clip(spherical, projected)
+            return (
+                primary
+                if len(clipped) and bool(clipped.finite[0])
+                else ProjectedPoints([], [], metadata=metadata)
             )
         values = np.asarray(
             (
@@ -48,7 +69,6 @@ def _comet_symbol_prepare(clip):
             raise ValueError(
                 "The projected comet antisolar direction is degenerate."
             )
-        metadata = dict(projected.metadata)
         metadata["comet_symbol_rotation_deg"] = degrees(atan2(dy, dx))
         for key in (
             "semantic_entity_keys",
@@ -85,6 +105,9 @@ def _comet_symbol_render_options(base_options, spherical, projected):
         "label_style": dict(base_options["label_style"]),
     }
     rotation = projected.metadata.get("comet_symbol_rotation_deg")
+    if projected.metadata.get("comet_tail_suppressed", False):
+        options["style"]["marker"] = DEFAULT_SYMBOLS.comet_head
+        return options
     if rotation is None:
         raise ValueError("Prepared comet geometry has no symbol rotation.")
     options["style"]["marker"] = DEFAULT_SYMBOLS.comet.transformed(

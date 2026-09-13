@@ -68,8 +68,8 @@ def _radial_segment(angle_deg, inner_radius, outer_radius):
     )
 
 
-def _comet_symbol() -> Path:
-    """Materialize the canonical hollow circle and spoke geometry once."""
+def _comet_head_symbol() -> Path:
+    """Materialize the canonical coma and short-spoke geometry once."""
     geometry = COMET_SYMBOL_GEOMETRY
     circle = Path.unit_circle().transformed(
         Affine2D().scale(geometry.circle_radius)
@@ -82,6 +82,12 @@ def _comet_symbol() -> Path:
         )
         for angle in geometry.short_spoke_angles_deg
     )
+    return Path.make_compound_path(circle, *spokes)
+
+
+def _comet_symbol() -> Path:
+    """Materialize the canonical head plus three-spoke tail once."""
+    geometry = COMET_SYMBOL_GEOMETRY
     tail = tuple(
         _radial_segment(angle, geometry.circle_radius, radius)
         for angle, radius in zip(
@@ -90,7 +96,7 @@ def _comet_symbol() -> Path:
             strict=True,
         )
     )
-    return Path.make_compound_path(circle, *spokes, *tail)
+    return Path.make_compound_path(_comet_head_symbol(), *tail)
 
 
 def _circle_with_radial_ticks() -> Path:
@@ -169,6 +175,7 @@ class SymbolLibrary:
         default_factory=_filled_five_point_star
     )
     comet: Path = field(default_factory=_comet_symbol)
+    comet_head: Path = field(default_factory=_comet_head_symbol)
 
     @property
     def symbols(self) -> Mapping[str, Path]:
@@ -181,6 +188,7 @@ class SymbolLibrary:
                 "multiple_star": self.multiple_star,
                 "filled_five_point_star": self.filled_five_point_star,
                 "comet": self.comet,
+                "comet_head": self.comet_head,
             }
         )
 
