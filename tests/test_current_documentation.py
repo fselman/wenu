@@ -3174,6 +3174,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "second_drawable_comet_audit_50a5c.md",
         "comet_discovery_and_reporting_audit_50a5d.md",
         "comet_discovery_50a5d1a.md",
+        "comet_name_resolution_audit_50a5d2a.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -4507,3 +4508,29 @@ def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
     ):
         assert phrase in user_guide
     assert 'wenu_retrieve_comets = "wenu.cli.comets:main"' in project
+
+
+def test_50a5d2a_audits_exact_comet_name_resolution():
+    audit = " ".join(read(
+        DEVELOPER / "comet_name_resolution_audit_50a5d2a.md"
+    ).split())
+    roadmap = " ".join(read(
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).split())
+
+    for phrase in (
+        "Accepted by Fernando on 2026-09-13",
+        "provider-backed exact comet identity",
+        "case-folded after trimming and collapsing whitespace",
+        "`10P/Tempel 2` may resolve to the same identity as `10P`",
+        "`Tempel` is not an exact alias",
+        "`10` is not `10P`",
+        "No failure falls back to the first provider row",
+        "tests/test_minor_body_identity.py",
+        "production code may contain no `10P` conditional",
+        "authorizes only the identity resolver",
+    ):
+        assert phrase in audit
+
+    assert "accepted 50A.5D.2A audit" in roadmap
+    assert "SPK acquisition" in roadmap

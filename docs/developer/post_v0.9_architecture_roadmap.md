@@ -1614,3 +1614,11 @@ The accepted 50A.5D.1A implementation provides only the deterministic SBDB
 query, typed rows, and table/JSON command. Fernando deferred observer-dependent Horizons
 magnitude and its cadence to 50A.5D.1B. Comet acquisition and moving-object
 reports remain unauthorized later slices.
+
+The accepted 50A.5D.2A audit isolates exact comet identity resolution before
+acquisition. It reuses exact installed aliases, permits one explicit SBDB
+identity query for an uninstalled selection, and fails on partial, absent,
+ambiguous, fragment-ambiguous, or bare-number input rather than guessing.
+`10P/Tempel 2` is only the first acceptance specimen. SPK acquisition, cache
+publication, chart integration, magnitude, and reports remain outside this
+accepted audit.
