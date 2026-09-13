@@ -13,7 +13,6 @@ from tools.acquire_50a5b_antisolar_evidence import (
     _sun_table_identity,
 )
 from tools.build_50a5b_antisolar_fixture import (
-    ANTISOLAR_POSITION_ANGLE_TOLERANCE_DEG,
     build_fixture,
 )
 from wenu.antisolar import (
@@ -146,6 +145,20 @@ def test_offline_builder_freezes_independent_sun_and_comet_directions(
     }
     sun_path = tmp_path / "horizons-sun-topocentric.json"
     sun_path.write_text(json.dumps(sun), encoding="utf-8")
+    tail_rows = (
+        " 2026-Nov-13 00:00:00.000,N,m,76.060,168.326,347.16285,11.56332,\n"
+        " 2027-Feb-11 00:00:00.000,C,m,248.649,61.671,312.64901,-18.92222,\n"
+        " 2027-May-12 00:00:00.000, ,m,246.184,133.119,339.76756,-15.70082,\n"
+    )
+    tail = {
+        "signature": sun["signature"],
+        "result": (
+            "Target body name: 2P/Encke {source: JPL#K273/14}\n"
+            "PsAng PsAMV\n$$SOE\n" + tail_rows + "$$EOE\n"
+        ),
+    }
+    tail_path = tmp_path / "horizons-comet-tail-topocentric.json"
+    tail_path.write_text(json.dumps(tail), encoding="utf-8")
     report = {
         "observer": {
             "name": "La Ligua",
@@ -157,10 +170,16 @@ def test_offline_builder_freezes_independent_sun_and_comet_directions(
         "comet_reference": {
             "sha256": acquisition.COMET_REFERENCE_SHA256,
         },
-        "evidence": [{
-            "filename": sun_path.name,
-            "sha256": acquisition._digest(sun_path),
-        }],
+        "evidence": [
+            {
+                "filename": sun_path.name,
+                "sha256": acquisition._digest(sun_path),
+            },
+            {
+                "filename": tail_path.name,
+                "sha256": acquisition._digest(tail_path),
+            },
+        ],
     }
     (tmp_path / "acquisition-report.json").write_text(
         json.dumps(report), encoding="utf-8"
@@ -168,10 +187,7 @@ def test_offline_builder_freezes_independent_sun_and_comet_directions(
 
     fixture = build_fixture(tmp_path, reference)
 
-    assert fixture["tolerances"] == {
-        "antisolar_position_angle_deg": 2.0e-5,
-    }
-    assert ANTISOLAR_POSITION_ANGLE_TOLERANCE_DEG == 2.0e-5
+    assert fixture["tolerances"] is None
     assert fixture["object"] == {
         "key": "2p-encke",
         "primary_designation": "2P",
@@ -182,9 +198,10 @@ def test_offline_builder_freezes_independent_sun_and_comet_directions(
     first = fixture["epochs"][0]
     assert first["comet_apparent_icrf_deg"] == [347.16285, 11.56332]
     assert first["sun_apparent_icrf_deg"] == [230.1, -18.1]
-    assert first["antisolar_position_angle_deg"] == pytest.approx(
+    assert first["antisolar_position_angle_deg"] == pytest.approx(76.060)
+    assert first["horizons_psamv_deg"] == pytest.approx(168.326)
+    assert first["calculated_antisolar_position_angle_deg"] == pytest.approx(
         antisolar_position_angle_deg(
-            first["comet_apparent_icrf_deg"],
-            first["sun_apparent_icrf_deg"],
+            first["comet_apparent_icrf_deg"], first["sun_apparent_icrf_deg"]
         )
     )

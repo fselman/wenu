@@ -71,13 +71,20 @@ def validate_antisolar(
     """Validate or characterize Wenu's apparent antisolar direction."""
     reference = json.loads(reference_path.read_text(encoding="utf-8"))
     tolerances = reference.get("tolerances")
-    if not isinstance(tolerances, dict) or set(tolerances) != {
-        "antisolar_position_angle_deg"
-    }:
-        raise ValueError("50A.5B reference must set only its accepted tolerance.")
-    tolerance = float(tolerances["antisolar_position_angle_deg"])
-    if tolerance <= 0:
-        raise ValueError("antisolar position-angle tolerance must be positive.")
+    if characterize and tolerances is None:
+        tolerance = None
+    else:
+        if not isinstance(tolerances, dict) or set(tolerances) != {
+            "antisolar_position_angle_deg"
+        }:
+            raise ValueError(
+                "50A.5B reference must set only its accepted tolerance."
+            )
+        tolerance = float(tolerances["antisolar_position_angle_deg"])
+        if tolerance <= 0:
+            raise ValueError(
+                "antisolar position-angle tolerance must be positive."
+            )
     record = reference["object"]
     comet_reference = json.loads(
         (
@@ -133,6 +140,8 @@ def validate_antisolar(
                     "reference_antisolar_position_angle_deg": (
                         epoch["antisolar_position_angle_deg"]
                     ),
+                    "reference_source": "Horizons PsAng",
+                    "horizons_psamv_deg": epoch["horizons_psamv_deg"],
                     "residual_deg": _wrapped(
                         actual, epoch["antisolar_position_angle_deg"]
                     ),
