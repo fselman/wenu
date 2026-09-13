@@ -122,6 +122,24 @@ def test_planet_asteroid_and_comet_tracks_share_one_timeline():
     assert len({option.start_instant for option in options}) == 1
 
 
+@pytest.mark.parametrize(
+    ("selection", "normalized"),
+    (("2P", "2p"), ("2P/Encke", "2p/encke"), ("Encke", "encke")),
+)
+def test_comet_track_accepts_installed_designation_and_name_aliases(
+    selection, normalized
+):
+    options = chart_track_options(parse(
+        "--comet-track", selection,
+        "--track-start", "2026-11-13T00:00:00Z",
+        "--track-sample-step", "12h",
+        "--track-tick-step", "7d",
+        "--track-tick-count", "5",
+    ))
+
+    assert options[0].body == normalized
+
+
 def test_track_target_may_not_be_repeated():
     with pytest.raises(ValueError, match="cannot repeat"):
         chart_track_options(parse(

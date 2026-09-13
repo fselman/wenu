@@ -171,3 +171,9 @@ symbol layers, retains the existing generic observed-disk sequence owner for
 Venus, Mercury, and Moon phase payloads, and adds the independent path, tick,
 symbol-cadence, and label-cadence controls above. Mac regression and visual
 verification remain required before this corrective slice is complete.
+
+Track-owned symbol layers are enabled by the explicit track request and do
+not inherit the independent instantaneous-point selection filter. Comet CLI
+selection admits the installed exact aliases authorized by 50A.5A, including
+`2P`, `2P/Encke`, and `Encke`; the resource collection remains the authority
+that resolves any accepted spelling to one installed descriptor and solution.

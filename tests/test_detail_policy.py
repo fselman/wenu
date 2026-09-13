@@ -792,6 +792,7 @@ def test_request_owned_comet_track_symbol_is_enabled_by_geometry_contract():
     application = apply_resolved_detail(sky, detail)
 
     assert application.layer_options[layer]["enabled"] is True
+    assert "geometry" not in application.layer_options[layer]
 
 
 @pytest.mark.parametrize(

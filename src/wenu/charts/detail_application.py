@@ -372,6 +372,7 @@ def apply_resolved_detail(
         selection_field = _SELECTION_OPTIONS.get(name)
         if (
             selection_field is None
+            and name != "solar_system_track_symbol"
             and getattr(layer, "body_descriptor", None) is not None
             and getattr(layer, "display_kind", None) == "symbolic_point"
         ):

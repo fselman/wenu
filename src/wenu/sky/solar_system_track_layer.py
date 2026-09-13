@@ -120,9 +120,8 @@ class SolarSystemTrackSymbolLayer(SkyLayer):
         self.request_draw_label = bool(draw_label)
 
     def realize(self, context, observer, **geometry_options):
-        selected = geometry_options.pop("selected", None)
-        if selected is not None and self.descriptor.selection_key not in selected:
-            raise ValueError("track-symbol selection must contain its body.")
+        # This layer is owned by an explicit track request, not point selection.
+        geometry_options.pop("selected", None)
         if geometry_options:
             raise TypeError("track symbol accepts no geometry options.")
         result = self.track_realization.realize(context, observer)

@@ -349,7 +349,10 @@ def test_path_and_major_symbols_reuse_one_realized_target_trajectory():
 
     curve = path.realize(CONTEXT, observer)
     request_count = len(source.requests)
-    points = tuple(symbol.realize(CONTEXT, observer) for symbol in symbols)
+    points = tuple(
+        symbol.realize(CONTEXT, observer, selected=frozenset())
+        for symbol in symbols
+    )
 
     assert len(source.requests) == request_count
     assert tuple(float(point.lon_deg[0]) for point in points) == pytest.approx(

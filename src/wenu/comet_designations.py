@@ -11,6 +11,10 @@ _PROVISIONAL = re.compile(
     r"(?:-(?P<fragment>[A-Z]+))?$"
 )
 COMET_DESIGNATION_CLASSES = frozenset({"P", "D", "I", "C", "X", "A"})
+_NUMBERED_NAMED = re.compile(
+    r"^(?P<designation>[1-9]\d*[PDI](?:-[A-Z]+)?)/(?P<name>[^/,]+)$"
+)
+_INSTALLED_NAME = re.compile(r"^[^/,]+$")
 
 
 @dataclass(frozen=True)
@@ -48,3 +52,22 @@ def parse_comet_designation(value):
             fragment=match.group("fragment"),
         )
     raise ValueError(f"invalid comet designation: {value!r}.")
+
+
+def normalize_comet_selection(value):
+    """Normalize a designation or exact installed comet-name alias."""
+    if not isinstance(value, str):
+        raise TypeError("comet selection must be a string.")
+    normalized = " ".join(value.strip().split())
+    if not normalized:
+        raise ValueError("comet selection cannot be empty.")
+    try:
+        parse_comet_designation(normalized)
+    except ValueError:
+        upper = normalized.upper()
+        named = _NUMBERED_NAMED.fullmatch(upper)
+        if named is not None:
+            parse_comet_designation(named.group("designation"))
+        elif _INSTALLED_NAME.fullmatch(normalized) is None:
+            raise ValueError(f"invalid comet selection: {value!r}.") from None
+    return normalized.casefold()

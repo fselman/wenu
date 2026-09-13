@@ -157,16 +157,15 @@ def _asteroid_selection(value):
 
 
 def _comet_selection(value):
-    from wenu.comet_designations import parse_comet_designation
+    from wenu.comet_designations import normalize_comet_selection
 
     name = str(value).strip()
     if not name:
         raise argparse.ArgumentTypeError("comet selection cannot be empty")
     try:
-        parse_comet_designation(name)
+        return normalize_comet_selection(name)
     except (TypeError, ValueError) as error:
         raise argparse.ArgumentTypeError(str(error)) from error
-    return name.casefold()
 
 
 def _constellation_selection(value):
