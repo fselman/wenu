@@ -4474,7 +4474,7 @@ def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
     implementation = " ".join(read(
         DEVELOPER / "comet_discovery_50a5d1a.md"
     ).split())
-    roadmap = read(ROADMAP)
+    roadmap = read(DEVELOPER / "post_v0.9_architecture_roadmap.md")
     reference = read(DEVELOPER / "implementation_reference.md")
     source_tree = read(DEVELOPER / "source_tree.md")
     coordinate_guide = " ".join(read(
@@ -4490,7 +4490,6 @@ def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
         "complete inclusive UTC civil days",
         "not a visibility forecast",
         "sampling policy to a separately reviewed 50A.5D.1B",
-        "does not implement `--observer-location`",
         "does not implement `--observer-location`, model apparent magnitude, comet acquisition, chart preflight, reports",
     ):
         assert phrase in implementation
