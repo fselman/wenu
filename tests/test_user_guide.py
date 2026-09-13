@@ -65,6 +65,7 @@ def test_readme_quick_start_uses_the_canonical_planisphere_interface():
     assert "--style cartoon --mode presentation" in text
     assert "--output output/la-ligua-planisphere.png" in text
     assert "--credits" in text
+    assert "docs/user_guide/assets/la-ligua-planisphere.png" in text
 
 
 def test_readme_image_matches_its_recorded_binary_contract():
