@@ -874,32 +874,27 @@ def chart_disk_sequence_options(arguments):
         if model == "frozen-earth-ecliptic"
         else ObservedSolarSystemDiskSequenceDisplayRequest
     )
-    temporal_components = None
-    if request_type is ObservedSolarSystemDiskSequenceRequest:
-        from wenu.temporal_components import TemporalComponentPolicy
+    from wenu.temporal_components import TemporalComponentPolicy
 
-        symbol_cadence = getattr(arguments, "disk_sequence_symbols", None)
-        label_cadence = getattr(
-            arguments, "disk_sequence_label_cadence", None
+    temporal_components = None
+    symbol_cadence = getattr(arguments, "disk_sequence_symbols", None)
+    label_cadence = getattr(arguments, "disk_sequence_label_cadence", None)
+    legacy_labels = bool(getattr(arguments, "disk_sequence_labels", False))
+    if legacy_labels and label_cadence not in {None, "major"}:
+        raise ValueError(
+            "disk-sequence-labels conflicts with an explicit label cadence."
         )
-        legacy_labels = bool(
-            getattr(arguments, "disk_sequence_labels", False)
+    if symbol_cadence is not None or label_cadence is not None:
+        temporal_components = TemporalComponentPolicy(
+            path=False,
+            ticks=False,
+            symbols="major" if symbol_cadence is None else symbol_cadence,
+            labels=(
+                label_cadence
+                if label_cadence is not None
+                else "major" if legacy_labels else "none"
+            ),
         )
-        if legacy_labels and label_cadence not in {None, "major"}:
-            raise ValueError(
-                "disk-sequence-labels conflicts with an explicit label cadence."
-            )
-        if symbol_cadence is not None or label_cadence is not None:
-            temporal_components = TemporalComponentPolicy(
-                path=False,
-                ticks=False,
-                symbols="major" if symbol_cadence is None else symbol_cadence,
-                labels=(
-                    label_cadence
-                    if label_cadence is not None
-                    else "major" if legacy_labels else "none"
-                ),
-            )
     display_options = {
         "magnification": magnification,
         "label_dates": bool(getattr(arguments, "disk_sequence_labels", False)),

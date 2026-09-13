@@ -11,6 +11,10 @@ from wenu.sky.venus import VENUS_POINT
 from wenu.sky.venus_disk_sequence import (
     observed_solar_system_disk_sequence_layers,
 )
+from wenu.sky.frozen_earth_disk_sequences import FrozenEarthDiskSequenceRequest
+from wenu.sky.frozen_earth_venus_disk_sequence import (
+    frozen_earth_solar_system_disk_sequence_layers,
+)
 from wenu.temporal_components import TemporalComponentPolicy
 
 
@@ -18,6 +22,19 @@ def sequence(descriptor):
     return ObservedSolarSystemDiskSequenceRequest(
         descriptor=descriptor,
         start_instant="2026-09-06T00:00:00Z",
+        start_time_scale="utc",
+        step_days=2.0,
+        n_steps=3,
+        display_name=descriptor.display_name,
+        physical_radius_km=descriptor.physical_radius_km,
+        radius_model=descriptor.radius_model,
+    )
+
+
+def frozen_sequence(descriptor):
+    return FrozenEarthDiskSequenceRequest(
+        descriptor=descriptor,
+        start_instant="2026-08-30T00:00:00Z",
         start_time_scale="utc",
         step_days=2.0,
         n_steps=3,
@@ -35,7 +52,7 @@ def test_start_inclusive_cadence_selection_is_shared(cadence, expected):
     assert TemporalComponentPolicy.indices(cadence, 4) == expected
 
 
-@pytest.mark.parametrize("descriptor", (VENUS_POINT, MERCURY_BODY, MOON_BODY))
+@pytest.mark.parametrize("descriptor", (VENUS_POINT, MOON_BODY))
 def test_phase_bodies_use_common_start_only_component_policy(descriptor):
     policy = TemporalComponentPolicy(
         path=False, ticks=False, symbols="start", labels="start"
@@ -49,6 +66,23 @@ def test_phase_bodies_use_common_start_only_component_policy(descriptor):
         "illuminated", "limb", "terminator", "labels",
     )
     assert all(layer.sample_indices == (0,) for layer in layers)
+    assert len({id(layer.disk_realization) for layer in layers}) == 1
+
+
+def test_frozen_earth_mercury_uses_the_same_start_only_policy():
+    policy = TemporalComponentPolicy(
+        path=False, ticks=False, symbols="start", labels="start"
+    )
+
+    layers = frozen_earth_solar_system_disk_sequence_layers(
+        frozen_sequence(MERCURY_BODY), temporal_components=policy
+    )
+
+    assert tuple(layer.component_role for layer in layers) == (
+        "illuminated", "limb", "terminator", "labels", "sun",
+    )
+    assert all(layer.sample_indices == (0,) for layer in layers[:-1])
+    assert layers[-1].sample_indices is None
     assert len({id(layer.disk_realization) for layer in layers}) == 1
 
 

@@ -20,6 +20,10 @@ from wenu.sky.frozen_earth_disk_sequences import (
 from wenu.sky.realization import LayerRealizationContext
 from wenu.sky.sky_layer import SkyLayer
 from wenu.solar_system_disk_geometry import SolarSystemDiskGeometryRealizer
+from wenu.temporal_components import (
+    TemporalComponentPolicy,
+    select_spherical_entities,
+)
 
 
 @dataclass(frozen=True)
@@ -175,7 +179,7 @@ class FrozenEarthSolarSystemDiskSequenceLayer(SkyLayer):
     component = None
     component_role = None
 
-    def __init__(self, realization, *, magnification=1.0):
+    def __init__(self, realization, *, magnification=1.0, sample_indices=None):
         if not isinstance(
             realization, FrozenEarthSolarSystemDiskSequenceRealization
         ):
@@ -191,6 +195,9 @@ class FrozenEarthSolarSystemDiskSequenceLayer(SkyLayer):
         self.disk_realization = realization
         self.body_descriptor = realization.request.descriptor
         self.magnification = magnification
+        self.sample_indices = (
+            None if sample_indices is None else tuple(sample_indices)
+        )
         self.display_kind = "frozen_earth_disk_sequence"
         if self.component_role == "sun":
             self.layer_name = "frozen_earth_sun"
@@ -211,7 +218,10 @@ class FrozenEarthSolarSystemDiskSequenceLayer(SkyLayer):
         if geometry_options:
             raise TypeError("frozen-Earth sequence accepts no geometry options.")
         realized = self.disk_realization.realize(context, observer)
-        return getattr(realized, self.component)
+        geometry = getattr(realized, self.component)
+        if self.component_role == "sun":
+            return geometry
+        return select_spherical_entities(geometry, self.sample_indices)
 
 
 class FrozenEarthSolarSystemSequenceIlluminatedLayer(
@@ -252,24 +262,38 @@ def frozen_earth_solar_system_disk_sequence_layers(
     *,
     magnification=1.0,
     label_dates=False,
+    temporal_components=None,
 ):
     """Return the fixed Sun and generic shared body-disk components."""
+    if temporal_components is None:
+        temporal_components = TemporalComponentPolicy(
+            path=False, ticks=False, symbols="major",
+            labels="major" if label_dates else "none",
+        )
+    elif not isinstance(temporal_components, TemporalComponentPolicy):
+        raise TypeError("temporal_components must be a TemporalComponentPolicy.")
+    if label_dates and temporal_components.labels != "major":
+        raise ValueError("label_dates conflicts with an explicit label cadence.")
     realization = FrozenEarthSolarSystemDiskSequenceRealization(request)
-    layers = [
-        FrozenEarthSolarSystemSequenceIlluminatedLayer(
-            realization, magnification=magnification
-        ),
-        FrozenEarthSolarSystemSequenceLimbLayer(
-            realization, magnification=magnification
-        ),
-        FrozenEarthSolarSystemSequenceTerminatorLayer(
-            realization, magnification=magnification
-        ),
-    ]
-    if label_dates:
+    count = request.n_steps + 1
+    symbol_indices = temporal_components.symbol_indices(count)
+    label_indices = temporal_components.label_indices(count)
+    layers = []
+    if symbol_indices:
+        options = {
+            "magnification": magnification,
+            "sample_indices": symbol_indices,
+        }
+        layers.extend((
+            FrozenEarthSolarSystemSequenceIlluminatedLayer(realization, **options),
+            FrozenEarthSolarSystemSequenceLimbLayer(realization, **options),
+            FrozenEarthSolarSystemSequenceTerminatorLayer(realization, **options),
+        ))
+    if label_indices:
         layers.append(
             FrozenEarthSolarSystemSequenceLabelsLayer(
-                realization, magnification=magnification
+                realization, magnification=magnification,
+                sample_indices=label_indices,
             )
         )
     layers.append(FrozenEarthSunSymbolLayer(realization, magnification=1.0))

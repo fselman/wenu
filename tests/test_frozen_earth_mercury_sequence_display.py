@@ -46,6 +46,17 @@ def test_cli_exposes_mercury_only_for_its_catalog_capability():
     assert chart_disk_options(arguments()) == ()
 
 
+def test_mercury_cli_uses_the_shared_phase_component_policy():
+    value = chart_disk_sequence_options(arguments(
+        disk_sequence_labels=False,
+        disk_sequence_symbols="start",
+        disk_sequence_label_cadence="start",
+    ))
+
+    assert value.temporal_components.symbols == "start"
+    assert value.temporal_components.labels == "start"
+
+
 def test_cli_rejects_unvalidated_observed_mercury():
     with pytest.raises(
         ValueError,

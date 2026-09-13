@@ -126,6 +126,7 @@ class FrozenEarthSolarSystemDiskSequenceDisplayRequest:
     sequence: FrozenEarthDiskSequenceRequest
     magnification: float = 1.0
     label_dates: bool = False
+    temporal_components: TemporalComponentPolicy | None = None
 
     def __post_init__(self):
         if not isinstance(self.sequence, FrozenEarthDiskSequenceRequest):
@@ -148,6 +149,21 @@ class FrozenEarthSolarSystemDiskSequenceDisplayRequest:
             )
         object.__setattr__(self, "magnification", magnification)
         object.__setattr__(self, "label_dates", bool(self.label_dates))
+        components = self.temporal_components
+        if components is None:
+            components = TemporalComponentPolicy(
+                path=False, ticks=False, symbols="major",
+                labels="major" if self.label_dates else "none",
+            )
+        elif not isinstance(components, TemporalComponentPolicy):
+            raise TypeError(
+                "temporal_components must be a TemporalComponentPolicy."
+            )
+        if self.label_dates and components.labels != "major":
+            raise ValueError(
+                "label_dates conflicts with an explicit label cadence."
+            )
+        object.__setattr__(self, "temporal_components", components)
 
     @property
     def target(self):
@@ -216,12 +232,7 @@ def configure_chart_request_disks(sky, request):
             sequence.sequence,
             magnification=sequence.magnification,
             label_dates=sequence.label_dates,
-            **(
-                {"temporal_components": sequence.temporal_components}
-                if isinstance(
-                    sequence, ObservedSolarSystemDiskSequenceDisplayRequest
-                ) else {}
-            ),
+            temporal_components=sequence.temporal_components,
         )
         for layer in layers:
             setattr(sky, layer.layer_name, layer)

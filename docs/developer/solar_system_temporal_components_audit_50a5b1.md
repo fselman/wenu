@@ -109,11 +109,12 @@ oriented asteroid or planetary symbol may provide a descriptor-selected
 appearance adapter without changing temporal sampling, projection, or
 rendering ownership.
 
-For Venus, Mercury, and the Moon, an observed phase display uses the physical
-disk sample already produced for that epoch. The common temporal policy chooses
-which major samples and dates are visible; it does not recompute or approximate
-phase from the track curve. Thus temporal orchestration is shared while disk
-physics remains in its accepted owner.
+For Venus and the Moon, an observed phase display uses the physical disk sample
+already produced for that epoch. Mercury retains its separately accepted
+frozen-Earth-ecliptic phase model. The common temporal policy chooses which
+major samples and dates are visible in both models; it does not recompute or
+approximate phase from the track curve. Thus temporal orchestration is shared
+while disk physics remains in its accepted owner.
 
 ## 6. Required behavior
 
@@ -167,8 +168,8 @@ Stop if implementation would:
 
 Fernando accepted this corrective architecture on 2026-09-13. The first
 implementation shares one cached `SolarSystemTrackResult` among path and
-symbol layers, retains the existing generic observed-disk sequence owner for
-Venus, Mercury, and Moon phase payloads, and adds the independent path, tick,
+symbol layers, retains the existing generic observed and frozen-Earth sequence
+owners for Venus, Mercury, and Moon phase payloads, and adds the independent path, tick,
 symbol-cadence, and label-cadence controls above. Complete Mac regression
 remains required before this corrective slice is complete.
 
@@ -187,10 +188,10 @@ require the final focused and complete Mac gates.
 
 The shared immutable `TemporalComponentPolicy` now owns start-inclusive
 `none`, `start`, and `major` selection. Track presentation and the existing
-generic observed disk-sequence layers both consume it. Venus, Mercury, and
-Moon phase geometry remains wholly owned and fully sampled by
-`ObservedSolarSystemDiskSequenceRealizer`; the policy filters only the already
-realized drawable components. Existing disk-sequence defaults and
+generic observed and frozen-Earth disk-sequence layers all consume it. Venus
+and Moon observed geometry and Mercury frozen-Earth geometry remain wholly
+owned and fully sampled by their accepted scientific realizers; the policy
+filters only the already realized drawable components. Existing defaults and
 `--disk-sequence-labels` remain compatible. The optional
 `--disk-sequence-symbols` and `--disk-sequence-label-cadence` adapters expose
 independent phase-symbol and date selection without moving phase physics into

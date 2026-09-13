@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from wenu.geometry.spherical import SphericalCurves, SphericalPoints
+
 
 TEMPORAL_CADENCES = frozenset({"none", "start", "major"})
 
@@ -53,3 +55,32 @@ class TemporalComponentPolicy:
 
     def label_indices(self, major_count):
         return self.indices(self.labels, major_count)
+
+
+def select_spherical_entities(geometry, indices):
+    """Select already-realized entities without changing their coordinates."""
+    if indices is None:
+        return geometry
+    indices = tuple(indices)
+    positions = list(indices)
+    common = {
+        "coordinate_spec": geometry.coordinate_spec,
+        "ids": None if geometry.ids is None else geometry.ids[positions],
+        "labels": None if geometry.labels is None else geometry.labels[positions],
+        "names": None if geometry.names is None else geometry.names[positions],
+        "metadata": dict(geometry.metadata),
+    }
+    if isinstance(geometry, SphericalPoints):
+        return SphericalPoints(
+            geometry.lon_deg[positions], geometry.lat_deg[positions], **common
+        )
+    closed = (
+        {"closed": geometry.closed[positions]}
+        if isinstance(geometry, SphericalCurves) else {}
+    )
+    return type(geometry)(
+        tuple(geometry.lon_deg[index] for index in indices),
+        tuple(geometry.lat_deg[index] for index in indices),
+        **common,
+        **closed,
+    )

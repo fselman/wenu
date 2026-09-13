@@ -16,7 +16,10 @@ from wenu.sky.solar_system_disk_sequences import (
     ObservedSolarSystemDiskSequenceRealizer,
     ObservedSolarSystemDiskSequenceRequest,
 )
-from wenu.temporal_components import TemporalComponentPolicy
+from wenu.temporal_components import (
+    TemporalComponentPolicy,
+    select_spherical_entities,
+)
 
 
 @dataclass(frozen=True)
@@ -170,36 +173,6 @@ class ObservedSolarSystemDiskSequenceRealization:
         return self._transformed
 
 
-def _selected_geometry(geometry, indices):
-    """Select already-realized entities while retaining geometry semantics."""
-    if indices is None:
-        return geometry
-    indices = tuple(indices)
-    common = {
-        "coordinate_spec": geometry.coordinate_spec,
-        "ids": None if geometry.ids is None else geometry.ids[list(indices)],
-        "labels": (
-            None if geometry.labels is None else geometry.labels[list(indices)]
-        ),
-        "names": None if geometry.names is None else geometry.names[list(indices)],
-        "metadata": dict(geometry.metadata),
-    }
-    if isinstance(geometry, SphericalPoints):
-        return SphericalPoints(
-            geometry.lon_deg[list(indices)], geometry.lat_deg[list(indices)],
-            **common,
-        )
-    closed = (
-        {"closed": geometry.closed[list(indices)]}
-        if isinstance(geometry, SphericalCurves) else {}
-    )
-    return type(geometry)(
-        tuple(geometry.lon_deg[index] for index in indices),
-        tuple(geometry.lat_deg[index] for index in indices),
-        **common, **closed,
-    )
-
-
 class ObservedSolarSystemDiskSequenceLayer(SkyLayer):
     component = None
     component_role = None
@@ -240,7 +213,7 @@ class ObservedSolarSystemDiskSequenceLayer(SkyLayer):
         geometry = getattr(
             self.disk_realization.realize(context, observer), self.component
         )
-        return _selected_geometry(geometry, self.sample_indices)
+        return select_spherical_entities(geometry, self.sample_indices)
 
 
 class ObservedSolarSystemDiskSequenceIlluminatedLayer(
