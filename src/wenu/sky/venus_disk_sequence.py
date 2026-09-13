@@ -16,6 +16,7 @@ from wenu.sky.solar_system_disk_sequences import (
     ObservedSolarSystemDiskSequenceRealizer,
     ObservedSolarSystemDiskSequenceRequest,
 )
+from wenu.temporal_components import TemporalComponentPolicy
 
 
 @dataclass(frozen=True)
@@ -169,11 +170,41 @@ class ObservedSolarSystemDiskSequenceRealization:
         return self._transformed
 
 
+def _selected_geometry(geometry, indices):
+    """Select already-realized entities while retaining geometry semantics."""
+    if indices is None:
+        return geometry
+    indices = tuple(indices)
+    common = {
+        "coordinate_spec": geometry.coordinate_spec,
+        "ids": None if geometry.ids is None else geometry.ids[list(indices)],
+        "labels": (
+            None if geometry.labels is None else geometry.labels[list(indices)]
+        ),
+        "names": None if geometry.names is None else geometry.names[list(indices)],
+        "metadata": dict(geometry.metadata),
+    }
+    if isinstance(geometry, SphericalPoints):
+        return SphericalPoints(
+            geometry.lon_deg[list(indices)], geometry.lat_deg[list(indices)],
+            **common,
+        )
+    closed = (
+        {"closed": geometry.closed[list(indices)]}
+        if isinstance(geometry, SphericalCurves) else {}
+    )
+    return type(geometry)(
+        tuple(geometry.lon_deg[index] for index in indices),
+        tuple(geometry.lat_deg[index] for index in indices),
+        **common, **closed,
+    )
+
+
 class ObservedSolarSystemDiskSequenceLayer(SkyLayer):
     component = None
     component_role = None
 
-    def __init__(self, realization, *, magnification=1.0):
+    def __init__(self, realization, *, magnification=1.0, sample_indices=None):
         if not isinstance(
             realization, ObservedSolarSystemDiskSequenceRealization
         ):
@@ -187,6 +218,9 @@ class ObservedSolarSystemDiskSequenceLayer(SkyLayer):
         self.disk_realization = realization
         self.body_descriptor = realization.request.descriptor
         self.magnification = magnification
+        self.sample_indices = (
+            None if sample_indices is None else tuple(sample_indices)
+        )
         self.display_kind = "observed_disk_sequence"
         self.layer_name = (
             f"{self.body_descriptor.entity_key}_disk_sequence_"
@@ -203,7 +237,10 @@ class ObservedSolarSystemDiskSequenceLayer(SkyLayer):
     def realize(self, context, observer, **geometry_options):
         if geometry_options:
             raise TypeError("observed disk sequence accepts no geometry options.")
-        return getattr(self.disk_realization.realize(context, observer), self.component)
+        geometry = getattr(
+            self.disk_realization.realize(context, observer), self.component
+        )
+        return _selected_geometry(geometry, self.sample_indices)
 
 
 class ObservedSolarSystemDiskSequenceIlluminatedLayer(
@@ -239,24 +276,38 @@ def observed_solar_system_disk_sequence_layers(
     *,
     magnification=1.0,
     label_dates=False,
+    temporal_components=None,
 ):
     """Return ordered component layers sharing one observed sequence."""
+    if temporal_components is None:
+        temporal_components = TemporalComponentPolicy(
+            path=False, ticks=False, symbols="major",
+            labels="major" if label_dates else "none",
+        )
+    elif not isinstance(temporal_components, TemporalComponentPolicy):
+        raise TypeError("temporal_components must be a TemporalComponentPolicy.")
+    if label_dates and temporal_components.labels != "major":
+        raise ValueError("label_dates conflicts with an explicit label cadence.")
     realization = ObservedSolarSystemDiskSequenceRealization(request)
-    layers = [
-        ObservedSolarSystemDiskSequenceIlluminatedLayer(
-            realization, magnification=magnification
-        ),
-        ObservedSolarSystemDiskSequenceLimbLayer(
-            realization, magnification=magnification
-        ),
-        ObservedSolarSystemDiskSequenceTerminatorLayer(
-            realization, magnification=magnification
-        ),
-    ]
-    if label_dates:
+    count = request.n_steps + 1
+    symbol_indices = temporal_components.symbol_indices(count)
+    label_indices = temporal_components.label_indices(count)
+    layers = []
+    if symbol_indices:
+        options = {
+            "magnification": magnification,
+            "sample_indices": symbol_indices,
+        }
+        layers.extend((
+            ObservedSolarSystemDiskSequenceIlluminatedLayer(realization, **options),
+            ObservedSolarSystemDiskSequenceLimbLayer(realization, **options),
+            ObservedSolarSystemDiskSequenceTerminatorLayer(realization, **options),
+        ))
+    if label_indices:
         layers.append(
             ObservedSolarSystemDiskSequenceLabelsLayer(
-                realization, magnification=magnification
+                realization, magnification=magnification,
+                sample_indices=label_indices,
             )
         )
     return tuple(layers)

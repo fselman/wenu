@@ -8,6 +8,7 @@ from wenu.sky.solar_system_track_layer import (
     SolarSystemTrackSymbolLayer,
 )
 from wenu.sky.solar_system_tracks import SolarSystemTrackRealizer
+from wenu.temporal_components import TemporalComponentPolicy
 
 
 def _selected_point_replaces_start_label(request, track):
@@ -60,35 +61,41 @@ def configure_chart_request_tracks(sky, request, *, source_resolver=None):
                 point.request_draw_label = False
         realizer = SolarSystemTrackRealizer(source_resolver=source_resolver)
         realization = SolarSystemTrackRealization(track, realizer=realizer)
-        labels = request.solar_system_track_labels
-        if labels is None:
-            labels = (
+        label_cadence = request.solar_system_track_labels
+        if label_cadence is None:
+            label_cadence = (
                 "major" if request.solar_system_track_tick_labels else "start"
             )
-        symbols = request.solar_system_track_symbols
-        if symbols is None:
-            symbols = (
+        symbol_cadence = request.solar_system_track_symbols
+        if symbol_cadence is None:
+            symbol_cadence = (
                 "major" if getattr(descriptor, "body_class", None) == "comet"
                 else "none"
             )
+        components = TemporalComponentPolicy(
+            path=request.solar_system_track_path,
+            ticks=request.solar_system_track_ticks,
+            symbols=symbol_cadence,
+            labels=label_cadence,
+        )
         layer = SolarSystemTrackLayer(
             track,
             realization=realization,
-            label_ticks=labels == "major",
-            label_start=labels in {"start", "major"},
+            label_ticks=components.labels == "major",
+            label_start=components.labels in {"start", "major"},
             start_label_text=(
                 _coincident_start_label(descriptor)
                 if replaces_start else None
             ),
-            draw_path=request.solar_system_track_path,
-            draw_ticks=request.solar_system_track_ticks,
+            draw_path=components.path,
+            draw_ticks=components.ticks,
         )
         sky.add(layer)
         layers.append(layer)
-        if symbols != "none":
-            indices = range(1 if symbols == "start" else len(track.tick_offsets_days))
+        if components.symbols != "none":
+            indices = components.symbol_indices(len(track.tick_offsets_days))
             if replaces_start:
-                indices = tuple(indices)[1:]
+                indices = indices[1:]
             symbol_type = (
                 CometTrackSymbolLayer
                 if getattr(descriptor, "body_class", None) == "comet"

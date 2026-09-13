@@ -38,6 +38,27 @@ def test_cli_builds_start_inclusive_observed_sequence_without_minor_step():
     assert chart_disk_options(arguments()) == ()
 
 
+def test_cli_adapts_phase_component_cadences_to_shared_policy():
+    value = chart_disk_sequence_options(arguments(
+        disk_sequence_labels=False,
+        disk_sequence_symbols="start",
+        disk_sequence_label_cadence="major",
+    ))
+
+    assert value.temporal_components.symbols == "start"
+    assert value.temporal_components.labels == "major"
+
+
+def test_legacy_disk_sequence_labels_reject_conflicting_cadence():
+    import pytest
+
+    with pytest.raises(ValueError, match="conflicts"):
+        chart_disk_sequence_options(arguments(
+            disk_sequence_labels=True,
+            disk_sequence_label_cadence="start",
+        ))
+
+
 def test_sequence_layers_share_state_and_have_stable_semantics():
     request = chart_disk_sequence_options(arguments())
     layers = observed_venus_disk_sequence_layers(

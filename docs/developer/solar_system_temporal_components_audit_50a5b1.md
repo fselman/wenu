@@ -1,7 +1,7 @@
 # Solar-System temporal components audit (Milestone 50A.5B.1)
 
 **Status:** Architecture and Encke track presentations accepted by Fernando on
-2026-09-13; complete Mac regression and phase-sequence reuse remain
+2026-09-13; shared phase-sequence reuse implemented, Mac verification pending
 
 **Supersedes:** The provisional 50A.5B implementation choice that realizes
 each comet track symbol through a second `SolarSystemPointLayer` evaluation.
@@ -169,8 +169,8 @@ Fernando accepted this corrective architecture on 2026-09-13. The first
 implementation shares one cached `SolarSystemTrackResult` among path and
 symbol layers, retains the existing generic observed-disk sequence owner for
 Venus, Mercury, and Moon phase payloads, and adds the independent path, tick,
-symbol-cadence, and label-cadence controls above. Complete Mac regression and
-phase-sequence reuse remain required before this corrective slice is complete.
+symbol-cadence, and label-cadence controls above. Complete Mac regression
+remains required before this corrective slice is complete.
 
 Track-owned symbol layers are enabled by the explicit track request and do
 not inherit the independent instantaneous-point selection filter. Comet CLI
@@ -184,3 +184,14 @@ and the complete path-plus-ticks presentation using the same symbols and
 labels. The focused Mac gate passed all 170 tests in 4.28 seconds before the
 canonical-alias and request-owned-symbol corrections; those corrections still
 require the final focused and complete Mac gates.
+
+The shared immutable `TemporalComponentPolicy` now owns start-inclusive
+`none`, `start`, and `major` selection. Track presentation and the existing
+generic observed disk-sequence layers both consume it. Venus, Mercury, and
+Moon phase geometry remains wholly owned and fully sampled by
+`ObservedSolarSystemDiskSequenceRealizer`; the policy filters only the already
+realized drawable components. Existing disk-sequence defaults and
+`--disk-sequence-labels` remain compatible. The optional
+`--disk-sequence-symbols` and `--disk-sequence-label-cadence` adapters expose
+independent phase-symbol and date selection without moving phase physics into
+track code.
