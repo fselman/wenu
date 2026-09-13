@@ -3171,6 +3171,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "comet_numerical_validation_50a4.md",
         "first_drawable_comet_audit_50a5a.md",
         "solar_system_temporal_components_audit_50a5b1.md",
+        "second_drawable_comet_audit_50a5c.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -4402,3 +4403,22 @@ def test_50a5b1_records_shared_temporal_component_closure():
     assert "Accepted 50A.5B.1 adds no coordinate or product frame" in guide
     assert "closing\n50A.5B.1" in roadmap
     assert "temporal_components.py" in source_tree
+
+
+def test_50a5c_audits_a_second_comet_before_minor_body_closure():
+    audit = read(DEVELOPER / "second_drawable_comet_audit_50a5c.md")
+    roadmap = read(DEVELOPER / "post_v0.9_architecture_roadmap.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+
+    for phrase in (
+        "Accepted by Fernando on 2026-09-13",
+        "161P/Hartley-IRAS",
+        "Characterization must precede tolerance selection",
+        "Provider `PsAng` has precedence",
+        "one target evaluation per track sample",
+        "performs no network access",
+        "general comet catalogue, live service",
+    ):
+        assert phrase.lower() in audit.lower()
+    assert "Accepted 50A.5C uses 161P/Hartley-IRAS" in roadmap
+    assert "bounded evidence acquisition" in source_tree

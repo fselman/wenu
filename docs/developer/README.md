@@ -50,6 +50,11 @@ milestone evidence are under [`archive/`](archive/README.md).
   — accepted evidence acquisition and offline numerical validation.
 - [`first_drawable_comet_audit_50a5a.md`](first_drawable_comet_audit_50a5a.md)
   — accepted first symbolic 2P/Encke nucleus point and multi-track contract.
+- [`solar_system_temporal_components_audit_50a5b1.md`](solar_system_temporal_components_audit_50a5b1.md)
+  — accepted corrective reuse contract for paths, ticks, symbols, labels, and
+  observed phase-series anchors.
+- [`second_drawable_comet_audit_50a5c.md`](second_drawable_comet_audit_50a5c.md)
+  — accepted second-comet generalization test using 161P/Hartley-IRAS.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).
