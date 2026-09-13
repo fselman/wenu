@@ -1494,3 +1494,7 @@ owns deterministic contract coverage;
   `161P` without guessing or selecting an apparition record;
 - `tests/test_acquire_50a5c_comet_identity.py` protects that new discovery
   boundary without repeating numerical, projection, or rendering tests.
+- `tools/acquire_50a5c_comet_evidence.py` alone owns the subsequent full
+  network acquisition bound to inspected record `90001107`, NAIF target
+  `1000042`, solution `JPL#71`, and the three accepted 2026 characterization
+  epochs; it publishes no partial evidence directory.

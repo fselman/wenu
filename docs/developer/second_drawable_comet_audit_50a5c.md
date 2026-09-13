@@ -209,3 +209,18 @@ It validates both service signatures and the returned numbered-comet name,
 preserves both complete raw responses with digests and request URLs, and does
 not guess an apparition record. Fernando must inspect those provider results
 before the next acquisition step freezes a Horizons record or solution.
+
+Fernando's inspected identity result selects Horizons record `90001107`, NAIF
+target `1000042`, and solution `JPL#71` dated 2026-09-08 09:12:21. SBDB returns
+the Halley-type periodic-comet classification, observation arc 1983-11-23
+through 2026-09-08, and non-gravitational `A1` and `A2`. The complete Horizons
+identity response additionally preserves the non-standard force-law constants
+`ALN`, `NK`, `NM`, `NN`, and `R0`; they are not reconstructed from the smaller
+SBDB model-parameter list.
+
+`tools/acquire_50a5c_comet_evidence.py` binds its full SPK, vector,
+geocentric, La Ligua topocentric, Sun, and `PsAng`/`PsAMV` requests to that
+inspected identity. The characterization epochs are 2026-09-01, 2026-10-02,
+and 2026-10-31. It copies the verified identity documents into a new immutable
+evidence directory and writes nothing until every returned signature, target,
+solution, table, and SPK segment has passed validation.
