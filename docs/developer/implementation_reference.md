@@ -2317,3 +2317,11 @@ The installed source exposes a provider `PsAng` only at exact evidence epochs.
 The existing comet point and shared track-symbol layers prefer that value and
 otherwise retain the accepted apparent-Sun fallback. `PsAMV` remains evidence
 only and is never substituted for gas-tail orientation.
+
+`--center-on-date ISO_TIME` is a generic moving-center companion to
+`--center-on` in regional and binocular commands. The CLI constructs the chart
+observer at that instant, resolves a planet, Moon, asteroid, or installed
+comet through `center_arguments.py`, and uses `object_center.py` to obtain the
+single apparent center point. Consequently the same instant governs horizon
+and zenith-up orientation. Track realization remains timeline-owned; its
+samples are not replaced by the center date.

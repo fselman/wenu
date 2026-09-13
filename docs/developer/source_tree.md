@@ -1515,3 +1515,7 @@ owns deterministic contract coverage;
   aliases from that verified manifest, while `SkyfieldMinorBodyStateSource`
   exposes only exact installed provider `PsAng` epochs to the existing comet
   orientation adapter.
+- `charts/center_arguments.py`, `charts/object_center.py`, and `cli/chart.py`
+  jointly own generic named moving-center resolution. `--center-on-date`
+  selects the apparent center and horizontal-frame instant; the existing
+  temporal track owners retain every independent track-sample instant.

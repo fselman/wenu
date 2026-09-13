@@ -248,3 +248,14 @@ atomic publication. Installed identity and exact aliases are derived from the
 manifest rather than an Encke or 161P runtime branch. Exact provider `PsAng`
 epochs are retained by the installed source; an absent epoch continues through
 the accepted apparent-Sun fallback.
+
+The generic named-center checkpoint adds `--center-on-date ISO_TIME` beside
+`--center-on` for regional and binocular views. A moving descriptor is
+resolved through the ordinary planet, Moon, asteroid, or installed-comet
+namespace; full installed aliases such as `161P/Hartley-IRAS` are valid.
+The center date is the observation context for the selected apparent point and
+also fixes the chart's horizontal frame and zenith-up orientation. Track
+samples remain independently evaluated at their own track dates, including
+both target and terrestrial-observer motion. Omitting `--center-on-date`
+retains the ordinary `--observer-time` context. The option is rejected for a
+fixed target or constellation and performs no comet acquisition.

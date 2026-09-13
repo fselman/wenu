@@ -3,6 +3,9 @@
 import argparse
 
 import pytest
+from dataclasses import replace
+
+from wenu.sky.ceres import CERES_BODY
 
 from wenu.charts.center_arguments import (
     parse_degree_angle,
@@ -72,3 +75,25 @@ def test_unknown_namespace_and_unknown_identifier_are_rejected():
 def test_earth_is_not_a_geocentric_chart_center():
     with pytest.raises(ValueError, match="observer origin"):
         resolve_named_center("planet:Earth")
+
+
+def test_installed_comet_resolves_by_full_name_and_namespace():
+    encke = replace(
+        CERES_BODY,
+        target="2p", entity_key="comet_2p", display_name="2P/Encke",
+        selection_key="2p", body_class="comet",
+        canonical_designation="2P/Encke", iau_number=2,
+    )
+
+    class Collection:
+        def resolve(self, selection):
+            if str(selection).casefold() in {"2p/encke", "encke"}:
+                return encke
+            raise KeyError(selection)
+
+    assert resolve_named_center(
+        "2P/Encke", minor_body_collection=Collection()
+    ).value is encke
+    assert resolve_named_center(
+        "comet:Encke", minor_body_collection=Collection()
+    ).value is encke

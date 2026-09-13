@@ -29,7 +29,8 @@ _TARGET_FAMILIES = {
     }),
 }
 _QUALIFIERS = frozenset({
-    "constellation", "group", "planet", "moon", "asteroid", "target",
+    "constellation", "group", "planet", "moon", "asteroid", "comet",
+    "target",
     *_TARGET_FAMILIES,
 })
 
@@ -139,6 +140,7 @@ def _body(identifier, qualifier, minor_body_collection=None):
         "planet": "planet",
         "moon": "natural_satellite",
         "asteroid": "asteroid",
+        "comet": "comet",
     }[qualifier]
     if descriptor.body_class != expected:
         raise ValueError(f"{identifier!r} is not a {qualifier}.")
@@ -152,7 +154,7 @@ def _qualified(qualifier, identifier, minor_body_collection=None):
         return _constellation(identifier)
     if qualifier == "group":
         return _constellation(identifier, group=True)
-    if qualifier in {"planet", "moon", "asteroid"}:
+    if qualifier in {"planet", "moon", "asteroid", "comet"}:
         return _body(identifier, qualifier, minor_body_collection)
     return _target(identifier, qualifier)
 
@@ -179,6 +181,9 @@ def resolve_named_center(specification, *, minor_body_collection=None):
         ("moon", lambda: _body(identifier, "moon")),
         ("asteroid", lambda: _body(
             identifier, "asteroid", minor_body_collection
+        )),
+        ("comet", lambda: _body(
+            identifier, "comet", minor_body_collection
         )),
     ):
         try:
