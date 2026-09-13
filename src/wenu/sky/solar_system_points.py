@@ -7,6 +7,10 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from wenu.coordinate_service import CoordinateService
+from wenu.antisolar import (
+    antisolar_position_angle_deg,
+    antisolar_reference_direction,
+)
 from wenu.geometry.spherical import SphericalPoints
 from wenu.sky.realization import LayerRealizationContext
 from wenu.sky.sky_layer import SkyLayer
@@ -205,36 +209,75 @@ class SolarSystemPointLayer(SkyLayer):
             policy=self.descriptor.correction_policy,
         )
         native = apparent.geometry
-        identified = SphericalPoints(
-            native.lon_deg,
-            native.lat_deg,
-            coordinate_spec=native.coordinate_spec,
-            ids=np.asarray((self.descriptor.entity_key,), dtype=object),
-            labels=np.asarray(
-                (
-                    getattr(
-                        self.descriptor,
-                        "astronomical_symbol",
-                        None,
+        is_comet = getattr(self.descriptor, "body_class", None) == "comet"
+        lon_deg = np.asarray(native.lon_deg)
+        lat_deg = np.asarray(native.lat_deg)
+        entity_keys = (self.descriptor.entity_key,)
+        display_names = (self.descriptor.display_name,)
+        labels = (
+            getattr(self.descriptor, "astronomical_symbol", None)
+            or getattr(self.descriptor, "canonical_designation", None)
+            or self.descriptor.display_name,
+        )
+        orientation_metadata = {}
+        if is_comet:
+            sun_request = AstrometricDirectionRequest(
+                target="sun",
+                centre=self.descriptor.centre,
+                reception_instant=context.evaluation_instant,
+                reception_time_scale=context.evaluation_time_scale,
+            )
+            sun_astrometric = self.astrometric_realizer.direction(
+                observer_source,
+                sun_request,
+                observer_state,
+            )
+            sun_apparent = self.apparent_realizer.direction(
+                sun_astrometric,
+                observer=observer,
+                source=observer_source,
+                policy=self.descriptor.correction_policy,
+            ).geometry
+            comet_direction = (float(lon_deg[0]), float(lat_deg[0]))
+            sun_direction = (
+                float(sun_apparent.lon_deg[0]),
+                float(sun_apparent.lat_deg[0]),
+            )
+            reference = antisolar_reference_direction(
+                comet_direction, sun_direction
+            )
+            lon_deg = np.asarray((comet_direction[0], reference[0]))
+            lat_deg = np.asarray((comet_direction[1], reference[1]))
+            entity_keys = (
+                self.descriptor.entity_key,
+                f"{self.descriptor.entity_key}__antisolar_reference",
+            )
+            display_names = (self.descriptor.display_name, None)
+            labels = (labels[0], None)
+            orientation_metadata = {
+                "comet_symbol_orientation_reference_index": 1,
+                "antisolar_position_angle_deg": (
+                    antisolar_position_angle_deg(
+                        comet_direction, sun_direction
                     )
-                    or getattr(
-                        self.descriptor,
-                        "canonical_designation",
-                        None,
-                    )
-                    or self.descriptor.display_name,
                 ),
-                dtype=object,
-            ),
-            names=np.asarray((self.descriptor.display_name,), dtype=object),
+                "sun_apparent_icrf_deg": sun_direction,
+            }
+        identified = SphericalPoints(
+            lon_deg,
+            lat_deg,
+            coordinate_spec=native.coordinate_spec,
+            ids=np.asarray(entity_keys, dtype=object),
+            labels=np.asarray(labels, dtype=object),
+            names=np.asarray(display_names, dtype=object),
             metadata={
                 **native.metadata,
                 "semantic_entity_keys": np.asarray(
-                    (self.descriptor.entity_key,),
+                    entity_keys,
                     dtype=object,
                 ),
                 "semantic_entity_display_names": np.asarray(
-                    (self.descriptor.display_name,),
+                    display_names,
                     dtype=object,
                 ),
                 "ephemeris_sha256": _primary_resource_sha256(
@@ -243,6 +286,7 @@ class SolarSystemPointLayer(SkyLayer):
                 "apparent_provenance": tuple(
                     native.coordinate_spec.provenance
                 ),
+                **orientation_metadata,
             },
         )
         return self.coordinate_service.transform(

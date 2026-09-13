@@ -243,3 +243,76 @@ def test_shared_layer_accepts_distinct_target_and_observer_sources():
     )
     result = layer.realize(context(), object(), selected={"ceres"})
     assert result.labels.tolist() == ["(1) Ceres"]
+
+
+def test_comet_layer_realizes_simultaneous_sun_and_tail_reference():
+    descriptor = SolarSystemBodyDescriptor(
+        target="2p",
+        entity_key="comet_2p",
+        display_name="2P/Encke",
+        selection_key="2p",
+        body_class="comet",
+        canonical_designation="2P/Encke",
+        iau_number=2,
+    )
+    target_source = SimpleNamespace(
+        resource=SimpleNamespace(primary=SimpleNamespace(sha256="d" * 64))
+    )
+    observer_source = object()
+    coordinate_spec = CoordinateSpec(
+        frame="icrs", origin="observer",
+        position_status=PositionStatus.APPARENT,
+        provenance=("test apparent",),
+    )
+
+    class Astrometric:
+        def direction(self, source, request, observer_state):
+            assert observer_state == "observer-state"
+            if request.target == "sun":
+                assert source is observer_source
+            else:
+                assert source is target_source
+            return request.target
+
+    class Apparent:
+        def direction(self, value, *, observer, source, policy):
+            del observer, policy
+            assert source is observer_source
+            coordinates = {
+                "2p": (347.16284728400217, 11.5633172622082),
+                "sun": (227.79603677620744, -17.8009756969018),
+            }[value]
+            return SimpleNamespace(
+                geometry=SphericalPoints(
+                    [coordinates[0]], [coordinates[1]],
+                    coordinate_spec=coordinate_spec,
+                )
+            )
+
+    class Coordinates:
+        def transform(self, geometry, target, observation):
+            del target, observation
+            return geometry
+
+    layer = SolarSystemPointLayer(
+        descriptor,
+        source_resolver=lambda body, observer: EphemerisSourceBinding(
+            target_source, observer_source
+        ),
+        observer_state_factory=lambda observer, *, source: "observer-state",
+        astrometric_realizer=Astrometric(),
+        apparent_realizer=Apparent(),
+        coordinate_service=Coordinates(),
+    )
+
+    result = layer.realize(context(), object(), selected={"2p"})
+
+    assert len(result) == 2
+    assert result.ids.tolist() == [
+        "comet_2p", "comet_2p__antisolar_reference",
+    ]
+    assert result.labels.tolist() == ["2P/Encke", None]
+    assert result.metadata["comet_symbol_orientation_reference_index"] == 1
+    assert result.metadata["antisolar_position_angle_deg"] == pytest.approx(
+        76.06332619563693
+    )
