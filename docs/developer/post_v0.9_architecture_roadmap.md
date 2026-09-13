@@ -1597,7 +1597,7 @@ sidecar reports require a new audit before implementation.
 
 ## Milestone 50A.5D — Comet discovery, acquisition, and moving-object reports
 
-**Status:** Audit accepted by Fernando on 2026-09-13; 50A.5D.1 authorized.
+**Status:** Audit accepted; 50A.5D.1A candidate implementation in review.
 
 The proposed audit separates an explicit `wenu_retrieve_comets` SBDB query,
 exact policy-governed comet preflight, and renderer-neutral natural moving-
