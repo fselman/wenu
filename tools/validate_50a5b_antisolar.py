@@ -64,11 +64,20 @@ def _wrapped(actual, reference):
     return (actual - reference + 180.0) % 360.0 - 180.0
 
 
-def characterize(*, resource_directory, planetary_ephemeris_path, reference_path):
-    """Report residuals without asserting a not-yet-accepted tolerance."""
+def validate_antisolar(
+    *, resource_directory, planetary_ephemeris_path, reference_path,
+    characterize=False,
+):
+    """Validate or characterize Wenu's apparent antisolar direction."""
     reference = json.loads(reference_path.read_text(encoding="utf-8"))
-    if reference.get("tolerances") is not None:
-        raise ValueError("50A.5B characterization reference must not set tolerances.")
+    tolerances = reference.get("tolerances")
+    if not isinstance(tolerances, dict) or set(tolerances) != {
+        "antisolar_position_angle_deg"
+    }:
+        raise ValueError("50A.5B reference must set only its accepted tolerance.")
+    tolerance = float(tolerances["antisolar_position_angle_deg"])
+    if tolerance <= 0:
+        raise ValueError("antisolar position-angle tolerance must be positive.")
     record = reference["object"]
     comet_reference = json.loads(
         (
@@ -128,17 +137,34 @@ def characterize(*, resource_directory, planetary_ephemeris_path, reference_path
                         actual, epoch["antisolar_position_angle_deg"]
                     ),
                 })
+    maximum = max(abs(item["residual_deg"]) for item in residuals)
+    if not characterize and maximum > tolerance:
+        raise AssertionError(
+            "antisolar position-angle residual "
+            f"{maximum:.16g} exceeds {tolerance:.16g}."
+        )
     return {
-        "accepted": False,
-        "characterization": True,
-        "tolerance_status": "not yet established",
-        "tolerances": None,
+        "accepted": not characterize,
+        "characterization": bool(characterize),
+        "tolerance_status": (
+            "not enforced during characterization"
+            if characterize else "accepted and enforced"
+        ),
+        "tolerances": None if characterize else tolerances,
         "object": record,
         "epochs": residuals,
-        "maximum_residual_deg": max(
-            abs(item["residual_deg"]) for item in residuals
-        ),
+        "maximum_residual_deg": maximum,
     }
+
+
+def characterize(*, resource_directory, planetary_ephemeris_path, reference_path):
+    """Report residuals without applying the accepted threshold."""
+    return validate_antisolar(
+        resource_directory=resource_directory,
+        planetary_ephemeris_path=planetary_ephemeris_path,
+        reference_path=reference_path,
+        characterize=True,
+    )
 
 
 def main():
@@ -155,14 +181,15 @@ def main():
     )
     parser.add_argument("--reference", type=Path, default=REFERENCE)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--characterize", action="store_true", required=True)
+    parser.add_argument("--characterize", action="store_true")
     arguments = parser.parse_args()
-    report = characterize(
+    report = validate_antisolar(
         resource_directory=arguments.resource_directory.expanduser().resolve(),
         planetary_ephemeris_path=(
             arguments.planetary_ephemeris_path.expanduser().resolve()
         ),
         reference_path=arguments.reference.expanduser().resolve(),
+        characterize=arguments.characterize,
     )
     arguments.output.write_text(
         json.dumps(report, indent=2, sort_keys=True) + "\n",

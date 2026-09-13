@@ -11,6 +11,8 @@ from wenu.antisolar import (
     antisolar_position_angle_deg,
 )
 
+ANTISOLAR_POSITION_ANGLE_TOLERANCE_DEG = 2.0e-5
+
 try:
     from tools.acquire_50a5b_antisolar_evidence import (
         COMET_REFERENCE_SHA256,
@@ -119,7 +121,11 @@ def build_fixture(raw_directory, comet_reference):
             comet_reference.name: COMET_REFERENCE_SHA256,
             sun_path.name: evidence[sun_path.name]["sha256"],
         },
-        "tolerances": None,
+        "tolerances": {
+            "antisolar_position_angle_deg": (
+                ANTISOLAR_POSITION_ANGLE_TOLERANCE_DEG
+            ),
+        },
         "epochs": epochs,
     }
 

@@ -1,0 +1,66 @@
+{
+  "authority": {
+    "apparent_policy": "AIRLESS",
+    "horizons_api": "NASA/JPL Horizons API",
+    "horizons_version": "1.2",
+    "position_angle_convention": "degrees east of celestial north",
+    "reference_system": "ICRF"
+  },
+  "epochs": [
+    {
+      "antisolar_position_angle_deg": 76.0633227522228,
+      "calendar_utc": "2026-11-13T00:00:00",
+      "comet_apparent_icrf_deg": [
+        347.16285,
+        11.56332
+      ],
+      "sun_apparent_icrf_deg": [
+        227.79604,
+        -17.80098
+      ]
+    },
+    {
+      "antisolar_position_angle_deg": 248.65038044455247,
+      "calendar_utc": "2027-02-11T00:00:00",
+      "comet_apparent_icrf_deg": [
+        312.64901,
+        -18.92222
+      ],
+      "sun_apparent_icrf_deg": [
+        324.00981,
+        -14.28918
+      ]
+    },
+    {
+      "antisolar_position_angle_deg": 246.18428100507154,
+      "calendar_utc": "2027-05-12T00:00:00",
+      "comet_apparent_icrf_deg": [
+        339.76756,
+        -15.70082
+      ],
+      "sun_apparent_icrf_deg": [
+        48.24897,
+        17.92229
+      ]
+    }
+  ],
+  "object": {
+    "key": "2p-encke",
+    "orbit_solution_id": "K273/14",
+    "primary_designation": "2P",
+    "provider_spk_id": "1000025"
+  },
+  "observer": {
+    "elevation_km": 0.052,
+    "latitude_deg": -32.443342,
+    "longitude_deg_east": -71.230289,
+    "name": "La Ligua"
+  },
+  "source_evidence_sha256": {
+    "horizons-sun-topocentric.json": "29656793e1a612043b8ba0bc212a3805762a765ef111bbaf0a2b140720391c9f",
+    "horizons_comet_validation_50a4.json": "d440eb4b7a56ed4aff79cd062308e8a81463afec5c6055517865c5c033abb4e1"
+  },
+  "tolerances": {
+    "antisolar_position_angle_deg": 2e-05
+  }
+}
