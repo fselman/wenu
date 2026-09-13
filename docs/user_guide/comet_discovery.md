@@ -30,7 +30,11 @@ does not install a comet or render a chart.
 The table ends with a `Header key` defining its orbital symbols, provider
 codes, photometric parameters, time scale, and units. In particular, `q` is
 perihelion distance, `e` eccentricity, `i` inclination, and Earth `MOID`
-the minimum orbit intersection distance from Earth.
+the minimum orbit intersection distance from Earth. The key also decodes the
+designation prefixes `P` (periodic), `C` (non-periodic), `D`
+(disappeared), `X` (orbit not meaningfully computable), `A` (found to be a
+minor planet), and `I` (interstellar), as well as permanent periodic-comet
+numbers such as `2P`.
 
 The result means only that SBDB reports a perihelion instant inside the chosen
 interval and a perihelion distance inside the chosen bound. It is **not a
