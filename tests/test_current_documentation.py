@@ -4464,6 +4464,6 @@ def test_50a5d_audits_comet_discovery_acquisition_and_reports():
         "total sky-plane speed",
         "some request `dRA/dt`, others request `mu_RA*`",
         "artificial satellites remain outside",
-        "Fernando's acceptance would authorize only 50A.5D.1",
+        "Fernando accepted it on 2026-09-13 with the observed-angular-rate addition, authorizing only 50A.5D.1",
     ):
         assert phrase.lower() in audit.lower()
