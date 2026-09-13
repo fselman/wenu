@@ -1,7 +1,7 @@
 # Solar-System temporal components audit (Milestone 50A.5B.1)
 
-**Status:** Architecture and Encke track presentations accepted by Fernando on
-2026-09-13; shared phase-sequence reuse implemented, Mac verification pending
+**Status:** Scientifically, architecturally, visually, operationally, and
+regression accepted by Fernando on 2026-09-13
 
 **Supersedes:** The provisional 50A.5B implementation choice that realizes
 each comet track symbol through a second `SolarSystemPointLayer` evaluation.
@@ -70,8 +70,7 @@ The accepted CLI adapter is:
 ```
 
 Compatibility defaults preserve accepted existing planet and asteroid track
-output. The accepted final default for comet symbols remains subject to visual
-review. The old `--track-tick-labels` spelling may remain as a compatibility
+output. The old `--track-tick-labels` spelling remains as a compatibility
 alias for `--track-labels major`, but conflicting simultaneous forms fail
 closed.
 
@@ -166,12 +165,11 @@ Stop if implementation would:
 - change an accepted Venus, Mercury, Moon, asteroid, or planet output without
   an explicit compatibility test and visual review.
 
-Fernando accepted this corrective architecture on 2026-09-13. The first
+Fernando accepted this corrective architecture on 2026-09-13. The accepted
 implementation shares one cached `SolarSystemTrackResult` among path and
 symbol layers, retains the existing generic observed and frozen-Earth sequence
 owners for Venus, Mercury, and Moon phase payloads, and adds the independent path, tick,
-symbol-cadence, and label-cadence controls above. Complete Mac regression
-remains required before this corrective slice is complete.
+symbol-cadence, and label-cadence controls above.
 
 Track-owned symbol layers are enabled by the explicit track request and do
 not inherit the independent instantaneous-point selection filter. Comet CLI
@@ -182,9 +180,8 @@ that resolves any accepted spelling to one installed descriptor and solution.
 Fernando visually accepted both requested Encke presentations on 2026-09-13:
 independently oriented major-epoch symbols and dates without path or ticks,
 and the complete path-plus-ticks presentation using the same symbols and
-labels. The focused Mac gate passed all 170 tests in 4.28 seconds before the
-canonical-alias and request-owned-symbol corrections; those corrections still
-require the final focused and complete Mac gates.
+labels. The focused Mac gates progressed through 170 tests in 4.28 seconds and
+188 tests in 3.33 seconds as the shared temporal machinery was completed.
 
 The shared immutable `TemporalComponentPolicy` now owns start-inclusive
 `none`, `start`, and `major` selection. Track presentation and the existing
@@ -202,3 +199,9 @@ as the phase component layer. It still projects the realization's physical
 centres through the accepted shared preparation owner, then selects matching
 centres before scaling. This keeps start-only and major-epoch component counts
 aligned without a second scientific realization.
+
+Final Mac verification passed the complete 2,331-test suite in 84.56 seconds.
+Together with Fernando's accepted Encke and Venus chart review, this closes
+50A.5B.1: one shared temporal policy now selects independently visible path,
+ticks, symbols, and labels while the existing capability-specific realizers
+continue to own comet orientation and planetary or lunar phase physics.

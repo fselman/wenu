@@ -4385,3 +4385,20 @@ def test_active_cli_documentation_matches_schema_v2_and_explicit_centers():
         value["constellations"] == []
         for value in defaults["masks"].values()
     )
+
+
+def test_50a5b1_records_shared_temporal_component_closure():
+    audit = read(DEVELOPER / "solar_system_temporal_components_audit_50a5b1.md")
+    guide = read(DEVELOPER / "coordinate_system_guide_v0.9.5.md")
+    roadmap = read(DEVELOPER / "post_v0.9_architecture_roadmap.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+
+    for phrase in (
+        "Scientifically, architecturally, visually, operationally, and",
+        "complete 2,331-test suite in 84.56 seconds",
+        "this closes\n50A.5B.1",
+    ):
+        assert phrase.lower() in audit.lower()
+    assert "Accepted 50A.5B.1 adds no coordinate or product frame" in guide
+    assert "closing\n50A.5B.1" in roadmap
+    assert "temporal_components.py" in source_tree
