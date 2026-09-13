@@ -1,0 +1,271 @@
+{
+  "antisolar": {
+    "epochs": [
+      {
+        "antisolar_position_angle_deg": 269.947,
+        "calculated_antisolar_position_angle_deg": 269.9409072970315,
+        "calendar_utc": "2026-09-01T00:00:00",
+        "comet_apparent_icrf_deg": [
+          42.97056,
+          -18.14995
+        ],
+        "horizons_psamv_deg": 161.276,
+        "horizons_psang_deg": 269.947,
+        "sun_apparent_icrf_deg": [
+          159.86335,
+          8.48853
+        ]
+      },
+      {
+        "antisolar_position_angle_deg": 65.412,
+        "calculated_antisolar_position_angle_deg": 65.41016425041352,
+        "calendar_utc": "2026-10-02T00:00:00",
+        "comet_apparent_icrf_deg": [
+          348.80838,
+          -5.48323
+        ],
+        "horizons_psamv_deg": 146.113,
+        "horizons_psang_deg": 65.412,
+        "sun_apparent_icrf_deg": [
+          187.75611,
+          -3.34701
+        ]
+      },
+      {
+        "antisolar_position_angle_deg": 75.2,
+        "calculated_antisolar_position_angle_deg": 75.20248581137457,
+        "calendar_utc": "2026-10-31T00:00:00",
+        "comet_apparent_icrf_deg": [
+          299.40958,
+          13.46142
+        ],
+        "horizons_psamv_deg": 134.747,
+        "horizons_psang_deg": 75.2,
+        "sun_apparent_icrf_deg": [
+          214.85258,
+          -13.91201
+        ]
+      }
+    ],
+    "object": {
+      "key": "161p-hartley-iras",
+      "orbit_solution_id": "71",
+      "primary_designation": "161P",
+      "provider_spk_id": "1000042"
+    },
+    "source_evidence_sha256": {
+      "horizons-comet-tail-topocentric.json": "b8beb4d673bdfb21bb3c167a56c08c042fe114997187b8be34a14b0358e3f8fc",
+      "horizons-sun-topocentric.json": "ebb462f5a5ce77a3987a4c7790764a05e3a1dc68786dc7f30f8c29d5422caf1d"
+    },
+    "tolerances": {
+      "antisolar_position_angle_deg": 0.01
+    }
+  },
+  "authority": {
+    "dust_tail_diagnostic": "Horizons quantity 27 PsAMV",
+    "gas_tail_orientation": "Horizons quantity 27 PsAng",
+    "horizons_api": "NASA/JPL Horizons API",
+    "horizons_version": "1.2",
+    "observer_apparent_policy": "AIRLESS",
+    "observer_quantities": [
+      1,
+      20,
+      21,
+      45
+    ],
+    "observer_reference_system": "ICRF",
+    "position_angle_convention": "degrees east of celestial north",
+    "sbdb_api": "NASA/JPL Small-Body Database (SBDB) API",
+    "sbdb_version": "1.3",
+    "vector_centre": "solar system barycenter",
+    "vector_corrections": "NONE",
+    "vector_reference_plane": "FRAME",
+    "vector_units": "AU-D"
+  },
+  "objects": [
+    {
+      "aliases": [
+        "161P/Hartley-IRAS",
+        "Hartley-IRAS"
+      ],
+      "class": "comet",
+      "epochs": [
+        {
+          "calendar": "2026-09-01T00:00:00",
+          "calendar_tdb": "2026-09-01T00:01:09",
+          "geocentric": {
+            "apparent_dec_deg": -18.15165,
+            "apparent_ra_deg": 42.96907,
+            "astrometric_dec_deg": -18.15513,
+            "astrometric_ra_deg": 42.9668,
+            "calendar_utc": "2026-09-01T00:00:00",
+            "distance_au": 1.00337018132255,
+            "light_time_min": 8.34477534
+          },
+          "position_au": [
+            1.633488748678044,
+            0.3014171861297795,
+            -0.4634636737825512
+          ],
+          "topocentric": {
+            "apparent_dec_deg": -18.14995,
+            "apparent_ra_deg": 42.97056,
+            "astrometric_dec_deg": -18.15344,
+            "astrometric_ra_deg": 42.96834,
+            "calendar_utc": "2026-09-01T00:00:00",
+            "distance_au": 1.00338706993787,
+            "light_time_min": 8.3449158
+          },
+          "vector_jd_tdb": 2461284.500800725,
+          "velocity_au_per_day": [
+            -0.003274453253083937,
+            -0.008441424862875588,
+            0.01491648039531362
+          ]
+        },
+        {
+          "calendar": "2026-10-02T00:00:00",
+          "calendar_tdb": "2026-10-02T00:01:09",
+          "geocentric": {
+            "apparent_dec_deg": -5.48557,
+            "apparent_ra_deg": 348.80519,
+            "astrometric_dec_deg": -5.4876,
+            "astrometric_ra_deg": 348.80029,
+            "calendar_utc": "2026-10-02T00:00:00",
+            "distance_au": 0.5033413111327,
+            "light_time_min": 4.18616204
+          },
+          "position_au": [
+            1.480409818269787,
+            0.03289840244924352,
+            0.008459762663012536
+          ],
+          "topocentric": {
+            "apparent_dec_deg": -5.48323,
+            "apparent_ra_deg": 348.80838,
+            "astrometric_dec_deg": -5.48528,
+            "astrometric_ra_deg": 348.80343,
+            "calendar_utc": "2026-10-02T00:00:00",
+            "distance_au": 0.50331597622448,
+            "light_time_min": 4.18595133
+          },
+          "vector_jd_tdb": 2461315.500800722,
+          "velocity_au_per_day": [
+            -0.006813477100847135,
+            -0.008809984753685163,
+            0.01538975362190373
+          ]
+        },
+        {
+          "calendar": "2026-10-31T00:00:00",
+          "calendar_tdb": "2026-10-31T00:01:09",
+          "geocentric": {
+            "apparent_dec_deg": 13.45954,
+            "apparent_ra_deg": 299.41062,
+            "astrometric_dec_deg": 13.45655,
+            "astrometric_ra_deg": 299.41169,
+            "calendar_utc": "2026-10-31T00:00:00",
+            "distance_au": 0.90469131455998,
+            "light_time_min": 7.52408823
+          },
+          "position_au": [
+            1.221800700511892,
+            -0.2202946254450719,
+            0.447464755643032
+          ],
+          "topocentric": {
+            "apparent_dec_deg": 13.46142,
+            "apparent_ra_deg": 299.40958,
+            "astrometric_dec_deg": 13.45843,
+            "astrometric_ra_deg": 299.41058,
+            "calendar_utc": "2026-10-31T00:00:00",
+            "distance_au": 0.90466582147009,
+            "light_time_min": 7.52387621
+          },
+          "vector_jd_tdb": 2461344.500800725,
+          "velocity_au_per_day": [
+            -0.01113454718898212,
+            -0.00850043972811827,
+            0.01461042491959985
+          ]
+        }
+      ],
+      "horizons_command": "90001107;",
+      "iau_number": 161,
+      "key": "161p-hartley-iras",
+      "model_parameters": [
+        {
+          "desc": "non-gravitational radial acceleration parameter",
+          "kind": "EST",
+          "n": 1,
+          "name": "A1",
+          "sigma": "2.407E-10",
+          "title": "non-grav. radial accel.",
+          "units": "au/d^2",
+          "value": "1.127826967829836E-8"
+        },
+        {
+          "desc": "non-gravitational transverse acceleration parameter",
+          "kind": "EST",
+          "n": 2,
+          "name": "A2",
+          "sigma": "2.076E-13",
+          "title": "non-grav. transverse accel.",
+          "units": "au/d^2",
+          "value": "-3.322022229583861E-10"
+        }
+      ],
+      "name": "Hartley-IRAS",
+      "orbit_solution_id": "71",
+      "osculating_epoch": "2455861.5 TDB",
+      "primary_designation": "161P",
+      "provider_spk_id": "1000042",
+      "quality_fields": {
+        "condition_code": "0",
+        "data_arc": "15630",
+        "first_obs": "1983-11-23",
+        "last_obs": "2026-09-08",
+        "n_del_obs_used": null,
+        "n_dop_obs_used": null,
+        "n_obs_used": 519,
+        "not_valid_after": null,
+        "not_valid_before": null,
+        "pe_used": "DE441",
+        "producer": "Otto Matic",
+        "rms": ".86496",
+        "sb_used": "SB441-N16",
+        "source": "JPL"
+      },
+      "reference_system": "J2000 ecliptic and equinox",
+      "solution_date": "2026-09-08 09:12:21",
+      "source_evidence_sha256": {
+        "horizons-geocentric.json": "48c93cca70238cb0f6f4928ff6a771107a60bb4ece067bc7ddad7892326e5f57",
+        "horizons-topocentric.json": "5cbea723e909d93d0d84ab363e1964f706d31ad99bcd17a58940e3481aadc2a4",
+        "horizons-vectors.json": "f361d5e0e6835435c938570436f05161e02c9cd64ceab712d6d1a4386722d0da",
+        "sbdb-161p.json": "82b54386625505759f28e8722ce39a7a86dacaa4fa5300c61149b22e9bd9982e"
+      },
+      "spk": {
+        "coverage_end_jd_tdb": 2461374.5,
+        "coverage_start_jd_tdb": 2461254.5,
+        "filename": "161p-hartley-iras.bsp",
+        "segment_centre_id": 10,
+        "segment_type": 21,
+        "sha256": "95214d7670214ea126d2eb695229259573576b7c3060f932ad612cd832069ff8"
+      }
+    }
+  ],
+  "observer": {
+    "elevation_km": 0.052,
+    "latitude_deg": -32.443342,
+    "longitude_deg_east": -71.230289,
+    "name": "La Ligua"
+  },
+  "tolerances": {
+    "direction_deg": 1e-05,
+    "distance_au": 1e-09,
+    "light_time_min": 1e-07,
+    "parallax_deg": 1e-05,
+    "position_au": 1e-10,
+    "velocity_au_per_day": 5e-12
+  }
+}

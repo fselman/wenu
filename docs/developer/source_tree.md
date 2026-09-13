@@ -1506,3 +1506,12 @@ owns deterministic contract coverage;
   and antisolar validators; Fernando accepted the characterized shared comet
   envelopes, including `1e-5 deg` for observer-direction components and
   `0.01 deg` for PsAng, on 2026-09-13.
+- `tests/fixtures/horizons_comet_validation_50a5c.json` is the frozen compact
+  161P numerical, identity, SPK, observer, and provider-angle oracle;
+- `tools/install_comet_resource.py` is the generic offline comet installer: it
+  verifies fixture-declared evidence and the actual SPK segment before atomic
+  publication, with no object-specific runtime branch;
+- `MinorBodyResourceCollection` derives installed comet identity and exact
+  aliases from that verified manifest, while `SkyfieldMinorBodyStateSource`
+  exposes only exact installed provider `PsAng` epochs to the existing comet
+  orientation adapter.

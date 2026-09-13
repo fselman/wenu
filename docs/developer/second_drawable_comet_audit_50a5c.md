@@ -239,3 +239,12 @@ residual, `4.9380866053994055e-6 deg`, consumed almost the complete theoretical
 half-step of the five-decimal Horizons table, he accepted `1e-5 deg`
 (`0.036 arcsec`) as the common Encke-and-161P direction envelope. This is a
 source-precision policy, not a 161P-specific fit.
+
+The accepted compact fixture is frozen at
+`tests/fixtures/horizons_comet_validation_50a5c.json`. The reusable
+`tools/install_comet_resource.py` validates every fixture-declared raw digest,
+the SPK digest, target, centre, frame, type, and exact coverage before an
+atomic publication. Installed identity and exact aliases are derived from the
+manifest rather than an Encke or 161P runtime branch. Exact provider `PsAng`
+epochs are retained by the installed source; an absent epoch continues through
+the accepted apparent-Sun fallback.

@@ -3122,3 +3122,11 @@ magnification neither reevaluate a target nor alter sample times, physical
 appearance, provenance, or the fixed chart product frame. Fernando visually
 accepted the Encke and Venus presentations, and final Mac verification passed
 all 2,331 tests in 84.56 seconds on 2026-09-13.
+
+Accepted 50A.5C adds no coordinate or product frame. Provider `PsAng` remains
+a topocentric apparent position angle measured east of celestial north. An
+exact installed provider epoch has precedence; if none exists, Wenu derives
+the same antisolar tangent direction from the comet and Sun apparent ICRF
+directions. The provider and fallback routes therefore share the product-frame
+transform, projection, and reusable symbol-orientation adapter rather than
+introducing a new frame or renderer path.

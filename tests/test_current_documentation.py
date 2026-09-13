@@ -4424,6 +4424,8 @@ def test_50a5c_audits_a_second_comet_before_minor_body_closure():
         "both numerical and antisolar tolerances explicitly null",
         "common Encke-and-161P direction envelope",
         "`0.036 arcsec`",
+        "install_comet_resource.py",
+        "atomic publication",
     ):
         assert phrase.lower() in audit.lower()
     assert "Accepted 50A.5C uses 161P/Hartley-IRAS" in roadmap
@@ -4432,3 +4434,5 @@ def test_50a5c_audits_a_second_comet_before_minor_body_closure():
     assert "acquire_50a5c_comet_evidence.py" in source_tree
     assert "build_50a5c_comet_fixture.py" in source_tree
     assert "validate_50a5c_comet.py" in source_tree
+    assert "horizons_comet_validation_50a5c.json" in source_tree
+    assert "generic offline comet installer" in source_tree

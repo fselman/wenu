@@ -2303,3 +2303,17 @@ That module is the only network owner. It validates staging before atomic
 content-addressed publication and serializes concurrent acquisition. An
 explicit `--minor-body-resource-directory` bypasses acquisition and remains
 read-only. Request generation and rendering retain the offline contract.
+
+### Installed comets (Milestone 50A.5C)
+
+`tools/install_comet_resource.py` converts one accepted compact comet fixture
+and its digest-bound raw evidence into the existing manifest schema. It checks
+the actual SPK target, solar centre, ICRF frame, type 21, coverage, and digest
+before atomically publishing the directory. `MinorBodyResourceCollection`
+then derives the numbered-comet descriptor and exact aliases from that
+manifest; neither Encke nor 161P is a runtime branch.
+
+The installed source exposes a provider `PsAng` only at exact evidence epochs.
+The existing comet point and shared track-symbol layers prefer that value and
+otherwise retain the accepted apparent-Sun fallback. `PsAMV` remains evidence
+only and is never substituted for gas-tail orientation.
