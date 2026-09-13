@@ -1,8 +1,10 @@
 # Second drawable comet audit (Milestone 50A.5C)
 
-**Status:** Accepted by Fernando on 2026-09-13
+**Status:** Scientifically, architecturally, visually, operationally, and
+regression accepted by Fernando on 2026-09-13
 
-**Runtime effect:** None
+**Runtime effect:** Generic validated comet installation, a second drawable
+comet, and date-owned moving-object centering
 
 **Acceptance specimen:** 161P/Hartley-IRAS
 
@@ -259,3 +261,13 @@ samples remain independently evaluated at their own track dates, including
 both target and terrestrial-observer motion. Omitting `--center-on-date`
 retains the ordinary `--observer-time` context. The option is rejected for a
 fixed target or constellation and performs no comet acquisition.
+
+Final Mac acceptance reproduced the compact fixture byte for byte, installed
+and resolved 161P through its designation and exact aliases, and visually
+verified complete and symbols-only September--October tracks with independently
+oriented comet symbols. The accepted `--center-on-date` experiment centered
+the chart and its horizontal orientation at the requested moving-object epoch
+while retaining the independent dates of all track samples. The complete Mac
+regression gate passed all 2,346 tests in 83.89 seconds. This closes 50A.5C;
+automatic comet discovery, acquisition, photometry, and moving-object sidecar
+reports remain separately audited future work.

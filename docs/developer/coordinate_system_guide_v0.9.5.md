@@ -3138,3 +3138,5 @@ the center point. This does not freeze a track at that instant: every track
 sample is still evaluated at its own sample date against the moving Earth and
 then transported through the chart's fixed product frame. Without
 `--center-on-date`, `--observer-time` remains the chart observation instant.
+Fernando accepted this second-comet and moving-center coordinate behavior after
+visual review; final Mac regression passed all 2,346 tests in 83.89 seconds.
