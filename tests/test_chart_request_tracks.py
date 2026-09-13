@@ -17,7 +17,11 @@ from wenu.charts.request_tracks import (
 )
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.ceres import CERES_BODY
-from wenu.sky.solar_system_track_layer import CometTrackSymbolLayer
+from wenu.sky.solar_system_track_layer import (
+    CometTrackSymbolLayer,
+    SolarSystemTrackRealization,
+    SolarSystemTrackSymbolLayer,
+)
 from wenu.sky.solar_system_tracks import SolarSystemTrackRequest
 from wenu.sky.venus import VENUS_POINT
 
@@ -137,6 +141,101 @@ def test_comet_track_places_one_symbol_at_every_major_epoch():
     )
     assert all(layer.body_descriptor is encke for layer in symbols)
     assert all(layer.request_draw_label is False for layer in symbols)
+    track_layer = next(
+        layer for layer in sky.layers
+        if layer.layer_name == "solar_system_track"
+    )
+    assert all(
+        layer.track_realization is track_layer.track_realization
+        for layer in symbols
+    )
+
+
+def test_track_components_are_independently_selectable_from_one_realization():
+    chart_request = replace(
+        request("regional", track()),
+        solar_system_track=None,
+        solar_system_track_path=False,
+        solar_system_track_ticks=False,
+        solar_system_track_symbols="start",
+        solar_system_track_labels="start",
+    )
+    sky = CelestialSphere(None)
+
+    track_layer = configure_chart_request_track(sky, chart_request)
+
+    symbols = tuple(
+        layer for layer in sky.layers
+        if isinstance(layer, SolarSystemTrackSymbolLayer)
+    )
+    assert track_layer.draw_path is False
+    assert track_layer.draw_ticks is False
+    assert track_layer.label_start is True
+    assert track_layer.label_ticks is False
+    assert len(symbols) == 1
+    assert symbols[0].major_index == 0
+    assert symbols[0].track_realization is track_layer.track_realization
+
+
+def test_major_symbol_cadence_is_generic_for_planets():
+    chart_request = replace(
+        request("regional", track()), solar_system_track=None,
+        solar_system_track_symbols="major"
+    )
+    sky = CelestialSphere(None)
+
+    configure_chart_request_tracks(sky, chart_request)
+
+    symbols = tuple(
+        layer for layer in sky.layers
+        if isinstance(layer, SolarSystemTrackSymbolLayer)
+    )
+    assert tuple(layer.major_index for layer in symbols) == tuple(
+        range(track().tick_count + 1)
+    )
+    assert not any(isinstance(layer, CometTrackSymbolLayer) for layer in symbols)
+
+
+def test_legacy_tick_label_flag_is_the_major_label_compatibility_alias():
+    chart_request = replace(
+        request("regional", track()), solar_system_track=None,
+        solar_system_track_tick_labels=True
+    )
+    layer = configure_chart_request_track(CelestialSphere(None), chart_request)
+
+    assert layer.label_start is True
+    assert layer.label_ticks is True
+
+
+def test_legacy_tick_label_flag_rejects_conflicting_explicit_cadence():
+    with pytest.raises(ValueError, match="conflicts"):
+        replace(
+            request("regional", track()),
+            solar_system_track=None,
+            solar_system_track_tick_labels=True,
+            solar_system_track_labels="start",
+        )
+
+
+def test_shared_track_realization_evaluates_the_scientific_track_once():
+    class CountingRealizer:
+        def __init__(self):
+            self.calls = []
+
+        def curve(self, track_request, *, context, observer):
+            self.calls.append((track_request, context, observer))
+            return object()
+
+    realizer = CountingRealizer()
+    realization = SolarSystemTrackRealization(track(), realizer=realizer)
+    context = object()
+    observer = object()
+
+    first = realization.realize(context, observer)
+    second = realization.realize(context, observer)
+
+    assert second is first
+    assert len(realizer.calls) == 1
 
 
 def test_selected_comet_point_replaces_duplicate_track_start_symbol():

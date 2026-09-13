@@ -135,7 +135,8 @@ def test_cli_forwards_mixed_planet_asteroid_and_comet_tracks(monkeypatch):
         "--comet-track", "2P", "--minor-body-resource-directory",
         "/tmp/minor-bodies", "--track-start", "2026-11-13T00:00:00Z",
         "--track-sample-step", "1d", "--track-tick-step", "7d",
-        "--track-tick-count", "4",
+        "--track-tick-count", "4", "--no-track-path", "--no-track-ticks",
+        "--track-symbols", "major", "--track-labels", "start",
     ])
     view = type("View", (), {"family": "regional"})()
 
@@ -146,6 +147,10 @@ def test_cli_forwards_mixed_planet_asteroid_and_comet_tracks(monkeypatch):
         "venus", "ceres", "2p",
     )
     assert len({track.start_instant for track in tracks}) == 1
+    assert calls[0]["solar_system_track_path"] is False
+    assert calls[0]["solar_system_track_ticks"] is False
+    assert calls[0]["solar_system_track_symbols"] == "major"
+    assert calls[0]["solar_system_track_labels"] == "start"
 
 
 def test_cli_uses_resolved_minor_body_key_for_point_selection(monkeypatch):

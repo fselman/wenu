@@ -68,6 +68,25 @@ def test_major_tick_date_labels_are_explicitly_opt_in():
     assert options.label_ticks is True
 
 
+def test_track_presentation_components_have_independent_cli_controls():
+    arguments = parse(
+        "--planet-track", "venus",
+        "--track-start", "2026-08-30T00:00:00Z",
+        "--track-sample-step", "1h",
+        "--track-tick-step", "7d",
+        "--track-tick-count", "4",
+        "--no-track-path",
+        "--no-track-ticks",
+        "--track-symbols", "major",
+        "--track-labels", "start",
+    )
+
+    assert arguments.track_path is False
+    assert arguments.track_ticks is False
+    assert arguments.track_symbols == "major"
+    assert arguments.track_labels == "start"
+
+
 def test_ceres_point_track_and_resource_directory_are_independent_options():
     arguments = parse(
         "--asteroid", "ceres",

@@ -1,6 +1,6 @@
 """Scientific contract tests for sampled Solar-System trajectories."""
 
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, replace
 from math import cos, radians, sin
 from types import SimpleNamespace
 
@@ -24,6 +24,13 @@ from wenu.sky.solar_system_tracks import (
     SolarSystemTrackRealizer,
     SolarSystemTrackRequest,
 )
+from wenu.sky.solar_system_track_layer import (
+    CometTrackSymbolLayer,
+    SolarSystemTrackLayer,
+    SolarSystemTrackRealization,
+    SolarSystemTrackSymbolLayer,
+)
+from wenu.sky.ceres import CERES_BODY
 from wenu.solar_system_directions import (
     ApparentDirection,
     ObserverBarycentricState,
@@ -319,6 +326,71 @@ def test_realizer_keeps_target_and_observer_source_roles_distinct():
 
     assert len(target_source.requests) == 6
     assert observer_sources == [observer_source] * 3
+
+
+def test_path_and_major_symbols_reuse_one_realized_target_trajectory():
+    source = TrackSource()
+    realizer = SolarSystemTrackRealizer(
+        source_factory=lambda observer: source,
+        sample_observer_factory=sample_observer,
+        observer_state_factory=observer_state,
+        apparent_realizer=ApparentRealizer(),
+    )
+    track_request = request(
+        sample_step_days=0.75, tick_step_days=0.75, tick_count=2
+    )
+    shared = SolarSystemTrackRealization(track_request, realizer=realizer)
+    path = SolarSystemTrackLayer(track_request, realization=shared)
+    symbols = tuple(
+        SolarSystemTrackSymbolLayer(shared, index)
+        for index in range(track_request.tick_count + 1)
+    )
+    observer = object()
+
+    curve = path.realize(CONTEXT, observer)
+    request_count = len(source.requests)
+    points = tuple(symbol.realize(CONTEXT, observer) for symbol in symbols)
+
+    assert len(source.requests) == request_count
+    assert tuple(float(point.lon_deg[0]) for point in points) == pytest.approx(
+        tuple(curve.lon_deg[0][index] for index in (0, 1, 2))
+    )
+
+
+def test_comet_symbol_adds_provider_orientation_without_reevaluating_target():
+    class CometSource(TrackSource):
+        def apparent_gas_tail_position_angle_deg(self, **options):
+            del options
+            return 76.0
+
+    descriptor = replace(
+        CERES_BODY,
+        target="2p", entity_key="comet_2p", display_name="2P/Encke",
+        selection_key="2p", body_class="comet", physical_body_id="1000025",
+        canonical_designation="2P/Encke", iau_number=2,
+    )
+    track_request = request(
+        descriptor=descriptor, sample_step_days=0.75,
+        tick_step_days=0.75, tick_count=2,
+    )
+    source = CometSource()
+    realizer = SolarSystemTrackRealizer(
+        source_factory=lambda observer: source,
+        sample_observer_factory=sample_observer,
+        observer_state_factory=observer_state,
+        apparent_realizer=ApparentRealizer(),
+    )
+    shared = SolarSystemTrackRealization(track_request, realizer=realizer)
+    observer = object()
+    shared.realize(CONTEXT, observer)
+    request_count = len(source.requests)
+
+    symbol = CometTrackSymbolLayer(shared, 1).realize(CONTEXT, observer)
+
+    assert len(source.requests) == request_count
+    assert len(symbol) == 2
+    assert symbol.metadata["antisolar_position_angle_deg"] == 76.0
+    assert symbol.metadata["comet_tail_orientation_source"] == "provider PsAng"
 
 
 def test_realizer_requires_typed_context_with_observation():

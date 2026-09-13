@@ -459,7 +459,23 @@ def add_chart_content_arguments(parser):
     parser.add_argument("--track-tick-count", type=int, metavar="COUNT")
     parser.add_argument(
         "--track-tick-labels", action="store_true",
-        help="label every major planet-track tick with its ISO date",
+        help="compatibility alias for --track-labels major",
+    )
+    parser.add_argument(
+        "--track-path", action=argparse.BooleanOptionalAction, default=True,
+        help="draw or suppress the sampled track path",
+    )
+    parser.add_argument(
+        "--track-ticks", action=argparse.BooleanOptionalAction, default=True,
+        help="draw or suppress the major tick marks",
+    )
+    parser.add_argument(
+        "--track-symbols", choices=("none", "start", "major"),
+        help="place body-specific symbols at no, starting, or all major epochs",
+    )
+    parser.add_argument(
+        "--track-labels", choices=("none", "start", "major"),
+        help="place date labels at no, starting, or all major epochs",
     )
     parser.add_argument(
         "--moon",

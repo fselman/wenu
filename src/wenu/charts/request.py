@@ -368,6 +368,10 @@ class ChartRequest:
     # Compatibility input; normalized into solar_system_tracks.
     solar_system_track: SolarSystemTrackRequest | None = None
     solar_system_track_tick_labels: bool = False
+    solar_system_track_path: bool = True
+    solar_system_track_ticks: bool = True
+    solar_system_track_symbols: str | None = None
+    solar_system_track_labels: str | None = None
     solar_system_disks: tuple[SolarSystemDiskDisplayRequest, ...] = ()
     solar_system_disk_sequence: (
         ObservedSolarSystemDiskSequenceDisplayRequest
@@ -691,10 +695,38 @@ class ChartRequest:
         object.__setattr__(self, "coordinate_frame", coordinate_frame)
         if self.solar_system_track_tick_labels and not tracks:
             raise ValueError("track tick labels require a Solar-System track.")
+        if any(
+            value is not None and not tracks
+            for value in (
+                self.solar_system_track_symbols,
+                self.solar_system_track_labels,
+            )
+        ):
+            raise ValueError("track presentation options require a Solar-System track.")
+        for name in ("solar_system_track_symbols", "solar_system_track_labels"):
+            value = getattr(self, name)
+            if value is not None:
+                value = str(value).strip().lower()
+                if value not in {"none", "start", "major"}:
+                    raise ValueError(f"{name} must be 'none', 'start', or 'major'.")
+            object.__setattr__(self, name, value)
+        if (
+            self.solar_system_track_tick_labels
+            and self.solar_system_track_labels not in {None, "major"}
+        ):
+            raise ValueError(
+                "track-tick-labels conflicts with an explicit track label cadence."
+            )
         object.__setattr__(
             self,
             "solar_system_track_tick_labels",
             bool(self.solar_system_track_tick_labels),
+        )
+        object.__setattr__(
+            self, "solar_system_track_path", bool(self.solar_system_track_path)
+        )
+        object.__setattr__(
+            self, "solar_system_track_ticks", bool(self.solar_system_track_ticks)
         )
         object.__setattr__(self, "solar_system_disks", solar_system_disks)
         object.__setattr__(self, "mask", bool(self.mask))

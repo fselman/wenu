@@ -473,6 +473,10 @@ def _chart_view_argument_plans(
                 "solar_system_track_tick_labels": (
                     False if not parsed_tracks else parsed_tracks[0].label_ticks
                 ),
+                "solar_system_track_path": arguments.track_path,
+                "solar_system_track_ticks": arguments.track_ticks,
+                "solar_system_track_symbols": arguments.track_symbols,
+                "solar_system_track_labels": arguments.track_labels,
             },
         ))
     return tuple(plans)

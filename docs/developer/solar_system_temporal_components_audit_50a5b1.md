@@ -1,6 +1,7 @@
 # Solar-System temporal components audit (Milestone 50A.5B.1)
 
-**Status:** Proposed corrective architecture; Fernando review pending
+**Status:** Architecture accepted by Fernando on 2026-09-13; first shared-track
+implementation ready for Mac verification
 
 **Supersedes:** The provisional 50A.5B implementation choice that realizes
 each comet track symbol through a second `SolarSystemPointLayer` evaluation.
@@ -59,7 +60,7 @@ The request-level policy has four independent fields:
 `major` is start-inclusive. No combination changes physical sample times,
 target evaluation, product frame, resource identity, or provenance.
 
-The proposed CLI adapter is:
+The accepted CLI adapter is:
 
 ```text
 --track-path / --no-track-path
@@ -164,5 +165,9 @@ Stop if implementation would:
 - change an accepted Venus, Mercury, Moon, asteroid, or planet output without
   an explicit compatibility test and visual review.
 
-Runtime refactoring and new CLI controls remain pending Fernando's acceptance
-of this corrective audit.
+Fernando accepted this corrective architecture on 2026-09-13. The first
+implementation shares one cached `SolarSystemTrackResult` among path and
+symbol layers, retains the existing generic observed-disk sequence owner for
+Venus, Mercury, and Moon phase payloads, and adds the independent path, tick,
+symbol-cadence, and label-cadence controls above. Mac regression and visual
+verification remain required before this corrective slice is complete.
