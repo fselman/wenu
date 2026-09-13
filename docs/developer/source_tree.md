@@ -1553,5 +1553,10 @@ owns deterministic contract coverage;
 - `MinorBodyResourceCollection` remains the installed-manifest alias
   authority, while `comet_discovery.py` remains the interval-set discovery
   owner;
+- `minor_body_identity.py` is the candidate owner of exact installed/provider
+  minor-body identity, mandatory class constraints, fixed SBDB response
+  validation, alias construction, and provenance;
+- `tests/test_minor_body_identity.py` owns the durable exact-identity seam and
+  frozen unique, ambiguous, and wrong-class provider responses;
 - the candidate authorizes no acquisition, cache, SPK, chart, coordinate,
-  magnitude, report, renderer, semantic, or export change.
+  magnitude, report, renderer, semantic, or export integration.
