@@ -20,7 +20,8 @@ SBDB_QUERY_SOURCE = "NASA/JPL SBDB (Small-Body DataBase) Query API"
 DEFAULT_MAX_PERIHELION_DISTANCE_AU = 5.0
 
 DISCOVERY_FIELDS = (
-    "spkid", "full_name", "kind", "pdes", "name", "prefix", "class",
+    "spkid", "full_name", "kind", "pdes", "name", "first_obs",
+    "prefix", "class",
     "q", "tp", "tp_cal", "e", "i", "per", "moid", "t_jup",
     "orbit_id", "M1", "M2", "K1", "K2",
 )
@@ -35,6 +36,7 @@ class CometDiscoveryRecord:
     kind: str
     primary_designation: str
     name: str | None
+    first_observation: str | None
     prefix: str | None
     orbit_class: str | None
     perihelion_distance_au: float
@@ -205,6 +207,10 @@ def parse_discovery_response(
                 kind=str(row["kind"]),
                 primary_designation=_required_text(row["pdes"]),
                 name=str(row["name"]).strip() if row["name"] else None,
+                first_observation=(
+                    str(row["first_obs"]).strip()
+                    if row["first_obs"] else None
+                ),
                 prefix=str(row["prefix"]).strip() if row["prefix"] else None,
                 orbit_class=(
                     str(row["class"]).strip() if row["class"] else None
