@@ -47,7 +47,7 @@ def table_text(result: CometDiscoveryResult) -> str:
     rows = []
     for row in result.records:
         rows.append((
-            row.primary_designation,
+            row.canonical_designation,
             _unknown(row.name),
             _unknown(row.orbit_class),
             row.perihelion_date_utc,
@@ -103,6 +103,7 @@ def json_text(result: CometDiscoveryResult) -> str:
     }
     for record in result.records:
         values = asdict(record)
+        values["canonical_designation"] = record.canonical_designation
         values["perihelion"] = {
             "jd": values.pop("perihelion_jd_tdb"),
             "calendar": values.pop("perihelion_calendar_tdb"),
