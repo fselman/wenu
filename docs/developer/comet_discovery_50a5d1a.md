@@ -47,7 +47,9 @@ retrieval instant, provider identity/version, exact request parameters,
 SHA-256 of the raw response, and typed rows. Missing provider values remain
 `None` internally and `unknown` in the human table. The table includes a
 short `Header key` defining every acronym, orbital symbol, provider code, and
-unit used by its columns. JSON retains explicit
+unit used by its columns. The `1st obs.` column retains SBDB `first_obs` and is
+explicitly labelled as the earliest observation used by the current orbit
+solution, not necessarily the historical discovery date. JSON retains explicit
 units and identifies perihelion JD/calendar values as TDB.
 
 `M1`, `M2`, `K1`, and `K2` are labelled only as provider photometric model
