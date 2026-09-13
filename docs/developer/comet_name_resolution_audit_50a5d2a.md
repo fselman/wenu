@@ -1,6 +1,6 @@
 # Exact comet name resolution audit (Milestone 50A.5D.2A)
 
-**Status:** Candidate audit for Fernando's review
+**Status:** Accepted by Fernando on 2026-09-13
 
 **Base:** `32e1fe2cf86ff9e29d64869c0904a9e5cbd0614e`
 
@@ -170,3 +170,11 @@ Acceptance requires:
 
 Acceptance of 50A.5D.2A authorizes only the identity resolver. A separate
 50A.5D.2B review is required before generic comet acquisition.
+
+## Acceptance
+
+Fernando accepted this audit on 2026-09-13 and authorized only the exact,
+typed 50A.5D.2A comet-identity resolver described here. The authorization does
+not include generic comet acquisition, Horizons SPK requests, cache
+publication, chart integration, observer-dependent magnitude, or reports.
+Those remain subject to their separately reviewed milestones.
