@@ -1610,7 +1610,7 @@ The accepted report contract additionally requires instantaneous topocentric
 apparent `dRA/dt`, `cos(dec) dRA/dt`, `dDec/dt`, and total sky-plane speed in
 mas/s, with explicit telescope-driver convention warnings.
 
-The accepted 50A.5D.1A implementation provides only the deterministic SBDB query, typed
-rows, and table/JSON command. Fernando deferred observer-dependent Horizons
+The accepted 50A.5D.1A implementation provides only the deterministic SBDB
+query, typed rows, and table/JSON command. Fernando deferred observer-dependent Horizons
 magnitude and its cadence to 50A.5D.1B. Comet acquisition and moving-object
 reports remain unauthorized later slices.
