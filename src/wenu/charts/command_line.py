@@ -296,12 +296,24 @@ def _chart_view_argument_plans(
         else configuration.minor_body_resource_directory
     )
     asteroid_selections = tuple(getattr(arguments, "asteroid", ()))
-    track_selection = getattr(arguments, "asteroid_track", None)
+    comet_selections = tuple(getattr(arguments, "comet", ()))
+    def repeated_selections(name):
+        values = getattr(arguments, name, ()) or ()
+        return (values,) if isinstance(values, str) else tuple(values)
+
+    asteroid_track_selections = repeated_selections("asteroid_track")
+    comet_track_selections = repeated_selections("comet_track")
+    minor_selections = (
+        *asteroid_selections,
+        *comet_selections,
+        *asteroid_track_selections,
+        *comet_track_selections,
+    )
     minor_body_descriptors = ()
-    if asteroid_selections or track_selection is not None:
+    if minor_selections:
         if resource_directory is None:
             raise ValueError(
-                "selected asteroids require minor_body_resource_directory."
+                "selected minor bodies require minor_body_resource_directory."
             )
         from wenu.minor_body_resources import MinorBodyResourceCollection
 
@@ -320,40 +332,38 @@ def _chart_view_argument_plans(
             descriptor.selection_key: descriptor
             for descriptor in (
                 resolve_selection(selection)
-                for selection in (
-                    *asteroid_selections,
-                    *((track_selection,)
-                      if track_selection is not None else ()),
-                )
+                for selection in minor_selections
             )
         }.values())
         resolved_by_selection = {
             selection: resolve_selection(selection)
-            for selection in (
-                *asteroid_selections,
-                *((track_selection,)
-                  if track_selection is not None else ()),
-            )
+            for selection in minor_selections
         }
         effective_arguments = copy(effective_arguments)
         effective_arguments.asteroid = [
             resolved_by_selection[value].selection_key
             for value in asteroid_selections
         ]
-        if track_selection is not None:
-            effective_arguments.asteroid_track = (
-                resolved_by_selection[track_selection].selection_key
-            )
+        effective_arguments.comet = [
+            resolved_by_selection[value].selection_key
+            for value in comet_selections
+        ]
+        effective_arguments.asteroid_track = [
+            resolved_by_selection[value].selection_key
+            for value in asteroid_track_selections
+        ]
+        effective_arguments.comet_track = [
+            resolved_by_selection[value].selection_key
+            for value in comet_track_selections
+        ]
     descriptor_map = {
         value.selection_key: value for value in minor_body_descriptors
     }
     detail_overrides = chart_detail_overrides(effective_arguments)
     content = chart_content_options(effective_arguments)
-    parsed_track = chart_track_options(effective_arguments)
-    track_request = (
-        None
-        if parsed_track is None
-        else SolarSystemTrackRequest(
+    parsed_tracks = chart_track_options(effective_arguments)
+    track_requests = tuple(
+        SolarSystemTrackRequest(
             descriptor=(
                 descriptor_map.get(parsed_track.body)
                 or SOLAR_SYSTEM_BODY_CATALOG.resolve(parsed_track.body)
@@ -364,8 +374,9 @@ def _chart_view_argument_plans(
             tick_step_days=parsed_track.tick_step_days,
             tick_count=parsed_track.tick_count,
         )
+        for parsed_track in parsed_tracks
     )
-    if track_request is not None and getattr(view, "family", None) not in {
+    if track_requests and getattr(view, "family", None) not in {
         "regional", "binocular"
     }:
         raise ValueError(
@@ -456,11 +467,11 @@ def _chart_view_argument_plans(
                 "content": chart_sky_content(arguments),
                 "minor_body_resource_directory": resource_directory,
                 "minor_body_descriptors": minor_body_descriptors,
-                "solar_system_track": track_request,
+                "solar_system_tracks": track_requests,
                 "solar_system_disks": disk_requests,
                 "solar_system_disk_sequence": disk_sequence,
                 "solar_system_track_tick_labels": (
-                    False if parsed_track is None else parsed_track.label_ticks
+                    False if not parsed_tracks else parsed_tracks[0].label_ticks
                 ),
             },
         ))

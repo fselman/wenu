@@ -483,18 +483,25 @@ def composition_layer_options(
             base,
             {"stars": {"render": render_stars}},
         )
-    track = next(
-        (
-            layer for layer in sky.layers
-            if getattr(layer, "layer_name", None) == "solar_system_track"
-        ),
-        None,
+    tracks = tuple(
+        layer for layer in sky.layers
+        if getattr(layer, "layer_name", None) == "solar_system_track"
     )
-    if track is not None:
+    for track in tracks:
         viewport = composition.context.viewport
         tick_length = 0.018 * min(viewport.width, viewport.height)
         label_anchor = TrackLabelAnchor(
             fontsize=publication.solar_system_track_label_fontsize
+        )
+        body_class = getattr(
+            getattr(track, "body_descriptor", None), "body_class", None
+        )
+        track_color = (
+            publication.asteroid_color
+            if body_class == "asteroid"
+            else publication.comet_color
+            if body_class == "comet"
+            else publication.solar_system_track_color
         )
         base = merge_sky_layer_options(
             sky,
@@ -511,13 +518,13 @@ def composition_layer_options(
                     "render": {
                         "component_styles": {
                             "path": {
-                                "color": publication.solar_system_track_color,
+                                "color": track_color,
                                 "linewidth": publication.solar_system_track_linewidth,
                                 "linestyle": publication.solar_system_track_linestyle,
                                 "zorder": 38.0,
                             },
                             "ticks": {
-                                "color": publication.solar_system_track_color,
+                                "color": track_color,
                                 "linewidth": (
                                     publication.solar_system_track_tick_linewidth
                                 ),
@@ -532,20 +539,13 @@ def composition_layer_options(
                         "draw_labels": True,
                         "label_anchor": label_anchor,
                         "label_style": {
-                            "color": publication.solar_system_track_color,
+                            "color": track_color,
                             "fontsize": publication.solar_system_track_label_fontsize,
                             "zorder": 38.2,
                         },
                         "component_label_styles": {
                             "labels": {
-                                "color": (
-                                    publication.asteroid_color
-                                    if getattr(
-                                        getattr(track, "body_descriptor", None),
-                                        "body_class", None,
-                                    ) == "asteroid"
-                                    else publication.solar_system_track_color
-                                ),
+                                "color": track_color,
                             },
                         },
                         "label_offset": (0.0, 0.0),

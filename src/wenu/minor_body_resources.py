@@ -234,8 +234,8 @@ def request_minor_body_descriptors(request):
     from wenu.sky.solar_system_catalog import SOLAR_SYSTEM_BODY_CATALOG
 
     keys = set(request.content.solar_system_objects or ())
-    if request.solar_system_track is not None:
-        keys.add(request.solar_system_track.descriptor.selection_key)
+    for track in request.solar_system_tracks:
+        keys.add(track.descriptor.selection_key)
     external = tuple(getattr(request, "minor_body_descriptors", ()))
     external_by_key = {value.selection_key: value for value in external}
     return tuple(

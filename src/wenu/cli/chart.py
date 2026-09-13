@@ -341,9 +341,11 @@ def _numbered_asteroid_selections(arguments):
     selections = [
         *getattr(arguments, "asteroid", ()),
     ]
-    track = getattr(arguments, "asteroid_track", None)
-    if track is not None:
-        selections.append(track)
+    tracks = getattr(arguments, "asteroid_track", None)
+    if tracks is not None:
+        selections.extend(
+            (tracks,) if isinstance(tracks, str) else tracks
+        )
     center = getattr(arguments, "center_on", None)
     if isinstance(center, str):
         if ":" in center:

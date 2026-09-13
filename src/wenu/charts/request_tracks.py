@@ -4,9 +4,8 @@ from astropy.time import Time
 from wenu.sky.solar_system_track_layer import SolarSystemTrackLayer
 
 
-def _selected_point_replaces_start_label(request):
+def _selected_point_replaces_start_label(request, track):
     """Return whether one selected point identifies the same track instant."""
-    track = request.solar_system_track
     selected = set(request.content.solar_system_objects or ())
     if track.descriptor.selection_key not in selected:
         return False
@@ -31,15 +30,16 @@ def _coincident_start_label(descriptor):
     )
 
 
-def configure_chart_request_track(sky, request, *, source_resolver=None):
-    """Replace any prior request track with the request's selected track."""
+def configure_chart_request_tracks(sky, request, *, source_resolver=None):
+    """Replace prior tracks with the request's immutable track collection."""
     for point in getattr(sky, "solar_system_bodies", {}).values():
         point.request_draw_label = True
     for layer in tuple(sky.layers):
         if getattr(layer, "layer_name", None) == "solar_system_track":
             sky.remove(layer)
-    if request.solar_system_track is None:
-        return None
+    tracks = tuple(request.solar_system_tracks)
+    if not tracks:
+        return ()
     options = {}
     if source_resolver is not None:
         from wenu.sky.solar_system_tracks import SolarSystemTrackRealizer
@@ -47,23 +47,34 @@ def configure_chart_request_track(sky, request, *, source_resolver=None):
         options["realizer"] = SolarSystemTrackRealizer(
             source_resolver=source_resolver
         )
-    replaces_start = _selected_point_replaces_start_label(request)
-    descriptor = request.solar_system_track.descriptor
-    if replaces_start:
-        point = getattr(sky, "solar_system_bodies", {}).get(
-            descriptor.selection_key
+    layers = []
+    for track in tracks:
+        replaces_start = _selected_point_replaces_start_label(request, track)
+        descriptor = track.descriptor
+        if replaces_start:
+            point = getattr(sky, "solar_system_bodies", {}).get(
+                descriptor.selection_key
+            )
+            if point is not None:
+                point.request_draw_label = False
+        layer = SolarSystemTrackLayer(
+            track,
+            label_ticks=request.solar_system_track_tick_labels,
+            label_start=True,
+            start_label_text=(
+                _coincident_start_label(descriptor)
+                if replaces_start else None
+            ),
+            **options,
         )
-        if point is not None:
-            point.request_draw_label = False
-    start_label_text = None
-    if replaces_start:
-        start_label_text = _coincident_start_label(descriptor)
-    layer = SolarSystemTrackLayer(
-        request.solar_system_track,
-        label_ticks=request.solar_system_track_tick_labels,
-        label_start=True,
-        start_label_text=start_label_text,
-        **options,
+        sky.add(layer)
+        layers.append(layer)
+    return tuple(layers)
+
+
+def configure_chart_request_track(sky, request, *, source_resolver=None):
+    """Compatibility wrapper for callers expecting zero or one layer."""
+    layers = configure_chart_request_tracks(
+        sky, request, source_resolver=source_resolver
     )
-    sky.add(layer)
-    return layer
+    return None if not layers else layers[0] if len(layers) == 1 else layers

@@ -13,6 +13,7 @@ from wenu.charts.request import (
 from wenu.charts.request_tracks import (
     _coincident_start_label,
     configure_chart_request_track,
+    configure_chart_request_tracks,
 )
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.ceres import CERES_BODY
@@ -74,6 +75,51 @@ def test_request_registration_replaces_prior_track_and_can_remove_it():
         sky, request("regional", None)
     ) is None
     assert sky.layers == ()
+
+
+def test_request_registers_multiple_tracks_as_independent_layers():
+    sky = CelestialSphere(None)
+    ceres = SolarSystemTrackRequest(
+        descriptor=CERES_BODY,
+        start_instant="2026-08-30T00:00:00Z",
+        start_time_scale="utc",
+        sample_step_days=1.0,
+        tick_step_days=7.0,
+        tick_count=4,
+    )
+    chart_request = ChartRequest(
+        observer=ChartObserverRequest(
+            location="La Ligua", time="2026-08-30T00:00:00Z"
+        ),
+        family="regional",
+        product=ChartProductOptions(
+            output=Path("tracks.png"), style="atlas", mode="presentation"
+        ),
+        subject=ChartSubjectRequest(constellations=("Psc",)),
+        solar_system_tracks=(track(), ceres),
+        minor_body_resource_directory=Path("resources"),
+    )
+
+    layers = configure_chart_request_tracks(sky, chart_request)
+
+    assert len(layers) == 2
+    assert tuple(layer.request.descriptor.selection_key for layer in layers) == (
+        "venus", "ceres",
+    )
+    assert all(layer in sky.layers for layer in layers)
+
+
+def test_request_rejects_duplicate_and_satellite_tracks():
+    with pytest.raises(ValueError, match="cannot repeat"):
+        replace(request("regional", track()),
+                solar_system_track=None, solar_system_tracks=(track(), track()))
+
+    moon = replace(track(), descriptor=replace(
+        VENUS_POINT, target="moon", entity_key="moon", selection_key="moon",
+        display_name="Moon", body_class="natural_satellite",
+    ))
+    with pytest.raises(ValueError, match="satellite tracks"):
+        replace(request("regional"), solar_system_tracks=(moon,))
 
 
 def test_coincident_selected_point_replaces_only_the_track_start_label():

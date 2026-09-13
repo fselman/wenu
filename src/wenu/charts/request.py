@@ -364,6 +364,8 @@ class ChartRequest:
     horizon: bool = False
     horizon_mask: bool = False
     content: SkyContentSelection = SkyContentSelection()
+    solar_system_tracks: tuple[SolarSystemTrackRequest, ...] = ()
+    # Compatibility input; normalized into solar_system_tracks.
     solar_system_track: SolarSystemTrackRequest | None = None
     solar_system_track_tick_labels: bool = False
     solar_system_disks: tuple[SolarSystemDiskDisplayRequest, ...] = ()
@@ -427,10 +429,30 @@ class ChartRequest:
         object.__setattr__(self, "minor_body_descriptors", descriptors)
 
         selected_body_keys = set(self.content.solar_system_objects or ())
+        tracks = tuple(self.solar_system_tracks)
         if self.solar_system_track is not None:
-            selected_body_keys.add(
-                self.solar_system_track.descriptor.selection_key
+            if tracks:
+                raise ValueError(
+                    "Specify solar_system_tracks, not both track fields."
+                )
+            tracks = (self.solar_system_track,)
+        if any(not isinstance(value, SolarSystemTrackRequest) for value in tracks):
+            raise TypeError(
+                "solar_system_tracks must contain SolarSystemTrackRequest values."
             )
+        track_keys = tuple(value.descriptor.selection_key for value in tracks)
+        if len(set(track_keys)) != len(track_keys):
+            raise ValueError("solar_system_tracks cannot repeat a target.")
+        if any(
+            getattr(value.descriptor, "body_class", None) in {
+                "natural_satellite", "artificial_satellite"
+            }
+            for value in tracks
+        ):
+            raise ValueError("satellite tracks are outside this chart contract.")
+        object.__setattr__(self, "solar_system_tracks", tracks)
+        for track in tracks:
+            selected_body_keys.add(track.descriptor.selection_key)
         needs_minor_body_resource = any(
             (
                 descriptor_map.get(key)
@@ -488,15 +510,14 @@ class ChartRequest:
             ("furniture", self.furniture, ChartFurnitureOptions),
             ("reference_policy", self.reference_policy, CelestialReferencePolicy),
         )
-        if (
-            self.solar_system_track is not None
-            and not isinstance(self.solar_system_track, SolarSystemTrackRequest)
+        if self.solar_system_track is not None and not isinstance(
+            self.solar_system_track, SolarSystemTrackRequest
         ):
             raise TypeError(
                 "solar_system_track must be a SolarSystemTrackRequest or None."
             )
         if (
-            self.solar_system_track is not None
+            tracks
             and family not in {"regional", "binocular"}
         ):
             raise ValueError(
@@ -668,7 +689,7 @@ class ChartRequest:
         object.__setattr__(self, "family", family)
         object.__setattr__(self, "projection", projection)
         object.__setattr__(self, "coordinate_frame", coordinate_frame)
-        if self.solar_system_track_tick_labels and self.solar_system_track is None:
+        if self.solar_system_track_tick_labels and not tracks:
             raise ValueError("track tick labels require a Solar-System track.")
         object.__setattr__(
             self,

@@ -156,6 +156,19 @@ def _asteroid_selection(value):
     return name.casefold()
 
 
+def _comet_selection(value):
+    from wenu.comet_designations import parse_comet_designation
+
+    name = str(value).strip()
+    if not name:
+        raise argparse.ArgumentTypeError("comet selection cannot be empty")
+    try:
+        parse_comet_designation(name)
+    except (TypeError, ValueError) as error:
+        raise argparse.ArgumentTypeError(str(error)) from error
+    return name.casefold()
+
+
 def _constellation_selection(value):
     names = tuple(
         item.strip() for item in str(value).split(",") if item.strip()
@@ -242,6 +255,7 @@ class ChartContentOptions:
     reference_equinox: str | None = None
     planets: frozenset[str] = frozenset()
     asteroids: frozenset[str] = frozenset()
+    comets: frozenset[str] = frozenset()
     moon: bool = False
     mw_contours: frozenset[str] | None = None
 
@@ -276,6 +290,15 @@ class ChartContentOptions:
             if str(name).strip()
         )
         object.__setattr__(self, "asteroids", asteroids)
+        object.__setattr__(
+            self,
+            "comets",
+            frozenset(
+                str(name).strip().lower()
+                for name in self.comets
+                if str(name).strip()
+            ),
+        )
         object.__setattr__(self, "moon", bool(self.moon))
         contours = self.mw_contours
         if contours is not None:
@@ -354,6 +377,14 @@ def add_chart_content_arguments(parser):
         help="draw an apparent asteroid (currently: ceres)",
     )
     parser.add_argument(
+        "--comet",
+        action="append",
+        type=_comet_selection,
+        default=[],
+        metavar="COMET",
+        help="draw an installed comet as an apparent symbolic point",
+    )
+    parser.add_argument(
         "--minor-body-resource-directory",
         type=Path,
         metavar="PATH",
@@ -405,13 +436,22 @@ def add_chart_content_arguments(parser):
     )
     parser.add_argument(
         "--planet-track",
+        action="append",
         choices=_TRACK_BODY_KEYS,
         help="draw the apparent path of a planet (regional/binocular only)",
     )
     parser.add_argument(
         "--asteroid-track",
+        action="append",
         type=_asteroid_selection,
         help="draw the apparent path of an asteroid (regional/binocular only)",
+    )
+    parser.add_argument(
+        "--comet-track",
+        action="append",
+        type=_comet_selection,
+        metavar="COMET",
+        help="draw an installed comet path (regional/binocular only)",
     )
     parser.add_argument("--track-start", metavar="ISO_TIME")
     parser.add_argument("--track-sample-step", type=_duration_days, metavar="DURATION")
@@ -661,6 +701,7 @@ def chart_content_options(arguments) -> ChartContentOptions:
         reference_equinox=arguments.reference_equinox,
         planets=_selected_planets(getattr(arguments, "planet", ())),
         asteroids=frozenset(getattr(arguments, "asteroid", ())),
+        comets=frozenset(getattr(arguments, "comet", ())),
         moon=_moon_display_options(arguments)[0] == "symbolic",
         mw_contours=_selected_milky_way_contours(
             getattr(arguments, "mw_contour", None)
@@ -826,13 +867,20 @@ def chart_disk_sequence_options(arguments):
 
 
 def chart_track_options(arguments):
-    """Resolve one optional complete moving-body track CLI group."""
-    planet = getattr(arguments, "planet_track", None)
-    asteroid = getattr(arguments, "asteroid_track", None)
-    if planet is not None and asteroid is not None:
-        raise ValueError(
-            "select either --planet-track or --asteroid-track, not both."
+    """Resolve optional mixed-class tracks sharing one timeline."""
+    selections = tuple(
+        (kind, body)
+        for kind, values in (
+            ("planet", getattr(arguments, "planet_track", None)),
+            ("asteroid", getattr(arguments, "asteroid_track", None)),
+            ("comet", getattr(arguments, "comet_track", None)),
         )
+        for body in (
+            (() if values is None else (values,))
+            if isinstance(values, str)
+            else (values or ())
+        )
+    )
     names = (
         "track_start",
         "track_sample_step",
@@ -840,17 +888,16 @@ def chart_track_options(arguments):
         "track_tick_count",
     )
     values = tuple(getattr(arguments, name, None) for name in names)
-    body = planet if planet is not None else asteroid
-    if body is None and all(value is None for value in values):
-        return None
-    if body is None or any(value is None for value in values):
+    if not selections and all(value is None for value in values):
+        return ()
+    if not selections or any(value is None for value in values):
         missing = [
             name.replace("_", "-")
             for name, value in zip(names, values)
             if value is None
         ]
-        if body is None:
-            missing.insert(0, "planet-track or asteroid-track")
+        if not selections:
+            missing.insert(0, "planet-track, asteroid-track, or comet-track")
         raise ValueError(
             "a moving-body track requires all track options; missing: "
             + ", ".join(missing)
@@ -859,11 +906,17 @@ def chart_track_options(arguments):
         raise ValueError("track-tick-count must be a positive integer")
     if not str(values[0]).strip():
         raise ValueError("track-start must be non-empty")
-    return ChartTrackOptions(
-        body=body, start_instant=str(values[0]).strip(),
-        sample_step_days=float(values[1]), tick_step_days=float(values[2]),
-        tick_count=int(values[3]),
-        label_ticks=bool(getattr(arguments, "track_tick_labels", False)),
+    keys = tuple((kind, str(body).casefold()) for kind, body in selections)
+    if len(set(keys)) != len(keys):
+        raise ValueError("moving-body tracks cannot repeat a target")
+    return tuple(
+        ChartTrackOptions(
+            body=body, start_instant=str(values[0]).strip(),
+            sample_step_days=float(values[1]), tick_step_days=float(values[2]),
+            tick_count=int(values[3]),
+            label_ticks=bool(getattr(arguments, "track_tick_labels", False)),
+        )
+        for kind, body in selections
     )
 
 def chart_reference_policy(arguments, *, default=None):
@@ -958,6 +1011,7 @@ def chart_sky_content(arguments) -> SkyContentSelection:
     content = chart_content_options(arguments)
     selected = set(content.planets)
     selected.update(content.asteroids)
+    selected.update(content.comets)
     if content.moon:
         selected.add("moon")
     from .constellation_resolver import resolve_constellation_subject

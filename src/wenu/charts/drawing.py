@@ -131,6 +131,7 @@ def chart_view_request(
     output_format=None,
     reference_policy=None,
     content=None,
+    solar_system_tracks=(),
     solar_system_track=None,
     solar_system_track_tick_labels=False,
     solar_system_disks=(),
@@ -168,7 +169,10 @@ def chart_view_request(
     labels = frozenset(overrides.grid_label_layers or ())
     frozen = _is_frozen_sequence(solar_system_disk_sequence)
     if frozen:
-        if horizon or horizon_mask or solar_system_track or solar_system_disks:
+        if (
+            horizon or horizon_mask or solar_system_track
+            or solar_system_tracks or solar_system_disks
+        ):
             raise ValueError(
                 "frozen-Earth ecliptic sequences exclude horizon, tracks, "
                 "and ordinary resolved disks."
@@ -248,6 +252,7 @@ def chart_view_request(
             )
         ),
         solar_system_track=solar_system_track,
+        solar_system_tracks=tuple(solar_system_tracks),
         solar_system_track_tick_labels=bool(solar_system_track_tick_labels),
         solar_system_disks=tuple(solar_system_disks),
         solar_system_disk_sequence=solar_system_disk_sequence,
