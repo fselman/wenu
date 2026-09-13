@@ -1,0 +1,20 @@
+{
+  "signature": {
+    "source": "NASA/JPL Small-Body Database (SBDB) API",
+    "version": "1.3"
+  },
+  "object": {
+    "spkid": "1000094",
+    "fullname": "10P/Tempel 2",
+    "shortname": "10P/Tempel 2",
+    "des": "10P",
+    "prefix": "P",
+    "kind": "cn",
+    "orbit_class": {
+      "name": "Jupiter-family Comet",
+      "code": "JFc"
+    },
+    "orbit_id": "K265/50",
+    "des_alt": []
+  }
+}
