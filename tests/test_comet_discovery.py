@@ -126,6 +126,10 @@ def test_table_labels_model_parameters_and_visibility_limit():
     assert "unknown" in text
     for explanation in (
         "Header key:",
+        "P: periodic; C: non-periodic; D: disappeared",
+        "A: object found to be a minor planet",
+        "I: interstellar object",
+        "permanent number of a periodic comet",
         "SBDB orbit-class code",
         "minimum orbit intersection distance",
         "total/nuclear absolute-magnitude parameters",
