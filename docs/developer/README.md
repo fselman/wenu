@@ -56,8 +56,9 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`second_drawable_comet_audit_50a5c.md`](second_drawable_comet_audit_50a5c.md)
   — accepted second-comet generalization test using 161P/Hartley-IRAS.
 - [`comet_discovery_and_reporting_audit_50a5d.md`](comet_discovery_and_reporting_audit_50a5d.md)
-  — proposed comet discovery, generic acquisition, and natural moving-object
-  report contract; no runtime change.
+  — accepted comet discovery, generic acquisition, and natural moving-object
+  report contract, including both right-ascension rate conventions; no runtime
+  change.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).

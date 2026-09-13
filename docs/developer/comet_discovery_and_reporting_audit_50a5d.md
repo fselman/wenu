@@ -1,6 +1,6 @@
 # Comet discovery, acquisition, and moving-object reporting audit (Milestone 50A.5D)
 
-**Status:** Proposed for Fernando review on 2026-09-13
+**Status:** Accepted by Fernando on 2026-09-13, including the observed-angular-rate addition
 
 **Base:** `c4c6a9c35fe9f2f91e0d1071b550628f4f5345e5`
 
@@ -181,6 +181,11 @@ machine-readable record. Both contain:
 - for each selected major epoch: UTC and provider time scale, apparent ICRS
   right ascension/declination, altitude/azimuth for that epoch's observer,
   observer distance, one-way light time, and provenance;
+- predicted instantaneous topocentric apparent angular motion relative to the
+  sidereal sky, with signed eastward and northward components in mas/s:
+  coordinate rate `dRA/dt` (without the cosine factor), tangent-plane rate
+  `mu_RA* = cos(dec) dRA/dt`, declination rate `mu_Dec = dDec/dt`, and total
+  sky-plane speed `sqrt(mu_RA*^2 + mu_Dec^2)`;
 - for comets: symbolic tail position angle and whether its source was exact
   provider `PsAng` or the calculated antisolar fallback;
 - model magnitude only when an authoritative realized provider value exists,
@@ -198,6 +203,24 @@ No report calculation may call a state source, Horizons, SBDB, a projection,
 or a renderer. If a requested field was not retained by the completed
 scientific realization, the implementation must first extend that immutable
 result type or report `unknown`; it must not reevaluate the body.
+
+The rates are observing predictions at each reported epoch, not orbital angular
+velocities and not secants across the user-selected track cadence. Their
+scientific owner must evaluate and retain an instantaneous derivative as part
+of the same observer-bound apparent-direction realization. The implementation
+must declare its derivative method and interval, demonstrate numerical
+convergence, and compare the result with an independent Horizons apparent-rate
+quantity before acceptance. The report serializer only formats the retained
+values.
+
+Signs are positive eastward in right ascension and northward in declination.
+The raw coordinate rate `dRA/dt` becomes ill-conditioned at the celestial
+poles; the report must retain the well-behaved tangent-plane components and
+emit `unknown` plus a warning for the raw rate when the adopted pole guard is
+crossed. The text report must also warn that telescope-control systems differ:
+some request `dRA/dt`, others request `mu_RA*`, and neither value is an
+Alt/Az motor rate or a field-rotation rate. The observer must verify the
+driver's convention before applying differential tracking.
 
 ## Ownership changes
 
@@ -266,4 +289,5 @@ second astronomical realization, or if report generation changes chart
 geometry or graphical bytes.
 
 This audit changes no runtime code, network behavior, chart output, or public
-command. Fernando's acceptance would authorize only 50A.5D.1.
+command. Fernando accepted it on 2026-09-13 with the observed-angular-rate
+addition, authorizing only 50A.5D.1.

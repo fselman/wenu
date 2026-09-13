@@ -4448,6 +4448,7 @@ def test_50a5d_audits_comet_discovery_acquisition_and_reports():
     ).split())
 
     for phrase in (
+        "Accepted by Fernando on 2026-09-13",
         "This audit changes no runtime code",
         "wenu_retrieve_comets START STOP",
         "perihelion instant `tp` lies within the closed input interval",
@@ -4459,6 +4460,9 @@ def test_50a5d_audits_comet_discovery_acquisition_and_reports():
         "one report pair",
         "SolarSystemTrackResult",
         "must not repeat an ephemeris calculation",
+        "mu_RA* = cos(dec) dRA/dt",
+        "total sky-plane speed",
+        "some request `dRA/dt`, others request `mu_RA*`",
         "artificial satellites remain outside",
         "Fernando's acceptance would authorize only 50A.5D.1",
     ):
