@@ -53,6 +53,9 @@ def test_frozen_response_is_typed_sorted_and_preserves_unknowns():
     assert [record.primary_designation for record in records] == [
         "2026 A1", "2P",
     ]
+    assert [record.canonical_designation for record in records] == [
+        "C/2026 A1", "2P",
+    ]
     assert records[0].period_days is None
     assert records[0].earth_moid_au is None
     assert records[1].name == "Encke"
@@ -121,7 +124,7 @@ def test_table_labels_model_parameters_and_visibility_limit():
     assert "not a visibility forecast" in text
     assert "M1 model" in text
     assert "unknown" in text
-    assert text.index("2026 A1") < text.index("2P")
+    assert text.index("C/2026 A1") < text.index("2P")
 
 
 def test_json_retains_units_time_scale_and_provider_identity():
@@ -136,6 +139,7 @@ def test_json_retains_units_time_scale_and_provider_identity():
         == comet_discovery.SBDB_QUERY_SOURCE
     )
     assert document["records"][0]["perihelion"]["time_scale"] == "TDB"
+    assert document["records"][0]["canonical_designation"] == "C/2026 A1"
     assert document["records"][0]["period_days"] == {
         "unit": "d", "value": None,
     }
