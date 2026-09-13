@@ -124,6 +124,15 @@ def test_table_labels_model_parameters_and_visibility_limit():
     assert "not a visibility forecast" in text
     assert "M1 model" in text
     assert "unknown" in text
+    for explanation in (
+        "Header key:",
+        "SBDB orbit-class code",
+        "minimum orbit intersection distance",
+        "total/nuclear absolute-magnitude parameters",
+        "total/nuclear magnitude-slope parameters",
+        "UTC: Coordinated Universal Time",
+    ):
+        assert explanation in text
     assert text.index("C/2026 A1") < text.index("2P")
 
 
