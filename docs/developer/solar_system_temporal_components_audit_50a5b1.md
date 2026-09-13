@@ -1,7 +1,7 @@
 # Solar-System temporal components audit (Milestone 50A.5B.1)
 
-**Status:** Architecture accepted by Fernando on 2026-09-13; first shared-track
-implementation ready for Mac verification
+**Status:** Architecture and Encke track presentations accepted by Fernando on
+2026-09-13; complete Mac regression and phase-sequence reuse remain
 
 **Supersedes:** The provisional 50A.5B implementation choice that realizes
 each comet track symbol through a second `SolarSystemPointLayer` evaluation.
@@ -169,11 +169,18 @@ Fernando accepted this corrective architecture on 2026-09-13. The first
 implementation shares one cached `SolarSystemTrackResult` among path and
 symbol layers, retains the existing generic observed-disk sequence owner for
 Venus, Mercury, and Moon phase payloads, and adds the independent path, tick,
-symbol-cadence, and label-cadence controls above. Mac regression and visual
-verification remain required before this corrective slice is complete.
+symbol-cadence, and label-cadence controls above. Complete Mac regression and
+phase-sequence reuse remain required before this corrective slice is complete.
 
 Track-owned symbol layers are enabled by the explicit track request and do
 not inherit the independent instantaneous-point selection filter. Comet CLI
 selection admits the installed exact aliases authorized by 50A.5A, including
 `2P`, `2P/Encke`, and `Encke`; the resource collection remains the authority
 that resolves any accepted spelling to one installed descriptor and solution.
+
+Fernando visually accepted both requested Encke presentations on 2026-09-13:
+independently oriented major-epoch symbols and dates without path or ticks,
+and the complete path-plus-ticks presentation using the same symbols and
+labels. The focused Mac gate passed all 170 tests in 4.28 seconds before the
+canonical-alias and request-owned-symbol corrections; those corrections still
+require the final focused and complete Mac gates.
