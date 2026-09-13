@@ -47,5 +47,35 @@ brightness, weather, coma activity, or detectability.
 
 `M1`, `M2`, `K1`, and `K2`, when present, are labelled as provider model
 parameters. They are not synthesized or presented as an expected apparent
-magnitude. Observer-dependent model magnitude is deferred to a later,
-separately reviewed command extension.
+magnitude.
+
+## Photometric model parameters
+
+For observer-comet distance \\(\\Delta\\) and heliocentric distance \\(r\\), both
+in au, the standard total-magnitude model is
+
+\\[
+m_1 = M_1 + 5\\log_{10}(\\Delta) + K_1\\log_{10}(r).
+\\]
+
+`M1` is therefore the reference total magnitude (nucleus plus coma) at
+\\(r=1\\) au and \\(\\Delta=1\\) au. `K1` is not a magnitude: it controls how
+strongly total brightness changes with heliocentric distance. If flux is
+written as \\(F\\propto r^{-n}\\), then \\(n=K_1/2.5\\).
+
+The corresponding nuclear-magnitude model is
+
+\\[
+m_2 = M_2 + 5\\log_{10}(\\Delta) + K_2\\log_{10}(r) + \\Phi(\\alpha),
+\\]
+
+where `M2` is the nuclear reference magnitude, `K2` is its heliocentric
+slope parameter, and \\(\\Phi(\\alpha)\\) is a possible phase-angle correction.
+These are Solar System reference magnitudes at unit distances, not stellar
+absolute magnitudes defined at 10 parsecs.
+
+A numerical estimate also requires observer-dependent \\(r\\), \\(\\Delta\\),
+phase geometry, and an evaluation instant. Comets can depart substantially
+from the model through outbursts, fading, fragmentation, asymmetric activity,
+and observational-aperture effects. Observer-dependent model magnitude remains
+deferred to the separately reviewed 50A.5D.1B.
