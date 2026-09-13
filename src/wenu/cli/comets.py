@@ -81,15 +81,27 @@ def table_text(result: CometDiscoveryResult) -> str:
     lines.extend((
         "",
         "Header key:",
-        "  designation: canonical comet designation; name: comet name, if any.",
+        (
+            "  designation: canonical comet designation; "
+            "name: comet name, if any."
+        ),
         "  class: SBDB orbit-class code; orbit: provider orbit-solution ID.",
-        "  perihelion UTC: UTC calendar date derived from the TDB perihelion time.",
+        (
+            "  perihelion UTC: UTC calendar date derived from the "
+            "TDB perihelion time."
+        ),
         "  q: perihelion distance (au); e: orbital eccentricity.",
         "  period: orbital period (d); i: orbital inclination (deg).",
         "  Earth MOID: minimum orbit intersection distance from Earth (au).",
-        "  M1/M2: provider total/nuclear absolute-magnitude parameters.",
+        (
+            "  M1/M2: provider total/nuclear absolute-magnitude "
+            "parameters."
+        ),
         "  K1/K2: provider total/nuclear magnitude-slope parameters.",
-        "  au: astronomical unit; d: day; deg: degree; UTC: Coordinated Universal Time.",
+        (
+            "  au: astronomical unit; d: day; deg: degree; "
+            "UTC: Coordinated Universal Time."
+        ),
     ))
     return "\n".join(lines) + "\n"
 
