@@ -4489,7 +4489,7 @@ def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
         "Candidate implementation for Fernando's review",
         "complete inclusive UTC civil days",
         "not a visibility forecast",
-        "remains deferred to 50A.5D.1B",
+        "sampling policy to a separately reviewed 50A.5D.1B",
         "does not implement `--observer-location`",
         "does not authorize 50A.5D.2 acquisition or 50A.5D.3 reports",
     ):
