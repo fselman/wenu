@@ -4491,7 +4491,7 @@ def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
         "not a visibility forecast",
         "sampling policy to a separately reviewed 50A.5D.1B",
         "does not implement `--observer-location`",
-        "does not authorize 50A.5D.2 acquisition or 50A.5D.3 reports",
+        "does not implement `--observer-location`, model apparent magnitude, comet acquisition, chart preflight, reports",
     ):
         assert phrase in implementation
     assert "50A.5D.1A candidate implementation in review" in roadmap
