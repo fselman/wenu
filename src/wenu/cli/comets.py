@@ -40,7 +40,8 @@ def _unknown(value: object, formatter=str) -> str:
 
 def table_text(result: CometDiscoveryResult) -> str:
     headers = (
-        "designation", "name", "class", "perihelion UTC", "q (au)",
+        "designation", "name", "1st obs.", "class", "perihelion UTC",
+        "q (au)",
         "e", "period (d)", "i (deg)", "Earth MOID (au)", "orbit",
         "M1 model", "M2 model", "K1 model", "K2 model",
     )
@@ -49,6 +50,7 @@ def table_text(result: CometDiscoveryResult) -> str:
         rows.append((
             row.canonical_designation,
             _unknown(row.name),
+            _unknown(row.first_observation),
             _unknown(row.orbit_class),
             row.perihelion_date_utc,
             f"{row.perihelion_distance_au:.6g}",
@@ -84,6 +86,10 @@ def table_text(result: CometDiscoveryResult) -> str:
         (
             "  designation: canonical comet designation; "
             "name: comet name, if any."
+        ),
+        (
+            "  1st obs.: earliest observation used by the current orbit "
+            "solution; not necessarily the discovery date."
         ),
         (
             "  P: periodic; C: non-periodic; D: disappeared; "
