@@ -17,6 +17,7 @@ from wenu.charts.request_tracks import (
 )
 from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.ceres import CERES_BODY
+from wenu.sky.solar_system_track_layer import CometTrackSymbolLayer
 from wenu.sky.solar_system_tracks import SolarSystemTrackRequest
 from wenu.sky.venus import VENUS_POINT
 
@@ -107,6 +108,61 @@ def test_request_registers_multiple_tracks_as_independent_layers():
         "venus", "ceres",
     )
     assert all(layer in sky.layers for layer in layers)
+
+
+def test_comet_track_places_one_symbol_at_every_major_epoch():
+    encke = replace(
+        CERES_BODY,
+        target="2p", entity_key="comet_2p", display_name="2P/Encke",
+        selection_key="2p", body_class="comet", physical_body_id="1000025",
+        canonical_designation="2P/Encke", iau_number=2,
+    )
+    encke_track = replace(track(), descriptor=encke)
+    chart_request = replace(
+        request("regional"),
+        solar_system_tracks=(encke_track,),
+        minor_body_resource_directory=Path("resources"),
+    )
+    sky = CelestialSphere(None)
+
+    configure_chart_request_tracks(sky, chart_request)
+
+    symbols = tuple(
+        layer for layer in sky.layers
+        if isinstance(layer, CometTrackSymbolLayer)
+    )
+    assert tuple(layer.offset_days for layer in symbols) == pytest.approx(
+        encke_track.tick_offsets_days
+    )
+    assert all(layer.body_descriptor is encke for layer in symbols)
+    assert all(layer.request_draw_label is False for layer in symbols)
+
+
+def test_selected_comet_point_replaces_duplicate_track_start_symbol():
+    encke = replace(
+        CERES_BODY,
+        target="2p", entity_key="comet_2p", display_name="2P/Encke",
+        selection_key="2p", body_class="comet", physical_body_id="1000025",
+        canonical_designation="2P/Encke", iau_number=2,
+    )
+    encke_track = replace(track(), descriptor=encke)
+    chart_request = replace(
+        request("regional"),
+        content=SkyContentSelection(solar_system_objects={"2p"}),
+        minor_body_descriptors=(encke,),
+        solar_system_tracks=(encke_track,),
+        minor_body_resource_directory=Path("resources"),
+    )
+    sky = CelestialSphere(None)
+    sky.add_solar_system_body(encke)
+
+    configure_chart_request_tracks(sky, chart_request)
+
+    offsets = tuple(
+        layer.offset_days for layer in sky.layers
+        if isinstance(layer, CometTrackSymbolLayer)
+    )
+    assert offsets == pytest.approx(encke_track.tick_offsets_days[1:])
 
 
 def test_request_rejects_duplicate_and_satellite_tracks():

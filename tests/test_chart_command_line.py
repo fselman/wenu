@@ -148,6 +148,44 @@ def test_cli_forwards_mixed_planet_asteroid_and_comet_tracks(monkeypatch):
     assert len({track.start_instant for track in tracks}) == 1
 
 
+def test_cli_uses_resolved_minor_body_key_for_point_selection(monkeypatch):
+    from dataclasses import replace
+    from wenu.sky.ceres import CERES_BODY
+
+    encke = replace(
+        CERES_BODY,
+        target="2p", entity_key="comet_2p", display_name="2P/Encke",
+        selection_key="2p", body_class="comet", physical_body_id="1000025",
+        canonical_designation="2P/Encke", iau_number=2,
+    )
+
+    class Collection:
+        def __init__(self, directory):
+            assert directory == Path("/tmp/minor-bodies")
+
+        def resolve(self, selection):
+            assert selection == "2P"
+            return encke
+
+    calls = []
+    monkeypatch.setattr(
+        "wenu.minor_body_resources.MinorBodyResourceCollection", Collection
+    )
+    monkeypatch.setattr(
+        "wenu.charts.command_line.draw_chart_view",
+        lambda *args, **kwargs: calls.append(kwargs) or object(),
+    )
+    arguments = parser().parse_args([
+        "--comet", "2P", "--minor-body-resource-directory",
+        "/tmp/minor-bodies",
+    ])
+    view = type("View", (), {"family": "regional"})()
+
+    draw_chart_view_from_arguments(view, arguments, stem="map")
+
+    assert calls[0]["content"].solar_system_objects == {"2p"}
+
+
 def test_ordinary_cli_can_omit_default_equatorial_grid():
     arguments = parser().parse_args(["--no-equatorial-grid"])
 

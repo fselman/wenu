@@ -1,7 +1,10 @@
 """Request-owned registration of one drawable Solar-System track."""
 from __future__ import annotations
 from astropy.time import Time
-from wenu.sky.solar_system_track_layer import SolarSystemTrackLayer
+from wenu.sky.solar_system_track_layer import (
+    CometTrackSymbolLayer,
+    SolarSystemTrackLayer,
+)
 
 
 def _selected_point_replaces_start_label(request, track):
@@ -35,7 +38,9 @@ def configure_chart_request_tracks(sky, request, *, source_resolver=None):
     for point in getattr(sky, "solar_system_bodies", {}).values():
         point.request_draw_label = True
     for layer in tuple(sky.layers):
-        if getattr(layer, "layer_name", None) == "solar_system_track":
+        if getattr(layer, "layer_name", None) in {
+            "solar_system_track", "solar_system_track_symbol",
+        }:
             sky.remove(layer)
     tracks = tuple(request.solar_system_tracks)
     if not tracks:
@@ -69,6 +74,17 @@ def configure_chart_request_tracks(sky, request, *, source_resolver=None):
         )
         sky.add(layer)
         layers.append(layer)
+        if getattr(descriptor, "body_class", None) == "comet":
+            offsets = track.tick_offsets_days
+            if replaces_start:
+                offsets = offsets[1:]
+            for offset in offsets:
+                symbol = CometTrackSymbolLayer(
+                    track,
+                    offset,
+                    source_resolver=source_resolver,
+                )
+                sky.add(symbol)
     return tuple(layers)
 
 

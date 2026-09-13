@@ -383,9 +383,13 @@ class PublicationStyle:
             minimum=minimum,
         )
         options = {}
-        moving_bodies = tuple(
-            getattr(sky, "solar_system_bodies", {}).values()
-        )
+        moving_bodies = tuple(dict.fromkeys((
+            *getattr(sky, "solar_system_bodies", {}).values(),
+            *(
+                layer for layer in getattr(sky, "layers", ())
+                if getattr(layer, "display_kind", None) == "symbolic_point"
+            ),
+        )))
         if not moving_bodies and getattr(sky, "venus", None) is not None:
             moving_bodies = (sky.venus,)
         for body_layer in moving_bodies:
