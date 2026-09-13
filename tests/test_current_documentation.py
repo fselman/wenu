@@ -4493,9 +4493,17 @@ def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
         "does not implement `--observer-location`, model apparent magnitude, comet acquisition, chart preflight, reports",
     ):
         assert phrase in implementation
-    assert "50A.5D.1A candidate implementation in review" in roadmap
+    assert "50A.5D.1A accepted by Fernando on 2026-09-13" in roadmap
     assert "Deterministic comet discovery" in reference
     assert "50A.5D.1A deterministic comet-discovery ownership" in source_tree
     assert "Returned `tp` values retain their TDB identity" in coordinate_guide
-    assert "not a visibility forecast" in user_guide
+    for phrase in (
+        "not a visibility forecast",
+        "m_1 = M_1 + 5\\\\log_{10}(\\\\Delta) + K_1\\\\log_{10}(r)",
+        "M1` is therefore the reference total magnitude",
+        "K1` is not a magnitude",
+        "not stellar absolute magnitudes defined at 10 parsecs",
+        "deferred to the separately reviewed 50A.5D.1B",
+    ):
+        assert phrase in user_guide
     assert 'wenu_retrieve_comets = "wenu.cli.comets:main"' in project
