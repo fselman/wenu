@@ -4499,7 +4499,7 @@ def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
     assert "Returned `tp` values retain their TDB identity" in coordinate_guide
     for phrase in (
         "not a visibility forecast",
-        "m_1 = M_1 + 5\\\\log_{10}(\\\\Delta) + K_1\\\\log_{10}(r)",
+        "m_1 = M_1 + 5\\log_{10}(\\Delta) + K_1\\log_{10}(r)",
         "M1` is therefore the reference total magnitude",
         "K1` is not a magnitude",
         "not stellar absolute magnitudes defined at 10 parsecs",
