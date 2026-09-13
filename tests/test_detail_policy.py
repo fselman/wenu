@@ -778,11 +778,12 @@ def test_default_arguments_disable_all_optional_content():
 
 
 def test_request_owned_comet_track_symbol_is_enabled_by_geometry_contract():
-    layer = SimpleNamespace(
-        layer_name="solar_system_track_symbol",
-        display_kind="symbolic_point",
-        body_descriptor=SimpleNamespace(selection_key="2p"),
-    )
+    class Layer:
+        layer_name = "solar_system_track_symbol"
+        display_kind = "symbolic_point"
+        body_descriptor = SimpleNamespace(selection_key="2p")
+
+    layer = Layer()
     sky = SimpleNamespace(layers=(layer,))
     detail = apply_detail_overrides(
         adaptive_detail(), chart_detail_overrides(parser().parse_args([]))
