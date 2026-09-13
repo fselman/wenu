@@ -1,6 +1,6 @@
 # Deterministic comet discovery (Milestone 50A.5D.1A)
 
-**Status:** Candidate implementation for Fernando's review
+**Status:** Accepted by Fernando on 2026-09-13
 
 **Base:** `0acfa260f9f2dac8bc50ee02008dff6e1819077f`
 
@@ -75,3 +75,18 @@ value, or mismatch between the provider count and returned rows.
 
 No graphical or scientific-position output changes, so no visual chart or
 PNG/PDF/SVG comparison is required for this slice.
+
+## Acceptance
+
+Fernando accepted the displayed table and bounded 50A.5D.1A behavior on
+2026-09-13 after live SBDB verification. The accepted table includes canonical
+designations, `1st obs.`, and a header key; `1st obs.` is explicitly not
+claimed as the historical discovery date. The guide records the meanings of
+`M1`, `M2`, `K1`, and `K2` and the standard total and nuclear magnitude
+models without implementing an observer-dependent estimate.
+
+The live September 2026 query returned `C/2025 E1` and `P/2026 N2`; the
+latter's 2021 first observation demonstrated the required distinction between
+`first_obs` and discovery date. Focused regression passed 123 tests, and the
+complete pre-acceptance regression passed all 2,359 tests. No graphical output
+changed.
