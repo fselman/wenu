@@ -2325,3 +2325,18 @@ comet through `center_arguments.py`, and uses `object_center.py` to obtain the
 single apparent center point. Consequently the same instant governs horizon
 and zenith-up orientation. Track realization remains timeline-owned; its
 samples are not replaced by the center date.
+
+### Deterministic comet discovery (Milestone 50A.5D.1A candidate)
+
+`comet_discovery.py` owns one explicit SBDB Query API request, inclusive UTC
+civil-day to TDB conversion, an immutable typed result, fail-closed provider
+schema validation, sorting, and exact request/raw-response provenance.
+`cli/comets.py` exposes this boundary as `wenu_retrieve_comets START STOP` with
+an explicit perihelion-distance bound and table or JSON publication.
+
+This command filters perihelion time and distance; it is not a visibility
+forecast. Provider `M1`, `M2`, `K1`, and `K2` values remain labelled model
+parameters, and missing values remain unknown. The command is independent of
+`wenu_chart`; no acquisition, resource, chart, coordinate, projection,
+renderer, semantic, or export owner changes. Observer-dependent Horizons
+magnitude and its cadence remain deferred to 50A.5D.1B.

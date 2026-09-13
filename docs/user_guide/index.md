@@ -51,7 +51,9 @@ time sampling, civil display time, manifests, and verified resume.
 Resolved Moon, observed Moon-sequence, apparent major-planet, and offline
 installed numbered-asteroid point/track examples are
 included in the [chart examples](chart_examples.md) and
-[configuration guide](configuration.md).
+[configuration guide](configuration.md). Use the separate
+[comet-discovery command](comet_discovery.md) to query current SBDB solutions
+by perihelion date and distance without installing or drawing them.
 
 Use [`wenu_chart` and editable TOML profiles](configuration.md) to generate
 any family through one installed command and keep publication, presentation,

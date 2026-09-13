@@ -28,6 +28,7 @@ dependencies = [
 
 [project.scripts]
 wenu_chart = "wenu.cli.chart:main"
+wenu_retrieve_comets = "wenu.cli.comets:main"
 wenu_examples = "wenu.cli.examples:main"
 wenu_notebooks = "wenu.cli.notebooks:main"
 

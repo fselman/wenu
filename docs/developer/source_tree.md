@@ -1534,3 +1534,14 @@ owns deterministic contract coverage;
   and total sky-plane motion;
 - no runtime, command, network, cache, coordinate, projection, renderer,
   semantic, report, or export owner changes in this audit.
+
+## 50A.5D.1A deterministic comet-discovery ownership (candidate)
+
+- `comet_discovery.py` owns SBDB query construction, UTC-to-TDB boundaries,
+  typed rows, schema validation, sorting, and raw-response provenance;
+- `cli/comets.py` owns only `wenu_retrieve_comets` parsing and table/JSON
+  publication;
+- `tests/test_comet_discovery.py` owns the provider query/parser/serialization
+  boundary and uses a frozen provider-schema response without network access;
+- `wenu_chart`, minor-body acquisition/cache, coordinate, projection,
+  renderer, semantic, report, and export owners remain unchanged.

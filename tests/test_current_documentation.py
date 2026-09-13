@@ -3173,6 +3173,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "solar_system_temporal_components_audit_50a5b1.md",
         "second_drawable_comet_audit_50a5c.md",
         "comet_discovery_and_reporting_audit_50a5d.md",
+        "comet_discovery_50a5d1a.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -4467,3 +4468,42 @@ def test_50a5d_audits_comet_discovery_acquisition_and_reports():
         "Fernando accepted it on 2026-09-13 with the observed-angular-rate addition, authorizing only 50A.5D.1",
     ):
         assert phrase.lower() in audit.lower()
+
+
+def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
+    implementation = " ".join(read(
+        DEVELOPER / "comet_discovery_50a5d1a.md"
+    ).split())
+    roadmap = read(DEVELOPER / "post_v0.9_architecture_roadmap.md")
+    reference = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+    coordinate_guide = " ".join(read(
+        DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+    ).split())
+    user_guide = " ".join(read(
+        ROOT / "docs/user_guide/comet_discovery.md"
+    ).split())
+    project = read(ROOT / "pyproject.toml")
+
+    for phrase in (
+        "Accepted by Fernando on 2026-09-13",
+        "complete inclusive UTC civil days",
+        "not a visibility forecast",
+        "sampling policy to a separately reviewed 50A.5D.1B",
+        "does not implement `--observer-location`, model apparent magnitude, comet acquisition, chart preflight, reports",
+    ):
+        assert phrase in implementation
+    assert "50A.5D.1A accepted by Fernando on 2026-09-13" in roadmap
+    assert "Deterministic comet discovery" in reference
+    assert "50A.5D.1A deterministic comet-discovery ownership" in source_tree
+    assert "Returned `tp` values retain their TDB identity" in coordinate_guide
+    for phrase in (
+        "not a visibility forecast",
+        "m_1 = M_1 + 5\\log_{10}(\\Delta) + K_1\\log_{10}(r)",
+        "M1` is therefore the reference total magnitude",
+        "K1` is not a magnitude",
+        "not stellar absolute magnitudes defined at 10 parsecs",
+        "deferred to the separately reviewed 50A.5D.1B",
+    ):
+        assert phrase in user_guide
+    assert 'wenu_retrieve_comets = "wenu.cli.comets:main"' in project

@@ -14,6 +14,7 @@ IMAGE_SHA256 = (
 GUIDE_PAGES = (
     "index.md",
     "chart_examples.md",
+    "comet_discovery.md",
     "all_sky.md",
     "planisphere.md",
     "regional_charts.md",

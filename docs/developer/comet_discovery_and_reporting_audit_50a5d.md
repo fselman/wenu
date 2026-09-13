@@ -291,3 +291,9 @@ geometry or graphical bytes.
 This audit changes no runtime code, network behavior, chart output, or public
 command. Fernando accepted it on 2026-09-13 with the observed-angular-rate
 addition, authorizing only 50A.5D.1.
+
+Fernando subsequently approved a bounded 50A.5D.1A implementation on
+2026-09-13: deterministic SBDB discovery, typed rows, and table/JSON output.
+The optional observer-dependent Horizons magnitude query requires an agreed
+sampling cadence and remains deferred to 50A.5D.1B. This split does not
+authorize 50A.5D.2 acquisition or 50A.5D.3 reports.

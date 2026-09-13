@@ -59,6 +59,9 @@ milestone evidence are under [`archive/`](archive/README.md).
   — accepted comet discovery, generic acquisition, and natural moving-object
   report contract, including both right-ascension rate conventions; no runtime
   change.
+- [`comet_discovery_50a5d1a.md`](comet_discovery_50a5d1a.md) — candidate
+  deterministic SBDB comet-discovery command; observer-dependent magnitude is
+  deferred.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).

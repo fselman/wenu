@@ -3140,3 +3140,10 @@ then transported through the chart's fixed product frame. Without
 `--center-on-date`, `--observer-time` remains the chart observation instant.
 Fernando accepted this second-comet and moving-center coordinate behavior after
 visual review; final Mac regression passed all 2,346 tests in 83.89 seconds.
+
+Candidate 50A.5D.1A adds no chart coordinate or product frame. Its explicit
+networked discovery query interprets `START` and `STOP` as complete inclusive
+UTC civil days and converts both boundaries to JD TDB before applying the SBDB
+perihelion-time constraint. Returned `tp` values retain their TDB identity;
+UTC dates in the human table are derived display values. No discovered row is
+an apparent direction, observer-relative state, or visibility prediction.
