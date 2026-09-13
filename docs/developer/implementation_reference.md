@@ -2340,3 +2340,19 @@ parameters, and missing values remain unknown. The command is independent of
 `wenu_chart`; no acquisition, resource, chart, coordinate, projection,
 renderer, semantic, or export owner changes. Observer-dependent Horizons
 magnitude and its cadence remain deferred to 50A.5D.1B.
+
+### Exact minor-body identity resolution (Milestone 50A.5D.2A candidate)
+
+`minor_body_identity.py` provides an immutable
+`ResolvedMinorBodyIdentity` and requires callers to state `expected_class` as
+`comet` or `asteroid`. Exact installed aliases win without network access.
+Uninstalled designations use one SBDB `des` request; names use one `sstr`
+request. Provider signature, version, response shape, kind, identity, aliases,
+orbit solution, request parameters, retrieval instant, and raw SHA-256 are
+validated or retained.
+
+`resolve_comet_identity` binds the accepted comet route. The generic core can
+also resolve asteroid identity when explicitly class-constrained, but this
+slice does not connect asteroid names to CLI preflight or acquisition.
+Partial names, ambiguous HTTP 300 responses, wrong-class results, and bare
+asteroid numbers supplied as comets fail without selecting a candidate.
