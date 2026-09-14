@@ -420,7 +420,7 @@ def test_cli_observer_photometry_table_and_json_contract(
     unknown = replace(
         photometry.results[0],
         canonical_designation=full_discovery.records[0].canonical_designation,
-        provider_spk_id=full_discovery.records[0].provider_spk_id,
+        provider_spk_id=full_discovery.records[0].spk_id,
         orbit_solution_id=full_discovery.records[0].orbit_solution_id,
         samples=unknown_samples,
     )
