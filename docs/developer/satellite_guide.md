@@ -2,8 +2,8 @@
 
 **Status:** Living 50S work-in-progress guide; 50S.0 decisions accepted by
 Fernando on 2026-09-14
-**Established:** 2026-09-14  
-**Initial baseline:** `862acaa`  
+**Established:** 2026-09-14
+**Initial baseline:** `862acaa`
 **Current authority:** the accepted portions of this guide together with the
 active 50S milestone record and the general Wenu architecture documents
 
