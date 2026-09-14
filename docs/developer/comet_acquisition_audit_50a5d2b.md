@@ -242,3 +242,8 @@ atomic publication.
 
 It does not authorize 50A.5D.2C CLI preflight integration, chart changes,
 observer-dependent magnitude, or 50A.5D.3 moving-object reports.
+
+Acceptance evidence: the focused documentation gate passed all 114 tests in
+2.86 seconds; the complete Mac regression passed all 2,381 tests in 87.20
+seconds; `git diff --check` was clean; and the branch was synchronized with a
+clean working tree.
