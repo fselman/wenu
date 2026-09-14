@@ -230,7 +230,11 @@ def _target_identity(
     target_value: str,
 ) -> tuple[bool, str | None]:
     source = _TARGET_SOURCE.search(target_value)
-    name = (\n        target_value[:source.start()].strip()\n        if source\n        else target_value.strip()\n    )
+    name = (
+        target_value[:source.start()].strip()
+        if source
+        else target_value.strip()
+    )
     designation = record.canonical_designation
     matches = (
         name == designation
