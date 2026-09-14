@@ -135,12 +135,18 @@ class MinorBodyResourceCollection:
                     display_name = name or f"({number})"
                     classifications = identity.get("classifications", ())
                 elif object_class == "comet":
-                    parsed = parse_comet_designation(
-                        identity.get("primary_designation")
+                    primary_designation = identity.get(
+                        "primary_designation"
                     )
+                    designation_class = identity.get("designation_class")
+                    try:
+                        parsed = parse_comet_designation(primary_designation)
+                    except ValueError:
+                        parsed = parse_comet_designation(
+                            f"{designation_class}/{primary_designation}"
+                        )
                     if (
-                        identity.get("designation_class")
-                        != parsed.designation_class
+                        designation_class != parsed.designation_class
                     ):
                         raise ValueError(
                             "comet manifest designation classes differ."
@@ -188,7 +194,7 @@ class MinorBodyResourceCollection:
                     raise ValueError("minor-body identity and solution targets differ.")
                 if (
                     object_class == "comet"
-                    and solution.primary_designation != parsed.canonical
+                    and solution.primary_designation != primary_designation
                 ):
                     raise ValueError(
                         "comet identity and solution designations differ."
