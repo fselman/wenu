@@ -3175,6 +3175,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "comet_discovery_and_reporting_audit_50a5d.md",
         "comet_discovery_50a5d1a.md",
         "comet_name_resolution_audit_50a5d2a.md",
+        "comet_acquisition_audit_50a5d2b.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -4550,3 +4551,42 @@ def test_50a5d2a_audits_exact_comet_name_resolution():
     assert "Exact minor-body identity resolution" in reference
     assert "minor_body_identity.py" in source_tree
     assert "tests/test_minor_body_identity.py" in source_tree
+
+
+def test_50a5d2b_audits_generic_comet_acquisition():
+    audit = " ".join(read(
+        DEVELOPER / "comet_acquisition_audit_50a5d2b.md"
+    ).split())
+    roadmap = " ".join(read(
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).split())
+    source_tree = " ".join(read(
+        DEVELOPER / "source_tree.md"
+    ).split())
+
+    for phrase in (
+        "Accepted by Fernando on 2026-09-13",
+        "one already resolved comet identity",
+        "does not yet connect acquisition to `wenu_chart`",
+        "must not derive a Horizons record number arithmetically",
+        "unique provider record, apparition when applicable",
+        "must not silently select the first, latest",
+        "solar-system centre `10`",
+        "SPK segment type `21`",
+        "Wenu neither reapplies nor removes those terms",
+        "`offline` performs no network access",
+        "Connecting exact comet selections and these policies to `wenu_chart` is deferred to 50A.5D.2C",
+        "load unchanged through `MinorBodyResourceCollection`",
+        "Extend `tests/test_minor_body_acquisition.py`",
+        "Production code may contain no `10P` conditional",
+        "authorizes only the bounded 50A.5D.2B acquisition service",
+    ):
+        assert phrase in audit
+
+    assert "accepted 50A.5D.2B audit isolates the shared acquisition service" in roadmap
+    assert "50A.5D.2B generic comet-acquisition audit ownership" in source_tree
+    assert "no coordinate or product-frame meaning changes" in audit
+    assert "This slice changes data availability and provenance only" in audit
+    assert "does not authorize 50A.5D.2C CLI preflight integration" in audit
+    assert "focused documentation gate passed all 114 tests" in audit
+    assert "complete Mac regression passed all 2,381 tests in 87.20 seconds" in audit
