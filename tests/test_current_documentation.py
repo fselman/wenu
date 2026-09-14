@@ -4689,6 +4689,16 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
     roadmap = " ".join(read(
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
     ).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(
+        DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+    ).split())
+    user_guide = " ".join(read(
+        ROOT / "docs/user_guide/comet_discovery.md"
+    ).split())
 
     for phrase in (
         "Accepted by Fernando on 2026-09-14",
@@ -4721,6 +4731,57 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
 
     assert "comet_model_magnitude_audit_50a5d1b.md" in index
     assert "accepted the 50A.5D.1B audit on 2026-09-14" in roadmap
+
+    for phrase in (
+        "bounded implementation candidate complete",
+        "src/wenu/comet_photometry.py",
+        "scientific and Mac acceptance pending",
+        "frozen Horizons response",
+    ):
+        assert phrase in audit
+
+    for phrase in (
+        "Candidate implemented: observer-dependent sampled Horizons",
+        "comet_photometry.py",
+        "default cadence is `1d`",
+        "Scientific and Mac acceptance remain pending",
+    ):
+        assert phrase in roadmap
+
+    for phrase in (
+        "comet_photometry.py",
+        "sequential Horizons observer-table requests",
+        "brightest sampled total model magnitude",
+        "not a continuous minimum",
+        "bounded to 50 comet solutions and 367 epochs",
+    ):
+        assert phrase in reference
+
+    for phrase in (
+        "50A.5D.1B observer-dependent comet-photometry ownership",
+        "exact SBDB/Horizons solution binding",
+        "does not import or alter chart",
+    ):
+        assert phrase in source_tree
+
+    for phrase in (
+        "50A.5D.1B candidate likewise adds no coordinate",
+        "geodetic longitude, latitude, and elevation",
+        "scalar provider-model quantities",
+    ):
+        assert phrase in coordinate_guide
+
+    for phrase in (
+        "--observer-location",
+        "--magnitude-step 1d",
+        "numerically smallest valid sampled `T-mag`",
+        "not continuous minima, visibility forecasts",
+        "uncertain at roughly 1 magnitude",
+        "50 selected comet solutions",
+        "367 epochs per comet",
+        "Any Horizons failure fails the complete result",
+    ):
+        assert phrase in user_guide
 
 def test_assistant_instructions_require_documentation_contract_preflight():
     instructions = " ".join(read(INSTRUCTIONS).split())
