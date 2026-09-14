@@ -227,9 +227,11 @@ views of one scientifically realized crossing set:
   field size, and exposure duration.
 
 The staged contract, scientific separation from SPK/TDB providers,
-conservative two-stage search, complete-scan oracle, reproducible index keys,
-result fields, uncertainty boundary, and closure requirements are authoritative
-in `post_v0.9_architecture_roadmap.md`. No satellite runtime behavior is
+mandatory literature reviews for fast orbit-to-field screening and satellite
+photometry, conservative two-stage search, complete-scan oracle, reproducible
+index keys, apparent-brightness model boundary, result fields, uncertainty
+boundary, and closure requirements are authoritative in
+`post_v0.9_architecture_roadmap.md`. No satellite runtime behavior is
 authorized until the 50S.0 audit is accepted.
 
 ## 5. Program 50B — Publication legibility and economical printing
