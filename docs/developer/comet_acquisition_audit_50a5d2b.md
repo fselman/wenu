@@ -249,7 +249,7 @@ seconds; `git diff --check` was clean; and the branch was synchronized with a
 clean working tree.
 
 
-## Candidate implementation
+## Accepted implementation
 
 The bounded implementation adds `acquire_minor_body_resources()` and
 `ensure_minor_body_resources()` to the existing acquisition owner. A resolved
@@ -277,8 +277,8 @@ verified actual TDB coverage JD 2461284.5 through 2461344.5, and loaded the
 published identity as `10P/Tempel 2` through
 `MinorBodyResourceCollection`.
 
-**Implementation status:** Verified candidate for Fernando's review. No
-`wenu_chart` integration or visible output changes are included.
+**Implementation status:** Accepted by Fernando on 2026-09-14. No `wenu_chart`
+integration or visible output changes are included.
 
 Fernando's Mac acceptance run acquired `10P/Tempel 2` from the live providers,
 bound Horizons command `90000214;` and solution `JPL#K265/50` to SPK target
@@ -288,3 +288,8 @@ resource under `offline` without network acquisition. The focused gate passed
 all 169 tests in 4.09 seconds, the complete Mac regression passed all 2,388
 tests in 91.98 seconds, `git diff --check` was clean, and the branch was
 synchronized with a clean working tree.
+
+Fernando accepted the bounded 50A.5D.2B implementation on 2026-09-14.
+This closes only the shared acquisition service. Exact comet composition with
+`wenu_chart` remains 50A.5D.2C; observer-dependent magnitude and moving-object
+reports remain outside this closure.
