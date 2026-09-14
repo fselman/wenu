@@ -206,9 +206,9 @@ This acceptance authorizes only the bounded 50A.5D.1B implementation described
 here. It does not authorize visibility prediction, chart integration, altered
 SPK acquisition, empirical activity correction, or any 50A.5D.3 report work.
 
-## 9. Implementation candidate
+## 9. Accepted implementation
 
-The candidate places the independent Horizons observer-table responsibility in
+The accepted implementation places the independent Horizons observer-table responsibility in
 `src/wenu/comet_photometry.py`; the existing `comet_discovery.py` remains the
 SBDB selection owner and `cli/comets.py` composes the two typed results. This
 placement follows the production-module admission rule because Horizons
