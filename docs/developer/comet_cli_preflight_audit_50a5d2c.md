@@ -257,6 +257,29 @@ contract. Visual review is required only to confirm that the existing symbols,
 tracks, labels, and center semantics remain unchanged; this milestone
 authorizes no new visible design.
 
+### Independent C/2021 T4 (Lemmon) comparison
+
+Fernando generated a live La Ligua chart centered on `C/2021 T4` at
+2023-07-24T00:00:00Z, with a track starting on July 1 and weekly major marks.
+The result was compared with Guy Ottewell's equatorial finder chart reproduced
+by EarthSky:
+
+<https://earthsky.org/astronomy-essentials/comet-c-2021-t4-lemmon-is-sweeping-southern-skies/>
+
+The independent chart identifies opposition on July 18, a southern extremum
+near declination -56 degrees on July 20, perihelion on July 31, northward
+motion through Ara, Norma, and Lupus, and an ecliptic crossing on September 10.
+Wenu's dated trajectory reproduces that ordering, turning geometry, and
+constellation progression despite the different projection and observer-bound
+chart framing. It also completed live acquisition for the provisional
+designation and produced the requested PNG.
+
+This is a qualitative external acceptance comparison, not a numerical oracle.
+The published finder chart does not provide machine-readable coordinates or
+uncertainties, so its raster pixels must not be converted into artificial
+sub-degree regression tolerances. Wenu's existing direct-Horizons fixtures
+remain the numerical authority.
+
 ## Acceptance gates
 
 Acceptance requires:
@@ -291,3 +314,22 @@ This acceptance authorizes only implementation of the request-level exact
 comet CLI preflight composition specified above. It does not authorize any of
 the explicitly excluded magnitude, discovery handoff, fuzzy lookup, graphics,
 asteroid-name acquisition, or reporting behavior.
+
+## Candidate implementation checkpoint
+
+The implementation branch composes typed asteroid and comet point, track, and
+explicit-center selections in `cli/chart.py`, derives one shared coverage
+interval, validates an explicit directory, reuses an adequate complete warm
+cache without provider access, and otherwise resolves and acquires one shared
+immutable collection before sphere construction. It also formats expected CLI
+failures without tracebacks while retaining an explicit `--debug` traceback
+mode.
+
+Mac acceptance passed 2,404 tests in 83.97 seconds with a clean synchronized
+branch and clean `git diff --check`. Live `10P/Tempel 2` and `C/2006 P1`
+diagnostics exercised acquisition and immediate offline reuse. The provisional
+McNaught diagnostic additionally verified provider fullname ordering, manifest
+prefix reconstruction, installed-identity reuse, and safe SVG semantic paths.
+The attached live and offline charts completed with the same scientific chart
+content. The deterministic mixed asteroid/comet test confirms one shared
+verified collection.

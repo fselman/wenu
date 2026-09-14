@@ -390,7 +390,7 @@ def _installed_identity(
     number = descriptor.iau_number
     fragment = None
     if expected_class == "comet":
-        parsed = parse_comet_designation(designation)
+        parsed = parse_comet_designation(descriptor.selection_key)
         prefix = parsed.designation_class
         number = parsed.permanent_number
         fragment = parsed.fragment

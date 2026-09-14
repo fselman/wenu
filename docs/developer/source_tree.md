@@ -1586,13 +1586,15 @@ owns deterministic contract coverage;
   evidence.
 
 
-## 50A.5D.2C exact comet CLI-preflight audit ownership
+## 50A.5D.2C exact comet CLI-preflight ownership (candidate implementation)
 
-- `docs/developer/comet_cli_preflight_audit_50a5d2c.md` alone owns the
+- `docs/developer/comet_cli_preflight_audit_50a5d2c.md` owns the
   accepted request-composition, precedence, network, coverage, mixed-resource,
   failure, and acceptance contract;
-- `cli/chart.py` is the proposed request-level selection, policy, diagnostic,
-  and pre-construction composition owner;
+- `cli/chart.py` collects typed asteroid/comet selections and coverage,
+  validates an explicit directory, reuses an adequate complete warm cache,
+  resolves missing exact identities, and installs one effective resource
+  directory before sphere construction;
 - `minor_body_identity.py`, `minor_body_acquisition.py`, and
   `minor_body_resources.py` retain exact identity, provider acquisition, and
   installed-resource authority respectively;

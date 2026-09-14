@@ -194,8 +194,25 @@ def _horizons_solution(result, identity):
             " ".join(value.strip().split()).casefold()
             for value in identity.aliases
         }
-        if " ".join(fullname.split()).casefold() not in aliases:
-            raise ValueError("Horizons and resolved comet identities differ.")
+        normalized_fullname = " ".join(fullname.split()).casefold()
+        parenthesized = re.fullmatch(
+            r"(?P<name>.+?)\s*\((?P<designation>[^()]+)\)",
+            normalized_fullname,
+        )
+        horizons_designation = (
+            parenthesized.group("designation").strip()
+            if parenthesized is not None
+            else None
+        )
+        if (
+            normalized_fullname not in aliases
+            and horizons_designation not in aliases
+        ):
+            raise ValueError(
+                "Horizons comet identity "
+                f"{normalized_fullname!r} does not match resolved aliases "
+                f"{tuple(sorted(aliases))!r}."
+            )
     else:
         header = _HEADER.search(result)
         if header is None or "ASTEROID comments:" not in result:
@@ -210,9 +227,14 @@ def _horizons_solution(result, identity):
         non_gravitational[name] = (
             match.group("value") if match is not None else None
         )
+    orbit_solution_id = solution.group("value").strip()
+    if identity.object_class == "comet" and orbit_solution_id.startswith(
+        "JPL#"
+    ):
+        orbit_solution_id = orbit_solution_id.removeprefix("JPL#")
     return {
         "record_number": record.group("value"),
-        "orbit_solution_id": solution.group("value").strip(),
+        "orbit_solution_id": orbit_solution_id,
         "solution_date": solution_date.group("value"),
         "osculating_epoch": f"{epoch.group('value')} {epoch.group('scale')}",
         "non_gravitational_parameters": non_gravitational,

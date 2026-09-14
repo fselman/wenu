@@ -43,8 +43,12 @@ from wenu.observer import Observer
 from wenu.minor_body_acquisition import (
     MovingObjectDataPolicy,
     coverage_interval,
-    ensure_numbered_asteroid_resources,
-    resource_covers,
+    ensure_minor_body_resources,
+    resource_covers_identities,
+)
+from wenu.minor_body_identity import (
+    normalize_minor_body_selection,
+    resolve_minor_body_identity,
 )
 from wenu.sky.maximal_sphere import generate_celestial_sphere
 
@@ -66,6 +70,11 @@ def _add_observer_arguments(parser):
         "--data-policy",
         choices=tuple(value.value for value in MovingObjectDataPolicy),
         help="resolve moving-object data before offline chart construction",
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="show a traceback instead of formatting an expected failure",
     )
 
 
@@ -355,49 +364,90 @@ def _observer(arguments, values, *, time=None):
     })
 
 
-def _numbered_asteroid_selections(arguments):
-    """Return exact numbered asteroids needed by center or chart content."""
+def _selection_values(value):
+    """Return one parser selection as a tuple without splitting its text."""
+    if value is None:
+        return ()
+    return (value,) if isinstance(value, str) else tuple(value)
+
+
+def _typed_minor_body_selections(arguments, *, allow_asteroid_names=False):
+    """Return exact class-owned minor-body selections for one chart request."""
     selections = [
-        *getattr(arguments, "asteroid", ()),
+        *(
+            ("asteroid", str(value).strip())
+            for value in _selection_values(
+                getattr(arguments, "asteroid", ())
+            )
+        ),
+        *(
+            ("asteroid", str(value).strip())
+            for value in _selection_values(
+                getattr(arguments, "asteroid_track", None)
+            )
+        ),
+        *(
+            ("comet", str(value).strip())
+            for value in _selection_values(getattr(arguments, "comet", ()))
+        ),
+        *(
+            ("comet", str(value).strip())
+            for value in _selection_values(
+                getattr(arguments, "comet_track", None)
+            )
+        ),
     ]
-    tracks = getattr(arguments, "asteroid_track", None)
-    if tracks is not None:
-        selections.extend(
-            (tracks,) if isinstance(tracks, str) else tracks
-        )
     center = getattr(arguments, "center_on", None)
     if isinstance(center, str):
         if ":" in center:
             kind, identifier = center.split(":", 1)
-            if kind.strip().casefold() == "asteroid":
-                selections.append(identifier.strip())
+            kind = kind.strip().casefold()
+            if kind in {"asteroid", "comet"}:
+                selections.append((kind, identifier.strip()))
         elif center.strip().isdecimal():
-            selections.append(center.strip())
-    if not selections:
-        return ()
-    nonnumeric = tuple(
-        value for value in selections if not str(value).strip().isdecimal()
-    )
-    if nonnumeric:
-        raise ValueError(
-            "automatic asteroid acquisition requires a positive permanent "
-            "number; use an explicit --minor-body-resource-directory for "
-            "installed-name selection."
+            selections.append(("asteroid", center.strip()))
+    if not allow_asteroid_names:
+        nonnumeric = tuple(
+            value for kind, value in selections
+            if kind == "asteroid" and not value.isdecimal()
         )
-    numbers = tuple(sorted({int(value) for value in selections}))
-    if any(value <= 0 for value in numbers):
-        raise ValueError("asteroid numbers must be positive integers.")
-    return numbers
+        if nonnumeric:
+            raise ValueError(
+                "automatic asteroid acquisition requires a positive permanent "
+                "number; use an explicit --minor-body-resource-directory for "
+                "installed-name selection."
+            )
+    for kind, value in selections:
+        if not value:
+            raise ValueError(f"{kind} selection must be non-empty.")
+        if kind == "asteroid" and value.isdecimal() and int(value) <= 0:
+            raise ValueError("asteroid numbers must be positive integers.")
+    unique = {}
+    for kind, value in selections:
+        key = (kind, normalize_minor_body_selection(value))
+        unique.setdefault(key, (kind, value))
+    return tuple(unique[key] for key in sorted(unique))
+
+
+def _numbered_asteroid_selections(arguments):
+    """Retain the accepted numbered-asteroid selection compatibility seam."""
+    return tuple(sorted({
+        int(value) for kind, value in _typed_minor_body_selections(arguments)
+        if kind == "asteroid"
+    }))
 
 
 def _minor_body_coverage_instants(arguments, observer, sequence_options):
     instants = [observer.utc_datetime]
     if sequence_options is not None:
         instants.extend(sequence_options.timeline.instants)
-    parsed_track = chart_track_options(arguments)
-    if getattr(arguments, "asteroid_track", None) is not None:
+    if (
+        getattr(arguments, "asteroid_track", None) is not None
+        or getattr(arguments, "comet_track", None) is not None
+    ):
         from astropy.time import Time
 
+        parsed_track = chart_track_options(arguments)[0]
         start = Time(parsed_track.start_instant, scale="utc").to_datetime(
             timezone=timezone.utc
         )
@@ -406,10 +456,109 @@ def _minor_body_coverage_instants(arguments, observer, sequence_options):
     return tuple(instants)
 
 
+def _candidate_minor_body_directories(observer):
+    """Yield existing verified-resource candidates in stable precedence."""
+    roots = (
+        observer.data_directory / "minor_bodies" / "minor-bodies-cache",
+        observer.data_directory / "minor_bodies" / "numbered-asteroids-cache",
+    )
+    legacy = observer.data_directory / "minor_bodies" / "numbered-asteroids"
+    yielded = set()
+    for candidate in (legacy,):
+        resolved = candidate.expanduser().resolve()
+        if resolved not in yielded and (
+            resolved / "acquisition-report.json"
+        ).is_file():
+            yielded.add(resolved)
+            yield resolved
+    for root in roots:
+        root = root.expanduser()
+        if not root.is_dir():
+            continue
+        for candidate in sorted(root.iterdir()):
+            resolved = candidate.resolve()
+            if (
+                resolved not in yielded
+                and resolved.is_dir()
+                and not resolved.name.startswith(".")
+                and (resolved / "acquisition-report.json").is_file()
+            ):
+                yielded.add(resolved)
+                yield resolved
+
+
+def _resolved_identities(
+    selections, *, collections=(), use_provider=True
+):
+    """Resolve and canonicalize typed selections without guessing identity."""
+    identities = []
+    for object_class, selection in selections:
+        identity = None
+        for collection in collections:
+            try:
+                collection.resolve(selection)
+            except KeyError:
+                continue
+            identity = resolve_minor_body_identity(
+                selection,
+                expected_class=object_class,
+                installed_collection=collection,
+            )
+            break
+        if identity is None:
+            if not use_provider:
+                raise KeyError(
+                    f"no exact installed {object_class} identity for "
+                    f"{selection!r}."
+                )
+            identity = resolve_minor_body_identity(
+                selection, expected_class=object_class
+            )
+        identities.append(identity)
+    unique = {}
+    for identity in identities:
+        key = (
+            identity.object_class,
+            identity.canonical_designation.casefold(),
+            identity.provider_spk_id,
+        )
+        unique.setdefault(key, identity)
+    return tuple(unique[key] for key in sorted(unique))
+
+
+def _installed_candidate(directory, selections, start, stop):
+    """Return exact installed identities when one directory covers all."""
+    from wenu.minor_body_resources import MinorBodyResourceCollection
+
+    try:
+        collection = MinorBodyResourceCollection(directory)
+        identities = _resolved_identities(
+            selections, collections=(collection,), use_provider=False
+        )
+    except (FileNotFoundError, KeyError, TypeError, ValueError):
+        return None
+    if not resource_covers_identities(directory, identities, start, stop):
+        return None
+    return identities
+
+
+def _installed_collections(directories):
+    """Return valid automatically discovered collections, skipping debris."""
+    from wenu.minor_body_resources import MinorBodyResourceCollection
+
+    collections = []
+    for directory in directories:
+        try:
+            collections.append(MinorBodyResourceCollection(directory))
+        except (FileNotFoundError, KeyError, TypeError, ValueError):
+            continue
+    return tuple(collections)
+
+
 def _preflight_minor_body_resources(
     arguments, configuration, observer, sequence_options
 ):
-    """Resolve numbered-asteroid resources before chart construction."""
+    """Resolve all exact minor-body resources before chart construction."""
     explicit = (
         arguments.minor_body_resource_directory
         or configuration.minor_body_resource_directory
@@ -417,42 +566,73 @@ def _preflight_minor_body_resources(
     policy = (
         arguments.data_policy or configuration.moving_object_data_policy
     )
-    if explicit is not None:
-        if policy == MovingObjectDataPolicy.REFRESH.value:
-            raise ValueError(
-                "--data-policy refresh cannot replace an explicit "
-                "--minor-body-resource-directory."
-            )
-        arguments.minor_body_resource_directory = Path(explicit)
-        return None
-    numbers = _numbered_asteroid_selections(arguments)
-    if not numbers:
+    if (
+        explicit is not None
+        and policy == MovingObjectDataPolicy.REFRESH.value
+    ):
+        raise ValueError(
+            "--data-policy refresh cannot replace an explicit "
+            "--minor-body-resource-directory."
+        )
+    selections = _typed_minor_body_selections(
+        arguments, allow_asteroid_names=explicit is not None
+    )
+    if not selections:
+        if explicit is not None:
+            arguments.minor_body_resource_directory = Path(explicit)
         return None
     start, stop = coverage_interval(
         _minor_body_coverage_instants(
             arguments, observer, sequence_options
         )
     )
-    legacy = (
-        observer.data_directory / "minor_bodies" / "numbered-asteroids"
-    )
-    if (
-        policy != MovingObjectDataPolicy.REFRESH.value
-        and resource_covers(legacy, numbers, start, stop)
-    ):
-        arguments.minor_body_resource_directory = legacy
-        print(
-            f"wenu_chart: reused numbered-asteroid resources at {legacy}",
-            file=sys.stderr,
-        )
+    if explicit is not None:
+        directory = Path(explicit).expanduser().resolve()
+        if _installed_candidate(
+            directory, selections, start, stop
+        ) is None:
+            requested = ", ".join(
+                f"{kind}:{value}" for kind, value in selections
+            )
+            raise ValueError(
+                f"explicit minor-body resource directory does not cover "
+                f"{requested} from {start} through {stop}."
+            )
+        arguments.minor_body_resource_directory = directory
         return None
-    result = ensure_numbered_asteroid_resources(
-        numbers,
-        (
-            observer.data_directory
-            / "minor_bodies"
-            / "numbered-asteroids-cache"
-        ),
+
+    candidates = tuple(_candidate_minor_body_directories(observer))
+    if policy != MovingObjectDataPolicy.REFRESH.value:
+        for directory in candidates:
+            if _installed_candidate(
+                directory, selections, start, stop
+            ) is not None:
+                arguments.minor_body_resource_directory = directory
+                print(
+                    f"wenu_chart: reused minor-body resources at {directory}",
+                    file=sys.stderr,
+                )
+                return None
+    if policy == MovingObjectDataPolicy.OFFLINE.value:
+        requested = ", ".join(
+            f"{kind}:{value}" for kind, value in selections
+        )
+        raise FileNotFoundError(
+            "offline data policy found no verified minor-body resource for "
+            f"{requested} covering {start} through {stop}."
+        )
+
+    collections = []
+    if policy != MovingObjectDataPolicy.REFRESH.value:
+        collections = _installed_collections(candidates)
+    identities = _resolved_identities(
+        selections,
+        collections=collections,
+        use_provider=True,
+    )
+    result = ensure_minor_body_resources(
+        identities,
+        observer.data_directory / "minor_bodies" / "minor-bodies-cache",
         start,
         stop,
         policy=policy,
@@ -460,7 +640,7 @@ def _preflight_minor_body_resources(
     arguments.minor_body_resource_directory = result.resource_directory
     action = "acquired" if result.acquired else "reused"
     print(
-        f"wenu_chart: {action} numbered-asteroid resources at "
+        f"wenu_chart: {action} minor-body resources at "
         f"{result.resource_directory}",
         file=sys.stderr,
     )
@@ -628,15 +808,21 @@ def write_defaults_template(path):
 def main(argv=None):
     """Run the installed command and return a process status."""
     arguments = parser().parse_args(argv)
-    if arguments.command == "defaults":
-        if arguments.write is None:
-            print(packaged_defaults_text(), end="")
-        else:
-            print(write_defaults_template(arguments.write))
+    try:
+        if arguments.command == "defaults":
+            if arguments.write is None:
+                print(packaged_defaults_text(), end="")
+            else:
+                print(write_defaults_template(arguments.write))
+            return 0
+        for output in generate(arguments):
+            print(output)
         return 0
-    for output in generate(arguments):
-        print(output)
-    return 0
+    except (FileNotFoundError, ValueError) as error:
+        if arguments.debug:
+            raise
+        print(f"wenu_chart: error: {error}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":

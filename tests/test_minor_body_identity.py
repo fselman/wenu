@@ -192,6 +192,7 @@ def test_installed_exact_alias_wins_without_network_access():
     descriptor = SimpleNamespace(
         body_class="comet",
         canonical_designation="10P/Tempel 2",
+        selection_key="10p",
         iau_number=10,
     )
     solution = SimpleNamespace(
@@ -224,6 +225,44 @@ def test_installed_exact_alias_wins_without_network_access():
     assert identity.name == "Tempel 2"
     assert identity.raw_sha256 is None
     assert identity.request_parameters == ()
+
+
+def test_installed_provisional_comet_uses_validated_selection_key():
+    descriptor = SimpleNamespace(
+        body_class="comet",
+        canonical_designation="C/2006 P1/McNaught",
+        selection_key="c/2006 p1",
+        iau_number=None,
+    )
+    solution = SimpleNamespace(
+        primary_designation="2006 P1",
+        aliases=("C/2006 P1", "C/2006 P1 (McNaught)"),
+        name="McNaught",
+        provider_spk_id="1003228",
+        orbit_solution_id="J061/32",
+        provider="NASA/JPL Horizons",
+        service_version="1.2",
+    )
+
+    class Collection:
+        def resolve(self, selection):
+            assert selection == "C/2006 P1"
+            return descriptor
+
+        def solution_for(self, value):
+            assert value is descriptor
+            return solution
+
+    identity = resolve_comet_identity(
+        "C/2006 P1",
+        installed_collection=Collection(),
+        fetch=lambda *values: pytest.fail("network access was attempted"),
+    )
+
+    assert identity.source == "installed"
+    assert identity.primary_designation == "2006 P1"
+    assert identity.prefix == "C"
+    assert identity.permanent_number is None
 
 
 @pytest.mark.parametrize("expected", ("planet", "", None))

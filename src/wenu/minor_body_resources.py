@@ -45,6 +45,14 @@ def _solution_from_record(record, *, key, iau_number, name):
         if isinstance(value, dict):
             value = tuple(sorted(value.items()))
         pairs[field] = tuple(tuple(item) for item in value)
+    orbit_solution_id = values["orbit_solution_id"]
+    if (
+        values["object_class"] == "comet"
+        and str(orbit_solution_id).startswith("JPL#")
+    ):
+        raise ValueError(
+            "comet manifest orbit solution excludes the Horizons JPL# prefix."
+        )
     return MinorBodySolutionIdentity(
         provider=values["provider"],
         service_version=values["service_version"],
@@ -53,7 +61,7 @@ def _solution_from_record(record, *, key, iau_number, name):
         primary_designation=values["primary_designation"],
         horizons_command=values["horizons_command"],
         provider_spk_id=values["provider_spk_id"],
-        orbit_solution_id=values["orbit_solution_id"],
+        orbit_solution_id=orbit_solution_id,
         solution_date=values["solution_date"],
         osculating_epoch=values["osculating_epoch"],
         reference_system=values["reference_system"],
@@ -127,12 +135,18 @@ class MinorBodyResourceCollection:
                     display_name = name or f"({number})"
                     classifications = identity.get("classifications", ())
                 elif object_class == "comet":
-                    parsed = parse_comet_designation(
-                        identity.get("primary_designation")
+                    primary_designation = identity.get(
+                        "primary_designation"
                     )
+                    designation_class = identity.get("designation_class")
+                    try:
+                        parsed = parse_comet_designation(primary_designation)
+                    except ValueError:
+                        parsed = parse_comet_designation(
+                            f"{designation_class}/{primary_designation}"
+                        )
                     if (
-                        identity.get("designation_class")
-                        != parsed.designation_class
+                        designation_class != parsed.designation_class
                     ):
                         raise ValueError(
                             "comet manifest designation classes differ."
@@ -180,7 +194,7 @@ class MinorBodyResourceCollection:
                     raise ValueError("minor-body identity and solution targets differ.")
                 if (
                     object_class == "comet"
-                    and solution.primary_designation != parsed.canonical
+                    and solution.primary_designation != primary_designation
                 ):
                     raise ValueError(
                         "comet identity and solution designations differ."

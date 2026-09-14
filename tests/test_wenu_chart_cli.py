@@ -401,6 +401,42 @@ def test_defaults_write_requires_an_existing_parent(tmp_path):
     assert not destination.exists()
 
 
+@pytest.mark.parametrize(
+    "error",
+    (
+        FileNotFoundError("offline data policy found no verified resource."),
+        ValueError("explicit minor-body resource directory is invalid."),
+    ),
+)
+def test_main_formats_expected_command_failures_without_traceback(
+    monkeypatch, capsys, error
+):
+    monkeypatch.setattr(
+        chart,
+        "generate",
+        lambda arguments: (_ for _ in ()).throw(error),
+    )
+
+    assert chart.main(["regional"]) == 2
+
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert captured.err == f"wenu_chart: error: {error}\n"
+    assert "Traceback" not in captured.err
+
+
+def test_debug_reraises_expected_command_failure(monkeypatch):
+    error = ValueError("diagnostic failure")
+    monkeypatch.setattr(
+        chart,
+        "generate",
+        lambda arguments: (_ for _ in ()).throw(error),
+    )
+
+    with pytest.raises(ValueError, match="diagnostic failure"):
+        chart.main(["regional", "--debug"])
+
+
 def test_invalid_configuration_fails_before_observer_or_sphere(
     monkeypatch, tmp_path
 ):

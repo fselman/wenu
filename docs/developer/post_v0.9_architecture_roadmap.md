@@ -1652,3 +1652,9 @@ requests must not acquire parallel directories. Magnitude, fuzzy lookup,
 automatic asteroid-name acquisition, new graphics, and reports remain outside
 the accepted audit. Fernando accepted it on 2026-09-13, authorizing only the
 bounded CLI-preflight implementation.
+
+The candidate implementation now performs that typed composition in
+`cli/chart.py`: exact point, track, and explicitly classed center selections
+share one coverage interval and one verified resource directory; explicit and
+adequate warm-cache paths remain offline. Scientific and Mac acceptance remain
+pending.
