@@ -4590,3 +4590,19 @@ def test_50a5d2b_audits_generic_comet_acquisition():
     assert "does not authorize 50A.5D.2C CLI preflight integration" in audit
     assert "focused documentation gate passed all 114 tests" in audit
     assert "complete Mac regression passed all 2,381 tests in 87.20 seconds" in audit
+    for phrase in (
+        "Candidate implementation",
+        "acquire_minor_body_resources()",
+        "ensure_minor_body_resources()",
+        "DES=<designation>;CAP;NOFRAG",
+        "Horizons API version 1.2",
+        "one type-21 target segment",
+        "record `90000214`",
+        "solution `JPL#K265/50`",
+        "JD 2461284.5 through 2461344.5",
+        "Candidate for Fernando's review",
+    ):
+        assert phrase in audit
+    reference = read(DEVELOPER / "implementation_reference.md")
+    assert "Resolved minor-body acquisition" in reference
+    assert "CLI integration remains 50A.5D.2C" in roadmap
