@@ -282,8 +282,10 @@ reports.
 ## Acceptance
 
 Fernando accepted this bounded audit on 2026-09-13 after the focused
-current-documentation gate passed all 115 tests in 2.84 seconds. The branch was
-clean and synchronized and `git diff --check` was clean.
+current-documentation gate passed all 115 tests in 2.84 seconds. Final Mac
+verification passed the updated 115-test documentation gate in 2.62 seconds
+and the complete 2,389-test regression in 82.59 seconds. The branch was clean
+and synchronized and `git diff --check` was clean.
 
 This acceptance authorizes only implementation of the request-level exact
 comet CLI preflight composition specified above. It does not authorize any of
