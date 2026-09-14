@@ -210,9 +210,14 @@ def _horizons_solution(result, identity):
         non_gravitational[name] = (
             match.group("value") if match is not None else None
         )
+    orbit_solution_id = solution.group("value").strip()
+    if identity.object_class == "comet" and orbit_solution_id.startswith(
+        "JPL#"
+    ):
+        orbit_solution_id = orbit_solution_id.removeprefix("JPL#")
     return {
         "record_number": record.group("value"),
-        "orbit_solution_id": solution.group("value").strip(),
+        "orbit_solution_id": orbit_solution_id,
         "solution_date": solution_date.group("value"),
         "osculating_epoch": f"{epoch.group('value')} {epoch.group('scale')}",
         "non_gravitational_parameters": non_gravitational,
