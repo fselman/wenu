@@ -33,8 +33,8 @@ migrations, milestone evidence, and superseded roadmaps are under
   — active parent contract for observer-dependent comet discovery magnitude
   and natural moving-object reports.
 - [`comet_model_magnitude_audit_50a5d1b.md`](comet_model_magnitude_audit_50a5d1b.md)
-  — proposed scientific/provider contract for sampled observer-dependent comet
-  model magnitude; no runtime implementation is authorized.
+  — accepted scientific/provider contract for the bounded observer-dependent
+  comet model-magnitude implementation.
 
 The accepted 50A.0 through 50A.3C records and completed 50A.3D through
 50A.5D.2C records are archived under
