@@ -247,6 +247,33 @@ def test_collection_preserves_typed_encke_identity_and_solution(tmp_path):
     assert set(dict(solution.model_parameters)) == {"A1", "A2"}
 
 
+def test_collection_reconstructs_provisional_comet_class_prefix(tmp_path):
+    directory = comet_manifest_directory(tmp_path)
+    manifest = directory / "acquisition-report.json"
+    document = json.loads(manifest.read_text(encoding="utf-8"))
+    record = document["resources"][0]
+    record["key"] = "C/2006 P1"
+    record["identity"].update({
+        "permanent_number": None,
+        "primary_designation": "2006 P1",
+        "designation_class": "C",
+        "name": "McNaught",
+    })
+    record["solution"]["primary_designation"] = "2006 P1"
+    record["solution"]["aliases"] = [
+        "2006 P1", "C/2006 P1", "C/2006 P1 (McNaught)",
+    ]
+    manifest.write_text(json.dumps(document), encoding="utf-8")
+
+    collection = MinorBodyResourceCollection(directory)
+    mcnaught = collection.resolve("C/2006 P1")
+
+    assert collection.resolve("C/2006 P1 (McNaught)") is mcnaught
+    assert mcnaught.selection_key == "c/2006 p1"
+    assert mcnaught.canonical_designation == "C/2006 P1/McNaught"
+    assert collection.solution_for(mcnaught).primary_designation == "2006 P1"
+
+
 def test_collection_rejects_receipt_prefix_in_comet_solution_id(tmp_path):
     directory = comet_manifest_directory(
         tmp_path, solution_id="JPL#K273/14"
