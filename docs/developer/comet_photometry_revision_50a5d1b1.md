@@ -40,6 +40,11 @@ historically valid, but it is not sufficient for operational closure.
 9. Horizons calls remain sequential and any failure still fails the whole
    result. Model magnitude remains characterization, not a visibility or
    detectability forecast.
+10. Horizons target headers may identify the selected solution with a
+    provider label such as `JPL#27` or `SAO_2008`. Wenu accepts arbitrary
+    non-empty source labels only when they match the SBDB orbit solution after
+    the narrow documented JPL notation normalization. A per-comet parse error
+    names the canonical designation that failed.
 
 ## Ownership and non-goals
 
@@ -59,6 +64,7 @@ partial-result semantics, or 50A.5D.3 moving-object report behavior.
   and documentation tests on the exact final branch;
 - the complete regression suite;
 - live narrow McNaught table and JSON preservation;
+- live non-JPL `C/2007 B4` / `SAO_2008` solution binding;
 - live broad discovery cases demonstrating per-comet windows, deliberate
   workload authorization, no HTTP 414, and clean errors without `--debug`;
 - `--debug` traceback restoration;

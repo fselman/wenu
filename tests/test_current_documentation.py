@@ -4807,6 +4807,8 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
         "wenu_retrieve_comets: error:",
         "Matched comets: 0",
         "--debug",
+        "JPL#27` or `SAO_2008",
+        "names the canonical designation that failed",
         "PR #121 must not be merged",
     ):
         assert phrase in revision

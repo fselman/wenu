@@ -440,6 +440,29 @@ def test_photometry_provider_drift_fails_closed():
             )
 
 
+def test_photometry_accepts_exact_non_jpl_solution_source():
+    discovery = short_mcnaught_discovery()
+    record = replace(
+        discovery.records[0], orbit_solution_id="SAO_2008"
+    )
+    _, epochs = comet_photometry.magnitude_sample_epochs(
+        discovery.start_utc, discovery.stop_utc, "12h"
+    )
+    document = json.loads(photometry_fixture_bytes())
+    document["result"] = document["result"].replace(
+        "JPL#27", "SAO_2008"
+    )
+    assert document != json.loads(photometry_fixture_bytes())
+
+    _, samples, _ = comet_photometry.parse_photometry_response(
+        json.dumps(document).encode("utf-8"),
+        record=record,
+        requested_epochs_utc=epochs,
+    )
+
+    assert len(samples) == 3
+
+
 def test_characterization_resolves_observer_and_retains_exact_response():
     discovery = short_mcnaught_discovery()
     raw = photometry_fixture_bytes()

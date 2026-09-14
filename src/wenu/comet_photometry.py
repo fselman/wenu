@@ -30,7 +30,7 @@ _MULTIPART_BOUNDARY = "wenu-horizons-photometry"
 _STEP = re.compile(r"(?P<count>[1-9]\d*)\s*(?P<unit>[hd])", re.IGNORECASE)
 _SOLUTION = re.compile(r"soln ref\.\s*=\s*(?P<value>[^,\n]+)")
 _TARGET = re.compile(r"Target body name:\s*(?P<value>[^\n]+)")
-_TARGET_SOURCE = re.compile(r"\{source:\s*JPL#(?P<value>[^}\s]+)\s*\}")
+_TARGET_SOURCE = re.compile(r"\{source:\s*(?P<value>[^}]+?)\s*\}")
 
 
 @dataclass(frozen=True)
@@ -539,11 +539,17 @@ def characterize_discovery_photometry(
             epochs_utc=epochs,
         )
         raw = fetch(HORIZONS_API, parameters)
-        version, samples, notices = parse_photometry_response(
-            raw,
-            record=record,
-            requested_epochs_utc=epochs,
-        )
+        try:
+            version, samples, notices = parse_photometry_response(
+                raw,
+                record=record,
+                requested_epochs_utc=epochs,
+            )
+        except ValueError as error:
+            raise ValueError(
+                "Horizons photometry failed for "
+                f"{record.canonical_designation}: {error}"
+            ) from error
         retrieved = clock()
         if retrieved.tzinfo is None:
             retrieved = retrieved.replace(tzinfo=timezone.utc)
