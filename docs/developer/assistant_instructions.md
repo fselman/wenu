@@ -258,6 +258,39 @@ files.
 6. Do not present the branch for Mac testing until this static
    documentation-contract preflight is complete.
 
+### Source-tree alignment and production-module admission
+
+Before adding or relocating a production module, identify its durable
+architectural responsibility, closest existing owner, dependency direction,
+lifecycle, provenance, and failure modes.
+
+- Extend an existing module when the new behavior has the same responsibility,
+  dependencies, lifecycle, and reason to change.
+- Create a new module when the behavior introduces a distinct scientific or
+  provider responsibility, provenance contract, failure boundary, or
+  independently testable lifecycle.
+- Create a subpackage when a coherent domain requires several collaborating
+  modules with a stable boundary. Do not create one merely for a milestone or
+  first implementation.
+- Organize production code by enduring responsibility, not milestone number,
+  CLI option, first specimen, or chronological development history.
+- A body-specific module is appropriate only for immutable registration data
+  or genuinely body-specific science, never for copied orchestration,
+  projection, rendering, or export.
+- Do not place domain behavior in `utils`. File size alone neither requires
+  nor justifies splitting a module.
+- Keep package `__init__.py` files focused on intentional public or
+  compatibility exports; adding an internal module does not by itself justify
+  another top-level export.
+- Before handoff, verify package-boundary tests and update `source_tree.md`
+  whenever ownership or placement changes.
+- Keep structural reorganization separate from behavioral implementation
+  unless the accepted milestone explicitly requires both.
+
+Every new production file proposal must name the closest existing owner and
+explain why extending it would mix responsibilities or violate a dependency,
+lifecycle, provenance, failure, or testing boundary.
+
 Run Wenu tests with ambient pytest plugins disabled:
 
 ```bash
