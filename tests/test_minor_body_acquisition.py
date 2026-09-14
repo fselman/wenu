@@ -190,12 +190,25 @@ def test_cli_collects_unqualified_numbered_asteroid_center():
     assert chart._numbered_asteroid_selections(arguments) == (79989,)
 
 
+def test_cli_collects_typed_comet_point_track_and_explicit_center_once():
+    arguments = chart.parser().parse_args([
+        "regional", "--center-on", "comet:10P",
+        "--comet", "10P", "--comet-track", "10P",
+        "--track-start", "2026-09-01", "--track-sample-step", "1d",
+        "--track-tick-step", "7d", "--track-tick-count", "2",
+    ])
+
+    assert chart._typed_minor_body_selections(arguments) == (
+        ("comet", "10p"),
+    )
+
+
 def test_cli_preflight_installs_resolved_directory_before_chart_build(
     tmp_path, monkeypatch
 ):
     arguments = chart.parser().parse_args([
         "regional", "--center-on", "asteroid:79989",
-        "--data-policy", "offline",
+        "--data-policy", "acquire-if-missing",
     ])
     observer = SimpleNamespace(
         utc_datetime=datetime(2026, 9, 16, tzinfo=timezone.utc),
@@ -207,12 +220,27 @@ def test_cli_preflight_installs_resolved_directory_before_chart_build(
     )
     resolved = tmp_path / "resolved"
     calls = []
-    monkeypatch.setattr(chart, "resource_covers", lambda *values: False)
+    identity = replace(
+        resolved_tempel_2(),
+        object_class="asteroid",
+        canonical_designation="79989",
+        primary_designation="79989",
+        permanent_number=79989,
+        name=None,
+        aliases=("79989",),
+        provider_spk_id="2079989",
+    )
+    monkeypatch.setattr(
+        chart, "_candidate_minor_body_directories", lambda observer: (),
+    )
+    monkeypatch.setattr(
+        chart, "resolve_minor_body_identity", lambda *args, **kwargs: identity,
+    )
     monkeypatch.setattr(
         chart,
-        "ensure_numbered_asteroid_resources",
-        lambda numbers, root, start, stop, policy: (
-            calls.append((numbers, root, start, stop, policy))
+        "ensure_minor_body_resources",
+        lambda identities, root, start, stop, policy: (
+            calls.append((identities, root, start, stop, policy))
             or SimpleNamespace(
                 resource_directory=resolved, acquired=False
             )
@@ -224,8 +252,8 @@ def test_cli_preflight_installs_resolved_directory_before_chart_build(
     )
 
     assert arguments.minor_body_resource_directory == resolved
-    assert calls[0][0] == (79989,)
-    assert calls[0][4] == "offline"
+    assert calls[0][0] == (identity,)
+    assert calls[0][4] == "acquire-if-missing"
 
 
 def test_explicit_resource_directory_cannot_be_refreshed(tmp_path):
@@ -250,7 +278,7 @@ def test_explicit_resource_directory_cannot_be_refreshed(tmp_path):
 
 
 def test_explicit_resource_directory_preserves_installed_name_selection(
-    tmp_path,
+    tmp_path, monkeypatch,
 ):
     arguments = chart.parser().parse_args([
         "regional", "--asteroid", "ceres",
@@ -264,12 +292,87 @@ def test_explicit_resource_directory_preserves_installed_name_selection(
         utc_datetime=datetime(2026, 9, 16, tzinfo=timezone.utc),
         data_directory=tmp_path,
     )
+    monkeypatch.setattr(
+        chart, "_installed_candidate", lambda *values: (object(),),
+    )
 
     chart._preflight_minor_body_resources(
         arguments, configuration, observer, None
     )
 
     assert arguments.minor_body_resource_directory == tmp_path
+
+
+def test_comet_track_extends_preflight_coverage():
+    arguments = chart.parser().parse_args([
+        "regional", "--comet-track", "10P",
+        "--track-start", "2026-09-01", "--track-sample-step", "1d",
+        "--track-tick-step", "7d", "--track-tick-count", "4",
+    ])
+    observer = SimpleNamespace(
+        utc_datetime=datetime(2026, 9, 16, tzinfo=timezone.utc),
+    )
+
+    instants = chart._minor_body_coverage_instants(arguments, observer, None)
+
+    assert instants[1] == datetime(2026, 9, 1, tzinfo=timezone.utc)
+    assert instants[2] == datetime(2026, 9, 29, tzinfo=timezone.utc)
+
+
+def test_cli_preflight_composes_one_mixed_identity_collection(
+    tmp_path, monkeypatch
+):
+    arguments = chart.parser().parse_args([
+        "regional", "--asteroid-track", "79989",
+        "--comet-track", "10P",
+        "--track-start", "2026-09-01", "--track-sample-step", "1d",
+        "--track-tick-step", "7d", "--track-tick-count", "2",
+    ])
+    observer = SimpleNamespace(
+        utc_datetime=datetime(2026, 9, 16, tzinfo=timezone.utc),
+        data_directory=tmp_path,
+    )
+    configuration = SimpleNamespace(
+        minor_body_resource_directory=None,
+        moving_object_data_policy="acquire-if-missing",
+    )
+    asteroid = replace(
+        resolved_tempel_2(),
+        object_class="asteroid",
+        canonical_designation="79989",
+        primary_designation="79989",
+        permanent_number=79989,
+        name=None,
+        aliases=("79989",),
+        provider_spk_id="2079989",
+    )
+    comet = resolved_tempel_2()
+    identities = {"79989": asteroid, "10p": comet}
+    calls = []
+    destination = tmp_path / "mixed"
+    monkeypatch.setattr(
+        chart, "_candidate_minor_body_directories", lambda observer: (),
+    )
+    monkeypatch.setattr(
+        chart,
+        "resolve_minor_body_identity",
+        lambda selection, **kwargs: identities[selection],
+    )
+    monkeypatch.setattr(
+        chart,
+        "ensure_minor_body_resources",
+        lambda resolved, root, start, stop, policy: (
+            calls.append((resolved, root, start, stop, policy))
+            or SimpleNamespace(resource_directory=destination, acquired=True)
+        ),
+    )
+
+    chart._preflight_minor_body_resources(
+        arguments, configuration, observer, None
+    )
+
+    assert calls[0][0] == (asteroid, comet)
+    assert arguments.minor_body_resource_directory == destination
 
 
 def test_automatic_name_lookup_remains_outside_numbered_asteroid_slice():
