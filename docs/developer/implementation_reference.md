@@ -2356,3 +2356,21 @@ also resolve asteroid identity when explicitly class-constrained, but this
 slice does not connect asteroid names to CLI preflight or acquisition.
 Partial names, ambiguous HTTP 300 responses, wrong-class results, and bare
 asteroid numbers supplied as comets fail without selecting a candidate.
+
+
+### Resolved minor-body acquisition (Milestone 50A.5D.2B candidate)
+
+`acquire_minor_body_resources(identities, output_directory, start=..., stop=...)`
+accepts typed `ResolvedMinorBodyIdentity` values. It performs an explicit
+Horizons identity lookup, binds the returned unique record and orbit solution,
+requests a bounded type-21 SPK by that record, validates the target and segment,
+and writes the existing manifest-backed resource format. Comet
+non-gravitational parameters and both identity and Horizons receipts remain
+provenance.
+
+`ensure_minor_body_resources(...)` applies `offline`,
+`acquire-if-missing`, or `refresh` before rendering. It reuses a verified
+warm cache without network access or publishes a validated acquisition
+atomically under a per-identity lock. This candidate is a library boundary
+only; `wenu_chart` continues to use the accepted numbered-asteroid preflight
+until 50A.5D.2C.
