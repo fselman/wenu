@@ -519,18 +519,41 @@ def test_resolved_comet_rejects_nonunique_horizons_lookup(tmp_path):
         )
 
 
-def test_resolved_comet_identity_mismatch_reports_compared_values():
-    identity = resolved_tempel_2()
+def test_resolved_comet_accepts_horizons_name_before_designation():
+    identity = replace(
+        resolved_tempel_2(),
+        canonical_designation="C/2006 P1",
+        primary_designation="C/2006 P1",
+        aliases=("2006 P1", "C/2006 P1", "C/2006 P1 (McNaught)"),
+    )
     result = horizons_tempel_2()["result"].replace(
-        "10P/Tempel 2", "C/2006 P1 (McNaught)"
+        "10P/Tempel 2", "McNaught (C/2006 P1)"
     )
 
-    with pytest.raises(ValueError, match="c/2006 p1 \\(mcnaught\\)") as error:
+    from wenu.minor_body_acquisition import _horizons_solution
+
+    solution = _horizons_solution(result, identity)
+
+    assert solution["record_number"] == "90000214"
+
+
+def test_resolved_comet_identity_mismatch_reports_compared_values():
+    identity = replace(
+        resolved_tempel_2(),
+        canonical_designation="C/2006 P1",
+        primary_designation="C/2006 P1",
+        aliases=("2006 P1", "C/2006 P1", "C/2006 P1 (McNaught)"),
+    )
+    result = horizons_tempel_2()["result"].replace(
+        "10P/Tempel 2", "McNaught (C/2006 Q1)"
+    )
+
+    with pytest.raises(ValueError, match="mcnaught \\(c/2006 q1\\)") as error:
         from wenu.minor_body_acquisition import _horizons_solution
 
         _horizons_solution(result, identity)
 
-    assert "10p/tempel 2" in str(error.value)
+    assert "c/2006 p1" in str(error.value)
 
 
 def test_typed_preflight_reuses_warm_comet_cache_without_network(tmp_path):
