@@ -442,7 +442,7 @@ def _minor_body_coverage_instants(arguments, observer, sequence_options):
     ):
         from astropy.time import Time
 
-        parsed_track = chart_track_options(arguments)
+        parsed_track = chart_track_options(arguments)[0]
         start = Time(parsed_track.start_instant, scale="utc").to_datetime(
             timezone=timezone.utc
         )
