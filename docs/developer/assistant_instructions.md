@@ -312,6 +312,10 @@ environment before handing the branch to Fernando.
    for the same mistaken assumption, and rerun the identical focused command
    before widening to the full suite.
 6. Do not request the full regression suite until the focused gate passes.
+7. A fixture described as a frozen or exact provider response must be captured
+   byte-for-byte from that provider, with retrieval provenance. A constructed
+   fixture must be labelled synthetic and may test parser faults, but it cannot
+   serve as provider-format or scientific acceptance evidence.
 
 Run Wenu tests with ambient pytest plugins disabled:
 
