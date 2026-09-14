@@ -238,6 +238,26 @@ count, new files added, complete-route duplication, and whether superseded
 historical phrase checks can move to bounded archive-integrity coverage. Do not
 reorganize existing tests solely to reduce the number of files.
 
+### Documentation-contract preflight
+
+Before presenting any documentation change, inspect every existing
+documentation test affected by added, removed, renamed, moved, or reworded
+files.
+
+1. If a file is added to or removed from `docs/developer/`, update and verify
+   the exact top-level-file allowlist.
+2. If established acceptance wording is changed, search for every exact-phrase
+   assertion before committing.
+3. Never write a documentation assertion from memory. Copy its exact phrase
+   from the final document, then verify after whitespace normalization that the
+   resulting document contains the asserted text.
+4. Treat the developer-document index, resulting filesystem set, roadmap
+   links, relative Markdown links, and archive paths as one consistency unit.
+5. Inspect the resulting branch contents—not only the intended replacement—to
+   verify that every required edit actually applied.
+6. Do not present the branch for Mac testing until this static
+   documentation-contract preflight is complete.
+
 Run Wenu tests with ambient pytest plugins disabled:
 
 ```bash
