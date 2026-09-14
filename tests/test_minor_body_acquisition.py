@@ -519,6 +519,20 @@ def test_resolved_comet_rejects_nonunique_horizons_lookup(tmp_path):
         )
 
 
+def test_resolved_comet_identity_mismatch_reports_compared_values():
+    identity = resolved_tempel_2()
+    result = horizons_tempel_2()["result"].replace(
+        "10P/Tempel 2", "C/2006 P1 (McNaught)"
+    )
+
+    with pytest.raises(ValueError, match="c/2006 p1 \\(mcnaught\\)") as error:
+        from wenu.minor_body_acquisition import _horizons_solution
+
+        _horizons_solution(result, identity)
+
+    assert "10p/tempel 2" in str(error.value)
+
+
 def test_typed_preflight_reuses_warm_comet_cache_without_network(tmp_path):
     cached = tmp_path / "verified"
     calls = []
