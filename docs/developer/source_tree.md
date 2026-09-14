@@ -1589,7 +1589,7 @@ owns deterministic contract coverage;
 ## 50A.5D.2C exact comet CLI-preflight audit ownership
 
 - `docs/developer/comet_cli_preflight_audit_50a5d2c.md` alone owns the
-  candidate request-composition, precedence, network, coverage, mixed-resource,
+  accepted request-composition, precedence, network, coverage, mixed-resource,
   failure, and acceptance contract;
 - `cli/chart.py` is the proposed request-level selection, policy, diagnostic,
   and pre-construction composition owner;
