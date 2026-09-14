@@ -68,6 +68,9 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`comet_acquisition_audit_50a5d2b.md`](comet_acquisition_audit_50a5d2b.md)
   — accepted shared exact-comet acquisition, type-21 validation, and immutable
   publication contract; no chart integration or runtime change.
+- [`comet_cli_preflight_audit_50a5d2c.md`](comet_cli_preflight_audit_50a5d2c.md)
+  — candidate exact-comet CLI preflight, mixed-resource, offline, and coverage
+  composition contract; no runtime change.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).
