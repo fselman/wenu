@@ -4821,6 +4821,8 @@ def test_assistant_instructions_require_post_change_verification():
         "captured byte-for-byte from that provider",
         "labelled synthetic",
         "cannot serve as provider-format or scientific acceptance evidence",
+        "Every fault-injection test must prove that its mutation changed",
+        "A no-op replacement or mutation cannot count as fault coverage",
     ):
         assert phrase in instructions
 
