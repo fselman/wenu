@@ -291,6 +291,28 @@ Every new production file proposal must name the closest existing owner and
 explain why extending it would mix responsibilities or violate a dependency,
 lifecycle, provenance, failure, or testing boundary.
 
+### Post-change verification gate
+
+After all implementation, test, fixture, and documentation edits are present
+on the resulting branch, run the closest focused tests in the current execution
+environment before handing the branch to Fernando.
+
+1. Inspect the exact final branch, not an earlier local or fetched snapshot.
+2. Run the narrow tests that execute every changed production route and every
+   changed documentation contract. Writing tests is not evidence that they
+   pass.
+3. For every new cross-module reference, verify each imported name, constructor
+   field, attribute, and return shape against the actual current definition;
+   do not infer interface names from analogous types.
+4. If the execution environment cannot run Wenu, perform syntax compilation
+   and this explicit interface audit, state that execution remains pending,
+   and give Fernando the smallest focused Mac command. Never describe
+   unexecuted tests as passing.
+5. When a focused test fails, fix the root cause, search the complete change
+   for the same mistaken assumption, and rerun the identical focused command
+   before widening to the full suite.
+6. Do not request the full regression suite until the focused gate passes.
+
 Run Wenu tests with ambient pytest plugins disabled:
 
 ```bash
