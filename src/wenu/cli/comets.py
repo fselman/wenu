@@ -77,6 +77,26 @@ def _photometry_by_designation(
     return values
 
 
+def _ordered_records(
+    result: CometDiscoveryResult,
+    by_designation,
+):
+    if by_designation is None:
+        return result.records
+
+    def key(record):
+        sample = by_designation[
+            record.canonical_designation
+        ].brightest_total_sample
+        return (
+            sample is None,
+            float("inf") if sample is None else sample.total_magnitude,
+            record.canonical_designation.casefold(),
+        )
+
+    return tuple(sorted(result.records, key=key))
+
+
 def table_text(
     result: CometDiscoveryResult,
     photometry: CometDiscoveryPhotometry | None = None,
@@ -94,7 +114,7 @@ def table_text(
             "brightest sampled N-mag model", "N-mag epoch UTC",
         )
     rows = []
-    for row in result.records:
+    for row in _ordered_records(result, by_designation):
         values = (
             row.canonical_designation,
             _unknown(row.name),
@@ -309,7 +329,7 @@ def json_text(
                 "1 mag in practice and potentially worse at large phase angle."
             ),
         }
-    for record in result.records:
+    for record in _ordered_records(result, by_designation):
         values = asdict(record)
         values["canonical_designation"] = record.canonical_designation
         values["perihelion"] = {
