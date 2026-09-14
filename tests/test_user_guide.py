@@ -152,6 +152,23 @@ def test_configuration_guide_documents_template_and_profiles():
         assert value in text
 
 
+def test_configuration_guide_documents_moving_object_data_authorities():
+    text = (GUIDE / "configuration.md").read_text(encoding="utf-8")
+
+    for value in (
+        "Minor Planet Center (MPC)",
+        "Planetary Data System (PDS)",
+        "10P/Tempel 2",
+        "not the tenth periodic comet discovered",
+        "does not query MPC or PDS directly",
+        "SBDB Query API",
+        "Exact `--comet` identity resolution uses the SBDB API",
+        "Horizons API",
+        "chart construction and rendering are offline",
+    ):
+        assert value in text
+
+
 def test_circumpolar_guide_documents_horizon_crossing_framing():
     text = (GUIDE / "circumpolar_charts.md").read_text(encoding="utf-8")
 
