@@ -1,7 +1,7 @@
 # Observer-dependent comet model-magnitude audit (Milestone 50A.5D.1B)
 
-**Status:** Proposed for Fernando's scientific review on 2026-09-14; documentation
-only; no runtime implementation is authorized.
+**Status:** Accepted by Fernando on 2026-09-14; documentation only. This audit
+authorizes only the bounded 50A.5D.1B implementation.
 
 **Exact base:** `15c77d95653d24f37ef6140385eef52702f0720d`
 
@@ -188,17 +188,20 @@ A frozen, exact provider response owns ordinary tests. One deliberate live
 smoke test may be marked according to the existing network/integration policy;
 it is not part of the routine gate.
 
-## 8. Acceptance required before implementation
+## 8. Accepted decisions and implementation authorization
 
-Fernando's review must explicitly decide:
+Fernando accepted all five proposed decisions on 2026-09-14:
 
-1. whether the `1d` default and 367-sample per-comet bound are adequate;
-2. whether the 50-comet request bound is adequate;
-3. whether `T-mag` alone is the public summary while `N-mag` is retained
-   separately;
-4. whether failure is whole-result or explicitly partial;
-5. whether the same `START`/`STOP` interval should own both perihelion
-   selection and magnitude sampling.
+1. the default cadence is `1d`, with the start and stop endpoints included;
+2. the first implementation is limited to 367 sample epochs per comet and 50
+   selected comet solutions per invocation;
+3. the brightest sampled `T-mag` is the public summary while `N-mag` is
+   retained separately when available;
+4. any Horizons failure fails the whole result rather than silently producing
+   a partial ranking;
+5. the same inclusive `START`/`STOP` interval owns perihelion selection and
+   magnitude sampling.
 
-Only after those decisions are recorded may 50A.5D.1B runtime implementation
-begin.
+This acceptance authorizes only the bounded 50A.5D.1B implementation described
+here. It does not authorize visibility prediction, chart integration, altered
+SPK acquisition, empirical activity correction, or any 50A.5D.3 report work.
