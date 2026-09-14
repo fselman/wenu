@@ -4565,7 +4565,7 @@ def test_50a5d2b_audits_generic_comet_acquisition():
     ).split())
 
     for phrase in (
-        "Candidate audit for Fernando's review",
+        "Accepted by Fernando on 2026-09-13",
         "one already resolved comet identity",
         "does not yet connect acquisition to `wenu_chart`",
         "must not derive a Horizons record number arithmetically",
@@ -4583,7 +4583,8 @@ def test_50a5d2b_audits_generic_comet_acquisition():
     ):
         assert phrase in audit
 
-    assert "50A.5D.2B candidate audit isolates the shared acquisition service" in roadmap
+    assert "accepted 50A.5D.2B audit isolates the shared acquisition service" in roadmap
     assert "50A.5D.2B generic comet-acquisition audit ownership" in source_tree
     assert "no coordinate or product-frame meaning changes" in audit
     assert "This slice changes data availability and provenance only" in audit
+    assert "does not authorize 50A.5D.2C CLI preflight integration" in audit
