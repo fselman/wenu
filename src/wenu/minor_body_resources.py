@@ -45,6 +45,14 @@ def _solution_from_record(record, *, key, iau_number, name):
         if isinstance(value, dict):
             value = tuple(sorted(value.items()))
         pairs[field] = tuple(tuple(item) for item in value)
+    orbit_solution_id = values["orbit_solution_id"]
+    if (
+        values["object_class"] == "comet"
+        and str(orbit_solution_id).startswith("JPL#")
+    ):
+        raise ValueError(
+            "comet manifest orbit solution excludes the Horizons JPL# prefix."
+        )
     return MinorBodySolutionIdentity(
         provider=values["provider"],
         service_version=values["service_version"],
@@ -53,7 +61,7 @@ def _solution_from_record(record, *, key, iau_number, name):
         primary_designation=values["primary_designation"],
         horizons_command=values["horizons_command"],
         provider_spk_id=values["provider_spk_id"],
-        orbit_solution_id=values["orbit_solution_id"],
+        orbit_solution_id=orbit_solution_id,
         solution_date=values["solution_date"],
         osculating_epoch=values["osculating_epoch"],
         reference_system=values["reference_system"],
