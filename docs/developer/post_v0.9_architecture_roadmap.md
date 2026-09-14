@@ -22,20 +22,23 @@ architectural rationale and accepted boundaries.
 | 5 | 50A.5E.2 | Add the `wenu-database` policy and default cache → provider → database resolution order. |
 | 6 | 50A.5E.3 | Add safe cache inspection, dry-run, pruning, and explicit minor-body cache flushing. |
 | 7 | 50A.6 | Close minor-body provenance, public interfaces, validation, documentation, and PNG/PDF/SVG acceptance. |
-| 8 | 50S.0 | Audit satellite catalogues, SGP4/TEME science, fast orbit-to-field literature, photometry, and performance workloads. |
-| 9 | 50S.1 | Implement and independently validate a frozen-snapshot artificial-satellite state provider. |
-| 10 | 50S.2 | Define exact field-crossing semantics and implement a complete-scan correctness oracle. |
-| 11 | 50S.3 | Add conservative high-performance candidate indexing with zero false negatives against the oracle. |
-| 12 | 50S.4A | Report geometric crossings, rates, trail lengths, range, phase, and illumination. |
-| 13 | 50S.4B | Estimate apparent brightness with explicit uncertainty and empirical photometric validation. |
-| 14 | Later 50S detector slice | Estimate detector-level trail signal and detectability separately from apparent magnitude. |
-| 15 | 50S.5 | Add selected drawable tracks through the shared pipeline and close the satellite program. |
-| 16 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
-| 17 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
-| 18 | 50B.2 | Measure representative products at declared physical dimensions. |
-| 19 | 50B.3 | Implement monochrome and limited-grayscale publication profiles. |
-| 20 | 50B.4 | Perform physical print, reduction, grayscale, and photocopy acceptance. |
-| 21 | 50B.5 | Close publication styles with accepted standards, examples, limitations, and evidence. |
+| 8 | 50S.0 | Accepted satellite catalogue, provider, crossing, acceleration, illumination, photometry, and validation decisions. |
+| 9 | 50S.1 | Define the provider-neutral satellite crossing domain. |
+| 10 | 50S.2 | Add the policy-compliant cached SatChecker crossing adapter. |
+| 11 | 50S.3 | Report and draw normalized SatChecker crossings through shared Wenu paths. |
+| 12 | 50S.4 | Add a small local snapshot, validated SGP4/topocentric machinery, and specimen builder. |
+| 13 | 50S.5 | Implement the complete local FoV-crossing oracle. |
+| 14 | 50S.6 | Add conservative plane/phase/state filters and optional benchmark-justified HEALPix/time indexing. |
+| 15 | 50S.7 | Add independent illumination, shadow-transition, and observer-night geometry. |
+| 16 | 50S.8 | Add empirical object/family/population brightness models with uncertainty and explicit unknowns. |
+| 17 | 50S.9 | Estimate detector-level trail contamination separately from apparent magnitude. |
+| 18 | 50S.10 | Produce night/season/sky-position statistics and close the satellite program. |
+| 19 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
+| 20 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
+| 21 | 50B.2 | Measure representative products at declared physical dimensions. |
+| 22 | 50B.3 | Implement monochrome and limited-grayscale publication profiles. |
+| 23 | 50B.4 | Perform physical print, reduction, grayscale, and photocopy acceptance. |
+| 24 | 50B.5 | Close publication styles with accepted standards, examples, limitations, and evidence. |
 
 ## 1. Purpose and authority
 
@@ -1765,7 +1768,8 @@ flushed cache data must be reacquired.
 ## Program 50S — Artificial-satellite crossings and contamination
 
 **Status:** Planned after 50A.6 minor-body closure and before Program 50B
-publication work; audit required before implementation.
+publication work; 50S.0 scientific and architectural decisions accepted by
+Fernando on 2026-09-14.
 
 This program must make field-crossing queries a first-class scientific product.
 Given an observer, an explicitly framed field of view and centre, a start and
@@ -1784,26 +1788,30 @@ Earth-orientation data, topocentric transformation, orbit-epoch freshness,
 Earth-shadow and illumination state, and prediction uncertainty must remain
 identified and reproducible.
 
-The required fast path is a conservative two-stage search:
+The online path begins with a provider-neutral query/result domain and a
+policy-compliant SatChecker adapter. The later local fast path is a
+conservative cascade:
 
-1. propagate catalogue batches with vectorized SGP4 at a declared coarse or
-   adaptive cadence and reject objects using conservative spatial-temporal
-   bounds;
-2. refine entry, exit, closest approach, and exposure overlap only for retained
+1. reject impossible candidates with topocentric orbital-plane/FoV-cone,
+   radial-shell, phase/reachable-arc, Earth-occultation, and horizon bounds;
+2. propagate retained catalogue batches with vectorized SGP4 and conservative
+   angular-motion/curvature bounds;
+3. refine entry, exit, closest approach, and exposure overlap only for retained
    candidates, without missing a true crossing.
 
-Repeated all-night or seasonal studies should be able to reuse an immutable
+Repeated all-night or seasonal studies may reuse an immutable HEALPix/time
 index keyed by orbit-catalogue digest, observer, Earth-orientation policy,
 night or bounded interval, cadence/bounding policy, and scientific software
-version. Index or cache policy must not enter propagation, coordinate,
-projection, or rendering ownership, and the unindexed complete calculation
-must remain available as a correctness oracle.
+version, but only if larger-snapshot benchmarks justify it. Index or cache
+policy must not enter propagation, coordinate, projection, or rendering
+ownership, and the unindexed complete calculation must remain available as a
+correctness oracle.
 
 ### 50S.0 — Scientific, catalogue, search, and photometry audit
 
-**Status:** Candidate audit recorded in
-`artificial_satellite_crossing_audit_50s0.md`; scientific and architectural
-acceptance pending.
+**Status:** Accepted by Fernando on 2026-09-14 and recorded in
+`artificial_satellite_crossing_audit_50s0.md` and the living
+`satellite_guide.md`.
 
 Review the scientific and technical literature before selecting either the
 catalogue-wide crossing algorithm or an apparent-brightness model. Record
@@ -1836,74 +1844,106 @@ communication, catalogue scale, and representative performance workloads.
 Characterize the maximum angular motion that the candidate filter must
 conservatively enclose. Add no visible satellite or public crossing command.
 
-### 50S.1 — Validated satellite state provider
+### 50S.1 — Provider-neutral satellite crossing domain
 
-Implement one frozen-snapshot OMM/TLE plus SGP4/TEME provider and validate a
-bounded set spanning low, medium, geosynchronous, and highly elliptical Earth
-orbits against an independent authoritative oracle. Transform through the
-accepted coordinate service into explicit observer-local or product-frame
-directions. Do not yet perform catalogue-wide field searches.
+Define satellite identity, observer, inclusive interval, explicitly framed FoV,
+crossing candidate, and crossing result independently of any provider or chart.
+Begin with circular FoVs while preserving extension to spherical rectangles,
+WCS/instrument footprints, fixed celestial fields, fixed Alt/Az fields, and
+later moving fields. Distinguish provider-reported candidates from
+Wenu-verified crossings. Add no propagation yet.
 
-### 50S.2 — Exact field-crossing contract and reference implementation
+### 50S.2 — SatChecker crossing adapter
 
-Define circular, rectangular, and WCS/instrument-footprint fields independently
-of chart drawing. A query owns observer, field frame and centre, footprint,
-inclusive time interval, exposure start times and durations when applicable,
-and boundary-touch semantics. First implement a complete catalogue scan as the
-scientific correctness oracle. Results must retain satellite identity, orbit
-snapshot and epoch, entry and exit instants, closest approach, time in field,
-angular rate, trail length per exposure, illumination/shadow state, and
-prediction-quality warnings.
+Use SatChecker first for supported bounded circular-FoV queries. Translate only
+at the adapter boundary, preserve exact request, raw response, task status,
+upstream orbit source/epoch, provider version, and stated limitations, and
+normalize results into the 50S.1 domain. Support asynchronous progress, exact
+cache reuse, serial policy-compliant access, and bounded failures. Do not claim
+stronger completeness than SatChecker documents or make ordinary tests depend
+on live service availability.
 
-### 50S.3 — Conservative high-performance candidate index
+### 50S.3 — SatChecker reports and drawable crossing tracks
 
-Add vectorized propagation, temporal batching, conservative swept-region
-bounds, and a spatial index only after 50S.2 is accepted. Prove zero false
-negatives against the complete-scan oracle over adversarial boundary, fast-LEO,
-zenith, horizon, and short-exposure cases. Measure cold construction, warm
-reuse, query latency, memory, index size, and scaling with catalogue size,
-duration, cadence, field size, and number of pointings. Performance acceptance
-must use representative current-catalogue workloads rather than a reduced test
-fixture alone.
+Expose human-readable and JSON crossing reports, then render the same
+normalized result through Wenu's shared moving-track, projection, preparation,
+renderer, semantic SVG, and export pipeline. Mark tracks, direction, UTC time,
+entry/exit when supported, and closest approach. Preserve provider-derived
+illumination separately from geometric crossing and do not yet infer local
+photometry or detector contamination.
 
-### 50S.4 — Observation-contamination reports
+### 50S.4 — Small local snapshot, propagation, and specimen builder
 
-#### 50S.4A — Geometric and illumination reports
+Add an OMM-first immutable content-addressed snapshot format with a legacy TLE
+adapter and one small geometrically representative development snapshot.
+Validate a maintained Vallado-compatible SGP4 implementation against official
+reference vectors and implement the explicit TEME/Earth-orientation/
+topocentric chain through Wenu's accepted coordinate service.
 
-Expose human-readable and JSON results for planned observations and aggregate
-night-sky studies. Support crossing count, probability or rate with its stated
-estimator, occupied time, angular-speed and trail-length distributions, and
-maps or tables versus time, season, position, field size, and exposure
-duration. Preserve geometric intersection, range, phase angle, and
-illumination or shadow state without inferring brightness or detectability.
+Add a developer specimen builder that consumes cached data, an observer,
+bounded search interval, FoV size, and requested case type; selects a
+reproducible FoV/time window; stores independent reference tracks and expected
+crossings; and invokes Wenu to produce both crossing results and a marked-track
+FoV chart. Ordinary tests remain network-free. Progressively larger retained
+snapshots follow only after the small machinery is correct.
 
-#### 50S.4B — Apparent-brightness estimation and validation
+### 50S.5 — Complete local FoV-crossing oracle
 
-Implement only the photometric models accepted in 50S.0. Estimate apparent
-magnitude, passband when known, and an uncertainty or distribution appropriate
-to the available satellite metadata. The calculation must expose its range,
-phase function or reflectance model, projected-area and attitude assumptions,
-shadow state, atmospheric-extinction policy, and empirical calibration
-provenance. Unknown shape, attitude, tumbling, surface properties, or flare
-behavior must produce explicit limitations rather than false precision.
+Implement a complete scan of every valid object in a selected snapshot with
+adaptive interval subdivision, conservative motion bounds, bracketed boundary
+roots, and closest-approach refinement. Boundary touch counts; disconnected
+visits remain separate. This slower implementation remains independently
+callable as the scientific oracle after optimization.
 
-Validate bounded satellite classes and geometries against time-resolved
-published or newly acquired calibrated photometric observations. Characterize
-residuals before accepting tolerances. A later detector model may combine
-brightness, angular speed, exposure time, point-spread function, pixel scale,
-throughput, sky background, saturation, and sensor response to estimate trail
-signal or detectability; it must remain distinct from intrinsic apparent
-magnitude and geometric crossing probability.
+### 50S.6 — Conservative local crossing acceleration
 
-### 50S.5 — Drawable tracks and program closure
+Add, in order, topocentric orbital-plane/FoV-cone and radial-shell rejection,
+phase/reachable-arc rejection from epoch and mean motion, Earth-occultation and
+horizon rejection, then vectorized coarse SGP4 states with conservative motion
+and curvature bounds. Prove zero false negatives against 50S.5 over central,
+grazing, between-sample, zenith, horizon, seam, pole, short-exposure, and
+interval-end cases.
 
-Only after the query science is accepted may selected crossings enter ordinary
-Wenu charts through the shared moving-body trajectory, projection,
-preparation, renderer, semantic SVG, and export machinery. Close with catalogue
-and provider provenance, numerical validation, complete-scan equivalence,
-performance evidence, PNG/PDF/SVG inspection, public documentation, and
-reproducible observer/night studies. Do not create a satellite-specific
-projection, renderer, exporter, or parallel sky pipeline.
+HEALPix/time indexing remains optional. Add it only if medium/full-snapshot or
+many-pointing benchmarks show material benefit beyond the plane/phase filter
+cascade. Any pixel cover must enclose the complete swept trajectory tube, and
+every candidate still reaches the exact solver.
+
+### 50S.7 — Independent illumination and night geometry
+
+Calculate sunlight, penumbra, and umbra using finite Sun/Earth geometry, and
+record shadow transitions independently of crossing. Separately report Sun
+altitude and twilight/night state at the observer. Default results retain all
+geometric crossings and annotate illumination rather than silently erasing
+eclipsed crossings.
+
+### 50S.8 — Apparent-brightness estimation and validation
+
+Use the strongest defensible model level: object-specific empirical models,
+satellite-family distributions, broader population distributions, or explicit
+`unknown`. Retain passband, range normalization, phase dependence, model epoch,
+scatter, calibration provenance, and limits. Treat ordinary brightness and
+specular glints separately; absent flare evidence is `unknown`, never zero
+probability. Validate materially different families and geometries against
+time-resolved calibrated observations before accepting tolerances.
+
+### 50S.9 — Detector-specific contamination
+
+Combine crossing geometry and brightness distributions with angular speed,
+exposure, optics, aperture, throughput, passband, defocus/PSF, pixel scale, sky
+background, saturation, blooming, shutter behavior, and detector response.
+Report assumptions and uncertainty. Do not reinterpret apparent magnitude as
+trail signal or detectability.
+
+### 50S.10 — Night, season, and sky-position products and closure
+
+Generate reproducible maps, tables, and distributions versus local night time,
+season, observer, pointing, FoV, and exposure duration. Close with provider and
+snapshot provenance, numerical validation, complete-scan equivalence,
+performance evidence over progressively larger snapshots, cached SatChecker
+comparisons, observed-trail specimens when available, PNG/PDF/SVG inspection,
+and public documentation. Do not create a satellite-specific projection,
+renderer, exporter, or parallel sky pipeline.
 
 ## Program 50B — Publication legibility and economical printing
 
