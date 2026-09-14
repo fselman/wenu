@@ -3159,6 +3159,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "README.md",
         "assistant_instructions.md",
         "comet_discovery_and_reporting_audit_50a5d.md",
+        "comet_model_magnitude_audit_50a5d1b.md",
         "configuration_schema_v2.md",
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
@@ -4679,3 +4680,60 @@ def test_50a5d2c_audits_exact_comet_cli_preflight():
         source_tree
     )
     assert "introduces no coordinate system, origin, frame, epoch, equinox" in audit
+
+def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
+    audit = " ".join(read(
+        DEVELOPER / "comet_model_magnitude_audit_50a5d1b.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    roadmap = " ".join(read(
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).split())
+
+    for phrase in (
+        "Accepted by Fernando on 2026-09-14",
+        "authorizes only the bounded 50A.5D.1B implementation",
+        "brightest sampled total model magnitude",
+        "not a visibility forecast",
+        "T-mag = M1 + 5 log10(delta) + k1 log10(r)",
+        "N-mag = M2 + 5 log10(delta) + k2 log10(r) + phcof beta",
+        "uncertain at roughly 1 magnitude in practice",
+        "sequential rather than simultaneous API calls",
+        "--magnitude-step DURATION",
+        "positive whole number of hours or days",
+        "proposed default is `1d`",
+        "numerically smallest valid sampled `T-mag`",
+        "nuclear magnitude is not substituted",
+        "Unknown values sort after all known values",
+        "at most 50 selected comet solutions",
+        "at most 367 sample epochs per comet",
+        "recommended first implementation is fail-whole",
+        "not the minor-body SPK cache",
+        "must not import chart, renderer, projection",
+        "Extend it rather than creating a milestone-named test file",
+        "the default cadence is `1d`",
+        "367 sample epochs per comet and 50",
+        "any Horizons failure fails the whole result",
+        "same inclusive `START`/`STOP` interval",
+        "does not authorize visibility prediction",
+    ):
+        assert phrase in audit
+
+    assert "comet_model_magnitude_audit_50a5d1b.md" in index
+    assert "accepted the 50A.5D.1B audit on 2026-09-14" in roadmap
+
+def test_assistant_instructions_require_documentation_contract_preflight():
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Documentation-contract preflight",
+        "exact top-level-file allowlist",
+        "search for every exact-phrase assertion",
+        "Never write a documentation assertion from memory",
+        "verify after whitespace normalization",
+        "developer-document index, resulting filesystem set, roadmap links",
+        "Inspect the resulting branch contents",
+        "every required edit actually applied",
+        "Do not present the branch for Mac testing",
+    ):
+        assert phrase in instructions
