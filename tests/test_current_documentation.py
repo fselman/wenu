@@ -4648,6 +4648,8 @@ def test_50a5d2c_audits_exact_comet_cli_preflight():
         "authorizes only the 50A.5D.2C exact comet CLI",
         "does not authorize observer-dependent comet magnitude",
         "focused current-documentation gate passed all 115 tests in 2.84 seconds",
+        "updated 115-test documentation gate in 2.62 seconds",
+        "complete 2,389-test regression in 82.59 seconds",
         "authorizes only implementation of the request-level exact",
     ):
         assert phrase in audit
