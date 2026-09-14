@@ -1625,4 +1625,4 @@ not duplicated; only the comet route is integrated in this slice. SPK
 acquisition, cache publication, chart integration, magnitude, and reports
 remain outside this accepted audit.
 
-The 50A.5D.2A candidate implementation is in review.
+The 50A.5D.2A implementation was accepted by Fernando on 2026-09-13 after exact live SBDB success and failure checks, 150 focused Mac tests, and the complete 2,380-test Mac regression.
