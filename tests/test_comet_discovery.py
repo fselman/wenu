@@ -106,6 +106,7 @@ def test_provider_signature_schema_and_kind_drift_fail_closed():
     ):
         changed = json.loads(json.dumps(document))
         mutation(changed)
+        assert changed != document
         with pytest.raises(ValueError, match=message):
             comet_discovery.parse_discovery_response(
                 json.dumps(changed).encode("utf-8")
@@ -321,7 +322,7 @@ def test_photometry_provider_drift_fails_closed():
         ),
         (
             lambda value: value.update(
-                result=value["result"].replace("JPL#other", "JPL#other")
+                result=value["result"].replace("JPL#27", "JPL#other")
             ),
             "orbit solutions differ",
         ),
