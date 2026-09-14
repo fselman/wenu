@@ -415,7 +415,8 @@ def test_resolved_comet_binds_unique_horizons_record_and_publishes_manifest(
     record = document["resources"][0]
     assert record["spk_file_id"] == "1000094"
     assert record["identity"]["primary_designation"] == "10P"
-    assert record["solution"]["orbit_solution_id"] == "JPL#K265/50"
+    assert record["solution"]["orbit_solution_id"] == "K265/50"
+    assert "soln ref.= JPL#K265/50" in record["horizons_result"]
     assert record["solution"]["horizons_command"] == "90000214;"
     assert record["solution"]["non_gravitational_parameters"]["A1"] == (
         "2.556003071368E-10"
