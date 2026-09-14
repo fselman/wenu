@@ -4591,7 +4591,7 @@ def test_50a5d2b_audits_generic_comet_acquisition():
     assert "focused documentation gate passed all 114 tests" in audit
     assert "complete Mac regression passed all 2,381 tests in 87.20 seconds" in audit
     for phrase in (
-        "Candidate implementation",
+        "Accepted implementation",
         "acquire_minor_body_resources()",
         "ensure_minor_body_resources()",
         "DES=<designation>;CAP;NOFRAG",
@@ -4600,7 +4600,9 @@ def test_50a5d2b_audits_generic_comet_acquisition():
         "record `90000214`",
         "solution `JPL#K265/50`",
         "JD 2461284.5 through 2461344.5",
-        "Verified candidate for Fernando's review",
+        "Implementation status:** Accepted by Fernando on 2026-09-14",
+        "accepted the bounded 50A.5D.2B implementation on 2026-09-14",
+        "This closes only the shared acquisition service",
         "Mac acceptance run acquired `10P/Tempel 2`",
         "reused the identical immutable resource under `offline`",
         "focused gate passed all 169 tests in 4.09 seconds",
@@ -4609,4 +4611,5 @@ def test_50a5d2b_audits_generic_comet_acquisition():
         assert phrase in audit
     reference = read(DEVELOPER / "implementation_reference.md")
     assert "Resolved minor-body acquisition" in reference
+    assert "accepted the bounded 50A.5D.2B acquisition-service implementation" in roadmap
     assert "CLI integration remains 50A.5D.2C" in roadmap
