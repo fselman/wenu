@@ -247,6 +247,15 @@ def test_collection_preserves_typed_encke_identity_and_solution(tmp_path):
     assert set(dict(solution.model_parameters)) == {"A1", "A2"}
 
 
+def test_collection_rejects_receipt_prefix_in_comet_solution_id(tmp_path):
+    directory = comet_manifest_directory(
+        tmp_path, solution_id="JPL#K273/14"
+    )
+
+    with pytest.raises(ValueError, match="excludes the Horizons JPL# prefix"):
+        MinorBodyResourceCollection(directory)
+
+
 def test_collection_does_not_treat_2p_as_asteroid_2(tmp_path):
     collection = MinorBodyResourceCollection(comet_manifest_directory(tmp_path))
 
