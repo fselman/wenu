@@ -228,5 +228,15 @@ observer, cadence, provider, request, retrieval, and raw-digest provenance.
 frozen Horizons response and covers provider drift, non-finite values, sample
 count, bounds, fail-whole behavior, serialization, and provenance. The
 candidate adds no chart, SPK cache, coordinate frame, projection, renderer,
-semantic, report, or export coupling. Scientific comparison with a live
-Horizons result and complete Mac acceptance remain pending.
+semantic, report, or export coupling. On 2026-09-14 Fernando captured the exact live McNaught response for a
+La Ligua topocentric request spanning 2007-01-12 at 12-hour cadence. The
+fixture preserves Horizons API version `1.2`, target
+`McNaught (C/2006 P1) {source: JPL#27}`, three endpoint-inclusive samples,
+and raw SHA-256
+`054f05bd5905997f4b1dd22de92417d51b8cfead345089f1d5dfb2b6f2dda7f0`.
+SBDB expressed the same orbit as `JPL 27`; normalization treats only the
+provider's `JPL 27` and `JPL#27` notations as equivalent. The fixture is
+byte-for-byte provider evidence rather than a constructed response.
+
+Complete command-path scientific comparison and final Mac acceptance remain
+pending.
