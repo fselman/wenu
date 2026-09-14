@@ -2340,12 +2340,17 @@ schema validation, sorting, and exact request/raw-response provenance.
 an explicit perihelion-distance bound and table or JSON publication.
 
 When `--observer-location NAME` is present, `comet_photometry.py` owns
-sequential Horizons observer-table requests at the declared
-`--magnitude-step` (default `1d`). It includes both endpoints, validates the
+sequential Horizons observer-table requests. Each comet has an independent
+endpoint-inclusive UTC interval spanning ±30 days around its perihelion.
+An omitted `--magnitude-step` selects an automatic cadence, normally `1d`;
+an explicit cadence is preserved or rejected with its minimum usable value.
+The implementation validates the
 exact target and orbit solution selected by SBDB, preserves `T-mag` and
 `N-mag` independently, and retains exact request/raw-response provenance and
-provider notices. The route is bounded to 50 comet solutions and 367 epochs
-per comet, and any Horizons failure fails the whole result.
+provider notices. The official Horizons file API carries discrete epochs by
+POST. The route defaults to 50 comet solutions, permits an explicitly larger
+sequential workload through `--max-photometry-comets`, remains bounded to 367
+epochs per comet, and fails the whole result after any Horizons failure.
 
 The primary summary is the numerically smallest valid sampled `T-mag`,
 labelled the brightest sampled total model magnitude. It is not a continuous

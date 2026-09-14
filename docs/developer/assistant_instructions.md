@@ -124,6 +124,9 @@ For current work, read and follow:
 - `archive/milestone_history/50a_minor_bodies/first_drawable_comet_audit_50a5a.md` for accepted 2P/Encke identity,
   explicit resource, symbolic nucleus, shared point/track, and coma/tail
   separation decisions;
+- `comet_photometry_revision_50a5d1b1.md` for the active accepted revision of
+  per-comet perihelion sampling, workload authorization, Horizons file-API
+  transport, and clean command failures;
 - `archive/milestone_history/50a_minor_bodies/solar_system_temporal_components_audit_50a5b1.md` before changing temporal
   path, tick, symbol, label, or observed-phase component reuse;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
@@ -675,6 +678,14 @@ ordinary offline chart request. Never allow request generation, provider state
 evaluation, direction realization, projection, rendering, or export to query a
 service. Do not add a silent orbital-element fallback. Keep artificial
 satellite OMM/TLE plus SGP4/TEME physics in a separate provider milestone.
+
+For the reopened 50A.5D.1B.1 operational revision, follow
+`comet_photometry_revision_50a5d1b1.md`. Keep discovery selection separate
+from each comet's ±30-day perihelion photometry window, preserve explicit
+cadences or report their minimum usable replacement, require deliberate
+authorization above the default 50-comet workload, and use multiline discrete
+epochs through the Horizons file API POST route. Do not close or merge PR #121
+until broad live cases and the complete Mac gate pass.
 
 For 50B publication-style work, complete the print, typography, contrast,
 accessibility, cartographic, and astronomical-atlas practice review plus

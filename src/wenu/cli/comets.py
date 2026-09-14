@@ -6,6 +6,7 @@ import argparse
 from dataclasses import asdict
 import json
 from pathlib import Path
+import sys
 
 from wenu.comet_discovery import (
     DEFAULT_MAX_PERIHELION_DISTANCE_AU,
@@ -13,7 +14,8 @@ from wenu.comet_discovery import (
     discover_comets,
 )
 from wenu.comet_photometry import (
-    DEFAULT_MAGNITUDE_STEP,
+    DEFAULT_PERIHELION_WINDOW_DAYS,
+    MAX_COMETS,
     CometDiscoveryPhotometry,
     characterize_discovery_photometry,
 )
@@ -47,8 +49,23 @@ def parser() -> argparse.ArgumentParser:
         metavar="DURATION",
         help=(
             "positive whole hours or days (for example 12h or 1d); "
-            f"default with an observer: {DEFAULT_MAGNITUDE_STEP}"
+            "default with an observer: automatic (normally 1d)"
         ),
+    )
+    value.add_argument(
+        "--max-photometry-comets",
+        type=int,
+        default=MAX_COMETS,
+        metavar="COUNT",
+        help=(
+            "maximum sequential Horizons requests authorized for this run; "
+            f"default: {MAX_COMETS}"
+        ),
+    )
+    value.add_argument(
+        "--debug",
+        action="store_true",
+        help="show a traceback instead of formatting an expected failure",
     )
     value.add_argument("--format", choices=("table", "json"), default="table")
     value.add_argument("--output", type=Path)
@@ -164,6 +181,7 @@ def table_text(
             "not a visibility forecast."
         ),
         f"Retrieved: {result.retrieved_at_utc.isoformat()}",
+        f"Matched comets: {len(result.records)}",
     ]
     if photometry is not None:
         lines.extend((
@@ -173,7 +191,8 @@ def table_text(
                 f"({photometry.observer_latitude_deg:.6f}, "
                 f"{photometry.observer_longitude_deg:.6f}, "
                 f"{photometry.observer_elevation_m:.1f} m); "
-                f"step {photometry.magnitude_step}."
+                f"±{photometry.perihelion_window_days}d around each "
+                f"perihelion; step {photometry.magnitude_step}."
             ),
             (
                 "Brightest sampled T-mag/N-mag values are provider models, "
@@ -314,10 +333,11 @@ def json_text(
                 },
             },
             "sampling": {
-                "start_utc": photometry.start_utc.isoformat(),
-                "stop_utc": photometry.stop_utc.isoformat(),
+                "strategy": "per-comet window centered on perihelion",
+                "perihelion_window_days_each_side": (
+                    photometry.perihelion_window_days
+                ),
                 "step": photometry.magnitude_step,
-                "sample_count": len(photometry.sample_epochs_utc),
                 "endpoint_inclusive": True,
             },
             "meaning": (
@@ -356,6 +376,8 @@ def json_text(
             values["observer_model_photometry"] = {
                 "provider": {
                     "identity": model.provider,
+                    "endpoint": model.provider_endpoint,
+                    "transport": model.provider_transport,
                     "version": model.provider_version,
                     "retrieved_at_utc": model.retrieved_at_utc.isoformat(),
                     "request_parameters": dict(model.request_parameters),
@@ -364,6 +386,13 @@ def json_text(
                 "target": {
                     "provider_spk_id": model.provider_spk_id,
                     "orbit_solution_id": model.orbit_solution_id,
+                },
+                "sampling": {
+                    "start_utc": model.start_utc.isoformat(),
+                    "stop_utc": model.stop_utc.isoformat(),
+                    "step": model.magnitude_step,
+                    "sample_count": len(model.samples),
+                    "endpoint_inclusive": True,
                 },
                 "brightest_sampled_total": _summary_document(
                     model.brightest_total_sample,
@@ -391,30 +420,43 @@ def main(argv=None) -> int:
         argument_parser.error(
             "--magnitude-step requires --observer-location."
         )
-    result = discover_comets(
-        arguments.start,
-        arguments.stop,
-        max_perihelion_distance_au=arguments.max_perihelion_distance,
-    )
-    photometry = None
-    if arguments.observer_location is not None:
-        photometry = characterize_discovery_photometry(
-            result,
-            observer_location=arguments.observer_location,
-            magnitude_step=(
-                arguments.magnitude_step or DEFAULT_MAGNITUDE_STEP
-            ),
+    if (
+        arguments.max_photometry_comets != MAX_COMETS
+        and arguments.observer_location is None
+    ):
+        argument_parser.error(
+            "--max-photometry-comets requires --observer-location."
         )
-    text = (
-        table_text(result, photometry)
-        if arguments.format == "table"
-        else json_text(result, photometry)
-    )
-    if arguments.output is None:
-        print(text, end="")
-    else:
-        arguments.output.write_text(text, encoding="utf-8")
-    return 0
+    try:
+        result = discover_comets(
+            arguments.start,
+            arguments.stop,
+            max_perihelion_distance_au=arguments.max_perihelion_distance,
+        )
+        photometry = None
+        if arguments.observer_location is not None:
+            photometry = characterize_discovery_photometry(
+                result,
+                observer_location=arguments.observer_location,
+                magnitude_step=arguments.magnitude_step,
+                perihelion_window_days=DEFAULT_PERIHELION_WINDOW_DAYS,
+                max_comets=arguments.max_photometry_comets,
+            )
+        text = (
+            table_text(result, photometry)
+            if arguments.format == "table"
+            else json_text(result, photometry)
+        )
+        if arguments.output is None:
+            print(text, end="")
+        else:
+            arguments.output.write_text(text, encoding="utf-8")
+        return 0
+    except (OSError, ValueError) as error:
+        if arguments.debug:
+            raise
+        print(f"wenu_retrieve_comets: error: {error}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":

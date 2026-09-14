@@ -3083,12 +3083,13 @@ in 4.99 seconds, and passed the complete 2,262-test suite in 84.96 seconds.
 This closes 50A.4 without changing a coordinate frame or adding drawable comet
 behavior.
 
-Accepted 50A.5D.1B likewise adds no coordinate or product frame.
+The accepted 50A.5D.1B.1 revision likewise adds no coordinate or product frame.
 `comet_photometry.py` resolves a governed observer location once, records its
 geodetic longitude, latitude, and elevation, and sends those coordinates to a
-Horizons topocentric observer table with UTC sample epochs. The same inclusive
-UTC interval used for discovery owns the magnitude samples; perihelion remains
-TDB provider data. Returned `T-mag` and `N-mag` are scalar provider-model
+Horizons topocentric observer table with UTC sample epochs. Discovery dates
+select TDB perihelia; each comet's separate magnitude interval is centered on
+its TDB perihelion instant after conversion to UTC, extending 30 days on each
+side. Returned `T-mag` and `N-mag` are scalar provider-model
 quantities attached to their UTC epochs, not positions and not transformations.
 No result enters the chart apparent-place, fixed-product-frame, projection, or
 rendering pipeline.

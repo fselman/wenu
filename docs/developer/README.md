@@ -32,9 +32,13 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`comet_discovery_and_reporting_audit_50a5d.md`](comet_discovery_and_reporting_audit_50a5d.md)
   — active parent contract for observer-dependent comet discovery magnitude
   and natural moving-object reports.
+- [`comet_photometry_revision_50a5d1b1.md`](comet_photometry_revision_50a5d1b1.md)
+  — accepted operational revision of comet sampling, workload control,
+  Horizons transport, and CLI failures; implementation acceptance pending.
 
 The accepted 50A.0 through 50A.3C records and completed 50A.3D through
-50A.5D.2C records, including 50A.5D.1B comet photometry, are archived under
+50A.5D.2C records, including the original 50A.5D.1B comet-photometry
+acceptance evidence, are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).
 The completed 49J program and its superseded combined future-program document
 are archived under [`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/)

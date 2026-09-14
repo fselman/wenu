@@ -82,13 +82,14 @@ and observational-aperture effects. Observer-dependent model magnitude is availa
 
 ```bash
 wenu_retrieve_comets 2026-09-01 2026-09-30 \
-  --observer-location "La Ligua" \
-  --magnitude-step 1d
+  --observer-location "La Ligua"
 ```
 
-The magnitude step must be a positive whole number of hours or days; its
-default is `1d`. Wenu samples both endpoints of the same inclusive interval
-used for discovery, makes one sequential Horizons request per selected comet,
+The magnitude step, when explicit, must be a positive whole number of hours or
+days. When it is omitted Wenu selects a reproducible cadence, normally `1d`,
+that stays within the sample budget. For each selected comet Wenu samples both
+endpoints of a separate interval extending 30 days before and after that
+comet's perihelion, and makes one sequential Horizons request per selected comet,
 and reports the numerically smallest valid sampled `T-mag` as the brightest
 sampled total model magnitude. `N-mag` is reported independently and is
 never substituted for a missing `T-mag`.
@@ -101,7 +102,12 @@ retains the observer coordinates, sampling epochs, provider version, exact
 target and orbit solution, request parameters, retrieval time, raw-response
 digest, and provider notices in JSON output.
 
-The observer mode is intentionally bounded to 50 selected comet solutions and
-367 epochs per comet. Any Horizons failure fails the complete result; narrow
-the discovery interval or increase `--magnitude-step` when a bound is
-exceeded. `--magnitude-step` without `--observer-location` is invalid.
+The observer mode defaults to at most 50 selected comet solutions and remains
+bounded to 367 epochs per comet. Use `--max-photometry-comets COUNT` to
+authorize a larger complete sequential workload; Wenu never truncates the
+result silently. If an explicit cadence is too fine, the error reports the
+minimum usable cadence. Discrete epochs travel through the official Horizons
+file API POST route rather than a length-limited GET URL. Any Horizons failure
+fails the complete result. Expected failures are concise; `--debug` restores
+their traceback. `--magnitude-step` and a non-default
+`--max-photometry-comets` require `--observer-location`.

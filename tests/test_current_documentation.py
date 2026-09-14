@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 51483)
+Total output lines: 4894
+
 """Current public-documentation and architecture-authority contracts."""
 
 import ast
@@ -2462,144 +2465,7 @@ def test_49i3c31a_records_observed_venus_disk_sequence():
             DEVELOPER / "archive/milestone_history/49i_solar_system/observed_venus_disk_sequence_49i3c31a.md"
         ).split()
     )
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `8a6cb0f`",
-        "Scientifically and architecturally accepted",
-        "`ObservedSolarSystemDiskSequenceRequest`",
-        "`ObservedSolarSystemDiskSequenceRealizer.sequence()`",
-        "`ObservedSolarSystemDiskSequence`",
-        "`n_steps = 8` produces nine exact sample instants",
-        "origin `observer` and unit `au`",
-        "future 3D Solar-System visualizer",
-        "`4.615e-10 deg`",
-        "`1.946e-10 deg`",
-        "`3.128e-12 AU`",
-        "`3.795e-10 arcsec`",
-        "`7.096e-10 deg`",
-        "`4.823e-12`",
-        "`4.301e-09 deg`",
-        "all 51 focused tests passed in 1.89 seconds",
-        "All 91 focused sequence",
-        "49I.3C.3.1B",
-        "adds no public command",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.3.1A" in roadmap
-    assert "Accepted output-neutral observed Venus disk sequence" in architecture
-    assert "Observed Venus disk sequence (Milestone 49I.3C.3.1A)" in implementation
-    assert "Milestone 49I.3C.3.1A ownership" in source_tree
-    assert "13.2.27 49I.3C.3.1A observed Venus disk sequence" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "observed_venus_disk_sequence_49i3c31a.md" in instructions
-    assert "all 64 current-documentation tests in 2.23 seconds" in contract
-    assert "1,985 tests with 30 deselected in 25.46 seconds" in contract
-    assert "all 2,015 tests in 84.38 seconds" in contract
-
-
-def test_49i3c31b_records_drawable_observed_venus_sequence():
-    contract = " ".join(read(DRAWABLE_OBSERVED_VENUS_SEQUENCE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `7fd2a6a`",
-        "Scientifically, architecturally, visually, and operationally accepted",
-        "`ObservedVenusDiskSequenceRealization`",
-        "`MagnifyProjectedDiskSequence`",
-        "one fixed product frame",
-        "observer/AU distances",
-        "`--planet-disk-sequence venus`",
-        "--disk-sequence-model observed",
-        "`--disk-sequence-labels`",
-        "`--planet-disk-magnification venus=FACTOR`",
-        "`--no-equatorial-grid`",
-        "`--grid-references ecliptic`",
-        "All 211 focused tests passed in 5.74 seconds",
-        "1,988 tests with 30 deselected in 25.91 seconds",
-        "all 2,018 tests in 85.27 seconds",
-        "Frozen-Earth ecliptic mode",
-        "Mercury",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.3.1B" in roadmap
-    assert "Drawable observed Venus disk sequence" in architecture
-    assert "Drawable observed Venus disk sequence (Milestone 49I.3C.3.1B)" in implementation
-    assert "Milestone 49I.3C.3.1B ownership" in source_tree
-    assert "13.2.28 49I.3C.3.1B drawable observed Venus sequence" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "drawable_observed_venus_sequence_49i3c31b.md" in instructions
-
-
-def test_49i3c32a_records_frozen_earth_venus_sequence_state():
-    contract = " ".join(read(FROZEN_EARTH_VENUS_SEQUENCE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `447e701`",
-        "Scientifically and architecturally accepted",
-        "`FrozenEarthDiskSequenceRequest`",
-        "`FrozenEarthDiskSequenceRealizer.sequence()`",
-        "`FrozenEarthGeometricDisk`",
-        "origin `frozen-earth` and unit `au`",
-        "fixed J2000 mean-ecliptic axes",
-        "future 3D Solar-System visualizer",
-        "not topocentric, astrometric, apparent",
-        "`4.337e-12 AU`",
-        "`1.968e-10 deg`",
-        "`2.064e-11 deg`",
-        "`1.274e-12 AU`",
-        "`1.627e-10 deg`",
-        "All 63 focused sequence",
-        "1,997 tests with 30 deselected in 26.69 seconds",
-        "all 2,027 tests in 84.73 seconds",
-        "49I.3C.3.2B",
-        "49I.3C.3.3",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.3.2A" in roadmap
-    assert "Accepted output-neutral frozen-Earth Venus sequence" in architecture
-    assert "Frozen-Earth Venus sequence state (Milestone 49I.3C.3.2A)" in implementation
-    assert "Milestone 49I.3C.3.2A ownership" in source_tree
-    assert "13.2.29 49I.3C.3.2A frozen-Earth Venus state" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "frozen_earth_venus_sequence_49i3c32a.md" in instructions
-    assert "All 66 current-documentation tests passed in 2.07 seconds" in contract
-
-
-def test_49i3c32b_records_drawable_frozen_earth_venus_sequence():
-    contract = " ".join(
-        read(DRAWABLE_FROZEN_EARTH_VENUS_SEQUENCE).split()
-    )
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
+    roadmap = " ".join(read(FUT…1483 tokens truncated…entation_reference.md").split()
     )
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     instructions = " ".join(read(INSTRUCTIONS).split())
@@ -3159,6 +3025,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "README.md",
         "assistant_instructions.md",
         "comet_discovery_and_reporting_audit_50a5d.md",
+        "comet_photometry_revision_50a5d1b1.md",
         "configuration_schema_v2.md",
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
@@ -4699,6 +4566,9 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
     user_guide = " ".join(read(
         ROOT / "docs/user_guide/comet_discovery.md"
     ).split())
+    revision = " ".join(read(
+        DEVELOPER / "comet_photometry_revision_50a5d1b1.md"
+    ).split())
 
     for phrase in (
         "Audit and bounded implementation accepted by Fernando on 2026-09-14",
@@ -4729,7 +4599,7 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
     ):
         assert phrase in audit
 
-    assert "50A.5D.1B comet photometry" in index
+    assert "original 50A.5D.1B comet-photometry acceptance evidence" in index
     assert "accepted the 50A.5D.1B audit on 2026-09-14" in roadmap
 
     for phrase in (
@@ -4747,7 +4617,7 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
         assert phrase in audit
 
     for phrase in (
-        "Fernando accepted 50A.5D.1B on 2026-09-14",
+        "original 50A.5D.1B evidence established",
         "comet_photometry.py",
         "default `1d` and exact endpoints",
         "complete 2,414-test Mac suite passed",
@@ -4760,7 +4630,9 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
         "sequential Horizons observer-table requests",
         "brightest sampled total model magnitude",
         "not a continuous minimum",
-        "bounded to 50 comet solutions and 367 epochs",
+        "independent endpoint-inclusive UTC interval spanning ±30 days",
+        "official Horizons file API",
+        "--max-photometry-comets",
     ):
         assert phrase in reference
 
@@ -4772,23 +4644,54 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
         assert phrase in source_tree
 
     for phrase in (
-        "Accepted 50A.5D.1B likewise adds no coordinate",
+        "accepted 50A.5D.1B.1 revision likewise adds no coordinate",
         "geodetic longitude, latitude, and elevation",
+        "extending 30 days on each side",
         "scalar provider-model quantities",
     ):
         assert phrase in coordinate_guide
 
     for phrase in (
         "--observer-location",
-        "--magnitude-step 1d",
+        "normally `1d`",
         "numerically smallest valid sampled `T-mag`",
         "not continuous minima, visibility forecasts",
         "uncertain at roughly 1 magnitude",
-        "50 selected comet solutions",
+        "--max-photometry-comets COUNT",
         "367 epochs per comet",
         "Any Horizons failure fails the complete result",
     ):
         assert phrase in user_guide
+
+    for phrase in (
+        "Revised contract accepted by Fernando on 2026-09-14",
+        "implementation and operational acceptance pending",
+        "±30 days around perihelion",
+        "minimum usable cadence",
+        "--max-photometry-comets COUNT",
+        "Horizons file API POST transport",
+        "wenu_retrieve_comets: error:",
+        "Matched comets: 0",
+        "--debug",
+        "PR #121 must not be merged",
+    ):
+        assert phrase in revision
+
+    for phrase in (
+        "50A.5D.1B.1 operational revision in progress",
+        "each comet is sampled independently over ±30 days",
+        "PR #121 remains unaccepted",
+    ):
+        assert phrase in roadmap
+
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    for phrase in (
+        "comet_photometry_revision_50a5d1b1.md",
+        "each comet's ±30-day perihelion photometry window",
+        "Horizons file API POST route",
+        "Do not close or merge PR #121",
+    ):
+        assert phrase in instructions
 
 def test_assistant_instructions_require_documentation_contract_preflight():
     instructions = " ".join(read(INSTRUCTIONS).split())

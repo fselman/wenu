@@ -1627,8 +1627,8 @@ sidecar reports require a new audit before implementation.
 
 ## Milestone 50A.5D — Comet discovery, acquisition, and moving-object reports
 
-**Status:** Audit, 50A.5D.1A, 50A.5D.1B, and 50A.5D.2A through
-50A.5D.2C accepted; 50A.5D.3 remains.
+**Status:** Audit, 50A.5D.1A, and 50A.5D.2A through 50A.5D.2C accepted;
+50A.5D.1B.1 operational revision in progress; 50A.5D.3 remains.
 
 50A.5D.1A accepted by Fernando on 2026-09-13.
 
@@ -1639,6 +1639,17 @@ at most 367 epochs per comet and 50 comets, sequential Horizons requests,
 brightest sampled `T-mag` as the public summary with separate `N-mag`, and
 whole-result failure. The value remains a provider model, not a continuous
 minimum, visibility forecast, or detectability claim.
+
+Broader live trials subsequently reopened operational acceptance as
+50A.5D.1B.1. Fernando accepted the revised contract on 2026-09-14: discovery
+dates select perihelia, while each comet is sampled independently over ±30
+days around its perihelion; omitted cadence is automatic, an explicit
+over-fine cadence reports its minimum usable replacement, larger sequential
+workloads require `--max-photometry-comets`, discrete epochs use the official
+Horizons file API POST transport, and expected failures are concise unless
+`--debug` is present. The active revision record is
+`comet_photometry_revision_50a5d1b1.md`. PR #121 remains unaccepted until
+broad live trials and all gates pass.
 
 The proposed audit separates an explicit `wenu_retrieve_comets` SBDB query,
 exact policy-governed comet preflight, and renderer-neutral natural moving-
@@ -1652,7 +1663,7 @@ apparent `dRA/dt`, `cos(dec) dRA/dt`, `dDec/dt`, and total sky-plane speed in
 mas/s, with explicit telescope-driver convention warnings.
 
 The accepted 50A.5D.1A implementation provides the deterministic SBDB query,
-typed rows, and table/JSON command. Fernando accepted 50A.5D.1B on 2026-09-14:
+typed rows, and table/JSON command. The original 50A.5D.1B evidence established:
 `comet_photometry.py` owns bounded, sequential Horizons quantity-9 requests
 when `--observer-location` is explicit; default `1d` and exact endpoints,
 target/solution binding, separate `T-mag` and `N-mag`, provider warnings,
@@ -1660,7 +1671,8 @@ and complete request/raw-response provenance are regression-covered. Live
 McNaught table and JSON routes from La Ligua and the complete 2,414-test Mac
 suite passed. The accepted record is archived at
 `archive/milestone_history/50a_minor_bodies/comet_model_magnitude_audit_50a5d1b.md`.
-Moving-object reports remain an unauthorized later slice.
+Its operational contract is now under the accepted 50A.5D.1B.1 revision
+described above. Moving-object reports remain an unauthorized later slice.
 
 The accepted 50A.5D.2A audit isolates exact comet identity resolution before
 acquisition. It reuses exact installed aliases, permits one explicit SBDB

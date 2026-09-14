@@ -10,8 +10,7 @@ import json
 import math
 import re
 from typing import Callable
-from urllib.parse import urlencode
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 from astropy.time import Time
 
@@ -20,11 +19,13 @@ from wenu.comet_discovery import CometDiscoveryRecord, CometDiscoveryResult
 from wenu.observer import Observer
 
 
-HORIZONS_API = "https://ssd.jpl.nasa.gov/api/horizons.api"
+HORIZONS_API = "https://ssd.jpl.nasa.gov/api/horizons_file.api"
 HORIZONS_SOURCE = "NASA/JPL Horizons API"
 DEFAULT_MAGNITUDE_STEP = "1d"
+DEFAULT_PERIHELION_WINDOW_DAYS = 30
 MAX_COMETS = 50
 MAX_SAMPLES_PER_COMET = 367
+_MULTIPART_BOUNDARY = "wenu-horizons-photometry"
 
 _STEP = re.compile(r"(?P<count>[1-9]\d*)\s*(?P<unit>[hd])", re.IGNORECASE)
 _SOLUTION = re.compile(r"soln ref\.\s*=\s*(?P<value>[^,\n]+)")
@@ -49,6 +50,8 @@ class CometPhotometryResult:
     provider_spk_id: str
     orbit_solution_id: str
     provider: str
+    provider_endpoint: str
+    provider_transport: str
     provider_version: str
     observer_location: str
     observer_latitude_deg: float
@@ -100,10 +103,8 @@ class CometDiscoveryPhotometry:
     observer_latitude_deg: float
     observer_longitude_deg: float
     observer_elevation_m: float
-    start_utc: datetime
-    stop_utc: datetime
+    perihelion_window_days: int
     magnitude_step: str
-    sample_epochs_utc: tuple[datetime, ...]
     results: tuple[CometPhotometryResult, ...]
 
 
@@ -126,7 +127,7 @@ def parse_magnitude_step(value: str) -> tuple[str, timedelta]:
 def magnitude_sample_epochs(
     start_utc: datetime,
     stop_utc: datetime,
-    magnitude_step: str = DEFAULT_MAGNITUDE_STEP,
+    magnitude_step: str | None = None,
 ) -> tuple[str, tuple[datetime, ...]]:
     """Return start-inclusive regular samples plus the exact stop endpoint."""
     if start_utc.tzinfo is None or stop_utc.tzinfo is None:
@@ -135,18 +136,66 @@ def magnitude_sample_epochs(
     stop = stop_utc.astimezone(timezone.utc)
     if stop < start:
         raise ValueError("magnitude sampling stop must not precede start.")
+    if magnitude_step is None:
+        minimum_hours = max(
+            1,
+            math.ceil(
+                (stop - start).total_seconds()
+                / (MAX_SAMPLES_PER_COMET - 1)
+                / 3600.0
+            ),
+        )
+        default_hours = int(
+            parse_magnitude_step(DEFAULT_MAGNITUDE_STEP)[1].total_seconds()
+            / 3600.0
+        )
+        selected_hours = max(default_hours, minimum_hours)
+        magnitude_step = (
+            f"{selected_hours // 24}d"
+            if selected_hours % 24 == 0
+            else f"{selected_hours}h"
+        )
     canonical, duration = parse_magnitude_step(magnitude_step)
     count = int((stop - start) // duration)
     epochs = [start + index * duration for index in range(count + 1)]
     if epochs[-1] != stop:
         epochs.append(stop)
     if len(epochs) > MAX_SAMPLES_PER_COMET:
+        minimum_hours = math.ceil(
+            (stop - start).total_seconds()
+            / (MAX_SAMPLES_PER_COMET - 1)
+            / 3600.0
+        )
+        minimum = (
+            f"{minimum_hours // 24}d"
+            if minimum_hours % 24 == 0
+            else f"{minimum_hours}h"
+        )
         raise ValueError(
             f"magnitude sampling requires {len(epochs)} epochs; "
-            f"the limit is {MAX_SAMPLES_PER_COMET}. Narrow START/STOP or "
-            "increase --magnitude-step."
+            f"the limit is {MAX_SAMPLES_PER_COMET}. The minimum usable "
+            f"--magnitude-step for this window is {minimum}."
         )
     return canonical, tuple(epochs)
+
+
+def perihelion_sampling_window(
+    record: CometDiscoveryRecord,
+    *,
+    window_days: int = DEFAULT_PERIHELION_WINDOW_DAYS,
+) -> tuple[datetime, datetime]:
+    """Return the UTC interval equally bounded around perihelion."""
+    if not isinstance(record, CometDiscoveryRecord):
+        raise TypeError("photometry requires a comet discovery record.")
+    if isinstance(window_days, bool) or not isinstance(window_days, int):
+        raise TypeError("perihelion window must be a whole number of days.")
+    if window_days <= 0:
+        raise ValueError("perihelion window must be positive.")
+    center = Time(
+        record.perihelion_jd_tdb, format="jd", scale="tdb"
+    ).utc.to_datetime(timezone=timezone.utc)
+    width = timedelta(days=window_days)
+    return center - width, center + width
 
 
 def _horizons_command(record: CometDiscoveryRecord) -> str:
@@ -191,14 +240,17 @@ def photometry_query_parameters(
         "COMMAND": f"'{_horizons_command(record)}'",
         "OBJ_DATA": "'YES'",
         "MAKE_EPHEM": "'YES'",
-        "EPHEM_TYPE": "'OBSERVER'",
+        "TABLE_TYPE": "'OBSERVER'",
         "CENTER": "'coord@399'",
         "COORD_TYPE": "'GEODETIC'",
         "SITE_COORD": (
             f"'{coordinates[1]:.12g},{coordinates[0]:.12g},"
             f"{coordinates[2] / 1000.0:.12g}'"
         ),
-        "TLIST": "'" + "','".join(jd_values) + "'",
+        # Horizons batch input accepts continuation lines. Keep each epoch on
+        # its own line so the file transport does not encounter the batch
+        # parser's practical input-line limit.
+        "TLIST": "'" + "','\n'".join(jd_values) + "'",
         "TLIST_TYPE": "'JD'",
         "TIME_TYPE": "'UT'",
         "CAL_FORMAT": "'BOTH'",
@@ -211,11 +263,45 @@ def photometry_query_parameters(
     }
 
 
+def photometry_batch_input(parameters: dict[str, str]) -> str:
+    """Serialize API parameters as a Horizons batch input file."""
+    return "!$$SOF\n" + "\n".join(
+        f"{key}={value}"
+        for key, value in parameters.items()
+        if key != "format"
+    ) + "\n"
+
+
+def _multipart_body(parameters: dict[str, str]) -> bytes:
+    batch = photometry_batch_input(parameters)
+    parts = (
+        f"--{_MULTIPART_BOUNDARY}\r\n"
+        'Content-Disposition: form-data; name="format"\r\n\r\n'
+        "json\r\n"
+        f"--{_MULTIPART_BOUNDARY}\r\n"
+        'Content-Disposition: form-data; name="input"; '
+        'filename="wenu-horizons.txt"\r\n'
+        "Content-Type: text/plain; charset=utf-8\r\n\r\n"
+        f"{batch}\r\n"
+        f"--{_MULTIPART_BOUNDARY}--\r\n"
+    )
+    return parts.encode("utf-8")
+
+
 def _fetch(
     url: str, parameters: dict[str, str], *, timeout: int = 120
 ) -> bytes:
-    request_url = url + "?" + urlencode(parameters)
-    with urlopen(request_url, timeout=timeout) as response:
+    request = Request(
+        url,
+        data=_multipart_body(parameters),
+        headers={
+            "Content-Type": (
+                "multipart/form-data; boundary=" + _MULTIPART_BOUNDARY
+            )
+        },
+        method="POST",
+    )
+    with urlopen(request, timeout=timeout) as response:
         return response.read()
 
 
@@ -405,22 +491,26 @@ def characterize_discovery_photometry(
     discovery: CometDiscoveryResult,
     *,
     observer_location: str,
-    magnitude_step: str = DEFAULT_MAGNITUDE_STEP,
+    magnitude_step: str | None = None,
+    perihelion_window_days: int = DEFAULT_PERIHELION_WINDOW_DAYS,
+    max_comets: int = MAX_COMETS,
     fetch: Callable[[str, dict[str, str]], bytes] = _fetch,
     now: Callable[[], datetime] | None = None,
 ) -> CometDiscoveryPhotometry:
     """Characterize every discovered solution with sequential Horizons calls."""
     if not isinstance(discovery, CometDiscoveryResult):
         raise TypeError("photometry requires a comet discovery result.")
-    if len(discovery.records) > MAX_COMETS:
+    if isinstance(max_comets, bool) or not isinstance(max_comets, int):
+        raise TypeError("maximum photometry comets must be a whole number.")
+    if max_comets <= 0:
+        raise ValueError("maximum photometry comets must be positive.")
+    if len(discovery.records) > max_comets:
         raise ValueError(
             f"photometry selected {len(discovery.records)} comets; "
-            f"the limit is {MAX_COMETS}. Narrow START/STOP or "
-            "--max-perihelion-distance."
+            f"the current limit is {max_comets}. Use "
+            f"--max-photometry-comets {len(discovery.records)} to "
+            "authorize that sequential workload, or narrow the discovery."
         )
-    step, epochs = magnitude_sample_epochs(
-        discovery.start_utc, discovery.stop_utc, magnitude_step
-    )
     location_name = str(observer_location).strip()
     if not location_name:
         raise ValueError("observer location must be non-empty.")
@@ -431,7 +521,16 @@ def characterize_discovery_photometry(
 
     clock = now or (lambda: datetime.now(timezone.utc))
     results = []
+    selected_step = None
     for record in discovery.records:
+        start, stop = perihelion_sampling_window(
+            record, window_days=perihelion_window_days
+        )
+        step, epochs = magnitude_sample_epochs(start, stop, magnitude_step)
+        if selected_step is None:
+            selected_step = step
+        elif selected_step != step:
+            selected_step = "per-comet automatic"
         parameters = photometry_query_parameters(
             record,
             latitude_deg=latitude,
@@ -453,13 +552,15 @@ def characterize_discovery_photometry(
             provider_spk_id=record.spk_id,
             orbit_solution_id=record.orbit_solution_id or "unknown",
             provider=HORIZONS_SOURCE,
+            provider_endpoint=HORIZONS_API,
+            provider_transport="multipart/form-data POST",
             provider_version=version,
             observer_location=location_name,
             observer_latitude_deg=latitude,
             observer_longitude_deg=longitude,
             observer_elevation_m=elevation,
-            start_utc=discovery.start_utc,
-            stop_utc=discovery.stop_utc,
+            start_utc=start,
+            stop_utc=stop,
             magnitude_step=step,
             request_parameters=tuple(sorted(parameters.items())),
             raw_sha256=sha256(raw).hexdigest(),
@@ -472,9 +573,9 @@ def characterize_discovery_photometry(
         observer_latitude_deg=latitude,
         observer_longitude_deg=longitude,
         observer_elevation_m=elevation,
-        start_utc=discovery.start_utc,
-        stop_utc=discovery.stop_utc,
-        magnitude_step=step,
-        sample_epochs_utc=epochs,
+        perihelion_window_days=perihelion_window_days,
+        magnitude_step=selected_step or (
+            magnitude_step or DEFAULT_MAGNITUDE_STEP
+        ),
         results=tuple(results),
     )
