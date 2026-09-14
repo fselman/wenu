@@ -4690,7 +4690,8 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
     ).split())
 
     for phrase in (
-        "documentation only; no runtime implementation is authorized",
+        "Accepted by Fernando on 2026-09-14",
+        "authorizes only the bounded 50A.5D.1B implementation",
         "brightest sampled model magnitude",
         "not a visibility forecast",
         "T-mag = M1 + 5 log10(delta) + k1 log10(r)",
@@ -4709,9 +4710,13 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
         "not the minor-body SPK cache",
         "must not import chart, renderer, projection",
         "Extend it rather than creating a milestone-named test file",
-        "Only after those decisions are recorded",
+        "the default cadence is `1d`",
+        "367 sample epochs per comet and 50",
+        "any Horizons failure fails the whole result",
+        "same inclusive `START`/`STOP` interval",
+        "does not authorize visibility prediction",
     ):
         assert phrase in audit
 
     assert "comet_model_magnitude_audit_50a5d1b.md" in index
-    assert "proposed 50A.5D.1B audit" in roadmap
+    assert "accepted the 50A.5D.1B audit on 2026-09-14" in roadmap
