@@ -1658,3 +1658,103 @@ The candidate implementation now performs that typed composition in
 share one coverage interval and one verified resource directory; explicit and
 adequate warm-cache paths remain offline. Scientific and Mac acceptance remain
 pending.
+
+
+## Program 50S — Artificial-satellite crossings and contamination
+
+**Status:** Planned after 50A.6 minor-body closure and before Program 50B
+publication work; audit required before implementation.
+
+This program must make field-crossing queries a first-class scientific product.
+Given an observer, an explicitly framed field of view and centre, a start and
+stop instant spanning minutes to hours, and an orbit-catalogue snapshot, Wenu
+must efficiently return every artificial satellite whose apparent topocentric
+trajectory intersects the field during that interval. The same evaluated
+crossings must support statistical characterization of the night sky by local
+time, season, pointing, field size, and exposure duration.
+
+Artificial satellites may reuse Wenu's moving-body identity, observed
+trajectory, fixed product-frame transformation, projection, clipping,
+semantic-output, report, and instrument-footprint contracts. Their scientific
+path remains separate from Solar-System and minor-body SPK/TDB providers:
+current OMM or legacy TLE elements, SGP4 propagation in TEME, explicit
+Earth-orientation data, topocentric transformation, orbit-epoch freshness,
+Earth-shadow and illumination state, and prediction uncertainty must remain
+identified and reproducible.
+
+The required fast path is a conservative two-stage search:
+
+1. propagate catalogue batches with vectorized SGP4 at a declared coarse or
+   adaptive cadence and reject objects using conservative spatial-temporal
+   bounds;
+2. refine entry, exit, closest approach, and exposure overlap only for retained
+   candidates, without missing a true crossing.
+
+Repeated all-night or seasonal studies should be able to reuse an immutable
+index keyed by orbit-catalogue digest, observer, Earth-orientation policy,
+night or bounded interval, cadence/bounding policy, and scientific software
+version. Index or cache policy must not enter propagation, coordinate,
+projection, or rendering ownership, and the unindexed complete calculation
+must remain available as a correctness oracle.
+
+### 50S.0 — Scientific, catalogue, and performance audit
+
+Select authoritative OMM/TLE sources and define identity, provenance, licence,
+snapshot time, element epoch, freshness, decay/removal policy, SGP4 variant,
+TEME meaning, time scales, Earth orientation, topocentric and refraction
+policy, shadow/illumination model, uncertainty communication, catalogue scale,
+and representative performance workloads. Characterize the maximum angular
+motion that the candidate filter must conservatively enclose. Add no visible
+satellite or public crossing command.
+
+### 50S.1 — Validated satellite state provider
+
+Implement one frozen-snapshot OMM/TLE plus SGP4/TEME provider and validate a
+bounded set spanning low, medium, geosynchronous, and highly elliptical Earth
+orbits against an independent authoritative oracle. Transform through the
+accepted coordinate service into explicit observer-local or product-frame
+directions. Do not yet perform catalogue-wide field searches.
+
+### 50S.2 — Exact field-crossing contract and reference implementation
+
+Define circular, rectangular, and WCS/instrument-footprint fields independently
+of chart drawing. A query owns observer, field frame and centre, footprint,
+inclusive time interval, exposure start times and durations when applicable,
+and boundary-touch semantics. First implement a complete catalogue scan as the
+scientific correctness oracle. Results must retain satellite identity, orbit
+snapshot and epoch, entry and exit instants, closest approach, time in field,
+angular rate, trail length per exposure, illumination/shadow state, and
+prediction-quality warnings.
+
+### 50S.3 — Conservative high-performance candidate index
+
+Add vectorized propagation, temporal batching, conservative swept-region
+bounds, and a spatial index only after 50S.2 is accepted. Prove zero false
+negatives against the complete-scan oracle over adversarial boundary, fast-LEO,
+zenith, horizon, and short-exposure cases. Measure cold construction, warm
+reuse, query latency, memory, index size, and scaling with catalogue size,
+duration, cadence, field size, and number of pointings. Performance acceptance
+must use representative current-catalogue workloads rather than a reduced test
+fixture alone.
+
+### 50S.4 — Observation-contamination reports
+
+Expose human-readable and JSON results for planned observations and aggregate
+night-sky studies. Support crossing count, probability or rate with its stated
+estimator, occupied time, angular-speed and trail-length distributions, and
+maps or tables versus time, season, position, field size, and exposure
+duration. Geometric intersection and illumination are the first accepted
+contamination measures. Apparent brightness, attitude, flares, morphology,
+detector response, and a claim that a trail is detectable require separate
+models with explicit uncertainty and must never be inferred from geometry
+alone.
+
+### 50S.5 — Drawable tracks and program closure
+
+Only after the query science is accepted may selected crossings enter ordinary
+Wenu charts through the shared moving-body trajectory, projection,
+preparation, renderer, semantic SVG, and export machinery. Close with catalogue
+and provider provenance, numerical validation, complete-scan equivalence,
+performance evidence, PNG/PDF/SVG inspection, public documentation, and
+reproducible observer/night studies. Do not create a satellite-specific
+projection, renderer, exporter, or parallel sky pipeline.
