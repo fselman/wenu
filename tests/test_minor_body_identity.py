@@ -94,6 +94,20 @@ def test_generic_boundary_can_resolve_an_asteroid_when_explicitly_requested():
     assert "A849 GA" in identity.aliases
 
 
+@pytest.mark.parametrize("selection", ("Tempel*", "10P*"))
+def test_wildcards_fail_before_provider_access(selection):
+    calls = []
+
+    with pytest.raises(
+        MinorBodyIdentityNotFoundError, match="wildcards"
+    ):
+        resolve_comet_identity(
+            selection, fetch=lambda *values: calls.append(values)
+        )
+
+    assert calls == []
+
+
 def test_bare_number_is_not_accepted_as_a_comet_or_sent_to_sbdb():
     calls = []
 
