@@ -1633,12 +1633,13 @@ sidecar reports require a new audit before implementation.
 
 50A.5D.1A accepted by Fernando on 2026-09-13.
 
-The proposed 50A.5D.1B audit is recorded in
-`comet_model_magnitude_audit_50a5d1b.md`. It separates Horizons `T-mag` and
-`N-mag`, proposes a bounded daily sampling contract and sequential fair-use
-requests, labels the result as a brightest sampled model value rather than a
-continuous minimum or visibility forecast, and requires Fernando's cadence,
-budget, quantity, failure, and interval decisions before implementation.
+Fernando accepted the 50A.5D.1B audit on 2026-09-14. It is recorded in
+`comet_model_magnitude_audit_50a5d1b.md` and authorizes only the bounded
+implementation: daily endpoint-inclusive sampling over the discovery interval,
+at most 367 epochs per comet and 50 comets, sequential Horizons requests,
+brightest sampled `T-mag` as the public summary with separate `N-mag`, and
+whole-result failure. The value remains a provider model, not a continuous
+minimum, visibility forecast, or detectability claim.
 
 The proposed audit separates an explicit `wenu_retrieve_comets` SBDB query,
 exact policy-governed comet preflight, and renderer-neutral natural moving-
