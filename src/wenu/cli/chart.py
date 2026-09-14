@@ -537,6 +537,19 @@ def _installed_candidate(directory, selections, start, stop):
     return identities
 
 
+def _installed_collections(directories):
+    """Return valid automatically discovered collections, skipping debris."""
+    from wenu.minor_body_resources import MinorBodyResourceCollection
+
+    collections = []
+    for directory in directories:
+        try:
+            collections.append(MinorBodyResourceCollection(directory))
+        except (FileNotFoundError, KeyError, TypeError, ValueError):
+            continue
+    return tuple(collections)
+
+
 def _preflight_minor_body_resources(
     arguments, configuration, observer, sequence_options
 ):
@@ -606,12 +619,7 @@ def _preflight_minor_body_resources(
 
     collections = []
     if policy != MovingObjectDataPolicy.REFRESH.value:
-        from wenu.minor_body_resources import MinorBodyResourceCollection
-
-        collections = [
-            MinorBodyResourceCollection(directory)
-            for directory in candidates
-        ]
+        collections = _installed_collections(candidates)
     identities = _resolved_identities(
         selections,
         collections=collections,
@@ -795,15 +803,19 @@ def write_defaults_template(path):
 def main(argv=None):
     """Run the installed command and return a process status."""
     arguments = parser().parse_args(argv)
-    if arguments.command == "defaults":
-        if arguments.write is None:
-            print(packaged_defaults_text(), end="")
-        else:
-            print(write_defaults_template(arguments.write))
+    try:
+        if arguments.command == "defaults":
+            if arguments.write is None:
+                print(packaged_defaults_text(), end="")
+            else:
+                print(write_defaults_template(arguments.write))
+            return 0
+        for output in generate(arguments):
+            print(output)
         return 0
-    for output in generate(arguments):
-        print(output)
-    return 0
+    except (FileNotFoundError, ValueError) as error:
+        print(f"wenu_chart: error: {error}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":
