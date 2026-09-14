@@ -1,6 +1,6 @@
 # Generic comet acquisition audit (Milestone 50A.5D.2B)
 
-**Status:** Candidate audit for Fernando's review
+**Status:** Accepted by Fernando on 2026-09-13
 
 **Base:** `59c605f075d29a0f174249cd6d2e6218cee91ee5`
 
@@ -230,3 +230,15 @@ Acceptance requires:
 Acceptance of this audit authorizes only the bounded 50A.5D.2B acquisition
 service. It does not authorize 50A.5D.2C CLI preflight integration or
 50A.5D.3 reports.
+
+
+## Acceptance
+
+Fernando accepted this audit on 2026-09-13. The acceptance authorizes only the
+bounded 50A.5D.2B shared acquisition service described here: exact resolved
+identity, explicit unique Horizons record/apparition and solution binding,
+bounded type-21 SPK validation, non-gravitational provenance, and immutable
+atomic publication.
+
+It does not authorize 50A.5D.2C CLI preflight integration, chart changes,
+observer-dependent magnitude, or 50A.5D.3 moving-object reports.
