@@ -29,6 +29,7 @@ MAX_SAMPLES_PER_COMET = 367
 _STEP = re.compile(r"(?P<count>[1-9]\d*)\s*(?P<unit>[hd])", re.IGNORECASE)
 _SOLUTION = re.compile(r"soln ref\.\s*=\s*(?P<value>[^,\n]+)")
 _TARGET = re.compile(r"Target body name:\s*(?P<value>[^\n]+)")
+_TARGET_SOURCE = re.compile(r"\{source:\s*JPL#(?P<value>[^}\s]+)\s*\}")
 
 
 @dataclass(frozen=True)
@@ -225,6 +226,21 @@ def _normalized_solution(value: str) -> str:
     return result.casefold()
 
 
+def _target_identity(
+    record: CometDiscoveryRecord,
+    target_value: str,
+) -> tuple[bool, str | None]:
+    source = _TARGET_SOURCE.search(target_value)
+    name = target_value[:source.start()].strip() if source else target_value.strip()
+    designation = record.canonical_designation
+    matches = (
+        name == designation
+        or name.startswith(designation + " ")
+        or name.startswith(designation + "/")
+    )
+    return matches, None if source is None else source.group("value")
+
+
 def _optional_magnitude(value: str) -> float | None:
     text = value.strip()
     if not text or text.casefold() in {"n.a.", "n.a", "na"}:
@@ -283,17 +299,23 @@ def parse_photometry_response(
         raise ValueError("Horizons photometry response has no result text.")
 
     target = _TARGET.search(result)
-    target_id = (
-        None
+    target_matches, target_solution = (
+        (False, None)
         if target is None
-        else re.search(r"\((?P<value>\d+)\)\s*$", target.group("value"))
+        else _target_identity(record, target.group("value"))
     )
-    if (
-        target_id is None
-        or target_id.group("value") != record.spk_id
-    ):
+    if not target_matches:
         raise ValueError(
             "Horizons photometry target differs from the discovery identity."
+        )
+    if (
+        target_solution is None
+        or _normalized_solution(target_solution) != _normalized_solution(
+            record.orbit_solution_id or ""
+        )
+    ):
+        raise ValueError(
+            "Horizons target source and SBDB orbit solutions differ."
         )
     solution = _SOLUTION.search(result)
     if solution is None:
