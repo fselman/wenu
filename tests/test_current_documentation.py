@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 51581)
+Total output lines: 4873
+
 """Current public-documentation and architecture-authority contracts."""
 
 import ast
@@ -2462,153 +2465,7 @@ def test_49i3c31a_records_observed_venus_disk_sequence():
             DEVELOPER / "archive/milestone_history/49i_solar_system/observed_venus_disk_sequence_49i3c31a.md"
         ).split()
     )
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `8a6cb0f`",
-        "Scientifically and architecturally accepted",
-        "`ObservedSolarSystemDiskSequenceRequest`",
-        "`ObservedSolarSystemDiskSequenceRealizer.sequence()`",
-        "`ObservedSolarSystemDiskSequence`",
-        "`n_steps = 8` produces nine exact sample instants",
-        "origin `observer` and unit `au`",
-        "future 3D Solar-System visualizer",
-        "`4.615e-10 deg`",
-        "`1.946e-10 deg`",
-        "`3.128e-12 AU`",
-        "`3.795e-10 arcsec`",
-        "`7.096e-10 deg`",
-        "`4.823e-12`",
-        "`4.301e-09 deg`",
-        "all 51 focused tests passed in 1.89 seconds",
-        "All 91 focused sequence",
-        "49I.3C.3.1B",
-        "adds no public command",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.3.1A" in roadmap
-    assert "Accepted output-neutral observed Venus disk sequence" in architecture
-    assert "Observed Venus disk sequence (Milestone 49I.3C.3.1A)" in implementation
-    assert "Milestone 49I.3C.3.1A ownership" in source_tree
-    assert "13.2.27 49I.3C.3.1A observed Venus disk sequence" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "observed_venus_disk_sequence_49i3c31a.md" in instructions
-    assert "all 64 current-documentation tests in 2.23 seconds" in contract
-    assert "1,985 tests with 30 deselected in 25.46 seconds" in contract
-    assert "all 2,015 tests in 84.38 seconds" in contract
-
-
-def test_49i3c31b_records_drawable_observed_venus_sequence():
-    contract = " ".join(read(DRAWABLE_OBSERVED_VENUS_SEQUENCE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `7fd2a6a`",
-        "Scientifically, architecturally, visually, and operationally accepted",
-        "`ObservedVenusDiskSequenceRealization`",
-        "`MagnifyProjectedDiskSequence`",
-        "one fixed product frame",
-        "observer/AU distances",
-        "`--planet-disk-sequence venus`",
-        "--disk-sequence-model observed",
-        "`--disk-sequence-labels`",
-        "`--planet-disk-magnification venus=FACTOR`",
-        "`--no-equatorial-grid`",
-        "`--grid-references ecliptic`",
-        "All 211 focused tests passed in 5.74 seconds",
-        "1,988 tests with 30 deselected in 25.91 seconds",
-        "all 2,018 tests in 85.27 seconds",
-        "Frozen-Earth ecliptic mode",
-        "Mercury",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.3.1B" in roadmap
-    assert "Drawable observed Venus disk sequence" in architecture
-    assert "Drawable observed Venus disk sequence (Milestone 49I.3C.3.1B)" in implementation
-    assert "Milestone 49I.3C.3.1B ownership" in source_tree
-    assert "13.2.28 49I.3C.3.1B drawable observed Venus sequence" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "drawable_observed_venus_sequence_49i3c31b.md" in instructions
-
-
-def test_49i3c32a_records_frozen_earth_venus_sequence_state():
-    contract = " ".join(read(FROZEN_EARTH_VENUS_SEQUENCE).split())
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `447e701`",
-        "Scientifically and architecturally accepted",
-        "`FrozenEarthDiskSequenceRequest`",
-        "`FrozenEarthDiskSequenceRealizer.sequence()`",
-        "`FrozenEarthGeometricDisk`",
-        "origin `frozen-earth` and unit `au`",
-        "fixed J2000 mean-ecliptic axes",
-        "future 3D Solar-System visualizer",
-        "not topocentric, astrometric, apparent",
-        "`4.337e-12 AU`",
-        "`1.968e-10 deg`",
-        "`2.064e-11 deg`",
-        "`1.274e-12 AU`",
-        "`1.627e-10 deg`",
-        "All 63 focused sequence",
-        "1,997 tests with 30 deselected in 26.69 seconds",
-        "all 2,027 tests in 84.73 seconds",
-        "49I.3C.3.2B",
-        "49I.3C.3.3",
-    ):
-        assert phrase in contract
-
-    assert "Milestone 49I.3C.3.2A" in roadmap
-    assert "Accepted output-neutral frozen-Earth Venus sequence" in architecture
-    assert "Frozen-Earth Venus sequence state (Milestone 49I.3C.3.2A)" in implementation
-    assert "Milestone 49I.3C.3.2A ownership" in source_tree
-    assert "13.2.29 49I.3C.3.2A frozen-Earth Venus state" in guide
-    assert "Guide version:** `0.9.5.20260902.54`" in guide
-    assert "frozen_earth_venus_sequence_49i3c32a.md" in instructions
-    assert "All 66 current-documentation tests passed in 2.07 seconds" in contract
-
-
-def test_49i3c32b_records_drawable_frozen_earth_venus_sequence():
-    contract = " ".join(
-        read(DRAWABLE_FROZEN_EARTH_VENUS_SEQUENCE).split()
-    )
-    roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    architecture = " ".join(read(V09_CURRENT).split())
-    guide = " ".join(read(COORDINATE_GUIDE).split())
-    implementation = " ".join(
-        read(DEVELOPER / "implementation_reference.md").split()
-    )
-    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
-    for phrase in (
-        "**Implementation baseline:** `c30785c`",
-        "Scientifically, architecturally, visually, and operationally accepted",
-        "`FrozenEarthVenusDiskSequenceRealization`",
-        "fixed J2000 mean-ecliptic axes",
+    roadmap = " ".join(read(FUT…1581 tokens truncated…an-ecliptic axes",
         "product-frame latitude zero",
         "neither reference passes through observer-dependent AltAz geometry",
         "Secuencia de Venus desde una Tierra fija",
@@ -3203,7 +3060,7 @@ def test_50s0_audits_satellite_crossing_search_and_photometry():
     ).split())
 
     for phrase in (
-        "Candidate for Fernando's scientific and architectural review",
+        "Accepted by Fernando on 2026-09-14",
         "no runtime satellite, catalogue acquisition, or public crossing command",
         "must not discard a true crossing",
         "Adopt OMM as the canonical ingestion model",
@@ -3211,7 +3068,7 @@ def test_50s0_audits_satellite_crossing_search_and_photometry():
         "Adopt the Vallado-compatible SGP4 implementation",
         "TEME is neither ICRS nor an observer frame",
         "adaptive complete scan as the oracle",
-        "HEALPix is the leading candidate",
+        "HEALPix plus time slabs remains the leading optional index",
         "zero false negatives",
         "Near-zenith intervals",
         "empirical satellite-family magnitude distribution",
@@ -3221,13 +3078,30 @@ def test_50s0_audits_satellite_crossing_search_and_photometry():
         "at most one supported bulk request",
         "No per-object requests, polling loop, parallel downloads, or automatic retry",
         "Space-Track is valuable as an authenticated independent source",
-        "SatChecker as an independent oracle",
+        "SatChecker first as a bounded online crossing provider and external oracle",
         "strict separation of crossing, illumination, apparent magnitude",
+        "The orbital-plane test is topocentric",
+        "small, geometrically representative immutable OMM snapshot",
+        "developer specimen builder",
+        "50S.0 through 50S.3 end with SatChecker reports/charts",
     ):
         assert phrase in audit
 
     assert "artificial_satellite_crossing_audit_50s0.md" in index
-    assert "scientific and architectural acceptance pending" in roadmap
+    for phrase in (
+        "50S.0 scientific and architectural decisions accepted by Fernando on 2026-09-14",
+        "50S.1 — Provider-neutral satellite crossing domain",
+        "50S.2 — SatChecker crossing adapter",
+        "50S.3 — SatChecker reports and drawable crossing tracks",
+        "50S.4 — Small local snapshot, propagation, and specimen builder",
+        "50S.5 — Complete local FoV-crossing oracle",
+        "50S.6 — Conservative local crossing acceleration",
+        "50S.7 — Independent illumination and night geometry",
+        "50S.8 — Apparent-brightness estimation and validation",
+        "50S.9 — Detector-specific contamination",
+        "50S.10 — Night, season, and sky-position products and closure",
+    ):
+        assert phrase in roadmap
 
 
 def test_satellite_guide_preserves_50s_scientific_boundaries():
@@ -3264,6 +3138,13 @@ def test_satellite_guide_preserves_50s_scientific_boundaries():
         "Near-zenith or otherwise singular intervals",
         "zero false negatives",
         "HEALPix is the leading pixelization candidate",
+        "orbital-plane/FoV-cone intersection",
+        "Testing only the angular distance to a geocentric orbital great circle is unsafe",
+        "provider data from cache wherever possible",
+        "small representative OMM snapshot",
+        "developer specimen builder",
+        "dense/adaptive brute-force reference path must remain independent",
+        "missing flare evidence produces `unknown`, never zero flare probability",
         "A single standard magnitude does not replace a phase function",
         "Measured maxima tune performance but never replace conservative bounds",
         "must not duplicate Wenu's coordinate service",
