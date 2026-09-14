@@ -3159,7 +3159,6 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "README.md",
         "assistant_instructions.md",
         "comet_discovery_and_reporting_audit_50a5d.md",
-        "comet_model_magnitude_audit_50a5d1b.md",
         "configuration_schema_v2.md",
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
@@ -3184,6 +3183,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "comet_name_resolution_audit_50a5d2a.md",
         "comet_acquisition_audit_50a5d2b.md",
         "comet_cli_preflight_audit_50a5d2c.md",
+        "comet_model_magnitude_audit_50a5d1b.md",
     ):
         assert (MINOR_BODY_HISTORY / name).is_file()
         assert not (DEVELOPER / name).exists()
@@ -4683,7 +4683,7 @@ def test_50a5d2c_audits_exact_comet_cli_preflight():
 
 def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
     audit = " ".join(read(
-        DEVELOPER / "comet_model_magnitude_audit_50a5d1b.md"
+        MINOR_BODY_HISTORY / "comet_model_magnitude_audit_50a5d1b.md"
     ).split())
     index = " ".join(read(DEVELOPER / "README.md").split())
     roadmap = " ".join(read(
@@ -4729,13 +4729,15 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
     ):
         assert phrase in audit
 
-    assert "comet_model_magnitude_audit_50a5d1b.md" in index
+    assert "50A.5D.1B comet photometry" in index
     assert "accepted the 50A.5D.1B audit on 2026-09-14" in roadmap
 
     for phrase in (
-        "bounded implementation candidate complete",
+        "bounded implementation accepted by Fernando",
         "src/wenu/comet_photometry.py",
-        "scientific and Mac acceptance pending",
+        "focused 136-test gate passed",
+        "complete 2,414-test suite passed",
+        "live McNaught table and JSON routes",
         "frozen Horizons response",
         "exact live McNaught response",
         "McNaught (C/2006 P1) {source: JPL#27}",
@@ -4745,10 +4747,11 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
         assert phrase in audit
 
     for phrase in (
-        "Candidate implemented: observer-dependent sampled Horizons",
+        "Fernando accepted 50A.5D.1B on 2026-09-14",
         "comet_photometry.py",
-        "default cadence is `1d`",
-        "Scientific and Mac acceptance remain pending",
+        "default `1d` and exact endpoints",
+        "complete 2,414-test Mac suite passed",
+        "comet_model_magnitude_audit_50a5d1b.md",
     ):
         assert phrase in roadmap
 
