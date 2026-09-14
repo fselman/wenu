@@ -291,3 +291,13 @@ This acceptance authorizes only implementation of the request-level exact
 comet CLI preflight composition specified above. It does not authorize any of
 the explicitly excluded magnitude, discovery handoff, fuzzy lookup, graphics,
 asteroid-name acquisition, or reporting behavior.
+
+## Candidate implementation checkpoint
+
+The implementation branch composes typed asteroid and comet point, track, and
+explicit-center selections in `cli/chart.py`, derives one shared coverage
+interval, validates an explicit directory, reuses an adequate complete warm
+cache without provider access, and otherwise resolves and acquires one shared
+immutable collection before sphere construction. It extends the existing
+acquisition and CLI test owners only. Scientific, live-network, visual, and
+complete Mac acceptance remain pending.
