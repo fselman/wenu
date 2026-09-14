@@ -40,9 +40,9 @@ historically valid, but it is not sufficient for operational closure.
 9. The initial implementation used sequential calls. Fernando's broad
    270-comet trial completed successfully but established that serial latency
    and the absence of progress or reusable partial work were operational
-   defects. The accepted acceleration revision uses four concurrent requests
-   by default, permits `--photometry-workers 1..8`, preserves discovery order,
-   and still fails the whole result if any request fails.
+   defects. JPL's Fair Use Policy explicitly requires one API request at a
+   time, so Wenu preserves sequential access and deterministic discovery order.
+   Any request failure still fails the whole result.
 10. Horizons target headers may identify the selected solution with a
     provider label such as `JPL#27` or `SAO_2008`. Wenu accepts arbitrary
     non-empty source labels only when they match the SBDB orbit solution after
@@ -68,6 +68,11 @@ subpackage is justified. Wenu currently has no generic Horizons client: SPK
 acquisition and photometry use different API, identity, coverage, validation,
 and cache contracts. A shared transport module should be admitted only when
 another consumer establishes a durable common responsibility.
+
+Concurrent requests are prohibited by the provider's Fair Use Policy and are
+not an accepted acceleration mechanism. Caching avoids redundant requests;
+fewer first-run requests would require a different scientific model or a new
+provider capability.
 
 This revision adds no chart integration, SPK-cache coupling, empirical
 activity correction, visibility model, partial-result publication semantics,

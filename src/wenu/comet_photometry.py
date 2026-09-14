@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import base64
 import csv
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
@@ -29,8 +28,6 @@ DEFAULT_MAGNITUDE_STEP = "1d"
 DEFAULT_PERIHELION_WINDOW_DAYS = 30
 MAX_COMETS = 50
 MAX_SAMPLES_PER_COMET = 367
-DEFAULT_WORKERS = 4
-MAX_WORKERS = 8
 _MULTIPART_BOUNDARY = "wenu-horizons-photometry"
 
 _STEP = re.compile(r"(?P<count>[1-9]\d*)\s*(?P<unit>[hd])", re.IGNORECASE)
@@ -566,7 +563,6 @@ def characterize_discovery_photometry(
     fetch: Callable[[str, dict[str, str]], bytes] = _fetch,
     now: Callable[[], datetime] | None = None,
     progress: Callable[[int, int, str, bool], None] | None = None,
-    workers: int = 1,
     cache_directory: Path | None = None,
     refresh_cache: bool = False,
 ) -> CometDiscoveryPhotometry:
@@ -577,12 +573,6 @@ def characterize_discovery_photometry(
         raise TypeError("maximum photometry comets must be a whole number.")
     if max_comets <= 0:
         raise ValueError("maximum photometry comets must be positive.")
-    if isinstance(workers, bool) or not isinstance(workers, int):
-        raise TypeError("photometry workers must be a whole number.")
-    if not 1 <= workers <= MAX_WORKERS:
-        raise ValueError(
-            f"photometry workers must be between 1 and {MAX_WORKERS}."
-        )
     if len(discovery.records) > max_comets:
         raise ValueError(
             f"photometry selected {len(discovery.records)} comets; "
@@ -675,22 +665,11 @@ def characterize_discovery_photometry(
     results = [None] * total
     if progress is not None:
         progress(0, total, "starting", False)
-    if workers == 1:
-        completed = (characterize(item) for item in prepared)
-        for count, (index, result, cache_hit) in enumerate(completed, start=1):
-            results[index] = result
-            if progress is not None:
-                progress(count, total, result.canonical_designation, cache_hit)
-    else:
-        with ThreadPoolExecutor(max_workers=workers) as executor:
-            futures = [executor.submit(characterize, item) for item in prepared]
-            for count, future in enumerate(as_completed(futures), start=1):
-                index, result, cache_hit = future.result()
-                results[index] = result
-                if progress is not None:
-                    progress(
-                        count, total, result.canonical_designation, cache_hit
-                    )
+    completed = (characterize(item) for item in prepared)
+    for count, (index, result, cache_hit) in enumerate(completed, start=1):
+        results[index] = result
+        if progress is not None:
+            progress(count, total, result.canonical_designation, cache_hit)
     return CometDiscoveryPhotometry(
         observer_location=location_name,
         observer_latitude_deg=latitude,

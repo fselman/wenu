@@ -4761,13 +4761,13 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
 
     for phrase in (
         "comet_photometry.py",
-        "bounded concurrent Horizons observer-table requests",
+        "bounded sequential Horizons observer-table requests",
         "brightest sampled total model magnitude",
         "not a continuous minimum",
         "independent endpoint-inclusive UTC interval spanning ±30 days",
         "official Horizons file API",
         "--max-photometry-comets",
-        "uses four workers by default",
+        "one-request-at-a-time",
         "atomic validated entries",
     ):
         assert phrase in reference
@@ -4775,7 +4775,7 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
     for phrase in (
         "50A.5D.1B observer-dependent comet-photometry ownership",
         "exact SBDB/Horizons solution binding",
-        "bounded concurrency",
+        "provider-compliant sequential access",
         "atomic validated response caching",
         "does not import or alter chart",
     ):
@@ -4813,7 +4813,7 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
         "--debug",
         "JPL#27` or `SAO_2008",
         "names the canonical designation that failed",
-        "--photometry-workers 1..8",
+        "one API request at a time",
         "one-line progress bar on stderr",
         "~/.cache/wenu/comet_photometry",
         "Cache corruption fails closed",
@@ -4825,7 +4825,7 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
     for phrase in (
         "50A.5D.1B.1 operational revision in progress",
         "each comet is sampled independently over ±30 days",
-        "four-worker concurrency",
+        "provider-compliant sequential access",
         "validated raw-response cache",
         "PR #121 remains unaccepted",
     ):

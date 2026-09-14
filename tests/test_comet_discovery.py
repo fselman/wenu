@@ -7,7 +7,6 @@ from io import StringIO
 import json
 from pathlib import Path
 import re
-import threading
 
 import pytest
 
@@ -766,27 +765,6 @@ def test_photometry_cache_resumes_without_provider_request(tmp_path):
     assert refreshed == first
 
 
-def test_photometry_workers_execute_bounded_requests_concurrently():
-    discovery = short_mcnaught_discovery()
-    repeated = replace(
-        discovery, records=(discovery.records[0], discovery.records[0])
-    )
-    rendezvous = threading.Barrier(2, timeout=2)
-
-    def fetch(url, parameters):
-        rendezvous.wait()
-        return synthetic_photometry_response(parameters)
-
-    result = comet_photometry.characterize_discovery_photometry(
-        repeated,
-        observer_location="La Ligua",
-        fetch=fetch,
-        workers=2,
-    )
-
-    assert len(result.results) == 2
-
-
 def test_cli_progress_bar_is_stderr_only_and_can_be_suppressed(
     monkeypatch, capsys
 ):
@@ -832,6 +810,30 @@ def test_progress_bar_reports_cache_source_elapsed_time_and_eta():
     assert "C/2006 P1 (cache)" in message
     assert "elapsed 00:00:10" in message
     assert "ETA 00:00:30" in message
+
+
+def test_progress_bar_finishes_line_before_provider_error(monkeypatch, capsys):
+    discovery = short_mcnaught_discovery()
+    monkeypatch.setattr(
+        comets, "discover_comets", lambda *args, **kwargs: discovery
+    )
+
+    def fail(*args, progress, **kwargs):
+        progress(0, 1, "starting", False)
+        raise OSError("HTTP Error 503: Service Temporarily Unavailable")
+
+    monkeypatch.setattr(comets, "characterize_discovery_photometry", fail)
+
+    assert comets.main([
+        "2007-01-12", "2007-01-12", "--observer-location", "La Ligua",
+        "--progress",
+    ]) == 2
+    error = capsys.readouterr().err
+    assert "ETA --:--:--\n" in error
+    assert error.endswith(
+        "wenu_retrieve_comets: error: HTTP Error 503: "
+        "Service Temporarily Unavailable\n"
+    )
 
 
 def test_console_entry_point_is_packaged():

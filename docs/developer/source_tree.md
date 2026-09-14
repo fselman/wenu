@@ -1552,7 +1552,7 @@ owns deterministic contract coverage;
 - `comet_photometry.py` owns bounded Horizons observer-table request
   construction, exact SBDB/Horizons solution binding, sampled `T-mag` and
   `N-mag` parsing, per-comet perihelion windows, automatic cadence, file-API
-  POST transport, bounded concurrency, atomic validated response caching,
+  POST transport, provider-compliant sequential access, atomic validated response caching,
   provider notices, limits, progress events, and raw-response provenance;
 - `comet_discovery.py` remains the SBDB interval-selection owner;
 - `cli/comets.py` composes discovery and optional photometry and owns only

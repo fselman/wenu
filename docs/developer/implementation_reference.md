@@ -2340,7 +2340,7 @@ schema validation, sorting, and exact request/raw-response provenance.
 an explicit perihelion-distance bound and table or JSON publication.
 
 When `--observer-location NAME` is present, `comet_photometry.py` owns bounded
-concurrent Horizons observer-table requests and its validated raw-response
+sequential Horizons observer-table requests and its validated raw-response
 cache. Each comet has an independent
 endpoint-inclusive UTC interval spanning ±30 days around its perihelion.
 An omitted `--magnitude-step` selects an automatic cadence, normally `1d`;
@@ -2350,9 +2350,9 @@ exact target and orbit solution selected by SBDB, preserves `T-mag` and
 `N-mag` independently, and retains exact request/raw-response provenance and
 provider notices. The official Horizons file API carries discrete epochs by
 POST. The route defaults to 50 comet solutions, permits an explicitly larger
-workload through `--max-photometry-comets`, uses four workers by default with
-an accepted range of one through eight, remains bounded to 367 epochs per
-comet, and fails the whole result after any Horizons failure. Progress is
+workload through `--max-photometry-comets`, obeys JPL's one-request-at-a-time
+Fair Use Policy, remains bounded to 367 epochs per comet, and fails the whole
+result after any Horizons failure. Progress is
 terminal-aware stderr output. Exact request cache keys and atomic validated
 entries make long workloads resumable without changing deterministic result
 order or original retrieval provenance.

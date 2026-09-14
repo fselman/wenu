@@ -1647,8 +1647,8 @@ days around its perihelion; omitted cadence is automatic, an explicit
 over-fine cadence reports its minimum usable replacement, larger
 workloads require `--max-photometry-comets`, discrete epochs use the official
 Horizons file API POST transport, and expected failures are concise unless
-`--debug` is present. A subsequent 270-comet live run accepted bounded
-four-worker concurrency, terminal-aware stderr progress, and an atomic
+`--debug` is present. A subsequent 270-comet live run accepted provider-compliant
+sequential access, terminal-aware stderr progress, and an atomic
 validated raw-response cache for repeated and interrupted workloads. The active revision record is
 `comet_photometry_revision_50a5d1b1.md`. PR #121 remains unaccepted until
 broad live trials and all gates pass.

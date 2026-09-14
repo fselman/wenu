@@ -107,9 +107,8 @@ bounded to 367 epochs per comet. Use `--max-photometry-comets COUNT` to
 authorize a larger complete workload; Wenu never truncates the
 result silently. If an explicit cadence is too fine, the error reports the
 minimum usable cadence. Discrete epochs travel through the official Horizons
-file API POST route rather than a length-limited GET URL. Four requests run
-concurrently by default; `--photometry-workers COUNT` selects from one through
-eight while preserving result order. Validated responses are cached under
+file API POST route rather than a length-limited GET URL. JPL requires one API
+request at a time, so Wenu keeps provider access sequential. Validated responses are cached under
 `~/.cache/wenu/comet_photometry`, so repeated and interrupted workloads reuse
 completed requests. `--refresh-photometry` replaces matching cache entries.
 
@@ -118,5 +117,5 @@ or JSON output. Use `--progress` to force progress in a log or `--no-progress`
 to suppress it. Any Horizons failure fails the complete result. Expected
 failures are concise; `--debug` restores their traceback. `--magnitude-step`
 and a non-default
-`--max-photometry-comets`, non-default `--photometry-workers`, progress
-controls, and `--refresh-photometry` require `--observer-location`.
+`--max-photometry-comets`, progress controls, and `--refresh-photometry`
+require `--observer-location`.

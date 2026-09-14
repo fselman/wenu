@@ -16,9 +16,7 @@ from wenu.comet_discovery import (
 )
 from wenu.comet_photometry import (
     DEFAULT_PERIHELION_WINDOW_DAYS,
-    DEFAULT_WORKERS,
     MAX_COMETS,
-    MAX_WORKERS,
     CometDiscoveryPhotometry,
     characterize_discovery_photometry,
     default_photometry_cache_directory,
@@ -67,16 +65,6 @@ def parser() -> argparse.ArgumentParser:
         ),
     )
     value.add_argument(
-        "--photometry-workers",
-        type=int,
-        default=DEFAULT_WORKERS,
-        metavar="COUNT",
-        help=(
-            "concurrent Horizons requests; default: "
-            f"{DEFAULT_WORKERS}, maximum: {MAX_WORKERS}"
-        ),
-    )
-    value.add_argument(
         "--photometry-cache",
         type=Path,
         default=default_photometry_cache_directory(),
@@ -121,6 +109,7 @@ class _PhotometryProgress:
         self.stream = sys.stderr if stream is None else stream
         self.clock = clock
         self.started = clock()
+        self.line_open = False
 
     def __call__(
         self, completed: int, total: int, designation: str, cached: bool
@@ -145,6 +134,13 @@ class _PhotometryProgress:
             file=self.stream,
             flush=True,
         )
+        self.line_open = completed != total
+
+    def finish(self) -> None:
+        """End an incomplete progress line before another diagnostic."""
+        if self.line_open:
+            print(file=self.stream, flush=True)
+            self.line_open = False
 
 
 def _unknown(value: object, formatter=str) -> str:
@@ -502,19 +498,13 @@ def main(argv=None) -> int:
         argument_parser.error(
             "--max-photometry-comets requires --observer-location."
         )
-    if (
-        arguments.photometry_workers != DEFAULT_WORKERS
-        and arguments.observer_location is None
-    ):
-        argument_parser.error(
-            "--photometry-workers requires --observer-location."
-        )
     if arguments.refresh_photometry and arguments.observer_location is None:
         argument_parser.error(
             "--refresh-photometry requires --observer-location."
         )
     if arguments.progress is not None and arguments.observer_location is None:
         argument_parser.error("--progress requires --observer-location.")
+    progress_reporter = None
     try:
         result = discover_comets(
             arguments.start,
@@ -528,14 +518,14 @@ def main(argv=None) -> int:
                 if arguments.progress is None
                 else arguments.progress
             )
+            progress_reporter = _PhotometryProgress() if show_progress else None
             photometry = characterize_discovery_photometry(
                 result,
                 observer_location=arguments.observer_location,
                 magnitude_step=arguments.magnitude_step,
                 perihelion_window_days=DEFAULT_PERIHELION_WINDOW_DAYS,
                 max_comets=arguments.max_photometry_comets,
-                progress=_PhotometryProgress() if show_progress else None,
-                workers=arguments.photometry_workers,
+                progress=progress_reporter,
                 cache_directory=arguments.photometry_cache,
                 refresh_cache=arguments.refresh_photometry,
             )
@@ -550,6 +540,8 @@ def main(argv=None) -> int:
             arguments.output.write_text(text, encoding="utf-8")
         return 0
     except (OSError, ValueError) as error:
+        if progress_reporter is not None:
+            progress_reporter.finish()
         if arguments.debug:
             raise
         print(f"wenu_retrieve_comets: error: {error}", file=sys.stderr)
