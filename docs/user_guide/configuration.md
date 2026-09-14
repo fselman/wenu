@@ -177,6 +177,10 @@ MPC remains the upstream designation authority, while PDS is an archival and
 reference system. Once Wenu's preflight has resolved or acquired the required
 resource collection, chart construction and rendering are offline.
 
+Expected command failures are printed as one concise `wenu_chart: error:`
+message. Add `--debug` to the chart command to re-raise the failure with its
+complete Python traceback when diagnosing provider or resource problems.
+
 Select the symbolic hollow diamond with `--asteroid 79989`, the trajectory
 with `--asteroid-track 79989`, or both. If a manifest declares an official
 name, that exact name is also accepted case-insensitively. The permanent number
