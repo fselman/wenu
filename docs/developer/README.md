@@ -66,7 +66,7 @@ milestone evidence are under [`archive/`](archive/README.md).
   — accepted exact installed/provider identity contract with a candidate
   generic minor-body resolver; no acquisition or chart integration.
 - [`comet_acquisition_audit_50a5d2b.md`](comet_acquisition_audit_50a5d2b.md)
-  — candidate shared exact-comet acquisition, type-21 validation, and immutable
+  — accepted shared exact-comet acquisition, type-21 validation, and immutable
   publication contract; no chart integration or runtime change.
 - The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
   point and track and the numbered-asteroid generalization audit, are archived under
