@@ -193,4 +193,4 @@ connect asteroid names to the chart CLI or automatic preflight. The existing
 numbered-asteroid acquisition path remains unchanged, and the 50A.5D.2A
 acceptance specimen and runtime integration remain comet-only.
 
-**Implementation status:** Candidate for Fernando's review.
+**Implementation status:** Accepted by Fernando on 2026-09-13 after the focused Mac gate passed all 150 tests, the complete Mac regression passed all 2,380 tests in 89.08 seconds, deliberate live SBDB checks confirmed the exact success and failure behavior, and the working tree remained clean.
