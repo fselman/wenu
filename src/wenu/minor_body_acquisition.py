@@ -194,8 +194,13 @@ def _horizons_solution(result, identity):
             " ".join(value.strip().split()).casefold()
             for value in identity.aliases
         }
-        if " ".join(fullname.split()).casefold() not in aliases:
-            raise ValueError("Horizons and resolved comet identities differ.")
+        normalized_fullname = " ".join(fullname.split()).casefold()
+        if normalized_fullname not in aliases:
+            raise ValueError(
+                "Horizons comet identity "
+                f"{normalized_fullname!r} does not match resolved aliases "
+                f"{tuple(sorted(aliases))!r}."
+            )
     else:
         header = _HEADER.search(result)
         if header is None or "ASTEROID comments:" not in result:
