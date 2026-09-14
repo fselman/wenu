@@ -275,6 +275,11 @@ def test_frozen_horizons_photometry_preserves_unknowns_and_provenance():
     )
 
     assert version == "1.2"
+    assert sha256(photometry_fixture_bytes()).hexdigest() == (
+        "054f05bd5905997f4b1dd22de92417d51b8cfead345089f1d5dfb2b6f2dda7f0"
+    )
+    assert b"McNaught (C/2006 P1)" in photometry_fixture_bytes()
+    assert b"{source: JPL#27}" in photometry_fixture_bytes()
     assert len(samples) == 3
     assert samples[0].total_magnitude == -11.0
     assert samples[0].nuclear_magnitude == 12.0
