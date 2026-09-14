@@ -3159,6 +3159,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "README.md",
         "assistant_instructions.md",
         "comet_discovery_and_reporting_audit_50a5d.md",
+        "comet_model_magnitude_audit_50a5d1b.md",
         "configuration_schema_v2.md",
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
