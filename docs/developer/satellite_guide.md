@@ -1,6 +1,7 @@
 # Wenu artificial-satellite scientific and implementation guide
 
-**Status:** Living 50S work-in-progress guide  
+**Status:** Living 50S work-in-progress guide; 50S.0 decisions accepted by
+Fernando on 2026-09-14
 **Established:** 2026-09-14  
 **Initial baseline:** `862acaa`  
 **Current authority:** the accepted portions of this guide together with the
@@ -122,17 +123,21 @@ No later stage may change the result of an earlier geometric crossing test.
 The proposed scientific flow is:
 
 ```text
-provider response
+provider-neutral crossing query
+    -> SatChecker adapter and cached response
+    -> normalized crossing result
+    -> reports and shared Wenu chart pipeline
+
+later local provider
     -> validated immutable OMM/TLE snapshot
     -> SGP4 geometric TEME state
     -> declared Earth-orientation transformation
     -> observer-relative topocentric state
-    -> apparent spherical direction in the requested field frame
     -> exact trajectory/footprint intersection
-    -> optional conservative candidate index
-    -> illumination and optional photometry
-    -> reports
-    -> optional shared Wenu chart pipeline
+    -> conservative candidate filters
+    -> optional HEALPix/time index
+    -> the same normalized crossing result
+    -> illumination, optional photometry, and later contamination
 ```
 
 Acquisition never occurs inside propagation, field search, chart construction,
@@ -216,9 +221,14 @@ then-current terms.
 
 ### 6.3 SatChecker role
 
-IAU CPS SatChecker is an independent comparison oracle for selected
-ephemerides, range, motion, illumination, and field-crossing results. It is not
-the sole Wenu production dependency because reproducible queries must work
+IAU CPS SatChecker is Wenu's first bounded online crossing provider and an
+external comparison oracle for selected ephemerides, range, motion,
+illumination, and circular-field results. Wenu first owns a provider-neutral
+query/result contract so SatChecker endpoint shapes and provider-specific
+fields do not define the central domain. Exact requests and raw responses are
+cached with provenance, async progress is exposed, and retries, concurrency,
+and cadence follow the current provider policy. SatChecker is not the sole
+long-term production dependency because later reproducible queries must work
 from a frozen local snapshot without relying on service availability.
 
 ## 7. Propagation and reference systems
@@ -307,14 +317,14 @@ An exact event retains at least:
 
 ## 9. Complete-scan correctness oracle
 
-The first implementation scans every valid object in the snapshot. A fixed
-sampling grid alone is not a completeness proof because a fast LEO pass may
-cross a narrow field between samples.
+The first *local* implementation scans every valid object in the small
+representative snapshot. A fixed sampling grid alone is not a completeness
+proof because a fast LEO pass may cross a narrow field between samples.
 
 The oracle uses adaptive interval subdivision with a conservative motion
 bound. Intervals that cannot exclude the field are subdivided or refined using
 bracketed boundary roots and closest-approach extrema. It must remain callable
-after optimization so 50S.3 can compare every indexed result against it.
+after optimization so 50S.6 can compare every accelerated result against it.
 
 For topocentric relative position `rho` and velocity `rho_dot`, instantaneous
 angular speed is
@@ -331,7 +341,24 @@ rejected merely because the bound is loose.
 
 ## 10. Conservative high-performance search
 
-The leading 50S.3 design is a time-slab and hierarchical-sky-pixel index:
+The first local acceleration is a cascade of conservative geometric and state
+filters:
+
+1. orbital-plane/FoV-cone intersection over the admissible radial shell;
+2. element-epoch phase and reachable-orbital-arc rejection;
+3. Earth-occultation and geometric-horizon rejection over the interval;
+4. vectorized coarse SGP4 states with angular-motion and curvature bounds;
+5. exact refinement of every retained candidate.
+
+For observer position `r_o`, sight direction `u`, satellite range `rho`, and
+orbital-plane normal `n`, a possible line-of-sight state satisfies
+`n . (r_o + rho u) = 0`. The admissible positive range, orbit radial shell,
+FoV cone, interval, and conservative perturbation margin are all required.
+Testing only the angular distance to a geocentric orbital great circle is
+unsafe for low satellites because topocentric parallax is large.
+
+For repeated pointings or larger snapshots, a time-slab and
+hierarchical-sky-pixel index may add another candidate stage:
 
 1. vectorize SGP4 over satellite batches and bounded time slabs;
 2. construct a conservative swept spherical cover for each object/slab;
@@ -341,9 +368,12 @@ The leading 50S.3 design is a time-slab and hierarchical-sky-pixel index:
 5. refine every candidate using the exact crossing solver.
 
 HEALPix is the leading pixelization candidate, not yet a mandated dependency.
-An initial simple inverted index is preferred to an opaque combined
-space-time tree. An isolated query may build ephemeral bounds; repeated
-pointings may reuse an immutable observer/night index.
+The small-snapshot specimen builder and complete oracle use brute force first.
+Benchmarks must show that an index materially improves medium/full-snapshot or
+repeated-night workloads before Wenu adopts it. A simple inverted index is
+preferred to an opaque combined space-time tree. An isolated query may build
+ephemeral bounds; repeated pointings may reuse an immutable observer/night
+index.
 
 The index key includes snapshot digest, observer, Earth-orientation policy,
 interval, sampling/bounding policy, SGP4 implementation and version, and Wenu
@@ -389,21 +419,24 @@ properties, and specular geometry may dominate the observed flux.
 Wenu uses the most specific defensible level:
 
 1. `unknown` when no supported empirical or physical model exists;
-2. a satellite-family magnitude distribution normalized to a declared range
+2. a population distribution for a defensible object class and orbital regime;
+3. a satellite-family magnitude distribution normalized to a declared range
    and conditioned on available geometry;
-3. a diffuse physical model with explicit size, attitude, and reflectance
+4. an object-specific empirical model supported by observations;
+5. a diffuse physical model with explicit size, attitude, and reflectance
    assumptions;
-4. a spacecraft-specific attitude/BRDF model with published parameters and
+6. a spacecraft-specific attitude/BRDF model with published parameters and
    independent validation.
 
 A result is labelled model magnitude or magnitude distribution, never
-guaranteed brightness. Scatter, bias, outliers, unmodeled glints, and tumbling
-limitations are reported. A single standard magnitude does not replace a
-phase function.
+guaranteed brightness. Ordinary brightness and glints remain separate:
+missing flare evidence produces `unknown`, never zero flare probability.
+Scatter, bias, outliers, unmodeled glints, and tumbling limitations are
+reported. A single standard magnitude does not replace a phase function.
 
 ### 12.3 Validation
 
-Before 50S.4B acceptance, compare at least two materially different satellite
+Before 50S.8 acceptance, compare at least two materially different satellite
 families over varied range, phase, elevation, and illumination geometry using
 calibrated, time-resolved observations. Report passband transformations,
 range normalization, residual bias and scatter, outliers, phase coverage,
@@ -416,7 +449,34 @@ optics, aperture, throughput, defocus and PSF, pixel scale, sky background,
 saturation, blooming, and detector response. Those belong to a later
 instrument model and must not be inferred from apparent magnitude alone.
 
-## 13. Validation hierarchy
+## 13. Cached development data and specimen construction
+
+Development uses provider data from cache wherever possible. Ordinary unit,
+focused, documentation, and full tests are network-free. Reviewed exact raw
+responses may become committed fixtures; provider-contract tests prefer cache;
+live checks are explicit, serial, bounded, policy-checked, and never ordinary
+pytest gates. Refresh creates new immutable bytes rather than overwriting a
+reproducibility specimen.
+
+Local development begins with a small representative OMM snapshot spanning
+orbit regimes, inclinations, eccentricities, object classes, shared orbital
+planes with different phases, fast and grazing passes, Earth occultation,
+shadow transitions, known/unknown photometry, aged elements, and parser fault
+cases. Larger retained snapshots follow only after the complete machinery is
+correct.
+
+A developer specimen builder accepts the snapshot, observer, search interval,
+FoV size, and requested case type. It finds a useful FoV and time window,
+stores reference tracks and expected crossings, invokes Wenu's ordinary query,
+and produces a machine-readable report plus a FoV chart with track, direction,
+entry/exit, closest approach, and time annotations. Central, grazing,
+between-sample, multiple-crossing, non-crossing, horizon, shadow-transition,
+seam, and polar cases are required. Its dense/adaptive brute-force reference
+path must remain independent of production rejection filters. HEALPix may help
+locate interesting cases in larger snapshots, but exact spherical geometry
+certifies them.
+
+## 14. Validation hierarchy
 
 The satellite program uses independent layers of evidence:
 
@@ -435,10 +495,12 @@ polar fields, horizon proximity, fast zenith LEO motion, short exposure,
 interval endpoints, high eccentricity, multiple visits, stale elements, and
 propagation error states.
 
-## 14. Performance evidence
+## 15. Performance evidence
 
-Performance acceptance uses a recorded current full-catalogue snapshot rather
-than only a reduced fixture. Measure:
+Correctness development begins with the small representative snapshot.
+Performance acceptance later uses progressively larger retained snapshots and
+a recorded current full-catalogue snapshot rather than only the reduced
+fixture. Measure:
 
 - cold snapshot parsing and propagation setup;
 - exact complete-scan time;
@@ -457,7 +519,7 @@ high latitude.
 Measured maxima tune performance but never replace conservative bounds or the
 complete-scan equivalence test.
 
-## 15. Source ownership direction
+## 16. Source ownership direction
 
 No production module is admitted by this guide. Before 50S.1, the source-tree
 admission review must compare the proposed responsibility with existing
@@ -471,21 +533,30 @@ milestone number, and it must not duplicate Wenu's coordinate service,
 trajectory geometry, projection, preparation, renderer, semantic SVG, or
 export machinery.
 
-## 16. Milestone evolution
+## 17. Milestone evolution
 
 - **50S.0:** maintain this literature, provider-policy, scientific, and
   architecture guide; no runtime behavior.
-- **50S.1:** add and validate frozen-snapshot SGP4/TEME state and explicit
-  topocentric transformation; update implemented ownership here and in
-  `source_tree.md`.
-- **50S.2:** add field types and the complete-scan crossing oracle.
-- **50S.3:** add the conservative index and prove zero false negatives.
-- **50S.4A:** add geometric and illumination reports and statistical products.
-- **50S.4B:** add only empirically validated brightness models.
-- **Later detector slice:** add instrument-specific trail signal and
-  detectability.
-- **50S.5:** draw selected tracks through the existing Wenu pipeline and close
-  the program.
+- **50S.1:** provider-neutral identity, observer, FoV, interval, candidate, and
+  crossing-result contracts; no propagation yet.
+- **50S.2:** SatChecker circular-field adapter, exact-response cache, async
+  progress, bounded provider-policy handling, and normalized provenance.
+- **50S.3:** human-readable/JSON reports and FoV charts consuming the same
+  SatChecker-derived normalized results; illumination remains provider-derived.
+- **50S.4:** small representative immutable OMM snapshot,
+  Vallado-compatible SGP4/TEME foundation, explicit topocentric chain, and
+  developer crossing-specimen builder.
+- **50S.5:** complete local catalogue scan and adaptive exact-crossing oracle.
+- **50S.6:** conservative plane, radial-shell, phase/reachable-arc,
+  occultation, and coarse-state filters; add HEALPix/time indexing only if
+  measured larger-snapshot workloads justify it; prove zero false negatives.
+- **50S.7:** independent Sun/penumbra/umbra and observer-night geometry.
+- **50S.8:** empirically validated object, family, and population brightness
+  models with explicit `unknown` and separate glint limitations.
+- **50S.9:** instrument-specific trail signal and detector contamination.
+- **50S.10:** statistical products versus night time, season, observer,
+  pointing, FoV, and exposure duration; close the program after numerical,
+  performance, report, and visual acceptance.
 
 At every milestone, revise this living guide to match accepted science and
 implemented ownership. When 50S foundation work is merged, decide explicitly
