@@ -165,6 +165,8 @@ def test_configuration_guide_documents_moving_object_data_authorities():
         "Exact `--comet` identity resolution uses the SBDB API",
         "Horizons API",
         "chart construction and rendering are offline",
+        "Add `--debug`",
+        "complete Python traceback",
     ):
         assert value in text
 
