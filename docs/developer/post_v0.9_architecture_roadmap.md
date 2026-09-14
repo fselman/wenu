@@ -1633,6 +1633,13 @@ sidecar reports require a new audit before implementation.
 
 50A.5D.1A accepted by Fernando on 2026-09-13.
 
+The proposed 50A.5D.1B audit is recorded in
+`comet_model_magnitude_audit_50a5d1b.md`. It separates Horizons `T-mag` and
+`N-mag`, proposes a bounded daily sampling contract and sequential fair-use
+requests, labels the result as a brightest sampled model value rather than a
+continuous minimum or visibility forecast, and requires Fernando's cadence,
+budget, quantity, failure, and interval decisions before implementation.
+
 The proposed audit separates an explicit `wenu_retrieve_comets` SBDB query,
 exact policy-governed comet preflight, and renderer-neutral natural moving-
 object sidecars. Discovery means a declared perihelion-time and perihelion-
