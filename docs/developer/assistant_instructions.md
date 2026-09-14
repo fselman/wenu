@@ -124,6 +124,9 @@ For current work, read and follow:
 - `archive/milestone_history/50a_minor_bodies/first_drawable_comet_audit_50a5a.md` for accepted 2P/Encke identity,
   explicit resource, symbolic nucleus, shared point/track, and coma/tail
   separation decisions;
+- `comet_photometry_revision_50a5d1b1.md` for the active accepted revision of
+  per-comet perihelion sampling, workload authorization, Horizons file-API
+  transport, and clean command failures;
 - `archive/milestone_history/50a_minor_bodies/solar_system_temporal_components_audit_50a5b1.md` before changing temporal
   path, tick, symbol, label, or observed-phase component reuse;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
@@ -291,6 +294,35 @@ Every new production file proposal must name the closest existing owner and
 explain why extending it would mix responsibilities or violate a dependency,
 lifecycle, provenance, failure, or testing boundary.
 
+### Post-change verification gate
+
+After all implementation, test, fixture, and documentation edits are present
+on the resulting branch, run the closest focused tests in the current execution
+environment before handing the branch to Fernando.
+
+1. Inspect the exact final branch, not an earlier local or fetched snapshot.
+2. Run the narrow tests that execute every changed production route and every
+   changed documentation contract. Writing tests is not evidence that they
+   pass.
+3. For every new cross-module reference, verify each imported name, constructor
+   field, attribute, and return shape against the actual current definition;
+   do not infer interface names from analogous types.
+4. If the execution environment cannot run Wenu, perform syntax compilation
+   and this explicit interface audit, state that execution remains pending,
+   and give Fernando the smallest focused Mac command. Never describe
+   unexecuted tests as passing.
+5. When a focused test fails, fix the root cause, search the complete change
+   for the same mistaken assumption, and rerun the identical focused command
+   before widening to the full suite.
+6. Do not request the full regression suite until the focused gate passes.
+7. A fixture described as a frozen or exact provider response must be captured
+   byte-for-byte from that provider, with retrieval provenance. A constructed
+   fixture must be labelled synthetic and may test parser faults, but it cannot
+   serve as provider-format or scientific acceptance evidence.
+8. Every fault-injection test must prove that its mutation changed the
+   baseline fixture before asserting the expected failure. A no-op replacement
+   or mutation cannot count as fault coverage.
+
 Run Wenu tests with ambient pytest plugins disabled:
 
 ```bash
@@ -299,6 +331,35 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest
 
 Any required plugin must be explicitly loaded, version constrained,
 documented, and accepted before it becomes part of a Wenu gate.
+
+### External-provider policy preflight
+
+Before designing, implementing, or changing any automated access to an
+external data provider, read the provider's current primary-source terms,
+fair-use policy, API documentation, and relevant licensing requirements.
+Perform this check before choosing concurrency, batching, request cadence,
+retry behavior, cache lifetime, or redistribution policy—not after the code
+has been written.
+
+1. Record the authoritative policy URL and the date checked in the active
+   milestone record.
+2. Identify explicit limits on simultaneous requests, request frequency,
+   workload size, retries, automated use, caching, attribution, licensing,
+   and redistribution.
+3. Treat provider requirements as hard design constraints. A performance
+   optimization must not violate them even when tests pass and the service
+   appears to accept it.
+4. Prefer validated caching, deduplication, batching explicitly supported by
+   the provider, and reduced request scope before increasing request rate.
+5. On rate-limit, throttling, or service-unavailable responses, stop or back
+   off as directed. Never create an aggressive automatic retry loop or evade
+   a provider restriction through multiple workers, processes, hosts,
+   identities, endpoints, or equivalent mechanisms.
+6. If the current policy is absent, ambiguous, or unreachable, preserve the
+   most conservative behavior and leave the optimization pending clarification.
+7. Add contract tests for the adopted local policy, but never treat tests as
+   evidence that provider permission exists. Recheck the primary policy when
+   a provider route, workload model, or distribution behavior changes.
 
 For visual milestones, compare the mandatory regression charts named in the
 active migration roadmap. Do not accept an unexplained regression.
@@ -646,6 +707,14 @@ ordinary offline chart request. Never allow request generation, provider state
 evaluation, direction realization, projection, rendering, or export to query a
 service. Do not add a silent orbital-element fallback. Keep artificial
 satellite OMM/TLE plus SGP4/TEME physics in a separate provider milestone.
+
+For the reopened 50A.5D.1B.1 operational revision, follow
+`comet_photometry_revision_50a5d1b1.md`. Keep discovery selection separate
+from each comet's ±30-day perihelion photometry window, preserve explicit
+cadences or report their minimum usable replacement, require deliberate
+authorization above the default 50-comet workload, and use multiline discrete
+epochs through the Horizons file API POST route. Do not close or merge PR #121
+until broad live cases and the complete Mac gate pass.
 
 For 50B publication-style work, complete the print, typography, contrast,
 accessibility, cartographic, and astronomical-atlas practice review plus

@@ -1547,6 +1547,21 @@ owns deterministic contract coverage;
 - `wenu_chart`, minor-body acquisition/cache, coordinate, projection,
   renderer, semantic, report, and export owners remain unchanged.
 
+## 50A.5D.1B observer-dependent comet-photometry ownership
+
+- `comet_photometry.py` owns bounded Horizons observer-table request
+  construction, exact SBDB/Horizons solution binding, sampled `T-mag` and
+  `N-mag` parsing, per-comet perihelion windows, automatic cadence, file-API
+  POST transport, provider-compliant sequential access, atomic validated response caching,
+  provider notices, limits, progress events, and raw-response provenance;
+- `comet_discovery.py` remains the SBDB interval-selection owner;
+- `cli/comets.py` composes discovery and optional photometry and owns only
+  command parsing plus table/JSON publication;
+- `tests/test_comet_discovery.py` extends its existing public-route
+  responsibility with a frozen Horizons response and failure contracts;
+- this owner does not import or alter chart, SPK acquisition/cache, projection,
+  renderer, semantic, report, or export modules.
+
 ## 50A.5D.2A exact comet-name-resolution audit ownership
 
 - `docs/developer/archive/milestone_history/50a_minor_bodies/comet_name_resolution_audit_50a5d2a.md` alone owns the

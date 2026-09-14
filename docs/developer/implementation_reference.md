@@ -2331,7 +2331,7 @@ single apparent center point. Consequently the same instant governs horizon
 and zenith-up orientation. Track realization remains timeline-owned; its
 samples are not replaced by the center date.
 
-### Deterministic comet discovery (Milestone 50A.5D.1A candidate)
+### Deterministic comet discovery and sampled model magnitude
 
 `comet_discovery.py` owns one explicit SBDB Query API request, inclusive UTC
 civil-day to TDB conversion, an immutable typed result, fail-closed provider
@@ -2339,12 +2339,31 @@ schema validation, sorting, and exact request/raw-response provenance.
 `cli/comets.py` exposes this boundary as `wenu_retrieve_comets START STOP` with
 an explicit perihelion-distance bound and table or JSON publication.
 
-This command filters perihelion time and distance; it is not a visibility
-forecast. Provider `M1`, `M2`, `K1`, and `K2` values remain labelled model
-parameters, and missing values remain unknown. The command is independent of
-`wenu_chart`; no acquisition, resource, chart, coordinate, projection,
-renderer, semantic, or export owner changes. Observer-dependent Horizons
-magnitude and its cadence remain deferred to 50A.5D.1B.
+When `--observer-location NAME` is present, `comet_photometry.py` owns bounded
+sequential Horizons observer-table requests and its validated raw-response
+cache. Each comet has an independent
+endpoint-inclusive UTC interval spanning ±30 days around its perihelion.
+An omitted `--magnitude-step` selects an automatic cadence, normally `1d`;
+an explicit cadence is preserved or rejected with its minimum usable value.
+The implementation validates the
+exact target and orbit solution selected by SBDB, preserves `T-mag` and
+`N-mag` independently, and retains exact request/raw-response provenance and
+provider notices. The official Horizons file API carries discrete epochs by
+POST. The route defaults to 50 comet solutions, permits an explicitly larger
+workload through `--max-photometry-comets`, obeys JPL's one-request-at-a-time
+Fair Use Policy, remains bounded to 367 epochs per comet, and fails the whole
+result after any Horizons failure. Progress is
+terminal-aware stderr output. Exact request cache keys and atomic validated
+entries make long workloads resumable without changing deterministic result
+order or original retrieval provenance.
+
+The primary summary is the numerically smallest valid sampled `T-mag`,
+labelled the brightest sampled total model magnitude. It is not a continuous
+minimum, visibility forecast, or detectability estimate. Unknown values remain
+unknown, and Horizons' practical uncertainty warning of roughly 1 magnitude is
+published. This explicit network path remains independent of `wenu_chart`;
+no SPK acquisition/cache, coordinate, projection, renderer, semantic, report,
+or export owner changes.
 
 ### Exact minor-body identity resolution (Milestone 50A.5D.2A candidate)
 

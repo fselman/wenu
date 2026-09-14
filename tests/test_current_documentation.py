@@ -3159,7 +3159,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "README.md",
         "assistant_instructions.md",
         "comet_discovery_and_reporting_audit_50a5d.md",
-        "comet_model_magnitude_audit_50a5d1b.md",
+        "comet_photometry_revision_50a5d1b1.md",
         "configuration_schema_v2.md",
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
@@ -3184,6 +3184,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "comet_name_resolution_audit_50a5d2a.md",
         "comet_acquisition_audit_50a5d2b.md",
         "comet_cli_preflight_audit_50a5d2c.md",
+        "comet_model_magnitude_audit_50a5d1b.md",
     ):
         assert (MINOR_BODY_HISTORY / name).is_file()
         assert not (DEVELOPER / name).exists()
@@ -4514,7 +4515,7 @@ def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
         "M1` is therefore the reference total magnitude",
         "K1` is not a magnitude",
         "not stellar absolute magnitudes defined at 10 parsecs",
-        "deferred to the separately reviewed 50A.5D.1B",
+        "available only when `--observer-location` is supplied",
     ):
         assert phrase in user_guide
     assert 'wenu_retrieve_comets = "wenu.cli.comets:main"' in project
@@ -4683,15 +4684,28 @@ def test_50a5d2c_audits_exact_comet_cli_preflight():
 
 def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
     audit = " ".join(read(
-        DEVELOPER / "comet_model_magnitude_audit_50a5d1b.md"
+        MINOR_BODY_HISTORY / "comet_model_magnitude_audit_50a5d1b.md"
     ).split())
     index = " ".join(read(DEVELOPER / "README.md").split())
     roadmap = " ".join(read(
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
     ).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(
+        DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+    ).split())
+    user_guide = " ".join(read(
+        ROOT / "docs/user_guide/comet_discovery.md"
+    ).split())
+    revision = " ".join(read(
+        DEVELOPER / "comet_photometry_revision_50a5d1b1.md"
+    ).split())
 
     for phrase in (
-        "Accepted by Fernando on 2026-09-14",
+        "Audit and bounded implementation accepted by Fernando on 2026-09-14",
         "authorizes only the bounded 50A.5D.1B implementation",
         "brightest sampled total model magnitude",
         "not a visibility forecast",
@@ -4719,8 +4733,112 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
     ):
         assert phrase in audit
 
-    assert "comet_model_magnitude_audit_50a5d1b.md" in index
+    assert "original 50A.5D.1B comet-photometry acceptance evidence" in index
     assert "accepted the 50A.5D.1B audit on 2026-09-14" in roadmap
+
+    for phrase in (
+        "bounded implementation accepted by Fernando",
+        "src/wenu/comet_photometry.py",
+        "focused 136-test gate passed",
+        "complete 2,414-test suite passed",
+        "live McNaught table and JSON routes",
+        "frozen Horizons response",
+        "exact live McNaught response",
+        "McNaught (C/2006 P1) {source: JPL#27}",
+        "054f05bd5905997f4b1dd22de92417d51b8cfead345089f1d5dfb2b6f2dda7f0",
+        "byte-for-byte provider evidence",
+    ):
+        assert phrase in audit
+
+    for phrase in (
+        "original 50A.5D.1B evidence established",
+        "comet_photometry.py",
+        "default `1d` and exact endpoints",
+        "complete 2,414-test Mac suite passed",
+        "comet_model_magnitude_audit_50a5d1b.md",
+    ):
+        assert phrase in roadmap
+
+    for phrase in (
+        "comet_photometry.py",
+        "bounded sequential Horizons observer-table requests",
+        "brightest sampled total model magnitude",
+        "not a continuous minimum",
+        "independent endpoint-inclusive UTC interval spanning ±30 days",
+        "official Horizons file API",
+        "--max-photometry-comets",
+        "one-request-at-a-time",
+        "atomic validated entries",
+    ):
+        assert phrase in reference
+
+    for phrase in (
+        "50A.5D.1B observer-dependent comet-photometry ownership",
+        "exact SBDB/Horizons solution binding",
+        "provider-compliant sequential access",
+        "atomic validated response caching",
+        "does not import or alter chart",
+    ):
+        assert phrase in source_tree
+
+    for phrase in (
+        "accepted 50A.5D.1B.1 revision likewise adds no coordinate",
+        "geodetic longitude, latitude, and elevation",
+        "extending 30 days on each side",
+        "scalar provider-model quantities",
+    ):
+        assert phrase in coordinate_guide
+
+    for phrase in (
+        "--observer-location",
+        "normally `1d`",
+        "numerically smallest valid sampled `T-mag`",
+        "not continuous minima, visibility forecasts",
+        "uncertain at roughly 1 magnitude",
+        "--max-photometry-comets COUNT",
+        "367 epochs per comet",
+        "Any Horizons failure fails the complete result",
+    ):
+        assert phrase in user_guide
+
+    for phrase in (
+        "Revised contract accepted by Fernando on 2026-09-14",
+        "implementation and operational acceptance pending",
+        "±30 days around perihelion",
+        "minimum usable cadence",
+        "--max-photometry-comets COUNT",
+        "Horizons file API POST transport",
+        "wenu_retrieve_comets: error:",
+        "Matched comets: 0",
+        "--debug",
+        "JPL#27` or `SAO_2008",
+        "names the canonical designation that failed",
+        "one API request at a time",
+        "one-line progress bar on stderr",
+        "~/.cache/wenu/comet_photometry",
+        "Cache corruption fails closed",
+        "no generic Horizons client",
+        "PR #121 must not be merged",
+    ):
+        assert phrase in revision
+
+    for phrase in (
+        "50A.5D.1B.1 operational revision in progress",
+        "each comet is sampled independently over ±30 days",
+        "provider-compliant sequential access",
+        "validated raw-response cache",
+        "PR #121 remains unaccepted",
+    ):
+        assert phrase in roadmap
+
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    for phrase in (
+        "comet_photometry_revision_50a5d1b1.md",
+        "each comet's ±30-day perihelion photometry window",
+        "Horizons file API POST route",
+        "Do not close or merge PR #121",
+    ):
+        assert phrase in instructions
 
 def test_assistant_instructions_require_documentation_contract_preflight():
     instructions = " ".join(read(INSTRUCTIONS).split())
@@ -4737,6 +4855,49 @@ def test_assistant_instructions_require_documentation_contract_preflight():
         "Do not present the branch for Mac testing",
     ):
         assert phrase in instructions
+
+def test_assistant_instructions_require_post_change_verification():
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Post-change verification gate",
+        "exact final branch",
+        "Writing tests is not evidence that they pass",
+        "verify each imported name, constructor field, attribute, and return shape",
+        "against the actual current definition",
+        "do not infer interface names from analogous types",
+        "execution remains pending",
+        "Never describe unexecuted tests as passing",
+        "search the complete change for the same mistaken assumption",
+        "rerun the identical focused command",
+        "Do not request the full regression suite until the focused gate passes",
+        "captured byte-for-byte from that provider",
+        "labelled synthetic",
+        "cannot serve as provider-format or scientific acceptance evidence",
+        "Every fault-injection test must prove that its mutation changed",
+        "A no-op replacement or mutation cannot count as fault coverage",
+    ):
+        assert phrase in instructions
+
+
+def test_assistant_instructions_require_external_provider_policy_preflight():
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "External-provider policy preflight",
+        "current primary-source terms",
+        "before choosing concurrency",
+        "authoritative policy URL and the date checked",
+        "simultaneous requests, request frequency",
+        "Treat provider requirements as hard design constraints",
+        "validated caching, deduplication",
+        "rate-limit, throttling, or service-unavailable responses",
+        "Never create an aggressive automatic retry loop",
+        "most conservative behavior",
+        "never treat tests as evidence that provider permission exists",
+    ):
+        assert phrase in instructions
+
 
 def test_assistant_instructions_govern_production_module_placement():
     instructions = " ".join(read(INSTRUCTIONS).split())
