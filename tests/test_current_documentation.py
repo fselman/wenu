@@ -4701,7 +4701,7 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
     ).split())
 
     for phrase in (
-        "Accepted by Fernando on 2026-09-14",
+        "Audit and bounded implementation accepted by Fernando on 2026-09-14",
         "authorizes only the bounded 50A.5D.1B implementation",
         "brightest sampled total model magnitude",
         "not a visibility forecast",
@@ -4772,7 +4772,7 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
         assert phrase in source_tree
 
     for phrase in (
-        "50A.5D.1B candidate likewise adds no coordinate",
+        "Accepted 50A.5D.1B likewise adds no coordinate",
         "geodetic longitude, latitude, and elevation",
         "scalar provider-model quantities",
     ):
