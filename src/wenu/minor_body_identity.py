@@ -97,6 +97,10 @@ def identity_query_parameters(
     """Build one exact designation or name-oriented SBDB request."""
     expected = _expected_class(expected_class)
     normalized = " ".join(selection.strip().split())
+    if "*" in normalized:
+        raise MinorBodyIdentityNotFoundError(
+            "wildcards are not allowed in exact minor-body identity."
+        )
     if expected == "comet":
         if normalized.isdecimal():
             raise MinorBodyIdentityNotFoundError(
