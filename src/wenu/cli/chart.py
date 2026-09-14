@@ -525,12 +525,12 @@ def _installed_candidate(directory, selections, start, stop):
     """Return exact installed identities when one directory covers all."""
     from wenu.minor_body_resources import MinorBodyResourceCollection
 
-    collection = MinorBodyResourceCollection(directory)
     try:
+        collection = MinorBodyResourceCollection(directory)
         identities = _resolved_identities(
             selections, collections=(collection,), use_provider=False
         )
-    except KeyError:
+    except (FileNotFoundError, KeyError, TypeError, ValueError):
         return None
     if not resource_covers_identities(directory, identities, start, stop):
         return None
