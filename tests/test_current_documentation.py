@@ -4737,6 +4737,10 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
         "src/wenu/comet_photometry.py",
         "scientific and Mac acceptance pending",
         "frozen Horizons response",
+        "exact live McNaught response",
+        "McNaught (C/2006 P1) {source: JPL#27}",
+        "054f05bd5905997f4b1dd22de92417d51b8cfead345089f1d5dfb2b6f2dda7f0",
+        "byte-for-byte provider evidence",
     ):
         assert phrase in audit
 
