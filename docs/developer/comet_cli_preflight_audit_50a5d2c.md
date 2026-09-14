@@ -257,6 +257,29 @@ contract. Visual review is required only to confirm that the existing symbols,
 tracks, labels, and center semantics remain unchanged; this milestone
 authorizes no new visible design.
 
+### Independent C/2021 T4 (Lemmon) comparison
+
+Fernando generated a live La Ligua chart centered on `C/2021 T4` at
+2023-07-24T00:00:00Z, with a track starting on July 1 and weekly major marks.
+The result was compared with Guy Ottewell's equatorial finder chart reproduced
+by EarthSky:
+
+<https://earthsky.org/astronomy-essentials/comet-c-2021-t4-lemmon-is-sweeping-southern-skies/>
+
+The independent chart identifies opposition on July 18, a southern extremum
+near declination -56 degrees on July 20, perihelion on July 31, northward
+motion through Ara, Norma, and Lupus, and an ecliptic crossing on September 10.
+Wenu's dated trajectory reproduces that ordering, turning geometry, and
+constellation progression despite the different projection and observer-bound
+chart framing. It also completed live acquisition for the provisional
+designation and produced the requested PNG.
+
+This is a qualitative external acceptance comparison, not a numerical oracle.
+The published finder chart does not provide machine-readable coordinates or
+uncertainties, so its raster pixels must not be converted into artificial
+sub-degree regression tolerances. Wenu's existing direct-Horizons fixtures
+remain the numerical authority.
+
 ## Acceptance gates
 
 Acceptance requires:
