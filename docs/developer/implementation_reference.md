@@ -2339,8 +2339,9 @@ schema validation, sorting, and exact request/raw-response provenance.
 `cli/comets.py` exposes this boundary as `wenu_retrieve_comets START STOP` with
 an explicit perihelion-distance bound and table or JSON publication.
 
-When `--observer-location NAME` is present, `comet_photometry.py` owns
-sequential Horizons observer-table requests. Each comet has an independent
+When `--observer-location NAME` is present, `comet_photometry.py` owns bounded
+concurrent Horizons observer-table requests and its validated raw-response
+cache. Each comet has an independent
 endpoint-inclusive UTC interval spanning ±30 days around its perihelion.
 An omitted `--magnitude-step` selects an automatic cadence, normally `1d`;
 an explicit cadence is preserved or rejected with its minimum usable value.
@@ -2349,8 +2350,12 @@ exact target and orbit solution selected by SBDB, preserves `T-mag` and
 `N-mag` independently, and retains exact request/raw-response provenance and
 provider notices. The official Horizons file API carries discrete epochs by
 POST. The route defaults to 50 comet solutions, permits an explicitly larger
-sequential workload through `--max-photometry-comets`, remains bounded to 367
-epochs per comet, and fails the whole result after any Horizons failure.
+workload through `--max-photometry-comets`, uses four workers by default with
+an accepted range of one through eight, remains bounded to 367 epochs per
+comet, and fails the whole result after any Horizons failure. Progress is
+terminal-aware stderr output. Exact request cache keys and atomic validated
+entries make long workloads resumable without changing deterministic result
+order or original retrieval provenance.
 
 The primary summary is the numerically smallest valid sampled `T-mag`,
 labelled the brightest sampled total model magnitude. It is not a continuous

@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+import base64
 import csv
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 import json
 import math
+from pathlib import Path
 import re
+import tempfile
 from typing import Callable
 from urllib.request import Request, urlopen
 
@@ -25,6 +29,8 @@ DEFAULT_MAGNITUDE_STEP = "1d"
 DEFAULT_PERIHELION_WINDOW_DAYS = 30
 MAX_COMETS = 50
 MAX_SAMPLES_PER_COMET = 367
+DEFAULT_WORKERS = 4
+MAX_WORKERS = 8
 _MULTIPART_BOUNDARY = "wenu-horizons-photometry"
 
 _STEP = re.compile(r"(?P<count>[1-9]\d*)\s*(?P<unit>[hd])", re.IGNORECASE)
@@ -305,6 +311,69 @@ def _fetch(
         return response.read()
 
 
+def default_photometry_cache_directory() -> Path:
+    """Return Wenu's user-local raw Horizons photometry cache."""
+    return Path.home() / ".cache" / "wenu" / "comet_photometry"
+
+
+def _cache_key(parameters: dict[str, str]) -> str:
+    identity = json.dumps(
+        {"endpoint": HORIZONS_API, "parameters": parameters},
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return sha256(identity).hexdigest()
+
+
+def _read_cached_response(
+    directory: Path, parameters: dict[str, str]
+) -> tuple[bytes, datetime] | None:
+    key = _cache_key(parameters)
+    path = directory / f"{key}.json"
+    if not path.exists():
+        return None
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+        if document["schema"] != 1 or document["key"] != key:
+            raise ValueError
+        raw = base64.b64decode(document["response_base64"], validate=True)
+        if sha256(raw).hexdigest() != document["response_sha256"]:
+            raise ValueError
+        retrieved = datetime.fromisoformat(document["retrieved_at_utc"])
+        if retrieved.tzinfo is None:
+            raise ValueError
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+        raise ValueError(f"invalid photometry cache entry: {path}") from error
+    return raw, retrieved.astimezone(timezone.utc)
+
+
+def _write_cached_response(
+    directory: Path,
+    parameters: dict[str, str],
+    raw: bytes,
+    retrieved: datetime,
+) -> None:
+    directory.mkdir(parents=True, exist_ok=True)
+    key = _cache_key(parameters)
+    document = {
+        "schema": 1,
+        "key": key,
+        "endpoint": HORIZONS_API,
+        "parameters": parameters,
+        "response_sha256": sha256(raw).hexdigest(),
+        "response_base64": base64.b64encode(raw).decode("ascii"),
+        "retrieved_at_utc": retrieved.astimezone(timezone.utc).isoformat(),
+    }
+    with tempfile.NamedTemporaryFile(
+        mode="w", encoding="utf-8", dir=directory,
+        prefix=f".{key}-", suffix=".tmp", delete=False,
+    ) as temporary:
+        json.dump(document, temporary, indent=2, sort_keys=True)
+        temporary.write("\n")
+        temporary_path = Path(temporary.name)
+    temporary_path.replace(directory / f"{key}.json")
+
+
 def _normalized_solution(value: str) -> str:
     result = " ".join(value.strip().split())
     result = re.sub(r"^JPL(?:#|\s)+", "", result, flags=re.IGNORECASE)
@@ -496,20 +565,30 @@ def characterize_discovery_photometry(
     max_comets: int = MAX_COMETS,
     fetch: Callable[[str, dict[str, str]], bytes] = _fetch,
     now: Callable[[], datetime] | None = None,
+    progress: Callable[[int, int, str, bool], None] | None = None,
+    workers: int = 1,
+    cache_directory: Path | None = None,
+    refresh_cache: bool = False,
 ) -> CometDiscoveryPhotometry:
-    """Characterize every discovered solution with sequential Horizons calls."""
+    """Characterize discovered solutions with cached bounded Horizons calls."""
     if not isinstance(discovery, CometDiscoveryResult):
         raise TypeError("photometry requires a comet discovery result.")
     if isinstance(max_comets, bool) or not isinstance(max_comets, int):
         raise TypeError("maximum photometry comets must be a whole number.")
     if max_comets <= 0:
         raise ValueError("maximum photometry comets must be positive.")
+    if isinstance(workers, bool) or not isinstance(workers, int):
+        raise TypeError("photometry workers must be a whole number.")
+    if not 1 <= workers <= MAX_WORKERS:
+        raise ValueError(
+            f"photometry workers must be between 1 and {MAX_WORKERS}."
+        )
     if len(discovery.records) > max_comets:
         raise ValueError(
             f"photometry selected {len(discovery.records)} comets; "
             f"the current limit is {max_comets}. Use "
             f"--max-photometry-comets {len(discovery.records)} to "
-            "authorize that sequential workload, or narrow the discovery."
+            "authorize that workload, or narrow the discovery."
         )
     location_name = str(observer_location).strip()
     if not location_name:
@@ -520,9 +599,11 @@ def characterize_discovery_photometry(
     )
 
     clock = now or (lambda: datetime.now(timezone.utc))
-    results = []
+    cache = None if cache_directory is None else Path(cache_directory).expanduser()
+    prepared = []
     selected_step = None
-    for record in discovery.records:
+    total = len(discovery.records)
+    for index, record in enumerate(discovery.records):
         start, stop = perihelion_sampling_window(
             record, window_days=perihelion_window_days
         )
@@ -538,7 +619,23 @@ def characterize_discovery_photometry(
             elevation_m=elevation,
             epochs_utc=epochs,
         )
-        raw = fetch(HORIZONS_API, parameters)
+        prepared.append((index, record, start, stop, step, epochs, parameters))
+
+    def characterize(item):
+        index, record, start, stop, step, epochs, parameters = item
+        cached = None
+        if cache is not None and not refresh_cache:
+            cached = _read_cached_response(cache, parameters)
+        if cached is None:
+            raw = fetch(HORIZONS_API, parameters)
+            retrieved = clock()
+            if retrieved.tzinfo is None:
+                retrieved = retrieved.replace(tzinfo=timezone.utc)
+            retrieved = retrieved.astimezone(timezone.utc)
+            cache_hit = False
+        else:
+            raw, retrieved = cached
+            cache_hit = True
         try:
             version, samples, notices = parse_photometry_response(
                 raw,
@@ -550,10 +647,9 @@ def characterize_discovery_photometry(
                 "Horizons photometry failed for "
                 f"{record.canonical_designation}: {error}"
             ) from error
-        retrieved = clock()
-        if retrieved.tzinfo is None:
-            retrieved = retrieved.replace(tzinfo=timezone.utc)
-        results.append(CometPhotometryResult(
+        if cache is not None and not cache_hit:
+            _write_cached_response(cache, parameters, raw, retrieved)
+        result = CometPhotometryResult(
             canonical_designation=record.canonical_designation,
             provider_spk_id=record.spk_id,
             orbit_solution_id=record.orbit_solution_id or "unknown",
@@ -570,10 +666,31 @@ def characterize_discovery_photometry(
             magnitude_step=step,
             request_parameters=tuple(sorted(parameters.items())),
             raw_sha256=sha256(raw).hexdigest(),
-            retrieved_at_utc=retrieved.astimezone(timezone.utc),
+            retrieved_at_utc=retrieved,
             notices=notices,
             samples=samples,
-        ))
+        )
+        return index, result, cache_hit
+
+    results = [None] * total
+    if progress is not None:
+        progress(0, total, "starting", False)
+    if workers == 1:
+        completed = (characterize(item) for item in prepared)
+        for count, (index, result, cache_hit) in enumerate(completed, start=1):
+            results[index] = result
+            if progress is not None:
+                progress(count, total, result.canonical_designation, cache_hit)
+    else:
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = [executor.submit(characterize, item) for item in prepared]
+            for count, future in enumerate(as_completed(futures), start=1):
+                index, result, cache_hit = future.result()
+                results[index] = result
+                if progress is not None:
+                    progress(
+                        count, total, result.canonical_designation, cache_hit
+                    )
     return CometDiscoveryPhotometry(
         observer_location=location_name,
         observer_latitude_deg=latitude,

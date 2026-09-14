@@ -89,7 +89,7 @@ The magnitude step, when explicit, must be a positive whole number of hours or
 days. When it is omitted Wenu selects a reproducible cadence, normally `1d`,
 that stays within the sample budget. For each selected comet Wenu samples both
 endpoints of a separate interval extending 30 days before and after that
-comet's perihelion, and makes one sequential Horizons request per selected comet,
+comet's perihelion, and makes one Horizons request per selected comet,
 and reports the numerically smallest valid sampled `T-mag` as the brightest
 sampled total model magnitude. `N-mag` is reported independently and is
 never substituted for a missing `T-mag`.
@@ -104,10 +104,19 @@ digest, and provider notices in JSON output.
 
 The observer mode defaults to at most 50 selected comet solutions and remains
 bounded to 367 epochs per comet. Use `--max-photometry-comets COUNT` to
-authorize a larger complete sequential workload; Wenu never truncates the
+authorize a larger complete workload; Wenu never truncates the
 result silently. If an explicit cadence is too fine, the error reports the
 minimum usable cadence. Discrete epochs travel through the official Horizons
-file API POST route rather than a length-limited GET URL. Any Horizons failure
-fails the complete result. Expected failures are concise; `--debug` restores
-their traceback. `--magnitude-step` and a non-default
-`--max-photometry-comets` require `--observer-location`.
+file API POST route rather than a length-limited GET URL. Four requests run
+concurrently by default; `--photometry-workers COUNT` selects from one through
+eight while preserving result order. Validated responses are cached under
+`~/.cache/wenu/comet_photometry`, so repeated and interrupted workloads reuse
+completed requests. `--refresh-photometry` replaces matching cache entries.
+
+An interactive terminal shows progress on stderr without contaminating table
+or JSON output. Use `--progress` to force progress in a log or `--no-progress`
+to suppress it. Any Horizons failure fails the complete result. Expected
+failures are concise; `--debug` restores their traceback. `--magnitude-step`
+and a non-default
+`--max-photometry-comets`, non-default `--photometry-workers`, progress
+controls, and `--refresh-photometry` require `--observer-location`.

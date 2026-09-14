@@ -26,7 +26,7 @@ historically valid, but it is not sufficient for operational closure.
    endpoint-inclusive samples.
 4. An explicit cadence is never silently changed. If it exceeds 367 samples,
    the command reports the minimum usable cadence without a traceback.
-5. The default workload guard remains 50 sequential comet requests. The user
+5. The default workload guard remains 50 comet requests. The user
    may explicitly authorize a larger complete workload with
    `--max-photometry-comets COUNT`; Wenu must never silently truncate rows.
 6. Discrete epochs use the official Horizons file API POST transport so the
@@ -37,14 +37,26 @@ historically valid, but it is not sufficient for operational closure.
    `--debug` restores the original traceback.
 8. A zero-match table says `Matched comets: 0`; JSON retains an empty
    `records` array and the declared selection/provenance.
-9. Horizons calls remain sequential and any failure still fails the whole
-   result. Model magnitude remains characterization, not a visibility or
-   detectability forecast.
+9. The initial implementation used sequential calls. Fernando's broad
+   270-comet trial completed successfully but established that serial latency
+   and the absence of progress or reusable partial work were operational
+   defects. The accepted acceleration revision uses four concurrent requests
+   by default, permits `--photometry-workers 1..8`, preserves discovery order,
+   and still fails the whole result if any request fails.
 10. Horizons target headers may identify the selected solution with a
     provider label such as `JPL#27` or `SAO_2008`. Wenu accepts arbitrary
     non-empty source labels only when they match the SBDB orbit solution after
     the narrow documented JPL notation normalization. A per-comet parse error
     names the canonical designation that failed.
+11. Interactive terminals receive a one-line progress bar on stderr with
+    completed/total counts, designation, source, elapsed time, and ETA.
+    `--progress` forces it and `--no-progress` suppresses it; stdout and result
+    files remain clean.
+12. Each validated raw response is atomically cached under
+    `~/.cache/wenu/comet_photometry`, keyed by the exact endpoint and request
+    parameters. A repeated or interrupted workload reuses completed entries
+    with their original retrieval time and digest. `--refresh-photometry`
+    deliberately replaces matching entries. Cache corruption fails closed.
 
 ## Ownership and non-goals
 
@@ -52,11 +64,14 @@ historically valid, but it is not sufficient for operational closure.
 Horizons transport, provider validation, and photometry provenance share one
 failure lifecycle. `comet_discovery.py` remains the SBDB selection owner, and
 `cli/comets.py` owns parsing and publication. No new production module or
-subpackage is justified.
+subpackage is justified. Wenu currently has no generic Horizons client: SPK
+acquisition and photometry use different API, identity, coverage, validation,
+and cache contracts. A shared transport module should be admitted only when
+another consumer establishes a durable common responsibility.
 
-This revision adds no chart integration, SPK acquisition, response cache,
-empirical activity correction, visibility model, parallel provider calls,
-partial-result semantics, or 50A.5D.3 moving-object report behavior.
+This revision adds no chart integration, SPK-cache coupling, empirical
+activity correction, visibility model, partial-result publication semantics,
+or 50A.5D.3 moving-object report behavior.
 
 ## Required evidence before closure
 

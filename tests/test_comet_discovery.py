@@ -3,9 +3,11 @@
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
+from io import StringIO
 import json
 from pathlib import Path
 import re
+import threading
 
 import pytest
 
@@ -692,6 +694,144 @@ def test_zero_match_table_is_explicit():
     discovery = replace(short_mcnaught_discovery(), records=())
 
     assert "Matched comets: 0" in comets.table_text(discovery)
+
+
+def test_photometry_reports_each_sequential_request_progress():
+    discovery = short_mcnaught_discovery()
+    events = []
+
+    comet_photometry.characterize_discovery_photometry(
+        discovery,
+        observer_location="La Ligua",
+        magnitude_step="12h",
+        fetch=lambda url, parameters: synthetic_photometry_response(parameters),
+        progress=lambda *event: events.append(event),
+    )
+
+    assert events == [
+        (0, 1, "starting", False),
+        (1, 1, "C/2006 P1", False),
+    ]
+
+
+def test_photometry_cache_resumes_without_provider_request(tmp_path):
+    discovery = short_mcnaught_discovery()
+    calls = []
+    acquired = datetime(2026, 9, 14, 20, 0, tzinfo=timezone.utc)
+
+    first = comet_photometry.characterize_discovery_photometry(
+        discovery,
+        observer_location="La Ligua",
+        fetch=lambda url, parameters: (
+            calls.append(parameters)
+            or synthetic_photometry_response(parameters)
+        ),
+        now=lambda: acquired,
+        cache_directory=tmp_path,
+    )
+    events = []
+    second = comet_photometry.characterize_discovery_photometry(
+        discovery,
+        observer_location="La Ligua",
+        fetch=lambda *values: pytest.fail("cache miss"),
+        cache_directory=tmp_path,
+        progress=lambda *event: events.append(event),
+    )
+
+    assert len(calls) == 1
+    assert second == first
+    assert events[-1] == (1, 1, "C/2006 P1", True)
+
+    path = next(tmp_path.glob("*.json"))
+    baseline = json.loads(path.read_text(encoding="utf-8"))
+    damaged = dict(baseline, response_sha256="0" * 64)
+    assert damaged != baseline
+    path.write_text(json.dumps(damaged), encoding="utf-8")
+    with pytest.raises(ValueError, match="invalid photometry cache entry"):
+        comet_photometry.characterize_discovery_photometry(
+            discovery,
+            observer_location="La Ligua",
+            fetch=lambda *values: pytest.fail("corruption used network"),
+            cache_directory=tmp_path,
+        )
+
+    refreshed = comet_photometry.characterize_discovery_photometry(
+        discovery,
+        observer_location="La Ligua",
+        fetch=lambda url, parameters: synthetic_photometry_response(parameters),
+        now=lambda: acquired,
+        cache_directory=tmp_path,
+        refresh_cache=True,
+    )
+    assert refreshed == first
+
+
+def test_photometry_workers_execute_bounded_requests_concurrently():
+    discovery = short_mcnaught_discovery()
+    repeated = replace(
+        discovery, records=(discovery.records[0], discovery.records[0])
+    )
+    rendezvous = threading.Barrier(2, timeout=2)
+
+    def fetch(url, parameters):
+        rendezvous.wait()
+        return synthetic_photometry_response(parameters)
+
+    result = comet_photometry.characterize_discovery_photometry(
+        repeated,
+        observer_location="La Ligua",
+        fetch=fetch,
+        workers=2,
+    )
+
+    assert len(result.results) == 2
+
+
+def test_cli_progress_bar_is_stderr_only_and_can_be_suppressed(
+    monkeypatch, capsys
+):
+    discovery = short_mcnaught_discovery()
+    observed = []
+
+    monkeypatch.setattr(
+        comets, "discover_comets", lambda *args, **kwargs: discovery
+    )
+
+    def characterize(*args, **kwargs):
+        observed.append(kwargs["progress"])
+        return None
+
+    monkeypatch.setattr(comets, "characterize_discovery_photometry", characterize)
+    monkeypatch.setattr(comets.sys.stderr, "isatty", lambda: True)
+
+    assert comets.main([
+        "2007-01-12", "2007-01-12", "--observer-location", "La Ligua"
+    ]) == 0
+    assert isinstance(observed[-1], comets._PhotometryProgress)
+    assert "Comets selected" in capsys.readouterr().out
+
+    assert comets.main([
+        "2007-01-12", "2007-01-12", "--observer-location", "La Ligua",
+        "--no-progress",
+    ]) == 0
+    assert observed[-1] is None
+
+
+def test_progress_bar_reports_cache_source_elapsed_time_and_eta():
+    times = iter((10.0, 20.0))
+    stream = StringIO()
+    progress = comets._PhotometryProgress(
+        stream=stream, clock=lambda: next(times)
+    )
+
+    progress(1, 4, "C/2006 P1", True)
+
+    message = stream.getvalue()
+    assert "[######------------------]" in message
+    assert "1/4 (25.00%)" in message
+    assert "C/2006 P1 (cache)" in message
+    assert "elapsed 00:00:10" in message
+    assert "ETA 00:00:30" in message
 
 
 def test_console_entry_point_is_packaged():

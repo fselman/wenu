@@ -1644,10 +1644,12 @@ Broader live trials subsequently reopened operational acceptance as
 50A.5D.1B.1. Fernando accepted the revised contract on 2026-09-14: discovery
 dates select perihelia, while each comet is sampled independently over ±30
 days around its perihelion; omitted cadence is automatic, an explicit
-over-fine cadence reports its minimum usable replacement, larger sequential
+over-fine cadence reports its minimum usable replacement, larger
 workloads require `--max-photometry-comets`, discrete epochs use the official
 Horizons file API POST transport, and expected failures are concise unless
-`--debug` is present. The active revision record is
+`--debug` is present. A subsequent 270-comet live run accepted bounded
+four-worker concurrency, terminal-aware stderr progress, and an atomic
+validated raw-response cache for repeated and interrupted workloads. The active revision record is
 `comet_photometry_revision_50a5d1b1.md`. PR #121 remains unaccepted until
 broad live trials and all gates pass.
 
