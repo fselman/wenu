@@ -22,6 +22,7 @@ FIXTURES = Path("tests/fixtures")
 TEN_P = FIXTURES / "sbdb_minor_body_identity_10p.json"
 TEMPEL = FIXTURES / "sbdb_minor_body_identity_tempel_ambiguous.json"
 HYGIEA = FIXTURES / "sbdb_minor_body_identity_10_hygiea.json"
+NOT_FOUND = FIXTURES / "sbdb_minor_body_identity_not_found.json"
 NOW = datetime(2026, 9, 13, 23, 0, tzinfo=timezone.utc)
 
 
@@ -108,7 +109,7 @@ def test_bare_number_is_not_accepted_as_a_comet_or_sent_to_sbdb():
 
 def test_ambiguous_provider_result_never_selects_the_first_candidate():
     with pytest.raises(
-        AmbiguousMinorBodyIdentityError, match="3 candidates"
+        AmbiguousMinorBodyIdentityError, match="11 candidates"
     ) as failure:
         resolve_comet_identity(
             "Tempel",
@@ -117,6 +118,25 @@ def test_ambiguous_provider_result_never_selects_the_first_candidate():
 
     assert "9P/Tempel 1" in str(failure.value)
     assert "10P/Tempel 2" in str(failure.value)
+
+
+@pytest.mark.parametrize("selection", ("pencils 10P", "Tempel_STA"))
+def test_documented_not_found_response_is_an_exact_failure(selection):
+    with pytest.raises(
+        MinorBodyIdentityNotFoundError, match="no exact identity"
+    ):
+        resolve_comet_identity(
+            selection, fetch=lambda *values: response(NOT_FOUND)
+        )
+
+
+def test_unsigned_unknown_error_shape_still_fails_closed():
+    raw = b'{"code":"200","message":"different","moreInfo":"url"}'
+    with pytest.raises(MinorBodyIdentityError, match="signature"):
+        resolve_comet_identity(
+            "missing",
+            fetch=lambda *values: ProviderResponse(200, raw),
+        )
 
 
 def test_unique_non_comet_response_fails_the_comet_class_constraint():
