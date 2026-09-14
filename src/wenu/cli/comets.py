@@ -12,13 +12,19 @@ from wenu.comet_discovery import (
     CometDiscoveryResult,
     discover_comets,
 )
+from wenu.comet_photometry import (
+    DEFAULT_MAGNITUDE_STEP,
+    CometDiscoveryPhotometry,
+    characterize_discovery_photometry,
+)
 
 
 def parser() -> argparse.ArgumentParser:
     value = argparse.ArgumentParser(
         description=(
             "List SBDB comet solutions by perihelion date and distance. "
-            "This is not a visibility forecast."
+            "Optional Horizons magnitude is a sampled provider model, "
+            "not a visibility forecast."
         )
     )
     value.add_argument("start", help="first inclusive UTC civil date")
@@ -29,6 +35,21 @@ def parser() -> argparse.ArgumentParser:
         default=DEFAULT_MAX_PERIHELION_DISTANCE_AU,
         metavar="AU",
     )
+    value.add_argument(
+        "--observer-location",
+        help=(
+            "governed Wenu location for sampled Horizons T-mag/N-mag "
+            "characterization"
+        ),
+    )
+    value.add_argument(
+        "--magnitude-step",
+        metavar="DURATION",
+        help=(
+            "positive whole hours or days (for example 12h or 1d); "
+            f"default with an observer: {DEFAULT_MAGNITUDE_STEP}"
+        ),
+    )
     value.add_argument("--format", choices=("table", "json"), default="table")
     value.add_argument("--output", type=Path)
     return value
@@ -38,16 +59,43 @@ def _unknown(value: object, formatter=str) -> str:
     return "unknown" if value is None else formatter(value)
 
 
-def table_text(result: CometDiscoveryResult) -> str:
+def _photometry_by_designation(
+    result: CometDiscoveryResult,
+    photometry: CometDiscoveryPhotometry | None,
+):
+    if photometry is None:
+        return None
+    values = {
+        value.canonical_designation: value
+        for value in photometry.results
+    }
+    expected = {value.canonical_designation for value in result.records}
+    if len(values) != len(photometry.results) or set(values) != expected:
+        raise ValueError(
+            "photometry results do not match the discovery records."
+        )
+    return values
+
+
+def table_text(
+    result: CometDiscoveryResult,
+    photometry: CometDiscoveryPhotometry | None = None,
+) -> str:
     headers = (
         "designation", "name", "1st obs.", "class", "perihelion UTC",
         "q (au)",
         "e", "period (d)", "i (deg)", "Earth MOID (au)", "orbit",
         "M1 model", "M2 model", "K1 model", "K2 model",
     )
+    by_designation = _photometry_by_designation(result, photometry)
+    if by_designation is not None:
+        headers += (
+            "brightest sampled T-mag model", "T-mag epoch UTC",
+            "brightest sampled N-mag model", "N-mag epoch UTC",
+        )
     rows = []
     for row in result.records:
-        rows.append((
+        values = (
             row.canonical_designation,
             _unknown(row.name),
             _unknown(row.first_observation),
@@ -63,7 +111,30 @@ def table_text(result: CometDiscoveryResult) -> str:
             _unknown(row.magnitude_model_m2, lambda x: f"{x:.6g}"),
             _unknown(row.magnitude_model_k1, lambda x: f"{x:.6g}"),
             _unknown(row.magnitude_model_k2, lambda x: f"{x:.6g}"),
-        ))
+        )
+        if by_designation is not None:
+            model = by_designation[row.canonical_designation]
+            total = model.brightest_total_sample
+            nuclear = model.brightest_nuclear_sample
+            values += (
+                _unknown(
+                    None if total is None else total.total_magnitude,
+                    lambda x: f"{x:.3f}",
+                ),
+                _unknown(
+                    None if total is None else total.epoch_utc,
+                    lambda x: x.isoformat(),
+                ),
+                _unknown(
+                    None if nuclear is None else nuclear.nuclear_magnitude,
+                    lambda x: f"{x:.3f}",
+                ),
+                _unknown(
+                    None if nuclear is None else nuclear.epoch_utc,
+                    lambda x: x.isoformat(),
+                ),
+            )
+        rows.append(values)
     widths = [len(value) for value in headers]
     for row in rows:
         widths = [max(old, len(value)) for old, value in zip(widths, row)]
@@ -73,9 +144,26 @@ def table_text(result: CometDiscoveryResult) -> str:
             "not a visibility forecast."
         ),
         f"Retrieved: {result.retrieved_at_utc.isoformat()}",
+    ]
+    if photometry is not None:
+        lines.extend((
+            (
+                "Horizons observer model: "
+                f"{photometry.observer_location} "
+                f"({photometry.observer_latitude_deg:.6f}, "
+                f"{photometry.observer_longitude_deg:.6f}, "
+                f"{photometry.observer_elevation_m:.1f} m); "
+                f"step {photometry.magnitude_step}."
+            ),
+            (
+                "Brightest sampled T-mag/N-mag values are provider models, "
+                "not continuous minima, visibility, or detectability."
+            ),
+        ))
+    lines.extend((
         "  ".join(value.ljust(width) for value, width in zip(headers, widths)),
         "  ".join("-" * width for width in widths),
-    ]
+    ))
     lines.extend(
         "  ".join(value.ljust(width) for value, width in zip(row, widths))
         for row in rows
@@ -116,15 +204,59 @@ def table_text(result: CometDiscoveryResult) -> str:
             "parameters."
         ),
         "  K1/K2: provider total/nuclear magnitude-slope parameters.",
-        (
-            "  au: astronomical unit; d: day; deg: degree; "
-            "UTC: Coordinated Universal Time."
-        ),
     ))
+    if photometry is not None:
+        lines.extend((
+            (
+                "  T-mag/N-mag: brightest valid sampled Horizons total/"
+                "nuclear model magnitude and its UTC epoch."
+            ),
+            (
+                "  Horizons advises treating small-body magnitudes as "
+                "uncertain at roughly 1 mag in practice, potentially worse "
+                "at large phase angle."
+            ),
+        ))
+    lines.append(
+        "  au: astronomical unit; d: day; deg: degree; "
+        "UTC: Coordinated Universal Time."
+    )
     return "\n".join(lines) + "\n"
 
 
-def json_text(result: CometDiscoveryResult) -> str:
+def _sample_document(sample):
+    return {
+        "epoch_utc": sample.epoch_utc.isoformat(),
+        "time_scale": "UTC",
+        "total_model_magnitude": {
+            "quantity": "T-mag",
+            "value": sample.total_magnitude,
+            "unit": "mag",
+        },
+        "nuclear_model_magnitude": {
+            "quantity": "N-mag",
+            "value": sample.nuclear_magnitude,
+            "unit": "mag",
+        },
+    }
+
+
+def _summary_document(sample, *, quantity, attribute):
+    return {
+        "quantity": quantity,
+        "value": None if sample is None else getattr(sample, attribute),
+        "unit": "mag",
+        "epoch_utc": None if sample is None else sample.epoch_utc.isoformat(),
+        "time_scale": "UTC",
+        "meaning": "brightest valid sampled provider model value",
+    }
+
+
+def json_text(
+    result: CometDiscoveryResult,
+    photometry: CometDiscoveryPhotometry | None = None,
+) -> str:
+    by_designation = _photometry_by_designation(result, photometry)
     document = {
         "selection": {
             "start_utc": result.start_utc.isoformat(),
@@ -144,6 +276,39 @@ def json_text(result: CometDiscoveryResult) -> str:
         },
         "records": [],
     }
+    if photometry is not None:
+        document["observer_model_photometry"] = {
+            "observer": {
+                "location": photometry.observer_location,
+                "latitude": {
+                    "value": photometry.observer_latitude_deg,
+                    "unit": "deg",
+                },
+                "longitude": {
+                    "value": photometry.observer_longitude_deg,
+                    "unit": "deg",
+                },
+                "elevation": {
+                    "value": photometry.observer_elevation_m,
+                    "unit": "m",
+                },
+            },
+            "sampling": {
+                "start_utc": photometry.start_utc.isoformat(),
+                "stop_utc": photometry.stop_utc.isoformat(),
+                "step": photometry.magnitude_step,
+                "sample_count": len(photometry.sample_epochs_utc),
+                "endpoint_inclusive": True,
+            },
+            "meaning": (
+                "sampled Horizons provider model; not a continuous minimum, "
+                "visibility forecast, or detectability estimate"
+            ),
+            "practical_uncertainty_warning": (
+                "Treat small-body model magnitudes as uncertain at roughly "
+                "1 mag in practice and potentially worse at large phase angle."
+            ),
+        }
     for record in result.records:
         values = asdict(record)
         values["canonical_designation"] = record.canonical_designation
@@ -166,21 +331,64 @@ def json_text(result: CometDiscoveryResult) -> str:
                 "magnitude_model_k1", "magnitude_model_k2",
             )
         }
+        if by_designation is not None:
+            model = by_designation[record.canonical_designation]
+            values["observer_model_photometry"] = {
+                "provider": {
+                    "identity": model.provider,
+                    "version": model.provider_version,
+                    "retrieved_at_utc": model.retrieved_at_utc.isoformat(),
+                    "request_parameters": dict(model.request_parameters),
+                    "raw_sha256": model.raw_sha256,
+                },
+                "target": {
+                    "provider_spk_id": model.provider_spk_id,
+                    "orbit_solution_id": model.orbit_solution_id,
+                },
+                "brightest_sampled_total": _summary_document(
+                    model.brightest_total_sample,
+                    quantity="T-mag",
+                    attribute="total_magnitude",
+                ),
+                "brightest_sampled_nuclear": _summary_document(
+                    model.brightest_nuclear_sample,
+                    quantity="N-mag",
+                    attribute="nuclear_magnitude",
+                ),
+                "notices": list(model.notices),
+                "samples": [
+                    _sample_document(sample) for sample in model.samples
+                ],
+            }
         document["records"].append(values)
     return json.dumps(document, indent=2, sort_keys=True) + "\n"
 
 
 def main(argv=None) -> int:
-    arguments = parser().parse_args(argv)
+    argument_parser = parser()
+    arguments = argument_parser.parse_args(argv)
+    if arguments.magnitude_step is not None and arguments.observer_location is None:
+        argument_parser.error(
+            "--magnitude-step requires --observer-location."
+        )
     result = discover_comets(
         arguments.start,
         arguments.stop,
         max_perihelion_distance_au=arguments.max_perihelion_distance,
     )
+    photometry = None
+    if arguments.observer_location is not None:
+        photometry = characterize_discovery_photometry(
+            result,
+            observer_location=arguments.observer_location,
+            magnitude_step=(
+                arguments.magnitude_step or DEFAULT_MAGNITUDE_STEP
+            ),
+        )
     text = (
-        table_text(result)
+        table_text(result, photometry)
         if arguments.format == "table"
-        else json_text(result)
+        else json_text(result, photometry)
     )
     if arguments.output is None:
         print(text, end="")
