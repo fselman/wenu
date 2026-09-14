@@ -247,3 +247,35 @@ Acceptance evidence: the focused documentation gate passed all 114 tests in
 2.86 seconds; the complete Mac regression passed all 2,381 tests in 87.20
 seconds; `git diff --check` was clean; and the branch was synchronized with a
 clean working tree.
+
+
+## Candidate implementation
+
+The bounded implementation adds `acquire_minor_body_resources()` and
+`ensure_minor_body_resources()` to the existing acquisition owner. A resolved
+identity first produces an explicit Horizons lookup selector. Comet parents use
+`DES=<designation>;CAP;NOFRAG`; fragments retain their fragment designation and
+omit `NOFRAG`. Only a unique returned record number is then used for the SPK
+request.
+
+The implementation validates Horizons API version 1.2, repeats and compares
+the object/solution identity across lookup and SPK receipts, checks the returned
+target against the resolved SBDB target, requires one type-21 target segment,
+and retains exact non-gravitational parameter strings. Filenames sanitize
+provider solution identifiers such as `JPL#K265/50` without changing the
+scientific solution value stored in the manifest.
+
+The generic policy path supports warm-cache reuse, explicit offline failure,
+refresh, per-identity locking, staging validation, content-addressed atomic
+publication, and post-publication revalidation. The existing numbered-asteroid
+API and CLI behavior remain unchanged.
+
+A deliberate live diagnostic on 2026-09-13 resolved `10P` through SBDB target
+`1000094`, bound Horizons record `90000214`, preserved solution
+`JPL#K265/50`, downloaded a type-21 SPK for 2026-09-01 through 2026-10-31,
+verified actual TDB coverage JD 2461284.5 through 2461344.5, and loaded the
+published identity as `10P/Tempel 2` through
+`MinorBodyResourceCollection`.
+
+**Implementation status:** Candidate for Fernando's review. No `wenu_chart`
+integration or visible output changes are included.
