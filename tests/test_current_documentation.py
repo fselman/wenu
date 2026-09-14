@@ -4628,7 +4628,7 @@ def test_50a5d2c_audits_exact_comet_cli_preflight():
     ).split())
 
     for phrase in (
-        "Candidate audit for Fernando's review",
+        "Accepted by Fernando on 2026-09-13",
         "request-level composition",
         "`--comet SELECTION`",
         "`--comet-track SELECTION`",
@@ -4645,11 +4645,13 @@ def test_50a5d2c_audits_exact_comet_cli_preflight():
         "No failure falls back to the first provider result",
         "Extend existing owners rather than add a milestone-specific test module",
         "mixed asteroid-and-comet preflight uses one verified collection",
-        "would authorize only the 50A.5D.2C exact comet CLI",
-        "would not authorize observer-dependent comet magnitude",
+        "authorizes only the 50A.5D.2C exact comet CLI",
+        "does not authorize observer-dependent comet magnitude",
+        "focused current-documentation gate passed all 115 tests in 2.84 seconds",
+        "authorizes only implementation of the request-level exact",
     ):
         assert phrase in audit
 
-    assert "candidate 50A.5D.2C audit isolates exact comet CLI preflight" in roadmap
+    assert "accepted 50A.5D.2C audit isolates exact comet CLI preflight" in roadmap
     assert "50A.5D.2C exact comet CLI-preflight audit ownership" in source_tree
     assert "introduces no coordinate system, origin, frame, epoch, equinox" in audit
