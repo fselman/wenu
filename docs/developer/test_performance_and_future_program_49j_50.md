@@ -216,7 +216,7 @@ a separate later physical-appearance milestone.
 Close provenance, public interface, validation, and documentation after PNG,
 PDF, and semantic-SVG acceptance.
 
-## 4.1. Program 50S — Artificial-satellite crossings and contamination
+## 4.1 — Program 50S: artificial-satellite crossings and contamination
 
 Program 50S is scheduled after 50A.6 and before Program 50B. It provides two
 views of one scientifically realized crossing set:
