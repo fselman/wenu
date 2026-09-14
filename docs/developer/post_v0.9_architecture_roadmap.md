@@ -15,7 +15,7 @@ architectural rationale and accepted boundaries.
 
 | Order | Milestone | Outcome |
 |---:|---|---|
-| 1 | 50A.5D.1B | Observer-dependent sampled Horizons comet model magnitude, explicitly not a visibility prediction. |
+| 1 | 50A.5D.1B | Candidate implemented: observer-dependent sampled Horizons comet model magnitude; scientific and Mac acceptance pending. |
 | 2 | 50A.5D.3 | Renderer-neutral text and JSON moving-object reports from already realized temporal results. |
 | 3 | 50A.5E.0 | Audit the distributable Wenu asteroid/comet database, scientific representation, provenance, coverage, and lifecycle. |
 | 4 | 50A.5E.1 | Build and verify a versioned distributable database, including important minor bodies and all governed dwarf planets. |
@@ -1652,10 +1652,15 @@ The accepted report contract additionally requires instantaneous topocentric
 apparent `dRA/dt`, `cos(dec) dRA/dt`, `dDec/dt`, and total sky-plane speed in
 mas/s, with explicit telescope-driver convention warnings.
 
-The accepted 50A.5D.1A implementation provides only the deterministic SBDB
-query, typed rows, and table/JSON command. Fernando deferred observer-dependent Horizons
-magnitude and its cadence to 50A.5D.1B. Comet acquisition and moving-object
-reports remain unauthorized later slices.
+The accepted 50A.5D.1A implementation provides the deterministic SBDB query,
+typed rows, and table/JSON command. The 50A.5D.1B candidate adds a distinct
+`comet_photometry.py` owner for bounded, sequential Horizons quantity-9
+requests when `--observer-location` is explicit. The default cadence is
+`1d`; both discovery-interval endpoints are sampled; exact target and orbit
+solution are validated; `T-mag` and `N-mag` remain separate; and complete
+request and raw-response provenance are retained. Scientific and Mac
+acceptance remain pending. Moving-object reports remain an unauthorized later
+slice.
 
 The accepted 50A.5D.2A audit isolates exact comet identity resolution before
 acquisition. It reuses exact installed aliases, permits one explicit SBDB
