@@ -503,7 +503,14 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
                 and body.entity_key.startswith("asteroid_")
             )
             else (
-                body.selection_key
+                (
+                    body.selection_key
+                    if _SAFE_PATH_COMPONENT.fullmatch(body.selection_key)
+                    else semantic_key(
+                        body.selection_key,
+                        field="comet selection key",
+                    )
+                )
                 if body.body_class == "comet"
                 else body.entity_key
             )
