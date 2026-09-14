@@ -221,7 +221,7 @@ def _fetch(
 
 def _normalized_solution(value: str) -> str:
     result = " ".join(value.strip().split())
-    result = re.sub(r"^JPL(?:#|\\s)+", "", result, flags=re.IGNORECASE)
+    result = re.sub(r"^JPL(?:#|\s)+", "", result, flags=re.IGNORECASE)
     return result.casefold()
 
 
@@ -230,7 +230,7 @@ def _target_identity(
     target_value: str,
 ) -> tuple[bool, str | None]:
     source = _TARGET_SOURCE.search(target_value)
-    name = target_value[:source.start()].strip() if source else target_value.strip()
+    name = (\n        target_value[:source.start()].strip()\n        if source\n        else target_value.strip()\n    )
     designation = record.canonical_designation
     matches = (
         name == designation
