@@ -277,5 +277,14 @@ verified actual TDB coverage JD 2461284.5 through 2461344.5, and loaded the
 published identity as `10P/Tempel 2` through
 `MinorBodyResourceCollection`.
 
-**Implementation status:** Candidate for Fernando's review. No `wenu_chart`
-integration or visible output changes are included.
+**Implementation status:** Verified candidate for Fernando's review. No
+`wenu_chart` integration or visible output changes are included.
+
+Fernando's Mac acceptance run acquired `10P/Tempel 2` from the live providers,
+bound Horizons command `90000214;` and solution `JPL#K265/50` to SPK target
+`1000094`, verified TDB coverage JD 2461284.5 through 2461344.5, retained the
+exact non-gravitational parameters, and then reused the identical immutable
+resource under `offline` without network acquisition. The focused gate passed
+all 169 tests in 4.09 seconds, the complete Mac regression passed all 2,388
+tests in 91.98 seconds, `git diff --check` was clean, and the branch was
+synchronized with a clean working tree.
