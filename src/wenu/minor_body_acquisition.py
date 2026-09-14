@@ -195,7 +195,19 @@ def _horizons_solution(result, identity):
             for value in identity.aliases
         }
         normalized_fullname = " ".join(fullname.split()).casefold()
-        if normalized_fullname not in aliases:
+        parenthesized = re.fullmatch(
+            r"(?P<name>.+?)\s*\((?P<designation>[^()]+)\)",
+            normalized_fullname,
+        )
+        horizons_designation = (
+            parenthesized.group("designation").strip()
+            if parenthesized is not None
+            else None
+        )
+        if (
+            normalized_fullname not in aliases
+            and horizons_designation not in aliases
+        ):
             raise ValueError(
                 "Horizons comet identity "
                 f"{normalized_fullname!r} does not match resolved aliases "
