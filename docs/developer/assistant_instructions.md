@@ -179,9 +179,40 @@ Work in small, independently testable milestones. Each change must:
 
 - compile;
 - preserve existing public APIs unless the roadmap explicitly changes them;
-- pass focused and full tests;
+- pass the focused gate that covers every changed responsibility and immediate
+  seam, plus the full suite at the milestone handoff defined below;
 - leave the project usable;
 - avoid unrelated refactoring, cleanup, or formatting.
+
+### Layered post-change verification
+
+During implementation, run the smallest focused gate that covers every changed
+responsibility and its immediate architectural, scientific, provider, or public
+seams. Do not repeatedly run unrelated tests merely because they exist in the
+repository. A documentation-only edit normally reruns the affected
+documentation contract and integrity checks; a domain edit reruns its owning
+tests plus directly affected shared-boundary tests.
+
+Run the complete plugin-disabled suite:
+
+- once before presenting a bounded implementation milestone for acceptance;
+- after a material cross-cutting change whose effects cannot be bounded by the
+  focused gates;
+- before merging a milestone branch into its integration branch; and
+- before merging the integration branch into `main`.
+
+A previously passing full suite remains valid across a later documentation-only
+edit only when the documentation gate and repository-integrity checks pass and
+no executable code, scientific fixture, dependency, configuration, packaging,
+or non-documentation test collection changed. Record the exact commit or
+remote tree covered by every focused and full-suite result; never attach an
+earlier result ambiguously to later production content.
+
+Create domain markers or focused test files only when they describe an
+enduring responsibility and their membership is complete and truthful. Do not
+create a marker or empty future test file merely to name a branch or milestone.
+Shared tests may need to be named explicitly when they protect multiple domains
+and therefore do not belong exclusively to one marker.
 
 Every medium or major milestone must review
 `coordinate_system_guide_v0.9.5.md`. Update it when scientific meaning,
