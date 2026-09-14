@@ -1801,6 +1801,10 @@ must remain available as a correctness oracle.
 
 ### 50S.0 — Scientific, catalogue, search, and photometry audit
 
+**Status:** Candidate audit recorded in
+`artificial_satellite_crossing_audit_50s0.md`; scientific and architectural
+acceptance pending.
+
 Review the scientific and technical literature before selecting either the
 catalogue-wide crossing algorithm or an apparent-brightness model. Record
 primary sources, implemented reference systems, assumptions, failure modes,
