@@ -1,8 +1,8 @@
 # Artificial-satellite crossing and photometry audit (Milestone 50S.0)
 
 **Status:** Accepted by Fernando on 2026-09-14
-**Audit date:** 2026-09-14  
-**Implementation baseline:** `862acaa`  
+**Audit date:** 2026-09-14
+**Implementation baseline:** `862acaa`
 **Scope:** Literature, provider, algorithm, photometry, validation, and
 architecture decisions only; no runtime satellite, catalogue acquisition, or
 public crossing command
