@@ -1576,3 +1576,11 @@ owns deterministic contract coverage;
   acquisition, cache, lock, publication, and failure test owner;
 - `cli/chart.py`, coordinate, projection, renderer, magnitude, report,
   semantic, and export owners do not change in the audit.
+
+- the candidate implementation adds shared resolved-identity acquisition and
+  policy entry points to `minor_body_acquisition.py`; it does not connect them
+  to `cli/chart.py`;
+- `tests/test_minor_body_acquisition.py` extends its existing responsibility
+  with exact Horizons record binding, manifest loading, warm-cache, offline,
+  target-mismatch, ambiguity, safe identity locks, and atomic-publication
+  evidence.

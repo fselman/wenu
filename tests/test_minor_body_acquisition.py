@@ -1,6 +1,8 @@
 """Moving-object preflight acquisition and immutable-cache contracts."""
 
+from dataclasses import replace
 from datetime import datetime, timezone
+import base64
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -10,10 +12,67 @@ import pytest
 from wenu.cli import chart
 from wenu.minor_body_acquisition import (
     MovingObjectDataPolicy,
+    _identity_keys,
     _publish_acquisition,
+    acquire_minor_body_resources,
     coverage_interval,
+    ensure_minor_body_resources,
     ensure_numbered_asteroid_resources,
 )
+from wenu.minor_body_identity import ResolvedMinorBodyIdentity
+from wenu.minor_body_resources import MinorBodyResourceCollection
+
+
+def resolved_tempel_2():
+    return ResolvedMinorBodyIdentity(
+        original_selection="10P",
+        normalized_selection="10p",
+        object_class="comet",
+        kind="cn",
+        canonical_designation="10P",
+        primary_designation="10P",
+        prefix="P",
+        permanent_number=10,
+        fragment=None,
+        name="Tempel 2",
+        aliases=("10P", "10P/Tempel 2", "Tempel 2"),
+        provider_spk_id="1000094",
+        orbit_class_code="JFc",
+        orbit_class_name="Jupiter-family Comet",
+        orbit_solution_id="K265/50",
+        provider="NASA/JPL Small-Body Database (SBDB) API",
+        provider_version="1.3",
+        source="provider",
+        request_parameters=(("des", "10P"),),
+        retrieved_at_utc=datetime(2026, 9, 13, tzinfo=timezone.utc),
+        raw_sha256="a" * 64,
+    )
+
+
+def horizons_tempel_2(*, spk=False, target="1000094"):
+    result = """JPL/HORIZONS                    10P/Tempel 2               2026-Sep-13 18:15:46
+Rec #:90000214 (+COV) Soln.date: 2026-Sep-08_14:24:57   # obs: 6790 (2003-2026)
+EPOCH=  2457869.5 ! 2017-Apr-26.0000000 (TDB)
+Comet non-gravitational force model
+ AMRAT=  0. DT=  0.
+ A1= 2.556003071368E-10 A2= 8.289547404274E-12 A3= 0.
+ ALN= .1112620426 NK= 4.6142 NM= 2.15 NN= 5.093 R0= 2.808
+COMET comments
+1: soln ref.= JPL#K265/50, data arc: 2003-03-07 to 2026-09-07
+"""
+    document = {
+        "signature": {
+            "source": "NASA/JPL Horizons API",
+            "version": "1.2",
+        },
+        "result": result,
+    }
+    if spk:
+        document.update({
+            "spk_file_id": target,
+            "spk": base64.b64encode(b"DAF/fake comet").decode("ascii"),
+        })
+    return document
 
 
 def test_policy_reuses_warm_cache_without_acquisition(tmp_path):
@@ -220,3 +279,162 @@ def test_automatic_name_lookup_remains_outside_numbered_asteroid_slice():
 
     with pytest.raises(ValueError, match="positive permanent number"):
         chart._numbered_asteroid_selections(arguments)
+
+
+def test_resolved_comet_binds_unique_horizons_record_and_publishes_manifest(
+    tmp_path, monkeypatch
+):
+    calls = []
+
+    def fetch(url, parameters):
+        calls.append((url, parameters))
+        return horizons_tempel_2(spk=len(calls) == 2)
+
+    monkeypatch.setattr(
+        "wenu.minor_body_acquisition._actual_coverage",
+        lambda path, target, **options: {
+            "start_jd_tdb": 2461254.5,
+            "stop_jd_tdb": 2461374.5,
+        },
+    )
+    manifest = acquire_minor_body_resources(
+        (resolved_tempel_2(),),
+        tmp_path,
+        start="2026-08-02",
+        stop="2026-11-30",
+        fetch_json=fetch,
+    )
+
+    assert len(calls) == 2
+    assert calls[0][1]["COMMAND"] == "'DES=10P;CAP;NOFRAG'"
+    assert calls[1][1]["COMMAND"] == "'90000214;'"
+    document = json.loads(manifest.read_text(encoding="utf-8"))
+    record = document["resources"][0]
+    assert record["spk_file_id"] == "1000094"
+    assert record["identity"]["primary_designation"] == "10P"
+    assert record["solution"]["orbit_solution_id"] == "JPL#K265/50"
+    assert record["solution"]["horizons_command"] == "90000214;"
+    assert record["solution"]["non_gravitational_parameters"]["A1"] == (
+        "2.556003071368E-10"
+    )
+    assert record["receipt"]["identity_raw_sha256"] == "a" * 64
+    collection = MinorBodyResourceCollection(tmp_path)
+    assert collection.resolve("Tempel 2").canonical_designation == (
+        "10P/Tempel 2"
+    )
+
+
+def test_resolved_comet_rejects_changed_horizons_target(tmp_path, monkeypatch):
+    calls = []
+
+    def fetch(url, parameters):
+        calls.append(parameters)
+        return horizons_tempel_2(
+            spk=len(calls) == 2, target="different"
+        )
+
+    with pytest.raises(ValueError, match="provider targets differ"):
+        acquire_minor_body_resources(
+            (resolved_tempel_2(),), tmp_path,
+            start="2026-08-02", stop="2026-11-30", fetch_json=fetch,
+        )
+
+    assert not tuple(tmp_path.iterdir())
+
+
+def test_resolved_comet_rejects_nonunique_horizons_lookup(tmp_path):
+    ambiguous = horizons_tempel_2()
+    ambiguous["result"] = "Matching small-bodies: 10P"
+
+    with pytest.raises(ValueError, match="unique record"):
+        acquire_minor_body_resources(
+            (resolved_tempel_2(),), tmp_path,
+            start="2026-08-02", stop="2026-11-30",
+            fetch_json=lambda *values: ambiguous,
+        )
+
+
+def test_typed_preflight_reuses_warm_comet_cache_without_network(tmp_path):
+    cached = tmp_path / "verified"
+    calls = []
+
+    result = ensure_minor_body_resources(
+        (resolved_tempel_2(),), tmp_path,
+        "2026-08-02", "2026-11-30",
+        finder=lambda *values: cached,
+        acquire=lambda *values, **kwargs: calls.append((values, kwargs)),
+    )
+
+    assert result.resource_directory == cached
+    assert result.acquired is False
+    assert calls == []
+
+
+def test_typed_offline_preflight_reports_identity_and_coverage(tmp_path):
+    calls = []
+
+    with pytest.raises(
+        FileNotFoundError, match="10P covering 2026-08-02 through 2026-11-30"
+    ):
+        ensure_minor_body_resources(
+            (resolved_tempel_2(),), tmp_path,
+            "2026-08-02", "2026-11-30",
+            policy="offline",
+            finder=lambda *values: None,
+            acquire=lambda *values, **kwargs: calls.append((values, kwargs)),
+        )
+
+    assert calls == []
+
+
+def test_typed_publication_is_atomic_and_content_addressed(
+    tmp_path, monkeypatch
+):
+    identity = resolved_tempel_2()
+
+    def acquire(identities, directory, *, start, stop):
+        assert identities == (identity,)
+        (directory / "10p.bsp").write_bytes(b"DAF/test")
+        manifest = directory / "acquisition-report.json"
+        manifest.write_text(json.dumps({
+            "resources": [{
+                "identity": {
+                    "object_class": "comet",
+                    "provider_spk_id": "1000094",
+                    "primary_designation": "10P",
+                },
+                "filename": "10p.bsp",
+                "sha256": "injected",
+                "spk_file_id": "1000094",
+            }],
+        }, sort_keys=True) + "\n", encoding="utf-8")
+        return manifest
+
+    checks = []
+    monkeypatch.setattr(
+        "wenu.minor_body_acquisition.resource_covers_identities",
+        lambda *values: checks.append(values) or True,
+    )
+    result = ensure_minor_body_resources(
+        (identity,), tmp_path, "2026-08-02", "2026-11-30",
+        policy="refresh", finder=lambda *values: None, acquire=acquire,
+    )
+
+    assert result.acquired is True
+    assert len(result.resource_directory.name) == 64
+    assert len(checks) == 2
+    assert not tuple(tmp_path.glob(".acquire-*"))
+
+
+def test_identity_lock_key_is_filename_safe_for_provisional_comets():
+    identity = resolved_tempel_2()
+    identity = replace(
+        identity,
+        canonical_designation="C/2025 E1",
+        primary_designation="2025 E1",
+        prefix="C",
+        permanent_number=None,
+    )
+
+    assert len(_identity_keys((identity,))[0]) == 64
+    assert "/" not in _identity_keys((identity,))[0]

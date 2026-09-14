@@ -1633,3 +1633,11 @@ Horizons record/apparition and solution binding, a bounded validated type-21
 SPK, retained non-gravitational provenance, and atomic content-addressed
 publication. It changes no runtime code and does not authorize chart preflight
 integration or reports. Fernando accepted this bounded audit on 2026-09-13.
+
+Fernando accepted the bounded 50A.5D.2B acquisition-service implementation
+on 2026-09-13 after live `10P/Tempel 2` acquisition, offline immutable-cache
+reuse, 169 focused tests, and the complete 2,388-test Mac regression. It uses a
+resolved identity, a unique explicit Horizons record, strict
+solution/target/signature comparison, one validated type-21 segment, and the
+existing immutable publication policy. This closes only the shared acquisition
+service; CLI integration remains 50A.5D.2C.
