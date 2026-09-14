@@ -283,7 +283,15 @@ def parse_photometry_response(
         raise ValueError("Horizons photometry response has no result text.")
 
     target = _TARGET.search(result)
-    if target is None or record.provider_spk_id not in target.group("value"):
+    target_id = (
+        None
+        if target is None
+        else re.search(r"\((?P<value>\d+)\)\s*$", target.group("value"))
+    )
+    if (
+        target_id is None
+        or target_id.group("value") != record.provider_spk_id
+    ):
         raise ValueError(
             "Horizons photometry target differs from the discovery identity."
         )
