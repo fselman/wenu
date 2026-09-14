@@ -1631,6 +1631,8 @@ sidecar reports require a new audit before implementation.
 **Status:** Audit, 50A.5D.1A, and 50A.5D.2A through 50A.5D.2C accepted;
 50A.5D.1B and 50A.5D.3 remain.
 
+50A.5D.1A accepted by Fernando on 2026-09-13.
+
 The proposed audit separates an explicit `wenu_retrieve_comets` SBDB query,
 exact policy-governed comet preflight, and renderer-neutral natural moving-
 object sidecars. Discovery means a declared perihelion-time and perihelion-
