@@ -4655,5 +4655,11 @@ def test_50a5d2c_audits_exact_comet_cli_preflight():
         assert phrase in audit
 
     assert "accepted 50A.5D.2C audit isolates exact comet CLI preflight" in roadmap
-    assert "50A.5D.2C exact comet CLI-preflight audit ownership" in source_tree
+    assert (
+        "50A.5D.2C exact comet CLI-preflight ownership "
+        "(candidate implementation)" in source_tree
+    )
+    assert "one effective resource directory before sphere construction" in (
+        source_tree
+    )
     assert "introduces no coordinate system, origin, frame, epoch, equinox" in audit
