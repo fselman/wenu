@@ -4721,3 +4721,19 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
 
     assert "comet_model_magnitude_audit_50a5d1b.md" in index
     assert "accepted the 50A.5D.1B audit on 2026-09-14" in roadmap
+
+def test_assistant_instructions_require_documentation_contract_preflight():
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Documentation-contract preflight",
+        "exact top-level-file allowlist",
+        "search for every exact-phrase assertion",
+        "Never write a documentation assertion from memory",
+        "verify after whitespace normalization",
+        "developer-document index, resulting filesystem set, roadmap links",
+        "Inspect the resulting branch contents",
+        "every required edit actually applied",
+        "Do not present the branch for Mac testing",
+    ):
+        assert phrase in instructions
