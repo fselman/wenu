@@ -332,6 +332,35 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest
 Any required plugin must be explicitly loaded, version constrained,
 documented, and accepted before it becomes part of a Wenu gate.
 
+### External-provider policy preflight
+
+Before designing, implementing, or changing any automated access to an
+external data provider, read the provider's current primary-source terms,
+fair-use policy, API documentation, and relevant licensing requirements.
+Perform this check before choosing concurrency, batching, request cadence,
+retry behavior, cache lifetime, or redistribution policy—not after the code
+has been written.
+
+1. Record the authoritative policy URL and the date checked in the active
+   milestone record.
+2. Identify explicit limits on simultaneous requests, request frequency,
+   workload size, retries, automated use, caching, attribution, licensing,
+   and redistribution.
+3. Treat provider requirements as hard design constraints. A performance
+   optimization must not violate them even when tests pass and the service
+   appears to accept it.
+4. Prefer validated caching, deduplication, batching explicitly supported by
+   the provider, and reduced request scope before increasing request rate.
+5. On rate-limit, throttling, or service-unavailable responses, stop or back
+   off as directed. Never create an aggressive automatic retry loop or evade
+   a provider restriction through multiple workers, processes, hosts,
+   identities, endpoints, or equivalent mechanisms.
+6. If the current policy is absent, ambiguous, or unreachable, preserve the
+   most conservative behavior and leave the optimization pending clarification.
+7. Add contract tests for the adopted local policy, but never treat tests as
+   evidence that provider permission exists. Recheck the primary policy when
+   a provider route, workload model, or distribution behavior changes.
+
 For visual milestones, compare the mandatory regression charts named in the
 active migration roadmap. Do not accept an unexplained regression.
 

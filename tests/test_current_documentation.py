@@ -4880,6 +4880,25 @@ def test_assistant_instructions_require_post_change_verification():
         assert phrase in instructions
 
 
+def test_assistant_instructions_require_external_provider_policy_preflight():
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "External-provider policy preflight",
+        "current primary-source terms",
+        "before choosing concurrency",
+        "authoritative policy URL and the date checked",
+        "simultaneous requests, request frequency",
+        "Treat provider requirements as hard design constraints",
+        "validated caching, deduplication",
+        "rate-limit, throttling, or service-unavailable responses",
+        "Never create an aggressive automatic retry loop",
+        "most conservative behavior",
+        "never treat tests as evidence that provider permission exists",
+    ):
+        assert phrase in instructions
+
+
 def test_assistant_instructions_govern_production_module_placement():
     instructions = " ".join(read(INSTRUCTIONS).split())
     source_tree = read(DEVELOPER / "source_tree.md")
