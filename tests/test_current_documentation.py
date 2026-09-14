@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 51483)
-Total output lines: 4894
-
 """Current public-documentation and architecture-authority contracts."""
 
 import ast
@@ -2465,7 +2462,144 @@ def test_49i3c31a_records_observed_venus_disk_sequence():
             DEVELOPER / "archive/milestone_history/49i_solar_system/observed_venus_disk_sequence_49i3c31a.md"
         ).split()
     )
-    roadmap = " ".join(read(FUT…1483 tokens truncated…entation_reference.md").split()
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `8a6cb0f`",
+        "Scientifically and architecturally accepted",
+        "`ObservedSolarSystemDiskSequenceRequest`",
+        "`ObservedSolarSystemDiskSequenceRealizer.sequence()`",
+        "`ObservedSolarSystemDiskSequence`",
+        "`n_steps = 8` produces nine exact sample instants",
+        "origin `observer` and unit `au`",
+        "future 3D Solar-System visualizer",
+        "`4.615e-10 deg`",
+        "`1.946e-10 deg`",
+        "`3.128e-12 AU`",
+        "`3.795e-10 arcsec`",
+        "`7.096e-10 deg`",
+        "`4.823e-12`",
+        "`4.301e-09 deg`",
+        "all 51 focused tests passed in 1.89 seconds",
+        "All 91 focused sequence",
+        "49I.3C.3.1B",
+        "adds no public command",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.3.1A" in roadmap
+    assert "Accepted output-neutral observed Venus disk sequence" in architecture
+    assert "Observed Venus disk sequence (Milestone 49I.3C.3.1A)" in implementation
+    assert "Milestone 49I.3C.3.1A ownership" in source_tree
+    assert "13.2.27 49I.3C.3.1A observed Venus disk sequence" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "observed_venus_disk_sequence_49i3c31a.md" in instructions
+    assert "all 64 current-documentation tests in 2.23 seconds" in contract
+    assert "1,985 tests with 30 deselected in 25.46 seconds" in contract
+    assert "all 2,015 tests in 84.38 seconds" in contract
+
+
+def test_49i3c31b_records_drawable_observed_venus_sequence():
+    contract = " ".join(read(DRAWABLE_OBSERVED_VENUS_SEQUENCE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `7fd2a6a`",
+        "Scientifically, architecturally, visually, and operationally accepted",
+        "`ObservedVenusDiskSequenceRealization`",
+        "`MagnifyProjectedDiskSequence`",
+        "one fixed product frame",
+        "observer/AU distances",
+        "`--planet-disk-sequence venus`",
+        "--disk-sequence-model observed",
+        "`--disk-sequence-labels`",
+        "`--planet-disk-magnification venus=FACTOR`",
+        "`--no-equatorial-grid`",
+        "`--grid-references ecliptic`",
+        "All 211 focused tests passed in 5.74 seconds",
+        "1,988 tests with 30 deselected in 25.91 seconds",
+        "all 2,018 tests in 85.27 seconds",
+        "Frozen-Earth ecliptic mode",
+        "Mercury",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.3.1B" in roadmap
+    assert "Drawable observed Venus disk sequence" in architecture
+    assert "Drawable observed Venus disk sequence (Milestone 49I.3C.3.1B)" in implementation
+    assert "Milestone 49I.3C.3.1B ownership" in source_tree
+    assert "13.2.28 49I.3C.3.1B drawable observed Venus sequence" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "drawable_observed_venus_sequence_49i3c31b.md" in instructions
+
+
+def test_49i3c32a_records_frozen_earth_venus_sequence_state():
+    contract = " ".join(read(FROZEN_EARTH_VENUS_SEQUENCE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `447e701`",
+        "Scientifically and architecturally accepted",
+        "`FrozenEarthDiskSequenceRequest`",
+        "`FrozenEarthDiskSequenceRealizer.sequence()`",
+        "`FrozenEarthGeometricDisk`",
+        "origin `frozen-earth` and unit `au`",
+        "fixed J2000 mean-ecliptic axes",
+        "future 3D Solar-System visualizer",
+        "not topocentric, astrometric, apparent",
+        "`4.337e-12 AU`",
+        "`1.968e-10 deg`",
+        "`2.064e-11 deg`",
+        "`1.274e-12 AU`",
+        "`1.627e-10 deg`",
+        "All 63 focused sequence",
+        "1,997 tests with 30 deselected in 26.69 seconds",
+        "all 2,027 tests in 84.73 seconds",
+        "49I.3C.3.2B",
+        "49I.3C.3.3",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.3.2A" in roadmap
+    assert "Accepted output-neutral frozen-Earth Venus sequence" in architecture
+    assert "Frozen-Earth Venus sequence state (Milestone 49I.3C.3.2A)" in implementation
+    assert "Milestone 49I.3C.3.2A ownership" in source_tree
+    assert "13.2.29 49I.3C.3.2A frozen-Earth Venus state" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "frozen_earth_venus_sequence_49i3c32a.md" in instructions
+    assert "All 66 current-documentation tests passed in 2.07 seconds" in contract
+
+
+def test_49i3c32b_records_drawable_frozen_earth_venus_sequence():
+    contract = " ".join(
+        read(DRAWABLE_FROZEN_EARTH_VENUS_SEQUENCE).split()
+    )
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
     )
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     instructions = " ".join(read(INSTRUCTIONS).split())
