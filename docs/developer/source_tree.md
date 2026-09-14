@@ -1560,3 +1560,19 @@ owns deterministic contract coverage;
   frozen unique, ambiguous, and wrong-class provider responses;
 - the candidate authorizes no acquisition, cache, SPK, chart, coordinate,
   magnitude, report, renderer, semantic, or export integration.
+
+
+## 50A.5D.2B generic comet-acquisition audit ownership
+
+- `docs/developer/comet_acquisition_audit_50a5d2b.md` alone owns the candidate
+  provider, apparition, bounded-SPK, provenance, failure, and acceptance
+  contract;
+- `minor_body_identity.py` remains the exact identity owner;
+- `minor_body_acquisition.py` is the proposed shared acquisition, coverage,
+  validation, lock, and immutable-publication owner;
+- `minor_body_resources.py` remains the installed manifest and resource
+  lifecycle authority;
+- `tests/test_minor_body_acquisition.py` remains the durable policy,
+  acquisition, cache, lock, publication, and failure test owner;
+- `cli/chart.py`, coordinate, projection, renderer, magnitude, report,
+  semantic, and export owners do not change in the audit.
