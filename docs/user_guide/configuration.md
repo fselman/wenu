@@ -155,6 +155,28 @@ The standalone
 `tools/acquire_numbered_asteroids.py` command remains available for controlled
 offline preparation.
 
+### Moving-object authorities and Wenu data services
+
+The Minor Planet Center (MPC) is the International Astronomical Union's
+clearinghouse for minor-planet and comet observations and designations. A
+permanent periodic-comet designation such as `10P/Tempel 2` uses the MPC's
+permanent number: `10P` is not the tenth periodic comet discovered in a given
+year. NASA's Planetary Data System (PDS), including its Small Bodies Node,
+archives and distributes planetary and small-body datasets and cross-reference
+catalogues.
+
+Wenu does not query MPC or PDS directly while listing or charting. Its moving-
+object services are NASA/JPL endpoints:
+
+- `wenu_retrieve_comets` lists comets through the SBDB Query API.
+- Exact `--comet` identity resolution uses the SBDB API.
+- Automatic minor-body acquisition uses the Horizons API to obtain a bounded
+  SPK, then stores and verifies it as an immutable local resource.
+
+MPC remains the upstream designation authority, while PDS is an archival and
+reference system. Once Wenu's preflight has resolved or acquired the required
+resource collection, chart construction and rendering are offline.
+
 Select the symbolic hollow diamond with `--asteroid 79989`, the trajectory
 with `--asteroid-track 79989`, or both. If a manifest declares an official
 name, that exact name is also accepted case-insensitively. The permanent number
