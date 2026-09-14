@@ -75,8 +75,9 @@ Examples:
 - `73P` and `73P-B` are different selections unless the provider identity
   explicitly proves an exact alias relationship.
 
-The resolver never uses substring, prefix, fuzzy, popularity, nearest-name, or
-first-result matching.
+The resolver never uses substring, prefix, wildcard, fuzzy, popularity,
+nearest-name, or first-result matching. A selection containing SBDB's `*`
+wildcard fails before network access.
 
 ## Resolution order
 
