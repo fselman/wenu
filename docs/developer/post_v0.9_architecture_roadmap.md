@@ -1697,15 +1697,38 @@ version. Index or cache policy must not enter propagation, coordinate,
 projection, or rendering ownership, and the unindexed complete calculation
 must remain available as a correctness oracle.
 
-### 50S.0 — Scientific, catalogue, and performance audit
+### 50S.0 — Scientific, catalogue, search, and photometry audit
 
-Select authoritative OMM/TLE sources and define identity, provenance, licence,
-snapshot time, element epoch, freshness, decay/removal policy, SGP4 variant,
-TEME meaning, time scales, Earth orientation, topocentric and refraction
-policy, shadow/illumination model, uncertainty communication, catalogue scale,
-and representative performance workloads. Characterize the maximum angular
-motion that the candidate filter must conservatively enclose. Add no visible
-satellite or public crossing command.
+Review the scientific and technical literature before selecting either the
+catalogue-wide crossing algorithm or an apparent-brightness model. Record
+primary sources, implemented reference systems, assumptions, failure modes,
+computational complexity, validation evidence, and an explicit
+Adopt/Adapt/Reject/Defer decision for every material candidate.
+
+The fast-search review must cover published orbit-to-field and
+satellite-to-survey screening methods, including vectorized propagation,
+adaptive temporal sampling, conservative swept-angle or swept-region bounds,
+spherical spatial indexing, interval indexing, hierarchical sky
+pixelizations, and combined space-time indexes. It must determine which
+methods can guarantee that no true crossing is discarded, what bounds are
+needed for fast low-Earth-orbit motion near the zenith, and whether an
+observer/night catalogue index is preferable to per-query propagation.
+
+The photometry review must cover reflected-sunlight models, range and phase
+dependence, projected area, shape, attitude and tumbling, bidirectional
+reflectance or empirical phase functions, passband and solar spectrum,
+atmospheric extinction, Earth umbra and penumbra, specular flares, published
+standard magnitudes, and empirical survey calibrations. It must distinguish a
+model magnitude or magnitude distribution from a guaranteed observed
+brightness or trail detection.
+
+The same audit must select authoritative OMM/TLE sources and define identity,
+provenance, licence, snapshot time, element epoch, freshness, decay/removal
+policy, SGP4 variant, TEME meaning, time scales, Earth orientation,
+topocentric and refraction policy, shadow/illumination model, uncertainty
+communication, catalogue scale, and representative performance workloads.
+Characterize the maximum angular motion that the candidate filter must
+conservatively enclose. Add no visible satellite or public crossing command.
 
 ### 50S.1 — Validated satellite state provider
 
@@ -1739,15 +1762,32 @@ fixture alone.
 
 ### 50S.4 — Observation-contamination reports
 
+#### 50S.4A — Geometric and illumination reports
+
 Expose human-readable and JSON results for planned observations and aggregate
 night-sky studies. Support crossing count, probability or rate with its stated
 estimator, occupied time, angular-speed and trail-length distributions, and
 maps or tables versus time, season, position, field size, and exposure
-duration. Geometric intersection and illumination are the first accepted
-contamination measures. Apparent brightness, attitude, flares, morphology,
-detector response, and a claim that a trail is detectable require separate
-models with explicit uncertainty and must never be inferred from geometry
-alone.
+duration. Preserve geometric intersection, range, phase angle, and
+illumination or shadow state without inferring brightness or detectability.
+
+#### 50S.4B — Apparent-brightness estimation and validation
+
+Implement only the photometric models accepted in 50S.0. Estimate apparent
+magnitude, passband when known, and an uncertainty or distribution appropriate
+to the available satellite metadata. The calculation must expose its range,
+phase function or reflectance model, projected-area and attitude assumptions,
+shadow state, atmospheric-extinction policy, and empirical calibration
+provenance. Unknown shape, attitude, tumbling, surface properties, or flare
+behavior must produce explicit limitations rather than false precision.
+
+Validate bounded satellite classes and geometries against time-resolved
+published or newly acquired calibrated photometric observations. Characterize
+residuals before accepting tolerances. A later detector model may combine
+brightness, angular speed, exposure time, point-spread function, pixel scale,
+throughput, sky background, saturation, and sensor response to estimate trail
+signal or detectability; it must remain distinct from intrinsic apparent
+magnitude and geometric crossing probability.
 
 ### 50S.5 — Drawable tracks and program closure
 
