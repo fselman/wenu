@@ -15,27 +15,26 @@ architectural rationale and accepted boundaries.
 
 | Order | Milestone | Outcome |
 |---:|---|---|
-| 1 | 50A.5D.1B | Candidate implemented: observer-dependent sampled Horizons comet model magnitude; scientific and Mac acceptance pending. |
-| 2 | 50A.5D.3 | Renderer-neutral text and JSON moving-object reports from already realized temporal results. |
-| 3 | 50A.5E.0 | Audit the distributable Wenu asteroid/comet database, scientific representation, provenance, coverage, and lifecycle. |
-| 4 | 50A.5E.1 | Build and verify a versioned distributable database, including important minor bodies and all governed dwarf planets. |
-| 5 | 50A.5E.2 | Add the `wenu-database` policy and default cache → provider → database resolution order. |
-| 6 | 50A.5E.3 | Add safe cache inspection, dry-run, pruning, and explicit minor-body cache flushing. |
-| 7 | 50A.6 | Close minor-body provenance, public interfaces, validation, documentation, and PNG/PDF/SVG acceptance. |
-| 8 | 50S.0 | Audit satellite catalogues, SGP4/TEME science, fast orbit-to-field literature, photometry, and performance workloads. |
-| 9 | 50S.1 | Implement and independently validate a frozen-snapshot artificial-satellite state provider. |
-| 10 | 50S.2 | Define exact field-crossing semantics and implement a complete-scan correctness oracle. |
-| 11 | 50S.3 | Add conservative high-performance candidate indexing with zero false negatives against the oracle. |
-| 12 | 50S.4A | Report geometric crossings, rates, trail lengths, range, phase, and illumination. |
-| 13 | 50S.4B | Estimate apparent brightness with explicit uncertainty and empirical photometric validation. |
-| 14 | Later 50S detector slice | Estimate detector-level trail signal and detectability separately from apparent magnitude. |
-| 15 | 50S.5 | Add selected drawable tracks through the shared pipeline and close the satellite program. |
-| 16 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
-| 17 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
-| 18 | 50B.2 | Measure representative products at declared physical dimensions. |
-| 19 | 50B.3 | Implement monochrome and limited-grayscale publication profiles. |
-| 20 | 50B.4 | Perform physical print, reduction, grayscale, and photocopy acceptance. |
-| 21 | 50B.5 | Close publication styles with accepted standards, examples, limitations, and evidence. |
+| 1 | 50A.5D.3 | Renderer-neutral text and JSON moving-object reports from already realized temporal results. |
+| 2 | 50A.5E.0 | Audit the distributable Wenu asteroid/comet database, scientific representation, provenance, coverage, and lifecycle. |
+| 3 | 50A.5E.1 | Build and verify a versioned distributable database, including important minor bodies and all governed dwarf planets. |
+| 4 | 50A.5E.2 | Add the `wenu-database` policy and default cache → provider → database resolution order. |
+| 5 | 50A.5E.3 | Add safe cache inspection, dry-run, pruning, and explicit minor-body cache flushing. |
+| 6 | 50A.6 | Close minor-body provenance, public interfaces, validation, documentation, and PNG/PDF/SVG acceptance. |
+| 7 | 50S.0 | Audit satellite catalogues, SGP4/TEME science, fast orbit-to-field literature, photometry, and performance workloads. |
+| 8 | 50S.1 | Implement and independently validate a frozen-snapshot artificial-satellite state provider. |
+| 9 | 50S.2 | Define exact field-crossing semantics and implement a complete-scan correctness oracle. |
+| 10 | 50S.3 | Add conservative high-performance candidate indexing with zero false negatives against the oracle. |
+| 11 | 50S.4A | Report geometric crossings, rates, trail lengths, range, phase, and illumination. |
+| 12 | 50S.4B | Estimate apparent brightness with explicit uncertainty and empirical photometric validation. |
+| 13 | Later 50S detector slice | Estimate detector-level trail signal and detectability separately from apparent magnitude. |
+| 14 | 50S.5 | Add selected drawable tracks through the shared pipeline and close the satellite program. |
+| 15 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
+| 16 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
+| 17 | 50B.2 | Measure representative products at declared physical dimensions. |
+| 18 | 50B.3 | Implement monochrome and limited-grayscale publication profiles. |
+| 19 | 50B.4 | Perform physical print, reduction, grayscale, and photocopy acceptance. |
+| 20 | 50B.5 | Close publication styles with accepted standards, examples, limitations, and evidence. |
 
 ## 1. Purpose and authority
 
@@ -1628,8 +1627,8 @@ sidecar reports require a new audit before implementation.
 
 ## Milestone 50A.5D — Comet discovery, acquisition, and moving-object reports
 
-**Status:** Audit, 50A.5D.1A, and 50A.5D.2A through 50A.5D.2C accepted;
-50A.5D.1B and 50A.5D.3 remain.
+**Status:** Audit, 50A.5D.1A, 50A.5D.1B, and 50A.5D.2A through
+50A.5D.2C accepted; 50A.5D.3 remains.
 
 50A.5D.1A accepted by Fernando on 2026-09-13.
 
@@ -1653,14 +1652,15 @@ apparent `dRA/dt`, `cos(dec) dRA/dt`, `dDec/dt`, and total sky-plane speed in
 mas/s, with explicit telescope-driver convention warnings.
 
 The accepted 50A.5D.1A implementation provides the deterministic SBDB query,
-typed rows, and table/JSON command. The 50A.5D.1B candidate adds a distinct
-`comet_photometry.py` owner for bounded, sequential Horizons quantity-9
-requests when `--observer-location` is explicit. The default cadence is
-`1d`; both discovery-interval endpoints are sampled; exact target and orbit
-solution are validated; `T-mag` and `N-mag` remain separate; and complete
-request and raw-response provenance are retained. Scientific and Mac
-acceptance remain pending. Moving-object reports remain an unauthorized later
-slice.
+typed rows, and table/JSON command. Fernando accepted 50A.5D.1B on 2026-09-14:
+`comet_photometry.py` owns bounded, sequential Horizons quantity-9 requests
+when `--observer-location` is explicit; default `1d` and exact endpoints,
+target/solution binding, separate `T-mag` and `N-mag`, provider warnings,
+and complete request/raw-response provenance are regression-covered. Live
+McNaught table and JSON routes from La Ligua and the complete 2,414-test Mac
+suite passed. The accepted record is archived at
+`archive/milestone_history/50a_minor_bodies/comet_model_magnitude_audit_50a5d1b.md`.
+Moving-object reports remain an unauthorized later slice.
 
 The accepted 50A.5D.2A audit isolates exact comet identity resolution before
 acquisition. It reuses exact installed aliases, permits one explicit SBDB
