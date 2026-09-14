@@ -144,10 +144,14 @@ to request a new provider solution. The same default is configurable as:
 moving_object_policy = "acquire-if-missing"
 ```
 
-An explicit `--minor-body-resource-directory` remains authoritative and is
-never modified or refreshed. Exact manifest names remain available only when
-such a directory is explicitly installed; automatic acquisition deliberately
-accepts positive permanent numbers only. The standalone
+An explicit `--minor-body-resource-directory` remains authoritative, is
+validated for every requested identity and epoch, and is never modified or
+refreshed. Automatic asteroid acquisition deliberately accepts positive
+permanent numbers only. Exact comet selections may instead be acquired or
+reused automatically through `--comet`, `--comet-track`, or an explicitly
+classed `--center-on comet:SELECTION`; partial names and wildcards are never
+guessed. A mixed asteroid/comet request uses one verified resource collection.
+The standalone
 `tools/acquire_numbered_asteroids.py` command remains available for controlled
 offline preparation.
 
