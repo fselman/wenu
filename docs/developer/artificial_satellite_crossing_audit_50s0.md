@@ -331,6 +331,10 @@ and redistribution terms can change.
 current because 50S.0 installs no coordinate type, transformation, provider,
 or public product. Milestone 50S.1 must update it when TEME and the
 satellite-to-topocentric chain become implemented Wenu responsibilities.
+During the foundation branch, `satellite_guide.md` separately maintains the
+satellite vocabulary, equations, provider rules, data flow, and evolving
+implementation map. Consolidation with the coordinate-system guide is a
+deliberate merge-time decision rather than an automatic file combination.
 
 ## 10. Explicit non-goals
 

@@ -32,6 +32,9 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`artificial_satellite_crossing_audit_50s0.md`](artificial_satellite_crossing_audit_50s0.md)
   — candidate scientific, provider-policy, complete-scan, conservative-index,
   and apparent-brightness decisions for artificial-satellite crossings.
+- [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
+  scientific and implementation guide maintained separately during the 50S
+  foundation branch.
 - [`comet_discovery_and_reporting_audit_50a5d.md`](comet_discovery_and_reporting_audit_50a5d.md)
   — active parent contract for observer-dependent comet discovery magnitude
   and natural moving-object reports.

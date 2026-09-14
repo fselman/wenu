@@ -3166,6 +3166,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "current_architecture_v0.9.md",
         "implementation_reference.md",
         "post_v0.9_architecture_roadmap.md",
+        "satellite_guide.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
     }
@@ -3227,6 +3228,41 @@ def test_50s0_audits_satellite_crossing_search_and_photometry():
 
     assert "artificial_satellite_crossing_audit_50s0.md" in index
     assert "scientific and architectural acceptance pending" in roadmap
+
+
+def test_satellite_guide_preserves_50s_scientific_boundaries():
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    audit = " ".join(read(
+        DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+    ).split())
+
+    for phrase in (
+        "Living 50S work-in-progress guide",
+        "intentionally separate from `coordinate_system_guide_v0.9.5.md`",
+        "geometric crossing",
+        "illumination",
+        "apparent brightness",
+        "detector contamination",
+        "validated immutable OMM/TLE snapshot",
+        "No later stage may change the result of an earlier geometric crossing test",
+        "must not define the internal identity model",
+        "one supported bulk request",
+        "TEME is not ICRS, GCRS, ITRS, or topocentric AltAz",
+        "A fixed sampling grid alone is not a completeness proof",
+        "omega = |rho x rho_dot| / |rho|^2",
+        "Near-zenith or otherwise singular intervals",
+        "zero false negatives",
+        "HEALPix is the leading pixelization candidate",
+        "A single standard magnitude does not replace a phase function",
+        "Measured maxima tune performance but never replace conservative bounds",
+        "must not duplicate Wenu's coordinate service",
+        "do not merge documents mechanically",
+    ):
+        assert phrase in guide
+
+    assert "satellite_guide.md" in index
+    assert "satellite_guide.md" in audit
 
     archived = {
         "archive/audits/coordinate_transformation_audit_09a2afd.md",
