@@ -626,7 +626,7 @@ independent-frame oracle.
 The accepted historical audit at
 `archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md`
 freezes exclusive stage timing and the first fixed-sky circumpolar reuse
-candidate. `test_performance_and_future_program_49j_50.md` records the accepted
+candidate. `post_v0.9_architecture_roadmap.md` records the accepted
 test-practice, measurement, and optimization sequence and governs the current
 minor-body and publication programs. Planning adds no instrumentation, cache,
 optimization, test reclassification, or runtime/output change.

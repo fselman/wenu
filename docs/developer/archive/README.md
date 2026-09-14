@@ -18,8 +18,8 @@ coordinate guide, contribution rules, and current work in progress.
   architectures through the accepted v0.9 design;
 - `migration_history/` contains completed version-to-version roadmaps and
   compatibility/deprecation records;
-- `roadmap_history/` contains superseded sequencing, feature backlogs, and
-  background roadmaps;
+- `roadmap_history/` contains superseded sequencing, feature backlogs,
+  background roadmaps, and the completed 49J/50 combined planning document;
 - `diagram_history/` contains superseded architecture diagrams;
 - `audits/` contains completed coordinate, configuration, request, interface,
   and test-suite audits;
@@ -40,11 +40,9 @@ coordinate guide, contribution rules, and current work in progress.
   test-practice policy, test-suite changes and retained fault evidence, cold
   baseline, bounded loaded-sphere reuse, exact equivalence measurement, and
   final performance closure;
-- `milestone_history/50a_minor_bodies/` contains the accepted 50A.0 scientific
-  and provider audit, 50A.1 offline state-provider seam, 50A.2 Ceres and
-  Apophis numerical validation, 50A.3A first-drawable-Ceres audit, and the
-  accepted 50A.3B drawable Ceres point-and-track implementation plus 50A.3C
-  numbered-asteroid generalization audit;
+- `milestone_history/50a_minor_bodies/` contains completed 50A.0 through
+  50A.5D.2C minor-body audits, implementations, validations, public-interface
+  contracts, and acceptance records;
 - `pre_versioned/` contains the original unversioned architecture, roadmap,
   and UML material;
 - files directly under this directory are older records retained from the

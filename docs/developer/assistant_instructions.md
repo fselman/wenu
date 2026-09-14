@@ -121,10 +121,10 @@ For current work, read and follow:
 - `archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md`
   for accepted asteroid/comet state-source, resource-chain, validity,
   uncertainty, identifier, photometry, and non-gravitational-model decisions;
-- `first_drawable_comet_audit_50a5a.md` for accepted 2P/Encke identity,
+- `archive/milestone_history/50a_minor_bodies/first_drawable_comet_audit_50a5a.md` for accepted 2P/Encke identity,
   explicit resource, symbolic nucleus, shared point/track, and coma/tail
   separation decisions;
-- `solar_system_temporal_components_audit_50a5b1.md` before changing temporal
+- `archive/milestone_history/50a_minor_bodies/solar_system_temporal_components_audit_50a5b1.md` before changing temporal
   path, tick, symbol, label, or observed-phase component reuse;
 - `archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
   for the completed reproducible test-entry and new-test admission
@@ -520,7 +520,7 @@ resolved-disk refraction, or occultation work requires a new bounded milestone.
 
 
 For performance or post-v0.9 closure work, consult
-`test_performance_and_future_program_49j_50.md` and the accepted historical
+`archive/roadmap_history/test_performance_and_future_program_49j_50.md` and the accepted historical
 audit at
 `archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md`.
 Keep the reusable-sphere diagnostic
@@ -571,12 +571,12 @@ rule that center, content, constellation layers, and masks are independent.
 Milestones 50A.3G and 50A.3I are accepted. Preserve their explicit CLI
 semantics and automatic numbered-asteroid preflight contracts.
 
-For 50A.4, follow `comet_numerical_validation_audit_50a4.md`. Until Fernando
+For 50A.4, follow `archive/milestone_history/50a_minor_bodies/comet_numerical_validation_audit_50a4.md`. Until Fernando
 accepts that audit, add no comet runtime, selector, acquisition, fixture, or
 validation implementation. Preserve 2P/Encke as a proposed specimen rather
 than a special runtime case.
 
-For 50A.5C, follow the accepted `second_drawable_comet_audit_50a5c.md`.
+For 50A.5C, follow the accepted `archive/milestone_history/50a_minor_bodies/second_drawable_comet_audit_50a5c.md`.
 Preserve 161P/Hartley-IRAS as a bounded second installed-resource specimen,
 never a runtime special case. Inspect signed SBDB and Horizons identity
 responses before selecting its apparition record. Characterize new numerical
