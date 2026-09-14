@@ -3509,6 +3509,19 @@ def test_49j3a_installs_reproducible_entry_and_new_test_admission_rules():
     assert "Which existing test is closest" in instructions
     assert "Which marker and gate" in instructions
     assert "Any required plugin must be explicitly loaded" in instructions
+    for phrase in (
+        "Layered post-change verification",
+        "smallest focused gate that covers every changed responsibility",
+        "Do not repeatedly run unrelated tests",
+        "once before presenting a bounded implementation milestone",
+        "before merging a milestone branch into its integration branch",
+        "before merging the integration branch into `main`",
+        "A previously passing full suite remains valid across a later documentation-only edit",
+        "or non-documentation test collection changed",
+        "Record the exact commit or remote tree covered by every focused and full-suite result",
+        "Do not create a marker or empty future test file merely to name a branch or milestone",
+    ):
+        assert phrase in instructions
     assert source_tree.count("PYTEST_DISABLE_PLUGIN_AUTOLOAD=1") >= 4
     assert "49J.3A implemented only" in roadmap
     assert "83 current-documentation tests in 2.43" in roadmap
