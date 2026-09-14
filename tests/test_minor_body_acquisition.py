@@ -375,6 +375,67 @@ def test_cli_preflight_composes_one_mixed_identity_collection(
     assert arguments.minor_body_resource_directory == destination
 
 
+def test_acquisition_skips_malformed_automatically_discovered_cache(
+    tmp_path, monkeypatch
+):
+    arguments = chart.parser().parse_args([
+        "regional", "--comet", "C/2006 P1",
+    ])
+    configuration = SimpleNamespace(
+        minor_body_resource_directory=None,
+        moving_object_data_policy="acquire-if-missing",
+    )
+    observer = SimpleNamespace(
+        utc_datetime=datetime(2007, 1, 1, tzinfo=timezone.utc),
+        data_directory=tmp_path,
+    )
+    malformed = tmp_path / "malformed-10p"
+    malformed.mkdir()
+    destination = tmp_path / "mcnaught"
+    identity = replace(
+        resolved_tempel_2(),
+        original_selection="C/2006 P1",
+        normalized_selection="c/2006 p1",
+        canonical_designation="C/2006 P1",
+        primary_designation="C/2006 P1",
+        permanent_number=None,
+        name="McNaught",
+        aliases=("C/2006 P1", "McNaught"),
+        provider_spk_id="1003228",
+    )
+
+    monkeypatch.setattr(
+        chart, "_candidate_minor_body_directories",
+        lambda observer: (malformed,),
+    )
+    monkeypatch.setattr(chart, "_installed_candidate", lambda *values: None)
+    monkeypatch.setattr(
+        "wenu.minor_body_resources.MinorBodyResourceCollection",
+        lambda directory: (_ for _ in ()).throw(
+            ValueError(
+                "comet manifest orbit solution excludes the Horizons "
+                "JPL# prefix."
+            )
+        ),
+    )
+    monkeypatch.setattr(
+        chart, "resolve_minor_body_identity", lambda *args, **kwargs: identity,
+    )
+    monkeypatch.setattr(
+        chart,
+        "ensure_minor_body_resources",
+        lambda *args, **kwargs: SimpleNamespace(
+            resource_directory=destination, acquired=True
+        ),
+    )
+
+    chart._preflight_minor_body_resources(
+        arguments, configuration, observer, None
+    )
+
+    assert arguments.minor_body_resource_directory == destination
+
+
 def test_automatic_name_lookup_remains_outside_numbered_asteroid_slice():
     arguments = chart.parser().parse_args([
         "regional", "--asteroid", "ceres",
