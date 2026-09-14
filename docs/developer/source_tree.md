@@ -1584,3 +1584,19 @@ owns deterministic contract coverage;
   with exact Horizons record binding, manifest loading, warm-cache, offline,
   target-mismatch, ambiguity, safe identity locks, and atomic-publication
   evidence.
+
+
+## 50A.5D.2C exact comet CLI-preflight audit ownership
+
+- `docs/developer/comet_cli_preflight_audit_50a5d2c.md` alone owns the
+  candidate request-composition, precedence, network, coverage, mixed-resource,
+  failure, and acceptance contract;
+- `cli/chart.py` is the proposed request-level selection, policy, diagnostic,
+  and pre-construction composition owner;
+- `minor_body_identity.py`, `minor_body_acquisition.py`, and
+  `minor_body_resources.py` retain exact identity, provider acquisition, and
+  installed-resource authority respectively;
+- `charts/command_line.py` and `charts/chart_arguments.py` retain parsing and
+  request translation and acquire no data;
+- coordinate, state, temporal-component, projection, renderer, semantic,
+  style, furniture, and export owners do not change in the audit.
