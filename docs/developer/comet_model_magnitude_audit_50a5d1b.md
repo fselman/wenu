@@ -1,7 +1,8 @@
 # Observer-dependent comet model-magnitude audit (Milestone 50A.5D.1B)
 
-**Status:** Accepted by Fernando on 2026-09-14; documentation only. This audit
-authorizes only the bounded 50A.5D.1B implementation.
+**Status:** Accepted by Fernando on 2026-09-14; bounded implementation candidate
+complete, scientific and Mac acceptance pending. This audit authorizes only the
+bounded 50A.5D.1B implementation.
 
 **Exact base:** `15c77d95653d24f37ef6140385eef52702f0720d`
 
@@ -205,3 +206,27 @@ Fernando accepted all five proposed decisions on 2026-09-14:
 This acceptance authorizes only the bounded 50A.5D.1B implementation described
 here. It does not authorize visibility prediction, chart integration, altered
 SPK acquisition, empirical activity correction, or any 50A.5D.3 report work.
+
+## 9. Implementation candidate
+
+The candidate places the independent Horizons observer-table responsibility in
+`src/wenu/comet_photometry.py`; the existing `comet_discovery.py` remains the
+SBDB selection owner and `cli/comets.py` composes the two typed results. This
+placement follows the production-module admission rule because Horizons
+photometry has a distinct provider, observer geometry, request budget,
+provenance, and failure lifecycle.
+
+The implementation supplies `--observer-location NAME` and
+`--magnitude-step DURATION`, defaults to `1d`, samples both endpoints,
+limits requests before provider access, issues calls sequentially, validates
+the exact target and orbit solution, retains unknown values and provider
+notices, and publishes the brightest sampled total model magnitude separately
+from the nuclear model. The JSON form retains every sample and the complete
+observer, cadence, provider, request, retrieval, and raw-digest provenance.
+
+`tests/test_comet_discovery.py` extends the existing responsibility with a
+frozen Horizons response and covers provider drift, non-finite values, sample
+count, bounds, fail-whole behavior, serialization, and provenance. The
+candidate adds no chart, SPK cache, coordinate frame, projection, renderer,
+semantic, report, or export coupling. Scientific comparison with a live
+Horizons result and complete Mac acceptance remain pending.
