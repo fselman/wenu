@@ -228,3 +228,28 @@ def test_comet_symbol_has_comet_specific_semantic_path():
     assert semantic_layer_identity(layer).semantic_path == (
         "sky", "solar_system", "minor_bodies", "comets", "2p",
     )
+
+
+@pytest.mark.parametrize(
+    ("display_kind", "suffix"),
+    (("symbolic_point", ()), ("apparent_track", ("track",))),
+)
+def test_provisional_comet_has_safe_semantic_path(display_kind, suffix):
+    descriptor = SolarSystemBodyDescriptor(
+        target="c/2006 p1",
+        entity_key="comet_c_2006_p1",
+        display_name="C/2006 P1/McNaught",
+        selection_key="c/2006 p1",
+        body_class="comet",
+        canonical_designation="C/2006 P1/McNaught",
+    )
+    layer = SimpleNamespace(
+        layer_name="comet_c_2006_p1",
+        body_descriptor=descriptor,
+        display_kind=display_kind,
+    )
+
+    assert semantic_layer_identity(layer).semantic_path == (
+        "sky", "solar_system", "minor_bodies", "comets", "c_2006_p1",
+        *suffix,
+    )
