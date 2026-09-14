@@ -77,5 +77,31 @@ absolute magnitudes defined at 10 parsecs.
 A numerical estimate also requires observer-dependent \(r\), \(\Delta\),
 phase geometry, and an evaluation instant. Comets can depart substantially
 from the model through outbursts, fading, fragmentation, asymmetric activity,
-and observational-aperture effects. Observer-dependent model magnitude remains
-deferred to the separately reviewed 50A.5D.1B.
+and observational-aperture effects. Observer-dependent model magnitude is available only when
+`--observer-location` is supplied:
+
+```bash
+wenu_retrieve_comets 2026-09-01 2026-09-30 \
+  --observer-location "La Ligua" \
+  --magnitude-step 1d
+```
+
+The magnitude step must be a positive whole number of hours or days; its
+default is `1d`. Wenu samples both endpoints of the same inclusive interval
+used for discovery, makes one sequential Horizons request per selected comet,
+and reports the numerically smallest valid sampled `T-mag` as the brightest
+sampled total model magnitude. `N-mag` is reported independently and is
+never substituted for a missing `T-mag`.
+
+These sampled provider values are not continuous minima, visibility forecasts,
+or detectability estimates. Unknown provider values remain unknown. Horizons
+advises treating small-body model magnitudes as uncertain at roughly 1
+magnitude in practice, potentially worse at large phase angle. The command
+retains the observer coordinates, sampling epochs, provider version, exact
+target and orbit solution, request parameters, retrieval time, raw-response
+digest, and provider notices in JSON output.
+
+The observer mode is intentionally bounded to 50 selected comet solutions and
+367 epochs per comet. Any Horizons failure fails the complete result; narrow
+the discovery interval or increase `--magnitude-step` when a bound is
+exceeded. `--magnitude-step` without `--observer-location` is invalid.
