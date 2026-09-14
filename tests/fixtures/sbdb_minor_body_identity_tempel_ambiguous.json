@@ -3,8 +3,12 @@
     "source": "NASA/JPL Small-Body Database (SBDB) API",
     "version": "1.3"
   },
-  "count": 3,
+  "count": 11,
   "list": [
+    {
+      "name": "3808 Tempel (1982 FQ2)",
+      "pdes": "3808"
+    },
     {
       "name": "9P/Tempel 1",
       "pdes": "9P"
@@ -14,10 +18,38 @@
       "pdes": "10P"
     },
     {
-      "name": "C/1859 G1 (Tempel)",
-      "pdes": "1859 G1"
+      "pdes": "1859 G1",
+      "name": "C/1859 G1 (Tempel)"
+    },
+    {
+      "pdes": "1860 U1",
+      "name": "C/1860 U1 (Tempel)"
+    },
+    {
+      "pdes": "1863 V1",
+      "name": "C/1863 V1 (Tempel)"
+    },
+    {
+      "name": "C/1864 N1 (Tempel)",
+      "pdes": "1864 N1"
+    },
+    {
+      "pdes": "1869 T1",
+      "name": "C/1869 T1 (Tempel)"
+    },
+    {
+      "pdes": "1871 L1",
+      "name": "C/1871 L1 (Tempel)"
+    },
+    {
+      "pdes": "1871 V1",
+      "name": "C/1871 V1 (Tempel)"
+    },
+    {
+      "pdes": "1877 T1",
+      "name": "C/1877 T1 (Tempel)"
     }
   ],
-  "code": 300,
+  "code": "300",
   "message": "specified query matched more than one object"
 }
