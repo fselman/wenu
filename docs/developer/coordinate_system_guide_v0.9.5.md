@@ -3083,7 +3083,7 @@ in 4.99 seconds, and passed the complete 2,262-test suite in 84.96 seconds.
 This closes 50A.4 without changing a coordinate frame or adding drawable comet
 behavior.
 
-The 50A.5D.1B candidate likewise adds no coordinate or product frame.
+Accepted 50A.5D.1B likewise adds no coordinate or product frame.
 `comet_photometry.py` resolves a governed observer location once, records its
 geodetic longitude, latitude, and elevation, and sends those coordinates to a
 Horizons topocentric observer table with UTC sample epochs. The same inclusive
