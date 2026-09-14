@@ -71,6 +71,11 @@ def _add_observer_arguments(parser):
         choices=tuple(value.value for value in MovingObjectDataPolicy),
         help="resolve moving-object data before offline chart construction",
     )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="show a traceback instead of formatting an expected failure",
+    )
 
 
 def _add_common_arguments(parser, *, family):
@@ -814,6 +819,8 @@ def main(argv=None):
             print(output)
         return 0
     except (FileNotFoundError, ValueError) as error:
+        if arguments.debug:
+            raise
         print(f"wenu_chart: error: {error}", file=sys.stderr)
         return 2
 
