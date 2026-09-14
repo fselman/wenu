@@ -4514,7 +4514,7 @@ def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
         "M1` is therefore the reference total magnitude",
         "K1` is not a magnitude",
         "not stellar absolute magnitudes defined at 10 parsecs",
-        "deferred to the separately reviewed 50A.5D.1B",
+        "available only when `--observer-location` is supplied",
     ):
         assert phrase in user_guide
     assert 'wenu_retrieve_comets = "wenu.cli.comets:main"' in project
