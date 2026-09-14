@@ -2118,7 +2118,7 @@ The accepted audit is archived at
 `archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md`.
 Current 49J sequencing, test-practice review and decisions, production
 measurement, first reuse, and the later 50A/50B programs are governed by
-`test_performance_and_future_program_49j_50.md`. The planning document changes
+`post_v0.9_architecture_roadmap.md`. The planning document changes
 no installed interface or runtime owner.
 
 The accepted 49J.1 report is

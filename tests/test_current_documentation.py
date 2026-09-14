@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEVELOPER = ROOT / "docs" / "developer"
 ARCHIVE = DEVELOPER / "archive"
+MINOR_BODY_HISTORY = ARCHIVE / "milestone_history" / "50a_minor_bodies"
 CURRENT = ARCHIVE / "architecture_history" / "current_architecture_v0.7.md"
 IMPLEMENTED = ARCHIVE / "architecture_history" / "target_architecture_v0.7.md"
 V08_CURRENT = ARCHIVE / "architecture_history/current_architecture_v0.8.md"
@@ -118,7 +119,7 @@ PERFORMANCE_CLOSURE_AUDIT = (
     / "archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md"
 )
 TEST_PERFORMANCE_PROGRAM = (
-    DEVELOPER / "test_performance_and_future_program_49j_50.md"
+    ARCHIVE / "roadmap_history" / "test_performance_and_future_program_49j_50.md"
 )
 MINOR_BODY_PROVIDER_AUDIT = (
     DEVELOPER
@@ -3064,7 +3065,7 @@ def test_49j0_freezes_performance_measurement_before_optimization():
 
 
 def test_moving_object_data_resolution_audit_preserves_offline_rendering():
-    audit = read(DEVELOPER / "moving_object_data_resolution_audit_50a3h.md")
+    audit = read(MINOR_BODY_HISTORY / "moving_object_data_resolution_audit_50a3h.md")
     roadmap = read(FUTURE_ROADMAP)
     instructions = read(DEVELOPER / "assistant_instructions.md")
 
@@ -3089,7 +3090,7 @@ def test_moving_object_data_resolution_audit_preserves_offline_rendering():
 
 def test_numbered_asteroid_cli_preflight_contract_is_documented():
     document = " ".join(read(
-        DEVELOPER / "numbered_asteroid_cli_preflight_50a3i.md"
+        MINOR_BODY_HISTORY / "numbered_asteroid_cli_preflight_50a3i.md"
     ).split())
     for phrase in (
         "acquire-if-missing",
@@ -3105,7 +3106,7 @@ def test_numbered_asteroid_cli_preflight_contract_is_documented():
 
 def test_50a4_audits_comet_numerics_before_runtime_behavior():
     audit = " ".join(read(
-        DEVELOPER / "comet_numerical_validation_audit_50a4.md"
+        MINOR_BODY_HISTORY / "comet_numerical_validation_audit_50a4.md"
     ).split())
     for phrase in (
         "2P/Encke",
@@ -3123,7 +3124,7 @@ def test_50a4_audits_comet_numerics_before_runtime_behavior():
 
 def test_50a4_closure_is_offline_accepted_and_non_drawable():
     document = " ".join(read(
-        DEVELOPER / "comet_numerical_validation_50a4.md"
+        MINOR_BODY_HISTORY / "comet_numerical_validation_50a4.md"
     ).split())
     source_tree = read(DEVELOPER / "source_tree.md")
     implementation = read(DEVELOPER / "implementation_reference.md")
@@ -3157,31 +3158,37 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
     } == {
         "README.md",
         "assistant_instructions.md",
+        "comet_discovery_and_reporting_audit_50a5d.md",
         "configuration_schema_v2.md",
         "coordinate_system_guide_v0.9.5.md",
         "current_architecture_v0.9.md",
         "implementation_reference.md",
-        "numbered_asteroids_50a3d.md",
-        "object_centered_regional_charts_50a3e.md",
+        "post_v0.9_architecture_roadmap.md",
+        "source_tree.md",
+        "target_architecture_v0.9.5.md",
+    }
+    for name in (
         "chart_cli_semantics_audit_50a3f.md",
         "cli_contract_acceptance_50a3g.md",
         "moving_object_data_resolution_audit_50a3h.md",
         "numbered_asteroid_cli_preflight_50a3i.md",
+        "numbered_asteroids_50a3d.md",
+        "object_centered_regional_charts_50a3e.md",
         "comet_numerical_validation_audit_50a4.md",
         "comet_numerical_validation_50a4.md",
         "first_drawable_comet_audit_50a5a.md",
         "solar_system_temporal_components_audit_50a5b1.md",
         "second_drawable_comet_audit_50a5c.md",
-        "comet_discovery_and_reporting_audit_50a5d.md",
         "comet_discovery_50a5d1a.md",
         "comet_name_resolution_audit_50a5d2a.md",
         "comet_acquisition_audit_50a5d2b.md",
         "comet_cli_preflight_audit_50a5d2c.md",
-        "post_v0.9_architecture_roadmap.md",
-        "source_tree.md",
-        "target_architecture_v0.9.5.md",
-        "test_performance_and_future_program_49j_50.md",
-}
+    ):
+        assert (MINOR_BODY_HISTORY / name).is_file()
+        assert not (DEVELOPER / name).exists()
+    assert TEST_PERFORMANCE_PROGRAM.is_file()
+    assert not (DEVELOPER / "test_performance_and_future_program_49j_50.md").exists()
+
     archived = {
         "archive/audits/coordinate_transformation_audit_09a2afd.md",
         "archive/audits/public_interface_audit_v0.9.5.md",
@@ -3223,7 +3230,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
 
 def test_50a5a_audits_first_drawable_comet_without_runtime_behavior():
     audit = " ".join(read(
-        DEVELOPER / "first_drawable_comet_audit_50a5a.md"
+        MINOR_BODY_HISTORY / "first_drawable_comet_audit_50a5a.md"
     ).split())
     for phrase in (
         "Runtime effect:** None",
@@ -4253,7 +4260,7 @@ def test_50a3c_audit_changes_no_runtime_user_guide_or_diagram_contract():
 
 def test_50a3d_documents_request_owned_installed_numbered_asteroids():
     record = " ".join(
-        read(DEVELOPER / "numbered_asteroids_50a3d.md").split()
+        read(MINOR_BODY_HISTORY / "numbered_asteroids_50a3d.md").split()
     )
     implementation = " ".join(
         read(DEVELOPER / "implementation_reference.md").split()
@@ -4364,8 +4371,8 @@ def test_active_cli_documentation_matches_schema_v2_and_explicit_centers():
     planisphere = read(ROOT / "docs/user_guide/planisphere.md")
     configuration = read(ROOT / "docs/user_guide/configuration.md")
     architecture = read(V09_CURRENT)
-    audit = read(DEVELOPER / "chart_cli_semantics_audit_50a3f.md")
-    acceptance = read(DEVELOPER / "cli_contract_acceptance_50a3g.md")
+    audit = read(MINOR_BODY_HISTORY / "chart_cli_semantics_audit_50a3f.md")
+    acceptance = read(MINOR_BODY_HISTORY / "cli_contract_acceptance_50a3g.md")
     defaults = tomllib.loads(read(
         ROOT / "src/wenu/configuration/defaults.toml"
     ))
@@ -4394,7 +4401,7 @@ def test_active_cli_documentation_matches_schema_v2_and_explicit_centers():
 
 
 def test_50a5b1_records_shared_temporal_component_closure():
-    audit = read(DEVELOPER / "solar_system_temporal_components_audit_50a5b1.md")
+    audit = read(MINOR_BODY_HISTORY / "solar_system_temporal_components_audit_50a5b1.md")
     guide = read(DEVELOPER / "coordinate_system_guide_v0.9.5.md")
     roadmap = read(DEVELOPER / "post_v0.9_architecture_roadmap.md")
     source_tree = read(DEVELOPER / "source_tree.md")
@@ -4411,7 +4418,7 @@ def test_50a5b1_records_shared_temporal_component_closure():
 
 
 def test_50a5c_audits_a_second_comet_before_minor_body_closure():
-    audit = read(DEVELOPER / "second_drawable_comet_audit_50a5c.md")
+    audit = read(MINOR_BODY_HISTORY / "second_drawable_comet_audit_50a5c.md")
     roadmap = read(DEVELOPER / "post_v0.9_architecture_roadmap.md")
     source_tree = read(DEVELOPER / "source_tree.md")
 
@@ -4475,7 +4482,7 @@ def test_50a5d_audits_comet_discovery_acquisition_and_reports():
 
 def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
     implementation = " ".join(read(
-        DEVELOPER / "comet_discovery_50a5d1a.md"
+        MINOR_BODY_HISTORY / "comet_discovery_50a5d1a.md"
     ).split())
     roadmap = read(DEVELOPER / "post_v0.9_architecture_roadmap.md")
     reference = read(DEVELOPER / "implementation_reference.md")
@@ -4514,7 +4521,7 @@ def test_50a5d1a_documents_bounded_deterministic_comet_discovery():
 
 def test_50a5d2a_audits_exact_comet_name_resolution():
     audit = " ".join(read(
-        DEVELOPER / "comet_name_resolution_audit_50a5d2a.md"
+        MINOR_BODY_HISTORY / "comet_name_resolution_audit_50a5d2a.md"
     ).split())
     roadmap = " ".join(read(
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
@@ -4556,7 +4563,7 @@ def test_50a5d2a_audits_exact_comet_name_resolution():
 
 def test_50a5d2b_audits_generic_comet_acquisition():
     audit = " ".join(read(
-        DEVELOPER / "comet_acquisition_audit_50a5d2b.md"
+        MINOR_BODY_HISTORY / "comet_acquisition_audit_50a5d2b.md"
     ).split())
     roadmap = " ".join(read(
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
@@ -4618,7 +4625,7 @@ def test_50a5d2b_audits_generic_comet_acquisition():
 
 def test_50a5d2c_audits_exact_comet_cli_preflight():
     audit = " ".join(read(
-        DEVELOPER / "comet_cli_preflight_audit_50a5d2c.md"
+        MINOR_BODY_HISTORY / "comet_cli_preflight_audit_50a5d2c.md"
     ).split())
     roadmap = " ".join(read(
         DEVELOPER / "post_v0.9_architecture_roadmap.md"

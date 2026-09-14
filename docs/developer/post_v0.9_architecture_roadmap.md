@@ -6,6 +6,37 @@
 
 **Decision date:** 2026-08-19
 
+
+## Current forward roadmap
+
+This is the single active sequence after merge commit `b877a74`. Completed
+milestone detail belongs in `archive/`; the historical sections below retain
+architectural rationale and accepted boundaries.
+
+| Order | Milestone | Outcome |
+|---:|---|---|
+| 1 | 50A.5D.1B | Observer-dependent sampled Horizons comet model magnitude, explicitly not a visibility prediction. |
+| 2 | 50A.5D.3 | Renderer-neutral text and JSON moving-object reports from already realized temporal results. |
+| 3 | 50A.5E.0 | Audit the distributable Wenu asteroid/comet database, scientific representation, provenance, coverage, and lifecycle. |
+| 4 | 50A.5E.1 | Build and verify a versioned distributable database, including important minor bodies and all governed dwarf planets. |
+| 5 | 50A.5E.2 | Add the `wenu-database` policy and default cache → provider → database resolution order. |
+| 6 | 50A.5E.3 | Add safe cache inspection, dry-run, pruning, and explicit minor-body cache flushing. |
+| 7 | 50A.6 | Close minor-body provenance, public interfaces, validation, documentation, and PNG/PDF/SVG acceptance. |
+| 8 | 50S.0 | Audit satellite catalogues, SGP4/TEME science, fast orbit-to-field literature, photometry, and performance workloads. |
+| 9 | 50S.1 | Implement and independently validate a frozen-snapshot artificial-satellite state provider. |
+| 10 | 50S.2 | Define exact field-crossing semantics and implement a complete-scan correctness oracle. |
+| 11 | 50S.3 | Add conservative high-performance candidate indexing with zero false negatives against the oracle. |
+| 12 | 50S.4A | Report geometric crossings, rates, trail lengths, range, phase, and illumination. |
+| 13 | 50S.4B | Estimate apparent brightness with explicit uncertainty and empirical photometric validation. |
+| 14 | Later 50S detector slice | Estimate detector-level trail signal and detectability separately from apparent magnitude. |
+| 15 | 50S.5 | Add selected drawable tracks through the shared pipeline and close the satellite program. |
+| 16 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
+| 17 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
+| 18 | 50B.2 | Measure representative products at declared physical dimensions. |
+| 19 | 50B.3 | Implement monochrome and limited-grayscale publication profiles. |
+| 20 | 50B.4 | Perform physical print, reduction, grayscale, and photocopy acceptance. |
+| 21 | 50B.5 | Close publication styles with accepted standards, examples, limitations, and evidence. |
+
 ## 1. Purpose and authority
 
 This roadmap preserves three future enhancements after the physical
@@ -936,7 +967,7 @@ production optimization. The active sequence is therefore:
 5. 49J.5 one bounded scientifically keyed fixed-sky circumpolar reuse;
 6. 49J.6 performance closure.
 
-`test_performance_and_future_program_49j_50.md` governs the scope, evidence,
+`archive/roadmap_history/test_performance_and_future_program_49j_50.md` governs the scope, evidence,
 decision ledger, ordering, and stop conditions. Every slice remains separately
 authorized.
 
@@ -1155,7 +1186,7 @@ as-is products, implement monochrome and limited-grayscale styles, perform
 actual-size print and reduction acceptance, and close the numerical standard.
 
 The active detailed sequence and decision requirements for 50A and 50B are in
-`test_performance_and_future_program_49j_50.md`.
+`archive/roadmap_history/test_performance_and_future_program_49j_50.md`.
 
 ## 14. Stop conditions
 
@@ -1597,7 +1628,8 @@ sidecar reports require a new audit before implementation.
 
 ## Milestone 50A.5D — Comet discovery, acquisition, and moving-object reports
 
-**Status:** Audit and 50A.5D.1A accepted by Fernando on 2026-09-13.
+**Status:** Audit, 50A.5D.1A, and 50A.5D.2A through 50A.5D.2C accepted;
+50A.5D.1B and 50A.5D.3 remain.
 
 The proposed audit separates an explicit `wenu_retrieve_comets` SBDB query,
 exact policy-governed comet preflight, and renderer-neutral natural moving-
@@ -1653,12 +1685,72 @@ automatic asteroid-name acquisition, new graphics, and reports remain outside
 the accepted audit. Fernando accepted it on 2026-09-13, authorizing only the
 bounded CLI-preflight implementation.
 
-The candidate implementation now performs that typed composition in
+The accepted implementation performs that typed composition in
 `cli/chart.py`: exact point, track, and explicitly classed center selections
 share one coverage interval and one verified resource directory; explicit and
-adequate warm-cache paths remain offline. Scientific and Mac acceptance remain
-pending.
+adequate warm-cache paths remain offline. Fernando accepted live and offline
+numbered and provisional comet acquisition, the independent Lemmon comparison,
+and the complete 2,404-test Mac suite. PR #116 merged at `2f30a95`.
 
+
+
+## Milestone 50A.5E — Distributable minor-body database and lifecycle tools
+
+**Status:** Planned after 50A.5D and before 50A.6; audit required before
+implementation.
+
+Wenu will support a versioned distributable database of important asteroids
+and comets, including every dwarf planet admitted by the governed inclusion
+policy. This is a third data source, distinct from a recently acquired
+immutable cache and live provider acquisition. The accepted default resolution
+order is:
+
+```text
+verified cache -> live provider acquisition -> packaged Wenu database
+```
+
+Explicit policy always overrides that fallback:
+
+- `offline` uses verified cache only and performs no network access;
+- `refresh` requires new provider acquisition and does not silently fall back;
+- `wenu-database` uses only the installed distributable database;
+- `acquire-if-missing` uses cache, then provider, then the database if
+  acquisition is unavailable and the database adequately covers the request.
+
+### 50A.5E.0 — Database scientific and packaging audit
+
+Choose bounded SPKs, orbital elements plus an independently validated
+propagator, or a governed hybrid. Define source authority, identity,
+classification, solution/model provenance, validity and coverage, uncertainty,
+database version, compatibility, update cadence, licensing, package-size
+budget, selection criteria, dwarf-planet policy, and behavior outside database
+coverage. A packaged database must never become an unvalidated two-body
+fallback.
+
+### 50A.5E.1 — Reproducible database-construction tool
+
+Add a maintainer/package-construction tool that deliberately downloads
+authoritative source data, validates identity and scientific coverage, freezes
+provider receipts and checksums, builds a deterministic versioned artifact,
+and verifies the installed artifact before release. The tool must not run
+during ordinary chart construction or package import.
+
+### 50A.5E.2 — Runtime database policy and fallback
+
+Add the explicit `wenu-database` policy and the accepted
+cache-to-provider-to-database default. All three sources must converge on one
+verified resource-collection boundary before sphere, view, request, or
+rendering construction. Reports and semantic output must identify which source
+and database version supplied every object.
+
+### 50A.5E.3 — Safe cache lifecycle tool
+
+Add a cache-management command that can list entries, report size and
+coverage, identify invalid or superseded entries, perform a dry run, prune by
+an explicit policy, and flush the minor-body cache only after explicit
+confirmation. It must resolve and validate Wenu's cache root, refuse broad or
+unrelated paths, never delete the packaged database, and clearly state that
+flushed cache data must be reacquired.
 
 ## Program 50S — Artificial-satellite crossings and contamination
 
@@ -1798,3 +1890,84 @@ and provider provenance, numerical validation, complete-scan equivalence,
 performance evidence, PNG/PDF/SVG inspection, public documentation, and
 reproducible observer/night studies. Do not create a satellite-specific
 projection, renderer, exporter, or parallel sky pipeline.
+
+## Program 50B — Publication legibility and economical printing
+
+### 50B.0 — Accepted-practice review
+
+Research and report current accepted practice before changing Wenu appearance.
+Use maintained primary or standards-body material where available and clearly
+distinguish normative requirements, professional-print recommendations,
+accessibility references, cartographic convention, and empirical practice.
+
+The review must cover:
+
+- PDF print exchange, font embedding, output intent, color spaces,
+  transparency, physical page boxes, and scale;
+- ordinary office printing, professional printing, grayscale, pure black, and
+  photocopy reproduction;
+- nominal point size versus perceived size, x-height, weight, viewing distance,
+  label spacing, and reduction after export;
+- minimum reproducible line and symbol dimensions;
+- luminance contrast for text and meaningful non-text graphics;
+- redundant encodings using size, shape, line weight, and dash pattern rather
+  than color alone;
+- magnitude-dependent star symbols, crowded-field selection, grid hierarchy,
+  line crossings, label collision, legends, angular scale, and apparent
+  precision in respected astronomical and cartographic publications;
+- needs of older readers and classroom handouts.
+
+The review must evaluate the ISO 15930 PDF/X family, relevant print-production
+standards, accessibility contrast guidance such as WCAG as a reference rather
+than an automatic print rule, and empirical measurements from respected
+printed star atlases. It must not invent universal minimum sizes where the
+evidence depends on process, stock, printer, viewing distance, or reduction.
+
+### 50B.1 — Wenu publication-standard decisions
+
+Publish and review the Adopt/Adapt/Reject/Defer ledger. Define accepted Wenu
+physical-output profiles only after that review. Candidate use cases include
+full-page publication, half-page handout, book-column figure, ordinary
+grayscale office print, monochrome photocopy-safe print, and classroom
+projection.
+
+For every accepted profile decide:
+
+- intended final physical dimensions and viewing conditions;
+- minimum text size by semantic role;
+- minimum star-symbol diameter and line width by semantic role;
+- contrast hierarchy and permitted gray levels;
+- maximum useful content and label density;
+- magnitude-limit and grid-label adjustment rules;
+- legend requirements;
+- whether post-export reduction is permitted;
+- font embedding, PDF metadata, color-space, and print-exchange requirements;
+- required physical print and reduction tests.
+
+Fernando's printed scientific and pedagogical review is required before these
+values become Wenu defaults or named profiles.
+
+### 50B.2 — Physical-output measurement harness
+
+Measure representative Wenu regional, binocular, circumpolar, all-sky, and
+applicable planisphere products at their declared final sizes. Prefer vector
+geometry and physical units over inference from raster pixels.
+
+### 50B.3 — Monochrome and limited-grayscale styles
+
+Implement the accepted profiles. Monochrome must remain usable without color;
+limited grayscale must use only accepted reproducible levels. Keep ownership
+separate: detail selects content, style selects appearance, output mode owns
+physical dimensions and scale, chart type owns geometry, and furniture owns
+legends.
+
+### 50B.4 — Physical print and reduction acceptance
+
+Produce actual-size PDF test sheets and declared reduction matrices. Inspect
+ordinary printer output, grayscale behavior, and photocopy behavior where
+practical. Screen PNG review is not sufficient.
+
+### 50B.5 — Publication-style closure
+
+Record accepted numerical standards, named profiles, examples, regression
+products, limitations, and the human print-acceptance record.

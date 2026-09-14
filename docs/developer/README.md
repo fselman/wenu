@@ -1,10 +1,11 @@
 # Active Wenu developer documents
 
-Only current authority, target direction, the active roadmap, and work in
-progress live directly in this directory. Completed audits, migrations, and
-milestone evidence are under [`archive/`](archive/README.md).
+Only current authority, retained target direction, the active roadmap, and
+work in progress live directly in this directory. Completed audits,
+migrations, milestone evidence, and superseded roadmaps are under
+[`archive/`](archive/README.md).
 
-## Current architecture
+## Current architecture and interfaces
 
 - [`current_architecture_v0.9.md`](current_architecture_v0.9.md) — implemented
   architecture authority.
@@ -16,67 +17,27 @@ milestone evidence are under [`archive/`](archive/README.md).
 - [`assistant_instructions.md`](assistant_instructions.md) — contribution and
   delivery rules.
 
-## Target architecture
+## Retained target direction
 
 - [`target_architecture_v0.9.5.md`](target_architecture_v0.9.5.md) — retained
-  target and scientific vocabulary authority.
+  target and scientific-vocabulary authority.
 - [`coordinate_system_guide_v0.9.5.md`](coordinate_system_guide_v0.9.5.md) —
-  living work-in-progress scientific and implementation guide.
+  living scientific and implementation guide.
 
 ## Roadmap and current work
 
 - [`post_v0.9_architecture_roadmap.md`](post_v0.9_architecture_roadmap.md) —
-  active milestone roadmap.
-- [`test_performance_and_future_program_49j_50.md`](test_performance_and_future_program_49j_50.md)
-  — accepted 49J test/performance program and the current ordered 50A
-  minor-body and 50B publication-legibility programs.
-- [`numbered_asteroids_50a3d.md`](numbered_asteroids_50a3d.md) — candidate
-  generic installed numbered-asteroid implementation and acceptance gates.
-- [`object_centered_regional_charts_50a3e.md`](object_centered_regional_charts_50a3e.md)
-  — implemented generic fixed- and moving-object regional-centering contract.
-- [`chart_cli_semantics_audit_50a3f.md`](chart_cli_semantics_audit_50a3f.md)
-  — implemented explicit center, content, and mask CLI contract.
-- [`cli_contract_acceptance_50a3g.md`](cli_contract_acceptance_50a3g.md)
-  — current documentation and visual-acceptance closure for that contract.
-- [`moving_object_data_resolution_audit_50a3h.md`](moving_object_data_resolution_audit_50a3h.md)
-  — accepted one-command acquisition, immutable-cache, offline-render, and
-  future satellite-provider contract.
-- [`numbered_asteroid_cli_preflight_50a3i.md`](numbered_asteroid_cli_preflight_50a3i.md)
-  — accepted automatic numbered-asteroid CLI preflight and data policies.
-- [`comet_numerical_validation_audit_50a4.md`](comet_numerical_validation_audit_50a4.md)
-  — accepted 2P/Encke nucleus-state, non-gravitational provenance, and
-  numerical-validation contract.
-- [`comet_numerical_validation_50a4.md`](comet_numerical_validation_50a4.md)
-  — accepted evidence acquisition and offline numerical validation.
-- [`first_drawable_comet_audit_50a5a.md`](first_drawable_comet_audit_50a5a.md)
-  — accepted first symbolic 2P/Encke nucleus point and multi-track contract.
-- [`solar_system_temporal_components_audit_50a5b1.md`](solar_system_temporal_components_audit_50a5b1.md)
-  — accepted corrective reuse contract for paths, ticks, symbols, labels, and
-  observed phase-series anchors.
-- [`second_drawable_comet_audit_50a5c.md`](second_drawable_comet_audit_50a5c.md)
-  — accepted second-comet generalization test using 161P/Hartley-IRAS.
+  the single active forward roadmap for remaining minor-body work, artificial
+  satellites, and publication output.
 - [`comet_discovery_and_reporting_audit_50a5d.md`](comet_discovery_and_reporting_audit_50a5d.md)
-  — accepted comet discovery, generic acquisition, and natural moving-object
-  report contract, including both right-ascension rate conventions; no runtime
-  change.
-- [`comet_discovery_50a5d1a.md`](comet_discovery_50a5d1a.md) — accepted
-  deterministic SBDB comet-discovery command; observer-dependent magnitude is
-  deferred.
-- [`comet_name_resolution_audit_50a5d2a.md`](comet_name_resolution_audit_50a5d2a.md)
-  — accepted exact installed/provider identity contract with a candidate
-  generic minor-body resolver; no acquisition or chart integration.
-- [`comet_acquisition_audit_50a5d2b.md`](comet_acquisition_audit_50a5d2b.md)
-  — accepted shared exact-comet acquisition, type-21 validation, and immutable
-  publication contract; no chart integration or runtime change.
-- [`comet_cli_preflight_audit_50a5d2c.md`](comet_cli_preflight_audit_50a5d2c.md)
-  — accepted exact-comet CLI preflight, mixed-resource, offline, and coverage
-  composition contract; no runtime change.
-- The accepted 50A.0 through 50A.3C records, including the first drawable Ceres
-  point and track and the numbered-asteroid generalization audit, are archived under
+  — active parent contract for observer-dependent comet discovery magnitude
+  and natural moving-object reports.
+
+Completed 50A.3D through 50A.5D.2C records are archived under
 [`archive/milestone_history/50a_minor_bodies/`](archive/milestone_history/50a_minor_bodies/).
-The accepted 49J.0 through 49J.6 records, including the final closure, are
-archived under
-[`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/).
+The completed 49J program and its superseded combined future-program document
+are archived under [`archive/milestone_history/49j_performance/`](archive/milestone_history/49j_performance/)
+and [`archive/roadmap_history/`](archive/roadmap_history/).
 
 Do not place completed milestone records directly in this directory. Move them
 to the matching archive family and update active links and documentation tests

@@ -1301,9 +1301,10 @@ owns deterministic contract coverage;
   repeated-static workload.
 - `archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md`
   retains the accepted diagnostic timing vocabulary and cache constraints.
-- `test_performance_and_future_program_49j_50.md` owns current planning,
-  accepted-practice review requirements, adoption decisions, ordering, and
-  stop conditions without adding a source owner or runtime behavior.
+- `archive/roadmap_history/test_performance_and_future_program_49j_50.md` retains
+  the completed 49J program and superseded 50A/50B planning context;
+  `post_v0.9_architecture_roadmap.md` owns current ordering and future scope
+  without adding a source owner or runtime behavior.
 - `archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md`
   records the completed marker audit. Marker
   corrections change gate membership only; they do not create a runtime owner.
@@ -1459,14 +1460,14 @@ owns deterministic contract coverage;
 
 ## 50A.5A first-drawable-comet audit ownership
 
-- `docs/developer/first_drawable_comet_audit_50a5a.md` owns the accepted
+- `docs/developer/archive/milestone_history/50a_minor_bodies/first_drawable_comet_audit_50a5a.md` owns the accepted
   bounded 2P/Encke identity, resource, point, track, appearance, failure, and
   acceptance contract;
 - existing runtime owners remain unchanged by the audit.
 
 ## 50A.5B.1 temporal-component corrective audit ownership
 
-- `docs/developer/solar_system_temporal_components_audit_50a5b1.md` owns the
+- `docs/developer/archive/milestone_history/50a_minor_bodies/solar_system_temporal_components_audit_50a5b1.md` owns the
   accepted common temporal-anchor and independently visible path, tick,
   symbol, label, and observed-phase reuse contract;
 - `temporal_components.py` owns immutable start-inclusive `none`, `start`, and
@@ -1482,7 +1483,7 @@ owns deterministic contract coverage;
 
 ## 50A.5C second-drawable-comet audit ownership
 
-- `docs/developer/second_drawable_comet_audit_50a5c.md` alone owns the accepted
+- `docs/developer/archive/milestone_history/50a_minor_bodies/second_drawable_comet_audit_50a5c.md` alone owns the accepted
   161P/Hartley-IRAS second-resource evidence, generalization, visual-test, and
   acceptance boundary;
 - the audit changes no runtime owner, fixture, command, or output;
@@ -1548,7 +1549,7 @@ owns deterministic contract coverage;
 
 ## 50A.5D.2A exact comet-name-resolution audit ownership
 
-- `docs/developer/comet_name_resolution_audit_50a5d2a.md` alone owns the
+- `docs/developer/archive/milestone_history/50a_minor_bodies/comet_name_resolution_audit_50a5d2a.md` alone owns the
   candidate exact installed/provider identity-resolution contract;
 - `MinorBodyResourceCollection` remains the installed-manifest alias
   authority, while `comet_discovery.py` remains the interval-set discovery
@@ -1564,7 +1565,7 @@ owns deterministic contract coverage;
 
 ## 50A.5D.2B generic comet-acquisition audit ownership
 
-- `docs/developer/comet_acquisition_audit_50a5d2b.md` alone owns the accepted
+- `docs/developer/archive/milestone_history/50a_minor_bodies/comet_acquisition_audit_50a5d2b.md` alone owns the accepted
   provider, apparition, bounded-SPK, provenance, failure, and acceptance
   contract;
 - `minor_body_identity.py` remains the exact identity owner;
@@ -1588,7 +1589,7 @@ owns deterministic contract coverage;
 
 ## 50A.5D.2C exact comet CLI-preflight ownership (candidate implementation)
 
-- `docs/developer/comet_cli_preflight_audit_50a5d2c.md` owns the
+- `docs/developer/archive/milestone_history/50a_minor_bodies/comet_cli_preflight_audit_50a5d2c.md` owns the
   accepted request-composition, precedence, network, coverage, mixed-resource,
   failure, and acceptance contract;
 - `cli/chart.py` collects typed asteroid/comet selections and coverage,
