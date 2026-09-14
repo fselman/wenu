@@ -26,17 +26,29 @@ def photometry_fixture_bytes():
     return PHOTOMETRY_FIXTURE.read_bytes()
 
 
-def short_encke_discovery():
+def short_mcnaught_discovery():
     result = comet_discovery.discover_comets(
         "2026-09-01", "2026-09-30", fetch=lambda *values: fixture_bytes()
     )
+    record = replace(
+        result.records[1],
+        spk_id="1002410",
+        full_name="C/2006 P1 (McNaught)",
+        kind="cu",
+        primary_designation="2006 P1",
+        name="McNaught",
+        first_observation="2006-08-07",
+        prefix="C",
+        orbit_class="COM",
+        orbit_solution_id="JPL 27",
+    )
     return replace(
         result,
-        start_utc=datetime(2026, 9, 1, tzinfo=timezone.utc),
+        start_utc=datetime(2007, 1, 12, tzinfo=timezone.utc),
         stop_utc=datetime(
-            2026, 9, 2, 23, 59, 59, 999999, tzinfo=timezone.utc
+            2007, 1, 12, 23, 59, 59, 999999, tzinfo=timezone.utc
         ),
-        records=(result.records[1],),
+        records=(record,),
     )
 
 
@@ -227,9 +239,9 @@ def test_magnitude_step_and_endpoint_sampling_are_bounded():
 
 
 def test_photometry_request_is_topocentric_airless_and_exactly_sampled():
-    discovery = short_encke_discovery()
+    discovery = short_mcnaught_discovery()
     _, epochs = comet_photometry.magnitude_sample_epochs(
-        discovery.start_utc, discovery.stop_utc
+        discovery.start_utc, discovery.stop_utc, "12h"
     )
     parameters = comet_photometry.photometry_query_parameters(
         discovery.records[0],
@@ -239,7 +251,7 @@ def test_photometry_request_is_topocentric_airless_and_exactly_sampled():
         epochs_utc=epochs,
     )
 
-    assert parameters["COMMAND"] == "'DES=2P;CAP;NOFRAG'"
+    assert parameters["COMMAND"] == "'DES=2006 P1;CAP;NOFRAG'"
     assert parameters["CENTER"] == "'coord@399'"
     assert parameters["COORD_TYPE"] == "'GEODETIC'"
     assert parameters["SITE_COORD"] == "'-71.232,-32.452,0.05'"
@@ -252,9 +264,9 @@ def test_photometry_request_is_topocentric_airless_and_exactly_sampled():
 
 
 def test_frozen_horizons_photometry_preserves_unknowns_and_provenance():
-    discovery = short_encke_discovery()
+    discovery = short_mcnaught_discovery()
     _, epochs = comet_photometry.magnitude_sample_epochs(
-        discovery.start_utc, discovery.stop_utc
+        discovery.start_utc, discovery.stop_utc, "12h"
     )
     version, samples, notices = comet_photometry.parse_photometry_response(
         photometry_fixture_bytes(),
@@ -262,22 +274,35 @@ def test_frozen_horizons_photometry_preserves_unknowns_and_provenance():
         requested_epochs_utc=epochs,
     )
 
-    assert version == "1.3"
+    assert version == "1.2"
     assert len(samples) == 3
-    assert samples[0].nuclear_magnitude is None
-    assert samples[1].total_magnitude == 11.9
-    assert samples[1].nuclear_magnitude == 16.2
+    assert samples[0].total_magnitude == -11.0
+    assert samples[0].nuclear_magnitude == 12.0
+    assert samples[1].nuclear_magnitude == 13.0
     assert abs(
         (samples[-1].epoch_utc - discovery.stop_utc).total_seconds()
     ) < 1.0
-    assert any("provider model" in notice for notice in notices)
+    assert any("apparent visual total magnitude" in notice for notice in notices)
+
+    synthetic = json.loads(photometry_fixture_bytes())
+    synthetic["result"] = synthetic["result"].replace(
+        "    -11.,    12.,",
+        "    -11.,  n.a.,",
+        1,
+    )
+    _, unknown_samples, _ = comet_photometry.parse_photometry_response(
+        json.dumps(synthetic).encode("utf-8"),
+        record=discovery.records[0],
+        requested_epochs_utc=epochs,
+    )
+    assert unknown_samples[0].nuclear_magnitude is None
 
 
 def test_photometry_provider_drift_fails_closed():
-    discovery = short_encke_discovery()
+    discovery = short_mcnaught_discovery()
     record = discovery.records[0]
     _, epochs = comet_photometry.magnitude_sample_epochs(
-        discovery.start_utc, discovery.stop_utc
+        discovery.start_utc, discovery.stop_utc, "12h"
     )
     document = json.loads(photometry_fixture_bytes())
 
@@ -285,27 +310,27 @@ def test_photometry_provider_drift_fails_closed():
         (lambda value: value["signature"].update(source="other"), "signature"),
         (
             lambda value: value.update(
-                result=value["result"].replace("2P/Encke", "9P/Tempel 1")
+                result=value["result"].replace("C/2006 P1", "C/2006 P2")
             ),
             "target differs",
         ),
         (
             lambda value: value.update(
-                result=value["result"].replace("JPL#K273/14", "JPL#other")
+                result=value["result"].replace("JPL#other", "JPL#other")
             ),
             "orbit solutions differ",
         ),
         (
             lambda value: value.update(
-                result=value["result"].replace("12.40", "nan")
+                result=value["result"].replace("    -11.,    12.,", "    nan,    12.,", 1)
             ),
             "invalid values",
         ),
         (
             lambda value: value.update(
                 result=value["result"].replace(
-                    " 2026-Sep-03 00:00:00.000,"
-                    " 2461286.500000000000, 12.10, n.a.,\n",
+                    " 2007-Jan-13 00:00:00.000,"
+                    " 2454113.500000000,C, ,    -11.,    13.,\n",
                     "",
                 )
             ),
@@ -324,7 +349,7 @@ def test_photometry_provider_drift_fails_closed():
 
 
 def test_characterization_resolves_observer_and_retains_exact_response():
-    discovery = short_encke_discovery()
+    discovery = short_mcnaught_discovery()
     raw = photometry_fixture_bytes()
     calls = []
     now = datetime(2026, 9, 14, 12, 0, tzinfo=timezone.utc)
@@ -332,6 +357,7 @@ def test_characterization_resolves_observer_and_retains_exact_response():
     result = comet_photometry.characterize_discovery_photometry(
         discovery,
         observer_location="La Ligua",
+        magnitude_step="12h",
         fetch=lambda url, parameters: (
             calls.append((url, parameters)) or raw
         ),
@@ -341,17 +367,17 @@ def test_characterization_resolves_observer_and_retains_exact_response():
     assert len(calls) == 1
     assert calls[0][0] == comet_photometry.HORIZONS_API
     assert result.observer_location == "La Ligua"
-    assert result.magnitude_step == "1d"
+    assert result.magnitude_step == "12h"
     model = result.results[0]
-    assert model.brightest_total_sample.total_magnitude == 11.9
-    assert model.brightest_nuclear_sample.nuclear_magnitude == 16.2
+    assert model.brightest_total_sample.total_magnitude == -11.0
+    assert model.brightest_nuclear_sample.nuclear_magnitude == 12.0
     assert model.raw_sha256 == sha256(raw).hexdigest()
     assert model.retrieved_at_utc == now
     assert dict(model.request_parameters) == calls[0][1]
 
 
 def test_characterization_limits_and_any_provider_failure_fail_whole():
-    discovery = short_encke_discovery()
+    discovery = short_mcnaught_discovery()
     calls = []
     too_many = replace(
         discovery,
@@ -366,29 +392,23 @@ def test_characterization_limits_and_any_provider_failure_fail_whole():
         )
     assert calls == []
 
-    full = comet_discovery.discover_comets(
-        "2026-09-01", "2026-09-30", fetch=lambda *values: fixture_bytes()
+    repeated = replace(
+        discovery,
+        records=(discovery.records[0], discovery.records[0]),
     )
-    full = replace(
-        full,
-        start_utc=discovery.start_utc,
-        stop_utc=discovery.stop_utc,
-    )
-    first_raw = photometry_fixture_bytes().replace(
-        b"2P/Encke", b"C/2026 A1 (Example)"
-    ).replace(b"JPL#K273/14", b"JPL#1")
     provider_calls = []
 
     def fail_second(url, parameters):
         provider_calls.append((url, parameters))
         if len(provider_calls) == 1:
-            return first_raw
+            return photometry_fixture_bytes()
         raise RuntimeError("provider unavailable")
 
     with pytest.raises(RuntimeError, match="provider unavailable"):
         comet_photometry.characterize_discovery_photometry(
-            full,
+            repeated,
             observer_location="La Ligua",
+            magnitude_step="12h",
             fetch=fail_second,
         )
     assert len(provider_calls) == 2
@@ -397,10 +417,11 @@ def test_characterization_limits_and_any_provider_failure_fail_whole():
 def test_cli_observer_photometry_table_and_json_contract(
     tmp_path, monkeypatch
 ):
-    discovery = short_encke_discovery()
+    discovery = short_mcnaught_discovery()
     photometry = comet_photometry.characterize_discovery_photometry(
         discovery,
         observer_location="La Ligua",
+        magnitude_step="12h",
         fetch=lambda *values: photometry_fixture_bytes(),
         now=lambda: datetime(2026, 9, 14, tzinfo=timezone.utc),
     )
@@ -424,11 +445,17 @@ def test_cli_observer_photometry_table_and_json_contract(
         orbit_solution_id=full_discovery.records[0].orbit_solution_id,
         samples=unknown_samples,
     )
+    known = replace(
+        photometry.results[0],
+        canonical_designation=full_discovery.records[1].canonical_designation,
+        provider_spk_id=full_discovery.records[1].spk_id,
+        orbit_solution_id=full_discovery.records[1].orbit_solution_id,
+    )
     ordered_photometry = replace(
         photometry,
         start_utc=full_discovery.start_utc,
         stop_utc=full_discovery.stop_utc,
-        results=(unknown, photometry.results[0]),
+        results=(unknown, known),
     )
     ordered_table = comets.table_text(full_discovery, ordered_photometry)
     ordered_json = json.loads(
@@ -441,8 +468,8 @@ def test_cli_observer_photometry_table_and_json_contract(
     ] == ["2P", "C/2026 A1"]
 
     model = document["records"][0]["observer_model_photometry"]
-    assert model["brightest_sampled_total"]["value"] == 11.9
-    assert model["brightest_sampled_nuclear"]["value"] == 16.2
+    assert model["brightest_sampled_total"]["value"] == -11.0
+    assert model["brightest_sampled_nuclear"]["value"] == 12.0
     assert model["provider"]["raw_sha256"] == sha256(
         photometry_fixture_bytes()
     ).hexdigest()
