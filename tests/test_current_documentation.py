@@ -3176,6 +3176,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "comet_discovery_50a5d1a.md",
         "comet_name_resolution_audit_50a5d2a.md",
         "comet_acquisition_audit_50a5d2b.md",
+        "comet_cli_preflight_audit_50a5d2c.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -4613,3 +4614,46 @@ def test_50a5d2b_audits_generic_comet_acquisition():
     assert "Resolved minor-body acquisition" in reference
     assert "accepted the bounded 50A.5D.2B acquisition-service implementation" in roadmap
     assert "CLI integration remains 50A.5D.2C" in roadmap
+
+
+def test_50a5d2c_audits_exact_comet_cli_preflight():
+    audit = " ".join(read(
+        DEVELOPER / "comet_cli_preflight_audit_50a5d2c.md"
+    ).split())
+    roadmap = " ".join(read(
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).split())
+    source_tree = " ".join(read(
+        DEVELOPER / "source_tree.md"
+    ).split())
+
+    for phrase in (
+        "Accepted by Fernando on 2026-09-13",
+        "request-level composition",
+        "`--comet SELECTION`",
+        "`--comet-track SELECTION`",
+        "`--center-on comet:SELECTION`",
+        "Provider-backed uninstalled center resolution requires the explicit",
+        "`--asteroid Hygiea` remains outside",
+        "one verified collection rather than acquire per-class directories",
+        "remains authoritative and offline",
+        "warm cache adequate for the full request performs no SBDB or Horizons access",
+        "one closed TDB acquisition interval",
+        "No network access may occur after chart construction begins",
+        "Libraries do not print",
+        "Production code may contain no special `10P`",
+        "No failure falls back to the first provider result",
+        "Extend existing owners rather than add a milestone-specific test module",
+        "mixed asteroid-and-comet preflight uses one verified collection",
+        "authorizes only the 50A.5D.2C exact comet CLI",
+        "does not authorize observer-dependent comet magnitude",
+        "focused current-documentation gate passed all 115 tests in 2.84 seconds",
+        "updated 115-test documentation gate in 2.62 seconds",
+        "complete 2,389-test regression in 82.59 seconds",
+        "authorizes only implementation of the request-level exact",
+    ):
+        assert phrase in audit
+
+    assert "accepted 50A.5D.2C audit isolates exact comet CLI preflight" in roadmap
+    assert "50A.5D.2C exact comet CLI-preflight audit ownership" in source_tree
+    assert "introduces no coordinate system, origin, frame, epoch, equinox" in audit
