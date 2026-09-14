@@ -298,6 +298,15 @@ The implementation branch composes typed asteroid and comet point, track, and
 explicit-center selections in `cli/chart.py`, derives one shared coverage
 interval, validates an explicit directory, reuses an adequate complete warm
 cache without provider access, and otherwise resolves and acquires one shared
-immutable collection before sphere construction. It extends the existing
-acquisition and CLI test owners only. Scientific, live-network, visual, and
-complete Mac acceptance remain pending.
+immutable collection before sphere construction. It also formats expected CLI
+failures without tracebacks while retaining an explicit `--debug` traceback
+mode.
+
+Mac acceptance passed 2,404 tests in 83.97 seconds with a clean synchronized
+branch and clean `git diff --check`. Live `10P/Tempel 2` and `C/2006 P1`
+diagnostics exercised acquisition and immediate offline reuse. The provisional
+McNaught diagnostic additionally verified provider fullname ordering, manifest
+prefix reconstruction, installed-identity reuse, and safe SVG semantic paths.
+The attached live and offline charts completed with the same scientific chart
+content. The deterministic mixed asteroid/comet test confirms one shared
+verified collection.
