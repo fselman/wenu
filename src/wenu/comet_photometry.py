@@ -221,8 +221,7 @@ def _fetch(
 
 def _normalized_solution(value: str) -> str:
     result = " ".join(value.strip().split())
-    if result.upper().startswith("JPL#"):
-        result = result[4:]
+    result = re.sub(r"^JPL(?:#|\\s)+", "", result, flags=re.IGNORECASE)
     return result.casefold()
 
 
@@ -237,6 +236,7 @@ def _target_identity(
         name == designation
         or name.startswith(designation + " ")
         or name.startswith(designation + "/")
+        or name.endswith(f"({designation})")
     )
     return matches, None if source is None else source.group("value")
 
