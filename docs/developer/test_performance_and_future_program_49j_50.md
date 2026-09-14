@@ -18,7 +18,8 @@ audit. It adds two requirements requested by Fernando:
    explicitly which practices Wenu adopts.
 
 The intended order is test-suite work, production performance work, minor
-bodies, and finally publication legibility and economical printing styles.
+bodies, artificial-satellite crossing and contamination analysis, and finally
+publication legibility and economical printing styles.
 Each implementation slice remains separately authorized.
 
 ## 2. Decision method
@@ -214,6 +215,24 @@ a separate later physical-appearance milestone.
 
 Close provenance, public interface, validation, and documentation after PNG,
 PDF, and semantic-SVG acceptance.
+
+## 4.1 — Program 50S: artificial-satellite crossings and contamination
+
+Program 50S is scheduled after 50A.6 and before Program 50B. It provides two
+views of one scientifically realized crossing set:
+
+- observation planning for a supplied field, centre, observer, and minutes-to-
+  hours interval;
+- statistical contamination studies versus local time, season, sky position,
+  field size, and exposure duration.
+
+The staged contract, scientific separation from SPK/TDB providers,
+mandatory literature reviews for fast orbit-to-field screening and satellite
+photometry, conservative two-stage search, complete-scan oracle, reproducible
+index keys, apparent-brightness model boundary, result fields, uncertainty
+boundary, and closure requirements are authoritative in
+`post_v0.9_architecture_roadmap.md`. No satellite runtime behavior is
+authorized until the 50S.0 audit is accepted.
 
 ## 5. Program 50B — Publication legibility and economical printing
 
