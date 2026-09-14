@@ -4540,7 +4540,8 @@ def test_50a5d2a_audits_exact_comet_name_resolution():
         "resolve_minor_body_identity(selection, expected_class=...)",
         "mandatory and accepts only `comet` or `asteroid`",
         "does not connect asteroid names to the chart CLI",
-        "Candidate for Fernando's review",
+        "Accepted by Fernando on 2026-09-13 after the focused Mac gate passed all 150 tests",
+        "complete Mac regression passed all 2,380 tests in 89.08 seconds",
     ):
         assert phrase in audit
 
