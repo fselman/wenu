@@ -4799,6 +4799,25 @@ def test_assistant_instructions_require_documentation_contract_preflight():
     ):
         assert phrase in instructions
 
+def test_assistant_instructions_require_post_change_verification():
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Post-change verification gate",
+        "exact final branch",
+        "Writing tests is not evidence that they pass",
+        "verify each imported name, constructor field, attribute, and return shape",
+        "against the actual current definition",
+        "do not infer interface names from analogous types",
+        "execution remains pending",
+        "Never describe unexecuted tests as passing",
+        "search the complete change for the same mistaken assumption",
+        "rerun the identical focused command",
+        "Do not request the full regression suite until the focused gate passes",
+    ):
+        assert phrase in instructions
+
+
 def test_assistant_instructions_govern_production_module_placement():
     instructions = " ".join(read(INSTRUCTIONS).split())
     source_tree = read(DEVELOPER / "source_tree.md")
