@@ -285,7 +285,7 @@ def test_photometry_provider_drift_fails_closed():
         (lambda value: value["signature"].update(source="other"), "signature"),
         (
             lambda value: value.update(
-                result=value["result"].replace("(1000025)", "(9999999)")
+                result=value["result"].replace("2P/Encke", "9P/Tempel 1")
             ),
             "target differs",
         ),
@@ -375,7 +375,7 @@ def test_characterization_limits_and_any_provider_failure_fail_whole():
         stop_utc=discovery.stop_utc,
     )
     first_raw = photometry_fixture_bytes().replace(
-        b"2P/Encke (1000025)", b"C/2026 A1 (1009999)"
+        b"2P/Encke", b"C/2026 A1 (Example)"
     ).replace(b"JPL#K273/14", b"JPL#1")
     provider_calls = []
 
