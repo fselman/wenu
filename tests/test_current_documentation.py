@@ -4737,3 +4737,29 @@ def test_assistant_instructions_require_documentation_contract_preflight():
         "Do not present the branch for Mac testing",
     ):
         assert phrase in instructions
+
+def test_assistant_instructions_govern_production_module_placement():
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    source_tree = read(DEVELOPER / "source_tree.md")
+
+    for phrase in (
+        "Source-tree alignment and production-module admission",
+        "durable architectural responsibility",
+        "closest existing owner",
+        "same responsibility, dependencies, lifecycle, and reason to change",
+        "distinct scientific or provider responsibility",
+        "Create a subpackage when a coherent domain requires several collaborating modules",
+        "not milestone number, CLI option, first specimen",
+        "genuinely body-specific science",
+        "never for copied orchestration, projection, rendering, or export",
+        "Do not place domain behavior in `utils`",
+        "File size alone neither requires nor justifies splitting",
+        "intentional public or compatibility exports",
+        "update `source_tree.md` whenever ownership or placement changes",
+        "Keep structural reorganization separate from behavioral implementation",
+        "Every new production file proposal must name the closest existing owner",
+    ):
+        assert phrase in instructions
+
+    assert "├── resources.py                installed-resource access" in source_tree
+    assert "├── resources/                  installed-resource access" not in source_tree

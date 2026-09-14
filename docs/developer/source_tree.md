@@ -38,7 +38,7 @@ src/wenu/
 ├── charts/                     chart types, composition, detail, styles,
 │                               legends, boundaries, and export workflow
 ├── rendering/                  preparation and Matplotlib backend
-├── resources/                  installed-resource access
+├── resources.py                installed-resource access
 ├── cli/                        installed command adapters
 ├── example_scripts/            packaged canonical user examples
 ├── data/                       distributed astronomical datasets
