@@ -2291,18 +2291,23 @@ point and track, and restore a reusable sphere on close.
 the explicit networked acquisition route. Ordinary chart rendering only reads
 that local directory. The 50A.2 Ceres manifest remains a compatibility input.
 
-### Automatic numbered-asteroid preflight (Milestone 50A.3I candidate)
+### Automatic minor-body preflight (Milestones 50A.3I and 50A.5D.2C candidate)
 
 The installed CLI accepts `--data-policy acquire-if-missing`, `offline`, or
 `refresh`; the packaged default is `acquire-if-missing`. Before constructing a
-sphere or view, it collects exact permanent numbers required by an asteroid
+sphere or view, it collects typed asteroid and comet selections required by a
 center, point, or track and asks `minor_body_acquisition.py` for one verified
-local collection covering every required epoch plus margin.
+local collection covering every required epoch plus margin. Automatic asteroid
+selection remains limited to positive permanent numbers. Comet selections use
+exact installed or SBDB identity; partial names, wildcards, and bare asteroid
+numbers in comet context fail closed.
 
 That module is the only network owner. It validates staging before atomic
 content-addressed publication and serializes concurrent acquisition. An
-explicit `--minor-body-resource-directory` bypasses acquisition and remains
-read-only. Request generation and rendering retain the offline contract.
+explicit `--minor-body-resource-directory` is validated as one complete,
+read-only authority. Adequate warm caches perform no provider access. Mixed
+asteroid/comet requests resolve to one effective collection, while request
+generation and rendering retain the offline contract.
 
 ### Installed comets (Milestone 50A.5C)
 
@@ -2371,6 +2376,5 @@ provenance.
 `ensure_minor_body_resources(...)` applies `offline`,
 `acquire-if-missing`, or `refresh` before rendering. It reuses a verified
 warm cache without network access or publishes a validated acquisition
-atomically under a per-identity lock. This candidate is a library boundary
-only; `wenu_chart` continues to use the accepted numbered-asteroid preflight
-until 50A.5D.2C.
+atomically under a per-identity lock. The 50A.5D.2C candidate connects that
+boundary to `wenu_chart` for exact comet and mixed asteroid/comet preflight.
