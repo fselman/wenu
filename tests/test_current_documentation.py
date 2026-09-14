@@ -4693,7 +4693,7 @@ def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
     for phrase in (
         "Accepted by Fernando on 2026-09-14",
         "authorizes only the bounded 50A.5D.1B implementation",
-        "brightest sampled model magnitude",
+        "brightest sampled total model magnitude",
         "not a visibility forecast",
         "T-mag = M1 + 5 log10(delta) + k1 log10(r)",
         "N-mag = M2 + 5 log10(delta) + k2 log10(r) + phcof beta",
