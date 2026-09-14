@@ -22,7 +22,73 @@ Each section distinguishes accepted direction, proposed implementation, and
 future work. The as-built source ownership remains in `source_tree.md` and the
 public interface remains in `implementation_reference.md`.
 
-## 2. Scientific product
+## 2. Acronyms and specialized abbreviations
+
+- **AltAz — altitude–azimuth:** observer-local horizontal coordinates.
+- **BRDF — bidirectional reflectance distribution function:** a model of how
+  a surface reflects incident light into an outgoing direction.
+- **BSTAR — SGP4 drag-like coefficient:** the historical `B*` element carried
+  by GP records; it is not by itself a physical ballistic coefficient.
+- **CCSDS — Consultative Committee for Space Data Systems:** standards body
+  that defines OMM and related navigation messages.
+- **CPS — Centre for the Protection of the Dark and Quiet Sky from Satellite
+  Constellation Interference:** the IAU centre responsible for SatHub and
+  SatChecker.
+- **CSV — comma-separated values:** a tabular text serialization.
+- **EOP — Earth-orientation parameters:** quantities such as UT1−UTC and polar
+  motion used in terrestrial/celestial transformations.
+- **GCRS — Geocentric Celestial Reference System:** relativistic celestial
+  reference system centred at Earth.
+- **GEO — geosynchronous Earth orbit:** orbit whose period follows Earth's
+  rotation; geostationary orbit is the circular equatorial special case.
+- **GP — general perturbations:** the orbit-element/model family to which TLE
+  and the corresponding OMM data belong.
+- **HEALPix — Hierarchical Equal Area isoLatitude Pixelization:** a
+  hierarchical equal-area tessellation of the sphere.
+- **HTTP — Hypertext Transfer Protocol:** the protocol used by provider web
+  services.
+- **IAU — International Astronomical Union.**
+- **ICRS — International Celestial Reference System:** the adopted
+  barycentric celestial reference system.
+- **ITRS — International Terrestrial Reference System:** the Earth-fixed
+  terrestrial reference system.
+- **LEO — low Earth orbit.**
+- **MEO — medium Earth orbit.**
+- **NORAD — North American Aerospace Defense Command:** the historical source
+  of the catalogue-number terminology retained in `NORAD_CAT_ID`.
+- **OMM — Orbit Mean-Elements Message:** the CCSDS extensible message standard
+  used to exchange mean orbital elements and their metadata.
+- **PSF — point-spread function:** an instrument's response to a point source.
+- **RA — right ascension.**
+- **SGP4 — Simplified General Perturbations 4:** the propagation model paired
+  with public GP mean elements.
+- **SHA-256 — Secure Hash Algorithm with a 256-bit digest:** used to identify
+  exact immutable bytes.
+- **SVG — Scalable Vector Graphics:** Wenu's editable vector-output format.
+- **TEME — True Equator, Mean Equinox:** the reference frame convention of an
+  SGP4 state; despite its name, it is not ICRS or an observer frame.
+- **TLE — two-line element set:** the legacy fixed-width serialization of GP
+  mean elements.
+- **TT — Terrestrial Time:** a uniform time scale used in astronomical
+  transformations.
+- **URL — Uniform Resource Locator:** the address of a provider resource.
+- **UT1 — Universal Time 1:** Earth-rotation angle expressed as a time scale.
+- **UTC — Coordinated Universal Time:** the civil time scale used for Wenu
+  query instants and OMM epochs.
+- **WCS — World Coordinate System:** metadata mapping instrument/image
+  coordinates to celestial coordinates.
+- **XML — Extensible Markup Language:** a structured text serialization.
+
+OMM and TLE are not two competing propagation models. A provider can publish
+the same GP/SGP4 mean-element solution in either representation. TLE is a
+compact historical card format with fixed columns, a two-digit epoch year, and
+a five-character catalogue-number field. OMM is a metadata-rich CCSDS message
+that names the object, epoch, reference frame, time system, centre, and mean
+element theory explicitly and supports larger catalogue identifiers. Wenu
+therefore treats OMM as the canonical data model and translates legacy TLE
+into it before any propagation.
+
+## 3. Scientific product
 
 The primary product is a field-crossing query. Given:
 
@@ -51,7 +117,7 @@ Four results remain scientifically separate:
 
 No later stage may change the result of an earlier geometric crossing test.
 
-## 3. Canonical satellite flow
+## 4. Canonical satellite flow
 
 The proposed scientific flow is:
 
@@ -73,9 +139,9 @@ Acquisition never occurs inside propagation, field search, chart construction,
 rendering, or export. Candidate indexing accelerates the exact calculation but
 does not become a second propagation authority.
 
-## 4. Identity and catalogue snapshot
+## 5. Identity and catalogue snapshot
 
-### 4.1 Canonical ingestion model
+### 5.1 Canonical ingestion model
 
 The Orbit Mean-Elements Message (OMM) vocabulary is the canonical ingestion
 model. Preserve, when supplied:
@@ -96,7 +162,14 @@ record and must not define the internal identity model. Catalogue identity,
 international designator, display name, and one exact orbit solution remain
 separate values.
 
-### 4.2 Snapshot identity
+### 5.2 Snapshot identity
+
+A snapshot is a frozen copy of the provider's orbit catalogue at one declared
+retrieval instant. It is not a set of satellite positions and it is not an
+image of the sky. It contains the orbital-element solutions from which Wenu
+can later propagate positions for requested times. Freezing those inputs is
+what makes a calculation reproducible after the provider has replaced its
+live elements with newer orbit solutions.
 
 An immutable snapshot records:
 
@@ -114,14 +187,14 @@ Ordinary queries use an already published snapshot. Refresh is an explicit
 acquisition operation. A derived observer/night index always names the exact
 snapshot digest from which it was built.
 
-## 5. Provider policy
+## 6. Provider policy
 
 Provider policy is a scientific reproducibility and operational-safety input,
 not merely a networking detail. It must be rechecked before any change to
 endpoint, workload, concurrency, cadence, caching, retry, packaging, or
 redistribution.
 
-### 5.1 CelesTrak candidate policy
+### 6.1 CelesTrak candidate policy
 
 As checked on 2026-09-14, CelesTrak requests clients to use cached GP data by
 default, check for updates no more often than once every two hours, request
@@ -133,7 +206,7 @@ OMM-compatible CSV or XML is preferred to legacy TLE because new catalogue
 identifiers exceed TLE's five-digit field. Redistribution is not authorized by
 this guide and requires a separately recorded licensing decision.
 
-### 5.2 Space-Track candidate policy
+### 6.2 Space-Track candidate policy
 
 Space-Track requires an account and publishes request and bandwidth guidance.
 It is not the automatic Wenu default. A future adapter is opt-in,
@@ -141,16 +214,16 @@ credential-external, serial, bulk-oriented, and cached. Account-derived data
 must not be packaged or redistributed without explicit permission under the
 then-current terms.
 
-### 5.3 SatChecker role
+### 6.3 SatChecker role
 
 IAU CPS SatChecker is an independent comparison oracle for selected
 ephemerides, range, motion, illumination, and field-crossing results. It is not
 the sole Wenu production dependency because reproducible queries must work
 from a frozen local snapshot without relying on service availability.
 
-## 6. Propagation and reference systems
+## 7. Propagation and reference systems
 
-### 6.1 SGP4 contract
+### 7.1 SGP4 contract
 
 General-perturbations elements are mean elements fitted for SGP4. They are not
 osculating Keplerian elements and must not be silently propagated with a
@@ -162,7 +235,7 @@ same model and error behavior. Each result retains propagator identity and
 version, element epoch, evaluation instant, time offset from the element
 epoch, and SGP4 status/error code.
 
-### 6.2 TEME is an explicit state
+### 7.2 TEME is an explicit state
 
 The SGP4 Cartesian result is geometric TEME position and velocity. TEME is not
 ICRS, GCRS, ITRS, or topocentric AltAz. It must remain typed until a declared
@@ -181,7 +254,7 @@ Refraction is off by default for astronomical field intersection. If an
 observed/refracted field is later supported, it is an explicit policy and must
 be applied consistently to both satellite directions and the field boundary.
 
-### 6.3 Freshness and uncertainty
+### 7.3 Freshness and uncertainty
 
 Element age is always reported. There is no universal age cutoff because drag,
 maneuvers, orbit regime, required timing precision, and field size differ.
@@ -194,9 +267,9 @@ Wenu must not present an unquantified prediction as a confidence interval.
 Future covariance or empirical along-track uncertainty is additional state,
 not a reinterpretation of SGP4 output.
 
-## 7. Field and crossing definitions
+## 8. Field and crossing definitions
 
-### 7.1 Field
+### 8.1 Field
 
 A field is spherical scientific geometry independent of chart projection.
 Initially planned forms are:
@@ -209,14 +282,14 @@ The field declares its coordinate frame and position status. Boundary touch
 counts as intersection. RA wrap, poles, and projection seams are handled by
 spherical geometry, never by an unqualified RA/Dec bounding box.
 
-### 7.2 Query interval
+### 8.2 Query interval
 
 Start and stop are explicit UTC instants and the interval is inclusive.
 Exposure windows, when supplied, retain exact start and duration. A trajectory
 may enter the same field more than once; disconnected visits are separate
 crossing events.
 
-### 7.3 Crossing record
+### 8.3 Crossing record
 
 An exact event retains at least:
 
@@ -232,7 +305,7 @@ An exact event retains at least:
 - illumination/shadow state and prediction warnings;
 - solver tolerance and software provenance.
 
-## 8. Complete-scan correctness oracle
+## 9. Complete-scan correctness oracle
 
 The first implementation scans every valid object in the snapshot. A fixed
 sampling grid alone is not a completeness proof because a fast LEO pass may
@@ -256,7 +329,7 @@ and an upper transverse-speed/curvature bound. Near-zenith or otherwise
 singular intervals subdivide or fall back to exact evaluation; they are never
 rejected merely because the bound is loose.
 
-## 9. Conservative high-performance search
+## 10. Conservative high-performance search
 
 The leading 50S.3 design is a time-slab and hierarchical-sky-pixel index:
 
@@ -282,7 +355,7 @@ scientific completeness. Unsafe approaches include nearest sampled-point
 tests, unconstrained interpolation, plain RA/Dec boxes, and any index without
 an exact fallback.
 
-## 10. Illumination
+## 11. Illumination
 
 Illumination uses explicit Sun-Earth-satellite-observer geometry. The minimum
 accepted physical model distinguishes sunlight, penumbra, and umbra using the
@@ -293,9 +366,9 @@ Atmospheric refraction and absorption near shadow ingress and egress can
 modify observed brightness. They remain separate from the minimum geometric
 shadow state until a model is selected and empirically validated.
 
-## 11. Apparent brightness
+## 12. Apparent brightness
 
-### 11.1 Required inputs
+### 12.1 Required inputs
 
 A reflected-sunlight model declares, when known:
 
@@ -311,7 +384,7 @@ A reflected-sunlight model declares, when known:
 Range and phase alone do not determine brightness. Unknown attitude, surface
 properties, and specular geometry may dominate the observed flux.
 
-### 11.2 Model hierarchy
+### 12.2 Model hierarchy
 
 Wenu uses the most specific defensible level:
 
@@ -328,7 +401,7 @@ guaranteed brightness. Scatter, bias, outliers, unmodeled glints, and tumbling
 limitations are reported. A single standard magnitude does not replace a
 phase function.
 
-### 11.3 Validation
+### 12.3 Validation
 
 Before 50S.4B acceptance, compare at least two materially different satellite
 families over varied range, phase, elevation, and illumination geometry using
@@ -336,14 +409,14 @@ calibrated, time-resolved observations. Report passband transformations,
 range normalization, residual bias and scatter, outliers, phase coverage,
 and orbit-age or trajectory-timing contribution.
 
-### 11.4 Detector contamination is later
+### 12.4 Detector contamination is later
 
 Trail signal or detectability also depends on angular speed, exposure time,
 optics, aperture, throughput, defocus and PSF, pixel scale, sky background,
 saturation, blooming, and detector response. Those belong to a later
 instrument model and must not be inferred from apparent magnitude alone.
 
-## 12. Validation hierarchy
+## 13. Validation hierarchy
 
 The satellite program uses independent layers of evidence:
 
@@ -362,7 +435,7 @@ polar fields, horizon proximity, fast zenith LEO motion, short exposure,
 interval endpoints, high eccentricity, multiple visits, stale elements, and
 propagation error states.
 
-## 13. Performance evidence
+## 14. Performance evidence
 
 Performance acceptance uses a recorded current full-catalogue snapshot rather
 than only a reduced fixture. Measure:
@@ -384,7 +457,7 @@ high latitude.
 Measured maxima tune performance but never replace conservative bounds or the
 complete-scan equivalence test.
 
-## 14. Source ownership direction
+## 15. Source ownership direction
 
 No production module is admitted by this guide. Before 50S.1, the source-tree
 admission review must compare the proposed responsibility with existing
@@ -398,7 +471,7 @@ milestone number, and it must not duplicate Wenu's coordinate service,
 trajectory geometry, projection, preparation, renderer, semantic SVG, or
 export machinery.
 
-## 15. Milestone evolution
+## 16. Milestone evolution
 
 - **50S.0:** maintain this literature, provider-policy, scientific, and
   architecture guide; no runtime behavior.

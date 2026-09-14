@@ -136,11 +136,15 @@ element theory. Accept legacy TLE only through an adapter that produces the
 same typed internal record. Never truncate a catalogue identifier to five
 digits.
 
-**Adopt a frozen catalogue snapshot.** Its identity includes provider,
-retrieval instant, exact response digest, query, schema/format version, and
-all element records. Satellite identity and orbit-solution identity remain
-separate. Duplicate catalogue entries and element epochs are resolved by an
-explicit policy, never input order.
+**Adopt a frozen catalogue snapshot.** This is a frozen copy of the provider's
+orbit-element catalogue at one declared retrieval instant, not a set of
+propagated satellite positions or an image of the sky. Its identity includes
+provider, retrieval instant, exact response digest, query, schema/format
+version, and all element records. Satellite identity and orbit-solution
+identity remain separate. Duplicate catalogue entries and element epochs are
+resolved by an explicit policy, never input order. Future positions are
+propagated from these fixed inputs so a result remains reproducible after the
+provider publishes newer elements.
 
 **Adopt the Vallado-compatible SGP4 implementation and verification vectors.**
 GP mean elements are not osculating Keplerian elements. They must not be sent
