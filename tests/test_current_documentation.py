@@ -4534,3 +4534,19 @@ def test_50a5d2a_audits_exact_comet_name_resolution():
 
     assert "accepted 50A.5D.2A audit" in roadmap
     assert "SPK acquisition" in roadmap
+
+    for phrase in (
+        "Accepted generic-core amendment",
+        "resolve_minor_body_identity(selection, expected_class=...)",
+        "mandatory and accepts only `comet` or `asteroid`",
+        "does not connect asteroid names to the chart CLI",
+        "Accepted by Fernando on 2026-09-13 after the focused Mac gate passed all 150 tests",
+        "complete Mac regression passed all 2,380 tests in 89.08 seconds",
+    ):
+        assert phrase in audit
+
+    reference = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+    assert "Exact minor-body identity resolution" in reference
+    assert "minor_body_identity.py" in source_tree
+    assert "tests/test_minor_body_identity.py" in source_tree

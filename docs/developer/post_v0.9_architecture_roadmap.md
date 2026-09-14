@@ -1619,6 +1619,10 @@ The accepted 50A.5D.2A audit isolates exact comet identity resolution before
 acquisition. It reuses exact installed aliases, permits one explicit SBDB
 identity query for an uninstalled selection, and fails on partial, absent,
 ambiguous, fragment-ambiguous, or bare-number input rather than guessing.
-`10P/Tempel 2` is only the first acceptance specimen. SPK acquisition, cache
-publication, chart integration, magnitude, and reports remain outside this
-accepted audit.
+`10P/Tempel 2` is only the first acceptance specimen. Fernando accepted a
+mandatory-class generic resolver core so asteroid and comet identity logic is
+not duplicated; only the comet route is integrated in this slice. SPK
+acquisition, cache publication, chart integration, magnitude, and reports
+remain outside this accepted audit.
+
+The 50A.5D.2A implementation was accepted by Fernando on 2026-09-13 after exact live SBDB success and failure checks, 150 focused Mac tests, and the complete 2,380-test Mac regression.

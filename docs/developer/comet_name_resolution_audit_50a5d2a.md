@@ -75,8 +75,9 @@ Examples:
 - `73P` and `73P-B` are different selections unless the provider identity
   explicitly proves an exact alias relationship.
 
-The resolver never uses substring, prefix, fuzzy, popularity, nearest-name, or
-first-result matching.
+The resolver never uses substring, prefix, wildcard, fuzzy, popularity,
+nearest-name, or first-result matching. A selection containing SBDB's `*`
+wildcard fails before network access.
 
 ## Resolution order
 
@@ -173,8 +174,23 @@ Acceptance of 50A.5D.2A authorizes only the identity resolver. A separate
 
 ## Acceptance
 
-Fernando accepted this audit on 2026-09-13 and authorized only the exact,
-typed 50A.5D.2A comet-identity resolver described here. The authorization does
+Fernando accepted this audit on 2026-09-13 and authorized the exact 50A.5D.2A
+identity resolver described here. The authorization does
 not include generic comet acquisition, Horizons SPK requests, cache
 publication, chart integration, observer-dependent magnitude, or reports.
 Those remain subject to their separately reviewed milestones.
+
+## Accepted generic-core amendment
+
+Fernando subsequently agreed on 2026-09-13 that the implementation core
+should resolve either minor-body class through
+`resolve_minor_body_identity(selection, expected_class=...)`. The
+`expected_class` argument is mandatory and accepts only `comet` or `asteroid`.
+`resolve_comet_identity` is the comet convenience boundary.
+
+This amendment prevents duplicate asteroid and comet resolvers. It does not
+connect asteroid names to the chart CLI or automatic preflight. The existing
+numbered-asteroid acquisition path remains unchanged, and the 50A.5D.2A
+acceptance specimen and runtime integration remain comet-only.
+
+**Implementation status:** Accepted by Fernando on 2026-09-13 after the focused Mac gate passed all 150 tests, the complete Mac regression passed all 2,380 tests in 89.08 seconds, deliberate live SBDB checks confirmed the exact success and failure behavior, and the working tree remained clean.

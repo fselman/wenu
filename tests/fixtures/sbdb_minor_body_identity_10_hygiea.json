@@ -1,0 +1,24 @@
+{
+  "signature": {
+    "source": "NASA/JPL Small-Body Database (SBDB) API",
+    "version": "1.3"
+  },
+  "object": {
+    "spkid": "20000010",
+    "fullname": "10 Hygiea (A849 GA)",
+    "shortname": "10 Hygiea",
+    "des": "10",
+    "prefix": null,
+    "kind": "an",
+    "orbit_class": {
+      "name": "Main-belt Asteroid",
+      "code": "MBA"
+    },
+    "orbit_id": "129",
+    "des_alt": [
+      {
+        "pri": "A849 GA"
+      }
+    ]
+  }
+}
