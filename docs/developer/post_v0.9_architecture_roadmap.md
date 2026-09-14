@@ -1643,11 +1643,12 @@ existing immutable publication policy. This closes only the shared acquisition
 service; CLI integration remains 50A.5D.2C.
 
 
-The candidate 50A.5D.2C audit isolates exact comet CLI preflight composition.
+The accepted 50A.5D.2C audit isolates exact comet CLI preflight composition.
 It requires one request-level typed minor-body set, one complete coverage
 interval, and one verified immutable resource collection before chart
 construction. Explicit resource directories remain authoritative and offline;
 warm-cache reuse performs no provider access. Mixed numbered-asteroid and comet
 requests must not acquire parallel directories. Magnitude, fuzzy lookup,
 automatic asteroid-name acquisition, new graphics, and reports remain outside
-the candidate audit.
+the accepted audit. Fernando accepted it on 2026-09-13, authorizing only the
+bounded CLI-preflight implementation.
