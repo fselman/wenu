@@ -4600,7 +4600,11 @@ def test_50a5d2b_audits_generic_comet_acquisition():
         "record `90000214`",
         "solution `JPL#K265/50`",
         "JD 2461284.5 through 2461344.5",
-        "Candidate for Fernando's review",
+        "Verified candidate for Fernando's review",
+        "Mac acceptance run acquired `10P/Tempel 2`",
+        "reused the identical immutable resource under `offline`",
+        "focused gate passed all 169 tests in 4.09 seconds",
+        "complete Mac regression passed all 2,388 tests in 91.98 seconds",
     ):
         assert phrase in audit
     reference = read(DEVELOPER / "implementation_reference.md")
