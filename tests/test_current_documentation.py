@@ -3175,6 +3175,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "comet_discovery_and_reporting_audit_50a5d.md",
         "comet_discovery_50a5d1a.md",
         "comet_name_resolution_audit_50a5d2a.md",
+        "comet_acquisition_audit_50a5d2b.md",
         "post_v0.9_architecture_roadmap.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
