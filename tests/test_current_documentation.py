@@ -4679,3 +4679,39 @@ def test_50a5d2c_audits_exact_comet_cli_preflight():
         source_tree
     )
     assert "introduces no coordinate system, origin, frame, epoch, equinox" in audit
+
+def test_50a5d1b_audits_observer_dependent_comet_model_magnitude():
+    audit = " ".join(read(
+        DEVELOPER / "comet_model_magnitude_audit_50a5d1b.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    roadmap = " ".join(read(
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).split())
+
+    for phrase in (
+        "documentation only; no runtime implementation is authorized",
+        "brightest sampled model magnitude",
+        "not a visibility forecast",
+        "T-mag = M1 + 5 log10(delta) + k1 log10(r)",
+        "N-mag = M2 + 5 log10(delta) + k2 log10(r) + phcof beta",
+        "uncertain at roughly 1 magnitude in practice",
+        "sequential rather than simultaneous API calls",
+        "--magnitude-step DURATION",
+        "positive whole number of hours or days",
+        "proposed default is `1d`",
+        "numerically smallest valid sampled `T-mag`",
+        "nuclear magnitude is not substituted",
+        "Unknown values sort after all known values",
+        "at most 50 selected comet solutions",
+        "at most 367 sample epochs per comet",
+        "recommended first implementation is fail-whole",
+        "not the minor-body SPK cache",
+        "must not import chart, renderer, projection",
+        "Extend it rather than creating a milestone-named test file",
+        "Only after those decisions are recorded",
+    ):
+        assert phrase in audit
+
+    assert "comet_model_magnitude_audit_50a5d1b.md" in index
+    assert "proposed 50A.5D.1B audit" in roadmap
