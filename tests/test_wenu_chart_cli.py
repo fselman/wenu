@@ -425,6 +425,18 @@ def test_main_formats_expected_command_failures_without_traceback(
     assert "Traceback" not in captured.err
 
 
+def test_debug_reraises_expected_command_failure(monkeypatch):
+    error = ValueError("diagnostic failure")
+    monkeypatch.setattr(
+        chart,
+        "generate",
+        lambda arguments: (_ for _ in ()).throw(error),
+    )
+
+    with pytest.raises(ValueError, match="diagnostic failure"):
+        chart.main(["regional", "--debug"])
+
+
 def test_invalid_configuration_fails_before_observer_or_sphere(
     monkeypatch, tmp_path
 ):
