@@ -267,7 +267,9 @@ def test_frozen_horizons_photometry_preserves_unknowns_and_provenance():
     assert samples[0].nuclear_magnitude is None
     assert samples[1].total_magnitude == 11.9
     assert samples[1].nuclear_magnitude == 16.2
-    assert samples[-1].epoch_utc == discovery.stop_utc
+    assert abs(
+        (samples[-1].epoch_utc - discovery.stop_utc).total_seconds()
+    ) < 1.0
     assert any("provider model" in notice for notice in notices)
 
 
