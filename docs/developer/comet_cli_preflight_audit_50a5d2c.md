@@ -1,6 +1,6 @@
 # Exact comet CLI preflight audit (Milestone 50A.5D.2C)
 
-**Status:** Candidate audit for Fernando's review
+**Status:** Accepted by Fernando on 2026-09-13
 
 **Base:** `cc6527ebbaa2fae0e28c7ee1ec05a19f57436895`
 
@@ -272,8 +272,20 @@ Acceptance requires:
 7. review confirms existing explicit-directory reproducibility is unchanged;
 8. visual comparison confirms no unintended chart-output change.
 
-Acceptance of this audit would authorize only the 50A.5D.2C exact comet CLI
-preflight composition. It would not authorize observer-dependent comet
+Acceptance of this audit authorizes only the 50A.5D.2C exact comet CLI
+preflight composition. It does not authorize observer-dependent comet
 magnitude, discovery-result handoff, fuzzy lookup, automatic asteroid-name
 acquisition, new comet graphics, physical coma or tail modeling, or 50A.5D.3
 reports.
+
+
+## Acceptance
+
+Fernando accepted this bounded audit on 2026-09-13 after the focused
+current-documentation gate passed all 115 tests in 2.84 seconds. The branch was
+clean and synchronized and `git diff --check` was clean.
+
+This acceptance authorizes only implementation of the request-level exact
+comet CLI preflight composition specified above. It does not authorize any of
+the explicitly excluded magnitude, discovery handoff, fuzzy lookup, graphics,
+asteroid-name acquisition, or reporting behavior.
