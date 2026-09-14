@@ -316,6 +316,9 @@ environment before handing the branch to Fernando.
    byte-for-byte from that provider, with retrieval provenance. A constructed
    fixture must be labelled synthetic and may test parser faults, but it cannot
    serve as provider-format or scientific acceptance evidence.
+8. Every fault-injection test must prove that its mutation changed the
+   baseline fixture before asserting the expected failure. A no-op replacement
+   or mutation cannot count as fault coverage.
 
 Run Wenu tests with ambient pytest plugins disabled:
 
