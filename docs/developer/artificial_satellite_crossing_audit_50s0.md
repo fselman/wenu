@@ -1,6 +1,6 @@
 # Artificial-satellite crossing and photometry audit (Milestone 50S.0)
 
-**Status:** Candidate for Fernando's scientific and architectural review  
+**Status:** Accepted by Fernando on 2026-09-14
 **Audit date:** 2026-09-14  
 **Implementation baseline:** `862acaa`  
 **Scope:** Literature, provider, algorithm, photometry, validation, and
@@ -122,10 +122,13 @@ Authoritative project and API documentation:
 BSD-3-Clause; its service consumes CelesTrak and Space-Track data and exposes
 ephemeris and field-interference results.
 
-**Decision — Adopt as an independent comparison oracle; reject as the sole
-production dependency.** Wenu needs reproducible frozen snapshots and a local
-complete-scan oracle. Service availability, its upstream snapshot, and its
-request policy must not determine whether an offline Wenu query works.
+**Decision — Adopt as the first bounded crossing provider and as an external
+comparison oracle; reject as the sole long-term production dependency.** Wenu
+first defines a provider-neutral crossing query and result contract, then uses
+SatChecker for supported circular-field queries while retaining its exact
+request, raw response, upstream-orbit provenance, async-task state, and stated
+limitations. Service availability, its upstream snapshot, and its request
+policy must not determine whether a later offline Wenu query works.
 
 ## 4. Orbit-state contract
 
@@ -181,7 +184,8 @@ not a proof bound for later snapshots.
 
 ## 5. Crossing semantics and exhaustive oracle
 
-50S.2 must first implement a complete catalogue scan independent of drawing.
+50S.5 must first implement a complete local catalogue scan independent of
+drawing.
 The predicate is intersection of a continuous apparent topocentric trajectory
 with a closed spherical footprint during an inclusive interval. Boundary
 touch counts as a crossing. Circular, spherical-rectangle, and later WCS
@@ -203,30 +207,41 @@ and on adversarial cases.
 
 ## 6. Fast candidate search
 
-The reviewed literature supports bulk propagation and spatial/temporal masks,
-but no reviewed method makes coarse point sampling alone a zero-false-negative
-proof. Wenu therefore adopts a conservative hierarchy:
+The reviewed literature supports bulk propagation, geometric screening, and
+spatial/temporal masks, but no reviewed method makes coarse point sampling
+alone a zero-false-negative proof. Wenu therefore adopts a conservative
+hierarchy after the complete local oracle exists:
 
-1. group queries by exact snapshot, observer, Earth-orientation policy, and
-   bounded interval;
-2. vectorize SGP4 evaluation over catalogue batches and time slabs;
-3. construct a conservative swept spherical cap or pixel cover for each
-   object/slab using endpoint directions plus a bound on angular displacement
-   and numerical/transformation error;
-4. query a hierarchical spherical pixel index (HEALPix is the leading
-   candidate) and overlapping time intervals;
-5. pass every retained candidate to the exact 50S.2 crossing solver.
+1. reject orbital planes whose observer-centred FoV cones cannot intersect the
+   orbit over its admissible radial shell;
+2. use element epoch, mean motion, mean anomaly, and conservative perturbation
+   margins to reject objects whose reachable orbital arcs cannot approach the
+   field during the interval;
+3. reject intervals that remain Earth-occulted or geometrically below the
+   observer horizon;
+4. vectorize SGP4 evaluation over remaining catalogue batches and use coarse
+   states plus conservative angular-motion and curvature bounds;
+5. pass every retained candidate to the exact 50S.5 crossing solver.
+
+The orbital-plane test is topocentric, not merely a geocentric great-circle
+comparison. For observer position `r_o`, line-of-sight direction `u`, range
+`rho`, and plane normal `n`, a possible state must satisfy
+`n . (r_o + rho u) = 0` at a positive admissible range. Plane proximity alone
+must never reject a low satellite whose parallax moves its apparent path away
+from the corresponding geocentric great circle.
 
 The cover radius must include maximum possible between-sample curvature and
 motion, footprint dilation, prediction/numerical allowance, and boundary
 tolerance. Near-zenith intervals that cannot obtain a sufficiently tight
 bound subdivide or fall back to exact evaluation; they are never rejected.
 
-**Decision — Adapt hierarchical sky pixels plus interval slabs.** A simple
-inverted mapping from `(time slab, sky pixel)` to candidate identifiers is
-preferred before a more complex combined space-time tree. An immutable
-observer/night index is appropriate for many pointings; isolated queries may
-use ephemeral vectorized bounds. Index keys include snapshot digest, observer,
+**Decision — Adopt plane, radial-shell, phase/reachable-arc, occultation, and
+coarse-state filters before deciding whether to add a persistent spatial
+index.** HEALPix plus time slabs remains the leading optional index for many
+pointings over an observer/night or for seasonal sky characterization. The
+initial small-snapshot specimen builder and complete oracle use brute force.
+Benchmarks on larger snapshots decide whether an ephemeral or persistent
+HEALPix index is justified. Any index key includes snapshot digest, observer,
 EOP policy, interval, bound/cadence policy, SGP4 implementation/version, and
 software version.
 
@@ -235,7 +250,7 @@ plain bounding boxes in right ascension/declination, or an index that lacks an
 exact fallback. RA wrapping, polar convergence, horizon geometry, and zenith
 singularity make these unsafe.
 
-50S.3 acceptance requires zero false negatives against the complete-scan
+50S.6 acceptance requires zero false negatives against the complete-scan
 oracle for adversarial grazing, seam, pole, horizon, fast-LEO zenith, high
 eccentricity, boundary-touch, short-exposure, and interval-end cases. Measure
 cold index construction, warm reuse, query latency, memory and disk size over
@@ -262,16 +277,21 @@ material BRDF, and specular paths can dominate the answer.
 **Adopt a hierarchy rather than one universal magnitude:**
 
 1. `unknown` when there is no defensible area/reflectance or empirical class;
-2. an empirical satellite-family magnitude distribution normalized to a
+2. an empirical population distribution for a defensible class and orbital
+   regime when no narrower model exists;
+3. an empirical satellite-family magnitude distribution normalized to a
    declared range and conditioned on available geometry;
-3. a diffuse physical model only when size, attitude, and reflectance
+4. an object-specific empirical model when observations support it;
+5. a diffuse physical model only when size, attitude, and reflectance
    assumptions are explicit;
-4. a spacecraft-specific BRDF/attitude model only with published parameters
+6. a spacecraft-specific BRDF/attitude model only with published parameters
    and independent observations.
 
-Every result is a model magnitude or distribution with uncertainty and model
-domain. It must never be labelled guaranteed brightness. Specular flares and
-tumbling are reported as unmodeled or probabilistic tails unless validated
+Every result identifies the selected model level and is a model magnitude or
+distribution with uncertainty and model domain. It must never be labelled
+guaranteed brightness. Ordinary brightness and glints are separate results;
+absent glint evidence means `unknown`, never zero probability. Specular flares
+and tumbling are reported as unmodeled or probabilistic tails unless validated
 time-dependent attitude/BRDF data exist. A single standard magnitude is not a
 substitute for a phase function.
 
@@ -281,7 +301,7 @@ not determine trail signal without angular speed, exposure, defocus/PSF,
 aperture, throughput, pixel scale, sky background, saturation, and detector
 response.
 
-**Decision — Defer runtime photometry to 50S.4B.** 50S.0 accepts the hierarchy
+**Decision — Defer runtime photometry to 50S.8.** 50S.0 accepts the hierarchy
 and validation obligations, not coefficients. At least two materially
 different satellite families and geometries must be compared with calibrated,
 time-resolved observations before tolerances are selected. Report residuals,
@@ -290,7 +310,27 @@ coverage, and orbit-age/trajectory error.
 
 ## 8. Workloads and validation
 
-Performance specimens must include the complete current public catalogue and
+Development begins with a small, geometrically representative immutable OMM
+snapshot rather than the first arbitrary catalogue records. It spans orbit
+regimes, inclinations, eccentricities, object classes, shared planes with
+different phases, fast and grazing passes, occulted objects, shadow
+transitions, known and unknown photometry, aged elements, and parser fault
+fixtures. Ordinary tests use committed fixtures and local snapshots only;
+provider-contract tests prefer exact raw-response cache entries; live tests
+are explicit, serial, bounded, policy-checked, and never part of ordinary
+pytest.
+
+A developer specimen builder consumes the small snapshot, observer, bounded
+search interval, FoV size, and requested case type. It selects a reproducible
+FoV and time window, stores reference tracks and provenance, invokes the
+ordinary Wenu crossing query, and produces both a machine-readable crossing
+result and a FoV chart with marked tracks. Its dense/adaptive brute-force
+reference calculation remains independent of production candidate filters so
+the same defect cannot generate and verify a fixture. HEALPix may later help
+find crowded, empty, or otherwise useful specimens in larger snapshots, but
+exact spherical geometry certifies every stored case.
+
+Performance specimens later include the complete current public catalogue and
 representative LEO, MEO, GEO, and highly elliptical subsets; one isolated
 short query; many pointings in one night; a wide survey field; a narrow
 instrument field; exposures from seconds to minutes; twilight and deep-night
@@ -298,7 +338,8 @@ illumination; and observers at low, middle, and high latitude.
 
 Scientific validation is layered:
 
-- official Vallado SGP4 verification vectors for raw TEME propagation;
+- official Vallado SGP4 verification vectors for raw TEME states;
+- cached SatChecker comparisons for bounded end-to-end circular-field cases;
 - independent SatChecker or Space-Track comparisons for selected states;
 - direct coordinate-chain comparisons at multiple observers and orbit regimes;
 - complete-scan versus optimized-index equivalence;
@@ -325,11 +366,28 @@ boundaries:
 - selected drawing reuses Wenu's existing trajectory, projection,
   preparation, renderer, semantic SVG, and export pipeline.
 
-The implementation order remains 50S.1 validated states, 50S.2 exact crossing
-oracle, 50S.3 conservative index, 50S.4A geometric reports, 50S.4B brightness,
-and 50S.5 selected drawing and closure. Each slice requires a fresh provider
-policy check because provider formats, catalogue identifiers, access limits,
-and redistribution terms can change.
+The accepted implementation order is:
+
+1. 50S.1 provider-neutral satellite identity, observer, FoV, interval,
+   crossing-candidate, and crossing-result contracts;
+2. 50S.2 SatChecker adapter with cached raw responses, asynchronous progress,
+   bounded policy-compliant failure handling, and normalized provenance;
+3. 50S.3 human-readable/JSON crossing reports and FoV charts using the same
+   normalized results, with provider-derived illumination kept distinct;
+4. 50S.4 small representative immutable OMM snapshot, Vallado-compatible SGP4
+   foundation, and the developer crossing-specimen builder;
+5. 50S.5 complete local FoV-crossing oracle;
+6. 50S.6 conservative orbital-plane, radial-shell, reachable-arc,
+   occultation, and coarse-state acceleration, with HEALPix/time indexing only
+   if larger-snapshot benchmarks justify it;
+7. 50S.7 independent sunlight, penumbra, umbra, and observer-night geometry;
+8. 50S.8 empirical object/family/population photometry and glint limitations;
+9. 50S.9 detector-specific trail contamination; and
+10. 50S.10 night, season, observer, pointing, field-size, and exposure-duration
+    statistical products.
+
+Each slice requires a fresh provider policy check because provider formats,
+catalogue identifiers, access limits, and redistribution terms can change.
 
 `coordinate_system_guide_v0.9.5.md` was reviewed for this audit and remains
 current because 50S.0 installs no coordinate type, transformation, provider,
@@ -348,18 +406,27 @@ propagation, maneuver prediction, radio interference, physical spacecraft
 rendering, deterministic flare prediction, visibility/detectability claims,
 or a satellite-specific projection/render/export pipeline.
 
-## 11. Acceptance decision requested
+## 11. Accepted decisions
 
-Fernando is asked to accept, adapt, reject, or defer:
+Fernando accepted on 2026-09-14:
 
 1. OMM-first frozen snapshots with legacy TLE only as an adapter;
-2. CelesTrak as the candidate bulk source under its two-hour/cache/stop rules,
-   with Space-Track opt-in and SatChecker as an independent oracle;
+2. SatChecker first as a bounded online crossing provider and external oracle,
+   followed by local immutable snapshots; CelesTrak remains the candidate bulk
+   source under its two-hour/cache/stop rules and Space-Track remains opt-in;
 3. Vallado-compatible SGP4 and explicit TEME/EOP/topocentric stages;
-4. adaptive complete scan as the 50S.2 correctness oracle;
-5. conservative time-slab plus hierarchical-sky-pixel indexing for 50S.3;
+4. adaptive complete scan as the 50S.5 local correctness oracle;
+5. conservative plane, radial-shell, phase/reachable-arc, occultation, and
+   coarse-state filters before optional HEALPix/time indexing in 50S.6;
 6. zero false negatives as the optimization acceptance invariant;
-7. empirical, class-aware magnitude distributions with explicit uncertainty,
+7. empirical object-specific models where defensible, satellite-family and
+   population distributions otherwise, explicit uncertainty and `unknown`,
    rather than a universal deterministic brightness formula;
 8. strict separation of crossing, illumination, apparent magnitude, and
-   detector-level contamination.
+   detector-level contamination;
+9. extensive cached-data use, network-free ordinary tests, and a small
+   representative snapshot before progressively larger retained snapshots;
+10. a developer specimen builder that derives reproducible FoV/time cases from
+    cached data and verifies Wenu reports and marked-track charts; and
+11. 50S.0 through 50S.3 end with SatChecker reports/charts, while local
+    snapshot and specimen work begins in 50S.4.
