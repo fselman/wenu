@@ -29,6 +29,13 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`post_v0.9_architecture_roadmap.md`](post_v0.9_architecture_roadmap.md) —
   the single active forward roadmap for remaining minor-body work, artificial
   satellites, and publication output.
+- [`artificial_satellite_crossing_audit_50s0.md`](artificial_satellite_crossing_audit_50s0.md)
+  — accepted SatChecker-first, provider-policy, local-oracle, conservative-filter,
+  snapshot, specimen-builder, and apparent-brightness decisions for
+  artificial-satellite crossings.
+- [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
+  scientific and implementation guide maintained separately during the 50S
+  foundation branch.
 - [`comet_discovery_and_reporting_audit_50a5d.md`](comet_discovery_and_reporting_audit_50a5d.md)
   — active parent contract for observer-dependent comet discovery magnitude
   and natural moving-object reports.
