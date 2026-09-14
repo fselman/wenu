@@ -290,7 +290,7 @@ def parse_photometry_response(
     )
     if (
         target_id is None
-        or target_id.group("value") != record.provider_spk_id
+        or target_id.group("value") != record.spk_id
     ):
         raise ValueError(
             "Horizons photometry target differs from the discovery identity."
@@ -424,7 +424,7 @@ def characterize_discovery_photometry(
             retrieved = retrieved.replace(tzinfo=timezone.utc)
         results.append(CometPhotometryResult(
             canonical_designation=record.canonical_designation,
-            provider_spk_id=record.provider_spk_id,
+            provider_spk_id=record.spk_id,
             orbit_solution_id=record.orbit_solution_id or "unknown",
             provider=HORIZONS_SOURCE,
             provider_version=version,
