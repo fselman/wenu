@@ -319,6 +319,20 @@ def parse_unique_identity_response(
     )
 
 
+def _is_not_found_response(raw: bytes) -> bool:
+    try:
+        document = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return False
+    return (
+        isinstance(document, dict)
+        and set(document) == {"code", "message", "moreInfo"}
+        and document.get("code") == "200"
+        and document.get("message") == "specified object was not found"
+        and isinstance(document.get("moreInfo"), str)
+    )
+
+
 def _raise_ambiguous(raw: bytes, selection: str) -> None:
     document = _decode(raw)
     if set(document) != {
@@ -329,7 +343,7 @@ def _raise_ambiguous(raw: bytes, selection: str) -> None:
         )
     candidates = document["list"]
     if (
-        document.get("code") != 300
+        document.get("code") != "300"
         or not isinstance(candidates, list)
         or document.get("count") != len(candidates)
     ):
@@ -430,6 +444,11 @@ def resolve_minor_body_identity(
     if response.status != 200:
         raise MinorBodyIdentityNotFoundError(
             f"SBDB identity request failed with HTTP {response.status}."
+        )
+    if _is_not_found_response(response.raw):
+        normalized = normalize_minor_body_selection(selection)
+        raise MinorBodyIdentityNotFoundError(
+            f"SBDB returned no exact identity for {normalized!r}."
         )
     clock = now or (lambda: datetime.now(timezone.utc))
     retrieved = clock()
