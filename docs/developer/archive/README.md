@@ -41,8 +41,8 @@ coordinate guide, contribution rules, and current work in progress.
   baseline, bounded loaded-sphere reuse, exact equivalence measurement, and
   final performance closure;
 - `milestone_history/50a_minor_bodies/` contains completed 50A.0 through
-  50A.5D.2C minor-body audits, including 50A.5D.1B comet photometry,, implementations, validations, public-interface
-  contracts, and acceptance records;
+  50A.5D.2C minor-body audits, implementations, validations, public-interface
+  contracts, and acceptance records, including 50A.5D.1B comet photometry;
 - `pre_versioned/` contains the original unversioned architecture, roadmap,
   and UML material;
 - files directly under this directory are older records retained from the
