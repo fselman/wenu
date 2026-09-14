@@ -4814,6 +4814,9 @@ def test_assistant_instructions_require_post_change_verification():
         "search the complete change for the same mistaken assumption",
         "rerun the identical focused command",
         "Do not request the full regression suite until the focused gate passes",
+        "captured byte-for-byte from that provider",
+        "labelled synthetic",
+        "cannot serve as provider-format or scientific acceptance evidence",
     ):
         assert phrase in instructions
 
