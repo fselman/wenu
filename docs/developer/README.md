@@ -30,8 +30,9 @@ migrations, milestone evidence, and superseded roadmaps are under
   the single active forward roadmap for remaining minor-body work, artificial
   satellites, and publication output.
 - [`artificial_satellite_crossing_audit_50s0.md`](artificial_satellite_crossing_audit_50s0.md)
-  — candidate scientific, provider-policy, complete-scan, conservative-index,
-  and apparent-brightness decisions for artificial-satellite crossings.
+  — accepted SatChecker-first, provider-policy, local-oracle, conservative-filter,
+  snapshot, specimen-builder, and apparent-brightness decisions for
+  artificial-satellite crossings.
 - [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
   scientific and implementation guide maintained separately during the 50S
   foundation branch.
