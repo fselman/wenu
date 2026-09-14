@@ -410,6 +410,36 @@ def test_cli_observer_photometry_table_and_json_contract(
     assert "brightest sampled T-mag model" in table
     assert "not continuous minima, visibility, or detectability" in table
     assert "roughly 1 mag" in table
+    full_discovery = comet_discovery.discover_comets(
+        "2026-09-01", "2026-09-30", fetch=lambda *values: fixture_bytes()
+    )
+    unknown_samples = tuple(
+        replace(sample, total_magnitude=None, nuclear_magnitude=None)
+        for sample in photometry.results[0].samples
+    )
+    unknown = replace(
+        photometry.results[0],
+        canonical_designation=full_discovery.records[0].canonical_designation,
+        provider_spk_id=full_discovery.records[0].provider_spk_id,
+        orbit_solution_id=full_discovery.records[0].orbit_solution_id,
+        samples=unknown_samples,
+    )
+    ordered_photometry = replace(
+        photometry,
+        start_utc=full_discovery.start_utc,
+        stop_utc=full_discovery.stop_utc,
+        results=(unknown, photometry.results[0]),
+    )
+    ordered_table = comets.table_text(full_discovery, ordered_photometry)
+    ordered_json = json.loads(
+        comets.json_text(full_discovery, ordered_photometry)
+    )
+    assert ordered_table.index("2P") < ordered_table.index("C/2026 A1")
+    assert [
+        value["canonical_designation"]
+        for value in ordered_json["records"]
+    ] == ["2P", "C/2026 A1"]
+
     model = document["records"][0]["observer_model_photometry"]
     assert model["brightest_sampled_total"]["value"] == 11.9
     assert model["brightest_sampled_nuclear"]["value"] == 16.2
