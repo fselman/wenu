@@ -4588,3 +4588,5 @@ def test_50a5d2b_audits_generic_comet_acquisition():
     assert "no coordinate or product-frame meaning changes" in audit
     assert "This slice changes data availability and provenance only" in audit
     assert "does not authorize 50A.5D.2C CLI preflight integration" in audit
+    assert "focused documentation gate passed all 114 tests" in audit
+    assert "complete Mac regression passed all 2,381 tests in 87.20 seconds" in audit
