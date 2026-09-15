@@ -157,6 +157,9 @@ class SatCheckerPresentation:
             "schema_version": SATELLITE_PRESENTATION_SCHEMA_VERSION,
             "product": SATELLITE_PRESENTATION_PRODUCT,
             "scientific_status": SATELLITE_PRESENTATION_STATUS,
+            "sample_coordinate_spec": _coordinate_spec_document(
+                self.query.field_of_view.coordinate_spec
+            ),
             "request": self.query.canonical_document,
             "response": {
                 "state": self.response.state.value,
