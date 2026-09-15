@@ -5522,13 +5522,14 @@ def test_50s5a_audits_complete_local_crossing_oracle_contract():
         assert phrase in audit
 
     assert "satellite_crossing_oracle_audit_50s5a.md" in index
-    assert "Candidate 50S.5A complete-oracle audit" in architecture
+    assert "Accepted 50S.5A complete-oracle audit" in architecture
     assert "50S.5A — Complete local crossing-oracle audit" in roadmap
     assert "No callable local crossing oracle exists yet" in reference
-    assert "Proposed 50S.5 local crossing-oracle ownership" in source_tree
+    assert "accepted audit specifies" in reference
+    assert "Accepted 50S.5A local crossing-oracle ownership" in source_tree
     assert "closest existing `tests/test_satellite_crossings.py`" in source_tree
-    assert "Candidate 50S.5A crossing-coordinate contract" in coordinate_guide
-    assert "Candidate 50S.5A complete local crossing-oracle audit" in guide
+    assert "Accepted 50S.5A crossing-coordinate contract" in coordinate_guide
+    assert "Accepted 50S.5A complete local crossing-oracle audit" in guide
     assert "Uncertain numerical intervals must subdivide or fail closed" in (
         instructions
     )
@@ -5541,4 +5542,8 @@ def test_50s5a_audits_complete_local_crossing_oracle_contract():
     assert "adds no runtime, dependency, package data, or generated product" in (
         audit
     )
-    assert "acceptance remains pending" in audit.lower()
+    assert "final acceptance documentation gate passed all 136 tests" in audit
+    assert "3.00 seconds" in audit
+    assert "Fernando scientifically and architecturally accepted 50S.5A" in audit
+    assert "only bounded 50S.5B implementation" in audit
+    assert "50S.6 acceleration and all later satellite behavior remain unauthorized" in audit
