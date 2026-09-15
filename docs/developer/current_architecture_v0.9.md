@@ -788,7 +788,7 @@ the complete plugin-disabled suite passed all 2,457 tests in 88.48 seconds.
 Only 50S.3 reporting and drawing is authorized next.
 
 
-## Candidate 50S.3B sampled-candidate presentation boundary
+## 50S.3B sampled-candidate presentation boundary (accepted)
 
 Candidate 50S.3B adds a dormant renderer-neutral
 `satellite_presentations.py` boundary and two ordinary sky layers in
@@ -812,5 +812,6 @@ propagation, provider access, illumination calculation, magnitude, or detector
 claim is introduced. Fernando visually accepted the network-free synthetic text report and centered
 FoV chart on 2026-09-15 after matching PNG, PDF, and semantic SVG inspection.
 The final focused boundary passed all 217 tests, and the complete plugin-disabled
-suite passed all 2,473 tests in 83.98 seconds. This remains candidate
-implementation pending Fernando's milestone acceptance.
+suite passed all 2,473 tests in 83.98 seconds. Fernando accepted the implementation and its scientific boundaries on
+2026-09-15. This closes 50S.3B; only 50S.4 snapshot, propagation, and specimen
+builder work is authorized next.
