@@ -1898,8 +1898,8 @@ Successful output is only `SatelliteCrossingCandidate` plus ordered
 closest approach, exit, or one connected visit. Synthetic source-shaped tests
 perform no network access. No waiter loop, automatic retry, CLI, live fixture,
 report, propagation, drawing, or export is added. The bounded live check
-confirmed fail-closed IERS coverage and real PENDING submission/poll receipts;
-the provider did not produce a terminal result during the review window.
+confirmed fail-closed IERS coverage, real PENDING submission/poll receipts, and
+a later SUCCESS receipt normalized to 13 candidates and 26 ordered samples.
 
 ### 50S.3 — SatChecker reports and drawable crossing tracks
 

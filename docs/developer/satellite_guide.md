@@ -567,9 +567,9 @@ It imports the 50S.1 contracts rather than redefining them. The adapter accepts
 only geometric topocentric-direction ICRS fields and never constructs an exact
 connected-visit result. `tests/test_satchecker.py` is the durable provider
 boundary owner; ordinary tests inject transport and remain network-free. The
-bounded live check reached real HTTP 200 PENDING submission and polling states
-but no terminal provider result, so it is transport evidence rather than a
-claim of live candidate normalization.
+bounded live check reached real HTTP 200 PENDING states and a later SUCCESS
+receipt; the adapter normalized 13 candidates and 26 ordered samples while
+retaining the candidate-only boundary.
 
 ## 17. Milestone evolution
 

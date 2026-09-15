@@ -5023,7 +5023,7 @@ def test_50s2b_documents_cached_satchecker_adapter_candidate():
     assert "satchecker_provider_contract_audit_50s2a.md" in instructions
 
 
-def test_50s2b_records_bounded_live_transport_without_terminal_claim():
+def test_50s2b_records_bounded_live_provider_normalization():
     audit = " ".join(read(
         DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
     ).split())
@@ -5037,10 +5037,12 @@ def test_50s2b_records_bounded_live_transport_without_terminal_claim():
         "Exactly one versioned FOV submission returned HTTP 200 and PENDING",
         "Two separate explicit polls returned the same PENDING message",
         "No retry, replacement submission, concurrent access",
-        "does not claim terminal live SUCCESS or live candidate normalization",
+        "A later third explicit poll reached SUCCESS",
+        "normalized 13 distinct NORAD identities and 26 ordered samples",
+        "without constructing an exact connected visit",
     ):
         assert phrase in audit
-    assert "provider did not produce a terminal result" in roadmap
-    assert "transport evidence rather than a claim of live candidate normalization" in (
-        guide
+    assert "SUCCESS receipt normalized to 13 candidates and 26 ordered samples" in (
+        roadmap
     )
+    assert "normalized 13 candidates and 26 ordered samples" in guide

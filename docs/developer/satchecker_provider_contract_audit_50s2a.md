@@ -192,11 +192,15 @@ versioned FOV submission returned HTTP 200 and PENDING task
 Two separate explicit polls returned the same PENDING message, “Task is waiting
 to be processed,” and exact body SHA-256
 `a0546eca1db836cf1186a3b99b30bb6e9f181375746ad4bffb5b90497136bcef`.
-No retry, replacement submission, concurrent access, or hidden polling loop
-was used.
+A later third explicit poll reached SUCCESS with exact body SHA-256
+`99a858ccfaad214800bd94f9fdbf2aa1a060c7617b95a43eb1e6b8ab4288e485`.
+The adapter normalized 13 distinct NORAD identities and 26 ordered samples,
+two samples per candidate, without constructing an exact connected visit. No
+retry, replacement submission, concurrent access, or hidden polling loop was
+used.
 
 This validates the real no-download time preflight, request translation,
-versioned HTTPS transport, task identity, receipt capture, and one-shot polling
-path. It does not claim terminal live SUCCESS or live candidate normalization;
-those contracts remain covered by synthetic source-shaped provider specimens
-because ordinary acceptance cannot depend on service queue availability.
+versioned HTTPS transport, task identity, receipt capture, one-shot polling,
+terminal schema, candidate identity, sample normalization, and containment
+path. Synthetic source-shaped specimens remain the ordinary regression
+evidence because acceptance cannot depend on service queue availability.
