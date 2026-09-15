@@ -5368,3 +5368,44 @@ def test_50s4c_records_complete_and_installed_wheel_evidence():
     assert "branch diff check was clean" in audit
     assert "This closes 50S.4C and" in audit
     assert "authorizes only 50S.4D Earth-orientation and topocentric state work" in audit
+
+def test_50s4d_documents_candidate_topocentric_boundary():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate 50S.4D Earth-orientation and topocentric state",
+        "topocentric geometric vector expressed in GCRS axes",
+        "Complete-suite, documentation, diff, and scientific acceptance",
+    ):
+        assert phrase in architecture
+    assert "Status:** Candidate implementation; acceptance pending" in roadmap
+    assert "17-test dedicated and 89-test expanded Mac gates" in roadmap
+    for phrase in (
+        "SatelliteTopocentricTransformer().transform(teme_state, observer)",
+        "SatelliteEarthOrientationEvidence",
+        "SatelliteEarthOrientationError",
+        "gcrs-axes",
+    ):
+        assert phrase in reference
+    assert "50S.4D Earth-orientation/topocentric ownership (candidate)" in source_tree
+    assert "tests/test_satellite_topocentric.py" in source_tree
+    assert "50S.4D topocentric Cartesian and GCRS-axis boundary (candidate)" in coordinate_guide
+    assert "not an ICRS catalogue position" in coordinate_guide
+    assert "Candidate 50S.4D implementation evidence" in audit
+    assert "observed near-zenith separation is 1.40 mas" in audit
+    assert "expanded element/SGP4/topocentric/crossing/SatChecker/coordinate gate" in audit
+    assert "Candidate 50S.4D local topocentric state" in guide
+    assert "exact IERS-A SHA-256 and coverage" in guide
+    assert "only this bounded candidate is authorized" in instructions
+
