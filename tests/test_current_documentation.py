@@ -3167,6 +3167,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "implementation_reference.md",
         "post_v0.9_architecture_roadmap.md",
         "satchecker_provider_contract_audit_50s2a.md",
+        "satellite_report_drawing_audit_50s3a.md",
         "satellite_guide.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -3236,7 +3237,8 @@ def test_50s0_audits_satellite_crossing_search_and_photometry():
         "50S.0 scientific and architectural decisions accepted by Fernando on 2026-09-14",
         "50S.1 — Provider-neutral satellite crossing domain",
         "50S.2 — SatChecker crossing adapter",
-        "50S.3 — SatChecker reports and drawable crossing tracks",
+        "50S.3A — Satellite report and drawing contract audit",
+        "50S.3B — SatChecker sampled-candidate reports and tracks",
         "50S.4 — Small local snapshot, propagation, and specimen builder",
         "50S.5 — Complete local FoV-crossing oracle",
         "50S.6 — Conservative local crossing acceleration",
@@ -5071,9 +5073,47 @@ def test_50s2b_records_accepted_implementation_and_gates():
     ):
         assert "2026-09-15" in text
     assert "all 2,457 tests in 88.48 seconds" in architecture
-    assert "Acceptance closes 50S.2B and authorizes only 50S.3" in roadmap
+    assert "accepted 50S.3A now authorizes only bounded 50S.3B" in roadmap
     assert "accepted the bounded 50S.2B API and ownership" in reference
     assert "50S.2B SatChecker adapter ownership (accepted)" in source_tree
     assert "50S.2B acceptance" in audit
     assert "This closes only the cached SatChecker adapter" in audit
-    assert "Only 50S.3 is authorized next" in guide
+    assert "only the bounded 50S.3B implementation is authorized next" in guide
+
+
+
+def test_50s3a_audits_sampled_candidate_reports_and_shared_path_drawing():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_report_drawing_audit_50s3a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+
+    for phrase in (
+        "This documentation-only audit",
+        "provider-sampled candidate evidence, not a verified connected FoV crossing",
+        "must not be used as a false type for provider samples",
+        "SatChecker sampled candidate evidence — not verified crossings",
+        "must not reparse provider JSON",
+        "Candidate ordering is by NORAD catalogue identifier",
+        "Two or more samples produce one open spherical polyline",
+        "One sample produces one point marker",
+        "No interpolation, extrapolation, smoothing, resampling",
+        "sky/artificial_satellites/satchecker_candidates/norad_<catalogue_id>/sampled_track",
+        "PNG, PDF, and SVG must all be produced by the same realized layer",
+        "adds no CLI acquisition workflow",
+        "authorizes only the bounded 50S.3B implementation",
+        "Accepted by Fernando on 2026-09-15",
+        "focused documentation gate passed all 126 tests",
+    ):
+        assert phrase in audit
+
+    assert "satellite_report_drawing_audit_50s3a.md" in index
+    assert "50S.3A — Satellite report and drawing contract audit" in roadmap
+    assert "50S.3B — SatChecker sampled-candidate reports and tracks" in roadmap
+    assert "only the bounded 50S.3B implementation is authorized next" in guide
+    assert "50S.3A satellite report and drawing contract audit ownership (accepted)" in source_tree
+    assert "Connecting ordered provider samples is presentation" in coordinate_guide

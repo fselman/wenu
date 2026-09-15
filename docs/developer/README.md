@@ -36,6 +36,9 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`satchecker_provider_contract_audit_50s2a.md`](satchecker_provider_contract_audit_50s2a.md)
   — accepted SatChecker endpoint, time-scale, candidate-envelope, async,
   cache, provenance, failure, and redistribution contract for 50S.2B.
+- [`satellite_report_drawing_audit_50s3a.md`](satellite_report_drawing_audit_50s3a.md)
+  — accepted contract for honest sampled-evidence reports, shared-path charts,
+  stable satellite semantics, and the bounded 50S.3B implementation.
 - [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
   scientific and implementation guide maintained separately during the 50S
   foundation branch.

@@ -581,8 +581,11 @@ retaining the candidate-only boundary.
   candidate envelope, async policy, exact cache, failures, and redistribution.
 - **50S.2B:** accepted cached circular-field adapter, candidate-only
   normalization, provider-sampled evidence, explicit progress, and exact cache.
-- **50S.3:** human-readable/JSON reports and FoV charts consuming the same
-  SatChecker-derived normalized results; illumination remains provider-derived.
+- **50S.3A:** accepted audit of honest human-readable/JSON reports and FoV charts from
+  provider-sampled candidate evidence, with no invented exact crossing events.
+- **50S.3B:** after acceptance, implement deterministic reports and a drawable
+  sampled-candidate layer through the shared renderer/export path; provider
+  illumination remains separate evidence.
 - **50S.4:** small representative immutable OMM snapshot,
   Vallado-compatible SGP4/TEME foundation, explicit topocentric chain, and
   developer crossing-specimen builder.
@@ -600,9 +603,37 @@ retaining the candidate-only boundary.
 
 Fernando accepted 50S.2B on 2026-09-15 after 45 provider/domain tests, 168
 expanded focused tests, all 2,457 tests, and the bounded live provider check
-passed. Only 50S.3 is authorized next.
+passed. Fernando accepted 50S.3A on 2026-09-15; only the bounded 50S.3B implementation is authorized next.
 
 At every milestone, revise this living guide to match accepted science and
 implemented ownership. When 50S foundation work is merged, decide explicitly
 whether this guide remains separate or is integrated into
 `coordinate_system_guide_v0.9.5.md`; do not merge documents mechanically.
+
+
+## 18. 50S.3 sampled-evidence presentation boundary
+
+The 50S.3A admission review found reusable coordinate, projection,
+preparation, renderer, semantic SVG, and export paths, but no existing
+satellite report owner. `SolarSystemTrackResult` is not reusable as a data
+type because it means ephemeris realization, while SatChecker supplies ordered
+provider samples.
+
+Every 50S.3 product must therefore identify its content as **SatChecker sampled
+candidate evidence — not verified crossings**. Human-readable reports, JSON,
+and charts consume the same already-normalized SUCCESS result. Two or more
+samples may form one open polyline in supplied order; a singleton remains a
+point. No interpolation, propagation, entry, exit, closest approach, continuous
+containment, illumination calculation, magnitude, or detector consequence may
+be inferred.
+
+Chart geometry declares geometric topocentric-direction ICRS and follows
+`CelestialSphere.draw_chart()`. Semantic identity uses the full NORAD
+catalogue identifier rather than provider order or display name. Provider
+illumination, if present, remains separately attributed evidence and cannot
+change track admission or style.
+
+Fernando accepted 50S.3A on 2026-09-15 after all 126 focused documentation
+tests and the candidate diff check passed. The audit itself changes no runtime
+behavior. Acceptance authorizes only bounded renderer-neutral reports and a
+drawable sampled-candidate layer in 50S.3B.
