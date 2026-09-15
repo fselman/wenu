@@ -22,6 +22,7 @@ dependencies = [
     "numpy",
     "pandas",
     "skyfield",
+    "sgp4>=2.25,<3",
     "spiceypy>=6,<9",
     "tomli>=2; python_version < '3.11'",
 ]
@@ -54,6 +55,10 @@ markers = [
 [tool.setuptools.package-data]
 "wenu.configuration" = ["defaults.toml"]
 "wenu.data" = ["*.json", "*.geojson"]
+"wenu.data.satellites.snapshots.synthetic_50s4b_v1" = [
+    "*.json",
+    "README.md",
+]
 "wenu.data.isophotes.milky_way" = [
     "*.json", "*.geojson", "*.txt", "README.md",
 ]

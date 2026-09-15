@@ -3252,3 +3252,14 @@ An instantaneous topocentric geometric vector expressed in celestial axes is
 not automatically an ICRS astrometric position. 50S.4D must name and validate
 that convention before it can feed an ICRS-oriented field. Projection and
 rendering remain downstream and coordinate-neutral.
+
+
+### 50S.4B element data remains pre-coordinate
+
+The candidate immutable snapshot records `CENTER_NAME=EARTH`,
+`REF_FRAME=TEME`, `TIME_SYSTEM=UTC`, and
+`MEAN_ELEMENT_THEORY=SGP4` as validated element semantics. These declarations
+do not constitute a TEME Cartesian state or any coordinate transformation.
+The 50S.4B loader performs no propagation, Earth rotation, observer
+subtraction, angular conversion, or projection. The TEME-to-ITRS and
+topocentric convention remains entirely deferred to 50S.4D.

@@ -298,3 +298,35 @@ documentation gate passed all 128 tests and the branch diff check was clean.
 Acceptance closes 50S.4A and authorizes only 50S.4B immutable OMM element and
 snapshot work. It does not authorize propagation, topocentric transformation,
 a crossing solver, or 50S.5.
+
+
+## Candidate 50S.4B implementation evidence
+
+The dedicated 50S.4B branch implements the accepted immutable element and
+snapshot boundary: strict canonical OMM/GP records, a versioned manifest,
+canonical-byte and per-record SHA-256 validation, full-NORAD ordering,
+duplicate rejection, immutable lookup, installed-resource loading, and three
+hand-authored synthetic non-operational LEO/MEO/geosynchronous-like records.
+It declares `sgp4>=2.25,<3` directly but imports or invokes no propagator.
+
+The initial focused element, package-boundary, and packaged-configuration gate
+passed all 29 tests. At production commit `d3cb597`, the expanded focused gate
+passed all 158 tests and the complete plugin-disabled suite passed all 2,483
+tests in 87.11 seconds.
+
+A wheel from the same production commit was installed into an isolated virtual
+environment. The snapshot loaded from the installed `site-packages` tree,
+verified content digest
+`b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457`,
+reported three records, and preserved ordered full identifiers 900001, 900002,
+and 900003. The first no-dependency import and a second inherited-environment
+import exposed unrelated NumPy absence and a broken external `spiceypy`
+shared library; a package-local import isolated and passed the installed
+satellite-resource boundary.
+
+Propagation, TEME state generation, Earth-orientation and observer
+transformation, acquisition, exact crossings, and presentation remain absent.
+Fernando accepted the scientific and architectural boundary on 2026-09-15.
+This closes 50S.4B and authorizes only 50S.4C validated SGP4/TEME propagation.
+It does not authorize Earth-orientation/topocentric transformation, specimen
+construction, a crossing solver, or 50S.5.

@@ -835,3 +835,30 @@ transformation; and 50S.4E propagated sampled-specimen construction and
 closure. 50S.4A added no runtime behavior, dependency, package data,
 propagation, transformation, or crossing result. Acceptance closes 50S.4A and
 authorizes only 50S.4B immutable OMM element and snapshot work.
+
+
+## Accepted 50S.4B immutable element snapshot
+
+The dedicated milestone branch adds the first bounded
+`src/wenu/satellites/` package. `elements.py` owns immutable, fail-closed
+canonical OMM/GP records; `snapshots.py` owns manifest validation,
+canonical-byte and record-level SHA-256 verification, deterministic full-NORAD
+ordering, duplicate rejection, immutable lookup, and installed-resource
+loading.
+
+The packaged `synthetic_50s4b_v1` snapshot contains exactly three
+hand-authored non-operational LEO-like, MEO-like, and geosynchronous-like
+records with six-digit synthetic identifiers. No provider response or tracked
+object was copied. `sgp4>=2.25,<3` is now a direct dependency, but this
+candidate adds no propagator construction, TEME state, Earth-orientation
+transform, observer direction, crossing result, acquisition, or rendering.
+
+At production commit `d3cb597`, the expanded focused gate passed all 158
+tests and the complete plugin-disabled suite passed all 2,483 tests in 87.11
+seconds. A wheel built from that commit was installed into an isolated virtual
+environment; `load_snapshot()` loaded from `site-packages`, verified
+`b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457`,
+and returned the ordered identifiers 900001, 900002, and 900003. Fernando
+accepted the implementation and its bounded scientific ownership on
+2026-09-15. This closes 50S.4B and authorizes only 50S.4C validated SGP4/TEME
+propagation.

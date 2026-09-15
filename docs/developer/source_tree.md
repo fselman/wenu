@@ -1723,3 +1723,31 @@ review passed. Only 50S.4 is authorized next.
 - acceptance closes 50S.4A and authorizes only 50S.4B canonical elements and
   the tiny synthetic installed snapshot, not propagation or observer
   transformation.
+
+
+## 50S.4B satellite element and snapshot ownership (accepted)
+
+- `src/wenu/satellites/elements.py` owns the immutable canonical OMM/GP
+  record, strict value/semantic validation, canonical JSON encoding, and
+  source-record digest verification;
+- `src/wenu/satellites/snapshots.py` owns versioned manifest validation,
+  canonical-byte and snapshot-digest verification, deterministic full-NORAD
+  ordering, duplicate rejection, immutable lookup, and installed loading;
+- `src/wenu/data/satellites/snapshots/synthetic_50s4b_v1/` owns three
+  hand-authored non-operational LEO/MEO/geosynchronous-like resources and
+  their reviewed provenance;
+- `tests/test_satellite_elements.py` owns immutability, six-digit identity,
+  schema/semantic rejection, ordering/duplicate/count faults, installed
+  loading, canonical bytes, and record/snapshot digest failure evidence;
+- `pyproject.toml` declares `sgp4>=2.25,<3` directly and includes the
+  snapshot JSON and README as package data;
+- no SGP4 adapter, propagation, TEME state, Earth-orientation transformation,
+  observer direction, acquisition, crossing solver, presentation, or
+  rendering behavior is added.
+
+At production commit `d3cb597`, the 158-test expanded gate, 2,483-test
+complete suite, and isolated installed-wheel snapshot check passed. The
+installed resource digest was
+`b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457`.
+Fernando accepted this ownership on 2026-09-15. This closes 50S.4B and
+authorizes only 50S.4C validated SGP4/TEME propagation.

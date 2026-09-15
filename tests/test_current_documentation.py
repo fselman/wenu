@@ -5242,3 +5242,66 @@ def test_50s4a_audits_snapshot_propagation_and_topocentric_contracts():
     assert "focused documentation gate passed all 128 tests" in audit
     assert "branch diff check was clean" in audit
     assert "authorizes only 50S.4B immutable OMM element and snapshot work" in roadmap
+
+
+def test_50s4b_documents_immutable_omm_snapshot_boundary():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Accepted 50S.4B immutable element snapshot",
+        "canonical-byte and record-level SHA-256 verification",
+        "synthetic_50s4b_v1",
+        "adds no propagator construction",
+    ):
+        assert phrase in architecture
+    assert "50S.4B — Immutable OMM element snapshot" in roadmap
+    for phrase in (
+        "Local satellite elements and snapshots (50S.4B accepted)",
+        "SatelliteElementRecord",
+        "SatelliteSnapshotManifest",
+        "SatelliteElementSnapshot",
+        "load_snapshot",
+        "performs no network access and no propagation",
+    ):
+        assert phrase in reference
+    assert "50S.4B satellite element and snapshot ownership (accepted)" in source_tree
+    assert "tests/test_satellite_elements.py" in source_tree
+    assert "50S.4B element data remains pre-coordinate" in coordinate_guide
+    assert "performs no propagation" in coordinate_guide
+    assert "Candidate 50S.4B implementation evidence" in audit
+    assert "focused element, package-boundary, and packaged-configuration gate passed all 29 tests" in audit
+    assert "Accepted 50S.4B immutable OMM snapshot" in guide
+    assert "copies no live CelesTrak, Space-Track, SatChecker" in guide
+    assert "sgp4>=2.25,<3" in instructions
+
+def test_50s4b_records_complete_and_installed_wheel_evidence():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert "production commit `d3cb597`" in architecture
+    assert "expanded focused gate passed all 158 tests" in audit
+    assert "complete plugin-disabled suite passed all 2,483 tests" in audit
+    assert "isolated virtual environment" in audit
+    assert "installed `site-packages` tree" in audit
+    assert "b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457" in audit
+    assert "ordered full identifiers 900001, 900002, and 900003" in audit
+    assert "Accepted by Fernando on 2026-09-15" in roadmap
+    assert "This closes 50S.4B and authorizes only 50S.4C" in audit
+    assert "only 50S.4C validated SGP4/TEME propagation is authorized next" in guide
+    assert "only the bounded 50S.4C validated SGP4/TEME wrapper is authorized next" in instructions

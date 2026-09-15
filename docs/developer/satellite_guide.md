@@ -707,3 +707,38 @@ Fernando accepted the documentation-only 50S.4A audit on 2026-09-15 after
 the focused gate passed all 128 tests and the branch diff check was clean.
 50S.4A changed no runtime, dependency, or package data. It is now closed, and
 only 50S.4B immutable OMM element and snapshot work is authorized next.
+
+
+### Accepted 50S.4B immutable OMM snapshot
+
+The dedicated 50S.4B branch implements only the element/snapshot boundary
+authorized by 50S.4A. `SatelliteElementRecord` retains all required OMM mean
+elements, full six-digit synthetic NORAD identity, canonical UTC epoch,
+`EARTH`/`TEME`/`UTC`/`SGP4` declarations, source-record digest, and
+provenance. Invalid, incomplete, unknown-field, non-finite, wrong-frame, or
+wrong-theory input fails closed.
+
+`SatelliteElementSnapshot` and its manifest enforce exact canonical JSON
+bytes, content and per-record SHA-256 identities, record count, ascending full
+NORAD ordering, duplicate rejection, immutable lookup, and installed-resource
+loading. The first snapshot contains only three hand-authored, non-operational
+LEO-like, MEO-like, and geosynchronous-like specimens. It copies no live
+CelesTrak, Space-Track, SatChecker, or tracked-object record.
+
+The branch declares `sgp4>=2.25,<3` directly so installation owns its future
+propagation dependency. It deliberately constructs no propagator and produces
+no TEME state, terrestrial/topocentric transformation, field intersection, or
+crossing result. Those remain gated by 50S.4C and later milestones.
+
+At production commit `d3cb597`, all 158 expanded focused tests and all 2,483
+complete-suite tests passed. The wheel was then installed into an isolated
+virtual environment and the snapshot loaded from `site-packages` with exact
+digest
+`b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457`,
+record count three, and ordered identifiers 900001–900003. The first two
+wheel-import attempts exposed unrelated environment issues—missing
+dependencies in a no-dependency environment and a broken inherited
+`spiceypy` shared library—before the package-local resource check isolated
+the intended boundary. Neither failure involved the snapshot. Fernando
+accepted 50S.4B on 2026-09-15. The immutable snapshot boundary is closed, and
+only 50S.4C validated SGP4/TEME propagation is authorized next.
