@@ -920,7 +920,8 @@ astrometric, apparent, or observed. The generic `CoordinateService` remains
 unchanged because it transforms already represented spherical geometry rather
 than satellite Cartesian state.
 
-The initial 17-test topocentric gate and 89-test expanded satellite/coordinate
-gate pass on Fernando's Mac. Complete-suite, documentation, diff, and
+The initial 17-test topocentric gate, 89-test expanded satellite/coordinate
+gate, 133-test documentation gate, and complete plugin-disabled suite of 2,511
+tests in 95.10 seconds pass on Fernando's Mac. Final diff inspection and
 scientific acceptance remain pending. No crossing, field intersection,
 illumination, photometry, CLI, chart, or specimen behavior is added.
