@@ -1007,3 +1007,18 @@ working tree was clean and `git diff --check aa6f91a...HEAD` passed. Fernando sc
 closing 50S.5. Only a documentation-first 50S.6 conservative-acceleration audit
 is authorized next; runtime acceleration and all later behavior remain
 unauthorized.
+
+### Candidate 50S.6A conservative acceleration audit
+
+The documentation-only audit keeps the accepted 50S.5 exhaustive oracle
+independently callable and proposes a separate conservative candidate-selection
+owner. Rejection requires a recorded topocentric cone/orbital-shell bound that
+covers the complete inclusive interval, observer displacement, Earth rotation,
+model discrepancy, numerical margin, and the accepted angular tolerance.
+Uncertain or unsupported bounds retain the record for exact solving.
+
+The audit rejects horizon and Earth-occultation filters because the current
+query reports geometric directional crossings rather than visibility. It
+defers phase, coarse vectorized propagation, and HEALPix/time indexing behind
+separate correctness and benchmark gates. No runtime, package, dependency,
+coordinate path, result, or output changes under 50S.6A.

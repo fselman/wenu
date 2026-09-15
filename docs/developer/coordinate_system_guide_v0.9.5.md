@@ -3357,3 +3357,16 @@ coordinate pipeline.
 Fernando scientifically and architecturally accepted this coordinate boundary
 on 2026-09-15. Only a documentation-first 50S.6 conservative-acceleration
 audit is authorized next.
+
+### Candidate 50S.6A acceleration coordinate boundary
+
+Conservative rejection must be derived in the same physical geometry as the
+accepted query: a fixed observer-origin closed circular field and topocentric
+geometric directions expressed in GCRS axes. A geocentric orbital-plane angle
+alone cannot reject a record because observer displacement, finite range, Earth
+rotation, and orbital-plane evolution alter the topocentric direction.
+
+The proposed shell/cone envelope must cover the complete inclusive UTC interval
+and all declared margins. Horizon and Earth occultation are visibility
+predicates, not coordinate accelerators for the accepted geometric crossing
+query, and therefore cannot remove results under 50S.6.

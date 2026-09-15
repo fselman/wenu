@@ -2230,3 +2230,19 @@ working tree was clean and `git diff --check aa6f91a...HEAD` passed. Acceptance
 closes 50S.5 and authorizes only a documentation-first 50S.6 conservative local
 crossing acceleration audit. Runtime acceleration, 50S.7, and all later
 satellite behavior remain unauthorized.
+
+### 50S.6A — Conservative local crossing acceleration audit (candidate)
+
+**Status:** Documentation-only scientific and API audit pending focused, diff,
+and Fernando acceptance gates.
+
+The candidate preserves the independently callable 50S.5 exhaustive oracle and
+defines tri-state conservative selection, recorded rejection inequalities,
+topocentric cone/orbital-shell bounds, exact-oracle equivalence, stage isolation,
+and benchmark admission. It rejects horizon and Earth-occultation removal under
+the current geometric query semantics and defers phase, coarse vectorized
+states, and HEALPix/time indexing.
+
+Acceptance would authorize only bounded 50S.6B implementation of the first
+topocentric cone/orbital-shell selector. Runtime acceleration and all later
+stages remain unauthorized until that acceptance.

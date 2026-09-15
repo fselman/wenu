@@ -1859,3 +1859,17 @@ fail-closed lifecycle. It adds no provider, cache, rendering, reporting,
 illumination, photometry, or 50S.6 responsibility. Fernando scientifically and
 architecturally accepted this ownership on 2026-09-15. Only a documentation-first
 50S.6 acceleration audit is authorized next.
+
+### Candidate 50S.6A acceleration ownership audit
+
+- `satellite_crossing_acceleration_audit_50s6a.md` owns the documentation-only
+  conservative-filter, validation, benchmark, failure, and ownership decision;
+- `src/wenu/satellites/crossing_oracle.py` remains the accepted exhaustive
+  exact owner and is unchanged;
+- a later `src/wenu/satellites/crossing_acceleration.py` may own only admitted
+  candidate selection, rejection evidence, and exact-oracle coordination;
+- a later `tests/test_satellite_crossing_acceleration.py` may own the durable
+  tri-state filter oracle and zero-false-negative equivalence matrix.
+
+This audit creates neither future source nor acceleration test file and changes
+no package boundary.

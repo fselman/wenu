@@ -884,3 +884,17 @@ completeness, not formal interval arithmetic, and it authorizes no runtime 50S.6
 Fernando scientifically and architecturally accepted 50S.5B on 2026-09-15.
 Only a documentation-first 50S.6 conservative-acceleration audit is authorized
 next.
+
+## 23. Candidate 50S.6A conservative crossing acceleration audit
+
+The accepted exhaustive oracle remains the scientific reference. Acceleration
+may reject a record only when a complete topocentric field-cone and bounded
+orbital-shell envelope, including tolerance and model margins, proves that no
+contact is reachable. Uncertainty means retain and solve exactly.
+
+The first proposed implementation stage is the cone/shell selector. Nominal
+orbital-plane distance, endpoint sampling, mean anomaly alone, or a fixed
+sampling grid cannot establish absence. Horizon and Earth occultation do not
+belong in the current geometric query predicate. Phase, coarse vectorized
+states, and HEALPix/time indexing require later separate admission and measured
+benefit. This candidate adds no runtime acceleration.

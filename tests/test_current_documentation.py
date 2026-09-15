@@ -3169,6 +3169,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satchecker_provider_contract_audit_50s2a.md",
         "satellite_report_drawing_audit_50s3a.md",
         "satellite_crossing_oracle_audit_50s5a.md",
+        "satellite_crossing_acceleration_audit_50s6a.md",
         "satellite_snapshot_propagation_audit_50s4a.md",
         "satellite_guide.md",
         "source_tree.md",
@@ -5590,3 +5591,52 @@ def test_50s5b_documents_accepted_complete_local_crossing_oracle():
         assert phrase in audit
     assert "documentation-first 50S.6 conservative local crossing acceleration audit" in roadmap
     assert "Runtime acceleration and all later behavior remain unauthorized" in audit
+
+
+def test_50s6a_audits_conservative_crossing_acceleration():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_acceleration_audit_50s6a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "documentation-only scientific and API audit",
+        "LocalSatelliteCrossingOracle.solve(query)",
+        "tri-state: `reject`, `retain`, or `indeterminate`",
+        "validated zero false negatives",
+        "not a formal interval-arithmetic proof of SGP4",
+        "Topocentric cone versus bounded orbital shell",
+        "may not treat the epoch osculating plane as fixed",
+        "A geocentric great-circle distance alone is insufficient",
+        "Phase and reachable-arc rejection",
+        "Sampling alone proves nothing between samples",
+        "Horizon rejection",
+        "would therefore change result semantics",
+        "Earth-occultation rejection",
+        "HEALPix and time indexing",
+        "Every retained candidate reaches the accepted 50S.5",
+        "tests/test_satellite_crossing_acceleration.py",
+        "three-record synthetic snapshot proves composition, not useful speed",
+        "50S.6B first implementation",
+    ):
+        assert phrase in audit
+
+    assert "satellite_crossing_acceleration_audit_50s6a.md" in index
+    assert "Candidate 50S.6A conservative acceleration audit" in architecture
+    assert "50S.6A — Conservative local crossing acceleration audit" in roadmap
+    assert "No acceleration API exists yet" in reference
+    assert "Candidate 50S.6A acceleration ownership audit" in source_tree
+    assert "Candidate 50S.6A acceleration coordinate boundary" in coordinate_guide
+    assert "Candidate 50S.6A conservative crossing acceleration audit" in guide
+    assert "Candidate 50S.6A acceleration-audit boundary" in instructions
+    assert "creates neither future source nor acceleration test file" in source_tree
+    assert "Runtime acceleration and all later stages remain unauthorized" in roadmap
