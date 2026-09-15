@@ -1660,7 +1660,7 @@ owns deterministic contract coverage;
   photometry, and detector-contamination owners remain unchanged.
 
 
-## 50S.3A satellite report and drawing contract audit ownership (candidate)
+## 50S.3A satellite report and drawing contract audit ownership (accepted)
 
 - `docs/developer/satellite_report_drawing_audit_50s3a.md` owns the proposed
   sampled-candidate report, drawing, semantic, and acceptance contract;
@@ -1672,4 +1672,4 @@ owns deterministic contract coverage;
   `SatelliteCrossingResult`;
 - existing coordinate, projection, preparation, renderer, semantic SVG, style,
   furniture, and PNG/PDF/SVG export owners remain authoritative;
-- 50S.3B may be admitted only after Fernando accepts this audit.
+- Fernando accepted the audit on 2026-09-15; only bounded 50S.3B report and sampled-candidate layer implementation is admitted next.
