@@ -521,17 +521,29 @@ complete-scan equivalence test.
 
 ## 16. Source ownership direction
 
-No production module is admitted by this guide. Before 50S.1, the source-tree
-admission review must compare the proposed responsibility with existing
-ephemeris, coordinate, resource, acquisition, moving-track, and report owners.
+The 50S.1 admission review found no existing owner for provider-neutral
+satellite field and crossing semantics. `coordinates.py` remains the coordinate
+vocabulary owner, `ephemeris.py` remains the Cartesian state boundary, and the
+minor-body, moving-track, chart, renderer, and report owners have different
+lifecycles and failure modes.
 
-The satellite domain is expected eventually to justify a coherent
-`src/wenu/satellites/` package because snapshot ingestion, SGP4 state,
-crossing geometry, indexing, illumination, and photometry have distinct
-collaborating responsibilities. It must not be created merely to carry a
-milestone number, and it must not duplicate Wenu's coordinate service,
-trajectory geometry, projection, preparation, renderer, semantic SVG, or
-export machinery.
+`satellite_crossings.py` therefore owns the first immutable satellite-domain
+contracts: `SatelliteIdentity`, `SatelliteObserver`,
+`SatelliteFieldOfView`, `InclusiveTimeInterval`,
+`SatelliteCrossingCandidate`, and `SatelliteCrossingResult`. The first field
+is circular, spherical, explicitly framed, and closed. A candidate binds
+identity, observer, field, interval, source, optional orbit/snapshot evidence,
+provenance, and warnings. A normalized result represents one connected visit,
+keeps ordered entry, closest-approach, and exit instants inside the inclusive
+query interval, and accepts boundary touch.
+
+This is a distinct scientific-domain responsibility: it owns neither provider
+acquisition nor propagation and is independent of chart projection. A
+`src/wenu/satellites/` package remains deferred until snapshot ingestion, SGP4
+state, crossing geometry, indexing, illumination, and photometry form several
+collaborating production modules. Later work must not duplicate Wenu's
+coordinate service, trajectory geometry, projection, preparation, renderer,
+semantic SVG, or export machinery.
 
 ## 17. Milestone evolution
 
