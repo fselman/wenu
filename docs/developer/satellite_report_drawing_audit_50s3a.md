@@ -170,5 +170,9 @@ satellite handling in `sky/semantic_identity.py`, and
 `tests/test_satellite_presentations.py`. The implementation follows this
 audit's one-evidence-source and candidate-only rules. An actual Matplotlib gate
 serializes the same realized layers to PNG, PDF, and semantic SVG. The expanded
-focused gate passed all 90 tests. These are candidate results pending visual
-inspection and Fernando's milestone acceptance.
+focused gate passed all 90 tests. Fernando accepted the regenerated visual
+specimen on 2026-09-15 after the FoV was labelled explicitly with its identifier,
+closed circular boundary, ICRS center, and radius. The candidate-only title,
+ordered track, four UTC annotations, and three output formats were correct.
+These remain candidate implementation results pending final gates and
+Fernando's milestone acceptance.
