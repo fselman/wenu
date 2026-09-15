@@ -193,7 +193,7 @@ def test_human_report_is_explicitly_candidate_only_and_uses_same_counts():
     assert text.startswith(SATELLITE_PRESENTATION_STATUS)
     assert "Evidence: 1 candidates, 2 samples" in text
     assert "Candidate NORAD 123456: TEST SAT" in text
-    assert "2026-09-15T01:00:01.000000Z UTC" in text
+    assert "2026-09-15T01:00:01Z UTC" in text
     assert "provider illuminated true" in text
     assert "Entry:" not in text
     assert "Exit:" not in text
@@ -286,12 +286,12 @@ def test_sample_layer_retains_order_utc_labels_and_stable_identifiers():
 
     assert isinstance(geometry, SphericalPoints)
     assert list(geometry.labels) == [
-        "2026-09-15T01:00:00.000000Z",
-        "2026-09-15T01:00:01.000000Z",
+        "2026-09-15T01:00:00Z",
+        "2026-09-15T01:00:01Z",
     ]
     assert list(geometry.ids) == [
-        "norad_123456__sample_20260915t010000000000z",
-        "norad_123456__sample_20260915t010001000000z",
+        "norad_123456__sample_20260915t010000z",
+        "norad_123456__sample_20260915t010001z",
     ]
     assert geometry.metadata["utc_labels"] is True
     assert geometry.metadata["provider_illumination"] == (None, True)
@@ -309,8 +309,8 @@ def test_sample_labels_can_be_suppressed_without_changing_evidence():
     assert list(geometry.labels) == [None, None]
     assert len(geometry) == 2
     assert geometry.metadata["sample_instants_utc"] == (
-        "2026-09-15T01:00:00.000000Z",
-        "2026-09-15T01:00:01.000000Z",
+        "2026-09-15T01:00:00Z",
+        "2026-09-15T01:00:01Z",
     )
 
 
