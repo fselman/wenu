@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "synthetic_50s4b_v1",
+  "created_utc": "2026-09-15T00:00:00.000000Z",
+  "source_identity": "Wenu hand-authored synthetic non-operational OMM/GP specimens",
+  "source_url": "https://github.com/fselman/wenu",
+  "source_format": "CCSDS OMM-compatible JSON field vocabulary",
+  "records_file": "records.json",
+  "content_sha256": "b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457",
+  "record_count": 3,
+  "builder_identity": "Wenu 50S.4B reviewed static resource",
+  "provider_policy_url": "https://celestrak.org/NORAD/documentation/gp-data-formats.php",
+  "provider_policy_checked_utc": "2026-09-15T00:00:00.000000Z",
+  "provenance": [
+    "Hand-authored for Wenu numerical and packaging tests.",
+    "No live provider record was copied or redistributed."
+  ],
+  "warnings": [
+    "Synthetic non-operational elements; never use for prediction or identification."
+  ]
+}
