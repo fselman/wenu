@@ -5401,7 +5401,7 @@ def test_50s4d_documents_candidate_topocentric_boundary():
     assert "50S.4D Earth-orientation/topocentric ownership (candidate)" in source_tree
     assert "tests/test_satellite_topocentric.py" in source_tree
     assert "50S.4D topocentric Cartesian and GCRS-axis boundary (candidate)" in coordinate_guide
-    assert "not an ICRS catalogue position" in coordinate_guide
+    assert "does not make it an ICRS catalogue position" in coordinate_guide
     assert "Candidate 50S.4D implementation evidence" in audit
     assert "observed near-zenith separation is 1.40 mas" in audit
     assert "expanded element/SGP4/topocentric/crossing/SatChecker/coordinate gate" in audit
