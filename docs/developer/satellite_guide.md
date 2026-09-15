@@ -775,3 +775,31 @@ snapshot from `site-packages` and propagated identifiers 300001, 300002, and
 and finite position and velocity. Fernando scientifically and architecturally
 accepted 50S.4C on 2026-09-15. The SGP4/TEME boundary is closed, and only
 50S.4D Earth-orientation and topocentric state work is authorized next.
+
+
+### Candidate 50S.4D local topocentric state
+
+The candidate local path is:
+
+```text
+canonical OMM record
+    -> WGS-72 SGP4 geometric TEME state
+    -> explicit installed IERS-A TEME-to-ITRS transform
+    -> WGS-84 observer subtraction in Cartesian ITRS
+    -> range plus vacuum geometric AltAz
+    -> optional topocentric geometric direction in GCRS axes
+```
+
+Every result retains the full source TEME state, observer, satellite and
+observer ITRS vectors, topocentric vector/velocity, range, angular directions,
+exact IERS-A SHA-256 and coverage, interpolated UT1−UTC and polar motion,
+software versions, coordinate identity, provenance, and warnings. Automatic
+IERS download and degraded accuracy are disabled; out-of-coverage instants fail
+closed.
+
+The GCRS-axis longitude/latitude are not an ICRS position, formal geocentric
+GCRS coordinate, astrometric place, apparent place, or observed direction.
+They are the instantaneous observer-subtracted geometric vector expressed in
+celestial axes. Refraction, field intersection, exact visits, illumination,
+brightness, detector effects, reporting, drawing, and specimen generation are
+not part of this candidate.
