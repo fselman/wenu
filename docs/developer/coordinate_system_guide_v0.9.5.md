@@ -3340,3 +3340,16 @@ instant records the query reference instant; it does not rotate the field with
 each trajectory evaluation. This accepted review changes no runtime coordinate path. Only bounded 50S.5B
 implementation is authorized next; 50S.6 and later behavior remain
 unauthorized.
+
+### Candidate 50S.5B local crossing coordinates
+
+`LocalSatelliteCrossingQuery` accepts only a fixed closed circular field whose
+centre and every evaluated trajectory state are topocentric geometric
+directions expressed in GCRS axes. Vector dot products and clipped angular
+separation remove longitude-wrap and polar singularities. The field reference
+instant does not rotate the centre during the inclusive query interval.
+
+The solver obtains every final state through the accepted SGP4/TEME and
+installed-IERS-A topocentric chain. It does not compare apparent ICRS, AltAz,
+projected, refracted, or mixed-status coordinates and adds no alternate
+coordinate pipeline.
