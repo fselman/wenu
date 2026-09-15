@@ -2203,3 +2203,8 @@ Acceptance authorizes only bounded 50S.5B implementation of the exhaustive
 three-record local oracle. It does not pre-accept numerical tolerances, close
 50S.5, or authorize 50S.6 acceleration, illumination, photometry, CLI,
 reporting, drawing, or additional footprint types.
+
+
+The candidate 50S.5A focused documentation gate passed all 136 tests in 3.27
+seconds and the corrected branch diff check was clean. Fernando's acceptance
+remains pending.
