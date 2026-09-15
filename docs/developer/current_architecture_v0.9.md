@@ -973,3 +973,8 @@ angular tolerances, not a formal interval-arithmetic theorem over SGP4.
 Every selected snapshot record must be scanned. Uncertain, singular, or
 non-converged intervals subdivide or fail closed and cannot be reported as
 negative. No 50S.5 runtime or 50S.6 acceleration is implemented.
+
+
+The candidate 50S.5A documentation gate passed all 136 tests in 3.27 seconds
+on macOS, and the corrected branch diff check was clean. Scientific and
+architectural acceptance remains pending.
