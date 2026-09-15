@@ -1,6 +1,6 @@
 # 50S.5A complete local crossing-oracle audit
 
-**Status:** Candidate documentation-only scientific and API audit
+**Status:** Accepted documentation-only scientific and API audit
 **Base:** accepted 50S.4 closure at merge commit `41978bc`
 **Date:** 2026-09-15
 
@@ -223,7 +223,7 @@ clean diff evidence, and Fernando’s scientific and architectural review.
 
 ## 9. Proposed implementation boundary
 
-After Fernando accepts this audit, only 50S.5B may:
+Following Fernando's acceptance of this audit, only 50S.5B may:
 
 1. add the immutable local query, solver evidence, convergence error, and
    exhaustive oracle in `src/wenu/satellites/crossing_oracle.py`;
@@ -237,7 +237,7 @@ Acceptance of 50S.5A authorizes 50S.5B only. It does not accept numerical
 tolerances in advance, close 50S.5, or authorize 50S.6.
 
 
-## 10. Candidate audit evidence
+## 10. Accepted audit evidence
 
 On macOS with Python 3.11.7, the focused plugin-disabled documentation gate
 passed all 136 tests in 3.27 seconds. The working tree was clean and
@@ -246,5 +246,7 @@ trailing spaces. The branch changes only active documentation and its
 documentation-contract test; it adds no runtime, dependency, package data, or
 generated product.
 
-Fernando's scientific and architectural acceptance remains pending. Until
-acceptance, 50S.5B runtime work and all 50S.6 behavior remain unauthorized.
+The final acceptance documentation gate passed all 136 tests in 3.00 seconds.
+Fernando scientifically and architecturally accepted 50S.5A on 2026-09-15.
+This closes the audit and authorizes only bounded 50S.5B implementation. 50S.6
+acceleration and all later satellite behavior remain unauthorized.
