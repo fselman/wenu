@@ -379,27 +379,65 @@ def _leaf_visit(cache, start, stop, radius, time_tolerance, angular_tolerance):
     return entry, closest, exit_
 
 
-def _merge_visits(visits, cache, radius, angular_tolerance):
+def _gap_is_tolerance_connected(
+    cache,
+    start,
+    stop,
+    radius,
+    angular_tolerance,
+    time_tolerance,
+):
+    if stop <= start:
+        return True
+    left = cache(start)
+    right = cache(stop)
+    middle_time = _midpoint(start, stop)
+    middle = cache(middle_time)
+    if any(
+        sample.separation_deg > radius + angular_tolerance
+        for sample in (left, middle, right)
+    ):
+        return False
+    if (stop - start).total_seconds() <= time_tolerance:
+        return True
+    return _gap_is_tolerance_connected(
+        cache,
+        start,
+        middle_time,
+        radius,
+        angular_tolerance,
+        time_tolerance,
+    ) and _gap_is_tolerance_connected(
+        cache,
+        middle_time,
+        stop,
+        radius,
+        angular_tolerance,
+        time_tolerance,
+    )
+
+
+def _merge_visits(
+    visits,
+    cache,
+    radius,
+    angular_tolerance,
+    time_tolerance,
+):
     merged = []
     for visit in sorted(visits, key=lambda item: item[0].state.instant):
         if not merged:
             merged.append(visit)
             continue
         previous = merged[-1]
-        gap_left = previous[2]
-        gap_right = visit[0]
-        gap_width = gap_right.state.instant - gap_left.state.instant
-        gap_samples = tuple(
-            cache(gap_left.state.instant + gap_width * fraction)
-            for fraction in (0.0, 0.25, 0.5, 0.75, 1.0)
-        )
-        nearest_sample_seconds = gap_width.total_seconds() / 8.0
-        gap_upper_bound = max(
-            sample.separation_deg for sample in gap_samples
-        ) + nearest_sample_seconds * max(
-            sample.state.angular_rate_deg_per_s for sample in gap_samples
-        )
-        if gap_upper_bound <= radius + angular_tolerance:
+        if _gap_is_tolerance_connected(
+            cache,
+            previous[2].state.instant,
+            visit[0].state.instant,
+            radius,
+            angular_tolerance,
+            time_tolerance,
+        ):
             closest = min(
                 (previous[1], visit[1]), key=lambda item: item.separation_deg
             )
@@ -467,6 +505,7 @@ def _solve_trajectory(
             cache,
             radius,
             angular_tolerance_deg,
+            time_tolerance_seconds,
         )
     return tuple(
         SatelliteCrossingResult(
