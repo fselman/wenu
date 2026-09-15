@@ -339,11 +339,17 @@ def _leaf_visit(cache, start, stop, radius, time_tolerance, angular_tolerance):
     closest = _golden_minimum(cache, start, stop, time_tolerance)
     left_inside = left.separation_deg <= radius
     right_inside = right.separation_deg <= radius
+    left_definitely_inside = (
+        left.separation_deg < radius - angular_tolerance
+    )
+    right_definitely_inside = (
+        right.separation_deg < radius - angular_tolerance
+    )
     if closest.separation_deg > radius + angular_tolerance:
         return None
     tangent_without_sign_change = (
-        not left_inside
-        and not right_inside
+        not left_definitely_inside
+        and not right_definitely_inside
         and abs(closest.separation_deg - radius) <= angular_tolerance
     )
     if tangent_without_sign_change:
