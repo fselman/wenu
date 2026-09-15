@@ -2439,7 +2439,7 @@ Fernando accepted the bounded 50S.2B API and ownership on 2026-09-15 after the
 complete suite, and terminal live SatChecker normalization all passed.
 
 
-## SatChecker sampled-candidate presentations
+## SatChecker sampled-candidate presentations (50S.3B accepted)
 
 `SatCheckerPresentation(query, response, cache_provenance=())` accepts a
 terminal `SatCheckerResponse`. `.document` returns the versioned,
