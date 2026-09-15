@@ -375,7 +375,18 @@ def _merge_visits(visits, cache, radius, time_tolerance, angular_tolerance):
         gap_midpoint = cache(
             _midpoint(previous[2].state.instant, visit[0].state.instant)
         )
-        if (
+        tangent_fragment = (
+            abs(
+                (
+                    visit[1].state.instant
+                    - previous[1].state.instant
+                ).total_seconds()
+            )
+            <= time_tolerance
+            and previous[1].separation_deg <= radius + angular_tolerance
+            and visit[1].separation_deg <= radius + angular_tolerance
+        )
+        if tangent_fragment or (
             gap <= time_tolerance
             and gap_midpoint.separation_deg <= radius + angular_tolerance
         ):
