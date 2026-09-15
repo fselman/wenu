@@ -204,7 +204,7 @@ class SatelliteTopocentricState:
 def _earth_orientation(time):
     source = Path(IERS_A_FILE)
     digest = sha256(source.read_bytes()).hexdigest()
-    table = iers.IERS_A.open(source)
+    table = iers.IERS_A.open(str(source))
     with warnings.catch_warnings():
         warnings.simplefilter("error", iers.IERSWarning)
         try:
