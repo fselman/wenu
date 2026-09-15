@@ -223,7 +223,7 @@ then-current terms.
 
 IAU CPS SatChecker is Wenu's first bounded online crossing provider and an
 external comparison oracle for selected ephemerides, range, motion,
-illumination, and circular-field candidates. The 50S.2A review covers
+illumination, and circular-field candidates. Fernando accepted the 50S.2A review on 2026-09-15. It covers
 SatChecker 1.8.0 at commit `a638d72`. Its current service samples at one-second
 steps with a stop-exclusive grid and accepts points within 1.2 times the
 requested radius. It therefore supplies a candidate envelope and sampled
@@ -565,7 +565,7 @@ merged the verified implementation into the satellite integration branch as
   architecture guide; no runtime behavior.
 - **50S.1:** provider-neutral identity, observer, FoV, interval, candidate, and
   crossing-result contracts; no propagation yet.
-- **50S.2A:** audit SatChecker endpoints, time and coordinate semantics,
+- **50S.2A:** accepted audit of SatChecker endpoints, time and coordinate semantics,
   candidate envelope, async policy, exact cache, failures, and redistribution.
 - **50S.2B:** implement the cached circular-field adapter, candidate-only
   normalization, provider-sampled evidence, and explicit progress.

@@ -1625,7 +1625,7 @@ owns deterministic contract coverage;
   gate and complete suite of 2,428 tests passed; PR #123 merged it as `23b851b`.
 
 
-## 50S.2A SatChecker provider-contract audit ownership (candidate)
+## 50S.2A SatChecker provider-contract audit ownership (accepted)
 
 - `docs/developer/satchecker_provider_contract_audit_50s2a.md` owns the reviewed
   provider request, time-scale, coordinate, sampling, candidate-envelope,

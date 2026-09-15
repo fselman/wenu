@@ -1868,7 +1868,7 @@ integration branch as commit `23b851b`.
 
 ### 50S.2A — SatChecker provider-contract audit
 
-**Status:** Candidate audit on the dedicated milestone branch.
+**Status:** Accepted by Fernando on 2026-09-15.
 
 The audit in `satchecker_provider_contract_audit_50s2a.md` reviews SatChecker
 1.8.0 at source commit `a638d72`. It records the versioned endpoints, explicit
@@ -1876,7 +1876,8 @@ UTC-to-UT1 conversion boundary, source-inferred geometric topocentric
 ICRF/ICRS-oriented directions, one-second stop-exclusive sampling, 1.2-radius
 candidate envelope, async states, serial no-retry access, exact local cache,
 bounded failures, and unresolved response-data redistribution terms. It changes
-no runtime behavior.
+no runtime behavior. Fernando's acceptance authorizes only the bounded 50S.2B
+cached-adapter implementation.
 
 ### 50S.2 — SatChecker crossing adapter
 

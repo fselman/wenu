@@ -1,6 +1,6 @@
 # SatChecker provider-contract audit (Milestone 50S.2A)
 
-**Status:** Candidate audit for Fernando's scientific and architectural review
+**Status:** Accepted by Fernando on 2026-09-15
 **Audit date:** 2026-09-15
 **Wenu baseline:** `06c05a2994683e8ac8f04abf0a1480a0abeb566e`
 **Provider source reviewed:** SatChecker 1.8.0, commit
@@ -152,6 +152,8 @@ solution, illumination physics, brightness, reports, charts, projection,
 rendering, or export. It must not make a live service an import-time,
 construction-time, or ordinary-test dependency.
 
-This audit authorizes no implementation until Fernando accepts the request
-mapping, UTC-to-UT1 policy, candidate-only normalization, async access policy,
-cache identity, and response-data redistribution boundary.
+Fernando scientifically and architecturally accepted the request mapping,
+UTC-to-UT1 policy, candidate-only normalization, async access policy, cache
+identity, and response-data redistribution boundary on 2026-09-15. That
+acceptance authorizes only the bounded 50S.2B cached-adapter implementation;
+it does not authorize any later satellite milestone.

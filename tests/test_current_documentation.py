@@ -4967,12 +4967,14 @@ def test_50s2a_audits_satchecker_provider_contract_before_adapter():
         "Corrupt, partial, mismatched, or obsolete-schema entries fail closed",
         "must not be committed, packaged, or redistributed",
         "Ordinary tests use synthetic source-shaped specimens",
-        "This audit authorizes no implementation until Fernando accepts",
+        "Accepted by Fernando on 2026-09-15",
+        "acceptance authorizes only the bounded 50S.2B cached-adapter implementation",
     ):
         assert phrase in audit
 
     assert "satchecker_provider_contract_audit_50s2a.md" in index
     assert "50S.2A — SatChecker provider-contract audit" in roadmap
     assert "candidate envelope and sampled evidence" in guide
-    assert "50S.2A SatChecker provider-contract audit ownership" in source_tree
+    assert "50S.2A SatChecker provider-contract audit ownership (accepted)" in source_tree
     assert "one-second sampling grid excludes the stop endpoint" in coordinate_guide
+    assert "Fernando accepted this scientific boundary on 2026-09-15" in coordinate_guide
