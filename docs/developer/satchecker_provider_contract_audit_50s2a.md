@@ -157,3 +157,65 @@ UTC-to-UT1 policy, candidate-only normalization, async access policy, cache
 identity, and response-data redistribution boundary on 2026-09-15. That
 acceptance authorizes only the bounded 50S.2B cached-adapter implementation;
 it does not authorize any later satellite milestone.
+
+
+## 9. Candidate 50S.2B implementation
+
+The dedicated implementation branch adds `src/wenu/satchecker.py` and the
+durable provider-boundary owner `tests/test_satchecker.py`. The candidate
+implements the accepted mapping as immutable query, receipt, task, sample,
+candidate-evidence, and cache contracts. Submission and polling are separate
+one-shot operations; neither retries nor hides a wait loop. Exact response
+bytes are SHA-256 addressed locally, while a canonical manifest binds the
+complete Wenu request, endpoint, parameters, Earth-orientation identity,
+receipt chain, and normalized interpretation.
+
+Provider SUCCESS output becomes only `SatelliteCrossingCandidate` plus
+ordered `SatCheckerSample` evidence. The implementation creates no exact
+`SatelliteCrossingResult` and performs no network access in ordinary tests.
+This candidate remains limited to 50S.2B and does not change the
+response-data redistribution decision.
+
+
+## 10. Bounded live transport evidence
+
+Fernando ran the separately required bounded live check on 2026-09-15. The
+first candidate interval, 2026-09-15, lay outside the local IERS-B table, whose
+reported coverage ended at MJD 61211 (2026-06-20). Wenu failed before network
+access with `UTC-to-UT1 conversion requires valid local Earth-orientation
+data`; degraded accuracy was not enabled.
+
+One replacement query used 2026-06-19, inside the same local table. Exactly one
+versioned FOV submission returned HTTP 200 and PENDING task
+`657ec03e-906b-4966-9eef-4318dda45e48`; the exact submission-body SHA-256 was
+`1da524ada082cd6403648dac7b5a95349b62dcda6521d24d45824db9321df9cc`.
+Two separate explicit polls returned the same PENDING message, “Task is waiting
+to be processed,” and exact body SHA-256
+`a0546eca1db836cf1186a3b99b30bb6e9f181375746ad4bffb5b90497136bcef`.
+A later third explicit poll reached SUCCESS with exact body SHA-256
+`99a858ccfaad214800bd94f9fdbf2aa1a060c7617b95a43eb1e6b8ab4288e485`.
+The adapter normalized 13 distinct NORAD identities and 26 ordered samples,
+two samples per candidate, without constructing an exact connected visit. No
+retry, replacement submission, concurrent access, or hidden polling loop was
+used.
+
+This validates the real no-download time preflight, request translation,
+versioned HTTPS transport, task identity, receipt capture, one-shot polling,
+terminal schema, candidate identity, sample normalization, and containment
+path. Synthetic source-shaped specimens remain the ordinary regression
+evidence because acceptance cannot depend on service queue availability.
+
+
+## 11. 50S.2B acceptance
+
+Fernando scientifically and architecturally accepted 50S.2B on 2026-09-15.
+The provider/domain gate passed all 45 tests in 1.79 seconds, the expanded
+focused gate passed all 168 tests in 3.89 seconds, and the complete
+plugin-disabled suite passed all 2,457 tests in 88.48 seconds. The later
+documentation-only live-evidence commits passed the final 124-test
+documentation gate in 2.89 seconds and left the integrity check clean.
+
+This closes only the cached SatChecker adapter. It authorizes 50S.3 reports and
+shared-path drawable crossing tracks next; local propagation, exact crossing
+verification, independent illumination, photometry, detector contamination,
+and statistical products remain later milestones.

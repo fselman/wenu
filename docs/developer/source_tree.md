@@ -1638,3 +1638,23 @@ owns deterministic contract coverage;
 - ordinary provider-contract tests will use synthetic source-shaped specimens;
   no exact provider response may be committed until redistribution terms are
   clarified.
+
+
+## 50S.2B SatChecker adapter ownership (accepted)
+
+- `src/wenu/satchecker.py` owns the SatChecker-specific request translation,
+  no-download UTC-to-UT1 boundary, exact receipts, one-shot submit/poll
+  transport, task-state parsing, provider-schema normalization, sampled
+  evidence, and exact local cache;
+- `src/wenu/satellite_crossings.py` remains unchanged and owns only the
+  provider-neutral candidate and exact-result domain;
+- `tests/test_satchecker.py` owns the durable provider request, schema drift,
+  identity/count consistency, sample containment, serial one-shot access,
+  exact-byte cache, corruption, and no-network evidence;
+- `tests/test_satellite_crossings.py` remains the independent 50S.1 domain
+  owner and is included in the focused gate;
+- no `src/wenu/satellites/` package is admitted by this second production
+  module; later collaborating propagation and catalogue modules must re-review
+  that package boundary;
+- chart, projection, renderer, export, local SGP4/TEME, illumination,
+  photometry, and detector-contamination owners remain unchanged.

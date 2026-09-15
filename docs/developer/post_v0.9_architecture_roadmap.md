@@ -1881,14 +1881,27 @@ cached-adapter implementation.
 
 ### 50S.2 — SatChecker crossing adapter
 
-After 50S.2A acceptance, implement the policy-compliant cached adapter as
-50S.2B. Translate only at the adapter boundary, preserve exact request and raw
-response receipts, expose asynchronous progress, and normalize successful
-provider output to `SatelliteCrossingCandidate` plus provider-sampled
-evidence. Do not construct `SatelliteCrossingResult`: SatChecker samples do
-not establish exact entry, closest approach, exit, or one connected visit.
-Ordinary tests use synthetic source-shaped specimens and never require live
-service availability.
+**50S.2B status:** Accepted by Fernando on 2026-09-15.
+
+`satchecker.py` provides the versioned geometric circular-field request,
+explicit no-download UTC-to-UT1 conversion, exact-byte receipt, one-shot
+submission and polling, explicit task states, provider-schema normalization,
+candidate/sample evidence, and content-addressed exact local cache. It
+serializes the complete Wenu request and Earth-orientation identity into the
+cache key and fails closed on HTTP, media, JSON, identity, count, task, sample,
+or cache drift.
+
+Successful output is only `SatelliteCrossingCandidate` plus ordered
+`SatCheckerSample` evidence. The implementation does not construct
+`SatelliteCrossingResult`: provider samples do not establish exact entry,
+closest approach, exit, or one connected visit. Synthetic source-shaped tests
+perform no network access. No waiter loop, automatic retry, CLI, live fixture,
+report, propagation, drawing, or export is added. The bounded live check
+confirmed fail-closed IERS coverage, real PENDING submission/poll receipts, and
+a later SUCCESS receipt normalized to 13 candidates and 26 ordered samples.
+The focused provider/domain gate passed 45 tests, the expanded focused gate
+passed 168 tests, and the complete suite passed all 2,457 tests. Acceptance
+closes 50S.2B and authorizes only 50S.3 reporting and shared-path drawing.
 
 ### 50S.3 — SatChecker reports and drawable crossing tracks
 

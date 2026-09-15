@@ -559,6 +559,18 @@ plugin-disabled suite passed all 2,428 tests in 85.52 seconds, and PR #123
 merged the verified implementation into the satellite integration branch as
 `23b851b`.
 
+The accepted 50S.2B provider module is `satchecker.py`. It owns exact
+versioned request translation, explicit no-download UTC-to-UT1 conversion,
+immutable response receipts, one-shot submit/poll access, provider task/schema
+normalization, ordered sampled evidence, and the content-addressed local cache.
+It imports the 50S.1 contracts rather than redefining them. The adapter accepts
+only geometric topocentric-direction ICRS fields and never constructs an exact
+connected-visit result. `tests/test_satchecker.py` is the durable provider
+boundary owner; ordinary tests inject transport and remain network-free. The
+bounded live check reached real HTTP 200 PENDING states and a later SUCCESS
+receipt; the adapter normalized 13 candidates and 26 ordered samples while
+retaining the candidate-only boundary.
+
 ## 17. Milestone evolution
 
 - **50S.0:** maintain this literature, provider-policy, scientific, and
@@ -567,8 +579,8 @@ merged the verified implementation into the satellite integration branch as
   crossing-result contracts; no propagation yet.
 - **50S.2A:** accepted audit of SatChecker endpoints, time and coordinate semantics,
   candidate envelope, async policy, exact cache, failures, and redistribution.
-- **50S.2B:** implement the cached circular-field adapter, candidate-only
-  normalization, provider-sampled evidence, and explicit progress.
+- **50S.2B:** accepted cached circular-field adapter, candidate-only
+  normalization, provider-sampled evidence, explicit progress, and exact cache.
 - **50S.3:** human-readable/JSON reports and FoV charts consuming the same
   SatChecker-derived normalized results; illumination remains provider-derived.
 - **50S.4:** small representative immutable OMM snapshot,
@@ -585,6 +597,10 @@ merged the verified implementation into the satellite integration branch as
 - **50S.10:** statistical products versus night time, season, observer,
   pointing, FoV, and exposure duration; close the program after numerical,
   performance, report, and visual acceptance.
+
+Fernando accepted 50S.2B on 2026-09-15 after 45 provider/domain tests, 168
+expanded focused tests, all 2,457 tests, and the bounded live provider check
+passed. Only 50S.3 is authorized next.
 
 At every milestone, revise this living guide to match accepted science and
 implemented ownership. When 50S foundation work is merged, decide explicitly

@@ -762,3 +762,27 @@ pipeline. No satellite acquisition, orbit solution, propagation, coordinate
 transformation, exact crossing solver, report, drawing, or output changes in
 this accepted milestone. Fernando accepted the implementation on 2026-09-15
 after all 2,428 tests passed; PR #123 merged it as `23b851b`.
+
+
+## 50S.2B SatChecker adapter boundary (accepted)
+
+The dedicated 50S.2B milestone branch adds a dormant `satchecker.py` provider
+boundary. It maps only geometric topocentric-direction ICRS circular fields to
+the versioned asynchronous SatChecker endpoint, performs explicit UTC-to-UT1
+conversion with Astropy automatic IERS download disabled, and exposes one-shot
+`submit()` and `poll()` operations. There is no retry, concurrency, hidden
+wait loop, import-time access, chart-construction access, or ordinary-test
+network dependency.
+
+Exact response bytes become immutable SHA-256-addressed local receipts.
+`SatCheckerCache` keys the complete Wenu request, transmitted parameters,
+resolved endpoint, Earth-orientation identity, and adapter schema, and validates
+both response bytes and stored normalized interpretation on reuse. Successful
+provider output becomes `SatelliteCrossingCandidate` with ordered
+`SatCheckerSample` evidence. The adapter does not create
+`SatelliteCrossingResult`, exact crossing events, satellite states,
+illumination physics, reports, tracks, projection, rendering, or export. Fernando scientifically and architecturally accepted this implementation on
+2026-09-15. The focused provider/domain gate passed all 45 tests in 1.79
+seconds, the expanded focused gate passed all 168 tests in 3.89 seconds, and
+the complete plugin-disabled suite passed all 2,457 tests in 88.48 seconds.
+Only 50S.3 reporting and drawing is authorized next.
