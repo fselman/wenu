@@ -1941,13 +1941,16 @@ candidate reporting/drawing and authorizes only 50S.4 next.
 
 ### 50S.4A — Snapshot and propagation contract audit
 
-**Status:** Candidate documentation-only audit.
+**Status:** Accepted by Fernando on 2026-09-15.
 
 Freeze the direct SGP4 dependency, synthetic distributable snapshot, OMM
 element domain, content digest, Vallado validation, split-Julian-date,
 geometric TEME state, no-download Earth-orientation, topocentric oracle, and
 developer-specimen boundaries. This audit changes no runtime, dependency, or
-packaged data and authorizes no propagation before acceptance.
+packaged data. The focused documentation gate passed all 128 tests and the
+branch diff check was clean. Acceptance closes 50S.4A and authorizes only
+50S.4B immutable OMM element and snapshot work; propagation remains
+unauthorized.
 
 ### 50S.4B — Immutable OMM element snapshot
 

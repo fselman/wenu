@@ -5218,12 +5218,12 @@ def test_50s4a_audits_snapshot_propagation_and_topocentric_contracts():
         "Agreement between two paths using the same hidden inputs is not independent evidence",
         "propagated sampled specimens — not verified crossings",
         "It cannot emit",
-        "authorize only 50S.4B immutable OMM element and snapshot work",
+        "Acceptance closes 50S.4A and authorizes only 50S.4B immutable OMM element",
     ):
         assert phrase in audit
 
     assert "satellite_snapshot_propagation_audit_50s4a.md" in index
-    assert "Candidate 50S.4A snapshot and propagation audit" in architecture
+    assert "Accepted 50S.4A snapshot and propagation audit" in architecture
     for phrase in (
         "50S.4A — Snapshot and propagation contract audit",
         "50S.4B — Immutable OMM element snapshot",
@@ -5233,8 +5233,12 @@ def test_50s4a_audits_snapshot_propagation_and_topocentric_contracts():
     ):
         assert phrase in roadmap
     assert "50S.4 snapshot and propagation admission review" in guide
-    assert "only the documentation-only 50S.4A audit is authorized next" in guide
-    assert "50S.4A snapshot and propagation contract audit ownership (candidate)" in source_tree
+    assert "only 50S.4B immutable OMM element and snapshot work is authorized next" in guide
+    assert "50S.4A snapshot and propagation contract audit ownership (accepted)" in source_tree
     assert "TEME and topocentric transformation admission note" in coordinate_guide
     assert "not automatically an ICRS astrometric position" in coordinate_guide
     assert "satellite_snapshot_propagation_audit_50s4a.md" in instructions
+    assert "Accepted by Fernando on 2026-09-15" in audit
+    assert "focused documentation gate passed all 128 tests" in audit
+    assert "branch diff check was clean" in audit
+    assert "authorizes only 50S.4B immutable OMM element and snapshot work" in roadmap

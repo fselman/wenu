@@ -817,7 +817,7 @@ suite passed all 2,473 tests in 83.98 seconds. Fernando accepted the implementat
 builder work is authorized next.
 
 
-## Candidate 50S.4A snapshot and propagation audit
+## Accepted 50S.4A snapshot and propagation audit
 
 The as-is review finds no production owner for canonical OMM/GP records,
 immutable satellite element snapshots, geometric TEME propagation receipts, or
@@ -825,10 +825,13 @@ the TEME/Earth-orientation/topocentric state chain. The accepted SatChecker,
 provider-neutral crossing, presentation, generic Cartesian-state, coordinate,
 chart, and renderer modules do not own those responsibilities.
 
-The candidate documentation-only audit proposes five bounded stages:
+Fernando accepted the documentation-only contract audit on 2026-09-15 after
+the focused gate passed all 128 tests and the branch diff check was clean. The
+accepted contract defines five bounded stages:
 50S.4A contract acceptance; 50S.4B synthetic installed snapshot and element
 domain; 50S.4C direct `sgp4>=2.25,<3` WGS-72 propagation into typed geometric
 TEME state; 50S.4D no-download independently validated topocentric
 transformation; and 50S.4E propagated sampled-specimen construction and
-closure. It adds no runtime behavior, dependency, package data, propagation,
-transformation, or crossing result.
+closure. 50S.4A added no runtime behavior, dependency, package data,
+propagation, transformation, or crossing result. Acceptance closes 50S.4A and
+authorizes only 50S.4B immutable OMM element and snapshot work.

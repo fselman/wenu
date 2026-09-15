@@ -703,5 +703,7 @@ The developer builder will emit **propagated sampled specimens — not verified
 crossings**. It cannot create `SatelliteCrossingResult` or claim completeness;
 those belong to 50S.5.
 
-The candidate 50S.4A audit changes no runtime, dependency, or package data.
-Fernando's acceptance would authorize only 50S.4B element/snapshot work.
+Fernando accepted the documentation-only 50S.4A audit on 2026-09-15 after
+the focused gate passed all 128 tests and the branch diff check was clean.
+50S.4A changed no runtime, dependency, or package data. It is now closed, and
+only 50S.4B immutable OMM element and snapshot work is authorized next.

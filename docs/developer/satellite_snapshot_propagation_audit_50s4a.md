@@ -1,6 +1,6 @@
 # 50S.4A local snapshot, propagation, and topocentric contract audit
 
-**Status:** Candidate audit for Fernando's scientific and architectural review
+**Status:** Accepted by Fernando on 2026-09-15
 **Audit date:** 2026-09-15
 **Wenu baseline:** `ead74169fdcd4aa44a9811394a3dd5b565baa106`
 
@@ -291,8 +291,10 @@ pure-Python SGP4 availability contract without requiring acceleration.
 - focused and complete plugin-disabled suites;
 - Fernando's inspection of the manifest, numerical report, and specimens.
 
-## Decision requested
+## Acceptance
 
-Accept this contract as 50S.4A and authorize only 50S.4B immutable OMM element
-and snapshot work. Acceptance does not authorize propagation, topocentric
-transformation, a crossing solver, or 50S.5.
+Fernando accepted this contract as 50S.4A on 2026-09-15 after the focused
+documentation gate passed all 128 tests and the branch diff check was clean.
+Acceptance closes 50S.4A and authorizes only 50S.4B immutable OMM element and
+snapshot work. It does not authorize propagation, topocentric transformation,
+a crossing solver, or 50S.5.
