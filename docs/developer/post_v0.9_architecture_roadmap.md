@@ -2157,3 +2157,21 @@ practical. Screen PNG review is not sufficient.
 
 Record accepted numerical standards, named profiles, examples, regression
 products, limitations, and the human print-acceptance record.
+
+### 50S.4E — Propagated specimen builder and closure (candidate)
+
+**Status:** Candidate implementation pending focused, complete-suite, diff,
+and developer-product acceptance.
+
+The dedicated branch adds only
+`tools/build_50s4_satellite_specimens.py` and its durable focused tests. The
+tool composes accepted 50S.4B–D authorities into deterministic, network-free
+**propagated sampled specimens — not verified crossings**, written only to a
+caller-selected output directory. It records snapshot, grid, observer,
+Earth-orientation, propagator, and software identities.
+
+50S.4E does not emit `SatelliteCrossingResult`, search a complete catalogue,
+derive entry/exit or closest approach, select production solver tolerances, or
+authorize 50S.5. Closure still requires focused and full Mac gates, clean diff
+evidence, inspection of the generated JSON, and Fernando's scientific and
+architectural acceptance.
