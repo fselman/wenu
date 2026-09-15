@@ -5546,4 +5546,7 @@ def test_50s5a_audits_complete_local_crossing_oracle_contract():
     assert "3.00 seconds" in audit
     assert "Fernando scientifically and architecturally accepted 50S.5A" in audit
     assert "only bounded 50S.5B implementation" in audit
-    assert "50S.6 acceleration and all later satellite behavior remain unauthorized" in audit
+    assert (
+        "50S.6 acceleration and all later satellite behavior remain unauthorized"
+        in audit
+    )
