@@ -413,3 +413,20 @@ diff check is clean. Fernando scientifically and architecturally accepted
 50S.4D on 2026-09-15. This closes 50S.4D and authorizes only bounded 50S.4E
 propagated-specimen builder work; it does not authorize a crossing solver or
 50S.5.
+
+## Candidate 50S.4E implementation evidence
+
+The dedicated candidate adds the admitted
+`tools/build_50s4_satellite_specimens.py` developer tool without adding a
+production module or installed CLI. The builder consumes only the installed
+synthetic snapshot and accepted 50S.4C/50S.4D APIs. It is deterministic and
+network-free, writes only to a caller-selected output directory, and labels
+its document **propagated sampled specimens — not verified crossings**.
+
+The document records snapshot digest and ordered record identities, evaluation
+grid, observer, exact IERS-A identity and sampled values, SGP4 implementation
+and version, WGS-72 policy, Wenu version, TEME samples, topocentric samples,
+and bounded query inputs. It cannot emit `SatelliteCrossingResult`, claim
+complete catalogue coverage, find exact crossing events, or choose production
+solver tolerances. Focused, complete-suite, diff, generated-product, and
+Fernando acceptance evidence remain pending.
