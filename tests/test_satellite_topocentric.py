@@ -271,8 +271,8 @@ def test_out_of_coverage_instant_fails_closed():
     )
     outside = replace(
         state,
-        evaluation_utc="1800-01-01T00:00:00.000000Z",
-        julian_day=2378496.5,
+        evaluation_utc="1960-01-01T00:00:00.000000Z",
+        julian_day=2436934.5,
         julian_fraction=0.0,
     )
 
