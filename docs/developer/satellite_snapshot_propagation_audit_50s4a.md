@@ -330,3 +330,25 @@ Fernando accepted the scientific and architectural boundary on 2026-09-15.
 This closes 50S.4B and authorizes only 50S.4C validated SGP4/TEME propagation.
 It does not authorize Earth-orientation/topocentric transformation, specimen
 construction, a crossing solver, or 50S.5.
+
+
+## Candidate 50S.4C implementation evidence
+
+The dedicated 50S.4C branch maps immutable canonical OMM records through the
+upstream Vallado-compatible API with explicit WGS-72 and improved operation
+mode. It supplies split Julian-date components, converts only declared OMM
+units, raises non-zero SGP4 statuses, and returns immutable successful
+geocentric geometric TEME position/velocity with complete identity, version,
+backend, time, element-age, and provenance fields.
+
+Preflight found that the original synthetic identifiers 900001–900003 exceeded
+the upstream `Satrec` maximum 339999. They were corrected openly to
+300001–300003; all three source-record digests and the snapshot content digest
+were regenerated. No hidden internal satellite identity is permitted.
+
+Pinned AIAA 2006-6753/Vallado verification vectors cover the near-Earth and
+deep-space branches at epoch. The upstream case 44160 validates a non-zero
+terminal status, and scalar/array evaluation has a sub-millimetre parity gate.
+The initial satellite element/SGP4 gate passed all 15 tests. Expanded,
+complete-suite, and documentation gates remain pending. No terrestrial or
+observer transformation is included.

@@ -5305,3 +5305,46 @@ def test_50s4b_records_complete_and_installed_wheel_evidence():
     assert "This closes 50S.4B and authorizes only 50S.4C" in audit
     assert "only 50S.4C validated SGP4/TEME propagation is authorized next" in guide
     assert "only the bounded 50S.4C validated SGP4/TEME wrapper is authorized next" in instructions
+
+
+def test_50s4c_documents_validated_sgp4_teme_boundary():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate 50S.4C validated SGP4/TEME propagation",
+        "separate Julian-day and fractional-day values",
+        "SatelliteTemeState",
+        "does not pass a hidden surrogate identity",
+    ):
+        assert phrase in architecture
+    assert "50S.4C — Validated SGP4/TEME propagation" in roadmap
+    for phrase in (
+        "Validated SGP4 geometric TEME propagation (50S.4C candidate)",
+        "split_julian_date",
+        "Sgp4TemePropagator",
+        "SatelliteTemeState",
+        "SatellitePropagationError",
+        "does not transform TEME",
+    ):
+        assert phrase in reference
+    assert "50S.4C SGP4/TEME propagation ownership (candidate)" in source_tree
+    assert "tests/test_satellite_sgp4.py" in source_tree
+    assert "50S.4C typed TEME state boundary" in coordinate_guide
+    assert "must not be labelled ICRS, GCRS, ITRS" in coordinate_guide
+    assert "Candidate 50S.4C implementation evidence" in audit
+    assert "upstream `Satrec` maximum 339999" in audit
+    assert "initial satellite element/SGP4 gate passed all 15 tests" in audit
+    assert "Candidate 50S.4C SGP4 and geometric TEME state" in guide
+    assert "300001–300003" in guide
+    assert "only the bounded 50S.4C" in instructions

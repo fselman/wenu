@@ -1751,3 +1751,20 @@ installed resource digest was
 `b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457`.
 Fernando accepted this ownership on 2026-09-15. This closes 50S.4B and
 authorizes only 50S.4C validated SGP4/TEME propagation.
+
+
+## 50S.4C SGP4/TEME propagation ownership (candidate)
+
+- `src/wenu/satellites/sgp4.py` owns canonical-OMM mapping, explicit WGS-72
+  initialization, UTC-to-split-Julian-date conversion, scalar/array execution,
+  upstream status translation, and immutable geometric TEME state provenance;
+- `tests/test_satellite_sgp4.py` owns pinned Vallado near-Earth/deep-space
+  wrapper vectors, terminal error behavior, split-date precision,
+  snapshot-identity propagation, immutability, and scalar/array parity;
+- the accepted synthetic snapshot now uses identifiers 300001–300003 because
+  the upstream `Satrec` limit is 339999; its record and content digests were
+  regenerated without hidden identity substitution;
+- `elements.py` and `snapshots.py` retain their accepted responsibilities;
+- TEME-to-ITRS transformation, EOP handling, observer subtraction,
+  topocentric coordinates, crossings, acquisition, presentation, and
+  rendering remain absent.

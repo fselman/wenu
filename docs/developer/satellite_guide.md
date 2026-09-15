@@ -742,3 +742,28 @@ dependencies in a no-dependency environment and a broken inherited
 the intended boundary. Neither failure involved the snapshot. Fernando
 accepted 50S.4B on 2026-09-15. The immutable snapshot boundary is closed, and
 only 50S.4C validated SGP4/TEME propagation is authorized next.
+
+
+### Candidate 50S.4C SGP4 and geometric TEME state
+
+The 50S.4C adapter is deliberately narrow: canonical OMM record → explicit
+WGS-72 Vallado-compatible `Satrec` → immutable successful geometric TEME
+state, or an explicit `SatellitePropagationError`. It retains split Julian
+dates, element age, upstream version/backend, operation mode, source/snapshot
+identity, and units. It does not silently accept NaNs or non-zero statuses.
+
+The published Vallado verification vectors for near-Earth satellite 5 and
+deep-space satellite 4632 are pinned as wrapper oracles. A published decaying
+case verifies terminal error propagation. Scalar and accelerated-array routes
+agree within the declared sub-millimetre position tolerance.
+
+The 50S.4C preflight caught that the original synthetic identifiers
+900001–900003 cannot be represented by upstream `Satrec`, whose current
+maximum is 339999. The corrected installed snapshot uses 300001–300003,
+preserving six-digit identity while remaining valid for the actual propagator.
+All record digests and the snapshot digest changed accordingly; Wenu never
+substitutes an internal ID.
+
+Every result remains geocentric geometric TEME. No Earth rotation, polar
+motion, ITRS state, observer subtraction, range, AltAz, celestial direction,
+FoV test, or drawing occurs in this milestone.

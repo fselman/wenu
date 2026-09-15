@@ -1973,11 +1973,17 @@ propagation.
 
 ### 50S.4C — Validated SGP4/TEME propagation
 
-Map accepted OMM fields explicitly into the upstream Vallado-compatible
-propagator with WGS-72, split Julian dates, typed geometric TEME
-position/velocity, explicit errors, element age, and scalar/array parity.
-Validate the wrapper against pinned published near-Earth and deep-space
-reference values. No Earth-fixed or observer state is produced.
+**Status:** Candidate implementation on the dedicated milestone branch.
+
+The candidate maps accepted OMM fields explicitly into the upstream
+Vallado-compatible propagator with WGS-72, split Julian dates, typed geometric
+TEME position/velocity, explicit errors, element age, and scalar/array parity.
+Pinned published near-Earth and deep-space reference vectors plus a terminal
+error case validate the wrapper. Preflight corrected the synthetic identifiers
+from unsupported 900001–900003 to valid six-digit 300001–300003 and regenerated
+all affected digests; no hidden surrogate identity is used. The initial
+element/SGP4 gate passed all 15 tests. No Earth-fixed or observer state is
+produced.
 
 ### 50S.4D — Earth-orientation and topocentric state
 
