@@ -1658,3 +1658,18 @@ owns deterministic contract coverage;
   that package boundary;
 - chart, projection, renderer, export, local SGP4/TEME, illumination,
   photometry, and detector-contamination owners remain unchanged.
+
+
+## 50S.3A satellite report and drawing contract audit ownership (candidate)
+
+- `docs/developer/satellite_report_drawing_audit_50s3a.md` owns the proposed
+  sampled-candidate report, drawing, semantic, and acceptance contract;
+- the audit changes no production module and admits no new runtime owner;
+- `src/wenu/satchecker.py` remains the completed provider evidence owner and
+  `src/wenu/satellite_crossings.py` remains the independent domain owner;
+- future report and layer code must consume already-normalized evidence and
+  must not reparse responses, access the network/cache, propagate, or synthesize
+  `SatelliteCrossingResult`;
+- existing coordinate, projection, preparation, renderer, semantic SVG, style,
+  furniture, and PNG/PDF/SVG export owners remain authoritative;
+- 50S.3B may be admitted only after Fernando accepts this audit.
