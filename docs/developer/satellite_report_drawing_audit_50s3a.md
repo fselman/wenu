@@ -175,5 +175,6 @@ specimen on 2026-09-15 after the FoV was labelled explicitly with its identifier
 closed circular boundary, ICRS center, and radius. The candidate-only title,
 ordered track, four UTC annotations, and three output formats were correct.
 The final focused boundary then passed all 217 tests and the complete
-plugin-disabled suite passed all 2,473 tests in 83.98 seconds. These remain
-candidate implementation results pending Fernando's milestone acceptance.
+plugin-disabled suite passed all 2,473 tests in 83.98 seconds. Fernando accepted the bounded 50S.3B implementation on 2026-09-15. This closes
+only sampled-candidate reporting and shared-path drawing and authorizes only
+50S.4 next.
