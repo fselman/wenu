@@ -5533,3 +5533,12 @@ def test_50s5a_audits_complete_local_crossing_oracle_contract():
         instructions
     )
     assert "50S.6 and later behavior remain unauthorized" in guide
+    assert "focused plugin-disabled documentation gate passed all 136 tests" in (
+        audit
+    )
+    assert "3.27 seconds" in audit
+    assert "git diff --check 41978bc...HEAD" in audit
+    assert "adds no runtime, dependency, package data, or generated product" in (
+        audit
+    )
+    assert "acceptance remains pending" in audit.lower()
