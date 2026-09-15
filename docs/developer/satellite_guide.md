@@ -777,7 +777,7 @@ accepted 50S.4C on 2026-09-15. The SGP4/TEME boundary is closed, and only
 50S.4D Earth-orientation and topocentric state work is authorized next.
 
 
-### Candidate 50S.4D local topocentric state
+### Accepted 50S.4D local topocentric state
 
 The candidate local path is:
 
@@ -802,4 +802,6 @@ GCRS coordinate, astrometric place, apparent place, or observed direction.
 They are the instantaneous observer-subtracted geometric vector expressed in
 celestial axes. Refraction, field intersection, exact visits, illumination,
 brightness, detector effects, reporting, drawing, and specimen generation are
-not part of this candidate.
+not part of 50S.4D. Fernando scientifically and architecturally accepted this
+boundary on 2026-09-15. Only the bounded 50S.4E propagated-specimen builder is
+authorized next.
