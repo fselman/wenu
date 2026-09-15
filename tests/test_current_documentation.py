@@ -5171,3 +5171,8 @@ def test_50s3b_documents_candidate_reports_and_shared_path_layers():
     assert "centered FoV chart across PNG" in roadmap
     assert "four UTC annotations" in guide
     assert "FoV was labelled explicitly" in audit
+    assert "all 217 tests" in architecture
+    assert "all 2,473 tests in 83.98 seconds" in architecture
+    assert "Only milestone acceptance remains" in roadmap
+    assert "Only Fernando's milestone acceptance remains pending" in guide
+    assert "complete plugin-disabled suite passed all 2,473 tests" in audit
