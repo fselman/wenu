@@ -160,3 +160,21 @@ after the focused documentation gate passed all 126 tests and the candidate
 diff passed `git diff --check`. Acceptance closes 50S.3A and authorizes only
 the bounded 50S.3B implementation. It does not authorize 50S.4 propagation or
 snapshot work.
+
+
+## Accepted 50S.3B implementation evidence
+
+The dedicated implementation branch now contains
+`satellite_presentations.py`, `sky/satellite_candidate_layer.py`, stable
+satellite handling in `sky/semantic_identity.py`, and
+`tests/test_satellite_presentations.py`. The implementation follows this
+audit's one-evidence-source and candidate-only rules. An actual Matplotlib gate
+serializes the same realized layers to PNG, PDF, and semantic SVG. The expanded
+focused gate passed all 90 tests. Fernando accepted the regenerated visual
+specimen on 2026-09-15 after the FoV was labelled explicitly with its identifier,
+closed circular boundary, ICRS center, and radius. The candidate-only title,
+ordered track, four UTC annotations, and three output formats were correct.
+The final focused boundary then passed all 217 tests and the complete
+plugin-disabled suite passed all 2,473 tests in 83.98 seconds. Fernando accepted the bounded 50S.3B implementation on 2026-09-15. This closes
+only sampled-candidate reporting and shared-path drawing and authorizes only
+50S.4 next.

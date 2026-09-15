@@ -2437,3 +2437,27 @@ normalized interpretation digest before reuse.
 Fernando accepted the bounded 50S.2B API and ownership on 2026-09-15 after the
 45-test provider/domain gate, 168-test expanded focused gate, 2,457-test
 complete suite, and terminal live SatChecker normalization all passed.
+
+
+## SatChecker sampled-candidate presentations (50S.3B accepted)
+
+`SatCheckerPresentation(query, response, cache_provenance=())` accepts a
+terminal `SatCheckerResponse`. `.document` returns the versioned,
+JSON-compatible report model; `.to_json()` returns deterministic sorted,
+indented JSON with a final newline; and `.to_text()` returns the deterministic
+human-readable projection of the same model. The first line is
+`SatChecker sampled candidate evidence — not verified crossings`. SUCCESS
+evidence is sorted by full NORAD catalogue identifier. FAILURE and ERROR
+responses report zero candidates. PENDING and PROGRESS are rejected.
+
+`SatelliteCandidateTrackLayer(evidence)` consumes one normalized
+`SatCheckerCandidateEvidence`. Two or more samples become one open
+`SphericalCurves`; one sample becomes one `SphericalPoints` value with no
+invented segment.
+
+`SatelliteCandidateSamplesLayer(evidence, label_times=True)` exposes the
+supplied ordered samples as `SphericalPoints`. Its labels are exact normalized
+UTC sample strings when enabled. Both layer types require a
+`LayerRealizationContext`, use `CoordinateService`, retain candidate-only
+metadata and provider illumination as evidence, and perform no network access,
+cache read, propagation, interpolation, or exact crossing construction.

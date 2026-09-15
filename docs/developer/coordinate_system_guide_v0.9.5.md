@@ -3217,3 +3217,19 @@ Connecting ordered provider samples is presentation, not propagation or proof
 of continuous FoV containment. It cannot create exact entry, exit, boundary
 touch, or closest-approach instants. UTC labels refer only to supplied sample
 instants. Rendering remains coordinate-neutral and performs no astronomy.
+
+
+## 50S.3B multi-instant sampled-track realization
+
+The candidate layer follows Wenu's existing fixed-product-frame track
+convention. Its native container declares geometric
+topocentric-direction ICRS without one false scalar instant; the ordered UTC
+and UT1 instants remain per-sample metadata. `CoordinateService` transforms
+the assembled geometry once into the fixed chart product frame using the
+request's `LayerRealizationContext`.
+
+This is coordinate representation of already supplied directions, not
+position generation. It does not interpolate between samples, recompute the
+observer, propagate an orbit, or prove continuous containment. The source
+query's exact coordinate identity is retained in the report, while the
+realized geometry carries the product `CoordinateSpec`.

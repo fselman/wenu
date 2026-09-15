@@ -786,3 +786,32 @@ illumination physics, reports, tracks, projection, rendering, or export. Fernand
 seconds, the expanded focused gate passed all 168 tests in 3.89 seconds, and
 the complete plugin-disabled suite passed all 2,457 tests in 88.48 seconds.
 Only 50S.3 reporting and drawing is authorized next.
+
+
+## 50S.3B sampled-candidate presentation boundary (accepted)
+
+Candidate 50S.3B adds a dormant renderer-neutral
+`satellite_presentations.py` boundary and two ordinary sky layers in
+`sky/satellite_candidate_layer.py`. A `SatCheckerPresentation` accepts one
+terminal `SatCheckerResponse`, retains its exact receipt digest and normalized
+query/evidence, sorts candidates by full NORAD catalogue identifier, and emits
+deterministic human-readable and versioned JSON products.
+
+`SatelliteCandidateTrackLayer` realizes two or more ordered samples as one
+open spherical curve and realizes a singleton as one point.
+`SatelliteCandidateSamplesLayer` exposes only supplied points with optional
+UTC labels. Both consume `SatCheckerCandidateEvidence`, transform through
+`CoordinateService` into the request product frame, and then use
+`CelestialSphere.draw_chart()`, projection, preparation, renderer, semantic
+SVG, and PNG/PDF/SVG export unchanged.
+
+The stable semantic roots are
+`sky/artificial_satellites/satchecker_candidates/norad_<id>/sampled_track`
+and `.../samples`. No entry, exit, closest approach, interpolation,
+propagation, provider access, illumination calculation, magnitude, or detector
+claim is introduced. Fernando visually accepted the network-free synthetic text report and centered
+FoV chart on 2026-09-15 after matching PNG, PDF, and semantic SVG inspection.
+The final focused boundary passed all 217 tests, and the complete plugin-disabled
+suite passed all 2,473 tests in 83.98 seconds. Fernando accepted the implementation and its scientific boundaries on
+2026-09-15. This closes 50S.3B; only 50S.4 snapshot, propagation, and specimen
+builder work is authorized next.

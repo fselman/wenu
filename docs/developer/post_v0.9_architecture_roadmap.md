@@ -1917,12 +1917,23 @@ normalized evidence source for every output.
 
 ### 50S.3B — SatChecker sampled-candidate reports and tracks
 
-Authorized next: implement deterministic reports and an
+**Status:** Accepted by Fernando on 2026-09-15.
+
+Implement deterministic reports and an
 already-normalized-evidence sky layer. The layer emits typed spherical points
 and open polylines and then uses Wenu's shared coordinate, projection,
 preparation, renderer, semantic SVG, and PNG/PDF/SVG export paths. No CLI
 acquisition workflow, polling loop, exact crossing solver, or 50S.4 work is
 included.
+
+The candidate implementation adds deterministic text/JSON reports, open
+sampled-track or singleton-point geometry, optional UTC-labelled sample
+points, stable full-NORAD semantic paths, and a shared PNG/PDF/SVG pipeline
+gate. It remains network-free and does not synthesize exact crossing events.
+Fernando accepted the synthetic report and centered FoV chart across PNG,
+PDF, and semantic SVG on 2026-09-15. The final focused gate passed all 217 tests and the complete plugin-disabled
+suite passed all 2,473 tests in 83.98 seconds. Fernando accepted 50S.3B on 2026-09-15. Acceptance closes SatChecker sampled
+candidate reporting/drawing and authorizes only 50S.4 next.
 
 ### 50S.4 — Small local snapshot, propagation, and specimen builder
 
