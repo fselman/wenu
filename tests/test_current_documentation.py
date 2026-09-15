@@ -5021,3 +5021,26 @@ def test_50s2b_documents_cached_satchecker_adapter_candidate():
     assert "Candidate 50S.2B implementation" in audit
     assert "candidate 50S.2B provider module is `satchecker.py`" in guide
     assert "satchecker_provider_contract_audit_50s2a.md" in instructions
+
+
+def test_50s2b_records_bounded_live_transport_without_terminal_claim():
+    audit = " ".join(read(
+        DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
+    ).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+
+    for phrase in (
+        "Bounded live transport evidence",
+        "failed before network access",
+        "degraded accuracy was not enabled",
+        "Exactly one versioned FOV submission returned HTTP 200 and PENDING",
+        "Two separate explicit polls returned the same PENDING message",
+        "No retry, replacement submission, concurrent access",
+        "does not claim terminal live SUCCESS or live candidate normalization",
+    ):
+        assert phrase in audit
+    assert "provider did not produce a terminal result" in roadmap
+    assert "transport evidence rather than a claim of live candidate normalization" in (
+        guide
+    )

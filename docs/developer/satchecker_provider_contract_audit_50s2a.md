@@ -175,3 +175,28 @@ ordered `SatCheckerSample` evidence. The implementation creates no exact
 `SatelliteCrossingResult` and performs no network access in ordinary tests.
 This candidate remains limited to 50S.2B and does not change the
 response-data redistribution decision.
+
+
+## 10. Bounded live transport evidence
+
+Fernando ran the separately required bounded live check on 2026-09-15. The
+first candidate interval, 2026-09-15, lay outside the local IERS-B table, whose
+reported coverage ended at MJD 61211 (2026-06-20). Wenu failed before network
+access with `UTC-to-UT1 conversion requires valid local Earth-orientation
+data`; degraded accuracy was not enabled.
+
+One replacement query used 2026-06-19, inside the same local table. Exactly one
+versioned FOV submission returned HTTP 200 and PENDING task
+`657ec03e-906b-4966-9eef-4318dda45e48`; the exact submission-body SHA-256 was
+`1da524ada082cd6403648dac7b5a95349b62dcda6521d24d45824db9321df9cc`.
+Two separate explicit polls returned the same PENDING message, “Task is waiting
+to be processed,” and exact body SHA-256
+`a0546eca1db836cf1186a3b99b30bb6e9f181375746ad4bffb5b90497136bcef`.
+No retry, replacement submission, concurrent access, or hidden polling loop
+was used.
+
+This validates the real no-download time preflight, request translation,
+versioned HTTPS transport, task identity, receipt capture, and one-shot polling
+path. It does not claim terminal live SUCCESS or live candidate normalization;
+those contracts remain covered by synthetic source-shaped provider specimens
+because ordinary acceptance cannot depend on service queue availability.
