@@ -3,6 +3,7 @@
 from dataclasses import FrozenInstanceError, replace
 from datetime import datetime, timedelta, timezone
 
+import numpy as np
 import pytest
 
 from wenu.coordinates import CoordinateSpec, PositionStatus
@@ -200,6 +201,71 @@ def test_selection_is_ordered_deterministic_and_retains_snapshot_identity():
     )
     with pytest.raises(FrozenInstanceError):
         first.field_id = "changed"
+
+
+
+def test_recorded_speed_bound_encloses_installed_relative_displacement():
+    snapshot = load_snapshot("synthetic_50s4b_v1")
+    selector = ConservativeConeShellSelector()
+
+    for record in snapshot.records:
+        initial = start_state(snapshot, record)
+        request = query(
+            snapshot,
+            field(
+                initial.gcrs_axis_longitude_deg,
+                initial.gcrs_axis_latitude_deg,
+            ),
+        )
+        decision = next(
+            item
+            for item in selector.select(request).decisions
+            if item.norad_catalog_id == record.norad_catalog_id
+        )
+        assert decision.outcome in {"retain", "reject"}
+        initial_vector = np.asarray(
+            initial.topocentric_itrs_position_km, dtype=float
+        )
+        propagator = Sgp4TemePropagator(
+            record,
+            snapshot_sha256=snapshot.manifest.content_sha256,
+        )
+        transformer = SatelliteTopocentricTransformer()
+        for seconds in range(0, 61, 5):
+            state = transformer.transform(
+                propagator.propagate(
+                    iso(START + timedelta(seconds=seconds))
+                ),
+                observer(),
+            )
+            displacement = np.linalg.norm(
+                np.asarray(
+                    state.topocentric_itrs_position_km, dtype=float
+                )
+                - initial_vector
+            )
+            assert displacement <= (
+                decision.relative_speed_bound_km_per_s * seconds + 1.0e-9
+            )
+
+
+def test_unadmitted_snapshot_identity_is_indeterminate():
+    snapshot = load_snapshot("synthetic_50s4b_v1")
+    unadmitted = SatelliteElementSnapshot(
+        manifest=replace(snapshot.manifest, snapshot_id="unadmitted_snapshot"),
+        records=snapshot.records,
+    )
+    selection = ConservativeConeShellSelector().select(
+        query(unadmitted, field(0.0, 0.0))
+    )
+
+    assert {item.outcome for item in selection.decisions} == {
+        "indeterminate"
+    }
+    assert all(
+        "snapshot is outside" in item.reason
+        for item in selection.decisions
+    )
 
 
 def test_selector_rejects_non_query_input():
