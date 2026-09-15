@@ -192,6 +192,44 @@ def test_longitude_seam_is_absent_from_vector_predicate():
     assert results[0].closest_approach_deg == pytest.approx(2.0, abs=1e-10)
 
 
+def test_polar_field_uses_vectors_without_longitude_singularity():
+    polar_candidate = candidate(radius=1.0)
+    polar_candidate = SatelliteCrossingCandidate(
+        satellite=polar_candidate.satellite,
+        observer=polar_candidate.observer,
+        field_of_view=SatelliteFieldOfView(
+            field_id="north-pole",
+            center_longitude_deg=123.0,
+            center_latitude_deg=90.0,
+            angular_radius_deg=1.0,
+            coordinate_spec=polar_candidate.field_of_view.coordinate_spec,
+        ),
+        interval=polar_candidate.interval,
+        source_provider=polar_candidate.source_provider,
+        snapshot_sha256=polar_candidate.snapshot_sha256,
+        element_epoch=polar_candidate.element_epoch,
+    )
+
+    def evaluator(value):
+        return _TrajectoryState(
+            instant=value,
+            direction=(0.0, 0.0, 1.0),
+            range_km=1000.0,
+            angular_rate_deg_per_s=0.0,
+        )
+
+    results = _solve_trajectory(
+        evaluator,
+        candidate=polar_candidate,
+        time_tolerance_seconds=0.01,
+        angular_tolerance_deg=1e-5,
+        max_evaluations=20000,
+    )
+
+    assert len(results) == 1
+    assert results[0].closest_approach_deg == pytest.approx(0.0)
+
+
 def test_tightening_tolerances_is_stable():
     evaluator = longitude_state(lambda t: t - 50.0, lambda _t: 1.0)
     coarse = _solve_trajectory(
@@ -278,3 +316,6 @@ def test_installed_snapshot_scan_is_complete_ordered_and_provenanced():
     )
     assert all(item.illumination is None for item in results)
     assert all("exhaustive adaptive" in item.provenance[0] for item in results)
+    assert all("IERS-A SHA-256" in " ".join(item.provenance) for item in results)
+    assert all("SGP4" in " ".join(item.provenance) for item in results)
+    assert LocalSatelliteCrossingOracle().solve(query) == results
