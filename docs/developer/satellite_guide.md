@@ -839,7 +839,7 @@ accepted 50S.4E on 2026-09-15. This closes 50S.4 and authorizes only bounded
 50S.6 acceleration and every later satellite milestone remain unauthorized.
 
 
-## 21. Candidate 50S.5A complete local crossing-oracle audit
+## 21. Accepted 50S.5A complete local crossing-oracle audit
 
 The first local oracle is restricted to a fixed closed circular field whose
 centre and the accepted 50S.4D trajectory are both topocentric geometric
@@ -862,5 +862,6 @@ inclusive, boundary touch counts, disconnected visits stay separate, and
 uncertain refinement raises an explicit convergence error. Analytic
 trajectory oracles remain independent of SGP4/Astropy composition tests.
 
-This documentation-only review adds no solver. Acceptance authorizes only
-bounded 50S.5B; 50S.6 and later behavior remain unauthorized.
+This documentation-only review adds no solver. Fernando scientifically and
+architecturally accepted it on 2026-09-15. Acceptance authorizes only bounded
+50S.5B; 50S.6 and later behavior remain unauthorized.
