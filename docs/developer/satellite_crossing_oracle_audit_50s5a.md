@@ -266,5 +266,16 @@ minimum in the angular uncertainty band becomes one zero-duration boundary
 event. Numerical fragments merge only when recursive sampling certifies
 continuous containment within the declared time and angular tolerances.
 
-Focused, complete-suite, diff, and Fernando acceptance gates remain pending.
-50S.6 and all later behavior remain unauthorized.
+## 12. Candidate 50S.5B gate evidence
+
+On Fernando's Mac with Python 3.11.7, the dedicated plugin-disabled oracle
+gate passed all 13 tests in 60.62 seconds. The expanded oracle, crossing,
+element, SGP4, topocentric, SatChecker, coordinate-service, and package-boundary
+gate passed all 108 tests in 70.80 seconds. The documentation gate passed all
+137 tests in 3.33 seconds, and the complete plugin-disabled suite passed all
+2,538 tests in 163.36 seconds. The working tree was clean and
+`git diff --check aa6f91a...HEAD` passed.
+
+Focused, complete-suite, documentation, and diff gates are complete. Fernando's
+scientific and architectural acceptance remains pending. 50S.6 and all later
+behavior remain unauthorized.

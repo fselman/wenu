@@ -5579,7 +5579,12 @@ def test_50s5b_documents_candidate_complete_local_crossing_oracle():
         "recursive sampling certifies continuous containment within the declared time and angular tolerances",
         "zero-duration boundary event",
         "tests/test_satellite_crossing_oracle.py",
-        "Focused, complete-suite, diff, and Fernando acceptance gates remain pending",
+        "Focused, complete-suite, documentation, and diff gates are complete",
+        "dedicated plugin-disabled oracle gate passed all 13 tests",
+        "expanded oracle, crossing, element, SGP4, topocentric, SatChecker",
+        "complete plugin-disabled suite passed all 2,538 tests in 163.36 seconds",
+        "git diff --check aa6f91a...HEAD",
+        "scientific and architectural acceptance remains pending",
         "50S.6 and all later behavior remain unauthorized",
     ):
         assert phrase in audit

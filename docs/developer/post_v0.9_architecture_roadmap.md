@@ -2213,8 +2213,8 @@ authorized next; 50S.6 and later behavior remain unauthorized.
 
 ### 50S.5B — Complete local crossing-oracle implementation (candidate)
 
-**Status:** Bounded implementation candidate pending focused, complete-suite,
-diff, and Fernando acceptance gates.
+**Status:** Bounded implementation candidate with focused, complete-suite, and
+diff gates complete; Fernando acceptance remains pending.
 
 The candidate introduces the dedicated local numerical owner, immutable query,
 explicit convergence failure, exhaustive all-record scan, adaptive motion and
@@ -2222,3 +2222,8 @@ curvature evidence, bracketed entry/exit refinement, bounded tangent detection,
 recursive tolerance-connected visit assembly, deterministic ordering, and
 complete SGP4/IERS/observer/solver provenance. It adds no 50S.6 acceleration or
 later satellite behavior.
+
+Mac verification passed the 13-test dedicated oracle gate in 60.62 seconds,
+the 108-test expanded gate in 70.80 seconds, the 137-test documentation gate
+in 3.33 seconds, and all 2,538 plugin-disabled tests in 163.36 seconds. The
+working tree was clean and `git diff --check aa6f91a...HEAD` passed.
