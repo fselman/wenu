@@ -1,5 +1,10 @@
 """Local artificial-satellite state and resource domain."""
 
+from .crossing_oracle import (
+    LocalSatelliteCrossingOracle,
+    LocalSatelliteCrossingQuery,
+    SatelliteCrossingConvergenceError,
+)
 from .elements import SatelliteElementRecord
 from .sgp4 import (
     SatellitePropagationError,
@@ -22,6 +27,8 @@ from .topocentric import (
 
 __all__ = [
     "DEFAULT_SNAPSHOT_ID",
+    "LocalSatelliteCrossingOracle",
+    "LocalSatelliteCrossingQuery",
     "SatelliteEarthOrientationError",
     "SatelliteEarthOrientationEvidence",
     "SatelliteElementRecord",
