@@ -26,6 +26,7 @@ from wenu.satellites import (
     SatelliteTopocentricState,
     SatelliteTopocentricTransformer,
     Sgp4TemePropagator,
+    load_snapshot,
 )
 from wenu.satellites.elements import SatelliteElementRecord
 
@@ -239,11 +240,110 @@ def test_coordinate_identity_is_geometric_vacuum_and_not_apparent_icrs():
     assert any("not an ICRS/GCRS" in item for item in result.warnings)
 
 
-def test_gcrs_axis_rotation_preserves_topocentric_vector_norm():
-    result = transformed()
-    assert result.range_km == pytest.approx(
-        np.linalg.norm(result.topocentric_itrs_position_km), abs=1e-9
+def state_from_local_direction(*, azimuth_deg, altitude_deg, range_km):
+    time = Time("2000-06-27T18:50:19.733568Z", scale="utc")
+    site = observer()
+    location = EarthLocation.from_geodetic(
+        site.longitude_deg * u.deg,
+        site.latitude_deg * u.deg,
+        site.elevation_m * u.m,
+        ellipsoid="WGS84",
     )
+    longitude = np.deg2rad(site.longitude_deg)
+    latitude = np.deg2rad(site.latitude_deg)
+    azimuth = np.deg2rad(azimuth_deg)
+    altitude = np.deg2rad(altitude_deg)
+    east = np.array((-np.sin(longitude), np.cos(longitude), 0.0))
+    north = np.array(
+        (
+            -np.sin(latitude) * np.cos(longitude),
+            -np.sin(latitude) * np.sin(longitude),
+            np.cos(latitude),
+        )
+    )
+    up = np.array(
+        (
+            np.cos(latitude) * np.cos(longitude),
+            np.cos(latitude) * np.sin(longitude),
+            np.sin(latitude),
+        )
+    )
+    topocentric = range_km * (
+        np.cos(altitude) * np.sin(azimuth) * east
+        + np.cos(altitude) * np.cos(azimuth) * north
+        + np.sin(altitude) * up
+    )
+    geocentric = (
+        location.get_itrs(time).cartesian
+        + CartesianRepresentation(topocentric * u.km)
+    )
+    itrs = ITRS(
+        geocentric.with_differentials(
+            CartesianDifferential(np.zeros(3) * u.km / u.s)
+        ),
+        obstime=time,
+    )
+    with iers.conf.set_temp("auto_download", False):
+        teme = itrs.transform_to(TEME(obstime=time))
+    return replace(
+        Sgp4TemePropagator(vanguard_record()).propagate(
+            "2000-06-27T18:50:19.733568Z"
+        ),
+        position_km=tuple(teme.cartesian.xyz.to_value(u.km)),
+        velocity_km_per_s=tuple(
+            teme.cartesian.differentials["s"].d_xyz.to_value(u.km / u.s)
+        ),
+    )
+
+
+@pytest.mark.parametrize(
+    ("azimuth_deg", "altitude_deg"),
+    [
+        (15.0, 89.999),
+        (359.999, 0.001),
+        (0.001, -0.001),
+    ],
+)
+def test_constructed_zenith_horizon_and_azimuth_wrap_geometry(
+    azimuth_deg, altitude_deg
+):
+    state = state_from_local_direction(
+        azimuth_deg=azimuth_deg,
+        altitude_deg=altitude_deg,
+        range_km=1000.0,
+    )
+    result = SatelliteTopocentricTransformer().transform(state, observer())
+    delta_azimuth = (
+        (result.azimuth_deg - azimuth_deg + 180.0) % 360.0 - 180.0
+    )
+
+    assert delta_azimuth == pytest.approx(0.0, abs=1e-7)
+    assert result.altitude_deg == pytest.approx(altitude_deg, abs=1e-7)
+    assert result.range_km == pytest.approx(1000.0, abs=1e-8)
+
+
+def test_installed_leo_meo_and_geosynchronous_like_states_transform():
+    snapshot = load_snapshot()
+    results = tuple(
+        SatelliteTopocentricTransformer().transform(
+            Sgp4TemePropagator(
+                record,
+                snapshot_sha256=snapshot.manifest.content_sha256,
+            ).propagate("2026-09-15T00:10:00Z"),
+            observer(),
+        )
+        for record in snapshot.records
+    )
+
+    assert tuple(
+        result.teme_state.norad_catalog_id for result in results
+    ) == (300001, 300002, 300003)
+    for result in results:
+        assert result.teme_state.snapshot_sha256 == (
+            snapshot.manifest.content_sha256
+        )
+        assert result.range_km > 0.0
+        assert all(np.isfinite(result.topocentric_itrs_position_km))
 
 
 def test_earth_orientation_evidence_identifies_exact_local_resource():
