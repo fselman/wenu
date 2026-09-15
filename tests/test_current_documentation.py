@@ -5413,7 +5413,7 @@ def test_50s4d_documents_accepted_topocentric_boundary():
     assert "exact IERS-A SHA-256 and coverage" in guide
     assert "only the bounded 50S.4E propagated-specimen builder is authorized next" in instructions
 
-def test_50s4e_documents_bounded_propagated_specimen_candidate():
+def test_50s4e_documents_accepted_propagated_specimen_boundary():
     architecture = " ".join(read(V09_CURRENT).split())
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
     reference = " ".join(read(
@@ -5440,7 +5440,7 @@ def test_50s4e_documents_bounded_propagated_specimen_candidate():
         assert "propagated sampled specimens — not verified crossings" in text
     assert "tools/build_50s4_satellite_specimens.py" in architecture
     assert "caller-selected output directory" in architecture
-    assert "Candidate implementation pending" in roadmap
+    assert "Status:** Accepted by Fernando on 2026-09-15" in roadmap
     assert "tests/test_satellite_specimens.py" in source_tree
     assert "No new `src/wenu` module is admitted" in source_tree
     assert "topocentric geometric direction expressed in GCRS axes" in (
@@ -5451,7 +5451,7 @@ def test_50s4e_documents_bounded_propagated_specimen_candidate():
     assert "50S.5" in guide
     assert "hidden 50S.5 crossing oracle" in instructions
 
-def test_50s4e_records_complete_candidate_gate_evidence():
+def test_50s4e_records_complete_and_accepted_gate_evidence():
     architecture = " ".join(read(V09_CURRENT).split())
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
     audit = " ".join(read(
@@ -5466,7 +5466,7 @@ def test_50s4e_records_complete_candidate_gate_evidence():
             "16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374"
             in text
         )
-        assert "acceptance remains pending" in text.lower()
+        assert "accepted 50S.4E on 2026-09-15" in text
     assert "dedicated builder gate passed all 10 tests in 10.58 seconds" in (
         architecture
     )
@@ -5481,4 +5481,7 @@ def test_50s4e_records_complete_candidate_gate_evidence():
     )
     assert "All three default tracks were below the La Ligua horizon" in audit
     assert "git diff --check 243b75c...HEAD" in audit
-    assert "50S.5 is not yet authorized" in roadmap
+    assert "closing 50S.4 and authorizing only bounded" in roadmap
+    assert "50S.5 complete local FoV-crossing oracle work" in roadmap
+    assert "50S.6 acceleration" in guide
+    assert "remain unauthorized" in guide
