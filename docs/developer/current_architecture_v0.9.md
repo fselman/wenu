@@ -944,3 +944,14 @@ inputs. It is labelled **propagated sampled specimens — not verified
 crossings**. It has no network client, does not construct
 `SatelliteCrossingResult`, does not find entry/exit or closest approach, and
 does not define production solver tolerances or implement 50S.5.
+
+#### Candidate 50S.4E gate evidence
+
+On macOS with Python 3.11.7, the dedicated builder gate passed all 10 tests in
+10.58 seconds, the expanded satellite/coordinate gate passed all 99 tests in
+18.07 seconds, the documentation gate passed all 134 tests in 2.45 seconds,
+and the complete plugin-disabled suite passed all 2,522 tests in 105.38
+seconds. The generated JSON had SHA-256
+`16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374`.
+The branch was clean and `git diff --check 243b75c...HEAD` passed. Fernando's
+50S.4E scientific and architectural acceptance remains pending.
