@@ -1841,7 +1841,7 @@ Fernando scientifically and architecturally accepted this ownership contract
 on 2026-09-15. Only bounded 50S.5B implementation is authorized next; 50S.6
 and later behavior remain unauthorized.
 
-### Candidate 50S.5B local crossing-oracle ownership
+### Accepted 50S.5B local crossing-oracle ownership
 
 - `src/wenu/satellites/crossing_oracle.py` owns the immutable local query,
   exhaustive adaptive evaluation, root/minimum refinement, tolerance-connected
@@ -1856,4 +1856,6 @@ and later behavior remain unauthorized.
 
 The new production file is justified by its distinct numerical-convergence and
 fail-closed lifecycle. It adds no provider, cache, rendering, reporting,
-illumination, photometry, or 50S.6 responsibility.
+illumination, photometry, or 50S.6 responsibility. Fernando scientifically and
+architecturally accepted this ownership on 2026-09-15. Only a documentation-first
+50S.6 acceleration audit is authorized next.

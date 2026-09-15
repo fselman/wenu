@@ -5552,7 +5552,7 @@ def test_50s5a_audits_complete_local_crossing_oracle_contract():
     )
 
 
-def test_50s5b_documents_candidate_complete_local_crossing_oracle():
+def test_50s5b_documents_accepted_complete_local_crossing_oracle():
     architecture = " ".join(read(V09_CURRENT).split())
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
     reference = " ".join(read(
@@ -5566,15 +5566,15 @@ def test_50s5b_documents_candidate_complete_local_crossing_oracle():
     guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
-    assert "Candidate 50S.5B complete local crossing oracle" in architecture
+    assert "Accepted 50S.5B complete local crossing oracle" in architecture
     assert "50S.5B — Complete local crossing-oracle implementation" in roadmap
     assert "LocalSatelliteCrossingQuery" in reference
     assert "LocalSatelliteCrossingOracle" in reference
     assert "SatelliteCrossingConvergenceError" in reference
-    assert "Candidate 50S.5B local crossing-oracle ownership" in source_tree
-    assert "Candidate 50S.5B local crossing coordinates" in coordinate_guide
+    assert "Accepted 50S.5B local crossing-oracle ownership" in source_tree
+    assert "Accepted 50S.5B local crossing coordinates" in coordinate_guide
     assert "Candidate 50S.5B complete local crossing oracle" in guide
-    assert "Candidate 50S.5B implementation boundary" in instructions
+    assert "Accepted 50S.5B implementation boundary" in instructions
     for phrase in (
         "recursive sampling certifies continuous containment within the declared time and angular tolerances",
         "zero-duration boundary event",
@@ -5584,7 +5584,9 @@ def test_50s5b_documents_candidate_complete_local_crossing_oracle():
         "expanded oracle, crossing, element, SGP4, topocentric, SatChecker",
         "complete plugin-disabled suite passed all 2,538 tests in 163.36 seconds",
         "git diff --check aa6f91a...HEAD",
-        "scientific and architectural acceptance remains pending",
+        "scientifically and architecturally accepted 50S.5B on 2026-09-15",
         "50S.6 and all later behavior remain unauthorized",
     ):
         assert phrase in audit
+    assert "documentation-first 50S.6 conservative local crossing acceleration audit" in roadmap
+    assert "Runtime acceleration and all later behavior remain unauthorized" in audit

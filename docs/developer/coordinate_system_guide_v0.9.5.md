@@ -3341,7 +3341,7 @@ each trajectory evaluation. This accepted review changes no runtime coordinate p
 implementation is authorized next; 50S.6 and later behavior remain
 unauthorized.
 
-### Candidate 50S.5B local crossing coordinates
+### Accepted 50S.5B local crossing coordinates
 
 `LocalSatelliteCrossingQuery` accepts only a fixed closed circular field whose
 centre and every evaluated trajectory state are topocentric geometric
@@ -3353,3 +3353,7 @@ The solver obtains every final state through the accepted SGP4/TEME and
 installed-IERS-A topocentric chain. It does not compare apparent ICRS, AltAz,
 projected, refracted, or mixed-status coordinates and adds no alternate
 coordinate pipeline.
+
+Fernando scientifically and architecturally accepted this coordinate boundary
+on 2026-09-15. Only a documentation-first 50S.6 conservative-acceleration
+audit is authorized next.

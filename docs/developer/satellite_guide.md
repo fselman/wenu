@@ -866,9 +866,9 @@ This documentation-only review adds no solver. Fernando scientifically and
 architecturally accepted it on 2026-09-15. Acceptance authorizes only bounded
 50S.5B; 50S.6 and later behavior remain unauthorized.
 
-## 22. Candidate 50S.5B complete local crossing oracle
+## 22. Accepted 50S.5B complete local crossing oracle
 
-The candidate `LocalSatelliteCrossingOracle` scans every record in the selected
+The accepted `LocalSatelliteCrossingOracle` scans every record in the selected
 immutable snapshot and composes the accepted SGP4/TEME and installed-IERS-A
 observer chain. It compares only fixed-field and trajectory unit vectors in
 GCRS axes. No horizon, orbital-plane, phase, HEALPix, or population filter may
@@ -879,4 +879,8 @@ rate, curvature evidence, bounded roots and minima, and recursive
 time-and-angular tolerance connectivity. A tangent is retained as one
 zero-duration boundary event; disconnected visits remain separate. Failure or
 resource exhaustion is explicit and fail closed. This is validated numerical
-completeness, not formal interval arithmetic, and it authorizes no 50S.6 work.
+completeness, not formal interval arithmetic, and it authorizes no runtime 50S.6 work.
+
+Fernando scientifically and architecturally accepted 50S.5B on 2026-09-15.
+Only a documentation-first 50S.6 conservative-acceleration audit is authorized
+next.

@@ -251,7 +251,7 @@ Fernando scientifically and architecturally accepted 50S.5A on 2026-09-15.
 This closes the audit and authorizes only bounded 50S.5B implementation. 50S.6
 acceleration and all later satellite behavior remain unauthorized.
 
-## 11. Candidate 50S.5B implementation
+## 11. Accepted 50S.5B implementation
 
 The bounded implementation follows the accepted ownership decision with
 `src/wenu/satellites/crossing_oracle.py` and the independent durable oracle in
@@ -266,7 +266,7 @@ minimum in the angular uncertainty band becomes one zero-duration boundary
 event. Numerical fragments merge only when recursive sampling certifies
 continuous containment within the declared time and angular tolerances.
 
-## 12. Candidate 50S.5B gate evidence
+## 12. Accepted 50S.5B gate evidence
 
 On Fernando's Mac with Python 3.11.7, the dedicated plugin-disabled oracle
 gate passed all 13 tests in 60.62 seconds. The expanded oracle, crossing,
@@ -276,6 +276,8 @@ gate passed all 108 tests in 70.80 seconds. The documentation gate passed all
 2,538 tests in 163.36 seconds. The working tree was clean and
 `git diff --check aa6f91a...HEAD` passed.
 
-Focused, complete-suite, documentation, and diff gates are complete. Fernando's
-scientific and architectural acceptance remains pending. 50S.6 and all later
-behavior remain unauthorized.
+Focused, complete-suite, documentation, and diff gates are complete. Fernando
+scientifically and architecturally accepted 50S.5B on 2026-09-15. This closes
+50S.5 and authorizes only a documentation-first 50S.6 conservative local
+crossing acceleration audit. Runtime acceleration and all later behavior remain
+unauthorized.
