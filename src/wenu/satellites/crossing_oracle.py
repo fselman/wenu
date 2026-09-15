@@ -301,11 +301,16 @@ def _adaptive_leaves(
     )
     if certified_outside:
         return ()
-    curvature = abs(
-        middle.separation_deg
-        - (left.separation_deg + right.separation_deg) / 2.0
+    certified_inside = (
+        max(
+            left.separation_deg,
+            middle.separation_deg,
+            right.separation_deg,
+        )
+        + envelope
+        <= radius + angular_tolerance
     )
-    if width <= time_tolerance or curvature <= angular_tolerance:
+    if width <= time_tolerance or certified_inside:
         return ((start, stop),)
     return _adaptive_leaves(
         cache,
