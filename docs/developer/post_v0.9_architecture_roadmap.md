@@ -1993,11 +1993,18 @@ documentation gate, and installed-wheel propagation check. Acceptance closes
 
 ### 50S.4D — Earth-orientation and topocentric state
 
-Use Astropy's declared TEME → ITRS → observer-subtracted Cartesian chain with
-automatic IERS download disabled, exact EOP identity, WGS-84 geodetic sites,
-vacuum horizontal directions, and a carefully named celestial-axis direction.
-Validate range and angles against an independent path and cover pathological
-observer/time geometry. No field-intersection solver is included.
+**Status:** Candidate implementation; acceptance pending.
+
+The candidate uses Astropy's declared TEME → ITRS → observer-subtracted
+Cartesian chain with automatic IERS download and degraded accuracy disabled,
+exact installed IERS-A SHA-256 and coverage, WGS-84 geodetic sites, vacuum
+horizontal directions, and a topocentric geometric direction expressed in
+GCRS axes. It fails closed outside local EOP coverage. Direct Cartesian
+evidence, independent Skyfield comparison, constructed zenith/horizon/wrap
+geometry, pathological sites, and installed LEO/MEO/GEO-like specimens pass
+the 17-test dedicated and 89-test expanded Mac gates. Complete-suite,
+documentation, diff, and Fernando's scientific acceptance remain pending. No
+field-intersection solver is included.
 
 ### 50S.4E — Propagated specimen builder and closure
 
