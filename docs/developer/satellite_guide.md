@@ -581,7 +581,7 @@ retaining the candidate-only boundary.
   candidate envelope, async policy, exact cache, failures, and redistribution.
 - **50S.2B:** accepted cached circular-field adapter, candidate-only
   normalization, provider-sampled evidence, explicit progress, and exact cache.
-- **50S.3A:** audit honest human-readable/JSON reports and FoV charts from
+- **50S.3A:** accepted audit of honest human-readable/JSON reports and FoV charts from
   provider-sampled candidate evidence, with no invented exact crossing events.
 - **50S.3B:** after acceptance, implement deterministic reports and a drawable
   sampled-candidate layer through the shared renderer/export path; provider
@@ -603,7 +603,7 @@ retaining the candidate-only boundary.
 
 Fernando accepted 50S.2B on 2026-09-15 after 45 provider/domain tests, 168
 expanded focused tests, all 2,457 tests, and the bounded live provider check
-passed. Only the documentation-only 50S.3A contract audit is authorized next.
+passed. Fernando accepted 50S.3A on 2026-09-15; only the bounded 50S.3B implementation is authorized next.
 
 At every milestone, revise this living guide to match accepted science and
 implemented ownership. When 50S foundation work is merged, decide explicitly
@@ -633,6 +633,7 @@ catalogue identifier rather than provider order or display name. Provider
 illumination, if present, remains separately attributed evidence and cannot
 change track admission or style.
 
-The candidate 50S.3A audit authorizes no runtime change. Fernando's acceptance
-would authorize only bounded renderer-neutral reports and a drawable
-sampled-candidate layer in 50S.3B.
+Fernando accepted 50S.3A on 2026-09-15 after all 126 focused documentation
+tests and the candidate diff check passed. The audit itself changes no runtime
+behavior. Acceptance authorizes only bounded renderer-neutral reports and a
+drawable sampled-candidate layer in 50S.3B.
