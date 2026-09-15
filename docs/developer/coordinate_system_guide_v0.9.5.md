@@ -3204,3 +3204,16 @@ are not observed/apparent coordinates, exact boundary events, or a new
 refraction, propagation, projection, or output behavior changes. Fernando
 accepted this boundary on 2026-09-15 after all 2,457 tests and the bounded live
 provider check passed.
+
+
+## 50S.3 sampled candidate presentation note
+
+50S.3 introduces no new astronomical frame or transformation. Accepted
+SatChecker samples remain geometric topocentric-direction ICRS observations.
+A drawable sampled-candidate layer must attach that identity to typed spherical
+geometry and use the existing coordinate service before projection.
+
+Connecting ordered provider samples is presentation, not propagation or proof
+of continuous FoV containment. It cannot create exact entry, exit, boundary
+touch, or closest-approach instants. UTC labels refer only to supplied sample
+instants. Rendering remains coordinate-neutral and performs no astronomy.
