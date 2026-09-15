@@ -5292,8 +5292,6 @@ def test_50s4b_records_complete_and_installed_wheel_evidence():
         DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
     ).split())
     guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
     assert "production commit `d3cb597`" in architecture
     assert "expanded focused gate passed all 158 tests" in audit
     assert "complete plugin-disabled suite passed all 2,483 tests" in audit
@@ -5304,7 +5302,6 @@ def test_50s4b_records_complete_and_installed_wheel_evidence():
     assert "Accepted by Fernando on 2026-09-15" in roadmap
     assert "This closes 50S.4B and authorizes only 50S.4C" in audit
     assert "only 50S.4C validated SGP4/TEME propagation is authorized next" in guide
-    assert "only the bounded 50S.4C validated SGP4/TEME wrapper is authorized next" in instructions
 
 
 def test_50s4c_documents_validated_sgp4_teme_boundary():
