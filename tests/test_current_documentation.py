@@ -5135,7 +5135,7 @@ def test_50s3b_documents_candidate_reports_and_shared_path_layers():
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
-        "Candidate 50S.3B sampled-candidate presentation boundary",
+        "50S.3B sampled-candidate presentation boundary (accepted)",
         "satellite_presentations.py",
         "SatelliteCandidateTrackLayer",
         "SatelliteCandidateSamplesLayer",
@@ -5144,7 +5144,7 @@ def test_50s3b_documents_candidate_reports_and_shared_path_layers():
         assert phrase in architecture
     for phrase in (
         "50S.3B — SatChecker sampled-candidate reports and tracks",
-        "Candidate implementation on the dedicated milestone branch",
+        "Accepted by Fernando on 2026-09-15",
         "shared PNG/PDF/SVG pipeline gate",
         "does not synthesize exact crossing events",
     ):
@@ -5157,13 +5157,13 @@ def test_50s3b_documents_candidate_reports_and_shared_path_layers():
         "perform no network access",
     ):
         assert phrase in reference
-    assert "50S.3B satellite presentation ownership (candidate)" in source_tree
+    assert "50S.3B satellite presentation ownership (accepted)" in source_tree
     assert "tests/test_satellite_presentations.py" in source_tree
     assert "fixed-product-frame track convention" in coordinate_guide
     assert "position generation" in coordinate_guide
-    assert "Candidate 50S.3B implementation evidence" in audit
+    assert "Accepted 50S.3B implementation evidence" in audit
     assert "expanded focused gate passed all 90 tests" in audit
-    assert "Candidate 50S.3B implementation" in guide
+    assert "Accepted 50S.3B implementation" in guide
     assert "There is no entry, exit, closest approach" in guide
     assert "satellite_report_drawing_audit_50s3a.md" in instructions
     assert "tools/validate_50s3b_satellite_presentations.py" in source_tree
@@ -5173,6 +5173,8 @@ def test_50s3b_documents_candidate_reports_and_shared_path_layers():
     assert "FoV was labelled explicitly" in audit
     assert "all 217 tests" in architecture
     assert "all 2,473 tests in 83.98 seconds" in architecture
-    assert "Only milestone acceptance remains" in roadmap
-    assert "Only Fernando's milestone acceptance remains pending" in guide
+    assert "authorizes only 50S.4 next" in roadmap
+    assert "only 50S.4 is authorized next" in guide
     assert "complete plugin-disabled suite passed all 2,473 tests" in audit
+    assert "accepted the bounded 50S.3B implementation on 2026-09-15" in audit
+    assert "Only 50S.4 is authorized next" in source_tree
