@@ -2540,7 +2540,7 @@ axes representation, not an ICRS or GCRS catalogue/apparent coordinate.
 Fernando accepted this API and ownership on 2026-09-15; only the bounded
 50S.4E propagated-specimen builder is authorized next.
 
-### Propagated sampled specimen builder (candidate 50S.4E)
+### Propagated sampled specimen builder (accepted 50S.4E)
 
 Run the developer tool with an explicit output directory:
 
@@ -2557,3 +2557,6 @@ choice is recorded. The output is deterministic for the same installed
 software/resources and arguments, network-free, and labelled **propagated
 sampled specimens — not verified crossings**. It is input evidence for later
 50S.5 work, not a crossing result or completeness claim.
+
+Fernando scientifically and architecturally accepted this developer product on
+2026-09-15. It closes 50S.4 without promoting the tool into a runtime authority.
