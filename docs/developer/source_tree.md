@@ -1603,3 +1603,21 @@ owns deterministic contract coverage;
   request translation and acquire no data;
 - coordinate, state, temporal-component, projection, renderer, semantic,
   style, furniture, and export owners do not change in the audit.
+
+## 50S.1 provider-neutral satellite-crossing ownership (candidate)
+
+- `src/wenu/satellite_crossings.py` owns immutable satellite identity,
+  terrestrial observer/site, explicitly framed closed circular FoV, inclusive
+  UTC interval, provider candidate, and normalized connected-visit result
+  contracts;
+- `src/wenu/coordinates.py` remains the shared coordinate vocabulary owner;
+- `tests/test_satellite_crossings.py` owns the durable type, normalization,
+  immutability, inclusive-endpoint, closed-boundary, ordering, query-containment,
+  provenance, and invalid-input evidence;
+- `docs/developer/satellite_guide.md` remains the living satellite scientific,
+  provider-policy, equation, and evolving ownership guide;
+- no `src/wenu/satellites/` package is admitted until several collaborating
+  satellite production modules justify that boundary;
+- acquisition, OMM/TLE ingestion, SGP4/TEME state, observer transformation,
+  exact crossing solution, indexing, illumination, photometry, reports,
+  charts, projection, rendering, semantic SVG, and export remain unchanged.

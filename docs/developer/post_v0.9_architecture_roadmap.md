@@ -1846,12 +1846,20 @@ conservatively enclose. Add no visible satellite or public crossing command.
 
 ### 50S.1 — Provider-neutral satellite crossing domain
 
-Define satellite identity, observer, inclusive interval, explicitly framed FoV,
-crossing candidate, and crossing result independently of any provider or chart.
-Begin with circular FoVs while preserving extension to spherical rectangles,
-WCS/instrument footprints, fixed celestial fields, fixed Alt/Az fields, and
-later moving fields. Distinguish provider-reported candidates from
-Wenu-verified crossings. Add no propagation yet.
+**Status:** Candidate implementation on the dedicated milestone branch.
+
+`satellite_crossings.py` defines immutable satellite identity, terrestrial
+observer/site, inclusive UTC interval, explicitly framed closed circular FoV,
+crossing candidate, and normalized connected-visit result contracts. Provider
+candidates retain source, optional orbit/snapshot evidence, provenance, and
+warnings; normalized results enforce ordered in-interval event instants and
+closed-boundary intersection semantics. The module imports only the shared
+`CoordinateSpec` vocabulary and remains independent of provider acquisition,
+propagation, charts, projection, rendering, and export.
+
+Spherical rectangles, WCS/instrument footprints, fixed Alt/Az and moving
+fields, SatChecker adaptation, propagation, exact crossing verification,
+illumination physics, reporting, and drawing remain later milestones.
 
 ### 50S.2 — SatChecker crossing adapter
 

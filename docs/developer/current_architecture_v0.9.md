@@ -750,3 +750,14 @@ owner; it returns a verified local manifest-backed directory. The request,
 coordinate, projection, rendering, and export pipeline remains offline. Public
 policies are `acquire-if-missing` (default), `offline`, and `refresh`; an
 explicit resource directory is authoritative and read-only.
+
+## Provider-neutral satellite crossing domain (Milestone 50S.1 candidate)
+
+The dormant `satellite_crossings.py` domain boundary defines immutable
+satellite identity, terrestrial observer/site, explicitly framed closed
+circular field, inclusive UTC interval, provider candidate, and normalized
+connected-visit result contracts. It reuses `CoordinateSpec` and is not
+exported through the public package facade or consumed by the canonical chart
+pipeline. No satellite acquisition, orbit solution, propagation, coordinate
+transformation, exact crossing solver, report, drawing, or output changes in
+this candidate milestone.
