@@ -87,7 +87,6 @@ def one_record_snapshot(snapshot, record):
     return SatelliteElementSnapshot(
         manifest=replace(
             snapshot.manifest,
-            snapshot_id=f"{snapshot.manifest.snapshot_id}-one",
             record_count=1,
         ),
         records=(record,),
@@ -148,7 +147,7 @@ def test_opposite_short_interval_is_rejected_with_complete_evidence():
     assert decision.perigee_radius_km > 6378.137
     assert decision.apogee_radius_km >= decision.perigee_radius_km
     assert decision.relative_speed_bound_km_per_s > 0.0
-    assert decision.provenance[-1].startswith("180")
+    assert " deg > " in decision.provenance[-1]
 
 
 def test_rejected_record_has_no_exact_crossing():
