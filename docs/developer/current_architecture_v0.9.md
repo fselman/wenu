@@ -902,9 +902,9 @@ and propagated all three identifiers with TEME/WGS-72/status zero.
 Fernando scientifically and architecturally accepted 50S.4C on 2026-09-15 after the 15-test initial gate, 167-test expanded gate, all 2,492 tests, the 132-test documentation gate, and installed-wheel propagation evidence. This closes 50S.4C and authorizes only 50S.4D Earth-orientation and topocentric state work.
 
 
-## Candidate 50S.4D Earth-orientation and topocentric state
+## Accepted 50S.4D Earth-orientation and topocentric state
 
-The dedicated candidate adds `satellites/topocentric.py` as the owner of the
+The accepted implementation adds `satellites/topocentric.py` as the owner of the
 Cartesian TEME → geocentric ITRS → observer-subtracted topocentric ITRS chain.
 It consumes an accepted `SatelliteTemeState` and `SatelliteObserver`, selects
 the installed bundled IERS-A file explicitly with automatic download disabled,
@@ -922,6 +922,9 @@ than satellite Cartesian state.
 
 The initial 17-test topocentric gate, 89-test expanded satellite/coordinate
 gate, 133-test documentation gate, and complete plugin-disabled suite of 2,511
-tests in 95.10 seconds pass on Fernando's Mac. Final diff inspection and
-scientific acceptance remain pending. No crossing, field intersection,
-illumination, photometry, CLI, chart, or specimen behavior is added.
+tests in 95.10 seconds pass on Fernando's Mac. The final diff check is clean.
+Fernando scientifically and architecturally accepted 50S.4D on 2026-09-15.
+Acceptance closes the Earth-orientation/topocentric boundary and authorizes
+only bounded 50S.4E propagated-specimen builder work. No crossing, field
+intersection, illumination, photometry, CLI, chart, or specimen behavior is
+added by 50S.4D.
