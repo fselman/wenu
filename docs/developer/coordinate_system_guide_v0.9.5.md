@@ -3150,7 +3150,7 @@ an apparent direction, observer-relative state, or visibility prediction.
 
 ## 13.2.41 50S.1 provider-neutral satellite crossing domain
 
-Candidate 50S.1 adds no TEME state, Earth-fixed transformation, topocentric
+Accepted 50S.1 adds no TEME state, Earth-fixed transformation, topocentric
 satellite direction, or new coordinate frame. The initial closed circular
 satellite FoV retains an ordinary `CoordinateSpec`, so its spherical centre is
 never inferred from a provider payload or planar chart boundary. The separate
@@ -3162,5 +3162,6 @@ from being mistaken for a multi-instant satellite query.
 The accepted future chain remains OMM/TLE orbit solution through validated SGP4
 to explicit geometric TEME state, declared Earth-fixed transformation, observer
 subtraction, and topocentric direction. None of those stages is implemented or
-implied by the 50S.1 candidate contracts. SatChecker adaptation begins only in
-50S.2.
+implied by the 50S.1 contracts. Fernando accepted this coordinate boundary on
+2026-09-15 after all 2,428 tests passed; PR #123 merged it as `23b851b`.
+SatChecker adaptation begins only in 50S.2.
