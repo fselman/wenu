@@ -699,3 +699,15 @@ accessibility, cartographic, and astronomical-atlas practice review plus
 Fernando's adoption decisions before installing numerical physical-output
 standards. Screen review alone cannot accept a print profile; style and output
 mode must not change astronomical geometry.
+
+
+For candidate 50S.4D Earth-orientation and topocentric work, preserve
+`satellites/topocentric.py` as the distinct Cartesian-state boundary. Select
+and identify the installed IERS-A resource explicitly, disable automatic
+download and degraded accuracy, fail closed outside coverage, subtract the
+WGS-84 observer in ITRS before angular conversion, and retain range plus vacuum
+AltAz. Call the celestial result a topocentric geometric direction expressed
+in GCRS axes; never label it ICRS, a formal GCRS coordinate, astrometric,
+apparent, or observed. Add no field intersection, crossing solver,
+illumination, photometry, CLI, drawing, or 50S.4E specimen behavior. Until
+Fernando accepts 50S.4D, only this bounded candidate is authorized.
