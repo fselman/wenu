@@ -3167,6 +3167,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "implementation_reference.md",
         "post_v0.9_architecture_roadmap.md",
         "satchecker_provider_contract_audit_50s2a.md",
+        "satellite_report_drawing_audit_50s3a.md",
         "satellite_guide.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -5077,3 +5078,39 @@ def test_50s2b_records_accepted_implementation_and_gates():
     assert "50S.2B acceptance" in audit
     assert "This closes only the cached SatChecker adapter" in audit
     assert "Only 50S.3 is authorized next" in guide
+
+
+
+def test_50s3a_audits_sampled_candidate_reports_and_shared_path_drawing():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_report_drawing_audit_50s3a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+
+    for phrase in (
+        "This documentation-only audit",
+        "provider-sampled candidate evidence, not a verified connected FoV crossing",
+        "must not be used as a false type for provider samples",
+        "SatChecker sampled candidate evidence — not verified crossings",
+        "must not reparse provider JSON",
+        "Candidate ordering is by NORAD catalogue identifier",
+        "Two or more samples produce one open spherical polyline",
+        "One sample produces one point marker",
+        "No interpolation, extrapolation, smoothing, resampling",
+        "sky/artificial_satellites/satchecker_candidates/norad_<catalogue_id>/sampled_track",
+        "PNG, PDF, and SVG must all be produced by the same realized layer",
+        "adds no CLI acquisition workflow",
+        "authorize only the bounded 50S.3B implementation",
+    ):
+        assert phrase in audit
+
+    assert "satellite_report_drawing_audit_50s3a.md" in index
+    assert "50S.3A — Satellite report and drawing contract audit" in roadmap
+    assert "50S.3B — SatChecker sampled-candidate reports and tracks" in roadmap
+    assert "Only the documentation-only 50S.3A contract audit is authorized next" in guide
+    assert "50S.3A satellite report and drawing contract audit ownership (candidate)" in source_tree
+    assert "Connecting ordered provider samples is presentation" in coordinate_guide
