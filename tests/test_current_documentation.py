@@ -5585,7 +5585,7 @@ def test_50s5b_documents_accepted_complete_local_crossing_oracle():
         "complete plugin-disabled suite passed all 2,538 tests in 163.36 seconds",
         "git diff --check aa6f91a...HEAD",
         "scientifically and architecturally accepted 50S.5B on 2026-09-15",
-        "50S.6 and all later behavior remain unauthorized",
+        "Runtime acceleration and all later behavior remain unauthorized",
     ):
         assert phrase in audit
     assert "documentation-first 50S.6 conservative local crossing acceleration audit" in roadmap
