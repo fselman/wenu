@@ -160,3 +160,15 @@ after the focused documentation gate passed all 126 tests and the candidate
 diff passed `git diff --check`. Acceptance closes 50S.3A and authorizes only
 the bounded 50S.3B implementation. It does not authorize 50S.4 propagation or
 snapshot work.
+
+
+## Candidate 50S.3B implementation evidence
+
+The dedicated implementation branch now contains
+`satellite_presentations.py`, `sky/satellite_candidate_layer.py`, stable
+satellite handling in `sky/semantic_identity.py`, and
+`tests/test_satellite_presentations.py`. The implementation follows this
+audit's one-evidence-source and candidate-only rules. An actual Matplotlib gate
+serializes the same realized layers to PNG, PDF, and semantic SVG. The expanded
+focused gate passed all 90 tests. These are candidate results pending visual
+inspection and Fernando's milestone acceptance.
