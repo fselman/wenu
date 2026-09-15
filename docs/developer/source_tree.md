@@ -1684,6 +1684,8 @@ owns deterministic contract coverage;
   and optional supplied-sample points/UTC labels;
 - `src/wenu/sky/semantic_identity.py` owns stable full-NORAD paths for the
   sampled track and samples;
+- `tools/validate_50s3b_satellite_presentations.py` builds the network-free
+  text/JSON and centered PNG/PDF/semantic-SVG acceptance products;
 - `tests/test_satellite_presentations.py` owns report determinism,
   candidate-only wording, provenance, ordering, failure behavior, singleton
   behavior, point identities, coordinate handoff, semantic identity, and
