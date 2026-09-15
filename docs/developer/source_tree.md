@@ -1673,3 +1673,24 @@ owns deterministic contract coverage;
 - existing coordinate, projection, preparation, renderer, semantic SVG, style,
   furniture, and PNG/PDF/SVG export owners remain authoritative;
 - Fernando accepted the audit on 2026-09-15; only bounded 50S.3B report and sampled-candidate layer implementation is admitted next.
+
+
+## 50S.3B satellite presentation ownership (candidate)
+
+- `src/wenu/satellite_presentations.py` owns the terminal-response report
+  model and deterministic human-readable/JSON serialization;
+- `src/wenu/sky/satellite_candidate_layer.py` owns conversion of one
+  normalized candidate's ordered samples into an open track or singleton point
+  and optional supplied-sample points/UTC labels;
+- `src/wenu/sky/semantic_identity.py` owns stable full-NORAD paths for the
+  sampled track and samples;
+- `tests/test_satellite_presentations.py` owns report determinism,
+  candidate-only wording, provenance, ordering, failure behavior, singleton
+  behavior, point identities, coordinate handoff, semantic identity, and
+  shared PNG/PDF/SVG pipeline evidence;
+- `src/wenu/satchecker.py` remains unchanged and owns provider
+  transport/cache/normalization; `src/wenu/satellite_crossings.py` remains
+  unchanged and owns provider-neutral candidates and exact connected results;
+- provider access, polling, cache reads, CLI orchestration, interpolation,
+  propagation, exact crossing events, illumination calculation, photometry,
+  and detector consequences are absent.
