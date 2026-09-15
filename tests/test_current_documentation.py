@@ -5391,6 +5391,7 @@ def test_50s4d_documents_candidate_topocentric_boundary():
         assert phrase in architecture
     assert "Status:** Candidate implementation; acceptance pending" in roadmap
     assert "17-test dedicated and 89-test expanded Mac gates" in roadmap
+    assert "complete plugin-disabled suite of 2,511 tests in 95.10" in roadmap
     for phrase in (
         "SatelliteTopocentricTransformer().transform(teme_state, observer)",
         "SatelliteEarthOrientationEvidence",
@@ -5403,6 +5404,8 @@ def test_50s4d_documents_candidate_topocentric_boundary():
     assert "50S.4D topocentric Cartesian and GCRS-axis boundary (candidate)" in coordinate_guide
     assert "does not make it an ICRS catalogue position" in coordinate_guide
     assert "Candidate 50S.4D implementation evidence" in audit
+    assert "production-code commit `1c33f3`" in audit
+    assert "complete plugin-disabled suite passes all 2,511 tests" in audit
     assert "observed near-zenith separation is 1.40 mas" in audit
     assert "expanded element/SGP4/topocentric/crossing/SatChecker/coordinate gate" in audit
     assert "Candidate 50S.4D local topocentric state" in guide
