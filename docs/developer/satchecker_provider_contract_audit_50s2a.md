@@ -1,8 +1,8 @@
 # SatChecker provider-contract audit (Milestone 50S.2A)
 
-**Status:** Candidate audit for Fernando's scientific and architectural review  
-**Audit date:** 2026-09-15  
-**Wenu baseline:** `06c05a2994683e8ac8f04abf0a1480a0abeb566e`  
+**Status:** Candidate audit for Fernando's scientific and architectural review
+**Audit date:** 2026-09-15
+**Wenu baseline:** `06c05a2994683e8ac8f04abf0a1480a0abeb566e`
 **Provider source reviewed:** SatChecker 1.8.0, commit
 `a638d72b67c7d93de043e47e6156d54474f377d6`
 
