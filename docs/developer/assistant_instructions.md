@@ -98,7 +98,7 @@ For current work, read and follow:
   records immutable and fail closed, load only digest-verified installed
   synthetic resources, preserve full NORAD identifiers, and add no
   propagation or transformation. Fernando accepted 50S.4B on 2026-09-15;
-  only the bounded 50S.4C validated SGP4/TEME wrapper is authorized next.
+  only the bounded 50S.4D Earth-orientation and topocentric state chain is authorized next.
   In that wrapper use explicit WGS-72, split Julian dates, typed geocentric
   geometric TEME state, complete status/provenance, and pinned Vallado
   near-Earth/deep-space vectors; add no terrestrial or observer transform;

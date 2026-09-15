@@ -744,7 +744,7 @@ accepted 50S.4B on 2026-09-15. The immutable snapshot boundary is closed, and
 only 50S.4C validated SGP4/TEME propagation is authorized next.
 
 
-### Candidate 50S.4C SGP4 and geometric TEME state
+### Accepted 50S.4C SGP4 and geometric TEME state
 
 The 50S.4C adapter is deliberately narrow: canonical OMM record → explicit
 WGS-72 Vallado-compatible `Satrec` → immutable successful geometric TEME
@@ -772,4 +772,6 @@ At production commit `e0d7c78`, all 167 expanded focused tests and all 2,492
 complete-suite tests passed. An isolated installed wheel loaded the corrected
 snapshot from `site-packages` and propagated identifiers 300001, 300002, and
 300003 at 2026-09-15T00:10:00Z. Each result reported TEME, WGS-72, status zero,
-and finite position and velocity. Scientific acceptance remains pending.
+and finite position and velocity. Fernando scientifically and architecturally
+accepted 50S.4C on 2026-09-15. The SGP4/TEME boundary is closed, and only
+50S.4D Earth-orientation and topocentric state work is authorized next.

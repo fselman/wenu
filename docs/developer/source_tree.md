@@ -1753,7 +1753,7 @@ Fernando accepted this ownership on 2026-09-15. This closes 50S.4B and
 authorizes only 50S.4C validated SGP4/TEME propagation.
 
 
-## 50S.4C SGP4/TEME propagation ownership (candidate)
+## 50S.4C SGP4/TEME propagation ownership (accepted)
 
 - `src/wenu/satellites/sgp4.py` owns canonical-OMM mapping, explicit WGS-72
   initialization, UTC-to-split-Julian-date conversion, scalar/array execution,
@@ -1773,3 +1773,6 @@ At production commit `e0d7c78`, the 167-test expanded gate and 2,492-test
 complete suite passed. An isolated installed wheel verified snapshot digest
 `2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe`
 and successful TEME/WGS-72/status-zero propagation for all three records.
+
+
+Fernando accepted this ownership on 2026-09-15 after all implementation, complete-suite, documentation, and installed-wheel gates passed. Only 50S.4D Earth-orientation and topocentric state work is authorized next.

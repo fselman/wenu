@@ -864,7 +864,7 @@ accepted the implementation and its bounded scientific ownership on
 propagation.
 
 
-## Candidate 50S.4C validated SGP4/TEME propagation
+## Accepted 50S.4C validated SGP4/TEME propagation
 
 `satellites/sgp4.py` now owns the bounded mapping from one accepted
 `SatelliteElementRecord` to the upstream `Satrec` API. Initialization passes
@@ -897,3 +897,6 @@ seconds. An isolated wheel installation then loaded Wenu from `site-packages`,
 verified corrected snapshot digest
 `2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe`,
 and propagated all three identifiers with TEME/WGS-72/status zero.
+
+
+Fernando scientifically and architecturally accepted 50S.4C on 2026-09-15 after the 15-test initial gate, 167-test expanded gate, all 2,492 tests, the 132-test documentation gate, and installed-wheel propagation evidence. This closes 50S.4C and authorizes only 50S.4D Earth-orientation and topocentric state work.

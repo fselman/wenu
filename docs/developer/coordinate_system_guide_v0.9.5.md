@@ -3276,3 +3276,8 @@ This state must not be labelled ICRS, GCRS, ITRS, apparent, astrometric,
 topocentric, RA/Dec, or AltAz. 50S.4C performs no Earth-orientation lookup and
 requires no IERS data. Only the separately gated 50S.4D chain may transform
 this state through ITRS and observer subtraction.
+
+
+### 50S.4C acceptance
+
+Fernando scientifically and architecturally accepted the typed geometric TEME boundary on 2026-09-15. TEME remains explicit; acceptance authorizes only the separately validated 50S.4D Earth-orientation and topocentric state chain.

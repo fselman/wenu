@@ -332,7 +332,7 @@ It does not authorize Earth-orientation/topocentric transformation, specimen
 construction, a crossing solver, or 50S.5.
 
 
-## Candidate 50S.4C implementation evidence
+## Accepted 50S.4C implementation evidence
 
 The dedicated 50S.4C branch maps immutable canonical OMM records through the
 upstream Vallado-compatible API with explicit WGS-72 and improved operation
@@ -369,5 +369,8 @@ and propagated all three synthetic records at
   (-41802.597498888295, -5496.836777718252, -24.45502701752297) km.
 
 All returned finite position and velocity. This evidence validates installation
-and execution of the candidate wrapper; Fernando's scientific and
-architectural acceptance remains pending.
+and execution of the wrapper. The final documentation gate passed all 132 tests
+in 3.67 seconds, and the branch diff check was clean. Fernando scientifically
+and architecturally accepted 50S.4C on 2026-09-15. This closes 50S.4C and
+authorizes only 50S.4D Earth-orientation and topocentric state work; it does
+not authorize a crossing solver, specimen builder, or 50S.5.

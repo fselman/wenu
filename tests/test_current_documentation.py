@@ -5322,7 +5322,7 @@ def test_50s4c_documents_validated_sgp4_teme_boundary():
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
-        "Candidate 50S.4C validated SGP4/TEME propagation",
+        "Accepted 50S.4C validated SGP4/TEME propagation",
         "separate Julian-day and fractional-day values",
         "SatelliteTemeState",
         "does not pass a hidden surrogate identity",
@@ -5330,7 +5330,7 @@ def test_50s4c_documents_validated_sgp4_teme_boundary():
         assert phrase in architecture
     assert "50S.4C — Validated SGP4/TEME propagation" in roadmap
     for phrase in (
-        "Validated SGP4 geometric TEME propagation (50S.4C candidate)",
+        "Validated SGP4 geometric TEME propagation (50S.4C accepted)",
         "split_julian_date",
         "Sgp4TemePropagator",
         "SatelliteTemeState",
@@ -5338,16 +5338,16 @@ def test_50s4c_documents_validated_sgp4_teme_boundary():
         "does not transform TEME",
     ):
         assert phrase in reference
-    assert "50S.4C SGP4/TEME propagation ownership (candidate)" in source_tree
+    assert "50S.4C SGP4/TEME propagation ownership (accepted)" in source_tree
     assert "tests/test_satellite_sgp4.py" in source_tree
     assert "50S.4C typed TEME state boundary" in coordinate_guide
     assert "must not be labelled ICRS, GCRS, ITRS" in coordinate_guide
-    assert "Candidate 50S.4C implementation evidence" in audit
+    assert "Accepted 50S.4C implementation evidence" in audit
     assert "upstream `Satrec` maximum 339999" in audit
     assert "initial satellite element/SGP4 gate passed all 15 tests" in audit
-    assert "Candidate 50S.4C SGP4 and geometric TEME state" in guide
+    assert "Accepted 50S.4C SGP4 and geometric TEME state" in guide
     assert "300001–300003" in guide
-    assert "only the bounded 50S.4C" in instructions
+    assert "only the bounded 50S.4D" in instructions
 
 
 def test_50s4c_records_complete_and_installed_wheel_evidence():
@@ -5366,4 +5366,8 @@ def test_50s4c_records_complete_and_installed_wheel_evidence():
     for identifier in ("300001", "300002", "300003"):
         assert f"{identifier}: TEME/WGS-72/status 0" in audit
     assert "finite position and velocity" in audit
-    assert "Scientific acceptance remains pending" in guide
+    assert "accepted 50S.4C on 2026-09-15" in guide
+    assert "final documentation gate passed all 132 tests" in audit
+    assert "branch diff check was clean" in audit
+    assert "This closes 50S.4C and" in audit
+    assert "authorizes only 50S.4D Earth-orientation and topocentric state work" in audit

@@ -2489,7 +2489,7 @@ this API and ownership boundary on 2026-09-15; only 50S.4C propagation is
 authorized next.
 
 
-## Validated SGP4 geometric TEME propagation (50S.4C candidate)
+## Validated SGP4 geometric TEME propagation (50S.4C accepted)
 
 `split_julian_date(utc)` normalizes an ISO-8601 UTC instant and returns
 `(canonical_utc, julian_day, julian_fraction)`. The components remain separate
@@ -2513,3 +2513,6 @@ The synthetic snapshot now uses full identifiers 300001–300003 because the
 upstream `Satrec` interface rejects values above 339999. Record and snapshot
 digests were regenerated; there is no hidden propagator identifier. This API
 does not transform TEME or produce observer-relative directions.
+
+
+Fernando accepted the bounded 50S.4C API and ownership on 2026-09-15. Only 50S.4D Earth-orientation and topocentric state work is authorized next.
