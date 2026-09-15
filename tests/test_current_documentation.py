@@ -4925,5 +4925,5 @@ def test_50s1_documents_provider_neutral_satellite_crossing_domain():
     assert "tests/test_satellite_crossings.py" in source_tree
     assert "adds no TEME state" in coordinate_guide
     assert "one chart observation instant" in coordinate_guide
-    assert "dormant satellite_crossings.py domain boundary" in architecture
+    assert "dormant `satellite_crossings.py` domain boundary" in architecture
     assert "No satellite acquisition, orbit solution, propagation" in architecture
