@@ -625,6 +625,58 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
             f"{name}_{system_key}",
         )
         svg_id = f"{system_key.replace('_', '-')}-{component}"
+    if name in {
+        "satellite_candidate_track",
+        "satellite_candidate_samples",
+    }:
+        identifier = getattr(layer, "norad_catalog_id", None)
+        if isinstance(identifier, bool) or not isinstance(identifier, int):
+            raise TypeError(
+                "satellite candidate semantic identity requires an integer "
+                "NORAD catalogue identifier."
+            )
+        if identifier <= 0:
+            raise ValueError(
+                "NORAD catalogue identifier must be positive."
+            )
+        display = getattr(layer, "satellite_display_name", None)
+        if not isinstance(display, str) or not display.strip():
+            raise ValueError(
+                "satellite candidate semantic identity requires a display name."
+            )
+        component = (
+            "sampled_track"
+            if name == "satellite_candidate_track"
+            else "samples"
+        )
+        component_display = (
+            f"{display.strip()} sampled track"
+            if component == "sampled_track"
+            else f"{display.strip()} supplied samples"
+        )
+        contract = SemanticLayerContract(
+            (
+                "sky",
+                "artificial_satellites",
+                "satchecker_candidates",
+                f"norad_{identifier}",
+                component,
+            ),
+            component_display,
+            37,
+            name,
+        )
+        path_display_names = (
+            "Sky",
+            "Artificial Satellites",
+            "SatChecker Candidates",
+            display.strip(),
+            component_display,
+        )
+        svg_id = (
+            f"satchecker-norad-{identifier}-"
+            f"{component.replace('_', '-')}"
+        )
     options = {} if contract is None else {
         "semantic_path": contract.path,
         "display_name": contract.display_name,
