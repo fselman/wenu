@@ -1,7 +1,7 @@
 # 50S.5A complete local crossing-oracle audit
 
-**Status:** Candidate documentation-only scientific and API audit  
-**Base:** accepted 50S.4 closure at merge commit `41978bc`  
+**Status:** Candidate documentation-only scientific and API audit
+**Base:** accepted 50S.4 closure at merge commit `41978bc`
 **Date:** 2026-09-15
 
 ## 1. Purpose and scope
