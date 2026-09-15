@@ -250,3 +250,21 @@ The final acceptance documentation gate passed all 136 tests in 3.00 seconds.
 Fernando scientifically and architecturally accepted 50S.5A on 2026-09-15.
 This closes the audit and authorizes only bounded 50S.5B implementation. 50S.6
 acceleration and all later satellite behavior remain unauthorized.
+
+## 11. Candidate 50S.5B implementation
+
+The bounded implementation follows the accepted ownership decision with
+`src/wenu/satellites/crossing_oracle.py` and the independent durable oracle in
+`tests/test_satellite_crossing_oracle.py`. The analytic path does not use SGP4
+or Astropy; installed composition scans the ordered three-record snapshot and
+retains final-state SGP4 and IERS-A identity.
+
+Adaptive rejection requires the motion envelope to certify an interval outside.
+Possible contact subdivides to the declared time tolerance, boundary roots stay
+bracketed, closest-approach refinement stays bounded, and a no-sign-change
+minimum in the angular uncertainty band becomes one zero-duration boundary
+event. Numerical fragments merge only when recursive sampling certifies
+continuous containment within the declared time and angular tolerances.
+
+Focused, complete-suite, diff, and Fernando acceptance gates remain pending.
+50S.6 and all later behavior remain unauthorized.
