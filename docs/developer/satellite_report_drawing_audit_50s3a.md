@@ -162,7 +162,7 @@ the bounded 50S.3B implementation. It does not authorize 50S.4 propagation or
 snapshot work.
 
 
-## Candidate 50S.3B implementation evidence
+## Accepted 50S.3B implementation evidence
 
 The dedicated implementation branch now contains
 `satellite_presentations.py`, `sky/satellite_candidate_layer.py`, stable
