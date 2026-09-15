@@ -3311,6 +3311,8 @@ this coordinate meaning on 2026-09-15.
 
 ### Candidate 50S.4E sampled-specimen coordinate identity
 
+The output is labelled **propagated sampled specimens — not verified crossings**.
+
 The 50S.4E developer output preserves each accepted geometric TEME state and
 the observer-relative vacuum direction from 50S.4D. Its celestial longitudes
 and latitudes remain a **topocentric geometric direction expressed in GCRS
