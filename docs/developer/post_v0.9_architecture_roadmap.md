@@ -2188,3 +2188,18 @@ accepted 50S.4E on 2026-09-15, closing 50S.4 and authorizing only bounded
 
 50S.6 acceleration, illumination, photometry, detector effects, CLI, reporting,
 and drawing remain unauthorized.
+
+
+### 50S.5A — Complete local crossing-oracle audit (candidate)
+
+**Status:** Documentation-only candidate pending Fernando's acceptance.
+
+Freeze the coordinate compatibility, immutable query, declared tolerance,
+validated numerical completeness, adaptive subdivision, root/extremum,
+connected-visit, fail-closed, provenance, ownership, and independent
+analytic/adversarial validation contracts before runtime work.
+
+Acceptance authorizes only bounded 50S.5B implementation of the exhaustive
+three-record local oracle. It does not pre-accept numerical tolerances, close
+50S.5, or authorize 50S.6 acceleration, illumination, photometry, CLI,
+reporting, drawing, or additional footprint types.
