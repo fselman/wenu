@@ -1,12 +1,20 @@
 """50S.3B reports and drawable SatChecker sampled-candidate evidence."""
 
+from io import BytesIO
 import json
 
+import matplotlib
+
+matplotlib.use("Agg")
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 
 from wenu.coordinates import CoordinateSpec, PositionStatus
 from wenu.geometry.spherical import SphericalCurves, SphericalPoints
+from wenu.projections.stereographic import StereographicProjection
+from wenu.rendering import MatplotlibRenderer
 from wenu.satellite_crossings import (
     InclusiveTimeInterval,
     SatelliteCrossingCandidate,
@@ -29,6 +37,7 @@ from wenu.satchecker import (
     SatCheckerSample,
     SatCheckerTaskState,
 )
+from wenu.sky.celestial_sphere import CelestialSphere
 from wenu.sky.realization import LayerRealizationContext
 from wenu.sky.satellite_candidate_layer import (
     SatelliteCandidateSamplesLayer,
@@ -351,3 +360,72 @@ def test_layers_require_normalized_evidence_context_and_no_options():
         )
     with pytest.raises(RuntimeError, match="LayerRealizationContext"):
         layer.spherical_geometry(None)
+
+
+
+def test_candidate_layers_use_canonical_chart_pipeline_and_all_backends():
+    track = SatelliteCandidateTrackLayer(evidence())
+    samples = SatelliteCandidateSamplesLayer(
+        evidence(),
+        label_times=False,
+    )
+    sphere = CelestialSphere(object())
+    sphere.extend((track, samples))
+    figure, axes = plt.subplots()
+
+    result = sphere.draw_chart(
+        projection=StereographicProjection(
+            radius=2.0,
+            flip_ew=False,
+        ),
+        renderer=MatplotlibRenderer(axes),
+        realization_context=LayerRealizationContext(product_spec()),
+        layer_options={
+            track: {
+                "style": {
+                    "color": "black",
+                    "linewidth": 1.0,
+                },
+            },
+            samples: {
+                "style": {
+                    "c": "black",
+                    "s": 8.0,
+                },
+            },
+        },
+    )
+
+    assert len(result.layers) == 2
+    assert result.layers[0].semantic_identity.semantic_path_text.endswith(
+        "norad_123456/sampled_track"
+    )
+    assert result.layers[1].semantic_identity.semantic_path_text.endswith(
+        "norad_123456/samples"
+    )
+    assert result.layers[0].semantic_artists
+    assert result.layers[1].semantic_artists
+
+    products = {}
+    for format_ in ("png", "pdf", "svg"):
+        stream = BytesIO()
+        figure.savefig(stream, format=format_)
+        products[format_] = stream.getvalue()
+    assert products["png"].startswith(b"\x89PNG")
+    assert products["pdf"].startswith(b"%PDF")
+    assert b"satchecker-norad-123456-sampled-track" in products["svg"]
+    assert b"satchecker-norad-123456-samples" in products["svg"]
+    plt.close(figure)
+
+
+def test_presentation_rejects_untyped_response_evidence():
+    malformed = SatCheckerResponse(
+        SatCheckerTaskState.SUCCESS,
+        "task-1",
+        None,
+        "complete",
+        receipt(),
+        (object(),),
+    )
+    with pytest.raises(TypeError, match="SatCheckerCandidateEvidence"):
+        SatCheckerPresentation(query(), malformed)
