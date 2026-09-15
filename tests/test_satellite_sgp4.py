@@ -196,7 +196,7 @@ def test_nonzero_sgp4_status_fails_explicitly():
 
     with pytest.raises(SatellitePropagationError) as raised:
         Sgp4TemePropagator(decaying).propagate(
-            "2020-06-11T19:07:51.381408Z"
+            "2020-07-25T19:07:51.381408Z"
         )
 
     assert raised.value.code == 1
