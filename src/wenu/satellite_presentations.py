@@ -109,6 +109,14 @@ class SatCheckerPresentation:
             raise ValueError(
                 "non-success responses cannot contain candidate evidence."
             )
+        if any(
+            not isinstance(value, SatCheckerCandidateEvidence)
+            for value in evidence
+        ):
+            raise TypeError(
+                "response evidence must contain "
+                "SatCheckerCandidateEvidence values."
+            )
         identifiers = [
             value.candidate.satellite.norad_catalog_id
             for value in evidence
@@ -118,11 +126,6 @@ class SatCheckerPresentation:
                 "candidate evidence must contain unique NORAD identities."
             )
         for value in evidence:
-            if not isinstance(value, SatCheckerCandidateEvidence):
-                raise TypeError(
-                    "response evidence must contain "
-                    "SatCheckerCandidateEvidence values."
-                )
             candidate = value.candidate
             if (
                 candidate.observer != self.query.observer
