@@ -665,5 +665,6 @@ The candidate focused gate passed 90 tests, including actual Matplotlib
 PNG/PDF/SVG serialization through the canonical chart pipeline. Fernando then
 accepted the regenerated network-free specimen on 2026-09-15: the explicit
 closed circular FoV annotation, red ordered sample path, four UTC annotations,
-candidate-only title, and PNG/PDF/SVG products were correct. Expanded focused
-and complete-suite acceptance remain pending.
+candidate-only title, and PNG/PDF/SVG products were correct. The final expanded focused gate passed all 217 tests, and the complete
+plugin-disabled suite passed all 2,473 tests in 83.98 seconds. Only Fernando's
+milestone acceptance remains pending.
