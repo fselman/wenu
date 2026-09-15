@@ -404,7 +404,9 @@ The initial candidate exposed one Astropy-version compatibility fault:
 `IERS_A.open()` on Fernando's installation requires a string path rather than
 `pathlib.Path`. After correcting that interface, all 14 initial tests passed.
 Three stronger constructed-geometry tests and an installed LEO/MEO/GEO-like
-snapshot test were then added. The final dedicated gate passes all 17 tests,
-and the expanded element/SGP4/topocentric/crossing/SatChecker/coordinate gate
-passes all 89 tests on Fernando's Mac. Documentation, complete-suite, diff, and
-scientific acceptance remain pending.
+snapshot test were then added. At production-code commit `1c33f3`, the final dedicated gate passes all 17
+tests, and the expanded
+element/SGP4/topocentric/crossing/SatChecker/coordinate gate passes all 89
+tests on Fernando's Mac. The candidate documentation gate passes all 133 tests,
+and the complete plugin-disabled suite passes all 2,511 tests in 95.10 seconds.
+Final diff inspection and scientific acceptance remain pending.
