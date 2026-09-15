@@ -5166,3 +5166,8 @@ def test_50s3b_documents_candidate_reports_and_shared_path_layers():
     assert "Candidate 50S.3B implementation" in guide
     assert "There is no entry, exit, closest approach" in guide
     assert "satellite_report_drawing_audit_50s3a.md" in instructions
+    assert "tools/validate_50s3b_satellite_presentations.py" in source_tree
+    assert "Fernando visually accepted" in architecture
+    assert "centered FoV chart across PNG" in roadmap
+    assert "four UTC annotations" in guide
+    assert "FoV was labelled explicitly" in audit
