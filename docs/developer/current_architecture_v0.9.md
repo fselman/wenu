@@ -811,4 +811,6 @@ and `.../samples`. No entry, exit, closest approach, interpolation,
 propagation, provider access, illumination calculation, magnitude, or detector
 claim is introduced. Fernando visually accepted the network-free synthetic text report and centered
 FoV chart on 2026-09-15 after matching PNG, PDF, and semantic SVG inspection.
-This remains candidate implementation pending final gates and milestone acceptance.
+The final focused boundary passed all 217 tests, and the complete plugin-disabled
+suite passed all 2,473 tests in 83.98 seconds. This remains candidate
+implementation pending Fernando's milestone acceptance.
