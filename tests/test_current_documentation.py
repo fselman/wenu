@@ -4900,7 +4900,7 @@ def test_50s1_documents_provider_neutral_satellite_crossing_domain():
     ).split())
 
     for phrase in (
-        "Candidate implementation on the dedicated milestone branch",
+        "Accepted by Fernando on 2026-09-15; merged through PR #123",
         "explicitly framed closed circular FoV",
         "provider acquisition, propagation, charts, projection, rendering",
         "Spherical rectangles, WCS/instrument footprints",
@@ -4927,3 +4927,13 @@ def test_50s1_documents_provider_neutral_satellite_crossing_domain():
     assert "one chart observation instant" in coordinate_guide
     assert "dormant `satellite_crossings.py` domain boundary" in architecture
     assert "No satellite acquisition, orbit solution, propagation" in architecture
+    for text in (
+        roadmap,
+        guide,
+        architecture,
+        reference,
+        source_tree,
+        coordinate_guide,
+    ):
+        assert "2,428 tests" in text
+        assert "23b851b" in text
