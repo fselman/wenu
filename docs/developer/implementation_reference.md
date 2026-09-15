@@ -2378,3 +2378,26 @@ provenance.
 warm cache without network access or publishes a validated acquisition
 atomically under a per-identity lock. The 50A.5D.2C candidate connects that
 boundary to `wenu_chart` for exact comet and mixed asteroid/comet preflight.
+
+## Provider-neutral satellite crossing domain (Milestone 50S.1 candidate)
+
+`wenu.satellite_crossings` defines six frozen provider-neutral values:
+`SatelliteIdentity`, `SatelliteObserver`, `SatelliteFieldOfView`,
+`InclusiveTimeInterval`, `SatelliteCrossingCandidate`, and
+`SatelliteCrossingResult`. They are advanced domain contracts and are not yet
+exported from `wenu` or connected to a public command.
+
+The initial FoV is a closed circular region on the sphere. Its centre retains a
+shared `CoordinateSpec`; longitude wraps to [0, 360) degrees, latitude remains
+within [-90, 90] degrees, and angular radius is in (0, 180] degrees. Query
+intervals require explicit UTC instants and include both endpoints. Boundary
+touch is a valid zero-duration crossing.
+
+A candidate binds satellite identity, terrestrial site and coordinate policy,
+field, interval, source provider, optional orbit-solution/snapshot evidence,
+provenance, and warnings. A normalized result represents one connected field
+visit and retains ordered entry, closest-approach, and exit instants, closest
+angular separation, optional provider-derived range, angular rate,
+illumination, event identity, provenance, and warnings. It performs no
+acquisition, propagation, exact crossing solution, illumination calculation,
+charting, or rendering.
