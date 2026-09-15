@@ -3237,7 +3237,8 @@ def test_50s0_audits_satellite_crossing_search_and_photometry():
         "50S.0 scientific and architectural decisions accepted by Fernando on 2026-09-14",
         "50S.1 — Provider-neutral satellite crossing domain",
         "50S.2 — SatChecker crossing adapter",
-        "50S.3 — SatChecker reports and drawable crossing tracks",
+        "50S.3A — Satellite report and drawing contract audit",
+        "50S.3B — SatChecker sampled-candidate reports and tracks",
         "50S.4 — Small local snapshot, propagation, and specimen builder",
         "50S.5 — Complete local FoV-crossing oracle",
         "50S.6 — Conservative local crossing acceleration",
@@ -5077,7 +5078,7 @@ def test_50s2b_records_accepted_implementation_and_gates():
     assert "50S.2B SatChecker adapter ownership (accepted)" in source_tree
     assert "50S.2B acceptance" in audit
     assert "This closes only the cached SatChecker adapter" in audit
-    assert "Only 50S.3 is authorized next" in guide
+    assert "Only the documentation-only 50S.3A contract audit is authorized next" in guide
 
 
 
