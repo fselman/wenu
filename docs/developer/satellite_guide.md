@@ -586,9 +586,12 @@ retaining the candidate-only boundary.
 - **50S.3B:** accepted deterministic reports plus drawable sampled-track and
   sample-point layers through the shared renderer/export path; provider
   illumination remains separate evidence.
-- **50S.4:** small representative immutable OMM snapshot,
-  Vallado-compatible SGP4/TEME foundation, explicit topocentric chain, and
-  developer crossing-specimen builder.
+- **50S.4A:** audit direct dependency, OMM/snapshot, SGP4/TEME,
+  Earth-orientation/topocentric validation, and specimen contracts.
+- **50S.4B:** canonical OMM elements and a tiny immutable synthetic snapshot.
+- **50S.4C:** Vallado-validated SGP4 and typed geometric TEME state.
+- **50S.4D:** independently validated no-download topocentric transformation.
+- **50S.4E:** network-free propagated-specimen builder and 50S.4 closure.
 - **50S.5:** complete local catalogue scan and adaptive exact-crossing oracle.
 - **50S.6:** conservative plane, radial-shell, phase/reachable-arc,
   occultation, and coarse-state filters; add HEALPix/time indexing only if
@@ -667,4 +670,38 @@ accepted the regenerated network-free specimen on 2026-09-15: the explicit
 closed circular FoV annotation, red ordered sample path, four UTC annotations,
 candidate-only title, and PNG/PDF/SVG products were correct. The final expanded focused gate passed all 217 tests, and the complete
 plugin-disabled suite passed all 2,473 tests in 83.98 seconds. Fernando accepted 50S.3B on 2026-09-15. This closes SatChecker sampled
-candidate reporting and drawing; only 50S.4 is authorized next.
+candidate reporting and drawing; only the documentation-only 50S.4A audit is authorized next.
+
+
+## 20. 50S.4 snapshot and propagation admission review
+
+The 50S.4A review separates five responsibilities that cannot share one
+acceptance boundary: contract audit, immutable snapshot/domain, SGP4/TEME
+propagation, Earth-orientation/topocentric transformation, and developer
+specimen construction.
+
+Wenu will declare `sgp4>=2.25,<3` directly rather than relying on Skyfield's
+transitive dependency. The adapter will use explicit WGS-72 OMM
+initialization, split Julian dates, typed geometric TEME position/velocity,
+and explicit status codes. It will be a wrapper around the upstream
+Vallado-compatible implementation, not a copied propagator.
+
+The first installed snapshot will be a tiny hand-authored synthetic OMM/GP
+collection spanning LEO, MEO, and geosynchronous-like geometry. It is
+non-operational and avoids redistributing live provider data. Full integer
+NORAD identity, UTC epoch, TEME/Earth/SGP4 declarations, exact canonical
+content, SHA-256 identity, provenance, and validation remain mandatory.
+
+Topocentric work will follow Astropy's documented TEME-to-ITRS and
+observer-subtraction chain with automatic IERS download disabled. Results
+retain EOP identity and fail outside available coverage. A separate numerical
+stage must settle the name and convention of an instantaneous geometric
+topocentric vector expressed in celestial axes; it must not be called
+geometric ICRS merely because the axes are ICRS-oriented.
+
+The developer builder will emit **propagated sampled specimens — not verified
+crossings**. It cannot create `SatelliteCrossingResult` or claim completeness;
+those belong to 50S.5.
+
+The candidate 50S.4A audit changes no runtime, dependency, or package data.
+Fernando's acceptance would authorize only 50S.4B element/snapshot work.
