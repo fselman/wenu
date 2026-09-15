@@ -1846,7 +1846,7 @@ conservatively enclose. Add no visible satellite or public crossing command.
 
 ### 50S.1 — Provider-neutral satellite crossing domain
 
-**Status:** Candidate implementation on the dedicated milestone branch.
+**Status:** Accepted by Fernando on 2026-09-15; merged through PR #123.
 
 `satellite_crossings.py` defines immutable satellite identity, terrestrial
 observer/site, inclusive UTC interval, explicitly framed closed circular FoV,
@@ -1860,6 +1860,11 @@ propagation, charts, projection, rendering, and export.
 Spherical rectangles, WCS/instrument footprints, fixed Alt/Az and moving
 fields, SatChecker adaptation, propagation, exact crossing verification,
 illumination physics, reporting, and drawing remain later milestones.
+
+Fernando accepted 50S.1 after the focused Mac gate passed all 139 tests in
+3.07 seconds and the complete plugin-disabled suite passed all 2,428 tests in
+85.52 seconds. PR #123 merged the verified implementation into the satellite
+integration branch as commit `23b851b`.
 
 ### 50S.2 — SatChecker crossing adapter
 
