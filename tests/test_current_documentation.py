@@ -5291,6 +5291,8 @@ def test_50s4b_records_complete_and_installed_wheel_evidence():
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
     ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
 
     assert "production commit `d3cb597`" in architecture
     assert "expanded focused gate passed all 158 tests" in audit
