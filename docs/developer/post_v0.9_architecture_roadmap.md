@@ -1993,7 +1993,7 @@ documentation gate, and installed-wheel propagation check. Acceptance closes
 
 ### 50S.4D — Earth-orientation and topocentric state
 
-**Status:** Candidate implementation; acceptance pending.
+**Status:** Accepted by Fernando on 2026-09-15.
 
 The candidate uses Astropy's declared TEME → ITRS → observer-subtracted
 Cartesian chain with automatic IERS download and degraded accuracy disabled,
@@ -2004,8 +2004,11 @@ evidence, independent Skyfield comparison, constructed zenith/horizon/wrap
 geometry, pathological sites, and installed LEO/MEO/GEO-like specimens pass
 the 17-test dedicated and 89-test expanded Mac gates. The 133-test
 documentation gate and complete plugin-disabled suite of 2,511 tests in 95.10
-seconds also pass. Final diff inspection and Fernando's scientific acceptance
-remain pending. No field-intersection solver is included.
+seconds also pass, and the final branch diff check is clean. Fernando
+scientifically and architecturally accepted 50S.4D on 2026-09-15. Acceptance
+closes the Earth-orientation/topocentric boundary and authorizes only bounded
+50S.4E propagated-specimen builder work. No field-intersection solver is
+included.
 
 ### 50S.4E — Propagated specimen builder and closure
 
