@@ -204,3 +204,18 @@ versioned HTTPS transport, task identity, receipt capture, one-shot polling,
 terminal schema, candidate identity, sample normalization, and containment
 path. Synthetic source-shaped specimens remain the ordinary regression
 evidence because acceptance cannot depend on service queue availability.
+
+
+## 11. 50S.2B acceptance
+
+Fernando scientifically and architecturally accepted 50S.2B on 2026-09-15.
+The provider/domain gate passed all 45 tests in 1.79 seconds, the expanded
+focused gate passed all 168 tests in 3.89 seconds, and the complete
+plugin-disabled suite passed all 2,457 tests in 88.48 seconds. The later
+documentation-only live-evidence commits passed the final 124-test
+documentation gate in 2.89 seconds and left the integrity check clean.
+
+This closes only the cached SatChecker adapter. It authorizes 50S.3 reports and
+shared-path drawable crossing tracks next; local propagation, exact crossing
+verification, independent illumination, photometry, detector contamination,
+and statistical products remain later milestones.

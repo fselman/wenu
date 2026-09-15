@@ -1640,7 +1640,7 @@ owns deterministic contract coverage;
   clarified.
 
 
-## 50S.2B SatChecker adapter ownership (candidate implementation)
+## 50S.2B SatChecker adapter ownership (accepted)
 
 - `src/wenu/satchecker.py` owns the SatChecker-specific request translation,
   no-download UTC-to-UT1 boundary, exact receipts, one-shot submit/poll

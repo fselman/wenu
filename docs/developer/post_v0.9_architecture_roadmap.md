@@ -1881,8 +1881,7 @@ cached-adapter implementation.
 
 ### 50S.2 — SatChecker crossing adapter
 
-**50S.2B status:** Candidate implementation on the dedicated milestone
-branch.
+**50S.2B status:** Accepted by Fernando on 2026-09-15.
 
 `satchecker.py` provides the versioned geometric circular-field request,
 explicit no-download UTC-to-UT1 conversion, exact-byte receipt, one-shot
@@ -1900,6 +1899,9 @@ perform no network access. No waiter loop, automatic retry, CLI, live fixture,
 report, propagation, drawing, or export is added. The bounded live check
 confirmed fail-closed IERS coverage, real PENDING submission/poll receipts, and
 a later SUCCESS receipt normalized to 13 candidates and 26 ordered samples.
+The focused provider/domain gate passed 45 tests, the expanded focused gate
+passed 168 tests, and the complete suite passed all 2,457 tests. Acceptance
+closes 50S.2B and authorizes only 50S.3 reporting and shared-path drawing.
 
 ### 50S.3 — SatChecker reports and drawable crossing tracks
 

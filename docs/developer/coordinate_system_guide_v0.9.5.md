@@ -3186,7 +3186,7 @@ this scientific boundary on 2026-09-15, authorizing only the bounded 50S.2B
 cached-adapter implementation.
 
 
-## 13.2.43 50S.2B candidate adapter realization
+## 13.2.43 50S.2B adapter realization (accepted)
 
 The candidate adapter implements the accepted 50S.2A time and coordinate
 boundary without adding a new coordinate frame. It accepts only geometric
@@ -3201,4 +3201,6 @@ source-inferred geometric topocentric ICRF/ICRS-oriented directions and retain
 the stop-exclusive, one-second, 1.2-radius candidate-envelope warnings. They
 are not observed/apparent coordinates, exact boundary events, or a new
 `SatelliteCrossingResult`. No TEME state, Earth-fixed realization,
-refraction, propagation, projection, or output behavior changes.
+refraction, propagation, projection, or output behavior changes. Fernando
+accepted this boundary on 2026-09-15 after all 2,457 tests and the bounded live
+provider check passed.

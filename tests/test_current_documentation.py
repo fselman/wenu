@@ -4998,11 +4998,11 @@ def test_50s2b_documents_cached_satchecker_adapter_candidate():
         "dormant `satchecker.py` provider boundary",
         "one-shot `submit()` and `poll()` operations",
         "does not create `SatelliteCrossingResult`",
-        "not yet accepted current architecture",
+        "Only 50S.3 reporting and drawing is authorized next",
     ):
         assert phrase in architecture
     for phrase in (
-        "50S.2B status:** Candidate implementation",
+        "50S.2B status:** Accepted by Fernando on 2026-09-15",
         "content-addressed exact local cache",
         "No waiter loop, automatic retry, CLI, live fixture",
     ):
@@ -5013,13 +5013,13 @@ def test_50s2b_documents_cached_satchecker_adapter_candidate():
         "No exact `SatelliteCrossingResult` is synthesized",
     ):
         assert phrase in reference
-    assert "50S.2B SatChecker adapter ownership (candidate implementation)" in (
+    assert "50S.2B SatChecker adapter ownership (accepted)" in (
         source_tree
     )
     assert "tests/test_satchecker.py" in source_tree
     assert "Astropy IERS automatic download is disabled" in coordinate_guide
     assert "Candidate 50S.2B implementation" in audit
-    assert "candidate 50S.2B provider module is `satchecker.py`" in guide
+    assert "accepted 50S.2B provider module is `satchecker.py`" in guide
     assert "satchecker_provider_contract_audit_50s2a.md" in instructions
 
 
@@ -5046,3 +5046,34 @@ def test_50s2b_records_bounded_live_provider_normalization():
         roadmap
     )
     assert "normalized 13 candidates and 26 ordered samples" in guide
+
+
+def test_50s2b_records_accepted_implementation_and_gates():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+
+    for text in (
+        architecture,
+        roadmap,
+        reference,
+        coordinate_guide,
+        audit,
+        guide,
+    ):
+        assert "2026-09-15" in text
+    assert "all 2,457 tests in 88.48 seconds" in architecture
+    assert "Acceptance closes 50S.2B and authorizes only 50S.3" in roadmap
+    assert "accepted the bounded 50S.2B API and ownership" in reference
+    assert "50S.2B SatChecker adapter ownership (accepted)" in source_tree
+    assert "50S.2B acceptance" in audit
+    assert "This closes only the cached SatChecker adapter" in audit
+    assert "Only 50S.3 is authorized next" in guide
