@@ -1930,7 +1930,9 @@ The candidate implementation adds deterministic text/JSON reports, open
 sampled-track or singleton-point geometry, optional UTC-labelled sample
 points, stable full-NORAD semantic paths, and a shared PNG/PDF/SVG pipeline
 gate. It remains network-free and does not synthesize exact crossing events.
-Fernando's visual and milestone acceptance are still required.
+Fernando accepted the synthetic report and centered FoV chart across PNG,
+PDF, and semantic SVG on 2026-09-15. Final gates and milestone acceptance
+remain required.
 
 ### 50S.4 — Small local snapshot, propagation, and specimen builder
 
