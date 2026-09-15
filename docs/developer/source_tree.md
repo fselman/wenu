@@ -1821,18 +1821,22 @@ developer-only after 50S.4 closure; 50S.5 must establish its own durable runtime
 oracle ownership rather than expanding this specimen builder.
 
 
-### Proposed 50S.5 local crossing-oracle ownership
+### Accepted 50S.5A local crossing-oracle ownership
 
 - `src/wenu/satellite_crossings.py` continues to own provider-neutral
   immutable crossing values; it does not own local numerical solving.
-- Proposed `src/wenu/satellites/crossing_oracle.py` will own the distinct
+- `src/wenu/satellites/crossing_oracle.py` will own the distinct
   exhaustive trajectory-evaluation, adaptive convergence, root/extremum,
-  connected-visit, provenance, and fail-closed responsibility after 50S.5A
-  acceptance.
-- Proposed `tests/test_satellite_crossing_oracle.py` will own independent
+  connected-visit, provenance, and fail-closed responsibility in bounded
+  50S.5B implementation.
+- `tests/test_satellite_crossing_oracle.py` will own independent
   analytic/adversarial numerical-oracle evidence plus installed-snapshot
   composition and provenance. The closest existing
   `tests/test_satellite_crossings.py` remains focused on immutable value
   contracts.
-- This audit creates neither proposed source nor test file and changes no
+- This audit creates neither future source nor test file and changes no
   package boundary.
+
+Fernando scientifically and architecturally accepted this ownership contract
+on 2026-09-15. Only bounded 50S.5B implementation is authorized next; 50S.6
+and later behavior remain unauthorized.
