@@ -805,7 +805,7 @@ not part of 50S.4D. Fernando scientifically and architecturally accepted this
 boundary on 2026-09-15. Only the bounded 50S.4E propagated-specimen builder is
 authorized next.
 
-### Candidate 50S.4E propagated specimen builder
+### Accepted 50S.4E propagated specimen builder
 
 The candidate `tools/build_50s4_satellite_specimens.py` tool loads the
 installed three-record synthetic snapshot and evaluates an explicit ordered
@@ -822,7 +822,7 @@ entry/exit, closest approach, completeness claim, production tolerance, chart,
 or field-search behavior. Focused, full-suite, generated-product, diff, and
 Fernando acceptance gates remain pending.
 
-#### Candidate 50S.4E verification result
+#### Accepted 50S.4E verification result
 
 The dedicated, expanded, and documentation Mac gates passed 10, 99, and 134
 tests. The complete plugin-disabled suite passed all 2,522 tests in 105.38
@@ -832,5 +832,8 @@ The inspected generated product had SHA-256
 and preserved the exact snapshot, observer, grid, IERS-A, propagator, and
 software identities. Its three default synthetic tracks were below the La
 Ligua horizon, so the product correctly made no visibility or crossing claim.
-The branch and diff checks were clean. Fernando's scientific and architectural
-acceptance remains pending; 50S.4E remains open and 50S.5 remains unauthorized.
+The branch and diff checks were clean. Fernando scientifically and architecturally
+accepted 50S.4E on 2026-09-15. This closes 50S.4 and authorizes only bounded
+50S.5 complete local FoV-crossing oracle work.
+
+50S.6 acceleration and every later satellite milestone remain unauthorized.
