@@ -479,7 +479,9 @@ and query inputs only. It does not find a useful field automatically, emit
 expected crossings, invoke a crossing query, calculate entry/exit or closest
 approach, or certify central, grazing, between-sample, multiple-crossing,
 non-crossing, horizon, shadow-transition, seam, or polar cases. Those
-crossing-oracle responsibilities belong to 50S.5.
+crossing-oracle responsibilities belong to 50S.5. The future 50S.5
+dense/adaptive brute-force reference path must remain independent of production
+rejection filters.
 
 ## 14. Validation hierarchy
 
