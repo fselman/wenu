@@ -133,6 +133,12 @@ def test_query_maps_only_accepted_satchecker_parameters():
     assert parameters["convert_omm_to_tle"] == "false"
     assert value.duration_seconds == 2.0
     assert len(value.cache_key) == 64
+    assert value.canonical_document["wenu_request"]["observer"][
+        "earth_orientation_policy"
+    ] == "iers-a-bundled"
+    assert value.canonical_document["wenu_request"]["field_of_view"][
+        "coordinate_spec"
+    ]["position_status"] == "geometric"
 
 
 def test_query_rejects_non_geometric_or_non_icrs_field():
@@ -293,6 +299,7 @@ def test_success_normalizes_candidate_and_ordered_sample_evidence():
         "Earth-orientation identity" in value
         for value in evidence.candidate.provenance
     )
+    assert "SatChecker orbit source omm" in evidence.candidate.provenance
 
 
 def test_success_does_not_construct_exact_crossing_result():
@@ -411,6 +418,42 @@ def test_exact_cache_round_trip_preserves_receipts_and_normalization(tmp_path):
 
 def test_exact_cache_miss_is_network_free(tmp_path):
     assert SatCheckerCache(tmp_path).load(query()) is None
+
+
+def test_cache_key_includes_complete_observer_and_field_semantics():
+    value = query()
+    changed_observer = SatelliteObserver(
+        value.observer.observer_id,
+        value.observer.longitude_deg,
+        value.observer.latitude_deg,
+        value.observer.elevation_m,
+        refraction_policy="standard-atmosphere",
+        earth_orientation_policy=value.observer.earth_orientation_policy,
+    )
+    changed = SatCheckerQuery(
+        changed_observer,
+        value.field_of_view,
+        value.interval,
+        value.start_time_ut1_jd,
+        value.duration_seconds,
+        value.earth_orientation_identity,
+    )
+
+    assert changed.parameters == value.parameters
+    assert changed.cache_key != value.cache_key
+
+
+def test_exact_cache_rejects_corrupt_normalization(tmp_path):
+    cache = SatCheckerCache(tmp_path)
+    terminal = terminal_response()
+    destination = cache.store(query(), (terminal,))
+    manifest = destination / "manifest.json"
+    document = json.loads(manifest.read_text())
+    document["normalized"][0]["object_name"] = "changed"
+    manifest.write_text(json.dumps(document, separators=(",", ":"), sort_keys=True))
+
+    with pytest.raises(ValueError, match="normalization is corrupt"):
+        cache.load(query())
 
 
 def test_exact_cache_rejects_corrupt_raw_response(tmp_path):

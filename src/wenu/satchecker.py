@@ -218,11 +218,46 @@ class SatCheckerQuery:
             "endpoint": self.endpoint,
             "parameters": dict(self.parameters),
             "wenu_request": {
-                "observer_id": self.observer.observer_id,
-                "field_id": self.field_of_view.field_id,
-                "interval_start_utc": self.interval.start,
-                "interval_stop_utc": self.interval.stop,
-                "interval_boundary": self.interval.boundary,
+                "observer": {
+                    "observer_id": self.observer.observer_id,
+                    "longitude_deg": self.observer.longitude_deg,
+                    "latitude_deg": self.observer.latitude_deg,
+                    "elevation_m": self.observer.elevation_m,
+                    "refraction_policy": self.observer.refraction_policy,
+                    "earth_orientation_policy": (
+                        self.observer.earth_orientation_policy
+                    ),
+                },
+                "field_of_view": {
+                    "field_id": self.field_of_view.field_id,
+                    "center_longitude_deg": (
+                        self.field_of_view.center_longitude_deg
+                    ),
+                    "center_latitude_deg": (
+                        self.field_of_view.center_latitude_deg
+                    ),
+                    "angular_radius_deg": (
+                        self.field_of_view.angular_radius_deg
+                    ),
+                    "boundary": self.field_of_view.boundary,
+                    "coordinate_spec": {
+                        "frame": self.field_of_view.coordinate_spec.frame,
+                        "origin": self.field_of_view.coordinate_spec.origin,
+                        "position_status": (
+                            self.field_of_view.coordinate_spec.position_status.value
+                        ),
+                        "instant": self.field_of_view.coordinate_spec.instant,
+                        "time_scale": (
+                            self.field_of_view.coordinate_spec.time_scale
+                        ),
+                    },
+                },
+                "interval": {
+                    "start_utc": self.interval.start,
+                    "stop_utc": self.interval.stop,
+                    "time_scale": self.interval.time_scale,
+                    "boundary": self.interval.boundary,
+                },
             },
             "earth_orientation_identity": self.earth_orientation_identity,
         }
@@ -551,6 +586,10 @@ def _normalize_success(query, payload, receipt, *, ut1_jd_to_utc):
                 (
                     "provider-source-inferred geometric topocentric "
                     "ICRF/ICRS-oriented directions"
+                ),
+                (
+                    "SatChecker orbit source "
+                    + (next(iter(sources)) if sources else "unknown")
                 ),
             ),
             warnings=(_SAMPLE_WARNING, _ENVELOPE_WARNING),
