@@ -809,5 +809,6 @@ The stable semantic roots are
 `sky/artificial_satellites/satchecker_candidates/norad_<id>/sampled_track`
 and `.../samples`. No entry, exit, closest approach, interpolation,
 propagation, provider access, illumination calculation, magnitude, or detector
-claim is introduced. This remains candidate implementation pending Fernando's
-scientific, report, semantic, and visual acceptance.
+claim is introduced. Fernando visually accepted the network-free synthetic text report and centered
+FoV chart on 2026-09-15 after matching PNG, PDF, and semantic SVG inspection.
+This remains candidate implementation pending final gates and milestone acceptance.
