@@ -1,6 +1,6 @@
 # 50S.3A satellite report and drawing contract audit
 
-**Status:** Candidate audit for Fernando's scientific and architectural review
+**Status:** Accepted by Fernando on 2026-09-15
 **Audit date:** 2026-09-15
 **Wenu baseline:** `9b751b9751b43cbf808158c86c2575b7872b1534`
 
@@ -153,8 +153,10 @@ shared-backend drawing. Visual acceptance must include a compact synthetic FoV
 chart in PNG, PDF, and SVG. The complete suite runs at the 50S.3B acceptance
 boundary.
 
-## Decision requested
+## Acceptance
 
-Accept this contract as 50S.3A and authorize only the bounded 50S.3B
-implementation. Acceptance does not authorize 50S.4 propagation or snapshot
-work.
+Fernando accepted this scientific and architectural contract on 2026-09-15
+after the focused documentation gate passed all 126 tests and the candidate
+diff passed `git diff --check`. Acceptance closes 50S.3A and authorizes only
+the bounded 50S.3B implementation. It does not authorize 50S.4 propagation or
+snapshot work.
