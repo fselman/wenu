@@ -3168,6 +3168,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "post_v0.9_architecture_roadmap.md",
         "satchecker_provider_contract_audit_50s2a.md",
         "satellite_report_drawing_audit_50s3a.md",
+        "satellite_crossing_oracle_audit_50s5a.md",
         "satellite_snapshot_propagation_audit_50s4a.md",
         "satellite_guide.md",
         "source_tree.md",
@@ -5485,3 +5486,50 @@ def test_50s4e_records_complete_and_accepted_gate_evidence():
     assert "50S.5 complete local FoV-crossing oracle work" in roadmap
     assert "50S.6 acceleration" in guide
     assert "remain unauthorized" in guide
+
+def test_50s5a_audits_complete_local_crossing_oracle_contract():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_oracle_audit_50s5a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "documentation-only scientific and API audit",
+        "topocentric geometric vector expressed in GCRS axes",
+        "fixed unit vector expressed in GCRS axes",
+        "validated numerical completeness under the declared time and angular tolerances",
+        "It is not a formal interval-arithmetic proof",
+        "scans every valid record",
+        "SatelliteCrossingConvergenceError",
+        "A fixed sampling grid",
+        "bracket-preserving root method",
+        "detects tangency without requiring a sign change",
+        "Disconnected visits are separate results",
+        "One invalid record does not silently disappear",
+        "tests/test_satellite_crossing_oracle.py",
+        "Analytic trajectory tests exercise the solver independently",
+        "Acceptance of 50S.5A authorizes 50S.5B only",
+    ):
+        assert phrase in audit
+
+    assert "satellite_crossing_oracle_audit_50s5a.md" in index
+    assert "Candidate 50S.5A complete-oracle audit" in architecture
+    assert "50S.5A — Complete local crossing-oracle audit" in roadmap
+    assert "No callable local crossing oracle exists yet" in reference
+    assert "Proposed 50S.5 local crossing-oracle ownership" in source_tree
+    assert "closest existing `tests/test_satellite_crossings.py`" in source_tree
+    assert "Candidate 50S.5A crossing-coordinate contract" in coordinate_guide
+    assert "Candidate 50S.5A complete local crossing-oracle audit" in guide
+    assert "Uncertain numerical intervals must subdivide or fail closed" in (
+        instructions
+    )
+    assert "50S.6 and later behavior remain unauthorized" in guide
