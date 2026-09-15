@@ -269,6 +269,22 @@ def build(output_directory):
     axes.set_title(
         "SatChecker sampled candidate evidence — not verified crossings",
         fontsize=11,
+        pad=28,
+    )
+    axes.text(
+        0.5,
+        1.015,
+        (
+            f"FoV: {query.field_of_view.field_id} — closed circular, "
+            f"ICRS center "
+            f"({query.field_of_view.center_longitude_deg:.3f}°, "
+            f"{query.field_of_view.center_latitude_deg:.3f}°), "
+            f"radius {query.field_of_view.angular_radius_deg:.3f}°"
+        ),
+        transform=axes.transAxes,
+        ha="center",
+        va="bottom",
+        fontsize=8.5,
     )
     axes.text(
         0.5,
