@@ -5386,7 +5386,7 @@ def test_50s4d_documents_candidate_topocentric_boundary():
     for phrase in (
         "Candidate 50S.4D Earth-orientation and topocentric state",
         "topocentric geometric vector expressed in GCRS axes",
-        "Complete-suite, documentation, diff, and scientific acceptance",
+        "Final diff inspection and scientific acceptance remain pending",
     ):
         assert phrase in architecture
     assert "Status:** Candidate implementation; acceptance pending" in roadmap
