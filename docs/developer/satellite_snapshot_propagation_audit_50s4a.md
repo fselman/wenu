@@ -326,4 +326,7 @@ satellite-resource boundary.
 
 Propagation, TEME state generation, Earth-orientation and observer
 transformation, acquisition, exact crossings, and presentation remain absent.
-Fernando's scientific and architectural acceptance remains pending.
+Fernando accepted the scientific and architectural boundary on 2026-09-15.
+This closes 50S.4B and authorizes only 50S.4C validated SGP4/TEME propagation.
+It does not authorize Earth-orientation/topocentric transformation, specimen
+construction, a crossing solver, or 50S.5.

@@ -97,7 +97,8 @@ For current work, read and follow:
   topocentric-validation, and propagated-specimen boundary. In 50S.4B keep
   records immutable and fail closed, load only digest-verified installed
   synthetic resources, preserve full NORAD identifiers, and add no
-  propagation or transformation;
+  propagation or transformation. Fernando accepted 50S.4B on 2026-09-15;
+  only the bounded 50S.4C validated SGP4/TEME wrapper is authorized next;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,

@@ -2463,7 +2463,7 @@ metadata and provider illumination as evidence, and perform no network access,
 cache read, propagation, interpolation, or exact crossing construction.
 
 
-## Local satellite elements and snapshots (50S.4B candidate)
+## Local satellite elements and snapshots (50S.4B accepted)
 
 `SatelliteElementRecord` is an immutable canonical OMM/GP-domain record. It
 retains full integer NORAD identity, UTC element epoch, OMM mean elements and
@@ -2484,4 +2484,6 @@ with `importlib.resources`, requires the records bytes to equal Wenu's
 canonical sorted compact JSON representation, verifies the snapshot and every
 record digest, and then constructs the immutable domain. The default resource
 contains three explicitly synthetic non-operational LEO/MEO/geosynchronous-like
-records. It performs no network access and no propagation.
+records. It performs no network access and no propagation. Fernando accepted
+this API and ownership boundary on 2026-09-15; only 50S.4C propagation is
+authorized next.

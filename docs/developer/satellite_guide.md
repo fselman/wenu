@@ -709,7 +709,7 @@ the focused gate passed all 128 tests and the branch diff check was clean.
 only 50S.4B immutable OMM element and snapshot work is authorized next.
 
 
-### Candidate 50S.4B immutable OMM snapshot
+### Accepted 50S.4B immutable OMM snapshot
 
 The dedicated 50S.4B branch implements only the element/snapshot boundary
 authorized by 50S.4A. `SatelliteElementRecord` retains all required OMM mean
@@ -739,4 +739,6 @@ record count three, and ordered identifiers 900001–900003. The first two
 wheel-import attempts exposed unrelated environment issues—missing
 dependencies in a no-dependency environment and a broken inherited
 `spiceypy` shared library—before the package-local resource check isolated
-the intended boundary. Neither failure involved the snapshot.
+the intended boundary. Neither failure involved the snapshot. Fernando
+accepted 50S.4B on 2026-09-15. The immutable snapshot boundary is closed, and
+only 50S.4C validated SGP4/TEME propagation is authorized next.

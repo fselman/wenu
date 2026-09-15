@@ -1954,7 +1954,7 @@ unauthorized.
 
 ### 50S.4B — Immutable OMM element snapshot
 
-**Status:** Candidate implementation on the dedicated milestone branch.
+**Status:** Accepted by Fernando on 2026-09-15.
 
 The candidate adds typed canonical GP/OMM records, manifest and content-digest
 validation, per-record digests, installed-resource loading, deterministic
@@ -1967,7 +1967,9 @@ production commit `d3cb597`, the expanded gate passed all 158 tests and the
 complete plugin-disabled suite passed all 2,483 tests in 87.11 seconds. An
 isolated installed-wheel check loaded the snapshot from `site-packages`,
 verified its exact manifest digest, and returned all three ordered identifiers.
-Scientific and architectural acceptance remains pending.
+Fernando accepted the scientific and architectural boundary on 2026-09-15.
+Acceptance closes 50S.4B and authorizes only 50S.4C validated SGP4/TEME
+propagation.
 
 ### 50S.4C — Validated SGP4/TEME propagation
 

@@ -1725,7 +1725,7 @@ review passed. Only 50S.4 is authorized next.
   transformation.
 
 
-## 50S.4B satellite element and snapshot ownership (candidate)
+## 50S.4B satellite element and snapshot ownership (accepted)
 
 - `src/wenu/satellites/elements.py` owns the immutable canonical OMM/GP
   record, strict value/semantic validation, canonical JSON encoding, and
@@ -1749,3 +1749,5 @@ At production commit `d3cb597`, the 158-test expanded gate, 2,483-test
 complete suite, and isolated installed-wheel snapshot check passed. The
 installed resource digest was
 `b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457`.
+Fernando accepted this ownership on 2026-09-15. This closes 50S.4B and
+authorizes only 50S.4C validated SGP4/TEME propagation.

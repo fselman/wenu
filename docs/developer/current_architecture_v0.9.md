@@ -837,7 +837,7 @@ propagation, transformation, or crossing result. Acceptance closes 50S.4A and
 authorizes only 50S.4B immutable OMM element and snapshot work.
 
 
-## Candidate 50S.4B immutable element snapshot
+## Accepted 50S.4B immutable element snapshot
 
 The dedicated milestone branch adds the first bounded
 `src/wenu/satellites/` package. `elements.py` owns immutable, fail-closed
@@ -858,4 +858,7 @@ tests and the complete plugin-disabled suite passed all 2,483 tests in 87.11
 seconds. A wheel built from that commit was installed into an isolated virtual
 environment; `load_snapshot()` loaded from `site-packages`, verified
 `b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457`,
-and returned the ordered identifiers 900001, 900002, and 900003.
+and returned the ordered identifiers 900001, 900002, and 900003. Fernando
+accepted the implementation and its bounded scientific ownership on
+2026-09-15. This closes 50S.4B and authorizes only 50S.4C validated SGP4/TEME
+propagation.
