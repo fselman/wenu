@@ -235,3 +235,16 @@ After Fernando accepts this audit, only 50S.5B may:
 
 Acceptance of 50S.5A authorizes 50S.5B only. It does not accept numerical
 tolerances in advance, close 50S.5, or authorize 50S.6.
+
+
+## 10. Candidate audit evidence
+
+On macOS with Python 3.11.7, the focused plugin-disabled documentation gate
+passed all 136 tests in 3.27 seconds. The working tree was clean and
+`git diff --check 41978bc...HEAD` passed after removing two audit-header
+trailing spaces. The branch changes only active documentation and its
+documentation-contract test; it adds no runtime, dependency, package data, or
+generated product.
+
+Fernando's scientific and architectural acceptance remains pending. Until
+acceptance, 50S.5B runtime work and all 50S.6 behavior remain unauthorized.
