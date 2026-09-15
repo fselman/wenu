@@ -3240,7 +3240,11 @@ def test_50s0_audits_satellite_crossing_search_and_photometry():
         "50S.2 — SatChecker crossing adapter",
         "50S.3A — Satellite report and drawing contract audit",
         "50S.3B — SatChecker sampled-candidate reports and tracks",
-        "50S.4 — Small local snapshot, propagation, and specimen builder",
+        "50S.4A — Snapshot and propagation contract audit",
+        "50S.4B — Immutable OMM element snapshot",
+        "50S.4C — Validated SGP4/TEME propagation",
+        "50S.4D — Earth-orientation and topocentric state",
+        "50S.4E — Propagated specimen builder and closure",
         "50S.5 — Complete local FoV-crossing oracle",
         "50S.6 — Conservative local crossing acceleration",
         "50S.7 — Independent illumination and night geometry",
@@ -5175,7 +5179,7 @@ def test_50s3b_documents_candidate_reports_and_shared_path_layers():
     assert "all 217 tests" in architecture
     assert "all 2,473 tests in 83.98 seconds" in architecture
     assert "authorizes only 50S.4 next" in roadmap
-    assert "only 50S.4 is authorized next" in guide
+    assert "only the documentation-only 50S.4A audit is authorized next" in guide
     assert "complete plugin-disabled suite passed all 2,473 tests" in audit
     assert "accepted the bounded 50S.3B implementation on 2026-09-15" in audit
     assert "Only 50S.4 is authorized next" in source_tree
@@ -5210,7 +5214,7 @@ def test_50s4a_audits_snapshot_propagation_and_topocentric_contracts():
         "geocentric geometric TEME",
         "Astropy IERS automatic download remains disabled",
         "degraded accuracy is never enabled silently",
-        "must not call an aberration-bearing result",
+        "aberration-bearing result “geometric ICRS”",
         "Agreement between two paths using the same hidden inputs is not independent evidence",
         "propagated sampled specimens — not verified crossings",
         "It cannot emit",
