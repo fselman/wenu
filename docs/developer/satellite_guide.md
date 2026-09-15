@@ -662,6 +662,8 @@ entry, exit, closest approach, interpolation, propagation, network, cache-read,
 retry, CLI, local catalogue, brightness, or detector behavior.
 
 The candidate focused gate passed 90 tests, including actual Matplotlib
-PNG/PDF/SVG serialization through the canonical chart pipeline. Final visual
-inspection, expanded documentation gates, and complete-suite acceptance remain
-pending.
+PNG/PDF/SVG serialization through the canonical chart pipeline. Fernando then
+accepted the regenerated network-free specimen on 2026-09-15: the explicit
+closed circular FoV annotation, red ordered sample path, four UTC annotations,
+candidate-only title, and PNG/PDF/SVG products were correct. Expanded focused
+and complete-suite acceptance remain pending.
