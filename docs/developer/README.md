@@ -33,6 +33,9 @@ migrations, milestone evidence, and superseded roadmaps are under
   — accepted SatChecker-first, provider-policy, local-oracle, conservative-filter,
   snapshot, specimen-builder, and apparent-brightness decisions for
   artificial-satellite crossings.
+- [`satchecker_provider_contract_audit_50s2a.md`](satchecker_provider_contract_audit_50s2a.md)
+  — accepted SatChecker endpoint, time-scale, candidate-envelope, async,
+  cache, provenance, failure, and redistribution contract for 50S.2B.
 - [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
   scientific and implementation guide maintained separately during the 50S
   foundation branch.

@@ -1866,15 +1866,29 @@ Fernando accepted 50S.1 after the focused Mac gate passed all 139 tests in
 85.52 seconds. PR #123 merged the verified implementation into the satellite
 integration branch as commit `23b851b`.
 
+### 50S.2A — SatChecker provider-contract audit
+
+**Status:** Accepted by Fernando on 2026-09-15.
+
+The audit in `satchecker_provider_contract_audit_50s2a.md` reviews SatChecker
+1.8.0 at source commit `a638d72`. It records the versioned endpoints, explicit
+UTC-to-UT1 conversion boundary, source-inferred geometric topocentric
+ICRF/ICRS-oriented directions, one-second stop-exclusive sampling, 1.2-radius
+candidate envelope, async states, serial no-retry access, exact local cache,
+bounded failures, and unresolved response-data redistribution terms. It changes
+no runtime behavior. Fernando's acceptance authorizes only the bounded 50S.2B
+cached-adapter implementation.
+
 ### 50S.2 — SatChecker crossing adapter
 
-Use SatChecker first for supported bounded circular-FoV queries. Translate only
-at the adapter boundary, preserve exact request, raw response, task status,
-upstream orbit source/epoch, provider version, and stated limitations, and
-normalize results into the 50S.1 domain. Support asynchronous progress, exact
-cache reuse, serial policy-compliant access, and bounded failures. Do not claim
-stronger completeness than SatChecker documents or make ordinary tests depend
-on live service availability.
+After 50S.2A acceptance, implement the policy-compliant cached adapter as
+50S.2B. Translate only at the adapter boundary, preserve exact request and raw
+response receipts, expose asynchronous progress, and normalize successful
+provider output to `SatelliteCrossingCandidate` plus provider-sampled
+evidence. Do not construct `SatelliteCrossingResult`: SatChecker samples do
+not establish exact entry, closest approach, exit, or one connected visit.
+Ordinary tests use synthetic source-shaped specimens and never require live
+service availability.
 
 ### 50S.3 — SatChecker reports and drawable crossing tracks
 

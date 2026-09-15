@@ -223,13 +223,21 @@ then-current terms.
 
 IAU CPS SatChecker is Wenu's first bounded online crossing provider and an
 external comparison oracle for selected ephemerides, range, motion,
-illumination, and circular-field results. Wenu first owns a provider-neutral
-query/result contract so SatChecker endpoint shapes and provider-specific
-fields do not define the central domain. Exact requests and raw responses are
-cached with provenance, async progress is exposed, and retries, concurrency,
-and cadence follow the current provider policy. SatChecker is not the sole
-long-term production dependency because later reproducible queries must work
-from a frozen local snapshot without relying on service availability.
+illumination, and circular-field candidates. Fernando accepted the 50S.2A review on 2026-09-15. It covers
+SatChecker 1.8.0 at commit `a638d72`. Its current service samples at one-second
+steps with a stop-exclusive grid and accepts points within 1.2 times the
+requested radius. It therefore supplies a candidate envelope and sampled
+evidence, not exact connected crossing events.
+
+Wenu's provider-neutral domain remains authoritative. The adapter must record
+the explicit UTC-to-UT1 conversion, source-inferred geometric topocentric
+ICRF/ICRS-oriented coordinate meaning, exact request and response receipts,
+orbit source/epoch, provider version, async progress, and limitations.
+Submissions and polls are serial, automatic retry is forbidden, and ordinary
+tests are network-free. Exact response bytes remain local until provider-data
+redistribution terms are clarified. SatChecker is not the sole long-term
+production dependency because later reproducible queries must work from a
+frozen local snapshot without relying on service availability.
 
 ## 7. Propagation and reference systems
 
@@ -557,8 +565,10 @@ merged the verified implementation into the satellite integration branch as
   architecture guide; no runtime behavior.
 - **50S.1:** provider-neutral identity, observer, FoV, interval, candidate, and
   crossing-result contracts; no propagation yet.
-- **50S.2:** SatChecker circular-field adapter, exact-response cache, async
-  progress, bounded provider-policy handling, and normalized provenance.
+- **50S.2A:** accepted audit of SatChecker endpoints, time and coordinate semantics,
+  candidate envelope, async policy, exact cache, failures, and redistribution.
+- **50S.2B:** implement the cached circular-field adapter, candidate-only
+  normalization, provider-sampled evidence, and explicit progress.
 - **50S.3:** human-readable/JSON reports and FoV charts consuming the same
   SatChecker-derived normalized results; illumination remains provider-derived.
 - **50S.4:** small representative immutable OMM snapshot,

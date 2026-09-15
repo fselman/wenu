@@ -3165,3 +3165,22 @@ subtraction, and topocentric direction. None of those stages is implemented or
 implied by the 50S.1 contracts. Fernando accepted this coordinate boundary on
 2026-09-15 after all 2,428 tests passed; PR #123 merged it as `23b851b`.
 SatChecker adaptation begins only in 50S.2.
+
+
+## 13.2.42 50S.2A SatChecker provider semantics review
+
+Accepted 50S.2A adds no coordinate transform or runtime behavior.
+It finds that SatChecker's public Julian-Date input does not fully state a time
+scale, while the reviewed 1.8.0 source interprets it as UT1. Any 50S.2B adapter
+must explicitly convert Wenu's inclusive UTC interval to UT1 under a declared
+Earth-orientation-data policy, preserve both representations, and forbid a
+hidden IERS download.
+
+The reviewed propagation source yields observer-relative geometric topocentric
+right ascension and declination on ICRF/ICRS-oriented axes, not
+observed/apparent directions. Its one-second sampling grid excludes the stop
+endpoint and its 1.2-radius selection is a candidate envelope. Those samples
+must not be relabelled as Wenu entry, closest-approach, or exit events. Exact
+TEME-to-observer realization remains later local-oracle work. Fernando accepted
+this scientific boundary on 2026-09-15, authorizing only the bounded 50S.2B
+cached-adapter implementation.

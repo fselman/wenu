@@ -3166,6 +3166,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "current_architecture_v0.9.md",
         "implementation_reference.md",
         "post_v0.9_architecture_roadmap.md",
+        "satchecker_provider_contract_audit_50s2a.md",
         "satellite_guide.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -4937,3 +4938,43 @@ def test_50s1_documents_provider_neutral_satellite_crossing_domain():
     ):
         assert "2,428 tests" in text
         assert "23b851b" in text
+
+
+def test_50s2a_audits_satchecker_provider_contract_before_adapter():
+    audit = " ".join(read(
+        DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    roadmap = " ".join(read(
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(
+        DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+    ).split())
+
+    for phrase in (
+        "This audit changes no runtime code",
+        "normalize successful provider output only to `SatelliteCrossingCandidate`",
+        "It must not construct `SatelliteCrossingResult`",
+        "one-second grid with `numpy.arange`",
+        "exclude the computed stop endpoint",
+        "explicit UTC-to-UT1 conversion",
+        "never trigger a hidden IERS download",
+        "outside Wenu's closed requested FoV",
+        "no parallel submissions, no automatic retry, and no hidden polling loop",
+        "Corrupt, partial, mismatched, or obsolete-schema entries fail closed",
+        "must not be committed, packaged, or redistributed",
+        "Ordinary tests use synthetic source-shaped specimens",
+        "Accepted by Fernando on 2026-09-15",
+        "acceptance authorizes only the bounded 50S.2B cached-adapter implementation",
+    ):
+        assert phrase in audit
+
+    assert "satchecker_provider_contract_audit_50s2a.md" in index
+    assert "50S.2A — SatChecker provider-contract audit" in roadmap
+    assert "candidate envelope and sampled evidence" in guide
+    assert "50S.2A SatChecker provider-contract audit ownership (accepted)" in source_tree
+    assert "one-second sampling grid excludes the stop endpoint" in coordinate_guide
+    assert "Fernando accepted this scientific boundary on 2026-09-15" in coordinate_guide

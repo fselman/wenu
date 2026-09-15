@@ -1623,3 +1623,18 @@ owns deterministic contract coverage;
   charts, projection, rendering, semantic SVG, and export remain unchanged;
 - Fernando accepted this ownership on 2026-09-15 after the focused 139-test
   gate and complete suite of 2,428 tests passed; PR #123 merged it as `23b851b`.
+
+
+## 50S.2A SatChecker provider-contract audit ownership (accepted)
+
+- `docs/developer/satchecker_provider_contract_audit_50s2a.md` owns the reviewed
+  provider request, time-scale, coordinate, sampling, candidate-envelope,
+  async, cache, failure, and redistribution decisions;
+- `src/wenu/satellite_crossings.py` remains unchanged and retains the
+  provider-neutral 50S.1 domain;
+- no production adapter module is admitted by this documentation-only audit;
+- the closest future production owner is a distinct provider boundary rather
+  than coordinates, charts, rendering, or the provider-neutral domain module;
+- ordinary provider-contract tests will use synthetic source-shaped specimens;
+  no exact provider response may be committed until redistribution terms are
+  clarified.
