@@ -5450,3 +5450,35 @@ def test_50s4e_documents_bounded_propagated_specimen_candidate():
     assert "does not find a useful field automatically" in guide
     assert "50S.5" in guide
     assert "hidden 50S.5 crossing oracle" in instructions
+
+def test_50s4e_records_complete_candidate_gate_evidence():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+
+    for text in (architecture, roadmap, audit, guide):
+        assert "all 2,522 tests" in text
+        assert "105.38 seconds" in text
+        assert (
+            "16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374"
+            in text
+        )
+        assert "acceptance remains pending" in text.lower()
+    assert "dedicated builder gate passed all 10 tests in 10.58 seconds" in (
+        architecture
+    )
+    assert "expanded satellite/coordinate gate passed all 99 tests" in (
+        architecture
+    )
+    assert "documentation gate passed all 134 tests in 2.45 seconds" in (
+        architecture
+    )
+    assert "d4bb5af084caf3e82621bc75aad902dc7ad9e38e785a97d3fcac0a23d89644fb" in (
+        audit
+    )
+    assert "All three default tracks were below the La Ligua horizon" in audit
+    assert "git diff --check 243b75c...HEAD" in audit
+    assert "50S.5 is not yet authorized" in roadmap
