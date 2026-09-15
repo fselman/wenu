@@ -43,7 +43,7 @@ migrations, milestone evidence, and superseded roadmaps are under
   — candidate dependency, immutable-snapshot, SGP4/TEME, Earth-orientation,
   topocentric-validation, and specimen-builder contract for 50S.4.
 - [`satellite_crossing_oracle_audit_50s5a.md`](satellite_crossing_oracle_audit_50s5a.md)
-  — candidate coordinate, query, validated-numerical-completeness, failure,
+  — accepted coordinate, query, validated-numerical-completeness, failure,
   validation, and ownership contract for the bounded 50S.5B local oracle.
 - [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
   scientific and implementation guide maintained separately during the 50S
