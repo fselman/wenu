@@ -2379,7 +2379,7 @@ warm cache without network access or publishes a validated acquisition
 atomically under a per-identity lock. The 50A.5D.2C candidate connects that
 boundary to `wenu_chart` for exact comet and mixed asteroid/comet preflight.
 
-## Provider-neutral satellite crossing domain (Milestone 50S.1 candidate)
+## Provider-neutral satellite crossing domain (Milestone 50S.1 accepted)
 
 `wenu.satellite_crossings` defines six frozen provider-neutral values:
 `SatelliteIdentity`, `SatelliteObserver`, `SatelliteFieldOfView`,
@@ -2400,4 +2400,5 @@ visit and retains ordered entry, closest-approach, and exit instants, closest
 angular separation, optional provider-derived range, angular rate,
 illumination, event identity, provenance, and warnings. It performs no
 acquisition, propagation, exact crossing solution, illumination calculation,
-charting, or rendering.
+charting, or rendering. Fernando accepted the contract on 2026-09-15 after
+all 2,428 tests passed; PR #123 merged it as `23b851b`.
