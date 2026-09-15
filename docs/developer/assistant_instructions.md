@@ -725,3 +725,14 @@ Fernando scientifically and architecturally accepted 50S.4E on 2026-09-15.
 This closes 50S.4. Only bounded 50S.5 complete local FoV-crossing oracle work
 is authorized next; 50S.6 acceleration and all later satellite behavior remain
 unauthorized.
+
+
+### Accepted 50S.5A audit boundary
+
+Follow `satellite_crossing_oracle_audit_50s5a.md` for complete-local-oracle
+work. Fernando scientifically and architecturally accepted 50S.5A on
+2026-09-15. Only the bounded 50S.5B local crossing-oracle implementation is
+authorized next; 50S.6 acceleration and all later satellite behavior remain
+unauthorized. Preserve the distinction between a fixed geometric field in
+GCRS axes and provider apparent ICRS evidence. Uncertain numerical intervals
+must subdivide or fail closed; they must never become silent negative results.

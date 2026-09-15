@@ -958,3 +958,25 @@ The branch was clean and `git diff --check 243b75c...HEAD` passed. Fernando scie
 Acceptance closes 50S.4. The next authorized boundary is only bounded 50S.5
 complete local FoV-crossing oracle work; no 50S.6 optimization or later
 satellite behavior is authorized.
+
+
+### Accepted 50S.5A complete-oracle audit
+
+The documentation-only 50S.5A review adds no runtime behavior. It identifies
+the accepted 50S.4C/50S.4D chain as the only local trajectory authority,
+retains `satellite_crossings.py` as provider-neutral immutable contracts, and
+proposes `satellites/crossing_oracle.py` as a distinct future scientific
+owner for exhaustive adaptive solving.
+
+Completeness means validated numerical completeness under declared time and
+angular tolerances, not a formal interval-arithmetic theorem over SGP4.
+Every selected snapshot record must be scanned. Uncertain, singular, or
+non-converged intervals subdivide or fail closed and cannot be reported as
+negative. No 50S.5 runtime or 50S.6 acceleration is implemented.
+
+
+The candidate 50S.5A documentation gate passed all 136 tests in 3.27 seconds
+on macOS, and the corrected branch diff check was clean. The final acceptance
+documentation gate passed all 136 tests in 3.00 seconds. Fernando scientifically
+and architecturally accepted 50S.5A on 2026-09-15. This authorizes only bounded
+50S.5B implementation; 50S.6 and later behavior remain unauthorized.
