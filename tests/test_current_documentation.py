@@ -5550,3 +5550,36 @@ def test_50s5a_audits_complete_local_crossing_oracle_contract():
         "50S.6 acceleration and all later satellite behavior remain unauthorized"
         in audit
     )
+
+
+def test_50s5b_documents_candidate_complete_local_crossing_oracle():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_oracle_audit_50s5a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert "Candidate 50S.5B complete local crossing oracle" in architecture
+    assert "50S.5B — Complete local crossing-oracle implementation" in roadmap
+    assert "LocalSatelliteCrossingQuery" in reference
+    assert "LocalSatelliteCrossingOracle" in reference
+    assert "SatelliteCrossingConvergenceError" in reference
+    assert "Candidate 50S.5B local crossing-oracle ownership" in source_tree
+    assert "Candidate 50S.5B local crossing coordinates" in coordinate_guide
+    assert "Candidate 50S.5B complete local crossing oracle" in guide
+    assert "Candidate 50S.5B implementation boundary" in instructions
+    for phrase in (
+        "recursive time-and-angular tolerance connectivity",
+        "zero-duration boundary event",
+        "tests/test_satellite_crossing_oracle.py",
+        "Focused, complete-suite, diff, and Fernando acceptance gates remain pending",
+        "50S.6 and all later behavior remain unauthorized",
+    ):
+        assert phrase in audit
