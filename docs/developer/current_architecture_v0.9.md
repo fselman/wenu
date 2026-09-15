@@ -751,7 +751,7 @@ coordinate, projection, rendering, and export pipeline remains offline. Public
 policies are `acquire-if-missing` (default), `offline`, and `refresh`; an
 explicit resource directory is authoritative and read-only.
 
-## Provider-neutral satellite crossing domain (Milestone 50S.1 candidate)
+## Provider-neutral satellite crossing domain (Milestone 50S.1 accepted)
 
 The dormant `satellite_crossings.py` domain boundary defines immutable
 satellite identity, terrestrial observer/site, explicitly framed closed
@@ -760,4 +760,5 @@ connected-visit result contracts. It reuses `CoordinateSpec` and is not
 exported through the public package facade or consumed by the canonical chart
 pipeline. No satellite acquisition, orbit solution, propagation, coordinate
 transformation, exact crossing solver, report, drawing, or output changes in
-this candidate milestone.
+this accepted milestone. Fernando accepted the implementation on 2026-09-15
+after all 2,428 tests passed; PR #123 merged it as `23b851b`.
