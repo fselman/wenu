@@ -2002,9 +2002,10 @@ horizontal directions, and a topocentric geometric direction expressed in
 GCRS axes. It fails closed outside local EOP coverage. Direct Cartesian
 evidence, independent Skyfield comparison, constructed zenith/horizon/wrap
 geometry, pathological sites, and installed LEO/MEO/GEO-like specimens pass
-the 17-test dedicated and 89-test expanded Mac gates. Complete-suite,
-documentation, diff, and Fernando's scientific acceptance remain pending. No
-field-intersection solver is included.
+the 17-test dedicated and 89-test expanded Mac gates. The 133-test
+documentation gate and complete plugin-disabled suite of 2,511 tests in 95.10
+seconds also pass. Final diff inspection and Fernando's scientific acceptance
+remain pending. No field-intersection solver is included.
 
 ### 50S.4E — Propagated specimen builder and closure
 
