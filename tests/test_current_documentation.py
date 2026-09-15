@@ -5078,7 +5078,7 @@ def test_50s2b_records_accepted_implementation_and_gates():
     assert "50S.2B SatChecker adapter ownership (accepted)" in source_tree
     assert "50S.2B acceptance" in audit
     assert "This closes only the cached SatChecker adapter" in audit
-    assert "Only the documentation-only 50S.3A contract audit is authorized next" in guide
+    assert "only the bounded 50S.3B implementation is authorized next" in guide
 
 
 
@@ -5106,6 +5106,8 @@ def test_50s3a_audits_sampled_candidate_reports_and_shared_path_drawing():
         "PNG, PDF, and SVG must all be produced by the same realized layer",
         "adds no CLI acquisition workflow",
         "authorize only the bounded 50S.3B implementation",
+        "Accepted by Fernando on 2026-09-15",
+        "focused documentation gate passed all 126 tests",
     ):
         assert phrase in audit
 
@@ -5113,5 +5115,5 @@ def test_50s3a_audits_sampled_candidate_reports_and_shared_path_drawing():
     assert "50S.3A — Satellite report and drawing contract audit" in roadmap
     assert "50S.3B — SatChecker sampled-candidate reports and tracks" in roadmap
     assert "Only the documentation-only 50S.3A contract audit is authorized next" in guide
-    assert "50S.3A satellite report and drawing contract audit ownership (candidate)" in source_tree
+    assert "50S.3A satellite report and drawing contract audit ownership (accepted)" in source_tree
     assert "Connecting ordered provider samples is presentation" in coordinate_guide
