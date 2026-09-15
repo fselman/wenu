@@ -4962,7 +4962,7 @@ def test_50s2a_audits_satchecker_provider_contract_before_adapter():
         "exclude the computed stop endpoint",
         "explicit UTC-to-UT1 conversion",
         "never trigger a hidden IERS download",
-        "within Wenu's closed requested FoV",
+        "outside Wenu's closed requested FoV",
         "no parallel submissions, no automatic retry, and no hidden polling loop",
         "Corrupt, partial, mismatched, or obsolete-schema entries fail closed",
         "must not be committed, packaged, or redistributed",
