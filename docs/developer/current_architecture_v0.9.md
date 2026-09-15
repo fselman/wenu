@@ -1021,4 +1021,6 @@ The audit rejects horizon and Earth-occultation filters because the current
 query reports geometric directional crossings rather than visibility. It
 defers phase, coarse vectorized propagation, and HEALPix/time indexing behind
 separate correctness and benchmark gates. No runtime, package, dependency,
-coordinate path, result, or output changes under 50S.6A.
+coordinate path, result, or output changes under 50S.6A. The candidate Mac
+verification passed all 138 documentation tests in 3.99 seconds and the
+corrected branch diff check was clean.

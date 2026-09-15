@@ -5640,3 +5640,7 @@ def test_50s6a_audits_conservative_crossing_acceleration():
     assert "Candidate 50S.6A acceleration-audit boundary" in instructions
     assert "creates neither future source nor acceleration test file" in source_tree
     assert "Runtime acceleration and all later stages remain unauthorized" in roadmap
+    assert "passed all 138 plugin-disabled current-documentation tests" in audit
+    assert "3.99 seconds" in audit
+    assert "git diff --check cc454de...HEAD" in audit
+    assert "corrected branch diff check was clean" in roadmap

@@ -243,8 +243,12 @@ catalogue access, snapshot acquisition, or new footprint shapes.
 
 ## 13. Candidate acceptance and authorization
 
-Acceptance requires Fernando's scientific and architectural review, the focused
-documentation gate, and clean branch-diff evidence. Acceptance of 50S.6A would
+Candidate verification on Fernando's Mac passed all 138 plugin-disabled current-
+documentation tests in 3.99 seconds. The working tree was clean and
+`git diff --check cc454de...HEAD` passed after removing two audit-header
+trailing spaces.
+
+Acceptance requires Fernando's scientific and architectural review. Acceptance of 50S.6A would
 authorize only a bounded 50S.6B first implementation of the topocentric
 cone/orbital-shell conservative selector and its exact-oracle equivalence
 evidence.

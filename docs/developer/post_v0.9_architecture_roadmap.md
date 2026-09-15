@@ -2243,6 +2243,10 @@ and benchmark admission. It rejects horizon and Earth-occultation removal under
 the current geometric query semantics and defers phase, coarse vectorized
 states, and HEALPix/time indexing.
 
+Candidate verification passed all 138 plugin-disabled documentation tests in
+3.99 seconds on Fernando's Mac. The working tree and corrected branch diff
+check were clean.
+
 Acceptance would authorize only bounded 50S.6B implementation of the first
 topocentric cone/orbital-shell selector. Runtime acceleration and all later
 stages remain unauthorized until that acceptance.
