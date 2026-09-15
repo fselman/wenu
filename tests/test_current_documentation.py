@@ -3168,6 +3168,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "post_v0.9_architecture_roadmap.md",
         "satchecker_provider_contract_audit_50s2a.md",
         "satellite_report_drawing_audit_50s3a.md",
+        "satellite_snapshot_propagation_audit_50s4a.md",
         "satellite_guide.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
@@ -5178,3 +5179,58 @@ def test_50s3b_documents_candidate_reports_and_shared_path_layers():
     assert "complete plugin-disabled suite passed all 2,473 tests" in audit
     assert "accepted the bounded 50S.3B implementation on 2026-09-15" in audit
     assert "Only 50S.4 is authorized next" in source_tree
+
+
+
+def test_50s4a_audits_snapshot_propagation_and_topocentric_contracts():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "This documentation-only audit",
+        "50S.4B — immutable OMM snapshot and element domain",
+        "50S.4C — validated SGP4/TEME propagation",
+        "50S.4D — Earth-orientation and topocentric state chain",
+        "50S.4E — developer specimen builder and closure",
+        "sgp4>=2.25,<3",
+        "Do not rely on Skyfield's transitive dependency",
+        "WGS-72 is mandatory",
+        "CCSDS 502.0-B-3",
+        "synthetic and non-operational",
+        "No live CelesTrak, Space-Track, or SatChecker response is committed",
+        "split Julian date parts",
+        "geocentric geometric TEME",
+        "Astropy IERS automatic download remains disabled",
+        "degraded accuracy is never enabled silently",
+        "must not call an aberration-bearing result",
+        "Agreement between two paths using the same hidden inputs is not independent evidence",
+        "propagated sampled specimens — not verified crossings",
+        "It cannot emit",
+        "authorize only 50S.4B immutable OMM element and snapshot work",
+    ):
+        assert phrase in audit
+
+    assert "satellite_snapshot_propagation_audit_50s4a.md" in index
+    assert "Candidate 50S.4A snapshot and propagation audit" in architecture
+    for phrase in (
+        "50S.4A — Snapshot and propagation contract audit",
+        "50S.4B — Immutable OMM element snapshot",
+        "50S.4C — Validated SGP4/TEME propagation",
+        "50S.4D — Earth-orientation and topocentric state",
+        "50S.4E — Propagated specimen builder and closure",
+    ):
+        assert phrase in roadmap
+    assert "50S.4 snapshot and propagation admission review" in guide
+    assert "only the documentation-only 50S.4A audit is authorized next" in guide
+    assert "50S.4A snapshot and propagation contract audit ownership (candidate)" in source_tree
+    assert "TEME and topocentric transformation admission note" in coordinate_guide
+    assert "not automatically an ICRS astrometric position" in coordinate_guide
+    assert "satellite_snapshot_propagation_audit_50s4a.md" in instructions
