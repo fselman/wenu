@@ -2607,3 +2607,18 @@ The authorized 50S.6B implementation is limited to
 the topocentric field-cone versus bounded orbital-shell selector. Phase,
 coarse-state, HEALPix/time, horizon, and occultation filters remain outside that
 first slice.
+
+### Conservative cone-shell selector (50S.6B candidate)
+
+`ConeShellPolicy` declares the admitted snapshot, 60-second interval limit,
+element-domain limits, outward orbital-speed factor, observer-speed bound, and
+numerical margin. `ConservativeConeShellSelector.select(query)` returns one
+NORAD-ordered immutable `ConeShellDecision` per snapshot record inside a
+`ConeShellSelection`.
+
+A decision is `reject`, `retain`, or `indeterminate`.
+`exact_solver_norad_catalog_ids` contains both retained and indeterminate
+records. The selector never returns `SatelliteCrossingResult` and does not
+coordinate an accelerated solve. The accepted
+`LocalSatelliteCrossingOracle.solve(query)` API and implementation remain
+unchanged.

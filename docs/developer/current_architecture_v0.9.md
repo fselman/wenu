@@ -1026,3 +1026,18 @@ separate correctness and benchmark gates. No runtime, package, dependency,
 coordinate path, result, or output changes under 50S.6A. The candidate Mac
 verification passed all 138 documentation tests in 3.99 seconds and the
 corrected branch diff check was clean.
+
+### Candidate 50S.6B conservative cone-shell selector
+
+The candidate adds `satellites/crossing_acceleration.py` as the distinct owner
+of immutable tri-state first-stage evidence. It evaluates one accepted
+SGP4/WGS-72 and installed-IERS-A topocentric start state, derives an
+OMM-shell Kepler perigee speed with an explicit 2.5 safety factor plus observer
+speed bound, and encloses the complete admitted interval in a topocentric
+reachable cap.
+
+The supported production domain is deliberately limited to
+`synthetic_50s4b_v1` and intervals of at most 60 seconds. All unsupported or
+weak cases are `indeterminate`. The accepted exhaustive oracle is unchanged
+and remains independently callable. This slice adds no accelerated coordinator
+and cannot return crossing results.

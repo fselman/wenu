@@ -5647,3 +5647,42 @@ def test_50s6a_records_accepted_conservative_crossing_acceleration():
     assert "scientifically and architecturally accepted 50S.6A on 2026-09-15" in audit
     assert "authorizes only a bounded 50S.6B first implementation" in audit
     assert "all later behavior would remain unauthorized" in audit
+
+
+def test_50s6b_documents_candidate_cone_shell_selector():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_acceleration_audit_50s6a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert "Candidate 50S.6B conservative cone-shell selector" in architecture
+    assert "50S.6B — First conservative cone-shell selector" in roadmap
+    assert "ConservativeConeShellSelector.select(query)" in reference
+    assert "Candidate 50S.6B selector ownership" in source_tree
+    assert "Candidate 50S.6B cone-shell coordinate evidence" in coordinate_guide
+    assert "Candidate 50S.6B cone-shell selector" in guide
+    assert "Candidate 50S.6B cone-shell selector boundary" in instructions
+    for phrase in (
+        "src/wenu/satellites/crossing_acceleration.py",
+        "synthetic_50s4b_v1",
+        "intervals no longer than 60 seconds",
+        "2.5 safety factor",
+        "0.6 km/s observer-speed allowance",
+        "strict antipodal rejection",
+        "exact-oracle absence for the rejected record",
+        "all three installed records across the complete admitted interval",
+        "dedicated gate passed all 9 tests in 34.58 seconds",
+        "passed all 78 tests in 99.99 seconds",
+        "Complete-suite, documentation, diff, and Fernando acceptance gates remain pending",
+    ):
+        assert phrase in audit
+    assert "does not coordinate an accelerated solve" in reference
+    assert "package exports expose the four selector contracts" in source_tree

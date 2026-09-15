@@ -256,3 +256,29 @@ evidence.
 Phase/reachable-arc filtering, coarse vectorized propagation, HEALPix/time
 indexing, horizon/occultation semantics, 50S.7, and all later behavior would
 remain unauthorized.
+
+## 14. Candidate 50S.6B implementation
+
+The bounded candidate adds `src/wenu/satellites/crossing_acceleration.py`,
+exports four supported immutable selector contracts, and adds
+`tests/test_satellite_crossing_acceleration.py`. The selector admits only
+`synthetic_50s4b_v1` and intervals no longer than 60 seconds.
+
+One accepted start state supplies the initial topocentric direction and range.
+The OMM mean motion/eccentricity shell supplies a Kepler perigee speed, expanded
+by a 2.5 safety factor and a 0.6 km/s observer-speed allowance. The resulting
+whole-interval relative-displacement ball defines a reachable angular cap.
+Strict separation from the field radius, query angular tolerance, and numerical
+margin is required for `reject`; every unsupported or inconclusive case is
+`indeterminate`.
+
+The durable tests verify immutability, tri-state behavior, below-horizon
+geometric retention, strict antipodal rejection, exact-oracle absence for the
+rejected record, deterministic ordering, unadmitted-snapshot fallback, and
+that the recorded speed bound encloses sampled relative displacement for all
+three installed records across the complete admitted interval.
+
+The dedicated gate passed all 9 tests in 34.58 seconds. The expanded selector,
+oracle, crossing-contract, element, SGP4, topocentric, and package-boundary gate
+passed all 78 tests in 99.99 seconds. Complete-suite, documentation, diff, and
+Fernando acceptance gates remain pending.

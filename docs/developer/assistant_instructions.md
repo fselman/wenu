@@ -762,3 +762,18 @@ with the accepted geometric query semantics. Fernando scientifically and archite
 Only bounded 50S.6B implementation of the first topocentric cone/orbital-shell
 selector is authorized. No phase stage, coarse vectorized propagator,
 HEALPix/time index, horizon/occultation filter, or later behavior is authorized.
+
+### Candidate 50S.6B cone-shell selector boundary
+
+The candidate `satellites/crossing_acceleration.py` adds only immutable
+`ConeShellPolicy`, `ConeShellDecision`, `ConeShellSelection`, and
+`ConservativeConeShellSelector`. It admits only
+`synthetic_50s4b_v1` and intervals no longer than 60 seconds. Rejection
+requires strict separation between the closed field and a whole-interval
+reachable cap derived from the accepted initial topocentric state and an
+outward shell-speed bound.
+
+Every unsupported snapshot, longer interval, unsupported element regime,
+insufficient range, or initial-state failure is `indeterminate` and must reach
+the exact 50S.5 solver. No accelerated coordinator, phase filter, coarse-state
+filter, horizon/occultation filter, index, or changed oracle result is included.
