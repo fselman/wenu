@@ -2210,3 +2210,15 @@ seconds and the corrected branch diff check was clean. The final acceptance
 documentation gate passed all 136 tests in 3.00 seconds. Fernando scientifically
 and architecturally accepted 50S.5A on 2026-09-15. Only bounded 50S.5B is
 authorized next; 50S.6 and later behavior remain unauthorized.
+
+### 50S.5B — Complete local crossing-oracle implementation (candidate)
+
+**Status:** Bounded implementation candidate pending focused, complete-suite,
+diff, and Fernando acceptance gates.
+
+The candidate introduces the dedicated local numerical owner, immutable query,
+explicit convergence failure, exhaustive all-record scan, adaptive motion and
+curvature evidence, bracketed entry/exit refinement, bounded tangent detection,
+recursive tolerance-connected visit assembly, deterministic ordering, and
+complete SGP4/IERS/observer/solver provenance. It adds no 50S.6 acceleration or
+later satellite behavior.
