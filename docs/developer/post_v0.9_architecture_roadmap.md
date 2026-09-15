@@ -2190,9 +2190,9 @@ accepted 50S.4E on 2026-09-15, closing 50S.4 and authorizing only bounded
 and drawing remain unauthorized.
 
 
-### 50S.5A — Complete local crossing-oracle audit (candidate)
+### 50S.5A — Complete local crossing-oracle audit (accepted)
 
-**Status:** Documentation-only candidate pending Fernando's acceptance.
+**Status:** Accepted by Fernando on 2026-09-15.
 
 Freeze the coordinate compatibility, immutable query, declared tolerance,
 validated numerical completeness, adaptive subdivision, root/extremum,
@@ -2206,5 +2206,7 @@ reporting, drawing, or additional footprint types.
 
 
 The candidate 50S.5A focused documentation gate passed all 136 tests in 3.27
-seconds and the corrected branch diff check was clean. Fernando's acceptance
-remains pending.
+seconds and the corrected branch diff check was clean. The final acceptance
+documentation gate passed all 136 tests in 3.00 seconds. Fernando scientifically
+and architecturally accepted 50S.5A on 2026-09-15. Only bounded 50S.5B is
+authorized next; 50S.6 and later behavior remain unauthorized.
