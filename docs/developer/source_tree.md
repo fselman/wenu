@@ -1604,7 +1604,7 @@ owns deterministic contract coverage;
 - coordinate, state, temporal-component, projection, renderer, semantic,
   style, furniture, and export owners do not change in the audit.
 
-## 50S.1 provider-neutral satellite-crossing ownership (candidate)
+## 50S.1 provider-neutral satellite-crossing ownership (accepted)
 
 - `src/wenu/satellite_crossings.py` owns immutable satellite identity,
   terrestrial observer/site, explicitly framed closed circular FoV, inclusive
@@ -1620,4 +1620,6 @@ owns deterministic contract coverage;
   satellite production modules justify that boundary;
 - acquisition, OMM/TLE ingestion, SGP4/TEME state, observer transformation,
   exact crossing solution, indexing, illumination, photometry, reports,
-  charts, projection, rendering, semantic SVG, and export remain unchanged.
+  charts, projection, rendering, semantic SVG, and export remain unchanged;
+- Fernando accepted this ownership on 2026-09-15 after the focused 139-test
+  gate and complete 2,428-test suite passed; PR #123 merged it as `23b851b`.
