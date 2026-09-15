@@ -250,3 +250,34 @@ The final acceptance documentation gate passed all 136 tests in 3.00 seconds.
 Fernando scientifically and architecturally accepted 50S.5A on 2026-09-15.
 This closes the audit and authorizes only bounded 50S.5B implementation. 50S.6
 acceleration and all later satellite behavior remain unauthorized.
+
+## 11. Accepted 50S.5B implementation
+
+The bounded implementation follows the accepted ownership decision with
+`src/wenu/satellites/crossing_oracle.py` and the independent durable oracle in
+`tests/test_satellite_crossing_oracle.py`. The analytic path does not use SGP4
+or Astropy; installed composition scans the ordered three-record snapshot and
+retains final-state SGP4 and IERS-A identity.
+
+Adaptive rejection requires the motion envelope to certify an interval outside.
+Possible contact subdivides to the declared time tolerance, boundary roots stay
+bracketed, closest-approach refinement stays bounded, and a no-sign-change
+minimum in the angular uncertainty band becomes one zero-duration boundary
+event. Numerical fragments merge only when recursive sampling certifies
+continuous containment within the declared time and angular tolerances.
+
+## 12. Accepted 50S.5B gate evidence
+
+On Fernando's Mac with Python 3.11.7, the dedicated plugin-disabled oracle
+gate passed all 13 tests in 60.62 seconds. The expanded oracle, crossing,
+element, SGP4, topocentric, SatChecker, coordinate-service, and package-boundary
+gate passed all 108 tests in 70.80 seconds. The documentation gate passed all
+137 tests in 3.33 seconds, and the complete plugin-disabled suite passed all
+2,538 tests in 163.36 seconds. The working tree was clean and
+`git diff --check aa6f91a...HEAD` passed.
+
+Focused, complete-suite, documentation, and diff gates are complete. Fernando
+scientifically and architecturally accepted 50S.5B on 2026-09-15. This closes
+50S.5 and authorizes only a documentation-first 50S.6 conservative local
+crossing acceleration audit. Runtime acceleration and all later behavior remain
+unauthorized.

@@ -2210,3 +2210,23 @@ seconds and the corrected branch diff check was clean. The final acceptance
 documentation gate passed all 136 tests in 3.00 seconds. Fernando scientifically
 and architecturally accepted 50S.5A on 2026-09-15. Only bounded 50S.5B is
 authorized next; 50S.6 and later behavior remain unauthorized.
+
+### 50S.5B — Complete local crossing-oracle implementation (accepted)
+
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-09-15.
+
+The accepted implementation introduces the dedicated local numerical owner, immutable query,
+explicit convergence failure, exhaustive all-record scan, adaptive motion and
+curvature evidence, bracketed entry/exit refinement, bounded tangent detection,
+recursive tolerance-connected visit assembly, deterministic ordering, and
+complete SGP4/IERS/observer/solver provenance. It adds no 50S.6 acceleration or
+later satellite behavior.
+
+Mac verification passed the 13-test dedicated oracle gate in 60.62 seconds,
+the 108-test expanded gate in 70.80 seconds, the 137-test documentation gate
+in 3.33 seconds, and all 2,538 plugin-disabled tests in 163.36 seconds. The
+working tree was clean and `git diff --check aa6f91a...HEAD` passed. Acceptance
+closes 50S.5 and authorizes only a documentation-first 50S.6 conservative local
+crossing acceleration audit. Runtime acceleration, 50S.7, and all later
+satellite behavior remain unauthorized.

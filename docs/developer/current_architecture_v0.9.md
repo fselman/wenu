@@ -980,3 +980,30 @@ on macOS, and the corrected branch diff check was clean. The final acceptance
 documentation gate passed all 136 tests in 3.00 seconds. Fernando scientifically
 and architecturally accepted 50S.5A on 2026-09-15. This authorizes only bounded
 50S.5B implementation; 50S.6 and later behavior remain unauthorized.
+
+### Accepted 50S.5B complete local crossing oracle
+
+The accepted implementation adds the immutable `LocalSatelliteCrossingQuery`, exhaustive
+`LocalSatelliteCrossingOracle`, and explicit
+`SatelliteCrossingConvergenceError` in
+`satellites/crossing_oracle.py`. Every selected snapshot record follows the
+accepted 50S.4C/50S.4D chain. Endpoint/midpoint subdivision, topocentric angular
+rate, curvature evidence, bracket-preserving roots, bounded minimum refinement,
+and recursive time-and-angular tolerance connectivity produce ordered connected
+visits.
+
+A no-sign-change tangent in the angular uncertainty band becomes one refined
+zero-duration boundary event. Disconnected visits remain separate. The final
+state retains snapshot, record, SGP4, observer, IERS-A, solver, tolerance, and
+warning evidence. Resource exhaustion or any record failure aborts the complete
+query rather than returning a partial negative result. It adds no
+50S.6 filter, illumination, photometry, CLI, report, drawing, or export.
+
+Candidate verification on Fernando's Mac passed the 13-test dedicated oracle
+gate in 60.62 seconds, the 108-test expanded satellite/coordinate/package
+gate in 70.80 seconds, the 137-test documentation gate in 3.33 seconds, and
+the complete plugin-disabled suite of 2,538 tests in 163.36 seconds. The
+working tree was clean and `git diff --check aa6f91a...HEAD` passed. Fernando scientifically and architecturally accepted 50S.5B on 2026-09-15,
+closing 50S.5. Only a documentation-first 50S.6 conservative-acceleration audit
+is authorized next; runtime acceleration and all later behavior remain
+unauthorized.

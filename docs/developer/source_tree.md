@@ -1840,3 +1840,22 @@ oracle ownership rather than expanding this specimen builder.
 Fernando scientifically and architecturally accepted this ownership contract
 on 2026-09-15. Only bounded 50S.5B implementation is authorized next; 50S.6
 and later behavior remain unauthorized.
+
+### Accepted 50S.5B local crossing-oracle ownership
+
+- `src/wenu/satellites/crossing_oracle.py` owns the immutable local query,
+  exhaustive adaptive evaluation, root/minimum refinement, tolerance-connected
+  visit assembly, deterministic ordering, provenance, and convergence failure;
+- `src/wenu/satellite_crossings.py` retains provider-neutral identity, field,
+  interval, candidate, and result value contracts;
+- `tests/test_satellite_crossing_oracle.py` owns analytic trajectories
+  independent of SGP4/Astropy plus installed-snapshot composition and resource
+  provenance;
+- `satellites/sgp4.py`, `satellites/topocentric.py`, and
+  `satellites/snapshots.py` retain their accepted lower-level ownership.
+
+The new production file is justified by its distinct numerical-convergence and
+fail-closed lifecycle. It adds no provider, cache, rendering, reporting,
+illumination, photometry, or 50S.6 responsibility. Fernando scientifically and
+architecturally accepted this ownership on 2026-09-15. Only a documentation-first
+50S.6 acceleration audit is authorized next.

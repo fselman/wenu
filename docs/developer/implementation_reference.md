@@ -2576,3 +2576,20 @@ intervals.
 continuous crossing has already been solved. 50S.4E sampled specimens remain
 non-oracular input evidence. Fernando accepted this contract on 2026-09-15;
 only bounded 50S.5B implementation is authorized next.
+
+### Complete local crossing oracle (50S.5B accepted)
+
+`LocalSatelliteCrossingQuery(snapshot, observer, field_of_view, interval,
+time_tolerance_seconds, angular_tolerance_deg)` is an immutable exhaustive
+request. `LocalSatelliteCrossingOracle(max_evaluations_per_record=20000)`
+returns a tuple of existing `SatelliteCrossingResult` visits ordered by full
+NORAD catalogue identifier and entry instant. It raises
+`SatelliteCrossingConvergenceError` instead of returning an incomplete set.
+
+The compatible field is a fixed closed circular geometric topocentric
+direction expressed in GCRS axes. Query endpoints are inclusive, boundary touch
+counts, a tangent is a zero-duration result, and adjacent numerical fragments
+merge only after recursive time/angular tolerance connectivity. Illumination
+remains `None`. Fernando scientifically and architecturally accepted this
+boundary on 2026-09-15. Only a documentation-first 50S.6 acceleration audit is
+authorized next.
