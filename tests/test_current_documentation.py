@@ -4884,3 +4884,46 @@ def test_assistant_instructions_govern_production_module_placement():
 
     assert "├── resources.py                installed-resource access" in source_tree
     assert "├── resources/                  installed-resource access" not in source_tree
+
+def test_50s1_documents_provider_neutral_satellite_crossing_domain():
+    roadmap = " ".join(read(
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(
+        DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+    ).split())
+
+    for phrase in (
+        "Candidate implementation on the dedicated milestone branch",
+        "explicitly framed closed circular FoV",
+        "provider acquisition, propagation, charts, projection, rendering",
+        "Spherical rectangles, WCS/instrument footprints",
+        "SatChecker adaptation",
+    ):
+        assert phrase in roadmap
+
+    for phrase in (
+        "The 50S.1 admission review found no existing owner",
+        "satellite_crossings.py",
+        "SatelliteCrossingCandidate",
+        "one connected visit",
+        "accepts boundary touch",
+        "src/wenu/satellites/",
+    ):
+        assert phrase in guide
+
+    assert "advanced domain contracts" in reference
+    assert "include both endpoints" in reference
+    assert "Boundary touch is a valid zero-duration crossing" in reference
+    assert "50S.1 provider-neutral satellite-crossing ownership" in source_tree
+    assert "tests/test_satellite_crossings.py" in source_tree
+    assert "adds no TEME state" in coordinate_guide
+    assert "one chart observation instant" in coordinate_guide
+    assert "dormant satellite_crossings.py domain boundary" in architecture
+    assert "No satellite acquisition, orbit solution, propagation" in architecture
