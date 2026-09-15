@@ -430,3 +430,24 @@ and bounded query inputs. It cannot emit `SatelliteCrossingResult`, claim
 complete catalogue coverage, find exact crossing events, or choose production
 solver tolerances. Focused, complete-suite, diff, generated-product, and
 Fernando acceptance evidence remain pending.
+
+### Candidate 50S.4E complete gate evidence
+
+The dedicated builder gate passed all 10 tests in 10.58 seconds. The expanded
+element, SGP4, topocentric, specimen, crossing-contract, SatChecker, and
+coordinate gate passed all 99 tests in 18.07 seconds. The final documentation
+gate passed all 134 tests in 2.45 seconds, and the complete plugin-disabled
+suite passed all 2,522 tests in 105.38 seconds.
+
+The inspected product retained snapshot SHA-256
+`2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe`,
+ordered records 300001, 300002, and 300003, bundled IERS-A SHA-256
+`d4bb5af084caf3e82621bc75aad902dc7ad9e38e785a97d3fcac0a23d89644fb`,
+the explicit La Ligua observer and three-instant grid, and the required
+**propagated sampled specimens — not verified crossings** label. Its own
+SHA-256 was
+`16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374`.
+All three default tracks were below the La Ligua horizon; this is valid sampled
+geometry and no visibility or crossing claim was made. The working tree and
+branch were clean and `git diff --check 243b75c...HEAD` passed. Fernando's
+scientific and architectural acceptance remains pending.
