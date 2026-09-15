@@ -5411,4 +5411,3 @@ def test_50s4d_documents_candidate_topocentric_boundary():
     assert "Candidate 50S.4D local topocentric state" in guide
     assert "exact IERS-A SHA-256 and coverage" in guide
     assert "only this bounded candidate is authorized" in instructions
-
