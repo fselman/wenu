@@ -414,7 +414,7 @@ diff check is clean. Fernando scientifically and architecturally accepted
 propagated-specimen builder work; it does not authorize a crossing solver or
 50S.5.
 
-## Candidate 50S.4E implementation evidence
+## Accepted 50S.4E implementation evidence
 
 The dedicated candidate adds the admitted
 `tools/build_50s4_satellite_specimens.py` developer tool without adding a
@@ -431,7 +431,7 @@ complete catalogue coverage, find exact crossing events, or choose production
 solver tolerances. Focused, complete-suite, diff, generated-product, and
 Fernando acceptance evidence remain pending.
 
-### Candidate 50S.4E complete gate evidence
+### Accepted 50S.4E complete gate evidence
 
 The dedicated builder gate passed all 10 tests in 10.58 seconds. The expanded
 element, SGP4, topocentric, specimen, crossing-contract, SatChecker, and
@@ -449,5 +449,8 @@ SHA-256 was
 `16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374`.
 All three default tracks were below the La Ligua horizon; this is valid sampled
 geometry and no visibility or crossing claim was made. The working tree and
-branch were clean and `git diff --check 243b75c...HEAD` passed. Fernando's
-scientific and architectural acceptance remains pending.
+branch were clean and `git diff --check 243b75c...HEAD` passed. Fernando scientifically and architecturally accepted 50S.4E on 2026-09-15.
+
+This closes 50S.4 and authorizes only bounded 50S.5 complete local
+FoV-crossing oracle work. It does not authorize 50S.6 acceleration or any
+illumination, photometry, detector, CLI, reporting, or drawing behavior.
