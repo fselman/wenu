@@ -5576,7 +5576,7 @@ def test_50s5b_documents_candidate_complete_local_crossing_oracle():
     assert "Candidate 50S.5B complete local crossing oracle" in guide
     assert "Candidate 50S.5B implementation boundary" in instructions
     for phrase in (
-        "recursive time-and-angular tolerance connectivity",
+        "recursive sampling certifies continuous containment within the declared time and angular tolerances",
         "zero-duration boundary event",
         "tests/test_satellite_crossing_oracle.py",
         "Focused, complete-suite, diff, and Fernando acceptance gates remain pending",
