@@ -928,3 +928,19 @@ Acceptance closes the Earth-orientation/topocentric boundary and authorizes
 only bounded 50S.4E propagated-specimen builder work. No crossing, field
 intersection, illumination, photometry, CLI, chart, or specimen behavior is
 added by 50S.4D.
+
+### Candidate 50S.4E propagated sampled specimens
+
+`tools/build_50s4_satellite_specimens.py` is the candidate developer-only
+50S.4E composition boundary. It loads the installed
+`synthetic_50s4b_v1` snapshot, propagates its ordered records through the
+accepted SGP4/TEME and topocentric chains, and writes one deterministic JSON
+document only beneath a caller-selected output directory.
+
+The document records the snapshot digest and record identity, evaluation grid,
+observer, exact Earth-orientation resource, propagator identity, software
+version, sampled TEME states, sampled topocentric states, and bounded query
+inputs. It is labelled **propagated sampled specimens — not verified
+crossings**. It has no network client, does not construct
+`SatelliteCrossingResult`, does not find entry/exit or closest approach, and
+does not define production solver tolerances or implement 50S.5.
