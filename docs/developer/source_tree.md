@@ -1675,7 +1675,7 @@ owns deterministic contract coverage;
 - Fernando accepted the audit on 2026-09-15; only bounded 50S.3B report and sampled-candidate layer implementation is admitted next.
 
 
-## 50S.3B satellite presentation ownership (candidate)
+## 50S.3B satellite presentation ownership (accepted)
 
 - `src/wenu/satellite_presentations.py` owns the terminal-response report
   model and deterministic human-readable/JSON serialization;
@@ -1696,3 +1696,9 @@ owns deterministic contract coverage;
 - provider access, polling, cache reads, CLI orchestration, interpolation,
   propagation, exact crossing events, illumination calculation, photometry,
   and detector consequences are absent.
+
+
+Fernando accepted the 50S.3B ownership and bounded implementation on
+2026-09-15 after the 217-test focused gate, complete 2,473-test suite,
+127-test documentation gate, clean diff check, and PNG/PDF/semantic-SVG visual
+review passed. Only 50S.4 is authorized next.
