@@ -5073,7 +5073,7 @@ def test_50s2b_records_accepted_implementation_and_gates():
     ):
         assert "2026-09-15" in text
     assert "all 2,457 tests in 88.48 seconds" in architecture
-    assert "Acceptance closes 50S.2B and authorizes only 50S.3" in roadmap
+    assert "accepted 50S.3A now authorizes only bounded 50S.3B" in roadmap
     assert "accepted the bounded 50S.2B API and ownership" in reference
     assert "50S.2B SatChecker adapter ownership (accepted)" in source_tree
     assert "50S.2B acceptance" in audit
@@ -5105,7 +5105,7 @@ def test_50s3a_audits_sampled_candidate_reports_and_shared_path_drawing():
         "sky/artificial_satellites/satchecker_candidates/norad_<catalogue_id>/sampled_track",
         "PNG, PDF, and SVG must all be produced by the same realized layer",
         "adds no CLI acquisition workflow",
-        "authorize only the bounded 50S.3B implementation",
+        "authorizes only the bounded 50S.3B implementation",
         "Accepted by Fernando on 2026-09-15",
         "focused documentation gate passed all 126 tests",
     ):
