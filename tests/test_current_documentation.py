@@ -5412,3 +5412,41 @@ def test_50s4d_documents_accepted_topocentric_boundary():
     assert "Accepted 50S.4D local topocentric state" in guide
     assert "exact IERS-A SHA-256 and coverage" in guide
     assert "only the bounded 50S.4E propagated-specimen builder is authorized next" in instructions
+
+def test_50s4e_documents_bounded_propagated_specimen_candidate():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for text in (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        audit,
+        guide,
+        instructions,
+    ):
+        assert "propagated sampled specimens — not verified crossings" in text
+    assert "tools/build_50s4_satellite_specimens.py" in architecture
+    assert "caller-selected output directory" in architecture
+    assert "Candidate implementation pending" in roadmap
+    assert "tests/test_satellite_specimens.py" in source_tree
+    assert "No new `src/wenu` module is admitted" in source_tree
+    assert "topocentric geometric direction expressed in GCRS axes" in (
+        coordinate_guide
+    )
+    assert "cannot emit `SatelliteCrossingResult`" in audit
+    assert "does not find a useful field automatically" in guide
+    assert "50S.5" in guide
+    assert "hidden 50S.5 crossing oracle" in instructions
