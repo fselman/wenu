@@ -3147,3 +3147,20 @@ UTC civil days and converts both boundaries to JD TDB before applying the SBDB
 perihelion-time constraint. Returned `tp` values retain their TDB identity;
 UTC dates in the human table are derived display values. No discovered row is
 an apparent direction, observer-relative state, or visibility prediction.
+
+## 13.2.41 50S.1 provider-neutral satellite crossing domain
+
+Candidate 50S.1 adds no TEME state, Earth-fixed transformation, topocentric
+satellite direction, or new coordinate frame. The initial closed circular
+satellite FoV retains an ordinary `CoordinateSpec`, so its spherical centre is
+never inferred from a provider payload or planar chart boundary. The separate
+`SatelliteObserver` retains site, vacuum-refraction default, and declared
+Earth-orientation policy while the `InclusiveTimeInterval` owns explicit UTC
+start and stop instants. This separation prevents one chart observation instant
+from being mistaken for a multi-instant satellite query.
+
+The accepted future chain remains OMM/TLE orbit solution through validated SGP4
+to explicit geometric TEME state, declared Earth-fixed transformation, observer
+subtraction, and topocentric direction. None of those stages is implemented or
+implied by the 50S.1 candidate contracts. SatChecker adaptation begins only in
+50S.2.
