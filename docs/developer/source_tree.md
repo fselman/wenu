@@ -1778,7 +1778,7 @@ and successful TEME/WGS-72/status-zero propagation for all three records.
 Fernando accepted this ownership on 2026-09-15 after all implementation, complete-suite, documentation, and installed-wheel gates passed. Only 50S.4D Earth-orientation and topocentric state work is authorized next.
 
 
-## 50S.4D Earth-orientation/topocentric ownership (candidate)
+## 50S.4D Earth-orientation/topocentric ownership (accepted)
 
 - `src/wenu/satellites/topocentric.py` owns explicit installed-IERS-A
   selection and identity, TEME → ITRS transformation, WGS-84 observer
@@ -1799,4 +1799,6 @@ Fernando accepted this ownership on 2026-09-15 after all implementation, complet
 A new production module is justified because EOP resource provenance,
 terrestrial transformation, observer subtraction, and coverage failure form a
 distinct lifecycle and failure boundary from OMM snapshot loading, SGP4
-propagation, and generic spherical geometry transformation.
+propagation, and generic spherical geometry transformation. Fernando accepted
+this ownership on 2026-09-15. Only 50S.4E specimen-builder work is authorized
+next.
