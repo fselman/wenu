@@ -507,8 +507,29 @@ def _solve_trajectory(
             angular_tolerance_deg,
             time_tolerance_seconds,
         )
-    return tuple(
-        SatelliteCrossingResult(
+    results = []
+    for entry, closest, exit_ in visits:
+        source_state = closest.state.source_state
+        source_provenance = tuple(getattr(source_state, "provenance", ()))
+        source_warnings = tuple(getattr(source_state, "warnings", ()))
+        earth_orientation = getattr(source_state, "earth_orientation", None)
+        teme_state = getattr(source_state, "teme_state", None)
+        resource_provenance = ()
+        if earth_orientation is not None:
+            resource_provenance += (
+                "IERS-A SHA-256 "
+                f"{earth_orientation.source_sha256}.",
+                "Astropy "
+                f"{earth_orientation.astropy_version}; astropy-iers-data "
+                f"{earth_orientation.astropy_iers_data_version}.",
+            )
+        if teme_state is not None:
+            resource_provenance += (
+                f"SGP4 {teme_state.sgp4_version}; "
+                f"{teme_state.implementation}; {teme_state.gravity_model}.",
+            )
+            source_warnings += tuple(teme_state.warnings)
+        results.append(SatelliteCrossingResult(
             candidate=candidate,
             entry_instant=_instant(entry.state.instant),
             exit_instant=_instant(exit_.state.instant),
@@ -520,10 +541,11 @@ def _solve_trajectory(
                 ORACLE_IMPLEMENTATION,
                 f"time tolerance {time_tolerance_seconds:.12g} s",
                 f"angular tolerance {angular_tolerance_deg:.12g} deg",
-            ),
+            ) + source_provenance + resource_provenance,
+            warnings=source_warnings,
         )
-        for entry, closest, exit_ in visits
-    )
+        )
+    return tuple(results)
 
 
 class LocalSatelliteCrossingOracle:
