@@ -5114,6 +5114,6 @@ def test_50s3a_audits_sampled_candidate_reports_and_shared_path_drawing():
     assert "satellite_report_drawing_audit_50s3a.md" in index
     assert "50S.3A — Satellite report and drawing contract audit" in roadmap
     assert "50S.3B — SatChecker sampled-candidate reports and tracks" in roadmap
-    assert "Only the documentation-only 50S.3A contract audit is authorized next" in guide
+    assert "only the bounded 50S.3B implementation is authorized next" in guide
     assert "50S.3A satellite report and drawing contract audit ownership (accepted)" in source_tree
     assert "Connecting ordered provider samples is presentation" in coordinate_guide
