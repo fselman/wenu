@@ -1,7 +1,7 @@
 # 50S.6A conservative local crossing acceleration audit
 
-**Status:** Candidate documentation-only scientific and API audit  
-**Base:** accepted 50S.5 closure at merge commit `cc454de`  
+**Status:** Candidate documentation-only scientific and API audit
+**Base:** accepted 50S.5 closure at merge commit `cc454de`
 **Date:** 2026-09-15
 
 ## 1. Purpose
