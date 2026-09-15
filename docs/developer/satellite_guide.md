@@ -837,3 +837,30 @@ accepted 50S.4E on 2026-09-15. This closes 50S.4 and authorizes only bounded
 50S.5 complete local FoV-crossing oracle work.
 
 50S.6 acceleration and every later satellite milestone remain unauthorized.
+
+
+## 21. Candidate 50S.5A complete local crossing-oracle audit
+
+The first local oracle is restricted to a fixed closed circular field whose
+centre and the accepted 50S.4D trajectory are both topocentric geometric
+directions expressed in GCRS axes. Provider apparent ICRS, AltAz, projected
+coordinates, and mixed position statuses are rejected rather than compared
+numerically.
+
+Every valid record in the selected immutable snapshot is scanned. Completeness
+means validated numerical completeness under explicit time and angular
+tolerances. Endpoint and midpoint state, topocentric Cartesian motion,
+instantaneous angular rate, curvature evidence, and successive refinement form
+an operationally conservative envelope. A possible-contact interval
+subdivides; a singular or non-converged interval fails closed. A fixed grid,
+endpoint signs alone, unconstrained interpolation, and measured
+catalogue-wide speed maximum are not completeness evidence.
+
+Bracket-preserving roots establish entry and exit. Bounded minimum refinement
+detects tangency without requiring a sign change. Query endpoints are
+inclusive, boundary touch counts, disconnected visits stay separate, and
+uncertain refinement raises an explicit convergence error. Analytic
+trajectory oracles remain independent of SGP4/Astropy composition tests.
+
+This documentation-only review adds no solver. Acceptance authorizes only
+bounded 50S.5B; 50S.6 and later behavior remain unauthorized.
