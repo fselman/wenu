@@ -736,3 +736,15 @@ authorized next; 50S.6 acceleration and all later satellite behavior remain
 unauthorized. Preserve the distinction between a fixed geometric field in
 GCRS axes and provider apparent ICRS evidence. Uncertain numerical intervals
 must subdivide or fail closed; they must never become silent negative results.
+
+### Candidate 50S.5B implementation boundary
+
+The bounded candidate implementation lives in
+`satellites/crossing_oracle.py`. It may scan all selected snapshot records,
+compose only the accepted SGP4/TEME and topocentric services, and return ordered
+connected `SatelliteCrossingResult` values. Preserve validated numerical
+completeness under declared time and angular tolerances; this is not a formal
+interval-arithmetic proof. Uncertain evaluation, exhausted resources, invalid
+records, propagation failure, or unavailable Earth orientation must fail
+closed through `SatelliteCrossingConvergenceError` with the record identity.
+50S.6 acceleration and all later behavior remain unauthorized.
