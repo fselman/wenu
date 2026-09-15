@@ -1,6 +1,6 @@
 # 50S.6A conservative local crossing acceleration audit
 
-**Status:** Candidate documentation-only scientific and API audit
+**Status:** Accepted documentation-only scientific and API audit
 **Base:** accepted 50S.5 closure at merge commit `cc454de`
 **Date:** 2026-09-15
 
@@ -241,15 +241,15 @@ classification, brightness, flare probability, detector response, exposure
 contamination, CLI, reporting, chart layers, drawing, rendering, export, live
 catalogue access, snapshot acquisition, or new footprint shapes.
 
-## 13. Candidate acceptance and authorization
+## 13. Accepted audit and authorization
 
 Candidate verification on Fernando's Mac passed all 138 plugin-disabled
 current-documentation tests in 3.99 seconds. The working tree was clean and
 `git diff --check cc454de...HEAD` passed after removing two audit-header
 trailing spaces.
 
-Acceptance requires Fernando's scientific and architectural review. Acceptance of 50S.6A would
-authorize only a bounded 50S.6B first implementation of the topocentric
+Fernando scientifically and architecturally accepted 50S.6A on 2026-09-15.
+Acceptance authorizes only a bounded 50S.6B first implementation of the topocentric
 cone/orbital-shell conservative selector and its exact-oracle equivalence
 evidence.
 

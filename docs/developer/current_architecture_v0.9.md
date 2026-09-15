@@ -976,7 +976,9 @@ negative. No 50S.5 runtime or 50S.6 acceleration is implemented.
 
 
 The candidate 50S.5A documentation gate passed all 136 tests in 3.27 seconds
-on macOS, and the corrected branch diff check was clean. The final acceptance
+on macOS, and the corrected branch diff check was clean. Fernando scientifically and
+architecturally accepted 50S.6A on 2026-09-15, authorizing only bounded 50S.6B
+implementation of the first topocentric cone/orbital-shell selector. The final acceptance
 documentation gate passed all 136 tests in 3.00 seconds. Fernando scientifically
 and architecturally accepted 50S.5A on 2026-09-15. This authorizes only bounded
 50S.5B implementation; 50S.6 and later behavior remain unauthorized.
@@ -1008,7 +1010,7 @@ closing 50S.5. Only a documentation-first 50S.6 conservative-acceleration audit
 is authorized next; runtime acceleration and all later behavior remain
 unauthorized.
 
-### Candidate 50S.6A conservative acceleration audit
+### Accepted 50S.6A conservative acceleration audit
 
 The documentation-only audit keeps the accepted 50S.5 exhaustive oracle
 independently callable and proposes a separate conservative candidate-selection

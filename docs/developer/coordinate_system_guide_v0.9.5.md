@@ -3358,7 +3358,7 @@ Fernando scientifically and architecturally accepted this coordinate boundary
 on 2026-09-15. Only a documentation-first 50S.6 conservative-acceleration
 audit is authorized next.
 
-### Candidate 50S.6A acceleration coordinate boundary
+### Accepted 50S.6A acceleration coordinate boundary
 
 Conservative rejection must be derived in the same physical geometry as the
 accepted query: a fixed observer-origin closed circular field and topocentric
@@ -3369,4 +3369,6 @@ rotation, and orbital-plane evolution alter the topocentric direction.
 The proposed shell/cone envelope must cover the complete inclusive UTC interval
 and all declared margins. Horizon and Earth occultation are visibility
 predicates, not coordinate accelerators for the accepted geometric crossing
-query, and therefore cannot remove results under 50S.6.
+query, and therefore cannot remove results under 50S.6. Fernando scientifically and
+architecturally accepted this boundary on 2026-09-15. Only the first bounded
+cone/orbital-shell selector is authorized for 50S.6B.

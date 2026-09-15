@@ -5593,7 +5593,7 @@ def test_50s5b_documents_accepted_complete_local_crossing_oracle():
     assert "Runtime acceleration and all later behavior remain unauthorized" in audit
 
 
-def test_50s6a_audits_conservative_crossing_acceleration():
+def test_50s6a_records_accepted_conservative_crossing_acceleration():
     audit = " ".join(read(
         DEVELOPER / "satellite_crossing_acceleration_audit_50s6a.md"
     ).split())
@@ -5631,16 +5631,19 @@ def test_50s6a_audits_conservative_crossing_acceleration():
         assert phrase in audit
 
     assert "satellite_crossing_acceleration_audit_50s6a.md" in index
-    assert "Candidate 50S.6A conservative acceleration audit" in architecture
+    assert "Accepted 50S.6A conservative acceleration audit" in architecture
     assert "50S.6A — Conservative local crossing acceleration audit" in roadmap
     assert "No acceleration API exists yet" in reference
-    assert "Candidate 50S.6A acceleration ownership audit" in source_tree
-    assert "Candidate 50S.6A acceleration coordinate boundary" in coordinate_guide
-    assert "Candidate 50S.6A conservative crossing acceleration audit" in guide
-    assert "Candidate 50S.6A acceleration-audit boundary" in instructions
+    assert "Accepted 50S.6A acceleration ownership audit" in source_tree
+    assert "Accepted 50S.6A acceleration coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6A conservative crossing acceleration audit" in guide
+    assert "Accepted 50S.6A acceleration-audit boundary" in instructions
     assert "creates neither future source nor acceleration test file" in source_tree
-    assert "Runtime acceleration and all later stages remain unauthorized" in roadmap
+    assert "Phase/reachable-arc filtering, coarse vectorized propagation" in roadmap
     assert "passed all 138 plugin-disabled current-documentation tests" in audit
     assert "3.99 seconds" in audit
     assert "git diff --check cc454de...HEAD" in audit
     assert "corrected branch diff check was clean" in roadmap
+    assert "scientifically and architecturally accepted 50S.6A on 2026-09-15" in audit
+    assert "authorizes only a bounded 50S.6B first implementation" in audit
+    assert "all later behavior would remain unauthorized" in audit

@@ -2594,7 +2594,7 @@ remains `None`. Fernando scientifically and architecturally accepted this
 boundary on 2026-09-15. Only a documentation-first 50S.6 acceleration audit is
 authorized next.
 
-### Conservative crossing acceleration (50S.6A audit candidate)
+### Conservative crossing acceleration (50S.6A audit accepted)
 
 No acceleration API exists yet. The accepted
 `LocalSatelliteCrossingOracle.solve(query)` remains the exhaustive independent
@@ -2603,7 +2603,7 @@ correctness route. The proposed later owner would emit immutable tri-state
 a proved conservative rejection. Retained candidates must use the accepted
 exact record solver, and no partial record set may be labelled exhaustive.
 
-The first authorized implementation after audit acceptance would be limited to
+The authorized 50S.6B implementation is limited to
 the topocentric field-cone versus bounded orbital-shell selector. Phase,
 coarse-state, HEALPix/time, horizon, and occultation filters remain outside that
 first slice.

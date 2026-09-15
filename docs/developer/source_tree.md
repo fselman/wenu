@@ -1860,7 +1860,7 @@ illumination, photometry, or 50S.6 responsibility. Fernando scientifically and
 architecturally accepted this ownership on 2026-09-15. Only a documentation-first
 50S.6 acceleration audit is authorized next.
 
-### Candidate 50S.6A acceleration ownership audit
+### Accepted 50S.6A acceleration ownership audit
 
 - `satellite_crossing_acceleration_audit_50s6a.md` owns the documentation-only
   conservative-filter, validation, benchmark, failure, and ownership decision;
@@ -1871,5 +1871,6 @@ architecturally accepted this ownership on 2026-09-15. Only a documentation-firs
 - a later `tests/test_satellite_crossing_acceleration.py` may own the durable
   tri-state filter oracle and zero-false-negative equivalence matrix.
 
-This audit creates neither future source nor acceleration test file and changes
-no package boundary.
+This accepted audit creates neither future source nor acceleration test file
+and changes no package boundary. Only bounded 50S.6B implementation of the
+first cone/orbital-shell selector is authorized next.
