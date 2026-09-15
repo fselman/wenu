@@ -928,3 +928,33 @@ Acceptance closes the Earth-orientation/topocentric boundary and authorizes
 only bounded 50S.4E propagated-specimen builder work. No crossing, field
 intersection, illumination, photometry, CLI, chart, or specimen behavior is
 added by 50S.4D.
+
+### Accepted 50S.4E propagated sampled specimens
+
+`tools/build_50s4_satellite_specimens.py` is the candidate developer-only
+50S.4E composition boundary. It loads the installed
+`synthetic_50s4b_v1` snapshot, propagates its ordered records through the
+accepted SGP4/TEME and topocentric chains, and writes one deterministic JSON
+document only beneath a caller-selected output directory.
+
+The document records the snapshot digest and record identity, evaluation grid,
+observer, exact Earth-orientation resource, propagator identity, software
+version, sampled TEME states, sampled topocentric states, and bounded query
+inputs. It is labelled **propagated sampled specimens — not verified
+crossings**. It has no network client, does not construct
+`SatelliteCrossingResult`, does not find entry/exit or closest approach, and
+does not define production solver tolerances or implement 50S.5.
+
+#### Accepted 50S.4E gate evidence
+
+On macOS with Python 3.11.7, the dedicated builder gate passed all 10 tests in
+10.58 seconds, the expanded satellite/coordinate gate passed all 99 tests in
+18.07 seconds, the documentation gate passed all 134 tests in 2.45 seconds,
+and the complete plugin-disabled suite passed all 2,522 tests in 105.38
+seconds. The generated JSON had SHA-256
+`16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374`.
+The branch was clean and `git diff --check 243b75c...HEAD` passed. Fernando scientifically and architecturally accepted 50S.4E on 2026-09-15.
+
+Acceptance closes 50S.4. The next authorized boundary is only bounded 50S.5
+complete local FoV-crossing oracle work; no 50S.6 optimization or later
+satellite behavior is authorized.

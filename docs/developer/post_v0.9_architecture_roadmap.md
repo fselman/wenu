@@ -2157,3 +2157,34 @@ practical. Screen PNG review is not sufficient.
 
 Record accepted numerical standards, named profiles, examples, regression
 products, limitations, and the human print-acceptance record.
+
+### 50S.4E — Propagated specimen builder and closure (accepted)
+
+**Status:** Accepted by Fernando on 2026-09-15.
+
+The dedicated branch adds only
+`tools/build_50s4_satellite_specimens.py` and its durable focused tests. The
+tool composes accepted 50S.4B–D authorities into deterministic, network-free
+**propagated sampled specimens — not verified crossings**, written only to a
+caller-selected output directory. It records snapshot, grid, observer,
+Earth-orientation, propagator, and software identities.
+
+50S.4E does not emit `SatelliteCrossingResult`, search a complete catalogue,
+derive entry/exit or closest approach, select production solver tolerances, or
+authorize 50S.5. Closure still requires focused and full Mac gates, clean diff
+evidence, inspection of the generated JSON, and Fernando's scientific and
+architectural acceptance.
+
+#### Accepted 50S.4E measured gates
+
+The dedicated, expanded, and documentation Mac gates passed 10, 99, and 134
+tests respectively; the complete plugin-disabled suite passed all 2,522 tests
+in 105.38 seconds. The inspected generated specimen had SHA-256
+`16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374`,
+preserved ordered identities 300001–300003, and declared the exact snapshot
+and bundled IERS-A digests. The branch and diff checks were clean. Fernando scientifically and architecturally
+accepted 50S.4E on 2026-09-15, closing 50S.4 and authorizing only bounded
+50S.5 complete local FoV-crossing oracle work.
+
+50S.6 acceleration, illumination, photometry, detector effects, CLI, reporting,
+and drawing remain unauthorized.

@@ -1802,3 +1802,20 @@ distinct lifecycle and failure boundary from OMM snapshot loading, SGP4
 propagation, and generic spherical geometry transformation. Fernando accepted
 this ownership on 2026-09-15. Only 50S.4E specimen-builder work is authorized
 next.
+
+### Accepted 50S.4E developer specimen ownership
+
+- `tools/build_50s4_satellite_specimens.py` owns explicit, deterministic,
+  network-free composition of the installed synthetic snapshot with accepted
+  SGP4/TEME and topocentric services. It writes only **propagated sampled
+  specimens — not verified crossings** to a caller-selected directory.
+- `tests/test_satellite_specimens.py` owns the durable output-schema,
+  determinism, provenance, offline, explicit-destination, and no-crossing-claim
+  contract for that developer tool.
+- No new `src/wenu` module is admitted because 50S.4E adds no runtime
+  authority. Crossing construction and oracle ownership remain reserved for
+  50S.5.
+
+Fernando accepted this ownership boundary on 2026-09-15. The tool remains
+developer-only after 50S.4 closure; 50S.5 must establish its own durable runtime
+oracle ownership rather than expanding this specimen builder.

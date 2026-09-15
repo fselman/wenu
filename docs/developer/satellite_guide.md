@@ -473,16 +473,15 @@ shadow transitions, known/unknown photometry, aged elements, and parser fault
 cases. Larger retained snapshots follow only after the complete machinery is
 correct.
 
-A developer specimen builder accepts the snapshot, observer, search interval,
-FoV size, and requested case type. It finds a useful FoV and time window,
-stores reference tracks and expected crossings, invokes Wenu's ordinary query,
-and produces a machine-readable report plus a FoV chart with track, direction,
-entry/exit, closest approach, and time annotations. Central, grazing,
-between-sample, multiple-crossing, non-crossing, horizon, shadow-transition,
-seam, and polar cases are required. Its dense/adaptive brute-force reference
-path must remain independent of production rejection filters. HEALPix may help
-locate interesting cases in larger snapshots, but exact spherical geometry
-certifies them.
+The bounded 50S.4E developer specimen builder accepts the installed synthetic snapshot,
+observer, evaluation grid, and FoV size. It stores propagated sampled tracks
+and query inputs only. It does not find a useful field automatically, emit
+expected crossings, invoke a crossing query, calculate entry/exit or closest
+approach, or certify central, grazing, between-sample, multiple-crossing,
+non-crossing, horizon, shadow-transition, seam, or polar cases. Those
+crossing-oracle responsibilities belong to 50S.5. The future 50S.5
+dense/adaptive brute-force reference path must remain independent of production
+rejection filters.
 
 ## 14. Validation hierarchy
 
@@ -805,3 +804,36 @@ brightness, detector effects, reporting, drawing, and specimen generation are
 not part of 50S.4D. Fernando scientifically and architecturally accepted this
 boundary on 2026-09-15. Only the bounded 50S.4E propagated-specimen builder is
 authorized next.
+
+### Accepted 50S.4E propagated specimen builder
+
+The candidate `tools/build_50s4_satellite_specimens.py` tool loads the
+installed three-record synthetic snapshot and evaluates an explicit ordered
+UTC grid for the La Ligua observer by default. Its one JSON product records
+snapshot and record digests, evaluation grid, observer, exact IERS-A identity
+and sampled values, SGP4 identity, WGS-72 policy, Wenu version, TEME states,
+topocentric states, and query inputs.
+
+The product is explicitly labelled **propagated sampled specimens — not
+verified crossings**. It is deterministic for identical installed resources
+and arguments, performs no network access, and writes only below the required
+caller-selected output directory. It contains no `SatelliteCrossingResult`,
+entry/exit, closest approach, completeness claim, production tolerance, chart,
+or field-search behavior. Focused, full-suite, generated-product, diff, and
+Fernando acceptance gates remain pending.
+
+#### Accepted 50S.4E verification result
+
+The dedicated, expanded, and documentation Mac gates passed 10, 99, and 134
+tests. The complete plugin-disabled suite passed all 2,522 tests in 105.38
+seconds.
+The inspected generated product had SHA-256
+`16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374`
+and preserved the exact snapshot, observer, grid, IERS-A, propagator, and
+software identities. Its three default synthetic tracks were below the La
+Ligua horizon, so the product correctly made no visibility or crossing claim.
+The branch and diff checks were clean. Fernando scientifically and architecturally
+accepted 50S.4E on 2026-09-15. This closes 50S.4 and authorizes only bounded
+50S.5 complete local FoV-crossing oracle work.
+
+50S.6 acceleration and every later satellite milestone remain unauthorized.

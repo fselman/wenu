@@ -711,3 +711,17 @@ in GCRS axes; never label it ICRS, a formal GCRS coordinate, astrometric,
 apparent, or observed. Add no field intersection, crossing solver,
 illumination, photometry, CLI, drawing, or 50S.4E specimen behavior. Fernando accepted 50S.4D on 2026-09-15; only
 the bounded 50S.4E propagated-specimen builder is authorized next.
+
+### Accepted 50S.4E boundary
+
+The bounded 50S.4E developer specimen builder is accepted and closed. It consumes the
+installed synthetic snapshot and accepted 50S.4C/50S.4D services, performs no
+network access, and writes only **propagated sampled specimens — not verified
+crossings** beneath a caller-selected output directory. It must not construct
+`SatelliteCrossingResult`, claim a complete catalogue search, select production
+crossing tolerances, or become a hidden 50S.5 crossing oracle.
+
+Fernando scientifically and architecturally accepted 50S.4E on 2026-09-15.
+This closes 50S.4. Only bounded 50S.5 complete local FoV-crossing oracle work
+is authorized next; 50S.6 acceleration and all later satellite behavior remain
+unauthorized.

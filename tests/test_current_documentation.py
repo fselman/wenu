@@ -5412,3 +5412,76 @@ def test_50s4d_documents_accepted_topocentric_boundary():
     assert "Accepted 50S.4D local topocentric state" in guide
     assert "exact IERS-A SHA-256 and coverage" in guide
     assert "only the bounded 50S.4E propagated-specimen builder is authorized next" in instructions
+
+def test_50s4e_documents_accepted_propagated_specimen_boundary():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for text in (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        audit,
+        guide,
+        instructions,
+    ):
+        assert "propagated sampled specimens — not verified crossings" in text
+    assert "tools/build_50s4_satellite_specimens.py" in architecture
+    assert "caller-selected output directory" in architecture
+    assert "Status:** Accepted by Fernando on 2026-09-15" in roadmap
+    assert "tests/test_satellite_specimens.py" in source_tree
+    assert "No new `src/wenu` module is admitted" in source_tree
+    assert "topocentric geometric direction expressed in GCRS axes" in (
+        coordinate_guide
+    )
+    assert "cannot emit `SatelliteCrossingResult`" in audit
+    assert "does not find a useful field automatically" in guide
+    assert "50S.5" in guide
+    assert "hidden 50S.5 crossing oracle" in instructions
+
+def test_50s4e_records_complete_and_accepted_gate_evidence():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+
+    for text in (architecture, roadmap, audit, guide):
+        assert "all 2,522 tests" in text
+        assert "105.38 seconds" in text
+        assert (
+            "16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374"
+            in text
+        )
+        assert "accepted 50S.4E on 2026-09-15" in text
+    assert "dedicated builder gate passed all 10 tests in 10.58 seconds" in (
+        architecture
+    )
+    assert "expanded satellite/coordinate gate passed all 99 tests" in (
+        architecture
+    )
+    assert "documentation gate passed all 134 tests in 2.45 seconds" in (
+        architecture
+    )
+    assert "d4bb5af084caf3e82621bc75aad902dc7ad9e38e785a97d3fcac0a23d89644fb" in (
+        audit
+    )
+    assert "All three default tracks were below the La Ligua horizon" in audit
+    assert "git diff --check 243b75c...HEAD" in audit
+    assert "closing 50S.4 and authorizing only bounded" in roadmap
+    assert "50S.5 complete local FoV-crossing oracle work" in roadmap
+    assert "50S.6 acceleration" in guide
+    assert "remain unauthorized" in guide

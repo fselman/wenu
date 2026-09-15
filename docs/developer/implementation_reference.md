@@ -2539,3 +2539,24 @@ expressed in GCRS axes. Its two `CoordinateSpec` values distinguish
 axes representation, not an ICRS or GCRS catalogue/apparent coordinate.
 Fernando accepted this API and ownership on 2026-09-15; only the bounded
 50S.4E propagated-specimen builder is authorized next.
+
+### Propagated sampled specimen builder (accepted 50S.4E)
+
+Run the developer tool with an explicit output directory:
+
+```bash
+python tools/build_50s4_satellite_specimens.py \
+  --output-directory /explicit/developer/output
+```
+
+The fixed output `propagated-sampled-specimens.json` contains ordered samples
+for all three installed synthetic records and query inputs centered on each
+middle sampled topocentric direction. Defaults use La Ligua, the snapshot
+epoch, a three-instant five-minute grid, and a one-degree field radius. Every
+choice is recorded. The output is deterministic for the same installed
+software/resources and arguments, network-free, and labelled **propagated
+sampled specimens — not verified crossings**. It is input evidence for later
+50S.5 work, not a crossing result or completeness claim.
+
+Fernando scientifically and architecturally accepted this developer product on
+2026-09-15. It closes 50S.4 without promoting the tool into a runtime authority.

@@ -3308,3 +3308,19 @@ adds Earth-orientation, observer-parallax, horizontal-direction, and
 celestial-axis semantics. The accepted inertial catalogue and generic
 coordinate-service meanings remain unchanged. Fernando scientifically accepted
 this coordinate meaning on 2026-09-15.
+
+### Accepted 50S.4E sampled-specimen coordinate identity
+
+The output is labelled **propagated sampled specimens — not verified crossings**.
+
+The 50S.4E developer output preserves each accepted geometric TEME state and
+the observer-relative vacuum direction from 50S.4D. Its celestial longitudes
+and latitudes remain a **topocentric geometric direction expressed in GCRS
+axes**; they are not ICRS/GCRS astrometric or apparent catalogue coordinates.
+The evaluation grid, observer, exact IERS-A identity, and interpolated
+Earth-orientation values remain explicit. Sampling creates no continuous path
+or verified field crossing.
+
+Fernando accepted this coordinate identity and the bounded 50S.4E specimen
+product on 2026-09-15. Sampling remains evidence, not a continuous crossing
+solution; exact boundary solving begins only in 50S.5.
