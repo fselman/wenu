@@ -2518,7 +2518,7 @@ does not transform TEME or produce observer-relative directions.
 Fernando accepted the bounded 50S.4C API and ownership on 2026-09-15. Only 50S.4D Earth-orientation and topocentric state work is authorized next.
 
 
-## Satellite topocentric state chain (50S.4D candidate)
+## Satellite topocentric state chain (50S.4D accepted)
 
 `SatelliteTopocentricTransformer().transform(teme_state, observer)` accepts one
 successful `SatelliteTemeState` and one vacuum `SatelliteObserver`. It uses
@@ -2537,3 +2537,5 @@ geometric vacuum azimuth/altitude, and a geometric topocentric direction
 expressed in GCRS axes. Its two `CoordinateSpec` values distinguish
 `altaz`/observer from `gcrs-axes`/topocentric-direction. The latter is an
 axes representation, not an ICRS or GCRS catalogue/apparent coordinate.
+Fernando accepted this API and ownership on 2026-09-15; only the bounded
+50S.4E propagated-specimen builder is authorized next.
