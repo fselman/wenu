@@ -221,7 +221,7 @@ clean diff evidence, and Fernando’s scientific and architectural review.
 - reporting, chart layers, projection, rendering, or export;
 - production performance claims from the three-record synthetic snapshot.
 
-## 9. Proposed implementation boundary
+## 9. Authorized implementation boundary
 
 Following Fernando's acceptance of this audit, only 50S.5B may:
 
@@ -230,7 +230,7 @@ Following Fernando's acceptance of this audit, only 50S.5B may:
 2. add intentional package exports only for the supported query/oracle result
    boundary;
 3. add `tests/test_satellite_crossing_oracle.py`;
-4. update active documentation for the candidate implementation;
+4. update active documentation for the bounded implementation;
 5. add no behavior listed in the non-goals.
 
 Acceptance of 50S.5A authorizes 50S.5B only. It does not accept numerical
