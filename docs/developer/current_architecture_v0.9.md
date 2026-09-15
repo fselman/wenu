@@ -890,3 +890,10 @@ satellite 4632 at epoch, while the upstream published terminal-error case
 44160 verifies explicit failure. The candidate adds no ITRS, observer,
 topocentric direction, crossing solver, acquisition, presentation, or
 rendering behavior.
+
+At production commit `e0d7c78`, the expanded focused gate passed all 167
+tests and the complete plugin-disabled suite passed all 2,492 tests in 86.88
+seconds. An isolated wheel installation then loaded Wenu from `site-packages`,
+verified corrected snapshot digest
+`2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe`,
+and propagated all three identifiers with TEME/WGS-72/status zero.

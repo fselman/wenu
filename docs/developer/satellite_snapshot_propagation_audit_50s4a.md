@@ -352,3 +352,22 @@ terminal status, and scalar/array evaluation has a sub-millimetre parity gate.
 The initial satellite element/SGP4 gate passed all 15 tests. Expanded,
 complete-suite, and documentation gates remain pending. No terrestrial or
 observer transformation is included.
+
+At production commit `e0d7c78`, the expanded focused gate passed all 167
+tests and the complete plugin-disabled suite passed all 2,492 tests in 86.88
+seconds. A wheel installed into an isolated virtual environment loaded from
+`site-packages`, verified corrected snapshot digest
+`2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe`,
+and propagated all three synthetic records at
+2026-09-15T00:10:00Z:
+
+- 300001: TEME/WGS-72/status 0; position
+  (-1652.351964020854, 3880.9803510202178, 5315.164599300292) km;
+- 300002: TEME/WGS-72/status 0; position
+  (8131.2128472741315, 14916.96335971539, -20707.73332733826) km;
+- 300003: TEME/WGS-72/status 0; position
+  (-41802.597498888295, -5496.836777718252, -24.45502701752297) km.
+
+All returned finite position and velocity. This evidence validates installation
+and execution of the candidate wrapper; Fernando's scientific and
+architectural acceptance remains pending.

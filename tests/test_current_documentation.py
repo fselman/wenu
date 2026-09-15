@@ -5348,3 +5348,22 @@ def test_50s4c_documents_validated_sgp4_teme_boundary():
     assert "Candidate 50S.4C SGP4 and geometric TEME state" in guide
     assert "300001–300003" in guide
     assert "only the bounded 50S.4C" in instructions
+
+
+def test_50s4c_records_complete_and_installed_wheel_evidence():
+    architecture = " ".join(read(V09_CURRENT).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+
+    assert "production commit `e0d7c78`" in architecture
+    assert "expanded focused gate passed all 167 tests" in audit
+    assert "complete plugin-disabled suite passed all 2,492 tests" in audit
+    assert "isolated virtual environment" in audit
+    assert "loaded from `site-packages`" in audit
+    assert "2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe" in audit
+    for identifier in ("300001", "300002", "300003"):
+        assert f"{identifier}: TEME/WGS-72/status 0" in audit
+    assert "finite position and velocity" in audit
+    assert "Scientific acceptance remains pending" in guide

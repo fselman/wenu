@@ -1981,9 +1981,12 @@ TEME position/velocity, explicit errors, element age, and scalar/array parity.
 Pinned published near-Earth and deep-space reference vectors plus a terminal
 error case validate the wrapper. Preflight corrected the synthetic identifiers
 from unsupported 900001–900003 to valid six-digit 300001–300003 and regenerated
-all affected digests; no hidden surrogate identity is used. The initial
-element/SGP4 gate passed all 15 tests. No Earth-fixed or observer state is
-produced.
+all affected digests; no hidden surrogate identity is used. The initial element/SGP4 gate passed all 15 tests. At production commit
+`e0d7c78`, the expanded gate passed all 167 tests and the complete
+plugin-disabled suite passed all 2,492 tests in 86.88 seconds. An isolated
+installed-wheel check verified the corrected snapshot digest and successful
+TEME/WGS-72/status-zero propagation of all three records. No Earth-fixed or
+observer state is produced. Scientific acceptance remains pending.
 
 ### 50S.4D — Earth-orientation and topocentric state
 
