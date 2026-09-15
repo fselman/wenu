@@ -39,6 +39,9 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`satellite_report_drawing_audit_50s3a.md`](satellite_report_drawing_audit_50s3a.md)
   — accepted contract for honest sampled-evidence reports, shared-path charts,
   stable satellite semantics, and the bounded 50S.3B implementation.
+- [`satellite_snapshot_propagation_audit_50s4a.md`](satellite_snapshot_propagation_audit_50s4a.md)
+  — candidate dependency, immutable-snapshot, SGP4/TEME, Earth-orientation,
+  topocentric-validation, and specimen-builder contract for 50S.4.
 - [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
   scientific and implementation guide maintained separately during the 50S
   foundation branch.
