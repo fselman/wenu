@@ -373,14 +373,17 @@ def _merge_visits(visits, cache, radius, angular_tolerance):
         previous = merged[-1]
         gap_left = previous[2]
         gap_right = visit[0]
-        gap_midpoint = cache(
-            _midpoint(gap_left.state.instant, gap_right.state.instant)
+        gap_width = gap_right.state.instant - gap_left.state.instant
+        gap_samples = tuple(
+            cache(gap_left.state.instant + gap_width * fraction)
+            for fraction in (0.0, 0.25, 0.5, 0.75, 1.0)
         )
+        nearest_sample_seconds = gap_width.total_seconds() / 8.0
         gap_upper_bound = max(
-            gap_left.separation_deg,
-            gap_midpoint.separation_deg,
-            gap_right.separation_deg,
-        ) + _motion_envelope_deg(gap_left, gap_midpoint, gap_right)
+            sample.separation_deg for sample in gap_samples
+        ) + nearest_sample_seconds * max(
+            sample.state.angular_rate_deg_per_s for sample in gap_samples
+        )
         if gap_upper_bound <= radius + angular_tolerance:
             closest = min(
                 (previous[1], visit[1]), key=lambda item: item.separation_deg
