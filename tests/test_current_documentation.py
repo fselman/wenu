@@ -5284,3 +5284,19 @@ def test_50s4b_documents_immutable_omm_snapshot_boundary():
     assert "Candidate 50S.4B immutable OMM snapshot" in guide
     assert "copies no live CelesTrak, Space-Track, SatChecker" in guide
     assert "sgp4>=2.25,<3" in instructions
+
+def test_50s4b_records_complete_and_installed_wheel_evidence():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+
+    assert "production commit `d3cb597`" in architecture
+    assert "expanded focused gate passed all 158 tests" in audit
+    assert "complete plugin-disabled suite passed all 2,483 tests" in audit
+    assert "isolated virtual environment" in audit
+    assert "installed `site-packages` tree" in audit
+    assert "b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457" in audit
+    assert "ordered full identifiers 900001, 900002, and 900003" in audit
+    assert "acceptance remains pending" in roadmap

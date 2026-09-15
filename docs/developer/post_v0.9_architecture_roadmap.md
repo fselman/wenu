@@ -1962,8 +1962,12 @@ full-NORAD ordering, duplicate rejection, immutable lookup, and a three-record
 synthetic LEO/MEO/geosynchronous-like snapshot. It declares
 `sgp4>=2.25,<3` directly. No live provider record, TLE adapter, propagation,
 TEME state, Earth-orientation/topocentric transformation, or crossing result
-is included. The initial focused domain and packaging gate passed all 29
-tests; expanded and complete-suite gates remain pending.
+is included. The initial focused domain and packaging gate passed all 29 tests. At
+production commit `d3cb597`, the expanded gate passed all 158 tests and the
+complete plugin-disabled suite passed all 2,483 tests in 87.11 seconds. An
+isolated installed-wheel check loaded the snapshot from `site-packages`,
+verified its exact manifest digest, and returned all three ordered identifiers.
+Scientific and architectural acceptance remains pending.
 
 ### 50S.4C — Validated SGP4/TEME propagation
 

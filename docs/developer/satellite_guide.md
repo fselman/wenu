@@ -729,3 +729,14 @@ The branch declares `sgp4>=2.25,<3` directly so installation owns its future
 propagation dependency. It deliberately constructs no propagator and produces
 no TEME state, terrestrial/topocentric transformation, field intersection, or
 crossing result. Those remain gated by 50S.4C and later milestones.
+
+At production commit `d3cb597`, all 158 expanded focused tests and all 2,483
+complete-suite tests passed. The wheel was then installed into an isolated
+virtual environment and the snapshot loaded from `site-packages` with exact
+digest
+`b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457`,
+record count three, and ordered identifiers 900001–900003. The first two
+wheel-import attempts exposed unrelated environment issues—missing
+dependencies in a no-dependency environment and a broken inherited
+`spiceypy` shared library—before the package-local resource check isolated
+the intended boundary. Neither failure involved the snapshot.
