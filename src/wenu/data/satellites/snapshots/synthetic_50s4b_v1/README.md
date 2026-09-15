@@ -12,3 +12,9 @@ only deterministic inputs for Wenu development and tests.
 one trailing newline. `manifest.json` records its SHA-256 digest and
 provenance. Never edit either file without regenerating and reviewing both
 record-level and snapshot-level digests.
+
+The six-digit identifiers 300001–300003 were selected below the upstream
+`Satrec` maximum of 339999. Earlier candidate identifiers 900001–900003 were
+replaced before the first propagation implementation because the upstream
+Vallado-compatible API rejects them; Wenu never substitutes a hidden internal
+identity.
