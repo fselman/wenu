@@ -1902,11 +1902,11 @@ confirmed fail-closed IERS coverage, real PENDING submission/poll receipts, and
 a later SUCCESS receipt normalized to 13 candidates and 26 ordered samples.
 The focused provider/domain gate passed 45 tests, the expanded focused gate
 passed 168 tests, and the complete suite passed all 2,457 tests. Acceptance
-closes 50S.2B and authorizes only 50S.3 reporting and shared-path drawing.
+closes 50S.2B; accepted 50S.3A now authorizes only bounded 50S.3B reporting and shared-path drawing.
 
 ### 50S.3A — Satellite report and drawing contract audit
 
-**Status:** Candidate documentation-only audit.
+**Status:** Accepted by Fernando on 2026-09-15.
 
 Freeze honest human-readable/JSON reporting and shared-path drawing for
 provider-sampled candidate evidence. SatChecker samples are not exact connected
@@ -1917,7 +1917,7 @@ normalized evidence source for every output.
 
 ### 50S.3B — SatChecker sampled-candidate reports and tracks
 
-After Fernando accepts 50S.3A, implement deterministic reports and an
+Authorized next: implement deterministic reports and an
 already-normalized-evidence sky layer. The layer emits typed spherical points
 and open polylines and then uses Wenu's shared coordinate, projection,
 preparation, renderer, semantic SVG, and PNG/PDF/SVG export paths. No CLI
