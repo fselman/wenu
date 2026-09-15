@@ -5117,3 +5117,52 @@ def test_50s3a_audits_sampled_candidate_reports_and_shared_path_drawing():
     assert "only the bounded 50S.3B implementation is authorized next" in guide
     assert "50S.3A satellite report and drawing contract audit ownership (accepted)" in source_tree
     assert "Connecting ordered provider samples is presentation" in coordinate_guide
+
+
+
+def test_50s3b_documents_candidate_reports_and_shared_path_layers():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_report_drawing_audit_50s3a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate 50S.3B sampled-candidate presentation boundary",
+        "satellite_presentations.py",
+        "SatelliteCandidateTrackLayer",
+        "SatelliteCandidateSamplesLayer",
+        "No entry, exit, closest approach, interpolation",
+    ):
+        assert phrase in architecture
+    for phrase in (
+        "50S.3B — SatChecker sampled-candidate reports and tracks",
+        "Candidate implementation on the dedicated milestone branch",
+        "shared PNG/PDF/SVG pipeline gate",
+        "does not synthesize exact crossing events",
+    ):
+        assert phrase in roadmap
+    for phrase in (
+        "SatChecker sampled-candidate presentations",
+        "SatChecker sampled candidate evidence — not verified crossings",
+        "SUCCESS evidence is sorted by full NORAD catalogue identifier",
+        "one sample becomes one",
+        "perform no network access",
+    ):
+        assert phrase in reference
+    assert "50S.3B satellite presentation ownership (candidate)" in source_tree
+    assert "tests/test_satellite_presentations.py" in source_tree
+    assert "fixed-product-frame track convention" in coordinate_guide
+    assert "position generation" in coordinate_guide
+    assert "Candidate 50S.3B implementation evidence" in audit
+    assert "expanded focused gate passed all 90 tests" in audit
+    assert "Candidate 50S.3B implementation" in guide
+    assert "exact connected results" in guide
+    assert "satellite_report_drawing_audit_50s3a.md" in instructions
