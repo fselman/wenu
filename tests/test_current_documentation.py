@@ -5573,7 +5573,7 @@ def test_50s5b_documents_accepted_complete_local_crossing_oracle():
     assert "SatelliteCrossingConvergenceError" in reference
     assert "Accepted 50S.5B local crossing-oracle ownership" in source_tree
     assert "Accepted 50S.5B local crossing coordinates" in coordinate_guide
-    assert "Candidate 50S.5B complete local crossing oracle" in guide
+    assert "Accepted 50S.5B complete local crossing oracle" in guide
     assert "Accepted 50S.5B implementation boundary" in instructions
     for phrase in (
         "recursive sampling certifies continuous containment within the declared time and angular tolerances",
