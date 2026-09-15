@@ -1931,8 +1931,8 @@ sampled-track or singleton-point geometry, optional UTC-labelled sample
 points, stable full-NORAD semantic paths, and a shared PNG/PDF/SVG pipeline
 gate. It remains network-free and does not synthesize exact crossing events.
 Fernando accepted the synthetic report and centered FoV chart across PNG,
-PDF, and semantic SVG on 2026-09-15. Final gates and milestone acceptance
-remain required.
+PDF, and semantic SVG on 2026-09-15. The final focused gate passed all 217 tests and the complete plugin-disabled
+suite passed all 2,473 tests in 83.98 seconds. Only milestone acceptance remains.
 
 ### 50S.4 — Small local snapshot, propagation, and specimen builder
 
