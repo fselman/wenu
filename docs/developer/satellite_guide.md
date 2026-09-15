@@ -583,7 +583,7 @@ retaining the candidate-only boundary.
   normalization, provider-sampled evidence, explicit progress, and exact cache.
 - **50S.3A:** accepted audit of honest human-readable/JSON reports and FoV charts from
   provider-sampled candidate evidence, with no invented exact crossing events.
-- **50S.3B:** candidate deterministic reports plus drawable sampled-track and
+- **50S.3B:** accepted deterministic reports plus drawable sampled-track and
   sample-point layers through the shared renderer/export path; provider
   illumination remains separate evidence.
 - **50S.4:** small representative immutable OMM snapshot,
@@ -666,5 +666,5 @@ PNG/PDF/SVG serialization through the canonical chart pipeline. Fernando then
 accepted the regenerated network-free specimen on 2026-09-15: the explicit
 closed circular FoV annotation, red ordered sample path, four UTC annotations,
 candidate-only title, and PNG/PDF/SVG products were correct. The final expanded focused gate passed all 217 tests, and the complete
-plugin-disabled suite passed all 2,473 tests in 83.98 seconds. Only Fernando's
-milestone acceptance remains pending.
+plugin-disabled suite passed all 2,473 tests in 83.98 seconds. Fernando accepted 50S.3B on 2026-09-15. This closes SatChecker sampled
+candidate reporting and drawing; only 50S.4 is authorized next.
