@@ -3326,7 +3326,7 @@ product on 2026-09-15. Sampling remains evidence, not a continuous crossing
 solution; exact boundary solving begins only in 50S.5.
 
 
-### Candidate 50S.5A crossing-coordinate contract
+### Accepted 50S.5A crossing-coordinate contract
 
 The first local oracle will accept only a fixed closed circular field expressed
 as a topocentric geometric direction in GCRS axes, matching the accepted
@@ -3337,4 +3337,6 @@ coordinates, and mixed position statuses are not numerically interchangeable.
 Spherical containment uses clipped vector dot products, so longitude wrap,
 poles, and chart seams do not alter the predicate. A field coordinate-spec
 instant records the query reference instant; it does not rotate the field with
-each trajectory evaluation. This review changes no runtime coordinate path.
+each trajectory evaluation. This accepted review changes no runtime coordinate path. Only bounded 50S.5B
+implementation is authorized next; 50S.6 and later behavior remain
+unauthorized.
