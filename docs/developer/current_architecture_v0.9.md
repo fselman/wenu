@@ -976,7 +976,9 @@ negative. No 50S.5 runtime or 50S.6 acceleration is implemented.
 
 
 The candidate 50S.5A documentation gate passed all 136 tests in 3.27 seconds
-on macOS, and the corrected branch diff check was clean. The final acceptance
+on macOS, and the corrected branch diff check was clean. Fernando scientifically and
+architecturally accepted 50S.6A on 2026-09-15, authorizing only bounded 50S.6B
+implementation of the first topocentric cone/orbital-shell selector. The final acceptance
 documentation gate passed all 136 tests in 3.00 seconds. Fernando scientifically
 and architecturally accepted 50S.5A on 2026-09-15. This authorizes only bounded
 50S.5B implementation; 50S.6 and later behavior remain unauthorized.
@@ -1007,3 +1009,20 @@ working tree was clean and `git diff --check aa6f91a...HEAD` passed. Fernando sc
 closing 50S.5. Only a documentation-first 50S.6 conservative-acceleration audit
 is authorized next; runtime acceleration and all later behavior remain
 unauthorized.
+
+### Accepted 50S.6A conservative acceleration audit
+
+The documentation-only audit keeps the accepted 50S.5 exhaustive oracle
+independently callable and proposes a separate conservative candidate-selection
+owner. Rejection requires a recorded topocentric cone/orbital-shell bound that
+covers the complete inclusive interval, observer displacement, Earth rotation,
+model discrepancy, numerical margin, and the accepted angular tolerance.
+Uncertain or unsupported bounds retain the record for exact solving.
+
+The audit rejects horizon and Earth-occultation filters because the current
+query reports geometric directional crossings rather than visibility. It
+defers phase, coarse vectorized propagation, and HEALPix/time indexing behind
+separate correctness and benchmark gates. No runtime, package, dependency,
+coordinate path, result, or output changes under 50S.6A. The candidate Mac
+verification passed all 138 documentation tests in 3.99 seconds and the
+corrected branch diff check was clean.

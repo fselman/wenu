@@ -750,3 +750,15 @@ closed through `SatelliteCrossingConvergenceError` with the record identity.
 Fernando scientifically and architecturally accepted 50S.5B on 2026-09-15.
 Only a documentation-first 50S.6 conservative-acceleration audit is authorized
 next; runtime acceleration and all later behavior remain unauthorized.
+
+### Accepted 50S.6A acceleration-audit boundary
+
+Follow `satellite_crossing_acceleration_audit_50s6a.md` before adding any
+crossing acceleration. Preserve the independently callable exhaustive 50S.5
+oracle. A filter may reject only with an explicit conservative bound; equality,
+uncertainty, unsupported regimes, or arithmetic failure must retain the record
+for exact solving. Horizon and Earth-occultation rejection are not compatible
+with the accepted geometric query semantics. Fernando scientifically and architecturally accepted this audit on 2026-09-15.
+Only bounded 50S.6B implementation of the first topocentric cone/orbital-shell
+selector is authorized. No phase stage, coarse vectorized propagator,
+HEALPix/time index, horizon/occultation filter, or later behavior is authorized.

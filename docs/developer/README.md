@@ -45,6 +45,9 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`satellite_crossing_oracle_audit_50s5a.md`](satellite_crossing_oracle_audit_50s5a.md)
   — accepted coordinate, query, validated-numerical-completeness, failure,
   validation, and ownership contract for the bounded 50S.5B local oracle.
+- [`satellite_crossing_acceleration_audit_50s6a.md`](satellite_crossing_acceleration_audit_50s6a.md)
+  — accepted zero-false-negative, staged-filter, exact-oracle-equivalence,
+  benchmark-admission, and ownership contract for bounded 50S.6B work.
 - [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
   scientific and implementation guide maintained separately during the 50S
   foundation branch.
