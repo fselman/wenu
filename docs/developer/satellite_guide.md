@@ -821,3 +821,15 @@ caller-selected output directory. It contains no `SatelliteCrossingResult`,
 entry/exit, closest approach, completeness claim, production tolerance, chart,
 or field-search behavior. Focused, full-suite, generated-product, diff, and
 Fernando acceptance gates remain pending.
+
+#### Candidate 50S.4E verification result
+
+The dedicated, expanded, documentation, and complete plugin-disabled Mac gates
+passed 10, 99, 134, and 2,522 tests. The complete suite took 105.38 seconds.
+The inspected generated product had SHA-256
+`16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374`
+and preserved the exact snapshot, observer, grid, IERS-A, propagator, and
+software identities. Its three default synthetic tracks were below the La
+Ligua horizon, so the product correctly made no visibility or crossing claim.
+The branch and diff checks were clean. 50S.4E remains pending Fernando's
+scientific and architectural acceptance; 50S.5 remains unauthorized.
