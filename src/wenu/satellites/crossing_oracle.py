@@ -133,7 +133,9 @@ class _TrajectoryState:
             raise ValueError("trajectory-state instant must be UTC-aware.")
         vector = np.asarray(self.direction, dtype=float)
         if vector.shape != (3,) or not np.all(np.isfinite(vector)):
-            raise ValueError("trajectory-state direction must have three finite values.")
+            raise ValueError(
+                "trajectory-state direction must have three finite values."
+            )
         norm = float(np.linalg.norm(vector))
         if not isfinite(norm) or norm <= 0.0:
             raise ValueError("trajectory-state direction must be non-zero.")
@@ -339,6 +341,13 @@ def _leaf_visit(cache, start, stop, radius, time_tolerance, angular_tolerance):
     right_inside = right.separation_deg <= radius
     if closest.separation_deg > radius + angular_tolerance:
         return None
+    tangent_without_sign_change = (
+        not left_inside
+        and not right_inside
+        and abs(closest.separation_deg - radius) <= angular_tolerance
+    )
+    if tangent_without_sign_change:
+        return closest, closest, closest
     if left_inside:
         entry = left
     else:
@@ -388,7 +397,12 @@ def _merge_visits(visits, cache, radius, angular_tolerance):
             closest = min(
                 (previous[1], visit[1]), key=lambda item: item.separation_deg
             )
-            merged[-1] = (previous[0], closest, visit[2])
+            previous_is_touch = previous[0].state.instant == previous[2].state.instant
+            visit_is_touch = visit[0].state.instant == visit[2].state.instant
+            if previous_is_touch and visit_is_touch:
+                merged[-1] = (closest, closest, closest)
+            else:
+                merged[-1] = (previous[0], closest, visit[2])
         else:
             merged.append(visit)
     return tuple(merged)
