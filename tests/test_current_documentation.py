@@ -4978,3 +4978,46 @@ def test_50s2a_audits_satchecker_provider_contract_before_adapter():
     assert "50S.2A SatChecker provider-contract audit ownership (accepted)" in source_tree
     assert "one-second sampling grid excludes the stop endpoint" in coordinate_guide
     assert "Fernando accepted this scientific boundary on 2026-09-15" in coordinate_guide
+
+
+def test_50s2b_documents_cached_satchecker_adapter_candidate():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "dormant `satchecker.py` provider boundary",
+        "one-shot `submit()` and `poll()` operations",
+        "does not create `SatelliteCrossingResult`",
+        "not yet accepted current architecture",
+    ):
+        assert phrase in architecture
+    for phrase in (
+        "50S.2B status:** Candidate implementation",
+        "content-addressed exact local cache",
+        "No waiter loop, automatic retry, CLI, live fixture",
+    ):
+        assert phrase in roadmap
+    for phrase in (
+        "SatChecker crossing candidates",
+        "Neither function retries, waits, loops, or runs concurrently",
+        "No exact `SatelliteCrossingResult` is synthesized",
+    ):
+        assert phrase in reference
+    assert "50S.2B SatChecker adapter ownership (candidate implementation)" in (
+        source_tree
+    )
+    assert "tests/test_satchecker.py" in source_tree
+    assert "Astropy IERS automatic download is disabled" in coordinate_guide
+    assert "Candidate 50S.2B implementation" in audit
+    assert "candidate 50S.2B provider module is `satchecker.py`" in guide
+    assert "satchecker_provider_contract_audit_50s2a.md" in instructions

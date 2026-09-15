@@ -3184,3 +3184,21 @@ must not be relabelled as Wenu entry, closest-approach, or exit events. Exact
 TEME-to-observer realization remains later local-oracle work. Fernando accepted
 this scientific boundary on 2026-09-15, authorizing only the bounded 50S.2B
 cached-adapter implementation.
+
+
+## 13.2.43 50S.2B candidate adapter realization
+
+The candidate adapter implements the accepted 50S.2A time and coordinate
+boundary without adding a new coordinate frame. It accepts only geometric
+topocentric-direction ICRS field centres, records Wenu's inclusive UTC request,
+and transmits a separately recorded UT1 Julian date. Astropy IERS automatic
+download is disabled during conversion; absent or invalid local
+Earth-orientation data is an explicit failure.
+
+Returned provider Julian dates remain identified as UT1 and are explicitly
+converted back to UTC for ordered sample evidence. The samples remain
+source-inferred geometric topocentric ICRF/ICRS-oriented directions and retain
+the stop-exclusive, one-second, 1.2-radius candidate-envelope warnings. They
+are not observed/apparent coordinates, exact boundary events, or a new
+`SatelliteCrossingResult`. No TEME state, Earth-fixed realization,
+refraction, propagation, projection, or output behavior changes.

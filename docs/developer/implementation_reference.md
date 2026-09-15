@@ -2402,3 +2402,33 @@ illumination, event identity, provenance, and warnings. It performs no
 acquisition, propagation, exact crossing solution, illumination calculation,
 charting, or rendering. Fernando accepted the contract on 2026-09-15 after
 all 2,428 tests passed; PR #123 merged it as `23b851b`.
+
+
+## SatChecker crossing candidates
+
+`SatCheckerQuery.from_domain(observer, field_of_view, interval,
+earth_orientation_identity=...)` accepts the 50S.1 observer, closed circular
+field, and inclusive UTC interval. The field must be geometric,
+topocentric-direction ICRS. The query records the explicit UTC-to-UT1 result,
+complete original Wenu semantics, versioned endpoint, transmitted parameters,
+Earth-orientation identity, and stable SHA-256 cache key.
+
+`submit(query, timeout=...)` makes one asynchronous provider submission.
+`poll(query, task_id, timeout=...)` makes one status request. Neither function
+retries, waits, loops, or runs concurrently. Tests inject the transport;
+ordinary tests perform no network access.
+
+`SatCheckerReceipt` retains the exact response bytes, SHA-256, resolved URL,
+retrieval instant, HTTP status, normalized media type, and headers.
+`parse_response()` recognizes only PENDING, PROGRESS, SUCCESS, FAILURE, and
+ERROR. SUCCESS becomes `SatCheckerCandidateEvidence`: one
+`SatelliteCrossingCandidate` and ordered `SatCheckerSample` values retaining
+UT1 Julian date, converted UTC instant, geometric topocentric RA/Dec, angular
+distance, and optional altitude, azimuth, range, and provider illumination.
+No exact `SatelliteCrossingResult` is synthesized.
+
+`SatCheckerCache(root)` atomically stores immutable content-addressed exact
+receipt bytes and a canonical manifest. `store(query, responses)` accepts
+only a terminal-success chain. `load(query)` is network-free and validates
+the request identity, adapter schema, every raw digest, receipt metadata, and
+normalized interpretation digest before reuse.

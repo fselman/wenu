@@ -157,3 +157,21 @@ UTC-to-UT1 policy, candidate-only normalization, async access policy, cache
 identity, and response-data redistribution boundary on 2026-09-15. That
 acceptance authorizes only the bounded 50S.2B cached-adapter implementation;
 it does not authorize any later satellite milestone.
+
+
+## 9. Candidate 50S.2B implementation
+
+The dedicated implementation branch adds `src/wenu/satchecker.py` and the
+durable provider-boundary owner `tests/test_satchecker.py`. The candidate
+implements the accepted mapping as immutable query, receipt, task, sample,
+candidate-evidence, and cache contracts. Submission and polling are separate
+one-shot operations; neither retries nor hides a wait loop. Exact response
+bytes are SHA-256 addressed locally, while a canonical manifest binds the
+complete Wenu request, endpoint, parameters, Earth-orientation identity,
+receipt chain, and normalized interpretation.
+
+Provider SUCCESS output becomes only `SatelliteCrossingCandidate` plus
+ordered `SatCheckerSample` evidence. The implementation creates no exact
+`SatelliteCrossingResult` and performs no network access in ordinary tests.
+This candidate remains limited to 50S.2B and does not change the
+response-data redistribution decision.

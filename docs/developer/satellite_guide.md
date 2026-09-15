@@ -559,6 +559,15 @@ plugin-disabled suite passed all 2,428 tests in 85.52 seconds, and PR #123
 merged the verified implementation into the satellite integration branch as
 `23b851b`.
 
+The candidate 50S.2B provider module is `satchecker.py`. It owns exact
+versioned request translation, explicit no-download UTC-to-UT1 conversion,
+immutable response receipts, one-shot submit/poll access, provider task/schema
+normalization, ordered sampled evidence, and the content-addressed local cache.
+It imports the 50S.1 contracts rather than redefining them. The adapter accepts
+only geometric topocentric-direction ICRS fields and never constructs an exact
+connected-visit result. `tests/test_satchecker.py` is the durable provider
+boundary owner; ordinary tests inject transport and remain network-free.
+
 ## 17. Milestone evolution
 
 - **50S.0:** maintain this literature, provider-policy, scientific, and
