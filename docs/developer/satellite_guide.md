@@ -545,6 +545,12 @@ collaborating production modules. Later work must not duplicate Wenu's
 coordinate service, trajectory geometry, projection, preparation, renderer,
 semantic SVG, or export machinery.
 
+Fernando accepted these 50S.1 contracts and ownership boundaries on 2026-09-15.
+The focused Mac gate passed all 139 tests in 3.07 seconds, the complete
+plugin-disabled suite passed all 2,428 tests in 85.52 seconds, and PR #123
+merged the verified implementation into the satellite integration branch as
+`23b851b`.
+
 ## 17. Milestone evolution
 
 - **50S.0:** maintain this literature, provider-policy, scientific, and
