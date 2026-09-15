@@ -243,8 +243,8 @@ catalogue access, snapshot acquisition, or new footprint shapes.
 
 ## 13. Candidate acceptance and authorization
 
-Candidate verification on Fernando's Mac passed all 138 plugin-disabled current-
-documentation tests in 3.99 seconds. The working tree was clean and
+Candidate verification on Fernando's Mac passed all 138 plugin-disabled
+current-documentation tests in 3.99 seconds. The working tree was clean and
 `git diff --check cc454de...HEAD` passed after removing two audit-header
 trailing spaces.
 
