@@ -815,3 +815,23 @@ The final focused boundary passed all 217 tests, and the complete plugin-disable
 suite passed all 2,473 tests in 83.98 seconds. Fernando accepted the implementation and its scientific boundaries on
 2026-09-15. This closes 50S.3B; only 50S.4 snapshot, propagation, and specimen
 builder work is authorized next.
+
+
+## Accepted 50S.4A snapshot and propagation audit
+
+The as-is review finds no production owner for canonical OMM/GP records,
+immutable satellite element snapshots, geometric TEME propagation receipts, or
+the TEME/Earth-orientation/topocentric state chain. The accepted SatChecker,
+provider-neutral crossing, presentation, generic Cartesian-state, coordinate,
+chart, and renderer modules do not own those responsibilities.
+
+Fernando accepted the documentation-only contract audit on 2026-09-15 after
+the focused gate passed all 128 tests and the branch diff check was clean. The
+accepted contract defines five bounded stages:
+50S.4A contract acceptance; 50S.4B synthetic installed snapshot and element
+domain; 50S.4C direct `sgp4>=2.25,<3` WGS-72 propagation into typed geometric
+TEME state; 50S.4D no-download independently validated topocentric
+transformation; and 50S.4E propagated sampled-specimen construction and
+closure. 50S.4A added no runtime behavior, dependency, package data,
+propagation, transformation, or crossing result. Acceptance closes 50S.4A and
+authorizes only 50S.4B immutable OMM element and snapshot work.

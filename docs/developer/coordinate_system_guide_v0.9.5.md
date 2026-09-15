@@ -3233,3 +3233,22 @@ position generation. It does not interpolate between samples, recompute the
 observer, propagate an orbit, or prove continuous containment. The source
 query's exact coordinate identity is retained in the report, while the
 realized geometry carries the product `CoordinateSpec`.
+
+
+## 50S.4 TEME and topocentric transformation admission note
+
+The local satellite foundation introduces a new Cartesian frame boundary, not
+a shortcut through existing spherical coordinates. SGP4 returns geocentric
+geometric TEME position in kilometres and velocity in kilometres per second.
+TEME is retained explicitly until 50S.4D.
+
+The accepted candidate chain for later implementation is Astropy TEME at the
+evaluation UTC instant → geocentric ITRS → subtraction of the observer's
+WGS-84 geodetic ITRS position → topocentric Cartesian range/direction.
+Automatic IERS download is disabled, EOP identity and UT1−UTC are provenance,
+out-of-coverage time fails closed, and refraction remains off.
+
+An instantaneous topocentric geometric vector expressed in celestial axes is
+not automatically an ICRS astrometric position. 50S.4D must name and validate
+that convention before it can feed an ICRS-oriented field. Projection and
+rendering remain downstream and coordinate-neutral.

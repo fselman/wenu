@@ -27,19 +27,23 @@ architectural rationale and accepted boundaries.
 | 10 | 50S.2 | Add the policy-compliant cached SatChecker crossing adapter. |
 | 11 | 50S.3A | Audit honest sampled-candidate reports, shared-path drawing, and semantic identity. |
 | 12 | 50S.3B | Implement deterministic reports and drawable sampled-candidate tracks. |
-| 13 | 50S.4 | Add a small local snapshot, validated SGP4/topocentric machinery, and specimen builder. |
-| 14 | 50S.5 | Implement the complete local FoV-crossing oracle. |
-| 15 | 50S.6 | Add conservative plane/phase/state filters and optional benchmark-justified HEALPix/time indexing. |
-| 16 | 50S.7 | Add independent illumination, shadow-transition, and observer-night geometry. |
-| 17 | 50S.8 | Add empirical object/family/population brightness models with uncertainty and explicit unknowns. |
-| 18 | 50S.9 | Estimate detector-level trail contamination separately from apparent magnitude. |
-| 19 | 50S.10 | Produce night/season/sky-position statistics and close the satellite program. |
-| 20 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
-| 21 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
-| 22 | 50B.2 | Measure representative products at declared physical dimensions. |
-| 23 | 50B.3 | Implement monochrome and limited-grayscale publication profiles. |
-| 24 | 50B.4 | Perform physical print, reduction, grayscale, and photocopy acceptance. |
-| 25 | 50B.5 | Close publication styles with accepted standards, examples, limitations, and evidence. |
+| 13 | 50S.4A | Audit snapshot, dependency, propagation, Earth-orientation, validation, and specimen contracts. |
+| 14 | 50S.4B | Add canonical OMM elements and a small immutable synthetic snapshot. |
+| 15 | 50S.4C | Add Vallado-validated SGP4 propagation and typed geometric TEME state. |
+| 16 | 50S.4D | Add and independently validate the explicit topocentric transformation chain. |
+| 17 | 50S.4E | Add the network-free propagated-specimen builder and close 50S.4. |
+| 18 | 50S.5 | Implement the complete local FoV-crossing oracle. |
+| 19 | 50S.6 | Add conservative plane/phase/state filters and optional benchmark-justified HEALPix/time indexing. |
+| 20 | 50S.7 | Add independent illumination, shadow-transition, and observer-night geometry. |
+| 21 | 50S.8 | Add empirical object/family/population brightness models with uncertainty and explicit unknowns. |
+| 22 | 50S.9 | Estimate detector-level trail contamination separately from apparent magnitude. |
+| 23 | 50S.10 | Produce night/season/sky-position statistics and close the satellite program. |
+| 24 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
+| 25 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
+| 26 | 50B.2 | Measure representative products at declared physical dimensions. |
+| 27 | 50B.3 | Implement monochrome and limited-grayscale publication profiles. |
+| 28 | 50B.4 | Perform physical print, reduction, grayscale, and photocopy acceptance. |
+| 29 | 50B.5 | Close publication styles with accepted standards, examples, limitations, and evidence. |
 
 ## 1. Purpose and authority
 
@@ -1935,20 +1939,50 @@ PDF, and semantic SVG on 2026-09-15. The final focused gate passed all 217 tests
 suite passed all 2,473 tests in 83.98 seconds. Fernando accepted 50S.3B on 2026-09-15. Acceptance closes SatChecker sampled
 candidate reporting/drawing and authorizes only 50S.4 next.
 
-### 50S.4 — Small local snapshot, propagation, and specimen builder
+### 50S.4A — Snapshot and propagation contract audit
 
-Add an OMM-first immutable content-addressed snapshot format with a legacy TLE
-adapter and one small geometrically representative development snapshot.
-Validate a maintained Vallado-compatible SGP4 implementation against official
-reference vectors and implement the explicit TEME/Earth-orientation/
-topocentric chain through Wenu's accepted coordinate service.
+**Status:** Accepted by Fernando on 2026-09-15.
 
-Add a developer specimen builder that consumes cached data, an observer,
-bounded search interval, FoV size, and requested case type; selects a
-reproducible FoV/time window; stores independent reference tracks and expected
-crossings; and invokes Wenu to produce both crossing results and a marked-track
-FoV chart. Ordinary tests remain network-free. Progressively larger retained
-snapshots follow only after the small machinery is correct.
+Freeze the direct SGP4 dependency, synthetic distributable snapshot, OMM
+element domain, content digest, Vallado validation, split-Julian-date,
+geometric TEME state, no-download Earth-orientation, topocentric oracle, and
+developer-specimen boundaries. This audit changes no runtime, dependency, or
+packaged data. The focused documentation gate passed all 128 tests and the
+branch diff check was clean. Acceptance closes 50S.4A and authorizes only
+50S.4B immutable OMM element and snapshot work; propagation remains
+unauthorized.
+
+### 50S.4B — Immutable OMM element snapshot
+
+After 50S.4A acceptance, add typed canonical GP/OMM records, manifest and
+content-digest validation, installed-resource loading, and a tiny synthetic
+LEO/MEO/geosynchronous-like snapshot. Declare `sgp4>=2.25,<3` directly. No
+live provider record, TLE adapter, propagation, or transformation is included.
+
+### 50S.4C — Validated SGP4/TEME propagation
+
+Map accepted OMM fields explicitly into the upstream Vallado-compatible
+propagator with WGS-72, split Julian dates, typed geometric TEME
+position/velocity, explicit errors, element age, and scalar/array parity.
+Validate the wrapper against pinned published near-Earth and deep-space
+reference values. No Earth-fixed or observer state is produced.
+
+### 50S.4D — Earth-orientation and topocentric state
+
+Use Astropy's declared TEME → ITRS → observer-subtracted Cartesian chain with
+automatic IERS download disabled, exact EOP identity, WGS-84 geodetic sites,
+vacuum horizontal directions, and a carefully named celestial-axis direction.
+Validate range and angles against an independent path and cover pathological
+observer/time geometry. No field-intersection solver is included.
+
+### 50S.4E — Propagated specimen builder and closure
+
+Add a deterministic network-free developer builder that consumes the installed
+synthetic snapshot and writes sampled propagated tracks/query inputs with full
+provenance. Outputs say **propagated sampled specimens — not verified
+crossings**. Exact crossing results and completeness claims remain 50S.5.
+Close 50S.4 only after package, numerical, focused, full-suite, and developer
+product acceptance.
 
 ### 50S.5 — Complete local FoV-crossing oracle
 

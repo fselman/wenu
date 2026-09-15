@@ -1702,3 +1702,24 @@ Fernando accepted the 50S.3B ownership and bounded implementation on
 2026-09-15 after the 217-test focused gate, complete 2,473-test suite,
 127-test documentation gate, clean diff check, and PNG/PDF/semantic-SVG visual
 review passed. Only 50S.4 is authorized next.
+
+
+## 50S.4A snapshot and propagation contract audit ownership (accepted)
+
+- `docs/developer/satellite_snapshot_propagation_audit_50s4a.md` owns the
+  proposed dependency, canonical OMM element, immutable snapshot,
+  SGP4/geometric-TEME, Earth-orientation/topocentric, numerical validation, and
+  developer-specimen contracts;
+- the audit changes no production code, dependency, fixture, or package data;
+- no current module absorbs these responsibilities;
+- after acceptance, several collaborating modules justify the first
+  `src/wenu/satellites/` package, with distinct element, snapshot, SGP4, and
+  topocentric owners;
+- `satchecker.py`, `satellite_crossings.py`, `ephemeris.py`,
+  `coordinate_service.py`, presentation, chart, renderer, semantic, and
+  export ownership remain unchanged;
+- Fernando accepted 50S.4A on 2026-09-15 after the focused documentation
+  gate passed all 128 tests and the branch diff check was clean;
+- acceptance closes 50S.4A and authorizes only 50S.4B canonical elements and
+  the tiny synthetic installed snapshot, not propagation or observer
+  transformation.
