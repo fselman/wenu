@@ -376,9 +376,9 @@ authorizes only 50S.4D Earth-orientation and topocentric state work; it does
 not authorize a crossing solver, specimen builder, or 50S.5.
 
 
-## Candidate 50S.4D implementation evidence
+## Accepted 50S.4D implementation evidence
 
-The candidate implements the accepted Astropy chain in a distinct
+The accepted implementation uses the frozen Astropy chain in a distinct
 `satellites/topocentric.py` owner. It opens the installed
 `astropy-iers-data` IERS-A file explicitly, hashes its exact bytes, disables
 automatic download and degraded accuracy, rejects negative EOP interpolation
@@ -407,6 +407,9 @@ Three stronger constructed-geometry tests and an installed LEO/MEO/GEO-like
 snapshot test were then added. At production-code commit `1c33f3`, the final dedicated gate passes all 17
 tests, and the expanded
 element/SGP4/topocentric/crossing/SatChecker/coordinate gate passes all 89
-tests on Fernando's Mac. The candidate documentation gate passes all 133 tests,
-and the complete plugin-disabled suite passes all 2,511 tests in 95.10 seconds.
-Final diff inspection and scientific acceptance remain pending.
+tests on Fernando's Mac. The final documentation gate passes all 133 tests, and the complete
+plugin-disabled suite passes all 2,511 tests in 95.10 seconds. The final branch
+diff check is clean. Fernando scientifically and architecturally accepted
+50S.4D on 2026-09-15. This closes 50S.4D and authorizes only bounded 50S.4E
+propagated-specimen builder work; it does not authorize a crossing solver or
+50S.5.
