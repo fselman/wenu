@@ -92,9 +92,12 @@ For current work, read and follow:
 - `satellite_report_drawing_audit_50s3a.md` for the accepted sampled-candidate
   report, drawing, semantic-identity, shared-backend, and no-exact-crossing
   boundary;
-- `satellite_snapshot_propagation_audit_50s4a.md` for the candidate direct
-  SGP4 dependency, synthetic snapshot, geometric TEME, no-download
-  topocentric-validation, and propagated-specimen boundary;
+- `satellite_snapshot_propagation_audit_50s4a.md` for the accepted direct
+  `sgp4>=2.25,<3` dependency, synthetic snapshot, geometric TEME, no-download
+  topocentric-validation, and propagated-specimen boundary. In 50S.4B keep
+  records immutable and fail closed, load only digest-verified installed
+  synthetic resources, preserve full NORAD identifiers, and add no
+  propagation or transformation;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,

@@ -2461,3 +2461,27 @@ UTC sample strings when enabled. Both layer types require a
 `LayerRealizationContext`, use `CoordinateService`, retain candidate-only
 metadata and provider illumination as evidence, and perform no network access,
 cache read, propagation, interpolation, or exact crossing construction.
+
+
+## Local satellite elements and snapshots (50S.4B candidate)
+
+`SatelliteElementRecord` is an immutable canonical OMM/GP-domain record. It
+retains full integer NORAD identity, UTC element epoch, OMM mean elements and
+source fields, fixed `EARTH`/`TEME`/`UTC`/`SGP4` declarations, exact
+source identity, record digest, and provenance. Construction rejects missing
+or unknown mapping fields, invalid semantics, non-finite or out-of-range
+values, and record-content digest mismatch.
+
+`SatelliteSnapshotManifest` identifies one schema-versioned resource,
+records file, canonical content SHA-256, record count, source and builder
+identity, provider-policy reference/check instant, provenance, and warnings.
+`SatelliteElementSnapshot` requires a non-empty tuple ordered by the complete
+NORAD catalogue identifier, rejects duplicates and count mismatch, and
+provides an immutable `by_norad_catalog_id` mapping.
+
+`load_snapshot(snapshot_id="synthetic_50s4b_v1")` reads installed resources
+with `importlib.resources`, requires the records bytes to equal Wenu's
+canonical sorted compact JSON representation, verifies the snapshot and every
+record digest, and then constructs the immutable domain. The default resource
+contains three explicitly synthetic non-operational LEO/MEO/geosynchronous-like
+records. It performs no network access and no propagation.

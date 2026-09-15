@@ -298,3 +298,18 @@ documentation gate passed all 128 tests and the branch diff check was clean.
 Acceptance closes 50S.4A and authorizes only 50S.4B immutable OMM element and
 snapshot work. It does not authorize propagation, topocentric transformation,
 a crossing solver, or 50S.5.
+
+
+## Candidate 50S.4B implementation evidence
+
+The dedicated 50S.4B branch implements the accepted immutable element and
+snapshot boundary: strict canonical OMM/GP records, a versioned manifest,
+canonical-byte and per-record SHA-256 validation, full-NORAD ordering,
+duplicate rejection, immutable lookup, installed-resource loading, and three
+hand-authored synthetic non-operational LEO/MEO/geosynchronous-like records.
+It declares `sgp4>=2.25,<3` directly but imports or invokes no propagator.
+
+The initial focused element, package-boundary, and packaged-configuration gate
+passed all 29 tests. Propagation, TEME state generation, Earth-orientation and
+observer transformation, acquisition, exact crossings, and presentation
+remain absent. Complete-suite and final documentation evidence remain pending.

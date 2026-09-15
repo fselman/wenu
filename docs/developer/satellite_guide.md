@@ -707,3 +707,25 @@ Fernando accepted the documentation-only 50S.4A audit on 2026-09-15 after
 the focused gate passed all 128 tests and the branch diff check was clean.
 50S.4A changed no runtime, dependency, or package data. It is now closed, and
 only 50S.4B immutable OMM element and snapshot work is authorized next.
+
+
+### Candidate 50S.4B immutable OMM snapshot
+
+The dedicated 50S.4B branch implements only the element/snapshot boundary
+authorized by 50S.4A. `SatelliteElementRecord` retains all required OMM mean
+elements, full six-digit synthetic NORAD identity, canonical UTC epoch,
+`EARTH`/`TEME`/`UTC`/`SGP4` declarations, source-record digest, and
+provenance. Invalid, incomplete, unknown-field, non-finite, wrong-frame, or
+wrong-theory input fails closed.
+
+`SatelliteElementSnapshot` and its manifest enforce exact canonical JSON
+bytes, content and per-record SHA-256 identities, record count, ascending full
+NORAD ordering, duplicate rejection, immutable lookup, and installed-resource
+loading. The first snapshot contains only three hand-authored, non-operational
+LEO-like, MEO-like, and geosynchronous-like specimens. It copies no live
+CelesTrak, Space-Track, SatChecker, or tracked-object record.
+
+The branch declares `sgp4>=2.25,<3` directly so installation owns its future
+propagation dependency. It deliberately constructs no propagator and produces
+no TEME state, terrestrial/topocentric transformation, field intersection, or
+crossing result. Those remain gated by 50S.4C and later milestones.

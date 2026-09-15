@@ -835,3 +835,20 @@ transformation; and 50S.4E propagated sampled-specimen construction and
 closure. 50S.4A added no runtime behavior, dependency, package data,
 propagation, transformation, or crossing result. Acceptance closes 50S.4A and
 authorizes only 50S.4B immutable OMM element and snapshot work.
+
+
+## Candidate 50S.4B immutable element snapshot
+
+The dedicated milestone branch adds the first bounded
+`src/wenu/satellites/` package. `elements.py` owns immutable, fail-closed
+canonical OMM/GP records; `snapshots.py` owns manifest validation,
+canonical-byte and record-level SHA-256 verification, deterministic full-NORAD
+ordering, duplicate rejection, immutable lookup, and installed-resource
+loading.
+
+The packaged `synthetic_50s4b_v1` snapshot contains exactly three
+hand-authored non-operational LEO-like, MEO-like, and geosynchronous-like
+records with six-digit synthetic identifiers. No provider response or tracked
+object was copied. `sgp4>=2.25,<3` is now a direct dependency, but this
+candidate adds no propagator construction, TEME state, Earth-orientation
+transform, observer direction, crossing result, acquisition, or rendering.

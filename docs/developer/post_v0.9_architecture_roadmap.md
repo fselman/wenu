@@ -1954,10 +1954,16 @@ unauthorized.
 
 ### 50S.4B — Immutable OMM element snapshot
 
-After 50S.4A acceptance, add typed canonical GP/OMM records, manifest and
-content-digest validation, installed-resource loading, and a tiny synthetic
-LEO/MEO/geosynchronous-like snapshot. Declare `sgp4>=2.25,<3` directly. No
-live provider record, TLE adapter, propagation, or transformation is included.
+**Status:** Candidate implementation on the dedicated milestone branch.
+
+The candidate adds typed canonical GP/OMM records, manifest and content-digest
+validation, per-record digests, installed-resource loading, deterministic
+full-NORAD ordering, duplicate rejection, immutable lookup, and a three-record
+synthetic LEO/MEO/geosynchronous-like snapshot. It declares
+`sgp4>=2.25,<3` directly. No live provider record, TLE adapter, propagation,
+TEME state, Earth-orientation/topocentric transformation, or crossing result
+is included. The initial focused domain and packaging gate passed all 29
+tests; expanded and complete-suite gates remain pending.
 
 ### 50S.4C — Validated SGP4/TEME propagation
 
