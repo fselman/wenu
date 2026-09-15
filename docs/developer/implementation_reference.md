@@ -2560,3 +2560,18 @@ sampled specimens — not verified crossings**. It is input evidence for later
 
 Fernando scientifically and architecturally accepted this developer product on
 2026-09-15. It closes 50S.4 without promoting the tool into a runtime authority.
+
+
+### Proposed complete local crossing oracle (50S.5A audit)
+
+No callable local crossing oracle exists yet. The candidate audit proposes an
+immutable query containing one installed snapshot, observer, compatible fixed
+geometric GCRS-axis circular field, inclusive UTC interval, and explicit
+positive time/angular tolerances. The proposed exhaustive oracle returns
+ordered existing `SatelliteCrossingResult` visits or raises an explicit
+convergence error; it never silently drops invalid records or unresolved
+intervals.
+
+`SatelliteCrossingResult` remains a value contract, not evidence that a
+continuous crossing has already been solved. 50S.4E sampled specimens remain
+non-oracular input evidence.
