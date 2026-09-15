@@ -3283,7 +3283,7 @@ this state through ITRS and observer subtraction.
 Fernando scientifically and architecturally accepted the typed geometric TEME boundary on 2026-09-15. TEME remains explicit; acceptance authorizes only the separately validated 50S.4D Earth-orientation and topocentric state chain.
 
 
-### 50S.4D topocentric Cartesian and GCRS-axis boundary (candidate)
+### 50S.4D topocentric Cartesian and GCRS-axis boundary (accepted)
 
 The candidate begins with geocentric geometric TEME position/velocity at one
 UTC instant. Astropy transforms that complete Cartesian state to geocentric
@@ -3306,4 +3306,5 @@ distinction in `CoordinateSpec`.
 The coordinate guide was reviewed and updated for 50S.4D because the milestone
 adds Earth-orientation, observer-parallax, horizontal-direction, and
 celestial-axis semantics. The accepted inertial catalogue and generic
-coordinate-service meanings remain unchanged.
+coordinate-service meanings remain unchanged. Fernando scientifically accepted
+this coordinate meaning on 2026-09-15.
