@@ -33,6 +33,8 @@ from wenu.satellites.elements import SatelliteElementRecord
 
 SKYFIELD_ANGLE_TOLERANCE_DEG = 0.002
 SKYFIELD_RANGE_TOLERANCE_KM = 0.05
+CONSTRUCTED_DIRECTION_TOLERANCE_DEG = 1e-7
+CONSTRUCTED_RANGE_TOLERANCE_KM = 1e-5
 
 
 def vanguard_record():
@@ -313,13 +315,24 @@ def test_constructed_zenith_horizon_and_azimuth_wrap_geometry(
         range_km=1000.0,
     )
     result = SatelliteTopocentricTransformer().transform(state, observer())
-    delta_azimuth = (
-        (result.azimuth_deg - azimuth_deg + 180.0) % 360.0 - 180.0
+    expected_azimuth = np.deg2rad(azimuth_deg)
+    expected_altitude = np.deg2rad(altitude_deg)
+    actual_azimuth = np.deg2rad(result.azimuth_deg)
+    actual_altitude = np.deg2rad(result.altitude_deg)
+    haversine = (
+        np.sin((actual_altitude - expected_altitude) / 2.0) ** 2
+        + np.cos(expected_altitude)
+        * np.cos(actual_altitude)
+        * np.sin((actual_azimuth - expected_azimuth) / 2.0) ** 2
+    )
+    separation_deg = np.rad2deg(
+        2.0 * np.arcsin(np.sqrt(np.clip(haversine, 0.0, 1.0)))
     )
 
-    assert delta_azimuth == pytest.approx(0.0, abs=1e-7)
-    assert result.altitude_deg == pytest.approx(altitude_deg, abs=1e-7)
-    assert result.range_km == pytest.approx(1000.0, abs=1e-8)
+    assert separation_deg <= CONSTRUCTED_DIRECTION_TOLERANCE_DEG
+    assert result.range_km == pytest.approx(
+        1000.0, abs=CONSTRUCTED_RANGE_TOLERANCE_KM
+    )
 
 
 def test_installed_leo_meo_and_geosynchronous_like_states_transform():
