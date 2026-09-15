@@ -639,7 +639,7 @@ behavior. Acceptance authorizes only bounded renderer-neutral reports and a
 drawable sampled-candidate layer in 50S.3B.
 
 
-## 19. Candidate 50S.3B implementation
+## 19. Accepted 50S.3B implementation
 
 `satellite_presentations.py` now provides one deterministic presentation
 model over a terminal normalized SatChecker response. Text and JSON share the
