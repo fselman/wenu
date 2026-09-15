@@ -89,6 +89,9 @@ For current work, read and follow:
 - `satchecker_provider_contract_audit_50s2a.md` for the accepted SatChecker
   endpoint, UTC-to-UT1, coordinate, candidate-envelope, async, exact-cache,
   failure, and response-data redistribution boundary;
+- `satellite_report_drawing_audit_50s3a.md` for the accepted sampled-candidate
+  report, drawing, semantic-identity, shared-backend, and no-exact-crossing
+  boundary;
 - `post_v0.9_architecture_roadmap.md` for active coordinate, SVG,
   temporal-sequence, animation, planet, or satellite direction;
 - `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product, font, verification,
