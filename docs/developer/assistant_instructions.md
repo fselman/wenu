@@ -727,11 +727,12 @@ is authorized next; 50S.6 acceleration and all later satellite behavior remain
 unauthorized.
 
 
-### Candidate 50S.5A audit boundary
+### Accepted 50S.5A audit boundary
 
 Follow `satellite_crossing_oracle_audit_50s5a.md` for complete-local-oracle
-work. Until Fernando accepts that audit, add no crossing solver, query,
-tolerance, root/extremum refinement, local catalogue scan, or 50S.6 filter.
-Preserve the distinction between a fixed geometric field in GCRS axes and
-provider apparent ICRS evidence. Uncertain numerical intervals must subdivide
-or fail closed; they must never become silent negative results.
+work. Fernando scientifically and architecturally accepted 50S.5A on
+2026-09-15. Only the bounded 50S.5B local crossing-oracle implementation is
+authorized next; 50S.6 acceleration and all later satellite behavior remain
+unauthorized. Preserve the distinction between a fixed geometric field in
+GCRS axes and provider apparent ICRS evidence. Uncertain numerical intervals
+must subdivide or fail closed; they must never become silent negative results.
