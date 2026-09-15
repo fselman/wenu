@@ -284,7 +284,7 @@ def test_success_normalizes_candidate_and_ordered_sample_evidence():
     evidence = result.evidence[0]
     assert evidence.candidate.satellite.norad_catalog_id == 123456
     assert evidence.candidate.satellite.international_designator == "2026-001A"
-    assert evidence.candidate.element_epoch == "2026-09-15T00:00:00Z"
+    assert evidence.candidate.element_epoch == "2026-09-15T00:00:00.000000Z"
     assert evidence.response_sha256 == raw.body_sha256
     assert len(evidence.samples) == 2
     assert evidence.samples[0].julian_date_ut1 == 2461298.5416667
