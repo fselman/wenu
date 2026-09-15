@@ -1,4 +1,4 @@
-"""Local artificial-satellite element and snapshot domain."""
+"""Local artificial-satellite state and resource domain."""
 
 from .elements import SatelliteElementRecord
 from .sgp4 import (
@@ -13,14 +13,24 @@ from .snapshots import (
     SatelliteSnapshotManifest,
     load_snapshot,
 )
+from .topocentric import (
+    SatelliteEarthOrientationError,
+    SatelliteEarthOrientationEvidence,
+    SatelliteTopocentricState,
+    SatelliteTopocentricTransformer,
+)
 
 __all__ = [
     "DEFAULT_SNAPSHOT_ID",
+    "SatelliteEarthOrientationError",
+    "SatelliteEarthOrientationEvidence",
     "SatelliteElementRecord",
     "SatelliteElementSnapshot",
     "SatelliteSnapshotManifest",
     "SatellitePropagationError",
     "SatelliteTemeState",
+    "SatelliteTopocentricState",
+    "SatelliteTopocentricTransformer",
     "Sgp4TemePropagator",
     "split_julian_date",
     "load_snapshot",

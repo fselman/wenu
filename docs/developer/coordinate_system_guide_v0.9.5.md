@@ -3281,3 +3281,30 @@ this state through ITRS and observer subtraction.
 ### 50S.4C acceptance
 
 Fernando scientifically and architecturally accepted the typed geometric TEME boundary on 2026-09-15. TEME remains explicit; acceptance authorizes only the separately validated 50S.4D Earth-orientation and topocentric state chain.
+
+
+### 50S.4D topocentric Cartesian and GCRS-axis boundary (accepted)
+
+The candidate begins with geocentric geometric TEME position/velocity at one
+UTC instant. Astropy transforms that complete Cartesian state to geocentric
+ITRS using a specifically selected installed IERS-A table. Wenu constructs the
+observer from WGS-84 geodetic longitude, latitude, and ellipsoidal height and
+subtracts the observer ITRS position before converting the vector to angles.
+Range is the norm of that same observer-subtracted Cartesian vector.
+
+Vacuum AltAz is geometric observer-local direction: azimuth is measured from
+north through east and altitude from the ideal horizon. No atmospheric
+refraction is applied.
+
+The second angular representation is called **topocentric geometric direction
+expressed in GCRS axes**. The already observer-subtracted ITRS vector is rotated
+into GCRS axes at the same instant. This does not make it an ICRS catalogue
+position, a formal GCRS coordinate with geocentric origin, or an astrometric,
+apparent, or observed place. The `gcrs-axes` frame label preserves that
+distinction in `CoordinateSpec`.
+
+The coordinate guide was reviewed and updated for 50S.4D because the milestone
+adds Earth-orientation, observer-parallax, horizontal-direction, and
+celestial-axis semantics. The accepted inertial catalogue and generic
+coordinate-service meanings remain unchanged. Fernando scientifically accepted
+this coordinate meaning on 2026-09-15.

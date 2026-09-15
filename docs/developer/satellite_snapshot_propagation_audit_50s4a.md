@@ -374,3 +374,42 @@ in 3.67 seconds, and the branch diff check was clean. Fernando scientifically
 and architecturally accepted 50S.4C on 2026-09-15. This closes 50S.4C and
 authorizes only 50S.4D Earth-orientation and topocentric state work; it does
 not authorize a crossing solver, specimen builder, or 50S.5.
+
+
+## Accepted 50S.4D implementation evidence
+
+The accepted implementation uses the frozen Astropy chain in a distinct
+`satellites/topocentric.py` owner. It opens the installed
+`astropy-iers-data` IERS-A file explicitly, hashes its exact bytes, disables
+automatic download and degraded accuracy, rejects negative EOP interpolation
+statuses, and retains coverage plus evaluated UT1−UTC and polar motion.
+
+The implementation constructs the TEME Cartesian representation and
+differential at the propagation instant, transforms to geocentric ITRS,
+constructs the WGS-84 observer, subtracts observer position before angular
+conversion, and retains the resulting vector, velocity, and range. It derives
+vacuum AltAz from the manual topocentric ITRS representation. A separate
+axes-only rotation provides a topocentric geometric direction in GCRS axes
+without claiming ICRS, GCRS-origin, astrometric, apparent, or observed status.
+
+Tolerances were declared by evidence type. Direct Cartesian subtraction and
+range use (10^{-9}) km internal checks; velocity identity in rotating ITRS
+uses (10^{-12}) km/s. The independent Skyfield high-level comparison uses
+0.002° and 0.05 km to admit documented EOP/convention differences. Constructed
+zenith/horizon/wrap fixtures use (10^{-6})° and (10^{-5}) km after an
+ITRS→TEME→ITRS round trip; the observed near-zenith separation is 1.40 mas and
+the observed range round-trip residual is 5.74 mm.
+
+The initial candidate exposed one Astropy-version compatibility fault:
+`IERS_A.open()` on Fernando's installation requires a string path rather than
+`pathlib.Path`. After correcting that interface, all 14 initial tests passed.
+Three stronger constructed-geometry tests and an installed LEO/MEO/GEO-like
+snapshot test were then added. At production-code commit `1c33f3`, the final dedicated gate passes all 17
+tests, and the expanded
+element/SGP4/topocentric/crossing/SatChecker/coordinate gate passes all 89
+tests on Fernando's Mac. The final documentation gate passes all 133 tests, and the complete
+plugin-disabled suite passes all 2,511 tests in 95.10 seconds. The final branch
+diff check is clean. Fernando scientifically and architecturally accepted
+50S.4D on 2026-09-15. This closes 50S.4D and authorizes only bounded 50S.4E
+propagated-specimen builder work; it does not authorize a crossing solver or
+50S.5.

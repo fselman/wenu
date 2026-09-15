@@ -2516,3 +2516,26 @@ does not transform TEME or produce observer-relative directions.
 
 
 Fernando accepted the bounded 50S.4C API and ownership on 2026-09-15. Only 50S.4D Earth-orientation and topocentric state work is authorized next.
+
+
+## Satellite topocentric state chain (50S.4D accepted)
+
+`SatelliteTopocentricTransformer().transform(teme_state, observer)` accepts one
+successful `SatelliteTemeState` and one vacuum `SatelliteObserver`. It uses
+the installed `astropy-iers-data` IERS-A resource without network access,
+performs the Astropy TEME/ITRS transformation, subtracts the WGS-84 observer in
+ITRS Cartesian space, and returns `SatelliteTopocentricState`.
+
+`SatelliteEarthOrientationEvidence` records the exact source path and SHA-256,
+Astropy and `astropy-iers-data` versions, MJD coverage, UT1−UTC, x/y polar
+motion, and their interpolation statuses. `SatelliteEarthOrientationError`
+reports unavailable or out-of-coverage local EOP data.
+
+The returned state contains the source TEME state and observer, satellite and
+observer ITRS vectors, observer-subtracted position and velocity, range,
+geometric vacuum azimuth/altitude, and a geometric topocentric direction
+expressed in GCRS axes. Its two `CoordinateSpec` values distinguish
+`altaz`/observer from `gcrs-axes`/topocentric-direction. The latter is an
+axes representation, not an ICRS or GCRS catalogue/apparent coordinate.
+Fernando accepted this API and ownership on 2026-09-15; only the bounded
+50S.4E propagated-specimen builder is authorized next.
