@@ -473,7 +473,7 @@ shadow transitions, known/unknown photometry, aged elements, and parser fault
 cases. Larger retained snapshots follow only after the complete machinery is
 correct.
 
-The bounded 50S.4E developer builder accepts the installed synthetic snapshot,
+The bounded 50S.4E developer specimen builder accepts the installed synthetic snapshot,
 observer, evaluation grid, and FoV size. It stores propagated sampled tracks
 and query inputs only. It does not find a useful field automatically, emit
 expected crossings, invoke a crossing query, calculate entry/exit or closest
