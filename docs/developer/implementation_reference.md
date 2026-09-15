@@ -2487,3 +2487,32 @@ contains three explicitly synthetic non-operational LEO/MEO/geosynchronous-like
 records. It performs no network access and no propagation. Fernando accepted
 this API and ownership boundary on 2026-09-15; only 50S.4C propagation is
 authorized next.
+
+
+## Validated SGP4 geometric TEME propagation (50S.4C accepted)
+
+`split_julian_date(utc)` normalizes an ISO-8601 UTC instant and returns
+`(canonical_utc, julian_day, julian_fraction)`. The components remain separate
+when passed to SGP4 so modern Julian-date precision is not collapsed into one
+float.
+
+`Sgp4TemePropagator(record, snapshot_sha256=None)` maps the canonical OMM
+fields to `sgp4.omm.initialize()` with explicit `WGS72`. `.propagate(utc)`
+returns one immutable `SatelliteTemeState`; `.propagate_many(instants)`
+returns ordered states and uses `sgp4_array()` when the accelerated backend is
+available. Empty input returns an empty tuple.
+
+`SatelliteTemeState` is successful state evidence only: status zero,
+geocentric geometric `EARTH`/`TEME`, position kilometres, velocity
+kilometres per second, canonical UTC, split Julian date, element age, record
+and optional snapshot identity, upstream version/backend, WGS-72, improved
+mode, provenance, and warnings. `SatellitePropagationError` retains every
+non-zero upstream status code, message, satellite identifier, and instant.
+
+The synthetic snapshot now uses full identifiers 300001–300003 because the
+upstream `Satrec` interface rejects values above 339999. Record and snapshot
+digests were regenerated; there is no hidden propagator identifier. This API
+does not transform TEME or produce observer-relative directions.
+
+
+Fernando accepted the bounded 50S.4C API and ownership on 2026-09-15. Only 50S.4D Earth-orientation and topocentric state work is authorized next.

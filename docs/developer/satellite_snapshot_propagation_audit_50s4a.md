@@ -330,3 +330,47 @@ Fernando accepted the scientific and architectural boundary on 2026-09-15.
 This closes 50S.4B and authorizes only 50S.4C validated SGP4/TEME propagation.
 It does not authorize Earth-orientation/topocentric transformation, specimen
 construction, a crossing solver, or 50S.5.
+
+
+## Accepted 50S.4C implementation evidence
+
+The dedicated 50S.4C branch maps immutable canonical OMM records through the
+upstream Vallado-compatible API with explicit WGS-72 and improved operation
+mode. It supplies split Julian-date components, converts only declared OMM
+units, raises non-zero SGP4 statuses, and returns immutable successful
+geocentric geometric TEME position/velocity with complete identity, version,
+backend, time, element-age, and provenance fields.
+
+Preflight found that the original synthetic identifiers 900001–900003 exceeded
+the upstream `Satrec` maximum 339999. They were corrected openly to
+300001–300003; all three source-record digests and the snapshot content digest
+were regenerated. No hidden internal satellite identity is permitted.
+
+Pinned AIAA 2006-6753/Vallado verification vectors cover the near-Earth and
+deep-space branches at epoch. The upstream case 44160 validates a non-zero
+terminal status, and scalar/array evaluation has a sub-millimetre parity gate.
+The initial satellite element/SGP4 gate passed all 15 tests. Expanded,
+complete-suite, and documentation gates remain pending. No terrestrial or
+observer transformation is included.
+
+At production commit `e0d7c78`, the expanded focused gate passed all 167
+tests and the complete plugin-disabled suite passed all 2,492 tests in 86.88
+seconds. A wheel installed into an isolated virtual environment loaded from
+`site-packages`, verified corrected snapshot digest
+`2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe`,
+and propagated all three synthetic records at
+2026-09-15T00:10:00Z:
+
+- 300001: TEME/WGS-72/status 0; position
+  (-1652.351964020854, 3880.9803510202178, 5315.164599300292) km;
+- 300002: TEME/WGS-72/status 0; position
+  (8131.2128472741315, 14916.96335971539, -20707.73332733826) km;
+- 300003: TEME/WGS-72/status 0; position
+  (-41802.597498888295, -5496.836777718252, -24.45502701752297) km.
+
+All returned finite position and velocity. This evidence validates installation
+and execution of the wrapper. The final documentation gate passed all 132 tests
+in 3.67 seconds, and the branch diff check was clean. Fernando scientifically
+and architecturally accepted 50S.4C on 2026-09-15. This closes 50S.4C and
+authorizes only 50S.4D Earth-orientation and topocentric state work; it does
+not authorize a crossing solver, specimen builder, or 50S.5.

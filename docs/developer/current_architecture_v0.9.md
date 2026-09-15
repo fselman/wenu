@@ -862,3 +862,41 @@ and returned the ordered identifiers 900001, 900002, and 900003. Fernando
 accepted the implementation and its bounded scientific ownership on
 2026-09-15. This closes 50S.4B and authorizes only 50S.4C validated SGP4/TEME
 propagation.
+
+
+## Accepted 50S.4C validated SGP4/TEME propagation
+
+`satellites/sgp4.py` now owns the bounded mapping from one accepted
+`SatelliteElementRecord` to the upstream `Satrec` API. Initialization passes
+WGS-72 explicitly, retains improved operation mode, supplies evaluation time as
+separate Julian-day and fractional-day values, raises every non-zero SGP4
+status explicitly, and returns immutable `SatelliteTemeState` values with
+geocentric geometric TEME position in kilometres and velocity in kilometres
+per second.
+
+The wrapper records complete satellite/source/snapshot identity, canonical UTC,
+both Julian-date components, element age, SGP4 package version, implementation
+backend, WGS-72, operation mode, status, provenance, and warnings. Scalar and
+array routes share the same state construction; the array route uses upstream
+acceleration when available and otherwise preserves the scalar contract.
+
+The admission review found that the first synthetic IDs 900001–900003 exceeded
+the upstream `Satrec` maximum 339999. The snapshot was transparently corrected
+to valid six-digit synthetic IDs 300001–300003 and every affected digest was
+regenerated. Wenu does not pass a hidden surrogate identity to SGP4.
+
+Pinned Vallado verification cases cover near-Earth satellite 5 and deep-space
+satellite 4632 at epoch, while the upstream published terminal-error case
+44160 verifies explicit failure. The candidate adds no ITRS, observer,
+topocentric direction, crossing solver, acquisition, presentation, or
+rendering behavior.
+
+At production commit `e0d7c78`, the expanded focused gate passed all 167
+tests and the complete plugin-disabled suite passed all 2,492 tests in 86.88
+seconds. An isolated wheel installation then loaded Wenu from `site-packages`,
+verified corrected snapshot digest
+`2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe`,
+and propagated all three identifiers with TEME/WGS-72/status zero.
+
+
+Fernando scientifically and architecturally accepted 50S.4C on 2026-09-15 after the 15-test initial gate, 167-test expanded gate, all 2,492 tests, the 132-test documentation gate, and installed-wheel propagation evidence. This closes 50S.4C and authorizes only 50S.4D Earth-orientation and topocentric state work.

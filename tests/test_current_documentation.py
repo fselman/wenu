@@ -5292,8 +5292,6 @@ def test_50s4b_records_complete_and_installed_wheel_evidence():
         DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
     ).split())
     guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
-    instructions = " ".join(read(INSTRUCTIONS).split())
-
     assert "production commit `d3cb597`" in architecture
     assert "expanded focused gate passed all 158 tests" in audit
     assert "complete plugin-disabled suite passed all 2,483 tests" in audit
@@ -5304,4 +5302,69 @@ def test_50s4b_records_complete_and_installed_wheel_evidence():
     assert "Accepted by Fernando on 2026-09-15" in roadmap
     assert "This closes 50S.4B and authorizes only 50S.4C" in audit
     assert "only 50S.4C validated SGP4/TEME propagation is authorized next" in guide
-    assert "only the bounded 50S.4C validated SGP4/TEME wrapper is authorized next" in instructions
+
+
+def test_50s4c_documents_validated_sgp4_teme_boundary():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Accepted 50S.4C validated SGP4/TEME propagation",
+        "separate Julian-day and fractional-day values",
+        "SatelliteTemeState",
+        "does not pass a hidden surrogate identity",
+    ):
+        assert phrase in architecture
+    assert "50S.4C — Validated SGP4/TEME propagation" in roadmap
+    for phrase in (
+        "Validated SGP4 geometric TEME propagation (50S.4C accepted)",
+        "split_julian_date",
+        "Sgp4TemePropagator",
+        "SatelliteTemeState",
+        "SatellitePropagationError",
+        "does not transform TEME",
+    ):
+        assert phrase in reference
+    assert "50S.4C SGP4/TEME propagation ownership (accepted)" in source_tree
+    assert "tests/test_satellite_sgp4.py" in source_tree
+    assert "50S.4C typed TEME state boundary" in coordinate_guide
+    assert "must not be labelled ICRS, GCRS, ITRS" in coordinate_guide
+    assert "Accepted 50S.4C implementation evidence" in audit
+    assert "upstream `Satrec` maximum 339999" in audit
+    assert "initial satellite element/SGP4 gate passed all 15 tests" in audit
+    assert "Accepted 50S.4C SGP4 and geometric TEME state" in guide
+    assert "300001–300003" in guide
+    assert "only the bounded 50S.4D" in instructions
+
+
+def test_50s4c_records_complete_and_installed_wheel_evidence():
+    architecture = " ".join(read(V09_CURRENT).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
+    ).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+
+    assert "production commit `e0d7c78`" in architecture
+    assert "expanded focused gate passed all 167 tests" in audit
+    assert "complete plugin-disabled suite passed all 2,492 tests" in audit
+    assert "isolated virtual environment" in audit
+    assert "loaded from `site-packages`" in audit
+    assert "2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe" in audit
+    for identifier in ("300001", "300002", "300003"):
+        assert f"{identifier}: TEME/WGS-72/status 0" in audit
+    assert "finite position and velocity" in audit
+    assert "accepted 50S.4C on 2026-09-15" in guide
+    assert "final documentation gate passed all 132 tests" in audit
+    assert "branch diff check was clean" in audit
+    assert "This closes 50S.4C and" in audit
+    assert "authorizes only 50S.4D Earth-orientation and topocentric state work" in audit

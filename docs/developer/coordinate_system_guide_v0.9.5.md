@@ -3263,3 +3263,21 @@ do not constitute a TEME Cartesian state or any coordinate transformation.
 The 50S.4B loader performs no propagation, Earth rotation, observer
 subtraction, angular conversion, or projection. The TEME-to-ITRS and
 topocentric convention remains entirely deferred to 50S.4D.
+
+
+### 50S.4C typed TEME state boundary
+
+`SatelliteTemeState` is explicitly geocentric, geometric, Cartesian TEME.
+Its position unit is kilometres and its velocity unit is kilometres per
+second. Its evaluation UTC and split Julian-date components describe one
+propagation instant; element age is provenance, not a coordinate correction.
+
+This state must not be labelled ICRS, GCRS, ITRS, apparent, astrometric,
+topocentric, RA/Dec, or AltAz. 50S.4C performs no Earth-orientation lookup and
+requires no IERS data. Only the separately gated 50S.4D chain may transform
+this state through ITRS and observer subtraction.
+
+
+### 50S.4C acceptance
+
+Fernando scientifically and architecturally accepted the typed geometric TEME boundary on 2026-09-15. TEME remains explicit; acceptance authorizes only the separately validated 50S.4D Earth-orientation and topocentric state chain.

@@ -21,7 +21,7 @@ def test_installed_snapshot_is_canonical_ordered_and_synthetic():
 
     assert value.manifest.snapshot_id == DEFAULT_SNAPSHOT_ID
     assert value.manifest.record_count == 3
-    assert tuple(value.by_norad_catalog_id) == (900001, 900002, 900003)
+    assert tuple(value.by_norad_catalog_id) == (300001, 300002, 300003)
     assert [record.mean_motion_rev_per_day for record in value.records] == [
         15.5,
         2.0056,
@@ -44,15 +44,15 @@ def test_records_snapshot_and_lookup_are_immutable():
     with pytest.raises(FrozenInstanceError):
         value.records[0].object_name = "changed"
     with pytest.raises(TypeError):
-        value.by_norad_catalog_id[900001] = value.records[1]
+        value.by_norad_catalog_id[300001] = value.records[1]
     assert isinstance(value.records, tuple)
 
 
 def test_full_six_digit_norad_identifiers_are_not_truncated():
     value = load_snapshot()
 
-    assert value.records[0].norad_catalog_id == 900001
-    assert value.by_norad_catalog_id[900001] is value.records[0]
+    assert value.records[0].norad_catalog_id == 300001
+    assert value.by_norad_catalog_id[300001] is value.records[0]
 
 
 def test_snapshot_rejects_duplicate_or_unsorted_identifiers():
