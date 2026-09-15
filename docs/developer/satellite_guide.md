@@ -583,8 +583,8 @@ retaining the candidate-only boundary.
   normalization, provider-sampled evidence, explicit progress, and exact cache.
 - **50S.3A:** accepted audit of honest human-readable/JSON reports and FoV charts from
   provider-sampled candidate evidence, with no invented exact crossing events.
-- **50S.3B:** after acceptance, implement deterministic reports and a drawable
-  sampled-candidate layer through the shared renderer/export path; provider
+- **50S.3B:** candidate deterministic reports plus drawable sampled-track and
+  sample-point layers through the shared renderer/export path; provider
   illumination remains separate evidence.
 - **50S.4:** small representative immutable OMM snapshot,
   Vallado-compatible SGP4/TEME foundation, explicit topocentric chain, and
@@ -637,3 +637,31 @@ Fernando accepted 50S.3A on 2026-09-15 after all 126 focused documentation
 tests and the candidate diff check passed. The audit itself changes no runtime
 behavior. Acceptance authorizes only bounded renderer-neutral reports and a
 drawable sampled-candidate layer in 50S.3B.
+
+
+## 19. Candidate 50S.3B implementation
+
+`satellite_presentations.py` now provides one deterministic presentation
+model over a terminal normalized SatChecker response. Text and JSON share the
+same document, retain query and receipt provenance, sort candidates by full
+NORAD catalogue identifier, preserve supplied samples in temporal order, and
+state that the product is not a verified crossing report.
+
+`sky/satellite_candidate_layer.py` supplies two cooperating ordinary layers.
+The track layer returns an open curve for two or more samples and a point for a
+singleton. The samples layer returns only supplied points and may expose their
+exact normalized UTC instants as labels. Both assemble multi-instant geometric
+topocentric-direction ICRS evidence with per-sample time metadata, then use the
+accepted fixed chart-product transformation convention and canonical
+`CelestialSphere.draw_chart()` pipeline.
+
+Stable semantic identity is based on the full NORAD catalogue identifier.
+Names remain display labels. Provider illumination is retained only in
+metadata/report evidence and does not control geometry or style. There is no
+entry, exit, closest approach, interpolation, propagation, network, cache-read,
+retry, CLI, local catalogue, brightness, or detector behavior.
+
+The candidate focused gate passed 90 tests, including actual Matplotlib
+PNG/PDF/SVG serialization through the canonical chart pipeline. Final visual
+inspection, expanded documentation gates, and complete-suite acceptance remain
+pending.
