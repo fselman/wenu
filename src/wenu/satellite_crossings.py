@@ -43,9 +43,14 @@ def _utc_instant(value, *, name):
         parsed = datetime.fromisoformat(candidate)
     except ValueError as error:
         raise ValueError(f"{name} must be an ISO-8601 UTC instant.") from error
-    if parsed.tzinfo is None or parsed.utcoffset() != timezone.utc.utcoffset(parsed):
+    if (
+        parsed.tzinfo is None
+        or parsed.utcoffset() != timezone.utc.utcoffset(parsed)
+    ):
         raise ValueError(f"{name} must be an ISO-8601 UTC instant.")
-    normalized = parsed.astimezone(timezone.utc).isoformat(timespec="microseconds")
+    normalized = parsed.astimezone(timezone.utc).isoformat(
+        timespec="microseconds"
+    )
     return normalized.replace("+00:00", "Z")
 
 
@@ -138,7 +143,11 @@ class SatelliteFieldOfView:
     boundary: str = "closed"
 
     def __post_init__(self):
-        object.__setattr__(self, "field_id", _text(self.field_id, name="field_id"))
+        object.__setattr__(
+            self,
+            "field_id",
+            _text(self.field_id, name="field_id"),
+        )
         if not isinstance(self.coordinate_spec, CoordinateSpec):
             raise TypeError("coordinate_spec must be a CoordinateSpec.")
         for name in (
@@ -159,7 +168,9 @@ class SatelliteFieldOfView:
         if not -90.0 <= self.center_latitude_deg <= 90.0:
             raise ValueError("center_latitude_deg must be between -90 and 90.")
         if not 0.0 < self.angular_radius_deg <= 180.0:
-            raise ValueError("angular_radius_deg must be in the interval (0, 180].")
+            raise ValueError(
+                "angular_radius_deg must be in the interval (0, 180]."
+            )
         boundary = _text(self.boundary, name="boundary").lower()
         if boundary != "closed":
             raise ValueError("boundary must be 'closed'.")
@@ -204,7 +215,7 @@ class InclusiveTimeInterval:
 
 @dataclass(frozen=True)
 class SatelliteCrossingCandidate:
-    """One provider-neutral candidate awaiting or surviving exact refinement."""
+    """One candidate awaiting or surviving exact refinement."""
 
     satellite: SatelliteIdentity
     observer: SatelliteObserver
@@ -239,10 +250,16 @@ class SatelliteCrossingCandidate:
                 _optional_text(getattr(self, name), name=name),
             )
         if self.snapshot_sha256 is not None:
-            digest = _text(self.snapshot_sha256, name="snapshot_sha256").lower()
-            if len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest):
+            digest = _text(
+                self.snapshot_sha256,
+                name="snapshot_sha256",
+            ).lower()
+            if len(digest) != 64 or any(
+                c not in "0123456789abcdef" for c in digest
+            ):
                 raise ValueError(
-                    "snapshot_sha256 must contain exactly 64 hexadecimal characters."
+                    "snapshot_sha256 must contain exactly 64 hexadecimal "
+                    "characters."
                 )
             object.__setattr__(self, "snapshot_sha256", digest)
         if self.element_epoch is not None:
@@ -302,7 +319,9 @@ class SatelliteCrossingResult:
         if not self.candidate.interval.contains(self.entry_instant) or not (
             self.candidate.interval.contains(self.exit_instant)
         ):
-            raise ValueError("crossing instants must lie within the query interval.")
+            raise ValueError(
+                "crossing instants must lie within the query interval."
+            )
         separation = _finite_float(
             self.closest_approach_deg,
             name="closest_approach_deg",
@@ -310,7 +329,9 @@ class SatelliteCrossingResult:
         if separation < 0.0:
             raise ValueError("closest_approach_deg must be non-negative.")
         if separation > self.candidate.field_of_view.angular_radius_deg:
-            raise ValueError("closest approach must lie within the closed field.")
+            raise ValueError(
+                "closest approach must lie within the closed field."
+            )
         object.__setattr__(self, "closest_approach_deg", separation)
         for name in ("range_km", "angular_rate_deg_per_s"):
             value = getattr(self, name)
@@ -318,7 +339,9 @@ class SatelliteCrossingResult:
                 continue
             value = _finite_float(value, name=name)
             if value < 0.0 or (name == "range_km" and value == 0.0):
-                qualifier = "positive" if name == "range_km" else "non-negative"
+                qualifier = (
+                    "positive" if name == "range_km" else "non-negative"
+                )
                 raise ValueError(f"{name} must be {qualifier}.")
             object.__setattr__(self, name, value)
         for name in ("illumination", "provider_event_id"):
