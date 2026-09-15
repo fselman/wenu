@@ -364,32 +364,24 @@ def _leaf_visit(cache, start, stop, radius, time_tolerance, angular_tolerance):
     return entry, closest, exit_
 
 
-def _merge_visits(visits, cache, radius, time_tolerance, angular_tolerance):
+def _merge_visits(visits, cache, radius, angular_tolerance):
     merged = []
     for visit in sorted(visits, key=lambda item: item[0].state.instant):
         if not merged:
             merged.append(visit)
             continue
         previous = merged[-1]
-        gap = (visit[0].state.instant - previous[2].state.instant).total_seconds()
+        gap_left = previous[2]
+        gap_right = visit[0]
         gap_midpoint = cache(
-            _midpoint(previous[2].state.instant, visit[0].state.instant)
+            _midpoint(gap_left.state.instant, gap_right.state.instant)
         )
-        tangent_fragment = (
-            abs(
-                (
-                    visit[1].state.instant
-                    - previous[1].state.instant
-                ).total_seconds()
-            )
-            <= time_tolerance
-            and previous[1].separation_deg <= radius + angular_tolerance
-            and visit[1].separation_deg <= radius + angular_tolerance
-        )
-        if tangent_fragment or (
-            gap <= time_tolerance
-            and gap_midpoint.separation_deg <= radius + angular_tolerance
-        ):
+        gap_upper_bound = max(
+            gap_left.separation_deg,
+            gap_midpoint.separation_deg,
+            gap_right.separation_deg,
+        ) + _motion_envelope_deg(gap_left, gap_midpoint, gap_right)
+        if gap_upper_bound <= radius + angular_tolerance:
             closest = min(
                 (previous[1], visit[1]), key=lambda item: item.separation_deg
             )
@@ -451,7 +443,6 @@ def _solve_trajectory(
             visits,
             cache,
             radius,
-            time_tolerance_seconds,
             angular_tolerance_deg,
         )
     return tuple(
