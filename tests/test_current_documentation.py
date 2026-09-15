@@ -5164,5 +5164,5 @@ def test_50s3b_documents_candidate_reports_and_shared_path_layers():
     assert "Candidate 50S.3B implementation evidence" in audit
     assert "expanded focused gate passed all 90 tests" in audit
     assert "Candidate 50S.3B implementation" in guide
-    assert "exact connected results" in guide
+    assert "There is no entry, exit, closest approach" in guide
     assert "satellite_report_drawing_audit_50s3a.md" in instructions
