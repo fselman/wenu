@@ -29,6 +29,7 @@ __all__ = [
     "DEFAULT_SNAPSHOT_ID",
     "LocalSatelliteCrossingOracle",
     "LocalSatelliteCrossingQuery",
+    "SatelliteCrossingConvergenceError",
     "SatelliteEarthOrientationError",
     "SatelliteEarthOrientationEvidence",
     "SatelliteElementRecord",
