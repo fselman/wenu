@@ -5767,15 +5767,15 @@ def test_50s6d_documents_candidate_accelerated_coordinator():
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     assert "accepted exact-solver coordination" in index
-    assert "Candidate 50S.6D bounded accelerated crossing coordinator" in (
+    assert "Accepted 50S.6D bounded accelerated crossing coordinator" in (
         architecture
     )
     assert "50S.6D — Bounded accelerated exact-solver coordination" in roadmap
-    assert "Candidate accelerated local crossing coordinator" in reference
-    assert "Candidate 50S.6D coordinator ownership" in source_tree
-    assert "Candidate 50S.6D unchanged coordinate boundary" in coordinate_guide
-    assert "Candidate 50S.6D bounded accelerated coordinator" in guide
-    assert "Candidate 50S.6D accelerated-coordinator boundary" in instructions
+    assert "Accepted accelerated local crossing coordinator" in reference
+    assert "Accepted 50S.6D coordinator ownership" in source_tree
+    assert "Accepted 50S.6D unchanged coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6D bounded accelerated coordinator" in guide
+    assert "Accepted 50S.6D accelerated-coordinator boundary" in instructions
     for phrase in (
         "one package-internal exact-record seam",
         "AcceleratedCrossingPolicy",
@@ -5826,7 +5826,9 @@ def test_50s6d_records_candidate_verification_evidence():
         "no performance, broader-domain, or default-enablement claim",
     ):
         assert phrase in audit
-    assert "Scientific and architectural acceptance remains pending" in (
-        architecture
-    )
-    assert "final branch-integrity checks remain pending" in roadmap
+    assert "Fernando scientifically and architecturally accepted 50S.6D" in audit
+    assert "final pre-acceptance documentation gate passed all 142 tests" in audit
+    assert "branch diff check was clean" in audit
+    assert "working tree was clean" in audit
+    assert "No later acceleration milestone is authorized automatically" in roadmap
+    assert "separately accepted bounded milestone" in instructions
