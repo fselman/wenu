@@ -1,4 +1,4 @@
-# 50S.6E same-observer, same-night multi-FoV and interchange audit
+# 50S.6E same-observer, airmass-bounded multi-FoV and interchange audit
 
 **Status:** Candidate documentation-only scientific, API, performance, and
 interchange audit.
@@ -41,8 +41,18 @@ The proposed local batch has:
 - any non-empty ordered number of circular FoV requests;
 - an independently declared start, stop, radius, frame, centre, and solver
   tolerance for every field;
-- intervals contained within one explicitly identified observing night;
+- a configurable field-centre airmass ceiling satisfied throughout every
+  complete requested interval;
 - the accepted exact per-field closed-boundary and connected-visit semantics.
+
+The initial accessibility policy uses the field-centre direction transformed
+to geometric vacuum AltAz and plane-parallel `X = sec(z)`. `X_max` is finite,
+configurable, and at least 1; it defaults to 2, corresponding to approximately
+30 degrees minimum altitude. The complete interval must be conservatively
+certified; uncertain numerical certification fails closed. This is an FoV
+admission constraint, not a satellite horizon, Earth-occultation, illumination,
+visibility, or crossing predicate. It imposes no civil-date, time-zone, solar-
+altitude, or inferred-twilight boundary.
 
 Ten FoVs are the reference workload and proposed default internal processing
 chunk, not a hard-coded public cardinality or scientific limit. The public
@@ -53,8 +63,10 @@ provenance.
 
 The same-interval workload is a special research and optimization case, not a
 precondition. The evidence matrix must include disjoint, partially overlapping,
-and identical intervals in the same night. Different observers and intervals
-crossing the accepted night boundary remain later domains.
+and identical airmass-admissible intervals. Different observers and fields that
+cannot certify the declared accessibility policy remain outside the bounded
+domain. Admission of substantially broader temporal spans remains subject to
+resource bounds established by use testing.
 
 ## 4. Reuse and exactness boundary
 
@@ -87,7 +99,7 @@ atomic or returns a typed per-field failure collection.
 The reproducible matrix uses 1, 2, 5, 10, 20, and, when practical, 50 FoVs.
 Ten is the principal ordinary workload. It includes:
 
-- different FoVs with disjoint same-night intervals;
+- different FoVs with disjoint airmass-admissible intervals;
 - partially overlapping intervals;
 - identical intervals as the maximum-reuse research case;
 - a realistic sequential observing programme;
@@ -115,7 +127,7 @@ ordinary chart request.
 After this audit:
 
 1. 50S.6F may implement the bounded multi-FoV coordinator.
-2. 50S.6G.1 may admit representative catalogue scale and same-night intervals.
+2. 50S.6G.1 may admit representative catalogue scale and airmass-bounded intervals.
 3. 50S.6G.2 may adapt exact crossing results into the existing shared satellite
    track layer.
 4. 50S.6G.3 may accept binocular and regional chart products.
@@ -193,7 +205,7 @@ products and at least one external planning workflow.
 The resulting sequence is:
 
 - 50S.6E: this documentation-only audit;
-- 50S.6F: bounded same-observer, same-night multi-FoV implementation;
+- 50S.6F: bounded same-observer, airmass-bounded multi-FoV implementation;
 - 50S.6G: representative admission, generic reports, and exact chart tracks;
 - 50S.6H: observatory-interface audit and separately bounded adapters;
 - 50S.7: four-source illumination geometry;
