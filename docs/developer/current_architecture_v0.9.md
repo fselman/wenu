@@ -1092,3 +1092,19 @@ dedicated gate, 93-test expanded immediate-seam gate, 141-test documentation
 gate, and complete 2,566-test plugin-disabled suite. Fernando scientifically and architecturally accepted 50S.6D on 2026-09-16.
 No broader-domain, benchmark, default-enablement, or later acceleration work is
 authorized by this acceptance.
+
+
+## Candidate 50S.6E multi-FoV and interchange direction
+
+The accepted runtime remains the single-FoV exhaustive oracle and the narrowly
+admitted opt-in 50S.6D coordinator. The candidate documentation-only
+`satellite_multifov_interchange_audit_50s6e.md` proposes one observer, any
+non-empty ordered number of independently timed FoVs within one observing
+night, and exact equivalence to independent calls. Ten FoVs are a reference
+workload and proposed processing chunk, not a hard-coded public limit.
+
+The same candidate places generic JSON/ECSV/VOTable crossing reports and exact
+binocular, regional, and stereographic chart tracks in 50S.6G; observatory
+adapter auditing in 50S.6H; component-resolved Sunlight, solar Earthshine,
+Moonlight, and Lunar-Earthshine geometry in 50S.7; and brightness in 50S.8.
+None of this candidate direction is implemented or authorized.
