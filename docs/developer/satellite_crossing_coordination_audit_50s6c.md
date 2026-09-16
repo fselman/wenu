@@ -6,6 +6,7 @@
 
 ## 1. Purpose
 
+This accepted record remains a documentation-only scientific and API audit.
 This audit defines the only admissible next boundary above the accepted 50S.6B
 conservative cone-shell selector. It adds no runtime coordinator, broader
 selector domain, benchmark fixture, dependency, package data, CLI, report,
