@@ -3442,3 +3442,22 @@ and interpolation policy explicitly. The coordinate guide was reviewed for
 50S.6E; no implemented coordinate meaning changes. Fernando scientifically
 and architecturally accepted this boundary on 2026-09-16. Only bounded 50S.6F
 is authorized next.
+
+
+## Candidate 50S.6F field-centre airmass realization
+
+`SatelliteFieldCenterAltitudeEvaluator` treats the declared field-centre
+longitude and latitude only as one fixed topocentric geometric unit direction
+expressed in GCRS axes. At each requested UTC instant it rotates that vector
+into ITRS with the explicit installed IERS-A table and evaluates altitude
+against the observer's WGS-84 geodetic up direction. It applies no refraction,
+parallax, apparent-place correction, satellite horizon predicate, or FoV-radius
+adjustment.
+
+`FieldAirmassCertifier` uses plane-parallel `X = sec(z)`, configurable
+`X_max >= 1` defaulting to 2, and a declared conservative
+0.005-degree-per-second whole-interval sky-motion bound. Recursive midpoint
+certification may accept only when the complete segment lower bound remains at
+or above the threshold; an actual failure, unavailable Earth orientation, or
+unresolved numerical boundary fails atomically. The guide was reviewed for
+50S.6F. No existing crossing coordinate or satellite direction meaning changes.
