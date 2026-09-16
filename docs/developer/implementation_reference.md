@@ -2658,3 +2658,19 @@ Both routes use the same package-internal exact-record seam owned by
 complete NORAD-ordered coverage before solving. Retain and indeterminate
 records are evaluated exactly once; rejected records are not evaluated.
 Malformed evidence or an out-of-domain reject fails closed.
+
+
+## Accepted multi-FoV and observatory interchange contract
+
+No multi-FoV runtime API or generic observatory export exists. The 50S.6E
+accepted audit specifies a same-observer batch containing any non-empty ordered
+number of independently timed FoVs. The centre of every field must satisfy the
+configured airmass limit throughout its complete interval. The initial policy
+uses geometric vacuum AltAz, plane-parallel `X = sec(z)`, and configurable
+`X_max` defaulting to 2. Only the centre is checked; the FoV radius does not
+enter airmass admission. This is field admission, not a satellite horizon or
+occultation filter. Ten is the reference workload, not a cardinality limit.
+Future JSON, ECSV, and VOTable encodings must represent
+one canonical lossless crossing model; any Paranal, ELT, or other observatory
+adapter remains outside the solver and requires a separate interface audit.
+No multi-FoV runtime API is implemented; only bounded 50S.6F is authorized next.

@@ -822,3 +822,20 @@ three-record, 60-second limit. No broader domain, benchmark claim, default
 enablement, phase/coarse/index stage, horizon/occultation predicate, 50S.7, or
 later behavior is authorized next without a separately accepted bounded
 milestone.
+
+
+## Accepted 50S.6E boundary
+
+Before any later satellite acceleration, batching, reporting, drawing, or
+illumination work, read
+`satellite_multifov_interchange_audit_50s6e.md`. It proposes one observer and
+any non-empty number of independently timed, field-centre airmass-bounded FoVs;
+ten is a reference workload, not a hard-coded public limit. The initial policy
+uses geometric vacuum AltAz and plane-parallel `X = sec(z)`, with configurable
+`X_max` defaulting to 2. Only the field centre is checked, and it must satisfy
+the limit throughout the complete field interval. This is field admission, not a satellite horizon or occultation filter.
+Fernando scientifically and architecturally accepted 50S.6E on 2026-09-16.
+Only a separately bounded 50S.6F implementation is authorized next. Generic observatory reports, exact
+chart tracks, Paranal/ELT adapters, Sunlight, solar Earthshine, Moonlight,
+Lunar-Earthshine, brightness, and detector effects remain later, separately
+accepted milestones.
