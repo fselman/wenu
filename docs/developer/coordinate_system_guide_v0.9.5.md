@@ -3425,9 +3425,16 @@ operation or rejection predicate.
 ## Candidate 50S.6E multi-FoV coordinate boundary
 
 A future same-observer batch would preserve each field's independently framed
-centre, radius, interval, and solver tolerance. Shared propagation or
-topocentric state must be keyed by observer, instant, snapshot, record,
-Earth-orientation, propagator, and software identity; field-specific separation
-is not a reusable physical state. JSON, ECSV, and VOTable reports must declare
-UTC, units, frame, and interpolation policy explicitly. The coordinate guide
-was reviewed for 50S.6E; no implemented coordinate meaning changes.
+centre, radius, interval, solver tolerance, and airmass-admission evidence. The
+initial admission policy transforms the field centre to geometric vacuum AltAz
+and uses plane-parallel `X = sec(z)`, with configurable finite `X_max >= 1`
+defaulting to 2. The centre must satisfy the limit throughout the complete
+requested interval; uncertain certification fails closed. This is an FoV
+accessibility constraint, not a satellite horizon, occultation, visibility, or
+crossing predicate, and it adds no civil-date or inferred-twilight boundary.
+Shared propagation or topocentric state must be keyed by observer, instant,
+snapshot, record, Earth-orientation, propagator, and software identity;
+field-specific separation is not a reusable physical state. JSON, ECSV, and
+VOTable reports must declare UTC, units, frame, airmass policy and evidence,
+and interpolation policy explicitly. The coordinate guide was reviewed for
+50S.6E; no implemented coordinate meaning changes.
