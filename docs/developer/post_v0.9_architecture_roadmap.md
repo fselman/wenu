@@ -2057,7 +2057,7 @@ each illumination component rather than silently erasing eclipsed crossings.
 Audit Caddy et al. (2026), arXiv:2609.07057, and its modified `lumos-sat`
 model before choosing any implementation.
 
-### 50S.8 — Component-resolved apparent-brightness estimation and validation
+### 50S.8 — Apparent-brightness estimation and validation
 
 Use the strongest defensible model level for each of Sunlight, solar
 Earthshine, Moonlight, and Lunar-Earthshine: object-specific empirical models,
