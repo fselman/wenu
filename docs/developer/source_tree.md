@@ -1890,3 +1890,22 @@ first cone/orbital-shell selector is authorized next.
 No phase, coarse-state, horizon, occultation, indexing, coordinator, reporting,
 or rendering responsibility is added. Fernando accepted this ownership on
 2026-09-16; only a documentation-first 50S.6C audit is authorized next.
+
+### Candidate 50S.6C coordination ownership audit
+
+- `satellite_crossing_coordination_audit_50s6c.md` owns the documentation-only
+  coordinator, broader-domain, equivalence, failure, and benchmark-admission
+  decision;
+- `src/wenu/satellites/crossing_oracle.py` retains exact numerical solving and
+  would own one shared record-level seam used by both routes;
+- `src/wenu/satellites/crossing_acceleration.py` retains selector ownership
+  and may later own only admitted coordination, ordered-decision validation,
+  fallback, evaluation accounting, and acceleration evidence;
+- `tests/test_satellite_crossing_oracle.py` remains the independent exact
+  oracle suite, while `tests/test_satellite_crossing_acceleration.py` would
+  own coordination and equivalence evidence;
+- any later benchmark driver belongs under `tools/` and cannot become a
+  runtime dependency.
+
+This audit creates no source, runtime test, benchmark tool, fixture, dependency,
+or package export. A bounded 50S.6D coordinator remains pending acceptance.
