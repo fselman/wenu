@@ -41,24 +41,21 @@ The proposed local batch has:
 - any non-empty ordered number of circular FoV requests;
 - an independently declared start, stop, radius, frame, centre, and solver
   tolerance for every field;
-- a configurable airmass ceiling satisfied by every point of each closed
-  circular FoV throughout every complete requested interval;
+- a configurable airmass ceiling satisfied by each field centre throughout
+  every complete requested interval;
 - the accepted exact per-field closed-boundary and connected-visit semantics.
 
-The initial accessibility policy transforms the field centre to geometric
+The initial accessibility policy transforms only the field centre to geometric
 vacuum AltAz and uses plane-parallel `X = sec(z)` only for
 `0 <= z < 90 degrees`. `X_max` is finite, configurable, and at least 1; it
-defaults to 2, corresponding to exactly 30 degrees minimum altitude in this
-model. Every point of the closed circular FoV, including its boundary, must
-satisfy the ceiling throughout the complete interval. Since zenith distance is
-angular distance from the zenith, the exact spherical-footprint condition is
-`z_centre(t) + r_FoV <= arccos(1 / X_max)` for every instant. The complete
-interval must be conservatively certified; non-positive altitude, an oversized
-field, or uncertain numerical certification fails closed. Arbitrary non-
-circular footprints remain later work. This is an FoV admission constraint,
-not a satellite horizon, Earth-occultation, illumination, visibility, or
-crossing predicate. It imposes no civil-date, time-zone, solar-altitude, or
-inferred-twilight boundary.
+defaults to 2, corresponding to exactly 30 degrees minimum centre altitude in
+this model. The centre must satisfy the ceiling throughout the complete
+interval; the FoV radius does not enter airmass admission. The complete
+interval must be conservatively certified; non-positive centre altitude or
+uncertain numerical certification fails closed. This is an FoV admission
+constraint, not a satellite horizon, Earth-occultation, illumination,
+visibility, or crossing predicate. It imposes no civil-date, time-zone,
+solar-altitude, or inferred-twilight boundary.
 
 Ten FoVs are the reference workload and proposed default internal processing
 chunk, not a hard-coded public cardinality or scientific limit. The public
