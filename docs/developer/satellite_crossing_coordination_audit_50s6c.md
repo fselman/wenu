@@ -233,3 +233,20 @@ drawing, illumination, photometry, or later satellite behavior. Acceptance
 requires the dedicated acceleration gate, the expanded immediate-seam gate,
 the complete plugin-disabled suite, documentation preflight, clean branch
 diff, and Fernando's scientific and architectural review.
+
+
+## 14. Candidate 50S.6D verification evidence
+
+On macOS with Python 3.11.7 and ambient pytest plugins disabled, candidate
+commit `a7aecba` passed:
+
+- the 37-test dedicated acceleration/oracle gate in 116.58 seconds;
+- the 93-test expanded acceleration, oracle, crossing-contract, element, SGP4,
+  topocentric, and package-boundary gate in 128.74 seconds;
+- the 141-test current-documentation gate in 4.36 seconds; and
+- the complete 2,566-test suite in 213.87 seconds.
+
+This evidence covers the candidate executable implementation and its initial
+documentation. Final acceptance documentation and branch-integrity checks
+remain pending; no performance, broader-domain, or default-enablement claim is
+made.
