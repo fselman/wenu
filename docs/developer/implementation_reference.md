@@ -2662,8 +2662,8 @@ Malformed evidence or an out-of-domain reject fails closed.
 
 ## Accepted multi-FoV and observatory interchange contract
 
-No multi-FoV runtime API or generic observatory export exists. The 50S.6E
-accepted audit specifies a same-observer batch containing any non-empty ordered
+The 50S.6E accepted audit specifies a same-observer batch containing any
+non-empty ordered
 number of independently timed FoVs. The centre of every field must satisfy the
 configured airmass limit throughout its complete interval. The initial policy
 uses geometric vacuum AltAz, plane-parallel `X = sec(z)`, and configurable
@@ -2673,4 +2673,22 @@ occultation filter. Ten is the reference workload, not a cardinality limit.
 Future JSON, ECSV, and VOTable encodings must represent
 one canonical lossless crossing model; any Paranal, ELT, or other observatory
 adapter remains outside the solver and requires a separate interface audit.
-No multi-FoV runtime API is implemented; only bounded 50S.6F is authorized next.
+
+The candidate bounded runtime API is:
+
+- `MultiFieldCrossingPolicy`: immutable synthetic-snapshot, 60-second,
+  centre-airmass, certification, and execution-chunk policy;
+- `MultiFieldCrossingRequest`: immutable non-empty ordered tuple of complete
+  `LocalSatelliteCrossingQuery` values with unique field identifiers;
+- `FieldAirmassCertifier`: conservative complete-interval field-centre
+  admission using the governed installed-IERS-A altitude evaluator;
+- `MultiFieldCrossingValidationError.failures`: every ordered field-specific
+  atomic validation failure;
+- `MultiFieldSatelliteCrossingCoordinator.solve(request)`: validate every
+  field before work, then return one `MultiFieldCrossingResult` per input field
+  in input order, with exact crossings plus separate airmass and 50S.6D
+  acceleration evidence.
+
+Chunk size changes execution only. No public cardinality maximum, partial
+result, shared-state speed claim, CLI, file adapter, report, or chart is
+implemented.
