@@ -2274,10 +2274,9 @@ documentation-first 50S.6C audit of exact-solver coordination, broader-domain
 evidence, and benchmark admission. Further runtime acceleration remains
 unauthorized.
 
-### 50S.6C — Exact-solver coordination and admission audit (candidate)
+### 50S.6C — Exact-solver coordination and admission audit (accepted)
 
-**Status:** Documentation-only candidate; scientific and architectural
-acceptance pending.
+**Status:** Accepted by Fernando on 2026-09-16.
 
 Freeze the shared exact-record seam, complete decision-coverage validation,
 fallback and fail-closed behavior, exhaustive-result equivalence,
@@ -2290,7 +2289,8 @@ The accepted 50S.6B selector remains restricted to
 composition, not useful speed. This audit adds no runtime coordinator, broader
 domain, benchmark product, new selector stage, or performance claim.
 
-Acceptance may authorize only bounded 50S.6D exact-solver coordination with the
+Fernando scientifically and architecturally accepted 50S.6C on 2026-09-16.
+Acceptance authorizes only bounded 50S.6D exact-solver coordination with the
 existing selector and admitted domain. Broader-domain activation, benchmark
 claims, default enablement, phase/coarse/index stages, 50S.7, and later behavior
 remain unauthorized.
