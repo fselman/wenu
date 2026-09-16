@@ -5813,6 +5813,7 @@ def test_50s6d_records_accepted_verification_evidence():
     ).split())
     architecture = " ".join(read(V09_CURRENT).split())
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
 
     for text in (audit, architecture, roadmap):
         assert "commit `a7aecba`" in text
