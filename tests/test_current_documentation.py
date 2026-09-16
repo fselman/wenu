@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 64346)
-Total output lines: 5949
-
 """Current public-documentation and architecture-authority contracts."""
 
 import ast
@@ -2465,7 +2462,1311 @@ def test_49i3c31a_records_observed_venus_disk_sequence():
             DEVELOPER / "archive/milestone_history/49i_solar_system/observed_venus_disk_sequence_49i3c31a.md"
         ).split()
     )
-    roadmap = " ".join(read(FUT…14346 tokens truncated…ts passed in 76.85 seconds",
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `8a6cb0f`",
+        "Scientifically and architecturally accepted",
+        "`ObservedSolarSystemDiskSequenceRequest`",
+        "`ObservedSolarSystemDiskSequenceRealizer.sequence()`",
+        "`ObservedSolarSystemDiskSequence`",
+        "`n_steps = 8` produces nine exact sample instants",
+        "origin `observer` and unit `au`",
+        "future 3D Solar-System visualizer",
+        "`4.615e-10 deg`",
+        "`1.946e-10 deg`",
+        "`3.128e-12 AU`",
+        "`3.795e-10 arcsec`",
+        "`7.096e-10 deg`",
+        "`4.823e-12`",
+        "`4.301e-09 deg`",
+        "all 51 focused tests passed in 1.89 seconds",
+        "All 91 focused sequence",
+        "49I.3C.3.1B",
+        "adds no public command",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.3.1A" in roadmap
+    assert "Accepted output-neutral observed Venus disk sequence" in architecture
+    assert "Observed Venus disk sequence (Milestone 49I.3C.3.1A)" in implementation
+    assert "Milestone 49I.3C.3.1A ownership" in source_tree
+    assert "13.2.27 49I.3C.3.1A observed Venus disk sequence" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "observed_venus_disk_sequence_49i3c31a.md" in instructions
+    assert "all 64 current-documentation tests in 2.23 seconds" in contract
+    assert "1,985 tests with 30 deselected in 25.46 seconds" in contract
+    assert "all 2,015 tests in 84.38 seconds" in contract
+
+
+def test_49i3c31b_records_drawable_observed_venus_sequence():
+    contract = " ".join(read(DRAWABLE_OBSERVED_VENUS_SEQUENCE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `7fd2a6a`",
+        "Scientifically, architecturally, visually, and operationally accepted",
+        "`ObservedVenusDiskSequenceRealization`",
+        "`MagnifyProjectedDiskSequence`",
+        "one fixed product frame",
+        "observer/AU distances",
+        "`--planet-disk-sequence venus`",
+        "--disk-sequence-model observed",
+        "`--disk-sequence-labels`",
+        "`--planet-disk-magnification venus=FACTOR`",
+        "`--no-equatorial-grid`",
+        "`--grid-references ecliptic`",
+        "All 211 focused tests passed in 5.74 seconds",
+        "1,988 tests with 30 deselected in 25.91 seconds",
+        "all 2,018 tests in 85.27 seconds",
+        "Frozen-Earth ecliptic mode",
+        "Mercury",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.3.1B" in roadmap
+    assert "Drawable observed Venus disk sequence" in architecture
+    assert "Drawable observed Venus disk sequence (Milestone 49I.3C.3.1B)" in implementation
+    assert "Milestone 49I.3C.3.1B ownership" in source_tree
+    assert "13.2.28 49I.3C.3.1B drawable observed Venus sequence" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "drawable_observed_venus_sequence_49i3c31b.md" in instructions
+
+
+def test_49i3c32a_records_frozen_earth_venus_sequence_state():
+    contract = " ".join(read(FROZEN_EARTH_VENUS_SEQUENCE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `447e701`",
+        "Scientifically and architecturally accepted",
+        "`FrozenEarthDiskSequenceRequest`",
+        "`FrozenEarthDiskSequenceRealizer.sequence()`",
+        "`FrozenEarthGeometricDisk`",
+        "origin `frozen-earth` and unit `au`",
+        "fixed J2000 mean-ecliptic axes",
+        "future 3D Solar-System visualizer",
+        "not topocentric, astrometric, apparent",
+        "`4.337e-12 AU`",
+        "`1.968e-10 deg`",
+        "`2.064e-11 deg`",
+        "`1.274e-12 AU`",
+        "`1.627e-10 deg`",
+        "All 63 focused sequence",
+        "1,997 tests with 30 deselected in 26.69 seconds",
+        "all 2,027 tests in 84.73 seconds",
+        "49I.3C.3.2B",
+        "49I.3C.3.3",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.3.2A" in roadmap
+    assert "Accepted output-neutral frozen-Earth Venus sequence" in architecture
+    assert "Frozen-Earth Venus sequence state (Milestone 49I.3C.3.2A)" in implementation
+    assert "Milestone 49I.3C.3.2A ownership" in source_tree
+    assert "13.2.29 49I.3C.3.2A frozen-Earth Venus state" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "frozen_earth_venus_sequence_49i3c32a.md" in instructions
+    assert "All 66 current-documentation tests passed in 2.07 seconds" in contract
+
+
+def test_49i3c32b_records_drawable_frozen_earth_venus_sequence():
+    contract = " ".join(
+        read(DRAWABLE_FROZEN_EARTH_VENUS_SEQUENCE).split()
+    )
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Implementation baseline:** `c30785c`",
+        "Scientifically, architecturally, visually, and operationally accepted",
+        "`FrozenEarthVenusDiskSequenceRealization`",
+        "fixed J2000 mean-ecliptic axes",
+        "product-frame latitude zero",
+        "neither reference passes through observer-dependent AltAz geometry",
+        "Secuencia de Venus desde una Tierra fija",
+        "31 independently realized disks",
+        "all 2,037 tests in 84.41 seconds",
+        "All 67 current-documentation tests passed",
+        "49I.3C.3.3",
+    ):
+        assert phrase in contract
+
+    assert "Milestone 49I.3C.3.2B" in roadmap
+    assert "Drawable frozen-Earth Venus disk sequence" in architecture
+    assert (
+        "Drawable frozen-Earth Venus sequence (Milestone 49I.3C.3.2B)"
+        in implementation
+    )
+    assert "Milestone 49I.3C.3.2B ownership" in source_tree
+    assert (
+        "13.2.30 49I.3C.3.2B drawable frozen-Earth Venus sequence"
+        in guide
+    )
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert (
+        "drawable_frozen_earth_venus_sequence_49i3c32b.md"
+        in instructions
+    )
+
+
+def test_49i3c33_audits_mercury_generalization_and_validation():
+    audit = " ".join(read(MERCURY_DISK_SEQUENCE_AUDIT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**As-is baseline:** `3a713fb`",
+        "Scientifically and architecturally accepted",
+        "`2439.4 km`",
+        "equatorial radius `2440.53 km`",
+        "NAIF body code `199`",
+        "Mercury barycentre code `1`",
+        "actual `provider_target_id`",
+            "49I.3C.3.3B — Output-neutral Mercury state",
+            "49I.3C.3.3C — Drawable frozen-Earth Mercury sequence",
+        "`--planet-disk-sequence mercury`",
+        "sky/solar_system/planets/mercury/frozen_earth_sequence",
+        "does not authorize observed/topocentric Mercury sequences",
+        "changes no runtime type",
+        "all 68 current-documentation tests",
+        "Fernando scientifically and architecturally accepted",
+    ):
+        assert phrase in audit
+
+    assert "Milestone 49I.3C.3.3" in roadmap
+    assert "Mercury generalization audit boundary" in architecture
+    assert "Milestone 49I.3C.3.3 audit ownership" in source_tree
+    assert "13.2.31 49I.3C.3.3 Mercury generalization audit" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "mercury_disk_sequence_audit_49i3c33.md" in instructions
+
+
+def test_49i3c33a_records_descriptor_driven_moving_body_foundation():
+    contract = " ".join(read(MOVING_BODY_ARCHITECTURE).split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    for phrase in (
+        "SolarSystemBodyDescriptor",
+        "A planet does not contain its satellites",
+        "Capabilities, not classification",
+        "synthetic minor body",
+        "Mercury remains unregistered",
+        "does not add Mercury",
+        "all 2,045 tests in 86.49 seconds",
+        "Scientifically, architecturally, and visually accepted",
+        "three Venus compatibility renders",
+    ):
+        assert phrase in contract
+    assert "13.2.32 49I.3C.3.3A moving-body foundation" in guide
+    assert "Milestone 49I.3C.3.3A moving-body ownership" in source_tree
+    assert "moving_body_architecture_49i3c33a.md" in instructions
+
+
+def test_49i3c33c_proposes_descriptor_driven_drawable_mercury():
+    contract = " ".join(
+        read(DRAWABLE_FROZEN_EARTH_MERCURY_SEQUENCE).split()
+    )
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    for phrase in (
+        "Scientifically, architecturally, visually, and operationally accepted",
+        "adds no Mercury-specific layer, factory, projection, preparation",
+        "`frozen_earth_disk_sequence` capability",
+        "`--disk-sequence-model observed`",
+        "`Mercury` and `Mercurio`",
+        "sky/solar_system/planets/mercury/frozen_earth_sequence",
+        "sky/solar_system/star/sun",
+        "`--planet-disk-sequence mercury`",
+        "`--disk-sequence-step 2d`",
+        "`--disk-sequence-n-steps 44`",
+        "PNG/PDF/SVG parity",
+        "all 2,052 tests in 89.90 seconds",
+        "same frozen-state realizer, disk-geometry realizer",
+    ):
+        assert phrase in contract
+    assert "Milestone 49I.3C.3.3C drawable frozen-Earth Mercury" in source_tree
+    assert "Milestone 49I.3C.3.3C — Drawable frozen-Earth Mercury" in roadmap
+    assert "drawable_frozen_earth_mercury_sequence_49i3c33c.md" in instructions
+
+
+def test_49i3d1_proposes_shared_apparent_major_planets():
+    contract = " ".join(read(APPARENT_MAJOR_PLANETS).split())
+    user_guide = " ".join(
+        read(ROOT / "docs/user_guide/configuration.md").split()
+    )
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    for phrase in (
+        "DE440 validation passed; compact-glyph visual acceptance pending",
+        "Mercury, Venus, Mars, Jupiter, Saturn, Uranus, and Neptune",
+        "Earth is not a drawable apparent target",
+        "same apparent symbolic-point machinery",
+        "barycentre targets: Mars `4`, Jupiter `5`, Saturn `6`",
+        "physical planet IDs `499`, `599`, `699`, `799`, and `899`",
+        "`solar_system_objects` selection",
+        "sky/solar_system/planets/<planet>",
+        "`1e-7 deg` component tolerance",
+        "`--planet mercury,venus,mars,jupiter,saturn,uranus,neptune`",
+        "conventional astronomical symbol",
+        "accepted Venus cream `#FFE6A3`",
+        "corresponding `planisphere` render",
+        "only `ol1` produces the unnatural broad envelope",
+        "replace only explicitly supplied fields",
+        "`--mw-contour OL1[,OL2,...]|all`",
+        "single-feature GeoJSON file",
+    ):
+        assert phrase in contract
+    assert "Milestone 49I.3D.1 apparent major planets" in source_tree
+    assert "Milestone 49I.3D.1 — Apparent major-planet symbolic points" in roadmap
+    assert "apparent_major_planets_49i3d1.md" in instructions
+    for phrase in (
+        "## Planet symbols",
+        "`mercury` | Mercury | ☿",
+        "`venus` | Venus | ♀",
+        "`mars` | Mars | ♂",
+        "`jupiter` | Jupiter | ♃",
+        "`saturn` | Saturn | ♄",
+        "`uranus` | Uranus | ♅",
+        "`neptune` | Neptune | ♆",
+        "Earth is the observer's reference body",
+    ):
+        assert phrase in user_guide
+
+
+def test_49i3e0_audits_resolved_moon_science_and_generic_reuse():
+    audit = " ".join(read(RESOLVED_MOON_AUDIT).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**As-is baseline:** `a8296f5`",
+        "**Status:** Scientifically and architecturally accepted",
+        "changes no runtime type",
+        "No runtime Moon behavior is authorized",
+        "`SolarSystemBodyDescriptor`",
+        "`natural_satellite`",
+        "physical body ID `301`",
+        "parent `earth`",
+        "equal-volume mean radius `1737.4 km`",
+        "quoted uncertainty `0.1 km`",
+        "Topocentric parallax is essential",
+        "`d = 2 asin(R / Delta)`",
+        "`k = (1 + cos(i)) / 2`",
+        "zero at celestial north and increases toward apparent east",
+        "`t_j = start + j * step`",
+        "`n_steps + 1` physical samples",
+        "one product coordinate specification and projection fixed at `t_c`",
+        "Transforming every spherical vertex",
+        "must not transform the scalar `chi_j`",
+        "--moon-appearance resolved|symbolic",
+        "--moon-disk-sequence",
+        "Only `observed` is accepted",
+        "`1 <= M_moon <= 1000`",
+        "display-only",
+        "unrelated to Wenu's `presentation` output mode",
+        "same rule applies in atlas and presentation modes",
+        "refuses downloads",
+        "`1e-7 deg`",
+        "sky/solar_system/natural_satellites/moon",
+        "all five chart-family enablement",
+        "changes no implemented coordinate transformation",
+        "frozen-Earth lunar sequences",
+        "Fernando scientifically and architecturally accepted this audit on 2026-09-02",
+        "acceptance authorizes only 49I.3E.1",
+    ):
+        assert phrase in audit
+
+    for phrase in (
+        "resolved_moon_audit_49i3e0.md",
+        "one fixed chart-epoch product frame",
+        "do not treat the scalar bright-limb angle as frame-invariant",
+        "Do not add runtime Moon behavior under 49I.3E.0",
+    ):
+        assert phrase in instructions
+
+
+def test_49i3e1_records_output_neutral_lunar_appearance():
+    contract = " ".join(read(LUNAR_PHYSICAL_APPEARANCE).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Scientifically accepted and regression-verified; ready for integration",
+        "**Implementation baseline:** `86bbbf1`",
+        "NAIF physical body ID `301`",
+        "parent key `earth`",
+        "English `Moon` and Spanish `Luna`",
+        "equal-volume mean radius `1737.4 km`",
+        "`spherical_physical_appearance`",
+        "`EARTH_BODY`",
+        "NAIF body ID `399`",
+        "does not yet advertise `resolved_spherical_disk`",
+        "No lunar appearance class was added",
+        "topocentric retarded observer–Moon distance",
+        "has no display magnification",
+        "refuses to download a missing kernel",
+        "`2e-7 deg`",
+        "`5e-12 au`",
+        "`5e-6 arcsec`",
+        "`1e-9`",
+        "revised envelope on 2026-09-02",
+        "independent margins rather than fitted",
+        "scientifically accepted the 49I.3E.1 numerical validation",
+        "`1.338e-07 deg`",
+        "`2.994e-06 arcsec`",
+        "`0.272607 deg`",
+        "All residuals satisfy the accepted envelope",
+        "73 documentation tests in `2.75 s`",
+        "124 focused tests in `8.36 s`",
+        "all 2,081 tests in `91.18 s`",
+        "nonzero geocentric/topocentric parallax",
+        "does not add disk geometry",
+    ):
+        assert phrase in contract
+
+    assert "Output-neutral lunar physical appearance" in architecture
+    assert "Milestone 49I.3E.1 — Output-neutral lunar" in roadmap
+    assert "Lunar physical-appearance state (Milestone 49I.3E.1)" in implementation
+    assert "Milestone 49I.3E.1 lunar appearance ownership" in source_tree
+    assert "13.2.33 49I.3E.1 lunar physical appearance" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "lunar_physical_appearance_49i3e1.md" in instructions
+
+
+def test_49i3e2_records_pending_drawable_resolved_moon_contract():
+    contract = " ".join(read(DRAWABLE_RESOLVED_MOON).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Scientifically, architecturally, visually, operationally, and regression accepted",
+        "Supplying `--moon` now requests one resolved physical Moon by default",
+        "`--moon-appearance symbolic` preserves the earlier point",
+        "equal-volume mean radius `1737.4 km`",
+        "shared default of `720` samples",
+        "sky/solar_system/natural_satellites/moon/disk/illuminated",
+        "`regional`, `binocular`, `circumpolar`, `planisphere`, and `all_sky`",
+        "`1 <= M_moon <= 1000`",
+        "display-only",
+        "unrelated to Wenu's `presentation` output mode",
+        "There is no Moon-specific renderer",
+        "python tools/render_49i3e2_resolved_moon_review.py",
+        "equatorial coordinates center the binocular chart",
+        "horizontal coordinates center the regional chart",
+        "magnitude `11.0`",
+        "magnified Moon is present and legible in every family",
+        "69 focused Moon/display tests in 2.43 seconds",
+        "74 current-documentation tests in 3.19 seconds",
+        "2,074 routine tests with 30 deselected in 31.19 seconds",
+        "all 2,104 tests in 100.17 seconds",
+        "Milestone 49I.3E.3 multi-epoch Moon behavior remains unimplemented",
+    ):
+        assert phrase in contract
+
+    assert "Drawable resolved single-epoch Moon" in architecture
+    assert "Milestone 49I.3E.2 — Drawable resolved" in roadmap
+    assert "Drawable resolved Moon (Milestone 49I.3E.2)" in implementation
+    assert "Milestone 49I.3E.2 resolved single-Moon ownership" in source_tree
+    assert "13.2.34 49I.3E.2 drawable resolved Moon" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "drawable_resolved_moon_49i3e2.md" in instructions
+
+
+
+def test_49i3e3_records_observed_fixed_chart_moon_sequence():
+    contract = " ".join(read(OBSERVED_MOON_SEQUENCE).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    user_guide = " ".join(
+        read(ROOT / "docs/user_guide/configuration.md").split()
+    )
+
+    for phrase in (
+        "Scientifically, architecturally, visually, operationally, and regression accepted",
+        "`--moon-disk-sequence`",
+        "--disk-sequence-model observed",
+        "`COUNT + 1` independently realized samples",
+        "one chart-epoch product frame",
+        "never treats the scalar bright-limb position angle as frame-invariant",
+        "regional, binocular, circumpolar, planisphere, and all-sky",
+        "sky/solar_system/natural_satellites/moon/disk_sequence",
+        "python tools/validate_49i3e3_observed_moon_sequence.py",
+        "`5.458e-08 deg`",
+        "`3.800e-12 au`",
+        "`1.193e-07 deg`",
+        "`0.196988 deg`",
+        "python tools/render_49i3e3_observed_moon_sequence_review.py",
+        "35 sequence, output-mode, and compatibility tests passed in 3.58 seconds",
+        "accepted all five chart-family sequences",
+        "75 current-documentation tests in 2.23 seconds",
+        "161 expanded focused tests in 5.73 seconds",
+        "2,088 routine tests with 30 deselected",
+        "all 2,118 tests in 88.61 seconds",
+        "Frozen-Earth",
+    ):
+        assert phrase in contract
+
+    assert "Observed multi-epoch Moon sequence" in architecture
+    assert "Milestone 49I.3E.3 — Observed fixed-chart Moon sequence" in roadmap
+    assert "Observed Moon disk sequence (Milestone 49I.3E.3)" in implementation
+    assert "Milestone 49I.3E.3 observed Moon sequence ownership" in source_tree
+    assert "13.2.35 49I.3E.3 observed Moon sequence" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "observed_moon_disk_sequence_49i3e3.md" in instructions
+    assert "## Resolved Moon and observed sequences" in user_guide
+
+
+def test_49i3e_parent_milestone_is_closed_without_new_runtime_scope():
+    plan = " ".join(read(RESOLVED_MOON_PLAN).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    guide = " ".join(read(COORDINATE_GUIDE).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert "**Status:** Accepted and closed on 2026-09-02" in plan
+    for phrase in (
+        "49I.3E.0 through 49I.3E.3",
+        "PRs #70 through #73",
+        "`bc45cc0`",
+        "75 documentation tests",
+        "161 expanded focused tests",
+        "2,088 routine tests with 30 deselected",
+        "all 2,118 tests",
+        "Parent-closure verification passed 76 documentation tests in 9.55 seconds",
+        "2,089 routine tests with 30 deselected in 31.89 seconds",
+        "all 2,119 tests in 87.44 seconds",
+        "No additional runtime behavior is authorized by this parent closure",
+    ):
+        assert phrase in roadmap
+
+    assert "Completed resolved Moon capability (Milestone 49I.3E)" in architecture
+    assert "Resolved Moon integration closure (Milestone 49I.3E)" in implementation
+    assert "Milestone 49I.3E resolved Moon ownership closure" in source_tree
+    assert "13.2.36 49I.3E resolved Moon closure" in guide
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "Last updated:** `2026-09-02T23:59:30Z`" in guide
+    assert "resolved-Moon program 49I.3E.0 through 49I.3E.3 is closed" in instructions
+
+    for document in (plan, architecture, roadmap, implementation, source_tree, guide):
+        assert "Frozen-Earth lunar sequences" in document
+    assert "Frozen-Earth" in instructions
+
+
+def test_49j0_freezes_performance_measurement_before_optimization():
+    audit = " ".join(read(PERFORMANCE_CLOSURE_AUDIT).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    guide = read(COORDINATE_GUIDE)
+
+    for phrase in (
+        "**Audit baseline:** `ea6f340`",
+        "**Status:** Architecturally accepted and regression-verified on 2026-09-02",
+        "**Runtime effect:** None",
+        "Fernando also selected conservative documentation cleanup",
+        "`docs/user_guide/` remains separate",
+        "76 passed",
+        "2,089 passed; 30 deselected",
+        "31.89 s",
+        "2,119 passed",
+        "87.44 s",
+        "about 6.3 percent",
+        "not the 49J independent-frame baseline",
+        "non-overlapping wall-time spans",
+        "`time.perf_counter_ns()`",
+        "Cold independent-frame oracle",
+        "Reusable-sphere comparison",
+        "Test-loop characterization",
+        "identical projected records",
+        "immutable key",
+        "49J.1 — Independent-frame benchmark harness",
+        "49J.2 — Routine-suite characterization and remediation",
+        "49J.3 — First scientifically keyed reuse",
+        "49J.4 — Post-v0.9 closure",
+        "49J.0 does not authorize",
+        "deletion or reclassification of tests",
+        "94 combined current-documentation and user-guide tests in 2.61 seconds",
+        "2,092 routine tests with 30 deselected in 37.88 seconds",
+        "all 2,122 tests in 93.31 seconds",
+        "49J.0 is ready for integration",
+    ):
+        assert phrase in audit
+
+    assert "Milestone 49J.0 — Performance and closure audit" in roadmap
+    assert "Every slice remains separately authorized" in roadmap
+    assert "Architecturally accepted and regression-verified" in roadmap
+    assert "all 2,122 tests" in roadmap
+    assert "Performance closure boundary (Milestone 49J)" in architecture
+    assert "Performance diagnostics and oracle (Milestone 49J.0)" in implementation
+    assert "Milestone 49J performance-program ownership" in source_tree
+    assert "performance_and_closure_audit_49j0.md" in instructions
+    assert "Do not add caching or optimization under 49J.0" in instructions
+    assert "Guide version:** `0.9.5.20260902.54`" in guide
+    assert "Last updated:** `2026-09-02T23:59:30Z`" in guide
+
+
+def test_moving_object_data_resolution_audit_preserves_offline_rendering():
+    audit = read(MINOR_BODY_HISTORY / "moving_object_data_resolution_audit_50a3h.md")
+    roadmap = read(FUTURE_ROADMAP)
+    instructions = read(DEVELOPER / "assistant_instructions.md")
+
+    for phrase in (
+        "acquire-if-missing",
+        "offline",
+        "refresh",
+        "content-addressed immutable cache",
+        "One shell command does not imply one architectural phase",
+        "network I/O",
+        "Keplerian element calculation",
+        "SGP4/SDP4-compatible propagation",
+        "comet numerical validation",
+    ):
+        assert phrase.lower() in audit.lower()
+
+    assert "Accepted 50A.3H" in roadmap
+    assert "104 focused documentation\ntests passed" in roadmap
+    assert "installed-CLI preflight phase" in instructions
+    assert "Never allow request generation" in instructions
+
+
+def test_numbered_asteroid_cli_preflight_contract_is_documented():
+    document = " ".join(read(
+        MINOR_BODY_HISTORY / "numbered_asteroid_cli_preflight_50a3i.md"
+    ).split())
+    for phrase in (
+        "acquire-if-missing",
+        "offline",
+        "refresh",
+        "content-addressed immutable publication",
+        "before sphere, view, request, or rendering construction",
+        "positive permanent",
+        "artificial satellites",
+    ):
+        assert phrase.lower() in document.lower()
+
+
+def test_50a4_audits_comet_numerics_before_runtime_behavior():
+    audit = " ".join(read(
+        MINOR_BODY_HISTORY / "comet_numerical_validation_audit_50a4.md"
+    ).split())
+    for phrase in (
+        "2P/Encke",
+        "non-gravitational model",
+        "A1`, `A2`, `A3`, or `DT",
+        "geocentric astrometric ICRS",
+        "topocentric astrometric and apparent ICRS",
+        "explicit `--characterize` mode",
+        "not an independent rederivation",
+        "does not add `--comet`",
+        "must never contact SBDB or Horizons",
+    ):
+        assert phrase.lower() in audit.lower()
+
+
+def test_50a4_closure_is_offline_accepted_and_non_drawable():
+    document = " ".join(read(
+        MINOR_BODY_HISTORY / "comet_numerical_validation_50a4.md"
+    ).split())
+    source_tree = read(DEVELOPER / "source_tree.md")
+    implementation = read(DEVELOPER / "implementation_reference.md")
+    guide = read(DEVELOPER / "coordinate_system_guide_v0.9.5.md")
+
+    for phrase in (
+        "Scientifically, operationally, and regression accepted",
+        "build_50a4_comet_fixture.py",
+        "validate_50a4_comet.py",
+        '"accepted": true',
+        '"accepted": false',
+        '"tolerances": null',
+        "explicit JD TDB",
+        "five decimal degrees",
+        "No descriptor, chart request, CLI selector, drawing, or exporter",
+        "151 focused tests",
+        "complete 2,262-test suite",
+    ):
+        assert phrase.lower() in document.lower()
+    assert "compact-oracle construction" in source_tree
+    assert "apparition command" in implementation
+    assert "This review introduces no new coordinate or product frame" in guide
+    assert "barycentric ICRF position | `1e-10 au`" in guide
+
+
+def test_developer_root_contains_only_active_authority_and_wip_documents():
+    assert {
+        path.name
+        for path in DEVELOPER.iterdir()
+        if path.is_file() and not path.name.startswith(".")
+    } == {
+        "README.md",
+        "assistant_instructions.md",
+        "artificial_satellite_crossing_audit_50s0.md",
+        "comet_discovery_and_reporting_audit_50a5d.md",
+        "comet_model_magnitude_audit_50a5d1b.md",
+        "configuration_schema_v2.md",
+        "coordinate_system_guide_v0.9.5.md",
+        "current_architecture_v0.9.md",
+        "implementation_reference.md",
+        "post_v0.9_architecture_roadmap.md",
+        "satchecker_provider_contract_audit_50s2a.md",
+        "satellite_report_drawing_audit_50s3a.md",
+        "satellite_crossing_oracle_audit_50s5a.md",
+        "satellite_crossing_acceleration_audit_50s6a.md",
+        "satellite_crossing_coordination_audit_50s6c.md",
+        "satellite_multifov_interchange_audit_50s6e.md",
+        "satellite_snapshot_propagation_audit_50s4a.md",
+        "satellite_guide.md",
+        "source_tree.md",
+        "target_architecture_v0.9.5.md",
+    }
+    for name in (
+        "chart_cli_semantics_audit_50a3f.md",
+        "cli_contract_acceptance_50a3g.md",
+        "moving_object_data_resolution_audit_50a3h.md",
+        "numbered_asteroid_cli_preflight_50a3i.md",
+        "numbered_asteroids_50a3d.md",
+        "object_centered_regional_charts_50a3e.md",
+        "comet_numerical_validation_audit_50a4.md",
+        "comet_numerical_validation_50a4.md",
+        "first_drawable_comet_audit_50a5a.md",
+        "solar_system_temporal_components_audit_50a5b1.md",
+        "second_drawable_comet_audit_50a5c.md",
+        "comet_discovery_50a5d1a.md",
+        "comet_name_resolution_audit_50a5d2a.md",
+        "comet_acquisition_audit_50a5d2b.md",
+        "comet_cli_preflight_audit_50a5d2c.md",
+    ):
+        assert (MINOR_BODY_HISTORY / name).is_file()
+        assert not (DEVELOPER / name).exists()
+    assert TEST_PERFORMANCE_PROGRAM.is_file()
+    assert not (DEVELOPER / "test_performance_and_future_program_49j_50.md").exists()
+
+
+def test_50s0_audits_satellite_crossing_search_and_photometry():
+    audit = " ".join(read(
+        DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    roadmap = " ".join(read(
+        DEVELOPER / "post_v0.9_architecture_roadmap.md"
+    ).split())
+
+    for phrase in (
+        "Accepted by Fernando on 2026-09-14",
+        "no runtime satellite, catalogue acquisition, or public crossing command",
+        "must not discard a true crossing",
+        "Adopt OMM as the canonical ingestion model",
+        "Never truncate a catalogue identifier to five digits",
+        "Adopt the Vallado-compatible SGP4 implementation",
+        "TEME is neither ICRS nor an observer frame",
+        "adaptive complete scan as the oracle",
+        "HEALPix plus time slabs remains the leading optional index",
+        "zero false negatives",
+        "Near-zenith intervals",
+        "empirical satellite-family magnitude distribution",
+        "A single standard magnitude is not a substitute for a phase function",
+        "Detector contamination remains later work",
+        "checked 2026-09-14",
+        "at most one supported bulk request",
+        "No per-object requests, polling loop, parallel downloads, or automatic retry",
+        "Space-Track is valuable as an authenticated independent source",
+        "SatChecker first as a bounded online crossing provider and external oracle",
+        "strict separation of crossing, illumination, apparent magnitude",
+        "The orbital-plane test is topocentric",
+        "small, geometrically representative immutable OMM snapshot",
+        "developer specimen builder",
+        "50S.0 through 50S.3 end with SatChecker reports/charts",
+    ):
+        assert phrase in audit
+
+    assert "artificial_satellite_crossing_audit_50s0.md" in index
+    for phrase in (
+        "50S.0 scientific and architectural decisions accepted by Fernando on 2026-09-14",
+        "50S.1 — Provider-neutral satellite crossing domain",
+        "50S.2 — SatChecker crossing adapter",
+        "50S.3A — Satellite report and drawing contract audit",
+        "50S.3B — SatChecker sampled-candidate reports and tracks",
+        "50S.4A — Snapshot and propagation contract audit",
+        "50S.4B — Immutable OMM element snapshot",
+        "50S.4C — Validated SGP4/TEME propagation",
+        "50S.4D — Earth-orientation and topocentric state",
+        "50S.4E — Propagated specimen builder and closure",
+        "50S.5 — Complete local FoV-crossing oracle",
+        "50S.6 — Conservative local crossing acceleration",
+        "50S.7 — Independent illumination and night geometry",
+        "50S.8 — Apparent-brightness estimation and validation",
+        "50S.9 — Detector-specific contamination",
+        "50S.10 — Night, season, and sky-position products and closure",
+    ):
+        assert phrase in roadmap
+
+
+def test_satellite_guide_preserves_50s_scientific_boundaries():
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    audit = " ".join(read(
+        DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+    ).split())
+
+    for phrase in (
+        "Living 50S work-in-progress guide",
+        "intentionally separate from `coordinate_system_guide_v0.9.5.md`",
+        "Acronyms and specialized abbreviations",
+        "OMM and TLE are not two competing propagation models",
+        "OMM — Orbit Mean-Elements Message",
+        "TLE — two-line element set",
+        "SGP4 — Simplified General Perturbations 4",
+        "TEME — True Equator, Mean Equinox",
+        "HEALPix — Hierarchical Equal Area isoLatitude Pixelization",
+        "EOP — Earth-orientation parameters",
+        "geometric crossing",
+        "illumination",
+        "apparent brightness",
+        "detector contamination",
+        "validated immutable OMM/TLE snapshot",
+        "No later stage may change the result of an earlier geometric crossing test",
+        "must not define the internal identity model",
+        "A snapshot is a frozen copy of the provider's orbit catalogue",
+        "It is not a set of satellite positions",
+        "one supported bulk request",
+        "TEME is not ICRS, GCRS, ITRS, or topocentric AltAz",
+        "A fixed sampling grid alone is not a completeness proof",
+        "omega = |rho x rho_dot| / |rho|^2",
+        "Near-zenith or otherwise singular intervals",
+        "zero false negatives",
+        "HEALPix is the leading pixelization candidate",
+        "orbital-plane/FoV-cone intersection",
+        "Testing only the angular distance to a geocentric orbital great circle is unsafe",
+        "provider data from cache wherever possible",
+        "small representative OMM snapshot",
+        "developer specimen builder",
+        "dense/adaptive brute-force reference path must remain independent",
+        "missing flare evidence produces `unknown`, never zero flare probability",
+        "A single standard magnitude does not replace a phase function",
+        "Measured maxima tune performance but never replace conservative bounds",
+        "must not duplicate Wenu's coordinate service",
+        "do not merge documents mechanically",
+    ):
+        assert phrase in guide
+
+    assert "satellite_guide.md" in index
+    assert "satellite_guide.md" in audit
+
+    archived = {
+        "archive/audits/coordinate_transformation_audit_09a2afd.md",
+        "archive/audits/public_interface_audit_v0.9.5.md",
+        "archive/migration_history/deprecations_v0.5.md",
+        "archive/roadmap_history/wenu_cli_feature_requests.md",
+        "archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md",
+        "archive/milestone_history/49e_ephemeris/ephemeris_provider_contract_49e1.md",
+        "archive/milestone_history/49i_solar_system/resolved_moon_plan_49i3e.md",
+        "archive/milestone_history/49i_solar_system/observed_moon_disk_sequence_49i3e3.md",
+        "archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md",
+        "archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md",
+        "archive/milestone_history/49j_performance/test_practice_decisions_49j2.md",
+        "archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md",
+        "archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md",
+        "archive/milestone_history/49j_performance/repository_source_index_49j3c.md",
+        "archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md",
+        "archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md",
+        "archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md",
+        "archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md",
+        "archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md",
+        "archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md",
+        "archive/milestone_history/50a_minor_bodies/minor_body_state_provider_50a1.md",
+        "archive/milestone_history/50a_minor_bodies/asteroid_numerical_validation_50a2.md",
+        "archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md",
+    }
+    for relative in archived:
+        assert (DEVELOPER / relative).is_file()
+
+    archive_index = read(ARCHIVE / "README.md")
+    for folder in (
+        "49d_scene",
+        "49e_ephemeris",
+        "49i_solar_system",
+        "49j_performance",
+        "50a_minor_bodies",
+    ):
+        assert f"`milestone_history/{folder}/`" in archive_index
+
+
+def test_50a5a_audits_first_drawable_comet_without_runtime_behavior():
+    audit = " ".join(read(
+        MINOR_BODY_HISTORY / "first_drawable_comet_audit_50a5a.md"
+    ).split())
+    for phrase in (
+        "Runtime effect:** None",
+        "Scientifically and architecturally accepted",
+        "2P/Encke",
+        "sky/solar_system/minor_bodies/comets/2p",
+        "--comet 2P",
+        "--comet-track 2P",
+        "explicit installed resource directory",
+        "A1",
+        "A2",
+        "`P`, `D`, `I`, `C`, `X`, and `A`",
+        "recognizing a well-formed designation is not a promise",
+        "a `D` object normally fails",
+        "a future validated `I` SPK",
+        "fragment suffixes",
+        "central long spoke points **antisolar**",
+        "constructed vector symbol",
+        "one hollow central circle",
+        "several evenly distributed short radial spokes",
+        "three longer adjacent spokes",
+        "initial total fan angle",
+        "1.5` times",
+        "must not depend on a Unicode comet glyph",
+        "one canonical reusable vector symbol",
+        "placement, orientation, and magnification",
+        "must not reconstruct its circle and spokes from scratch",
+        "immutable and safe to reuse",
+        "must not redefine the geometry",
+        "one semantic comet-symbol entity",
+        "physical direction claim",
+        "apparent comet and Sun directions",
+        "independent direct-Horizons apparent Sun and comet directions",
+        "number of normal spokes",
+        "immutable collection",
+        "--comet-track 2P --planet-track venus --asteroid-track 79989",
+        "all selected tracks share",
+        "Artificial-satellite tracks remain outside",
+        "not a resolved nucleus, coma, tail, brightness, visibility",
+        "must not extend the numbered-asteroid automatic preflight",
+        "the existing observer, astrometric, apparent",
+        "That acceptance authorizes only the bounded 50A.5B",
+    ):
+        assert phrase.lower() in audit.lower()
+
+
+def test_current_49j_50_program_records_research_decisions_and_order():
+    program = " ".join(read(TEST_PERFORMANCE_PROGRAM).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+
+    for phrase in (
+        "Adopt",
+        "Adapt",
+        "Reject",
+        "Defer",
+        "49J.1 — Test architecture and accepted-practice audit",
+        "49J.2 — Wenu test-practice decisions",
+        "49J.3 — Test-suite optimization",
+        "49J.4 — Cold chart and sequence performance baseline",
+        "49J.5 — First scientifically keyed chart reuse",
+        "49J.6 — Performance closure",
+        "Program 50A — Asteroids and comets",
+        "50B.0 — Accepted-practice review",
+        "50B.1 — Wenu publication-standard decisions",
+        "PDF/X",
+        "WCAG",
+        "printed star atlases",
+        "Screen PNG review is not sufficient",
+    ):
+        assert phrase in program
+
+    assert "49J.1 test architecture and accepted-practice audit" in roadmap
+    assert "Program 50A - Asteroids and comets" in roadmap
+    assert "Program 50B - Publication legibility" in roadmap
+
+
+def test_49j1_records_current_practice_static_evidence_and_pending_timings():
+    audit = " ".join(read(TEST_PRACTICE_AUDIT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "**Audit baseline:** `d92f393`",
+        "**Runtime effect:** None",
+        "187 `test_*.py` modules",
+        "1,767 test-function definitions",
+        "2,123 test cases",
+        "16 declared fixtures",
+        "No class-, package-, or session-scoped fixture",
+        "no `tests/conftest.py`",
+        "127 parametrization decorators",
+        "Adopt",
+        "Adapt",
+        "Reject",
+        "Defer",
+        "pytest: How to use fixtures",
+        "pytest: Flaky tests",
+        "coverage.py: Dynamic contexts",
+        "ISO/IEC/IEEE 29119-1:2022",
+        "2,094",
+        "27.16 s",
+        "3.42 s",
+        "2,124",
+        "85.49 s",
+        "2.19 s",
+        "pytest_filter_subpackage",
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1",
+        "--durations=50",
+        "No answer is adopted by this document",
+        "coordinate-system guide was reviewed",
+    ):
+        assert phrase in audit
+
+    assert "49J.1 is accepted and archived" in roadmap
+    assert "The committed suite has no session-scoped fixture" in source_tree
+
+
+def test_49j2_records_proposed_test_policy_and_duplication_control():
+    decisions = " ".join(read(TEST_PRACTICE_DECISIONS).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "**Status:** Accepted by Fernando on 2026-09-09; ready for integration",
+        "D4 — External pytest plugins: **Adopt**",
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1",
+        "D6 — Reuse of expensive immutable setup: **Adapt**",
+        "D9 — Independent scientific recomputation: **Adopt**",
+        "D12 — New-test admission and duplication control: **Adopt**",
+        "does **not** automatically duplicate all lower-level tests",
+        "What fault would this test catch that existing tests would not?",
+        "D13 — Deleting or consolidating tests: **Adopt**",
+        "D20 — Parallel execution: **Defer**",
+        "D22 — Canonical observer-time sequence: **Reject** test removal",
+        "Each materially different implementation group",
+        "reviewed and accepted the ledger in five groups",
+    ):
+        assert phrase in decisions
+
+    assert "Fernando accepted 49J.2 on 2026-09-09" in roadmap
+    assert "Before adding a test" in instructions
+
+
+def test_49j3a_installs_reproducible_entry_and_new_test_admission_rules():
+    record = " ".join(read(TEST_ENTRY_ADMISSION).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+
+    for phrase in (
+        "Reproducible test entry and admission rules (Milestone 49J.3A)",
+        "**Status:** Accepted and merged in `21ee528`",
+        "**Runtime effect:** None",
+        "**Test behavior effect:** None",
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest",
+        "distinct contract or fault model",
+        "closest existing coverage",
+        "does not repeat all lower-level tests",
+        "cannot claim a performance improvement",
+        "coordinate-system guide was reviewed",
+        "83 current-documentation tests in 2.12 seconds",
+        "same 83 tests in 2.43 seconds",
+    ):
+        assert phrase in record
+
+    assert "Before adding a test" in instructions
+    assert "Which existing test is closest" in instructions
+    assert "Which marker and gate" in instructions
+    assert "Any required plugin must be explicitly loaded" in instructions
+    for phrase in (
+        "Layered post-change verification",
+        "smallest focused gate that covers every changed responsibility",
+        "Do not repeatedly run unrelated tests",
+        "once before presenting a bounded implementation milestone",
+        "before merging a milestone branch into its integration branch",
+        "before merging the integration branch into `main`",
+        "A previously passing full suite remains valid across a later documentation-only edit",
+        "or non-documentation test collection changed",
+        "Record the exact commit or remote tree covered by every focused and full-suite result",
+        "Do not create a marker or empty future test file merely to name a branch or milestone",
+    ):
+        assert phrase in instructions
+    assert source_tree.count("PYTEST_DISABLE_PLUGIN_AUTOLOAD=1") >= 4
+    assert "49J.3A implemented only" in roadmap
+    assert "83 current-documentation tests in 2.43" in roadmap
+
+
+def test_49j3b_records_truthful_marker_scope_without_changing_assertions():
+    record = " ".join(read(MARKER_TRUTHFULNESS).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Test-marker truthfulness (Milestone 49J.3B)",
+        "**Runtime effect:** None",
+        "**Test assertion and fixture effect:** None",
+        "Markers describe work and resources",
+        "does not by itself require `visual`",
+        "canonical observer-time sequence remains both `integration` and `slow`",
+        "calendar-label containment check remains both `visual` and `slow`",
+        "focused constants contract returns to the routine gate",
+        "2,103 routine cases with 24 deselected",
+        "21 integration cases, 3 visual cases, 2 slow cases",
+        "No committed pytest case requires an installed DE440 kernel",
+        "coordinate-system guide was reviewed",
+        "94 focused tests in 9.21 seconds",
+        "all 2,127 tests in 88.79 seconds",
+    ):
+        assert phrase in record
+
+    assert "49J.3B audited marker truthfulness" in roadmap
+    assert "2,103 routine tests with 24 deselected" in roadmap
+    assert "all 2,127 tests" in roadmap
+    assert "marker_truthfulness_49j3b.md" in architecture
+    assert "Marker corrections change gate membership only" in source_tree
+
+    planisphere = ast.parse(
+        read(ROOT / "tests/test_planisphere_composition.py")
+    )
+    cen_a = ast.parse(read(ROOT / "tests/test_cen_a_binocular.py"))
+
+    def marked_functions(tree, marker):
+        return {
+            node.name
+            for node in tree.body
+            if isinstance(node, ast.FunctionDef)
+            and any(
+                ast.unparse(decorator) == f"pytest.mark.{marker}"
+                for decorator in node.decorator_list
+            )
+        }
+
+    assert marked_functions(planisphere, "visual") == {
+        "test_planisphere_export_has_transparent_corner_and_opaque_center",
+        "test_default_planisphere_legends_are_outside_and_disjoint_from_axes",
+    }
+    assert marked_functions(cen_a, "integration") == {
+        "test_chart_is_centered_on_cen_a_and_is_square",
+        "test_circular_aperture_has_expected_projected_radius",
+    }
+
+
+def test_49j3c_records_complete_shared_source_index_and_retained_faults():
+    record = " ".join(read(REPOSITORY_SOURCE_INDEX).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Repository source index (Milestone 49J.3C)",
+        "**Status:** Accepted and merged in `23d1b32`",
+        "changes no installed package",
+        "independent subprocess/import-isolation oracle",
+        "all Python paths below `src`, `tests`, `examples`, `tools`, and `example_scripts`",
+        "lazily caches its UTF-8 text and parsed AST",
+        "proves exact inventory equality",
+        "median 2.39 seconds",
+        "observed median improvement is 0.38 seconds, or about 9.1 percent",
+        "2,105 tests with 24 deselected",
+        "all 2,129 tests",
+        "median 89.59 seconds; range 1.29 seconds",
+        "three routine and three complete Mac runs",
+        "coordinate-system guide was reviewed",
+    ):
+        assert phrase in record
+
+    assert "49J.3C completed" in roadmap
+    assert "repository_source_index_49j3c.md" in architecture
+    assert "tests/repository_sources.py" in source_tree
+
+
+def test_49j3d_records_only_proved_immutable_catalogue_fixture_reuse():
+    record = " ".join(read(IMMUTABLE_CATALOGUE_FIXTURE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Immutable catalogue fixture (Milestone 49J.3D)",
+        "**Status:** Accepted and merged in `63beb17`",
+        "canonical sphere is not eligible for session scope",
+        "No sphere/build registry is installed",
+        "nested `MappingProxyType` values",
+        "outer and inner mutation attempts",
+        "one assertion owns exact identifier presence and order",
+        "other owns north/south overlap counts",
+        "retains an independent cold canonical factory build",
+        "forward, reverse, and isolated execution",
+        "coordinate-system guide was reviewed",
+        "median 1.27 seconds",
+        "median 1.18 seconds",
+        "local diagnostic reduction of about 7 percent",
+        "exact missing identifier",
+        "about 9.4 percent",
+        "approximately 50-percent reduction",
+        "159 focused documentation, catalogue, geometry, and cold-factory tests",
+        "2,106 routine tests with 24 deselected",
+        "all 2,130 tests in 85.61 seconds",
+        "three distinct nodes",
+    ):
+        assert phrase in record
+
+    assert "49J.3D completed" in roadmap
+    assert "immutable_catalogue_fixture_49j3d.md" in architecture
+    assert "catalogue_positions" in source_tree
+
+
+def test_49j3e_preserves_cold_builders_and_independent_kernel_oracles():
+    record = " ".join(read(COLD_BUILDER_KERNEL_ORACLES).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Cold builders and installed-kernel oracles (Milestone 49J.3E)",
+        "**Status:** Accepted and merged in `6db2272`",
+        "no new fixture, build registry, kernel cache, observer cache",
+        "independently recomputes its direct Skyfield comparison",
+        "Direction, light-time, apparent-place, parallax, physical appearance",
+        "commands run in separate processes",
+        "refuse an unavailable kernel instead of downloading one",
+        "Sharing an observer, requested time, direct Skyfield result",
+        "retains the independent cold ordinary factory",
+        "temporary horizon mutation and restoration",
+        "real independent observer-time frames",
+        "3.43 seconds for the cold ordinary factory",
+        "20.72 seconds for the real observer-time sequence",
+        "87 current-documentation tests in 2.54 seconds",
+        "2,107 routine tests with 24 deselected in 28.34 seconds",
+        "all 2,131 tests in 85.58 seconds",
+        "3.42 seconds for the ordinary canonical factory",
+        "21.27 seconds for the real observer-time sequence",
+        "evidence supports preservation rather than consolidation",
+        "No speedup is claimed",
+        "**Runtime effect:** None",
+        "**Test behavior effect:** None",
+        "coordinate-system guide was reviewed",
+    ):
+        assert phrase in record
+
+    assert "49J.3E completed" in roadmap
+    assert "cold_builder_kernel_oracles_49j3e.md" in architecture
+    assert "direct installed-kernel recomputation" in implementation
+    assert "independently recomputed installed-DE440" in source_tree
+
+
+def test_49j3f_removes_only_redundant_calendar_canvas_redraws():
+    record = " ".join(read(CALENDAR_LAYOUT_COST).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Calendar layout cost (Milestone 49J.3F)",
+        "**Status:** Accepted and merged in `a190a09`",
+        "all 83 day and month labels",
+        "97.5 mm physical disk",
+        "83 redundant full-canvas redraws",
+        "`Text.get_window_extent(renderer=...)`",
+        "anchors, font metrics, tangential/outward extents",
+        "Median elapsed time fell from 6.77 to 1.88 seconds",
+        "median call time fell from 5.98 to 0.90 seconds",
+        "about 85 percent",
+        "outer corner of 106.64 mm",
+        "mutation was reverted before commit",
+        "median 15.27 seconds",
+        "median 3.14 seconds",
+        "79.4 percent in elapsed time",
+        "88.0 percent in call time",
+        "93 focused documentation and page-rendering tests",
+        "2,108 routine tests with 24 deselected",
+        "all 2,132 tests in 77.94 seconds",
+        "characterization evidence, not a threshold",
+        "**Runtime effect:** None",
+        "**Test behavior effect:** None",
+        "does not reduce dpi, sample labels",
+    ):
+        assert phrase in record
+
+    assert "49J.3F completed" in roadmap
+    assert "calendar_layout_cost_49j3f.md" in architecture
+    assert "redundant full-canvas redraws" in source_tree
+
+
+def test_49j3g_preserves_the_canonical_observer_time_sequence_oracle():
+    record = " ".join(read(OBSERVER_TIME_SEQUENCE_ORACLE).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    implementation = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+
+    for phrase in (
+        "Canonical observer-time sequence oracle (Milestone 49J.3G)",
+        "**Status:** Accepted and merged in `d7ba1d5`",
+        "retain the test unchanged",
+        "minimum scientifically meaningful sequence of two instants",
+        "`generate_observer_time_chart_sequence()`",
+        "`generate_chart_request()`",
+        "equal image dimensions, different image bytes",
+        "detect per-frame observer time errors",
+        "current complete route binds each sphere",
+        "would violate D22 directly",
+        "independent-frame timing harness in 49J.4",
+        "first fixed-sky reuse in 49J.5",
+        "isolated real canonical sequence in 24.69 seconds",
+        "22.90 seconds in the test call",
+        "101 tests in 25.30 seconds",
+        "2,109 tests with 24 deselected in 26.54 seconds",
+        "all 2,133 tests passed in 76.85 seconds",
         "slowest test at 20.79 seconds",
         "neither removed, mocked, nor hidden",
         "No speedup is claimed",
