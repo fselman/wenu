@@ -5858,7 +5858,13 @@ def test_50s6e_audits_multifov_interchange_and_lunar_illumination():
         "Ten FoVs are the reference workload",
         "not a hard-coded public cardinality",
         "same-interval workload is a special research and optimization case",
-        "disjoint, partially overlapping, and identical intervals",
+        "geometric vacuum AltAz",
+        "plane-parallel `X = sec(z)`",
+        "defaults to 2",
+        "complete interval must be conservatively certified",
+        "not a satellite horizon, Earth-occultation, illumination",
+        "no civil-date, time-zone, solar-altitude, or inferred-twilight boundary",
+        "disjoint, partially overlapping, and identical airmass-admissible intervals",
         "exactly equivalent to the ordered collection of independent exhaustive",
         "1, 2, 5, 10, 20, and, when practical, 50 FoVs",
         "JSON as the canonical nested exchange",
@@ -5878,7 +5884,7 @@ def test_50s6e_audits_multifov_interchange_and_lunar_illumination():
 
     assert "satellite_multifov_interchange_audit_50s6e.md" in index
     assert "Candidate 50S.6E multi-FoV and interchange direction" in architecture
-    assert "50S.6E — Same-observer, same-night multi-FoV" in roadmap
+    assert "50S.6E — Same-observer, airmass-bounded multi-FoV" in roadmap
     assert "Candidate multi-FoV and observatory interchange contract" in reference
     assert "Candidate 50S.6E documentation ownership" in source_tree
     assert "Candidate 50S.6E multi-FoV coordinate boundary" in coordinate_guide
@@ -5888,3 +5894,5 @@ def test_50s6e_audits_multifov_interchange_and_lunar_illumination():
     assert "50S.6G.4 may accept stereographic planisphere" in audit
     assert "no runtime or output" in roadmap
     assert "not implemented or authorized" in architecture
+    assert "| 28 | 50B.0 |" in roadmap
+    assert "| 33 | 50B.5 |" in roadmap
