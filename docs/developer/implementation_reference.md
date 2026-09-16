@@ -2664,10 +2664,12 @@ Malformed evidence or an out-of-domain reject fails closed.
 
 No multi-FoV runtime API or generic observatory export exists. The 50S.6E
 candidate audit proposes a same-observer batch containing any non-empty ordered
-number of independently timed FoVs. Every field centre must satisfy the
-configured airmass limit throughout its complete interval. The initial policy
-uses geometric vacuum AltAz, plane-parallel `X = sec(z)`, and configurable
-`X_max` defaulting to 2. This is field admission, not a satellite horizon or
+number of independently timed circular FoVs. Every point of each closed field,
+including its boundary, must satisfy the configured airmass limit throughout
+its complete interval. The initial policy uses geometric vacuum AltAz,
+plane-parallel `X = sec(z)`, and configurable `X_max` defaulting to 2; therefore
+`z_centre(t) + r_FoV <= arccos(1 / X_max)` for every instant. This is field
+admission, not a satellite horizon or
 occultation filter. Ten is the reference workload, not a cardinality limit.
 Future JSON, ECSV, and VOTable encodings must represent
 one canonical lossless crossing model; any Paranal, ELT, or other observatory
