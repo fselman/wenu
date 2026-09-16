@@ -3420,3 +3420,14 @@ projected coordinates remain inadmissible rejection predicates.
 Fernando scientifically and architecturally accepted this unchanged 50S.6D
 coordinate boundary on 2026-09-16. The acceptance authorizes no new coordinate
 operation or rejection predicate.
+
+
+## Candidate 50S.6E multi-FoV coordinate boundary
+
+A future same-observer batch would preserve each field's independently framed
+centre, radius, interval, and solver tolerance. Shared propagation or
+topocentric state must be keyed by observer, instant, snapshot, record,
+Earth-orientation, propagator, and software identity; field-specific separation
+is not a reusable physical state. JSON, ECSV, and VOTable reports must declare
+UTC, units, frame, and interpolation policy explicitly. The coordinate guide
+was reviewed for 50S.6E; no implemented coordinate meaning changes.
