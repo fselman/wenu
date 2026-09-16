@@ -5691,4 +5691,4 @@ def test_50s6b_documents_accepted_cone_shell_selector():
     assert "does not coordinate an accelerated solve" in reference
     assert "package exports expose the four selector contracts" in source_tree
     assert "documentation-first 50S.6C audit" in roadmap
-    assert "further runtime acceleration remains unauthorized" in roadmap
+    assert "Further runtime acceleration remains unauthorized" in roadmap
