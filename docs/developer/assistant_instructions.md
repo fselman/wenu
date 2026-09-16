@@ -791,6 +791,7 @@ only with complete ordered selector evidence. Selector failure falls back to
 exhaustive solving or fails closed and can never become an empty result.
 
 This documentation-only audit authorizes no runtime coordinator, broader
-selector domain, benchmark claim, or default enablement. Only after Fernando's
+selector domain, benchmark claim, or default enablement. Further runtime acceleration
+remains unauthorized. Only after Fernando's
 acceptance may a bounded 50S.6D coordinator inside the existing three-record,
 60-second domain be considered.
