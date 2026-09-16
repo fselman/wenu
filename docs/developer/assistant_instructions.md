@@ -839,3 +839,23 @@ Only a separately bounded 50S.6F implementation is authorized next. Generic obse
 chart tracks, Paranal/ELT adapters, Sunlight, solar Earthshine, Moonlight,
 Lunar-Earthshine, brightness, and detector effects remain later, separately
 accepted milestones.
+
+
+## Candidate 50S.6F implementation boundary
+
+The candidate implementation adds only the immutable Python batch contracts in
+`satellites/crossing_batch.py`, the governed field-centre altitude evaluator
+in `satellites/topocentric.py`, and focused tests. Preserve one snapshot, one
+observer, unique ordered FoV identifiers, independently bounded intervals, the
+existing synthetic three-record snapshot, and the existing 60-second
+single-field admission domain.
+
+Validate the complete batch before solving any field. Accumulate every
+field-specific validation failure in input order and raise one typed atomic
+error; do not return partial crossing results. Certify centre-only geometric
+vacuum airmass over the complete interval with configurable `X_max` defaulting
+to 2. Process any non-empty field count in execution-only chunks defaulting to
+10, preserve input order, and compose the accepted 50S.6D single-field route.
+This candidate makes no useful-speed or physical-state-reuse claim. It adds no
+CLI, file input, validation-output file, generic report, chart, observatory
+adapter, illumination, photometry, broader catalogue, or later behavior.
