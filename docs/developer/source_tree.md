@@ -1948,3 +1948,23 @@ Existing single-FoV crossing, acceleration, sampled-track, coordinate,
 projection, rendering, and export owners remain unchanged. Fernando
 scientifically and architecturally accepted this ownership on 2026-09-16. No
 production owner exists yet; only bounded 50S.6F is authorized next.
+
+
+## Candidate 50S.6F production ownership
+
+`src/wenu/satellites/crossing_batch.py` owns immutable multi-field request,
+policy, centre-airmass evidence, ordered atomic validation failures, per-field
+result, and batch coordination. The closest prior owner is
+`crossing_acceleration.py`, but extending it would mix one-query conservative
+selection and exact coordination with a distinct many-query validation,
+ordering, chunking, and failure lifecycle.
+
+`SatelliteFieldCenterAltitudeEvaluator` extends
+`satellites/topocentric.py` because it owns the same installed-IERS-A,
+geometric vacuum, GCRS-axis-to-observer rotation boundary; it does not create a
+second coordinate service. `tests/test_satellite_crossing_batch.py` is a new
+stable test owner because atomic all-fields-before-work behavior, input-order
+preservation, independent intervals, and batch failure aggregation are a
+distinct public route and isolation obligation. Existing topocentric tests own
+the independent zenith-direction transformation check. No projection,
+rendering, report, CLI, or exporter owner changes.
