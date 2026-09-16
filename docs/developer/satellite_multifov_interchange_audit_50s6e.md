@@ -84,7 +84,7 @@ tangency, closest approach, connected-visit assembly, and output remain
 independent per field. A field-specific separation result must never be reused
 as though it were a satellite physical state.
 
-The union night envelope may organize setup and coarse work, but Wenu must not
+The union temporal envelope may organize setup and coarse work, but Wenu must not
 blindly propagate every object at every time across that envelope. Candidate
 implementations must compare independent calls, bounded concurrency, overlap
 grouping, and on-demand shared-state caching. Every batch result must be
