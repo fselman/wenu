@@ -34,7 +34,7 @@ architectural rationale and accepted boundaries.
 | 17 | 50S.4E | Add the network-free propagated-specimen builder and close 50S.4. |
 | 18 | 50S.5 | Implement the complete local FoV-crossing oracle. |
 | 19 | 50S.6A–D | Accepted conservative selection and bounded exact-solver coordination. |
-| 20 | 50S.6E | Audit same-observer, same-night multi-FoV reuse, interchange, and the remaining delivery sequence. |
+| 20 | 50S.6E | Audit same-observer, airmass-bounded multi-FoV reuse, interchange, and the remaining delivery sequence. |
 | 21 | 50S.6F | Implement the bounded multi-FoV coordinator after separate acceptance. |
 | 22 | 50S.6G | Admit representative scale and connect exact results to generic reports and chart tracks. |
 | 23 | 50S.6H | Audit Paranal, ELT, and other observatory planning adapters. |
@@ -42,12 +42,12 @@ architectural rationale and accepted boundaries.
 | 25 | 50S.8 | Add component-resolved brightness models with uncertainty and explicit unknowns. |
 | 26 | 50S.9 | Estimate detector-level trail contamination separately from apparent magnitude. |
 | 27 | 50S.10 | Produce night/season/sky-position statistics and close the satellite program. |
-| 24 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
-| 25 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
-| 26 | 50B.2 | Measure representative products at declared physical dimensions. |
-| 27 | 50B.3 | Implement monochrome and limited-grayscale publication profiles. |
-| 28 | 50B.4 | Perform physical print, reduction, grayscale, and photocopy acceptance. |
-| 29 | 50B.5 | Close publication styles with accepted standards, examples, limitations, and evidence. |
+| 28 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
+| 29 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
+| 30 | 50B.2 | Measure representative products at declared physical dimensions. |
+| 31 | 50B.3 | Implement monochrome and limited-grayscale publication profiles. |
+| 32 | 50B.4 | Perform physical print, reduction, grayscale, and photocopy acceptance. |
+| 33 | 50B.5 | Close publication styles with accepted standards, examples, limitations, and evidence. |
 
 ## 1. Purpose and authority
 
@@ -2335,16 +2335,20 @@ plugin-disabled tests. Fernando scientifically and architecturally accepted 50S.
 No later acceleration milestone is authorized automatically.
 
 
-### 50S.6E — Same-observer, same-night multi-FoV and interchange audit
+### 50S.6E — Same-observer, airmass-bounded multi-FoV and interchange audit
 
 **Status:** Candidate documentation-only audit.
 
 The audit in `satellite_multifov_interchange_audit_50s6e.md` defines one
 observer with any non-empty ordered number of independently timed circular
-FoVs contained within one observing night. Ten FoVs are the reference workload
-and proposed default internal processing chunk, never a hard-coded public
-limit. Identical intervals are a maximum-reuse research case rather than a
-public precondition.
+FoVs. Every field centre must satisfy a configurable airmass limit throughout
+its complete interval. The initial policy uses geometric vacuum AltAz and
+plane-parallel `X = sec(z)`, with `X_max = 2` by default (approximately 30
+degrees minimum altitude). This is an FoV admission condition, not a satellite
+horizon or occultation filter, and it imposes no civil-date or inferred-
+twilight boundary. Ten FoVs are the reference workload and proposed default
+internal processing chunk, never a hard-coded public limit. Identical intervals
+are a maximum-reuse research case rather than a public precondition.
 
 The audit separates bounded concurrency from genuine reduction in propagation
 and coordinate work, requires exact per-field equivalence to independent
