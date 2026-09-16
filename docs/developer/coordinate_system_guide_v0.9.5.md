@@ -3385,3 +3385,19 @@ The bound is admitted only for the installed synthetic snapshot and at most
 60 seconds. It does not use altitude, Earth occultation, apparent ICRS,
 projection, or refraction as a rejection predicate. Fernando scientifically
 and architecturally accepted this bounded coordinate evidence on 2026-09-16.
+
+### Accepted 50S.6C coordination coordinate boundary
+
+Coordination introduces no new coordinate system. Selection evidence, exhaustive
+evaluation, and accelerated exact evaluation must refer to the identical fixed
+closed circular field and topocentric geometric directions expressed in GCRS
+axes. The shared exact seam continues to obtain states only through the accepted
+SGP4/TEME and installed-IERS-A transformation chain.
+
+Fernando scientifically and architecturally accepted this unchanged coordinate
+boundary on 2026-09-16. Only bounded 50S.6D coordination is authorized next.
+
+Broader-domain evidence must preserve observer identity, inclusive UTC interval,
+field coordinate specification, IERS-A identity, and every outward angular
+margin. Horizon, Earth occultation, apparent ICRS, refraction, and projected
+coordinates remain inadmissible rejection predicates.

@@ -3170,6 +3170,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_report_drawing_audit_50s3a.md",
         "satellite_crossing_oracle_audit_50s5a.md",
         "satellite_crossing_acceleration_audit_50s6a.md",
+        "satellite_crossing_coordination_audit_50s6c.md",
         "satellite_snapshot_propagation_audit_50s4a.md",
         "satellite_guide.md",
         "source_tree.md",
@@ -5692,3 +5693,58 @@ def test_50s6b_documents_accepted_cone_shell_selector():
     assert "package exports expose the four selector contracts" in source_tree
     assert "documentation-first 50S.6C audit" in roadmap
     assert "Further runtime acceleration remains unauthorized" in roadmap
+
+
+def test_50s6c_audits_exact_solver_coordination_and_admission():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_coordination_audit_50s6c.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "documentation-only scientific and API audit",
+        "LocalSatelliteCrossingOracle.solve(query)",
+        "ConservativeConeShellSelector.select(query)",
+        "AcceleratedLocalSatelliteCrossingOracle",
+        "one shared exact record solver",
+        "No public caller may supply an arbitrary subset",
+        "Additional acceleration evidence may differ",
+        "fall back to the complete exhaustive route",
+        "Broader-domain admission",
+        "cannot justify production-catalogue admission",
+        "an instrumented proof that rejected records receive zero exact evaluations",
+        "Mocked speedup is not benchmark evidence",
+        "repeated cold and warm runs",
+        "an accelerated coordinator must remain opt-in",
+        "This audit creates no source, runtime test, benchmark tool",
+        "git diff --check 93a7d41...HEAD",
+        "bounded 50S.6D implementation",
+        "all later behavior would remain unauthorized",
+    ):
+        assert phrase in audit
+
+    assert "satellite_crossing_coordination_audit_50s6c.md" in index
+    assert "Accepted 50S.6C exact-solver coordination audit" in architecture
+    assert "50S.6C — Exact-solver coordination and admission audit" in roadmap
+    assert "Accepted accelerated coordination contract (50S.6C audit)" in reference
+    assert "Accepted 50S.6C coordination ownership audit" in source_tree
+    assert "Accepted 50S.6C coordination coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6C coordination and admission audit" in guide
+    assert "Accepted 50S.6C coordination-audit boundary" in instructions
+    assert "No accelerated crossing service exists" in reference
+    assert "three-record snapshot proves composition, not useful speed" in roadmap
+    assert "creates no source, runtime test, benchmark tool" in source_tree
+    assert "passed all 140 tests in 3.55 seconds" in audit
+    assert "Fernando scientifically and architecturally accepted 50S.6C" in audit
+    assert "only a bounded 50S.6D implementation" in audit
+    assert "only bounded 50S.6D" in roadmap
+    assert "bounded 50S.6D coordinator" in instructions

@@ -2625,3 +2625,17 @@ unchanged.
 
 Fernando scientifically and architecturally accepted this bounded selector on
 2026-09-16. No accelerated solve API exists.
+
+### Accepted accelerated coordination contract (50S.6C audit)
+
+No accelerated crossing service exists. The accepted audit authorizes a later
+`AcceleratedLocalSatelliteCrossingOracle` that would accept the unchanged
+`LocalSatelliteCrossingQuery`, validate complete NORAD-ordered selector
+evidence, and route every retain or indeterminate decision through the same
+exact record seam used by exhaustive `LocalSatelliteCrossingOracle.solve`.
+
+The underlying `SatelliteCrossingResult` tuple must remain exactly equivalent
+to exhaustive output. Acceleration evidence is separate. Selector failure must
+fall back to the exhaustive route or fail closed; it cannot produce an empty
+search. The accepted cone-shell selector's installed-snapshot, 60-second domain
+is unchanged, and no callable coordinator is authorized by this audit.

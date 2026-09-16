@@ -916,3 +916,28 @@ occultation, does not sample a nominal track to infer absence, and does not
 return crossings or make a performance claim. Fernando scientifically and
 architecturally accepted this bounded selector on 2026-09-16. Only a
 50S.6C documentation-first coordination and admission audit is authorized next.
+
+## 25. Accepted 50S.6C coordination and admission audit
+
+The proposed accelerated route does not create a second crossing solver.
+Exhaustive and accelerated searches must share one exact record operation;
+the exhaustive route invokes it for every record, and acceleration may omit
+only records carrying a validated conservative reject decision. Retain and
+indeterminate both mean exact solve.
+
+Fernando scientifically and architecturally accepted this audit on 2026-09-16.
+Only bounded 50S.6D coordination in the existing admitted domain is authorized
+next.
+
+Complete ordered decision coverage, invariant checking, fallback, exact-result
+equivalence, and fail-closed behavior precede optimization. A selector error or
+unsupported query cannot become an empty result. The installed synthetic
+three-record snapshot remains a composition fixture, not evidence of useful
+speed or broader catalogue validity.
+
+Widening the selector requires immutable regime-covering fixtures and
+zero-false-negative comparison with the independent exhaustive oracle.
+Performance claims require predeclared representative workloads, repeated cold
+and warm measurements, evaluation counts, timing distributions, and material
+total-wall-time benefit. This documentation-only candidate authorizes no
+runtime coordinator or broader acceleration.

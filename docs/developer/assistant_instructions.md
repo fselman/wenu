@@ -780,3 +780,18 @@ filter, horizon/occultation filter, index, or changed oracle result is included.
 Fernando scientifically and architecturally accepted this bounded selector on
 2026-09-16. Only a documentation-first 50S.6C coordination, broader-domain,
 and benchmark-admission audit is authorized next.
+
+### Accepted 50S.6C coordination-audit boundary
+
+Follow `satellite_crossing_coordination_audit_50s6c.md` before adding an
+accelerated search service. Preserve the independently callable exhaustive
+50S.5 route and the accepted 50S.6B selector domain. Retain and indeterminate
+records must reach one shared exact record seam; rejected records may be omitted
+only with complete ordered selector evidence. Selector failure falls back to
+exhaustive solving or fails closed and can never become an empty result.
+
+This documentation-only audit authorizes no broader selector domain, benchmark
+claim, default enablement, phase/coarse/indexing stage, or later satellite
+behavior. Fernando scientifically and architecturally accepted 50S.6C on
+2026-09-16. Only a bounded 50S.6D coordinator inside the existing three-record,
+60-second domain is authorized next.

@@ -2273,3 +2273,24 @@ seconds, and `git diff --check d609322...HEAD` was clean. Acceptance authorizes 
 documentation-first 50S.6C audit of exact-solver coordination, broader-domain
 evidence, and benchmark admission. Further runtime acceleration remains
 unauthorized.
+
+### 50S.6C — Exact-solver coordination and admission audit (accepted)
+
+**Status:** Accepted by Fernando on 2026-09-16.
+
+Freeze the shared exact-record seam, complete decision-coverage validation,
+fallback and fail-closed behavior, exhaustive-result equivalence,
+broader-domain evidence matrix, and reproducible benchmark-admission rules
+before runtime coordination.
+
+The accepted 50S.5 exhaustive route remains independently callable and default.
+The accepted 50S.6B selector remains restricted to
+`synthetic_50s4b_v1` and at most 60 seconds. The three-record snapshot proves
+composition, not useful speed. This audit adds no runtime coordinator, broader
+domain, benchmark product, new selector stage, or performance claim.
+
+Fernando scientifically and architecturally accepted 50S.6C on 2026-09-16.
+Acceptance authorizes only bounded 50S.6D exact-solver coordination with the
+existing selector and admitted domain. Broader-domain activation, benchmark
+claims, default enablement, phase/coarse/index stages, 50S.7, and later behavior
+remain unauthorized.
