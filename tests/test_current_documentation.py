@@ -5751,7 +5751,7 @@ def test_50s6c_audits_exact_solver_coordination_and_admission():
 
 
 
-def test_50s6d_documents_candidate_accelerated_coordinator():
+def test_50s6d_documents_accepted_accelerated_coordinator():
     audit = " ".join(read(
         DEVELOPER / "satellite_crossing_coordination_audit_50s6c.md"
     ).split())
@@ -5807,7 +5807,7 @@ def test_50s6d_documents_candidate_accelerated_coordinator():
 
 
 
-def test_50s6d_records_candidate_verification_evidence():
+def test_50s6d_records_accepted_verification_evidence():
     audit = " ".join(read(
         DEVELOPER / "satellite_crossing_coordination_audit_50s6c.md"
     ).split())
@@ -5823,7 +5823,7 @@ def test_50s6d_records_candidate_verification_evidence():
         "package-boundary gate in 128.74 seconds",
         "141-test current-documentation gate in 4.36 seconds",
         "complete 2,566-test suite in 213.87 seconds",
-        "no performance, broader-domain, or default-enablement claim",
+        "No performance, broader-domain, default-enablement, or later acceleration claim",
     ):
         assert phrase in audit
     assert "Fernando scientifically and architecturally accepted 50S.6D" in audit
