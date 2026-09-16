@@ -2658,3 +2658,13 @@ Both routes use the same package-internal exact-record seam owned by
 complete NORAD-ordered coverage before solving. Retain and indeterminate
 records are evaluated exactly once; rejected records are not evaluated.
 Malformed evidence or an out-of-domain reject fails closed.
+
+
+## Candidate multi-FoV and observatory interchange contract
+
+No multi-FoV runtime API or generic observatory export exists. The 50S.6E
+candidate audit proposes a same-observer batch containing any non-empty ordered
+number of independently timed same-night FoVs. Ten is the reference workload,
+not a cardinality limit. Future JSON, ECSV, and VOTable encodings must represent
+one canonical lossless crossing model; any Paranal, ELT, or other observatory
+adapter remains outside the solver and requires a separate interface audit.
