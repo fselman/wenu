@@ -3401,3 +3401,17 @@ Broader-domain evidence must preserve observer identity, inclusive UTC interval,
 field coordinate specification, IERS-A identity, and every outward angular
 margin. Horizon, Earth occultation, apparent ICRS, refraction, and projected
 coordinates remain inadmissible rejection predicates.
+
+
+### Candidate 50S.6D unchanged coordinate boundary
+
+The coordinator introduces no coordinate operation. The selector and both
+exact routes consume the identical fixed circular field and the same
+topocentric geometric directions expressed in GCRS axes. Exact evaluation
+continues to use only the accepted SGP4/TEME and installed-IERS-A state chain.
+
+The coordinate guide was reviewed for 50S.6D and remains scientifically
+current. Selection accounting, fallback, and shared-record orchestration do
+not change frame, origin, position status, instant, time scale, refraction, or
+Earth-orientation meaning. Horizon, occultation, apparent ICRS, refraction, and
+projected coordinates remain inadmissible rejection predicates.
