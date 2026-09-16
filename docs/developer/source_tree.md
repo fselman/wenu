@@ -1891,7 +1891,7 @@ No phase, coarse-state, horizon, occultation, indexing, coordinator, reporting,
 or rendering responsibility is added. Fernando accepted this ownership on
 2026-09-16; only a documentation-first 50S.6C audit is authorized next.
 
-### Candidate 50S.6C coordination ownership audit
+### Accepted 50S.6C coordination ownership audit
 
 - `satellite_crossing_coordination_audit_50s6c.md` owns the documentation-only
   coordinator, broader-domain, equivalence, failure, and benchmark-admission
@@ -1908,4 +1908,5 @@ or rendering responsibility is added. Fernando accepted this ownership on
   runtime dependency.
 
 This audit creates no source, runtime test, benchmark tool, fixture, dependency,
-or package export. A bounded 50S.6D coordinator remains pending acceptance.
+or package export. Fernando accepted this ownership on 2026-09-16; only a
+bounded 50S.6D coordinator is authorized next.
