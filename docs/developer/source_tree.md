@@ -1910,3 +1910,24 @@ or rendering responsibility is added. Fernando accepted this ownership on
 This audit creates no source, runtime test, benchmark tool, fixture, dependency,
 or package export. Fernando accepted this ownership on 2026-09-16; only a
 bounded 50S.6D coordinator is authorized next.
+
+
+### Candidate 50S.6D coordinator ownership
+
+- `src/wenu/satellites/crossing_oracle.py` owns the unchanged exact numerical
+  algorithm and one package-internal record seam used by both public routes;
+- `src/wenu/satellites/crossing_acceleration.py` owns immutable coordinator
+  policy, ordered evidence validation, selection composition, fallback,
+  exact-evaluation accounting, and the opt-in accelerated service;
+- `src/wenu/satellites/__init__.py` exports the three candidate coordinator
+  contracts without changing the exhaustive default;
+- `tests/test_satellite_crossing_oracle.py` remains the independent exact
+  numerical authority;
+- `tests/test_satellite_crossing_acceleration.py` owns fake-selector
+  invariants, instrumented shared-seam accounting, fallback behavior, and
+  real-selector exhaustive equivalence.
+
+No new production module or test file is admitted: the new behavior has the
+same selector-coordination lifecycle and ownership as
+`crossing_acceleration.py`. No benchmark tool, fixture, dependency,
+coordinate service, CLI, report, renderer, or exporter changes.
