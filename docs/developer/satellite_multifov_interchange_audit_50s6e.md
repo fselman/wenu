@@ -1,6 +1,6 @@
 # 50S.6E same-observer, airmass-bounded multi-FoV and interchange audit
 
-**Status:** Candidate documentation-only scientific, API, performance, and
+**Status:** Accepted documentation-only scientific, API, performance, and
 interchange audit.
 
 ## 1. Purpose and authority
@@ -216,8 +216,13 @@ The resulting sequence is:
 - 50S.9: instrument/detector contamination;
 - 50S.10: night/season/pointing products and closure.
 
-Acceptance of this audit would authorize only a bounded 50S.6F implementation.
-It would not authorize broader catalogue admission, a public cardinality
-limit, a performance claim, chart integration, observatory writes, direct ESO
-or ELT compatibility, illumination, photometry, detector effects, or any later
+Fernando scientifically and architecturally accepted this audit on 2026-09-16.
+The reviewed candidate at commit `f079d95` passed all 143 plugin-disabled
+current-documentation tests in 3.70 seconds; the branch diff check against
+`adaa5e5` was clean and the Mac working tree was clean.
+
+This acceptance authorizes only a bounded 50S.6F implementation. It does not
+authorize broader catalogue admission, a public cardinality limit, a
+performance claim, chart integration, observatory writes, direct ESO or ELT
+compatibility, illumination, photometry, detector effects, or any later
 milestone.
