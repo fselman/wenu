@@ -1047,9 +1047,9 @@ architecturally accepted the bounded selector on 2026-09-16. Only a
 50S.6C documentation-first coordination, broader-domain, and benchmark audit is
 authorized next.
 
-### Candidate 50S.6C exact-solver coordination audit
+### Accepted 50S.6C exact-solver coordination audit
 
-The documentation-only candidate preserves the accepted exhaustive 50S.5 oracle
+The accepted documentation-only audit preserves the accepted exhaustive 50S.5 oracle
 as the independent scientific reference and the accepted 50S.6B selector as a
 tri-state evidence producer. It specifies one shared exact record seam:
 exhaustive solving calls it for every record, while a later accelerated route
@@ -1060,5 +1060,6 @@ broader-domain evidence, instrumented evaluation accounting, and reproducible
 benchmark admission. The three-record synthetic snapshot remains composition
 evidence rather than a performance fixture. No source, runtime test, benchmark,
 dependency, package export, coordinate path, or result changes in 50S.6C.
+Fernando scientifically and architecturally accepted 50S.6C on 2026-09-16.
 Only a bounded 50S.6D coordinator inside the existing three-record, 60-second
-domain could be authorized after acceptance.
+domain is authorized next.
