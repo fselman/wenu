@@ -2267,5 +2267,7 @@ whole-interval non-overlap permits rejection and every uncertainty is
 The selector does not coordinate exact solving or change 50S.5. The dedicated
 gate passed all 9 tests in 34.58 seconds and the expanded
 acceleration/oracle/crossing/element/SGP4/topocentric/package gate passed all
-78 tests in 99.99 seconds. Complete-suite, documentation, diff, and Fernando
-acceptance gates remain pending.
+78 tests in 99.99 seconds. The documentation gate passed all 139 tests in 4.72
+seconds, the complete plugin-disabled suite passed all 2,549 tests in 200.47
+seconds, and `git diff --check d609322...HEAD` was clean. Fernando acceptance
+remains pending.

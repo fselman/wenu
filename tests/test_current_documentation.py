@@ -5681,7 +5681,11 @@ def test_50s6b_documents_candidate_cone_shell_selector():
         "all three installed records across the complete admitted interval",
         "dedicated gate passed all 9 tests in 34.58 seconds",
         "passed all 78 tests in 99.99 seconds",
-        "Complete-suite, documentation, diff, and Fernando acceptance gates remain pending",
+        "Focused, complete-suite, documentation, and diff gates are complete",
+        "documentation gate passed all 139 tests in 4.72 seconds",
+        "complete plugin-disabled suite passed all 2,549 tests in 200.47 seconds",
+        "git diff --check d609322...HEAD",
+        "scientific and architectural acceptance remains pending",
     ):
         assert phrase in audit
     assert "does not coordinate an accelerated solve" in reference

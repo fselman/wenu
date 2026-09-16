@@ -1040,4 +1040,6 @@ The supported production domain is deliberately limited to
 `synthetic_50s4b_v1` and intervals of at most 60 seconds. All unsupported or
 weak cases are `indeterminate`. The accepted exhaustive oracle is unchanged
 and remains independently callable. This slice adds no accelerated coordinator
-and cannot return crossing results.
+and cannot return crossing results. Candidate verification passed the 9-test
+dedicated gate, 78-test expanded gate, 139-test documentation gate, and all
+2,549 plugin-disabled tests. The branch and diff checks were clean.

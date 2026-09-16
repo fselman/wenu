@@ -280,5 +280,10 @@ three installed records across the complete admitted interval.
 
 The dedicated gate passed all 9 tests in 34.58 seconds. The expanded selector,
 oracle, crossing-contract, element, SGP4, topocentric, and package-boundary gate
-passed all 78 tests in 99.99 seconds. Complete-suite, documentation, diff, and
-Fernando acceptance gates remain pending.
+passed all 78 tests in 99.99 seconds. The documentation gate passed all 139
+tests in 4.72 seconds, and the complete plugin-disabled suite passed all 2,549
+tests in 200.47 seconds. The working tree was clean and
+`git diff --check d609322...HEAD` passed.
+
+Focused, complete-suite, documentation, and diff gates are complete. Fernando's
+scientific and architectural acceptance remains pending.
