@@ -2664,7 +2664,11 @@ Malformed evidence or an out-of-domain reject fails closed.
 
 No multi-FoV runtime API or generic observatory export exists. The 50S.6E
 candidate audit proposes a same-observer batch containing any non-empty ordered
-number of independently timed same-night FoVs. Ten is the reference workload,
-not a cardinality limit. Future JSON, ECSV, and VOTable encodings must represent
+number of independently timed FoVs. Every field centre must satisfy the
+configured airmass limit throughout its complete interval. The initial policy
+uses geometric vacuum AltAz, plane-parallel `X = sec(z)`, and configurable
+`X_max` defaulting to 2. This is field admission, not a satellite horizon or
+occultation filter. Ten is the reference workload, not a cardinality limit.
+Future JSON, ECSV, and VOTable encodings must represent
 one canonical lossless crossing model; any Paranal, ELT, or other observatory
 adapter remains outside the solver and requires a separate interface audit.
