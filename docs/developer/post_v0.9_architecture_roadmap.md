@@ -2337,7 +2337,7 @@ No later acceleration milestone is authorized automatically.
 
 ### 50S.6E — Same-observer, airmass-bounded multi-FoV and interchange audit
 
-**Status:** Candidate documentation-only audit.
+**Status:** Accepted documentation-only audit.
 
 The audit in `satellite_multifov_interchange_audit_50s6e.md` defines one
 observer with any non-empty ordered number of independently timed circular
@@ -2361,6 +2361,7 @@ adapter auditing in 50S.6H; four-source Sunlight, solar Earthshine, Moonlight,
 and Lunar-Earthshine geometry in 50S.7; component-resolved brightness in
 50S.8; detector effects in 50S.9; and external-workflow validation in 50S.10.
 
-This audit changes no runtime or output. Acceptance would authorize only a
-bounded 50S.6F implementation; every later claim remains separately
+This audit changes no runtime or output. Fernando scientifically and
+architecturally accepted 50S.6E on 2026-09-16. Only a bounded 50S.6F
+implementation is authorized next; every later claim remains separately
 authorized.
