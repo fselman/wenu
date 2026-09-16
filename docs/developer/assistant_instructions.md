@@ -795,3 +795,21 @@ claim, default enablement, phase/coarse/indexing stage, or later satellite
 behavior. Fernando scientifically and architecturally accepted 50S.6C on
 2026-09-16. Only a bounded 50S.6D coordinator inside the existing three-record,
 60-second domain is authorized next.
+
+
+### Candidate 50S.6D accelerated-coordinator boundary
+
+The bounded candidate may only extract the existing exact per-record operation
+without changing its algorithm and compose the accepted 50S.6B selector inside
+the installed three-record, 60-second domain. Preserve the independently
+callable exhaustive route as the default. Retain and indeterminate decisions
+must reach the shared exact seam once; rejected records may be omitted only
+after complete query-bound NORAD-ordered evidence validation.
+
+Selector exceptions must fall back to exhaustive solving or fail closed.
+Missing, inconsistent, duplicate, reordered, unknown, or out-of-domain reject
+evidence must fail closed. Keep acceleration evidence separate from the exact
+`SatelliteCrossingResult` tuple. No broader selector domain, benchmark claim,
+default enablement, phase/coarse/index stage, horizon/occultation predicate,
+illumination, photometry, CLI, reporting, drawing, 50S.7, or later behavior is
+authorized.
