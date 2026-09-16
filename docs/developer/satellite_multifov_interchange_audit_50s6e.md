@@ -221,8 +221,8 @@ The reviewed candidate at commit `f079d95` passed all 143 plugin-disabled
 current-documentation tests in 3.70 seconds; the branch diff check against
 `adaa5e5` was clean and the Mac working tree was clean.
 
-This acceptance authorizes only a bounded 50S.6F implementation. It does not
-authorize broader catalogue admission, a public cardinality limit, a
+Only a bounded 50S.6F implementation is authorized next. This acceptance does
+not authorize broader catalogue admission, a public cardinality limit, a
 performance claim, chart integration, observatory writes, direct ESO or ELT
 compatibility, illumination, photometry, detector effects, or any later
 milestone.
