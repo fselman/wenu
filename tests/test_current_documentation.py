@@ -5804,3 +5804,29 @@ def test_50s6d_documents_candidate_accelerated_coordinator():
     assert "No new production module or test file is admitted" in source_tree
     assert "complete plugin-disabled suite" in audit
     assert "Fernando's scientific and architectural review" in audit
+
+
+
+def test_50s6d_records_candidate_verification_evidence():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_coordination_audit_50s6c.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+
+    for text in (audit, architecture, roadmap):
+        assert "commit `a7aecba`" in text
+        assert "2,566" in text
+    for phrase in (
+        "37-test dedicated acceleration/oracle gate in 116.58 seconds",
+        "93-test expanded acceleration, oracle, crossing-contract, element, SGP4",
+        "package-boundary gate in 128.74 seconds",
+        "141-test current-documentation gate in 4.36 seconds",
+        "complete 2,566-test suite in 213.87 seconds",
+        "no performance, broader-domain, or default-enablement claim",
+    ):
+        assert phrase in audit
+    assert "Scientific and architectural acceptance remains pending" in (
+        architecture
+    )
+    assert "final branch-integrity checks remain pending" in roadmap
