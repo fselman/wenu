@@ -1107,4 +1107,4 @@ The same candidate places generic JSON/ECSV/VOTable crossing reports and exact
 binocular, regional, and stereographic chart tracks in 50S.6G; observatory
 adapter auditing in 50S.6H; component-resolved Sunlight, solar Earthshine,
 Moonlight, and Lunar-Earthshine geometry in 50S.7; and brightness in 50S.8.
-None of this candidate direction is implemented or authorized.
+This candidate direction is not implemented or authorized.
