@@ -1,6 +1,6 @@
 # 50S.6C exact-solver coordination and acceleration admission audit
 
-**Status:** Candidate documentation-only scientific and API audit
+**Status:** Accepted by Fernando on 2026-09-16
 **Base:** accepted 50S.6B closure at merge commit `93a7d41`
 **Date:** 2026-09-16
 
@@ -197,14 +197,14 @@ brightness, flare probability, detector response, exposure contamination,
 provider acquisition, CLI, reporting, drawing, rendering, export, new field
 shape, or population index.
 
-## 12. Candidate gate and authorization
+## 12. Acceptance and authorization
 
-The candidate is documentation-only. Acceptance requires the focused
-plugin-disabled current-documentation gate, a clean
-`git diff --check 93a7d41...HEAD`, a clean working tree, and Fernando's
-scientific and architectural review.
+The audit is documentation-only. On commit `ba1deaa`, the focused
+plugin-disabled current-documentation gate passed all 140 tests in 3.55
+seconds and `git diff --check 93a7d41...HEAD` was clean. Fernando
+scientifically and architecturally accepted 50S.6C on 2026-09-16.
 
-Acceptance would authorize only a bounded 50S.6D implementation of exact-solver
+Acceptance authorizes only a bounded 50S.6D implementation of exact-solver
 coordination using the already accepted cone-shell selector inside its existing
 three-record, 60-second domain. Broader-domain activation, benchmark claims,
 default enablement, phase/coarse/indexing stages, 50S.7, and all later behavior
