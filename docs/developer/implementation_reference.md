@@ -2641,7 +2641,7 @@ search. The accepted cone-shell selector's installed-snapshot, 60-second domain
 is unchanged, and no callable coordinator is authorized by this audit.
 
 
-### Candidate accelerated local crossing coordinator (50S.6D)
+### Accepted accelerated local crossing coordinator (50S.6D)
 
 `AcceleratedCrossingPolicy` freezes the admitted
 `synthetic_50s4b_v1`, 60-second coordinator domain and chooses either
