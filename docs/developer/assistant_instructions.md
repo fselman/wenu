@@ -822,3 +822,16 @@ three-record, 60-second limit. No broader domain, benchmark claim, default
 enablement, phase/coarse/index stage, horizon/occultation predicate, 50S.7, or
 later behavior is authorized next without a separately accepted bounded
 milestone.
+
+
+## Candidate 50S.6E boundary
+
+Before any later satellite acceleration, batching, reporting, drawing, or
+illumination work, read
+`satellite_multifov_interchange_audit_50s6e.md`. It proposes one observer and
+any non-empty number of independently timed same-night FoVs; ten is a reference
+workload, not a hard-coded public limit. Acceptance would authorize only a
+separately bounded 50S.6F implementation. Generic observatory reports, exact
+chart tracks, Paranal/ELT adapters, Sunlight, solar Earthshine, Moonlight,
+Lunar-Earthshine, brightness, and detector effects remain later, separately
+accepted milestones.
