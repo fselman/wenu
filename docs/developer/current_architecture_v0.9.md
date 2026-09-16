@@ -1085,3 +1085,9 @@ unknown, reordered, or out-of-domain rejection evidence fails closed. The
 candidate remains limited to `synthetic_50s4b_v1` and intervals no longer than
 60 seconds. It adds no broader selector domain, benchmark claim, default
 enablement, coordinate path, CLI, reporting, drawing, or later filter stage.
+
+
+Candidate 50S.6D verification at commit `a7aecba` passed the 37-test
+dedicated gate, 93-test expanded immediate-seam gate, 141-test documentation
+gate, and complete 2,566-test plugin-disabled suite. Scientific and
+architectural acceptance remains pending.
