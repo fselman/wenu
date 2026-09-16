@@ -33,11 +33,15 @@ architectural rationale and accepted boundaries.
 | 16 | 50S.4D | Add and independently validate the explicit topocentric transformation chain. |
 | 17 | 50S.4E | Add the network-free propagated-specimen builder and close 50S.4. |
 | 18 | 50S.5 | Implement the complete local FoV-crossing oracle. |
-| 19 | 50S.6 | Add conservative plane/phase/state filters and optional benchmark-justified HEALPix/time indexing. |
-| 20 | 50S.7 | Add independent illumination, shadow-transition, and observer-night geometry. |
-| 21 | 50S.8 | Add empirical object/family/population brightness models with uncertainty and explicit unknowns. |
-| 22 | 50S.9 | Estimate detector-level trail contamination separately from apparent magnitude. |
-| 23 | 50S.10 | Produce night/season/sky-position statistics and close the satellite program. |
+| 19 | 50S.6A–D | Accepted conservative selection and bounded exact-solver coordination. |
+| 20 | 50S.6E | Audit same-observer, same-night multi-FoV reuse, interchange, and the remaining delivery sequence. |
+| 21 | 50S.6F | Implement the bounded multi-FoV coordinator after separate acceptance. |
+| 22 | 50S.6G | Admit representative scale and connect exact results to generic reports and chart tracks. |
+| 23 | 50S.6H | Audit Paranal, ELT, and other observatory planning adapters. |
+| 24 | 50S.7 | Add Sunlight, solar Earthshine, Moonlight, Lunar-Earthshine, shadow-transition, and night geometry. |
+| 25 | 50S.8 | Add component-resolved brightness models with uncertainty and explicit unknowns. |
+| 26 | 50S.9 | Estimate detector-level trail contamination separately from apparent magnitude. |
+| 27 | 50S.10 | Produce night/season/sky-position statistics and close the satellite program. |
 | 24 | 50B.0 | Review accepted publication, printing, typography, accessibility, and atlas practice. |
 | 25 | 50B.1 | Adopt Wenu physical-output profiles and numerical publication standards. |
 | 26 | 50B.2 | Measure representative products at declared physical dimensions. |
@@ -2041,23 +2045,30 @@ many-pointing benchmarks show material benefit beyond the plane/phase filter
 cascade. Any pixel cover must enclose the complete swept trajectory tube, and
 every candidate still reaches the exact solver.
 
-### 50S.7 — Independent illumination and night geometry
+### 50S.7 — Four-source illumination and night geometry
 
-Calculate sunlight, penumbra, and umbra using finite Sun/Earth geometry, and
-record shadow transitions independently of crossing. Separately report Sun
-altitude and twilight/night state at the observer. Default results retain all
-geometric crossings and annotate illumination rather than silently erasing
-eclipsed crossings.
+Treat illumination as component-resolved geometry. Calculate direct Sunlight,
+solar Earthshine, direct Moonlight, and Lunar-Earthshine (Moonlight reflected
+by Earth), with finite Sun/Earth/Moon geometry, umbra, penumbra, lunar phase,
+visibility, incident directions, and shadow transitions recorded independently
+of crossing. Separately report Sun and Moon altitude and twilight/night state
+at the observer. Default results retain all geometric crossings and annotate
+each illumination component rather than silently erasing eclipsed crossings.
+Audit Caddy et al. (2026), arXiv:2609.07057, and its modified `lumos-sat`
+model before choosing any implementation.
 
-### 50S.8 — Apparent-brightness estimation and validation
+### 50S.8 — Component-resolved apparent-brightness estimation and validation
 
-Use the strongest defensible model level: object-specific empirical models,
+Use the strongest defensible model level for each of Sunlight, solar
+Earthshine, Moonlight, and Lunar-Earthshine: object-specific empirical models,
 satellite-family distributions, broader population distributions, or explicit
-`unknown`. Retain passband, range normalization, phase dependence, model epoch,
-scatter, calibration provenance, and limits. Treat ordinary brightness and
-specular glints separately; absent flare evidence is `unknown`, never zero
-probability. Validate materially different families and geometries against
-time-resolved calibrated observations before accepting tolerances.
+`unknown`. Sum fluxes, never magnitudes. Retain passband, range normalization,
+solar/lunar phase dependence, Earth/lunar reflectance or BRDF, satellite
+surface and attitude assumptions, atmospheric extinction, model epoch,
+scatter, calibration provenance, validity domain, and limits. Treat ordinary
+brightness and specular glints separately; absent flare evidence is `unknown`,
+never zero probability. Validate materially different families and geometries
+against time-resolved calibrated observations before accepting tolerances.
 
 ### 50S.9 — Detector-specific contamination
 
@@ -2322,3 +2333,29 @@ Candidate verification at commit `a7aecba` passed all 37 dedicated tests, 93
 expanded immediate-seam tests, 141 documentation tests, and the complete 2,566
 plugin-disabled tests. Fernando scientifically and architecturally accepted 50S.6D on 2026-09-16.
 No later acceleration milestone is authorized automatically.
+
+
+### 50S.6E — Same-observer, same-night multi-FoV and interchange audit
+
+**Status:** Candidate documentation-only audit.
+
+The audit in `satellite_multifov_interchange_audit_50s6e.md` defines one
+observer with any non-empty ordered number of independently timed circular
+FoVs contained within one observing night. Ten FoVs are the reference workload
+and proposed default internal processing chunk, never a hard-coded public
+limit. Identical intervals are a maximum-reuse research case rather than a
+public precondition.
+
+The audit separates bounded concurrency from genuine reduction in propagation
+and coordinate work, requires exact per-field equivalence to independent
+50S.5 calls, and defines 1/2/5/10/20/50-field evidence across disjoint,
+overlapping, and identical intervals. It places a bounded coordinator in
+50S.6F; representative catalogue admission, JSON/ECSV/VOTable reports, and
+exact binocular/regional/stereographic chart tracks in 50S.6G; observatory
+adapter auditing in 50S.6H; four-source Sunlight, solar Earthshine, Moonlight,
+and Lunar-Earthshine geometry in 50S.7; component-resolved brightness in
+50S.8; detector effects in 50S.9; and external-workflow validation in 50S.10.
+
+This audit changes no runtime or output. Acceptance would authorize only a
+bounded 50S.6F implementation; every later claim remains separately
+authorized.
