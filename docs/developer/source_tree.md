@@ -1936,3 +1936,13 @@ coordinate service, CLI, report, renderer, or exporter changes.
 Fernando scientifically and architecturally accepted this 50S.6D ownership on
 2026-09-16. No broader selector domain, benchmark tool, default enablement, new
 filter stage, or later satellite behavior is authorized by this acceptance.
+
+
+## Candidate 50S.6E documentation ownership
+
+`satellite_multifov_interchange_audit_50s6e.md` owns the candidate
+same-observer, same-night multi-FoV, generic interchange, exact chart-track,
+observatory-adapter, and four-source illumination sequence. It creates no
+source owner, production module, runtime test, benchmark tool, or output.
+Existing single-FoV crossing, acceleration, sampled-track, coordinate,
+projection, rendering, and export owners remain unchanged.
