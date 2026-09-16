@@ -3171,6 +3171,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_crossing_oracle_audit_50s5a.md",
         "satellite_crossing_acceleration_audit_50s6a.md",
         "satellite_crossing_coordination_audit_50s6c.md",
+        "satellite_multifov_interchange_audit_50s6e.md",
         "satellite_snapshot_propagation_audit_50s4a.md",
         "satellite_guide.md",
         "source_tree.md",
@@ -5833,3 +5834,57 @@ def test_50s6d_records_accepted_verification_evidence():
     assert "working tree was clean" in audit
     assert "No later acceleration milestone is authorized automatically" in roadmap
     assert "separately accepted bounded milestone" in instructions
+
+
+def test_50s6e_audits_multifov_interchange_and_lunar_illumination():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_multifov_interchange_audit_50s6e.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "documentation-only scientific, API, performance, and interchange audit",
+        "not a documented multi-FoV batch API",
+        "any non-empty ordered number of circular FoV requests",
+        "Ten FoVs are the reference workload",
+        "not a hard-coded public cardinality",
+        "same-interval workload is a special research and optimization case",
+        "disjoint, partially overlapping, and identical intervals",
+        "exactly equivalent to the ordered collection of independent exhaustive",
+        "1, 2, 5, 10, 20, and, when practical, 50 FoVs",
+        "JSON as the canonical nested exchange",
+        "Astropy ECSV",
+        "IVOA VOTable",
+        "optional CCSDS OEM",
+        "Paranal, ELT, and at least one other observatory",
+        "direct Sunlight",
+        "solar Earthshine",
+        "direct Moonlight",
+        "Lunar-Earthshine",
+        "arXiv:2609.07057",
+        "Fluxes, never magnitudes, are summed",
+        "bounded 50S.6F implementation",
+    ):
+        assert phrase in audit
+
+    assert "satellite_multifov_interchange_audit_50s6e.md" in index
+    assert "Candidate 50S.6E multi-FoV and interchange direction" in architecture
+    assert "50S.6E — Same-observer, same-night multi-FoV" in roadmap
+    assert "Candidate multi-FoV and observatory interchange contract" in reference
+    assert "Candidate 50S.6E documentation ownership" in source_tree
+    assert "Candidate 50S.6E multi-FoV coordinate boundary" in coordinate_guide
+    assert "Candidate 50S.6E multi-FoV and delivery sequence" in guide
+    assert "Candidate 50S.6E boundary" in instructions
+    assert "50S.6G.3 may accept binocular and regional chart products" in audit
+    assert "50S.6G.4 may accept stereographic planisphere" in audit
+    assert "no runtime or output" in roadmap
+    assert "not implemented or authorized" in architecture
