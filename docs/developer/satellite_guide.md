@@ -972,9 +972,11 @@ filter stages, and later satellite behavior remain unauthorized.
 The proposed primary workload is one observer with any non-empty number of
 different FoVs and independently bounded intervals. Every field centre must
 satisfy a configurable airmass limit throughout its complete interval. The
-initial policy uses geometric vacuum AltAz and plane-parallel `X = sec(z)`,
-with `X_max = 2` by default (approximately 30 degrees minimum altitude). This
-is an FoV admission condition, not a satellite horizon or occultation filter;
+initial policy uses geometric vacuum AltAz and plane-parallel `X = sec(z)`
+above the horizon, with `X_max = 2` by default (exactly 30 degrees minimum
+altitude in this model). It certifies the centre across the complete interval,
+not the full finite-radius footprint. This is an FoV admission condition, not
+a satellite horizon or occultation filter;
 it imposes no civil-date or inferred-twilight boundary. Ten FoVs are the
 ordinary benchmark and proposed internal chunk, never a hard-coded public
 maximum. Disjoint, overlapping, and identical intervals are separate evidence
