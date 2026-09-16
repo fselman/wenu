@@ -1099,9 +1099,12 @@ authorized by this acceptance.
 The accepted runtime remains the single-FoV exhaustive oracle and the narrowly
 admitted opt-in 50S.6D coordinator. The candidate documentation-only
 `satellite_multifov_interchange_audit_50s6e.md` proposes one observer, any
-non-empty ordered number of independently timed FoVs within one observing
-night, and exact equivalence to independent calls. Ten FoVs are a reference
-workload and proposed processing chunk, not a hard-coded public limit.
+non-empty ordered number of independently timed FoVs whose field centres meet
+a configurable airmass limit throughout their complete intervals, and exact
+equivalence to independent calls. The initial geometric vacuum AltAz policy
+uses plane-parallel `X = sec(z)` with `X_max = 2` by default. Ten FoVs are a
+reference workload and proposed processing chunk, not a hard-coded public
+limit. This admission condition does not filter satellite crossings.
 
 The same candidate places generic JSON/ECSV/VOTable crossing reports and exact
 binocular, regional, and stereographic chart tracks in 50S.6G; observatory
