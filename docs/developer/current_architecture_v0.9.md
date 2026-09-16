@@ -1094,10 +1094,10 @@ No broader-domain, benchmark, default-enablement, or later acceleration work is
 authorized by this acceptance.
 
 
-## Candidate 50S.6E multi-FoV and interchange direction
+## Accepted 50S.6E multi-FoV and interchange direction
 
 The accepted runtime remains the single-FoV exhaustive oracle and the narrowly
-admitted opt-in 50S.6D coordinator. The candidate documentation-only
+admitted opt-in 50S.6D coordinator. The accepted documentation-only
 `satellite_multifov_interchange_audit_50s6e.md` proposes one observer, any
 non-empty ordered number of independently timed FoVs whose field centres meet
 a configurable airmass limit throughout their complete intervals, and exact
@@ -1108,8 +1108,10 @@ are a
 reference workload and proposed processing chunk, not a hard-coded public
 limit. This admission condition does not filter satellite crossings.
 
-The same candidate places generic JSON/ECSV/VOTable crossing reports and exact
+The accepted roadmap places generic JSON/ECSV/VOTable crossing reports and exact
 binocular, regional, and stereographic chart tracks in 50S.6G; observatory
 adapter auditing in 50S.6H; component-resolved Sunlight, solar Earthshine,
 Moonlight, and Lunar-Earthshine geometry in 50S.7; and brightness in 50S.8.
-This candidate direction is not implemented or authorized.
+Fernando scientifically and architecturally accepted this direction on
+2026-09-16. No multi-FoV runtime is implemented. Only a separately bounded
+50S.6F implementation is authorized next; later milestones remain unauthorized.
