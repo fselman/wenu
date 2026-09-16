@@ -941,3 +941,22 @@ Performance claims require predeclared representative workloads, repeated cold
 and warm measurements, evaluation counts, timing distributions, and material
 total-wall-time benefit. This documentation-only candidate authorizes no
 runtime coordinator or broader acceleration.
+
+
+## 26. Candidate 50S.6D bounded accelerated coordinator
+
+The exhaustive crossing oracle remains the default and independently callable.
+The candidate coordinator validates the complete ordered result of the accepted
+cone-shell selector and calls the same exact record solver for every retain or
+indeterminate decision. Only a validated reject may omit exact work.
+
+`solve(query)` returns ordinary exact crossing results.
+`solve_with_evidence(query)` additionally returns separate immutable
+selection and evaluation accounting. Selector failure falls back to the
+complete exhaustive route by default or fails closed under explicit policy;
+invalid coverage and rejection outside the installed three-record, 60-second
+domain always fail closed.
+
+This candidate makes no useful-speed claim and adds no broader catalogue
+domain, default acceleration, new filter, visibility semantics, CLI, report,
+or drawing behavior.
