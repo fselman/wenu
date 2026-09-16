@@ -797,9 +797,9 @@ behavior. Fernando scientifically and architecturally accepted 50S.6C on
 60-second domain is authorized next.
 
 
-### Candidate 50S.6D accelerated-coordinator boundary
+### Accepted 50S.6D accelerated-coordinator boundary
 
-The bounded candidate may only extract the existing exact per-record operation
+The accepted implementation extracts the existing exact per-record operation
 without changing its algorithm and compose the accepted 50S.6B selector inside
 the installed three-record, 60-second domain. Preserve the independently
 callable exhaustive route as the default. Retain and indeterminate decisions
@@ -813,3 +813,12 @@ evidence must fail closed. Keep acceleration evidence separate from the exact
 default enablement, phase/coarse/index stage, horizon/occultation predicate,
 illumination, photometry, CLI, reporting, drawing, 50S.7, or later behavior is
 authorized.
+
+
+Fernando scientifically and architecturally accepted 50S.6D on 2026-09-16.
+Preserve the exhaustive default, shared exact-record seam, separate immutable
+acceleration evidence, complete ordered-decision validation, and the installed
+three-record, 60-second limit. No broader domain, benchmark claim, default
+enablement, phase/coarse/index stage, horizon/occultation predicate, 50S.7, or
+later behavior is authorized next without a separately accepted bounded
+milestone.
