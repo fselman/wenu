@@ -5887,16 +5887,20 @@ def test_50s6e_audits_multifov_interchange_and_lunar_illumination():
         assert phrase in audit
 
     assert "satellite_multifov_interchange_audit_50s6e.md" in index
-    assert "Candidate 50S.6E multi-FoV and interchange direction" in architecture
+    assert "Accepted 50S.6E multi-FoV and interchange direction" in architecture
     assert "50S.6E — Same-observer, airmass-bounded multi-FoV" in roadmap
-    assert "Candidate multi-FoV and observatory interchange contract" in reference
-    assert "Candidate 50S.6E documentation ownership" in source_tree
-    assert "Candidate 50S.6E multi-FoV coordinate boundary" in coordinate_guide
-    assert "Candidate 50S.6E multi-FoV and delivery sequence" in guide
-    assert "Candidate 50S.6E boundary" in instructions
+    assert "Accepted multi-FoV and observatory interchange contract" in reference
+    assert "Accepted 50S.6E documentation ownership" in source_tree
+    assert "Accepted 50S.6E multi-FoV coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6E multi-FoV and delivery sequence" in guide
+    assert "Accepted 50S.6E boundary" in instructions
     assert "50S.6G.3 may accept binocular and regional chart products" in audit
     assert "50S.6G.4 may accept stereographic planisphere" in audit
     assert "no runtime or output" in roadmap
-    assert "not implemented or authorized" in architecture
+    assert "No multi-FoV runtime is implemented" in architecture
+    assert "scientifically and architecturally accepted this audit" in audit
+    assert "commit `f079d95`" in audit
+    assert "all 143 plugin-disabled current-documentation tests" in audit
+    assert "Only a bounded 50S.6F implementation is authorized next" in audit
     assert "| 28 | 50B.0 |" in roadmap
     assert "| 33 | 50B.5 |" in roadmap
