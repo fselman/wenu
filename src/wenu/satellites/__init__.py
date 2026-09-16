@@ -6,6 +6,9 @@ from .crossing_oracle import (
     SatelliteCrossingConvergenceError,
 )
 from .crossing_acceleration import (
+    AcceleratedCrossingEvidence,
+    AcceleratedCrossingPolicy,
+    AcceleratedLocalSatelliteCrossingOracle,
     ConeShellDecision,
     ConeShellPolicy,
     ConeShellSelection,
@@ -32,6 +35,9 @@ from .topocentric import (
 )
 
 __all__ = [
+    "AcceleratedCrossingEvidence",
+    "AcceleratedCrossingPolicy",
+    "AcceleratedLocalSatelliteCrossingOracle",
     "ConeShellDecision",
     "ConeShellPolicy",
     "ConeShellSelection",
