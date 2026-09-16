@@ -965,3 +965,20 @@ or drawing behavior.
 Fernando scientifically and architecturally accepted 50S.6D on 2026-09-16.
 Broader-domain activation, benchmarking claims, default acceleration, new
 filter stages, and later satellite behavior remain unauthorized.
+
+
+## Candidate 50S.6E multi-FoV and delivery sequence
+
+The proposed primary workload is one observer with any non-empty number of
+different FoVs and independently bounded intervals within one observing night.
+Ten FoVs are the ordinary benchmark and proposed internal chunk, never a
+hard-coded public maximum. Disjoint, overlapping, and identical intervals are
+separate evidence cases; identical intervals are a maximum-reuse research case.
+
+A bounded 50S.6F implementation would precede representative-scale admission,
+generic JSON/ECSV/VOTable reports, and exact binocular/regional/stereographic
+tracks in 50S.6G. Direct Paranal or ELT compatibility requires the separate
+50S.6H interface audit. 50S.7 then treats Sunlight, solar Earthshine,
+Moonlight, and Lunar-Earthshine as separate geometric components; 50S.8 adds
+component-resolved flux or magnitude distributions. These candidate milestones
+are not implemented or automatically authorized.
