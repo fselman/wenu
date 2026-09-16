@@ -2045,7 +2045,7 @@ many-pointing benchmarks show material benefit beyond the plane/phase filter
 cascade. Any pixel cover must enclose the complete swept trajectory tube, and
 every candidate still reaches the exact solver.
 
-### 50S.7 — Four-source illumination and night geometry
+### 50S.7 — Independent illumination and night geometry
 
 Treat illumination as component-resolved geometry. Calculate direct Sunlight,
 solar Earthshine, direct Moonlight, and Lunar-Earthshine (Moonlight reflected
