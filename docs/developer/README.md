@@ -51,6 +51,9 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`satellite_crossing_coordination_audit_50s6c.md`](satellite_crossing_coordination_audit_50s6c.md)
   — accepted exact-solver coordination, broader-domain evidence, fallback,
   equivalence, and benchmark-admission contract for bounded 50S.6D work.
+- [`satellite_multifov_interchange_audit_50s6e.md`](satellite_multifov_interchange_audit_50s6e.md)
+  — candidate same-observer, same-night multi-FoV, observatory interchange,
+  exact chart-track, and four-source illumination roadmap audit.
 - [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
   scientific and implementation guide maintained separately during the 50S
   foundation branch.
