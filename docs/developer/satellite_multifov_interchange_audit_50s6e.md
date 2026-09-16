@@ -226,3 +226,19 @@ not authorize broader catalogue admission, a public cardinality limit, a
 performance claim, chart integration, observatory writes, direct ESO or ELT
 compatibility, illumination, photometry, detector effects, or any later
 milestone.
+
+## 10. Candidate 50S.6F implementation handoff
+
+Fernando selected atomic validation on 2026-09-16. The bounded Python API
+collects every invalid field and reason in input order, raises before any
+crossing solve, and returns no partial results. CLI and file behavior remain
+50S.6G: a future invalid input file may produce a validation file retaining the
+valid subset for a second call, but 50S.6F neither reads nor writes that file.
+
+The candidate implementation adds `satellites/crossing_batch.py`, extends the
+existing topocentric owner with a governed field-centre altitude evaluator, and
+adds one stable batch test owner. It retains the synthetic snapshot, 60-second
+per-field domain, exhaustive-default semantics beneath the opt-in 50S.6D
+composition, ten-field execution chunk, exact per-field results, and separate
+evidence. It makes no representative-scale, useful-speed, or shared-state-cache
+claim and authorizes no 50S.6G or later behavior.
