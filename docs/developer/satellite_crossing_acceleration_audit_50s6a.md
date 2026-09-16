@@ -256,3 +256,37 @@ evidence.
 Phase/reachable-arc filtering, coarse vectorized propagation, HEALPix/time
 indexing, horizon/occultation semantics, 50S.7, and all later behavior would
 remain unauthorized.
+
+## 14. Accepted 50S.6B implementation
+
+The bounded candidate adds `src/wenu/satellites/crossing_acceleration.py`,
+exports four supported immutable selector contracts, and adds
+`tests/test_satellite_crossing_acceleration.py`. The selector admits only
+`synthetic_50s4b_v1` and intervals no longer than 60 seconds.
+
+One accepted start state supplies the initial topocentric direction and range.
+The OMM mean motion/eccentricity shell supplies a Kepler perigee speed, expanded
+by a 2.5 safety factor and a 0.6 km/s observer-speed allowance. The resulting
+whole-interval relative-displacement ball defines a reachable angular cap.
+Strict separation from the field radius, query angular tolerance, and numerical
+margin is required for `reject`; every unsupported or inconclusive case is
+`indeterminate`.
+
+The durable tests verify immutability, tri-state behavior, below-horizon
+geometric retention, strict antipodal rejection, exact-oracle absence for the
+rejected record, deterministic ordering, unadmitted-snapshot fallback, and
+that the recorded speed bound encloses sampled relative displacement for all
+three installed records across the complete admitted interval.
+
+The dedicated gate passed all 9 tests in 34.58 seconds. The expanded selector,
+oracle, crossing-contract, element, SGP4, topocentric, and package-boundary gate
+passed all 78 tests in 99.99 seconds. The documentation gate passed all 139
+tests in 4.72 seconds, and the complete plugin-disabled suite passed all 2,549
+tests in 200.47 seconds. The working tree was clean and
+`git diff --check d609322...HEAD` passed.
+
+Focused, complete-suite, documentation, and diff gates are complete. Fernando
+scientifically and architecturally accepted 50S.6B on 2026-09-16. This
+acceptance authorizes only a documentation-first 50S.6C coordination,
+broader-domain, and benchmark-admission audit; further runtime acceleration,
+phase/coarse-state/indexing stages, and later behavior remain unauthorized.

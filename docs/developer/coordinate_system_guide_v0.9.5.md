@@ -3372,3 +3372,16 @@ predicates, not coordinate accelerators for the accepted geometric crossing
 query, and therefore cannot remove results under 50S.6. Fernando scientifically and
 architecturally accepted this boundary on 2026-09-15. Only the first bounded
 cone/orbital-shell selector is authorized for 50S.6B.
+
+### Accepted 50S.6B cone-shell coordinate evidence
+
+The selector evaluates one accepted geometric topocentric GCRS-axis direction
+at the inclusive interval start. A relative-vector displacement ball with
+radius `relative_speed_bound × interval_seconds` subtends the recorded
+reachable angular cap. Only strict non-overlap of that cap, the closed field,
+the query angular tolerance, and a numerical margin permits rejection.
+
+The bound is admitted only for the installed synthetic snapshot and at most
+60 seconds. It does not use altitude, Earth occultation, apparent ICRS,
+projection, or refraction as a rejection predicate. Fernando scientifically
+and architecturally accepted this bounded coordinate evidence on 2026-09-16.

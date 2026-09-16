@@ -2251,3 +2251,25 @@ Acceptance authorizes only bounded 50S.6B implementation of the first
 topocentric cone/orbital-shell selector. Phase/reachable-arc filtering, coarse
 vectorized propagation, HEALPix/time indexing, horizon/occultation filtering,
 50S.7, and all later behavior remain unauthorized.
+
+### 50S.6B — First conservative cone-shell selector (accepted)
+
+**Status:** Scientifically and architecturally accepted by Fernando on
+2026-09-16.
+
+The accepted slice installs immutable policy, decision, and selection evidence plus
+one conservative selector. Its admitted domain is only the installed synthetic
+snapshot and intervals no longer than 60 seconds. It uses an accepted initial
+state and a deliberately outward relative-displacement bound; strict
+whole-interval non-overlap permits rejection and every uncertainty is
+`indeterminate`.
+
+The selector does not coordinate exact solving or change 50S.5. The dedicated
+gate passed all 9 tests in 34.58 seconds and the expanded
+acceleration/oracle/crossing/element/SGP4/topocentric/package gate passed all
+78 tests in 99.99 seconds. The documentation gate passed all 139 tests in 4.72
+seconds, the complete plugin-disabled suite passed all 2,549 tests in 200.47
+seconds, and `git diff --check d609322...HEAD` was clean. Acceptance authorizes only a
+documentation-first 50S.6C audit of exact-solver coordination, broader-domain
+evidence, and benchmark admission. Further runtime acceleration remains
+unauthorized.

@@ -1874,3 +1874,19 @@ architecturally accepted this ownership on 2026-09-15. Only a documentation-firs
 This accepted audit creates neither future source nor acceleration test file
 and changes no package boundary. Only bounded 50S.6B implementation of the
 first cone/orbital-shell selector is authorized next.
+
+### Accepted 50S.6B selector ownership
+
+- `src/wenu/satellites/crossing_acceleration.py` owns immutable first-stage
+  policy, tri-state decision, selection, and conservative cap construction;
+- `src/wenu/satellites/crossing_oracle.py` remains unchanged and owns exact
+  trajectory solving and crossing results;
+- `tests/test_satellite_crossing_acceleration.py` owns the selector's durable
+  domain-bound, tri-state, ordering, fallback, and exact-oracle rejection
+  evidence;
+- package exports expose the four selector contracts but no accelerated search
+  service.
+
+No phase, coarse-state, horizon, occultation, indexing, coordinator, reporting,
+or rendering responsibility is added. Fernando accepted this ownership on
+2026-09-16; only a documentation-first 50S.6C audit is authorized next.

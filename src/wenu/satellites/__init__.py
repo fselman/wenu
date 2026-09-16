@@ -5,6 +5,12 @@ from .crossing_oracle import (
     LocalSatelliteCrossingQuery,
     SatelliteCrossingConvergenceError,
 )
+from .crossing_acceleration import (
+    ConeShellDecision,
+    ConeShellPolicy,
+    ConeShellSelection,
+    ConservativeConeShellSelector,
+)
 from .elements import SatelliteElementRecord
 from .sgp4 import (
     SatellitePropagationError,
@@ -26,6 +32,10 @@ from .topocentric import (
 )
 
 __all__ = [
+    "ConeShellDecision",
+    "ConeShellPolicy",
+    "ConeShellSelection",
+    "ConservativeConeShellSelector",
     "DEFAULT_SNAPSHOT_ID",
     "LocalSatelliteCrossingOracle",
     "LocalSatelliteCrossingQuery",

@@ -901,3 +901,18 @@ benefit. Fernando scientifically and architecturally accepted 50S.6A on 2026-09-
 Only bounded 50S.6B implementation of the first cone/orbital-shell selector is
 authorized; all later acceleration stages and satellite behavior remain
 unauthorized.
+
+## 24. Accepted 50S.6B cone-shell selector
+
+The first selector is intentionally narrow. It supports only the installed
+three-record synthetic snapshot and query intervals up to 60 seconds. It
+constructs one whole-interval reachable angular cap from an accepted initial
+topocentric state and a deliberately inflated orbital-shell speed bound.
+
+A record is rejected only when the cap is strictly disjoint from the closed
+field after tolerance and numerical margins. Retain and indeterminate both
+mean “send to the exact oracle.” The selector does not use altitude or
+occultation, does not sample a nominal track to infer absence, and does not
+return crossings or make a performance claim. Fernando scientifically and
+architecturally accepted this bounded selector on 2026-09-16. Only a
+50S.6C documentation-first coordination and admission audit is authorized next.
