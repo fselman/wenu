@@ -14,6 +14,16 @@ from .crossing_acceleration import (
     ConeShellSelection,
     ConservativeConeShellSelector,
 )
+from .crossing_batch import (
+    FieldAirmassAdmission,
+    FieldAirmassCertifier,
+    MultiFieldCrossingPolicy,
+    MultiFieldCrossingRequest,
+    MultiFieldCrossingResult,
+    MultiFieldCrossingValidationError,
+    MultiFieldSatelliteCrossingCoordinator,
+    MultiFieldValidationFailure,
+)
 from .elements import SatelliteElementRecord
 from .sgp4 import (
     SatellitePropagationError,
@@ -28,6 +38,7 @@ from .snapshots import (
     load_snapshot,
 )
 from .topocentric import (
+    SatelliteFieldCenterAltitudeEvaluator,
     SatelliteEarthOrientationError,
     SatelliteEarthOrientationEvidence,
     SatelliteTopocentricState,
@@ -42,12 +53,21 @@ __all__ = [
     "ConeShellPolicy",
     "ConeShellSelection",
     "ConservativeConeShellSelector",
+    "FieldAirmassAdmission",
+    "FieldAirmassCertifier",
     "DEFAULT_SNAPSHOT_ID",
     "LocalSatelliteCrossingOracle",
     "LocalSatelliteCrossingQuery",
+    "MultiFieldCrossingPolicy",
+    "MultiFieldCrossingRequest",
+    "MultiFieldCrossingResult",
+    "MultiFieldCrossingValidationError",
+    "MultiFieldSatelliteCrossingCoordinator",
+    "MultiFieldValidationFailure",
     "SatelliteCrossingConvergenceError",
     "SatelliteEarthOrientationError",
     "SatelliteEarthOrientationEvidence",
+    "SatelliteFieldCenterAltitudeEvaluator",
     "SatelliteElementRecord",
     "SatelliteElementSnapshot",
     "SatelliteSnapshotManifest",
