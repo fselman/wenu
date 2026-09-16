@@ -967,7 +967,7 @@ Broader-domain activation, benchmarking claims, default acceleration, new
 filter stages, and later satellite behavior remain unauthorized.
 
 
-## Candidate 50S.6E multi-FoV and delivery sequence
+## Accepted 50S.6E multi-FoV and delivery sequence
 
 The proposed primary workload is one observer with any non-empty number of
 different FoVs and independently bounded intervals. The centre of every field
@@ -987,5 +987,6 @@ generic JSON/ECSV/VOTable reports, and exact binocular/regional/stereographic
 tracks in 50S.6G. Direct Paranal or ELT compatibility requires the separate
 50S.6H interface audit. 50S.7 then treats Sunlight, solar Earthshine,
 Moonlight, and Lunar-Earthshine as separate geometric components; 50S.8 adds
-component-resolved flux or magnitude distributions. These candidate milestones
-are not implemented or automatically authorized.
+component-resolved flux or magnitude distributions. Fernando scientifically and architecturally accepted 50S.6E on 2026-09-16.
+No multi-FoV runtime or later milestone is implemented or automatically
+authorized. Only bounded 50S.6F is authorized next.
