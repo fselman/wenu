@@ -3422,7 +3422,7 @@ coordinate boundary on 2026-09-16. The acceptance authorizes no new coordinate
 operation or rejection predicate.
 
 
-## Candidate 50S.6E multi-FoV coordinate boundary
+## Accepted 50S.6E multi-FoV coordinate boundary
 
 A future same-observer batch would preserve each field's independently framed
 centre, radius, interval, solver tolerance, and airmass-admission evidence. The
@@ -3439,4 +3439,6 @@ snapshot, record, Earth-orientation, propagator, and software identity;
 field-specific separation is not a reusable physical state. JSON, ECSV, and
 VOTable reports must declare UTC, units, frame, airmass policy and evidence,
 and interpolation policy explicitly. The coordinate guide was reviewed for
-50S.6E; no implemented coordinate meaning changes.
+50S.6E; no implemented coordinate meaning changes. Fernando scientifically
+and architecturally accepted this boundary on 2026-09-16. Only bounded 50S.6F
+is authorized next.
