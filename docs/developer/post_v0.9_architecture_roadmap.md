@@ -2341,12 +2341,13 @@ No later acceleration milestone is authorized automatically.
 
 The audit in `satellite_multifov_interchange_audit_50s6e.md` defines one
 observer with any non-empty ordered number of independently timed circular
-FoVs. Every field centre must satisfy a configurable airmass limit throughout
-its complete interval. The initial policy uses geometric vacuum AltAz and
-plane-parallel `X = sec(z)` above the horizon, with `X_max = 2` by default
-(exactly 30 degrees minimum altitude in this model). This certifies the field
-centre across the complete interval, not the full finite-radius footprint. It
-is an FoV admission condition, not a satellite horizon or occultation filter,
+FoVs. Every point of each closed circular field, including its boundary, must
+satisfy a configurable airmass limit throughout its complete interval. The
+initial policy uses geometric vacuum AltAz and plane-parallel `X = sec(z)`
+above the horizon, with `X_max = 2` by default (exactly 30 degrees minimum
+altitude in this model). Its exact spherical condition is
+`z_centre(t) + r_FoV <= arccos(1 / X_max)` for every instant. It is an FoV
+admission condition, not a satellite horizon or occultation filter,
 and it imposes no civil-date or inferred-twilight boundary. Ten FoVs are the reference workload and proposed default
 internal processing chunk, never a hard-coded public limit. Identical intervals
 are a maximum-reuse research case rather than a public precondition.
