@@ -3424,19 +3424,16 @@ operation or rejection predicate.
 
 ## Candidate 50S.6E multi-FoV coordinate boundary
 
-A future same-observer batch would preserve each circular field's independently
-framed centre, radius, interval, solver tolerance, and airmass-admission
-evidence. The initial admission policy transforms the field centre to geometric
-vacuum AltAz and uses plane-parallel `X = sec(z)` only for
+A future same-observer batch would preserve each field's independently framed
+centre, radius, interval, solver tolerance, and airmass-admission evidence. The
+initial admission policy transforms only the field centre to geometric vacuum
+AltAz and uses plane-parallel `X = sec(z)` only for
 `0 <= z < 90 degrees`, with configurable finite `X_max >= 1` defaulting to 2.
-Every point of the closed spherical field, including its boundary, must satisfy
-the limit throughout the complete requested interval. Because zenith distance
-is angular distance from the zenith, the exact circular-footprint condition is
-`z_centre(t) + r_FoV <= arccos(1 / X_max)` for every instant. Non-positive
-altitude, an oversized field, or uncertain certification fails admission. This
-is an FoV accessibility constraint, not a satellite horizon, occultation,
-visibility, or crossing predicate, and it adds no civil-date or inferred-
-twilight boundary. Arbitrary non-circular footprints remain later work.
+The centre must satisfy the limit throughout the complete requested interval;
+the FoV radius does not enter airmass admission. Non-positive centre altitude
+or uncertain certification fails admission. This is an FoV accessibility
+constraint, not a satellite horizon, occultation, visibility, or crossing
+predicate, and it adds no civil-date or inferred-twilight boundary.
 Shared propagation or topocentric state must be keyed by observer, instant,
 snapshot, record, Earth-orientation, propagator, and software identity;
 field-specific separation is not a reusable physical state. JSON, ECSV, and
