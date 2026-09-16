@@ -5748,3 +5748,59 @@ def test_50s6c_audits_exact_solver_coordination_and_admission():
     assert "only a bounded 50S.6D implementation" in audit
     assert "only bounded 50S.6D" in roadmap
     assert "bounded 50S.6D coordinator" in instructions
+
+
+
+def test_50s6d_documents_candidate_accelerated_coordinator():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_coordination_audit_50s6c.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert "accepted exact-solver coordination" in index
+    assert "Candidate 50S.6D bounded accelerated crossing coordinator" in (
+        architecture
+    )
+    assert "50S.6D — Bounded accelerated exact-solver coordination" in roadmap
+    assert "Candidate accelerated local crossing coordinator" in reference
+    assert "Candidate 50S.6D coordinator ownership" in source_tree
+    assert "Candidate 50S.6D unchanged coordinate boundary" in coordinate_guide
+    assert "Candidate 50S.6D bounded accelerated coordinator" in guide
+    assert "Candidate 50S.6D accelerated-coordinator boundary" in instructions
+    for phrase in (
+        "one package-internal exact-record seam",
+        "AcceleratedCrossingPolicy",
+        "AcceleratedCrossingEvidence",
+        "AcceleratedLocalSatelliteCrossingOracle",
+        "solve_with_evidence(query)",
+        "fallback_exhaustive",
+        "retain and indeterminate",
+        "three-record, 60-second domain",
+        "no useful-speed claim",
+        "adds no broader domain",
+    ):
+        assert phrase in " ".join(
+            (
+                audit,
+                architecture,
+                roadmap,
+                reference,
+                source_tree,
+                coordinate_guide,
+                guide,
+                instructions,
+            )
+        )
+    assert "The coordinate guide was reviewed for 50S.6D" in coordinate_guide
+    assert "No new production module or test file is admitted" in source_tree
+    assert "complete plugin-disabled suite" in audit
+    assert "Fernando's scientific and architectural review" in audit
