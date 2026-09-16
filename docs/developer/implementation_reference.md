@@ -2626,9 +2626,9 @@ unchanged.
 Fernando scientifically and architecturally accepted this bounded selector on
 2026-09-16. No accelerated solve API exists.
 
-### Candidate accelerated coordination contract (50S.6C audit)
+### Accepted accelerated coordination contract (50S.6C audit)
 
-No accelerated crossing service exists. The candidate audit proposes a later
+No accelerated crossing service exists. The accepted audit authorizes a later
 `AcceleratedLocalSatelliteCrossingOracle` that would accept the unchanged
 `LocalSatelliteCrossingQuery`, validate complete NORAD-ordered selector
 evidence, and route every retain or indeterminate decision through the same
