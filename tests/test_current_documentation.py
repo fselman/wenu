@@ -3170,6 +3170,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_report_drawing_audit_50s3a.md",
         "satellite_crossing_oracle_audit_50s5a.md",
         "satellite_crossing_acceleration_audit_50s6a.md",
+        "satellite_crossing_coordination_audit_50s6c.md",
         "satellite_snapshot_propagation_audit_50s4a.md",
         "satellite_guide.md",
         "source_tree.md",
