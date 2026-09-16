@@ -46,13 +46,16 @@ The proposed local batch has:
 - the accepted exact per-field closed-boundary and connected-visit semantics.
 
 The initial accessibility policy uses the field-centre direction transformed
-to geometric vacuum AltAz and plane-parallel `X = sec(z)`. `X_max` is finite,
-configurable, and at least 1; it defaults to 2, corresponding to approximately
-30 degrees minimum altitude. The complete interval must be conservatively
-certified; uncertain numerical certification fails closed. This is an FoV
-admission constraint, not a satellite horizon, Earth-occultation, illumination,
-visibility, or crossing predicate. It imposes no civil-date, time-zone, solar-
-altitude, or inferred-twilight boundary.
+to geometric vacuum AltAz and plane-parallel `X = sec(z)` only for
+`0 <= z < 90 degrees`; non-positive altitude fails admission. `X_max` is
+finite, configurable, and at least 1; it defaults to 2, corresponding to
+exactly 30 degrees minimum altitude in this model. The complete interval must
+be conservatively certified; uncertain numerical certification fails closed.
+This certifies the centre, not every point of a finite-radius field; a stricter
+full-footprint policy remains later work. This is an FoV admission constraint,
+not a satellite horizon, Earth-occultation, illumination, visibility, or
+crossing predicate. It imposes no civil-date, time-zone, solar-altitude, or
+inferred-twilight boundary.
 
 Ten FoVs are the reference workload and proposed default internal processing
 chunk, not a hard-coded public cardinality or scientific limit. The public
