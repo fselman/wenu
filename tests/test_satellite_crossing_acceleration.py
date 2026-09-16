@@ -6,6 +6,8 @@ from datetime import datetime, timedelta, timezone
 import numpy as np
 import pytest
 
+import wenu.satellites.crossing_acceleration as acceleration_module
+
 from wenu.coordinates import CoordinateSpec, PositionStatus
 from wenu.satellite_crossings import (
     InclusiveTimeInterval,
@@ -14,12 +16,17 @@ from wenu.satellite_crossings import (
 )
 from wenu.satellites import load_snapshot
 from wenu.satellites.crossing_acceleration import (
+    AcceleratedCrossingPolicy,
+    AcceleratedLocalSatelliteCrossingOracle,
+    ConeShellDecision,
     ConeShellPolicy,
+    ConeShellSelection,
     ConservativeConeShellSelector,
 )
 from wenu.satellites.crossing_oracle import (
     LocalSatelliteCrossingOracle,
     LocalSatelliteCrossingQuery,
+    SatelliteCrossingConvergenceError,
 )
 from wenu.satellites.sgp4 import Sgp4TemePropagator
 from wenu.satellites.snapshots import SatelliteElementSnapshot
@@ -271,3 +278,238 @@ def test_unadmitted_snapshot_identity_is_indeterminate():
 def test_selector_rejects_non_query_input():
     with pytest.raises(TypeError, match="LocalSatelliteCrossingQuery"):
         ConservativeConeShellSelector().select(object())
+
+
+
+class FakeSelector:
+    def __init__(self, selection=None, error=None):
+        self.selection = selection
+        self.error = error
+
+    def select(self, request):
+        if self.error is not None:
+            raise self.error
+        return self.selection
+
+
+def fake_selection(request, outcomes):
+    return ConeShellSelection(
+        snapshot_sha256=request.snapshot.manifest.content_sha256,
+        field_id=request.field_of_view.field_id,
+        interval_start=request.interval.start,
+        interval_stop=request.interval.stop,
+        decisions=tuple(
+            ConeShellDecision(
+                norad_catalog_id=record.norad_catalog_id,
+                outcome=outcome,
+                reason=f"fake {outcome}",
+            )
+            for record, outcome in zip(
+                request.snapshot.records, outcomes, strict=True
+            )
+        ),
+    )
+
+
+def test_accelerated_policy_and_evidence_are_immutable_and_validated():
+    policy = AcceleratedCrossingPolicy()
+    with pytest.raises(FrozenInstanceError):
+        policy.max_interval_seconds = 30.0
+    with pytest.raises(ValueError, match="selector_failure_mode"):
+        AcceleratedCrossingPolicy(selector_failure_mode="ignore")
+
+    snapshot = load_snapshot("synthetic_50s4b_v1")
+    request = query(snapshot, field(0.0, 0.0))
+    results, evidence = AcceleratedLocalSatelliteCrossingOracle(
+        selector=FakeSelector(
+            fake_selection(request, ("retain", "retain", "retain"))
+        )
+    ).solve_with_evidence(request)
+
+    assert evidence.exact_solver_norad_catalog_ids == tuple(
+        record.norad_catalog_id for record in snapshot.records
+    )
+    assert evidence.rejected_norad_catalog_ids == ()
+    assert not evidence.fallback_to_exhaustive
+    with pytest.raises(FrozenInstanceError):
+        evidence.field_id = "changed"
+    assert results == LocalSatelliteCrossingOracle().solve(request)
+
+
+def test_mixed_decisions_call_shared_exact_seam_once_per_non_reject(
+    monkeypatch,
+):
+    snapshot = load_snapshot("synthetic_50s4b_v1")
+    request = query(snapshot, field(0.0, 0.0))
+    selection = fake_selection(
+        request, ("reject", "retain", "indeterminate")
+    )
+    calls = []
+
+    def solve_record(request_value, record, *, max_evaluations_per_record):
+        assert request_value is request
+        assert max_evaluations_per_record == 20000
+        calls.append(record.norad_catalog_id)
+        return ()
+
+    monkeypatch.setattr(acceleration_module, "_solve_record", solve_record)
+    results, evidence = AcceleratedLocalSatelliteCrossingOracle(
+        selector=FakeSelector(selection)
+    ).solve_with_evidence(request)
+
+    assert results == ()
+    assert tuple(calls) == selection.exact_solver_norad_catalog_ids
+    assert selection.rejected_norad_catalog_ids[0] not in calls
+    assert evidence.selection is selection
+
+
+@pytest.mark.parametrize(
+    "outcomes",
+    [
+        ("reject", "reject", "reject"),
+        ("retain", "retain", "retain"),
+        ("indeterminate", "indeterminate", "indeterminate"),
+    ],
+)
+def test_coordinator_preserves_all_ordered_decision_modes(monkeypatch, outcomes):
+    snapshot = load_snapshot("synthetic_50s4b_v1")
+    request = query(snapshot, field(0.0, 0.0))
+    selection = fake_selection(request, outcomes)
+    calls = []
+
+    def solve_record(_request, record, *, max_evaluations_per_record):
+        calls.append(record.norad_catalog_id)
+        return ()
+
+    monkeypatch.setattr(acceleration_module, "_solve_record", solve_record)
+    _results, evidence = AcceleratedLocalSatelliteCrossingOracle(
+        selector=FakeSelector(selection)
+    ).solve_with_evidence(request)
+
+    assert tuple(calls) == selection.exact_solver_norad_catalog_ids
+    assert evidence.rejected_norad_catalog_ids == (
+        selection.rejected_norad_catalog_ids
+    )
+
+
+def test_selector_exception_falls_back_to_complete_exhaustive_route(
+    monkeypatch,
+):
+    snapshot = load_snapshot("synthetic_50s4b_v1")
+    request = query(snapshot, field(0.0, 0.0))
+    sentinel = ("complete exhaustive result",)
+    calls = []
+
+    def exhaustive(_self, request_value):
+        calls.append(request_value)
+        return sentinel
+
+    monkeypatch.setattr(LocalSatelliteCrossingOracle, "solve", exhaustive)
+    results, evidence = AcceleratedLocalSatelliteCrossingOracle(
+        selector=FakeSelector(error=RuntimeError("selector unavailable"))
+    ).solve_with_evidence(request)
+
+    assert results == sentinel
+    assert calls == [request]
+    assert evidence.fallback_to_exhaustive
+    assert evidence.selection is None
+    assert evidence.rejected_norad_catalog_ids == ()
+    assert evidence.exact_solver_norad_catalog_ids == tuple(
+        record.norad_catalog_id for record in snapshot.records
+    )
+    assert "RuntimeError" in evidence.fallback_reason
+
+
+def test_selector_exception_can_fail_closed_by_explicit_policy():
+    snapshot = load_snapshot("synthetic_50s4b_v1")
+    request = query(snapshot, field(0.0, 0.0))
+    oracle = AcceleratedLocalSatelliteCrossingOracle(
+        selector=FakeSelector(error=RuntimeError("selector unavailable")),
+        policy=AcceleratedCrossingPolicy(
+            selector_failure_mode="fail_closed"
+        ),
+    )
+
+    with pytest.raises(
+        SatelliteCrossingConvergenceError, match="selector failed closed"
+    ):
+        oracle.solve(request)
+
+
+@pytest.mark.parametrize(
+    "change",
+    ["field", "missing", "duplicate", "reordered", "unknown"],
+)
+def test_inconsistent_selector_evidence_fails_closed(change):
+    snapshot = load_snapshot("synthetic_50s4b_v1")
+    request = query(snapshot, field(0.0, 0.0))
+    selection = fake_selection(
+        request, ("retain", "retain", "retain")
+    )
+    if change == "field":
+        selection = replace(selection, field_id="wrong-field")
+    else:
+        decisions = list(selection.decisions)
+        if change == "missing":
+            decisions = decisions[:-1]
+        elif change == "duplicate":
+            decisions[-1] = decisions[0]
+        elif change == "reordered":
+            decisions[0], decisions[1] = decisions[1], decisions[0]
+        elif change == "unknown":
+            decisions[-1] = replace(
+                decisions[-1], norad_catalog_id=999999
+            )
+        object.__setattr__(selection, "decisions", tuple(decisions))
+
+    with pytest.raises(SatelliteCrossingConvergenceError):
+        AcceleratedLocalSatelliteCrossingOracle(
+            selector=FakeSelector(selection)
+        ).solve(request)
+
+
+def test_reject_outside_coordinator_domain_fails_closed():
+    snapshot = load_snapshot("synthetic_50s4b_v1")
+    request = query(
+        snapshot, field(0.0, 0.0), seconds=61.0
+    )
+    selection = fake_selection(
+        request, ("reject", "retain", "retain")
+    )
+
+    with pytest.raises(
+        SatelliteCrossingConvergenceError,
+        match="outside the coordinator's admitted domain",
+    ):
+        AcceleratedLocalSatelliteCrossingOracle(
+            selector=FakeSelector(selection)
+        ).solve(request)
+
+
+def test_real_selector_results_are_exactly_exhaustive():
+    snapshot = load_snapshot("synthetic_50s4b_v1")
+    request = query(snapshot, field(0.0, 0.0))
+    exhaustive = LocalSatelliteCrossingOracle().solve(request)
+    accelerated, evidence = (
+        AcceleratedLocalSatelliteCrossingOracle().solve_with_evidence(request)
+    )
+
+    assert accelerated == exhaustive
+    assert AcceleratedLocalSatelliteCrossingOracle().solve(request) == exhaustive
+    assert evidence.selection == ConservativeConeShellSelector().select(request)
+    assert set(evidence.rejected_norad_catalog_ids).isdisjoint(
+        evidence.exact_solver_norad_catalog_ids
+    )
+
+
+
+def test_candidate_coordinator_contracts_are_package_exports():
+    from wenu.satellites import (
+        AcceleratedCrossingEvidence as ExportedEvidence,
+        AcceleratedCrossingPolicy as ExportedPolicy,
+        AcceleratedLocalSatelliteCrossingOracle as ExportedOracle,
+    )
+
+    assert ExportedEvidence is acceleration_module.AcceleratedCrossingEvidence
+    assert ExportedPolicy is AcceleratedCrossingPolicy
+    assert ExportedOracle is AcceleratedLocalSatelliteCrossingOracle

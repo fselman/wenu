@@ -2639,3 +2639,22 @@ to exhaustive output. Acceleration evidence is separate. Selector failure must
 fall back to the exhaustive route or fail closed; it cannot produce an empty
 search. The accepted cone-shell selector's installed-snapshot, 60-second domain
 is unchanged, and no callable coordinator is authorized by this audit.
+
+
+### Accepted accelerated local crossing coordinator (50S.6D)
+
+`AcceleratedCrossingPolicy` freezes the admitted
+`synthetic_50s4b_v1`, 60-second coordinator domain and chooses either
+`fallback_exhaustive` or `fail_closed` selector-failure behavior.
+
+`AcceleratedLocalSatelliteCrossingOracle.solve(query)` returns the same
+ordered `SatelliteCrossingResult` tuple as the exhaustive public API.
+`solve_with_evidence(query)` returns that tuple together with immutable
+`AcceleratedCrossingEvidence`, which records the complete selector evidence,
+rejected identifiers, exact-solver identifiers, and any exhaustive fallback.
+
+Both routes use the same package-internal exact-record seam owned by
+`crossing_oracle.py`. The accelerated route validates query identity and
+complete NORAD-ordered coverage before solving. Retain and indeterminate
+records are evaluated exactly once; rejected records are not evaluated.
+Malformed evidence or an out-of-domain reject fails closed.

@@ -548,6 +548,81 @@ def _solve_trajectory(
     return tuple(results)
 
 
+def _solve_record(
+    query: LocalSatelliteCrossingQuery,
+    record,
+    *,
+    max_evaluations_per_record: int,
+):
+    """Solve one snapshot record through the accepted exact numerical path."""
+    propagator = Sgp4TemePropagator(
+        record,
+        snapshot_sha256=query.snapshot.manifest.content_sha256,
+    )
+    transformer = SatelliteTopocentricTransformer()
+
+    def evaluate(instant):
+        state = transformer.transform(
+            propagator.propagate(_instant(instant)), query.observer
+        )
+        position = np.asarray(
+            state.topocentric_itrs_position_km, dtype=float
+        )
+        velocity = np.asarray(
+            state.topocentric_itrs_velocity_km_per_s, dtype=float
+        )
+        angular_rate = degrees(
+            float(np.linalg.norm(np.cross(position, velocity)))
+            / float(np.dot(position, position))
+        )
+        return _TrajectoryState(
+            instant=instant,
+            direction=tuple(
+                _unit_vector(
+                    state.gcrs_axis_longitude_deg,
+                    state.gcrs_axis_latitude_deg,
+                )
+            ),
+            range_km=state.range_km,
+            angular_rate_deg_per_s=angular_rate,
+            source_state=state,
+        )
+
+    candidate = SatelliteCrossingCandidate(
+        satellite=SatelliteIdentity(
+            norad_catalog_id=record.norad_catalog_id,
+            object_name=record.object_name,
+            international_designator=record.international_designator,
+            classification=record.classification,
+        ),
+        observer=query.observer,
+        field_of_view=query.field_of_view,
+        interval=query.interval,
+        source_provider="wenu local crossing oracle",
+        orbit_solution_id=record.source_identity,
+        snapshot_sha256=query.snapshot.manifest.content_sha256,
+        element_epoch=record.epoch_utc,
+        provenance=(
+            ORACLE_IMPLEMENTATION,
+            query.snapshot.manifest.snapshot_id,
+            record.source_record_sha256,
+            "SGP4 WGS-72 geometric TEME to installed-IERS-A "
+            "topocentric GCRS-axis direction.",
+            f"observer {query.observer.observer_id}",
+            f"refraction policy {query.observer.refraction_policy}",
+            "earth-orientation policy "
+            f"{query.observer.earth_orientation_policy}",
+        ),
+    )
+    return _solve_trajectory(
+        evaluate,
+        candidate=candidate,
+        time_tolerance_seconds=query.time_tolerance_seconds,
+        angular_tolerance_deg=query.angular_tolerance_deg,
+        max_evaluations=max_evaluations_per_record,
+    )
+
+
 class LocalSatelliteCrossingOracle:
     """Scan every snapshot record with the accepted local state chain."""
 
@@ -565,76 +640,15 @@ class LocalSatelliteCrossingOracle:
         """Return all connected visits, ordered by full NORAD id and entry."""
         if not isinstance(query, LocalSatelliteCrossingQuery):
             raise TypeError("query must be a LocalSatelliteCrossingQuery.")
-        results = []
-        for record in query.snapshot.records:
-            propagator = Sgp4TemePropagator(
+        results = tuple(
+            result
+            for record in query.snapshot.records
+            for result in _solve_record(
+                query,
                 record,
-                snapshot_sha256=query.snapshot.manifest.content_sha256,
+                max_evaluations_per_record=self._max_evaluations_per_record,
             )
-            transformer = SatelliteTopocentricTransformer()
-
-            def evaluate(instant, propagator=propagator, transformer=transformer):
-                state = transformer.transform(
-                    propagator.propagate(_instant(instant)), query.observer
-                )
-                position = np.asarray(
-                    state.topocentric_itrs_position_km, dtype=float
-                )
-                velocity = np.asarray(
-                    state.topocentric_itrs_velocity_km_per_s, dtype=float
-                )
-                angular_rate = degrees(
-                    float(np.linalg.norm(np.cross(position, velocity)))
-                    / float(np.dot(position, position))
-                )
-                return _TrajectoryState(
-                    instant=instant,
-                    direction=tuple(
-                        _unit_vector(
-                            state.gcrs_axis_longitude_deg,
-                            state.gcrs_axis_latitude_deg,
-                        )
-                    ),
-                    range_km=state.range_km,
-                    angular_rate_deg_per_s=angular_rate,
-                    source_state=state,
-                )
-
-            candidate = SatelliteCrossingCandidate(
-                satellite=SatelliteIdentity(
-                    norad_catalog_id=record.norad_catalog_id,
-                    object_name=record.object_name,
-                    international_designator=record.international_designator,
-                    classification=record.classification,
-                ),
-                observer=query.observer,
-                field_of_view=query.field_of_view,
-                interval=query.interval,
-                source_provider="wenu local crossing oracle",
-                orbit_solution_id=record.source_identity,
-                snapshot_sha256=query.snapshot.manifest.content_sha256,
-                element_epoch=record.epoch_utc,
-                provenance=(
-                    ORACLE_IMPLEMENTATION,
-                    query.snapshot.manifest.snapshot_id,
-                    record.source_record_sha256,
-                    "SGP4 WGS-72 geometric TEME to installed-IERS-A "
-                    "topocentric GCRS-axis direction.",
-                    f"observer {query.observer.observer_id}",
-                    f"refraction policy {query.observer.refraction_policy}",
-                    "earth-orientation policy "
-                    f"{query.observer.earth_orientation_policy}",
-                ),
-            )
-            results.extend(
-                _solve_trajectory(
-                    evaluate,
-                    candidate=candidate,
-                    time_tolerance_seconds=query.time_tolerance_seconds,
-                    angular_tolerance_deg=query.angular_tolerance_deg,
-                    max_evaluations=self._max_evaluations_per_record,
-                )
-            )
+        )
         return tuple(
             sorted(
                 results,

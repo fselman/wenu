@@ -9,13 +9,21 @@ from typing import Literal
 
 import numpy as np
 
-from wenu.satellites.crossing_oracle import LocalSatelliteCrossingQuery
+from wenu.satellites.crossing_oracle import (
+    LocalSatelliteCrossingOracle,
+    LocalSatelliteCrossingQuery,
+    SatelliteCrossingConvergenceError,
+    _solve_record,
+)
 from wenu.satellites.sgp4 import Sgp4TemePropagator
 from wenu.satellites.topocentric import SatelliteTopocentricTransformer
 
 
 CONE_SHELL_IMPLEMENTATION = (
     "wenu conservative topocentric cone/orbital-shell selector v1"
+)
+ACCELERATED_ORACLE_IMPLEMENTATION = (
+    "wenu conservative accelerated local crossing coordinator v1"
 )
 _EARTH_EQUATORIAL_RADIUS_KM = 6378.137
 _EARTH_GRAVITATIONAL_PARAMETER_KM3_S2 = 398600.8
@@ -391,3 +399,256 @@ class ConservativeConeShellSelector:
             interval_stop=query.interval.stop,
             decisions=decisions,
         )
+
+
+@dataclass(frozen=True)
+class AcceleratedCrossingPolicy:
+    """Immutable admitted coordinator domain and selector-failure behavior."""
+
+    admitted_snapshot_ids: tuple[str, ...] = ("synthetic_50s4b_v1",)
+    max_interval_seconds: float = 60.0
+    selector_failure_mode: Literal["fallback_exhaustive", "fail_closed"] = (
+        "fallback_exhaustive"
+    )
+
+    def __post_init__(self):
+        snapshot_ids = tuple(self.admitted_snapshot_ids)
+        if not snapshot_ids or not all(
+            isinstance(item, str) and item.strip() for item in snapshot_ids
+        ):
+            raise ValueError(
+                "admitted_snapshot_ids must contain non-empty strings."
+            )
+        object.__setattr__(self, "admitted_snapshot_ids", snapshot_ids)
+        object.__setattr__(
+            self,
+            "max_interval_seconds",
+            _positive_finite(
+                self.max_interval_seconds,
+                name="max_interval_seconds",
+            ),
+        )
+        if self.selector_failure_mode not in {
+            "fallback_exhaustive",
+            "fail_closed",
+        }:
+            raise ValueError(
+                "selector_failure_mode must be fallback_exhaustive or "
+                "fail_closed."
+            )
+
+
+@dataclass(frozen=True)
+class AcceleratedCrossingEvidence:
+    """Immutable selection and exact-evaluation accounting."""
+
+    snapshot_sha256: str
+    field_id: str
+    interval_start: str
+    interval_stop: str
+    rejected_norad_catalog_ids: tuple[int, ...]
+    exact_solver_norad_catalog_ids: tuple[int, ...]
+    selection: ConeShellSelection | None
+    fallback_to_exhaustive: bool
+    fallback_reason: str | None = None
+    implementation: str = ACCELERATED_ORACLE_IMPLEMENTATION
+
+    def __post_init__(self):
+        rejected = tuple(self.rejected_norad_catalog_ids)
+        exact = tuple(self.exact_solver_norad_catalog_ids)
+        if len(set(rejected + exact)) != len(rejected + exact):
+            raise ValueError(
+                "rejected and exact-solver identifiers must be unique."
+            )
+        if rejected != tuple(sorted(rejected)):
+            raise ValueError("rejected identifiers must be NORAD ordered.")
+        if exact != tuple(sorted(exact)):
+            raise ValueError("exact-solver identifiers must be NORAD ordered.")
+        object.__setattr__(self, "rejected_norad_catalog_ids", rejected)
+        object.__setattr__(self, "exact_solver_norad_catalog_ids", exact)
+        if not isinstance(self.fallback_to_exhaustive, bool):
+            raise TypeError("fallback_to_exhaustive must be boolean.")
+        if self.fallback_to_exhaustive:
+            if self.selection is not None or rejected:
+                raise ValueError(
+                    "exhaustive fallback cannot retain selection rejections."
+                )
+            if not isinstance(self.fallback_reason, str) or not (
+                self.fallback_reason.strip()
+            ):
+                raise ValueError(
+                    "exhaustive fallback requires a non-empty reason."
+                )
+            object.__setattr__(
+                self, "fallback_reason", self.fallback_reason.strip()
+            )
+        elif self.fallback_reason is not None:
+            raise ValueError(
+                "fallback_reason is valid only for exhaustive fallback."
+            )
+
+
+class AcceleratedLocalSatelliteCrossingOracle:
+    """Coordinate conservative selection with the shared exact record seam."""
+
+    def __init__(
+        self,
+        *,
+        selector=None,
+        policy=None,
+        max_evaluations_per_record=20000,
+    ):
+        if selector is None:
+            selector = ConservativeConeShellSelector()
+        if not callable(getattr(selector, "select", None)):
+            raise TypeError("selector must provide callable select(query).")
+        if policy is None:
+            policy = AcceleratedCrossingPolicy()
+        if not isinstance(policy, AcceleratedCrossingPolicy):
+            raise TypeError("policy must be an AcceleratedCrossingPolicy.")
+        if (
+            isinstance(max_evaluations_per_record, bool)
+            or not isinstance(max_evaluations_per_record, int)
+        ):
+            raise TypeError("max_evaluations_per_record must be an integer.")
+        if max_evaluations_per_record < 3:
+            raise ValueError("max_evaluations_per_record must be at least 3.")
+        self._selector = selector
+        self._policy = policy
+        self._max_evaluations_per_record = max_evaluations_per_record
+
+    @property
+    def policy(self):
+        return self._policy
+
+    def _fallback(self, query, reason):
+        results = LocalSatelliteCrossingOracle(
+            max_evaluations_per_record=self._max_evaluations_per_record
+        ).solve(query)
+        identifiers = tuple(
+            record.norad_catalog_id for record in query.snapshot.records
+        )
+        evidence = AcceleratedCrossingEvidence(
+            snapshot_sha256=query.snapshot.manifest.content_sha256,
+            field_id=query.field_of_view.field_id,
+            interval_start=query.interval.start,
+            interval_stop=query.interval.stop,
+            rejected_norad_catalog_ids=(),
+            exact_solver_norad_catalog_ids=identifiers,
+            selection=None,
+            fallback_to_exhaustive=True,
+            fallback_reason=reason,
+        )
+        return results, evidence
+
+    def _validate_selection(self, query, selection):
+        if not isinstance(selection, ConeShellSelection):
+            raise SatelliteCrossingConvergenceError(
+                "selector did not return ConeShellSelection evidence."
+            )
+        expected_identifiers = tuple(
+            record.norad_catalog_id for record in query.snapshot.records
+        )
+        actual_identifiers = tuple(
+            item.norad_catalog_id for item in selection.decisions
+        )
+        expected_identity = (
+            query.snapshot.manifest.content_sha256,
+            query.field_of_view.field_id,
+            query.interval.start,
+            query.interval.stop,
+        )
+        actual_identity = (
+            selection.snapshot_sha256,
+            selection.field_id,
+            selection.interval_start,
+            selection.interval_stop,
+        )
+        if actual_identity != expected_identity:
+            raise SatelliteCrossingConvergenceError(
+                "selector evidence does not identify the complete query."
+            )
+        if actual_identifiers != expected_identifiers:
+            raise SatelliteCrossingConvergenceError(
+                "selector evidence does not cover the snapshot exactly in "
+                "NORAD order."
+            )
+        if any(
+            item.outcome not in {"reject", "retain", "indeterminate"}
+            for item in selection.decisions
+        ):
+            raise SatelliteCrossingConvergenceError(
+                "selector evidence contains an unsupported outcome."
+            )
+        interval_seconds = (
+            _instant(query.interval.stop) - _instant(query.interval.start)
+        ).total_seconds()
+        admitted = (
+            query.snapshot.manifest.snapshot_id
+            in self._policy.admitted_snapshot_ids
+            and interval_seconds <= self._policy.max_interval_seconds
+        )
+        if selection.rejected_norad_catalog_ids and not admitted:
+            raise SatelliteCrossingConvergenceError(
+                "selector rejected a record outside the coordinator's "
+                "admitted domain."
+            )
+        return selection
+
+    def solve_with_evidence(self, query):
+        """Return exact results and separate immutable acceleration evidence."""
+        if not isinstance(query, LocalSatelliteCrossingQuery):
+            raise TypeError("query must be a LocalSatelliteCrossingQuery.")
+        try:
+            selection = self._selector.select(query)
+        except Exception as error:
+            if self._policy.selector_failure_mode == "fail_closed":
+                raise SatelliteCrossingConvergenceError(
+                    "selector failed closed: "
+                    f"{type(error).__name__}: {error}"
+                ) from error
+            return self._fallback(
+                query,
+                f"selector failure ({type(error).__name__}: {error})",
+            )
+
+        selection = self._validate_selection(query, selection)
+        exact_identifiers = selection.exact_solver_norad_catalog_ids
+        exact_identifier_set = set(exact_identifiers)
+        results = tuple(
+            result
+            for record in query.snapshot.records
+            if record.norad_catalog_id in exact_identifier_set
+            for result in _solve_record(
+                query,
+                record,
+                max_evaluations_per_record=self._max_evaluations_per_record,
+            )
+        )
+        results = tuple(
+            sorted(
+                results,
+                key=lambda item: (
+                    item.candidate.satellite.norad_catalog_id,
+                    item.entry_instant,
+                ),
+            )
+        )
+        evidence = AcceleratedCrossingEvidence(
+            snapshot_sha256=selection.snapshot_sha256,
+            field_id=selection.field_id,
+            interval_start=selection.interval_start,
+            interval_stop=selection.interval_stop,
+            rejected_norad_catalog_ids=(
+                selection.rejected_norad_catalog_ids
+            ),
+            exact_solver_norad_catalog_ids=exact_identifiers,
+            selection=selection,
+            fallback_to_exhaustive=False,
+        )
+        return results, evidence
+
+    def solve(self, query):
+        """Return only exact crossing results, matching the exhaustive API."""
+        results, _evidence = self.solve_with_evidence(query)
+        return results

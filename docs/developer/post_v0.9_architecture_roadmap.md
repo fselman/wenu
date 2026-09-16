@@ -2294,3 +2294,31 @@ Acceptance authorizes only bounded 50S.6D exact-solver coordination with the
 existing selector and admitted domain. Broader-domain activation, benchmark
 claims, default enablement, phase/coarse/index stages, 50S.7, and later behavior
 remain unauthorized.
+
+
+### 50S.6D — Bounded accelerated exact-solver coordination (accepted)
+
+**Status:** Accepted by Fernando on 2026-09-16.
+
+Extract one unchanged package-internal exact-record seam from the exhaustive
+50S.5 oracle. Keep the exhaustive public route independently callable and
+default. Add one opt-in coordinator that validates complete ordered selector
+evidence, routes retain and indeterminate decisions through the shared seam,
+and omits only accepted reject decisions.
+
+Return exact crossing results separately from immutable acceleration evidence.
+Selector exceptions fall back to exhaustive solving by default or fail closed
+under explicit policy; malformed evidence and rejection outside the admitted
+three-record, 60-second domain fail closed. Require fake-selector invariant
+tests, instrumented exact-evaluation accounting, and real-selector equality
+with exhaustive results.
+
+This slice adds no broader domain, benchmark claim, default enablement,
+phase/coarse/index stage, illumination, photometry, CLI, reporting, drawing,
+or 50S.7 behavior.
+
+
+Candidate verification at commit `a7aecba` passed all 37 dedicated tests, 93
+expanded immediate-seam tests, 141 documentation tests, and the complete 2,566
+plugin-disabled tests. Fernando scientifically and architecturally accepted 50S.6D on 2026-09-16.
+No later acceleration milestone is authorized automatically.

@@ -49,7 +49,7 @@ migrations, milestone evidence, and superseded roadmaps are under
   — accepted zero-false-negative, staged-filter, exact-oracle-equivalence,
   benchmark-admission, and ownership contract for bounded 50S.6B work.
 - [`satellite_crossing_coordination_audit_50s6c.md`](satellite_crossing_coordination_audit_50s6c.md)
-  — candidate exact-solver coordination, broader-domain evidence, fallback,
+  — accepted exact-solver coordination, broader-domain evidence, fallback,
   equivalence, and benchmark-admission contract for bounded 50S.6D work.
 - [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
   scientific and implementation guide maintained separately during the 50S

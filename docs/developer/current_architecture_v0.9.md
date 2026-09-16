@@ -1063,3 +1063,32 @@ dependency, package export, coordinate path, or result changes in 50S.6C.
 Fernando scientifically and architecturally accepted 50S.6C on 2026-09-16.
 Only a bounded 50S.6D coordinator inside the existing three-record, 60-second
 domain is authorized next.
+
+
+### Accepted 50S.6D bounded accelerated crossing coordinator
+
+The accepted implementation extracts one package-internal exact-record seam from
+`LocalSatelliteCrossingOracle.solve(query)` without changing its numerical
+algorithm. The exhaustive route remains independently callable and invokes that
+seam for every snapshot record.
+
+`AcceleratedLocalSatelliteCrossingOracle` is an opt-in coordinator. It
+validates complete query-bound, NORAD-ordered `ConeShellSelection` evidence,
+sends every retained and indeterminate record through the shared exact seam,
+and omits only accepted reject decisions. `solve(query)` returns the ordinary
+exact result tuple; `solve_with_evidence(query)` returns that tuple plus
+separate immutable `AcceleratedCrossingEvidence`.
+
+Selector exceptions fall back to the complete exhaustive route by default or
+fail closed under explicit immutable policy. Missing, inconsistent, duplicate,
+unknown, reordered, or out-of-domain rejection evidence fails closed. The
+candidate remains limited to `synthetic_50s4b_v1` and intervals no longer than
+60 seconds. It adds no broader selector domain, benchmark claim, default
+enablement, coordinate path, CLI, reporting, drawing, or later filter stage.
+
+
+Candidate 50S.6D verification at commit `a7aecba` passed the 37-test
+dedicated gate, 93-test expanded immediate-seam gate, 141-test documentation
+gate, and complete 2,566-test plugin-disabled suite. Fernando scientifically and architecturally accepted 50S.6D on 2026-09-16.
+No broader-domain, benchmark, default-enablement, or later acceleration work is
+authorized by this acceptance.

@@ -5748,3 +5748,88 @@ def test_50s6c_audits_exact_solver_coordination_and_admission():
     assert "only a bounded 50S.6D implementation" in audit
     assert "only bounded 50S.6D" in roadmap
     assert "bounded 50S.6D coordinator" in instructions
+
+
+
+def test_50s6d_documents_accepted_accelerated_coordinator():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_coordination_audit_50s6c.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert "accepted exact-solver coordination" in index
+    assert "Accepted 50S.6D bounded accelerated crossing coordinator" in (
+        architecture
+    )
+    assert "50S.6D — Bounded accelerated exact-solver coordination" in roadmap
+    assert "Accepted accelerated local crossing coordinator" in reference
+    assert "Accepted 50S.6D coordinator ownership" in source_tree
+    assert "Accepted 50S.6D unchanged coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6D bounded accelerated coordinator" in guide
+    assert "Accepted 50S.6D accelerated-coordinator boundary" in instructions
+    for phrase in (
+        "one package-internal exact-record seam",
+        "AcceleratedCrossingPolicy",
+        "AcceleratedCrossingEvidence",
+        "AcceleratedLocalSatelliteCrossingOracle",
+        "solve_with_evidence(query)",
+        "fallback_exhaustive",
+        "retain and indeterminate",
+        "three-record, 60-second domain",
+        "no useful-speed claim",
+        "adds no broader domain",
+    ):
+        assert phrase in " ".join(
+            (
+                audit,
+                architecture,
+                roadmap,
+                reference,
+                source_tree,
+                coordinate_guide,
+                guide,
+                instructions,
+            )
+        )
+    assert "The coordinate guide was reviewed for 50S.6D" in coordinate_guide
+    assert "No new production module or test file is admitted" in source_tree
+    assert "complete plugin-disabled suite" in audit
+    assert "Fernando's scientific and architectural review" in audit
+
+
+
+def test_50s6d_records_accepted_verification_evidence():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_crossing_coordination_audit_50s6c.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for text in (audit, architecture, roadmap):
+        assert "commit `a7aecba`" in text
+        assert "2,566" in text
+    for phrase in (
+        "37-test dedicated acceleration/oracle gate in 116.58 seconds",
+        "93-test expanded acceleration, oracle, crossing-contract, element, SGP4",
+        "package-boundary gate in 128.74 seconds",
+        "141-test current-documentation gate in 4.36 seconds",
+        "complete 2,566-test suite in 213.87 seconds",
+        "No performance, broader-domain, default-enablement, or later acceleration claim",
+    ):
+        assert phrase in audit
+    assert "Fernando scientifically and architecturally accepted 50S.6D" in audit
+    assert "final pre-acceptance documentation gate passed all 142 tests" in audit
+    assert "branch diff check was clean" in audit
+    assert "working tree was clean" in audit
+    assert "No later acceleration milestone is authorized automatically" in roadmap
+    assert "separately accepted bounded milestone" in instructions

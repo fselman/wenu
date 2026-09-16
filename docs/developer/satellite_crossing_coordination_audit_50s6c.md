@@ -210,3 +210,44 @@ coordination using the already accepted cone-shell selector inside its existing
 three-record, 60-second domain. Broader-domain activation, benchmark claims,
 default enablement, phase/coarse/indexing stages, 50S.7, and all later behavior
 would remain unauthorized.
+
+
+## 13. Accepted 50S.6D implementation record
+
+The accepted implementation extracts the existing exact per-record operation
+into one package-internal seam owned by `crossing_oracle.py`. The exhaustive
+public oracle still scans every record. The opt-in coordinator in
+`crossing_acceleration.py` validates complete query identity and
+NORAD-ordered coverage, solves every retain and indeterminate record through
+that same seam, and records rejected and exactly evaluated identifiers in
+immutable evidence.
+
+Selector exceptions fall back to the complete exhaustive route by default or
+fail closed under explicit policy. Malformed selection evidence and any reject
+outside `synthetic_50s4b_v1` or the 60-second limit fail closed. Exact results
+remain separate from acceleration evidence.
+
+The accepted implementation adds no broader domain, fixture, benchmark claim, default
+enablement, new filter stage, coordinate path, dependency, CLI, report,
+drawing, illumination, photometry, or later satellite behavior. Acceptance required the dedicated acceleration gate, the expanded immediate-seam
+gate, the complete plugin-disabled suite, documentation preflight, clean branch
+diff, and Fernando's scientific and architectural review.
+
+
+## 14. Accepted 50S.6D verification evidence
+
+On macOS with Python 3.11.7 and ambient pytest plugins disabled, candidate
+commit `a7aecba` passed:
+
+- the 37-test dedicated acceleration/oracle gate in 116.58 seconds;
+- the 93-test expanded acceleration, oracle, crossing-contract, element, SGP4,
+  topocentric, and package-boundary gate in 128.74 seconds;
+- the 141-test current-documentation gate in 4.36 seconds; and
+- the complete 2,566-test suite in 213.87 seconds.
+
+This evidence covers the accepted executable implementation and its initial
+documentation. The final pre-acceptance documentation gate passed all 142 tests
+in 4.06 seconds, the branch diff check was clean, and the working tree was
+clean. Fernando scientifically and architecturally accepted 50S.6D on
+2026-09-16. No performance, broader-domain, default-enablement, or later
+acceleration claim is made or authorized.
