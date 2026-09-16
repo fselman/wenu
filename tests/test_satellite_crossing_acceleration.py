@@ -500,3 +500,16 @@ def test_real_selector_results_are_exactly_exhaustive():
     assert set(evidence.rejected_norad_catalog_ids).isdisjoint(
         evidence.exact_solver_norad_catalog_ids
     )
+
+
+
+def test_candidate_coordinator_contracts_are_package_exports():
+    from wenu.satellites import (
+        AcceleratedCrossingEvidence as ExportedEvidence,
+        AcceleratedCrossingPolicy as ExportedPolicy,
+        AcceleratedLocalSatelliteCrossingOracle as ExportedOracle,
+    )
+
+    assert ExportedEvidence is acceleration_module.AcceleratedCrossingEvidence
+    assert ExportedPolicy is AcceleratedCrossingPolicy
+    assert ExportedOracle is AcceleratedLocalSatelliteCrossingOracle
