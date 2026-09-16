@@ -3403,7 +3403,7 @@ margin. Horizon, Earth occultation, apparent ICRS, refraction, and projected
 coordinates remain inadmissible rejection predicates.
 
 
-### Candidate 50S.6D unchanged coordinate boundary
+### Accepted 50S.6D unchanged coordinate boundary
 
 The coordinator introduces no coordinate operation. The selector and both
 exact routes consume the identical fixed circular field and the same
@@ -3415,3 +3415,8 @@ current. Selection accounting, fallback, and shared-record orchestration do
 not change frame, origin, position status, instant, time scale, refraction, or
 Earth-orientation meaning. Horizon, occultation, apparent ICRS, refraction, and
 projected coordinates remain inadmissible rejection predicates.
+
+
+Fernando scientifically and architecturally accepted this unchanged 50S.6D
+coordinate boundary on 2026-09-16. The acceptance authorizes no new coordinate
+operation or rejection predicate.
