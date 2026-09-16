@@ -829,8 +829,12 @@ milestone.
 Before any later satellite acceleration, batching, reporting, drawing, or
 illumination work, read
 `satellite_multifov_interchange_audit_50s6e.md`. It proposes one observer and
-any non-empty number of independently timed same-night FoVs; ten is a reference
-workload, not a hard-coded public limit. Acceptance would authorize only a
+any non-empty number of independently timed, field-centre airmass-bounded FoVs;
+ten is a reference workload, not a hard-coded public limit. The initial policy
+uses geometric vacuum AltAz and plane-parallel `X = sec(z)`, with configurable
+`X_max` defaulting to 2, certified across every complete field interval. This
+is field admission, not a satellite horizon or occultation filter. Acceptance
+would authorize only a
 separately bounded 50S.6F implementation. Generic observatory reports, exact
 chart tracks, Paranal/ELT adapters, Sunlight, solar Earthshine, Moonlight,
 Lunar-Earthshine, brightness, and detector effects remain later, separately
