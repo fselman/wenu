@@ -943,10 +943,10 @@ total-wall-time benefit. This documentation-only candidate authorizes no
 runtime coordinator or broader acceleration.
 
 
-## 26. Candidate 50S.6D bounded accelerated coordinator
+## 26. Accepted 50S.6D bounded accelerated coordinator
 
 The exhaustive crossing oracle remains the default and independently callable.
-The candidate coordinator validates the complete ordered result of the accepted
+The accepted coordinator validates the complete ordered result of the accepted
 cone-shell selector and calls the same exact record solver for every retain or
 indeterminate decision. Only a validated reject may omit exact work.
 
@@ -957,6 +957,11 @@ complete exhaustive route by default or fails closed under explicit policy;
 invalid coverage and rejection outside the installed three-record, 60-second
 domain always fail closed.
 
-This candidate makes no useful-speed claim and adds no broader catalogue
+This accepted implementation makes no useful-speed claim and adds no broader catalogue
 domain, default acceleration, new filter, visibility semantics, CLI, report,
 or drawing behavior.
+
+
+Fernando scientifically and architecturally accepted 50S.6D on 2026-09-16.
+Broader-domain activation, benchmarking claims, default acceleration, new
+filter stages, and later satellite behavior remain unauthorized.
