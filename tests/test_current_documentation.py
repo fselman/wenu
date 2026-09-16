@@ -5733,14 +5733,18 @@ def test_50s6c_audits_exact_solver_coordination_and_admission():
         assert phrase in audit
 
     assert "satellite_crossing_coordination_audit_50s6c.md" in index
-    assert "Candidate 50S.6C exact-solver coordination audit" in architecture
+    assert "Accepted 50S.6C exact-solver coordination audit" in architecture
     assert "50S.6C — Exact-solver coordination and admission audit" in roadmap
-    assert "Candidate accelerated coordination contract (50S.6C audit)" in reference
-    assert "Candidate 50S.6C coordination ownership audit" in source_tree
-    assert "Candidate 50S.6C coordination coordinate boundary" in coordinate_guide
-    assert "Candidate 50S.6C coordination and admission audit" in guide
-    assert "Candidate 50S.6C coordination-audit boundary" in instructions
+    assert "Accepted accelerated coordination contract (50S.6C audit)" in reference
+    assert "Accepted 50S.6C coordination ownership audit" in source_tree
+    assert "Accepted 50S.6C coordination coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6C coordination and admission audit" in guide
+    assert "Accepted 50S.6C coordination-audit boundary" in instructions
     assert "No accelerated crossing service exists" in reference
     assert "three-record snapshot proves composition, not useful speed" in roadmap
     assert "creates no source, runtime test, benchmark tool" in source_tree
-    assert "further runtime acceleration" in instructions.lower()
+    assert "passed all 140 tests in 3.55 seconds" in audit
+    assert "Fernando scientifically and architecturally accepted 50S.6C" in audit
+    assert "only a bounded 50S.6D implementation" in audit
+    assert "only bounded 50S.6D" in roadmap
+    assert "bounded 50S.6D coordinator" in instructions
