@@ -1027,7 +1027,7 @@ coordinate path, result, or output changes under 50S.6A. The candidate Mac
 verification passed all 138 documentation tests in 3.99 seconds and the
 corrected branch diff check was clean.
 
-### Candidate 50S.6B conservative cone-shell selector
+### Accepted 50S.6B conservative cone-shell selector
 
 The candidate adds `satellites/crossing_acceleration.py` as the distinct owner
 of immutable tri-state first-stage evidence. It evaluates one accepted
@@ -1042,4 +1042,7 @@ weak cases are `indeterminate`. The accepted exhaustive oracle is unchanged
 and remains independently callable. This slice adds no accelerated coordinator
 and cannot return crossing results. Candidate verification passed the 9-test
 dedicated gate, 78-test expanded gate, 139-test documentation gate, and all
-2,549 plugin-disabled tests. The branch and diff checks were clean.
+2,549 plugin-disabled tests. The branch and diff checks were clean. Fernando scientifically and
+architecturally accepted the bounded selector on 2026-09-16. Only a
+50S.6C documentation-first coordination, broader-domain, and benchmark audit is
+authorized next.

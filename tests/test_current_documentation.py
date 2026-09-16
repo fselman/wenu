@@ -5649,7 +5649,7 @@ def test_50s6a_records_accepted_conservative_crossing_acceleration():
     assert "all later behavior would remain unauthorized" in audit
 
 
-def test_50s6b_documents_candidate_cone_shell_selector():
+def test_50s6b_documents_accepted_cone_shell_selector():
     architecture = " ".join(read(V09_CURRENT).split())
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
     reference = " ".join(read(
@@ -5663,13 +5663,13 @@ def test_50s6b_documents_candidate_cone_shell_selector():
     guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
-    assert "Candidate 50S.6B conservative cone-shell selector" in architecture
+    assert "Accepted 50S.6B conservative cone-shell selector" in architecture
     assert "50S.6B — First conservative cone-shell selector" in roadmap
     assert "ConservativeConeShellSelector.select(query)" in reference
-    assert "Candidate 50S.6B selector ownership" in source_tree
-    assert "Candidate 50S.6B cone-shell coordinate evidence" in coordinate_guide
-    assert "Candidate 50S.6B cone-shell selector" in guide
-    assert "Candidate 50S.6B cone-shell selector boundary" in instructions
+    assert "Accepted 50S.6B selector ownership" in source_tree
+    assert "Accepted 50S.6B cone-shell coordinate evidence" in coordinate_guide
+    assert "Accepted 50S.6B cone-shell selector" in guide
+    assert "Accepted 50S.6B cone-shell selector boundary" in instructions
     for phrase in (
         "src/wenu/satellites/crossing_acceleration.py",
         "synthetic_50s4b_v1",
@@ -5685,8 +5685,10 @@ def test_50s6b_documents_candidate_cone_shell_selector():
         "documentation gate passed all 139 tests in 4.72 seconds",
         "complete plugin-disabled suite passed all 2,549 tests in 200.47 seconds",
         "git diff --check d609322...HEAD",
-        "scientific and architectural acceptance remains pending",
+        "scientifically and architecturally accepted 50S.6B on 2026-09-16",
     ):
         assert phrase in audit
     assert "does not coordinate an accelerated solve" in reference
     assert "package exports expose the four selector contracts" in source_tree
+    assert "documentation-first 50S.6C audit" in roadmap
+    assert "further runtime acceleration remains unauthorized" in roadmap

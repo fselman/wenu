@@ -2608,7 +2608,7 @@ the topocentric field-cone versus bounded orbital-shell selector. Phase,
 coarse-state, HEALPix/time, horizon, and occultation filters remain outside that
 first slice.
 
-### Conservative cone-shell selector (50S.6B candidate)
+### Conservative cone-shell selector (50S.6B accepted)
 
 `ConeShellPolicy` declares the admitted snapshot, 60-second interval limit,
 element-domain limits, outward orbital-speed factor, observer-speed bound, and
@@ -2622,3 +2622,6 @@ records. The selector never returns `SatelliteCrossingResult` and does not
 coordinate an accelerated solve. The accepted
 `LocalSatelliteCrossingOracle.solve(query)` API and implementation remain
 unchanged.
+
+Fernando scientifically and architecturally accepted this bounded selector on
+2026-09-16. No accelerated solve API exists.

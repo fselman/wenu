@@ -257,7 +257,7 @@ Phase/reachable-arc filtering, coarse vectorized propagation, HEALPix/time
 indexing, horizon/occultation semantics, 50S.7, and all later behavior would
 remain unauthorized.
 
-## 14. Candidate 50S.6B implementation
+## 14. Accepted 50S.6B implementation
 
 The bounded candidate adds `src/wenu/satellites/crossing_acceleration.py`,
 exports four supported immutable selector contracts, and adds
@@ -285,5 +285,8 @@ tests in 4.72 seconds, and the complete plugin-disabled suite passed all 2,549
 tests in 200.47 seconds. The working tree was clean and
 `git diff --check d609322...HEAD` passed.
 
-Focused, complete-suite, documentation, and diff gates are complete. Fernando's
-scientific and architectural acceptance remains pending.
+Focused, complete-suite, documentation, and diff gates are complete. Fernando
+scientifically and architecturally accepted 50S.6B on 2026-09-16. This
+acceptance authorizes only a documentation-first 50S.6C coordination,
+broader-domain, and benchmark-admission audit; further runtime acceleration,
+phase/coarse-state/indexing stages, and later behavior remain unauthorized.

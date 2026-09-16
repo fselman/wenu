@@ -763,7 +763,7 @@ Only bounded 50S.6B implementation of the first topocentric cone/orbital-shell
 selector is authorized. No phase stage, coarse vectorized propagator,
 HEALPix/time index, horizon/occultation filter, or later behavior is authorized.
 
-### Candidate 50S.6B cone-shell selector boundary
+### Accepted 50S.6B cone-shell selector boundary
 
 The candidate `satellites/crossing_acceleration.py` adds only immutable
 `ConeShellPolicy`, `ConeShellDecision`, `ConeShellSelection`, and
@@ -777,3 +777,6 @@ Every unsupported snapshot, longer interval, unsupported element regime,
 insufficient range, or initial-state failure is `indeterminate` and must reach
 the exact 50S.5 solver. No accelerated coordinator, phase filter, coarse-state
 filter, horizon/occultation filter, index, or changed oracle result is included.
+Fernando scientifically and architecturally accepted this bounded selector on
+2026-09-16. Only a documentation-first 50S.6C coordination, broader-domain,
+and benchmark-admission audit is authorized next.
