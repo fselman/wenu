@@ -2296,10 +2296,9 @@ claims, default enablement, phase/coarse/index stages, 50S.7, and later behavior
 remain unauthorized.
 
 
-### 50S.6D — Bounded accelerated exact-solver coordination (candidate)
+### 50S.6D — Bounded accelerated exact-solver coordination (accepted)
 
-**Status:** Candidate implementation; scientific and architectural acceptance
-pending.
+**Status:** Accepted by Fernando on 2026-09-16.
 
 Extract one unchanged package-internal exact-record seam from the exhaustive
 50S.5 oracle. Keep the exhaustive public route independently callable and
@@ -2321,5 +2320,5 @@ or 50S.7 behavior.
 
 Candidate verification at commit `a7aecba` passed all 37 dedicated tests, 93
 expanded immediate-seam tests, 141 documentation tests, and the complete 2,566
-plugin-disabled tests. Acceptance and final branch-integrity checks remain
-pending.
+plugin-disabled tests. Fernando scientifically and architecturally accepted 50S.6D on 2026-09-16.
+No later acceleration milestone is authorized automatically.
