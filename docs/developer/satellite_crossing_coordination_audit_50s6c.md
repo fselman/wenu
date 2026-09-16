@@ -210,3 +210,26 @@ coordination using the already accepted cone-shell selector inside its existing
 three-record, 60-second domain. Broader-domain activation, benchmark claims,
 default enablement, phase/coarse/indexing stages, 50S.7, and all later behavior
 would remain unauthorized.
+
+
+## 13. Candidate 50S.6D implementation record
+
+The candidate implementation extracts the existing exact per-record operation
+into one package-internal seam owned by `crossing_oracle.py`. The exhaustive
+public oracle still scans every record. The opt-in coordinator in
+`crossing_acceleration.py` validates complete query identity and
+NORAD-ordered coverage, solves every retain and indeterminate record through
+that same seam, and records rejected and exactly evaluated identifiers in
+immutable evidence.
+
+Selector exceptions fall back to the complete exhaustive route by default or
+fail closed under explicit policy. Malformed selection evidence and any reject
+outside `synthetic_50s4b_v1` or the 60-second limit fail closed. Exact results
+remain separate from acceleration evidence.
+
+The candidate adds no broader domain, fixture, benchmark claim, default
+enablement, new filter stage, coordinate path, dependency, CLI, report,
+drawing, illumination, photometry, or later satellite behavior. Acceptance
+requires the dedicated acceleration gate, the expanded immediate-seam gate,
+the complete plugin-disabled suite, documentation preflight, clean branch
+diff, and Fernando's scientific and architectural review.
