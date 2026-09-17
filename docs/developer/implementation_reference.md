@@ -2796,3 +2796,11 @@ correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
 tests passed. The frozen 14,643-byte response and receipt share SHA-256
 `67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. This does not approve the digest for GP access; that explicit
 human acknowledgement remains a separate operation.
+
+The accepted CelesTrak CSV adapter requires the observed suffix-free
+`YYYY-MM-DDTHH:MM:SS.ffffff` epoch form, applies the provider's declared UTC
+invariant, and stores canonical explicit-`Z` instants. The offline command
+requires the captured media type; it must not synthesize one. Fernando accepted
+this repair and the 16,559-record snapshot on 2026-09-17 after 15 focused and
+2,600 complete plugin-disabled tests. Raw SHA-256 is `e54730e14b2097444c5e20bba6dd13d3e2d92f956797d49256ddb1a70ffe5014`; canonical
+SHA-256 is `e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`. No second request or 50S.6G.1B.2 work is implied.

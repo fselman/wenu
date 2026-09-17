@@ -6241,3 +6241,16 @@ def test_50s6g1b1_documents_offline_snapshot_builder_boundary():
     assert "2.41 seconds" in audit
     assert "226.25 seconds" in audit
     assert "Explicit approval of this exact digest remains" in audit
+    for document in (
+        architecture, roadmap, reference, guide, instructions, audit
+    ):
+        assert "e54730e14b2097444c5e20bba6dd13d3e2d92f956797d49256ddb1a70ffe5014" in document
+        assert "e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347" in document
+        assert "16,559" in document
+        assert "2,600" in document
+    assert "YYYY-MM-DDTHH:MM:SS.ffffff" in audit
+    assert "text/plain; charset=UTF-8" in audit
+    assert "15 focused tests passed in 2.22 seconds" in audit
+    assert "2,600 plugin-disabled tests passed in 223.57 seconds" in audit
+    assert "No second provider request occurred" in audit
+    assert "50S.6G.1B.2 remain separately authorized" in audit
