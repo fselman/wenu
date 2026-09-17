@@ -1129,3 +1129,13 @@ fresh-subprocess worker, and explicit offline developer command. Only bounded
 production-path implementation with fake data is authorized next. Do not read,
 discover, copy, hash, or otherwise access the external real specimen; do not
 propagate it, execute a route, or infer performance under this audit.
+
+### Accepted real-execution readiness boundary
+
+Fernando scientifically and architecturally accepted the fail-closed audit on
+2026-09-17 after 163 plugin-disabled current-documentation tests passed in
+3.80 seconds at `054ac39`. Implement only the bounded production path using
+fake data: exact receipt constraints, frozen fixture, production airmass
+certifier, fresh-subprocess protocol and worker, offline command, and tests.
+Do not access the accepted real specimen or execute the real matrix without a
+later separate explicit authorization.
