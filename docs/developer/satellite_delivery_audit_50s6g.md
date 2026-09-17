@@ -345,9 +345,9 @@ illumination, brightness, detector effects, or observatory adapters.
 - CCSDS 502.0 Orbit Data Messages, consulted to retain OEM as an orbit/state
   ephemeris option rather than a Wenu crossing-report substitute.
 
-## 13. Candidate 50S.6G.1A implementation handoff
+## 13. Accepted 50S.6G.1A implementation handoff
 
-The candidate implements only `load_snapshot_directory(directory)` in the
+The accepted implementation adds only `load_snapshot_directory(directory)` in the
 existing immutable snapshot owner. One explicit local non-symlink directory
 must contain a non-symlink regular `manifest.json` and a non-symlink regular
 records file named by that manifest. Directory names do not define snapshot
@@ -359,9 +359,11 @@ record-count, full-NORAD identity/order, OMM semantics, epoch, provenance, and
 warning validation. The focused tests extend the existing satellite-element
 owner; no new production or test file is added.
 
-This candidate performs no discovery, acquisition, provider access, network,
+This implementation performs no discovery, acquisition, provider access, network,
 retry, fallback, cache write, atomic directory publication, representative
 catalogue packaging, coordinator admission, benchmark, report, CLI/file,
-track, chart, illumination, or later behavior. Acceptance would authorize only
-a separately bounded 50S.6G.1B representative snapshot preflight and evidence
-audit, not its implementation.
+track, chart, illumination, or later behavior. Fernando scientifically and
+architecturally accepted 50S.6G.1A on 2026-09-17 after the 164-test focused
+gate and all 2,583 plugin-disabled tests passed. Only a separately bounded
+50S.6G.1B representative snapshot preflight and evidence audit is authorized
+next, not its implementation.

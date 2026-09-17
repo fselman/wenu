@@ -2422,7 +2422,7 @@ bounded 50S.6G.1A external immutable snapshot loading is authorized next.
 
 #### 50S.6G.1A — External immutable snapshot seam
 
-**Status:** Candidate bounded implementation.
+**Status:** Accepted bounded implementation.
 
 The candidate adds an explicit local-directory loader beside the installed
 snapshot loader. It accepts no implicit location and derives scientific
@@ -2436,3 +2436,8 @@ This slice performs no acquisition or network access, packages no
 representative catalogue, and does not admit an external snapshot to the
 50S.6F coordinator. It adds no builder, policy preflight, benchmark, CLI,
 report, chart, track, illumination, or later 50S.6G behavior.
+
+Fernando scientifically and architecturally accepted 50S.6G.1A on 2026-09-17
+after the 164-test focused gate and all 2,583 plugin-disabled tests passed.
+Only a separately bounded 50S.6G.1B representative snapshot preflight and
+evidence audit is authorized next, not its implementation.

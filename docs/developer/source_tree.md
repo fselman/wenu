@@ -1996,7 +1996,7 @@ Fernando scientifically and architecturally accepted this ownership on
 authorized next.
 
 
-## Candidate 50S.6G.1A production ownership
+## Accepted 50S.6G.1A production ownership
 
 `src/wenu/satellites/snapshots.py` owns the candidate explicit-directory
 loader because installed and external immutable resources share the same
@@ -2009,3 +2009,7 @@ reuse, symlink rejection, traversal rejection, digest mutation, and package
 export. No new test file or production owner is justified. Acquisition,
 builder, cache/publication, coordinator admission, CLI, report, and chart
 ownership remain unchanged.
+
+Fernando scientifically and architecturally accepted this ownership on
+2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled tests
+passed. Only a separately bounded 50S.6G.1B audit is authorized next.

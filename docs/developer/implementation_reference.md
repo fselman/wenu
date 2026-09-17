@@ -2721,7 +2721,7 @@ Fernando scientifically and architecturally accepted this direction on
 4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
 authorized next; every interface described above remains unimplemented.
 
-## Candidate explicit-directory satellite snapshot loader
+## Accepted explicit-directory satellite snapshot loader
 
 `load_snapshot_directory(directory) -> SatelliteElementSnapshot` loads one
 caller-selected local directory. `directory` accepts a string or path-like
@@ -2735,3 +2735,7 @@ directory name is not compared with `manifest.snapshot_id`. Invalid type,
 path, manifest, records, canonicalization, digest, or record content fails
 before a snapshot is returned. The function performs no network access,
 acquisition, publication, fallback, or runtime admission.
+
+Fernando scientifically and architecturally accepted this interface on
+2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled tests
+passed. Only a separately bounded 50S.6G.1B audit is authorized next.

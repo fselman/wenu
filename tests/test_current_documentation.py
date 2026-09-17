@@ -6042,7 +6042,7 @@ def test_50s6g_audits_representative_delivery_reports_files_and_tracks():
         )
 
 
-def test_50s6g1a_documents_candidate_external_snapshot_loader():
+def test_50s6g1a_documents_accepted_external_snapshot_loader():
     audit = " ".join(read(
         DEVELOPER / "satellite_delivery_audit_50s6g.md"
     ).split())
@@ -6057,28 +6057,41 @@ def test_50s6g1a_documents_candidate_external_snapshot_loader():
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
-        "Candidate 50S.6G.1A implementation handoff",
+        "Accepted 50S.6G.1A implementation handoff",
         "load_snapshot_directory(directory)",
         "explicit local non-symlink directory",
         "Directory names do not define snapshot identity",
         "same immutable snapshot through the accepted complete schema",
         "no discovery, acquisition, provider access, network",
         "no new production or test file is added",
-        "authorize only a separately bounded 50S.6G.1B",
+        "Only a separately bounded 50S.6G.1B",
         "not its implementation",
     ):
         assert phrase in audit
 
-    assert "candidate 50S.6G.1A implementation" in architecture
-    assert "Candidate bounded implementation" in roadmap
-    assert "Candidate explicit-directory satellite snapshot loader" in (
+    assert "accepted 50S.6G.1A implementation" in architecture
+    assert "Accepted bounded implementation" in roadmap
+    assert "Accepted explicit-directory satellite snapshot loader" in (
         reference
     )
-    assert "Candidate 50S.6G.1A production ownership" in source_tree
-    assert "Candidate 50S.6G.1A coordinate review" in coordinate_guide
-    assert "Candidate 50S.6G.1A external snapshot loading" in guide
-    assert "Candidate 50S.6G.1A external snapshot boundary" in instructions
+    assert "Accepted 50S.6G.1A production ownership" in source_tree
+    assert "Accepted 50S.6G.1A coordinate review" in coordinate_guide
+    assert "Accepted 50S.6G.1A external snapshot loading" in guide
+    assert "Accepted 50S.6G.1A external snapshot boundary" in instructions
     assert "performs no network access, acquisition, publication" in reference
     assert "does not admit an external snapshot to the 50S.6F coordinator" in (
         roadmap
     )
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+    ):
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "2,583 plugin-disabled tests passed" in document

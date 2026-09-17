@@ -3485,10 +3485,13 @@ Fernando scientifically and architecturally accepted this boundary on
 authorized next; no implemented coordinate meaning changes.
 
 
-## Candidate 50S.6G.1A coordinate review
+## Accepted 50S.6G.1A coordinate review
 
 The coordinate guide was reviewed for the external immutable snapshot loader;
 no coordinate, origin, frame, time-scale, epoch, propagation, topocentric, FoV,
 or airmass meaning changes. The loader validates canonical OMM records only.
 TEME remains the SGP4 propagation frame and is not reinterpreted as ICRS,
 GCRS, an observer frame, or a chart product frame.
+Fernando scientifically and architecturally accepted this coordinate boundary
+on 2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled
+tests passed. Only the bounded 50S.6G.1B audit is authorized next.
