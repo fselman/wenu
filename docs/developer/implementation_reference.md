@@ -2914,3 +2914,17 @@ with receipt
 Fernando accepted it on 2026-09-17 at `c4cd009` after 157 plugin-disabled
 documentation tests passed in 4.66 seconds. No other artifact is implied by
 this acceptance, and 50S.6G.1B.2D remains unauthorized.
+
+### Proposed exact-equivalence matrix contract
+
+Candidate 50S.6G.1B.2D assigns a future
+`satellites/crossing_matrix.py` owner to canonicalize and compare the existing
+`LocalSatelliteCrossingOracle` and
+`AcceleratedLocalSatelliteCrossingOracle`. It must consume one exact
+digest-admitted medium snapshot, atomically certify all 10 La Ligua fields,
+forbid exhaustive fallback, compare complete ordered result bytes and digests,
+capture isolated raw resource observations, and publish only fully revalidated
+external evidence.
+
+The proposed `run-equivalence-matrix` developer command is offline. Neither
+the owner nor command exists yet.
