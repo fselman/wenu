@@ -326,17 +326,27 @@ def _validate_partition(query, evidence, exhaustive_results):
     return counts
 
 
-def _validate_existing(directory, report):
+def _validate_existing(directory, report, manifest):
     root = Path(directory)
     report_bytes = _regular_bytes(
         root / "equivalence-report.json", name="equivalence report"
     )
-    actual = _json_object(report_bytes, name="equivalence report")
-    if canonical_json_bytes(actual) != report_bytes:
+    actual_report = _json_object(report_bytes, name="equivalence report")
+    if canonical_json_bytes(actual_report) != report_bytes:
         raise ValueError("equivalence report is not canonical JSON.")
-    if actual != report:
+    if actual_report != report:
         raise ValueError("existing matrix report does not match.")
-    for name, digest in report["file_sha256"].items():
+
+    manifest_bytes = _regular_bytes(
+        root / "matrix-manifest.json", name="matrix manifest"
+    )
+    actual_manifest = _json_object(manifest_bytes, name="matrix manifest")
+    if canonical_json_bytes(actual_manifest) != manifest_bytes:
+        raise ValueError("matrix manifest is not canonical JSON.")
+    if actual_manifest != manifest:
+        raise ValueError("existing matrix manifest does not match.")
+
+    for name, digest in manifest["file_sha256"].items():
         if sha256_hex(_regular_bytes(root / name, name=name)) != digest:
             raise ValueError(f"existing matrix file digest mismatch: {name}.")
     return root
@@ -587,7 +597,7 @@ def run_equivalence_matrix(
         raise ValueError("output_root must be a non-symlink directory.")
     destination = output_root / report_digest
     if destination.exists():
-        return _validate_existing(destination, report)
+        return _validate_existing(destination, report, manifest)
 
     stage = Path(tempfile.mkdtemp(prefix=".matrix-", dir=output_root))
     try:
@@ -597,7 +607,7 @@ def run_equivalence_matrix(
         (stage / "matrix-manifest.json").write_bytes(
             canonical_json_bytes(manifest)
         )
-        _validate_existing(stage, report)
+        _validate_existing(stage, report, manifest)
         os.rename(stage, destination)
     finally:
         if stage.exists():
