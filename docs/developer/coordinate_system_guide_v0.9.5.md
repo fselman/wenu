@@ -3694,4 +3694,12 @@ the accepted La Ligua geodetic position. Its ten fields use only 15- and
 60-second intervals; two distinct fields share one 15-second interval. Runtime
 airmass admission independently certifies every centre throughout its complete
 interval at maximum airmass 2 before any worker starts. No apparent, observed,
-or ICRS label is introduced.
+or ICRS label is introduced.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.
