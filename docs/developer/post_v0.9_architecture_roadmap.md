@@ -2468,3 +2468,15 @@ after all 147 plugin-disabled current-documentation tests passed in 4.54
 seconds. Only bounded 50S.6G.1B.1 fake-transport policy-receipt and
 deterministic-builder implementation is authorized next. A live provider
 request and 50S.6G.1B.2 admission/evidence remain separately authorized.
+
+**50S.6G.1B.1 implementation state.** The policy receipt, exact SHA-256
+acknowledgement, fixed Active CSV normalization, raw receipts, staged
+validation, and atomic external publication are implemented behind a mandatory
+injected transport. The developer command is offline and consumes explicit
+response files. A live CelesTrak transport/request remains a separate human
+policy checkpoint; 50S.6G.1B.2 representative admission and evidence remain
+future work.
+
+Fernando accepted the 50S.6G.1B.1 implementation on 2026-09-17 after 175
+focused plugin-disabled tests and all 2,594 plugin-disabled tests passed.
+No live CelesTrak request or 50S.6G.1B.2 work is thereby authorized.

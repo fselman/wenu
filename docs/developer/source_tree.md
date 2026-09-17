@@ -1995,6 +1995,25 @@ Fernando scientifically and architecturally accepted this ownership on
 4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
 authorized next.
 
+## Implemented 50S.6G.1B.1 ownership
+
+- `src/wenu/satellites/snapshot_acquisition.py` owns provider-policy receipts,
+  injected one-request transport, CelesTrak Active CSV normalization, evidence
+  receipts, staging, validation, and atomic external publication.
+- `tools/build_satellite_snapshot.py` is the thin offline developer command;
+  it consumes explicit response files and has no live transport.
+- `tests/test_satellite_snapshot_acquisition.py` owns the stable provider and
+  filesystem fault contract, including zero GP calls before exact digest
+  acknowledgement and no partial publication.
+
+`snapshots.py` remains the network-free immutable loader and
+`minor_body_acquisition.py` retains its scientifically distinct Horizons/SBDB
+ownership. No chart, runtime CLI, report, projection, or coordinate owner
+changes. Live CelesTrak access and 50S.6G.1B.2 remain unauthorized.
+
+Fernando accepted this ownership and implementation on 2026-09-17 after 175
+focused plugin-disabled tests and all 2,594 plugin-disabled tests passed.
+
 
 ## Accepted 50S.6G.1A production ownership
 

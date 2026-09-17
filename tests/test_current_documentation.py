@@ -6178,3 +6178,47 @@ def test_50s6g1b_accepts_representative_snapshot_preflight_and_evidence():
         )
     assert "no live CelesTrak request" in architecture
     assert "fake-transport" in roadmap
+
+
+def test_50s6g1b1_documents_offline_snapshot_builder_boundary():
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_preflight_audit_50s6g1b.md"
+    ).split())
+
+    assert "Implemented 50S.6G.1B.1 offline snapshot builder" in architecture
+    assert "mandatory injected transport" in roadmap
+    assert "offline developer command" in reference
+    assert "snapshot_acquisition.py" in source_tree
+    assert "build_satellite_snapshot.py" in source_tree
+    assert "test_satellite_snapshot_acquisition.py" in source_tree
+    assert "adds no coordinate transform" in coordinate_guide
+    assert "preserves full NORAD identifiers" in guide
+    assert "Preserve the absence of a default or live network adapter" in (
+        instructions
+    )
+    assert "No live provider request or 50S.6G.1B.2 evidence" in audit
+    for document in (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+        audit,
+    ):
+        assert "Fernando accepted" in document
+        assert "2026-09-17" in document
+        assert "2,594 plugin-disabled tests passed" in document
+    assert "175 focused plugin-disabled tests passed" in audit
+    assert "226.82 seconds" in audit
+    assert "does not authorize a live policy or GP request" in audit

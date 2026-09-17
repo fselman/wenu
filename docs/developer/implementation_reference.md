@@ -2761,3 +2761,23 @@ Fernando scientifically and architecturally accepted this contract on
 2026-09-17 after all 147 plugin-disabled current-documentation tests passed in
 4.54 seconds. Only the bounded fake-transport 50S.6G.1B.1 implementation is
 authorized next; live provider access and 50S.6G.1B.2 remain unauthorized.
+
+### Implemented offline satellite snapshot acquisition seam
+
+Use `freeze_policy_receipt(..., transport=...)` and
+`acquire_active_snapshot(..., transport=...)` from
+`wenu.satellites.snapshot_acquisition`. A transport is mandatory and no
+stdlib, third-party, or implicit network implementation is supplied. The
+offline developer command `tools/build_satellite_snapshot.py` accepts only
+explicit response files. Its `build` operation requires the exact
+`--accept-policy-sha256` value and writes only beneath the explicit external
+snapshot root.
+
+The six-file directory remains content-addressed by canonical `records.json`,
+retains full raw policy and provider bytes, and is validated before atomic
+rename. CelesTrak `GROUP=active` remains a representative provider population,
+not a complete resident-space-object catalogue.
+
+Fernando accepted this offline builder on 2026-09-17 after 175 focused tests
+and all 2,594 plugin-disabled tests passed. A real policy fetch, GP request,
+and exact policy-digest approval remain separately authorized operations.

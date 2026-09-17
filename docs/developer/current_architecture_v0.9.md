@@ -1158,3 +1158,22 @@ Fernando scientifically and architecturally accepted 50S.6G.1B on 2026-09-17
 after all 147 plugin-disabled current-documentation tests passed in 4.54
 seconds. Only bounded 50S.6G.1B.1 fake-transport implementation is authorized
 next; no live CelesTrak request or representative admission is authorized.
+
+## Implemented 50S.6G.1B.1 offline snapshot builder
+
+`satellites/snapshot_acquisition.py` now implements the accepted policy
+receipt, exact policy-response SHA-256 acknowledgement, deterministic Active
+CSV normalization, and atomic external publication contract. The production
+owner has no network adapter: callers must inject its single-request
+transport. Therefore this implementation and its tests cannot initiate live
+CelesTrak access. The acknowledgement is checked before the GP transport is
+called, every row passes the existing typed OMM validator, and the staged
+snapshot passes `load_snapshot_directory()` before publication.
+
+This slice does not authorize a live request, cache-refresh override,
+representative admission or evidence, 50S.6G.1B.2, or a runtime default.
+
+Fernando accepted the bounded 50S.6G.1B.1 implementation on 2026-09-17 after
+175 focused plugin-disabled tests and all 2,594 plugin-disabled tests passed.
+`git diff --check` and the working tree were clean. Acceptance does not
+authorize a live CelesTrak request or 50S.6G.1B.2.
