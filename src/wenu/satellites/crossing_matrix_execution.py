@@ -7,6 +7,7 @@ is intentionally private to the developer command and remains digest-bound.
 from __future__ import annotations
 
 from dataclasses import asdict, is_dataclass
+from datetime import datetime, timezone
 from enum import Enum
 import json
 from importlib.metadata import PackageNotFoundError, version
@@ -62,6 +63,17 @@ ACCEPTED_MEDIUM_IDENTITY = MatrixSpecimenIdentity(
     parent_content_sha256="e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347",
     record_count=256,
 )
+ACCEPTED_MEDIUM_SNAPSHOT_IDENTITY = ExternalSnapshotIdentity(
+    schema_version=1,
+    snapshot_id="medium_2e85c576e287a047",
+    content_sha256=ACCEPTED_MEDIUM_IDENTITY.content_sha256,
+    source_identity="CelesTrak GP GROUP=active",
+    source_url=(
+        "https://celestrak.org/NORAD/elements/"
+        "gp.php?GROUP=active&FORMAT=CSV"
+    ),
+    builder_identity=MEDIUM_SPECIMEN_IMPLEMENTATION,
+)
 
 _OBSERVER = {
     "observer_id": "la-ligua",
@@ -76,17 +88,25 @@ _OBSERVER = {
 # sidereal angle at La Ligua minus the declared hour-angle offset; declination
 # is the site latitude plus the declared offset.  Durations are only 15 or 60 s.
 _FIELDS = (
-    ("field-00", 329.785643112, -47.443342, 0.25, "2026-09-17T01:00:00.000000Z", "2026-09-17T01:00:15.000000Z", -30.0, -15.0),
-    ("field-01", 319.785643112, -42.443342, 0.50, "2026-09-17T01:00:00.000000Z", "2026-09-17T01:00:15.000000Z", -20.0, -10.0),
-    ("field-02", 310.287012037, -37.443342, 1.00, "2026-09-17T01:02:00.000000Z", "2026-09-17T01:02:15.000000Z", -10.0, -5.0),
-    ("field-03", 300.882387719, -32.443342, 2.00, "2026-09-17T01:04:00.000000Z", "2026-09-17T01:05:00.000000Z", 0.0, 0.0),
-    ("field-04", 291.289749886, -27.443342, 3.00, "2026-09-17T01:06:00.000000Z", "2026-09-17T01:06:15.000000Z", 10.0, 5.0),
-    ("field-05", 281.885125569, -22.443342, 0.25, "2026-09-17T01:08:00.000000Z", "2026-09-17T01:09:00.000000Z", 20.0, 10.0),
-    ("field-06", 272.292487905, -17.443342, 0.50, "2026-09-17T01:10:00.000000Z", "2026-09-17T01:10:15.000000Z", 30.0, 15.0),
-    ("field-07", 327.887863419, -44.443342, 1.00, "2026-09-17T01:12:00.000000Z", "2026-09-17T01:13:00.000000Z", -25.0, -12.0),
-    ("field-08", 298.295225754, -24.443342, 2.00, "2026-09-17T01:14:00.000000Z", "2026-09-17T01:14:15.000000Z", 5.0, 8.0),
-    ("field-09", 278.890601436, -20.443342, 3.00, "2026-09-17T01:16:00.000000Z", "2026-09-17T01:17:00.000000Z", 25.0, 12.0),
+    ("field-00", 329.703675971877, -47.571720052137, 0.25, "2026-09-17T01:00:00.000000Z", "2026-09-17T01:00:15.000000Z", -30.0, -15.0),
+    ("field-01", 319.697816413667, -42.556383431782, 0.50, "2026-09-17T01:00:00.000000Z", "2026-09-17T01:00:15.000000Z", -20.0, -10.0),
+    ("field-02", 310.200558693187, -37.538632618425, 1.00, "2026-09-17T01:02:00.000000Z", "2026-09-17T01:02:15.000000Z", -10.0, -5.0),
+    ("field-03", 300.802077905052, -32.518488793147, 2.00, "2026-09-17T01:04:00.000000Z", "2026-09-17T01:05:00.000000Z", 0.0, 0.0),
+    ("field-04", 291.218986104295, -27.495872616984, 3.00, "2026-09-17T01:06:00.000000Z", "2026-09-17T01:06:15.000000Z", 10.0, 5.0),
+    ("field-05", 281.826532343408, -22.472276332411, 0.25, "2026-09-17T01:08:00.000000Z", "2026-09-17T01:09:00.000000Z", 20.0, 10.0),
+    ("field-06", 272.247585457736, -17.447416344019, 0.50, "2026-09-17T01:10:00.000000Z", "2026-09-17T01:10:15.000000Z", 30.0, 15.0),
+    ("field-07", 327.810134506323, -44.569097339298, 1.00, "2026-09-17T01:12:00.000000Z", "2026-09-17T01:13:00.000000Z", -25.0, -12.0),
+    ("field-08", 298.236918318459, -24.512591958411, 2.00, "2026-09-17T01:14:00.000000Z", "2026-09-17T01:14:15.000000Z", 5.0, 8.0),
+    ("field-09", 278.837453239516, -20.464571010991, 3.00, "2026-09-17T01:16:00.000000Z", "2026-09-17T01:17:00.000000Z", 25.0, 12.0),
 )
+
+
+def _midpoint(start, stop):
+    left = datetime.fromisoformat(start.replace("Z", "+00:00"))
+    right = datetime.fromisoformat(stop.replace("Z", "+00:00"))
+    return (left + (right - left) / 2).astimezone(timezone.utc).isoformat(
+        timespec="microseconds"
+    ).replace("+00:00", "Z")
 
 
 def _fixture_mapping():
@@ -100,6 +120,9 @@ def _fixture_mapping():
             "position_status": "geometric",
             "time_scale": "utc",
             "centre_recipe": "midpoint local sidereal angle minus hour-angle offset; site latitude plus declination offset",
+            "transformation": "Astropy CIRS at La Ligua to GCRS at the same midpoint",
+            "astropy_version": "8.0.1",
+            "iers_a_sha256": "e3905ff7a74b791744704aa3e900a2161e96db97a30095d8fc442b04e4cfe058",
         },
         "time_tolerance_seconds": 0.01,
         "angular_tolerance_deg": 1.0e-5,
@@ -108,6 +131,7 @@ def _fixture_mapping():
                 "field_id": item[0], "center_longitude_deg": item[1],
                 "center_latitude_deg": item[2], "angular_radius_deg": item[3],
                 "interval_start": item[4], "interval_stop": item[5],
+                "centre_instant_utc": _midpoint(item[4], item[5]),
                 "hour_angle_offset_deg": item[6], "declination_offset_deg": item[7],
             }
             for item in _FIELDS
@@ -117,7 +141,7 @@ def _fixture_mapping():
 
 MATRIX_REQUEST_FIXTURE = _fixture_mapping()
 MATRIX_REQUEST_FIXTURE_SHA256 = (
-    "a7c04ab59d4578221e943e0e21c4be24782fe72a62eff70c230300dfe60cd097"
+    "5370eaa0e14ecaddc4321a7cde1de14e3d7063e4dc7c67d69af3f781e8125b3f"
 )
 if sha256_hex(canonical_json_bytes(MATRIX_REQUEST_FIXTURE)) != MATRIX_REQUEST_FIXTURE_SHA256:
     raise RuntimeError("frozen matrix request fixture digest mismatch.")
@@ -131,7 +155,7 @@ def build_matrix_queries(snapshot):
         spec = CoordinateSpec(
             frame="gcrs-axes", origin="topocentric-direction",
             position_status=PositionStatus.GEOMETRIC,
-            instant=start, time_scale="utc",
+            instant=_midpoint(start, stop), time_scale="utc",
             provider=MATRIX_EXECUTION_IMPLEMENTATION,
         )
         queries.append(LocalSatelliteCrossingQuery(
@@ -366,7 +390,7 @@ def run_production_equivalence_matrix(snapshot_directory, output_root, *, specim
     validate_accepted_medium_receipt(json.loads(receipt_bytes))
     admission = ExternalSnapshotAdmissionPolicy(
         MATRIX_EXECUTION_IMPLEMENTATION,
-        (ExternalSnapshotIdentity.from_snapshot(snapshot),),
+        (ACCEPTED_MEDIUM_SNAPSHOT_IDENTITY,),
     ).admit(snapshot)
     return run_equivalence_matrix(
         root, output_root, specimen_identity=specimen_identity,
