@@ -2862,3 +2862,20 @@ Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
 fake-data implementation is authorized next. The first real medium selection,
 50S.6G.1B.2D matrix execution, and later delivery remain separately
 unauthorized.
+
+### Deterministic medium snapshot evidence API
+
+`select_medium_snapshot(parent_directory, output_root, *, admission,
+target_count=256)` is the candidate 50S.6G.1B.2C API in
+`satellites/snapshot_evidence.py`. It accepts no transport and no current
+time. The function requires an `ExternalSnapshotAdmission`, validates the
+parent snapshot, acquisition report, captured provider-response bytes and
+retrieval interval, and uses `retrieved_stopped_utc` as the signed-age
+reference.
+
+It publishes `manifest.json`, `records.json`, and
+`selection-receipt.json` beneath the subset canonical-record digest. Existing
+products are fully revalidated and never overwritten. The receipt contains no
+filesystem path. The 2026-09-17 fake-data gate passed 30 plugin-disabled tests
+in 5.99 seconds. Real medium selection and matrix execution remain
+unauthorized.
