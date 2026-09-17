@@ -2392,3 +2392,27 @@ after 2,577 plugin-disabled tests passed. Only a separately bounded 50S.6G
 audit is authorized next. Representative-scale catalogue admission, generic
 reports, chart tracks, CLI/file adapters, and a validation-output file remain
 unimplemented and unauthorized pending that audit.
+
+
+### 50S.6G — Representative delivery, reports, files, and exact chart tracks
+
+**Status:** Candidate documentation-only audit.
+
+The candidate `satellite_delivery_audit_50s6g.md` decomposes delivery into an
+external immutable snapshot seam; a policy-governed representative builder and
+scale/equivalence matrix; one canonical exact-crossing model with deterministic
+JSON, ECSV, and VOTable encodings; an atomic direct CLI plus JSON two-call file
+protocol; certified exact local track evidence; binocular/regional products;
+and a separate stereographic-planisphere audit and implementation.
+
+File validation remains atomic. An invalid request file solves no fields and
+may write one versioned validation-output JSON that records every rejected FoV
+and embeds the ordered valid subset as a complete derived request. A second
+explicit invocation revalidates that derived request before calculation.
+
+All chart products reuse the canonical spherical-geometry, projection,
+preparation, rendering, semantic-SVG, and export flow. 50S.6G reports and
+tracks remain geometric: illumination, brightness, detector effects, direct
+observatory adapters, scheduling decisions, and observatory writes remain
+50S.6H–50S.10 work. This audit changes no runtime or output and authorizes no
+implementation before separate acceptance.
