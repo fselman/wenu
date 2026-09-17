@@ -259,6 +259,21 @@ def _number(value, kind, name):
         raise ValueError(f"{name} has an invalid value.") from error
 
 
+def _celestrak_epoch(value):
+    value = value.strip()
+    try:
+        parsed = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+    except ValueError as error:
+        raise ValueError(
+            "CelesTrak EPOCH must use YYYY-MM-DDTHH:MM:SS.ffffff UTC."
+        ) from error
+    if parsed.strftime("%Y-%m-%dT%H:%M:%S.%f") != value:
+        raise ValueError(
+            "CelesTrak EPOCH must use YYYY-MM-DDTHH:MM:SS.ffffff UTC."
+        )
+    return _utc(f"{value}Z", name="EPOCH")
+
+
 def _normalize_csv(body, raw_digest):
     try:
         text = body.decode("utf-8")
@@ -283,7 +298,7 @@ def _normalize_csv(body, raw_digest):
             "OBJECT_ID": row["OBJECT_ID"].strip(),
             "NORAD_CAT_ID": _number(row["NORAD_CAT_ID"], int, "NORAD_CAT_ID"),
             "CLASSIFICATION_TYPE": row["CLASSIFICATION_TYPE"].strip(),
-            "EPOCH": row["EPOCH"].strip(),
+            "EPOCH": _celestrak_epoch(row["EPOCH"]),
             "MEAN_MOTION": _number(row["MEAN_MOTION"], float, "MEAN_MOTION"),
             "ECCENTRICITY": _number(
                 row["ECCENTRICITY"], float, "ECCENTRICITY"

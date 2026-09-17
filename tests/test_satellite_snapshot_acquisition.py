@@ -57,12 +57,12 @@ def provider_csv(rows=None):
     if rows is None:
         rows = [
             (
-                "SIX DIGIT", "2024-001A", "2026-09-17T09:00:00Z",
+                "SIX DIGIT", "2024-001A", "2026-09-17T09:00:00.000000",
                 "15.1", "0.001", "51.6", "20", "30", "40", "0", "U",
                 "123456", "7", "100", "0.00001", "0.00002", "0",
             ),
             (
-                "LOW ID", "1998-067A", "2026-09-17T08:00:00Z",
+                "LOW ID", "1998-067A", "2026-09-17T08:00:00.000000",
                 "15.5", "0.002", "51.7", "21", "31", "41", "0", "U",
                 "25544", "8", "101", "0.00003", "0.00004", "0",
             ),
@@ -156,6 +156,8 @@ def test_one_bulk_response_is_normalized_and_published_atomically(tmp_path):
     assert tuple(snapshot.by_norad_catalog_id) == (25544, 123456)
     assert snapshot.records[1].center_name == "EARTH"
     assert snapshot.records[1].reference_frame == "TEME"
+    assert snapshot.records[0].epoch_utc == "2026-09-17T08:00:00.000000Z"
+    assert snapshot.records[1].epoch_utc == "2026-09-17T09:00:00.000000Z"
     assert set(path.name for path in directory.iterdir()) == {
         "manifest.json", "records.json", "acquisition-report.json",
         "policy-receipt.json", "policy-response.html",
@@ -188,6 +190,36 @@ def test_fresh_validated_snapshot_is_reused_without_provider_request(tmp_path):
 
     assert reused == directory
     assert forbidden.calls == []
+
+
+@pytest.mark.parametrize(
+    "epoch",
+    (
+        "2026-09-17T09:00:00.000000Z",
+        "2026-09-17T09:00:00+00:00",
+        "2026-09-17T09:00:00",
+        "2026-09-17T09:00:00.00000",
+    ),
+)
+def test_provider_epoch_rejects_non_contract_forms(tmp_path, epoch):
+    policy, digest, _ = frozen_policy(tmp_path)
+    body = provider_csv().replace(
+        b"2026-09-17T09:00:00.000000", epoch.encode(), 1
+    )
+    transport = FakeTransport(
+        ACTIVE_GP_URL, response(ACTIVE_GP_URL, body, "text/csv")
+    )
+
+    with pytest.raises(ValueError, match="CelesTrak EPOCH"):
+        acquire_active_snapshot(
+            tmp_path / "snapshots",
+            policy,
+            accepted_policy_sha256=digest,
+            accepted_utc="2026-09-17T10:01:00Z",
+            transport=transport,
+        )
+
+    assert not (tmp_path / "snapshots").exists()
 
 
 def test_duplicate_identifier_fails_without_partial_publication(tmp_path):
