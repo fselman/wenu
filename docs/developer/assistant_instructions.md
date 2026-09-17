@@ -1057,5 +1057,18 @@ The authorized offline operation used `a5b95fd`, selected 48 mandatory and
 208 fill records across 24 nonempty bins, preserved all parent bytes, and made
 no provider request. Keep this product external and identity-bound. Do not
 package, discover, refresh, substitute, or treat it as statistically
-representative. Its evidence record awaits Fernando's acceptance; do not begin
+representative. Its candidate evidence record preceded acceptance; do not begin
 50S.6G.1B.2D without separate authorization.
+
+### Accepted real 50S.6G.1B.2C artifact
+
+Fernando accepted only exact external subset
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`
+and receipt
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`
+on 2026-09-17 at `c4cd009`, after 157 plugin-disabled documentation tests
+passed in 4.66 seconds. This closes 50S.6G.1B.2C.
+
+Do not refresh, substitute, package, discover, or promote this artifact to a
+runtime default. Only a separately authorized 50S.6G.1B.2D matrix audit may
+proceed next; matrix execution itself is not authorized by this acceptance.
