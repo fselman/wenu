@@ -3608,3 +3608,12 @@ rare high-inclination and high-eccentricity domains, and six-digit NORAD
 identifiers. It performed no propagation or coordinate transformation.
 Consequently the real selection changes no frame, origin, position status,
 epoch, or time-scale meaning. Matrix execution remains unauthorized.
+
+### Accepted real 50S.6G.1B.2C coordinate finding
+
+Fernando accepted the exact external specimen and its no-coordinate-change
+finding on 2026-09-17 at `c4cd009`, after 157 plugin-disabled documentation
+tests passed in 4.66 seconds. The accepted digest is
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`;
+selection performed no propagation or coordinate transformation.
+50S.6G.1B.2D remains unauthorized.
