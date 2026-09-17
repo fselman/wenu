@@ -6633,3 +6633,48 @@ def test_50s6g1b2c_documents_candidate_real_medium_evidence():
     assert "performed no propagation or coordinate transformation" in coordinates
     assert "not a statistical sample" in guide
     assert "awaits Fernando's acceptance" in instructions
+
+def test_50s6g1b2c_records_accepted_exact_real_specimen():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b" in document
+        assert "2026-09-17" in document
+        assert "c4cd009" in document
+        assert "157 plugin-disabled" in document
+        assert "4.66 seconds" in document
+        assert "50S.6G.1B.2D" in document
+        assert "unauthorized" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted real-selection closure" in audit
+    assert "Accepted real 50S.6G.1B.2C specimen" in architecture
+    assert "50S.6G.1B.2C accepted real-selection closure" in roadmap
+    assert "Accepted real medium evidence" in reference
+    assert "Accepted real 50S.6G.1B.2C evidence" in source_tree
+    assert "Accepted real 50S.6G.1B.2C coordinate finding" in coordinates
+    assert "Accepted real 50S.6G.1B.2C specimen" in guide
+    assert "Accepted real 50S.6G.1B.2C artifact" in instructions
+
+    for document in (audit, architecture, roadmap, reference, source_tree, guide, instructions):
+        assert "1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895" in document
+
+    assert "closes 50S.6G.1B.2C" in audit
+    assert "installed synthetic default" in architecture
+    assert "Only a separately authorized 50S.6G.1B.2D matrix audit" in roadmap
+    assert "No other artifact is implied" in reference
+    assert "outside the repository and package" in source_tree
+    assert "no propagation or coordinate transformation" in coordinates
+    assert "external, immutable, and non-statistical" in guide
+    assert "Do not refresh, substitute, package, discover, or promote" in instructions
