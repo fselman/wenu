@@ -6587,3 +6587,94 @@ def test_50s6g1b2c_records_accepted_fake_data_implementation_boundary():
     assert "no propagation or coordinate transformation" in coordinates
     assert "No real medium snapshot has been produced" in guide
     assert "Require Fernando's separate approval" in instructions
+
+def test_50s6g1b2c_documents_candidate_real_medium_evidence():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b" in document
+        assert "1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895" in document
+        assert "e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347" in document
+        assert "2026-09-17T15:52:23.000000Z" in document
+        assert "50S.6G.1B.2D" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate real-selection closure" in audit
+    assert "Candidate real 50S.6G.1B.2C specimen evidence" in architecture
+    assert "50S.6G.1B.2C real-selection closure candidate" in roadmap
+    assert "Real medium specimen identity" in reference
+    assert "Candidate real-selection evidence ownership" in source_tree
+    assert "Candidate real medium specimen coordinate finding" in coordinates
+    assert "Candidate real medium specimen" in guide
+    assert "Candidate real 50S.6G.1B.2C artifact boundary" in instructions
+
+    for document in (audit, architecture, roadmap, reference, guide, instructions):
+        assert "48" in document
+        assert "208" in document
+        assert "24" in document
+
+    assert "byte-for-byte unchanged" in audit
+    assert "made no provider request" in audit
+    assert "not packaged, installed, discovered" in architecture
+    assert "remaining 50S.6G.1B.2C closure decision" in roadmap
+    assert "external, immutable, and evidence-only" in reference
+    assert "No repository source or data directory owns" in source_tree
+    assert "performed no propagation or coordinate transformation" in coordinates
+    assert "not a statistical sample" in guide
+    assert "candidate evidence record preceded acceptance" in instructions
+
+def test_50s6g1b2c_records_accepted_exact_real_specimen():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b" in document
+        assert "2026-09-17" in document
+        assert "c4cd009" in document
+        assert "157 plugin-disabled" in document
+        assert "4.66 seconds" in document
+        assert "50S.6G.1B.2D" in document
+        assert "unauthorized" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted real-selection closure" in audit
+    assert "Accepted real 50S.6G.1B.2C specimen" in architecture
+    assert "50S.6G.1B.2C accepted real-selection closure" in roadmap
+    assert "Accepted real medium evidence" in reference
+    assert "Accepted real 50S.6G.1B.2C evidence" in source_tree
+    assert "Accepted real 50S.6G.1B.2C coordinate finding" in coordinates
+    assert "Accepted real 50S.6G.1B.2C specimen" in guide
+    assert "Accepted real 50S.6G.1B.2C artifact" in instructions
+
+    for document in (audit, architecture, roadmap, reference, source_tree, guide, instructions):
+        assert "1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895" in document
+
+    assert "closes 50S.6G.1B.2C" in audit
+    assert "installed synthetic default" in architecture
+    assert "Only a separately authorized 50S.6G.1B.2D matrix audit" in roadmap
+    assert "No other artifact is implied" in reference
+    assert "outside the repository and package" in source_tree
+    assert "no propagation or coordinate transformation" in coordinates
+    assert "external, immutable, and non-statistical" in guide
+    assert "Do not refresh, substitute, package, discover, or promote" in instructions

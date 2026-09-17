@@ -1183,3 +1183,29 @@ selector on 2026-09-17 at `1d9d4e4`. The complete plugin-disabled suite
 passed 2,622 tests in 225.75 seconds; 185 focused tests passed in 9.03 seconds.
 No real medium snapshot has been produced. The first real offline selection
 requires separate authorization, and 50S.6G.1B.2D remains unauthorized.
+
+### Candidate real medium specimen
+
+The external specimen contains 256 records with canonical-record SHA-256
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`.
+Its canonical selection receipt has SHA-256
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+It derives from the accepted 16,559-record parent
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`
+using age reference `2026-09-17T15:52:23.000000Z`.
+
+The specimen has 48 mandatory representatives, 208 deterministic fill records,
+and no empty bin. It remains an external deterministic coverage specimen—not a
+statistical sample, complete catalogue, packaged default, or population claim.
+The parent bytes were unchanged and the operation made no provider request.
+Acceptance and 50S.6G.1B.2D authorization remain separate decisions.
+
+### Accepted real 50S.6G.1B.2C specimen
+
+Fernando accepted exact external specimen
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`
+with receipt
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`
+on 2026-09-17 at `c4cd009`; 157 plugin-disabled documentation tests passed
+in 4.66 seconds. It remains external, immutable, and non-statistical.
+50S.6G.1B.2D remains separately unauthorized.

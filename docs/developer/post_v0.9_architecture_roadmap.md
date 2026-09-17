@@ -2589,3 +2589,30 @@ Fernando accepted the bounded fake-data implementation on 2026-09-17 at
 separately authorized offline selection from the already accepted
 16,559-record parent; it requires no provider request. This acceptance does not
 authorize that operation or 50S.6G.1B.2D matrix execution.
+
+### 50S.6G.1B.2C real-selection closure candidate
+
+The external specimen contains 256 records with canonical-record SHA-256
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`.
+Its canonical selection receipt has SHA-256
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+It derives from the accepted 16,559-record parent
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`
+using age reference `2026-09-17T15:52:23.000000Z`.
+
+The authorized offline operation covered all 24 bins with a 48-record mandatory
+union and 208-record deterministic fill. Parent bytes were unchanged and no
+provider request occurred. Acceptance of this exact external artifact is the
+remaining 50S.6G.1B.2C closure decision. 50S.6G.1B.2D remains separately
+unauthorized.
+
+### 50S.6G.1B.2C accepted real-selection closure
+
+Fernando accepted the exact 256-record external specimen on 2026-09-17 at
+`c4cd009`, after 157 plugin-disabled documentation tests passed in 4.66
+seconds. The accepted subset digest is
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`;
+the receipt digest is
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+50S.6G.1B.2C is closed. Only a separately authorized 50S.6G.1B.2D matrix audit
+may proceed next.
