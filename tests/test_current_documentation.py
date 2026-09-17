@@ -3172,6 +3172,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_crossing_acceleration_audit_50s6a.md",
         "satellite_crossing_coordination_audit_50s6c.md",
         "satellite_multifov_interchange_audit_50s6e.md",
+        "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_propagation_audit_50s4a.md",
         "satellite_guide.md",
         "source_tree.md",
@@ -5964,3 +5965,78 @@ def test_50s6f_documents_candidate_atomic_multifov_coordinator():
             document
         )
     assert "no 50S.6G implementation is authorized" in instructions
+
+
+def test_50s6g_audits_representative_delivery_reports_files_and_tracks():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_delivery_audit_50s6g.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "documentation-only architecture, API, performance, interchange, CLI/file, and chart-delivery audit",
+        "changes no executable behavior, public command",
+        "explicit caller-selected snapshot directory",
+        "at most one supported bulk request",
+        "1, 2, 5, 10, 20, and, when practical, 50",
+        "One canonical crossing information model",
+        "JSON is the canonical nested exchange",
+        "Astropy ECSV is a lossless unit-aware tabular encoding",
+        "IVOA VOTable is a lossless astronomical interoperability encoding",
+        "CCSDS OEM describes orbit ephemerides rather than Wenu crossing semantics",
+        "Python calls and direct CLI argument mode are atomic",
+        "File mode is also atomic",
+        "Supplying the validation-output file in a second explicit invocation",
+        "revalidates it against the current snapshot and policy",
+        "If no valid fields remain, the derived request is absent",
+        "ECSV and VOTable are output encodings, not initial request",
+        "those three values alone are not a sufficiently controlled plotted curve",
+        "Regional and binocular products are the first chart families",
+        "Stereographic planispheres require a separate audit",
+        "geometric crossings retained independently of illumination or brightness",
+        "50S.6G.1A — External immutable snapshot seam",
+        "50S.6G.4B — Stereographic planisphere tracks",
+        "Only bounded 50S.6G.1A external immutable snapshot loading",
+    ):
+        assert phrase in audit
+
+    assert "satellite_delivery_audit_50s6g.md" in index
+    assert "accepted 50S.6G delivery audit" in architecture
+    assert "50S.6G — Representative delivery, reports, files" in roadmap
+    assert "Accepted 50S.6G delivery direction" in reference
+    assert "Accepted 50S.6G delivery ownership" in source_tree
+    assert "Accepted 50S.6G delivery coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6G delivery sequence" in guide
+    assert "Accepted 50S.6G delivery-audit boundary" in instructions
+    assert "Accepted 50S.6G delivery refinement" in (
+        " ".join(read(
+            DEVELOPER / "satellite_multifov_interchange_audit_50s6e.md"
+        ).split())
+    )
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+    ):
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "145 plugin-disabled current-documentation tests passed" in (
+            document
+        )
+        assert "Only bounded 50S.6G.1A external immutable snapshot loading" in (
+            document
+        )

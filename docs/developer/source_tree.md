@@ -1971,3 +1971,26 @@ rendering, report, CLI, or exporter owner changes.
 Fernando scientifically and architecturally accepted this ownership on
 2026-09-17 after 2,577 plugin-disabled tests passed. Only a separately bounded
 50S.6G audit is authorized next.
+
+
+## Accepted 50S.6G delivery ownership
+
+`satellite_delivery_audit_50s6g.md` proposes responsibilities but adds no
+production owner. `satellites/snapshots.py` remains the closest immutable
+snapshot validator; acquisition must remain a separate preflight owner.
+`satellite_presentations.py` is the closest presentation precedent, but exact
+crossing reports require a distinct logical model and pure encoders rather
+than altering SatChecker candidate semantics. `crossing_batch.py` remains a
+scientific coordinator and must not absorb CLI, filesystem, report, or chart
+responsibilities.
+
+Exact local track layers belong beside the existing satellite candidate
+layers while preserving distinct scientific status. Ordinary chart request
+and composition owners may later register already validated exact evidence;
+existing projection, preparation, renderer, semantic identity, and exporter
+owners remain unchanged. Every proposed production file requires a separate
+implementation-slice placement review.
+Fernando scientifically and architecturally accepted this ownership on
+2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
+4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next.

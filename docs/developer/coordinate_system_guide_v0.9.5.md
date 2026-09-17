@@ -3464,3 +3464,22 @@ unresolved numerical boundary fails atomically. The guide was reviewed for
 Fernando scientifically and architecturally accepted this realization on
 2026-09-17 after 2,577 plugin-disabled tests passed. Only a separately bounded
 50S.6G audit is authorized next.
+
+
+## Accepted 50S.6G delivery coordinate boundary
+
+The coordinate guide was reviewed for the documentation-only 50S.6G audit; no
+implemented coordinate meaning changes. Initial request files retain complete
+declared fixed geometric topocentric field centres in GCRS axes and inclusive
+UTC intervals. Centre-only airmass admission remains geometric vacuum AltAz.
+
+Future exact-track samples must retain their individual UTC instants, geometric
+topocentric direction in GCRS axes, range, Earth-orientation identity, and
+sampling-tolerance evidence before any transformation into one chart product
+frame. Renderers must not interpret TEME as a celestial chart frame, treat a
+three-event crossing summary as a certified curve, interpolate across visits
+or seams, or infer apparent visibility from geometric coordinates.
+Fernando scientifically and architecturally accepted this boundary on
+2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
+4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next; no implemented coordinate meaning changes.

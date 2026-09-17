@@ -2696,3 +2696,27 @@ Fernando scientifically and architecturally accepted this API on 2026-09-17
 after 2,577 plugin-disabled tests passed. Only a separately bounded 50S.6G
 audit is authorized next; representative-scale runtime and output remain
 unauthorized.
+
+## Accepted 50S.6G delivery direction
+
+No interface in this section is implemented. The candidate audit proposes an
+explicit-directory immutable snapshot loader; one canonical exact-crossing
+logical report; deterministic JSON plus lossless ECSV and VOTable encodings;
+an atomic direct CLI; and a versioned JSON file protocol.
+
+For file input, whole-batch validation precedes all crossing work. Any invalid
+field yields one separate validation-output JSON with ordered failures and an
+embedded complete request containing only the valid fields. Supplying that
+document explicitly in a second call causes the embedded request to be
+digest-bound revalidated and then calculated. It is a request/validation
+envelope, not a scientific crossing report.
+
+Exact drawable tracks require separately certified ordered samples linked to
+the accepted entry/closest/exit result. Ordinary chart requests may later gain
+a distinct artificial-satellite selection; they must not reuse the natural or
+minor-body `SolarSystemTrackRequest` contract.
+
+Fernando scientifically and architecturally accepted this direction on
+2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
+4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next; every interface described above remains unimplemented.
