@@ -448,4 +448,12 @@ This candidate has not accessed the accepted real specimen and has not
 executed the real matrix. It awaits focused and full-suite verification and
 Fernando's scientific and architectural acceptance. Real execution, external
 evidence publication, performance claims, and later delivery remain
-unauthorized.
+unauthorized.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.
