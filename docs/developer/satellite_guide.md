@@ -1010,3 +1010,22 @@ chunks of 10 by default and results retain input order. The candidate composes
 shared propagation/topocentric-state reuse. Fernando scientifically and
 architecturally accepted 50S.6F on 2026-09-17 after 2,577 plugin-disabled tests
 passed. Only a separately bounded 50S.6G audit is authorized next.
+
+
+## Candidate 50S.6G delivery sequence
+
+The candidate delivery audit separates external immutable snapshot loading,
+policy-governed representative acquisition/evidence, canonical reports,
+CLI/file workflow, exact drawable evidence, binocular/regional charts, and
+stereographic planispheres into separately accepted slices.
+
+Direct Python and CLI requests fail atomically. An invalid JSON request file
+solves no FoV but may atomically produce a second validation-output JSON that
+marks every failed FoV and embeds the ordered valid subset. Explicitly feeding
+that file to a second call revalidates and calculates only the valid subset.
+
+JSON is the canonical nested exchange; ECSV and VOTable encode the same logical
+model for scientific interoperability. Exact chart tracks require certified
+samples between exact entry and exit and reuse the ordinary Wenu chart path.
+They remain geometric crossings; illumination, brightness, detector effects,
+and observatory scheduling remain later milestones.
