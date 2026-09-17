@@ -5897,7 +5897,7 @@ def test_50s6e_audits_multifov_interchange_and_lunar_illumination():
     assert "50S.6G.3 may accept binocular and regional chart products" in audit
     assert "50S.6G.4 may accept stereographic planisphere" in audit
     assert "no runtime or output" in roadmap
-    assert "No multi-FoV runtime is implemented" in architecture
+    assert "candidate 50S.6F implementation now adds" in architecture
     assert "scientifically and architecturally accepted this audit" in audit
     assert "commit `f079d95`" in audit
     assert "all 143 plugin-disabled current-documentation tests" in audit
