@@ -2204,3 +2204,13 @@ in 230.25 seconds on 2026-09-17. No repository data owner packages or discovers
 the accepted real specimen, and no real matrix was executed. The next
 real-execution boundary remains separately unauthorized pending Fernando's
 scientific and architectural acceptance.
+
+### Accepted 50S.6G.1B.2D ownership
+
+Fernando scientifically and architecturally accepted the fake-data-only
+ownership of `satellites/crossing_matrix.py` and
+`tests/test_satellite_crossing_matrix.py` on 2026-09-17. Acceptance follows
+2634 plugin-disabled full-suite tests in 230.25 seconds at `19520f3` and 161
+plugin-disabled current-documentation tests in 3.32 seconds at `3ef6a4d`.
+No source-tree owner may discover or read the accepted real specimen under this
+closure. Only a separately bounded real-execution audit is authorized next.
