@@ -2674,7 +2674,7 @@ Future JSON, ECSV, and VOTable encodings must represent
 one canonical lossless crossing model; any Paranal, ELT, or other observatory
 adapter remains outside the solver and requires a separate interface audit.
 
-The candidate bounded runtime API is:
+The accepted bounded runtime API is:
 
 - `MultiFieldCrossingPolicy`: immutable synthetic-snapshot, 60-second,
   centre-airmass, certification, and execution-chunk policy;
@@ -2692,3 +2692,7 @@ The candidate bounded runtime API is:
 Chunk size changes execution only. No public cardinality maximum, partial
 result, shared-state speed claim, CLI, file adapter, report, or chart is
 implemented.
+Fernando scientifically and architecturally accepted this API on 2026-09-17
+after 2,577 plugin-disabled tests passed. Only a separately bounded 50S.6G
+audit is authorized next; representative-scale runtime and output remain
+unauthorized.
