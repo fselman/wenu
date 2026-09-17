@@ -328,3 +328,28 @@ operator seam. It does not itself authorize executing `select-medium` against
 the real 16,559-record parent. That first real selection is the next separately
 bounded 50S.6G.1B.2C operation. 50S.6G.1B.2D matrix execution remains
 separately unauthorized.
+
+## 15. Candidate real-selection closure
+
+Fernando separately authorized the first real offline medium selection on
+2026-09-17. The external specimen contains 256 records with canonical-record SHA-256
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`.
+Its canonical selection receipt has SHA-256
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+It derives from the accepted 16,559-record parent
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`
+using age reference `2026-09-17T15:52:23.000000Z`.
+
+All 24 declared bins were nonempty. The mandatory union contains 48 records,
+exactly two distinct digest-ranked representatives per bin, and deterministic
+fill contributed 208 records. The selected NORAD range is 22195 through
+100682. The parent manifest, canonical records, acquisition report, and
+captured provider response were hashed before and after selection and remained
+byte-for-byte unchanged. The operation used integrated commit `a5b95fd` and
+Wenu `0.8.1.dev986+ga5b95fdcb`; it made no provider request.
+
+The artifact remains external to the repository and package. It is a
+deterministic coverage specimen, not a statistical sample, completeness claim,
+or population-frequency model. This is a candidate evidence record awaiting
+scientific and architectural acceptance. It does not authorize 50S.6G.1B.2D
+matrix execution.
