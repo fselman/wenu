@@ -1143,3 +1143,13 @@ and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
 seconds. `git diff --check` and the working tree were clean. Only bounded
 50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
 matrix execution and later delivery remain separately unauthorized.
+
+
+## Candidate 50S.6G.1B.2C medium specimen
+
+The proposed 256-record default is a deterministic coverage specimen, not a
+population-frequency sample. It covers declared mean-motion, inclination,
+eccentricity, BSTAR, signed-age, and NORAD-width bins independently, taking two
+digest-ranked representatives from every non-empty bin before deterministic
+fill. It remains an external non-default product bound to the exact admitted
+parent and a complete selection receipt.

@@ -995,3 +995,14 @@ and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
 seconds. `git diff --check` and the working tree were clean. Only bounded
 50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
 matrix execution and later delivery remain separately unauthorized.
+
+
+## Candidate 50S.6G.1B.2C medium-specimen boundary
+
+Before medium-specimen work, read
+`satellite_medium_specimen_audit_50s6g1b2c.md`. The candidate uses only the
+explicit admitted parent, the acquisition stop instant, exact declared scalar
+bins, two deterministic representatives per non-empty bin, and deterministic
+fill to a default target of 256. Keep the product external, receipt-bound,
+non-statistical, and non-default. This documentation audit changes no runtime
+and does not authorize a real subset operation or matrix execution.

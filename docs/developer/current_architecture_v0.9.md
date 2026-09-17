@@ -1233,3 +1233,13 @@ and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
 seconds. `git diff --check` and the working tree were clean. Only bounded
 50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
 matrix execution and later delivery remain separately unauthorized.
+
+
+## Candidate 50S.6G.1B.2C medium-specimen audit
+
+The current architecture has no medium-subset owner. The candidate audit
+separates deterministic evidence selection from immutable loading, provider
+acquisition, digest admission, and later matrix execution. It proposes an
+external three-file derived snapshot with a default target of 256, independent
+one-dimensional bin coverage, deterministic digest-based ranking, and a
+complete selection receipt. No runtime behavior or installed data changes.
