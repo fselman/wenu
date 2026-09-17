@@ -1271,4 +1271,16 @@ Fernando scientifically and architecturally accepted the not-ready finding on
 2026-09-17 after 163 plugin-disabled current-documentation tests passed in
 3.80 seconds at `054ac39`. Only the bounded fake-data production-path
 implementation may proceed next. The accepted real 256-record specimen must
-remain untouched and the real ten-field matrix must not be executed.
+remain untouched and the real ten-field matrix must not be executed.\n
+
+### Candidate offline equivalence-matrix execution path
+
+The candidate `run-equivalence-matrix` developer command is explicit and
+offline. It requires the snapshot and output directories, all three accepted
+digests, and an exact operator acknowledgement. Before any route process
+starts it validates the complete accepted selection receipt, constructs the
+digest-frozen La Ligua fields, and atomically certifies their centre-only
+airmass. Each route/query/repetition then runs in a fresh subprocess. The
+fixture contains only 15- and 60-second intervals and its tests use fake data
+and bounded subprocess doubles. The command performs no discovery, download,
+refresh, fallback, concurrency, or cache reuse.
