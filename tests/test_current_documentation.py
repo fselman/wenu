@@ -6749,3 +6749,46 @@ def test_50s6g1b2d_proposes_exact_equivalence_resource_matrix():
     assert "introduces no coordinate operation" in coordinate_guide
     assert "not a speed claim" in guide
     assert "Do not implement or run the matrix" in instructions
+
+def test_50s6g1b2d_records_acceptance_and_fake_data_only_authority():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "accepted" in document.lower()
+        assert "2026-09-17" in document
+        assert "6e7a8b9" in document
+        assert "159 plugin-disabled" in document
+        assert "10.75 seconds" in document
+        assert "fake-data" in document
+        assert "real" in document.lower()
+        assert "unauthorized" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Acceptance record" in audit
+    assert "Accepted 50S.6G.1B.2D matrix audit" in architecture
+    assert "50S.6G.1B.2D accepted audit" in roadmap
+    assert "Accepted 50S.6G.1B.2D matrix contract" in reference
+    assert "Accepted 50S.6G.1B.2D ownership proposal" in source_tree
+    assert "Accepted 50S.6G.1B.2D coordinate finding" in coordinates
+    assert "Accepted 50S.6G.1B.2D audit" in guide
+    assert "Accepted 50S.6G.1B.2D audit boundary" in instructions
+
+    assert "does not authorize execution" in audit
+    assert "Only bounded fake-data implementation" in architecture
+    assert "Only bounded fake-data matrix-harness implementation" in roadmap
+    assert "using fake data only" in reference
+    assert "No real matrix execution" in source_tree
+    assert "real matrix execution" in coordinates
+    assert "must not be executed" in guide
+    assert "Do not read or execute the accepted real 256-record specimen" in instructions
