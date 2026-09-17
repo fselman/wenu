@@ -2142,3 +2142,19 @@ ownership split on 2026-09-17 at `1d9d4e4`. The complete plugin-disabled
 suite passed 2,622 tests in 225.75 seconds and the focused gate passed 185 tests
 in 9.03 seconds. No real medium product was created; real selection and
 50S.6G.1B.2D remain separately unauthorized.
+
+### Candidate real-selection evidence ownership
+
+The external specimen contains 256 records with canonical-record SHA-256
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`.
+Its canonical selection receipt has SHA-256
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+It derives from the accepted 16,559-record parent
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`
+using age reference `2026-09-17T15:52:23.000000Z`.
+
+No repository source or data directory owns the external bytes.
+`snapshot_evidence.py` produced them through the accepted offline seam, while
+the canonical receipt and derived manifest carry the evidence bindings. The
+repository records identity and verification facts only. The parent remained
+unchanged, no provider request occurred, and 50S.6G.1B.2D is unauthorized.
