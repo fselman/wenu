@@ -318,6 +318,23 @@ def test_identical_existing_product_is_revalidated(tmp_path):
     assert same == directory
 
 
+def test_existing_manifest_tamper_fails_revalidation(tmp_path):
+    directory, _root = run(tmp_path)
+    (directory / "matrix-manifest.json").write_bytes(b"{}\n")
+    root, snapshot, identity, admission = fake_specimen(tmp_path / "again")
+
+    with pytest.raises(ValueError, match="matrix manifest"):
+        run_equivalence_matrix(
+            root,
+            directory.parent,
+            specimen_identity=identity,
+            admission=admission,
+            queries=queries(snapshot),
+            airmass_certifier=FakeCertifier(),
+            executor=FakeExecutor(),
+        )
+
+
 def test_result_mismatch_fails_closed_without_publication(tmp_path):
     root, snapshot, identity, admission = fake_specimen(tmp_path)
     output = tmp_path / "output"
