@@ -294,5 +294,5 @@ This audit was accepted when:
 - the plugin-disabled documentation gate and `git diff --check` pass.
 
 Acceptance authorizes only bounded 50S.6G.1B.2C implementation with fake
-data. It does not authorize the first real medium selection, 50S.6G.1B.2D
-matrix execution, or later 50S.6G delivery.
+data. It does not authorize the first real medium selection; 50S.6G.1B.2D
+matrix execution and later 50S.6G delivery remain separately unauthorized.
