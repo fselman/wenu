@@ -946,3 +946,10 @@ subdirectory URL is not an acceptable substitute.
 Fernando accepted this direct-policy-URL correction on 2026-09-17 after all
 2,595 plugin-disabled tests passed. CelesTrak remains the only authorized
 provider. Do not treat that acceptance as permission for a live GP request.
+
+Fernando accepted the exact `non-HTTP 200` policy-clause compatibility
+correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
+tests passed. The frozen 14,643-byte policy response has SHA-256
+`67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. This acceptance validates the parser correction and receipt only;
+explicit approval of that exact digest remains separately required before any
+GP request.

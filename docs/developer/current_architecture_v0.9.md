@@ -1181,3 +1181,9 @@ authorize a live CelesTrak request or 50S.6G.1B.2.
 Fernando accepted the direct-policy-URL correction on 2026-09-17 after all
 2,595 plugin-disabled tests passed in 205.93 seconds. The protected endpoint is
 `https://celestrak.org/usage-policy.php`; no GP request was performed.
+
+Fernando accepted the exact `non-HTTP 200` policy-clause compatibility
+correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
+tests passed. The resulting 14,643-byte policy receipt is bound to SHA-256
+`67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. No GP request was made or authorized; approval of that exact
+digest remains a separate human checkpoint.

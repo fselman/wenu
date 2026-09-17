@@ -2485,3 +2485,9 @@ Any later second provider requires a separate audit and must be public,
 reliable, and genuinely independent rather than a redistribution of CelesTrak
 or Space-Track. Its first role is an explicit validation oracle; no automatic
 fallback or catalogue merge is implied.
+
+Fernando accepted the exact `non-HTTP 200` policy-clause compatibility
+correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
+tests passed. The 14,643-byte policy receipt is bound to SHA-256
+`67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. No GP request was performed, and digest approval remains a
+separate gate before the one authorized bulk request.
