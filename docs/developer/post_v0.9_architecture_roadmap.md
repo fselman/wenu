@@ -2652,3 +2652,13 @@ the complete published manifest, but it has not read the accepted real
 scientific and architectural acceptance is required before a separately
 bounded real-matrix execution may be authorized. Later 50S.6G delivery remains
 unauthorized.
+
+### 50S.6G.1B.2D accepted fake-data implementation
+
+Fernando scientifically and architecturally accepted this bounded
+implementation on 2026-09-17 after 2634 plugin-disabled full-suite tests passed
+in 230.25 seconds at `19520f3` and 161 plugin-disabled
+current-documentation tests passed in 3.32 seconds at `3ef6a4d`. The accepted
+scope remains fake data only. Reading the accepted real specimen and executing
+the real matrix remain unauthorized. Only a separately bounded real-execution
+audit may proceed next; later 50S.6G delivery remains future work.
