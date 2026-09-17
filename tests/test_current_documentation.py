@@ -6005,20 +6005,38 @@ def test_50s6g_audits_representative_delivery_reports_files_and_tracks():
         "geometric crossings retained independently of illumination or brightness",
         "50S.6G.1A — External immutable snapshot seam",
         "50S.6G.4B — Stereographic planisphere tracks",
-        "authorize only bounded 50S.6G.1A",
+        "Only bounded 50S.6G.1A external immutable snapshot loading",
     ):
         assert phrase in audit
 
     assert "satellite_delivery_audit_50s6g.md" in index
-    assert "candidate 50S.6G delivery audit" in architecture
+    assert "accepted 50S.6G delivery audit" in architecture
     assert "50S.6G — Representative delivery, reports, files" in roadmap
-    assert "Candidate 50S.6G delivery interfaces" in reference
-    assert "Candidate 50S.6G delivery ownership" in source_tree
-    assert "Candidate 50S.6G delivery coordinate boundary" in coordinate_guide
-    assert "Candidate 50S.6G delivery sequence" in guide
-    assert "Candidate 50S.6G delivery-audit boundary" in instructions
-    assert "No 50S.6G runtime or output is authorized" in (
+    assert "Accepted 50S.6G delivery direction" in reference
+    assert "Accepted 50S.6G delivery ownership" in source_tree
+    assert "Accepted 50S.6G delivery coordinate boundary" in coordinate_guide
+    assert "Accepted 50S.6G delivery sequence" in guide
+    assert "Accepted 50S.6G delivery-audit boundary" in instructions
+    assert "Accepted 50S.6G delivery refinement" in (
         " ".join(read(
             DEVELOPER / "satellite_multifov_interchange_audit_50s6e.md"
         ).split())
     )
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+    ):
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "145 plugin-disabled current-documentation tests passed" in (
+            document
+        )
+        assert "Only bounded 50S.6G.1A external immutable snapshot loading" in (
+            document
+        )
