@@ -2673,3 +2673,12 @@ explicit offline `run-equivalence-matrix` developer command. Only that
 bounded production-path implementation and fake-data proof are authorized
 next. Reading the real specimen, running the matrix, making a performance
 claim, and advancing 50S.6G delivery remain separately unauthorized.
+
+### 50S.6G.1B.2D accepted real-execution readiness finding
+
+Fernando scientifically and architecturally accepted the not-ready finding on
+2026-09-17 after 163 plugin-disabled current-documentation tests passed in
+3.80 seconds at `054ac39`. The next authorized step is bounded fake-data
+implementation of the production execution path. Reading the accepted real
+specimen, executing the matrix, publishing real evidence, making performance
+claims, and advancing later 50S.6G delivery remain separately unauthorized.
