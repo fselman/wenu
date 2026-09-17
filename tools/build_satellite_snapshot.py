@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Build 50S.6G.1B.1 receipts from explicitly supplied response files.
+"""Build satellite snapshot evidence from explicitly supplied local files.
 
-This command is intentionally offline.  It supplies captured bytes through
-the same injected-transport seam used by tests and cannot contact CelesTrak.
+This command is intentionally offline. It supplies captured bytes through the
+same injected-transport seam used by tests and cannot contact CelesTrak.
 """
 
 import argparse
@@ -15,6 +15,13 @@ from wenu.satellites.snapshot_acquisition import (
     acquire_active_snapshot,
     freeze_policy_receipt,
 )
+from wenu.satellites.snapshot_admission import (
+    CELESTRAK_ACTIVE_20260917_IDENTITY,
+    CELESTRAK_ACTIVE_20260917_POLICY_IDENTITY,
+    ExternalSnapshotAdmissionPolicy,
+)
+from wenu.satellites.snapshot_evidence import select_medium_snapshot
+from wenu.satellites.snapshots import load_snapshot_directory
 
 
 def _transport(url, body, media_type, started, stopped):
@@ -52,37 +59,69 @@ def _arguments():
     acquire.add_argument("--started-utc", required=True)
     acquire.add_argument("--stopped-utc", required=True)
     acquire.add_argument("--media-type", required=True)
+    select = commands.add_parser("select-medium")
+    select.add_argument("--parent-directory", type=Path, required=True)
+    select.add_argument("--output-root", type=Path, required=True)
+    select.add_argument("--target-count", type=int, default=256)
+    select.add_argument(
+        "--accept-parent-sha256",
+        required=True,
+        help="Explicit acknowledgement of the accepted parent canonical digest.",
+    )
     return parser.parse_args()
+
+
+def _select_medium(args):
+    expected = CELESTRAK_ACTIVE_20260917_IDENTITY
+    if args.accept_parent_sha256.lower() != expected.content_sha256:
+        raise ValueError(
+            "--accept-parent-sha256 must equal the accepted CelesTrak "
+            "Active canonical digest."
+        )
+    snapshot = load_snapshot_directory(args.parent_directory)
+    admission = ExternalSnapshotAdmissionPolicy(
+        CELESTRAK_ACTIVE_20260917_POLICY_IDENTITY,
+        (expected,),
+    ).admit(snapshot)
+    return select_medium_snapshot(
+        args.parent_directory,
+        args.output_root,
+        admission=admission,
+        target_count=args.target_count,
+    )
 
 
 def main():
     args = _arguments()
-    body = args.response.read_bytes()
-    if args.operation == "freeze-policy":
-        result = freeze_policy_receipt(
-            args.output,
-            transport=_transport(
-                POLICY_URL,
-                body,
-                args.media_type,
-                args.started_utc,
-                args.stopped_utc,
-            ),
-        )
+    if args.operation == "select-medium":
+        result = _select_medium(args)
     else:
-        result = acquire_active_snapshot(
-            args.snapshot_root,
-            args.policy_directory,
-            accepted_policy_sha256=args.accept_policy_sha256,
-            accepted_utc=args.accepted_utc,
-            transport=_transport(
-                ACTIVE_GP_URL,
-                body,
-                args.media_type,
-                args.started_utc,
-                args.stopped_utc,
-            ),
-        )
+        body = args.response.read_bytes()
+        if args.operation == "freeze-policy":
+            result = freeze_policy_receipt(
+                args.output,
+                transport=_transport(
+                    POLICY_URL,
+                    body,
+                    args.media_type,
+                    args.started_utc,
+                    args.stopped_utc,
+                ),
+            )
+        else:
+            result = acquire_active_snapshot(
+                args.snapshot_root,
+                args.policy_directory,
+                accepted_policy_sha256=args.accept_policy_sha256,
+                accepted_utc=args.accepted_utc,
+                transport=_transport(
+                    ACTIVE_GP_URL,
+                    body,
+                    args.media_type,
+                    args.started_utc,
+                    args.stopped_utc,
+                ),
+            )
     print(result)
 
 

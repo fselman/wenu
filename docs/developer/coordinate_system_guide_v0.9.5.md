@@ -3570,3 +3570,25 @@ Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
 fake-data implementation is authorized next. The first real medium selection,
 50S.6G.1B.2D matrix execution, and later delivery remain separately
 unauthorized.
+
+### Candidate 50S.6G.1B.2C coordinate review
+
+The fake-data medium selector in `satellites/snapshot_evidence.py` reads only
+stored OMM scalar values, full NORAD identifiers, and signed UTC epoch age
+relative to the acquisition stop. It performs no propagation, TEME
+transformation, Earth-orientation interpolation, observer calculation,
+topocentric conversion, FoV evaluation, crossing solve, projection, or
+rendering. Therefore it changes no frame, origin, position-status, epoch, or
+time-scale meaning.
+
+The 2026-09-17 focused gate passed 30 plugin-disabled tests in 5.99 seconds.
+The candidate does not authorize real medium selection or 50S.6G.1B.2D matrix
+execution.
+
+### Accepted 50S.6G.1B.2C coordinate boundary
+
+Fernando accepted the no-coordinate-change finding on 2026-09-17 at
+`1d9d4e4`. The full plugin-disabled suite passed 2,622 tests in 225.75
+seconds and the focused gate passed 185 tests in 9.03 seconds. Selection still
+performs no propagation or coordinate transformation. Acceptance does not
+authorize real selection or 50S.6G.1B.2D.

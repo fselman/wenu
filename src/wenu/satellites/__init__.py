@@ -33,6 +33,12 @@ from .snapshot_admission import (
     ExternalSnapshotIdentity,
     SNAPSHOT_ADMISSION_IMPLEMENTATION,
 )
+from .snapshot_evidence import (
+    MEDIUM_SPECIMEN_DOCUMENT_KIND,
+    MEDIUM_SPECIMEN_IMPLEMENTATION,
+    REPRESENTATIVES_PER_BIN,
+    select_medium_snapshot,
+)
 from .sgp4 import (
     SatellitePropagationError,
     SatelliteTemeState,
@@ -72,12 +78,15 @@ __all__ = [
     "DEFAULT_SNAPSHOT_ID",
     "LocalSatelliteCrossingOracle",
     "LocalSatelliteCrossingQuery",
+    "MEDIUM_SPECIMEN_DOCUMENT_KIND",
+    "MEDIUM_SPECIMEN_IMPLEMENTATION",
     "MultiFieldCrossingPolicy",
     "MultiFieldCrossingRequest",
     "MultiFieldCrossingResult",
     "MultiFieldCrossingValidationError",
     "MultiFieldSatelliteCrossingCoordinator",
     "MultiFieldValidationFailure",
+    "REPRESENTATIVES_PER_BIN",
     "SatelliteCrossingConvergenceError",
     "SatelliteEarthOrientationError",
     "SatelliteEarthOrientationEvidence",
@@ -94,4 +103,5 @@ __all__ = [
     "split_julian_date",
     "load_snapshot",
     "load_snapshot_directory",
+    "select_medium_snapshot",
 ]

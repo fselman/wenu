@@ -1251,3 +1251,29 @@ Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
 fake-data implementation is authorized next. The first real medium selection,
 50S.6G.1B.2D matrix execution, and later delivery remain separately
 unauthorized.
+
+### Candidate 50S.6G.1B.2C deterministic medium evidence
+
+The candidate fake-data implementation in
+`satellites/snapshot_evidence.py` derives a deterministic coverage specimen
+only from an explicitly loaded, digest-admitted external snapshot. It binds the
+validated parent manifest, acquisition report, and captured provider-response
+bytes before applying the accepted scalar bins. Publication is canonical,
+content-addressed, receipt-bound, and atomic. The developer
+`select-medium` command is offline and requires explicit acknowledgement of
+the accepted parent digest.
+
+On 2026-09-17, 30 plugin-disabled focused tests passed in 5.99 seconds. The
+ordinary installed default remains `synthetic_50s4b_v1`; no external product
+is packaged or discovered. The candidate does not authorize the first real
+medium selection or 50S.6G.1B.2D matrix execution.
+
+### Accepted 50S.6G.1B.2C implementation
+
+Fernando scientifically and architecturally accepted the fake-data
+implementation on 2026-09-17 at `1d9d4e4`: 2,622 plugin-disabled tests passed
+in 225.75 seconds and the 185-test focused gate passed in 9.03 seconds.
+`satellites/snapshot_evidence.py` is now the accepted owner of deterministic
+medium selection and receipt-bound atomic publication. The real parent has not
+been selected; that operation requires separate authorization. 50S.6G.1B.2D
+remains unauthorized.

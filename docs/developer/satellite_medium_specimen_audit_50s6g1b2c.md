@@ -296,3 +296,35 @@ This audit was accepted when:
 Acceptance authorizes only bounded 50S.6G.1B.2C implementation with fake
 data. It does not authorize the first real medium selection; 50S.6G.1B.2D
 matrix execution and later 50S.6G delivery remain separately unauthorized.
+
+## 13. Candidate fake-data implementation record
+
+Candidate 50S.6G.1B.2C fake-data implementation now lives in
+`satellites/snapshot_evidence.py`. It requires an exact
+`ExternalSnapshotAdmission`, validates the acquisition report and captured
+provider-response bytes, uses the recorded retrieval stop as its age reference,
+applies the accepted independent bins and digest ranks, writes a canonical
+selection receipt, and atomically publishes a content-addressed derived
+snapshot. The offline `select-medium` command is explicit and transport-free.
+
+All tests use hand-authored fake data. On 2026-09-17, 30 plugin-disabled
+snapshot-evidence, admission, and acquisition tests passed in 5.99 seconds;
+compilation, `git diff --check`, and the working tree were clean. This is a
+candidate implementation awaiting scientific and architectural acceptance. It
+does not authorize the first real medium selection or 50S.6G.1B.2D matrix
+execution.
+
+## 14. Accepted fake-data implementation
+
+Fernando scientifically and architecturally accepted the bounded
+50S.6G.1B.2C fake-data implementation on 2026-09-17. The complete
+plugin-disabled suite passed 2,622 tests in 225.75 seconds; the 185-test
+implementation-and-documentation gate passed in 9.03 seconds; compilation,
+`git diff --check`, and the working tree were clean at `1d9d4e4`.
+
+Acceptance covers the deterministic selector, exact parent-evidence binding,
+canonical path-free receipt, content-addressed atomic publication, and offline
+operator seam. It does not itself authorize executing `select-medium` against
+the real 16,559-record parent. That first real selection is the next separately
+bounded 50S.6G.1B.2C operation. 50S.6G.1B.2D matrix execution remains
+separately unauthorized.
