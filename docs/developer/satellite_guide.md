@@ -1012,7 +1012,7 @@ architecturally accepted 50S.6F on 2026-09-17 after 2,577 plugin-disabled tests
 passed. Only a separately bounded 50S.6G audit is authorized next.
 
 
-## Candidate 50S.6G delivery sequence
+## Accepted 50S.6G delivery sequence
 
 The candidate delivery audit separates external immutable snapshot loading,
 policy-governed representative acquisition/evidence, canonical reports,
@@ -1029,3 +1029,7 @@ model for scientific interoperability. Exact chart tracks require certified
 samples between exact entry and exit and reuse the ordinary Wenu chart path.
 They remain geometric crossings; illumination, brightness, detector effects,
 and observatory scheduling remain later milestones.
+Fernando scientifically and architecturally accepted this sequence on
+2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
+4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next.
