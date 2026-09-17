@@ -310,7 +310,11 @@ def _validate_partition(query, evidence, exhaustive_results):
             "every field must exercise rejection and exact solving."
         )
     crossing_ids = {
-        result.candidate.satellite.norad_catalog_id
+        (
+            result.candidate.satellite.norad_catalog_id
+            if hasattr(result, "candidate")
+            else result["candidate"]["satellite"]["norad_catalog_id"]
+        )
         for result in exhaustive_results
     }
     overlap = crossing_ids.intersection(rejected)
