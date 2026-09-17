@@ -1973,7 +1973,7 @@ Fernando scientifically and architecturally accepted this ownership on
 50S.6G audit is authorized next.
 
 
-## Candidate 50S.6G delivery ownership
+## Accepted 50S.6G delivery ownership
 
 `satellite_delivery_audit_50s6g.md` proposes responsibilities but adds no
 production owner. `satellites/snapshots.py` remains the closest immutable
@@ -1990,3 +1990,7 @@ and composition owners may later register already validated exact evidence;
 existing projection, preparation, renderer, semantic identity, and exporter
 owners remain unchanged. Every proposed production file requires a separate
 implementation-slice placement review.
+Fernando scientifically and architecturally accepted this ownership on
+2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
+4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next.
