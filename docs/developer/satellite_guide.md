@@ -992,9 +992,9 @@ No multi-FoV runtime or later milestone is implemented or automatically
 authorized. Only bounded 50S.6F is authorized next.
 
 
-## Candidate 50S.6F bounded batch implementation
+## Accepted 50S.6F bounded batch implementation
 
-The candidate Python API accepts an immutable ordered non-empty tuple of
+The accepted Python API accepts an immutable ordered non-empty tuple of
 complete single-field queries. All fields must share one observer and immutable
 snapshot; field identifiers are unique, intervals and exact-solver tolerances
 remain independent, and the installed synthetic 60-second domain remains the
@@ -1007,4 +1007,6 @@ file/CLI adapter to write a validation file and resubmit the valid subset
 without adding that behavior now. Valid fields are processed in execution-only
 chunks of 10 by default and results retain input order. The candidate composes
 50S.6D independently per field; it does not yet claim useful acceleration or
-shared propagation/topocentric-state reuse.
+shared propagation/topocentric-state reuse. Fernando scientifically and
+architecturally accepted 50S.6F on 2026-09-17 after 2,577 plugin-disabled tests
+passed. Only a separately bounded 50S.6G audit is authorized next.
