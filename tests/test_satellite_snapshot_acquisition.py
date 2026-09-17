@@ -219,19 +219,19 @@ def test_provider_epoch_rejects_non_contract_forms(tmp_path, epoch):
             transport=transport,
         )
 
-    assert not (tmp_path / "snapshots").exists()
+    assert not tuple((tmp_path / "snapshots").iterdir())
 
 
 def test_duplicate_identifier_fails_without_partial_publication(tmp_path):
     policy, digest, _ = frozen_policy(tmp_path)
     rows = [
         (
-            "ONE", "2024-001A", "2026-09-17T09:00:00Z", "15.1",
+            "ONE", "2024-001A", "2026-09-17T09:00:00.000000", "15.1",
             "0.001", "51.6", "20", "30", "40", "0", "U", "123456",
             "7", "100", "0.00001", "0.00002", "0",
         ),
         (
-            "TWO", "2024-001B", "2026-09-17T09:00:00Z", "15.2",
+            "TWO", "2024-001B", "2026-09-17T09:00:00.000000", "15.2",
             "0.002", "51.7", "21", "31", "41", "0", "U", "123456",
             "8", "101", "0.00003", "0.00004", "0",
         ),
