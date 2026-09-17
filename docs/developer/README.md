@@ -55,7 +55,7 @@ migrations, milestone evidence, and superseded roadmaps are under
   — accepted same-observer, airmass-bounded multi-FoV, observatory
   interchange, exact chart-track, and four-source illumination roadmap audit.
 - [`satellite_delivery_audit_50s6g.md`](satellite_delivery_audit_50s6g.md)
-  — candidate representative-snapshot, canonical-report, two-call file,
+  — accepted representative-snapshot, canonical-report, two-call file,
   exact-track, and chart-delivery decomposition for 50S.6G.
 - [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
   scientific and implementation guide maintained separately during the 50S
