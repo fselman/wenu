@@ -68,10 +68,7 @@ ACCEPTED_MEDIUM_SNAPSHOT_IDENTITY = ExternalSnapshotIdentity(
     snapshot_id="medium_2e85c576e287a047",
     content_sha256=ACCEPTED_MEDIUM_IDENTITY.content_sha256,
     source_identity="CelesTrak GP GROUP=active",
-    source_url=(
-        "https://celestrak.org/NORAD/elements/"
-        "gp.php?GROUP=active&FORMAT=CSV"
-    ),
+    source_url=("https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=CSV"),
     builder_identity=MEDIUM_SPECIMEN_IMPLEMENTATION,
 )
 
@@ -88,25 +85,118 @@ _OBSERVER = {
 # sidereal angle at La Ligua minus the declared hour-angle offset; declination
 # is the site latitude plus the declared offset.  Durations are only 15 or 60 s.
 _FIELDS = (
-    ("field-00", 329.703675971877, -47.571720052137, 0.25, "2026-09-17T01:00:00.000000Z", "2026-09-17T01:00:15.000000Z", -30.0, -15.0),
-    ("field-01", 319.697816413667, -42.556383431782, 0.50, "2026-09-17T01:00:00.000000Z", "2026-09-17T01:00:15.000000Z", -20.0, -10.0),
-    ("field-02", 310.200558693187, -37.538632618425, 1.00, "2026-09-17T01:02:00.000000Z", "2026-09-17T01:02:15.000000Z", -10.0, -5.0),
-    ("field-03", 300.802077905052, -32.518488793147, 2.00, "2026-09-17T01:04:00.000000Z", "2026-09-17T01:05:00.000000Z", 0.0, 0.0),
-    ("field-04", 291.218986104295, -27.495872616984, 3.00, "2026-09-17T01:06:00.000000Z", "2026-09-17T01:06:15.000000Z", 10.0, 5.0),
-    ("field-05", 281.826532343408, -22.472276332411, 0.25, "2026-09-17T01:08:00.000000Z", "2026-09-17T01:09:00.000000Z", 20.0, 10.0),
-    ("field-06", 272.247585457736, -17.447416344019, 0.50, "2026-09-17T01:10:00.000000Z", "2026-09-17T01:10:15.000000Z", 30.0, 15.0),
-    ("field-07", 327.810134506323, -44.569097339298, 1.00, "2026-09-17T01:12:00.000000Z", "2026-09-17T01:13:00.000000Z", -25.0, -12.0),
-    ("field-08", 298.236918318459, -24.512591958411, 2.00, "2026-09-17T01:14:00.000000Z", "2026-09-17T01:14:15.000000Z", 5.0, 8.0),
-    ("field-09", 278.837453239516, -20.464571010991, 3.00, "2026-09-17T01:16:00.000000Z", "2026-09-17T01:17:00.000000Z", 25.0, 12.0),
+    (
+        "field-00",
+        329.703675971877,
+        -47.571720052137,
+        0.25,
+        "2026-09-17T01:00:00.000000Z",
+        "2026-09-17T01:00:15.000000Z",
+        -30.0,
+        -15.0,
+    ),
+    (
+        "field-01",
+        319.697816413667,
+        -42.556383431782,
+        0.50,
+        "2026-09-17T01:00:00.000000Z",
+        "2026-09-17T01:00:15.000000Z",
+        -20.0,
+        -10.0,
+    ),
+    (
+        "field-02",
+        310.200558693187,
+        -37.538632618425,
+        1.00,
+        "2026-09-17T01:02:00.000000Z",
+        "2026-09-17T01:02:15.000000Z",
+        -10.0,
+        -5.0,
+    ),
+    (
+        "field-03",
+        300.802077905052,
+        -32.518488793147,
+        2.00,
+        "2026-09-17T01:04:00.000000Z",
+        "2026-09-17T01:05:00.000000Z",
+        0.0,
+        0.0,
+    ),
+    (
+        "field-04",
+        291.218986104295,
+        -27.495872616984,
+        3.00,
+        "2026-09-17T01:06:00.000000Z",
+        "2026-09-17T01:06:15.000000Z",
+        10.0,
+        5.0,
+    ),
+    (
+        "field-05",
+        281.826532343408,
+        -22.472276332411,
+        0.25,
+        "2026-09-17T01:08:00.000000Z",
+        "2026-09-17T01:09:00.000000Z",
+        20.0,
+        10.0,
+    ),
+    (
+        "field-06",
+        272.247585457736,
+        -17.447416344019,
+        0.50,
+        "2026-09-17T01:10:00.000000Z",
+        "2026-09-17T01:10:15.000000Z",
+        30.0,
+        15.0,
+    ),
+    (
+        "field-07",
+        327.810134506323,
+        -44.569097339298,
+        1.00,
+        "2026-09-17T01:12:00.000000Z",
+        "2026-09-17T01:13:00.000000Z",
+        -25.0,
+        -12.0,
+    ),
+    (
+        "field-08",
+        298.236918318459,
+        -24.512591958411,
+        2.00,
+        "2026-09-17T01:14:00.000000Z",
+        "2026-09-17T01:14:15.000000Z",
+        5.0,
+        8.0,
+    ),
+    (
+        "field-09",
+        278.837453239516,
+        -20.464571010991,
+        3.00,
+        "2026-09-17T01:16:00.000000Z",
+        "2026-09-17T01:17:00.000000Z",
+        25.0,
+        12.0,
+    ),
 )
 
 
 def _midpoint(start, stop):
     left = datetime.fromisoformat(start.replace("Z", "+00:00"))
     right = datetime.fromisoformat(stop.replace("Z", "+00:00"))
-    return (left + (right - left) / 2).astimezone(timezone.utc).isoformat(
-        timespec="microseconds"
-    ).replace("+00:00", "Z")
+    return (
+        (left + (right - left) / 2)
+        .astimezone(timezone.utc)
+        .isoformat(timespec="microseconds")
+        .replace("+00:00", "Z")
+    )
 
 
 def _fixture_mapping():
@@ -128,11 +218,15 @@ def _fixture_mapping():
         "angular_tolerance_deg": 1.0e-5,
         "fields": [
             {
-                "field_id": item[0], "center_longitude_deg": item[1],
-                "center_latitude_deg": item[2], "angular_radius_deg": item[3],
-                "interval_start": item[4], "interval_stop": item[5],
+                "field_id": item[0],
+                "center_longitude_deg": item[1],
+                "center_latitude_deg": item[2],
+                "angular_radius_deg": item[3],
+                "interval_start": item[4],
+                "interval_stop": item[5],
                 "centre_instant_utc": _midpoint(item[4], item[5]),
-                "hour_angle_offset_deg": item[6], "declination_offset_deg": item[7],
+                "hour_angle_offset_deg": item[6],
+                "declination_offset_deg": item[7],
             }
             for item in _FIELDS
         ],
@@ -143,7 +237,10 @@ MATRIX_REQUEST_FIXTURE = _fixture_mapping()
 MATRIX_REQUEST_FIXTURE_SHA256 = (
     "5370eaa0e14ecaddc4321a7cde1de14e3d7063e4dc7c67d69af3f781e8125b3f"
 )
-if sha256_hex(canonical_json_bytes(MATRIX_REQUEST_FIXTURE)) != MATRIX_REQUEST_FIXTURE_SHA256:
+if (
+    sha256_hex(canonical_json_bytes(MATRIX_REQUEST_FIXTURE))
+    != MATRIX_REQUEST_FIXTURE_SHA256
+):
     raise RuntimeError("frozen matrix request fixture digest mismatch.")
 
 
@@ -153,25 +250,29 @@ def build_matrix_queries(snapshot):
     queries = []
     for field_id, longitude, latitude, radius, start, stop, _ha, _dec in _FIELDS:
         spec = CoordinateSpec(
-            frame="gcrs-axes", origin="topocentric-direction",
+            frame="gcrs-axes",
+            origin="topocentric-direction",
             position_status=PositionStatus.GEOMETRIC,
-            instant=_midpoint(start, stop), time_scale="utc",
+            instant=_midpoint(start, stop),
+            time_scale="utc",
             provider=MATRIX_EXECUTION_IMPLEMENTATION,
         )
-        queries.append(LocalSatelliteCrossingQuery(
-            snapshot=snapshot,
-            observer=observer,
-            field_of_view=SatelliteFieldOfView(
-                field_id=field_id,
-                center_longitude_deg=longitude,
-                center_latitude_deg=latitude,
-                angular_radius_deg=radius,
-                coordinate_spec=spec,
-            ),
-            interval=InclusiveTimeInterval(start, stop),
-            time_tolerance_seconds=0.01,
-            angular_tolerance_deg=1.0e-5,
-        ))
+        queries.append(
+            LocalSatelliteCrossingQuery(
+                snapshot=snapshot,
+                observer=observer,
+                field_of_view=SatelliteFieldOfView(
+                    field_id=field_id,
+                    center_longitude_deg=longitude,
+                    center_latitude_deg=latitude,
+                    angular_radius_deg=radius,
+                    coordinate_spec=spec,
+                ),
+                interval=InclusiveTimeInterval(start, stop),
+                time_tolerance_seconds=0.01,
+                angular_tolerance_deg=1.0e-5,
+            )
+        )
     return tuple(queries)
 
 
@@ -191,10 +292,17 @@ def validate_accepted_medium_receipt(receipt):
         raise ValueError("selection receipt fill constraint mismatch.")
     if receipt.get("actual_record_count") != 256:
         raise ValueError("selection receipt record count mismatch.")
-    if receipt.get("subset_canonical_records_sha256") != ACCEPTED_MEDIUM_IDENTITY.content_sha256:
+    if (
+        receipt.get("subset_canonical_records_sha256")
+        != ACCEPTED_MEDIUM_IDENTITY.content_sha256
+    ):
         raise ValueError("selection receipt subset digest mismatch.")
     parent = receipt.get("parent_identity")
-    if not isinstance(parent, dict) or parent.get("content_sha256") != ACCEPTED_MEDIUM_IDENTITY.parent_content_sha256:
+    if (
+        not isinstance(parent, dict)
+        or parent.get("content_sha256")
+        != ACCEPTED_MEDIUM_IDENTITY.parent_content_sha256
+    ):
         raise ValueError("selection receipt parent digest mismatch.")
     return receipt
 
@@ -203,11 +311,14 @@ class ProductionMatrixAirmassCertifier(FieldAirmassCertifier):
     """Accepted centre-only complete-interval X <= 2 certifier."""
 
     def __init__(self, *, evaluator=None):
-        super().__init__(policy=MultiFieldCrossingPolicy(
-            admitted_snapshot_ids=("never-implicit-external",),
-            max_interval_seconds=60.0,
-            maximum_airmass=2.0,
-        ), evaluator=evaluator)
+        super().__init__(
+            policy=MultiFieldCrossingPolicy(
+                admitted_snapshot_ids=("never-implicit-external",),
+                max_interval_seconds=60.0,
+                maximum_airmass=2.0,
+            ),
+            evaluator=evaluator,
+        )
 
 
 def _jsonable(value):
@@ -250,7 +361,11 @@ def _query_from_payload(snapshot, payload):
 
 
 def _environment():
-    values = {"python": platform.python_version(), "os": platform.platform(), "machine": platform.machine()}
+    values = {
+        "python": platform.python_version(),
+        "os": platform.platform(),
+        "machine": platform.machine(),
+    }
     for name in ("wenu", "numpy", "astropy", "skyfield", "sgp4"):
         try:
             values[name] = version(name)
@@ -263,8 +378,10 @@ def _selection_from_mapping(value):
     if value is None:
         return None
     return ConeShellSelection(
-        snapshot_sha256=value["snapshot_sha256"], field_id=value["field_id"],
-        interval_start=value["interval_start"], interval_stop=value["interval_stop"],
+        snapshot_sha256=value["snapshot_sha256"],
+        field_id=value["field_id"],
+        interval_start=value["interval_start"],
+        interval_stop=value["interval_stop"],
         decisions=tuple(ConeShellDecision(**item) for item in value["decisions"]),
         implementation=value["implementation"],
     )
@@ -274,13 +391,16 @@ def _evidence_from_mapping(value):
     if value is None:
         return None
     return AcceleratedCrossingEvidence(
-        snapshot_sha256=value["snapshot_sha256"], field_id=value["field_id"],
-        interval_start=value["interval_start"], interval_stop=value["interval_stop"],
+        snapshot_sha256=value["snapshot_sha256"],
+        field_id=value["field_id"],
+        interval_start=value["interval_start"],
+        interval_stop=value["interval_stop"],
         rejected_norad_catalog_ids=tuple(value["rejected_norad_catalog_ids"]),
         exact_solver_norad_catalog_ids=tuple(value["exact_solver_norad_catalog_ids"]),
         selection=_selection_from_mapping(value["selection"]),
         fallback_to_exhaustive=value["fallback_to_exhaustive"],
-        fallback_reason=value.get("fallback_reason"), implementation=value["implementation"],
+        fallback_reason=value.get("fallback_reason"),
+        implementation=value["implementation"],
     )
 
 
@@ -296,9 +416,13 @@ class FreshSubprocessMatrixExecutor:
     def __call__(self, route, query, repetition, measured):
         request = {
             "protocol": MATRIX_WORKER_PROTOCOL,
-            "route": route, "repetition": repetition, "measured": bool(measured),
+            "route": route,
+            "repetition": repetition,
+            "measured": bool(measured),
             "snapshot_directory": self.snapshot_directory,
-            "snapshot_identity": _jsonable(ExternalSnapshotIdentity.from_snapshot(query.snapshot)),
+            "snapshot_identity": _jsonable(
+                ExternalSnapshotIdentity.from_snapshot(query.snapshot)
+            ),
             "query": _query_payload(query),
         }
         with tempfile.TemporaryDirectory(prefix="wenu-matrix-worker-") as directory:
@@ -307,51 +431,83 @@ class FreshSubprocessMatrixExecutor:
             request_path.write_bytes(canonical_json_bytes(request))
             try:
                 completed = subprocess.run(
-                    [sys.executable, "-m", __name__, "worker", str(request_path), str(response_path)],
-                    stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                    timeout=self.timeout_seconds, check=False,
+                    [
+                        sys.executable,
+                        "-m",
+                        __name__,
+                        "worker",
+                        str(request_path),
+                        str(response_path),
+                    ],
+                    stdin=subprocess.DEVNULL,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    timeout=self.timeout_seconds,
+                    check=False,
                 )
             except subprocess.TimeoutExpired as error:
-                raise TimeoutError(f"matrix worker timed out after {self.timeout_seconds:g} s.") from error
+                raise TimeoutError(
+                    f"matrix worker timed out after {self.timeout_seconds:g} s."
+                ) from error
             if completed.returncode != 0:
                 stderr = completed.stderr.decode("utf-8", errors="replace").strip()
-                raise RuntimeError(f"matrix worker exited {completed.returncode}: {stderr}")
+                raise RuntimeError(
+                    f"matrix worker exited {completed.returncode}: {stderr}"
+                )
             data = response_path.read_bytes()
             value = json.loads(data)
-            if canonical_json_bytes(value) != data or value.get("protocol") != MATRIX_WORKER_PROTOCOL:
-                raise ValueError("matrix worker returned a non-canonical or unsupported response.")
+            if (
+                canonical_json_bytes(value) != data
+                or value.get("protocol") != MATRIX_WORKER_PROTOCOL
+            ):
+                raise ValueError(
+                    "matrix worker returned a non-canonical or unsupported response."
+                )
         resource = MatrixResourceObservation(**value["resource"])
         return MatrixRouteRun(
-            results=tuple(value["results"]), resource=resource,
-            acceleration_evidence=_evidence_from_mapping(value.get("acceleration_evidence")),
+            results=tuple(value["results"]),
+            resource=resource,
+            acceleration_evidence=_evidence_from_mapping(
+                value.get("acceleration_evidence")
+            ),
         )
 
 
 def _worker(request_path, response_path):
     request_bytes = Path(request_path).read_bytes()
     request = json.loads(request_bytes)
-    if canonical_json_bytes(request) != request_bytes or request.get("protocol") != MATRIX_WORKER_PROTOCOL:
+    if (
+        canonical_json_bytes(request) != request_bytes
+        or request.get("protocol") != MATRIX_WORKER_PROTOCOL
+    ):
         raise ValueError("matrix worker request is non-canonical or unsupported.")
     snapshot = load_snapshot_directory(request["snapshot_directory"])
     expected = ExternalSnapshotIdentity(**request["snapshot_identity"])
-    admission = ExternalSnapshotAdmissionPolicy(MATRIX_EXECUTION_IMPLEMENTATION, (expected,)).admit(snapshot)
+    admission = ExternalSnapshotAdmissionPolicy(
+        MATRIX_EXECUTION_IMPLEMENTATION, (expected,)
+    ).admit(snapshot)
     query = _query_from_payload(snapshot, request["query"])
     route = request["route"]
     tracemalloc.start()
     wall_start, cpu_start = time.monotonic(), time.process_time()
     if route == "exhaustive":
-        results = LocalSatelliteCrossingOracle(max_evaluations_per_record=20000).solve(query)
+        results = LocalSatelliteCrossingOracle(max_evaluations_per_record=20000).solve(
+            query
+        )
         evidence = None
     elif route == "accelerated":
         selector = ConservativeConeShellSelector(
-            policy=ConeShellPolicy(validated_snapshot_ids=(snapshot.manifest.snapshot_id,)),
+            policy=ConeShellPolicy(
+                validated_snapshot_ids=(snapshot.manifest.snapshot_id,)
+            ),
             external_snapshot_admission=admission,
         )
         oracle = AcceleratedLocalSatelliteCrossingOracle(
             selector=selector,
             policy=AcceleratedCrossingPolicy(
                 admitted_snapshot_ids=(snapshot.manifest.snapshot_id,),
-                max_interval_seconds=60.0, selector_failure_mode="fail_closed",
+                max_interval_seconds=60.0,
+                selector_failure_mode="fail_closed",
             ),
             max_evaluations_per_record=20000,
             external_snapshot_admission=admission,
@@ -359,15 +515,22 @@ def _worker(request_path, response_path):
         results, evidence = oracle.solve_with_evidence(query)
     else:
         raise ValueError("matrix worker route must be exhaustive or accelerated.")
-    cpu_seconds, wall_seconds = time.process_time() - cpu_start, time.monotonic() - wall_start
+    cpu_seconds, wall_seconds = (
+        time.process_time() - cpu_start,
+        time.monotonic() - wall_start,
+    )
     _current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
     result_document = _jsonable(results)
     evidence_document = None if evidence is None else _jsonable(evidence)
     resource = MatrixResourceObservation(
-        route=route, field_id=query.field_of_view.field_id,
-        repetition=max(0, request["repetition"]), wall_seconds=wall_seconds,
-        cpu_seconds=cpu_seconds, peak_python_bytes=peak, environment=_environment(),
+        route=route,
+        field_id=query.field_of_view.field_id,
+        repetition=max(0, request["repetition"]),
+        wall_seconds=wall_seconds,
+        cpu_seconds=cpu_seconds,
+        peak_python_bytes=peak,
+        environment=_environment(),
         exit_status=0,
         snapshot_sha256=snapshot.manifest.content_sha256,
         request_sha256=sha256_hex(request_bytes),
@@ -383,7 +546,16 @@ def _worker(request_path, response_path):
     Path(response_path).write_bytes(canonical_json_bytes(response))
 
 
-def run_production_equivalence_matrix(snapshot_directory, output_root, *, specimen_identity, acknowledgement, policy=None, certifier=None, executor=None):
+def run_production_equivalence_matrix(
+    snapshot_directory,
+    output_root,
+    *,
+    specimen_identity,
+    acknowledgement,
+    policy=None,
+    certifier=None,
+    executor=None,
+):
     """Run the explicit offline path after exact operator acknowledgements."""
     if acknowledgement != REAL_EXECUTION_ACKNOWLEDGEMENT:
         raise ValueError("exact real-execution acknowledgement is required.")
@@ -400,8 +572,11 @@ def run_production_equivalence_matrix(snapshot_directory, output_root, *, specim
         (ACCEPTED_MEDIUM_SNAPSHOT_IDENTITY,),
     ).admit(snapshot)
     return run_equivalence_matrix(
-        root, output_root, specimen_identity=specimen_identity,
-        admission=admission, queries=build_matrix_queries(snapshot),
+        root,
+        output_root,
+        specimen_identity=specimen_identity,
+        admission=admission,
+        queries=build_matrix_queries(snapshot),
         airmass_certifier=certifier or ProductionMatrixAirmassCertifier(),
         executor=executor or FreshSubprocessMatrixExecutor(root),
         policy=policy or CrossingMatrixPolicy(),
