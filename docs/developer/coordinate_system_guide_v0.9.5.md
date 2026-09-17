@@ -3673,3 +3673,13 @@ evidence. The fresh-subprocess protocol and explicit offline developer command
 must preserve that same coordinate identity without reconstruction or implicit
 defaults. This audit at `9bdf301` performed no real propagation,
 transformation, airmass evaluation, specimen read, or matrix execution.
+
+### Accepted real-matrix coordinate readiness finding
+
+Fernando scientifically and architecturally accepted the fail-closed
+coordinate-readiness finding on 2026-09-17 after 163 plugin-disabled
+current-documentation tests passed in 3.80 seconds at `054ac39`. Only
+fake-data implementation of the frozen ten-field coordinate fixture,
+whole-interval airmass certifier, and identity-preserving subprocess protocol
+is authorized next. No real coordinate evaluation or matrix execution is
+authorized.
