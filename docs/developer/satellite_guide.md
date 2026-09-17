@@ -1283,4 +1283,12 @@ digest-frozen La Ligua fields, and atomically certifies their centre-only
 airmass. Each route/query/repetition then runs in a fresh subprocess. The
 fixture contains only 15- and 60-second intervals and its tests use fake data
 and bounded subprocess doubles. The command performs no discovery, download,
-refresh, fallback, concurrency, or cache reuse.
+refresh, fallback, concurrency, or cache reuse.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.
