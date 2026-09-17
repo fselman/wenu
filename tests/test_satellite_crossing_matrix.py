@@ -3,6 +3,7 @@
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 import json
+from pathlib import Path
 import subprocess
 
 import pytest
@@ -508,7 +509,6 @@ def test_fresh_subprocess_executor_uses_canonical_protocol(tmp_path, monkeypatch
         Path(command[-1]).write_bytes(canonical_json_bytes(response))
         return subprocess.CompletedProcess(command, 0, b"", b"")
 
-    from pathlib import Path
     monkeypatch.setattr(subprocess, "run", fake_run)
     result = FreshSubprocessMatrixExecutor(root)(
         "exhaustive", query, 0, True
