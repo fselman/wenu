@@ -118,6 +118,8 @@ def parent(tmp_path, *, reverse=False):
         })
     )
     (root / "records.json").write_bytes(records_bytes)
+    provider_bytes = b"fake captured provider response\n"
+    (root / "provider-response.csv").write_bytes(provider_bytes)
     report = {
         "schema_version": 1,
         "document_kind": "fake-acquisition-report",
@@ -125,7 +127,9 @@ def parent(tmp_path, *, reverse=False):
         "retrieved_started_utc": iso(REFERENCE - timedelta(seconds=1)),
         "retrieved_stopped_utc": iso(REFERENCE),
         "http_status": 200,
-        "provider_response_sha256": "a" * 64,
+        "provider_response_file": "provider-response.csv",
+        "provider_response_bytes": len(provider_bytes),
+        "provider_response_sha256": sha256_hex(provider_bytes),
         "canonical_records_sha256": digest,
         "record_count": len(payload),
         "status": "success",
@@ -241,3 +245,14 @@ def test_existing_destination_is_fully_revalidated(tmp_path):
         select_medium_snapshot(
             root, output, admission=admission, target_count=8
         )
+
+
+def test_provider_response_tampering_fails_before_publication(tmp_path):
+    root, admission = parent(tmp_path)
+    (root / "provider-response.csv").write_bytes(b"tampered\n")
+
+    with pytest.raises(ValueError, match="provider response"):
+        select_medium_snapshot(
+            root, tmp_path / "output", admission=admission, target_count=8
+        )
+    assert not (tmp_path / "output").exists()
