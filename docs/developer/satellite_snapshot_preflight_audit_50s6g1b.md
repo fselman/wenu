@@ -403,3 +403,20 @@ correction on 2026-09-17 after 10 focused tests passed in 2.41 seconds and all
 response and receipt share SHA-256
 `67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. No GP request was made or authorized. Explicit approval of this
 exact digest remains a separate human checkpoint.
+
+## 16. Accepted live-evidence compatibility closure
+
+The single authorized direct Active response contained 16,559 records and had
+SHA-256 `e54730e14b2097444c5e20bba6dd13d3e2d92f956797d49256ddb1a70ffe5014`. Every observed `EPOCH` used the suffix-free
+`YYYY-MM-DDTHH:MM:SS.ffffff` form. The accepted adapter applies the already
+audited CelesTrak `TIME_SYSTEM = UTC` invariant, writes explicit canonical
+`Z` instants, accepts the endpoint's captured `text/plain; charset=UTF-8`
+media type, and requires offline callers to supply rather than invent that
+metadata.
+
+The corrected external snapshot has canonical-record SHA-256
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`. Fernando accepted the repair and snapshot on 2026-09-17 after
+15 focused tests passed in 2.22 seconds and all 2,600 plugin-disabled tests
+passed in 223.57 seconds. No second provider request occurred. This closes the
+50S.6G.1B.1 live acquisition repair only; representative admission, medium-tier
+selection, evidence-matrix work, and 50S.6G.1B.2 remain separately authorized.

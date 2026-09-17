@@ -2491,3 +2491,11 @@ correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
 tests passed. The 14,643-byte policy receipt is bound to SHA-256
 `67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. No GP request was performed, and digest approval remains a
 separate gate before the one authorized bulk request.
+
+**50S.6G.1B.1 live-evidence closure.** Fernando accepted the strict CelesTrak
+UTC-epoch normalization, exact captured HTTP media type, and the resulting
+16,559-record external Active snapshot on 2026-09-17 after 15 focused and 2,600
+complete plugin-disabled tests. The raw/canonical SHA-256 values are
+`e54730e14b2097444c5e20bba6dd13d3e2d92f956797d49256ddb1a70ffe5014` and `e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`. Only one provider request occurred. Representative
+admission, medium-tier selection, matrix evidence, and 50S.6G.1B.2 remain
+separately accepted future work.
