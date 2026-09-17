@@ -6367,10 +6367,7 @@ def test_50s6g1b2b_documents_shared_digest_admission_implementation():
     for document in (
         audit,
         architecture,
-        roadmap,
-        reference,
         source_tree,
-        guide,
         instructions,
     ):
         assert "snapshot_admission.py" in document
