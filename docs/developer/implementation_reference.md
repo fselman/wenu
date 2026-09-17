@@ -2985,4 +2985,18 @@ current-documentation tests passed in 3.80 seconds at `054ac39`. The accepted
 next scope is fake-data implementation of the exact receipt validator, frozen
 fixture, production certifier, subprocess protocol and worker, explicit
 offline command, and tests. The acceptance grants no authority to read or run
-the external real specimen.
+the external real specimen.\n
+
+### Candidate offline production matrix path
+
+`build_matrix_queries(snapshot)` materializes one digest-frozen ten-field La
+Ligua fixture containing only 15- and 60-second intervals.
+`ProductionMatrixAirmassCertifier` composes the accepted centre-only,
+whole-interval geometric vacuum policy at maximum airmass 2.
+`FreshSubprocessMatrixExecutor` runs one route/query/repetition per fresh
+Python process through a canonical private protocol and records exit status,
+environment, timing, allocation, request, result, evidence, and snapshot
+digests. `run_production_equivalence_matrix()` requires the exact accepted
+medium identity, receipt constraints, and operator acknowledgement before the
+existing equivalence owner runs. This candidate provides no discovery,
+network, refresh, fallback, concurrency, cache reuse, or implicit execution.
