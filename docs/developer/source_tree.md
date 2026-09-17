@@ -2158,3 +2158,13 @@ No repository source or data directory owns the external bytes.
 the canonical receipt and derived manifest carry the evidence bindings. The
 repository records identity and verification facts only. The parent remained
 unchanged, no provider request occurred, and 50S.6G.1B.2D is unauthorized.
+
+### Accepted real 50S.6G.1B.2C evidence
+
+Fernando accepted external subset
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`
+and receipt
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`
+on 2026-09-17 at `c4cd009`; 157 plugin-disabled documentation tests passed
+in 4.66 seconds. The bytes remain outside the repository and package.
+50S.6G.1B.2D remains unauthorized.
