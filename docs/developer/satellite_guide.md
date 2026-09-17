@@ -1209,3 +1209,16 @@ with receipt
 on 2026-09-17 at `c4cd009`; 157 plugin-disabled documentation tests passed
 in 4.66 seconds. It remains external, immutable, and non-statistical.
 50S.6G.1B.2D remains separately unauthorized.
+
+### Candidate 50S.6G.1B.2D equivalence matrix
+
+The documentation-only candidate defines 10 deterministic La Ligua fields on
+one UTC night, with different centres and intervals plus a shared-interval
+research control. The accepted 256-record specimen is explicitly admitted to
+both exhaustive and accelerated services. Success requires identical ordered
+crossing results, complete conservative-selection evidence, no fallback, and
+no rejected satellite with an exhaustive crossing.
+
+Resource measurements are descriptive evidence, not a speed claim. The matrix
+is not executed by this audit and creates no chart, track, report route, or
+runtime default.
