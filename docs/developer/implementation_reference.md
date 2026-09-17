@@ -2928,3 +2928,11 @@ external evidence.
 
 The proposed `run-equivalence-matrix` developer command is offline. Neither
 the owner nor command exists yet.
+
+### Accepted 50S.6G.1B.2D matrix contract
+
+Fernando accepted the proposed strict exhaustive/accelerated equivalence
+contract on 2026-09-17 at `6e7a8b9`, after 159 plugin-disabled documentation
+tests passed in 10.75 seconds. A later bounded implementation may add the
+dedicated matrix owner and offline command using fake data only. The real
+medium specimen must not be read or executed without separate authorization.
