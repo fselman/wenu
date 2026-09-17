@@ -86,3 +86,7 @@ and [`archive/roadmap_history/`](archive/roadmap_history/).
 Do not place completed milestone records directly in this directory. Move them
 to the matching archive family and update active links and documentation tests
 in the same change.
+
+- [50S.6G.1B.2D exact-equivalence matrix audit](satellite_equivalence_matrix_audit_50s6g1b2d.md)
+  — candidate documentation-only contract for strict exhaustive/accelerated
+  equality and external matrix evidence.

@@ -1304,3 +1304,25 @@ and its receipt digest is
 `1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
 This closes 50S.6G.1B.2C without changing the installed synthetic default.
 50S.6G.1B.2D remains separately unauthorized.
+
+### Candidate 50S.6G.1B.2D equivalence-matrix audit
+
+The candidate audit in
+`satellite_equivalence_matrix_audit_50s6g1b2d.md` defines a documentation-only
+boundary for comparing the exhaustive and accelerated production services on
+the exact accepted 256-record external specimen. It requires 10 deterministic
+same-observer, same-night fields with independent intervals and one
+shared-interval research control, strict canonical result equality, complete
+selector evidence, fail-closed execution, isolated resource observations, and
+atomic external publication.
+
+No matrix is executed, no runtime changes, and no performance claim, chart,
+track, report route, provider access, or default change are authorized.
+
+### Accepted 50S.6G.1B.2D matrix audit
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-17 at `6e7a8b9`, after 159 plugin-disabled documentation
+tests passed in 10.75 seconds. Only bounded fake-data implementation of the
+strict equivalence and evidence harness is authorized next. Real matrix
+execution, resource claims, delivery, and charting remain unauthorized.

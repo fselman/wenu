@@ -2616,3 +2616,27 @@ the receipt digest is
 `1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
 50S.6G.1B.2C is closed. Only a separately authorized 50S.6G.1B.2D matrix audit
 may proceed next.
+
+#### 50S.6G.1B.2D — Exact-equivalence and resource-matrix audit
+
+**Status:** Candidate documentation-only audit.
+
+The candidate binds the accepted 256-record medium and receipt identities to a
+10-field same-observer, same-night matrix. Exhaustive and accelerated results
+must be strictly equal as tuples, canonical bytes, per-field digests, and a
+whole-matrix digest. Accelerated evidence must partition all 256 identifiers,
+forbid fallback, and prove that no rejected record has an exhaustive crossing.
+
+Resource observations are isolated, repeated, and descriptive only. A later
+implementation would use fake data exclusively; real matrix execution requires
+separate authorization. No delivery, charting, illumination, provider access,
+or speed claim is authorized by this audit.
+
+### 50S.6G.1B.2D accepted audit
+
+Fernando accepted the exact-equivalence and resource-matrix audit on
+2026-09-17 at `6e7a8b9`; 159 plugin-disabled documentation tests passed in
+10.75 seconds. Only bounded fake-data matrix-harness implementation is
+authorized next. Execution on the real accepted medium specimen and every
+speed, capacity, delivery, track, chart, and illumination claim remain
+separately unauthorized.

@@ -3617,3 +3617,24 @@ tests passed in 4.66 seconds. The accepted digest is
 `2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`;
 selection performed no propagation or coordinate transformation.
 50S.6G.1B.2D remains unauthorized.
+
+### Candidate 50S.6G.1B.2D coordinate review
+
+The proposed matrix introduces no coordinate operation. It constructs declared
+GCRS-axes, topocentric-direction, geometric FoVs through the accepted
+coordinate chain, then passes identical immutable queries to the existing
+exhaustive and accelerated services. The same La Ligua observer, UTC instants,
+vacuum policy, bundled Earth orientation, FoV geometry, and tolerances apply to
+both routes.
+
+Strict result equality is required after those services return. No frame,
+origin, position status, epoch, time scale, refraction, propagation, or
+transformation meaning changes.
+
+### Accepted 50S.6G.1B.2D coordinate finding
+
+Fernando accepted the no-new-coordinate-operation finding on 2026-09-17 at
+`6e7a8b9`, after 159 plugin-disabled documentation tests passed in 10.75
+seconds. Fake-data harness implementation may preserve and exercise the
+existing contracts; real matrix execution and any coordinate change remain
+unauthorized.
