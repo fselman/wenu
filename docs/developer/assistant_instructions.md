@@ -1042,3 +1042,20 @@ Acceptance does not authorize running against the real 16,559-record parent.
 Require Fernando's separate approval before the first real selection.
 50S.6G.1B.2D matrix execution, packaging, discovery, provider access, and
 runtime-default changes remain unauthorized.
+
+### Candidate real 50S.6G.1B.2C artifact boundary
+
+The external specimen contains 256 records with canonical-record SHA-256
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`.
+Its canonical selection receipt has SHA-256
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+It derives from the accepted 16,559-record parent
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`
+using age reference `2026-09-17T15:52:23.000000Z`.
+
+The authorized offline operation used `a5b95fd`, selected 48 mandatory and
+208 fill records across 24 nonempty bins, preserved all parent bytes, and made
+no provider request. Keep this product external and identity-bound. Do not
+package, discover, refresh, substitute, or treat it as statistically
+representative. Its evidence record awaits Fernando's acceptance; do not begin
+50S.6G.1B.2D without separate authorization.
