@@ -2396,9 +2396,9 @@ unimplemented and unauthorized pending that audit.
 
 ### 50S.6G — Representative delivery, reports, files, and exact chart tracks
 
-**Status:** Candidate documentation-only audit.
+**Status:** Accepted documentation-only audit.
 
-The candidate `satellite_delivery_audit_50s6g.md` decomposes delivery into an
+The accepted `satellite_delivery_audit_50s6g.md` decomposes delivery into an
 external immutable snapshot seam; a policy-governed representative builder and
 scale/equivalence matrix; one canonical exact-crossing model with deterministic
 JSON, ECSV, and VOTable encodings; an atomic direct CLI plus JSON two-call file
@@ -2414,5 +2414,7 @@ All chart products reuse the canonical spherical-geometry, projection,
 preparation, rendering, semantic-SVG, and export flow. 50S.6G reports and
 tracks remain geometric: illumination, brightness, detector effects, direct
 observatory adapters, scheduling decisions, and observatory writes remain
-50S.6H–50S.10 work. This audit changes no runtime or output and authorizes no
-implementation before separate acceptance.
+50S.6H–50S.10 work. This audit changes no runtime or output. Fernando
+scientifically and architecturally accepted it on 2026-09-17 after all 145
+plugin-disabled current-documentation tests passed in 4.36 seconds. Only
+bounded 50S.6G.1A external immutable snapshot loading is authorized next.
