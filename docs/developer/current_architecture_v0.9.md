@@ -1145,3 +1145,12 @@ Fernando scientifically and architecturally accepted 50S.6G.1A on 2026-09-17
 after the 164-test focused gate and all 2,583 plugin-disabled tests passed.
 Only a separately bounded 50S.6G.1B representative snapshot preflight and
 evidence audit is authorized next, not its implementation.
+
+The candidate 50S.6G.1B audit adds no implementation. It proposes a separate
+satellite acquisition owner with a two-phase CelesTrak policy receipt and exact
+digest acknowledgement, followed by at most one fixed `GROUP=active` CSV bulk
+request. Exact raw bytes and deterministic canonicalization receipts precede
+atomic content-addressed external publication. Active is representative scale,
+not complete orbital-population coverage. External evidence admission must be
+bound to the canonical-record digest; installed synthetic defaults remain
+unchanged.

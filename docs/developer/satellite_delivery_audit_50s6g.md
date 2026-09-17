@@ -367,3 +367,19 @@ architecturally accepted 50S.6G.1A on 2026-09-17 after the 164-test focused
 gate and all 2,583 plugin-disabled tests passed. Only a separately bounded
 50S.6G.1B representative snapshot preflight and evidence audit is authorized
 next, not its implementation.
+
+## 14. Candidate 50S.6G.1B refinement
+
+The dedicated `satellite_snapshot_preflight_audit_50s6g1b.md` refines the
+representative-snapshot step without changing later report or chart contracts.
+It separates a frozen official policy receipt and exact human digest
+acknowledgement from one fixed CelesTrak Active-group CSV bulk request. All
+responses stop on redirect or non-200 status and have no retry, fallback,
+polling, per-object, parallel, or partial-success route.
+
+Raw and canonical bytes, receipts, content-addressed publication, deterministic
+medium selection, digest-bound evidence-only admission, exhaustive equality,
+and the declared scale/resource matrix remain external artifacts. Active-group
+scope is not full-population completeness. The candidate audit adds no runtime,
+provider request, catalogue, benchmark result, report, CLI/file behavior,
+track, or chart.

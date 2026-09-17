@@ -3495,3 +3495,18 @@ GCRS, an observer frame, or a chart product frame.
 Fernando scientifically and architecturally accepted this coordinate boundary
 on 2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled
 tests passed. Only the bounded 50S.6G.1B audit is authorized next.
+
+
+## Candidate 50S.6G.1B coordinate review
+
+The representative snapshot preflight/evidence audit changes no implemented
+coordinate, origin, frame, time-scale, epoch, propagation, topocentric, FoV,
+airmass, crossing, projection, or chart meaning. CelesTrak OMM-compatible CSV
+normalization must declare `EARTH`, `TEME`, `UTC`, and `SGP4` only as documented
+provider-format invariants when those redundant fields are omitted. Every
+record still enters the accepted typed OMM and WGS-72 SGP4/TEME chain.
+
+Representative evidence retains exact snapshot, Earth-orientation, observer,
+field, interval, and tolerance identities. It must not reinterpret provider
+population scope as coordinate completeness or infer visibility from geometric
+crossings.

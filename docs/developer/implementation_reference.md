@@ -2739,3 +2739,20 @@ acquisition, publication, fallback, or runtime admission.
 Fernando scientifically and architecturally accepted this interface on
 2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled tests
 passed. Only a separately bounded 50S.6G.1B audit is authorized next.
+
+## Candidate representative snapshot preflight contract
+
+No interface in this section is implemented. The audit proposes separate
+policy-receipt and acquisition operations. The first freezes the exact official
+CelesTrak policy response and its SHA-256 without requesting GP data. The
+second requires explicit acknowledgement of that exact digest before one fixed
+`GROUP=active&FORMAT=CSV` request. Every redirect, non-200 response, timeout,
+changed policy, malformed record, duplicate NORAD identity, or unsupported OMM
+value fails closed without retry or partial publication.
+
+The future builder preserves raw response bytes and receipts locally, maps only
+documented omitted constants, constructs every existing typed OMM record,
+canonicalizes by full NORAD order, reloads the staged result through
+`load_snapshot_directory()`, and atomically publishes a content-addressed
+external directory. Digest-bound evidence policies may evaluate it without
+changing ordinary synthetic defaults.

@@ -2013,3 +2013,20 @@ ownership remain unchanged.
 Fernando scientifically and architecturally accepted this ownership on
 2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled tests
 passed. Only a separately bounded 50S.6G.1B audit is authorized next.
+
+
+## Candidate 50S.6G.1B acquisition and evidence ownership
+
+Representative acquisition is a new durable provider/filesystem
+responsibility adjacent to `src/wenu/satellites/`, not an extension of
+`snapshots.py`. The latter remains an offline immutable loader. It also does
+not belong in `minor_body_acquisition.py`, whose Horizons/SBDB identity,
+coverage, SPK, and credential-free provider lifecycle is scientifically
+different.
+
+A later accepted implementation requires one dedicated satellite acquisition
+owner, one thin developer command, and a new stable test owner for policy
+receipts, no-network-before-acknowledgement, one-request enforcement, CelesTrak
+CSV normalization, raw provenance, atomic publication, and failure cleanup.
+The evidence runner remains a developer tool and writes outside the repository.
+No chart, projection, renderer, exporter, report, or ordinary CLI owner changes.

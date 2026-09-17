@@ -3173,6 +3173,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_crossing_coordination_audit_50s6c.md",
         "satellite_multifov_interchange_audit_50s6e.md",
         "satellite_delivery_audit_50s6g.md",
+        "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_snapshot_propagation_audit_50s4a.md",
         "satellite_guide.md",
         "source_tree.md",
@@ -6095,3 +6096,69 @@ def test_50s6g1a_documents_accepted_external_snapshot_loader():
         assert "scientifically and architecturally accepted" in document
         assert "2026-09-17" in document
         assert "2,583 plugin-disabled tests passed" in document
+
+
+def test_50s6g1b_audits_representative_snapshot_preflight_and_evidence():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_preflight_audit_50s6g1b.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+    delivery = " ".join(read(
+        DEVELOPER / "satellite_delivery_audit_50s6g.md"
+    ).split())
+
+    for phrase in (
+        "documentation-only provider, acquisition, publication, admission, and performance-evidence audit",
+        "one explicit representative-scale population, not a complete resident-space-object catalogue",
+        "Policy review and data acquisition are separate explicit operations",
+        "exact SHA-256",
+        "not a generic `--yes` flag",
+        "at most one GP network request",
+        "accepts only a direct HTTPS 200 response",
+        "does not follow redirects and does not retry",
+        "GROUP=active&FORMAT=CSV",
+        "provider-defined active-satellite population",
+        "not the complete public resident-space-object population",
+        "CENTER_NAME = EARTH",
+        "REF_FRAME = TEME",
+        "TIME_SYSTEM = UTC",
+        "MEAN_ELEMENT_THEORY = SGP4",
+        "rejects duplicate NORAD identifiers",
+        "staged directory is reloaded through `load_snapshot_directory()`",
+        "Raw provider and policy bytes remain local evidence",
+        "Medium representative specimen",
+        "derived from one validated Active snapshot",
+        "admitted by exact canonical-record SHA-256",
+        "1, 2, 5, 10, 20, and, when practical, 50",
+        "at least La Ligua, Paranal, ELT, and one northern-site explicit observer",
+        "makes no useful-speed, shared-state-reuse, memory-bound, or production-capacity claim",
+        "50S.6G.1B.1 — Policy receipt and deterministic builder",
+        "50S.6G.1B.2 — Representative admission and evidence",
+        "would not authorize a live CelesTrak request",
+    ):
+        assert phrase in audit
+
+    assert "satellite_snapshot_preflight_audit_50s6g1b.md" in index
+    assert "candidate 50S.6G.1B audit" in architecture
+    assert "50S.6G.1B — Representative snapshot preflight" in roadmap
+    assert "Candidate representative snapshot preflight contract" in reference
+    assert "Candidate 50S.6G.1B acquisition and evidence ownership" in (
+        source_tree
+    )
+    assert "Candidate 50S.6G.1B coordinate review" in coordinate_guide
+    assert "Candidate 50S.6G.1B representative snapshot preflight" in guide
+    assert "Candidate 50S.6G.1B provider-policy and evidence boundary" in (
+        instructions
+    )
+    assert "Candidate 50S.6G.1B refinement" in delivery
+    assert "This audit changes no runtime" in instructions
+    assert "authorizes no live request or implementation" in instructions
