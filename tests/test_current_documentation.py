@@ -6865,3 +6865,43 @@ def test_50s6g1b2d_records_fake_data_implementation_acceptance():
     assert "Accepted 50S.6G.1B.2D implementation boundary" in instructions
     assert "does not authorize" in audit
     assert "real execution" in audit
+
+def test_50s6g1b2d_audits_real_execution_readiness_fail_closed():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "9bdf301" in document
+        assert "real" in document.lower()
+        assert "fixture" in document.lower()
+        assert "airmass" in document.lower()
+        assert "subprocess" in document.lower()
+        assert "command" in document.lower()
+        assert "no" in document.lower() or "not" in document.lower()
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate real-execution readiness audit" in audit
+    assert "not ready for real execution" in audit
+    assert "Candidate 50S.6G.1B.2D real-execution readiness finding" in architecture
+    assert "50S.6G.1B.2D real-execution readiness gate" in roadmap
+    assert "Proposed real-matrix execution surface" in reference
+    assert "Candidate real-execution readiness ownership" in source_tree
+    assert "Candidate real-matrix coordinate readiness finding" in coordinates
+    assert "Candidate real-execution readiness audit" in guide
+    assert "Candidate real-execution readiness boundary" in instructions
+    assert "24 nonempty bins" in audit
+    assert "48 mandatory representatives" in audit
+    assert "208 fill records" in audit
+    assert "run-equivalence-matrix" in audit
+    assert "separate explicit authorization" in audit
+    assert "do not attempt the real" in instructions.lower()
