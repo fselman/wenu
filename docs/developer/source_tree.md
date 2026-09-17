@@ -2168,3 +2168,17 @@ and receipt
 on 2026-09-17 at `c4cd009`; 157 plugin-disabled documentation tests passed
 in 4.66 seconds. The bytes remain outside the repository and package.
 50S.6G.1B.2D remains unauthorized.
+
+### Candidate 50S.6G.1B.2D ownership
+
+A later bounded implementation may add:
+
+- `src/wenu/satellites/crossing_matrix.py` for matrix request identity,
+  canonical result/evidence mapping, strict equality, isolated resource
+  observations, and atomic external publication;
+- `tests/test_satellite_crossing_matrix.py` for fake-data-only matrix gates;
+- an offline `run-equivalence-matrix` developer subcommand.
+
+The exact oracle, conservative selector, accelerated coordinator, batch
+airmass certifier, snapshot loader, admission policy, and medium selector retain
+their current ownership. No matrix runtime or evidence artifact exists yet.
