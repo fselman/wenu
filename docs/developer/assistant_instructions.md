@@ -1029,3 +1029,16 @@ candidate has not yet been scientifically and architecturally accepted. Do not
 run it on the real 16,559-record parent, authorize 50S.6G.1B.2D, package an
 external product, or change runtime defaults without Fernando's separate
 approval.
+
+### Accepted 50S.6G.1B.2C implementation boundary
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+implementation on 2026-09-17 at `1d9d4e4`, after 2,622 plugin-disabled tests
+passed in 225.75 seconds and 185 focused tests passed in 9.03 seconds. Preserve
+`snapshot_evidence.py` as the deterministic medium-selection owner and keep
+the command offline, explicit, digest-bound, and receipt-bound.
+
+Acceptance does not authorize running against the real 16,559-record parent.
+Require Fernando's separate approval before the first real selection.
+50S.6G.1B.2D matrix execution, packaging, discovery, provider access, and
+runtime-default changes remain unauthorized.
