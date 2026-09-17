@@ -1212,7 +1212,7 @@ in 4.66 seconds. It remains external, immutable, and non-statistical.
 
 ### Candidate 50S.6G.1B.2D equivalence matrix
 
-The documentation-only candidate defines 10 deterministic La Ligua fields on
+The documentation-only candidate defines 10 deterministic same-observer La Ligua fields on
 one UTC night, with different centres and intervals plus a shared-interval
 research control. The accepted 256-record specimen is explicitly admitted to
 both exhaustive and accelerated services. Success requires identical ordered
