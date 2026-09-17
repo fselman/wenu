@@ -6656,7 +6656,7 @@ def test_50s6g1b2c_records_accepted_exact_real_specimen():
         assert "157 plugin-disabled" in document
         assert "4.66 seconds" in document
         assert "50S.6G.1B.2D" in document
-        assert "unauthorized" in document or "does not authorize" in document
+        assert "unauthorized" in document
 
     audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
     assert "Accepted real-selection closure" in audit
@@ -6772,7 +6772,7 @@ def test_50s6g1b2d_records_acceptance_and_fake_data_only_authority():
         assert "10.75 seconds" in document
         assert "fake-data" in document
         assert "real" in document.lower()
-        assert "unauthorized" in document
+        assert "unauthorized" in document or "does not authorize" in document
 
     audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
     assert "Acceptance record" in audit
