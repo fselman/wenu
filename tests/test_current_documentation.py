@@ -6678,3 +6678,73 @@ def test_50s6g1b2c_records_accepted_exact_real_specimen():
     assert "no propagation or coordinate transformation" in coordinates
     assert "external, immutable, and non-statistical" in guide
     assert "Do not refresh, substitute, package, discover, or promote" in instructions
+
+def test_50s6g1b2d_proposes_exact_equivalence_resource_matrix():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate documentation-only audit",
+        "2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b",
+        "1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895",
+        "exactly **10 fields**",
+        "same accepted 256-record snapshot",
+        "different intervals within one UTC night",
+        "one pair shares the same interval",
+        "time_tolerance_seconds = 0.01",
+        "angular_tolerance_deg = 1e-5",
+        "selector_failure_mode = \"fail_closed\"",
+        "Python result tuples must compare equal",
+        "canonical result bytes must be identical",
+        "no exhaustive fallback",
+        "at least one conservative rejection",
+        "three times after one unreported warm-up",
+        "fresh subprocesses",
+        "crossing_matrix.py",
+        "run-equivalence-matrix",
+        "tests/test_satellite_crossing_matrix.py",
+        "does not",
+    ):
+        assert phrase in audit
+
+    assert "satellite_equivalence_matrix_audit_50s6g1b2d.md" in index
+    assert "Candidate 50S.6G.1B.2D equivalence-matrix audit" in architecture
+    assert "50S.6G.1B.2D — Exact-equivalence and resource-matrix audit" in roadmap
+    assert "Proposed exact-equivalence matrix contract" in reference
+    assert "Candidate 50S.6G.1B.2D ownership" in source_tree
+    assert "Candidate 50S.6G.1B.2D coordinate review" in coordinate_guide
+    assert "Candidate 50S.6G.1B.2D equivalence matrix" in guide
+    assert "Candidate 50S.6G.1B.2D audit boundary" in instructions
+
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+    ):
+        assert "10" in document
+        assert "same-observer" in document
+        assert "matrix" in document.lower()
+
+    assert "no matrix is executed" in architecture.lower()
+    assert "real matrix execution requires separate authorization" in roadmap
+    assert "Neither the owner nor command exists yet" in reference
+    assert "No matrix runtime or evidence artifact exists yet" in source_tree
+    assert "introduces no coordinate operation" in coordinate_guide
+    assert "not a speed claim" in guide
+    assert "Do not implement or run the matrix" in instructions
