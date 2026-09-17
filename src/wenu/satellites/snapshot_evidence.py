@@ -195,10 +195,11 @@ def _rank(parent_digest, *parts):
     return sha256(payload.encode("utf-8")).hexdigest()
 
 
-def _validate_report(report, report_bytes, snapshot):
+def _validate_report(report, report_bytes, snapshot, parent_directory):
     required = {
         "schema_version", "document_kind", "source_url",
         "retrieved_started_utc", "retrieved_stopped_utc", "http_status",
+        "provider_response_file", "provider_response_bytes",
         "provider_response_sha256", "canonical_records_sha256",
         "record_count", "status",
     }
@@ -229,6 +230,22 @@ def _validate_report(report, report_bytes, snapshot):
         character not in "0123456789abcdef" for character in digest
     ):
         raise ValueError("provider_response_sha256 must be lowercase SHA-256.")
+    filename = report["provider_response_file"]
+    if (
+        not isinstance(filename, str)
+        or not filename
+        or "/" in filename
+        or "\\" in filename
+    ):
+        raise ValueError("provider_response_file must be a local resource name.")
+    response_bytes = _regular_bytes(
+        Path(parent_directory) / filename,
+        name="provider response",
+    )
+    if report["provider_response_bytes"] != len(response_bytes):
+        raise ValueError("provider response byte count does not match report.")
+    if sha256_hex(response_bytes) != digest:
+        raise ValueError("provider response digest does not match report.")
     return stopped, sha256_hex(report_bytes)
 
 
@@ -291,7 +308,9 @@ def select_medium_snapshot(
         name="acquisition report",
     )
     report = _json_object(report_bytes, name="acquisition report")
-    reference, report_digest = _validate_report(report, report_bytes, snapshot)
+    reference, report_digest = _validate_report(
+        report, report_bytes, snapshot, parent_directory
+    )
     mappings = _source_mappings(parent_directory, snapshot)
     parent_digest = snapshot.manifest.content_sha256
 
