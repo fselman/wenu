@@ -2961,3 +2961,18 @@ Fernando scientifically and architecturally accepted
 current-documentation tests in 3.32 seconds at `3ef6a4d`. This acceptance
 does not admit a real specimen or execute a real matrix. A separately bounded
 real-execution audit is the only authorized next step.
+
+### Proposed real-matrix execution surface
+
+The accepted `run_equivalence_matrix()` orchestration API at `9bdf301`
+requires injected executor and airmass-certifier objects and therefore is not
+an approved real-execution entry point. A bounded next implementation must add
+a frozen canonical ten-field request fixture, exact accepted-medium receipt
+constraints, a production whole-interval certifier, a fresh-subprocess
+canonical worker protocol, and an explicit offline
+`run-equivalence-matrix` developer command.
+
+The command must require explicit snapshot and output paths plus exact digest
+acknowledgements. It must perform no discovery, provider request, refresh,
+fallback, or implicit default selection. This candidate audit reads no real
+artifact and executes no matrix.
