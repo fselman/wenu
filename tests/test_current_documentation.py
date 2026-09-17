@@ -5897,7 +5897,7 @@ def test_50s6e_audits_multifov_interchange_and_lunar_illumination():
     assert "50S.6G.3 may accept binocular and regional chart products" in audit
     assert "50S.6G.4 may accept stereographic planisphere" in audit
     assert "no runtime or output" in roadmap
-    assert "candidate 50S.6F implementation now adds" in architecture
+    assert "accepted 50S.6F implementation adds" in architecture
     assert "scientifically and architecturally accepted this audit" in audit
     assert "commit `f079d95`" in audit
     assert "all 143 plugin-disabled current-documentation tests" in audit
@@ -5933,17 +5933,34 @@ def test_50s6f_documents_candidate_atomic_multifov_coordinator():
     ):
         assert phrase in audit
 
-    assert "candidate 50S.6F implementation" in architecture
-    assert "Candidate bounded implementation" in roadmap
+    assert "accepted 50S.6F implementation" in architecture
+    assert "Accepted bounded implementation" in roadmap
     assert "MultiFieldSatelliteCrossingCoordinator.solve(request)" in reference
-    assert "Candidate 50S.6F production ownership" in source_tree
-    assert "Candidate 50S.6F field-centre airmass realization" in (
+    assert "Accepted 50S.6F production ownership" in source_tree
+    assert "Accepted 50S.6F field-centre airmass realization" in (
         coordinate_guide
     )
-    assert "Candidate 50S.6F bounded batch implementation" in guide
-    assert "Candidate 50S.6F implementation boundary" in instructions
+    assert "Accepted 50S.6F bounded batch implementation" in guide
+    assert "Accepted 50S.6F implementation boundary" in instructions
     assert "No projection, rendering, report, CLI, or exporter owner changes" in (
         source_tree
     )
     assert "no useful-speed or shared-physical-state-reuse claim" in roadmap
     assert "adds no CLI, file input, validation-output file" in instructions
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+    ):
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "2,577 plugin-disabled tests passed" in document
+        assert "Only a separately bounded 50S.6G audit is authorized next" in (
+            document
+        )
+    assert "no 50S.6G implementation is authorized" in instructions
