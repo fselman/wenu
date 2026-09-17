@@ -2522,3 +2522,16 @@ Fernando scientifically and architecturally accepted 50S.6G.1B.2A on
 2026-09-17 after all 150 plugin-disabled current-documentation tests passed in
 3.84 seconds; `git diff --check` and the working tree were clean. Only bounded
 50S.6G.1B.2B digest-admission implementation is authorized next.
+
+
+**50S.6G.1B.2B implementation state.** The candidate implements one explicit
+digest-plus-manifest admission token in a dedicated satellite policy owner.
+The existing selector, accelerated coordinator, and multi-FoV batch consume
+that same token before external work; the batch passes it into its default
+single-field route. Ordinary synthetic defaults remain unchanged.
+
+The accepted CelesTrak identity constant is evidence metadata, not a path,
+loader, global allowlist, or automatic default. This implementation adds no
+medium specimen, evidence matrix, external fixture, network access, report,
+exact track, chart, illumination, provider fallback, or speed claim.
+50S.6G.1B.2C and 50S.6G.1B.2D remain separately bounded future work.

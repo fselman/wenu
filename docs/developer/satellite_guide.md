@@ -1121,3 +1121,17 @@ indeterminate or fail closed and must reach the accepted exact path where
 required. Fernando scientifically and architecturally accepted this boundary
 on 2026-09-17 after all 150 plugin-disabled current-documentation tests passed
 in 3.84 seconds. Only bounded 50S.6G.1B.2B implementation is authorized next.
+
+
+## Implemented candidate 50S.6G.1B.2B admission
+
+External evidence now requires an explicit immutable token created after exact
+canonical-digest and manifest-identity comparison. The accepted CelesTrak
+identity constant is inert: it neither locates nor loads the external
+directory. The same token is checked by the conservative selector, accelerated
+coordinator, and multi-FoV batch before their respective external work.
+
+Missing, forged, mismatched, or substituted admission fails closed. Existing
+synthetic defaults remain unchanged, and unsupported element or query domains
+remain indeterminate or fail through their accepted paths. No external
+snapshot is packaged, discovered, or enabled globally.

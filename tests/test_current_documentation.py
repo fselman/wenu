@@ -6336,3 +6336,60 @@ def test_50s6g1b2a_records_acceptance_and_bounded_next_step():
     assert "matrix execution" in audit
     assert "chart integration" in audit
     assert "another provider request" in audit
+
+
+def test_50s6g1b2b_documents_shared_digest_admission_implementation():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_snapshot_admission_audit_50s6g1b2a.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert "50S.6G.1B.2B candidate implementation record" in audit
+    assert "Implemented candidate 50S.6G.1B.2B digest admission" in architecture
+    assert "50S.6G.1B.2B implementation state" in roadmap
+    assert "External snapshot admission API" in reference
+    assert "Implemented candidate 50S.6G.1B.2B ownership" in source_tree
+    assert "Implemented candidate 50S.6G.1B.2B coordinate review" in (
+        coordinate_guide
+    )
+    assert "Implemented candidate 50S.6G.1B.2B admission" in guide
+    assert "Implemented candidate 50S.6G.1B.2B admission boundary" in (
+        instructions
+    )
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        guide,
+        instructions,
+    ):
+        assert "snapshot_admission.py" in document
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        guide,
+    ):
+        assert "synthetic" in document
+    assert "schema version, snapshot ID, canonical-record SHA-256" in audit
+    assert "token contains no path" in architecture
+    assert "cannot be directly constructed" in reference
+    assert "before airmass or crossing work" in source_tree
+    assert "performs no coordinate transformation" in coordinate_guide
+    assert "No external snapshot is packaged, discovered" in guide
+    assert "50S.6G.1B.2C and 50S.6G.1B.2D remain separately bounded" in roadmap
+    assert "does not authorize or implement deterministic medium selection" in (
+        audit
+    )

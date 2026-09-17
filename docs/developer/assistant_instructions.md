@@ -975,3 +975,15 @@ documentation audit changes no runtime and does not authorize medium selection,
 matrix execution, chart integration, or another provider request. Fernando
 scientifically and architecturally accepted it on 2026-09-17 after all 150 plugin-disabled current-documentation tests passed in 3.84 seconds. Only
 bounded 50S.6G.1B.2B digest-admission implementation is authorized next.
+
+
+## Implemented candidate 50S.6G.1B.2B admission boundary
+
+The candidate implementation in `satellites/snapshot_admission.py` owns
+explicit external identity, finite policy, and opaque admission-token
+contracts. Preserve exact canonical-record SHA-256 plus the complete audited
+manifest identity. The selector, accelerated coordinator, and multi-FoV batch
+must consume the same token before external scientific work. Keep all existing
+synthetic ID defaults unchanged. Do not add medium selection, a matrix runner,
+implicit discovery, network access, external package data, reports, tracks,
+charts, or later 50S.6G behavior before separate acceptance.

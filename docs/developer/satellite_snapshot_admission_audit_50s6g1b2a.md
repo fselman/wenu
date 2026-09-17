@@ -183,3 +183,24 @@ This audit was accepted when:
 Acceptance of this document authorizes only bounded
 50S.6G.1B.2B implementation. It does not authorize medium selection, matrix execution, chart integration,
 another provider request, or any runtime default change.
+
+
+## 11. 50S.6G.1B.2B candidate implementation record
+
+The bounded candidate adds `satellites/snapshot_admission.py` with immutable
+exact identity, explicit finite policy, and opaque token contracts. Identity
+contains schema version, snapshot ID, canonical-record SHA-256, source
+identity, source URL, and builder identity. The accepted CelesTrak Active
+constant records the exact audited manifest identity but performs no loading,
+discovery, or enablement.
+
+The existing conservative selector, accelerated coordinator, and multi-FoV
+batch accept one optional shared token. Missing or mismatched external
+admission fails before the component's scientific work; batch validation
+remains atomic. Existing synthetic defaults are unchanged. Tests use only the
+installed synthetic records under hand-authored external manifest identities;
+the 16,559-record directory is neither required nor packaged.
+
+This candidate implements only 50S.6G.1B.2B. It does not authorize or implement
+deterministic medium selection, the evidence matrix, another provider request,
+reports, exact drawable tracks, or chart integration.

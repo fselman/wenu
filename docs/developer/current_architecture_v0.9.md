@@ -1209,3 +1209,19 @@ ordinary synthetic default and all current behavior remain unchanged.
 Fernando scientifically and architecturally accepted this boundary on
 2026-09-17 after all 150 plugin-disabled current-documentation tests passed in
 3.84 seconds. Only bounded 50S.6G.1B.2B implementation is authorized next.
+
+
+## Implemented candidate 50S.6G.1B.2B digest admission
+
+`satellites/snapshot_admission.py` now separates external evidence
+authorization from immutable snapshot loading. An explicit finite policy
+compares schema version, logical ID, canonical-record SHA-256, source identity,
+source URL, and builder identity before producing an opaque immutable token.
+The token contains no path and performs no acquisition.
+
+The conservative selector, accelerated coordinator, and multi-FoV batch accept
+the same optional token. External work without an exact token fails before
+selection, airmass certification, propagation, or exact evaluation as
+appropriate. The existing `synthetic_50s4b_v1` defaults and ordinary results
+remain unchanged. This candidate adds no medium tier, matrix, runtime
+discovery, report, track, chart, coordinate change, or provider request.
