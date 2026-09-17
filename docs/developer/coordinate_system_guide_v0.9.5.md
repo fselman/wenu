@@ -3535,3 +3535,21 @@ field centre, tolerance, and centre-only geometric-vacuum airmass identities
 remain unchanged. The coordinate guide therefore remains current. Fernando scientifically and
 architecturally accepted this unchanged boundary on 2026-09-17 after all 150 plugin-disabled current-documentation tests passed in 3.84 seconds. Only
 bounded 50S.6G.1B.2B implementation is authorized next.
+
+
+## Accepted 50S.6G.1B.2B coordinate review
+
+The digest-admission token compares provenance and identity only. It performs
+no coordinate transformation and changes no origin, frame, position status,
+epoch, time scale, Earth-orientation resource, observer, FoV, airmass, or
+crossing meaning. TEME remains the propagation frame and local directions
+remain topocentric geometric directions expressed in GCRS axes. The coordinate
+guide remains scientifically current.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2B on
+2026-09-17 after 51 focused runtime tests, 151 current-documentation tests,
+and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
+seconds. `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
+matrix execution and later delivery remain separately unauthorized.

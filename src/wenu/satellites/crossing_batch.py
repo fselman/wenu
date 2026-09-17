@@ -11,6 +11,7 @@ from .crossing_acceleration import (
     AcceleratedLocalSatelliteCrossingOracle,
 )
 from .crossing_oracle import LocalSatelliteCrossingQuery
+from .snapshot_admission import ExternalSnapshotAdmission
 from .topocentric import SatelliteFieldCenterAltitudeEvaluator
 
 
@@ -267,10 +268,28 @@ class FieldAirmassCertifier:
 class MultiFieldSatelliteCrossingCoordinator:
     """Atomically validate and solve an ordered same-observer field batch."""
 
-    def __init__(self, *, policy=None, certifier=None, single_field_oracle=None):
+    def __init__(
+        self,
+        *,
+        policy=None,
+        certifier=None,
+        single_field_oracle=None,
+        external_snapshot_admission=None,
+    ):
         self._policy = policy or MultiFieldCrossingPolicy()
         if not isinstance(self._policy, MultiFieldCrossingPolicy):
             raise TypeError("policy must be a MultiFieldCrossingPolicy.")
+        if (
+            external_snapshot_admission is not None
+            and not isinstance(
+                external_snapshot_admission, ExternalSnapshotAdmission
+            )
+        ):
+            raise TypeError(
+                "external_snapshot_admission must be an "
+                "ExternalSnapshotAdmission."
+            )
+        self._external_snapshot_admission = external_snapshot_admission
         self._certifier = certifier or FieldAirmassCertifier(
             policy=self._policy
         )
@@ -278,7 +297,9 @@ class MultiFieldSatelliteCrossingCoordinator:
             raise TypeError("certifier must provide callable certify(query).")
         self._single_field_oracle = (
             single_field_oracle
-            or AcceleratedLocalSatelliteCrossingOracle()
+            or AcceleratedLocalSatelliteCrossingOracle(
+                external_snapshot_admission=external_snapshot_admission
+            )
         )
         if not callable(
             getattr(self._single_field_oracle, "solve_with_evidence", None)
@@ -324,15 +345,29 @@ class MultiFieldSatelliteCrossingCoordinator:
                     )
                 )
                 continue
-            if (
+            ordinary_admitted = (
                 query.snapshot.manifest.snapshot_id
-                not in self._policy.admitted_snapshot_ids
-            ):
+                in self._policy.admitted_snapshot_ids
+            )
+            if self._external_snapshot_admission is not None:
+                try:
+                    self._external_snapshot_admission.require(query.snapshot)
+                except (TypeError, ValueError) as error:
+                    failures.append(
+                        MultiFieldValidationFailure(
+                            field_id,
+                            "snapshot-admission-failed",
+                            f"{type(error).__name__}: {error}",
+                        )
+                    )
+                    continue
+            elif not ordinary_admitted:
                 failures.append(
                     MultiFieldValidationFailure(
                         field_id,
                         "snapshot-outside-domain",
-                        "snapshot is outside the bounded 50S.6F domain",
+                        "external snapshot requires explicit digest-bound "
+                        "admission",
                     )
                 )
                 continue
@@ -349,6 +384,10 @@ class MultiFieldSatelliteCrossingCoordinator:
                     )
                 )
                 continue
+        if failures:
+            raise MultiFieldCrossingValidationError(failures)
+        for query in request.queries:
+            field_id = query.field_of_view.field_id
             try:
                 admissions[field_id] = self._certifier.certify(query)
             except Exception as error:

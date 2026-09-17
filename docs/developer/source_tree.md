@@ -2067,3 +2067,32 @@ multi-FoV batch. No production or runtime test file is added by this audit. Fern
 scientifically and architecturally accepted this ownership on 2026-09-17 after
 all 150 plugin-disabled current-documentation tests passed in 3.84 seconds.
 Only bounded 50S.6G.1B.2B implementation is authorized next.
+
+
+## Accepted 50S.6G.1B.2B ownership
+
+- `src/wenu/satellites/snapshot_admission.py` owns exact external snapshot
+  identity, explicit finite admission policy, the opaque immutable token, and
+  the accepted CelesTrak Active identity constant.
+- `crossing_acceleration.py` consumes the token before external selector or
+  accelerated exact work while retaining its synthetic ID defaults.
+- `crossing_batch.py` validates the same token atomically before airmass or
+  crossing work and passes it into its default single-field service.
+- `tests/test_satellite_snapshot_admission.py` owns identity, policy,
+  immutability, forgery, digest/manifest substitution, cross-service,
+  before-work, and default-preservation evidence.
+- Existing snapshot, selector, oracle, batch, coordinate, presentation,
+  renderer, and exporter ownership remains unchanged.
+
+The new production module is justified because authorization has a distinct
+cross-service policy lifecycle and failure boundary from byte validation in
+`snapshots.py`. No provider bytes, snapshot directory, acquisition,
+medium-tier selector, matrix runner, report, or chart owner is added.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2B on
+2026-09-17 after 51 focused runtime tests, 151 current-documentation tests,
+and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
+seconds. `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
+matrix execution and later delivery remain separately unauthorized.

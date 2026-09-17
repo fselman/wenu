@@ -25,6 +25,14 @@ from .crossing_batch import (
     MultiFieldValidationFailure,
 )
 from .elements import SatelliteElementRecord
+from .snapshot_admission import (
+    CELESTRAK_ACTIVE_20260917_IDENTITY,
+    CELESTRAK_ACTIVE_20260917_POLICY_IDENTITY,
+    ExternalSnapshotAdmission,
+    ExternalSnapshotAdmissionPolicy,
+    ExternalSnapshotIdentity,
+    SNAPSHOT_ADMISSION_IMPLEMENTATION,
+)
 from .sgp4 import (
     SatellitePropagationError,
     SatelliteTemeState,
@@ -54,8 +62,13 @@ __all__ = [
     "ConeShellPolicy",
     "ConeShellSelection",
     "ConservativeConeShellSelector",
+    "ExternalSnapshotAdmission",
+    "ExternalSnapshotAdmissionPolicy",
+    "ExternalSnapshotIdentity",
     "FieldAirmassAdmission",
     "FieldAirmassCertifier",
+    "CELESTRAK_ACTIVE_20260917_IDENTITY",
+    "CELESTRAK_ACTIVE_20260917_POLICY_IDENTITY",
     "DEFAULT_SNAPSHOT_ID",
     "LocalSatelliteCrossingOracle",
     "LocalSatelliteCrossingQuery",
@@ -73,6 +86,7 @@ __all__ = [
     "SatelliteElementSnapshot",
     "SatelliteSnapshotManifest",
     "SatellitePropagationError",
+    "SNAPSHOT_ADMISSION_IMPLEMENTATION",
     "SatelliteTemeState",
     "SatelliteTopocentricState",
     "SatelliteTopocentricTransformer",
