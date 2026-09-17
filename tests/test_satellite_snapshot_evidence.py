@@ -74,7 +74,7 @@ def records():
 
 def parent(tmp_path, *, reverse=False):
     root = tmp_path / ("parent-reversed" if reverse else "parent")
-    root.mkdir()
+    root.mkdir(parents=True)
     payload = records()
     if reverse:
         payload.reverse()
