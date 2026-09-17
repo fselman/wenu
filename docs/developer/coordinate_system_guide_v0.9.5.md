@@ -3661,3 +3661,13 @@ current-documentation tests passed in 3.32 seconds at `3ef6a4d`. This
 acceptance performs and authorizes no real propagation, coordinate
 transformation, specimen read, or matrix execution. Only a separately bounded
 real-execution audit may proceed next.
+
+### Candidate real-matrix coordinate readiness finding
+
+The production ten-field coordinate fixture is not yet frozen. Before any real
+execution, a bounded implementation must materialize the accepted La Ligua
+observer, exact decimal GCRS-axes topocentric geometric centres, radii, UTC
+intervals, shared-interval control, time and angular tolerances, Earth-
+orientation evidence, and whole-interval airmass admissions as canonical
+evidence. This audit at `9bdf301` performed no real propagation,
+transformation, airmass evaluation, specimen read, or matrix execution.
