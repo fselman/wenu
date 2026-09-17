@@ -2116,3 +2116,20 @@ Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
 fake-data implementation is authorized next. The first real medium selection,
 50S.6G.1B.2D matrix execution, and later delivery remain separately
 unauthorized.
+
+### Candidate 50S.6G.1B.2C ownership
+
+- `src/wenu/satellites/snapshot_evidence.py` owns deterministic scalar
+  stratification, receipt construction, and atomic derived publication.
+- `tests/test_satellite_snapshot_evidence.py` owns hand-authored fake-data
+  parent binding, bin-boundary, determinism, exhaustion, tamper, and
+  revalidation gates.
+- `tools/build_satellite_snapshot.py select-medium` is the explicit offline
+  operator seam; it has no transport.
+- `snapshots.py` remains the generic validator, `snapshot_acquisition.py`
+  remains provider acquisition, and `snapshot_admission.py` remains
+  authorization-only.
+
+The 2026-09-17 candidate gate passed 30 plugin-disabled focused tests in 5.99
+seconds. No real medium selection or 50S.6G.1B.2D matrix execution is
+authorized.
