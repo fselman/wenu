@@ -3630,3 +3630,11 @@ both routes.
 Strict result equality is required after those services return. No frame,
 origin, position status, epoch, time scale, refraction, propagation, or
 transformation meaning changes.
+
+### Accepted 50S.6G.1B.2D coordinate finding
+
+Fernando accepted the no-new-coordinate-operation finding on 2026-09-17 at
+`6e7a8b9`, after 159 plugin-disabled documentation tests passed in 10.75
+seconds. Fake-data harness implementation may preserve and exercise the
+existing contracts; real matrix execution and any coordinate change remain
+unauthorized.
