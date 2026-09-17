@@ -2445,7 +2445,7 @@ evidence audit is authorized next, not its implementation.
 
 #### 50S.6G.1B — Representative snapshot preflight and evidence
 
-**Status:** Candidate documentation-only audit.
+**Status:** Accepted documentation-only audit.
 
 The candidate `satellite_snapshot_preflight_audit_50s6g1b.md` defines a
 two-phase CelesTrak policy receipt and human digest acknowledgement, one fixed
@@ -2463,6 +2463,8 @@ admission is digest-bound and evidence-only. No useful-speed, shared-state,
 capacity, runtime-default, live-request, report, CLI/file, track, or chart claim
 is made.
 
-Acceptance would authorize only bounded 50S.6G.1B.1 fake-transport policy
-receipt and deterministic-builder implementation. A live provider request and
-50S.6G.1B.2 admission/evidence remain separately authorized.
+Fernando scientifically and architecturally accepted 50S.6G.1B on 2026-09-17
+after all 147 plugin-disabled current-documentation tests passed in 4.54
+seconds. Only bounded 50S.6G.1B.1 fake-transport policy-receipt and
+deterministic-builder implementation is authorized next. A live provider
+request and 50S.6G.1B.2 admission/evidence remain separately authorized.

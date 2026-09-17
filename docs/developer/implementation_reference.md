@@ -2740,7 +2740,7 @@ Fernando scientifically and architecturally accepted this interface on
 2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled tests
 passed. Only a separately bounded 50S.6G.1B audit is authorized next.
 
-## Candidate representative snapshot preflight contract
+## Accepted representative snapshot preflight contract
 
 No interface in this section is implemented. The audit proposes separate
 policy-receipt and acquisition operations. The first freezes the exact official
@@ -2756,3 +2756,8 @@ canonicalizes by full NORAD order, reloads the staged result through
 `load_snapshot_directory()`, and atomically publishes a content-addressed
 external directory. Digest-bound evidence policies may evaluate it without
 changing ordinary synthetic defaults.
+
+Fernando scientifically and architecturally accepted this contract on
+2026-09-17 after all 147 plugin-disabled current-documentation tests passed in
+4.54 seconds. Only the bounded fake-transport 50S.6G.1B.1 implementation is
+authorized next; live provider access and 50S.6G.1B.2 remain unauthorized.

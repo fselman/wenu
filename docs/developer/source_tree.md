@@ -2015,7 +2015,7 @@ Fernando scientifically and architecturally accepted this ownership on
 passed. Only a separately bounded 50S.6G.1B audit is authorized next.
 
 
-## Candidate 50S.6G.1B acquisition and evidence ownership
+## Accepted 50S.6G.1B acquisition and evidence ownership
 
 Representative acquisition is a new durable provider/filesystem
 responsibility adjacent to `src/wenu/satellites/`, not an extension of
@@ -2030,3 +2030,8 @@ receipts, no-network-before-acknowledgement, one-request enforcement, CelesTrak
 CSV normalization, raw provenance, atomic publication, and failure cleanup.
 The evidence runner remains a developer tool and writes outside the repository.
 No chart, projection, renderer, exporter, report, or ordinary CLI owner changes.
+
+Fernando scientifically and architecturally accepted this ownership on
+2026-09-17 after all 147 plugin-disabled current-documentation tests passed in
+4.54 seconds. Only bounded 50S.6G.1B.1 fake-transport implementation is
+authorized next.

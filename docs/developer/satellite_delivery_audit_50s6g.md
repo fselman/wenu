@@ -368,7 +368,7 @@ gate and all 2,583 plugin-disabled tests passed. Only a separately bounded
 50S.6G.1B representative snapshot preflight and evidence audit is authorized
 next, not its implementation.
 
-## 14. Candidate 50S.6G.1B refinement
+## 14. Accepted 50S.6G.1B refinement
 
 The dedicated `satellite_snapshot_preflight_audit_50s6g1b.md` refines the
 representative-snapshot step without changing later report or chart contracts.
@@ -383,3 +383,8 @@ and the declared scale/resource matrix remain external artifacts. Active-group
 scope is not full-population completeness. The candidate audit adds no runtime,
 provider request, catalogue, benchmark result, report, CLI/file behavior,
 track, or chart.
+
+Fernando scientifically and architecturally accepted this refinement on
+2026-09-17 after all 147 plugin-disabled current-documentation tests passed in
+4.54 seconds. Only bounded fake-transport 50S.6G.1B.1 is authorized next; no
+live CelesTrak access or representative admission/evidence is authorized.

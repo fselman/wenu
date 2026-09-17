@@ -1053,7 +1053,7 @@ after the 164-test focused gate and all 2,583 plugin-disabled tests passed.
 Only a separately bounded 50S.6G.1B audit is authorized next.
 
 
-## Candidate 50S.6G.1B representative snapshot preflight
+## Accepted 50S.6G.1B representative snapshot preflight
 
 The candidate audit makes policy a frozen reproducibility input. Wenu first
 records the exact official CelesTrak policy bytes and digest; a later
@@ -1067,3 +1067,8 @@ response and policy bytes remain local. A deterministic medium tier is derived
 offline from the same parent response, while the installed synthetic snapshot
 remains the fast oracle. Exact equality and resource evidence are bound to the
 canonical snapshot digest; ordinary runtime defaults do not change.
+
+Fernando scientifically and architecturally accepted 50S.6G.1B on 2026-09-17
+after all 147 plugin-disabled current-documentation tests passed in 4.54
+seconds. Only bounded 50S.6G.1B.1 fake-transport implementation is authorized
+next; policy-digest approval for live acquisition remains separate.

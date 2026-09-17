@@ -6098,7 +6098,7 @@ def test_50s6g1a_documents_accepted_external_snapshot_loader():
         assert "2,583 plugin-disabled tests passed" in document
 
 
-def test_50s6g1b_audits_representative_snapshot_preflight_and_evidence():
+def test_50s6g1b_accepts_representative_snapshot_preflight_and_evidence():
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_preflight_audit_50s6g1b.md"
     ).split())
@@ -6117,7 +6117,7 @@ def test_50s6g1b_audits_representative_snapshot_preflight_and_evidence():
     ).split())
 
     for phrase in (
-        "documentation-only provider, acquisition, publication, admission, and performance-evidence audit",
+        "Accepted documentation-only provider, acquisition, publication, admission, and performance-evidence audit",
         "one explicit representative-scale population, not a complete resident-space-object catalogue",
         "Policy review and data acquisition are separate explicit operations",
         "exact SHA-256",
@@ -6143,22 +6143,38 @@ def test_50s6g1b_audits_representative_snapshot_preflight_and_evidence():
         "makes no useful-speed, shared-state-reuse, memory-bound, or production-capacity claim",
         "50S.6G.1B.1 — Policy receipt and deterministic builder",
         "50S.6G.1B.2 — Representative admission and evidence",
-        "would not authorize a live CelesTrak request",
+        "does not authorize a live CelesTrak request",
     ):
         assert phrase in audit
 
     assert "satellite_snapshot_preflight_audit_50s6g1b.md" in index
-    assert "candidate 50S.6G.1B audit" in architecture
+    assert "accepted 50S.6G.1B audit" in architecture
     assert "50S.6G.1B — Representative snapshot preflight" in roadmap
-    assert "Candidate representative snapshot preflight contract" in reference
-    assert "Candidate 50S.6G.1B acquisition and evidence ownership" in (
+    assert "Accepted representative snapshot preflight contract" in reference
+    assert "Accepted 50S.6G.1B acquisition and evidence ownership" in (
         source_tree
     )
-    assert "Candidate 50S.6G.1B coordinate review" in coordinate_guide
-    assert "Candidate 50S.6G.1B representative snapshot preflight" in guide
-    assert "Candidate 50S.6G.1B provider-policy and evidence boundary" in (
+    assert "Accepted 50S.6G.1B coordinate review" in coordinate_guide
+    assert "Accepted 50S.6G.1B representative snapshot preflight" in guide
+    assert "Accepted 50S.6G.1B provider-policy and evidence boundary" in (
         instructions
     )
-    assert "Candidate 50S.6G.1B refinement" in delivery
-    assert "This audit changes no runtime" in instructions
-    assert "authorizes no live request or implementation" in instructions
+    assert "Accepted 50S.6G.1B refinement" in delivery
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+        delivery,
+    ):
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "147 plugin-disabled current-documentation tests passed" in (
+            document
+        )
+    assert "no live CelesTrak request" in architecture
+    assert "fake-transport" in roadmap

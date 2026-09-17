@@ -3497,7 +3497,7 @@ on 2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled
 tests passed. Only the bounded 50S.6G.1B audit is authorized next.
 
 
-## Candidate 50S.6G.1B coordinate review
+## Accepted 50S.6G.1B coordinate review
 
 The representative snapshot preflight/evidence audit changes no implemented
 coordinate, origin, frame, time-scale, epoch, propagation, topocentric, FoV,
@@ -3510,3 +3510,8 @@ Representative evidence retains exact snapshot, Earth-orientation, observer,
 field, interval, and tolerance identities. It must not reinterpret provider
 population scope as coordinate completeness or infer visibility from geometric
 crossings.
+
+Fernando scientifically and architecturally accepted this unchanged coordinate
+boundary on 2026-09-17 after all 147 plugin-disabled current-documentation
+tests passed in 4.54 seconds. Only bounded 50S.6G.1B.1 fake-transport work is
+authorized next; no live provider access or coordinate change is authorized.

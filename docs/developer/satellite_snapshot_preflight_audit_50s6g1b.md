@@ -1,6 +1,6 @@
 # 50S.6G.1B representative satellite snapshot preflight and evidence audit
 
-**Status:** Candidate documentation-only provider, acquisition, publication,
+**Status:** Accepted documentation-only provider, acquisition, publication,
 admission, and performance-evidence audit.
 
 **Base:** accepted 50S.6G.1A at merge commit `15b122f`.
@@ -369,7 +369,9 @@ This documentation audit is acceptable when:
 - Fernando explicitly accepts the scientific, policy, and operational
   boundary.
 
-Acceptance would authorize only separately bounded 50S.6G.1B.1 policy-receipt
-and deterministic-builder implementation with fake transport. It would not
-authorize a live CelesTrak request, representative admission/evidence,
-50S.6G.1B.2, or any later 50S.6G behavior.
+Fernando scientifically and architecturally accepted this audit on 2026-09-17
+after all 147 plugin-disabled current-documentation tests passed in 4.54
+seconds. Acceptance authorizes only separately bounded 50S.6G.1B.1
+policy-receipt and deterministic-builder implementation with fake transport.
+It does not authorize a live CelesTrak request, representative
+admission/evidence, 50S.6G.1B.2, or any later 50S.6G behavior.
