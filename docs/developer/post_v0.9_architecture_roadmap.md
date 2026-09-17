@@ -2640,3 +2640,15 @@ Fernando accepted the exact-equivalence and resource-matrix audit on
 authorized next. Execution on the real accepted medium specimen and every
 speed, capacity, delivery, track, chart, and illumination claim remain
 separately unauthorized.
+
+### 50S.6G.1B.2D candidate fake-data implementation state
+
+The bounded fake-data-only equivalence owner is implemented in
+`satellites/crossing_matrix.py` at candidate commit `19520f3`. Verification
+on 2026-09-17 completed 2634 plugin-disabled full-suite tests in 230.25
+seconds. The implementation creates strict canonical evidence and revalidates
+the complete published manifest, but it has not read the accepted real
+256-record specimen or executed the real ten-field matrix. Fernando's
+scientific and architectural acceptance is required before a separately
+bounded real-matrix execution may be authorized. Later 50S.6G delivery remains
+unauthorized.
