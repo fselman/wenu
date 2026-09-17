@@ -1222,3 +1222,11 @@ no rejected satellite with an exhaustive crossing.
 Resource measurements are descriptive evidence, not a speed claim. The matrix
 is not executed by this audit and creates no chart, track, report route, or
 runtime default.
+
+### Accepted 50S.6G.1B.2D audit
+
+Fernando accepted the strict equivalence-matrix audit on 2026-09-17 at
+`6e7a8b9`; 159 plugin-disabled documentation tests passed in 10.75 seconds.
+Only fake-data harness implementation is authorized next. The accepted real
+256-record specimen must not be executed, and no speed or downstream delivery
+claim is authorized.
