@@ -1123,3 +1123,10 @@ adapter, illumination, photometry, broader catalogue, or later milestone is
 implemented or authorized by this milestone. Fernando scientifically and
 architecturally accepted 50S.6F on 2026-09-17 after 2,577 plugin-disabled tests
 passed. Only a separately bounded 50S.6G audit is authorized next.
+
+The candidate 50S.6G delivery audit records future seams only. No external
+snapshot directory, representative catalogue, exact-crossing report,
+multi-FoV CLI/file protocol, validation-output file, exact local track layer,
+or ordinary chart integration is implemented. The proposed delivery must
+compose the accepted 50S.6F domain and the canonical chart pipeline; it may not
+change current coordinate, crossing, rendering, or export meaning.
