@@ -361,3 +361,18 @@ acceptance. Acceptance may authorize only a separately bounded real-matrix
 execution step; it does not itself execute that matrix or authorize later
 50S.6G delivery, chart tracks, reports, illumination, provider access,
 concurrency, or cache reuse.
+
+## Accepted fake-data implementation closure
+
+Fernando scientifically and architecturally accepted the bounded
+50S.6G.1B.2D fake-data implementation on 2026-09-17. Acceptance rests on the
+2634 plugin-disabled full-suite tests that passed in 230.25 seconds at
+implementation commit `19520f3`, followed by 161 plugin-disabled
+current-documentation tests that passed in 3.32 seconds at acceptance-record
+baseline `3ef6a4d`.
+
+This acceptance closes the fake-data implementation only. It does not authorize
+reading the accepted real 256-record specimen or executing the real ten-field
+matrix. Only a separately bounded real-execution audit is authorized next;
+real execution, performance claims, and later 50S.6G delivery remain
+unauthorized.
