@@ -1072,3 +1072,16 @@ passed in 4.66 seconds. This closes 50S.6G.1B.2C.
 Do not refresh, substitute, package, discover, or promote this artifact to a
 runtime default. Only a separately authorized 50S.6G.1B.2D matrix audit may
 proceed next; matrix execution itself is not authorized by this acceptance.
+
+### Candidate 50S.6G.1B.2D audit boundary
+
+Treat `satellite_equivalence_matrix_audit_50s6g1b2d.md` as a
+documentation-only candidate. Preserve the exact accepted medium and receipt
+digests, the 10-field same-observer/same-night contract, independent intervals,
+shared-interval research control, strict canonical result equality, complete
+selector partitions, forbidden fallback, isolated raw resource observations,
+atomic external evidence, and all stated non-claims.
+
+Do not implement or run the matrix, access a provider, package external data,
+add concurrency or cache reuse, create tracks or charts, or claim speed without
+Fernando's separate authorization.
