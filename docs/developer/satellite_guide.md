@@ -1199,3 +1199,13 @@ and no empty bin. It remains an external deterministic coverage specimen—not a
 statistical sample, complete catalogue, packaged default, or population claim.
 The parent bytes were unchanged and the operation made no provider request.
 Acceptance and 50S.6G.1B.2D authorization remain separate decisions.
+
+### Accepted real 50S.6G.1B.2C specimen
+
+Fernando accepted exact external specimen
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`
+with receipt
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`
+on 2026-09-17 at `c4cd009`; 157 plugin-disabled documentation tests passed
+in 4.66 seconds. It remains external, immutable, and non-statistical.
+50S.6G.1B.2D remains separately unauthorized.
