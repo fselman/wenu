@@ -1107,3 +1107,17 @@ by the provider contract and is stored with explicit `Z`; the captured HTTP
 media type remains `text/plain; charset=UTF-8`. Fernando accepted this repair
 and snapshot on 2026-09-17 after 15 focused and 2,600 complete plugin-disabled
 tests. No second provider request or 50S.6G.1B.2 work was authorized.
+
+
+## Accepted 50S.6G.1B.2A external admission
+
+The validated Active snapshot is not an ordinary runtime default. The
+accepted admission boundary requires its exact canonical-record SHA-256 plus
+validated manifest identity through one explicit evidence-only token shared by
+the conservative selector, accelerated coordinator, and multi-FoV batch.
+Logical `snapshot_id`, directory name, raw-response digest, or policy digest
+alone cannot authorize scientific use. Unsupported records remain
+indeterminate or fail closed and must reach the accepted exact path where
+required. Fernando scientifically and architecturally accepted this boundary
+on 2026-09-17 after all 150 plugin-disabled current-documentation tests passed
+in 3.84 seconds. Only bounded 50S.6G.1B.2B implementation is authorized next.

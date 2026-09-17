@@ -1195,3 +1195,17 @@ tests and all 2,600 plugin-disabled tests passed. Raw response SHA-256 is
 normalizes the provider-declared UTC epoch to explicit `Z` and preserves the
 captured `text/plain; charset=UTF-8` value. No second request was made, and
 50S.6G.1B.2 remains a separate milestone.
+
+
+## Accepted 50S.6G.1B.2A external admission audit
+
+The current external loader verifies canonical bytes and digest, while
+`ConeShellPolicy`, `AcceleratedCrossingPolicy`, and
+`MultiFieldCrossingPolicy` independently admit by logical snapshot ID. The
+candidate 50S.6G.1B.2A audit records that an external evidence snapshot must be
+authorized by exact canonical-record SHA-256 plus validated manifest identity
+through one shared predicate. No such runtime owner is implemented yet; the
+ordinary synthetic default and all current behavior remain unchanged.
+Fernando scientifically and architecturally accepted this boundary on
+2026-09-17 after all 150 plugin-disabled current-documentation tests passed in
+3.84 seconds. Only bounded 50S.6G.1B.2B implementation is authorized next.

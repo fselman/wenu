@@ -2499,3 +2499,26 @@ complete plugin-disabled tests. The raw/canonical SHA-256 values are
 `e54730e14b2097444c5e20bba6dd13d3e2d92f956797d49256ddb1a70ffe5014` and `e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`. Only one provider request occurred. Representative
 admission, medium-tier selection, matrix evidence, and 50S.6G.1B.2 remain
 separately accepted future work.
+
+
+#### 50S.6G.1B.2A — External snapshot admission audit
+
+**Status:** Accepted documentation-only audit.
+
+The candidate isolates the first part of 50S.6G.1B.2: one explicit
+evidence-only token bound to exact canonical-record SHA-256 plus validated
+manifest identity. The selector, accelerated coordinator, and multi-FoV batch
+currently admit independently by logical snapshot ID; a later bounded
+50S.6G.1B.2B implementation would replace external ID-only authorization with
+one shared predicate while preserving the installed synthetic default.
+
+This slice changes no runtime. Deterministic medium selection is separately
+50S.6G.1B.2C, and the exact-equivalence/resource matrix is separately
+50S.6G.1B.2D. No report, CLI/file route, exact track, binocular/regional chart,
+stereographic planisphere, illumination, provider request, runtime-default
+change, or speed claim is authorized by this audit.
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2A on
+2026-09-17 after all 150 plugin-disabled current-documentation tests passed in
+3.84 seconds; `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2B digest-admission implementation is authorized next.
