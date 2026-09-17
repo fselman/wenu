@@ -938,3 +938,7 @@ Fernando accepted 50S.6G.1B.1 on 2026-09-17 after 175 focused plugin-disabled
 tests and all 2,594 plugin-disabled tests passed. The next step is not an
 implicit live operation: obtain separate authorization before fetching the
 policy, and require separate approval of its exact digest before GP access.
+
+The exact direct policy URL is `https://celestrak.org/usage-policy.php`; the
+50S.6G.1B.1 regression test protects it. A redirected or documentation-
+subdirectory URL is not an acceptable substitute.

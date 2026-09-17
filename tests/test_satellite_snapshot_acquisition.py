@@ -16,7 +16,8 @@ from wenu.satellites.snapshots import load_snapshot_directory
 
 POLICY = b"""<!doctype html><title>CelesTrak Usage Policy</title>
 <h1>CelesTrak Usage Policy</h1><p>Updated 2026 May 22</p>
-<p>Use the documented gp.php query. GP data updates every 2 hours.</p>
+<p>Use the documented gp-data-formats.php query.</p>
+<p>GP data updates every 2 hours.</p>
 <p>Download once per update and cache the response.</p>
 <p>Stop immediately after a non-200 response.</p>"""
 HEADER = (
@@ -90,6 +91,10 @@ def test_policy_preflight_makes_one_policy_request_and_no_gp_request(tmp_path):
     assert transport.calls == [POLICY_URL]
     assert len(digest) == 64
     assert (directory / "policy-response.html").read_bytes() == POLICY
+
+
+def test_policy_preflight_uses_exact_official_policy_url():
+    assert POLICY_URL == "https://celestrak.org/usage-policy.php"
 
 
 @pytest.mark.parametrize(

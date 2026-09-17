@@ -2773,6 +2773,11 @@ explicit response files. Its `build` operation requires the exact
 `--accept-policy-sha256` value and writes only beneath the explicit external
 snapshot root.
 
+The frozen direct policy endpoint is exactly
+`https://celestrak.org/usage-policy.php`. Do not substitute a documentation
+subdirectory, accept a redirect, or weaken the parsed documented-query marker
+from `gp-data-formats.php`.
+
 The six-file directory remains content-addressed by canonical `records.json`,
 retains full raw policy and provider bytes, and is validated before atomic
 rename. CelesTrak `GROUP=active` remains a representative provider population,

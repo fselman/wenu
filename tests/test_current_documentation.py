@@ -6197,6 +6197,8 @@ def test_50s6g1b1_documents_offline_snapshot_builder_boundary():
     assert "Implemented 50S.6G.1B.1 offline snapshot builder" in architecture
     assert "mandatory injected transport" in roadmap
     assert "offline developer command" in reference
+    assert "https://celestrak.org/usage-policy.php" in reference
+    assert "gp-data-formats.php" in reference
     assert "snapshot_acquisition.py" in source_tree
     assert "build_satellite_snapshot.py" in source_tree
     assert "test_satellite_snapshot_acquisition.py" in source_tree

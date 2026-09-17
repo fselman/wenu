@@ -30,7 +30,7 @@ from .elements import (
 from .snapshots import load_snapshot_directory
 
 
-POLICY_URL = "https://celestrak.org/NORAD/documentation/usage-policy.php"
+POLICY_URL = "https://celestrak.org/usage-policy.php"
 ACTIVE_GP_URL = (
     "https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=CSV"
 )
@@ -57,7 +57,7 @@ _CSV_HEADER = (
     "MEAN_MOTION_DDOT",
 )
 _REQUIRED_POLICY_CLAUSES = {
-    "documented_query": "gp.php",
+    "documented_query": "gp-data-formats.php",
     "two_hour_cadence": "2 hours",
     "one_download_per_update": "once per update",
     "caching": "cache",
