@@ -33,6 +33,7 @@ from wenu.satellites.crossing_matrix_execution import (
 from wenu.satellites.crossing_matrix import (
     CROSSING_MATRIX_IMPLEMENTATION,
     MATRIX_DOCUMENT_KIND,
+    CrossingMatrixPolicy,
     MatrixEquivalenceError,
     MatrixResourceObservation,
     MatrixRouteRun,
