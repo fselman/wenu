@@ -2224,3 +2224,12 @@ owner exists. The bounded next implementation may add those owners beside the
 existing matrix core and in `tools/build_satellite_snapshot.py`, with
 fake-data-only tests. No repository file may own, package, discover, or read
 the external real specimen, and real matrix execution remains unauthorized.
+
+### Accepted real-execution readiness ownership
+
+Fernando scientifically and architecturally accepted the missing-owner finding
+on 2026-09-17 after 163 plugin-disabled current-documentation tests passed in
+3.80 seconds at `054ac39`. Bounded fake-data additions for the fixture,
+certifier, subprocess worker, offline command, and tests are authorized next.
+No repository owner may access the accepted external specimen or execute the
+real matrix under this acceptance.
