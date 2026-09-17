@@ -1175,3 +1175,11 @@ The developer `select-medium` command is offline. The 2026-09-17 fake-data
 gate passed 30 plugin-disabled tests in 5.99 seconds. No external medium
 snapshot is packaged, discovered, or selected automatically; the first real
 medium selection and 50S.6G.1B.2D remain unauthorized.
+
+### Accepted 50S.6G.1B.2C implementation
+
+Fernando scientifically and architecturally accepted the fake-data medium
+selector on 2026-09-17 at `1d9d4e4`. The complete plugin-disabled suite
+passed 2,622 tests in 225.75 seconds; 185 focused tests passed in 9.03 seconds.
+No real medium snapshot has been produced. The first real offline selection
+requires separate authorization, and 50S.6G.1B.2D remains unauthorized.
