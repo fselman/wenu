@@ -3444,7 +3444,7 @@ and architecturally accepted this boundary on 2026-09-16. Only bounded 50S.6F
 is authorized next.
 
 
-## Candidate 50S.6F field-centre airmass realization
+## Accepted 50S.6F field-centre airmass realization
 
 `SatelliteFieldCenterAltitudeEvaluator` treats the declared field-centre
 longitude and latitude only as one fixed topocentric geometric unit direction
@@ -3461,3 +3461,6 @@ certification may accept only when the complete segment lower bound remains at
 or above the threshold; an actual failure, unavailable Earth orientation, or
 unresolved numerical boundary fails atomically. The guide was reviewed for
 50S.6F. No existing crossing coordinate or satellite direction meaning changes.
+Fernando scientifically and architecturally accepted this realization on
+2026-09-17 after 2,577 plugin-disabled tests passed. Only a separately bounded
+50S.6G audit is authorized next.
