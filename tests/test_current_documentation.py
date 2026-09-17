@@ -6905,3 +6905,39 @@ def test_50s6g1b2d_audits_real_execution_readiness_fail_closed():
     assert "run-equivalence-matrix" in audit
     assert "separate explicit authorization" in audit
     assert "do not attempt the real" in instructions.lower()
+
+def test_50s6g1b2d_records_accepted_real_execution_readiness_audit():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "163 plugin-disabled" in document
+        assert "3.80 seconds" in document
+        assert "054ac39" in document
+        assert "fake-data" in document or "fake data" in document
+        assert "real" in document.lower()
+        assert "unauthorized" in document or "not be executed" in document or "no authority" in document.lower()
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted real-execution readiness finding" in audit
+    assert "Accepted 50S.6G.1B.2D real-execution readiness finding" in architecture
+    assert "50S.6G.1B.2D accepted real-execution readiness finding" in roadmap
+    assert "Accepted real-execution readiness boundary" in reference
+    assert "Accepted real-execution readiness ownership" in source_tree
+    assert "Accepted real-matrix coordinate readiness finding" in coordinates
+    assert "Accepted real-execution readiness audit" in guide
+    assert "Accepted real-execution readiness boundary" in instructions
+    assert "real matrix is not yet ready to run" in audit
+    assert "does not authorize reading" in audit
