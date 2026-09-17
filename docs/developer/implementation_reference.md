@@ -2879,3 +2879,12 @@ products are fully revalidated and never overwritten. The receipt contains no
 filesystem path. The 2026-09-17 fake-data gate passed 30 plugin-disabled tests
 in 5.99 seconds. Real medium selection and matrix execution remain
 unauthorized.
+
+### Accepted medium-evidence implementation
+
+The 50S.6G.1B.2C API and offline command were scientifically and
+architecturally accepted on 2026-09-17 at `1d9d4e4`. The full
+plugin-disabled suite passed 2,622 tests in 225.75 seconds; the focused gate
+passed 185 tests in 9.03 seconds. The implementation remains evidence-only:
+running `select-medium` on the accepted real parent requires separate
+authorization, and matrix execution remains outside this acceptance.
