@@ -905,3 +905,24 @@ Fernando scientifically and architecturally accepted 50S.6G.1A on 2026-09-17
 after the 164-test focused gate and all 2,583 plugin-disabled tests passed.
 Only a separately bounded 50S.6G.1B representative snapshot preflight and
 evidence audit is authorized next, not its implementation.
+
+
+## Accepted 50S.6G.1B provider-policy and evidence boundary
+
+Read `satellite_snapshot_preflight_audit_50s6g1b.md` before proposing any
+representative satellite acquisition, external-snapshot admission, or scale
+claim. The accepted audit chooses CelesTrak `GROUP=active&FORMAT=CSV` as one
+explicit representative-scale population, not a complete resident-space-
+object catalogue.
+
+Policy freezing and GP acquisition are separate operations. A direct HTTP 200
+policy receipt must be inspected and explicitly acknowledged by exact digest
+before one direct HTTP 200 bulk GP request; redirects, retries, fallback,
+polling, per-object requests, and concurrent downloads are forbidden. Raw
+bytes, receipts, canonical snapshot, medium selection, and evidence remain
+outside the repository and package. This audit changes no runtime. Fernando
+scientifically and architecturally accepted this boundary on 2026-09-17 after
+all 147 plugin-disabled current-documentation tests passed in 4.54 seconds.
+Only bounded 50S.6G.1B.1 fake-transport policy-receipt and deterministic-
+builder implementation is authorized next. No live CelesTrak request or
+50S.6G.1B.2 work is authorized.

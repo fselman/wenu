@@ -2441,3 +2441,30 @@ Fernando scientifically and architecturally accepted 50S.6G.1A on 2026-09-17
 after the 164-test focused gate and all 2,583 plugin-disabled tests passed.
 Only a separately bounded 50S.6G.1B representative snapshot preflight and
 evidence audit is authorized next, not its implementation.
+
+
+#### 50S.6G.1B — Representative snapshot preflight and evidence
+
+**Status:** Accepted documentation-only audit.
+
+The candidate `satellite_snapshot_preflight_audit_50s6g1b.md` defines a
+two-phase CelesTrak policy receipt and human digest acknowledgement, one fixed
+Active-group OMM-compatible CSV request, deterministic fail-closed
+normalization, complete raw/canonical receipts, and atomic content-addressed
+external publication. The Active group is labeled representative-scale rather
+than complete population coverage; Space-Track, SupGP, multi-group unions, and
+redistribution remain outside the slice.
+
+Evidence retains synthetic, deterministic medium, and complete acquired Active
+tiers; 1/2/5/10/20/50 FoVs; disjoint/overlapping/identical intervals; declared
+geometry cases and observers; cold/warm resource measurements; selector and
+exact-evaluation counts; and independent exhaustive equality. External
+admission is digest-bound and evidence-only. No useful-speed, shared-state,
+capacity, runtime-default, live-request, report, CLI/file, track, or chart claim
+is made.
+
+Fernando scientifically and architecturally accepted 50S.6G.1B on 2026-09-17
+after all 147 plugin-disabled current-documentation tests passed in 4.54
+seconds. Only bounded 50S.6G.1B.1 fake-transport policy-receipt and
+deterministic-builder implementation is authorized next. A live provider
+request and 50S.6G.1B.2 admission/evidence remain separately authorized.

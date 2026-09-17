@@ -1051,3 +1051,24 @@ three-record, 60-second crossing domain.
 Fernando scientifically and architecturally accepted 50S.6G.1A on 2026-09-17
 after the 164-test focused gate and all 2,583 plugin-disabled tests passed.
 Only a separately bounded 50S.6G.1B audit is authorized next.
+
+
+## Accepted 50S.6G.1B representative snapshot preflight
+
+The candidate audit makes policy a frozen reproducibility input. Wenu first
+records the exact official CelesTrak policy bytes and digest; a later
+acquisition requires explicit acknowledgement of that digest before a single
+fixed Active-group CSV request. Network failure, redirect, changed policy, or
+invalid data stops without retry and publishes nothing.
+
+CelesTrak Active is a large representative population, not a complete census
+of payloads, rocket bodies, debris, analyst, restricted, or lost objects. Raw
+response and policy bytes remain local. A deterministic medium tier is derived
+offline from the same parent response, while the installed synthetic snapshot
+remains the fast oracle. Exact equality and resource evidence are bound to the
+canonical snapshot digest; ordinary runtime defaults do not change.
+
+Fernando scientifically and architecturally accepted 50S.6G.1B on 2026-09-17
+after all 147 plugin-disabled current-documentation tests passed in 4.54
+seconds. Only bounded 50S.6G.1B.1 fake-transport implementation is authorized
+next; policy-digest approval for live acquisition remains separate.
