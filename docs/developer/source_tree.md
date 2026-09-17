@@ -2244,4 +2244,12 @@ explicit `run-equivalence-matrix` developer-command surface. The existing
 `crossing_matrix.py` remains the scientific equivalence and atomic-publication
 owner. No owner discovers, downloads, refreshes, packages, or implicitly
 selects the external specimen. The candidate uses only 15- and 60-second
-fixture intervals and remains fake-data-tested pending acceptance.
+fixture intervals and remains fake-data-tested pending acceptance.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.
