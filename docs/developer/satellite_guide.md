@@ -1086,3 +1086,24 @@ transport, representative admission, or evidence matrix is implemented.
 Fernando accepted 50S.6G.1B.1 on 2026-09-17 after 175 focused tests and all
 2,594 plugin-disabled tests passed. No live provider access was exercised or
 authorized by that acceptance.
+
+A future provider may be audited only if it is public, reliable, and genuinely
+independent in observation or orbit determination, rather than a mirror of
+CelesTrak or Space-Track. It must have stable machine-readable access, explicit
+policy and provenance, complete identifiers, and an auditable OMM-compatible
+mapping. Introduce it first as a separate validation oracle, never as silent
+fallback, automatic merge, or replacement of the authorized provider.
+
+Fernando accepted the exact `non-HTTP 200` policy-clause compatibility
+correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
+tests passed. The frozen 14,643-byte response has SHA-256
+`67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. The acceptance covers the parser and receipt only; it does not
+approve a GP request or the digest acknowledgement required before one.
+
+The first external Active snapshot contains 16,559 records. Its retained raw
+response SHA-256 is `e54730e14b2097444c5e20bba6dd13d3e2d92f956797d49256ddb1a70ffe5014`; its canonical-record SHA-256 is
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`. CelesTrak's suffix-free six-fractional-digit `EPOCH` is UTC
+by the provider contract and is stored with explicit `Z`; the captured HTTP
+media type remains `text/plain; charset=UTF-8`. Fernando accepted this repair
+and snapshot on 2026-09-17 after 15 focused and 2,600 complete plugin-disabled
+tests. No second provider request or 50S.6G.1B.2 work was authorized.

@@ -30,7 +30,7 @@ from .elements import (
 from .snapshots import load_snapshot_directory
 
 
-POLICY_URL = "https://celestrak.org/NORAD/documentation/usage-policy.php"
+POLICY_URL = "https://celestrak.org/usage-policy.php"
 ACTIVE_GP_URL = (
     "https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=CSV"
 )
@@ -57,11 +57,11 @@ _CSV_HEADER = (
     "MEAN_MOTION_DDOT",
 )
 _REQUIRED_POLICY_CLAUSES = {
-    "documented_query": "gp.php",
+    "documented_query": "gp-data-formats.php",
     "two_hour_cadence": "2 hours",
     "one_download_per_update": "once per update",
     "caching": "cache",
-    "stop_on_non_200": "non-200",
+    "stop_on_non_200": "non-http 200",
 }
 _PUBLICATION_FILES = (
     "manifest.json",
@@ -259,6 +259,21 @@ def _number(value, kind, name):
         raise ValueError(f"{name} has an invalid value.") from error
 
 
+def _celestrak_epoch(value):
+    value = value.strip()
+    try:
+        parsed = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+    except ValueError as error:
+        raise ValueError(
+            "CelesTrak EPOCH must use YYYY-MM-DDTHH:MM:SS.ffffff UTC."
+        ) from error
+    if parsed.strftime("%Y-%m-%dT%H:%M:%S.%f") != value:
+        raise ValueError(
+            "CelesTrak EPOCH must use YYYY-MM-DDTHH:MM:SS.ffffff UTC."
+        )
+    return _utc(f"{value}Z", name="EPOCH")
+
+
 def _normalize_csv(body, raw_digest):
     try:
         text = body.decode("utf-8")
@@ -283,7 +298,7 @@ def _normalize_csv(body, raw_digest):
             "OBJECT_ID": row["OBJECT_ID"].strip(),
             "NORAD_CAT_ID": _number(row["NORAD_CAT_ID"], int, "NORAD_CAT_ID"),
             "CLASSIFICATION_TYPE": row["CLASSIFICATION_TYPE"].strip(),
-            "EPOCH": row["EPOCH"].strip(),
+            "EPOCH": _celestrak_epoch(row["EPOCH"]),
             "MEAN_MOTION": _number(row["MEAN_MOTION"], float, "MEAN_MOTION"),
             "ECCENTRICITY": _number(
                 row["ECCENTRICITY"], float, "ECCENTRICITY"
@@ -414,7 +429,7 @@ def acquire_active_snapshot(
     if cached is not None:
         return cached
     response = transport(ACTIVE_GP_URL)
-    started, stopped = _response(response, ACTIVE_GP_URL, "text/csv")
+    started, stopped = _response(response, ACTIVE_GP_URL, "text/plain")
     raw_digest = sha256_hex(response.body)
     records = _normalize_csv(response.body, raw_digest)
     records_bytes = canonical_json_bytes(records)

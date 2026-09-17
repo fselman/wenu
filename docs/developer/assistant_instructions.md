@@ -938,3 +938,27 @@ Fernando accepted 50S.6G.1B.1 on 2026-09-17 after 175 focused plugin-disabled
 tests and all 2,594 plugin-disabled tests passed. The next step is not an
 implicit live operation: obtain separate authorization before fetching the
 policy, and require separate approval of its exact digest before GP access.
+
+The exact direct policy URL is `https://celestrak.org/usage-policy.php`; the
+50S.6G.1B.1 regression test protects it. A redirected or documentation-
+subdirectory URL is not an acceptable substitute.
+
+Fernando accepted this direct-policy-URL correction on 2026-09-17 after all
+2,595 plugin-disabled tests passed. CelesTrak remains the only authorized
+provider. Do not treat that acceptance as permission for a live GP request.
+
+Fernando accepted the exact `non-HTTP 200` policy-clause compatibility
+correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
+tests passed. The frozen 14,643-byte policy response has SHA-256
+`67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. This acceptance validates the parser correction and receipt only;
+explicit approval of that exact digest remains separately required before any
+GP request.
+
+Fernando accepted the CelesTrak epoch/media-type compatibility correction and
+the resulting external Active snapshot on 2026-09-17 after 15 focused tests
+and all 2,600 plugin-disabled tests passed. The single direct response contains
+16,559 records and has SHA-256 `e54730e14b2097444c5e20bba6dd13d3e2d92f956797d49256ddb1a70ffe5014`; its canonical records have SHA-256
+`e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`. Preserve CelesTrak's declared UTC meaning while normalizing
+the exact suffix-free six-fractional-digit CSV epoch to Wenu's canonical `Z`
+form, and preserve the captured `text/plain; charset=UTF-8` media type. No
+second provider request occurred. 50S.6G.1B.2 remains separately authorized.

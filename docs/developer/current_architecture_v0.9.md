@@ -1177,3 +1177,21 @@ Fernando accepted the bounded 50S.6G.1B.1 implementation on 2026-09-17 after
 175 focused plugin-disabled tests and all 2,594 plugin-disabled tests passed.
 `git diff --check` and the working tree were clean. Acceptance does not
 authorize a live CelesTrak request or 50S.6G.1B.2.
+
+Fernando accepted the direct-policy-URL correction on 2026-09-17 after all
+2,595 plugin-disabled tests passed in 205.93 seconds. The protected endpoint is
+`https://celestrak.org/usage-policy.php`; no GP request was performed.
+
+Fernando accepted the exact `non-HTTP 200` policy-clause compatibility
+correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
+tests passed. The resulting 14,643-byte policy receipt is bound to SHA-256
+`67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. No GP request was made or authorized; approval of that exact
+digest remains a separate human checkpoint.
+
+Fernando accepted the exact CelesTrak epoch and HTTP-media compatibility repair
+and its 16,559-record external Active snapshot on 2026-09-17 after 15 focused
+tests and all 2,600 plugin-disabled tests passed. Raw response SHA-256 is
+`e54730e14b2097444c5e20bba6dd13d3e2d92f956797d49256ddb1a70ffe5014`; canonical-record SHA-256 is `e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`. The implemented seam
+normalizes the provider-declared UTC epoch to explicit `Z` and preserves the
+captured `text/plain; charset=UTF-8` value. No second request was made, and
+50S.6G.1B.2 remains a separate milestone.
