@@ -926,3 +926,10 @@ all 147 plugin-disabled current-documentation tests passed in 4.54 seconds.
 Only bounded 50S.6G.1B.1 fake-transport policy-receipt and deterministic-
 builder implementation is authorized next. No live CelesTrak request or
 50S.6G.1B.2 work is authorized.
+
+50S.6G.1B.1 is now implemented through a mandatory injected transport and an
+offline response-file developer command. Preserve the absence of a default or
+live network adapter. Exact policy-response SHA-256 acknowledgement must occur
+before any GP transport call; failures remain atomic. Do not perform a live
+CelesTrak request or begin representative admission/evidence without separate
+Fernando authorization.

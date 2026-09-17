@@ -1,1160 +1,1 @@
-# Wenu current architecture v0.9
-
-**Status:** Implemented current architecture
-**Previous baseline:** `archive/architecture_history/current_architecture_v0.8.md`
-**Completed migration:** `archive/migration_history/wenu_migration_0.8_to_0.9.md`
-**Accepted design:** `archive/architecture_history/target_architecture_v0.9.md`
-**Baseline commit:** `5da93cc`
-**Closure date:** 2026-08-28
-
-## Purpose
-
-This document is the current architectural authority for Wenu v0.9. It
-records the implemented physical-planisphere baseline and the responsibility
-boundaries that current and post-v0.9 work must preserve. Detailed public APIs
-and file ownership remain in `implementation_reference.md` and
-`source_tree.md`. The reviewable as-is structure and coordinate-rationalization
-seams are rendered in `diagrams/current_architecture_v0.9_overview.svg` and
-`diagrams/coordinate_transformation_as_is_v0.9.svg`. The intended result after
-49B/49C is rendered separately in
-`diagrams/coordinate_transformation_target_49bc.svg`. Source-level as-is and
-proposed structures plus the target runtime call sequence are indexed in
-`diagrams/README.md`.
-
-The v0.9 architecture is closed around the accepted canonical physical
-polar-planisphere product: paired celestial disks, civil calendar and page
-furniture, the latitude-specific folded horizon pouch, reviewed physical
-appearance, curated bright and deep-sky content, and shared localization.
-The optional night edition remains a later appearance experiment and is not a
-condition of the canonical v0.9 architecture.
-
-This closure records architecture and implementation state. It does not claim
-that a `v0.9.0` Git tag or distribution release exists; package versions
-remain governed by Git tags and setuptools-scm.
-
-## Canonical pipeline
-
-Wenu retains one astronomical and rendering flow:
-
-```text
-catalogues or provider state
-    -> observer-independent celestial content
-    -> explicitly framed spherical geometry
-    -> projection-domain guard
-    -> coordinate-neutral projection
-    -> projected geometry and clipping
-    -> chart preparation
-    -> canonical renderer
-    -> resolved furniture and export
-```
-
-Examples, command adapters, physical furniture, and renderers do not acquire
-catalogue loading, astronomical transformation, projection selection, or chart
-policy. Style and output mode change appearance, not astronomical geometry.
-
-## Ordinary chart architecture
-
-The implemented ordinary workflow separates:
-
-- chart type: projection, framing, viewport, and final boundary;
-- style: semantic visual appearance;
-- output mode: medium, dimensions, DPI, and presentation scaling;
-- detail policy: astronomical selection and density;
-- observer: site and observation-time context;
-- renderer: realization of prepared graphical records;
-- export: one final save per declared product.
-
-One observer-independent `CelestialSphere` may serve multiple chart families,
-observers, and instants. Observer-bound realizations use explicit immutable
-keys; render-local requests and configuration overlays do not leak state
-between commands or products.
-
-Regional, full-sky, all-sky, circumpolar, binocular, and polar-planisphere
-products share this pipeline. PNG, PDF, and semantic SVG are output products
-of the same resolved geometry and preparation path.
-
-## Physical polar-planisphere product
-
-The canonical v0.9 physical product contains:
-
-- matched north and south celestial disks with independently declared
-  declination limits and validated common physical scale;
-- opposite face handedness implemented in geometry, never by mirroring a
-  finished image or reversing text;
-- a 365-day standard-time civil calendar with immutable daily, monthly, and
-  label furniture;
-- actual-size A4 disk pages with centre, registration, scale, face, and
-  assembly records;
-- a separate latitude-specific altitude-zero horizon pair;
-- an accepted folded A4 pouch with cut window, cardinal furniture, hour scale,
-  registration, and assembly geometry;
-- deterministic page, pouch, preview, manifest, and command/export ownership.
-
-The celestial disks remain observer-independent. Site and standard UTC offset
-calibrate the civil-time relationship and the separate horizon product.
-Daylight-saving behavior is instruction policy, not a second astronomical
-scale.
-
-Polar projection, calendar geometry, page furniture, horizon transformation,
-pouch furniture, rendering, preview, and export remain distinct owners.
-Physical millimetre geometry is resolved before Matplotlib realization and is
-not inferred from display pixels.
-
-## Content, appearance, and localization
-
-One packaged polar detail policy owns the reviewed stellar, constellation,
-Milky Way, Magellanic Cloud, and curated binocular/deep-sky selection. The
-canonical physical appearance uses the accepted white-background palette and
-reviewed magnitude mapping, including its configured bright-star treatment.
-
-Semantic label keys and packaged language catalogues provide shared English
-and Spanish generated text across chart families. Unknown caller text remains
-unchanged, and unsupported language identifiers fail explicitly. Localization
-does not own geometry, catalogue identifiers, or caller titles.
-
-The optional dark night edition remains deferred until it receives physical
-review under red observing light. It must reuse the same geometry and product
-pipeline when undertaken.
-
-## Coordinate and temporal boundaries
-
-Every astronomical value must retain explicit frame, origin, epoch, observation
-instant, time scale, observer, and apparent/geometric status where applicable.
-Projection code remains coordinate-neutral and may not select or relabel an
-astronomical frame.
-
-Milestone 49D.2 adds an optional immutable `LayerRealizationContext` before
-projection. It can carry product coordinate identity, observation context,
-provider evaluation instant/time scale, and resolved reference equinox.
-`SkyLayer.realize()` adapts that input to the existing
-`spherical_geometry(observer, ...)` contract. Ordinary requests do not yet
-supply the context and follow the exact legacy branch; no current astronomical
-layer, numerical geometry, or public product changes in this milestone.
-
-Future Sun, Moon, and planet layers must preserve the same output-neutral
-boundary. They acquire provider states, transform exactly once into the
-requested spherical product frame, and declare Wenu semantic identity before
-projection. PNG, PDF, and SVG then share the existing projection, preparation,
-Matplotlib rendering, and single export path. SVG annotation may expose the
-reserved `solar-system/sun`, `solar-system/moon`, and
-`solar-system/planets` hierarchy, but it must not infer astronomical identity,
-recompute coordinates, add a post-export overlay, or invoke a separate SVG
-generator.
-
-The 49D.2 handoff and this output-neutral moving-object boundary were
-scientifically, pedagogically, and technically accepted by Fernando on
-2026-08-29. They remain review-branch additions until merged.
-
-The proposed 49E.1 ephemeris boundary distinguishes a Cartesian state source
-from observer-relative direction realization. A source state must preserve
-its target, centre, frame, instant/time scale, position/velocity units, kernel
-identity, coverage, and provenance. Light-time and apparent-place physics are
-resolved before the result becomes spherical chart geometry; a raw
-barycentric vector must never be relabelled as an ICRS sky direction. This is
-a design candidate only and changes no installed runtime path.
-
-The accepted 49E.1 decisions require complete position-velocity states,
-provider/model plus filename/SHA-256/coverage kernel identity, and a shared
-request/session ephemeris resource. Because Wenu is unreleased and the as-is
-runtime has only one helper default plus two tests using it,
-`PositionStatus.TOPOCENTRIC` is removed atomically in 49E.2;
-observer-centred origin and physical correction status remain separate. Venus
-is the first planned 49I.1 body, followed by the Moon.
-
-49E.2 installs only renderer-neutral Cartesian boundary types in
-`ephemeris.py`: resolved resource identity, geometric state request, complete
-position-velocity state, and structural state source. The types own no kernel
-I/O, observer-relative direction realization, coordinate transformation,
-chart, or output policy. A deterministic source exists only in tests. `observer_altaz_spec()` has no status default:
-observer-transformed celestial directions explicitly use `APPARENT`, native
-observer-local references use `GEOMETRIC`, and `OBSERVED` remains reserved for
-future atmospheric realization.
-
-49E.3 installs `SkyfieldEphemerisStateSource` as a borrowed-resource adapter.
-It hashes the exact already-open BSP file once, records conservative common
-segment coverage in TDB, and returns simultaneous geometric target-minus-centre
-ICRF states in AU and AU/day. It owns no observer-relative direction physics,
-moving-object layer, projection, renderer, or output path.
-
-The accepted 49E.4 audit defines the next boundary without changing runtime
-code. Astrometric direction realization combines the observer's barycentric
-state at reception with iterated target states at retarded emission times and
-retains distance, one-way light time, both instants, convergence policy, and
-resource provenance. Apparent-place realization is a later explicit step that
-adds gravitational deflection and aberration. Neither step selects an equinox:
-native spherical directions use fixed ICRS axes before `CoordinateService`
-performs any requested product-frame transformation.
-
-Fernando scientifically accepted that boundary on 2026-08-30 after all 45
-current-documentation tests passed in 2.03 seconds. Runtime realization remains
-49E.5 and is not part of the implemented as-is architecture yet.
-
-The accepted 49E.5 implementation supplies the renderer-neutral astrometric stage.
-One typed observer barycentric state at reception and repeated typed target
-states at retarded emission times produce an observer-origin ICRS
-`SphericalPoints` value plus retained distance, light-time, emission-time,
-iteration, target, observer, and exact resource evidence. The candidate is not
-connected to a production sky layer and changes no chart or output.
-
-Fernando scientifically accepted the implementation and installed-DE440 Venus
-comparison on 2026-08-30 after 111 focused tests, 1,848 routine tests with 30
-deselected, and all 1,878 tests passed. Apparent place remains 49E.6; drawable
-Venus remains 49I.1.
-
-The accepted 49E.6 implementation adds the renderer-neutral apparent stage. It
-consumes the accepted 49E.5 astrometric result, including retained relative
-velocity, and uses Skyfield `apparent()` for explicit gravitational deflection
-and aberration without invoking `observe()` again. Same-kernel, same-resource,
-same-observer-state, and same-reception-instant checks protect the handoff.
-
-The result is an observer-origin apparent direction on fixed ICRS-oriented
-axes. Apparent is a physical correction status, not a reference frame or an
-equinox-of-date selection. No sky layer or output path consumes the candidate;
-future Venus geometry must still pass once through the product-frame,
-projection, renderer, and shared PNG/PDF/SVG pipeline.
-
-Fernando scientifically accepted 49E.6 and its installed-DE440 Venus
-comparison on 2026-08-30 after 95 focused tests and all 1,883 tests passed.
-Residuals from direct Skyfield were `3.152e-11` degree in right ascension and
-`1.544e-12` degree in declination. Drawable Venus remains 49I.1.
-
-The 49I.1 audit identifies one remaining chart-side prerequisite. Although
-`LayerRealizationContext` and `SkyLayer.realize()` exist, ordinary chart
-facades do not yet construct and pass the product-frame context. The proposed
-49I.1A closes that output-neutral handoff; 49I.1B then adds one opt-in Venus
-layer using the accepted provider, astrometric, apparent, transformation,
-projection, renderer, and shared-export sequence. No 49I.1 runtime or visible
-planet is part of the implemented architecture yet.
-
-Fernando scientifically and architecturally accepted the 49I.1 audit on
-2026-08-30 after all 48 current-documentation tests passed in 3.30 seconds.
-The accepted audit changes no runtime type or output; 49I.1A remains the next
-implementation milestone.
-
-The accepted 49I.1A implementation closes the ordinary request-to-layer context
-handoff. One request-derived `LayerRealizationContext` reaches every canonical
-chart facade before `CelestialSphere.draw_chart()`. Existing layers ignore it
-through the concrete compatibility adapter and retain their established
-geometry. Ordinary pre-projection products are currently horizontal for
-planisphere, regional, circumpolar, and binocular, and Galactic for all-sky;
-the reference equinox remains a separate field. No Venus layer or visible
-output is installed by 49I.1A.
-
-Fernando scientifically and architecturally accepted 49I.1A on 2026-08-30
-after 166 focused tests, 1,859 routine tests with 30 deselected, and all 1,890
-tests passed. The full suite also verified UTC-datetime normalization for the
-ordinary chart-view observer contract. 49I.1B is the next bounded slice.
-
-The accepted 49I.1B implementation installs one dormant `VenusLayer` in the canonical
-sphere. `--planet venus` enables it; the layer borrows the observer kernel,
-uses the accepted astrometric/apparent chain, and transforms once into the
-49I.1A product coordinate specification before ordinary projection. It adds
-no physical disk or alternative SVG path and is scientifically and visually
-accepted. Fernando's installed-DE440 comparison placed Venus at the
-Stellarium position for the declared La Ligua instant; PNG, PDF, and semantic
-SVG looked the same. Acceptance passed the 148-test implementation review, 35
-focused post-correction tests, and all 1,898 tests in 82.01 seconds.
-
-The proposed 49I.2 audit now distinguishes the common moving-body chart
-pipeline from its interchangeable state-source and appearance policies.
-Current code proves one installed JPL/Skyfield Venus route only. The Moon is
-the next proposed body because strong topocentric parallax tests observer
-ownership; its correction policy must be compared with direct Skyfield rather
-than inherited from Venus by assumption. No Moon or generic body layer is part
-of the implemented architecture yet.
-
-Fernando scientifically and architecturally accepted the 49I.2 audit on
-2026-08-30 after all 51 current-documentation tests passed in 1.88 seconds.
-The accepted audit changes no runtime type or output. 49I.2A Moon numerical
-direction validation is the next bounded implementation.
-
-Fernando scientifically accepted 49I.2A on 2026-08-30 after 102 focused tests
-passed in 1.99 seconds and the installed-DE440 validator agreed with direct
-Skyfield to 0.1503 mas in right ascension and 0.0624 mas in declination. The
-accepted validation measured 0.9500231004-degree topocentric-geocentric
-parallax and a 27.91-mas 52 m minus 0 m observer-height displacement. The
-complete suite then passed all 1,902 tests in 89.59 seconds. It adds no runtime
-production type or chart content.
-
-The accepted 49I.2B implementation extracts the shared renderer-neutral
-symbolic-point orchestration into `sky/solar_system_points.py`. A frozen descriptor owns body
-identity, declared centre, selection key, and explicit correction policy.
-`VenusLayer` is now a thin specialization with unchanged downstream ownership;
-a test-only Moon descriptor proves reuse without installing Moon content.
-Verification passed all 1,912 tests, and main-versus-branch Venus products
-were identical at the PNG, rendered-PDF, and normalized semantic-SVG levels.
-Fernando scientifically and architecturally accepted 49I.2B on 2026-08-30.
-
-The accepted 49I.2C implementation installs a thin default-off Moon
-specialization and
-replaces planet-only internal selection with one request-owned
-`solar_system_objects` set. Class-aware `--planet venus` and `--moon` inputs
-therefore converge before detail application. The Moon retains natural-
-satellite semantics and the ordinary style, projection, renderer, and exporter
-owners; physical disk and phase remain deferred. Fernando scientifically,
-architecturally, and visually accepted this symbolic Moon slice on 2026-08-30
-after all 1,917 tests and the PNG/PDF/SVG comparison passed.
-
-The accepted 49I.2D audit places a shared Solar-System trajectory contract
-before physical-disk work. It distinguishes each body's sample reception
-instants from the single fixed chart-frame instant, assembles accepted apparent
-directions as one typed spherical curve, and reuses the existing vectorized
-coordinate, projection, clipping, renderer, and export path. Major-time anchors
-remain scientific metadata; visible perpendicular ticks and the starting-date
-label are projected annotations. Fernando scientifically and architecturally
-accepted the audit on 2026-08-31 after 55 documentation tests, 1,889 routine
-tests with 30 deselected, and all 1,919 tests passed. The audit changes no
-runtime source, public interface, numerical geometry, or output.
-
-The accepted 49I.2D.1 implementation adds the renderer-neutral
-scientific curve only. One frozen request merges regular samples and exact
-major-time anchors. The accepted scalar observer-state, astrometric, and
-apparent chain is reevaluated at every vertex using one borrowed ephemeris
-resource. Complete apparent directions are assembled as one open
-`SphericalCurves`, then transformed exactly once into the fixed product
-frame. The installed-DE440 validator agreed with direct Skyfield to
-`4.293e-10` degree in right ascension and `8.471e-11` degree in
-declination. Fernando accepted the slice after all 1,929 tests passed. It adds
-no registered layer, public option, projected annotation, style, renderer, or
-output change.
-
-The implemented temporal sequence contracts distinguish physical instants,
-civil/display time, sampling cadence, and playback cadence. The accepted
-fixed-sky reference keeps the celestial scene and equatorial grid anchored
-while the observer-local horizon and AltAz grid rotate. Complete independent
-renders remain the correctness oracle for later reuse optimization.
-
-Implemented `CoordinateSpec` and coordinate-service ownership plus future
-provider, moving-object, public-coordinate, and reuse work are governed by
-`post_v0.9_architecture_roadmap.md` and must preserve this v0.9 pipeline.
-
-## Configuration and public boundaries
-
-Packaged defaults and schema-version-2 configuration resolve into immutable
-typed contracts. User overlays merge non-mutatingly; explicit command values
-override overlays; sequential invocations share no active configuration
-singleton.
-
-The installed `wenu_chart` interface and canonical examples are adapters over
-the same public drawing and export workflow. They do not import one another or
-create alternative astronomical, rendering, or physical-product paths.
-
-## Acceptance and regression authority
-
-Automated tests protect scientific geometry, ownership, configuration,
-localization, output, and physical-size contracts. Atlas-print remains the
-visual regression baseline for ordinary pre-v0.9 families. The accepted
-white-background polar disks and folded pouch are the physical v0.9 baseline.
-
-Human inspection remains authoritative for paper scale, readability,
-registration, cutting, assembly, classroom use, and appearance. The accepted
-49H.3 reference additionally establishes the fixed-celestial-scene and
-rotating-observer-horizon behavior.
-
-The routine regression gate is expected to complete in less than 30 seconds on
-Fernando's Intel Mac. The complete suite plus any milestone-specific
-scientific, SVG, visual, print, sequence, or classroom acceptance remains
-mandatory before milestone closure.
-
-## Active authority after v0.9
-
-Current work reads this document together with:
-
-- `implementation_reference.md` for public and advanced API contracts;
-- `source_tree.md` for responsibility ownership;
-- `post_v0.9_architecture_roadmap.md` for active milestone sequencing;
-- `target_architecture_v0.9.5.md` for the proposed coordinate-rationalization
-  target and minimal 49B/49C roadmap;
-- `coordinate_system_guide_v0.9.5.md` for living equations, coordinate
-  conventions, code ownership, object inventory, and provenance;
-- `archive/audits/coordinate_transformation_audit_09a2afd.md` for scientific coordinate
-  evidence;
-- `archive/audits/public_interface_audit_v0.9.5.md` for the accepted executable inventory and
-  public system, frame, equinox, and epoch boundary;
-- `archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md` and
-  `archive/milestone_history/49d_scene/layer_realization_context_49d2.md` for scene dependencies and the minimal
-  pre-projection realization handoff;
-- `archive/milestone_history/49f_svg/svg_output_audit_and_plan.md` for SVG product evidence.
-
-The v0.8 architecture, v0.9 target, and v0.8-to-v0.9 migration documents are
-provenance. They do not override this implemented baseline.
-
-## Accepted drawable Solar-System trajectory
-
-Milestone 49I.2D.2 installs the first visible Venus trajectory in regional and
-binocular charts. The scientific `SolarSystemTrackLayer` remains in
-`wenu.sky`; projected ticks and two-pass perpendicular date placement belong
-to `wenu.charts.solar_system_track_annotations`. Style owns the accepted
-amber-orange appearance. The same prepared geometry reaches PNG, PDF, and
-semantic SVG at `sky/solar_system/planets/venus/track`.
-
-
-## Deferred physical Solar-System appearance
-
-Milestone 49I.3A is an accepted contract audit, not implemented architecture.
-The current runtime still realizes Venus and the Moon as apparent centre
-points and style still draws provisional fixed hollow symbols. No current
-record carries physical angular diameter, illuminated fraction, bright-limb
-orientation, body orientation, photometry, or display magnification.
-
-The accepted boundary keeps a future physical-appearance state renderer-neutral
-and keeps object-specific display magnification outside that scientific state.
-Any resolved disk must become ordinary semantic geometry before the existing
-projection, clipping, renderer, and shared exporter.
-
-
-## Accepted Venus physical-appearance state
-
-Milestone 49I.3B installs `wenu.solar_system_appearance` as a
-renderer-neutral numerical boundary. `SolarSystemApparentDisk` accompanies
-the accepted Venus direction with physical radius, angular diameter, phase,
-illuminated fraction, and apparent-ICRS bright-limb position angle. It carries
-no display magnification or chart/output policy.
-
-No production layer consumes the state yet. Current Venus and Moon chart
-appearance remains the existing symbolic points. There is no resolved disk,
-request, style, renderer, or output change in 49I.3B.
-
-
-## Accepted resolved Venus disk boundary
-
-Milestone 49I.3C accepts an illuminated `SphericalPolygons` layer plus limb
-and terminator `SphericalCurves` layers sampled at the physical angular radius.
-After ordinary projection, chart preparation applies Venus-specific display
-magnification about the projected physical centre. This avoids forcing mixed
-geometry into the curve-only `SphericalGrid` contract and avoids
-renderer-specific disk artists.
-
-The accepted future capability includes several independently realized Venus
-disks in one fixed chart frame. Milestone 49I.3C.1 now installs the
-output-neutral physical centre, limb, visible terminator, and illuminated-face
-spherical geometry bundle. No sky layer, chart request, magnification, style,
-renderer, or output behavior consumes it yet. Current symbolic Venus output
-remains authoritative.
-
-
-## Drawable resolved Venus disk
-
-Milestone 49I.3C.2 installs one opt-in resolved Venus disk for regional and
-binocular charts. Three sky layers share one physical appearance realization:
-an illuminated polygon, a closed limb curve, and a visible terminator curve.
-The ordinary projection pipeline projects each component and the physical
-centre; chart preparation then scales projected offsets by the Venus-specific
-display magnification about that exact projected centre.
-
-Symbolic Venus remains the default. A request cannot select symbolic and
-resolved Venus simultaneously. Magnification alone cannot enable the disk,
-factor 1 retains physical angular scale, and planisphere/all-sky products
-retain symbolic representation. Direct Python chart requests and the CLI
-install the same request-owned layers.
-
-
-## Accepted multi-epoch resolved planet-disk boundary
-
-Milestone 49I.3C.3 audits two distinct static sequence products. Observed
-sequences independently realize the topocentric observer and planet appearance
-at every sample before transformation into one fixed chart frame. Frozen-Earth
-ecliptic sequences instead freeze Earth's heliocentric position at the start,
-advance the planet geometrically, and permit only the planet disks, a central
-six-point Sun symbol, and the equatorial grid in the fixed ecliptic frame.
-
-Every accepted sample retains full physical distance, origin, unit, instant,
-and provider provenance for possible future independently governed 3D
-Solar-System visualization. No 3D runtime is installed.
-
-Both policies reuse the accepted per-epoch spherical disk geometry and
-object-specific post-projection magnification around each separately projected
-centre. The frozen construction is not apparent sky and must retain that status
-in labels and metadata. Fernando accepted the audit on 2026-08-31 after all 63
-current-documentation tests passed in 2.04 seconds. It changes no implemented
-runtime or output.
-
-
-## Accepted output-neutral observed Venus disk sequence
-
-Milestone 49I.3C.3.1A adds immutable start-inclusive major sampling and
-independently realizes the observer, apparent Venus and Sun directions,
-physical appearance, and spherical disk geometry at every epoch. The result
-retains full observer/AU distances with provider and instant evidence for
-possible future independently governed 3D use.
-
-The native physical geometries deliberately remain per epoch because their
-apparent coordinate identities carry different instants. A later drawable
-slice must transform each independently into one fixed product frame before
-aggregation. No request option, registered layer, chart transformation,
-projection, magnification, renderer, or visible output is installed.
-
-
-## Drawable observed Venus disk sequence
-
-Milestone 49I.3C.3.1B installs the accepted observed sequence in regional and
-binocular charts. Each physical epoch is transformed independently into the
-fixed product frame before illuminated faces, limbs, terminators, and optional
-date centres are aggregated. Chart preparation magnifies each projected
-component around its own projected physical centre.
-
-Combined geometry retains exact instants, time scale, observer/AU distances,
-and provenance. Symbolic Venus, one resolved Venus disk, and a resolved Venus
-sequence are mutually exclusive. Frozen-Earth mode, Mercury, and 3D
-visualization remain unimplemented.
-
-
-## Accepted output-neutral frozen-Earth Venus sequence
-
-Milestone 49I.3C.3.2A freezes Earth's heliocentric ICRF vector at the start
-and evaluates Venus heliocentrically at exact major epochs. Each result retains
-the frozen Earth vector, relative target vector, frozen-earth/AU distance,
-physical diameter, phase, illuminated fraction, and fixed-ecliptic limb
-orientation. Target and fixed-Sun directions are geometric in J2000
-mean-ecliptic axes and must never be described as apparent sky.
-
-This state remains output-neutral. Public request integration, resolved disk
-adaptation, per-centre projected magnification, central six-point Sun,
-equatorial grid, restricted scene, semantics, and rendering remain
-49I.3C.3.2B. Mercury remains 49I.3C.3.3; no 3D visualizer is installed.
-
-
-## Drawable frozen-Earth Venus disk sequence
-
-Milestone 49I.3C.3.2B installs the accepted frozen construction in regional
-charts. Exact start-inclusive Venus states share ordinary illuminated, limb,
-terminator, optional-label, and central fixed-Sun spherical layers. Each Venus
-disk is magnified after projection about its own physical centre.
-
-The restricted scene permits only those sequence layers, the fixed Sun, an
-optional equatorial grid, and an explicitly requested ecliptic reference. The
-ecliptic is latitude zero in the fixed product frame; the equatorial grid is
-transformed directly from FK5 into those same J2000 mean-ecliptic axes. Neither
-reference depends on observer AltAz geometry. Automatic English and Spanish
-titles and reference labels use the resolved chart language.
-
-All retained directions remain frozen-observer geometric, not apparent sky.
-Mercury remains 49I.3C.3.3; no 3D visualizer is installed.
-
-
-## Mercury generalization audit boundary
-
-The accepted Milestone 49I.3C.3.3 audit governs, but does not implement,
-Mercury reuse. The
-accepted sequence request/result and physical spherical disk geometry are
-already target-parameterized. CLI selection, body constants, drawable layers,
-style lookup, cleanup, semantic roots, localization, and installed-kernel
-evidence remain Venus-specific.
-
-The authorized first runtime slice is output-neutral Mercury descriptor/radius
-state plus an installed-DE440 frozen-Earth comparison. Only a separately
-accepted second slice may generalize the drawable frozen sequence. No Mercury
-runtime, public request, style, semantic output, or chart is currently
-installed.
-
-
-## Output-neutral lunar physical appearance
-
-Milestone 49I.3E.1 registers one immutable Moon body descriptor with physical
-body ID `301`, Earth parent relationship, JPL equal-volume mean radius
-`1737.4 km`, localization, symbolic compatibility, and an output-neutral
-spherical-appearance capability. A non-drawable Earth descriptor with body ID
-`399` completes the catalog relationship without exposing Earth as a chart
-target.
-
-The generic `SolarSystemAppearanceRealizer` produces the lunar
-`SolarSystemApparentDisk` from accepted topocentric Moon and Sun directions.
-The physical state remains renderer-neutral and contains no magnification or
-page policy. Resolved geometry, public Moon appearance controls, sequences,
-styles, rendering, and visible output remain later 49I.3E slices.
-
-
-## Drawable resolved single-epoch Moon
-
-Milestone 49I.3E.2 adapts the accepted lunar physical appearance into the
-generic resolved-disk layers. Bare `--moon` selects the resolved disk at
-physical scale; `--moon-appearance symbolic` preserves the compatibility
-point. Moon-specific magnification is display-only, post-projection, bounded
-from 1 through 1000, and independent of output mode.
-
-The Moon descriptor authorizes its disk in regional, binocular, circumpolar,
-planisphere, and Mollweide all-sky products without broadening Venus support.
-Generic 720-sample geometry, transformation, preparation, rendering,
-semantics, and exporters own the output. Multi-epoch Moon behavior remains
-unimplemented under 49I.3E.3. Fernando accepted the single-epoch scientific,
-architectural, visual, operational, and regression result on 2026-09-02.
-
-
-## Observed multi-epoch Moon sequence
-
-Milestone 49I.3E.3 adapts `--moon-disk-sequence` into the generic
-`ObservedSolarSystemDiskSequenceRequest`. Every sample independently realizes
-the topocentric Moon and its physical appearance, then transforms complete
-spherical disk geometry into the one product frame fixed at the chart epoch.
-The background, horizon, projection, and furniture therefore do not rotate
-between samples.
-
-Descriptor policy authorizes observed Moon sequences in all five chart
-families while preserving Venus's regional/binocular boundary. Shared labels,
-per-centre post-projection magnification, semantics, clipping, and PNG/PDF/SVG
-export remain generic. Frozen-Earth lunar sequences remain unimplemented.
-
-
-
-## Completed resolved Moon capability (Milestone 49I.3E)
-
-Milestones 49I.3E.0 through 49I.3E.3 are closed. The implemented architecture
-has one catalog Moon identity and Earth relationship, one renderer-neutral
-physical appearance state, shared illuminated spherical-disk geometry, a
-resolved single-epoch request, symbolic compatibility, and an observed
-multi-epoch request. Single disks and independently realized sequence samples
-use ordinary transformation, projection, per-centre post-projection
-magnification, rendering, semantic SVG, and export owners in all five ordinary
-chart families.
-
-The sequence preserves one chart-epoch product frame while each sample retains
-its own apparent centre, distance, diameter, phase, illuminated fraction, and
-complete tangent geometry. No Moon-specific projection, renderer, or exporter
-exists. Parent closure adds no runtime behavior; Frozen-Earth lunar sequences,
-interpolation, animation, texture, libration, eclipses, disk refraction, and
-occultation prediction remain unimplemented.
-
-
-## Performance closure boundary (Milestone 49J)
-
-The current complete-frame authority remains `generate_chart_request()`;
-fixed-sky and observer-time sequences call that static path for every frame.
-`tools/benchmark_reusable_sphere.py` is a separate shared-sphere diagnostic
-whose overlapping profiler categories are non-additive. It is not a cold
-independent-frame oracle.
-
-The accepted historical audit at
-`archive/milestone_history/49j_performance/performance_and_closure_audit_49j0.md`
-freezes exclusive stage timing and the first fixed-sky circumpolar reuse
-candidate. `post_v0.9_architecture_roadmap.md` records the accepted
-test-practice, measurement, and optimization sequence and governs the current
-minor-body and publication programs. Planning adds no instrumentation, cache,
-optimization, test reclassification, or runtime/output change.
-
-The accepted 49J.1 evidence is recorded in
-`archive/milestone_history/49j_performance/test_architecture_and_accepted_practice_audit_49j1.md`.
-Static inspection
-found no session-scoped fixture or `tests/conftest.py`, despite the older
-source-tree description of a session-scoped canonical build registry; 49J.2
-corrected that description. Repeated Mac evidence found 27.16-second routine
-and 85.49-second complete medians. The accepted policy is archived at
-`archive/milestone_history/49j_performance/test_practice_decisions_49j2.md`.
-`archive/milestone_history/49j_performance/test_entry_and_admission_49j3a.md`
-implements reproducible documented test entry and admission rules without
-changing tests or runtime architecture.
-`archive/milestone_history/49j_performance/marker_truthfulness_49j3b.md` records
-the completed marker audit and gate-membership correction.
-`archive/milestone_history/49j_performance/repository_source_index_49j3c.md`
-records the completed test-only immutable source inventory and lazy
-parsed-source index.
-`archive/milestone_history/49j_performance/immutable_catalogue_fixture_49j3d.md`
-records the accepted catalogue-summary fixture and rejection of session-scoped
-canonical-sphere reuse.
-`archive/milestone_history/49j_performance/cold_builder_kernel_oracles_49j3e.md`
-records the accepted preservation of distinct cold builders and independently
-recomputed installed-kernel scientific validators.
-`archive/milestone_history/49j_performance/calendar_layout_cost_49j3f.md`
-records the accepted removal of redundant test-only canvas redraws while
-retaining physical text-containment measurement.
-`archive/milestone_history/49j_performance/observer_time_sequence_oracle_49j3g.md`
-records the accepted decision to retain the cold two-frame canonical
-observer-time route unchanged.
-`archive/milestone_history/49j_performance/test_suite_optimization_closure_49j3h.md`
-records the accepted 49J.3 fault-model and test-file-growth closure.
-`archive/milestone_history/49j_performance/cold_frame_performance_baseline_49j4.md`
-records the accepted diagnostic harness:
-three fresh circumpolar frames traverse `generate_chart_request()`, while
-exclusive nanosecond spans and residual are observed without changing an
-installed interface, runtime owner, cache, or chart output.
-`archive/milestone_history/49j_performance/loaded_sphere_reuse_49j5a.md` owns
-the accepted opt-in execution seam. The accepted comparison in
-`archive/milestone_history/49j_performance/fixed_sky_reuse_equivalence_49j5b.md`
-matches it exactly with the cold oracle, and
-`archive/milestone_history/49j_performance/performance_closure_49j6.md` closes
-49J.
-The fixed-sky orchestrator may reuse one observer-independent canonical sphere,
-but each frame supplies a fresh observer to the unchanged complete request
-route. The cold independent-frame execution remains the default oracle.
-
-## Minor-body provider boundary (accepted Milestone 50A.0)
-
-`archive/milestone_history/50a_minor_bodies/minor_body_scientific_provider_audit_50a0.md`
-accepts the provider boundary without changing implemented architecture.
-Asteroids and comets must still produce the existing geometric
-`EphemerisState`, then use the accepted astrometric/apparent realization and
-descriptor-driven moving-body pipeline. The first source is a bounded local
-Horizons small-body SPK with an explicit companion planetary-resource chain;
-rendering remains offline and no two-body element propagator is an implicit
-fallback. The next authorized implementation is the 50A.1 provider/resource
-seam only.
-
-## Minor-body state-provider seam (Milestone 50A.1 accepted)
-
-`ephemeris.py` now admits either one `EphemerisResourceIdentity` or an explicit
-`EphemerisResourceChain` on a geometric state. Existing planetary states retain
-their original single-resource identity. `minor_body_ephemeris.py` adds a
-frozen Horizons solution identity and an unconnected
-`SkyfieldMinorBodyStateSource` that borrows a small-body kernel, a planetary
-state source, and a timescale.
-Its frozen `MinorBodyEphemerisState` remains an `EphemerisState` while retaining
-the typed orbit solution and selected SPK segment on each result.
-
-The small-body segment supplies target relative to its declared centre. The
-planetary source supplies that numeric centre relative to the requested centre
-at the same TDB instant. Their positions and velocities are composed only after
-the dependency request, resource, frame, and AU/AU-day units are validated.
-No observer, light-time, apparent-place, spherical-geometry, catalog, chart, or
-output owner consumes this provider yet.
-
-Milestone 50A.2 adds `SpiceMinorBodyKernel` as the explicit owner of one local
-Horizons DAF/SPK handle. It evaluates a selected type-21 descriptor through
-CSPICE `spkpvn()` without furnishing a global kernel or allowing hidden SPICE
-composition. The existing astrometric realizer now accepts a target resource
-chain only when it explicitly contains the observer's planetary resource;
-Skyfield remains the DE440, observer-state, and apparent-place owner. This seam
-is exercised only by the validator and remains unconnected to a body or chart.
-
-## Drawable Ceres point and track (Milestone 50A.3B accepted)
-
-`archive/milestone_history/50a_minor_bodies/drawable_ceres_50a3b.md` records the accepted bounded
-Ceres connection. `CERES_BODY` joins the descriptor catalog with a stable
-minor-body identity and symbolic-point plus apparent-track capabilities.
-`MinorBodyResourceSession` validates an explicit local acquisition manifest,
-opens the declared SPK once per chart build, and supplies a descriptor-aware
-`EphemerisSourceBinding`: the Ceres provider owns the target state, while the
-existing DE440/Skyfield provider continues to own observer state and apparent
-corrections. The shared point and track realizers, fixed product frame,
-projection, preparation, semantic SVG, renderers, and exporters remain the
-ordinary route. Fernando accepted the macOS PNG and semantic SVG; 50A.3 is
-closed. Milestone 50A.3G now verifies the merged explicit CLI contract visually
-before 50A.4 comet numerical validation begins.
-
-## Object-centered regional framing and explicit CLI semantics
-
-Explicit point-center identity is resolved before regional chart construction.
-`get_object_center()` overloads fixed `ResolvedTarget` values and
-descriptor-driven Solar-System bodies into the same apparent observer-
-horizontal point contract. Regional framing consumes that result while the
-ordinary detail, spatial-selection, projection, preparation, renderer, and
-export owners remain unchanged. Drawing selectors never supply a center.
-Planets, the Moon, installed asteroids, packaged stellar and deep-sky targets,
-and explicit ICRS or horizontal coordinates use the same chart family only
-through an explicit CLI or effective-configuration center.
-Constellation geometry remains the independent extended-region framing case.
-
-## Installed-CLI moving-object preflight
-
-For exact numbered asteroids, `wenu_chart` resolves data before building the
-chart. `minor_body_acquisition.py` is the sole network and immutable-cache
-owner; it returns a verified local manifest-backed directory. The request,
-coordinate, projection, rendering, and export pipeline remains offline. Public
-policies are `acquire-if-missing` (default), `offline`, and `refresh`; an
-explicit resource directory is authoritative and read-only.
-
-## Provider-neutral satellite crossing domain (Milestone 50S.1 accepted)
-
-The dormant `satellite_crossings.py` domain boundary defines immutable
-satellite identity, terrestrial observer/site, explicitly framed closed
-circular field, inclusive UTC interval, provider candidate, and normalized
-connected-visit result contracts. It reuses `CoordinateSpec` and is not
-exported through the public package facade or consumed by the canonical chart
-pipeline. No satellite acquisition, orbit solution, propagation, coordinate
-transformation, exact crossing solver, report, drawing, or output changes in
-this accepted milestone. Fernando accepted the implementation on 2026-09-15
-after all 2,428 tests passed; PR #123 merged it as `23b851b`.
-
-
-## 50S.2B SatChecker adapter boundary (accepted)
-
-The dedicated 50S.2B milestone branch adds a dormant `satchecker.py` provider
-boundary. It maps only geometric topocentric-direction ICRS circular fields to
-the versioned asynchronous SatChecker endpoint, performs explicit UTC-to-UT1
-conversion with Astropy automatic IERS download disabled, and exposes one-shot
-`submit()` and `poll()` operations. There is no retry, concurrency, hidden
-wait loop, import-time access, chart-construction access, or ordinary-test
-network dependency.
-
-Exact response bytes become immutable SHA-256-addressed local receipts.
-`SatCheckerCache` keys the complete Wenu request, transmitted parameters,
-resolved endpoint, Earth-orientation identity, and adapter schema, and validates
-both response bytes and stored normalized interpretation on reuse. Successful
-provider output becomes `SatelliteCrossingCandidate` with ordered
-`SatCheckerSample` evidence. The adapter does not create
-`SatelliteCrossingResult`, exact crossing events, satellite states,
-illumination physics, reports, tracks, projection, rendering, or export. Fernando scientifically and architecturally accepted this implementation on
-2026-09-15. The focused provider/domain gate passed all 45 tests in 1.79
-seconds, the expanded focused gate passed all 168 tests in 3.89 seconds, and
-the complete plugin-disabled suite passed all 2,457 tests in 88.48 seconds.
-Only 50S.3 reporting and drawing is authorized next.
-
-
-## 50S.3B sampled-candidate presentation boundary (accepted)
-
-Candidate 50S.3B adds a dormant renderer-neutral
-`satellite_presentations.py` boundary and two ordinary sky layers in
-`sky/satellite_candidate_layer.py`. A `SatCheckerPresentation` accepts one
-terminal `SatCheckerResponse`, retains its exact receipt digest and normalized
-query/evidence, sorts candidates by full NORAD catalogue identifier, and emits
-deterministic human-readable and versioned JSON products.
-
-`SatelliteCandidateTrackLayer` realizes two or more ordered samples as one
-open spherical curve and realizes a singleton as one point.
-`SatelliteCandidateSamplesLayer` exposes only supplied points with optional
-UTC labels. Both consume `SatCheckerCandidateEvidence`, transform through
-`CoordinateService` into the request product frame, and then use
-`CelestialSphere.draw_chart()`, projection, preparation, renderer, semantic
-SVG, and PNG/PDF/SVG export unchanged.
-
-The stable semantic roots are
-`sky/artificial_satellites/satchecker_candidates/norad_<id>/sampled_track`
-and `.../samples`. No entry, exit, closest approach, interpolation,
-propagation, provider access, illumination calculation, magnitude, or detector
-claim is introduced. Fernando visually accepted the network-free synthetic text report and centered
-FoV chart on 2026-09-15 after matching PNG, PDF, and semantic SVG inspection.
-The final focused boundary passed all 217 tests, and the complete plugin-disabled
-suite passed all 2,473 tests in 83.98 seconds. Fernando accepted the implementation and its scientific boundaries on
-2026-09-15. This closes 50S.3B; only 50S.4 snapshot, propagation, and specimen
-builder work is authorized next.
-
-
-## Accepted 50S.4A snapshot and propagation audit
-
-The as-is review finds no production owner for canonical OMM/GP records,
-immutable satellite element snapshots, geometric TEME propagation receipts, or
-the TEME/Earth-orientation/topocentric state chain. The accepted SatChecker,
-provider-neutral crossing, presentation, generic Cartesian-state, coordinate,
-chart, and renderer modules do not own those responsibilities.
-
-Fernando accepted the documentation-only contract audit on 2026-09-15 after
-the focused gate passed all 128 tests and the branch diff check was clean. The
-accepted contract defines five bounded stages:
-50S.4A contract acceptance; 50S.4B synthetic installed snapshot and element
-domain; 50S.4C direct `sgp4>=2.25,<3` WGS-72 propagation into typed geometric
-TEME state; 50S.4D no-download independently validated topocentric
-transformation; and 50S.4E propagated sampled-specimen construction and
-closure. 50S.4A added no runtime behavior, dependency, package data,
-propagation, transformation, or crossing result. Acceptance closes 50S.4A and
-authorizes only 50S.4B immutable OMM element and snapshot work.
-
-
-## Accepted 50S.4B immutable element snapshot
-
-The dedicated milestone branch adds the first bounded
-`src/wenu/satellites/` package. `elements.py` owns immutable, fail-closed
-canonical OMM/GP records; `snapshots.py` owns manifest validation,
-canonical-byte and record-level SHA-256 verification, deterministic full-NORAD
-ordering, duplicate rejection, immutable lookup, and installed-resource
-loading.
-
-The packaged `synthetic_50s4b_v1` snapshot contains exactly three
-hand-authored non-operational LEO-like, MEO-like, and geosynchronous-like
-records with six-digit synthetic identifiers. No provider response or tracked
-object was copied. `sgp4>=2.25,<3` is now a direct dependency, but this
-candidate adds no propagator construction, TEME state, Earth-orientation
-transform, observer direction, crossing result, acquisition, or rendering.
-
-At production commit `d3cb597`, the expanded focused gate passed all 158
-tests and the complete plugin-disabled suite passed all 2,483 tests in 87.11
-seconds. A wheel built from that commit was installed into an isolated virtual
-environment; `load_snapshot()` loaded from `site-packages`, verified
-`b6ab95df3eb180b07694b1b9bafd47c2805b6cc7ebea8636490beec03cd71457`,
-and returned the ordered identifiers 900001, 900002, and 900003. Fernando
-accepted the implementation and its bounded scientific ownership on
-2026-09-15. This closes 50S.4B and authorizes only 50S.4C validated SGP4/TEME
-propagation.
-
-
-## Accepted 50S.4C validated SGP4/TEME propagation
-
-`satellites/sgp4.py` now owns the bounded mapping from one accepted
-`SatelliteElementRecord` to the upstream `Satrec` API. Initialization passes
-WGS-72 explicitly, retains improved operation mode, supplies evaluation time as
-separate Julian-day and fractional-day values, raises every non-zero SGP4
-status explicitly, and returns immutable `SatelliteTemeState` values with
-geocentric geometric TEME position in kilometres and velocity in kilometres
-per second.
-
-The wrapper records complete satellite/source/snapshot identity, canonical UTC,
-both Julian-date components, element age, SGP4 package version, implementation
-backend, WGS-72, operation mode, status, provenance, and warnings. Scalar and
-array routes share the same state construction; the array route uses upstream
-acceleration when available and otherwise preserves the scalar contract.
-
-The admission review found that the first synthetic IDs 900001â€“900003 exceeded
-the upstream `Satrec` maximum 339999. The snapshot was transparently corrected
-to valid six-digit synthetic IDs 300001â€“300003 and every affected digest was
-regenerated. Wenu does not pass a hidden surrogate identity to SGP4.
-
-Pinned Vallado verification cases cover near-Earth satellite 5 and deep-space
-satellite 4632 at epoch, while the upstream published terminal-error case
-44160 verifies explicit failure. The candidate adds no ITRS, observer,
-topocentric direction, crossing solver, acquisition, presentation, or
-rendering behavior.
-
-At production commit `e0d7c78`, the expanded focused gate passed all 167
-tests and the complete plugin-disabled suite passed all 2,492 tests in 86.88
-seconds. An isolated wheel installation then loaded Wenu from `site-packages`,
-verified corrected snapshot digest
-`2e5288a6aad9fbe29cfe6d9a60e0045be28501859d8c739135fd302460ece5fe`,
-and propagated all three identifiers with TEME/WGS-72/status zero.
-
-
-Fernando scientifically and architecturally accepted 50S.4C on 2026-09-15 after the 15-test initial gate, 167-test expanded gate, all 2,492 tests, the 132-test documentation gate, and installed-wheel propagation evidence. This closes 50S.4C and authorizes only 50S.4D Earth-orientation and topocentric state work.
-
-
-## Accepted 50S.4D Earth-orientation and topocentric state
-
-The accepted implementation adds `satellites/topocentric.py` as the owner of the
-Cartesian TEME â†’ geocentric ITRS â†’ observer-subtracted topocentric ITRS chain.
-It consumes an accepted `SatelliteTemeState` and `SatelliteObserver`, selects
-the installed bundled IERS-A file explicitly with automatic download disabled,
-and records the file SHA-256, installed package versions, coverage, UT1âˆ’UTC,
-polar motion, and interpolation statuses. Instants outside the installed table
-coverage fail closed.
-
-The immutable `SatelliteTopocentricState` retains satellite, observer, TEME,
-ITRS, topocentric Cartesian, range, vacuum AltAz, and coordinate/provenance
-evidence. Its celestial values are a topocentric geometric vector expressed in
-GCRS axes; they are deliberately not labelled ICRS, a GCRS coordinate,
-astrometric, apparent, or observed. The generic `CoordinateService` remains
-unchanged because it transforms already represented spherical geometry rather
-than satellite Cartesian state.
-
-The initial 17-test topocentric gate, 89-test expanded satellite/coordinate
-gate, 133-test documentation gate, and complete plugin-disabled suite of 2,511
-tests in 95.10 seconds pass on Fernando's Mac. The final diff check is clean.
-Fernando scientifically and architecturally accepted 50S.4D on 2026-09-15.
-Acceptance closes the Earth-orientation/topocentric boundary and authorizes
-only bounded 50S.4E propagated-specimen builder work. No crossing, field
-intersection, illumination, photometry, CLI, chart, or specimen behavior is
-added by 50S.4D.
-
-### Accepted 50S.4E propagated sampled specimens
-
-`tools/build_50s4_satellite_specimens.py` is the candidate developer-only
-50S.4E composition boundary. It loads the installed
-`synthetic_50s4b_v1` snapshot, propagates its ordered records through the
-accepted SGP4/TEME and topocentric chains, and writes one deterministic JSON
-document only beneath a caller-selected output directory.
-
-The document records the snapshot digest and record identity, evaluation grid,
-observer, exact Earth-orientation resource, propagator identity, software
-version, sampled TEME states, sampled topocentric states, and bounded query
-inputs. It is labelled **propagated sampled specimens â€” not verified
-crossings**. It has no network client, does not construct
-`SatelliteCrossingResult`, does not find entry/exit or closest approach, and
-does not define production solver tolerances or implement 50S.5.
-
-#### Accepted 50S.4E gate evidence
-
-On macOS with Python 3.11.7, the dedicated builder gate passed all 10 tests in
-10.58 seconds, the expanded satellite/coordinate gate passed all 99 tests in
-18.07 seconds, the documentation gate passed all 134 tests in 2.45 seconds,
-and the complete plugin-disabled suite passed all 2,522 tests in 105.38
-seconds. The generated JSON had SHA-256
-`16137e9380404dca03789532ab029c4159755c69dd2ab0ca5990a82cd9c42374`.
-The branch was clean and `git diff --check 243b75c...HEAD` passed. Fernando scientifically and architecturally accepted 50S.4E on 2026-09-15.
-
-Acceptance closes 50S.4. The next authorized boundary is only bounded 50S.5
-complete local FoV-crossing oracle work; no 50S.6 optimization or later
-satellite behavior is authorized.
-
-
-### Accepted 50S.5A complete-oracle audit
-
-The documentation-only 50S.5A review adds no runtime behavior. It identifies
-the accepted 50S.4C/50S.4D chain as the only local trajectory authority,
-retains `satellite_crossings.py` as provider-neutral immutable contracts, and
-proposes `satellites/crossing_oracle.py` as a distinct future scientific
-owner for exhaustive adaptive solving.
-
-Completeness means validated numerical completeness under declared time and
-angular tolerances, not a formal interval-arithmetic theorem over SGP4.
-Every selected snapshot record must be scanned. Uncertain, singular, or
-non-converged intervals subdivide or fail closed and cannot be reported as
-negative. No 50S.5 runtime or 50S.6 acceleration is implemented.
-
-
-The candidate 50S.5A documentation gate passed all 136 tests in 3.27 seconds
-on macOS, and the corrected branch diff check was clean. Fernando scientifically and
-architecturally accepted 50S.6A on 2026-09-15, authorizing only bounded 50S.6B
-implementation of the first topocentric cone/orbital-shell selector. The final acceptance
-documentation gate passed all 136 tests in 3.00 seconds. Fernando scientifically
-and architecturally accepted 50S.5A on 2026-09-15. This authorizes only bounded
-50S.5B implementation; 50S.6 and later behavior remain unauthorized.
-
-### Accepted 50S.5B complete local crossing oracle
-
-The accepted implementation adds the immutable `LocalSatelliteCrossingQuery`, exhaustive
-`LocalSatelliteCrossingOracle`, and explicit
-`SatelliteCrossingConvergenceError` in
-`satellites/crossing_oracle.py`. Every selected snapshot record follows the
-accepted 50S.4C/50S.4D chain. Endpoint/midpoint subdivision, topocentric angular
-rate, curvature evidence, bracket-preserving roots, bounded minimum refinement,
-and recursive time-and-angular tolerance connectivity produce ordered connected
-visits.
-
-A no-sign-change tangent in the angular uncertainty band becomes one refined
-zero-duration boundary event. Disconnected visits remain separate. The final
-state retains snapshot, record, SGP4, observer, IERS-A, solver, tolerance, and
-warning evidence. Resource exhaustion or any record failure aborts the complete
-query rather than returning a partial negative result. It adds no
-50S.6 filter, illumination, photometry, CLI, report, drawing, or export.
-
-Candidate verification on Fernando's Mac passed the 13-test dedicated oracle
-gate in 60.62 seconds, the 108-test expanded satellite/coordinate/package
-gate in 70.80 seconds, the 137-test documentation gate in 3.33 seconds, and
-the complete plugin-disabled suite of 2,538 tests in 163.36 seconds. The
-working tree was clean and `git diff --check aa6f91a...HEAD` passed. Fernando scientifically and architecturally accepted 50S.5B on 2026-09-15,
-closing 50S.5. Only a documentation-first 50S.6 conservative-acceleration audit
-is authorized next; runtime acceleration and all later behavior remain
-unauthorized.
-
-### Accepted 50S.6A conservative acceleration audit
-
-The documentation-only audit keeps the accepted 50S.5 exhaustive oracle
-independently callable and proposes a separate conservative candidate-selection
-owner. Rejection requires a recorded topocentric cone/orbital-shell bound that
-covers the complete inclusive interval, observer displacement, Earth rotation,
-model discrepancy, numerical margin, and the accepted angular tolerance.
-Uncertain or unsupported bounds retain the record for exact solving.
-
-The audit rejects horizon and Earth-occultation filters because the current
-query reports geometric directional crossings rather than visibility. It
-defers phase, coarse vectorized propagation, and HEALPix/time indexing behind
-separate correctness and benchmark gates. No runtime, package, dependency,
-coordinate path, result, or output changes under 50S.6A. The candidate Mac
-verification passed all 138 documentation tests in 3.99 seconds and the
-corrected branch diff check was clean.
-
-### Accepted 50S.6B conservative cone-shell selector
-
-The candidate adds `satellites/crossing_acceleration.py` as the distinct owner
-of immutable tri-state first-stage evidence. It evaluates one accepted
-SGP4/WGS-72 and installed-IERS-A topocentric start state, derives an
-OMM-shell Kepler perigee speed with an explicit 2.5 safety factor plus observer
-speed bound, and encloses the complete admitted interval in a topocentric
-reachable cap.
-
-The supported production domain is deliberately limited to
-`synthetic_50s4b_v1` and intervals of at most 60 seconds. All unsupported or
-weak cases are `indeterminate`. The accepted exhaustive oracle is unchanged
-and remains independently callable. This slice adds no accelerated coordinator
-and cannot return crossing results. Candidate verification passed the 9-test
-dedicated gate, 78-test expanded gate, 139-test documentation gate, and all
-2,549 plugin-disabled tests. The branch and diff checks were clean. Fernando scientifically and
-architecturally accepted the bounded selector on 2026-09-16. Only a
-50S.6C documentation-first coordination, broader-domain, and benchmark audit is
-authorized next.
-
-### Accepted 50S.6C exact-solver coordination audit
-
-The accepted documentation-only audit preserves the accepted exhaustive 50S.5 oracle
-as the independent scientific reference and the accepted 50S.6B selector as a
-tri-state evidence producer. It specifies one shared exact record seam:
-exhaustive solving calls it for every record, while a later accelerated route
-could call it only for ordered retain and indeterminate decisions.
-
-The audit defines fail-closed decision coverage, exhaustive-result equivalence,
-broader-domain evidence, instrumented evaluation accounting, and reproducible
-benchmark admission. The three-record synthetic snapshot remains composition
-evidence rather than a performance fixture. No source, runtime test, benchmark,
-dependency, package export, coordinate path, or result changes in 50S.6C.
-Fernando scientifically and architecturally accepted 50S.6C on 2026-09-16.
-Only a bounded 50S.6D coordinator inside the existing three-record, 60-second
-domain is authorized next.
-
-
-### Accepted 50S.6D bounded accelerated crossing coordinator
-
-The accepted implementation extracts one package-internal exact-record seam from
-`LocalSatelliteCrossingOracle.solve(query)` without changing its numerical
-algorithm. The exhaustive route remains independently callable and invokes that
-seam for every snapshot record.
-
-`AcceleratedLocalSatelliteCrossingOracle` is an opt-in coordinator. It
-validates complete query-bound, NORAD-ordered `ConeShellSelection` evidence,
-sends every retained and indeterminate record through the shared exact seam,
-and omits only accepted reject decisions. `solve(query)` returns the ordinary
-exact result tuple; `solve_with_evidence(query)` returns that tuple plus
-separate immutable `AcceleratedCrossingEvidence`.
-
-Selector exceptions fall back to the complete exhaustive route by default or
-fail closed under explicit immutable policy. Missing, inconsistent, duplicate,
-unknown, reordered, or out-of-domain rejection evidence fails closed. The
-candidate remains limited to `synthetic_50s4b_v1` and intervals no longer than
-60 seconds. It adds no broader selector domain, benchmark claim, default
-enablement, coordinate path, CLI, reporting, drawing, or later filter stage.
-
-
-Candidate 50S.6D verification at commit `a7aecba` passed the 37-test
-dedicated gate, 93-test expanded immediate-seam gate, 141-test documentation
-gate, and complete 2,566-test plugin-disabled suite. Fernando scientifically and architecturally accepted 50S.6D on 2026-09-16.
-No broader-domain, benchmark, default-enablement, or later acceleration work is
-authorized by this acceptance.
-
-
-## Accepted 50S.6E multi-FoV and interchange direction
-
-The accepted runtime remains the single-FoV exhaustive oracle and the narrowly
-admitted opt-in 50S.6D coordinator. The accepted documentation-only
-`satellite_multifov_interchange_audit_50s6e.md` proposes one observer, any
-non-empty ordered number of independently timed FoVs whose field centres meet
-a configurable airmass limit throughout their complete intervals, and exact
-equivalence to independent calls. The initial geometric vacuum AltAz policy
-uses plane-parallel `X = sec(z)` with `X_max = 2` by default. Only the field
-centre is checked; the FoV radius does not enter airmass admission. Ten FoVs
-are a
-reference workload and proposed processing chunk, not a hard-coded public
-limit. This admission condition does not filter satellite crossings.
-
-The accepted roadmap places generic JSON/ECSV/VOTable crossing reports and exact
-binocular, regional, and stereographic chart tracks in 50S.6G; observatory
-adapter auditing in 50S.6H; component-resolved Sunlight, solar Earthshine,
-Moonlight, and Lunar-Earthshine geometry in 50S.7; and brightness in 50S.8.
-Fernando scientifically and architecturally accepted this direction on
-2026-09-16. The accepted 50S.6F implementation adds an immutable
-same-observer batch request, atomic ordered validation failures, centre-only
-airmass admission, execution-only chunking, and ordered composition of the
-accepted 50S.6D single-field route. It remains restricted to the installed
-synthetic snapshot and 60-second per-field intervals. No CLI, file adapter,
-generic report, chart, useful-speed claim, physical-state cache, observatory
-adapter, illumination, photometry, broader catalogue, or later milestone is
-implemented or authorized by this milestone. Fernando scientifically and
-architecturally accepted 50S.6F on 2026-09-17 after 2,577 plugin-disabled tests
-passed. Only a separately bounded 50S.6G audit is authorized next.
-
-The accepted 50S.6G delivery audit records future seams only. No external
-snapshot directory, representative catalogue, exact-crossing report,
-multi-FoV CLI/file protocol, validation-output file, exact local track layer,
-or ordinary chart integration is implemented. The proposed delivery must
-compose the accepted 50S.6F domain and the canonical chart pipeline; it may not
-change current coordinate, crossing, rendering, or export meaning.
-Fernando scientifically and architecturally accepted the audit on 2026-09-17
-after all 145 plugin-disabled current-documentation tests passed in 4.36
-seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
-authorized next.
-
-The accepted 50S.6G.1A implementation adds one explicit-directory snapshot
-loading seam. It constructs the same immutable `SatelliteElementSnapshot`
-through the existing complete byte-level validator, rejects symlink or missing
-filesystem resources, and treats the manifest rather than the directory name
-as scientific identity. No external snapshot is admitted to crossing runtime,
-and no acquisition, network, report, CLI, or chart behavior is added.
-Fernando scientifically and architecturally accepted 50S.6G.1A on 2026-09-17
-after the 164-test focused gate and all 2,583 plugin-disabled tests passed.
-Only a separately bounded 50S.6G.1B representative snapshot preflight and
-evidence audit is authorized next, not its implementation.
-
-The accepted 50S.6G.1B audit adds no implementation. It proposes a separate
-satellite acquisition owner with a two-phase CelesTrak policy receipt and exact
-digest acknowledgement, followed by at most one fixed `GROUP=active` CSV bulk
-request. Exact raw bytes and deterministic canonicalization receipts precede
-atomic content-addressed external publication. Active is representative scale,
-not complete orbital-population coverage. External evidence admission must be
-bound to the canonical-record digest; installed synthetic defaults remain
-unchanged.
-Fernando scientifically and architecturally accepted 50S.6G.1B on 2026-09-17
-after all 147 plugin-disabled current-documentation tests passed in 4.54
-seconds. Only bounded 50S.6G.1B.1 fake-transport implementation is authorized
-next; no live CelesTrak request or representative admission is authorized.
+YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éíÛmzé:-jZ.¶›­–)Þ³]yØŒ]•¹ÔÕÉÉ•¹Ð…É¡¥Ñ•ÑÕÉ”ØÀ¸ä((¨©MÑ…ÑÕÌè¨¨%µÁ±•µ•¹Ñ•ÕÉÉ•¹Ð…É¡¥Ñ•ÑÕÉ”(¨©AÉ•Ù¥½ÕÌ‰…Í•±¥¹”è¨¨…É¡¥Ù”½…É¡¥Ñ•ÑÕÉ•}¡¥ÍÑ½Éä½ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸à¹µ‘€(¨©½µÁ±•Ñ•µ¥É…Ñ¥½¸è¨¨…É¡¥Ù”½µ¥É…Ñ¥½¹}¡¥ÍÑ½Éä½Ý•¹Õ}µ¥É…Ñ¥½¹|À¸á}Ñ½|À¸ä¹µ‘€(¨©•ÁÑ•‘•Í¥¸è¨¨…É¡¥Ù”½…É¡¥Ñ•ÑÕÉ•}¡¥ÍÑ½Éä½Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸ä¹µ‘€(¨©	…Í•±¥¹”½µµ¥Ðè¨¨€Õ‘„äÍ€(¨©±½ÍÕÉ”‘…Ñ”è¨¨€ÈÀÈØ´Àà´Èà((ŒŒAÕÉÁ½Í”()Q¡¥Ì‘½Õµ•¹Ð¥ÌÑ¡”ÕÉÉ•¹Ð…É¡¥Ñ•ÑÕÉ…°…ÕÑ¡½É¥Ñä™½È]•¹ÔØÀ¸ä¸%Ð)É•½É‘ÌÑ¡”¥µÁ±•µ•¹Ñ•Á¡åÍ¥…°µÁ±…¹¥ÍÁ¡•É”‰…Í•±¥¹”…¹Ñ¡”É•ÍÁ½¹Í¥‰¥±¥Ñä)‰½Õ¹‘…É¥•ÌÑ¡…ÐÕÉÉ•¹Ð…¹Á½ÍÐµØÀ¸äÝ½É¬µÕÍÐÁÉ•Í•ÉÙ”¸•Ñ…¥±•ÁÕ‰±¥ŒA%Ì)…¹™¥±”½Ý¹•ÉÍ¡¥ÀÉ•µ…¥¸¥¸¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µ‘€…¹)Í½ÕÉ•}ÑÉ•”¹µ‘€¸Q¡”É•Ù¥•Ý…‰±”…Ìµ¥ÌÍÑÉÕÑÕÉ”…¹½½É‘¥¹…Ñ”µÉ…Ñ¥½¹…±¥é…Ñ¥½¸)Í•…µÌ…É”É•¹‘•É•¥¸‘¥…É…µÌ½ÕÉÉ•¹Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸å}½Ù•ÉÙ¥•Ü¹ÍÙ€…¹)‘¥…É…µÌ½½½É‘¥¹…Ñ•}ÑÉ…¹Í™½Éµ…Ñ¥½¹}…Í}¥Í}ØÀ¸ä¹ÍÙ€¸Q¡”¥¹Ñ•¹‘•É•ÍÕ±Ð…™Ñ•È(Ðå¼Ðå¥ÌÉ•¹‘•É•Í•Á…É…Ñ•±ä¥¸)‘¥…É…µÌ½½½É‘¥¹…Ñ•}ÑÉ…¹Í™½Éµ…Ñ¥½¹}Ñ…É•Ñ|Ðå‰Œ¹ÍÙ€¸M½ÕÉ”µ±•Ù•°…Ìµ¥Ì…¹)ÁÉ½Á½Í•ÍÑÉÕÑÕÉ•ÌÁ±ÕÌÑ¡”Ñ…É•ÐÉÕ¹Ñ¥µ”…±°Í•ÅÕ•¹”…É”¥¹‘•á•¥¸)‘¥…É…µÌ½I5¹µ‘€¸()Q¡”ØÀ¸ä…É¡¥Ñ•ÑÕÉ”¥Ì±½Í•…É½Õ¹Ñ¡”…•ÁÑ•…¹½¹¥…°Á¡åÍ¥…°)Á½±…ÈµÁ±…¹¥ÍÁ¡•É”ÁÉ½‘ÕÐèÁ…¥É••±•ÍÑ¥…°‘¥Í­Ì°¥Ù¥°…±•¹‘…È…¹Á…”)™ÕÉ¹¥ÑÕÉ”°Ñ¡”±…Ñ¥ÑÕ‘”µÍÁ•¥™¥Œ™½±‘•¡½É¥é½¸Á½Õ °É•Ù¥•Ý•Á¡åÍ¥…°)…ÁÁ•…É…¹”°ÕÉ…Ñ•‰É¥¡Ð…¹‘••ÀµÍ­ä½¹Ñ•¹Ð°…¹Í¡…É•±½…±¥é…Ñ¥½¸¸)Q¡”½ÁÑ¥½¹…°¹¥¡Ð•‘¥Ñ¥½¸É•µ…¥¹Ì„±…Ñ•È…ÁÁ•…É…¹”•áÁ•É¥µ•¹Ð…¹¥Ì¹½Ð„)½¹‘¥Ñ¥½¸½˜Ñ¡”…¹½¹¥…°ØÀ¸ä…É¡¥Ñ•ÑÕÉ”¸()Q¡¥Ì±½ÍÕÉ”É•½É‘Ì…É¡¥Ñ•ÑÕÉ”…¹¥µÁ±•µ•¹Ñ…Ñ¥½¸ÍÑ…Ñ”¸%Ð‘½•Ì¹½Ð±…¥´)Ñ¡…Ð„ØÀ¸ä¸Á€¥ÐÑ…œ½È‘¥ÍÑÉ¥‰ÕÑ¥½¸É•±•…Í”•á¥ÍÑÌìÁ…­…”Ù•ÉÍ¥½¹Ì)É•µ…¥¸½Ù•É¹•‰ä¥ÐÑ…Ì…¹Í•ÑÕÁÑ½½±ÌµÍ´¸((ŒŒ…¹½¹¥…°Á¥Á•±¥¹”()]•¹ÔÉ•Ñ…¥¹Ì½¹”…ÍÑÉ½¹½µ¥…°…¹É•¹‘•É¥¹œ™±½Üè()Ñ•áÐ)…Ñ…±½Õ•Ì½ÈÁÉ½Ù¥‘•ÈÍÑ…Ñ”(€€€€´ø½‰Í•ÉÙ•Èµ¥¹‘•Á•¹‘•¹Ð•±•ÍÑ¥…°½¹Ñ•¹Ð(€€€€´ø•áÁ±¥¥Ñ±ä™É…µ•ÍÁ¡•É¥…°•½µ•ÑÉä(€€€€´øÁÉ½©•Ñ¥½¸µ‘½µ…¥¸Õ…É(€€€€´ø½½É‘¥¹…Ñ”µ¹•ÕÑÉ…°ÁÉ½©•Ñ¥½¸(€€€€´øÁÉ½©•Ñ••½µ•ÑÉä…¹±¥ÁÁ¥¹œ(€€€€´ø¡…ÉÐÁÉ•Á…É…Ñ¥½¸(€€€€´ø…¹½¹¥…°É•¹‘•É•È(€€€€´øÉ•Í½±Ù•™ÕÉ¹¥ÑÕÉ”…¹•áÁ½ÉÐ)€()á…µÁ±•Ì°½µµ…¹…‘…ÁÑ•ÉÌ°Á¡åÍ¥…°™ÕÉ¹¥ÑÕÉ”°…¹É•¹‘•É•ÉÌ‘¼¹½Ð…ÅÕ¥É”)…Ñ…±½Õ”±½…‘¥¹œ°…ÍÑÉ½¹½µ¥…°ÑÉ…¹Í™½Éµ…Ñ¥½¸°ÁÉ½©•Ñ¥½¸Í•±•Ñ¥½¸°½È¡…ÉÐ)Á½±¥ä¸MÑå±”…¹½ÕÑÁÕÐµ½‘”¡…¹”…ÁÁ•…É…¹”°¹½Ð…ÍÑÉ½¹½µ¥…°•½µ•ÑÉä¸((ŒŒ=É‘¥¹…Éä¡…ÉÐ…É¡¥Ñ•ÑÕÉ”()Q¡”¥µÁ±•µ•¹Ñ•½É‘¥¹…ÉäÝ½É­™±½ÜÍ•Á…É…Ñ•Ìè((´¡…ÉÐÑåÁ”èÁÉ½©•Ñ¥½¸°™É…µ¥¹œ°Ù¥•ÝÁ½ÉÐ°…¹™¥¹…°‰½Õ¹‘…Éäì(´ÍÑå±”èÍ•µ…¹Ñ¥ŒÙ¥ÍÕ…°…ÁÁ•…É…¹”ì(´½ÕÑÁÕÐµ½‘”èµ•‘¥Õ´°‘¥µ•¹Í¥½¹Ì°A$°…¹ÁÉ•Í•¹Ñ…Ñ¥½¸Í…±¥¹œì(´‘•Ñ…¥°Á½±¥äè…ÍÑÉ½¹½µ¥…°Í•±•Ñ¥½¸…¹‘•¹Í¥Ñäì(´½‰Í•ÉÙ•ÈèÍ¥Ñ”…¹½‰Í•ÉÙ…Ñ¥½¸µÑ¥µ”½¹Ñ•áÐì(´É•¹‘•É•ÈèÉ•…±¥é…Ñ¥½¸½˜ÁÉ•Á…É•É…Á¡¥…°É•½É‘Ìì(´•áÁ½ÉÐè½¹”™¥¹…°Í…Ù”Á•È‘•±…É•ÁÉ½‘ÕÐ¸()=¹”½‰Í•ÉÙ•Èµ¥¹‘•Á•¹‘•¹Ð•±•ÍÑ¥…±MÁ¡•É•€µ…äÍ•ÉÙ”µÕ±Ñ¥Á±”¡…ÉÐ™…µ¥±¥•Ì°)½‰Í•ÉÙ•ÉÌ°…¹¥¹ÍÑ…¹ÑÌ¸=‰Í•ÉÙ•Èµ‰½Õ¹É•…±¥é…Ñ¥½¹ÌÕÍ”•áÁ±¥¥Ð¥µµÕÑ…‰±”)­•åÌìÉ•¹‘•Èµ±½…°É•ÅÕ•ÍÑÌ…¹½¹™¥ÕÉ…Ñ¥½¸½Ù•É±…åÌ‘¼¹½Ð±•…¬ÍÑ…Ñ”)‰•ÑÝ••¸½µµ…¹‘Ì½ÈÁÉ½‘ÕÑÌ¸()I•¥½¹…°°™Õ±°µÍ­ä°…±°µÍ­ä°¥ÉÕµÁ½±…È°‰¥¹½Õ±…È°…¹Á½±…ÈµÁ±…¹¥ÍÁ¡•É”)ÁÉ½‘ÕÑÌÍ¡…É”Ñ¡¥ÌÁ¥Á•±¥¹”¸A9°A°…¹Í•µ…¹Ñ¥ŒMY…É”½ÕÑÁÕÐÁÉ½‘ÕÑÌ)½˜Ñ¡”Í…µ”É•Í½±Ù••½µ•ÑÉä…¹ÁÉ•Á…É…Ñ¥½¸Á…Ñ ¸((ŒŒA¡åÍ¥…°Á½±…ÈµÁ±…¹¥ÍÁ¡•É”ÁÉ½‘ÕÐ()Q¡”…¹½¹¥…°ØÀ¸äÁ¡åÍ¥…°ÁÉ½‘ÕÐ½¹Ñ…¥¹Ìè((´µ…Ñ¡•¹½ÉÑ …¹Í½ÕÑ •±•ÍÑ¥…°‘¥Í­ÌÝ¥Ñ ¥¹‘•Á•¹‘•¹Ñ±ä‘•±…É•(€‘•±¥¹…Ñ¥½¸±¥µ¥ÑÌ…¹Ù…±¥‘…Ñ•½µµ½¸Á¡åÍ¥…°Í…±”ì(´½ÁÁ½Í¥Ñ”™…”¡…¹‘•‘¹•ÍÌ¥µÁ±•µ•¹Ñ•¥¸•½µ•ÑÉä°¹•Ù•È‰äµ¥ÉÉ½É¥¹œ„(€™¥¹¥Í¡•¥µ…”½ÈÉ•Ù•ÉÍ¥¹œÑ•áÐì(´„€ÌØÔµ‘…äÍÑ…¹‘…ÉµÑ¥µ”¥Ù¥°…±•¹‘…ÈÝ¥Ñ ¥µµÕÑ…‰±”‘…¥±ä°µ½¹Ñ¡±ä°…¹(€±…‰•°™ÕÉ¹¥ÑÕÉ”ì(´…ÑÕ…°µÍ¥é”Ð‘¥Í¬Á…•ÌÝ¥Ñ •¹ÑÉ”°É•¥ÍÑÉ…Ñ¥½¸°Í…±”°™…”°…¹(€…ÍÍ•µ‰±äÉ•½É‘Ìì(´„Í•Á…É…Ñ”±…Ñ¥ÑÕ‘”µÍÁ•¥™¥Œ…±Ñ¥ÑÕ‘”µé•É¼¡½É¥é½¸Á…¥Èì(´…¸…•ÁÑ•™½±‘•ÐÁ½Õ Ý¥Ñ ÕÐÝ¥¹‘½Ü°…É‘¥¹…°™ÕÉ¹¥ÑÕÉ”°¡½ÕÈÍ…±”°(€É•¥ÍÑÉ…Ñ¥½¸°…¹…ÍÍ•µ‰±ä•½µ•ÑÉäì(´‘•Ñ•Éµ¥¹¥ÍÑ¥ŒÁ…”°Á½Õ °ÁÉ•Ù¥•Ü°µ…¹¥™•ÍÐ°…¹½µµ…¹½•áÁ½ÉÐ½Ý¹•ÉÍ¡¥À¸()Q¡”•±•ÍÑ¥…°‘¥Í­ÌÉ•µ…¥¸½‰Í•ÉÙ•Èµ¥¹‘•Á•¹‘•¹Ð¸M¥Ñ”…¹ÍÑ…¹‘…ÉUQ½™™Í•Ð)…±¥‰É…Ñ”Ñ¡”¥Ù¥°µÑ¥µ”É•±…Ñ¥½¹Í¡¥À…¹Ñ¡”Í•Á…É…Ñ”¡½É¥é½¸ÁÉ½‘ÕÐ¸)…å±¥¡ÐµÍ…Ù¥¹œ‰•¡…Ù¥½È¥Ì¥¹ÍÑÉÕÑ¥½¸Á½±¥ä°¹½Ð„Í•½¹…ÍÑÉ½¹½µ¥…°)Í…±”¸()A½±…ÈÁÉ½©•Ñ¥½¸°…±•¹‘…È•½µ•ÑÉä°Á…”™ÕÉ¹¥ÑÕÉ”°¡½É¥é½¸ÑÉ…¹Í™½Éµ…Ñ¥½¸°)Á½Õ ™ÕÉ¹¥ÑÕÉ”°É•¹‘•É¥¹œ°ÁÉ•Ù¥•Ü°…¹•áÁ½ÉÐÉ•µ…¥¸‘¥ÍÑ¥¹Ð½Ý¹•ÉÌ¸)A¡åÍ¥…°µ¥±±¥µ•ÑÉ”•½µ•ÑÉä¥ÌÉ•Í½±Ù•‰•™½É”5…ÑÁ±½Ñ±¥ˆÉ•…±¥é…Ñ¥½¸…¹¥Ì)¹½Ð¥¹™•ÉÉ•™É½´‘¥ÍÁ±…äÁ¥á•±Ì¸((ŒŒ½¹Ñ•¹Ð°…ÁÁ•…É…¹”°…¹±½…±¥é…Ñ¥½¸()=¹”Á…­…•Á½±…È‘•Ñ…¥°Á½±¥ä½Ý¹ÌÑ¡”É•Ù¥•Ý•ÍÑ•±±…È°½¹ÍÑ•±±…Ñ¥½¸°)5¥±­ä]…ä°5…•±±…¹¥Œ±½Õ°…¹ÕÉ…Ñ•‰¥¹½Õ±…È½‘••ÀµÍ­äÍ•±•Ñ¥½¸¸Q¡”)…¹½¹¥…°Á¡åÍ¥…°…ÁÁ•…É…¹”ÕÍ•ÌÑ¡”…•ÁÑ•Ý¡¥Ñ”µ‰…­É½Õ¹Á…±•ÑÑ”…¹)É•Ù¥•Ý•µ…¹¥ÑÕ‘”µ…ÁÁ¥¹œ°¥¹±Õ‘¥¹œ¥ÑÌ½¹™¥ÕÉ•‰É¥¡ÐµÍÑ…ÈÑÉ•…Ñµ•¹Ð¸()M•µ…¹Ñ¥Œ±…‰•°­•åÌ…¹Á…­…•±…¹Õ…”…Ñ…±½Õ•ÌÁÉ½Ù¥‘”Í¡…É•¹±¥Í )…¹MÁ…¹¥Í •¹•É…Ñ•Ñ•áÐ…É½ÍÌ¡…ÉÐ™…µ¥±¥•Ì¸U¹­¹½Ý¸…±±•ÈÑ•áÐÉ•µ…¥¹Ì)Õ¹¡…¹•°…¹Õ¹ÍÕÁÁ½ÉÑ•±…¹Õ…”¥‘•¹Ñ¥™¥•ÉÌ™…¥°•áÁ±¥¥Ñ±ä¸1½…±¥é…Ñ¥½¸)‘½•Ì¹½Ð½Ý¸•½µ•ÑÉä°…Ñ…±½Õ”¥‘•¹Ñ¥™¥•ÉÌ°½È…±±•ÈÑ¥Ñ±•Ì¸()Q¡”½ÁÑ¥½¹…°‘…É¬¹¥¡Ð•‘¥Ñ¥½¸É•µ…¥¹Ì‘•™•ÉÉ•Õ¹Ñ¥°¥ÐÉ••¥Ù•ÌÁ¡åÍ¥…°)É•Ù¥•ÜÕ¹‘•ÈÉ•½‰Í•ÉÙ¥¹œ±¥¡Ð¸%ÐµÕÍÐÉ•ÕÍ”Ñ¡”Í…µ”•½µ•ÑÉä…¹ÁÉ½‘ÕÐ)Á¥Á•±¥¹”Ý¡•¸Õ¹‘•ÉÑ…­•¸¸((ŒŒ½½É‘¥¹…Ñ”…¹Ñ•µÁ½É…°‰½Õ¹‘…É¥•Ì()Ù•Éä…ÍÑÉ½¹½µ¥…°Ù…±Õ”µÕÍÐÉ•Ñ…¥¸•áÁ±¥¥Ð™É…µ”°½É¥¥¸°•Á½ °½‰Í•ÉÙ…Ñ¥½¸)¥¹ÍÑ…¹Ð°Ñ¥µ”Í…±”°½‰Í•ÉÙ•È°…¹…ÁÁ…É•¹Ð½•½µ•ÑÉ¥ŒÍÑ…ÑÕÌÝ¡•É”…ÁÁ±¥…‰±”¸)AÉ½©•Ñ¥½¸½‘”É•µ…¥¹Ì½½É‘¥¹…Ñ”µ¹•ÕÑÉ…°…¹µ…ä¹½ÐÍ•±•Ð½ÈÉ•±…‰•°…¸)…ÍÑÉ½¹½µ¥…°™É…µ”¸()5¥±•ÍÑ½¹”€Ðå¸È…‘‘Ì…¸½ÁÑ¥½¹…°¥µµÕÑ…‰±”1…å•ÉI•…±¥é…Ñ¥½¹½¹Ñ•áÑ€‰•™½É”)ÁÉ½©•Ñ¥½¸¸%Ð…¸…ÉÉäÁÉ½‘ÕÐ½½É‘¥¹…Ñ”¥‘•¹Ñ¥Ñä°½‰Í•ÉÙ…Ñ¥½¸½¹Ñ•áÐ°)ÁÉ½Ù¥‘•È•Ù…±Õ…Ñ¥½¸¥¹ÍÑ…¹Ð½Ñ¥µ”Í…±”°…¹É•Í½±Ù•É•™•É•¹”•ÅÕ¥¹½à¸)M­å1…å•È¹É•…±¥é” ¥€…‘…ÁÑÌÑ¡…Ð¥¹ÁÕÐÑ¼Ñ¡”•á¥ÍÑ¥¹œ)ÍÁ¡•É¥…±}•½µ•ÑÉä¡½‰Í•ÉÙ•È°€¸¸¸¥€½¹ÑÉ…Ð¸=É‘¥¹…ÉäÉ•ÅÕ•ÍÑÌ‘¼¹½Ðå•Ð)ÍÕÁÁ±äÑ¡”½¹Ñ•áÐ…¹™½±±½ÜÑ¡”•á…Ð±•…ä‰É…¹ ì¹¼ÕÉÉ•¹Ð…ÍÑÉ½¹½µ¥…°)±…å•È°¹Õµ•É¥…°•½µ•ÑÉä°½ÈÁÕ‰±¥ŒÁÉ½‘ÕÐ¡…¹•Ì¥¸Ñ¡¥Ìµ¥±•ÍÑ½¹”¸()ÕÑÕÉ”MÕ¸°5½½¸°…¹Á±…¹•Ð±…å•ÉÌµÕÍÐÁÉ•Í•ÉÙ”Ñ¡”Í…µ”½ÕÑÁÕÐµ¹•ÕÑÉ…°)‰½Õ¹‘…Éä¸Q¡•ä…ÅÕ¥É”ÁÉ½Ù¥‘•ÈÍÑ…Ñ•Ì°ÑÉ…¹Í™½É´•á…Ñ±ä½¹”¥¹Ñ¼Ñ¡”)É•ÅÕ•ÍÑ•ÍÁ¡•É¥…°ÁÉ½‘ÕÐ™É…µ”°…¹‘•±…É”]•¹ÔÍ•µ…¹Ñ¥Œ¥‘•¹Ñ¥Ñä‰•™½É”)ÁÉ½©•Ñ¥½¸¸A9°A°…¹MYÑ¡•¸Í¡…É”Ñ¡”•á¥ÍÑ¥¹œÁÉ½©•Ñ¥½¸°ÁÉ•Á…É…Ñ¥½¸°)5…ÑÁ±½Ñ±¥ˆÉ•¹‘•É¥¹œ°…¹Í¥¹±”•áÁ½ÉÐÁ…Ñ ¸MY…¹¹½Ñ…Ñ¥½¸µ…ä•áÁ½Í”Ñ¡”)É•Í•ÉÙ•Í½±…ÈµÍåÍÑ•´½ÍÕ¹€°Í½±…ÈµÍåÍÑ•´½µ½½¹€°…¹)Í½±…ÈµÍåÍÑ•´½Á±…¹•ÑÍ€¡¥•É…É¡ä°‰ÕÐ¥ÐµÕÍÐ¹½Ð¥¹™•È…ÍÑÉ½¹½µ¥…°¥‘•¹Ñ¥Ñä°)É•½µÁÕÑ”½½É‘¥¹…Ñ•Ì°…‘„Á½ÍÐµ•áÁ½ÉÐ½Ù•É±…ä°½È¥¹Ù½­”„Í•Á…É…Ñ”MY)•¹•É…Ñ½È¸()Q¡”€Ðå¸È¡…¹‘½™˜…¹Ñ¡¥Ì½ÕÑÁÕÐµ¹•ÕÑÉ…°µ½Ù¥¹œµ½‰©•Ð‰½Õ¹‘…ÉäÝ•É”)Í¥•¹Ñ¥™¥…±±ä°Á•‘…½¥…±±ä°…¹Ñ•¡¹¥…±±ä…•ÁÑ•‰ä•É¹…¹‘¼½¸(ÈÀÈØ´Àà´Èä¸Q¡•äÉ•µ…¥¸É•Ù¥•Üµ‰É…¹ …‘‘¥Ñ¥½¹ÌÕ¹Ñ¥°µ•É•¸()Q¡”ÁÉ½Á½Í•€Ðå¸Ä•Á¡•µ•É¥Ì‰½Õ¹‘…Éä‘¥ÍÑ¥¹Õ¥Í¡•Ì„…ÉÑ•Í¥…¸ÍÑ…Ñ”Í½ÕÉ”)™É½´½‰Í•ÉÙ•ÈµÉ•±…Ñ¥Ù”‘¥É•Ñ¥½¸É•…±¥é…Ñ¥½¸¸Í½ÕÉ”ÍÑ…Ñ”µÕÍÐÁÉ•Í•ÉÙ”)¥ÑÌÑ…É•Ð°•¹ÑÉ”°™É…µ”°¥¹ÍÑ…¹Ð½Ñ¥µ”Í…±”°Á½Í¥Ñ¥½¸½Ù•±½¥ÑäÕ¹¥ÑÌ°­•É¹•°)¥‘•¹Ñ¥Ñä°½Ù•É…”°…¹ÁÉ½Ù•¹…¹”¸1¥¡ÐµÑ¥µ”…¹…ÁÁ…É•¹ÐµÁ±…”Á¡åÍ¥Ì…É”)É•Í½±Ù•‰•™½É”Ñ¡”É•ÍÕ±Ð‰•½µ•ÌÍÁ¡•É¥…°¡…ÉÐ•½µ•ÑÉäì„É…Ü)‰…Éå•¹ÑÉ¥ŒÙ•Ñ½ÈµÕÍÐ¹•Ù•È‰”É•±…‰•±±•…Ì…¸%ILÍ­ä‘¥É•Ñ¥½¸¸Q¡¥Ì¥Ì)„‘•Í¥¸…¹‘¥‘…Ñ”½¹±ä…¹¡…¹•Ì¹¼¥¹ÍÑ…±±•ÉÕ¹Ñ¥µ”Á…Ñ ¸()Q¡”…•ÁÑ•€Ðå¸Ä‘•¥Í¥½¹ÌÉ•ÅÕ¥É”½µÁ±•Ñ”Á½Í¥Ñ¥½¸µÙ•±½¥ÑäÍÑ…Ñ•Ì°)ÁÉ½Ù¥‘•È½µ½‘•°Á±ÕÌ™¥±•¹…µ”½M!´ÈÔØ½½Ù•É…”­•É¹•°¥‘•¹Ñ¥Ñä°…¹„Í¡…É•)É•ÅÕ•ÍÐ½Í•ÍÍ¥½¸•Á¡•µ•É¥ÌÉ•Í½ÕÉ”¸	•…ÕÍ”]•¹Ô¥ÌÕ¹É•±•…Í•…¹Ñ¡”…Ìµ¥Ì)ÉÕ¹Ñ¥µ”¡…Ì½¹±ä½¹”¡•±Á•È‘•™…Õ±ÐÁ±ÕÌÑÝ¼Ñ•ÍÑÌÕÍ¥¹œ¥Ð°)A½Í¥Ñ¥½¹MÑ…ÑÕÌ¹Q=A=9QI%€¥ÌÉ•µ½Ù•…Ñ½µ¥…±±ä¥¸€Ðå¸Èì)½‰Í•ÉÙ•Èµ•¹ÑÉ•½É¥¥¸…¹Á¡åÍ¥…°½ÉÉ•Ñ¥½¸ÍÑ…ÑÕÌÉ•µ…¥¸Í•Á…É…Ñ”¸Y•¹ÕÌ)¥ÌÑ¡”™¥ÉÍÐÁ±…¹¹•€Ðå$¸Ä‰½‘ä°™½±±½Ý•‰äÑ¡”5½½¸¸((Ðå¸È¥¹ÍÑ…±±Ì½¹±äÉ•¹‘•É•Èµ¹•ÕÑÉ…°…ÉÑ•Í¥…¸‰½Õ¹‘…ÉäÑåÁ•Ì¥¸)•Á¡•µ•É¥Ì¹Áå€èÉ•Í½±Ù•É•Í½ÕÉ”¥‘•¹Ñ¥Ñä°•½µ•ÑÉ¥ŒÍÑ…Ñ”É•ÅÕ•ÍÐ°½µÁ±•Ñ”)Á½Í¥Ñ¥½¸µÙ•±½¥ÑäÍÑ…Ñ”°…¹ÍÑÉÕÑÕÉ…°ÍÑ…Ñ”Í½ÕÉ”¸Q¡”ÑåÁ•Ì½Ý¸¹¼­•É¹•°)$½<°½‰Í•ÉÙ•ÈµÉ•±…Ñ¥Ù”‘¥É•Ñ¥½¸É•…±¥é…Ñ¥½¸°½½É‘¥¹…Ñ”ÑÉ…¹Í™½Éµ…Ñ¥½¸°)¡…ÉÐ°½È½ÕÑÁÕÐÁ½±¥ä¸‘•Ñ•Éµ¥¹¥ÍÑ¥ŒÍ½ÕÉ”•á¥ÍÑÌ½¹±ä¥¸Ñ•ÍÑÌ¸½‰Í•ÉÙ•É}…±Ñ…é}ÍÁ•Œ ¥€¡…Ì¹¼ÍÑ…ÑÕÌ‘•™…Õ±Ðè)½‰Í•ÉÙ•ÈµÑÉ…¹Í™½Éµ••±•ÍÑ¥…°‘¥É•Ñ¥½¹Ì•áÁ±¥¥Ñ±äÕÍ”AAI9Q€°¹…Ñ¥Ù”)½‰Í•ÉÙ•Èµ±½…°É•™•É•¹•ÌÕÍ”=5QI%€°…¹=	MIY€É•µ…¥¹ÌÉ•Í•ÉÙ•™½È)™ÕÑÕÉ”…Ñµ½ÍÁ¡•É¥ŒÉ•…±¥é…Ñ¥½¸¸((Ðå¸Ì¥¹ÍÑ…±±ÌM­å™¥•±‘Á¡•µ•É¥ÍMÑ…Ñ•M½ÕÉ•€…Ì„‰½ÉÉ½Ý•µÉ•Í½ÕÉ”…‘…ÁÑ•È¸)%Ð¡…Í¡•ÌÑ¡”•á…Ð…±É•…‘äµ½Á•¸	M@™¥±”½¹”°É•½É‘Ì½¹Í•ÉÙ…Ñ¥Ù”½µµ½¸)Í•µ•¹Ð½Ù•É…”¥¸Q°…¹É•ÑÕÉ¹ÌÍ¥µÕ±Ñ…¹•½ÕÌ•½µ•ÑÉ¥ŒÑ…É•Ðµµ¥¹ÕÌµ•¹ÑÉ”)%IÍÑ…Ñ•Ì¥¸T…¹T½‘…ä¸%Ð½Ý¹Ì¹¼½‰Í•ÉÙ•ÈµÉ•±…Ñ¥Ù”‘¥É•Ñ¥½¸Á¡åÍ¥Ì°)µ½Ù¥¹œµ½‰©•Ð±…å•È°ÁÉ½©•Ñ¥½¸°É•¹‘•É•È°½È½ÕÑÁÕÐÁ…Ñ ¸()Q¡”…•ÁÑ•€Ðå¸Ð…Õ‘¥Ð‘•™¥¹•ÌÑ¡”¹•áÐ‰½Õ¹‘…ÉäÝ¥Ñ¡½ÕÐ¡…¹¥¹œÉÕ¹Ñ¥µ”)½‘”¸ÍÑÉ½µ•ÑÉ¥Œ‘¥É•Ñ¥½¸É•…±¥é…Ñ¥½¸½µ‰¥¹•ÌÑ¡”½‰Í•ÉÙ•ÈÌ‰…Éå•¹ÑÉ¥Œ)ÍÑ…Ñ”…ÐÉ••ÁÑ¥½¸Ý¥Ñ ¥Ñ•É…Ñ•Ñ…É•ÐÍÑ…Ñ•Ì…ÐÉ•Ñ…É‘••µ¥ÍÍ¥½¸Ñ¥µ•Ì…¹)É•Ñ…¥¹Ì‘¥ÍÑ…¹”°½¹”µÝ…ä±¥¡ÐÑ¥µ”°‰½Ñ ¥¹ÍÑ…¹ÑÌ°½¹Ù•É•¹”Á½±¥ä°…¹)É•Í½ÕÉ”ÁÉ½Ù•¹…¹”¸ÁÁ…É•¹ÐµÁ±…”É•…±¥é…Ñ¥½¸¥Ì„±…Ñ•È•áÁ±¥¥ÐÍÑ•ÀÑ¡…Ð)…‘‘ÌÉ…Ù¥Ñ…Ñ¥½¹…°‘•™±•Ñ¥½¸…¹…‰•ÉÉ…Ñ¥½¸¸9•¥Ñ¡•ÈÍÑ•ÀÍ•±•ÑÌ…¸•ÅÕ¥¹½àè)¹…Ñ¥Ù”ÍÁ¡•É¥…°‘¥É•Ñ¥½¹ÌÕÍ”™¥á•%IL…á•Ì‰•™½É”½½É‘¥¹…Ñ•M•ÉÙ¥•€)Á•É™½ÉµÌ…¹äÉ•ÅÕ•ÍÑ•ÁÉ½‘ÕÐµ™É…µ”ÑÉ…¹Í™½Éµ…Ñ¥½¸¸()•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…•ÁÑ•Ñ¡…Ð‰½Õ¹‘…Éä½¸€ÈÀÈØ´Àà´ÌÀ…™Ñ•È…±°€ÐÔ)ÕÉÉ•¹Ðµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌÁ…ÍÍ•¥¸€È¸ÀÌÍ•½¹‘Ì¸IÕ¹Ñ¥µ”É•…±¥é…Ñ¥½¸É•µ…¥¹Ì(Ðå¸Ô…¹¥Ì¹½ÐÁ…ÉÐ½˜Ñ¡”¥µÁ±•µ•¹Ñ•…Ìµ¥Ì…É¡¥Ñ•ÑÕÉ”å•Ð¸()Q¡”…•ÁÑ•€Ðå¸Ô¥µÁ±•µ•¹Ñ…Ñ¥½¸ÍÕÁÁ±¥•ÌÑ¡”É•¹‘•É•Èµ¹•ÕÑÉ…°…ÍÑÉ½µ•ÑÉ¥ŒÍÑ…”¸)=¹”ÑåÁ•½‰Í•ÉÙ•È‰…Éå•¹ÑÉ¥ŒÍÑ…Ñ”…ÐÉ••ÁÑ¥½¸…¹É•Á•…Ñ•ÑåÁ•Ñ…É•Ð)ÍÑ…Ñ•Ì…ÐÉ•Ñ…É‘••µ¥ÍÍ¥½¸Ñ¥µ•ÌÁÉ½‘Õ”…¸½‰Í•ÉÙ•Èµ½É¥¥¸%IL)MÁ¡•É¥…±A½¥¹ÑÍ€Ù…±Õ”Á±ÕÌÉ•Ñ…¥¹•‘¥ÍÑ…¹”°±¥¡ÐµÑ¥µ”°•µ¥ÍÍ¥½¸µÑ¥µ”°)¥Ñ•É…Ñ¥½¸°Ñ…É•Ð°½‰Í•ÉÙ•È°…¹•á…ÐÉ•Í½ÕÉ”•Ù¥‘•¹”¸Q¡”…¹‘¥‘…Ñ”¥Ì¹½Ð)½¹¹•Ñ•Ñ¼„ÁÉ½‘ÕÑ¥½¸Í­ä±…å•È…¹¡…¹•Ì¹¼¡…ÉÐ½È½ÕÑÁÕÐ¸()•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…•ÁÑ•Ñ¡”¥µÁ±•µ•¹Ñ…Ñ¥½¸…¹¥¹ÍÑ…±±•µÐÐÀY•¹ÕÌ)½µÁ…É¥Í½¸½¸€ÈÀÈØ´Àà´ÌÀ…™Ñ•È€ÄÄÄ™½ÕÍ•Ñ•ÍÑÌ°€Ä°àÐàÉ½ÕÑ¥¹”Ñ•ÍÑÌÝ¥Ñ €ÌÀ)‘•Í•±•Ñ•°…¹…±°€Ä°àÜàÑ•ÍÑÌÁ…ÍÍ•¸ÁÁ…É•¹ÐÁ±…”É•µ…¥¹Ì€Ðå¸Øì‘É…Ý…‰±”)Y•¹ÕÌÉ•µ…¥¹Ì€Ðå$¸Ä¸()Q¡”…•ÁÑ•€Ðå¸Ø¥µÁ±•µ•¹Ñ…Ñ¥½¸…‘‘ÌÑ¡”É•¹‘•É•Èµ¹•ÕÑÉ…°…ÁÁ…É•¹ÐÍÑ…”¸%Ð)½¹ÍÕµ•ÌÑ¡”…•ÁÑ•€Ðå¸Ô…ÍÑÉ½µ•ÑÉ¥ŒÉ•ÍÕ±Ð°¥¹±Õ‘¥¹œÉ•Ñ…¥¹•É•±…Ñ¥Ù”)Ù•±½¥Ñä°…¹ÕÍ•ÌM­å™¥•±…ÁÁ…É•¹Ð ¥€™½È•áÁ±¥¥ÐÉ…Ù¥Ñ…Ñ¥½¹…°‘•™±•Ñ¥½¸)…¹…‰•ÉÉ…Ñ¥½¸Ý¥Ñ¡½ÕÐ¥¹Ù½­¥¹œ½‰Í•ÉÙ” ¥€……¥¸¸M…µ”µ­•É¹•°°Í…µ”µÉ•Í½ÕÉ”°)Í…µ”µ½‰Í•ÉÙ•ÈµÍÑ…Ñ”°…¹Í…µ”µÉ••ÁÑ¥½¸µ¥¹ÍÑ…¹Ð¡•­ÌÁÉ½Ñ•ÐÑ¡”¡…¹‘½™˜¸()Q¡”É•ÍÕ±Ð¥Ì…¸½‰Í•ÉÙ•Èµ½É¥¥¸…ÁÁ…É•¹Ð‘¥É•Ñ¥½¸½¸™¥á•%ILµ½É¥•¹Ñ•)…á•Ì¸ÁÁ…É•¹Ð¥Ì„Á¡åÍ¥…°½ÉÉ•Ñ¥½¸ÍÑ…ÑÕÌ°¹½Ð„É•™•É•¹”™É…µ”½È…¸)•ÅÕ¥¹½àµ½˜µ‘…Ñ”Í•±•Ñ¥½¸¸9¼Í­ä±…å•È½È½ÕÑÁÕÐÁ…Ñ ½¹ÍÕµ•ÌÑ¡”…¹‘¥‘…Ñ”ì)™ÕÑÕÉ”Y•¹ÕÌ•½µ•ÑÉäµÕÍÐÍÑ¥±°Á…ÍÌ½¹”Ñ¡É½Õ Ñ¡”ÁÉ½‘ÕÐµ™É…µ”°)ÁÉ½©•Ñ¥½¸°É•¹‘•É•È°…¹Í¡…É•A9½A½MYÁ¥Á•±¥¹”¸()•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…•ÁÑ•€Ðå¸Ø…¹¥ÑÌ¥¹ÍÑ…±±•µÐÐÀY•¹ÕÌ)½µÁ…É¥Í½¸½¸€ÈÀÈØ´Àà´ÌÀ…™Ñ•È€äÔ™½ÕÍ•Ñ•ÍÑÌ…¹…±°€Ä°ààÌÑ•ÍÑÌÁ…ÍÍ•¸)I•Í¥‘Õ…±Ì™É½´‘¥É•ÐM­å™¥•±Ý•É”€Ì¸ÄÔÉ”´ÄÅ€‘•É•”¥¸É¥¡Ð…Í•¹Í¥½¸…¹)€Ä¸ÔÐÑ”´ÄÉ€‘•É•”¥¸‘•±¥¹…Ñ¥½¸¸É…Ý…‰±”Y•¹ÕÌÉ•µ…¥¹Ì€Ðå$¸Ä¸()Q¡”€Ðå$¸Ä…Õ‘¥Ð¥‘•¹Ñ¥™¥•Ì½¹”É•µ…¥¹¥¹œ¡…ÉÐµÍ¥‘”ÁÉ•É•ÅÕ¥Í¥Ñ”¸±Ñ¡½Õ )1…å•ÉI•…±¥é…Ñ¥½¹½¹Ñ•áÑ€…¹M­å1…å•È¹É•…±¥é” ¥€•á¥ÍÐ°½É‘¥¹…Éä¡…ÉÐ)™……‘•Ì‘¼¹½Ðå•Ð½¹ÍÑÉÕÐ…¹Á…ÍÌÑ¡”ÁÉ½‘ÕÐµ™É…µ”½¹Ñ•áÐ¸Q¡”ÁÉ½Á½Í•(Ðå$¸Å±½Í•ÌÑ¡…Ð½ÕÑÁÕÐµ¹•ÕÑÉ…°¡…¹‘½™˜ì€Ðå$¸ÅÑ¡•¸…‘‘Ì½¹”½ÁÐµ¥¸Y•¹ÕÌ)±…å•ÈÕÍ¥¹œÑ¡”…•ÁÑ•ÁÉ½Ù¥‘•È°…ÍÑÉ½µ•ÑÉ¥Œ°…ÁÁ…É•¹Ð°ÑÉ…¹Í™½Éµ…Ñ¥½¸°)ÁÉ½©•Ñ¥½¸°É•¹‘•É•È°…¹Í¡…É•µ•áÁ½ÉÐÍ•ÅÕ•¹”¸9¼€Ðå$¸ÄÉÕ¹Ñ¥µ”½ÈÙ¥Í¥‰±”)Á±…¹•Ð¥ÌÁ…ÉÐ½˜Ñ¡”¥µÁ±•µ•¹Ñ•…É¡¥Ñ•ÑÕÉ”å•Ð¸()•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•Ñ¡”€Ðå$¸Ä…Õ‘¥Ð½¸(ÈÀÈØ´Àà´ÌÀ…™Ñ•È…±°€ÐàÕÉÉ•¹Ðµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌÁ…ÍÍ•¥¸€Ì¸ÌÀÍ•½¹‘Ì¸)Q¡”…•ÁÑ•…Õ‘¥Ð¡…¹•Ì¹¼ÉÕ¹Ñ¥µ”ÑåÁ”½È½ÕÑÁÕÐì€Ðå$¸ÅÉ•µ…¥¹ÌÑ¡”¹•áÐ)¥µÁ±•µ•¹Ñ…Ñ¥½¸µ¥±•ÍÑ½¹”¸()Q¡”…•ÁÑ•€Ðå$¸Å¥µÁ±•µ•¹Ñ…Ñ¥½¸±½Í•ÌÑ¡”½É‘¥¹…ÉäÉ•ÅÕ•ÍÐµÑ¼µ±…å•È½¹Ñ•áÐ)¡…¹‘½™˜¸=¹”É•ÅÕ•ÍÐµ‘•É¥Ù•1…å•ÉI•…±¥é…Ñ¥½¹½¹Ñ•áÑ€É•…¡•Ì•Ù•Éä…¹½¹¥…°)¡…ÉÐ™……‘”‰•™½É”•±•ÍÑ¥…±MÁ¡•É”¹‘É…Ý}¡…ÉÐ ¥€¸á¥ÍÑ¥¹œ±…å•ÉÌ¥¹½É”¥Ð)Ñ¡É½Õ Ñ¡”½¹É•Ñ”½µÁ…Ñ¥‰¥±¥Ñä…‘…ÁÑ•È…¹É•Ñ…¥¸Ñ¡•¥È•ÍÑ…‰±¥Í¡•)•½µ•ÑÉä¸=É‘¥¹…ÉäÁÉ”µÁÉ½©•Ñ¥½¸ÁÉ½‘ÕÑÌ…É”ÕÉÉ•¹Ñ±ä¡½É¥é½¹Ñ…°™½È)Á±…¹¥ÍÁ¡•É”°É•¥½¹…°°¥ÉÕµÁ½±…È°…¹‰¥¹½Õ±…È°…¹…±…Ñ¥Œ™½È…±°µÍ­äì)Ñ¡”É•™•É•¹”•ÅÕ¥¹½àÉ•µ…¥¹Ì„Í•Á…É…Ñ”™¥•±¸9¼Y•¹ÕÌ±…å•È½ÈÙ¥Í¥‰±”)½ÕÑÁÕÐ¥Ì¥¹ÍÑ…±±•‰ä€Ðå$¸Å¸()•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€Ðå$¸Å½¸€ÈÀÈØ´Àà´ÌÀ)…™Ñ•È€ÄØØ™½ÕÍ•Ñ•ÍÑÌ°€Ä°àÔäÉ½ÕÑ¥¹”Ñ•ÍÑÌÝ¥Ñ €ÌÀ‘•Í•±•Ñ•°…¹…±°€Ä°àäÀ)Ñ•ÍÑÌÁ…ÍÍ•¸Q¡”™Õ±°ÍÕ¥Ñ”…±Í¼Ù•É¥™¥•UQµ‘…Ñ•Ñ¥µ”¹½Éµ…±¥é…Ñ¥½¸™½ÈÑ¡”)½É‘¥¹…Éä¡…ÉÐµÙ¥•Ü½‰Í•ÉÙ•È½¹ÑÉ…Ð¸€Ðå$¸Å¥ÌÑ¡”¹•áÐ‰½Õ¹‘•Í±¥”¸()Q¡”…•ÁÑ•€Ðå$¸Å¥µÁ±•µ•¹Ñ…Ñ¥½¸¥¹ÍÑ…±±Ì½¹”‘½Éµ…¹ÐY•¹ÕÍ1…å•É€¥¸Ñ¡”…¹½¹¥…°)ÍÁ¡•É”¸€´µÁ±…¹•ÐÙ•¹ÕÍ€•¹…‰±•Ì¥ÐìÑ¡”±…å•È‰½ÉÉ½ÝÌÑ¡”½‰Í•ÉÙ•È­•É¹•°°)ÕÍ•ÌÑ¡”…•ÁÑ•…ÍÑÉ½µ•ÑÉ¥Œ½…ÁÁ…É•¹Ð¡…¥¸°…¹ÑÉ…¹Í™½ÉµÌ½¹”¥¹Ñ¼Ñ¡”(Ðå$¸ÅÁÉ½‘ÕÐ½½É‘¥¹…Ñ”ÍÁ•¥™¥…Ñ¥½¸‰•™½É”½É‘¥¹…ÉäÁÉ½©•Ñ¥½¸¸%Ð…‘‘Ì)¹¼Á¡åÍ¥…°‘¥Í¬½È…±Ñ•É¹…Ñ¥Ù”MYÁ…Ñ …¹¥ÌÍ¥•¹Ñ¥™¥…±±ä…¹Ù¥ÍÕ…±±ä)…•ÁÑ•¸•É¹…¹‘¼Ì¥¹ÍÑ…±±•µÐÐÀ½µÁ…É¥Í½¸Á±…•Y•¹ÕÌ…ÐÑ¡”)MÑ•±±…É¥Õ´Á½Í¥Ñ¥½¸™½ÈÑ¡”‘•±…É•1„1¥Õ„¥¹ÍÑ…¹ÐìA9°A°…¹Í•µ…¹Ñ¥Œ)MY±½½­•Ñ¡”Í…µ”¸•ÁÑ…¹”Á…ÍÍ•Ñ¡”€ÄÐàµÑ•ÍÐ¥µÁ±•µ•¹Ñ…Ñ¥½¸É•Ù¥•Ü°€ÌÔ)™½ÕÍ•Á½ÍÐµ½ÉÉ•Ñ¥½¸Ñ•ÍÑÌ°…¹…±°€Ä°àäàÑ•ÍÑÌ¥¸€àÈ¸ÀÄÍ•½¹‘Ì¸()Q¡”ÁÉ½Á½Í•€Ðå$¸È…Õ‘¥Ð¹½Ü‘¥ÍÑ¥¹Õ¥Í¡•ÌÑ¡”½µµ½¸µ½Ù¥¹œµ‰½‘ä¡…ÉÐ)Á¥Á•±¥¹”™É½´¥ÑÌ¥¹Ñ•É¡…¹•…‰±”ÍÑ…Ñ”µÍ½ÕÉ”…¹…ÁÁ•…É…¹”Á½±¥¥•Ì¸)ÕÉÉ•¹Ð½‘”ÁÉ½Ù•Ì½¹”¥¹ÍÑ…±±•)A0½M­å™¥•±Y•¹ÕÌÉ½ÕÑ”½¹±ä¸Q¡”5½½¸¥Ì)Ñ¡”¹•áÐÁÉ½Á½Í•‰½‘ä‰•…ÕÍ”ÍÑÉ½¹œÑ½Á½•¹ÑÉ¥ŒÁ…É…±±…àÑ•ÍÑÌ½‰Í•ÉÙ•È)½Ý¹•ÉÍ¡¥Àì¥ÑÌ½ÉÉ•Ñ¥½¸Á½±¥äµÕÍÐ‰”½µÁ…É•Ý¥Ñ ‘¥É•ÐM­å™¥•±É…Ñ¡•È)Ñ¡…¸¥¹¡•É¥Ñ•™É½´Y•¹ÕÌ‰ä…ÍÍÕµÁÑ¥½¸¸9¼5½½¸½È•¹•É¥Œ‰½‘ä±…å•È¥ÌÁ…ÉÐ)½˜Ñ¡”¥µÁ±•µ•¹Ñ•…É¡¥Ñ•ÑÕÉ”å•Ð¸()•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•Ñ¡”€Ðå$¸È…Õ‘¥Ð½¸(ÈÀÈØ´Àà´ÌÀ…™Ñ•È…±°€ÔÄÕÉÉ•¹Ðµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌÁ…ÍÍ•¥¸€Ä¸ààÍ•½¹‘Ì¸)Q¡”…•ÁÑ•…Õ‘¥Ð¡…¹•Ì¹¼ÉÕ¹Ñ¥µ”ÑåÁ”½È½ÕÑÁÕÐ¸€Ðå$¸É5½½¸¹Õµ•É¥…°)‘¥É•Ñ¥½¸Ù…±¥‘…Ñ¥½¸¥ÌÑ¡”¹•áÐ‰½Õ¹‘•¥µÁ±•µ•¹Ñ…Ñ¥½¸¸()•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…•ÁÑ•€Ðå$¸É½¸€ÈÀÈØ´Àà´ÌÀ…™Ñ•È€ÄÀÈ™½ÕÍ•Ñ•ÍÑÌ)Á…ÍÍ•¥¸€Ä¸ääÍ•½¹‘Ì…¹Ñ¡”¥¹ÍÑ…±±•µÐÐÀÙ…±¥‘…Ñ½È…É••Ý¥Ñ ‘¥É•Ð)M­å™¥•±Ñ¼€À¸ÄÔÀÌµ…Ì¥¸É¥¡Ð…Í•¹Í¥½¸…¹€À¸ÀØÈÐµ…Ì¥¸‘•±¥¹…Ñ¥½¸¸Q¡”)…•ÁÑ•Ù…±¥‘…Ñ¥½¸µ•…ÍÕÉ•€À¸äÔÀÀÈÌÄÀÀÐµ‘•É•”Ñ½Á½•¹ÑÉ¥Œµ•½•¹ÑÉ¥Œ)Á…É…±±…à…¹„€ÈÜ¸äÄµµ…Ì€ÔÈ´µ¥¹ÕÌ€À´½‰Í•ÉÙ•Èµ¡•¥¡Ð‘¥ÍÁ±…•µ•¹Ð¸Q¡”)½µÁ±•Ñ”ÍÕ¥Ñ”Ñ¡•¸Á…ÍÍ•…±°€Ä°äÀÈÑ•ÍÑÌ¥¸€àä¸ÔäÍ•½¹‘Ì¸%Ð…‘‘Ì¹¼ÉÕ¹Ñ¥µ”)ÁÉ½‘ÕÑ¥½¸ÑåÁ”½È¡…ÉÐ½¹Ñ•¹Ð¸()Q¡”…•ÁÑ•€Ðå$¸É¥µÁ±•µ•¹Ñ…Ñ¥½¸•áÑÉ…ÑÌÑ¡”Í¡…É•É•¹‘•É•Èµ¹•ÕÑÉ…°)Íåµ‰½±¥ŒµÁ½¥¹Ð½É¡•ÍÑÉ…Ñ¥½¸¥¹Ñ¼Í­ä½Í½±…É}ÍåÍÑ•µ}Á½¥¹ÑÌ¹Áå€¸™É½é•¸‘•ÍÉ¥ÁÑ½È½Ý¹Ì‰½‘ä)¥‘•¹Ñ¥Ñä°‘•±…É••¹ÑÉ”°Í•±•Ñ¥½¸­•ä°…¹•áÁ±¥¥Ð½ÉÉ•Ñ¥½¸Á½±¥ä¸)Y•¹ÕÍ1…å•É€¥Ì¹½Ü„Ñ¡¥¸ÍÁ•¥…±¥é…Ñ¥½¸Ý¥Ñ Õ¹¡…¹•‘½Ý¹ÍÑÉ•…´½Ý¹•ÉÍ¡¥Àì)„Ñ•ÍÐµ½¹±ä5½½¸‘•ÍÉ¥ÁÑ½ÈÁÉ½Ù•ÌÉ•ÕÍ”Ý¥Ñ¡½ÕÐ¥¹ÍÑ…±±¥¹œ5½½¸½¹Ñ•¹Ð¸)Y•É¥™¥…Ñ¥½¸Á…ÍÍ•…±°€Ä°äÄÈÑ•ÍÑÌ°…¹µ…¥¸µÙ•ÉÍÕÌµ‰É…¹ Y•¹ÕÌÁÉ½‘ÕÑÌ)Ý•É”¥‘•¹Ñ¥…°…ÐÑ¡”A9°É•¹‘•É•µA°…¹¹½Éµ…±¥é•Í•µ…¹Ñ¥ŒµMY±•Ù•±Ì¸)•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€Ðå$¸É½¸€ÈÀÈØ´Àà´ÌÀ¸()Q¡”…•ÁÑ•€Ðå$¸É¥µÁ±•µ•¹Ñ…Ñ¥½¸¥¹ÍÑ…±±Ì„Ñ¡¥¸‘•™…Õ±Ðµ½™˜5½½¸)ÍÁ•¥…±¥é…Ñ¥½¸…¹)É•Á±…•ÌÁ±…¹•Ðµ½¹±ä¥¹Ñ•É¹…°Í•±•Ñ¥½¸Ý¥Ñ ½¹”É•ÅÕ•ÍÐµ½Ý¹•)Í½±…É}ÍåÍÑ•µ}½‰©•ÑÍ€Í•Ð¸±…ÍÌµ…Ý…É”€´µÁ±…¹•ÐÙ•¹ÕÍ€…¹€´µµ½½¹€¥¹ÁÕÑÌ)Ñ¡•É•™½É”½¹Ù•É”‰•™½É”‘•Ñ…¥°…ÁÁ±¥…Ñ¥½¸¸Q¡”5½½¸É•Ñ…¥¹Ì¹…ÑÕÉ…°´)Í…Ñ•±±¥Ñ”Í•µ…¹Ñ¥Ì…¹Ñ¡”½É‘¥¹…ÉäÍÑå±”°ÁÉ½©•Ñ¥½¸°É•¹‘•É•È°…¹•áÁ½ÉÑ•È)½Ý¹•ÉÌìÁ¡åÍ¥…°‘¥Í¬…¹Á¡…Í”É•µ…¥¸‘•™•ÉÉ•¸•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä°)…É¡¥Ñ•ÑÕÉ…±±ä°…¹Ù¥ÍÕ…±±ä…•ÁÑ•Ñ¡¥ÌÍåµ‰½±¥Œ5½½¸Í±¥”½¸€ÈÀÈØ´Àà´ÌÀ)…™Ñ•È…±°€Ä°äÄÜÑ•ÍÑÌ…¹Ñ¡”A9½A½MY½µÁ…É¥Í½¸Á…ÍÍ•¸()Q¡”…•ÁÑ•€Ðå$¸É…Õ‘¥ÐÁ±…•Ì„Í¡…É•M½±…ÈµMåÍÑ•´ÑÉ…©•Ñ½Éä½¹ÑÉ…Ð)‰•™½É”Á¡åÍ¥…°µ‘¥Í¬Ý½É¬¸%Ð‘¥ÍÑ¥¹Õ¥Í¡•Ì•… ‰½‘äÌÍ…µÁ±”É••ÁÑ¥½¸)¥¹ÍÑ…¹ÑÌ™É½´Ñ¡”Í¥¹±”™¥á•¡…ÉÐµ™É…µ”¥¹ÍÑ…¹Ð°…ÍÍ•µ‰±•Ì…•ÁÑ•…ÁÁ…É•¹Ð)‘¥É•Ñ¥½¹Ì…Ì½¹”ÑåÁ•ÍÁ¡•É¥…°ÕÉÙ”°…¹É•ÕÍ•ÌÑ¡”•á¥ÍÑ¥¹œÙ•Ñ½É¥é•)½½É‘¥¹…Ñ”°ÁÉ½©•Ñ¥½¸°±¥ÁÁ¥¹œ°É•¹‘•É•È°…¹•áÁ½ÉÐÁ…Ñ ¸5…©½ÈµÑ¥µ”…¹¡½ÉÌ)É•µ…¥¸Í¥•¹Ñ¥™¥Œµ•Ñ…‘…Ñ„ìÙ¥Í¥‰±”Á•ÉÁ•¹‘¥Õ±…ÈÑ¥­Ì…¹Ñ¡”ÍÑ…ÉÑ¥¹œµ‘…Ñ”)±…‰•°…É”ÁÉ½©•Ñ•…¹¹½Ñ…Ñ¥½¹Ì¸•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä)…•ÁÑ•Ñ¡”…Õ‘¥Ð½¸€ÈÀÈØ´Àà´ÌÄ…™Ñ•È€ÔÔ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌ°€Ä°ààäÉ½ÕÑ¥¹”)Ñ•ÍÑÌÝ¥Ñ €ÌÀ‘•Í•±•Ñ•°…¹…±°€Ä°äÄäÑ•ÍÑÌÁ…ÍÍ•¸Q¡”…Õ‘¥Ð¡…¹•Ì¹¼)ÉÕ¹Ñ¥µ”Í½ÕÉ”°ÁÕ‰±¥Œ¥¹Ñ•É™…”°¹Õµ•É¥…°•½µ•ÑÉä°½È½ÕÑÁÕÐ¸()Q¡”…•ÁÑ•€Ðå$¸É¸Ä¥µÁ±•µ•¹Ñ…Ñ¥½¸…‘‘ÌÑ¡”É•¹‘•É•Èµ¹•ÕÑÉ…°)Í¥•¹Ñ¥™¥ŒÕÉÙ”½¹±ä¸=¹”™É½é•¸É•ÅÕ•ÍÐµ•É•ÌÉ•Õ±…ÈÍ…µÁ±•Ì…¹•á…Ð)µ…©½ÈµÑ¥µ”…¹¡½ÉÌ¸Q¡”…•ÁÑ•Í…±…È½‰Í•ÉÙ•ÈµÍÑ…Ñ”°…ÍÑÉ½µ•ÑÉ¥Œ°…¹)…ÁÁ…É•¹Ð¡…¥¸¥ÌÉ••Ù…±Õ…Ñ•…Ð•Ù•ÉäÙ•ÉÑ•àÕÍ¥¹œ½¹”‰½ÉÉ½Ý••Á¡•µ•É¥Ì)É•Í½ÕÉ”¸½µÁ±•Ñ”…ÁÁ…É•¹Ð‘¥É•Ñ¥½¹Ì…É”…ÍÍ•µ‰±•…Ì½¹”½Á•¸)MÁ¡•É¥…±ÕÉÙ•Í€°Ñ¡•¸ÑÉ…¹Í™½Éµ••á…Ñ±ä½¹”¥¹Ñ¼Ñ¡”™¥á•ÁÉ½‘ÕÐ)™É…µ”¸Q¡”¥¹ÍÑ…±±•µÐÐÀÙ…±¥‘…Ñ½È…É••Ý¥Ñ ‘¥É•ÐM­å™¥•±Ñ¼)€Ð¸ÈäÍ”´ÄÁ€‘•É•”¥¸É¥¡Ð…Í•¹Í¥½¸…¹€à¸ÐÜÅ”´ÄÅ€‘•É•”¥¸)‘•±¥¹…Ñ¥½¸¸•É¹…¹‘¼…•ÁÑ•Ñ¡”Í±¥”…™Ñ•È…±°€Ä°äÈäÑ•ÍÑÌÁ…ÍÍ•¸%Ð…‘‘Ì)¹¼É•¥ÍÑ•É•±…å•È°ÁÕ‰±¥Œ½ÁÑ¥½¸°ÁÉ½©•Ñ•…¹¹½Ñ…Ñ¥½¸°ÍÑå±”°É•¹‘•É•È°½È)½ÕÑÁÕÐ¡…¹”¸()Q¡”¥µÁ±•µ•¹Ñ•Ñ•µÁ½É…°Í•ÅÕ•¹”½¹ÑÉ…ÑÌ‘¥ÍÑ¥¹Õ¥Í Á¡åÍ¥…°¥¹ÍÑ…¹ÑÌ°)¥Ù¥°½‘¥ÍÁ±…äÑ¥µ”°Í…µÁ±¥¹œ…‘•¹”°…¹Á±…å‰…¬…‘•¹”¸Q¡”…•ÁÑ•)™¥á•µÍ­äÉ•™•É•¹”­••ÁÌÑ¡”•±•ÍÑ¥…°Í•¹”…¹•ÅÕ…Ñ½É¥…°É¥…¹¡½É•)Ý¡¥±”Ñ¡”½‰Í•ÉÙ•Èµ±½…°¡½É¥é½¸…¹±ÑèÉ¥É½Ñ…Ñ”¸½µÁ±•Ñ”¥¹‘•Á•¹‘•¹Ð)É•¹‘•ÉÌÉ•µ…¥¸Ñ¡”½ÉÉ•Ñ¹•ÍÌ½É…±”™½È±…Ñ•ÈÉ•ÕÍ”½ÁÑ¥µ¥é…Ñ¥½¸¸()%µÁ±•µ•¹Ñ•½½É‘¥¹…Ñ•MÁ•€…¹½½É‘¥¹…Ñ”µÍ•ÉÙ¥”½Ý¹•ÉÍ¡¥ÀÁ±ÕÌ™ÕÑÕÉ”)ÁÉ½Ù¥‘•È°µ½Ù¥¹œµ½‰©•Ð°ÁÕ‰±¥Œµ½½É‘¥¹…Ñ”°…¹É•ÕÍ”Ý½É¬…É”½Ù•É¹•‰ä)Á½ÍÑ}ØÀ¸å}…É¡¥Ñ•ÑÕÉ•}É½…‘µ…À¹µ‘€…¹µÕÍÐÁÉ•Í•ÉÙ”Ñ¡¥ÌØÀ¸äÁ¥Á•±¥¹”¸((ŒŒ½¹™¥ÕÉ…Ñ¥½¸…¹ÁÕ‰±¥Œ‰½Õ¹‘…É¥•Ì()A…­…•‘•™…Õ±ÑÌ…¹Í¡•µ„µÙ•ÉÍ¥½¸´È½¹™¥ÕÉ…Ñ¥½¸É•Í½±Ù”¥¹Ñ¼¥µµÕÑ…‰±”)ÑåÁ•½¹ÑÉ…ÑÌ¸UÍ•È½Ù•É±…åÌµ•É”¹½¸µµÕÑ…Ñ¥¹±äì•áÁ±¥¥Ð½µµ…¹Ù…±Õ•Ì)½Ù•ÉÉ¥‘”½Ù•É±…åÌìÍ•ÅÕ•¹Ñ¥…°¥¹Ù½…Ñ¥½¹ÌÍ¡…É”¹¼…Ñ¥Ù”½¹™¥ÕÉ…Ñ¥½¸)Í¥¹±•Ñ½¸¸()Q¡”¥¹ÍÑ…±±•Ý•¹Õ}¡…ÉÑ€¥¹Ñ•É™…”…¹…¹½¹¥…°•á…µÁ±•Ì…É”…‘…ÁÑ•ÉÌ½Ù•È)Ñ¡”Í…µ”ÁÕ‰±¥Œ‘É…Ý¥¹œ…¹•áÁ½ÉÐÝ½É­™±½Ü¸Q¡•ä‘¼¹½Ð¥µÁ½ÉÐ½¹”…¹½Ñ¡•È½È)É•…Ñ”…±Ñ•É¹…Ñ¥Ù”…ÍÑÉ½¹½µ¥…°°É•¹‘•É¥¹œ°½ÈÁ¡åÍ¥…°µÁÉ½‘ÕÐÁ…Ñ¡Ì¸((ŒŒ•ÁÑ…¹”…¹É•É•ÍÍ¥½¸…ÕÑ¡½É¥Ñä()ÕÑ½µ…Ñ•Ñ•ÍÑÌÁÉ½Ñ•ÐÍ¥•¹Ñ¥™¥Œ•½µ•ÑÉä°½Ý¹•ÉÍ¡¥À°½¹™¥ÕÉ…Ñ¥½¸°)±½…±¥é…Ñ¥½¸°½ÕÑÁÕÐ°…¹Á¡åÍ¥…°µÍ¥é”½¹ÑÉ…ÑÌ¸Ñ±…ÌµÁÉ¥¹ÐÉ•µ…¥¹ÌÑ¡”)Ù¥ÍÕ…°É•É•ÍÍ¥½¸‰…Í•±¥¹”™½È½É‘¥¹…ÉäÁÉ”µØÀ¸ä™…µ¥±¥•Ì¸Q¡”…•ÁÑ•)Ý¡¥Ñ”µ‰…­É½Õ¹Á½±…È‘¥Í­Ì…¹™½±‘•Á½Õ …É”Ñ¡”Á¡åÍ¥…°ØÀ¸ä‰…Í•±¥¹”¸()!Õµ…¸¥¹ÍÁ•Ñ¥½¸É•µ…¥¹Ì…ÕÑ¡½É¥Ñ…Ñ¥Ù”™½ÈÁ…Á•ÈÍ…±”°É•…‘…‰¥±¥Ñä°)É•¥ÍÑÉ…Ñ¥½¸°ÕÑÑ¥¹œ°…ÍÍ•µ‰±ä°±…ÍÍÉ½½´ÕÍ”°…¹…ÁÁ•…É…¹”¸Q¡”…•ÁÑ•(Ðå ¸ÌÉ•™•É•¹”…‘‘¥Ñ¥½¹…±±ä•ÍÑ…‰±¥Í¡•ÌÑ¡”™¥á•µ•±•ÍÑ¥…°µÍ•¹”…¹)É½Ñ…Ñ¥¹œµ½‰Í•ÉÙ•Èµ¡½É¥é½¸‰•¡…Ù¥½È¸()Q¡”É½ÕÑ¥¹”É•É•ÍÍ¥½¸…Ñ”¥Ì•áÁ•Ñ•Ñ¼½µÁ±•Ñ”¥¸±•ÍÌÑ¡…¸€ÌÀÍ•½¹‘Ì½¸)•É¹…¹‘¼Ì%¹Ñ•°5…Œ¸Q¡”½µÁ±•Ñ”ÍÕ¥Ñ”Á±ÕÌ…¹äµ¥±•ÍÑ½¹”µÍÁ•¥™¥Œ)Í¥•¹Ñ¥™¥Œ°MY°Ù¥ÍÕ…°°ÁÉ¥¹Ð°Í•ÅÕ•¹”°½È±…ÍÍÉ½½´…•ÁÑ…¹”É•µ…¥¹Ì)µ…¹‘…Ñ½Éä‰•™½É”µ¥±•ÍÑ½¹”±½ÍÕÉ”¸((ŒŒÑ¥Ù”…ÕÑ¡½É¥Ñä…™Ñ•ÈØÀ¸ä()ÕÉÉ•¹ÐÝ½É¬É•…‘ÌÑ¡¥Ì‘½Õµ•¹ÐÑ½•Ñ¡•ÈÝ¥Ñ è((´¥µÁ±•µ•¹Ñ…Ñ¥½¹}É•™•É•¹”¹µ‘€™½ÈÁÕ‰±¥Œ…¹…‘Ù…¹•A$½¹ÑÉ…ÑÌì(´Í½ÕÉ•}ÑÉ•”¹µ‘€™½ÈÉ•ÍÁ½¹Í¥‰¥±¥Ñä½Ý¹•ÉÍ¡¥Àì(´Á½ÍÑ}ØÀ¸å}…É¡¥Ñ•ÑÕÉ•}É½…‘µ…À¹µ‘€™½È…Ñ¥Ù”µ¥±•ÍÑ½¹”Í•ÅÕ•¹¥¹œì(´Ñ…É•Ñ}…É¡¥Ñ•ÑÕÉ•}ØÀ¸ä¸Ô¹µ‘€™½ÈÑ¡”ÁÉ½Á½Í•½½É‘¥¹…Ñ”µÉ…Ñ¥½¹…±¥é…Ñ¥½¸(€Ñ…É•Ð…¹µ¥¹¥µ…°€Ðå¼ÐåÉ½…‘µ…Àì(´½½É‘¥¹…Ñ•}ÍåÍÑ•µ}Õ¥‘•}ØÀ¸ä¸Ô¹µ‘€™½È±¥Ù¥¹œ•ÅÕ…Ñ¥½¹Ì°½½É‘¥¹…Ñ”(€½¹Ù•¹Ñ¥½¹Ì°½‘”½Ý¹•ÉÍ¡¥À°½‰©•Ð¥¹Ù•¹Ñ½Éä°…¹ÁÉ½Ù•¹…¹”ì(´…É¡¥Ù”½…Õ‘¥ÑÌ½½½É‘¥¹…Ñ•}ÑÉ…¹Í™½Éµ…Ñ¥½¹}…Õ‘¥Ñ|Àå„É…™¹µ‘€™½ÈÍ¥•¹Ñ¥™¥Œ½½É‘¥¹…Ñ”(€•Ù¥‘•¹”ì(´…É¡¥Ù”½…Õ‘¥ÑÌ½ÁÕ‰±¥}¥¹Ñ•É™…•}…Õ‘¥Ñ}ØÀ¸ä¸Ô¹µ‘€™½ÈÑ¡”…•ÁÑ••á•ÕÑ…‰±”¥¹Ù•¹Ñ½Éä…¹(€ÁÕ‰±¥ŒÍåÍÑ•´°™É…µ”°•ÅÕ¥¹½à°…¹•Á½ ‰½Õ¹‘…Éäì(´…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ðå‘}Í•¹”½•±•ÍÑ¥…±}Í•¹•}‘•Á•¹‘•¹å}…Õ‘¥Ñ|ÐåÄ¹µ‘€…¹(€…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ðå‘}Í•¹”½±…å•É}É•…±¥é…Ñ¥½¹}½¹Ñ•áÑ|ÐåÈ¹µ‘€™½ÈÍ•¹”‘•Á•¹‘•¹¥•Ì…¹Ñ¡”µ¥¹¥µ…°(€ÁÉ”µÁÉ½©•Ñ¥½¸É•…±¥é…Ñ¥½¸¡…¹‘½™˜ì(´…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ðå™}ÍÙœ½ÍÙ}½ÕÑÁÕÑ}…Õ‘¥Ñ}…¹‘}Á±…¸¹µ‘€™½ÈMYÁÉ½‘ÕÐ•Ù¥‘•¹”¸()Q¡”ØÀ¸à…É¡¥Ñ•ÑÕÉ”°ØÀ¸äÑ…É•Ð°…¹ØÀ¸àµÑ¼µØÀ¸äµ¥É…Ñ¥½¸‘½Õµ•¹ÑÌ…É”)ÁÉ½Ù•¹…¹”¸Q¡•ä‘¼¹½Ð½Ù•ÉÉ¥‘”Ñ¡¥Ì¥µÁ±•µ•¹Ñ•‰…Í•±¥¹”¸((ŒŒ•ÁÑ•‘É…Ý…‰±”M½±…ÈµMåÍÑ•´ÑÉ…©•Ñ½Éä()5¥±•ÍÑ½¹”€Ðå$¸É¸È¥¹ÍÑ…±±ÌÑ¡”™¥ÉÍÐÙ¥Í¥‰±”Y•¹ÕÌÑÉ…©•Ñ½Éä¥¸É•¥½¹…°…¹)‰¥¹½Õ±…È¡…ÉÑÌ¸Q¡”Í¥•¹Ñ¥™¥ŒM½±…ÉMåÍÑ•µQÉ…­1…å•É€É•µ…¥¹Ì¥¸)Ý•¹Ô¹Í­å€ìÁÉ½©•Ñ•Ñ¥­Ì…¹ÑÝ¼µÁ…ÍÌÁ•ÉÁ•¹‘¥Õ±…È‘…Ñ”Á±…•µ•¹Ð‰•±½¹œ)Ñ¼Ý•¹Ô¹¡…ÉÑÌ¹Í½±…É}ÍåÍÑ•µ}ÑÉ…­}…¹¹½Ñ…Ñ¥½¹Í€¸MÑå±”½Ý¹ÌÑ¡”…•ÁÑ•)…µ‰•Èµ½É…¹”…ÁÁ•…É…¹”¸Q¡”Í…µ”ÁÉ•Á…É••½µ•ÑÉäÉ•…¡•ÌA9°A°…¹)Í•µ…¹Ñ¥ŒMY…ÐÍ­ä½Í½±…É}ÍåÍÑ•´½Á±…¹•ÑÌ½Ù•¹ÕÌ½ÑÉ…­€¸(((ŒŒ•™•ÉÉ•Á¡åÍ¥…°M½±…ÈµMåÍÑ•´…ÁÁ•…É…¹”()5¥±•ÍÑ½¹”€Ðå$¸Í¥Ì…¸…•ÁÑ•½¹ÑÉ…Ð…Õ‘¥Ð°¹½Ð¥µÁ±•µ•¹Ñ•…É¡¥Ñ•ÑÕÉ”¸)Q¡”ÕÉÉ•¹ÐÉÕ¹Ñ¥µ”ÍÑ¥±°É•…±¥é•ÌY•¹ÕÌ…¹Ñ¡”5½½¸…Ì…ÁÁ…É•¹Ð•¹ÑÉ”)Á½¥¹ÑÌ…¹ÍÑå±”ÍÑ¥±°‘É…ÝÌÁÉ½Ù¥Í¥½¹…°™¥á•¡½±±½ÜÍåµ‰½±Ì¸9¼ÕÉÉ•¹Ð)É•½É…ÉÉ¥•ÌÁ¡åÍ¥…°…¹Õ±…È‘¥…µ•Ñ•È°¥±±Õµ¥¹…Ñ•™É…Ñ¥½¸°‰É¥¡Ðµ±¥µˆ)½É¥•¹Ñ…Ñ¥½¸°‰½‘ä½É¥•¹Ñ…Ñ¥½¸°Á¡½Ñ½µ•ÑÉä°½È‘¥ÍÁ±…äµ…¹¥™¥…Ñ¥½¸¸()Q¡”…•ÁÑ•‰½Õ¹‘…Éä­••ÁÌ„™ÕÑÕÉ”Á¡åÍ¥…°µ…ÁÁ•…É…¹”ÍÑ…Ñ”É•¹‘•É•Èµ¹•ÕÑÉ…°)…¹­••ÁÌ½‰©•ÐµÍÁ•¥™¥Œ‘¥ÍÁ±…äµ…¹¥™¥…Ñ¥½¸½ÕÑÍ¥‘”Ñ¡…ÐÍ¥•¹Ñ¥™¥ŒÍÑ…Ñ”¸)¹äÉ•Í½±Ù•‘¥Í¬µÕÍÐ‰•½µ”½É‘¥¹…ÉäÍ•µ…¹Ñ¥Œ•½µ•ÑÉä‰•™½É”Ñ¡”•á¥ÍÑ¥¹œ)ÁÉ½©•Ñ¥½¸°±¥ÁÁ¥¹œ°É•¹‘•É•È°…¹Í¡…É••áÁ½ÉÑ•È¸(((ŒŒ•ÁÑ•Y•¹ÕÌÁ¡åÍ¥…°µ…ÁÁ•…É…¹”ÍÑ…Ñ”()5¥±•ÍÑ½¹”€Ðå$¸Í¥¹ÍÑ…±±ÌÝ•¹Ô¹Í½±…É}ÍåÍÑ•µ}…ÁÁ•…É…¹•€…Ì„)É•¹‘•É•Èµ¹•ÕÑÉ…°¹Õµ•É¥…°‰½Õ¹‘…Éä¸M½±…ÉMåÍÑ•µÁÁ…É•¹Ñ¥Í­€…½µÁ…¹¥•Ì)Ñ¡”…•ÁÑ•Y•¹ÕÌ‘¥É•Ñ¥½¸Ý¥Ñ Á¡åÍ¥…°É…‘¥ÕÌ°…¹Õ±…È‘¥…µ•Ñ•È°Á¡…Í”°)¥±±Õµ¥¹…Ñ•™É…Ñ¥½¸°…¹…ÁÁ…É•¹Ðµ%IL‰É¥¡Ðµ±¥µˆÁ½Í¥Ñ¥½¸…¹±”¸%Ð…ÉÉ¥•Ì)¹¼‘¥ÍÁ±…äµ…¹¥™¥…Ñ¥½¸½È¡…ÉÐ½½ÕÑÁÕÐÁ½±¥ä¸()9¼ÁÉ½‘ÕÑ¥½¸±…å•È½¹ÍÕµ•ÌÑ¡”ÍÑ…Ñ”å•Ð¸ÕÉÉ•¹ÐY•¹ÕÌ…¹5½½¸¡…ÉÐ)…ÁÁ•…É…¹”É•µ…¥¹ÌÑ¡”•á¥ÍÑ¥¹œÍåµ‰½±¥ŒÁ½¥¹ÑÌ¸Q¡•É”¥Ì¹¼É•Í½±Ù•‘¥Í¬°)É•ÅÕ•ÍÐ°ÍÑå±”°É•¹‘•É•È°½È½ÕÑÁÕÐ¡…¹”¥¸€Ðå$¸Í¸(((ŒŒ•ÁÑ•É•Í½±Ù•Y•¹ÕÌ‘¥Í¬‰½Õ¹‘…Éä()5¥±•ÍÑ½¹”€Ðå$¸Í…•ÁÑÌ…¸¥±±Õµ¥¹…Ñ•MÁ¡•É¥…±A½±å½¹Í€±…å•ÈÁ±ÕÌ±¥µˆ)…¹Ñ•Éµ¥¹…Ñ½ÈMÁ¡•É¥…±ÕÉÙ•Í€±…å•ÉÌÍ…µÁ±•…ÐÑ¡”Á¡åÍ¥…°…¹Õ±…ÈÉ…‘¥ÕÌ¸)™Ñ•È½É‘¥¹…ÉäÁÉ½©•Ñ¥½¸°¡…ÉÐÁÉ•Á…É…Ñ¥½¸…ÁÁ±¥•ÌY•¹ÕÌµÍÁ•¥™¥Œ‘¥ÍÁ±…ä)µ…¹¥™¥…Ñ¥½¸…‰½ÕÐÑ¡”ÁÉ½©•Ñ•Á¡åÍ¥…°•¹ÑÉ”¸Q¡¥Ì…Ù½¥‘Ì™½É¥¹œµ¥á•)•½µ•ÑÉä¥¹Ñ¼Ñ¡”ÕÉÙ”µ½¹±äMÁ¡•É¥…±É¥‘€½¹ÑÉ…Ð…¹…Ù½¥‘Ì)É•¹‘•É•ÈµÍÁ•¥™¥Œ‘¥Í¬…ÉÑ¥ÍÑÌ¸()Q¡”…•ÁÑ•™ÕÑÕÉ”…Á…‰¥±¥Ñä¥¹±Õ‘•ÌÍ•Ù•É…°¥¹‘•Á•¹‘•¹Ñ±äÉ•…±¥é•Y•¹ÕÌ)‘¥Í­Ì¥¸½¹”™¥á•¡…ÉÐ™É…µ”¸5¥±•ÍÑ½¹”€Ðå$¸Í¸Ä¹½Ü¥¹ÍÑ…±±ÌÑ¡”)½ÕÑÁÕÐµ¹•ÕÑÉ…°Á¡åÍ¥…°•¹ÑÉ”°±¥µˆ°Ù¥Í¥‰±”Ñ•Éµ¥¹…Ñ½È°…¹¥±±Õµ¥¹…Ñ•µ™…”)ÍÁ¡•É¥…°•½µ•ÑÉä‰Õ¹‘±”¸9¼Í­ä±…å•È°¡…ÉÐÉ•ÅÕ•ÍÐ°µ…¹¥™¥…Ñ¥½¸°ÍÑå±”°)É•¹‘•É•È°½È½ÕÑÁÕÐ‰•¡…Ù¥½È½¹ÍÕµ•Ì¥Ðå•Ð¸ÕÉÉ•¹ÐÍåµ‰½±¥ŒY•¹ÕÌ½ÕÑÁÕÐ)É•µ…¥¹Ì…ÕÑ¡½É¥Ñ…Ñ¥Ù”¸(((ŒŒÉ…Ý…‰±”É•Í½±Ù•Y•¹ÕÌ‘¥Í¬()5¥±•ÍÑ½¹”€Ðå$¸Í¸È¥¹ÍÑ…±±Ì½¹”½ÁÐµ¥¸É•Í½±Ù•Y•¹ÕÌ‘¥Í¬™½ÈÉ•¥½¹…°…¹)‰¥¹½Õ±…È¡…ÉÑÌ¸Q¡É•”Í­ä±…å•ÉÌÍ¡…É”½¹”Á¡åÍ¥…°…ÁÁ•…É…¹”É•…±¥é…Ñ¥½¸è)…¸¥±±Õµ¥¹…Ñ•Á½±å½¸°„±½Í•±¥µˆÕÉÙ”°…¹„Ù¥Í¥‰±”Ñ•Éµ¥¹…Ñ½ÈÕÉÙ”¸)Q¡”½É‘¥¹…ÉäÁÉ½©•Ñ¥½¸Á¥Á•±¥¹”ÁÉ½©•ÑÌ•… ½µÁ½¹•¹Ð…¹Ñ¡”Á¡åÍ¥…°)•¹ÑÉ”ì¡…ÉÐÁÉ•Á…É…Ñ¥½¸Ñ¡•¸Í…±•ÌÁÉ½©•Ñ•½™™Í•ÑÌ‰äÑ¡”Y•¹ÕÌµÍÁ•¥™¥Œ)‘¥ÍÁ±…äµ…¹¥™¥…Ñ¥½¸…‰½ÕÐÑ¡…Ð•á…ÐÁÉ½©•Ñ••¹ÑÉ”¸()Måµ‰½±¥ŒY•¹ÕÌÉ•µ…¥¹ÌÑ¡”‘•™…Õ±Ð¸É•ÅÕ•ÍÐ…¹¹½ÐÍ•±•ÐÍåµ‰½±¥Œ…¹)É•Í½±Ù•Y•¹ÕÌÍ¥µÕ±Ñ…¹•½ÕÍ±ä¸5…¹¥™¥…Ñ¥½¸…±½¹”…¹¹½Ð•¹…‰±”Ñ¡”‘¥Í¬°)™…Ñ½È€ÄÉ•Ñ…¥¹ÌÁ¡åÍ¥…°…¹Õ±…ÈÍ…±”°…¹Á±…¹¥ÍÁ¡•É”½…±°µÍ­äÁÉ½‘ÕÑÌ)É•Ñ…¥¸Íåµ‰½±¥ŒÉ•ÁÉ•Í•¹Ñ…Ñ¥½¸¸¥É•ÐAåÑ¡½¸¡…ÉÐÉ•ÅÕ•ÍÑÌ…¹Ñ¡”1$)¥¹ÍÑ…±°Ñ¡”Í…µ”É•ÅÕ•ÍÐµ½Ý¹•±…å•ÉÌ¸(((ŒŒ•ÁÑ•µÕ±Ñ¤µ•Á½ É•Í½±Ù•Á±…¹•Ðµ‘¥Í¬‰½Õ¹‘…Éä()5¥±•ÍÑ½¹”€Ðå$¸Í¸Ì…Õ‘¥ÑÌÑÝ¼‘¥ÍÑ¥¹ÐÍÑ…Ñ¥ŒÍ•ÅÕ•¹”ÁÉ½‘ÕÑÌ¸=‰Í•ÉÙ•)Í•ÅÕ•¹•Ì¥¹‘•Á•¹‘•¹Ñ±äÉ•…±¥é”Ñ¡”Ñ½Á½•¹ÑÉ¥Œ½‰Í•ÉÙ•È…¹Á±…¹•Ð…ÁÁ•…É…¹”)…Ð•Ù•ÉäÍ…µÁ±”‰•™½É”ÑÉ…¹Í™½Éµ…Ñ¥½¸¥¹Ñ¼½¹”™¥á•¡…ÉÐ™É…µ”¸É½é•¸µ…ÉÑ )•±¥ÁÑ¥ŒÍ•ÅÕ•¹•Ì¥¹ÍÑ•…™É••é”…ÉÑ Ì¡•±¥½•¹ÑÉ¥ŒÁ½Í¥Ñ¥½¸…ÐÑ¡”ÍÑ…ÉÐ°)…‘Ù…¹”Ñ¡”Á±…¹•Ð•½µ•ÑÉ¥…±±ä°…¹Á•Éµ¥Ð½¹±äÑ¡”Á±…¹•Ð‘¥Í­Ì°„•¹ÑÉ…°)Í¥àµÁ½¥¹ÐMÕ¸Íåµ‰½°°…¹Ñ¡”•ÅÕ…Ñ½É¥…°É¥¥¸Ñ¡”™¥á••±¥ÁÑ¥Œ™É…µ”¸()Ù•Éä…•ÁÑ•Í…µÁ±”É•Ñ…¥¹Ì™Õ±°Á¡åÍ¥…°‘¥ÍÑ…¹”°½É¥¥¸°Õ¹¥Ð°¥¹ÍÑ…¹Ð°)…¹ÁÉ½Ù¥‘•ÈÁÉ½Ù•¹…¹”™½ÈÁ½ÍÍ¥‰±”™ÕÑÕÉ”¥¹‘•Á•¹‘•¹Ñ±ä½Ù•É¹•€Í)M½±…ÈµMåÍÑ•´Ù¥ÍÕ…±¥é…Ñ¥½¸¸9¼€ÍÉÕ¹Ñ¥µ”¥Ì¥¹ÍÑ…±±•¸()	½Ñ Á½±¥¥•ÌÉ•ÕÍ”Ñ¡”…•ÁÑ•Á•Èµ•Á½ ÍÁ¡•É¥…°‘¥Í¬•½µ•ÑÉä…¹)½‰©•ÐµÍÁ•¥™¥ŒÁ½ÍÐµÁÉ½©•Ñ¥½¸µ…¹¥™¥…Ñ¥½¸…É½Õ¹•… Í•Á…É…Ñ•±äÁÉ½©•Ñ•)•¹ÑÉ”¸Q¡”™É½é•¸½¹ÍÑÉÕÑ¥½¸¥Ì¹½Ð…ÁÁ…É•¹ÐÍ­ä…¹µÕÍÐÉ•Ñ…¥¸Ñ¡…ÐÍÑ…ÑÕÌ)¥¸±…‰•±Ì…¹µ•Ñ…‘…Ñ„¸•É¹…¹‘¼…•ÁÑ•Ñ¡”…Õ‘¥Ð½¸€ÈÀÈØ´Àà´ÌÄ…™Ñ•È…±°€ØÌ)ÕÉÉ•¹Ðµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌÁ…ÍÍ•¥¸€È¸ÀÐÍ•½¹‘Ì¸%Ð¡…¹•Ì¹¼¥µÁ±•µ•¹Ñ•)ÉÕ¹Ñ¥µ”½È½ÕÑÁÕÐ¸(((ŒŒ•ÁÑ•½ÕÑÁÕÐµ¹•ÕÑÉ…°½‰Í•ÉÙ•Y•¹ÕÌ‘¥Í¬Í•ÅÕ•¹”()5¥±•ÍÑ½¹”€Ðå$¸Í¸Ì¸Å…‘‘Ì¥µµÕÑ…‰±”ÍÑ…ÉÐµ¥¹±ÕÍ¥Ù”µ…©½ÈÍ…µÁ±¥¹œ…¹)¥¹‘•Á•¹‘•¹Ñ±äÉ•…±¥é•ÌÑ¡”½‰Í•ÉÙ•È°…ÁÁ…É•¹ÐY•¹ÕÌ…¹MÕ¸‘¥É•Ñ¥½¹Ì°)Á¡åÍ¥…°…ÁÁ•…É…¹”°…¹ÍÁ¡•É¥…°‘¥Í¬•½µ•ÑÉä…Ð•Ù•Éä•Á½ ¸Q¡”É•ÍÕ±Ð)É•Ñ…¥¹Ì™Õ±°½‰Í•ÉÙ•È½T‘¥ÍÑ…¹•ÌÝ¥Ñ ÁÉ½Ù¥‘•È…¹¥¹ÍÑ…¹Ð•Ù¥‘•¹”™½È)Á½ÍÍ¥‰±”™ÕÑÕÉ”¥¹‘•Á•¹‘•¹Ñ±ä½Ù•É¹•€ÍÕÍ”¸()Q¡”¹…Ñ¥Ù”Á¡åÍ¥…°•½µ•ÑÉ¥•Ì‘•±¥‰•É…Ñ•±äÉ•µ…¥¸Á•È•Á½ ‰•…ÕÍ”Ñ¡•¥È)…ÁÁ…É•¹Ð½½É‘¥¹…Ñ”¥‘•¹Ñ¥Ñ¥•Ì…ÉÉä‘¥™™•É•¹Ð¥¹ÍÑ…¹ÑÌ¸±…Ñ•È‘É…Ý…‰±”)Í±¥”µÕÍÐÑÉ…¹Í™½É´•… ¥¹‘•Á•¹‘•¹Ñ±ä¥¹Ñ¼½¹”™¥á•ÁÉ½‘ÕÐ™É…µ”‰•™½É”)…É•…Ñ¥½¸¸9¼É•ÅÕ•ÍÐ½ÁÑ¥½¸°É•¥ÍÑ•É•±…å•È°¡…ÉÐÑÉ…¹Í™½Éµ…Ñ¥½¸°)ÁÉ½©•Ñ¥½¸°µ…¹¥™¥…Ñ¥½¸°É•¹‘•É•È°½ÈÙ¥Í¥‰±”½ÕÑÁÕÐ¥Ì¥¹ÍÑ…±±•¸(((ŒŒÉ…Ý…‰±”½‰Í•ÉÙ•Y•¹ÕÌ‘¥Í¬Í•ÅÕ•¹”()5¥±•ÍÑ½¹”€Ðå$¸Í¸Ì¸Å¥¹ÍÑ…±±ÌÑ¡”…•ÁÑ•½‰Í•ÉÙ•Í•ÅÕ•¹”¥¸É•¥½¹…°…¹)‰¥¹½Õ±…È¡…ÉÑÌ¸… Á¡åÍ¥…°•Á½ ¥ÌÑÉ…¹Í™½Éµ•¥¹‘•Á•¹‘•¹Ñ±ä¥¹Ñ¼Ñ¡”)™¥á•ÁÉ½‘ÕÐ™É…µ”‰•™½É”¥±±Õµ¥¹…Ñ•™…•Ì°±¥µ‰Ì°Ñ•Éµ¥¹…Ñ½ÉÌ°…¹½ÁÑ¥½¹…°)‘…Ñ”•¹ÑÉ•Ì…É”…É•…Ñ•¸¡…ÉÐÁÉ•Á…É…Ñ¥½¸µ…¹¥™¥•Ì•… ÁÉ½©•Ñ•)½µÁ½¹•¹Ð…É½Õ¹¥ÑÌ½Ý¸ÁÉ½©•Ñ•Á¡åÍ¥…°•¹ÑÉ”¸()½µ‰¥¹••½µ•ÑÉäÉ•Ñ…¥¹Ì•á…Ð¥¹ÍÑ…¹ÑÌ°Ñ¥µ”Í…±”°½‰Í•ÉÙ•È½T‘¥ÍÑ…¹•Ì°)…¹ÁÉ½Ù•¹…¹”¸Måµ‰½±¥ŒY•¹ÕÌ°½¹”É•Í½±Ù•Y•¹ÕÌ‘¥Í¬°…¹„É•Í½±Ù•Y•¹ÕÌ)Í•ÅÕ•¹”…É”µÕÑÕ…±±ä•á±ÕÍ¥Ù”¸É½é•¸µ…ÉÑ µ½‘”°5•ÉÕÉä°…¹€Í)Ù¥ÍÕ…±¥é…Ñ¥½¸É•µ…¥¸Õ¹¥µÁ±•µ•¹Ñ•¸(((ŒŒ•ÁÑ•½ÕÑÁÕÐµ¹•ÕÑÉ…°™É½é•¸µ…ÉÑ Y•¹ÕÌÍ•ÅÕ•¹”()5¥±•ÍÑ½¹”€Ðå$¸Í¸Ì¸É™É••é•Ì…ÉÑ Ì¡•±¥½•¹ÑÉ¥Œ%IÙ•Ñ½È…ÐÑ¡”ÍÑ…ÉÐ)…¹•Ù…±Õ…Ñ•ÌY•¹ÕÌ¡•±¥½•¹ÑÉ¥…±±ä…Ð•á…Ðµ…©½È•Á½¡Ì¸… É•ÍÕ±ÐÉ•Ñ…¥¹Ì)Ñ¡”™É½é•¸…ÉÑ Ù•Ñ½È°É•±…Ñ¥Ù”Ñ…É•ÐÙ•Ñ½È°™É½é•¸µ•…ÉÑ ½T‘¥ÍÑ…¹”°)Á¡åÍ¥…°‘¥…µ•Ñ•È°Á¡…Í”°¥±±Õµ¥¹…Ñ•™É…Ñ¥½¸°…¹™¥á•µ•±¥ÁÑ¥Œ±¥µˆ)½É¥•¹Ñ…Ñ¥½¸¸Q…É•Ð…¹™¥á•µMÕ¸‘¥É•Ñ¥½¹Ì…É”•½µ•ÑÉ¥Œ¥¸(ÈÀÀÀ)µ•…¸µ•±¥ÁÑ¥Œ…á•Ì…¹µÕÍÐ¹•Ù•È‰”‘•ÍÉ¥‰•…Ì…ÁÁ…É•¹ÐÍ­ä¸()Q¡¥ÌÍÑ…Ñ”É•µ…¥¹Ì½ÕÑÁÕÐµ¹•ÕÑÉ…°¸AÕ‰±¥ŒÉ•ÅÕ•ÍÐ¥¹Ñ•É…Ñ¥½¸°É•Í½±Ù•‘¥Í¬)…‘…ÁÑ…Ñ¥½¸°Á•Èµ•¹ÑÉ”ÁÉ½©•Ñ•µ…¹¥™¥…Ñ¥½¸°•¹ÑÉ…°Í¥àµÁ½¥¹ÐMÕ¸°)•ÅÕ…Ñ½É¥…°É¥°É•ÍÑÉ¥Ñ•Í•¹”°Í•µ…¹Ñ¥Ì°…¹É•¹‘•É¥¹œÉ•µ…¥¸(Ðå$¸Í¸Ì¸É¸5•ÉÕÉäÉ•µ…¥¹Ì€Ðå$¸Í¸Ì¸Ìì¹¼€ÍÙ¥ÍÕ…±¥é•È¥Ì¥¹ÍÑ…±±•¸(((ŒŒÉ…Ý…‰±”™É½é•¸µ…ÉÑ Y•¹ÕÌ‘¥Í¬Í•ÅÕ•¹”()5¥±•ÍÑ½¹”€Ðå$¸Í¸Ì¸É¥¹ÍÑ…±±ÌÑ¡”…•ÁÑ•™É½é•¸½¹ÍÑÉÕÑ¥½¸¥¸É•¥½¹…°)¡…ÉÑÌ¸á…ÐÍÑ…ÉÐµ¥¹±ÕÍ¥Ù”Y•¹ÕÌÍÑ…Ñ•ÌÍ¡…É”½É‘¥¹…Éä¥±±Õµ¥¹…Ñ•°±¥µˆ°)Ñ•Éµ¥¹…Ñ½È°½ÁÑ¥½¹…°µ±…‰•°°…¹•¹ÑÉ…°™¥á•µMÕ¸ÍÁ¡•É¥…°±…å•ÉÌ¸… Y•¹ÕÌ)‘¥Í¬¥Ìµ…¹¥™¥•…™Ñ•ÈÁÉ½©•Ñ¥½¸…‰½ÕÐ¥ÑÌ½Ý¸Á¡åÍ¥…°•¹ÑÉ”¸()Q¡”É•ÍÑÉ¥Ñ•Í•¹”Á•Éµ¥ÑÌ½¹±äÑ¡½Í”Í•ÅÕ•¹”±…å•ÉÌ°Ñ¡”™¥á•MÕ¸°…¸)½ÁÑ¥½¹…°•ÅÕ…Ñ½É¥…°É¥°…¹…¸•áÁ±¥¥Ñ±äÉ•ÅÕ•ÍÑ••±¥ÁÑ¥ŒÉ•™•É•¹”¸Q¡”)•±¥ÁÑ¥Œ¥Ì±…Ñ¥ÑÕ‘”é•É¼¥¸Ñ¡”™¥á•ÁÉ½‘ÕÐ™É…µ”ìÑ¡”•ÅÕ…Ñ½É¥…°É¥¥Ì)ÑÉ…¹Í™½Éµ•‘¥É•Ñ±ä™É½´,Ô¥¹Ñ¼Ñ¡½Í”Í…µ”(ÈÀÀÀµ•…¸µ•±¥ÁÑ¥Œ…á•Ì¸9•¥Ñ¡•È)É•™•É•¹”‘•Á•¹‘Ì½¸½‰Í•ÉÙ•È±Ñè•½µ•ÑÉä¸ÕÑ½µ…Ñ¥Œ¹±¥Í …¹MÁ…¹¥Í )Ñ¥Ñ±•Ì…¹É•™•É•¹”±…‰•±ÌÕÍ”Ñ¡”É•Í½±Ù•¡…ÉÐ±…¹Õ…”¸()±°É•Ñ…¥¹•‘¥É•Ñ¥½¹ÌÉ•µ…¥¸™É½é•¸µ½‰Í•ÉÙ•È•½µ•ÑÉ¥Œ°¹½Ð…ÁÁ…É•¹ÐÍ­ä¸)5•ÉÕÉäÉ•µ…¥¹Ì€Ðå$¸Í¸Ì¸Ìì¹¼€ÍÙ¥ÍÕ…±¥é•È¥Ì¥¹ÍÑ…±±•¸(((ŒŒ5•ÉÕÉä•¹•É…±¥é…Ñ¥½¸…Õ‘¥Ð‰½Õ¹‘…Éä()Q¡”…•ÁÑ•5¥±•ÍÑ½¹”€Ðå$¸Í¸Ì¸Ì…Õ‘¥Ð½Ù•É¹Ì°‰ÕÐ‘½•Ì¹½Ð¥µÁ±•µ•¹Ð°)5•ÉÕÉäÉ•ÕÍ”¸Q¡”)…•ÁÑ•Í•ÅÕ•¹”É•ÅÕ•ÍÐ½É•ÍÕ±Ð…¹Á¡åÍ¥…°ÍÁ¡•É¥…°‘¥Í¬•½µ•ÑÉä…É”)…±É•…‘äÑ…É•ÐµÁ…É…µ•Ñ•É¥é•¸1$Í•±•Ñ¥½¸°‰½‘ä½¹ÍÑ…¹ÑÌ°‘É…Ý…‰±”±…å•ÉÌ°)ÍÑå±”±½½­ÕÀ°±•…¹ÕÀ°Í•µ…¹Ñ¥ŒÉ½½ÑÌ°±½…±¥é…Ñ¥½¸°…¹¥¹ÍÑ…±±•µ­•É¹•°)•Ù¥‘•¹”É•µ…¥¸Y•¹ÕÌµÍÁ•¥™¥Œ¸()Q¡”…ÕÑ¡½É¥é•™¥ÉÍÐÉÕ¹Ñ¥µ”Í±¥”¥Ì½ÕÑÁÕÐµ¹•ÕÑÉ…°5•ÉÕÉä‘•ÍÉ¥ÁÑ½È½É…‘¥ÕÌ)ÍÑ…Ñ”Á±ÕÌ…¸¥¹ÍÑ…±±•µÐÐÀ™É½é•¸µ…ÉÑ ½µÁ…É¥Í½¸¸=¹±ä„Í•Á…É…Ñ•±ä)…•ÁÑ•Í•½¹Í±¥”µ…ä•¹•É…±¥é”Ñ¡”‘É…Ý…‰±”™É½é•¸Í•ÅÕ•¹”¸9¼5•ÉÕÉä)ÉÕ¹Ñ¥µ”°ÁÕ‰±¥ŒÉ•ÅÕ•ÍÐ°ÍÑå±”°Í•µ…¹Ñ¥Œ½ÕÑÁÕÐ°½È¡…ÉÐ¥ÌÕÉÉ•¹Ñ±ä)¥¹ÍÑ…±±•¸(((ŒŒ=ÕÑÁÕÐµ¹•ÕÑÉ…°±Õ¹…ÈÁ¡åÍ¥…°…ÁÁ•…É…¹”()5¥±•ÍÑ½¹”€Ðå$¸Í¸ÄÉ•¥ÍÑ•ÉÌ½¹”¥µµÕÑ…‰±”5½½¸‰½‘ä‘•ÍÉ¥ÁÑ½ÈÝ¥Ñ Á¡åÍ¥…°)‰½‘ä%€ÌÀÅ€°…ÉÑ Á…É•¹ÐÉ•±…Ñ¥½¹Í¡¥À°)A0•ÅÕ…°µÙ½±Õµ”µ•…¸É…‘¥ÕÌ)€ÄÜÌÜ¸Ð­µ€°±½…±¥é…Ñ¥½¸°Íåµ‰½±¥Œ½µë«h‘éì¶»§q«^uÑ¥½¸Í•…´¸Q¡”…•ÁÑ•½µÁ…É¥Í½¸¥¸)…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ðå©}Á•É™½Éµ…¹”½™¥á•‘}Í­å}É•ÕÍ•}•ÅÕ¥Ù…±•¹•|Ðå¨Õˆ¹µ‘€)µ…Ñ¡•Ì¥Ð•á…Ñ±äÝ¥Ñ Ñ¡”½±½É…±”°…¹)…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼Ðå©}Á•É™½Éµ…¹”½Á•É™½Éµ…¹•}±½ÍÕÉ•|Ðå¨Ø¹µ‘€±½Í•Ì(Ðå(¸)Q¡”™¥á•µÍ­ä½É¡•ÍÑÉ…Ñ½Èµ…äÉ•ÕÍ”½¹”½‰Í•ÉÙ•Èµ¥¹‘•Á•¹‘•¹Ð…¹½¹¥…°ÍÁ¡•É”°)‰ÕÐ•… ™É…µ”ÍÕÁÁ±¥•Ì„™É•Í ½‰Í•ÉÙ•ÈÑ¼Ñ¡”Õ¹¡…¹•½µÁ±•Ñ”É•ÅÕ•ÍÐ)É½ÕÑ”¸Q¡”½±¥¹‘•Á•¹‘•¹Ðµ™É…µ”•á•ÕÑ¥½¸É•µ…¥¹ÌÑ¡”‘•™…Õ±Ð½É…±”¸((ŒŒ5¥¹½Èµ‰½‘äÁÉ½Ù¥‘•È‰½Õ¹‘…Éä€¡…•ÁÑ•5¥±•ÍÑ½¹”€ÔÁ¸À¤()…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼ÔÁ…}µ¥¹½É}‰½‘¥•Ì½µ¥¹½É}‰½‘å}Í¥•¹Ñ¥™¥}ÁÉ½Ù¥‘•É}…Õ‘¥Ñ|ÔÁ„À¹µ‘€)…•ÁÑÌÑ¡”ÁÉ½Ù¥‘•È‰½Õ¹‘…ÉäÝ¥Ñ¡½ÕÐ¡…¹¥¹œ¥µÁ±•µ•¹Ñ•…É¡¥Ñ•ÑÕÉ”¸)ÍÑ•É½¥‘Ì…¹½µ•ÑÌµÕÍÐÍÑ¥±°ÁÉ½‘Õ”Ñ¡”•á¥ÍÑ¥¹œ•½µ•ÑÉ¥Œ)Á¡•µ•É¥ÍMÑ…Ñ•€°Ñ¡•¸ÕÍ”Ñ¡”…•ÁÑ•…ÍÑÉ½µ•ÑÉ¥Œ½…ÁÁ…É•¹ÐÉ•…±¥é…Ñ¥½¸…¹)‘•ÍÉ¥ÁÑ½Èµ‘É¥Ù•¸µ½Ù¥¹œµ‰½‘äÁ¥Á•±¥¹”¸Q¡”™¥ÉÍÐÍ½ÕÉ”¥Ì„‰½Õ¹‘•±½…°)!½É¥é½¹ÌÍµ…±°µ‰½‘äMA,Ý¥Ñ …¸•áÁ±¥¥Ð½µÁ…¹¥½¸Á±…¹•Ñ…ÉäµÉ•Í½ÕÉ”¡…¥¸ì)É•¹‘•É¥¹œÉ•µ…¥¹Ì½™™±¥¹”…¹¹¼ÑÝ¼µ‰½‘ä•±•µ•¹ÐÁÉ½Á……Ñ½È¥Ì…¸¥µÁ±¥¥Ð)™…±±‰…¬¸Q¡”¹•áÐ…ÕÑ¡½É¥é•¥µÁ±•µ•¹Ñ…Ñ¥½¸¥ÌÑ¡”€ÔÁ¸ÄÁÉ½Ù¥‘•È½É•Í½ÕÉ”)Í•…´½¹±ä¸((ŒŒ5¥¹½Èµ‰½‘äÍÑ…Ñ”µÁÉ½Ù¥‘•ÈÍ•…´€¡5¥±•ÍÑ½¹”€ÔÁ¸Ä…•ÁÑ•¤()•Á¡•µ•É¥Ì¹Áå€¹½Ü…‘µ¥ÑÌ•¥Ñ¡•È½¹”Á¡•µ•É¥ÍI•Í½ÕÉ•%‘•¹Ñ¥Ñå€½È…¸•áÁ±¥¥Ð)Á¡•µ•É¥ÍI•Í½ÕÉ•¡…¥¹€½¸„•½µ•ÑÉ¥ŒÍÑ…Ñ”¸á¥ÍÑ¥¹œÁ±…¹•Ñ…ÉäÍÑ…Ñ•ÌÉ•Ñ…¥¸)Ñ¡•¥È½É¥¥¹…°Í¥¹±”µÉ•Í½ÕÉ”¥‘•¹Ñ¥Ñä¸µ¥¹½É}‰½‘å}•Á¡•µ•É¥Ì¹Áå€…‘‘Ì„)™É½é•¸!½É¥é½¹ÌÍ½±ÕÑ¥½¸¥‘•¹Ñ¥Ñä…¹…¸Õ¹½¹¹•Ñ•)M­å™¥•±‘5¥¹½É	½‘åMÑ…Ñ•M½ÕÉ•€Ñ¡…Ð‰½ÉÉ½ÝÌ„Íµ…±°µ‰½‘ä­•É¹•°°„Á±…¹•Ñ…Éä)ÍÑ…Ñ”Í½ÕÉ”°…¹„Ñ¥µ•Í…±”¸)%ÑÌ™É½é•¸5¥¹½É	½‘åÁ¡•µ•É¥ÍMÑ…Ñ•€É•µ…¥¹Ì…¸Á¡•µ•É¥ÍMÑ…Ñ•€Ý¡¥±”É•Ñ…¥¹¥¹œ)Ñ¡”ÑåÁ•½É‰¥ÐÍ½±ÕÑ¥½¸…¹Í•±•Ñ•MA,Í•µ•¹Ð½¸•… É•ÍÕ±Ð¸()Q¡”Íµ…±°µ‰½‘äÍ•µ•¹ÐÍÕÁÁ±¥•ÌÑ…É•ÐÉ•±…Ñ¥Ù”Ñ¼¥ÑÌ‘•±…É••¹ÑÉ”¸Q¡”)Á±…¹•Ñ…ÉäÍ½ÕÉ”ÍÕÁÁ±¥•ÌÑ¡…Ð¹Õµ•É¥Œ•¹ÑÉ”É•±…Ñ¥Ù”Ñ¼Ñ¡”É•ÅÕ•ÍÑ••¹ÑÉ”)…ÐÑ¡”Í…µ”Q¥¹ÍÑ…¹Ð¸Q¡•¥ÈÁ½Í¥Ñ¥½¹Ì…¹Ù•±½¥Ñ¥•Ì…É”½µÁ½Í•½¹±ä…™Ñ•È)Ñ¡”‘•Á•¹‘•¹äÉ•ÅÕ•ÍÐ°É•Í½ÕÉ”°™É…µ”°…¹T½Tµ‘…äÕ¹¥ÑÌ…É”Ù…±¥‘…Ñ•¸)9¼½‰Í•ÉÙ•È°±¥¡ÐµÑ¥µ”°…ÁÁ…É•¹ÐµÁ±…”°ÍÁ¡•É¥…°µ•½µ•ÑÉä°…Ñ…±½œ°¡…ÉÐ°½È)½ÕÑÁÕÐ½Ý¹•È½¹ÍÕµ•ÌÑ¡¥ÌÁÉ½Ù¥‘•Èå•Ð¸()5¥±•ÍÑ½¹”€ÔÁ¸È…‘‘ÌMÁ¥•5¥¹½É	½‘å-•É¹•±€…ÌÑ¡”•áÁ±¥¥Ð½Ý¹•È½˜½¹”±½…°)!½É¥é½¹Ì½MA,¡…¹‘±”¸%Ð•Ù…±Õ…Ñ•Ì„Í•±•Ñ•ÑåÁ”´ÈÄ‘•ÍÉ¥ÁÑ½ÈÑ¡É½Õ )MA%ÍÁ­ÁÙ¸ ¥€Ý¥Ñ¡½ÕÐ™ÕÉ¹¥Í¡¥¹œ„±½‰…°­•É¹•°½È…±±½Ý¥¹œ¡¥‘‘•¸MA%)½µÁ½Í¥Ñ¥½¸¸Q¡”•á¥ÍÑ¥¹œ…ÍÑÉ½µ•ÑÉ¥ŒÉ•…±¥é•È¹½Ü…•ÁÑÌ„Ñ…É•ÐÉ•Í½ÕÉ”)¡…¥¸½¹±äÝ¡•¸¥Ð•áÁ±¥¥Ñ±ä½¹Ñ…¥¹ÌÑ¡”½‰Í•ÉÙ•ÈÌÁ±…¹•Ñ…ÉäÉ•Í½ÕÉ”ì)M­å™¥•±É•µ…¥¹ÌÑ¡”ÐÐÀ°½‰Í•ÉÙ•ÈµÍÑ…Ñ”°…¹…ÁÁ…É•¹ÐµÁ±…”½Ý¹•È¸Q¡¥ÌÍ•…´)¥Ì•á•É¥Í•½¹±ä‰äÑ¡”Ù…±¥‘…Ñ½È…¹É•µ…¥¹ÌÕ¹½¹¹•Ñ•Ñ¼„‰½‘ä½È¡…ÉÐ¸((ŒŒÉ…Ý…‰±”•É•ÌÁ½¥¹Ð…¹ÑÉ…¬€¡5¥±•ÍÑ½¹”€ÔÁ¸Í…•ÁÑ•¤()…É¡¥Ù”½µ¥±•ÍÑ½¹•}¡¥ÍÑ½Éä¼ÔÁ…}µ¥¹½É}‰½‘¥•Ì½‘É…Ý…‰±•}•É•Í|ÔÁ„Íˆ¹µ‘€É•½É‘ÌÑ¡”…•ÁÑ•‰½Õ¹‘•)•É•Ì½¹¹•Ñ¥½¸¸IM}	=e€©½¥¹ÌÑ¡”‘•ÍÉ¥ÁÑ½È…Ñ…±½œÝ¥Ñ „ÍÑ…‰±”)µ¥¹½Èµ‰½‘ä¥‘•¹Ñ¥Ñä…¹Íåµ‰½±¥ŒµÁ½¥¹ÐÁ±ÕÌ…ÁÁ…É•¹ÐµÑÉ…¬…Á…‰¥±¥Ñ¥•Ì¸)5¥¹½É	½‘åI•Í½ÕÉ•M•ÍÍ¥½¹€Ù…±¥‘…Ñ•Ì…¸•áÁ±¥¥Ð±½…°…ÅÕ¥Í¥Ñ¥½¸µ…¹¥™•ÍÐ°)½Á•¹ÌÑ¡”‘•±…É•MA,½¹”Á•È¡…ÉÐ‰Õ¥±°…¹ÍÕÁÁ±¥•Ì„‘•ÍÉ¥ÁÑ½Èµ…Ý…É”)Á¡•µ•É¥ÍM½ÕÉ•	¥¹‘¥¹€èÑ¡”•É•ÌÁÉ½Ù¥‘•È½Ý¹ÌÑ¡”Ñ…É•ÐÍÑ…Ñ”°Ý¡¥±”Ñ¡”)•á¥ÍÑ¥¹œÐÐÀ½M­å™¥•±ÁÉ½Ù¥‘•È½¹Ñ¥¹Õ•ÌÑ¼½Ý¸½‰Í•ÉÙ•ÈÍÑ…Ñ”…¹…ÁÁ…É•¹Ð)½ÉÉ•Ñ¥½¹Ì¸Q¡”Í¡…É•Á½¥¹Ð…¹ÑÉ…¬É•…±¥é•ÉÌ°™¥á•ÁÉ½‘ÕÐ™É…µ”°)ÁÉ½©•Ñ¥½¸°ÁÉ•Á…É…Ñ¥½¸°Í•µ…¹Ñ¥ŒMY°É•¹‘•É•ÉÌ°…¹•áÁ½ÉÑ•ÉÌÉ•µ…¥¸Ñ¡”)½É‘¥¹…ÉäÉ½ÕÑ”¸•É¹…¹‘¼…•ÁÑ•Ñ¡”µ…=LA9…¹Í•µ…¹Ñ¥ŒMYì€ÔÁ¸Ì¥Ì)±½Í•¸5¥±•ÍÑ½¹”€ÔÁ¸Í¹½ÜÙ•É¥™¥•ÌÑ¡”µ•É••áÁ±¥¥Ð1$½¹ÑÉ…ÐÙ¥ÍÕ…±±ä)‰•™½É”€ÔÁ¸Ð½µ•Ð¹Õµ•É¥…°Ù…±¥‘…Ñ¥½¸‰•¥¹Ì¸((ŒŒ=‰©•Ðµ•¹Ñ•É•É•¥½¹…°™É…µ¥¹œ…¹•áÁ±¥¥Ð1$Í•µ…¹Ñ¥Ì()áÁ±¥¥ÐÁ½¥¹Ðµ•¹Ñ•È¥‘•¹Ñ¥Ñä¥ÌÉ•Í½±Ù•‰•™½É”É•¥½¹…°¡…ÉÐ½¹ÍÑÉÕÑ¥½¸¸)•Ñ}½‰©•Ñ}•¹Ñ•È ¥€½Ù•É±½…‘Ì™¥á•I•Í½±Ù•‘Q…É•Ñ€Ù…±Õ•Ì…¹)‘•ÍÉ¥ÁÑ½Èµ‘É¥Ù•¸M½±…ÈµMåÍÑ•´‰½‘¥•Ì¥¹Ñ¼Ñ¡”Í…µ”…ÁÁ…É•¹Ð½‰Í•ÉÙ•È´)¡½É¥é½¹Ñ…°Á½¥¹Ð½¹ÑÉ…Ð¸I•¥½¹…°™É…µ¥¹œ½¹ÍÕµ•ÌÑ¡…ÐÉ•ÍÕ±ÐÝ¡¥±”Ñ¡”)½É‘¥¹…Éä‘•Ñ…¥°°ÍÁ…Ñ¥…°µÍ•±•Ñ¥½¸°ÁÉ½©•Ñ¥½¸°ÁÉ•Á…É…Ñ¥½¸°É•¹‘•É•È°…¹)•áÁ½ÉÐ½Ý¹•ÉÌÉ•µ…¥¸Õ¹¡…¹•¸É…Ý¥¹œÍ•±•Ñ½ÉÌ¹•Ù•ÈÍÕÁÁ±ä„•¹Ñ•È¸)A±…¹•ÑÌ°Ñ¡”5½½¸°¥¹ÍÑ…±±•…ÍÑ•É½¥‘Ì°Á…­…•ÍÑ•±±…È…¹‘••ÀµÍ­äÑ…É•ÑÌ°)…¹•áÁ±¥¥Ð%IL½È¡½É¥é½¹Ñ…°½½É‘¥¹…Ñ•ÌÕÍ”Ñ¡”Í…µ”¡…ÉÐ™…µ¥±ä½¹±ä)Ñ¡É½Õ …¸•áÁ±¥¥Ð1$½È•™™•Ñ¥Ù”µ½¹™¥ÕÉ…Ñ¥½¸•¹Ñ•È¸)½¹ÍÑ•±±…Ñ¥½¸•½µ•ÑÉäÉ•µ…¥¹ÌÑ¡”¥¹‘•Á•¹‘•¹Ð•áÑ•¹‘•µÉ•¥½¸™É…µ¥¹œ…Í”¸((ŒŒ%¹ÍÑ…±±•µ1$µ½Ù¥¹œµ½‰©•ÐÁÉ•™±¥¡Ð()½È•á…Ð¹Õµ‰•É•…ÍÑ•É½¥‘Ì°Ý•¹Õ}¡…ÉÑ€É•Í½±Ù•Ì‘…Ñ„‰•™½É”‰Õ¥±‘¥¹œÑ¡”)¡…ÉÐ¸µ¥¹½É}‰½‘å}…ÅÕ¥Í¥Ñ¥½¸¹Áå€¥ÌÑ¡”Í½±”¹•ÑÝ½É¬…¹¥µµÕÑ…‰±”µ…¡”)½Ý¹•Èì¥ÐÉ•ÑÕÉ¹Ì„Ù•É¥™¥•±½…°µ…¹¥™•ÍÐµ‰…­•‘¥É•Ñ½Éä¸Q¡”É•ÅÕ•ÍÐ°)½½É‘¥¹…Ñ”°ÁÉ½©•Ñ¥½¸°É•¹‘•É¥¹œ°…¹•áÁ½ÉÐÁ¥Á•±¥¹”É•µ…¥¹Ì½™™±¥¹”¸AÕ‰±¥Œ)Á½±¥¥•Ì…É”…ÅÕ¥É”µ¥˜µµ¥ÍÍ¥¹€€¡‘•™…Õ±Ð¤°½™™±¥¹•€°…¹É•™É•Í¡€ì…¸)•áÁ±¥¥ÐÉ•Í½ÕÉ”‘¥É•Ñ½Éä¥Ì…ÕÑ¡½É¥Ñ…Ñ¥Ù”…¹É•…µ½¹±ä¸((ŒŒAÉ½Ù¥‘•Èµ¹•ÕÑÉ…°Í…Ñ•±±¥Ñ”É½ÍÍ¥¹œ‘½µ…¥¸€¡5¥±•ÍÑ½¹”€ÔÁL¸Ä…•ÁÑ•¤()Q¡”‘½Éµ…¹ÐÍ…Ñ•±±¥Ñ•}É½ÍÍ¥¹Ì¹Áå€‘½µ…¥¸‰½Õ¹‘…Éä‘•™¥¹•Ì¥µµÕÑ…‰±”)Í…Ñ•±±¥Ñ”¥‘•¹Ñ¥Ñä°Ñ•ÉÉ•ÍÑÉ¥…°½‰Í•ÉÙ•È½Í¥Ñ”°•áÁ±¥¥Ñ±ä™É…µ•±½Í•)¥ÉÕ±…È™¥•±°¥¹±ÕÍ¥Ù”UQ¥¹Ñ•ÉÙ…°°ÁÉ½Ù¥‘•È…¹‘¥‘…Ñ”°…¹¹½Éµ…±¥é•)½¹¹•Ñ•µÙ¥Í¥ÐÉ•ÍÕ±Ð½¹ÑÉ…ÑÌ¸%ÐÉ•ÕÍ•Ì½½É‘¥¹…Ñ•MÁ•€…¹¥Ì¹½Ð)•áÁ½ÉÑ•Ñ¡É½Õ Ñ¡”ÁÕ‰±¥ŒÁ…­…”™……‘”½È½¹ÍÕµ•‰äÑ¡”…¹½¹¥…°¡…ÉÐ)Á¥Á•±¥¹”¸9¼Í…Ñ•±±¥Ñ”…ÅÕ¥Í¥Ñ¥½¸°½É‰¥ÐÍ½±ÕÑ¥½¸°ÁÉ½Á……Ñ¥½¸°½½É‘¥¹…Ñ”)ÑÉ…¹Í™½Éµ…Ñ¥½¸°•á…ÐÉ½ÍÍ¥¹œÍ½±Ù•È°É•Á½ÉÐ°‘É…Ý¥¹œ°½È½ÕÑÁÕÐ¡…¹•Ì¥¸)Ñ¡¥Ì…•ÁÑ•µ¥±•ÍÑ½¹”¸•É¹…¹‘¼…•ÁÑ•Ñ¡”¥µÁ±•µ•¹Ñ…Ñ¥½¸½¸€ÈÀÈØ´Àä´ÄÔ)…™Ñ•È…±°€È°ÐÈàÑ•ÍÑÌÁ…ÍÍ•ìAH€ŒÄÈÌµ•É•¥Ð…Ì€ÈÍˆàÔÅ‰€¸(((ŒŒ€ÔÁL¸ÉM…Ñ¡•­•È…‘…ÁÑ•È‰½Õ¹‘…Éä€¡…•ÁÑ•¤()Q¡”‘•‘¥…Ñ•€ÔÁL¸Éµ¥±•ÍÑ½¹”‰É…¹ …‘‘Ì„‘½Éµ…¹ÐÍ…Ñ¡•­•È¹Áå€ÁÉ½Ù¥‘•È)‰½Õ¹‘…Éä¸%Ðµ…ÁÌ½¹±ä•½µ•ÑÉ¥ŒÑ½Á½•¹ÑÉ¥Œµ‘¥É•Ñ¥½¸%IL¥ÉÕ±…È™¥•±‘ÌÑ¼)Ñ¡”Ù•ÉÍ¥½¹•…Íå¹¡É½¹½ÕÌM…Ñ¡•­•È•¹‘Á½¥¹Ð°Á•É™½ÉµÌ•áÁ±¥¥ÐUQµÑ¼µUPÄ)½¹Ù•ÉÍ¥½¸Ý¥Ñ ÍÑÉ½Áä…ÕÑ½µ…Ñ¥Œ%IL‘½Ý¹±½…‘¥Í…‰±•°…¹•áÁ½Í•Ì½¹”µÍ¡½Ð)ÍÕ‰µ¥Ð ¥€…¹Á½±° ¥€½Á•É…Ñ¥½¹Ì¸Q¡•É”¥Ì¹¼É•ÑÉä°½¹ÕÉÉ•¹ä°¡¥‘‘•¸)Ý…¥Ð±½½À°¥µÁ½ÉÐµÑ¥µ”…•ÍÌ°¡…ÉÐµ½¹ÍÑÉÕÑ¥½¸…•ÍÌ°½È½É‘¥¹…ÉäµÑ•ÍÐ)¹•ÑÝ½É¬‘•Á•¹‘•¹ä¸()á…ÐÉ•ÍÁ½¹Í”‰åÑ•Ì‰•½µ”¥µµÕÑ…‰±”M!´ÈÔØµ…‘‘É•ÍÍ•±½…°É••¥ÁÑÌ¸)M…Ñ¡•­•É…¡•€­•åÌÑ¡”½µÁ±•Ñ”]•¹ÔÉ•ÅÕ•ÍÐ°ÑÉ…¹Íµ¥ÑÑ•Á…É…µ•Ñ•ÉÌ°)É•Í½±Ù••¹‘Á½¥¹Ð°…ÉÑ µ½É¥•¹Ñ…Ñ¥½¸¥‘•¹Ñ¥Ñä°…¹…‘…ÁÑ•ÈÍ¡•µ„°…¹Ù…±¥‘…Ñ•Ì)‰½Ñ É•ÍÁ½¹Í”‰åÑ•Ì…¹ÍÑ½É•¹½Éµ…±¥é•¥¹Ñ•ÉÁÉ•Ñ…Ñ¥½¸½¸É•ÕÍ”¸MÕ•ÍÍ™Õ°)ÁÉ½Ù¥‘•È½ÕÑÁÕÐ‰•½µ•ÌM…Ñ•±±¥Ñ•É½ÍÍ¥¹…¹‘¥‘…Ñ•€Ý¥Ñ ½É‘•É•)M…Ñ¡•­•ÉM…µÁ±•€•Ù¥‘•¹”¸Q¡”…‘…ÁÑ•È‘½•Ì¹½ÐÉ•…Ñ”)M…Ñ•±±¥Ñ•É½ÍÍ¥¹I•ÍÕ±Ñ€°•á…ÐÉ½ÍÍ¥¹œ•Ù•¹ÑÌ°Í…Ñ•±±¥Ñ”ÍÑ…Ñ•Ì°)¥±±Õµ¥¹…Ñ¥½¸Á¡åÍ¥Ì°É•Á½ÉÑÌ°ÑÉ…­Ì°ÁÉ½©•Ñ¥½¸°É•¹‘•É¥¹œ°½È•áÁ½ÉÐ¸•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•Ñ¡¥Ì¥µÁ±•µ•¹Ñ…Ñ¥½¸½¸(ÈÀÈØ´Àä´ÄÔ¸Q¡”™½ÕÍ•ÁÉ½Ù¥‘•È½‘½µ…¥¸…Ñ”Á…ÍÍ•…±°€ÐÔÑ•ÍÑÌ¥¸€Ä¸Üä)Í•½¹‘Ì°Ñ¡”•áÁ…¹‘•™½ÕÍ•…Ñ”Á…ÍÍ•…±°€ÄØàÑ•ÍÑÌ¥¸€Ì¸àäÍ•½¹‘Ì°…¹)Ñ¡”½µÁ±•Ñ”Á±Õ¥¸µ‘¥Í…‰±•ÍÕ¥Ñ”Á…ÍÍ•…±°€È°ÐÔÜÑ•ÍÑÌ¥¸€àà¸ÐàÍ•½¹‘Ì¸)=¹±ä€ÔÁL¸ÌÉ•Á½ÉÑ¥¹œ…¹‘É…Ý¥¹œ¥Ì…ÕÑ¡½É¥é•¹•áÐ¸(((ŒŒ€ÔÁL¸ÍÍ…µÁ±•µ…¹‘¥‘…Ñ”ÁÉ•Í•¹Ñ…Ñ¥½¸‰½Õ¹‘…Éä€¡…•ÁÑ•¤()…¹‘¥‘…Ñ”€ÔÁL¸Í…‘‘Ì„‘½Éµ…¹ÐÉ•¹‘•É•Èµ¹•ÕÑÉ…°)Í…Ñ•±±¥Ñ•}ÁÉ•Í•¹Ñ…Ñ¥½¹Ì¹Áå€‰½Õ¹‘…Éä…¹ÑÝ¼½É‘¥¹…ÉäÍ­ä±…å•ÉÌ¥¸)Í­ä½Í…Ñ•±±¥Ñ•}…¹‘¥‘…Ñ•}±…å•È¹Áå€¸M…Ñ¡•­•ÉAÉ•Í•¹Ñ…Ñ¥½¹€…•ÁÑÌ½¹”)Ñ•Éµ¥¹…°M…Ñ¡•­•ÉI•ÍÁ½¹Í•€°É•Ñ…¥¹Ì¥ÑÌ•á…ÐÉ••¥ÁÐ‘¥•ÍÐ…¹¹½Éµ…±¥é•)ÅÕ•Éä½•Ù¥‘•¹”°Í½ÉÑÌ…¹‘¥‘…Ñ•Ì‰ä™Õ±°9=I…Ñ…±½Õ”¥‘•¹Ñ¥™¥•È°…¹•µ¥ÑÌ)‘•Ñ•Éµ¥¹¥ÍÑ¥Œ¡Õµ…¸µÉ•…‘…‰±”…¹Ù•ÉÍ¥½¹•)M=8ÁÉ½‘ÕÑÌ¸()M…Ñ•±±¥Ñ•…¹‘¥‘…Ñ•QÉ…­1…å•É€É•…±¥é•ÌÑÝ¼½Èµ½É”½É‘•É•Í…µÁ±•Ì…Ì½¹”)½Á•¸ÍÁ¡•É¥…°ÕÉÙ”…¹É•…±¥é•Ì„Í¥¹±•Ñ½¸…Ì½¹”Á½¥¹Ð¸)M…Ñ•±±¥Ñ•…¹‘¥‘…Ñ•M…µÁ±•Í1…å•É€•áÁ½Í•Ì½¹±äÍÕÁÁ±¥•Á½¥¹ÑÌÝ¥Ñ ½ÁÑ¥½¹…°)UQ±…‰•±Ì¸	½Ñ ½¹ÍÕµ”M…Ñ¡•­•É…¹‘¥‘…Ñ•Ù¥‘•¹•€°ÑÉ…¹Í™½É´Ñ¡É½Õ )½½É‘¥¹…Ñ•M•ÉÙ¥•€¥¹Ñ¼Ñ¡”É•ÅÕ•ÍÐÁÉ½‘ÕÐ™É…µ”°…¹Ñ¡•¸ÕÍ”)•±•ÍÑ¥…±MÁ¡•É”¹‘É…Ý}¡…ÉÐ ¥€°ÁÉ½©•Ñ¥½¸°ÁÉ•Á…É…Ñ¥½¸°É•¹‘•É•È°Í•µ…¹Ñ¥Œ)MY°…¹A9½A½MY•áÁ½ÉÐÕ¹¡…¹•¸()Q¡”ÍÑ…‰±”Í•µ…¹Ñ¥ŒÉ½½ÑÌ…É”)Í­ä½…ÉÑ¥™¥¥…±}Í…Ñ•±±¥Ñ•Ì½Í…Ñ¡•­•É}…¹‘¥‘…Ñ•Ì½¹½É…‘|ñ¥ø½Í…µÁ±•‘}ÑÉ…­€)…¹€¸¸¸½Í…µÁ±•Í€¸9¼•¹ÑÉä°•á¥Ð°±½Í•ÍÐ…ÁÁÉ½… °¥¹Ñ•ÉÁ½±…Ñ¥½¸°)ÁÉ½Á……Ñ¥½¸°ÁÉ½Ù¥‘•È…•ÍÌ°¥±±Õµ¥¹…Ñ¥½¸…±Õ±…Ñ¥½¸°µ…¹¥ÑÕ‘”°½È‘•Ñ•Ñ½È)±…¥´¥Ì¥¹ÑÉ½‘Õ•¸•É¹…¹‘¼Ù¥ÍÕ…±±ä…•ÁÑ•Ñ¡”¹•ÑÝ½É¬µ™É•”Íå¹Ñ¡•Ñ¥ŒÑ•áÐÉ•Á½ÉÐ…¹•¹Ñ•É•)½X¡…ÉÐ½¸€ÈÀÈØ´Àä´ÄÔ…™Ñ•Èµ…Ñ¡¥¹œA9°A°…¹Í•µ…¹Ñ¥ŒMY¥¹ÍÁ•Ñ¥½¸¸)Q¡”™¥¹…°™½ÕÍ•‰½Õ¹‘…ÉäÁ…ÍÍ•…±°€ÈÄÜÑ•ÍÑÌ°…¹Ñ¡”½µÁ±•Ñ”Á±Õ¥¸µ‘¥Í…‰±•)ÍÕ¥Ñ”Á…ÍÍ•…±°€È°ÐÜÌÑ•ÍÑÌ¥¸€àÌ¸äàÍ•½¹‘Ì¸•É¹…¹‘¼…•ÁÑ•Ñ¡”¥µÁ±•µ•¹Ñ…Ñ¥½¸…¹¥ÑÌÍ¥•¹Ñ¥™¥Œ‰½Õ¹‘…É¥•Ì½¸(ÈÀÈØ´Àä´ÄÔ¸Q¡¥Ì±½Í•Ì€ÔÁL¸Íì½¹±ä€ÔÁL¸ÐÍ¹…ÁÍ¡½Ð°ÁÉ½Á……Ñ¥½¸°…¹ÍÁ•¥µ•¸)‰Õ¥±‘•ÈÝ½É¬¥Ì…ÕÑ¡½É¥é•¹•áÐ¸(((ŒŒ•ÁÑ•€ÔÁL¸ÑÍ¹…ÁÍ¡½Ð…¹ÁÉ½Á……Ñ¥½¸…Õ‘¥Ð()Q¡”…Ìµ¥ÌÉ•Ù¥•Ü™¥¹‘Ì¹¼ÁÉ½‘ÕÑ¥½¸½Ý¹•È™½È…¹½¹¥…°=54½@É•½É‘Ì°)¥µµÕÑ…‰±”Í…Ñ•±±¥Ñ”•±•µ•¹ÐÍ¹…ÁÍ¡½ÑÌ°•½µ•ÑÉ¥ŒQ5ÁÉ½Á……Ñ¥½¸É••¥ÁÑÌ°½È)Ñ¡”Q5½…ÉÑ µ½É¥•¹Ñ…Ñ¥½¸½Ñ½Á½•¹ÑÉ¥ŒÍÑ…Ñ”¡…¥¸¸Q¡”…•ÁÑ•M…Ñ¡•­•È°)ÁÉ½Ù¥‘•Èµ¹•ÕÑÉ…°É½ÍÍ¥¹œ°ÁÉ•Í•¹Ñ…Ñ¥½¸°•¹•É¥Œ…ÉÑ•Í¥…¸µÍÑ…Ñ”°½½É‘¥¹…Ñ”°)¡…ÉÐ°…¹É•¹‘•É•Èµ½‘Õ±•Ì‘¼¹½Ð½Ý¸Ñ¡½Í”É•ÍÁ½¹Í¥‰¥±¥Ñ¥•Ì¸()•É¹…¹‘¼…•ÁÑ•Ñ¡”‘½Õµ•¹Ñ…Ñ¥½¸µ½¹±ä½¹ÑÉ…Ð…Õ‘¥Ð½¸€ÈÀÈØ´Àä´ÄÔ…™Ñ•È)Ñ¡”™½ÕÍ•…Ñ”Á…ÍÍ•…±°€ÄÈàÑ•ÍÑÌ…¹Ñ¡”‰É…¹ ‘¥™˜¡•¬Ý…Ì±•…¸¸Q¡”)…•ÁÑ•½¹ÑÉ…Ð‘•™¥¹•Ì™¥Ù”‰½Õ¹‘•ÍÑ…•Ìè(ÔÁL¸Ñ½¹ÑÉ…Ð…•ÁÑ…¹”ì€ÔÁL¸ÑÍå¹Ñ¡•Ñ¥Œ¥¹ÍÑ…±±•Í¹…ÁÍ¡½Ð…¹•±•µ•¹Ð)‘½µ…¥¸ì€ÔÁL¸Ñ‘¥É•ÐÍÀÐøôÈ¸ÈÔ°ðÍ€]L´ÜÈÁÉ½Á……Ñ¥½¸¥¹Ñ¼ÑåÁ••½µ•ÑÉ¥Œ)Q5ÍÑ…Ñ”ì€ÔÁL¸Ñ¹¼µ‘½Ý¹±½…¥¹‘•Á•¹‘•¹Ñ±äÙ…±¥‘…Ñ•Ñ½Á½•¹ÑÉ¥Œ)ÑÉ…¹Í™½Éµ…Ñ¥½¸ì…¹€ÔÁL¸ÑÁÉ½Á……Ñ•Í…µÁ±•µÍÁ•¥µ•¸½¹ÍÑÉÕÑ¥½¸…¹)±½ÍÕÉ”¸€ÔÁL¸Ñ…‘‘•¹¼ÉÕ¹Ñ¥µ”‰•¡…Ù¥½È°‘•Á•¹‘•¹ä°Á…­…”‘…Ñ„°)ÁÉ½Á……Ñ¥½¸°ÑÉ…¹Í™½Éµ…Ñ¥½¸°½ÈÉ½ÍÍ¥¹œÉ•ÍÕ±Ð¸•ÁÑ…¹”±½Í•Ì€ÔÁL¸Ñ…¹)…ÕÑ¡½É¥é•Ì½¹±ä€ÔÁL¸Ñ¥µµÕÑ…‰±”=54•±•µ•¹Ð…¹Í¹…ÁÍ¡½ÐÝ½É¬¸(((ŒŒ•ÁÑ•€ÔÁL¸Ñ¥µµÕÑ…‰±”•±•µ•¹ÐÍ¹…ÁÍ¡½Ð()Q¡”‘•‘¥…Ñ•µ¥±•ÍÑ½¹”‰É…¹ …‘‘ÌÑ¡”™¥ÉÍÐ‰½Õ¹‘•)ÍÉŒ½Ý•¹Ô½Í…Ñ•±±¥Ñ•Ì½€Á…­…”¸•±•µ•¹ÑÌ¹Áå€½Ý¹Ì¥µµÕÑ…‰±”°™…¥°µ±½Í•)…¹½¹¥…°=54½@É•½É‘ÌìÍ¹…ÁÍ¡½ÑÌ¹Áå€½Ý¹Ìµ…¹¥™•ÍÐÙ…±¥‘…Ñ¥½¸°)…¹½¹¥…°µ‰åÑ”…¹É•½Éµ±•Ù•°M!´ÈÔØÙ•É¥™¥…Ñ¥½¸°‘•Ñ•Éµ¥¹¥ÍÑ¥Œ™Õ±°µ9=I)½É‘•É¥¹œ°‘ÕÁ±¥…Ñ”É•©•Ñ¥½¸°¥µµÕÑ…‰±”±½½­ÕÀ°…¹¥¹ÍÑ…±±•µÉ•Í½ÕÉ”)±½…‘¥¹œ¸()Q¡”Á…­…•Íå¹Ñ¡•Ñ¥|ÔÁÌÑ‰}ØÅ€Í¹…ÁÍ¡½Ð½¹Ñ…¥¹Ì•á…Ñ±äÑ¡É•”)¡…¹µ…ÕÑ¡½É•¹½¸µ½Á•É…Ñ¥½¹…°1<µ±¥­”°5<µ±¥­”°…¹•½Íå¹¡É½¹½ÕÌµ±¥­”)É•½É‘ÌÝ¥Ñ Í¥àµ‘¥¥ÐÍå¹Ñ¡•Ñ¥Œ¥‘•¹Ñ¥™¥•ÉÌ¸9¼ÁÉ½Ù¥‘•ÈÉ•ÍÁ½¹Í”½ÈÑÉ…­•)½‰©•ÐÝ…Ì½Á¥•¸ÍÀÐøôÈ¸ÈÔ°ðÍ€¥Ì¹½Ü„‘¥É•Ð‘•Á•¹‘•¹ä°‰ÕÐÑ¡¥Ì)…¹‘¥‘…Ñ”…‘‘Ì¹¼ÁÉ½Á……Ñ½È½¹ÍÑÉÕÑ¥½¸°Q5ÍÑ…Ñ”°…ÉÑ µ½É¥•¹Ñ…Ñ¥½¸)ÑÉ…¹Í™½É´°½‰Í•ÉÙ•È‘¥É•Ñ¥½¸°É½ÍÍ¥¹œÉ•ÍÕ±Ð°…ÅÕ¥Í¥Ñ¥½¸°½ÈÉ•¹‘•É¥¹œ¸()ÐÁÉ½‘ÕÑ¥½¸½µµ¥ÐÍˆÔäÝ€°Ñ¡”•áÁ…¹‘•™½ÕÍ•…Ñ”Á…ÍÍ•…±°€ÄÔà)Ñ•ÍÑÌ…¹Ñ¡”½µÁ±•Ñ”Á±Õ¥¸µ‘¥Í…‰±•ÍÕ¥Ñ”Á…ÍÍ•…±°€È°ÐàÌÑ•ÍÑÌ¥¸€àÜ¸ÄÄ)Í•½¹‘Ì¸Ý¡••°‰Õ¥±Ð™É½´Ñ¡…Ð½µµ¥ÐÝ…Ì¥¹ÍÑ…±±•¥¹Ñ¼…¸¥Í½±…Ñ•Ù¥ÉÑÕ…°)•¹Ù¥É½¹µ•¹Ðì±½…‘}Í¹…ÁÍ¡½Ð ¥€±½…‘•™É½´Í¥Ñ”µÁ…­…•Í€°Ù•É¥™¥•)ˆÙ…ˆäÕ‘˜Í•ˆÄàÁˆÀÜØäÑˆÅˆå‰…™ÐÝŒÈàÀÕˆÙŒÝ•‰•„àØÌØÐäÁ‰••ŒÀÍÜÄÐÔÝ€°)…¹É•ÑÕÉ¹•Ñ¡”½É‘•É•¥‘•¹Ñ¥™¥•ÉÌ€äÀÀÀÀÄ°€äÀÀÀÀÈ°…¹€äÀÀÀÀÌ¸•É¹…¹‘¼)…•ÁÑ•Ñ¡”¥µÁ±•µ•¹Ñ…Ñ¥½¸…¹¥ÑÌ‰½Õ¹‘•Í¥•¹Ñ¥™¥Œ½Ý¹•ÉÍ¡¥À½¸(ÈÀÈØ´Àä´ÄÔ¸Q¡¥Ì±½Í•Ì€ÔÁL¸Ñ…¹…ÕÑ¡½É¥é•Ì½¹±ä€ÔÁL¸ÑÙ…±¥‘…Ñ•M@Ð½Q5)ÁÉ½Á……Ñ¥½¸¸(((ŒŒ•ÁÑ•€ÔÁL¸ÑÙ…±¥‘…Ñ•M@Ð½Q5ÁÉ½Á……Ñ¥½¸()Í…Ñ•±±¥Ñ•Ì½ÍÀÐ¹Áå€¹½Ü½Ý¹ÌÑ¡”‰½Õ¹‘•µ…ÁÁ¥¹œ™É½´½¹”…•ÁÑ•)M…Ñ•±±¥Ñ•±•µ•¹ÑI•½É‘€Ñ¼Ñ¡”ÕÁÍÑÉ•…´M…ÑÉ•€A$¸%¹¥Ñ¥…±¥é…Ñ¥½¸Á…ÍÍ•Ì)]L´ÜÈ•áÁ±¥¥Ñ±ä°É•Ñ…¥¹Ì¥µÁÉ½Ù•½Á•É…Ñ¥½¸µ½‘”°ÍÕÁÁ±¥•Ì•Ù…±Õ…Ñ¥½¸Ñ¥µ”…Ì)Í•Á…É…Ñ”)Õ±¥…¸µ‘…ä…¹™É…Ñ¥½¹…°µ‘…äÙ…±Õ•Ì°É…¥Í•Ì•Ù•Éä¹½¸µé•É¼M@Ð)ÍÑ…ÑÕÌ•áÁ±¥¥Ñ±ä°…¹É•ÑÕÉ¹Ì¥µµÕÑ…‰±”M…Ñ•±±¥Ñ•Q•µ•MÑ…Ñ•€Ù…±Õ•ÌÝ¥Ñ )•½•¹ÑÉ¥Œ•½µ•ÑÉ¥ŒQ5Á½Í¥Ñ¥½¸¥¸­¥±½µ•ÑÉ•Ì…¹Ù•±½¥Ñä¥¸­¥±½µ•ÑÉ•Ì)Á•ÈÍ•½¹¸()Q¡”ÝÉ…ÁÁ•ÈÉ•½É‘Ì½µÁ±•Ñ”Í…Ñ•±±¥Ñ”½Í½ÕÉ”½Í¹…ÁÍ¡½Ð¥‘•¹Ñ¥Ñä°…¹½¹¥…°UQ°)‰½Ñ )Õ±¥…¸µ‘…Ñ”½µÁ½¹•¹ÑÌ°•±•µ•¹Ð…”°M@ÐÁ…­…”Ù•ÉÍ¥½¸°¥µÁ±•µ•¹Ñ…Ñ¥½¸)‰…­•¹°]L´ÜÈ°½Á•É…Ñ¥½¸µ½‘”°ÍÑ…ÑÕÌ°ÁÉ½Ù•¹…¹”°…¹Ý…É¹¥¹Ì¸M…±…È…¹)…ÉÉ…äÉ½ÕÑ•ÌÍ¡…É”Ñ¡”Í…µ”ÍÑ…Ñ”½¹ÍÑÉÕÑ¥½¸ìÑ¡”…ÉÉ…äÉ½ÕÑ”ÕÍ•ÌÕÁÍÑÉ•…´)…•±•É…Ñ¥½¸Ý¡•¸…Ù…¥±…‰±”…¹½Ñ¡•ÉÝ¥Í”ÁÉ•Í•ÉÙ•ÌÑ¡”Í…±…È½¹ÑÉ…Ð¸()Q¡”…‘µ¥ÍÍ¥½¸É•Ù¥•Ü™½Õ¹Ñ¡…ÐÑ¡”™¥ÉÍÐÍå¹Ñ¡•Ñ¥Œ%Ì€äÀÀÀÀÇŠLäÀÀÀÀÌ•á••‘•)Ñ¡”ÕÁÍÑÉ•…´M…ÑÉ•€µ…á¥µÕ´€ÌÌääää¸Q¡”Í¹…ÁÍ¡½ÐÝ…ÌÑÉ…¹ÍÁ…É•¹Ñ±ä½ÉÉ•Ñ•)Ñ¼Ù…±¥Í¥àµ‘¥¥ÐÍå¹Ñ¡•Ñ¥Œ%Ì€ÌÀÀÀÀÇŠLÌÀÀÀÀÌ…¹•Ù•Éä…™™•Ñ•‘¥•ÍÐÝ…Ì)É••¹•É…Ñ•¸]•¹Ô‘½•Ì¹½ÐÁ…ÍÌ„¡¥‘‘•¸ÍÕÉÉ½…Ñ”¥‘•¹Ñ¥ÑäÑ¼M@Ð¸()A¥¹¹•Y…±±…‘¼Ù•É¥™¥…Ñ¥½¸…Í•Ì½Ù•È¹•…Èµ…ÉÑ Í…Ñ•±±¥Ñ”€Ô…¹‘••ÀµÍÁ…”)Í…Ñ•±±¥Ñ”€ÐØÌÈ…Ð•Á½ °Ý¡¥±”Ñ¡”ÕÁÍÑÉ•…´ÁÕ‰±¥Í¡•Ñ•Éµ¥¹…°µ•ÉÉ½È…Í”(ÐÐÄØÀÙ•É¥™¥•Ì•áÁ±¥¥Ð™…¥±ÕÉ”¸Q¡”…¹‘¥‘…Ñ”…‘‘Ì¹¼%QIL°½‰Í•ÉÙ•È°)Ñ½Á½•¹ÑÉ¥Œ‘¥É•Ñ¥½¸°É½ÍÍ¥¹œÍ½±Ù•È°…ÅÕ¥Í¥Ñ¥½¸°ÁÉ•Í•¹Ñ…Ñ¥½¸°½È)É•¹‘•É¥¹œ‰•¡…Ù¥½È¸()ÐÁÉ½‘ÕÑ¥½¸½µµ¥Ð”ÁÝŒÜá€°Ñ¡”•áÁ…¹‘•™½ÕÍ•…Ñ”Á…ÍÍ•…±°€ÄØÜ)Ñ•ÍÑÌ…¹Ñ¡”½µÁ±•Ñ”Á±Õ¥¸µ‘¥Í…‰±•ÍÕ¥Ñ”Á…ÍÍ•…±°€È°ÐäÈÑ•ÍÑÌ¥¸€àØ¸àà)Í•½¹‘Ì¸¸¥Í½±…Ñ•Ý¡••°¥¹ÍÑ…±±…Ñ¥½¸Ñ¡•¸±½…‘•]•¹Ô™É½´Í¥Ñ”µÁ…­…•Í€°)Ù•É¥™¥•½ÉÉ•Ñ•Í¹…ÁÍ¡½Ð‘¥•ÍÐ)€É”ÔÈàá„Ù……å™‰”Èå™”Ùå„ØÁ”ÀÀÐÕ‰”ÈàÔÀÄàÔåáŒÜÌäÄÌÕ™ÌÀÈÐØÁ•”Õ™•€°)…¹ÁÉ½Á……Ñ•…±°Ñ¡É•”¥‘•¹Ñ¥™¥•ÉÌÝ¥Ñ Q5½]L´ÜÈ½ÍÑ…ÑÕÌé•É¼¸(()•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€ÔÁL¸Ñ½¸€ÈÀÈØ´Àä´ÄÔ…™Ñ•ÈÑ¡”€ÄÔµÑ•ÍÐ¥¹¥Ñ¥…°…Ñ”°€ÄØÜµÑ•ÍÐ•áÁ…¹‘•…Ñ”°…±°€È°ÐäÈÑ•ÍÑÌ°Ñ¡”€ÄÌÈµÑ•ÍÐ‘½Õµ•¹Ñ…Ñ¥½¸…Ñ”°…¹¥¹ÍÑ…±±•µÝ¡••°ÁÉ½Á……Ñ¥½¸•Ù¥‘•¹”¸Q¡¥Ì±½Í•Ì€ÔÁL¸Ñ…¹…ÕÑ¡½É¥é•Ì½¹±ä€ÔÁL¸Ñ…ÉÑ µ½É¥•¹Ñ…Ñ¥½¸…¹Ñ½Á½•¹ÑÉ¥ŒÍÑ…Ñ”Ý½É¬¸(((ŒŒ•ÁÑ•€ÔÁL¸Ñ…ÉÑ µ½É¥•¹Ñ…Ñ¥½¸…¹Ñ½Á½•¹ÑÉ¥ŒÍÑ…Ñ”()Q¡”…•ÁÑ•¥µÁ±•µ•¹Ñ…Ñ¥½¸…‘‘ÌÍ…Ñ•±±¥Ñ•Ì½Ñ½Á½•¹ÑÉ¥Œ¹Áå€…ÌÑ¡”½Ý¹•È½˜Ñ¡”)…ÉÑ•Í¥…¸Q5ƒŠH•½•¹ÑÉ¥Œ%QILƒŠH½‰Í•ÉÙ•ÈµÍÕ‰ÑÉ…Ñ•Ñ½Á½•¹ÑÉ¥Œ%QIL¡…¥¸¸)%Ð½¹ÍÕµ•Ì…¸…•ÁÑ•M…Ñ•±±¥Ñ•Q•µ•MÑ…Ñ•€…¹M…Ñ•±±¥Ñ•=‰Í•ÉÙ•É€°Í•±•ÑÌ)Ñ¡”¥¹ÍÑ…±±•‰Õ¹‘±•%ILµ™¥±”•áÁ±¥¥Ñ±äÝ¥Ñ …ÕÑ½µ…Ñ¥Œ‘½Ý¹±½…‘¥Í…‰±•°)…¹É•½É‘ÌÑ¡”™¥±”M!´ÈÔØ°¥¹ÍÑ…±±•Á…­…”Ù•ÉÍ¥½¹Ì°½Ù•É…”°UPÇŠ"IUQ°)Á½±…Èµ½Ñ¥½¸°…¹¥¹Ñ•ÉÁ½±…Ñ¥½¸ÍÑ…ÑÕÍ•Ì¸%¹ÍÑ…¹ÑÌ½ÕÑÍ¥‘”Ñ¡”¥¹ÍÑ…±±•Ñ…‰±”)½Ù•É…”™…¥°±½Í•¸()Q¡”¥µµÕÑ…‰±”M…Ñ•±±¥Ñ•Q½Á½•¹ÑÉ¥MÑ…Ñ•€É•Ñ…¥¹ÌÍ…Ñ•±±¥Ñ”°½‰Í•ÉÙ•È°Q5°)%QIL°Ñ½Á½•¹ÑÉ¥Œ…ÉÑ•Í¥…¸°É…¹”°Ù…ÕÕ´±Ñè°…¹½½É‘¥¹…Ñ”½ÁÉ½Ù•¹…¹”)•Ù¥‘•¹”¸%ÑÌ•±•ÍÑ¥…°Ù…±Õ•Ì…É”„Ñ½Á½•¹ÑÉ¥Œ•½µ•ÑÉ¥ŒÙ•Ñ½È•áÁÉ•ÍÍ•¥¸)IL…á•ÌìÑ¡•ä…É”‘•±¥‰•É…Ñ•±ä¹½Ð±…‰•±±•%IL°„IL½½É‘¥¹…Ñ”°)…ÍÑÉ½µ•ÑÉ¥Œ°…ÁÁ…É•¹Ð°½È½‰Í•ÉÙ•¸Q¡”•¹•É¥Œ½½É‘¥¹…Ñ•M•ÉÙ¥•€É•µ…¥¹Ì)Õ¹¡…¹•‰•…ÕÍ”¥ÐÑÉ…¹Í™½ÉµÌ…±É•…‘äÉ•ÁÉ•Í•¹Ñ•ÍÁ¡•É¥…°•½µ•ÑÉäÉ…Ñ¡•È)Ñ¡…¸Í…Ñ•±±¥Ñ”…ÉÑ•Í¥…¸ÍÑ…Ñ”¸()Q¡”¥¹¥Ñ¥…°€ÄÜµÑ•ÍÐÑ½Á½•¹ÑÉ¥Œ…Ñ”°€àäµÑ•ÍÐ•áÁ…¹‘•Í…Ñ•±±¥Ñ”½½½É‘¥¹…Ñ”)…Ñ”°€ÄÌÌµÑ•ÍÐ‘½Õµ•¹Ñ…Ñ¥½¸…Ñ”°…¹½µÁ±•Ñ”Á±Õ¥¸µ‘¥Í…‰±•ÍÕ¥Ñ”½˜€È°ÔÄÄ)Ñ•ÍÑÌ¥¸€äÔ¸ÄÀÍ•½¹‘ÌÁ…ÍÌ½¸•É¹…¹‘¼Ì5…Œ¸Q¡”™¥¹…°‘¥™˜¡•¬¥Ì±•…¸¸)•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€ÔÁL¸Ñ½¸€ÈÀÈØ´Àä´ÄÔ¸)•ÁÑ…¹”±½Í•ÌÑ¡”…ÉÑ µ½É¥•¹Ñ…Ñ¥½¸½Ñ½Á½•¹ÑÉ¥Œ‰½Õ¹‘…Éä…¹…ÕÑ¡½É¥é•Ì)½¹±ä‰½Õ¹‘•€ÔÁL¸ÑÁÉ½Á……Ñ•µÍÁ•¥µ•¸‰Õ¥±‘•ÈÝ½É¬¸9¼É½ÍÍ¥¹œ°™¥•±)¥¹Ñ•ÉÍ•Ñ¥½¸°¥±±Õµ¥¹…Ñ¥½¸°Á¡½Ñ½µ•ÑÉä°1$°¡…ÉÐ°½ÈÍÁ•¥µ•¸‰•¡…Ù¥½È¥Ì)…‘‘•‰ä€ÔÁL¸Ñ¸((ŒŒŒ•ÁÑ•€ÔÁL¸ÑÁÉ½Á……Ñ•Í…µÁ±•ÍÁ•¥µ•¹Ì()Ñ½½±Ì½‰Õ¥±‘|ÔÁÌÑ}Í…Ñ•±±¥Ñ•}ÍÁ•¥µ•¹Ì¹Áå€¥ÌÑ¡”…¹‘¥‘…Ñ”‘•Ù•±½Á•Èµ½¹±ä(ÔÁL¸Ñ½µÁ½Í¥Ñ¥½¸‰½Õ¹‘…Éä¸%Ð±½…‘ÌÑ¡”¥¹ÍÑ…±±•)Íå¹Ñ¡•Ñ¥|ÔÁÌÑ‰}ØÅ€Í¹…ÁÍ¡½Ð°ÁÉ½Á……Ñ•Ì¥ÑÌ½É‘•É•É•½É‘ÌÑ¡É½Õ Ñ¡”)…•ÁÑ•M@Ð½Q5…¹Ñ½Á½•¹ÑÉ¥Œ¡…¥¹Ì°…¹ÝÉ¥Ñ•Ì½¹”‘•Ñ•Éµ¥¹¥ÍÑ¥Œ)M=8)‘½Õµ•¹Ð½¹±ä‰•¹•…Ñ „…±±•ÈµÍ•±•Ñ•½ÕÑÁÕÐ‘¥É•Ñ½Éä¸()Q¡”‘½Õµ•¹ÐÉ•½É‘ÌÑ¡”Í¹…ÁÍ¡½Ð‘¥•ÍÐ…¹É•½É¥‘•¹Ñ¥Ñä°•Ù…±Õ…Ñ¥½¸É¥°)½‰Í•ÉÙ•È°•á…Ð…ÉÑ µ½É¥•¹Ñ…Ñ¥½¸É•Í½ÕÉ”°ÁÉ½Á……Ñ½È¥‘•¹Ñ¥Ñä°Í½™ÑÝ…É”)Ù•ÉÍ¥½¸°Í…µÁ±•Q5ÍÑ…Ñ•Ì°Í…µÁ±•Ñ½Á½•¹ÑÉ¥ŒÍÑ…Ñ•Ì°…¹‰½Õ¹‘•ÅÕ•Éä)¥¹ÁÕÑÌ¸%Ð¥Ì±…‰•±±•€¨©ÁÉ½Á……Ñ•Í…µÁ±•ÍÁ•¥µ•¹ÌƒŠP¹½ÐÙ•É¥™¥•)É½ÍÍ¥¹Ì¨¨¸%Ð¡…Ì¹¼¹•ÑÝ½É¬±¥•¹Ð°‘½•Ì¹½Ð½¹ÍÑÉÕÐ)M…Ñ•±±¥Ñ•É½ÍÍ¥¹I•ÍÕ±Ñ€°‘½•Ì¹½Ð™¥¹•¹ÑÉä½•á¥Ð½È±½Í•ÍÐ…ÁÁÉ½… °…¹)‘½•Ì¹½Ð‘•™¥¹”ÁÉ½‘ÕÑ¥½¸Í½±Ù•ÈÑ½±•É…¹•Ì½È¥µÁ±•µ•¹Ð€ÔÁL¸Ô¸((ŒŒŒŒ•ÁÑ•€ÔÁL¸Ñ…Ñ”•Ù¥‘•¹”()=¸µ…=LÝ¥Ñ AåÑ¡½¸€Ì¸ÄÄ¸Ü°Ñ¡”‘•‘¥…Ñ•‰Õ¥±‘•È…Ñ”Á…ÍÍ•…±°€ÄÀÑ•ÍÑÌ¥¸(ÄÀ¸ÔàÍ•½¹‘Ì°Ñ¡”•áÁ…¹‘•Í…Ñ•±±¥Ñ”½½½É‘¥¹…Ñ”…Ñ”Á…ÍÍ•…±°€ääÑ•ÍÑÌ¥¸(Äà¸ÀÜÍ•½¹‘Ì°Ñ¡”‘½Õµ•¹Ñ…Ñ¥½¸…Ñ”Á…ÍÍ•…±°€ÄÌÐÑ•ÍÑÌ¥¸€È¸ÐÔÍ•½¹‘Ì°)…¹Ñ¡”½µÁ±•Ñ”Á±Õ¥¸µ‘¥Í…‰±•ÍÕ¥Ñ”Á…ÍÍ•…±°€È°ÔÈÈÑ•ÍÑÌ¥¸€ÄÀÔ¸Ìà)Í•½¹‘Ì¸Q¡”•¹•É…Ñ•)M=8¡…M!´ÈÔØ)€ÄØÄÌÝ”äÌàÀÐÀÑ‘„ÀÌÜàäÔÌÉ…ˆÀÈåŒÐÄÔäÜÔÕŒØå‘É…ˆÁ„ÔääÁ„àÉåŒÐÈÌÜÑ€¸)Q¡”‰É…¹ Ý…Ì±•…¸…¹¥Ð‘¥™˜€´µ¡•¬€ÈÐÍˆÜÕŒ¸¸¹!€Á…ÍÍ•¸•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€ÔÁL¸Ñ½¸€ÈÀÈØ´Àä´ÄÔ¸()•ÁÑ…¹”±½Í•Ì€ÔÁL¸Ð¸Q¡”¹•áÐ…ÕÑ¡½É¥é•‰½Õ¹‘…Éä¥Ì½¹±ä‰½Õ¹‘•€ÔÁL¸Ô)½µÁ±•Ñ”±½…°½XµÉ½ÍÍ¥¹œ½É…±”Ý½É¬ì¹¼€ÔÁL¸Ø½ÁÑ¥µ¥é…Ñ¥½¸½È±…Ñ•È)Í…Ñ•±±¥Ñ”‰•¡…Ù¥½È¥Ì…ÕÑ¡½É¥é•¸(((ŒŒŒ•ÁÑ•€ÔÁL¸Õ½µÁ±•Ñ”µ½É…±”…Õ‘¥Ð()Q¡”‘½Õµ•¹Ñ…Ñ¥½¸µ½¹±ä€ÔÁL¸ÕÉ•Ù¥•Ü…‘‘Ì¹¼ÉÕ¹Ñ¥µ”‰•¡…Ù¥½È¸%Ð¥‘•¹Ñ¥™¥•Ì)Ñ¡”…•ÁÑ•€ÔÁL¸Ñ¼ÔÁL¸Ñ¡…¥¸…ÌÑ¡”½¹±ä±½…°ÑÉ…©•Ñ½Éä…ÕÑ¡½É¥Ñä°)É•Ñ…¥¹ÌÍ…Ñ•±±¥Ñ•}É½ÍÍ¥¹Ì¹Áå€…ÌÁÉ½Ù¥‘•Èµ¹•ÕÑÉ…°¥µµÕÑ…‰±”½¹ÑÉ…ÑÌ°…¹)ÁÉ½Á½Í•ÌÍ…Ñ•±±¥Ñ•Ì½É½ÍÍ¥¹}½É…±”¹Áå€…Ì„‘¥ÍÑ¥¹Ð™ÕÑÕÉ”Í¥•¹Ñ¥™¥Œ)½Ý¹•È™½È•á¡…ÕÍÑ¥Ù”…‘…ÁÑ¥Ù”Í½±Ù¥¹œ¸()½µÁ±•Ñ•¹•ÍÌµ•…¹ÌÙ…±¥‘…Ñ•¹Õµ•É¥…°½µÁ±•Ñ•¹•ÍÌÕ¹‘•È‘•±…É•Ñ¥µ”…¹)…¹Õ±…ÈÑ½±•É…¹•Ì°¹½Ð„™½Éµ…°¥¹Ñ•ÉÙ…°µ…É¥Ñ¡µ•Ñ¥ŒÑ¡•½É•´½Ù•ÈM@Ð¸)Ù•ÉäÍ•±•Ñ•Í¹…ÁÍ¡½ÐÉ•½ÉµÕÍÐ‰”Í…¹¹•¸U¹•ÉÑ…¥¸°Í¥¹Õ±…È°½È)¹½¸µ½¹Ù•É•¥¹Ñ•ÉÙ…±ÌÍÕ‰‘¥Ù¥‘”½È™…¥°±½Í•…¹…¹¹½Ð‰”É•Á½ÉÑ•…Ì)¹•…Ñ¥Ù”¸9¼€ÔÁL¸ÔÉÕ¹Ñ¥µ”½È€ÔÁL¸Ø…•±•É…Ñ¥½¸¥Ì¥µÁ±•µ•¹Ñ•¸(()Q¡”…¹‘¥‘…Ñ”€ÔÁL¸Õ‘½Õµ•¹Ñ…Ñ¥½¸…Ñ”Á…ÍÍ•…±°€ÄÌØÑ•ÍÑÌ¥¸€Ì¸ÈÜÍ•½¹‘Ì)½¸µ…=L°…¹Ñ¡”½ÉÉ•Ñ•‰É…¹ ‘¥™˜¡•¬Ý…Ì±•…¸¸•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹)…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€ÔÁL¸Ù½¸€ÈÀÈØ´Àä´ÄÔ°…ÕÑ¡½É¥é¥¹œ½¹±ä‰½Õ¹‘•€ÔÁL¸Ù)¥µÁ±•µ•¹Ñ…Ñ¥½¸½˜Ñ¡”™¥ÉÍÐÑ½Á½•¹ÑÉ¥Œ½¹”½½É‰¥Ñ…°µÍ¡•±°Í•±•Ñ½È¸Q¡”™¥¹…°…•ÁÑ…¹”)‘½Õµ•¹Ñ…Ñ¥½¸…Ñ”Á…ÍÍ•…±°€ÄÌØÑ•ÍÑÌ¥¸€Ì¸ÀÀÍ•½¹‘Ì¸•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä)…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€ÔÁL¸Õ½¸€ÈÀÈØ´Àä´ÄÔ¸Q¡¥Ì…ÕÑ¡½É¥é•Ì½¹±ä‰½Õ¹‘•(ÔÁL¸Õ¥µÁ±•µ•¹Ñ…Ñ¥½¸ì€ÔÁL¸Ø…¹±…Ñ•È‰•¡…Ù¥½ÈÉ•µ…¥¸Õ¹…ÕÑ¡½É¥é•¸((ŒŒŒ•ÁÑ•€ÔÁL¸Õ½µÁ±•Ñ”±½…°É½ÍÍ¥¹œ½É…±”()Q¡”…•ÁÑ•¥µÁ±•µ•¹Ñ…Ñ¥½¸…‘‘ÌÑ¡”¥µµÕÑ…‰±”1½…±M…Ñ•±±¥Ñ•É½ÍÍ¥¹EÕ•Éå€°•á¡…ÕÍÑ¥Ù”)1½…±M…Ñ•±±¥Ñ•É½ÍÍ¥¹=É…±•€°…¹•áÁ±¥¥Ð)M…Ñ•±±¥Ñ•É½ÍÍ¥¹½¹Ù•É•¹•ÉÉ½É€¥¸)Í…Ñ•±±¥Ñ•Ì½É½ÍÍ¥¹}½É…±”¹Áå€¸Ù•ÉäÍ•±•Ñ•Í¹…ÁÍ¡½ÐÉ•½É™½±±½ÝÌÑ¡”)…•ÁÑ•€ÔÁL¸Ñ¼ÔÁL¸Ñ¡…¥¸¸¹‘Á½¥¹Ð½µ¥‘Á½¥¹ÐÍÕ‰‘¥Ù¥Í¥½¸°Ñ½Á½•¹ÑÉ¥Œ…¹Õ±…È)É…Ñ”°ÕÉÙ…ÑÕÉ”•Ù¥‘•¹”°‰É…­•ÐµÁÉ•Í•ÉÙ¥¹œÉ½½ÑÌ°‰½Õ¹‘•µ¥¹¥µÕ´É•™¥¹•µ•¹Ð°)…¹É•ÕÉÍ¥Ù”Ñ¥µ”µ…¹µ…¹Õ±…ÈÑ½±•É…¹”½¹¹•Ñ¥Ù¥ÑäÁÉ½‘Õ”½É‘•É•½¹¹•Ñ•)Ù¥Í¥ÑÌ¸()¹¼µÍ¥¸µ¡…¹”Ñ…¹•¹Ð¥¸Ñ¡”…¹Õ±…ÈÕ¹•ÉÑ…¥¹Ñä‰…¹‰•½µ•Ì½¹”É•™¥¹•)é•É¼µ‘ÕÉ…Ñ¥½¸‰½Õ¹‘…Éä•Ù•¹Ð¸¥Í½¹¹•Ñ•Ù¥Í¥ÑÌÉ•µ…¥¸Í•Á…É…Ñ”¸Q¡”™¥¹…°)ÍÑ…Ñ”É•Ñ…¥¹ÌÍ¹…ÁÍ¡½Ð°É•½É°M@Ð°½‰Í•ÉÙ•È°%ILµ°Í½±Ù•È°Ñ½±•É…¹”°…¹)Ý…É¹¥¹œ•Ù¥‘•¹”¸I•Í½ÕÉ”•á¡…ÕÍÑ¥½¸½È…¹äÉ•½É™…¥±ÕÉ”…‰½ÉÑÌÑ¡”½µÁ±•Ñ”)ÅÕ•ÉäÉ…Ñ¡•ÈÑ¡…¸É•ÑÕÉ¹¥¹œ„Á…ÉÑ¥…°¹•…Ñ¥Ù”É•ÍÕ±Ð¸%Ð…‘‘Ì¹¼(ÔÁL¸Ø™¥±Ñ•È°¥±±Õµ¥¹…Ñ¥½¸°Á¡½Ñ½µ•ÑÉä°1$°É•Á½ÉÐ°‘É…Ý¥¹œ°½È•áÁ½ÉÐ¸()…¹‘¥‘…Ñ”Ù•É¥™¥…Ñ¥½¸½¸•É¹…¹‘¼Ì5…ŒÁ…ÍÍ•Ñ¡”€ÄÌµÑ•ÍÐ‘•‘¥…Ñ•½É…±”)…Ñ”¥¸€ØÀ¸ØÈÍ•½¹‘Ì°Ñ¡”€ÄÀàµÑ•ÍÐ•áÁ…¹‘•Í…Ñ•±±¥Ñ”½½½É‘¥¹…Ñ”½Á…­…”)…Ñ”¥¸€ÜÀ¸àÀÍ•½¹‘Ì°Ñ¡”€ÄÌÜµÑ•ÍÐ‘½Õµ•¹Ñ…Ñ¥½¸…Ñ”¥¸€Ì¸ÌÌÍ•½¹‘Ì°…¹)Ñ¡”½µÁ±•Ñ”Á±Õ¥¸µ‘¥Í…‰±•ÍÕ¥Ñ”½˜€È°ÔÌàÑ•ÍÑÌ¥¸€ÄØÌ¸ÌØÍ•½¹‘Ì¸Q¡”)Ý½É­¥¹œÑÉ•”Ý…Ì±•…¸…¹¥Ð‘¥™˜€´µ¡•¬…„Ù˜äÅ„¸¸¹!€Á…ÍÍ•¸•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€ÔÁL¸Õ½¸€ÈÀÈØ´Àä´ÄÔ°)±½Í¥¹œ€ÔÁL¸Ô¸=¹±ä„‘½Õµ•¹Ñ…Ñ¥½¸µ™¥ÉÍÐ€ÔÁL¸Ø½¹Í•ÉÙ…Ñ¥Ù”µ…•±•É…Ñ¥½¸…Õ‘¥Ð)¥Ì…ÕÑ¡½É¥é•¹•áÐìÉÕ¹Ñ¥µ”…•±•É…Ñ¥½¸…¹…±°±…Ñ•È‰•¡…Ù¥½ÈÉ•µ…¥¸)Õ¹…ÕÑ¡½É¥é•¸((ŒŒŒ•ÁÑ•€ÔÁL¸Ù½¹Í•ÉÙ…Ñ¥Ù”…•±•É…Ñ¥½¸…Õ‘¥Ð()Q¡”‘½Õµ•¹Ñ…Ñ¥½¸µ½¹±ä…Õ‘¥Ð­••ÁÌÑ¡”…•ÁÑ•€ÔÁL¸Ô•á¡…ÕÍÑ¥Ù”½É…±”)¥¹‘•Á•¹‘•¹Ñ±ä…±±…‰±”…¹ÁÉ½Á½Í•Ì„Í•Á…É…Ñ”½¹Í•ÉÙ…Ñ¥Ù”…¹‘¥‘…Ñ”µÍ•±•Ñ¥½¸)½Ý¹•È¸I•©•Ñ¥½¸É•ÅÕ¥É•Ì„É•½É‘•Ñ½Á½•¹ÑÉ¥Œ½¹”½½É‰¥Ñ…°µÍ¡•±°‰½Õ¹Ñ¡…Ð)½Ù•ÉÌÑ¡”½µÁ±•Ñ”¥¹±ÕÍ¥Ù”¥¹Ñ•ÉÙ…°°½‰Í•ÉÙ•È‘¥ÍÁ±…•µ•¹Ð°…ÉÑ É½Ñ…Ñ¥½¸°)µ½‘•°‘¥ÍÉ•Á…¹ä°¹Õµ•É¥…°µ…É¥¸°…¹Ñ¡”…•ÁÑ•…¹Õ±…ÈÑ½±•É…¹”¸)U¹•ÉÑ…¥¸½ÈÕ¹ÍÕÁÁ½ÉÑ•‰½Õ¹‘ÌÉ•Ñ…¥¸Ñ¡”É•½É™½È•á…ÐÍ½±Ù¥¹œ¸()Q¡”…Õ‘¥ÐÉ•©•ÑÌ¡½É¥é½¸…¹…ÉÑ µ½Õ±Ñ…Ñ¥½¸™¥±Ñ•ÉÌ‰•…ÕÍ”Ñ¡”ÕÉÉ•¹Ð)ÅÕ•ÉäÉ•Á½ÉÑÌ•½µ•ÑÉ¥Œ‘¥É•Ñ¥½¹…°É½ÍÍ¥¹ÌÉ…Ñ¡•ÈÑ¡…¸Ù¥Í¥‰¥±¥Ñä¸%Ð)‘•™•ÉÌÁ¡…Í”°½…ÉÍ”Ù•Ñ½É¥é•ÁÉ½Á……Ñ¥½¸°…¹!1A¥à½Ñ¥µ”¥¹‘•á¥¹œ‰•¡¥¹)Í•Á…É…Ñ”½ÉÉ•Ñ¹•ÍÌ…¹‰•¹¡µ…É¬…Ñ•Ì¸9¼ÉÕ¹Ñ¥µ”°Á…­…”°‘•Á•¹‘•¹ä°)½½É‘¥¹…Ñ”Á…Ñ °É•ÍÕ±Ð°½È½ÕÑÁÕÐ¡…¹•ÌÕ¹‘•È€ÔÁL¸Ù¸Q¡”…¹‘¥‘…Ñ”5…Œ)Ù•É¥™¥…Ñ¥½¸Á…ÍÍ•…±°€ÄÌà‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌ¥¸€Ì¸ääÍ•½¹‘Ì…¹Ñ¡”)½ÉÉ•Ñ•‰É…¹ ‘¥™˜¡•¬Ý…Ì±•…¸¸((ŒŒŒ•ÁÑ•€ÔÁL¸Ù½¹Í•ÉÙ…Ñ¥Ù”½¹”µÍ¡•±°Í•±•Ñ½È()Q¡”…¹‘¥‘…Ñ”…‘‘ÌÍ…Ñ•±±¥Ñ•Ì½É½ÍÍ¥¹}…•±•É…Ñ¥½¸¹Áå€…ÌÑ¡”‘¥ÍÑ¥¹Ð½Ý¹•È)½˜¥µµÕÑ…‰±”ÑÉ¤µÍÑ…Ñ”™¥ÉÍÐµÍÑ…”•Ù¥‘•¹”¸%Ð•Ù…±Õ…Ñ•Ì½¹”…•ÁÑ•)M@Ð½]L´ÜÈ…¹¥¹ÍÑ…±±•µ%ILµÑ½Á½•¹ÑÉ¥ŒÍÑ…ÉÐÍÑ…Ñ”°‘•É¥Ù•Ì…¸)=54µÍ¡•±°-•Á±•ÈÁ•É¥•”ÍÁ••Ý¥Ñ …¸•áÁ±¥¥Ð€È¸ÔÍ…™•Ñä™…Ñ½ÈÁ±ÕÌ½‰Í•ÉÙ•È)ÍÁ••‰½Õ¹°…¹•¹±½Í•ÌÑ¡”½µÁ±•Ñ”…‘µ¥ÑÑ•¥¹Ñ•ÉÙ…°¥¸„Ñ½Á½•¹ÑÉ¥Œ)É•…¡…‰±”…À¸()Q¡”ÍÕÁÁ½ÉÑ•ÁÉ½‘ÕÑ¥½¸‘½µ…¥¸¥Ì‘•±¥‰•É…Ñ•±ä±¥µ¥Ñ•Ñ¼)Íå¹Ñ¡•Ñ¥|ÔÁÌÑ‰}ØÅ€…¹¥¹Ñ•ÉÙ…±Ì½˜…Ðµ½ÍÐ€ØÀÍ•½¹‘Ì¸±°Õ¹ÍÕÁÁ½ÉÑ•½È)Ý•…¬…Í•Ì…É”¥¹‘•Ñ•Éµ¥¹…Ñ•€¸Q¡”…•ÁÑ••á¡…ÕÍÑ¥Ù”½É…±”¥ÌÕ¹¡…¹•)…¹É•µ…¥¹Ì¥¹‘•Á•¹‘•¹Ñ±ä…±±…‰±”¸Q¡¥ÌÍ±¥”…‘‘Ì¹¼…•±•É…Ñ•½½É‘¥¹…Ñ½È)…¹…¹¹½ÐÉ•ÑÕÉ¸É½ÍÍ¥¹œÉ•ÍÕ±ÑÌ¸…¹‘¥‘…Ñ”Ù•É¥™¥…Ñ¥½¸Á…ÍÍ•Ñ¡”€äµÑ•ÍÐ)‘•‘¥…Ñ•…Ñ”°€ÜàµÑ•ÍÐ•áÁ…¹‘•…Ñ”°€ÄÌäµÑ•ÍÐ‘½Õµ•¹Ñ…Ñ¥½¸…Ñ”°…¹…±°(È°ÔÐäÁ±Õ¥¸µ‘¥Í…‰±•Ñ•ÍÑÌ¸Q¡”‰É…¹ …¹‘¥™˜¡•­ÌÝ•É”±•…¸¸•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹)…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•Ñ¡”‰½Õ¹‘•Í•±•Ñ½È½¸€ÈÀÈØ´Àä´ÄØ¸=¹±ä„(ÔÁL¸Ù‘½Õµ•¹Ñ…Ñ¥½¸µ™¥ÉÍÐ½½É‘¥¹…Ñ¥½¸°‰É½…‘•Èµ‘½µ…¥¸°…¹‰•¹¡µ…É¬…Õ‘¥Ð¥Ì)…ÕÑ¡½É¥é•¹•áÐ¸((ŒŒŒ•ÁÑ•€ÔÁL¸Ù•á…ÐµÍ½±Ù•È½½É‘¥¹…Ñ¥½¸…Õ‘¥Ð()Q¡”…•ÁÑ•‘½Õµ•¹Ñ…Ñ¥½¸µ½¹±ä…Õ‘¥ÐÁÉ•Í•ÉÙ•ÌÑ¡”…•ÁÑ••á¡…ÕÍÑ¥Ù”€ÔÁL¸Ô½É…±”)…ÌÑ¡”¥¹‘•Á•¹‘•¹ÐÍ¥•¹Ñ¥™¥ŒÉ•™•É•¹”…¹Ñ¡”…•ÁÑ•€ÔÁL¸ÙÍ•±•Ñ½È…Ì„)ÑÉ¤µÍÑ…Ñ”•Ù¥‘•¹”ÁÉ½‘Õ•È¸%ÐÍÁ•¥™¥•Ì½¹”Í¡…É••á…ÐÉ•½ÉÍ•…´è)•á¡…ÕÍÑ¥Ù”Í½±Ù¥¹œ…±±Ì¥Ð™½È•Ù•ÉäÉ•½É°Ý¡¥±”„±…Ñ•È…•±•É…Ñ•É½ÕÑ”)½Õ±…±°¥Ð½¹±ä™½È½É‘•É•É•Ñ…¥¸…¹¥¹‘•Ñ•Éµ¥¹…Ñ”‘•¥Í¥½¹Ì¸()Q¡”…Õ‘¥Ð‘•™¥¹•Ì™…¥°µ±½Í•‘•¥Í¥½¸½Ù•É…”°•á¡…ÕÍÑ¥Ù”µÉ•ÍÕ±Ð•ÅÕ¥Ù…±•¹”°)‰É½…‘•Èµ‘½µ…¥¸•Ù¥‘•¹”°¥¹ÍÑÉÕµ•¹Ñ••Ù…±Õ…Ñ¥½¸…½Õ¹Ñ¥¹œ°…¹É•ÁÉ½‘Õ¥‰±”)‰•¹¡µ…É¬…‘µ¥ÍÍ¥½¸¸Q¡”Ñ¡É•”µÉ•½ÉÍå¹Ñ¡•Ñ¥ŒÍ¹…ÁÍ¡½ÐÉ•µ…¥¹Ì½µÁ½Í¥Ñ¥½¸)•Ù¥‘•¹”É…Ñ¡•ÈÑ¡…¸„Á•É™½Éµ…¹”™¥áÑÕÉ”¸9¼Í½ÕÉ”°ÉÕ¹Ñ¥µ”Ñ•ÍÐ°‰•¹¡µ…É¬°)‘•Á•¹‘•¹ä°Á…­…”•áÁ½ÉÐ°½½É‘¥¹…Ñ”Á…Ñ °½ÈÉ•ÍÕ±Ð¡…¹•Ì¥¸€ÔÁL¸Ù¸)•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€ÔÁL¸Ù½¸€ÈÀÈØ´Àä´ÄØ¸)=¹±ä„‰½Õ¹‘•€ÔÁL¸Ù½½É‘¥¹…Ñ½È¥¹Í¥‘”Ñ¡”•á¥ÍÑ¥¹œÑ¡É•”µÉ•½É°€ØÀµÍ•½¹)‘½µ…¥¸¥Ì…ÕÑ¡½É¥é•¹•áÐ¸(((ŒŒŒ•ÁÑ•€ÔÁL¸Ù‰½Õ¹‘•…•±•É…Ñ•É½ÍÍ¥¹œ½½É‘¥¹…Ñ½È()Q¡”…•ÁÑ•¥µÁ±•µ•¹Ñ…Ñ¥½¸•áÑÉ…ÑÌ½¹”Á…­…”µ¥¹Ñ•É¹…°•á…ÐµÉ•½ÉÍ•…´™É½´)1½…±M…Ñ•±±¥Ñ•É½ÍÍ¥¹=É…±”¹Í½±Ù”¡ÅÕ•Éä¥€Ý¥Ñ¡½ÕÐ¡…¹¥¹œ¥ÑÌ¹Õµ•É¥…°)…±½É¥Ñ¡´¸Q¡”•á¡…ÕÍÑ¥Ù”É½ÕÑ”É•µ…¥¹Ì¥¹‘•Á•¹‘•¹Ñ±ä…±±…‰±”…¹¥¹Ù½­•ÌÑ¡…Ð)Í•…´™½È•Ù•ÉäÍ¹…ÁÍ¡½ÐÉ•½É¸()•±•É…Ñ•‘1½…±M…Ñ•±±¥Ñ•É½ÍÍ¥¹=É…±•€¥Ì…¸½ÁÐµ¥¸½½É‘¥¹…Ñ½È¸%Ð)Ù…±¥‘…Ñ•Ì½µÁ±•Ñ”ÅÕ•Éäµ‰½Õ¹°9=Iµ½É‘•É•½¹•M¡•±±M•±•Ñ¥½¹€•Ù¥‘•¹”°)Í•¹‘Ì•Ù•ÉäÉ•Ñ…¥¹•…¹¥¹‘•Ñ•Éµ¥¹…Ñ”É•½ÉÑ¡É½Õ Ñ¡”Í¡…É••á…ÐÍ•…´°)…¹½µ¥ÑÌ½¹±ä…•ÁÑ•É•©•Ð‘•¥Í¥½¹Ì¸Í½±Ù”¡ÅÕ•Éä¥€É•ÑÕÉ¹ÌÑ¡”½É‘¥¹…Éä)•á…ÐÉ•ÍÕ±ÐÑÕÁ±”ìÍ½±Ù•}Ý¥Ñ¡}•Ù¥‘•¹”¡ÅÕ•Éä¥€É•ÑÕÉ¹ÌÑ¡…ÐÑÕÁ±”Á±ÕÌ)Í•Á…É…Ñ”¥µµÕÑ…‰±”•±•É…Ñ•‘É½ÍÍ¥¹Ù¥‘•¹•€¸()M•±•Ñ½È•á•ÁÑ¥½¹Ì™…±°‰…¬Ñ¼Ñ¡”½µÁ±•Ñ”•á¡…ÕÍÑ¥Ù”É½ÕÑ”‰ä‘•™…Õ±Ð½È)™…¥°±½Í•Õ¹‘•È•áÁ±¥¥Ð¥µµÕÑ…‰±”Á½±¥ä¸5¥ÍÍ¥¹œ°¥¹½¹Í¥ÍÑ•¹Ð°‘ÕÁ±¥…Ñ”°)Õ¹­¹½Ý¸°É•½É‘•É•°½È½ÕÐµ½˜µ‘½µ…¥¸É•©•Ñ¥½¸•Ù¥‘•¹”™…¥±Ì±½Í•¸Q¡”)…¹‘¥‘…Ñ”É•µ…¥¹Ì±¥µ¥Ñ•Ñ¼Íå¹Ñ¡•Ñ¥|ÔÁÌÑ‰}ØÅ€…¹¥¹Ñ•ÉÙ…±Ì¹¼±½¹•ÈÑ¡…¸(ØÀÍ•½¹‘Ì¸%Ð…‘‘Ì¹¼‰É½…‘•ÈÍ•±•Ñ½È‘½µ…¥¸°‰•¹¡µ…É¬±…¥´°‘•™…Õ±Ð)•¹…‰±•µ•¹Ð°½½É‘¥¹…Ñ”Á…Ñ °1$°É•Á½ÉÑ¥¹œ°‘É…Ý¥¹œ°½È±…Ñ•È™¥±Ñ•ÈÍÑ…”¸(()…¹‘¥‘…Ñ”€ÔÁL¸ÙÙ•É¥™¥…Ñ¥½¸…Ð½µµ¥Ð„Ý…•‰…€Á…ÍÍ•Ñ¡”€ÌÜµÑ•ÍÐ)‘•‘¥…Ñ•…Ñ”°€äÌµÑ•ÍÐ•áÁ…¹‘•¥µµ•‘¥…Ñ”µÍ•…´…Ñ”°€ÄÐÄµÑ•ÍÐ‘½Õµ•¹Ñ…Ñ¥½¸)…Ñ”°…¹½µÁ±•Ñ”€È°ÔØØµÑ•ÍÐÁ±Õ¥¸µ‘¥Í…‰±•ÍÕ¥Ñ”¸•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€ÔÁL¸Ù½¸€ÈÀÈØ´Àä´ÄØ¸)9¼‰É½…‘•Èµ‘½µ…¥¸°‰•¹¡µ…É¬°‘•™…Õ±Ðµ•¹…‰±•µ•¹Ð°½È±…Ñ•È…•±•É…Ñ¥½¸Ý½É¬¥Ì)…ÕÑ¡½É¥é•‰äÑ¡¥Ì…•ÁÑ…¹”¸(((ŒŒ•ÁÑ•€ÔÁL¸ÙµÕ±Ñ¤µ½X…¹¥¹Ñ•É¡…¹”‘¥É•Ñ¥½¸()Q¡”…•ÁÑ•ÉÕ¹Ñ¥µ”É•µ…¥¹ÌÑ¡”Í¥¹±”µ½X•á¡…ÕÍÑ¥Ù”½É…±”…¹Ñ¡”¹…ÉÉ½Ý±ä)…‘µ¥ÑÑ•½ÁÐµ¥¸€ÔÁL¸Ù½½É‘¥¹…Ñ½È¸Q¡”…•ÁÑ•‘½Õµ•¹Ñ…Ñ¥½¸µ½¹±ä)Í…Ñ•±±¥Ñ•}µÕ±Ñ¥™½Ù}¥¹Ñ•É¡…¹•}…Õ‘¥Ñ|ÔÁÌÙ”¹µ‘€ÁÉ½Á½Í•Ì½¹”½‰Í•ÉÙ•È°…¹ä)¹½¸µ•µÁÑä½É‘•É•¹Õµ‰•È½˜¥¹‘•Á•¹‘•¹Ñ±äÑ¥µ•½YÌÝ¡½Í”™¥•±•¹ÑÉ•Ìµ••Ð)„½¹™¥ÕÉ…‰±”…¥Éµ…ÍÌ±¥µ¥ÐÑ¡É½Õ¡½ÕÐÑ¡•¥È½µÁ±•Ñ”¥¹Ñ•ÉÙ…±Ì°…¹•á…Ð)•ÅÕ¥Ù…±•¹”Ñ¼¥¹‘•Á•¹‘•¹Ð…±±Ì¸Q¡”¥¹¥Ñ¥…°•½µ•ÑÉ¥ŒÙ…ÕÕ´±ÑèÁ½±¥ä)ÕÍ•ÌÁ±…¹”µÁ…É…±±•°`€ôÍ•Œ¡è¥€Ý¥Ñ a}µ…à€ô€É€‰ä‘•™…Õ±Ð¸=¹±äÑ¡”™¥•±)•¹ÑÉ”¥Ì¡•­•ìÑ¡”½XÉ…‘¥ÕÌ‘½•Ì¹½Ð•¹Ñ•È…¥Éµ…ÍÌ…‘µ¥ÍÍ¥½¸¸Q•¸½YÌ)…É”„)É•™•É•¹”Ý½É­±½……¹ÁÉ½Á½Í•ÁÉ½•ÍÍ¥¹œ¡Õ¹¬°¹½Ð„¡…Éµ½‘•ÁÕ‰±¥Œ)±¥µ¥Ð¸Q¡¥Ì…‘µ¥ÍÍ¥½¸½¹‘¥Ñ¥½¸‘½•Ì¹½Ð™¥±Ñ•ÈÍ…Ñ•±±¥Ñ”É½ÍÍ¥¹Ì¸()Q¡”…•ÁÑ•É½…‘µ…ÀÁ±…•Ì•¹•É¥Œ)M=8½MX½Y=Q…‰±”É½ÍÍ¥¹œÉ•Á½ÉÑÌ…¹•á…Ð)‰¥¹½Õ±…È°É•¥½¹…°°…¹ÍÑ•É•½É…Á¡¥Œ¡…ÉÐÑÉ…­Ì¥¸€ÔÁL¸Ùì½‰Í•ÉÙ…Ñ½Éä)…‘…ÁÑ•È…Õ‘¥Ñ¥¹œ¥¸€ÔÁL¸Ù ì½µÁ½¹•¹ÐµÉ•Í½±Ù•MÕ¹±¥¡Ð°Í½±…È…ÉÑ¡Í¡¥¹”°)5½½¹±¥¡Ð°…¹1Õ¹…Èµ…ÉÑ¡Í¡¥¹”•½µ•ÑÉä¥¸€ÔÁL¸Üì…¹‰É¥¡Ñ¹•ÍÌ¥¸€ÔÁL¸à¸)•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•Ñ¡¥Ì‘¥É•Ñ¥½¸½¸(ÈÀÈØ´Àä´ÄØ¸Q¡”…•ÁÑ•€ÔÁL¸Ù¥µÁ±•µ•¹Ñ…Ñ¥½¸…‘‘Ì…¸¥µµÕÑ…‰±”)Í…µ”µ½‰Í•ÉÙ•È‰…Ñ É•ÅÕ•ÍÐ°…Ñ½µ¥Œ½É‘•É•Ù…±¥‘…Ñ¥½¸™…¥±ÕÉ•Ì°•¹ÑÉ”µ½¹±ä)…¥Éµ…ÍÌ…‘µ¥ÍÍ¥½¸°•á•ÕÑ¥½¸µ½¹±ä¡Õ¹­¥¹œ°…¹½É‘•É•½µÁ½Í¥Ñ¥½¸½˜Ñ¡”)…•ÁÑ•€ÔÁL¸ÙÍ¥¹±”µ™¥•±É½ÕÑ”¸%ÐÉ•µ…¥¹ÌÉ•ÍÑÉ¥Ñ•Ñ¼Ñ¡”¥¹ÍÑ…±±•)Íå¹Ñ¡•Ñ¥ŒÍ¹…ÁÍ¡½Ð…¹€ØÀµÍ•½¹Á•Èµ™¥•±¥¹Ñ•ÉÙ…±Ì¸9¼1$°™¥±”…‘…ÁÑ•È°)•¹•É¥ŒÉ•Á½ÉÐ°¡…ÉÐ°ÕÍ•™Õ°µÍÁ••±…¥´°Á¡åÍ¥…°µÍÑ…Ñ”…¡”°½‰Í•ÉÙ…Ñ½Éä)…‘…ÁÑ•È°¥±±Õµ¥¹…Ñ¥½¸°Á¡½Ñ½µ•ÑÉä°‰É½…‘•È…Ñ…±½Õ”°½È±…Ñ•Èµ¥±•ÍÑ½¹”¥Ì)¥µÁ±•µ•¹Ñ•½È…ÕÑ¡½É¥é•‰äÑ¡¥Ìµ¥±•ÍÑ½¹”¸•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹)…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€ÔÁL¸Ù½¸€ÈÀÈØ´Àä´ÄÜ…™Ñ•È€È°ÔÜÜÁ±Õ¥¸µ‘¥Í…‰±•Ñ•ÍÑÌ)Á…ÍÍ•¸=¹±ä„Í•Á…É…Ñ•±ä‰½Õ¹‘•€ÔÁL¸Ù…Õ‘¥Ð¥Ì…ÕÑ¡½É¥é•¹•áÐ¸()Q¡”…•ÁÑ•€ÔÁL¸Ù‘•±¥Ù•Éä…Õ‘¥ÐÉ•½É‘Ì™ÕÑÕÉ”Í•…µÌ½¹±ä¸9¼•áÑ•É¹…°)Í¹…ÁÍ¡½Ð‘¥É•Ñ½Éä°É•ÁÉ•Í•¹Ñ…Ñ¥Ù”…Ñ…±½Õ”°•á…ÐµÉ½ÍÍ¥¹œÉ•Á½ÉÐ°)µÕ±Ñ¤µ½X1$½™¥±”ÁÉ½Ñ½½°°Ù…±¥‘…Ñ¥½¸µ½ÕÑÁÕÐ™¥±”°•á…Ð±½…°ÑÉ…¬±…å•È°)½È½É‘¥¹…Éä¡…ÉÐ¥¹Ñ•É…Ñ¥½¸¥Ì¥µÁ±•µ•¹Ñ•¸Q¡”ÁÉ½Á½Í•‘•±¥Ù•ÉäµÕÍÐ)½µÁ½Í”Ñ¡”…•ÁÑ•€ÔÁL¸Ù‘½µ…¥¸…¹Ñ¡”…¹½¹¥…°¡…ÉÐÁ¥Á•±¥¹”ì¥Ðµ…ä¹½Ð)¡…¹”ÕÉÉ•¹Ð½½É‘¥¹…Ñ”°É½ÍÍ¥¹œ°É•¹‘•É¥¹œ°½È•áÁ½ÉÐµ•…¹¥¹œ¸)•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•Ñ¡”…Õ‘¥Ð½¸€ÈÀÈØ´Àä´ÄÜ)…™Ñ•È…±°€ÄÐÔÁ±Õ¥¸µ‘¥Í…‰±•ÕÉÉ•¹Ðµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌÁ…ÍÍ•¥¸€Ð¸ÌØ)Í•½¹‘Ì¸=¹±ä‰½Õ¹‘•€ÔÁL¸Ù¸Å•áÑ•É¹…°¥µµÕÑ…‰±”Í¹…ÁÍ¡½Ð±½…‘¥¹œ¥Ì)…ÕÑ¡½É¥é•¹•áÐ¸()Q¡”…•ÁÑ•€ÔÁL¸Ù¸Å¥µÁ±•µ•¹Ñ…Ñ¥½¸…‘‘Ì½¹”•áÁ±¥¥Ðµ‘¥É•Ñ½ÉäÍ¹…ÁÍ¡½Ð)±½…‘¥¹œÍ•…´¸%Ð½¹ÍÑÉÕÑÌÑ¡”Í…µ”¥µµÕÑ…‰±”M…Ñ•±±¥Ñ•±•µ•¹ÑM¹…ÁÍ¡½Ñ€)Ñ¡É½Õ Ñ¡”•á¥ÍÑ¥¹œ½µÁ±•Ñ”‰åÑ”µ±•Ù•°Ù…±¥‘…Ñ½È°É•©•ÑÌÍåµ±¥¹¬½Èµ¥ÍÍ¥¹œ)™¥±•ÍåÍÑ•´É•Í½ÕÉ•Ì°…¹ÑÉ•…ÑÌÑ¡”µ…¹¥™•ÍÐÉ…Ñ¡•ÈÑ¡…¸Ñ¡”‘¥É•Ñ½Éä¹…µ”)…ÌÍ¥•¹Ñ¥™¥Œ¥‘•¹Ñ¥Ñä¸9¼•áÑ•É¹…°Í¹…ÁÍ¡½Ð¥Ì…‘µ¥ÑÑ•Ñ¼É½ÍÍ¥¹œÉÕ¹Ñ¥µ”°)…¹¹¼…ÅÕ¥Í¥Ñ¥½¸°¹•ÑÝ½É¬°É•Á½ÉÐ°1$°½È¡…ÉÐ‰•¡…Ù¥½È¥Ì…‘‘•¸)•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€ÔÁL¸Ù¸Å½¸€ÈÀÈØ´Àä´ÄÜ)…™Ñ•ÈÑ¡”€ÄØÐµÑ•ÍÐ™½ÕÍ•…Ñ”…¹…±°€È°ÔàÌÁ±Õ¥¸µ‘¥Í…‰±•Ñ•ÍÑÌÁ…ÍÍ•¸)=¹±ä„Í•Á…É…Ñ•±ä‰½Õ¹‘•€ÔÁL¸Ù¸ÅÉ•ÁÉ•Í•¹Ñ…Ñ¥Ù”Í¹…ÁÍ¡½ÐÁÉ•™±¥¡Ð…¹)•Ù¥‘•¹”…Õ‘¥Ð¥Ì…ÕÑ¡½É¥é•¹•áÐ°¹½Ð¥ÑÌ¥µÁ±•µ•¹Ñ…Ñ¥½¸¸()Q¡”…•ÁÑ•€ÔÁL¸Ù¸Å…Õ‘¥Ð…‘‘Ì¹¼¥µÁ±•µ•¹Ñ…Ñ¥½¸¸%ÐÁÉ½Á½Í•Ì„Í•Á…É…Ñ”)Í…Ñ•±±¥Ñ”…ÅÕ¥Í¥Ñ¥½¸½Ý¹•ÈÝ¥Ñ „ÑÝ¼µÁ¡…Í”•±•ÍQÉ…¬Á½±¥äÉ••¥ÁÐ…¹•á…Ð)‘¥•ÍÐ…­¹½Ý±•‘•µ•¹Ð°™½±±½Ý•‰ä…Ðµ½ÍÐ½¹”™¥á•I=U@õ…Ñ¥Ù•€MX‰Õ±¬)É•ÅÕ•ÍÐ¸á…ÐÉ…Ü‰åÑ•Ì…¹‘•Ñ•Éµ¥¹¥ÍÑ¥Œ…¹½¹¥…±¥é…Ñ¥½¸É••¥ÁÑÌÁÉ••‘”)…Ñ½µ¥Œ½¹Ñ•¹Ðµ…‘‘É•ÍÍ••áÑ•É¹…°ÁÕ‰±¥…Ñ¥½¸¸Ñ¥Ù”¥ÌÉ•ÁÉ•Í•¹Ñ…Ñ¥Ù”Í…±”°)¹½Ð½µÁ±•Ñ”½É‰¥Ñ…°µÁ½ÁÕ±…Ñ¥½¸½Ù•É…”¸áÑ•É¹…°•Ù¥‘•¹”…‘µ¥ÍÍ¥½¸µÕÍÐ‰”)‰½Õ¹Ñ¼Ñ¡”…¹½¹¥…°µÉ•½É‘¥•ÍÐì¥¹ÍÑ…±±•Íå¹Ñ¡•Ñ¥Œ‘•™…Õ±ÑÌÉ•µ…¥¸)Õ¹¡…¹•¸)•É¹…¹‘¼Í¥•¹Ñ¥™¥…±±ä…¹…É¡¥Ñ•ÑÕÉ…±±ä…•ÁÑ•€ÔÁL¸Ù¸Å½¸€ÈÀÈØ´Àä´ÄÜ)…™Ñ•È…±°€ÄÐÜÁ±Õ¥¸µ‘¥Í…‰±•ÕÉÉ•¹Ðµ‘½Õµ•¹Ñ…Ñ¥½¸Ñ•ÍÑÌÁ…ÍÍ•¥¸€Ð¸ÔÐ)Í•½¹‘Ì¸=¹±ä‰½Õ¹‘•€ÔÁL¸Ù¸Å¸Ä™…­”µÑÉ…¹ÍÁ½ÉÐ¥µÁ±•µ•¹Ñ…Ñ¥½¸¥Ì…ÕÑ¡½É¥é•)¹•áÐì¹¼±¥Ù”•±•ÍQÉ…¬É•ÅÕ•ÍÐ½ÈÉ•ÁÉ•Í•¹Ñ…Ñ¥Ù”…‘µ¥ÍÍ¥½¸¥Ì…ÕÑ¡½É¥é•¸((ŒŒ%µÁ±•µ•¹Ñ•€ÔÁL¸Ù¸Å¸Ä½™™±¥¹”Í¹…ÁÍ¡½Ð‰Õ¥±‘•È()Í…Ñ•±±¥Ñ•Ì½Í¹…ÁÍ¡½Ñ}…ÅÕ¥Í¥Ñ¥½¸¹Áå€¹½Ü¥µÁ±•µ•¹ÑÌÑ¡”…•ÁÑ•Á½±¥ä)É••¥ÁÐ°•á…ÐÁ½±¥äµÉ•ÍÁ½¹Í”M!´ÈÔØ…­¹½Ý±•‘•µ•¹Ð°‘•Ñ•Éµ¥¹¥ÍÑ¥ŒÑ¥Ù”)MX¹½Éµ…±¥é…Ñ¥½¸°…¹…Ñ½µ¥Œ•áÑ•É¹…°ÁÕ‰±¥…Ñ¥½¸½¹ÑÉ…Ð¸Q¡”ÁÉ½‘ÕÑ¥½¸)½Ý¹•È¡…Ì¹¼¹•ÑÝ½É¬…‘…ÁÑ•Èè…±±•ÉÌµÕÍÐ¥¹©•Ð¥ÑÌÍ¥¹±”µÉ•ÅÕ•ÍÐ)ÑÉ…¹ÍÁ½ÉÐ¸Q¡•É•™½É”Ñ¡¥Ì¥µÁ±•µ•¹Ñ…Ñ¥½¸…¹¥ÑÌÑ•ÍÑÌ…¹¹½Ð¥¹¥Ñ¥…Ñ”±¥Ù”)•±•ÍQÉ…¬…•ÍÌ¸Q¡”…­¹½Ý±•‘•µ•¹Ð¥Ì¡•­•‰•™½É”Ñ¡”@ÑÉ…¹ÍÁ½ÉÐ¥Ì)…±±•°•Ù•ÉäÉ½ÜÁ…ÍÍ•ÌÑ¡”•á¥ÍÑ¥¹œÑåÁ•=54Ù…±¥‘…Ñ½È°…¹Ñ¡”ÍÑ…•)Í¹…ÁÍ¡½ÐÁ…ÍÍ•Ì±½…‘}Í¹…ÁÍ¡½Ñ}‘¥É•Ñ½Éä ¥€‰•™½É”ÁÕ‰±¥…Ñ¥½¸¸()Q¡¥ÌÍ±¥”‘½•Ì¹½Ð…ÕÑ¡½É¥é”„±¥Ù”É•ÅÕ•ÍÐ°…¡”µÉ•™É•Í ½Ù•ÉÉ¥‘”°)É•ÁÉ•Í•¹Ñ…Ñ¥Ù”…‘µ¥ÍÍ¥½¸½È•Ù¥‘•¹”°€ÔÁL¸Ù¸Å¸È°½È„ÉÕ¹Ñ¥µ”‘•™…Õ±Ð¸(

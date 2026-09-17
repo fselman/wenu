@@ -375,3 +375,14 @@ seconds. Acceptance authorizes only separately bounded 50S.6G.1B.1
 policy-receipt and deterministic-builder implementation with fake transport.
 It does not authorize a live CelesTrak request, representative
 admission/evidence, 50S.6G.1B.2, or any later 50S.6G behavior.
+
+## 15. 50S.6G.1B.1 implementation record
+
+The bounded implementation uses a dedicated satellite acquisition owner, a
+mandatory injected transport with no live adapter, and an offline thin
+developer command. It verifies exact policy-response SHA-256 acknowledgement
+before the GP transport call, normalizes the fixed Active CSV contract through
+the existing typed record validator, retains both raw responses and receipts,
+reloads the staged snapshot, and publishes by atomic rename. Tests use only
+hand-authored fake responses. No live provider request or 50S.6G.1B.2 evidence
+is part of this implementation.

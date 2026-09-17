@@ -1072,3 +1072,13 @@ Fernando scientifically and architecturally accepted 50S.6G.1B on 2026-09-17
 after all 147 plugin-disabled current-documentation tests passed in 4.54
 seconds. Only bounded 50S.6G.1B.1 fake-transport implementation is authorized
 next; policy-digest approval for live acquisition remains separate.
+
+### Offline 50S.6G.1B.1 builder
+
+The implemented builder freezes exact policy bytes and requires their SHA-256
+as the acquisition acknowledgement before invoking an injected GP transport.
+It accepts only the fixed Active CSV header, preserves full NORAD identifiers,
+adds only the four documented OMM constants, sorts by full NORAD identity, and
+publishes only after typed-record and explicit-directory validation succeed.
+The included developer command consumes local response files only. No live
+transport, representative admission, or evidence matrix is implemented.
