@@ -340,3 +340,24 @@ observation seam, and atomic external publication. It does not authorize
 execution against the accepted real 256-record specimen, a speed claim,
 50S.6G delivery, report/file interfaces, tracks, charts, illumination,
 provider access, concurrency, or cache reuse.
+
+## Candidate fake-data implementation record
+
+The bounded 50S.6G.1B.2D fake-data implementation is present in
+`satellites/crossing_matrix.py` at candidate commit `19520f3`. It implements
+strict injected-route equivalence, canonical evidence, deterministic unordered
+value serialization, atomic airmass admission, complete selector-partition
+checks, forbidden exhaustive fallback, alternating measured route order, and
+atomic publication with full manifest revalidation.
+
+The candidate was verified on 2026-09-17 with 46 focused tests, 224 broader
+implementation tests, and **2634 plugin-disabled full-suite tests passed in
+230.25 seconds**. The verification used repository fake data only. It did not
+read the accepted real 256-record specimen, execute the real ten-field matrix,
+or establish any performance claim.
+
+This candidate implementation awaits Fernando's scientific and architectural
+acceptance. Acceptance may authorize only a separately bounded real-matrix
+execution step; it does not itself execute that matrix or authorize later
+50S.6G delivery, chart tracks, reports, illumination, provider access,
+concurrency, or cache reuse.
