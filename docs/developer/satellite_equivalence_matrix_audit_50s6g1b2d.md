@@ -340,3 +340,39 @@ observation seam, and atomic external publication. It does not authorize
 execution against the accepted real 256-record specimen, a speed claim,
 50S.6G delivery, report/file interfaces, tracks, charts, illumination,
 provider access, concurrency, or cache reuse.
+
+## Candidate fake-data implementation record
+
+The bounded 50S.6G.1B.2D fake-data implementation is present in
+`satellites/crossing_matrix.py` at candidate commit `19520f3`. It implements
+strict injected-route equivalence, canonical evidence, deterministic unordered
+value serialization, atomic airmass admission, complete selector-partition
+checks, forbidden exhaustive fallback, alternating measured route order, and
+atomic publication with full manifest revalidation.
+
+The candidate was verified on 2026-09-17 with 46 focused tests, 224 broader
+implementation tests, and **2634 plugin-disabled full-suite tests passed in
+230.25 seconds**. The verification used repository fake data only. No accepted real
+256-record specimen was read, no real matrix was executed, and no performance
+claim was established.
+
+This candidate implementation awaits Fernando's scientific and architectural
+acceptance. Acceptance may authorize only a separately bounded real-matrix
+execution step; it does not itself execute that matrix or authorize later
+50S.6G delivery, chart tracks, reports, illumination, provider access,
+concurrency, or cache reuse.
+
+## Accepted fake-data implementation closure
+
+Fernando scientifically and architecturally accepted the bounded
+50S.6G.1B.2D fake-data implementation on 2026-09-17. Acceptance rests on the
+2634 plugin-disabled full-suite tests that passed in 230.25 seconds at
+implementation commit `19520f3`, followed by 161 plugin-disabled
+current-documentation tests that passed in 3.32 seconds at acceptance-record
+baseline `3ef6a4d`.
+
+This acceptance closes the fake-data implementation only. It does not authorize
+reading the accepted real 256-record specimen or executing the real ten-field
+matrix. Only a separately bounded real-execution audit is authorized next;
+real execution, performance claims, and later 50S.6G delivery remain
+unauthorized.

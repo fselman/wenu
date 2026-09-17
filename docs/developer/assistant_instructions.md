@@ -1098,3 +1098,24 @@ Do not read or execute the accepted real 256-record specimen, publish real
 matrix evidence, claim speed or capacity, add concurrency or cache reuse, or
 begin reports, tracks, charts, illumination, or later delivery without
 separate authorization.
+
+### Candidate 50S.6G.1B.2D implementation boundary
+
+Treat `satellites/crossing_matrix.py` at candidate commit `19520f3` as a
+fake-data-tested implementation awaiting Fernando's scientific and
+architectural acceptance. On 2026-09-17, 2634 plugin-disabled full-suite tests
+passed in 230.25 seconds. Do not read the accepted real 256-record specimen,
+execute the real ten-field matrix, claim a speedup, or advance later 50S.6G
+delivery under this candidate record. Any real execution requires a separate
+explicit authorization after acceptance.
+
+### Accepted 50S.6G.1B.2D implementation boundary
+
+Fernando scientifically and architecturally accepted the fake-data-only
+50S.6G.1B.2D implementation on 2026-09-17 after 2634 plugin-disabled
+full-suite tests passed in 230.25 seconds at `19520f3` and 161
+plugin-disabled current-documentation tests passed in 3.32 seconds at
+`3ef6a4d`. Do not read the accepted real specimen or execute the real matrix
+under this acceptance. Only a separately bounded real-execution audit is
+authorized next; execution and later delivery require separate explicit
+authorization.

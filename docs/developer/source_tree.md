@@ -2190,3 +2190,27 @@ Fernando accepted the proposed `crossing_matrix.py`,
 2026-09-17 at `6e7a8b9`; 159 plugin-disabled documentation tests passed in
 10.75 seconds. Only fake-data implementation is authorized. No real matrix
 execution or evidence artifact is authorized.
+
+### Candidate 50S.6G.1B.2D implementation ownership
+
+`src/wenu/satellites/crossing_matrix.py` exclusively owns the candidate
+fake-data-tested matrix contract, canonical evidence assembly, strict
+equivalence checks, resource-observation records, atomic publication, and
+published-manifest revalidation. `tests/test_satellite_crossing_matrix.py`
+owns its fake-data-only behavioral proof.
+
+At candidate commit `19520f3`, 2634 plugin-disabled full-suite tests passed
+in 230.25 seconds on 2026-09-17. No repository data owner packages or discovers
+the accepted real specimen, and no real matrix was executed. The next
+real-execution boundary remains separately unauthorized pending Fernando's
+scientific and architectural acceptance.
+
+### Accepted 50S.6G.1B.2D ownership
+
+Fernando scientifically and architecturally accepted the fake-data-only
+ownership of `satellites/crossing_matrix.py` and
+`tests/test_satellite_crossing_matrix.py` on 2026-09-17. Acceptance follows
+2634 plugin-disabled full-suite tests in 230.25 seconds at `19520f3` and 161
+plugin-disabled current-documentation tests in 3.32 seconds at `3ef6a4d`.
+No source-tree owner may discover or read the accepted real specimen under this
+closure. Only a separately bounded real-execution audit is authorized next.

@@ -1230,3 +1230,27 @@ Fernando accepted the strict equivalence-matrix audit on 2026-09-17 at
 Only fake-data harness implementation is authorized next. The accepted real
 256-record specimen must not be executed, and no speed or downstream delivery
 claim is authorized.
+
+### Candidate 50S.6G.1B.2D fake-data implementation
+
+The candidate `satellites/crossing_matrix.py` implementation enforces exact
+Python-result equality, canonical-byte and digest equality, complete
+reject/retain/indeterminate evidence, forbidden exhaustive fallback, isolated
+resource observations, and atomic evidence publication with manifest
+revalidation. Candidate commit `19520f3` passed 2634 plugin-disabled
+full-suite tests in 230.25 seconds on 2026-09-17.
+
+This verification used fake data only. The accepted real 256-record specimen
+was not read, the real ten-field matrix was not executed, and no speed or
+capacity claim was made. Fernando's scientific and architectural acceptance
+is required before any separately authorized real-matrix execution.
+
+### Accepted 50S.6G.1B.2D fake-data implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+matrix implementation on 2026-09-17. Its recorded evidence is 2634
+plugin-disabled full-suite tests in 230.25 seconds at `19520f3`, followed by
+161 plugin-disabled current-documentation tests in 3.32 seconds at
+`3ef6a4d`. The accepted closure neither reads the real 256-record specimen
+nor executes the real ten-field matrix. Only a separately bounded
+real-execution audit is authorized next.

@@ -1326,3 +1326,23 @@ audit on 2026-09-17 at `6e7a8b9`, after 159 plugin-disabled documentation
 tests passed in 10.75 seconds. Only bounded fake-data implementation of the
 strict equivalence and evidence harness is authorized next. Real matrix
 execution, resource claims, delivery, and charting remain unauthorized.
+
+### Candidate 50S.6G.1B.2D fake-data matrix implementation
+
+`satellites/crossing_matrix.py` now contains the candidate bounded
+fake-data-only exact-equivalence matrix owner. It fail-closes on route-result,
+canonical-byte, digest, selector-partition, fallback, admission, or published
+manifest mismatches. At candidate commit `19520f3`, 2634 plugin-disabled
+full-suite tests passed in 230.25 seconds on 2026-09-17. No accepted real
+specimen was read and no real matrix was executed. The candidate awaits
+Fernando's scientific and architectural acceptance before any separately
+authorized real-matrix execution.
+
+### Accepted 50S.6G.1B.2D fake-data matrix implementation
+
+Fernando scientifically and architecturally accepted the fake-data-only matrix
+implementation on 2026-09-17. The accepted evidence is 2634 plugin-disabled
+full-suite tests in 230.25 seconds at `19520f3`, plus 161 plugin-disabled
+current-documentation tests in 3.32 seconds at `3ef6a4d`. Acceptance does not
+authorize reading the accepted real specimen or executing the real matrix.
+Only a separately bounded real-execution audit is authorized next.

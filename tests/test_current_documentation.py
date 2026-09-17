@@ -6792,3 +6792,76 @@ def test_50s6g1b2d_records_acceptance_and_fake_data_only_authority():
     assert "real matrix execution" in coordinates
     assert "must not be executed" in guide
     assert "Do not read or execute the accepted real 256-record specimen" in instructions
+
+def test_50s6g1b2d_documents_candidate_fake_data_implementation():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "19520f3" in document
+        assert "2634 plugin-disabled" in document
+        assert "230.25 seconds" in document
+        assert "2026-09-17" in document
+        assert "fake data" in document.lower() or "fake-data" in document.lower()
+        assert "real" in document.lower()
+        assert "acceptance" in document.lower()
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate fake-data implementation record" in audit
+    assert "Candidate 50S.6G.1B.2D fake-data matrix implementation" in architecture
+    assert "50S.6G.1B.2D candidate fake-data implementation state" in roadmap
+    assert "Candidate crossing equivalence matrix API" in reference
+    assert "Candidate 50S.6G.1B.2D implementation ownership" in source_tree
+    assert "Candidate 50S.6G.1B.2D coordinate review" in coordinates
+    assert "Candidate 50S.6G.1B.2D fake-data implementation" in guide
+    assert "Candidate 50S.6G.1B.2D implementation boundary" in instructions
+    assert "matrix-manifest.json" in reference
+    assert "No accepted real specimen was read" in architecture
+    assert "no real matrix was executed" in audit.lower()
+
+def test_50s6g1b2d_records_fake_data_implementation_acceptance():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "2634 plugin-disabled" in document
+        assert "230.25 seconds" in document
+        assert "19520f3" in document
+        assert "161 plugin-disabled" in document
+        assert "3.32 seconds" in document
+        assert "3ef6a4d" in document
+        assert "separately bounded real-execution audit" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted fake-data implementation closure" in audit
+    assert "Accepted 50S.6G.1B.2D fake-data matrix implementation" in architecture
+    assert "50S.6G.1B.2D accepted fake-data implementation" in roadmap
+    assert "Accepted crossing equivalence matrix boundary" in reference
+    assert "Accepted 50S.6G.1B.2D ownership" in source_tree
+    assert "Accepted 50S.6G.1B.2D coordinate boundary" in coordinates
+    assert "Accepted 50S.6G.1B.2D fake-data implementation" in guide
+    assert "Accepted 50S.6G.1B.2D implementation boundary" in instructions
+    assert "does not authorize" in audit
+    assert "real execution" in audit

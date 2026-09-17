@@ -24,6 +24,17 @@ from .crossing_batch import (
     MultiFieldSatelliteCrossingCoordinator,
     MultiFieldValidationFailure,
 )
+from .crossing_matrix import (
+    CROSSING_MATRIX_IMPLEMENTATION,
+    MATRIX_DOCUMENT_KIND,
+    MATRIX_ISOLATION_IDENTITY,
+    CrossingMatrixPolicy,
+    MatrixEquivalenceError,
+    MatrixResourceObservation,
+    MatrixRouteRun,
+    MatrixSpecimenIdentity,
+    run_equivalence_matrix,
+)
 from .elements import SatelliteElementRecord
 from .snapshot_admission import (
     CELESTRAK_ACTIVE_20260917_IDENTITY,
@@ -67,6 +78,14 @@ __all__ = [
     "ConeShellDecision",
     "ConeShellPolicy",
     "ConeShellSelection",
+    "CROSSING_MATRIX_IMPLEMENTATION",
+    "MATRIX_DOCUMENT_KIND",
+    "MATRIX_ISOLATION_IDENTITY",
+    "CrossingMatrixPolicy",
+    "MatrixEquivalenceError",
+    "MatrixResourceObservation",
+    "MatrixRouteRun",
+    "MatrixSpecimenIdentity",
     "ConservativeConeShellSelector",
     "ExternalSnapshotAdmission",
     "ExternalSnapshotAdmissionPolicy",
@@ -103,5 +122,6 @@ __all__ = [
     "split_julian_date",
     "load_snapshot",
     "load_snapshot_directory",
+    "run_equivalence_matrix",
     "select_medium_snapshot",
 ]
