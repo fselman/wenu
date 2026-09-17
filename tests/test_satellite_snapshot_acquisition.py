@@ -118,7 +118,7 @@ def test_policy_preflight_fails_closed_without_receipt(tmp_path, change):
 def test_wrong_policy_acknowledgement_stops_before_provider_request(tmp_path):
     policy, _digest, _ = frozen_policy(tmp_path)
     transport = FakeTransport(
-        ACTIVE_GP_URL, response(ACTIVE_GP_URL, provider_csv(), "text/csv")
+        ACTIVE_GP_URL, response(ACTIVE_GP_URL, provider_csv(), "text/plain; charset=UTF-8")
     )
 
     with pytest.raises(ValueError, match="acknowledgement"):
@@ -137,7 +137,7 @@ def test_wrong_policy_acknowledgement_stops_before_provider_request(tmp_path):
 def test_one_bulk_response_is_normalized_and_published_atomically(tmp_path):
     policy, digest, _ = frozen_policy(tmp_path)
     transport = FakeTransport(
-        ACTIVE_GP_URL, response(ACTIVE_GP_URL, provider_csv(), "text/csv")
+        ACTIVE_GP_URL, response(ACTIVE_GP_URL, provider_csv(), "text/plain; charset=UTF-8")
     )
 
     directory = acquire_active_snapshot(
@@ -166,10 +166,30 @@ def test_one_bulk_response_is_normalized_and_published_atomically(tmp_path):
     assert not tuple((tmp_path / "snapshots").glob(".snapshot-*"))
 
 
+def test_active_response_rejects_unexpected_http_media_type(tmp_path):
+    policy, digest, _ = frozen_policy(tmp_path)
+    transport = FakeTransport(
+        ACTIVE_GP_URL,
+        response(ACTIVE_GP_URL, provider_csv(), "text/csv; charset=UTF-8"),
+    )
+
+    with pytest.raises(ValueError, match="unexpected media type"):
+        acquire_active_snapshot(
+            tmp_path / "snapshots",
+            policy,
+            accepted_policy_sha256=digest,
+            accepted_utc="2026-09-17T10:01:00Z",
+            transport=transport,
+        )
+
+    assert transport.calls == [ACTIVE_GP_URL]
+    assert not tuple((tmp_path / "snapshots").iterdir())
+
+
 def test_fresh_validated_snapshot_is_reused_without_provider_request(tmp_path):
     policy, digest, _ = frozen_policy(tmp_path)
     first = FakeTransport(
-        ACTIVE_GP_URL, response(ACTIVE_GP_URL, provider_csv(), "text/csv")
+        ACTIVE_GP_URL, response(ACTIVE_GP_URL, provider_csv(), "text/plain; charset=UTF-8")
     )
     directory = acquire_active_snapshot(
         tmp_path / "snapshots",
@@ -207,7 +227,7 @@ def test_provider_epoch_rejects_non_contract_forms(tmp_path, epoch):
         b"2026-09-17T09:00:00.000000", epoch.encode(), 1
     )
     transport = FakeTransport(
-        ACTIVE_GP_URL, response(ACTIVE_GP_URL, body, "text/csv")
+        ACTIVE_GP_URL, response(ACTIVE_GP_URL, body, "text/plain; charset=UTF-8")
     )
 
     with pytest.raises(ValueError, match="CelesTrak EPOCH"):
@@ -238,7 +258,7 @@ def test_duplicate_identifier_fails_without_partial_publication(tmp_path):
     ]
     transport = FakeTransport(
         ACTIVE_GP_URL,
-        response(ACTIVE_GP_URL, provider_csv(rows), "text/csv"),
+        response(ACTIVE_GP_URL, provider_csv(rows), "text/plain; charset=UTF-8"),
     )
 
     with pytest.raises(ValueError, match="duplicate NORAD"):
@@ -260,7 +280,7 @@ def test_fixed_csv_header_rejects_unknown_or_reordered_contract(tmp_path):
         b"OBJECT_NAME,OBJECT_ID", b"OBJECT_ID,OBJECT_NAME", 1
     )
     transport = FakeTransport(
-        ACTIVE_GP_URL, response(ACTIVE_GP_URL, body, "text/csv")
+        ACTIVE_GP_URL, response(ACTIVE_GP_URL, body, "text/plain; charset=UTF-8")
     )
 
     with pytest.raises(ValueError, match="fixed contract"):

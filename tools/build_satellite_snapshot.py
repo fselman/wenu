@@ -42,6 +42,7 @@ def _arguments():
     policy.add_argument("--output", type=Path, required=True)
     policy.add_argument("--started-utc", required=True)
     policy.add_argument("--stopped-utc", required=True)
+    policy.add_argument("--media-type", required=True)
     acquire = commands.add_parser("build")
     acquire.add_argument("--response", type=Path, required=True)
     acquire.add_argument("--policy-directory", type=Path, required=True)
@@ -50,6 +51,7 @@ def _arguments():
     acquire.add_argument("--accepted-utc", required=True)
     acquire.add_argument("--started-utc", required=True)
     acquire.add_argument("--stopped-utc", required=True)
+    acquire.add_argument("--media-type", required=True)
     return parser.parse_args()
 
 
@@ -62,7 +64,7 @@ def main():
             transport=_transport(
                 POLICY_URL,
                 body,
-                "text/html; charset=utf-8",
+                args.media_type,
                 args.started_utc,
                 args.stopped_utc,
             ),
@@ -76,7 +78,7 @@ def main():
             transport=_transport(
                 ACTIVE_GP_URL,
                 body,
-                "text/csv; charset=utf-8",
+                args.media_type,
                 args.started_utc,
                 args.stopped_utc,
             ),

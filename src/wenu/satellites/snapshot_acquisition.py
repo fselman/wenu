@@ -429,7 +429,7 @@ def acquire_active_snapshot(
     if cached is not None:
         return cached
     response = transport(ACTIVE_GP_URL)
-    started, stopped = _response(response, ACTIVE_GP_URL, "text/csv")
+    started, stopped = _response(response, ACTIVE_GP_URL, "text/plain")
     raw_digest = sha256_hex(response.body)
     records = _normalize_csv(response.body, raw_digest)
     records_bytes = canonical_json_bytes(records)
