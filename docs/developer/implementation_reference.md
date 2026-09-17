@@ -2697,7 +2697,7 @@ after 2,577 plugin-disabled tests passed. Only a separately bounded 50S.6G
 audit is authorized next; representative-scale runtime and output remain
 unauthorized.
 
-## Candidate 50S.6G delivery interfaces
+## Accepted 50S.6G delivery direction
 
 No interface in this section is implemented. The candidate audit proposes an
 explicit-directory immutable snapshot loader; one canonical exact-crossing
@@ -2715,3 +2715,8 @@ Exact drawable tracks require separately certified ordered samples linked to
 the accepted entry/closest/exit result. Ordinary chart requests may later gain
 a distinct artificial-satellite selection; they must not reuse the natural or
 minor-body `SolarSystemTrackRequest` contract.
+
+Fernando scientifically and architecturally accepted this direction on
+2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
+4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next; every interface described above remains unimplemented.
