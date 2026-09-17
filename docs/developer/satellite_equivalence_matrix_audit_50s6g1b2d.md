@@ -431,4 +431,21 @@ fresh-subprocess route worker and protocol, explicit offline
 `run-equivalence-matrix` command, and their fail-closed tests. It does not
 authorize reading the accepted real specimen, executing either real route,
 publishing real evidence, making a performance claim, or advancing later
-50S.6G delivery.
+50S.6G delivery.\n
+
+## Candidate bounded production-path implementation
+
+The dedicated candidate branch adds the exact accepted-medium receipt checks,
+a digest-frozen ten-field La Ligua fixture, the production whole-interval
+airmass adapter, a canonical fresh-subprocess protocol and worker, an explicit
+offline `run-equivalence-matrix` command, and fake-data-only tests. Following
+Fernando's 2026-09-17 direction to shorten tests, the fixture uses only 15- and
+60-second intervals and the new test gate avoids repeated scientific route
+runs by using bounded protocol doubles. Production policy retains one warm-up
+and three measured isolated repetitions.
+
+This candidate has not accessed the accepted real specimen and has not
+executed the real matrix. It awaits focused and full-suite verification and
+Fernando's scientific and architectural acceptance. Real execution, external
+evidence publication, performance claims, and later delivery remain
+unauthorized.
