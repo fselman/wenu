@@ -942,3 +942,7 @@ policy, and require separate approval of its exact digest before GP access.
 The exact direct policy URL is `https://celestrak.org/usage-policy.php`; the
 50S.6G.1B.1 regression test protects it. A redirected or documentation-
 subdirectory URL is not an acceptable substitute.
+
+Fernando accepted this direct-policy-URL correction on 2026-09-17 after all
+2,595 plugin-disabled tests passed. CelesTrak remains the only authorized
+provider. Do not treat that acceptance as permission for a live GP request.

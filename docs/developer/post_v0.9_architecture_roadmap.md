@@ -2480,3 +2480,8 @@ future work.
 Fernando accepted the 50S.6G.1B.1 implementation on 2026-09-17 after 175
 focused plugin-disabled tests and all 2,594 plugin-disabled tests passed.
 No live CelesTrak request or 50S.6G.1B.2 work is thereby authorized.
+
+Any later second provider requires a separate audit and must be public,
+reliable, and genuinely independent rather than a redistribution of CelesTrak
+or Space-Track. Its first role is an explicit validation oracle; no automatic
+fallback or catalogue merge is implied.

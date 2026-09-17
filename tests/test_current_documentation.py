@@ -6224,3 +6224,11 @@ def test_50s6g1b1_documents_offline_snapshot_builder_boundary():
     assert "175 focused plugin-disabled tests passed" in audit
     assert "226.82 seconds" in audit
     assert "does not authorize a live policy or GP request" in audit
+    for document in (architecture, reference, instructions, audit):
+        assert "2,595 plugin-disabled tests passed" in document
+    assert "https://celestrak.org/usage-policy.php" in architecture
+    assert "no GP request was performed" in architecture
+    assert "public, reliable, and genuinely independent" in guide
+    assert "rather than a redistribution of CelesTrak" in roadmap
+    assert "validation oracle" in guide
+    assert "never as silent fallback" in guide

@@ -392,3 +392,7 @@ plugin-disabled tests passed in 7.24 seconds and all 2,594 plugin-disabled tests
 passed in 226.82 seconds. `git diff --check` and the working tree were clean.
 Acceptance does not authorize a live policy or GP request, representative
 admission/evidence, or 50S.6G.1B.2.
+
+Fernando accepted the correction to the exact direct policy endpoint on
+2026-09-17 after all 2,595 plugin-disabled tests passed in 205.93 seconds.
+No GP request was made or authorized.

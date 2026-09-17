@@ -1086,3 +1086,10 @@ transport, representative admission, or evidence matrix is implemented.
 Fernando accepted 50S.6G.1B.1 on 2026-09-17 after 175 focused tests and all
 2,594 plugin-disabled tests passed. No live provider access was exercised or
 authorized by that acceptance.
+
+A future provider may be audited only if it is public, reliable, and genuinely
+independent in observation or orbit determination, rather than a mirror of
+CelesTrak or Space-Track. It must have stable machine-readable access, explicit
+policy and provenance, complete identifiers, and an auditable OMM-compatible
+mapping. Introduce it first as a separate validation oracle, never as silent
+fallback, automatic merge, or replacement of the authorized provider.

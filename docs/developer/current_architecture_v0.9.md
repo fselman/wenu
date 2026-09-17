@@ -1177,3 +1177,7 @@ Fernando accepted the bounded 50S.6G.1B.1 implementation on 2026-09-17 after
 175 focused plugin-disabled tests and all 2,594 plugin-disabled tests passed.
 `git diff --check` and the working tree were clean. Acceptance does not
 authorize a live CelesTrak request or 50S.6G.1B.2.
+
+Fernando accepted the direct-policy-URL correction on 2026-09-17 after all
+2,595 plugin-disabled tests passed in 205.93 seconds. The protected endpoint is
+`https://celestrak.org/usage-policy.php`; no GP request was performed.
