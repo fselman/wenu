@@ -864,7 +864,7 @@ after 2,577 plugin-disabled tests passed. Only a separately bounded 50S.6G
 audit is authorized next; no 50S.6G implementation is authorized.
 
 
-## Candidate 50S.6G delivery-audit boundary
+## Accepted 50S.6G delivery-audit boundary
 
 Read `satellite_delivery_audit_50s6g.md` before proposing representative
 snapshot admission, exact crossing reports, multi-FoV CLI/files, exact local
@@ -879,5 +879,9 @@ and requires digest-bound revalidation when explicitly supplied for a second
 call. JSON is the only initial request protocol. Reports use one canonical
 logical model with JSON, ECSV, and VOTable encodings. Exact tracks must reuse
 the accepted propagation/topocentric services and canonical chart pipeline.
-This candidate audit changes no runtime or output and authorizes no 50S.6G
-implementation before Fernando's separate acceptance.
+This accepted audit changes no runtime or output. Fernando scientifically and
+architecturally accepted it on 2026-09-17 after all 145 plugin-disabled
+current-documentation tests passed in 4.36 seconds. Only bounded 50S.6G.1A
+external immutable snapshot loading is authorized next. Acquisition, broader
+runtime admission, reports, CLI/files, exact tracks, chart integration, and all
+later behavior remain unauthorized.
