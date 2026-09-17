@@ -343,4 +343,3 @@ illumination, brightness, detector effects, or observatory adapters.
 - IVOA VOTable Recommendation and VOUnits Recommendation;
 - CCSDS 502.0 Orbit Data Messages, consulted to retain OEM as an orbit/state
   ephemeris option rather than a Wenu crossing-report substitute.
-
