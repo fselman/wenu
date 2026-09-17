@@ -6328,8 +6328,8 @@ def test_50s6g1b2a_records_acceptance_and_bounded_next_step():
     for document in documents:
         assert "scientifically and architecturally accepted" in document
         assert "2026-09-17" in document
-        assert "149 plugin-disabled current-documentation tests passed" in document
-        assert "3.35 seconds" in document
+        assert "150 plugin-disabled current-documentation tests passed" in document
+        assert "3.84 seconds" in document
         assert "Only bounded 50S.6G.1B.2B" in document
     audit = documents[0]
     assert "does not authorize medium selection" in audit
