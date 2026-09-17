@@ -1364,4 +1364,15 @@ finding on 2026-09-17 after 163 plugin-disabled current-documentation tests
 passed in 3.80 seconds at `054ac39`. Only bounded fake-data implementation of
 the frozen fixture, receipt constraints, production airmass certifier,
 fresh-subprocess worker, offline command, and tests is authorized next. Real
-specimen access and real matrix execution remain unauthorized.
+specimen access and real matrix execution remain unauthorized.\n
+
+### Candidate 50S.6G.1B.2D production execution path
+
+The candidate production boundary is isolated in
+`satellites/crossing_matrix_execution.py`: an exact external-medium gate,
+digest-frozen ten-field La Ligua fixture, production whole-interval airmass
+certifier, canonical fresh-subprocess worker/executor, and explicit offline
+developer command. The fixture uses only 15- and 60-second intervals. The
+accepted `crossing_matrix.py` equivalence and atomic-publication owner remains
+unchanged except for accepting canonical worker result mappings and recording
+complete subprocess digests. No provider or implicit execution path exists.
