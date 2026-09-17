@@ -3584,3 +3584,11 @@ time-scale meaning.
 The 2026-09-17 focused gate passed 30 plugin-disabled tests in 5.99 seconds.
 The candidate does not authorize real medium selection or 50S.6G.1B.2D matrix
 execution.
+
+### Accepted 50S.6G.1B.2C coordinate boundary
+
+Fernando accepted the no-coordinate-change finding on 2026-09-17 at
+`1d9d4e4`. The full plugin-disabled suite passed 2,622 tests in 225.75
+seconds and the focused gate passed 185 tests in 9.03 seconds. Selection still
+performs no propagation or coordinate transformation. Acceptance does not
+authorize real selection or 50S.6G.1B.2D.
