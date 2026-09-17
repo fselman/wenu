@@ -19,7 +19,7 @@ POLICY = b"""<!doctype html><title>CelesTrak Usage Policy</title>
 <p>Use the documented gp-data-formats.php query.</p>
 <p>GP data updates every 2 hours.</p>
 <p>Download once per update and cache the response.</p>
-<p>Stop immediately after a non-200 response.</p>"""
+<p>M2M software should immediately stop querying after any non-HTTP 200 response.</p>"""
 HEADER = (
     "OBJECT_NAME", "OBJECT_ID", "EPOCH", "MEAN_MOTION", "ECCENTRICITY",
     "INCLINATION", "RA_OF_ASC_NODE", "ARG_OF_PERICENTER",

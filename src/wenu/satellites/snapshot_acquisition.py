@@ -61,7 +61,7 @@ _REQUIRED_POLICY_CLAUSES = {
     "two_hour_cadence": "2 hours",
     "one_download_per_update": "once per update",
     "caching": "cache",
-    "stop_on_non_200": "non-200",
+    "stop_on_non_200": "non-http 200",
 }
 _PUBLICATION_FILES = (
     "manifest.json",
