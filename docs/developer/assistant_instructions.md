@@ -1138,4 +1138,16 @@ Fernando scientifically and architecturally accepted the fail-closed audit on
 fake data: exact receipt constraints, frozen fixture, production airmass
 certifier, fresh-subprocess protocol and worker, offline command, and tests.
 Do not access the accepted real specimen or execute the real matrix without a
-later separate explicit authorization.
+later separate explicit authorization.\n
+
+### Candidate production-path implementation boundary
+
+The candidate branch implements only the accepted fake-data production path:
+exact medium-receipt constraints, a digest-frozen ten-field La Ligua fixture,
+the production whole-interval airmass certifier, a canonical fresh-subprocess
+worker/executor, and the explicit offline `run-equivalence-matrix` developer
+command. Fernando directed on 2026-09-17 that fixture durations be reduced to
+15 and 60 seconds and that new tests avoid unnecessary repeated scientific
+route runs. Do not access the accepted real specimen or execute the real
+matrix under this candidate. Verification and separate scientific and
+architectural acceptance are still required.
