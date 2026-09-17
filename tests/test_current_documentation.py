@@ -6419,7 +6419,7 @@ def test_50s6g1b2b_records_acceptance_and_authorizes_only_medium_work():
         assert "separately unauthorized" in document
 
 
-def test_50s6g1b2c_proposes_deterministic_medium_specimen():
+def test_50s6g1b2c_accepts_deterministic_medium_specimen():
     audit = " ".join(read(
         DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md"
     ).split())
@@ -6435,7 +6435,7 @@ def test_50s6g1b2c_proposes_deterministic_medium_specimen():
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
-        "Candidate documentation-only audit",
+        "Accepted documentation-only audit",
         "not a statistical sample",
         "retrieved_stopped_utc",
         "geo_deep_like",
@@ -6459,14 +6459,39 @@ def test_50s6g1b2c_proposes_deterministic_medium_specimen():
         assert phrase in audit
 
     assert "satellite_medium_specimen_audit_50s6g1b2c.md" in index
-    assert "Candidate 50S.6G.1B.2C medium-specimen audit" in architecture
+    assert "Accepted 50S.6G.1B.2C medium-specimen audit" in architecture
     assert "50S.6G.1B.2C — Deterministic medium specimen" in roadmap
-    assert "Proposed deterministic medium-specimen contract" in reference
-    assert "Candidate 50S.6G.1B.2C ownership" in source_tree
-    assert "Candidate 50S.6G.1B.2C coordinate review" in coordinate_guide
-    assert "Candidate 50S.6G.1B.2C medium specimen" in guide
-    assert "Candidate 50S.6G.1B.2C medium-specimen boundary" in instructions
+    assert "Accepted proposed deterministic medium-specimen contract" in reference
+    assert "Accepted 50S.6G.1B.2C ownership" in source_tree
+    assert "Accepted 50S.6G.1B.2C coordinate review" in coordinate_guide
+    assert "Accepted 50S.6G.1B.2C medium specimen" in guide
+    assert "Accepted 50S.6G.1B.2C medium-specimen boundary" in instructions
     assert "No source or runtime test file is added" in source_tree
     assert "performs no propagation" in coordinate_guide
     assert "first real subset operation" in roadmap
     assert "matrix execution" in instructions
+
+
+def test_50s6g1b2c_records_acceptance_and_fake_data_only_authority():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "153 plugin-disabled current-documentation tests passed" in document
+        assert "4.58 seconds" in document
+        assert "Only bounded fake-data" in document
+        assert "first real medium selection" in document
+        assert "50S.6G.1B.2D matrix execution" in document
+        assert "separately unauthorized" in document

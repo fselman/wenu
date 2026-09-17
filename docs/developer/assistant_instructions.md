@@ -997,7 +997,7 @@ seconds. `git diff --check` and the working tree were clean. Only bounded
 matrix execution and later delivery remain separately unauthorized.
 
 
-## Candidate 50S.6G.1B.2C medium-specimen boundary
+## Accepted 50S.6G.1B.2C medium-specimen boundary
 
 Before medium-specimen work, read
 `satellite_medium_specimen_audit_50s6g1b2c.md`. The candidate uses only the
@@ -1006,3 +1006,11 @@ bins, two deterministic representatives per non-empty bin, and deterministic
 fill to a default target of 256. Keep the product external, receipt-bound,
 non-statistical, and non-default. This documentation audit changes no runtime
 and does not authorize a real subset operation or matrix execution.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
+2026-09-17 after all 153 plugin-disabled current-documentation tests passed in
+4.58 seconds; `git diff --check` and the working tree were clean. Only bounded
+fake-data implementation is authorized next. The first real medium selection,
+50S.6G.1B.2D matrix execution, and later delivery remain separately
+unauthorized.

@@ -1145,7 +1145,7 @@ seconds. `git diff --check` and the working tree were clean. Only bounded
 matrix execution and later delivery remain separately unauthorized.
 
 
-## Candidate 50S.6G.1B.2C medium specimen
+## Accepted 50S.6G.1B.2C medium specimen
 
 The proposed 256-record default is a deterministic coverage specimen, not a
 population-frequency sample. It covers declared mean-motion, inclination,
@@ -1153,3 +1153,11 @@ eccentricity, BSTAR, signed-age, and NORAD-width bins independently, taking two
 digest-ranked representatives from every non-empty bin before deterministic
 fill. It remains an external non-default product bound to the exact admitted
 parent and a complete selection receipt.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
+2026-09-17 after all 153 plugin-disabled current-documentation tests passed in
+4.58 seconds; `git diff --check` and the working tree were clean. Only bounded
+fake-data implementation is authorized next. The first real medium selection,
+50S.6G.1B.2D matrix execution, and later delivery remain separately
+unauthorized.

@@ -1235,7 +1235,7 @@ seconds. `git diff --check` and the working tree were clean. Only bounded
 matrix execution and later delivery remain separately unauthorized.
 
 
-## Candidate 50S.6G.1B.2C medium-specimen audit
+## Accepted 50S.6G.1B.2C medium-specimen audit
 
 The current architecture has no medium-subset owner. The candidate audit
 separates deterministic evidence selection from immutable loading, provider
@@ -1243,3 +1243,11 @@ acquisition, digest admission, and later matrix execution. It proposes an
 external three-file derived snapshot with a default target of 256, independent
 one-dimensional bin coverage, deterministic digest-based ranking, and a
 complete selection receipt. No runtime behavior or installed data changes.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
+2026-09-17 after all 153 plugin-disabled current-documentation tests passed in
+4.58 seconds; `git diff --check` and the working tree were clean. Only bounded
+fake-data implementation is authorized next. The first real medium selection,
+50S.6G.1B.2D matrix execution, and later delivery remain separately
+unauthorized.

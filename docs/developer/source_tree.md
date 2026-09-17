@@ -2098,7 +2098,7 @@ seconds. `git diff --check` and the working tree were clean. Only bounded
 matrix execution and later delivery remain separately unauthorized.
 
 
-## Candidate 50S.6G.1B.2C ownership
+## Accepted 50S.6G.1B.2C ownership
 
 `satellite_medium_specimen_audit_50s6g1b2c.md` proposes a later
 `src/wenu/satellites/snapshot_evidence.py` owner for deterministic
@@ -2108,3 +2108,11 @@ A `select-medium` operation may extend the existing offline
 `tests/test_satellite_snapshot_evidence.py` would own the distinct
 stratification and publication fault model. No source or runtime test file is
 added by this audit.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
+2026-09-17 after all 153 plugin-disabled current-documentation tests passed in
+4.58 seconds; `git diff --check` and the working tree were clean. Only bounded
+fake-data implementation is authorized next. The first real medium selection,
+50S.6G.1B.2D matrix execution, and later delivery remain separately
+unauthorized.

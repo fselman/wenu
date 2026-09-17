@@ -1,8 +1,13 @@
 # 50S.6G.1B.2C — Deterministic medium satellite specimen audit
 
-**Status:** Candidate documentation-only audit authorized for review on
-2026-09-17. It changes no runtime, installed data, external snapshot, default,
-coordinate meaning, report, track, chart, or provider access.
+**Status:** Accepted documentation-only audit.
+
+Fernando scientifically and architecturally accepted this audit on 2026-09-17
+after all 153 plugin-disabled current-documentation tests passed in 4.58
+seconds; `git diff --check` and the working tree were clean. It changes no
+runtime, installed data, external snapshot, default, coordinate meaning,
+report, track, chart, or provider access. Only bounded fake-data
+50S.6G.1B.2C implementation is authorized next.
 
 ## 1. Purpose and roadmap position
 
@@ -278,7 +283,7 @@ CelesTrak request is needed or permitted.
 
 ## 12. Acceptance criteria
 
-This audit is ready for Fernando's review when:
+This audit was accepted when:
 
 - every active authority agrees on the exact parent, reference instant, bins,
   target, deterministic ranks, receipt, publication, and non-claims;
@@ -288,6 +293,6 @@ This audit is ready for Fernando's review when:
 - documentation tests protect the precise choices and exclusions;
 - the plugin-disabled documentation gate and `git diff --check` pass.
 
-Acceptance would authorize only bounded 50S.6G.1B.2C implementation with fake
+Acceptance authorizes only bounded 50S.6G.1B.2C implementation with fake
 data. It would not authorize the first real subset operation, 50S.6G.1B.2D
 matrix execution, or later 50S.6G delivery.
