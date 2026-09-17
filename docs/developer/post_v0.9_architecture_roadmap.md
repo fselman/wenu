@@ -2369,9 +2369,9 @@ authorized.
 
 ### 50S.6F — Bounded atomic multi-FoV coordinator
 
-**Status:** Candidate bounded implementation.
+**Status:** Accepted bounded implementation.
 
-The candidate adds an immutable Python batch of complete
+The accepted implementation adds an immutable Python batch of complete
 `LocalSatelliteCrossingQuery` values. It requires one observer and snapshot,
 unique ordered field identities, centre-only complete-interval airmass
 admission, and at most 60 seconds per field in the installed synthetic domain.
@@ -2386,3 +2386,9 @@ batch contract but makes no useful-speed or shared-physical-state-reuse claim.
 CLI/file adapters, a validation-output file for a later second call, generic
 reports, chart tracks, representative catalogue admission, and all 50S.6G+
 behavior remain later.
+
+Fernando scientifically and architecturally accepted 50S.6F on 2026-09-17
+after 2,577 plugin-disabled tests passed. Only a separately bounded 50S.6G
+audit is authorized next. Representative-scale catalogue admission, generic
+reports, chart tracks, CLI/file adapters, and a validation-output file remain
+unimplemented and unauthorized pending that audit.
