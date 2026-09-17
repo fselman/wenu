@@ -2214,3 +2214,13 @@ ownership of `satellites/crossing_matrix.py` and
 plugin-disabled current-documentation tests in 3.32 seconds at `3ef6a4d`.
 No source-tree owner may discover or read the accepted real specimen under this
 closure. Only a separately bounded real-execution audit is authorized next.
+
+### Candidate real-execution readiness ownership
+
+At integrated baseline `9bdf301`, `satellites/crossing_matrix.py` owns the
+accepted fake-data orchestration core, but no production subprocess worker,
+frozen real request fixture, production airmass adapter, or developer-command
+owner exists. The bounded next implementation may add those owners beside the
+existing matrix core and in `tools/build_satellite_snapshot.py`, with
+fake-data-only tests. No repository file may own, package, discover, or read
+the external real specimen, and real matrix execution remains unauthorized.
