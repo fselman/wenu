@@ -12,17 +12,21 @@ from astropy.coordinates import (
     CartesianDifferential,
     CartesianRepresentation,
     EarthLocation,
+    GCRS,
     ITRS,
     TEME,
 )
 from astropy.time import Time
 from astropy.utils import iers
+from astropy_iers_data import IERS_A_FILE
 from skyfield.api import EarthSatellite, load, wgs84
 
-from wenu.coordinates import PositionStatus
+from wenu.coordinates import CoordinateSpec, PositionStatus
 from wenu.satellite_crossings import SatelliteObserver
+from wenu.satellite_crossings import SatelliteFieldOfView
 from wenu.satellites import (
     SatelliteEarthOrientationError,
+    SatelliteFieldCenterAltitudeEvaluator,
     SatelliteTopocentricState,
     SatelliteTopocentricTransformer,
     Sgp4TemePropagator,
@@ -414,3 +418,50 @@ def test_policy_rejects_refraction_and_unknown_earth_orientation():
         SatelliteTopocentricTransformer().transform(state, refracted)
     with pytest.raises(ValueError, match="Earth-orientation policy"):
         SatelliteTopocentricTransformer().transform(state, unknown)
+
+
+def test_field_center_altitude_uses_governed_gcrs_axis_rotation():
+    instant = "2026-09-15T00:00:00.000000Z"
+    time = Time(instant, scale="utc")
+    site = observer()
+    longitude = np.deg2rad(site.longitude_deg)
+    latitude = np.deg2rad(site.latitude_deg)
+    local_up = CartesianRepresentation(
+        np.asarray(
+            (
+                np.cos(latitude) * np.cos(longitude),
+                np.cos(latitude) * np.sin(longitude),
+                np.sin(latitude),
+            )
+        )
+    )
+    table = iers.IERS_A.open(str(IERS_A_FILE))
+    with iers.conf.set_temp("auto_download", False):
+        with iers.conf.set_temp("iers_degraded_accuracy", "error"):
+            with iers.earth_orientation_table.set(table):
+                gcrs = ITRS(local_up, obstime=time).transform_to(
+                    GCRS(obstime=time)
+                ).spherical
+    field = SatelliteFieldOfView(
+        field_id="zenith",
+        center_longitude_deg=gcrs.lon.to_value(u.deg),
+        center_latitude_deg=gcrs.lat.to_value(u.deg),
+        angular_radius_deg=1.0,
+        coordinate_spec=CoordinateSpec(
+            frame="gcrs-axes",
+            origin="topocentric-direction",
+            position_status=PositionStatus.GEOMETRIC,
+            instant=instant,
+            time_scale="utc",
+            provider="independent test construction",
+        ),
+    )
+
+    altitude, evidence = SatelliteFieldCenterAltitudeEvaluator().evaluate(
+        field, site, instant
+    )
+
+    assert altitude == pytest.approx(90.0, abs=1e-10)
+    assert evidence.source_sha256 == sha256(
+        Path(IERS_A_FILE).read_bytes()
+    ).hexdigest()

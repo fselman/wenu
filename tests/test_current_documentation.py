@@ -5897,10 +5897,70 @@ def test_50s6e_audits_multifov_interchange_and_lunar_illumination():
     assert "50S.6G.3 may accept binocular and regional chart products" in audit
     assert "50S.6G.4 may accept stereographic planisphere" in audit
     assert "no runtime or output" in roadmap
-    assert "No multi-FoV runtime is implemented" in architecture
+    assert "accepted 50S.6F implementation adds" in architecture
     assert "scientifically and architecturally accepted this audit" in audit
     assert "commit `f079d95`" in audit
     assert "all 143 plugin-disabled current-documentation tests" in audit
     assert "Only a bounded 50S.6F implementation is authorized next" in audit
     assert "| 28 | 50B.0 |" in roadmap
     assert "| 33 | 50B.5 |" in roadmap
+
+
+def test_50s6f_documents_candidate_atomic_multifov_coordinator():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_multifov_interchange_audit_50s6e.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "atomic validation on 2026-09-16",
+        "collects every invalid field and reason in input order",
+        "raises before any crossing solve",
+        "returns no partial results",
+        "future invalid input file may produce a validation file",
+        "50S.6F neither reads nor writes that file",
+        "satellites/crossing_batch.py",
+        "ten-field execution chunk",
+        "no representative-scale, useful-speed, or shared-state-cache claim",
+    ):
+        assert phrase in audit
+
+    assert "accepted 50S.6F implementation" in architecture
+    assert "Accepted bounded implementation" in roadmap
+    assert "MultiFieldSatelliteCrossingCoordinator.solve(request)" in reference
+    assert "Accepted 50S.6F production ownership" in source_tree
+    assert "Accepted 50S.6F field-centre airmass realization" in (
+        coordinate_guide
+    )
+    assert "Accepted 50S.6F bounded batch implementation" in guide
+    assert "Accepted 50S.6F implementation boundary" in instructions
+    assert "No projection, rendering, report, CLI, or exporter owner changes" in (
+        source_tree
+    )
+    assert "no useful-speed or shared-physical-state-reuse claim" in roadmap
+    assert "adds no CLI, file input, validation-output file" in instructions
+    for document in (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+    ):
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "2,577 plugin-disabled tests passed" in document
+        assert "Only a separately bounded 50S.6G audit is authorized next" in (
+            document
+        )
+    assert "no 50S.6G implementation is authorized" in instructions

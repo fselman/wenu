@@ -990,3 +990,23 @@ Moonlight, and Lunar-Earthshine as separate geometric components; 50S.8 adds
 component-resolved flux or magnitude distributions. Fernando scientifically and architecturally accepted 50S.6E on 2026-09-16.
 No multi-FoV runtime or later milestone is implemented or automatically
 authorized. Only bounded 50S.6F is authorized next.
+
+
+## Accepted 50S.6F bounded batch implementation
+
+The accepted Python API accepts an immutable ordered non-empty tuple of
+complete single-field queries. All fields must share one observer and immutable
+snapshot; field identifiers are unique, intervals and exact-solver tolerances
+remain independent, and the installed synthetic 60-second domain remains the
+only admitted runtime. The field-centre airmass ceiling is configurable and
+defaults to 2. The radius is not part of admission.
+
+Validation is atomic and precedes all crossing work. One typed exception
+retains every rejected field and reason in input order, preparing a later 50S.6G
+file/CLI adapter to write a validation file and resubmit the valid subset
+without adding that behavior now. Valid fields are processed in execution-only
+chunks of 10 by default and results retain input order. The candidate composes
+50S.6D independently per field; it does not yet claim useful acceleration or
+shared propagation/topocentric-state reuse. Fernando scientifically and
+architecturally accepted 50S.6F on 2026-09-17 after 2,577 plugin-disabled tests
+passed. Only a separately bounded 50S.6G audit is authorized next.

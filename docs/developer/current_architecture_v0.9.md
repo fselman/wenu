@@ -1113,5 +1113,13 @@ binocular, regional, and stereographic chart tracks in 50S.6G; observatory
 adapter auditing in 50S.6H; component-resolved Sunlight, solar Earthshine,
 Moonlight, and Lunar-Earthshine geometry in 50S.7; and brightness in 50S.8.
 Fernando scientifically and architecturally accepted this direction on
-2026-09-16. No multi-FoV runtime is implemented. Only a separately bounded
-50S.6F implementation is authorized next; later milestones remain unauthorized.
+2026-09-16. The accepted 50S.6F implementation adds an immutable
+same-observer batch request, atomic ordered validation failures, centre-only
+airmass admission, execution-only chunking, and ordered composition of the
+accepted 50S.6D single-field route. It remains restricted to the installed
+synthetic snapshot and 60-second per-field intervals. No CLI, file adapter,
+generic report, chart, useful-speed claim, physical-state cache, observatory
+adapter, illumination, photometry, broader catalogue, or later milestone is
+implemented or authorized by this milestone. Fernando scientifically and
+architecturally accepted 50S.6F on 2026-09-17 after 2,577 plugin-disabled tests
+passed. Only a separately bounded 50S.6G audit is authorized next.

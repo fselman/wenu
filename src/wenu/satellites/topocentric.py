@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from hashlib import sha256
 from importlib.metadata import version
-from math import isfinite
+from math import asin, cos, degrees, isfinite, radians, sin
 from pathlib import Path
 import warnings
 
@@ -25,7 +25,10 @@ from astropy.utils import iers
 from astropy_iers_data import IERS_A_FILE
 
 from wenu.coordinates import CoordinateSpec, PositionStatus
-from wenu.satellite_crossings import SatelliteObserver
+from wenu.satellite_crossings import (
+    SatelliteFieldOfView,
+    SatelliteObserver,
+)
 from wenu.satellites.sgp4 import SatelliteTemeState
 
 
@@ -410,3 +413,87 @@ class SatelliteTopocentricTransformer:
                 "not an ICRS/GCRS astrometric or apparent coordinate.",
             ),
         )
+
+
+class SatelliteFieldCenterAltitudeEvaluator:
+    """Evaluate one fixed GCRS-axis field centre in geometric vacuum AltAz."""
+
+    def evaluate(
+        self,
+        field: SatelliteFieldOfView,
+        observer: SatelliteObserver,
+        instant: str,
+    ) -> tuple[float, SatelliteEarthOrientationEvidence]:
+        if not isinstance(field, SatelliteFieldOfView):
+            raise TypeError("field must be a SatelliteFieldOfView.")
+        if not isinstance(observer, SatelliteObserver):
+            raise TypeError("observer must be a SatelliteObserver.")
+        spec = field.coordinate_spec
+        if (
+            spec.frame != "gcrs-axes"
+            or spec.origin != "topocentric-direction"
+            or spec.position_status is not PositionStatus.GEOMETRIC
+            or spec.time_scale != "utc"
+        ):
+            raise ValueError(
+                "field must be a geometric topocentric direction in GCRS axes."
+            )
+        if observer.refraction_policy != "vacuum":
+            raise ValueError("Field-centre altitude requires vacuum.")
+        if observer.earth_orientation_policy not in {
+            "astropy",
+            "iers-a-bundled",
+        }:
+            raise ValueError(
+                "Unsupported satellite Earth-orientation policy."
+            )
+
+        time = Time(instant, scale="utc")
+        table, evidence = _earth_orientation(time)
+        longitude = radians(field.center_longitude_deg)
+        latitude = radians(field.center_latitude_deg)
+        vector = np.asarray(
+            (
+                cos(latitude) * cos(longitude),
+                cos(latitude) * sin(longitude),
+                sin(latitude),
+            ),
+            dtype=float,
+        )
+        direction = GCRS(
+            CartesianRepresentation(vector),
+            obstime=time,
+        )
+        with iers.conf.set_temp("auto_download", False):
+            with iers.conf.set_temp("iers_degraded_accuracy", "error"):
+                with iers.earth_orientation_table.set(table):
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("error", iers.IERSWarning)
+                        try:
+                            itrs = direction.transform_to(ITRS(obstime=time))
+                        except (
+                            ValueError,
+                            iers.IERSRangeError,
+                            iers.IERSWarning,
+                        ) as error:
+                            raise SatelliteEarthOrientationError(
+                                "Field-centre altitude transformation failed "
+                                "with the installed Earth-orientation resource."
+                            ) from error
+
+        itrs_vector = np.asarray(itrs.cartesian.xyz.value, dtype=float)
+        itrs_vector /= np.linalg.norm(itrs_vector)
+        site_longitude = radians(observer.longitude_deg)
+        site_latitude = radians(observer.latitude_deg)
+        geodetic_up = np.asarray(
+            (
+                cos(site_latitude) * cos(site_longitude),
+                cos(site_latitude) * sin(site_longitude),
+                sin(site_latitude),
+            ),
+            dtype=float,
+        )
+        altitude = degrees(
+            asin(float(np.clip(np.dot(itrs_vector, geodetic_up), -1.0, 1.0)))
+        )
+        return altitude, evidence
