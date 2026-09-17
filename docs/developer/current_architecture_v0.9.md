@@ -1134,3 +1134,10 @@ Fernando scientifically and architecturally accepted the audit on 2026-09-17
 after all 145 plugin-disabled current-documentation tests passed in 4.36
 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
 authorized next.
+
+The candidate 50S.6G.1A implementation adds one explicit-directory snapshot
+loading seam. It constructs the same immutable `SatelliteElementSnapshot`
+through the existing complete byte-level validator, rejects symlink or missing
+filesystem resources, and treats the manifest rather than the directory name
+as scientific identity. No external snapshot is admitted to crossing runtime,
+and no acquisition, network, report, CLI, or chart behavior is added.

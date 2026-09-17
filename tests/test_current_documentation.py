@@ -6040,3 +6040,45 @@ def test_50s6g_audits_representative_delivery_reports_files_and_tracks():
         assert "Only bounded 50S.6G.1A external immutable snapshot loading" in (
             document
         )
+
+
+def test_50s6g1a_documents_candidate_external_snapshot_loader():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_delivery_audit_50s6g.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate 50S.6G.1A implementation handoff",
+        "load_snapshot_directory(directory)",
+        "explicit local non-symlink directory",
+        "Directory names do not define snapshot identity",
+        "same immutable snapshot through the accepted complete schema",
+        "no discovery, acquisition, provider access, network",
+        "no new production or test file is added",
+        "authorize only a separately bounded 50S.6G.1B",
+        "not its implementation",
+    ):
+        assert phrase in audit
+
+    assert "candidate 50S.6G.1A implementation" in architecture
+    assert "Candidate bounded implementation" in roadmap
+    assert "Candidate explicit-directory satellite snapshot loader" in (
+        reference
+    )
+    assert "Candidate 50S.6G.1A production ownership" in source_tree
+    assert "Candidate 50S.6G.1A coordinate review" in coordinate_guide
+    assert "Candidate 50S.6G.1A external snapshot loading" in guide
+    assert "Candidate 50S.6G.1A external snapshot boundary" in instructions
+    assert "performs no network access, acquisition, publication" in reference
+    assert "does not admit an external snapshot to the 50S.6F coordinator" in (
+        roadmap
+    )

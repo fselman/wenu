@@ -36,6 +36,7 @@ from .snapshots import (
     SatelliteElementSnapshot,
     SatelliteSnapshotManifest,
     load_snapshot,
+    load_snapshot_directory,
 )
 from .topocentric import (
     SatelliteFieldCenterAltitudeEvaluator,
@@ -78,4 +79,5 @@ __all__ = [
     "Sgp4TemePropagator",
     "split_julian_date",
     "load_snapshot",
+    "load_snapshot_directory",
 ]
