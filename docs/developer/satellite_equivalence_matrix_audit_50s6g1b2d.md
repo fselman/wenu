@@ -352,9 +352,9 @@ atomic publication with full manifest revalidation.
 
 The candidate was verified on 2026-09-17 with 46 focused tests, 224 broader
 implementation tests, and **2634 plugin-disabled full-suite tests passed in
-230.25 seconds**. The verification used repository fake data only. It did not
-read the accepted real 256-record specimen, execute the real ten-field matrix,
-or establish any performance claim.
+230.25 seconds**. The verification used repository fake data only. No accepted real
+256-record specimen was read, no real matrix was executed, and no performance
+claim was established.
 
 This candidate implementation awaits Fernando's scientific and architectural
 acceptance. Acceptance may authorize only a separately bounded real-matrix
