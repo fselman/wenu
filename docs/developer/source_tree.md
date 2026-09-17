@@ -1950,7 +1950,7 @@ scientifically and architecturally accepted this ownership on 2026-09-16. No
 production owner exists yet; only bounded 50S.6F is authorized next.
 
 
-## Candidate 50S.6F production ownership
+## Accepted 50S.6F production ownership
 
 `src/wenu/satellites/crossing_batch.py` owns immutable multi-field request,
 policy, centre-airmass evidence, ordered atomic validation failures, per-field
@@ -1968,3 +1968,6 @@ preservation, independent intervals, and batch failure aggregation are a
 distinct public route and isolation obligation. Existing topocentric tests own
 the independent zenith-direction transformation check. No projection,
 rendering, report, CLI, or exporter owner changes.
+Fernando scientifically and architecturally accepted this ownership on
+2026-09-17 after 2,577 plugin-disabled tests passed. Only a separately bounded
+50S.6G audit is authorized next.
