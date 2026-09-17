@@ -248,7 +248,7 @@ after 2,577 plugin-disabled tests passed. Only a separately bounded 50S.6G
 audit is authorized next; this acceptance does not authorize representative
 scale, file/report output, chart tracks, or any other 50S.6G behavior.
 
-## 11. Candidate 50S.6G delivery refinement
+## 11. Accepted 50S.6G delivery refinement
 
 The later `satellite_delivery_audit_50s6g.md` refines the accepted direction
 without changing it. It records Fernando's atomic direct-input choice and the
@@ -258,5 +258,8 @@ subset, and requires explicit digest-bound revalidation on the second call.
 
 It further separates representative snapshots, canonical JSON/ECSV/VOTable
 reports, exact local track evidence, binocular/regional chart acceptance, and
-the stereographic-planisphere boundary into independently accepted slices. No
-50S.6G runtime or output is authorized by that candidate audit.
+the stereographic-planisphere boundary into independently accepted slices.
+Fernando scientifically and architecturally accepted that audit on 2026-09-17
+after all 145 plugin-disabled current-documentation tests passed in 4.36
+seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next.
