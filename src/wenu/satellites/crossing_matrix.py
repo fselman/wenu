@@ -55,6 +55,9 @@ def _plain(value):
         return {str(key): _plain(item) for key, item in value.items()}
     if isinstance(value, (tuple, list)):
         return [_plain(item) for item in value]
+    if isinstance(value, (set, frozenset)):
+        items = [_plain(item) for item in value]
+        return sorted(items, key=canonical_json_bytes)
     if value is None or isinstance(value, (str, int, float, bool)):
         return value
     raise TypeError(
