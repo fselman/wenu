@@ -3466,7 +3466,7 @@ Fernando scientifically and architecturally accepted this realization on
 50S.6G audit is authorized next.
 
 
-## Candidate 50S.6G delivery coordinate boundary
+## Accepted 50S.6G delivery coordinate boundary
 
 The coordinate guide was reviewed for the documentation-only 50S.6G audit; no
 implemented coordinate meaning changes. Initial request files retain complete
@@ -3479,3 +3479,7 @@ sampling-tolerance evidence before any transformation into one chart product
 frame. Renderers must not interpret TEME as a celestial chart frame, treat a
 three-event crossing summary as a certified curve, interpolate across visits
 or seams, or infer apparent visibility from geometric coordinates.
+Fernando scientifically and architecturally accepted this boundary on
+2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
+4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next; no implemented coordinate meaning changes.
