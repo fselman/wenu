@@ -362,16 +362,23 @@ def _worker(request_path, response_path):
     cpu_seconds, wall_seconds = time.process_time() - cpu_start, time.monotonic() - wall_start
     _current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
+    result_document = _jsonable(results)
+    evidence_document = None if evidence is None else _jsonable(evidence)
     resource = MatrixResourceObservation(
         route=route, field_id=query.field_of_view.field_id,
         repetition=max(0, request["repetition"]), wall_seconds=wall_seconds,
         cpu_seconds=cpu_seconds, peak_python_bytes=peak, environment=_environment(),
+        exit_status=0,
+        snapshot_sha256=snapshot.manifest.content_sha256,
+        request_sha256=sha256_hex(request_bytes),
+        result_sha256=sha256_hex(canonical_json_bytes(result_document)),
+        evidence_sha256=sha256_hex(canonical_json_bytes(evidence_document)),
     )
     response = {
         "protocol": MATRIX_WORKER_PROTOCOL,
-        "results": _jsonable(results),
+        "results": result_document,
         "resource": _jsonable(resource),
-        "acceleration_evidence": None if evidence is None else _jsonable(evidence),
+        "acceleration_evidence": evidence_document,
     }
     Path(response_path).write_bytes(canonical_json_bytes(response))
 
