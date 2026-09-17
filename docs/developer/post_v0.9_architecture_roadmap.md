@@ -2567,3 +2567,16 @@ Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
 fake-data implementation is authorized next. The first real medium selection,
 50S.6G.1B.2D matrix execution, and later delivery remain separately
 unauthorized.
+
+### 50S.6G.1B.2C candidate implementation state
+
+The bounded fake-data implementation is now a candidate. The dedicated
+`satellites/snapshot_evidence.py` owner performs admitted-parent validation,
+report and raw-response binding, deterministic independent-axis selection,
+canonical receipt construction, and atomic content-addressed publication. The
+offline `select-medium` developer command has no transport.
+
+The focused 2026-09-17 gate passed 30 plugin-disabled tests in 5.99 seconds.
+Scientific and architectural acceptance remains required before the first real
+medium selection. 50S.6G.1B.2D matrix execution remains separately
+unauthorized.
