@@ -2777,3 +2777,7 @@ The six-file directory remains content-addressed by canonical `records.json`,
 retains full raw policy and provider bytes, and is validated before atomic
 rename. CelesTrak `GROUP=active` remains a representative provider population,
 not a complete resident-space-object catalogue.
+
+Fernando accepted this offline builder on 2026-09-17 after 175 focused tests
+and all 2,594 plugin-disabled tests passed. A real policy fetch, GP request,
+and exact policy-digest approval remain separately authorized operations.

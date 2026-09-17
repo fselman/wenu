@@ -6206,3 +6206,19 @@ def test_50s6g1b1_documents_offline_snapshot_builder_boundary():
         instructions
     )
     assert "No live provider request or 50S.6G.1B.2 evidence" in audit
+    for document in (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        instructions,
+        audit,
+    ):
+        assert "Fernando accepted" in document
+        assert "2026-09-17" in document
+        assert "2,594 plugin-disabled tests passed" in document
+    assert "175 focused plugin-disabled tests passed" in audit
+    assert "226.82 seconds" in audit
+    assert "does not authorize a live policy or GP request" in audit

@@ -1172,3 +1172,8 @@ snapshot passes `load_snapshot_directory()` before publication.
 
 This slice does not authorize a live request, cache-refresh override,
 representative admission or evidence, 50S.6G.1B.2, or a runtime default.
+
+Fernando accepted the bounded 50S.6G.1B.1 implementation on 2026-09-17 after
+175 focused plugin-disabled tests and all 2,594 plugin-disabled tests passed.
+`git diff --check` and the working tree were clean. Acceptance does not
+authorize a live CelesTrak request or 50S.6G.1B.2.

@@ -933,3 +933,8 @@ live network adapter. Exact policy-response SHA-256 acknowledgement must occur
 before any GP transport call; failures remain atomic. Do not perform a live
 CelesTrak request or begin representative admission/evidence without separate
 Fernando authorization.
+
+Fernando accepted 50S.6G.1B.1 on 2026-09-17 after 175 focused plugin-disabled
+tests and all 2,594 plugin-disabled tests passed. The next step is not an
+implicit live operation: obtain separate authorization before fetching the
+policy, and require separate approval of its exact digest before GP access.

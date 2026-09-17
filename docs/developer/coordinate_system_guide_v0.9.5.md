@@ -3520,3 +3520,6 @@ The implemented 50S.6G.1B.1 offline builder preserves that boundary. It maps
 only `EARTH`, `TEME`, `UTC`, and `SGP4` provider-format invariants before using
 the existing typed OMM validator. It adds no coordinate transform, observer,
 horizon, visibility, crossing, illumination, or airmass meaning.
+
+Fernando accepted this unchanged coordinate boundary with 50S.6G.1B.1 on
+2026-09-17 after all 2,594 plugin-disabled tests passed.
