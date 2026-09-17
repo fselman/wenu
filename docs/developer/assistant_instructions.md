@@ -1119,3 +1119,13 @@ plugin-disabled current-documentation tests passed in 3.32 seconds at
 under this acceptance. Only a separately bounded real-execution audit is
 authorized next; execution and later delivery require separate explicit
 authorization.
+
+### Candidate real-execution readiness boundary
+
+At integrated baseline `9bdf301`, do not attempt the real 50S.6G.1B.2D
+matrix. The accepted core still exposes injected test seams and lacks the
+frozen ten-field request fixture, production airmass certifier,
+fresh-subprocess worker, and explicit offline developer command. Only bounded
+production-path implementation with fake data is authorized next. Do not read,
+discover, copy, hash, or otherwise access the external real specimen; do not
+propagate it, execute a route, or infer performance under this audit.
