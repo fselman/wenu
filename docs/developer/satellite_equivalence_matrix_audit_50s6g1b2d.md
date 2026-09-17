@@ -376,3 +376,43 @@ reading the accepted real 256-record specimen or executing the real ten-field
 matrix. Only a separately bounded real-execution audit is authorized next;
 real execution, performance claims, and later 50S.6G delivery remain
 unauthorized.
+
+## Candidate real-execution readiness audit
+
+**Finding:** not ready for real execution.
+
+This audit inspected the accepted implementation at integrated baseline
+`9bdf301` without reading the external 256-record specimen and without
+executing either crossing route. The accepted `run_equivalence_matrix()`
+owner correctly provides a strict orchestration and evidence boundary, but its
+execution dependencies remain injected test seams. There is no approved
+production path from an explicit operator command to isolated exhaustive and
+accelerated route runs.
+
+The following closure work is required before real execution can be proposed:
+
+1. add an exact accepted-medium identity constant and validate the receipt's
+   implementation identity, 24 nonempty bins, 48 mandatory representatives,
+   208 fill records, and complete parent/subset/receipt binding;
+2. freeze the exact ten-field La Ligua request fixture, including decimal GCRS
+   centres, radii, UTC intervals, shared-interval control, coordinate metadata,
+   tolerances, and a canonical request digest;
+3. provide the production whole-interval airmass certifier used atomically
+   before any route process starts;
+4. implement a fresh-subprocess worker and executor for each route/query/run,
+   with an explicit canonical input/output protocol, timeout, exit status,
+   environment versions, and no cross-route object or cache reuse;
+5. add the explicit offline `run-equivalence-matrix` developer command with
+   required snapshot directory, output root, accepted digests, and operator
+   acknowledgement—never discovery, newest-directory selection, provider
+   access, refresh, or fallback;
+6. extend fake-data tests to prove the production fixture, worker, command,
+   timeout, subprocess isolation, receipt constraints, and fail-closed
+   publication behavior.
+
+The real execution gate remains closed until that bounded production-path
+implementation is scientifically and architecturally accepted. Even then, the
+first real matrix run requires separate explicit authorization and its external
+evidence requires independent acceptance. This audit authorizes no specimen
+read, propagation, coordinate transformation, matrix execution, performance
+claim, or downstream 50S.6G delivery.
