@@ -3682,4 +3682,16 @@ current-documentation tests passed in 3.80 seconds at `054ac39`. Only
 fake-data implementation of the frozen ten-field coordinate fixture,
 whole-interval airmass certifier, and identity-preserving subprocess protocol
 is authorized next. No real coordinate evaluation or matrix execution is
-authorized.
+authorized.\n
+
+### Candidate production matrix fixture review
+
+The frozen La Ligua fixture declares hour-angle and declination offsets at each
+interval midpoint and records the resulting decimal GCRS-axis geometric
+topocentric directions after one CIRS-to-GCRS transformation. It binds the
+generation Astropy version and IERS-A digest, uses UTC, vacuum refraction, and
+the accepted La Ligua geodetic position. Its ten fields use only 15- and
+60-second intervals; two distinct fields share one 15-second interval. Runtime
+airmass admission independently certifies every centre throughout its complete
+interval at maximum airmass 2 before any worker starts. No apparent, observed,
+or ICRS label is introduced.
