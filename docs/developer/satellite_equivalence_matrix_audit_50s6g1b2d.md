@@ -326,3 +326,17 @@ on:
 - fake-data-only implementation gates;
 - the prohibition on real execution until separately authorized;
 - no coordinate or downstream-delivery expansion.
+
+## 14. Acceptance record
+
+Fernando scientifically and architecturally accepted this documentation-only
+audit on 2026-09-17 after 159 plugin-disabled current-documentation tests
+passed in 10.75 seconds; `git diff --check` and the working tree were clean at
+`6e7a8b9`.
+
+Acceptance authorizes only bounded fake-data implementation of the matrix
+harness, canonical serializers, evidence validators, isolated resource
+observation seam, and atomic external publication. It does not authorize
+execution against the accepted real 256-record specimen, a speed claim,
+50S.6G delivery, report/file interfaces, tracks, charts, illumination,
+provider access, concurrency, or cache reuse.
