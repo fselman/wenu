@@ -1161,3 +1161,17 @@ Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
 fake-data implementation is authorized next. The first real medium selection,
 50S.6G.1B.2D matrix execution, and later delivery remain separately
 unauthorized.
+
+### Candidate 50S.6G.1B.2C medium specimen
+
+The candidate `satellites/snapshot_evidence.py` service creates a
+deterministic coverage specimen from one explicitly admitted parent. It checks
+the acquisition report and captured provider bytes, selects two digest-ranked
+representatives per nonempty independent bin, fills deterministically, and
+publishes canonical records plus a path-free receipt beneath the subset digest.
+It is not a statistical sample or completeness claim.
+
+The developer `select-medium` command is offline. The 2026-09-17 fake-data
+gate passed 30 plugin-disabled tests in 5.99 seconds. No external medium
+snapshot is packaged, discovered, or selected automatically; the first real
+medium selection and 50S.6G.1B.2D remain unauthorized.
