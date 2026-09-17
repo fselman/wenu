@@ -6387,7 +6387,7 @@ def test_50s6g1b2b_documents_accepted_shared_digest_admission():
     assert "performs no coordinate transformation" in coordinate_guide
     assert "No external snapshot is packaged, discovered" in guide
     assert "50S.6G.1B.2C and 50S.6G.1B.2D remain separately bounded" in roadmap
-    assert "does not authorize or implement deterministic medium selection" in (
+    assert "does not implement deterministic medium selection" in (
         audit
     )
 
