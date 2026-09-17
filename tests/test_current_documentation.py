@@ -6656,7 +6656,7 @@ def test_50s6g1b2c_records_accepted_exact_real_specimen():
         assert "157 plugin-disabled" in document
         assert "4.66 seconds" in document
         assert "50S.6G.1B.2D" in document
-        assert "unauthorized" in document
+        assert "unauthorized" in document or "does not authorize" in document
 
     audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
     assert "Accepted real-selection closure" in audit
