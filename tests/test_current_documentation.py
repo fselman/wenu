@@ -6338,7 +6338,7 @@ def test_50s6g1b2a_records_acceptance_and_bounded_next_step():
     assert "another provider request" in audit
 
 
-def test_50s6g1b2b_documents_shared_digest_admission_implementation():
+def test_50s6g1b2b_documents_accepted_shared_digest_admission():
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_admission_audit_50s6g1b2a.md"
     ).split())
@@ -6352,16 +6352,16 @@ def test_50s6g1b2b_documents_shared_digest_admission_implementation():
     guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
-    assert "50S.6G.1B.2B candidate implementation record" in audit
-    assert "Implemented candidate 50S.6G.1B.2B digest admission" in architecture
-    assert "50S.6G.1B.2B implementation state" in roadmap
+    assert "Accepted 50S.6G.1B.2B implementation record" in audit
+    assert "Accepted 50S.6G.1B.2B digest admission" in architecture
+    assert "50S.6G.1B.2B accepted implementation" in roadmap
     assert "External snapshot admission API" in reference
-    assert "Implemented candidate 50S.6G.1B.2B ownership" in source_tree
-    assert "Implemented candidate 50S.6G.1B.2B coordinate review" in (
+    assert "Accepted 50S.6G.1B.2B ownership" in source_tree
+    assert "Accepted 50S.6G.1B.2B coordinate review" in (
         coordinate_guide
     )
-    assert "Implemented candidate 50S.6G.1B.2B admission" in guide
-    assert "Implemented candidate 50S.6G.1B.2B admission boundary" in (
+    assert "Accepted 50S.6G.1B.2B admission" in guide
+    assert "Accepted 50S.6G.1B.2B admission boundary" in (
         instructions
     )
     for document in (
@@ -6390,3 +6390,29 @@ def test_50s6g1b2b_documents_shared_digest_admission_implementation():
     assert "does not authorize or implement deterministic medium selection" in (
         audit
     )
+
+
+def test_50s6g1b2b_records_acceptance_and_authorizes_only_medium_work():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_snapshot_admission_audit_50s6g1b2a.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted 50S.6G.1B.2B" in document
+        assert "2026-09-17" in document
+        assert "51 focused runtime tests" in document
+        assert "151 current-documentation tests" in document
+        assert "2,611 plugin-disabled tests passed" in document
+        assert "215.89 seconds" in document
+        assert "Only bounded 50S.6G.1B.2C" in document
+        assert "50S.6G.1B.2D matrix execution" in document
+        assert "separately unauthorized" in document

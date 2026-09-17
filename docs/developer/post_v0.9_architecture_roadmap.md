@@ -2524,7 +2524,7 @@ Fernando scientifically and architecturally accepted 50S.6G.1B.2A on
 50S.6G.1B.2B digest-admission implementation is authorized next.
 
 
-**50S.6G.1B.2B implementation state.** The candidate implements one explicit
+**50S.6G.1B.2B accepted implementation.** The implementation provides one explicit
 digest-plus-manifest admission token in a dedicated satellite policy owner.
 The existing selector, accelerated coordinator, and multi-FoV batch consume
 that same token before external work; the batch passes it into its default
@@ -2535,3 +2535,11 @@ loader, global allowlist, or automatic default. This implementation adds no
 medium specimen, evidence matrix, external fixture, network access, report,
 exact track, chart, illumination, provider fallback, or speed claim.
 50S.6G.1B.2C and 50S.6G.1B.2D remain separately bounded future work.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2B on
+2026-09-17 after 51 focused runtime tests, 151 current-documentation tests,
+and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
+seconds. `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
+matrix execution and later delivery remain separately unauthorized.

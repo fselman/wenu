@@ -2836,3 +2836,11 @@ snapshot. `ConservativeConeShellSelector`,
 `MultiFieldSatelliteCrossingCoordinator` accept optional
 `external_snapshot_admission`. Their ordinary synthetic defaults are
 unchanged; an external call must explicitly supply the matching token.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2B on
+2026-09-17 after 51 focused runtime tests, 151 current-documentation tests,
+and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
+seconds. `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
+matrix execution and later delivery remain separately unauthorized.

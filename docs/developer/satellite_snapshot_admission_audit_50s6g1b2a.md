@@ -185,7 +185,7 @@ Acceptance of this document authorizes only bounded
 another provider request, or any runtime default change.
 
 
-## 11. 50S.6G.1B.2B candidate implementation record
+## 11. Accepted 50S.6G.1B.2B implementation record
 
 The bounded candidate adds `satellites/snapshot_admission.py` with immutable
 exact identity, explicit finite policy, and opaque token contracts. Identity
@@ -201,6 +201,14 @@ remains atomic. Existing synthetic defaults are unchanged. Tests use only the
 installed synthetic records under hand-authored external manifest identities;
 the 16,559-record directory is neither required nor packaged.
 
-This candidate implements only 50S.6G.1B.2B. It does not authorize or implement
+This accepted implementation closes only 50S.6G.1B.2B. It does not implement
 deterministic medium selection, the evidence matrix, another provider request,
 reports, exact drawable tracks, or chart integration.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2B on
+2026-09-17 after 51 focused runtime tests, 151 current-documentation tests,
+and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
+seconds. `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
+matrix execution and later delivery remain separately unauthorized.

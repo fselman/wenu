@@ -1123,7 +1123,7 @@ on 2026-09-17 after all 150 plugin-disabled current-documentation tests passed
 in 3.84 seconds. Only bounded 50S.6G.1B.2B implementation is authorized next.
 
 
-## Implemented candidate 50S.6G.1B.2B admission
+## Accepted 50S.6G.1B.2B admission
 
 External evidence now requires an explicit immutable token created after exact
 canonical-digest and manifest-identity comparison. The accepted CelesTrak
@@ -1135,3 +1135,11 @@ Missing, forged, mismatched, or substituted admission fails closed. Existing
 synthetic defaults remain unchanged, and unsupported element or query domains
 remain indeterminate or fail through their accepted paths. No external
 snapshot is packaged, discovered, or enabled globally.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2B on
+2026-09-17 after 51 focused runtime tests, 151 current-documentation tests,
+and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
+seconds. `git diff --check` and the working tree were clean. Only bounded
+50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
+matrix execution and later delivery remain separately unauthorized.
