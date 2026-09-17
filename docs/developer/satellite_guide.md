@@ -1254,3 +1254,13 @@ plugin-disabled full-suite tests in 230.25 seconds at `19520f3`, followed by
 `3ef6a4d`. The accepted closure neither reads the real 256-record specimen
 nor executes the real ten-field matrix. Only a separately bounded
 real-execution audit is authorized next.
+
+### Candidate real-execution readiness audit
+
+The accepted fake-data matrix core at `9bdf301` is not yet ready for the
+first real run. The exact ten-field La Ligua fixture, production whole-interval
+airmass certifier, isolated subprocess worker, and explicit offline developer
+command remain to be implemented and proven with fake data. This audit did not
+read the accepted real 256-record specimen or execute either route. Only the
+bounded production-path implementation may proceed next; the real matrix and
+all performance conclusions remain unauthorized.
