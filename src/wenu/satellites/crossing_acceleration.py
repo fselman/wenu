@@ -15,6 +15,7 @@ from wenu.satellites.crossing_oracle import (
     SatelliteCrossingConvergenceError,
     _solve_record,
 )
+from wenu.satellites.snapshot_admission import ExternalSnapshotAdmission
 from wenu.satellites.sgp4 import Sgp4TemePropagator
 from wenu.satellites.topocentric import SatelliteTopocentricTransformer
 
@@ -214,12 +215,23 @@ class ConeShellSelection:
 class ConservativeConeShellSelector:
     """Reject only records outside a conservative whole-interval cone."""
 
-    def __init__(self, *, policy=None):
+    def __init__(self, *, policy=None, external_snapshot_admission=None):
         if policy is None:
             policy = ConeShellPolicy()
         if not isinstance(policy, ConeShellPolicy):
             raise TypeError("policy must be a ConeShellPolicy.")
+        if (
+            external_snapshot_admission is not None
+            and not isinstance(
+                external_snapshot_admission, ExternalSnapshotAdmission
+            )
+        ):
+            raise TypeError(
+                "external_snapshot_admission must be an "
+                "ExternalSnapshotAdmission."
+            )
         self._policy = policy
+        self._external_snapshot_admission = external_snapshot_admission
 
     @property
     def policy(self):
@@ -237,11 +249,14 @@ class ConservativeConeShellSelector:
             ),
         )
 
-    def _select_record(self, query, record, interval_seconds):
+    def _select_record(
+        self, query, record, interval_seconds, external_admitted
+    ):
         policy = self._policy
         if (
             query.snapshot.manifest.snapshot_id
             not in policy.validated_snapshot_ids
+            and not external_admitted
         ):
             return self._indeterminate(
                 record,
@@ -385,11 +400,17 @@ class ConservativeConeShellSelector:
         """Return ordered tri-state evidence without solving crossings."""
         if not isinstance(query, LocalSatelliteCrossingQuery):
             raise TypeError("query must be a LocalSatelliteCrossingQuery.")
+        external_admitted = False
+        if self._external_snapshot_admission is not None:
+            self._external_snapshot_admission.require(query.snapshot)
+            external_admitted = True
         interval_seconds = (
             _instant(query.interval.stop) - _instant(query.interval.start)
         ).total_seconds()
         decisions = tuple(
-            self._select_record(query, record, interval_seconds)
+            self._select_record(
+                query, record, interval_seconds, external_admitted
+            )
             for record in query.snapshot.records
         )
         return ConeShellSelection(
@@ -497,9 +518,22 @@ class AcceleratedLocalSatelliteCrossingOracle:
         selector=None,
         policy=None,
         max_evaluations_per_record=20000,
+        external_snapshot_admission=None,
     ):
+        if (
+            external_snapshot_admission is not None
+            and not isinstance(
+                external_snapshot_admission, ExternalSnapshotAdmission
+            )
+        ):
+            raise TypeError(
+                "external_snapshot_admission must be an "
+                "ExternalSnapshotAdmission."
+            )
         if selector is None:
-            selector = ConservativeConeShellSelector()
+            selector = ConservativeConeShellSelector(
+                external_snapshot_admission=external_snapshot_admission
+            )
         if not callable(getattr(selector, "select", None)):
             raise TypeError("selector must provide callable select(query).")
         if policy is None:
@@ -516,6 +550,7 @@ class AcceleratedLocalSatelliteCrossingOracle:
         self._selector = selector
         self._policy = policy
         self._max_evaluations_per_record = max_evaluations_per_record
+        self._external_snapshot_admission = external_snapshot_admission
 
     @property
     def policy(self):
@@ -584,8 +619,11 @@ class AcceleratedLocalSatelliteCrossingOracle:
             _instant(query.interval.stop) - _instant(query.interval.start)
         ).total_seconds()
         admitted = (
-            query.snapshot.manifest.snapshot_id
-            in self._policy.admitted_snapshot_ids
+            (
+                query.snapshot.manifest.snapshot_id
+                in self._policy.admitted_snapshot_ids
+                or self._external_snapshot_admission is not None
+            )
             and interval_seconds <= self._policy.max_interval_seconds
         )
         if selection.rejected_norad_catalog_ids and not admitted:
@@ -599,6 +637,22 @@ class AcceleratedLocalSatelliteCrossingOracle:
         """Return exact results and separate immutable acceleration evidence."""
         if not isinstance(query, LocalSatelliteCrossingQuery):
             raise TypeError("query must be a LocalSatelliteCrossingQuery.")
+        ordinary_admitted = (
+            query.snapshot.manifest.snapshot_id
+            in self._policy.admitted_snapshot_ids
+        )
+        if self._external_snapshot_admission is not None:
+            try:
+                self._external_snapshot_admission.require(query.snapshot)
+            except (TypeError, ValueError) as error:
+                raise SatelliteCrossingConvergenceError(
+                    "external snapshot admission failed: "
+                    f"{type(error).__name__}: {error}"
+                ) from error
+        elif not ordinary_admitted:
+            raise SatelliteCrossingConvergenceError(
+                "external snapshot requires explicit digest-bound admission."
+            )
         try:
             selection = self._selector.select(query)
         except Exception as error:
