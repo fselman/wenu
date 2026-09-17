@@ -2605,3 +2605,14 @@ union and 208-record deterministic fill. Parent bytes were unchanged and no
 provider request occurred. Acceptance of this exact external artifact is the
 remaining 50S.6G.1B.2C closure decision. 50S.6G.1B.2D remains separately
 unauthorized.
+
+### 50S.6G.1B.2C accepted real-selection closure
+
+Fernando accepted the exact 256-record external specimen on 2026-09-17 at
+`c4cd009`, after 157 plugin-disabled documentation tests passed in 4.66
+seconds. The accepted subset digest is
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`;
+the receipt digest is
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+50S.6G.1B.2C is closed. Only a separately authorized 50S.6G.1B.2D matrix audit
+may proceed next.
