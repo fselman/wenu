@@ -2232,4 +2232,16 @@ on 2026-09-17 after 163 plugin-disabled current-documentation tests passed in
 3.80 seconds at `054ac39`. Bounded fake-data additions for the fixture,
 certifier, subprocess worker, offline command, and tests are authorized next.
 No repository owner may access the accepted external specimen or execute the
-real matrix under this acceptance.
+real matrix under this acceptance.\n
+
+### Candidate production matrix execution ownership
+
+`src/wenu/satellites/crossing_matrix_execution.py` owns the explicit offline
+production fixture, exact accepted-medium receipt constraints, production
+whole-interval airmass adapter, canonical fresh-subprocess protocol and worker,
+and isolated executor. `tools/build_satellite_snapshot.py` owns only the
+explicit `run-equivalence-matrix` developer-command surface. The existing
+`crossing_matrix.py` remains the scientific equivalence and atomic-publication
+owner. No owner discovers, downloads, refreshes, packages, or implicitly
+selects the external specimen. The candidate uses only 15- and 60-second
+fixture intervals and remains fake-data-tested pending acceptance.
