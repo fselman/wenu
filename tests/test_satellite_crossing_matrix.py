@@ -24,6 +24,7 @@ from wenu.satellites.crossing_matrix_execution import (
     MATRIX_REQUEST_FIXTURE,
     MATRIX_REQUEST_FIXTURE_SHA256,
     MATRIX_WORKER_PROTOCOL,
+    REAL_EXECUTION_ACKNOWLEDGEMENT,
     FreshSubprocessMatrixExecutor,
     build_matrix_queries,
     run_production_equivalence_matrix,
@@ -529,3 +530,25 @@ def test_fresh_subprocess_executor_timeout_is_fail_closed(tmp_path, monkeypatch)
         FreshSubprocessMatrixExecutor(root, timeout_seconds=0.01)(
             "exhaustive", query, 0, True
         )
+
+
+def test_complete_production_path_uses_one_fake_measured_run(tmp_path):
+    root, snapshot, identity, _admission = fake_specimen(tmp_path)
+    executor = FakeExecutor()
+    destination = run_production_equivalence_matrix(
+        root,
+        tmp_path / "production-output",
+        specimen_identity=identity,
+        acknowledgement=REAL_EXECUTION_ACKNOWLEDGEMENT,
+        policy=CrossingMatrixPolicy(warmup_count=0, measured_repetitions=1),
+        certifier=FakeCertifier(),
+        executor=executor,
+        expected_specimen_identity=identity,
+        expected_snapshot_identity=ExternalSnapshotIdentity.from_snapshot(
+            snapshot
+        ),
+        receipt_validator=lambda receipt: receipt,
+    )
+    assert destination.is_dir()
+    assert len(executor.calls) == 20
+    assert all(call[2:] == (0, True) for call in executor.calls)
