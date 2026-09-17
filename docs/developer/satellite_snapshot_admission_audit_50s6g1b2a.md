@@ -182,6 +182,5 @@ This audit was accepted when:
 - the plugin-disabled documentation gate and `git diff --check` pass.
 
 Acceptance of this document authorizes only bounded
-50S.6G.1B.2B implementation. It would not authorize medium selection, matrix
-execution, chart integration, another provider request, or any runtime
-default change.
+50S.6G.1B.2B implementation. It does not authorize medium selection, matrix execution, chart integration,
+another provider request, or any runtime default change.
