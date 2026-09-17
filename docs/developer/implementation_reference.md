@@ -2951,3 +2951,13 @@ Candidate commit `19520f3` passed 2634 plugin-disabled full-suite tests in
 read the accepted real specimen or executed the real matrix and makes no
 performance claim. Scientific and architectural acceptance remains required
 before separately authorizing real execution.
+
+### Accepted crossing equivalence matrix boundary
+
+Fernando scientifically and architecturally accepted
+`run_equivalence_matrix` as the bounded fake-data-tested 50S.6G.1B.2D API on
+2026-09-17. The evidence comprises 2634 plugin-disabled full-suite tests in
+230.25 seconds at `19520f3` and 161 plugin-disabled
+current-documentation tests in 3.32 seconds at `3ef6a4d`. This acceptance
+does not admit a real specimen or execute a real matrix. A separately bounded
+real-execution audit is the only authorized next step.
