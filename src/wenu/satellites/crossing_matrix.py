@@ -252,7 +252,7 @@ def _validate_queries(queries, snapshot, policy):
     dates = set()
     intervals = []
     for query in queries:
-        if query.snapshot is not snapshot:
+        if query.snapshot != snapshot:
             raise ValueError("every matrix query must use the loaded snapshot.")
         if query.observer != observer:
             raise ValueError("every matrix query must use one observer.")
