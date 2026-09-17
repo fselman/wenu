@@ -862,3 +862,22 @@ adapter, illumination, photometry, broader catalogue, or later behavior.
 Fernando scientifically and architecturally accepted 50S.6F on 2026-09-17
 after 2,577 plugin-disabled tests passed. Only a separately bounded 50S.6G
 audit is authorized next; no 50S.6G implementation is authorized.
+
+
+## Candidate 50S.6G delivery-audit boundary
+
+Read `satellite_delivery_audit_50s6g.md` before proposing representative
+snapshot admission, exact crossing reports, multi-FoV CLI/files, exact local
+track layers, or chart integration. Preserve one observer, ordered independent
+FoVs, centre-only complete-interval airmass admission, atomic validation, exact
+50S.5 equivalence, and illumination-independent geometric results.
+
+Direct Python/CLI mode remains atomic. File mode may write one separate
+validation-output JSON only after whole-batch validation fails; it performs no
+crossing work, records every invalid field, embeds the ordered valid subset,
+and requires digest-bound revalidation when explicitly supplied for a second
+call. JSON is the only initial request protocol. Reports use one canonical
+logical model with JSON, ECSV, and VOTable encodings. Exact tracks must reuse
+the accepted propagation/topocentric services and canonical chart pipeline.
+This candidate audit changes no runtime or output and authorizes no 50S.6G
+implementation before Fernando's separate acceptance.
