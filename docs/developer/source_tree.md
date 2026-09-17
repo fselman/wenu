@@ -2182,3 +2182,11 @@ A later bounded implementation may add:
 The exact oracle, conservative selector, accelerated coordinator, batch
 airmass certifier, snapshot loader, admission policy, and medium selector retain
 their current ownership. No matrix runtime or evidence artifact exists yet.
+
+### Accepted 50S.6G.1B.2D ownership proposal
+
+Fernando accepted the proposed `crossing_matrix.py`,
+`test_satellite_crossing_matrix.py`, and offline command ownership on
+2026-09-17 at `6e7a8b9`; 159 plugin-disabled documentation tests passed in
+10.75 seconds. Only fake-data implementation is authorized. No real matrix
+execution or evidence artifact is authorized.
