@@ -1267,3 +1267,13 @@ On 2026-09-17, 30 plugin-disabled focused tests passed in 5.99 seconds. The
 ordinary installed default remains `synthetic_50s4b_v1`; no external product
 is packaged or discovered. The candidate does not authorize the first real
 medium selection or 50S.6G.1B.2D matrix execution.
+
+### Accepted 50S.6G.1B.2C implementation
+
+Fernando scientifically and architecturally accepted the fake-data
+implementation on 2026-09-17 at `1d9d4e4`: 2,622 plugin-disabled tests passed
+in 225.75 seconds and the 185-test focused gate passed in 9.03 seconds.
+`satellites/snapshot_evidence.py` is now the accepted owner of deterministic
+medium selection and receipt-bound atomic publication. The real parent has not
+been selected; that operation requires separate authorization. 50S.6G.1B.2D
+remains unauthorized.
