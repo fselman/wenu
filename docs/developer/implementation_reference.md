@@ -2976,3 +2976,13 @@ The command must require explicit snapshot and output paths plus exact digest
 acknowledgements. It must perform no discovery, provider request, refresh,
 fallback, or implicit default selection. This candidate audit reads no real
 artifact and executes no matrix.
+
+### Accepted real-execution readiness boundary
+
+Fernando scientifically and architecturally accepted the fail-closed
+production-path finding on 2026-09-17 after 163 plugin-disabled
+current-documentation tests passed in 3.80 seconds at `054ac39`. The accepted
+next scope is fake-data implementation of the exact receipt validator, frozen
+fixture, production certifier, subprocess protocol and worker, explicit
+offline command, and tests. The acceptance grants no authority to read or run
+the external real specimen.
