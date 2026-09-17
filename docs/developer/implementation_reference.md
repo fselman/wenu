@@ -2936,3 +2936,18 @@ contract on 2026-09-17 at `6e7a8b9`, after 159 plugin-disabled documentation
 tests passed in 10.75 seconds. A later bounded implementation may add the
 dedicated matrix owner and offline command using fake data only. The real
 medium specimen must not be read or executed without separate authorization.
+
+### Candidate crossing equivalence matrix API
+
+`wenu.satellites.crossing_matrix.run_equivalence_matrix` is the candidate
+50S.6G.1B.2D fake-data-tested orchestration API. Its explicit inputs bind the
+snapshot directory, digest admission token, exact specimen identity, ordered
+queries, atomic airmass certifier, injected isolated-route executor, and matrix
+policy. It publishes canonical evidence atomically and revalidates both
+`equivalence-report.json` and `matrix-manifest.json` plus every bound file.
+
+Candidate commit `19520f3` passed 2634 plugin-disabled full-suite tests in
+230.25 seconds on 2026-09-17. Those tests used fake data only; the API has not
+read the accepted real specimen or executed the real matrix and makes no
+performance claim. Scientific and architectural acceptance remains required
+before separately authorizing real execution.
