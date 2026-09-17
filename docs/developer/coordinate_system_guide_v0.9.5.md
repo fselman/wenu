@@ -3669,5 +3669,7 @@ execution, a bounded implementation must materialize the accepted La Ligua
 observer, exact decimal GCRS-axes topocentric geometric centres, radii, UTC
 intervals, shared-interval control, time and angular tolerances, Earth-
 orientation evidence, and whole-interval airmass admissions as canonical
-evidence. This audit at `9bdf301` performed no real propagation,
+evidence. The fresh-subprocess protocol and explicit offline developer command
+must preserve that same coordinate identity without reconstruction or implicit
+defaults. This audit at `9bdf301` performed no real propagation,
 transformation, airmass evaluation, specimen read, or matrix execution.
