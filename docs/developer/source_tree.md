@@ -1994,3 +1994,22 @@ Fernando scientifically and architecturally accepted this ownership on
 2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
 4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
 authorized next.
+
+
+## Accepted 50S.6G.1A production ownership
+
+`src/wenu/satellites/snapshots.py` owns the candidate explicit-directory
+loader because installed and external immutable resources share the same
+manifest, canonical-byte, digest, OMM-record, ordering, and immutable-object
+lifecycle. A new production module would split one validation responsibility.
+
+`tests/test_satellite_elements.py` remains the stable test owner and now
+protects path/type failure, directory-name independence, complete validator
+reuse, symlink rejection, traversal rejection, digest mutation, and package
+export. No new test file or production owner is justified. Acquisition,
+builder, cache/publication, coordinator admission, CLI, report, and chart
+ownership remain unchanged.
+
+Fernando scientifically and architecturally accepted this ownership on
+2026-09-17 after the 164-test focused gate and all 2,583 plugin-disabled tests
+passed. Only a separately bounded 50S.6G.1B audit is authorized next.

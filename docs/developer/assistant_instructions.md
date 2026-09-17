@@ -885,3 +885,23 @@ current-documentation tests passed in 4.36 seconds. Only bounded 50S.6G.1A
 external immutable snapshot loading is authorized next. Acquisition, broader
 runtime admission, reports, CLI/files, exact tracks, chart integration, and all
 later behavior remain unauthorized.
+
+
+## Accepted 50S.6G.1A external snapshot boundary
+
+The accepted implementation adds only `load_snapshot_directory(directory)` to
+`satellites/snapshots.py` and its intentional package export. It accepts one
+explicit caller-selected local directory, requires a real non-symlink
+directory plus non-symlink regular `manifest.json` and declared records file,
+and reuses the complete accepted manifest, canonical-byte, digest, OMM,
+identity, ordering, epoch, and count validation.
+
+The validated manifest, not the directory name, owns snapshot identity. The
+loader performs no discovery, download, acquisition, provider access, retry,
+fallback, cache write, directory publication, representative-scale admission,
+crossing calculation, report, CLI, or chart behavior. The installed synthetic
+snapshot and existing `load_snapshot()` remain unchanged public routes.
+Fernando scientifically and architecturally accepted 50S.6G.1A on 2026-09-17
+after the 164-test focused gate and all 2,583 plugin-disabled tests passed.
+Only a separately bounded 50S.6G.1B representative snapshot preflight and
+evidence audit is authorized next, not its implementation.

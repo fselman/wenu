@@ -1033,3 +1033,21 @@ Fernando scientifically and architecturally accepted this sequence on
 2026-09-17 after all 145 plugin-disabled current-documentation tests passed in
 4.36 seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
 authorized next.
+
+
+## Accepted 50S.6G.1A external snapshot loading
+
+The accepted Python seam loads one explicitly selected local immutable
+snapshot directory and returns the same `SatelliteElementSnapshot` used by the
+installed synthetic route. The directory name is operational only; the
+validated manifest and canonical records digest retain scientific identity.
+
+The directory and both required files must be real non-symlink filesystem
+objects. Every manifest, canonical JSON, digest, full-NORAD, ordering, OMM,
+epoch, provenance, warning, and count check is shared with the installed
+loader. This slice neither obtains nor publishes data and does not broaden the
+three-record, 60-second crossing domain.
+
+Fernando scientifically and architecturally accepted 50S.6G.1A on 2026-09-17
+after the 164-test focused gate and all 2,583 plugin-disabled tests passed.
+Only a separately bounded 50S.6G.1B audit is authorized next.

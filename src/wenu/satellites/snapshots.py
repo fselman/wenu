@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from importlib import resources
 import json
+from pathlib import Path
 from types import MappingProxyType
 from typing import Mapping
 import re
@@ -189,6 +190,14 @@ def snapshot_from_bytes(manifest_bytes: bytes, records_bytes: bytes):
     return SatelliteElementSnapshot(manifest=manifest, records=records)
 
 
+def _manifest_from_bytes(manifest_bytes: bytes):
+    try:
+        manifest_data = json.loads(manifest_bytes)
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("manifest must be valid UTF-8 JSON.") from error
+    return SatelliteSnapshotManifest.from_mapping(manifest_data)
+
+
 def load_snapshot(snapshot_id: str = DEFAULT_SNAPSHOT_ID):
     """Load and fully validate one installed satellite snapshot."""
     snapshot_id = _text(snapshot_id, name="snapshot_id")
@@ -198,19 +207,49 @@ def load_snapshot(snapshot_id: str = DEFAULT_SNAPSHOT_ID):
         snapshot_id
     )
     manifest_bytes = root.joinpath("manifest.json").read_bytes()
-    try:
-        manifest_data = json.loads(manifest_bytes)
-    except (UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise ValueError("manifest must be valid UTF-8 JSON.") from error
-    records_name = manifest_data.get("records_file")
-    if not isinstance(records_name, str):
-        raise ValueError("manifest records_file must be a string.")
+    manifest = _manifest_from_bytes(manifest_bytes)
     result = snapshot_from_bytes(
         manifest_bytes,
-        root.joinpath(records_name).read_bytes(),
+        root.joinpath(manifest.records_file).read_bytes(),
     )
     if result.manifest.snapshot_id != snapshot_id:
         raise ValueError(
             "manifest snapshot_id does not match resource path."
         )
     return result
+
+
+def load_snapshot_directory(directory):
+    """Load and validate one explicit local immutable snapshot directory.
+
+    This filesystem seam performs no discovery, acquisition, fallback, or
+    network access. The snapshot identity comes from the validated manifest,
+    not from the directory name.
+    """
+    if isinstance(directory, bytes):
+        raise TypeError("directory must be a string or path-like value.")
+    try:
+        root = Path(directory).expanduser()
+    except TypeError as error:
+        raise TypeError(
+            "directory must be a string or path-like value."
+        ) from error
+    if root.is_symlink() or not root.is_dir():
+        raise ValueError(
+            "directory must be an existing non-symlink directory."
+        )
+
+    manifest_path = root / "manifest.json"
+    if manifest_path.is_symlink() or not manifest_path.is_file():
+        raise ValueError(
+            "snapshot directory must contain a non-symlink manifest.json."
+        )
+    manifest_bytes = manifest_path.read_bytes()
+    manifest = _manifest_from_bytes(manifest_bytes)
+
+    records_path = root / manifest.records_file
+    if records_path.is_symlink() or not records_path.is_file():
+        raise ValueError(
+            "snapshot records_file must be a non-symlink regular file."
+        )
+    return snapshot_from_bytes(manifest_bytes, records_path.read_bytes())

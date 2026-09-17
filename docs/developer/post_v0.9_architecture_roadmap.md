@@ -2418,3 +2418,26 @@ observatory adapters, scheduling decisions, and observatory writes remain
 scientifically and architecturally accepted it on 2026-09-17 after all 145
 plugin-disabled current-documentation tests passed in 4.36 seconds. Only
 bounded 50S.6G.1A external immutable snapshot loading is authorized next.
+
+
+#### 50S.6G.1A — External immutable snapshot seam
+
+**Status:** Accepted bounded implementation.
+
+The candidate adds an explicit local-directory loader beside the installed
+snapshot loader. It accepts no implicit location and derives scientific
+identity only from a completely validated manifest and canonical records
+digest. The selected directory, `manifest.json`, and declared records file
+must be real non-symlink filesystem objects. All accepted OMM semantics,
+full-NORAD ordering, record-count, epoch, provenance, warning, and digest
+checks remain shared with the installed route.
+
+This slice performs no acquisition or network access, packages no
+representative catalogue, and does not admit an external snapshot to the
+50S.6F coordinator. It adds no builder, policy preflight, benchmark, CLI,
+report, chart, track, illumination, or later 50S.6G behavior.
+
+Fernando scientifically and architecturally accepted 50S.6G.1A on 2026-09-17
+after the 164-test focused gate and all 2,583 plugin-disabled tests passed.
+Only a separately bounded 50S.6G.1B representative snapshot preflight and
+evidence audit is authorized next, not its implementation.

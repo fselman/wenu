@@ -11,6 +11,7 @@ from wenu.satellites import (
     SatelliteElementSnapshot,
     SatelliteSnapshotManifest,
     load_snapshot,
+    load_snapshot_directory,
 )
 from wenu.satellites.elements import canonical_json_bytes
 from wenu.satellites.snapshots import snapshot_from_bytes
@@ -127,3 +128,97 @@ def test_manifest_count_is_enforced():
 
     with pytest.raises(ValueError, match="record_count"):
         SatelliteElementSnapshot(manifest=bad, records=value.records)
+
+
+def _copy_installed_snapshot(directory):
+    root = resources.files(
+        "wenu.data.satellites.snapshots"
+    ).joinpath(DEFAULT_SNAPSHOT_ID)
+    directory.mkdir()
+    for name in ("manifest.json", "records.json"):
+        (directory / name).write_bytes(root.joinpath(name).read_bytes())
+
+
+def test_explicit_snapshot_directory_reuses_complete_validation(tmp_path):
+    directory = tmp_path / "caller-selected-name"
+    _copy_installed_snapshot(directory)
+
+    external = load_snapshot_directory(directory)
+    installed = load_snapshot()
+
+    assert external == installed
+    assert external.manifest.snapshot_id == DEFAULT_SNAPSHOT_ID
+    assert tuple(external.by_norad_catalog_id) == (
+        300001,
+        300002,
+        300003,
+    )
+
+
+def test_explicit_snapshot_directory_fails_closed_on_invalid_paths(tmp_path):
+    missing = tmp_path / "missing"
+    with pytest.raises(ValueError, match="existing non-symlink directory"):
+        load_snapshot_directory(missing)
+    with pytest.raises(TypeError, match="string or path-like"):
+        load_snapshot_directory(b"snapshot")
+
+    ordinary_file = tmp_path / "ordinary-file"
+    ordinary_file.write_text("not a directory", encoding="utf-8")
+    with pytest.raises(ValueError, match="existing non-symlink directory"):
+        load_snapshot_directory(ordinary_file)
+
+    directory = tmp_path / "without-manifest"
+    directory.mkdir()
+    with pytest.raises(ValueError, match="manifest.json"):
+        load_snapshot_directory(directory)
+
+
+def test_explicit_snapshot_directory_rejects_symlink_resources(tmp_path):
+    source = tmp_path / "source"
+    _copy_installed_snapshot(source)
+
+    linked_directory = tmp_path / "linked-directory"
+    linked_directory.symlink_to(source, target_is_directory=True)
+    with pytest.raises(ValueError, match="non-symlink directory"):
+        load_snapshot_directory(linked_directory)
+
+    linked_manifest = tmp_path / "linked-manifest"
+    linked_manifest.mkdir()
+    (linked_manifest / "manifest.json").symlink_to(
+        source / "manifest.json"
+    )
+    (linked_manifest / "records.json").write_bytes(
+        (source / "records.json").read_bytes()
+    )
+    with pytest.raises(ValueError, match="non-symlink manifest.json"):
+        load_snapshot_directory(linked_manifest)
+
+    linked_records = tmp_path / "linked-records"
+    linked_records.mkdir()
+    (linked_records / "manifest.json").write_bytes(
+        (source / "manifest.json").read_bytes()
+    )
+    (linked_records / "records.json").symlink_to(source / "records.json")
+    with pytest.raises(ValueError, match="non-symlink regular file"):
+        load_snapshot_directory(linked_records)
+
+
+def test_explicit_snapshot_directory_rejects_escape_and_mutation(tmp_path):
+    directory = tmp_path / "snapshot"
+    _copy_installed_snapshot(directory)
+
+    manifest_path = directory / "manifest.json"
+    manifest = json.loads(manifest_path.read_bytes())
+    manifest["records_file"] = "../records.json"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    with pytest.raises(ValueError, match="local resource name"):
+        load_snapshot_directory(directory)
+
+    _copy_installed_snapshot(tmp_path / "mutated")
+    mutated = tmp_path / "mutated"
+    records_path = mutated / "records.json"
+    records_path.write_bytes(
+        records_path.read_bytes().replace(b"15.5", b"15.6", 1)
+    )
+    with pytest.raises(ValueError, match="content_sha256"):
+        load_snapshot_directory(mutated)
