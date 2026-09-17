@@ -2681,4 +2681,13 @@ Fernando scientifically and architecturally accepted the not-ready finding on
 3.80 seconds at `054ac39`. The next authorized step is bounded fake-data
 implementation of the production execution path. Reading the accepted real
 specimen, executing the matrix, publishing real evidence, making performance
-claims, and advancing later 50S.6G delivery remain separately unauthorized.
+claims, and advancing later 50S.6G delivery remain separately unauthorized.\n
+
+### 50S.6G.1B.2D candidate production execution path
+
+The bounded candidate adds the exact receipt gate, frozen La Ligua fixture,
+production airmass certifier, isolated worker protocol, and explicit offline
+developer command required by the accepted readiness finding. The fixture uses
+only 15- and 60-second intervals. Tests remain fake-data-only and are designed
+to avoid repeated scientific route execution. No real specimen access or real
+matrix execution is authorized before separate acceptance.
