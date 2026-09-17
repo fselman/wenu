@@ -2054,3 +2054,13 @@ Fernando scientifically and architecturally accepted this ownership on
 2026-09-17 after all 147 plugin-disabled current-documentation tests passed in
 4.54 seconds. Only bounded 50S.6G.1B.1 fake-transport implementation is
 authorized next.
+
+
+## Candidate 50S.6G.1B.2A admission ownership
+
+`satellite_snapshot_admission_audit_50s6g1b2a.md` proposes a distinct shared
+external-evidence authorization owner beside `satellites/snapshots.py`.
+The loader retains byte and manifest validation; the proposed admission owner
+would bind exact canonical-record SHA-256 plus validated manifest identity and
+supply one immutable token to the selector, accelerated coordinator, and
+multi-FoV batch. No production or runtime test file is added by this audit.
