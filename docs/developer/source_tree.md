@@ -2133,3 +2133,12 @@ unauthorized.
 The 2026-09-17 candidate gate passed 30 plugin-disabled focused tests in 5.99
 seconds. No real medium selection or 50S.6G.1B.2D matrix execution is
 authorized.
+
+### Accepted 50S.6G.1B.2C ownership
+
+Fernando accepted the `snapshot_evidence.py`,
+`test_satellite_snapshot_evidence.py`, and offline `select-medium`
+ownership split on 2026-09-17 at `1d9d4e4`. The complete plugin-disabled
+suite passed 2,622 tests in 225.75 seconds and the focused gate passed 185 tests
+in 9.03 seconds. No real medium product was created; real selection and
+50S.6G.1B.2D remain separately unauthorized.
