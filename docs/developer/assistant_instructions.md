@@ -1150,4 +1150,12 @@ command. Fernando directed on 2026-09-17 that fixture durations be reduced to
 15 and 60 seconds and that new tests avoid unnecessary repeated scientific
 route runs. Do not access the accepted real specimen or execute the real
 matrix under this candidate. Verification and separate scientific and
-architectural acceptance are still required.
+architectural acceptance are still required.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.
