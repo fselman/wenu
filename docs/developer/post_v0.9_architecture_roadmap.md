@@ -2543,3 +2543,27 @@ and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
 seconds. `git diff --check` and the working tree were clean. Only bounded
 50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
 matrix execution and later delivery remain separately unauthorized.
+
+
+#### 50S.6G.1B.2C — Deterministic medium specimen
+
+**Status:** Accepted documentation-only audit.
+
+The candidate derives one external medium evidence tier from the exact admitted
+Active parent without network access. It uses the acquisition stop instant for
+signed element age, independent declared scalar bins, two digest-ranked
+representatives per non-empty bin, deterministic fill to a configurable
+default target of 256, and a complete receipt. It makes no statistical,
+population-frequency, speed, capacity, or equivalence claim.
+
+A later bounded implementation would own only offline selection and atomic
+derived publication. The first real subset operation, 50S.6G.1B.2D matrix,
+reports, files, exact tracks, and charts remain separately unauthorized.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
+2026-09-17 after all 153 plugin-disabled current-documentation tests passed in
+4.58 seconds; `git diff --check` and the working tree were clean. Only bounded
+fake-data implementation is authorized next. The first real medium selection,
+50S.6G.1B.2D matrix execution, and later delivery remain separately
+unauthorized.

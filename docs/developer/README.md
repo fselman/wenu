@@ -63,6 +63,9 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`satellite_snapshot_admission_audit_50s6g1b2a.md`](satellite_snapshot_admission_audit_50s6g1b2a.md)
   — accepted exact-digest-plus-manifest, shared evidence-only external
   snapshot admission contract for 50S.6G.1B.2A.
+- [`satellite_medium_specimen_audit_50s6g1b2c.md`](satellite_medium_specimen_audit_50s6g1b2c.md)
+  — candidate deterministic stratification, receipt, and external medium
+  publication contract for 50S.6G.1B.2C.
 - [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
   scientific and implementation guide maintained separately during the 50S
   foundation branch.

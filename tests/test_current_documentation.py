@@ -3175,6 +3175,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_snapshot_admission_audit_50s6g1b2a.md",
+        "satellite_medium_specimen_audit_50s6g1b2c.md",
         "satellite_snapshot_propagation_audit_50s4a.md",
         "satellite_guide.md",
         "source_tree.md",
@@ -6414,5 +6415,83 @@ def test_50s6g1b2b_records_acceptance_and_authorizes_only_medium_work():
         assert "2,611 plugin-disabled tests passed" in document
         assert "215.89 seconds" in document
         assert "Only bounded 50S.6G.1B.2C" in document
+        assert "50S.6G.1B.2D matrix execution" in document
+        assert "separately unauthorized" in document
+
+
+def test_50s6g1b2c_accepts_deterministic_medium_specimen():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Accepted documentation-only audit",
+        "not a statistical sample",
+        "retrieved_stopped_utc",
+        "geo_deep_like",
+        "meo_like",
+        "leo_like",
+        "e_over_0p25",
+        "bstar_zero",
+        "age_future",
+        "norad_more_than_five",
+        "default target is exactly **256 records**",
+        "first two distinct records",
+        "mandatory union exceeds the requested target",
+        "selection-receipt.json",
+        "two-per-non-empty-bin coverage rule",
+        "no-population-frequency statement",
+        "satellites/snapshot_evidence.py",
+        "tests/test_satellite_snapshot_evidence.py",
+        "does not run the matrix",
+        "first real medium artifact",
+    ):
+        assert phrase in audit
+
+    assert "satellite_medium_specimen_audit_50s6g1b2c.md" in index
+    assert "Accepted 50S.6G.1B.2C medium-specimen audit" in architecture
+    assert "50S.6G.1B.2C — Deterministic medium specimen" in roadmap
+    assert "Accepted proposed deterministic medium-specimen contract" in reference
+    assert "Accepted 50S.6G.1B.2C ownership" in source_tree
+    assert "Accepted 50S.6G.1B.2C coordinate review" in coordinate_guide
+    assert "Accepted 50S.6G.1B.2C medium specimen" in guide
+    assert "Accepted 50S.6G.1B.2C medium-specimen boundary" in instructions
+    assert "No source or runtime test file is added" in source_tree
+    assert "performs no propagation" in coordinate_guide
+    assert "first real subset operation" in roadmap
+    assert "matrix execution" in instructions
+
+
+def test_50s6g1b2c_records_acceptance_and_fake_data_only_authority():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "153 plugin-disabled current-documentation tests passed" in document
+        assert "4.58 seconds" in document
+        assert "Only bounded fake-data" in document
+        assert "first real medium selection" in document
         assert "50S.6G.1B.2D matrix execution" in document
         assert "separately unauthorized" in document

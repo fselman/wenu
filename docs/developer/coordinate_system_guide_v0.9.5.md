@@ -3553,3 +3553,20 @@ and all 2,611 plugin-disabled tests passed; the complete suite took 215.89
 seconds. `git diff --check` and the working tree were clean. Only bounded
 50S.6G.1B.2C deterministic medium-specimen work is authorized next; 50S.6G.1B.2D
 matrix execution and later delivery remain separately unauthorized.
+
+
+## Accepted 50S.6G.1B.2C coordinate review
+
+The proposed medium selector reads canonical mean motion, inclination,
+eccentricity, BSTAR, NORAD identity, and UTC element epoch. Signed age uses the
+acquisition report's retrieval-stop UTC instant. It performs no propagation,
+frame transformation, observer calculation, crossing solve, or projection.
+The coordinate guide remains scientifically current.
+
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2C on
+2026-09-17 after all 153 plugin-disabled current-documentation tests passed in
+4.58 seconds; `git diff --check` and the working tree were clean. Only bounded
+fake-data implementation is authorized next. The first real medium selection,
+50S.6G.1B.2D matrix execution, and later delivery remain separately
+unauthorized.
