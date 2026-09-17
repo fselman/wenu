@@ -6257,7 +6257,7 @@ def test_50s6g1b1_documents_offline_snapshot_builder_boundary():
     assert "50S.6G.1B.2 remain separately authorized" in audit
 
 
-def test_50s6g1b2a_proposes_exact_shared_external_admission():
+def test_50s6g1b2a_accepts_exact_shared_external_admission():
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_admission_audit_50s6g1b2a.md"
     ).split())
@@ -6273,7 +6273,7 @@ def test_50s6g1b2a_proposes_exact_shared_external_admission():
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
-        "Candidate documentation-only audit",
+        "Accepted documentation-only audit",
         "exact canonical-record SHA-256 plus validated manifest identity",
         "never by directory name",
         "Each present service admits by `snapshot_id`, independently",
@@ -6290,13 +6290,13 @@ def test_50s6g1b2a_proposes_exact_shared_external_admission():
         assert phrase in audit
 
     assert "satellite_snapshot_admission_audit_50s6g1b2a.md" in index
-    assert "Candidate 50S.6G.1B.2A external admission audit" in architecture
+    assert "Accepted 50S.6G.1B.2A external admission audit" in architecture
     assert "50S.6G.1B.2A — External snapshot admission audit" in roadmap
-    assert "Proposed external snapshot admission contract" in reference
-    assert "Candidate 50S.6G.1B.2A admission ownership" in source_tree
-    assert "Candidate 50S.6G.1B.2A coordinate review" in coordinate_guide
-    assert "Candidate 50S.6G.1B.2A external admission" in guide
-    assert "Candidate 50S.6G.1B.2A digest-admission boundary" in instructions
+    assert "Accepted proposed external snapshot admission contract" in reference
+    assert "Accepted 50S.6G.1B.2A admission ownership" in source_tree
+    assert "Accepted 50S.6G.1B.2A coordinate review" in coordinate_guide
+    assert "Accepted 50S.6G.1B.2A external admission" in guide
+    assert "Accepted 50S.6G.1B.2A digest-admission boundary" in instructions
 
     for document in (
         audit,
@@ -6309,3 +6309,30 @@ def test_50s6g1b2a_proposes_exact_shared_external_admission():
     assert "no coordinate operation" in coordinate_guide
     assert "changes no runtime" in roadmap
     assert "No production or runtime test file is added" in source_tree
+
+
+def test_50s6g1b2a_records_acceptance_and_bounded_next_step():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_snapshot_admission_audit_50s6g1b2a.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "149 plugin-disabled current-documentation tests passed" in document
+        assert "3.35 seconds" in document
+        assert "Only bounded 50S.6G.1B.2B" in document
+    audit = documents[0]
+    assert "does not authorize medium selection" in audit
+    assert "matrix execution" in audit
+    assert "chart integration" in audit
+    assert "another provider request" in audit

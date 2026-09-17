@@ -3525,11 +3525,14 @@ Fernando accepted this unchanged coordinate boundary with 50S.6G.1B.1 on
 2026-09-17 after all 2,594 plugin-disabled tests passed.
 
 
-## Candidate 50S.6G.1B.2A coordinate review
+## Accepted 50S.6G.1B.2A coordinate review
 
 Digest-bound snapshot admission introduces no coordinate operation or
 scientific reinterpretation. TEME remains the SGP4 propagation frame; local
 crossings remain topocentric geometric directions expressed in GCRS axes with
 the accepted installed IERS-A chain. Observer, inclusive UTC interval, fixed
 field centre, tolerance, and centre-only geometric-vacuum airmass identities
-remain unchanged. The coordinate guide therefore remains current.
+remain unchanged. The coordinate guide therefore remains current. Fernando scientifically and
+architecturally accepted this unchanged boundary on 2026-09-17 after all 149
+plugin-disabled current-documentation tests passed in 3.35 seconds. Only
+bounded 50S.6G.1B.2B implementation is authorized next.

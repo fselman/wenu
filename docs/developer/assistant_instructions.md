@@ -964,7 +964,7 @@ form, and preserve the captured `text/plain; charset=UTF-8` media type. No
 second provider request occurred. 50S.6G.1B.2 remains separately authorized.
 
 
-## Candidate 50S.6G.1B.2A digest-admission boundary
+## Accepted 50S.6G.1B.2A digest-admission boundary
 
 Before external snapshot admission work, read
 `satellite_snapshot_admission_audit_50s6g1b2a.md`. The candidate requires
@@ -972,4 +972,7 @@ exact canonical-record SHA-256 plus validated manifest identity, shared by the
 selector, accelerated coordinator, and multi-FoV batch. Preserve the installed
 synthetic default and keep external admission explicit and evidence-only. This
 documentation audit changes no runtime and does not authorize medium selection,
-matrix execution, chart integration, or another provider request.
+matrix execution, chart integration, or another provider request. Fernando
+scientifically and architecturally accepted it on 2026-09-17 after all 149
+plugin-disabled current-documentation tests passed in 3.35 seconds. Only
+bounded 50S.6G.1B.2B digest-admission implementation is authorized next.

@@ -1,8 +1,12 @@
 # 50S.6G.1B.2A — External snapshot admission audit
 
-**Status:** Candidate documentation-only audit authorized for review on
-2026-09-17. It changes no runtime, default, data, report, chart, coordinate
-meaning, or provider access.
+**Status:** Accepted documentation-only audit.
+
+Fernando scientifically and architecturally accepted this audit on 2026-09-17
+after all 149 plugin-disabled current-documentation tests passed in 3.35
+seconds; `git diff --check` and the working tree were clean. It changes no
+runtime, default, data, report, chart, coordinate meaning, or provider access.
+Only bounded 50S.6G.1B.2B digest-admission implementation is authorized next.
 
 ## 1. Roadmap position
 
@@ -165,7 +169,7 @@ never an automatic fallback or merge.
 
 ## 10. Acceptance criteria
 
-This audit is ready for Fernando's review when:
+This audit was accepted when:
 
 - every active authority describes the exact-digest-plus-manifest boundary;
 - the three current ID-only admission points and their shared replacement are
@@ -177,7 +181,7 @@ This audit is ready for Fernando's review when:
 - documentation tests protect the boundary and exclusions;
 - the plugin-disabled documentation gate and `git diff --check` pass.
 
-Acceptance of this document would authorize only bounded
+Acceptance of this document authorizes only bounded
 50S.6G.1B.2B implementation. It would not authorize medium selection, matrix
 execution, chart integration, another provider request, or any runtime
 default change.

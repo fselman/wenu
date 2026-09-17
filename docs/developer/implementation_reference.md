@@ -2806,7 +2806,7 @@ this repair and the 16,559-record snapshot on 2026-09-17 after 15 focused and
 SHA-256 is `e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`. No second request or 50S.6G.1B.2 work is implied.
 
 
-## Proposed external snapshot admission contract
+## Accepted proposed external snapshot admission contract
 
 50S.6G.1B.2A proposes an explicit evidence-only admission token bound to exact
 canonical-record SHA-256 plus validated manifest identity. It is not yet a
@@ -2814,4 +2814,7 @@ public or implemented API. A later bounded implementation would pass the same
 immutable token to the conservative selector, accelerated coordinator, and
 multi-FoV batch, while leaving `synthetic_50s4b_v1` as the ordinary default.
 Directory names, `snapshot_id` alone, acquisition-response digests, and
-policy digests are not runtime admission identities.
+policy digests are not runtime admission identities. Fernando scientifically
+and architecturally accepted this proposal on 2026-09-17 after all 149
+plugin-disabled current-documentation tests passed in 3.35 seconds. Only
+bounded 50S.6G.1B.2B implementation is authorized next.
