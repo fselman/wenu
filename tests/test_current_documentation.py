@@ -6632,7 +6632,7 @@ def test_50s6g1b2c_documents_candidate_real_medium_evidence():
     assert "No repository source or data directory owns" in source_tree
     assert "performed no propagation or coordinate transformation" in coordinates
     assert "not a statistical sample" in guide
-    assert "awaits Fernando's acceptance" in instructions
+    assert "candidate evidence record preceded acceptance" in instructions
 
 def test_50s6g1b2c_records_accepted_exact_real_specimen():
     documents = tuple(
