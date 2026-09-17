@@ -353,3 +353,18 @@ deterministic coverage specimen, not a statistical sample, completeness claim,
 or population-frequency model. This is a candidate evidence record awaiting
 scientific and architectural acceptance. It does not authorize 50S.6G.1B.2D
 matrix execution.
+
+## 16. Accepted real-selection closure
+
+Fernando scientifically and architecturally accepted the exact external
+256-record specimen on 2026-09-17 after 157 plugin-disabled
+current-documentation tests passed in 4.66 seconds; `git diff --check` and the
+working tree were clean at `c4cd009`.
+
+Acceptance is bound to subset digest
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`
+and selection-receipt digest
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+It closes 50S.6G.1B.2C for this exact external evidence artifact. It does not
+authorize a refresh, alternative specimen, package inclusion, runtime default,
+or 50S.6G.1B.2D matrix execution.
