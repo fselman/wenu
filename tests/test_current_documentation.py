@@ -6232,3 +6232,12 @@ def test_50s6g1b1_documents_offline_snapshot_builder_boundary():
     assert "rather than a redistribution of CelesTrak" in roadmap
     assert "validation oracle" in guide
     assert "never as silent fallback" in guide
+    for document in (
+        architecture, roadmap, reference, guide, instructions, audit
+    ):
+        assert "67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa" in document
+        assert "10 focused tests" in document
+    assert "14,643-byte" in audit
+    assert "2.41 seconds" in audit
+    assert "226.25 seconds" in audit
+    assert "Explicit approval of this exact digest remains" in audit

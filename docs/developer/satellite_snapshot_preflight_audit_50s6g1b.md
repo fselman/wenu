@@ -396,3 +396,10 @@ admission/evidence, or 50S.6G.1B.2.
 Fernando accepted the correction to the exact direct policy endpoint on
 2026-09-17 after all 2,595 plugin-disabled tests passed in 205.93 seconds.
 No GP request was made or authorized.
+
+Fernando accepted the exact `non-HTTP 200` policy-clause compatibility
+correction on 2026-09-17 after 10 focused tests passed in 2.41 seconds and all
+2,595 plugin-disabled tests passed in 226.25 seconds. The frozen 14,643-byte
+response and receipt share SHA-256
+`67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. No GP request was made or authorized. Explicit approval of this
+exact digest remains a separate human checkpoint.

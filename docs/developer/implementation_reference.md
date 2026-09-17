@@ -2790,3 +2790,9 @@ and exact policy-digest approval remain separately authorized operations.
 Fernando accepted the exact direct-policy-URL correction on 2026-09-17 after
 all 2,595 plugin-disabled tests passed. It changes no provider or acquisition
 authority.
+
+Fernando accepted the exact `non-HTTP 200` policy-clause compatibility
+correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
+tests passed. The frozen 14,643-byte response and receipt share SHA-256
+`67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. This does not approve the digest for GP access; that explicit
+human acknowledgement remains a separate operation.

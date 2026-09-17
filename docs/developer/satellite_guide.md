@@ -1093,3 +1093,9 @@ CelesTrak or Space-Track. It must have stable machine-readable access, explicit
 policy and provenance, complete identifiers, and an auditable OMM-compatible
 mapping. Introduce it first as a separate validation oracle, never as silent
 fallback, automatic merge, or replacement of the authorized provider.
+
+Fernando accepted the exact `non-HTTP 200` policy-clause compatibility
+correction on 2026-09-17 after 10 focused tests and all 2,595 plugin-disabled
+tests passed. The frozen 14,643-byte response has SHA-256
+`67bf0faa7e026a7cd49799069db9d3355f2a867894133afd39e130d6185724aa`. The acceptance covers the parser and receipt only; it does not
+approve a GP request or the digest acknowledgement required before one.
