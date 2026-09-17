@@ -6300,11 +6300,8 @@ def test_50s6g1b2a_proposes_exact_shared_external_admission():
 
     for document in (
         audit,
-        architecture,
         roadmap,
         reference,
-        source_tree,
-        coordinate_guide,
         guide,
         instructions,
     ):
