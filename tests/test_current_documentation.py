@@ -6543,3 +6543,47 @@ def test_50s6g1b2c_documents_candidate_fake_data_implementation():
     assert "performs no propagation" in coordinate_guide
     assert "not a statistical sample" in guide
     assert "Do not run it on the real 16,559-record parent" in instructions
+
+def test_50s6g1b2c_records_accepted_fake_data_implementation_boundary():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_medium_specimen_audit_50s6g1b2c.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "accepted" in document.lower()
+        assert "2026-09-17" in document
+        assert "1d9d4e4" in document
+        assert "2,622" in document
+        assert "225.75 seconds" in document
+        assert "185" in document
+        assert "9.03 seconds" in document
+        assert "real" in document.lower()
+        assert "separate" in document.lower()
+        assert "50S.6G.1B.2D" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted fake-data implementation" in audit
+    assert "Accepted 50S.6G.1B.2C implementation" in architecture
+    assert "50S.6G.1B.2C accepted implementation" in roadmap
+    assert "Accepted medium-evidence implementation" in reference
+    assert "Accepted 50S.6G.1B.2C ownership" in source_tree
+    assert "Accepted 50S.6G.1B.2C coordinate boundary" in coordinates
+    assert "Accepted 50S.6G.1B.2C implementation" in guide
+    assert "Accepted 50S.6G.1B.2C implementation boundary" in instructions
+    assert "does not itself authorize executing `select-medium`" in audit
+    assert "requires separate authorization" in architecture
+    assert "requires no provider request" in roadmap
+    assert "evidence-only" in reference
+    assert "No real medium product was created" in source_tree
+    assert "no propagation or coordinate transformation" in coordinates
+    assert "No real medium snapshot has been produced" in guide
+    assert "Require Fernando's separate approval" in instructions
