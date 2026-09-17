@@ -3638,3 +3638,16 @@ Fernando accepted the no-new-coordinate-operation finding on 2026-09-17 at
 seconds. Fake-data harness implementation may preserve and exercise the
 existing contracts; real matrix execution and any coordinate change remain
 unauthorized.
+
+### Candidate 50S.6G.1B.2D coordinate review
+
+The candidate fake-data matrix owner preserves each query's explicit observer,
+field coordinate specification, UTC interval, angular tolerance, and time
+tolerance in canonical request evidence. It performs no implicit frame change
+and requires atomic airmass admission before route execution.
+
+Candidate commit `19520f3` passed 2634 plugin-disabled full-suite tests in
+230.25 seconds on 2026-09-17. Verification used fake data only; it performed
+no propagation or coordinate transformation of the accepted real specimen and
+did not execute the real matrix. Scientific and architectural acceptance is
+required before that separately bounded step.
