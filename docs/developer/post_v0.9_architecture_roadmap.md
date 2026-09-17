@@ -2662,3 +2662,14 @@ current-documentation tests passed in 3.32 seconds at `3ef6a4d`. The accepted
 scope remains fake data only. Reading the accepted real specimen and executing
 the real matrix remain unauthorized. Only a separately bounded real-execution
 audit may proceed next; later 50S.6G delivery remains future work.
+
+### 50S.6G.1B.2D real-execution readiness gate
+
+The candidate readiness audit at integrated baseline `9bdf301` finds the real
+matrix not ready to run. Before execution, Wenu still needs exact receipt
+constraint validation, the frozen ten-field La Ligua fixture, a production
+whole-interval airmass certifier, fresh-subprocess route workers, and the
+explicit offline `run-equivalence-matrix` developer command. Only that
+bounded production-path implementation and fake-data proof are authorized
+next. Reading the real specimen, running the matrix, making a performance
+claim, and advancing 50S.6G delivery remain separately unauthorized.
