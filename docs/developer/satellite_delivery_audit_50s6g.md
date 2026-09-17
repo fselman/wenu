@@ -1,6 +1,6 @@
 # 50S.6G representative delivery, report, file, and exact-track audit
 
-**Status:** Candidate documentation-only architecture, API, performance,
+**Status:** Accepted documentation-only architecture, API, performance,
 interchange, CLI/file, and chart-delivery audit.
 
 **Base:** accepted 50S.6F at merge commit `83a1018`.
@@ -22,8 +22,7 @@ reports, explicit CLI and file-input behavior, renderer-neutral exact track
 evidence, and chart integration without creating a second propagation,
 coordinate, projection, rendering, or export pipeline.
 
-This audit decomposes that work into independently accepted slices. It does
-not authorize any 50S.6G implementation.
+This audit decomposes that work into independently accepted slices.
 
 ## 2. As-is assessment
 
@@ -330,8 +329,10 @@ The documentation audit is acceptable when:
 - Fernando reviews the scientific/product boundary and explicitly accepts or
   revises it.
 
-Acceptance of this audit would authorize only bounded 50S.6G.1A external
-immutable snapshot loading. It would not authorize acquisition, broader
+Fernando scientifically and architecturally accepted this audit on 2026-09-17
+after all 145 plugin-disabled current-documentation tests passed in 4.36
+seconds. Only bounded 50S.6G.1A external immutable snapshot loading is
+authorized next. Acceptance does not authorize acquisition, broader
 runtime admission, reports, CLI/files, drawable tracks, chart integration,
 illumination, brightness, detector effects, or observatory adapters.
 
