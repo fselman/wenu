@@ -1085,3 +1085,16 @@ atomic external evidence, and all stated non-claims.
 Do not implement or run the matrix, access a provider, package external data,
 add concurrency or cache reuse, create tracks or charts, or claim speed without
 Fernando's separate authorization.
+
+### Accepted 50S.6G.1B.2D audit boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-17 at `6e7a8b9`, after 159 plugin-disabled documentation
+tests passed in 10.75 seconds. Only bounded fake-data implementation of
+`crossing_matrix.py`, its tests, canonical evidence, isolated resource seam,
+atomic publication, and offline command is authorized next.
+
+Do not read or execute the accepted real 256-record specimen, publish real
+matrix evidence, claim speed or capacity, add concurrency or cache reuse, or
+begin reports, tracks, charts, illumination, or later delivery without
+separate authorization.
