@@ -2904,3 +2904,13 @@ digest, and receipt digest. All 24 bins are populated; 48 records form the
 mandatory union and 208 are deterministic fill. The artifact is external,
 immutable, and evidence-only. It is not a runtime default or installed
 resource, and matrix execution remains unauthorized.
+
+### Accepted real medium evidence
+
+The accepted 50S.6G.1B.2C external artifact is exactly subset
+`2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`
+with receipt
+`1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`.
+Fernando accepted it on 2026-09-17 at `c4cd009` after 157 plugin-disabled
+documentation tests passed in 4.66 seconds. No other artifact is implied by
+this acceptance, and 50S.6G.1B.2D remains unauthorized.
