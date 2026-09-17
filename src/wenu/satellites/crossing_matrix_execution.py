@@ -555,21 +555,28 @@ def run_production_equivalence_matrix(
     policy=None,
     certifier=None,
     executor=None,
+    expected_specimen_identity=ACCEPTED_MEDIUM_IDENTITY,
+    expected_snapshot_identity=ACCEPTED_MEDIUM_SNAPSHOT_IDENTITY,
+    receipt_validator=validate_accepted_medium_receipt,
 ):
     """Run the explicit offline path after exact operator acknowledgements."""
     if acknowledgement != REAL_EXECUTION_ACKNOWLEDGEMENT:
         raise ValueError("exact real-execution acknowledgement is required.")
-    if specimen_identity != ACCEPTED_MEDIUM_IDENTITY:
+    if specimen_identity != expected_specimen_identity:
         raise ValueError("specimen identity is not the exact accepted medium.")
+    if not isinstance(expected_snapshot_identity, ExternalSnapshotIdentity):
+        raise TypeError("expected_snapshot_identity must be ExternalSnapshotIdentity.")
+    if not callable(receipt_validator):
+        raise TypeError("receipt_validator must be callable.")
     root = Path(snapshot_directory).expanduser()
     snapshot = load_snapshot_directory(root)
     receipt_bytes = (root / "selection-receipt.json").read_bytes()
     if sha256_hex(receipt_bytes) != specimen_identity.selection_receipt_sha256:
         raise ValueError("selection receipt digest does not match accepted identity.")
-    validate_accepted_medium_receipt(json.loads(receipt_bytes))
+    receipt_validator(json.loads(receipt_bytes))
     admission = ExternalSnapshotAdmissionPolicy(
         MATRIX_EXECUTION_IMPLEMENTATION,
-        (ACCEPTED_MEDIUM_SNAPSHOT_IDENTITY,),
+        (expected_snapshot_identity,),
     ).admit(snapshot)
     return run_equivalence_matrix(
         root,
