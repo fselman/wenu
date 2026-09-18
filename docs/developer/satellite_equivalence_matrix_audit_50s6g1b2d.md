@@ -456,4 +456,23 @@ Candidate verification on Fernando's Mac completed at executable commit
 and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
 --check 5cd60fd...HEAD` and the working tree were clean. No accepted real
 specimen was accessed and no real matrix was executed. The candidate still
-requires Fernando's scientific and architectural acceptance.
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.
