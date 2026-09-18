@@ -1436,3 +1436,7 @@ claim or later 50S.6G delivery is authorized.\n
 field count, two routes, warm-up count, and measured repetitions; the accepted
 default is 80. Progress is not part of the subprocess protocol, canonical
 evidence, resource observations, scientific result, or publication identity.
+
+## Candidate 50S.6G.1B.2D.2 progress verification
+
+Candidate commit `b0b4432` was verified on 2026-09-18: 180 focused plugin-disabled tests passed in 5.44 seconds, and all 2647 plugin-disabled tests passed in 239.53 seconds. The diff check was clean. The parent-only progress display changes no scientific or canonical-evidence architecture; acceptance, merge, and renewed real-run authorization remain pending.
