@@ -3771,3 +3771,7 @@ The coordinate guide was reviewed after progress-display merge `9c4b808` and rem
 ## Accepted renewed real-run coordinate boundary
 
 Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after 169 documentation tests passed in 4.29 seconds and integrity checks were clean. The coordinate guide remains current and the accepted authorization introduces no coordinate or scientific-semantic change.
+
+## Candidate first real-matrix coordinate finding
+
+The 2026-09-18 candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` from `9d93113` exercised the accepted 10 fixed field/interval requests and introduced no new coordinate operation or tolerance. Exact route outputs agreed, but all fields had zero crossings. The coordinate guide remains current; the result must not be represented as positive real-crossing validation.
