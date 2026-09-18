@@ -1440,3 +1440,7 @@ evidence, resource observations, scientific result, or publication identity.
 ## Candidate 50S.6G.1B.2D.2 progress verification
 
 Candidate commit `b0b4432` was verified on 2026-09-18: 180 focused plugin-disabled tests passed in 5.44 seconds, and all 2647 plugin-disabled tests passed in 239.53 seconds. The diff check was clean. The parent-only progress display changes no scientific or canonical-evidence architecture; acceptance, merge, and renewed real-run authorization remain pending.
+
+## Accepted 50S.6G.1B.2D.2 progress display
+
+Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18 after the recorded 180-test focused gate, 2647-test full suite, 167-test final documentation gate, and clean diff check. The accepted behavior remains parent-only and outside canonical evidence. Merge and renewed real-run authorization remain separate.
