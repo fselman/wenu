@@ -7034,10 +7034,8 @@ def test_50s6g1b2d2_records_candidate_progress_verification():
         assert "5.44 seconds" in document
         assert "2647" in document
         assert "239.53 seconds" in document
-        assert "diff check" in document
-        assert "clean" in document or "reported no errors" in document
-
     audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "git diff --check 5aff265...HEAD` reported no errors" in audit
     assert "Candidate 50S.6G.1B.2D.2 verification record" in audit
     assert "Candidate 50S.6G.1B.2D.2 progress verification" in architecture
     assert "50S.6G.1B.2D.2 candidate verification state" in roadmap
