@@ -7195,3 +7195,41 @@ def test_50s6g1b2d4_records_candidate_first_real_matrix_evidence():
         assert phrase in audit
     assert "positive-crossing behavior remains covered by synthetic evidence" in audit
     assert "no universal speed, capacity, memory, or hardware claim" in audit
+
+
+def test_50s6g1b2d4_records_acceptance_of_first_real_matrix_evidence():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "186e255" in document
+        assert "d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258" in document
+        assert "2026-09-18" in document
+        assert "zero crossings" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted 50S.6G.1B.2D.4 first real-matrix evidence" in audit
+    assert "Accepted 50S.6G.1B.2D.4 real-matrix evidence" in architecture
+    assert "50S.6G.1B.2D.4 accepted first real-matrix evidence" in roadmap
+    assert "Accepted first real-matrix evidence" in reference
+    assert "Accepted first real-matrix evidence ownership" in source_tree
+    assert "Accepted first real-matrix coordinate finding" in coordinates
+    assert "Accepted first real equivalence evidence" in guide
+    assert "Accepted first real-matrix evidence boundary" in instructions
+
+    assert "171 plugin-disabled documentation tests passing in 4.46 seconds" in audit
+    assert "deterministic empty-result equivalence" in audit
+    assert "does not establish positive real-crossing validation" in audit
+    assert "authorize another real run" in audit
+    assert "authorize parallelization or refactoring" in audit
