@@ -581,4 +581,20 @@ Acceptance criteria for this audit are therefore narrow: one exact offline
 run, one accepted specimen, one new empty output root, no retry, fail-closed
 publication, and separate evidence acceptance. Until Fernando explicitly
 accepts this audit, real specimen access and real matrix execution remain
-unauthorized.
+unauthorized.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.
