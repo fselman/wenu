@@ -2755,3 +2755,7 @@ paused pending acceptance, merge, and renewed authorization.
 ## 50S.6G.1B.2D.2 candidate verification state
 
 Candidate commit `b0b4432` passed 180 focused plugin-disabled tests in 5.44 seconds and the complete 2647-test plugin-disabled suite in 239.53 seconds on 2026-09-18; its diff check was clean. This verifies the bounded progress-display implementation but does not accept or merge it and does not renew authority for the real run.
+
+## 50S.6G.1B.2D.2 accepted progress-display state
+
+Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18 with the recorded 180 focused, 2647 full-suite, and 167 final-documentation plugin-disabled test results and clean diff check. The next actions are a separately requested merge and, only afterward, explicit renewal of the single real-run authorization.
