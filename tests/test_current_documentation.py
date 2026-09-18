@@ -7080,3 +7080,38 @@ def test_50s6g1b2d2_records_progress_display_acceptance():
     assert "does not merge the feature branch" in audit
     assert "does not itself authorize execution" in reference
     assert "post-merge renewed authorization" in guide
+
+
+def test_50s6g1b2d3_records_renewed_single_real_run_authorization():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "9c4b808" in document
+        assert "2026-09-18" in document
+        assert "renew" in document.lower()
+        assert "exactly one" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Renewed 50S.6G.1B.2D.3 one-run authorization" in audit
+    assert "Renewed 50S.6G.1B.2D.3 one-run authority" in architecture
+    assert "50S.6G.1B.2D.3 renewed single-run authorization" in roadmap
+    assert "Renewed single real-run contract" in reference
+    assert "Renewed real-run ownership" in source_tree
+    assert "Renewed real-run coordinate boundary" in coordinates
+    assert "Renewed single real equivalence run" in guide
+    assert "Renewed one-run matrix authority" in instructions
+    assert "at most 80 fresh subprocess invocations" in audit
+    assert "There is no automatic retry or resume" in audit
+    assert "consumes this authorization" in audit
+    assert "candidate evidence requiring independent review" in audit
