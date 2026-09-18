@@ -2271,4 +2271,29 @@ explicit offline command, and shortened fake-data test practice. This
 acceptance does not authorize accessing the accepted real specimen, executing
 the real matrix, publishing real evidence, making a performance claim, or
 advancing later delivery. Any real execution requires a separate explicit
-authorization.
+authorization.\n
+
+### Candidate first-real-execution ownership
+
+No new source owner is proposed. `crossing_matrix_execution.py` remains the
+fixture, receipt, airmass, worker-protocol, and isolated-executor owner;
+`crossing_matrix.py` remains the equivalence and atomic-publication owner;
+and `tools/build_satellite_snapshot.py` remains the explicit offline command
+surface. Candidate 50S.6G.1B.2D.1 authorizes no code change, alternate owner,
+network adapter, discovery path, retry owner, or evidence consumer.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.

@@ -6941,3 +6941,42 @@ def test_50s6g1b2d_records_accepted_real_execution_readiness_audit():
     assert "Accepted real-execution readiness boundary" in instructions
     assert "real matrix is not yet ready to run" in audit
     assert "does not authorize reading" in audit
+
+
+def test_50s6g1b2d1_documents_single_real_execution_authorization():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate 50S.6G.1B.2D.1 first-real-execution authorization",
+        "authorize exactly one operator-started offline run",
+        "at most 80 fresh subprocess invocations",
+        "The existing worker timeout remains 3600 seconds per subprocess",
+        "There is no automatic retry",
+        "A successful command does not itself accept the evidence",
+        "Until Fernando explicitly accepts this audit",
+    ):
+        assert phrase in audit
+    for digest in (
+        "2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b",
+        "1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895",
+        "e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347",
+    ):
+        assert digest in audit
+    assert "Candidate first-real-execution authorization" in architecture
+    assert "Candidate first real run policy" in reference
+    assert "50S.6G.1B.2D.1 candidate first real execution" in roadmap
+    assert "Candidate first-real-execution ownership" in source_tree
+    assert "Candidate first-real-execution coordinate boundary" in coordinate_guide
+    assert "Candidate first real equivalence run" in guide
+    assert "Candidate first-real-execution authorization boundary" in instructions
