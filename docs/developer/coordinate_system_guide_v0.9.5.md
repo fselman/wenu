@@ -3775,3 +3775,7 @@ Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026
 ## Candidate first real-matrix coordinate finding
 
 The 2026-09-18 candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` from `9d93113` exercised the accepted 10 fixed field/interval requests and introduced no new coordinate operation or tolerance. Exact route outputs agreed, but all fields had zero crossings. The coordinate guide remains current; the result must not be represented as positive real-crossing validation.
+
+## Accepted first real-matrix coordinate finding
+
+Fernando scientifically and architecturally accepted report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18. The coordinate guide remains current. Exact empty-result route agreement was established, but all fields had zero crossings and therefore no positive real-crossing validation is claimed.
