@@ -6980,3 +6980,103 @@ def test_50s6g1b2d1_documents_single_real_execution_authorization():
     assert "Candidate first-real-execution coordinate boundary" in coordinate_guide
     assert "Candidate first real equivalence run" in guide
     assert "Candidate first-real-execution authorization boundary" in instructions
+
+
+def test_50s6g1b2d2_documents_parent_only_progress_boundary():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate parent-process matrix progress display",
+        "The authorized execution has not started",
+        "exactly 80 invocations",
+        "excluded from canonical scientific evidence",
+        "The real specimen must not be accessed",
+    ):
+        assert phrase in audit
+    assert "Candidate matrix execution progress display" in architecture
+    assert "Candidate matrix progress reporting" in reference
+    assert "50S.6G.1B.2D.2 candidate progress display" in roadmap
+    assert "Candidate matrix progress ownership" in source_tree
+    assert "Candidate progress-display coordinate review" in coordinate_guide
+    assert "Candidate equivalence-run progress display" in guide
+    assert "Candidate matrix progress boundary" in instructions
+
+
+def test_50s6g1b2d2_records_candidate_progress_verification():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "b0b4432" in document
+        assert "2026-09-18" in document
+        assert "180" in document
+        assert "5.44 seconds" in document
+        assert "2647" in document
+        assert "239.53 seconds" in document
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "git diff --check 5aff265...HEAD` reported no errors" in audit
+    assert "Candidate 50S.6G.1B.2D.2 verification record" in audit
+    assert "Candidate 50S.6G.1B.2D.2 progress verification" in architecture
+    assert "50S.6G.1B.2D.2 candidate verification state" in roadmap
+    assert "Candidate matrix progress verification" in reference
+    assert "Candidate matrix progress verification ownership" in source_tree
+    assert "Candidate progress-display verification review" in coordinates
+    assert "Candidate equivalence-run progress verification" in guide
+    assert "Candidate matrix progress verification boundary" in instructions
+    assert "authorized execution has not started" in audit
+    assert "renewed authorization remain separate decisions" in audit
+    assert "real specimen was not accessed" in guide
+
+
+def test_50s6g1b2d2_records_progress_display_acceptance():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "96b9ba0" in document
+        assert "2026-09-18" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted 50S.6G.1B.2D.2 progress-display closure" in audit
+    assert "Accepted 50S.6G.1B.2D.2 progress display" in architecture
+    assert "50S.6G.1B.2D.2 accepted progress-display state" in roadmap
+    assert "Accepted matrix progress display" in reference
+    assert "Accepted matrix progress ownership" in source_tree
+    assert "Accepted progress-display coordinate review" in coordinates
+    assert "Accepted equivalence-run progress display" in guide
+    assert "Accepted matrix progress boundary" in instructions
+    assert "does not merge the feature branch" in audit
+    assert "does not itself authorize execution" in reference
+    assert "post-merge renewed authorization" in guide

@@ -1427,4 +1427,20 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix execution progress display
+
+`MatrixProgressBar` is a parent-process terminal concern inside
+`crossing_matrix_execution.py`. The production wrapper derives its total from
+field count, two routes, warm-up count, and measured repetitions; the accepted
+default is 80. Progress is not part of the subprocess protocol, canonical
+evidence, resource observations, scientific result, or publication identity.
+
+## Candidate 50S.6G.1B.2D.2 progress verification
+
+Candidate commit `b0b4432` was verified on 2026-09-18: 180 focused plugin-disabled tests passed in 5.44 seconds, and all 2647 plugin-disabled tests passed in 239.53 seconds. The diff check was clean. The parent-only progress display changes no scientific or canonical-evidence architecture; acceptance, merge, and renewed real-run authorization remain pending.
+
+## Accepted 50S.6G.1B.2D.2 progress display
+
+Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18 after the recorded 180-test focused gate, 2647-test full suite, 167-test final documentation gate, and clean diff check. The accepted behavior remains parent-only and outside canonical evidence. Merge and renewed real-run authorization remain separate.

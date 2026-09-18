@@ -1336,4 +1336,21 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate equivalence-run progress display
+
+The offline matrix command candidate displays a terminal bar with completed
+workers over the policy-derived total, integer percentage, field, route, and
+phase. Under the accepted default it advances from 0/80 to 80/80. The display
+is parent-only stderr text and is not scientific evidence. A running worker may
+leave the same line visible for a long time; completion advances only after
+that fresh subprocess returns successfully.
+
+## Candidate equivalence-run progress verification
+
+Candidate `b0b4432` passed 180 focused plugin-disabled tests in 5.44 seconds and the full 2647-test plugin-disabled suite in 239.53 seconds on 2026-09-18; the diff check was clean. The progress display remains parent-only and outside canonical evidence. The real specimen was not accessed, the run has not started, and renewed authorization remains pending.
+
+## Accepted equivalence-run progress display
+
+Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18 after the recorded focused, full-suite, final-documentation, and diff verification. The display remains parent-only and outside canonical evidence. The real specimen has not been accessed, the run has not started, and execution still requires post-merge renewed authorization.

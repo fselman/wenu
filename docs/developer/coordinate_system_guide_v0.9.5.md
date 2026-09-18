@@ -3746,4 +3746,20 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate progress-display coordinate review
+
+The parent-process progress bar carries only field identifier, route, phase,
+count, percentage, and state. It does not serialize or reconstruct a
+coordinate, alter the frozen GCRS-axis field fixture, evaluate airmass, enter a
+worker request, or change any coordinate provenance. The coordinate guide
+therefore remains scientifically unchanged.
+
+## Candidate progress-display verification review
+
+The coordinate guide was reviewed for candidate `b0b4432` on 2026-09-18 and remains current. Verification comprised 180 focused plugin-disabled tests passing in 5.44 seconds, all 2647 plugin-disabled tests passing in 239.53 seconds, and a clean diff check. Parent-only progress reporting introduces no coordinate operation or scientific-semantic change.
+
+## Accepted progress-display coordinate review
+
+Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18. The reviewed coordinate guide remains current: the accepted parent-process display introduces no coordinate operation, transformation, tolerance, or scientific-semantic change.

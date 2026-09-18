@@ -597,4 +597,36 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+## Candidate parent-process matrix progress display
+
+Fernando requested a progress bar before the first real run. The authorized
+execution has not started. This candidate changes only parent-process terminal
+reporting: before each worker it displays the current field, route, warm-up or
+measured repetition, completed count, declared total, and integer percentage;
+after successful return it advances the completed count. Failure leaves the
+scientific operation fail-closed and prints a terminal failed state.
+
+The default accepted policy derives exactly 80 invocations from the frozen 10
+fields, two routes, one warm-up, and three measured repetitions. The display
+has no third-party dependency, is written to the parent standard-error stream,
+does not enter the worker request or response, and is excluded from canonical
+scientific evidence, digests, timing, and resource observations. It changes no
+fixture, route order, timeout, retry policy, subprocess isolation, result,
+selector, publication, or coordinate behavior.
+
+The closest existing protocol test is extended with an in-memory stream and
+the existing fake subprocess; no additional scientific route is run. The
+previously accepted one-run authorization remains unconsumed but is paused.
+The real specimen must not be accessed and the real run must not begin until
+this candidate is verified, accepted, merged, and the one-run authorization is
+explicitly renewed for the resulting integrated commit.
+
+## Candidate 50S.6G.1B.2D.2 verification record
+
+Fernando verified candidate commit `b0b4432` on macOS on 2026-09-18. The focused compile and gate completed with **180 plugin-disabled tests passing in 5.44 seconds**; the complete plugin-disabled suite completed with **2647 tests passing in 239.53 seconds**. `git diff --check 5aff265...HEAD` reported no errors and the working tree was clean. The coordinate-system guide was reviewed and remains current because this parent-process progress display changes no coordinate, scientific, worker-protocol, canonical-evidence, timing, or selection semantics. The accepted real specimen was not accessed and the authorized execution has not started. This is candidate verification evidence only; acceptance, merge, and renewed authorization remain separate decisions.
+
+## Accepted 50S.6G.1B.2D.2 progress-display closure
+
+Fernando scientifically and architecturally accepted the parent-process progress display on 2026-09-18 at candidate commit `96b9ba0`. Acceptance relies on the recorded candidate verification: 180 focused plugin-disabled tests passed in 5.44 seconds, the complete 2647-test plugin-disabled suite passed in 239.53 seconds, the final 167-test documentation gate passed in 4.22 seconds, and `git diff --check 5aff265...HEAD` reported no errors. This closes the bounded progress-display change only. It does not merge the feature branch, access the real specimen, start the matrix, or renew the single-run authorization.

@@ -404,16 +404,87 @@ def _evidence_from_mapping(value):
     )
 
 
+class MatrixProgressBar:
+    """Render deterministic parent-process progress without changing evidence."""
+
+    def __init__(self, total, *, stream=None, width=30):
+        if isinstance(total, bool) or not isinstance(total, int):
+            raise TypeError("progress total must be an integer.")
+        if total < 1:
+            raise ValueError("progress total must be positive.")
+        if isinstance(width, bool) or not isinstance(width, int):
+            raise TypeError("progress width must be an integer.")
+        if width < 10:
+            raise ValueError("progress width must be at least 10.")
+        self.total = total
+        self.completed = 0
+        self.stream = sys.stderr if stream is None else stream
+        self.width = width
+
+    @staticmethod
+    def _phase(repetition, measured):
+        return (
+            f"measured {repetition + 1}"
+            if measured
+            else f"warm-up {-repetition}"
+        )
+
+    def _render(self, route, query, repetition, measured, state):
+        filled = self.width * self.completed // self.total
+        bar = "#" * filled + "-" * (self.width - filled)
+        percent = 100 * self.completed // self.total
+        label = (
+            f"{query.field_of_view.field_id} {route} "
+            f"{self._phase(repetition, measured)} {state}"
+        )
+        end = "\n" if state in {"failed", "complete"} and (
+            state == "failed" or self.completed == self.total
+        ) else "\r"
+        print(
+            f"\r[{bar}] {self.completed}/{self.total} "
+            f"{percent:3d}% {label}",
+            end=end,
+            file=self.stream,
+            flush=True,
+        )
+
+    def started(self, route, query, repetition, measured):
+        self._render(route, query, repetition, measured, "running")
+
+    def succeeded(self, route, query, repetition, measured):
+        if self.completed >= self.total:
+            raise RuntimeError("progress completed more workers than declared.")
+        self.completed += 1
+        self._render(route, query, repetition, measured, "complete")
+
+    def failed(self, route, query, repetition, measured):
+        self._render(route, query, repetition, measured, "failed")
+
+
 class FreshSubprocessMatrixExecutor:
     """Execute exactly one route/query/run in one fresh Python process."""
 
-    def __init__(self, snapshot_directory, *, timeout_seconds=3600.0):
+    def __init__(
+        self,
+        snapshot_directory,
+        *,
+        timeout_seconds=3600.0,
+        total_invocations=None,
+        progress_stream=None,
+    ):
         self.snapshot_directory = str(Path(snapshot_directory).expanduser().resolve())
         self.timeout_seconds = float(timeout_seconds)
         if self.timeout_seconds <= 0:
             raise ValueError("timeout_seconds must be positive.")
+        self._progress = (
+            None
+            if total_invocations is None
+            else MatrixProgressBar(total_invocations, stream=progress_stream)
+        )
 
     def __call__(self, route, query, repetition, measured):
+        if self._progress is not None:
+            self._progress.started(route, query, repetition, measured)
         request = {
             "protocol": MATRIX_WORKER_PROTOCOL,
             "route": route,
@@ -446,10 +517,14 @@ class FreshSubprocessMatrixExecutor:
                     check=False,
                 )
             except subprocess.TimeoutExpired as error:
+                if self._progress is not None:
+                    self._progress.failed(route, query, repetition, measured)
                 raise TimeoutError(
                     f"matrix worker timed out after {self.timeout_seconds:g} s."
                 ) from error
             if completed.returncode != 0:
+                if self._progress is not None:
+                    self._progress.failed(route, query, repetition, measured)
                 stderr = completed.stderr.decode("utf-8", errors="replace").strip()
                 raise RuntimeError(
                     f"matrix worker exited {completed.returncode}: {stderr}"
@@ -460,10 +535,14 @@ class FreshSubprocessMatrixExecutor:
                 canonical_json_bytes(value) != data
                 or value.get("protocol") != MATRIX_WORKER_PROTOCOL
             ):
+                if self._progress is not None:
+                    self._progress.failed(route, query, repetition, measured)
                 raise ValueError(
                     "matrix worker returned a non-canonical or unsupported response."
                 )
         resource = MatrixResourceObservation(**value["resource"])
+        if self._progress is not None:
+            self._progress.succeeded(route, query, repetition, measured)
         return MatrixRouteRun(
             results=tuple(value["results"]),
             resource=resource,
@@ -578,15 +657,31 @@ def run_production_equivalence_matrix(
         MATRIX_EXECUTION_IMPLEMENTATION,
         (expected_snapshot_identity,),
     ).admit(snapshot)
+    matrix_policy = policy or CrossingMatrixPolicy()
+    matrix_queries = build_matrix_queries(snapshot)
+    matrix_executor = executor
+    if matrix_executor is None:
+        total_invocations = (
+            len(matrix_queries)
+            * 2
+            * (
+                matrix_policy.warmup_count
+                + matrix_policy.measured_repetitions
+            )
+        )
+        matrix_executor = FreshSubprocessMatrixExecutor(
+            root,
+            total_invocations=total_invocations,
+        )
     return run_equivalence_matrix(
         root,
         output_root,
         specimen_identity=specimen_identity,
         admission=admission,
-        queries=build_matrix_queries(snapshot),
+        queries=matrix_queries,
         airmass_certifier=certifier or ProductionMatrixAirmassCertifier(),
-        executor=executor or FreshSubprocessMatrixExecutor(root),
-        policy=policy or CrossingMatrixPolicy(),
+        executor=matrix_executor,
+        policy=matrix_policy,
     )
 
 

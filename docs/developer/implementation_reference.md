@@ -3052,4 +3052,21 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix progress reporting
+
+When the production wrapper constructs its default
+`FreshSubprocessMatrixExecutor`, it supplies a policy-derived invocation total
+to `MatrixProgressBar`. The bar reports field, exhaustive/accelerated route,
+warm-up or measured repetition, completed count, and percentage on parent
+stderr. Injected executors remain quiet by default. Progress changes no worker
+input/output, timeout, result, evidence, or digest.
+
+## Candidate matrix progress verification
+
+At candidate commit `b0b4432`, the parent-process progress display passed 180 focused plugin-disabled tests in 5.44 seconds and all 2647 plugin-disabled tests in 239.53 seconds on 2026-09-18. The diff check was clean. This verification changes neither the callable contract nor canonical evidence and does not authorize execution.
+
+## Accepted matrix progress display
+
+Fernando scientifically and architecturally accepted the parent-process progress display at `96b9ba0` on 2026-09-18 after the recorded focused, full-suite, final-documentation, and diff verification. This acceptance changes no worker protocol or canonical evidence and does not itself authorize execution.

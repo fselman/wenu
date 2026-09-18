@@ -1203,4 +1203,22 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix progress boundary
+
+The first real run remains paused. The candidate parent-process progress bar
+reports completed worker count over the policy-derived total plus field, route,
+and phase. It writes only to parent stderr and must not change worker protocol,
+canonical evidence, timing, route order, timeout, retries, science, or
+publication. Verification extends the existing fake protocol test and adds no
+scientific run. Require separate acceptance, merge, and renewed one-run
+authorization before accessing the real specimen.
+
+## Candidate matrix progress verification boundary
+
+Candidate commit `b0b4432` was verified on 2026-09-18 with 180 focused plugin-disabled tests passing in 5.44 seconds, the complete 2647-test plugin-disabled suite passing in 239.53 seconds, and a clean diff check. Do not treat this verification as acceptance, merge authority, or renewed real-run authorization. Do not access the accepted real specimen until the progress change is accepted, merged, and the one-run authorization is explicitly renewed.
+
+## Accepted matrix progress boundary
+
+Fernando scientifically and architecturally accepted the 50S.6G.1B.2D.2 progress display at `96b9ba0` on 2026-09-18. Do not infer merge authority or real-run authority from this acceptance. Keep the accepted real specimen untouched until Fernando separately requests the merge and then explicitly renews the one-run authorization.
