@@ -1310,4 +1310,14 @@ explicit offline command, and shortened fake-data test practice. This
 acceptance does not authorize accessing the accepted real specimen, executing
 the real matrix, publishing real evidence, making a performance claim, or
 advancing later delivery. Any real execution requires a separate explicit
-authorization.
+authorization.\n
+
+### Candidate first real equivalence run
+
+Candidate 50S.6G.1B.2D.1 proposes exactly one operator-started use of
+`run-equivalence-matrix` with explicit absolute snapshot and output paths,
+all three accepted digests, and the exact acknowledgement. The output root
+must be new, empty, external, and have at least 2 GiB free. The run allows no
+network, discovery, refresh, substitution, retry, resume, changed fixture, or
+changed policy. A successful evidence directory remains external and
+unaccepted until a separate review.
