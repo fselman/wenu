@@ -3721,4 +3721,13 @@ explicit offline command, and shortened fake-data test practice. This
 acceptance does not authorize accessing the accepted real specimen, executing
 the real matrix, publishing real evidence, making a performance claim, or
 advancing later delivery. Any real execution requires a separate explicit
-authorization.
+authorization.\n
+
+### Candidate first-real-execution coordinate boundary
+
+The proposed first run changes no coordinate contract. It uses the accepted
+digest-frozen ten-field La Ligua fixture, geometric topocentric directions in
+GCRS axes, UTC intervals of only 15 and 60 seconds, bundled-IERS-A evidence,
+vacuum refraction, and atomic complete-interval centre-only airmass admission
+at maximum airmass 2. No field, centre, interval, tolerance, frame, status,
+observer, or Earth-orientation policy may be changed for the run.
