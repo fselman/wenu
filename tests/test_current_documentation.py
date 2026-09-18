@@ -7150,3 +7150,48 @@ def test_50s6g1b2d3_records_acceptance_of_renewed_authorization():
     assert "run remains unstarted and unconsumed" in audit
     assert "only after this record is merged" in audit
     assert "external preflight" in audit
+
+
+def test_50s6g1b2d4_records_candidate_first_real_matrix_evidence():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258" in document
+        assert "9d93113" in document
+        assert "2026-09-18" in document
+        assert "zero crossings" in document
+        assert "candidate" in document.lower()
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate 50S.6G.1B.2D.4 first real-matrix evidence" in audit
+    assert "Candidate 50S.6G.1B.2D.4 real-matrix evidence" in architecture
+    assert "50S.6G.1B.2D.4 candidate real-matrix evidence" in roadmap
+    assert "Candidate first real-matrix evidence" in reference
+    assert "Candidate first real-matrix evidence ownership" in source_tree
+    assert "Candidate first real-matrix coordinate finding" in coordinates
+    assert "Candidate first real equivalence evidence" in guide
+    assert "Candidate first real-matrix evidence boundary" in instructions
+
+    for phrase in (
+        "0cad196ea850a26d7cb5a2b73e73d932f06b2ae1ba2e36d745a1c3f1b2beb26c",
+        "64b5b4f99ca09fc78cdabb4a487382425317bacf71075825d40b3f28d4adee72",
+        "2,455 reject, 101 indeterminate, and 4 retain",
+        "38,292.318 wall seconds",
+        "13,636.603 wall seconds",
+        "2.694 to 2.865",
+        "authorization is consumed",
+    ):
+        assert phrase in audit
+    assert "positive-crossing behavior remains covered by synthetic evidence" in audit
+    assert "no universal speed, capacity, memory, or hardware claim" in audit
