@@ -1444,3 +1444,7 @@ Candidate commit `b0b4432` was verified on 2026-09-18: 180 focused plugin-disabl
 ## Accepted 50S.6G.1B.2D.2 progress display
 
 Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18 after the recorded 180-test focused gate, 2647-test full suite, 167-test final documentation gate, and clean diff check. The accepted behavior remains parent-only and outside canonical evidence. Merge and renewed real-run authorization remain separate.
+
+## Renewed 50S.6G.1B.2D.3 one-run authority
+
+After the accepted progress display was merged at `9c4b808`, Fernando explicitly renewed authorization on 2026-09-18 for exactly one real matrix run. The bounded run retains the accepted 10-field, 15/60-second, two-route, one-warm-up plus three-measurement, 80-invocation maximum contract. Progress remains parent-only and noncanonical; no retry or resume is authorized.
