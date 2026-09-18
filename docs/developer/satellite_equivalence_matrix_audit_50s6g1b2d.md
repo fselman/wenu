@@ -597,4 +597,28 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+## Candidate parent-process matrix progress display
+
+Fernando requested a progress bar before the first real run. The authorized
+execution has not started. This candidate changes only parent-process terminal
+reporting: before each worker it displays the current field, route, warm-up or
+measured repetition, completed count, declared total, and integer percentage;
+after successful return it advances the completed count. Failure leaves the
+scientific operation fail-closed and prints a terminal failed state.
+
+The default accepted policy derives exactly 80 invocations from the frozen 10
+fields, two routes, one warm-up, and three measured repetitions. The display
+has no third-party dependency, is written to the parent standard-error stream,
+does not enter the worker request or response, and is excluded from canonical
+scientific evidence, digests, timing, and resource observations. It changes no
+fixture, route order, timeout, retry policy, subprocess isolation, result,
+selector, publication, or coordinate behavior.
+
+The closest existing protocol test is extended with an in-memory stream and
+the existing fake subprocess; no additional scientific route is run. The
+previously accepted one-run authorization remains unconsumed but is paused.
+The real specimen must not be accessed and the real run must not begin until
+this candidate is verified, accepted, merged, and the one-run authorization is
+explicitly renewed for the resulting integrated commit.
