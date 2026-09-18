@@ -2,6 +2,7 @@
 
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
+from io import StringIO
 import json
 from pathlib import Path
 import subprocess
@@ -512,11 +513,17 @@ def test_fresh_subprocess_executor_uses_canonical_protocol(tmp_path, monkeypatch
         return subprocess.CompletedProcess(command, 0, b"", b"")
 
     monkeypatch.setattr(subprocess, "run", fake_run)
-    result = FreshSubprocessMatrixExecutor(root)(
-        "exhaustive", query, 0, True
-    )
+    progress = StringIO()
+    result = FreshSubprocessMatrixExecutor(
+        root,
+        total_invocations=1,
+        progress_stream=progress,
+    )("exhaustive", query, 0, True)
     assert result.results == ()
     assert result.resource.field_id == query.field_of_view.field_id
+    output = progress.getvalue()
+    assert "0/1   0% field-00 exhaustive measured 1 running" in output
+    assert "1/1 100% field-00 exhaustive measured 1 complete" in output
 
 
 def test_fresh_subprocess_executor_timeout_is_fail_closed(tmp_path, monkeypatch):
