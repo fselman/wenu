@@ -1214,3 +1214,7 @@ canonical evidence, timing, route order, timeout, retries, science, or
 publication. Verification extends the existing fake protocol test and adds no
 scientific run. Require separate acceptance, merge, and renewed one-run
 authorization before accessing the real specimen.
+
+## Candidate matrix progress verification boundary
+
+Candidate commit `b0b4432` was verified on 2026-09-18 with 180 focused plugin-disabled tests passing in 5.44 seconds, the complete 2647-test plugin-disabled suite passing in 239.53 seconds, and a clean diff check. Do not treat this verification as acceptance, merge authority, or renewed real-run authorization. Do not access the accepted real specimen until the progress change is accepted, merged, and the one-run authorization is explicitly renewed.
