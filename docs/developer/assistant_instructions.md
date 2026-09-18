@@ -1218,3 +1218,7 @@ authorization before accessing the real specimen.
 ## Candidate matrix progress verification boundary
 
 Candidate commit `b0b4432` was verified on 2026-09-18 with 180 focused plugin-disabled tests passing in 5.44 seconds, the complete 2647-test plugin-disabled suite passing in 239.53 seconds, and a clean diff check. Do not treat this verification as acceptance, merge authority, or renewed real-run authorization. Do not access the accepted real specimen until the progress change is accepted, merged, and the one-run authorization is explicitly renewed.
+
+## Accepted matrix progress boundary
+
+Fernando scientifically and architecturally accepted the 50S.6G.1B.2D.2 progress display at `96b9ba0` on 2026-09-18. Do not infer merge authority or real-run authority from this acceptance. Keep the accepted real specimen untouched until Fernando separately requests the merge and then explicitly renews the one-run authorization.
