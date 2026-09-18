@@ -1350,3 +1350,7 @@ that fresh subprocess returns successfully.
 ## Candidate equivalence-run progress verification
 
 Candidate `b0b4432` passed 180 focused plugin-disabled tests in 5.44 seconds and the full 2647-test plugin-disabled suite in 239.53 seconds on 2026-09-18; the diff check was clean. The progress display remains parent-only and outside canonical evidence. The real specimen was not accessed, the run has not started, and renewed authorization remains pending.
+
+## Accepted equivalence-run progress display
+
+Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18 after the recorded focused, full-suite, final-documentation, and diff verification. The display remains parent-only and outside canonical evidence. The real specimen has not been accessed, the run has not started, and execution still requires post-merge renewed authorization.
