@@ -622,3 +622,7 @@ previously accepted one-run authorization remains unconsumed but is paused.
 The real specimen must not be accessed and the real run must not begin until
 this candidate is verified, accepted, merged, and the one-run authorization is
 explicitly renewed for the resulting integrated commit.
+
+## Candidate 50S.6G.1B.2D.2 verification record
+
+Fernando verified candidate commit `b0b4432` on macOS on 2026-09-18. The focused compile and gate completed with **180 plugin-disabled tests passing in 5.44 seconds**; the complete plugin-disabled suite completed with **2647 tests passing in 239.53 seconds**. `git diff --check 5aff265...HEAD` reported no errors and the working tree was clean. The coordinate-system guide was reviewed and remains current because this parent-process progress display changes no coordinate, scientific, worker-protocol, canonical-evidence, timing, or selection semantics. The accepted real specimen was not accessed and the authorized execution has not started. This is candidate verification evidence only; acceptance, merge, and renewed authorization remain separate decisions.
