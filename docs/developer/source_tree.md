@@ -2325,3 +2325,7 @@ Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026
 ## Candidate first real-matrix evidence ownership
 
 The external immutable report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258`, produced from `9d93113` on 2026-09-18, is candidate evidence outside the repository and package. The repository owns only the implementation and this provenance record. Exact route equality passed, but all fields had zero crossings; no repository data directory may absorb or silently substitute the external evidence.
+
+## Accepted first real-matrix evidence ownership
+
+Fernando scientifically and architecturally accepted external report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18. The repository records provenance and the zero-crossing limitation but does not own or package the external evidence. No new production owner, rerun authority, or parallel execution owner is implied.
