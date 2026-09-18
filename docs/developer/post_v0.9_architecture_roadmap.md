@@ -2717,4 +2717,13 @@ explicit offline command, and shortened fake-data test practice. This
 acceptance does not authorize accessing the accepted real specimen, executing
 the real matrix, publishing real evidence, making a performance claim, or
 advancing later delivery. Any real execution requires a separate explicit
-authorization.
+authorization.\n
+
+### 50S.6G.1B.2D.1 candidate first real execution
+
+The next proposed step is not more implementation. It is one separately
+authorized offline execution against the exact accepted 256-record medium,
+using one new empty external output root, the accepted 15/60-second fixture,
+at most 80 fresh subprocess invocations, the existing timeout, and no retry.
+The resulting external evidence requires independent acceptance before any
+performance claim or later 50S.6G delivery.
