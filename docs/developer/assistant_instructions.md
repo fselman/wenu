@@ -1138,4 +1138,43 @@ Fernando scientifically and architecturally accepted the fail-closed audit on
 fake data: exact receipt constraints, frozen fixture, production airmass
 certifier, fresh-subprocess protocol and worker, offline command, and tests.
 Do not access the accepted real specimen or execute the real matrix without a
-later separate explicit authorization.
+later separate explicit authorization.\n
+
+### Candidate production-path implementation boundary
+
+The candidate branch implements only the accepted fake-data production path:
+exact medium-receipt constraints, a digest-frozen ten-field La Ligua fixture,
+the production whole-interval airmass certifier, a canonical fresh-subprocess
+worker/executor, and the explicit offline `run-equivalence-matrix` developer
+command. Fernando directed on 2026-09-17 that fixture durations be reduced to
+15 and 60 seconds and that new tests avoid unnecessary repeated scientific
+route runs. Do not access the accepted real specimen or execute the real
+matrix under this candidate. Verification and separate scientific and
+architectural acceptance are still required.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.

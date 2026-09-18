@@ -157,6 +157,11 @@ class MatrixResourceObservation:
     cpu_seconds: float
     peak_python_bytes: int
     environment: dict
+    exit_status: int = 0
+    snapshot_sha256: str | None = None
+    request_sha256: str | None = None
+    result_sha256: str | None = None
+    evidence_sha256: str | None = None
     implementation: str = MATRIX_ISOLATION_IDENTITY
 
     def __post_init__(self):
@@ -186,6 +191,21 @@ class MatrixResourceObservation:
             raise ValueError("peak_python_bytes must be non-negative.")
         if not isinstance(self.environment, dict) or not self.environment:
             raise ValueError("environment must be a non-empty mapping.")
+        if isinstance(self.exit_status, bool) or not isinstance(
+            self.exit_status, int
+        ):
+            raise TypeError("exit_status must be an integer.")
+        if self.exit_status != 0:
+            raise ValueError("successful resource observations require exit_status 0.")
+        for name in (
+            "snapshot_sha256",
+            "request_sha256",
+            "result_sha256",
+            "evidence_sha256",
+        ):
+            value = getattr(self, name)
+            if value is not None:
+                object.__setattr__(self, name, _digest(value, name=name))
         if self.implementation != MATRIX_ISOLATION_IDENTITY:
             raise ValueError("resource observation isolation is unsupported.")
 
@@ -310,7 +330,11 @@ def _validate_partition(query, evidence, exhaustive_results):
             "every field must exercise rejection and exact solving."
         )
     crossing_ids = {
-        result.candidate.satellite.norad_catalog_id
+        (
+            result.candidate.satellite.norad_catalog_id
+            if hasattr(result, "candidate")
+            else result["candidate"]["satellite"]["norad_catalog_id"]
+        )
         for result in exhaustive_results
     }
     overlap = crossing_ids.intersection(rejected)

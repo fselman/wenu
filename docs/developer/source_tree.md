@@ -2232,4 +2232,43 @@ on 2026-09-17 after 163 plugin-disabled current-documentation tests passed in
 3.80 seconds at `054ac39`. Bounded fake-data additions for the fixture,
 certifier, subprocess worker, offline command, and tests are authorized next.
 No repository owner may access the accepted external specimen or execute the
-real matrix under this acceptance.
+real matrix under this acceptance.\n
+
+### Candidate production matrix execution ownership
+
+`src/wenu/satellites/crossing_matrix_execution.py` owns the explicit offline
+production fixture, exact accepted-medium receipt constraints, production
+whole-interval airmass adapter, canonical fresh-subprocess protocol and worker,
+and isolated executor. `tools/build_satellite_snapshot.py` owns only the
+explicit `run-equivalence-matrix` developer-command surface. The existing
+`crossing_matrix.py` remains the scientific equivalence and atomic-publication
+owner. No owner discovers, downloads, refreshes, packages, or implicitly
+selects the external specimen. The candidate uses only 15- and 60-second
+fixture intervals and remains fake-data-tested pending acceptance.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.

@@ -20,6 +20,12 @@ from wenu.satellites.snapshot_admission import (
     CELESTRAK_ACTIVE_20260917_POLICY_IDENTITY,
     ExternalSnapshotAdmissionPolicy,
 )
+from wenu.satellites.crossing_matrix import MatrixSpecimenIdentity
+from wenu.satellites.crossing_matrix_execution import (
+    ACCEPTED_MEDIUM_IDENTITY,
+    REAL_EXECUTION_ACKNOWLEDGEMENT,
+    run_production_equivalence_matrix,
+)
 from wenu.satellites.snapshot_evidence import select_medium_snapshot
 from wenu.satellites.snapshots import load_snapshot_directory
 
@@ -68,6 +74,17 @@ def _arguments():
         required=True,
         help="Explicit acknowledgement of the accepted parent canonical digest.",
     )
+    matrix = commands.add_parser("run-equivalence-matrix")
+    matrix.add_argument("--snapshot-directory", type=Path, required=True)
+    matrix.add_argument("--output-root", type=Path, required=True)
+    matrix.add_argument("--accept-medium-sha256", required=True)
+    matrix.add_argument("--accept-receipt-sha256", required=True)
+    matrix.add_argument("--accept-parent-sha256", required=True)
+    matrix.add_argument(
+        "--acknowledgement",
+        required=True,
+        help="Exact explicit acknowledgement required for a real offline run.",
+    )
     return parser.parse_args()
 
 
@@ -91,10 +108,34 @@ def _select_medium(args):
     )
 
 
+def _run_equivalence_matrix(args):
+    expected = ACCEPTED_MEDIUM_IDENTITY
+    supplied = MatrixSpecimenIdentity(
+        content_sha256=args.accept_medium_sha256,
+        selection_receipt_sha256=args.accept_receipt_sha256,
+        parent_content_sha256=args.accept_parent_sha256,
+        record_count=expected.record_count,
+    )
+    if supplied != expected:
+        raise ValueError("the supplied digests do not identify the accepted medium.")
+    if args.acknowledgement != REAL_EXECUTION_ACKNOWLEDGEMENT:
+        raise ValueError(
+            "--acknowledgement must contain the exact explicit offline-run phrase."
+        )
+    return run_production_equivalence_matrix(
+        args.snapshot_directory,
+        args.output_root,
+        specimen_identity=supplied,
+        acknowledgement=args.acknowledgement,
+    )
+
+
 def main():
     args = _arguments()
     if args.operation == "select-medium":
         result = _select_medium(args)
+    elif args.operation == "run-equivalence-matrix":
+        result = _run_equivalence_matrix(args)
     else:
         body = args.response.read_bytes()
         if args.operation == "freeze-policy":
