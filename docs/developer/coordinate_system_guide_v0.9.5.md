@@ -3767,3 +3767,7 @@ Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026
 ## Renewed real-run coordinate boundary
 
 The coordinate guide was reviewed after progress-display merge `9c4b808` and remains current. Fernando’s 2026-09-18 renewal authorizes exactly one bounded real matrix execution but no new coordinate operation, transformation, tolerance, frame, epoch, or scientific interpretation.
+
+## Accepted renewed real-run coordinate boundary
+
+Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after 169 documentation tests passed in 4.29 seconds and integrity checks were clean. The coordinate guide remains current and the accepted authorization introduces no coordinate or scientific-semantic change.
