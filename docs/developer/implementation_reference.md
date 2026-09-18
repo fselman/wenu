@@ -3026,4 +3026,14 @@ explicit offline command, and shortened fake-data test practice. This
 acceptance does not authorize accessing the accepted real specimen, executing
 the real matrix, publishing real evidence, making a performance claim, or
 advancing later delivery. Any real execution requires a separate explicit
-authorization.
+authorization.\n
+
+### Candidate first real run policy
+
+The accepted `run-equivalence-matrix` command is unchanged. Candidate
+50S.6G.1B.2D.1 proposes one invocation only, using the exact accepted medium,
+receipt and parent digests, exact acknowledgement, explicit absolute paths,
+the existing 3600-second per-worker timeout, and a new empty external output
+root with at least 2 GiB free. There is no automatic retry or resume. Success
+publishes one external content-addressed evidence directory whose acceptance
+is a separate review.
