@@ -1336,4 +1336,13 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate equivalence-run progress display
+
+The offline matrix command candidate displays a terminal bar with completed
+workers over the policy-derived total, integer percentage, field, route, and
+phase. Under the accepted default it advances from 0/80 to 80/80. The display
+is parent-only stderr text and is not scientific evidence. A running worker may
+leave the same line visible for a long time; completion advances only after
+that fresh subprocess returns successfully.
