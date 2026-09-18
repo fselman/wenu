@@ -6980,3 +6980,34 @@ def test_50s6g1b2d1_documents_single_real_execution_authorization():
     assert "Candidate first-real-execution coordinate boundary" in coordinate_guide
     assert "Candidate first real equivalence run" in guide
     assert "Candidate first-real-execution authorization boundary" in instructions
+
+
+def test_50s6g1b2d2_documents_parent_only_progress_boundary():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate parent-process matrix progress display",
+        "The authorized execution has not started",
+        "exactly 80 invocations",
+        "excluded from canonical scientific evidence",
+        "The real specimen must not be accessed",
+    ):
+        assert phrase in audit
+    assert "Candidate matrix execution progress display" in architecture
+    assert "Candidate matrix progress reporting" in reference
+    assert "50S.6G.1B.2D.2 candidate progress display" in roadmap
+    assert "Candidate matrix progress ownership" in source_tree
+    assert "Candidate progress-display coordinate review" in coordinate_guide
+    assert "Candidate equivalence-run progress display" in guide
+    assert "Candidate matrix progress boundary" in instructions
