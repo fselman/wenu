@@ -475,4 +475,110 @@ explicit offline command, and shortened fake-data test practice. This
 acceptance does not authorize accessing the accepted real specimen, executing
 the real matrix, publishing real evidence, making a performance claim, or
 advancing later delivery. Any real execution requires a separate explicit
-authorization.
+authorization.\n
+
+## Candidate 50S.6G.1B.2D.1 first-real-execution authorization
+
+**Status:** Candidate documentation-only authorization audit.
+
+The accepted production path at merge commit `e1cdec9` is complete. No
+further runtime implementation is proposed before the first real execution.
+This audit does not read, stat, discover, hash, copy, propagate, or otherwise
+access the accepted external specimen and does not execute a matrix worker.
+
+Acceptance of this audit would authorize exactly one operator-started offline
+run against the already accepted 256-record medium specimen. It would not
+authorize a retry, a second run, another specimen, provider access, refresh,
+substitution, packaging, concurrency, cache reuse, changed fixture, changed
+policy, or downstream delivery.
+
+### Frozen identities and command
+
+The run must use only:
+
+- medium canonical SHA-256
+  `2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b`;
+- selection-receipt SHA-256
+  `1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895`;
+- parent canonical SHA-256
+  `e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347`;
+- acknowledgement
+  `I_ACKNOWLEDGE_THE_EXPLICIT_OFFLINE_REAL_MATRIX_RUN`;
+- the accepted digest-frozen ten-field La Ligua fixture, containing only
+  15- and 60-second intervals;
+- one explicit absolute snapshot directory and one distinct explicit absolute
+  output root supplied by Fernando after audit acceptance.
+
+The only authorized command is the installed repository developer command:
+
+```bash
+python tools/build_satellite_snapshot.py run-equivalence-matrix \
+  --snapshot-directory <EXACT-ACCEPTED-MEDIUM-DIRECTORY> \
+  --output-root <NEW-EMPTY-EXTERNAL-OUTPUT-ROOT> \
+  --accept-medium-sha256 2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b \
+  --accept-receipt-sha256 1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895 \
+  --accept-parent-sha256 e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347 \
+  --acknowledgement I_ACKNOWLEDGE_THE_EXPLICIT_OFFLINE_REAL_MATRIX_RUN
+```
+
+The placeholders are audit notation, not commands for Fernando to compose.
+After acceptance, the assistant must resolve both exact absolute Mac paths and
+provide the complete copy-and-paste-ready command. Neither path may be inside
+the Git repository, a package directory, or an existing evidence directory.
+The output root must be new and empty.
+
+### Operational preflight and limits
+
+Before the one authorized command, verify without changing the specimen:
+
+1. the Mac is on the integrated audit branch at `e1cdec9` or an accepted
+   documentation-only descendant, with a clean working tree;
+2. the explicit snapshot and output paths are absolute, distinct, external to
+   the repository, non-symlink paths, and the output root is new and empty;
+3. at least 2 GiB are free on the output filesystem;
+4. no prior matrix process is running;
+5. automatic network access remains absent and no provider credential,
+   response, or refresh path is supplied.
+
+The accepted policy schedules 10 fields, two routes, one warm-up and three
+measured repetitions: at most 80 fresh subprocess invocations. The existing
+worker timeout remains 3600 seconds per subprocess. There is no automatic
+retry and no outer performance deadline. Fernando may interrupt the run; an
+interrupted or failed run is not evidence and authorizes no restart. A retry
+requires a new explicit authorization after the failure is inspected.
+
+### Fail-closed execution and publication
+
+Any identity, receipt, manifest, airmass, propagation, transformation,
+selector, convergence, subprocess, timeout, equality, digest, staging, or
+publication failure stops the run. Do not weaken the command, change a
+timeout, omit a field, reduce repetitions, switch routes, or resume from
+partial state. A failure directory or console output is diagnostic only.
+
+Success means exactly one new content-addressed directory beneath the empty
+output root. Do not move, rename, edit, compress, upload, publish, or place it
+in the repository. Do not delete the accepted specimen or successful evidence.
+
+### Independent evidence review
+
+A successful command does not itself accept the evidence. Before any speed,
+capacity, delivery, or scientific conclusion, a separate review must verify:
+
+- the complete manifest and every bound file digest;
+- exact ordered exhaustive/accelerated Python and canonical-result equality;
+- complete selector partitions, zero fallback, and no rejected exhaustive
+  crossing;
+- the accepted snapshot, receipt, request-fixture, implementation, environment,
+  and isolation identities;
+- all raw resource observations and the absence of path leakage;
+- the explicit non-claim that timings and allocations are descriptive only.
+
+The review may accept or reject the exact external evidence directory. It may
+not generalize performance, authorize another run, or begin later 50S.6G
+delivery without a separately accepted milestone.
+
+Acceptance criteria for this audit are therefore narrow: one exact offline
+run, one accepted specimen, one new empty output root, no retry, fail-closed
+publication, and separate evidence acceptance. Until Fernando explicitly
+accepts this audit, real specimen access and real matrix execution remain
+unauthorized.
