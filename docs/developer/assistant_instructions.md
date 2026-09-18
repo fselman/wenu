@@ -1203,4 +1203,14 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix progress boundary
+
+The first real run remains paused. The candidate parent-process progress bar
+reports completed worker count over the policy-derived total plus field, route,
+and phase. It writes only to parent stderr and must not change worker protocol,
+canonical evidence, timing, route order, timeout, retries, science, or
+publication. Verification extends the existing fake protocol test and adds no
+scientific run. Require separate acceptance, merge, and renewed one-run
+authorization before accessing the real specimen.
