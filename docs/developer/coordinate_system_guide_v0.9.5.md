@@ -3763,3 +3763,7 @@ The coordinate guide was reviewed for candidate `b0b4432` on 2026-09-18 and rema
 ## Accepted progress-display coordinate review
 
 Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18. The reviewed coordinate guide remains current: the accepted parent-process display introduces no coordinate operation, transformation, tolerance, or scientific-semantic change.
+
+## Renewed real-run coordinate boundary
+
+The coordinate guide was reviewed after progress-display merge `9c4b808` and remains current. Fernando’s 2026-09-18 renewal authorizes exactly one bounded real matrix execution but no new coordinate operation, transformation, tolerance, frame, epoch, or scientific interpretation.
