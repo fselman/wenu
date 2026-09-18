@@ -2296,4 +2296,12 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix progress ownership
+
+`crossing_matrix_execution.py` owns the small parent-terminal progress
+adapter beside its isolated executor. No new module, package, dependency, or
+public export is introduced. The existing crossing-matrix test extends its
+fake subprocess protocol case; no new test file or repeated scientific route
+is justified.
