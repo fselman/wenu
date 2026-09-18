@@ -3074,3 +3074,7 @@ Fernando scientifically and architecturally accepted the parent-process progress
 ## Renewed single real-run contract
 
 Following progress-display merge `9c4b808`, Fernando explicitly renewed authorization on 2026-09-18 for exactly one operator-started real matrix run. The accepted invocation contract, specimen identities, 10-field fixture, 15/60-second intervals, two routes, warm-up and repetition counts, 80-invocation ceiling, worker timeout, new-output-root rule, and no-retry/no-resume policy remain unchanged.
+
+## Accepted renewed real-run contract
+
+Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after the 169-test documentation gate and clean repository checks. The accepted invocation contract remains inactive until this record is merged and external preflight succeeds.
