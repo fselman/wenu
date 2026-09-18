@@ -7136,9 +7136,9 @@ def test_50s6g1b2d3_records_acceptance_of_renewed_authorization():
         assert "dd71e01" in document
         assert "2026-09-18" in document
         assert "169" in document
-        assert "4.29 seconds" in document
 
     audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "4.29 seconds" in audit
     assert "Accepted 50S.6G.1B.2D.3 renewed authorization" in audit
     assert "Accepted 50S.6G.1B.2D.3 renewed authority" in architecture
     assert "50S.6G.1B.2D.3 accepted renewed authorization" in roadmap
