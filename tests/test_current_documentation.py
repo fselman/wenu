@@ -7115,3 +7115,38 @@ def test_50s6g1b2d3_records_renewed_single_real_run_authorization():
     assert "There is no automatic retry or resume" in audit
     assert "consumes this authorization" in audit
     assert "candidate evidence requiring independent review" in audit
+
+
+def test_50s6g1b2d3_records_acceptance_of_renewed_authorization():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "dd71e01" in document
+        assert "2026-09-18" in document
+        assert "169" in document
+        assert "4.29 seconds" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted 50S.6G.1B.2D.3 renewed authorization" in audit
+    assert "Accepted 50S.6G.1B.2D.3 renewed authority" in architecture
+    assert "50S.6G.1B.2D.3 accepted renewed authorization" in roadmap
+    assert "Accepted renewed real-run contract" in reference
+    assert "Accepted renewed real-run ownership" in source_tree
+    assert "Accepted renewed real-run coordinate boundary" in coordinates
+    assert "Accepted renewed single real run" in guide
+    assert "Accepted renewed one-run authority" in instructions
+    assert "run remains unstarted and unconsumed" in audit
+    assert "only after this record is merged" in audit
+    assert "external preflight" in audit
