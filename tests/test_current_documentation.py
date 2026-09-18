@@ -7011,3 +7011,40 @@ def test_50s6g1b2d2_documents_parent_only_progress_boundary():
     assert "Candidate progress-display coordinate review" in coordinate_guide
     assert "Candidate equivalence-run progress display" in guide
     assert "Candidate matrix progress boundary" in instructions
+
+
+def test_50s6g1b2d2_records_candidate_progress_verification():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "b0b4432" in document
+        assert "2026-09-18" in document
+        assert "180" in document
+        assert "5.44 seconds" in document
+        assert "2647" in document
+        assert "239.53 seconds" in document
+        assert "clean diff check" in document or "diff check was clean" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate 50S.6G.1B.2D.2 verification record" in audit
+    assert "Candidate 50S.6G.1B.2D.2 progress verification" in architecture
+    assert "50S.6G.1B.2D.2 candidate verification state" in roadmap
+    assert "Candidate matrix progress verification" in reference
+    assert "Candidate matrix progress verification ownership" in source_tree
+    assert "Candidate progress-display verification review" in coordinates
+    assert "Candidate equivalence-run progress verification" in guide
+    assert "Candidate matrix progress verification boundary" in instructions
+    assert "authorized execution has not started" in audit
+    assert "renewed authorization remain separate decisions" in audit
+    assert "real specimen was not accessed" in guide
