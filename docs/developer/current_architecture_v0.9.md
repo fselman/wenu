@@ -1427,4 +1427,12 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix execution progress display
+
+`MatrixProgressBar` is a parent-process terminal concern inside
+`crossing_matrix_execution.py`. The production wrapper derives its total from
+field count, two routes, warm-up count, and measured repetitions; the accepted
+default is 80. Progress is not part of the subprocess protocol, canonical
+evidence, resource observations, scientific result, or publication identity.
