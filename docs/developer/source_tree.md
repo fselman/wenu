@@ -2271,4 +2271,13 @@ explicit offline command, and shortened fake-data test practice. This
 acceptance does not authorize accessing the accepted real specimen, executing
 the real matrix, publishing real evidence, making a performance claim, or
 advancing later delivery. Any real execution requires a separate explicit
-authorization.
+authorization.\n
+
+### Candidate first-real-execution ownership
+
+No new source owner is proposed. `crossing_matrix_execution.py` remains the
+fixture, receipt, airmass, worker-protocol, and isolated-executor owner;
+`crossing_matrix.py` remains the equivalence and atomic-publication owner;
+and `tools/build_satellite_snapshot.py` remains the explicit offline command
+surface. Candidate 50S.6G.1B.2D.1 authorizes no code change, alternate owner,
+network adapter, discovery path, retry owner, or evidence consumer.
