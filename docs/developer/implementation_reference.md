@@ -3052,4 +3052,13 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix progress reporting
+
+When the production wrapper constructs its default
+`FreshSubprocessMatrixExecutor`, it supplies a policy-derived invocation total
+to `MatrixProgressBar`. The bar reports field, exhaustive/accelerated route,
+warm-up or measured repetition, completed count, and percentage on parent
+stderr. Injected executors remain quiet by default. Progress changes no worker
+input/output, timeout, result, evidence, or digest.
