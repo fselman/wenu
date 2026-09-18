@@ -2742,4 +2742,12 @@ per-subprocess timeout, and no retry or resume. It does not itself start the
 run. The exact absolute Mac paths must be resolved before the command is
 issued. Failure or interruption authorizes no restart. Successful evidence
 remains external and unaccepted pending an independent review; no performance
-claim or later 50S.6G delivery is authorized.
+claim or later 50S.6G delivery is authorized.\n
+
+### 50S.6G.1B.2D.2 candidate progress display
+
+Before the authorized first real execution, add only parent-process progress
+visibility. Derive the total from the existing matrix policy, reuse the
+accepted worker sequence, and exclude display text from evidence and timing.
+Extend one existing fake protocol test; add no scientific run. The real run is
+paused pending acceptance, merge, and renewed authorization.
