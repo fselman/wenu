@@ -2751,3 +2751,7 @@ visibility. Derive the total from the existing matrix policy, reuse the
 accepted worker sequence, and exclude display text from evidence and timing.
 Extend one existing fake protocol test; add no scientific run. The real run is
 paused pending acceptance, merge, and renewed authorization.
+
+## 50S.6G.1B.2D.2 candidate verification state
+
+Candidate commit `b0b4432` passed 180 focused plugin-disabled tests in 5.44 seconds and the complete 2647-test plugin-disabled suite in 239.53 seconds on 2026-09-18; its diff check was clean. This verifies the bounded progress-display implementation but does not accept or merge it and does not renew authority for the real run.
