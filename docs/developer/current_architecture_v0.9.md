@@ -1402,4 +1402,13 @@ explicit offline command, and shortened fake-data test practice. This
 acceptance does not authorize accessing the accepted real specimen, executing
 the real matrix, publishing real evidence, making a performance claim, or
 advancing later delivery. Any real execution requires a separate explicit
-authorization.
+authorization.\n
+
+### Candidate first-real-execution authorization
+
+No architectural or runtime change is proposed after `e1cdec9`. The candidate
+50S.6G.1B.2D.1 audit would authorize one use of the accepted explicit offline
+command against the exact accepted medium, with one new empty external output
+root and no retry. The matrix remains 10 fields, two routes, one warm-up and
+three measured repetitions, for at most 80 fresh subprocess invocations.
+Evidence remains external and requires independent acceptance.
