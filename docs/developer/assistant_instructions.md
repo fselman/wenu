@@ -1177,4 +1177,14 @@ explicit offline command, and shortened fake-data test practice. This
 acceptance does not authorize accessing the accepted real specimen, executing
 the real matrix, publishing real evidence, making a performance claim, or
 advancing later delivery. Any real execution requires a separate explicit
-authorization.
+authorization.\n
+
+### Candidate first-real-execution authorization boundary
+
+Read the candidate 50S.6G.1B.2D.1 section in
+`satellite_equivalence_matrix_audit_50s6g1b2d.md`. It proposes exactly one
+offline run of the accepted 256-record specimen into one new empty external
+output root, with the three accepted digests, exact acknowledgement, accepted
+15/60-second fixture, existing 3600-second subprocess timeout, no retry, and
+separate evidence review. This documentation candidate authorizes no specimen
+access or execution before Fernando's explicit acceptance.
