@@ -1226,3 +1226,7 @@ Fernando scientifically and architecturally accepted the 50S.6G.1B.2D.2 progress
 ## Renewed one-run matrix authority
 
 Fernando explicitly renewed authorization on 2026-09-18 for exactly one real matrix run after progress-display merge `9c4b808`. Do not access the accepted specimen or start the command until this renewal record is merged and the external preflight is repeated. Then issue exactly one operator-started command using the accepted specimen, a new empty output root, 10 fields, only 15/60-second intervals, both routes, one warm-up plus three measured repetitions, at most 80 subprocess invocations, and no retry or resume. Failure or interruption consumes the authority. Success remains candidate evidence requiring independent review.
+
+## Accepted renewed one-run authority
+
+Fernando scientifically and architecturally accepted the renewed authorization record at `dd71e01` on 2026-09-18 after 169 documentation tests passed in 4.29 seconds and repository checks were clean. Do not start or consume the run before this record is merged and the external preflight is repeated. After those conditions pass, issue exactly one command and do not retry or resume it.
