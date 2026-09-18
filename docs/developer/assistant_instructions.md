@@ -1230,3 +1230,11 @@ Fernando explicitly renewed authorization on 2026-09-18 for exactly one real mat
 ## Accepted renewed one-run authority
 
 Fernando scientifically and architecturally accepted the renewed authorization record at `dd71e01` on 2026-09-18 after 169 documentation tests passed in 4.29 seconds and repository checks were clean. Do not start or consume the run before this record is merged and the external preflight is repeated. After those conditions pass, issue exactly one command and do not retry or resume it.
+
+## Candidate first real-matrix evidence boundary
+
+The one authorized run was consumed successfully on 2026-09-18 at `9d93113`, producing candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258`. Do not rerun, resume, refresh, or substitute the external evidence. Exact empty-result equivalence and partition integrity passed across 10 fields and 60 measured observations, but all fields had zero crossings; do not claim positive real-crossing validation or universal performance. The candidate requires Fernando's separate scientific and architectural acceptance.
+
+## Accepted first real-matrix evidence boundary
+
+Fernando scientifically and architecturally accepted the first real-matrix report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18. Preserve the explicit finding: exact empty-result equivalence and partition integrity passed, while all 10 fields had zero crossings. Do not claim positive real-crossing validation or universal performance, and do not rerun the matrix. Serial closure review, output-neutral refactoring, or parallelization requires a new bounded audit and explicit authorization.

@@ -1452,3 +1452,11 @@ After the accepted progress display was merged at `9c4b808`, Fernando explicitly
 ## Accepted 50S.6G.1B.2D.3 renewed authority
 
 Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after 169 plugin-disabled documentation tests passed in 4.29 seconds and repository checks were clean. The single bounded run remains unstarted and may proceed only after this record is merged and external preflight is repeated.
+
+## Candidate 50S.6G.1B.2D.4 real-matrix evidence
+
+The one authorized run from `9d93113` produced candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` on 2026-09-18. Independent review found exact canonical equality across 10 fields and 60 measured observations, with no fallback or rejected exhaustive crossing. All real fields had zero crossings, so the result establishes empty-result equivalence and partition integrity only; positive-crossing evidence remains synthetic. Timing is descriptive for this run and hardware, not an architectural performance claim.
+
+## Accepted 50S.6G.1B.2D.4 real-matrix evidence
+
+Fernando scientifically and architecturally accepted report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at candidate commit `186e255` on 2026-09-18 after 171 documentation tests passed in 4.46 seconds. The accepted finding is limited to deterministic empty-result equivalence and conservative partition integrity; all 10 real fields had zero crossings. No second run, universal performance claim, refactor, or parallel implementation is authorized.

@@ -1362,3 +1362,11 @@ After progress-display merge `9c4b808`, Fernando explicitly renewed authorizatio
 ## Accepted renewed single real run
 
 Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after 169 plugin-disabled documentation tests passed in 4.29 seconds and repository checks were clean. The run remains unstarted and unconsumed; merge and repeated external preflight are required before execution.
+
+## Candidate first real equivalence evidence
+
+The consumed one-run authorization produced candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` from `9d93113` on 2026-09-18. Ten fields, both 15/60-second intervals, 60 measured observations, all decision classes, and exact route equality passed with no fallback. All fields had zero crossings, so positive crossing remains synthetic-only evidence. The observed acceleration is descriptive for the exact specimen and 2017 Intel Mac, not a general speed claim.
+
+## Accepted first real equivalence evidence
+
+Fernando scientifically and architecturally accepted report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18 after 171 documentation tests passed in 4.46 seconds. This closes the first real run as exact empty-result equivalence and conservative partition evidence. All fields had zero crossings; observed timing is descriptive only, and no rerun or parallelization is authorized.

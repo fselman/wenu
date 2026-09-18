@@ -2767,3 +2767,11 @@ Fernando explicitly renewed authorization on 2026-09-18 for exactly one real mat
 ## 50S.6G.1B.2D.3 accepted renewed authorization
 
 Fernando scientifically and architecturally accepted the renewed single-run record at `dd71e01` on 2026-09-18, with 169 documentation tests passing in 4.29 seconds and clean integrity checks. Merge and repeated external preflight remain prerequisites to starting the one authorized run.
+
+## 50S.6G.1B.2D.4 candidate real-matrix evidence
+
+The consumed single run from `9d93113` produced candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` on 2026-09-18. Ten fields and 60 measured observations passed exact equivalence with zero fallback. All fields had zero crossings; record that limitation explicitly before any closure decision. No retry, second run, optimization, or universal performance claim is authorized.
+
+## 50S.6G.1B.2D.4 accepted first real-matrix evidence
+
+Fernando scientifically and architecturally accepted candidate `186e255` and report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` on 2026-09-18. The closure establishes exact empty-result equivalence and partition integrity, explicitly not positive real-crossing validation because every field had zero crossings. Further serial closure review, refactoring, parallelization, or another real run requires separate authorization.
