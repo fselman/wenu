@@ -1346,3 +1346,7 @@ phase. Under the accepted default it advances from 0/80 to 80/80. The display
 is parent-only stderr text and is not scientific evidence. A running worker may
 leave the same line visible for a long time; completion advances only after
 that fresh subprocess returns successfully.
+
+## Candidate equivalence-run progress verification
+
+Candidate `b0b4432` passed 180 focused plugin-disabled tests in 5.44 seconds and the full 2647-test plugin-disabled suite in 239.53 seconds on 2026-09-18; the diff check was clean. The progress display remains parent-only and outside canonical evidence. The real specimen was not accessed, the run has not started, and renewed authorization remains pending.
