@@ -3078,3 +3078,7 @@ Following progress-display merge `9c4b808`, Fernando explicitly renewed authoriz
 ## Accepted renewed real-run contract
 
 Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after the 169-test documentation gate and clean repository checks. The accepted invocation contract remains inactive until this record is merged and external preflight succeeds.
+
+## Candidate first real-matrix evidence
+
+Report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` records the successful single run from `9d93113` on 2026-09-18: 10 fields, 60 measured observations, exact exhaustive/accelerated canonical equality, zero fallback, and zero rejected exhaustive crossings. Decision totals were 2,455 reject, 101 indeterminate, and 4 retain. All fields had zero crossings, so positive real-crossing behavior was not exercised. Resource observations are descriptive only.
