@@ -1358,3 +1358,7 @@ Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026
 ## Renewed single real equivalence run
 
 After progress-display merge `9c4b808`, Fernando explicitly renewed authorization on 2026-09-18 for exactly one real matrix run. It must use the accepted immutable specimen, exact fixture and 10 fields, only 15/60-second intervals, both routes, one warm-up and three measurements, at most 80 fresh subprocesses, a new empty external output root, and no retry or resume. Progress is operational stderr only; successful artifacts remain unaccepted candidate evidence.
+
+## Accepted renewed single real run
+
+Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after 169 plugin-disabled documentation tests passed in 4.29 seconds and repository checks were clean. The run remains unstarted and unconsumed; merge and repeated external preflight are required before execution.
