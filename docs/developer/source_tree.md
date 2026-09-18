@@ -2313,3 +2313,7 @@ The 50S.6G.1B.2D.2 changes at `b0b4432` passed 180 focused plugin-disabled tests
 ## Accepted matrix progress ownership
 
 Fernando scientifically and architecturally accepted the 50S.6G.1B.2D.2 ownership at `96b9ba0` on 2026-09-18. The accepted display remains in `crossing_matrix_execution.py`; no new production module or data owner was introduced. Merge and renewed execution authority remain separate.
+
+## Renewed real-run ownership
+
+Fernando explicitly renewed exactly one real matrix run on 2026-09-18 after merge `9c4b808`. `crossing_matrix_execution.py` continues to own parent orchestration and progress; workers own route execution; the external output root owns candidate evidence. No repository or package directory owns the real specimen or generated evidence.
