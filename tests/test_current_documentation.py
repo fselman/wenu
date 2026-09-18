@@ -7047,3 +7047,36 @@ def test_50s6g1b2d2_records_candidate_progress_verification():
     assert "authorized execution has not started" in audit
     assert "renewed authorization remain separate decisions" in audit
     assert "real specimen was not accessed" in guide
+
+
+def test_50s6g1b2d2_records_progress_display_acceptance():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "96b9ba0" in document
+        assert "2026-09-18" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted 50S.6G.1B.2D.2 progress-display closure" in audit
+    assert "Accepted 50S.6G.1B.2D.2 progress display" in architecture
+    assert "50S.6G.1B.2D.2 accepted progress-display state" in roadmap
+    assert "Accepted matrix progress display" in reference
+    assert "Accepted matrix progress ownership" in source_tree
+    assert "Accepted progress-display coordinate review" in coordinates
+    assert "Accepted equivalence-run progress display" in guide
+    assert "Accepted matrix progress boundary" in instructions
+    assert "does not merge the feature branch" in audit
+    assert "does not itself authorize execution" in reference
+    assert "post-merge renewed authorization" in guide
