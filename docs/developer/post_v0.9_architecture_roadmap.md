@@ -2759,3 +2759,11 @@ Candidate commit `b0b4432` passed 180 focused plugin-disabled tests in 5.44 seco
 ## 50S.6G.1B.2D.2 accepted progress-display state
 
 Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18 with the recorded 180 focused, 2647 full-suite, and 167 final-documentation plugin-disabled test results and clean diff check. The next actions are a separately requested merge and, only afterward, explicit renewal of the single real-run authorization.
+
+## 50S.6G.1B.2D.3 renewed single-run authorization
+
+Fernando explicitly renewed authorization on 2026-09-18 for exactly one real matrix run after progress-display merge `9c4b808`. Once this record is merged, only that bounded run may proceed. Any failure, interruption, or pre-existing output root consumes the authority; successful output remains candidate evidence pending independent review.
+
+## 50S.6G.1B.2D.3 accepted renewed authorization
+
+Fernando scientifically and architecturally accepted the renewed single-run record at `dd71e01` on 2026-09-18, with 169 documentation tests passing in 4.29 seconds and clean integrity checks. Merge and repeated external preflight remain prerequisites to starting the one authorized run.
