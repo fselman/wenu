@@ -116,6 +116,14 @@ def _manifest_document(manifest):
     }
 
 
+def _snapshot_document(snapshot):
+    result = _manifest_document(snapshot.manifest)
+    epochs = tuple(record.epoch_utc for record in snapshot.records)
+    result["minimum_element_epoch"] = min(epochs)
+    result["maximum_element_epoch"] = max(epochs)
+    return result
+
+
 def _policy_document(policy, field_count):
     return {
         "admitted_snapshot_ids": list(policy.admitted_snapshot_ids),
@@ -184,6 +192,7 @@ def _crossing_document(crossing, acceleration):
         "field_id": crossing.candidate.field_of_view.field_id,
         "illumination": None,
         "international_designator": identity.international_designator,
+        "classification": identity.classification,
         "norad_catalog_id": identity.norad_catalog_id,
         "object_name": identity.object_name,
         "orbit_solution_id": crossing.candidate.orbit_solution_id,
@@ -338,6 +347,8 @@ def _semantic_validation(document):
     if len(set(field_ids)) != len(field_ids):
         raise ValueError("field identifiers must be unique.")
     for field in fields:
+        _utc(field["interval"]["start_utc"], name="interval start")
+        _utc(field["interval"]["stop_utc"], name="interval stop")
         if field["field_of_view"]["field_id"] != field["field_id"]:
             raise ValueError("field identity does not match field_of_view.")
         if field["airmass_admission"]["field_id"] != field["field_id"]:
@@ -348,6 +359,14 @@ def _semantic_validation(document):
         stop = field["interval"]["stop_utc"]
         ordered = []
         visits = set()
+        identities = {}
+        acceleration = field["acceleration"]
+        partition = (
+            acceleration["rejected_norad_catalog_ids"]
+            + acceleration["exact_solver_norad_catalog_ids"]
+        )
+        if len(partition) != snapshot["record_count"] or len(set(partition)) != len(partition):
+            raise ValueError("acceleration evidence does not partition the snapshot.")
         for crossing in field["crossings"]:
             if crossing["field_id"] != field["field_id"]:
                 raise ValueError("crossing belongs to another field.")
@@ -361,6 +380,13 @@ def _semantic_validation(document):
             entry = crossing["entry_instant"]
             closest = crossing["closest_approach_instant"]
             exit_ = crossing["exit_instant"]
+            for name, instant in (
+                ("element epoch", crossing["element_epoch"]),
+                ("entry instant", entry),
+                ("closest approach instant", closest),
+                ("exit instant", exit_),
+            ):
+                _utc(instant, name=name)
             if not start <= entry <= closest <= exit_ <= stop:
                 raise ValueError("crossing instants violate interval ordering.")
             if crossing["closest_approach_deg"] > field["field_of_view"]["angular_radius_deg"]:
@@ -370,6 +396,16 @@ def _semantic_validation(document):
                 raise ValueError("duplicate connected crossing visit.")
             visits.add(key)
             ordered.append(key)
+            identity = (
+                crossing["object_name"],
+                crossing["international_designator"],
+                crossing["classification"],
+                crossing["orbit_solution_id"],
+                crossing["element_epoch"],
+            )
+            previous = identities.setdefault(crossing["norad_catalog_id"], identity)
+            if previous != identity:
+                raise ValueError("one NORAD identity has inconsistent element identity.")
         if ordered != sorted(ordered):
             raise ValueError("crossings must be ordered by NORAD identifier and entry.")
     if not isinstance(observer, dict):
@@ -486,7 +522,7 @@ class ExactSatelliteCrossingReport:
             "product": EXACT_REPORT_PRODUCT,
             "schema_version": EXACT_REPORT_SCHEMA_VERSION,
             "scientific_status": EXACT_REPORT_STATUS,
-            "snapshot": _manifest_document(snapshot.manifest),
+            "snapshot": _snapshot_document(snapshot),
         }
         document["report_identity_sha256"] = sha256(
             _canonical(document).encode("utf-8")
