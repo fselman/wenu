@@ -3305,3 +3305,9 @@ The chart path would install accepted evidence-only layers and emit bounded prov
 ## Accepted 50S.6G.3B implementation authorization
 
 After acceptance at `ef58180`, implementation may add only `SatelliteExactTrackDisplayRequest`, the default-empty `ChartRequest.satellite_exact_tracks` tuple, bounded admission/provenance/lifecycle composition, existing-owner appearance integration, focused tests, and required specimens. The chart route must consume accepted evidence and perform no orbital or crossing science.
+
+## Candidate 50S.6G.3B executable API
+
+SatelliteExactTrackDisplayRequest is a frozen value containing one accepted ExactLocalSatelliteTrack and boolean draw_path, draw_events, and label_events controls. ChartRequest.satellite_exact_tracks is an ordered default-empty tuple with duplicate-identity, family, frame, observer-policy, and reference-instant admission.
+
+configure_chart_request_satellite_tracks() installs only requested evidence views, while ChartRequestBuild records and removes those layers. satellite_exact_track_provenance() and chart_request_provenance_parameters() replace recursive evidence serialization with ordered bounded summaries. These APIs remain candidate pending complete verification and acceptance.
