@@ -3,7 +3,6 @@
 from dataclasses import FrozenInstanceError, replace
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
-from io import StringIO
 import json
 
 from astropy.io import ascii
@@ -349,7 +348,7 @@ def test_ecsv_declares_fixed_metadata_units_and_explicit_masks():
     assert "wenu_tabular_schema_version: 1" in encoded
     assert "report_identity_sha256:" in encoded
     assert "deg / s" in encoded
-    table = ascii.read(StringIO(encoded), format="ecsv")
+    table = ascii.read(encoded, format="ecsv")
     assert np.ma.is_masked(table["field_ordinal"][0])
     assert not np.ma.is_masked(table["field_ordinal"][1])
 
