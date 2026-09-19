@@ -3158,3 +3158,16 @@ byte-identical canonical round trips.
 This candidate API performs no scientific calculation and exposes no path,
 overwrite, file-writing, CLI, ECSV, VOTable, track, chart, or future-science
 operation. Acceptance remains pending.
+
+
+## Accepted 50S.6G.2A exact-report API
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+The candidate API documented above is accepted within its bounded exclusions.
+No file, CLI, ECSV/VOTable, track, chart, illumination, brightness, detector,
+provider, scheduling, or execution API is implied.
