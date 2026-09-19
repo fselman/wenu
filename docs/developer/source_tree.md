@@ -2400,3 +2400,16 @@ scientific products and failure contracts.
 No ownership moves. Existing crossing, coordinate, snapshot, acceleration,
 batch, presentation, rendering, and export owners remain unchanged. Candidate
 acceptance is pending.
+
+
+## Accepted 50S.6G.2A implementation ownership
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+The dedicated module, packaged schema, and stable-responsibility test file own
+the accepted boundary. No other owner moves, and SatChecker sampled-candidate
+presentation remains scientifically separate.
