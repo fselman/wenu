@@ -880,7 +880,11 @@ added, the same 15 tests passed in 2.31 seconds at `f8d2e51`. The immediate
 satellite boundary gate then passed 99 tests in 119.54 seconds.
 
 A later decoder-isolation refinement loads the packaged schema once so each
-decode/re-encode operation performs no filesystem access. That current state
-still requires focused, documentation, integrity, and complete-suite
-verification before acceptance. No later 50S.6G work or new scientific
-execution is authorized.
+decode/re-encode operation performs no filesystem access. At executable commit
+`a65e5ac`, the combined focused and documentation gate passed 195 tests in
+5.46 seconds; `git diff --check 378d2dd...HEAD` passed; and the complete
+plugin-disabled suite passed 2,676 tests in 234.08 seconds. The working tree
+was clean and synchronized.
+
+The candidate remains pending Fernando's scientific and architectural
+acceptance. No later 50S.6G work or new scientific execution is authorized.
