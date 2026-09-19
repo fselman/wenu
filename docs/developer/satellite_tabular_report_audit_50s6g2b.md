@@ -115,9 +115,10 @@ different value.
 The public candidate boundary is pure bytes:
 `report.to_votable() -> bytes` and
 `ExactSatelliteCrossingReport.from_votable(xml_or_utf8_bytes)`.
-Text input may be accepted only after strict UTF-8 encoding. The accepted
-writer uses VOTable 1.5 and `BINARY2`, whose null flags can represent missing
-values for every datatype.
+Text input may be accepted only after strict UTF-8 encoding. The accepted writer uses VOTable 1.5 and `BINARY2`. Its null flags
+represent missing numeric and Boolean values. Astropy 7.1.0 deliberately
+discards parsed BINARY2 null flags for `char` and `unicodeChar` fields, so
+nullable Unicode values require the explicit companion-null amendment below.
 
 One RESOURCE with a fixed ID contains exactly three TABLEs in order:
 `report` (one row), `field` (one row per field), and `crossing` (zero or
@@ -265,3 +266,113 @@ validation, and lossless reconstruction of the accepted exact report with the
 same canonical JSON and `report_identity_sha256`. Do not add paths, files,
 CLI, atomic publication, plain CSV, tracks, charts, visibility science,
 provider access, another real run, or unrelated refactoring.
+
+
+## Candidate Astropy 7.1 Unicode-null amendment
+
+Candidate implementation testing on Fernando's Mac with Astropy 7.1.0 showed
+that its VOTable BINARY2 parser deliberately clears null flags for `char` and
+`unicodeChar` fields, citing upstream Astropy issue 8995. Isolated checks with
+inferred, one-character, and sixteen-character Unicode widths all wrote a
+masked value and read it back as an unmasked empty string. Numeric BINARY2
+masks remained intact. Therefore the accepted premise that Astropy preserves
+BINARY2 null flags for every datatype is false for the supported dependency.
+
+The proposed bounded correction keeps the shared logical projection unchanged.
+For every nullable Unicode VOTable FIELD, and only such a FIELD, the adapter
+adds an adjacent Boolean FIELD named `<logical_name>__is_null`. A true
+indicator requires the Unicode carrier to contain the canonical empty
+placeholder and reconstructs logical `None`; a false indicator preserves the
+Unicode value exactly, including a legitimate empty string. Numeric and Boolean
+nulls continue to use BINARY2 null flags. The indicator FIELD is wire-level
+VOTable syntax, not a new logical or scientific column.
+
+The decoder requires the exact ordered companion set derived from the fixed
+schema. It rejects missing, duplicate, unknown, reordered, masked, non-Boolean,
+or contradictory indicators, including a true indicator paired with a
+non-empty carrier. It must still reconstruct the accepted report and verify
+byte-identical canonical JSON and `report_identity_sha256`.
+
+This correction adds no path, file, CLI, publication, provider, execution,
+track, chart, visibility, or later science. It does not authorize interpreting
+an unmarked empty string as null and does not introduce a private BINARY2
+parser. Until Fernando separately accepts this amendment, no further
+50S.6G.2B runtime correction is authorized.
+
+Upstream evidence: https://github.com/astropy/astropy/issues/8995
+
+
+## Accepted Astropy 7.1 Unicode-null amendment
+
+Fernando scientifically and architecturally accepted this bounded amendment on
+2026-09-19 at verified candidate commit `5038e4a`, after all 184
+plugin-disabled current-documentation tests passed in 5.28 seconds.
+`git diff --check a38d573...HEAD` passed, and the Mac working tree was clean
+and synchronized.
+
+Implement only the exact adjacent Boolean `__is_null` VOTable FIELD contract
+for nullable Unicode values, its strict validation, and focused tests. Preserve
+the shared logical projection, ECSV representation, canonical JSON, and
+`report_identity_sha256`. Do not interpret an unmarked empty string as null
+or add a private BINARY2 parser. All existing 50S.6G.2B exclusions remain in
+force.
+
+
+## Candidate implementation verification
+
+The bounded implementation candidate at `3bbd82f` passed the combined
+plugin-disabled report and current-documentation gate: 208 tests in 6.68
+seconds. All 2,689 plugin-disabled repository tests then passed in 215.15
+seconds. `git diff --check 142ae70...HEAD` passed, and the Mac working tree
+was clean and synchronized with
+`origin/feature/50s6g2b-tabular-report`.
+
+The candidate provides one shared schema-derived format-neutral projection,
+deterministic in-memory ECSV and VOTable 1.5/BINARY2 adapters, exact canonical
+JSON and `report_identity_sha256` round trips, strict validation, explicit
+Unicode null indicators required by the accepted Astropy 7.1.0 amendment, and
+bounded input handling. The coordinate-system guide was reviewed and remains
+current because the adapters only retain accepted coordinate identity and
+perform no coordinate calculation or transformation.
+
+This is verification evidence, not scientific or architectural acceptance,
+merge authority, or authorization for 50S.6G.2C. Paths, files, CLI, atomic
+publication, plain CSV, tracks, charts, visibility science, provider access,
+another real run, and unrelated refactoring remain unauthorized.
+
+
+## Accepted 50S.6G.2B implementation
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable candidate `3bbd82f`
+passed the 208-test combined report/documentation gate in 6.68 seconds and all
+2,689 plugin-disabled repository tests in 215.15 seconds. Documentation-only
+evidence record `ece80c7` then passed all 186 current-documentation tests in
+4.60 seconds. Both diff checks passed, and the Mac working tree was clean and
+synchronized.
+
+Preserve one shared schema-derived format-neutral projection, deterministic
+in-memory ECSV and VOTable 1.5/BINARY2 adapters, strict typed reconstruction,
+canonical JSON and `report_identity_sha256` authority, and the accepted
+Astropy 7.1.0 Unicode `__is_null` companion contract. This acceptance
+authorizes no later milestone. 50S.6G.2C filesystem/CLI publication, plain
+CSV, tracks, charts, visibility science, provider access, another real run,
+and unrelated refactoring remain unauthorized.
+
+
+## Accepted complete 50S.6G.2B implementation
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+Preserve one shared schema-derived format-neutral projection, deterministic
+in-memory ECSV and VOTable 1.5/BINARY2 adapters, strict typed reconstruction,
+canonical JSON and `report_identity_sha256` authority, and the accepted
+Astropy 7.1.0 Unicode `__is_null` companion contract. This acceptance
+authorizes no later milestone. 50S.6G.2C filesystem/CLI publication, plain
+CSV, tracks, charts, visibility science, provider access, another real run,
+and unrelated refactoring remain unauthorized.

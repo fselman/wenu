@@ -1360,3 +1360,65 @@ reconstruction preserving canonical JSON and `report_identity_sha256`.
 Do not add paths, files, CLI, atomic publication, plain CSV, tracks, charts,
 visibility science, provider access, another real run, or unrelated
 refactoring. 50S.6G.2C and later milestones remain separately unauthorized.
+
+
+## Candidate 50S.6G.2B Astropy Unicode-null correction boundary
+
+Candidate testing on Fernando's Mac with Astropy 7.1.0 demonstrated that
+Astropy deliberately discards VOTable BINARY2 null flags for `char` and
+`unicodeChar` fields. Treat the amendment in
+`satellite_tabular_report_audit_50s6g2b.md` as documentation-only and
+unaccepted. It proposes exact adjacent Boolean `__is_null` companion FIELDs
+only for nullable Unicode VOTable values, while leaving the shared logical
+projection, ECSV, canonical JSON, and `report_identity_sha256` unchanged.
+
+Do not interpret an empty string as null, write a private BINARY2 parser, or
+make further runtime changes until Fernando separately accepts this bounded
+amendment. Paths, files, CLI, publication, tracks, charts, visibility science,
+provider access, and new execution remain unauthorized.
+
+
+## Accepted 50S.6G.2B Astropy Unicode-null correction
+
+Fernando scientifically and architecturally accepted the bounded correction on
+2026-09-19 at `5038e4a`, after 184 plugin-disabled current-documentation
+tests passed in 5.28 seconds and repository checks were clean. Implement only
+the exact adjacent Boolean `__is_null` VOTable FIELDs for nullable Unicode
+values, strict validation, and focused tests. Preserve the shared logical
+projection, ECSV, canonical JSON identity, and every existing 50S.6G.2B
+exclusion.
+
+
+## Candidate 50S.6G.2B implementation verification boundary
+
+Treat the in-memory ECSV/VOTable implementation at `3bbd82f` as a verified
+candidate awaiting Fernando's scientific and architectural acceptance. The
+combined report/documentation gate passed 208 plugin-disabled tests in 6.68
+seconds, and all 2,689 plugin-disabled repository tests passed in 215.15
+seconds. Repository checks and the Mac working tree were clean and
+synchronized.
+
+Preserve the single shared schema-derived projection, deterministic ECSV and
+VOTable 1.5/BINARY2 adapters, strict reconstruction, canonical JSON and
+`report_identity_sha256`, and accepted explicit Unicode `__is_null`
+companions. Do not merge, begin 50S.6G.2C, or add paths, files, CLI,
+publication, tracks, charts, visibility science, provider access, another real
+run, or unrelated refactoring before separate acceptance.
+
+
+## Accepted complete 50S.6G.2B implementation boundary
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+Preserve the single shared schema-derived projection, deterministic ECSV and
+VOTable 1.5/BINARY2 adapters, canonical JSON and
+`report_identity_sha256`, strict reconstruction, and explicit nullable
+Unicode `__is_null` companions. This acceptance authorizes no later
+milestone. Do not begin 50S.6G.2C, filesystem/CLI publication, tracks, charts,
+visibility science, provider access, another real run, or unrelated
+refactoring without separate authorization.

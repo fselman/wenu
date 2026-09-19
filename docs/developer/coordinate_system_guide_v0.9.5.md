@@ -3883,3 +3883,22 @@ may serialize and strictly reconstruct the already accepted coordinate and UTC
 metadata through one reusable projection, but it may not transform, infer, or
 change any frame, origin, epoch, time scale, refraction policy,
 Earth-orientation policy, or numerical coordinate rule.
+
+
+## Accepted complete 50S.6G.2B coordinate finding
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+ECSV and VOTable retain the accepted coordinate frame, origin, position
+status, time scale, observer, refraction, Earth-orientation, and TIMESYS
+identity. Canonical JSON and `report_identity_sha256` remain authoritative,
+and the VOTable `__is_null` fields carry no coordinate meaning. The adapters
+perform no coordinate generation or transformation and introduce no new frame,
+origin, epoch, equinox, time-scale, or position-status meaning. The coordinate
+guide remains current. No later coordinate or satellite milestone is
+authorized.

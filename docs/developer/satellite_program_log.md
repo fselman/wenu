@@ -947,3 +947,40 @@ format-neutral projection, thin ECSV and VOTable 1.5 adapters, strict
 validation, and lossless reconstruction preserving canonical JSON and
 `report_identity_sha256`. Filesystem publication, CLI, tracks, charts,
 visibility science, provider access, and new execution remain unauthorized.
+
+
+### Candidate 50S.6G.2B in-memory tabular interoperability
+
+At `3bbd82f`, the candidate adds one private reusable schema-derived tabular
+projection and thin deterministic ECSV and VOTable 1.5/BINARY2 adapters for
+the accepted exact local crossing report. Canonical JSON and
+`report_identity_sha256` remain authoritative. The accepted Astropy 7.1.0
+workaround uses explicit adjacent Boolean `__is_null` VOTable FIELDs only
+for nullable Unicode values; it does not reinterpret an unmarked empty string.
+
+The combined plugin-disabled report/documentation gate passed 208 tests in
+6.68 seconds, and the complete plugin-disabled suite passed all 2,689 tests in
+215.15 seconds. The diff check against `142ae70` passed, and the Mac branch
+was clean and synchronized. This is candidate verification, not scientific or
+architectural acceptance or merge authority. 50S.6G.2C and all filesystem,
+CLI, publication, track, chart, visibility, provider, and new-execution work
+remain unauthorized.
+
+
+### Accepted complete 50S.6G.2B in-memory interoperability
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+The accepted product provides deterministic lossless in-memory ECSV and
+VOTable 1.5/BINARY2 carriers through one shared schema-derived projection.
+Canonical JSON and `report_identity_sha256` remain authoritative, and
+nullable Unicode VOTable fields use explicit `__is_null` companions required
+by Astropy 7.1.0 behavior. This acceptance authorizes no later milestone;
+50S.6G.2C, filesystem/CLI publication, tracks, charts, visibility science,
+provider access, another real run, and unrelated refactoring remain
+unauthorized.

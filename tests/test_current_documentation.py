@@ -7634,3 +7634,112 @@ def test_50s6g2b_records_scientific_and_architectural_acceptance():
     assert "coordinate guide remains current" in coordinates
     assert "exactly one reusable format-neutral mapping" in source_tree
     assert "new execution remain unauthorized" in log
+
+
+
+def test_50s6g2b_candidate_unicode_null_amendment_is_explicit_and_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"
+    ).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for document in (audit, instructions):
+        assert "Astropy 7.1.0" in document
+        assert "BINARY2 null flags" in document
+        assert "__is_null" in document
+        assert "shared logical projection" in document
+        assert "report_identity_sha256" in document
+        assert "empty string as null" in document
+        assert "runtime" in document
+
+    assert "no further" in audit
+    assert "make further runtime changes" in instructions
+    assert "Astropy issue 8995" in audit
+    assert "Numeric and Boolean nulls continue to use BINARY2 null flags" in audit
+    assert "true indicator paired with a non-empty carrier" in audit
+    assert "does not introduce a private BINARY2 parser" in audit
+    assert "documentation-only and unaccepted" in instructions
+
+
+
+def test_50s6g2b_records_unicode_null_amendment_acceptance():
+    documents = (
+        read(DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"),
+        read(INSTRUCTIONS),
+    )
+    for document in (" ".join(value.split()) for value in documents):
+        assert "scientifically and architecturally accepted" in document
+        assert "5038e4a" in document
+        assert "184" in document
+        assert "5.28 seconds" in document
+        assert "__is_null" in document
+        assert "shared logical projection" in document
+        assert "ECSV" in document
+        assert "canonical JSON" in document
+
+
+
+def test_50s6g2b_records_candidate_implementation_verification():
+    documents = (
+        read(DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"),
+        read(INSTRUCTIONS),
+        read(SATELLITE_PROGRAM_LOG),
+    )
+    for document in (" ".join(value.split()) for value in documents):
+        assert "3bbd82f" in document
+        assert "208" in document
+        assert "6.68 seconds" in document
+        assert "2,689" in document
+        assert "215.15 seconds" in document
+        assert "canonical JSON" in document
+        assert "report_identity_sha256" in document
+        assert "__is_null" in document
+        assert "candidate" in document
+        assert "acceptance" in document
+        assert "50S.6G.2C" in document
+
+    audit = " ".join(documents[0].split())
+    assert "coordinate-system guide was reviewed and remains current" in audit
+    assert "verification evidence, not scientific or architectural acceptance" in audit
+
+
+
+def test_50s6g2b_records_complete_implementation_acceptance():
+    paths = (
+        DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md",
+        INSTRUCTIONS,
+        V09_CURRENT,
+        DEVELOPER / "implementation_reference.md",
+        DEVELOPER / "source_tree.md",
+        FUTURE_ROADMAP,
+        COORDINATE_GUIDE,
+        SATELLITE_PROGRAM_LOG,
+    )
+    documents = tuple(" ".join(read(path).split()) for path in paths)
+
+    for document in documents:
+        assert "scientifically and architecturally accepted the complete bounded" in document
+        assert "2026-09-19" in document
+        assert "3bbd82f" in document
+        assert "208" in document
+        assert "6.68 seconds" in document
+        assert "2,689" in document
+        assert "215.15 seconds" in document
+        assert "ece80c7" in document
+        assert "186" in document
+        assert "4.60 seconds" in document
+        assert "canonical json" in document.lower()
+        assert "report_identity_sha256" in document
+        assert "__is_null" in document
+        assert "no later" in document.lower()
+
+    audit, instructions, architecture, reference, source_tree, roadmap, coordinates, log = documents
+    assert "Accepted complete 50S.6G.2B implementation" in audit
+    assert "Accepted complete 50S.6G.2B implementation boundary" in instructions
+    assert "Accepted complete 50S.6G.2B in-memory interoperability" in architecture
+    assert "Accepted complete 50S.6G.2B tabular API" in reference
+    assert "Accepted complete 50S.6G.2B ownership" in source_tree
+    assert "50S.6G.2B complete implementation accepted" in roadmap
+    assert "Accepted complete 50S.6G.2B coordinate finding" in coordinates
+    assert "Accepted complete 50S.6G.2B in-memory interoperability" in log
+    assert "50S.6G.2C filesystem/CLI publication" in roadmap

@@ -3198,3 +3198,27 @@ A bounded implementation may add the pure in-memory `to_ecsv()`,
 described above. They must delegate to one reusable format-neutral projection,
 preserve canonical JSON and `report_identity_sha256`, and accept no path,
 file object, overwrite flag, service, or scientific-computation responsibility.
+
+
+## Accepted complete 50S.6G.2B tabular API
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+`ExactSatelliteCrossingReport.to_ecsv() -> str` and
+`ExactSatelliteCrossingReport.from_ecsv(text_or_utf8_bytes)` provide
+deterministic lossless ECSV interchange.
+`ExactSatelliteCrossingReport.to_votable() -> bytes` and
+`ExactSatelliteCrossingReport.from_votable(xml_or_utf8_bytes)` provide
+deterministic lossless VOTable 1.5/BINARY2 interchange. Both reconstruct the
+accepted exact report and verify canonical JSON identity through
+`report_identity_sha256`. The VOTable wire contract uses adjacent Boolean
+`__is_null` FIELDs for nullable Unicode values under Astropy 7.1.0.
+
+These methods accept and return values only, never paths or file-like objects.
+This acceptance authorizes no later filesystem, CLI, publication, track,
+chart, or API milestone.
