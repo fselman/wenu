@@ -1578,3 +1578,22 @@ in-memory tabular projection with thin ECSV and VOTable 1.5 adapters. Canonical
 JSON and `report_identity_sha256` remain the logical authority. Filesystem
 publication, CLI, tracks, charts, visibility science, provider access, and new
 scientific execution remain outside this milestone.
+
+
+## Accepted complete 50S.6G.2B in-memory interoperability
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+The exact local crossing report now has alternate deterministic lossless
+in-memory ECSV and VOTable 1.5 carriers through exactly one private
+schema-derived format-neutral projection. Canonical JSON and
+`report_identity_sha256` remain the logical authority. Nullable Unicode
+VOTable values use explicit Boolean `__is_null` companions because Astropy
+7.1.0 discards string BINARY2 masks. No coordinate, propagation, crossing,
+visibility, provider, filesystem, CLI, or rendering responsibility moved into
+the adapters. No later milestone is authorized.
