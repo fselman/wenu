@@ -904,8 +904,7 @@ class PublicationStyle:
                         "style": {
                             "marker": self.satellite_exact_event_marker,
                             "s": self.satellite_exact_event_symbol_size,
-                            "facecolors": "none",
-                            "edgecolors": self.satellite_exact_track_color,
+                            "color": self.satellite_exact_track_color,
                             "linewidths": self.satellite_exact_event_linewidth,
                             "zorder": 38.1,
                         },
