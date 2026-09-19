@@ -7494,3 +7494,39 @@ def test_50s6g2a_candidate_implementation_is_bounded_and_propagated():
     assert "ECSV/VOTable remains 50S.6G.2B" in roadmap
     assert "CLI/files and atomic publication remain 50S.6G.2C" in roadmap
     assert "exact tracks remain 50S.6G.3A" in roadmap
+
+def test_50s6g2a_records_accepted_implementation_boundary():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            INSTRUCTIONS,
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+    for document in documents:
+        assert (
+            "Fernando scientifically and architecturally accepted the bounded "
+            "50S.6G.2A implementation on 2026-09-19"
+        ) in document
+        assert "a65e5ac" in document
+        assert "2,676" in document
+        assert "234.08 seconds" in document
+        assert "8af0d14" in document
+        assert "179" in document
+        assert "5.05 seconds" in document
+
+    architecture, roadmap, reference, source_tree, coordinates, instructions, log = documents
+    assert "Accepted 50S.6G.2A exact-report implementation" in architecture
+    assert "50S.6G.2A accepted implementation" in roadmap
+    assert "Accepted 50S.6G.2A exact-report API" in reference
+    assert "Accepted 50S.6G.2A implementation ownership" in source_tree
+    assert "Accepted 50S.6G.2A coordinate finding" in coordinates
+    assert "Accepted 50S.6G.2A implementation boundary" in instructions
+    assert "Accepted 50S.6G.2A exact-report implementation" in log
+    assert "No later milestone is authorized by this acceptance" in roadmap
+
