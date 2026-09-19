@@ -2329,3 +2329,19 @@ The external immutable report `d200f3920aeda64df4d385d6f695fc3a69694df519f152034
 ## Accepted first real-matrix evidence ownership
 
 Fernando scientifically and architecturally accepted external report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18. The repository records provenance and the zero-crossing limitation but does not own or package the external evidence. No new production owner, rerun authority, or parallel execution owner is implied.
+
+
+## Candidate 50S.6G.1B closure ownership
+
+No production ownership changes at integrated baseline `b010a6c`.
+`satellites/snapshots.py`, `snapshot_acquisition.py`,
+`snapshot_admission.py`, `snapshot_evidence.py`, `crossing_matrix.py`,
+and `crossing_matrix_execution.py` retain their accepted bounded
+responsibilities. External artifacts remain outside the package.
+
+The accepted real matrix has only empty crossing results. The candidate closure
+does not create a report owner, move code, authorize another real run, or claim
+positive real-crossing or general performance evidence. Pending separate
+acceptance, 50S.6G.2A remains unauthorized; acceptance would authorize only a
+documentation audit that must reassess the closest stable report owner before
+proposing any production module.
