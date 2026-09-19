@@ -2345,3 +2345,15 @@ positive real-crossing or general performance evidence. Pending separate
 acceptance, 50S.6G.2A remains unauthorized; acceptance would authorize only a
 documentation audit that must reassess the closest stable report owner before
 proposing any production module.
+
+
+## Accepted 50S.6G.1B closure ownership
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after 173 documentation tests passed in 3.82 seconds
+and clean repository checks. Existing production ownership remains unchanged
+and external artifacts remain outside the package.
+
+Only a bounded 50S.6G.2A documentation audit is authorized next. It must
+perform a fresh source-tree assessment before proposing a report owner; no new
+production module is authorized by this closure.
