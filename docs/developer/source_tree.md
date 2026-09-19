@@ -2508,3 +2508,7 @@ tabular projection, provider, track, chart, or visibility responsibility moved.
 A future module adjacent to `satellites/crossing_oracle.py` may own immutable exact-local-track samples, sampling policy, identity, typed failure, and the realizer that composes accepted propagation and topocentric services. A future `sky/satellite_exact_track_layer.py` may own only evidence-to-geometry views, stable exact-visit semantics, and product-frame transformation.
 
 `sky/satellite_candidate_layer.py` remains the unverified SatChecker sampled candidate owner. `sky/solar_system_tracks.py`, accepted report/CLI modules, renderers, and exporters do not gain responsibility. No production placement is authorized by this documentation audit.
+
+## Accepted 50S.6G.3A implementation ownership
+
+The accepted audit authorizes one exact-track scientific owner adjacent to local satellite science, one evidence-only layer owner under `sky/`, and focused tests. Existing SatChecker candidate, crossing oracle, SGP4/TEME, topocentric, report, CLI, Solar-System track, chart, renderer, and exporter responsibilities remain in place. Final filenames may be chosen during implementation preflight without widening responsibility.

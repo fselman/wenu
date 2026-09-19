@@ -153,3 +153,11 @@ Tests use deterministic fake evaluators for convergence edges and accepted local
 ## Explicit authorization boundary
 
 This candidate authorizes no implementation. Acceptance would authorize only the bounded 50S.6G.3A exact local track evidence and output-neutral layer described here. It would not authorize 50S.6G.3B chart integration, 50S.6G.4A/B planisphere work, provider access, report or CLI changes, new crossing science, visibility, illumination, brightness, or unrelated refactoring.
+
+## Acceptance and bounded implementation authority
+
+Fernando scientifically and architecturally accepted this documentation-only audit on 2026-09-19 at `ce549715889c135e17b87749f3860855b1b54447`. Verification comprised 193 plugin-disabled current-documentation tests passing in 5.73 seconds, a clean diff check against `99631a08f5a2d28020f71b43f49f9fe94c261c3e`, and a clean synchronized Mac working tree.
+
+Implement only the bounded 50S.6G.3A exact local track evidence and output-neutral layer specified above. Preserve the accepted connected crossing as event truth; compose the accepted immutable snapshot, SGP4/TEME, and geometric topocentric route; retain exact event anchors; use deterministic fail-closed sampling; and keep candidate and exact scientific status distinct.
+
+This acceptance does not authorize 50S.6G.3B chart integration, 50S.6G.4A/B planisphere work, report or CLI protocol changes, provider access, new crossing science, visibility, illumination, brightness, detector effects, or unrelated refactoring. The implementation remains a candidate until separately verified and accepted.

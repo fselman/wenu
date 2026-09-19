@@ -8051,3 +8051,45 @@ def test_50s6g3a_candidate_exact_local_track_audit_is_bounded():
     assert "Candidate 50S.6G.3A exact-local-track audit" in log
     assert "50S.6G.3B binocular/regional chart integration" in roadmap
     assert "no implementation is yet authorized" in guide
+
+def test_50s6g3a_records_acceptance_and_only_bounded_implementation_authority():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "ce549715889c135e17b87749f3860855b1b54447",
+        "193 plugin-disabled current-documentation tests",
+        "5.73 seconds",
+        "Implement only the bounded 50S.6G.3A",
+        "This acceptance does not authorize 50S.6G.3B",
+        "implementation remains a candidate",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Accepted 50S.6G.3A audit boundary" in architecture
+    assert "50S.6G.3A accepted audit and next authority" in roadmap
+    assert "Accepted 50S.6G.3A implementation authorization" in reference
+    assert "Accepted 50S.6G.3A implementation ownership" in source_tree
+    assert "Accepted 50S.6G.3A coordinate boundary" in coordinates
+    assert "Accepted exact local track audit" in guide
+    assert "Accepted 50S.6G.3A audit boundary" in instructions
+    assert "Accepted 50S.6G.3A audit refinement" in delivery
+    assert "Accepted 50S.6G.3A audit" in log
+    assert "50S.6G.3B and 50S.6G.4A/B remain unauthorized" in roadmap

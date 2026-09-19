@@ -3936,3 +3936,7 @@ geometry, or satellite-state interpretation. The guide remains current.
 ## Candidate 50S.6G.3A exact-track coordinate finding
 
 Exact local track samples are geometric topocentric direction unit vectors expressed in GCRS axes at individual retained UTC instants. The collection coordinate specification therefore has frame `gcrs-axes`, origin `topocentric-direction`, geometric position status, UTC time scale, and no single collection instant. This is not TEME-labelled sky longitude/latitude, a geocentric GCRS position, ICRS, observed AltAz, or a refracted direction. The candidate audit authorizes no coordinate implementation.
+
+## Accepted 50S.6G.3A coordinate boundary
+
+Fernando accepted the exact-track coordinate finding: each retained vertex is a geometric topocentric direction expressed in GCRS axes at its own UTC instant, while the collection has no single instant. The bounded implementation must preserve that meaning through evidence and layer realization. No apparent, refracted, TEME-labelled spherical, geocentric GCRS, ICRS, or observed AltAz reinterpretation is authorized.
