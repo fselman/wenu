@@ -3946,3 +3946,7 @@ Fernando accepted the exact-track coordinate finding: each retained vertex is a 
 Implementation preflight preserved the existing rule that a `CoordinateSpec` instant and time scale occur together. Because an exact track has no single instant, its collection specification is timeless geometric `gcrs-axes` / `topocentric-direction`; the evidence declares `sample_time_scale="utc"`, and each vertex retains its UTC instant.
 
 For direction-coordinate transformation only, `CoordinateService` maps `gcrs-axes` to the fixed GCRS/ICRS axis orientation. This is an axes statement, not a geocentric GCRS state, ICRS source direction, apparent correction, or common track epoch.
+
+## Verified candidate 50S.6G.3A coordinate representation
+
+The timeless collection plus evidence-level/per-sample UTC representation and fixed-axis coordinate-service seam passed the complete 2,728-test repository gate at `f0a4164`. This is verification, not acceptance, and changes no later coordinate authority.

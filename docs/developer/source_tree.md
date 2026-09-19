@@ -2522,3 +2522,7 @@ The accepted audit authorizes one exact-track scientific owner adjacent to local
 - `tests/test_satellite_exact_tracks.py` owns the new durable evidence/layer boundary.
 
 No report, CLI, provider, chart registry, renderer, exporter, or SatChecker candidate owner changes.
+
+## Verified candidate 50S.6G.3A placement
+
+The exact-track science module, evidence-only layer module, narrow coordinate/semantic seams, and durable test owner at `f0a4164` passed focused, documentation, and complete repository gates. Verification introduced no additional owner and grants no merge or later-milestone authority.

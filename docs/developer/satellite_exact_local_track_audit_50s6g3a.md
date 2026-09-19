@@ -175,3 +175,9 @@ Candidate commit `98a756d4405ba60756e3899d9a0886029cfa8afd` adds frozen policy, 
 The realizer binds one accepted crossing to its exact snapshot record, composes the accepted SGP4/TEME and topocentric owners, retains exact entry/closest/exit anchors, adaptively samples left before right, caches by normalized UTC instant, and fails closed at evaluation, recursion, and retained-sample limits. Layers select retained evidence without propagation or event recomputation.
 
 The focused plugin-disabled gate passed 69 tests in 75.58 seconds on Fernando's Mac. Diff and synchronized-tree checks were clean. This is a verified focused candidate, not scientific or architectural implementation acceptance. Full-suite verification, documentation verification, and separate acceptance remain required.
+
+## Verified candidate 50S.6G.3A implementation
+
+The complete candidate at `f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1` passed all 2,728 plugin-disabled repository tests in 222.01 seconds on Fernando's Mac. The immediately preceding documentation gate passed 195 tests in 5.86 seconds; diff checks and the clean synchronized working tree passed.
+
+This verifies the executable evidence, output-neutral layers, coordinate representation, semantics, focused tests, and active documentation together. It is not scientific or architectural implementation acceptance. Do not merge or begin 50S.6G.3B until Fernando separately accepts the implementation.

@@ -1655,3 +1655,7 @@ Fernando scientifically and architecturally accepted the documentation-only exac
 ## Candidate 50S.6G.3A implementation state
 
 The candidate adds immutable exact connected-visit evidence and science-free path/event layers. A timeless `gcrs-axes` collection retains `sample_time_scale="utc"` and per-vertex UTC instants, preserving the existing instant/time-scale invariant. The accepted SGP4/TEME and topocentric owners remain the only state route. The initial focused gate passed 69 tests; full verification and separate acceptance remain pending.
+
+## Verified candidate 50S.6G.3A implementation
+
+Candidate `f0a4164` passed all 2,728 plugin-disabled tests in 222.01 seconds after its 195-test documentation gate passed in 5.86 seconds. Diff and clean synchronized-tree checks passed. The exact-track evidence and output-neutral layer remain an unaccepted candidate.

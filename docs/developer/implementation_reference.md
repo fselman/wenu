@@ -3287,3 +3287,7 @@ After acceptance at `ce54971`, implementation may add only the frozen exact-loca
 `ExactLocalTrackPolicy`, `ExactLocalTrackEvaluation`, `ExactLocalSatelliteTrackSample`, `ExactLocalSatelliteTrack`, `ExactLocalTrackError`, and `ExactLocalSatelliteTrackRealizer` provide the bounded evidence route. `SatelliteExactTrackLayer` and `SatelliteExactTrackEventsLayer` expose retained evidence as ordinary geometry without recomputation.
 
 The collection `CoordinateSpec` is timeless `gcrs-axes` / `topocentric-direction`; `sample_time_scale="utc"` and each sample instant carry time. `CoordinateService` treats `gcrs-axes` only as the fixed GCRS/ICRS axis orientation for direction transformations. These APIs remain candidate pending full verification and acceptance.
+
+## Verified candidate 50S.6G.3A API
+
+The candidate exact-track evidence, realizer, failure, path/event layer, coordinate-service, and semantic APIs at `f0a4164` passed the complete 2,728-test repository gate. They remain candidate APIs until Fernando separately accepts the implementation.

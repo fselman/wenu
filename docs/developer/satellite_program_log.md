@@ -1030,3 +1030,7 @@ Fernando scientifically and architecturally accepted the documentation-only audi
 ## 2026-09-19 — Candidate 50S.6G.3A implementation
 
 At `98a756d`, the candidate adds immutable exact local track evidence, accepted-route composition, deterministic anchored adaptive sampling, fail-closed limits, exact-visit identity, and evidence-only path/event layers. Fernando authorized the implementation-preflight representation correction: a timeless collection specification with evidence-level UTC and per-sample UTC instants. The focused plugin-disabled gate passed 69 tests in 75.58 seconds; full verification and separate acceptance remain pending.
+
+## 2026-09-19 — Verified candidate 50S.6G.3A implementation
+
+At `f0a4164`, all 2,728 plugin-disabled repository tests passed in 222.01 seconds. The 195-test documentation gate passed in 5.86 seconds, and diff plus clean synchronized-tree checks passed. This is candidate verification only; implementation acceptance, merge, and 50S.6G.3B remain unauthorized.

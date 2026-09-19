@@ -2961,3 +2961,7 @@ Fernando accepted the documentation-only audit on 2026-09-19 at `ce54971`. The n
 ## 50S.6G.3A candidate implementation
 
 The bounded candidate implements exact connected-visit evidence, deterministic anchored adaptive sampling, fail-closed limits, identity/provenance, and output-neutral path/event layers. The implementation-preflight correction keeps the collection coordinate specification timeless and places UTC on the evidence and every sample. The 69-test focused gate passed. Full-suite verification and Fernando's separate implementation acceptance are required before merge or 50S.6G.3B.
+
+## 50S.6G.3A verified candidate state
+
+The complete bounded candidate at `f0a4164` passed all 2,728 plugin-disabled repository tests in 222.01 seconds; documentation, diff, and clean-tree gates also passed. Merge and 50S.6G.3B remain unauthorized pending Fernando's separate scientific and architectural implementation acceptance.

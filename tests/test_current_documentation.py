@@ -8152,3 +8152,43 @@ def test_50s6g3a_candidate_implementation_is_exact_output_neutral_and_bounded():
     assert "50S.6G.3A candidate implementation state" in delivery
     assert "Candidate 50S.6G.3A implementation" in log
     assert "Do not merge or begin 50S.6G.3B" in instructions
+
+def test_50s6g3a_records_complete_candidate_verification_without_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            INSTRUCTIONS,
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1",
+        "2,728 plugin-disabled repository tests",
+        "222.01 seconds",
+        "195 tests in 5.86 seconds",
+        "not scientific or architectural implementation acceptance",
+        "Do not merge or begin 50S.6G.3B",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, instructions, log = documents
+    assert "Verified candidate 50S.6G.3A implementation" in architecture
+    assert "50S.6G.3A verified candidate state" in roadmap
+    assert "Verified candidate 50S.6G.3A API" in reference
+    assert "Verified candidate 50S.6G.3A placement" in source_tree
+    assert "Verified candidate 50S.6G.3A coordinate representation" in coordinates
+    assert (
+        "Candidate 50S.6G.3A implementation verification boundary"
+        in instructions
+    )
+    assert "Verified candidate 50S.6G.3A implementation" in log
+    assert "Merge and 50S.6G.3B remain unauthorized" in roadmap

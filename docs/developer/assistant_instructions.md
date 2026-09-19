@@ -1504,3 +1504,9 @@ Implement only the exact connected-visit evidence, deterministic anchored fail-c
 Treat `98a756d4405ba60756e3899d9a0886029cfa8afd` as a focused-test-passing candidate, not an accepted implementation. Preserve the timeless collection `CoordinateSpec`, evidence-level UTC sample scale, per-sample UTC instants, exact event anchors, deterministic left-before-right adaptation, fail-closed limits, snapshot binding, exact-visit semantics, and evidence-only layer ownership.
 
 The 69-test plugin-disabled focused gate passed in 75.58 seconds. Do not merge or begin 50S.6G.3B before full-suite and documentation verification plus Fernando's separate scientific and architectural acceptance. Do not add report/CLI changes, chart registration, planispheres, providers, visibility, illumination, brightness, or unrelated refactoring.
+
+## Candidate 50S.6G.3A implementation verification boundary
+
+Treat `f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1` as a verified candidate awaiting Fernando's separate scientific and architectural implementation acceptance. The 195-test documentation gate passed in 5.86 seconds and all 2,728 plugin-disabled repository tests passed in 222.01 seconds; diff and clean synchronized-tree checks passed.
+
+Do not merge, delete branches, or begin 50S.6G.3B. Preserve the accepted scope and implementation-preflight representation resolution without adding charts, planispheres, report/CLI changes, providers, visibility, illumination, or brightness.
