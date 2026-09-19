@@ -7529,3 +7529,57 @@ def test_50s6g2a_records_accepted_implementation_boundary():
     assert "Accepted 50S.6G.2A implementation boundary" in instructions
     assert "Accepted 50S.6G.2A exact-report implementation" in log
     assert "No later milestone is authorized by this acceptance" in roadmap
+
+
+def test_50s6g2b_candidate_tabular_audit_is_lossless_reusable_and_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    assert "satellite_tabular_report_audit_50s6g2b.md" in index
+    for phrase in (
+        "one shared reusable format-neutral tabular projection",
+        "thin format adapters",
+        "report_identity_sha256",
+        "validated field with zero crossings",
+        'serialize_method="data_mask"',
+        "VOTable 1.5",
+        "BINARY2",
+        'timescale="UTC"',
+        'refposition="TOPOCENTER"',
+        "from_ecsv(report.to_ecsv()) == report",
+        "from_votable(report.to_votable()) == report",
+        "Atomic filesystem publication belongs to 50S.6G.2C",
+        "no 50S.6G.2B implementation is authorized",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        assert "50S.6G.2B" in document
+        assert "reusable" in document
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "alternate lossless carriers" in architecture
+    assert "Candidate 50S.6G.2B tabular API" in reference
+    assert "exactly one format-neutral mapping" in source_tree
+    assert "introduces no new frame" in coordinates
+    assert "scientific flattening and validation are written once" in guide
+    assert "Do not implement 50S.6G.2B" in instructions
+    assert "authorizes no runtime work" in roadmap
+    assert "authorizes no implementation" in delivery
+    assert "candidate audit, not acceptance" in log
