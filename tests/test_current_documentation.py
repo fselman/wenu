@@ -7406,6 +7406,30 @@ def test_satellite_guide_is_pedagogical_and_history_is_separate():
     assert "pedagogical artificial-satellite" in index
     assert "chronological 50S" in index
 
+
+def test_satellite_guide_explains_orbital_elements_and_precession():
+    guide = read(DEVELOPER / "satellite_guide.md")
+
+    for phrase in (
+        "Keplerian elements: osculating geometry and Wenu's mean-element input",
+        "instantaneous two-body conic",
+        "MEAN_ELEMENT_THEORY = SGP4",
+        "does **not** turn a GP record into osculating elements",
+        "dOmega/dt = -(3/2) J2 n (R_E / p)^2 cos(i)",
+        "domega/dt =  (3/4) J2 n (R_E / p)^2 (5 cos(i)^2 - 1)",
+        "a^(-7/2)",
+        "(1 - e^2)^(-2)",
+        "critical inclinations near 63.4 and 116.6 degrees",
+        "+0.986 degree per day",
+        "GPS-like MEO",
+        "about -0.04 degree/day",
+        "SGP4 drag-like fit parameter",
+        "https://public.ccsds.org/Pubs/502x0b3e1.pdf",
+        "AIAA-2006-6753-Rev3.pdf",
+        "gp-data-formats.php",
+    ):
+        assert phrase in guide
+
 def test_50s6g2a_records_acceptance_and_bounded_implementation_authority():
     documents = tuple(
         " ".join(read(path).split())
