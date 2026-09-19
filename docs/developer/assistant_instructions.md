@@ -1360,3 +1360,19 @@ reconstruction preserving canonical JSON and `report_identity_sha256`.
 Do not add paths, files, CLI, atomic publication, plain CSV, tracks, charts,
 visibility science, provider access, another real run, or unrelated
 refactoring. 50S.6G.2C and later milestones remain separately unauthorized.
+
+
+## Candidate 50S.6G.2B Astropy Unicode-null correction boundary
+
+Candidate testing on Fernando's Mac with Astropy 7.1.0 demonstrated that
+Astropy deliberately discards VOTable BINARY2 null flags for `char` and
+`unicodeChar` fields. Treat the amendment in
+`satellite_tabular_report_audit_50s6g2b.md` as documentation-only and
+unaccepted. It proposes exact adjacent Boolean `__is_null` companion FIELDs
+only for nullable Unicode VOTable values, while leaving the shared logical
+projection, ECSV, canonical JSON, and `report_identity_sha256` unchanged.
+
+Do not interpret an empty string as null, write a private BINARY2 parser, or
+make further runtime changes until Fernando separately accepts this bounded
+amendment. Paths, files, CLI, publication, tracks, charts, visibility science,
+provider access, and new execution remain unauthorized.
