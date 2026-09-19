@@ -308,3 +308,72 @@ def test_crossing_order_and_query_context_are_enforced():
     )
     with pytest.raises(ValueError, match="context"):
         report(replace(result, crossings=(wrong,)))
+def test_ecsv_and_votable_round_trips_preserve_exact_logical_identity():
+    value = report(
+        field_result("positive"),
+        field_result("validated-zero", offset=120, crossings=False),
+    )
+
+    ecsv = value.to_ecsv()
+    votable = value.to_votable()
+    ecsv_decoded = ExactSatelliteCrossingReport.from_ecsv(ecsv)
+    votable_decoded = ExactSatelliteCrossingReport.from_votable(votable)
+
+    assert isinstance(ecsv, str)
+    assert isinstance(votable, bytes)
+    assert ecsv_decoded == value
+    assert votable_decoded == value
+    assert ecsv_decoded.to_json() == value.to_json()
+    assert votable_decoded.to_json() == value.to_json()
+    assert ecsv_decoded.report_identity_sha256 == value.report_identity_sha256
+    assert votable_decoded.report_identity_sha256 == value.report_identity_sha256
+
+
+def test_tabular_encoders_are_deterministic_and_retain_unicode_and_empty_values():
+    value = report(field_result("field — unicode"))
+
+    assert value.to_ecsv() == value.to_ecsv()
+    assert value.to_votable() == value.to_votable()
+    assert "field — unicode" in value.to_ecsv()
+    assert ExactSatelliteCrossingReport.from_ecsv(value.to_ecsv().encode()) == value
+    assert ExactSatelliteCrossingReport.from_votable(value.to_votable().decode()) == value
+
+
+def test_ecsv_declares_fixed_metadata_units_and_explicit_masks():
+    encoded = report(field_result("one")).to_ecsv()
+
+    assert encoded.startswith("# %ECSV 1.0")
+    assert "wenu_tabular_schema_version: 1" in encoded
+    assert "report_identity_sha256:" in encoded
+    assert "deg / s" in encoded
+    assert "serialize_method" in encoded
+    assert "data_mask" in encoded
+
+
+def test_votable_declares_version_binary2_timesys_and_three_tables():
+    encoded = report(field_result("one")).to_votable()
+
+    assert b'VOTABLE version="1.5"' in encoded
+    assert b"<BINARY2>" in encoded
+    assert b'timescale="UTC"' in encoded
+    assert b'refposition="TOPOCENTER"' in encoded
+    assert encoded.count(b"<TABLE") == 3
+
+
+@pytest.mark.parametrize("method", ("from_ecsv", "from_votable"))
+def test_tabular_decoders_reject_paths_file_objects_and_invalid_utf8(method):
+    decoder = getattr(ExactSatelliteCrossingReport, method)
+
+    with pytest.raises(TypeError, match="text or UTF-8 bytes"):
+        decoder(object())
+    with pytest.raises(ValueError, match="UTF-8"):
+        decoder(b"\xff")
+
+
+def test_votable_decoder_rejects_doctype_and_external_entity_before_parsing():
+    unsafe = b'''<?xml version="1.0"?>
+<!DOCTYPE x [<!ENTITY external SYSTEM "file:///etc/passwd">]>
+<VOTABLE version="1.5">&external;</VOTABLE>'''
+
+    with pytest.raises(ValueError, match="unsafe XML"):
+        ExactSatelliteCrossingReport.from_votable(unsafe)
