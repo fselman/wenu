@@ -235,3 +235,9 @@ Fernando scientifically and architecturally accepted this documentation-only aud
 Implement only the bounded 50S.6G.3B binocular/regional exact-track chart integration specified above: explicit already-realized display requests, strict observer/reference-instant admission, one fixed product-frame transform, request-owned layer lifecycle, independent path/event/label controls, canonical presentation/export owners, bounded provenance summaries, stable semantics, focused tests, and required PNG/PDF/semantic-SVG specimens.
 
 This acceptance does not authorize 50S.6G.4A/B planisphere work, all-sky/circumpolar satellite tracks, provider access, snapshot acquisition, report or CLI changes, new execution science, visibility, illumination, brightness, detector effects, scheduling integration, or unrelated refactoring. The implementation remains a candidate until separately verified, visually reviewed, and accepted.
+
+## Candidate implementation finding
+
+The bounded implementation adds the frozen display request, strict regional/binocular admission, request-owned path/event installation and cleanup, independent label control, existing style/detail integration, and bounded SVG provenance without invoking any satellite science. The same prepared regional or binocular chart exports PNG, PDF, and semantic SVG.
+
+Acceptance-specimen review exposed an important evidence distinction. A physically plausible short satellite pass through a convex chart viewport is nearly straight and cannot ordinarily leave and re-enter that viewport while its entry, closest-approach, and exit markers all remain visible. The visual specimens therefore keep the complete plausible pass and all event markers visible. Canonical boundary clipping is verified separately by focused geometry tests; the specimen must not distort evidence merely to combine both demonstrations in one image. This clarification changes no production geometry or accepted clipping owner.
