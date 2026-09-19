@@ -3291,3 +3291,7 @@ The collection `CoordinateSpec` is timeless `gcrs-axes` / `topocentric-direction
 ## Verified candidate 50S.6G.3A API
 
 The candidate exact-track evidence, realizer, failure, path/event layer, coordinate-service, and semantic APIs at `f0a4164` passed the complete 2,728-test repository gate. They remain candidate APIs until Fernando separately accepts the implementation.
+
+## Accepted 50S.6G.3A API
+
+The exact-track policy, evaluation, sample, evidence, typed-error, realizer, path layer, event layer, semantic identity, and fixed-axis coordinate-service seam are accepted within their documented boundary. Preserve evidence-level/per-sample UTC and the timeless collection specification. No chart request or rendering API is accepted by this milestone.

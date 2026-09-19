@@ -3950,3 +3950,7 @@ For direction-coordinate transformation only, `CoordinateService` maps `gcrs-axe
 ## Verified candidate 50S.6G.3A coordinate representation
 
 The timeless collection plus evidence-level/per-sample UTC representation and fixed-axis coordinate-service seam passed the complete 2,728-test repository gate at `f0a4164`. This is verification, not acceptance, and changes no later coordinate authority.
+
+## Accepted 50S.6G.3A coordinate representation
+
+Fernando accepted the timeless geometric `gcrs-axes` / `topocentric-direction` collection, evidence-level `sample_time_scale="utc"`, and per-sample UTC instants. The coordinate-service seam means fixed axis orientation only and must never be described as a geocentric GCRS state, ICRS source place, apparent correction, or shared collection epoch.

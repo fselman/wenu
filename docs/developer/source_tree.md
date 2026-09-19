@@ -2526,3 +2526,7 @@ No report, CLI, provider, chart registry, renderer, exporter, or SatChecker cand
 ## Verified candidate 50S.6G.3A placement
 
 The exact-track science module, evidence-only layer module, narrow coordinate/semantic seams, and durable test owner at `f0a4164` passed focused, documentation, and complete repository gates. Verification introduced no additional owner and grants no merge or later-milestone authority.
+
+## Accepted 50S.6G.3A ownership
+
+`satellites/exact_tracks.py`, `sky/satellite_exact_track_layer.py`, the narrow coordinate/semantic seams, and `tests/test_satellite_exact_tracks.py` are the accepted owners. They do not absorb crossing, report, CLI, provider, chart, renderer, exporter, or SatChecker-candidate responsibilities.

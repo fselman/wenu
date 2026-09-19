@@ -1659,3 +1659,7 @@ The candidate adds immutable exact connected-visit evidence and science-free pat
 ## Verified candidate 50S.6G.3A implementation
 
 Candidate `f0a4164` passed all 2,728 plugin-disabled tests in 222.01 seconds after its 195-test documentation gate passed in 5.86 seconds. Diff and clean synchronized-tree checks passed. The exact-track evidence and output-neutral layer remain an unaccepted candidate.
+
+## Accepted 50S.6G.3A implementation
+
+Fernando accepted the complete bounded exact-local-track implementation on 2026-09-19. Preserve the snapshot-bound evidence, exact anchors, deterministic fail-closed sampling, identity/provenance, timeless collection plus per-sample UTC representation, evidence-only layers, exact-visit semantics, and narrow fixed-axis coordinate-service seam. Only a documentation-first 50S.6G.3B chart-integration audit is authorized next.

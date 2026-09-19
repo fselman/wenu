@@ -181,3 +181,11 @@ The focused plugin-disabled gate passed 69 tests in 75.58 seconds on Fernando's 
 The complete candidate at `f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1` passed all 2,728 plugin-disabled repository tests in 222.01 seconds on Fernando's Mac. The immediately preceding documentation gate passed 195 tests in 5.86 seconds; diff checks and the clean synchronized working tree passed.
 
 This verifies the executable evidence, output-neutral layers, coordinate representation, semantics, focused tests, and active documentation together. It is not scientific or architectural implementation acceptance. Do not merge or begin 50S.6G.3B until Fernando separately accepts the implementation.
+
+## Accepted complete 50S.6G.3A implementation
+
+Fernando scientifically and architecturally accepted the complete bounded implementation on 2026-09-19 and explicitly authorized merge. Executable and active-document candidate `f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1` passed the 69-test focused gate in 75.58 seconds, the 195-test documentation gate in 5.86 seconds, and all 2,728 plugin-disabled repository tests in 222.01 seconds. Verification record `0182224a5e41074f87ce6507d52b981eeeda5ed8` passed 196 documentation tests in 5.55 seconds; diff checks and the clean synchronized Mac working tree passed.
+
+The accepted product is limited to immutable snapshot-bound exact connected-visit evidence, deterministic anchored fail-closed sampling, deterministic identity and provenance, timeless GCRS-axis collection coordinates with explicit evidence/per-sample UTC, evidence-only path/event layers, stable exact-visit semantics, and the narrow coordinate-service orientation seam.
+
+Only a separately bounded documentation-first 50S.6G.3B binocular/regional chart-integration audit is authorized next. No chart implementation, planisphere work, report/CLI change, provider access, visibility, illumination, brightness, detector effect, or unrelated refactoring is authorized.

@@ -1510,3 +1510,9 @@ The 69-test plugin-disabled focused gate passed in 75.58 seconds. Do not merge o
 Treat `f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1` as a verified candidate awaiting Fernando's separate scientific and architectural implementation acceptance. The 195-test documentation gate passed in 5.86 seconds and all 2,728 plugin-disabled repository tests passed in 222.01 seconds; diff and clean synchronized-tree checks passed.
 
 Do not merge, delete branches, or begin 50S.6G.3B. Preserve the accepted scope and implementation-preflight representation resolution without adding charts, planispheres, report/CLI changes, providers, visibility, illumination, or brightness.
+
+## Accepted 50S.6G.3A implementation boundary
+
+Fernando scientifically and architecturally accepted the complete bounded implementation and authorized merge on 2026-09-19. Preserve the exact-track evidence, accepted scientific composition route, anchors, sampling/failure/identity contracts, timeless collection plus explicit sample UTC, evidence-only layers, semantic family, and fixed-axis coordinate seam.
+
+Only a documentation-first 50S.6G.3B binocular/regional chart-integration audit is authorized next. Do not implement chart integration or begin 50S.6G.4A/B planisphere work without separate acceptance. Do not add report/CLI changes, providers, visibility, illumination, brightness, detector effects, or unrelated refactoring.

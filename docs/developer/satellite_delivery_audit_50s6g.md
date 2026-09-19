@@ -463,3 +463,7 @@ Fernando accepted the dedicated exact-local-track audit on 2026-09-19. Only its 
 ## 50S.6G.3A candidate implementation state
 
 The bounded candidate implements the accepted exact connected-visit evidence and output-neutral layer decomposition. The accepted report and CLI bundle remain unchanged. The collection is timeless, while UTC remains explicit on the evidence and every sample. Focused verification passed; full verification and separate acceptance remain required.
+
+## Accepted 50S.6G.3A implementation closure
+
+Fernando accepted the complete exact connected-visit evidence and output-neutral layer implementation on 2026-09-19. It changes no accepted report or CLI bundle. Only the documentation-first 50S.6G.3B binocular/regional chart-integration audit is authorized next.

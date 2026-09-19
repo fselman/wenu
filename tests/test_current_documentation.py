@@ -8192,3 +8192,45 @@ def test_50s6g3a_records_complete_candidate_verification_without_acceptance():
     )
     assert "Verified candidate 50S.6G.3A implementation" in log
     assert "Merge and 50S.6G.3B remain unauthorized" in roadmap
+
+def test_50s6g3a_records_accepted_implementation_and_next_audit_only():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1",
+        "0182224a5e41074f87ce6507d52b981eeeda5ed8",
+        "2,728 plugin-disabled repository tests",
+        "196 documentation tests",
+        "Only a separately bounded documentation-first 50S.6G.3B",
+        "No chart implementation",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Accepted 50S.6G.3A implementation" in architecture
+    assert "50S.6G.3A accepted implementation" in roadmap
+    assert "Accepted 50S.6G.3A API" in reference
+    assert "Accepted 50S.6G.3A ownership" in source_tree
+    assert "Accepted 50S.6G.3A coordinate representation" in coordinates
+    assert "Accepted exact local track implementation" in guide
+    assert "Accepted 50S.6G.3A implementation boundary" in instructions
+    assert "Accepted 50S.6G.3A implementation closure" in delivery
+    assert "Accepted complete 50S.6G.3A implementation" in log
+    assert "Chart implementation and 50S.6G.4A/B remain unauthorized" in roadmap
