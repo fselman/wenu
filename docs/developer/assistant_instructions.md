@@ -1332,3 +1332,17 @@ owner and preserve the packaged version-1 schema, deterministic identity,
 strict typed decoder, zero-crossing semantics, null future science, and
 byte-identical round trips. Do not begin 50S.6G.2B or later work without
 separate authorization.
+
+
+## Candidate 50S.6G.2B audit boundary
+
+Treat `satellite_tabular_report_audit_50s6g2b.md` as a documentation-only
+candidate. It proposes lossless in-memory ECSV and VOTable 1.5 encodings of the
+accepted exact report through one shared reusable format-neutral tabular
+projection and thin format adapters. Canonical JSON and
+`report_identity_sha256` remain logical authority.
+
+Do not implement 50S.6G.2B before Fernando's separate scientific and
+architectural acceptance. Do not add paths, files, CLI, atomic publication,
+plain CSV, tracks, charts, visibility science, provider access, another real
+run, or unrelated refactoring.
