@@ -3966,3 +3966,20 @@ Fernando accepted the fixed-product-frame finding: admitted evidence keeps per-s
 ## Candidate 50S.6G.3B implemented coordinate path
 
 Admission requires the chart observer's normalized longitude, latitude, elevation, and UTC instant to match the crossing field context, with vacuum refraction and the accepted Astropy/bundled-IERS Earth-orientation policies. The already-realized timeless GCRS-axis collection is transformed once into the chart's horizontal frame at that reference instant. Per-sample UTC remains evidence and is neither discarded nor reinterpreted as a series of instantaneous AltAz frames.
+
+## Candidate 50S.6G.4A fixed-axis polar finding
+
+A stereographic physical polar planisphere differs from the accepted 3B
+horizontal products. Its north and south faces are equatorial celestial disks.
+An exact local track therefore retains each sample's geometric topocentric
+direction in the fixed GCRS/ICRS axis orientation and is projected directly
+into each face's equatorial coordinates. It must not pass through AltAz,
+acquire apparent-place corrections, or be relabeled astrometric, apparent, or
+observed.
+
+The track remains observer- and UTC-interval-specific even though it is drawn
+against a rotating reusable celestial disk. The proposed product must identify
+itself as an event-specific non-recurring overlay. Face declination caps may
+clip presentation, but the physical horizon and pouch perform no satellite
+visibility filtering. This audit changes no coordinate calculation and
+authorizes no implementation.

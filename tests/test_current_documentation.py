@@ -3178,6 +3178,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_exact_crossing_report_audit_50s6g2a.md",
         "satellite_exact_local_track_audit_50s6g3a.md",
         "satellite_binocular_regional_track_audit_50s6g3b.md",
+        "satellite_stereographic_planisphere_track_audit_50s6g4a.md",
         "satellite_tabular_report_audit_50s6g2b.md",
         "satellite_cli_file_protocol_audit_50s6g2c.md",
         "satellite_snapshot_admission_audit_50s6g1b2a.md",
@@ -8332,3 +8333,79 @@ def test_50s6g3b_records_acceptance_and_only_bounded_implementation_authority():
     assert "Accepted 50S.6G.3B audit refinement" in delivery
     assert "Accepted 50S.6G.3B audit" in log
     assert "50S.6G.4A/B and all later science remain unauthorized" in roadmap
+
+
+def test_50s6g4a_candidate_stereographic_planisphere_audit_is_bounded():
+    audit = " ".join(read(
+        DEVELOPER
+        / "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    assert (
+        "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
+        in index
+    )
+    for phrase in (
+        "paired physical polar planisphere",
+        'projection_name="stereographic"',
+        'ChartRequest(family="planisphere")',
+        "event-specific planisphere overlay",
+        "SatelliteExactTrackDisplayRequest",
+        "fixed GCRS/ICRS axis orientation",
+        'origin="topocentric-direction"',
+        "PositionStatus.GEOMETRIC",
+        "must not route the track through AltAz",
+        "No invalid or mismatched track is silently dropped",
+        "appears on both faces intentionally",
+        "never a scientific entry or exit event",
+        "no physical right-ascension cut",
+        "do not alter track evidence",
+        "event-specific non-recurrence limitation",
+        "PNG, PDF, and semantic SVG",
+        "must not recursively serialize samples",
+        "This candidate does not authorize 50S.6G.4B implementation",
+    ):
+        assert phrase in audit
+
+    (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinates,
+        guide,
+        instructions,
+        delivery,
+        log,
+    ) = documents
+    assert (
+        "Candidate 50S.6G.4A stereographic polar-planisphere boundary"
+        in architecture
+    )
+    assert "50S.6G.4A candidate audit state" in roadmap
+    assert (
+        "Candidate 50S.6G.4A paired stereographic planisphere API"
+        in reference
+    )
+    assert "Candidate 50S.6G.4A ownership" in source_tree
+    assert "Candidate 50S.6G.4A fixed-axis polar finding" in coordinates
+    assert "Candidate stereographic polar-planisphere exact tracks" in guide
+    assert "Candidate 50S.6G.4A audit boundary" in instructions
+    assert "50S.6G.4A candidate refinement" in delivery
+    assert "Candidate 50S.6G.4A stereographic planisphere audit" in log
+    assert "This candidate authorizes no implementation" in roadmap

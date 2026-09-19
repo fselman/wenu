@@ -1058,3 +1058,14 @@ At `6580f88`, the 314-test immediate gate passed in 7.71 seconds and all 2,741 p
 ## 2026-09-19 — Accepted complete 50S.6G.3B implementation
 
 Fernando scientifically and architecturally accepted the bounded implementation and explicitly authorized merge and cleanup. PR 172 merged `ff2e225` into `program/50s-crossing-foundation` at `05d4029`. Evidence comprises 314 immediate tests, all 2,741 plugin-disabled tests, 199 final documentation tests, physical regional/binocular PNG/PDF/semantic-SVG review, and clean diff, exact-head, and synchronized-tree checks. Only a documentation-first 50S.6G.4A planisphere audit is authorized next; runtime planisphere/later science remains unauthorized.
+
+## 2026-09-19 — Candidate 50S.6G.4A stereographic planisphere audit
+
+A documentation-only candidate defines an event-specific exact-track overlay
+for Wenu's paired physical stereographic polar planisphere. It distinguishes
+that product from the ordinary horizontal full-sky planisphere, preserves
+geometric topocentric fixed-axis meaning, resolves north/south overlap and cap
+clipping, keeps the physical horizon and masks outside satellite admission,
+and requires paired lifecycle cleanup, bounded non-recurrence provenance, and
+physical PNG/PDF/semantic-SVG evidence. It authorizes no implementation or
+later satellite science.

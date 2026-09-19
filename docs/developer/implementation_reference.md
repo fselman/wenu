@@ -3311,3 +3311,19 @@ After acceptance at `ef58180`, implementation may add only `SatelliteExactTrackD
 SatelliteExactTrackDisplayRequest is a frozen value containing one accepted ExactLocalSatelliteTrack and boolean draw_path, draw_events, and label_events controls. ChartRequest.satellite_exact_tracks is an ordered default-empty tuple with duplicate-identity, family, frame, observer-policy, and reference-instant admission.
 
 configure_chart_request_satellite_tracks() installs only requested evidence views, while ChartRequestBuild records and removes those layers. satellite_exact_track_provenance() and chart_request_provenance_parameters() replace recursive evidence serialization with ordered bounded summaries. These APIs remain candidate pending complete verification and acceptance.
+
+## Candidate 50S.6G.4A paired stereographic planisphere API
+
+The proposed API reuses `SatelliteExactTrackDisplayRequest`; it introduces no
+polar-specific evidence or display value. A future bounded
+`export_polar_planisphere_pages(...)` may accept an explicit default-empty
+`satellite_exact_tracks` tuple, validate the complete tuple and resolved pair,
+install the accepted path/event layers once, export both stereographic faces,
+and clean up after success or failure.
+
+The typed equatorial projection seam must express native `gcrs-axes` as ICRS
+axes while preserving geometric topocentric origin, timeless collection
+meaning, per-sample UTC, and track identity. Existing observer-local layers
+retain their current transformation. North/south overlap is intentional, face
+cap clipping creates no event, and page provenance remains bounded. These are
+proposed APIs only; no implementation is authorized by the audit.

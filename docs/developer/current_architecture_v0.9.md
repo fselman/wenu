@@ -1675,3 +1675,20 @@ Fernando accepted the documentation-only binocular/regional exact-track audit on
 ## Candidate 50S.6G.3B implementation state
 
 The candidate implements explicit already-realized exact-track display requests for regional and binocular stereographic horizontal charts. Strict observer, coordinate-policy, and reference-instant admission occurs before preparation. Request-owned path and event layers use the ordinary fixed product-frame transformation, detail, style, projection, clipping, renderer, export, semantic-SVG, and cleanup owners. SVG provenance contains only ordered bounded summaries rather than retained samples. No provider, solver, report, CLI, planisphere, visibility, illumination, or brightness responsibility changed.
+
+## Candidate 50S.6G.4A stereographic polar-planisphere boundary
+
+The documentation-only candidate proposes an event-specific exact-track
+overlay for the paired physical `PolarPlanispherePair` only when both faces use
+stereographic projection. It reuses already-realized 50S.6G.3A evidence and
+the accepted display request, preserves each sample's geometric topocentric
+direction in fixed GCRS/ICRS axis orientation, and projects the same evidence
+independently through the north and south declination caps.
+
+The existing physical horizon, constellation masks, calendar, and page
+furniture do not admit, reject, or clip the track. Face overlap may display the
+same visit twice intentionally; cap clipping creates no scientific event.
+Observer/reference validation and request-owned cleanup precede and surround
+the two canonical face exports. This audit changes no runtime and authorizes no
+implementation, ordinary full-sky/circumpolar track, visibility science, or
+later satellite behavior.

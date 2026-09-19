@@ -1548,3 +1548,23 @@ Fernando scientifically and architecturally accepted the complete bounded implem
 Preserve the already-realized exact-track request boundary, strict observer/reference admission, fixed product-frame realization, request-owned cleanup, independent path/event/label controls, canonical projection/clipping/render/export ownership, bounded provenance, stable exact-visit semantics, and the separation between physical visual specimens and canonical clipping tests.
 
 Only a documentation-first 50S.6G.4A planisphere exact-track audit is authorized next. Do not implement planisphere, all-sky, or circumpolar satellite tracks or add provider access, report/CLI changes, new execution science, visibility, illumination, brightness, detector effects, or unrelated refactoring without later separate acceptance.
+
+## Candidate 50S.6G.4A audit boundary
+
+Read `satellite_stereographic_planisphere_track_audit_50s6g4a.md` before any
+polar-planisphere exact-track work. Treat the document as a documentation-only
+candidate. It concerns only the paired physical north/south planisphere with
+stereographic projection, not the ordinary horizontal full-sky planisphere.
+
+Preserve already-realized 3A evidence, geometric topocentric fixed-axis
+meaning, explicit observer/reference admission, event-specific non-recurrence,
+intentional face-overlap duplication, existing declination-cap clipping,
+longitude continuity, paired lifecycle cleanup, stable semantics, and bounded
+provenance. The physical horizon, masks, calendar, and page furniture perform
+no satellite visibility science.
+
+Do not implement 50S.6G.4B before Fernando separately accepts this audit. Do
+not add ordinary all-sky/circumpolar or equidistant-polar tracks, provider or
+report/CLI changes, new execution science, visibility, illumination,
+brightness, detector effects, scheduling adapters, 50S.7/50S.8 behavior, or
+unrelated refactoring.

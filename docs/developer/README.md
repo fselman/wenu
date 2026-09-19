@@ -60,6 +60,9 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`satellite_binocular_regional_track_audit_50s6g3b.md`](satellite_binocular_regional_track_audit_50s6g3b.md)
   — candidate ordinary-request, fixed-frame, lifecycle, styling, semantic-SVG,
   and PNG/PDF/SVG specimen contract for binocular and regional exact tracks.
+- [`satellite_stereographic_planisphere_track_audit_50s6g4a.md`](satellite_stereographic_planisphere_track_audit_50s6g4a.md)
+  — candidate paired-face, fixed-axis, overlap, cap-clipping, event-specific,
+  and PNG/PDF/SVG contract for exact tracks on stereographic polar planispheres.
 - [`satellite_exact_local_track_audit_50s6g3a.md`](satellite_exact_local_track_audit_50s6g3a.md)
   — candidate exact connected-visit evidence, deterministic anchored sampling,
   identity, fail-closed behavior, and output-neutral layer contract.

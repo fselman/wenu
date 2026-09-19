@@ -2993,3 +2993,18 @@ Complete verification and Fernando's separate implementation acceptance are stil
 Fernando accepted the complete bounded binocular/regional exact-track implementation and authorized merge and cleanup on 2026-09-19. PR 172 merged it into `program/50s-crossing-foundation` at `05d4029` after 314 immediate, 2,741 complete, and 199 final documentation tests plus physical PNG/PDF/semantic-SVG review and clean repository checks.
 
 Only a documentation-first 50S.6G.4A planisphere exact-track audit is authorized next. 50S.6G.4A/B runtime work and all later satellite science remain unauthorized pending separate acceptance.
+
+## 50S.6G.4A candidate audit state
+
+A documentation-only candidate now distinguishes the paired physical polar
+planisphere from the ordinary horizontal full-sky planisphere and specifies
+only stereographic north/south faces. It freezes event-specific non-recurrence
+meaning, fixed GCRS/ICRS-axis projection, observer/reference admission,
+intentional overlap, declination-cap clipping, longitude continuity, existing
+horizon/mask/furniture separation, paired lifecycle cleanup, bounded
+provenance, and PNG/PDF/semantic-SVG acceptance evidence.
+
+This candidate authorizes no implementation. 50S.6G.4B, ordinary all-sky or
+circumpolar satellite tracks, equidistant polar tracks, report/CLI changes,
+providers, visibility, illumination, brightness, detector effects, scheduling
+adapters, and 50S.7/50S.8 remain unauthorized.

@@ -479,3 +479,18 @@ Fernando accepted the dedicated binocular/regional chart-integration audit on 20
 ## 50S.6G.3B candidate implementation state
 
 The bounded candidate composes accepted exact evidence into ordinary regional and binocular chart requests, with request-owned lifecycle, existing presentation/export owners, exact semantics, and bounded provenance. It changes no accepted report, CLI, manifest, or filesystem protocol. Deterministic offline specimens and focused clipping evidence remain separate so visual demonstration does not invent an implausible track.
+
+## 50S.6G.4A candidate refinement
+
+The dedicated 50S.6G.4A audit refines the final delivery slice into an
+event-specific exact-track overlay on the paired physical stereographic polar
+planisphere. It separates this product from the ordinary horizontal full-sky
+planisphere, preserves fixed geometric GCRS/ICRS-axis meaning, assigns the same
+evidence independently to both declination-capped faces, permits intentional
+overlap duplication, and keeps horizon, masks, furniture, and later visibility
+science outside track admission.
+
+The proposed paired lifecycle validates and installs once, exports both faces
+through existing owners, records bounded non-recurrence provenance, and always
+cleans request-owned layers. This is candidate documentation only. It
+authorizes no 50S.6G.4B implementation or later satellite work.
