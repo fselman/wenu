@@ -2380,3 +2380,23 @@ documentation tests passed in 3.27 seconds and clean checks. A dedicated
 exact-report production owner adjacent to sampled-candidate presentation and a
 stable exact-report test file are authorized, subject to the implementation
 source-tree preflight. No other module or ownership change is authorized.
+
+
+## Candidate 50S.6G.2A implementation ownership
+
+`src/wenu/satellite_crossing_reports.py` is the dedicated exact-local logical
+report, identity, deterministic JSON, strict decoder, and typed semantic
+validation owner. It is adjacent to, but scientifically separate from,
+`satellite_presentations.py`, which continues to own SatChecker sampled
+candidate evidence.
+
+`src/wenu/data/satellite_exact_crossing_report_v1.schema.json` is the
+packaged closed Draft 2020-12 authority.
+`tests/test_satellite_crossing_reports.py` owns the stable exact-report
+logical-model, schema, corruption, isolation, determinism, and round-trip
+responsibility. Extending the sampled-presentation tests would mix different
+scientific products and failure contracts.
+
+No ownership moves. Existing crossing, coordinate, snapshot, acceleration,
+batch, presentation, rendering, and export owners remain unchanged. Candidate
+acceptance is pending.
