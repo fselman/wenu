@@ -7282,3 +7282,44 @@ def test_50s6g1b_candidate_bounded_closure_preserves_limitations():
     assert "No production ownership changes" in source_tree
     assert "introduces no coordinate operation" in coordinates
     assert "The one-run authority is consumed" in instructions
+
+
+def test_50s6g1b_records_accepted_bounded_closure():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_snapshot_preflight_audit_50s6g1b.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-19" in document
+        assert "c62a451" in document
+        assert "173" in document
+        assert "3.82 seconds" in document
+        assert "50S.6G.2A documentation audit" in document
+        assert "zero crossings" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted 50S.6G.1B bounded closure" in audit
+    assert "Accepted bounded 50S.6G.1B closure" in architecture
+    assert "50S.6G.1B accepted bounded closure" in roadmap
+    assert "Accepted 50S.6G.1B closure boundary" in reference
+    assert "Accepted 50S.6G.1B closure ownership" in source_tree
+    assert "Accepted 50S.6G.1B closure coordinate review" in coordinates
+    assert "Accepted bounded 50S.6G.1B closure" in guide
+    assert "Accepted bounded 50S.6G.1B closure boundary" in instructions
+
+    assert "The consumed execution authority is not renewed" in audit
+    assert "Implementation is not authorized" in roadmap
+    assert "No report API" in reference
+    assert "no new production module" in source_tree
+    assert "may not implement serialization" in coordinates
+    assert "The one-run authority remains consumed" in instructions
