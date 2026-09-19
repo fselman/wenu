@@ -460,3 +460,22 @@ behavior. Until Fernando separately accepts it, 50S.6G.1B is not closed and
 50S.6G.2A is not authorized. Acceptance would close only the bounded
 acquisition/admission/evidence foundation and authorize only a separate
 documentation audit for 50S.6G.2A, not report implementation.
+
+
+## Accepted 50S.6G.1B bounded closure
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at candidate commit `c62a451`, after all 173 plugin-disabled
+current-documentation tests passed in 3.82 seconds; the diff check and working
+tree were clean.
+
+50S.6G.1B is closed only as the policy-governed acquisition, immutable
+admission, deterministic medium-specimen, exact empty-result equivalence, and
+conservative partition foundation. All real matrix fields had zero crossings.
+The deferred full-snapshot, wider FoV-count, comprehensive real-crossing, and
+performance/resource claims remain unmade and require a future separately
+bounded audit. The consumed execution authority is not renewed.
+
+Only a bounded 50S.6G.2A documentation audit is authorized next. Report-model,
+JSON Schema, deterministic JSON, or round-trip implementation remains
+unauthorized pending separate acceptance of that audit.
