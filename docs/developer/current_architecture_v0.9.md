@@ -1477,3 +1477,16 @@ meaning. It does not authorize another real run. Pending Fernando's separate
 acceptance, 50S.6G.1B remains open and 50S.6G.2A remains unauthorized.
 Acceptance would authorize only a documentation audit of the canonical
 exact-crossing report and deterministic JSON boundary.
+
+
+## Accepted bounded 50S.6G.1B closure
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after 173 plugin-disabled documentation tests passed
+in 3.82 seconds and repository checks were clean. The accepted architecture
+claim remains exact empty-result equivalence and conservative partition
+integrity; all real fields had zero crossings.
+
+Only a 50S.6G.2A documentation audit is authorized next. Report implementation,
+another real run, refactoring, parallelization, and broader performance claims
+remain unauthorized.
