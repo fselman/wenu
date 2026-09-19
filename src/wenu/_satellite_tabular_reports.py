@@ -498,6 +498,10 @@ def _scope_table(projection, kind):
 def to_votable(report):
     projection = _projection_from_report(report, "votable")
     votable = VOTableFile(version="1.5")
+    # Astropy 7 validates version 1.5 but does not populate the child-element
+    # version flags until parsing.  Populate them from Astropy's own authority.
+    votable._config.update(votable._get_version_checks())
+    votable._config["version"] = votable.version
     resource = Resource(
         ID=_RESOURCE_ID,
         name="Wenu exact satellite crossing report",
