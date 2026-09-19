@@ -7408,7 +7408,7 @@ def test_satellite_guide_is_pedagogical_and_history_is_separate():
 
 
 def test_satellite_guide_explains_orbital_elements_and_precession():
-    guide = read(DEVELOPER / "satellite_guide.md")
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
 
     for phrase in (
         "Keplerian elements: osculating geometry and Wenu's mean-element input",
