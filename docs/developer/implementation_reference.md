@@ -3086,3 +3086,18 @@ Report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` record
 ## Accepted first real-matrix evidence
 
 Fernando scientifically and architecturally accepted the first real-matrix report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18 after the 171-test documentation gate. The accepted contract evidence is exact empty-result equivalence and complete conservative partitioning. All fields had zero crossings; no positive real-crossing or universal performance conclusion follows.
+
+
+## Candidate 50S.6G.1B closure boundary
+
+The integrated `b010a6c` runtime remains unchanged. Its external-snapshot,
+admission, medium-selection, matrix, and offline execution APIs retain their
+accepted fail-closed contracts. The one real report proves exact empty-result
+route equivalence and partition integrity for the accepted ten-field fixture;
+all fields had zero crossings.
+
+This candidate adds no report API or serialization. It claims no positive real
+crossing, full-snapshot matrix, broad FoV-count capacity, universal
+performance, concurrency, or reuse result and authorizes no further execution.
+Pending separate acceptance, 50S.6G.2A remains unauthorized. Acceptance would
+authorize only its documentation audit.
