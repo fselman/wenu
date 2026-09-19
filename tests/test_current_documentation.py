@@ -7584,3 +7584,22 @@ def test_50s6g2b_candidate_tabular_audit_is_lossless_reusable_and_bounded():
     assert "authorizes no runtime work" in roadmap
     assert "authorizes no implementation" in delivery
     assert "candidate audit, not acceptance" in log
+
+
+def test_50s6g2b_records_candidate_verification_without_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"
+    ).split())
+    log = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+
+    for document in (audit, log):
+        assert "ef14bc1" in document
+        assert "181" in document
+        assert "4.88 seconds" in document
+        assert "57c8bec" in document
+        assert "clean" in document
+        assert "synchronized" in document
+        assert "authorizes no implementation" in document
+
+    assert "documentation consistency only" in audit
+    assert "not scientific or architectural acceptance" in log
