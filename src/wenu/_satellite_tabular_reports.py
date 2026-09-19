@@ -167,6 +167,13 @@ def _column_specs():
 
 
 _COLUMNS = _column_specs()
+_COMMON_SPECS = (
+    _ColumnSpec("record_kind", "", (), "string", False, None),
+    _ColumnSpec("field_ordinal", "", (), "integer", True, None),
+    _ColumnSpec("field_id", "", (), "string", True, None),
+    _ColumnSpec("crossing_ordinal", "", (), "integer", True, None),
+    _ColumnSpec("norad_catalog_id", "", (), "integer", True, None),
+)
 
 
 def _canonical_array(value):
@@ -421,13 +428,7 @@ def _table_from_rows(projection, rows=None, columns=None):
     columns = projection.columns if columns is None else tuple(columns)
     names = _COMMON_COLUMNS + tuple(column.name for column in columns)
     result = Table(masked=True)
-    all_specs = (
-        (_ColumnSpec("record_kind", "", (), "string", False, None)),
-        (_ColumnSpec("field_ordinal", "", (), "integer", True, None)),
-        (_ColumnSpec("field_id", "", (), "string", True, None)),
-        (_ColumnSpec("crossing_ordinal", "", (), "integer", True, None)),
-        (_ColumnSpec("norad_catalog_id", "", (), "integer", True, None)),
-    ) + columns
+    all_specs = _COMMON_SPECS + columns
     indices = [projection.column_names.index(name) for name in names]
     for spec, index in zip(all_specs, indices):
         values = [row[index] for row in rows]
@@ -501,10 +502,36 @@ def _scope_columns(kind):
     return tuple(column for column in _COLUMNS if column.record_kind == kind)
 
 
+def _votable_specs(kind):
+    return _COMMON_SPECS + _scope_columns(kind)
+
+
+def _votable_names(kind):
+    names = []
+    for spec in _votable_specs(kind):
+        names.append(spec.name)
+        if spec.nullable and spec.value_kind == "string":
+            names.append(f"{spec.name}__is_null")
+    return tuple(names)
+
+
 def _scope_table(projection, kind):
     columns = _scope_columns(kind)
     rows = [row for row in projection.rows if row[0] == kind]
-    return _table_from_rows(projection, rows=rows, columns=columns)
+    table = _table_from_rows(projection, rows=rows, columns=columns)
+    for spec in _votable_specs(kind):
+        if not (spec.nullable and spec.value_kind == "string"):
+            continue
+        nulls = np.asarray(table[spec.name].mask, dtype=bool)
+        table[spec.name].mask = np.zeros(len(table), dtype=bool)
+        indicator = MaskedColumn(
+            nulls,
+            name=f"{spec.name}__is_null",
+            dtype=np.bool_,
+            mask=np.zeros(len(table), dtype=bool),
+        )
+        table.add_column(indicator, index=table.colnames.index(spec.name) + 1)
+    return table
 
 
 def to_votable(report):
@@ -594,9 +621,7 @@ def from_votable(value):
     expected_names = _COMMON_COLUMNS + tuple(column.name for column in _COLUMNS)
     for kind, element in zip(_KINDS, resource.tables):
         table = element.to_table(use_names_over_ids=True)
-        expected_scope = _COMMON_COLUMNS + tuple(
-            column.name for column in _scope_columns(kind)
-        )
+        expected_scope = _votable_names(kind)
         if tuple(table.colnames) != expected_scope:
             raise ValueError("VOTable FIELD structure is unsupported.")
         for field in element.fields:
@@ -608,9 +633,36 @@ def from_votable(value):
                 raise ValueError("VOTable UTC FIELD lacks the required TIMESYS reference.")
         for row_index, row in enumerate(table):
             mapping = {}
-            for name in expected_scope:
+            for spec in _votable_specs(kind):
+                name = spec.name
                 item = row[name]
                 masked = bool(np.all(table[name].mask[row_index]))
+                if spec.nullable and spec.value_kind == "string":
+                    indicator_name = f"{name}__is_null"
+                    indicator = row[indicator_name]
+                    indicator_masked = bool(
+                        np.all(table[indicator_name].mask[row_index])
+                    )
+                    if indicator_masked or not isinstance(
+                        indicator, (bool, np.bool_)
+                    ):
+                        raise ValueError(
+                            "VOTable Unicode null indicator is invalid."
+                        )
+                    if masked:
+                        raise ValueError(
+                            "VOTable Unicode carriers must be unmasked."
+                        )
+                    item = item.item() if hasattr(item, "item") else item
+                    if bool(indicator):
+                        if item != "":
+                            raise ValueError(
+                                "VOTable Unicode null indicator contradicts its carrier."
+                            )
+                        mapping[name] = None
+                    else:
+                        mapping[name] = item
+                    continue
                 mapping[name] = (
                     None
                     if masked
