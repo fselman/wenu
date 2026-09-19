@@ -902,3 +902,23 @@ This acceptance closes only the immutable JSON logical-report slice. It does
 not authorize ECSV/VOTable, CLI/file publication, atomic writing, exact tracks,
 charts, illumination, magnitude, detector effects, provider access, scheduling
 integration, or another scientific execution.
+
+
+## Candidate 50S.6G.2B tabular interoperability audit
+
+After accepted 50S.6G.2A and merge commit `57c8bec`, the next bounded
+documentation audit defines lossless in-memory ECSV and IVOA VOTable 1.5
+encodings. The as-is review found existing repository ECSV precedent for units
+and types, no existing VOTable production convention, and no authority to make
+format bytes the scientific identity.
+
+The candidate therefore retains canonical JSON identity and requires one
+shared reusable format-neutral projection with thin ECSV/VOTable adapters.
+It preserves validated zero-crossing fields, order, units, masks, coordinate
+and UTC metadata, stable joins, provenance, and null future science. It
+separates portable logical round-trip identity from same-encoder byte
+determinism.
+
+This entry records a candidate audit, not acceptance. No implementation,
+filesystem publication, CLI, tracks, visibility science, provider access, or
+new execution is authorized.
