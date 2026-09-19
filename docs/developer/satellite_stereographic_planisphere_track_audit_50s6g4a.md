@@ -353,3 +353,28 @@ photometry, brightness, detector effects, observatory scheduling adapters, or
 If Fernando accepts this audit, only the bounded 50S.6G.4B implementation and
 the evidence listed above become authorized. Merge, later science, and program
 closure still require separate decisions.
+
+## Acceptance and bounded implementation authority
+
+Fernando scientifically and architecturally accepted this documentation-only
+audit on 2026-09-19 at
+`c1d9015ab18153dc84aba1360edb29fa4f46bf4e`. Verification comprised all 200
+plugin-disabled current-documentation tests passing in 5.29 seconds, a clean
+diff check against `00033b717e5b41471b618a0a2a87ec7dae65e7ac`, exact local
+and upstream head agreement, and a clean synchronized Mac working tree.
+
+Implement only the bounded 50S.6G.4B paired stereographic-planisphere
+integration specified above: explicit already-realized display requests,
+complete pair/observer/reference admission, fixed-axis geometric meaning,
+independent two-face projection and accepted cap clipping, intentional overlap,
+request-owned lifecycle, existing presentation/export owners, bounded
+event-specific provenance and validity text, focused evidence, and required
+north/south PNG, PDF, and semantic-SVG specimens.
+
+This acceptance does not authorize ordinary full-sky or circumpolar satellite
+tracks, polar azimuthal-equidistant tracks, combined-face or pouch-sheet
+satellite output, providers, report or CLI changes, new execution science,
+visibility, sunlight, solar Earthshine, moonlight, lunar Earthshine,
+photometry, brightness, detector effects, scheduling adapters, or 50S.7/50S.8
+work. The implementation remains a candidate until separately verified,
+physically reviewed, and accepted.

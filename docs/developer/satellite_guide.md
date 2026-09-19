@@ -855,3 +855,12 @@ must not suggest that the satellite repeats the path whenever the planisphere
 is rotated to the same sky. Horizon furniture remains separate and makes no
 visibility claim. The audit is documentation-only; implementation and later
 illumination or brightness science remain unauthorized.
+
+## Accepted stereographic polar-planisphere audit
+
+Fernando accepted the 50S.6G.4A documentation boundary on 2026-09-19. A
+bounded implementation may now carry already-realized exact evidence through
+the paired north/south stereographic page export, including event-specific
+site/time validity, face overlap, cap clipping, cleanup, and existing semantic
+outputs. It may not perform new satellite science or add other all-sky,
+illumination, or brightness behavior.

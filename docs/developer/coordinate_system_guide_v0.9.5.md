@@ -3983,3 +3983,12 @@ itself as an event-specific non-recurring overlay. Face declination caps may
 clip presentation, but the physical horizon and pouch perform no satellite
 visibility filtering. This audit changes no coordinate calculation and
 authorizes no implementation.
+
+## Accepted 50S.6G.4A fixed-axis polar boundary
+
+Fernando accepted the direct fixed GCRS/ICRS-axis presentation for the paired
+stereographic polar planisphere. A bounded implementation may project the same
+geometric topocentric evidence independently on both equatorial faces while
+retaining per-sample UTC and event-specific non-recurrence. It must not pass
+through AltAz, apply apparent corrections, or let horizon furniture perform
+satellite visibility filtering.

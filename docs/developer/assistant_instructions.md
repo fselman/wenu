@@ -1568,3 +1568,20 @@ not add ordinary all-sky/circumpolar or equidistant-polar tracks, provider or
 report/CLI changes, new execution science, visibility, illumination,
 brightness, detector effects, scheduling adapters, 50S.7/50S.8 behavior, or
 unrelated refactoring.
+
+## Accepted 50S.6G.4A audit boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `c1d9015ab18153dc84aba1360edb29fa4f46bf4e`;
+all 200 plugin-disabled current-documentation tests passed in 5.29 seconds,
+and exact-head, upstream, diff, and clean-tree checks passed.
+
+Implement only the bounded 50S.6G.4B paired stereographic-planisphere
+integration and its required north/south PNG, PDF, semantic-SVG, coordinate,
+clipping, lifecycle, provenance, state-isolation, and unchanged-output
+evidence. Do not add ordinary full-sky/circumpolar or equidistant-polar
+tracks, combined-face or pouch-sheet output, provider or report/CLI changes,
+new execution science, visibility, illumination, brightness, detector
+effects, scheduling adapters, 50S.7/50S.8 behavior, or unrelated refactoring.
+Do not merge the implementation before separate verification, physical visual
+review, and Fernando's scientific and architectural acceptance.

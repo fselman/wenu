@@ -3327,3 +3327,13 @@ meaning, per-sample UTC, and track identity. Existing observer-local layers
 retain their current transformation. North/south overlap is intentional, face
 cap clipping creates no event, and page provenance remains bounded. These are
 proposed APIs only; no implementation is authorized by the audit.
+
+## Accepted 50S.6G.4A implementation authorization
+
+After acceptance at `c1d9015`, implementation may add only the explicit
+default-empty `satellite_exact_tracks` input to the paired stereographic page
+export, complete pair/display admission, shared request-owned installation and
+cleanup, typed fixed-axis equatorial handling, bounded per-face provenance and
+validity furniture, focused tests, and required north/south PNG/PDF/semantic-
+SVG specimens. It must consume accepted evidence and perform no new satellite
+science.

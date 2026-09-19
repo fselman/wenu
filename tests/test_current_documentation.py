@@ -8409,3 +8409,56 @@ def test_50s6g4a_candidate_stereographic_planisphere_audit_is_bounded():
     assert "50S.6G.4A candidate refinement" in delivery
     assert "Candidate 50S.6G.4A stereographic planisphere audit" in log
     assert "This candidate authorizes no implementation" in roadmap
+
+
+def test_50s6g4a_records_acceptance_and_only_bounded_implementation_authority():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "c1d9015ab18153dc84aba1360edb29fa4f46bf4e",
+        "all 200 plugin-disabled current-documentation tests",
+        "5.29 seconds",
+        "Implement only the bounded 50S.6G.4B",
+        "This acceptance does not authorize ordinary full-sky",
+        "implementation remains a candidate",
+    ):
+        assert phrase in audit
+
+    (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinates,
+        guide,
+        instructions,
+        delivery,
+        log,
+    ) = documents
+    assert "Accepted 50S.6G.4A audit boundary" in architecture
+    assert "50S.6G.4A accepted audit and next authority" in roadmap
+    assert "Accepted 50S.6G.4A implementation authorization" in reference
+    assert "Accepted 50S.6G.4A implementation ownership" in source_tree
+    assert "Accepted 50S.6G.4A fixed-axis polar boundary" in coordinates
+    assert "Accepted stereographic polar-planisphere audit" in guide
+    assert "Accepted 50S.6G.4A audit boundary" in instructions
+    assert "Accepted 50S.6G.4A audit refinement" in delivery
+    assert "Accepted 50S.6G.4A stereographic planisphere audit" in log
+    assert "later satellite work remain unauthorized" in roadmap

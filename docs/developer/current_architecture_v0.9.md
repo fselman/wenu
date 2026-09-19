@@ -1692,3 +1692,11 @@ Observer/reference validation and request-owned cleanup precede and surround
 the two canonical face exports. This audit changes no runtime and authorizes no
 implementation, ordinary full-sky/circumpolar track, visibility science, or
 later satellite behavior.
+
+## Accepted 50S.6G.4A audit boundary
+
+Fernando accepted the documentation-only paired stereographic-planisphere
+audit on 2026-09-19 at `c1d9015`, after 200 plugin-disabled documentation
+tests passed in 5.29 seconds and repository checks were clean. Only the
+bounded 50S.6G.4B integration and required physical north/south specimens are
+authorized next; all later satellite science remains unauthorized.

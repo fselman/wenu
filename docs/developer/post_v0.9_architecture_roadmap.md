@@ -3008,3 +3008,13 @@ This candidate authorizes no implementation. 50S.6G.4B, ordinary all-sky or
 circumpolar satellite tracks, equidistant polar tracks, report/CLI changes,
 providers, visibility, illumination, brightness, detector effects, scheduling
 adapters, and 50S.7/50S.8 remain unauthorized.
+
+## 50S.6G.4A accepted audit and next authority
+
+Fernando accepted the documentation-only audit on 2026-09-19 at `c1d9015`.
+The next authorized step is only the bounded 50S.6G.4B paired stereographic-
+planisphere integration, focused evidence, and physical north/south PNG, PDF,
+and semantic-SVG specimens described by the audit. Ordinary full-sky,
+circumpolar, equidistant-polar, combined-face, pouch-sheet, visibility,
+illumination, brightness, detector, scheduling, 50S.7, 50S.8, and later
+satellite work remain unauthorized.

@@ -494,3 +494,12 @@ The proposed paired lifecycle validates and installs once, exports both faces
 through existing owners, records bounded non-recurrence provenance, and always
 cleans request-owned layers. This is candidate documentation only. It
 authorizes no 50S.6G.4B implementation or later satellite work.
+
+## Accepted 50S.6G.4A audit refinement
+
+Fernando accepted the dedicated paired stereographic-planisphere audit on
+2026-09-19. Only its bounded 50S.6G.4B evidence-to-two-face integration,
+focused contracts, bounded validity provenance, and physical north/south
+acceptance specimens are authorized next. Other all-sky products,
+illumination, brightness, observatory adapters, and later satellite science
+remain separate.

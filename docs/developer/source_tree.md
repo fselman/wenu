@@ -2564,3 +2564,13 @@ paired lifecycle, page-provenance, furniture, and single-save owner.
 owners, renderers, and exporters retain their accepted responsibilities. No
 new projection, satellite-science, report, CLI, provider, renderer, exporter,
 or milestone-named runtime-test owner is authorized.
+
+## Accepted 50S.6G.4A implementation ownership
+
+The accepted audit authorizes only minimal extensions to the existing
+science-free request-track composition, polar-planisphere typed equatorial
+projection/cap clipping, and paired page-export lifecycle/provenance owners.
+Existing exact-evidence layers, styles, semantics, renderers, exporters, and
+durable exact-track and polar test files remain authoritative. No new
+projection, science, provider, report, CLI, renderer, exporter, or milestone-
+named runtime-test owner is authorized.
