@@ -388,3 +388,17 @@ Fernando scientifically and architecturally accepted this refinement on
 2026-09-17 after all 147 plugin-disabled current-documentation tests passed in
 4.54 seconds. Only bounded fake-transport 50S.6G.1B.1 is authorized next; no
 live CelesTrak access or representative admission/evidence is authorized.
+
+## 15. Candidate 50S.6G.2A exact-report refinement
+
+The dedicated `satellite_exact_crossing_report_audit_50s6g2a.md` refines
+milestone 50S.6G.2A without changing the later ECSV/VOTable, CLI/file, track,
+or chart contracts. It defines a distinct exact-local product, complete
+immutable logical model, explicit creation instant, report identity digest,
+closed Draft 2020-12 JSON Schema, deterministic UTF-8 JSON, strict semantic
+decoder, and typed byte-identical round trips.
+
+Validated zero-crossing fields remain explicit results. Version 1 requires
+future illumination, magnitude, detector, and exact-track values to be null.
+The audit changes no runtime and authorizes no implementation before Fernando's
+separate acceptance.
