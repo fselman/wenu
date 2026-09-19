@@ -2357,3 +2357,17 @@ and external artifacts remain outside the package.
 Only a bounded 50S.6G.2A documentation audit is authorized next. It must
 perform a fresh source-tree assessment before proposing a report owner; no new
 production module is authorized by this closure.
+
+
+## Candidate 50S.6G.2A exact-report ownership
+
+The closest existing owner is `satellite_presentations.py`, but it owns the
+scientifically distinct SatChecker sampled-candidate product. The candidate
+audit therefore proposes a dedicated adjacent exact-report module and, if
+implementation is later accepted, a new
+`tests/test_satellite_crossing_reports.py` stable-responsibility test owner.
+
+The candidate owner formats already retained values only. It does not own
+solving, propagation, coordinates, airmass, acceleration, acquisition,
+ECSV/VOTable, CLI/files, tracks, charts, or future illumination/brightness.
+No production or test file is authorized until audit acceptance.
