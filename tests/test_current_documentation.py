@@ -3174,6 +3174,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_multifov_interchange_audit_50s6e.md",
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
+        "satellite_exact_crossing_report_audit_50s6g2a.md",
         "satellite_snapshot_admission_audit_50s6g1b2a.md",
         "satellite_medium_specimen_audit_50s6g1b2c.md",
         "satellite_equivalence_matrix_audit_50s6g1b2d.md",
@@ -7323,3 +7324,54 @@ def test_50s6g1b_records_accepted_bounded_closure():
     assert "no new production module" in source_tree
     assert "may not implement serialization" in coordinates
     assert "The one-run authority remains consumed" in instructions
+
+def test_50s6g2a_candidate_exact_crossing_report_audit():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_crossing_report_audit_50s6g2a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+        )
+    )
+
+    assert "satellite_exact_crossing_report_audit_50s6g2a.md" in index
+    for phrase in (
+        "wenu.artificial_satellite_exact_crossing_report",
+        "geometric exact local crossings — visibility not evaluated",
+        "validated field with zero crossings",
+        "satellite_presentations.py",
+        "caller-supplied immutable creation time",
+        "report_identity_sha256",
+        "additionalProperties: false",
+        "JSON Schema Draft 2020-12",
+        "duplicate object keys",
+        "from_json(report.to_json()) == report",
+        "tests/test_satellite_crossing_reports.py",
+        "future-science values must be JSON `null`",
+        "Atomic filesystem publication belongs to 50S.6G.2C",
+        "Until that acceptance, no 50S.6G.2A implementation is authorized",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        assert "50S.6G.2A" in document
+        assert "candidate" in document.lower()
+        assert "no runtime" in document.lower() or "no production" in document.lower() or "no implementation" in document.lower()
+
+    assert "distinct renderer-neutral exact-crossing logical model" in documents[0]
+    assert "No exact-report API exists" in documents[2]
+    assert "closest existing owner is `satellite_presentations.py`" in documents[3]
+    assert "introduces no coordinate operation" in documents[4]
+    assert "not a visibility forecast" in documents[5]
+    assert "Do not implement until Fernando separately accepts" in documents[6]
+    assert "Candidate 50S.6G.2A exact-report refinement" in documents[7]
