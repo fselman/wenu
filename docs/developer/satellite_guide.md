@@ -840,3 +840,27 @@ Fernando accepted the 50S.6G.3B documentation boundary on 2026-09-19. A bounded 
 The candidate accepts already-realized exact evidence directly in a regional or binocular ChartRequest. It can draw the retained path, the exact entry/closest/exit markers, and optional English event labels. Reusing a sphere leaves no request-owned satellite layer behind, and chart provenance records only the track digest and bounded identity/event summary.
 
 Deterministic offline specimens use a nearly straight short pass and export PNG, PDF, and semantic SVG from the same prepared chart. Boundary clipping is tested separately so the specimen does not invent an implausible bending satellite path. The implementation remains a candidate pending complete verification and acceptance.
+
+## Candidate stereographic polar-planisphere exact tracks
+
+50S.6G.4A proposes an event-specific overlay on Wenu's paired physical north
+and south polar planisphere faces, not on the ordinary horizontal full-sky
+planisphere. The same already-realized track is expressed in fixed equatorial
+axes and projected independently onto both stereographic faces. A track in the
+declination overlap may appear on both; a face boundary clips only the drawing
+and never creates a new entry or exit event.
+
+This product is valid only for the stated observing site and UTC interval. It
+must not suggest that the satellite repeats the path whenever the planisphere
+is rotated to the same sky. Horizon furniture remains separate and makes no
+visibility claim. The audit is documentation-only; implementation and later
+illumination or brightness science remain unauthorized.
+
+## Accepted stereographic polar-planisphere audit
+
+Fernando accepted the 50S.6G.4A documentation boundary on 2026-09-19. A
+bounded implementation may now carry already-realized exact evidence through
+the paired north/south stereographic page export, including event-specific
+site/time validity, face overlap, cap clipping, cleanup, and existing semantic
+outputs. It may not perform new satellite science or add other all-sky,
+illumination, or brightness behavior.

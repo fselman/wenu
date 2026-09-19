@@ -2550,3 +2550,27 @@ The accepted audit authorizes one request-integration owner adjacent to existing
 - tools/validate_50s6g3b_exact_satellite_charts.py creates deterministic offline PNG/PDF/semantic-SVG specimens.
 
 No satellite science, provider, report, CLI, planisphere, projection, renderer, or exporter owner changed.
+
+## Candidate 50S.6G.4A ownership
+
+The documentation-only audit proposes no new production file.
+`charts/request_satellite_tracks.py` remains the science-free display,
+validation, installation, cleanup, and bounded-summary owner;
+`charts/polar_planisphere.py` remains the typed equatorial projection and
+declination-cap-clipping owner; and `charts/polar_page_export.py` remains the
+paired lifecycle, page-provenance, furniture, and single-save owner.
+
+`sky/satellite_exact_track_layer.py`, existing exact-track style and semantic
+owners, renderers, and exporters retain their accepted responsibilities. No
+new projection, satellite-science, report, CLI, provider, renderer, exporter,
+or milestone-named runtime-test owner is authorized.
+
+## Accepted 50S.6G.4A implementation ownership
+
+The accepted audit authorizes only minimal extensions to the existing
+science-free request-track composition, polar-planisphere typed equatorial
+projection/cap clipping, and paired page-export lifecycle/provenance owners.
+Existing exact-evidence layers, styles, semantics, renderers, exporters, and
+durable exact-track and polar test files remain authoritative. No new
+projection, science, provider, report, CLI, renderer, exporter, or milestone-
+named runtime-test owner is authorized.
