@@ -868,3 +868,19 @@ pure deterministic encoder/decoder, and focused exact-report tests are
 authorized next. ECSV/VOTable, CLI/files, tracks, charts, illumination,
 magnitude, detector effects, provider access, another real run, and unrelated
 refactoring remain unauthorized.
+
+
+## Candidate 50S.6G.2A exact-report implementation
+
+The bounded candidate adds the dedicated immutable exact-local report model,
+packaged closed Draft 2020-12 schema, deterministic JSON and report identity,
+strict typed decoder, and focused synthetic tests. The first focused gate
+passed 15 tests in 9.38 seconds at `f5f58b5`; after typed reconstruction was
+added, the same 15 tests passed in 2.31 seconds at `f8d2e51`. The immediate
+satellite boundary gate then passed 99 tests in 119.54 seconds.
+
+A later decoder-isolation refinement loads the packaged schema once so each
+decode/re-encode operation performs no filesystem access. That current state
+still requires focused, documentation, integrity, and complete-suite
+verification before acceptance. No later 50S.6G work or new scientific
+execution is authorized.
