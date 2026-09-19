@@ -1376,3 +1376,14 @@ Do not interpret an empty string as null, write a private BINARY2 parser, or
 make further runtime changes until Fernando separately accepts this bounded
 amendment. Paths, files, CLI, publication, tracks, charts, visibility science,
 provider access, and new execution remain unauthorized.
+
+
+## Accepted 50S.6G.2B Astropy Unicode-null correction
+
+Fernando scientifically and architecturally accepted the bounded correction on
+2026-09-19 at `5038e4a`, after 184 plugin-disabled current-documentation
+tests passed in 5.28 seconds and repository checks were clean. Implement only
+the exact adjacent Boolean `__is_null` VOTable FIELDs for nullable Unicode
+values, strict validation, and focused tests. Preserve the shared logical
+projection, ECSV, canonical JSON identity, and every existing 50S.6G.2B
+exclusion.
