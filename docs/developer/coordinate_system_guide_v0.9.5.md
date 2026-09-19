@@ -3958,3 +3958,7 @@ Fernando accepted the timeless geometric `gcrs-axes` / `topocentric-direction` c
 ## Candidate 50S.6G.3B fixed product-frame finding
 
 For a static regional or binocular chart, every retained geometric topocentric direction remains tied to its own UTC sample instant in fixed GCRS axes, while the complete curve is transformed once into the horizontal product frame at the chart reference instant. The chart reference instant must equal the crossing FoV coordinate reference instant. This does not make samples simultaneous or recompute per-sample instantaneous AltAz. The candidate authorizes no coordinate implementation.
+
+## Accepted 50S.6G.3B coordinate boundary
+
+Fernando accepted the fixed-product-frame finding: admitted evidence keeps per-sample UTC directions in fixed GCRS axes, and the complete path is transformed once into the horizontal chart frame at the matching chart/FoV reference instant. Implementation must not recompute per-sample instantaneous AltAz or describe samples as simultaneous.

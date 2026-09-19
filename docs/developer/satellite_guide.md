@@ -830,3 +830,7 @@ The curve itself has no single time. UTC is therefore declared once on the evide
 50S.6G.3B proposes an explicit display request that carries already-computed exact evidence into an ordinary regional or binocular chart. The request may show the path, exact event markers, and optional event labels. Chart construction does not solve or propagate a satellite again; it only installs evidence views and uses Wenu's ordinary projection, clipping, styling, and export path.
 
 The complete curve is shown in one fixed chart frame at the crossing field's reference instant. Planisphere tracks and later visibility or illumination science remain separate work. This audit is documentation-only.
+
+## Accepted binocular/regional chart audit
+
+Fernando accepted the 50S.6G.3B documentation boundary on 2026-09-19. A bounded implementation may now carry already-realized exact evidence into ordinary regional and binocular charts, with path/event/label controls and existing output paths. It may not perform satellite science or add planisphere support.

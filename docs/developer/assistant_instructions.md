@@ -1522,3 +1522,9 @@ Only a documentation-first 50S.6G.3B binocular/regional chart-integration audit 
 Read `satellite_binocular_regional_track_audit_50s6g3b.md` before any exact satellite chart-request or regional/binocular integration work. Treat it as a candidate only; do not implement before Fernando separately accepts it.
 
 Preserve already-realized 3A evidence as the sole track truth, matching observer/reference-instant admission, one fixed product-frame transform, request-owned installation and cleanup, independent path/event/label controls, canonical projection/clipping/render/export owners, bounded provenance summaries, and stable exact-visit semantics. Do not add planisphere/all-sky/circumpolar tracks, provider access, report/CLI changes, new execution science, visibility, illumination, brightness, detector effects, or unrelated refactoring.
+
+## Accepted 50S.6G.3B audit boundary
+
+Fernando scientifically and architecturally accepted the audit on 2026-09-19 at `ef58180f62b99423abbb92da56f9ef08dce8c173`; 198 plugin-disabled documentation tests passed in 5.30 seconds and repository checks were clean.
+
+Implement only the explicit already-realized display request, strict admission, fixed-frame realization, request-owned install/cleanup, path/event/label controls, existing-owner appearance and export integration, bounded provenance, stable semantics, focused tests, and required regional/binocular PNG/PDF/semantic-SVG specimens. Do not begin 50S.6G.4A/B or add all-sky/circumpolar tracks, providers, report/CLI changes, new science, visibility, illumination, brightness, detector effects, or unrelated refactoring. Do not merge before separate verification, visual review, and acceptance.

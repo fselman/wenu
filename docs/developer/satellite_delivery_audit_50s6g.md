@@ -471,3 +471,7 @@ Fernando accepted the complete exact connected-visit evidence and output-neutral
 ## 50S.6G.3B candidate refinement
 
 The dedicated 50S.6G.3B audit refines binocular/regional delivery into explicit already-realized evidence requests, matching observer and reference-instant admission, fixed-frame path/event views, ordinary lifecycle cleanup, style/detail integration, bounded provenance, and PNG/PDF/semantic-SVG specimens. It adds no science and authorizes no implementation.
+
+## Accepted 50S.6G.3B audit refinement
+
+Fernando accepted the dedicated binocular/regional chart-integration audit on 2026-09-19. Only its bounded ordinary-request integration, focused tests, and acceptance specimens are authorized next. Planisphere work and later satellite science remain separate.

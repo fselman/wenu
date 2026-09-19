@@ -1042,3 +1042,7 @@ Fernando scientifically and architecturally accepted the bounded implementation 
 ## 2026-09-19 — Candidate 50S.6G.3B chart-integration audit
 
 A documentation-only candidate defines how accepted exact connected-visit evidence may enter ordinary binocular and regional stereographic horizontal chart requests. It preserves one fixed product frame, existing projection/clipping/render/export owners, explicit request lifecycle cleanup, stable semantics, and bounded provenance. It authorizes no implementation or planisphere/later science work.
+
+## 2026-09-19 — Accepted 50S.6G.3B audit
+
+Fernando scientifically and architecturally accepted the documentation-only chart-integration audit at `ef58180`. Verification comprised 198 plugin-disabled documentation tests in 5.30 seconds plus clean diff and synchronized-tree checks. Only the bounded binocular/regional implementation and specimens are authorized next.

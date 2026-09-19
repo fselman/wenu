@@ -227,3 +227,11 @@ Focused tests may use deterministic constructed `ExactLocalSatelliteTrack` evide
 ## Explicit authorization boundary
 
 This candidate authorizes no implementation. Acceptance would authorize only the bounded 50S.6G.3B binocular/regional exact-track chart integration described here. It would not authorize 50S.6G.4A/B planisphere work, all-sky/circumpolar satellite tracks, provider access, snapshot acquisition, report or CLI changes, new execution science, visibility, illumination, brightness, detector effects, scheduling integration, or unrelated refactoring.
+
+## Acceptance and bounded implementation authority
+
+Fernando scientifically and architecturally accepted this documentation-only audit on 2026-09-19 at `ef58180f62b99423abbb92da56f9ef08dce8c173`. Verification comprised 198 plugin-disabled current-documentation tests passing in 5.30 seconds, a clean diff check against `ce6eea37e518f97c81e13d52a613e540b204c31b`, and a clean synchronized Mac working tree.
+
+Implement only the bounded 50S.6G.3B binocular/regional exact-track chart integration specified above: explicit already-realized display requests, strict observer/reference-instant admission, one fixed product-frame transform, request-owned layer lifecycle, independent path/event/label controls, canonical presentation/export owners, bounded provenance summaries, stable semantics, focused tests, and required PNG/PDF/semantic-SVG specimens.
+
+This acceptance does not authorize 50S.6G.4A/B planisphere work, all-sky/circumpolar satellite tracks, provider access, snapshot acquisition, report or CLI changes, new execution science, visibility, illumination, brightness, detector effects, scheduling integration, or unrelated refactoring. The implementation remains a candidate until separately verified, visually reviewed, and accepted.

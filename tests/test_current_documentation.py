@@ -8290,3 +8290,45 @@ def test_50s6g3b_candidate_chart_integration_audit_is_bounded():
     assert "50S.6G.3B candidate refinement" in delivery
     assert "Candidate 50S.6G.3B chart-integration audit" in log
     assert "50S.6G.4A/B planisphere work" in roadmap
+
+def test_50s6g3b_records_acceptance_and_only_bounded_implementation_authority():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_binocular_regional_track_audit_50s6g3b.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "ef58180f62b99423abbb92da56f9ef08dce8c173",
+        "198 plugin-disabled current-documentation tests",
+        "5.30 seconds",
+        "Implement only the bounded 50S.6G.3B",
+        "This acceptance does not authorize 50S.6G.4A/B",
+        "implementation remains a candidate",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Accepted 50S.6G.3B audit boundary" in architecture
+    assert "50S.6G.3B accepted audit and next authority" in roadmap
+    assert "Accepted 50S.6G.3B implementation authorization" in reference
+    assert "Accepted 50S.6G.3B implementation ownership" in source_tree
+    assert "Accepted 50S.6G.3B coordinate boundary" in coordinates
+    assert "Accepted binocular/regional chart audit" in guide
+    assert "Accepted 50S.6G.3B audit boundary" in instructions
+    assert "Accepted 50S.6G.3B audit refinement" in delivery
+    assert "Accepted 50S.6G.3B audit" in log
+    assert "50S.6G.4A/B and all later science remain unauthorized" in roadmap

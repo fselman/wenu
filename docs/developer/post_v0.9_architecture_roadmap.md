@@ -2977,3 +2977,7 @@ Only the bounded documentation-first 50S.6G.3B binocular/regional chart-integrat
 A documentation-only candidate now specifies explicit exact-track display requests for regional and binocular stereographic horizontal products. It freezes observer/reference-instant admission, fixed product-frame meaning, request-owned layer lifecycle, independent path/event/label controls, bounded provenance summaries, stable semantic SVG identity, and PNG/PDF/SVG acceptance specimens.
 
 This candidate authorizes no implementation. 50S.6G.4A/B planisphere work, all-sky/circumpolar satellite tracks, report/CLI changes, providers, visibility, illumination, brightness, and detector effects remain unauthorized.
+
+## 50S.6G.3B accepted audit and next authority
+
+Fernando accepted the documentation-only audit on 2026-09-19 at `ef58180`. The next authorized step is only the bounded binocular/regional ordinary-request integration, lifecycle, detail/style/semantic/export seams, focused tests, and PNG/PDF/semantic-SVG specimens described by the audit. 50S.6G.4A/B and all later science remain unauthorized.

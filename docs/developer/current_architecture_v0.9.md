@@ -1667,3 +1667,7 @@ Fernando accepted the complete bounded exact-local-track implementation on 2026-
 ## Candidate 50S.6G.3B binocular/regional chart boundary
 
 The documentation-only candidate connects already-realized 50S.6G.3A evidence to explicit regional and binocular chart requests. The chart builder may install and clean up accepted path/event views, apply independent labels and appearance, and use the canonical projection, clipping, renderer, and PNG/PDF/semantic-SVG exporters. It performs no crossing, propagation, transformation science, sampling, provider access, report/CLI work, or planisphere integration. No runtime implementation is authorized by this audit.
+
+## Accepted 50S.6G.3B audit boundary
+
+Fernando accepted the documentation-only binocular/regional exact-track audit on 2026-09-19 at `ef58180`, after 198 plugin-disabled documentation tests passed in 5.30 seconds and repository checks were clean. Only the bounded ordinary-request chart integration and required specimens are authorized next. Planisphere and later science work remain unauthorized.

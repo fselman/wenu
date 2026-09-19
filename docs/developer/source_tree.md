@@ -2534,3 +2534,7 @@ The exact-track science module, evidence-only layer module, narrow coordinate/se
 ## Candidate 50S.6G.3B ownership
 
 A future `charts/request_satellite_tracks.py` may own display-request validation, admission, path/event layer installation, bounded provenance summaries, and cleanup. Existing chart request, detail, style, semantic SVG, projection, clipping, renderer, and exporter owners remain canonical. `satellites/exact_tracks.py` and `sky/satellite_exact_track_layer.py` retain all scientific evidence and view ownership. No production placement is authorized by this audit.
+
+## Accepted 50S.6G.3B implementation ownership
+
+The accepted audit authorizes one request-integration owner adjacent to existing chart-request track composition, minimal extensions to request/build cleanup, existing detail/style/semantic/export owners, focused tests, and specimen generation. Scientific evidence/layers and all canonical projection/render/export responsibilities remain where they are.
