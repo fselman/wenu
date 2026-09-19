@@ -7634,3 +7634,27 @@ def test_50s6g2b_records_scientific_and_architectural_acceptance():
     assert "coordinate guide remains current" in coordinates
     assert "exactly one reusable format-neutral mapping" in source_tree
     assert "new execution remain unauthorized" in log
+
+
+
+def test_50s6g2b_candidate_unicode_null_amendment_is_explicit_and_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"
+    ).split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for document in (audit, instructions):
+        assert "Astropy 7.1.0" in document
+        assert "BINARY2 null flags" in document
+        assert "__is_null" in document
+        assert "shared logical projection" in document
+        assert "report_identity_sha256" in document
+        assert "empty string as null" in document
+        assert "no further" in document
+        assert "runtime" in document
+
+    assert "Astropy issue 8995" in audit
+    assert "Numeric and Boolean nulls continue to use BINARY2 null flags" in audit
+    assert "true indicator paired with a non-empty carrier" in audit
+    assert "does not introduce a private BINARY2 parser" in audit
+    assert "documentation-only and unaccepted" in instructions
