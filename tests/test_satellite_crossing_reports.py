@@ -3,8 +3,11 @@
 from dataclasses import FrozenInstanceError, replace
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
+from io import StringIO
 import json
 
+from astropy.io import ascii
+import numpy as np
 import pytest
 
 import wenu.satellite_crossing_reports as report_module
@@ -346,8 +349,9 @@ def test_ecsv_declares_fixed_metadata_units_and_explicit_masks():
     assert "wenu_tabular_schema_version: 1" in encoded
     assert "report_identity_sha256:" in encoded
     assert "deg / s" in encoded
-    assert "serialize_method" in encoded
-    assert "data_mask" in encoded
+    table = ascii.read(StringIO(encoded), format="ecsv")
+    assert np.ma.is_masked(table["field_ordinal"][0])
+    assert not np.ma.is_masked(table["field_ordinal"][1])
 
 
 def test_votable_declares_version_binary2_timesys_and_three_tables():
