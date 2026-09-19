@@ -239,3 +239,14 @@ no 50S.6G.2B implementation is authorized.
   https://docs.astropy.org/en/stable/io/votable/
 - IVOA Recommendation, “VOTable Format Definition, Version 1.5”:
   https://www.ivoa.net/documents/VOTable/20231115/
+
+
+## Candidate verification evidence
+
+The documentation candidate at `ef14bc1` passed all 181 plugin-disabled
+`tests/test_current_documentation.py` tests in 4.88 seconds.
+`git diff --check 57c8bec...HEAD` passed, and the working tree was clean,
+synchronized with `origin/docs/50s6g2b-tabular-report-audit`.
+
+This evidence verifies documentation consistency only. The audit remains
+candidate documentation; it does not authorize 50S.6G.2B implementation.
