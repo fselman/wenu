@@ -1671,3 +1671,7 @@ The documentation-only candidate connects already-realized 50S.6G.3A evidence to
 ## Accepted 50S.6G.3B audit boundary
 
 Fernando accepted the documentation-only binocular/regional exact-track audit on 2026-09-19 at `ef58180`, after 198 plugin-disabled documentation tests passed in 5.30 seconds and repository checks were clean. Only the bounded ordinary-request chart integration and required specimens are authorized next. Planisphere and later science work remain unauthorized.
+
+## Candidate 50S.6G.3B implementation state
+
+The candidate implements explicit already-realized exact-track display requests for regional and binocular stereographic horizontal charts. Strict observer, coordinate-policy, and reference-instant admission occurs before preparation. Request-owned path and event layers use the ordinary fixed product-frame transformation, detail, style, projection, clipping, renderer, export, semantic-SVG, and cleanup owners. SVG provenance contains only ordered bounded summaries rather than retained samples. No provider, solver, report, CLI, planisphere, visibility, illumination, or brightness responsibility changed.
