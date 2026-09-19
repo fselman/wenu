@@ -595,6 +595,11 @@ class ChartRequest:
         for name, value, kind in expected:
             if not isinstance(value, kind):
                 raise TypeError(f"{name} must be a {kind.__name__} value.")
+        from .request_satellite_tracks import (
+            validate_satellite_exact_track_requests,
+        )
+
+        validate_satellite_exact_track_requests(self)
         product_compositions = tuple(self.product_compositions)
         if any(
             not isinstance(value, ChartProductCompositionOptions)
@@ -699,11 +704,6 @@ class ChartRequest:
         object.__setattr__(
             self, "satellite_exact_tracks", satellite_exact_tracks
         )
-        from .request_satellite_tracks import (
-            validate_satellite_exact_track_requests,
-        )
-
-        validate_satellite_exact_track_requests(self)
         if self.solar_system_track_tick_labels and not tracks:
             raise ValueError("track tick labels require a Solar-System track.")
         if any(
