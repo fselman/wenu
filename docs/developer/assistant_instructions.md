@@ -1256,3 +1256,20 @@ parallelize, or refactor under this candidate. This documentation-only closure
 changes no runtime. Until Fernando separately accepts it, 50S.6G.1B remains
 open and 50S.6G.2A is unauthorized. Acceptance would authorize only a bounded
 50S.6G.2A documentation audit, not report implementation.
+
+
+## Accepted bounded 50S.6G.1B closure boundary
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after 173 plugin-disabled current-documentation
+tests passed in 3.82 seconds and repository checks were clean.
+
+Preserve the exact limitation: every real field had zero crossings, so the
+accepted result is exact empty-result equivalence and conservative partition
+integrity, not positive real-crossing validation or a universal scale or
+performance claim. The one-run authority remains consumed.
+
+Only the bounded 50S.6G.2A documentation audit is authorized next. Do not
+implement a report model, JSON Schema, encoder, decoder, round trip, CLI,
+track, chart, new execution, refactor, or parallelization without later
+separate acceptance.
