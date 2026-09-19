@@ -947,3 +947,21 @@ format-neutral projection, thin ECSV and VOTable 1.5 adapters, strict
 validation, and lossless reconstruction preserving canonical JSON and
 `report_identity_sha256`. Filesystem publication, CLI, tracks, charts,
 visibility science, provider access, and new execution remain unauthorized.
+
+
+### Candidate 50S.6G.2B in-memory tabular interoperability
+
+At `3bbd82f`, the candidate adds one private reusable schema-derived tabular
+projection and thin deterministic ECSV and VOTable 1.5/BINARY2 adapters for
+the accepted exact local crossing report. Canonical JSON and
+`report_identity_sha256` remain authoritative. The accepted Astropy 7.1.0
+workaround uses explicit adjacent Boolean `__is_null` VOTable FIELDs only
+for nullable Unicode values; it does not reinterpret an unmarked empty string.
+
+The combined plugin-disabled report/documentation gate passed 208 tests in
+6.68 seconds, and the complete plugin-disabled suite passed all 2,689 tests in
+215.15 seconds. The diff check against `142ae70` passed, and the Mac branch
+was clean and synchronized. This is candidate verification, not scientific or
+architectural acceptance or merge authority. 50S.6G.2C and all filesystem,
+CLI, publication, track, chart, visibility, provider, and new-execution work
+remain unauthorized.
