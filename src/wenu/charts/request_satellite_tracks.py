@@ -94,7 +94,8 @@ def validate_satellite_exact_track_requests(request):
             )
         if (
             observer.refraction_policy != "vacuum"
-            or observer.earth_orientation_policy != "astropy"
+            or observer.earth_orientation_policy
+            not in {"astropy", "iers-a-bundled"}
         ):
             raise ValueError(
                 "Exact satellite track coordinate policies do not match the "
