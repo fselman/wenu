@@ -2807,3 +2807,17 @@ crossings, and all stated scale and performance limitations remain explicit.
 The next authorized milestone is only the bounded 50S.6G.2A documentation
 audit for the canonical exact-crossing logical model, versioned JSON Schema,
 deterministic JSON, and round trips. Implementation is not authorized.
+
+
+## 50S.6G.2A candidate exact-report audit
+
+The candidate documentation audit defines one immutable canonical
+exact-crossing report, packaged Draft 2020-12 JSON Schema, deterministic UTF-8
+JSON, report identity digest, strict decoder, and typed/byte-identical round
+trips. It preserves exact-local scientific status separately from SatChecker
+sampled candidates and accepts validated zero-crossing fields as explicit
+results.
+
+This audit changes no runtime. ECSV/VOTable, CLI/files, tracks, charts,
+illumination, brightness, detector effects, provider access, and another real
+matrix run remain excluded. Implementation requires separate acceptance.
