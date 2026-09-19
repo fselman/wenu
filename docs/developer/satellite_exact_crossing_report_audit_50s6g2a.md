@@ -239,3 +239,23 @@ The documentation audit requires:
 - Fernando's separate scientific and architectural acceptance.
 
 Until that acceptance, no 50S.6G.2A implementation is authorized.
+
+
+## 12. Accepted audit and handoff
+
+Fernando scientifically and architecturally accepted this audit on 2026-09-19
+at candidate commit `835ddfe`, after all 175 plugin-disabled
+current-documentation tests passed in 3.27 seconds; the diff check and working
+tree were clean.
+
+Only the bounded immutable logical model, packaged Draft 2020-12 JSON Schema,
+pure deterministic encoder/decoder, and focused exact-report tests are
+authorized next. Preserve the dedicated exact-local product, explicit
+zero-crossing fields, caller-supplied immutable creation time, complete
+context, canonical digest, closed schema, duplicate-key rejection, semantic
+validation, nullable version-1 future science, and typed byte-identical round
+trips.
+
+ECSV/VOTable, CLI/files, tracks, charts, illumination, magnitude, detector
+effects, provider access, another real run, and unrelated refactoring remain
+unauthorized.
