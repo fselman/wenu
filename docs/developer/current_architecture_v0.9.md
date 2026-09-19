@@ -1551,3 +1551,18 @@ packaged closed schema, deterministic JSON identity/encoding, strict typed
 decoder, and round-trip boundary. Existing crossing, coordinate, presentation,
 rendering, and export paths remain unchanged. 50S.6G.2B and later work require
 separate authorization.
+
+
+## Candidate 50S.6G.2B interoperability audit
+
+The candidate audit proposes no current runtime change. It defines ECSV and
+IVOA VOTable 1.5 as alternate lossless carriers of the accepted exact-report
+logical model. JSON-derived `report_identity_sha256` remains the scientific
+identity; tabular or XML bytes do not replace it.
+
+A future accepted implementation must use one immutable format-neutral tabular
+projection for row kinds, field definitions, units, masks, stable joins,
+ordering, reconstruction, validation, and resource limits. Thin ECSV and
+VOTable adapters may own only wire-specific syntax and metadata. This shared
+layer is deliberately reusable by later publication work without accepting
+paths or performing science. No implementation is authorized by this audit.
