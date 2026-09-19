@@ -57,6 +57,9 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`satellite_delivery_audit_50s6g.md`](satellite_delivery_audit_50s6g.md)
   — accepted representative-snapshot, canonical-report, two-call file,
   exact-track, and chart-delivery decomposition for 50S.6G.
+- [`satellite_exact_local_track_audit_50s6g3a.md`](satellite_exact_local_track_audit_50s6g3a.md)
+  — candidate exact connected-visit evidence, deterministic anchored sampling,
+  identity, fail-closed behavior, and output-neutral layer contract.
 - [`satellite_snapshot_preflight_audit_50s6g1b.md`](satellite_snapshot_preflight_audit_50s6g1b.md)
   — accepted two-phase provider-policy, single-bulk-request, immutable
   publication, representative-tier, and evidence contract for 50S.6G.1B.

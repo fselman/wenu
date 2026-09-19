@@ -804,3 +804,13 @@ layer. Readers should interpret its validation-output document as an explicit
 audit-preserving partition of the original FoVs, not a scientific crossing
 result. Only the revalidated embedded valid subset may reach the unchanged
 exact crossing service on the second call.
+
+## Candidate exact local track evidence
+
+50S.6G.3A proposes a track as evidence for one already solved connected visit. It evaluates the accepted immutable orbit snapshot from entry through exit and retains entry, closest approach, and exit as exact sample anchors. Adaptive midpoint checks add samples between those anchors; declared limits fail closed instead of returning a shortened track.
+
+This exact local evidence is different from SatChecker's provider-sampled candidate path. An output-neutral layer would only present retained evidence and would perform no propagation or crossing calculation. The audit is documentation-only and no implementation is yet authorized.
+
+## Accepted exact local track audit
+
+Fernando accepted the 50S.6G.3A documentation boundary on 2026-09-19. A bounded implementation may now construct immutable exact connected-visit evidence through the accepted local propagation route and expose it through a science-free layer. Chart integration and later track products remain separate milestones.

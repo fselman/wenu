@@ -1486,3 +1486,15 @@ Only a bounded documentation-first 50S.6G.3A exact-local-track audit is
 authorized next. Do not implement tracks, layers, charts, visibility,
 illumination, brightness, provider access, or new execution science without
 later separate acceptance.
+
+## Candidate 50S.6G.3A audit boundary
+
+Read `satellite_exact_local_track_audit_50s6g3a.md` before any exact local satellite track or layer work. Treat the document as a candidate only. Do not implement until Fernando separately accepts it.
+
+Preserve one accepted connected crossing as event truth, the accepted snapshot/SGP4/TEME/topocentric route as direction truth, mandatory exact entry/closest/exit anchors, deterministic fail-closed sampling, distinct candidate-versus-exact scientific status, and an evidence-only layer. Do not add chart integration, planisphere work, provider access, report/CLI changes, visibility, illumination, brightness, or unrelated refactoring.
+
+## Accepted 50S.6G.3A audit boundary
+
+Fernando scientifically and architecturally accepted the audit on 2026-09-19 at `ce549715889c135e17b87749f3860855b1b54447`; 193 plugin-disabled current-documentation tests passed in 5.73 seconds and repository checks were clean.
+
+Implement only the exact connected-visit evidence, deterministic anchored fail-closed sampler, identity/provenance contract, output-neutral path/event views, and focused offline tests. Do not begin 50S.6G.3B charts, 50S.6G.4A/B planispheres, provider work, report/CLI changes, visibility, illumination, brightness, or unrelated refactoring. Do not merge the candidate implementation before separate verification and acceptance.

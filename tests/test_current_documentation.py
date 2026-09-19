@@ -3176,6 +3176,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
+        "satellite_exact_local_track_audit_50s6g3a.md",
         "satellite_tabular_report_audit_50s6g2b.md",
         "satellite_cli_file_protocol_audit_50s6g2c.md",
         "satellite_snapshot_admission_audit_50s6g1b2a.md",
@@ -7988,3 +7989,107 @@ def test_50s6g2c_records_accepted_implementation_and_next_audit_only():
     assert "Accepted 50S.6G.2C implementation boundary" in instructions
     assert "Accepted 50S.6G.2C implementation" in log
     assert "50S.6G.3A documentation audit is authorized next" in roadmap
+
+def test_50s6g3a_candidate_exact_local_track_audit_is_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    assert "satellite_exact_local_track_audit_50s6g3a.md" in index
+    for phrase in (
+        "one accepted connected visit",
+        "entry, closest-approach, and exit",
+        "normalized spherical chord midpoint",
+        "maximum sample interval",
+        "It is not a proof of a global continuous maximum error",
+        "returns no partial track",
+        "track_identity_sha256",
+        "exact local connected-visit track",
+        "SatChecker sampled candidate evidence — not verified crossings",
+        "must not reuse `SolarSystemTrackResult`",
+        "report.json",
+        "This candidate authorizes no implementation",
+        "50S.6G.3B chart integration",
+        "50S.6G.4A/B planisphere work",
+    ):
+        assert phrase in audit
+
+    (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinates,
+        guide,
+        instructions,
+        delivery,
+        log,
+    ) = documents
+    assert "Candidate 50S.6G.3A exact-local-track boundary" in architecture
+    assert "50S.6G.3A candidate audit state" in roadmap
+    assert "Candidate 50S.6G.3A exact-local-track API" in reference
+    assert "Candidate 50S.6G.3A ownership" in source_tree
+    assert "Candidate 50S.6G.3A exact-track coordinate finding" in coordinates
+    assert "Candidate exact local track evidence" in guide
+    assert "Candidate 50S.6G.3A audit boundary" in instructions
+    assert "50S.6G.3A candidate refinement" in delivery
+    assert "Candidate 50S.6G.3A exact-local-track audit" in log
+    assert "50S.6G.3B binocular/regional chart integration" in roadmap
+    assert "no implementation is yet authorized" in guide
+
+def test_50s6g3a_records_acceptance_and_only_bounded_implementation_authority():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "ce549715889c135e17b87749f3860855b1b54447",
+        "193 plugin-disabled current-documentation tests",
+        "5.73 seconds",
+        "Implement only the bounded 50S.6G.3A",
+        "This acceptance does not authorize 50S.6G.3B",
+        "implementation remains a candidate",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Accepted 50S.6G.3A audit boundary" in architecture
+    assert "50S.6G.3A accepted audit and next authority" in roadmap
+    assert "Accepted 50S.6G.3A implementation authorization" in reference
+    assert "Accepted 50S.6G.3A implementation ownership" in source_tree
+    assert "Accepted 50S.6G.3A coordinate boundary" in coordinates
+    assert "Accepted exact local track audit" in guide
+    assert "Accepted 50S.6G.3A audit boundary" in instructions
+    assert "Accepted 50S.6G.3A audit refinement" in delivery
+    assert "Accepted 50S.6G.3A audit" in log
+    assert "50S.6G.3B and 50S.6G.4A/B remain unauthorized" in roadmap

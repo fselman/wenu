@@ -2947,3 +2947,13 @@ lossless report bundle, digest manifest, no-clobber/symlink contract, exit
 statuses, and interruption behavior. Only the bounded 50S.6G.3A documentation
 audit is authorized next; exact track runtime and chart work remain
 unauthorized.
+
+## 50S.6G.3A candidate audit state
+
+A documentation-only candidate now specifies immutable exact local track evidence for each accepted connected visit and a science-free output-neutral layer. It retains exact event anchors, per-sample UTC directions and range, declared coordinate identity, deterministic adaptive sampling, fail-closed limits, provenance, and a distinct track digest and semantic visit identity.
+
+This candidate authorizes no implementation. 50S.6G.3B binocular/regional chart integration, 50S.6G.4A/B planisphere work, report or CLI changes, provider access, and visibility/illumination/brightness work remain unauthorized.
+
+## 50S.6G.3A accepted audit and next authority
+
+Fernando accepted the documentation-only audit on 2026-09-19 at `ce54971`. The next authorized step is only the bounded exact connected-visit evidence realizer and output-neutral layer, including exact anchors, deterministic fail-closed sampling, track identity, coordinate/provenance retention, and focused tests. 50S.6G.3B and 50S.6G.4A/B remain unauthorized.

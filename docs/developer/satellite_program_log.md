@@ -1018,3 +1018,11 @@ Fernando scientifically and architecturally accepted the bounded offline
 CLI/file protocol. Executable evidence is 235 immediate tests and 2,709 full
 plugin-disabled tests at `e08ebf5`; final documentation evidence is 191 tests
 at `f2bb49c`. Only a documentation-first 50S.6G.3A audit is authorized next.
+
+## 2026-09-19 — Candidate 50S.6G.3A exact-local-track audit
+
+A documentation-only candidate defines immutable exact track evidence for one accepted connected visit and an output-neutral evidence-only layer. It reuses the accepted snapshot, SGP4/TEME, and geometric topocentric route; retains exact entry, closest-approach, and exit anchors; and uses deterministic adaptive sampling with explicit fail-closed limits. SatChecker candidate tracks, accepted reports/CLI, charts, planispheres, providers, visibility, illumination, and brightness remain unchanged and unauthorized.
+
+## 2026-09-19 — Accepted 50S.6G.3A audit
+
+Fernando scientifically and architecturally accepted the documentation-only audit at `ce54971`. Verification comprised 193 plugin-disabled current-documentation tests in 5.73 seconds plus clean diff and synchronized-tree checks. Only the bounded exact connected-visit evidence and output-neutral layer implementation is authorized next; 50S.6G.3B and later work remain unauthorized.

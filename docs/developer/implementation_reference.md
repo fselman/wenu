@@ -3271,3 +3271,13 @@ validation and returns ordered admissions; `solve(request)` remains the sole
 calculation route. The accepted CLI composes this seam with the immutable exact
 report encoders and fixed atomic bundle publisher. Preserve all closed-schema,
 identity, path, status, and interruption contracts.
+
+## Candidate 50S.6G.3A exact-local-track API
+
+A future frozen exact-track evidence value may bind one accepted `SatelliteCrossingResult` to ordered UTC samples, exact entry/closest/exit roles, geometric topocentric directions expressed in GCRS axes, range, sampling policy, provenance, and `track_identity_sha256`. A separate realizer would compose the accepted SGP4/TEME and topocentric services and fail closed rather than return partial evidence.
+
+A future output-neutral layer may consume only that evidence and return an open `SphericalCurves` path or a singleton `SphericalPoints`, plus event views that select retained vertices without recomputation. These are proposed APIs only; implementation requires separate acceptance.
+
+## Accepted 50S.6G.3A implementation authorization
+
+After acceptance at `ce54971`, implementation may add only the frozen exact-local-track evidence, sampling policy, typed failures, realizer, output-neutral path/event views, stable semantic identity, and focused offline tests described by the audit. It must compose existing crossing, propagation, topocentric, spherical-geometry, and coordinate-service owners and must not change report, CLI, provider, chart, renderer, or exporter APIs.
