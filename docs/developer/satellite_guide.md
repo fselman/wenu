@@ -834,3 +834,9 @@ The complete curve is shown in one fixed chart frame at the crossing field's ref
 ## Accepted binocular/regional chart audit
 
 Fernando accepted the 50S.6G.3B documentation boundary on 2026-09-19. A bounded implementation may now carry already-realized exact evidence into ordinary regional and binocular charts, with path/event/label controls and existing output paths. It may not perform satellite science or add planisphere support.
+
+## Candidate binocular and regional track implementation
+
+The candidate accepts already-realized exact evidence directly in a regional or binocular ChartRequest. It can draw the retained path, the exact entry/closest/exit markers, and optional English event labels. Reusing a sphere leaves no request-owned satellite layer behind, and chart provenance records only the track digest and bounded identity/event summary.
+
+Deterministic offline specimens use a nearly straight short pass and export PNG, PDF, and semantic SVG from the same prepared chart. Boundary clipping is tested separately so the specimen does not invent an implausible bending satellite path. The implementation remains a candidate pending complete verification and acceptance.

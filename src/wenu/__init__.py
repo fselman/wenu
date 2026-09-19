@@ -67,6 +67,9 @@ from .charts.request import (
     ChartSubjectRequest,
 )
 from .charts.request_composition import ChartProductCompositionOptions
+from .charts.request_satellite_tracks import (
+    SatelliteExactTrackDisplayRequest,
+)
 from .charts.target_resolver import (
     AmbiguousTargetError,
     ResolvedTarget,
@@ -493,6 +496,7 @@ __all__ = [
     "ChartObserverRequest",
     "ChartRequest",
     "ChartSubjectRequest",
+    "SatelliteExactTrackDisplayRequest",
     "AmbiguousTargetError",
     "ResolvedTarget",
     "TargetComponent",

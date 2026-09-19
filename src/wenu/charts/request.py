@@ -12,6 +12,7 @@ from .furniture import ChartFurnitureOptions
 from .product_options import ChartProductOptions
 from .request_composition import ChartProductCompositionOptions
 from .reference_policy import CelestialReferencePolicy
+from .request_satellite_tracks import SatelliteExactTrackDisplayRequest
 from .request_disks import (
     FrozenEarthSolarSystemDiskSequenceDisplayRequest,
     ObservedSolarSystemDiskSequenceDisplayRequest,
@@ -365,6 +366,7 @@ class ChartRequest:
     horizon_mask: bool = False
     content: SkyContentSelection = SkyContentSelection()
     solar_system_tracks: tuple[SolarSystemTrackRequest, ...] = ()
+    satellite_exact_tracks: tuple[SatelliteExactTrackDisplayRequest, ...] = ()
     # Compatibility input; normalized into solar_system_tracks.
     solar_system_track: SolarSystemTrackRequest | None = None
     solar_system_track_tick_labels: bool = False
@@ -593,6 +595,11 @@ class ChartRequest:
         for name, value, kind in expected:
             if not isinstance(value, kind):
                 raise TypeError(f"{name} must be a {kind.__name__} value.")
+        from .request_satellite_tracks import (
+            validate_satellite_exact_track_requests,
+        )
+
+        validate_satellite_exact_track_requests(self)
         product_compositions = tuple(self.product_compositions)
         if any(
             not isinstance(value, ChartProductCompositionOptions)
@@ -693,6 +700,10 @@ class ChartRequest:
         object.__setattr__(self, "family", family)
         object.__setattr__(self, "projection", projection)
         object.__setattr__(self, "coordinate_frame", coordinate_frame)
+        satellite_exact_tracks = tuple(self.satellite_exact_tracks)
+        object.__setattr__(
+            self, "satellite_exact_tracks", satellite_exact_tracks
+        )
         if self.solar_system_track_tick_labels and not tracks:
             raise ValueError("track tick labels require a Solar-System track.")
         if any(

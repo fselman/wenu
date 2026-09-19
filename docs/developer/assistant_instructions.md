@@ -1528,3 +1528,15 @@ Preserve already-realized 3A evidence as the sole track truth, matching observer
 Fernando scientifically and architecturally accepted the audit on 2026-09-19 at `ef58180f62b99423abbb92da56f9ef08dce8c173`; 198 plugin-disabled documentation tests passed in 5.30 seconds and repository checks were clean.
 
 Implement only the explicit already-realized display request, strict admission, fixed-frame realization, request-owned install/cleanup, path/event/label controls, existing-owner appearance and export integration, bounded provenance, stable semantics, focused tests, and required regional/binocular PNG/PDF/semantic-SVG specimens. Do not begin 50S.6G.4A/B or add all-sky/circumpolar tracks, providers, report/CLI changes, new science, visibility, illumination, brightness, detector effects, or unrelated refactoring. Do not merge before separate verification, visual review, and acceptance.
+
+## Candidate 50S.6G.3B implementation boundary
+
+The current candidate implements only the accepted already-realized regional/binocular chart seam: frozen display controls, strict observer/reference admission, one fixed product-frame transform, request-owned cleanup, existing style/detail/projection/render/export composition, bounded provenance, stable exact-visit semantics, focused tests, and deterministic offline specimens.
+
+Treat physically plausible complete-track visual specimens and canonical boundary-clipping tests as complementary evidence. Do not distort a short satellite trajectory merely to show every event marker and a leave/re-enter clipping case in one convex viewport. Do not merge or begin 50S.6G.4A/B before complete verification and Fernando's separate acceptance. Providers, reports, CLI schemas, new execution science, all-sky/circumpolar tracks, visibility, illumination, brightness, and detector effects remain out of scope.
+
+## Candidate 50S.6G.3B implementation verification boundary
+
+Treat executable commit `6580f88ed6e0199d3089e9319d59f6e50d294a29` as a verified candidate awaiting Fernando's separate scientific and architectural implementation acceptance. The 314-test immediate gate passed in 7.71 seconds and all 2,741 plugin-disabled repository tests passed in 228.97 seconds. The deterministic offline physical specimen produced one 65-sample propagated exact visit in regional and binocular PNG, PDF, and semantic SVG; Fernando judged the binocular field consistent and the revised 20 by 16 degree regional context much better. Diff, clean synchronized-tree, and exact-head checks passed.
+
+The coordinate-system guide was reviewed and remains current: this specimen changes no coordinate ownership or meaning. Do not merge, delete branches, or begin 50S.6G.4A/B. Providers, reports, CLI schemas, new execution science, all-sky/circumpolar tracks, visibility, illumination, brightness, and detector effects remain unauthorized.

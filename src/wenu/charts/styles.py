@@ -240,6 +240,13 @@ class PublicationStyle:
     solar_system_track_linestyle: str = "-"
     solar_system_track_tick_linewidth: float = 1.0
     solar_system_track_label_fontsize: float = 9.0
+    satellite_exact_track_color: str = "#00D7FF"
+    satellite_exact_track_linewidth: float = 1.2
+    satellite_exact_track_linestyle: str = "-"
+    satellite_exact_event_marker: str = "x"
+    satellite_exact_event_symbol_size: float = 28.0
+    satellite_exact_event_linewidth: float = 1.0
+    satellite_exact_event_label_fontsize: float = 7.0
     moon_color: str = "#6f6f6f"
     moon_marker: str = "o"
     asteroid_color: str = "#8c5a00"
@@ -874,6 +881,48 @@ class PublicationStyle:
                     layer,
                     minimum=horizon_altitude_deg,
                 )
+            elif getattr(layer, "layer_name", None) == "satellite_exact_track":
+                options[layer] = {
+                    "prepare": clip,
+                    "render": {
+                        "style": {
+                            "color": self.satellite_exact_track_color,
+                            "linewidth": self.satellite_exact_track_linewidth,
+                            "linestyle": self.satellite_exact_track_linestyle,
+                            "zorder": 38.0,
+                        },
+                        "draw_labels": False,
+                    },
+                }
+            elif (
+                getattr(layer, "layer_name", None)
+                == "satellite_exact_track_events"
+            ):
+                options[layer] = {
+                    "prepare": clip,
+                    "render": {
+                        "style": {
+                            "marker": self.satellite_exact_event_marker,
+                            "s": self.satellite_exact_event_symbol_size,
+                            "color": self.satellite_exact_track_color,
+                            "linewidths": self.satellite_exact_event_linewidth,
+                            "zorder": 38.1,
+                        },
+                        "draw_labels": getattr(
+                            layer, "label_events", False
+                        ),
+                        "label_style": {
+                            "color": self.satellite_exact_track_color,
+                            "fontsize": (
+                                self.satellite_exact_event_label_fontsize
+                            ),
+                            "ha": "left",
+                            "va": "bottom",
+                            "zorder": 38.2,
+                        },
+                        "label_offset": (0.01, 0.01),
+                    },
+                }
         horizon = getattr(sky, "horizon_reference", None)
         if horizon is not None:
             options[horizon] = {

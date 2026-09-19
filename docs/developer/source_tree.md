@@ -2538,3 +2538,15 @@ A future `charts/request_satellite_tracks.py` may own display-request validation
 ## Accepted 50S.6G.3B implementation ownership
 
 The accepted audit authorizes one request-integration owner adjacent to existing chart-request track composition, minimal extensions to request/build cleanup, existing detail/style/semantic/export owners, focused tests, and specimen generation. Scientific evidence/layers and all canonical projection/render/export responsibilities remain where they are.
+
+## Candidate 50S.6G.3B implementation placement
+
+- charts/request_satellite_tracks.py owns the frozen display request, strict admission, request-owned installation, and bounded provenance summary.
+- charts/request.py owns only the new default-empty request field and invokes admission.
+- charts/request_generation.py owns installation timing, failure/success cleanup, and bounded export provenance composition.
+- charts/styles.py and charts/style_components.py own exact path, event-marker, and event-label appearance.
+- sky/satellite_exact_track_layer.py retains evidence-view ownership and now permits labels to be suppressed without changing marker geometry.
+- tests/test_satellite_exact_tracks.py, tests/test_request_generation.py, and tests/test_style_contracts.py cover the durable evidence-to-chart, lifecycle, and appearance seams.
+- tools/validate_50s6g3b_exact_satellite_charts.py creates deterministic offline PNG/PDF/semantic-SVG specimens.
+
+No satellite science, provider, report, CLI, planisphere, projection, renderer, or exporter owner changed.

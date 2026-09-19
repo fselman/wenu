@@ -2981,3 +2981,9 @@ This candidate authorizes no implementation. 50S.6G.4A/B planisphere work, all-s
 ## 50S.6G.3B accepted audit and next authority
 
 Fernando accepted the documentation-only audit on 2026-09-19 at `ef58180`. The next authorized step is only the bounded binocular/regional ordinary-request integration, lifecycle, detail/style/semantic/export seams, focused tests, and PNG/PDF/semantic-SVG specimens described by the audit. 50S.6G.4A/B and all later science remain unauthorized.
+
+## 50S.6G.3B candidate implementation
+
+The bounded candidate now carries immutable exact connected-visit evidence through ordinary regional and binocular request preparation and PNG/PDF/semantic-SVG export. It adds strict admission, independent path/event/label controls, request-owned cleanup, exact-visit semantics, bounded provenance, focused tests, and deterministic offline specimens. Physically plausible complete-track specimens and canonical clipping tests are separate evidence rather than one distorted trajectory.
+
+Complete verification and Fernando's separate implementation acceptance are still required. 50S.6G.4A/B and all later science remain unauthorized.
