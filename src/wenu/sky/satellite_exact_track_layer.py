@@ -152,6 +152,12 @@ class SatelliteExactTrackEventsLayer(_ExactSatelliteTrackLayer):
 
     layer_name = "satellite_exact_track_events"
 
+    def __init__(self, track, *, label_events=True, coordinate_service=None):
+        if not isinstance(label_events, bool):
+            raise TypeError("label_events must be a bool.")
+        super().__init__(track, coordinate_service=coordinate_service)
+        self.label_events = label_events
+
     def _native_geometry(self):
         selected = tuple(
             (sample, role)
@@ -176,7 +182,10 @@ class SatelliteExactTrackEventsLayer(_ExactSatelliteTrackLayer):
                 dtype=object,
             ),
             labels=np.asarray(
-                tuple(labels[role] for _sample, role in selected),
+                tuple(
+                    labels[role] if self.label_events else None
+                    for _sample, role in selected
+                ),
                 dtype=object,
             ),
             names=np.asarray(
@@ -187,6 +196,7 @@ class SatelliteExactTrackEventsLayer(_ExactSatelliteTrackLayer):
                 **_metadata(self.track),
                 "geometry_status": "exact event views over retained samples",
                 "event_roles": tuple(role for _sample, role in selected),
+                "event_labels_enabled": self.label_events,
                 "recomputed": False,
             },
         )
