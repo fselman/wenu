@@ -3295,3 +3295,13 @@ The candidate exact-track evidence, realizer, failure, path/event layer, coordin
 ## Accepted 50S.6G.3A API
 
 The exact-track policy, evaluation, sample, evidence, typed-error, realizer, path layer, event layer, semantic identity, and fixed-axis coordinate-service seam are accepted within their documented boundary. Preserve evidence-level/per-sample UTC and the timeless collection specification. No chart request or rendering API is accepted by this milestone.
+
+## Candidate 50S.6G.3B chart-request API
+
+A future frozen `SatelliteExactTrackDisplayRequest` may contain one already-realized `ExactLocalSatelliteTrack` plus `draw_path`, `draw_events`, and `label_events` controls. `ChartRequest.satellite_exact_tracks` would be an explicit default-empty ordered tuple, admitted only for regional or binocular stereographic horizontal products with matching observer and reference-instant identity.
+
+The chart path would install accepted evidence-only layers and emit bounded provenance summaries. These are proposed APIs only; implementation requires separate acceptance.
+
+## Accepted 50S.6G.3B implementation authorization
+
+After acceptance at `ef58180`, implementation may add only `SatelliteExactTrackDisplayRequest`, the default-empty `ChartRequest.satellite_exact_tracks` tuple, bounded admission/provenance/lifecycle composition, existing-owner appearance integration, focused tests, and required specimens. The chart route must consume accepted evidence and perform no orbital or crossing science.
