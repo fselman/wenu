@@ -109,7 +109,7 @@ def specimen_track():
         entry_instant=iso(START),
         closest_approach_instant=iso(START + timedelta(seconds=6)),
         exit_instant=iso(START + timedelta(seconds=12)),
-        closest_approach_deg=0.0,
+        closest_approach_deg=2.5,
         range_km=500.0,
         angular_rate_deg_per_s=1.0,
         provenance=("deterministic 50S.6G.3B specimen",),
