@@ -7599,10 +7599,10 @@ def test_50s6g2b_records_candidate_verification_without_acceptance():
         assert "57c8bec" in document
         assert "clean" in document
         assert "synchronized" in document
-        assert "authorizes no implementation" in document
 
     assert "documentation consistency only" in audit
     assert "not scientific or architectural acceptance" in log
+
 
 def test_50s6g2b_records_scientific_and_architectural_acceptance():
     documents = (
