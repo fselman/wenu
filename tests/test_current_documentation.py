@@ -7464,3 +7464,42 @@ def test_50s6g2a_records_acceptance_and_bounded_implementation_authority():
     assert "Accepted 50S.6G.2A exact-report audit" in log
     assert "50S.6G.2B and later work remain unauthorized" in roadmap
     assert "Do not implement ECSV/VOTable" in instructions
+
+def test_50s6g2a_candidate_implementation_is_bounded_and_propagated():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "immutable exact-local report",
+        "closed Draft 2020-12",
+        "deterministic JSON",
+        "typed",
+        "zero-crossing",
+        "future science",
+    ):
+        assert all(phrase.lower() in document.lower() for document in documents)
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, log = documents
+    assert "satellite_crossing_reports.py" in architecture
+    assert "50S.6G.2A candidate implementation state" in roadmap
+    assert "Candidate exact-crossing report API" in reference
+    assert "satellite_exact_crossing_report_v1.schema.json" in source_tree
+    assert "introduces no new frame" in coordinates
+    assert "Null means “not evaluated,” not false, dark, zero, or absent" in guide
+    assert "Do not add ECSV/VOTable" in instructions
+    assert "99 tests in 119.54 seconds" in log
+    assert "ECSV/VOTable remains 50S.6G.2B" in roadmap
+    assert "CLI/files and atomic publication remain 50S.6G.2C" in roadmap
+    assert "exact tracks remain 50S.6G.3A" in roadmap
+
