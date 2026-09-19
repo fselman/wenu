@@ -7233,3 +7233,52 @@ def test_50s6g1b2d4_records_acceptance_of_first_real_matrix_evidence():
     assert "does not establish positive real-crossing validation" in audit
     assert "authorize another real run" in audit
     assert "authorize parallelization or refactoring" in audit
+
+
+def test_50s6g1b_candidate_bounded_closure_preserves_limitations():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_snapshot_preflight_audit_50s6g1b.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "b010a6c" in document
+        assert "zero crossings" in document
+        assert "50S.6G.2A" in document
+        assert "documentation audit" in document
+        assert "unauthorized" in document or "not authorized" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate 50S.6G.1B bounded closure audit" in audit
+    assert "Candidate bounded 50S.6G.1B closure" in architecture
+    assert "50S.6G.1B candidate bounded closure state" in roadmap
+    assert "Candidate 50S.6G.1B closure boundary" in reference
+    assert "Candidate 50S.6G.1B closure ownership" in source_tree
+    assert "Candidate 50S.6G.1B closure coordinate review" in coordinates
+    assert "Candidate bounded 50S.6G.1B closure" in guide
+    assert "Candidate bounded 50S.6G.1B closure boundary" in instructions
+
+    for phrase in (
+        "d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258",
+        "60 measured observations",
+        "Positive-crossing behavior remains synthetic evidence",
+        "full 16,559-record matrix",
+        "FoV counts 1, 2, 5, 20, or 50",
+        "The consumed one-run authority is not renewed",
+        "changes no runtime",
+        "not report implementation",
+    ):
+        assert phrase in audit
+
+    assert "full-snapshot matrix" in roadmap
+    assert "No production ownership changes" in source_tree
+    assert "introduces no coordinate operation" in coordinates
+    assert "The one-run authority is consumed" in instructions
