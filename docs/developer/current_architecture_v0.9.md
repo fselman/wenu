@@ -1536,3 +1536,18 @@ coordinate, airmass, or crossing work.
 The candidate adds no ECSV/VOTable, CLI/file publication, exact track, chart,
 illumination, magnitude, detector effect, provider access, or new scientific
 execution. Scientific and architectural acceptance remains pending.
+
+
+## Accepted 50S.6G.2A exact-report implementation
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+The accepted architecture adds only the immutable exact-local logical model,
+packaged closed schema, deterministic JSON identity/encoding, strict typed
+decoder, and round-trip boundary. Existing crossing, coordinate, presentation,
+rendering, and export paths remain unchanged. 50S.6G.2B and later work require
+separate authorization.
