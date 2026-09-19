@@ -2479,3 +2479,26 @@ durable protocol tests. It does not authorize production changes in crossing
 science, propagation, topocentric transformation, report identity, or the
 shared tabular projection except minimal intentional exports required by the
 accepted composition seam.
+
+## Candidate 50S.6G.2C implementation placement
+
+- `src/wenu/cli/satellite_crossings.py`: durable offline CLI, request and
+  validation lifecycle, path safety, exit mapping, staging, and publication.
+- `src/wenu/data/satellite_crossing_*_v1.schema.json`: closed packaged request,
+  validation-output, and bundle-manifest protocol descriptions.
+- `tests/test_satellite_crossing_cli.py`: durable protocol/path/publication
+  fault owner; it does not repeat orbital or report-format science.
+- `satellites/crossing_batch.py`: adds only public validation-only composition
+  of its existing `_validate` owner; the calculation route reuses it.
+
+## Verified candidate 50S.6G.2C placement
+
+The candidate source, schemas, entry point, and durable protocol tests at
+`e08ebf5` passed their immediate gate and the complete repository suite. No
+additional production owner or test file was introduced by verification.
+
+## Accepted 50S.6G.2C ownership
+
+The CLI module, three protocol schemas, entry point, validation-only batch seam,
+and durable CLI test owner are accepted. No crossing science, report identity,
+tabular projection, provider, track, chart, or visibility responsibility moved.

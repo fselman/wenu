@@ -32,6 +32,7 @@ wenu_chart = "wenu.cli.chart:main"
 wenu_retrieve_comets = "wenu.cli.comets:main"
 wenu_examples = "wenu.cli.examples:main"
 wenu_notebooks = "wenu.cli.notebooks:main"
+wenu_satellite_crossings = "wenu.cli.satellite_crossings:main"
 
 [tool.ruff]
 line-length = 79

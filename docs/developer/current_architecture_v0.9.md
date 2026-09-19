@@ -1619,3 +1619,27 @@ implementation is authorized next. Preserve the existing batch coordinator and
 canonical JSON plus reusable ECSV/VOTable report owners. Tracks, charts,
 providers, new execution science, visibility, illumination, and brightness
 remain unauthorized.
+
+## Candidate 50S.6G.2C implementation state
+
+The bounded candidate adds one offline `wenu_satellite_crossings` adapter,
+three packaged closed protocol schemas, a public validation-only composition
+method on the existing multi-FoV coordinator, and focused CLI/filesystem tests.
+The command reuses the accepted exact report and shared tabular adapters,
+publishes fixed no-clobber bundles, and performs no provider access, new
+execution science, track, chart, visibility, illumination, or brightness work.
+
+## Verified candidate 50S.6G.2C implementation
+
+Candidate commit `e08ebf5` passed 235 immediate tests and all 2,709
+plugin-disabled repository tests on Fernando's Mac. The help preflight, diff
+check, and clean synchronized working tree passed. This is verification, not
+scientific or architectural acceptance; the implementation remains bounded to
+the offline CLI/filesystem responsibility.
+
+## Accepted 50S.6G.2C implementation
+
+Fernando accepted the bounded offline CLI/file protocol on 2026-09-19. The
+accepted implementation preserves the batch and report owners and adds only
+validation-only composition plus safe deterministic filesystem delivery. Only
+a documentation-first 50S.6G.3A exact-local-track audit is authorized next.

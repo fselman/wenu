@@ -1453,3 +1453,36 @@ path/symlink/no-clobber policy, exit status, interruption cleanup, and focused
 tests. Do not add provider access, new execution science, tracks, charts,
 visibility, illumination, brightness, detector effects, scheduling adapters,
 or unrelated refactoring. 50S.6G.3A and later work remain unauthorized.
+
+## Candidate 50S.6G.2C implementation boundary
+
+Treat the CLI/file-protocol implementation as an unaccepted candidate. It may
+contain only the offline adapter, packaged closed schemas, validation-only
+coordinator seam, installed entry point, focused tests, and directly required
+documentation. Do not add provider access, acquisition, new execution science,
+tracks, charts, visibility, illumination, brightness, detector effects,
+scheduling adapters, or unrelated refactoring. Do not merge or begin
+50S.6G.3A before separate verification and acceptance.
+
+## Candidate 50S.6G.2C implementation verification boundary
+
+Treat `e08ebf5e0061dbf1e69c8cc58a55a9696e785300` as a verified candidate,
+not an accepted implementation. The 235-test immediate gate passed in 7.63
+seconds and all 2,709 plugin-disabled tests passed in 237.35 seconds on
+Fernando's Mac; the CLI help preflight, diff check, branch synchronization, and
+working-tree check were clean. Do not merge, delete branches, or begin
+50S.6G.3A without Fernando's separate scientific and architectural acceptance.
+
+## Accepted 50S.6G.2C implementation boundary
+
+Fernando scientifically and architecturally accepted the bounded implementation
+on 2026-09-19. Executable commit `e08ebf5` passed 235 immediate tests in 7.63
+seconds and all 2,709 plugin-disabled tests in 237.35 seconds; documentation
+commit `f2bb49c` passed 191 tests in 5.50 seconds. Preserve every accepted CLI,
+protocol, identity, validation, report, path, publication, status, and
+interruption contract.
+
+Only a bounded documentation-first 50S.6G.3A exact-local-track audit is
+authorized next. Do not implement tracks, layers, charts, visibility,
+illumination, brightness, provider access, or new execution science without
+later separate acceptance.

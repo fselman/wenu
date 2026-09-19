@@ -3243,3 +3243,31 @@ schemas, installed entry point, filesystem publisher, and focused enduring
 CLI/file-protocol tests. It must compose the accepted batch and report APIs,
 retain the fixed exit/status and interruption contract, and add no scientific
 or format mapping of its own.
+
+## Candidate 50S.6G.2C executable API
+
+`MultiFieldSatelliteCrossingCoordinator.validate(request)` returns ordered
+admission evidence after the existing complete atomic validation and performs
+no crossing solve. The installed `wenu_satellite_crossings` entry point uses
+that seam for first-call partition evidence and uses `solve(request)` only for
+an all-valid initial/direct request or a revalidated second-call subset.
+
+The adapter owns strict protocol decoding, fixed exit statuses, safe paths,
+staging, atomic no-clobber publication, and manifest construction. It delegates
+all scientific validation, calculation, report identity, ECSV, and VOTable
+behavior to the accepted owners.
+
+## Verified candidate 50S.6G.2C API
+
+The candidate `validate()` seam and installed CLI at `e08ebf5` passed the
+immediate and complete repository gates. This verification changes no public
+authority: the API remains candidate until Fernando separately accepts the
+scientific and architectural implementation.
+
+## Accepted 50S.6G.2C executable API
+
+The accepted `validate(request)` seam performs only existing atomic scientific
+validation and returns ordered admissions; `solve(request)` remains the sole
+calculation route. The accepted CLI composes this seam with the immutable exact
+report encoders and fixed atomic bundle publisher. Preserve all closed-schema,
+identity, path, status, and interruption contracts.

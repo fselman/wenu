@@ -2924,3 +2924,26 @@ validated-subset second call, fixed digest-manifest bundle, safe no-clobber
 publication, exit/interruption contracts, and focused tests. 50S.6G.3A and all
 track, chart, provider, visibility, illumination, and brightness work remain
 separately unauthorized.
+
+## 50S.6G.2C candidate implementation
+
+The candidate implementation is confined to the accepted offline CLI/file
+protocol. It adds no later milestone. Verification and Fernando's separate
+scientific and architectural acceptance are required before merge or
+50S.6G.3A.
+
+## 50S.6G.2C verified candidate state
+
+The bounded implementation at `e08ebf5` is repository-verified but unaccepted.
+The immediate 235-test gate and complete 2,709-test plugin-disabled suite
+passed. Merge and 50S.6G.3A remain unauthorized pending Fernando's separate
+scientific and architectural acceptance.
+
+## 50S.6G.2C accepted implementation
+
+The bounded offline CLI/file implementation is accepted and closed. Preserve
+its explicit invalid-field audit record, validated-subset second call, fixed
+lossless report bundle, digest manifest, no-clobber/symlink contract, exit
+statuses, and interruption behavior. Only the bounded 50S.6G.3A documentation
+audit is authorized next; exact track runtime and chart work remain
+unauthorized.

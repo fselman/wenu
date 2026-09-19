@@ -3919,3 +3919,16 @@ implementation transports existing coordinate documents and invokes the
 accepted geometric-vacuum centre-only complete-interval airmass contract; it
 must introduce no new frame, transformation, refraction, field geometry, or
 satellite-state interpretation.
+
+## Verified candidate 50S.6G.2C coordinate review
+
+The implementation adds no coordinate generation or transformation. The
+complete repository gate passed at `e08ebf5`; this guide remains scientifically
+current. Verification is not acceptance and authorizes no later milestone.
+
+## Accepted 50S.6G.2C coordinate closure
+
+Fernando accepted the implementation after review of this guide. It transports
+accepted coordinate documents and invokes existing validation/calculation
+owners without introducing a frame, transformation, refraction, field
+geometry, or satellite-state interpretation. The guide remains current.

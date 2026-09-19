@@ -312,6 +312,16 @@ class MultiFieldSatelliteCrossingCoordinator:
     def policy(self):
         return self._policy
 
+    def validate(self, request):
+        """Validate every field atomically without solving any crossing."""
+        if not isinstance(request, MultiFieldCrossingRequest):
+            raise TypeError("request must be a MultiFieldCrossingRequest.")
+        admissions = self._validate(request)
+        return tuple(
+            admissions[query.field_of_view.field_id]
+            for query in request.queries
+        )
+
     def _validate(self, request):
         first = request.queries[0]
         snapshot_identity = (
@@ -405,7 +415,10 @@ class MultiFieldSatelliteCrossingCoordinator:
     def solve(self, request):
         if not isinstance(request, MultiFieldCrossingRequest):
             raise TypeError("request must be a MultiFieldCrossingRequest.")
-        admissions = self._validate(request)
+        admissions_values = self.validate(request)
+        admissions = {
+            value.field_id: value for value in admissions_values
+        }
         results = []
         size = self._policy.processing_chunk_size
         for offset in range(0, len(request.queries), size):
