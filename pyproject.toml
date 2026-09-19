@@ -17,9 +17,9 @@ readme = "README.md"
 requires-python = ">=3.10"
 
 dependencies = [
-    "astropy>=7,<9",
+    "astropy>=7,<8",
     "matplotlib",
-    "numpy",
+    "numpy>=1.26,<2",
     "pandas",
     "skyfield",
     "sgp4>=2.25,<3",
