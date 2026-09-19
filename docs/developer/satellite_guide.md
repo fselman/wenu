@@ -253,7 +253,152 @@ same model and error behavior. Each result retains propagator identity and
 version, element epoch, evaluation instant, time offset from the element
 epoch, and SGP4 status/error code.
 
-### 7.2 TEME is an explicit state
+### 7.2 Keplerian elements: osculating geometry and Wenu's mean-element input
+
+A Cartesian position and velocity at one instant define an instantaneous
+two-body conic. Its six classical Keplerian elements are:
+
+- semimajor axis `a`, which sets orbit size and, in the two-body problem,
+  period;
+- eccentricity `e`, which sets shape;
+- inclination `i`, the tilt of the orbital plane to the reference equator;
+- right ascension of the ascending node `Omega`, the inertial direction of
+  the equator crossing at which the satellite moves north;
+- argument of pericentre `omega`, the angle in the orbital plane from the
+  ascending node to pericentre; and
+- true anomaly `nu`, the satellite's instantaneous angle from pericentre.
+
+Together with epoch, central body, reference frame, and time scale, these form
+an **osculating** element set: the Kepler ellipse tangent to the real
+trajectory at that instant. Perturbations make this ellipse evolve
+continuously. The elements are singular for some useful orbits: `Omega` is
+undefined at zero inclination, `omega` is undefined at zero eccentricity,
+and true longitude or nonsingular equinoctial elements are then often clearer.
+
+Wenu does not ingest that parametrization directly. Its canonical OMM/SGP4
+record carries epoch, `MEAN_MOTION` `n` in revolutions per day,
+`ECCENTRICITY`, `INCLINATION`, `RA_OF_ASC_NODE`,
+`ARG_OF_PERICENTER`, and `MEAN_ANOMALY`, plus `BSTAR`, mean-motion
+derivatives, and metadata such as `REF_FRAME = TEME`, `TIME_SYSTEM = UTC`,
+and `MEAN_ELEMENT_THEORY = SGP4`. Mean anomaly replaces true anomaly because
+it advances uniformly in an unperturbed ellipse. For orientation only, a
+two-body semimajor axis can be estimated from mean motion,
+
+```text
+a approximately equals (mu / n^2)^(1/3),
+```
+
+after converting `n` to radians per second. That conversion does **not**
+turn a GP record into osculating elements. SGP4 mean elements have selected
+short-period motion removed by the SGP4 theory and are model-dependent fit
+parameters. They must be interpreted by SGP4; a generic Kepler solver or a
+different force model need not reproduce the catalogue trajectory.
+
+#### 7.2.1 Why elements change between revolutions
+
+In a perfect spherical two-body problem, `a`, `e`, `i`, `Omega`, and
+`omega` are constant and the anomaly advances by 360 degrees per orbit. For
+an Earth satellite, the largest systematic departure in many low and medium
+orbits is Earth's oblateness, represented first by the dimensionless
+coefficient `J2 approximately 1.08263e-3`. Atmospheric drag, higher gravity
+harmonics, the Moon and Sun, solar radiation pressure, tides, and maneuvers add
+changes on other time scales. Osculating elements also contain short-period
+within-orbit oscillations, so comparing two isolated osculating sets can mix a
+secular drift with the phase of those oscillations.
+
+For a first-order, orbit-averaged `J2` estimate, define
+
+```text
+p = a (1 - e^2)
+n = sqrt(mu / a^3)
+```
+
+where `p` is the semilatus rectum. The secular rates of the node and
+pericentre are approximately
+
+```text
+dOmega/dt = -(3/2) J2 n (R_E / p)^2 cos(i)
+
+domega/dt =  (3/4) J2 n (R_E / p)^2 (5 cos(i)^2 - 1).
+```
+
+Equivalently, the accumulated change per revolution is approximately
+
+```text
+Delta Omega = -3 pi J2 (R_E / p)^2 cos(i)
+
+Delta omega = (3 pi / 2) J2 (R_E / p)^2 (5 cos(i)^2 - 1).
+```
+
+These equations are a scale and sign guide, not Wenu's propagator. SGP4
+contains its own consistent secular and periodic perturbation theory.
+
+The dependence is instructive:
+
+- per unit time the `J2` rates scale approximately as `a^(-7/2)`; per
+  revolution they scale approximately as `a^(-2)`;
+- eccentricity strengthens both rates through `(1 - e^2)^(-2)`, although a
+  high-eccentricity orbit also demands attention to perigee altitude and to
+  the validity of the averaged approximation;
+- nodal regression is fastest for low-inclination prograde orbits, vanishes
+  in the first-order formula at 90 degrees, and reverses sign for retrograde
+  orbits;
+- apsidal rotation vanishes at the critical inclinations near 63.4 and 116.6
+  degrees, and its sign changes across them; and
+- a retrograde near-polar LEO can be chosen for about +0.986 degree per day of
+  nodal precession, matching the Sun's annual apparent motion and producing a
+  Sun-synchronous orbit.
+
+#### 7.2.2 Orders of magnitude
+
+Using `J2` alone and nearly circular representative orbits gives useful
+mental scales, not prediction tolerances:
+
+| Regime | Representative scale | First-order nodal rate |
+| --- | --- | --- |
+| LEO, `a approximately 7000 km` | about 100 minutes per orbit | up to about 7 degrees/day times `cos(i)`, or about 0.5 degree/orbit times `cos(i)` |
+| GPS-like MEO, `a approximately 26,600 km`, `i approximately 55 degrees` | about 12 hours per orbit | about -0.04 degree/day |
+| GEO, `a approximately 42,200 km` | about one sidereal day per orbit | at most roughly -0.01 degree/day from `J2` |
+
+At `a approximately 7000 km`, the first-order apsidal rate ranges from about
+-3.6 degrees/day near polar inclination to about +14 degrees/day near the
+equator, with zero at the critical inclination. A Sun-synchronous LEO is
+deliberately near +1 degree/day in `Omega`, rather than the maximum LEO
+rate, because its retrograde inclination makes `cos(i)` small and negative.
+
+Semimajor axis and eccentricity have no first-order secular `J2` drift in
+this averaged model, but their osculating values still vary periodically.
+Drag usually reduces orbital energy and semimajor axis in LEO, increasing mean
+motion and eventually shortening lifetime. Its rate varies strongly with
+altitude, area-to-mass ratio, attitude, and solar-driven atmospheric density;
+a single `BSTAR` value is only an SGP4 drag-like fit parameter, not a
+universal physical decay rate. At high altitude, luni-solar torques and solar
+radiation pressure can be comparable to or more important than drag. Maneuvers
+can dominate all natural trends.
+
+Therefore Wenu should answer “how fast are the elements changing?” by
+propagating the accepted element set with SGP4 over the requested interval and,
+when element histories are compared, by stating whether the values are SGP4
+mean elements or osculating elements derived from propagated states. The
+formulae above explain scale; they do not replace propagation or an uncertainty
+model.
+
+#### 7.2.3 References
+
+- CCSDS, *Orbit Data Messages*, CCSDS 502.0-B-3, the normative definition of
+  OMM fields and metadata:
+  <https://public.ccsds.org/Pubs/502x0b3e1.pdf>.
+- Vallado, Crawford, Hujsak, and Kelso, “Revisiting Spacetrack Report #3,”
+  AIAA 2006-6753 Rev. 3, the SGP4 formulation and verification reference:
+  <https://celestrak.org/publications/AIAA/2006-6753/AIAA-2006-6753-Rev3.pdf>.
+- CelesTrak, “A New Way to Obtain GP Data,” a practical mapping of current GP
+  JSON/CSV fields to OMM and the declared TEME/UTC/SGP4 metadata:
+  <https://celestrak.org/NORAD/documentation/gp-data-formats.php>.
+- Vallado, *Fundamentals of Astrodynamics and Applications*, 4th ed.,
+  Microcosm Press, 2013, especially the classical-element and perturbation
+  chapters, for the `J2` secular-rate derivation and limitations.
+
+### 7.3 TEME is an explicit state
 
 The SGP4 Cartesian result is geometric TEME position and velocity. TEME is not
 ICRS, GCRS, ITRS, or topocentric AltAz. It must remain typed until a declared
@@ -272,7 +417,7 @@ Refraction is off by default for astronomical field intersection. If an
 observed/refracted field is later supported, it is an explicit policy and must
 be applied consistently to both satellite directions and the field boundary.
 
-### 7.3 Freshness and uncertainty
+### 7.4 Freshness and uncertainty
 
 Element age is always reported. There is no universal age cutoff because drag,
 maneuvers, orbit regime, required timing precision, and field size differ.
