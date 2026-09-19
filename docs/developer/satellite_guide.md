@@ -1403,3 +1403,18 @@ performance evidence remains explicitly unclaimed.
 Only a bounded 50S.6G.2A documentation audit is authorized next. No report,
 JSON Schema, encoder, round trip, CLI, track, or chart implementation is
 authorized.
+
+
+## Candidate 50S.6G.2A canonical exact-crossing report
+
+The candidate report is a versioned immutable account of geometric exact local
+crossings, explicitly not a visibility forecast. It preserves complete
+observer, snapshot, policy, field, airmass, crossing, tolerance, provenance,
+warning, and implementation identity. Zero crossings are explicit valid field
+results. Creation time is supplied once, and canonical JSON plus a report
+digest make repeated serialization deterministic.
+
+Schema version 1 requires illumination, apparent magnitude, detector effect,
+and exact-track samples to be null because those quantities are not evaluated.
+The candidate remains separate from SatChecker sampled-candidate evidence.
+Implementation is unauthorized pending Fernando's acceptance.
