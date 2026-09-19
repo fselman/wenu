@@ -3807,3 +3807,16 @@ real-crossing validation is claimed.
 
 Only a 50S.6G.2A documentation audit is authorized next; it must preserve the
 accepted coordinate identities and may not implement serialization.
+
+
+## Candidate 50S.6G.2A coordinate review
+
+The coordinate guide was reviewed at baseline `3f234cc` and remains current.
+The candidate report serializes each already accepted observer, field
+`CoordinateSpec`, inclusive UTC interval, event instant, tolerance, and
+Earth-orientation identity without transformation, inference, relabeling, or
+recomputation. JSON object order has no coordinate meaning; field and crossing
+array order remains semantic.
+
+The audit introduces no coordinate operation or scientific-semantic change.
+No implementation is authorized pending separate acceptance.
