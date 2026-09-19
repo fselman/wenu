@@ -56,9 +56,15 @@ def iso(value):
     return value.isoformat(timespec="microseconds").replace("+00:00", "Z")
 
 
-def direction(longitude_deg):
-    angle = radians(longitude_deg)
-    return (cos(angle), sin(angle), 0.0)
+def direction(longitude_deg, latitude_deg=0.0):
+    longitude = radians(longitude_deg)
+    latitude = radians(latitude_deg)
+    scale = cos(latitude)
+    return (
+        scale * cos(longitude),
+        scale * sin(longitude),
+        sin(latitude),
+    )
 
 
 def specimen_track():
@@ -109,18 +115,20 @@ def specimen_track():
         provenance=("deterministic 50S.6G.3B specimen",),
     )
     samples = []
-    for seconds, longitude, roles in (
-        (0, 0.0, ("entry",)),
-        (6, 6.0, ("closest_approach",)),
-        (12, 12.0, ("exit",)),
+    for seconds, longitude, latitude, roles in (
+        (0, 3.0, 0.0, ("entry",)),
+        (3, 4.5, 4.0, ()),
+        (6, 6.0, 0.0, ("closest_approach",)),
+        (9, 7.5, -4.0, ()),
+        (12, 9.0, 0.0, ("exit",)),
     ):
-        vector = direction(longitude)
+        vector = direction(longitude, latitude)
         samples.append(
             ExactLocalSatelliteTrackSample(
                 instant_utc=iso(START + timedelta(seconds=seconds)),
                 direction=vector,
                 longitude_deg=longitude,
-                latitude_deg=0.0,
+                latitude_deg=latitude,
                 range_km=500.0,
                 roles=roles,
                 provenance=("constructed retained specimen vertex",),
