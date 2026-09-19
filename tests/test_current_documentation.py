@@ -7489,6 +7489,8 @@ def test_50s6g2a_candidate_implementation_is_bounded_and_propagated():
     assert "Null means “not evaluated,” not false, dark, zero, or absent" in guide
     assert "Do not add ECSV/VOTable" in instructions
     assert "99 tests in 119.54 seconds" in log
+    assert "2,676 tests in 234.08 seconds" in log
+    assert "a65e5ac" in log
     assert "ECSV/VOTable remains 50S.6G.2B" in roadmap
     assert "CLI/files and atomic publication remain 50S.6G.2C" in roadmap
     assert "exact tracks remain 50S.6G.3A" in roadmap
