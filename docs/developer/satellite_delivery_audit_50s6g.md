@@ -411,3 +411,17 @@ Fernando scientifically and architecturally accepted the exact-report audit on
 and clean repository checks. Only the bounded model, schema, deterministic
 JSON encoder/decoder, and focused tests are authorized next. Later 50S.6G
 delivery slices remain separately unauthorized.
+
+
+## Candidate 50S.6G.2B refinement
+
+The dedicated 50S.6G.2B audit refines this accepted delivery direction without
+changing it. ECSV and VOTable are lossless alternate encodings of the accepted
+exact-report model; canonical JSON-derived report identity remains
+authoritative. One shared reusable format-neutral projection owns scientific
+flattening, units, masks, joins, order, reconstruction, and limits, while thin
+adapters own only ECSV or VOTable syntax.
+
+The refinement remains candidate documentation. It authorizes no implementation
+and does not pull 50S.6G.2C filesystem publication or any later science into
+50S.6G.2B.

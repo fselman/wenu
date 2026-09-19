@@ -3856,3 +3856,30 @@ working-tree checks were clean.
 The coordinate guide remains current. Acceptance authorizes serialization and
 strict reconstruction of retained coordinate identities only; it introduces
 no coordinate transformation or new coordinate meaning.
+
+
+## Candidate 50S.6G.2B coordinate finding
+
+The proposed tabular encodings retain the accepted geometric topocentric
+GCRS-axes direction identity, UTC instants, vacuum/refraction policy, and
+Earth-orientation policy as explicit validated metadata. VOTable TIMESYS
+records UTC with topocentric reference position; it does not transform a
+direction or turn it into an astrometric position.
+
+Units and coordinate metadata are invariants of the shared reusable projection.
+A changed, missing, or contradictory unit, frame, origin, position status,
+time scale, refraction policy, Earth-orientation policy, or TIMESYS reference
+must fail decoding. The coordinate guide remains current; the audit introduces
+no new frame, origin, epoch, transformation, or numerical policy.
+
+## Accepted 50S.6G.2B coordinate finding
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `ef14bc1`, after 181 plugin-disabled documentation
+tests passed in 4.88 seconds and repository checks were clean.
+
+The coordinate guide remains current. The authorized tabular implementation
+may serialize and strictly reconstruct the already accepted coordinate and UTC
+metadata through one reusable projection, but it may not transform, infer, or
+change any frame, origin, epoch, time scale, refraction policy,
+Earth-orientation policy, or numerical coordinate rule.

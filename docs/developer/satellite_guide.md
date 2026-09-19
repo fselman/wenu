@@ -763,3 +763,26 @@ acceptance records are maintained separately in
 [satellite_program_log.md](satellite_program_log.md). They are not part of this
 pedagogical guide. Keep the two responsibilities linked, but do not merge
 documents mechanically.
+
+
+## Lossless reusable tabular views of an exact-crossing report
+
+A scientific report and a file format are different layers. Wenu's accepted
+exact-crossing report has one logical identity derived from canonical JSON.
+ECSV and VOTable can later provide interoperable tabular views without
+changing that identity or recalculating a crossing.
+
+The proposed design first projects the report into shared validated record
+kinds: one report record, one record for every field, and records for its
+crossings. A zero-crossing field still has a field record. Stable ordinals
+preserve scientific array order, while units, masks, coordinate meaning, UTC
+time metadata, provenance, and joins remain explicit. Thin format adapters can
+then express those same records as one ECSV table or as related VOTable tables.
+
+This is a reusable design: scientific flattening and validation are written
+once, so two formats cannot quietly acquire different meanings, and later
+publication code can reuse the same in-memory representation. ECSV is a
+human-readable table format with YAML metadata; VOTable is an IVOA XML format
+with astronomical FIELD, PARAM, and TIMESYS metadata. Neither format makes a
+satellite visible, illuminated, bright, or damaging to a detector. This
+candidate belongs to 50S.6G.2B and is not yet implemented.

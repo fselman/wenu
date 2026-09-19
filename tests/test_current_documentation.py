@@ -3176,6 +3176,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
+        "satellite_tabular_report_audit_50s6g2b.md",
         "satellite_snapshot_admission_audit_50s6g1b2a.md",
         "satellite_medium_specimen_audit_50s6g1b2c.md",
         "satellite_equivalence_matrix_audit_50s6g1b2d.md",
@@ -7529,3 +7530,107 @@ def test_50s6g2a_records_accepted_implementation_boundary():
     assert "Accepted 50S.6G.2A implementation boundary" in instructions
     assert "Accepted 50S.6G.2A exact-report implementation" in log
     assert "No later milestone is authorized by this acceptance" in roadmap
+
+
+def test_50s6g2b_candidate_tabular_audit_is_lossless_reusable_and_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    assert "satellite_tabular_report_audit_50s6g2b.md" in index
+    for phrase in (
+        "one shared reusable format-neutral tabular projection",
+        "thin format adapters",
+        "report_identity_sha256",
+        "validated field with zero crossings",
+        'serialize_method="data_mask"',
+        "VOTable 1.5",
+        "BINARY2",
+        'timescale="UTC"',
+        'refposition="TOPOCENTER"',
+        "from_ecsv(report.to_ecsv()) == report",
+        "from_votable(report.to_votable()) == report",
+        "Atomic filesystem publication belongs to 50S.6G.2C",
+        "no 50S.6G.2B implementation is authorized",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        assert "50S.6G.2B" in document
+        assert "reusable" in document
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "alternate lossless carriers" in architecture
+    assert "Candidate 50S.6G.2B tabular API" in reference
+    assert "exactly one format-neutral mapping" in source_tree
+    assert "introduces no new frame" in coordinates
+    assert "scientific flattening and validation are written once" in guide
+    assert "Do not implement 50S.6G.2B" in instructions
+    assert "authorizes no runtime work" in roadmap
+    assert "authorizes no implementation" in delivery
+    assert "candidate audit, not acceptance" in log
+
+
+def test_50s6g2b_records_candidate_verification_without_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"
+    ).split())
+    log = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+
+    for document in (audit, log):
+        assert "ef14bc1" in document
+        assert "181" in document
+        assert "4.88 seconds" in document
+        assert "57c8bec" in document
+        assert "clean" in document
+        assert "synchronized" in document
+
+    assert "documentation consistency only" in audit
+    assert "not scientific or architectural acceptance" in log
+
+
+def test_50s6g2b_records_scientific_and_architectural_acceptance():
+    documents = (
+        read(DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"),
+        read(DEVELOPER / "assistant_instructions.md"),
+        read(DEVELOPER / "current_architecture_v0.9.md"),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "post_v0.9_architecture_roadmap.md"),
+        read(DEVELOPER / "coordinate_system_guide_v0.9.5.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(SATELLITE_PROGRAM_LOG),
+    )
+    normalized = tuple(" ".join(document.split()) for document in documents)
+
+    for document in normalized:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-19" in document
+        assert "ef14bc1" in document
+        assert "181" in document
+        assert "4.88 seconds" in document
+        assert "reusable" in document
+
+    audit, instructions, architecture, reference, roadmap, coordinates, source_tree, log = normalized
+    assert "Only a bounded in-memory implementation is authorized next" in audit
+    assert "Implement only one reusable format-neutral" in instructions
+    assert "Canonical JSON and `report_identity_sha256` remain the logical authority" in architecture
+    assert "to_ecsv()" in reference
+    assert "50S.6G.2C filesystem/CLI publication" in roadmap
+    assert "coordinate guide remains current" in coordinates
+    assert "exactly one reusable format-neutral mapping" in source_tree
+    assert "new execution remain unauthorized" in log

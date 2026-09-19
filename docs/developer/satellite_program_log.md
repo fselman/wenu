@@ -902,3 +902,48 @@ This acceptance closes only the immutable JSON logical-report slice. It does
 not authorize ECSV/VOTable, CLI/file publication, atomic writing, exact tracks,
 charts, illumination, magnitude, detector effects, provider access, scheduling
 integration, or another scientific execution.
+
+
+## Candidate 50S.6G.2B tabular interoperability audit
+
+After accepted 50S.6G.2A and merge commit `57c8bec`, the next bounded
+documentation audit defines lossless in-memory ECSV and IVOA VOTable 1.5
+encodings. The as-is review found existing repository ECSV precedent for units
+and types, no existing VOTable production convention, and no authority to make
+format bytes the scientific identity.
+
+The candidate therefore retains canonical JSON identity and requires one
+shared reusable format-neutral projection with thin ECSV/VOTable adapters.
+It preserves validated zero-crossing fields, order, units, masks, coordinate
+and UTC metadata, stable joins, provenance, and null future science. It
+separates portable logical round-trip identity from same-encoder byte
+determinism.
+
+This entry records a candidate audit, not acceptance. No implementation,
+filesystem publication, CLI, tracks, visibility science, provider access, or
+new execution is authorized.
+
+
+## Verified candidate 50S.6G.2B audit
+
+At `ef14bc1`, all 181 plugin-disabled documentation tests passed in 4.88
+seconds. The diff check against accepted program base `57c8bec` passed, and
+the branch was clean and synchronized.
+
+This verification establishes that the lossless ECSV/VOTable audit, reusable
+shared projection rule, thin-adapter boundary, active-document index, and
+bounded exclusions agree across current documentation. It is not scientific
+or architectural acceptance and authorizes no implementation.
+
+## Accepted 50S.6G.2B tabular interoperability audit
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `ef14bc1`. All 181 plugin-disabled
+current-documentation tests passed in 4.88 seconds; the diff check against
+`57c8bec` passed, and the branch was clean and synchronized.
+
+Only bounded in-memory implementation is authorized next: one shared reusable
+format-neutral projection, thin ECSV and VOTable 1.5 adapters, strict
+validation, and lossless reconstruction preserving canonical JSON and
+`report_identity_sha256`. Filesystem publication, CLI, tracks, charts,
+visibility science, provider access, and new execution remain unauthorized.
