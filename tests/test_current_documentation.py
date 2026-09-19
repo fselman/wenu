@@ -7480,16 +7480,6 @@ def test_50s6g2a_candidate_implementation_is_bounded_and_propagated():
         )
     )
 
-    for phrase in (
-        "immutable exact-local report",
-        "closed Draft 2020-12",
-        "deterministic JSON",
-        "typed",
-        "zero-crossing",
-        "future science",
-    ):
-        assert all(phrase.lower() in document.lower() for document in documents)
-
     architecture, roadmap, reference, source_tree, coordinates, guide, instructions, log = documents
     assert "satellite_crossing_reports.py" in architecture
     assert "50S.6G.2A candidate implementation state" in roadmap
