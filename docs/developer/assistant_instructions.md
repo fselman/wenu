@@ -1288,3 +1288,17 @@ typed byte-identical round trips.
 Do not implement until Fernando separately accepts the audit. ECSV/VOTable,
 CLI/files, tracks, charts, illumination, magnitude, detector effects, provider
 access, another real run, and unrelated refactoring remain unauthorized.
+
+
+## Accepted 50S.6G.2A implementation boundary
+
+Fernando scientifically and architecturally accepted the audit on 2026-09-19
+at `835ddfe`, after 175 plugin-disabled documentation tests passed in 3.27
+seconds and repository checks were clean.
+
+Implement only the bounded immutable exact-report logical model, packaged
+Draft 2020-12 JSON Schema, pure deterministic encoder/decoder, and focused
+tests. Preserve every accepted status, ordering, digest, schema, semantic, and
+round-trip constraint. Do not implement ECSV/VOTable, CLI/files, tracks,
+charts, illumination, magnitude, detector effects, provider access, another
+real run, or unrelated refactoring.
