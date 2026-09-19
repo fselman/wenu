@@ -3,9 +3,11 @@
 from dataclasses import FrozenInstanceError, replace
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
+from io import BytesIO
 import json
 
 from astropy.io import ascii
+from astropy.io.votable import parse
 import numpy as np
 import pytest
 
@@ -361,6 +363,19 @@ def test_votable_declares_version_binary2_timesys_and_three_tables():
     assert b'timescale="UTC"' in encoded
     assert b'refposition="TOPOCENTER"' in encoded
     assert encoded.count(b"<TABLE") == 3
+
+
+    votable = parse(BytesIO(encoded), verify="exception", invalid="exception")
+    report_table, field_table, _ = votable.resources[0].tables
+    report_values = report_table.to_table(use_names_over_ids=True)
+    field_values = field_table.to_table(use_names_over_ids=True)
+    report_names = tuple(report_values.colnames)
+    field_id_index = report_names.index("field_id")
+    assert report_names[field_id_index + 1] == "field_id__is_null"
+    assert bool(report_values["field_id__is_null"][0])
+    assert report_values["field_id"][0] == ""
+    assert not bool(field_values["field_id__is_null"][0])
+    assert field_values["field_id"][0] == "one"
 
 
 @pytest.mark.parametrize("method", ("from_ecsv", "from_votable"))
