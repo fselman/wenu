@@ -7929,7 +7929,15 @@ def test_50s6g2c_records_candidate_verification_without_acceptance():
     ):
         assert phrase in audit
 
-    architecture, roadmap, reference, source_tree, coordinates, instructions, log = documents
+    (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinates,
+        instructions,
+        log,
+    ) = documents
     assert "Verified candidate 50S.6G.2C implementation" in architecture
     assert "50S.6G.2C verified candidate state" in roadmap
     assert "Verified candidate 50S.6G.2C API" in reference
@@ -7941,3 +7949,42 @@ def test_50s6g2c_records_candidate_verification_without_acceptance():
     )
     assert "Verified candidate 50S.6G.2C implementation" in log
     assert "Merge and 50S.6G.3A remain unauthorized" in roadmap
+
+
+def test_50s6g2c_records_accepted_implementation_and_next_audit_only():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_cli_file_protocol_audit_50s6g2c.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            INSTRUCTIONS,
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "e08ebf5e0061dbf1e69c8cc58a55a9696e785300",
+        "f2bb49c6f44281428d546d5d2adbf35f74b7fc6d",
+        "2,709 plugin-disabled tests",
+        "191 current-documentation tests",
+        "Only a separately bounded documentation-first 50S.6G.3A",
+        "no track implementation is authorized",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, instructions, log = documents
+    assert "Accepted 50S.6G.2C implementation" in architecture
+    assert "50S.6G.2C accepted implementation" in roadmap
+    assert "Accepted 50S.6G.2C executable API" in reference
+    assert "Accepted 50S.6G.2C ownership" in source_tree
+    assert "Accepted 50S.6G.2C coordinate closure" in coordinates
+    assert "Accepted 50S.6G.2C implementation boundary" in instructions
+    assert "Accepted 50S.6G.2C implementation" in log
+    assert "50S.6G.3A documentation audit is authorized next" in roadmap

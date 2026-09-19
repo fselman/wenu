@@ -2496,3 +2496,9 @@ accepted composition seam.
 The candidate source, schemas, entry point, and durable protocol tests at
 `e08ebf5` passed their immediate gate and the complete repository suite. No
 additional production owner or test file was introduced by verification.
+
+## Accepted 50S.6G.2C ownership
+
+The CLI module, three protocol schemas, entry point, validation-only batch seam,
+and durable CLI test owner are accepted. No crossing science, report identity,
+tabular projection, provider, track, chart, or visibility responsibility moved.

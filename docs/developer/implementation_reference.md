@@ -3263,3 +3263,11 @@ The candidate `validate()` seam and installed CLI at `e08ebf5` passed the
 immediate and complete repository gates. This verification changes no public
 authority: the API remains candidate until Fernando separately accepts the
 scientific and architectural implementation.
+
+## Accepted 50S.6G.2C executable API
+
+The accepted `validate(request)` seam performs only existing atomic scientific
+validation and returns ordered admissions; `solve(request)` remains the sole
+calculation route. The accepted CLI composes this seam with the immutable exact
+report encoders and fixed atomic bundle publisher. Preserve all closed-schema,
+identity, path, status, and interruption contracts.

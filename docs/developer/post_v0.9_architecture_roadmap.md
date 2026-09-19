@@ -2938,3 +2938,12 @@ The bounded implementation at `e08ebf5` is repository-verified but unaccepted.
 The immediate 235-test gate and complete 2,709-test plugin-disabled suite
 passed. Merge and 50S.6G.3A remain unauthorized pending Fernando's separate
 scientific and architectural acceptance.
+
+## 50S.6G.2C accepted implementation
+
+The bounded offline CLI/file implementation is accepted and closed. Preserve
+its explicit invalid-field audit record, validated-subset second call, fixed
+lossless report bundle, digest manifest, no-clobber/symlink contract, exit
+statuses, and interruption behavior. Only the bounded 50S.6G.3A documentation
+audit is authorized next; exact track runtime and chart work remain
+unauthorized.

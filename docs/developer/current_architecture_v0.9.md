@@ -1636,3 +1636,10 @@ plugin-disabled repository tests on Fernando's Mac. The help preflight, diff
 check, and clean synchronized working tree passed. This is verification, not
 scientific or architectural acceptance; the implementation remains bounded to
 the offline CLI/filesystem responsibility.
+
+## Accepted 50S.6G.2C implementation
+
+Fernando accepted the bounded offline CLI/file protocol on 2026-09-19. The
+accepted implementation preserves the batch and report owners and adds only
+validation-only composition plus safe deterministic filesystem delivery. Only
+a documentation-first 50S.6G.3A exact-local-track audit is authorized next.

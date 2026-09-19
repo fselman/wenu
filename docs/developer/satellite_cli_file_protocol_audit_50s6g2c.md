@@ -336,3 +336,22 @@ This evidence establishes repository compatibility, not acceptance. Preserve
 the offline adapter, validation-only coordinator seam, three closed schemas,
 fixed report bundle, no-clobber/symlink/exit/interruption contracts, and focused
 fault coverage. Do not merge or begin 50S.6G.3A before separate acceptance.
+
+## 16. Accepted implementation and next boundary
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2C
+implementation on 2026-09-19. Executable commit
+`e08ebf5e0061dbf1e69c8cc58a55a9696e785300` passed the 235-test immediate
+gate in 7.63 seconds and all 2,709 plugin-disabled tests in 237.35 seconds.
+Documentation evidence commit `f2bb49c6f44281428d546d5d2adbf35f74b7fc6d`
+passed all 191 current-documentation tests in 5.50 seconds. CLI help, diff,
+branch synchronization, and working-tree checks were clean.
+
+Preserve the offline adapter, public validation-only coordinator seam, three
+closed schemas, explicit invalid-field evidence, revalidated valid-subset
+second call, accepted JSON/ECSV/VOTable encoders, fixed digest manifest,
+no-clobber and symlink safety, typed exit statuses, and interruption cleanup.
+This acceptance authorizes no provider access, new execution science, track,
+chart, visibility, illumination, brightness, detector, or scheduling work.
+Only a separately bounded documentation-first 50S.6G.3A exact-local-track
+audit is authorized next; no track implementation is authorized.
