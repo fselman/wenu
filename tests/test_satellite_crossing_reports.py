@@ -7,6 +7,7 @@ import json
 
 import pytest
 
+import wenu.satellite_crossing_reports as report_module
 from wenu.coordinates import CoordinateSpec, PositionStatus
 from wenu.satellite_crossing_reports import (
     EXACT_REPORT_PRODUCT,
@@ -215,6 +216,20 @@ def test_typed_and_byte_identical_round_trip_accepts_text_and_bytes():
     assert ExactSatelliteCrossingReport.from_json(encoded) == value
     assert ExactSatelliteCrossingReport.from_json(encoded.encode()) == value
     assert ExactSatelliteCrossingReport.from_json(encoded).to_json() == encoded
+
+
+def test_decode_and_reencode_do_not_consult_filesystem(monkeypatch):
+    value = report(field_result("one"))
+    encoded = value.to_json()
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("runtime service access is forbidden")
+
+    monkeypatch.setattr(report_module.resources, "files", forbidden)
+
+    decoded = ExactSatelliteCrossingReport.from_json(encoded)
+
+    assert decoded.to_json() == encoded
 
 
 @pytest.mark.parametrize(
