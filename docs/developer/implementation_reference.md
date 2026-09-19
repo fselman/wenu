@@ -3126,3 +3126,12 @@ serialization consults neither clock nor scientific services.
 The proposed schema is closed and versioned, future-science values are required
 nulls in version 1, and semantic plus digest validation is mandatory. These are
 candidate contracts only; no production API is authorized.
+
+
+## Accepted 50S.6G.2A implementation authorization
+
+Fernando accepted the documentation contract on 2026-09-19 at `835ddfe`,
+after 175 documentation tests passed in 3.27 seconds and clean repository
+checks. Only the audited exact-report model, schema, pure encoder/decoder, and
+focused tests are authorized; the candidate API names remain subject to the
+implementation as-is assessment.
