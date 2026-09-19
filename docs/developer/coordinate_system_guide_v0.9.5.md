@@ -3820,3 +3820,12 @@ array order remains semantic.
 
 The audit introduces no coordinate operation or scientific-semantic change.
 No implementation is authorized pending separate acceptance.
+
+
+## Accepted 50S.6G.2A coordinate boundary
+
+Fernando accepted the audit on 2026-09-19 at `835ddfe`, after 175
+documentation tests passed in 3.27 seconds and clean checks. The coordinate
+guide remains current. The bounded implementation may serialize retained
+coordinate identities only and may not transform, infer, relabel, or
+recalculate them.
