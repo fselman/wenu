@@ -17,6 +17,7 @@ from wenu import (
     ChartSubjectRequest,
     Observer,
     SatelliteExactTrackDisplayRequest,
+    SkyContentSelection,
     build_chart_request,
     export_prepared_chart,
 )
@@ -201,6 +202,7 @@ def request_for(output, track, *, family, label_events):
         subject=ChartSubjectRequest(),
         frame=frame,
         horizon=False,
+        content=SkyContentSelection(solar_system_objects=frozenset()),
         satellite_exact_tracks=(
             SatelliteExactTrackDisplayRequest(
                 track,
