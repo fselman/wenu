@@ -542,6 +542,11 @@ def to_votable(report):
     for kind in _KINDS:
         table = _scope_table(projection, kind)
         element = TableElement.from_table(votable, table)
+        # Astropy 7.1 loses masks on variable-length Unicode columns while
+        # converting Table -> TableElement.  Restore every source mask so
+        # BINARY2 writes the projection's authoritative null flags.
+        for name in table.colnames:
+            element.array.mask[name] = np.asarray(table[name].mask, dtype=bool)
         element.ID = kind
         element.name = kind
         for field in element.fields:
