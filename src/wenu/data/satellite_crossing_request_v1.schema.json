@@ -11,14 +11,133 @@
     "product": {"const": "wenu.artificial_satellite_crossing_request"},
     "schema_version": {"const": 1},
     "document_kind": {"const": "initial_request"},
-    "created_utc": {"type": "string"},
-    "snapshot": {"type": "object"},
-    "observer": {"type": "object"},
-    "policy": {"type": "object"},
-    "fields": {"type": "array", "minItems": 1},
-    "request_identity_sha256": {
-      "type": "string", "pattern": "^[0-9a-f]{64}$"
-    }
+    "created_utc": {"$ref": "#/$defs/utc"},
+    "snapshot": {"$ref": "#/$defs/snapshot"},
+    "observer": {"$ref": "#/$defs/observer"},
+    "policy": {"$ref": "#/$defs/policy"},
+    "fields": {
+      "type": "array", "minItems": 1,
+      "items": {"$ref": "#/$defs/field"}
+    },
+    "request_identity_sha256": {"$ref": "#/$defs/digest"}
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "utc": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$"
+    },
+    "snapshot": {
+      "type": "object",
+      "required": ["directory", "snapshot_id", "content_sha256"],
+      "properties": {
+        "directory": {"type": "string", "minLength": 1},
+        "snapshot_id": {"type": "string", "minLength": 1},
+        "content_sha256": {"$ref": "#/$defs/digest"}
+      },
+      "additionalProperties": false
+    },
+    "observer": {
+      "type": "object",
+      "required": [
+        "observer_id", "longitude_deg", "latitude_deg", "elevation_m",
+        "refraction_policy", "earth_orientation_policy"
+      ],
+      "properties": {
+        "observer_id": {"type": "string", "minLength": 1},
+        "longitude_deg": {"type": "number"},
+        "latitude_deg": {"type": "number"},
+        "elevation_m": {"type": "number"},
+        "refraction_policy": {"const": "vacuum"},
+        "earth_orientation_policy": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "policy": {
+      "type": "object",
+      "required": [
+        "max_interval_seconds", "maximum_airmass",
+        "processing_chunk_size", "sky_motion_bound_deg_per_s",
+        "certification_time_tolerance_seconds"
+      ],
+      "properties": {
+        "max_interval_seconds": {"type": "number", "exclusiveMinimum": 0},
+        "maximum_airmass": {"type": "number", "minimum": 1},
+        "processing_chunk_size": {"type": "integer", "minimum": 1},
+        "sky_motion_bound_deg_per_s": {
+          "type": "number", "exclusiveMinimum": 0
+        },
+        "certification_time_tolerance_seconds": {
+          "type": "number", "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "coordinate": {
+      "type": "object",
+      "required": [
+        "frame", "origin", "position_status", "epoch", "equinox",
+        "instant", "time_scale", "longitude_unit", "latitude_unit",
+        "representation", "provider", "model", "provenance", "corrections"
+      ],
+      "properties": {
+        "frame": {"type": "string", "minLength": 1},
+        "origin": {"type": "string", "minLength": 1},
+        "position_status": {
+          "enum": ["geometric", "astrometric", "apparent", "observed"]
+        },
+        "epoch": {"type": ["string", "null"]},
+        "equinox": {"type": ["string", "null"]},
+        "instant": {"type": ["string", "null"]},
+        "time_scale": {"type": ["string", "null"]},
+        "longitude_unit": {"const": "deg"},
+        "latitude_unit": {"const": "deg"},
+        "representation": {"const": "spherical"},
+        "provider": {"type": ["string", "null"]},
+        "model": {"type": ["string", "null"]},
+        "provenance": {"type": "array", "items": {"type": "string"}},
+        "corrections": {
+          "type": "array", "items": {"type": "string"},
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "interval": {
+      "type": "object",
+      "required": ["start", "stop", "time_scale", "boundary"],
+      "properties": {
+        "start": {"$ref": "#/$defs/utc"},
+        "stop": {"$ref": "#/$defs/utc"},
+        "time_scale": {"const": "utc"},
+        "boundary": {"const": "inclusive"}
+      },
+      "additionalProperties": false
+    },
+    "field": {
+      "type": "object",
+      "required": [
+        "field_id", "center_longitude_deg", "center_latitude_deg",
+        "angular_radius_deg", "coordinate_spec", "boundary", "interval",
+        "time_tolerance_seconds", "angular_tolerance_deg"
+      ],
+      "properties": {
+        "field_id": {"type": "string", "minLength": 1},
+        "center_longitude_deg": {"type": "number"},
+        "center_latitude_deg": {"type": "number"},
+        "angular_radius_deg": {"type": "number", "exclusiveMinimum": 0},
+        "coordinate_spec": {"$ref": "#/$defs/coordinate"},
+        "boundary": {"const": "closed"},
+        "interval": {"$ref": "#/$defs/interval"},
+        "time_tolerance_seconds": {
+          "type": "number", "exclusiveMinimum": 0
+        },
+        "angular_tolerance_deg": {
+          "type": "number", "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  }
 }

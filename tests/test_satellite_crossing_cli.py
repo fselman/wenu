@@ -189,6 +189,16 @@ def test_output_paths_are_absolute_no_clobber_and_symlink_safe(tmp_path):
         cli._safe_destination(Path("relative"), directory=True)
 
 
+def test_single_file_publication_is_atomic_and_no_clobber(tmp_path):
+    destination = tmp_path / "validation.json"
+    cli._publish_file(destination, b"first\n")
+    assert destination.read_bytes() == b"first\n"
+    assert not tuple(tmp_path.glob(".validation.json.*"))
+    with pytest.raises(cli.PublicationError, match="already exists"):
+        cli._publish_file(destination, b"second\n")
+    assert destination.read_bytes() == b"first\n"
+
+
 def test_first_file_call_publishes_validation_before_status_four(
     tmp_path, monkeypatch
 ):
@@ -254,3 +264,56 @@ def test_parser_requires_exactly_one_input_mode():
     with pytest.raises(SystemExit):
         parse(["--direct", "--request", "/request.json"])
     assert parse(["--direct"]).direct
+
+
+@pytest.mark.parametrize(
+    ("error", "status"),
+    (
+        (cli.ProtocolInputError("input"), 3),
+        (cli.FieldValidationError([{
+            "field_id": "field",
+            "status": "invalid",
+            "code": "code",
+        }]), 4),
+        (cli.ValidatedSubsetError("stale"), 5),
+        (cli.PublicationError("path"), 6),
+        (RuntimeError("science"), 7),
+    ),
+)
+def test_main_maps_expected_failures_without_tracebacks(
+    error, status, monkeypatch, capsys
+):
+    monkeypatch.setattr(
+        cli,
+        "parser",
+        lambda: Namespace(parse_args=lambda _argv: arguments(direct=True)),
+    )
+
+    def fail(_arguments):
+        raise error
+
+    monkeypatch.setattr(cli, "run", fail)
+    assert cli.main([]) == status
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "wenu_satellite_crossings:" in captured.err
+    assert "Traceback" not in captured.err
+
+
+def test_packaged_protocol_schemas_close_every_declared_object():
+    root = Path(__file__).resolve().parents[1] / "src/wenu/data"
+    for name in (
+        "satellite_crossing_request_v1.schema.json",
+        "satellite_crossing_validation_v1.schema.json",
+        "satellite_crossing_bundle_manifest_v1.schema.json",
+    ):
+        schema = json.loads((root / name).read_text(encoding="utf-8"))
+        pending = [schema]
+        while pending:
+            value = pending.pop()
+            if isinstance(value, dict):
+                if value.get("type") == "object":
+                    assert value.get("additionalProperties") is False
+                pending.extend(value.values())
+            elif isinstance(value, list):
+                pending.extend(value)

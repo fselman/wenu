@@ -13,22 +13,35 @@
     "product": {"const": "wenu.artificial_satellite_crossing_bundle"},
     "schema_version": {"const": 1},
     "document_kind": {"const": "report_bundle_manifest"},
-    "implementation": {"type": "string"},
-    "request_mode": {"type": "string"},
-    "request_identity_sha256": {
-      "type": "string", "pattern": "^[0-9a-f]{64}$"
+    "implementation": {"type": "string", "minLength": 1},
+    "request_mode": {
+      "enum": ["direct", "initial-request", "validated-request"]
     },
-    "report_identity_sha256": {
-      "type": "string", "pattern": "^[0-9a-f]{64}$"
-    },
+    "request_identity_sha256": {"$ref": "#/$defs/digest"},
+    "report_identity_sha256": {"$ref": "#/$defs/digest"},
     "snapshot_id": {"type": "string", "minLength": 1},
-    "snapshot_content_sha256": {
-      "type": "string", "pattern": "^[0-9a-f]{64}$"
+    "snapshot_content_sha256": {"$ref": "#/$defs/digest"},
+    "files": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": {"$ref": "#/$defs/file"}
     },
-    "files": {"type": "array", "minItems": 3, "maxItems": 3},
-    "manifest_identity_sha256": {
-      "type": "string", "pattern": "^[0-9a-f]{64}$"
-    }
+    "manifest_identity_sha256": {"$ref": "#/$defs/digest"}
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "file": {
+      "type": "object",
+      "required": ["filename", "media_type", "byte_count", "sha256"],
+      "properties": {
+        "filename": {
+          "enum": ["report.json", "report.ecsv", "report.vot"]
+        },
+        "media_type": {"type": "string", "minLength": 1},
+        "byte_count": {"type": "integer", "minimum": 0},
+        "sha256": {"$ref": "#/$defs/digest"}
+      },
+      "additionalProperties": false
+    }
+  }
 }

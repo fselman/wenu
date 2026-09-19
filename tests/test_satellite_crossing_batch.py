@@ -250,3 +250,19 @@ def test_request_rejects_non_batch_input_and_exports_are_public():
     assert ExportedPolicy is MultiFieldCrossingPolicy
     assert ExportedRequest is MultiFieldCrossingRequest
     assert ExportedCoordinator is MultiFieldSatelliteCrossingCoordinator
+
+
+def test_public_validation_composes_existing_atomic_check_without_solving():
+    requests = MultiFieldCrossingRequest((query("one"), query("two")))
+    certifier = FakeCertifier()
+    oracle = FakeOracle()
+    coordinator = MultiFieldSatelliteCrossingCoordinator(
+        certifier=certifier,
+        single_field_oracle=oracle,
+    )
+
+    admissions = coordinator.validate(requests)
+
+    assert tuple(value.field_id for value in admissions) == ("one", "two")
+    assert certifier.calls == ["one", "two"]
+    assert oracle.calls == []

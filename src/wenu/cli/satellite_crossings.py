@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import argparse
 import ctypes
+from datetime import datetime
 import errno
 from hashlib import sha256
 from importlib.metadata import PackageNotFoundError, version
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import signal
 import sys
@@ -48,6 +50,10 @@ VALIDATION_PRODUCT = "wenu.artificial_satellite_crossing_validation"
 MANIFEST_PRODUCT = "wenu.artificial_satellite_crossing_bundle"
 PROTOCOL_VERSION = 1
 CLI_IMPLEMENTATION = "wenu satellite crossing CLI/file protocol v1"
+_DIGEST = re.compile(r"^[0-9a-f]{64}$")
+_UTC = re.compile(
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}Z$"
+)
 _DIGEST_KEYS = {
     REQUEST_PRODUCT: "request_identity_sha256",
     VALIDATION_PRODUCT: "validation_identity_sha256",
@@ -150,6 +156,26 @@ def _identity(document):
     if supplied is not None and supplied != actual:
         raise ProtocolInputError(f"{key} does not match document content.")
     return key, actual
+
+
+def _digest(value, *, name):
+    if not isinstance(value, str) or not _DIGEST.fullmatch(value):
+        raise ProtocolInputError(f"{name} must be a lowercase SHA-256.")
+    return value
+
+
+def _utc(value, *, name):
+    if not isinstance(value, str) or not _UTC.fullmatch(value):
+        raise ProtocolInputError(
+            f"{name} must be canonical UTC with six fractional digits."
+        )
+    try:
+        datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as error:
+        raise ProtocolInputError(
+            f"{name} must be a valid UTC instant."
+        ) from error
+    return value
 
 
 def _signed(document):
@@ -368,6 +394,7 @@ def _request(document, *, validated=False):
     ):
         raise ProtocolInputError("unsupported request product or version.")
     _, identity = _identity(document)
+    _utc(document["created_utc"], name="created_utc")
     snapshot_ref = document["snapshot"]
     _keys(
         snapshot_ref,
@@ -377,6 +404,8 @@ def _request(document, *, validated=False):
     directory = Path(snapshot_ref["directory"])
     if not directory.is_absolute():
         raise ProtocolInputError("snapshot directory must be absolute.")
+    _digest(snapshot_ref["content_sha256"], name="snapshot content digest")
+    _real_directory(directory, name="snapshot directory")
     snapshot = load_snapshot_directory(directory)
     if (
         snapshot.manifest.snapshot_id != snapshot_ref["snapshot_id"]
@@ -384,8 +413,13 @@ def _request(document, *, validated=False):
     ):
         error = ValidatedSubsetError if validated else ProtocolInputError
         raise error("snapshot identity does not match request.")
-    observer = _observer(document["observer"])
-    policy = _policy(document["policy"])
+    try:
+        observer = _observer(document["observer"])
+        policy = _policy(document["policy"])
+    except (KeyError, TypeError, ValueError) as error:
+        raise ProtocolInputError(
+            f"request context is invalid: {type(error).__name__}: {error}"
+        ) from error
     fields = document["fields"]
     if not isinstance(fields, list) or not fields:
         raise ProtocolInputError("fields must be a non-empty array.")
@@ -401,10 +435,15 @@ def _request(document, *, validated=False):
         raise ProtocolInputError(
             "field identifiers must be present and unique."
         )
-    queries = tuple(
-        _field_query(value, snapshot=snapshot, observer=observer)
-        for value in fields
-    )
+    try:
+        queries = tuple(
+            _field_query(value, snapshot=snapshot, observer=observer)
+            for value in fields
+        )
+    except (KeyError, TypeError, ValueError) as error:
+        raise ProtocolInputError(
+            f"field definition is invalid: {type(error).__name__}: {error}"
+        ) from error
     admission = None
     if snapshot.manifest.snapshot_id != "synthetic_50s4b_v1":
         try:
@@ -413,7 +452,7 @@ def _request(document, *, validated=False):
                 admitted_identities=(CELESTRAK_ACTIVE_20260917_IDENTITY,),
             ).admit(snapshot)
         except ValueError as error:
-            raise ProtocolInputError(str(error)) from error
+            raise RuntimeError(str(error)) from error
     coordinator = MultiFieldSatelliteCrossingCoordinator(
         policy=policy, external_snapshot_admission=admission
     )
@@ -574,6 +613,14 @@ def _validated_request(document):
             "unsupported validation product or version."
         )
     try:
+        _digest(document["source_bytes_sha256"], name="source byte digest")
+        _digest(
+            document["source_request_identity_sha256"],
+            name="source request identity",
+        )
+    except ProtocolInputError as error:
+        raise ValidatedSubsetError(str(error)) from error
+    try:
         _, identity = _identity(document)
     except ProtocolInputError as error:
         raise ValidatedSubsetError(str(error)) from error
@@ -670,10 +717,19 @@ def _direct_document(arguments):
             "direct mode requires: " + ", ".join(missing) + "."
         )
     try:
-        observer = json.loads(arguments.observer_json)
-        policy = json.loads(arguments.policy_json)
-        fields = [json.loads(value) for value in arguments.field]
-    except json.JSONDecodeError as error:
+        observer = _load_json_bytes(
+            arguments.observer_json.encode("utf-8"),
+            name="observer argument",
+        )
+        policy = _load_json_bytes(
+            arguments.policy_json.encode("utf-8"),
+            name="policy argument",
+        )
+        fields = [
+            _load_json_bytes(value.encode("utf-8"), name="field argument")
+            for value in arguments.field
+        ]
+    except UnicodeEncodeError as error:
         raise ProtocolInputError("direct JSON argument is invalid.") from error
     return _signed({
         "product": REQUEST_PRODUCT,
@@ -742,9 +798,14 @@ def run(arguments):
         ).read_bytes()
         validation = _load_json_bytes(source_bytes, name="validation output")
         validation_identity, document = _validated_request(validation)
-    identity, _snapshot, policy, coordinator, queries = _request(
-        document, validated=mode == "validated-request"
-    )
+    try:
+        identity, _snapshot, policy, coordinator, queries = _request(
+            document, validated=mode == "validated-request"
+        )
+    except ProtocolInputError as error:
+        if mode == "validated-request":
+            raise ValidatedSubsetError(str(error)) from error
+        raise
     validation = _validate_fields(coordinator, queries)
     invalid = [value for value in validation if value["status"] == "invalid"]
     if invalid:
@@ -779,10 +840,10 @@ def run(arguments):
 def main(argv=None):
     arguments = parser().parse_args(argv)
     previous_sigterm = signal.getsignal(signal.SIGTERM)
-    signal.signal(
-        signal.SIGTERM,
-        lambda _number, _frame: (_ for _ in ()).throw(Terminated()),
-    )
+    def terminate(_number, _frame):
+        raise Terminated
+
+    signal.signal(signal.SIGTERM, terminate)
     try:
         manifest, identity = run(arguments)
     except Terminated:
