@@ -1302,3 +1302,18 @@ tests. Preserve every accepted status, ordering, digest, schema, semantic, and
 round-trip constraint. Do not implement ECSV/VOTable, CLI/files, tracks,
 charts, illumination, magnitude, detector effects, provider access, another
 real run, or unrelated refactoring.
+
+
+## Candidate 50S.6G.2A implementation boundary
+
+Treat `satellite_crossing_reports.py`, its packaged version-1 schema, and
+`test_satellite_crossing_reports.py` as a bounded candidate awaiting
+Fernando's scientific and architectural acceptance. Preserve the distinct
+exact-local product/status, explicit zero-crossing fields, caller-supplied
+creation time, complete typed context, semantic array order, canonical digest,
+closed schema, duplicate-key rejection, null future science, and byte-identical
+round trip.
+
+Do not add ECSV/VOTable, CLI/files, atomic publication, tracks, charts,
+illumination, magnitude, detector effects, scheduling adapters, provider
+access, another real run, or unrelated refactoring under this candidate.
