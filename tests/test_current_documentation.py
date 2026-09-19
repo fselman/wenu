@@ -7650,9 +7650,10 @@ def test_50s6g2b_candidate_unicode_null_amendment_is_explicit_and_bounded():
         assert "shared logical projection" in document
         assert "report_identity_sha256" in document
         assert "empty string as null" in document
-        assert "no further" in document
         assert "runtime" in document
 
+    assert "no further" in audit
+    assert "make further runtime changes" in instructions
     assert "Astropy issue 8995" in audit
     assert "Numeric and Boolean nulls continue to use BINARY2 null flags" in audit
     assert "true indicator paired with a non-empty carrier" in audit
