@@ -1370,3 +1370,22 @@ The consumed one-run authorization produced candidate report `d200f3920aeda64df4
 ## Accepted first real equivalence evidence
 
 Fernando scientifically and architecturally accepted report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18 after 171 documentation tests passed in 4.46 seconds. This closes the first real run as exact empty-result equivalence and conservative partition evidence. All fields had zero crossings; observed timing is descriptive only, and no rerun or parallelization is authorized.
+
+
+## Candidate bounded 50S.6G.1B closure
+
+At integrated baseline `b010a6c`, the representative-snapshot foundation is
+implemented and its accepted real matrix demonstrates exact empty-result
+equivalence and complete conservative partitions. All ten real fields had zero
+crossings; positive-crossing behavior remains synthetic evidence.
+
+The candidate closure expressly defers a full-snapshot matrix, wider FoV-count
+matrix, comprehensive real crossing geometries, and universal performance,
+capacity, concurrency, or reuse claims. The consumed real-run authority is not
+renewed. No provider request, artifact refresh, rerun, report, CLI, track,
+chart, illumination, or brightness work is authorized.
+
+Pending Fernando's separate scientific and architectural acceptance,
+50S.6G.1B remains open. Acceptance would authorize only a separate
+documentation audit of 50S.6G.2A canonical exact-crossing reports and
+deterministic JSON, not implementation.
