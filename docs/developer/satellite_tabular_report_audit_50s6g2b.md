@@ -358,3 +358,21 @@ Astropy 7.1.0 Unicode `__is_null` companion contract. This acceptance
 authorizes no later milestone. 50S.6G.2C filesystem/CLI publication, plain
 CSV, tracks, charts, visibility science, provider access, another real run,
 and unrelated refactoring remain unauthorized.
+
+
+## Accepted complete 50S.6G.2B implementation
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+Preserve one shared schema-derived format-neutral projection, deterministic
+in-memory ECSV and VOTable 1.5/BINARY2 adapters, strict typed reconstruction,
+canonical JSON and `report_identity_sha256` authority, and the accepted
+Astropy 7.1.0 Unicode `__is_null` companion contract. This acceptance
+authorizes no later milestone. 50S.6G.2C filesystem/CLI publication, plain
+CSV, tracks, charts, visibility science, provider access, another real run,
+and unrelated refactoring remain unauthorized.
