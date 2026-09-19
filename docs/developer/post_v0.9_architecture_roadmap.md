@@ -2886,3 +2886,21 @@ one reusable format-neutral tabular projection and thin ECSV/VOTable 1.5
 adapters with strict lossless reconstruction. 50S.6G.2C filesystem/CLI
 publication, 50S.6G.3A exact tracks, charts, visibility science, provider
 access, and another real run remain separate and unauthorized.
+
+
+## 50S.6G.2B complete implementation accepted
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+50S.6G.2B is complete within its accepted boundary: one reusable
+schema-derived projection, deterministic ECSV and VOTable 1.5/BINARY2
+carriers, strict reconstruction, canonical JSON identity and
+`report_identity_sha256`, and the Astropy 7.1.0 Unicode `__is_null`
+companion contract. No later milestone is authorized by this acceptance.
+50S.6G.2C filesystem/CLI publication and all track, chart, visibility,
+provider, and new-execution work require separate audit and authorization.
