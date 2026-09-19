@@ -2512,3 +2512,21 @@ A future module adjacent to `satellites/crossing_oracle.py` may own immutable ex
 ## Accepted 50S.6G.3A implementation ownership
 
 The accepted audit authorizes one exact-track scientific owner adjacent to local satellite science, one evidence-only layer owner under `sky/`, and focused tests. Existing SatChecker candidate, crossing oracle, SGP4/TEME, topocentric, report, CLI, Solar-System track, chart, renderer, and exporter responsibilities remain in place. Final filenames may be chosen during implementation preflight without widening responsibility.
+
+## Candidate 50S.6G.3A implementation placement
+
+- `satellites/exact_tracks.py` owns policy, evaluation, immutable samples/evidence, digest identity, fail-closed adaptive sampling, and accepted-service composition.
+- `sky/satellite_exact_track_layer.py` owns evidence-only path and event geometry.
+- `coordinate_service.py` adds only fixed `gcrs-axes` orientation recognition.
+- `sky/semantic_identity.py` owns the sibling `sky/artificial_satellites/exact_local_tracks/<visit>/...` semantic family.
+- `tests/test_satellite_exact_tracks.py` owns the new durable evidence/layer boundary.
+
+No report, CLI, provider, chart registry, renderer, exporter, or SatChecker candidate owner changes.
+
+## Verified candidate 50S.6G.3A placement
+
+The exact-track science module, evidence-only layer module, narrow coordinate/semantic seams, and durable test owner at `f0a4164` passed focused, documentation, and complete repository gates. Verification introduced no additional owner and grants no merge or later-milestone authority.
+
+## Accepted 50S.6G.3A ownership
+
+`satellites/exact_tracks.py`, `sky/satellite_exact_track_layer.py`, the narrow coordinate/semantic seams, and `tests/test_satellite_exact_tracks.py` are the accepted owners. They do not absorb crossing, report, CLI, provider, chart, renderer, exporter, or SatChecker-candidate responsibilities.

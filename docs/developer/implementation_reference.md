@@ -3281,3 +3281,17 @@ A future output-neutral layer may consume only that evidence and return an open 
 ## Accepted 50S.6G.3A implementation authorization
 
 After acceptance at `ce54971`, implementation may add only the frozen exact-local-track evidence, sampling policy, typed failures, realizer, output-neutral path/event views, stable semantic identity, and focused offline tests described by the audit. It must compose existing crossing, propagation, topocentric, spherical-geometry, and coordinate-service owners and must not change report, CLI, provider, chart, renderer, or exporter APIs.
+
+## Candidate 50S.6G.3A executable API
+
+`ExactLocalTrackPolicy`, `ExactLocalTrackEvaluation`, `ExactLocalSatelliteTrackSample`, `ExactLocalSatelliteTrack`, `ExactLocalTrackError`, and `ExactLocalSatelliteTrackRealizer` provide the bounded evidence route. `SatelliteExactTrackLayer` and `SatelliteExactTrackEventsLayer` expose retained evidence as ordinary geometry without recomputation.
+
+The collection `CoordinateSpec` is timeless `gcrs-axes` / `topocentric-direction`; `sample_time_scale="utc"` and each sample instant carry time. `CoordinateService` treats `gcrs-axes` only as the fixed GCRS/ICRS axis orientation for direction transformations. These APIs remain candidate pending full verification and acceptance.
+
+## Verified candidate 50S.6G.3A API
+
+The candidate exact-track evidence, realizer, failure, path/event layer, coordinate-service, and semantic APIs at `f0a4164` passed the complete 2,728-test repository gate. They remain candidate APIs until Fernando separately accepts the implementation.
+
+## Accepted 50S.6G.3A API
+
+The exact-track policy, evaluation, sample, evidence, typed-error, realizer, path layer, event layer, semantic identity, and fixed-axis coordinate-service seam are accepted within their documented boundary. Preserve evidence-level/per-sample UTC and the timeless collection specification. No chart request or rendering API is accepted by this milestone.

@@ -677,6 +677,61 @@ def semantic_layer_identity(layer) -> SemanticLayerIdentity | None:
             f"satchecker-norad-{identifier}-"
             f"{component.replace('_', '-')}"
         )
+    if name in {
+        "satellite_exact_track",
+        "satellite_exact_track_events",
+    }:
+        identifier = getattr(layer, "norad_catalog_id", None)
+        if isinstance(identifier, bool) or not isinstance(identifier, int):
+            raise TypeError(
+                "satellite exact-track semantic identity requires an integer "
+                "NORAD catalogue identifier."
+            )
+        if identifier <= 0:
+            raise ValueError("NORAD catalogue identifier must be positive.")
+        display = getattr(layer, "satellite_display_name", None)
+        if not isinstance(display, str) or not display.strip():
+            raise ValueError(
+                "satellite exact-track semantic identity requires a display name."
+            )
+        visit_key = getattr(layer, "visit_key", None)
+        if (
+            not isinstance(visit_key, str)
+            or _SAFE_PATH_COMPONENT.fullmatch(visit_key) is None
+        ):
+            raise ValueError(
+                "satellite exact-track semantic identity requires a safe visit key."
+            )
+        component = (
+            "track" if name == "satellite_exact_track" else "events"
+        )
+        component_display = (
+            f"{display.strip()} exact local track"
+            if component == "track"
+            else f"{display.strip()} exact crossing events"
+        )
+        contract = SemanticLayerContract(
+            (
+                "sky",
+                "artificial_satellites",
+                "exact_local_tracks",
+                visit_key,
+                component,
+            ),
+            component_display,
+            37,
+            name,
+        )
+        path_display_names = (
+            "Sky",
+            "Artificial Satellites",
+            "Exact Local Tracks",
+            display.strip(),
+            component_display,
+        )
+        svg_id = (
+            f"exact-satellite-{visit_key.replace('_', '-')}-{component}"
+        )
     options = {} if contract is None else {
         "semantic_path": contract.path,
         "display_name": contract.display_name,

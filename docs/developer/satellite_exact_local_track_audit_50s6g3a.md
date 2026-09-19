@@ -161,3 +161,31 @@ Fernando scientifically and architecturally accepted this documentation-only aud
 Implement only the bounded 50S.6G.3A exact local track evidence and output-neutral layer specified above. Preserve the accepted connected crossing as event truth; compose the accepted immutable snapshot, SGP4/TEME, and geometric topocentric route; retain exact event anchors; use deterministic fail-closed sampling; and keep candidate and exact scientific status distinct.
 
 This acceptance does not authorize 50S.6G.3B chart integration, 50S.6G.4A/B planisphere work, report or CLI protocol changes, provider access, new crossing science, visibility, illumination, brightness, detector effects, or unrelated refactoring. The implementation remains a candidate until separately verified and accepted.
+
+## Accepted implementation-preflight representation resolution
+
+Implementation preflight found that `CoordinateSpec` deliberately requires `instant` and `time_scale` together, while one track collection has no single instant. Fernando authorized the smallest consistent resolution: the collection uses a timeless geometric `gcrs-axes` / `topocentric-direction` coordinate specification, `sample_time_scale` is `utc`, and every retained sample owns its normalized UTC instant.
+
+The canonical coordinate service now recognizes `gcrs-axes` only as the fixed GCRS/ICRS axis orientation for transforming geometric direction components. This does not reinterpret the evidence as a geocentric GCRS state, ICRS source position, apparent place, or single-epoch collection.
+
+## Candidate 50S.6G.3A implementation
+
+Candidate commit `98a756d4405ba60756e3899d9a0886029cfa8afd` adds frozen policy, evaluation, sample, evidence, typed-error, and realizer contracts under local satellite science; evidence-only exact path and event layers; stable exact-visit semantics; the narrowly required coordinate-service orientation seam; and focused offline tests.
+
+The realizer binds one accepted crossing to its exact snapshot record, composes the accepted SGP4/TEME and topocentric owners, retains exact entry/closest/exit anchors, adaptively samples left before right, caches by normalized UTC instant, and fails closed at evaluation, recursion, and retained-sample limits. Layers select retained evidence without propagation or event recomputation.
+
+The focused plugin-disabled gate passed 69 tests in 75.58 seconds on Fernando's Mac. Diff and synchronized-tree checks were clean. This is a verified focused candidate, not scientific or architectural implementation acceptance. Full-suite verification, documentation verification, and separate acceptance remain required.
+
+## Verified candidate 50S.6G.3A implementation
+
+The complete candidate at `f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1` passed all 2,728 plugin-disabled repository tests in 222.01 seconds on Fernando's Mac. The immediately preceding documentation gate passed 195 tests in 5.86 seconds; diff checks and the clean synchronized working tree passed.
+
+This verifies the executable evidence, output-neutral layers, coordinate representation, semantics, focused tests, and active documentation together. It is not scientific or architectural implementation acceptance. Do not merge or begin 50S.6G.3B until Fernando separately accepts the implementation.
+
+## Accepted complete 50S.6G.3A implementation
+
+Fernando scientifically and architecturally accepted the complete bounded implementation on 2026-09-19 and explicitly authorized merge. Executable and active-document candidate `f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1` passed the 69-test focused gate in 75.58 seconds, the 195-test documentation gate in 5.86 seconds, and all 2,728 plugin-disabled repository tests in 222.01 seconds. Verification record `0182224a5e41074f87ce6507d52b981eeeda5ed8` passed 196 documentation tests in 5.55 seconds; diff checks and the clean synchronized Mac working tree passed.
+
+The accepted product is limited to immutable snapshot-bound exact connected-visit evidence, deterministic anchored fail-closed sampling, deterministic identity and provenance, timeless GCRS-axis collection coordinates with explicit evidence/per-sample UTC, evidence-only path/event layers, stable exact-visit semantics, and the narrow coordinate-service orientation seam.
+
+Only a separately bounded documentation-first 50S.6G.3B binocular/regional chart-integration audit is authorized next. No chart implementation, planisphere work, report/CLI change, provider access, visibility, illumination, brightness, detector effect, or unrelated refactoring is authorized.

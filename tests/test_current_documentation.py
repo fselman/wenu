@@ -8093,3 +8093,144 @@ def test_50s6g3a_records_acceptance_and_only_bounded_implementation_authority():
     assert "Accepted 50S.6G.3A audit refinement" in delivery
     assert "Accepted 50S.6G.3A audit" in log
     assert "50S.6G.3B and 50S.6G.4A/B remain unauthorized" in roadmap
+
+def test_50s6g3a_candidate_implementation_is_exact_output_neutral_and_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    source = read(ROOT / "src/wenu/satellites/exact_tracks.py")
+    layer = read(ROOT / "src/wenu/sky/satellite_exact_track_layer.py")
+    coordinate_service = read(ROOT / "src/wenu/coordinate_service.py")
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "Accepted implementation-preflight representation resolution",
+        "sample_time_scale",
+        "Candidate 50S.6G.3A implementation",
+        "98a756d4405ba60756e3899d9a0886029cfa8afd",
+        "69 tests in 75.58 seconds",
+        "not scientific or architectural implementation acceptance",
+    ):
+        assert phrase in audit
+    for phrase in (
+        "class ExactLocalTrackPolicy",
+        "class ExactLocalSatelliteTrackSample",
+        "class ExactLocalSatelliteTrack",
+        "class ExactLocalTrackError",
+        "class ExactLocalSatelliteTrackRealizer",
+        "track_identity_sha256",
+        "maximum_step_seconds",
+        "adaptive subdivision exceeded",
+    ):
+        assert phrase in source
+    assert "class SatelliteExactTrackLayer" in layer
+    assert "class SatelliteExactTrackEventsLayer" in layer
+    assert "recomputed" in layer
+    assert 'if frame == "gcrs-axes"' in coordinate_service
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Candidate 50S.6G.3A implementation state" in architecture
+    assert "50S.6G.3A candidate implementation" in roadmap
+    assert "Candidate 50S.6G.3A executable API" in reference
+    assert "Candidate 50S.6G.3A implementation placement" in source_tree
+    assert "Candidate 50S.6G.3A implemented coordinate representation" in coordinates
+    assert "Candidate exact local track implementation" in guide
+    assert "Candidate 50S.6G.3A implementation boundary" in instructions
+    assert "50S.6G.3A candidate implementation state" in delivery
+    assert "Candidate 50S.6G.3A implementation" in log
+    assert "Do not merge or begin 50S.6G.3B" in instructions
+
+def test_50s6g3a_records_complete_candidate_verification_without_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            INSTRUCTIONS,
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1",
+        "2,728 plugin-disabled repository tests",
+        "222.01 seconds",
+        "195 tests in 5.86 seconds",
+        "not scientific or architectural implementation acceptance",
+        "Do not merge or begin 50S.6G.3B",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, instructions, log = documents
+    assert "Verified candidate 50S.6G.3A implementation" in architecture
+    assert "50S.6G.3A verified candidate state" in roadmap
+    assert "Verified candidate 50S.6G.3A API" in reference
+    assert "Verified candidate 50S.6G.3A placement" in source_tree
+    assert "Verified candidate 50S.6G.3A coordinate representation" in coordinates
+    assert (
+        "Candidate 50S.6G.3A implementation verification boundary"
+        in instructions
+    )
+    assert "Verified candidate 50S.6G.3A implementation" in log
+    assert "Merge and 50S.6G.3B remain unauthorized" in roadmap
+
+def test_50s6g3a_records_accepted_implementation_and_next_audit_only():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_exact_local_track_audit_50s6g3a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "f0a41648dc5565e4a8deed5d7bb6640a3df4e2d1",
+        "0182224a5e41074f87ce6507d52b981eeeda5ed8",
+        "2,728 plugin-disabled repository tests",
+        "196 documentation tests",
+        "Only a separately bounded documentation-first 50S.6G.3B",
+        "No chart implementation",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Accepted 50S.6G.3A implementation" in architecture
+    assert "50S.6G.3A accepted implementation" in roadmap
+    assert "Accepted 50S.6G.3A API" in reference
+    assert "Accepted 50S.6G.3A ownership" in source_tree
+    assert "Accepted 50S.6G.3A coordinate representation" in coordinates
+    assert "Accepted exact local track implementation" in guide
+    assert "Accepted 50S.6G.3A implementation boundary" in instructions
+    assert "Accepted 50S.6G.3A implementation closure" in delivery
+    assert "Accepted complete 50S.6G.3A implementation" in log
+    assert "Chart implementation and 50S.6G.4A/B remain unauthorized" in roadmap

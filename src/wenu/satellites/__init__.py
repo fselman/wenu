@@ -35,6 +35,18 @@ from .crossing_matrix import (
     MatrixSpecimenIdentity,
     run_equivalence_matrix,
 )
+from .exact_tracks import (
+    EXACT_LOCAL_TRACK_IMPLEMENTATION,
+    EXACT_LOCAL_TRACK_PRODUCT,
+    EXACT_LOCAL_TRACK_SCHEMA_VERSION,
+    EXACT_LOCAL_TRACK_STATUS,
+    ExactLocalSatelliteTrack,
+    ExactLocalSatelliteTrackRealizer,
+    ExactLocalSatelliteTrackSample,
+    ExactLocalTrackError,
+    ExactLocalTrackEvaluation,
+    ExactLocalTrackPolicy,
+)
 from .elements import SatelliteElementRecord
 from .snapshot_admission import (
     CELESTRAK_ACTIVE_20260917_IDENTITY,
@@ -87,6 +99,16 @@ __all__ = [
     "MatrixRouteRun",
     "MatrixSpecimenIdentity",
     "ConservativeConeShellSelector",
+    "EXACT_LOCAL_TRACK_IMPLEMENTATION",
+    "EXACT_LOCAL_TRACK_PRODUCT",
+    "EXACT_LOCAL_TRACK_SCHEMA_VERSION",
+    "EXACT_LOCAL_TRACK_STATUS",
+    "ExactLocalSatelliteTrack",
+    "ExactLocalSatelliteTrackRealizer",
+    "ExactLocalSatelliteTrackSample",
+    "ExactLocalTrackError",
+    "ExactLocalTrackEvaluation",
+    "ExactLocalTrackPolicy",
     "ExternalSnapshotAdmission",
     "ExternalSnapshotAdmissionPolicy",
     "ExternalSnapshotIdentity",
