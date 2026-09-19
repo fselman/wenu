@@ -1387,3 +1387,20 @@ the exact adjacent Boolean `__is_null` VOTable FIELDs for nullable Unicode
 values, strict validation, and focused tests. Preserve the shared logical
 projection, ECSV, canonical JSON identity, and every existing 50S.6G.2B
 exclusion.
+
+
+## Candidate 50S.6G.2B implementation verification boundary
+
+Treat the in-memory ECSV/VOTable implementation at `3bbd82f` as a verified
+candidate awaiting Fernando's scientific and architectural acceptance. The
+combined report/documentation gate passed 208 plugin-disabled tests in 6.68
+seconds, and all 2,689 plugin-disabled repository tests passed in 215.15
+seconds. Repository checks and the Mac working tree were clean and
+synchronized.
+
+Preserve the single shared schema-derived projection, deterministic ECSV and
+VOTable 1.5/BINARY2 adapters, strict reconstruction, canonical JSON and
+`report_identity_sha256`, and accepted explicit Unicode `__is_null`
+companions. Do not merge, begin 50S.6G.2C, or add paths, files, CLI,
+publication, tracks, charts, visibility science, provider access, another real
+run, or unrelated refactoring before separate acceptance.
