@@ -601,11 +601,18 @@ def from_votable(value):
                 or field.name.endswith("_epoch")
             ) and field.ref != _TIMESYS_ID:
                 raise ValueError("VOTable UTC FIELD lacks the required TIMESYS reference.")
-        for row in table:
+        for row_index, row in enumerate(table):
             mapping = {}
             for name in expected_scope:
                 item = row[name]
-                mapping[name] = None if np.ma.is_masked(item) else item.item() if hasattr(item, "item") else item
+                masked = bool(np.all(table[name].mask[row_index]))
+                mapping[name] = (
+                    None
+                    if masked
+                    else item.item()
+                    if hasattr(item, "item")
+                    else item
+                )
             rows_by_kind.setdefault(kind, []).append(
                 tuple(mapping.get(name) for name in expected_names)
             )
