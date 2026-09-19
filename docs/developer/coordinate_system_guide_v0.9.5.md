@@ -3793,4 +3793,5 @@ The candidate closure introduces no coordinate operation, frame, origin,
 status, epoch, time scale, Earth-orientation policy, tolerance, or
 transformation. It does not convert empty-result agreement into positive
 real-crossing validation and authorizes no new execution. Pending separate
-acceptance, 50S.6G.2A remains unauthorized.
+acceptance, 50S.6G.2A remains unauthorized. Acceptance would authorize only
+a documentation audit, not implementation.
