@@ -1504,3 +1504,12 @@ nullable future science, canonical digest, closed Draft 2020-12 schema, and
 typed byte-identical JSON round trips form the candidate boundary.
 
 No runtime implementation is authorized pending Fernando's separate acceptance.
+
+
+## Accepted 50S.6G.2A exact-report audit
+
+Fernando scientifically and architecturally accepted the documentation audit
+on 2026-09-19 at `835ddfe`, after 175 documentation tests passed in 3.27
+seconds and repository checks were clean. Only the bounded exact-report logical
+model, Draft 2020-12 schema, deterministic encoder/decoder, and focused tests
+are authorized next; no other runtime or delivery work is authorized.
