@@ -7405,3 +7405,38 @@ def test_satellite_guide_is_pedagogical_and_history_is_separate():
     assert "Accepted 50S.6G.2A exact-report audit" in log
     assert "pedagogical artificial-satellite" in index
     assert "chronological 50S" in index
+
+def test_50s6g2a_records_acceptance_and_bounded_implementation_authority():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_exact_crossing_report_audit_50s6g2a.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document or "Fernando accepted" in document
+        assert "2026-09-19" in document
+        assert "835ddfe" in document
+        assert "175" in document
+        assert "3.27 seconds" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, instructions, delivery, log = documents
+    assert "Accepted audit and handoff" in audit
+    assert "Accepted 50S.6G.2A exact-report audit" in architecture
+    assert "50S.6G.2A accepted audit state" in roadmap
+    assert "Accepted 50S.6G.2A implementation authorization" in reference
+    assert "Accepted 50S.6G.2A implementation ownership" in source_tree
+    assert "Accepted 50S.6G.2A coordinate boundary" in coordinates
+    assert "Accepted 50S.6G.2A implementation boundary" in instructions
+    assert "Accepted 50S.6G.2A audit handoff" in delivery
+    assert "Accepted 50S.6G.2A exact-report audit" in log
+    assert "50S.6G.2B and later work remain unauthorized" in roadmap
+    assert "Do not implement ECSV/VOTable" in instructions
