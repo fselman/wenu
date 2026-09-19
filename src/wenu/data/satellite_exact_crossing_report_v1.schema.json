@@ -48,7 +48,7 @@
     },
     "snapshot": {
       "type": "object", "additionalProperties": false,
-      "required": ["schema_version", "snapshot_id", "created_utc", "source_identity", "source_url", "source_format", "records_file", "content_sha256", "record_count", "builder_identity", "provider_policy_url", "provider_policy_checked_utc", "provenance", "warnings"],
+      "required": ["schema_version", "snapshot_id", "created_utc", "source_identity", "source_url", "source_format", "records_file", "content_sha256", "record_count", "builder_identity", "provider_policy_url", "provider_policy_checked_utc", "minimum_element_epoch", "maximum_element_epoch", "provenance", "warnings"],
       "properties": {
         "schema_version": {"const": 1}, "snapshot_id": {"$ref": "#/$defs/text"},
         "created_utc": {"$ref": "#/$defs/utc"}, "source_identity": {"$ref": "#/$defs/text"},
@@ -56,6 +56,7 @@
         "records_file": {"$ref": "#/$defs/text"}, "content_sha256": {"$ref": "#/$defs/digest"},
         "record_count": {"type": "integer", "minimum": 1}, "builder_identity": {"$ref": "#/$defs/text"},
         "provider_policy_url": {"$ref": "#/$defs/text"}, "provider_policy_checked_utc": {"$ref": "#/$defs/utc"},
+        "minimum_element_epoch": {"$ref": "#/$defs/utc"}, "maximum_element_epoch": {"$ref": "#/$defs/utc"},
         "provenance": {"$ref": "#/$defs/strings"}, "warnings": {"$ref": "#/$defs/strings"}
       }
     },
@@ -117,10 +118,11 @@
     },
     "crossing": {
       "type": "object", "additionalProperties": false,
-      "required": ["field_id", "norad_catalog_id", "object_name", "international_designator", "source_provider", "orbit_solution_id", "snapshot_sha256", "element_epoch", "entry_instant", "closest_approach_instant", "exit_instant", "closest_approach_deg", "time_in_field_seconds", "range_km", "angular_rate_deg_per_s", "oracle_provenance", "acceleration_provenance", "warnings", "illumination", "apparent_magnitude", "detector_effect", "exact_track_samples"],
+      "required": ["field_id", "norad_catalog_id", "object_name", "international_designator", "classification", "source_provider", "orbit_solution_id", "snapshot_sha256", "element_epoch", "entry_instant", "closest_approach_instant", "exit_instant", "closest_approach_deg", "time_in_field_seconds", "range_km", "angular_rate_deg_per_s", "oracle_provenance", "acceleration_provenance", "warnings", "illumination", "apparent_magnitude", "detector_effect", "exact_track_samples"],
       "properties": {
         "field_id": {"$ref": "#/$defs/text"}, "norad_catalog_id": {"type": "integer", "minimum": 1},
         "object_name": {"$ref": "#/$defs/nullableText"}, "international_designator": {"$ref": "#/$defs/nullableText"},
+        "classification": {"$ref": "#/$defs/nullableText"},
         "source_provider": {"$ref": "#/$defs/text"}, "orbit_solution_id": {"$ref": "#/$defs/nullableText"},
         "snapshot_sha256": {"$ref": "#/$defs/digest"}, "element_epoch": {"$ref": "#/$defs/utc"},
         "entry_instant": {"$ref": "#/$defs/utc"}, "closest_approach_instant": {"$ref": "#/$defs/utc"}, "exit_instant": {"$ref": "#/$defs/utc"},
