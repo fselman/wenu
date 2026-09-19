@@ -3171,3 +3171,18 @@ working-tree checks were clean.
 The candidate API documented above is accepted within its bounded exclusions.
 No file, CLI, ECSV/VOTable, track, chart, illumination, brightness, detector,
 provider, scheduling, or execution API is implied.
+
+
+## Candidate 50S.6G.2B tabular API
+
+Subject to separate acceptance, the exact report may gain pure in-memory
+`to_ecsv()`, `from_ecsv(...)`, `to_votable()`, and
+`from_votable(...)` operations. ECSV returns text; VOTable returns bytes.
+Decoders return `ExactSatelliteCrossingReport` and must reproduce the same
+canonical JSON and `report_identity_sha256`.
+
+The public methods delegate to one private shared logical-to-tabular projection
+and thin format adapters. The shared mapping is reusable but is not prematurely
+public. These candidate APIs accept no path, file object, overwrite flag, or
+service and perform no scientific computation. Implementation remains
+unauthorized pending acceptance.
