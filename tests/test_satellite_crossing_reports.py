@@ -95,14 +95,14 @@ def query(identifier, *, offset=0):
     )
 
 
-def exact_result(request, *, norad=1000001, entry=10):
-    record = request.snapshot.records[0]
+def exact_result(request, *, record_index=0, entry=10):
+    record = request.snapshot.records[record_index]
     candidate = SatelliteCrossingCandidate(
         satellite=SatelliteIdentity(
-            norad_catalog_id=norad,
-            object_name="ÑANDÚ TEST",
-            international_designator="2026-001A",
-            classification="U",
+            norad_catalog_id=record.norad_catalog_id,
+            object_name=record.object_name,
+            international_designator=record.international_designator,
+            classification=record.classification,
         ),
         observer=request.observer,
         field_of_view=request.field_of_view,
@@ -187,8 +187,7 @@ def test_positive_and_zero_crossing_fields_are_explicit_and_ordered():
     assert document["fields"][1]["crossing_count"] == 0
     assert document["fields"][1]["crossings"] == []
     crossing = document["fields"][0]["crossings"][0]
-    assert crossing["norad_catalog_id"] == 1000001
-    assert crossing["object_name"] == "ÑANDÚ TEST"
+    assert crossing["norad_catalog_id"] == 300001
     assert crossing["illumination"] is None
     assert crossing["apparent_magnitude"] is None
     assert crossing["detector_effect"] is None
@@ -203,8 +202,8 @@ def test_serialization_is_byte_stable_and_document_is_detached():
 
     assert value.to_json() == first
     assert first.endswith("\n")
-    assert "ÑANDÚ" in first
-    assert "\\u00d1" not in first
+    assert "synthetic warning — retained" in first
+    assert "\\u2014" not in first
     with pytest.raises(FrozenInstanceError):
         value._canonical_document = "{}"
 
@@ -283,8 +282,8 @@ def test_constructor_rejects_duplicate_fields_and_context_mismatch():
 
 def test_crossing_order_and_query_context_are_enforced():
     result = field_result("one")
-    later = exact_result(result.query, norad=1000000, entry=20)
-    unordered = replace(result, crossings=(result.crossings[0], later))
+    later = exact_result(result.query, record_index=1, entry=20)
+    unordered = replace(result, crossings=(later, result.crossings[0]))
     with pytest.raises(ValueError, match="oracle order"):
         report(unordered)
 
