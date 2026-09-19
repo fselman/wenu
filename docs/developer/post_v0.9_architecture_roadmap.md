@@ -2830,3 +2830,32 @@ Fernando scientifically and architecturally accepted the exact-report audit on
 with clean checks. The next authorized work is only the bounded immutable
 logical model, packaged JSON Schema, deterministic JSON encoder/decoder, and
 focused round-trip tests. 50S.6G.2B and later work remain unauthorized.
+
+
+## 50S.6G.2A candidate implementation state
+
+The bounded candidate implements only the accepted immutable exact-crossing
+logical report, packaged closed Draft 2020-12 schema, deterministic JSON,
+canonical report digest, strict typed decoder, and focused synthetic tests.
+It preserves explicit zero-crossing fields and null version-1 future-science
+values without recomputing any science.
+
+ECSV/VOTable remains 50S.6G.2B; CLI/files and atomic publication remain
+50S.6G.2C; exact tracks remain 50S.6G.3A. Charts, illumination, brightness,
+detector effects, scheduling adapters, provider access, and another real run
+remain unauthorized. Candidate verification and Fernando's separate
+scientific and architectural acceptance are required.
+
+
+## 50S.6G.2A accepted implementation
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+50S.6G.2A is complete within the audited JSON logical-model boundary.
+50S.6G.2B ECSV/VOTable, 50S.6G.2C CLI/files and atomic publication, and
+50S.6G.3A exact tracks remain separate future milestones. No later milestone
+is authorized by this acceptance.

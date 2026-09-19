@@ -868,3 +868,37 @@ pure deterministic encoder/decoder, and focused exact-report tests are
 authorized next. ECSV/VOTable, CLI/files, tracks, charts, illumination,
 magnitude, detector effects, provider access, another real run, and unrelated
 refactoring remain unauthorized.
+
+
+## Candidate 50S.6G.2A exact-report implementation
+
+The bounded candidate adds the dedicated immutable exact-local report model,
+packaged closed Draft 2020-12 schema, deterministic JSON and report identity,
+strict typed decoder, and focused synthetic tests. The first focused gate
+passed 15 tests in 9.38 seconds at `f5f58b5`; after typed reconstruction was
+added, the same 15 tests passed in 2.31 seconds at `f8d2e51`. The immediate
+satellite boundary gate then passed 99 tests in 119.54 seconds.
+
+A later decoder-isolation refinement loads the packaged schema once so each
+decode/re-encode operation performs no filesystem access. At executable commit
+`a65e5ac`, the combined focused and documentation gate passed 195 tests in
+5.46 seconds; `git diff --check 378d2dd...HEAD` passed; and the complete
+plugin-disabled suite passed 2,676 tests in 234.08 seconds. The working tree
+was clean and synchronized.
+
+The candidate remains pending Fernando's scientific and architectural
+acceptance. No later 50S.6G work or new scientific execution is authorized.
+
+
+## Accepted 50S.6G.2A exact-report implementation
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+This acceptance closes only the immutable JSON logical-report slice. It does
+not authorize ECSV/VOTable, CLI/file publication, atomic writing, exact tracks,
+charts, illumination, magnitude, detector effects, provider access, scheduling
+integration, or another scientific execution.

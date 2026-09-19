@@ -1513,3 +1513,41 @@ on 2026-09-19 at `835ddfe`, after 175 documentation tests passed in 3.27
 seconds and repository checks were clean. Only the bounded exact-report logical
 model, Draft 2020-12 schema, deterministic encoder/decoder, and focused tests
 are authorized next; no other runtime or delivery work is authorized.
+
+
+## Candidate 50S.6G.2A exact-report implementation
+
+The dedicated `satellite_crossing_reports.py` owner now constructs an
+immutable exact-local report only from already computed ordered
+`MultiFieldCrossingResult` values. Its compact canonical scientific payload
+is immutable; `document` returns a detached copy. The packaged closed Draft
+2020-12 schema and typed semantic reconstruction jointly validate observer,
+coordinate, interval, snapshot, airmass, acceleration, satellite identity, and
+connected-visit context.
+
+Serialization is deterministic UTF-8 JSON with a final newline. The report
+digest excludes only its own identity field. Decoding rejects duplicate keys,
+unknown fields, unsupported product/status/version, non-finite numbers,
+invalid UTC, context/count/order mismatches, non-null version-1 future science,
+and digest changes. Schema bytes are loaded once as package authority, so
+decode and re-encode perform no network, clock, filesystem, propagation,
+coordinate, airmass, or crossing work.
+
+The candidate adds no ECSV/VOTable, CLI/file publication, exact track, chart,
+illumination, magnitude, detector effect, provider access, or new scientific
+execution. Scientific and architectural acceptance remains pending.
+
+
+## Accepted 50S.6G.2A exact-report implementation
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+The accepted architecture adds only the immutable exact-local logical model,
+packaged closed schema, deterministic JSON identity/encoding, strict typed
+decoder, and round-trip boundary. Existing crossing, coordinate, presentation,
+rendering, and export paths remain unchanged. 50S.6G.2B and later work require
+separate authorization.

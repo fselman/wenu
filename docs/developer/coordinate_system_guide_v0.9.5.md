@@ -3829,3 +3829,30 @@ documentation tests passed in 3.27 seconds and clean checks. The coordinate
 guide remains current. The bounded implementation may serialize retained
 coordinate identities only and may not transform, infer, relabel, or
 recalculate them.
+
+
+## Candidate 50S.6G.2A implementation coordinate review
+
+The implementation serializes and strictly reconstructs the already accepted
+`SatelliteObserver`, `CoordinateSpec`, `SatelliteFieldOfView`, and
+`InclusiveTimeInterval` values. It preserves field-array order, geometric
+topocentric GCRS-axes meaning, explicit UTC instants, vacuum/refraction policy,
+Earth-orientation identity, and existing angular and time tolerances. It does
+not transform, infer, relabel, or recompute a coordinate.
+
+The coordinate guide remains current. The candidate introduces no new frame,
+origin, position status, epoch, time scale, transformation, or numerical
+coordinate policy. Acceptance remains pending.
+
+
+## Accepted 50S.6G.2A coordinate finding
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+The coordinate guide remains current. Acceptance authorizes serialization and
+strict reconstruction of retained coordinate identities only; it introduces
+no coordinate transformation or new coordinate meaning.

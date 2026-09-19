@@ -3135,3 +3135,39 @@ after 175 documentation tests passed in 3.27 seconds and clean repository
 checks. Only the audited exact-report model, schema, pure encoder/decoder, and
 focused tests are authorized; the candidate API names remain subject to the
 implementation as-is assessment.
+
+
+## Candidate exact-crossing report API
+
+`ExactSatelliteCrossingReport.from_results(...)` accepts an ordered non-empty
+sequence of existing `MultiFieldCrossingResult` values, one
+`MultiFieldCrossingPolicy`, an explicit UTC creation instant, Wenu version,
+and crossing-oracle, acceleration, and batch-coordinator implementation
+identities. It validates shared observer and snapshot identity, field
+uniqueness/order, exact crossing order and element identity, airmass and
+acceleration context, and complete snapshot partitions.
+
+`report.document` returns a detached JSON-compatible copy;
+`report.report_identity_sha256` returns canonical logical identity; and
+`report.to_json()` returns deterministic UTF-8-compatible JSON text.
+`ExactSatelliteCrossingReport.from_json(text_or_utf8_bytes)` applies the
+packaged closed schema, reconstructs existing immutable Wenu domain values,
+checks semantic invariants and digest identity, and supports typed and
+byte-identical canonical round trips.
+
+This candidate API performs no scientific calculation and exposes no path,
+overwrite, file-writing, CLI, ECSV, VOTable, track, chart, or future-science
+operation. Acceptance remains pending.
+
+
+## Accepted 50S.6G.2A exact-report API
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+The candidate API documented above is accepted within its bounded exclusions.
+No file, CLI, ECSV/VOTable, track, chart, illumination, brightness, detector,
+provider, scheduling, or execution API is implied.

@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wenu.dev/schema/satellite-exact-crossing-report-v1.json",
+  "title": "Wenu exact local artificial-satellite crossing report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "document_kind", "product", "scientific_status", "created_utc", "report_identity_sha256", "implementations", "observer", "snapshot", "batch", "fields"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "document_kind": {"const": "exact_satellite_crossing_report"},
+    "product": {"const": "wenu.artificial_satellite_exact_crossing_report"},
+    "scientific_status": {"const": "geometric exact local crossings — visibility not evaluated"},
+    "created_utc": {"$ref": "#/$defs/utc"},
+    "report_identity_sha256": {"$ref": "#/$defs/digest"},
+    "implementations": {"$ref": "#/$defs/implementations"},
+    "observer": {"$ref": "#/$defs/observer"},
+    "snapshot": {"$ref": "#/$defs/snapshot"},
+    "batch": {"$ref": "#/$defs/batch"},
+    "fields": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/field"}}
+  },
+  "$defs": {
+    "text": {"type": "string", "minLength": 1},
+    "nullableText": {"type": ["string", "null"]},
+    "number": {"type": "number"},
+    "nonnegative": {"type": "number", "minimum": 0},
+    "positive": {"type": "number", "exclusiveMinimum": 0},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "utc": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$"},
+    "strings": {"type": "array", "items": {"$ref": "#/$defs/text"}},
+    "integers": {"type": "array", "uniqueItems": true, "items": {"type": "integer", "minimum": 1}},
+    "implementations": {
+      "type": "object", "additionalProperties": false,
+      "required": ["wenu_version", "report_model", "encoder", "crossing_oracle", "acceleration", "batch_coordinator"],
+      "properties": {
+        "wenu_version": {"$ref": "#/$defs/text"}, "report_model": {"$ref": "#/$defs/text"},
+        "encoder": {"$ref": "#/$defs/text"}, "crossing_oracle": {"$ref": "#/$defs/text"},
+        "acceleration": {"$ref": "#/$defs/text"}, "batch_coordinator": {"$ref": "#/$defs/text"}
+      }
+    },
+    "observer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["observer_id", "longitude_deg", "latitude_deg", "elevation_m", "refraction_policy", "earth_orientation_policy"],
+      "properties": {
+        "observer_id": {"$ref": "#/$defs/text"}, "longitude_deg": {"$ref": "#/$defs/number"},
+        "latitude_deg": {"$ref": "#/$defs/number"}, "elevation_m": {"$ref": "#/$defs/number"},
+        "refraction_policy": {"$ref": "#/$defs/text"}, "earth_orientation_policy": {"$ref": "#/$defs/text"}
+      }
+    },
+    "snapshot": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "snapshot_id", "created_utc", "source_identity", "source_url", "source_format", "records_file", "content_sha256", "record_count", "builder_identity", "provider_policy_url", "provider_policy_checked_utc", "minimum_element_epoch", "maximum_element_epoch", "provenance", "warnings"],
+      "properties": {
+        "schema_version": {"const": 1}, "snapshot_id": {"$ref": "#/$defs/text"},
+        "created_utc": {"$ref": "#/$defs/utc"}, "source_identity": {"$ref": "#/$defs/text"},
+        "source_url": {"$ref": "#/$defs/text"}, "source_format": {"$ref": "#/$defs/text"},
+        "records_file": {"$ref": "#/$defs/text"}, "content_sha256": {"$ref": "#/$defs/digest"},
+        "record_count": {"type": "integer", "minimum": 1}, "builder_identity": {"$ref": "#/$defs/text"},
+        "provider_policy_url": {"$ref": "#/$defs/text"}, "provider_policy_checked_utc": {"$ref": "#/$defs/utc"},
+        "minimum_element_epoch": {"$ref": "#/$defs/utc"}, "maximum_element_epoch": {"$ref": "#/$defs/utc"},
+        "provenance": {"$ref": "#/$defs/strings"}, "warnings": {"$ref": "#/$defs/strings"}
+      }
+    },
+    "batch": {
+      "type": "object", "additionalProperties": false,
+      "required": ["admitted_snapshot_ids", "max_interval_seconds", "maximum_airmass", "processing_chunk_size", "sky_motion_bound_deg_per_s", "certification_time_tolerance_seconds", "field_count"],
+      "properties": {
+        "admitted_snapshot_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/text"}},
+        "max_interval_seconds": {"$ref": "#/$defs/positive"}, "maximum_airmass": {"$ref": "#/$defs/positive"},
+        "processing_chunk_size": {"type": "integer", "minimum": 1}, "sky_motion_bound_deg_per_s": {"$ref": "#/$defs/positive"},
+        "certification_time_tolerance_seconds": {"$ref": "#/$defs/positive"}, "field_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "coordinate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["frame", "origin", "position_status", "epoch", "equinox", "instant", "time_scale", "longitude_unit", "latitude_unit", "representation", "provider", "model", "provenance", "corrections"],
+      "properties": {
+        "frame": {"$ref": "#/$defs/text"}, "origin": {"$ref": "#/$defs/text"}, "position_status": {"$ref": "#/$defs/text"},
+        "epoch": {"$ref": "#/$defs/nullableText"}, "equinox": {"$ref": "#/$defs/nullableText"},
+        "instant": {"$ref": "#/$defs/nullableText"}, "time_scale": {"$ref": "#/$defs/nullableText"},
+        "longitude_unit": {"$ref": "#/$defs/text"}, "latitude_unit": {"$ref": "#/$defs/text"},
+        "representation": {"$ref": "#/$defs/text"}, "provider": {"$ref": "#/$defs/nullableText"},
+        "model": {"$ref": "#/$defs/nullableText"}, "provenance": {"$ref": "#/$defs/strings"}, "corrections": {"$ref": "#/$defs/strings"}
+      }
+    },
+    "fieldOfView": {
+      "type": "object", "additionalProperties": false,
+      "required": ["field_id", "center_longitude_deg", "center_latitude_deg", "angular_radius_deg", "coordinate_spec", "boundary"],
+      "properties": {
+        "field_id": {"$ref": "#/$defs/text"}, "center_longitude_deg": {"$ref": "#/$defs/number"},
+        "center_latitude_deg": {"$ref": "#/$defs/number"}, "angular_radius_deg": {"$ref": "#/$defs/positive"},
+        "coordinate_spec": {"$ref": "#/$defs/coordinate"}, "boundary": {"const": "closed"}
+      }
+    },
+    "interval": {
+      "type": "object", "additionalProperties": false,
+      "required": ["start_utc", "stop_utc", "time_scale", "boundary"],
+      "properties": {"start_utc": {"$ref": "#/$defs/utc"}, "stop_utc": {"$ref": "#/$defs/utc"}, "time_scale": {"const": "utc"}, "boundary": {"const": "inclusive"}}
+    },
+    "airmass": {
+      "type": "object", "additionalProperties": false,
+      "required": ["field_id", "maximum_airmass", "minimum_altitude_deg", "certified_lower_bound_deg", "evaluation_count", "earth_orientation_sha256", "provenance"],
+      "properties": {
+        "field_id": {"$ref": "#/$defs/text"}, "maximum_airmass": {"$ref": "#/$defs/positive"},
+        "minimum_altitude_deg": {"$ref": "#/$defs/number"}, "certified_lower_bound_deg": {"$ref": "#/$defs/number"},
+        "evaluation_count": {"type": "integer", "minimum": 1}, "earth_orientation_sha256": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/digest"}},
+        "provenance": {"$ref": "#/$defs/strings"}
+      }
+    },
+    "acceleration": {
+      "type": "object", "additionalProperties": false,
+      "required": ["snapshot_sha256", "rejected_norad_catalog_ids", "exact_solver_norad_catalog_ids", "fallback_to_exhaustive", "fallback_reason", "implementation", "selection_implementation"],
+      "properties": {
+        "snapshot_sha256": {"$ref": "#/$defs/digest"}, "rejected_norad_catalog_ids": {"$ref": "#/$defs/integers"},
+        "exact_solver_norad_catalog_ids": {"$ref": "#/$defs/integers"}, "fallback_to_exhaustive": {"type": "boolean"},
+        "fallback_reason": {"$ref": "#/$defs/nullableText"}, "implementation": {"$ref": "#/$defs/text"},
+        "selection_implementation": {"$ref": "#/$defs/nullableText"}
+      }
+    },
+    "crossing": {
+      "type": "object", "additionalProperties": false,
+      "required": ["field_id", "norad_catalog_id", "object_name", "international_designator", "classification", "source_provider", "orbit_solution_id", "snapshot_sha256", "element_epoch", "entry_instant", "closest_approach_instant", "exit_instant", "closest_approach_deg", "time_in_field_seconds", "range_km", "angular_rate_deg_per_s", "oracle_provenance", "acceleration_provenance", "warnings", "illumination", "apparent_magnitude", "detector_effect", "exact_track_samples"],
+      "properties": {
+        "field_id": {"$ref": "#/$defs/text"}, "norad_catalog_id": {"type": "integer", "minimum": 1},
+        "object_name": {"$ref": "#/$defs/nullableText"}, "international_designator": {"$ref": "#/$defs/nullableText"},
+        "classification": {"$ref": "#/$defs/nullableText"},
+        "source_provider": {"$ref": "#/$defs/text"}, "orbit_solution_id": {"$ref": "#/$defs/nullableText"},
+        "snapshot_sha256": {"$ref": "#/$defs/digest"}, "element_epoch": {"$ref": "#/$defs/utc"},
+        "entry_instant": {"$ref": "#/$defs/utc"}, "closest_approach_instant": {"$ref": "#/$defs/utc"}, "exit_instant": {"$ref": "#/$defs/utc"},
+        "closest_approach_deg": {"$ref": "#/$defs/nonnegative"}, "time_in_field_seconds": {"$ref": "#/$defs/nonnegative"},
+        "range_km": {"$ref": "#/$defs/positive"}, "angular_rate_deg_per_s": {"$ref": "#/$defs/nonnegative"},
+        "oracle_provenance": {"$ref": "#/$defs/strings"}, "acceleration_provenance": {"$ref": "#/$defs/strings"}, "warnings": {"$ref": "#/$defs/strings"},
+        "illumination": {"type": "null"}, "apparent_magnitude": {"type": "null"}, "detector_effect": {"type": "null"}, "exact_track_samples": {"type": "null"}
+      }
+    },
+    "field": {
+      "type": "object", "additionalProperties": false,
+      "required": ["field_id", "field_of_view", "interval", "time_tolerance_seconds", "angular_tolerance_deg", "airmass_admission", "acceleration", "warnings", "crossing_count", "crossings"],
+      "properties": {
+        "field_id": {"$ref": "#/$defs/text"}, "field_of_view": {"$ref": "#/$defs/fieldOfView"}, "interval": {"$ref": "#/$defs/interval"},
+        "time_tolerance_seconds": {"$ref": "#/$defs/positive"}, "angular_tolerance_deg": {"$ref": "#/$defs/positive"},
+        "airmass_admission": {"$ref": "#/$defs/airmass"}, "acceleration": {"$ref": "#/$defs/acceleration"},
+        "warnings": {"$ref": "#/$defs/strings"}, "crossing_count": {"type": "integer", "minimum": 0},
+        "crossings": {"type": "array", "items": {"$ref": "#/$defs/crossing"}}
+      }
+    }
+  }
+}

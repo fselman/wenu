@@ -737,6 +737,25 @@ explicit UTC instants, a fixed schema version, and an immutable creation time
 provided when the report is constructed. A report digest identifies the whole
 logical record; it does not replace the separate snapshot digest.
 
+Wenu's exact-report model therefore stores one immutable compact canonical
+payload and returns detached document copies. The readable JSON form uses
+sorted object keys, two-space indentation, Unicode text, and one final newline;
+array order remains scientific. The report identity is SHA-256 of the compact
+canonical scientific payload with only the identity field omitted.
+
+The packaged version-1 schema closes every object and requires all fields.
+Decoding is deliberately stricter than syntax validation: duplicate JSON keys,
+non-finite numbers, unknown fields, invalid UTC instants, changed identity,
+field/count/order mismatch, crossings outside their interval or field, and
+inconsistent observer, snapshot, element, airmass, or acceleration context all
+fail. The decoder reconstructs existing immutable Wenu domain values so the
+same physical and coordinate invariants apply on both sides of serialization.
+
+Illumination, apparent magnitude, detector effect, and exact-track samples are
+required JSON nulls in version 1. Null means “not evaluated,” not false, dark,
+zero, or absent. Adding those sciences requires a later schema version and its
+own accepted physical model.
+
 ## 18. Development history
 
 Chronological decisions, candidate states, verification evidence, and
