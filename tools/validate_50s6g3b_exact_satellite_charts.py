@@ -51,7 +51,7 @@ from wenu.satellites.snapshots import (
 from wenu.satellites.topocentric import SatelliteTopocentricTransformer
 
 
-REFERENCE = datetime(2026, 9, 15, 0, 0, tzinfo=timezone.utc)
+REFERENCE = datetime(2026, 9, 15, 2, 35, tzinfo=timezone.utc)
 LATITUDE_DEG = -32.443342
 LONGITUDE_DEG = -71.230289
 ELEVATION_M = 52.0
@@ -93,6 +93,11 @@ def physically_realized_track(snapshot_directory=None):
     center = SatelliteTopocentricTransformer().transform(
         propagated, observer
     )
+    if center.altitude_deg <= FIELD_RADIUS_DEG:
+        raise RuntimeError(
+            "The physical specimen field is not completely above the "
+            "geometric horizon."
+        )
     field_spec = CoordinateSpec(
         frame="gcrs-axes",
         origin="topocentric-direction",
