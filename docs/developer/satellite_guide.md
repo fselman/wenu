@@ -786,3 +786,13 @@ human-readable table format with YAML metadata; VOTable is an IVOA XML format
 with astronomical FIELD, PARAM, and TIMESYS metadata. Neither format makes a
 satellite visible, illuminated, bright, or damaging to a detector. This
 candidate belongs to 50S.6G.2B and is not yet implemented.
+
+## 50S.6G.2C file-protocol interpretation
+
+The proposed two-call workflow is an audit-preserving selection protocol, not
+a new visibility calculation. The first call evaluates every requested FoV and
+solves none when any is invalid. Its deterministic JSON records all invalid
+FoVs and the ordered valid subset. The second call leaves invalid FoVs explicit
+but sends only that revalidated subset to the existing exact crossing service.
+The resulting JSON, ECSV, and VOTable files describe the same accepted exact
+local report; filesystem history does not change astronomical meaning.

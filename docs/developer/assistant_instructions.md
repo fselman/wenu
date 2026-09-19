@@ -1422,3 +1422,19 @@ Unicode `__is_null` companions. This acceptance authorizes no later
 milestone. Do not begin 50S.6G.2C, filesystem/CLI publication, tracks, charts,
 visibility science, provider access, another real run, or unrelated
 refactoring without separate authorization.
+
+## Candidate 50S.6G.2C audit boundary
+
+Read `satellite_cli_file_protocol_audit_50s6g2c.md` before any satellite
+crossing CLI, request-file, validation-output, manifest, or filesystem
+publication work. The candidate specifies direct atomic calculation, one
+closed initial JSON request, deterministic first-call validation output, and a
+second explicit call that revalidates and calculates only the embedded valid
+subset while retaining every invalid FoV as audit evidence. It also freezes
+explicit paths, fixed bundle filenames, digests, no-clobber and symlink safety,
+exit status, and interruption cleanup while reusing the accepted canonical
+JSON/ECSV/VOTable report model.
+
+Do not implement 50S.6G.2C before Fernando separately accepts this audit. Do
+not add provider access, new execution science, tracks, charts, visibility,
+illumination, brightness, detector effects, or unrelated refactoring.

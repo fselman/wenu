@@ -984,3 +984,13 @@ by Astropy 7.1.0 behavior. This acceptance authorizes no later milestone;
 50S.6G.2C, filesystem/CLI publication, tracks, charts, visibility science,
 provider access, another real run, and unrelated refactoring remain
 unauthorized.
+
+## 2026-09-19 — Candidate 50S.6G.2C CLI/file-protocol audit
+
+A documentation-only candidate defines one offline CLI/filesystem adapter for
+direct atomic calculation and the digest-bound two-call JSON workflow. It
+preserves every invalid FoV explicitly, calculates only a revalidated embedded
+valid subset on the second call, and reuses the accepted canonical JSON,
+ECSV, and VOTable report encoders for an atomic no-clobber bundle. This is a
+candidate audit, not acceptance, and it authorizes no implementation or later
+track/chart work.

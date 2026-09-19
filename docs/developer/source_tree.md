@@ -2460,3 +2460,13 @@ metadata, units, masks, joins, limits, TIMESYS, and nullable-Unicode
 authoritative. Tests remain in `tests/test_satellite_crossing_reports.py`.
 No later filesystem, CLI, provider, science, track, or chart ownership is
 authorized.
+
+## Candidate 50S.6G.2C ownership
+
+A future dedicated module under `wenu/cli/` may own only CLI parsing, the
+two-call request lifecycle, path validation, exit mapping, staging cleanup, and
+atomic report-bundle publication. `satellites/crossing_batch.py` continues to
+own scientific batch validation/solving; `satellite_crossing_reports.py` and
+`_satellite_tabular_reports.py` continue to own the logical report and exactly
+one reusable encoding projection. No production module or test file is added
+by this documentation audit.

@@ -2904,3 +2904,13 @@ carriers, strict reconstruction, canonical JSON identity and
 companion contract. No later milestone is authorized by this acceptance.
 50S.6G.2C filesystem/CLI publication and all track, chart, visibility,
 provider, and new-execution work require separate audit and authorization.
+
+## 50S.6G.2C candidate audit state
+
+A documentation-only candidate now specifies the direct atomic CLI route and
+the digest-bound two-call JSON file protocol. A first invalid file call solves
+no FoV and publishes one deterministic validation record containing every
+invalid FoV and the ordered valid subset. A second explicit call retains the
+invalid audit entries, revalidates and calculates only that subset, and
+publishes one no-clobber JSON/ECSV/VOTable bundle. This candidate authorizes no
+implementation. 50S.6G.3A and later track/chart work remain unauthorized.

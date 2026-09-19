@@ -63,6 +63,9 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`satellite_tabular_report_audit_50s6g2b.md`](satellite_tabular_report_audit_50s6g2b.md)
   — candidate lossless ECSV/VOTable interoperability, shared reusable tabular
   projection, metadata, strict decode, and round-trip contract for 50S.6G.2B.
+- [`satellite_cli_file_protocol_audit_50s6g2c.md`](satellite_cli_file_protocol_audit_50s6g2c.md)
+  — candidate direct CLI and digest-bound two-call JSON, no-clobber
+  publication, path-safety, exit-status, and interruption contract.
 - [`satellite_exact_crossing_report_audit_50s6g2a.md`](satellite_exact_crossing_report_audit_50s6g2a.md)
   — candidate immutable exact-crossing logical model, Draft 2020-12 JSON
   Schema, deterministic JSON, digest, and round-trip contract for 50S.6G.2A.

@@ -425,3 +425,19 @@ adapters own only ECSV or VOTable syntax.
 The refinement remains candidate documentation. It authorizes no implementation
 and does not pull 50S.6G.2C filesystem publication or any later science into
 50S.6G.2B.
+
+## 17. Candidate 50S.6G.2C refinement
+
+The dedicated 50S.6G.2C audit refines the accepted two-call direction into one
+offline CLI/filesystem boundary. Direct mode is wholly atomic. Initial JSON
+file mode either calculates every valid field when the complete request passes
+or solves none and atomically publishes deterministic validation-output JSON
+containing every invalid FoV plus the ordered valid subset. A second explicit
+call verifies the digest-bound validation record, retains invalid entries, and
+revalidates and calculates only the valid subset.
+
+Successful calculation publishes one explicit no-clobber directory containing
+the accepted canonical JSON, ECSV, and VOTable bytes plus a digest manifest.
+The candidate freezes symlink safety, filenames, exit statuses, and
+interruption commit behavior. It authorizes no implementation or later track,
+chart, provider, visibility, illumination, or brightness work.
