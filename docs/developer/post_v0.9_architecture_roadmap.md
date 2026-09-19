@@ -2859,3 +2859,18 @@ working-tree checks were clean.
 50S.6G.2B ECSV/VOTable, 50S.6G.2C CLI/files and atomic publication, and
 50S.6G.3A exact tracks remain separate future milestones. No later milestone
 is authorized by this acceptance.
+
+
+## 50S.6G.2B candidate audit state
+
+A documentation-only audit now proposes lossless ECSV and IVOA VOTable 1.5
+interoperability for the accepted exact report. The design uses one reusable
+format-neutral tabular projection with thin adapters, retains explicit
+zero-crossing fields, units, coordinate/time metadata, stable joins and order,
+and reconstructs byte-identical canonical JSON with the same logical digest.
+
+Candidate status authorizes no runtime work. Fernando's separate scientific and
+architectural acceptance is required before implementation. 50S.6G.2C
+CLI/files and atomic publication, 50S.6G.3A exact tracks, later visibility
+science, provider access, and another real run remain separate and
+unauthorized.
