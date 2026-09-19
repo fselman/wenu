@@ -8266,7 +8266,7 @@ def test_50s6g3b_candidate_chart_integration_audit_is_bounded():
         "draw_path",
         "draw_events",
         "label_events",
-        "fixed product-frame",
+        "Fixed product-frame meaning",
         "chart observer UTC instant equals",
         "does not reinterpret each vertex as simultaneous",
         "request-build cleanup",
