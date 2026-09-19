@@ -147,8 +147,8 @@ input-size and row-count limits before constructing the logical report.
 
 ## 6. Reusable architecture contract
 
-The implementation must separate the accepted logical report, a shared
-format-neutral tabular projection, and format adapters:
+The implementation must separate the accepted logical report, one shared
+reusable format-neutral tabular projection, and thin format adapters:
 
 ```text
 ExactSatelliteCrossingReport
