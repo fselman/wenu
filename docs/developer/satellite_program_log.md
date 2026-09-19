@@ -1054,3 +1054,7 @@ The bounded candidate adds explicit already-realized exact-track display request
 ## 2026-09-19 — Verified candidate 50S.6G.3B implementation
 
 At `6580f88`, the 314-test immediate gate passed in 7.71 seconds and all 2,741 plugin-disabled tests passed in 228.97 seconds. The physically propagated 65-sample exact visit generated regional and binocular PNG, PDF, and semantic SVG through the ordinary route. Fernando judged the binocular field consistent and the revised 20 by 16 degree regional context much better. Exact-head, diff, and clean synchronized-tree checks passed. This is candidate verification only; implementation acceptance, merge, and 50S.6G.4A/B remain unauthorized.
+
+## 2026-09-19 — Accepted complete 50S.6G.3B implementation
+
+Fernando scientifically and architecturally accepted the bounded implementation and explicitly authorized merge and cleanup. PR 172 merged `ff2e225` into `program/50s-crossing-foundation` at `05d4029`. Evidence comprises 314 immediate tests, all 2,741 plugin-disabled tests, 199 final documentation tests, physical regional/binocular PNG/PDF/semantic-SVG review, and clean diff, exact-head, and synchronized-tree checks. Only a documentation-first 50S.6G.4A planisphere audit is authorized next; runtime planisphere/later science remains unauthorized.

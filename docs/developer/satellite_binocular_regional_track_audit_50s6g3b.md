@@ -249,3 +249,11 @@ Executable commit `6580f88ed6e0199d3089e9319d59f6e50d294a29` is a verified candi
 The deterministic offline acceptance tool propagated the installed synthetic OMM through the accepted SGP4/TEME, topocentric, crossing-oracle, and exact-track owners. It produced one 65-sample exact visit from 2026-09-15T02:34:46.816407Z through 2026-09-15T02:35:12.949219Z with track identity `3f526de147caae6832c7a56330d460948c4b8963c7cdbf753618682e70d4248a`. Regional and binocular PNG, PDF, and semantic SVG passed the bounded semantic checks. Fernando judged the 6.5-degree binocular field consistent and the revised 20 by 16 degree regional field much better. The visual specimen now fails explicitly unless its complete three-degree-radius exact field lies above the geometric horizon.
 
 The coordinate-system guide was reviewed and remains current because the corrected specimen changes neither coordinate meaning nor ownership. This is candidate verification only. It does not authorize merge, 50S.6G.4A/B, provider access, report or CLI changes, new execution science, all-sky/circumpolar tracks, visibility, illumination, brightness, detector effects, or unrelated refactoring.
+
+## Implementation acceptance and merge
+
+Fernando scientifically and architecturally accepted the complete bounded 50S.6G.3B implementation and explicitly authorized merge and branch cleanup on 2026-09-19. PR 172 merged documentation head `ff2e2257fe023f52b32e295b7000b4d1cb9ed521` into `program/50s-crossing-foundation` at `05d4029aa324eb43c6d1c4017101549a4cd68147`.
+
+Acceptance evidence comprises 314 immediate tests in 7.71 seconds, all 2,741 plugin-disabled tests in 228.97 seconds, 199 final current-documentation tests in 4.71 seconds, the physically propagated 65-sample regional/binocular PNG/PDF/semantic-SVG specimens, Fernando's visual review, and clean diff, exact-head, and synchronized-tree checks.
+
+This closes 50S.6G.3B. Only a documentation-first 50S.6G.4A planisphere exact-track audit is authorized next. No planisphere/all-sky/circumpolar implementation, provider access, report or CLI change, new execution science, visibility, illumination, brightness, detector effect, scheduling integration, or unrelated refactoring is authorized.
