@@ -1389,3 +1389,17 @@ Pending Fernando's separate scientific and architectural acceptance,
 50S.6G.1B remains open. Acceptance would authorize only a separate
 documentation audit of 50S.6G.2A canonical exact-crossing reports and
 deterministic JSON, not implementation.
+
+
+## Accepted bounded 50S.6G.1B closure
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after all 173 plugin-disabled documentation tests
+passed in 3.82 seconds and repository checks were clean. The representative
+foundation is closed with exact empty-result equivalence and conservative
+partition integrity; every real field had zero crossings. Deferred scale and
+performance evidence remains explicitly unclaimed.
+
+Only a bounded 50S.6G.2A documentation audit is authorized next. No report,
+JSON Schema, encoder, round trip, CLI, track, or chart implementation is
+authorized.
