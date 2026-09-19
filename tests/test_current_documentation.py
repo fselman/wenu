@@ -3176,6 +3176,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
+        "satellite_exact_local_track_audit_50s6g3a.md",
         "satellite_tabular_report_audit_50s6g2b.md",
         "satellite_cli_file_protocol_audit_50s6g2c.md",
         "satellite_snapshot_admission_audit_50s6g1b2a.md",
