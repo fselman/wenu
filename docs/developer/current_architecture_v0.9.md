@@ -1460,3 +1460,20 @@ The one authorized run from `9d93113` produced candidate report `d200f3920aeda64
 ## Accepted 50S.6G.1B.2D.4 real-matrix evidence
 
 Fernando scientifically and architecturally accepted report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at candidate commit `186e255` on 2026-09-18 after 171 documentation tests passed in 4.46 seconds. The accepted finding is limited to deterministic empty-result equivalence and conservative partition integrity; all 10 real fields had zero crossings. No second run, universal performance claim, refactor, or parallel implementation is authorized.
+
+
+## Candidate bounded 50S.6G.1B closure
+
+At integrated baseline `b010a6c`, the accepted representative-snapshot work
+provides policy-governed acquisition, immutable external validation,
+digest-bound admission, deterministic medium selection, and exact
+empty-result route equivalence with complete conservative partitions for the
+accepted ten-field matrix. All real fields had zero crossings. Positive
+crossings remain synthetic evidence, and no full-snapshot, broader FoV-count,
+universal performance, concurrency, or reuse claim is established.
+
+The candidate closure changes no implemented architecture or coordinate
+meaning. It does not authorize another real run. Pending Fernando's separate
+acceptance, 50S.6G.1B remains open and 50S.6G.2A remains unauthorized.
+Acceptance would authorize only a documentation audit of the canonical
+exact-crossing report and deterministic JSON boundary.
