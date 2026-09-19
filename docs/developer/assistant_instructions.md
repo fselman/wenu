@@ -1404,3 +1404,21 @@ VOTable 1.5/BINARY2 adapters, strict reconstruction, canonical JSON and
 companions. Do not merge, begin 50S.6G.2C, or add paths, files, CLI,
 publication, tracks, charts, visibility science, provider access, another real
 run, or unrelated refactoring before separate acceptance.
+
+
+## Accepted complete 50S.6G.2B implementation boundary
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+Preserve the single shared schema-derived projection, deterministic ECSV and
+VOTable 1.5/BINARY2 adapters, canonical JSON and
+`report_identity_sha256`, strict reconstruction, and explicit nullable
+Unicode `__is_null` companions. This acceptance authorizes no later
+milestone. Do not begin 50S.6G.2C, filesystem/CLI publication, tracks, charts,
+visibility science, provider access, another real run, or unrelated
+refactoring without separate authorization.
