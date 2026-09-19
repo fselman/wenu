@@ -1490,3 +1490,17 @@ integrity; all real fields had zero crossings.
 Only a 50S.6G.2A documentation audit is authorized next. Report implementation,
 another real run, refactoring, parallelization, and broader performance claims
 remain unauthorized.
+
+
+## Candidate 50S.6G.2A exact-report architecture
+
+The documentation-only audit at
+`satellite_exact_crossing_report_audit_50s6g2a.md` proposes a distinct
+renderer-neutral exact-crossing logical model beside, not inside, the existing
+SatChecker sampled-candidate presentation owner. It consumes retained immutable
+batch results only and changes no crossing, coordinate, projection, rendering,
+or export path. Explicit creation time, complete context, stable ordering,
+nullable future science, canonical digest, closed Draft 2020-12 schema, and
+typed byte-identical JSON round trips form the candidate boundary.
+
+No runtime implementation is authorized pending Fernando's separate acceptance.
