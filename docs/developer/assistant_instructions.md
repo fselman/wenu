@@ -1317,3 +1317,18 @@ round trip.
 Do not add ECSV/VOTable, CLI/files, atomic publication, tracks, charts,
 illumination, magnitude, detector effects, scheduling adapters, provider
 access, another real run, or unrelated refactoring under this candidate.
+
+
+## Accepted 50S.6G.2A implementation boundary
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+Preserve `satellite_crossing_reports.py` as the exact-local logical report
+owner and preserve the packaged version-1 schema, deterministic identity,
+strict typed decoder, zero-crossing semantics, null future science, and
+byte-identical round trips. Do not begin 50S.6G.2B or later work without
+separate authorization.
