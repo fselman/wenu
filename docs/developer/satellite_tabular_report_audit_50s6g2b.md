@@ -145,7 +145,43 @@ changes, missing TIMESYS references, row-count or join mismatches, non-finite
 numbers, and any warning from strict VOTable validation. It applies bounded
 input-size and row-count limits before constructing the logical report.
 
-## 6. Failure and security contract
+## 6. Reusable architecture contract
+
+The implementation must separate the accepted logical report, a shared
+format-neutral tabular projection, and format adapters:
+
+```text
+ExactSatelliteCrossingReport
+        <-> shared validated tabular records
+        <-> ECSV adapter / VOTable adapter
+```
+
+One internal immutable projection owns record kinds, fixed field definitions,
+ordinals and joins, units, masks/nulls, metadata names, logical reconstruction,
+and resource limits. ECSV and VOTable adapters only translate that projection
+to or from their wire syntax. They must not duplicate scientific flattening,
+ordering, unit, join, or reconstruction rules.
+
+The shared projection and validators should be small pure helpers with names
+and responsibilities that can be reused by 50S.6G.2C publication and future
+additional lossless encodings. They accept and return values or text/bytes,
+never paths. Format-specific metadata such as ECSV serialization directives,
+VOTable FIELD/PARAM objects, TIMESYS, and XML validation remains in thin
+format adapters.
+
+Reuse does not mean premature public API. Only the report encode/decode methods
+are public in 50S.6G.2B; shared helpers remain private until another accepted
+consumer proves a stable public abstraction. Existing JSON schema validation
+and typed semantic reconstruction are reused as the final authority rather
+than reimplemented.
+
+Tests must exercise the shared projection independently, require both adapters
+to reconstruct the same canonical JSON, and use common parameterized
+corruption cases where the failure rule is format-neutral. Adapter-only tests
+cover syntax-specific metadata and security. No copy-pasted ECSV/VOTable field
+map or validator is acceptable.
+
+## 7. Failure and security contract
 
 Malformed UTF-8, ECSV/YAML, JSON-array cells, or XML fails closed. Decoding
 does not access the network, filesystem, clock, provider, IERS download,
@@ -160,13 +196,20 @@ Resource limits cover bytes, rows, columns, string lengths, and nested JSON
 cell lengths. Tests must demonstrate that XML entity expansion and external
 entity resolution are unavailable.
 
-## 7. Candidate ownership and tests
+## 8. Candidate ownership and tests
 
-If this audit is accepted, the bounded implementation may extend only
-`src/wenu/satellite_crossing_reports.py` and
-`tests/test_satellite_crossing_reports.py`. A packaged tabular schema is not
-introduced: the fixed mapping is code-owned beside the accepted logical model
-and verified by tests.
+If this audit is accepted, the bounded implementation may add one focused
+private tabular-interchange module adjacent to
+`src/wenu/satellite_crossing_reports.py`, or keep equivalently focused private
+helpers in that owner if the implementation preflight shows a separate module
+would be artificial. The decision must minimize coupling and make the shared
+projection reusable without moving JSON or scientific ownership. Public report
+methods delegate to it. `tests/test_satellite_crossing_reports.py` remains
+the stable public-contract test owner; a focused private-helper test file is
+allowed only if it materially clarifies shared projection responsibility.
+
+A packaged tabular schema is not introduced: the fixed mapping is code-owned
+once beside the accepted logical model and verified by tests.
 
 Required tests cover positive and validated-zero fields; multiple fields and
 crossings; Unicode and empty strings; masks versus empty values; exact dtypes,
@@ -177,7 +220,7 @@ non-finite, reordered, orphaned, and digest-changing inputs; and proof that
 decoding performs no service, filesystem, clock, propagation, coordinate, or
 crossing work.
 
-## 8. Explicit exclusions and next gate
+## 9. Explicit exclusions and next gate
 
 50S.6G.2B does not include plain CSV, FITS, Parquet, CLI commands, paths,
 overwrite policy, filenames, atomic publication, manifests, exact tracks,
