@@ -3281,3 +3281,9 @@ A future output-neutral layer may consume only that evidence and return an open 
 ## Accepted 50S.6G.3A implementation authorization
 
 After acceptance at `ce54971`, implementation may add only the frozen exact-local-track evidence, sampling policy, typed failures, realizer, output-neutral path/event views, stable semantic identity, and focused offline tests described by the audit. It must compose existing crossing, propagation, topocentric, spherical-geometry, and coordinate-service owners and must not change report, CLI, provider, chart, renderer, or exporter APIs.
+
+## Candidate 50S.6G.3A executable API
+
+`ExactLocalTrackPolicy`, `ExactLocalTrackEvaluation`, `ExactLocalSatelliteTrackSample`, `ExactLocalSatelliteTrack`, `ExactLocalTrackError`, and `ExactLocalSatelliteTrackRealizer` provide the bounded evidence route. `SatelliteExactTrackLayer` and `SatelliteExactTrackEventsLayer` expose retained evidence as ordinary geometry without recomputation.
+
+The collection `CoordinateSpec` is timeless `gcrs-axes` / `topocentric-direction`; `sample_time_scale="utc"` and each sample instant carry time. `CoordinateService` treats `gcrs-axes` only as the fixed GCRS/ICRS axis orientation for direction transformations. These APIs remain candidate pending full verification and acceptance.

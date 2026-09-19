@@ -814,3 +814,9 @@ This exact local evidence is different from SatChecker's provider-sampled candid
 ## Accepted exact local track audit
 
 Fernando accepted the 50S.6G.3A documentation boundary on 2026-09-19. A bounded implementation may now construct immutable exact connected-visit evidence through the accepted local propagation route and expose it through a science-free layer. Chart integration and later track products remain separate milestones.
+
+## Candidate exact local track implementation
+
+The candidate now realizes one immutable sample set for each accepted connected visit. Event instants are always vertices; midpoint chord-deviation and maximum-step checks add intervening samples; limits fail closed. The layer reads that evidence and never propagates again.
+
+The curve itself has no single time. UTC is therefore declared once on the evidence and retained on every sample, while the collection coordinate specification describes only the timeless GCRS-axis orientation and topocentric-direction origin. Focused verification passed; full verification and acceptance remain pending.

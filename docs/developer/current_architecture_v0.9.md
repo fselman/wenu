@@ -1651,3 +1651,7 @@ The documentation-only candidate defines one immutable exact local track per acc
 ## Accepted 50S.6G.3A audit boundary
 
 Fernando scientifically and architecturally accepted the documentation-only exact-local-track audit on 2026-09-19 at `ce54971`, after 193 plugin-disabled documentation tests passed in 5.73 seconds and repository checks were clean. Only the bounded evidence realizer and output-neutral layer are authorized next. Chart integration, planisphere work, provider/report/CLI changes, visibility, illumination, and brightness remain unauthorized.
+
+## Candidate 50S.6G.3A implementation state
+
+The candidate adds immutable exact connected-visit evidence and science-free path/event layers. A timeless `gcrs-axes` collection retains `sample_time_scale="utc"` and per-vertex UTC instants, preserving the existing instant/time-scale invariant. The accepted SGP4/TEME and topocentric owners remain the only state route. The initial focused gate passed 69 tests; full verification and separate acceptance remain pending.

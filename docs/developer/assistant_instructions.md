@@ -1498,3 +1498,9 @@ Preserve one accepted connected crossing as event truth, the accepted snapshot/S
 Fernando scientifically and architecturally accepted the audit on 2026-09-19 at `ce549715889c135e17b87749f3860855b1b54447`; 193 plugin-disabled current-documentation tests passed in 5.73 seconds and repository checks were clean.
 
 Implement only the exact connected-visit evidence, deterministic anchored fail-closed sampler, identity/provenance contract, output-neutral path/event views, and focused offline tests. Do not begin 50S.6G.3B charts, 50S.6G.4A/B planispheres, provider work, report/CLI changes, visibility, illumination, brightness, or unrelated refactoring. Do not merge the candidate implementation before separate verification and acceptance.
+
+## Candidate 50S.6G.3A implementation boundary
+
+Treat `98a756d4405ba60756e3899d9a0886029cfa8afd` as a focused-test-passing candidate, not an accepted implementation. Preserve the timeless collection `CoordinateSpec`, evidence-level UTC sample scale, per-sample UTC instants, exact event anchors, deterministic left-before-right adaptation, fail-closed limits, snapshot binding, exact-visit semantics, and evidence-only layer ownership.
+
+The 69-test plugin-disabled focused gate passed in 75.58 seconds. Do not merge or begin 50S.6G.3B before full-suite and documentation verification plus Fernando's separate scientific and architectural acceptance. Do not add report/CLI changes, chart registration, planispheres, providers, visibility, illumination, brightness, or unrelated refactoring.

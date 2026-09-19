@@ -3940,3 +3940,9 @@ Exact local track samples are geometric topocentric direction unit vectors expre
 ## Accepted 50S.6G.3A coordinate boundary
 
 Fernando accepted the exact-track coordinate finding: each retained vertex is a geometric topocentric direction expressed in GCRS axes at its own UTC instant, while the collection has no single instant. The bounded implementation must preserve that meaning through evidence and layer realization. No apparent, refracted, TEME-labelled spherical, geocentric GCRS, ICRS, or observed AltAz reinterpretation is authorized.
+
+## Candidate 50S.6G.3A implemented coordinate representation
+
+Implementation preflight preserved the existing rule that a `CoordinateSpec` instant and time scale occur together. Because an exact track has no single instant, its collection specification is timeless geometric `gcrs-axes` / `topocentric-direction`; the evidence declares `sample_time_scale="utc"`, and each vertex retains its UTC instant.
+
+For direction-coordinate transformation only, `CoordinateService` maps `gcrs-axes` to the fixed GCRS/ICRS axis orientation. This is an axes statement, not a geocentric GCRS state, ICRS source direction, apparent correction, or common track epoch.

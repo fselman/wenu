@@ -1026,3 +1026,7 @@ A documentation-only candidate defines immutable exact track evidence for one ac
 ## 2026-09-19 — Accepted 50S.6G.3A audit
 
 Fernando scientifically and architecturally accepted the documentation-only audit at `ce54971`. Verification comprised 193 plugin-disabled current-documentation tests in 5.73 seconds plus clean diff and synchronized-tree checks. Only the bounded exact connected-visit evidence and output-neutral layer implementation is authorized next; 50S.6G.3B and later work remain unauthorized.
+
+## 2026-09-19 — Candidate 50S.6G.3A implementation
+
+At `98a756d`, the candidate adds immutable exact local track evidence, accepted-route composition, deterministic anchored adaptive sampling, fail-closed limits, exact-visit identity, and evidence-only path/event layers. Fernando authorized the implementation-preflight representation correction: a timeless collection specification with evidence-level UTC and per-sample UTC instants. The focused plugin-disabled gate passed 69 tests in 75.58 seconds; full verification and separate acceptance remain pending.

@@ -459,3 +459,7 @@ The dedicated 50S.6G.3A audit refines this delivery plan into one immutable exac
 ## Accepted 50S.6G.3A audit refinement
 
 Fernando accepted the dedicated exact-local-track audit on 2026-09-19. Only its bounded evidence realizer and output-neutral layer implementation are authorized next. The accepted report/file products remain unchanged, and all chart and planisphere integration remains later work.
+
+## 50S.6G.3A candidate implementation state
+
+The bounded candidate implements the accepted exact connected-visit evidence and output-neutral layer decomposition. The accepted report and CLI bundle remain unchanged. The collection is timeless, while UTC remains explicit on the evidence and every sample. Focused verification passed; full verification and separate acceptance remain required.

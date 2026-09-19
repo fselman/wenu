@@ -2957,3 +2957,7 @@ This candidate authorizes no implementation. 50S.6G.3B binocular/regional chart 
 ## 50S.6G.3A accepted audit and next authority
 
 Fernando accepted the documentation-only audit on 2026-09-19 at `ce54971`. The next authorized step is only the bounded exact connected-visit evidence realizer and output-neutral layer, including exact anchors, deterministic fail-closed sampling, track identity, coordinate/provenance retention, and focused tests. 50S.6G.3B and 50S.6G.4A/B remain unauthorized.
+
+## 50S.6G.3A candidate implementation
+
+The bounded candidate implements exact connected-visit evidence, deterministic anchored adaptive sampling, fail-closed limits, identity/provenance, and output-neutral path/event layers. The implementation-preflight correction keeps the collection coordinate specification timeless and places UTC on the evidence and every sample. The 69-test focused gate passed. Full-suite verification and Fernando's separate implementation acceptance are required before merge or 50S.6G.3B.
