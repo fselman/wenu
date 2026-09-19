@@ -7676,3 +7676,28 @@ def test_50s6g2b_records_unicode_null_amendment_acceptance():
         assert "shared logical projection" in document
         assert "ECSV" in document
         assert "canonical JSON" in document
+
+
+
+def test_50s6g2b_records_candidate_implementation_verification():
+    documents = (
+        read(DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"),
+        read(INSTRUCTIONS),
+        read(SATELLITE_PROGRAM_LOG),
+    )
+    for document in (" ".join(value.split()) for value in documents):
+        assert "3bbd82f" in document
+        assert "208" in document
+        assert "6.68 seconds" in document
+        assert "2,689" in document
+        assert "215.15 seconds" in document
+        assert "canonical JSON" in document
+        assert "report_identity_sha256" in document
+        assert "__is_null" in document
+        assert "candidate" in document
+        assert "acceptance" in document
+        assert "50S.6G.2C" in document
+
+    audit = " ".join(documents[0].split())
+    assert "coordinate-system guide was reviewed and remains current" in audit
+    assert "verification evidence, not scientific or architectural acceptance" in audit
