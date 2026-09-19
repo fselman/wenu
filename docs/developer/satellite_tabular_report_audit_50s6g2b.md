@@ -339,3 +339,22 @@ This is verification evidence, not scientific or architectural acceptance,
 merge authority, or authorization for 50S.6G.2C. Paths, files, CLI, atomic
 publication, plain CSV, tracks, charts, visibility science, provider access,
 another real run, and unrelated refactoring remain unauthorized.
+
+
+## Accepted 50S.6G.2B implementation
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable candidate `3bbd82f`
+passed the 208-test combined report/documentation gate in 6.68 seconds and all
+2,689 plugin-disabled repository tests in 215.15 seconds. Documentation-only
+evidence record `ece80c7` then passed all 186 current-documentation tests in
+4.60 seconds. Both diff checks passed, and the Mac working tree was clean and
+synchronized.
+
+Preserve one shared schema-derived format-neutral projection, deterministic
+in-memory ECSV and VOTable 1.5/BINARY2 adapters, strict typed reconstruction,
+canonical JSON and `report_identity_sha256` authority, and the accepted
+Astropy 7.1.0 Unicode `__is_null` companion contract. This acceptance
+authorizes no later milestone. 50S.6G.2C filesystem/CLI publication, plain
+CSV, tracks, charts, visibility science, provider access, another real run,
+and unrelated refactoring remain unauthorized.
