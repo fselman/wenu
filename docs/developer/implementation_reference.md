@@ -3113,3 +3113,16 @@ accepted.
 
 Only a 50S.6G.2A documentation audit is authorized next. No report API,
 schema, encoder, decoder, or round-trip implementation is authorized.
+
+
+## Candidate 50S.6G.2A exact-report boundary
+
+No exact-report API exists at baseline `3f234cc`. The candidate audit
+provisionally defines an immutable logical report constructor, JSON-compatible
+document, deterministic JSON encoder, and strict typed decoder in a dedicated
+owner adjacent to `satellite_presentations.py`. Creation time is explicit;
+serialization consults neither clock nor scientific services.
+
+The proposed schema is closed and versioned, future-science values are required
+nulls in version 1, and semantic plus digest validation is mandatory. These are
+candidate contracts only; no production API is authorized.
