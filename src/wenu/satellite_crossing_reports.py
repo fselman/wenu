@@ -679,6 +679,32 @@ class ExactSatelliteCrossingReport:
             raise ValueError("report must be valid JSON.") from error
         return cls._from_document(document)
 
+    def to_ecsv(self):
+        """Return deterministic in-memory ECSV text."""
+        from wenu._satellite_tabular_reports import to_ecsv
+
+        return to_ecsv(self)
+
+    @classmethod
+    def from_ecsv(cls, value):
+        """Decode strict in-memory ECSV into an exact report."""
+        from wenu._satellite_tabular_reports import from_ecsv
+
+        return from_ecsv(value)
+
+    def to_votable(self):
+        """Return deterministic in-memory VOTable 1.5 BINARY2 bytes."""
+        from wenu._satellite_tabular_reports import to_votable
+
+        return to_votable(self)
+
+    @classmethod
+    def from_votable(cls, value):
+        """Decode strict in-memory VOTable 1.5 into an exact report."""
+        from wenu._satellite_tabular_reports import from_votable
+
+        return from_votable(value)
+
     @property
     def document(self):
         """Return a fresh JSON-compatible copy of the report document."""
