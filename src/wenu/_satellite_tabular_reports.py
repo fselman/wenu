@@ -522,7 +522,7 @@ def _scope_table(projection, kind):
     for spec in _votable_specs(kind):
         if not (spec.nullable and spec.value_kind == "string"):
             continue
-        nulls = np.asarray(table[spec.name].mask, dtype=bool)
+        nulls = np.asarray(table[spec.name].mask, dtype=bool).copy()
         table[spec.name].mask = np.zeros(len(table), dtype=bool)
         indicator = MaskedColumn(
             nulls,
