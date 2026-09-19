@@ -475,3 +475,7 @@ The dedicated 50S.6G.3B audit refines binocular/regional delivery into explicit 
 ## Accepted 50S.6G.3B audit refinement
 
 Fernando accepted the dedicated binocular/regional chart-integration audit on 2026-09-19. Only its bounded ordinary-request integration, focused tests, and acceptance specimens are authorized next. Planisphere work and later satellite science remain separate.
+
+## 50S.6G.3B candidate implementation state
+
+The bounded candidate composes accepted exact evidence into ordinary regional and binocular chart requests, with request-owned lifecycle, existing presentation/export owners, exact semantics, and bounded provenance. It changes no accepted report, CLI, manifest, or filesystem protocol. Deterministic offline specimens and focused clipping evidence remain separate so visual demonstration does not invent an implausible track.
