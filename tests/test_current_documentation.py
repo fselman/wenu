@@ -4909,7 +4909,7 @@ def test_50s1_documents_provider_neutral_satellite_crossing_domain():
     roadmap = " ".join(read(
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
     ).split())
-    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
     architecture = " ".join(read(V09_CURRENT).split())
     reference = " ".join(read(
         DEVELOPER / "implementation_reference.md"
@@ -4967,7 +4967,7 @@ def test_50s2a_audits_satchecker_provider_contract_before_adapter():
     roadmap = " ".join(read(
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
     ).split())
-    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(
         DEVELOPER / "coordinate_system_guide_v0.9.5.md"
@@ -5010,7 +5010,7 @@ def test_50s2b_documents_cached_satchecker_adapter_candidate():
     audit = " ".join(read(
         DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
     ).split())
-    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -5047,7 +5047,7 @@ def test_50s2b_records_bounded_live_provider_normalization():
         DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
     ).split())
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
 
     for phrase in (
         "Bounded live transport evidence",
@@ -5436,7 +5436,7 @@ def test_50s4e_documents_accepted_propagated_specimen_boundary():
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
     ).split())
-    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for text in (
