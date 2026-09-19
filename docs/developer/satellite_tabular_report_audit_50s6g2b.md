@@ -115,9 +115,10 @@ different value.
 The public candidate boundary is pure bytes:
 `report.to_votable() -> bytes` and
 `ExactSatelliteCrossingReport.from_votable(xml_or_utf8_bytes)`.
-Text input may be accepted only after strict UTF-8 encoding. The accepted
-writer uses VOTable 1.5 and `BINARY2`, whose null flags can represent missing
-values for every datatype.
+Text input may be accepted only after strict UTF-8 encoding. The accepted writer uses VOTable 1.5 and `BINARY2`. Its null flags
+represent missing numeric and Boolean values. Astropy 7.1.0 deliberately
+discards parsed BINARY2 null flags for `char` and `unicodeChar` fields, so
+nullable Unicode values require the explicit companion-null amendment below.
 
 One RESOURCE with a fixed ID contains exactly three TABLEs in order:
 `report` (one row), `field` (one row per field), and `crossing` (zero or
@@ -265,3 +266,37 @@ validation, and lossless reconstruction of the accepted exact report with the
 same canonical JSON and `report_identity_sha256`. Do not add paths, files,
 CLI, atomic publication, plain CSV, tracks, charts, visibility science,
 provider access, another real run, or unrelated refactoring.
+
+
+## Candidate Astropy 7.1 Unicode-null amendment
+
+Candidate implementation testing on Fernando's Mac with Astropy 7.1.0 showed
+that its VOTable BINARY2 parser deliberately clears null flags for `char` and
+`unicodeChar` fields, citing upstream Astropy issue 8995. Isolated checks with
+inferred, one-character, and sixteen-character Unicode widths all wrote a
+masked value and read it back as an unmasked empty string. Numeric BINARY2
+masks remained intact. Therefore the accepted premise that Astropy preserves
+BINARY2 null flags for every datatype is false for the supported dependency.
+
+The proposed bounded correction keeps the shared logical projection unchanged.
+For every nullable Unicode VOTable FIELD, and only such a FIELD, the adapter
+adds an adjacent Boolean FIELD named `<logical_name>__is_null`. A true
+indicator requires the Unicode carrier to contain the canonical empty
+placeholder and reconstructs logical `None`; a false indicator preserves the
+Unicode value exactly, including a legitimate empty string. Numeric and Boolean
+nulls continue to use BINARY2 null flags. The indicator FIELD is wire-level
+VOTable syntax, not a new logical or scientific column.
+
+The decoder requires the exact ordered companion set derived from the fixed
+schema. It rejects missing, duplicate, unknown, reordered, masked, non-Boolean,
+or contradictory indicators, including a true indicator paired with a
+non-empty carrier. It must still reconstruct the accepted report and verify
+byte-identical canonical JSON and `report_identity_sha256`.
+
+This correction adds no path, file, CLI, publication, provider, execution,
+track, chart, visibility, or later science. It does not authorize interpreting
+an unmarked empty string as null and does not introduce a private BINARY2
+parser. Until Fernando separately accepts this amendment, no further
+50S.6G.2B runtime correction is authorized.
+
+Upstream evidence: https://github.com/astropy/astropy/issues/8995
