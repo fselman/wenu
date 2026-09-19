@@ -89,9 +89,9 @@ One immutable report contains:
 8. explicit nullable future-science values for illumination, apparent
    magnitude, detector effect, and exact-track samples.
 
-The creation instant is supplied explicitly when constructing the immutable
-report. It is normalized once to UTC microseconds and is never read from the
-clock during serialization or decoding. Therefore repeated serialization of
+The caller-supplied immutable creation time is provided explicitly when
+constructing the report. It is normalized once to UTC microseconds and is
+never read from the clock during serialization or decoding. Therefore repeated serialization of
 one report is byte-identical.
 
 In schema version 1 the four future-science values must be JSON `null`.
