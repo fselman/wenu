@@ -3234,3 +3234,12 @@ atomic, and no-clobber; successful bundles contain fixed `report.json`,
 `report.ecsv`, `report.vot`, and `manifest.json` names. The detailed audit
 freezes failure and interruption behavior but exposes no API until separately
 accepted and implemented.
+
+## Accepted 50S.6G.2C implementation authorization
+
+After acceptance at `bcac404`, implementation may add only the documented
+`wenu_satellite_crossings` adapter, packaged closed request/validation/manifest
+schemas, installed entry point, filesystem publisher, and focused enduring
+CLI/file-protocol tests. It must compose the accepted batch and report APIs,
+retain the fixed exit/status and interruption contract, and add no scientific
+or format mapping of its own.

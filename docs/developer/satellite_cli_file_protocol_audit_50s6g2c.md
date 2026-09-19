@@ -304,3 +304,20 @@ scientific and architectural acceptance, only the bounded CLI/file-protocol
 implementation described here becomes eligible. 50S.6G.3A and every track,
 chart, planisphere, illumination, brightness, provider, or new-execution
 milestone remain separately unauthorized.
+
+## 14. Accepted audit and implementation handoff
+
+Fernando scientifically and architecturally accepted this documentation-only
+50S.6G.2C audit on 2026-09-19 at
+`bcac40453ae244348b9fc33447246db1c587d722`, after all 188 plugin-disabled
+current-documentation tests passed in 5.29 seconds; the diff check and
+synchronized Mac working tree were clean.
+
+Implement only the bounded offline CLI/filesystem adapter, closed initial and
+validation JSON protocols, explicit validated-subset second call, fixed
+JSON/ECSV/VOTable report bundle and digest manifest, path and symlink checks,
+no-clobber atomic publication, typed exit statuses, interruption cleanup, and
+focused tests specified here. Preserve the accepted batch science and report
+encoders without duplication. This acceptance does not authorize provider
+access, new execution science, tracks, charts, visibility, illumination,
+brightness, detector effects, scheduling adapters, or unrelated refactoring.

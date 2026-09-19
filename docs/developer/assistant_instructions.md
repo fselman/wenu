@@ -1438,3 +1438,18 @@ JSON/ECSV/VOTable report model.
 Do not implement 50S.6G.2C before Fernando separately accepts this audit. Do
 not add provider access, new execution science, tracks, charts, visibility,
 illumination, brightness, detector effects, or unrelated refactoring.
+
+## Accepted 50S.6G.2C audit boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.6G.2C audit on 2026-09-19 at `bcac404`, after all 188 plugin-disabled
+current-documentation tests passed in 5.29 seconds and repository checks were
+clean.
+
+Implement only the bounded offline CLI/filesystem adapter, its closed initial
+request, validation output and manifest schemas, direct atomic route,
+validated-subset second call, accepted JSON/ECSV/VOTable bundle composition,
+path/symlink/no-clobber policy, exit status, interruption cleanup, and focused
+tests. Do not add provider access, new execution science, tracks, charts,
+visibility, illumination, brightness, detector effects, scheduling adapters,
+or unrelated refactoring. 50S.6G.3A and later work remain unauthorized.

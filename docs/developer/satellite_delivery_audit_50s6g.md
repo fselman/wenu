@@ -441,3 +441,13 @@ the accepted canonical JSON, ECSV, and VOTable bytes plus a digest manifest.
 The candidate freezes symlink safety, filenames, exit statuses, and
 interruption commit behavior. It authorizes no implementation or later track,
 chart, provider, visibility, illumination, or brightness work.
+
+## 18. Accepted 50S.6G.2C audit handoff
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `bcac404`, after 188 plugin-disabled documentation tests
+passed in 5.29 seconds and repository checks were clean. Only the bounded
+offline CLI/filesystem implementation described by the dedicated audit is
+authorized next. It must reuse the accepted batch and report owners and
+preserve every path, digest, publication, exit, interruption, and exclusion
+contract. 50S.6G.3A and all later track/chart work remain unauthorized.

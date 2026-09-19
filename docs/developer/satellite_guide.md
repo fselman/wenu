@@ -796,3 +796,11 @@ FoVs and the ordered valid subset. The second call leaves invalid FoVs explicit
 but sends only that revalidated subset to the existing exact crossing service.
 The resulting JSON, ECSV, and VOTable files describe the same accepted exact
 local report; filesystem history does not change astronomical meaning.
+
+## Accepted 50S.6G.2C reader boundary
+
+The accepted next implementation is an offline transport and publication
+layer. Readers should interpret its validation-output document as an explicit
+audit-preserving partition of the original FoVs, not a scientific crossing
+result. Only the revalidated embedded valid subset may reach the unchanged
+exact crossing service on the second call.

@@ -7801,3 +7801,45 @@ def test_50s6g2c_candidate_cli_file_protocol_is_atomic_explicit_and_bounded():
     assert "Do not implement 50S.6G.2C" in instructions
     assert "authorizes no implementation" in delivery
     assert "candidate audit, not acceptance" in log
+
+
+def test_50s6g2c_records_acceptance_and_only_bounded_implementation_authority():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_cli_file_protocol_audit_50s6g2c.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "bcac40453ae244348b9fc33447246db1c587d722",
+        "188 plugin-disabled",
+        "5.29 seconds",
+        "Implement only the bounded offline CLI/filesystem adapter",
+        "This acceptance does not authorize provider access",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Accepted 50S.6G.2C audit boundary" in architecture
+    assert "50S.6G.2C accepted audit and next authority" in roadmap
+    assert "Accepted 50S.6G.2C implementation authorization" in reference
+    assert "Accepted 50S.6G.2C implementation ownership" in source_tree
+    assert "Accepted 50S.6G.2C coordinate finding" in coordinates
+    assert "Accepted 50S.6G.2C reader boundary" in guide
+    assert "Accepted 50S.6G.2C audit boundary" in instructions
+    assert "Accepted 50S.6G.2C audit handoff" in delivery
+    assert "Accepted 50S.6G.2C audit" in log
+    assert "50S.6G.3A and later work remain unauthorized" in roadmap

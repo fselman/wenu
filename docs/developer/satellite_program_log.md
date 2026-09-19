@@ -994,3 +994,12 @@ valid subset on the second call, and reuses the accepted canonical JSON,
 ECSV, and VOTable report encoders for an atomic no-clobber bundle. This is a
 candidate audit, not acceptance, and it authorizes no implementation or later
 track/chart work.
+
+## 2026-09-19 — Accepted 50S.6G.2C audit
+
+Fernando scientifically and architecturally accepted the CLI and two-call
+file-protocol audit at `bcac404`. Verification comprised 188 plugin-disabled
+current-documentation tests in 5.29 seconds, a clean diff check, and a clean,
+synchronized Mac working tree. Only the bounded offline implementation is
+authorized next; no track, chart, provider, new science, visibility,
+illumination, or brightness work is authorized.

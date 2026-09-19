@@ -2914,3 +2914,13 @@ invalid FoV and the ordered valid subset. A second explicit call retains the
 invalid audit entries, revalidates and calculates only that subset, and
 publishes one no-clobber JSON/ECSV/VOTable bundle. This candidate authorizes no
 implementation. 50S.6G.3A and later track/chart work remain unauthorized.
+
+## 50S.6G.2C accepted audit and next authority
+
+Fernando accepted the documentation-only CLI/two-call file-protocol audit on
+2026-09-19 at `bcac404`. The next authorized step is only its bounded offline
+implementation: direct atomic calculation, closed initial and validation JSON,
+validated-subset second call, fixed digest-manifest bundle, safe no-clobber
+publication, exit/interruption contracts, and focused tests. 50S.6G.3A and all
+track, chart, provider, visibility, illumination, and brightness work remain
+separately unauthorized.

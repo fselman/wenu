@@ -1608,3 +1608,14 @@ solve owner; canonical JSON plus the reusable ECSV/VOTable projection remain
 the only report encoders. No runtime implementation, provider access, new
 execution science, track, chart, visibility, illumination, or brightness work
 is authorized by this candidate.
+
+## Accepted 50S.6G.2C audit boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.6G.2C CLI/file-protocol audit on 2026-09-19 at `bcac404`, after 188
+plugin-disabled current-documentation tests passed in 5.29 seconds and
+repository checks were clean. Only the bounded offline CLI/filesystem
+implementation is authorized next. Preserve the existing batch coordinator and
+canonical JSON plus reusable ECSV/VOTable report owners. Tracks, charts,
+providers, new execution science, visibility, illumination, and brightness
+remain unauthorized.

@@ -2470,3 +2470,12 @@ own scientific batch validation/solving; `satellite_crossing_reports.py` and
 `_satellite_tabular_reports.py` continue to own the logical report and exactly
 one reusable encoding projection. No production module or test file is added
 by this documentation audit.
+
+## Accepted 50S.6G.2C implementation ownership
+
+The accepted audit authorizes one bounded CLI/filesystem owner under
+`wenu/cli/`, its packaged protocol schemas, installed entry point, and focused
+durable protocol tests. It does not authorize production changes in crossing
+science, propagation, topocentric transformation, report identity, or the
+shared tabular projection except minimal intentional exports required by the
+accepted composition seam.
