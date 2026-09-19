@@ -2371,3 +2371,12 @@ The candidate owner formats already retained values only. It does not own
 solving, propagation, coordinates, airmass, acceleration, acquisition,
 ECSV/VOTable, CLI/files, tracks, charts, or future illumination/brightness.
 No production or test file is authorized until audit acceptance.
+
+
+## Accepted 50S.6G.2A implementation ownership
+
+Fernando accepted the audit on 2026-09-19 at `835ddfe`, after 175
+documentation tests passed in 3.27 seconds and clean checks. A dedicated
+exact-report production owner adjacent to sampled-candidate presentation and a
+stable exact-report test file are authorized, subject to the implementation
+source-tree preflight. No other module or ownership change is authorized.
