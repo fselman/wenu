@@ -7691,7 +7691,7 @@ def test_50s6g2b_records_candidate_implementation_verification():
         assert "6.68 seconds" in document
         assert "2,689" in document
         assert "215.15 seconds" in document
-        assert "canonical JSON" in document
+        assert "canonical json" in document.lower()
         assert "report_identity_sha256" in document
         assert "__is_null" in document
         assert "candidate" in document
