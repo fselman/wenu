@@ -1273,3 +1273,18 @@ Only the bounded 50S.6G.2A documentation audit is authorized next. Do not
 implement a report model, JSON Schema, encoder, decoder, round trip, CLI,
 track, chart, new execution, refactor, or parallelization without later
 separate acceptance.
+
+
+## Candidate 50S.6G.2A exact-report audit boundary
+
+Read `satellite_exact_crossing_report_audit_50s6g2a.md` before any
+exact-crossing report or JSON work. The candidate permits no runtime change.
+Preserve exact-local scientific status separately from SatChecker sampled
+candidates, explicit zero-crossing fields, caller-supplied immutable creation
+time, complete retained context, semantic array order, canonical digest,
+closed Draft 2020-12 schema, duplicate-key rejection, semantic validation, and
+typed byte-identical round trips.
+
+Do not implement until Fernando separately accepts the audit. ECSV/VOTable,
+CLI/files, tracks, charts, illumination, magnitude, detector effects, provider
+access, another real run, and unrelated refactoring remain unauthorized.
