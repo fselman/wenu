@@ -116,11 +116,13 @@ def specimen_track():
     )
     samples = []
     for seconds, longitude, latitude, roles in (
-        (0, 3.0, 0.0, ("entry",)),
-        (3, 4.5, 4.0, ()),
-        (6, 6.0, 0.0, ("closest_approach",)),
-        (9, 7.5, -4.0, ()),
-        (12, 9.0, 0.0, ("exit",)),
+        (0.0, 3.0, 0.0, ("entry",)),
+        (1.5, 3.75, 3.0, ()),
+        (3.0, 4.5, 4.0, ()),
+        (4.5, 5.25, 3.5, ()),
+        (6.0, 6.0, 2.5, ("closest_approach",)),
+        (9.0, 7.5, 1.0, ()),
+        (12.0, 9.0, 0.0, ("exit",)),
     ):
         vector = direction(longitude, latitude)
         samples.append(
@@ -160,13 +162,9 @@ def horizontal_center(track):
         elevation_m=ELEVATION_M,
     )
     try:
-        middle = next(
-            sample for sample in track.samples
-            if "closest_approach" in sample.roles
-        )
         native = SphericalPoints(
-            [middle.longitude_deg],
-            [middle.latitude_deg],
+            [6.0],
+            [0.0],
             coordinate_spec=track.coordinate_spec,
         )
         transformed = CoordinateService().transform(
