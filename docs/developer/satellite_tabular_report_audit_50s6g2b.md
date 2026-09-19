@@ -300,3 +300,19 @@ parser. Until Fernando separately accepts this amendment, no further
 50S.6G.2B runtime correction is authorized.
 
 Upstream evidence: https://github.com/astropy/astropy/issues/8995
+
+
+## Accepted Astropy 7.1 Unicode-null amendment
+
+Fernando scientifically and architecturally accepted this bounded amendment on
+2026-09-19 at verified candidate commit `5038e4a`, after all 184
+plugin-disabled current-documentation tests passed in 5.28 seconds.
+`git diff --check a38d573...HEAD` passed, and the Mac working tree was clean
+and synchronized.
+
+Implement only the exact adjacent Boolean `__is_null` VOTable FIELD contract
+for nullable Unicode values, its strict validation, and focused tests. Preserve
+the shared logical projection, ECSV representation, canonical JSON, and
+`report_identity_sha256`. Do not interpret an unmarked empty string as null
+or add a private BINARY2 parser. All existing 50S.6G.2B exclusions remain in
+force.
