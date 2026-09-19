@@ -1238,3 +1238,38 @@ The one authorized run was consumed successfully on 2026-09-18 at `9d93113`, pro
 ## Accepted first real-matrix evidence boundary
 
 Fernando scientifically and architecturally accepted the first real-matrix report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18. Preserve the explicit finding: exact empty-result equivalence and partition integrity passed, while all 10 fields had zero crossings. Do not claim positive real-crossing validation or universal performance, and do not rerun the matrix. Serial closure review, output-neutral refactoring, or parallelization requires a new bounded audit and explicit authorization.
+
+
+## Candidate bounded 50S.6G.1B closure boundary
+
+At integrated baseline `b010a6c`, accepted report
+`d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258`
+establishes exact empty-result exhaustive/accelerated equality and conservative
+partition integrity for the accepted ten-field real matrix. Every field had
+zero crossings. Do not claim positive real-crossing validation, a full-snapshot
+matrix, broader FoV-count coverage, universal performance, concurrency, or
+reuse.
+
+The one-run authority is consumed. Do not rerun, retry, resume, refresh,
+substitute, search for positive real crossings, execute the full snapshot,
+parallelize, or refactor under this candidate. This documentation-only closure
+changes no runtime. Until Fernando separately accepts it, 50S.6G.1B remains
+open and 50S.6G.2A is unauthorized. Acceptance would authorize only a bounded
+50S.6G.2A documentation audit, not report implementation.
+
+
+## Accepted bounded 50S.6G.1B closure boundary
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after 173 plugin-disabled current-documentation
+tests passed in 3.82 seconds and repository checks were clean.
+
+Preserve the exact limitation: every real field had zero crossings, so the
+accepted result is exact empty-result equivalence and conservative partition
+integrity, not positive real-crossing validation or a universal scale or
+performance claim. The one-run authority remains consumed.
+
+Only the bounded 50S.6G.2A documentation audit is authorized next. Do not
+implement a report model, JSON Schema, encoder, decoder, round trip, CLI,
+track, chart, new execution, refactor, or parallelization without later
+separate acceptance.

@@ -420,3 +420,62 @@ The corrected external snapshot has canonical-record SHA-256
 passed in 223.57 seconds. No second provider request occurred. This closes the
 50S.6G.1B.1 live acquisition repair only; representative admission, medium-tier
 selection, evidence-matrix work, and 50S.6G.1B.2 remain separately authorized.
+
+
+## Candidate 50S.6G.1B bounded closure audit
+
+The integrated as-is baseline is merge commit `b010a6c`. The accepted
+50S.6G.1B work establishes policy-governed single-response acquisition,
+immutable external snapshot validation, exact digest-plus-manifest admission,
+a deterministic external 256-record coverage specimen, and strict
+exhaustive-versus-accelerated equivalence plus conservative partition
+integrity for the accepted ten-field real matrix.
+
+The accepted real report
+`d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258`
+contains 60 measured observations and no fallback. Every field had zero
+crossings. It therefore establishes exact empty-result equivalence for that
+specimen and fixture, not positive real-crossing validation. Positive-crossing
+behavior remains synthetic evidence.
+
+The original representative-matrix aspiration is not fully discharged. This
+closure makes no claim for a full 16,559-record matrix, FoV counts 1, 2, 5, 20,
+or 50, comprehensive interval-relationship families, real central/grazing/
+between-sample/near-zenith/boundary-time/seam crossings, universal speed,
+capacity, memory, concurrency, or useful shared-state reuse. The consumed
+one-run authority is not renewed. No rerun, retry, resume, refresh,
+substitution, full-snapshot execution, positive-crossing search,
+parallelization, or output-neutral refactoring is authorized.
+
+Those missing scale and performance claims do not block an audit of the
+canonical exact-crossing report model. A future 50S.6G.2A audit may use
+accepted synthetic positive-crossing results together with representative
+empty-batch evidence to define an immutable logical model, versioned JSON
+Schema, deterministic JSON, and round trips without changing crossing science
+or making a performance claim.
+
+This candidate changes no runtime, snapshot, external artifact, provider
+access, report, CLI, track, chart, coordinate, illumination, or brightness
+behavior. Until Fernando separately accepts it, 50S.6G.1B is not closed and
+50S.6G.2A is not authorized. Acceptance would close only the bounded
+acquisition/admission/evidence foundation and authorize only a separate
+documentation audit for 50S.6G.2A, not report implementation.
+
+
+## Accepted 50S.6G.1B bounded closure
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at candidate commit `c62a451`, after all 173 plugin-disabled
+current-documentation tests passed in 3.82 seconds; the diff check and working
+tree were clean.
+
+50S.6G.1B is closed only as the policy-governed acquisition, immutable
+admission, deterministic medium-specimen, exact empty-result equivalence, and
+conservative partition foundation. All real matrix fields had zero crossings.
+The deferred full-snapshot, wider FoV-count, comprehensive real-crossing, and
+performance/resource claims remain unmade and require a future separately
+bounded audit. The consumed execution authority is not renewed.
+
+Only a bounded 50S.6G.2A documentation audit is authorized next. Report-model,
+JSON Schema, deterministic JSON, or round-trip implementation remains
+unauthorized pending separate acceptance of that audit.

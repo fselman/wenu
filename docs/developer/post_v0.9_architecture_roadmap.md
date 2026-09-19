@@ -2775,3 +2775,35 @@ The consumed single run from `9d93113` produced candidate report `d200f3920aeda6
 ## 50S.6G.1B.2D.4 accepted first real-matrix evidence
 
 Fernando scientifically and architecturally accepted candidate `186e255` and report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` on 2026-09-18. The closure establishes exact empty-result equivalence and partition integrity, explicitly not positive real-crossing validation because every field had zero crossings. Further serial closure review, refactoring, parallelization, or another real run requires separate authorization.
+
+
+## 50S.6G.1B candidate bounded closure state
+
+Integrated baseline `b010a6c` establishes the acquisition, immutable
+admission, deterministic medium-specimen, exact empty-result equivalence, and
+conservative partition foundation. The accepted real matrix had zero crossings
+in every field. It does not establish positive real-crossing validation, a
+full-snapshot matrix, the wider planned FoV-count matrix, comprehensive real
+crossing geometries, or universal performance, capacity, concurrency, or reuse
+claims.
+
+The candidate closure does not renew the consumed execution authority and
+changes no runtime. Missing scale/performance evidence is explicitly deferred
+behind a future bounded audit. Until separate acceptance, 50S.6G.1B remains
+open and 50S.6G.2A is unauthorized. Acceptance would authorize only a separate
+50S.6G.2A documentation audit for the immutable report model, versioned JSON
+Schema, deterministic JSON, and round trips—not implementation.
+
+
+## 50S.6G.1B accepted bounded closure
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after all 173 plugin-disabled documentation tests
+passed in 3.82 seconds with clean repository checks. 50S.6G.1B is closed only
+for the acquisition/admission/evidence foundation, with exact empty-result
+equivalence and conservative partition integrity. Every real field had zero
+crossings, and all stated scale and performance limitations remain explicit.
+
+The next authorized milestone is only the bounded 50S.6G.2A documentation
+audit for the canonical exact-crossing logical model, versioned JSON Schema,
+deterministic JSON, and round trips. Implementation is not authorized.

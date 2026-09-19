@@ -3779,3 +3779,31 @@ The 2026-09-18 candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520
 ## Accepted first real-matrix coordinate finding
 
 Fernando scientifically and architecturally accepted report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18. The coordinate guide remains current. Exact empty-result route agreement was established, but all fields had zero crossings and therefore no positive real-crossing validation is claimed.
+
+
+## Candidate 50S.6G.1B closure coordinate review
+
+The coordinate guide was reviewed at integrated baseline `b010a6c` and
+remains current. The accepted ten-field real matrix used the frozen geometric
+topocentric GCRS-axes directions, UTC intervals, bundled Earth-orientation
+evidence, vacuum policy, and complete-interval centre-only airmass admission.
+All fields had zero crossings.
+
+The candidate closure introduces no coordinate operation, frame, origin,
+status, epoch, time scale, Earth-orientation policy, tolerance, or
+transformation. It does not convert empty-result agreement into positive
+real-crossing validation and authorizes no new execution. Pending separate
+acceptance, 50S.6G.2A remains unauthorized. Acceptance would authorize only
+a documentation audit, not implementation.
+
+
+## Accepted 50S.6G.1B closure coordinate review
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after 173 documentation tests passed in 3.82 seconds
+and clean repository checks. The coordinate guide remains current. All real
+fields had zero crossings, and no new coordinate meaning or positive
+real-crossing validation is claimed.
+
+Only a 50S.6G.2A documentation audit is authorized next; it must preserve the
+accepted coordinate identities and may not implement serialization.
