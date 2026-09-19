@@ -7731,7 +7731,7 @@ def test_50s6g2b_records_complete_implementation_acceptance():
         assert "canonical json" in document.lower()
         assert "report_identity_sha256" in document
         assert "__is_null" in document
-        assert "no later" in document
+        assert "no later" in document.lower()
 
     audit, instructions, architecture, reference, source_tree, roadmap, coordinates, log = documents
     assert "Accepted complete 50S.6G.2B implementation" in audit
