@@ -3101,3 +3101,15 @@ crossing, full-snapshot matrix, broad FoV-count capacity, universal
 performance, concurrency, or reuse result and authorizes no further execution.
 Pending separate acceptance, 50S.6G.2A remains unauthorized. Acceptance would
 authorize only its documentation audit.
+
+
+## Accepted 50S.6G.1B closure boundary
+
+Fernando scientifically and architecturally accepted the bounded closure on
+2026-09-19 at `c62a451`, after 173 documentation tests passed in 3.82 seconds
+and repository checks were clean. Existing APIs remain unchanged; all real
+fields had zero crossings and no broader execution or performance claim is
+accepted.
+
+Only a 50S.6G.2A documentation audit is authorized next. No report API,
+schema, encoder, decoder, or round-trip implementation is authorized.
