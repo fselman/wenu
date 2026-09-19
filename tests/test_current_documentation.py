@@ -7492,4 +7492,3 @@ def test_50s6g2a_candidate_implementation_is_bounded_and_propagated():
     assert "ECSV/VOTable remains 50S.6G.2B" in roadmap
     assert "CLI/files and atomic publication remain 50S.6G.2C" in roadmap
     assert "exact tracks remain 50S.6G.3A" in roadmap
-
