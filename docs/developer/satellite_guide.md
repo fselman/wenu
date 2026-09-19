@@ -1254,3 +1254,119 @@ plugin-disabled full-suite tests in 230.25 seconds at `19520f3`, followed by
 `3ef6a4d`. The accepted closure neither reads the real 256-record specimen
 nor executes the real ten-field matrix. Only a separately bounded
 real-execution audit is authorized next.
+
+### Candidate real-execution readiness audit
+
+The accepted fake-data matrix core at `9bdf301` is not yet ready for the
+first real run. The exact ten-field La Ligua fixture, production whole-interval
+airmass certifier, isolated subprocess worker, and explicit offline developer
+command remain to be implemented and proven with fake data. This audit did not
+read the accepted real 256-record specimen or execute either route. Only the
+bounded production-path implementation may proceed next; the real matrix and
+all performance conclusions remain unauthorized.
+
+### Accepted real-execution readiness audit
+
+Fernando scientifically and architecturally accepted the not-ready finding on
+2026-09-17 after 163 plugin-disabled current-documentation tests passed in
+3.80 seconds at `054ac39`. Only the bounded fake-data production-path
+implementation may proceed next. The accepted real 256-record specimen must
+remain untouched and the real ten-field matrix must not be executed.\n
+
+### Candidate offline equivalence-matrix execution path
+
+The candidate `run-equivalence-matrix` developer command is explicit and
+offline. It requires the snapshot and output directories, all three accepted
+digests, and an exact operator acknowledgement. Before any route process
+starts it validates the complete accepted selection receipt, constructs the
+digest-frozen La Ligua fields, and atomically certifies their centre-only
+airmass. Each route/query/repetition then runs in a fresh subprocess. The
+fixture contains only 15- and 60-second intervals and its tests use fake data
+and bounded subprocess doubles. The command performs no discovery, download,
+refresh, fallback, concurrency, or cache reuse.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.\n
+
+### Candidate first real equivalence run
+
+Candidate 50S.6G.1B.2D.1 proposes exactly one operator-started use of
+`run-equivalence-matrix` with explicit absolute snapshot and output paths,
+all three accepted digests, and the exact acknowledgement. The output root
+must be new, empty, external, and have at least 2 GiB free. The run allows no
+network, discovery, refresh, substitution, retry, resume, changed fixture, or
+changed policy. A successful evidence directory remains external and
+unaccepted until a separate review.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate equivalence-run progress display
+
+The offline matrix command candidate displays a terminal bar with completed
+workers over the policy-derived total, integer percentage, field, route, and
+phase. Under the accepted default it advances from 0/80 to 80/80. The display
+is parent-only stderr text and is not scientific evidence. A running worker may
+leave the same line visible for a long time; completion advances only after
+that fresh subprocess returns successfully.
+
+## Candidate equivalence-run progress verification
+
+Candidate `b0b4432` passed 180 focused plugin-disabled tests in 5.44 seconds and the full 2647-test plugin-disabled suite in 239.53 seconds on 2026-09-18; the diff check was clean. The progress display remains parent-only and outside canonical evidence. The real specimen was not accessed, the run has not started, and renewed authorization remains pending.
+
+## Accepted equivalence-run progress display
+
+Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18 after the recorded focused, full-suite, final-documentation, and diff verification. The display remains parent-only and outside canonical evidence. The real specimen has not been accessed, the run has not started, and execution still requires post-merge renewed authorization.
+
+## Renewed single real equivalence run
+
+After progress-display merge `9c4b808`, Fernando explicitly renewed authorization on 2026-09-18 for exactly one real matrix run. It must use the accepted immutable specimen, exact fixture and 10 fields, only 15/60-second intervals, both routes, one warm-up and three measurements, at most 80 fresh subprocesses, a new empty external output root, and no retry or resume. Progress is operational stderr only; successful artifacts remain unaccepted candidate evidence.
+
+## Accepted renewed single real run
+
+Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after 169 plugin-disabled documentation tests passed in 4.29 seconds and repository checks were clean. The run remains unstarted and unconsumed; merge and repeated external preflight are required before execution.
+
+## Candidate first real equivalence evidence
+
+The consumed one-run authorization produced candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` from `9d93113` on 2026-09-18. Ten fields, both 15/60-second intervals, 60 measured observations, all decision classes, and exact route equality passed with no fallback. All fields had zero crossings, so positive crossing remains synthetic-only evidence. The observed acceleration is descriptive for the exact specimen and 2017 Intel Mac, not a general speed claim.
+
+## Accepted first real equivalence evidence
+
+Fernando scientifically and architecturally accepted report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18 after 171 documentation tests passed in 4.46 seconds. This closes the first real run as exact empty-result equivalence and conservative partition evidence. All fields had zero crossings; observed timing is descriptive only, and no rerun or parallelization is authorized.

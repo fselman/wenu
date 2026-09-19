@@ -1119,3 +1119,122 @@ plugin-disabled current-documentation tests passed in 3.32 seconds at
 under this acceptance. Only a separately bounded real-execution audit is
 authorized next; execution and later delivery require separate explicit
 authorization.
+
+### Candidate real-execution readiness boundary
+
+At integrated baseline `9bdf301`, do not attempt the real 50S.6G.1B.2D
+matrix. The accepted core still exposes injected test seams and lacks the
+frozen ten-field request fixture, production airmass certifier,
+fresh-subprocess worker, and explicit offline developer command. Only bounded
+production-path implementation with fake data is authorized next. Do not read,
+discover, copy, hash, or otherwise access the external real specimen; do not
+propagate it, execute a route, or infer performance under this audit.
+
+### Accepted real-execution readiness boundary
+
+Fernando scientifically and architecturally accepted the fail-closed audit on
+2026-09-17 after 163 plugin-disabled current-documentation tests passed in
+3.80 seconds at `054ac39`. Implement only the bounded production path using
+fake data: exact receipt constraints, frozen fixture, production airmass
+certifier, fresh-subprocess protocol and worker, offline command, and tests.
+Do not access the accepted real specimen or execute the real matrix without a
+later separate explicit authorization.\n
+
+### Candidate production-path implementation boundary
+
+The candidate branch implements only the accepted fake-data production path:
+exact medium-receipt constraints, a digest-frozen ten-field La Ligua fixture,
+the production whole-interval airmass certifier, a canonical fresh-subprocess
+worker/executor, and the explicit offline `run-equivalence-matrix` developer
+command. Fernando directed on 2026-09-17 that fixture durations be reduced to
+15 and 60 seconds and that new tests avoid unnecessary repeated scientific
+route runs. Do not access the accepted real specimen or execute the real
+matrix under this candidate. Verification and separate scientific and
+architectural acceptance are still required.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.\n
+
+### Candidate first-real-execution authorization boundary
+
+Read the candidate 50S.6G.1B.2D.1 section in
+`satellite_equivalence_matrix_audit_50s6g1b2d.md`. It proposes exactly one
+offline run of the accepted 256-record specimen into one new empty external
+output root, with the three accepted digests, exact acknowledgement, accepted
+15/60-second fixture, existing 3600-second subprocess timeout, no retry, and
+separate evidence review. This documentation candidate authorizes no specimen
+access or execution before Fernando's explicit acceptance.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix progress boundary
+
+The first real run remains paused. The candidate parent-process progress bar
+reports completed worker count over the policy-derived total plus field, route,
+and phase. It writes only to parent stderr and must not change worker protocol,
+canonical evidence, timing, route order, timeout, retries, science, or
+publication. Verification extends the existing fake protocol test and adds no
+scientific run. Require separate acceptance, merge, and renewed one-run
+authorization before accessing the real specimen.
+
+## Candidate matrix progress verification boundary
+
+Candidate commit `b0b4432` was verified on 2026-09-18 with 180 focused plugin-disabled tests passing in 5.44 seconds, the complete 2647-test plugin-disabled suite passing in 239.53 seconds, and a clean diff check. Do not treat this verification as acceptance, merge authority, or renewed real-run authorization. Do not access the accepted real specimen until the progress change is accepted, merged, and the one-run authorization is explicitly renewed.
+
+## Accepted matrix progress boundary
+
+Fernando scientifically and architecturally accepted the 50S.6G.1B.2D.2 progress display at `96b9ba0` on 2026-09-18. Do not infer merge authority or real-run authority from this acceptance. Keep the accepted real specimen untouched until Fernando separately requests the merge and then explicitly renews the one-run authorization.
+
+## Renewed one-run matrix authority
+
+Fernando explicitly renewed authorization on 2026-09-18 for exactly one real matrix run after progress-display merge `9c4b808`. Do not access the accepted specimen or start the command until this renewal record is merged and the external preflight is repeated. Then issue exactly one operator-started command using the accepted specimen, a new empty output root, 10 fields, only 15/60-second intervals, both routes, one warm-up plus three measured repetitions, at most 80 subprocess invocations, and no retry or resume. Failure or interruption consumes the authority. Success remains candidate evidence requiring independent review.
+
+## Accepted renewed one-run authority
+
+Fernando scientifically and architecturally accepted the renewed authorization record at `dd71e01` on 2026-09-18 after 169 documentation tests passed in 4.29 seconds and repository checks were clean. Do not start or consume the run before this record is merged and the external preflight is repeated. After those conditions pass, issue exactly one command and do not retry or resume it.
+
+## Candidate first real-matrix evidence boundary
+
+The one authorized run was consumed successfully on 2026-09-18 at `9d93113`, producing candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258`. Do not rerun, resume, refresh, or substitute the external evidence. Exact empty-result equivalence and partition integrity passed across 10 fields and 60 measured observations, but all fields had zero crossings; do not claim positive real-crossing validation or universal performance. The candidate requires Fernando's separate scientific and architectural acceptance.
+
+## Accepted first real-matrix evidence boundary
+
+Fernando scientifically and architecturally accepted the first real-matrix report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18. Preserve the explicit finding: exact empty-result equivalence and partition integrity passed, while all 10 fields had zero crossings. Do not claim positive real-crossing validation or universal performance, and do not rerun the matrix. Serial closure review, output-neutral refactoring, or parallelization requires a new bounded audit and explicit authorization.

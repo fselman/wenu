@@ -6865,3 +6865,371 @@ def test_50s6g1b2d_records_fake_data_implementation_acceptance():
     assert "Accepted 50S.6G.1B.2D implementation boundary" in instructions
     assert "does not authorize" in audit
     assert "real execution" in audit
+
+def test_50s6g1b2d_audits_real_execution_readiness_fail_closed():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "9bdf301" in document
+        assert "real" in document.lower()
+        assert "fixture" in document.lower()
+        assert "airmass" in document.lower()
+        assert "subprocess" in document.lower()
+        assert "command" in document.lower()
+        assert "no" in document.lower() or "not" in document.lower()
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate real-execution readiness audit" in audit
+    assert "not ready for real execution" in audit
+    assert "Candidate 50S.6G.1B.2D real-execution readiness finding" in architecture
+    assert "50S.6G.1B.2D real-execution readiness gate" in roadmap
+    assert "Proposed real-matrix execution surface" in reference
+    assert "Candidate real-execution readiness ownership" in source_tree
+    assert "Candidate real-matrix coordinate readiness finding" in coordinates
+    assert "Candidate real-execution readiness audit" in guide
+    assert "Candidate real-execution readiness boundary" in instructions
+    assert "24 nonempty bins" in audit
+    assert "48 mandatory representatives" in audit
+    assert "208 fill records" in audit
+    assert "run-equivalence-matrix" in audit
+    assert "separate explicit authorization" in audit
+    assert "do not attempt the real" in instructions.lower()
+
+def test_50s6g1b2d_records_accepted_real_execution_readiness_audit():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-17" in document
+        assert "163 plugin-disabled" in document
+        assert "3.80 seconds" in document
+        assert "054ac39" in document
+        assert "fake-data" in document or "fake data" in document
+        assert "real" in document.lower()
+        assert "unauthorized" in document or "not be executed" in document or "no authority" in document.lower()
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted real-execution readiness finding" in audit
+    assert "Accepted 50S.6G.1B.2D real-execution readiness finding" in architecture
+    assert "50S.6G.1B.2D accepted real-execution readiness finding" in roadmap
+    assert "Accepted real-execution readiness boundary" in reference
+    assert "Accepted real-execution readiness ownership" in source_tree
+    assert "Accepted real-matrix coordinate readiness finding" in coordinates
+    assert "Accepted real-execution readiness audit" in guide
+    assert "Accepted real-execution readiness boundary" in instructions
+    assert "real matrix is not yet ready to run" in audit
+    assert "does not authorize reading" in audit
+
+
+def test_50s6g1b2d1_documents_single_real_execution_authorization():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate 50S.6G.1B.2D.1 first-real-execution authorization",
+        "authorize exactly one operator-started offline run",
+        "at most 80 fresh subprocess invocations",
+        "The existing worker timeout remains 3600 seconds per subprocess",
+        "There is no automatic retry",
+        "A successful command does not itself accept the evidence",
+        "Until Fernando explicitly accepts this audit",
+    ):
+        assert phrase in audit
+    for digest in (
+        "2e85c576e287a047b12fe58b9487f96533ae739c46a594945cedb4236f08ab8b",
+        "1a1048a24d619ec15817dbbc63cb461240fbce243a5414f266179f9cba57a895",
+        "e80306c843b9e3004b1d5bf7a8e4e7eb76a4f56284cd659978dc9bd3461f2347",
+    ):
+        assert digest in audit
+    assert "Candidate first-real-execution authorization" in architecture
+    assert "Candidate first real run policy" in reference
+    assert "50S.6G.1B.2D.1 candidate first real execution" in roadmap
+    assert "Candidate first-real-execution ownership" in source_tree
+    assert "Candidate first-real-execution coordinate boundary" in coordinate_guide
+    assert "Candidate first real equivalence run" in guide
+    assert "Candidate first-real-execution authorization boundary" in instructions
+
+
+def test_50s6g1b2d2_documents_parent_only_progress_boundary():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md"
+    ).split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(read(
+        DEVELOPER / "implementation_reference.md"
+    ).split())
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    for phrase in (
+        "Candidate parent-process matrix progress display",
+        "The authorized execution has not started",
+        "exactly 80 invocations",
+        "excluded from canonical scientific evidence",
+        "The real specimen must not be accessed",
+    ):
+        assert phrase in audit
+    assert "Candidate matrix execution progress display" in architecture
+    assert "Candidate matrix progress reporting" in reference
+    assert "50S.6G.1B.2D.2 candidate progress display" in roadmap
+    assert "Candidate matrix progress ownership" in source_tree
+    assert "Candidate progress-display coordinate review" in coordinate_guide
+    assert "Candidate equivalence-run progress display" in guide
+    assert "Candidate matrix progress boundary" in instructions
+
+
+def test_50s6g1b2d2_records_candidate_progress_verification():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "b0b4432" in document
+        assert "2026-09-18" in document
+        assert "180" in document
+        assert "5.44 seconds" in document
+        assert "2647" in document
+        assert "239.53 seconds" in document
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "git diff --check 5aff265...HEAD` reported no errors" in audit
+    assert "Candidate 50S.6G.1B.2D.2 verification record" in audit
+    assert "Candidate 50S.6G.1B.2D.2 progress verification" in architecture
+    assert "50S.6G.1B.2D.2 candidate verification state" in roadmap
+    assert "Candidate matrix progress verification" in reference
+    assert "Candidate matrix progress verification ownership" in source_tree
+    assert "Candidate progress-display verification review" in coordinates
+    assert "Candidate equivalence-run progress verification" in guide
+    assert "Candidate matrix progress verification boundary" in instructions
+    assert "authorized execution has not started" in audit
+    assert "renewed authorization remain separate decisions" in audit
+    assert "real specimen was not accessed" in guide
+
+
+def test_50s6g1b2d2_records_progress_display_acceptance():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "96b9ba0" in document
+        assert "2026-09-18" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted 50S.6G.1B.2D.2 progress-display closure" in audit
+    assert "Accepted 50S.6G.1B.2D.2 progress display" in architecture
+    assert "50S.6G.1B.2D.2 accepted progress-display state" in roadmap
+    assert "Accepted matrix progress display" in reference
+    assert "Accepted matrix progress ownership" in source_tree
+    assert "Accepted progress-display coordinate review" in coordinates
+    assert "Accepted equivalence-run progress display" in guide
+    assert "Accepted matrix progress boundary" in instructions
+    assert "does not merge the feature branch" in audit
+    assert "does not itself authorize execution" in reference
+    assert "post-merge renewed authorization" in guide
+
+
+def test_50s6g1b2d3_records_renewed_single_real_run_authorization():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "9c4b808" in document
+        assert "2026-09-18" in document
+        assert "renew" in document.lower()
+        assert "exactly one" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Renewed 50S.6G.1B.2D.3 one-run authorization" in audit
+    assert "Renewed 50S.6G.1B.2D.3 one-run authority" in architecture
+    assert "50S.6G.1B.2D.3 renewed single-run authorization" in roadmap
+    assert "Renewed single real-run contract" in reference
+    assert "Renewed real-run ownership" in source_tree
+    assert "Renewed real-run coordinate boundary" in coordinates
+    assert "Renewed single real equivalence run" in guide
+    assert "Renewed one-run matrix authority" in instructions
+    assert "at most 80 fresh subprocess invocations" in audit
+    assert "There is no automatic retry or resume" in audit
+    assert "consumes this authorization" in audit
+    assert "candidate evidence requiring independent review" in audit
+
+
+def test_50s6g1b2d3_records_acceptance_of_renewed_authorization():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "dd71e01" in document
+        assert "2026-09-18" in document
+        assert "169" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "4.29 seconds" in audit
+    assert "Accepted 50S.6G.1B.2D.3 renewed authorization" in audit
+    assert "Accepted 50S.6G.1B.2D.3 renewed authority" in architecture
+    assert "50S.6G.1B.2D.3 accepted renewed authorization" in roadmap
+    assert "Accepted renewed real-run contract" in reference
+    assert "Accepted renewed real-run ownership" in source_tree
+    assert "Accepted renewed real-run coordinate boundary" in coordinates
+    assert "Accepted renewed single real run" in guide
+    assert "Accepted renewed one-run authority" in instructions
+    assert "run remains unstarted and unconsumed" in audit
+    assert "only after this record is merged" in audit
+    assert "external preflight" in audit
+
+
+def test_50s6g1b2d4_records_candidate_first_real_matrix_evidence():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258" in document
+        assert "9d93113" in document
+        assert "2026-09-18" in document
+        assert "zero crossings" in document
+        assert "candidate" in document.lower()
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Candidate 50S.6G.1B.2D.4 first real-matrix evidence" in audit
+    assert "Candidate 50S.6G.1B.2D.4 real-matrix evidence" in architecture
+    assert "50S.6G.1B.2D.4 candidate real-matrix evidence" in roadmap
+    assert "Candidate first real-matrix evidence" in reference
+    assert "Candidate first real-matrix evidence ownership" in source_tree
+    assert "Candidate first real-matrix coordinate finding" in coordinates
+    assert "Candidate first real equivalence evidence" in guide
+    assert "Candidate first real-matrix evidence boundary" in instructions
+
+    for phrase in (
+        "0cad196ea850a26d7cb5a2b73e73d932f06b2ae1ba2e36d745a1c3f1b2beb26c",
+        "64b5b4f99ca09fc78cdabb4a487382425317bacf71075825d40b3f28d4adee72",
+        "2,455 reject, 101 indeterminate, and 4 retain",
+        "38,292.318 wall seconds",
+        "13,636.603 wall seconds",
+        "2.694 to 2.865",
+        "authorization is consumed",
+    ):
+        assert phrase in audit
+    assert "positive-crossing behavior remains covered by synthetic evidence" in audit
+    assert "no universal speed, capacity, memory, or hardware claim" in audit
+
+
+def test_50s6g1b2d4_records_acceptance_of_first_real_matrix_evidence():
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            DEVELOPER / "satellite_equivalence_matrix_audit_50s6g1b2d.md",
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+        )
+    )
+    for document in documents:
+        assert "scientifically and architecturally accepted" in document
+        assert "186e255" in document
+        assert "d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258" in document
+        assert "2026-09-18" in document
+        assert "zero crossings" in document
+
+    audit, architecture, roadmap, reference, source_tree, coordinates, guide, instructions = documents
+    assert "Accepted 50S.6G.1B.2D.4 first real-matrix evidence" in audit
+    assert "Accepted 50S.6G.1B.2D.4 real-matrix evidence" in architecture
+    assert "50S.6G.1B.2D.4 accepted first real-matrix evidence" in roadmap
+    assert "Accepted first real-matrix evidence" in reference
+    assert "Accepted first real-matrix evidence ownership" in source_tree
+    assert "Accepted first real-matrix coordinate finding" in coordinates
+    assert "Accepted first real equivalence evidence" in guide
+    assert "Accepted first real-matrix evidence boundary" in instructions
+
+    assert "171 plugin-disabled documentation tests passing in 4.46 seconds" in audit
+    assert "deterministic empty-result equivalence" in audit
+    assert "does not establish positive real-crossing validation" in audit
+    assert "authorize another real run" in audit
+    assert "authorize parallelization or refactoring" in audit

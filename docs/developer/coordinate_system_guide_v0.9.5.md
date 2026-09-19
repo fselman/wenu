@@ -3661,3 +3661,121 @@ current-documentation tests passed in 3.32 seconds at `3ef6a4d`. This
 acceptance performs and authorizes no real propagation, coordinate
 transformation, specimen read, or matrix execution. Only a separately bounded
 real-execution audit may proceed next.
+
+### Candidate real-matrix coordinate readiness finding
+
+The production ten-field coordinate fixture is not yet frozen. Before any real
+execution, a bounded implementation must materialize the accepted La Ligua
+observer, exact decimal GCRS-axes topocentric geometric centres, radii, UTC
+intervals, shared-interval control, time and angular tolerances, Earth-
+orientation evidence, and whole-interval airmass admissions as canonical
+evidence. The fresh-subprocess protocol and explicit offline developer command
+must preserve that same coordinate identity without reconstruction or implicit
+defaults. This audit at `9bdf301` performed no real propagation,
+transformation, airmass evaluation, specimen read, or matrix execution.
+
+### Accepted real-matrix coordinate readiness finding
+
+Fernando scientifically and architecturally accepted the fail-closed
+coordinate-readiness finding on 2026-09-17 after 163 plugin-disabled
+current-documentation tests passed in 3.80 seconds at `054ac39`. Only
+fake-data implementation of the frozen ten-field coordinate fixture,
+whole-interval airmass certifier, and identity-preserving subprocess protocol
+is authorized next. No real coordinate evaluation or matrix execution is
+authorized.\n
+
+### Candidate production matrix fixture review
+
+The frozen La Ligua fixture declares hour-angle and declination offsets at each
+interval midpoint and records the resulting decimal GCRS-axis geometric
+topocentric directions after one CIRS-to-GCRS transformation. It binds the
+generation Astropy version and IERS-A digest, uses UTC, vacuum refraction, and
+the accepted La Ligua geodetic position. Its ten fields use only 15- and
+60-second intervals; two distinct fields share one 15-second interval. Runtime
+airmass admission independently certifies every centre throughout its complete
+interval at maximum airmass 2 before any worker starts. No apparent, observed,
+or ICRS label is introduced.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.\n
+
+### Candidate first-real-execution coordinate boundary
+
+The proposed first run changes no coordinate contract. It uses the accepted
+digest-frozen ten-field La Ligua fixture, geometric topocentric directions in
+GCRS axes, UTC intervals of only 15 and 60 seconds, bundled-IERS-A evidence,
+vacuum refraction, and atomic complete-interval centre-only airmass admission
+at maximum airmass 2. No field, centre, interval, tolerance, frame, status,
+observer, or Earth-orientation policy may be changed for the run.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate progress-display coordinate review
+
+The parent-process progress bar carries only field identifier, route, phase,
+count, percentage, and state. It does not serialize or reconstruct a
+coordinate, alter the frozen GCRS-axis field fixture, evaluate airmass, enter a
+worker request, or change any coordinate provenance. The coordinate guide
+therefore remains scientifically unchanged.
+
+## Candidate progress-display verification review
+
+The coordinate guide was reviewed for candidate `b0b4432` on 2026-09-18 and remains current. Verification comprised 180 focused plugin-disabled tests passing in 5.44 seconds, all 2647 plugin-disabled tests passing in 239.53 seconds, and a clean diff check. Parent-only progress reporting introduces no coordinate operation or scientific-semantic change.
+
+## Accepted progress-display coordinate review
+
+Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18. The reviewed coordinate guide remains current: the accepted parent-process display introduces no coordinate operation, transformation, tolerance, or scientific-semantic change.
+
+## Renewed real-run coordinate boundary
+
+The coordinate guide was reviewed after progress-display merge `9c4b808` and remains current. Fernando’s 2026-09-18 renewal authorizes exactly one bounded real matrix execution but no new coordinate operation, transformation, tolerance, frame, epoch, or scientific interpretation.
+
+## Accepted renewed real-run coordinate boundary
+
+Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after 169 documentation tests passed in 4.29 seconds and integrity checks were clean. The coordinate guide remains current and the accepted authorization introduces no coordinate or scientific-semantic change.
+
+## Candidate first real-matrix coordinate finding
+
+The 2026-09-18 candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` from `9d93113` exercised the accepted 10 fixed field/interval requests and introduced no new coordinate operation or tolerance. Exact route outputs agreed, but all fields had zero crossings. The coordinate guide remains current; the result must not be represented as positive real-crossing validation.
+
+## Accepted first real-matrix coordinate finding
+
+Fernando scientifically and architecturally accepted report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18. The coordinate guide remains current. Exact empty-result route agreement was established, but all fields had zero crossings and therefore no positive real-crossing validation is claimed.

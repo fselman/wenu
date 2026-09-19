@@ -2961,3 +2961,128 @@ Fernando scientifically and architecturally accepted
 current-documentation tests in 3.32 seconds at `3ef6a4d`. This acceptance
 does not admit a real specimen or execute a real matrix. A separately bounded
 real-execution audit is the only authorized next step.
+
+### Proposed real-matrix execution surface
+
+The accepted `run_equivalence_matrix()` orchestration API at `9bdf301`
+requires injected executor and airmass-certifier objects and therefore is not
+an approved real-execution entry point. A bounded next implementation must add
+a frozen canonical ten-field request fixture, exact accepted-medium receipt
+constraints, a production whole-interval certifier, a fresh-subprocess
+canonical worker protocol, and an explicit offline
+`run-equivalence-matrix` developer command.
+
+The command must require explicit snapshot and output paths plus exact digest
+acknowledgements. It must perform no discovery, provider request, refresh,
+fallback, or implicit default selection. This candidate audit reads no real
+artifact and executes no matrix.
+
+### Accepted real-execution readiness boundary
+
+Fernando scientifically and architecturally accepted the fail-closed
+production-path finding on 2026-09-17 after 163 plugin-disabled
+current-documentation tests passed in 3.80 seconds at `054ac39`. The accepted
+next scope is fake-data implementation of the exact receipt validator, frozen
+fixture, production certifier, subprocess protocol and worker, explicit
+offline command, and tests. The acceptance grants no authority to read or run
+the external real specimen.\n
+
+### Candidate offline production matrix path
+
+`build_matrix_queries(snapshot)` materializes one digest-frozen ten-field La
+Ligua fixture containing only 15- and 60-second intervals.
+`ProductionMatrixAirmassCertifier` composes the accepted centre-only,
+whole-interval geometric vacuum policy at maximum airmass 2.
+`FreshSubprocessMatrixExecutor` runs one route/query/repetition per fresh
+Python process through a canonical private protocol and records exit status,
+environment, timing, allocation, request, result, evidence, and snapshot
+digests. `run_production_equivalence_matrix()` requires the exact accepted
+medium identity, receipt constraints, and operator acknowledgement before the
+existing equivalence owner runs. This candidate provides no discovery,
+network, refresh, fallback, concurrency, cache reuse, or implicit execution.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.\n
+
+### Candidate first real run policy
+
+The accepted `run-equivalence-matrix` command is unchanged. Candidate
+50S.6G.1B.2D.1 proposes one invocation only, using the exact accepted medium,
+receipt and parent digests, exact acknowledgement, explicit absolute paths,
+the existing 3600-second per-worker timeout, and a new empty external output
+root with at least 2 GiB free. There is no automatic retry or resume. Success
+publishes one external content-addressed evidence directory whose acceptance
+is a separate review.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix progress reporting
+
+When the production wrapper constructs its default
+`FreshSubprocessMatrixExecutor`, it supplies a policy-derived invocation total
+to `MatrixProgressBar`. The bar reports field, exhaustive/accelerated route,
+warm-up or measured repetition, completed count, and percentage on parent
+stderr. Injected executors remain quiet by default. Progress changes no worker
+input/output, timeout, result, evidence, or digest.
+
+## Candidate matrix progress verification
+
+At candidate commit `b0b4432`, the parent-process progress display passed 180 focused plugin-disabled tests in 5.44 seconds and all 2647 plugin-disabled tests in 239.53 seconds on 2026-09-18. The diff check was clean. This verification changes neither the callable contract nor canonical evidence and does not authorize execution.
+
+## Accepted matrix progress display
+
+Fernando scientifically and architecturally accepted the parent-process progress display at `96b9ba0` on 2026-09-18 after the recorded focused, full-suite, final-documentation, and diff verification. This acceptance changes no worker protocol or canonical evidence and does not itself authorize execution.
+
+## Renewed single real-run contract
+
+Following progress-display merge `9c4b808`, Fernando explicitly renewed authorization on 2026-09-18 for exactly one operator-started real matrix run. The accepted invocation contract, specimen identities, 10-field fixture, 15/60-second intervals, two routes, warm-up and repetition counts, 80-invocation ceiling, worker timeout, new-output-root rule, and no-retry/no-resume policy remain unchanged.
+
+## Accepted renewed real-run contract
+
+Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after the 169-test documentation gate and clean repository checks. The accepted invocation contract remains inactive until this record is merged and external preflight succeeds.
+
+## Candidate first real-matrix evidence
+
+Report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` records the successful single run from `9d93113` on 2026-09-18: 10 fields, 60 measured observations, exact exhaustive/accelerated canonical equality, zero fallback, and zero rejected exhaustive crossings. Decision totals were 2,455 reject, 101 indeterminate, and 4 retain. All fields had zero crossings, so positive real-crossing behavior was not exercised. Resource observations are descriptive only.
+
+## Accepted first real-matrix evidence
+
+Fernando scientifically and architecturally accepted the first real-matrix report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18 after the 171-test documentation gate. The accepted contract evidence is exact empty-result equivalence and complete conservative partitioning. All fields had zero crossings; no positive real-crossing or universal performance conclusion follows.

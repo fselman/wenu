@@ -1346,3 +1346,117 @@ full-suite tests in 230.25 seconds at `19520f3`, plus 161 plugin-disabled
 current-documentation tests in 3.32 seconds at `3ef6a4d`. Acceptance does not
 authorize reading the accepted real specimen or executing the real matrix.
 Only a separately bounded real-execution audit is authorized next.
+
+### Candidate 50S.6G.1B.2D real-execution readiness finding
+
+The integrated fake-data matrix owner at `9bdf301` is not yet a production
+real-execution path. Its executor and airmass certifier are injected seams; no
+frozen ten-field real fixture, fresh-subprocess worker, or explicit offline
+developer command exists. The accepted real specimen was not read and no
+matrix was executed during this audit. Only bounded production-path
+implementation with fake-data tests may proceed next; real execution remains
+separately unauthorized.
+
+### Accepted 50S.6G.1B.2D real-execution readiness finding
+
+Fernando scientifically and architecturally accepted the fail-closed readiness
+finding on 2026-09-17 after 163 plugin-disabled current-documentation tests
+passed in 3.80 seconds at `054ac39`. Only bounded fake-data implementation of
+the frozen fixture, receipt constraints, production airmass certifier,
+fresh-subprocess worker, offline command, and tests is authorized next. Real
+specimen access and real matrix execution remain unauthorized.\n
+
+### Candidate 50S.6G.1B.2D production execution path
+
+The candidate production boundary is isolated in
+`satellites/crossing_matrix_execution.py`: an exact external-medium gate,
+digest-frozen ten-field La Ligua fixture, production whole-interval airmass
+certifier, canonical fresh-subprocess worker/executor, and explicit offline
+developer command. The fixture uses only 15- and 60-second intervals. The
+accepted `crossing_matrix.py` equivalence and atomic-publication owner remains
+unchanged except for accepting canonical worker result mappings and recording
+complete subprocess digests. No provider or implicit execution path exists.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.\n
+
+### Candidate first-real-execution authorization
+
+No architectural or runtime change is proposed after `e1cdec9`. The candidate
+50S.6G.1B.2D.1 audit would authorize one use of the accepted explicit offline
+command against the exact accepted medium, with one new empty external output
+root and no retry. The matrix remains 10 fields, two routes, one warm-up and
+three measured repetitions, for at most 80 fresh subprocess invocations.
+Evidence remains external and requires independent acceptance.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix execution progress display
+
+`MatrixProgressBar` is a parent-process terminal concern inside
+`crossing_matrix_execution.py`. The production wrapper derives its total from
+field count, two routes, warm-up count, and measured repetitions; the accepted
+default is 80. Progress is not part of the subprocess protocol, canonical
+evidence, resource observations, scientific result, or publication identity.
+
+## Candidate 50S.6G.1B.2D.2 progress verification
+
+Candidate commit `b0b4432` was verified on 2026-09-18: 180 focused plugin-disabled tests passed in 5.44 seconds, and all 2647 plugin-disabled tests passed in 239.53 seconds. The diff check was clean. The parent-only progress display changes no scientific or canonical-evidence architecture; acceptance, merge, and renewed real-run authorization remain pending.
+
+## Accepted 50S.6G.1B.2D.2 progress display
+
+Fernando scientifically and architecturally accepted candidate `96b9ba0` on 2026-09-18 after the recorded 180-test focused gate, 2647-test full suite, 167-test final documentation gate, and clean diff check. The accepted behavior remains parent-only and outside canonical evidence. Merge and renewed real-run authorization remain separate.
+
+## Renewed 50S.6G.1B.2D.3 one-run authority
+
+After the accepted progress display was merged at `9c4b808`, Fernando explicitly renewed authorization on 2026-09-18 for exactly one real matrix run. The bounded run retains the accepted 10-field, 15/60-second, two-route, one-warm-up plus three-measurement, 80-invocation maximum contract. Progress remains parent-only and noncanonical; no retry or resume is authorized.
+
+## Accepted 50S.6G.1B.2D.3 renewed authority
+
+Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18 after 169 plugin-disabled documentation tests passed in 4.29 seconds and repository checks were clean. The single bounded run remains unstarted and may proceed only after this record is merged and external preflight is repeated.
+
+## Candidate 50S.6G.1B.2D.4 real-matrix evidence
+
+The one authorized run from `9d93113` produced candidate report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` on 2026-09-18. Independent review found exact canonical equality across 10 fields and 60 measured observations, with no fallback or rejected exhaustive crossing. All real fields had zero crossings, so the result establishes empty-result equivalence and partition integrity only; positive-crossing evidence remains synthetic. Timing is descriptive for this run and hardware, not an architectural performance claim.
+
+## Accepted 50S.6G.1B.2D.4 real-matrix evidence
+
+Fernando scientifically and architecturally accepted report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at candidate commit `186e255` on 2026-09-18 after 171 documentation tests passed in 4.46 seconds. The accepted finding is limited to deterministic empty-result equivalence and conservative partition integrity; all 10 real fields had zero crossings. No second run, universal performance claim, refactor, or parallel implementation is authorized.

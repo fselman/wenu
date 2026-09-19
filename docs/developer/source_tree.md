@@ -2214,3 +2214,118 @@ ownership of `satellites/crossing_matrix.py` and
 plugin-disabled current-documentation tests in 3.32 seconds at `3ef6a4d`.
 No source-tree owner may discover or read the accepted real specimen under this
 closure. Only a separately bounded real-execution audit is authorized next.
+
+### Candidate real-execution readiness ownership
+
+At integrated baseline `9bdf301`, `satellites/crossing_matrix.py` owns the
+accepted fake-data orchestration core, but no production subprocess worker,
+frozen real request fixture, production airmass adapter, or developer-command
+owner exists. The bounded next implementation may add those owners beside the
+existing matrix core and in `tools/build_satellite_snapshot.py`, with
+fake-data-only tests. No repository file may own, package, discover, or read
+the external real specimen, and real matrix execution remains unauthorized.
+
+### Accepted real-execution readiness ownership
+
+Fernando scientifically and architecturally accepted the missing-owner finding
+on 2026-09-17 after 163 plugin-disabled current-documentation tests passed in
+3.80 seconds at `054ac39`. Bounded fake-data additions for the fixture,
+certifier, subprocess worker, offline command, and tests are authorized next.
+No repository owner may access the accepted external specimen or execute the
+real matrix under this acceptance.\n
+
+### Candidate production matrix execution ownership
+
+`src/wenu/satellites/crossing_matrix_execution.py` owns the explicit offline
+production fixture, exact accepted-medium receipt constraints, production
+whole-interval airmass adapter, canonical fresh-subprocess protocol and worker,
+and isolated executor. `tools/build_satellite_snapshot.py` owns only the
+explicit `run-equivalence-matrix` developer-command surface. The existing
+`crossing_matrix.py` remains the scientific equivalence and atomic-publication
+owner. No owner discovers, downloads, refreshes, packages, or implicitly
+selects the external specimen. The candidate uses only 15- and 60-second
+fixture intervals and remains fake-data-tested pending acceptance.\n
+
+Candidate verification on Fernando's Mac completed at executable commit
+`81f9031`: the 14-test focused matrix gate passed in 9.35 seconds, the
+210-test immediate-boundary and documentation gate passed in 60.26 seconds,
+and all 2,645 plugin-disabled tests passed in 243.71 seconds. `git diff
+--check 5cd60fd...HEAD` and the working tree were clean. No accepted real
+specimen was accessed and no real matrix was executed. The candidate still
+requires Fernando's scientific and architectural acceptance.\n
+
+### Accepted production-path implementation
+
+Fernando scientifically and architecturally accepted the bounded fake-data
+production-path implementation on 2026-09-18. The executable evidence remains
+14 focused tests in 9.35 seconds, 210 immediate-boundary tests in 60.26
+seconds, and all 2,645 plugin-disabled tests in 243.71 seconds at `81f9031`.
+After documentation-only evidence recording, 164 current-documentation tests
+passed in 3.94 seconds at `602eed7`; the whitespace check and working tree
+were clean.
+
+Preserve the exact accepted-medium and receipt constraints, digest-frozen
+ten-field La Ligua fixture with only 15- and 60-second intervals, production
+whole-interval airmass certifier, canonical fresh-subprocess worker/executor,
+explicit offline command, and shortened fake-data test practice. This
+acceptance does not authorize accessing the accepted real specimen, executing
+the real matrix, publishing real evidence, making a performance claim, or
+advancing later delivery. Any real execution requires a separate explicit
+authorization.\n
+
+### Candidate first-real-execution ownership
+
+No new source owner is proposed. `crossing_matrix_execution.py` remains the
+fixture, receipt, airmass, worker-protocol, and isolated-executor owner;
+`crossing_matrix.py` remains the equivalence and atomic-publication owner;
+and `tools/build_satellite_snapshot.py` remains the explicit offline command
+surface. Candidate 50S.6G.1B.2D.1 authorizes no code change, alternate owner,
+network adapter, discovery path, retry owner, or evidence consumer.\n
+
+### Accepted first-real-execution authorization
+
+Fernando scientifically and architecturally accepted 50S.6G.1B.2D.1 on
+2026-09-18 after all 165 plugin-disabled current-documentation tests passed in
+5.07 seconds at `af8044a`; the whitespace check and working tree were clean.
+
+This acceptance authorizes exactly one operator-started offline execution
+against the exact accepted 256-record medium, using the three frozen digests,
+exact acknowledgement, accepted ten-field 15/60-second fixture, one new empty
+external output root with at least 2 GiB free, the existing 3600-second
+per-subprocess timeout, and no retry or resume. It does not itself start the
+run. The exact absolute Mac paths must be resolved before the command is
+issued. Failure or interruption authorizes no restart. Successful evidence
+remains external and unaccepted pending an independent review; no performance
+claim or later 50S.6G delivery is authorized.\n
+
+### Candidate matrix progress ownership
+
+`crossing_matrix_execution.py` owns the small parent-terminal progress
+adapter beside its isolated executor. No new module, package, dependency, or
+public export is introduced. The existing crossing-matrix test extends its
+fake subprocess protocol case; no new test file or repeated scientific route
+is justified.
+
+## Candidate matrix progress verification ownership
+
+The 50S.6G.1B.2D.2 changes at `b0b4432` passed 180 focused plugin-disabled tests in 5.44 seconds and the full 2647-test plugin-disabled suite in 239.53 seconds on 2026-09-18, with a clean diff check. Ownership remains in `crossing_matrix_execution.py`; no new production module or data owner was introduced.
+
+## Accepted matrix progress ownership
+
+Fernando scientifically and architecturally accepted the 50S.6G.1B.2D.2 ownership at `96b9ba0` on 2026-09-18. The accepted display remains in `crossing_matrix_execution.py`; no new production module or data owner was introduced. Merge and renewed execution authority remain separate.
+
+## Renewed real-run ownership
+
+Fernando explicitly renewed exactly one real matrix run on 2026-09-18 after merge `9c4b808`. `crossing_matrix_execution.py` continues to own parent orchestration and progress; workers own route execution; the external output root owns candidate evidence. No repository or package directory owns the real specimen or generated evidence.
+
+## Accepted renewed real-run ownership
+
+Fernando scientifically and architecturally accepted candidate `dd71e01` on 2026-09-18. Documentation verification passed 169 tests in 4.29 seconds with clean integrity checks. The run remains unstarted; ownership and external-artifact boundaries are unchanged.
+
+## Candidate first real-matrix evidence ownership
+
+The external immutable report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258`, produced from `9d93113` on 2026-09-18, is candidate evidence outside the repository and package. The repository owns only the implementation and this provenance record. Exact route equality passed, but all fields had zero crossings; no repository data directory may absorb or silently substitute the external evidence.
+
+## Accepted first real-matrix evidence ownership
+
+Fernando scientifically and architecturally accepted external report `d200f3920aeda64df4d385d6f695fc3a69694df519f1520341e90d25e3037258` at `186e255` on 2026-09-18. The repository records provenance and the zero-crossing limitation but does not own or package the external evidence. No new production owner, rerun authority, or parallel execution owner is implied.
