@@ -1516,3 +1516,9 @@ Do not merge, delete branches, or begin 50S.6G.3B. Preserve the accepted scope a
 Fernando scientifically and architecturally accepted the complete bounded implementation and authorized merge on 2026-09-19. Preserve the exact-track evidence, accepted scientific composition route, anchors, sampling/failure/identity contracts, timeless collection plus explicit sample UTC, evidence-only layers, semantic family, and fixed-axis coordinate seam.
 
 Only a documentation-first 50S.6G.3B binocular/regional chart-integration audit is authorized next. Do not implement chart integration or begin 50S.6G.4A/B planisphere work without separate acceptance. Do not add report/CLI changes, providers, visibility, illumination, brightness, detector effects, or unrelated refactoring.
+
+## Candidate 50S.6G.3B audit boundary
+
+Read `satellite_binocular_regional_track_audit_50s6g3b.md` before any exact satellite chart-request or regional/binocular integration work. Treat it as a candidate only; do not implement before Fernando separately accepts it.
+
+Preserve already-realized 3A evidence as the sole track truth, matching observer/reference-instant admission, one fixed product-frame transform, request-owned installation and cleanup, independent path/event/label controls, canonical projection/clipping/render/export owners, bounded provenance summaries, and stable exact-visit semantics. Do not add planisphere/all-sky/circumpolar tracks, provider access, report/CLI changes, new execution science, visibility, illumination, brightness, detector effects, or unrelated refactoring.

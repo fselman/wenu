@@ -467,3 +467,7 @@ The bounded candidate implements the accepted exact connected-visit evidence and
 ## Accepted 50S.6G.3A implementation closure
 
 Fernando accepted the complete exact connected-visit evidence and output-neutral layer implementation on 2026-09-19. It changes no accepted report or CLI bundle. Only the documentation-first 50S.6G.3B binocular/regional chart-integration audit is authorized next.
+
+## 50S.6G.3B candidate refinement
+
+The dedicated 50S.6G.3B audit refines binocular/regional delivery into explicit already-realized evidence requests, matching observer and reference-instant admission, fixed-frame path/event views, ordinary lifecycle cleanup, style/detail integration, bounded provenance, and PNG/PDF/semantic-SVG specimens. It adds no science and authorizes no implementation.

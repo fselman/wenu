@@ -3954,3 +3954,7 @@ The timeless collection plus evidence-level/per-sample UTC representation and fi
 ## Accepted 50S.6G.3A coordinate representation
 
 Fernando accepted the timeless geometric `gcrs-axes` / `topocentric-direction` collection, evidence-level `sample_time_scale="utc"`, and per-sample UTC instants. The coordinate-service seam means fixed axis orientation only and must never be described as a geocentric GCRS state, ICRS source place, apparent correction, or shared collection epoch.
+
+## Candidate 50S.6G.3B fixed product-frame finding
+
+For a static regional or binocular chart, every retained geometric topocentric direction remains tied to its own UTC sample instant in fixed GCRS axes, while the complete curve is transformed once into the horizontal product frame at the chart reference instant. The chart reference instant must equal the crossing FoV coordinate reference instant. This does not make samples simultaneous or recompute per-sample instantaneous AltAz. The candidate authorizes no coordinate implementation.

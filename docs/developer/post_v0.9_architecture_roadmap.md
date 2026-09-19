@@ -2971,3 +2971,9 @@ The complete bounded candidate at `f0a4164` passed all 2,728 plugin-disabled rep
 The bounded exact connected-visit evidence and output-neutral layer implementation is accepted and closed. Evidence is realized once through accepted local science and reused without recomputation. The executable candidate passed 69 focused tests and all 2,728 plugin-disabled tests; final documentation closure remains authoritative.
 
 Only the bounded documentation-first 50S.6G.3B binocular/regional chart-integration audit is authorized next. Chart implementation and 50S.6G.4A/B remain unauthorized.
+
+## 50S.6G.3B candidate audit state
+
+A documentation-only candidate now specifies explicit exact-track display requests for regional and binocular stereographic horizontal products. It freezes observer/reference-instant admission, fixed product-frame meaning, request-owned layer lifecycle, independent path/event/label controls, bounded provenance summaries, stable semantic SVG identity, and PNG/PDF/SVG acceptance specimens.
+
+This candidate authorizes no implementation. 50S.6G.4A/B planisphere work, all-sky/circumpolar satellite tracks, report/CLI changes, providers, visibility, illumination, brightness, and detector effects remain unauthorized.

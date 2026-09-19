@@ -3177,6 +3177,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
         "satellite_exact_local_track_audit_50s6g3a.md",
+        "satellite_binocular_regional_track_audit_50s6g3b.md",
         "satellite_tabular_report_audit_50s6g2b.md",
         "satellite_cli_file_protocol_audit_50s6g2c.md",
         "satellite_snapshot_admission_audit_50s6g1b2a.md",
@@ -8234,3 +8235,58 @@ def test_50s6g3a_records_accepted_implementation_and_next_audit_only():
     assert "Accepted 50S.6G.3A implementation closure" in delivery
     assert "Accepted complete 50S.6G.3A implementation" in log
     assert "Chart implementation and 50S.6G.4A/B remain unauthorized" in roadmap
+
+def test_50s6g3b_candidate_chart_integration_audit_is_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_binocular_regional_track_audit_50s6g3b.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    assert "satellite_binocular_regional_track_audit_50s6g3b.md" in index
+    for phrase in (
+        "SatelliteExactTrackDisplayRequest",
+        "satellite_exact_tracks",
+        "regional",
+        "binocular",
+        "already-realized",
+        "draw_path",
+        "draw_events",
+        "label_events",
+        "fixed product-frame",
+        "chart observer UTC instant equals",
+        "does not reinterpret each vertex as simultaneous",
+        "request-build cleanup",
+        "track_identity_sha256",
+        "PNG, PDF, and semantic SVG",
+        "must not recursively serialize the full exact evidence object",
+        "No invalid or mismatched track is silently dropped",
+        "This candidate authorizes no implementation",
+        "50S.6G.4A/B planisphere work",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Candidate 50S.6G.3B binocular/regional chart boundary" in architecture
+    assert "50S.6G.3B candidate audit state" in roadmap
+    assert "Candidate 50S.6G.3B chart-request API" in reference
+    assert "Candidate 50S.6G.3B ownership" in source_tree
+    assert "Candidate 50S.6G.3B fixed product-frame finding" in coordinates
+    assert "Candidate binocular and regional exact-track charts" in guide
+    assert "Candidate 50S.6G.3B audit boundary" in instructions
+    assert "50S.6G.3B candidate refinement" in delivery
+    assert "Candidate 50S.6G.3B chart-integration audit" in log
+    assert "50S.6G.4A/B planisphere work" in roadmap

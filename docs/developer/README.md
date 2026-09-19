@@ -57,6 +57,9 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`satellite_delivery_audit_50s6g.md`](satellite_delivery_audit_50s6g.md)
   — accepted representative-snapshot, canonical-report, two-call file,
   exact-track, and chart-delivery decomposition for 50S.6G.
+- [`satellite_binocular_regional_track_audit_50s6g3b.md`](satellite_binocular_regional_track_audit_50s6g3b.md)
+  — candidate ordinary-request, fixed-frame, lifecycle, styling, semantic-SVG,
+  and PNG/PDF/SVG specimen contract for binocular and regional exact tracks.
 - [`satellite_exact_local_track_audit_50s6g3a.md`](satellite_exact_local_track_audit_50s6g3a.md)
   — candidate exact connected-visit evidence, deterministic anchored sampling,
   identity, fail-closed behavior, and output-neutral layer contract.
