@@ -2530,3 +2530,7 @@ The exact-track science module, evidence-only layer module, narrow coordinate/se
 ## Accepted 50S.6G.3A ownership
 
 `satellites/exact_tracks.py`, `sky/satellite_exact_track_layer.py`, the narrow coordinate/semantic seams, and `tests/test_satellite_exact_tracks.py` are the accepted owners. They do not absorb crossing, report, CLI, provider, chart, renderer, exporter, or SatChecker-candidate responsibilities.
+
+## Candidate 50S.6G.3B ownership
+
+A future `charts/request_satellite_tracks.py` may own display-request validation, admission, path/event layer installation, bounded provenance summaries, and cleanup. Existing chart request, detail, style, semantic SVG, projection, clipping, renderer, and exporter owners remain canonical. `satellites/exact_tracks.py` and `sky/satellite_exact_track_layer.py` retain all scientific evidence and view ownership. No production placement is authorized by this audit.

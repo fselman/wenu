@@ -824,3 +824,9 @@ The curve itself has no single time. UTC is therefore declared once on the evide
 ## Accepted exact local track implementation
 
 50S.6G.3A is accepted: Wenu can now construct immutable exact track evidence for an already solved connected visit and expose its path and events without repeating propagation. This does not yet place a track on a binocular or regional chart; that integration begins with a separate 50S.6G.3B documentation audit.
+
+## Candidate binocular and regional exact-track charts
+
+50S.6G.3B proposes an explicit display request that carries already-computed exact evidence into an ordinary regional or binocular chart. The request may show the path, exact event markers, and optional event labels. Chart construction does not solve or propagate a satellite again; it only installs evidence views and uses Wenu's ordinary projection, clipping, styling, and export path.
+
+The complete curve is shown in one fixed chart frame at the crossing field's reference instant. Planisphere tracks and later visibility or illumination science remain separate work. This audit is documentation-only.
