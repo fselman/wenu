@@ -60,6 +60,9 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`satellite_snapshot_preflight_audit_50s6g1b.md`](satellite_snapshot_preflight_audit_50s6g1b.md)
   — accepted two-phase provider-policy, single-bulk-request, immutable
   publication, representative-tier, and evidence contract for 50S.6G.1B.
+- [`satellite_exact_crossing_report_audit_50s6g2a.md`](satellite_exact_crossing_report_audit_50s6g2a.md)
+  — candidate immutable exact-crossing logical model, Draft 2020-12 JSON
+  Schema, deterministic JSON, digest, and round-trip contract for 50S.6G.2A.
 - [`satellite_snapshot_admission_audit_50s6g1b2a.md`](satellite_snapshot_admission_audit_50s6g1b2a.md)
   — accepted exact-digest-plus-manifest, shared evidence-only external
   snapshot admission contract for 50S.6G.1B.2A.
