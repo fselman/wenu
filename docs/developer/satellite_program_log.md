@@ -1046,3 +1046,7 @@ A documentation-only candidate defines how accepted exact connected-visit eviden
 ## 2026-09-19 — Accepted 50S.6G.3B audit
 
 Fernando scientifically and architecturally accepted the documentation-only chart-integration audit at `ef58180`. Verification comprised 198 plugin-disabled documentation tests in 5.30 seconds plus clean diff and synchronized-tree checks. Only the bounded binocular/regional implementation and specimens are authorized next.
+
+## 2026-09-19 — Candidate 50S.6G.3B implementation
+
+The bounded candidate adds explicit already-realized exact-track display requests, strict regional/binocular admission, fixed-frame path/event views, independent labels, request-owned cleanup, narrow style roles, bounded provenance, semantic SVG hierarchy, focused tests, and deterministic PNG/PDF/SVG specimens. The first focused gates passed 119 and 136 plugin-disabled tests. Fernando found and rejected two deliberately distorted boundary-crossing specimen shapes; the accepted visual direction is a physically plausible nearly straight short pass, with canonical clipping demonstrated separately by tests. Complete verification and separate implementation acceptance remain pending.
