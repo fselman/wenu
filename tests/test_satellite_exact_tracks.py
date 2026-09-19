@@ -9,6 +9,12 @@ import numpy as np
 import pytest
 
 from wenu.coordinates import CoordinateSpec, PositionStatus
+from wenu.charts.request_satellite_tracks import (
+    SatelliteExactTrackDisplayRequest,
+    configure_chart_request_satellite_tracks,
+    satellite_exact_track_provenance,
+    validate_satellite_exact_track_requests,
+)
 from wenu.geometry.spherical import SphericalCurves, SphericalPoints
 from wenu.satellite_crossings import (
     InclusiveTimeInterval,
@@ -430,3 +436,171 @@ def test_realizer_rejects_snapshot_identity_mismatch_before_evaluation():
             snapshot,
             policy(),
         )
+
+
+
+def exact_chart_request(*displays, observer_identity=None, **overrides):
+    if observer_identity is None:
+        observer_identity = (
+            -32.443342,
+            -71.230289,
+            52.0,
+            START,
+        )
+    values = {
+        "satellite_exact_tracks": tuple(displays),
+        "family": "regional",
+        "projection": "stereographic",
+        "coordinate_frame": "horizontal",
+        "observer": SimpleNamespace(
+            scientific_identity=lambda: observer_identity
+        ),
+    }
+    values.update(overrides)
+    return SimpleNamespace(**values)
+
+
+def test_exact_track_display_request_is_frozen_and_validates_controls():
+    value = SatelliteExactTrackDisplayRequest(track())
+
+    assert value.draw_path is True
+    assert value.draw_events is True
+    assert value.label_events is False
+    with pytest.raises(AttributeError):
+        value.draw_path = False
+    with pytest.raises(ValueError, match="path or events"):
+        SatelliteExactTrackDisplayRequest(
+            track(), draw_path=False, draw_events=False
+        )
+    with pytest.raises(ValueError, match="requires draw_events"):
+        SatelliteExactTrackDisplayRequest(
+            track(), draw_events=False, label_events=True
+        )
+
+
+def test_exact_track_chart_admission_is_strict_and_rejects_duplicates():
+    display = SatelliteExactTrackDisplayRequest(track())
+
+    assert validate_satellite_exact_track_requests(
+        exact_chart_request(display)
+    ) == (display,)
+    with pytest.raises(ValueError, match="repeat a track identity"):
+        validate_satellite_exact_track_requests(
+            exact_chart_request(display, display)
+        )
+    with pytest.raises(ValueError, match="regional and binocular"):
+        validate_satellite_exact_track_requests(
+            exact_chart_request(display, family="all_sky")
+        )
+    with pytest.raises(ValueError, match="observer does not match"):
+        validate_satellite_exact_track_requests(
+            exact_chart_request(
+                display,
+                observer_identity=(-32.0, -71.230289, 52.0, START),
+            )
+        )
+    with pytest.raises(ValueError, match="reference instant"):
+        validate_satellite_exact_track_requests(
+            exact_chart_request(
+                display,
+                observer_identity=(
+                    -32.443342,
+                    -71.230289,
+                    52.0,
+                    START + timedelta(seconds=1),
+                ),
+            )
+        )
+
+
+def test_request_owned_exact_layers_preserve_order_controls_and_shared_evidence():
+    one = track()
+    displays = (
+        SatelliteExactTrackDisplayRequest(
+            one, draw_events=False
+        ),
+        SatelliteExactTrackDisplayRequest(
+            _realize_track(
+                crossing(identifier=900002, field_id="field-two"),
+                policy(),
+                longitude_evaluator(),
+            ),
+            draw_path=False,
+            label_events=True,
+        ),
+    )
+
+    class Sky:
+        def __init__(self):
+            self.layers = []
+
+        def add(self, layer):
+            self.layers.append(layer)
+            return layer
+
+        def remove(self, layer):
+            self.layers.remove(layer)
+
+    sky = Sky()
+    installed = configure_chart_request_satellite_tracks(
+        sky, exact_chart_request(*displays)
+    )
+
+    assert tuple(type(value) for value in installed) == (
+        SatelliteExactTrackLayer,
+        SatelliteExactTrackEventsLayer,
+    )
+    assert installed[0].track is displays[0].track
+    assert installed[1].track is displays[1].track
+    assert installed[1].label_events is True
+    assert tuple(sky.layers) == installed
+
+
+def test_event_labels_can_be_suppressed_without_changing_event_geometry():
+    value = track()
+    labeled = SatelliteExactTrackEventsLayer(value, label_events=True)
+    unlabeled = SatelliteExactTrackEventsLayer(value, label_events=False)
+
+    labeled_geometry = labeled._native_geometry()
+    unlabeled_geometry = unlabeled._native_geometry()
+
+    assert np.array_equal(
+        labeled_geometry.longitude_deg,
+        unlabeled_geometry.longitude_deg,
+    )
+    assert np.array_equal(
+        labeled_geometry.latitude_deg,
+        unlabeled_geometry.latitude_deg,
+    )
+    assert tuple(labeled_geometry.labels) == (
+        "entry", "closest approach", "exit"
+    )
+    assert tuple(unlabeled_geometry.labels) == (None, None, None)
+    assert unlabeled_geometry.metadata["event_labels_enabled"] is False
+
+
+def test_exact_track_provenance_is_bounded_and_ordered():
+    first = SatelliteExactTrackDisplayRequest(track(), label_events=True)
+    second_track = _realize_track(
+        crossing(identifier=900002, field_id="field-two"),
+        policy(),
+        longitude_evaluator(),
+    )
+    second = SatelliteExactTrackDisplayRequest(
+        second_track, draw_path=False
+    )
+
+    summaries = satellite_exact_track_provenance(
+        exact_chart_request(first, second)
+    )
+
+    assert tuple(
+        value["track_identity_sha256"] for value in summaries
+    ) == (
+        first.track.track_identity_sha256,
+        second.track.track_identity_sha256,
+    )
+    assert summaries[0]["field_id"] == "field-one"
+    assert summaries[0]["label_events"] is True
+    assert "samples" not in summaries[0]
+    assert "track" not in summaries[0]
