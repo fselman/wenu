@@ -7529,4 +7529,3 @@ def test_50s6g2a_records_accepted_implementation_boundary():
     assert "Accepted 50S.6G.2A implementation boundary" in instructions
     assert "Accepted 50S.6G.2A exact-report implementation" in log
     assert "No later milestone is authorized by this acceptance" in roadmap
-
