@@ -922,3 +922,15 @@ determinism.
 This entry records a candidate audit, not acceptance. No implementation,
 filesystem publication, CLI, tracks, visibility science, provider access, or
 new execution is authorized.
+
+
+## Verified candidate 50S.6G.2B audit
+
+At `ef14bc1`, all 181 plugin-disabled documentation tests passed in 4.88
+seconds. The diff check against accepted program base `57c8bec` passed, and
+the branch was clean and synchronized.
+
+This verification establishes that the lossless ECSV/VOTable audit, reusable
+shared projection rule, thin-adapter boundary, active-document index, and
+bounded exclusions agree across current documentation. It is not scientific
+or architectural acceptance and authorizes no implementation.
