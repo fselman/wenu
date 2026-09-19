@@ -69,9 +69,10 @@ migrations, milestone evidence, and superseded roadmaps are under
 - [`satellite_medium_specimen_audit_50s6g1b2c.md`](satellite_medium_specimen_audit_50s6g1b2c.md)
   — candidate deterministic stratification, receipt, and external medium
   publication contract for 50S.6G.1B.2C.
-- [`satellite_guide.md`](satellite_guide.md) — living artificial-satellite
-  scientific and implementation guide maintained separately during the 50S
-  foundation branch.
+- [`satellite_guide.md`](satellite_guide.md) — pedagogical artificial-satellite
+  guide to acronyms, scientific language, formulae, principles, and module relationships.
+- [`satellite_program_log.md`](satellite_program_log.md) — chronological 50S
+  candidate, verification, acceptance, and authorization record.
 - [`comet_discovery_and_reporting_audit_50a5d.md`](comet_discovery_and_reporting_audit_50a5d.md)
   — active parent contract for observer-dependent comet discovery magnitude
   and natural moving-object reports.
