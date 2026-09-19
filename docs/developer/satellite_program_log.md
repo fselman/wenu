@@ -888,3 +888,17 @@ was clean and synchronized.
 
 The candidate remains pending Fernando's scientific and architectural
 acceptance. No later 50S.6G work or new scientific execution is authorized.
+
+
+## Accepted 50S.6G.2A exact-report implementation
+
+Fernando scientifically and architecturally accepted the bounded 50S.6G.2A
+implementation on 2026-09-19. The executable candidate at `a65e5ac` passed
+all 2,676 plugin-disabled tests in 234.08 seconds; the final pre-acceptance
+documentation gate at `8af0d14` passed 179 tests in 5.05 seconds; diff and
+working-tree checks were clean.
+
+This acceptance closes only the immutable JSON logical-report slice. It does
+not authorize ECSV/VOTable, CLI/file publication, atomic writing, exact tracks,
+charts, illumination, magnitude, detector effects, provider access, scheduling
+integration, or another scientific execution.
