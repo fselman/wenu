@@ -464,7 +464,7 @@ def to_ecsv(report):
 def from_ecsv(value):
     text = _text_input(value, "ECSV")
     try:
-        table = ascii.read(StringIO(text), format="ecsv")
+        table = ascii.read(text, format="ecsv")
     except Exception as error:
         raise ValueError("report must be valid strict ECSV.") from error
     return _report_from_projection(_projection_from_table(table, "ecsv"))
@@ -501,7 +501,7 @@ def to_votable(report):
     resource = Resource(
         ID=_RESOURCE_ID,
         name="Wenu exact satellite crossing report",
-        config=votable.config,
+        config=votable._config,
     )
     votable.resources.append(resource)
     resource.time_systems.append(
@@ -509,7 +509,7 @@ def to_votable(report):
             ID=_TIMESYS_ID,
             timescale="UTC",
             refposition="TOPOCENTER",
-            config=votable.config,
+            config=votable._config,
         )
     )
     for name, value in projection.metadata:
