@@ -463,6 +463,7 @@ class ExactSatelliteCrossingReport:
         first = results[0].query
         observer = first.observer
         snapshot = first.snapshot
+        records_by_id = snapshot.by_norad_catalog_id
         field_ids = [value.field_id for value in results]
         if len(set(field_ids)) != len(field_ids):
             raise ValueError("field identifiers must be unique.")
@@ -502,6 +503,18 @@ class ExactSatelliteCrossingReport:
                     or candidate.snapshot_sha256 != snapshot.manifest.content_sha256
                 ):
                     raise ValueError("crossing context does not match its result.")
+                record = records_by_id.get(candidate.satellite.norad_catalog_id)
+                if record is None:
+                    raise ValueError("crossing NORAD identity is absent from snapshot.")
+                if (
+                    candidate.satellite.object_name != record.object_name
+                    or candidate.satellite.international_designator
+                    != record.international_designator
+                    or candidate.satellite.classification != record.classification
+                    or candidate.orbit_solution_id != record.source_identity
+                    or candidate.element_epoch != record.epoch_utc
+                ):
+                    raise ValueError("crossing element identity is inconsistent with snapshot.")
             fields.append(_field_document(value))
         implementations = {
             "acceleration": acceleration_implementation,
