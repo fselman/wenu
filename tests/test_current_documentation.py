@@ -7701,3 +7701,45 @@ def test_50s6g2b_records_candidate_implementation_verification():
     audit = " ".join(documents[0].split())
     assert "coordinate-system guide was reviewed and remains current" in audit
     assert "verification evidence, not scientific or architectural acceptance" in audit
+
+
+
+def test_50s6g2b_records_complete_implementation_acceptance():
+    paths = (
+        DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md",
+        INSTRUCTIONS,
+        V09_CURRENT,
+        DEVELOPER / "implementation_reference.md",
+        DEVELOPER / "source_tree.md",
+        FUTURE_ROADMAP,
+        COORDINATE_GUIDE,
+        SATELLITE_PROGRAM_LOG,
+    )
+    documents = tuple(" ".join(read(path).split()) for path in paths)
+
+    for document in documents:
+        assert "scientifically and architecturally accepted the complete bounded" in document
+        assert "2026-09-19" in document
+        assert "3bbd82f" in document
+        assert "208" in document
+        assert "6.68 seconds" in document
+        assert "2,689" in document
+        assert "215.15 seconds" in document
+        assert "ece80c7" in document
+        assert "186" in document
+        assert "4.60 seconds" in document
+        assert "canonical JSON" in document
+        assert "report_identity_sha256" in document
+        assert "__is_null" in document
+        assert "no later" in document
+
+    audit, instructions, architecture, reference, source_tree, roadmap, coordinates, log = documents
+    assert "Accepted complete 50S.6G.2B implementation" in audit
+    assert "Accepted complete 50S.6G.2B implementation boundary" in instructions
+    assert "Accepted complete 50S.6G.2B in-memory interoperability" in architecture
+    assert "Accepted complete 50S.6G.2B tabular API" in reference
+    assert "Accepted complete 50S.6G.2B ownership" in source_tree
+    assert "50S.6G.2B complete implementation accepted" in roadmap
+    assert "Accepted complete 50S.6G.2B coordinate finding" in coordinates
+    assert "Accepted complete 50S.6G.2B in-memory interoperability" in log
+    assert "50S.6G.2C filesystem/CLI publication" in roadmap
