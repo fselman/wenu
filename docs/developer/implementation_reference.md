@@ -3222,3 +3222,24 @@ accepted exact report and verify canonical JSON identity through
 These methods accept and return values only, never paths or file-like objects.
 This acceptance authorizes no later filesystem, CLI, publication, track,
 chart, or API milestone.
+
+## Candidate 50S.6G.2C CLI/file API
+
+The proposed installed `wenu_satellite_crossings` command composes the accepted
+multi-FoV coordinator and exact-report encoders through mutually exclusive
+direct, `--request`, and `--validated-request` inputs. Initial requests,
+validation outputs, and bundle manifests are closed versioned JSON products
+with canonical SHA-256 identities. Publication is explicit, symlink-safe,
+atomic, and no-clobber; successful bundles contain fixed `report.json`,
+`report.ecsv`, `report.vot`, and `manifest.json` names. The detailed audit
+freezes failure and interruption behavior but exposes no API until separately
+accepted and implemented.
+
+## Accepted 50S.6G.2C implementation authorization
+
+After acceptance at `bcac404`, implementation may add only the documented
+`wenu_satellite_crossings` adapter, packaged closed request/validation/manifest
+schemas, installed entry point, filesystem publisher, and focused enduring
+CLI/file-protocol tests. It must compose the accepted batch and report APIs,
+retain the fixed exit/status and interruption contract, and add no scientific
+or format mapping of its own.

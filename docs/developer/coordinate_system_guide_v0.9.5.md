@@ -3902,3 +3902,20 @@ perform no coordinate generation or transformation and introduce no new frame,
 origin, epoch, equinox, time-scale, or position-status meaning. The coordinate
 guide remains current. No later coordinate or satellite milestone is
 authorized.
+
+## Candidate 50S.6G.2C coordinate finding
+
+The CLI/file protocol introduces no new frame, transformation, refraction,
+airmass definition, field geometry, or satellite-state meaning. Initial and
+validation JSON transport the accepted coordinate specification unchanged,
+and calculation delegates to the accepted centre-only complete-interval
+geometric-vacuum airmass validator. This guide was reviewed and remains
+scientifically current; the candidate is documentation only.
+
+## Accepted 50S.6G.2C coordinate finding
+
+Fernando accepted the audit after reviewing this guide. The authorized
+implementation transports existing coordinate documents and invokes the
+accepted geometric-vacuum centre-only complete-interval airmass contract; it
+must introduce no new frame, transformation, refraction, field geometry, or
+satellite-state interpretation.

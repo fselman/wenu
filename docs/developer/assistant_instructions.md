@@ -1422,3 +1422,34 @@ Unicode `__is_null` companions. This acceptance authorizes no later
 milestone. Do not begin 50S.6G.2C, filesystem/CLI publication, tracks, charts,
 visibility science, provider access, another real run, or unrelated
 refactoring without separate authorization.
+
+## Candidate 50S.6G.2C audit boundary
+
+Read `satellite_cli_file_protocol_audit_50s6g2c.md` before any satellite
+crossing CLI, request-file, validation-output, manifest, or filesystem
+publication work. The candidate specifies direct atomic calculation, one
+closed initial JSON request, deterministic first-call validation output, and a
+second explicit call that revalidates and calculates only the embedded valid
+subset while retaining every invalid FoV as audit evidence. It also freezes
+explicit paths, fixed bundle filenames, digests, no-clobber and symlink safety,
+exit status, and interruption cleanup while reusing the accepted canonical
+JSON/ECSV/VOTable report model.
+
+Do not implement 50S.6G.2C before Fernando separately accepts this audit. Do
+not add provider access, new execution science, tracks, charts, visibility,
+illumination, brightness, detector effects, or unrelated refactoring.
+
+## Accepted 50S.6G.2C audit boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.6G.2C audit on 2026-09-19 at `bcac404`, after all 188 plugin-disabled
+current-documentation tests passed in 5.29 seconds and repository checks were
+clean.
+
+Implement only the bounded offline CLI/filesystem adapter, its closed initial
+request, validation output and manifest schemas, direct atomic route,
+validated-subset second call, accepted JSON/ECSV/VOTable bundle composition,
+path/symlink/no-clobber policy, exit status, interruption cleanup, and focused
+tests. Do not add provider access, new execution science, tracks, charts,
+visibility, illumination, brightness, detector effects, scheduling adapters,
+or unrelated refactoring. 50S.6G.3A and later work remain unauthorized.

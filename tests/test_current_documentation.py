@@ -3177,6 +3177,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
         "satellite_tabular_report_audit_50s6g2b.md",
+        "satellite_cli_file_protocol_audit_50s6g2c.md",
         "satellite_snapshot_admission_audit_50s6g1b2a.md",
         "satellite_medium_specimen_audit_50s6g1b2c.md",
         "satellite_equivalence_matrix_audit_50s6g1b2d.md",
@@ -7743,3 +7744,102 @@ def test_50s6g2b_records_complete_implementation_acceptance():
     assert "Accepted complete 50S.6G.2B coordinate finding" in coordinates
     assert "Accepted complete 50S.6G.2B in-memory interoperability" in log
     assert "50S.6G.2C filesystem/CLI publication" in roadmap
+
+
+def test_50s6g2c_candidate_cli_file_protocol_is_atomic_explicit_and_bounded():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_cli_file_protocol_audit_50s6g2c.md"
+    ).split())
+    index = " ".join(read(DEVELOPER / "README.md").split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    assert "satellite_cli_file_protocol_audit_50s6g2c.md" in index
+    for phrase in (
+        "wenu_satellite_crossings",
+        "direct arguments",
+        "--request PATH",
+        "--validated-request PATH",
+        "no FoV is solved",
+        "derived_request: null",
+        "report.json",
+        "report.ecsv",
+        "report.vot",
+        "manifest.json",
+        "manifest_identity_sha256",
+        "no-clobber failure",
+        "SIGINT/KeyboardInterrupt returns 130",
+        "SIGTERM",
+        "Filesystem atomicity is limited to one filesystem",
+        "invalid FoVs do not reach",
+        "This candidate authorizes no implementation",
+    ):
+        assert phrase in audit
+
+    for document in documents:
+        assert "50S.6G.2C" in document
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "dedicated CLI adapter" in architecture
+    assert "authorizes no implementation" in roadmap
+    assert "mutually exclusive" in reference
+    assert "No production module or test file is added" in source_tree
+    assert "introduces no new frame" in coordinates
+    assert "audit-preserving selection protocol" in guide
+    assert "Do not implement 50S.6G.2C" in instructions
+    assert "authorizes no implementation" in delivery
+    assert "candidate audit, not acceptance" in log
+
+
+def test_50s6g2c_records_acceptance_and_only_bounded_implementation_authority():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_cli_file_protocol_audit_50s6g2c.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "scientifically and architecturally accepted",
+        "bcac40453ae244348b9fc33447246db1c587d722",
+        "188 plugin-disabled",
+        "5.29 seconds",
+        "Implement only the bounded offline CLI/filesystem adapter",
+        "This acceptance does not authorize provider access",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "Accepted 50S.6G.2C audit boundary" in architecture
+    assert "50S.6G.2C accepted audit and next authority" in roadmap
+    assert "Accepted 50S.6G.2C implementation authorization" in reference
+    assert "Accepted 50S.6G.2C implementation ownership" in source_tree
+    assert "Accepted 50S.6G.2C coordinate finding" in coordinates
+    assert "Accepted 50S.6G.2C reader boundary" in guide
+    assert "Accepted 50S.6G.2C audit boundary" in instructions
+    assert "Accepted 50S.6G.2C audit handoff" in delivery
+    assert "Accepted 50S.6G.2C audit" in log
+    assert "50S.6G.3A and all track, chart" in roadmap

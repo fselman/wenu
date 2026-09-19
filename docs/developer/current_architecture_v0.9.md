@@ -1597,3 +1597,25 @@ VOTable values use explicit Boolean `__is_null` companions because Astropy
 7.1.0 discards string BINARY2 masks. No coordinate, propagation, crossing,
 visibility, provider, filesystem, CLI, or rendering responsibility moved into
 the adapters. No later milestone is authorized.
+
+## Candidate 50S.6G.2C CLI/file protocol boundary
+
+The documentation-only 50S.6G.2C candidate assigns argument parsing, versioned
+initial-request and validation-output JSON, typed exit status, symlink-safe
+paths, and atomic no-clobber report-bundle publication to one dedicated CLI
+adapter. The accepted batch coordinator remains the scientific validation and
+solve owner; canonical JSON plus the reusable ECSV/VOTable projection remain
+the only report encoders. No runtime implementation, provider access, new
+execution science, track, chart, visibility, illumination, or brightness work
+is authorized by this candidate.
+
+## Accepted 50S.6G.2C audit boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.6G.2C CLI/file-protocol audit on 2026-09-19 at `bcac404`, after 188
+plugin-disabled current-documentation tests passed in 5.29 seconds and
+repository checks were clean. Only the bounded offline CLI/filesystem
+implementation is authorized next. Preserve the existing batch coordinator and
+canonical JSON plus reusable ECSV/VOTable report owners. Tracks, charts,
+providers, new execution science, visibility, illumination, and brightness
+remain unauthorized.
