@@ -1453,3 +1453,13 @@ path/symlink/no-clobber policy, exit status, interruption cleanup, and focused
 tests. Do not add provider access, new execution science, tracks, charts,
 visibility, illumination, brightness, detector effects, scheduling adapters,
 or unrelated refactoring. 50S.6G.3A and later work remain unauthorized.
+
+## Candidate 50S.6G.2C implementation boundary
+
+Treat the CLI/file-protocol implementation as an unaccepted candidate. It may
+contain only the offline adapter, packaged closed schemas, validation-only
+coordinator seam, installed entry point, focused tests, and directly required
+documentation. Do not add provider access, acquisition, new execution science,
+tracks, charts, visibility, illumination, brightness, detector effects,
+scheduling adapters, or unrelated refactoring. Do not merge or begin
+50S.6G.3A before separate verification and acceptance.

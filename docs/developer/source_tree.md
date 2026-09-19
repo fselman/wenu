@@ -2479,3 +2479,14 @@ durable protocol tests. It does not authorize production changes in crossing
 science, propagation, topocentric transformation, report identity, or the
 shared tabular projection except minimal intentional exports required by the
 accepted composition seam.
+
+## Candidate 50S.6G.2C implementation placement
+
+- `src/wenu/cli/satellite_crossings.py`: durable offline CLI, request and
+  validation lifecycle, path safety, exit mapping, staging, and publication.
+- `src/wenu/data/satellite_crossing_*_v1.schema.json`: closed packaged request,
+  validation-output, and bundle-manifest protocol descriptions.
+- `tests/test_satellite_crossing_cli.py`: durable protocol/path/publication
+  fault owner; it does not repeat orbital or report-format science.
+- `satellites/crossing_batch.py`: adds only public validation-only composition
+  of its existing `_validate` owner; the calculation route reuses it.

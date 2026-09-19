@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wenu.dev/schema/satellite-crossing-request-v1.json",
+  "title": "Wenu artificial-satellite crossing request v1",
+  "type": "object",
+  "required": [
+    "product", "schema_version", "document_kind", "created_utc",
+    "snapshot", "observer", "policy", "fields", "request_identity_sha256"
+  ],
+  "properties": {
+    "product": {"const": "wenu.artificial_satellite_crossing_request"},
+    "schema_version": {"const": 1},
+    "document_kind": {"const": "initial_request"},
+    "created_utc": {"type": "string"},
+    "snapshot": {"type": "object"},
+    "observer": {"type": "object"},
+    "policy": {"type": "object"},
+    "fields": {"type": "array", "minItems": 1},
+    "request_identity_sha256": {
+      "type": "string", "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

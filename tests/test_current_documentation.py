@@ -7843,3 +7843,50 @@ def test_50s6g2c_records_acceptance_and_only_bounded_implementation_authority():
     assert "Accepted 50S.6G.2C audit handoff" in delivery
     assert "Accepted 50S.6G.2C audit" in log
     assert "50S.6G.3A and all track, chart" in roadmap
+
+
+def test_50s6g2c_candidate_implementation_is_bounded_and_offline():
+    project = read(ROOT / "pyproject.toml")
+    cli = read(ROOT / "src/wenu/cli/satellite_crossings.py")
+    batch = read(ROOT / "src/wenu/satellites/crossing_batch.py")
+    source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
+    architecture = " ".join(read(V09_CURRENT).split())
+    roadmap = " ".join(read(FUTURE_ROADMAP).split())
+    reference = " ".join(
+        read(DEVELOPER / "implementation_reference.md").split()
+    )
+    instructions = " ".join(read(INSTRUCTIONS).split())
+
+    assert (
+        'wenu_satellite_crossings = "wenu.cli.satellite_crossings:main"'
+        in project
+    )
+    assert "def validate(self, request):" in batch
+    assert "without solving any crossing" in batch
+    for phrase in (
+        "REQUEST_PRODUCT",
+        "VALIDATION_PRODUCT",
+        "MANIFEST_PRODUCT",
+        "RENAME_EXCL",
+        "RENAME_NOREPLACE",
+        "report.json",
+        "report.ecsv",
+        "report.vot",
+        "manifest.json",
+        "return 130",
+        "return 143",
+    ):
+        assert phrase in cli
+    for name in (
+        "satellite_crossing_request_v1.schema.json",
+        "satellite_crossing_validation_v1.schema.json",
+        "satellite_crossing_bundle_manifest_v1.schema.json",
+    ):
+        assert (ROOT / "src/wenu/data" / name).is_file()
+
+    assert "Candidate 50S.6G.2C implementation state" in architecture
+    assert "50S.6G.2C candidate implementation" in roadmap
+    assert "Candidate 50S.6G.2C executable API" in reference
+    assert "Candidate 50S.6G.2C implementation placement" in source_tree
+    assert "Candidate 50S.6G.2C implementation boundary" in instructions
+    assert "Do not merge or begin 50S.6G.3A" in instructions

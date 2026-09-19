@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wenu.dev/schema/satellite-crossing-bundle-manifest-v1.json",
+  "title": "Wenu artificial-satellite report bundle manifest v1",
+  "type": "object",
+  "required": [
+    "product", "schema_version", "document_kind", "implementation",
+    "request_mode", "request_identity_sha256", "report_identity_sha256",
+    "snapshot_id", "snapshot_content_sha256", "files",
+    "manifest_identity_sha256"
+  ],
+  "properties": {
+    "product": {"const": "wenu.artificial_satellite_crossing_bundle"},
+    "schema_version": {"const": 1},
+    "document_kind": {"const": "report_bundle_manifest"},
+    "implementation": {"type": "string"},
+    "request_mode": {"type": "string"},
+    "request_identity_sha256": {
+      "type": "string", "pattern": "^[0-9a-f]{64}$"
+    },
+    "report_identity_sha256": {
+      "type": "string", "pattern": "^[0-9a-f]{64}$"
+    },
+    "snapshot_id": {"type": "string", "minLength": 1},
+    "snapshot_content_sha256": {
+      "type": "string", "pattern": "^[0-9a-f]{64}$"
+    },
+    "files": {"type": "array", "minItems": 3, "maxItems": 3},
+    "manifest_identity_sha256": {
+      "type": "string", "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

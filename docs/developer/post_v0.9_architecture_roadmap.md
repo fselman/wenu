@@ -2924,3 +2924,10 @@ validated-subset second call, fixed digest-manifest bundle, safe no-clobber
 publication, exit/interruption contracts, and focused tests. 50S.6G.3A and all
 track, chart, provider, visibility, illumination, and brightness work remain
 separately unauthorized.
+
+## 50S.6G.2C candidate implementation
+
+The candidate implementation is confined to the accepted offline CLI/file
+protocol. It adds no later milestone. Verification and Fernando's separate
+scientific and architectural acceptance are required before merge or
+50S.6G.3A.
