@@ -56,6 +56,8 @@ LATITUDE_DEG = -32.443342
 LONGITUDE_DEG = -71.230289
 ELEVATION_M = 52.0
 FIELD_RADIUS_DEG = 3.0
+REGIONAL_FIELD_WIDTH_DEG = 20.0
+REGIONAL_FIELD_HEIGHT_DEG = 16.0
 
 
 def iso(value):
@@ -190,8 +192,8 @@ def request_for(output, track, *, family, label_events):
     altitude, azimuth = horizontal_center(track)
     frame = (
         ChartFrameRequest(
-            field_width_deg=8.0,
-            field_height_deg=8.0,
+            field_width_deg=REGIONAL_FIELD_WIDTH_DEG,
+            field_height_deg=REGIONAL_FIELD_HEIGHT_DEG,
             center_altitude_deg=altitude,
             center_azimuth_deg=azimuth,
         )
