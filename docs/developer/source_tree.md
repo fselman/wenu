@@ -2413,3 +2413,18 @@ working-tree checks were clean.
 The dedicated module, packaged schema, and stable-responsibility test file own
 the accepted boundary. No other owner moves, and SatChecker sampled-candidate
 presentation remains scientifically separate.
+
+
+## Candidate 50S.6G.2B ownership
+
+The candidate audit keeps `satellite_crossing_reports.py` as logical report,
+canonical JSON, identity, and typed reconstruction owner. A bounded future
+implementation may add one adjacent private tabular-interchange module when
+the implementation preflight confirms that separation materially improves
+reuse; otherwise focused private helpers remain in the existing owner.
+
+Whichever placement is accepted, there is exactly one format-neutral mapping
+for records, columns, units, masks, joins, ordering, reconstruction, and
+limits. ECSV and VOTable adapters are thin syntax owners. Filesystem and CLI
+publication remain 50S.6G.2C responsibilities. No source-tree change is
+authorized yet.
