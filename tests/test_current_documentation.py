@@ -7603,3 +7603,34 @@ def test_50s6g2b_records_candidate_verification_without_acceptance():
 
     assert "documentation consistency only" in audit
     assert "not scientific or architectural acceptance" in log
+
+def test_50s6g2b_records_scientific_and_architectural_acceptance():
+    documents = (
+        read(DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"),
+        read(DEVELOPER / "assistant_instructions.md"),
+        read(DEVELOPER / "current_architecture_v0.9.md"),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "post_v0.9_architecture_roadmap.md"),
+        read(DEVELOPER / "coordinate_system_guide_v0.9.5.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(SATELLITE_PROGRAM_LOG),
+    )
+    normalized = tuple(" ".join(document.split()) for document in documents)
+
+    for document in normalized:
+        assert "scientifically and architecturally accepted" in document
+        assert "2026-09-19" in document
+        assert "ef14bc1" in document
+        assert "181" in document
+        assert "4.88 seconds" in document
+        assert "reusable" in document
+
+    audit, instructions, architecture, reference, roadmap, coordinates, source_tree, log = normalized
+    assert "Only a bounded in-memory implementation is authorized next" in audit
+    assert "Implement only one reusable format-neutral" in instructions
+    assert "Canonical JSON and report_identity_sha256 remain the logical authority" in architecture
+    assert "to_ecsv()" in reference
+    assert "50S.6G.2C filesystem/CLI publication" in roadmap
+    assert "coordinate guide remains current" in coordinates
+    assert "exactly one reusable format-neutral mapping" in source_tree
+    assert "new execution remain unauthorized" in log

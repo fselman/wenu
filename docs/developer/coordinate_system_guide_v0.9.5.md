@@ -3871,3 +3871,15 @@ A changed, missing, or contradictory unit, frame, origin, position status,
 time scale, refraction policy, Earth-orientation policy, or TIMESYS reference
 must fail decoding. The coordinate guide remains current; the audit introduces
 no new frame, origin, epoch, transformation, or numerical policy.
+
+## Accepted 50S.6G.2B coordinate finding
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `ef14bc1`, after 181 plugin-disabled documentation
+tests passed in 4.88 seconds and repository checks were clean.
+
+The coordinate guide remains current. The authorized tabular implementation
+may serialize and strictly reconstruct the already accepted coordinate and UTC
+metadata through one reusable projection, but it may not transform, infer, or
+change any frame, origin, epoch, time scale, refraction policy,
+Earth-orientation policy, or numerical coordinate rule.

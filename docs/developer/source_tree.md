@@ -2428,3 +2428,15 @@ for records, columns, units, masks, joins, ordering, reconstruction, and
 limits. ECSV and VOTable adapters are thin syntax owners. Filesystem and CLI
 publication remain 50S.6G.2C responsibilities. No source-tree change is
 authorized yet.
+
+## Accepted 50S.6G.2B ownership boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `ef14bc1`, after 181 plugin-disabled documentation
+tests passed in 4.88 seconds and repository checks were clean.
+
+Implementation must provide exactly one reusable format-neutral mapping and
+thin ECSV/VOTable adapters adjacent to the accepted exact-report owner.
+Placement remains subject to the implementation preflight described above;
+the acceptance authorizes no duplicated mapping, filesystem/CLI owner, or
+unrelated ownership move.

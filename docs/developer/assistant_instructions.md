@@ -1346,3 +1346,17 @@ Do not implement 50S.6G.2B before Fernando's separate scientific and
 architectural acceptance. Do not add paths, files, CLI, atomic publication,
 plain CSV, tracks, charts, visibility science, provider access, another real
 run, or unrelated refactoring.
+
+## Accepted 50S.6G.2B audit boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `ef14bc1`, after 181 plugin-disabled
+current-documentation tests passed in 4.88 seconds and repository checks were
+clean.
+
+Implement only one reusable format-neutral in-memory tabular projection with
+thin ECSV and VOTable 1.5 adapters, strict validation, and lossless exact-report
+reconstruction preserving canonical JSON and `report_identity_sha256`.
+Do not add paths, files, CLI, atomic publication, plain CSV, tracks, charts,
+visibility science, provider access, another real run, or unrelated
+refactoring. 50S.6G.2C and later milestones remain separately unauthorized.

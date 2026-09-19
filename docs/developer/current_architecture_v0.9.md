@@ -1566,3 +1566,15 @@ ordering, reconstruction, validation, and resource limits. Thin ECSV and
 VOTable adapters may own only wire-specific syntax and metadata. This shared
 layer is deliberately reusable by later publication work without accepting
 paths or performing science. No implementation is authorized by this audit.
+
+## Accepted 50S.6G.2B interoperability audit
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `ef14bc1`, after 181 plugin-disabled documentation
+tests passed in 4.88 seconds and repository checks were clean.
+
+The authorized implementation boundary is one reusable format-neutral
+in-memory tabular projection with thin ECSV and VOTable 1.5 adapters. Canonical
+JSON and `report_identity_sha256` remain the logical authority. Filesystem
+publication, CLI, tracks, charts, visibility science, provider access, and new
+scientific execution remain outside this milestone.

@@ -250,3 +250,18 @@ synchronized with `origin/docs/50s6g2b-tabular-report-audit`.
 
 This evidence verifies documentation consistency only. The audit remains
 candidate documentation; it does not authorize 50S.6G.2B implementation.
+
+## Accepted audit boundary
+
+Fernando scientifically and architecturally accepted this documentation-only
+50S.6G.2B audit on 2026-09-19 at `ef14bc1`, after all 181 plugin-disabled
+current-documentation tests passed in 4.88 seconds. The diff check against
+accepted program base `57c8bec` passed, and the branch was clean and
+synchronized.
+
+Only a bounded in-memory implementation is authorized next: one reusable
+format-neutral tabular projection, thin ECSV and VOTable 1.5 adapters, strict
+validation, and lossless reconstruction of the accepted exact report with the
+same canonical JSON and `report_identity_sha256`. Do not add paths, files,
+CLI, atomic publication, plain CSV, tracks, charts, visibility science,
+provider access, another real run, or unrelated refactoring.

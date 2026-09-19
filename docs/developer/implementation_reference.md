@@ -3186,3 +3186,15 @@ and thin format adapters. The shared mapping is reusable but is not prematurely
 public. These candidate APIs accept no path, file object, overwrite flag, or
 service and perform no scientific computation. Implementation remains
 unauthorized pending acceptance.
+
+## Accepted 50S.6G.2B tabular API boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+audit on 2026-09-19 at `ef14bc1`, after 181 plugin-disabled documentation
+tests passed in 4.88 seconds and repository checks were clean.
+
+A bounded implementation may add the pure in-memory `to_ecsv()`,
+`from_ecsv(...)`, `to_votable()`, and `from_votable(...)` operations
+described above. They must delegate to one reusable format-neutral projection,
+preserve canonical JSON and `report_identity_sha256`, and accept no path,
+file object, overwrite flag, service, or scientific-computation responsibility.
