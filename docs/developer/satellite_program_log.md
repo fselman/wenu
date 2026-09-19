@@ -1050,3 +1050,7 @@ Fernando scientifically and architecturally accepted the documentation-only char
 ## 2026-09-19 — Candidate 50S.6G.3B implementation
 
 The bounded candidate adds explicit already-realized exact-track display requests, strict regional/binocular admission, fixed-frame path/event views, independent labels, request-owned cleanup, narrow style roles, bounded provenance, semantic SVG hierarchy, focused tests, and deterministic PNG/PDF/SVG specimens. The first focused gates passed 119 and 136 plugin-disabled tests. Fernando found and rejected two deliberately distorted boundary-crossing specimen shapes; the accepted visual direction is a physically plausible nearly straight short pass, with canonical clipping demonstrated separately by tests. Complete verification and separate implementation acceptance remain pending.
+
+## 2026-09-19 — Verified candidate 50S.6G.3B implementation
+
+At `6580f88`, the 314-test immediate gate passed in 7.71 seconds and all 2,741 plugin-disabled tests passed in 228.97 seconds. The physically propagated 65-sample exact visit generated regional and binocular PNG, PDF, and semantic SVG through the ordinary route. Fernando judged the binocular field consistent and the revised 20 by 16 degree regional context much better. Exact-head, diff, and clean synchronized-tree checks passed. This is candidate verification only; implementation acceptance, merge, and 50S.6G.4A/B remain unauthorized.
