@@ -402,3 +402,12 @@ Validated zero-crossing fields remain explicit results. Version 1 requires
 future illumination, magnitude, detector, and exact-track values to be null.
 The audit changes no runtime and authorizes no implementation before Fernando's
 separate acceptance.
+
+
+## 16. Accepted 50S.6G.2A audit handoff
+
+Fernando scientifically and architecturally accepted the exact-report audit on
+2026-09-19 at `835ddfe`, after 175 documentation tests passed in 3.27 seconds
+and clean repository checks. Only the bounded model, schema, deterministic
+JSON encoder/decoder, and focused tests are authorized next. Later 50S.6G
+delivery slices remain separately unauthorized.
