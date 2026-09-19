@@ -7842,4 +7842,4 @@ def test_50s6g2c_records_acceptance_and_only_bounded_implementation_authority():
     assert "Accepted 50S.6G.2C audit boundary" in instructions
     assert "Accepted 50S.6G.2C audit handoff" in delivery
     assert "Accepted 50S.6G.2C audit" in log
-    assert "50S.6G.3A and later work remain unauthorized" in roadmap
+    assert "50S.6G.3A and all track, chart" in roadmap
