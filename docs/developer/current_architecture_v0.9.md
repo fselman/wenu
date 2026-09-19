@@ -1643,3 +1643,7 @@ Fernando accepted the bounded offline CLI/file protocol on 2026-09-19. The
 accepted implementation preserves the batch and report owners and adds only
 validation-only composition plus safe deterministic filesystem delivery. Only
 a documentation-first 50S.6G.3A exact-local-track audit is authorized next.
+
+## Candidate 50S.6G.3A exact-local-track boundary
+
+The documentation-only candidate defines one immutable exact local track per accepted connected crossing and one output-neutral layer over that retained evidence. Mandatory entry, closest-approach, and exit anchors partition a deterministic adaptive midpoint-deviation sampler that composes the accepted snapshot, SGP4/TEME, and geometric topocentric owners and fails closed. SatChecker candidate tracks and Solar-System tracks remain scientifically distinct. No runtime, report, CLI, chart, renderer, or provider change is authorized by this audit.

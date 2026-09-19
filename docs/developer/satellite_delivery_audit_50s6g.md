@@ -451,3 +451,7 @@ offline CLI/filesystem implementation described by the dedicated audit is
 authorized next. It must reuse the accepted batch and report owners and
 preserve every path, digest, publication, exit, interruption, and exclusion
 contract. 50S.6G.3A and all later track/chart work remain unauthorized.
+
+## 50S.6G.3A candidate refinement
+
+The dedicated 50S.6G.3A audit refines this delivery plan into one immutable exact track per accepted connected visit, exact entry/closest/exit anchors, deterministic midpoint-deviation and maximum-step subdivision, explicit fail-closed limits, a separate track identity, and a science-free output-neutral layer. The accepted report and CLI bundle remain unchanged. This is candidate documentation and authorizes no implementation.
