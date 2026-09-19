@@ -160,7 +160,10 @@ def horizontal_center(track):
         elevation_m=ELEVATION_M,
     )
     try:
-        middle = track.samples[1]
+        middle = next(
+            sample for sample in track.samples
+            if "closest_approach" in sample.roles
+        )
         native = SphericalPoints(
             [middle.longitude_deg],
             [middle.latitude_deg],
