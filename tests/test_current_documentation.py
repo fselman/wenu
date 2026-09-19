@@ -7628,7 +7628,7 @@ def test_50s6g2b_records_scientific_and_architectural_acceptance():
     audit, instructions, architecture, reference, roadmap, coordinates, source_tree, log = normalized
     assert "Only a bounded in-memory implementation is authorized next" in audit
     assert "Implement only one reusable format-neutral" in instructions
-    assert "Canonical JSON and report_identity_sha256 remain the logical authority" in architecture
+    assert "Canonical JSON and `report_identity_sha256` remain the logical authority" in architecture
     assert "to_ecsv()" in reference
     assert "50S.6G.2C filesystem/CLI publication" in roadmap
     assert "coordinate guide remains current" in coordinates
