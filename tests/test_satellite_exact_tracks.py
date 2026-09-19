@@ -565,12 +565,12 @@ def test_event_labels_can_be_suppressed_without_changing_event_geometry():
     unlabeled_geometry = unlabeled._native_geometry()
 
     assert np.array_equal(
-        labeled_geometry.longitude_deg,
-        unlabeled_geometry.longitude_deg,
+        labeled_geometry.lon_deg,
+        unlabeled_geometry.lon_deg,
     )
     assert np.array_equal(
-        labeled_geometry.latitude_deg,
-        unlabeled_geometry.latitude_deg,
+        labeled_geometry.lat_deg,
+        unlabeled_geometry.lat_deg,
     )
     assert tuple(labeled_geometry.labels) == (
         "entry", "closest approach", "exit"
