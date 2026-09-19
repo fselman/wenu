@@ -94,6 +94,18 @@ def _unit_for(path):
 
 def _leaf_kind(schema):
     types = set(_schema_types(schema))
+    if not types and "const" in schema:
+        constant = schema["const"]
+        if isinstance(constant, bool):
+            types = {"boolean"}
+        elif isinstance(constant, int):
+            types = {"integer"}
+        elif isinstance(constant, float):
+            types = {"number"}
+        elif isinstance(constant, str):
+            types = {"string"}
+        elif constant is None:
+            types = {"null"}
     nullable = "null" in types
     types.discard("null")
     if not types:
@@ -523,7 +535,7 @@ def to_votable(report):
                 ID=name,
                 name=name,
                 value=str(value),
-                datatype="char",
+                datatype="unicodeChar",
                 arraysize="*",
             )
         )
