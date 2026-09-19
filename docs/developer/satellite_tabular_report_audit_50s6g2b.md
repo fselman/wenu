@@ -316,3 +316,26 @@ the shared logical projection, ECSV representation, canonical JSON, and
 `report_identity_sha256`. Do not interpret an unmarked empty string as null
 or add a private BINARY2 parser. All existing 50S.6G.2B exclusions remain in
 force.
+
+
+## Candidate implementation verification
+
+The bounded implementation candidate at `3bbd82f` passed the combined
+plugin-disabled report and current-documentation gate: 208 tests in 6.68
+seconds. All 2,689 plugin-disabled repository tests then passed in 215.15
+seconds. `git diff --check 142ae70...HEAD` passed, and the Mac working tree
+was clean and synchronized with
+`origin/feature/50s6g2b-tabular-report`.
+
+The candidate provides one shared schema-derived format-neutral projection,
+deterministic in-memory ECSV and VOTable 1.5/BINARY2 adapters, exact canonical
+JSON and `report_identity_sha256` round trips, strict validation, explicit
+Unicode null indicators required by the accepted Astropy 7.1.0 amendment, and
+bounded input handling. The coordinate-system guide was reviewed and remains
+current because the adapters only retain accepted coordinate identity and
+perform no coordinate calculation or transformation.
+
+This is verification evidence, not scientific or architectural acceptance,
+merge authority, or authorization for 50S.6G.2C. Paths, files, CLI, atomic
+publication, plain CSV, tracks, charts, visibility science, provider access,
+another real run, and unrelated refactoring remain unauthorized.
