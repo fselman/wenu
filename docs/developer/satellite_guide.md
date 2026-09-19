@@ -474,8 +474,9 @@ cases. Larger retained snapshots follow only after the complete machinery is
 correct.
 
 The bounded 50S.4E developer specimen builder accepts the installed synthetic snapshot,
-observer, evaluation grid, and FoV size. It stores propagated sampled tracks
-and query inputs only. It does not find a useful field automatically, emit
+observer, evaluation grid, and FoV size. Its scientific status is
+propagated sampled specimens — not verified crossings. It stores propagated
+sampled tracks and query inputs only. It does not find a useful field automatically, emit
 expected crossings, invoke a crossing query, calculate entry/exit or closest
 approach, or certify central, grazing, between-sample, multiple-crossing,
 non-crossing, horizon, shadow-transition, seam, or polar cases. Those
