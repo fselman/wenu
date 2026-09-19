@@ -2987,3 +2987,9 @@ Fernando accepted the documentation-only audit on 2026-09-19 at `ef58180`. The n
 The bounded candidate now carries immutable exact connected-visit evidence through ordinary regional and binocular request preparation and PNG/PDF/semantic-SVG export. It adds strict admission, independent path/event/label controls, request-owned cleanup, exact-visit semantics, bounded provenance, focused tests, and deterministic offline specimens. Physically plausible complete-track specimens and canonical clipping tests are separate evidence rather than one distorted trajectory.
 
 Complete verification and Fernando's separate implementation acceptance are still required. 50S.6G.4A/B and all later science remain unauthorized.
+
+### 50S.6G.3B accepted implementation and next authority
+
+Fernando accepted the complete bounded binocular/regional exact-track implementation and authorized merge and cleanup on 2026-09-19. PR 172 merged it into `program/50s-crossing-foundation` at `05d4029` after 314 immediate, 2,741 complete, and 199 final documentation tests plus physical PNG/PDF/semantic-SVG review and clean repository checks.
+
+Only a documentation-first 50S.6G.4A planisphere exact-track audit is authorized next. 50S.6G.4A/B runtime work and all later satellite science remain unauthorized pending separate acceptance.
