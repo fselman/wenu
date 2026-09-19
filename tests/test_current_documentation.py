@@ -7659,3 +7659,20 @@ def test_50s6g2b_candidate_unicode_null_amendment_is_explicit_and_bounded():
     assert "true indicator paired with a non-empty carrier" in audit
     assert "does not introduce a private BINARY2 parser" in audit
     assert "documentation-only and unaccepted" in instructions
+
+
+
+def test_50s6g2b_records_unicode_null_amendment_acceptance():
+    documents = (
+        read(DEVELOPER / "satellite_tabular_report_audit_50s6g2b.md"),
+        read(INSTRUCTIONS),
+    )
+    for document in (" ".join(value.split()) for value in documents):
+        assert "scientifically and architecturally accepted" in document
+        assert "5038e4a" in document
+        assert "184" in document
+        assert "5.28 seconds" in document
+        assert "__is_null" in document
+        assert "shared logical projection" in document
+        assert "ECSV" in document
+        assert "canonical JSON" in document
