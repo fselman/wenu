@@ -194,6 +194,13 @@ class SolarSystemStyle:
     comet_alpha: float = 1.0
     comet_draw_label: bool = True
     comet_label_fontsize: float = 7.0
+    satellite_exact_track_color: str = "#00D7FF"
+    satellite_exact_track_linewidth: float = 1.2
+    satellite_exact_track_linestyle: str = "-"
+    satellite_exact_event_marker: str = "x"
+    satellite_exact_event_symbol_size: float = 28.0
+    satellite_exact_event_linewidth: float = 1.0
+    satellite_exact_event_label_fontsize: float = 7.0
 
 
 @dataclass(frozen=True)
@@ -446,6 +453,27 @@ class ChartStyle:
             comet_alpha=solar.comet_alpha,
             comet_draw_label=solar.comet_draw_label,
             comet_label_fontsize=solar.comet_label_fontsize,
+            satellite_exact_track_color=(
+                solar.satellite_exact_track_color
+            ),
+            satellite_exact_track_linewidth=(
+                solar.satellite_exact_track_linewidth
+            ),
+            satellite_exact_track_linestyle=(
+                solar.satellite_exact_track_linestyle
+            ),
+            satellite_exact_event_marker=(
+                solar.satellite_exact_event_marker
+            ),
+            satellite_exact_event_symbol_size=(
+                solar.satellite_exact_event_symbol_size
+            ),
+            satellite_exact_event_linewidth=(
+                solar.satellite_exact_event_linewidth
+            ),
+            satellite_exact_event_label_fontsize=(
+                solar.satellite_exact_event_label_fontsize
+            ),
             moon_color=solar.moon_color,
             moon_marker=solar.moon_marker,
             moon_symbol_size=solar.moon_symbol_size,
