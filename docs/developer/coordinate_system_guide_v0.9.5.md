@@ -3962,3 +3962,7 @@ For a static regional or binocular chart, every retained geometric topocentric d
 ## Accepted 50S.6G.3B coordinate boundary
 
 Fernando accepted the fixed-product-frame finding: admitted evidence keeps per-sample UTC directions in fixed GCRS axes, and the complete path is transformed once into the horizontal chart frame at the matching chart/FoV reference instant. Implementation must not recompute per-sample instantaneous AltAz or describe samples as simultaneous.
+
+## Candidate 50S.6G.3B implemented coordinate path
+
+Admission requires the chart observer's normalized longitude, latitude, elevation, and UTC instant to match the crossing field context, with vacuum refraction and the accepted Astropy/bundled-IERS Earth-orientation policies. The already-realized timeless GCRS-axis collection is transformed once into the chart's horizontal frame at that reference instant. Per-sample UTC remains evidence and is neither discarded nor reinterpreted as a series of instantaneous AltAz frames.
