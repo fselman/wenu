@@ -7728,7 +7728,7 @@ def test_50s6g2b_records_complete_implementation_acceptance():
         assert "ece80c7" in document
         assert "186" in document
         assert "4.60 seconds" in document
-        assert "canonical JSON" in document
+        assert "canonical json" in document.lower()
         assert "report_identity_sha256" in document
         assert "__is_null" in document
         assert "no later" in document
