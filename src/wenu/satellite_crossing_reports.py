@@ -9,11 +9,22 @@ import json
 from math import isfinite
 import re
 
-from wenu.satellite_crossings import SatelliteCrossingResult
+from wenu.coordinates import CoordinateSpec, PositionStatus
+from wenu.satellite_crossings import (
+    InclusiveTimeInterval,
+    SatelliteCrossingCandidate,
+    SatelliteCrossingResult,
+    SatelliteFieldOfView,
+    SatelliteIdentity,
+    SatelliteObserver,
+)
+from wenu.satellites.crossing_acceleration import AcceleratedCrossingEvidence
 from wenu.satellites.crossing_batch import (
+    FieldAirmassAdmission,
     MultiFieldCrossingPolicy,
     MultiFieldCrossingResult,
 )
+from wenu.satellites.snapshots import SatelliteSnapshotManifest
 
 
 EXACT_REPORT_SCHEMA_VERSION = 1
@@ -340,6 +351,19 @@ def _semantic_validation(document):
     _utc(document["created_utc"], name="created_utc")
     observer = document["observer"]
     snapshot = document["snapshot"]
+    typed_observer = SatelliteObserver(**observer)
+    manifest_document = dict(snapshot)
+    manifest_document.pop("minimum_element_epoch")
+    manifest_document.pop("maximum_element_epoch")
+    SatelliteSnapshotManifest.from_mapping(manifest_document)
+    minimum_epoch = _utc(
+        snapshot["minimum_element_epoch"], name="minimum element epoch"
+    )
+    maximum_epoch = _utc(
+        snapshot["maximum_element_epoch"], name="maximum element epoch"
+    )
+    if minimum_epoch > maximum_epoch:
+        raise ValueError("snapshot epoch bounds are reversed.")
     fields = document["fields"]
     if document["batch"]["field_count"] != len(fields):
         raise ValueError("batch field_count does not match fields.")
@@ -357,10 +381,71 @@ def _semantic_validation(document):
             raise ValueError("crossing_count does not match crossings.")
         start = field["interval"]["start_utc"]
         stop = field["interval"]["stop_utc"]
+        coordinate = field["field_of_view"]["coordinate_spec"]
+        typed_coordinate = CoordinateSpec(
+            frame=coordinate["frame"],
+            origin=coordinate["origin"],
+            position_status=PositionStatus(coordinate["position_status"]),
+            epoch=coordinate["epoch"],
+            equinox=coordinate["equinox"],
+            instant=coordinate["instant"],
+            time_scale=coordinate["time_scale"],
+            longitude_unit=coordinate["longitude_unit"],
+            latitude_unit=coordinate["latitude_unit"],
+            representation=coordinate["representation"],
+            provider=coordinate["provider"],
+            model=coordinate["model"],
+            provenance=tuple(coordinate["provenance"]),
+            corrections=frozenset(coordinate["corrections"]),
+        )
+        fov_document = field["field_of_view"]
+        typed_field = SatelliteFieldOfView(
+            field_id=fov_document["field_id"],
+            center_longitude_deg=fov_document["center_longitude_deg"],
+            center_latitude_deg=fov_document["center_latitude_deg"],
+            angular_radius_deg=fov_document["angular_radius_deg"],
+            coordinate_spec=typed_coordinate,
+            boundary=fov_document["boundary"],
+        )
+        interval_document = field["interval"]
+        typed_interval = InclusiveTimeInterval(
+            start=interval_document["start_utc"],
+            stop=interval_document["stop_utc"],
+            time_scale=interval_document["time_scale"],
+            boundary=interval_document["boundary"],
+        )
+        airmass = field["airmass_admission"]
+        FieldAirmassAdmission(
+            field_id=airmass["field_id"],
+            maximum_airmass=airmass["maximum_airmass"],
+            minimum_altitude_deg=airmass["minimum_altitude_deg"],
+            certified_lower_bound_deg=airmass["certified_lower_bound_deg"],
+            evaluation_count=airmass["evaluation_count"],
+            earth_orientation_sha256=tuple(
+                airmass["earth_orientation_sha256"]
+            ),
+            provenance=tuple(airmass["provenance"]),
+        )
         ordered = []
         visits = set()
         identities = {}
         acceleration = field["acceleration"]
+        AcceleratedCrossingEvidence(
+            snapshot_sha256=acceleration["snapshot_sha256"],
+            field_id=field["field_id"],
+            interval_start=start,
+            interval_stop=stop,
+            rejected_norad_catalog_ids=tuple(
+                acceleration["rejected_norad_catalog_ids"]
+            ),
+            exact_solver_norad_catalog_ids=tuple(
+                acceleration["exact_solver_norad_catalog_ids"]
+            ),
+            selection=None,
+            fallback_to_exhaustive=acceleration["fallback_to_exhaustive"],
+            fallback_reason=acceleration["fallback_reason"],
+            implementation=acceleration["implementation"],
+        )
         partition = (
             acceleration["rejected_norad_catalog_ids"]
             + acceleration["exact_solver_norad_catalog_ids"]
@@ -406,6 +491,35 @@ def _semantic_validation(document):
             previous = identities.setdefault(crossing["norad_catalog_id"], identity)
             if previous != identity:
                 raise ValueError("one NORAD identity has inconsistent element identity.")
+            typed_identity = SatelliteIdentity(
+                norad_catalog_id=crossing["norad_catalog_id"],
+                object_name=crossing["object_name"],
+                international_designator=crossing["international_designator"],
+                classification=crossing["classification"],
+            )
+            typed_candidate = SatelliteCrossingCandidate(
+                satellite=typed_identity,
+                observer=typed_observer,
+                field_of_view=typed_field,
+                interval=typed_interval,
+                source_provider=crossing["source_provider"],
+                orbit_solution_id=crossing["orbit_solution_id"],
+                snapshot_sha256=crossing["snapshot_sha256"],
+                element_epoch=crossing["element_epoch"],
+                provenance=tuple(crossing["oracle_provenance"]),
+                warnings=tuple(crossing["warnings"]),
+            )
+            SatelliteCrossingResult(
+                candidate=typed_candidate,
+                entry_instant=entry,
+                exit_instant=exit_,
+                closest_approach_instant=closest,
+                closest_approach_deg=crossing["closest_approach_deg"],
+                range_km=crossing["range_km"],
+                angular_rate_deg_per_s=crossing["angular_rate_deg_per_s"],
+                provenance=tuple(crossing["oracle_provenance"]),
+                warnings=tuple(crossing["warnings"]),
+            )
         if ordered != sorted(ordered):
             raise ValueError("crossings must be ordered by NORAD identifier and entry.")
     if not isinstance(observer, dict):
