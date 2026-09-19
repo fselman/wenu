@@ -266,11 +266,14 @@ def _pairs(values):
     return result
 
 
-def _schema():
+def _load_schema():
     text = resources.files("wenu.data").joinpath(_SCHEMA_RESOURCE).read_text(
         encoding="utf-8"
     )
     return json.loads(text, object_pairs_hook=_pairs, parse_constant=_reject_constant)
+
+
+_REPORT_SCHEMA = _load_schema()
 
 
 def _resolve(schema, root):
@@ -527,7 +530,7 @@ def _semantic_validation(document):
 
 
 def _validated_document(document):
-    schema = _schema()
+    schema = _REPORT_SCHEMA
     _validate_schema(document, schema, schema)
     _semantic_validation(document)
     return document
