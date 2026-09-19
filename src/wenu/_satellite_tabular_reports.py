@@ -11,8 +11,14 @@ from typing import Any
 import numpy as np
 from astropy import __version__ as ASTROPY_VERSION
 from astropy.io import ascii
-from astropy.io.votable import from_table, parse
-from astropy.io.votable.tree import Param, Resource, TimeSys, VOTableFile
+from astropy.io.votable import parse
+from astropy.io.votable.tree import (
+    Param,
+    Resource,
+    TableElement,
+    TimeSys,
+    VOTableFile,
+)
 from astropy.table import MaskedColumn, Table
 
 from wenu import satellite_crossing_reports as _reports
@@ -519,8 +525,7 @@ def to_votable(report):
         )
     for kind in _KINDS:
         table = _scope_table(projection, kind)
-        tree = from_table(table, table_id=kind)
-        element = tree.resources[0].tables[0]
+        element = TableElement.from_table(votable, table)
         element.ID = kind
         element.name = kind
         for field in element.fields:
@@ -564,7 +569,7 @@ def from_votable(value):
             raise ValueError("VOTable numeric metadata is invalid.") from error
     metadata["wenu_tabular_format"] = "votable"
 
-    full_rows = []
+    rows_by_kind = {}
     expected_names = _COMMON_COLUMNS + tuple(column.name for column in _COLUMNS)
     for kind, element in zip(_KINDS, resource.tables):
         table = element.to_table(use_names_over_ids=True)
@@ -585,6 +590,24 @@ def from_votable(value):
             for name in expected_scope:
                 item = row[name]
                 mapping[name] = None if np.ma.is_masked(item) else item.item() if hasattr(item, "item") else item
-            full_rows.append(tuple(mapping.get(name) for name in expected_names))
-    projection = _TabularProjection(_COLUMNS, tuple(full_rows), tuple(sorted(metadata.items())))
+            rows_by_kind.setdefault(kind, []).append(
+                tuple(mapping.get(name) for name in expected_names)
+            )
+
+    report_rows = rows_by_kind.get("report", [])
+    field_rows = rows_by_kind.get("field", [])
+    crossing_rows = rows_by_kind.get("crossing", [])
+    ordered_rows = list(report_rows)
+    for ordinal, field_row in enumerate(field_rows):
+        ordered_rows.append(field_row)
+        ordered_rows.extend(
+            row for row in crossing_rows if row[1] == ordinal
+        )
+    if len(ordered_rows) != len(report_rows) + len(field_rows) + len(crossing_rows):
+        raise ValueError("VOTable rows cannot be joined without loss.")
+    projection = _TabularProjection(
+        _COLUMNS,
+        tuple(ordered_rows),
+        tuple(sorted(metadata.items())),
+    )
     return _report_from_projection(projection)
