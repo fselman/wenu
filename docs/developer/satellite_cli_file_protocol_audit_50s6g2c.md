@@ -321,3 +321,18 @@ focused tests specified here. Preserve the accepted batch science and report
 encoders without duplication. This acceptance does not authorize provider
 access, new execution science, tracks, charts, visibility, illumination,
 brightness, detector effects, scheduling adapters, or unrelated refactoring.
+
+## 15. Candidate implementation verification
+
+Treat the bounded implementation at
+`e08ebf5e0061dbf1e69c8cc58a55a9696e785300` as a verified candidate awaiting
+Fernando's separate scientific and architectural acceptance. On Fernando's
+Mac, the 235-test immediate CLI/batch/report/documentation gate passed in 7.63
+seconds; the complete 2,709-test plugin-disabled suite passed in 237.35
+seconds. The module help preflight, diff check, synchronized branch, and clean
+working tree also passed.
+
+This evidence establishes repository compatibility, not acceptance. Preserve
+the offline adapter, validation-only coordinator seam, three closed schemas,
+fixed report bundle, no-clobber/symlink/exit/interruption contracts, and focused
+fault coverage. Do not merge or begin 50S.6G.3A before separate acceptance.

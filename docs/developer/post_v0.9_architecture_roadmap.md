@@ -2931,3 +2931,10 @@ The candidate implementation is confined to the accepted offline CLI/file
 protocol. It adds no later milestone. Verification and Fernando's separate
 scientific and architectural acceptance are required before merge or
 50S.6G.3A.
+
+## 50S.6G.2C verified candidate state
+
+The bounded implementation at `e08ebf5` is repository-verified but unaccepted.
+The immediate 235-test gate and complete 2,709-test plugin-disabled suite
+passed. Merge and 50S.6G.3A remain unauthorized pending Fernando's separate
+scientific and architectural acceptance.

@@ -7522,7 +7522,15 @@ def test_50s6g2a_records_accepted_implementation_boundary():
         assert "179" in document
         assert "5.05 seconds" in document
 
-    architecture, roadmap, reference, source_tree, coordinates, instructions, log = documents
+    (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinates,
+        instructions,
+        log,
+    ) = documents
     assert "Accepted 50S.6G.2A exact-report implementation" in architecture
     assert "50S.6G.2A accepted implementation" in roadmap
     assert "Accepted 50S.6G.2A exact-report API" in reference
@@ -7890,3 +7898,46 @@ def test_50s6g2c_candidate_implementation_is_bounded_and_offline():
     assert "Candidate 50S.6G.2C implementation placement" in source_tree
     assert "Candidate 50S.6G.2C implementation boundary" in instructions
     assert "Do not merge or begin 50S.6G.3A" in instructions
+
+
+def test_50s6g2c_records_candidate_verification_without_acceptance():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_cli_file_protocol_audit_50s6g2c.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            INSTRUCTIONS,
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "e08ebf5e0061dbf1e69c8cc58a55a9696e785300",
+        "235-test immediate",
+        "7.63 seconds",
+        "2,709-test plugin-disabled suite",
+        "237.35 seconds",
+        "verified candidate awaiting",
+        "not acceptance",
+        "Do not merge or begin 50S.6G.3A",
+    ):
+        assert phrase in audit
+
+    architecture, roadmap, reference, source_tree, coordinates, instructions, log = documents
+    assert "Verified candidate 50S.6G.2C implementation" in architecture
+    assert "50S.6G.2C verified candidate state" in roadmap
+    assert "Verified candidate 50S.6G.2C API" in reference
+    assert "Verified candidate 50S.6G.2C placement" in source_tree
+    assert "Verified candidate 50S.6G.2C coordinate review" in coordinates
+    assert (
+        "Candidate 50S.6G.2C implementation verification boundary"
+        in instructions
+    )
+    assert "Verified candidate 50S.6G.2C implementation" in log
+    assert "Merge and 50S.6G.3A remain unauthorized" in roadmap

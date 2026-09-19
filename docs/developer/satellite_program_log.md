@@ -1003,3 +1003,11 @@ current-documentation tests in 5.29 seconds, a clean diff check, and a clean,
 synchronized Mac working tree. Only the bounded offline implementation is
 authorized next; no track, chart, provider, new science, visibility,
 illumination, or brightness work is authorized.
+
+## 2026-09-19 — Verified candidate 50S.6G.2C implementation
+
+At `e08ebf5`, 235 immediate tests passed in 7.63 seconds and all 2,709
+plugin-disabled repository tests passed in 237.35 seconds. CLI help, diff, and
+clean synchronized-tree checks also passed. The implementation remains a
+candidate awaiting Fernando's separate scientific and architectural
+acceptance.

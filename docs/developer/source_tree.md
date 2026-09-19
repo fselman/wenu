@@ -2490,3 +2490,9 @@ accepted composition seam.
   fault owner; it does not repeat orbital or report-format science.
 - `satellites/crossing_batch.py`: adds only public validation-only composition
   of its existing `_validate` owner; the calculation route reuses it.
+
+## Verified candidate 50S.6G.2C placement
+
+The candidate source, schemas, entry point, and durable protocol tests at
+`e08ebf5` passed their immediate gate and the complete repository suite. No
+additional production owner or test file was introduced by verification.

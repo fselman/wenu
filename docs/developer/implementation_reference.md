@@ -3256,3 +3256,10 @@ The adapter owns strict protocol decoding, fixed exit statuses, safe paths,
 staging, atomic no-clobber publication, and manifest construction. It delegates
 all scientific validation, calculation, report identity, ECSV, and VOTable
 behavior to the accepted owners.
+
+## Verified candidate 50S.6G.2C API
+
+The candidate `validate()` seam and installed CLI at `e08ebf5` passed the
+immediate and complete repository gates. This verification changes no public
+authority: the API remains candidate until Fernando separately accepts the
+scientific and architectural implementation.

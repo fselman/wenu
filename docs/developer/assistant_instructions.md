@@ -1463,3 +1463,12 @@ documentation. Do not add provider access, acquisition, new execution science,
 tracks, charts, visibility, illumination, brightness, detector effects,
 scheduling adapters, or unrelated refactoring. Do not merge or begin
 50S.6G.3A before separate verification and acceptance.
+
+## Candidate 50S.6G.2C implementation verification boundary
+
+Treat `e08ebf5e0061dbf1e69c8cc58a55a9696e785300` as a verified candidate,
+not an accepted implementation. The 235-test immediate gate passed in 7.63
+seconds and all 2,709 plugin-disabled tests passed in 237.35 seconds on
+Fernando's Mac; the CLI help preflight, diff check, branch synchronization, and
+working-tree check were clean. Do not merge, delete branches, or begin
+50S.6G.3A without Fernando's separate scientific and architectural acceptance.
