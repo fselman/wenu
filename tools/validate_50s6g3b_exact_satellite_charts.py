@@ -109,20 +109,20 @@ def specimen_track():
         entry_instant=iso(START),
         closest_approach_instant=iso(START + timedelta(seconds=6)),
         exit_instant=iso(START + timedelta(seconds=12)),
-        closest_approach_deg=0.1,
+        closest_approach_deg=0.01,
         range_km=500.0,
         angular_rate_deg_per_s=1.0,
         provenance=("deterministic 50S.6G.3B specimen",),
     )
     samples = []
     for seconds, longitude, latitude, roles in (
-        (0.0, 3.0, 0.00, ("entry",)),
-        (2.0, 4.0, 0.05, ()),
-        (4.0, 5.0, 0.08, ()),
-        (6.0, 6.0, 0.10, ("closest_approach",)),
-        (8.0, 7.0, 0.08, ()),
-        (10.0, 8.0, 0.05, ()),
-        (12.0, 9.0, 0.00, ("exit",)),
+        (0.0, 3.0, 0.000, ("entry",)),
+        (2.0, 4.0, 0.005, ()),
+        (4.0, 5.0, 0.008, ()),
+        (6.0, 6.0, 0.010, ("closest_approach",)),
+        (8.0, 7.0, 0.008, ()),
+        (10.0, 8.0, 0.005, ()),
+        (12.0, 9.0, 0.000, ("exit",)),
     ):
         vector = direction(longitude, latitude)
         samples.append(
