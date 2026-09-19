@@ -239,6 +239,8 @@ _REQUEST_GEOMETRY_LAYERS = frozenset({
     "horizon",
     "solar_system_track",
     "solar_system_track_symbol",
+    "satellite_exact_track",
+    "satellite_exact_track_events",
     "venus_disk_illuminated",
     "venus_disk_limb",
     "venus_disk_terminator",
