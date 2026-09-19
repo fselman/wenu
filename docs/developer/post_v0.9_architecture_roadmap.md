@@ -2821,3 +2821,12 @@ results.
 This audit changes no runtime. ECSV/VOTable, CLI/files, tracks, charts,
 illumination, brightness, detector effects, provider access, and another real
 matrix run remain excluded. Implementation requires separate acceptance.
+
+
+## 50S.6G.2A accepted audit state
+
+Fernando scientifically and architecturally accepted the exact-report audit on
+2026-09-19 at `835ddfe`, after 175 documentation tests passed in 3.27 seconds
+with clean checks. The next authorized work is only the bounded immutable
+logical model, packaged JSON Schema, deterministic JSON encoder/decoder, and
+focused round-trip tests. 50S.6G.2B and later work remain unauthorized.
