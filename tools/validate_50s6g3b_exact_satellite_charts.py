@@ -297,6 +297,44 @@ def main():
     for output in outputs:
         if not output.is_file() or output.stat().st_size == 0:
             raise RuntimeError(f"missing specimen: {output}")
+
+    regional_svg = (
+        output_directory / "50s6g3b-regional.svg"
+    ).read_text(encoding="utf-8")
+    binocular_svg = (
+        output_directory / "50s6g3b-binocular.svg"
+    ).read_text(encoding="utf-8")
+    required_semantics = (
+        "sky/artificial_satellites/exact_local_tracks/",
+        "/track",
+        "/events",
+        "track_identity_sha256",
+    )
+    if any(value not in regional_svg for value in required_semantics):
+        raise RuntimeError("regional SVG lacks exact-track semantics.")
+    if any(value not in binocular_svg for value in required_semantics):
+        raise RuntimeError("binocular SVG lacks exact-track semantics.")
+    if any(
+        label not in regional_svg
+        for label in (
+            ">entry</text>",
+            ">closest approach</text>",
+            ">exit</text>",
+        )
+    ):
+        raise RuntimeError("regional SVG lacks a visible exact event label.")
+    if any(
+        label in binocular_svg
+        for label in (
+            ">entry</text>",
+            ">closest approach</text>",
+            ">exit</text>",
+        )
+    ):
+        raise RuntimeError("binocular SVG unexpectedly contains event labels.")
+    if '"samples":' in regional_svg or '"samples":' in binocular_svg:
+        raise RuntimeError("SVG provenance recursively serialized samples.")
+
     for output in outputs:
         print(output)
 
