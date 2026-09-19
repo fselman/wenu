@@ -596,4 +596,5 @@ logical record; it does not replace the separate snapshot digest.
 Chronological decisions, candidate states, verification evidence, and
 acceptance records are maintained separately in
 [satellite_program_log.md](satellite_program_log.md). They are not part of this
-pedagogical guide.
+pedagogical guide. Keep the two responsibilities linked, but do not merge
+documents mechanically.
