@@ -22,6 +22,7 @@ V09_ROADMAP = ARCHIVE / "migration_history/wenu_migration_0.8_to_0.9.md"
 FUTURE_ROADMAP = DEVELOPER / "post_v0.9_architecture_roadmap.md"
 V095_TARGET = DEVELOPER / "target_architecture_v0.9.5.md"
 COORDINATE_GUIDE = DEVELOPER / "coordinate_system_guide_v0.9.5.md"
+SATELLITE_PROGRAM_LOG = DEVELOPER / "satellite_program_log.md"
 PUBLIC_INTERFACE_AUDIT = DEVELOPER / "archive/audits/public_interface_audit_v0.9.5.md"
 SCENE_DEPENDENCY_AUDIT = (
     DEVELOPER / "archive/milestone_history/49d_scene/celestial_scene_dependency_audit_49d1.md"
@@ -3180,6 +3181,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_equivalence_matrix_audit_50s6g1b2d.md",
         "satellite_snapshot_propagation_audit_50s4a.md",
         "satellite_guide.md",
+        "satellite_program_log.md",
         "source_tree.md",
         "target_architecture_v0.9.5.md",
     }
@@ -4907,7 +4909,7 @@ def test_50s1_documents_provider_neutral_satellite_crossing_domain():
     roadmap = " ".join(read(
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     architecture = " ".join(read(V09_CURRENT).split())
     reference = " ".join(read(
         DEVELOPER / "implementation_reference.md"
@@ -4965,7 +4967,7 @@ def test_50s2a_audits_satchecker_provider_contract_before_adapter():
     roadmap = " ".join(read(
         DEVELOPER / "post_v0.9_architecture_roadmap.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(
         DEVELOPER / "coordinate_system_guide_v0.9.5.md"
@@ -5008,7 +5010,7 @@ def test_50s2b_documents_cached_satchecker_adapter_candidate():
     audit = " ".join(read(
         DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -5045,7 +5047,7 @@ def test_50s2b_records_bounded_live_provider_normalization():
         DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
     ).split())
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
 
     for phrase in (
         "Bounded live transport evidence",
@@ -5076,7 +5078,7 @@ def test_50s2b_records_accepted_implementation_and_gates():
     audit = " ".join(read(
         DEVELOPER / "satchecker_provider_contract_audit_50s2a.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
 
     for text in (
         architecture,
@@ -5103,7 +5105,7 @@ def test_50s3a_audits_sampled_candidate_reports_and_shared_path_drawing():
     ).split())
     index = " ".join(read(DEVELOPER / "README.md").split())
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
 
@@ -5146,7 +5148,7 @@ def test_50s3b_documents_candidate_reports_and_shared_path_layers():
     audit = " ".join(read(
         DEVELOPER / "satellite_report_drawing_audit_50s3a.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -5203,7 +5205,7 @@ def test_50s4a_audits_snapshot_propagation_and_topocentric_contracts():
     index = " ".join(read(DEVELOPER / "README.md").split())
     architecture = " ".join(read(V09_CURRENT).split())
     roadmap = " ".join(read(FUTURE_ROADMAP).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
@@ -5265,7 +5267,7 @@ def test_50s4b_documents_immutable_omm_snapshot_boundary():
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -5301,7 +5303,7 @@ def test_50s4b_records_complete_and_installed_wheel_evidence():
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     assert "production commit `d3cb597`" in architecture
     assert "expanded focused gate passed all 158 tests" in audit
     assert "complete plugin-disabled suite passed all 2,483 tests" in audit
@@ -5325,7 +5327,7 @@ def test_50s4c_documents_validated_sgp4_teme_boundary():
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -5362,7 +5364,7 @@ def test_50s4c_records_complete_and_installed_wheel_evidence():
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
 
     assert "production commit `e0d7c78`" in architecture
     assert "expanded focused gate passed all 167 tests" in audit
@@ -5390,7 +5392,7 @@ def test_50s4d_documents_accepted_topocentric_boundary():
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -5434,7 +5436,7 @@ def test_50s4e_documents_accepted_propagated_specimen_boundary():
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for text in (
@@ -5467,7 +5469,7 @@ def test_50s4e_records_complete_and_accepted_gate_evidence():
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_propagation_audit_50s4a.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
 
     for text in (architecture, roadmap, audit, guide):
         assert "all 2,522 tests" in text
@@ -5508,7 +5510,7 @@ def test_50s5a_audits_complete_local_crossing_oracle_contract():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -5572,7 +5574,7 @@ def test_50s5b_documents_accepted_complete_local_crossing_oracle():
     audit = " ".join(read(
         DEVELOPER / "satellite_crossing_oracle_audit_50s5a.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     assert "Accepted 50S.5B complete local crossing oracle" in architecture
@@ -5613,7 +5615,7 @@ def test_50s6a_records_accepted_conservative_crossing_acceleration():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -5668,7 +5670,7 @@ def test_50s6b_documents_accepted_cone_shell_selector():
     audit = " ".join(read(
         DEVELOPER / "satellite_crossing_acceleration_audit_50s6a.md"
     ).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     assert "Accepted 50S.6B conservative cone-shell selector" in architecture
@@ -5714,7 +5716,7 @@ def test_50s6c_audits_exact_solver_coordination_and_admission():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -5770,7 +5772,7 @@ def test_50s6d_documents_accepted_accelerated_coordinator():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     assert "accepted exact-solver coordination" in index
@@ -5854,7 +5856,7 @@ def test_50s6e_audits_multifov_interchange_and_lunar_illumination():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -5923,7 +5925,7 @@ def test_50s6f_documents_candidate_atomic_multifov_coordinator():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -5984,7 +5986,7 @@ def test_50s6g_audits_representative_delivery_reports_files_and_tracks():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -6058,7 +6060,7 @@ def test_50s6g1a_documents_accepted_external_snapshot_loader():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -6114,7 +6116,7 @@ def test_50s6g1b_accepts_representative_snapshot_preflight_and_evidence():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
     delivery = " ".join(read(
         DEVELOPER / "satellite_delivery_audit_50s6g.md"
@@ -6192,7 +6194,7 @@ def test_50s6g1b1_documents_offline_snapshot_builder_boundary():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
     audit = " ".join(read(
         DEVELOPER / "satellite_snapshot_preflight_audit_50s6g1b.md"
@@ -6272,7 +6274,7 @@ def test_50s6g1b2a_accepts_exact_shared_external_admission():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -6324,7 +6326,7 @@ def test_50s6g1b2a_records_acceptance_and_bounded_next_step():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -6352,7 +6354,7 @@ def test_50s6g1b2b_documents_accepted_shared_digest_admission():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     assert "Accepted 50S.6G.1B.2B implementation record" in audit
@@ -6405,7 +6407,7 @@ def test_50s6g1b2b_records_acceptance_and_authorizes_only_medium_work():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -6433,7 +6435,7 @@ def test_50s6g1b2c_accepts_deterministic_medium_specimen():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -6484,7 +6486,7 @@ def test_50s6g1b2c_records_acceptance_and_fake_data_only_authority():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -6509,7 +6511,7 @@ def test_50s6g1b2c_documents_candidate_fake_data_implementation():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     assert "Candidate 50S.6G.1B.2C fake-data implementation" in audit
@@ -6556,7 +6558,7 @@ def test_50s6g1b2c_records_accepted_fake_data_implementation_boundary():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -6600,7 +6602,7 @@ def test_50s6g1b2c_documents_candidate_real_medium_evidence():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -6646,7 +6648,7 @@ def test_50s6g1b2c_records_accepted_exact_real_specimen():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -6693,7 +6695,7 @@ def test_50s6g1b2d_proposes_exact_equivalence_resource_matrix():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -6761,7 +6763,7 @@ def test_50s6g1b2d_records_acceptance_and_fake_data_only_authority():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -6804,7 +6806,7 @@ def test_50s6g1b2d_documents_candidate_fake_data_implementation():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -6840,7 +6842,7 @@ def test_50s6g1b2d_records_fake_data_implementation_acceptance():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -6877,7 +6879,7 @@ def test_50s6g1b2d_audits_real_execution_readiness_fail_closed():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -6917,7 +6919,7 @@ def test_50s6g1b2d_records_accepted_real_execution_readiness_audit():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -6955,7 +6957,7 @@ def test_50s6g1b2d1_documents_single_real_execution_authorization():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -6994,7 +6996,7 @@ def test_50s6g1b2d2_documents_parent_only_progress_boundary():
     ).split())
     source_tree = " ".join(read(DEVELOPER / "source_tree.md").split())
     coordinate_guide = " ".join(read(COORDINATE_GUIDE).split())
-    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    guide = " ".join(read(SATELLITE_PROGRAM_LOG).split())
     instructions = " ".join(read(INSTRUCTIONS).split())
 
     for phrase in (
@@ -7024,7 +7026,7 @@ def test_50s6g1b2d2_records_candidate_progress_verification():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -7060,7 +7062,7 @@ def test_50s6g1b2d2_records_progress_display_acceptance():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -7093,7 +7095,7 @@ def test_50s6g1b2d3_records_renewed_single_real_run_authorization():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -7128,7 +7130,7 @@ def test_50s6g1b2d3_records_acceptance_of_renewed_authorization():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -7163,7 +7165,7 @@ def test_50s6g1b2d4_records_candidate_first_real_matrix_evidence():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -7208,7 +7210,7 @@ def test_50s6g1b2d4_records_acceptance_of_first_real_matrix_evidence():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -7246,7 +7248,7 @@ def test_50s6g1b_candidate_bounded_closure_preserves_limitations():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -7295,7 +7297,7 @@ def test_50s6g1b_records_accepted_bounded_closure():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
         )
     )
@@ -7338,7 +7340,7 @@ def test_50s6g2a_candidate_exact_crossing_report_audit():
             DEVELOPER / "implementation_reference.md",
             DEVELOPER / "source_tree.md",
             COORDINATE_GUIDE,
-            DEVELOPER / "satellite_guide.md",
+            SATELLITE_PROGRAM_LOG,
             INSTRUCTIONS,
             DEVELOPER / "satellite_delivery_audit_50s6g.md",
         )
@@ -7375,3 +7377,31 @@ def test_50s6g2a_candidate_exact_crossing_report_audit():
     assert "not a visibility forecast" in documents[5]
     assert "Do not implement until Fernando separately accepts" in documents[6]
     assert "Candidate 50S.6G.2A exact-report refinement" in documents[7]
+
+def test_satellite_guide_is_pedagogical_and_history_is_separate():
+    guide = read(DEVELOPER / "satellite_guide.md")
+    log = read(SATELLITE_PROGRAM_LOG)
+    index = read(DEVELOPER / "README.md")
+
+    for phrase in (
+        "Acronyms and specialized abbreviations",
+        "Canonical satellite flow",
+        "Propagation and reference systems",
+        "Field and crossing definitions",
+        "Complete-scan correctness oracle",
+        "Conservative high-performance search",
+        "Illumination",
+        "Apparent brightness",
+        "Validation hierarchy",
+        "Source ownership direction",
+        "Exact crossing reports",
+    ):
+        assert phrase in guide
+
+    assert "Candidate real-execution readiness audit" not in guide
+    assert "Accepted first real equivalence evidence" not in guide
+    assert "Candidate real-execution readiness audit" in log
+    assert "Accepted first real equivalence evidence" in log
+    assert "Accepted 50S.6G.2A exact-report audit" in log
+    assert "pedagogical artificial-satellite" in index
+    assert "chronological 50S" in index
