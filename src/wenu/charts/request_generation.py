@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field, replace
+from dataclasses import dataclass, field, replace
 
 from wenu.observer import Observer
 from wenu.rendering.matplotlib import MatplotlibRenderer
@@ -48,6 +48,7 @@ class ChartRequestBuild:
     minor_body_session: object | None = None
     prior_source_resolvers: tuple = ()
     request_minor_body_layers: tuple = ()
+    request_satellite_track_layers: tuple = ()
     _closed: bool = field(default=False, init=False, repr=False)
 
     @property
@@ -65,6 +66,8 @@ class ChartRequestBuild:
                 restore_sky_source_resolvers(self.prior_source_resolvers)
             if self.minor_body_session is not None:
                 self.minor_body_session.close()
+            for layer in self.request_satellite_track_layers:
+                self.sky.remove(layer)
             for layer in self.request_minor_body_layers:
                 self.sky.remove(layer)
                 self.sky.solar_system_bodies.pop(
@@ -198,10 +201,14 @@ def export_prepared_chart(
                 "copyright",
                 None,
             )
+            from .request_satellite_tracks import (
+                chart_request_provenance_parameters,
+            )
+
             provenance = SvgProvenance(
                 product_name=request.family,
                 title=title,
-                parameters=asdict(request),
+                parameters=chart_request_provenance_parameters(request),
                 copyright=copyright_text,
             )
             export_options["svg_provenance"] = provenance
@@ -229,6 +236,7 @@ def _prepare_with_sphere(
     session = None
     prior = ()
     request_layers = []
+    satellite_layers = ()
     from wenu.minor_body_resources import (
         MinorBodyResourceSession,
         bind_sky_source_resolver,
@@ -265,11 +273,20 @@ def _prepare_with_sphere(
                 None if session is None else session.source_binding
             ),
         )
+        from .request_satellite_tracks import (
+            configure_chart_request_satellite_tracks,
+        )
+
+        satellite_layers = configure_chart_request_satellite_tracks(
+            sky, resolved.request
+        )
         prepare_options = {}
         if observer is not None:
             prepare_options["observer"] = observer
         prepared = prepare_chart_request(sky, resolved, **prepare_options)
     except BaseException:
+        for layer in reversed(satellite_layers):
+            sky.remove(layer)
         if prior:
             from wenu.minor_body_resources import restore_sky_source_resolvers
 
@@ -284,6 +301,7 @@ def _prepare_with_sphere(
         minor_body_session=session,
         prior_source_resolvers=prior,
         request_minor_body_layers=tuple(request_layers),
+        request_satellite_track_layers=tuple(satellite_layers),
     )
 
 
