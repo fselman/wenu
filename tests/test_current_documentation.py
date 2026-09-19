@@ -7782,7 +7782,7 @@ def test_50s6g2c_candidate_cli_file_protocol_is_atomic_explicit_and_bounded():
         "no-clobber failure",
         "SIGINT/KeyboardInterrupt returns 130",
         "SIGTERM",
-        "Atomic filesystem publication",
+        "Filesystem atomicity is limited to one filesystem",
         "invalid FoVs do not reach",
         "This candidate authorizes no implementation",
     ):
