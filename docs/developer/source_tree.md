@@ -2440,3 +2440,23 @@ thin ECSV/VOTable adapters adjacent to the accepted exact-report owner.
 Placement remains subject to the implementation preflight described above;
 the acceptance authorizes no duplicated mapping, filesystem/CLI owner, or
 unrelated ownership move.
+
+
+## Accepted complete 50S.6G.2B ownership
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.6G.2B implementation on 2026-09-19. Executable commit `3bbd82f` passed
+208 focused tests in 6.68 seconds and all 2,689 plugin-disabled tests in
+215.15 seconds. Documentation evidence commit `ece80c7` passed all 186
+current-documentation tests in 4.60 seconds; diff checks and the clean,
+synchronized Mac working tree passed.
+
+`src/wenu/_satellite_tabular_reports.py` owns exactly one reusable private
+schema-derived format-neutral projection plus thin in-memory ECSV and VOTable
+1.5 adapters. `src/wenu/satellite_crossing_reports.py` remains the logical
+exact-report owner and exposes only delegating methods. The adapter owns wire
+metadata, units, masks, joins, limits, TIMESYS, and nullable-Unicode
+`__is_null` fields; canonical JSON and `report_identity_sha256` remain
+authoritative. Tests remain in `tests/test_satellite_crossing_reports.py`.
+No later filesystem, CLI, provider, science, track, or chart ownership is
+authorized.
