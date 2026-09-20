@@ -62,10 +62,10 @@ def validate_satellite_exact_track_requests(request):
         raise ValueError("satellite_exact_tracks cannot repeat a track identity.")
     if not displays:
         return displays
-    if request.family not in {"regional", "binocular"}:
+    if request.family not in {"planisphere", "regional", "binocular"}:
         raise ValueError(
-            "Exact satellite tracks are supported only by regional and "
-            "binocular charts."
+            "Exact satellite tracks are supported only by planisphere, "
+            "regional, and binocular charts."
         )
     if (
         request.projection != "stereographic"
