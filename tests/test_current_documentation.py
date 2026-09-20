@@ -8689,3 +8689,30 @@ def test_50s6h_records_candidate_offline_planning_advisory_implementation():
     )
     for document, phrase in zip(documents, expected, strict=True):
         assert phrase in document
+
+    for phrase in (
+        "Verified candidate evidence",
+        "32dce675e82ab9bdd806455a0c3e423a3e6f67b3",
+        "226 focused and",
+        "2,769 plugin-disabled repository",
+        "217.10 seconds",
+        "36899d514813784058a2ab887244b6dafbc371c78dec1111f0cc85dfdabaeba7",
+        "2e413ca5f5fe8f0b520424c159252f793fad7999baf54cbc8abfb869c3e81c38",
+        "a2a83fbf4bd15c3634a557f51802f41e1551e62e93dbce60c19b7326f73241ae",
+        "network_access: false",
+        "remains unaccepted",
+    ):
+        assert phrase in audit
+
+    verified = (
+        "Verified candidate 50S.6H implementation state",
+        "Verified candidate 50S.6H gate",
+        "Verified candidate 50S.6H behavior",
+        "Verified candidate 50S.6H source evidence",
+        "Verified candidate 50S.6H coordinate evidence",
+        "Verified candidate advisory specimens",
+        "Verified candidate 50S.6H implementation boundary",
+        "Verified candidate 50S.6H implementation evidence",
+    )
+    for document, phrase in zip(documents, verified, strict=True):
+        assert phrase in document
