@@ -2597,3 +2597,16 @@ family admission to planisphere. Existing request realization, generation,
 FullSkyChart, exact-track layer, style, semantic, renderer, and exporter owners
 remain unchanged. A deterministic physical review tool may be added under
 tools/. No new production module is authorized.
+
+## Verified candidate 50S.6G.4B implementation placement
+
+- `charts/request_satellite_tracks.py` has the sole production behavior
+  change: ordinary `planisphere` joins the admitted exact-track families.
+- Existing request realization, generation, `FullSkyChart`, exact-track
+  layers, semantics, styles, renderers, and exporters remain unchanged.
+- `tests/test_satellite_exact_tracks.py` owns the added admission, rejection,
+  coordinate-policy, and empty-state evidence.
+- `tools/validate_50s6g4b_exact_satellite_planisphere.py` owns the physical
+  PNG, PDF, semantic-SVG, and digest-manifest review.
+
+No new production owner is introduced.

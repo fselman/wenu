@@ -303,3 +303,23 @@ moonlight, lunar Earthshine, brightness, detector effects, scheduling
 adapters, 50S.7, 50S.8, merge of an implementation, or unrelated refactoring.
 The corrected implementation remains a candidate until separately verified,
 physically reviewed, and accepted.
+
+## 50S.6G.4B verified candidate implementation record
+
+Executable candidate `91eafff5ca7f0069806f7f059d19f7bb9ca123aa`
+widens only `validate_satellite_exact_track_requests()` admission to the
+ordinary `planisphere` family. It adds focused admission and empty-state
+evidence plus one deterministic physical review tool; every existing
+realization, lifecycle, projection, boundary, semantic, provenance, renderer,
+and exporter owner remains unchanged.
+
+The 252-test focused gate passed in 7.08 seconds and all 2,744
+plugin-disabled repository tests passed in 220.63 seconds. One physically
+propagated La Ligua visit produced PNG, PDF, and semantic SVG from 65 retained
+samples with track digest
+`3f526de147caae6832c7a56330d460948c4b8963c7cdbf753618682e70d4248a`.
+Fernando reviewed the ordinary horizon-bounded chart and identified only a
+non-blocking long specimen title; the companion manifest retains the reference
+instant and complete event interval. Diff, exact-head, upstream, and clean-tree
+checks passed. The candidate remains unaccepted and authorizes no merge or
+later work.

@@ -1101,3 +1101,19 @@ current-documentation tests in 6.14 seconds plus clean diff, exact-head,
 upstream, and working-tree checks. Only the bounded corrected 50S.6G.4B
 ordinary planisphere implementation and its focused and physical acceptance
 evidence are authorized next.
+
+## 2026-09-20 — Verified candidate 50S.6G.4B implementation
+
+Executable candidate `91eafff5` widened exact-track admission only to the
+ordinary AltAz stereographic planisphere and added focused plus physical review
+evidence. The focused gate passed 252 tests in 7.08 seconds and the full
+plugin-disabled suite passed 2,744 tests in 220.63 seconds. A 65-sample
+physically propagated La Ligua visit produced non-empty PNG, PDF, and semantic
+SVG with track digest
+`3f526de147caae6832c7a56330d460948c4b8963c7cdbf753618682e70d4248a`.
+
+Fernando reviewed the horizon-bounded chart and noted that its test-only title
+was too long; the manifest already carries the chart and event times, so this
+was non-blocking. Exact-head, upstream, diff, and clean-tree checks passed.
+The candidate awaits separate scientific and architectural acceptance; no
+merge or later work is authorized.

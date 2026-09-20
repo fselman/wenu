@@ -1723,3 +1723,12 @@ admission to family="planisphere" and add focused and physical acceptance
 evidence. It must reuse FullSkyChart, the fixed horizontal realization context,
 request-owned lifecycle, canonical rendering/export, and bounded provenance.
 No paired equatorial or later satellite behavior is authorized.
+
+## Verified candidate 50S.6G.4B ordinary-planisphere implementation
+
+The candidate admits already-realized exact tracks on the existing ordinary
+horizontal stereographic planisphere. `FullSkyChart`, the fixed AltAz
+realization context, horizon boundary, request-owned lifecycle, semantics,
+bounded provenance, renderer, and exporters remain the implemented owners.
+No new chart, coordinate, projection, layer, renderer, exporter, or scientific
+calculation is introduced. This remains an unaccepted candidate.

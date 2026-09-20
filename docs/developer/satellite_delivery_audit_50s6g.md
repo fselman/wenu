@@ -524,3 +524,13 @@ Fernando accepted the ordinary AltAz stereographic planisphere correction on
 request admission to planisphere and provide focused plus physical La Ligua
 PNG, PDF, and semantic-SVG evidence. The rejected paired-polar path and all
 later satellite science remain unauthorized.
+
+## Verified candidate 50S.6G.4B delivery evidence
+
+Candidate `91eafff5` generated one ordinary La Ligua planisphere as PNG, PDF,
+and semantic SVG through the canonical request and export route. The physical
+visit retained 65 samples and digest
+`3f526de147caae6832c7a56330d460948c4b8963c7cdbf753618682e70d4248a`;
+the companion manifest records site, chart instant, complete event interval,
+source revision, file sizes, and output digests. This evidence remains an
+unaccepted delivery candidate.

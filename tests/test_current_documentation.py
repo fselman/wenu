@@ -8461,3 +8461,49 @@ def test_50s6g4a_records_corrective_acceptance_and_bounded_authority():
     assert "Accepted corrective 50S.6G.4A refinement" in delivery
     assert "Accepted corrective 50S.6G.4A audit" in log
     assert "later satellite work remain unauthorized" in roadmap
+
+def test_50s6g4b_records_verified_altaz_planisphere_candidate():
+    audit = " ".join(read(
+        DEVELOPER
+        / "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
+    ).split())
+    documents = tuple(
+        read(path)
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "50S.6G.4B verified candidate implementation record",
+        "91eafff5ca7f0069806f7f059d19f7bb9ca123aa",
+        "252-test focused gate passed in 7.08 seconds",
+        "2,744 plugin-disabled repository tests passed in 220.63 seconds",
+        "65 retained samples",
+        "3f526de147caae6832c7a56330d460948c4b8963c7cdbf753618682e70d4248a",
+        "non-blocking long specimen title",
+        "candidate remains unaccepted",
+    ):
+        assert phrase in audit
+
+    expected = (
+        "Verified candidate 50S.6G.4B ordinary-planisphere implementation",
+        "50S.6G.4B verified candidate state",
+        "Verified candidate 50S.6G.4B request behavior",
+        "Verified candidate 50S.6G.4B implementation placement",
+        "Verified candidate 50S.6G.4B AltAz behavior",
+        "Verified candidate ordinary-planisphere exact track",
+        "Verified candidate 50S.6G.4B implementation boundary",
+        "Verified candidate 50S.6G.4B delivery evidence",
+        "Verified candidate 50S.6G.4B implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document

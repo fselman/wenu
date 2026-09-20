@@ -3019,6 +3019,15 @@ circumpolar, equidistant-polar, combined-face, pouch-sheet, visibility,
 illumination, brightness, detector, scheduling, 50S.7, 50S.8, and later
 satellite work remain unauthorized.
 
+## 50S.6G.4B verified candidate state
+
+Candidate `91eafff5` implements only ordinary AltAz stereographic planisphere
+admission, focused evidence, and the physical La Ligua PNG/PDF/semantic-SVG
+review tool. Focused and full repository gates passed, and the generated chart
+was physically reviewed. Merge, acceptance, paired polar, circumpolar,
+Galactic all-sky, provider, report/CLI, visibility, illumination, brightness,
+detector, scheduling, 50S.7, and 50S.8 work remain unauthorized.
+
 ## 50S.6G.4A corrective audit state
 
 Fernando rejected the unmerged 50S.6G.4B paired equatorial polar-planisphere

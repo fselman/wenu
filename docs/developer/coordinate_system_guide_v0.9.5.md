@@ -4017,3 +4017,11 @@ reference instant; sample UTC values remain evidence. FullSkyChart projection
 and horizon clipping are coordinate-neutral presentation and create no
 scientific event or visibility claim. No new coordinate calculation is
 authorized by 50S.6G.4B.
+
+## Verified candidate 50S.6G.4B AltAz behavior
+
+Candidate `91eafff5` changes no coordinate calculation. The complete retained
+geometric topocentric GCRS-axis track continues to be transformed once into
+the chart's fixed AltAz product frame at the request reference instant.
+Per-sample UTC remains evidence, and horizon clipping remains presentation
+without creating events or a visibility claim.

@@ -1610,3 +1610,13 @@ existing fixed AltAz request path, horizon boundary, exact-track lifecycle,
 semantics, provenance, renderer, and exporters. All paired-polar, circumpolar,
 Galactic all-sky, provider, CLI/report, visibility, illumination, brightness,
 detector, scheduling, 50S.7, and 50S.8 work remains unauthorized.
+
+## Verified candidate 50S.6G.4B implementation boundary
+
+Treat executable commit `91eafff5` as a verified candidate awaiting Fernando's
+separate scientific and architectural acceptance. It changes only ordinary
+planisphere admission and adds focused tests plus a physical La Ligua review
+tool. The focused 252-test gate and all 2,744 plugin-disabled repository tests
+passed; the PNG/PDF/semantic-SVG specimen retained 65 samples and passed visual
+review with only a non-blocking specimen-title observation. Do not merge or
+begin later satellite work before separate acceptance.
