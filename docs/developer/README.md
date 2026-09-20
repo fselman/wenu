@@ -110,5 +110,5 @@ in the same change.
   — candidate documentation-only contract for strict exhaustive/accelerated
   equality and external matrix evidence.
 - [50S.6H observatory-planning adapter audit](satellite_observatory_planning_adapter_audit_50s6h.md)
-  — candidate documentation-only contract for an offline general planning
+  — accepted documentation-only contract for an offline general planning
   advisory, a non-writing Paranal profile, and a reserved ELT profile.
