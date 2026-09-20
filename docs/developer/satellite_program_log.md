@@ -1152,3 +1152,14 @@ that intersects caller-supplied planned UTC intervals with accepted exact
 crossing intervals. Paranal remains non-writing context and ELT remains a
 reserved unsupported profile. Facility access or writes, scheduling decisions, ELT operational mapping, and
 50S.7+ work remain unauthorized.
+## Candidate 50S.6H offline planning-advisory implementation
+
+After acceptance and merge of the audit at `4923cf3`, the bounded feature
+candidate added the frozen general planning context, half-open overlap
+projection, strict canonical JSON advisory, typed stable failures, public
+exports, and focused tests.
+
+The candidate remains offline and observatory-neutral. Paranal and ELT
+profiles, facility network access or writes, scheduling decisions, and 50S.7+
+science remain excluded. No merge or later work is authorized before complete
+evidence and Fernando's acceptance.
