@@ -1014,4 +1014,3 @@ is about another factor of eleven down; and Lunar-Earthshine is commonly a
 fraction of direct Moonlight in total flux but can be the entire illumination
 of a nadir-facing component. These ratios do not by themselves predict an
 observed satellite magnitude.
-
