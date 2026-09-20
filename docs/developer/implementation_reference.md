@@ -3412,3 +3412,7 @@ The feature candidate exports:
 atomically, preserves planning-unit then report order, treats endpoint contact
 as no overlap, and permits identified zero-row output. The candidate is not
 yet accepted public behavior.
+The validation tool produces a positive advisory, an endpoint-touch zero-row
+advisory, their source exact report, and a SHA-256 manifest entirely offline.
+Its Paranal text is an opaque review label under the `general` profile and
+does not claim p2 compatibility.
