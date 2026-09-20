@@ -3103,3 +3103,10 @@ The candidate includes no Paranal or ELT operational profile, network client,
 credentials, write behavior, scheduling policy, or 50S.7+ science. Acceptance
 requires the focused and complete test gates, an offline specimen, and clean
 repository evidence.
+## Verified candidate 50S.6H gate
+
+Revision `32dce675` passed 226 focused/documentation tests in 8.86 seconds,
+2,769 complete tests in 217.10 seconds, offline positive and zero-row specimen
+review, and clean repository checks. The general profile remains the only
+admitted profile and performs no network access. The candidate remains
+unaccepted.
