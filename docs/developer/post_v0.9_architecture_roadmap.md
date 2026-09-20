@@ -3091,22 +3091,21 @@ unsupported profile pending a stable official operations interface and a new
 audit. Only the bounded offline general planning-advisory implementation is
 authorized next. Facility network access or writes, scheduling decisions, ELT
 mapping, and 50S.7+ remain unauthorized.
-## Candidate 50S.6H offline implementation state
+## Accepted 50S.6H offline implementation state
 
-The bounded feature candidate implements the accepted general planning profile
+The accepted bounded implementation provides the accepted general planning profile
 as a pure offline projection. Frozen observation units reference existing
 report `field_id` values and non-empty half-open UTC intervals. Output is
 strict deterministic JSON with complete context, advisory rows, source report
 and snapshot identities, scientific unknowns, and its own SHA-256 identity.
 
 The candidate includes no Paranal or ELT operational profile, network client,
-credentials, write behavior, scheduling policy, or 50S.7+ science. Acceptance
-requires the focused and complete test gates, an offline specimen, and clean
-repository evidence.
-## Verified candidate 50S.6H gate
+credentials, write behavior, scheduling policy, or 50S.7+ science. Acceptance followed the focused and complete test gates, offline specimens,
+and clean repository evidence on 2026-09-20.
+## Accepted complete 50S.6H gate
 
 Revision `32dce675` passed 226 focused/documentation tests in 8.86 seconds,
 2,769 complete tests in 217.10 seconds, offline positive and zero-row specimen
 review, and clean repository checks. The general profile remains the only
-admitted profile and performs no network access. The candidate remains
-unaccepted.
+admitted profile and performs no network access. Fernando accepted the complete verified candidate on 2026-09-20. After
+merge, only the documentation-first 50S.7 audit is authorized next.
