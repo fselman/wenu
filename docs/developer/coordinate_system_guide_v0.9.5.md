@@ -4034,9 +4034,9 @@ once into the fixed AltAz product frame at chart reference time. Sample UTC
 values remain evidence. FullSkyChart projection and horizon clipping remain
 presentation operations and create no event, visibility, illumination, or
 brightness claim.
-## Candidate 50S.6H coordinate boundary
+## Accepted 50S.6H coordinate boundary
 
-The observatory-planning adapter audit introduces no coordinate transform.
+The accepted observatory-planning adapter audit introduces no coordinate transform.
 Any later advisory consumes already accepted exact crossing results and binds
 caller-supplied planning units to an existing `field_id`. Observer identity,
 field geometry, UTC instants, and report identity must match exactly; a
