@@ -330,7 +330,7 @@ def _typed_context(document):
         profile_id=document["profile_id"],
         profile_schema_version=document["profile_schema_version"],
     )
-    if _context_document(context) != document:
+    if _canonical(_context_document(context)) != _canonical(document):
         _fail(
             "noncanonical_context",
             "planning context is not in canonical normalized form.",
