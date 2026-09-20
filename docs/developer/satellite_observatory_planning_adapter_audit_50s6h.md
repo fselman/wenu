@@ -278,3 +278,29 @@ reserved. No runtime change is part of this audit. Fernando's acceptance authori
 the bounded offline general planning-advisory implementation described above;
 facility access, facility writes, scheduling decisions, ELT mapping, and 50S.7+
 work remain unauthorized.
+## 13. Candidate offline implementation record
+
+The candidate implementation places the accepted pure owner in
+`satellite_planning_advisories.py`. It adds frozen
+`PlanningObservationUnit` and `ObservatoryPlanningContext` inputs, typed
+`PlanningAdvisoryValidationError` rejections, and immutable
+`SatellitePlanningAdvisory` output.
+
+The candidate consumes only a validated `ExactSatelliteCrossingReport`,
+requires the accepted general profile version 1, exactly matches the report
+observer and referenced fields, applies half-open interval intersection, and
+emits deterministic strict JSON with
+`planning_advisory_identity_sha256`. Rows preserve planning-unit then exact
+report order. Endpoint-only contact and disjoint intervals produce a valid
+identified zero-row document.
+
+Focused evidence is owned by
+`tests/test_satellite_planning_advisories.py`. The implementation includes no
+HTTP dependency, endpoint, credential, facility write verb, scheduling
+decision, ELT mapping, coordinate conversion, propagation, illumination,
+brightness, or detector-effect calculation.
+
+This implementation record is a candidate. It authorizes no merge, facility
+integration, or later milestone before focused, documentation, complete-suite,
+offline-specimen, and clean repository evidence receive Fernando's scientific
+and architectural acceptance.
