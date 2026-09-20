@@ -4044,3 +4044,19 @@ profile may not infer a site, transform a target, or reinterpret times.
 
 Illumination, Sun/Moon/night geometry, apparent brightness, and detector
 contamination remain deferred to 50S.7 through 50S.9.
+## Accepted 50S.6H implementation coordinate behavior
+
+The candidate performs no coordinate operation. It requires exact equality
+between the planning context's `SatelliteObserver` and the canonical report
+observer, binds units to existing report `field_id` values, and copies the
+accepted closest separation and field-geometry identity into advisory
+evidence. All calculations are UTC interval intersections only.
+
+The candidate neither transforms target coordinates nor infers a site,
+timescale, visibility, illumination, brightness, or detector effect.
+## Accepted complete 50S.6H coordinate evidence
+
+Positive and endpoint-touch zero-row specimens plus the complete test suite
+verify that revision `32dce675` performs UTC interval intersection only,
+requires exact observer/field binding, and adds no coordinate, propagation,
+visibility, illumination, brightness, or detector calculation. Fernando accepted this coordinate evidence on 2026-09-20.

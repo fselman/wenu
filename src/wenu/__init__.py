@@ -70,6 +70,18 @@ from .charts.request_composition import ChartProductCompositionOptions
 from .charts.request_satellite_tracks import (
     SatelliteExactTrackDisplayRequest,
 )
+from .satellite_planning_advisories import (
+    GENERAL_PLANNING_PROFILE,
+    GENERAL_PLANNING_PROFILE_SCHEMA_VERSION,
+    PLANNING_ADVISORY_DOCUMENT_KIND,
+    PLANNING_ADVISORY_PRODUCT,
+    PLANNING_ADVISORY_SCHEMA_VERSION,
+    PLANNING_ADVISORY_STATUS,
+    ObservatoryPlanningContext,
+    PlanningAdvisoryValidationError,
+    PlanningObservationUnit,
+    SatellitePlanningAdvisory,
+)
 from .charts.target_resolver import (
     AmbiguousTargetError,
     ResolvedTarget,
@@ -497,6 +509,16 @@ __all__ = [
     "ChartRequest",
     "ChartSubjectRequest",
     "SatelliteExactTrackDisplayRequest",
+    "GENERAL_PLANNING_PROFILE",
+    "GENERAL_PLANNING_PROFILE_SCHEMA_VERSION",
+    "PLANNING_ADVISORY_DOCUMENT_KIND",
+    "PLANNING_ADVISORY_PRODUCT",
+    "PLANNING_ADVISORY_SCHEMA_VERSION",
+    "PLANNING_ADVISORY_STATUS",
+    "ObservatoryPlanningContext",
+    "PlanningAdvisoryValidationError",
+    "PlanningObservationUnit",
+    "SatellitePlanningAdvisory",
     "AmbiguousTargetError",
     "ResolvedTarget",
     "TargetComponent",

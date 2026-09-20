@@ -278,3 +278,56 @@ reserved. No runtime change is part of this audit. Fernando's acceptance authori
 the bounded offline general planning-advisory implementation described above;
 facility access, facility writes, scheduling decisions, ELT mapping, and 50S.7+
 work remain unauthorized.
+## 13. Accepted offline implementation record
+
+The candidate implementation places the accepted pure owner in
+`satellite_planning_advisories.py`. It adds frozen
+`PlanningObservationUnit` and `ObservatoryPlanningContext` inputs, typed
+`PlanningAdvisoryValidationError` rejections, and immutable
+`SatellitePlanningAdvisory` output.
+
+The candidate consumes only a validated `ExactSatelliteCrossingReport`,
+requires the accepted general profile version 1, exactly matches the report
+observer and referenced fields, applies half-open interval intersection, and
+emits deterministic strict JSON with
+`planning_advisory_identity_sha256`. Rows preserve planning-unit then exact
+report order. Endpoint-only contact and disjoint intervals produce a valid
+identified zero-row document.
+
+Focused evidence is owned by
+`tests/test_satellite_planning_advisories.py`. The implementation includes no
+HTTP dependency, endpoint, credential, facility write verb, scheduling
+decision, ELT mapping, coordinate conversion, propagation, illumination,
+brightness, or detector-effect calculation.
+
+Fernando scientifically and architecturally accepted this implementation on
+2026-09-20 after the focused, documentation, complete-suite, offline-specimen,
+and clean repository gates. The acceptance authorizes merge of this bounded
+implementation only; facility integration, scheduling decisions, and 50S.7+
+runtime remain unauthorized.
+The offline review owner
+`tools/validate_50s6h_offline_planning_advisory.py` generates from packaged
+synthetic data one positive general-profile advisory, one endpoint-touch
+zero-row advisory, their exact source report, and a digest manifest. “Paranal”
+appears only as a human-readable caller label; the profile remains `general`,
+the manifest declares `network_access: false`, and no facility is contacted.
+## 14. Accepted implementation evidence
+
+Candidate source revision
+`32dce675e82ab9bdd806455a0c3e423a3e6f67b3` passed 226 focused and
+documentation tests in 8.86 seconds and all 2,769 plugin-disabled repository
+tests in 217.10 seconds. Diff, exact-head, upstream, and clean-tree checks also
+passed.
+
+The offline review manifest records source report identity
+`36899d514813784058a2ab887244b6dafbc371c78dec1111f0cc85dfdabaeba7`.
+The positive two-second overlap has advisory identity
+`2e413ca5f5fe8f0b520424c159252f793fad7999baf54cbc8abfb869c3e81c38`;
+the endpoint-touch zero-row advisory has identity
+`a2a83fbf4bd15c3634a557f51802f41e1551e62e93dbce60c19b7326f73241ae`.
+The manifest declares `profile_id: general` and `network_access: false`.
+
+Fernando accepted the verified implementation on 2026-09-20. After merge,
+only a documentation-first 50S.7 illumination and night-geometry audit is
+authorized next. Facility integration, scheduling decisions, illumination
+runtime, brightness work, and later milestones remain unauthorized.

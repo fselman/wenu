@@ -8600,3 +8600,119 @@ def test_50s6h_records_accepted_observatory_planning_adapter_audit():
     )
     for document, phrase in zip(documents, expected, strict=True):
         assert phrase in document
+def test_50s6h_records_accepted_offline_planning_advisory_implementation():
+    audit = read(
+        DEVELOPER / "satellite_observatory_planning_adapter_audit_50s6h.md"
+    )
+    source = read(ROOT / "src" / "wenu" / "satellite_planning_advisories.py")
+    public = read(ROOT / "src" / "wenu" / "__init__.py")
+    tests = read(ROOT / "tests" / "test_satellite_planning_advisories.py")
+    tool = read(
+        ROOT / "tools" / "validate_50s6h_offline_planning_advisory.py"
+    )
+
+    for phrase in (
+        "Accepted offline implementation record",
+        "PlanningObservationUnit",
+        "ObservatoryPlanningContext",
+        "PlanningAdvisoryValidationError",
+        "SatellitePlanningAdvisory",
+        "half-open interval intersection",
+        "planning_advisory_identity_sha256",
+        "HTTP dependency",
+        "Fernando scientifically and architecturally accepted",
+    ):
+        assert phrase in audit
+
+    for phrase in (
+        'PLANNING_ADVISORY_DOCUMENT_KIND = "wenu.observatory-planning-advisory"',
+        'GENERAL_PLANNING_PROFILE = "general"',
+        "class PlanningObservationUnit",
+        "class ObservatoryPlanningContext",
+        "class PlanningAdvisoryValidationError",
+        "class SatellitePlanningAdvisory",
+        "unsupported_profile",
+        "overlap_start >= overlap_stop",
+        "row_keys != sorted(row_keys)",
+        "planning_advisory_identity_sha256",
+    ):
+        assert phrase in source
+
+    for phrase in (
+        "50s6h-positive-advisory.json",
+        "50s6h-zero-row-advisory.json",
+        '"network_access": False',
+        "OFFLINE_ADVISORY=",
+    ):
+        assert phrase in tool
+
+    for name in (
+        "PlanningObservationUnit",
+        "ObservatoryPlanningContext",
+        "PlanningAdvisoryValidationError",
+        "SatellitePlanningAdvisory",
+    ):
+        assert f'"{name}"' in public
+        assert name in tests
+
+    for forbidden in (
+        "import requests",
+        "import urllib",
+        "import httpx",
+        "www.eso.org",
+        "createOB",
+        "saveOB",
+        "verifyOB",
+        "deleteOB",
+    ):
+        assert forbidden not in source
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(INSTRUCTIONS),
+        read(SATELLITE_PROGRAM_LOG),
+    )
+    expected = (
+        "Accepted 50S.6H offline planning-advisory implementation",
+        "Accepted 50S.6H offline implementation state",
+        "Accepted 50S.6H offline planning-advisory API",
+        "Accepted 50S.6H implementation placement",
+        "Accepted 50S.6H implementation coordinate behavior",
+        "Accepted offline satellite planning advisory",
+        "Accepted 50S.6H offline planning-advisory implementation boundary",
+        "Accepted 50S.6H offline planning-advisory implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+    for phrase in (
+        "Accepted implementation evidence",
+        "32dce675e82ab9bdd806455a0c3e423a3e6f67b3",
+        "226 focused and",
+        "2,769 plugin-disabled repository",
+        "217.10 seconds",
+        "36899d514813784058a2ab887244b6dafbc371c78dec1111f0cc85dfdabaeba7",
+        "2e413ca5f5fe8f0b520424c159252f793fad7999baf54cbc8abfb869c3e81c38",
+        "a2a83fbf4bd15c3634a557f51802f41e1551e62e93dbce60c19b7326f73241ae",
+        "network_access: false",
+        "documentation-first 50S.7",
+    ):
+        assert phrase in audit
+
+    verified = (
+        "Accepted complete 50S.6H implementation state",
+        "Accepted complete 50S.6H gate",
+        "Accepted complete 50S.6H behavior",
+        "Accepted complete 50S.6H source evidence",
+        "Accepted complete 50S.6H coordinate evidence",
+        "Accepted advisory specimens",
+        "Accepted complete 50S.6H implementation boundary",
+        "Accepted complete 50S.6H implementation evidence",
+    )
+    for document, phrase in zip(documents, verified, strict=True):
+        assert phrase in document

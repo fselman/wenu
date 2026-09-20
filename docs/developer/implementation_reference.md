@@ -3394,3 +3394,33 @@ schedule.
 No such runtime is implemented yet. Only this offline projection is authorized
 next. Paranal p2 network/write operations and any ELT operational mapping
 remain outside the accepted implementation.
+## Accepted 50S.6H offline planning-advisory API
+
+The accepted implementation exports:
+
+- `PlanningObservationUnit` — one caller-owned non-empty half-open UTC
+  interval associated with an accepted report `field_id`;
+- `ObservatoryPlanningContext` — one frozen general-profile version 1
+  context with an exact `SatelliteObserver` and ordered unique units;
+- `PlanningAdvisoryValidationError` — one stable typed rejection with a
+  machine-readable `code`; and
+- `SatellitePlanningAdvisory` — the immutable strict JSON result with
+  `from_report()`, `from_json()`, `document`, `to_json()`, and
+  `planning_advisory_identity_sha256`.
+
+`from_report()` preserves input objects, rejects observer or field mismatch
+atomically, preserves planning-unit then report order, treats endpoint contact
+as no overlap, and permits identified zero-row output. Fernando accepted this public behavior on 2026-09-20; it becomes implemented
+on merge.
+The validation tool produces a positive advisory, an endpoint-touch zero-row
+advisory, their source exact report, and a SHA-256 manifest entirely offline.
+Its Paranal text is an opaque review label under the `general` profile and
+does not claim p2 compatibility.
+## Accepted complete 50S.6H behavior
+
+Candidate revision `32dce675` passed the focused and complete gates and
+produced independently identified positive and zero-row advisories from the
+same identified exact report. The evidence verifies deterministic strict JSON,
+half-open endpoint behavior, source immutability, report-interchange
+equivalence, atomic mismatch rejection, and absence of a network/write surface.
+Fernando accepted the API and evidence on 2026-09-20.

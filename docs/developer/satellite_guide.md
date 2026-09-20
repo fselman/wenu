@@ -920,3 +920,22 @@ to matter, harmful to a detector, or grounds to reschedule an observation.
 Paranal OB constraints and time windows remain scientific and operational
 inputs owned by ESO and the observer. ELT planning remains unspecified until
 an official operational interface is available.
+## Accepted offline satellite planning advisory
+
+The accepted advisory answers only: “does this planned half-open UTC interval
+overlap an accepted geometric satellite crossing interval?” Each positive row
+retains the plan, crossing, overlap, object, observer, field, snapshot, and
+report identities. A zero-row result means no geometric interval overlap was
+found for those inputs; it is not a claim of an uncontaminated observation.
+
+The fixed scientific-status text states that illumination, apparent
+brightness, detector effect, and operational disposition are unknown. Human
+review remains responsible for observatory action.
+## Accepted advisory specimens
+
+The positive specimen intersects a four-second geometric crossing with a
+two-second planned interval and records exactly one two-second row. The second
+planned interval begins at the crossing exit and records zero rows, confirming
+half-open endpoint semantics. Both retain independent identities and state
+that operational disposition is unknown. This is validation evidence, not an
+observing recommendation.
