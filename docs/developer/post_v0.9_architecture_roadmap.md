@@ -3076,9 +3076,9 @@ accepted. Only a documentation-first 50S.6H Paranal, ELT, and general
 observatory-planning adapter audit is authorized next. Adapter runtime, writes
 to observatory systems, scheduling decisions, 50S.7 illumination, 50S.8
 brightness, and later behavior remain unauthorized.
-## Candidate 50S.6H observatory-planning adapter decision
+## Accepted 50S.6H observatory-planning adapter decision
 
-The documentation-only audit in
+Fernando accepted on 2026-09-20 the documentation-only audit in
 `satellite_observatory_planning_adapter_audit_50s6h.md` proposes one bounded
 next implementation after acceptance: a deterministic, offline general
 planning-advisory JSON projection from the accepted exact crossing report.
@@ -3088,5 +3088,6 @@ brightness, illumination, severity, or scheduling policy.
 Paranal p2 is a state-changing external system, so the proposed first slice
 performs no network operation and no OB mutation. ELT remains a reserved,
 unsupported profile pending a stable official operations interface and a new
-audit. The candidate remains unaccepted; adapter runtime and 50S.7+ remain
-unauthorized.
+audit. Only the bounded offline general planning-advisory implementation is
+authorized next. Facility network access or writes, scheduling decisions, ELT
+mapping, and 50S.7+ remain unauthorized.
