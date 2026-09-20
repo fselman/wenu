@@ -3372,3 +3372,12 @@ and `binocular` for non-empty tuples while retaining stereographic-horizontal,
 observer, coordinate-policy, reference-instant, UTC, type, display-control,
 and unique-identity validation. `all_sky` and `circumpolar` remain rejected.
 An empty tuple still returns before family admission and installs no layer.
+
+## Accepted 50S.6G.4B request behavior
+
+After merge `f0730d8`, non-empty
+`ChartRequest(family="planisphere")` values may include ordered
+`SatelliteExactTrackDisplayRequest` values under the same strict
+stereographic-horizontal, observer, coordinate-policy, reference-instant, UTC,
+display-control, and identity contracts as regional and binocular products.
+`all_sky` and `circumpolar` remain rejected; an empty tuple remains neutral.
