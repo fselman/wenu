@@ -1030,3 +1030,17 @@ is about another factor of eleven down; and Lunar-Earthshine is commonly a
 fraction of direct Moonlight in total flux but can be the entire illumination
 of a nadir-facing component. These ratios do not by themselves predict an
 observed satellite magnitude.
+
+## Accepted 50S.7A illumination vocabulary
+
+Fernando scientifically and architecturally accepted the four-component
+50S.7A vocabulary and its scientific separation on 2026-09-20 at
+`fdf7e005a41a5a4d45200f841e914815d37da870`. Sunlight, solar Earthshine, Moonlight,
+and Lunar-Earthshine remain independent incident-light components. Geometry
+and incident source fields remain separate from spacecraft attitude, BRDF,
+apparent brightness, and detector response.
+
+After merge, only direct finite-Sun/WGS-84 vacuum shadow geometry and observer
+geometric twilight may be implemented in 50S.7B. The order-of-magnitude table
+remains a pedagogical memory scale, not a Wenu numerical model or acceptance
+constant.
