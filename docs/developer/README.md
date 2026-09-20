@@ -112,3 +112,8 @@ in the same change.
 - [50S.6H observatory-planning adapter audit](satellite_observatory_planning_adapter_audit_50s6h.md)
   — accepted documentation-only contract for an offline general planning
   advisory, a non-writing Paranal profile, and a reserved ELT profile.
+
+- [50S.7A illumination and night-geometry audit](satellite_illumination_night_geometry_audit_50s7a.md)
+  — candidate documentation-only contract for four incident-light components,
+  finite-source shadow transitions, geometric twilight, fidelity tiers,
+  provenance, and a bounded direct-Sun-first implementation sequence.

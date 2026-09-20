@@ -3174,6 +3174,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_crossing_coordination_audit_50s6c.md",
         "satellite_multifov_interchange_audit_50s6e.md",
         "satellite_observatory_planning_adapter_audit_50s6h.md",
+        "satellite_illumination_night_geometry_audit_50s7a.md",
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
@@ -8716,3 +8717,130 @@ def test_50s6h_records_accepted_offline_planning_advisory_implementation():
     )
     for document, phrase in zip(documents, verified, strict=True):
         assert phrase in document
+
+
+def test_50s7a_records_candidate_four_source_illumination_audit():
+    audit = read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    )
+
+    for phrase in (
+        "Accepted documentation-only scientific and architectural audit",
+        "2659b46ea9194a9d2e0e7cdad311a5fc68d51b4c",
+        "Sunlight",
+        "Earthshine",
+        "Moonlight",
+        "Lunar-Earthshine",
+        "extended directional radiance fields",
+        "uniform finite solar disk",
+        "vacuum WGS-84 ellipsoid",
+        "SatelliteIlluminationGeometry",
+        "SatelliteShadowTransition",
+        "Unknown is never encoded as numeric zero",
+        "50S.7B — direct-Sun and observer-night geometry",
+        "50S.8",
+        "authorizes no implementation",
+    ):
+        assert phrase in audit
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(INSTRUCTIONS),
+        read(SATELLITE_PROGRAM_LOG),
+        read(DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"),
+    )
+    expected = (
+        "Candidate 50S.7A illumination architecture",
+        "Candidate 50S.7A illumination and night-geometry audit",
+        "Candidate 50S.7A reserved illumination interfaces",
+        "Candidate 50S.7A source placement",
+        "Candidate 50S.7A illumination coordinate boundary",
+        "Candidate 50S.7A illumination vocabulary",
+        "Candidate 50S.7A illumination and night-geometry audit boundary",
+        "Candidate 50S.7A illumination and night-geometry audit",
+        "Candidate 50S.7A refinement of the illumination decision",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
+    for phrase in (
+        "Order-of-magnitude illumination memory scale",
+        "roughly `3e-3 W m-2`",
+        "roughly `3e-4 W m-2`",
+        "quarter-Moon illumination is",
+        "about `0.091` of full Moon",
+        "V = 13.46",
+        "V = 12.98",
+        "about `0.48 mag`, or `1.55x` in total flux",
+        "Hainaut and Williams (2020)",
+        "more than `26,000` satellites",
+        "about `1,600` illuminated",
+        "about `85%` below `30 deg` elevation",
+        "below `1%`",
+        "about `3%`",
+        "`30-40%`",
+        "These ratios do not by themselves predict an observed satellite magnitude",
+    ):
+        assert phrase in guide
+
+    for forbidden in (
+        "class SatelliteIlluminationGeometry",
+        "class SatelliteShadowTransition",
+    ):
+        assert forbidden not in read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+
+
+def test_50s7a_records_acceptance_and_only_bounded_50s7b_authority():
+    audit = " ".join(read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    ).split())
+    for phrase in (
+        "Accepted documentation-only scientific and architectural audit",
+        "scientifically and architecturally accepted",
+        "fdf7e005a41a5a4d45200f841e914815d37da870",
+        "206 plugin-disabled current-documentation tests",
+        "5.87 seconds",
+        "only the bounded 50S.7B direct-Sun and observer-night geometry implementation",
+        "50S.7C and later",
+        "PR merge and branch deletion still require separate explicit authorization",
+    ):
+        assert phrase in audit
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(INSTRUCTIONS),
+        read(SATELLITE_PROGRAM_LOG),
+        read(DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"),
+    )
+    expected = (
+        "Accepted 50S.7A illumination architecture",
+        "50S.7A accepted audit and next authority",
+        "Accepted 50S.7A implementation authorization",
+        "Accepted 50S.7A implementation placement",
+        "Accepted 50S.7A coordinate boundary",
+        "Accepted 50S.7A illumination vocabulary",
+        "Accepted 50S.7A illumination and night-geometry audit boundary",
+        "Accepted 50S.7A illumination and night-geometry audit",
+        "Accepted 50S.7A refinement of the illumination decision",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+    normalized = tuple(" ".join(document.split()) for document in documents)
+    for document in normalized:
+        assert "50S.7B" in document
+        assert "finite uniform-Sun/WGS-84 vacuum" in document
+        assert "geometric twilight" in document
+        assert "unauthorized" in document

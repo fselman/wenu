@@ -1668,3 +1668,36 @@ complete plugin-disabled tests plus offline positive/zero-row specimen review,
 digest, diff, exact-head, upstream, and clean-tree checks. Fernando accepted this evidence on 2026-09-20. After merge, only a
 documentation-first 50S.7 illumination and night-geometry audit is authorized
 next; no 50S.7 runtime or later work is authorized.
+
+## Candidate 50S.7A illumination and night-geometry audit boundary
+
+Read `satellite_illumination_night_geometry_audit_50s7a.md` before any
+satellite illumination or night-geometry work. Treat the audit as a candidate
+only; it changes no runtime and authorizes no implementation before Fernando's
+separate scientific and architectural acceptance.
+
+Preserve Sunlight, solar Earthshine, Moonlight, and Lunar-Earthshine as four
+independent components. Preserve incident geometry/source fields separately
+from 50S.8 spacecraft attitude, BRDF, apparent brightness, and 50S.9 detector
+effects. The proposed first slice is only finite uniform-Sun/WGS-84 vacuum
+occultation, typed shadow state, observer geometric twilight, provenance, and
+focused offline validation. Do not implement reflected-light fields,
+radiometry, brightness, visibility, detector effects, facility integration,
+or scheduling from this candidate audit.
+
+## Accepted 50S.7A illumination and night-geometry audit boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.7A audit on 2026-09-20 at
+`fdf7e005a41a5a4d45200f841e914815d37da870`. The final 206 plugin-disabled
+current-documentation tests passed in 5.87 seconds, and diff, exact-head,
+upstream, and clean-tree checks passed.
+
+After this audit is merged, implement only the bounded 50S.7B direct-Sun and
+observer-night geometry slice: immutable output-neutral geometry, finite
+uniform-Sun/WGS-84 vacuum Earth occultation, typed shadow state, observer
+geometric twilight, complete provenance, and focused offline validation. Do
+not begin 50S.7C+, radiometry, solar Earthshine or Lunar-Earthshine fields,
+Moonlight radiometry, brightness, visibility, detector effects, facility
+integration, scheduling, or unrelated refactoring. Merge and branch deletion
+remain separately authorized operations.

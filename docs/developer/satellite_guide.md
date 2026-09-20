@@ -939,3 +939,108 @@ planned interval begins at the crossing exit and records zero rows, confirming
 half-open endpoint semantics. Both retain independent identities and state
 that operational disposition is unknown. This is validation evidence, not an
 observing recommendation.
+
+## Candidate 50S.7A illumination vocabulary
+
+Four source paths must be named independently:
+
+- **Sunlight:** Sun to satellite;
+- **Earthshine:** Sun to Earth to satellite;
+- **Moonlight:** Sun to Moon to satellite; and
+- **Lunar-Earthshine:** Sun to Moon to Earth to satellite.
+
+The last term follows the explicit definition in Caddy et al. (2026) and must
+not be confused with sunlight reflected from Earth onto the Moon. Sunlight and
+Moonlight are finite-disk beams. Earthshine and Lunar-Earthshine arrive from
+many Earth-surface directions and remain extended radiance fields until a
+spacecraft surface and BRDF are introduced in 50S.8.
+
+Satellite shadow and observer night are independent questions. A finite solar
+disk behind the WGS-84 vacuum Earth limb yields sunlit, penumbra, umbra, or
+possible antumbra geometry. Observer twilight uses the geometric altitude of
+the Sun's center. Neither state says that a satellite is in the field, above
+the horizon, bright enough to see, harmful to a detector, or grounds for a
+schedule change. The 50S.7A candidate changes no runtime.
+
+### Order-of-magnitude illumination memory scale
+
+These are memory-scale estimates for incident illumination at a LEO satellite,
+not Wenu model constants. The magnitude penalty assumes the same satellite
+surface, attitude, BRDF, range, observer direction, and passband, so that only
+the source irradiance changes.
+
+| Source and favourable geometry | Incident scale | Relative to direct Sun | Same-geometry penalty |
+| --- | ---: | ---: | ---: |
+| Direct Sunlight near 1 au | `1.36e3 W m-2` | `1` | `0 mag` |
+| Solar Earthshine onto a nadir-facing surface over sunlit Earth | roughly `1e1-4e2 W m-2` | `1e-2-3e-1` | roughly `+1.3 to +5 mag` |
+| Direct full-Moon light | roughly `3e-3 W m-2` | `2.5e-6` | roughly `+14 mag` |
+| Direct quarter-Moon light | roughly `3e-4 W m-2` | `2e-7` | roughly `+16.6 mag` |
+| Full-Moon Lunar-Earthshine onto a favourable nadir-facing surface | roughly `1e-4-1e-3 W m-2` | `1e-7-1e-6` | roughly `+15 to +18 mag` |
+| Quarter-Moon Lunar-Earthshine, scaled as a first estimate | roughly `1e-5-1e-4 W m-2` | `1e-8-1e-7` | roughly `+18 to +21 mag` |
+
+The direct-Moon scale follows the Sun/full-Moon contrast of about `400,000`
+(`14 mag`) quoted by Caddy et al. (2026). Their first-order lunar phase law
+gives `m(90 deg) - m(0 deg) = 2.60 mag`, so quarter-Moon illumination is
+about `0.091` of full Moon, not one half. Converting a visual contrast into
+the bolometric-looking `W m-2` values above is deliberately only an
+order-of-magnitude mnemonic; a real calculation must name its bandpass and
+spectral model.
+
+The reflected-Earth ranges are simple favourable-geometry estimates: a bright
+Earth beneath LEO can return a few percent to a few tenths of the incident
+source onto a nadir-facing surface. They can fall to zero when no suitably
+illuminated Earth is visible, and clouds, land/ocean BRDF, specular geometry,
+altitude, and spacecraft attitude can move the answer greatly.
+
+Two papers anchor the scale:
+
+- Fankhauser, Tyson, and Askari (2023), *Satellite Optical Brightness*
+  (<https://doi.org/10.3847/1538-3881/ace047>), models direct Sunlight plus
+  solar Earthshine with Earth and spacecraft BRDFs and finds Earthshine can
+  materially increase apparent brightness, especially in civil twilight.
+- Caddy et al. (2026), *The First Observations of Moonlit Satellites*
+  (<https://arxiv.org/html/2609.07057v1>), reports `147` Moonlit ISS
+  detections with median `V = 12.02 +/- 0.17 mag`, about
+  `13.1 +/- 1.3 mag` fainter than daylight. In their representative STK ISS
+  case, adding Lunar-Earthshine changed `V = 13.46` for direct Moonlight
+  alone to `V = 12.98`: about `0.48 mag`, or `1.55x` in total flux. It
+  added about `14%` to one directly Moonlit body component and dominated
+  components that faced Earth but received no direct Moonlight.
+
+- Hainaut and Williams (2020), *Impact of satellite constellations on
+  astronomical observations with ESO telescopes in the visible and infrared
+  domains* (<https://arxiv.org/abs/2003.01992>), gives a conservative
+  order-of-magnitude impact study for `18` then-proposed constellations with
+  more than `26,000` satellites. It estimated about `1,600` illuminated
+  satellites above the horizon just after sunset and `1,100` at the end of
+  astronomical twilight, with about `85%` below `30 deg` elevation. During
+  the first and last hours of night, predicted losses were below `1%` for
+  narrow/normal-field ESO imaging and spectroscopy, about `3%` for wide-field
+  or long medium-field exposures, and `30-40%` for ultra-wide survey
+  exposures such as Rubin/LSST; thermal-IR losses were negligible. The paper
+  is a planning and mitigation precedent, not a present-day population or
+  brightness baseline: it deliberately used simplified, conservative 2020
+  constellation and photometric assumptions.
+
+
+The practical memory rule is therefore: Sunlight dominates an illuminated
+surface; solar Earthshine can be a percent-to-tens-of-percent correction;
+full Moon is about a millionth to a few millionths of Sunlight; quarter Moon
+is about another factor of eleven down; and Lunar-Earthshine is commonly a
+fraction of direct Moonlight in total flux but can be the entire illumination
+of a nadir-facing component. These ratios do not by themselves predict an
+observed satellite magnitude.
+
+## Accepted 50S.7A illumination vocabulary
+
+Fernando scientifically and architecturally accepted the four-component
+50S.7A vocabulary and its scientific separation on 2026-09-20 at
+`fdf7e005a41a5a4d45200f841e914815d37da870`. Sunlight, solar Earthshine, Moonlight,
+and Lunar-Earthshine remain independent incident-light components. Geometry
+and incident source fields remain separate from spacecraft attitude, BRDF,
+apparent brightness, and detector response.
+
+After merge, only direct finite uniform-Sun/WGS-84 vacuum shadow geometry and observer
+geometric twilight may be implemented in 50S.7B. The order-of-magnitude table
+remains a pedagogical memory scale, not a Wenu numerical model or acceptance
+constant.

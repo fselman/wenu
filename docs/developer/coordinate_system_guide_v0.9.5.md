@@ -4060,3 +4060,32 @@ Positive and endpoint-touch zero-row specimens plus the complete test suite
 verify that revision `32dce675` performs UTC interval intersection only,
 requires exact observer/field binding, and adds no coordinate, propagation,
 visibility, illumination, brightness, or detector calculation. Fernando accepted this coordinate evidence on 2026-09-20.
+
+## Candidate 50S.7A illumination coordinate boundary
+
+One illumination state must place satellite, Earth, Sun, and Moon vectors in a
+single explicitly declared Cartesian frame at one physical instant before any
+subtraction. Public time remains canonical UTC; internal TDB ephemeris and UT1
+Earth rotation retain resource provenance. TEME, ITRS, GCRS, and ICRF
+three-vectors are never mixed by shape alone.
+
+The candidate first geometry uses the accepted satellite propagation and
+Earth-orientation route, installed ephemeris state, WGS-84 vacuum Earth limb,
+a finite uniform solar disk, and observer-centred geometric vacuum Sun
+altitude. Twilight thresholds are geometric `0`, `-6`, `-12`, and `-18`
+degrees under an explicit policy. This is not apparent sunrise, sky
+brightness, satellite visibility, or apparent magnitude. No coordinate or
+illumination runtime is authorized by the audit.
+
+## Accepted 50S.7A coordinate boundary
+
+Fernando accepted the 50S.7A coordinate finding on 2026-09-20. The audit
+introduces no coordinate type or transform. A later bounded 50S.7B must compose
+the accepted satellite and installed-ephemeris states at one physical instant,
+transform them explicitly into one common Cartesian frame before subtraction,
+and keep UTC, UT1, and TDB roles and resources in provenance.
+
+Only finite uniform-Sun/WGS-84 vacuum occultation, typed shadow state, and
+observer geometric twilight are authorized after merge. Mixed-frame vector
+subtraction, reflected fields, radiometry, apparent brightness, and detector
+effects remain unauthorized.
