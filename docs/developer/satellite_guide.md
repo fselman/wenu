@@ -1040,7 +1040,7 @@ and Lunar-Earthshine remain independent incident-light components. Geometry
 and incident source fields remain separate from spacecraft attitude, BRDF,
 apparent brightness, and detector response.
 
-After merge, only direct finite-Sun/WGS-84 vacuum shadow geometry and observer
+After merge, only direct finite uniform-Sun/WGS-84 vacuum shadow geometry and observer
 geometric twilight may be implemented in 50S.7B. The order-of-magnitude table
 remains a pedagogical memory scale, not a Wenu numerical model or acceptance
 constant.
