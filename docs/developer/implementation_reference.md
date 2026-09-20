@@ -3381,3 +3381,15 @@ After merge `f0730d8`, non-empty
 stereographic-horizontal, observer, coordinate-policy, reference-instant, UTC,
 display-control, and identity contracts as regional and binocular products.
 `all_sky` and `circumpolar` remain rejected; an empty tuple remains neutral.
+## Candidate 50S.6H planning-advisory boundary
+
+The documentation-only 50S.6H audit proposes a later immutable planning
+context and deterministic canonical JSON advisory downstream of
+`ExactSatelliteCrossingReport`. The report must first pass its existing
+strict decoder and digest verification. The adapter would only intersect
+caller-supplied half-open planned UTC intervals with accepted exact crossing
+intervals; it would not propagate, transform, filter by visibility, rank, or
+schedule.
+
+No such runtime is implemented. Paranal p2 network/write operations and any
+ELT operational mapping remain outside the accepted implementation.
