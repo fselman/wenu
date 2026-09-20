@@ -1755,7 +1755,7 @@ Fernando accepted this documentation architecture on 2026-09-20. Only the
 bounded offline general planning-advisory implementation is authorized next.
 Network access, credentials, observatory writes, scheduling decisions, ELT
 mapping, and 50S.7+ behavior remain unauthorized.
-## Candidate 50S.6H offline planning-advisory implementation
+## Accepted 50S.6H offline planning-advisory implementation
 
 The feature candidate adds one downstream pure owner,
 `satellite_planning_advisories.py`. It accepts the existing validated
@@ -1766,11 +1766,12 @@ immutable independently identified JSON advisory.
 The candidate does not alter the implemented propagation, coordinate,
 crossing, report, file-protocol, chart, renderer, or export owners. It has no
 network or facility-write capability and makes no illumination, brightness,
-detector, or scheduling claim. It remains unaccepted.
-## Verified candidate 50S.6H implementation state
+detector, or scheduling claim. Fernando accepted this bounded implementation on 2026-09-20.
+## Accepted complete 50S.6H implementation state
 
 Revision `32dce675` verifies the pure general-profile projection with 226
 focused/documentation tests, all 2,769 repository tests, and offline positive
 and endpoint-touch zero-row JSON specimens. The manifest declares no network
-access. This is candidate evidence only; implemented architecture does not
-change until acceptance and merge.
+access. Fernando accepted the verified candidate on 2026-09-20. The architecture
+becomes implemented on merge; only a documentation-first 50S.7 audit is
+authorized next.
