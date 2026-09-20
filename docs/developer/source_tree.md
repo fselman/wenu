@@ -2647,3 +2647,9 @@ scheduler, coordinate owner, propagator, renderer, or exporter is added.
 - `tools/validate_50s6h_offline_planning_advisory.py` owns the synthetic,
   offline positive/zero-row JSON review specimen and digest manifest. It is
   validation evidence, not a public file protocol or facility adapter.
+## Verified candidate 50S.6H source evidence
+
+At revision `32dce675`, the production module, public exports, focused tests,
+documentation tests, and offline validation tool passed 226 focused and 2,769
+complete tests. No HTTP dependency, endpoint, credential owner, facility
+adapter, or write owner was introduced. The placement remains a candidate.
