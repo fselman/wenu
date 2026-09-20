@@ -3124,3 +3124,16 @@ complete shadow-transition search, 50S.7D direct-source radiometry, 50S.7E
 solar/lunar Earth-reflected fields, and 50S.7F component-bundle closure. This
 candidate authorizes no runtime. Only 50S.7B may be considered after separate
 scientific and architectural acceptance.
+
+## 50S.7A accepted audit and next authority
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.7A audit on 2026-09-20 at `fdf7e005a41a5a4d45200f841e914815d37da870` after
+206 plugin-disabled current-documentation tests and clean repository checks.
+
+After merge, only the bounded 50S.7B direct-Sun and observer-night geometry
+implementation is authorized: immutable geometry, finite uniform-Sun/WGS-84
+vacuum occultation, typed shadow state, geometric twilight, provenance, and
+focused offline validation. 50S.7C and later radiometry or reflected-source
+work, 50S.8 brightness, 50S.9 detector effects, visibility, facility
+integration, scheduling, and unrelated refactoring remain unauthorized.
