@@ -1195,3 +1195,17 @@ observational evidence, not a frozen numerical standard. The proposed first
 implementation is only direct finite-Sun/WGS-84 vacuum occultation plus
 geometric observer-night state. The audit remains a candidate and authorizes
 no runtime, merge, branch deletion, or later work.
+
+## 2026-09-20 — Accepted 50S.7A illumination and night-geometry audit
+
+Fernando scientifically and architecturally accepted the complete
+documentation-only audit at `fdf7e005a41a5a4d45200f841e914815d37da870`. The final
+206 plugin-disabled current-documentation tests passed in 5.87 seconds, and
+diff, exact-head, upstream, and clean-working-tree checks passed.
+
+After merge, only bounded 50S.7B direct-Sun and observer-night geometry is
+authorized: finite uniform-Sun/WGS-84 vacuum occultation, typed shadow state,
+geometric twilight, provenance, and focused offline validation. 50S.7C and
+later radiometry, reflected-source fields, brightness, detector, visibility,
+facility, scheduling, and unrelated work remain unauthorized. PR merge and
+branch deletion require separate explicit authorization.
