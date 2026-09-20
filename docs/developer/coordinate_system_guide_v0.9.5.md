@@ -4025,3 +4025,12 @@ geometric topocentric GCRS-axis track continues to be transformed once into
 the chart's fixed AltAz product frame at the request reference instant.
 Per-sample UTC remains evidence, and horizon clipping remains presentation
 without creating events or a visibility claim.
+
+## Accepted 50S.6G.4B AltAz coordinate behavior
+
+The implementation accepted at `f0730d8` changes no coordinate calculation.
+Each complete retained geometric topocentric GCRS-axis track is transformed
+once into the fixed AltAz product frame at chart reference time. Sample UTC
+values remain evidence. FullSkyChart projection and horizon clipping remain
+presentation operations and create no event, visibility, illumination, or
+brightness claim.
