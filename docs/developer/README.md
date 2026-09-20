@@ -109,3 +109,6 @@ in the same change.
 - [50S.6G.1B.2D exact-equivalence matrix audit](satellite_equivalence_matrix_audit_50s6g1b2d.md)
   — candidate documentation-only contract for strict exhaustive/accelerated
   equality and external matrix evidence.
+- [50S.6H observatory-planning adapter audit](satellite_observatory_planning_adapter_audit_50s6h.md)
+  — accepted documentation-only contract for an offline general planning
+  advisory, a non-writing Paranal profile, and a reserved ELT profile.

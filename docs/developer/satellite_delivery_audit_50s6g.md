@@ -544,3 +544,10 @@ Ligua PNG/PDF/semantic-SVG specimen and its digest manifest. The accepted
 regional, binocular, and ordinary planisphere products now complete exact-track
 chart delivery for 50S.6G. Only the documentation-first 50S.6H observatory
 adapter audit is authorized next.
+## 50S.6H handoff boundary
+
+The accepted 50S.6H audit consumes 50S.6G only through the accepted canonical
+exact report and its verified identity. It proposes no change to report,
+file-protocol, or chart delivery. The authorized next planning advisory must remain an
+offline downstream projection; it may not mutate Paranal p2, invent an ELT
+interface, schedule observations, or add 50S.7+ scientific claims.

@@ -1634,3 +1634,17 @@ meaning, retained sample UTC, horizon-only clipping, request-owned lifecycle,
 semantics, bounded provenance, and canonical export. Only a
 documentation-first 50S.6H observatory-planning adapter audit is authorized
 next. Do not implement adapters or begin 50S.7+ work without later acceptance.
+## Accepted 50S.6H observatory-planning adapter boundary
+
+The documentation-only 50S.6H audit is recorded in
+`satellite_observatory_planning_adapter_audit_50s6h.md`. It admits for later
+acceptance only an offline, deterministic general planning-advisory JSON
+projection downstream of the canonical `ExactSatelliteCrossingReport`.
+Paranal vocabulary must remain advisory and non-writing; ELT remains reserved
+until ESO publishes a stable operational interface.
+
+Fernando scientifically and architecturally accepted this audit on 2026-09-20.
+Only the bounded offline general planning-advisory implementation is authorized
+next. Do not add facility network or credential handling, write or mutate an
+observatory planning system, make scheduling decisions, translate crossings
+into OB time constraints, map ELT operations, or begin 50S.7+ work.

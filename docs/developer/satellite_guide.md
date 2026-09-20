@@ -908,3 +908,15 @@ the chart, retained sample UTC records the evidence, and the horizon clips
 presentation without inventing events. The accepted physical La Ligua
 specimen and manifest demonstrate the PNG/PDF/semantic-SVG route and retain
 site, chart time, complete visit interval, identity, and output digests.
+## Accepted 50S.6H observatory-planning interpretation
+
+A satellite crossing and an observing-plan decision are different claims.
+The accepted exact report says when a propagated object intersects a declared
+field for one observer. The authorized next 50S.6H advisory will say only that this
+crossing interval overlaps a caller-supplied planned UTC interval.
+
+It will not say that the satellite is illuminated, detectable, bright enough
+to matter, harmful to a detector, or grounds to reschedule an observation.
+Paranal OB constraints and time windows remain scientific and operational
+inputs owned by ESO and the observer. ELT planning remains unspecified until
+an official operational interface is available.

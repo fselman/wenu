@@ -1741,3 +1741,17 @@ satellite tracks through the existing fixed AltAz realization, FullSkyChart
 horizon boundary, request-owned lifecycle, stable semantics, bounded
 provenance, renderer, and exporters. All other all-sky/circumpolar families
 remain rejected. No new coordinate or satellite science owner was introduced.
+## Accepted 50S.6H observatory-planning adapter audit
+
+The documentation-only
+`satellite_observatory_planning_adapter_audit_50s6h.md` preserves the
+canonical `ExactSatelliteCrossingReport` as the sole scientific source and
+proposes a later pure, offline planning-advisory JSON projection. It does not
+change the implemented architecture. Paranal p2 is treated as an external,
+state-changing system; no API call or OB mutation is admitted. ELT has no
+accepted operational profile and must not be aliased to Paranal.
+
+Fernando accepted this documentation architecture on 2026-09-20. Only the
+bounded offline general planning-advisory implementation is authorized next.
+Network access, credentials, observatory writes, scheduling decisions, ELT
+mapping, and 50S.7+ behavior remain unauthorized.

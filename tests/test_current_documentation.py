@@ -3173,6 +3173,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_crossing_acceleration_audit_50s6a.md",
         "satellite_crossing_coordination_audit_50s6c.md",
         "satellite_multifov_interchange_audit_50s6e.md",
+        "satellite_observatory_planning_adapter_audit_50s6h.md",
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
@@ -8551,6 +8552,51 @@ def test_50s6g4b_records_acceptance_and_closes_50s6g():
         "Accepted complete 50S.6G.4B implementation boundary",
         "Accepted 50S.6G.4B delivery closure",
         "Accepted complete 50S.6G.4B implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+def test_50s6h_records_accepted_observatory_planning_adapter_audit():
+    audit = read(
+        DEVELOPER / "satellite_observatory_planning_adapter_audit_50s6h.md"
+    )
+    for phrase in (
+        "Accepted documentation-only architecture and interface audit",
+        "e37298db29af84bd92443287ae1574cf471b76e8",
+        "wenu.observatory-planning-advisory",
+        "source_report_identity_sha256",
+        "planning_advisory_identity_sha256",
+        "Touching endpoints do not overlap",
+        "A zero-row document is a valid, identified result",
+        "Paranal profile",
+        "ELT profile",
+        "unsupported_profile",
+        "Fernando's acceptance authorizes only",
+    ):
+        assert phrase in audit
+
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(INSTRUCTIONS),
+        read(DEVELOPER / "satellite_delivery_audit_50s6g.md"),
+        read(SATELLITE_PROGRAM_LOG),
+    )
+    expected = (
+        "50S.6H observatory-planning adapter audit",
+        "Accepted 50S.6H observatory-planning adapter audit",
+        "Accepted 50S.6H observatory-planning adapter decision",
+        "Accepted 50S.6H planning-advisory boundary",
+        "Accepted 50S.6H placement",
+        "Accepted 50S.6H coordinate boundary",
+        "Accepted 50S.6H observatory-planning interpretation",
+        "Accepted 50S.6H observatory-planning adapter boundary",
+        "50S.6H handoff boundary",
+        "Accepted 50S.6H observatory-planning adapter audit",
     )
     for document, phrase in zip(documents, expected, strict=True):
         assert phrase in document

@@ -1135,3 +1135,20 @@ This closes 50S.6G delivery. Only a documentation-first 50S.6H Paranal, ELT,
 and general observatory-planning adapter audit is authorized next. Adapter
 runtime, observatory writes, scheduling decisions, illumination, brightness,
 and all 50S.7+ behavior remain unauthorized.
+## Accepted 50S.6H observatory-planning adapter audit
+
+On 2026-09-20, work began from accepted 50S.6G base
+`e37298db29af84bd92443287ae1574cf471b76e8` on a documentation-only audit of
+Paranal, ELT, and general observatory-planning adapters.
+
+Official ESO material establishes that Paranal Phase 2 uses OBs in p2 and that
+the p2 API immediately mutates ESO database state. ESO currently plans ELT
+telescope first light for 2029 and scientific first light for December 2030;
+the audit therefore does not infer an ELT operations API from Paranal.
+
+Fernando scientifically and architecturally accepted the audit on 2026-09-20.
+It authorizes next only an offline general JSON advisory
+that intersects caller-supplied planned UTC intervals with accepted exact
+crossing intervals. Paranal remains non-writing context and ELT remains a
+reserved unsupported profile. Facility access or writes, scheduling decisions, ELT operational mapping, and
+50S.7+ work remain unauthorized.
