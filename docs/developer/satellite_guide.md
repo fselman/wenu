@@ -1007,6 +1007,22 @@ Two papers anchor the scale:
   added about `14%` to one directly Moonlit body component and dominated
   components that faced Earth but received no direct Moonlight.
 
+- Hainaut and Williams (2020), *Impact of satellite constellations on
+  astronomical observations with ESO telescopes in the visible and infrared
+  domains* (<https://arxiv.org/abs/2003.01992>), gives a conservative
+  order-of-magnitude impact study for `18` then-proposed constellations with
+  more than `26,000` satellites. It estimated about `1,600` illuminated
+  satellites above the horizon just after sunset and `1,100` at the end of
+  astronomical twilight, with about `85%` below `30 deg` elevation. During
+  the first and last hours of night, predicted losses were below `1%` for
+  narrow/normal-field ESO imaging and spectroscopy, about `3%` for wide-field
+  or long medium-field exposures, and `30-40%` for ultra-wide survey
+  exposures such as Rubin/LSST; thermal-IR losses were negligible. The paper
+  is a planning and mitigation precedent, not a present-day population or
+  brightness baseline: it deliberately used simplified, conservative 2020
+  constellation and photometric assumptions.
+
+
 The practical memory rule is therefore: Sunlight dominates an illuminated
 surface; solar Earthshine can be a percent-to-tens-of-percent correction;
 full Moon is about a millionth to a few millionths of Sunlight; quarter Moon
