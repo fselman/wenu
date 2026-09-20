@@ -8769,7 +8769,7 @@ def test_50s7a_records_candidate_four_source_illumination_audit():
         assert phrase in document
 
 
-    guide = read(DEVELOPER / "satellite_guide.md")
+    guide = " ".join(read(DEVELOPER / "satellite_guide.md").split())
     for phrase in (
         "Order-of-magnitude illumination memory scale",
         "roughly `3e-3 W m-2`",
