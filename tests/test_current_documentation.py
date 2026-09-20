@@ -8795,6 +8795,8 @@ def test_50s7a_records_candidate_four_source_illumination_audit():
         "class SatelliteShadowTransition",
     ):
         assert forbidden not in read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+
+
 def test_50s7a_records_acceptance_and_only_bounded_50s7b_authority():
     audit = " ".join(read(
         DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
@@ -8805,7 +8807,7 @@ def test_50s7a_records_acceptance_and_only_bounded_50s7b_authority():
         "fdf7e005a41a5a4d45200f841e914815d37da870",
         "206 plugin-disabled current-documentation tests",
         "5.87 seconds",
-        "Only the bounded 50S.7B direct-Sun and observer-night geometry implementation",
+        "only the bounded 50S.7B direct-Sun and observer-night geometry implementation",
         "50S.7C and later",
         "PR merge and branch deletion still require separate explicit authorization",
     ):
