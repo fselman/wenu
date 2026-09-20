@@ -2619,15 +2619,16 @@ request realization/generation, `FullSkyChart`, exact-track layers, semantics,
 styles, renderers, and exporters own all downstream behavior. The durable
 exact-track tests and physical validation tool remain the evidence owners. No
 new production module or responsibility boundary was introduced.
-## Candidate 50S.6H placement
+## Accepted 50S.6H placement
 
-The documentation-only 50S.6H audit reserves
+The accepted documentation-only 50S.6H audit reserves
 `satellite_planning_advisories.py` for a possible later pure, offline
-planning-context and advisory owner. If accepted, that module would consume
+planning-context and advisory owner. That authorized next module will consume
 the existing canonical exact report and own only validation, half-open
 interval overlap, deterministic JSON, and advisory identity. It would not own
 propagation, coordinates, crossings, reports, charts, networking, credentials,
 observatory writes, or scheduling.
 
-No production file is added by the audit. A Paranal network client and an ELT
-profile have no authorized source-tree placement.
+No production file is added by the audit itself. The bounded offline module is
+authorized next. A Paranal network client and an ELT profile have no authorized
+source-tree placement.
