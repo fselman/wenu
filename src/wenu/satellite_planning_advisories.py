@@ -400,10 +400,6 @@ def _validate_row(row, *, index, document, context, units):
         _fail("invalid_row", "norad_catalog_id must be an integer.")
     if row["norad_catalog_id"] <= 0:
         _fail("invalid_row", "norad_catalog_id must be positive.")
-    if row["closest_approach_deg"] < 0:
-        _fail("invalid_row", "closest_approach_deg must be non-negative.")
-    if row["overlap_duration_seconds"] <= 0:
-        _fail("invalid_overlap", "overlap duration must be positive.")
     if row["orbit_solution_id"] is not None:
         _text(row["orbit_solution_id"], name="orbit_solution_id")
     for name in (
@@ -414,6 +410,10 @@ def _validate_row(row, *, index, document, context, units):
         "overlap_duration_seconds",
     ):
         _finite(row[name], name=f"rows[{index}].{name}")
+    if row["closest_approach_deg"] < 0:
+        _fail("invalid_row", "closest_approach_deg must be non-negative.")
+    if row["overlap_duration_seconds"] <= 0:
+        _fail("invalid_overlap", "overlap duration must be positive.")
     if row["planning_context_id"] != context.planning_context_id:
         _fail("context_mismatch", "row planning context does not match.")
     if row["profile_id"] != context.profile_id:
