@@ -1163,3 +1163,6 @@ The candidate remains offline and observatory-neutral. Paranal and ELT
 profiles, facility network access or writes, scheduling decisions, and 50S.7+
 science remain excluded. No merge or later work is authorized before complete
 evidence and Fernando's acceptance.
+The candidate validation tool owns reproducible offline positive and zero-row
+JSON specimens plus a digest manifest. It uses packaged synthetic data and
+performs no facility access.
