@@ -3441,3 +3441,16 @@ never numeric zero. These names are audit vocabulary, not public exports.
 Acceptance of the audit may authorize only the direct-Sun/observer-night
 geometry slice, not radiometry, Earthshine, Moonlight, Lunar-Earthshine,
 brightness, or detector behavior.
+
+## Accepted 50S.7A implementation authorization
+
+No 50S.7 runtime API is implemented by the accepted audit. After merge, the
+only authorized implementation slice is 50S.7B: immutable direct-Sun and
+observer-night geometry with a finite uniform solar disk, WGS-84 vacuum Earth
+occultation, typed shadow state, observer geometric twilight, provenance, and
+focused offline validation.
+
+The reserved component-status vocabulary remains output-neutral. Transition
+search, radiometry, solar Earthshine, Moonlight radiometry,
+Lunar-Earthshine, component summation, brightness, detector, facility, and
+scheduling APIs remain unauthorized.
