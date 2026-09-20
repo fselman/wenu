@@ -3091,3 +3091,15 @@ unsupported profile pending a stable official operations interface and a new
 audit. Only the bounded offline general planning-advisory implementation is
 authorized next. Facility network access or writes, scheduling decisions, ELT
 mapping, and 50S.7+ remain unauthorized.
+## Candidate 50S.6H offline implementation state
+
+The bounded feature candidate implements the accepted general planning profile
+as a pure offline projection. Frozen observation units reference existing
+report `field_id` values and non-empty half-open UTC intervals. Output is
+strict deterministic JSON with complete context, advisory rows, source report
+and snapshot identities, scientific unknowns, and its own SHA-256 identity.
+
+The candidate includes no Paranal or ELT operational profile, network client,
+credentials, write behavior, scheduling policy, or 50S.7+ science. Acceptance
+requires the focused and complete test gates, an offline specimen, and clean
+repository evidence.
