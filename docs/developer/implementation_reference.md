@@ -3363,3 +3363,12 @@ configure_chart_request_satellite_tracks(), ChartRequestBuild cleanup, fixed
 horizontal LayerRealizationContext, FullSkyChart, canonical rendering/export,
 and bounded provenance. No new public request type or projection, coordinate,
 layer, renderer, exporter, provider, CLI, or report API is authorized.
+
+## Verified candidate 50S.6G.4B request behavior
+
+At candidate `91eafff5`,
+`validate_satellite_exact_track_requests()` admits `planisphere`, `regional`,
+and `binocular` for non-empty tuples while retaining stereographic-horizontal,
+observer, coordinate-policy, reference-instant, UTC, type, display-control,
+and unique-identity validation. `all_sky` and `circumpolar` remain rejected.
+An empty tuple still returns before family admission and installs no layer.
