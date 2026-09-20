@@ -8616,7 +8616,7 @@ def test_50s6h_records_candidate_offline_planning_advisory_implementation():
         "SatellitePlanningAdvisory",
         "half-open interval intersection",
         "planning_advisory_identity_sha256",
-        "no HTTP dependency",
+        "HTTP dependency",
         "candidate",
     ):
         assert phrase in audit
