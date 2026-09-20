@@ -1152,21 +1152,21 @@ that intersects caller-supplied planned UTC intervals with accepted exact
 crossing intervals. Paranal remains non-writing context and ELT remains a
 reserved unsupported profile. Facility access or writes, scheduling decisions, ELT operational mapping, and
 50S.7+ work remain unauthorized.
-## Candidate 50S.6H offline planning-advisory implementation
+## Accepted 50S.6H offline planning-advisory implementation
 
 After acceptance and merge of the audit at `4923cf3`, the bounded feature
 candidate added the frozen general planning context, half-open overlap
 projection, strict canonical JSON advisory, typed stable failures, public
 exports, and focused tests.
 
-The candidate remains offline and observatory-neutral. Paranal and ELT
+The implementation remains offline and observatory-neutral. Paranal and ELT
 profiles, facility network access or writes, scheduling decisions, and 50S.7+
-science remain excluded. No merge or later work is authorized before complete
-evidence and Fernando's acceptance.
+science remain excluded. Fernando accepted the complete implementation on
+2026-09-20.
 The candidate validation tool owns reproducible offline positive and zero-row
 JSON specimens plus a digest manifest. It uses packaged synthetic data and
 performs no facility access.
-## Verified candidate 50S.6H implementation evidence
+## Accepted complete 50S.6H implementation evidence
 
 Revision `32dce675e82ab9bdd806455a0c3e423a3e6f67b3` passed 226 focused and
 documentation tests in 8.86 seconds and all 2,769 plugin-disabled tests in
@@ -1176,5 +1176,7 @@ endpoint-touch zero-row advisory from source report identity
 Their advisory identities begin `2e413ca5` and `a2a83fbf`, respectively;
 the manifest declares no network access.
 
-Diff, exact-head, upstream, and clean-tree checks passed. The candidate remains
-unaccepted and authorizes no merge or later work.
+Diff, exact-head, upstream, and clean-tree checks passed. Fernando accepted
+the verified implementation on 2026-09-20. After merge, only a
+documentation-first 50S.7 illumination and night-geometry audit is authorized
+next; facility integration and 50S.7+ runtime remain unauthorized.
