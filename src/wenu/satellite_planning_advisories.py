@@ -400,6 +400,10 @@ def _validate_row(row, *, index, document, context, units):
         _fail("invalid_row", "norad_catalog_id must be an integer.")
     if row["norad_catalog_id"] <= 0:
         _fail("invalid_row", "norad_catalog_id must be positive.")
+    if row["closest_approach_deg"] < 0:
+        _fail("invalid_row", "closest_approach_deg must be non-negative.")
+    if row["overlap_duration_seconds"] <= 0:
+        _fail("invalid_overlap", "overlap duration must be positive.")
     if row["orbit_solution_id"] is not None:
         _text(row["orbit_solution_id"], name="orbit_solution_id")
     for name in (
@@ -417,6 +421,11 @@ def _validate_row(row, *, index, document, context, units):
     unit = units.get(row["observation_unit_id"])
     if unit is None or unit.field_id != row["field_id"]:
         _fail("context_mismatch", "row planning unit does not match.")
+    if (
+        row["planned_start_utc"] != unit.start_utc
+        or row["planned_stop_utc"] != unit.stop_utc
+    ):
+        _fail("context_mismatch", "row planned interval does not match.")
     expected_observer = _observer_document(context.observer)
     for name in ("observer_id", "longitude_deg", "latitude_deg", "elevation_m"):
         if row[name] != expected_observer[name]:
@@ -507,6 +516,12 @@ def _validate_document(document):
         item.observation_unit_id: item
         for item in context.observation_units
     }
+    order = {
+        item.observation_unit_id: index
+        for index, item in enumerate(context.observation_units)
+    }
+    row_keys = []
+    unique_rows = set()
     for index, row in enumerate(document["rows"]):
         _validate_row(
             row,
@@ -514,6 +529,20 @@ def _validate_document(document):
             document=document,
             context=context,
             units=units,
+        )
+        key = (
+            order[row["observation_unit_id"]],
+            row["norad_catalog_id"],
+            row["crossing_entry_utc"],
+        )
+        if key in unique_rows:
+            _fail("duplicate_row", "advisory rows must be unique.")
+        unique_rows.add(key)
+        row_keys.append(key)
+    if row_keys != sorted(row_keys):
+        _fail(
+            "invalid_order",
+            "rows must preserve planning-unit and exact-report order.",
         )
     _digest(
         document["planning_advisory_identity_sha256"],
