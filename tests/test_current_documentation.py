@@ -8685,7 +8685,7 @@ def test_50s6h_records_accepted_offline_planning_advisory_implementation():
         "Accepted 50S.6H implementation coordinate behavior",
         "Accepted offline satellite planning advisory",
         "Accepted 50S.6H offline planning-advisory implementation boundary",
-        "Candidate 50S.6H offline planning-advisory implementation",
+        "Accepted 50S.6H offline planning-advisory implementation",
     )
     for document, phrase in zip(documents, expected, strict=True):
         assert phrase in document
