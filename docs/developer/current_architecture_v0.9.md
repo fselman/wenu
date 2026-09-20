@@ -1775,3 +1775,18 @@ and endpoint-touch zero-row JSON specimens. The manifest declares no network
 access. Fernando accepted the verified candidate on 2026-09-20. The architecture
 becomes implemented on merge; only a documentation-first 50S.7 audit is
 authorized next.
+
+## Candidate 50S.7A illumination architecture
+
+The documentation-only candidate introduces no implemented owner. It proposes
+one downstream `satellites/illumination.py` composition over the accepted
+snapshot, SGP4/TEME, Earth-orientation, topocentric, and installed-ephemeris
+owners. That owner would produce immutable geometry, incident source fields,
+shadow-transition events, identity, and provenance without changing crossing
+truth or chart/report/planning behavior.
+
+Sunlight, solar Earthshine, Moonlight, and Lunar-Earthshine remain separate.
+Earth-reflected terms retain their extended directional character until 50S.8
+supplies spacecraft surface orientation and BRDF. The candidate authorizes no
+runtime; after separate acceptance, only bounded direct-Sun and geometric
+observer-night state would be next.

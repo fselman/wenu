@@ -3424,3 +3424,20 @@ same identified exact report. The evidence verifies deterministic strict JSON,
 half-open endpoint behavior, source immutability, report-interchange
 equivalence, atomic mismatch rejection, and absence of a network/write surface.
 Fernando accepted the API and evidence on 2026-09-20.
+
+## Candidate 50S.7A reserved illumination interfaces
+
+No 50S.7 API is implemented. The audit reserves immutable concepts for
+`SatelliteIlluminationGeometry`, `SatelliteShadowTransition`, and
+component-resolved incident-light fields. A geometry state would bind one UTC
+instant, satellite/orbit/snapshot identity, accepted propagated state,
+Sun/Earth/Moon geometry, direct-solar disk visibility, typed shadow class,
+observer solar altitude, twilight class, model resources, and numerical
+policy.
+
+Every component uses an explicit status such as `evaluated`,
+`not_evaluated`, `outside_model_domain`, or `unavailable_input`; unknown is
+never numeric zero. These names are audit vocabulary, not public exports.
+Acceptance of the audit may authorize only the direct-Sun/observer-night
+geometry slice, not radiometry, Earthshine, Moonlight, Lunar-Earthshine,
+brightness, or detector behavior.

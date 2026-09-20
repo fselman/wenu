@@ -3109,3 +3109,18 @@ Revision `32dce675` passed 226 focused/documentation tests in 8.86 seconds,
 review, and clean repository checks. The general profile remains the only
 admitted profile and performs no network access. Fernando accepted the complete verified candidate on 2026-09-20. After
 merge, only the documentation-first 50S.7 audit is authorized next.
+
+## Candidate 50S.7A illumination and night-geometry audit
+
+The documentation-only 50S.7A candidate decomposes satellite illumination
+into direct Sunlight, solar Earthshine, direct Moonlight, and
+Lunar-Earthshine. It keeps finite-source occultation and observer twilight in
+an output-neutral geometry owner, retains Earth-reflected terms as extended
+directional fields, and defers spacecraft attitude/BRDF and apparent
+brightness to 50S.8.
+
+The proposed sequence is 50S.7B direct-Sun plus geometric-night state, 50S.7C
+complete shadow-transition search, 50S.7D direct-source radiometry, 50S.7E
+solar/lunar Earth-reflected fields, and 50S.7F component-bundle closure. This
+candidate authorizes no runtime. Only 50S.7B may be considered after separate
+scientific and architectural acceptance.

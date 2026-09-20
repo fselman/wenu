@@ -430,3 +430,17 @@ Fernando accepted on 2026-09-14:
     cached data and verifies Wenu reports and marked-track charts; and
 11. 50S.0 through 50S.3 end with SatChecker reports/charts, while local
     snapshot and specimen work begins in 50S.4.
+
+## Candidate 50S.7A refinement of the illumination decision
+
+The 50S.7A audit retains the accepted finite-Sun umbra/penumbra requirement
+and expands the source vocabulary to four independent incident components:
+Sunlight, solar Earthshine, Moonlight, and Lunar-Earthshine. Direct sources are
+finite-disk beams; Earth-reflected sources are extended directional fields.
+Neither is yet apparent brightness.
+
+The candidate proposes WGS-84 vacuum Earth occultation, typed transitions,
+and observer geometric twilight first. It reserves direct-source radiometry
+and both reflected fields for later separately accepted 50S.7 slices, with
+spacecraft attitude, projected area, BRDF, passband magnitude, and glints
+remaining 50S.8. No runtime is authorized by this refinement.

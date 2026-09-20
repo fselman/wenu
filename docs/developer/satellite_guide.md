@@ -939,3 +939,25 @@ planned interval begins at the crossing exit and records zero rows, confirming
 half-open endpoint semantics. Both retain independent identities and state
 that operational disposition is unknown. This is validation evidence, not an
 observing recommendation.
+
+## Candidate 50S.7A illumination vocabulary
+
+Four source paths must be named independently:
+
+- **Sunlight:** Sun to satellite;
+- **Earthshine:** Sun to Earth to satellite;
+- **Moonlight:** Sun to Moon to satellite; and
+- **Lunar-Earthshine:** Sun to Moon to Earth to satellite.
+
+The last term follows the explicit definition in Caddy et al. (2026) and must
+not be confused with sunlight reflected from Earth onto the Moon. Sunlight and
+Moonlight are finite-disk beams. Earthshine and Lunar-Earthshine arrive from
+many Earth-surface directions and remain extended radiance fields until a
+spacecraft surface and BRDF are introduced in 50S.8.
+
+Satellite shadow and observer night are independent questions. A finite solar
+disk behind the WGS-84 vacuum Earth limb yields sunlit, penumbra, umbra, or
+possible antumbra geometry. Observer twilight uses the geometric altitude of
+the Sun's center. Neither state says that a satellite is in the field, above
+the horizon, bright enough to see, harmful to a detector, or grounds for a
+schedule change. The 50S.7A candidate changes no runtime.

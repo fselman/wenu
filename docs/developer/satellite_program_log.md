@@ -1180,3 +1180,18 @@ Diff, exact-head, upstream, and clean-tree checks passed. Fernando accepted
 the verified implementation on 2026-09-20. After merge, only a
 documentation-first 50S.7 illumination and night-geometry audit is authorized
 next; facility integration and 50S.7+ runtime remain unauthorized.
+
+## 2026-09-20 — Candidate 50S.7A illumination and night-geometry audit
+
+Work began from accepted 50S.6H merge
+`2659b46ea9194a9d2e0e7cdad311a5fc68d51b4c`. The documentation-only candidate
+defines Sunlight, solar Earthshine, Moonlight, and Lunar-Earthshine as four
+independent incident components; separates finite-source shadow and observer
+twilight geometry from 50S.8 apparent brightness; and records fidelity,
+identity, failure, event-search, and validation gates.
+
+The current Caddy et al. moonlit-satellite preprint is treated as motivating
+observational evidence, not a frozen numerical standard. The proposed first
+implementation is only direct finite-Sun/WGS-84 vacuum occultation plus
+geometric observer-night state. The audit remains a candidate and authorizes
+no runtime, merge, branch deletion, or later work.

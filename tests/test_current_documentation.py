@@ -3174,6 +3174,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_crossing_coordination_audit_50s6c.md",
         "satellite_multifov_interchange_audit_50s6e.md",
         "satellite_observatory_planning_adapter_audit_50s6h.md",
+        "satellite_illumination_night_geometry_audit_50s7a.md",
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
@@ -8716,3 +8717,59 @@ def test_50s6h_records_accepted_offline_planning_advisory_implementation():
     )
     for document, phrase in zip(documents, verified, strict=True):
         assert phrase in document
+
+
+def test_50s7a_records_candidate_four_source_illumination_audit():
+    audit = read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    )
+
+    for phrase in (
+        "Candidate documentation-only scientific and architectural audit",
+        "2659b46ea9194a9d2e0e7cdad311a5fc68d51b4c",
+        "Sunlight",
+        "Earthshine",
+        "Moonlight",
+        "Lunar-Earthshine",
+        "extended directional radiance fields",
+        "uniform finite solar disk",
+        "vacuum WGS-84 ellipsoid",
+        "SatelliteIlluminationGeometry",
+        "SatelliteShadowTransition",
+        "Unknown is never encoded as numeric zero",
+        "50S.7B — direct-Sun and observer-night geometry",
+        "50S.8",
+        "authorizes no implementation",
+    ):
+        assert phrase in audit
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(INSTRUCTIONS),
+        read(SATELLITE_PROGRAM_LOG),
+        read(DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"),
+    )
+    expected = (
+        "Candidate 50S.7A illumination architecture",
+        "Candidate 50S.7A illumination and night-geometry audit",
+        "Candidate 50S.7A reserved illumination interfaces",
+        "Candidate 50S.7A source placement",
+        "Candidate 50S.7A illumination coordinate boundary",
+        "Candidate 50S.7A illumination vocabulary",
+        "Candidate 50S.7A illumination and night-geometry audit boundary",
+        "Candidate 50S.7A illumination and night-geometry audit",
+        "Candidate 50S.7A refinement of the illumination decision",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+    for forbidden in (
+        "class SatelliteIlluminationGeometry",
+        "class SatelliteShadowTransition",
+    ):
+        assert forbidden not in read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
