@@ -931,3 +931,11 @@ found for those inputs; it is not a claim of an uncontaminated observation.
 The fixed scientific-status text states that illumination, apparent
 brightness, detector effect, and operational disposition are unknown. Human
 review remains responsible for observatory action.
+## Verified candidate advisory specimens
+
+The positive specimen intersects a four-second geometric crossing with a
+two-second planned interval and records exactly one two-second row. The second
+planned interval begins at the crossing exit and records zero rows, confirming
+half-open endpoint semantics. Both retain independent identities and state
+that operational disposition is unknown. This is validation evidence, not an
+observing recommendation.
