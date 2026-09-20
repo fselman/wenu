@@ -1585,3 +1585,28 @@ new execution science, visibility, illumination, brightness, detector
 effects, scheduling adapters, 50S.7/50S.8 behavior, or unrelated refactoring.
 Do not merge the implementation before separate verification, physical visual
 review, and Fernando's scientific and architectural acceptance.
+
+## Corrective 50S.6G.4A AltAz planisphere boundary
+
+The 2026-09-19 authorization of paired equatorial polar-planisphere work was
+based on the wrong product identity and is superseded for 50S.6G.4B. Read
+satellite_stereographic_planisphere_track_audit_50s6g4a.md before any further
+planisphere satellite-track work.
+
+The corrective candidate concerns only ChartRequest(family="planisphere"):
+one zenith-centred FullSkyChart in the horizontal AltAz frame with
+stereographic projection and the horizon as its boundary. It authorizes no
+implementation until Fernando separately accepts it. Do not continue the
+unmerged paired-polar candidate or add circumpolar, Galactic all-sky, provider,
+CLI/report, visibility, illumination, brightness, detector, scheduling,
+50S.7, or 50S.8 behavior.
+
+## Accepted corrective 50S.6G.4A boundary
+
+Fernando accepted the corrective AltAz planisphere audit on 2026-09-20 at
+80855938. Only the bounded corrected 50S.6G.4B ordinary
+ChartRequest(family="planisphere") integration is authorized next. Preserve the
+existing fixed AltAz request path, horizon boundary, exact-track lifecycle,
+semantics, provenance, renderer, and exporters. All paired-polar, circumpolar,
+Galactic all-sky, provider, CLI/report, visibility, illumination, brightness,
+detector, scheduling, 50S.7, and 50S.8 work remains unauthorized.

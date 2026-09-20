@@ -503,3 +503,24 @@ focused contracts, bounded validity provenance, and physical north/south
 acceptance specimens are authorized next. Other all-sky products,
 illumination, brightness, observatory adapters, and later satellite science
 remain separate.
+
+## Corrective 50S.6G.4A delivery refinement
+
+The intended 50S.6G.4 delivery product is the ordinary zenith-centred AltAz
+stereographic planisphere, not paired equatorial polar faces. It reuses the
+accepted exact evidence and ordinary request pipeline and requires one
+physically propagated La Ligua specimen in PNG, PDF, and semantic SVG.
+
+The unmerged paired-polar candidate is rejected. This corrective refinement is
+documentation only and authorizes no runtime. A separately accepted corrected
+50S.6G.4B may widen exact-track admission only to family="planisphere";
+circumpolar, Galactic all-sky, providers, reports/CLI, and later science remain
+outside scope.
+
+## Accepted corrective 50S.6G.4A refinement
+
+Fernando accepted the ordinary AltAz stereographic planisphere correction on
+2026-09-20 at 80855938. Only a bounded corrected 50S.6G.4B may widen ordinary
+request admission to planisphere and provide focused plus physical La Ligua
+PNG, PDF, and semantic-SVG evidence. The rejected paired-polar path and all
+later satellite science remain unauthorized.

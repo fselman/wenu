@@ -3018,3 +3018,37 @@ and semantic-SVG specimens described by the audit. Ordinary full-sky,
 circumpolar, equidistant-polar, combined-face, pouch-sheet, visibility,
 illumination, brightness, detector, scheduling, 50S.7, 50S.8, and later
 satellite work remain unauthorized.
+
+## 50S.6G.4A corrective audit state
+
+Fernando rejected the unmerged 50S.6G.4B paired equatorial polar-planisphere
+candidate because the intended product is the ordinary AltAz stereographic
+planisphere. The 2026-09-19 paired-polar implementation authority is therefore
+superseded.
+
+A documentation-only corrective candidate now targets
+ChartRequest(family="planisphere"), which already resolves to one
+zenith-centred horizontal FullSkyChart with stereographic projection and a
+horizon boundary. It proposes only reuse of the accepted 3A evidence, 3B fixed
+AltAz product-frame rule, existing request lifecycle, FullSkyChart boundary,
+canonical render/export path, semantics, and bounded provenance.
+
+This candidate authorizes no implementation. Only after Fernando separately
+accepts the corrective audit may a bounded corrected 50S.6G.4B admit exact
+tracks on the ordinary planisphere and provide physical PNG, PDF, and semantic
+SVG evidence. Paired polar disks, circumpolar and Galactic all-sky tracks, and
+later satellite science remain unauthorized.
+
+## 50S.6G.4A corrective audit accepted and next authority
+
+Fernando scientifically and architecturally accepted the corrective
+documentation audit on 2026-09-20 at 80855938 after all 201 plugin-disabled
+current-documentation tests passed in 6.14 seconds and repository checks were
+clean.
+
+Only the bounded corrected 50S.6G.4B ordinary AltAz stereographic planisphere
+integration, focused evidence, and one physical La Ligua PNG, PDF, and semantic
+SVG specimen are authorized next. Paired polar disks, circumpolar and Galactic
+all-sky tracks, provider or report/CLI changes, visibility, illumination,
+brightness, detector effects, scheduling adapters, 50S.7, 50S.8, and later
+satellite work remain unauthorized.
