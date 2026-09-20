@@ -8463,10 +8463,10 @@ def test_50s6g4a_records_corrective_acceptance_and_bounded_authority():
     assert "later satellite work remain unauthorized" in roadmap
 
 def test_50s6g4b_records_verified_altaz_planisphere_candidate():
-    audit = read(
+    audit = " ".join(read(
         DEVELOPER
         / "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
-    )
+    ).split())
     documents = tuple(
         read(path)
         for path in (
