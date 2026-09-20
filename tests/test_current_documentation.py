@@ -8554,3 +8554,48 @@ def test_50s6g4b_records_acceptance_and_closes_50s6g():
     )
     for document, phrase in zip(documents, expected, strict=True):
         assert phrase in document
+def test_50s6h_records_candidate_observatory_planning_adapter_audit():
+    audit = read(
+        DEVELOPER / "satellite_observatory_planning_adapter_audit_50s6h.md"
+    )
+    for phrase in (
+        "Candidate documentation-only architecture and interface audit",
+        "e37298db29af84bd92443287ae1574cf471b76e8",
+        "wenu.observatory-planning-advisory",
+        "source_report_identity_sha256",
+        "planning_advisory_identity_sha256",
+        "Touching endpoints do not overlap",
+        "A zero-row document is a valid, identified result",
+        "Paranal profile",
+        "ELT profile",
+        "unsupported_profile",
+        "no runtime change",
+    ):
+        assert phrase in audit
+
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(INSTRUCTIONS),
+        read(DEVELOPER / "satellite_delivery_audit_50s6g.md"),
+        read(SATELLITE_PROGRAM_LOG),
+    )
+    expected = (
+        "50S.6H observatory-planning adapter audit",
+        "Candidate 50S.6H observatory-planning adapter audit",
+        "Candidate 50S.6H observatory-planning adapter decision",
+        "Candidate 50S.6H planning-advisory boundary",
+        "Candidate 50S.6H placement",
+        "Candidate 50S.6H coordinate boundary",
+        "Candidate 50S.6H observatory-planning interpretation",
+        "Candidate 50S.6H observatory-planning adapter boundary",
+        "50S.6H handoff boundary",
+        "Candidate 50S.6H observatory-planning adapter audit",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
