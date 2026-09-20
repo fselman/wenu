@@ -8600,7 +8600,7 @@ def test_50s6h_records_accepted_observatory_planning_adapter_audit():
     )
     for document, phrase in zip(documents, expected, strict=True):
         assert phrase in document
-def test_50s6h_records_candidate_offline_planning_advisory_implementation():
+def test_50s6h_records_accepted_offline_planning_advisory_implementation():
     audit = read(
         DEVELOPER / "satellite_observatory_planning_adapter_audit_50s6h.md"
     )
@@ -8612,7 +8612,7 @@ def test_50s6h_records_candidate_offline_planning_advisory_implementation():
     )
 
     for phrase in (
-        "Candidate offline implementation record",
+        "Accepted offline implementation record",
         "PlanningObservationUnit",
         "ObservatoryPlanningContext",
         "PlanningAdvisoryValidationError",
@@ -8620,7 +8620,7 @@ def test_50s6h_records_candidate_offline_planning_advisory_implementation():
         "half-open interval intersection",
         "planning_advisory_identity_sha256",
         "HTTP dependency",
-        "candidate",
+        "Fernando scientifically and architecturally accepted",
     ):
         assert phrase in audit
 
@@ -8678,20 +8678,20 @@ def test_50s6h_records_candidate_offline_planning_advisory_implementation():
         read(SATELLITE_PROGRAM_LOG),
     )
     expected = (
-        "Candidate 50S.6H offline planning-advisory implementation",
-        "Candidate 50S.6H offline implementation state",
-        "Candidate 50S.6H offline planning-advisory API",
-        "Candidate 50S.6H implementation placement",
-        "Candidate 50S.6H implementation coordinate behavior",
-        "Candidate offline satellite planning advisory",
-        "Candidate 50S.6H offline planning-advisory implementation boundary",
+        "Accepted 50S.6H offline planning-advisory implementation",
+        "Accepted 50S.6H offline implementation state",
+        "Accepted 50S.6H offline planning-advisory API",
+        "Accepted 50S.6H implementation placement",
+        "Accepted 50S.6H implementation coordinate behavior",
+        "Accepted offline satellite planning advisory",
+        "Accepted 50S.6H offline planning-advisory implementation boundary",
         "Candidate 50S.6H offline planning-advisory implementation",
     )
     for document, phrase in zip(documents, expected, strict=True):
         assert phrase in document
 
     for phrase in (
-        "Verified candidate evidence",
+        "Accepted implementation evidence",
         "32dce675e82ab9bdd806455a0c3e423a3e6f67b3",
         "226 focused and",
         "2,769 plugin-disabled repository",
@@ -8700,19 +8700,19 @@ def test_50s6h_records_candidate_offline_planning_advisory_implementation():
         "2e413ca5f5fe8f0b520424c159252f793fad7999baf54cbc8abfb869c3e81c38",
         "a2a83fbf4bd15c3634a557f51802f41e1551e62e93dbce60c19b7326f73241ae",
         "network_access: false",
-        "remains unaccepted",
+        "documentation-first 50S.7",
     ):
         assert phrase in audit
 
     verified = (
-        "Verified candidate 50S.6H implementation state",
-        "Verified candidate 50S.6H gate",
-        "Verified candidate 50S.6H behavior",
-        "Verified candidate 50S.6H source evidence",
-        "Verified candidate 50S.6H coordinate evidence",
-        "Verified candidate advisory specimens",
-        "Verified candidate 50S.6H implementation boundary",
-        "Verified candidate 50S.6H implementation evidence",
+        "Accepted complete 50S.6H implementation state",
+        "Accepted complete 50S.6H gate",
+        "Accepted complete 50S.6H behavior",
+        "Accepted complete 50S.6H source evidence",
+        "Accepted complete 50S.6H coordinate evidence",
+        "Accepted advisory specimens",
+        "Accepted complete 50S.6H implementation boundary",
+        "Accepted complete 50S.6H implementation evidence",
     )
     for document, phrase in zip(documents, verified, strict=True):
         assert phrase in document
