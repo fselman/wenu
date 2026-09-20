@@ -1661,3 +1661,10 @@ The candidate is unaccepted. Do not merge it, add facility networking or
 credentials, implement Paranal/ELT profiles, mutate an OB, make a scheduling
 decision, reinterpret report science, or begin 50S.7+ work before Fernando's
 later acceptance.
+## Verified candidate 50S.6H implementation boundary
+
+Candidate revision `32dce675` passed 226 focused/documentation and 2,769
+complete plugin-disabled tests plus offline positive/zero-row specimen review,
+digest, diff, exact-head, upstream, and clean-tree checks. The candidate
+remains unaccepted. Preserve the accepted offline-only boundary and do not
+merge or begin later work without Fernando's explicit acceptance.
