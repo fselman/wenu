@@ -3446,7 +3446,7 @@ brightness, or detector behavior.
 
 No 50S.7 runtime API is implemented by the accepted audit. After merge, the
 only authorized implementation slice is 50S.7B: immutable direct-Sun and
-observer-night geometry with a finite uniform solar disk, WGS-84 vacuum Earth
+observer-night geometry with finite uniform-Sun/WGS-84 vacuum Earth
 occultation, typed shadow state, observer geometric twilight, provenance, and
 focused offline validation.
 
