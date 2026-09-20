@@ -1,6 +1,8 @@
 # 50S.6H observatory-planning adapter audit
 
-**Status:** Candidate documentation-only architecture and interface audit.
+**Status:** Accepted documentation-only architecture and interface audit.
+
+**Accepted by Fernando:** 2026-09-20.
 
 **Base:** accepted complete 50S.6G at merge commit
 `e37298db29af84bd92443287ae1574cf471b76e8`.
@@ -13,13 +15,13 @@ brightness model.
 
 ## 1. Decision
 
-A later implementation may add one deterministic, offline
+The next authorized implementation may add one deterministic, offline
 observatory-planning projection downstream of the accepted
 `ExactSatelliteCrossingReport`. The projection is advisory evidence for a
 human planning workflow. It is not an observing-block format, a scheduler, or
 an observatory API binding.
 
-The first implementation slice, if separately authorized, shall produce only
+The first authorized implementation slice shall produce only
 an observatory-neutral document. Paranal and other facility profiles may
 validate supplied planning context and label the projection, but shall not
 contact a facility. No ELT-specific payload is admitted until ESO publishes a
@@ -267,10 +269,12 @@ must not ship real programme credentials or proprietary OB content.
 - detector trail contamination (50S.9); or
 - statistical programme closure (50S.10).
 
-## 12. Candidate conclusion
+## 12. Accepted conclusion
 
-The audit admits a small, reversible next milestone: implement and verify one
+The accepted audit authorizes one small, reversible next milestone: implement and verify one
 offline general planning-advisory JSON projection from the accepted exact
 crossing report. Paranal is vocabulary and validation context only; ELT stays
-reserved. The candidate remains unaccepted, authorizes no runtime change, and
-must receive scientific and architectural acceptance before implementation.
+reserved. No runtime change is part of this audit. Fernando's acceptance authorizes only
+the bounded offline general planning-advisory implementation described above;
+facility access, facility writes, scheduling decisions, ELT mapping, and 50S.7+
+work remain unauthorized.
