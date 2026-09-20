@@ -310,3 +310,21 @@ synthetic data one positive general-profile advisory, one endpoint-touch
 zero-row advisory, their exact source report, and a digest manifest. “Paranal”
 appears only as a human-readable caller label; the profile remains `general`,
 the manifest declares `network_access: false`, and no facility is contacted.
+## 14. Verified candidate evidence
+
+Candidate source revision
+`32dce675e82ab9bdd806455a0c3e423a3e6f67b3` passed 226 focused and
+documentation tests in 8.86 seconds and all 2,769 plugin-disabled repository
+tests in 217.10 seconds. Diff, exact-head, upstream, and clean-tree checks also
+passed.
+
+The offline review manifest records source report identity
+`36899d514813784058a2ab887244b6dafbc371c78dec1111f0cc85dfdabaeba7`.
+The positive two-second overlap has advisory identity
+`2e413ca5f5fe8f0b520424c159252f793fad7999baf54cbc8abfb869c3e81c38`;
+the endpoint-touch zero-row advisory has identity
+`a2a83fbf4bd15c3634a557f51802f41e1551e62e93dbce60c19b7326f73241ae`.
+The manifest declares `profile_id: general` and `network_access: false`.
+
+The implementation candidate remains unaccepted. This evidence authorizes no
+merge, facility integration, scheduling decision, or later milestone.
