@@ -2610,3 +2610,12 @@ tools/. No new production module is authorized.
   PNG, PDF, semantic-SVG, and digest-manifest review.
 
 No new production owner is introduced.
+
+## Accepted 50S.6G.4B implementation placement
+
+Merge `f0730d8` preserves the candidate placement:
+`charts/request_satellite_tracks.py` owns planisphere admission; existing
+request realization/generation, `FullSkyChart`, exact-track layers, semantics,
+styles, renderers, and exporters own all downstream behavior. The durable
+exact-track tests and physical validation tool remain the evidence owners. No
+new production module or responsibility boundary was introduced.
