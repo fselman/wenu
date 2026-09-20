@@ -8607,6 +8607,9 @@ def test_50s6h_records_candidate_offline_planning_advisory_implementation():
     source = read(ROOT / "src" / "wenu" / "satellite_planning_advisories.py")
     public = read(ROOT / "src" / "wenu" / "__init__.py")
     tests = read(ROOT / "tests" / "test_satellite_planning_advisories.py")
+    tool = read(
+        ROOT / "tools" / "validate_50s6h_offline_planning_advisory.py"
+    )
 
     for phrase in (
         "Candidate offline implementation record",
@@ -8634,6 +8637,14 @@ def test_50s6h_records_candidate_offline_planning_advisory_implementation():
         "planning_advisory_identity_sha256",
     ):
         assert phrase in source
+
+    for phrase in (
+        "50s6h-positive-advisory.json",
+        "50s6h-zero-row-advisory.json",
+        '"network_access": False',
+        "OFFLINE_ADVISORY=",
+    ):
+        assert phrase in tool
 
     for name in (
         "PlanningObservationUnit",
