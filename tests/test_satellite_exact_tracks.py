@@ -503,11 +503,49 @@ def test_exact_track_chart_admission_is_strict_and_rejects_duplicates():
         validate_satellite_exact_track_requests(
             exact_chart_request(display, family="circumpolar")
         )
+    with pytest.raises(ValueError, match="stereographic horizontal"):
+        validate_satellite_exact_track_requests(
+            exact_chart_request(
+                display,
+                family="planisphere",
+                projection="azimuthal_equidistant",
+            )
+        )
+    with pytest.raises(ValueError, match="stereographic horizontal"):
+        validate_satellite_exact_track_requests(
+            exact_chart_request(
+                display,
+                family="planisphere",
+                coordinate_frame="galactic",
+            )
+        )
     with pytest.raises(ValueError, match="observer does not match"):
         validate_satellite_exact_track_requests(
             exact_chart_request(
                 display,
                 observer_identity=(-32.0, -71.230289, 52.0, START),
+            )
+        )
+    mismatched_observer = replace(
+        display.track.crossing.candidate.observer,
+        refraction_policy="standard",
+    )
+    mismatched_candidate = replace(
+        display.track.crossing.candidate,
+        observer=mismatched_observer,
+    )
+    mismatched_crossing = replace(
+        display.track.crossing,
+        candidate=mismatched_candidate,
+    )
+    mismatched_display = SatelliteExactTrackDisplayRequest(
+        replace(display.track, crossing=mismatched_crossing)
+    )
+    with pytest.raises(ValueError, match="coordinate policies"):
+        validate_satellite_exact_track_requests(
+            exact_chart_request(
+                mismatched_display,
+                family="planisphere",
             )
         )
     with pytest.raises(ValueError, match="reference instant"):
