@@ -278,7 +278,7 @@ reserved. No runtime change is part of this audit. Fernando's acceptance authori
 the bounded offline general planning-advisory implementation described above;
 facility access, facility writes, scheduling decisions, ELT mapping, and 50S.7+
 work remain unauthorized.
-## 13. Candidate offline implementation record
+## 13. Accepted offline implementation record
 
 The candidate implementation places the accepted pure owner in
 `satellite_planning_advisories.py`. It adds frozen
@@ -300,17 +300,18 @@ HTTP dependency, endpoint, credential, facility write verb, scheduling
 decision, ELT mapping, coordinate conversion, propagation, illumination,
 brightness, or detector-effect calculation.
 
-This implementation record is a candidate. It authorizes no merge, facility
-integration, or later milestone before focused, documentation, complete-suite,
-offline-specimen, and clean repository evidence receive Fernando's scientific
-and architectural acceptance.
+Fernando scientifically and architecturally accepted this implementation on
+2026-09-20 after the focused, documentation, complete-suite, offline-specimen,
+and clean repository gates. The acceptance authorizes merge of this bounded
+implementation only; facility integration, scheduling decisions, and 50S.7+
+runtime remain unauthorized.
 The offline review owner
 `tools/validate_50s6h_offline_planning_advisory.py` generates from packaged
 synthetic data one positive general-profile advisory, one endpoint-touch
 zero-row advisory, their exact source report, and a digest manifest. “Paranal”
 appears only as a human-readable caller label; the profile remains `general`,
 the manifest declares `network_access: false`, and no facility is contacted.
-## 14. Verified candidate evidence
+## 14. Accepted implementation evidence
 
 Candidate source revision
 `32dce675e82ab9bdd806455a0c3e423a3e6f67b3` passed 226 focused and
@@ -326,5 +327,7 @@ the endpoint-touch zero-row advisory has identity
 `a2a83fbf4bd15c3634a557f51802f41e1551e62e93dbce60c19b7326f73241ae`.
 The manifest declares `profile_id: general` and `network_access: false`.
 
-The implementation candidate remains unaccepted. This evidence authorizes no
-merge, facility integration, scheduling decision, or later milestone.
+Fernando accepted the verified implementation on 2026-09-20. After merge,
+only a documentation-first 50S.7 illumination and night-geometry audit is
+authorized next. Facility integration, scheduling decisions, illumination
+runtime, brightness work, and later milestones remain unauthorized.
