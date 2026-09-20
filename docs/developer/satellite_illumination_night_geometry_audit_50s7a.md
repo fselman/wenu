@@ -1,8 +1,10 @@
 # 50S.7A illumination and night-geometry audit
 
-**Status:** Candidate documentation-only scientific and architectural audit
+**Status:** Accepted documentation-only scientific and architectural audit
 
 **Audit date:** 2026-09-20
+
+**Accepted by Fernando:** 2026-09-20
 
 **Accepted program base:** `2659b46ea9194a9d2e0e7cdad311a5fc68d51b4c`
 
@@ -452,3 +454,23 @@ Earthshine, Moonlight radiometry, Lunar-Earthshine, component summation,
 apparent brightness, detector effects, and observatory action remain
 unauthorized. The candidate audit itself authorizes no implementation, merge,
 branch deletion, or later milestone.
+
+## 11. Accepted 50S.7A audit and 50S.7B authority
+
+Fernando scientifically and architecturally accepted this documentation-only
+audit on 2026-09-20 at candidate revision
+`fdf7e005a41a5a4d45200f841e914815d37da870`. The final 206
+plugin-disabled current-documentation tests passed in 5.87 seconds; diff,
+exact-head, upstream, and clean-working-tree checks also passed.
+
+After this audit is merged, implement only the bounded 50S.7B direct-Sun and
+observer-night geometry implementation: immutable output-neutral geometry,
+finite uniform-Sun/WGS-84 vacuum Earth occultation, typed shadow state,
+geometric observer twilight, complete provenance, and focused offline
+validation.
+
+50S.7C and later transition, radiometric, reflected-source, component-bundle,
+50S.8 brightness, 50S.9 detector, facility, visibility, and scheduling work
+remain unauthorized. This acceptance does not itself authorize implementation
+before merge. PR merge and branch deletion still require separate explicit
+authorization.
