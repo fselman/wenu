@@ -890,3 +890,12 @@ zenith-centred AltAz stereographic FullSkyChart, using the existing fixed
 chart-reference frame, horizon presentation boundary, lifecycle, semantics,
 provenance, and exporters. Paired polar, circumpolar, Galactic all-sky, and
 later science remain outside this milestone.
+
+## Verified candidate ordinary-planisphere exact track
+
+The candidate places one accepted connected visit on the ordinary La Ligua
+visible-hemisphere planisphere. The complete track is expressed in the one
+AltAz frame fixed at chart time; the sample times still identify retained
+evidence. The horizon may clip drawing only and cannot invent an entry or exit
+event. The physical manifest accompanies the chart with site, chart time,
+complete visit interval, track identity, and output digests.
