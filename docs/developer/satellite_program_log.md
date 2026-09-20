@@ -1166,3 +1166,15 @@ evidence and Fernando's acceptance.
 The candidate validation tool owns reproducible offline positive and zero-row
 JSON specimens plus a digest manifest. It uses packaged synthetic data and
 performs no facility access.
+## Verified candidate 50S.6H implementation evidence
+
+Revision `32dce675e82ab9bdd806455a0c3e423a3e6f67b3` passed 226 focused and
+documentation tests in 8.86 seconds and all 2,769 plugin-disabled tests in
+217.10 seconds. Offline review produced one two-second positive row and one
+endpoint-touch zero-row advisory from source report identity
+`36899d514813784058a2ab887244b6dafbc371c78dec1111f0cc85dfdabaeba7`.
+Their advisory identities begin `2e413ca5` and `a2a83fbf`, respectively;
+the manifest declares no network access.
+
+Diff, exact-head, upstream, and clean-tree checks passed. The candidate remains
+unaccepted and authorizes no merge or later work.
