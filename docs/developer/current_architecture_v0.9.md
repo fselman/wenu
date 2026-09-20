@@ -1767,3 +1767,10 @@ The candidate does not alter the implemented propagation, coordinate,
 crossing, report, file-protocol, chart, renderer, or export owners. It has no
 network or facility-write capability and makes no illumination, brightness,
 detector, or scheduling claim. It remains unaccepted.
+## Verified candidate 50S.6H implementation state
+
+Revision `32dce675` verifies the pure general-profile projection with 226
+focused/documentation tests, all 2,769 repository tests, and offline positive
+and endpoint-touch zero-row JSON specimens. The manifest declares no network
+access. This is candidate evidence only; implemented architecture does not
+change until acceptance and merge.
