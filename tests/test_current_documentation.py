@@ -8596,7 +8596,7 @@ def test_50s6h_records_accepted_observatory_planning_adapter_audit():
         "Accepted 50S.6H observatory-planning interpretation",
         "Accepted 50S.6H observatory-planning adapter boundary",
         "50S.6H handoff boundary",
-        "Candidate 50S.6H observatory-planning adapter audit",
+        "Accepted 50S.6H observatory-planning adapter audit",
     )
     for document, phrase in zip(documents, expected, strict=True):
         assert phrase in document
