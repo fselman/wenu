@@ -1790,3 +1790,17 @@ Earth-reflected terms retain their extended directional character until 50S.8
 supplies spacecraft surface orientation and BRDF. The candidate authorizes no
 runtime; after separate acceptance, only bounded direct-Sun and geometric
 observer-night state would be next.
+
+## Accepted 50S.7A illumination architecture
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.7A architecture on 2026-09-20 at `fdf7e005a41a5a4d45200f841e914815d37da870`.
+No implemented owner changes in this audit. After merge, only a bounded
+`satellites/illumination.py` composition for finite uniform-Sun/WGS-84 vacuum
+occultation, typed shadow state, observer geometric twilight, provenance, and
+offline validation is authorized.
+
+Sunlight, solar Earthshine, Moonlight, and Lunar-Earthshine remain independent.
+50S.7C+ transitions and radiometry, reflected-source fields, 50S.8 attitude,
+BRDF and apparent brightness, 50S.9 detector effects, visibility, facility
+integration, and scheduling remain unauthorized.
