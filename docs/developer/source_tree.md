@@ -2644,3 +2644,6 @@ source-tree placement.
 
 No schema, HTTP client, credential owner, facility adapter, CLI/file protocol,
 scheduler, coordinate owner, propagator, renderer, or exporter is added.
+- `tools/validate_50s6h_offline_planning_advisory.py` owns the synthetic,
+  offline positive/zero-row JSON review specimen and digest manifest. It is
+  validation evidence, not a public file protocol or facility adapter.
