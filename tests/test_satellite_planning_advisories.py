@@ -4,6 +4,10 @@ from dataclasses import FrozenInstanceError
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 import json
+import os
+from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 
@@ -477,3 +481,48 @@ def test_module_has_no_network_or_facility_write_surface():
         "deleteOB",
     ):
         assert forbidden not in source
+def test_offline_validation_tool_writes_positive_zero_and_manifest(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    environment = dict(os.environ)
+    environment["PYTHONPATH"] = str(root / "src")
+    completed = subprocess.run(
+        (
+            sys.executable,
+            str(
+                root
+                / "tools"
+                / "validate_50s6h_offline_planning_advisory.py"
+            ),
+            str(tmp_path),
+            "--source-revision",
+            "test-revision",
+        ),
+        cwd=root,
+        env=environment,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    positive = json.loads(
+        (tmp_path / "50s6h-positive-advisory.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    zero = json.loads(
+        (tmp_path / "50s6h-zero-row-advisory.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    manifest = json.loads(
+        (tmp_path / "50s6h-manifest.json").read_text(encoding="utf-8")
+    )
+    assert positive["row_count"] == 1
+    assert zero["row_count"] == 0
+    assert manifest["network_access"] is False
+    assert manifest["positive_row_count"] == 1
+    assert manifest["zero_row_count"] == 0
+    assert manifest["source_revision"] == "test-revision"
+    assert "OFFLINE_ADVISORY=positive rows 1; zero rows 0" in (
+        completed.stdout
+    )
