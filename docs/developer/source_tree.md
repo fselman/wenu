@@ -2632,3 +2632,15 @@ observatory writes, or scheduling.
 No production file is added by the audit itself. The bounded offline module is
 authorized next. A Paranal network client and an ELT profile have no authorized
 source-tree placement.
+## Candidate 50S.6H implementation placement
+
+- `src/wenu/satellite_planning_advisories.py` owns frozen planning inputs,
+  strict validation, half-open overlap, canonical JSON, and advisory identity.
+- `src/wenu/__init__.py` exposes the bounded general-profile API and
+  constants.
+- `tests/test_satellite_planning_advisories.py` owns positive overlap,
+  zero-row boundaries, ordering, immutability, interchange equivalence,
+  malformed-input, mismatch, digest, and no-network evidence.
+
+No schema, HTTP client, credential owner, facility adapter, CLI/file protocol,
+scheduler, coordinate owner, propagator, renderer, or exporter is added.
