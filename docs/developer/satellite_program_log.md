@@ -1092,3 +1092,12 @@ requires fixed AltAz realization, horizon-boundary evidence, lifecycle and
 state isolation, bounded semantics/provenance, unchanged empty output, and one
 physical La Ligua PNG/PDF/semantic-SVG specimen. No implementation is
 authorized before Fernando's separate acceptance.
+
+## 2026-09-20 — Accepted corrective 50S.6G.4A audit
+
+Fernando scientifically and architecturally accepted the corrective AltAz
+planisphere audit at 80855938. Verification comprised 201 plugin-disabled
+current-documentation tests in 6.14 seconds plus clean diff, exact-head,
+upstream, and working-tree checks. Only the bounded corrected 50S.6G.4B
+ordinary planisphere implementation and its focused and physical acceptance
+evidence are authorized next.

@@ -3353,3 +3353,13 @@ extend validate_satellite_exact_track_requests() so family="planisphere" joins
 regional and binocular. all_sky and circumpolar remain rejected. The earlier
 paired stereographic planisphere API proposal is superseded and authorizes no
 runtime work.
+
+## Accepted corrective 50S.6G.4A implementation authorization
+
+After acceptance at 80855938, a bounded 50S.6G.4B may add planisphere to the
+families admitted by validate_satellite_exact_track_requests(). It must reuse
+the existing ChartRequest satellite_exact_tracks value,
+configure_chart_request_satellite_tracks(), ChartRequestBuild cleanup, fixed
+horizontal LayerRealizationContext, FullSkyChart, canonical rendering/export,
+and bounded provenance. No new public request type or projection, coordinate,
+layer, renderer, exporter, provider, CLI, or report API is authorized.

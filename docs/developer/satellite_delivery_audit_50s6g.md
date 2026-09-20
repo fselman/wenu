@@ -516,3 +516,11 @@ documentation only and authorizes no runtime. A separately accepted corrected
 50S.6G.4B may widen exact-track admission only to family="planisphere";
 circumpolar, Galactic all-sky, providers, reports/CLI, and later science remain
 outside scope.
+
+## Accepted corrective 50S.6G.4A refinement
+
+Fernando accepted the ordinary AltAz stereographic planisphere correction on
+2026-09-20 at 80855938. Only a bounded corrected 50S.6G.4B may widen ordinary
+request admission to planisphere and provide focused plus physical La Ligua
+PNG, PDF, and semantic-SVG evidence. The rejected paired-polar path and all
+later satellite science remain unauthorized.

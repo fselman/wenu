@@ -2588,3 +2588,12 @@ The earlier proposed polar_planisphere.py and polar_page_export.py ownership
 was based on the wrong paired equatorial product and is superseded for
 50S.6G.4B. This documentation-only correction adds no production file and
 authorizes no implementation.
+
+## Accepted corrective 50S.6G.4A implementation ownership
+
+After acceptance at 80855938, request_satellite_tracks.py remains the only
+production file expected to require behavior change: widening exact-track
+family admission to planisphere. Existing request realization, generation,
+FullSkyChart, exact-track layer, style, semantic, renderer, and exporter owners
+remain unchanged. A deterministic physical review tool may be added under
+tools/. No new production module is authorized.

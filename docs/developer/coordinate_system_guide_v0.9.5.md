@@ -4007,3 +4007,13 @@ horizon-boundary preparation. The horizon may clip presentation but never
 creates a scientific entry or exit event or a visibility claim. The earlier
 fixed-axis polar-face finding is superseded for 50S.6G.4B. The corrective audit
 changes no coordinate calculation and authorizes no implementation.
+
+## Accepted corrective 50S.6G.4A AltAz coordinate boundary
+
+Fernando accepted on 2026-09-20 the existing 50S.6G.3B fixed AltAz
+product-frame rule for the ordinary planisphere. The complete retained
+geometric topocentric GCRS-axis track is transformed once at the chart
+reference instant; sample UTC values remain evidence. FullSkyChart projection
+and horizon clipping are coordinate-neutral presentation and create no
+scientific event or visibility claim. No new coordinate calculation is
+authorized by 50S.6G.4B.

@@ -1,6 +1,6 @@
 # 50S.6G.4A corrective AltAz stereographic planisphere exact-track audit
 
-**Status:** documentation-only corrective candidate for Fernando's separate scientific and architectural acceptance
+**Status:** scientifically and architecturally accepted corrective audit; bounded implementation authorized
 **Milestone:** 50S.6G.4A corrective audit
 **Baseline:** d8604fccc9a203d6fbc80c6f892dc3b9025a6f2e
 **Date:** 2026-09-20
@@ -273,3 +273,33 @@ listed above become authorized. Merge, branch cleanup, program closure,
 circumpolar tracks, Galactic all-sky tracks, paired polar disks, CLI/report
 changes, visibility, illumination, brightness, detector effects, scheduling
 adapters, 50S.7, 50S.8, and later work remain unauthorized.
+
+## Acceptance and bounded corrected implementation authority
+
+Fernando scientifically and architecturally accepted this corrective
+documentation audit on 2026-09-20 at
+80855938a8711b7cec05190b5c7d33557dace9a9. Verification comprised all 201
+plugin-disabled current-documentation tests passing in 6.14 seconds, a clean
+diff check against d8604fccc9a203d6fbc80c6f892dc3b9025a6f2e, exact local
+and upstream head agreement, and a clean synchronized Mac working tree.
+
+Implement only the bounded corrected 50S.6G.4B ordinary AltAz stereographic
+planisphere integration specified above. The implementation may add
+planisphere to the existing regional/binocular exact-track family admission,
+extend the existing durable tests, and add one deterministic physical La Ligua
+review tool producing PNG, PDF, and semantic SVG through the ordinary request
+path.
+
+Preserve the accepted fixed AltAz product-frame rule, exact observer and
+reference-instant admission, horizon presentation boundary, no-synthetic-event
+rule, request-owned installation and cleanup, unchanged empty-request output,
+existing semantic identities, bounded provenance, canonical
+CelestialSphere.draw_chart() path, and existing renderer/exporter ownership.
+
+This acceptance does not authorize paired polar disks, circumpolar or Galactic
+all-sky tracks, provider or acquisition changes, report or CLI changes, new
+propagation or crossing science, visibility, sunlight, solar Earthshine,
+moonlight, lunar Earthshine, brightness, detector effects, scheduling
+adapters, 50S.7, 50S.8, merge of an implementation, or unrelated refactoring.
+The corrected implementation remains a candidate until separately verified,
+physically reviewed, and accepted.

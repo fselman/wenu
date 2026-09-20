@@ -8400,7 +8400,7 @@ def test_50s6g4a_corrective_altaz_planisphere_audit_is_bounded():
     assert "This candidate authorizes no implementation" in roadmap
 
 
-def test_50s6g4a_correction_supersedes_wrong_product_authority():
+def test_50s6g4a_records_corrective_acceptance_and_bounded_authority():
     audit = " ".join(read(
         DEVELOPER / "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
     ).split())
@@ -8420,25 +8420,44 @@ def test_50s6g4a_correction_supersedes_wrong_product_authority():
     )
 
     for phrase in (
-        "c1d9015ab18153dc84aba1360edb29fa4f46bf4e",
-        "wrong product identity",
-        "superseded for 50S.6G.4B",
-        "7a00b15498ffef4a63e3babba433d380f333a94e",
-        "isolated and unmerged",
-        "family admission from regional/binocular to planisphere",
-        "all_sky and circumpolar remain rejected",
-        "If Fernando accepts this corrective audit",
-        "only the bounded corrected 50S.6G.4B",
+        "scientifically and architecturally accepted this corrective",
+        "80855938a8711b7cec05190b5c7d33557dace9a9",
+        "all 201 plugin-disabled current-documentation tests",
+        "6.14 seconds",
+        "Implement only the bounded corrected 50S.6G.4B",
+        "ordinary AltAz stereographic planisphere integration",
+        "This acceptance does not authorize paired polar disks",
+        "implementation remains a candidate",
     ):
         assert phrase in audit
 
-    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
-    assert "wrong product" in architecture
-    assert "paired-polar implementation authority is therefore superseded" in roadmap
-    assert "paired stereographic planisphere API proposal is superseded" in reference
-    assert "wrong paired equatorial product" in source_tree
-    assert "fixed-axis polar-face finding is superseded" in coordinates
-    assert "paired-polar authorization is superseded" in guide
-    assert "paired equatorial polar-planisphere work" in instructions
-    assert "unmerged paired-polar candidate is rejected" in delivery
-    assert "supersedes the paired-polar" in log
+    (
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinates,
+        guide,
+        instructions,
+        delivery,
+        log,
+    ) = documents
+    assert (
+        "Accepted corrective 50S.6G.4A AltAz planisphere boundary"
+        in architecture
+    )
+    assert "50S.6G.4A corrective audit accepted and next authority" in roadmap
+    assert (
+        "Accepted corrective 50S.6G.4A implementation authorization"
+        in reference
+    )
+    assert (
+        "Accepted corrective 50S.6G.4A implementation ownership"
+        in source_tree
+    )
+    assert "Accepted corrective 50S.6G.4A AltAz coordinate boundary" in coordinates
+    assert "Accepted corrective AltAz planisphere audit" in guide
+    assert "Accepted corrective 50S.6G.4A boundary" in instructions
+    assert "Accepted corrective 50S.6G.4A refinement" in delivery
+    assert "Accepted corrective 50S.6G.4A audit" in log
+    assert "later satellite work remain unauthorized" in roadmap

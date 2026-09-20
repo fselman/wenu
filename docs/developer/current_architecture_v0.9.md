@@ -1714,3 +1714,12 @@ projection/preparation/render/export flow, and bounded provenance. Only a
 future separately accepted widening of exact-track family admission from
 regional/binocular to planisphere is proposed. This corrective audit changes
 no runtime and authorizes no implementation.
+
+## Accepted corrective 50S.6G.4A AltAz planisphere boundary
+
+Fernando accepted the corrected ordinary-planisphere scope on 2026-09-20 at
+80855938. A bounded 50S.6G.4B may widen the existing exact-track request
+admission to family="planisphere" and add focused and physical acceptance
+evidence. It must reuse FullSkyChart, the fixed horizontal realization context,
+request-owned lifecycle, canonical rendering/export, and bounded provenance.
+No paired equatorial or later satellite behavior is authorized.

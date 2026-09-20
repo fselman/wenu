@@ -881,3 +881,12 @@ and never creates an event or establishes visibility.
 The earlier paired-polar authorization is superseded. This corrective audit is
 documentation only and requires Fernando's separate acceptance before any
 runtime work.
+
+## Accepted corrective AltAz planisphere audit
+
+Fernando accepted the corrected ordinary visible-hemisphere product on
+2026-09-20. A bounded implementation may display accepted exact tracks on one
+zenith-centred AltAz stereographic FullSkyChart, using the existing fixed
+chart-reference frame, horizon presentation boundary, lifecycle, semantics,
+provenance, and exporters. Paired polar, circumpolar, Galactic all-sky, and
+later science remain outside this milestone.
