@@ -444,3 +444,17 @@ and observer geometric twilight first. It reserves direct-source radiometry
 and both reflected fields for later separately accepted 50S.7 slices, with
 spacecraft attitude, projected area, BRDF, passband magnitude, and glints
 remaining 50S.8. No runtime is authorized by this refinement.
+
+## Accepted 50S.7A refinement of the illumination decision
+
+Fernando accepted the documentation-only 50S.7A refinement on 2026-09-20.
+Sunlight, solar Earthshine, Moonlight, and Lunar-Earthshine remain four
+independent incident components; direct-source and extended Earth-reflected
+geometry remain separate from spacecraft attitude, BRDF, apparent brightness,
+and detector response.
+
+After merge, only bounded 50S.7B finite uniform-Sun/WGS-84 vacuum occultation,
+typed shadow state, observer geometric twilight, provenance, and offline
+validation are authorized. Transition solving, radiometry, reflected fields,
+brightness, detector effects, visibility, facility integration, and scheduling
+remain later, separately accepted work.
