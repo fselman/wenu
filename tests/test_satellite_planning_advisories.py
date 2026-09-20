@@ -409,7 +409,7 @@ def test_resigned_semantic_corruption_fails_closed(mutate, code):
 def test_digest_duplicate_nonfinite_utf8_and_noncanonical_json_fail():
     value = advisory()
     document = value.document
-    document["row_count"] = 0
+    document["created_utc"] = "2026-09-20T12:34:57.123456Z"
     encoded = json.dumps(
         document, ensure_ascii=False, indent=2, sort_keys=True
     ) + "\n"
