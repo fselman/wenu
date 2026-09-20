@@ -1648,3 +1648,16 @@ Only the bounded offline general planning-advisory implementation is authorized
 next. Do not add facility network or credential handling, write or mutate an
 observatory planning system, make scheduling decisions, translate crossings
 into OB time constraints, map ELT operations, or begin 50S.7+ work.
+## Candidate 50S.6H offline planning-advisory implementation boundary
+
+The feature candidate implements only the accepted general-profile version 1
+offline projection in `satellite_planning_advisories.py`. Preserve frozen
+caller-owned planning inputs, exact observer and `field_id` matching,
+half-open overlap, planning-unit/report ordering, zero-row validity, strict
+canonical JSON, typed stable rejection codes, source report identity, snapshot
+identity, and independent advisory identity.
+
+The candidate is unaccepted. Do not merge it, add facility networking or
+credentials, implement Paranal/ELT profiles, mutate an OB, make a scheduling
+decision, reinterpret report science, or begin 50S.7+ work before Fernando's
+later acceptance.
