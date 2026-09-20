@@ -2574,3 +2574,17 @@ Existing exact-evidence layers, styles, semantics, renderers, exporters, and
 durable exact-track and polar test files remain authoritative. No new
 projection, science, provider, report, CLI, renderer, exporter, or milestone-
 named runtime-test owner is authorized.
+
+## Corrective 50S.6G.4A ownership
+
+The requested planisphere track product belongs to existing ordinary owners:
+request_satellite_tracks.py for admission and installation,
+request_realization.py for one fixed AltAz product frame,
+request_generation.py for lifecycle and export, full_sky.py for the
+zenith-centred stereographic horizon-bounded chart, and
+satellite_exact_track_layer.py for retained path/event views.
+
+The earlier proposed polar_planisphere.py and polar_page_export.py ownership
+was based on the wrong paired equatorial product and is superseded for
+50S.6G.4B. This documentation-only correction adds no production file and
+authorizes no implementation.

@@ -1700,3 +1700,17 @@ audit on 2026-09-19 at `c1d9015`, after 200 plugin-disabled documentation
 tests passed in 5.29 seconds and repository checks were clean. Only the
 bounded 50S.6G.4B integration and required physical north/south specimens are
 authorized next; all later satellite science remains unauthorized.
+
+## Corrective 50S.6G.4A ordinary-planisphere boundary
+
+The accepted 2026-09-19 paired equatorial polar-planisphere scope selected the
+wrong product and is superseded for 50S.6G.4B. The requested product is the
+ordinary ChartRequest planisphere: one FullSkyChart, horizontal AltAz,
+zenith-centred stereographic projection, and the horizon as the chart boundary.
+
+The as-is architecture already supplies the correct chart, fixed horizontal
+LayerRealizationContext, exact-track layers, request-owned lifecycle, canonical
+projection/preparation/render/export flow, and bounded provenance. Only a
+future separately accepted widening of exact-track family admission from
+regional/binocular to planisphere is proposed. This corrective audit changes
+no runtime and authorizes no implementation.

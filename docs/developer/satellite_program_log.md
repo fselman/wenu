@@ -1077,3 +1077,18 @@ audit at `c1d9015`. Verification comprised 200 plugin-disabled documentation
 tests in 5.29 seconds plus exact-head, upstream, diff, and clean-tree checks.
 Only the bounded 50S.6G.4B paired stereographic-planisphere implementation and
 required physical north/south specimens are authorized next.
+
+## 2026-09-20 — Corrective 50S.6G.4A AltAz planisphere audit
+
+Fernando rejected the unmerged candidate at 7a00b15 because it placed exact
+tracks on paired equatorial polar-planisphere faces. The required product is
+the ordinary ChartRequest planisphere: one zenith-centred FullSkyChart in
+horizontal AltAz with stereographic projection and a horizon boundary.
+
+A documentation-only corrective candidate now supersedes the paired-polar
+50S.6G.4B authority while preserving accepted 3A evidence and 3B ordinary-chart
+work. It proposes only widening exact-track family admission to planisphere and
+requires fixed AltAz realization, horizon-boundary evidence, lifecycle and
+state isolation, bounded semantics/provenance, unchanged empty output, and one
+physical La Ligua PNG/PDF/semantic-SVG specimen. No implementation is
+authorized before Fernando's separate acceptance.

@@ -8335,7 +8335,7 @@ def test_50s6g3b_records_acceptance_and_only_bounded_implementation_authority():
     assert "50S.6G.4A/B and all later science remain unauthorized" in roadmap
 
 
-def test_50s6g4a_candidate_stereographic_planisphere_audit_is_bounded():
+def test_50s6g4a_corrective_altaz_planisphere_audit_is_bounded():
     audit = " ".join(read(
         DEVELOPER
         / "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
@@ -8361,24 +8361,19 @@ def test_50s6g4a_candidate_stereographic_planisphere_audit_is_bounded():
         in index
     )
     for phrase in (
-        "paired physical polar planisphere",
-        'projection_name="stereographic"',
         'ChartRequest(family="planisphere")',
-        "event-specific planisphere overlay",
+        "observer-horizontal planisphere",
+        "one FullSkyChart",
+        "zenith-centred stereographic projection",
+        "horizon as the chart boundary",
         "SatelliteExactTrackDisplayRequest",
-        "fixed GCRS/ICRS axis orientation",
-        'origin="topocentric-direction"',
-        "PositionStatus.GEOMETRIC",
-        "must not route the track through AltAz",
+        "fixed AltAz product frame",
+        "track_identity_sha256",
         "No invalid or mismatched track is silently dropped",
-        "appears on both faces intentionally",
-        "never a scientific entry or exit event",
-        "no physical right-ascension cut",
-        "do not alter track evidence",
-        "event-specific non-recurrence limitation",
+        "does not create a crossing entry or exit event",
         "PNG, PDF, and semantic SVG",
-        "must not recursively serialize samples",
-        "This candidate does not authorize 50S.6G.4B implementation",
+        "must not serialize samples",
+        "authorizes no implementation",
     ):
         assert phrase in audit
 
@@ -8393,25 +8388,19 @@ def test_50s6g4a_candidate_stereographic_planisphere_audit_is_bounded():
         delivery,
         log,
     ) = documents
-    assert (
-        "Candidate 50S.6G.4A stereographic polar-planisphere boundary"
-        in architecture
-    )
-    assert "50S.6G.4A candidate audit state" in roadmap
-    assert (
-        "Candidate 50S.6G.4A paired stereographic planisphere API"
-        in reference
-    )
-    assert "Candidate 50S.6G.4A ownership" in source_tree
-    assert "Candidate 50S.6G.4A fixed-axis polar finding" in coordinates
-    assert "Candidate stereographic polar-planisphere exact tracks" in guide
-    assert "Candidate 50S.6G.4A audit boundary" in instructions
-    assert "50S.6G.4A candidate refinement" in delivery
-    assert "Candidate 50S.6G.4A stereographic planisphere audit" in log
+    assert "Corrective 50S.6G.4A ordinary-planisphere boundary" in architecture
+    assert "50S.6G.4A corrective audit state" in roadmap
+    assert "Corrective 50S.6G.4A proposed request boundary" in reference
+    assert "Corrective 50S.6G.4A ownership" in source_tree
+    assert "Corrective 50S.6G.4A fixed AltAz planisphere finding" in coordinates
+    assert "Corrective ordinary AltAz planisphere audit" in guide
+    assert "Corrective 50S.6G.4A AltAz planisphere boundary" in instructions
+    assert "Corrective 50S.6G.4A delivery refinement" in delivery
+    assert "Corrective 50S.6G.4A AltAz planisphere audit" in log
     assert "This candidate authorizes no implementation" in roadmap
 
 
-def test_50s6g4a_records_acceptance_and_only_bounded_implementation_authority():
+def test_50s6g4a_correction_supersedes_wrong_product_authority():
     audit = " ".join(read(
         DEVELOPER / "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
     ).split())
@@ -8431,34 +8420,18 @@ def test_50s6g4a_records_acceptance_and_only_bounded_implementation_authority():
     )
 
     for phrase in (
-        "scientifically and architecturally accepted",
         "c1d9015ab18153dc84aba1360edb29fa4f46bf4e",
-        "all 200 plugin-disabled current-documentation tests",
-        "5.29 seconds",
-        "Implement only the bounded 50S.6G.4B",
-        "This acceptance does not authorize ordinary full-sky",
-        "implementation remains a candidate",
+        "wrong product identity",
+        "superseded for 50S.6G.4B",
+        "7a00b15498ffef4a63e3babba433d380f333a94e",
+        "isolated and unmerged",
+        "family admission from regional/binocular to planisphere",
+        "all_sky and circumpolar remain rejected",
+        "If Fernando accepts this corrective audit",
+        "only the bounded corrected 50S.6G.4B",
     ):
         assert phrase in audit
 
-    (
-        architecture,
-        roadmap,
-        reference,
-        source_tree,
-        coordinates,
-        guide,
-        instructions,
-        delivery,
-        log,
-    ) = documents
-    assert "Accepted 50S.6G.4A audit boundary" in architecture
-    assert "50S.6G.4A accepted audit and next authority" in roadmap
-    assert "Accepted 50S.6G.4A implementation authorization" in reference
-    assert "Accepted 50S.6G.4A implementation ownership" in source_tree
-    assert "Accepted 50S.6G.4A fixed-axis polar boundary" in coordinates
-    assert "Accepted stereographic polar-planisphere audit" in guide
-    assert "Accepted 50S.6G.4A audit boundary" in instructions
-    assert "Accepted 50S.6G.4A audit refinement" in delivery
-    assert "Accepted 50S.6G.4A stereographic planisphere audit" in log
-    assert "later satellite work remain unauthorized" in roadmap
+    for document in documents:
+        assert "superseded" in document
+        assert "authorizes no implementation" in document.lower()

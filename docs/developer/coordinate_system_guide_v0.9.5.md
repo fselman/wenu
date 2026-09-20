@@ -3992,3 +3992,18 @@ geometric topocentric evidence independently on both equatorial faces while
 retaining per-sample UTC and event-specific non-recurrence. It must not pass
 through AltAz, apply apparent corrections, or let horizon furniture perform
 satellite visibility filtering.
+
+## Corrective 50S.6G.4A fixed AltAz planisphere finding
+
+The requested satellite planisphere is observer-horizontal, not a paired
+equatorial polar disk. Accepted exact samples remain geometric topocentric
+directions in fixed GCRS axes with per-sample UTC evidence. The existing
+ordinary request realization transforms the complete collection once into the
+chart observer's fixed AltAz product frame at the crossing field reference
+instant, exactly as accepted for regional and binocular 50S.6G.3B charts.
+
+FullSkyChart then applies only coordinate-neutral stereographic projection and
+horizon-boundary preparation. The horizon may clip presentation but never
+creates a scientific entry or exit event or a visibility claim. The earlier
+fixed-axis polar-face finding is superseded for 50S.6G.4B. The corrective audit
+changes no coordinate calculation and authorizes no implementation.

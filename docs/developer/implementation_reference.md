@@ -3337,3 +3337,19 @@ cleanup, typed fixed-axis equatorial handling, bounded per-face provenance and
 validity furniture, focused tests, and required north/south PNG/PDF/semantic-
 SVG specimens. It must consume accepted evidence and perform no new satellite
 science.
+
+## Corrective 50S.6G.4A proposed request boundary
+
+ChartRequest already carries satellite_exact_tracks and requires
+projection="stereographic" plus coordinate_frame="horizontal" for every
+ordinary planisphere request. prepare_chart_request() resolves that family to
+FullSkyChart; chart_request_realization_context() supplies the fixed AltAz
+product frame; configure_chart_request_satellite_tracks() installs retained
+path/event views; ChartRequestBuild removes them; and ordinary export records
+bounded provenance.
+
+The corrective audit proposes no new API. A future accepted 50S.6G.4B may only
+extend validate_satellite_exact_track_requests() so family="planisphere" joins
+regional and binocular. all_sky and circumpolar remain rejected. The earlier
+paired stereographic planisphere API proposal is superseded and authorizes no
+runtime work.

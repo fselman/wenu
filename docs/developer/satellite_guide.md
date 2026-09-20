@@ -864,3 +864,20 @@ the paired north/south stereographic page export, including event-specific
 site/time validity, face overlap, cap clipping, cleanup, and existing semantic
 outputs. It may not perform new satellite science or add other all-sky,
 illumination, or brightness behavior.
+
+## Corrective ordinary AltAz planisphere audit
+
+The intended exact-track planisphere is Wenu's ordinary visible-hemisphere
+chart: one zenith-centred stereographic FullSkyChart in observer-local AltAz,
+bounded by the horizon. It is not the paired north/south equatorial physical
+planisphere.
+
+A future corrected implementation may reuse the same fixed horizontal
+product-frame rule already accepted for regional and binocular charts. The
+complete retained track is transformed at the chart reference instant;
+per-sample UTC remains evidence. Horizon clipping changes only presentation
+and never creates an event or establishes visibility.
+
+The earlier paired-polar authorization is superseded. This corrective audit is
+documentation only and requires Fernando's separate acceptance before any
+runtime work.

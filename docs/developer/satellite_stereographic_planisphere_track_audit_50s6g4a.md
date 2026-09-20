@@ -1,380 +1,273 @@
-# 50S.6G.4A stereographic planisphere exact-track audit
+# 50S.6G.4A corrective AltAz stereographic planisphere exact-track audit
 
-**Status:** documentation-only candidate for Fernando's separate scientific and architectural acceptance
-**Milestone:** 50S.6G.4A
-**Baseline:** `00033b717e5b41471b618a0a2a87ec7dae65e7ac`
-**Date:** 2026-09-19
+**Status:** documentation-only corrective candidate for Fernando's separate scientific and architectural acceptance
+**Milestone:** 50S.6G.4A corrective audit
+**Baseline:** d8604fccc9a203d6fbc80c6f892dc3b9025a6f2e
+**Date:** 2026-09-20
 
 ## Decision sought
 
-This audit proposes the smallest scientifically honest integration of accepted
-50S.6G.3A exact local satellite-track evidence with Wenu's paired physical
-polar planisphere when `projection_name="stereographic"`. It resolves the
-coordinate domain, two-face placement, overlap, cap clipping, horizon and mask
-separation, orientation, event labels, lifecycle, provenance, and acceptance
-evidence before any runtime work.
+This audit corrects the product identity selected by the accepted 2026-09-19
+50S.6G.4A record. Fernando requires exact satellite tracks on Wenu's ordinary
+observer-horizontal planisphere: ChartRequest(family="planisphere"), horizontal
+AltAz coordinates, zenith-centred stereographic projection, and the horizon as
+the chart boundary.
 
-This candidate authorizes no implementation. Fernando's separate scientific
-and architectural acceptance is required before changing runtime, style,
-tests, or specimen tools.
+The earlier audit instead selected PolarPlanispherePairRequest, a different
+product made from paired north and south equatorial celestial disks. That
+accepted scope and its resulting unmerged implementation candidate do not
+satisfy the requested product.
 
-## As-is findings and product identity
+This corrective candidate authorizes no implementation. Fernando's separate
+scientific and architectural acceptance is required before runtime, style,
+test, or specimen-tool changes.
 
-Wenu currently has two different products that use the word planisphere:
+## Superseded authority and preserved evidence
 
-- the ordinary `ChartRequest(family="planisphere")`, which constructs one
-  observer-horizontal `FullSkyChart`; and
-- `PolarPlanispherePairRequest`, which resolves matched north and south
-  equatorial celestial disks and may select either polar azimuthal equidistant
-  or stereographic projection.
+The scientific and architectural acceptance recorded on 2026-09-19 at
+c1d9015ab18153dc84aba1360edb29fa4f46bf4e applied to the wrong product
+identity. Its authorization of paired equatorial polar-planisphere work is
+superseded for 50S.6G.4B.
 
-50S.6G.4A concerns only the second product, with
-`projection_name="stereographic"`. It does not authorize satellite tracks on
-the ordinary horizontal full-sky planisphere, polar azimuthal equidistant
-disks, `CircumpolarChart`, Galactic `AllSkyChart`, pouch-sheet compositions, or
-other all-sky products.
+The rejected implementation branch
+feature/50s6g4b-stereographic-planisphere-tracks at
+7a00b15498ffef4a63e3babba433d380f333a94e remains isolated and unmerged. Its
+test results and generated artifacts are historical diagnostic evidence only;
+they do not establish acceptance of the requested AltAz product.
 
-The accepted physical pair owns opposite paper right-ascension direction,
-matched declination limits, a forty-degree default overlap, exact circular
-face boundaries, calendar and registration geometry, and independent
-north/south exports. `PolarPlanisphereChart` already projects equatorial
-geometry and clips curves to each face's declination cap. The page export owns
-two canonical face exports and one final save per face.
+The accepted 50S.6G.3A exact connected-visit evidence and 50S.6G.3B ordinary
+regional/binocular presentation remain valid. No satellite propagation,
+topocentric transformation, crossing solution, adaptive sampling, identity,
+semantic, style, provenance, renderer, or exporter result is revoked.
 
-The accepted 50S.6G.3B integration is not directly reusable as a coordinate
-policy. Regional and binocular charts transform the complete time-varying
-track into one horizontal product frame at the field reference instant. A
-polar planisphere is instead an equatorial celestial disk. Reapplying the 3B
-horizontal transformation would give the wrong product meaning.
+## As-is product identity
+
+Wenu has two distinct products that have been called planispheres:
+
+- ChartRequest(family="planisphere") resolves to one FullSkyChart in the
+  horizontal coordinate frame with stereographic projection;
+- PolarPlanispherePairRequest resolves to paired north and south equatorial
+  celestial disks for a physical rotating planisphere.
+
+The requested 50S.6G.4 product is only the first. It is an observer-local,
+instant-specific visible-hemisphere chart, normally centred on altitude
+90 degrees, bounded at altitude 0 degrees, with azimuth and altitude as its
+pre-projection spherical coordinates.
+
+FullSkyChart already owns the stereographic projection, horizon curve,
+viewport, chart boundary, final clipping, preparation, renderer handoff, and
+ordinary PNG, PDF, and semantic-SVG export. ChartRequest already owns a
+default-empty satellite_exact_tracks tuple, request-level observer/time
+identity, bounded provenance, request-owned layer installation, and cleanup.
+
+The only intentional admission blocker is
+validate_satellite_exact_track_requests(), which currently permits only the
+regional and binocular families. No new chart type, projection, coordinate
+service, layer, renderer, exporter, or parallel pipeline is required.
 
 ## Bounded scope
 
-50S.6G.4A is limited to a future implementation that:
+A future corrected 50S.6G.4B may only:
 
-- reuses `SatelliteExactTrackDisplayRequest` and already-realized
-  `ExactLocalSatelliteTrack` evidence without solving, propagating, or
+- admit family="planisphere" in the existing exact-track request validator;
+- preserve the existing stereographic and horizontal request requirements;
+- reuse SatelliteExactTrackDisplayRequest and already-realized
+  ExactLocalSatelliteTrack evidence without solving, propagating, or
   resampling;
-- admits only a resolved `PolarPlanispherePair` whose two faces use
-  stereographic projection;
-- installs accepted path and event views once for the paired export and removes
-  them after both faces complete or any failure occurs;
-- preserves each retained geometric topocentric direction in the fixed
-  GCRS/ICRS axis orientation for equatorial-disk projection;
-- projects the same immutable evidence independently through the accepted
-  north and south face projections and cap clipping;
-- reuses existing exact-track style roles, semantic identities, renderer, and
-  PNG/PDF/semantic-SVG exporters;
-- adds bounded event-specific site/time provenance to each face; and
-- supplies focused coordinate, face, clipping, lifecycle, semantic, export,
-  and state-isolation evidence plus physical visual specimens.
+- realize each complete retained track once into the chart's fixed AltAz
+  product frame at the request reference instant;
+- use FullSkyChart's existing horizon boundary, viewport preparation,
+  projection, clipping, renderer, and exporters;
+- preserve accepted exact-track path, event, label, semantic identity, style,
+  bounded provenance, installation, cleanup, and state isolation;
+- provide one deterministic physical AltAz planisphere specimen for La Ligua
+  in PNG, PDF, and semantic SVG; and
+- add only the focused planisphere admission, coordinate, boundary, lifecycle,
+  semantic, export, and unchanged-output evidence required below.
 
-It excludes every new scientific evaluation, provider access, snapshot or
-report/CLI change, ordinary full-sky/circumpolar tracks, visibility,
-illumination, brightness, detector effects, scheduling integration, physical
-horizon filtering, occultation, and unrelated refactoring.
-
-## Scientific meaning: an event-specific overlay
-
-An exact local track is observer-dependent and valid only between its declared
-entry and exit UTC instants. A reusable polar planisphere normally represents
-the celestial sphere for arbitrary rotations of date and time. Printing a
-satellite track on that disk must not imply that the satellite repeats the
-track on another day or whenever the disk is rotated to the same sidereal
-orientation.
-
-The future product is therefore an **event-specific planisphere overlay**. It
-shows one solved local visit against the equatorial celestial disk and is valid
-only for the stated site, coordinate-reference instant, and entry-to-exit UTC
-interval. Each exported face must expose that limitation in bounded provenance
-and in inspectable page text or accompanying specimen metadata. The product is
-not an ephemeris, recurrence prediction, visibility forecast, or reusable
-daily planisphere state.
+It excludes paired polar disks, PolarPlanispherePairRequest,
+PolarPlanisphereChart, polar page or pouch output, equatorial fixed-axis
+presentation, circumpolar and Galactic all-sky products, CLI or report changes,
+provider access, acquisition, new propagation or crossing science, visibility,
+illumination, brightness, detector effects, scheduling adapters, and unrelated
+refactoring.
 
 ## Coordinate contract
 
-Every accepted 3A sample is a geometric topocentric direction evaluated at its
-own UTC instant and expressed in fixed GCRS axes. The collection
-`CoordinateSpec` is timeless; `sample_time_scale="utc"` and the ordered sample
-instants carry time.
+Every accepted exact-track sample is a geometric topocentric direction
+evaluated at its own UTC instant and expressed in fixed GCRS axes. The retained
+collection remains immutable and its ordered sample instants remain evidence.
 
-For a stereographic polar face, those fixed-axis longitudes and latitudes map
-directly to equatorial right-ascension-axis orientation and declination. A
-future integration must use the governed `CoordinateService` seam to express
-`gcrs-axes` as `icrs` axes while preserving:
+The ordinary planisphere has one horizontal product frame resolved from the
+chart observer and the crossing field's coordinate reference instant. The
+existing LayerRealizationContext and CoordinateService transform the complete
+track from its typed geometric topocentric GCRS-axis representation into that
+one AltAz product frame before projection.
 
-- `origin="topocentric-direction"`;
-- `PositionStatus.GEOMETRIC`;
-- timeless collection meaning;
-- per-sample UTC instants in evidence metadata; and
-- the original track identity and provenance.
+This is the accepted 50S.6G.3B fixed-product-frame rule applied to a wider
+horizontal field. It does not reinterpret every sample as though the chart
+frame changed at that sample's UTC instant. Per-sample UTC remains provenance
+and event evidence; the chart reference instant owns the displayed AltAz axes.
 
-It must not route the track through AltAz, recompute a direction at the chart
-instant, apply apparent-place corrections, or relabel the geometric evidence
-as astrometric, apparent, or observed.
+The transformed chart geometry retains topocentric origin and the established
+ordinary horizontal request status. It must not be routed through the
+equatorial polar-face adapter, relabelled as an equatorial celestial track,
+given a second light-time or apparent-place solution, or recomputed by the
+chart.
 
-The polar chart's projection adapter must make this decision from typed
-coordinate meaning, not from a satellite-layer class check. Existing
-observer-local sky layers retain their current observer-to-equatorial route;
-already fixed equatorial-axis geometry retains its own origin and position
-status. This is one canonical pre-projection boundary, not a satellite-specific
-projection or a second rendering pipeline.
+## Admission and atomic failure
 
-## Admission
+A non-empty planisphere exact-track request is valid only when:
 
-A future paired exact-track export is valid only when all of the following
-hold:
-
-- the pair contains one south and one north `PolarPlanisphereChart`;
-- both faces select `projection_name="stereographic"` and equatorial
-  coordinate-frame geometry;
-- the pair's limits, scale, handedness, boundary, and registration invariants
-  already pass `PolarPlanispherePairRequest.resolve()`;
-- every display value is a valid `SatelliteExactTrackDisplayRequest`, at least
-  one of `draw_path` or `draw_events` is true, and `label_events` requires
-  events;
-- no `track_identity_sha256` occurs more than once;
+- family is planisphere;
+- projection is stereographic and coordinate_frame is horizontal;
+- every display is a SatelliteExactTrackDisplayRequest;
+- every display draws a path or events and labels require events;
+- no track_identity_sha256 is repeated;
+- each track retains the accepted geometric topocentric GCRS-axis coordinate
+  contract and UTC samples;
 - every track observer longitude, latitude, elevation, vacuum-refraction
-  policy, and Earth-orientation policy match the supplied page observer;
-- the page observer UTC instant equals every crossing field's declared
-  coordinate reference instant;
-- all tracks retain the accepted timeless `gcrs-axes` /
-  `topocentric-direction` geometric collection and UTC sample contract; and
-- multiple visits share the admitted observer and reference instant.
+  policy, and Earth-orientation policy matches the ChartRequest observer;
+- every crossing field coordinate reference instant equals the ChartRequest
+  observer instant; and
+- multiple tracks share that same admitted chart context.
 
-Validation of the complete tuple and both faces occurs before any layer is
-installed or output path is written. No invalid or mismatched track is
-silently dropped.
+The complete tuple is validated before any request-owned layer is installed or
+any output is written. No invalid or mismatched track is silently dropped.
 
-## Proposed request and lifecycle seam
+All existing rejection remains: all_sky, circumpolar, non-stereographic, and
+non-horizontal requests do not gain exact-track support from this milestone.
 
-`SatelliteExactTrackDisplayRequest` remains the sole display-control value;
-50S.6G.4A proposes no competing polar-specific track request. A future bounded
-API may add an explicit default-empty
-`satellite_exact_tracks: tuple[SatelliteExactTrackDisplayRequest, ...] = ()`
-keyword to `export_polar_planisphere_pages(...)`.
+## Horizon boundary and scientific meaning
 
-The paired export validates once, installs one path layer and/or event layer
-per display in supplied order, exports both faces, and removes only those
-layers in reverse installation order. Cleanup occurs after success, south-face
-failure, north-face failure, furniture failure, or save failure. A supplied
-maximal sphere retains no satellite layer, label state, style state, evidence
-reference, or selection after return.
+FullSkyChart's altitude-zero horizon is the ordinary chart's physical
+presentation boundary. Existing spherical and viewport preparation may clip a
+projected path at that boundary. Such clipping:
 
-The implementation may extract a shared science-free layer installer from
-`charts/request_satellite_tracks.py`, but regional/binocular admission and
-paired-planisphere admission remain separate explicit validators. The export
-must not construct a synthetic `ChartRequest` merely to reuse 3B validation.
+- does not create a crossing entry or exit event;
+- does not change the accepted FoV visit interval;
+- does not establish Earth occultation, illumination, or naked-eye
+  visibility;
+- does not alter retained evidence or track identity; and
+- does not permit extrapolation, smoothing, closing, or joining visits.
 
-## Faces, overlap, and cap boundaries
+The accepted multi-FoV admission already requires each field centre to remain
+within its configured airmass bound over the complete interval. That field
+admission is not replaced by chart-boundary clipping and is not a claim that
+every satellite sample is illuminated or detectable.
 
-The same immutable path is projected independently on both faces. Existing
-declination-cap clipping owns placement:
+A track point exactly on the closed horizon boundary may be drawn according to
+the existing preparation tolerance. Tests must inspect retained scientific
+event roles rather than infer events from graphical endpoints.
 
-- geometry inside only one face appears only there;
-- geometry in the configured overlap appears on both faces intentionally;
-- a connected visit crossing a limiting declination is clipped at that face's
-  exact circular boundary and continues on the other face where admitted; and
-- an event marker appears on every face whose closed cap contains its retained
-  event vertex.
+## Orientation, events, and presentation
 
-Overlap duplication is not a second visit and must preserve the same
-`track_identity_sha256`, UTC interval, and event role. Separate face documents
-may retain identical semantic visit paths. Any later composition that places
-both faces in one SVG document must qualify document-local SVG IDs by face
-without changing scientific semantic identity; such a combined composition is
-not implemented by 50S.6G.4B unless separately accepted.
+The default planisphere is zenith-centred. FullSkyChart and
+StereographicProjection own azimuth orientation, east-west display policy,
+position angle, tangent point, and scale. The satellite layer must not mirror,
+reverse, reorder, or recalculate samples.
 
-Cap clipping may create a graphical path endpoint but never a scientific
-entry or exit event. The integration must not synthesize an event, extrapolate,
-interpolate, smooth, close, or join visits at a face boundary.
+Existing controls retain their meaning:
 
-## Longitude continuity and orientation
+- draw_path shows the accepted open visit curve or zero-duration singleton;
+- draw_events selects retained entry, closest-approach, and exit vertices;
+- label_events enables the existing event labels without moving markers.
 
-A polar stereographic disk has no physical right-ascension cut from pole to
-rim. A connected spherical curve crossing 0/360 degrees remains connected and
-must not acquire a false long chord or split solely because longitude wraps.
-Focused geometry evidence, rather than a distorted visual specimen, must
-verify wrap continuity and declination-cap clipping.
+The physical specimen must make the event-specific context inspectable by
+showing or accompanying the chart with the La Ligua site, chart reference UTC,
+and complete entry-to-exit UTC interval. This is product validity information,
+not new satellite evidence. General request provenance remains bounded and
+must not serialize samples.
 
-The paired charts already own opposite paper right-ascension direction. The
-track is not mirrored, reordered, or reversed before projection. Each face
-projects the same ordered entry-to-exit evidence through its own accepted
-handedness. Event roles and UTC ordering remain attached to retained samples
-even when their paper direction differs between faces.
+## Lifecycle, semantics, and output
 
-## Horizon, masks, and physical furniture
+configure_chart_request_satellite_tracks() remains the installation owner.
+ChartRequestBuild remains the cleanup owner after success or any failure.
+FullSkyChart continues through CelestialSphere.draw_chart(), ordinary
+preparation, the existing renderer, and one final save per requested product.
 
-The physical horizon and pouch are observer-local moving furniture over an
-observer-independent celestial disk. They do not own satellite science and
-must not clip, mask, admit, reject, or reinterpret an exact track under this
-milestone. The track remains a geometric result even where it would lie below
-a chosen horizon setting. No horizon, Earth-occultation, illumination, or
-visibility claim is added.
+The accepted semantic families remain:
 
-Constellation outside masks, catalogue detail selection, label curation,
-calendar rings, cut lines, and page furniture also do not alter track evidence.
-Only the face's accepted declination cap and final circular clip boundary may
-clip path or event presentation. Page furniture remains drawn through the
-existing additional-furniture stage before the single canonical save.
+- sky/artificial_satellites/exact_local_tracks/<visit_key>/track;
+- sky/artificial_satellites/exact_local_tracks/<visit_key>/events.
 
-## Events and labels
+PNG, PDF, and semantic SVG are three encodings of the same prepared
+astronomical geometry. Semantic SVG and export provenance retain ordered
+bounded summaries including track identity, NORAD identity, field ID, event
+times, snapshot digest, and display controls. No full sample array or recursive
+evidence object is serialized.
 
-The accepted display controls retain their 3B meaning:
+An empty satellite_exact_tracks tuple must remain byte-equivalent to the
+ordinary planisphere baseline modulo no added provenance field, install no
+layer, and change no title, legend, geometry, selection, style, or output.
 
-- `draw_path` displays the accepted open connected-visit curve or singleton;
-- `draw_events` selects exact entry, closest-approach, and exit vertices; and
-- `label_events` enables the accepted English labels `entry`,
-  `closest approach`, and `exit` without changing marker geometry.
+## Test placement and acceptance evidence
 
-Labels are presentation annotations. A label whose event lies outside one
-face is absent from that face; a retained event in the overlap may be labeled
-on both. The implementation may use the existing polar radial text-orientation
-and interior-boundary preparation rules, but it must not move an event marker,
-change a role, place text in the calendar ring, or infer a missing event at a
-clip intersection. Timestamps on individual markers, collision optimization,
-leader lines, Spanish event labels, and along-track ticks are deferred.
+The closest durable production owners are
+charts/request_satellite_tracks.py, charts/request_generation.py,
+charts/request_realization.py, charts/full_sky.py, and
+sky/satellite_exact_track_layer.py. The corrected implementation should
+normally require only the family-admission change plus specimen tooling;
+existing owners already provide the other behavior.
 
-Each face must nevertheless carry a concise product-level validity statement
-naming the site and complete UTC interval. This statement is page/provenance
-furniture, not evidence geometry or an event label.
+The closest durable test owners are tests/test_satellite_exact_tracks.py for
+admission and retained evidence, tests/test_request_generation.py for request
+lifecycle and output, and tests/test_full_sky_chart.py for horizon projection
+and clipping. No milestone-named runtime test file is justified.
 
-## Style, semantics, and provenance
+Before implementation acceptance, corrected 50S.6G.4B must provide:
 
-Existing exact satellite path, event-marker, and event-label style roles
-remain authoritative. Polar adaptation may change only appearance required for
-legibility on the physical atlas palette. It cannot change samples, roles,
-coordinates, face admission, clipping, identity, or product validity.
-
-The accepted semantic family remains:
-
-- `sky/artificial_satellites/exact_local_tracks/<visit_key>/track`;
-- `sky/artificial_satellites/exact_local_tracks/<visit_key>/events`.
-
-Projected pieces retain the visit identity after cap and viewport clipping.
-Event markers and labels remain descendants of the event identity. Exact
-tracks remain distinct from SatChecker sampled candidates and Solar-System
-tracks.
-
-Each face's semantic SVG and bounded export provenance records the supplied
-order and, for every display:
-
-- `track_identity_sha256`;
-- NORAD catalog ID and display name;
-- field ID;
-- observer scientific identity;
-- coordinate reference instant;
-- entry, closest-approach, and exit UTC instants;
-- snapshot SHA-256;
-- face and limiting declination;
-- `draw_path`, `draw_events`, and `label_events`; and
-- the event-specific non-recurrence limitation.
-
-The export must not recursively serialize samples or the full exact evidence
-object. Filenames, page size, calendar layout, atomicity, overwrite behavior,
-and existing PDF metadata remain owned by current exporters.
-
-## Empty, multiple, and failure behavior
-
-- An empty tuple produces byte-equivalent ordinary paired output modulo no new
-  provenance field and installs no layer.
-- A zero-duration exact visit remains a singleton with explicit coincident
-  roles; no segment is invented.
-- Multiple satellites and multiple visits of one satellite are allowed when
-  identities are unique and the complete admission context matches.
-- A validation failure produces no installation and no output.
-- A failure after installation removes every request-owned layer.
-- A south-face success followed by north-face failure follows existing paired
-  export failure behavior; the integration adds no rollback claim for an
-  already committed face.
-- No face-selection, clipping, or label failure may mutate evidence.
-
-## Acceptance evidence for a later implementation
-
-50S.6G.4B must provide all of the following before implementation acceptance:
-
-1. deterministic offline north and south stereographic polar-face specimens
-   generated from one physically propagated accepted exact visit;
-2. PNG, PDF, and semantic SVG for both faces through the canonical paired
-   export and single-save paths;
-3. visible site and complete UTC validity text and bounded semantic-SVG
-   provenance on both faces;
-4. physical visual review of track direction, handedness, overlap duplication,
-   event markers, labels, celestial context, and calendar-ring clearance;
-5. focused tests for complete pre-install validation, observer/reference
-   admission, fixed-axis geometric status preservation, two-face projection,
-   intentional overlap, limiting-declination clipping, 0/360-degree
-   continuity, no synthetic boundary events, cleanup, state isolation,
-   semantics, and bounded provenance;
-6. unchanged-output evidence for an empty track tuple;
-7. the current documentation gate, relevant polar/exact-track/export tests,
-   and the complete plugin-disabled repository suite; and
-8. diff, whitespace, exact-head, branch-synchronization, and clean-tree checks.
-
-A physical short pass need not demonstrate every cap, overlap, and longitude
-edge case in one image. Canonical synthetic geometry tests and physical visual
-specimens are complementary evidence; the specimen must not distort accepted
-track science merely to exercise a boundary.
+1. focused proof that planisphere is admitted while all_sky and circumpolar
+   remain rejected;
+2. exact observer/reference-instant and coordinate-policy rejection evidence;
+3. fixed AltAz product-frame realization at the chart instant with sample UTC
+   evidence preserved;
+4. horizon clipping without synthetic scientific events;
+5. request-owned cleanup after success and failure and no cross-render state
+   leakage;
+6. unchanged-output evidence for an empty tuple;
+7. one physically propagated La Ligua visit rendered as a zenith-centred
+   stereographic AltAz planisphere in PNG, PDF, and semantic SVG;
+8. visual review of direction, horizon placement, markers, labels, context,
+   legibility, and site/time validity;
+9. semantic-SVG and bounded-provenance checks with no recursive samples;
+10. the current documentation gate, relevant focused tests, and complete
+    plugin-disabled suite; and
+11. diff, whitespace, exact-head, branch-synchronization, and clean-tree
+    checks.
 
 The coordinate-system guide requires Fernando's scientific and pedagogical
-review because this milestone adds a new equatorial presentation of existing
-geometric topocentric directions, even though it adds no new coordinate
-calculation.
+review because this milestone extends an existing fixed AltAz presentation to
+the full visible hemisphere.
 
 ## Proposed implementation placement
 
-No production file is authorized by this audit. If accepted, the smallest
-implementation should keep responsibility with existing owners:
+No production file is authorized by this corrective audit. If accepted, the
+smallest implementation should keep responsibility with existing owners:
 
-- `charts/request_satellite_tracks.py`: reusable science-free display
-  validation, layer installation, bounded summaries, and cleanup support;
-- `charts/polar_planisphere.py`: typed equatorial pre-projection handling and
-  existing cap clipping only;
-- `charts/polar_page_export.py`: explicit paired admission, shared lifecycle,
-  face provenance, and event-specific page validity text;
-- `sky/satellite_exact_track_layer.py`: retained-evidence path/event views;
-- existing style components, semantic identity, renderer, furniture, and
-  exporters: unchanged ownership; and
-- existing durable exact-track and polar chart/export test files, extended
-  rather than replaced by milestone-named runtime tests.
+- charts/request_satellite_tracks.py: add planisphere to the admitted ordinary
+  exact-track families and keep all validation and installation rules;
+- charts/request_generation.py and charts/request_realization.py: unchanged
+  canonical lifecycle and fixed horizontal product-frame ownership;
+- charts/full_sky.py: unchanged stereographic projection, horizon boundary,
+  clipping, renderer, and export ownership;
+- sky/satellite_exact_track_layer.py: unchanged retained-evidence path and
+  event views;
+- existing style, semantic, provenance, and export owners: unchanged; and
+- tools/: one deterministic physical acceptance specimen, not a user workflow.
 
-No new projection, satellite science, renderer, exporter, report, CLI, or
-provider module is justified.
+No new production module, chart class, projection, coordinate adapter, layer,
+renderer, exporter, provider, or report path is justified.
 
 ## Exclusions and next authority
 
-This candidate does not authorize 50S.6G.4B implementation. It also does not
-authorize ordinary full-sky or circumpolar satellite tracks, polar azimuthal
-equidistant satellite tracks, combined-face or pouch-sheet satellite output,
-new report or CLI fields, provider access, another real catalogue execution,
-visibility, sunlight, solar Earthshine, moonlight, lunar Earthshine,
-photometry, brightness, detector effects, observatory scheduling adapters, or
-50S.7/50S.8 work.
+This corrective candidate authorizes no implementation. The previously
+accepted paired-equatorial authority is superseded and does not authorize
+continued work on the rejected branch.
 
-If Fernando accepts this audit, only the bounded 50S.6G.4B implementation and
-the evidence listed above become authorized. Merge, later science, and program
-closure still require separate decisions.
-
-## Acceptance and bounded implementation authority
-
-Fernando scientifically and architecturally accepted this documentation-only
-audit on 2026-09-19 at
-`c1d9015ab18153dc84aba1360edb29fa4f46bf4e`. Verification comprised all 200
-plugin-disabled current-documentation tests passing in 5.29 seconds, a clean
-diff check against `00033b717e5b41471b618a0a2a87ec7dae65e7ac`, exact local
-and upstream head agreement, and a clean synchronized Mac working tree.
-
-Implement only the bounded 50S.6G.4B paired stereographic-planisphere
-integration specified above: explicit already-realized display requests,
-complete pair/observer/reference admission, fixed-axis geometric meaning,
-independent two-face projection and accepted cap clipping, intentional overlap,
-request-owned lifecycle, existing presentation/export owners, bounded
-event-specific provenance and validity text, focused evidence, and required
-north/south PNG, PDF, and semantic-SVG specimens.
-
-This acceptance does not authorize ordinary full-sky or circumpolar satellite
-tracks, polar azimuthal-equidistant tracks, combined-face or pouch-sheet
-satellite output, providers, report or CLI changes, new execution science,
-visibility, sunlight, solar Earthshine, moonlight, lunar Earthshine,
-photometry, brightness, detector effects, scheduling adapters, or 50S.7/50S.8
-work. The implementation remains a candidate until separately verified,
-physically reviewed, and accepted.
+If Fernando accepts this corrective audit, only the bounded corrected
+50S.6G.4B ordinary AltAz stereographic planisphere integration and the evidence
+listed above become authorized. Merge, branch cleanup, program closure,
+circumpolar tracks, Galactic all-sky tracks, paired polar disks, CLI/report
+changes, visibility, illumination, brightness, detector effects, scheduling
+adapters, 50S.7, 50S.8, and later work remain unauthorized.
