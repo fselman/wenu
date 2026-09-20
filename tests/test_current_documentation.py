@@ -8507,3 +8507,50 @@ def test_50s6g4b_records_verified_altaz_planisphere_candidate():
     )
     for document, phrase in zip(documents, expected, strict=True):
         assert phrase in document
+
+def test_50s6g4b_records_acceptance_and_closes_50s6g():
+    audit = " ".join(read(
+        DEVELOPER
+        / "satellite_stereographic_planisphere_track_audit_50s6g4a.md"
+    ).split())
+    documents = tuple(
+        " ".join(read(path).split())
+        for path in (
+            V09_CURRENT,
+            FUTURE_ROADMAP,
+            DEVELOPER / "implementation_reference.md",
+            DEVELOPER / "source_tree.md",
+            COORDINATE_GUIDE,
+            DEVELOPER / "satellite_guide.md",
+            INSTRUCTIONS,
+            DEVELOPER / "satellite_delivery_audit_50s6g.md",
+            SATELLITE_PROGRAM_LOG,
+        )
+    )
+
+    for phrase in (
+        "50S.6G.4B final implementation acceptance",
+        "PR 176 merged final candidate",
+        "6bc623bbabb356b1481b6e5e06e855eb79a560b7",
+        "f0730d80eb72c97837c75489a87d9faf1699e7d1",
+        "252 focused tests in 7.08 seconds",
+        "2,744 plugin-disabled repository tests in 220.63 seconds",
+        "202 final documentation tests in 5.19 seconds",
+        "50S.6G delivery is closed",
+        "documentation-first 50S.6H observatory-planning adapter audit",
+    ):
+        assert phrase in audit
+
+    expected = (
+        "Accepted complete 50S.6G.4B ordinary-planisphere implementation",
+        "50S.6G.4B accepted implementation and 50S.6G closure",
+        "Accepted 50S.6G.4B request behavior",
+        "Accepted 50S.6G.4B implementation placement",
+        "Accepted 50S.6G.4B AltAz coordinate behavior",
+        "Accepted ordinary-planisphere exact tracks",
+        "Accepted complete 50S.6G.4B implementation boundary",
+        "Accepted 50S.6G.4B delivery closure",
+        "Accepted complete 50S.6G.4B implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
