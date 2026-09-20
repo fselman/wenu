@@ -4076,3 +4076,16 @@ altitude. Twilight thresholds are geometric `0`, `-6`, `-12`, and `-18`
 degrees under an explicit policy. This is not apparent sunrise, sky
 brightness, satellite visibility, or apparent magnitude. No coordinate or
 illumination runtime is authorized by the audit.
+
+## Accepted 50S.7A coordinate boundary
+
+Fernando accepted the 50S.7A coordinate finding on 2026-09-20. The audit
+introduces no coordinate type or transform. A later bounded 50S.7B must compose
+the accepted satellite and installed-ephemeris states at one physical instant,
+transform them explicitly into one common Cartesian frame before subtraction,
+and keep UTC, UT1, and TDB roles and resources in provenance.
+
+Only finite uniform-Sun/WGS-84 vacuum occultation, typed shadow state, and
+observer geometric twilight are authorized after merge. Mixed-frame vector
+subtraction, reflected fields, radiometry, apparent brightness, and detector
+effects remain unauthorized.
