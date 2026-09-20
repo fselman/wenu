@@ -457,4 +457,4 @@ After merge, only bounded 50S.7B finite uniform-Sun/WGS-84 vacuum occultation,
 typed shadow state, observer geometric twilight, provenance, and offline
 validation are authorized. Transition solving, radiometry, reflected fields,
 brightness, detector effects, visibility, facility integration, and scheduling
-remain later, separately accepted work.
+remain unauthorized later work requiring separate acceptance.
