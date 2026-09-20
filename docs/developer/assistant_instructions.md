@@ -1620,3 +1620,17 @@ tool. The focused 252-test gate and all 2,744 plugin-disabled repository tests
 passed; the PNG/PDF/semantic-SVG specimen retained 65 samples and passed visual
 review with only a non-blocking specimen-title observation. Do not merge or
 begin later satellite work before separate acceptance.
+
+## Accepted complete 50S.6G.4B implementation boundary
+
+Fernando scientifically and architecturally accepted the complete corrected
+implementation and authorized merge on 2026-09-20. PR 176 merged final
+candidate `6bc623b` at `f0730d8` after 252 focused, 2,744 complete, and 202
+final documentation tests plus physical PNG/PDF/semantic-SVG review and clean
+repository checks.
+
+Preserve ordinary AltAz planisphere admission, fixed chart-reference-frame
+meaning, retained sample UTC, horizon-only clipping, request-owned lifecycle,
+semantics, bounded provenance, and canonical export. Only a
+documentation-first 50S.6H observatory-planning adapter audit is authorized
+next. Do not implement adapters or begin 50S.7+ work without later acceptance.
