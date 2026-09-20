@@ -8600,3 +8600,81 @@ def test_50s6h_records_accepted_observatory_planning_adapter_audit():
     )
     for document, phrase in zip(documents, expected, strict=True):
         assert phrase in document
+def test_50s6h_records_candidate_offline_planning_advisory_implementation():
+    audit = read(
+        DEVELOPER / "satellite_observatory_planning_adapter_audit_50s6h.md"
+    )
+    source = read(ROOT / "src" / "wenu" / "satellite_planning_advisories.py")
+    public = read(ROOT / "src" / "wenu" / "__init__.py")
+    tests = read(ROOT / "tests" / "test_satellite_planning_advisories.py")
+
+    for phrase in (
+        "Candidate offline implementation record",
+        "PlanningObservationUnit",
+        "ObservatoryPlanningContext",
+        "PlanningAdvisoryValidationError",
+        "SatellitePlanningAdvisory",
+        "half-open interval intersection",
+        "planning_advisory_identity_sha256",
+        "no HTTP dependency",
+        "candidate",
+    ):
+        assert phrase in audit
+
+    for phrase in (
+        'PLANNING_ADVISORY_DOCUMENT_KIND = "wenu.observatory-planning-advisory"',
+        'GENERAL_PLANNING_PROFILE = "general"',
+        "class PlanningObservationUnit",
+        "class ObservatoryPlanningContext",
+        "class PlanningAdvisoryValidationError",
+        "class SatellitePlanningAdvisory",
+        "unsupported_profile",
+        "overlap_start >= overlap_stop",
+        "row_keys != sorted(row_keys)",
+        "planning_advisory_identity_sha256",
+    ):
+        assert phrase in source
+
+    for name in (
+        "PlanningObservationUnit",
+        "ObservatoryPlanningContext",
+        "PlanningAdvisoryValidationError",
+        "SatellitePlanningAdvisory",
+    ):
+        assert f'"{name}"' in public
+        assert name in tests
+
+    for forbidden in (
+        "import requests",
+        "import urllib",
+        "import httpx",
+        "www.eso.org",
+        "createOB",
+        "saveOB",
+        "verifyOB",
+        "deleteOB",
+    ):
+        assert forbidden not in source
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(INSTRUCTIONS),
+        read(SATELLITE_PROGRAM_LOG),
+    )
+    expected = (
+        "Candidate 50S.6H offline planning-advisory implementation",
+        "Candidate 50S.6H offline implementation state",
+        "Candidate 50S.6H offline planning-advisory API",
+        "Candidate 50S.6H implementation placement",
+        "Candidate 50S.6H implementation coordinate behavior",
+        "Candidate offline satellite planning advisory",
+        "Candidate 50S.6H offline planning-advisory implementation boundary",
+        "Candidate 50S.6H offline planning-advisory implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
