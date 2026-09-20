@@ -8779,6 +8779,13 @@ def test_50s7a_records_candidate_four_source_illumination_audit():
         "V = 13.46",
         "V = 12.98",
         "about `0.48 mag`, or `1.55x` in total flux",
+        "Hainaut and Williams (2020)",
+        "more than `26,000` satellites",
+        "about `1,600` illuminated",
+        "about `85%` below `30 deg` elevation",
+        "below `1%`",
+        "about `3%`",
+        "`30-40%`",
         "These ratios do not by themselves predict an observed satellite magnitude",
     ):
         assert phrase in guide
