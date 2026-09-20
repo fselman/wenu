@@ -8432,6 +8432,13 @@ def test_50s6g4a_correction_supersedes_wrong_product_authority():
     ):
         assert phrase in audit
 
-    for document in documents:
-        assert "superseded" in document
-        assert "authorizes no implementation" in document.lower()
+    architecture, roadmap, reference, source_tree, coordinates, guide, instructions, delivery, log = documents
+    assert "wrong product" in architecture
+    assert "paired-polar implementation authority is therefore superseded" in roadmap
+    assert "paired stereographic planisphere API proposal is superseded" in reference
+    assert "wrong paired equatorial product" in source_tree
+    assert "fixed-axis polar-face finding is superseded" in coordinates
+    assert "paired-polar authorization is superseded" in guide
+    assert "paired equatorial polar-planisphere work" in instructions
+    assert "unmerged paired-polar candidate is rejected" in delivery
+    assert "supersedes the paired-polar" in log
