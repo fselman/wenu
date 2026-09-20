@@ -3416,3 +3416,11 @@ The validation tool produces a positive advisory, an endpoint-touch zero-row
 advisory, their source exact report, and a SHA-256 manifest entirely offline.
 Its Paranal text is an opaque review label under the `general` profile and
 does not claim p2 compatibility.
+## Verified candidate 50S.6H behavior
+
+Candidate revision `32dce675` passed the focused and complete gates and
+produced independently identified positive and zero-row advisories from the
+same identified exact report. The evidence verifies deterministic strict JSON,
+half-open endpoint behavior, source immutability, report-interchange
+equivalence, atomic mismatch rejection, and absence of a network/write surface.
+The API remains unaccepted.
