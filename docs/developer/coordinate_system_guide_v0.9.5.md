@@ -4054,3 +4054,10 @@ evidence. All calculations are UTC interval intersections only.
 
 The candidate neither transforms target coordinates nor infers a site,
 timescale, visibility, illumination, brightness, or detector effect.
+## Verified candidate 50S.6H coordinate evidence
+
+Positive and endpoint-touch zero-row specimens plus the complete test suite
+verify that revision `32dce675` performs UTC interval intersection only,
+requires exact observer/field binding, and adds no coordinate, propagation,
+visibility, illumination, brightness, or detector calculation. The candidate
+remains unaccepted.
