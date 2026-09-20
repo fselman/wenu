@@ -64,6 +64,8 @@ The only intentional admission blocker is
 validate_satellite_exact_track_requests(), which currently permits only the
 regional and binocular families. No new chart type, projection, coordinate
 service, layer, renderer, exporter, or parallel pipeline is required.
+The only proposed runtime change is to widen exact-track family admission from
+regional/binocular to planisphere.
 
 ## Bounded scope
 
