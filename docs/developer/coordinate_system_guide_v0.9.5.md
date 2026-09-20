@@ -4044,3 +4044,13 @@ profile may not infer a site, transform a target, or reinterpret times.
 
 Illumination, Sun/Moon/night geometry, apparent brightness, and detector
 contamination remain deferred to 50S.7 through 50S.9.
+## Candidate 50S.6H implementation coordinate behavior
+
+The candidate performs no coordinate operation. It requires exact equality
+between the planning context's `SatelliteObserver` and the canonical report
+observer, binds units to existing report `field_id` values, and copies the
+accepted closest separation and field-geometry identity into advisory
+evidence. All calculations are UTC interval intersections only.
+
+The candidate neither transforms target coordinates nor infers a site,
+timescale, visibility, illumination, brightness, or detector effect.
