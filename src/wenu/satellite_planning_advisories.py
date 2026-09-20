@@ -561,12 +561,8 @@ def _row(report_document, context, unit, field, crossing):
         "overlap_duration_seconds": (
             overlap_stop - overlap_start
         ).total_seconds(),
-        "overlap_start_utc": _utc_instant(
-            overlap_start, name="overlap_start_utc"
-        ),
-        "overlap_stop_utc": _utc_instant(
-            overlap_stop, name="overlap_stop_utc"
-        ),
+        "overlap_start_utc": _format_utc(overlap_start),
+        "overlap_stop_utc": _format_utc(overlap_stop),
         "planned_start_utc": unit.start_utc,
         "planned_stop_utc": unit.stop_utc,
         "planning_context_id": context.planning_context_id,
