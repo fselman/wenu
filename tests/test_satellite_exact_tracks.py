@@ -484,13 +484,24 @@ def test_exact_track_chart_admission_is_strict_and_rejects_duplicates():
     assert validate_satellite_exact_track_requests(
         exact_chart_request(display)
     ) == (display,)
+    assert validate_satellite_exact_track_requests(
+        exact_chart_request(display, family="planisphere")
+    ) == (display,)
     with pytest.raises(ValueError, match="repeat a track identity"):
         validate_satellite_exact_track_requests(
             exact_chart_request(display, display)
         )
-    with pytest.raises(ValueError, match="regional and binocular"):
+    with pytest.raises(
+        ValueError, match="planisphere, regional, and binocular"
+    ):
         validate_satellite_exact_track_requests(
             exact_chart_request(display, family="all_sky")
+        )
+    with pytest.raises(
+        ValueError, match="planisphere, regional, and binocular"
+    ):
+        validate_satellite_exact_track_requests(
+            exact_chart_request(display, family="circumpolar")
         )
     with pytest.raises(ValueError, match="observer does not match"):
         validate_satellite_exact_track_requests(
@@ -511,6 +522,25 @@ def test_exact_track_chart_admission_is_strict_and_rejects_duplicates():
                 ),
             )
         )
+
+
+def test_empty_exact_track_request_installs_nothing_for_any_chart_family():
+    class Sky:
+        def __init__(self):
+            self.layers = []
+
+        def add(self, layer):
+            self.layers.append(layer)
+
+        def remove(self, layer):
+            self.layers.remove(layer)
+
+    sky = Sky()
+    request = exact_chart_request(family="all_sky")
+
+    assert validate_satellite_exact_track_requests(request) == ()
+    assert configure_chart_request_satellite_tracks(sky, request) == ()
+    assert sky.layers == []
 
 
 def test_request_owned_exact_layers_preserve_order_controls_and_shared_evidence():
