@@ -65,9 +65,14 @@ def _pretty(value):
 def _text(value, *, name):
     if not isinstance(value, str) or not value.strip():
         _fail("invalid_text", f"{name} must be non-empty text.")
-    if _CONTROL.search(value):
+    normalized = value.strip()
+    if _CONTROL.search(normalized):
         _fail("invalid_text", f"{name} contains control characters.")
-    return value
+    return normalized
+
+
+def _format_utc(value):
+    return value.isoformat(timespec="microseconds").replace("+00:00", "Z")
 
 
 def _finite(value, *, name):
@@ -436,13 +441,9 @@ def _validate_row(row, *, index, document, context, units):
     )
     if overlap_start >= overlap_stop:
         _fail("invalid_overlap", "row intervals do not overlap.")
-    if row["overlap_start_utc"] != _utc_instant(
-        overlap_start, name="overlap_start_utc"
-    ):
+    if row["overlap_start_utc"] != _format_utc(overlap_start):
         _fail("invalid_overlap", "overlap_start_utc is inconsistent.")
-    if row["overlap_stop_utc"] != _utc_instant(
-        overlap_stop, name="overlap_stop_utc"
-    ):
+    if row["overlap_stop_utc"] != _format_utc(overlap_stop):
         _fail("invalid_overlap", "overlap_stop_utc is inconsistent.")
     duration = (overlap_stop - overlap_start).total_seconds()
     if row["overlap_duration_seconds"] != duration:
