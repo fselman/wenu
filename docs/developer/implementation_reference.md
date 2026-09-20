@@ -3394,3 +3394,21 @@ schedule.
 No such runtime is implemented yet. Only this offline projection is authorized
 next. Paranal p2 network/write operations and any ELT operational mapping
 remain outside the accepted implementation.
+## Candidate 50S.6H offline planning-advisory API
+
+The feature candidate exports:
+
+- `PlanningObservationUnit` — one caller-owned non-empty half-open UTC
+  interval associated with an accepted report `field_id`;
+- `ObservatoryPlanningContext` — one frozen general-profile version 1
+  context with an exact `SatelliteObserver` and ordered unique units;
+- `PlanningAdvisoryValidationError` — one stable typed rejection with a
+  machine-readable `code`; and
+- `SatellitePlanningAdvisory` — the immutable strict JSON result with
+  `from_report()`, `from_json()`, `document`, `to_json()`, and
+  `planning_advisory_identity_sha256`.
+
+`from_report()` preserves input objects, rejects observer or field mismatch
+atomically, preserves planning-unit then report order, treats endpoint contact
+as no overlap, and permits identified zero-row output. The candidate is not
+yet accepted public behavior.
