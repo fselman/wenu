@@ -304,3 +304,9 @@ This implementation record is a candidate. It authorizes no merge, facility
 integration, or later milestone before focused, documentation, complete-suite,
 offline-specimen, and clean repository evidence receive Fernando's scientific
 and architectural acceptance.
+The offline review owner
+`tools/validate_50s6h_offline_planning_advisory.py` generates from packaged
+synthetic data one positive general-profile advisory, one endpoint-touch
+zero-row advisory, their exact source report, and a digest manifest. “Paranal”
+appears only as a human-readable caller label; the profile remains `general`,
+the manifest declares `network_access: false`, and no facility is contacted.
