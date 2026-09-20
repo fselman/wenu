@@ -1117,3 +1117,21 @@ was too long; the manifest already carries the chart and event times, so this
 was non-blocking. Exact-head, upstream, diff, and clean-tree checks passed.
 The candidate awaits separate scientific and architectural acceptance; no
 merge or later work is authorized.
+
+## 2026-09-20 — Accepted complete 50S.6G.4B implementation
+
+Fernando scientifically and architecturally accepted the corrected ordinary
+AltAz stereographic planisphere implementation and explicitly authorized
+merge. PR 176 merged final candidate `6bc623b` into
+`program/50s-crossing-foundation` at `f0730d8`.
+
+Evidence comprises 252 focused tests in 7.08 seconds, all 2,744 plugin-disabled
+tests in 220.63 seconds, 202 final documentation tests in 5.19 seconds, the
+physically propagated 65-sample La Ligua PNG/PDF/semantic-SVG specimen, and
+clean diff, exact-head, upstream, and working-tree checks. The test-only long
+title was non-blocking because the manifest retains the chart and event times.
+
+This closes 50S.6G delivery. Only a documentation-first 50S.6H Paranal, ELT,
+and general observatory-planning adapter audit is authorized next. Adapter
+runtime, observatory writes, scheduling decisions, illumination, brightness,
+and all 50S.7+ behavior remain unauthorized.

@@ -534,3 +534,13 @@ visit retained 65 samples and digest
 the companion manifest records site, chart instant, complete event interval,
 source revision, file sizes, and output digests. This evidence remains an
 unaccepted delivery candidate.
+
+## Accepted 50S.6G.4B delivery closure
+
+Fernando accepted the corrected ordinary-planisphere delivery and authorized
+PR 176 to merge at `f0730d8`. Evidence includes 252 focused, 2,744 complete,
+and 202 final documentation tests plus the physically propagated 65-sample La
+Ligua PNG/PDF/semantic-SVG specimen and its digest manifest. The accepted
+regional, binocular, and ordinary planisphere products now complete exact-track
+chart delivery for 50S.6G. Only the documentation-first 50S.6H observatory
+adapter audit is authorized next.

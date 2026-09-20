@@ -323,3 +323,27 @@ non-blocking long specimen title; the companion manifest retains the reference
 instant and complete event interval. Diff, exact-head, upstream, and clean-tree
 checks passed. The candidate remains unaccepted and authorizes no merge or
 later work.
+
+## 50S.6G.4B final implementation acceptance
+
+Fernando scientifically and architecturally accepted the corrected ordinary
+AltAz planisphere implementation and explicitly authorized merge on
+2026-09-20. PR 176 merged final candidate
+`6bc623bbabb356b1481b6e5e06e855eb79a560b7` into
+`program/50s-crossing-foundation` at
+`f0730d80eb72c97837c75489a87d9faf1699e7d1`.
+
+Acceptance evidence comprises 252 focused tests in 7.08 seconds, all 2,744
+plugin-disabled repository tests in 220.63 seconds, 202 final documentation
+tests in 5.19 seconds, the physically propagated 65-sample La Ligua
+PNG/PDF/semantic-SVG specimen, and clean diff, exact-head, upstream, and
+working-tree checks. The test-only long title was a non-blocking review
+observation because the companion manifest retains the reference instant and
+complete event interval.
+
+Preserve ordinary `ChartRequest(family="planisphere")` admission, one fixed
+AltAz chart-reference frame, per-sample UTC evidence, the horizon presentation
+boundary without synthetic events, request-owned cleanup, stable exact-track
+semantics, bounded provenance, and canonical rendering/export. 50S.6G delivery
+is closed. Only a documentation-first 50S.6H observatory-planning adapter audit
+is authorized next; no adapter runtime or 50S.7+ behavior is authorized.

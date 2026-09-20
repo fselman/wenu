@@ -1732,3 +1732,12 @@ realization context, horizon boundary, request-owned lifecycle, semantics,
 bounded provenance, renderer, and exporters remain the implemented owners.
 No new chart, coordinate, projection, layer, renderer, exporter, or scientific
 calculation is introduced. This remains an unaccepted candidate.
+
+## Accepted complete 50S.6G.4B ordinary-planisphere implementation
+
+PR 176 merged the accepted corrected implementation at `f0730d8`.
+Non-empty ordinary planisphere requests may now carry already-realized exact
+satellite tracks through the existing fixed AltAz realization, FullSkyChart
+horizon boundary, request-owned lifecycle, stable semantics, bounded
+provenance, renderer, and exporters. All other all-sky/circumpolar families
+remain rejected. No new coordinate or satellite science owner was introduced.

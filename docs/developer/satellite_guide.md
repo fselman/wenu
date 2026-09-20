@@ -899,3 +899,12 @@ AltAz frame fixed at chart time; the sample times still identify retained
 evidence. The horizon may clip drawing only and cannot invent an entry or exit
 event. The physical manifest accompanies the chart with site, chart time,
 complete visit interval, track identity, and output digests.
+
+## Accepted ordinary-planisphere exact tracks
+
+Wenu now accepts already-realized exact connected visits on the ordinary
+observer-horizontal stereographic planisphere. One fixed AltAz frame describes
+the chart, retained sample UTC records the evidence, and the horizon clips
+presentation without inventing events. The accepted physical La Ligua
+specimen and manifest demonstrate the PNG/PDF/semantic-SVG route and retain
+site, chart time, complete visit interval, identity, and output digests.
