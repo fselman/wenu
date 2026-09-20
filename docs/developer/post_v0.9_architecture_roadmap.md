@@ -3061,3 +3061,18 @@ SVG specimen are authorized next. Paired polar disks, circumpolar and Galactic
 all-sky tracks, provider or report/CLI changes, visibility, illumination,
 brightness, detector effects, scheduling adapters, 50S.7, 50S.8, and later
 satellite work remain unauthorized.
+
+## 50S.6G.4B accepted implementation and 50S.6G closure
+
+Fernando accepted the corrected ordinary AltAz planisphere implementation and
+authorized merge on 2026-09-20. PR 176 merged final candidate `6bc623b` at
+`f0730d8` after 252 focused, 2,744 complete, and 202 final documentation
+tests, physical PNG/PDF/semantic-SVG review, and clean repository checks.
+
+This closes 50S.6G delivery: representative snapshot evidence, interoperable
+reports, the offline file protocol, exact connected-visit evidence, and exact
+regional, binocular, and ordinary stereographic planisphere tracks are
+accepted. Only a documentation-first 50S.6H Paranal, ELT, and general
+observatory-planning adapter audit is authorized next. Adapter runtime, writes
+to observatory systems, scheduling decisions, 50S.7 illumination, 50S.8
+brightness, and later behavior remain unauthorized.
