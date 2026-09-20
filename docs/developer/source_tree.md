@@ -2667,3 +2667,15 @@ No source file is added by the audit. If the audit is separately accepted,
 the first admitted change is limited to direct finite-Sun/WGS-84 vacuum
 occultation and geometric observer twilight with focused offline tests.
 Reflected fields and radiometry require later authorization.
+
+## Accepted 50S.7A implementation placement
+
+After the accepted audit is merged, only
+`src/wenu/satellites/illumination.py` is authorized as the bounded 50S.7B
+owner for direct-Sun finite-source/WGS-84 vacuum occultation, typed shadow
+state, observer geometric twilight, provenance, and offline validation.
+Existing propagation, ephemeris, Earth-orientation, topocentric, crossing,
+report, chart, and planning owners remain unchanged.
+
+No reflected-field, radiometric, BRDF, brightness, detector, facility, or
+scheduling owner is authorized. The audit itself adds no production file.
