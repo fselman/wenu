@@ -3151,4 +3151,11 @@ validation, complete repository gates, and Fernando's separate scientific and
 architectural review. 50S.7C transition search and every radiometric,
 reflected-source, brightness, detector, facility, visibility, and scheduling
 slice remain unauthorized.
+### Candidate 50S.7B validation progress
+
+The 24-test focused gate and offline installed-resource validator passed at
+`51b935f`. Selected SPICE classifications agree for sunlit, penumbra, umbra,
+and antumbra; pinned DE440/Skyfield comparison agrees for 20 full-light and 5
+full-shadow states. Complete-suite and final repository gates remain pending,
+and 50S.7C remains unauthorized.
 
