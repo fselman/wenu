@@ -3175,6 +3175,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_multifov_interchange_audit_50s6e.md",
         "satellite_observatory_planning_adapter_audit_50s6h.md",
         "satellite_illumination_night_geometry_audit_50s7a.md",
+        "satellite_shadow_transition_audit_50s7c.md",
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
@@ -9019,3 +9020,62 @@ def test_50s7b_records_acceptance_and_next_audit_boundary():
         assert "separate" in normalized
         assert "documentation-first 50S.7C" in normalized
         assert "authorized" in normalized
+def test_50s7c_records_candidate_shadow_transition_audit():
+    audit = read(
+        DEVELOPER / "satellite_shadow_transition_audit_50s7c.md"
+    )
+    for phrase in (
+        "Candidate documentation-only scientific and architectural audit",
+        "f9aa2dd7e7d197f015b0df7667c1fd5804e99428",
+        "SatelliteShadowTransition",
+        "continuous signed contact geometry",
+        "visible fraction is not the root function",
+        "two transitions strictly between initial samples",
+        "observer-independent",
+        "certified closed UTC bracket",
+        "transition_search_exhausted",
+        "spice \`gfoclt\` or Orekit eclipse detector",
+        "authorizes no runtime",
+    ):
+        assert phrase.lower() in audit.lower()
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+    )
+    expected = (
+        "Candidate 50S.7C shadow-transition architecture",
+        "Candidate 50S.7C — Complete shadow-transition audit",
+        "Candidate 50S.7C reserved transition API",
+        "Candidate 50S.7C source ownership",
+        "Candidate 50S.7C shadow-transition coordinate boundary",
+        "Candidate 50S.7C shadow-transition vocabulary",
+        "Candidate 50S.7C shadow-transition audit",
+        "Candidate 50S.7C shadow-transition audit boundary",
+        "Candidate 50S.7C refinement of shadow-event separation",
+        "Candidate 50S.7C shadow-transition audit handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "unauthorized" in normalized
+        assert "no runtime" in normalized.lower()
+
+    index = read(DEVELOPER / "README.md")
+    assert "satellite_shadow_transition_audit_50s7c.md" in index
+
+    exports = read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+    assert "SatelliteShadowTransition" not in exports
