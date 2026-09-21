@@ -3143,7 +3143,7 @@ The bounded candidate implements the first accepted illumination slice in
 `satellites/illumination.py`: immutable same-instant ITRS geometry, uniform
 finite-Sun occultation by the vacuum WGS-84 ellipsoid, typed shadow state,
 geometric observer twilight, complete model/resource identity, and
-two-resolution quadrature convergence evidence.
+bounded adaptive quadrature convergence evidence.
 
 Focused unit evidence and an offline installed-DE440/Skyfield/SPICE validator
 belong to this slice. The candidate remains unaccepted pending controlled
