@@ -1820,4 +1820,13 @@ equal-solid-angle ray quadrature fails closed if its declared fraction
 tolerance is not met. No crossing, chart, report, planning, radiometric,
 brightness, visibility, detector, facility, or scheduling owner changes.
 50S.7C and later work remain unauthorized.
+## Validated candidate 50S.7B numerical boundary
+
+At candidate `51b935f`, 24 focused tests passed in 5.58 seconds. The offline
+SPICE oracle agreed on clear/sunlit, partial/penumbra, umbra, and
+annular/antumbra cases. The installed DE440 kernel
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`
+also produced 20 matching Skyfield full-light and 5 matching full-shadow
+states. This validates the bounded numerical architecture but does not yet
+constitute scientific or architectural acceptance.
 
