@@ -175,6 +175,7 @@ def test_partial_geometry_fails_closed_when_quadrature_does_not_converge():
         solar_radius_km=sun_distance * sin(alpha),
         radial_samples=8,
         azimuth_samples=32,
+        maximum_refinements=1,
         fraction_convergence_tolerance=1.0e-12,
     )
 
