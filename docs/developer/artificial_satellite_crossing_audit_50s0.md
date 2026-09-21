@@ -499,3 +499,16 @@ uncertainty or exhausted work.
 This audit changes no runtime. Transition implementation, radiometry,
 reflected fields, brightness, detector effects, visibility, facility
 integration, and scheduling remain unauthorized.
+
+## Accepted 50S.7C refinement of shadow-event separation
+
+Fernando accepted the documentation-only refinement at `030a6322` on
+2026-09-21. After merge, a bounded transition implementation may compose the
+accepted propagation and Earth-orientation route for one selected record
+without changing geometric crossing identity or membership.
+
+Continuous finite-source contact geometry, certified brackets, complete
+bounded interval search, deterministic event identity, and terminal failure
+remain mandatory. Transition attachment to crossings, tracks, reports, charts,
+CLI, or planning advisories and all later light, brightness, detector,
+visibility, facility, and scheduling behavior remain unauthorized.
