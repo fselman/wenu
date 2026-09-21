@@ -1095,3 +1095,15 @@ These events remain geometry only. They do not say whether the observer is at
 night, the satellite is in a field or above the horizon, the spacecraft is
 bright, or a detector is affected. The audit changes no runtime and 50S.7D+
 behavior remains unauthorized.
+
+## Accepted 50S.7C transition vocabulary
+
+Fernando accepted the documentation-only transition vocabulary at
+`030a6322` on 2026-09-21. After merge, the bounded implementation may add
+only the six directed finite-source class boundaries, continuous contact
+geometry, certified UTC brackets, complete interval certification, and
+fail-closed search described above.
+
+Contact remains an event rather than a state. Shadow events remain independent
+of observer night and make no brightness, visibility, detectability, detector,
+facility, or scheduling claim. 50S.7D+ remains unauthorized.
