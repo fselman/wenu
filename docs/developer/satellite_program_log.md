@@ -1272,3 +1272,20 @@ topocentric owner.
 The audit adds no runtime and remains unaccepted. Transition implementation,
 50S.7D+ light models, brightness, visibility, detector, facility, and
 scheduling work remain unauthorized.
+
+## 2026-09-21 — Accepted 50S.7C shadow-transition audit
+
+Fernando scientifically and architecturally accepted exact candidate
+`030a632243349c34a1455743ae9bf40ced39e755`. The complete
+current-documentation gate passed 210 plugin-disabled tests in 5.81 seconds;
+the branch diff, exact upstream, and clean-tree checks passed.
+
+After merge, only the bounded 50S.7C implementation is authorized:
+observer-independent continuous contact geometry, complete bounded search for
+one selected record and admitted closed interval, directed events, certified
+brackets, deterministic identity, terminal failure, the minimal shared
+geocentric ITRS seam, focused tests, and offline independent event validation.
+
+PR 182 merge and branch deletion remain separately authorized operations.
+50S.7D+, report/chart/planning integration, brightness, visibility, detector,
+facility, scheduling, and unrelated work remain unauthorized.
