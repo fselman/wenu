@@ -1324,3 +1324,18 @@ The bounded implementation is ready for Fernando's separate scientific and
 architectural review. Merge, branch deletion, 50S.7D+, output integration,
 radiometry, brightness, visibility, detector, facility, scheduling, and
 unrelated work remain unauthorized.
+
+## 2026-09-21 — Accepted 50S.7C shadow-transition implementation
+
+Fernando scientifically and architecturally accepted exact branch head
+`eaeab6085b52bfed6136d37f3010c2f353e59f53`. Executable `bf877404`,
+the no-download SPICE/Skyfield receipt, 311 expanded tests in 21.47 seconds,
+212 documentation tests in 7.01 seconds, all 2,816 plugin-disabled repository
+tests in 218.58 seconds, the clean diff, exact upstream, and clean tree are
+accepted evidence. The final timing clarification passed 212 documentation
+tests in 4.72 seconds.
+
+PR 183 merge and branch deletion remain separate explicit operations. 50S.7D+,
+output integration, radiometry, reflected fields, brightness, visibility,
+detector, facility, scheduling, and unrelated work remain unauthorized.
+

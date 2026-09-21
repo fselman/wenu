@@ -3238,3 +3238,19 @@ passed.
 Merge, branch deletion, 50S.7D+, report/chart/planning integration, and all
 later light, brightness, visibility, detector, facility, or scheduling work
 remain unauthorized.
+
+## Accepted 50S.7C — Shadow-transition implementation
+
+Fernando scientifically and architecturally accepted the complete bounded
+implementation at `eaeab6085b52bfed6136d37f3010c2f353e59f53` on
+2026-09-21. Executable `bf877404` passed the SPICE/Skyfield receipt, 311
+expanded tests, 212 documentation tests, the clean diff, all 2,816
+plugin-disabled repository tests, exact upstream, and a clean tree. The final
+documentation clarification passed 212 tests in 4.72 seconds.
+
+PR 183 merge and feature-branch deletion remain separate explicit decisions.
+After merge, no 50S.7D+ work begins without a separately accepted bounded
+milestone. Report/chart/planning integration, radiometry, reflected fields,
+brightness, visibility, detector, facility, scheduling, and unrelated work
+remain unauthorized.
+

@@ -1807,3 +1807,23 @@ Do not merge or delete the feature branch without Fernando's separate explicit
 instruction. Do not begin 50S.7D+, attach transitions to outputs, or add
 radiometry, reflected fields, brightness, visibility, detector, facility,
 scheduling, or unrelated work before separate authorization.
+
+## Accepted 50S.7C implementation boundary
+
+Fernando scientifically and architecturally accepted exact branch head
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Executable
+`bf877404` passed the independent SPICE/Skyfield receipt, 311 expanded
+tests, 212 current-documentation tests, all 2,816 plugin-disabled repository
+tests, clean diff, exact upstream, and clean-tree checks. The final
+documentation-only clarification passed 212 tests in 4.72 seconds.
+
+Preserve the single-record observer-independent query, continuous
+finite-Sun/WGS-84 contact margins, shared geocentric ITRS seam, complete
+bounded search, six directed adjacent events, certified brackets,
+deterministic identity, complete provenance, and typed terminal failures.
+
+Do not merge PR 183 or delete its feature branch without Fernando's separate
+explicit instruction. Do not begin 50S.7D+, attach transitions to outputs, or
+add radiometry, reflected fields, brightness, visibility, detector, facility,
+scheduling, or unrelated work before a separately accepted bounded milestone.
+

@@ -2790,3 +2790,19 @@ offline validator, and governed documentation.
 
 The source placement is verified but unaccepted. Merge, branch deletion,
 50S.7D+, output integration, and later ownership changes remain unauthorized.
+
+## Accepted 50S.7C implementation source ownership
+
+Fernando accepted the complete bounded source placement at
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Preserve
+`satellites/illumination.py` as the transition-contract, contact-geometry,
+search, identity, provenance, and failure owner; `satellites/topocentric.py`
+as the shared TEME-to-ITRS/EOP owner; the existing illumination test file as
+the enduring scientific and failure-boundary owner; and the offline
+no-download validator as independent event evidence.
+
+Executable `bf877404` and its complete 311/212/2,816-test evidence are
+accepted. No new production or test owner is authorized. Merge, branch
+deletion, 50S.7D+, output integration, and later ownership changes remain
+separate and unauthorized.
+

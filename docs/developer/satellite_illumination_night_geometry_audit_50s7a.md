@@ -618,3 +618,21 @@ sequences, and Skyfield matched 20 full-light plus 5 full-shadow states using
 the accepted installed DE440 digest. Complete gates and acceptance remain
 pending. 50S.7D+, reflected fields, radiometry, brightness, visibility,
 detector, facility, scheduling, and output integration remain unauthorized.
+
+## 16. Accepted 50S.7C shadow-transition implementation handoff
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.7C implementation at
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. The accepted
+evidence comprises executable `bf877404`, the independent no-download
+SPICE/Skyfield receipt, 311 expanded tests, 212 documentation tests, all 2,816
+plugin-disabled repository tests, clean diff, exact upstream, clean tree, and
+the final 212-test documentation clarification in 4.72 seconds.
+
+Preserve 50S.7B visible-fraction and observer-night meanings while retaining
+50S.7C continuous contact geometry, complete bounded search, directed events,
+certified brackets, deterministic identity, shared geocentric ITRS evidence,
+and fail-closed behavior. PR 183 merge and branch deletion remain separate.
+50S.7D+, output attachment, radiometry, reflected fields, brightness,
+visibility, detector, facility, and scheduling remain unauthorized.
+

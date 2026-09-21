@@ -403,3 +403,28 @@ architectural review. It remains unaccepted. Merge, branch deletion, 50S.7D+
 work, transition attachment, radiometry, reflected fields, brightness,
 visibility, detector, facility, scheduling, and unrelated changes remain
 unauthorized.
+
+## 15. Accepted 50S.7C implementation
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.7C shadow-transition implementation on 2026-09-21 at exact branch head
+`eaeab6085b52bfed6136d37f3010c2f353e59f53`. Executable candidate
+`bf877404` passed the independent no-download SPICE `gfoclt` and Skyfield
+receipt, the 311-test expanded gate in 21.47 seconds, the 212-test
+current-documentation gate in 7.01 seconds, the clean branch diff, and all
+2,816 plugin-disabled repository tests in 218.58 seconds. Exact upstream
+equality and a clean tree passed. The final documentation-only clarification
+then passed all 212 documentation tests in 4.72 seconds.
+
+The accepted implementation is limited to one selected immutable record and
+one admitted closed UTC interval; continuous finite-Sun/WGS-84 contact
+geometry; the shared geocentric TEME-to-ITRS seam; complete bounded recursive
+search; the six directed adjacent transition kinds; certified UTC brackets;
+deterministic identity; complete provenance; and typed terminal failures.
+
+Acceptance does not authorize PR 183 merge or feature-branch deletion; both
+remain separate explicit decisions. It does not authorize 50S.7D+, attaching
+transitions to crossings, tracks, reports, charts, CLI, or planning, or adding
+radiometry, reflected fields, brightness, visibility, detector, facility,
+scheduling, or unrelated behavior.
+

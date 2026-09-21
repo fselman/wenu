@@ -4206,3 +4206,19 @@ TEME-to-ITRS/EOP implementation by the observer and transition routes.
 The coordinate extraction remains an unaccepted candidate. Merge, branch
 deletion, new frame meaning, observer-event coupling, refraction, brightness,
 visibility, and 50S.7D+ behavior remain unauthorized.
+
+## Accepted 50S.7C shared geocentric coordinate behavior
+
+Fernando accepted the 50S.7C coordinate behavior at
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Preserve
+canonical UTC event identity; split-JD SGP4 propagation; installed-IERS-A
+UT1/polar-motion evidence; the single shared TEME-to-ITRS seam; same-instant
+ICRF/GCRS-aligned Earth-to-Sun rotation into ITRS; and continuous
+finite-Sun/WGS-84 contact evaluation wholly in that Earth-fixed frame.
+
+The transition product remains observer-independent geometric evidence, not
+an apparent, brightness, visibility, or detector result. The coordinate-system
+guide was reviewed and remains current. PR 183 merge, branch deletion,
+50S.7D+, and any attachment to crossings or outputs require separate
+authorization.
+

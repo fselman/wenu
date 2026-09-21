@@ -9297,3 +9297,59 @@ def test_50s7c_records_bounded_candidate_implementation():
         assert "218.58 seconds" in normalized
         assert "unaccepted" in normalized
         assert "unauthorized" in normalized
+
+def test_50s7c_records_accepted_implementation_boundary():
+    audit = read(
+        DEVELOPER / "satellite_shadow_transition_audit_50s7c.md"
+    )
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7C implementation architecture",
+        "Accepted 50S.7C — Shadow-transition implementation",
+        "Accepted 50S.7C transition API implementation",
+        "Accepted 50S.7C implementation source ownership",
+        "Accepted 50S.7C shared geocentric coordinate behavior",
+        "Accepted 50S.7C transition runtime vocabulary",
+        "Accepted 50S.7C shadow-transition implementation",
+        "Accepted 50S.7C implementation boundary",
+        "Accepted 50S.7C implementation refinement",
+        "Accepted 50S.7C shadow-transition implementation handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "eaeab608" in normalized
+        assert "separate" in normalized
+        assert "50S.7D+" in normalized
+        assert "unauthorized" in normalized
+
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Accepted 50S.7C implementation",
+        "scientifically and architecturally accepted",
+        "eaeab6085b52bfed6136d37f3010c2f353e59f53",
+        "bf877404",
+        "311-test expanded gate in 21.47 seconds",
+        "212-test current-documentation gate in 7.01 seconds",
+        "2,816 plugin-disabled repository tests in 218.58 seconds",
+        "212 documentation tests in 4.72 seconds",
+        "does not authorize PR 183 merge or feature-branch deletion",
+    ):
+        assert phrase in normalized_audit
+

@@ -526,3 +526,18 @@ resource SPICE/Skyfield receipt. Complete gates and acceptance remain pending.
 Transition attachment and every 50S.7D+, radiometric, reflected-field,
 brightness, detector, visibility, facility, or scheduling behavior remain
 unauthorized.
+
+## Accepted 50S.7C implementation refinement
+
+Fernando accepted the bounded downstream shadow-event implementation at
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Preserve its
+single-record observer-independent query, continuous finite-source contact
+geometry, shared Earth-orientation route, complete bounded search, certified
+directed brackets, deterministic identity, and terminal failure.
+
+The accepted implementation does not change crossing membership, intervals,
+tracks, reports, charts, CLI, or planning advisories. PR 183 merge and branch
+deletion remain separate decisions. Transition attachment and all 50S.7D+
+radiometric, reflected-field, brightness, visibility, detector, facility, or
+scheduling behavior remain unauthorized.
+

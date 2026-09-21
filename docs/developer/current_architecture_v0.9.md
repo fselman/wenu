@@ -1915,3 +1915,22 @@ receipt, this verifies the bounded observer-independent event architecture.
 Fernando's separate acceptance is still required. Merge, branch deletion,
 50S.7D+, and all crossing/output, radiometric, brightness, visibility,
 detector, facility, or scheduling integration remain unauthorized.
+
+## Accepted 50S.7C implementation architecture
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.7C implementation on 2026-09-21 at branch head
+`eaeab6085b52bfed6136d37f3010c2f353e59f53`. Executable candidate
+`bf877404` passed the independent SPICE/Skyfield receipt, 311-test expanded
+gate, 212-test documentation gate, clean diff, complete 2,816-test
+plugin-disabled suite, exact upstream, and clean-tree checks. The final
+documentation-only timing clarification passed all 212 tests in 4.72 seconds.
+
+Preserve the observer-independent single-record query, continuous
+finite-Sun/WGS-84 contact geometry, shared geocentric ITRS seam, complete
+bounded search, six directed adjacent events, certified UTC brackets,
+deterministic identity, and typed terminal failure. Merge and branch deletion
+remain separate explicit decisions. 50S.7D+, transition attachment to outputs,
+radiometry, reflected fields, brightness, visibility, detector, facility,
+scheduling, and unrelated work remain unauthorized.
+
