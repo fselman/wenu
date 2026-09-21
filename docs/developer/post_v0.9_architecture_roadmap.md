@@ -3137,3 +3137,18 @@ vacuum occultation, typed shadow state, geometric twilight, provenance, and
 focused offline validation. 50S.7C and later radiometry or reflected-source
 work, 50S.8 brightness, 50S.9 detector effects, visibility, facility
 integration, scheduling, and unrelated refactoring remain unauthorized.
+## Candidate 50S.7B — Direct-Sun and observer-night geometry
+
+The bounded candidate implements the first accepted illumination slice in
+`satellites/illumination.py`: immutable same-instant ITRS geometry, uniform
+finite-Sun occultation by the vacuum WGS-84 ellipsoid, typed shadow state,
+geometric observer twilight, complete model/resource identity, and
+two-resolution quadrature convergence evidence.
+
+Focused unit evidence and an offline installed-DE440/Skyfield/SPICE validator
+belong to this slice. The candidate remains unaccepted pending controlled
+validation, complete repository gates, and Fernando's separate scientific and
+architectural review. 50S.7C transition search and every radiometric,
+reflected-source, brightness, detector, facility, visibility, and scheduling
+slice remain unauthorized.
+
