@@ -253,6 +253,47 @@ def _differential_tuple(differential, unit):
     )
 
 
+def geocentric_gcrs_axis_position_to_itrs(
+    position_km,
+    instant,
+    *,
+    expected_earth_orientation=None,
+):
+    """Rotate one geocentric GCRS-axis position into accepted ITRS."""
+    vector = _vector(position_km, name="position_km")
+    time = Time(instant, scale="utc")
+    table, evidence = _earth_orientation(time)
+    if (
+        expected_earth_orientation is not None
+        and evidence != expected_earth_orientation
+    ):
+        raise SatelliteEarthOrientationError(
+            "Earth-orientation evidence differs from the accepted "
+            "satellite transformation."
+        )
+    gcrs = GCRS(
+        CartesianRepresentation(np.asarray(vector, dtype=float) * u.km),
+        obstime=time,
+    )
+    with iers.conf.set_temp("auto_download", False):
+        with iers.conf.set_temp("iers_degraded_accuracy", "error"):
+            with iers.earth_orientation_table.set(table):
+                with warnings.catch_warnings():
+                    warnings.simplefilter("error", iers.IERSWarning)
+                    try:
+                        itrs = gcrs.transform_to(ITRS(obstime=time))
+                    except (
+                        ValueError,
+                        iers.IERSRangeError,
+                        iers.IERSWarning,
+                    ) as error:
+                        raise SatelliteEarthOrientationError(
+                            "GCRS-axis to ITRS rotation failed with the "
+                            "installed Earth-orientation resource."
+                        ) from error
+    return _cartesian_tuple(itrs.cartesian, u.km)
+
+
 class SatelliteTopocentricTransformer:
     """Apply the governed TEME-to-observer geometric transformation chain."""
 
