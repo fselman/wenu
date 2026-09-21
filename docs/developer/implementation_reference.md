@@ -3532,7 +3532,8 @@ detector, facility, or scheduling semantics. Merge remains separate.
 
 ## Candidate 50S.7C transition API implementation
 
-The unaccepted bounded API exports `ShadowTransitionSearchPolicy`,
+At executable `69375fab`, the unaccepted bounded API exports
+`ShadowTransitionSearchPolicy`,
 `SatelliteShadowTransitionQuery`, `SolarOccultationContactGeometry`,
 `SatelliteShadowTransition`, `ShadowTransitionKind`,
 `SatelliteShadowTransitionFinder`, and

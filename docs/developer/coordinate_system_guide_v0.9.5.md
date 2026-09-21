@@ -4179,7 +4179,8 @@ frame meaning.
 
 ## Candidate 50S.7C shared geocentric coordinate path
 
-The bounded candidate extracts `SatelliteGeocentricItrsState` and
+At executable `69375fab`, the bounded candidate extracts
+`SatelliteGeocentricItrsState` and
 `SatelliteGeocentricItrsTransformer` from the already governed transform.
 Both the transition finder and `SatelliteTopocentricTransformer` compose the
 same `_geocentric_itrs_components(...)` implementation and retain the exact

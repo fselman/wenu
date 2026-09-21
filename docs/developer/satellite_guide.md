@@ -1110,7 +1110,8 @@ facility, or scheduling claim. 50S.7D+ remains unauthorized.
 
 ## Candidate 50S.7C transition runtime vocabulary
 
-The bounded candidate treats contact as an observer-independent event between
+At executable `69375fab`, the bounded candidate treats contact as an
+observer-independent event between
 two ordinary `SolarOccultationClass` side states. It exposes exactly six
 directed adjacent kinds: sunlit/penumbra in both directions,
 penumbra/umbra in both directions, and penumbra/antumbra in both directions.

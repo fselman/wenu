@@ -9080,7 +9080,7 @@ def test_50s7c_records_candidate_shadow_transition_audit():
     assert "satellite_shadow_transition_audit_50s7c.md" in index
 
     exports = read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
-    assert "SatelliteShadowTransition" not in exports
+    assert "SatelliteShadowTransition" in exports
 
 def test_50s7c_records_acceptance_and_bounded_implementation_authority():
     audit = " ".join(
