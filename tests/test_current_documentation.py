@@ -8790,11 +8790,10 @@ def test_50s7a_records_candidate_four_source_illumination_audit():
     ):
         assert phrase in guide
 
-    for forbidden in (
-        "class SatelliteIlluminationGeometry",
-        "class SatelliteShadowTransition",
-    ):
-        assert forbidden not in read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+    exports = read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+    assert "SatelliteIlluminationGeometry" in exports
+    assert "SatelliteIlluminationGeometryEvaluator" in exports
+    assert "SatelliteShadowTransition" not in exports
 
 
 def test_50s7a_records_acceptance_and_only_bounded_50s7b_authority():
@@ -8844,3 +8843,80 @@ def test_50s7a_records_acceptance_and_only_bounded_50s7b_authority():
         assert "finite uniform-Sun/WGS-84 vacuum" in document
         assert "geometric twilight" in document
         assert "unauthorized" in document
+def test_50s7b_records_bounded_candidate_implementation():
+    audit = read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    )
+    architecture = read(V09_CURRENT)
+    roadmap = read(FUTURE_ROADMAP)
+    reference = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+    coordinate_guide = read(COORDINATE_GUIDE)
+    guide = read(DEVELOPER / "satellite_guide.md")
+    program_log = read(SATELLITE_PROGRAM_LOG)
+    instructions = read(INSTRUCTIONS)
+    foundation = read(
+        DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+    )
+    implementation = read(
+        ROOT / "src" / "wenu" / "satellites" / "illumination.py"
+    )
+    validator = read(
+        ROOT / "tools" / "validate_50s7b_illumination_geometry.py"
+    )
+
+    documents = (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        program_log,
+        instructions,
+        foundation,
+    )
+    expected = (
+        "Candidate 50S.7B implementation record",
+        "Candidate 50S.7B direct-Sun and observer-night architecture",
+        "Candidate 50S.7B — Direct-Sun and observer-night geometry",
+        "Candidate 50S.7B direct-Sun and observer-night API",
+        "Candidate 50S.7B source ownership",
+        "Candidate 50S.7B common-frame coordinate path",
+        "Candidate 50S.7B direct-Sun and night vocabulary",
+        "Candidate 50S.7B direct-Sun and observer-night geometry",
+        "Candidate 50S.7B implementation boundary",
+        "Candidate 50S.7B refinement of the illumination decision",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+    for phrase in (
+        "SatelliteIlluminationGeometry",
+        "SolarOccultationPolicy",
+        "uniform-solar-disk-wgs84-vacuum-ray-quadrature-v1",
+        "coarse_visible_disk_fraction",
+        "quadrature_absolute_difference",
+        "QUADRATURE_NOT_CONVERGED",
+        "ObserverTwilightClass",
+        "LunarOccultorStatus.NOT_EVALUATED",
+        "geocentric_gcrs_axis_position_to_itrs",
+    ):
+        assert phrase in implementation
+
+    for phrase in (
+        "spiceypy.surfpt",
+        "spiceypy.edlimb",
+        "is_sunlit",
+        "refusing download",
+        "Skyfield full-light matches",
+        "Skyfield full-shadow matches",
+    ):
+        assert phrase in validator
+
+    normalized = tuple(" ".join(document.split()) for document in documents)
+    for document in normalized:
+        assert "50S.7C" in document
+        assert "unauthorized" in document
+
