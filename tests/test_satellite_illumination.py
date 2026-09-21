@@ -152,6 +152,43 @@ def test_spherical_partial_fraction_matches_analytic_disk_overlap():
         expected_visible,
         abs=2.0e-3,
     )
+    assert result.quadrature_absolute_difference <= (
+        spherical_policy().fraction_convergence_tolerance
+    )
+    assert result.evaluated_ray_count == 256 * 1024
+
+
+def test_partial_geometry_fails_closed_when_quadrature_does_not_converge():
+    satellite_radius = 1_000_000.0
+    beta = asin(SPHERE_RADIUS_KM / satellite_radius)
+    alpha = 0.004
+    separation = beta
+    satellite = np.asarray((satellite_radius, 0.0, 0.0))
+    direction = np.asarray(
+        (-cos(separation), sin(separation), 0.0),
+    )
+    sun_distance = 100_000_000.0
+    earth_to_sun = satellite + sun_distance * direction
+    policy = SolarOccultationPolicy(
+        earth_equatorial_radius_km=SPHERE_RADIUS_KM,
+        earth_polar_radius_km=SPHERE_RADIUS_KM,
+        solar_radius_km=sun_distance * sin(alpha),
+        radial_samples=8,
+        azimuth_samples=32,
+        fraction_convergence_tolerance=1.0e-12,
+    )
+
+    with pytest.raises(SatelliteIlluminationGeometryError) as caught:
+        evaluate_solar_occultation(
+            satellite,
+            earth_to_sun,
+            policy=policy,
+        )
+
+    assert (
+        caught.value.code
+        is SatelliteIlluminationFailureCode.QUADRATURE_NOT_CONVERGED
+    )
 
 
 def test_spherical_annular_geometry_is_typed_antumbra():
