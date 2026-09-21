@@ -4123,4 +4123,3 @@ Skyfield, while the focused suite independently compared observer geometric
 Sun altitude with Astropy AltAz. Selected SPICE ellipsoid cases agreed across
 all four typed occultation classes. This evidence changes no coordinate
 owner and does not yet accept the candidate.
-
