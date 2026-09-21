@@ -4132,3 +4132,15 @@ repository tests. The same-instant ITRS composition and geometric observer
 Sun-altitude boundary are therefore verified as a candidate. Fernando's
 separate acceptance is still required; 50S.7C and later coordinate behavior
 remain unauthorized.
+
+## Accepted 50S.7B coordinate behavior
+
+Fernando accepted the same-instant ITRS composition and geometric vacuum
+observer Sun-altitude boundary at `054ac53a` on 2026-09-21. Preserve
+canonical UTC identity, internal TDB ephemeris evaluation, UT1/polar-motion
+IERS evidence, ICRF/GCRS-aligned celestial axes, explicit ITRS rotation before
+subtraction, and WGS-84 geodetic up.
+
+These results remain illumination geometry, not apparent sunrise, sky
+brightness, visibility, or detectability. Merge remains separate; after merge
+only a documentation-first 50S.7C audit is authorized.
