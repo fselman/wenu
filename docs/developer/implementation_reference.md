@@ -3479,3 +3479,5 @@ Neither function makes a radiometric, apparent-brightness, visibility, or
 detectability claim. The API is a review candidate until Fernando separately
 accepts it.
 
+50S.7C shadow-transition search and all later satellite-light behavior remain
+unauthorized by this candidate.
