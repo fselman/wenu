@@ -1209,3 +1209,17 @@ geometric twilight, provenance, and focused offline validation. 50S.7C and
 later radiometry, reflected-source fields, brightness, detector, visibility,
 facility, scheduling, and unrelated work remain unauthorized. PR merge and
 branch deletion require separate explicit authorization.
+## Candidate 50S.7B direct-Sun and observer-night geometry
+
+The feature branch implements the bounded accepted slice with immutable
+finite-Sun/WGS-84 vacuum occultation, typed shadow class, geometric observer
+twilight, same-instant ITRS composition, complete input/model provenance, and
+fail-closed two-resolution quadrature. The focused 24-test illumination gate
+passed in 4.86 seconds on Fernando's Mac at revision `5ffae3a`.
+
+An offline installed-DE440 binary Skyfield and selected SPICE classification
+validator plus complete repository/documentation gates remain pending. The
+candidate is not yet accepted. 50S.7C transitions and all radiometric,
+reflected-source, brightness, detector, facility, visibility, and scheduling
+work remain unauthorized.
+
