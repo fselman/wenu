@@ -8,6 +8,7 @@ from pathlib import Path
 
 import numpy as np
 import spiceypy
+from spiceypy.utils.exceptions import NotFoundError
 from skyfield.api import EarthSatellite
 
 from wenu.observer import DEFAULT_DATA_DIRECTORY, DEFAULT_EPHEMERIS, Observer
@@ -85,14 +86,18 @@ def _spice_classification(satellite, sun, policy):
     angular_radius = asin(policy.solar_radius_km / distance)
     hits = []
     for ray in _solar_rays(center, angular_radius):
-        _, found = spiceypy.surfpt(
-            satellite,
-            ray,
-            policy.earth_equatorial_radius_km,
-            policy.earth_equatorial_radius_km,
-            policy.earth_polar_radius_km,
-        )
-        hits.append(bool(found))
+        try:
+            spiceypy.surfpt(
+                satellite,
+                ray,
+                policy.earth_equatorial_radius_km,
+                policy.earth_equatorial_radius_km,
+                policy.earth_polar_radius_km,
+            )
+        except NotFoundError:
+            hits.append(False)
+        else:
+            hits.append(True)
     if not any(hits):
         return SolarOccultationClass.SUNLIT
     if all(hits):
