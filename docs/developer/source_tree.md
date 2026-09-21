@@ -2700,3 +2700,5 @@ No propagation, crossing, transition-event, report, chart, planning,
 radiometry, brightness, visibility, detector, facility, or scheduling
 ownership moves into illumination. This is an unaccepted candidate.
 
+50S.7C shadow-transition search and all later satellite-light behavior remain
+unauthorized by this candidate.
