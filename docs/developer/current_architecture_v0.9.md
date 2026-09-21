@@ -1829,3 +1829,12 @@ annular/antumbra cases. The installed DE440 kernel
 also produced 20 matching Skyfield full-light and 5 matching full-shadow
 states. This validates the bounded numerical architecture but does not yet
 constitute scientific or architectural acceptance.
+
+## Verified candidate 50S.7B architecture
+
+Executable revision `086e7da1` passed the 291-test expanded gate, 208-test
+documentation gate, clean branch diff, all 2,796 plugin-disabled repository
+tests in 233.66 seconds, and exact upstream/clean-tree checks. Together with
+the installed-DE440/SPICE/Skyfield receipt, this verifies the bounded
+output-neutral architecture. The candidate still requires Fernando's separate
+acceptance before merge; 50S.7C and later work remain unauthorized.
