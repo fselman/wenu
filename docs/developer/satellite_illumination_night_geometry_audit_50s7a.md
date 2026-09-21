@@ -549,3 +549,26 @@ The earlier offline SPICE/Skyfield receipt remains part of this evidence.
 These results establish a verified candidate for Fernando's separate
 scientific and architectural review. They do not themselves authorize merge,
 branch deletion, 50S.7C, or later work.
+
+## 13. Accepted 50S.7B implementation
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.7B implementation on 2026-09-21 at candidate revision
+`054ac53a1f2d50aca06c268cfc7ff5fb074c690f`. The accepted evidence comprises the analytic and independent
+geometry validation, installed-DE440/Skyfield comparison, 291-test expanded
+gate, 2,796-test complete repository gate, clean diff, exact upstream, clean
+tree, and final 208-test documentation gate in 4.19 seconds.
+
+The accepted implementation owns only immutable output-neutral direct-Sun and
+observer-night geometry: same-instant ITRS composition, a uniform finite solar
+disk occulted by the vacuum WGS-84 ellipsoid, bounded adaptive quadrature with
+fail-closed convergence, typed solar occultation and twilight states, explicit
+lunar `not_evaluated`, complete resource/model identity, provenance, and
+warnings.
+
+Acceptance authorizes merge of PR 181 only when Fernando gives a separate
+explicit merge instruction. It does not authorize branch deletion. After
+merge, only a documentation-first 50S.7C shadow-transition audit is authorized
+next. Transition runtime, radiometry, Earthshine, Moonlight radiometry,
+Lunar-Earthshine fields, brightness, visibility, detector effects, facility
+integration, and scheduling remain unauthorized.
