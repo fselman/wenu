@@ -3209,3 +3209,47 @@ brackets, deterministic identity, fail-closed budgets, a minimal shared
 geocentric ITRS seam, focused tests, and offline independent event validation.
 50S.7D+ and all report/chart/planning, brightness, visibility, detector,
 facility, and scheduling integration remain unauthorized.
+
+## Candidate 50S.7C — Shadow-transition implementation
+
+The feature branch now contains the bounded observer-independent service
+authorized by the accepted audit: shared geocentric ITRS state, continuous
+finite-Sun/WGS-84 contact evidence, complete bounded search, six directed
+adjacent transition kinds, certified UTC brackets, deterministic identity,
+and fail-closed limits.
+
+Executable `69375fab` passed 58 focused tests in 16.67 seconds. The offline
+no-download validator independently reproduced full and annular four-contact
+sequences with SPICE `gfoclt` and matched 20 full-light plus 5 full-shadow
+Skyfield states using the installed DE440 kernel. Documentation and complete
+repository gates remain next. The candidate is not accepted; 50S.7D+ and all
+report/chart/planning or later scientific integration remain unauthorized.
+
+## Verified candidate 50S.7C implementation gate
+
+At exact candidate `bf877404`, the 311-test expanded gate, 212-test
+documentation gate, clean diff, complete 2,816-test plugin-disabled suite,
+exact upstream check, and clean-tree check passed. The expanded gate took
+21.47 seconds, the documentation gate took 7.01 seconds, and the complete
+suite took 218.58 seconds. The independent SPICE/Skyfield event receipt also
+passed.
+
+50S.7C now awaits Fernando's separate scientific and architectural review.
+Merge, branch deletion, 50S.7D+, report/chart/planning integration, and all
+later light, brightness, visibility, detector, facility, or scheduling work
+remain unauthorized.
+
+## Accepted 50S.7C — Shadow-transition implementation
+
+Fernando scientifically and architecturally accepted the complete bounded
+implementation at `eaeab6085b52bfed6136d37f3010c2f353e59f53` on
+2026-09-21. Executable `bf877404` passed the SPICE/Skyfield receipt, 311
+expanded tests, 212 documentation tests, the clean diff, all 2,816
+plugin-disabled repository tests, exact upstream, and a clean tree. The final
+documentation clarification passed 212 tests in 4.72 seconds.
+
+PR 183 merge and feature-branch deletion remain separate explicit decisions.
+After merge, no 50S.7D+ work begins without a separately accepted bounded
+milestone. Report/chart/planning integration, radiometry, reflected fields,
+brightness, visibility, detector, facility, scheduling, and unrelated work
+remain unauthorized.

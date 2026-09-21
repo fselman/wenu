@@ -2760,3 +2760,48 @@ Do not create a milestone-named production or test module. Existing
 propagation, ephemeris, crossing, track, report, chart, CLI, planning,
 renderer, exporter, brightness, visibility, detector, facility, and scheduling
 owners remain unchanged. PR merge and later source work remain separate.
+
+## Candidate 50S.7C implementation source ownership
+
+- `src/wenu/satellites/illumination.py` owns the immutable transition
+  contracts, continuous contact geometry, bounded search, identity, and typed
+  failures alongside the accepted direct-Sun model.
+- `src/wenu/satellites/topocentric.py` owns one shared internal TEME-to-ITRS
+  implementation composed by both `SatelliteGeocentricItrsTransformer` and
+  the existing observer route.
+- `tests/test_satellite_illumination.py` remains the enduring scientific,
+  topology, budget, identity, and orchestration test owner.
+- `tools/validate_50s7c_shadow_transitions.py` owns the offline no-download
+  SPICE `gfoclt` event and Skyfield binary-side receipt.
+
+At executable `69375fab`, 58 focused tests and the independent installed-
+resource receipt passed. No milestone-named production/test module or output
+integration was added. Complete gates and acceptance remain pending; merge,
+branch deletion, 50S.7D+, and later ownership changes remain unauthorized.
+
+## Verified candidate 50S.7C implementation source gate
+
+Exact candidate `bf877404` passed 311 expanded tests in 21.47 seconds, 212
+documentation tests in 7.01 seconds, a clean diff, and all 2,816
+plugin-disabled repository tests in 218.58 seconds. Exact upstream equality
+and a clean tree were confirmed. The production changes remain limited to the
+accepted illumination and topocentric owners, exports, enduring focused test,
+offline validator, and governed documentation.
+
+The source placement is verified but unaccepted. Merge, branch deletion,
+50S.7D+, output integration, and later ownership changes remain unauthorized.
+
+## Accepted 50S.7C implementation source ownership
+
+Fernando accepted the complete bounded source placement at
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Preserve
+`satellites/illumination.py` as the transition-contract, contact-geometry,
+search, identity, provenance, and failure owner; `satellites/topocentric.py`
+as the shared TEME-to-ITRS/EOP owner; the existing illumination test file as
+the enduring scientific and failure-boundary owner; and the offline
+no-download validator as independent event evidence.
+
+Executable `bf877404` and its complete 311/212/2,816-test evidence are
+accepted. No new production or test owner is authorized. Merge, branch
+deletion, 50S.7D+, output integration, and later ownership changes remain
+separate and unauthorized.

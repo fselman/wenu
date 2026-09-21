@@ -3529,3 +3529,40 @@ certification, deterministic ordering, and atomic fail-closed behavior. It
 must not add transition data to crossing, track, report, chart, CLI, or
 planning APIs, and it must not add radiometric, brightness, visibility,
 detector, facility, or scheduling semantics. Merge remains separate.
+
+## Candidate 50S.7C transition API implementation
+
+At executable `69375fab`, the unaccepted bounded API exports
+`ShadowTransitionSearchPolicy`,
+`SatelliteShadowTransitionQuery`, `SolarOccultationContactGeometry`,
+`SatelliteShadowTransition`, `ShadowTransitionKind`,
+`SatelliteShadowTransitionFinder`, and
+`evaluate_solar_occultation_contact`. The topocentric owner exports
+`SatelliteGeocentricItrsState` and `SatelliteGeocentricItrsTransformer`.
+
+One query binds an immutable snapshot, one full NORAD identifier, one closed
+UTC interval, and both occultation and search policies. Each result retains
+the exact record, snapshot, query interval, directed side classes, certified
+bracket, deterministic midpoint, achieved width, evaluation count, EOP and
+ephemeris identities, complete policies, implementation identifier,
+provenance, and warnings. `SatelliteShadowTransition.identity` exposes that
+immutable identity tuple.
+
+Stable failures include invalid/unsupported query, propagation, EOP,
+ephemeris, frame, non-finite geometry, degenerate topology, inconsistent
+bracket, and `transition_search_exhausted`. The candidate adds no output or
+later illumination API; complete gates and acceptance remain pending.
+
+## Accepted 50S.7C transition API implementation
+
+Fernando accepted the immutable 50S.7C transition API at
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Preserve the
+single-record closed-interval query, explicit occultation and search policies,
+six directed adjacent transition kinds, certified brackets, deterministic
+midpoints, exact identity and provenance, ordered atomic results, and typed
+fail-closed errors implemented at executable `bf877404`.
+
+The accepted API remains output-neutral and observer-independent. It adds no
+crossing, track, report, chart, CLI, planning, radiometric, brightness,
+visibility, detector, facility, or scheduling semantics. PR 183 merge, branch
+deletion, and any 50S.7D+ API remain separately authorized decisions.

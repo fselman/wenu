@@ -356,3 +356,74 @@ tracks, reports, charts, CLI, or planning advisories, brightness, visibility,
 detector effects, facility integration, scheduling, and unrelated refactoring
 remain unauthorized. Acceptance does not authorize PR 182 merge or branch
 deletion; both require separate explicit instructions.
+
+## 13. Candidate 50S.7C implementation record
+
+The bounded implementation candidate at executable revision `69375fab`
+adds the accepted observer-independent transition service without attaching it
+to crossings, tracks, reports, charts, CLI, or planning. It introduces the
+immutable query, search policy, continuous WGS-84 limb-contact evidence,
+directed result, complete bounded recursive search, stable terminal failures,
+and the shared geocentric TEME-to-ITRS state seam.
+
+The public visible-fraction quadrature remains unchanged and is not used as a
+root function. Query endpoints inside contact tolerance are explicitly
+rejected. Same-class intervals are returned transition-free only when the
+declared contact-rate envelope certifies clearance; unresolved tangent,
+simultaneous, non-adjacent, depth, evaluation, or event-limit cases fail
+closed.
+
+On Fernando's Mac, 58 focused illumination/topocentric tests passed in 16.67
+seconds. The no-download validator used SpiceyPy 6.0.3, CSPICE N0067, and
+installed `de440s.bsp` SHA-256
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`.
+SPICE `gfoclt` independently reproduced four directed contacts for a full-
+shadow case and four for an annular case; Wenu used 277 and 717 evaluations,
+respectively. Skyfield independently matched 20 full-light and 5 full-shadow
+states. The SPICE event cases deliberately use spherical special cases;
+focused tests separately exercise equatorial, polar, and grazing WGS-84
+orientation.
+
+Complete repository and documentation gates remain pending. This is an
+unaccepted implementation candidate. Merge, branch deletion, 50S.7D+ work,
+and every radiometric, reflected-field, brightness, visibility, detector,
+facility, scheduling, or output integration remain unauthorized.
+
+## 14. Verified candidate 50S.7C implementation gate
+
+Exact candidate `bf877404` passed the 311-test expanded implementation gate
+in 21.47 seconds, the 212-test current-documentation gate in 7.01 seconds,
+the clean branch diff, and all 2,816 plugin-disabled repository tests in
+218.58 seconds. Exact upstream equality and a clean working tree were
+confirmed. The earlier no-download SPICE `gfoclt` and Skyfield receipt remains
+part of this executable evidence.
+
+The bounded implementation is ready for Fernando's separate scientific and
+architectural review. It remains unaccepted. Merge, branch deletion, 50S.7D+
+work, transition attachment, radiometry, reflected fields, brightness,
+visibility, detector, facility, scheduling, and unrelated changes remain
+unauthorized.
+
+## 15. Accepted 50S.7C implementation
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.7C shadow-transition implementation on 2026-09-21 at exact branch head
+`eaeab6085b52bfed6136d37f3010c2f353e59f53`. Executable candidate
+`bf877404` passed the independent no-download SPICE `gfoclt` and Skyfield
+receipt, the 311-test expanded gate in 21.47 seconds, the 212-test
+current-documentation gate in 7.01 seconds, the clean branch diff, and all
+2,816 plugin-disabled repository tests in 218.58 seconds. Exact upstream
+equality and a clean tree passed. The final documentation-only clarification
+then passed all 212 documentation tests in 4.72 seconds.
+
+The accepted implementation is limited to one selected immutable record and
+one admitted closed UTC interval; continuous finite-Sun/WGS-84 contact
+geometry; the shared geocentric TEME-to-ITRS seam; complete bounded recursive
+search; the six directed adjacent transition kinds; certified UTC brackets;
+deterministic identity; complete provenance; and typed terminal failures.
+
+Acceptance does not authorize PR 183 merge or feature-branch deletion; both
+remain separate explicit decisions. It does not authorize 50S.7D+, attaching
+transitions to crossings, tracks, reports, charts, CLI, or planning, or adding
+radiometry, reflected fields, brightness, visibility, detector, facility,
+scheduling, or unrelated behavior.

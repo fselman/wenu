@@ -1776,3 +1776,53 @@ transitions to crossings, tracks, reports, charts, CLI, or planning advisories,
 and do not add 50S.7D+ radiometry or reflected fields, brightness, visibility,
 detector effects, facility integration, scheduling, or unrelated refactoring.
 PR merge and branch deletion remain separate explicit decisions.
+
+## Candidate 50S.7C implementation boundary
+
+Treat `feature/50s7c-shadow-transitions` at executable `69375fab` plus later
+documentation-only evidence as an unaccepted bounded candidate. Preserve the
+single-record observer-independent query, continuous finite-Sun/WGS-84
+contact margins, shared geocentric ITRS seam, complete bounded recursive
+search, directed adjacent events, certified brackets, deterministic identity,
+and typed terminal failures.
+
+The 58-test focused gate and offline SPICE `gfoclt`/Skyfield receipt passed.
+Before review require the current-documentation gate, expanded focused gate,
+complete plugin-disabled suite, diff check, exact upstream, and clean tree.
+Do not attach events to crossings, tracks, reports, charts, CLI, or planning;
+do not begin 50S.7D+, radiometry, reflected fields, brightness, visibility,
+detector, facility, scheduling, or unrelated refactoring. Merge and branch
+deletion remain separate explicit decisions.
+
+## Verified candidate 50S.7C review state
+
+Treat exact candidate `bf877404` plus this documentation-only gate record as
+verified but unaccepted. The 311-test expanded gate passed in 21.47 seconds,
+the 212-test documentation gate passed in 7.01 seconds, the clean diff passed,
+and all 2,816 plugin-disabled repository tests passed in 218.58 seconds. Exact
+upstream equality, clean tree, and the independent SPICE/Skyfield receipt were
+also confirmed.
+
+Do not merge or delete the feature branch without Fernando's separate explicit
+instruction. Do not begin 50S.7D+, attach transitions to outputs, or add
+radiometry, reflected fields, brightness, visibility, detector, facility,
+scheduling, or unrelated work before separate authorization.
+
+## Accepted 50S.7C implementation boundary
+
+Fernando scientifically and architecturally accepted exact branch head
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Executable
+`bf877404` passed the independent SPICE/Skyfield receipt, 311 expanded
+tests, 212 current-documentation tests, all 2,816 plugin-disabled repository
+tests, clean diff, exact upstream, and clean-tree checks. The final
+documentation-only clarification passed 212 tests in 4.72 seconds.
+
+Preserve the single-record observer-independent query, continuous
+finite-Sun/WGS-84 contact margins, shared geocentric ITRS seam, complete
+bounded search, six directed adjacent events, certified brackets,
+deterministic identity, complete provenance, and typed terminal failures.
+
+Do not merge PR 183 or delete its feature branch without Fernando's separate
+explicit instruction. Do not begin 50S.7D+, attach transitions to outputs, or
+add radiometry, reflected fields, brightness, visibility, detector, facility,
+scheduling, or unrelated work before a separately accepted bounded milestone.

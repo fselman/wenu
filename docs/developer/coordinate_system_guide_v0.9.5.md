@@ -4176,3 +4176,48 @@ observer twilight-event search, apparent sunrise, refraction, brightness,
 visibility, or detectability is authorized. The coordinate-system guide was
 reviewed and this bounded extraction changes ownership reuse, not scientific
 frame meaning.
+
+## Candidate 50S.7C shared geocentric coordinate path
+
+At executable `69375fab`, the bounded candidate extracts
+`SatelliteGeocentricItrsState` and
+`SatelliteGeocentricItrsTransformer` from the already governed transform.
+Both the transition finder and `SatelliteTopocentricTransformer` compose the
+same `_geocentric_itrs_components(...)` implementation and retain the exact
+installed-IERS-A evidence. No dummy observer or second TEME/EOP route exists.
+
+At every transition evaluation, canonical UTC identifies the instant; SGP4
+supplies TEME; the shared owner supplies geocentric ITRS; and the geometric
+Earth-to-Sun ICRF/GCRS-axis state is rotated to ITRS using matching EOP
+evidence before contact geometry. The SPICE receipt uses explicitly pinned
+spherical special cases in J2000 solely as an independent event oracle;
+focused runtime tests cover WGS-84 orientations. No observer, twilight,
+refraction, brightness, or visibility meaning is added. Acceptance and later
+coordinate behavior remain unauthorized.
+
+## Verified candidate 50S.7C coordinate gate
+
+Exact candidate `bf877404` passed the 311-test expanded dependency gate in
+21.47 seconds, 212 documentation tests in 7.01 seconds, the clean diff, and all
+2,816 plugin-disabled repository tests in 218.58 seconds. The independent
+SPICE/Skyfield receipt also passed. This verifies reuse of one geocentric
+TEME-to-ITRS/EOP implementation by the observer and transition routes.
+
+The coordinate extraction remains an unaccepted candidate. Merge, branch
+deletion, new frame meaning, observer-event coupling, refraction, brightness,
+visibility, and 50S.7D+ behavior remain unauthorized.
+
+## Accepted 50S.7C shared geocentric coordinate behavior
+
+Fernando accepted the 50S.7C coordinate behavior at
+`eaeab6085b52bfed6136d37f3010c2f353e59f53` on 2026-09-21. Preserve
+canonical UTC event identity; split-JD SGP4 propagation; installed-IERS-A
+UT1/polar-motion evidence; the single shared TEME-to-ITRS seam; same-instant
+ICRF/GCRS-aligned Earth-to-Sun rotation into ITRS; and continuous
+finite-Sun/WGS-84 contact evaluation wholly in that Earth-fixed frame.
+
+The transition product remains observer-independent geometric evidence, not
+an apparent, brightness, visibility, or detector result. The coordinate-system
+guide was reviewed and remains current. PR 183 merge, branch deletion,
+50S.7D+, and any attachment to crossings or outputs require separate
+authorization.

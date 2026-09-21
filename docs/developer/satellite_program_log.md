@@ -1289,3 +1289,52 @@ geocentric ITRS seam, focused tests, and offline independent event validation.
 PR 182 merge and branch deletion remain separately authorized operations.
 50S.7D+, report/chart/planning integration, brightness, visibility, detector,
 facility, scheduling, and unrelated work remain unauthorized.
+
+## 2026-09-21 — Candidate 50S.7C shadow-transition implementation
+
+The feature branch `feature/50s7c-shadow-transitions` implements the accepted
+bounded slice. Runtime commits add the shared geocentric ITRS seam, continuous
+finite-Sun/WGS-84 contact geometry, immutable query/policy/result contracts,
+complete bounded recursive search, six directed adjacent kinds, certified
+brackets, deterministic identity, and stable fail-closed limits.
+
+At executable `69375fab`, 58 focused illumination/topocentric tests passed in
+16.67 seconds. The offline no-download validator used SpiceyPy 6.0.3, CSPICE
+N0067, and installed DE440 SHA-256
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`.
+SPICE `gfoclt` reproduced four directed full-shadow contacts with 277 Wenu
+evaluations and four annular contacts with 717 evaluations. Skyfield matched
+20 full-light and 5 full-shadow states.
+
+Documentation and complete repository gates remain pending. The candidate is
+unaccepted; merge, branch deletion, 50S.7D+, output integration, radiometry,
+brightness, visibility, detector, facility, and scheduling remain
+unauthorized.
+
+### Complete candidate 50S.7C gate
+
+Exact candidate `bf877404` passed 311 expanded implementation/dependency
+tests in 21.47 seconds, 212 current-documentation tests in 7.01 seconds, the
+clean branch diff, and all 2,816 plugin-disabled repository tests in 218.58
+seconds. Exact local/upstream equality and a clean working tree were confirmed.
+The earlier no-download SPICE `gfoclt` full/annular event receipt and Skyfield
+binary-side receipt remain part of the candidate evidence.
+
+The bounded implementation is ready for Fernando's separate scientific and
+architectural review. Merge, branch deletion, 50S.7D+, output integration,
+radiometry, brightness, visibility, detector, facility, scheduling, and
+unrelated work remain unauthorized.
+
+## 2026-09-21 — Accepted 50S.7C shadow-transition implementation
+
+Fernando scientifically and architecturally accepted exact branch head
+`eaeab6085b52bfed6136d37f3010c2f353e59f53`. Executable `bf877404`,
+the no-download SPICE/Skyfield receipt, 311 expanded tests in 21.47 seconds,
+212 documentation tests in 7.01 seconds, all 2,816 plugin-disabled repository
+tests in 218.58 seconds, the clean diff, exact upstream, and clean tree are
+accepted evidence. The final timing clarification passed 212 documentation
+tests in 4.72 seconds.
+
+PR 183 merge and branch deletion remain separate explicit operations. 50S.7D+,
+output integration, radiometry, reflected fields, brightness, visibility,
+detector, facility, scheduling, and unrelated work remain unauthorized.

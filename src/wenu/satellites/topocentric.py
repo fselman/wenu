@@ -124,6 +124,47 @@ class SatelliteEarthOrientationEvidence:
 
 
 @dataclass(frozen=True)
+class SatelliteGeocentricItrsState:
+    """Observer-independent geocentric state in accepted Earth-fixed axes."""
+
+    teme_state: SatelliteTemeState
+    earth_orientation: SatelliteEarthOrientationEvidence
+    satellite_itrs_position_km: tuple[float, float, float]
+    satellite_itrs_velocity_km_per_s: tuple[float, float, float]
+    frame: str = "ITRS"
+    center: str = "EARTH"
+    representation: str = "geocentric geometric Cartesian"
+    provenance: tuple[str, ...] = field(default_factory=tuple)
+
+    def __post_init__(self):
+        if not isinstance(self.teme_state, SatelliteTemeState):
+            raise TypeError("teme_state must be a SatelliteTemeState.")
+        if not isinstance(
+            self.earth_orientation,
+            SatelliteEarthOrientationEvidence,
+        ):
+            raise TypeError(
+                "earth_orientation must be SatelliteEarthOrientationEvidence."
+            )
+        for name in (
+            "satellite_itrs_position_km",
+            "satellite_itrs_velocity_km_per_s",
+        ):
+            object.__setattr__(
+                self,
+                name,
+                _vector(getattr(self, name), name=name),
+            )
+        if self.frame != "ITRS" or self.center != "EARTH":
+            raise ValueError("state must be geocentric Earth-centred ITRS.")
+        if self.representation != "geocentric geometric Cartesian":
+            raise ValueError(
+                "representation must be geocentric geometric Cartesian."
+            )
+        object.__setattr__(self, "provenance", tuple(self.provenance))
+
+
+@dataclass(frozen=True)
 class SatelliteTopocentricState:
     """Immutable geometric state for one observer and one TEME evaluation."""
 
@@ -294,6 +335,70 @@ def geocentric_gcrs_axis_position_to_itrs(
     return _cartesian_tuple(itrs.cartesian, u.km)
 
 
+def _geocentric_itrs_components(state):
+    if not isinstance(state, SatelliteTemeState):
+        raise TypeError("state must be a SatelliteTemeState.")
+    time = Time(state.evaluation_utc, scale="utc")
+    table, evidence = _earth_orientation(time)
+    position = CartesianRepresentation(
+        np.asarray(state.position_km, dtype=float) * u.km
+    )
+    velocity = CartesianDifferential(
+        np.asarray(state.velocity_km_per_s, dtype=float) * u.km / u.s
+    )
+    teme = TEME(
+        position.with_differentials(velocity),
+        obstime=time,
+    )
+    with iers.conf.set_temp("auto_download", False):
+        with iers.conf.set_temp("iers_degraded_accuracy", "error"):
+            with iers.earth_orientation_table.set(table):
+                with warnings.catch_warnings():
+                    warnings.simplefilter("error", iers.IERSWarning)
+                    try:
+                        itrs_geo = teme.transform_to(ITRS(obstime=time))
+                    except (
+                        ValueError,
+                        iers.IERSRangeError,
+                        iers.IERSWarning,
+                    ) as error:
+                        raise SatelliteEarthOrientationError(
+                            "Satellite geocentric TEME-to-ITRS "
+                            "transformation failed with the installed "
+                            "Earth-orientation resource."
+                        ) from error
+    satellite_position = itrs_geo.cartesian.without_differentials()
+    satellite_velocity = itrs_geo.cartesian.differentials["s"]
+    provenance = (
+        "Astropy TEME to ITRS with explicit installed IERS-A table.",
+        f"IERS-A SHA-256 {evidence.source_sha256}.",
+    )
+    result = SatelliteGeocentricItrsState(
+        teme_state=state,
+        earth_orientation=evidence,
+        satellite_itrs_position_km=_cartesian_tuple(
+            satellite_position,
+            u.km,
+        ),
+        satellite_itrs_velocity_km_per_s=_differential_tuple(
+            satellite_velocity,
+            u.km / u.s,
+        ),
+        provenance=provenance,
+    )
+    return result, time, table, itrs_geo
+
+
+class SatelliteGeocentricItrsTransformer:
+    """Apply the governed observer-independent TEME-to-ITRS transform."""
+
+    def transform(
+        self,
+        state: SatelliteTemeState,
+    ) -> SatelliteGeocentricItrsState:
+        return _geocentric_itrs_components(state)[0]
+
+
 class SatelliteTopocentricTransformer:
     """Apply the governed TEME-to-observer geometric transformation chain."""
 
@@ -316,23 +421,15 @@ class SatelliteTopocentricTransformer:
                 "Unsupported satellite Earth-orientation policy."
             )
 
-        time = Time(state.evaluation_utc, scale="utc")
-        table, evidence = _earth_orientation(time)
+        geocentric, time, table, itrs_geo = (
+            _geocentric_itrs_components(state)
+        )
+        evidence = geocentric.earth_orientation
         location = EarthLocation.from_geodetic(
             lon=observer.longitude_deg * u.deg,
             lat=observer.latitude_deg * u.deg,
             height=observer.elevation_m * u.m,
             ellipsoid="WGS84",
-        )
-        position = CartesianRepresentation(
-            np.asarray(state.position_km, dtype=float) * u.km
-        )
-        velocity = CartesianDifferential(
-            np.asarray(state.velocity_km_per_s, dtype=float) * u.km / u.s
-        )
-        teme = TEME(
-            position.with_differentials(velocity),
-            obstime=time,
         )
 
         with iers.conf.set_temp("auto_download", False):
@@ -341,7 +438,6 @@ class SatelliteTopocentricTransformer:
                     with warnings.catch_warnings():
                         warnings.simplefilter("error", iers.IERSWarning)
                         try:
-                            itrs_geo = teme.transform_to(ITRS(obstime=time))
                             observer_itrs = location.get_itrs(obstime=time)
                             satellite_position = (
                                 itrs_geo.cartesian.without_differentials()
