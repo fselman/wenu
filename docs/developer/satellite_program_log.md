@@ -1230,4 +1230,3 @@ then used installed DE440 `de440s.bsp` SHA-256
 `c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`
 to obtain 20 Skyfield full-light and 5 full-shadow matches. Complete and final
 repository gates remain pending; the candidate is unaccepted.
-
