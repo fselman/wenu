@@ -1838,3 +1838,17 @@ tests in 233.66 seconds, and exact upstream/clean-tree checks. Together with
 the installed-DE440/SPICE/Skyfield receipt, this verifies the bounded
 output-neutral architecture. The candidate still requires Fernando's separate
 acceptance before merge; 50S.7C and later work remain unauthorized.
+
+## Accepted 50S.7B architecture
+
+Fernando accepted the complete output-neutral 50S.7B architecture on
+2026-09-21 at `054ac53a`. Preserve `satellites/illumination.py` as the
+downstream direct-Sun and observer-night composition owner, the accepted
+topocentric module as the Earth-orientation owner, and the existing ephemeris
+boundary as the Sun-state owner. The final documentation gate passed all 208
+tests in 4.19 seconds.
+
+Merge remains a separate decision. After merge, only a documentation-first
+50S.7C shadow-transition audit may begin; transition runtime and all later
+radiometric, reflected-source, brightness, visibility, detector, facility,
+and scheduling behavior remain unauthorized.
