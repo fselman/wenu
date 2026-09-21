@@ -9259,10 +9259,11 @@ def test_50s7c_records_bounded_candidate_implementation():
         assert "5" in normalized
 
     for document in (audit, program_log):
-        assert "SpiceyPy 6.0.3" in document
-        assert "CSPICE N0067" in document
-        assert "277" in document
-        assert "717" in document
+        normalized = " ".join(document.split())
+        assert "SpiceyPy 6.0.3" in normalized
+        assert "CSPICE N0067" in normalized
+        assert "277" in normalized
+        assert "717" in normalized
         assert (
             "c1c7feeab882263fc493a9d5a5b2ddd71"
             "b54826cdf65d8d17a76126b260a49f2"
