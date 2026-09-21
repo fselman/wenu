@@ -4123,3 +4123,12 @@ Skyfield, while the focused suite independently compared observer geometric
 Sun altitude with Astropy AltAz. Selected SPICE ellipsoid cases agreed across
 all four typed occultation classes. This evidence changes no coordinate
 owner and does not yet accept the candidate.
+
+## Verified candidate 50S.7B coordinate gate
+
+Executable `086e7da1` passed the independent installed-resource receipt,
+291-test expanded gate, 208-test documentation gate, clean diff, and all 2,796
+repository tests. The same-instant ITRS composition and geometric observer
+Sun-altitude boundary are therefore verified as a candidate. Fernando's
+separate acceptance is still required; 50S.7C and later coordinate behavior
+remain unauthorized.
