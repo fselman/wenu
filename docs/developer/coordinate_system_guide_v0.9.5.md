@@ -4194,3 +4194,15 @@ spherical special cases in J2000 solely as an independent event oracle;
 focused runtime tests cover WGS-84 orientations. No observer, twilight,
 refraction, brightness, or visibility meaning is added. Acceptance and later
 coordinate behavior remain unauthorized.
+
+## Verified candidate 50S.7C coordinate gate
+
+Exact candidate `bf877404` passed the 311-test expanded dependency gate in
+21.47 seconds, 212 documentation tests in 7.01 seconds, the clean diff, and all
+2,816 plugin-disabled repository tests in 218.58 seconds. The independent
+SPICE/Skyfield receipt also passed. This verifies reuse of one geocentric
+TEME-to-ITRS/EOP implementation by the observer and transition routes.
+
+The coordinate extraction remains an unaccepted candidate. Merge, branch
+deletion, new frame meaning, observer-event coupling, refraction, brightness,
+visibility, and 50S.7D+ behavior remain unauthorized.

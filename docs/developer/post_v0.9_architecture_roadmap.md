@@ -3224,3 +3224,16 @@ sequences with SPICE `gfoclt` and matched 20 full-light plus 5 full-shadow
 Skyfield states using the installed DE440 kernel. Documentation and complete
 repository gates remain next. The candidate is not accepted; 50S.7D+ and all
 report/chart/planning or later scientific integration remain unauthorized.
+
+## Verified candidate 50S.7C implementation gate
+
+At exact candidate `bf877404`, the 311-test expanded gate, 212-test
+documentation gate, clean diff, complete 2,816-test plugin-disabled suite,
+exact upstream check, and clean-tree check passed. Timings were 21.47, 7.01,
+and 218.58 seconds, respectively. The independent SPICE/Skyfield event receipt
+also passed.
+
+50S.7C now awaits Fernando's separate scientific and architectural review.
+Merge, branch deletion, 50S.7D+, report/chart/planning integration, and all
+later light, brightness, visibility, detector, facility, or scheduling work
+remain unauthorized.

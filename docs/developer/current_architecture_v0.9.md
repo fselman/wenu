@@ -1903,3 +1903,15 @@ The 58-test focused gate passed in 16.67 seconds, and the installed-resource
 SPICE/Skyfield receipt reproduced full and annular directed sequences plus
 20 full-light and 5 full-shadow binary states. Complete gates and acceptance
 remain pending; 50S.7D+ and all integration remain unauthorized.
+
+## Verified candidate 50S.7C implementation architecture
+
+Exact candidate `bf877404` passed 311 expanded tests in 21.47 seconds, 212
+documentation tests in 7.01 seconds, the clean diff, and all 2,816
+plugin-disabled repository tests in 218.58 seconds. Exact upstream equality
+and a clean working tree were confirmed. Together with the SPICE/Skyfield
+receipt, this verifies the bounded observer-independent event architecture.
+
+Fernando's separate acceptance is still required. Merge, branch deletion,
+50S.7D+, and all crossing/output, radiometric, brightness, visibility,
+detector, facility, or scheduling integration remain unauthorized.

@@ -1310,3 +1310,17 @@ Documentation and complete repository gates remain pending. The candidate is
 unaccepted; merge, branch deletion, 50S.7D+, output integration, radiometry,
 brightness, visibility, detector, facility, and scheduling remain
 unauthorized.
+
+### Complete candidate 50S.7C gate
+
+Exact candidate `bf877404` passed 311 expanded implementation/dependency
+tests in 21.47 seconds, 212 current-documentation tests in 7.01 seconds, the
+clean branch diff, and all 2,816 plugin-disabled repository tests in 218.58
+seconds. Exact local/upstream equality and a clean working tree were confirmed.
+The earlier no-download SPICE `gfoclt` full/annular event receipt and Skyfield
+binary-side receipt remain part of the candidate evidence.
+
+The bounded implementation is ready for Fernando's separate scientific and
+architectural review. Merge, branch deletion, 50S.7D+, output integration,
+radiometry, brightness, visibility, detector, facility, scheduling, and
+unrelated work remain unauthorized.

@@ -9276,3 +9276,24 @@ def test_50s7c_records_bounded_candidate_implementation():
     for path in (ROOT / "src" / "wenu").rglob("*.py"):
         if path not in allowed:
             assert "SatelliteShadowTransition" not in read(path)
+
+    gate_documents = (
+        audit,
+        architecture,
+        roadmap,
+        source_tree,
+        coordinate_guide,
+        program_log,
+        instructions,
+    )
+    for document in gate_documents:
+        normalized = " ".join(document.split())
+        assert "bf877404" in normalized
+        assert "311" in normalized
+        assert "21.47 seconds" in normalized
+        assert "212" in normalized
+        assert "7.01 seconds" in normalized
+        assert "2,816" in normalized
+        assert "218.58 seconds" in normalized
+        assert "unaccepted" in normalized
+        assert "unauthorized" in normalized

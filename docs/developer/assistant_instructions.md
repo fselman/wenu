@@ -1793,3 +1793,17 @@ Do not attach events to crossings, tracks, reports, charts, CLI, or planning;
 do not begin 50S.7D+, radiometry, reflected fields, brightness, visibility,
 detector, facility, scheduling, or unrelated refactoring. Merge and branch
 deletion remain separate explicit decisions.
+
+## Verified candidate 50S.7C review state
+
+Treat exact candidate `bf877404` plus this documentation-only gate record as
+verified but unaccepted. The 311-test expanded gate passed in 21.47 seconds,
+the 212-test documentation gate passed in 7.01 seconds, the clean diff passed,
+and all 2,816 plugin-disabled repository tests passed in 218.58 seconds. Exact
+upstream equality, clean tree, and the independent SPICE/Skyfield receipt were
+also confirmed.
+
+Do not merge or delete the feature branch without Fernando's separate explicit
+instruction. Do not begin 50S.7D+, attach transitions to outputs, or add
+radiometry, reflected fields, brightness, visibility, detector, facility,
+scheduling, or unrelated work before separate authorization.
