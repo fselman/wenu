@@ -1240,3 +1240,15 @@ clean working tree were confirmed. Combined with the SPICE/Skyfield receipt,
 the bounded implementation is ready for Fernando's separate scientific and
 architectural review. Merge, branch deletion, 50S.7C, and later work remain
 unauthorized.
+
+## Accepted 50S.7B direct-Sun and observer-night geometry
+
+Fernando scientifically and architecturally accepted the verified candidate
+at `054ac53a` on 2026-09-21. The final 208-test documentation gate passed in
+4.19 seconds; the earlier 24 focused, SPICE/Skyfield, 291 expanded, 2,796
+complete, diff, upstream, and clean-tree evidence remains accepted.
+
+PR 181 merge and branch deletion require separate explicit instructions. After
+merge only a documentation-first 50S.7C shadow-transition audit is authorized;
+transition implementation and all later light, brightness, detector,
+visibility, facility, and scheduling work remain unauthorized.
