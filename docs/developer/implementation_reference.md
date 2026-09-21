@@ -3495,3 +3495,23 @@ Preserve their output-neutral geometry meaning and complete provenance. Do not
 add transition events, radiometry, brightness, visibility, or scheduling
 semantics to these types. Merge remains separate; after merge only a
 documentation-first 50S.7C audit is authorized.
+
+## Candidate 50S.7C reserved transition API
+
+No transition API is implemented by this documentation-only audit. It reserves
+`SatelliteShadowTransitionQuery`, `ShadowTransitionSearchPolicy`, a closed
+directed transition-kind enum, and immutable
+`SatelliteShadowTransition` results.
+
+A future result would retain left/right `SolarOccultationClass` values, one
+canonical UTC midpoint, a certified closed UTC bracket no wider than the
+declared time tolerance, exact satellite/orbit/snapshot/resource identity,
+shadow/search policies, evaluation counts, provenance, and warnings. An empty
+tuple is valid only after the complete query interval is certified
+transition-free.
+
+Contact is an event, not another occultation class. Direct
+`sunlit <-> umbra`, `sunlit <-> antumbra`, and
+`umbra <-> antumbra` outputs are invalid. The candidate authorizes no runtime
+or public export before separate acceptance and adds no brightness, visibility,
+report, chart, CLI, planning, detector, facility, or scheduling API.
