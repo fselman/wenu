@@ -4113,3 +4113,14 @@ update changes no general chart coordinate service.
 
 50S.7C shadow-transition search and all later satellite-light behavior remain
 unauthorized by this candidate.
+## Validated candidate 50S.7B coordinate evidence
+
+The controlled offline run at `51b935f` used installed DE440 file
+`de440s.bsp` with SHA-256
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`.
+Twenty full-light and five full-shadow same-instant states agreed with
+Skyfield, while the focused suite independently compared observer geometric
+Sun altitude with Astropy AltAz. Selected SPICE ellipsoid cases agreed across
+all four typed occultation classes. This evidence changes no coordinate
+owner and does not yet accept the candidate.
+
