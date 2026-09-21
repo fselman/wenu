@@ -4162,3 +4162,17 @@ Certified transition brackets describe finite-Sun/WGS-84 vacuum contact, not
 apparent sunrise, atmospheric refraction, observer twilight transition,
 brightness, visibility, or detectability. This audit changes no coordinate
 runtime and authorizes no implementation before separate acceptance.
+
+## Accepted 50S.7C coordinate boundary
+
+Fernando accepted the observer-independent same-instant coordinate contract at
+`030a6322` on 2026-09-21. After merge, the bounded implementation may extract
+one shared geocentric TEME-to-ITRS state seam from the existing topocentric
+owner and compose the same installed-IERS-A evidence with the same-instant
+Earth-to-Sun ITRS vector.
+
+No dummy observer, second Earth-orientation path, mixed-frame subtraction,
+observer twilight-event search, apparent sunrise, refraction, brightness,
+visibility, or detectability is authorized. The coordinate-system guide was
+reviewed and this bounded extraction changes ownership reuse, not scientific
+frame meaning.
