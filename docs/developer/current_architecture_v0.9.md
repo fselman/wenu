@@ -1871,3 +1871,17 @@ SPICE/Orekit event validation.
 This audit changes no runtime. 50S.7C implementation, 50S.7D+ radiometry and
 reflected fields, brightness, visibility, detector, facility, and scheduling
 behavior remain unauthorized pending separate acceptance.
+
+## Accepted 50S.7C shadow-transition architecture
+
+Fernando scientifically and architecturally accepted the documentation-only
+architecture at `030a6322` on 2026-09-21 after 210 documentation tests passed
+in 5.81 seconds and repository checks were clean.
+
+After merge, implement only the bounded observer-independent transition service
+in the existing illumination owner plus the minimal shared geocentric ITRS
+seam in the topocentric owner. Preserve continuous contact geometry, complete
+bounded closed-interval search, directed events, certified brackets,
+deterministic identity, terminal failure, and independent event validation.
+No later illumination, brightness, visibility, detector, facility, or
+scheduling behavior is authorized. PR 182 merge remains separate.
