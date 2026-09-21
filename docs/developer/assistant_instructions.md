@@ -1740,3 +1740,19 @@ instructions. After merge, only a documentation-first 50S.7C
 shadow-transition audit is authorized. Do not implement transitions,
 radiometry, reflected fields, brightness, visibility, detector effects,
 facility integration, scheduling, or unrelated refactoring.
+
+## Candidate 50S.7C shadow-transition audit boundary
+
+Read `satellite_shadow_transition_audit_50s7c.md` before any satellite
+shadow-contact or transition-search work. Treat it as a documentation-only
+candidate. It proposes observer-independent directed events, continuous
+finite-Sun/WGS-84 contact margins, certified UTC brackets, complete bounded
+closed-interval search, deterministic identity, terminal failure, and
+independent SPICE/Orekit event evidence.
+
+Do not implement 50S.7C before Fernando's separate scientific and
+architectural acceptance. Do not use visible-fraction quadrature, fixed-cadence
+sign scans, chart samples, or the 50S.5 empirical motion envelope as a
+transition-completeness oracle. Do not add radiometry, reflected fields,
+brightness, visibility, detector effects, facility integration, scheduling,
+or unrelated refactoring.
