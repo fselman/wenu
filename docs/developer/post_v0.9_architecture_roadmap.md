@@ -3158,3 +3158,11 @@ The 24-test focused gate and offline installed-resource validator passed at
 and antumbra; pinned DE440/Skyfield comparison agrees for 20 full-light and 5
 full-shadow states. Complete-suite and final repository gates remain pending,
 and 50S.7C remains unauthorized.
+
+### Verified candidate 50S.7B gate
+
+Revision `086e7da1` passed 291 expanded tests, 208 documentation tests, the
+clean diff gate, and all 2,796 repository tests in 233.66 seconds, with exact
+upstream and a clean tree. The candidate is ready for separate scientific and
+architectural review. Merge, deletion, 50S.7C, and later work remain
+unauthorized.
