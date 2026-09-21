@@ -2679,3 +2679,24 @@ report, chart, and planning owners remain unchanged.
 
 No reflected-field, radiometric, BRDF, brightness, detector, facility, or
 scheduling owner is authorized. The audit itself adds no production file.
+## Candidate 50S.7B source ownership
+
+- `src/wenu/satellites/illumination.py` owns only immutable direct-Sun
+  occultation, observer geometric twilight, explicit model/numerical policy,
+  failures, and provenance.
+- `src/wenu/satellites/topocentric.py` remains the accepted
+  Earth-orientation owner and exposes the minimal
+  `geocentric_gcrs_axis_position_to_itrs(...)` composition seam. It requires
+  equality with the Earth-orientation evidence already retained by the
+  satellite state.
+- `src/wenu/ephemeris.py` and `src/wenu/skyfield_ephemeris.py` remain the
+  provider-neutral state contract and installed-SPK adapter owners.
+- `tests/test_satellite_illumination.py` is the enduring distinct scientific
+  and failure-boundary test file.
+- `tools/validate_50s7b_illumination_geometry.py` is the offline installed-
+  resource validation owner and refuses downloads.
+
+No propagation, crossing, transition-event, report, chart, planning,
+radiometry, brightness, visibility, detector, facility, or scheduling
+ownership moves into illumination. This is an unaccepted candidate.
+
