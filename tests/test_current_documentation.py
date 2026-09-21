@@ -9019,4 +9019,3 @@ def test_50s7b_records_acceptance_and_next_audit_boundary():
         assert "separate" in normalized
         assert "documentation-first 50S.7C" in normalized
         assert "authorized" in normalized
-
