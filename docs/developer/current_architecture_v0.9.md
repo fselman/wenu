@@ -1804,3 +1804,20 @@ Sunlight, solar Earthshine, Moonlight, and Lunar-Earthshine remain independent.
 50S.7C+ transitions and radiometry, reflected-source fields, 50S.8 attitude,
 BRDF and apparent brightness, 50S.9 detector effects, visibility, facility
 integration, and scheduling remain unauthorized.
+## Candidate 50S.7B direct-Sun and observer-night architecture
+
+The unaccepted candidate installs `satellites/illumination.py` as a downstream,
+output-neutral composition owner. It consumes the accepted immutable
+topocentric satellite state and injected geometric ephemeris source, uses the
+same installed-IERS-A evidence to place the Earth-to-Sun vector in ITRS, and
+then owns only finite-Sun/WGS-84 occultation and geometric observer twilight.
+
+`SatelliteIlluminationGeometry` retains all input state/resource identity,
+common-frame vectors, a converged uniform-disk visible fraction, typed shadow
+and twilight classes, explicit lunar-occultor `not_evaluated` status,
+numerical policy, provenance, and warnings. The two-resolution
+equal-solid-angle ray quadrature fails closed if its declared fraction
+tolerance is not met. No crossing, chart, report, planning, radiometric,
+brightness, visibility, detector, facility, or scheduling owner changes.
+50S.7C and later work remain unauthorized.
+
