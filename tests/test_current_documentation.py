@@ -9353,6 +9353,8 @@ def test_50s7c_records_accepted_implementation_boundary():
         "does not authorize PR 183 merge or feature-branch deletion",
     ):
         assert phrase in normalized_audit
+
+
 def test_50s7d_records_candidate_direct_source_radiometry_audit():
     audit = read(
         DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
