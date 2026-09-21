@@ -1063,3 +1063,14 @@ separate models.
 
 50S.7C shadow-transition search and all later satellite-light behavior remain
 unauthorized by this candidate.
+
+## Accepted 50S.7B geometry vocabulary
+
+Fernando accepted the 50S.7B geometry behavior at `054ac53a` on 2026-09-21.
+The `sunlit`, `penumbra`, `umbra`, and `antumbra` terms, converged
+finite-disk fraction, geometric twilight classes, and lunar
+`not_evaluated` status have the bounded meanings stated above. They remain
+neither brightness nor visibility predictions.
+
+Merge remains separate. After merge, only a documentation-first 50S.7C
+shadow-transition audit is authorized.
