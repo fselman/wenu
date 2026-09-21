@@ -2702,3 +2702,12 @@ ownership moves into illumination. This is an unaccepted candidate.
 
 50S.7C shadow-transition search and all later satellite-light behavior remain
 unauthorized by this candidate.
+
+## Verified candidate 50S.7B source evidence
+
+At executable `086e7da1`, the new illumination module, minimal topocentric
+composition seam, enduring focused test file, exports, and offline validator
+passed 291 expanded tests, 208 documentation tests, a clean branch diff, and
+all 2,796 repository tests. Exact upstream equality and a clean working tree
+were confirmed. Ownership remains a review candidate; 50S.7C and later source
+changes remain unauthorized.
