@@ -717,9 +717,6 @@ def test_transition_finder_returns_identity_bound_directed_events(monkeypatch):
         search_policy=ShadowTransitionSearchPolicy(
             time_tolerance_seconds=0.01,
             maximum_interval_seconds=20.0,
-            minimum_altitude_km=1.0,
-            maximum_speed_km_per_s=100.0,
-            contact_rate_bound_rad_per_s=201.0,
         ),
     )
 
