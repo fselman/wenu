@@ -3195,3 +3195,17 @@ shared geocentric ITRS extraction in the existing topocentric owner. The audit
 authorizes no runtime. 50S.7D direct-source radiometry, reflected fields,
 brightness, detector, visibility, facility, and scheduling work remain
 unauthorized.
+
+## Accepted 50S.7C shadow-transition audit
+
+Fernando accepted the documentation-only audit at `030a6322` on 2026-09-21;
+210 plugin-disabled current-documentation tests passed in 5.81 seconds and the
+diff, upstream, and clean-tree checks passed.
+
+After merge, only the bounded 50S.7C implementation is authorized: one selected
+immutable record, one admitted closed UTC interval, continuous
+finite-Sun/WGS-84 contact geometry, every directed class boundary, certified
+brackets, deterministic identity, fail-closed budgets, a minimal shared
+geocentric ITRS seam, focused tests, and offline independent event validation.
+50S.7D+ and all report/chart/planning, brightness, visibility, detector,
+facility, and scheduling integration remain unauthorized.
