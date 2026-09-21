@@ -74,8 +74,8 @@ zero or a contact time. Root-finding that fraction, a ray count, or the
 `SolarOccultationClass` enum would make event time depend on quadrature
 resolution and could miss a narrow penumbra interval.
 
-The future event search must therefore use a separate continuous signed contact
-geometry derived from the same satellite-to-Sun direction, finite solar
+The future event search must therefore use continuous signed contact geometry
+derived from the same satellite-to-Sun direction, finite solar
 angular radius, and forward WGS-84 ellipsoid silhouette. The contact evaluator
 must expose enough independent signed margins to distinguish:
 
@@ -121,8 +121,8 @@ result identity.
 `SatelliteShadowTransition` should retain the exact record and snapshot
 identity rather than only a display name. Its bracket endpoints are canonical
 UTC, ordered, inside the query interval, and no wider than the declared time
-tolerance. The representative event instant is the deterministic midpoint of
-the final certified bracket; it is not claimed to be exact beyond that
+tolerance. The representative event instant is the deterministic midpoint of the final
+certified closed UTC bracket; it is not claimed to be exact beyond that
 bracket.
 
 Transition kinds are directed and closed:
