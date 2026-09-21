@@ -4089,3 +4089,25 @@ Only finite uniform-Sun/WGS-84 vacuum occultation, typed shadow state, and
 observer geometric twilight are authorized after merge. Mixed-frame vector
 subtraction, reflected fields, radiometry, apparent brightness, and detector
 effects remain unauthorized.
+## Candidate 50S.7B common-frame coordinate path
+
+The unaccepted implementation composes one accepted
+`SatelliteTopocentricState` and one same-instant geometric Earth-to-Sun
+`EphemerisState`. The public physical instant remains canonical UTC. The
+ephemeris adapter performs its internal TDB evaluation and retains the exact
+SPK resource; Earth rotation uses UT1/polar motion from the same installed
+IERS-A evidence already retained by the satellite transformation.
+
+The Earth-to-Sun state arrives in Earth-centred ICRF axes. Because ICRF/ICRS
+and GCRS axes are aligned for this geometric Cartesian composition, the
+accepted Astropy GCRS-axis-to-ITRS rotation is applied before subtraction.
+The satellite, observer, Earth, and Sun vectors used by the 50S.7B result are
+therefore all ITRS vectors at the same physical instant. TEME, ITRS, GCRS, and
+ICRF component arrays are never subtracted merely by shape.
+
+Observer solar altitude is the geometric vacuum angle between the
+observer-to-Sun ITRS vector and WGS-84 geodetic up. Its `0`, `-6`, `-12`,
+and `-18` degree thresholds are not apparent sunrise, refraction, sky
+brightness, satellite visibility, or detectability. This coordinate-guide
+update changes no general chart coordinate service.
+
