@@ -11,6 +11,8 @@ from typing import Final
 import numpy as np
 
 from wenu.ephemeris import (
+    EphemerisResourceChain,
+    EphemerisResourceIdentity,
     EphemerisState,
     EphemerisStateRequest,
     EphemerisStateSource,
@@ -691,51 +693,11 @@ class SatelliteIlluminationGeometryEvaluator:
                 "topocentric_state must be a SatelliteTopocentricState."
             )
         instant = topocentric_state.teme_state.evaluation_utc
-        request = EphemerisStateRequest(
-            target="sun",
-            centre="earth",
-            frame="icrf",
-            instant=instant,
-            time_scale="utc",
+        sun_state, earth_to_sun_itrs = _sun_state_and_itrs(
+            self.source,
+            instant,
+            topocentric_state.earth_orientation,
         )
-        sun_state = self.source.state(request)
-        if not isinstance(sun_state, EphemerisState):
-            raise SatelliteIlluminationGeometryError(
-                SatelliteIlluminationFailureCode.SOURCE_NOT_EVALUATED,
-                "ephemeris source did not return an EphemerisState.",
-            )
-        if sun_state.request != request:
-            raise SatelliteIlluminationGeometryError(
-                SatelliteIlluminationFailureCode.FRAME_MISMATCH,
-                "Sun ephemeris result does not match the exact request.",
-            )
-        if (
-            sun_state.position_unit.lower() != "au"
-            or sun_state.request.frame != "icrf"
-        ):
-            raise SatelliteIlluminationGeometryError(
-                SatelliteIlluminationFailureCode.FRAME_MISMATCH,
-                "Sun ephemeris state must use Earth-centred ICRF axes and AU.",
-            )
-        earth_to_sun_gcrs_axis_km = (
-            np.asarray(sun_state.position, dtype=float) * AU_KM
-        )
-        try:
-            earth_to_sun_itrs = np.asarray(
-                geocentric_gcrs_axis_position_to_itrs(
-                    earth_to_sun_gcrs_axis_km,
-                    instant,
-                    expected_earth_orientation=(
-                        topocentric_state.earth_orientation
-                    ),
-                ),
-                dtype=float,
-            )
-        except SatelliteEarthOrientationError as error:
-            raise SatelliteIlluminationGeometryError(
-                SatelliteIlluminationFailureCode.EARTH_ORIENTATION_UNAVAILABLE,
-                str(error),
-            ) from error
         solar_occultation = evaluate_solar_occultation(
             topocentric_state.satellite_itrs_position_km,
             earth_to_sun_itrs,
@@ -1028,6 +990,7 @@ class SatelliteShadowTransition:
     record: SatelliteElementRecord
     snapshot_id: str
     snapshot_sha256: str
+    query_interval: InclusiveTimeInterval
     left_class: SolarOccultationClass
     right_class: SolarOccultationClass
     kind: ShadowTransitionKind
@@ -1041,7 +1004,7 @@ class SatelliteShadowTransition:
     search_policy: ShadowTransitionSearchPolicy
     left_earth_orientation: SatelliteEarthOrientationEvidence
     right_earth_orientation: SatelliteEarthOrientationEvidence
-    sun_ephemeris_resource: object
+    sun_ephemeris_resource: EphemerisResourceIdentity | EphemerisResourceChain
     implementation: str = SHADOW_TRANSITION_IMPLEMENTATION
     provenance: tuple[str, ...] = field(default_factory=tuple)
     warnings: tuple[str, ...] = field(default_factory=tuple)
@@ -1055,6 +1018,10 @@ class SatelliteShadowTransition:
                 raise ValueError(f"{name} must be non-empty.")
         if len(self.snapshot_sha256) != 64:
             raise ValueError("snapshot_sha256 must be a SHA-256 digest.")
+        if not isinstance(self.query_interval, InclusiveTimeInterval):
+            raise TypeError(
+                "query_interval must be an InclusiveTimeInterval."
+            )
         if not isinstance(self.left_class, SolarOccultationClass):
             raise TypeError("left_class must be SolarOccultationClass.")
         if not isinstance(self.right_class, SolarOccultationClass):
@@ -1076,6 +1043,18 @@ class SatelliteShadowTransition:
         event = _utc_datetime(self.event_utc, name="event_utc")
         if not start <= event <= stop:
             raise ValueError("event_utc must lie inside the bracket.")
+        query_start = _utc_datetime(
+            self.query_interval.start,
+            name="query_interval.start",
+        )
+        query_stop = _utc_datetime(
+            self.query_interval.stop,
+            name="query_interval.stop",
+        )
+        if not query_start <= start <= stop <= query_stop:
+            raise ValueError(
+                "transition bracket must lie inside query_interval."
+            )
         width = (stop - start).total_seconds()
         tolerance = _positive_finite(
             self.time_tolerance_seconds,
@@ -1120,8 +1099,39 @@ class SatelliteShadowTransition:
                 raise TypeError(
                     f"{name} must be SatelliteEarthOrientationEvidence."
                 )
+        if not isinstance(
+            self.sun_ephemeris_resource,
+            (EphemerisResourceIdentity, EphemerisResourceChain),
+        ):
+            raise TypeError(
+                "sun_ephemeris_resource must be an immutable ephemeris "
+                "resource identity."
+            )
         object.__setattr__(self, "provenance", tuple(self.provenance))
         object.__setattr__(self, "warnings", tuple(self.warnings))
+
+    @property
+    def identity(self):
+        """Return the complete immutable transition identity tuple."""
+        return (
+            self.record,
+            self.snapshot_id,
+            self.snapshot_sha256,
+            self.query_interval,
+            self.left_class,
+            self.right_class,
+            self.kind,
+            self.event_utc,
+            self.bracket_start_utc,
+            self.bracket_stop_utc,
+            self.occultation_policy,
+            self.search_policy,
+            self.left_earth_orientation,
+            self.right_earth_orientation,
+            self.sun_ephemeris_resource,
+            self.implementation,
+            self.evaluation_count,
+        )
 
 
 def _unit_vector3(value, *, name):
@@ -1715,6 +1725,7 @@ class SatelliteShadowTransitionFinder:
                     snapshot_sha256=(
                         query.snapshot.manifest.content_sha256
                     ),
+                    query_interval=query.interval,
                     left_class=left.contact.occultation_class,
                     right_class=right.contact.occultation_class,
                     kind=kind,

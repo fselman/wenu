@@ -484,6 +484,73 @@ def test_continuous_spherical_contact_geometry(
         assert result.nearest_limb_contact_margin_rad > 0.0
 
 
+@pytest.mark.parametrize(
+    "satellite",
+    (
+        (7000.0, 0.0, 0.0),
+        (0.0, 0.0, 7000.0),
+        (4510.0, 4510.0, 1200.0),
+    ),
+)
+def test_continuous_wgs84_contact_agrees_with_ordinary_clear_geometry(
+    satellite,
+):
+    satellite = np.asarray(satellite, dtype=float)
+    earth_to_sun = satellite + satellite / np.linalg.norm(satellite) * 1.0e8
+
+    contact = evaluate_solar_occultation_contact(satellite, earth_to_sun)
+    ordinary = evaluate_solar_occultation(satellite, earth_to_sun)
+
+    assert contact.occultation_class is SolarOccultationClass.SUNLIT
+    assert contact.occultation_class is ordinary.occultation_class
+    assert contact.nearest_limb_contact_margin_rad > 0.0
+
+
+def test_all_six_directed_adjacent_transition_kinds_are_closed():
+    expected = {
+        (SolarOccultationClass.SUNLIT, SolarOccultationClass.PENUMBRA):
+            ShadowTransitionKind.SUNLIT_TO_PENUMBRA,
+        (SolarOccultationClass.PENUMBRA, SolarOccultationClass.SUNLIT):
+            ShadowTransitionKind.PENUMBRA_TO_SUNLIT,
+        (SolarOccultationClass.PENUMBRA, SolarOccultationClass.UMBRA):
+            ShadowTransitionKind.PENUMBRA_TO_UMBRA,
+        (SolarOccultationClass.UMBRA, SolarOccultationClass.PENUMBRA):
+            ShadowTransitionKind.UMBRA_TO_PENUMBRA,
+        (SolarOccultationClass.PENUMBRA, SolarOccultationClass.ANTUMBRA):
+            ShadowTransitionKind.PENUMBRA_TO_ANTUMBRA,
+        (SolarOccultationClass.ANTUMBRA, SolarOccultationClass.PENUMBRA):
+            ShadowTransitionKind.ANTUMBRA_TO_PENUMBRA,
+    }
+
+    assert {
+        pair: illumination_module._TRANSITION_KIND[pair]
+        for pair in expected
+    } == expected
+
+
+def test_non_adjacent_transition_topology_fails_closed():
+    left = _analytic_shadow_sample(
+        datetime(2026, 9, 21, tzinfo=timezone.utc),
+        datetime(2026, 9, 21, tzinfo=timezone.utc),
+    )
+    right = replace(
+        left,
+        contact=replace(
+            left.contact,
+            occultation_class=SolarOccultationClass.UMBRA,
+            central_ray_blocked=True,
+        ),
+    )
+
+    with pytest.raises(SatelliteIlluminationGeometryError) as caught:
+        illumination_module._transition_kind(left, right)
+
+    assert (
+        caught.value.code
+        is SatelliteIlluminationFailureCode.DEGENERATE_SHADOW_TOPOLOGY
+    )
+
+
 def _analytic_shadow_sample(instant, start):
     seconds = (instant - start).total_seconds()
     nearest_margin = 0.01 * (seconds - 4.123) * (seconds - 6.287)
@@ -583,6 +650,50 @@ def test_complete_search_fails_closed_when_budget_is_exhausted():
         5,
     )
 
+    with pytest.raises(SatelliteIlluminationGeometryError) as caught:
+        illumination_module._collect_transition_brackets(
+            cache,
+            start,
+            stop,
+            policy,
+        )
+
+    assert (
+        caught.value.code
+        is SatelliteIlluminationFailureCode.TRANSITION_SEARCH_EXHAUSTED
+    )
+
+
+def test_tangent_contact_fails_closed_at_subdivision_depth():
+    start = datetime(2026, 9, 21, tzinfo=timezone.utc)
+    stop = start + timedelta(seconds=2)
+    policy = ShadowTransitionSearchPolicy(
+        maximum_interval_seconds=3.0,
+        maximum_subdivision_depth=5,
+        maximum_evaluations=1000,
+    )
+
+    def tangent(instant):
+        seconds = (instant - start).total_seconds() - 1.0
+        margin = seconds * seconds
+        return illumination_module._ShadowSample(
+            instant=instant,
+            contact=SolarOccultationContactGeometry(
+                occultation_class=SolarOccultationClass.SUNLIT,
+                nearest_limb_contact_margin_rad=margin,
+                solar_contains_earth_margin_rad=-0.5,
+                minimum_limb_separation_rad=0.1 + margin,
+                maximum_limb_separation_rad=0.5,
+                solar_angular_radius_rad=0.1,
+                central_ray_blocked=False,
+            ),
+        )
+
+    cache = illumination_module._ShadowEvaluationCache(
+        tangent,
+        policy,
+        5,
+    )
     with pytest.raises(SatelliteIlluminationGeometryError) as caught:
         illumination_module._collect_transition_brackets(
             cache,
@@ -731,6 +842,8 @@ def test_transition_finder_returns_identity_bound_directed_events(monkeypatch):
         item.snapshot_sha256 == snapshot.manifest.content_sha256
         for item in results
     )
+    assert all(item.query_interval == query.interval for item in results)
+    assert all(item.identity == item.identity for item in results)
     assert all(item.evaluation_count == results[0].evaluation_count for item in results)
     assert all(item.achieved_bracket_width_seconds <= 0.01 for item in results)
     assert all("not a brightness" in item.warnings[0] for item in results)
