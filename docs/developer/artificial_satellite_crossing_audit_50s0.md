@@ -471,4 +471,3 @@ classifies geometric observer twilight.
 No crossing is filtered, relabeled, ranked, or scheduled by this state.
 50S.7C transitions, radiometry, reflected light, brightness, detector,
 facility, visibility, and scheduling work remain unauthorized.
-
