@@ -530,4 +530,3 @@ validator downloaded nothing.
 This completes the independent numerical receipt but does not accept the
 candidate. Expanded, complete, documentation, diff, exact-head, upstream, and
 clean-tree gates remain required before Fernando's separate review.
-
