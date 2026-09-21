@@ -1829,4 +1829,3 @@ annular/antumbra cases. The installed DE440 kernel
 also produced 20 matching Skyfield full-light and 5 matching full-shadow
 states. This validates the bounded numerical architecture but does not yet
 constitute scientific or architectural acceptance.
-
