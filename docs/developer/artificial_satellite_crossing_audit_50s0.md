@@ -512,3 +512,17 @@ bounded interval search, deterministic event identity, and terminal failure
 remain mandatory. Transition attachment to crossings, tracks, reports, charts,
 CLI, or planning advisories and all later light, brightness, detector,
 visibility, facility, and scheduling behavior remain unauthorized.
+
+## Candidate 50S.7C implementation refinement
+
+The bounded candidate adds observer-independent direct-solar shadow events
+strictly downstream of geometric crossings. One selected immutable record and
+closed UTC interval produce ordered directed contact brackets or a typed
+terminal failure. No crossing membership, interval, exact track, report,
+chart, or planning identity changes.
+
+Executable `69375fab` passed 58 focused tests and the independent installed-
+resource SPICE/Skyfield receipt. Complete gates and acceptance remain pending.
+Transition attachment and every 50S.7D+, radiometric, reflected-field,
+brightness, detector, visibility, facility, or scheduling behavior remain
+unauthorized.

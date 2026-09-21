@@ -2760,3 +2760,21 @@ Do not create a milestone-named production or test module. Existing
 propagation, ephemeris, crossing, track, report, chart, CLI, planning,
 renderer, exporter, brightness, visibility, detector, facility, and scheduling
 owners remain unchanged. PR merge and later source work remain separate.
+
+## Candidate 50S.7C implementation source ownership
+
+- `src/wenu/satellites/illumination.py` owns the immutable transition
+  contracts, continuous contact geometry, bounded search, identity, and typed
+  failures alongside the accepted direct-Sun model.
+- `src/wenu/satellites/topocentric.py` owns one shared internal TEME-to-ITRS
+  implementation composed by both `SatelliteGeocentricItrsTransformer` and
+  the existing observer route.
+- `tests/test_satellite_illumination.py` remains the enduring scientific,
+  topology, budget, identity, and orchestration test owner.
+- `tools/validate_50s7c_shadow_transitions.py` owns the offline no-download
+  SPICE `gfoclt` event and Skyfield binary-side receipt.
+
+At executable `69375fab`, 58 focused tests and the independent installed-
+resource receipt passed. No milestone-named production/test module or output
+integration was added. Complete gates and acceptance remain pending; merge,
+branch deletion, 50S.7D+, and later ownership changes remain unauthorized.

@@ -1107,3 +1107,20 @@ fail-closed search described above.
 Contact remains an event rather than a state. Shadow events remain independent
 of observer night and make no brightness, visibility, detectability, detector,
 facility, or scheduling claim. 50S.7D+ remains unauthorized.
+
+## Candidate 50S.7C transition runtime vocabulary
+
+The bounded candidate treats contact as an observer-independent event between
+two ordinary `SolarOccultationClass` side states. It exposes exactly six
+directed adjacent kinds: sunlit/penumbra in both directions,
+penumbra/umbra in both directions, and penumbra/antumbra in both directions.
+Direct non-adjacent output is invalid.
+
+Each representative event time is the deterministic midpoint of a retained
+closed UTC bracket no wider than the declared tolerance. Endpoint contact is
+explicitly rejected when the requested interval cannot certify both directed
+sides. An empty tuple means the whole admitted interval was certified free of
+contact; it is never a budget fallback. These events remain unattached to
+crossings and carry no observer-night, brightness, visibility, detector,
+facility, or scheduling meaning. The implementation remains unaccepted and
+50S.7D+ remains unauthorized.

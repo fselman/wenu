@@ -8794,7 +8794,7 @@ def test_50s7a_records_candidate_four_source_illumination_audit():
     exports = read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
     assert "SatelliteIlluminationGeometry" in exports
     assert "SatelliteIlluminationGeometryEvaluator" in exports
-    assert "SatelliteShadowTransition" not in exports
+    assert "SatelliteShadowTransition" in exports
 
 
 def test_50s7a_records_acceptance_and_only_bounded_50s7b_authority():
@@ -9136,3 +9136,142 @@ def test_50s7c_records_acceptance_and_bounded_implementation_authority():
 
     index = read(DEVELOPER / "README.md")
     assert "accepted documentation-only contract" in index
+
+
+def test_50s7c_records_bounded_candidate_implementation():
+    audit = read(
+        DEVELOPER / "satellite_shadow_transition_audit_50s7c.md"
+    )
+    architecture = read(V09_CURRENT)
+    roadmap = read(FUTURE_ROADMAP)
+    reference = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+    coordinate_guide = read(COORDINATE_GUIDE)
+    guide = read(DEVELOPER / "satellite_guide.md")
+    program_log = read(SATELLITE_PROGRAM_LOG)
+    instructions = read(INSTRUCTIONS)
+    foundation = read(
+        DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+    )
+    illumination_audit = read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    )
+    implementation = read(
+        ROOT / "src" / "wenu" / "satellites" / "illumination.py"
+    )
+    topocentric = read(
+        ROOT / "src" / "wenu" / "satellites" / "topocentric.py"
+    )
+    exports = read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+    validator = read(
+        ROOT / "tools" / "validate_50s7c_shadow_transitions.py"
+    )
+
+    documents = (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        program_log,
+        instructions,
+        foundation,
+        illumination_audit,
+    )
+    expected = (
+        "Candidate 50S.7C implementation record",
+        "Candidate 50S.7C shadow-transition implementation architecture",
+        "Candidate 50S.7C — Shadow-transition implementation",
+        "Candidate 50S.7C transition API implementation",
+        "Candidate 50S.7C implementation source ownership",
+        "Candidate 50S.7C shared geocentric coordinate path",
+        "Candidate 50S.7C transition runtime vocabulary",
+        "Candidate 50S.7C shadow-transition implementation",
+        "Candidate 50S.7C implementation boundary",
+        "Candidate 50S.7C implementation refinement",
+        "Candidate 50S.7C shadow-transition implementation handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "69375fab" in normalized
+        assert "unauthorized" in normalized
+
+    for phrase in (
+        "SatelliteShadowTransitionQuery",
+        "ShadowTransitionSearchPolicy",
+        "SolarOccultationContactGeometry",
+        "SatelliteShadowTransitionFinder",
+        "query_interval",
+        "def identity",
+        "TRANSITION_SEARCH_EXHAUSTED",
+        "DEGENERATE_SHADOW_TOPOLOGY",
+        "CONTACT_BRACKET_INCONSISTENT",
+        "visible-fraction quadrature is not a root function",
+    ):
+        assert phrase in implementation
+        assert phrase.split(".")[0] in exports or phrase in {
+            "query_interval",
+            "def identity",
+            "TRANSITION_SEARCH_EXHAUSTED",
+            "DEGENERATE_SHADOW_TOPOLOGY",
+            "CONTACT_BRACKET_INCONSISTENT",
+            "visible-fraction quadrature is not a root function",
+        }
+
+    for phrase in (
+        "SatelliteGeocentricItrsState",
+        "SatelliteGeocentricItrsTransformer",
+        "_geocentric_itrs_components",
+    ):
+        assert phrase in topocentric
+        if not phrase.startswith("_"):
+            assert phrase in exports
+
+    for phrase in (
+        "spiceypy.gfoclt",
+        "spiceypy.spkw09",
+        "spiceypy.gfstol",
+        "is_sunlit",
+        "refusing download",
+        "SPICE gfoclt",
+        "Skyfield full-light matches",
+        "Skyfield full-shadow matches",
+    ):
+        assert phrase in validator
+
+    receipt_documents = (
+        audit,
+        architecture,
+        roadmap,
+        program_log,
+        illumination_audit,
+    )
+    for document in receipt_documents:
+        normalized = " ".join(document.split())
+        assert "58" in normalized
+        assert "16.67 seconds" in normalized
+        assert "full" in normalized.lower()
+        assert "annular" in normalized.lower()
+        assert "20" in normalized
+        assert "5" in normalized
+
+    for document in (audit, program_log):
+        assert "SpiceyPy 6.0.3" in document
+        assert "CSPICE N0067" in document
+        assert "277" in document
+        assert "717" in document
+        assert (
+            "c1c7feeab882263fc493a9d5a5b2ddd71"
+            "b54826cdf65d8d17a76126b260a49f2"
+        ) in document
+
+    allowed = {
+        ROOT / "src" / "wenu" / "satellites" / "illumination.py",
+        ROOT / "src" / "wenu" / "satellites" / "__init__.py",
+    }
+    for path in (ROOT / "src" / "wenu").rglob("*.py"):
+        if path not in allowed:
+            assert "SatelliteShadowTransition" not in read(path)

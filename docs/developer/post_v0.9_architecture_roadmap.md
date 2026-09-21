@@ -3209,3 +3209,18 @@ brackets, deterministic identity, fail-closed budgets, a minimal shared
 geocentric ITRS seam, focused tests, and offline independent event validation.
 50S.7D+ and all report/chart/planning, brightness, visibility, detector,
 facility, and scheduling integration remain unauthorized.
+
+## Candidate 50S.7C — Shadow-transition implementation
+
+The feature branch now contains the bounded observer-independent service
+authorized by the accepted audit: shared geocentric ITRS state, continuous
+finite-Sun/WGS-84 contact evidence, complete bounded search, six directed
+adjacent transition kinds, certified UTC brackets, deterministic identity,
+and fail-closed limits.
+
+Executable `69375fab` passed 58 focused tests in 16.67 seconds. The offline
+no-download validator independently reproduced full and annular four-contact
+sequences with SPICE `gfoclt` and matched 20 full-light plus 5 full-shadow
+Skyfield states using the installed DE440 kernel. Documentation and complete
+repository gates remain next. The candidate is not accepted; 50S.7D+ and all
+report/chart/planning or later scientific integration remain unauthorized.

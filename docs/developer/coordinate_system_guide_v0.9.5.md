@@ -4176,3 +4176,20 @@ observer twilight-event search, apparent sunrise, refraction, brightness,
 visibility, or detectability is authorized. The coordinate-system guide was
 reviewed and this bounded extraction changes ownership reuse, not scientific
 frame meaning.
+
+## Candidate 50S.7C shared geocentric coordinate path
+
+The bounded candidate extracts `SatelliteGeocentricItrsState` and
+`SatelliteGeocentricItrsTransformer` from the already governed transform.
+Both the transition finder and `SatelliteTopocentricTransformer` compose the
+same `_geocentric_itrs_components(...)` implementation and retain the exact
+installed-IERS-A evidence. No dummy observer or second TEME/EOP route exists.
+
+At every transition evaluation, canonical UTC identifies the instant; SGP4
+supplies TEME; the shared owner supplies geocentric ITRS; and the geometric
+Earth-to-Sun ICRF/GCRS-axis state is rotated to ITRS using matching EOP
+evidence before contact geometry. The SPICE receipt uses explicitly pinned
+spherical special cases in J2000 solely as an independent event oracle;
+focused runtime tests cover WGS-84 orientations. No observer, twilight,
+refraction, brightness, or visibility meaning is added. Acceptance and later
+coordinate behavior remain unauthorized.

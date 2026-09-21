@@ -1885,3 +1885,21 @@ bounded closed-interval search, directed events, certified brackets,
 deterministic identity, terminal failure, and independent event validation.
 No later illumination, brightness, visibility, detector, facility, or
 scheduling behavior is authorized. PR 182 merge remains separate.
+
+## Candidate 50S.7C shadow-transition implementation architecture
+
+Executable `69375fab` implements the accepted bounded architecture in the
+existing illumination owner. `SatelliteShadowTransitionFinder` composes one
+selected snapshot record, SGP4 propagation, the shared geocentric ITRS seam,
+same-instant installed ephemeris, continuous finite-Sun limb margins, and a
+complete bounded recursive interval search. It returns ordered immutable
+directed brackets or a typed terminal failure; no observer enters event
+identity.
+
+The existing topocentric transformer now composes the same internal
+TEME-to-ITRS implementation as the new geocentric transformer. The accepted
+visible-fraction quadrature and every crossing/output owner remain unchanged.
+The 58-test focused gate passed in 16.67 seconds, and the installed-resource
+SPICE/Skyfield receipt reproduced full and annular directed sequences plus
+20 full-light and 5 full-shadow binary states. Complete gates and acceptance
+remain pending; 50S.7D+ and all integration remain unauthorized.

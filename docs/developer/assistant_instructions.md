@@ -1776,3 +1776,20 @@ transitions to crossings, tracks, reports, charts, CLI, or planning advisories,
 and do not add 50S.7D+ radiometry or reflected fields, brightness, visibility,
 detector effects, facility integration, scheduling, or unrelated refactoring.
 PR merge and branch deletion remain separate explicit decisions.
+
+## Candidate 50S.7C implementation boundary
+
+Treat `feature/50s7c-shadow-transitions` at executable `69375fab` plus later
+documentation-only evidence as an unaccepted bounded candidate. Preserve the
+single-record observer-independent query, continuous finite-Sun/WGS-84
+contact margins, shared geocentric ITRS seam, complete bounded recursive
+search, directed adjacent events, certified brackets, deterministic identity,
+and typed terminal failures.
+
+The 58-test focused gate and offline SPICE `gfoclt`/Skyfield receipt passed.
+Before review require the current-documentation gate, expanded focused gate,
+complete plugin-disabled suite, diff check, exact upstream, and clean tree.
+Do not attach events to crossings, tracks, reports, charts, CLI, or planning;
+do not begin 50S.7D+, radiometry, reflected fields, brightness, visibility,
+detector, facility, scheduling, or unrelated refactoring. Merge and branch
+deletion remain separate explicit decisions.

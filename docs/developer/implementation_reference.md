@@ -3529,3 +3529,25 @@ certification, deterministic ordering, and atomic fail-closed behavior. It
 must not add transition data to crossing, track, report, chart, CLI, or
 planning APIs, and it must not add radiometric, brightness, visibility,
 detector, facility, or scheduling semantics. Merge remains separate.
+
+## Candidate 50S.7C transition API implementation
+
+The unaccepted bounded API exports `ShadowTransitionSearchPolicy`,
+`SatelliteShadowTransitionQuery`, `SolarOccultationContactGeometry`,
+`SatelliteShadowTransition`, `ShadowTransitionKind`,
+`SatelliteShadowTransitionFinder`, and
+`evaluate_solar_occultation_contact`. The topocentric owner exports
+`SatelliteGeocentricItrsState` and `SatelliteGeocentricItrsTransformer`.
+
+One query binds an immutable snapshot, one full NORAD identifier, one closed
+UTC interval, and both occultation and search policies. Each result retains
+the exact record, snapshot, query interval, directed side classes, certified
+bracket, deterministic midpoint, achieved width, evaluation count, EOP and
+ephemeris identities, complete policies, implementation identifier,
+provenance, and warnings. `SatelliteShadowTransition.identity` exposes that
+immutable identity tuple.
+
+Stable failures include invalid/unsupported query, propagation, EOP,
+ephemeris, frame, non-finite geometry, degenerate topology, inconsistent
+bracket, and `transition_search_exhausted`. The candidate adds no output or
+later illumination API; complete gates and acceptance remain pending.

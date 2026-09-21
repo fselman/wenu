@@ -603,3 +603,18 @@ brackets, deterministic identity, terminal failure, a minimal shared
 geocentric ITRS seam, and independent event validation. 50S.7D+ and every
 brightness, visibility, detector, facility, or scheduling use remain
 unauthorized. Merge and branch deletion remain separate.
+
+## Candidate 50S.7C shadow-transition implementation handoff
+
+The unaccepted bounded candidate realizes the accepted next slice without
+changing 50S.7B visible-fraction or observer-night meaning. Continuous
+finite-Sun/WGS-84 contact margins drive one complete bounded search for one
+selected record and interval; six adjacent directed events retain certified
+UTC brackets, complete identity, resource evidence, and terminal failures.
+
+At executable `69375fab`, 58 focused tests passed in 16.67 seconds. The
+no-download SPICE `gfoclt` receipt reproduced full and annular four-contact
+sequences, and Skyfield matched 20 full-light plus 5 full-shadow states using
+the accepted installed DE440 digest. Complete gates and acceptance remain
+pending. 50S.7D+, reflected fields, radiometry, brightness, visibility,
+detector, facility, scheduling, and output integration remain unauthorized.
