@@ -1230,3 +1230,13 @@ then used installed DE440 `de440s.bsp` SHA-256
 `c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`
 to obtain 20 Skyfield full-light and 5 full-shadow matches. Complete and final
 repository gates remain pending; the candidate is unaccepted.
+
+### Complete candidate 50S.7B gate
+
+Executable revision `086e7da1` passed 291 expanded tests in 18.81 seconds,
+208 current-documentation tests in 6.47 seconds, the clean branch diff, and all
+2,796 plugin-disabled repository tests in 233.66 seconds. Exact upstream and a
+clean working tree were confirmed. Combined with the SPICE/Skyfield receipt,
+the bounded implementation is ready for Fernando's separate scientific and
+architectural review. Merge, branch deletion, 50S.7C, and later work remain
+unauthorized.
