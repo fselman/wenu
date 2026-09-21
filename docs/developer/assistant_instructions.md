@@ -1756,3 +1756,23 @@ sign scans, chart samples, or the 50S.5 empirical motion envelope as a
 transition-completeness oracle. Do not add radiometry, reflected fields,
 brightness, visibility, detector effects, facility integration, scheduling,
 or unrelated refactoring.
+
+## Accepted 50S.7C audit boundary
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.7C audit at `030a6322` on 2026-09-21 after 210 plugin-disabled
+current-documentation tests passed in 5.81 seconds and repository checks were
+clean.
+
+After merge, implement only the bounded observer-independent transition slice
+defined in `satellite_shadow_transition_audit_50s7c.md`: continuous
+finite-Sun/WGS-84 contact geometry, one selected immutable record and admitted
+closed UTC interval, complete bounded search, directed events, certified
+brackets, deterministic identity, terminal failure, the minimal shared
+geocentric ITRS seam, focused tests, and offline independent event validation.
+
+Do not begin implementation before the audit is merged. Do not attach
+transitions to crossings, tracks, reports, charts, CLI, or planning advisories,
+and do not add 50S.7D+ radiometry or reflected fields, brightness, visibility,
+detector effects, facility integration, scheduling, or unrelated refactoring.
+PR merge and branch deletion remain separate explicit decisions.
