@@ -3515,3 +3515,17 @@ Contact is an event, not another occultation class. Direct
 `umbra <-> antumbra` outputs are invalid. The candidate authorizes no runtime
 or public export before separate acceptance and adds no brightness, visibility,
 report, chart, CLI, planning, detector, facility, or scheduling API.
+
+## Accepted 50S.7C transition API authorization
+
+Fernando accepted the reserved transition API contract at `030a6322` on
+2026-09-21. After merge, a bounded implementation may add the immutable query,
+search policy, directed transition kinds, and
+`SatelliteShadowTransition` result described above.
+
+The implementation must retain certified closed UTC brackets, exact
+record/snapshot/resource/model/search identity, complete interval
+certification, deterministic ordering, and atomic fail-closed behavior. It
+must not add transition data to crossing, track, report, chart, CLI, or
+planning APIs, and it must not add radiometric, brightness, visibility,
+detector, facility, or scheduling semantics. Merge remains separate.
