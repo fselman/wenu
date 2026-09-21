@@ -3459,7 +3459,7 @@ scheduling APIs remain unauthorized.
 `wenu.satellites.illumination` now exports an unaccepted candidate API:
 
 - `SolarOccultationPolicy` declares the uniform-Sun, WGS-84 vacuum,
-  two-resolution equal-solid-angle quadrature and contact tolerances;
+  bounded adaptive equal-solid-angle quadrature and contact tolerances;
 - `SolarOccultationGeometry` carries refined/coarse visible fractions,
   convergence difference, typed class, angular radius, distance, and ray
   counts;
