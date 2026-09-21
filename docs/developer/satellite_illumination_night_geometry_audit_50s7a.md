@@ -488,7 +488,7 @@ axes, rotates the ICRF/GCRS-aligned geocentric vector into ITRS with the exact
 installed-IERS-A evidence already bound to the satellite state, and performs
 all subtraction in ITRS. It evaluates a uniform finite solar disk against the
 vacuum WGS-84 ellipsoid by deterministic equal-solid-angle ray quadrature.
-Coarse and refined evaluations record their absolute fraction difference and
+Successive bounded refinements record their absolute fraction difference and
 fail closed with `quadrature_not_converged` when the declared tolerance is
 not met.
 
