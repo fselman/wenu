@@ -1726,3 +1726,17 @@ commits as a verified but unaccepted candidate. The expanded 291-test gate,
 upstream/clean tree, and offline SPICE/Skyfield receipt passed. Do not merge,
 delete the branch, or begin 50S.7C+ work without Fernando's separate explicit
 decision.
+
+## Accepted 50S.7B implementation boundary
+
+Fernando scientifically and architecturally accepted exact candidate
+`054ac53a1f2d50aca06c268cfc7ff5fb074c690f` on 2026-09-21. Preserve its
+output-neutral direct-Sun/WGS-84 occultation, bounded adaptive convergence,
+same-instant ITRS composition, geometric twilight, typed states, explicit
+lunar `not_evaluated`, failures, resource identity, and provenance.
+
+Do not merge PR 181 or delete its branch without separate explicit
+instructions. After merge, only a documentation-first 50S.7C
+shadow-transition audit is authorized. Do not implement transitions,
+radiometry, reflected fields, brightness, visibility, detector effects,
+facility integration, scheduling, or unrelated refactoring.
