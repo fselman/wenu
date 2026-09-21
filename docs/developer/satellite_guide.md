@@ -1061,3 +1061,5 @@ enough, or detectable. Lunar solar occultation is explicitly
 `not_evaluated`; Moonlight, Earthshine, and Lunar-Earthshine remain later
 separate models.
 
+50S.7C shadow-transition search and all later satellite-light behavior remain
+unauthorized by this candidate.
