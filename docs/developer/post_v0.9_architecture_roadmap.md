@@ -3229,9 +3229,10 @@ report/chart/planning or later scientific integration remain unauthorized.
 
 At exact candidate `bf877404`, the 311-test expanded gate, 212-test
 documentation gate, clean diff, complete 2,816-test plugin-disabled suite,
-exact upstream check, and clean-tree check passed. Timings were 21.47, 7.01,
-and 218.58 seconds, respectively. The independent SPICE/Skyfield event receipt
-also passed.
+exact upstream check, and clean-tree check passed. The expanded gate took
+21.47 seconds, the documentation gate took 7.01 seconds, and the complete
+suite took 218.58 seconds. The independent SPICE/Skyfield event receipt also
+passed.
 
 50S.7C now awaits Fernando's separate scientific and architectural review.
 Merge, branch deletion, 50S.7D+, report/chart/planning integration, and all
