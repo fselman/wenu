@@ -8968,3 +8968,55 @@ def test_50s7b_records_bounded_candidate_implementation():
         assert "208" in document
         assert "6.47 seconds" in document
         assert "233.66 seconds" in document
+def test_50s7b_records_acceptance_and_next_audit_boundary():
+    audit = read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    )
+    documents = (
+        read(V09_CURRENT),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7B architecture",
+        "Accepted 50S.7B API boundary",
+        "Accepted 50S.7B source ownership",
+        "Accepted 50S.7B coordinate behavior",
+        "Accepted 50S.7B — Direct-Sun and observer-night geometry",
+        "Accepted 50S.7B geometry vocabulary",
+        "Accepted 50S.7B direct-Sun and observer-night geometry",
+        "Accepted 50S.7B implementation boundary",
+        "Accepted 50S.7B refinement of the crossing foundation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Accepted 50S.7B implementation",
+        "scientifically and architecturally accepted",
+        "054ac53a1f2d50aca06c268cfc7ff5fb074c690f",
+        "2,796-test complete repository gate",
+        "208-test documentation gate in 4.19 seconds",
+        "merge of PR 181 only when Fernando gives a separate explicit",
+        "does not authorize branch deletion",
+        "documentation-first 50S.7C shadow-transition audit",
+    ):
+        assert phrase in normalized_audit
+
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "054ac53a" in normalized
+        assert "merge" in normalized.lower()
+        assert "separate" in normalized
+        assert "documentation-first 50S.7C" in normalized
+        assert "authorized" in normalized
+
