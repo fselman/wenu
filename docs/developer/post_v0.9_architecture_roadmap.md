@@ -3253,3 +3253,20 @@ After merge, no 50S.7D+ work begins without a separately accepted bounded
 milestone. Report/chart/planning integration, radiometry, reflected fields,
 brightness, visibility, detector, facility, scheduling, and unrelated work
 remain unauthorized.
+## Candidate 50S.7D — Direct-source radiometry audit
+
+The documentation-only candidate retains direct Sunlight and Moonlight as the
+two 50S.7D components but decomposes their delivery by model maturity. The
+first proposed implementation, 50S.7D.1, is only bolometric normal-plane
+Sunlight from the IAU 2015 nominal `1361 W m-2` at 1 au, inverse-square
+Sun-satellite distance scaling, and the accepted finite-disk visible fraction.
+
+Spectral Sunlight requires a separately frozen TSIS-1 HSRS v2 resource.
+Moonlight requires a separately accepted ROLO/LIME-class phase, libration,
+distance, spectral, uncertainty, and licensing contract. Unknown Moonlight is
+not zero. The candidate adds no runtime and authorizes no implementation
+before Fernando's separate scientific and architectural acceptance.
+
+If accepted and merged, only bounded 50S.7D.1 may be implemented. 50S.7D.2+,
+50S.7E reflected fields, 50S.7F bundling, 50S.8 brightness, 50S.9 detector
+effects, outputs, facilities, visibility, and scheduling remain unauthorized.

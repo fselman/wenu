@@ -540,3 +540,19 @@ tracks, reports, charts, CLI, or planning advisories. PR 183 merge and branch
 deletion remain separate decisions. Transition attachment and all 50S.7D+
 radiometric, reflected-field, brightness, visibility, detector, facility, or
 scheduling behavior remain unauthorized.
+## Candidate 50S.7D refinement of illumination separation
+
+The documentation-only audit keeps direct-source incident radiometry strictly
+downstream of geometric crossing and accepted illumination geometry. The first
+proposed 50S.7D.1 value is only bolometric normal-plane Sunlight, derived from
+the IAU nominal irradiance, Sun-satellite distance, and accepted visible-disk
+fraction.
+
+It cannot filter, relabel, rank, draw, report, or schedule a crossing. It adds
+no spacecraft surface, attitude, BRDF, observer flux, apparent magnitude,
+visibility, or detector meaning. Unknown Moonlight remains not evaluated, not
+zero.
+
+The candidate changes no runtime. 50S.7D.1 implementation, later direct-source
+models, reflected fields, outputs, brightness, detector, facility, and
+scheduling behavior remain unauthorized pending separate acceptance.

@@ -3566,3 +3566,22 @@ The accepted API remains output-neutral and observer-independent. It adds no
 crossing, track, report, chart, CLI, planning, radiometric, brightness,
 visibility, detector, facility, or scheduling semantics. PR 183 merge, branch
 deletion, and any 50S.7D+ API remain separately authorized decisions.
+## Candidate 50S.7D radiometry API boundary
+
+No radiometry API is implemented by this documentation-only audit. It proposes
+for a later accepted 50S.7D.1 only immutable
+`DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts in the existing illumination
+owner.
+
+The evaluator would consume one accepted `SatelliteIlluminationGeometry` and
+return bolometric normal-plane clear and incident irradiance in `W m-2`,
+retaining distance, visible fraction, occultation class, complete geometry and
+model identity, convergence evidence, provenance, and explicit
+physical-uncertainty `not_evaluated`. It would perform no propagation,
+ephemeris query, occultation calculation, surface projection, or output work.
+
+The candidate authorizes no runtime. Spectral/passband Sunlight, numeric
+Moonlight, reflected fields, component bundles, magnitude, visibility,
+detector, report, chart, CLI, planning, facility, and scheduling APIs remain
+unauthorized.

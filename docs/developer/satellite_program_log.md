@@ -1338,3 +1338,20 @@ tests in 4.72 seconds.
 PR 183 merge and branch deletion remain separate explicit operations. 50S.7D+,
 output integration, radiometry, reflected fields, brightness, visibility,
 detector, facility, scheduling, and unrelated work remain unauthorized.
+## 2026-09-21 — Candidate 50S.7D direct-source radiometry audit
+
+Work began from accepted 50S.7C merge
+`17a8dd37ab3c361084c240cc68f9f8c3a25e5e3d` on branch
+`docs/50s7d-direct-source-radiometry-audit`. The documentation-only audit
+retains direct Sunlight and Moonlight as the 50S.7D responsibility but proposes
+only a bounded 50S.7D.1 implementation after separate acceptance.
+
+That first slice uses the IAU 2015 nominal bolometric solar irradiance,
+inverse-square Sun-satellite distance scaling, and the accepted uniform-disk
+visible fraction to produce normal-plane irradiance. It adds no spectrum,
+Moonlight number, surface orientation, BRDF, magnitude, output, or detector
+meaning.
+
+The audit changes no runtime and remains unaccepted. 50S.7D.1 implementation,
+50S.7D.2+, 50S.7E+, output integration, brightness, visibility, detector,
+facility, scheduling, merge, and branch deletion remain unauthorized.

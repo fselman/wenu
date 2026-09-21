@@ -635,3 +635,20 @@ certified brackets, deterministic identity, shared geocentric ITRS evidence,
 and fail-closed behavior. PR 183 merge and branch deletion remain separate.
 50S.7D+, output attachment, radiometry, reflected fields, brightness,
 visibility, detector, facility, and scheduling remain unauthorized.
+## 17. Candidate 50S.7D direct-source radiometry handoff
+
+The dedicated documentation-only audit in
+`satellite_direct_source_radiometry_audit_50s7d.md` refines the accepted
+50S.7 sequence without changing its four-component separation. Direct
+Sunlight and Moonlight remain 50S.7D; Earthshine and Lunar-Earthshine remain
+50S.7E.
+
+Because the model maturity differs, the candidate proposes only a bounded
+50S.7D.1 implementation after separate acceptance: IAU 2015 nominal
+bolometric normal-plane Sunlight, inverse-square Sun-satellite distance
+scaling, and the accepted uniform-disk visible fraction. Spectral TSIS-1
+Sunlight and ROLO/LIME-class Moonlight remain later separately audited slices.
+
+The candidate authorizes no runtime. 50S.7D.1 implementation, 50S.7D.2+,
+50S.7E+, output integration, brightness, visibility, detector, facility,
+scheduling, merge, and branch deletion remain unauthorized.

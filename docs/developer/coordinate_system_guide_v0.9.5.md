@@ -4221,3 +4221,18 @@ an apparent, brightness, visibility, or detector result. The coordinate-system
 guide was reviewed and remains current. PR 183 merge, branch deletion,
 50S.7D+, and any attachment to crossings or outputs require separate
 authorization.
+## Candidate 50S.7D coordinate and radiometric boundary
+
+The proposed 50S.7D.1 model introduces no coordinate transform, frame, time
+scale, or observer. It consumes the accepted same-instant Sun-satellite
+distance and uniform-disk visible fraction and returns a scalar bolometric
+normal-plane irradiance.
+
+Normal-plane is a radiometric reference surface perpendicular to the incoming
+beam, not a spacecraft frame or attitude. UTC remains result identity, while
+TDB ephemeris and UT1/EOP evidence remain inherited geometry provenance. The
+coordinate-system guide was reviewed and remains current.
+
+This documentation-only candidate authorizes no runtime. Spacecraft-frame
+projection, attitude, BRDF, observer flux, apparent magnitude, visibility,
+detector behavior, and all 50S.7D.2+ work remain unauthorized.
