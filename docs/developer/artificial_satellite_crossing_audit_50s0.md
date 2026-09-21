@@ -471,3 +471,13 @@ classifies geometric observer twilight.
 No crossing is filtered, relabeled, ranked, or scheduled by this state.
 50S.7C transitions, radiometry, reflected light, brightness, detector,
 facility, visibility, and scheduling work remain unauthorized.
+
+## Accepted 50S.7B refinement of the crossing foundation
+
+Fernando accepted 50S.7B at `054ac53a` on 2026-09-21. The implementation is
+strictly downstream and leaves crossing intervals, tracks, reports, charts,
+and planning advisories unchanged. Its illumination and night classes do not
+filter or redefine a crossing.
+
+Merge remains separate. After merge, only a documentation-first 50S.7C audit
+is authorized; transition runtime and later behavior remain unauthorized.
