@@ -474,3 +474,42 @@ validation.
 remain unauthorized. This acceptance does not itself authorize implementation
 before merge. PR merge and branch deletion still require separate explicit
 authorization.
+## 12. Candidate 50S.7B implementation record
+
+The unaccepted candidate at branch
+`feature/50s7b-direct-sun-night-geometry` implements only the authorized
+direct-Sun and observer-night slice. `wenu.satellites.illumination` composes
+an accepted `SatelliteTopocentricState` with an injected
+`EphemerisStateSource`; it does not propagate, search crossings, find shadow
+transitions, render, report, plan, or schedule.
+
+The candidate requests one same-instant geometric Earth-to-Sun state in ICRF
+axes, rotates the ICRF/GCRS-aligned geocentric vector into ITRS with the exact
+installed-IERS-A evidence already bound to the satellite state, and performs
+all subtraction in ITRS. It evaluates a uniform finite solar disk against the
+vacuum WGS-84 ellipsoid by deterministic equal-solid-angle ray quadrature.
+Coarse and refined evaluations record their absolute fraction difference and
+fail closed with `quadrature_not_converged` when the declared tolerance is
+not met.
+
+The immutable result retains the topocentric and ephemeris states, common UTC
+instant and ITRS vectors, bounded visible-disk fraction, typed
+`sunlit`/`penumbra`/`umbra`/`antumbra` class, geometric vacuum observer
+Sun altitude, exact twilight class, explicit model/numerical policy,
+provenance, and warnings. Lunar solar occultation is
+`not_evaluated`, never numeric zero.
+
+Focused analytic tests cover clear, exterior contact, partial, interior
+contact, umbra, annular, polar/equatorial, LEO/MEO/GEO/high-orbit, twilight
+boundaries, immutable identity, frame failure, convergence failure, and an
+independent Astropy AltAz comparison. The offline
+`tools/validate_50s7b_illumination_geometry.py` refuses downloads and is
+reserved for installed-DE440 binary comparison with Skyfield plus selected
+SPICE ellipsoid classification. Its controlled Mac receipt remains an
+acceptance gate.
+
+This candidate does not authorize 50S.7C transition search, radiometry,
+Earthshine, Moonlight radiometry, Lunar-Earthshine fields, brightness,
+visibility, detector effects, facility integration, or scheduling. Merge and
+branch deletion require separate explicit authorization.
+
