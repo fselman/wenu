@@ -1717,4 +1717,3 @@ radiometry, Earthshine, Moonlight radiometry, Lunar-Earthshine fields,
 brightness, visibility, detector effects, facility integration, scheduling,
 or unrelated refactoring. Merge and branch deletion remain separate explicit
 decisions.
-
