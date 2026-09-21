@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum
 from math import asin, atan, cos, degrees, isfinite, radians, sin
 from typing import Final
@@ -123,8 +123,10 @@ class SolarOccultationPolicy:
     earth_equatorial_radius_km: float = WGS84_EQUATORIAL_RADIUS_KM
     earth_polar_radius_km: float = WGS84_POLAR_RADIUS_KM
     solar_radius_km: float = IAU_NOMINAL_SOLAR_RADIUS_KM
-    radial_samples: int = 96
-    azimuth_samples: int = 384
+    radial_samples: int = 48
+    azimuth_samples: int = 192
+    refinement_factor: int = 2
+    fraction_convergence_tolerance: float = 7.5e-4
     contact_relative_tolerance: float = 1.0e-12
     provenance: tuple[str, ...] = (
         "Uniform-radiance finite solar disk.",
@@ -141,6 +143,7 @@ class SolarOccultationPolicy:
             "earth_equatorial_radius_km",
             "earth_polar_radius_km",
             "solar_radius_km",
+            "fraction_convergence_tolerance",
             "contact_relative_tolerance",
         ):
             object.__setattr__(
@@ -159,6 +162,11 @@ class SolarOccultationPolicy:
             )
         if self.solar_radius_km <= 0.0:
             raise ValueError("solar_radius_km must be positive.")
+        if not 0.0 < self.fraction_convergence_tolerance < 1.0:
+            raise ValueError(
+                "fraction_convergence_tolerance must lie strictly "
+                "between 0 and 1."
+            )
         if not 0.0 < self.contact_relative_tolerance < 1.0:
             raise ValueError(
                 "contact_relative_tolerance must lie strictly between 0 and 1."
@@ -176,6 +184,16 @@ class SolarOccultationPolicy:
                 name="azimuth_samples",
             ),
         )
+        object.__setattr__(
+            self,
+            "refinement_factor",
+            _positive_integer(
+                self.refinement_factor,
+                name="refinement_factor",
+            ),
+        )
+        if self.refinement_factor < 2:
+            raise ValueError("refinement_factor must be at least 2.")
         if self.radial_samples < 8 or self.azimuth_samples < 32:
             raise ValueError(
                 "solar-disk quadrature requires at least 8 radial and "
@@ -193,6 +211,8 @@ class SolarOccultationGeometry:
     """One finite-Sun/WGS-84 occultation evaluation in ITRS."""
 
     visible_disk_fraction: float
+    coarse_visible_disk_fraction: float
+    quadrature_absolute_difference: float
     occultation_class: SolarOccultationClass
     satellite_to_sun_distance_km: float
     solar_angular_radius_deg: float
@@ -207,6 +227,32 @@ class SolarOccultationGeometry:
         if not 0.0 <= fraction <= 1.0:
             raise ValueError("visible_disk_fraction must lie in [0, 1].")
         object.__setattr__(self, "visible_disk_fraction", fraction)
+        coarse = _finite(
+            self.coarse_visible_disk_fraction,
+            name="coarse_visible_disk_fraction",
+        )
+        if not 0.0 <= coarse <= 1.0:
+            raise ValueError(
+                "coarse_visible_disk_fraction must lie in [0, 1]."
+            )
+        object.__setattr__(
+            self,
+            "coarse_visible_disk_fraction",
+            coarse,
+        )
+        difference = _finite(
+            self.quadrature_absolute_difference,
+            name="quadrature_absolute_difference",
+        )
+        if difference < 0.0:
+            raise ValueError(
+                "quadrature_absolute_difference must be non-negative."
+            )
+        object.__setattr__(
+            self,
+            "quadrature_absolute_difference",
+            difference,
+        )
         if not isinstance(self.occultation_class, SolarOccultationClass):
             raise TypeError(
                 "occultation_class must be a SolarOccultationClass."
@@ -482,21 +528,57 @@ def evaluate_solar_occultation(
         )
     center = satellite_to_sun / distance
     angular_radius = asin(resolved_policy.solar_radius_km / distance)
-    rays, east, north = _solar_disk_rays(
+    coarse_rays, _, _ = _solar_disk_rays(
         center,
         angular_radius,
         resolved_policy,
     )
+    coarse_blocked = _rays_intersect_ellipsoid(
+        satellite,
+        coarse_rays,
+        resolved_policy,
+    )
+    coarse_fraction = float(
+        np.clip(
+            1.0
+            - np.count_nonzero(coarse_blocked) / coarse_blocked.size,
+            0.0,
+            1.0,
+        )
+    )
+    refined_policy = replace(
+        resolved_policy,
+        radial_samples=(
+            resolved_policy.radial_samples
+            * resolved_policy.refinement_factor
+        ),
+        azimuth_samples=(
+            resolved_policy.azimuth_samples
+            * resolved_policy.refinement_factor
+        ),
+    )
+    rays, east, north = _solar_disk_rays(
+        center,
+        angular_radius,
+        refined_policy,
+    )
     blocked = _rays_intersect_ellipsoid(
         satellite,
         rays,
-        resolved_policy,
+        refined_policy,
     )
     blocked_count = int(np.count_nonzero(blocked))
     ray_count = int(blocked.size)
     visible_fraction = float(
         np.clip(1.0 - blocked_count / ray_count, 0.0, 1.0)
     )
+    difference = abs(visible_fraction - coarse_fraction)
+    if difference > resolved_policy.fraction_convergence_tolerance:
+        raise SatelliteIlluminationGeometryError(
+            SatelliteIlluminationFailureCode.QUADRATURE_NOT_CONVERGED,
+            "solar-disk quadrature did not meet the declared absolute "
+            "fraction tolerance.",
+        )
     if blocked_count == 0:
         occultation_class = SolarOccultationClass.SUNLIT
     elif blocked_count == ray_count:
@@ -507,13 +589,15 @@ def evaluate_solar_occultation(
         east,
         north,
         angular_radius,
-        resolved_policy,
+        refined_policy,
     ):
         occultation_class = SolarOccultationClass.ANTUMBRA
     else:
         occultation_class = SolarOccultationClass.PENUMBRA
     return SolarOccultationGeometry(
         visible_disk_fraction=visible_fraction,
+        coarse_visible_disk_fraction=coarse_fraction,
+        quadrature_absolute_difference=difference,
         occultation_class=occultation_class,
         satellite_to_sun_distance_km=distance,
         solar_angular_radius_deg=degrees(angular_radius),
