@@ -3166,3 +3166,15 @@ clean diff gate, and all 2,796 repository tests in 233.66 seconds, with exact
 upstream and a clean tree. The candidate is ready for separate scientific and
 architectural review. Merge, deletion, 50S.7C, and later work remain
 unauthorized.
+
+## Accepted 50S.7B — Direct-Sun and observer-night geometry
+
+Fernando scientifically and architecturally accepted candidate `054ac53a` on
+2026-09-21 after the complete numerical, repository, documentation, diff,
+upstream, and clean-tree gates. PR 181 merge remains a separate explicit
+decision.
+
+After merge, the next permissible work is a documentation-first 50S.7C
+shadow-transition audit. No transition solver implementation, radiometry,
+reflected-source field, brightness, visibility, detector, facility, or
+scheduling work is authorized by this acceptance.
