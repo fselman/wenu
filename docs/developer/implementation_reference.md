@@ -3454,3 +3454,28 @@ The reserved component-status vocabulary remains output-neutral. Transition
 search, radiometry, solar Earthshine, Moonlight radiometry,
 Lunar-Earthshine, component summation, brightness, detector, facility, and
 scheduling APIs remain unauthorized.
+## Candidate 50S.7B direct-Sun and observer-night API
+
+`wenu.satellites.illumination` now exports an unaccepted candidate API:
+
+- `SolarOccultationPolicy` declares the uniform-Sun, WGS-84 vacuum,
+  two-resolution equal-solid-angle quadrature and contact tolerances;
+- `SolarOccultationGeometry` carries refined/coarse visible fractions,
+  convergence difference, typed class, angular radius, distance, and ray
+  counts;
+- `SatelliteIlluminationGeometryEvaluator.evaluate(topocentric_state)`
+  requests the exact same-instant Earth-to-Sun state from an injected
+  `EphemerisStateSource`, rotates it to ITRS with matching Earth-orientation
+  evidence, and returns immutable `SatelliteIlluminationGeometry`;
+- `SolarOccultationClass`, `ObserverTwilightClass`, and
+  `LunarOccultorStatus` provide stable semantic states; and
+- `SatelliteIlluminationGeometryError.code` uses the failure vocabulary
+  reserved by the accepted audit.
+
+`evaluate_solar_occultation(...)` is the frame-explicit numerical boundary
+for already-ITRS inputs. `classify_observer_twilight(...)` applies geometric
+Sun-centre thresholds `0`, `-6`, `-12`, and `-18` degrees exactly.
+Neither function makes a radiometric, apparent-brightness, visibility, or
+detectability claim. The API is a review candidate until Fernando separately
+accepts it.
+
