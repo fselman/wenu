@@ -1214,7 +1214,7 @@ branch deletion require separate explicit authorization.
 The feature branch implements the bounded accepted slice with immutable
 finite-Sun/WGS-84 vacuum occultation, typed shadow class, geometric observer
 twilight, same-instant ITRS composition, complete input/model provenance, and
-fail-closed two-resolution quadrature. The focused 24-test illumination gate
+fail-closed bounded adaptive quadrature. The focused 24-test illumination gate
 passed in 4.86 seconds on Fernando's Mac at revision `5ffae3a`.
 
 An offline installed-DE440 binary Skyfield and selected SPICE classification
