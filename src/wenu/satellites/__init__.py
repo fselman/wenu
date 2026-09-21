@@ -48,6 +48,23 @@ from .exact_tracks import (
     ExactLocalTrackPolicy,
 )
 from .elements import SatelliteElementRecord
+from .illumination import (
+    AU_KM,
+    IAU_NOMINAL_SOLAR_RADIUS_KM,
+    WGS84_EQUATORIAL_RADIUS_KM,
+    WGS84_POLAR_RADIUS_KM,
+    LunarOccultorStatus,
+    ObserverTwilightClass,
+    SatelliteIlluminationFailureCode,
+    SatelliteIlluminationGeometry,
+    SatelliteIlluminationGeometryError,
+    SatelliteIlluminationGeometryEvaluator,
+    SolarOccultationClass,
+    SolarOccultationGeometry,
+    SolarOccultationPolicy,
+    classify_observer_twilight,
+    evaluate_solar_occultation,
+)
 from .snapshot_admission import (
     CELESTRAK_ACTIVE_20260917_IDENTITY,
     CELESTRAK_ACTIVE_20260917_POLICY_IDENTITY,
@@ -81,9 +98,26 @@ from .topocentric import (
     SatelliteEarthOrientationEvidence,
     SatelliteTopocentricState,
     SatelliteTopocentricTransformer,
+    geocentric_gcrs_axis_position_to_itrs,
 )
 
 __all__ = [
+    "AU_KM",
+    "IAU_NOMINAL_SOLAR_RADIUS_KM",
+    "WGS84_EQUATORIAL_RADIUS_KM",
+    "WGS84_POLAR_RADIUS_KM",
+    "LunarOccultorStatus",
+    "ObserverTwilightClass",
+    "SatelliteIlluminationFailureCode",
+    "SatelliteIlluminationGeometry",
+    "SatelliteIlluminationGeometryError",
+    "SatelliteIlluminationGeometryEvaluator",
+    "SolarOccultationClass",
+    "SolarOccultationGeometry",
+    "SolarOccultationPolicy",
+    "classify_observer_twilight",
+    "evaluate_solar_occultation",
+    "geocentric_gcrs_axis_position_to_itrs",
     "AcceleratedCrossingEvidence",
     "AcceleratedCrossingPolicy",
     "AcceleratedLocalSatelliteCrossingOracle",
