@@ -1338,4 +1338,3 @@ tests in 4.72 seconds.
 PR 183 merge and branch deletion remain separate explicit operations. 50S.7D+,
 output integration, radiometry, reflected fields, brightness, visibility,
 detector, facility, scheduling, and unrelated work remain unauthorized.
-

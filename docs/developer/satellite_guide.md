@@ -1139,4 +1139,3 @@ These transitions remain geometry only. They carry no observer-night,
 crossing, brightness, visibility, detector, facility, or scheduling meaning.
 PR 183 merge, branch deletion, transition attachment, and 50S.7D+ remain
 separate unauthorized work.
-

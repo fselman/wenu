@@ -635,4 +635,3 @@ certified brackets, deterministic identity, shared geocentric ITRS evidence,
 and fail-closed behavior. PR 183 merge and branch deletion remain separate.
 50S.7D+, output attachment, radiometry, reflected fields, brightness,
 visibility, detector, facility, and scheduling remain unauthorized.
-

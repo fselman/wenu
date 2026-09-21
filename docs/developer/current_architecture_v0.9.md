@@ -1933,4 +1933,3 @@ deterministic identity, and typed terminal failure. Merge and branch deletion
 remain separate explicit decisions. 50S.7D+, transition attachment to outputs,
 radiometry, reflected fields, brightness, visibility, detector, facility,
 scheduling, and unrelated work remain unauthorized.
-

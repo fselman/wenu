@@ -2805,4 +2805,3 @@ Executable `bf877404` and its complete 311/212/2,816-test evidence are
 accepted. No new production or test owner is authorized. Merge, branch
 deletion, 50S.7D+, output integration, and later ownership changes remain
 separate and unauthorized.
-

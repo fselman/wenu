@@ -4221,4 +4221,3 @@ an apparent, brightness, visibility, or detector result. The coordinate-system
 guide was reviewed and remains current. PR 183 merge, branch deletion,
 50S.7D+, and any attachment to crossings or outputs require separate
 authorization.
-

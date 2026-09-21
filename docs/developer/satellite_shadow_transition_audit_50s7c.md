@@ -427,4 +427,3 @@ remain separate explicit decisions. It does not authorize 50S.7D+, attaching
 transitions to crossings, tracks, reports, charts, CLI, or planning, or adding
 radiometry, reflected fields, brightness, visibility, detector, facility,
 scheduling, or unrelated behavior.
-

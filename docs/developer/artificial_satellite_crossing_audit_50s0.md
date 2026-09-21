@@ -540,4 +540,3 @@ tracks, reports, charts, CLI, or planning advisories. PR 183 merge and branch
 deletion remain separate decisions. Transition attachment and all 50S.7D+
 radiometric, reflected-field, brightness, visibility, detector, facility, or
 scheduling behavior remain unauthorized.
-

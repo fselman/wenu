@@ -1826,4 +1826,3 @@ Do not merge PR 183 or delete its feature branch without Fernando's separate
 explicit instruction. Do not begin 50S.7D+, attach transitions to outputs, or
 add radiometry, reflected fields, brightness, visibility, detector, facility,
 scheduling, or unrelated work before a separately accepted bounded milestone.
-

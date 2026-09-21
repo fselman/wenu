@@ -3253,4 +3253,3 @@ After merge, no 50S.7D+ work begins without a separately accepted bounded
 milestone. Report/chart/planning integration, radiometry, reflected fields,
 brightness, visibility, detector, facility, scheduling, and unrelated work
 remain unauthorized.
-

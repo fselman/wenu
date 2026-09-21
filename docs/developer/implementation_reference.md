@@ -3566,4 +3566,3 @@ The accepted API remains output-neutral and observer-independent. It adds no
 crossing, track, report, chart, CLI, planning, radiometric, brightness,
 visibility, detector, facility, or scheduling semantics. PR 183 merge, branch
 deletion, and any 50S.7D+ API remain separately authorized decisions.
-
