@@ -3270,3 +3270,23 @@ before Fernando's separate scientific and architectural acceptance.
 If accepted and merged, only bounded 50S.7D.1 may be implemented. 50S.7D.2+,
 50S.7E reflected fields, 50S.7F bundling, 50S.8 brightness, 50S.9 detector
 effects, outputs, facilities, visibility, and scheduling remain unauthorized.
+
+## Accepted 50S.7D — Direct-source radiometry audit
+
+Fernando scientifically and architecturally accepted exact documentation-only
+candidate `362199d04bd917741a8be88f20608967af75530e` on 2026-09-21. All
+214 plugin-disabled current-documentation tests passed in 7.00 seconds; the
+diff, exact-head/upstream, and clean-tree checks passed.
+
+After merge, only bounded 50S.7D.1 direct-Sun bolometric normal-plane
+irradiance may be implemented in the existing illumination owner: IAU 2015
+nominal `1361 W m-2` at 1 au, inverse-square Sun-satellite distance scaling,
+the accepted uniform-disk visible fraction, explicit nominal/model-uncertainty
+separation, deterministic identity, focused tests, and offline independent
+recomputation.
+
+50S.7D.2 spectral Sunlight, 50S.7D.3 Moonlight, 50S.7D.4 closure, 50S.7E
+reflected fields, 50S.7F bundling, 50S.8 brightness, 50S.9 detector effects,
+outputs, visibility, facilities, scheduling, and unrelated work remain
+unauthorized. PR 184 merge and branch deletion remain separate explicit
+decisions.

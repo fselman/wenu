@@ -1355,3 +1355,22 @@ meaning.
 The audit changes no runtime and remains unaccepted. 50S.7D.1 implementation,
 50S.7D.2+, 50S.7E+, output integration, brightness, visibility, detector,
 facility, scheduling, merge, and branch deletion remain unauthorized.
+
+## 2026-09-21 — Accepted 50S.7D direct-source radiometry audit
+
+Fernando scientifically and architecturally accepted exact candidate
+`362199d04bd917741a8be88f20608967af75530e`. The complete
+current-documentation gate passed 214 plugin-disabled tests in 7.00 seconds;
+the branch diff, exact local/upstream equality, and clean-tree checks passed.
+
+After merge, only the bounded 50S.7D.1 implementation is authorized:
+direct-Sun bolometric normal-plane irradiance using the IAU 2015 nominal
+`1361 W m-2` value at 1 au, inverse-square Sun-satellite distance scaling,
+the accepted uniform-disk visible fraction, explicit unevaluated
+physical/model uncertainty, deterministic identity, focused tests, and
+offline independent recomputation.
+
+PR 184 merge and branch deletion remain separately authorized operations.
+50S.7D.2+, 50S.7E+, spectral/lunar resources, output integration, surfaces,
+BRDF, brightness, visibility, detector, facility, scheduling, and unrelated
+work remain unauthorized.

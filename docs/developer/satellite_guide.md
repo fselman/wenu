@@ -1156,3 +1156,18 @@ Moonlight requires a phase-, libration-, distance-, and wavelength-dependent
 model; unknown Moonlight is never numeric zero. This candidate adds no runtime
 and 50S.7D.2+, Earth-reflected fields, brightness, visibility, detector,
 facility, scheduling, and output behavior remain unauthorized.
+
+## Accepted 50S.7D direct-source radiometry vocabulary
+
+Fernando accepted the documentation-only 50S.7D vocabulary at exact candidate
+`362199d04bd917741a8be88f20608967af75530e` on 2026-09-21 after 214
+plugin-disabled current-documentation tests passed in 7.00 seconds and
+repository checks were clean.
+
+After merge, only the 50S.7D.1 bolometric normal-plane direct-Sun quantity may
+be implemented. Preserve `1361 W m-2` as an exact IAU nominal convention,
+not an instantaneous measurement or zero-uncertainty claim; preserve unknown
+Moonlight as not evaluated, never numeric zero. Spectral/passband Sunlight,
+Moonlight, reflected fields, spacecraft response, brightness, visibility,
+detector, output, facility, and scheduling vocabulary remain unauthorized.
+PR 184 merge and branch deletion remain separate explicit decisions.

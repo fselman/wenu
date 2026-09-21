@@ -359,3 +359,27 @@ Earth-reflected fields, component bundling, apparent brightness, detector
 effects, output integration, facility behavior, scheduling, or unrelated
 refactoring. Audit merge and branch deletion remain separate explicit
 decisions.
+
+## 12. Accepted 50S.7D audit and implementation authority
+
+Fernando scientifically and architecturally accepted this documentation-only
+audit on 2026-09-21 at exact candidate revision
+`362199d04bd917741a8be88f20608967af75530e`. The complete
+current-documentation gate passed all 214 plugin-disabled tests in 7.00
+seconds. The branch diff check, exact local/upstream equality, and clean
+working tree also passed.
+
+After this audit is merged, implement only bounded 50S.7D.1 direct-Sun
+bolometric normal-plane irradiance in
+`src/wenu/satellites/illumination.py`: immutable policy/result/evaluator
+contracts, the exact IAU 2015 nominal `1361 W m-2` value at 1 au,
+inverse-square Sun-satellite distance scaling, composition with the accepted
+uniform-disk visible fraction, explicit physical/model uncertainty
+`not_evaluated`, deterministic identity and provenance, focused tests in the
+existing illumination test owner, and offline independent recomputation.
+
+50S.7D.2 spectral Sunlight, 50S.7D.3 Moonlight, 50S.7D.4 closure, 50S.7E
+reflected fields, 50S.7F bundling, 50S.8 brightness, 50S.9 detector effects,
+outputs, visibility, facilities, scheduling, and unrelated refactoring remain
+unauthorized. Acceptance does not authorize PR 184 merge or branch deletion;
+both remain separate explicit decisions.

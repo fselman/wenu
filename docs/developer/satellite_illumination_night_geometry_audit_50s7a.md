@@ -652,3 +652,22 @@ Sunlight and ROLO/LIME-class Moonlight remain later separately audited slices.
 The candidate authorizes no runtime. 50S.7D.1 implementation, 50S.7D.2+,
 50S.7E+, output integration, brightness, visibility, detector, facility,
 scheduling, merge, and branch deletion remain unauthorized.
+
+## 18. Accepted 50S.7D direct-source radiometry handoff
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.7D audit at exact candidate
+`362199d04bd917741a8be88f20608967af75530e` on 2026-09-21. All 214
+plugin-disabled current-documentation tests passed in 7.00 seconds, and
+repository checks were clean.
+
+After merge, implement only bounded 50S.7D.1 IAU-nominal bolometric
+normal-plane Sunlight, inverse-square Sun-satellite distance scaling, and
+composition with the accepted uniform-disk visible fraction in the existing
+illumination owner. Direct Sunlight and Moonlight remain distinct 50S.7D
+components; Earthshine and Lunar-Earthshine remain 50S.7E.
+
+50S.7D.2+ spectral and lunar models, 50S.7E+, component bundling, outputs,
+spacecraft response, brightness, visibility, detector, facility, scheduling,
+and unrelated work remain unauthorized. PR 184 merge and branch deletion
+remain separate explicit decisions.

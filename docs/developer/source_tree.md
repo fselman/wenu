@@ -2821,3 +2821,20 @@ resource-admission decision before any new module is created.
 This candidate changes no runtime. 50S.7D.2+, 50S.7E+, resource acquisition,
 outputs, brightness, visibility, detector, facility, and scheduling ownership
 remain unauthorized.
+
+## Accepted 50S.7D source-ownership authority
+
+Fernando accepted the documentation-only 50S.7D source placement at exact
+candidate `362199d04bd917741a8be88f20608967af75530e` on 2026-09-21 after
+214 plugin-disabled current-documentation tests passed in 7.00 seconds and
+repository checks were clean.
+
+After merge, only bounded 50S.7D.1 implementation may extend
+`src/wenu/satellites/illumination.py` and
+`tests/test_satellite_illumination.py`. No new production or test file,
+dependency, resource, provider, network, cache, output, renderer, or exporter
+owner is authorized. Any spectral or lunar data lifecycle requires a separate
+source-tree and resource-admission audit. 50S.7D.2+, 50S.7E+, outputs,
+brightness, visibility, detector, facility, and scheduling ownership remain
+unauthorized. PR 184 merge and branch deletion remain separate explicit
+decisions.

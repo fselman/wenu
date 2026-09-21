@@ -4236,3 +4236,19 @@ coordinate-system guide was reviewed and remains current.
 This documentation-only candidate authorizes no runtime. Spacecraft-frame
 projection, attitude, BRDF, observer flux, apparent magnitude, visibility,
 detector behavior, and all 50S.7D.2+ work remain unauthorized.
+
+## Accepted 50S.7D coordinate and radiometric boundary
+
+Fernando accepted the documentation-only 50S.7D coordinate boundary at
+`362199d04bd917741a8be88f20608967af75530e` on 2026-09-21 after 214
+plugin-disabled current-documentation tests passed in 7.00 seconds and
+repository checks were clean. The coordinate-system guide was reviewed and
+remains current.
+
+After merge, 50S.7D.1 may consume only the accepted same-instant
+Sun-satellite distance and uniform-disk visible fraction to produce scalar
+bolometric normal-plane irradiance. It introduces no coordinate transform,
+frame, time scale, observer, or spacecraft attitude. 50S.7D.2+, spacecraft
+projection, BRDF, observer flux, apparent magnitude, visibility, detector,
+output, facility, and scheduling behavior remain unauthorized. PR 184 merge
+and branch deletion remain separate explicit decisions.

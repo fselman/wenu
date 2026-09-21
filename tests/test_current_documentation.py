@@ -9421,3 +9421,65 @@ def test_50s7d_records_candidate_direct_source_radiometry_audit():
         ROOT / "src" / "wenu" / "satellites" / "illumination.py"
     )
     assert "DirectSolarIrradiance" not in implementation
+
+
+def test_50s7d_records_accepted_direct_source_radiometry_audit():
+    audit = read(
+        DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+    )
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7D direct-source radiometry audit architecture",
+        "Accepted 50S.7D — Direct-source radiometry audit",
+        "Accepted 50S.7D radiometry API authority",
+        "Accepted 50S.7D source-ownership authority",
+        "Accepted 50S.7D coordinate and radiometric boundary",
+        "Accepted 50S.7D direct-source radiometry vocabulary",
+        "Accepted 50S.7D direct-source radiometry audit",
+        "Accepted 50S.7D audit boundary",
+        "Accepted 50S.7D refinement of illumination separation",
+        "Accepted 50S.7D direct-source radiometry handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "362199d04bd917741a8be88f20608967af75530e" in normalized
+        assert "214" in normalized
+        assert "7.00 seconds" in normalized
+        assert "50S.7D.1" in normalized
+        assert "separate" in normalized
+        assert "unauthorized" in normalized
+
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Accepted 50S.7D audit and implementation authority",
+        "scientifically and architecturally accepted",
+        "362199d04bd917741a8be88f20608967af75530e",
+        "214 plugin-disabled tests in 7.00 seconds",
+        "exact local/upstream equality",
+        "only bounded 50S.7D.1",
+        "does not authorize PR 184 merge or branch deletion",
+    ):
+        assert phrase in normalized_audit
+
+    index = read(DEVELOPER / "README.md")
+    assert (
+        "accepted documentation-only contract for direct-source model "
+        "separation"
+    ) in " ".join(index.split())

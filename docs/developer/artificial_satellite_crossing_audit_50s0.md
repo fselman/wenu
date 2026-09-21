@@ -556,3 +556,18 @@ zero.
 The candidate changes no runtime. 50S.7D.1 implementation, later direct-source
 models, reflected fields, outputs, brightness, detector, facility, and
 scheduling behavior remain unauthorized pending separate acceptance.
+
+## Accepted 50S.7D refinement of illumination separation
+
+Fernando scientifically and architecturally accepted the documentation-only
+50S.7D audit at exact candidate
+`362199d04bd917741a8be88f20608967af75530e` on 2026-09-21. All 214
+plugin-disabled current-documentation tests passed in 7.00 seconds; the diff,
+exact-upstream, and clean-tree checks passed.
+
+After merge, only the bounded 50S.7D.1 direct-Sun bolometric normal-plane
+irradiance implementation may begin. It must compose the accepted illumination
+geometry without changing crossing identity or adding surface, attitude, BRDF,
+observer-flux, magnitude, visibility, detector, output, facility, or scheduling
+meaning. 50S.7D.2+ and 50S.7E+ remain unauthorized. PR 184 merge and branch
+deletion remain separate explicit decisions.

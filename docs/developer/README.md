@@ -122,7 +122,7 @@ in the same change.
   contact geometry, complete bounded event search, certified UTC brackets,
   identity, failure, and independent event validation.
 - [50S.7D direct-source radiometry audit](satellite_direct_source_radiometry_audit_50s7d.md)
-  — candidate documentation-only contract for direct-source model separation,
+  — accepted documentation-only contract for direct-source model separation,
   IAU nominal bolometric Sunlight, solar spectral-resource reservation,
   lunar-model reservation, uncertainty, validation, and a bounded
   solar-first 50S.7D.1 implementation.
