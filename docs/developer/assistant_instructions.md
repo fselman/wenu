@@ -1717,3 +1717,12 @@ radiometry, Earthshine, Moonlight radiometry, Lunar-Earthshine fields,
 brightness, visibility, detector effects, facility integration, scheduling,
 or unrelated refactoring. Merge and branch deletion remain separate explicit
 decisions.
+
+## Verified candidate 50S.7B review state
+
+Treat executable revision `086e7da1` plus its documentation-only evidence
+commits as a verified but unaccepted candidate. The expanded 291-test gate,
+208-test documentation gate, clean diff, complete 2,796-test suite, exact
+upstream/clean tree, and offline SPICE/Skyfield receipt passed. Do not merge,
+delete the branch, or begin 50S.7C+ work without Fernando's separate explicit
+decision.
