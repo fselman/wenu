@@ -1815,7 +1815,7 @@ then owns only finite-Sun/WGS-84 occultation and geometric observer twilight.
 `SatelliteIlluminationGeometry` retains all input state/resource identity,
 common-frame vectors, a converged uniform-disk visible fraction, typed shadow
 and twilight classes, explicit lunar-occultor `not_evaluated` status,
-numerical policy, provenance, and warnings. The two-resolution
+numerical policy, provenance, and warnings. The bounded adaptive
 equal-solid-angle ray quadrature fails closed if its declared fraction
 tolerance is not met. No crossing, chart, report, planning, radiometric,
 brightness, visibility, detector, facility, or scheduling owner changes.
