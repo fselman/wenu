@@ -1701,3 +1701,20 @@ not begin 50S.7C+, radiometry, solar Earthshine or Lunar-Earthshine fields,
 Moonlight radiometry, brightness, visibility, detector effects, facility
 integration, scheduling, or unrelated refactoring. Merge and branch deletion
 remain separately authorized operations.
+## Candidate 50S.7B implementation boundary
+
+Treat `feature/50s7b-direct-sun-night-geometry` as an unaccepted bounded
+candidate. Preserve its output-neutral `satellites/illumination.py`
+composition over accepted topocentric and ephemeris owners, same-instant ITRS
+vectors, uniform finite-Sun/WGS-84 vacuum occultation, converged visible-disk
+fraction, typed shadow and twilight states, explicit lunar
+`not_evaluated`, failures, and provenance.
+
+Before acceptance require the offline installed-DE440/Skyfield/SPICE receipt,
+focused and complete plugin-disabled suites, documentation gate, diff check,
+exact head/upstream, and clean tree. Do not implement 50S.7C transition search,
+radiometry, Earthshine, Moonlight radiometry, Lunar-Earthshine fields,
+brightness, visibility, detector effects, facility integration, scheduling,
+or unrelated refactoring. Merge and branch deletion remain separate explicit
+decisions.
+
