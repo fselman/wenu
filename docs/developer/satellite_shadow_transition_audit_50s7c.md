@@ -334,3 +334,25 @@ independent event validator.
 This candidate audit itself authorizes no runtime, merge, branch deletion, or
 50S.7D+ work. Fernando's separate scientific and architectural acceptance is
 required before implementation begins.
+
+## 12. Accepted 50S.7C audit and implementation authority
+
+Fernando scientifically and architecturally accepted this documentation-only
+audit on 2026-09-21 at exact candidate revision
+`030a632243349c34a1455743ae9bf40ced39e755`. The complete
+current-documentation gate passed all 210 plugin-disabled tests in 5.81
+seconds. The branch diff check, exact local/upstream equality, and clean
+working tree also passed.
+
+After this audit is merged, implement only the bounded 50S.7C transition slice
+defined above: observer-independent continuous finite-Sun/WGS-84 contact
+geometry, one selected immutable record over one admitted closed UTC interval,
+complete bounded search, directed transition events, certified brackets,
+deterministic identity, fail-closed budgets, the minimal shared geocentric ITRS
+seam, focused tests, and offline independent event validation.
+
+50S.7D+ radiometry and reflected fields, transition attachment to crossings,
+tracks, reports, charts, CLI, or planning advisories, brightness, visibility,
+detector effects, facility integration, scheduling, and unrelated refactoring
+remain unauthorized. Acceptance does not authorize PR 182 merge or branch
+deletion; both require separate explicit instructions.
