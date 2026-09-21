@@ -126,6 +126,7 @@ class SolarOccultationPolicy:
     radial_samples: int = 48
     azimuth_samples: int = 192
     refinement_factor: int = 2
+    maximum_refinements: int = 3
     fraction_convergence_tolerance: float = 7.5e-4
     contact_relative_tolerance: float = 1.0e-12
     provenance: tuple[str, ...] = (
@@ -194,6 +195,14 @@ class SolarOccultationPolicy:
         )
         if self.refinement_factor < 2:
             raise ValueError("refinement_factor must be at least 2.")
+        object.__setattr__(
+            self,
+            "maximum_refinements",
+            _positive_integer(
+                self.maximum_refinements,
+                name="maximum_refinements",
+            ),
+        )
         if self.radial_samples < 8 or self.azimuth_samples < 32:
             raise ValueError(
                 "solar-disk quadrature requires at least 8 radial and "
@@ -546,38 +555,46 @@ def evaluate_solar_occultation(
             1.0,
         )
     )
-    refined_policy = replace(
-        resolved_policy,
-        radial_samples=(
-            resolved_policy.radial_samples
-            * resolved_policy.refinement_factor
-        ),
-        azimuth_samples=(
-            resolved_policy.azimuth_samples
-            * resolved_policy.refinement_factor
-        ),
-    )
-    rays, east, north = _solar_disk_rays(
-        center,
-        angular_radius,
-        refined_policy,
-    )
-    blocked = _rays_intersect_ellipsoid(
-        satellite,
-        rays,
-        refined_policy,
-    )
-    blocked_count = int(np.count_nonzero(blocked))
-    ray_count = int(blocked.size)
-    visible_fraction = float(
-        np.clip(1.0 - blocked_count / ray_count, 0.0, 1.0)
-    )
-    difference = abs(visible_fraction - coarse_fraction)
-    if difference > resolved_policy.fraction_convergence_tolerance:
+    current_policy = resolved_policy
+    for _ in range(resolved_policy.maximum_refinements):
+        refined_policy = replace(
+            current_policy,
+            radial_samples=(
+                current_policy.radial_samples
+                * resolved_policy.refinement_factor
+            ),
+            azimuth_samples=(
+                current_policy.azimuth_samples
+                * resolved_policy.refinement_factor
+            ),
+        )
+        rays, east, north = _solar_disk_rays(
+            center,
+            angular_radius,
+            refined_policy,
+        )
+        blocked = _rays_intersect_ellipsoid(
+            satellite,
+            rays,
+            refined_policy,
+        )
+        blocked_count = int(np.count_nonzero(blocked))
+        ray_count = int(blocked.size)
+        visible_fraction = float(
+            np.clip(1.0 - blocked_count / ray_count, 0.0, 1.0)
+        )
+        difference = abs(visible_fraction - coarse_fraction)
+        if difference <= (
+            resolved_policy.fraction_convergence_tolerance
+        ):
+            break
+        coarse_fraction = visible_fraction
+        current_policy = refined_policy
+    else:
         raise SatelliteIlluminationGeometryError(
             SatelliteIlluminationFailureCode.QUADRATURE_NOT_CONVERGED,
             "solar-disk quadrature did not meet the declared absolute "
-            "fraction tolerance.",
+            "fraction tolerance within the bounded refinement budget.",
         )
     if blocked_count == 0:
         occultation_class = SolarOccultationClass.SUNLIT
