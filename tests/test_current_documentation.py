@@ -8946,3 +8946,25 @@ def test_50s7b_records_bounded_candidate_implementation():
             "c1c7feeab882263fc493a9d5a5b2ddd71"
             "b54826cdf65d8d17a76126b260a49f2"
         ) in document
+
+    gate_documents = (
+        audit,
+        architecture,
+        roadmap,
+        source_tree,
+        coordinate_guide,
+        program_log,
+        instructions,
+    )
+    for document in gate_documents:
+        assert "086e7da1" in document
+        assert "2,796" in document
+        assert "50S.7C" in document
+        assert "unauthorized" in document
+
+    for document in (audit, program_log):
+        assert "291" in document
+        assert "18.81 seconds" in document
+        assert "208" in document
+        assert "6.47 seconds" in document
+        assert "233.66 seconds" in document
