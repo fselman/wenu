@@ -9036,7 +9036,7 @@ def test_50s7c_records_candidate_shadow_transition_audit():
         "observer-independent",
         "certified closed UTC bracket",
         "transition_search_exhausted",
-        "spice \`gfoclt\` or Orekit eclipse detector",
+        "spice `gfoclt` or Orekit eclipse detector",
         "authorizes no runtime",
     ):
         assert phrase.lower() in audit.lower()
