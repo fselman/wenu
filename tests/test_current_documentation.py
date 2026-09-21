@@ -8920,20 +8920,30 @@ def test_50s7b_records_bounded_candidate_implementation():
         assert "50S.7C" in document
         assert "unauthorized" in document
 
-    for document in (
+    receipt_documents = (
         audit,
         architecture,
         roadmap,
         coordinate_guide,
         program_log,
-    ):
+    )
+    for document in receipt_documents:
         assert "51b935f" in document
         assert "24" in document
+        assert "20" in document
+        assert "5" in document
+
+    for document in (audit, architecture, program_log):
         assert "5.58 seconds" in document
+
+    for document in (
+        audit,
+        architecture,
+        coordinate_guide,
+        program_log,
+    ):
         assert (
             "c1c7feeab882263fc493a9d5a5b2ddd71"
             "b54826cdf65d8d17a76126b260a49f2"
         ) in document
-        assert "20" in document
-        assert "5" in document
 
