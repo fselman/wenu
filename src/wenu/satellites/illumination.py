@@ -51,7 +51,9 @@ def _vector3(value, *, name):
     try:
         vector = np.asarray(tuple(value), dtype=float)
     except (TypeError, ValueError) as error:
-        raise TypeError(\n            f"{name} must contain three finite numbers."\n        ) from error
+        raise TypeError(
+            f"{name} must contain three finite numbers."
+        ) from error
     if vector.shape != (3,):
         raise ValueError(f"{name} must contain exactly three values.")
     if not np.all(np.isfinite(vector)):
@@ -234,7 +236,8 @@ class SolarOccultationGeometry:
             raise TypeError("blocked_ray_count must be an integer.")
         if not 0 <= self.blocked_ray_count <= total:
             raise ValueError(
-                "blocked_ray_count must lie between zero and "\n                "evaluated_ray_count."
+                "blocked_ray_count must lie between zero and "
+                "evaluated_ray_count."
             )
 
 
@@ -288,7 +291,9 @@ class SatelliteIlluminationGeometry:
             name="observer_sun_altitude_deg",
         )
         if not -90.0 <= altitude <= 90.0:
-            raise ValueError(\n                "observer_sun_altitude_deg must lie in [-90, 90]."\n            )
+            raise ValueError(
+                "observer_sun_altitude_deg must lie in [-90, 90]."
+            )
         object.__setattr__(self, "observer_sun_altitude_deg", altitude)
         if not isinstance(
             self.observer_twilight_class,
@@ -555,7 +560,9 @@ class SatelliteIlluminationGeometryEvaluator:
     def __init__(self, source, *, policy=None):
         if not isinstance(source, EphemerisStateSource):
             raise TypeError("source must implement EphemerisStateSource.")
-        resolved_policy = (\n            SolarOccultationPolicy() if policy is None else policy\n        )
+        resolved_policy = (
+            SolarOccultationPolicy() if policy is None else policy
+        )
         if not isinstance(resolved_policy, SolarOccultationPolicy):
             raise TypeError("policy must be a SolarOccultationPolicy.")
         self.source = source
@@ -649,7 +656,8 @@ class SatelliteIlluminationGeometryEvaluator:
                 *self.policy.provenance,
             ),
             warnings=(
-                "Geometric vacuum result; not a brightness or visibility "\n                "claim.",
+                "Geometric vacuum result; not a brightness or visibility "
+                "claim.",
                 "Lunar solar occultation is explicitly not evaluated.",
             ),
         )
