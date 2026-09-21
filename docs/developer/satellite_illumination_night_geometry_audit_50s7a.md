@@ -588,3 +588,18 @@ a contact root function. A later implementation would remain in
 in the existing topocentric owner. This candidate adds no runtime and does not
 authorize implementation, merge, branch deletion, 50S.7D+, brightness,
 visibility, detector, facility, or scheduling work.
+
+## 15. Accepted 50S.7C audit handoff
+
+Fernando accepted the documentation-only 50S.7C transition audit at
+`030a6322` on 2026-09-21 after 210 documentation tests passed in 5.81
+seconds and repository checks were clean.
+
+After merge, only the bounded transition implementation defined in
+`satellite_shadow_transition_audit_50s7c.md` is authorized. It must preserve
+the accepted 50S.7B fraction and class meanings while adding continuous
+contact geometry, complete bounded search, directed events, certified
+brackets, deterministic identity, terminal failure, a minimal shared
+geocentric ITRS seam, and independent event validation. 50S.7D+ and every
+brightness, visibility, detector, facility, or scheduling use remain
+unauthorized. Merge and branch deletion remain separate.
