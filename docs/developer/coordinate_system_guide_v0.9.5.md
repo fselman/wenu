@@ -4111,3 +4111,5 @@ and `-18` degree thresholds are not apparent sunrise, refraction, sky
 brightness, satellite visibility, or detectability. This coordinate-guide
 update changes no general chart coordinate service.
 
+50S.7C shadow-transition search and all later satellite-light behavior remain
+unauthorized by this candidate.
