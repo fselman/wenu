@@ -1252,3 +1252,23 @@ PR 181 merge and branch deletion require separate explicit instructions. After
 merge only a documentation-first 50S.7C shadow-transition audit is authorized;
 transition implementation and all later light, brightness, detector,
 visibility, facility, and scheduling work remain unauthorized.
+
+## 2026-09-21 — Candidate 50S.7C shadow-transition audit
+
+Work began from accepted 50S.7B merge
+`f9aa2dd7e7d197f015b0df7667c1fd5804e99428` on branch
+`docs/50s7c-shadow-transition-audit`. The documentation-only candidate
+defines observer-independent directed shadow events, continuous
+finite-Sun/WGS-84 contact margins, certified UTC brackets, complete bounded
+interval search, deterministic identity, fail-closed budgets, and independent
+SPICE/Orekit event evidence.
+
+The as-is review rejects visible-fraction quadrature, fixed-cadence sign scans,
+chart interpolation, and the 50S.5 empirical motion envelope as contact-
+completeness oracles. It keeps the future solver in the existing illumination
+owner and proposes only a minimal shared geocentric ITRS seam in the
+topocentric owner.
+
+The audit adds no runtime and remains unaccepted. Transition implementation,
+50S.7D+ light models, brightness, visibility, detector, facility, and
+scheduling work remain unauthorized.
