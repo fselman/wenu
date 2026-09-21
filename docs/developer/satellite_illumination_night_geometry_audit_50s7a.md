@@ -572,3 +572,34 @@ merge, only a documentation-first 50S.7C shadow-transition audit is authorized
 next. Transition runtime, radiometry, Earthshine, Moonlight radiometry,
 Lunar-Earthshine fields, brightness, visibility, detector effects, facility
 integration, and scheduling remain unauthorized.
+
+## 14. Candidate 50S.7C shadow-transition audit handoff
+
+The documentation-only 50S.7C candidate is recorded in
+`satellite_shadow_transition_audit_50s7c.md`. It refines the reserved event
+contract into observer-independent directed class boundaries with continuous
+finite-Sun/WGS-84 contact geometry, certified UTC brackets, complete bounded
+closed-interval search, fail-closed budgets, deterministic identity, and
+independent SPICE/Orekit event evidence.
+
+The accepted visible-fraction quadrature remains the fraction owner and is not
+a contact root function. A later implementation would remain in
+`satellites/illumination.py`, with only a minimal shared geocentric ITRS seam
+in the existing topocentric owner. This candidate adds no runtime and does not
+authorize implementation, merge, branch deletion, 50S.7D+, brightness,
+visibility, detector, facility, or scheduling work.
+
+## 15. Accepted 50S.7C audit handoff
+
+Fernando accepted the documentation-only 50S.7C transition audit at
+`030a6322` on 2026-09-21 after 210 documentation tests passed in 5.81
+seconds and repository checks were clean.
+
+After merge, only the bounded transition implementation defined in
+`satellite_shadow_transition_audit_50s7c.md` is authorized. It must preserve
+the accepted 50S.7B fraction and class meanings while adding continuous
+contact geometry, complete bounded search, directed events, certified
+brackets, deterministic identity, terminal failure, a minimal shared
+geocentric ITRS seam, and independent event validation. 50S.7D+ and every
+brightness, visibility, detector, facility, or scheduling use remain
+unauthorized. Merge and branch deletion remain separate.

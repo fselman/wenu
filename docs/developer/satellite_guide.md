@@ -1074,3 +1074,36 @@ neither brightness nor visibility predictions.
 
 Merge remains separate. After merge, only a documentation-first 50S.7C
 shadow-transition audit is authorized.
+
+## Candidate 50S.7C shadow-transition vocabulary
+
+A shadow state describes one ordinary instant; a shadow transition describes
+the boundary between the states on its two sides. Contact is an event, not a
+fifth state. The directed vocabulary is
+`sunlit_to_penumbra`, `penumbra_to_sunlit`,
+`penumbra_to_umbra`, `umbra_to_penumbra`,
+`penumbra_to_antumbra`, and `antumbra_to_penumbra`.
+
+The accepted visible solar-disk fraction is a finite ray-quadrature result, so
+it is not a smooth clock for contact. A future solver must instead isolate zero
+of continuous signed solar-limb/Earth-silhouette contact geometry, certify a
+UTC bracket, inspect stable side classes, and either return every event in the
+closed interval or fail closed. Two contacts between initial samples must not
+be missed.
+
+These events remain geometry only. They do not say whether the observer is at
+night, the satellite is in a field or above the horizon, the spacecraft is
+bright, or a detector is affected. The audit changes no runtime and 50S.7D+
+behavior remains unauthorized.
+
+## Accepted 50S.7C transition vocabulary
+
+Fernando accepted the documentation-only transition vocabulary at
+`030a6322` on 2026-09-21. After merge, the bounded implementation may add
+only the six directed finite-source class boundaries, continuous contact
+geometry, certified UTC brackets, complete interval certification, and
+fail-closed search described above.
+
+Contact remains an event rather than a state. Shadow events remain independent
+of observer night and make no brightness, visibility, detectability, detector,
+facility, or scheduling claim. 50S.7D+ remains unauthorized.

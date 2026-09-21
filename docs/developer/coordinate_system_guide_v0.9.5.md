@@ -4144,3 +4144,35 @@ subtraction, and WGS-84 geodetic up.
 These results remain illumination geometry, not apparent sunrise, sky
 brightness, visibility, or detectability. Merge remains separate; after merge
 only a documentation-first 50S.7C audit is authorized.
+
+## Candidate 50S.7C shadow-transition coordinate boundary
+
+A shadow event is observer-independent. A future search must propagate one
+selected immutable record at canonical UTC instants, transform the geocentric
+TEME state into ITRS through the existing installed-IERS-A Earth-orientation
+owner, rotate the same-instant geometric Earth-to-Sun state from aligned
+ICRF/GCRS axes into ITRS, and evaluate all contact geometry in that one frame.
+
+The candidate proposes a minimal shared geocentric Earth-fixed state seam in
+`satellites/topocentric.py`; it does not permit a dummy observer or a second
+TEME/EOP path. UTC remains public identity, UT1/polar motion remain explicit
+IERS evidence, and ephemeris TDB/SPK identity remains provenance.
+
+Certified transition brackets describe finite-Sun/WGS-84 vacuum contact, not
+apparent sunrise, atmospheric refraction, observer twilight transition,
+brightness, visibility, or detectability. This audit changes no coordinate
+runtime and authorizes no implementation before separate acceptance.
+
+## Accepted 50S.7C coordinate boundary
+
+Fernando accepted the observer-independent same-instant coordinate contract at
+`030a6322` on 2026-09-21. After merge, the bounded implementation may extract
+one shared geocentric TEME-to-ITRS state seam from the existing topocentric
+owner and compose the same installed-IERS-A evidence with the same-instant
+Earth-to-Sun ITRS vector.
+
+No dummy observer, second Earth-orientation path, mixed-frame subtraction,
+observer twilight-event search, apparent sunrise, refraction, brightness,
+visibility, or detectability is authorized. The coordinate-system guide was
+reviewed and this bounded extraction changes ownership reuse, not scientific
+frame meaning.

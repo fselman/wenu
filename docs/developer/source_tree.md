@@ -2723,3 +2723,40 @@ crossing, report, chart, and planning owners remain unchanged.
 Merge and branch deletion remain separate decisions. After merge only a
 documentation-first 50S.7C transition audit is authorized; no transition or
 later illumination runtime is authorized.
+
+## Candidate 50S.7C source ownership
+
+- `src/wenu/satellites/illumination.py` remains the closest and proposed
+  owner of continuous contact geometry, transition query/policy/result types,
+  complete bounded search, failure, identity, and provenance. Shared model,
+  dependency, lifecycle, and failure boundaries favor extension; file size
+  alone does not justify a new production module.
+- `src/wenu/satellites/topocentric.py` remains the TEME-to-ITRS and installed
+  Earth-orientation owner. A later implementation may extract only the
+  observer-independent geocentric Earth-fixed state seam so the existing
+  topocentric route and transition search share one transform.
+- `tests/test_satellite_illumination.py` remains the enduring scientific and
+  failure-boundary test owner.
+- A future `tools/validate_50s7c_shadow_transitions.py` may own offline
+  SPICE/Orekit event comparisons and must refuse downloads.
+- `docs/developer/satellite_shadow_transition_audit_50s7c.md` owns the
+  candidate scientific, completeness, identity, validation, and non-goal
+  contract.
+
+The audit adds no production owner. Crossing, track, report, chart, CLI,
+planning, renderer, exporter, brightness, visibility, detector, facility, and
+scheduling ownership remains unchanged. Runtime remains unauthorized.
+
+## Accepted 50S.7C implementation placement
+
+Fernando accepted the documentation-only placement at `030a6322` on
+2026-09-21. After merge, extend `satellites/illumination.py` for the bounded
+transition contracts and search; extract only the minimal shared geocentric
+TEME-to-ITRS state seam in `satellites/topocentric.py`; extend
+`tests/test_satellite_illumination.py`; and use one offline no-download
+independent event validator.
+
+Do not create a milestone-named production or test module. Existing
+propagation, ephemeris, crossing, track, report, chart, CLI, planning,
+renderer, exporter, brightness, visibility, detector, facility, and scheduling
+owners remain unchanged. PR merge and later source work remain separate.
