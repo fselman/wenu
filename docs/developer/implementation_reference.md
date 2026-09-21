@@ -3481,3 +3481,17 @@ accepts it.
 
 50S.7C shadow-transition search and all later satellite-light behavior remain
 unauthorized by this candidate.
+
+## Accepted 50S.7B API boundary
+
+Fernando accepted the immutable 50S.7B public contracts at `054ac53a` on
+2026-09-21: `SolarOccultationPolicy`, `SolarOccultationGeometry`,
+`SatelliteIlluminationGeometry`,
+`SatelliteIlluminationGeometryEvaluator`, typed occultation/twilight/lunar
+statuses, stable failure codes, and the frame-explicit numerical and twilight
+helpers.
+
+Preserve their output-neutral geometry meaning and complete provenance. Do not
+add transition events, radiometry, brightness, visibility, or scheduling
+semantics to these types. Merge remains separate; after merge only a
+documentation-first 50S.7C audit is authorized.
