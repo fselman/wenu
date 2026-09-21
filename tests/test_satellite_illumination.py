@@ -683,7 +683,7 @@ def test_tangent_contact_fails_closed_at_subdivision_depth():
                 nearest_limb_contact_margin_rad=margin,
                 solar_contains_earth_margin_rad=-0.5,
                 minimum_limb_separation_rad=0.1 + margin,
-                maximum_limb_separation_rad=0.5,
+                maximum_limb_separation_rad=1.5,
                 solar_angular_radius_rad=0.1,
                 central_ray_blocked=False,
             ),
