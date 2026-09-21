@@ -118,6 +118,6 @@ in the same change.
   finite-source shadow transitions, geometric twilight, fidelity tiers,
   provenance, and a bounded direct-Sun-first implementation sequence.
 - [50S.7C shadow-transition audit](satellite_shadow_transition_audit_50s7c.md)
-  — candidate documentation-only contract for continuous finite-Sun/WGS-84
+  — accepted documentation-only contract for continuous finite-Sun/WGS-84
   contact geometry, complete bounded event search, certified UTC brackets,
   identity, failure, and independent event validation.
