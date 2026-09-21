@@ -3178,3 +3178,20 @@ After merge, the next permissible work is a documentation-first 50S.7C
 shadow-transition audit. No transition solver implementation, radiometry,
 reflected-source field, brightness, visibility, detector, facility, or
 scheduling work is authorized by this acceptance.
+
+## Candidate 50S.7C — Complete shadow-transition audit
+
+The documentation-only candidate specifies one selected immutable snapshot
+record over one closed UTC interval. A future solver must return every admitted
+directed `sunlit`/`penumbra`/`umbra`/`antumbra` boundary with a
+certified bracket or fail closed. It must use continuous finite-Sun/WGS-84
+contact margins and conservative whole-interval exclusion, not visible-fraction
+quadrature, fixed-cadence sign scans, chart samples, or the 50S.5 empirical
+motion envelope.
+
+The event product is observer-independent and output-neutral. The proposed
+implementation remains in `satellites/illumination.py`, with only a minimal
+shared geocentric ITRS extraction in the existing topocentric owner. The audit
+authorizes no runtime. 50S.7D direct-source radiometry, reflected fields,
+brightness, detector, visibility, facility, and scheduling work remain
+unauthorized.
