@@ -530,3 +530,22 @@ validator downloaded nothing.
 This completes the independent numerical receipt but does not accept the
 candidate. Expanded, complete, documentation, diff, exact-head, upstream, and
 clean-tree gates remain required before Fernando's separate review.
+
+### Complete 50S.7B candidate gate evidence
+
+Executable candidate `086e7da1` completed the controlled Mac gates on
+2026-09-21:
+
+- the expanded satellite/ephemeris/documentation gate passed all 291 tests in
+  18.81 seconds;
+- the final current-documentation gate passed all 208 tests in 6.47 seconds;
+- `git diff --check c68e997777b8a2b1e5faf3bbe100fb4d8c445be8...HEAD`
+  was clean;
+- the complete plugin-disabled repository suite passed all 2,796 tests in
+  233.66 seconds; and
+- exact head/upstream equality and a clean working tree were confirmed.
+
+The earlier offline SPICE/Skyfield receipt remains part of this evidence.
+These results establish a verified candidate for Fernando's separate
+scientific and architectural review. They do not themselves authorize merge,
+branch deletion, 50S.7C, or later work.
