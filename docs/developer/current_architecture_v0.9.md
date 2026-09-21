@@ -1852,3 +1852,22 @@ Merge remains a separate decision. After merge, only a documentation-first
 50S.7C shadow-transition audit may begin; transition runtime and all later
 radiometric, reflected-source, brightness, visibility, detector, facility,
 and scheduling behavior remain unauthorized.
+
+## Candidate 50S.7C shadow-transition architecture
+
+The documentation-only audit proposes a complete bounded, observer-independent
+event search in the existing `satellites/illumination.py` owner. Transition
+time is isolated with continuous signed finite-Sun/WGS-84 limb-contact
+geometry, not the quadrature-quantized visible fraction. The accepted
+quadrature remains the reported fraction owner.
+
+A minimal shared geocentric TEME-to-ITRS state seam would remain in
+`satellites/topocentric.py`; both the existing observer route and a later
+transition search would compose it with the same installed-IERS-A evidence.
+The candidate defines directed events, certified UTC brackets, deterministic
+identity, complete interval certification, terminal failure, and independent
+SPICE/Orekit event validation.
+
+This audit changes no runtime. 50S.7C implementation, 50S.7D+ radiometry and
+reflected fields, brightness, visibility, detector, facility, and scheduling
+behavior remain unauthorized pending separate acceptance.
