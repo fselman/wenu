@@ -9081,3 +9081,58 @@ def test_50s7c_records_candidate_shadow_transition_audit():
 
     exports = read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
     assert "SatelliteShadowTransition" not in exports
+
+def test_50s7c_records_acceptance_and_bounded_implementation_authority():
+    audit = " ".join(
+        read(
+            DEVELOPER / "satellite_shadow_transition_audit_50s7c.md"
+        ).split()
+    )
+    for phrase in (
+        "Accepted 50S.7C audit and implementation authority",
+        "scientifically and architecturally accepted",
+        "030a632243349c34a1455743ae9bf40ced39e755",
+        "210 plugin-disabled tests in 5.81 seconds",
+        "only the bounded 50S.7C transition slice",
+        "Acceptance does not authorize PR 182 merge or branch deletion",
+    ):
+        assert phrase in audit
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7C shadow-transition architecture",
+        "Accepted 50S.7C shadow-transition audit",
+        "Accepted 50S.7C transition API authorization",
+        "Accepted 50S.7C implementation placement",
+        "Accepted 50S.7C coordinate boundary",
+        "Accepted 50S.7C transition vocabulary",
+        "Accepted 50S.7C shadow-transition audit",
+        "Accepted 50S.7C audit boundary",
+        "Accepted 50S.7C refinement of shadow-event separation",
+        "Accepted 50S.7C audit handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "030a6322" in normalized
+        assert "after merge" in normalized.lower()
+        assert "unauthorized" in normalized
+
+    index = read(DEVELOPER / "README.md")
+    assert "accepted documentation-only contract" in index
