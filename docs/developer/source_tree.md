@@ -2746,3 +2746,17 @@ later illumination runtime is authorized.
 The audit adds no production owner. Crossing, track, report, chart, CLI,
 planning, renderer, exporter, brightness, visibility, detector, facility, and
 scheduling ownership remains unchanged. Runtime remains unauthorized.
+
+## Accepted 50S.7C implementation placement
+
+Fernando accepted the documentation-only placement at `030a6322` on
+2026-09-21. After merge, extend `satellites/illumination.py` for the bounded
+transition contracts and search; extract only the minimal shared geocentric
+TEME-to-ITRS state seam in `satellites/topocentric.py`; extend
+`tests/test_satellite_illumination.py`; and use one offline no-download
+independent event validator.
+
+Do not create a milestone-named production or test module. Existing
+propagation, ephemeris, crossing, track, report, chart, CLI, planning,
+renderer, exporter, brightness, visibility, detector, facility, and scheduling
+owners remain unchanged. PR merge and later source work remain separate.
