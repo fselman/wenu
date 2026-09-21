@@ -2711,3 +2711,15 @@ passed 291 expanded tests, 208 documentation tests, a clean branch diff, and
 all 2,796 repository tests. Exact upstream equality and a clean working tree
 were confirmed. Ownership remains a review candidate; 50S.7C and later source
 changes remain unauthorized.
+
+## Accepted 50S.7B source ownership
+
+Fernando accepted the 50S.7B source placement at `054ac53a` on 2026-09-21.
+`satellites/illumination.py`, the minimal topocentric ITRS composition seam,
+`tests/test_satellite_illumination.py`, and the offline validator retain the
+bounded responsibilities documented above. Existing propagation, ephemeris,
+crossing, report, chart, and planning owners remain unchanged.
+
+Merge and branch deletion remain separate decisions. After merge only a
+documentation-first 50S.7C transition audit is authorized; no transition or
+later illumination runtime is authorized.
