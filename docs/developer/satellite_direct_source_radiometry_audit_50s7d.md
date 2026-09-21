@@ -177,7 +177,7 @@ spectral disk requires a new model and identity.
 
 Both values are finite and non-negative. `E_incident <= E_clear`. A numeric
 zero is valid only after successful evaluation with `f_visible = 0`.
-Unknown, unavailable, unsupported, or not-evaluated is never numeric zero.
+Unknown is never numeric zero. Unavailable, unsupported, and not-evaluated states are likewise never encoded as zero.
 
 ### 4.3 Nominal value and uncertainty language
 
