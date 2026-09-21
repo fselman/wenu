@@ -8946,4 +8946,3 @@ def test_50s7b_records_bounded_candidate_implementation():
             "c1c7feeab882263fc493a9d5a5b2ddd71"
             "b54826cdf65d8d17a76126b260a49f2"
         ) in document
-
