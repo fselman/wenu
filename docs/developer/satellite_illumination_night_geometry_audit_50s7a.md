@@ -474,3 +474,101 @@ validation.
 remain unauthorized. This acceptance does not itself authorize implementation
 before merge. PR merge and branch deletion still require separate explicit
 authorization.
+## 12. Candidate 50S.7B implementation record
+
+The unaccepted candidate at branch
+`feature/50s7b-direct-sun-night-geometry` implements only the authorized
+direct-Sun and observer-night slice. `wenu.satellites.illumination` composes
+an accepted `SatelliteTopocentricState` with an injected
+`EphemerisStateSource`; it does not propagate, search crossings, find shadow
+transitions, render, report, plan, or schedule.
+
+The candidate requests one same-instant geometric Earth-to-Sun state in ICRF
+axes, rotates the ICRF/GCRS-aligned geocentric vector into ITRS with the exact
+installed-IERS-A evidence already bound to the satellite state, and performs
+all subtraction in ITRS. It evaluates a uniform finite solar disk against the
+vacuum WGS-84 ellipsoid by deterministic equal-solid-angle ray quadrature.
+Successive bounded refinements record their absolute fraction difference and
+fail closed with `quadrature_not_converged` when the declared tolerance is
+not met.
+
+The immutable result retains the topocentric and ephemeris states, common UTC
+instant and ITRS vectors, bounded visible-disk fraction, typed
+`sunlit`/`penumbra`/`umbra`/`antumbra` class, geometric vacuum observer
+Sun altitude, exact twilight class, explicit model/numerical policy,
+provenance, and warnings. Lunar solar occultation is
+`not_evaluated`, never numeric zero.
+
+Focused analytic tests cover clear, exterior contact, partial, interior
+contact, umbra, annular, polar/equatorial, LEO/MEO/GEO/high-orbit, twilight
+boundaries, immutable identity, frame failure, convergence failure, and an
+independent Astropy AltAz comparison. The offline
+`tools/validate_50s7b_illumination_geometry.py` refuses downloads and is
+reserved for installed-DE440 binary comparison with Skyfield plus selected
+SPICE ellipsoid classification. Its controlled Mac receipt remains an
+acceptance gate.
+
+This candidate does not authorize 50S.7C transition search, radiometry,
+Earthshine, Moonlight radiometry, Lunar-Earthshine fields, brightness,
+visibility, detector effects, facility integration, or scheduling. Merge and
+branch deletion require separate explicit authorization.
+### Controlled 50S.7B independent-validation receipt
+
+Fernando ran the offline validator on 2026-09-21 at candidate `51b935f`.
+The focused illumination gate first passed all 24 tests in 5.58 seconds. SPICE
+independently classified the selected clear, partial, umbra, and annular cases
+as `sunlit`, `penumbra`, `umbra`, and `antumbra`; Wenu agreed. The
+reported visible fractions were `1.000000000`, `0.567165799`,
+`0.000000000`, and `0.593750000`.
+
+The installed ephemeris was model `DE440`, file `de440s.bsp`, SHA-256
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`.
+Against Skyfield `is_sunlit()`, the validator obtained 20 matching
+full-light states and 5 matching full-shadow states with no mismatch. The
+validator downloaded nothing.
+
+This completes the independent numerical receipt but does not accept the
+candidate. Expanded, complete, documentation, diff, exact-head, upstream, and
+clean-tree gates remain required before Fernando's separate review.
+
+### Complete 50S.7B candidate gate evidence
+
+Executable candidate `086e7da1` completed the controlled Mac gates on
+2026-09-21:
+
+- the expanded satellite/ephemeris/documentation gate passed all 291 tests in
+  18.81 seconds;
+- the final current-documentation gate passed all 208 tests in 6.47 seconds;
+- `git diff --check c68e997777b8a2b1e5faf3bbe100fb4d8c445be8...HEAD`
+  was clean;
+- the complete plugin-disabled repository suite passed all 2,796 tests in
+  233.66 seconds; and
+- exact head/upstream equality and a clean working tree were confirmed.
+
+The earlier offline SPICE/Skyfield receipt remains part of this evidence.
+These results establish a verified candidate for Fernando's separate
+scientific and architectural review. They do not themselves authorize merge,
+branch deletion, 50S.7C, or later work.
+
+## 13. Accepted 50S.7B implementation
+
+Fernando scientifically and architecturally accepted the complete bounded
+50S.7B implementation on 2026-09-21 at candidate revision
+`054ac53a1f2d50aca06c268cfc7ff5fb074c690f`. The accepted evidence comprises the analytic and independent
+geometry validation, installed-DE440/Skyfield comparison, 291-test expanded
+gate, 2,796-test complete repository gate, clean diff, exact upstream, clean
+tree, and final 208-test documentation gate in 4.19 seconds.
+
+The accepted implementation owns only immutable output-neutral direct-Sun and
+observer-night geometry: same-instant ITRS composition, a uniform finite solar
+disk occulted by the vacuum WGS-84 ellipsoid, bounded adaptive quadrature with
+fail-closed convergence, typed solar occultation and twilight states, explicit
+lunar `not_evaluated`, complete resource/model identity, provenance, and
+warnings.
+
+Acceptance authorizes merge of PR 181 only when Fernando gives a separate
+explicit merge instruction. It does not authorize branch deletion. After
+merge, only a documentation-first 50S.7C shadow-transition audit is authorized
+next. Transition runtime, radiometry, Earthshine, Moonlight radiometry,
+Lunar-Earthshine fields, brightness, visibility, detector effects, facility
+integration, and scheduling remain unauthorized.

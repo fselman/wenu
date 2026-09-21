@@ -1209,3 +1209,46 @@ geometric twilight, provenance, and focused offline validation. 50S.7C and
 later radiometry, reflected-source fields, brightness, detector, visibility,
 facility, scheduling, and unrelated work remain unauthorized. PR merge and
 branch deletion require separate explicit authorization.
+## Candidate 50S.7B direct-Sun and observer-night geometry
+
+The feature branch implements the bounded accepted slice with immutable
+finite-Sun/WGS-84 vacuum occultation, typed shadow class, geometric observer
+twilight, same-instant ITRS composition, complete input/model provenance, and
+fail-closed bounded adaptive quadrature. The focused 24-test illumination gate
+passed in 4.86 seconds on Fernando's Mac at revision `5ffae3a`.
+
+An offline installed-DE440 binary Skyfield and selected SPICE classification
+validator plus complete repository/documentation gates remain pending. The
+candidate is not yet accepted. 50S.7C transitions and all radiometric,
+reflected-source, brightness, detector, facility, visibility, and scheduling
+work remain unauthorized.
+### Candidate 50S.7B independent validation
+
+At `51b935f`, all 24 illumination tests passed in 5.58 seconds. The offline
+validator reported SPICE agreement for sunlit, penumbra, umbra, and antumbra,
+then used installed DE440 `de440s.bsp` SHA-256
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`
+to obtain 20 Skyfield full-light and 5 full-shadow matches. Complete and final
+repository gates remain pending; the candidate is unaccepted.
+
+### Complete candidate 50S.7B gate
+
+Executable revision `086e7da1` passed 291 expanded tests in 18.81 seconds,
+208 current-documentation tests in 6.47 seconds, the clean branch diff, and all
+2,796 plugin-disabled repository tests in 233.66 seconds. Exact upstream and a
+clean working tree were confirmed. Combined with the SPICE/Skyfield receipt,
+the bounded implementation is ready for Fernando's separate scientific and
+architectural review. Merge, branch deletion, 50S.7C, and later work remain
+unauthorized.
+
+## Accepted 50S.7B direct-Sun and observer-night geometry
+
+Fernando scientifically and architecturally accepted the verified candidate
+at `054ac53a` on 2026-09-21. The final 208-test documentation gate passed in
+4.19 seconds; the earlier 24 focused, SPICE/Skyfield, 291 expanded, 2,796
+complete, diff, upstream, and clean-tree evidence remains accepted.
+
+PR 181 merge and branch deletion require separate explicit instructions. After
+merge only a documentation-first 50S.7C shadow-transition audit is authorized;
+transition implementation and all later light, brightness, detector,
+visibility, facility, and scheduling work remain unauthorized.

@@ -8790,11 +8790,10 @@ def test_50s7a_records_candidate_four_source_illumination_audit():
     ):
         assert phrase in guide
 
-    for forbidden in (
-        "class SatelliteIlluminationGeometry",
-        "class SatelliteShadowTransition",
-    ):
-        assert forbidden not in read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+    exports = read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+    assert "SatelliteIlluminationGeometry" in exports
+    assert "SatelliteIlluminationGeometryEvaluator" in exports
+    assert "SatelliteShadowTransition" not in exports
 
 
 def test_50s7a_records_acceptance_and_only_bounded_50s7b_authority():
@@ -8844,3 +8843,179 @@ def test_50s7a_records_acceptance_and_only_bounded_50s7b_authority():
         assert "finite uniform-Sun/WGS-84 vacuum" in document
         assert "geometric twilight" in document
         assert "unauthorized" in document
+def test_50s7b_records_bounded_candidate_implementation():
+    audit = read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    )
+    architecture = read(V09_CURRENT)
+    roadmap = read(FUTURE_ROADMAP)
+    reference = read(DEVELOPER / "implementation_reference.md")
+    source_tree = read(DEVELOPER / "source_tree.md")
+    coordinate_guide = read(COORDINATE_GUIDE)
+    guide = read(DEVELOPER / "satellite_guide.md")
+    program_log = read(SATELLITE_PROGRAM_LOG)
+    instructions = read(INSTRUCTIONS)
+    foundation = read(
+        DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+    )
+    implementation = read(
+        ROOT / "src" / "wenu" / "satellites" / "illumination.py"
+    )
+    validator = read(
+        ROOT / "tools" / "validate_50s7b_illumination_geometry.py"
+    )
+
+    documents = (
+        audit,
+        architecture,
+        roadmap,
+        reference,
+        source_tree,
+        coordinate_guide,
+        guide,
+        program_log,
+        instructions,
+        foundation,
+    )
+    expected = (
+        "Candidate 50S.7B implementation record",
+        "Candidate 50S.7B direct-Sun and observer-night architecture",
+        "Candidate 50S.7B — Direct-Sun and observer-night geometry",
+        "Candidate 50S.7B direct-Sun and observer-night API",
+        "Candidate 50S.7B source ownership",
+        "Candidate 50S.7B common-frame coordinate path",
+        "Candidate 50S.7B direct-Sun and night vocabulary",
+        "Candidate 50S.7B direct-Sun and observer-night geometry",
+        "Candidate 50S.7B implementation boundary",
+        "Candidate 50S.7B refinement of the illumination decision",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+    for phrase in (
+        "SatelliteIlluminationGeometry",
+        "SolarOccultationPolicy",
+        "uniform-solar-disk-wgs84-vacuum-ray-quadrature-v1",
+        "coarse_visible_disk_fraction",
+        "quadrature_absolute_difference",
+        "QUADRATURE_NOT_CONVERGED",
+        "ObserverTwilightClass",
+        "LunarOccultorStatus.NOT_EVALUATED",
+        "geocentric_gcrs_axis_position_to_itrs",
+    ):
+        assert phrase in implementation
+
+    for phrase in (
+        "spiceypy.surfpt",
+        "spiceypy.edlimb",
+        "is_sunlit",
+        "refusing download",
+        "Skyfield full-light matches",
+        "Skyfield full-shadow matches",
+    ):
+        assert phrase in validator
+
+    normalized = tuple(" ".join(document.split()) for document in documents)
+    for document in normalized:
+        assert "50S.7C" in document
+        assert "unauthorized" in document
+
+    receipt_documents = (
+        audit,
+        architecture,
+        roadmap,
+        coordinate_guide,
+        program_log,
+    )
+    for document in receipt_documents:
+        assert "51b935f" in document
+        assert "24" in document
+        assert "20" in document
+        assert "5" in document
+
+    for document in (audit, architecture, program_log):
+        assert "5.58 seconds" in document
+
+    for document in (
+        audit,
+        architecture,
+        coordinate_guide,
+        program_log,
+    ):
+        assert (
+            "c1c7feeab882263fc493a9d5a5b2ddd71"
+            "b54826cdf65d8d17a76126b260a49f2"
+        ) in document
+
+    gate_documents = (
+        audit,
+        architecture,
+        roadmap,
+        source_tree,
+        coordinate_guide,
+        program_log,
+        instructions,
+    )
+    for document in gate_documents:
+        assert "086e7da1" in document
+        assert "2,796" in document
+        assert "50S.7C" in document
+        assert "unauthorized" in document
+
+    for document in (audit, program_log):
+        assert "291" in document
+        assert "18.81 seconds" in document
+        assert "208" in document
+        assert "6.47 seconds" in document
+        assert "233.66 seconds" in document
+def test_50s7b_records_acceptance_and_next_audit_boundary():
+    audit = read(
+        DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"
+    )
+    documents = (
+        read(V09_CURRENT),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7B architecture",
+        "Accepted 50S.7B API boundary",
+        "Accepted 50S.7B source ownership",
+        "Accepted 50S.7B coordinate behavior",
+        "Accepted 50S.7B — Direct-Sun and observer-night geometry",
+        "Accepted 50S.7B geometry vocabulary",
+        "Accepted 50S.7B direct-Sun and observer-night geometry",
+        "Accepted 50S.7B implementation boundary",
+        "Accepted 50S.7B refinement of the crossing foundation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Accepted 50S.7B implementation",
+        "scientifically and architecturally accepted",
+        "054ac53a1f2d50aca06c268cfc7ff5fb074c690f",
+        "2,796-test complete repository gate",
+        "208-test documentation gate in 4.19 seconds",
+        "merge of PR 181 only when Fernando gives a separate explicit",
+        "does not authorize branch deletion",
+        "documentation-first 50S.7C shadow-transition audit",
+    ):
+        assert phrase in normalized_audit
+
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "054ac53a" in normalized
+        assert "merge" in normalized.lower()
+        assert "separate" in normalized
+        assert "documentation-first 50S.7C" in normalized
+        assert "authorized" in normalized

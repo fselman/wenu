@@ -1044,3 +1044,33 @@ After merge, only direct finite uniform-Sun/WGS-84 vacuum shadow geometry and ob
 geometric twilight may be implemented in 50S.7B. The order-of-magnitude table
 remains a pedagogical memory scale, not a Wenu numerical model or acceptance
 constant.
+## Candidate 50S.7B direct-Sun and night vocabulary
+
+The candidate reports geometry, not whether a satellite will be visible. A
+`sunlit` result means the modeled uniform solar disk is wholly unobstructed
+by the vacuum WGS-84 Earth. `penumbra` means partial disk occultation,
+`umbra` complete occultation, and `antumbra` an Earth silhouette wholly
+inside the solar disk. The visible fraction is a converged geometric disk
+fraction in `[0, 1]`, not irradiance or magnitude.
+
+Observer night is independent. `day`, civil, nautical, astronomical
+twilight, and astronomical night use the geometric vacuum Sun-centre
+thresholds `0`, `-6`, `-12`, and `-18` degrees. These labels do not say
+that the satellite is above the horizon, inside a requested field, bright
+enough, or detectable. Lunar solar occultation is explicitly
+`not_evaluated`; Moonlight, Earthshine, and Lunar-Earthshine remain later
+separate models.
+
+50S.7C shadow-transition search and all later satellite-light behavior remain
+unauthorized by this candidate.
+
+## Accepted 50S.7B geometry vocabulary
+
+Fernando accepted the 50S.7B geometry behavior at `054ac53a` on 2026-09-21.
+The `sunlit`, `penumbra`, `umbra`, and `antumbra` terms, converged
+finite-disk fraction, geometric twilight classes, and lunar
+`not_evaluated` status have the bounded meanings stated above. They remain
+neither brightness nor visibility predictions.
+
+Merge remains separate. After merge, only a documentation-first 50S.7C
+shadow-transition audit is authorized.

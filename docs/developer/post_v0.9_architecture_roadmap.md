@@ -3137,3 +3137,44 @@ vacuum occultation, typed shadow state, geometric twilight, provenance, and
 focused offline validation. 50S.7C and later radiometry or reflected-source
 work, 50S.8 brightness, 50S.9 detector effects, visibility, facility
 integration, scheduling, and unrelated refactoring remain unauthorized.
+## Candidate 50S.7B — Direct-Sun and observer-night geometry
+
+The bounded candidate implements the first accepted illumination slice in
+`satellites/illumination.py`: immutable same-instant ITRS geometry, uniform
+finite-Sun occultation by the vacuum WGS-84 ellipsoid, typed shadow state,
+geometric observer twilight, complete model/resource identity, and
+bounded adaptive quadrature convergence evidence.
+
+Focused unit evidence and an offline installed-DE440/Skyfield/SPICE validator
+belong to this slice. The candidate remains unaccepted pending controlled
+validation, complete repository gates, and Fernando's separate scientific and
+architectural review. 50S.7C transition search and every radiometric,
+reflected-source, brightness, detector, facility, visibility, and scheduling
+slice remain unauthorized.
+### Candidate 50S.7B validation progress
+
+The 24-test focused gate and offline installed-resource validator passed at
+`51b935f`. Selected SPICE classifications agree for sunlit, penumbra, umbra,
+and antumbra; pinned DE440/Skyfield comparison agrees for 20 full-light and 5
+full-shadow states. Complete-suite and final repository gates remain pending,
+and 50S.7C remains unauthorized.
+
+### Verified candidate 50S.7B gate
+
+Revision `086e7da1` passed 291 expanded tests, 208 documentation tests, the
+clean diff gate, and all 2,796 repository tests in 233.66 seconds, with exact
+upstream and a clean tree. The candidate is ready for separate scientific and
+architectural review. Merge, deletion, 50S.7C, and later work remain
+unauthorized.
+
+## Accepted 50S.7B — Direct-Sun and observer-night geometry
+
+Fernando scientifically and architecturally accepted candidate `054ac53a` on
+2026-09-21 after the complete numerical, repository, documentation, diff,
+upstream, and clean-tree gates. PR 181 merge remains a separate explicit
+decision.
+
+After merge, the next permissible work is a documentation-first 50S.7C
+shadow-transition audit. No transition solver implementation, radiometry,
+reflected-source field, brightness, visibility, detector, facility, or
+scheduling work is authorized by this acceptance.

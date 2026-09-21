@@ -458,3 +458,26 @@ typed shadow state, observer geometric twilight, provenance, and offline
 validation are authorized. Transition solving, radiometry, reflected fields,
 brightness, detector effects, visibility, facility integration, and scheduling
 remain unauthorized later work requiring separate acceptance.
+## Candidate 50S.7B refinement of the illumination decision
+
+The bounded candidate adds an output-neutral downstream illumination geometry
+owner without changing the crossing foundation. Exact crossing intervals,
+tracks, reports, charts, and planning advisories retain their accepted
+identity and behavior. The new state composes one accepted topocentric state
+with one same-instant installed-ephemeris Sun state in ITRS, evaluates uniform
+finite-Sun/WGS-84 vacuum occultation with convergence evidence, and separately
+classifies geometric observer twilight.
+
+No crossing is filtered, relabeled, ranked, or scheduled by this state.
+50S.7C transitions, radiometry, reflected light, brightness, detector,
+facility, visibility, and scheduling work remain unauthorized.
+
+## Accepted 50S.7B refinement of the crossing foundation
+
+Fernando accepted 50S.7B at `054ac53a` on 2026-09-21. The implementation is
+strictly downstream and leaves crossing intervals, tracks, reports, charts,
+and planning advisories unchanged. Its illumination and night classes do not
+filter or redefine a crossing.
+
+Merge remains separate. After merge, only a documentation-first 50S.7C audit
+is authorized; transition runtime and later behavior remain unauthorized.

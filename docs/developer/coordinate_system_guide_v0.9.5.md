@@ -4089,3 +4089,58 @@ Only finite uniform-Sun/WGS-84 vacuum occultation, typed shadow state, and
 observer geometric twilight are authorized after merge. Mixed-frame vector
 subtraction, reflected fields, radiometry, apparent brightness, and detector
 effects remain unauthorized.
+## Candidate 50S.7B common-frame coordinate path
+
+The unaccepted implementation composes one accepted
+`SatelliteTopocentricState` and one same-instant geometric Earth-to-Sun
+`EphemerisState`. The public physical instant remains canonical UTC. The
+ephemeris adapter performs its internal TDB evaluation and retains the exact
+SPK resource; Earth rotation uses UT1/polar motion from the same installed
+IERS-A evidence already retained by the satellite transformation.
+
+The Earth-to-Sun state arrives in Earth-centred ICRF axes. Because ICRF/ICRS
+and GCRS axes are aligned for this geometric Cartesian composition, the
+accepted Astropy GCRS-axis-to-ITRS rotation is applied before subtraction.
+The satellite, observer, Earth, and Sun vectors used by the 50S.7B result are
+therefore all ITRS vectors at the same physical instant. TEME, ITRS, GCRS, and
+ICRF component arrays are never subtracted merely by shape.
+
+Observer solar altitude is the geometric vacuum angle between the
+observer-to-Sun ITRS vector and WGS-84 geodetic up. Its `0`, `-6`, `-12`,
+and `-18` degree thresholds are not apparent sunrise, refraction, sky
+brightness, satellite visibility, or detectability. This coordinate-guide
+update changes no general chart coordinate service.
+
+50S.7C shadow-transition search and all later satellite-light behavior remain
+unauthorized by this candidate.
+## Validated candidate 50S.7B coordinate evidence
+
+The controlled offline run at `51b935f` used installed DE440 file
+`de440s.bsp` with SHA-256
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`.
+Twenty full-light and five full-shadow same-instant states agreed with
+Skyfield, while the focused suite independently compared observer geometric
+Sun altitude with Astropy AltAz. Selected SPICE ellipsoid cases agreed across
+all four typed occultation classes. This evidence changes no coordinate
+owner and does not yet accept the candidate.
+
+## Verified candidate 50S.7B coordinate gate
+
+Executable `086e7da1` passed the independent installed-resource receipt,
+291-test expanded gate, 208-test documentation gate, clean diff, and all 2,796
+repository tests. The same-instant ITRS composition and geometric observer
+Sun-altitude boundary are therefore verified as a candidate. Fernando's
+separate acceptance is still required; 50S.7C and later coordinate behavior
+remain unauthorized.
+
+## Accepted 50S.7B coordinate behavior
+
+Fernando accepted the same-instant ITRS composition and geometric vacuum
+observer Sun-altitude boundary at `054ac53a` on 2026-09-21. Preserve
+canonical UTC identity, internal TDB ephemeris evaluation, UT1/polar-motion
+IERS evidence, ICRF/GCRS-aligned celestial axes, explicit ITRS rotation before
+subtraction, and WGS-84 geodetic up.
+
+These results remain illumination geometry, not apparent sunrise, sky
+brightness, visibility, or detectability. Merge remains separate; after merge
+only a documentation-first 50S.7C audit is authorized.

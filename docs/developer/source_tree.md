@@ -2679,3 +2679,47 @@ report, chart, and planning owners remain unchanged.
 
 No reflected-field, radiometric, BRDF, brightness, detector, facility, or
 scheduling owner is authorized. The audit itself adds no production file.
+## Candidate 50S.7B source ownership
+
+- `src/wenu/satellites/illumination.py` owns only immutable direct-Sun
+  occultation, observer geometric twilight, explicit model/numerical policy,
+  failures, and provenance.
+- `src/wenu/satellites/topocentric.py` remains the accepted
+  Earth-orientation owner and exposes the minimal
+  `geocentric_gcrs_axis_position_to_itrs(...)` composition seam. It requires
+  equality with the Earth-orientation evidence already retained by the
+  satellite state.
+- `src/wenu/ephemeris.py` and `src/wenu/skyfield_ephemeris.py` remain the
+  provider-neutral state contract and installed-SPK adapter owners.
+- `tests/test_satellite_illumination.py` is the enduring distinct scientific
+  and failure-boundary test file.
+- `tools/validate_50s7b_illumination_geometry.py` is the offline installed-
+  resource validation owner and refuses downloads.
+
+No propagation, crossing, transition-event, report, chart, planning,
+radiometry, brightness, visibility, detector, facility, or scheduling
+ownership moves into illumination. This is an unaccepted candidate.
+
+50S.7C shadow-transition search and all later satellite-light behavior remain
+unauthorized by this candidate.
+
+## Verified candidate 50S.7B source evidence
+
+At executable `086e7da1`, the new illumination module, minimal topocentric
+composition seam, enduring focused test file, exports, and offline validator
+passed 291 expanded tests, 208 documentation tests, a clean branch diff, and
+all 2,796 repository tests. Exact upstream equality and a clean working tree
+were confirmed. Ownership remains a review candidate; 50S.7C and later source
+changes remain unauthorized.
+
+## Accepted 50S.7B source ownership
+
+Fernando accepted the 50S.7B source placement at `054ac53a` on 2026-09-21.
+`satellites/illumination.py`, the minimal topocentric ITRS composition seam,
+`tests/test_satellite_illumination.py`, and the offline validator retain the
+bounded responsibilities documented above. Existing propagation, ephemeris,
+crossing, report, chart, and planning owners remain unchanged.
+
+Merge and branch deletion remain separate decisions. After merge only a
+documentation-first 50S.7C transition audit is authorized; no transition or
+later illumination runtime is authorized.
