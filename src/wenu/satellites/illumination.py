@@ -1475,10 +1475,9 @@ def _collect_transition_brackets(
                 (left, middle, _transition_kind(left, middle)),
                 (middle, right, _transition_kind(middle, right)),
             )
-        raise SatelliteIlluminationGeometryError(
-            SatelliteIlluminationFailureCode.DEGENERATE_SHADOW_TOPOLOGY,
-            "an uncertified same-class interval reached time tolerance.",
-        )
+        # Event time tolerance bounds returned brackets.  A nearby
+        # same-class interval may still require finer subdivision before the
+        # conservative clearance envelope can certify it contact-free.
     return _collect_transition_brackets(
         cache,
         start,
