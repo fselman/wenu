@@ -3158,4 +3158,3 @@ The 24-test focused gate and offline installed-resource validator passed at
 and antumbra; pinned DE440/Skyfield comparison agrees for 20 full-light and 5
 full-shadow states. Complete-suite and final repository gates remain pending,
 and 50S.7C remains unauthorized.
-
