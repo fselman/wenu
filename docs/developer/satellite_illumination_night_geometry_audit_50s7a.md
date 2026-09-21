@@ -512,4 +512,22 @@ This candidate does not authorize 50S.7C transition search, radiometry,
 Earthshine, Moonlight radiometry, Lunar-Earthshine fields, brightness,
 visibility, detector effects, facility integration, or scheduling. Merge and
 branch deletion require separate explicit authorization.
+### Controlled 50S.7B independent-validation receipt
+
+Fernando ran the offline validator on 2026-09-21 at candidate `51b935f`.
+The focused illumination gate first passed all 24 tests in 5.58 seconds. SPICE
+independently classified the selected clear, partial, umbra, and annular cases
+as `sunlit`, `penumbra`, `umbra`, and `antumbra`; Wenu agreed. The
+reported visible fractions were `1.000000000`, `0.567165799`,
+`0.000000000`, and `0.593750000`.
+
+The installed ephemeris was model `DE440`, file `de440s.bsp`, SHA-256
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`.
+Against Skyfield `is_sunlit()`, the validator obtained 20 matching
+full-light states and 5 matching full-shadow states with no mismatch. The
+validator downloaded nothing.
+
+This completes the independent numerical receipt but does not accept the
+candidate. Expanded, complete, documentation, diff, exact-head, upstream, and
+clean-tree gates remain required before Fernando's separate review.
 
