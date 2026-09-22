@@ -2044,3 +2044,16 @@ architecture diagram was reviewed and remains current because it does not
 enumerate satellite illumination submodules. The 79-test focused gate and the
 independent installed-resource receipt passed; complete gates and acceptance
 remain pending. 50S.7D.3 and later behavior remain unauthorized.
+
+## Verified candidate 50S.7D.2 implementation architecture
+
+Executable `8e930db2`, carried by exact verified branch head `8f2ca825`,
+passed the real-resource receipt, 132-test expanded dependency gate, 227-test
+documentation/package gate, clean diff, and all 2,858 plugin-disabled
+repository tests in 238.38 seconds. Exact upstream equality and a clean
+worktree were confirmed.
+
+This verifies the bounded distinct spectral-resource owner without changing
+the canonical geometry, rendering, output, or 50S.7D.1 bolometric
+architecture. The candidate remains unaccepted; merge, branch deletion,
+50S.7D.3, and all later behavior require separate decisions.
