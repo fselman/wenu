@@ -3412,3 +3412,15 @@ acceptance and merge, only an explicitly authorized external distribution
 preflight may proceed. Moonlight must remain `not_evaluated`; 50S.7D.3
 runtime, 50S.7D.4, 50S.7E+, outputs, brightness, visibility, detector, facility,
 and scheduling behavior remain unauthorized.
+
+## Accepted 50S.7D.3 — Direct-Moonlight readiness audit
+
+Fernando scientifically and architecturally accepted exact candidate
+`abbb1b78` on 2026-09-22. All 230 plugin-disabled documentation/package
+tests passed in 11.39 seconds, and diff, upstream, and clean-tree checks passed.
+
+After merge, perform only a separately controlled external LIME distribution
+preflight. Preserve LIME as the preferred candidate, GIRO/ROLO comparison
+evidence, and Moonlight `not_evaluated`. Do not retrieve or execute resources,
+implement 50S.7D.3, or begin 50S.7D.4+ without later explicit authority. PR
+merge and branch deletion remain separate.
