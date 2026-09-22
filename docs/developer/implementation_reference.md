@@ -3670,3 +3670,26 @@ TSIS-1 HSRS v2 resource. It must retain pointwise uncertainty and report
 integrated uncertainty as `not_evaluated`. No interpolation, extrapolation,
 renormalization, Moonlight, passband library, photon rate, or output API is
 authorized.
+
+## Candidate 50S.7D.2 spectral API implementation
+
+Executable `8e930db2` exports immutable
+`SolarSpectralIrradianceResourceIdentity`,
+`DirectSolarSpectralIrradiancePolicy`,
+`DirectSolarSpectralIrradiance`, and
+`DirectSolarSpectralIrradianceEvaluator` contracts plus the explicit offline
+`load_solar_spectral_irradiance_resource(path)` entry point.
+
+The loader admits only the accepted TSIS-1 HSRS v2 serialization by byte count
+and SHA-256, then validates UTF-8 CSV schema, native grid, values, bandwidth,
+and integral. The evaluator consumes one complete accepted
+`SatelliteIlluminationGeometry`, preserves native tuples, scales energy
+spectral irradiance and absolute pointwise uncertainty, and leaves integrated
+uncertainty `not_evaluated`. `integrate_energy()` accepts only exact native
+endpoints. Unsupported models, resources, geometry, interpolation,
+extrapolation, and renormalization fail closed.
+
+This remains an unaccepted candidate. It supplies no acquisition API,
+Moonlight, passband response, photon rate, surface response, brightness,
+visibility, detector, report, chart, CLI, planning, facility, or scheduling
+API.
