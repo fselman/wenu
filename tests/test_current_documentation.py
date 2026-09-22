@@ -3178,6 +3178,7 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_shadow_transition_audit_50s7c.md",
             "satellite_direct_source_radiometry_audit_50s7d.md",
             "satellite_spectral_solar_radiometry_audit_50s7d2.md",
+            "satellite_moonlight_radiometry_audit_50s7d3.md",
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
@@ -9953,3 +9954,43 @@ def test_50s7d2_records_accepted_spectral_implementation():
         "separate",
     ):
         assert phrase in combined
+
+def test_50s7d3_records_candidate_moonlight_readiness_audit():
+    audit = read(
+        DEVELOPER / "satellite_moonlight_radiometry_audit_50s7d3.md"
+    )
+    normalized_audit = " ".join(audit.split())
+    documents = (
+        read(DEVELOPER / "README.md"),
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+    )
+    expected = (
+        "LIME is the preferred production candidate",
+        "50S.7D.3 runtime is not authorized",
+        "external LIME distribution preflight",
+        "GIRO",
+        "ROLO",
+        "not_evaluated",
+        "selenographic",
+        "Earth eclipse at the Moon",
+        "Earth occultation between Moon and satellite",
+        "no runtime coordinate value",
+    )
+    for phrase in expected:
+        assert phrase in normalized_audit
+    for document in documents:
+        normalized = " ".join(document.split())
+        assert "50S.7D.3" in normalized
+        assert "LIME" in normalized
+        assert "runtime" in normalized.lower()
+    assert "satellite_moonlight_radiometry_audit_50s7d3.md" in read(
+        DEVELOPER / "README.md"
+    )
+
