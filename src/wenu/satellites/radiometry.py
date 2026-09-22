@@ -133,8 +133,50 @@ class SolarSpectralIrradianceResource:
         )
         if any(len(values) != self.identity.sample_count for values in vectors):
             raise ValueError("spectral resource sample count is inconsistent.")
-        if not isfinite(self.native_integral_w_m2):
-            raise ValueError("native_integral_w_m2 must be finite.")
+        if (
+            self.wavelength_nm[0] != self.identity.minimum_wavelength_nm
+            or self.wavelength_nm[-1] != self.identity.maximum_wavelength_nm
+            or any(
+                not isfinite(value)
+                for value in self.wavelength_nm
+            )
+            or any(
+                abs((right - left) - self.identity.sampling_nm) > 1.0e-10
+                for left, right in zip(
+                    self.wavelength_nm,
+                    self.wavelength_nm[1:],
+                )
+            )
+            or any(
+                not isfinite(value) or value < 0.0
+                for values in (
+                    self.irradiance_w_m2_nm,
+                    self.uncertainty_w_m2_nm,
+                )
+                for value in values
+            )
+            or any(
+                value != self.identity.resolution_fwhm_nm
+                for value in self.bandwidth_nm
+            )
+        ):
+            raise ValueError("spectral resource native-grid values are invalid.")
+        calculated = _native_integral(
+            self.wavelength_nm,
+            self.irradiance_w_m2_nm,
+            self.wavelength_nm[0],
+            self.wavelength_nm[-1],
+        )
+        if (
+            not isfinite(self.native_integral_w_m2)
+            or abs(self.native_integral_w_m2 - calculated) > 1.0e-12
+            or abs(
+                self.native_integral_w_m2
+                - TSIS1_HSRS_V2_INTEGRAL_W_M2
+            )
+            > 1.0e-9
+        ):
+            raise ValueError("native_integral_w_m2 is inconsistent.")
 
 
 def _resource_error(code, message, error=None):
@@ -304,6 +346,55 @@ class DirectSolarSpectralIrradiance:
     integrated_uncertainty_status: str = "not_evaluated"
     provenance: tuple[str, ...] = field(default_factory=tuple)
     warnings: tuple[str, ...] = field(default_factory=tuple)
+
+    def __post_init__(self):
+        if not isinstance(self.geometry, SatelliteIlluminationGeometry):
+            raise TypeError(
+                "geometry must be a SatelliteIlluminationGeometry."
+            )
+        if not isinstance(
+            self.policy,
+            DirectSolarSpectralIrradiancePolicy,
+        ):
+            raise TypeError(
+                "policy must be a DirectSolarSpectralIrradiancePolicy."
+            )
+        if self.resource_identity != self.policy.resource_identity:
+            raise ValueError("resource identity must match policy.")
+        count = self.resource_identity.sample_count
+        vectors = (
+            self.wavelength_nm,
+            self.unocculted_irradiance_w_m2_nm,
+            self.incident_irradiance_w_m2_nm,
+            self.pointwise_uncertainty_w_m2_nm,
+        )
+        if any(len(values) != count for values in vectors):
+            raise ValueError("spectral result sample count is inconsistent.")
+        if (
+            self.wavelength_nm[0]
+            != self.resource_identity.minimum_wavelength_nm
+            or self.wavelength_nm[-1]
+            != self.resource_identity.maximum_wavelength_nm
+            or any(
+                not isfinite(value) or value < 0.0
+                for values in vectors[1:]
+                for value in values
+            )
+            or not isfinite(self.satellite_to_sun_distance_au)
+            or self.satellite_to_sun_distance_au <= 0.0
+            or not 0.0 <= self.visible_disk_fraction <= 1.0
+            or self.integrated_uncertainty_status != "not_evaluated"
+        ):
+            raise ValueError("spectral result values are inconsistent.")
+        occultation = self.geometry.solar_occultation
+        if (
+            self.visible_disk_fraction
+            != occultation.visible_disk_fraction
+            or self.occultation_class is not occultation.occultation_class
+        ):
+            raise ValueError("spectral result must match accepted geometry.")
+        object.__setattr__(self, "provenance", tuple(self.provenance))
+        object.__setattr__(self, "warnings", tuple(self.warnings))
 
     @property
     def identity(self):
