@@ -9865,3 +9865,50 @@ def test_50s7d2_records_bounded_spectral_implementation_candidate():
         "redistribution=false",
     ):
         assert phrase in validator
+
+def test_50s7d2_records_verified_spectral_implementation_candidate():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER
+            / "satellite_spectral_solar_radiometry_audit_50s7d2.md"
+        ),
+    )
+    expected = (
+        "Verified candidate 50S.7D.2 implementation architecture",
+        "Verified candidate 50S.7D.2 implementation gate",
+        "Verified candidate 50S.7D.2 spectral API",
+        "Verified candidate 50S.7D.2 source ownership",
+        "Verified candidate 50S.7D.2 scalar coordinate gate",
+        "Verified candidate 50S.7D.2 direct-Sun spectrum",
+        "Verified candidate 50S.7D.2 implementation",
+        "Verified candidate 50S.7D.2 review state",
+        "Verified implementation candidate",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "8f2ca825" in normalized
+        assert "8e930db2" in normalized
+        assert "2,858" in normalized
+        assert (
+            "unaccepted" in normalized.lower()
+            or "acceptance" in normalized.lower()
+        )
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    for phrase in (
+        "132",
+        "227",
+        "238.38",
+        "50S.7D.3",
+    ):
+        assert phrase in combined
+
