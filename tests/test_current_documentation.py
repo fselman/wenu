@@ -9865,4 +9865,3 @@ def test_50s7d2_records_bounded_spectral_implementation_candidate():
         "redistribution=false",
     ):
         assert phrase in validator
-
