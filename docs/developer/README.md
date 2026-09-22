@@ -130,6 +130,6 @@ in the same change.
   — accepted documentation-only contract for one digest-bound TSIS-1 HSRS
   v2 product, native-grid energy semantics, uncertainty, and offline use.
 - [50S.7D.3 direct-Moonlight radiometry readiness audit](satellite_moonlight_radiometry_audit_50s7d3.md)
-  — candidate documentation-only comparison of ROLO, GIRO, and LIME; preferred
+  — accepted documentation-only comparison of ROLO, GIRO, and LIME; preferred
   LIME model family; required lunar geometry, uncertainty, resource, and
   licensing evidence; and an explicit runtime stop gate.
