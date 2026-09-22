@@ -2070,3 +2070,17 @@ or canonical chart architecture.
 The external-resource receipt, 132 expanded tests, all 2,858 plugin-disabled
 tests, and final 228 documentation/package tests passed. Do not merge PR 187,
 delete its branch, or begin 50S.7D.3+ without separate explicit authority.
+
+## Candidate 50S.7D.3 Moonlight readiness architecture
+
+The documentation-only audit selects LIME as the preferred production model
+family while preserving GIRO/ROLO as comparison evidence. It authorizes no
+runtime because no exact LIME distribution, coefficient resource, byte
+identity, license, or complete domain was frozen.
+
+A later proposal must keep same-instant lunar source geometry in
+`satellites/illumination.py` and exact external model admission plus native-
+band radiometry in `satellites/radiometry.py`. It may not repurpose the lunar
+solar-occultor reservation or create a second ephemeris, coordinate, output, or
+rendering path. Only a separately accepted external LIME distribution preflight
+may follow this audit; 50S.7D.3 runtime remains blocked.
