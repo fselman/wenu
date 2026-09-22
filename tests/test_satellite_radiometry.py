@@ -35,7 +35,8 @@ def spectral_resource():
     )
     # The unit-test specimen exercises composition without pretending to be
     # provider bytes; only the digest-verifying loader admits installed data.
-    irradiance = (1.0,) * TSIS1_HSRS_V2_SAMPLE_COUNT
+    irradiance_value = TSIS1_HSRS_V2_INTEGRAL_W_M2 / 2528.0
+    irradiance = (irradiance_value,) * TSIS1_HSRS_V2_SAMPLE_COUNT
     uncertainty = (0.1,) * TSIS1_HSRS_V2_SAMPLE_COUNT
     bandwidth = (1.0,) * TSIS1_HSRS_V2_SAMPLE_COUNT
     return SolarSpectralIrradianceResource(
@@ -44,7 +45,7 @@ def spectral_resource():
         irradiance_w_m2_nm=irradiance,
         uncertainty_w_m2_nm=uncertainty,
         bandwidth_nm=bandwidth,
-        native_integral_w_m2=2528.0,
+        native_integral_w_m2=TSIS1_HSRS_V2_INTEGRAL_W_M2,
     )
 
 
@@ -100,10 +101,13 @@ def test_evaluator_scales_native_samples_by_distance_and_visible_fraction(
     )
 
     assert result.wavelength_nm is resource.wavelength_nm
+    base = TSIS1_HSRS_V2_INTEGRAL_W_M2 / 2528.0
     assert result.unocculted_irradiance_w_m2_nm[0] == pytest.approx(
-        1.0 / distance_au**2
+        base / distance_au**2
     )
-    assert result.incident_irradiance_w_m2_nm[0] == pytest.approx(expected)
+    assert result.incident_irradiance_w_m2_nm[0] == pytest.approx(
+        base * expected
+    )
     assert result.pointwise_uncertainty_w_m2_nm[0] == pytest.approx(
         0.1 * expected
     )
@@ -127,7 +131,10 @@ def test_energy_integration_uses_exact_native_coordinates_only():
         spectral_resource()
     ).evaluate(geometry())
 
-    assert result.integrate_energy(202.0, 202.2) == pytest.approx(0.2)
+    base = TSIS1_HSRS_V2_INTEGRAL_W_M2 / 2528.0
+    assert result.integrate_energy(202.0, 202.2) == pytest.approx(
+        0.2 * base
+    )
     with pytest.raises(SolarSpectralRadiometryError) as caught:
         result.integrate_energy(202.05, 202.2)
     assert (
@@ -258,3 +265,12 @@ def test_resource_contract_keeps_audit_integral_distinct_from_bolometric_tsi():
         1325.759295697943
     )
     assert TSIS1_HSRS_V2_INTEGRAL_W_M2 != 1361.0
+
+
+def test_resource_constructor_enforces_native_grid_invariants():
+    resource = spectral_resource()
+    invalid = list(resource.wavelength_nm)
+    invalid[1] = invalid[0]
+
+    with pytest.raises(ValueError, match="native-grid"):
+        replace(resource, wavelength_nm=tuple(invalid))
