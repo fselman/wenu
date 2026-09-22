@@ -1472,3 +1472,14 @@ tests in 238.38 seconds. Diff, exact upstream, and clean-tree checks passed.
 The candidate awaits Fernando's separate scientific and architectural
 acceptance. PR creation, merge, branch deletion, and 50S.7D.3 remain separate
 decisions.
+
+## 2026-09-22 — Accepted 50S.7D.2 implementation
+
+Fernando scientifically and architecturally accepted exact verified branch
+head `d1edeb46f4ea70c34121910c54758c331fe4293b`, retaining executable
+`8e930db200b922cc3a4f403cde50cd00c34d0a27`. The external-resource
+receipt, 132 expanded tests, all 2,858 plugin-disabled tests, final 228
+documentation/package tests, diff, upstream, and clean-tree checks passed.
+
+PR 187 remains draft and unmerged. Merge, branch deletion, and 50S.7D.3 are
+separate explicit decisions.
