@@ -212,3 +212,20 @@ the spectral resource implicitly. 50S.7D.3 Moonlight, reflected fields,
 spacecraft response, brightness, visibility, detector effects, outputs,
 facility behavior, scheduling, PR merge, and branch deletion remain separate
 explicit decisions.
+
+## 9. Candidate implementation evidence
+
+Executable candidate `8e930db200b922cc3a4f403cde50cd00c34d0a27` implements
+the accepted bounded offline slice in `satellites/radiometry.py`. It adds no
+vendored resource or acquisition behavior. The explicit external-resource
+receipt reproduced byte count `1298915`, SHA-256
+`1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f`,
+the exact four-column header, all 25,281 samples, 202.0-2730.0 nm endpoints,
+0.1 nm sampling, 1.0 nm resolution, and production-loader equality.
+
+The independent native-grid integral was `1325.759295697934 W m-2`; its
+approximately `9e-12 W m-2` difference from the audit value is below the
+declared `1e-9 W m-2` receipt tolerance. The 79-test focused gate passed.
+Complete repository gates and Fernando's separate scientific and
+architectural acceptance remain pending. 50S.7D.3, merge, and branch deletion
+remain unauthorized.
