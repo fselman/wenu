@@ -1961,3 +1961,17 @@ alter 50S.7D.1 bolometric semantics, or add Moonlight, reflected fields,
 surface response, brightness, visibility, detector, output, facility,
 scheduling, or unrelated work. Merge and branch deletion remain separate
 explicit decisions.
+
+## Verified candidate 50S.7D.2 review state
+
+Treat exact branch head `8f2ca825fa799b171717fccd10ce50fab95255d7` as
+verified but unaccepted. Executable `8e930db2` passed the real TSIS-1
+external-resource receipt, 132-test expanded dependency gate, 227-test
+documentation/package gate, clean diff, and all 2,858 plugin-disabled
+repository tests in 238.38 seconds. Exact upstream equality and a clean
+worktree were confirmed.
+
+Do not merge, delete the feature branch, begin 50S.7D.3, vendor or implicitly
+acquire the resource, or add later radiometry, brightness, visibility,
+detector, output, facility, scheduling, or unrelated behavior without
+Fernando's separate explicit decision.
