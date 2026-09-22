@@ -79,6 +79,20 @@ from .illumination import (
     evaluate_solar_occultation,
     evaluate_solar_occultation_contact,
 )
+from .radiometry import (
+    DIRECT_SOLAR_SPECTRAL_MODEL,
+    TSIS1_HSRS_V2_IDENTITY,
+    TSIS1_HSRS_V2_INTEGRAL_W_M2,
+    TSIS1_HSRS_V2_PRODUCT,
+    DirectSolarSpectralIrradiance,
+    DirectSolarSpectralIrradianceEvaluator,
+    DirectSolarSpectralIrradiancePolicy,
+    SolarSpectralIrradianceResource,
+    SolarSpectralIrradianceResourceIdentity,
+    SolarSpectralRadiometryError,
+    SolarSpectralRadiometryFailureCode,
+    load_solar_spectral_irradiance_resource,
+)
 from .snapshot_admission import (
     CELESTRAK_ACTIVE_20260917_IDENTITY,
     CELESTRAK_ACTIVE_20260917_POLICY_IDENTITY,
@@ -119,6 +133,18 @@ from .topocentric import (
 
 __all__ = [
     "AU_KM",
+    "DIRECT_SOLAR_SPECTRAL_MODEL",
+    "TSIS1_HSRS_V2_IDENTITY",
+    "TSIS1_HSRS_V2_INTEGRAL_W_M2",
+    "TSIS1_HSRS_V2_PRODUCT",
+    "DirectSolarSpectralIrradiance",
+    "DirectSolarSpectralIrradianceEvaluator",
+    "DirectSolarSpectralIrradiancePolicy",
+    "SolarSpectralIrradianceResource",
+    "SolarSpectralIrradianceResourceIdentity",
+    "SolarSpectralRadiometryError",
+    "SolarSpectralRadiometryFailureCode",
+    "load_solar_spectral_irradiance_resource",
     "IAU_NOMINAL_SOLAR_RADIUS_KM",
     "WGS84_EQUATORIAL_RADIUS_KM",
     "WGS84_POLAR_RADIUS_KM",
