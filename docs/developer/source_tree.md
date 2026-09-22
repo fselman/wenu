@@ -2925,3 +2925,15 @@ checks passed.
 
 Ownership remains a verified but unaccepted candidate. No acquisition owner,
 vendored resource, second geometry path, or 50S.7D.3+ owner is admitted.
+
+## Accepted 50S.7D.2 implementation source ownership
+
+Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
+Preserve `src/wenu/satellites/radiometry.py` as the distinct offline
+spectral-resource and spectral-composition owner, its dedicated durable tests,
+intentional package exports, and the no-download independent validator at
+executable `8e930db2`.
+
+`illumination.py` remains geometry and 50S.7D.1 bolometric owner. No
+acquisition owner, vendored resource, second geometry path, or 50S.7D.3+
+ownership is accepted. PR 187 merge and branch deletion remain separate.
