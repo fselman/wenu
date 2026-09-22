@@ -3733,3 +3733,15 @@ outputs. Existing lunar `not_evaluated` semantics remain authoritative.
 No coefficient, loader, policy, result, evaluator, eclipse, occultation,
 passband, brightness, visibility, detector, output, facility, or scheduling API
 is added.
+
+## Accepted 50S.7D.3 Moonlight API readiness
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after the 230-test documentation/package gate and clean repository
+checks. No Moonlight API was added or authorized.
+
+After merge, only an external LIME distribution preflight may proceed under
+separate controls. Existing `not_evaluated` semantics remain authoritative.
+No resource retrieval, coefficient API, geometry API, loader, evaluator,
+numeric Moonlight, output, brightness, visibility, detector, facility, or
+scheduling behavior is authorized.
