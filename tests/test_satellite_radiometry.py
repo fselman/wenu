@@ -1,9 +1,12 @@
 """Offline native-grid direct-Sun spectral radiometry tests."""
 
 from dataclasses import FrozenInstanceError, replace
+import csv
+from io import StringIO
 
 import pytest
 
+import wenu.satellites.radiometry as radiometry_module
 from wenu.satellites.illumination import (
     AU_KM,
     SatelliteIlluminationGeometry,
@@ -165,6 +168,88 @@ def test_loader_rejects_missing_and_wrong_byte_identity(tmp_path):
     assert (
         caught.value.code
         is SolarSpectralRadiometryFailureCode.RESOURCE_IDENTITY_MISMATCH
+    )
+
+
+def serialized_rows(rows, header=None):
+    stream = StringIO(newline="")
+    writer = csv.writer(stream, lineterminator="\n")
+    writer.writerow(
+        TSIS1_HSRS_V2_IDENTITY.header if header is None else header
+    )
+    writer.writerows(rows)
+    return stream.getvalue().encode("utf-8")
+
+
+def admitted_rows():
+    return [
+        (202.0 + 0.1 * index, 1.0, 0.1, 1.0)
+        for index in range(TSIS1_HSRS_V2_SAMPLE_COUNT)
+    ]
+
+
+def assert_invalid_verified_payload(payload, expected_code):
+    with pytest.raises(SolarSpectralRadiometryError) as caught:
+        radiometry_module._parse_verified_spectral_payload(
+            payload,
+            TSIS1_HSRS_V2_IDENTITY,
+        )
+    assert caught.value.code is expected_code
+
+
+def test_verified_parser_rejects_header_and_row_shape():
+    rows = admitted_rows()
+    assert_invalid_verified_payload(
+        serialized_rows(rows, header=("wrong",) * 4),
+        SolarSpectralRadiometryFailureCode.RESOURCE_SCHEMA_MISMATCH,
+    )
+    rows[0] = rows[0][:-1]
+    assert_invalid_verified_payload(
+        serialized_rows(rows),
+        SolarSpectralRadiometryFailureCode.RESOURCE_DATA_INVALID,
+    )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "value"),
+    (
+        ("short_count", None),
+        ("duplicate", None),
+        ("descending", None),
+        ("non_finite", "nan"),
+        ("negative_irradiance", -1.0),
+        ("negative_uncertainty", -0.1),
+        ("wrong_start", 201.9),
+        ("wrong_stop", 2730.1),
+        ("wrong_spacing", 202.15),
+        ("wrong_bandwidth", 0.1),
+    ),
+)
+def test_verified_parser_rejects_invalid_native_resource(mutation, value):
+    rows = admitted_rows()
+    if mutation == "short_count":
+        rows.pop()
+    elif mutation == "duplicate":
+        rows[1] = (rows[0][0],) + rows[1][1:]
+    elif mutation == "descending":
+        rows[1], rows[2] = rows[2], rows[1]
+    elif mutation == "non_finite":
+        rows[100] = (rows[100][0], value, rows[100][2], rows[100][3])
+    elif mutation == "negative_irradiance":
+        rows[100] = (rows[100][0], value, rows[100][2], rows[100][3])
+    elif mutation == "negative_uncertainty":
+        rows[100] = (rows[100][0], rows[100][1], value, rows[100][3])
+    elif mutation == "wrong_start":
+        rows[0] = (value,) + rows[0][1:]
+    elif mutation == "wrong_stop":
+        rows[-1] = (value,) + rows[-1][1:]
+    elif mutation == "wrong_spacing":
+        rows[1] = (value,) + rows[1][1:]
+    elif mutation == "wrong_bandwidth":
+        rows[100] = rows[100][:-1] + (value,)
+    assert_invalid_verified_payload(
+        serialized_rows(rows),
+        SolarSpectralRadiometryFailureCode.RESOURCE_DATA_INVALID,
     )
 
 
