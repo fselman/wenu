@@ -3176,7 +3176,8 @@ def test_developer_root_contains_only_active_authority_and_wip_documents():
         "satellite_observatory_planning_adapter_audit_50s6h.md",
         "satellite_illumination_night_geometry_audit_50s7a.md",
         "satellite_shadow_transition_audit_50s7c.md",
-        "satellite_direct_source_radiometry_audit_50s7d.md",
+            "satellite_direct_source_radiometry_audit_50s7d.md",
+            "satellite_spectral_solar_radiometry_audit_50s7d2.md",
         "satellite_delivery_audit_50s6g.md",
         "satellite_snapshot_preflight_audit_50s6g1b.md",
         "satellite_exact_crossing_report_audit_50s6g2a.md",
@@ -9673,3 +9674,65 @@ def test_50s7d1_records_accepted_direct_solar_irradiance_implementation():
         "branch deletion",
     ):
         assert phrase in combined
+
+
+def test_50s7d2_records_candidate_spectral_solar_radiometry_audit():
+    audit = read(
+        DEVELOPER / "satellite_spectral_solar_radiometry_audit_50s7d2.md"
+    )
+    normalized_audit = " ".join(audit.split())
+    for phrase in (
+        "Candidate documentation-only scientific, resource, and architectural audit",
+        "c76525c4986faabff0a70e534d1706baa4f550e6",
+        "10.25980/ta3f-7h90",
+        "tsis1_hsrs_1nm",
+        "25,281",
+        "202.0 through 2730.0 nm",
+        "0.1 nm coordinate spacing",
+        "1.0 nm bandwidth",
+        "1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f",
+        "1325.759295697943 W m-2",
+        "must not be renormalized",
+        "integrated uncertainty must remain `not_evaluated`",
+        "authorizes no implementation",
+        "50S.7D.3 Moonlight",
+    ):
+        assert phrase in normalized_audit
+
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"),
+        read(DEVELOPER / "satellite_illumination_night_geometry_audit_50s7a.md"),
+        read(DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"),
+    )
+    expected = (
+        "Candidate 50S.7D.2 spectral radiometry architecture",
+        "Candidate 50S.7D.2 — Spectral direct-Sun radiometry audit",
+        "Candidate 50S.7D.2 spectral API boundary",
+        "Candidate 50S.7D.2 resource ownership",
+        "Candidate 50S.7D.2 spectral scalar boundary",
+        "Candidate 50S.7D.2 spectral vocabulary",
+        "Candidate 50S.7D.2 spectral direct-Sun audit",
+        "Candidate 50S.7D.2 audit boundary",
+        "Candidate 50S.7D.2 spectral refinement",
+        "Candidate 50S.7D.2 spectral handoff",
+        "Candidate 50S.7D.2 spectral audit handoff",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "no runtime" in normalized.lower()
+        assert "50S.7D.2" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    assert "50S.7D.3" in combined
+
+    index = read(DEVELOPER / "README.md")
+    assert "satellite_spectral_solar_radiometry_audit_50s7d2.md" in index

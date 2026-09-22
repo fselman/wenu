@@ -1913,3 +1913,12 @@ The zero-residual nine-case receipt, 308 expanded tests, all 2,832 plugin-
 disabled tests, and final 223 documentation/package-boundary tests passed. Do
 not merge PR 185 or delete its branch without Fernando's separate explicit
 instruction. Do not begin 50S.7D.2+ or later work without separate authority.
+
+## Candidate 50S.7D.2 audit boundary
+
+Read `satellite_spectral_solar_radiometry_audit_50s7d2.md` before spectral
+Sunlight work. Treat it as documentation only. Preserve exact TSIS-1 HSRS v2
+resource identity, the 202-2730 nm native grid, energy units, resolution versus
+sampling, no interpolation/extrapolation/renormalization, and explicit
+uncertainty limits. Do not implement, acquire, redistribute, merge, delete, or
+begin 50S.7D.3+ without separate authority.

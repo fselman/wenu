@@ -610,3 +610,10 @@ The nine-case independent receipt, 308 expanded tests, all 2,832 plugin-
 disabled tests, and final 223 documentation/package-boundary tests passed.
 Merge, branch deletion, 50S.7D.2+, and later crossing behavior remain
 unauthorized.
+
+## Candidate 50S.7D.2 spectral refinement
+
+Spectral direct-Sun irradiance remains downstream of crossing and accepted
+illumination geometry. The audit adds no filtering, track, report, chart,
+planning, brightness, visibility, detector, facility, scheduling, or runtime
+meaning.

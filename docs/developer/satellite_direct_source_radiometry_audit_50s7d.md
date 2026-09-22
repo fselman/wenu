@@ -449,3 +449,12 @@ This acceptance authorizes no numeric Moonlight, spectral Sunlight, reflected
 field, surface or attitude response, brightness, visibility, detector, output,
 facility, scheduling, or unrelated behavior. PR 185 merge, branch deletion,
 50S.7D.2+, and 50S.7E+ remain separate explicit decisions.
+
+## 16. Candidate 50S.7D.2 spectral audit handoff
+
+The separate audit proposes the TSIS-1 HSRS v2 `tsis1_hsrs_1nm` product:
+25,281 samples from 202.0 through 2730.0 nm, 1 nm FWHM, 0.1 nm sampling, and
+exact retrieved-byte SHA-256
+`1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f`.
+It keeps 50S.7D.1 bolometric semantics independent and authorizes no runtime,
+Moonlight, merge, or branch deletion.

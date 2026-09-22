@@ -2011,3 +2011,11 @@ The independent nine-case receipt, 308-test expanded gate, complete 2,832-test
 plugin-disabled suite, and final 223-test documentation/package-boundary gate
 passed. Merge, branch deletion, 50S.7D.2+, and all later behavior remain
 separate and unauthorized.
+
+## Candidate 50S.7D.2 spectral radiometry architecture
+
+The proposed offline spectral layer consumes accepted illumination geometry
+and one digest-admitted TSIS-1 HSRS v2 resource. It preserves 25,281 native
+samples, pointwise uncertainty, exact resource identity, and native-grid
+energy integration without changing accepted bolometric 50S.7D.1. This is a
+documentation-only candidate; no runtime or 50S.7D.3+ work is authorized.

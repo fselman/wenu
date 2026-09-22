@@ -1211,3 +1211,10 @@ uncertainty remains `not_evaluated`.
 The independent receipt, 308 expanded tests, all 2,832 plugin-disabled tests,
 and final 223 documentation/package-boundary tests passed. 50S.7D.2+, merge,
 branch deletion, and later runtime vocabulary remain unauthorized.
+
+## Candidate 50S.7D.2 spectral vocabulary
+
+The proposed reference spectrum is TSIS-1 HSRS v2 over 202-2730 nm at 1 nm
+FWHM and 0.1 nm sampling. Bandwidth is resolution, not integration width;
+energy spectral irradiance is not photon flux, and the finite-domain integral
+is not bolometric TSI. The audit authorizes no runtime.

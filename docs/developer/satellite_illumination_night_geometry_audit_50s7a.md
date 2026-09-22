@@ -710,3 +710,10 @@ The zero-residual nine-case receipt, 308 expanded tests, complete 2,832-test
 suite, and final 223 documentation/package-boundary tests passed. The
 acceptance does not authorize 50S.7D.2+, merge, branch deletion, or any later
 illumination/output behavior.
+
+## 22. Candidate 50S.7D.2 spectral handoff
+
+The proposed TSIS-1 HSRS v2 evaluator consumes complete accepted 50S.7A
+geometry and applies the accepted distance and uniform-disk fraction without
+recomputing either. Wavelength-dependent limb darkening remains unevaluated.
+This documentation-only handoff authorizes no runtime or 50S.7D.3+ work.

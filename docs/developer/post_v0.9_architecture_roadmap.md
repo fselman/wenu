@@ -3331,3 +3331,12 @@ The nine-case independent receipt, 308 expanded tests, all 2,832
 plugin-disabled repository tests, and the final 223 documentation/package-
 boundary tests passed. 50S.7D.2+, 50S.7E+, merge, and branch deletion remain
 separate explicit decisions.
+
+## Candidate 50S.7D.2 — Spectral direct-Sun radiometry audit
+
+The documentation-only candidate selects the TSIS-1 HSRS v2 1 nm-FWHM,
+0.1 nm-sampled product over 202-2730 nm, subject to exact digest admission and
+resolved redistribution or external-resource policy. It forbids silent
+interpolation, extrapolation, `1361 W m-2` renormalization, photon conversion,
+and covariance-free integrated uncertainty. It authorizes no runtime;
+50S.7D.3+, implementation, merge, and cleanup remain separate decisions.

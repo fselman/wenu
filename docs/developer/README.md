@@ -126,3 +126,6 @@ in the same change.
   IAU nominal bolometric Sunlight, solar spectral-resource reservation,
   lunar-model reservation, uncertainty, validation, and a bounded
   solar-first 50S.7D.1 implementation.
+- [50S.7D.2 spectral direct-Sun radiometry audit](satellite_spectral_solar_radiometry_audit_50s7d2.md)
+  — candidate documentation-only contract for one digest-bound TSIS-1 HSRS
+  v2 product, native-grid energy semantics, uncertainty, and offline use.

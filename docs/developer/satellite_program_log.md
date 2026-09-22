@@ -1422,3 +1422,12 @@ expanded tests in 24.79 seconds, all 2,832 plugin-disabled tests in 236.81
 seconds, and the final 223 documentation/package-boundary tests in 10.17
 seconds. PR 185 merge, branch deletion, 50S.7D.2+, and all later work remain
 separate explicit decisions.
+
+## 2026-09-22 — Candidate 50S.7D.2 spectral direct-Sun audit
+
+Started a documentation-only audit from accepted integration
+`c76525c4986faabff0a70e534d1706baa4f550e6`. It proposes the digest-bound
+TSIS-1 HSRS v2 `tsis1_hsrs_1nm` product, native-grid energy integration,
+pointwise uncertainty, offline evaluation, and fail-closed resource admission.
+Redistribution remains unresolved. No implementation or 50S.7D.3+ work is
+authorized.
