@@ -2008,3 +2008,20 @@ reference outputs before any runtime amendment. Preserve Moonlight as
 `not_evaluated`; do not add 50S.7D.4+, reflected fields, spacecraft response,
 brightness, visibility, detector, output, facility, scheduling, or unrelated
 behavior.
+
+## Accepted 50S.7D.3 Moonlight readiness-audit boundary
+
+Fernando scientifically and architecturally accepted exact documentation-only
+candidate `abbb1b78fbd272ef8b5553d515e9f2a896a0aa55` on
+2026-09-22. The 230-test documentation/package gate passed in 11.39 seconds,
+and diff, upstream, and clean-tree checks passed.
+
+Preserve LIME as the preferred production candidate, GIRO/ROLO as comparison
+evidence, and Moonlight as `not_evaluated`. Do not merge PR 188 or delete its
+branch without separate explicit instructions. After merge, only a separately
+controlled external LIME distribution preflight is authorized. Do not retrieve,
+install, execute, vendor, redistribute, or implement model resources under this
+acceptance. Runtime requires a later accepted amendment freezing exact version,
+bytes, license, bands, coefficients, geometry conventions, domain,
+uncertainty, and authoritative outputs. Do not begin 50S.7D.4+ or later
+behavior.
