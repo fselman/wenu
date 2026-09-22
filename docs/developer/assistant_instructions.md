@@ -1990,3 +1990,21 @@ Do not merge PR 187 or delete its feature branch without Fernando's separate
 explicit instruction. Do not begin 50S.7D.3 Moonlight, vendor or implicitly
 acquire the resource, or add reflected fields, surface response, brightness,
 visibility, detector, output, facility, scheduling, or unrelated behavior.
+
+## Candidate 50S.7D.3 Moonlight readiness-audit boundary
+
+Read `satellite_moonlight_radiometry_audit_50s7d3.md` before any direct
+Moonlight geometry, resource, or radiometry work. Treat it as documentation
+only. It selects LIME as the preferred production model family and GIRO/ROLO as
+comparison evidence, but freezes no admissible LIME distribution.
+
+Do not implement Moonlight. Do not acquire, install, execute, vendor, or
+redistribute LIME, GIRO, ROLO, coefficients, or toolbox resources without
+separate explicit authority. After Fernando's separate scientific and
+architectural acceptance and audit merge, only an explicit external LIME
+distribution preflight may be proposed. It must freeze exact version, bytes,
+license, bands, coefficients, geometry conventions, domain, uncertainty, and
+reference outputs before any runtime amendment. Preserve Moonlight as
+`not_evaluated`; do not add 50S.7D.4+, reflected fields, spacecraft response,
+brightness, visibility, detector, output, facility, scheduling, or unrelated
+behavior.
