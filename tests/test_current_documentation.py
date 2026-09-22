@@ -10017,6 +10017,10 @@ def test_50s7d3_records_scientific_and_architectural_acceptance():
         "external LIME distribution preflight",
         "authorizes no Moonlight runtime",
         "PR 188 merge and branch deletion remain separate explicit decisions",
+        "0be116abfa6ce0172b94a0d3c15f4f61ed2c8f8b",
+        "231 plugin-disabled current-documentation and package-boundary tests",
+        "8.54 seconds",
+        "Final accepted audit verification",
     )
     for phrase in expected:
         assert phrase in audit
