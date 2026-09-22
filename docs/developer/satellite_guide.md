@@ -1253,3 +1253,15 @@ native grid, resolution, integral, and production-loader result.
 The spectrum remains a verified but unaccepted reference-energy product. It is
 not bolometric TSI, Moonlight, spacecraft brightness, visibility, or detector
 response.
+
+## Accepted 50S.7D.2 direct-Sun spectrum
+
+Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
+Preserve the executable `8e930db2` TSIS-1 HSRS v2 native-grid energy
+spectrum, exact external-resource identity, pointwise uncertainty,
+inverse-square scaling, accepted achromatic visible fraction, exact-grid
+integration, and explicit integrated uncertainty `not_evaluated`.
+
+The product remains distinct from bolometric TSI, Moonlight, spacecraft
+brightness, visibility, and detector response. PR 187 merge and branch
+deletion remain separate.
