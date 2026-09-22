@@ -3705,3 +3705,16 @@ native immutable energy samples, pointwise uncertainty, exact-grid integration,
 and integrated uncertainty `not_evaluated`. Acquisition, interpolation,
 extrapolation, renormalization, Moonlight, photon, output, and later APIs remain
 unauthorized.
+
+## Accepted 50S.7D.2 spectral API implementation
+
+Fernando accepted exact verified candidate `d1edeb46` on 2026-09-22.
+Preserve the executable `8e930db2` immutable resource identity, policy,
+result, evaluator, offline loader, typed failures, native tuples, pointwise
+uncertainty, exact-grid energy integration, and deterministic identity.
+
+The API must continue to forbid implicit acquisition, interpolation,
+extrapolation, renormalization, aggregate uncertainty, Moonlight, photon
+conversion, surface response, brightness, visibility, detector, output,
+facility, and scheduling behavior. PR 187 merge and branch deletion remain
+separate decisions.
