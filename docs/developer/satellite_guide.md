@@ -1228,3 +1228,17 @@ irradiance, retained pointwise uncertainty, and integrated uncertainty
 `not_evaluated`. No interpolation, extrapolation, `1361 W m-2`
 renormalization, or numeric Moonlight is implied. The audit added no runtime or
 resource.
+
+## Candidate 50S.7D.2 spectral direct-Sun implementation
+
+Candidate `8e930db2` adds an offline, output-neutral direct-Sun reference
+spectrum over the exact TSIS-1 HSRS v2 native grid. It preserves the complete
+accepted illumination geometry, applies inverse-square distance scaling and
+one achromatic uniform-disk visible fraction, retains pointwise provider
+uncertainty, and records that integrated uncertainty is `not_evaluated`.
+
+The CSV remains an explicitly installed external resource. Wenu neither
+downloads nor vendors it. The finite-domain integral is not bolometric TSI,
+the 1 nm bandwidth is resolution rather than integration width, and no
+interpolation, extrapolation, 1361 W m-2 renormalization, photon conversion, or
+Moonlight is implied. The candidate is unaccepted.
