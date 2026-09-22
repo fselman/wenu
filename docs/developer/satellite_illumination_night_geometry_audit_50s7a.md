@@ -685,3 +685,16 @@ difference remains numerical convergence evidence only. The candidate is
 unaccepted and adds no spectral Sunlight, Moonlight, reflected fields,
 spacecraft response, brightness, visibility, detector, output, facility, or
 scheduling behavior.
+
+## 20. Verified candidate 50S.7D.1 implementation handoff
+
+Exact head `5bf5d52e81670f1a69af0476283195d12a3119bc` passed the independent
+installed-resource receipt for sunlit, penumbral, and umbral LEO/MEO/GEO
+geometry with zero irradiance residuals, 308 expanded tests in 24.79 seconds,
+and all 2,832 plugin-disabled tests in 236.81 seconds. Geometry identity,
+occultation state, and convergence evidence remain unchanged and upstream.
+
+This is verification evidence only. The implementation remains unaccepted;
+merge, branch deletion, spectral Sunlight, Moonlight, reflected fields,
+spacecraft response, brightness, visibility, detector, output, facility, and
+scheduling remain unauthorized.

@@ -4265,3 +4265,14 @@ identity remain inherited through the complete immutable geometry. The
 coordinate-system guide was reviewed and remains current. This candidate is
 unaccepted; 50S.7D.2+, surface projection, brightness, visibility, detector,
 output, facility, and scheduling behavior remain unauthorized.
+
+## Verified candidate 50S.7D.1 scalar coordinate boundary
+
+Exact head `5bf5d52e81670f1a69af0476283195d12a3119bc` passed the nine-case
+installed-resource receipt, 308 expanded tests, and all 2,832 plugin-disabled
+tests. The evidence confirms scalar composition over retained geometry without
+a new vector, frame, transform, time scale, observer, or attitude.
+
+The coordinate-system guide was reviewed and remains current. The candidate is
+verified but unaccepted; merge, branch deletion, 50S.7D.2+, and later
+coordinate or radiometric behavior remain unauthorized.

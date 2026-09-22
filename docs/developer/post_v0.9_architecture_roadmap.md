@@ -3305,3 +3305,16 @@ The installed-resource offline receipt, complete plugin-disabled gate, Mac
 verification, and Fernando's scientific and architectural acceptance remain
 pending. 50S.7D.2+, 50S.7E+, outputs, brightness, visibility, detector,
 facility, scheduling, merge, and branch deletion remain unauthorized.
+
+## Verified candidate 50S.7D.1 implementation gate
+
+At exact head `5bf5d52e81670f1a69af0476283195d12a3119bc`, the independent
+installed-resource receipt matched all nine LEO/MEO/GEO shadow cases with zero
+irradiance residual, the expanded 308-test gate passed in 24.79 seconds, and
+all 2,832 plugin-disabled repository tests passed in 236.81 seconds. Receipt
+SHA-256 was
+`43037267cd841232dcffca05797a2d55dce3d90b9caf8b84fbf785b19129fc73`.
+
+The clean diff, exact upstream, and clean worktree were confirmed. The
+candidate now awaits Fernando's separate scientific and architectural review.
+Merge, branch deletion, 50S.7D.2+, and later work remain unauthorized.

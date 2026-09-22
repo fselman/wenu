@@ -407,3 +407,25 @@ package-boundary gates, exact-upstream/clean-tree checks, and Fernando's
 scientific and architectural acceptance remain pending. 50S.7D.2+, 50S.7E+,
 outputs, brightness, visibility, detector, facility, scheduling, merge, and
 branch deletion remain unauthorized.
+
+## 14. Verified candidate 50S.7D.1 implementation
+
+Fernando's Mac verified exact feature-branch head
+`5bf5d52e81670f1a69af0476283195d12a3119bc`. The independent offline
+receipt used installed DE440
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`
+and installed IERS evidence with `network_access=false`. It covered sunlit,
+penumbral, and umbral LEO, MEO, and GEO states. Every independently computed
+clear and incident irradiance residual was `0.000e+00`; numeric zero occurred
+only for evaluated umbra. Receipt SHA-256 was
+`43037267cd841232dcffca05797a2d55dce3d90b9caf8b84fbf785b19129fc73`.
+
+The combined illumination, ephemeris, documentation, and package-boundary gate
+passed all 308 tests in 24.79 seconds. The complete plugin-disabled repository
+suite passed all 2,832 tests in 236.81 seconds. Diff, exact-head/upstream, and
+clean-tree checks passed.
+
+The candidate is verified but not scientifically or architecturally accepted.
+Fernando's separate review remains required. Merge, branch deletion,
+50S.7D.2+, 50S.7E+, outputs, brightness, visibility, detector, facility,
+scheduling, and unrelated work remain unauthorized.

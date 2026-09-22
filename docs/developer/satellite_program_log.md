@@ -1394,3 +1394,18 @@ failed. The installed-resource receipt, Mac complete suite, documentation
 gate, exact-upstream checks, and Fernando's separate scientific and
 architectural acceptance remain pending. 50S.7D.2+ and later work remain
 unauthorized.
+
+## 2026-09-22 — Verified candidate 50S.7D.1 implementation
+
+Fernando's Mac verified exact branch head
+`5bf5d52e81670f1a69af0476283195d12a3119bc`. The installed DE440/IERS
+no-download receipt covered sunlit, penumbral, and umbral LEO, MEO, and GEO
+states; every independently recomputed clear and incident irradiance residual
+was `0.000e+00`. Receipt SHA-256 was
+`43037267cd841232dcffca05797a2d55dce3d90b9caf8b84fbf785b19129fc73`.
+
+The expanded 308-test gate passed in 24.79 seconds and all 2,832
+plugin-disabled repository tests passed in 236.81 seconds. Diff,
+exact-head/upstream, and clean-tree checks passed. The candidate now awaits
+Fernando's separate scientific and architectural acceptance. Merge, branch
+deletion, 50S.7D.2+, and later work remain unauthorized.

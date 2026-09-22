@@ -3623,3 +3623,17 @@ incompatible uniform-disk geometry, inconsistent distance, and non-same-
 instant inputs fail closed through the accepted illumination failure boundary.
 The candidate adds no surface, passband, Moonlight, output, brightness,
 visibility, or detector API and is not yet accepted.
+
+## Verified candidate 50S.7D.1 API implementation
+
+The immutable API at exact branch head
+`5bf5d52e81670f1a69af0476283195d12a3119bc` passed its independent
+installed-resource formula receipt, 308-test expanded gate, and complete
+2,832-test plugin-disabled suite. The receipt independently recomputed the
+declared IAU nominal formula for sunlit, penumbral, and umbral LEO, MEO, and
+GEO geometry with zero residuals.
+
+The API remains an unaccepted review candidate. Do not extend it with
+spectral/passband, Moonlight, reflected-field, spacecraft-response, brightness,
+visibility, detector, output, facility, or scheduling contracts. Merge and
+branch deletion remain separate decisions.

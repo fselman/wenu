@@ -9555,3 +9555,64 @@ def test_50s7d1_records_candidate_direct_solar_irradiance_implementation():
         "GEO",
     ):
         assert phrase in validator
+
+
+def test_50s7d1_records_verified_direct_solar_irradiance_candidate():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+        read(
+            DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+        ),
+    )
+    expected = (
+        "Verified candidate 50S.7D.1 implementation architecture",
+        "Verified candidate 50S.7D.1 implementation gate",
+        "Verified candidate 50S.7D.1 API implementation",
+        "Verified candidate 50S.7D.1 implementation source gate",
+        "Verified candidate 50S.7D.1 scalar coordinate boundary",
+        "Verified candidate 50S.7D.1 runtime evidence",
+        "Verified candidate 50S.7D.1 implementation",
+        "Verified candidate 50S.7D.1 review state",
+        "Verified candidate 50S.7D.1 implementation refinement",
+        "Verified candidate 50S.7D.1 implementation handoff",
+        "Verified candidate 50S.7D.1 implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "5bf5d52e81670f1a69af0476283195d12a3119bc" in normalized
+        assert "308" in normalized
+        assert "2,832" in normalized
+        assert (
+            "unaccepted" in normalized.lower()
+            or "not accepted" in normalized.lower()
+            or "not scientifically or architecturally accepted"
+            in normalized.lower()
+        )
+        assert "unauthorized" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    for phrase in (
+        "24.79 seconds",
+        "236.81 seconds",
+        "43037267cd841232dcffca05797a2d55dce3d90b9caf8b84fbf785b19129fc73",
+        "all nine",
+        "zero clear and incident irradiance residuals",
+        "exact upstream",
+        "clean tree",
+    ):
+        assert phrase in combined

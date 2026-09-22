@@ -585,3 +585,15 @@ zero is produced only from an evaluated zero visible fraction; unknown
 Moonlight remains not evaluated. The candidate is unaccepted, and all
 50S.7D.2+, 50S.7E+, output, facility, and scheduling behavior remains
 unauthorized.
+
+## Verified candidate 50S.7D.1 implementation refinement
+
+Exact head `5bf5d52e81670f1a69af0476283195d12a3119bc` passed its nine-case
+installed-resource independent receipt, 308 expanded tests, and all 2,832
+plugin-disabled repository tests. The evidence confirms that radiometry stays
+downstream of crossing and accepted illumination geometry and introduces no
+crossing, report, chart, planning, observer-brightness, or detector meaning.
+
+The candidate is verified but unaccepted. Merge, branch deletion, 50S.7D.2+,
+50S.7E+, outputs, facilities, visibility, detector, and scheduling remain
+unauthorized.

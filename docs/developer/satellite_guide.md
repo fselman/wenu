@@ -1186,3 +1186,16 @@ exact as a convention while physical/model uncertainty remains
 `not_evaluated`; solar variability and limb darkening are omitted. Unknown
 Moonlight remains not evaluated, never numeric zero. The candidate is not yet
 accepted and all 50S.7D.2+ behavior remains unauthorized.
+
+## Verified candidate 50S.7D.1 runtime evidence
+
+At exact branch head `5bf5d52e81670f1a69af0476283195d12a3119bc`, independent
+recomputation agreed exactly with Wenu for sunlit, partly eclipsed, and fully
+eclipsed LEO, MEO, and GEO examples. Clear irradiance followed inverse-square
+distance scaling; incident irradiance followed the evaluated visible fraction;
+only umbra produced numeric zero.
+
+All 308 expanded tests and 2,832 complete plugin-disabled tests passed. This is
+verification evidence, not scientific or architectural acceptance. Spectral
+Sunlight, Moonlight, reflected fields, spacecraft response, brightness,
+visibility, detector, output, facility, and scheduling remain unauthorized.

@@ -1986,3 +1986,16 @@ deterministic identity. Physical/model uncertainty remains explicitly
 response, brightness, visibility, detector, output, facility, and scheduling
 behavior remain unauthorized. The implementation is an unaccepted candidate;
 independent receipt, complete gates, and Fernando's review remain pending.
+
+## Verified candidate 50S.7D.1 implementation architecture
+
+Exact branch head `5bf5d52e81670f1a69af0476283195d12a3119bc` passed the
+installed-DE440 no-download receipt, 308 expanded focused/documentation/
+package-boundary tests in 24.79 seconds, and all 2,832 plugin-disabled tests in
+236.81 seconds on Fernando's Mac. The receipt covered sunlit, penumbral, and
+umbral LEO, MEO, and GEO states with zero clear and incident residuals.
+
+Diff, exact-head/upstream, and clean-tree checks passed. The bounded
+architecture is verified but not scientifically or architecturally accepted;
+merge, branch deletion, 50S.7D.2+, and all later behavior remain separate and
+unauthorized.
