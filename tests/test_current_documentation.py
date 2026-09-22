@@ -9993,4 +9993,3 @@ def test_50s7d3_records_candidate_moonlight_readiness_audit():
     assert "satellite_moonlight_radiometry_audit_50s7d3.md" in read(
         DEVELOPER / "README.md"
     )
-
