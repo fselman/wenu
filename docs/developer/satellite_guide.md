@@ -1385,3 +1385,74 @@ Acceptance does not resolve coefficient/data licenses, exact netCDF schema,
 lunar conventions, or authoritative executable reference outputs. It
 authorizes no installation, execution, dependency, API, or Moonlight runtime.
 PR 189 merge and any later offline inspection remain separate decisions.
+
+## Candidate 50S.7D.3B: how the offline LIME inspection works
+
+The accepted preflight answered “which LIME?” but not “what does that exact
+executable return?” The 50S.7D.3B inspection is the bridge. It runs the frozen
+external toolbox as an oracle, not as a Wenu dependency and not as the future
+production Moonlight path.
+
+The distinction matters:
+
+- LIME owns the candidate empirical lunar-reflectance calculation and its
+  native uncertainty machinery;
+- Wenu continues to own satellite propagation, time, ephemerides, frames,
+  same-instant geometry, eclipse/occultation policy, and outputs; and
+- this inspection owns only evidence about LIME's exact package, resources,
+  interface, domain flags, and native numerical results.
+
+The developer command has two positional inputs:
+
+```text
+python tools/validate_50s7d3b_lime_offline_inspection.py \
+  /absolute/path/to/lime.pkg \
+  /absolute/path/to/new-evidence-directory
+```
+
+The output directory must not exist. The package must have the accepted
+`516220150` byte size and SHA-256
+`e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`.
+The command also refuses to start if `/Applications/LimeTBX.app` exists,
+because an installed copy would make resource selection ambiguous.
+
+The command does not run Apple's installer. It expands the package into a
+temporary directory, records the package signature, verifies the expanded app
+signature, and verifies bundled coefficient
+`LIME_MODEL_COEFS_20251010_V01.nc` at SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+It then executes that temporary app with an isolated home and temporary
+directory under the macOS sandbox rule `(deny network*)`. Proxy variables are
+also redirected to the local discard port. LIME's coefficient-update option is
+never called.
+
+Ten direct-selenographic rows hold both distances and all longitudes/latitudes
+fixed while testing signed phase at `-90.001`, `-90`, `-15`, `-2`, `-1.999`,
+`1.999`, `2`, `15`, `90`, and `90.001` degrees. This directly probes both
+signs and both edges of LIME's source-level
+`2 <= abs(phase_angle) <= 90` predicate. It does not yet say whether Wenu and
+LIME construct those scalars from Cartesian geometry in the same way.
+
+The tool runs a central-value calculation twice and requires exact equality of
+native CIMEL wavelengths, irradiance, reflectance, input geometry echoed by
+LIME, and domain flags. A third run enables LIME uncertainty propagation. Raw
+netCDF files are retained alongside JSON projections of the native values and
+schema. Package/app receipts, notices, version/help output, logs, byte counts,
+and SHA-256 digests are collected into one manifest.
+
+Four negative statements are part of the evidence, not incidental prose:
+
+```text
+network_access=false
+installed=false
+production_runtime_changed=false
+moonlight_status=not_evaluated
+```
+
+A successful command is only Phase A candidate evidence. The console summary
+and manifest must be reviewed before anything else proceeds. Phase B will
+independently compare Wenu/SPICE-derived direct-selenographic geometry against
+LIME's conventions for representative LEO, MEO, GEO, and highly elliptical
+states. Until that comparison and a later runtime amendment are separately
+accepted, Wenu must not import LIME, return numeric Moonlight, or interpret an
+outside-domain or failed case as zero.

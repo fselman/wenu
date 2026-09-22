@@ -2,7 +2,11 @@
 
 from dataclasses import FrozenInstanceError, replace
 import csv
+import importlib.util
 from io import StringIO
+import json
+from pathlib import Path
+import sys
 
 import pytest
 
@@ -26,6 +30,24 @@ from wenu.satellites.radiometry import (
     SolarSpectralRadiometryFailureCode,
     load_solar_spectral_irradiance_resource,
 )
+
+
+LIME_INSPECTION_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "tools"
+    / "validate_50s7d3b_lime_offline_inspection.py"
+)
+
+
+def load_lime_inspection_module():
+    specification = importlib.util.spec_from_file_location(
+        "validate_50s7d3b_lime_offline_inspection",
+        LIME_INSPECTION_PATH,
+    )
+    module = importlib.util.module_from_spec(specification)
+    sys.modules[specification.name] = module
+    specification.loader.exec_module(module)
+    return module
 
 
 def spectral_resource():
@@ -274,3 +296,68 @@ def test_resource_constructor_enforces_native_grid_invariants():
 
     with pytest.raises(ValueError, match="native-grid"):
         replace(resource, wavelength_nm=tuple(invalid))
+
+
+def test_lime_inspection_freezes_headerless_signed_domain_cases():
+    inspection = load_lime_inspection_module()
+
+    rows = list(csv.reader(StringIO(inspection._case_csv())))
+
+    assert len(rows) == 10
+    assert all(len(row) == 6 for row in rows)
+    assert [float(row[-1]) for row in rows] == [
+        -90.001,
+        -90.0,
+        -15.0,
+        -2.0,
+        -1.999,
+        1.999,
+        2.0,
+        15.0,
+        90.0,
+        90.001,
+    ]
+    assert [case.expected_outside_model_domain for case in inspection.CASES] == [
+        True,
+        False,
+        False,
+        False,
+        True,
+        True,
+        False,
+        False,
+        False,
+        True,
+    ]
+
+
+def test_lime_inspection_is_exact_no_install_and_network_denied():
+    inspection = load_lime_inspection_module()
+    source = LIME_INSPECTION_PATH.read_text(encoding="utf-8")
+
+    assert inspection.PACKAGE_BYTES == 516_220_150
+    assert inspection.PACKAGE_SHA256 == (
+        "e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21"
+    )
+    assert inspection.COEFFICIENT_SHA256 == (
+        "8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691"
+    )
+    assert inspection.SANDBOX_PROFILE == (
+        "(version 1) (allow default) (deny network*)"
+    )
+    assert '"--expand-full"' in source
+    assert '"--update"' not in source
+    assert '"-u"' not in source
+    assert 'Path("/Applications/LimeTBX.app")' in source
+
+
+def test_lime_inspection_serializes_nonfinite_external_values_as_strict_json():
+    inspection = load_lime_inspection_module()
+
+    encoded = inspection._json_text(
+        {"values": [float("nan"), float("inf"), float("-inf")]}
+    )
+
+    assert json.loads(encoded) == {
+        "values": ["NaN", "Infinity", "-Infinity"]
+    }

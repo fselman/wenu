@@ -3455,3 +3455,16 @@ tests passed in 11.95 seconds with clean exact-head, diff, upstream, and tree
 checks. The accepted preflight freezes resource identity and the Wenu-owned
 direct-selenographic geometry boundary only. PR 189 merge is separate, and no
 installation, execution, Moonlight runtime, or 50S.7D.4+ work is authorized.
+
+## Candidate 50S.7D.3B — Offline LIME resource/output inspection
+
+The next bounded candidate supplies a no-install, network-denied macOS harness
+for the exact accepted LIME package. It freezes ten signed-phase/domain-edge
+rows, exact coefficient selection, native CIMEL outputs, uncertainty output,
+repeatability evidence, notice inventory, package/app signatures, and a
+digest-bound external manifest.
+
+One successful operator run remains unaccepted evidence pending review. A
+later independent Wenu/SPICE geometry comparison is a separate phase. Do not
+add Moonlight runtime, a LIME dependency/API, vendored resources, output
+integration, or 50S.7D.4+ behavior under this candidate.

@@ -2066,3 +2066,20 @@ ownership, and all unresolved blockers. Acceptance authorizes no installation,
 execution, vendoring, dependency, API, Moonlight runtime, or 50S.7D.4+ work.
 PR 189 merge, branch deletion, and any later offline execution require
 separate explicit instructions.
+
+## Candidate 50S.7D.3B offline LIME inspection boundary
+
+Read `satellite_lime_offline_inspection_audit_50s7d3b.md` before executing the
+accepted LIME asset. Fernando explicitly authorized this bounded next step on
+2026-09-22 after 50S.7D.3A merge and cleanup. Use only exact `v1.4.2` package
+SHA-256 `e0a84e250dc4f5beb8a8305278756bbc0b2b136814b9c4defb053970f983ba21`
+and coefficient SHA-256
+`8e6839d95315eb2d797484be559ad70b69010cc1eb9b614770f61bb5ce2cf691`.
+
+The candidate harness must expand rather than install the package, reject an
+installed `/Applications/LimeTBX.app`, deny all network access through the
+macOS sandbox, use isolated home and temporary directories, never call LIME's
+update route, and preserve signed-phase/domain-edge native outputs plus exact
+digests. Successful execution is candidate external evidence only. Do not add
+a dependency or API, vendor or redistribute resources, claim Wenu/SPICE
+geometry equivalence, evaluate Moonlight, or begin 50S.7D.4+.

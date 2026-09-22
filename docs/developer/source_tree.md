@@ -2987,3 +2987,15 @@ remain reserved to `satellites/radiometry.py`.
 The LIME EO-CFI satellite route is outside Wenu ownership and must not become a
 second propagator. Installation, execution, runtime, and output integration
 remain unauthorized.
+
+## Candidate 50S.7D.3B offline-inspection ownership
+
+`tools/validate_50s7d3b_lime_offline_inspection.py` owns only the controlled
+developer receipt: exact package/coefficient verification, temporary package
+expansion, macOS network-denied execution, read-only netCDF inventory, frozen
+direct-selenographic cases, and external evidence manifest. It is not imported
+by `src/wenu` and adds no package resource or dependency.
+
+`docs/developer/satellite_lime_offline_inspection_audit_50s7d3b.md` owns the
+candidate scope and review gates. Existing production ownership reservations
+remain unchanged; no new production or domain-test file is admitted.

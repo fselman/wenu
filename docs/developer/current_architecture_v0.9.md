@@ -2127,3 +2127,17 @@ checks. The accepted boundary preserves Wenu geometry authority and exact LIME
 resource identities but changes no runtime owner, API, dependency, or result.
 Moonlight remains `not_evaluated`; PR 189 merge and any execution remain
 separate explicit decisions.
+
+## Candidate 50S.7D.3B offline-inspection architecture
+
+The candidate adds developer validation infrastructure only. The Mac harness
+verifies and temporarily expands the exact accepted package, executes only its
+direct-selenographic CLI inside a network-denied sandbox, inventories the exact
+coefficient netCDF, and records native outputs and digests. It does not install
+LIME or connect it to Wenu production code.
+
+Production ownership is unchanged: future same-instant lunar source geometry
+remains reserved to `satellites/illumination.py`, and future exact external
+model admission/native-band radiometry remains reserved to
+`satellites/radiometry.py`. `moonlight` remains `not_evaluated`; geometry
+equivalence, runtime, dependencies, APIs, and 50S.7D.4+ remain unauthorized.

@@ -1554,3 +1554,18 @@ It authorizes no installation, execution, vendoring, dependency, API,
 Moonlight runtime, or 50S.7D.4+ work. PR 189 merge, branch deletion, and any
 offline resource/reference-output inspection remain separate explicit
 decisions.
+
+## 2026-09-22 — Candidate 50S.7D.3B offline LIME inspection
+
+After the accepted preflight was merged and cleaned, Fernando said “proceed,”
+explicitly authorizing the separately controlled offline Mac inspection. A
+candidate developer harness now verifies and temporarily expands the exact
+package, rejects installed-resource ambiguity, denies network access with the
+macOS sandbox, selects exact coefficient `20251010_v1`, and records coefficient
+schema, notices, signatures, ten signed-phase/domain-edge cases, native CIMEL
+outputs, uncertainty, repeatability, and digests.
+
+This is not LIME installation or Wenu Moonlight implementation. Static gates,
+one controlled Mac run, evidence review, and Fernando's separate scientific
+and architectural acceptance remain required. Independent Wenu/SPICE geometry
+comparison is a later phase; `moonlight` remains `not_evaluated`.
