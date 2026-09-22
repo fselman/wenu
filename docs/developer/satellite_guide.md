@@ -1171,3 +1171,43 @@ Moonlight as not evaluated, never numeric zero. Spectral/passband Sunlight,
 Moonlight, reflected fields, spacecraft response, brightness, visibility,
 detector, output, facility, and scheduling vocabulary remain unauthorized.
 PR 184 merge and branch deletion remain separate explicit decisions.
+
+## Candidate 50S.7D.1 runtime vocabulary
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` computes direct
+Sunlight on an abstract plane normal to the incoming beam. At one astronomical
+unit with no occultation it is exactly the IAU nominal `1361 W m-2`; at other
+distances it follows inverse-square scaling, and Earth occultation multiplies
+it by the already-evaluated visible solar-disk fraction.
+
+This is bolometric normal-plane irradiance, not panel irradiance, observer
+brightness, magnitude, visibility, or detector signal. The nominal constant is
+exact as a convention while physical/model uncertainty remains
+`not_evaluated`; solar variability and limb darkening are omitted. Unknown
+Moonlight remains not evaluated, never numeric zero. The candidate is not yet
+accepted and all 50S.7D.2+ behavior remains unauthorized.
+
+## Verified candidate 50S.7D.1 runtime evidence
+
+At exact branch head `5bf5d52e81670f1a69af0476283195d12a3119bc`, independent
+recomputation agreed exactly with Wenu for sunlit, partly eclipsed, and fully
+eclipsed LEO, MEO, and GEO examples. Clear irradiance followed inverse-square
+distance scaling; incident irradiance followed the evaluated visible fraction;
+only umbra produced numeric zero.
+
+All 308 expanded tests and 2,832 complete plugin-disabled tests passed. This is
+verification evidence, not scientific or architectural acceptance. Spectral
+Sunlight, Moonlight, reflected fields, spacecraft response, brightness,
+visibility, detector, output, facility, and scheduling remain unauthorized.
+
+## Accepted 50S.7D.1 runtime vocabulary
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Direct-Sun
+`clear` and `incident` continue to mean bolometric normal-plane irradiance;
+numeric zero remains restricted to evaluated umbra, while physical/model
+uncertainty remains `not_evaluated`.
+
+The independent receipt, 308 expanded tests, all 2,832 plugin-disabled tests,
+and final 223 documentation/package-boundary tests passed. 50S.7D.2+, merge,
+branch deletion, and later runtime vocabulary remain unauthorized.

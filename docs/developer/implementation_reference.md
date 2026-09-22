@@ -3605,3 +3605,48 @@ Spectral/passband Sunlight, numeric Moonlight, reflected fields, component
 bundles, surface response, magnitude, visibility, detector, report, chart,
 CLI, planning, facility, and scheduling APIs remain unauthorized. PR 184
 merge, branch deletion, and 50S.7D.2+ remain separate decisions.
+
+## Candidate 50S.7D.1 direct-Sun irradiance API implementation
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` exports immutable
+`DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts. The evaluator accepts exactly one
+`SatelliteIlluminationGeometry` and implements
+`E_clear = 1361 * (au / r)^2` and
+`E_incident = visible_fraction * E_clear`.
+
+The result retains complete geometry identity, UTC, distance in kilometres and
+astronomical units, visible fraction, occultation class, clear/incident values,
+coarse value, convergence difference, policy, provenance, warnings, and
+physical/model uncertainty status `not_evaluated`. Unsupported model,
+incompatible uniform-disk geometry, inconsistent distance, and non-same-
+instant inputs fail closed through the accepted illumination failure boundary.
+The candidate adds no surface, passband, Moonlight, output, brightness,
+visibility, or detector API and is not yet accepted.
+
+## Verified candidate 50S.7D.1 API implementation
+
+The immutable API at exact branch head
+`5bf5d52e81670f1a69af0476283195d12a3119bc` passed its independent
+installed-resource formula receipt, 308-test expanded gate, and complete
+2,832-test plugin-disabled suite. The receipt independently recomputed the
+declared IAU nominal formula for sunlit, penumbral, and umbral LEO, MEO, and
+GEO geometry with zero residuals.
+
+The API remains an unaccepted review candidate. Do not extend it with
+spectral/passband, Moonlight, reflected-field, spacecraft-response, brightness,
+visibility, detector, output, facility, or scheduling contracts. Merge and
+branch deletion remain separate decisions.
+
+## Accepted 50S.7D.1 direct-Sun irradiance API implementation
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Preserve the
+immutable `DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts and their fail-closed geometry
+boundary.
+
+The independent receipt, 308 expanded tests, complete 2,832-test suite, and
+final 223-test documentation/package-boundary gate passed. The acceptance adds
+no 50S.7D.2+, output, brightness, visibility, detector, facility, or scheduling
+API; merge and branch deletion remain separate decisions.

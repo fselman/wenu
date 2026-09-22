@@ -671,3 +671,42 @@ components; Earthshine and Lunar-Earthshine remain 50S.7E.
 spacecraft response, brightness, visibility, detector, facility, scheduling,
 and unrelated work remain unauthorized. PR 184 merge and branch deletion
 remain separate explicit decisions.
+
+## 19. Candidate 50S.7D.1 implementation handoff
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` implements the first
+accepted radiometric composition downstream of this geometry: IAU-nominal
+bolometric normal-plane direct Sunlight, inverse-square distance scaling, and
+the already-converged uniform-disk visible fraction. It preserves all geometry
+identity and does not modify occultation or twilight behavior.
+
+Physical/model uncertainty stays `not_evaluated`; the inherited quadrature
+difference remains numerical convergence evidence only. The candidate is
+unaccepted and adds no spectral Sunlight, Moonlight, reflected fields,
+spacecraft response, brightness, visibility, detector, output, facility, or
+scheduling behavior.
+
+## 20. Verified candidate 50S.7D.1 implementation handoff
+
+Exact head `5bf5d52e81670f1a69af0476283195d12a3119bc` passed the independent
+installed-resource receipt for sunlit, penumbral, and umbral LEO/MEO/GEO
+geometry with zero irradiance residuals, 308 expanded tests in 24.79 seconds,
+and all 2,832 plugin-disabled tests in 236.81 seconds. Geometry identity,
+occultation state, and convergence evidence remain unchanged and upstream.
+
+This is verification evidence only. The implementation remains unaccepted;
+merge, branch deletion, spectral Sunlight, Moonlight, reflected fields,
+spacecraft response, brightness, visibility, detector, output, facility, and
+scheduling remain unauthorized.
+
+## 21. Accepted 50S.7D.1 implementation handoff
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. The accepted
+consumer preserves the full 50S.7A geometry and composes only same-instant
+direct-Sun bolometric normal-plane irradiance.
+
+The zero-residual nine-case receipt, 308 expanded tests, complete 2,832-test
+suite, and final 223 documentation/package-boundary tests passed. The
+acceptance does not authorize 50S.7D.2+, merge, branch deletion, or any later
+illumination/output behavior.

@@ -50,9 +50,15 @@ from .exact_tracks import (
 from .elements import SatelliteElementRecord
 from .illumination import (
     AU_KM,
+    DIRECT_SOLAR_IRRADIANCE_MODEL,
+    DIRECT_SOLAR_IRRADIANCE_QUANTITY_KIND,
+    IAU_NOMINAL_TOTAL_SOLAR_IRRADIANCE_W_M2,
     IAU_NOMINAL_SOLAR_RADIUS_KM,
     WGS84_EQUATORIAL_RADIUS_KM,
     WGS84_POLAR_RADIUS_KM,
+    DirectSolarIrradiance,
+    DirectSolarIrradianceEvaluator,
+    DirectSolarIrradiancePolicy,
     LunarOccultorStatus,
     ObserverTwilightClass,
     SHADOW_TRANSITION_IMPLEMENTATION,

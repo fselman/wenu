@@ -1865,3 +1865,51 @@ spacecraft attitude or surfaces, BRDF, magnitude, visibility, detector,
 report/chart/CLI/planning integration, facility behavior, scheduling, or
 unrelated refactoring. 50S.7D.2+, 50S.7E+, PR merge, and branch deletion
 remain separate explicit decisions.
+
+## Candidate 50S.7D.1 implementation boundary
+
+Treat executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` plus later
+documentation-only evidence as an unaccepted bounded candidate. Preserve its
+immutable IAU-nominal bolometric normal-plane policy/result/evaluator,
+inverse-square distance scaling, accepted uniform-disk fraction composition,
+complete geometry identity, numerical convergence evidence, explicit
+physical/model uncertainty `not_evaluated`, typed failures, focused tests, and
+offline independent recomputation.
+
+The 86-test illumination/ephemeris gate passed. Before review require the
+installed DE440/IERS no-download receipt, current-documentation and package-
+boundary gates, complete plugin-disabled Mac suite, diff check, exact upstream,
+and clean tree. Do not add spectral Sunlight, Moonlight, reflected fields,
+component bundles, surface response, brightness, visibility, detector,
+output, facility, scheduling, or unrelated refactoring. Merge and branch
+deletion remain separate explicit decisions.
+
+## Verified candidate 50S.7D.1 review state
+
+Treat exact branch head `5bf5d52e81670f1a69af0476283195d12a3119bc` as verified but
+unaccepted. The installed-resource no-download receipt produced all nine
+sunlit/penumbral/umbral LEO/MEO/GEO cases with zero clear and incident
+irradiance residuals; its SHA-256 is
+`43037267cd841232dcffca05797a2d55dce3d90b9caf8b84fbf785b19129fc73`.
+The 308-test expanded gate passed in 24.79 seconds and the complete 2,832-test
+plugin-disabled suite passed in 236.81 seconds. Diff, exact upstream, and clean
+tree checks passed.
+
+Do not merge or delete the feature branch without Fernando's separate explicit
+instruction. Do not begin 50S.7D.2+, reflected fields, spacecraft response,
+brightness, visibility, detector, output, facility, scheduling, or unrelated
+work before separate acceptance and authorization.
+
+## Accepted 50S.7D.1 implementation boundary
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Preserve the
+bounded direct-Sun bolometric normal-plane implementation at executable commit
+`4b5f8e6925f88df38a2923c057f4d039328e3d2b`, its complete retained
+geometry, deterministic identity, provenance, numerical evidence, and explicit
+physical/model uncertainty `not_evaluated`.
+
+The zero-residual nine-case receipt, 308 expanded tests, all 2,832 plugin-
+disabled tests, and final 223 documentation/package-boundary tests passed. Do
+not merge PR 185 or delete its branch without Fernando's separate explicit
+instruction. Do not begin 50S.7D.2+ or later work without separate authority.

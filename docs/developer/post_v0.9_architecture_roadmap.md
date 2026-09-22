@@ -3290,3 +3290,44 @@ reflected fields, 50S.7F bundling, 50S.8 brightness, 50S.9 detector effects,
 outputs, visibility, facilities, scheduling, and unrelated work remain
 unauthorized. PR 184 merge and branch deletion remain separate explicit
 decisions.
+
+## Candidate 50S.7D.1 — Direct-Sun bolometric irradiance implementation
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` implements only the
+authorized IAU-nominal `1361 W m-2` at 1 au model, inverse-square
+Sun-satellite distance scaling, and accepted uniform-disk visible fraction.
+It returns bolometric normal-plane clear and incident irradiance with explicit
+`not_evaluated` physical/model uncertainty and independent numerical
+convergence evidence.
+
+The focused illumination/ephemeris gate passed 86 tests in 9.80 seconds.
+The installed-resource offline receipt, complete plugin-disabled gate, Mac
+verification, and Fernando's scientific and architectural acceptance remain
+pending. 50S.7D.2+, 50S.7E+, outputs, brightness, visibility, detector,
+facility, scheduling, merge, and branch deletion remain unauthorized.
+
+## Verified candidate 50S.7D.1 implementation gate
+
+At exact head `5bf5d52e81670f1a69af0476283195d12a3119bc`, the independent
+installed-resource receipt matched all nine LEO/MEO/GEO shadow cases with zero
+irradiance residual, the expanded 308-test gate passed in 24.79 seconds, and
+all 2,832 plugin-disabled repository tests passed in 236.81 seconds. Receipt
+SHA-256 was
+`43037267cd841232dcffca05797a2d55dce3d90b9caf8b84fbf785b19129fc73`.
+
+The clean diff, exact upstream, and clean worktree were confirmed. The
+candidate now awaits Fernando's separate scientific and architectural review.
+Merge, branch deletion, 50S.7D.2+, and later work remain unauthorized.
+
+## Accepted 50S.7D.1 — Direct-Sun bolometric irradiance implementation
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Its accepted
+scope is only IAU-nominal bolometric normal-plane direct-Sun irradiance,
+inverse-square Sun-satellite distance scaling, and accepted uniform-disk
+visible-fraction composition.
+
+The nine-case independent receipt, 308 expanded tests, all 2,832
+plugin-disabled repository tests, and the final 223 documentation/package-
+boundary tests passed. 50S.7D.2+, 50S.7E+, merge, and branch deletion remain
+separate explicit decisions.

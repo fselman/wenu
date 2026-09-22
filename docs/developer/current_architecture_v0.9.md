@@ -1969,3 +1969,45 @@ unevaluated physical/model uncertainty. 50S.7D.2+, 50S.7E+, spectral or lunar
 resources, surfaces, attitude, BRDF, output integration, brightness,
 visibility, detector, facility, and scheduling behavior remain unauthorized.
 PR 184 merge and branch deletion remain separate explicit decisions.
+
+## Candidate 50S.7D.1 implementation architecture
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` adds only the accepted
+direct-Sun bolometric normal-plane composition to the existing illumination
+owner. `DirectSolarIrradianceEvaluator` consumes one immutable accepted
+`SatelliteIlluminationGeometry`; it neither propagates nor queries an
+ephemeris nor recomputes occultation.
+
+The result retains the complete geometry object, IAU nominal model policy,
+distance, visible fraction, typed occultation class, clear and incident
+irradiance, numerical convergence evidence, provenance, warnings, and
+deterministic identity. Physical/model uncertainty remains explicitly
+`not_evaluated`. Spectral Sunlight, Moonlight, reflected fields, spacecraft
+response, brightness, visibility, detector, output, facility, and scheduling
+behavior remain unauthorized. The implementation is an unaccepted candidate;
+independent receipt, complete gates, and Fernando's review remain pending.
+
+## Verified candidate 50S.7D.1 implementation architecture
+
+Exact branch head `5bf5d52e81670f1a69af0476283195d12a3119bc` passed the
+installed-DE440 no-download receipt, 308 expanded focused/documentation/
+package-boundary tests in 24.79 seconds, and all 2,832 plugin-disabled tests in
+236.81 seconds on Fernando's Mac. The receipt covered sunlit, penumbral, and
+umbral LEO, MEO, and GEO states with zero clear and incident residuals.
+
+Diff, exact-head/upstream, and clean-tree checks passed. The bounded
+architecture is verified but not scientifically or architecturally accepted;
+merge, branch deletion, 50S.7D.2+, and all later behavior remain separate and
+unauthorized.
+
+## Accepted 50S.7D.1 implementation architecture
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. The accepted
+runtime remains the bounded direct-Sun bolometric normal-plane irradiance
+composition implemented at `4b5f8e6925f88df38a2923c057f4d039328e3d2b`.
+
+The independent nine-case receipt, 308-test expanded gate, complete 2,832-test
+plugin-disabled suite, and final 223-test documentation/package-boundary gate
+passed. Merge, branch deletion, 50S.7D.2+, and all later behavior remain
+separate and unauthorized.

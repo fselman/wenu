@@ -4252,3 +4252,38 @@ frame, time scale, observer, or spacecraft attitude. 50S.7D.2+, spacecraft
 projection, BRDF, observer flux, apparent magnitude, visibility, detector,
 output, facility, and scheduling behavior remain unauthorized. PR 184 merge
 and branch deletion remain separate explicit decisions.
+
+## Candidate 50S.7D.1 scalar radiometry boundary
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` composes only the
+accepted same-instant Sun-satellite distance and uniform-disk visible fraction
+into scalar bolometric normal-plane irradiance. It introduces no vector,
+coordinate transform, frame, time scale, observer, or spacecraft attitude.
+
+UTC, TDB ephemeris resource, UT1/EOP, orbit, snapshot, and shadow-policy
+identity remain inherited through the complete immutable geometry. The
+coordinate-system guide was reviewed and remains current. This candidate is
+unaccepted; 50S.7D.2+, surface projection, brightness, visibility, detector,
+output, facility, and scheduling behavior remain unauthorized.
+
+## Verified candidate 50S.7D.1 scalar coordinate boundary
+
+Exact head `5bf5d52e81670f1a69af0476283195d12a3119bc` passed the nine-case
+installed-resource receipt, 308 expanded tests, and all 2,832 plugin-disabled
+tests. The evidence confirms scalar composition over retained geometry without
+a new vector, frame, transform, time scale, observer, or attitude.
+
+The coordinate-system guide was reviewed and remains current. The candidate is
+verified but unaccepted; merge, branch deletion, 50S.7D.2+, and later
+coordinate or radiometric behavior remain unauthorized.
+
+## Accepted 50S.7D.1 scalar coordinate boundary
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. The accepted
+composition remains scalar over retained same-instant geometry and introduces
+no vector, frame, transform, time scale, observer, or attitude.
+
+The nine-case receipt, 308 expanded tests, complete 2,832-test suite, and final
+223 documentation/package-boundary tests passed. This guide remains current;
+50S.7D.2+, merge, and branch deletion remain separate decisions.

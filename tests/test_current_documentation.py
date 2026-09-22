@@ -9417,12 +9417,6 @@ def test_50s7d_records_candidate_direct_source_radiometry_audit():
     index = read(DEVELOPER / "README.md")
     assert "satellite_direct_source_radiometry_audit_50s7d.md" in index
 
-    implementation = read(
-        ROOT / "src" / "wenu" / "satellites" / "illumination.py"
-    )
-    assert "DirectSolarIrradiance" not in implementation
-
-
 def test_50s7d_records_accepted_direct_source_radiometry_audit():
     audit = read(
         DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
@@ -9483,3 +9477,199 @@ def test_50s7d_records_accepted_direct_source_radiometry_audit():
         "accepted documentation-only contract for direct-source model "
         "separation"
     ) in " ".join(index.split())
+
+
+def test_50s7d1_records_candidate_direct_solar_irradiance_implementation():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+        read(
+            DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+        ),
+    )
+    expected = (
+        "Candidate 50S.7D.1 implementation architecture",
+        "Candidate 50S.7D.1 — Direct-Sun bolometric irradiance "
+        "implementation",
+        "Candidate 50S.7D.1 direct-Sun irradiance API implementation",
+        "Candidate 50S.7D.1 implementation source ownership",
+        "Candidate 50S.7D.1 scalar radiometry boundary",
+        "Candidate 50S.7D.1 runtime vocabulary",
+        "Candidate 50S.7D.1 direct-Sun irradiance implementation",
+        "Candidate 50S.7D.1 implementation boundary",
+        "Candidate 50S.7D.1 implementation refinement",
+        "Candidate 50S.7D.1 implementation handoff",
+        "Candidate 50S.7D.1 implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "4b5f8e6925f88df38a2923c057f4d039328e3d2b" in normalized
+        assert "50S.7D.1" in normalized
+        assert (
+            "unaccepted" in normalized.lower()
+            or "pending" in normalized.lower()
+        )
+        assert "unauthorized" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    assert "bolometric normal-plane" in combined
+    assert "not_evaluated" in combined
+
+    implementation = read(
+        ROOT / "src" / "wenu" / "satellites" / "illumination.py"
+    )
+    exports = read(
+        ROOT / "src" / "wenu" / "satellites" / "__init__.py"
+    )
+    validator = read(
+        ROOT / "tools" / "validate_50s7d1_direct_solar_irradiance.py"
+    )
+    for name in (
+        "DirectSolarIrradiancePolicy",
+        "DirectSolarIrradiance",
+        "DirectSolarIrradianceEvaluator",
+    ):
+        assert name in implementation
+        assert name in exports
+    for phrase in (
+        "IAU 2015 Resolution B3 nominal total solar irradiance",
+        "INDEPENDENT_NOMINAL_IRRADIANCE_W_M2 = 1361.0",
+        "INDEPENDENT_AU_KM = 149_597_870.7",
+        "network_access=false",
+        "LEO",
+        "MEO",
+        "GEO",
+    ):
+        assert phrase in validator
+
+
+def test_50s7d1_records_verified_direct_solar_irradiance_candidate():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+        read(
+            DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+        ),
+    )
+    expected = (
+        "Verified candidate 50S.7D.1 implementation architecture",
+        "Verified candidate 50S.7D.1 implementation gate",
+        "Verified candidate 50S.7D.1 API implementation",
+        "Verified candidate 50S.7D.1 implementation source gate",
+        "Verified candidate 50S.7D.1 scalar coordinate boundary",
+        "Verified candidate 50S.7D.1 runtime evidence",
+        "Verified candidate 50S.7D.1 implementation",
+        "Verified candidate 50S.7D.1 review state",
+        "Verified candidate 50S.7D.1 implementation refinement",
+        "Verified candidate 50S.7D.1 implementation handoff",
+        "Verified candidate 50S.7D.1 implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "5bf5d52e81670f1a69af0476283195d12a3119bc" in normalized
+        assert "308" in normalized
+        assert "2,832" in normalized
+        assert (
+            "unaccepted" in normalized.lower()
+            or "not accepted" in normalized.lower()
+            or "not scientifically or architecturally accepted"
+            in normalized.lower()
+        )
+        assert "unauthorized" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    for phrase in (
+        "24.79 seconds",
+        "236.81 seconds",
+        "43037267cd841232dcffca05797a2d55dce3d90b9caf8b84fbf785b19129fc73",
+        "all nine",
+        "zero clear and incident irradiance residuals",
+        "exact upstream",
+        "clean tree",
+    ):
+        assert phrase in combined
+
+
+def test_50s7d1_records_accepted_direct_solar_irradiance_implementation():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+        read(
+            DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7D.1 implementation architecture",
+        "Accepted 50S.7D.1 — Direct-Sun bolometric irradiance "
+        "implementation",
+        "Accepted 50S.7D.1 direct-Sun irradiance API implementation",
+        "Accepted 50S.7D.1 implementation source ownership",
+        "Accepted 50S.7D.1 scalar coordinate boundary",
+        "Accepted 50S.7D.1 runtime vocabulary",
+        "Accepted 50S.7D.1 direct-Sun irradiance implementation",
+        "Accepted 50S.7D.1 implementation boundary",
+        "Accepted 50S.7D.1 implementation refinement",
+        "Accepted 50S.7D.1 implementation handoff",
+        "Accepted 50S.7D.1 implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "f974b9996d2708ee0f2db7c747e45c481a457bb9" in normalized
+        assert "scientifically and architecturally accepted" in normalized
+        assert "223" in normalized
+        assert "50S.7D.2+" in normalized
+        assert "separate" in normalized or "unauthorized" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    for phrase in (
+        "4b5f8e6925f88df38a2923c057f4d039328e3d2b",
+        "nine-case",
+        "308",
+        "2,832",
+        "10.17 seconds",
+        "PR 185",
+        "branch deletion",
+    ):
+        assert phrase in combined

@@ -383,3 +383,69 @@ reflected fields, 50S.7F bundling, 50S.8 brightness, 50S.9 detector effects,
 outputs, visibility, facilities, scheduling, and unrelated refactoring remain
 unauthorized. Acceptance does not authorize PR 184 merge or branch deletion;
 both remain separate explicit decisions.
+
+## 13. Candidate 50S.7D.1 implementation
+
+Implementation began from exact merged audit base
+`664b6bc849776b4769ce8cc223f2c7dce8b8cc53`. Executable
+`4b5f8e6925f88df38a2923c057f4d039328e3d2b` adds only the accepted immutable
+`DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts in the existing illumination
+owner, intentional package exports, focused existing-owner tests, and one
+offline independent-recomputation tool.
+
+The evaluator consumes one accepted `SatelliteIlluminationGeometry`, applies
+the exact nominal `1361 W m-2` value at 1 au, inverse-square distance scaling,
+and the retained visible-disk fraction, and returns clear and incident
+bolometric normal-plane irradiance. It preserves complete geometry and model
+identity, explicit `not_evaluated` physical/model uncertainty, numerical
+convergence evidence, provenance, warnings, and fail-closed compatibility.
+
+The focused illumination/ephemeris gate passed 86 tests in 9.80 seconds. The
+installed-resource independent receipt, Mac complete suite, documentation and
+package-boundary gates, exact-upstream/clean-tree checks, and Fernando's
+scientific and architectural acceptance remain pending. 50S.7D.2+, 50S.7E+,
+outputs, brightness, visibility, detector, facility, scheduling, merge, and
+branch deletion remain unauthorized.
+
+## 14. Verified candidate 50S.7D.1 implementation
+
+Fernando's Mac verified exact feature-branch head
+`5bf5d52e81670f1a69af0476283195d12a3119bc`. The independent offline
+receipt used installed DE440
+`c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2`
+and installed IERS evidence with `network_access=false`. It covered sunlit,
+penumbral, and umbral LEO, MEO, and GEO states. Every independently computed
+clear and incident irradiance residual was `0.000e+00`; numeric zero occurred
+only for evaluated umbra. Receipt SHA-256 was
+`43037267cd841232dcffca05797a2d55dce3d90b9caf8b84fbf785b19129fc73`.
+
+The combined illumination, ephemeris, documentation, and package-boundary gate
+passed all 308 tests in 24.79 seconds. The complete plugin-disabled repository
+suite passed all 2,832 tests in 236.81 seconds. Diff, exact-head/upstream, and
+clean-tree checks passed.
+
+The candidate is verified but not scientifically or architecturally accepted.
+Fernando's separate review remains required. Merge, branch deletion,
+50S.7D.2+, 50S.7E+, outputs, brightness, visibility, detector, facility,
+scheduling, and unrelated work remain unauthorized.
+
+## 15. Accepted 50S.7D.1 implementation
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. The accepted
+runtime is only the bounded direct-Sun bolometric normal-plane slice at
+executable commit `4b5f8e6925f88df38a2923c057f4d039328e3d2b`: IAU nominal
+`1361 W m-2` at 1 au, inverse-square distance scaling, and accepted uniform-
+disk visible-fraction composition.
+
+The independent installed-resource receipt covered all nine sunlit,
+penumbral, and umbral LEO/MEO/GEO cases with zero clear and incident residuals.
+The 308-test expanded gate passed in 24.79 seconds, all 2,832 plugin-disabled
+tests passed in 236.81 seconds, and the final 223 documentation/package-
+boundary tests passed in 10.17 seconds.
+
+This acceptance authorizes no numeric Moonlight, spectral Sunlight, reflected
+field, surface or attitude response, brightness, visibility, detector, output,
+facility, scheduling, or unrelated behavior. PR 185 merge, branch deletion,
+50S.7D.2+, and 50S.7E+ remain separate explicit decisions.

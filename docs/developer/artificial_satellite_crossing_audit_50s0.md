@@ -571,3 +571,42 @@ geometry without changing crossing identity or adding surface, attitude, BRDF,
 observer-flux, magnitude, visibility, detector, output, facility, or scheduling
 meaning. 50S.7D.2+ and 50S.7E+ remain unauthorized. PR 184 merge and branch
 deletion remain separate explicit decisions.
+
+## Candidate 50S.7D.1 implementation refinement
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` composes accepted
+illumination geometry into direct-Sun bolometric normal-plane irradiance only.
+It cannot filter, rank, relabel, draw, report, or schedule a crossing and adds
+no observer brightness, surface response, magnitude, visibility, or detector
+meaning.
+
+The complete accepted geometry object remains the upstream identity. Numeric
+zero is produced only from an evaluated zero visible fraction; unknown
+Moonlight remains not evaluated. The candidate is unaccepted, and all
+50S.7D.2+, 50S.7E+, output, facility, and scheduling behavior remains
+unauthorized.
+
+## Verified candidate 50S.7D.1 implementation refinement
+
+Exact head `5bf5d52e81670f1a69af0476283195d12a3119bc` passed its nine-case
+installed-resource independent receipt, 308 expanded tests, and all 2,832
+plugin-disabled repository tests. The evidence confirms that radiometry stays
+downstream of crossing and accepted illumination geometry and introduces no
+crossing, report, chart, planning, observer-brightness, or detector meaning.
+
+The candidate is verified but unaccepted. Merge, branch deletion, 50S.7D.2+,
+50S.7E+, outputs, facilities, visibility, detector, and scheduling remain
+unauthorized.
+
+## Accepted 50S.7D.1 implementation refinement
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. The accepted
+radiometry remains downstream of crossing and accepted illumination geometry;
+it adds no crossing selection, reporting, charting, planning, observer-
+brightness, or detector meaning.
+
+The nine-case independent receipt, 308 expanded tests, all 2,832 plugin-
+disabled tests, and final 223 documentation/package-boundary tests passed.
+Merge, branch deletion, 50S.7D.2+, and later crossing behavior remain
+unauthorized.

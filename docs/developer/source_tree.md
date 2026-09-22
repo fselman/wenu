@@ -2838,3 +2838,43 @@ source-tree and resource-admission audit. 50S.7D.2+, 50S.7E+, outputs,
 brightness, visibility, detector, facility, and scheduling ownership remain
 unauthorized. PR 184 merge and branch deletion remain separate explicit
 decisions.
+
+## Candidate 50S.7D.1 implementation source ownership
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` extends only
+`src/wenu/satellites/illumination.py`, its intentional package exports, and
+the existing `tests/test_satellite_illumination.py` owner. The offline
+`tools/validate_50s7d1_direct_solar_irradiance.py` receipt independently
+recomputes the formula for installed-resource LEO, MEO, and GEO geometry.
+
+No new production or test module, dependency, resource, provider, network,
+cache, renderer, exporter, or output owner is introduced. The coordinate-
+system guide was reviewed and remains current. Independent receipt, complete
+gates, and acceptance remain pending; 50S.7D.2+ and later ownership remain
+unauthorized.
+
+## Verified candidate 50S.7D.1 implementation source gate
+
+Exact head `5bf5d52e81670f1a69af0476283195d12a3119bc` passed 308 expanded
+tests, all 2,832 plugin-disabled repository tests, the installed-resource
+independent receipt, clean diff, exact upstream, and clean-tree checks. The
+receipt file SHA-256 was
+`43037267cd841232dcffca05797a2d55dce3d90b9caf8b84fbf785b19129fc73`.
+
+Source placement remains limited to the accepted illumination owner, package
+exports, existing illumination test owner, offline validator, and governed
+documentation. It is verified but unaccepted; merge, branch deletion,
+50S.7D.2+, and later ownership remain unauthorized.
+
+## Accepted 50S.7D.1 implementation source ownership
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`f974b9996d2708ee0f2db7c747e45c481a457bb9` on 2026-09-22. Direct-Sun
+bolometric normal-plane irradiance remains owned by
+`src/wenu/satellites/illumination.py`, with package exports, existing-owner
+tests, and the offline validator in their recorded locations.
+
+The independent receipt, 308 expanded tests, all 2,832 plugin-disabled tests,
+and final 223 documentation/package-boundary tests passed. New 50S.7D.2+
+ownership, merge, and branch deletion remain unauthorized without separate
+decisions.

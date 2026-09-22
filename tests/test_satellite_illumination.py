@@ -1,6 +1,6 @@
 """Direct-Sun occultation and observer-night geometry tests."""
 
-from dataclasses import FrozenInstanceError, replace
+from dataclasses import FrozenInstanceError, fields, replace
 from datetime import datetime, timedelta, timezone
 from math import acos, asin, cos, pi, sin
 
@@ -20,6 +20,13 @@ from wenu.satellite_crossings import (
 )
 import wenu.satellites.illumination as illumination_module
 from wenu.satellites import (
+    AU_KM,
+    DIRECT_SOLAR_IRRADIANCE_MODEL,
+    DIRECT_SOLAR_IRRADIANCE_QUANTITY_KIND,
+    IAU_NOMINAL_TOTAL_SOLAR_IRRADIANCE_W_M2,
+    DirectSolarIrradiance,
+    DirectSolarIrradianceEvaluator,
+    DirectSolarIrradiancePolicy,
     LunarOccultorStatus,
     ObserverTwilightClass,
     ShadowTransitionKind,
@@ -414,6 +421,203 @@ def test_evaluator_fails_closed_on_mismatched_request():
         ).evaluate(transformed_state())
 
     assert caught.value.code is SatelliteIlluminationFailureCode.FRAME_MISMATCH
+
+
+def irradiance_geometry(*, distance_au=1.0, visible_fraction=1.0, coarse=None):
+    geometry = SatelliteIlluminationGeometryEvaluator(
+        SyntheticSunSource()
+    ).evaluate(transformed_state())
+    if coarse is None:
+        coarse = visible_fraction
+    if visible_fraction == 1.0:
+        occultation_class = SolarOccultationClass.SUNLIT
+    elif visible_fraction == 0.0:
+        occultation_class = SolarOccultationClass.UMBRA
+    else:
+        occultation_class = SolarOccultationClass.PENUMBRA
+    vector = np.asarray(geometry.satellite_to_sun_itrs_km)
+    vector *= distance_au * AU_KM / np.linalg.norm(vector)
+    occultation = replace(
+        geometry.solar_occultation,
+        visible_disk_fraction=visible_fraction,
+        coarse_visible_disk_fraction=coarse,
+        quadrature_absolute_difference=abs(visible_fraction - coarse),
+        occultation_class=occultation_class,
+        satellite_to_sun_distance_km=distance_au * AU_KM,
+    )
+    return replace(
+        geometry,
+        satellite_to_sun_itrs_km=tuple(vector),
+        solar_occultation=occultation,
+    )
+
+
+def test_direct_solar_policy_freezes_iau_nominal_bolometric_contract():
+    policy = DirectSolarIrradiancePolicy()
+
+    assert policy.model == DIRECT_SOLAR_IRRADIANCE_MODEL
+    assert policy.nominal_total_solar_irradiance_w_m2 == 1361.0
+    assert (
+        policy.nominal_total_solar_irradiance_w_m2
+        == IAU_NOMINAL_TOTAL_SOLAR_IRRADIANCE_W_M2
+    )
+    assert policy.astronomical_unit_km == AU_KM
+    assert policy.quantity_kind == DIRECT_SOLAR_IRRADIANCE_QUANTITY_KIND
+    assert policy.physical_model_uncertainty_status == "not_evaluated"
+    assert "variability" in policy.exclusions[0].lower()
+    with pytest.raises(FrozenInstanceError):
+        policy.nominal_total_solar_irradiance_w_m2 = 1360.0
+
+
+@pytest.mark.parametrize(
+    ("distance_au", "expected_w_m2"),
+    ((0.5, 5444.0), (1.0, 1361.0), (2.0, 340.25)),
+)
+def test_direct_solar_irradiance_uses_exact_inverse_square_scaling(
+    distance_au,
+    expected_w_m2,
+):
+    result = DirectSolarIrradianceEvaluator().evaluate(
+        irradiance_geometry(distance_au=distance_au)
+    )
+
+    assert result.satellite_to_sun_distance_au == pytest.approx(distance_au)
+    assert result.unocculted_normal_irradiance_w_m2 == pytest.approx(
+        expected_w_m2
+    )
+    assert result.incident_normal_irradiance_w_m2 == pytest.approx(
+        expected_w_m2
+    )
+
+
+@pytest.mark.parametrize("visible_fraction", (0.0, 0.25, 1.0))
+def test_direct_solar_irradiance_composes_evaluated_visible_fraction(
+    visible_fraction,
+):
+    result = DirectSolarIrradianceEvaluator().evaluate(
+        irradiance_geometry(visible_fraction=visible_fraction)
+    )
+
+    assert result.visible_disk_fraction == visible_fraction
+    assert result.incident_normal_irradiance_w_m2 == pytest.approx(
+        visible_fraction * 1361.0
+    )
+    assert 0.0 <= result.incident_normal_irradiance_w_m2 <= 1361.0
+    assert (result.incident_normal_irradiance_w_m2 == 0.0) is (
+        visible_fraction == 0.0
+    )
+
+
+def test_direct_solar_result_retains_geometry_convergence_and_uncertainty():
+    geometry = irradiance_geometry(visible_fraction=0.25, coarse=0.20)
+    result = DirectSolarIrradianceEvaluator().evaluate(geometry)
+
+    assert result.geometry is geometry
+    assert result.geometry_identity is geometry
+    assert result.evaluation_utc == geometry.evaluation_utc
+    assert result.coarse_incident_normal_irradiance_w_m2 == pytest.approx(
+        0.20 * 1361.0
+    )
+    assert (
+        result.numerical_convergence_absolute_difference_w_m2
+        == pytest.approx(0.05 * 1361.0)
+    )
+    assert result.physical_model_uncertainty_status == "not_evaluated"
+    assert "not total physical uncertainty" in result.warnings[1]
+    with pytest.raises(FrozenInstanceError):
+        result.incident_normal_irradiance_w_m2 = 0.0
+
+
+def test_direct_solar_identity_changes_with_geometry_and_policy():
+    evaluator = DirectSolarIrradianceEvaluator()
+    full = evaluator.evaluate(irradiance_geometry(visible_fraction=1.0))
+    partial = evaluator.evaluate(irradiance_geometry(visible_fraction=0.25))
+    alternate_policy = replace(
+        DirectSolarIrradiancePolicy(),
+        source_citations=(
+            "IAU 2015 Resolution B3 nominal total solar irradiance.",
+            "Reaffirmed source citation for identity test.",
+        ),
+    )
+    alternate = DirectSolarIrradianceEvaluator(alternate_policy).evaluate(
+        full.geometry
+    )
+
+    assert full.identity != partial.identity
+    assert full.identity != alternate.identity
+    assert full.identity[0] is full.geometry
+    assert (
+        full.geometry_identity.topocentric_state.teme_state
+        is full.geometry.topocentric_state.teme_state
+    )
+
+
+def test_direct_solar_contract_has_no_surface_spectral_or_output_fields():
+    names = {item.name for item in fields(DirectSolarIrradiance)}
+
+    for forbidden in (
+        "observer",
+        "surface_normal",
+        "attitude",
+        "brdf",
+        "passband",
+        "wavelength",
+        "magnitude",
+        "detector",
+        "visibility",
+        "crossing",
+        "output",
+    ):
+        assert forbidden not in names
+
+
+def test_direct_solar_evaluator_rejects_unsupported_or_inconsistent_models():
+    geometry = irradiance_geometry()
+    unsupported = replace(
+        DirectSolarIrradiancePolicy(),
+        model="unsupported-direct-sun-model",
+    )
+    with pytest.raises(SatelliteIlluminationGeometryError) as caught:
+        DirectSolarIrradianceEvaluator(unsupported).evaluate(geometry)
+    assert (
+        caught.value.code
+        is SatelliteIlluminationFailureCode.UNSUPPORTED_SOURCE_MODEL
+    )
+
+    incompatible_geometry = replace(
+        geometry,
+        policy=replace(geometry.policy, model="limb-darkened-solar-disk"),
+    )
+    with pytest.raises(SatelliteIlluminationGeometryError) as caught:
+        DirectSolarIrradianceEvaluator().evaluate(incompatible_geometry)
+    assert (
+        caught.value.code
+        is SatelliteIlluminationFailureCode.UNSUPPORTED_SOURCE_MODEL
+    )
+
+    inconsistent_distance = replace(
+        geometry,
+        satellite_to_sun_itrs_km=(AU_KM + 1.0, 0.0, 0.0),
+    )
+    with pytest.raises(SatelliteIlluminationGeometryError) as caught:
+        DirectSolarIrradianceEvaluator().evaluate(inconsistent_distance)
+    assert (
+        caught.value.code
+        is SatelliteIlluminationFailureCode.NON_FINITE_GEOMETRY
+    )
+
+
+def test_direct_solar_evaluator_rejects_not_same_instant_geometry():
+    geometry = irradiance_geometry()
+    mismatched = replace(geometry, evaluation_utc="2000-06-28T00:00:00Z")
+
+    with pytest.raises(SatelliteIlluminationGeometryError) as caught:
+        DirectSolarIrradianceEvaluator().evaluate(mismatched)
+
+    assert (
+        caught.value.code
+        is SatelliteIlluminationFailureCode.SOURCE_NOT_EVALUATED
+    )
 
 def test_geocentric_itrs_seam_matches_topocentric_source_state():
     teme = Sgp4TemePropagator(vanguard_record()).propagate(
