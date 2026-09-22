@@ -4304,3 +4304,15 @@ coordinate frame, transform, time scale, observer, or attitude meaning. The
 bounded later implementation must consume accepted same-instant geometry and
 must not interpolate, extrapolate, or renormalize the native spectrum.
 50S.7D.3 remains unauthorized.
+
+## Candidate 50S.7D.2 implemented scalar boundary
+
+Executable `8e930db2` adds scalar wavelength, energy spectral irradiance, and
+pointwise uncertainty values downstream of accepted same-instant geometry. It
+introduces no vector, frame, transform, time scale, observer, surface, or
+attitude. Sun-satellite distance and occultation remain owned by the accepted
+geometry; the spectral evaluator does not recompute either.
+
+The coordinate-system guide was reviewed and remains current. Complete gates
+and acceptance are pending; 50S.7D.3 and later coordinate or radiometric
+behavior remain unauthorized.
