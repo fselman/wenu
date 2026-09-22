@@ -2029,3 +2029,18 @@ one offline digest-bound TSIS-1 HSRS v2 native-grid implementation with
 pointwise uncertainty and no interpolation, extrapolation, renormalization, or
 implicit acquisition. The audit added no runtime or resource. 50S.7D.3 and
 later behavior remain unauthorized.
+
+## Candidate 50S.7D.2 spectral implementation architecture
+
+Executable candidate `8e930db2` adds the distinct offline
+`satellites/radiometry.py` owner accepted by the audit. It admits exactly one
+externally installed TSIS-1 HSRS v2 byte identity, preserves all 25,281 native
+samples and pointwise uncertainty as immutable tuples, and composes only the
+accepted Sun-satellite distance and uniform-disk visible fraction.
+
+The native-grid evaluator does not alter 50S.7D.1 bolometric semantics and
+adds no coordinate, rendering, output, or network pipeline. The high-level
+architecture diagram was reviewed and remains current because it does not
+enumerate satellite illumination submodules. The 79-test focused gate and the
+independent installed-resource receipt passed; complete gates and acceptance
+remain pending. 50S.7D.3 and later behavior remain unauthorized.
