@@ -2070,3 +2070,37 @@ or canonical chart architecture.
 The external-resource receipt, 132 expanded tests, all 2,858 plugin-disabled
 tests, and final 228 documentation/package tests passed. Do not merge PR 187,
 delete its branch, or begin 50S.7D.3+ without separate explicit authority.
+
+## Candidate 50S.7D.3 Moonlight readiness architecture
+
+The documentation-only audit selects LIME as the preferred production model
+family while preserving GIRO/ROLO as comparison evidence. It authorizes no
+runtime because no exact LIME distribution, coefficient resource, byte
+identity, license, or complete domain was frozen.
+
+A later proposal must keep same-instant lunar source geometry in
+`satellites/illumination.py` and exact external model admission plus native-
+band radiometry in `satellites/radiometry.py`. It may not repurpose the lunar
+solar-occultor reservation or create a second ephemeris, coordinate, output, or
+rendering path. Only a separately accepted external LIME distribution preflight
+may follow this audit; 50S.7D.3 runtime remains blocked.
+
+## Accepted 50S.7D.3 Moonlight readiness architecture
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after 230 documentation/package tests and clean repository checks.
+Preserve LIME as the preferred production candidate, GIRO/ROLO as comparison
+evidence, existing `not_evaluated` Moonlight, and the runtime stop gate.
+
+After audit merge, only a separately controlled external LIME distribution
+preflight is authorized. It must freeze version, bytes, license, bands,
+coefficients, geometry conventions, domain, uncertainty, and reference outputs.
+No acquisition or runtime begins under this acceptance; PR 188 merge and branch
+deletion remain separate decisions.
+
+## Final accepted 50S.7D.3 audit architecture verification
+
+Acceptance-record head `0be116ab` passed 231 documentation/package tests in
+8.54 seconds plus diff, upstream, and clean-tree checks. The accepted
+documentation changes no runtime architecture. Only the post-merge external
+LIME distribution preflight remains authorized next.

@@ -4336,3 +4336,36 @@ vector, frame, transform, time scale, observer, surface, or attitude.
 
 This guide remains current. PR 187 merge, branch deletion, 50S.7D.3, and later
 coordinate or radiometric behavior remain separate explicit decisions.
+
+## Candidate 50S.7D.3 lunar-coordinate readiness
+
+The documentation-only audit identifies future geometry that implemented Wenu
+does not yet own: one exact lunar body-fixed orientation model, selenographic
+Sun and satellite-observer coordinates, longitude direction, signed phase
+convention, and same-instant Moon-to-Sun and Moon-to-satellite vectors and
+distances.
+
+No coordinate runtime changes. The guide was reviewed and remains current for
+implemented behavior. A later Moonlight runtime proposal must update this guide
+and independently validate every model convention against direct SPICE
+evidence. LIME resource preflight and 50S.7D.3 implementation remain separate;
+numeric Moonlight stays unauthorized.
+
+## Accepted 50S.7D.3 lunar-coordinate readiness
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after the 230-test documentation/package gate and clean repository
+checks. The guide remains current because no runtime coordinate behavior was
+added.
+
+After merge, only an external LIME distribution preflight may inspect and
+freeze the required phase and selenographic conventions. No lunar body-fixed
+runtime, transform, vector, distance, or numeric Moonlight is authorized.
+Runtime requires a later guide update and separate acceptance.
+
+## Final accepted 50S.7D.3 coordinate-readiness verification
+
+Acceptance-record head `0be116ab` passed 231 documentation/package tests in
+8.54 seconds and clean repository checks. This guide remains current because
+the audit adds no runtime coordinate behavior. Only the post-merge external
+LIME distribution preflight is authorized next.

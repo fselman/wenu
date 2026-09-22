@@ -2937,3 +2937,34 @@ executable `8e930db2`.
 `illumination.py` remains geometry and 50S.7D.1 bolometric owner. No
 acquisition owner, vendored resource, second geometry path, or 50S.7D.3+
 ownership is accepted. PR 187 merge and branch deletion remain separate.
+
+## Candidate 50S.7D.3 Moonlight ownership audit
+
+The audit changes no production ownership. A future accepted slice would keep
+same-instant Moonlight geometry and typed eclipse/occultation states in
+`src/wenu/satellites/illumination.py`, while
+`src/wenu/satellites/radiometry.py` would own exact external LIME resource
+admission, native-band radiometry, uncertainty, and fail-closed model behavior.
+
+Existing illumination and radiometry test files remain the closest durable
+owners. No new module, test file, dependency, vendored resource, acquisition
+owner, or output integration is authorized. Only an external LIME distribution
+preflight may be proposed after separate acceptance and merge; runtime remains
+blocked.
+
+## Accepted 50S.7D.3 Moonlight readiness ownership
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after 230 documentation/package tests and clean repository checks.
+No production owner, module, dependency, test file, or resource was added.
+
+After merge, only an external LIME distribution preflight may proceed under
+separate controls. The future ownership reservation remains illumination for
+geometry and radiometry for exact model resources and native-band values.
+Runtime, acquisition ownership, and 50S.7D.4+ remain unauthorized.
+
+## Final accepted 50S.7D.3 ownership verification
+
+Acceptance-record head `0be116ab` passed 231 documentation/package tests in
+8.54 seconds and clean repository checks. No source-tree ownership changed.
+Only the post-merge external LIME distribution preflight is authorized next.

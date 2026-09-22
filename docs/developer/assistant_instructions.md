@@ -1990,3 +1990,48 @@ Do not merge PR 187 or delete its feature branch without Fernando's separate
 explicit instruction. Do not begin 50S.7D.3 Moonlight, vendor or implicitly
 acquire the resource, or add reflected fields, surface response, brightness,
 visibility, detector, output, facility, scheduling, or unrelated behavior.
+
+## Candidate 50S.7D.3 Moonlight readiness-audit boundary
+
+Read `satellite_moonlight_radiometry_audit_50s7d3.md` before any direct
+Moonlight geometry, resource, or radiometry work. Treat it as documentation
+only. It selects LIME as the preferred production model family and GIRO/ROLO as
+comparison evidence, but freezes no admissible LIME distribution.
+
+Do not implement Moonlight. Do not acquire, install, execute, vendor, or
+redistribute LIME, GIRO, ROLO, coefficients, or toolbox resources without
+separate explicit authority. After Fernando's separate scientific and
+architectural acceptance and audit merge, only an explicit external LIME
+distribution preflight may be proposed. It must freeze exact version, bytes,
+license, bands, coefficients, geometry conventions, domain, uncertainty, and
+reference outputs before any runtime amendment. Preserve Moonlight as
+`not_evaluated`; do not add 50S.7D.4+, reflected fields, spacecraft response,
+brightness, visibility, detector, output, facility, scheduling, or unrelated
+behavior.
+
+## Accepted 50S.7D.3 Moonlight readiness-audit boundary
+
+Fernando scientifically and architecturally accepted exact documentation-only
+candidate `abbb1b78fbd272ef8b5553d515e9f2a896a0aa55` on
+2026-09-22. The 230-test documentation/package gate passed in 11.39 seconds,
+and diff, upstream, and clean-tree checks passed.
+
+Preserve LIME as the preferred production candidate, GIRO/ROLO as comparison
+evidence, and Moonlight as `not_evaluated`. Do not merge PR 188 or delete its
+branch without separate explicit instructions. After merge, only a separately
+controlled external LIME distribution preflight is authorized. Do not retrieve,
+install, execute, vendor, redistribute, or implement model resources under this
+acceptance. Runtime requires a later accepted amendment freezing exact version,
+bytes, license, bands, coefficients, geometry conventions, domain,
+uncertainty, and authoritative outputs. Do not begin 50S.7D.4+ or later
+behavior.
+
+## Final accepted 50S.7D.3 audit verification boundary
+
+Exact acceptance-record head
+`0be116abfa6ce0172b94a0d3c15f4f61ed2c8f8b` passed all 231
+plugin-disabled documentation/package tests in 8.54 seconds plus diff,
+upstream, and clean-tree checks. Do not merge PR 188 or delete its branch
+without separate explicit instructions. After merge, only the separately
+controlled external LIME distribution preflight is authorized; resource
+retrieval, execution, and Moonlight runtime remain unauthorized.

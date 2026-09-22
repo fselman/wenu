@@ -3397,3 +3397,37 @@ integrated uncertainty `not_evaluated`.
 Do not merge PR 187 or delete its branch without separate instruction.
 50S.7D.3 Moonlight and later illumination, brightness, visibility, detector,
 output, facility, and scheduling work remain unauthorized.
+
+## Candidate 50S.7D.3 — Direct-Moonlight readiness audit
+
+The documentation-only audit compares ROLO, GIRO, and LIME and selects LIME as
+the preferred publication-quality production candidate because of its
+SI-traceable scale and band-specific uncertainty. GIRO/ROLO remains independent
+comparison evidence.
+
+Implementation is not authorized. The exact LIME toolbox/resource version,
+bytes, license, native bands, coefficients, geometry conventions, domain,
+uncertainty, and reference outputs are not yet frozen. After separate
+acceptance and merge, only an explicitly authorized external distribution
+preflight may proceed. Moonlight must remain `not_evaluated`; 50S.7D.3
+runtime, 50S.7D.4, 50S.7E+, outputs, brightness, visibility, detector, facility,
+and scheduling behavior remain unauthorized.
+
+## Accepted 50S.7D.3 — Direct-Moonlight readiness audit
+
+Fernando scientifically and architecturally accepted exact candidate
+`abbb1b78` on 2026-09-22. All 230 plugin-disabled documentation/package
+tests passed in 11.39 seconds, and diff, upstream, and clean-tree checks passed.
+
+After merge, perform only a separately controlled external LIME distribution
+preflight. Preserve LIME as the preferred candidate, GIRO/ROLO comparison
+evidence, and Moonlight `not_evaluated`. Do not retrieve or execute resources,
+implement 50S.7D.3, or begin 50S.7D.4+ without later explicit authority. PR
+merge and branch deletion remain separate.
+
+## Final accepted 50S.7D.3 audit gate
+
+Exact acceptance-record head `0be116ab` passed all 231 plugin-disabled
+documentation/package tests in 8.54 seconds and clean repository checks. Only
+the post-merge, separately controlled external LIME distribution preflight is
+authorized next; Moonlight runtime remains blocked.

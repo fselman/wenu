@@ -1483,3 +1483,39 @@ documentation/package tests, diff, upstream, and clean-tree checks passed.
 
 PR 187 remains draft and unmerged. Merge, branch deletion, and 50S.7D.3 are
 separate explicit decisions.
+
+## 2026-09-22 — Candidate 50S.7D.3 Moonlight readiness audit
+
+Started the documentation-only audit from exact merged integration head
+`5074358550051094c840bcab827760861fec101a`. The as-is review found no
+Moonlight geometry or model resource; the existing lunar-occultor field only
+reserves whether the Moon occults the Sun and cannot be repurposed.
+
+Primary-source comparison selects LIME as the preferred future production
+model, with GIRO/ROLO retained as comparison evidence. The audit records a stop
+gate because an exact versioned LIME distribution, byte identity, license,
+native bands, coefficients, complete domain, and reference outputs could not be
+frozen. It authorizes no acquisition or runtime. After separate acceptance and
+merge, only an explicitly authorized external LIME distribution preflight may
+proceed.
+
+## 2026-09-22 — Accepted 50S.7D.3 Moonlight readiness audit
+
+Fernando scientifically and architecturally accepted exact documentation-only
+candidate `abbb1b78fbd272ef8b5553d515e9f2a896a0aa55`. All 230
+plugin-disabled documentation/package tests passed in 11.39 seconds; diff,
+upstream, and clean-tree checks passed.
+
+The accepted decision prefers LIME and retains GIRO/ROLO as comparison
+evidence, while keeping Moonlight `not_evaluated`. After merge, only a
+separately controlled external LIME distribution preflight is authorized. No
+resource retrieval, execution, runtime, PR merge, or branch deletion is
+authorized by this acceptance.
+
+## 2026-09-22 — Final accepted 50S.7D.3 audit verification
+
+Exact acceptance-record head
+`0be116abfa6ce0172b94a0d3c15f4f61ed2c8f8b` passed all 231
+plugin-disabled documentation/package tests in 8.54 seconds. Diff, upstream,
+and clean-tree checks passed. PR 188 remains unmerged; after merge, only the
+separately controlled external LIME distribution preflight is authorized.

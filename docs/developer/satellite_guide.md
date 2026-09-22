@@ -1265,3 +1265,36 @@ integration, and explicit integrated uncertainty `not_evaluated`.
 The product remains distinct from bolometric TSI, Moonlight, spacecraft
 brightness, visibility, and detector response. PR 187 merge and branch
 deletion remain separate.
+
+## Candidate 50S.7D.3 direct-Moonlight readiness
+
+Direct Moonlight is sunlight reflected by the lunar disk and received on a
+normal plane at the satellite. It is not illuminated fraction times solar
+irradiance, Earthshine, spacecraft brightness, visibility, or detector signal.
+
+The audit prefers LIME over ROLO/GIRO for a future production model because of
+its SI-traceable scale and band-specific uncertainty. It adds no number:
+versioned LIME bytes, license, native bands, coefficients, geometry conventions,
+domain, uncertainty, and reference outputs are not yet frozen. Existing
+Moonlight remains `not_evaluated`. After separate acceptance and merge, only
+an explicit external distribution preflight may proceed; runtime remains
+blocked.
+
+## Accepted 50S.7D.3 direct-Moonlight readiness
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after 230 documentation/package tests and clean repository checks.
+Preserve LIME as the preferred future production model, GIRO/ROLO as comparison
+evidence, and numeric Moonlight as `not_evaluated`.
+
+After merge, only a separately controlled external LIME distribution preflight
+is authorized. It must freeze version, bytes, license, bands, coefficients,
+geometry, domain, uncertainty, and reference outputs. It authorizes no
+resource retrieval or runtime by itself.
+
+## Final accepted 50S.7D.3 readiness verification
+
+Acceptance-record head `0be116ab` passed 231 documentation/package tests in
+8.54 seconds and clean repository checks. Moonlight remains
+`not_evaluated`; only the post-merge external LIME distribution preflight is
+authorized next.
