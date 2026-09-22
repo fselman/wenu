@@ -363,4 +363,3 @@ uncertainty, and authoritative reference outputs.
 Do not begin the preflight before merge. A later documentation amendment and
 Fernando's separate acceptance remain mandatory before any 50S.7D.3 runtime.
 PR 188 merge and branch deletion remain separate explicit decisions.
-
