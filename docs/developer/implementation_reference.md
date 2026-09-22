@@ -3745,3 +3745,10 @@ separate controls. Existing `not_evaluated` semantics remain authoritative.
 No resource retrieval, coefficient API, geometry API, loader, evaluator,
 numeric Moonlight, output, brightness, visibility, detector, facility, or
 scheduling behavior is authorized.
+
+## Final accepted 50S.7D.3 API-readiness verification
+
+Acceptance-record head `0be116ab` passed 231 documentation/package tests in
+8.54 seconds and clean repository checks. No Moonlight API exists or is
+authorized. Only the post-merge external LIME distribution preflight may
+proceed under separate controls.
