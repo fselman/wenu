@@ -9911,3 +9911,45 @@ def test_50s7d2_records_verified_spectral_implementation_candidate():
         "50S.7D.3",
     ):
         assert phrase in combined
+
+def test_50s7d2_records_accepted_spectral_implementation():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER
+            / "satellite_spectral_solar_radiometry_audit_50s7d2.md"
+        ),
+    )
+    expected = (
+        "Accepted 50S.7D.2 implementation architecture",
+        "Accepted 50S.7D.2 — Spectral direct-Sun implementation",
+        "Accepted 50S.7D.2 spectral API implementation",
+        "Accepted 50S.7D.2 implementation source ownership",
+        "Accepted 50S.7D.2 scalar coordinate behavior",
+        "Accepted 50S.7D.2 direct-Sun spectrum",
+        "Accepted 50S.7D.2 implementation",
+        "Accepted 50S.7D.2 implementation boundary",
+        "Accepted implementation decision",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "d1edeb46" in normalized
+        assert "8e930db2" in normalized
+        assert "PR 187" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    for phrase in (
+        "2,858",
+        "228",
+        "50S.7D.3",
+        "separate",
+    ):
+        assert phrase in combined
