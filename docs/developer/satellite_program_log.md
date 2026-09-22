@@ -1445,3 +1445,18 @@ retain pointwise uncertainty while leaving integrated uncertainty
 redistribution rights are established. No runtime or resource was added.
 Implementation may begin only after audit merge; 50S.7D.3, merge, and branch
 deletion remain separate decisions.
+
+## 2026-09-22 — Candidate 50S.7D.2 spectral implementation
+
+Started the bounded implementation from accepted integration `b7f22611`.
+Executable candidate `8e930db2` adds the distinct offline radiometry owner,
+exact TSIS-1 HSRS v2 resource admission, immutable native-grid contracts,
+inverse-square and uniform-disk scaling, exact-grid energy integration, typed
+failures, focused tests, and a no-download independent validator.
+
+The real external CSV receipt matched the accepted byte count, SHA-256,
+schema, 25,281 samples, endpoints, sampling, resolution, and production loader.
+Its independently summed native integral was
+`1325.759295697934 W m-2`, within `9e-12 W m-2` of the audit value and the
+declared `1e-9 W m-2` tolerance. The 79-test focused gate passed. Complete
+gates, acceptance, PR merge, branch deletion, and 50S.7D.3 remain pending.
