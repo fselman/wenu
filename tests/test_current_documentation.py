@@ -9911,4 +9911,3 @@ def test_50s7d2_records_verified_spectral_implementation_candidate():
         "50S.7D.3",
     ):
         assert phrase in combined
-
