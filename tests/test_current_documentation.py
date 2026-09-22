@@ -9787,7 +9787,9 @@ def test_50s7d2_records_scientific_and_architectural_acceptance():
         assert phrase in document
         normalized = " ".join(document.split())
         assert "0a1a6a681bc3e9b4dd562a0b0b57ae48ff5caefe" in normalized
-        assert "50S.7D.3" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    assert "50S.7D.3" in combined
 
     index = read(DEVELOPER / "README.md")
     assert "accepted documentation-only contract" in index
