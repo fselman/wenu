@@ -1969,3 +1969,20 @@ unevaluated physical/model uncertainty. 50S.7D.2+, 50S.7E+, spectral or lunar
 resources, surfaces, attitude, BRDF, output integration, brightness,
 visibility, detector, facility, and scheduling behavior remain unauthorized.
 PR 184 merge and branch deletion remain separate explicit decisions.
+
+## Candidate 50S.7D.1 implementation architecture
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` adds only the accepted
+direct-Sun bolometric normal-plane composition to the existing illumination
+owner. `DirectSolarIrradianceEvaluator` consumes one immutable accepted
+`SatelliteIlluminationGeometry`; it neither propagates nor queries an
+ephemeris nor recomputes occultation.
+
+The result retains the complete geometry object, IAU nominal model policy,
+distance, visible fraction, typed occultation class, clear and incident
+irradiance, numerical convergence evidence, provenance, warnings, and
+deterministic identity. Physical/model uncertainty remains explicitly
+`not_evaluated`. Spectral Sunlight, Moonlight, reflected fields, spacecraft
+response, brightness, visibility, detector, output, facility, and scheduling
+behavior remain unauthorized. The implementation is an unaccepted candidate;
+independent receipt, complete gates, and Fernando's review remain pending.

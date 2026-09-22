@@ -1844,6 +1844,24 @@ visibility, detector, facility, scheduling, or unrelated behavior.
 The audit authorizes no runtime. 50S.7D.2+, 50S.7E+, merge, and branch deletion
 remain separate explicit decisions.
 
+## Candidate 50S.7D.1 implementation boundary
+
+Treat executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` plus later
+documentation-only evidence as an unaccepted bounded candidate. Preserve its
+immutable IAU-nominal bolometric normal-plane policy/result/evaluator,
+inverse-square distance scaling, accepted uniform-disk fraction composition,
+complete geometry identity, numerical convergence evidence, explicit
+physical/model uncertainty `not_evaluated`, typed failures, focused tests, and
+offline independent recomputation.
+
+The 86-test illumination/ephemeris gate passed. Before review require the
+installed DE440/IERS no-download receipt, current-documentation and package-
+boundary gates, complete plugin-disabled Mac suite, diff check, exact upstream,
+and clean tree. Do not add spectral Sunlight, Moonlight, reflected fields,
+component bundles, surface response, brightness, visibility, detector,
+output, facility, scheduling, or unrelated refactoring. Merge and branch
+deletion remain separate explicit decisions.
+
 ## Accepted 50S.7D audit boundary
 
 Fernando scientifically and architecturally accepted the documentation-only

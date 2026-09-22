@@ -1222,6 +1222,7 @@ validator plus complete repository/documentation gates remain pending. The
 candidate is not yet accepted. 50S.7C transitions and all radiometric,
 reflected-source, brightness, detector, facility, visibility, and scheduling
 work remain unauthorized.
+
 ### Candidate 50S.7B independent validation
 
 At `51b935f`, all 24 illumination tests passed in 5.58 seconds. The offline
@@ -1374,3 +1375,22 @@ PR 184 merge and branch deletion remain separately authorized operations.
 50S.7D.2+, 50S.7E+, spectral/lunar resources, output integration, surfaces,
 BRDF, brightness, visibility, detector, facility, scheduling, and unrelated
 work remain unauthorized.
+
+## 2026-09-22 — Candidate 50S.7D.1 direct-Sun irradiance implementation
+
+Work began from exact accepted-audit merge
+`664b6bc849776b4769ce8cc223f2c7dce8b8cc53` on branch
+`feature/50s7d1-direct-solar-irradiance`. Executable
+`4b5f8e6925f88df38a2923c057f4d039328e3d2b` adds only immutable IAU-nominal
+bolometric normal-plane direct-Sun policy, result, and evaluator contracts in
+the accepted illumination owner, focused tests in the existing owner, and one
+offline independent-recomputation receipt tool.
+
+The focused illumination/ephemeris gate passed 86 tests in 9.80 seconds. A
+container complete-suite attempt passed 2,807 tests but was not an acceptance
+gate: the installed DE440 resource was absent, one historical documentation
+assertion awaited this record, and unrelated environment-sensitive tests
+failed. The installed-resource receipt, Mac complete suite, documentation
+gate, exact-upstream checks, and Fernando's separate scientific and
+architectural acceptance remain pending. 50S.7D.2+ and later work remain
+unauthorized.

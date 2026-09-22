@@ -9417,12 +9417,6 @@ def test_50s7d_records_candidate_direct_source_radiometry_audit():
     index = read(DEVELOPER / "README.md")
     assert "satellite_direct_source_radiometry_audit_50s7d.md" in index
 
-    implementation = read(
-        ROOT / "src" / "wenu" / "satellites" / "illumination.py"
-    )
-    assert "DirectSolarIrradiance" not in implementation
-
-
 def test_50s7d_records_accepted_direct_source_radiometry_audit():
     audit = read(
         DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
@@ -9483,3 +9477,81 @@ def test_50s7d_records_accepted_direct_source_radiometry_audit():
         "accepted documentation-only contract for direct-source model "
         "separation"
     ) in " ".join(index.split())
+
+
+def test_50s7d1_records_candidate_direct_solar_irradiance_implementation():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER / "artificial_satellite_crossing_audit_50s0.md"
+        ),
+        read(
+            DEVELOPER
+            / "satellite_illumination_night_geometry_audit_50s7a.md"
+        ),
+        read(
+            DEVELOPER / "satellite_direct_source_radiometry_audit_50s7d.md"
+        ),
+    )
+    expected = (
+        "Candidate 50S.7D.1 implementation architecture",
+        "Candidate 50S.7D.1 — Direct-Sun bolometric irradiance "
+        "implementation",
+        "Candidate 50S.7D.1 direct-Sun irradiance API implementation",
+        "Candidate 50S.7D.1 implementation source ownership",
+        "Candidate 50S.7D.1 scalar radiometry boundary",
+        "Candidate 50S.7D.1 runtime vocabulary",
+        "Candidate 50S.7D.1 direct-Sun irradiance implementation",
+        "Candidate 50S.7D.1 implementation boundary",
+        "Candidate 50S.7D.1 implementation refinement",
+        "Candidate 50S.7D.1 implementation handoff",
+        "Candidate 50S.7D.1 implementation",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "4b5f8e6925f88df38a2923c057f4d039328e3d2b" in normalized
+        assert "50S.7D.1" in normalized
+        assert (
+            "unaccepted" in normalized.lower()
+            or "pending" in normalized.lower()
+        )
+        assert "unauthorized" in normalized
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    assert "bolometric normal-plane" in combined
+    assert "not_evaluated" in combined
+
+    implementation = read(
+        ROOT / "src" / "wenu" / "satellites" / "illumination.py"
+    )
+    exports = read(
+        ROOT / "src" / "wenu" / "satellites" / "__init__.py"
+    )
+    validator = read(
+        ROOT / "tools" / "validate_50s7d1_direct_solar_irradiance.py"
+    )
+    for name in (
+        "DirectSolarIrradiancePolicy",
+        "DirectSolarIrradiance",
+        "DirectSolarIrradianceEvaluator",
+    ):
+        assert name in implementation
+        assert name in exports
+    for phrase in (
+        "IAU 2015 Resolution B3 nominal total solar irradiance",
+        "INDEPENDENT_NOMINAL_IRRADIANCE_W_M2 = 1361.0",
+        "INDEPENDENT_AU_KM = 149_597_870.7",
+        "network_access=false",
+        "LEO",
+        "MEO",
+        "GEO",
+    ):
+        assert phrase in validator

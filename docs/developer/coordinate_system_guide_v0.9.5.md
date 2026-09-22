@@ -4252,3 +4252,16 @@ frame, time scale, observer, or spacecraft attitude. 50S.7D.2+, spacecraft
 projection, BRDF, observer flux, apparent magnitude, visibility, detector,
 output, facility, and scheduling behavior remain unauthorized. PR 184 merge
 and branch deletion remain separate explicit decisions.
+
+## Candidate 50S.7D.1 scalar radiometry boundary
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` composes only the
+accepted same-instant Sun-satellite distance and uniform-disk visible fraction
+into scalar bolometric normal-plane irradiance. It introduces no vector,
+coordinate transform, frame, time scale, observer, or spacecraft attitude.
+
+UTC, TDB ephemeris resource, UT1/EOP, orbit, snapshot, and shadow-policy
+identity remain inherited through the complete immutable geometry. The
+coordinate-system guide was reviewed and remains current. This candidate is
+unaccepted; 50S.7D.2+, surface projection, brightness, visibility, detector,
+output, facility, and scheduling behavior remain unauthorized.

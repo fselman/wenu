@@ -2838,3 +2838,17 @@ source-tree and resource-admission audit. 50S.7D.2+, 50S.7E+, outputs,
 brightness, visibility, detector, facility, and scheduling ownership remain
 unauthorized. PR 184 merge and branch deletion remain separate explicit
 decisions.
+
+## Candidate 50S.7D.1 implementation source ownership
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` extends only
+`src/wenu/satellites/illumination.py`, its intentional package exports, and
+the existing `tests/test_satellite_illumination.py` owner. The offline
+`tools/validate_50s7d1_direct_solar_irradiance.py` receipt independently
+recomputes the formula for installed-resource LEO, MEO, and GEO geometry.
+
+No new production or test module, dependency, resource, provider, network,
+cache, renderer, exporter, or output owner is introduced. The coordinate-
+system guide was reviewed and remains current. Independent receipt, complete
+gates, and acceptance remain pending; 50S.7D.2+ and later ownership remain
+unauthorized.

@@ -671,3 +671,17 @@ components; Earthshine and Lunar-Earthshine remain 50S.7E.
 spacecraft response, brightness, visibility, detector, facility, scheduling,
 and unrelated work remain unauthorized. PR 184 merge and branch deletion
 remain separate explicit decisions.
+
+## 19. Candidate 50S.7D.1 implementation handoff
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` implements the first
+accepted radiometric composition downstream of this geometry: IAU-nominal
+bolometric normal-plane direct Sunlight, inverse-square distance scaling, and
+the already-converged uniform-disk visible fraction. It preserves all geometry
+identity and does not modify occultation or twilight behavior.
+
+Physical/model uncertainty stays `not_evaluated`; the inherited quadrature
+difference remains numerical convergence evidence only. The candidate is
+unaccepted and adds no spectral Sunlight, Moonlight, reflected fields,
+spacecraft response, brightness, visibility, detector, output, facility, or
+scheduling behavior.

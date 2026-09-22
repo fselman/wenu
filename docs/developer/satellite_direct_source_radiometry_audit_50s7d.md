@@ -383,3 +383,27 @@ reflected fields, 50S.7F bundling, 50S.8 brightness, 50S.9 detector effects,
 outputs, visibility, facilities, scheduling, and unrelated refactoring remain
 unauthorized. Acceptance does not authorize PR 184 merge or branch deletion;
 both remain separate explicit decisions.
+
+## 13. Candidate 50S.7D.1 implementation
+
+Implementation began from exact merged audit base
+`664b6bc849776b4769ce8cc223f2c7dce8b8cc53`. Executable
+`4b5f8e6925f88df38a2923c057f4d039328e3d2b` adds only the accepted immutable
+`DirectSolarIrradiancePolicy`, `DirectSolarIrradiance`, and
+`DirectSolarIrradianceEvaluator` contracts in the existing illumination
+owner, intentional package exports, focused existing-owner tests, and one
+offline independent-recomputation tool.
+
+The evaluator consumes one accepted `SatelliteIlluminationGeometry`, applies
+the exact nominal `1361 W m-2` value at 1 au, inverse-square distance scaling,
+and the retained visible-disk fraction, and returns clear and incident
+bolometric normal-plane irradiance. It preserves complete geometry and model
+identity, explicit `not_evaluated` physical/model uncertainty, numerical
+convergence evidence, provenance, warnings, and fail-closed compatibility.
+
+The focused illumination/ephemeris gate passed 86 tests in 9.80 seconds. The
+installed-resource independent receipt, Mac complete suite, documentation and
+package-boundary gates, exact-upstream/clean-tree checks, and Fernando's
+scientific and architectural acceptance remain pending. 50S.7D.2+, 50S.7E+,
+outputs, brightness, visibility, detector, facility, scheduling, merge, and
+branch deletion remain unauthorized.

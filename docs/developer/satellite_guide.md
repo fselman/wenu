@@ -1171,3 +1171,18 @@ Moonlight as not evaluated, never numeric zero. Spectral/passband Sunlight,
 Moonlight, reflected fields, spacecraft response, brightness, visibility,
 detector, output, facility, and scheduling vocabulary remain unauthorized.
 PR 184 merge and branch deletion remain separate explicit decisions.
+
+## Candidate 50S.7D.1 runtime vocabulary
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` computes direct
+Sunlight on an abstract plane normal to the incoming beam. At one astronomical
+unit with no occultation it is exactly the IAU nominal `1361 W m-2`; at other
+distances it follows inverse-square scaling, and Earth occultation multiplies
+it by the already-evaluated visible solar-disk fraction.
+
+This is bolometric normal-plane irradiance, not panel irradiance, observer
+brightness, magnitude, visibility, or detector signal. The nominal constant is
+exact as a convention while physical/model uncertainty remains
+`not_evaluated`; solar variability and limb darkening are omitted. Unknown
+Moonlight remains not evaluated, never numeric zero. The candidate is not yet
+accepted and all 50S.7D.2+ behavior remains unauthorized.

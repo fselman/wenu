@@ -3290,3 +3290,18 @@ reflected fields, 50S.7F bundling, 50S.8 brightness, 50S.9 detector effects,
 outputs, visibility, facilities, scheduling, and unrelated work remain
 unauthorized. PR 184 merge and branch deletion remain separate explicit
 decisions.
+
+## Candidate 50S.7D.1 — Direct-Sun bolometric irradiance implementation
+
+Executable `4b5f8e6925f88df38a2923c057f4d039328e3d2b` implements only the
+authorized IAU-nominal `1361 W m-2` at 1 au model, inverse-square
+Sun-satellite distance scaling, and accepted uniform-disk visible fraction.
+It returns bolometric normal-plane clear and incident irradiance with explicit
+`not_evaluated` physical/model uncertainty and independent numerical
+convergence evidence.
+
+The focused illumination/ephemeris gate passed 86 tests in 9.80 seconds.
+The installed-resource offline receipt, complete plugin-disabled gate, Mac
+verification, and Fernando's scientific and architectural acceptance remain
+pending. 50S.7D.2+, 50S.7E+, outputs, brightness, visibility, detector,
+facility, scheduling, merge, and branch deletion remain unauthorized.
