@@ -2057,3 +2057,16 @@ This verifies the bounded distinct spectral-resource owner without changing
 the canonical geometry, rendering, output, or 50S.7D.1 bolometric
 architecture. The candidate remains unaccepted; merge, branch deletion,
 50S.7D.3, and all later behavior require separate decisions.
+
+## Accepted 50S.7D.2 implementation architecture
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`d1edeb46f4ea70c34121910c54758c331fe4293b` on 2026-09-22. Preserve the
+bounded executable architecture at `8e930db2`: one distinct offline spectral
+resource owner downstream of accepted geometry, exact TSIS-1 HSRS v2
+admission, immutable native-grid values, and no change to 50S.7D.1 bolometric
+or canonical chart architecture.
+
+The external-resource receipt, 132 expanded tests, all 2,858 plugin-disabled
+tests, and final 228 documentation/package tests passed. Do not merge PR 187,
+delete its branch, or begin 50S.7D.3+ without separate explicit authority.
