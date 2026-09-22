@@ -9793,3 +9793,76 @@ def test_50s7d2_records_scientific_and_architectural_acceptance():
 
     index = read(DEVELOPER / "README.md")
     assert "accepted documentation-only contract" in index
+
+def test_50s7d2_records_bounded_spectral_implementation_candidate():
+    documents = (
+        read(V09_CURRENT),
+        read(FUTURE_ROADMAP),
+        read(DEVELOPER / "implementation_reference.md"),
+        read(DEVELOPER / "source_tree.md"),
+        read(COORDINATE_GUIDE),
+        read(DEVELOPER / "satellite_guide.md"),
+        read(SATELLITE_PROGRAM_LOG),
+        read(INSTRUCTIONS),
+        read(
+            DEVELOPER
+            / "satellite_spectral_solar_radiometry_audit_50s7d2.md"
+        ),
+    )
+    expected = (
+        "Candidate 50S.7D.2 spectral implementation architecture",
+        "Candidate 50S.7D.2 — Spectral direct-Sun implementation",
+        "Candidate 50S.7D.2 spectral API implementation",
+        "Candidate 50S.7D.2 implementation ownership",
+        "Candidate 50S.7D.2 implemented scalar boundary",
+        "Candidate 50S.7D.2 spectral direct-Sun implementation",
+        "Candidate 50S.7D.2 spectral implementation",
+        "Candidate 50S.7D.2 implementation boundary",
+        "Candidate implementation evidence",
+    )
+    for document, phrase in zip(documents, expected, strict=True):
+        assert phrase in document
+        normalized = " ".join(document.split())
+        assert "8e930db2" in normalized
+        assert (
+            "unaccepted" in normalized.lower()
+            or "pending" in normalized.lower()
+        )
+
+    combined = " ".join(" ".join(document.split()) for document in documents)
+    for phrase in (
+        "1cf3b07e6ac9669c429ad7ce9e92d50dfd741422efcfffa3d1e0eeb5f901616f",
+        "25,281",
+        "not_evaluated",
+        "50S.7D.3",
+    ):
+        assert phrase in combined
+
+    implementation = read(
+        ROOT / "src" / "wenu" / "satellites" / "radiometry.py"
+    )
+    exports = read(ROOT / "src" / "wenu" / "satellites" / "__init__.py")
+    validator = read(
+        ROOT
+        / "tools"
+        / "validate_50s7d2_spectral_solar_radiometry.py"
+    )
+    for name in (
+        "SolarSpectralIrradianceResourceIdentity",
+        "DirectSolarSpectralIrradiancePolicy",
+        "DirectSolarSpectralIrradiance",
+        "DirectSolarSpectralIrradianceEvaluator",
+        "load_solar_spectral_irradiance_resource",
+    ):
+        assert name in implementation
+        assert name in exports
+    for phrase in (
+        "TSIS1_HSRS_V2_BYTE_COUNT",
+        "TSIS1_HSRS_V2_SHA256",
+        "native_integral_w_m2",
+        "production_match=true",
+        "network_access=false",
+        "redistribution=false",
+    ):
+        assert phrase in validator
+
