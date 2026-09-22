@@ -1511,3 +1511,11 @@ evidence, while keeping Moonlight `not_evaluated`. After merge, only a
 separately controlled external LIME distribution preflight is authorized. No
 resource retrieval, execution, runtime, PR merge, or branch deletion is
 authorized by this acceptance.
+
+## 2026-09-22 — Final accepted 50S.7D.3 audit verification
+
+Exact acceptance-record head
+`0be116abfa6ce0172b94a0d3c15f4f61ed2c8f8b` passed all 231
+plugin-disabled documentation/package tests in 8.54 seconds. Diff, upstream,
+and clean-tree checks passed. PR 188 remains unmerged; after merge, only the
+separately controlled external LIME distribution preflight is authorized.
