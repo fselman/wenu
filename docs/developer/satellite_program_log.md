@@ -1498,3 +1498,16 @@ native bands, coefficients, complete domain, and reference outputs could not be
 frozen. It authorizes no acquisition or runtime. After separate acceptance and
 merge, only an explicitly authorized external LIME distribution preflight may
 proceed.
+
+## 2026-09-22 — Accepted 50S.7D.3 Moonlight readiness audit
+
+Fernando scientifically and architecturally accepted exact documentation-only
+candidate `abbb1b78fbd272ef8b5553d515e9f2a896a0aa55`. All 230
+plugin-disabled documentation/package tests passed in 11.39 seconds; diff,
+upstream, and clean-tree checks passed.
+
+The accepted decision prefers LIME and retains GIRO/ROLO as comparison
+evidence, while keeping Moonlight `not_evaluated`. After merge, only a
+separately controlled external LIME distribution preflight is authorized. No
+resource retrieval, execution, runtime, PR merge, or branch deletion is
+authorized by this acceptance.
