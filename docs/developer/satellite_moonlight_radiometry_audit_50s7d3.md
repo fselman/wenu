@@ -343,3 +343,24 @@ records an exact reproducible LIME distribution, byte identities, licensing,
 native bands, coefficients, geometry conventions, supported domain,
 uncertainty, and authoritative reference outputs. PR merge and branch deletion
 remain separate explicit decisions.
+
+## 13. Accepted 50S.7D.3 readiness audit
+
+Fernando scientifically and architecturally accepted exact documentation-only
+candidate `abbb1b78fbd272ef8b5553d515e9f2a896a0aa55` on 2026-09-22.
+The final current-documentation and package-boundary gate passed all 230
+plugin-disabled tests in 11.39 seconds. The diff check, exact upstream
+equality, and clean worktree also passed.
+
+Preserve LIME as the preferred production candidate and GIRO/ROLO as comparison
+evidence. This acceptance authorizes no Moonlight runtime, resource retrieval,
+installation, execution, redistribution, coefficient transcription, or numeric
+output. After this audit is merged, proceed only to a separately controlled
+external LIME distribution preflight that freezes exact version, files, byte
+identities, license, native bands, coefficients, geometry conventions, domain,
+uncertainty, and authoritative reference outputs.
+
+Do not begin the preflight before merge. A later documentation amendment and
+Fernando's separate acceptance remain mandatory before any 50S.7D.3 runtime.
+PR 188 merge and branch deletion remain separate explicit decisions.
+
