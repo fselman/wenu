@@ -167,25 +167,8 @@ def _native_integral(wavelength_nm, values, start, stop):
     )
 
 
-def load_solar_spectral_irradiance_resource(path):
-    """Load the one admitted external CSV without network acquisition."""
-    resource_path = Path(path)
-    try:
-        payload = resource_path.read_bytes()
-    except OSError as error:
-        _resource_error(
-            SolarSpectralRadiometryFailureCode.RESOURCE_NOT_FOUND,
-            f"unable to read installed spectral resource: {resource_path}",
-            error,
-        )
-    identity = TSIS1_HSRS_V2_IDENTITY
-    if len(payload) != identity.byte_count or sha256(payload).hexdigest() != (
-        identity.content_sha256
-    ):
-        _resource_error(
-            SolarSpectralRadiometryFailureCode.RESOURCE_IDENTITY_MISMATCH,
-            "installed spectral resource byte identity is not admitted.",
-        )
+def _parse_verified_spectral_payload(payload, identity):
+    """Parse bytes only after the public loader verifies their identity."""
     try:
         text = payload.decode("utf-8")
     except UnicodeDecodeError as error:
@@ -261,6 +244,28 @@ def load_solar_spectral_irradiance_resource(path):
         bandwidth_nm=bandwidth,
         native_integral_w_m2=integral,
     )
+
+
+def load_solar_spectral_irradiance_resource(path):
+    """Load the one admitted external CSV without network acquisition."""
+    resource_path = Path(path)
+    try:
+        payload = resource_path.read_bytes()
+    except OSError as error:
+        _resource_error(
+            SolarSpectralRadiometryFailureCode.RESOURCE_NOT_FOUND,
+            f"unable to read installed spectral resource: {resource_path}",
+            error,
+        )
+    identity = TSIS1_HSRS_V2_IDENTITY
+    if len(payload) != identity.byte_count or sha256(payload).hexdigest() != (
+        identity.content_sha256
+    ):
+        _resource_error(
+            SolarSpectralRadiometryFailureCode.RESOURCE_IDENTITY_MISMATCH,
+            "installed spectral resource byte identity is not admitted.",
+        )
+    return _parse_verified_spectral_payload(payload, identity)
 
 
 @dataclass(frozen=True)
