@@ -3424,3 +3424,10 @@ preflight. Preserve LIME as the preferred candidate, GIRO/ROLO comparison
 evidence, and Moonlight `not_evaluated`. Do not retrieve or execute resources,
 implement 50S.7D.3, or begin 50S.7D.4+ without later explicit authority. PR
 merge and branch deletion remain separate.
+
+## Final accepted 50S.7D.3 audit gate
+
+Exact acceptance-record head `0be116ab` passed all 231 plugin-disabled
+documentation/package tests in 8.54 seconds and clean repository checks. Only
+the post-merge, separately controlled external LIME distribution preflight is
+authorized next; Moonlight runtime remains blocked.
