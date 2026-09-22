@@ -1279,3 +1279,15 @@ domain, uncertainty, and reference outputs are not yet frozen. Existing
 Moonlight remains `not_evaluated`. After separate acceptance and merge, only
 an explicit external distribution preflight may proceed; runtime remains
 blocked.
+
+## Accepted 50S.7D.3 direct-Moonlight readiness
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after 230 documentation/package tests and clean repository checks.
+Preserve LIME as the preferred future production model, GIRO/ROLO as comparison
+evidence, and numeric Moonlight as `not_evaluated`.
+
+After merge, only a separately controlled external LIME distribution preflight
+is authorized. It must freeze version, bytes, license, bands, coefficients,
+geometry, domain, uncertainty, and reference outputs. It authorizes no
+resource retrieval or runtime by itself.
