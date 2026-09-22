@@ -2951,3 +2951,14 @@ owners. No new module, test file, dependency, vendored resource, acquisition
 owner, or output integration is authorized. Only an external LIME distribution
 preflight may be proposed after separate acceptance and merge; runtime remains
 blocked.
+
+## Accepted 50S.7D.3 Moonlight readiness ownership
+
+Fernando accepted exact documentation-only candidate `abbb1b78` on
+2026-09-22 after 230 documentation/package tests and clean repository checks.
+No production owner, module, dependency, test file, or resource was added.
+
+After merge, only an external LIME distribution preflight may proceed under
+separate controls. The future ownership reservation remains illumination for
+geometry and radiometry for exact model resources and native-band values.
+Runtime, acquisition ownership, and 50S.7D.4+ remain unauthorized.
