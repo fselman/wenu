@@ -2097,3 +2097,10 @@ preflight is authorized. It must freeze version, bytes, license, bands,
 coefficients, geometry conventions, domain, uncertainty, and reference outputs.
 No acquisition or runtime begins under this acceptance; PR 188 merge and branch
 deletion remain separate decisions.
+
+## Final accepted 50S.7D.3 audit architecture verification
+
+Acceptance-record head `0be116ab` passed 231 documentation/package tests in
+8.54 seconds plus diff, upstream, and clean-tree checks. The accepted
+documentation changes no runtime architecture. Only the post-merge external
+LIME distribution preflight remains authorized next.
