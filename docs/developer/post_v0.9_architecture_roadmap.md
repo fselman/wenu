@@ -3384,3 +3384,16 @@ also confirmed.
 Fernando's separate scientific and architectural acceptance is still required.
 Do not merge, delete the branch, begin 50S.7D.3, or add later radiometric,
 brightness, visibility, detector, output, facility, or scheduling behavior.
+
+## Accepted 50S.7D.2 — Spectral direct-Sun implementation
+
+Fernando scientifically and architecturally accepted exact verified candidate
+`d1edeb46f4ea70c34121910c54758c331fe4293b` on 2026-09-22. Preserve the
+executable `8e930db2` boundary: exact external TSIS-1 HSRS v2 bytes, all
+25,281 native samples, pointwise uncertainty, inverse-square and accepted
+achromatic occultation scaling, exact-native-endpoint energy integration, and
+integrated uncertainty `not_evaluated`.
+
+Do not merge PR 187 or delete its branch without separate instruction.
+50S.7D.3 Moonlight and later illumination, brightness, visibility, detector,
+output, facility, and scheduling work remain unauthorized.
